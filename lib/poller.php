@@ -191,7 +191,7 @@ function update_reindex_cache($host_id, $data_query_id) {
 					$host["snmp_timeout"],
 					SNMP_POLLER);
 
-				array_push($recache_stack, "insert into poller_reindex (host_id,data_query_id,action,op,assert_value,arg1) values ($host_id,$data_query_id,0,'<','$assert_value','$oid_uptime')");
+				array_push($recache_stack, "insert into poller_reindex (host_id,data_query_id,action,op,assert_value,arg1) values ($host_id,$data_query_id," .  POLLER_ACTION_SNMP . ",'<','$assert_value','$oid_uptime')");
 			}
 
 			break;
@@ -216,23 +216,41 @@ function update_reindex_cache($host_id, $data_query_id) {
 			switch ($data_query_type) {
 				case DATA_INPUT_TYPE_SNMP_QUERY:
 					if (isset($data_query_xml["oid_num_indexes"])) { /* we have a specific OID for counting indexes */
-						$recache_stack[] = "($host_id, $data_query_id, " . POLLER_ACTION_SNMP . ", '=', '$assert_value', '" . $data_query_xml["oid_num_indexes"] . "', '1')";
+						array_push($recache_stack, "INSERT INTO poller_reindex 
+							(host_id, data_query_id, action, op, assert_value, arg1) 
+							VALUES ($host_id, $data_query_id, " .  POLLER_ACTION_SNMP . ", '=', '$assert_value', '" . $data_query_xml["oid_num_indexes"] . "')
+							ON DUPLICATE KEY UPDATE op=VALUES(op), assert_value=VALUES(assert_value), arg1=VALUES(arg1)");
 					} else { /* count all indexes found */
-						$recache_stack[] = "($host_id, $data_query_id, " . POLLER_ACTION_SNMP_COUNT . ", '=', '$assert_value', '" . $data_query_xml["oid_index"] . "', '1')";
+						array_push($recache_stack, "INSERT INTO poller_reindex 
+							(host_id, data_query_id, action, op, assert_value, arg1) 
+							VALUES ($host_id, $data_query_id, " .  POLLER_ACTION_SNMP_COUNT . ", '=', '$assert_value', '" . $data_query_xml["oid_index"] . "')
+							ON DUPLICATE KEY UPDATE op=VALUES(op), assert_value=VALUES(assert_value), arg1=VALUES(arg1)");
 					}
 					break;
 				case DATA_INPUT_TYPE_SCRIPT_QUERY:
 					if (isset($data_query_xml["arg_num_indexes"])) { /* we have a specific request for counting indexes */
-						$recache_stack[] = "($host_id, $data_query_id, " . POLLER_ACTION_SCRIPT . ", '=', '$assert_value', " . '"' . get_script_query_path((isset($data_query_xml["arg_prepend"]) ? $data_query_xml["arg_prepend"] . " ": "") . $data_query_xml["arg_num_indexes"], $data_query_xml["script_path"], $host_id) . '"' . ", '1')";
+						array_push($recache_stack, "INSERT INTO poller_reindex 
+							(host_id, data_query_id, action, op, assert_value, arg1) 
+							VALUES ($host_id, $data_query_id," . POLLER_ACTION_SCRIPT . ", '=', '$assert_value', '" . get_script_query_path((isset($data_query_xml["arg_prepend"]) ? $data_query_xml["arg_prepend"] . " ": "") . $data_query_xml["arg_num_indexes"], $data_query_xml["script_path"], $host_id) . "')
+							ON DUPLICATE KEY UPDATE op=VALUES(op), assert_value=VALUES(assert_value), arg1=VALUES(arg1)");
 					} else { /* count all indexes found */
-						$recache_stack[] = "($host_id, $data_query_id, " . POLLER_ACTION_SCRIPT_COUNT . ", '=', '$assert_value', " . '"' . get_script_query_path((isset($data_query_xml["arg_prepend"]) ? $data_query_xml["arg_prepend"] . " ": "") . $data_query_xml["arg_index"], $data_query_xml["script_path"], $host_id) . '"' . ", '1')";
+						array_push($recache_stack, "INSERT INTO poller_reindex 
+							(host_id, data_query_id, action, op, assert_value, arg1) 
+							VALUES ($host_id, $data_query_id," . POLLER_ACTION_SCRIPT_COUNT . ", '=', '$assert_value', '" . get_script_query_path((isset($data_query_xml["arg_prepend"]) ? $data_query_xml["arg_prepend"] . " ": "") . $data_query_xml["arg_index"], $data_query_xml["script_path"], $host_id) . "')
+							ON DUPLICATE KEY UPDATE op=VALUES(op), assert_value=VALUES(assert_value), arg1=VALUES(arg1)");
 					}
 					break;
 				case DATA_INPUT_TYPE_QUERY_SCRIPT_SERVER:
 					if (isset($data_query_xml["arg_num_indexes"])) { /* we have a specific request for counting indexes */
-						$recache_stack[] = "($host_id, $data_query_id, " . POLLER_ACTION_SCRIPT_PHP . ", '=', '$assert_value', " . '"' . get_script_query_path($data_query_xml["script_function"] . " " . (isset($data_query_xml["arg_prepend"]) ? $data_query_xml["arg_prepend"] . " ": "") . $data_query_xml["arg_num_indexes"], $data_query_xml["script_path"], $host_id) . '"' . ", '1')";
+						array_push($recache_stack, "INSERT INTO poller_reindex 
+							(host_id, data_query_id, action, op, assert_value, arg1) 
+							VALUES ($host_id, $data_query_id," . POLLER_ACTION_SCRIPT_PHP . ", '=', '$assert_value', '" . get_script_query_path($data_query_xml["script_function"] . " " . (isset($data_query_xml["arg_prepend"]) ? $data_query_xml["arg_prepend"] . " ": "") . $data_query_xml["arg_num_indexes"], $data_query_xml["script_path"], $host_id) . "')
+							ON DUPLICATE KEY UPDATE op=VALUES(op), assert_value=VALUES(assert_value), arg1=VALUES(arg1)");
 					} else { /* count all indexes found */
-						$recache_stack[] = "($host_id, $data_query_id, " . POLLER_ACTION_SCRIPT_PHP_COUNT . ", '=', '$assert_value', " . '"' . get_script_query_path($data_query_xml["script_function"] . " " . (isset($data_query_xml["arg_prepend"]) ? $data_query_xml["arg_prepend"] . " ": "") . $data_query_xml["arg_index"], $data_query_xml["script_path"], $host_id) . '"' . ", '1')";
+						array_push($recache_stack, "INSERT INTO poller_reindex 
+							(host_id, data_query_id, action, op, assert_value, arg1) 
+							VALUES ($host_id, $data_query_id," . POLLER_ACTION_SCRIPT_PHP_COUNT . ", '=', '$assert_value', '" . get_script_query_path($data_query_xml["script_function"] . " " . (isset($data_query_xml["arg_prepend"]) ? $data_query_xml["arg_prepend"] . " ": "") . $data_query_xml["arg_index"], $data_query_xml["script_path"], $host_id) . "')
+							ON DUPLICATE KEY UPDATE op=VALUES(op), assert_value=VALUES(assert_value), arg1=VALUES(arg1)");
 					}
 					break;
 			}
@@ -246,9 +264,15 @@ function update_reindex_cache($host_id, $data_query_id) {
 					$assert_value = $index["field_value"];
 
 					if ($data_query_type == DATA_INPUT_TYPE_SNMP_QUERY) {
-						array_push($recache_stack, "insert into poller_reindex (host_id, data_query_id, action, op, assert_value, arg1) values ($host_id, $data_query_id, 0, '=', '$assert_value', '" . $data_query_xml["fields"]{$data_query["sort_field"]}["oid"] . "." . $index["snmp_index"] . "')");
+						array_push($recache_stack, "INSERT INTO poller_reindex 
+							(host_id, data_query_id, action, op, assert_value, arg1) 
+							VALUES ($host_id, $data_query_id," .  POLLER_ACTION_SNMP . ", '=', '$assert_value', '" . $data_query_xml["fields"]{$data_query["sort_field"]}["oid"] . "." . $index["snmp_index"] . "')
+							ON DUPLICATE KEY UPDATE op=VALUES(op), assert_value=VALUES(assert_value), arg1=VALUES(arg1)");
 					}else if ($data_query_type == DATA_INPUT_TYPE_SCRIPT_QUERY) {
-						array_push($recache_stack, "insert into poller_reindex (host_id, data_query_id, action, op, assert_value, arg1) values ($host_id, $data_query_id, 1, '=', '$assert_value', '" . get_script_query_path((isset($data_query_xml["arg_prepend"]) ? $data_query_xml["arg_prepend"] . " ": "") . $data_query_xml["arg_get"] . " " . $data_query_xml["fields"]{$data_query["sort_field"]}["query_name"] . " " . $index["snmp_index"], $data_query_xml["script_path"], $host_id) . "')");
+						array_push($recache_stack, "INSERT INTO poller_reindex 
+							(host_id, data_query_id, action, op, assert_value, arg1) 
+							VALUES ($host_id, $data_query_id," . POLLER_ACTION_SCRIPT . ", '=', '$assert_value', '" . get_script_query_path((isset($data_query_xml["arg_prepend"]) ? $data_query_xml["arg_prepend"] . " ": "") . $data_query_xml["arg_get"] . " " . $data_query_xml["fields"]{$data_query["sort_field"]}["query_name"] . " " . $index["snmp_index"], $data_query_xml["script_path"], $host_id) . "')
+							ON DUPLICATE KEY UPDATE op=VALUES(op), assert_value=VALUES(assert_value), arg1=VALUES(arg1)");
 					}
 				}
 			}
