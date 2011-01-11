@@ -479,23 +479,18 @@ function update_graph_data_query_cache($local_graph_id) {
 	data source
    @arg $local_data_id - the id of the data source to update the data query cache for */
 function update_data_source_data_query_cache($local_data_id) {
-cacti_log(__FUNCTION__ . " called ldi " . $local_data_id, false, "TEST");
 	$host_id = db_fetch_cell("select host_id from data_local where id=$local_data_id");
-cacti_log(__FUNCTION__ . " called HOST " . $host_id, false, "TEST");
 
 	$field = data_query_field_list(db_fetch_cell("select
 		data_template_data.id
 		from data_template_data
 		where data_template_data.local_data_id=$local_data_id"));
-cacti_log(__FUNCTION__ . " field " . serialize($field), false, "TEST");
 
 	if (empty($field)) { return; }
 
 	$data_query_id = db_fetch_cell("select snmp_query_id from snmp_query_graph where id='" . $field["output_type"] . "'");
-cacti_log(__FUNCTION__ . " called dqi " . $data_query_id, false, "TEST");
 
 	$index = data_query_index($field["index_type"], $field["index_value"], $host_id, $data_query_id);
-cacti_log(__FUNCTION__ . " called dqindex " . $index, false, "TEST");
 
 	if (($data_query_id != "0") && ($index != "")) {
 		db_execute("update data_local set snmp_query_id='$data_query_id',snmp_index='$index' where id='$local_data_id'");
