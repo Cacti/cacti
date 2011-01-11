@@ -92,16 +92,22 @@ function query_script_host($host_id, $snmp_query_id) {
 		$script_queries["script_path"] = "\"|path_php_binary|\" -q " . $script_queries["script_path"];
 	}
 
+	if (!verify_index_order($script_queries)) {
+		debug_log_insert("data_query", "Invalid field &lt;index_order&gt;" . $script_queries["index_order"] . "&lt;/index_order&gt;");
+		debug_log_insert("data_query", "Must contain &lt;direction&gt;input&lt;/direction&gt; fields only");
+		return false;
+	}
+
 	/* provide data for arg_num_indexes, if given */
 	if (isset($script_queries["arg_num_indexes"])) {
-		$script_path = get_script_query_path((isset($script_queries["arg_prepend"]) ? $script_queries["arg_prepend"] . " ": "") . $script_queries["arg_num_indexes"], $script_queries["script_path"], $device_id);
+		$script_path = get_script_query_path((isset($script_queries["arg_prepend"]) ? $script_queries["arg_prepend"] . " ": "") . $script_queries["arg_num_indexes"], $script_queries["script_path"], $host_id);
 
 		/* fetch specified index at specified OID */
 		$script_num_index_array = exec_into_array($script_path);
 	
 		debug_log_insert("data_query", "Executing script for num of indexes" . " '$script_path'");
 		for ($i=0;($i<sizeof($script_num_index_array));$i++) {
-			debug_log_insert("data_query", "Found number of indexes: %s", $script_num_index_array[$i]);
+			debug_log_insert("data_query", "Found number of indexes: " . $script_num_index_array[$i]);
 		}
 	}
 
@@ -111,9 +117,9 @@ function query_script_host($host_id, $snmp_query_id) {
 	/* fetch specified index at specified OID */
 	$script_index_array = exec_into_array($script_path);
 
-	debug_log_insert("data_query", "Executing script for list of indexes" . " '$script_path' " . "Index Count: %s", sizeof($script_index_array));
+	debug_log_insert("data_query", "Executing script for list of indexes" . " '$script_path' " . "Index Count: " . sizeof($script_index_array));
 	for ($i=0;($i<sizeof($script_index_array));$i++) {
-		debug_log_insert("data_query", "Found index: %s", $script_index_array[$i]);
+		debug_log_insert("data_query", "Found index: " . $script_index_array[$i]);
 	}
 
 	db_execute("delete from host_snmp_cache where host_id=$host_id and snmp_query_id=$snmp_query_id");
@@ -180,6 +186,12 @@ function query_snmp_host($host_id, $snmp_query_id) {
 	}
 
 	debug_log_insert("data_query", "XML file parsed ok.");
+
+	if (!verify_index_order($snmp_queries)) {
+		debug_log_insert("data_query", "Invalid field &lt;index_order&gt;" . $snmp_queries["index_order"] . "&lt;/index_order&gt;");
+		debug_log_insert("data_query", "Must contain &lt;direction&gt;input&lt;/direction&gt; fields only");
+		return false;
+	}
 
 	/* provide data for oid_num_indexes, if given */
 	if (isset($snmp_queries["oid_num_indexes"])) {
@@ -701,6 +713,45 @@ function get_script_query_path($args, $script_path, $host_id) {
 
 	/* get a complete path for out target script */
 	return substitute_script_query_path($script_path) . " $extra_arguments";
+}
+
+
+/**
+ * verify a given index_order
+ * @param array $raw_xml 	- parsed XML array
+ * @return bool 			- index_order field valid
+ */
+function verify_index_order($raw_xml) {
+
+	/* invalid xml check */
+	if ((!is_array($raw_xml)) || (sizeof($raw_xml) == 0)) {
+		debug_log_insert("data_query", "Error parsing XML file into an array.");
+		return false;
+	}
+
+	$xml_inputs = array();
+
+	/* list each of the input fields for this snmp query */
+	while (list($field_name, $field_array) = each($raw_xml["fields"])) {
+		if ($field_array["direction"] == "input") {
+			/* create a list of all values for this index */
+			array_push($xml_inputs, $field_name);
+		}
+	}
+
+	$all_index_order_fields_found = true;
+	/* the xml file contains an ordered list of "indexable" fields */
+	if (isset($raw_xml["index_order"])) {
+		$index_order_array = explode(":", $raw_xml["index_order"]);
+
+		for ($i=0; $i<count($index_order_array); $i++) {
+			$all_index_order_fields_found = $all_index_order_fields_found && (in_array($index_order_array[$i], $xml_inputs));
+		}
+	} else {
+		/* the xml file does not contain an index order */
+	}
+
+	return $all_index_order_fields_found;
 }
 
 ?>
