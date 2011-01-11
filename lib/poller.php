@@ -197,17 +197,44 @@ function update_reindex_cache($host_id, $data_query_id) {
 			break;
 		case DATA_QUERY_AUTOINDEX_INDEX_NUM_CHANGE:
 			/* this method requires that some command/oid can be used to determine the
-			 * current number of indexes in the data query */
+			 * current number of indexes in the data query
+			 * pay ATTENTION to quoting!
+			 * the script parameters are usually enclosed in single tics: '
+			 * so we have to enclose the whole list of parameters in double tics: "
+			 * */
+			 
+			/* the assert_value counts the number of distinct indexes currently available device_snmp_cache
+			 * we do NOT make use of <oid_num_indexes> or the like!
+			 * this works, even if no <oid_num_indexes> was given
+			 */ 
 			$assert_value = sizeof(db_fetch_assoc("select snmp_index from host_snmp_cache where host_id=$host_id and snmp_query_id=$data_query_id group by snmp_index"));
 
-			if ($data_query_type == DATA_INPUT_TYPE_SNMP_QUERY) {
-				if (isset($data_query_xml["oid_num_indexes"])) {
-					array_push($recache_stack, "insert into poller_reindex (host_id, data_query_id, action, op, assert_value, arg1) values ($host_id, $data_query_id, 0, '=', '$assert_value', '" . $data_query_xml["oid_num_indexes"] . "')");
-				}
-			}else if ($data_query_type == DATA_INPUT_TYPE_SCRIPT_QUERY) {
-				if (isset($data_query_xml["arg_num_indexes"])) {
-					array_push($recache_stack, "insert into poller_reindex (host_id, data_query_id, action, op, assert_value, arg1) values ($host_id, $data_query_id, 1, '=', '$assert_value', '" . get_script_query_path((isset($data_query_xml["arg_prepend"]) ? $data_query_xml["arg_prepend"] . " ": "") . $data_query_xml["arg_num_indexes"], $data_query_xml["script_path"], $host_id) . "')");
-				}
+			/* now, we have to build the (list of) commands that are later used on a recache event
+			 * the result of those commands will be compared to the assert_value we have just computed
+			 * on a comparison failure, a reindex event will be generated
+			 */
+			switch ($data_query_type) {
+				case DATA_INPUT_TYPE_SNMP_QUERY:
+					if (isset($data_query_xml["oid_num_indexes"])) { /* we have a specific OID for counting indexes */
+						$recache_stack[] = "($host_id, $data_query_id, " . POLLER_ACTION_SNMP . ", '=', '$assert_value', '" . $data_query_xml["oid_num_indexes"] . "', '1')";
+					} else { /* count all indexes found */
+						$recache_stack[] = "($host_id, $data_query_id, " . POLLER_ACTION_SNMP_COUNT . ", '=', '$assert_value', '" . $data_query_xml["oid_index"] . "', '1')";
+					}
+					break;
+				case DATA_INPUT_TYPE_SCRIPT_QUERY:
+					if (isset($data_query_xml["arg_num_indexes"])) { /* we have a specific request for counting indexes */
+						$recache_stack[] = "($host_id, $data_query_id, " . POLLER_ACTION_SCRIPT . ", '=', '$assert_value', " . '"' . get_script_query_path((isset($data_query_xml["arg_prepend"]) ? $data_query_xml["arg_prepend"] . " ": "") . $data_query_xml["arg_num_indexes"], $data_query_xml["script_path"], $host_id) . '"' . ", '1')";
+					} else { /* count all indexes found */
+						$recache_stack[] = "($host_id, $data_query_id, " . POLLER_ACTION_SCRIPT_COUNT . ", '=', '$assert_value', " . '"' . get_script_query_path((isset($data_query_xml["arg_prepend"]) ? $data_query_xml["arg_prepend"] . " ": "") . $data_query_xml["arg_index"], $data_query_xml["script_path"], $host_id) . '"' . ", '1')";
+					}
+					break;
+				case DATA_INPUT_TYPE_QUERY_SCRIPT_SERVER:
+					if (isset($data_query_xml["arg_num_indexes"])) { /* we have a specific request for counting indexes */
+						$recache_stack[] = "($host_id, $data_query_id, " . POLLER_ACTION_SCRIPT_PHP . ", '=', '$assert_value', " . '"' . get_script_query_path($data_query_xml["script_function"] . " " . (isset($data_query_xml["arg_prepend"]) ? $data_query_xml["arg_prepend"] . " ": "") . $data_query_xml["arg_num_indexes"], $data_query_xml["script_path"], $host_id) . '"' . ", '1')";
+					} else { /* count all indexes found */
+						$recache_stack[] = "($host_id, $data_query_id, " . POLLER_ACTION_SCRIPT_PHP_COUNT . ", '=', '$assert_value', " . '"' . get_script_query_path($data_query_xml["script_function"] . " " . (isset($data_query_xml["arg_prepend"]) ? $data_query_xml["arg_prepend"] . " ": "") . $data_query_xml["arg_index"], $data_query_xml["script_path"], $host_id) . '"' . ", '1')";
+					}
+					break;
 			}
 
 			break;

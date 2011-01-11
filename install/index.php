@@ -32,7 +32,7 @@ if (!verify_php_extensions()) {exit;}
 
 $cacti_versions = array("0.8", "0.8.1", "0.8.2", "0.8.2a", "0.8.3", "0.8.3a", "0.8.4", "0.8.5", "0.8.5a",
 	"0.8.6", "0.8.6a", "0.8.6b", "0.8.6c", "0.8.6d", "0.8.6e", "0.8.6f", "0.8.6g", "0.8.6h", "0.8.6i", "0.8.6j", "0.8.6k",
-	"0.8.7", "0.8.7a", "0.8.7b", "0.8.7c", "0.8.7d", "0.8.7e", "0.8.7f", "0.8.7g");
+	"0.8.7", "0.8.7a", "0.8.7b", "0.8.7c", "0.8.7d", "0.8.7e", "0.8.7f", "0.8.7g", "0.8.7h");
 
 $old_cacti_version = db_fetch_cell("select cacti from version");
 
@@ -439,6 +439,9 @@ if ($_REQUEST["step"] == "4") {
 		}elseif ($cacti_versions[$i] == "0.8.7g") {
 			include ("0_8_7f_to_0_8_7g.php");
 			upgrade_to_0_8_7g();
+		}elseif ($cacti_versions[$i] == "0.8.7h") {
+			include ("0_8_7g_to_0_8_7h.php");
+			upgrade_to_0_8_7h();
 		}
 	}
 }

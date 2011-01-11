@@ -121,7 +121,7 @@ if ( $_SERVER["argc"] == 1 ) {
 	$hosts = array_rekey($hosts, "id", $host_struc);
 
 	$host_count = sizeof($hosts);
-	$script_server_calls = db_fetch_cell("SELECT count(*) from poller_item WHERE action=2");
+	$script_server_calls = db_fetch_cell("SELECT count(*) from poller_item WHERE action IN (" . POLLER_ACTION_SCRIPT_PHP . "," . POLLER_ACTION_SCRIPT_PHP_COUNT . ")");
 
 	/* setup next polling interval */
 	if (isset($polling_interval)) {
@@ -177,7 +177,7 @@ if ( $_SERVER["argc"] == 1 ) {
 						$_SERVER["argv"][2] . ") ORDER by host_id");
 
 				$script_server_calls = db_fetch_cell("SELECT count(*) from poller_item " .
-						"WHERE (action=2 AND (host_id >= " .
+						"WHERE (action IN (" . POLLER_ACTION_SCRIPT_PHP . "," . POLLER_ACTION_SCRIPT_PHP_COUNT . ") AND (host_id >= " .
 						$_SERVER["argv"][1] .
 						" and host_id <= " .
 						$_SERVER["argv"][2] . "))");
@@ -293,6 +293,7 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 
 						/* do the check */
 						switch ($index_item["action"]) {
+
 						case POLLER_ACTION_SNMP: /* snmp */
 							if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_DEBUG) {
 								cacti_log("Host[$host_id] RECACHE DQ[" . $index_item["data_query_id"] . "]: OID " . $index_item["arg1"], $print_data_to_stdout);
@@ -302,13 +303,119 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 								$item["snmp_auth_protocol"], $item["snmp_priv_passphrase"], $item["snmp_priv_protocol"],
 								$item["snmp_context"], $item["snmp_port"], $item["snmp_timeout"], read_config_option("snmp_retries"), SNMP_CMDPHP);
 							break;
+
 						case POLLER_ACTION_SCRIPT: /* script (popen) */
 							if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_DEBUG) {
 								cacti_log("Host[$host_id] RECACHE DQ[" . $index_item["data_query_id"] . "]: Script " . $index_item["arg1"], $print_data_to_stdout);
 							}
 							$output = exec_poll($index_item["arg1"]);
+
+							/* remove any quotes from string */
+							$output = strip_quotes($output);
+
+							if (!validate_result($output)) {
+								if (strlen($output) > 20) {
+									$strout = 20;
+								} else {
+									$strout = strlen($output);
+								}
+
+								cacti_log("Host[$host_id]: RECACHE DQ[" . $index_item["data_query_id"] . "] Warning: Result from CMD not valid.  Partial Result: " . substr($output, 0, $strout), $stdout);
+							}
+
+							if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_MEDIUM) {
+								cacti_log("Host[$host_id]: RECACHE DQ[" . $index_item["data_query_id"] . "] CMD: " . $index_item["arg1"] . ", output: $output",$stdout);
+							}
 							break;
+
+						case POLLER_ACTION_SCRIPT_PHP: /* script (php script server) */
+							if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_DEBUG) {
+								cacti_log("Host[$host_id]: RECACHE DQ[" . $index_item["data_query_id"] . "]: Script Server " . $index_item["arg1"], $stdout);
+							}
+
+							$output = trim(str_replace("\n", "", exec_poll_php($index_item["arg1"], $pipes, $cactiphp)));
+
+							/* remove any quotes from string */
+							$output = strip_quotes($output);
+
+							if (!validate_result($output)) {
+								if (strlen($output) > 20) {
+									$strout = 20;
+								} else {
+									$strout = strlen($output);
+								}
+
+								cacti_log("Host[$host_id]: RECACHE DQ[" . $index_item["data_query_id"] . "]: WARNING: Result from SERVER not valid.  Partial Result: " . substr($output, 0, $strout), $stdout);
+							}
+
+							if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_MEDIUM) {
+								cacti_log("Host[$host_id]: RECACHE DQ[" . $index_item["data_query_id"] . "]: SERVER: " . $index_item["arg1"] . ", output: $output", $stdout);
+							}
+
+							break;
+						case POLLER_ACTION_SNMP_COUNT: /* snmp; count items */
+							if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_DEBUG) {
+								cacti_log("Host[$host_id]: RECACHE DQ[" . $index_item["data_query_id"] . "]: OID Count " . $index_item["arg1"], $stdout);
+							}
+							$output = sizeof(cacti_snmp_walk($item["hostname"], $item["snmp_community"], $index_item["arg1"],
+								$item["snmp_version"], $item["snmp_username"], $item["snmp_password"],
+								$item["snmp_auth_protocol"], $item["snmp_priv_passphrase"], $item["snmp_priv_protocol"],
+								$item["snmp_context"], $item["snmp_port"], $item["snmp_timeout"], read_config_option("snmp_retries"), SNMP_CMDPHP));
+
+							break;
+						case POLLER_ACTION_SCRIPT_COUNT: /* script (popen); count items */
+							if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_DEBUG) {
+								cacti_log("Host[$host_id]: RECACHE DQ[" . $index_item["data_query_id"] . "]: Script Count " . $index_item["arg1"], $stdout);
+							}
+							$output = trim(exec_poll($index_item["arg1"]));
+
+							/* remove any quotes from string */
+							$output = strip_quotes($output);
+
+							if (!validate_result($output)) {
+								if (strlen($output) > 20) {
+									$strout = 20;
+								} else {
+									$strout = strlen($output);
+								}
+
+								cacti_log("Host[$host_id]: RECACHE DQ[" . $index_item["data_query_id"] . "] Warning: Result from CMD not valid.  Partial Result: " . substr($output, 0, $strout), $stdout);
+							}
+
+							if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_MEDIUM) {
+								cacti_log("Host[$host_id]: RECACHE DQ[" . $index_item["data_query_id"] . "] CMD: " . $index_item["arg1"] . ", output count: $output",$stdout);
+							}
+							break;
+
+						case POLLER_ACTION_SCRIPT_PHP_COUNT: /* script (php script server); count items */
+							if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_DEBUG) {
+								cacti_log("Host[$host_id]: RECACHE DQ[" . $index_item["data_query_id"] . "]: Script Server Count " . $index_item["arg1"], $stdout);
+							}
+
+							$output = trim(str_replace("\n", "", exec_poll_php($index_item["arg1"], $pipes, $cactiphp)));
+
+							/* remove any quotes from string */
+							$output = strip_quotes($output);
+
+							if (!validate_result($output)) {
+								if (strlen($output) > 20) {
+									$strout = 20;
+								} else {
+									$strout = strlen($output);
+								}
+
+								cacti_log("Host[$host_id]: RECACHE DQ[" . $index_item["data_query_id"] . "]: WARNING: Result from SERVER not valid.  Partial Result: " . substr($output, 0, $strout), $stdout);
+							}
+
+							if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_MEDIUM) {
+								cacti_log("Host[$host_id]: RECACHE DQ[" . $index_item["data_query_id"] . "]: SERVER: " . $index_item["arg1"] . ", output count: $output", $stdout);
+							}
+
+							break;
+						default: /* invalid reindex option */
+							cacti_log("Host[$host_id] RECACHE DQ[" . $index_item["data_query_id"] . "]: ERROR: Invalid reindex option: " . $index_item["action"], $stdout);						
 						}
+
 
 						/* assert the result with the expected value in the db; recache if the assert fails */
 						/* TODO: remove magic ":" from poller_command["command"]; this may interfere with scripts */
@@ -436,6 +543,8 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 				}
 
 				break;
+			default: /* invalid polling option */
+				cacti_log("Host[$host_id] DS[$data_source] ERROR: Invalid polling option: " . $item["action"], $stdout);						
 			} /* End Switch */
 
 			if (isset($output)) {

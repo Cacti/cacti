@@ -64,9 +64,18 @@ define("GRAPH_ITEM_TYPE_STACK",   8);
 define("GRAPH_ITEM_TYPE_GPRINT",  9);
 define("GRAPH_ITEM_TYPE_LEGEND", 10);
 
+/* used both for polling and reindexing */
 define("POLLER_ACTION_SNMP", 0);
 define("POLLER_ACTION_SCRIPT", 1);
 define("POLLER_ACTION_SCRIPT_PHP", 2);
+/* used for reindexing only: 
+ * in case we do not have OID_NUM_INDEXES|ARG_NUM_INDEXES
+ * we simply use the OID_INDEX|ARG_INDEX and count number of indexes found
+ * so this is more of a REINDEX_ACTION_... thingy
+ */
+define("POLLER_ACTION_SNMP_COUNT", 10);
+define("POLLER_ACTION_SCRIPT_COUNT", 11);
+define("POLLER_ACTION_SCRIPT_PHP_COUNT", 12);
 
 define("POLLER_COMMAND_REINDEX", 1);
 define("POLLER_COMMAND_RRDPURGE", 2);

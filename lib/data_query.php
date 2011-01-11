@@ -87,16 +87,34 @@ function query_script_host($host_id, $snmp_query_id) {
 
 	debug_log_insert("data_query", "XML file parsed ok.");
 
+	/* are we talking to script server? */
 	if (isset($script_queries["script_server"])) {
 		$script_queries["script_path"] = "\"|path_php_binary|\" -q " . $script_queries["script_path"];
 	}
 
+	/* provide data for arg_num_indexes, if given */
+	if (isset($script_queries["arg_num_indexes"])) {
+		$script_path = get_script_query_path((isset($script_queries["arg_prepend"]) ? $script_queries["arg_prepend"] . " ": "") . $script_queries["arg_num_indexes"], $script_queries["script_path"], $device_id);
+
+		/* fetch specified index at specified OID */
+		$script_num_index_array = exec_into_array($script_path);
+	
+		debug_log_insert("data_query", "Executing script for num of indexes" . " '$script_path'");
+		for ($i=0;($i<sizeof($script_num_index_array));$i++) {
+			debug_log_insert("data_query", "Found number of indexes: %s", $script_num_index_array[$i]);
+		}
+	}
+
+	/* provide data for index, mandatory */
 	$script_path = get_script_query_path((isset($script_queries["arg_prepend"]) ? $script_queries["arg_prepend"] . " ": "") . $script_queries["arg_index"], $script_queries["script_path"], $host_id);
 
 	/* fetch specified index at specified OID */
 	$script_index_array = exec_into_array($script_path);
 
-	debug_log_insert("data_query", "Executing script for list of indexes '$script_path'");
+	debug_log_insert("data_query", "Executing script for list of indexes" . " '$script_path' " . "Index Count: %s", sizeof($script_index_array));
+	for ($i=0;($i<sizeof($script_index_array));$i++) {
+		debug_log_insert("data_query", "Found index: %s", $script_index_array[$i]);
+	}
 
 	db_execute("delete from host_snmp_cache where host_id=$host_id and snmp_query_id=$snmp_query_id");
 
@@ -163,6 +181,18 @@ function query_snmp_host($host_id, $snmp_query_id) {
 
 	debug_log_insert("data_query", "XML file parsed ok.");
 
+	/* provide data for oid_num_indexes, if given */
+	if (isset($snmp_queries["oid_num_indexes"])) {
+		$snmp_num_indexes = cacti_snmp_get($host["hostname"], $host["snmp_community"], $snmp_queries["oid_num_indexes"],
+										$host["snmp_version"], $host["snmp_username"], $host["snmp_password"],
+										$host["snmp_auth_protocol"], $host["snmp_priv_passphrase"], $host["snmp_priv_protocol"],
+										$host["snmp_context"], $host["snmp_port"], $host["snmp_timeout"],
+										$host["ping_retries"], $host["max_oids"], SNMP_WEBUI);
+	
+		debug_log_insert("data_query", "Executing SNMP get for num of indexes @ '" . $snmp_queries["oid_num_indexes"] . "'");
+		debug_log_insert("data_query", "Found number of indexes: " . $snmp_num_indexes);
+	}
+
 	/* fetch specified index at specified OID */
 	$snmp_indexes = cacti_snmp_walk($host["hostname"], $host["snmp_community"], $snmp_queries["oid_index"],
 		$host["snmp_version"], $host["snmp_username"], $host["snmp_password"],
@@ -170,6 +200,7 @@ function query_snmp_host($host_id, $snmp_query_id) {
 		$host["snmp_context"], $host["snmp_port"], $host["snmp_timeout"], $host["ping_retries"], $host["max_oids"], SNMP_WEBUI);
 
 	debug_log_insert("data_query", "Executing SNMP walk for list of indexes @ '" . $snmp_queries["oid_index"] . "'");
+	debug_log_insert("data_query", "Executing SNMP walk for list of indexes @ '" . $snmp_queries["oid_index"] . "' Index Count: " . sizeof($snmp_indexes));
 
 	/* no data found; get out */
 	if (!$snmp_indexes) {
@@ -436,18 +467,23 @@ function update_graph_data_query_cache($local_graph_id) {
 	data source
    @arg $local_data_id - the id of the data source to update the data query cache for */
 function update_data_source_data_query_cache($local_data_id) {
+cacti_log(__FUNCTION__ . " called ldi " . $local_data_id, false, "TEST");
 	$host_id = db_fetch_cell("select host_id from data_local where id=$local_data_id");
+cacti_log(__FUNCTION__ . " called HOST " . $host_id, false, "TEST");
 
 	$field = data_query_field_list(db_fetch_cell("select
 		data_template_data.id
 		from data_template_data
 		where data_template_data.local_data_id=$local_data_id"));
+cacti_log(__FUNCTION__ . " field " . serialize($field), false, "TEST");
 
 	if (empty($field)) { return; }
 
 	$data_query_id = db_fetch_cell("select snmp_query_id from snmp_query_graph where id='" . $field["output_type"] . "'");
+cacti_log(__FUNCTION__ . " called dqi " . $data_query_id, false, "TEST");
 
 	$index = data_query_index($field["index_type"], $field["index_value"], $host_id, $data_query_id);
+cacti_log(__FUNCTION__ . " called dqindex " . $index, false, "TEST");
 
 	if (($data_query_id != "0") && ($index != "")) {
 		db_execute("update data_local set snmp_query_id='$data_query_id',snmp_index='$index' where id='$local_data_id'");
