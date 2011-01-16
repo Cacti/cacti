@@ -109,12 +109,14 @@ function query_script_host($host_id, $snmp_query_id) {
 		for ($i=0;($i<sizeof($script_num_index_array));$i++) {
 			debug_log_insert("data_query", "Found number of indexes: " . $script_num_index_array[$i]);
 		}
+	} else {
+		debug_log_insert("data_query", "'Index Count Changed' not supported, &lt;arg_num_indexes&gt; missing in XML file");		
 	}
 
 	/* provide data for index, mandatory */
 	$script_path = get_script_query_path((isset($script_queries["arg_prepend"]) ? $script_queries["arg_prepend"] . " ": "") . $script_queries["arg_index"], $script_queries["script_path"], $host_id);
 
-	/* fetch specified index at specified OID */
+	/* fetch specified index */
 	$script_index_array = exec_into_array($script_path);
 
 	debug_log_insert("data_query", "Executing script for list of indexes" . " '$script_path' " . "Index Count: " . sizeof($script_index_array));
@@ -201,8 +203,7 @@ function query_snmp_host($host_id, $snmp_query_id) {
 										$host["snmp_context"], $host["snmp_port"], $host["snmp_timeout"],
 										$host["ping_retries"], $host["max_oids"], SNMP_WEBUI);
 	
-		debug_log_insert("data_query", "Executing SNMP get for num of indexes @ '" . $snmp_queries["oid_num_indexes"] . "'");
-		debug_log_insert("data_query", "Found number of indexes: " . $snmp_num_indexes);
+		debug_log_insert("data_query", "Executing SNMP get for num of indexes @ '" . $snmp_queries["oid_num_indexes"] . "' Index Count: " . $snmp_num_indexes);
 	}
 
 	/* fetch specified index at specified OID */
@@ -211,7 +212,6 @@ function query_snmp_host($host_id, $snmp_query_id) {
 		$host["snmp_auth_protocol"], $host["snmp_priv_passphrase"], $host["snmp_priv_protocol"],
 		$host["snmp_context"], $host["snmp_port"], $host["snmp_timeout"], $host["ping_retries"], $host["max_oids"], SNMP_WEBUI);
 
-	debug_log_insert("data_query", "Executing SNMP walk for list of indexes @ '" . $snmp_queries["oid_index"] . "'");
 	debug_log_insert("data_query", "Executing SNMP walk for list of indexes @ '" . $snmp_queries["oid_index"] . "' Index Count: " . sizeof($snmp_indexes));
 
 	/* no data found; get out */

@@ -203,7 +203,7 @@ function update_reindex_cache($host_id, $data_query_id) {
 			 * so we have to enclose the whole list of parameters in double tics: "
 			 * */
 			 
-			/* the assert_value counts the number of distinct indexes currently available device_snmp_cache
+			/* the assert_value counts the number of distinct indexes currently available in host_snmp_cache
 			 * we do NOT make use of <oid_num_indexes> or the like!
 			 * this works, even if no <oid_num_indexes> was given
 			 */ 
@@ -247,10 +247,12 @@ function update_reindex_cache($host_id, $data_query_id) {
 							VALUES ($host_id, $data_query_id," . POLLER_ACTION_SCRIPT_PHP . ", '=', '$assert_value', '" . get_script_query_path($data_query_xml["script_function"] . " " . (isset($data_query_xml["arg_prepend"]) ? $data_query_xml["arg_prepend"] . " ": "") . $data_query_xml["arg_num_indexes"], $data_query_xml["script_path"], $host_id) . "')
 							ON DUPLICATE KEY UPDATE op=VALUES(op), assert_value=VALUES(assert_value), arg1=VALUES(arg1)");
 					} else { /* count all indexes found */
-						array_push($recache_stack, "INSERT INTO poller_reindex 
-							(host_id, data_query_id, action, op, assert_value, arg1) 
-							VALUES ($host_id, $data_query_id," . POLLER_ACTION_SCRIPT_PHP_COUNT . ", '=', '$assert_value', '" . get_script_query_path($data_query_xml["script_function"] . " " . (isset($data_query_xml["arg_prepend"]) ? $data_query_xml["arg_prepend"] . " ": "") . $data_query_xml["arg_index"], $data_query_xml["script_path"], $host_id) . "')
-							ON DUPLICATE KEY UPDATE op=VALUES(op), assert_value=VALUES(assert_value), arg1=VALUES(arg1)");
+						# TODO: push the correct assert value
+						#array_push($recache_stack, "INSERT INTO poller_reindex 
+						#	(host_id, data_query_id, action, op, assert_value, arg1) 
+						#	VALUES ($host_id, $data_query_id," . POLLER_ACTION_SCRIPT_PHP_COUNT . ", '=', '$assert_value', '" . get_script_query_path($data_query_xml["script_function"] . " " . (isset($data_query_xml["arg_prepend"]) ? $data_query_xml["arg_prepend"] . " ": "") . $data_query_xml["arg_index"], $data_query_xml["script_path"], $host_id) . "')
+						#	ON DUPLICATE KEY UPDATE op=VALUES(op), assert_value=VALUES(assert_value), arg1=VALUES(arg1)");
+						# omit the assert value until we are able to run an 'index' command through script server
 					}
 					break;
 			}
