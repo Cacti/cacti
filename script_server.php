@@ -178,7 +178,7 @@ while (1) {
 					}
 				}else{
 					$parameters = "";
-					$parameters_array = array();
+					$parameter_array = array();
 				}
 
 				if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_DEBUG) {
