@@ -21,11 +21,9 @@ if (!isset($called_by_script_server)) {
 	array_shift($_SERVER["argv"]);
 
 	print call_user_func_array("ss_host_disk", $_SERVER["argv"]);
-cacti_log("not called by script server " . serialize($_SERVER["argv"]), false, "TEST");
 }
 
 function ss_host_disk($hostname, $host_id, $snmp_auth, $cmd, $arg1 = "", $arg2 = "") {
-cacti_log("parms " . serialize($snmp_auth) . " cmd $cmd arg1 $arg1", false, "TEST");
 	$snmp = explode(":", $snmp_auth);
 	$snmp_version 	= $snmp[0];
 	$snmp_port    	= $snmp[1];
