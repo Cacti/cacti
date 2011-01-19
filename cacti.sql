@@ -1917,12 +1917,14 @@ CREATE TABLE host_snmp_cache (
   field_value varchar(255) default NULL,
   snmp_index varchar(255) NOT NULL default '',
   oid TEXT NOT NULL,
+  present tinyint NOT NULL DEFAULT '1',
   PRIMARY KEY  (host_id,snmp_query_id,field_name,snmp_index),
   KEY host_id (host_id,field_name),
   KEY snmp_index (snmp_index),
   KEY field_name (field_name),
   KEY field_value (field_value),
-  KEY snmp_query_id (snmp_query_id)
+  KEY snmp_query_id (snmp_query_id),
+  KEY present (present)
 ) TYPE=MyISAM;
 
 --
@@ -2075,6 +2077,7 @@ CREATE TABLE poller_item (
   poller_id smallint(5) unsigned NOT NULL default '0',
   host_id mediumint(8) NOT NULL default '0',
   action tinyint(2) unsigned NOT NULL default '1',
+  present tinyint NOT NULL DEFAULT '1',
   hostname varchar(250) NOT NULL default '',
   snmp_community varchar(100) NOT NULL default '',
   snmp_version tinyint(1) unsigned NOT NULL default '0',
@@ -2098,7 +2101,8 @@ CREATE TABLE poller_item (
   KEY local_data_id (local_data_id),
   KEY host_id (host_id),
   KEY rrd_next_step (rrd_next_step),
-  KEY action (action)
+  KEY action (action),
+  KEY present (present)
 ) TYPE=MyISAM;
 
 --
@@ -2131,10 +2135,12 @@ CREATE TABLE poller_reindex (
   host_id mediumint(8) unsigned NOT NULL default '0',
   data_query_id mediumint(8) unsigned NOT NULL default '0',
   action tinyint(3) unsigned NOT NULL default '0',
+  present tinyint NOT NULL DEFAULT '1',
   op char(1) NOT NULL default '',
   assert_value varchar(100) NOT NULL default '',
   arg1 varchar(255) NOT NULL default '',
-  PRIMARY KEY  (host_id,data_query_id,arg1)
+  PRIMARY KEY  (host_id,data_query_id,arg1),
+  KEY present (present)
 ) TYPE=MyISAM;
 
 --

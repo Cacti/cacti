@@ -107,7 +107,7 @@ function api_data_source_remove_multi($local_data_ids) {
 
 function api_data_source_enable($local_data_id) {
 	db_execute("UPDATE data_template_data SET active='on' WHERE local_data_id=$local_data_id");
-	update_poller_cache($local_data_id, false);
+	update_poller_cache($local_data_id, true);
  }
 
 function api_data_source_disable($local_data_id) {

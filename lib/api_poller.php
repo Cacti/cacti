@@ -23,6 +23,9 @@
 */
 
 function api_poller_cache_item_add($host_id, $host_field_override, $local_data_id, $rrd_step, $poller_action_id, $data_source_item_name, $num_rrd_items, $arg1 = "", $arg2 = "", $arg3 = "") {
+	static $hosts = array();
+
+	if (!isset($hosts[$host_id])) {
 	$host = db_fetch_row("select
 		host.id,
 		host.hostname,
@@ -40,6 +43,11 @@ function api_poller_cache_item_add($host_id, $host_field_override, $local_data_i
 		from host
 		where host.id=$host_id");
 
+		$hosts[$host_id] = $host;
+	} else {
+		$host = $hosts[$host_id];
+	}
+
 	/* the $host_field_override array can be used to override certain host fields in the poller cache */
 	if (isset($host)) {
 		$host = array_merge($host, $host_field_override);
@@ -48,11 +56,11 @@ function api_poller_cache_item_add($host_id, $host_field_override, $local_data_i
 	if (isset($host["id"]) || (isset($host_id))) {
 		if (isset($host)) {
 			if ($host["disabled"] == "on") {
-				return true;
+				return;
 			}
 		} else {
 			if ($poller_action_id == 0) {
-				return true;
+				return;
 			}
 
 			$host["id"] = 0;
@@ -72,23 +80,18 @@ function api_poller_cache_item_add($host_id, $host_field_override, $local_data_i
 		if ($poller_action_id == 0) {
 			if (($host["snmp_version"] < 1) || ($host["snmp_version"] > 3) ||
 				($host["snmp_community"] == "" && $host["snmp_version"] != 3)) {
-				return true;
+				return;
 			}
 		}
 
 		$rrd_next_step = api_poller_get_rrd_next_step($rrd_step, $num_rrd_items);
 
-		return db_execute("INSERT INTO poller_item (local_data_id, host_id, action,hostname,
-			snmp_community, snmp_version, snmp_timeout, snmp_username, snmp_password,
-			snmp_auth_protocol, snmp_priv_passphrase, snmp_priv_protocol, snmp_context, snmp_port, rrd_name, rrd_path,
-			rrd_num, rrd_step, rrd_next_step, arg1, arg2, arg3)
-			VALUES
-			($local_data_id, " . $host["id"] . ", $poller_action_id,'" . $host["hostname"] . "',
+		return "($local_data_id, " . "0, " . $host["id"] . ", $poller_action_id,'" . $host["hostname"] . "',
 			'" . $host["snmp_community"]       . "', '" . $host["snmp_version"]       . "', '" . $host["snmp_timeout"] . "',
 			'" . $host["snmp_username"]        . "', '" . $host["snmp_password"]      . "', '" . $host["snmp_auth_protocol"] . "',
 			'" . $host["snmp_priv_passphrase"] . "', '" . $host["snmp_priv_protocol"] . "', '" . $host["snmp_context"] . "',
 			'" . $host["snmp_port"]            . "', '$data_source_item_name', '"     . addslashes(clean_up_path(get_data_source_path($local_data_id, true))) . "',
-			'$num_rrd_items', '$rrd_step', '$rrd_next_step', '$arg1', '$arg2', '$arg3')");
+			'$num_rrd_items', '$rrd_step', '$rrd_next_step', '$arg1', '$arg2', '$arg3', '1')";
 	}
 }
 

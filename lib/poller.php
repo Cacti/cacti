@@ -191,7 +191,7 @@ function update_reindex_cache($host_id, $data_query_id) {
 					$host["snmp_timeout"],
 					SNMP_POLLER);
 
-				array_push($recache_stack, "insert into poller_reindex (host_id,data_query_id,action,op,assert_value,arg1) values ($host_id,$data_query_id," .  POLLER_ACTION_SNMP . ",'<','$assert_value','$oid_uptime')");
+				$recache_stack[] = "('$host_id', '$data_query_id'," .  POLLER_ACTION_SNMP . ", '<', '$assert_value', '$oid_uptime', '1')";
 			}
 
 			break;
@@ -216,42 +216,24 @@ function update_reindex_cache($host_id, $data_query_id) {
 			switch ($data_query_type) {
 				case DATA_INPUT_TYPE_SNMP_QUERY:
 					if (isset($data_query_xml["oid_num_indexes"])) { /* we have a specific OID for counting indexes */
-						array_push($recache_stack, "INSERT INTO poller_reindex 
-							(host_id, data_query_id, action, op, assert_value, arg1) 
-							VALUES ($host_id, $data_query_id, " .  POLLER_ACTION_SNMP . ", '=', '$assert_value', '" . $data_query_xml["oid_num_indexes"] . "')
-							ON DUPLICATE KEY UPDATE op=VALUES(op), assert_value=VALUES(assert_value), arg1=VALUES(arg1)");
+						$recache_stack[] = "($host_id, $data_query_id," .  POLLER_ACTION_SNMP . ", '=', '$assert_value', '" . $data_query_xml["oid_num_indexes"] . "', '1')";
 					} else { /* count all indexes found */
-						array_push($recache_stack, "INSERT INTO poller_reindex 
-							(host_id, data_query_id, action, op, assert_value, arg1) 
-							VALUES ($host_id, $data_query_id, " .  POLLER_ACTION_SNMP_COUNT . ", '=', '$assert_value', '" . $data_query_xml["oid_index"] . "')
-							ON DUPLICATE KEY UPDATE op=VALUES(op), assert_value=VALUES(assert_value), arg1=VALUES(arg1)");
+						$recache_stack[] = "($host_id, $data_query_id," .  POLLER_ACTION_SNMP_COUNT . ", '=', '$assert_value', '" . $data_query_xml["oid_num_indexes"] . "', '1')";
 					}
 					break;
 				case DATA_INPUT_TYPE_SCRIPT_QUERY:
 					if (isset($data_query_xml["arg_num_indexes"])) { /* we have a specific request for counting indexes */
-						array_push($recache_stack, "INSERT INTO poller_reindex 
-							(host_id, data_query_id, action, op, assert_value, arg1) 
-							VALUES ($host_id, $data_query_id," . POLLER_ACTION_SCRIPT . ", '=', '$assert_value', '" . get_script_query_path((isset($data_query_xml["arg_prepend"]) ? $data_query_xml["arg_prepend"] . " ": "") . $data_query_xml["arg_num_indexes"], $data_query_xml["script_path"], $host_id) . "')
-							ON DUPLICATE KEY UPDATE op=VALUES(op), assert_value=VALUES(assert_value), arg1=VALUES(arg1)");
+						$recache_stack[] = "($host_id, $data_query_id," . POLLER_ACTION_SCRIPT . ", '=', '$assert_value', '" . get_script_query_path((isset($data_query_xml["arg_prepend"]) ? $data_query_xml["arg_prepend"] . " ": "") . $data_query_xml["arg_num_indexes"], $data_query_xml["script_path"], $host_id) . "', '1')";
 					} else { /* count all indexes found */
-						array_push($recache_stack, "INSERT INTO poller_reindex 
-							(host_id, data_query_id, action, op, assert_value, arg1) 
-							VALUES ($host_id, $data_query_id," . POLLER_ACTION_SCRIPT_COUNT . ", '=', '$assert_value', '" . get_script_query_path((isset($data_query_xml["arg_prepend"]) ? $data_query_xml["arg_prepend"] . " ": "") . $data_query_xml["arg_index"], $data_query_xml["script_path"], $host_id) . "')
-							ON DUPLICATE KEY UPDATE op=VALUES(op), assert_value=VALUES(assert_value), arg1=VALUES(arg1)");
+						$recache_stack[] = "($host_id, $data_query_id," . POLLER_ACTION_SCRIPT_COUNT . ", '=', '$assert_value', '" . get_script_query_path((isset($data_query_xml["arg_prepend"]) ? $data_query_xml["arg_prepend"] . " ": "") . $data_query_xml["arg_num_indexes"], $data_query_xml["script_path"], $host_id) . "', '1')";
 					}
 					break;
 				case DATA_INPUT_TYPE_QUERY_SCRIPT_SERVER:
 					if (isset($data_query_xml["arg_num_indexes"])) { /* we have a specific request for counting indexes */
-						array_push($recache_stack, "INSERT INTO poller_reindex 
-							(host_id, data_query_id, action, op, assert_value, arg1) 
-							VALUES ($host_id, $data_query_id," . POLLER_ACTION_SCRIPT_PHP . ", '=', '$assert_value', '" . get_script_query_path($data_query_xml["script_function"] . " " . (isset($data_query_xml["arg_prepend"]) ? $data_query_xml["arg_prepend"] . " ": "") . $data_query_xml["arg_num_indexes"], $data_query_xml["script_path"], $host_id) . "')
-							ON DUPLICATE KEY UPDATE op=VALUES(op), assert_value=VALUES(assert_value), arg1=VALUES(arg1)");
+						$recache_stack[] = "($host_id, $data_query_id," . POLLER_ACTION_SCRIPT_PHP . ", '=', '$assert_value', '" . get_script_query_path($data_query_xml["script_function"] . " " . (isset($data_query_xml["arg_prepend"]) ? $data_query_xml["arg_prepend"] . " ": "") . $data_query_xml["arg_num_indexes"], $data_query_xml["script_path"], $host_id) . "', '1')";
 					} else { /* count all indexes found */
 						# TODO: push the correct assert value
-						#array_push($recache_stack, "INSERT INTO poller_reindex 
-						#	(host_id, data_query_id, action, op, assert_value, arg1) 
-						#	VALUES ($host_id, $data_query_id," . POLLER_ACTION_SCRIPT_PHP_COUNT . ", '=', '$assert_value', '" . get_script_query_path($data_query_xml["script_function"] . " " . (isset($data_query_xml["arg_prepend"]) ? $data_query_xml["arg_prepend"] . " ": "") . $data_query_xml["arg_index"], $data_query_xml["script_path"], $host_id) . "')
-						#	ON DUPLICATE KEY UPDATE op=VALUES(op), assert_value=VALUES(assert_value), arg1=VALUES(arg1)");
+						#$recache_stack[] = "($host_id, $data_query_id," . POLLER_ACTION_SCRIPT_PHP_COUNT . ", '=', '$assert_value', '" . get_script_query_path($data_query_xml["script_function"] . " " . (isset($data_query_xml["arg_prepend"]) ? $data_query_xml["arg_prepend"] . " ": "") . $data_query_xml["arg_num_indexes"], $data_query_xml["script_path"], $host_id) . "', '1')";
 						# omit the assert value until we are able to run an 'index' command through script server
 					}
 					break;
@@ -266,15 +248,9 @@ function update_reindex_cache($host_id, $data_query_id) {
 					$assert_value = $index["field_value"];
 
 					if ($data_query_type == DATA_INPUT_TYPE_SNMP_QUERY) {
-						array_push($recache_stack, "INSERT INTO poller_reindex 
-							(host_id, data_query_id, action, op, assert_value, arg1) 
-							VALUES ($host_id, $data_query_id," .  POLLER_ACTION_SNMP . ", '=', '$assert_value', '" . $data_query_xml["fields"]{$data_query["sort_field"]}["oid"] . "." . $index["snmp_index"] . "')
-							ON DUPLICATE KEY UPDATE op=VALUES(op), assert_value=VALUES(assert_value), arg1=VALUES(arg1)");
+						$recache_stack[] = "($host_id, $data_query_id," .  POLLER_ACTION_SNMP . ", '=', '$assert_value', '" . $data_query_xml["fields"]{$data_query["sort_field"]}["oid"] . "." . $index["snmp_index"] . "', '1')";
 					}else if ($data_query_type == DATA_INPUT_TYPE_SCRIPT_QUERY) {
-						array_push($recache_stack, "INSERT INTO poller_reindex 
-							(host_id, data_query_id, action, op, assert_value, arg1) 
-							VALUES ($host_id, $data_query_id," . POLLER_ACTION_SCRIPT . ", '=', '$assert_value', '" . get_script_query_path((isset($data_query_xml["arg_prepend"]) ? $data_query_xml["arg_prepend"] . " ": "") . $data_query_xml["arg_get"] . " " . $data_query_xml["fields"]{$data_query["sort_field"]}["query_name"] . " " . $index["snmp_index"], $data_query_xml["script_path"], $host_id) . "')
-							ON DUPLICATE KEY UPDATE op=VALUES(op), assert_value=VALUES(assert_value), arg1=VALUES(arg1)");
+						$recache_stack[] = "('$host_id', '$data_query_id'," . POLLER_ACTION_SCRIPT . ", '=', '$assert_value', '" . get_script_query_path((isset($data_query_xml["arg_prepend"]) ? $data_query_xml["arg_prepend"] . " ": "") . $data_query_xml["arg_get"] . " " . $data_query_xml["fields"]{$data_query["sort_field"]}["query_name"] . " " . $index["snmp_index"], $data_query_xml["script_path"], $host_id) . "', '1')";
 					}
 				}
 			}
@@ -282,12 +258,56 @@ function update_reindex_cache($host_id, $data_query_id) {
 			break;
 	}
 
-	/* save the delete for last since we need to reference this table in the code above */
-	db_execute("delete from poller_reindex where host_id=$host_id and data_query_id=$data_query_id");
-
-	for ($i=0; $i<count($recache_stack); $i++) {
-		db_execute($recache_stack[$i]);
+	if (sizeof($recache_stack)) {
+		poller_update_poller_reindex_from_buffer($host_id, $data_query_id, $recache_stack);
 	}
+}
+
+function poller_update_poller_reindex_from_buffer($host_id, $data_query_id, &$recache_stack) {
+	/* set all fields present value to 0, to mark the outliers when we are all done */
+	db_execute("UPDATE poller_reindex SET present=0 WHERE host_id='$host_id' AND data_query_id='$data_query_id'");
+
+	/* setup the database call */
+	$sql_prefix   = "INSERT INTO poller_reindex (host_id, data_query_id, action, op, assert_value, arg1, present) VALUES";
+	$sql_suffix   = " ON DUPLICATE KEY UPDATE action=VALUES(action), op=VALUES(op), assert_value=VALUES(assert_value), present=VALUES(present)";
+
+	/* use a reasonable insert buffer, the default is 1MByte */
+	$max_packet   = 256000;
+
+	/* setup somme defaults */
+	$overhead     = strlen($sql_prefix) + strlen($sql_suffix);
+	$buf_len      = 0;
+	$buf_count    = 0;
+	$buffer       = "";
+
+	foreach($recache_stack AS $record) {
+		if ($buf_count == 0) {
+			$delim = " ";
+		} else {
+			$delim = ", ";
+		}
+
+		$buffer .= $delim . $record;
+
+		$buf_len += strlen($record);
+
+		if (($overhead + $buf_len) > ($max_packet - 1024)) {
+			db_execute($sql_prefix . $buffer . $sql_suffix);
+
+			$buffer    = "";
+			$buf_len   = 0;
+			$buf_count = 0;
+		} else {
+			$buf_count++;
+		}
+	}
+
+	if ($buf_count > 0) {
+		db_execute($sql_prefix . $buffer . $sql_suffix);
+	}
+
+	/* remove stale records from the poller reindex */
+	db_execute("DELETE FROM poller_reindex WHERE host_id='$host_id' AND data_query_id='$data_query_id' AND present='0'");
 }
 
 /* process_poller_output - grabs data from the 'poller_output' table and feeds the *completed*
@@ -386,16 +406,28 @@ function process_poller_output(&$rrdtool_pipe, $remainder = FALSE) {
 
 		/* make sure each .rrd file has complete data */
 		reset($results);
+		$k = 0;
+		$data_ids = array();
 		foreach ($results as $item) {
 			$unix_time = strtotime($item["time"]);
 
 			if (isset($rrd_update_array{$item["rrd_path"]}["times"][$unix_time])) {
 				if ($item["rrd_num"] <= sizeof($rrd_update_array{$item["rrd_path"]}["times"][$unix_time])) {
-					db_execute("delete from poller_output where local_data_id='" . $item["local_data_id"] . "' and rrd_name='" . $item["rrd_name"] . "' and time='" . $item["time"] . "'");
+					$data_ids[] = $item["local_data_id"];
+					$k++;
+					if ($k % 10000 == 0) {
+						db_execute("DELETE FROM poller_output WHERE " . array_to_sql_or($data_ids, "local_data_id"));
+						$k = 0;
+						$data_ids = array();
+					}
 				}else{
 					unset($rrd_update_array{$item["rrd_path"]}["times"][$unix_time]);
 				}
 			}
+		}
+
+		if ($k > 0) {
+			db_execute("DELETE FROM poller_output WHERE " . array_to_sql_or($data_ids, "local_data_id"));
 		}
 
 		$rrds_processed = rrdtool_function_update($rrd_update_array, $rrdtool_pipe);

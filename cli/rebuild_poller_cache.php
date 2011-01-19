@@ -37,46 +37,60 @@ $parms = $_SERVER["argv"];
 array_shift($parms);
 
 $debug = FALSE;
+$host_id = 0;
 
 foreach($parms as $parameter) {
 	@list($arg, $value) = @explode("=", $parameter);
 
 	switch ($arg) {
 	case "-d":
+	case "--debug":
 		$debug = TRUE;
 		break;
+	case "--host-id":
+		$host_id = trim($value);
+
+		if (!is_numeric($host_id)) {
+			echo "ERROR: You must supply a valid host-id to run this script!\n";
+			exit(1);
+		}
+
+		break;
 	case "-h":
-		display_help();
-		exit;
 	case "-v":
-		display_help();
-		exit;
 	case "--version":
-		display_help();
-		exit;
 	case "--help":
 		display_help();
+
 		exit;
 	default:
 		print "ERROR: Invalid Parameter " . $parameter . "\n\n";
 		display_help();
+
 		exit;
 	}
 }
 
 /* obtain timeout settings */
 $max_execution = ini_get("max_execution_time");
+
+/* set new timeout */
 ini_set("max_execution_time", "0");
 
-/* clear the poller cache first */
-db_execute("truncate table poller_item");
-
 /* get the data_local Id's for the poller cache */
-$poller_data = db_fetch_assoc("select id from data_local");
+if ($host_id > 0) {
+	$poller_data  = db_fetch_assoc("SELECT id FROM data_local WHERE host_id=$host_id");
+} else {
+	$poller_data  = db_fetch_assoc("SELECT id FROM data_local");
+}
 
 /* initialize some variables */
 $current_ds = 1;
 $total_ds = sizeof($poller_data);
+
+/* setting local_data_ids to an empty array saves time during updates */
+$local_data_ids = array();
+$poller_items   = array();
 
 /* issue warnings and start message if applicable */
 print "WARNING: Do not interrupt this script.  Rebuilding the Poller Cache can take quite some time\n";
@@ -86,10 +100,13 @@ debug("There are '" . sizeof($poller_data) . "' data source elements to update."
 if (sizeof($poller_data) > 0) {
 	foreach ($poller_data as $data) {
 		if (!$debug) print ".";
-		update_poller_cache($data["id"], true);
+		$poller_items = array_merge($poller_items, update_poller_cache($data["id"]));
+
 		debug("Data Source Item '$current_ds' of '$total_ds' updated");
 		$current_ds++;
 	}
+
+	poller_update_poller_cache_from_buffer($local_data_ids, $poller_items);
 }
 if (!$debug) print "\n";
 
@@ -98,9 +115,9 @@ ini_set("max_execution_time", $max_execution);
 
 /*	display_help - displays the usage of the function */
 function display_help () {
-	print "Cacti Rebuild Poller Cache Script 1.0, Copyright 2004-2010 - The Cacti Group\n\n";
-	print "usage: rebuild_poller_cache.php [-d] [-h] [--help] [-v] [--version]\n\n";
-	print "-d            - Display verbose output during execution\n";
+	print "Cacti Rebuild Poller Cache Script 1.0, Copyright 2004-2011 - The Cacti Group\n\n";
+	print "usage: rebuild_poller_cache.php [--host-id=ID] [-d | --debug] [-h | --help | -v | --version]\n\n";
+	print "-d | --debug  - Display verbose output during execution\n";
 	print "-v --version  - Display this help message\n";
 	print "-h --help     - Display this help message\n";
 }

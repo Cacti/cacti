@@ -23,7 +23,23 @@
 */
 
 function upgrade_to_0_8_7h() {
-	
+	/* speed up the reindexing */
+	$_columns = array_rekey(db_fetch_assoc("SHOW COLUMNS FROM host_snmp_cache"), "Field", "Field");
+	if (!in_array("present", $_columns)) {
+		db_execute("ALTER TABLE host_snmp_cache ADD COLUMN present tinyint NOT NULL DEFAULT '1' AFTER `oid`");
+		db_execute("ALTER TABLE host_snmp_cache ADD INDEX present (present)");
+	}
+	$_columns = array_rekey(db_fetch_assoc("SHOW COLUMNS FROM poller_item"), "Field", "Field");
+	if (!in_array("present", $_columns)) {
+		db_execute("ALTER TABLE poller_item ADD COLUMN present tinyint NOT NULL DEFAULT '1' AFTER `action`");
+		db_execute("ALTER TABLE poller_item ADD INDEX present (present)");
+	}
+	$_columns = array_rekey(db_fetch_assoc("SHOW COLUMNS FROM poller_reindex"), "Field", "Field");
+	if (!in_array("present", $_columns)) {
+		db_execute("ALTER TABLE poller_reindex ADD COLUMN present tinyint NOT NULL DEFAULT '1' AFTER `action`");
+		db_execute("ALTER TABLE poller_reindex ADD INDEX present (present)");
+	}
+
 	/* update the reindex cache, as we now introduced more options for "index count changed" */
 	$host_snmp_query = db_fetch_assoc("select host_id,snmp_query_id from host_snmp_query");
 	if (sizeof($host_snmp_query) > 0) {
