@@ -31,7 +31,7 @@ if (!isset($_SERVER["argv"][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($
 $no_http_headers = true;
 
 include(dirname(__FILE__)."/../include/global.php");
-include_once("../lib/import.php");
+include_once($config["base_path"] . "/lib/import.php");
 
 /* process calling arguments */
 $parms = $_SERVER["argv"];
@@ -40,6 +40,7 @@ array_shift($parms);
 if (sizeof($parms)) {
 	$filename = "";
 	$import_custom_rra_settings = false;
+	$rra_set = "";
 
 	foreach($parms as $parameter) {
 		@list($arg, $value) = @explode("=", $parameter);
@@ -49,13 +50,42 @@ if (sizeof($parms)) {
 				$filename = trim($value);
 
 				break;
-			case "--with-rras":
+			case "--with-template-rras":
 				$import_custom_rra_settings = true;
+
+				break;
+			case "--with-user-rras":
+				$rra_set = trim($value);
 
 				break;
 			default:
 				echo "ERROR: Invalid Argument: ($arg)\n\n";
 				exit(1);
+		}
+	}
+	
+	if($rra_set != "") {
+		if ($import_custom_rra_settings) {
+			echo "ERROR: '--with-template-rras' given and '--with-user-rras' given. Ignoring '--with-user-rras'\n";
+		} else {
+			$rra_array = explode(':', $rra_set);
+			if (sizeof($rra_array)) {
+				foreach ($rra_array as $key => $value) {
+					$name = db_fetch_cell("SELECT name FROM rra WHERE id=" . intval($value));
+					if (strlen($name)) {
+						echo "using RRA $name\n";
+					} else {
+						echo "RRA id $value not found\n";
+						unset($rra_array[$key]);
+					}
+				}
+			}
+		}
+	}else{
+		$rra_array = array();
+		if (!$import_custom_rra_settings) {
+			echo "ERROR: neither '--with-template-rras' given nor '--with-user-rras' given. Exiting'\n";
+			return false;
 		}
 	}
 
@@ -67,7 +97,7 @@ if (sizeof($parms)) {
 
 			echo "Read ".strlen($xml_data)." bytes of XML data\n";
 
-			$debug_data = import_xml_data($xml_data, $import_custom_rra_settings);
+			$debug_data = import_xml_data($xml_data, $import_custom_rra_settings, $rra_array);
 
 			while (list($type, $type_array) = each($debug_data)) {
 				print "** " . $hash_type_names[$type] . "\n";
@@ -104,8 +134,6 @@ if (sizeof($parms)) {
 					if ($errors) {
 						echo $dep_text;
 						exit(-1);
-					}else{
-						exit(0);
 					}
 				}
 			}
@@ -125,11 +153,12 @@ if (sizeof($parms)) {
 }
 
 function display_help() {
-	echo "Add Graphs Script 1.0, Copyright 2010 - The Cacti Group\n\n";
+	echo "Add Graphs Script 1.1, Copyright 2010 - The Cacti Group\n\n";
 	echo "A simple command line utility to import a Template into Cacti\n\n";
-	echo "usage: import_template.php --filename=[filename] [--with-rras]\n";
+	echo "usage: import_template.php --filename=[filename] [--with-template-rras] [--with-user-rras=[n[:m]...]]\n";
 	echo "Required:\n";
 	echo "    --filename     the name of the XML file to import\n";
 	echo "Optional:\n";
-	echo "    --with-rras    also import custom RRA definitions from the template\n";
+	echo "    --with-template-rras    also import custom RRA definitions from the template\n";
+	echo "    --with-user-rras        use your own set of RRA like '1:2:3:4'\n";
 }
