@@ -18,6 +18,7 @@ SVN
 -bug: Removing graphs was not taking advantage of bulk deletes causing major slowdowns
 -bug: Add some command escaping
 -bug: Change default font sizes
+-bug: fixing issues with multiple "U" results for data input methods with multiple output parms
 -bug: when using template and search filter on graph management, sql error occurs
 -feature#0001922: Reindex method "Index Count Changed" requires that OID_NUM_INDEXES is given for SNMP Data Queries
 -feature#0001923: Implement counting for script (server) data queries just like OID_NUM_INDEXES
