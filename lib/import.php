@@ -22,7 +22,7 @@
  +-------------------------------------------------------------------------+
 */
 
-function &import_xml_data(&$xml_data, $import_custom_rra_settings) {
+function &import_xml_data(&$xml_data, $import_custom_rra_settings, $rra_array = array()) {
 	global $config, $hash_type_codes, $hash_version_codes;
 
 	include_once($config["library_path"] . "/xml.php");
@@ -68,7 +68,7 @@ function &import_xml_data(&$xml_data, $import_custom_rra_settings) {
 					$hash_cache += xml_to_graph_template($dep_hash_cache[$type][$i]["hash"], $hash_array, $hash_cache);
 					break;
 				case 'data_template':
-					$hash_cache += xml_to_data_template($dep_hash_cache[$type][$i]["hash"], $hash_array, $hash_cache, $import_custom_rra_settings);
+					$hash_cache += xml_to_data_template($dep_hash_cache[$type][$i]["hash"], $hash_array, $hash_cache, $import_custom_rra_settings, $rra_array);
 					break;
 				case 'host_template':
 					$hash_cache += xml_to_host_template($dep_hash_cache[$type][$i]["hash"], $hash_array, $hash_cache);
@@ -240,7 +240,7 @@ function &xml_to_graph_template($hash, &$xml_array, &$hash_cache) {
 	return $hash_cache;
 }
 
-function &xml_to_data_template($hash, &$xml_array, &$hash_cache, $import_custom_rra_settings) {
+function &xml_to_data_template($hash, &$xml_array, &$hash_cache, $import_custom_rra_settings, $rra_array) {
 	global $struct_data_source, $struct_data_source_item;
 
 	/* import into: data_template */
@@ -301,13 +301,13 @@ function &xml_to_data_template($hash, &$xml_array, &$hash_cache, $import_custom_
 				}
 			}
 		}
-	/* use all rras by default */
-	}else{
-		$rras = db_fetch_assoc("select id from rra");
-
-		if (is_array($rras)) {
-			foreach ($rras as $rra) {
-				db_execute("replace into data_template_data_rra (data_template_data_id,rra_id) values ($data_template_data_id," . $rra["id"] . ")");
+	}else{ /* use all rras selected by the user */
+		if (is_array($rra_array)) {
+			/* when overriding an existing data template, make sure that specifying fewer (or different) rra's is honoured */
+			db_execute("DELETE FROM data_template_data_rra  WHERE data_template_data_id = $data_template_data_id");
+			foreach ($rra_array as $rra) {
+				/* as it was user supplied input, make sure it's an integer */
+				db_execute("replace into data_template_data_rra (data_template_data_id,rra_id) values ($data_template_data_id," . intval($rra) . ")");
 			}
 		}
 	}

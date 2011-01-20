@@ -62,12 +62,14 @@ function form_save() {
 
 		if ($_POST["import_rra"] == "1") {
 			$import_custom_rra_settings = false;
+			$rra_array = (isset($_POST["rra_id"]) ? $_POST["rra_id"] : array());
 		}else{
 			$import_custom_rra_settings = true;
+			$rra_array = array();
 		}
 
 		/* obtain debug information if it's set */
-		$debug_data = import_xml_data($xml_data, $import_custom_rra_settings);
+		$debug_data = import_xml_data($xml_data, $import_custom_rra_settings, $rra_array);
 		if(sizeof($debug_data) > 0) {
 			$_SESSION["import_debug_info"] = $debug_data;
 		}
@@ -81,7 +83,7 @@ function form_save() {
    --------------------------- */
 
 function import() {
-	global $colors, $hash_type_names;
+	global $colors, $hash_type_names, $fields_template_import;
 
 	?>
 	<form method="post" action="templates_import.php" enctype="multipart/form-data">
@@ -140,46 +142,30 @@ function import() {
 
 	html_start_box("<strong>Import Templates</strong>", "100%", $colors["header"], "3", "center", "");
 
-	form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
-		<td width="50%">
-			<font class="textEditTitle">Import Template from Local File</font><br>
-			If the XML file containing template data is located on your local machine, select it here.
-		</td>
-		<td>
-			<input type="file" name="import_file">
-		</td>
-	</tr>
-
-	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
-		<td width="50%">
-			<font class="textEditTitle">Import Template from Text</font><br>
-			If you have the XML file containing template data as text, you can paste it into this box to
-			import it.
-		</td>
-		<td>
-			<?php form_text_area("import_text", "", "10	", "50", "");?>
-		</td>
-	</tr>
-
-	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
-		<td width="50%">
-			<font class="textEditTitle">Import RRA Settings</font><br>
-			Choose whether to allow Cacti to import custom RRA settings from imported templates or whether to use the defaults for this installation.
-		</td>
-		<td>
-			<?php
-			form_radio_button("import_rra", 1, 1, "Use defaults for this installation (Recommended)", 1); echo "<br />";
-			form_radio_button("import_rra", 1, 2, "Use custom RRA settings from the template", 1);
-			form_hidden_box("save_component_import","1","");
-			?>
-		</td>
-	</tr>
-
-	<?php
-
+	draw_edit_form(array(
+		"config" => array("no_form_tag" => true),
+		"fields" => $fields_template_import
+		));
 
 	html_end_box();
+	form_hidden_box("save_component_import","1","");
 
 	form_save_button("", "import");
-}
 ?>
+<script language="JavaScript">
+
+changeRRA();
+
+function changeRRA() {
+	//alert("changed to '" + document.getElementById('import_rra_1').checked + "'");
+	
+	if ((document.getElementById('import_rra_1').checked == '1')) {
+		document.getElementById('row_rra_id').style.display="";
+	}else{
+		document.getElementById('row_rra_id').style.display="none";
+	}
+}
+</script>
+<?php
+}
+

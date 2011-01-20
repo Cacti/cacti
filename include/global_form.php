@@ -1190,4 +1190,47 @@ $export_types = array(
 		"dropdown_sql" => "select id,name from snmp_query order by name"
 		)
 	);
+	
+$fields_template_import = array(
+	"import_file" => array(
+		"friendly_name" => "Import Template from Local File",
+		"description" => "If the XML file containing template data is located on your local machine, select it here.",
+		"method" => "file"
+		),
+	"import_text" => array(
+		"method" => "textarea",
+		"friendly_name" => "Import Template from Text",
+		"description" => "If you have the XML file containing template data as text, you can paste it into this box to import it.",
+		"value" => "",
+		"default" => "",
+		"textarea_rows" => "10",
+		"textarea_cols" => "50",
+		"class" => "textAreaNotes"
+		),
+	"import_rra" => array(
+		"friendly_name" => "Import RRA Settings",
+		"description" => "Choose whether to allow Cacti to import custom RRA settings from imported templates or whether to use the defaults for this installation.",
+		"method" => "radio",
+		"value" => "",
+		"default" => "1",
+		"on_change" => "changeRRA()",
+		"items" => array(
+			0 => array(
+				"radio_value" => "1",
+				"radio_caption" => "Select your RRA settings below (Recommended)"
+				),
+			1 => array(
+				"radio_value" => "2",
+				"radio_caption" => "Use custom RRA settings from the template"
+				),
+			)
+		),
+	"rra_id" => array(
+		"method" => "drop_multi_rra",
+		"friendly_name" => "Associated RRA's",
+		"description" => "Which RRA's to use when entering data (It is recommended that you <strong>deselect unwanted values</strong>).",
+		"form_id" => "",
+		"sql_all" => "select rra.id from rra where id in (1,2,3,4) order by id",
+		),
+	);
 ?>
