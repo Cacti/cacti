@@ -124,7 +124,7 @@ function associate($data_template_id, $data_rra, $debug, $quiet) {
 }
 
 function display_help($me) {
-	echo "Data Template Associate RRA Script 1.0, Copyright 2004-2010 - The Cacti Group\n\n";
+	echo "Data Template Associate RRA Script 1.0, Copyright 2004-2011 - The Cacti Group\n\n";
 	echo "A simple command line utility to associate RRA definitions to a data template in Cacti\n\n";
 	echo "usage: $me --rra='rra-1:..:rra-n' --data-template-id=[ID]\n";
 	echo "Required:\n";

@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2010 The Cacti Group                                 |
+ | Copyright (C) 2004-2011 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -83,7 +83,7 @@ if (sizeof($tables)) {
 
 /*	display_help - displays the usage of the function */
 function display_help () {
-	print "Cacti Database Repair Tool v1.0, Copyright 2004-2010 - The Cacti Group\n\n";
+	print "Cacti Database Repair Tool v1.0, Copyright 2004-2011 - The Cacti Group\n\n";
 	print "usage: repair_database.php [-d] [-h] [--form] [--help] [-v] [-V] [--version]\n\n";
 	print "-form            - Force rebuilding the indexes from the database creation syntax\n";
 	print "-d               - Display verbose output during execution\n";
