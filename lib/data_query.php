@@ -119,7 +119,11 @@ function query_script_host($host_id, $snmp_query_id) {
 			debug_log_insert("data_query", "Found number of indexes: " . $script_num_index_array[$i]);
 		}
 	} else {
-		debug_log_insert("data_query", "'Index Count Changed' not supported, &lt;arg_num_indexes&gt; missing in XML file");		
+		if (isset($script_queries["script_server"])) {
+			debug_log_insert("data_query", "&lt;arg_num_indexes&gt; missing in XML file, 'Index Count Changed' not supported");
+		} else {
+			debug_log_insert("data_query", "&lt;arg_num_indexes&gt; missing in XML file, 'Index Count Changed' emulated by counting arg_index entries");
+		}		
 	}
 
 	/* provide data for index, mandatory */
@@ -216,6 +220,8 @@ function query_snmp_host($host_id, $snmp_query_id) {
 										$host["ping_retries"], $host["max_oids"], SNMP_WEBUI);
 	
 		debug_log_insert("data_query", "Executing SNMP get for num of indexes @ '" . $snmp_queries["oid_num_indexes"] . "' Index Count: " . $snmp_num_indexes);
+	} else {
+		debug_log_insert("data_query", "&lt;oid_num_indexes&gt; missing in XML file, 'Index Count Changed' emulated by counting oid_index entries");
 	}
 
 	/* fetch specified index at specified OID */
