@@ -23,6 +23,8 @@
 */
 
 function upgrade_to_0_8_7h() {
+	require_once("../lib/poller.php");
+
 	/* speed up the reindexing */
 	$_columns = array_rekey(db_fetch_assoc("SHOW COLUMNS FROM host_snmp_cache"), "Field", "Field");
 	if (!in_array("present", $_columns)) {
