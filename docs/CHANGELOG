@@ -13,6 +13,7 @@ SVN
 -bug#0001880: When Performing Form Validation Error Message Areas Not Highlighted Upon Form Save
 -bug#0001903: Undefined variable: mode in lib/ldap.php on line 375 
 -bug#0001926: Importing templates "using defaults for this installation" associates all rra's defined 
+-bug#0001934: Poller sig_handler Bug
 -bug: accept "Connection refused" on TCP ping tests
 -bug: add missing row selection to graph preview
 -bug: script server throws "undefined variable" error when in debug mode

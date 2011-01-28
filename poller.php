@@ -37,7 +37,7 @@ function sig_handler($signo) {
 			foreach($running_processes as $process) {
 				if (function_exists("posix_kill")) {
 					cacti_log("WARNING: Termination poller process with pid '" . $process["pid"] . "'", TRUE, "POLLER");
-					posix_kill($process["pid"], SIG_TERM);
+					posix_kill($process["pid"], SIGTERM);
 				}
 			}
 			}
