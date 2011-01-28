@@ -881,7 +881,7 @@ function strip_quotes($result) {
 	$result = trim(trim($result), "'\"");
 
 	/* clean off ugly non-numeric data */
-	if ((!is_numeric($result)) && ($result != "U")) {
+	if ((!is_numeric($result)) && (!is_hexadecimal($result) && ($result != "U")) {
 		$len = strlen($result);
 		for($a=$len-1; $a>=0; $a--){
 			$p = ord($result[$a]);
@@ -900,7 +900,7 @@ function strip_quotes($result) {
    @arg $hexstr - the string to test
    @arg 1 if the argument is hex, 0 otherwise, and FALSE on error */
 function is_hexadecimal($hexstr) {
-	return preg_match('/^[a-fA-F0-9 \t]*$/', $hexstr);
+	return preg_match('/^[a-fA-F0-9: \t]*$/', $hexstr);
 }
 
 /* validate_result - determine's if the result value is valid or not.  If not valid returns a "U"
