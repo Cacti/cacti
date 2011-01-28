@@ -39,6 +39,10 @@ input_validate_input_number(get_request_var("local_graph_id"));
 input_validate_input_number(get_request_var("rra_id"));
 /* ==================================================== */
 
+if (!is_numeric(get_request_var("local_graph_id"))) {
+	die_html_input_error();
+}
+
 header("Content-type: image/png");
 
 /* flush the headers now */
