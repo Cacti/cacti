@@ -10,6 +10,7 @@ SVN
 -bug#0001814: CLI - Add Device Script problem when SNMP Default is Disabled 
 -bug#0001815: 1-minute with 5-minute crontab broken
 -bug#0001816: Cannot export graph data to CSV with IE 8 (8.0.7600.16385) 
+-bug#0001847: graph export is broken 
 -bug#0001851: graph selector in graphs_new.php is broken when there is a data query without graphs 
 -bug#0001862: ping graphs do not work with new version of iputils. 
 -bug#0001885: ping.pl does not account for ping using icmp_req rather than icmp_seq in some versions of ping 

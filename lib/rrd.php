@@ -1395,7 +1395,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, &$r
 	}
 }
 
-function rrdtool_function_xport($local_graph_id, $rra_id, $xport_data_array, &$xport_meta, &$rrdtool_pipe) {
+function rrdtool_function_xport($local_graph_id, $rra_id, $xport_data_array, &$xport_meta) {
 	global $config, $consolidation_functions;
 
 	include_once($config["library_path"] . "/cdef.php");
@@ -1950,7 +1950,7 @@ function rrdtool_function_xport($local_graph_id, $rra_id, $xport_data_array, &$x
 
 	$output_flag = RRDTOOL_OUTPUT_STDOUT;
 
-	$xport_array = rrdxport2array(@rrdtool_execute("xport $xport_opts$xport_defs$txt_xport_items", false, $output_flag, $rrdtool_pipe));
+	$xport_array = rrdxport2array(@rrdtool_execute("xport $xport_opts$xport_defs$txt_xport_items", false, $output_flag));
 
 	/* add host and graph information */
 	$xport_array["meta"]["stacked_columns"]= $stacked_columns;
