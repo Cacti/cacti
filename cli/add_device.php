@@ -289,7 +289,7 @@ if (sizeof($parms)) {
 	if ($snmp_ver < 0 || $snmp_ver > 3) {
 		echo "ERROR: Invalid snmp version ($snmp_ver)\n";
  		exit(1);
-	}else{
+	}elseif ($snmp_ver > 0) {
 		if ($snmp_port <= 1 || $snmp_port > 65534) {
 			echo "ERROR: Invalid port.  Valid values are from 1-65534\n";
 			exit(1);
@@ -302,7 +302,7 @@ if (sizeof($parms)) {
 	}
 
 	/* community/user/password verification */
-	if ($snmp_ver != "3") {
+	if ($snmp_ver < 3) {
 		/* snmp community can be blank */
 	}else{
 		if ($snmp_username == "" || $snmp_password == "") {
