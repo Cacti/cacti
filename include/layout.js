@@ -165,6 +165,9 @@ function dq_select_line(snmp_query_id, snmp_index, update) {
 
 function dq_is_disabled(snmp_query_id, snmp_index) {
 	dropdown = document.getElementById('sgg_' + snmp_query_id);
+	if(dropdown == null){
+		return false;
+	}
 	var snmp_query_graph_id = dropdown.value
 
 	for (var i = 0; i < created_graphs[snmp_query_graph_id].length; i++) {
@@ -180,6 +183,9 @@ function dq_update_deps(snmp_query_id, num_columns) {
 	dq_reset_deps(snmp_query_id, num_columns);
 
 	dropdown = document.getElementById('sgg_' + snmp_query_id);
+	if(dropdown == null){
+		return;
+	}
 	var snmp_query_graph_id = dropdown.value
 
 	for (var i = 0; i < created_graphs[snmp_query_graph_id].length; i++) {
