@@ -275,6 +275,13 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $username, $pass
 		if ($retries == "") $retries = 3;
 	}
 
+	/* determine default max_oids */
+	if (($max_oids == 0) || (!is_numeric($max_oids))) {
+		$max_oids = read_config_option("max_get_size");
+
+		if ($max_oids == "") $max_oids = 10;
+	}
+
 	/* do not attempt to poll invalid combinations */
 	if (($version == 0) || (!is_numeric($version)) ||
 		(!is_numeric($max_oids)) ||
