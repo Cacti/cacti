@@ -338,22 +338,22 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 								if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_DEBUG) {
 									cacti_log("Host[$host_id] RECACHE DQ[" . $index_item["data_query_id"] . "] Script Server: " . $index_item["arg1"], $print_data_to_stdout);
 								}
-	
+
 								$output = trim(str_replace("\n", "", exec_poll_php($index_item["arg1"], $using_proc_function, $pipes, $cactiphp)));
-	
+
 								/* remove any quotes from string */
 								$output = strip_quotes($output);
-	
+
 								if (!validate_result($output)) {
 									if (strlen($output) > 20) {
 										$strout = 20;
 									} else {
 										$strout = strlen($output);
 									}
-	
+
 									cacti_log("Host[$host_id] RECACHE DQ[" . $index_item["data_query_id"] . "] WARNING: Result from Script Server not valid. Partial Result: " . substr($output, 0, $strout), $print_data_to_stdout);
 								}
-	
+
 								if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_MEDIUM) {
 									cacti_log("Host[$host_id] RECACHE DQ[" . $index_item["data_query_id"] . "] Script Server: " . $index_item["arg1"] . ", output: $output", $print_data_to_stdout);
 								}
@@ -361,7 +361,7 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 								if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_MEDIUM) {
 									cacti_log("Host[$host_id] DS[$data_source] *SKIPPING* Script Server: " . $item["arg1"] . " (PHP < 4.3)", $print_data_to_stdout);
 								}
-			
+
 								$output = "U";
 							}
 
@@ -407,24 +407,24 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 								if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_DEBUG) {
 									cacti_log("Host[$host_id] RECACHE DQ[" . $index_item["data_query_id"] . "] Script Server Count: " . $index_item["arg1"], $print_data_to_stdout);
 								}
-	
+
 								/* fetch specified index */
 								$output = 'U'; # TODO compatibility until option is correctly implemented
 								cacti_log("Host[$host_id] DS[$data_source] *SKIPPING* Script Server: " . $item["arg1"] . " (arg_num_indexes required)", $print_data_to_stdout);
 								# TODO $output = sizeof(exec_poll_php($index_item["arg1"], $using_proc_function, $pipes, $cactiphp));
 								/* remove any quotes from string */
 								#$output = strip_quotes($output);
-	
+
 								#if (!validate_result($output)) {
 								#	if (strlen($output) > 20) {
 								#		$strout = 20;
 								#	} else {
 								#		$strout = strlen($output);
 								#	}
-	
+
 								#	cacti_log("Host[$host_id] RECACHE DQ[" . $index_item["data_query_id"] . "] WARNING: Result from Script Server not valid. Partial Result: " . substr($output, 0, $strout), $print_data_to_stdout);
 								#}
-	
+
 								#if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_MEDIUM) {
 								#	cacti_log("Host[$host_id] RECACHE DQ[" . $index_item["data_query_id"] . "] Script Server Count: " . $index_item["arg1"] . ", output: $output", $print_data_to_stdout);
 								#}
@@ -432,13 +432,13 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 								if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_MEDIUM) {
 									cacti_log("Host[$host_id] DS[$data_source] *SKIPPING* Script Server: " . $item["arg1"] . " (PHP < 4.3)", $print_data_to_stdout);
 								}
-			
+
 								$output = "U";
 							}
 
 							break;
 						default: /* invalid reindex option */
-							cacti_log("Host[$host_id] RECACHE DQ[" . $index_item["data_query_id"] . "] ERROR: Invalid reindex option: " . $index_item["action"], $print_data_to_stdout);						
+							cacti_log("Host[$host_id] RECACHE DQ[" . $index_item["data_query_id"] . "] ERROR: Invalid reindex option: " . $index_item["action"], $print_data_to_stdout);
 						}
 
 
@@ -569,7 +569,7 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 
 				break;
 			default: /* invalid polling option */
-				cacti_log("Host[$host_id] DS[$data_source] ERROR: Invalid polling option: " . $item["action"], $stdout);						
+				cacti_log("Host[$host_id] DS[$data_source] ERROR: Invalid polling option: " . $item["action"], $stdout);
 			} /* End Switch */
 
 			if (isset($output)) {
