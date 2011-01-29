@@ -217,7 +217,7 @@ function export_ftp_php_execute($stExportDir, $stFtpType = "ftp_php") {
 		$oFtpConnection = ftp_ssl_connect($aFtpExport['server'], $aFtpExport['port']);
 
 		if (!$oFtpConnection) {
-			export_fatal("FTPS Connection failed! Check hostname and port.  Export can not continue.");
+			export_fatal("SFTP Connection failed! Check hostname and port.  Export can not continue.");
 		}else {
 			export_log("Conection to remote server was successful.");
 		}
@@ -554,7 +554,7 @@ function classical_export($cacti_root_path, $cacti_export_path) {
 		ORDER BY timespan");
 
 	/* write the html header data to the index file */
-	$stats = "Export Date: " . date(date_time_format()) . "<br>";
+	$stats = "Export Date: " . date(date_time_format()) . "<br>"; 
 	$stats.= "Total Graphs: " . sizeof($graphs);
 	fwrite($fp_index, HTML_HEADER_CLASSIC);
 	fwrite($fp_index, HTML_GRAPH_HEADER_ONE_CLASSIC);
@@ -1048,7 +1048,7 @@ function build_html_file($leaf, $type = "", $array_data = array(), $snmp_index =
 	case "index":
 		fwrite($fp, "<strong>Graphs Last Updated on :</strong></td></tr>" .
 				"<tr bgcolor='#a9b7cb'>" .
-					"<td colspan='3' class='textHeaderDark'>" .
+					"<td colspan='3' class='textHeaderDark'>" . 
 						"Export Date: " . $array_data["timestamp"] . "<br>" .
 						"Total Graphs: " . $array_data["total_graphs_created"] .
 					"</td>" .
