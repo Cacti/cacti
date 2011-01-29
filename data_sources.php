@@ -314,42 +314,38 @@ function form_actions() {
 
 			switch ($_POST["delete_type"]) {
 				case '2': /* delete all graph items tied to this data source */
-					$data_template_rrds = db_fetch_assoc("select id from data_template_rrd where " . array_to_sql_or($selected_items, "local_data_id"));
+					$data_template_rrds = array_rekey(db_fetch_assoc("select id from data_template_rrd where " . array_to_sql_or($selected_items, "local_data_id")), "id", "id");
 
 					/* loop through each data source item */
 					if (sizeof($data_template_rrds) > 0) {
-						foreach ($data_template_rrds as $item) {
-							db_execute("delete from graph_templates_item where task_item_id=" . $item["id"] . " and local_graph_id > 0");
-						}
+						db_execute("delete from graph_templates_item where task_item_id IN (" . implode(",", $data_template_rrds) . ") and local_graph_id > 0");
 					}
 
 					break;
 				case '3': /* delete all graphs tied to this data source */
-					$graphs = db_fetch_assoc("select
+					$graphs = array_rekey(db_fetch_assoc("select
 						graph_templates_graph.local_graph_id
 						from (data_template_rrd,graph_templates_item,graph_templates_graph)
 						where graph_templates_item.task_item_id=data_template_rrd.id
 						and graph_templates_item.local_graph_id=graph_templates_graph.local_graph_id
 						and " . array_to_sql_or($selected_items, "data_template_rrd.local_data_id") . "
 						and graph_templates_graph.local_graph_id > 0
-						group by graph_templates_graph.local_graph_id");
+						group by graph_templates_graph.local_graph_id"), "local_graph_id", "local_graph_id");
 
 					if (sizeof($graphs) > 0) {
-						foreach ($graphs as $graph) {
-							api_graph_remove($graph["local_graph_id"]);
-						}
+						api_graph_remove_multi($graphs);
 					}
 
 					break;
-				}
+			}
 
-				for ($i=0;($i<count($selected_items));$i++) {
-					/* ================= input validation ================= */
-					input_validate_input_number($selected_items[$i]);
-					/* ==================================================== */
+			for ($i=0;($i<count($selected_items));$i++) {
+				/* ================= input validation ================= */
+				input_validate_input_number($selected_items[$i]);
+				/* ==================================================== */
+			}
 
-					api_data_source_remove($selected_items[$i]);
-				}
+			api_data_source_remove_multi($selected_items);
 		}elseif ($_POST["drp_action"] == "2") { /* change graph template */
 			for ($i=0;($i<count($selected_items));$i++) {
 				/* ================= input validation ================= */
@@ -976,7 +972,6 @@ function ds_edit() {
 	form_save_button("data_sources.php");
 
 	include_once("./include/bottom_footer.php");
-
 }
 
 function get_poller_interval($seconds) {
