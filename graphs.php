@@ -491,7 +491,7 @@ function form_actions() {
 			print "	<tr>
 					<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
 						<p>When you click \"Continue\", the following Graph(s) will have thier suggested naming convensions
-						recalculated and applies to the Graph(s).</p>
+						recalculated and applied to the Graph(s).</p>
 						<p><ul>$graph_list</ul></p>
 					</td>
 				</tr>\n
