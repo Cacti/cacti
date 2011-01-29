@@ -264,7 +264,7 @@ function auth_display_custom_error_message($message) {
 <body bgcolor="#FFFFFF" onload="document.login.login_username.focus()">
 	<form name="login" method="post" action="<?php print basename($_SERVER["PHP_SELF"]);?>">
 	<input type="hidden" name="action" value="login">
-	<table align="center">
+	<table id="login" align="center">
 		<tr>
 			<td colspan="2"><img src="images/auth_login.gif" border="0" alt=""></td>
 		</tr>
@@ -273,38 +273,38 @@ function auth_display_custom_error_message($message) {
 		if ($ldap_error) {?>
 		<tr style="height:10px;"><td></td></tr>
 		<tr>
-			<td colspan="2"><font color="#FF0000"><strong><?php print $ldap_error_message; ?></strong></font></td>
+			<td id="error" colspan="2"><font color="#FF0000"><strong><?php print $ldap_error_message; ?></strong></font></td>
 		</tr>
 		<?php }else{
 		if ($action == "login") {?>
 		<tr style="height:10px;"><td></td></tr>
 		<tr>
-			<td colspan="2"><font color="#FF0000"><strong>Invalid User Name/Password Please Retype</strong></font></td>
+			<td id="error" colspan="2"><font color="#FF0000"><strong>Invalid User Name/Password Please Retype</strong></font></td>
 		</tr>
 		<?php }
 		if ($user_enabled == "0") {?>
 		<tr style="height:10px;"><td></td></tr>
 		<tr>
-			<td colspan="2"><font color="#FF0000"><strong>User Account Disabled</strong></font></td>
+			<td id="error" colspan="2"><font color="#FF0000"><strong>User Account Disabled</strong></font></td>
 		</tr>
 		<?php } } ?>
 
 		<tr style="height:10px;"><td></td></tr>
-		<tr>
+		<tr id="login_row">
 			<td colspan="2">Please enter your Cacti user name and password below:</td>
 		</tr>
 		<tr style="height:10px;"><td></td></tr>
-		<tr>
+		<tr id="user_row">
 			<td>User Name:</td>
 			<td><input type="text" name="login_username" size="40" style="width: 295px;" value="<?php print htmlspecialchars($username); ?>"></td>
 		</tr>
-		<tr>
+		<tr id="password_row">
 			<td>Password:</td>
 			<td><input type="password" name="login_password" size="40" style="width: 295px;"></td>
 		</tr>
 		<?php
 		if (read_config_option("auth_method") == "3") {?>
-		<tr>
+		<tr id="realm_row">
 			<td>Realm:</td>
 			<td>
 				<select name="realm" style="width: 295px;">
