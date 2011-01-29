@@ -2,6 +2,7 @@ Cacti CHANGELOG
 
 SVN
 -bug#0001504: no newline fix
+-bug#0001540: SFTP is actually FTPS
 -bug#0001568: Cacti currently gives a lot of warnings of deprecated functions on PHP 5.3
 -bug#0001632: script server treats quoted arguments with spaces as multiple separate arguments
 -bug#0001678: Adding graphs to a device fails to add entries to poller_item if using the script server 

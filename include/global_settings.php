@@ -312,7 +312,7 @@ $settings = array(
 						"local" => "Classic (local path)",
 						"ftp_php" => "FTP (remote) - use php functions",
 						"ftp_ncftpput" => "FTP (remote) - use ncftpput",
-						"sftp_php" => "SFTP (remote) - use ssh php functions"
+						"sftp_php" => "FTPS (remote) - use ssh php functions"
 						),
 			),
 		"export_presentation" => array(
