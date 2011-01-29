@@ -801,9 +801,7 @@ function graph_diff() {
 			</td>
 		</tr>
 	</table>
-
 	<br>
-
 	<input type="hidden" name="action" value="save">
 	<input type="hidden" name="save_component_graph_diff" value="1">
 	<input type="hidden" name="local_graph_id" value="<?php print $_GET["id"];?>">
@@ -856,13 +854,13 @@ function graph_edit() {
 					<?php print htmlspecialchars(get_graph_title($_GET["id"]));?>
 				</td>
 				<td class="textInfo" align="right" valign="top">
-					<span style="color: #c16921;">*<a href='<?php print htmlspecialchars("graphs.php?action=graph_edit&id=" . (isset($_GET["id"]) ? $_GET["id"] : "0") . "&debug=" . (isset($_SESSION["graph_debug_mode"]) ? "0" : "1"));?>'>Turn <strong><?php print (isset($_SESSION["graph_debug_mode"]) ? "Off" : "On");?></strong> Graph Debug Mode.</a><br>
+					<span style="color: #c16921;">*<a href='<?php print htmlspecialchars("graphs.php?action=graph_edit&id=" . (isset($_GET["id"]) ? $_GET["id"] : "0") . "&debug=" . (isset($_SESSION["graph_debug_mode"]) ? "0" : "1"));?>'>Turn <strong><?php print (isset($_SESSION["graph_debug_mode"]) ? "Off" : "On");?></strong> Graph Debug Mode.</a></span><br>
 					<?php
 						if (!empty($graphs["graph_template_id"])) {
-							?><span style="color: #c16921;">*<a href='<?php print htmlspecialchars("graph_templates.php?action=template_edit&id=" . (isset($graphs["graph_template_id"]) ? $graphs["graph_template_id"] : "0"));?>'>Edit Graph Template.</a><br><?php
+							?><span style="color: #c16921;">*<a href='<?php print htmlspecialchars("graph_templates.php?action=template_edit&id=" . (isset($graphs["graph_template_id"]) ? $graphs["graph_template_id"] : "0"));?>'>Edit Graph Template.</a></span><br><?php
 						}
 						if (!empty($_GET["host_id"]) || !empty($host_id)) {
-							?><span style="color: #c16921;">*<a href='<?php print htmlspecialchars("host.php?action=edit&id=" . (isset($_GET["host_id"]) ? $_GET["host_id"] : $host_id));?>'>Edit Host.</a><br><?php
+							?><span style="color: #c16921;">*<a href='<?php print htmlspecialchars("host.php?action=edit&id=" . (isset($_GET["host_id"]) ? $_GET["host_id"] : $host_id));?>'>Edit Host.</a></span><br><?php
 						}
 					?>
 				</td>
@@ -925,8 +923,6 @@ function graph_edit() {
 	/* only display the "inputs" area if we are using a graph template for this graph */
 	if (!empty($graphs["graph_template_id"])) {
 		html_start_box("<strong>Supplemental Graph Template Data</strong>", "100%", $colors["header"], "3", "center", "");
-
-		print "<form method='post' action='graphs.php'>\n";
 
 		draw_nontemplated_fields_graph($graphs["graph_template_id"], $graphs, "|field|", "<strong>Graph Fields</strong>", true, true, 0);
 		draw_nontemplated_fields_graph_item($graphs["graph_template_id"], $_GET["id"], "|field|_|id|", "<strong>Graph Item Fields</strong>", true);

@@ -12,6 +12,7 @@ SVN
 -bug#0001816: Cannot export graph data to CSV with IE 8 (8.0.7600.16385) 
 -bug#0001826: zoomed graph views should not have auto refresh since they do not change
 -bug#0001828: reapply suggested values gramatical errors
+-bug#0001835: invalid number of form tags on graphs.php?action=graph_edit
 -bug#0001847: graph export is broken 
 -bug#0001851: graph selector in graphs_new.php is broken when there is a data query without graphs 
 -bug#0001855: Improper formatting of Data Queries Can Result in SQL Errors
