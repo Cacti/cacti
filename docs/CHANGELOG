@@ -17,9 +17,9 @@ SVN
 -bug#0001862: ping graphs do not work with new version of iputils. 
 -bug#0001867: rrdtool_funcion_fetch() wrong regex with some locales
 -bug#0001876: strip_quotes from function.php altering hex values
--bug#0001885: ping.pl does not account for ping using icmp_req rather than icmp_seq in some versions of ping 
 -bug#0001880: When Performing Form Validation Error Message Areas Not Highlighted Upon Form Save
 -bug#0001882: lib/snmp.php fails if if max_oids undefined in snmp_walk function call
+-bug#0001885: ping.pl does not account for ping using icmp_req rather than icmp_seq in some versions of ping 
 -bug#0001903: Undefined variable: mode in lib/ldap.php on line 375 
 -bug#0001926: Importing templates "using defaults for this installation" associates all rra's defined
 -bug#0001928: graph_image.php does not check local_graph_id

@@ -440,6 +440,13 @@ function form_dropdown($form_name, $form_data, $column_display, $column_id, $for
 		$form_previous_value = $form_default_value;
 	}
 
+	if (isset($_SESSION["sess_error_fields"])) {
+		if (!empty($_SESSION["sess_error_fields"][$form_name])) {
+			$class .= (strlen($class) ? " ":"") . "txtErrorTextBox";
+			unset($_SESSION["sess_error_fields"][$form_name]);
+		}
+	}
+
 	if (isset($_SESSION["sess_field_values"])) {
 		if (!empty($_SESSION["sess_field_values"][$form_name])) {
 			$form_previous_value = $_SESSION["sess_field_values"][$form_name];
