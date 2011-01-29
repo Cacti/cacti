@@ -28,6 +28,7 @@ SVN
 -bug#0001928: graph_image.php does not check local_graph_id
 -bug#0001934: Poller sig_handler Bug
 -bug#0001936: Removing Data Sources is Inneficient 
+-bug#0001937: The Cacti Technical Support Page Uses Check Table Which Blocks 
 -bug: accept "Connection refused" on TCP ping tests
 -bug: add missing row selection to graph preview
 -bug: script server throws "undefined variable" error when in debug mode

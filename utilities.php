@@ -280,7 +280,7 @@ function utilities_view_tech($php_info = "") {
 			$spine_version = $out_array[0];
 		}
 	}
-		
+
 	/* Display tech information */
 	html_start_box("<strong>Technical Support</strong>", "100%", $colors["header"], "3", "center", "");
 	html_header(array("General Information"), 2);
@@ -462,7 +462,6 @@ function utilities_view_tech($php_info = "") {
 		print "  <th>Rows</th>\n";
 		print "  <th>Engine</th>\n";
 		print "  <th>Collation</th>\n";
-		print "  <th>Check Status</th>\n";
 		print "</tr>\n";
 		foreach ($table_status as $item) {
 			print "<tr>\n";
@@ -478,7 +477,6 @@ function utilities_view_tech($php_info = "") {
 			} else {
 				print "  <td>Unknown</td>\n";
 			}
-			print "  <td>" . db_fetch_cell("CHECK TABLE " . $item["Name"], "Msg_text") . "</td>\n";
 			print "</tr>\n";
 		}
 
