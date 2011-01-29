@@ -138,94 +138,97 @@ fflush(STDOUT);
 while (1) {
 	$result = "";
 
-	$input_string = fgets(STDIN, 1024);
+	$input_string    = fgets(STDIN, 1024);
+	$parameters      = "";
+	$parameter_array = array();
 
 	if ($input_string !== FALSE) {
 		$input_string = trim($input_string);
 
+		if (substr($input_string,0,4) == "quit") {
+			fputs(STDOUT, "PHP Script Server Shutdown request received, exiting\n");
+			if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_DEBUG) {
+				cacti_log("DEBUG: PHP Script Server Shutdown request received, exiting", false, "PHPSVR");
+			}
+			exit(1);
+		}
+
 		if (strlen($input_string)) {
-			$command_array = explode(" ", $input_string, 3);
+			/* pull off the parameters */
+			$i = 0;
+			while ( true ) {
+				$pos = strpos($input_string, " ");
 
-			if (sizeof($command_array)) {
-				/* user has requested to quit */
-				if (substr_count($command_array[0], "quit")) {
-					fputs(STDOUT, "PHP Script Server Shutdown request received, exiting\n");
-					if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_DEBUG) {
-						cacti_log("DEBUG: PHP Script Server Shutdown request received, exiting", false, "PHPSVR");
-					}
-					exit(1);
-				}
-
-				/* valid command entered to system, parse and execute */
-				if (isset($command_array[0])) {
-					$include_file = trim($command_array[0]);
-				}else{
-					$include_file = "";
-				}
-
-				if (isset($command_array[1])) {
-					$function = trim($command_array[1]);
-				}else{
-					$function = "";
-				}
-
-				if (isset($command_array[2])) {
-					$parameters = trim($command_array[2]);
-					$parameter_array = array();
-					if (!parseArgs($parameters, $parameter_array)) {
-						cacti_log("WARNING: Script Server count not parse '$parameters' for $function", false, "PHPSVR");
-						return "U";
+				if ($pos > 0) {
+					switch ($i) {
+					case 0:
+						$include_file = trim(substr($input_string,0,$pos));
+						$input_string = trim(strchr($input_string, " "));
+						break;
+					case 1:
+						$function = trim(substr($input_string,0,$pos));
+						$input_string = trim(strchr($input_string, " "));
+						break;
+					case 2:
+						$parameters = trim($input_string);
+						break 2;
 					}
 				}else{
-					$parameters = "";
-					$parameter_array = array();
+					break;
 				}
+
+				$i++;
+			}
+
+			if (!parseArgs($parameters, $parameter_array)) {
+				cacti_log("WARNING: Script Server count not parse '$parameters' for $function", false, "PHPSVR");
+				return "U";
+			}
+
+			if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_DEBUG) {
+				cacti_log("DEBUG: PID[$pid] CTR[$ctr] INC: '". basename($include_file) . "' FUNC: '" .$function . "' PARMS: '" . $parameters . "'", true, "PHPSVR");
+			}
+
+			/* validate the existance of the function, and include if applicable */
+			if (!function_exists($function)) {
+				if (file_exists($include_file)) {
+					/* quirk in php on Windows, believe it or not.... */
+					/* path must be lower case */
+					if ($config["cacti_server_os"] == "win32") {
+						$include_file = strtolower($include_file);
+					}
+
+					/* set this variable so the calling script can determine if it was called
+					 * by the script server or stand-alone */
+					$called_by_script_server = true;
+
+					/* turn on output buffering to avoid problems with nasty scripts */
+					ob_start();
+					include_once($include_file);
+					ob_end_clean();
+				} else {
+					cacti_log("WARNING: PHP Script File to be included, does not exist", false, "PHPSVR");
+				}
+			}
+
+			if (function_exists($function)) {
+				if ($parameters == "") {
+					$result = call_user_func($function);
+				} else {
+					$result = call_user_func_array($function, $parameter_array);
+				}
+
+				fputs(STDOUT, trim($result) . "\n");
+				fflush(STDOUT);
 
 				if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_DEBUG) {
-					cacti_log("DEBUG: PID[$pid] CTR[$ctr] INC: '". basename($include_file) . "' FUNC: '" .$function . "' PARMS: '" . $parameters . "'", false, "PHPSVR");
+					cacti_log("DEBUG: PID[$pid] CTR[$ctr] RESPONSE:'$result'", false, "PHPSVR");
 				}
 
-				/* validate the existance of the function, and include if applicable */
-				if (!function_exists($function)) {
-					if (file_exists($include_file)) {
-						/* quirk in php on Windows, believe it or not.... */
-						/* path must be lower case */
-						if ($config["cacti_server_os"] == "win32") {
-							$include_file = strtolower($include_file);
-						}
-
-						/* set this variable so the calling script can determine if it was called
-						 * by the script server or stand-alone */
-						$called_by_script_server = true;
-
-						/* turn on output buffering to avoid problems with nasty scripts */
-						ob_start();
-						include_once($include_file);
-						ob_end_clean();
-					} else {
-						cacti_log("WARNING: PHP Script File to be included, does not exist", false, "PHPSVR");
-					}
-				}
-
-				if (function_exists($function)) {
-					if ($parameters == "") {
-						$result = call_user_func($function);
-					} else {
-						$result = call_user_func_array($function, $parameter_array);
-					}
-
-					fputs(STDOUT, trim($result) . "\n");
-					fflush(STDOUT);
-
-					if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_DEBUG) {
-						cacti_log("DEBUG: PID[$pid] CTR[$ctr] RESPONSE:'$result'", false, "PHPSVR");
-					}
-
-					$ctr++;
-				} else {
-					cacti_log("WARNING: Function does not exist", false, "PHPSVR");
-					fputs(STDOUT, "WARNING: Function does not exist\n");
-				}
+				$ctr++;
+			} else {
+				cacti_log("WARNING: Function does not exist", false, "PHPSVR");
+				fputs(STDOUT, "WARNING: Function does not exist\n");
 			}
 		}
 	}else{
