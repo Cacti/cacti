@@ -249,7 +249,7 @@ function draw_edit_control($field_name, &$field_array) {
 
 		break;
 	case 'file':
-		form_file($field_name, 
+		form_file($field_name,
 			((isset($field_array["size"])) ? $field_array["size"] : "40"));
 
 		break;
