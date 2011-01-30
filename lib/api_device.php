@@ -96,6 +96,9 @@ function api_device_save($id, $host_template_id, $description, $hostname, $snmp_
 	$availability_method, $ping_method, $ping_port, $ping_timeout, $ping_retries,
 	$notes, $snmp_auth_protocol, $snmp_priv_passphrase, $snmp_priv_protocol, $snmp_context, $max_oids) {
 	global $config;
+	include_once($config["base_path"]."/lib/utility.php");
+	include_once($config["base_path"]."/lib/variables.php");
+	include_once($config["base_path"]."/lib/data_query.php");
 
 	/* fetch some cache variables */
 	if (empty($id)) {
