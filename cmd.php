@@ -410,7 +410,7 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 
 								/* fetch specified index */
 								$output = 'U'; # TODO compatibility until option is correctly implemented
-								cacti_log("Host[$host_id] DS[$data_source] *SKIPPING* Script Server: " . $item["arg1"] . " (arg_num_indexes required)", $print_data_to_stdout);
+								cacti_log("Host[$host_id] DS[$data_source] *SKIPPING* Script Server Count: " . $item["arg1"] . " (arg_num_indexes required)", $print_data_to_stdout);
 								# TODO $output = sizeof(exec_poll_php($index_item["arg1"], $using_proc_function, $pipes, $cactiphp));
 								/* remove any quotes from string */
 								#$output = strip_quotes($output);
