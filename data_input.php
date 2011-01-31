@@ -386,7 +386,7 @@ function data_edit() {
 	html_end_box();
 
 	if (!empty($_GET["id"])) {
-		html_start_box("<strong>Input Fields</strong>", "100%", $colors["header"], "3", "center", "data_input.php?action=field_edit&type=in&data_input_id=" . $_GET["id"]);
+		html_start_box("<strong>Input Fields</strong>", "100%", $colors["header"], "3", "center", "data_input.php?action=field_edit&type=in&data_input_id=" . htmlspecialchars(get_request_var("id")));
 		print "<tr bgcolor='#" . $colors["header_panel"] . "'>";
 			DrawMatrixHeaderItem("Name",$colors["header_text"],1);
 			DrawMatrixHeaderItem("Field Order",$colors["header_text"],1);

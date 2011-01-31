@@ -1109,7 +1109,7 @@ function graph() {
 	</script>
 	<?php
 
-	html_start_box("<strong>Graph Management</strong>", "100%", $colors["header"], "3", "center", "graphs.php?action=graph_edit&host_id=" . get_request_var_request("host_id"));
+	html_start_box("<strong>Graph Management</strong>", "100%", $colors["header"], "3", "center", "graphs.php?action=graph_edit&host_id=" . htmlspecialchars(get_request_var_request("host_id")));
 
 	?>
 	<tr bgcolor="#<?php print $colors["panel"];?>">

@@ -303,11 +303,11 @@ function item() {
 		$header_label = "[edit: " . db_fetch_cell("select name from graph_templates where id=" . $_GET["id"]) . "]";
 	}
 
-	html_start_box("<strong>Graph Template Items</strong> " . htmlspecialchars($header_label), "100%", $colors["header"], "3", "center", "graph_templates_items.php?action=item_edit&graph_template_id=" . $_GET["id"]);
+	html_start_box("<strong>Graph Template Items</strong> " . htmlspecialchars($header_label), "100%", $colors["header"], "3", "center", "graph_templates_items.php?action=item_edit&graph_template_id=" . htmlspecialchars(get_request_var("id")));
 	draw_graph_items_list($template_item_list, "graph_templates_items.php", "graph_template_id=" . $_GET["id"], false);
 	html_end_box();
 
-	html_start_box("<strong>Graph Item Inputs</strong>", "100%", $colors["header"], "3", "center", "graph_templates_inputs.php?action=input_edit&graph_template_id=" . $_GET["id"]);
+	html_start_box("<strong>Graph Item Inputs</strong>", "100%", $colors["header"], "3", "center", "graph_templates_inputs.php?action=input_edit&graph_template_id=" . htmlspecialchars(get_request_var("id")));
 
 	print "<tr bgcolor='#" . $colors["header_panel"] . "'>";
 		DrawMatrixHeaderItem("Name",$colors["header_text"],2);

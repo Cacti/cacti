@@ -93,7 +93,7 @@ function export() {
 				<select name="cbo_graph_id" onChange="window.location=document.form_graph_id.cbo_graph_id.options[document.form_graph_id.cbo_graph_id.selectedIndex].value">
 					<?php
 					while (list($key, $array) = each($export_types)) {
-						print "<option value='templates_export.php?export_type=$key'"; if ($_REQUEST["export_type"] == $key) { print " selected"; } print ">" . $array["name"] . "</option>\n";
+						print "<option value='templates_export.php?export_type=" . htmlspecialchars($key) . "'"; if ($_REQUEST["export_type"] == $key) { print " selected"; } print ">" . $array["name"] . "</option>\n";
 					}
 					?>
 				</select>

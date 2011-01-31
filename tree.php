@@ -141,7 +141,7 @@ function item_edit() {
 	/* ==================================================== */
 
 	if (!empty($_GET["id"])) {
-		$tree_item = db_fetch_row("select * from graph_tree_items where id=" . $_GET["id"]);
+		$tree_item = db_fetch_row("select * from graph_tree_items where id=" . get_request_var("id"));
 
 		if ($tree_item["local_graph_id"] > 0) { $db_type = TREE_ITEM_TYPE_GRAPH; }
 		if ($tree_item["title"] != "") { $db_type = TREE_ITEM_TYPE_HEADER; }
@@ -156,7 +156,7 @@ function item_edit() {
 		$current_type = TREE_ITEM_TYPE_HEADER;
 	}
 
-	$tree_sort_type = db_fetch_cell("select sort_type from graph_tree where id='" . $_GET["tree_id"] . "'");
+	$tree_sort_type = db_fetch_cell("select sort_type from graph_tree where id='" . get_request_var("tree_id") . "'");
 
 	print "<form method='post' action='tree.php' name='form_tree'>\n";
 
@@ -429,12 +429,12 @@ function tree_edit() {
 	html_end_box();
 
 	if (!empty($_GET["id"])) {
-		html_start_box("<strong>Tree Items</strong>", "100%", $colors["header"], "3", "center", "tree.php?action=item_edit&tree_id=" . $tree["id"] . "&parent_id=0");
+		html_start_box("<strong>Tree Items</strong>", "100%", $colors["header"], "3", "center", "tree.php?action=item_edit&tree_id=" . htmlspecialchars($tree["id"]) . "&parent_id=0");
 
 		?>
 		<td>
-		<input type='button' onClick='return document.location="tree.php?action=edit&id=<?php print $_GET["id"];?>&subaction=expand_all"' value='Expand All' title='Expand All Trees'>
-		<input type='button' onClick='return document.location="tree.php?action=edit&id=<?php print $_GET["id"];?>&subaction=collapse_all"' value='Collapse All' title='Collapse All Trees'></a>
+		<input type='button' onClick='return document.location="tree.php?action=edit&id=<?php print htmlspecialchars(get_request_var("id"));?>&subaction=expand_all"' value='Expand All' title='Expand All Trees'>
+		<input type='button' onClick='return document.location="tree.php?action=edit&id=<?php print htmlspecialchars(get_request_var("id"));?>&subaction=collapse_all"' value='Collapse All' title='Collapse All Trees'></a>
 		</td>
 		<?php
 

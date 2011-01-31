@@ -1193,7 +1193,7 @@ function host() {
 	</script>
 	<?php
 
-	html_start_box("<strong>Devices</strong>", "100%", $colors["header"], "3", "center", "host.php?action=edit&host_template_id=" . get_request_var_request("host_template_id") . "&host_status=" . get_request_var_request("host_status"));
+	html_start_box("<strong>Devices</strong>", "100%", $colors["header"], "3", "center", "host.php?action=edit&host_template_id=" . htmlspecialchars(get_request_var_request("host_template_id")) . "&host_status=" . htmlspecialchars(get_request_var_request("host_status")));
 
 	?>
 	<tr bgcolor="#<?php print $colors["panel"];?>">
