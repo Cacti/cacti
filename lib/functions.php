@@ -881,7 +881,7 @@ function strip_quotes($result) {
 	$result = trim(trim($result), "'\"");
 
 	/* clean off ugly non-numeric data */
-	if ((!is_numeric($result)) && (!is_hexadecimal($result) && ($result != "U")) {
+	if ((!is_numeric($result)) && (!is_hexadecimal($result)) && ($result != "U")) {
 		$len = strlen($result);
 		for($a=$len-1; $a>=0; $a--){
 			$p = ord($result[$a]);
