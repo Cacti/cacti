@@ -283,6 +283,15 @@ if (sizeof($parms)) {
 					exit(1);
 				}
 			}
+			$graphs = db_fetch_assoc("SELECT " .
+				"id " .
+				"FROM graph_local " .
+				"WHERE graph_local.id=" . $graphId);
+		
+			if (!sizeof($graphs)) {
+				echo "ERROR: No such graph-id ($graphId) exists. Try --list-graphs\n";
+				exit(1);
+			}
 		}else if ($nodeType == 'host') {
 			# Blank out graphId, rra_id, name fields
 			$graphId        = 0;
