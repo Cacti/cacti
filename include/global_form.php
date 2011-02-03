@@ -673,6 +673,14 @@ $fields_host_edit = array(
 		"none_value" => "None",
 		"sql" => "select id,name from host_template order by name",
 		),
+	"device_threads" => array(
+		"method" => "drop_array",
+		"friendly_name" => "Number of Collection Threads",
+		"description" => "The number of concurrent threads to use for polling this device.  This applies to the Spine poller only.",
+		"value" => "|arg1:device_threads|",
+		"default" => "1",
+		"array" => $device_threads
+		),
 	"disabled" => array(
 		"method" => "checkbox",
 		"friendly_name" => "Disable Host",

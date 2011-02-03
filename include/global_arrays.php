@@ -215,6 +215,15 @@ $poller_intervals = array(
 	60 => "Every Minute",
 	300 => "Every 5 Minutes");
 
+$device_threads = array(
+	1 => "1 Thread (default)",
+	2 => "2 Threads",
+	3 => "3 Threads",
+	4 => "4 Threads",
+	5 => "5 Threads",
+	6 => "6 Threads"
+	);
+
 $cron_intervals = array(
 	60 => "Every Minute",
 	300 => "Every 5 Minutes");
@@ -558,6 +567,7 @@ $host_struc = array(
 	"snmp_port",
 	"snmp_timeout",
 	"max_oids",
+	"device_threads",
 	"availability_method",
 	"ping_method",
 	"ping_port",

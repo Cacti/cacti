@@ -64,12 +64,13 @@ if (sizeof($parms)) {
 	$snmp_port            = read_config_option("snmp_port");
 	$snmp_timeout         = read_config_option("snmp_timeout");
 
-	$avail        = 1;
-	$ping_method  = read_config_option("ping_method");
-	$ping_port    = read_config_option("ping_port");
-	$ping_timeout = read_config_option("ping_timeout");
-	$ping_retries = read_config_option("ping_retries");
-	$max_oids     = read_config_option("max_get_size");
+	$avail          = 1;
+	$ping_method    = read_config_option("ping_method");
+	$ping_port      = read_config_option("ping_port");
+	$ping_timeout   = read_config_option("ping_timeout");
+	$ping_retries   = read_config_option("ping_retries");
+	$max_oids       = read_config_option("max_get_size");
+	$device_threads = 1;
 
 	$displayHostTemplates = FALSE;
 	$displayCommunities   = FALSE;
@@ -330,7 +331,7 @@ if (sizeof($parms)) {
 				$snmp_port, $snmp_timeout, $disable, $avail, $ping_method,
 				$ping_port, $ping_timeout, $ping_retries, $notes,
 				$snmp_auth_protocol, $snmp_priv_passphrase,
-				$snmp_priv_protocol, $snmp_context, $max_oids);
+				$snmp_priv_protocol, $snmp_context, $max_oids, $device_threads);
 
 	if (is_error_message()) {
 		echo "ERROR: Failed to add this device\n";

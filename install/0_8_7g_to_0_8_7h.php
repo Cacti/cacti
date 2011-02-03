@@ -42,6 +42,11 @@ function upgrade_to_0_8_7h() {
 		db_execute("ALTER TABLE poller_reindex ADD INDEX present (present)");
 	}
 
+	$_columns = array_rekey(db_fetch_assoc("SHOW COLUMNS FROM host"), "Field", "Field");
+	if (!in_array("device_threads", $_columns)) {
+		db_execute("ALTER TABLE host ADD COLUMN device_threads tinyint(2) unsigned NOT NULL DEFAULT '1' AFTER max_oids;");
+	}
+
 	/* update the reindex cache, as we now introduced more options for "index count changed" */
 	$host_snmp_query = db_fetch_assoc("select host_id,snmp_query_id from host_snmp_query");
 	if (sizeof($host_snmp_query) > 0) {

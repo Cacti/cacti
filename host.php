@@ -155,7 +155,7 @@ function form_save() {
 				$_POST["ping_port"], $_POST["ping_timeout"],
 				$_POST["ping_retries"], $_POST["notes"],
 				$_POST["snmp_auth_protocol"], $_POST["snmp_priv_passphrase"],
-				$_POST["snmp_priv_protocol"], $_POST["snmp_context"], $_POST["max_oids"]);
+				$_POST["snmp_priv_protocol"], $_POST["snmp_context"], $_POST["max_oids"], $_POST["device_threads"]);
 		}
 
 		header("Location: host.php?action=edit&id=" . (empty($host_id) ? $_POST["id"] : $host_id));

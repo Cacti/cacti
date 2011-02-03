@@ -37,6 +37,7 @@ SVN
 -bug: Change default font sizes
 -bug: fixing issues with multiple "U" results for data input methods with multiple output parms
 -bug: when using template and search filter on graph management, sql error occurs
+-feature#0001519: spine enhancement for parallel collection of data at device level
 -feature#0001922: Reindex method "Index Count Changed" requires that OID_NUM_INDEXES is given for SNMP Data Queries
 -feature#0001923: Implement counting for script (server) data queries just like OID_NUM_INDEXES
 -feature#0001924: Allow for reindex method "Index Count Changed" to apply to script (server) queries as well
