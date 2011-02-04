@@ -1,8 +1,9 @@
 Cacti CHANGELOG
 
-SVN
+0.8.7h
 -bug#0001504: no newline fix
 -bug#0001568: Cacti currently gives a lot of warnings of deprecated functions on PHP 5.3
+-bug#0001626: Cacti does not pass currency symbols ($) used in labels/gprint strings to rrdtool during graph generation.
 -bug#0001632: script server treats quoted arguments with spaces as multiple separate arguments
 -bug#0001678: Adding graphs to a device fails to add entries to poller_item if using the script server 
 -bug#0001768: perform consistency check on ds maximum vs. ds minimum
@@ -43,7 +44,6 @@ SVN
 -feature#0001924: Allow for reindex method "Index Count Changed" to apply to script (server) queries as well
 -feature: Make reindexing and repopulating the poller cache a lossless process, reduce time to index by 66%
 
-
 0.8.7g
 -bug: RRDTool 1.4.x not recognized during installation
 -bug: Implement windows-aware shell escaping
@@ -58,8 +58,8 @@ SVN
 -bug#0001620: Max OID's max value reported incorrectly in Web UI
 -bug#0001747: oid_suffix do not work correctly for input direction on data queries 
 -bug#0001756: Alternate font styles do not work correctly
--bug#0001763: Unable to add graph permissions on a user
 -bug#0001757: LDAP realm authentication outputs warning for undefined index
+-bug#0001763: Unable to add graph permissions on a user
 -bug#0001765: Tech support does not work correctly with RRDTool 1.4.x
 -bug#0001766: Page refresh setting not being honored
 -bug#0001771: "index count changed" not implemented for query_unix_partitions.pl, query_host_partitions.pl, query_cpu_partitions.pl, ss_host_cpu.php and ss_host_disk.php
