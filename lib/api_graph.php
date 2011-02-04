@@ -102,8 +102,21 @@ function api_reapply_suggested_graph_title($local_graph_id) {
 	if (!isset($graph_local["host_id"])) {
 		return;
 	}
-	$snmp_query_graph_id = db_fetch_cell("select id from snmp_query_graph where graph_template_id=" . $graph_local["graph_template_id"] .
-										" and snmp_query_id=" . $graph_local["snmp_query_id"]);
+	/* get data source associated with the graph */
+	$data_local = db_fetch_cell("SELECT " .
+		"data_template_data.local_data_id " .
+		"FROM (data_template_rrd,data_template_data,graph_templates_item) " .
+		"WHERE graph_templates_item.task_item_id=data_template_rrd.id " .
+		"AND data_template_rrd.local_data_id=data_template_data.local_data_id " .
+		"AND graph_templates_item.local_graph_id=" . $local_graph_id. " " .
+		"GROUP BY data_template_data.local_data_id");
+	
+	$snmp_query_graph_id = db_fetch_cell("SELECT " .
+		"data_input_data.value from data_input_data " .
+		"JOIN data_input_fields ON (data_input_data.data_input_field_id=data_input_fields.id) " .
+		"JOIN data_template_data ON (data_template_data.id = data_input_data.data_template_data_id) ".
+		"WHERE data_input_fields.type_code = 'output_type' " .
+		"AND data_template_data.local_data_id=" . $data_local );
 
 	/* no snmp query graph id found */
 	if ($snmp_query_graph_id == 0) {
@@ -111,35 +124,26 @@ function api_reapply_suggested_graph_title($local_graph_id) {
 	}
 
 	/* get the suggested values from the suggested values cache */
-	$suggested_values = db_fetch_assoc("select text,field_name from snmp_query_graph_sv where snmp_query_graph_id=" . $snmp_query_graph_id . " order by sequence");
+	$suggested_values = db_fetch_assoc("SELECT " .
+		"text, " .
+		"field_name " .
+		"FROM snmp_query_graph_sv " .
+		"WHERE snmp_query_graph_id=" . $snmp_query_graph_id . " " . 
+		"AND field_name = 'title' " .
+		"ORDER BY sequence");
 
+	$found = false;
 	if (sizeof($suggested_values) > 0) {
-	foreach ($suggested_values as $suggested_value) {
-		/* once we find a match; don't try to find more */
-		if (!isset($suggested_values_graph[$graph_template_id]{$suggested_value["field_name"]})) {
-			$subs_string = substitute_snmp_query_data($suggested_value["text"], $graph_local["host_id"], $graph_local["snmp_query_id"], $graph_local["snmp_index"], read_config_option("max_data_query_field_length"));
-			/* if there are no '|' characters, all of the substitutions were successful */
-			if ((!substr_count($subs_string, "|query")) && ($suggested_value["field_name"] == "title")) {
-				db_execute("update graph_templates_graph set " . $suggested_value["field_name"] . "='" . $suggested_value["text"] . "' where local_graph_id=" . $local_graph_id);
-				/* once we find a working value, stop */
-				$suggested_values_graph[$graph_template_id]{$suggested_value["field_name"]} = true;
-			}
-		}
-	}
-	}
-	/* suggested values: graph */
-	if (isset($suggested_values_array[$graph_template_id]["graph_template"])) {
-		while (list($field_name, $field_value) = each($suggested_values_array[$graph_template_id]["graph_template"])) {
-			db_execute("update graph_templates_graph set $field_name='$field_value' where local_graph_id=" . $local_graph_id);
-		}
-	}
-
-	/* suggested values: graph item */
-	if (isset($suggested_values_array[$graph_template_id]["graph_template_item"])) {
-		while (list($graph_template_item_id, $field_array) = each($suggested_values_array[$graph_template_id]["graph_template_item"])) {
-			while (list($field_name, $field_value) = each($field_array)) {
-				$graph_item_id = db_fetch_cell("select id from graph_templates_item where local_graph_template_item_id=$graph_template_item_id and local_graph_id=" . $local_graph_id);
-				db_execute("update graph_templates_item set $field_name='$field_value' where id=$graph_item_id");
+		foreach ($suggested_values as $suggested_value) {
+			/* once we find a match; don't try to find more */
+			if (!$found) {
+				$subs_string = substitute_snmp_query_data($suggested_value["text"], $graph_local["host_id"], $graph_local["snmp_query_id"], $graph_local["snmp_index"], read_config_option("max_data_query_field_length"));
+				/* if there are no '|' characters, all of the substitutions were successful */
+				if ((!substr_count($subs_string, "|query"))) {
+					db_execute("UPDATE graph_templates_graph SET " . $suggested_value["field_name"] . "='" . $suggested_value["text"] . "' WHERE local_graph_id=" . $local_graph_id);
+					/* once we find a working value, stop */
+					$found = true;
+				}
 			}
 		}
 	}

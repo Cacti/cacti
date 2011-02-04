@@ -598,7 +598,7 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 				$subs_string = substitute_snmp_query_data($suggested_value["text"], $host_id, $snmp_query_array["snmp_query_id"], $snmp_query_array["snmp_index"], read_config_option("max_data_query_field_length"));
 				/* if there are no '|' characters, all of the substitutions were successful */
 				if (!strstr($subs_string, "|query")) {
-					db_execute("update graph_templates_graph set " . $suggested_value["field_name"] . "='" . addslashes($subs_string) . "' where local_graph_id=" . $cache_array["local_graph_id"]);
+					db_execute("UPDATE graph_templates_graph SET " . $suggested_value["field_name"] . "='" . $suggested_value["text"] . "' WHERE local_graph_id=" . $cache_array["local_graph_id"]);
 
 					/* once we find a working value, stop */
 					$suggested_values_graph[$graph_template_id]{$suggested_value["field_name"]} = true;
@@ -667,7 +667,7 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 					/* if there are no '|' characters, all of the substitutions were successful */
 					if (!strstr($subs_string, "|query")) {
 						if (sizeof(db_fetch_row("show columns from data_template_data like '" . $suggested_value["field_name"] . "'"))) {
-							db_execute("update data_template_data set " . $suggested_value["field_name"] . "='" . addslashes($subs_string) . "' where local_data_id=" . $cache_array["local_data_id"]{$data_template["id"]});
+							db_execute("UPDATE data_template_data SET " . $suggested_value["field_name"] . "='" . $suggested_value["text"] . "' WHERE local_data_id=" . $cache_array["local_data_id"]{$data_template["id"]});
 						}
 
 						/* once we find a working value, stop */
@@ -675,7 +675,7 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 
 						if ((sizeof(db_fetch_row("show columns from data_template_rrd like '" . $suggested_value["field_name"] . "'"))) &&
 							(!substr_count($subs_string, "|"))) {
-							db_execute("update data_template_rrd set " . $suggested_value["field_name"] . "='" . $subs_string . "' where local_data_id=" . $cache_array["local_data_id"]{$data_template["id"]});
+							db_execute("UPDATE data_template_rrd SET " . $suggested_value["field_name"] . "='" . $suggested_value["text"] . "' WHERE local_data_id=" . $cache_array["local_data_id"]{$data_template["id"]});
 						}
 					}
 				}

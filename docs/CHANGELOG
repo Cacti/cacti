@@ -1,6 +1,7 @@
 Cacti CHANGELOG
 
 0.8.7h
+-bug#0001403: 'reapply suggested names' doesn't work correctly for graphs and data sources
 -bug#0001504: no newline fix
 -bug#0001568: Cacti currently gives a lot of warnings of deprecated functions on PHP 5.3
 -bug#0001626: Cacti does not pass currency symbols ($) used in labels/gprint strings to rrdtool during graph generation.
