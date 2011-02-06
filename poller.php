@@ -134,27 +134,26 @@ $concurrent_processes = read_config_option("concurrent_processes");
 
 /* assume a scheduled task of either 60 or 300 seconds */
 if (isset($poller_interval)) {
-	$num_polling_items = db_fetch_cell("SELECT COUNT(*) FROM poller_item WHERE rrd_next_step<=0");
-	$items_perhost     = array_rekey(db_fetch_assoc("SELECT host_id, COUNT(*) AS data_sources
-							FROM poller_item
-							WHERE rrd_next_step<=0
-							GROUP BY host_id
-							ORDER BY host_id"), "host_id", "data_sources");
 	$poller_runs       = intval($cron_interval / $poller_interval);
+	$sql_where = "  WHERE rrd_next_step<=0 ";
 
 	define("MAX_POLLER_RUNTIME", $poller_runs * $poller_interval - 2);
 }else{
-	$num_polling_items = db_fetch_cell("SELECT COUNT(*) FROM poller_item");
-	$items_perhost     = array_rekey(db_fetch_assoc("SELECT host_id, COUNT(*) AS data_sources
-							FROM poller_item
-							GROUP BY host_id
-							ORDER BY host_id"), "host_id", "data_sources");
+	$sql_where = "";
 	$poller_runs       = 1;
-
 	define("MAX_POLLER_RUNTIME", 298);
 }
 
-if (sizeof($items_perhost)) {
+$num_polling_items = db_fetch_cell("SELECT COUNT(*) FROM poller_item $sql_where");
+if (isset($concurrent_processes) && $concurrent_processes > 1) {
+	$items_perhost     = array_rekey(db_fetch_assoc("SELECT host_id, COUNT(*) AS data_sources
+							FROM poller_item
+							$sql_where
+							GROUP BY host_id
+							ORDER BY host_id"), "host_id", "data_sources");
+}
+
+if (isset($items_perhost) && sizeof($items_perhost)) {
 	$items_per_process   = floor($num_polling_items / $concurrent_processes);
 
 	if ($items_per_process == 0) {

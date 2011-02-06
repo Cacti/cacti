@@ -33,6 +33,7 @@ Cacti CHANGELOG
 -bug#0001934: Poller sig_handler Bug
 -bug#0001936: Removing Data Sources is Inneficient 
 -bug#0001937: The Cacti Technical Support Page Uses Check Table Which Blocks
+-bug#0001939: Do not query for items_perhost if concurrent_processes == 1
 -bug#0001941: Queries are run twice
 -bug: accept "Connection refused" on TCP ping tests
 -bug: add missing row selection to graph preview
