@@ -27,85 +27,178 @@
 	and the data template
    @arg $data_template_id - the id of the data template to push out values for */
 function push_out_data_source_custom_data($data_template_id) {
-	/* get data_input_id */
-	$data_template = db_fetch_row("SELECT
-		id,
-		data_input_id
-		FROM data_template_data
-		WHERE data_template_id=$data_template_id
-		AND local_data_id=0");
+	
+	/* valid data template id? */
+	if (empty($data_template_id)) { return 0; }
+
+	/* get data_input_id from template */
+	$data_template_data = db_fetch_row("SELECT " .
+			"id, " .
+			"data_input_id " .
+			"FROM data_template_data " .
+			"WHERE data_template_id=$data_template_id " .
+			"AND local_data_id=0");
 
 	/* must be a data template */
-	if ((empty($data_template_id)) || (empty($data_template["data_input_id"]))) { return 0; }
+	if (empty($data_template_data["data_input_id"])) { return 0; }
 
 	/* get a list of data sources using this template */
-	$data_sources = db_fetch_assoc("SELECT
-		data_template_data.id
-		FROM data_template_data
-		WHERE data_template_id=$data_template_id
-		AND local_data_id>0");
+	$data_sources = db_fetch_assoc("SELECT " .
+			"data_template_data.id " .
+			"FROM data_template_data " .
+			"WHERE data_template_id=$data_template_id " .
+			"AND local_data_id>0");
 
-	/* pull out all 'input' values so we know how much to save */
-	$input_fields = db_fetch_assoc("SELECT
-		data_template_data.id AS data_template_data_id,
-		data_input_fields.id,
-		data_input_fields.type_code,
-		data_input_data.value,
-		data_input_data.t_value
-		FROM data_input_fields
-		INNER JOIN (data_template_data
-		INNER JOIN data_input_data
-		ON data_template_data.id = data_input_data.data_template_data_id)
-		ON data_input_fields.id = data_input_data.data_input_field_id
-		WHERE (data_input_fields.input_output='in')
-		AND (data_template_data.local_data_template_data_id=" . $data_template["id"] . ")");
+	/* pull out all custom templated 'input' values from the template itself 
+	 * templated items are selected by querying t_value = '' OR t_value = NULL */
+	$template_input_fields = array_rekey(db_fetch_assoc("SELECT " .
+			"data_input_fields.id, " .
+			"data_input_fields.type_code, " .
+			"data_input_data.value, " .
+			"data_input_data.t_value " .
+			"FROM data_input_fields " .
+			"INNER JOIN (data_template_data " .
+			"INNER JOIN data_input_data " .
+			"ON data_template_data.id = data_input_data.data_template_data_id) " .
+			"ON data_input_fields.id = data_input_data.data_input_field_id " .
+			"WHERE (data_input_fields.input_output='in') " .
+			"AND (data_input_data.t_value='' OR data_input_data.t_value IS NULL) " .
+			"AND (data_input_data.data_template_data_id=" . $data_template_data["id"] . ") " .
+			"AND (data_template_data.local_data_template_data_id=0)"), "id", array("type_code", "value", "t_value"));
+
+	/* which data_input_fields are templated? */
+	$dif_ct = 0;
+	$dif_in_str = "";
+	if (sizeof($template_input_fields)) {
+		foreach ($template_input_fields as $key => $value) {
+			$dif_in_str .= ($dif_ct == 0 ? "(":",") . $key;
+			$dif_ct++;
+		}
+		$dif_in_str .= ")";
+	}
+
+	/* pull out all templated 'input' values from all related data sources 
+	 * unfortunately, you can't simply provide the same test as above
+	 * all input fields not related to a template ALWAYS are marked with t_value = NULL
+	 * so we will verify against the list of data_input_field id's taken from above */
+	$input_fields = db_fetch_assoc("SELECT " .
+			"data_template_data.id AS data_template_data_id, " .
+			"data_input_fields.id, " .
+			"data_input_fields.type_code, " .
+			"data_input_data.value, " .
+			"data_input_data.t_value " .
+			"FROM data_input_fields " .
+			"INNER JOIN (data_template_data " .
+			"INNER JOIN data_input_data " .
+			"ON data_template_data.id = data_input_data.data_template_data_id) " .
+			"ON data_input_fields.id = data_input_data.data_input_field_id " .
+			"WHERE (data_input_fields.input_output='in')" .
+			"AND data_input_fields.id IN " . $dif_in_str . " " .
+			"AND (data_input_data.t_value='' OR data_input_data.t_value IS NULL) " .
+			"AND (data_template_data.local_data_template_data_id=" . $data_template_data["id"] . ")");
 
 	$data_rra = db_fetch_assoc("SELECT rra_id
 		FROM data_template_data_rra
-		WHERE data_template_data_id=" . $data_template["id"]);
+		WHERE data_template_data_id=" . $data_template_data["id"]);
 
-	if (sizeof($data_sources) > 0) {
-	foreach ($data_sources as $data_source) {
-		reset($input_fields);
+	/* perform bulk update of rra associations */
+	$rra_ct = 0;
+	$rra_in_str = "";
+	if (sizeof($data_rra)) {
+		foreach($data_rra as $rra) {
+			$rra_in_str .= ($rra_ct == 0 ? "(":",") . $rra["rra_id"];
+			$rra_ct++;
+		}
+		$rra_in_str .= ")";
+	}
 
-		if (sizeof($input_fields) > 0) {
-		foreach ($input_fields as $input_field) {
-			if ($data_source["id"] == $input_field["data_template_data_id"]) {
-				/* do not push out "host fields" */
-				if (!preg_match('/^' . VALID_HOST_FIELDS . '$/i', $input_field["type_code"])) {
-					/* this is not a "host field", so we should either push out the value if it is templated
-					or leave it alone if the user checked "Use Per-Data Source Value". */
-					if ($input_field["t_value"] == "") { /* template this value */
-						db_execute("REPLACE INTO data_input_data
-							(data_input_field_id,data_template_data_id,value)
-							VALUES (" . $input_field["id"] . ", " . $data_source["id"] . ", '" . addslashes($input_field["value"]) . "')");
+	$ds_cnt    = 0;
+	$did_cnt   = 0;
+	$rra_cnt   = 0;
+	$ds_in_str = "";
+	$did_vals  = "";
+	$rra_vals  = "";
+	if (sizeof($data_sources)) {
+		foreach ($data_sources as $data_source) {
+			reset($input_fields);
+			
+			if (sizeof($input_fields)) {
+				foreach ($input_fields as $input_field) {
+					if ($data_source["id"] == $input_field["data_template_data_id"]) {
+						/* do not push out "host fields" */
+						if (!preg_match('/^' . VALID_HOST_FIELDS . '$/i', $input_field["type_code"])) {
+							/* this is not a "host field", so we should either push out the value if it is templated */
+							$did_vals .= ($did_cnt == 0 ? "":",") . "(" . $input_field["id"] . ", " . $data_source["id"] . ", '" . addslashes($template_input_fields[$input_field["id"]]["value"]) . "')";
+							$did_cnt++;
+						}elseif ((isset($template_input_fields[$input_field["id"]])) &&
+							($template_input_fields[$input_field["id"]]["value"] != $input_field["value"])) { # templated input field deviates from currenmt data source, so update required
+							$did_vals .= ($did_cnt == 0 ? "":",") . "(" . $input_field["id"] . ", " . $data_source["id"] . ", '" . addslashes($template_input_fields[$input_field["id"]]["value"]) . "')";
+							$did_cnt++;
+						}
 					}
-				}elseif (($input_field["t_value"] == "") && ($input_field["value"] != "")) {
-					/* we only template a "host field" when the user types something in the field. this way the data
-					template always overides the host if the user chooses to do so */
-					db_execute("REPLACE INTO data_input_data
-						(data_input_field_id,data_template_data_id,value)
-						VALUES (" . $input_field["id"] . ", " . $data_source["id"] . ", '" . addslashes($input_field["value"]) . "')");
 				}
 			}
-		}
-		}
-
-		/* make sure to update the 'data_template_data_rra' table for each data source */
-		db_execute("DELETE
-			FROM data_template_data_rra
-			WHERE data_template_data_id=" . $data_source["id"]);
-
-		reset($data_rra);
-
-		if (sizeof($data_rra) > 0) {
-		foreach ($data_rra as $rra) {
-			db_execute("INSERT INTO data_template_data_rra
-				(data_template_data_id,rra_id)
-				VALUES (" . $data_source["id"] . "," . $rra["rra_id"] . ")");
-		}
+			
+			/* create large inserts to reduce turns */
+			$ds_in_str .= ($ds_cnt == 0 ? "(":",") . $data_source["id"];
+			if (sizeof($data_rra)) {
+				foreach ($data_rra as $rra) {
+					$rra_vals .= ($rra_cnt == 0 ? "":",") . "(" . $data_source["id"] . "," . $rra["rra_id"] . ")";
+					$rra_cnt++;
+				}
+			}
+			$ds_cnt++;
+			
+			/* per 1000 data source, update rows */
+			if ($ds_cnt % 1000 == 0) {
+				$ds_in_str .= ")";
+				push_out_data_source_templates($did_vals, $ds_in_str, $rra_vals, $rra_in_str);
+				$ds_cnt    = 0;
+				$did_cnt   = 0;
+				$rra_cnt   = 0;
+				$ds_in_str = "";
+				$did_vals  = "";
+				$rra_vals  = "";
+			}
 		}
 	}
+	
+	if ($ds_cnt > 0) {
+		$ds_in_str .= ")";
+		push_out_data_source_templates($did_vals, $ds_in_str, $rra_vals, $rra_in_str);
+	}
+}
+
+/* push out changed data template fields to related data sources
+ * @parm string $did_vals	- data input data fields
+ * @parm string $ds_in_str	- all data sources, formatted as SQL "IN" clause
+ * @parm string $rra_vals	- new set of rra associations
+ * @parm string $rra_in_str	- all rra associations, formatted as SQL "IN" clause
+ */
+function push_out_data_source_templates($did_vals, $ds_in_str, $rra_vals, $rra_in_str) {
+
+	/* update all templated input fields */
+	if ($did_vals != "") {
+		db_execute("INSERT INTO data_input_data
+			(data_input_field_id,data_template_data_id,value)
+			VALUES $did_vals
+			ON DUPLICATE KEY UPDATE value=VALUES(value)");
+	}
+
+	/* remove old RRA associations */
+	if ($ds_in_str != "" && $rra_in_str != "") {
+		db_execute("DELETE
+			FROM data_template_data_rra
+			WHERE data_template_data_id IN $ds_in_str
+			AND rra_id NOT IN $rra_in_str");
+	}
+
+	/* ... and add new ones */
+	if ($rra_vals != "") {
+			db_execute("INSERT INTO data_template_data_rra
+				(data_template_data_id,rra_id)
+			VALUES $rra_vals
+			ON DUPLICATE KEY UPDATE rra_id=VALUES(rra_id)");
 	}
 }
 
