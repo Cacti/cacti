@@ -13,6 +13,7 @@ Cacti CHANGELOG
 -bug#0001814: CLI - Add Device Script problem when SNMP Default is Disabled 
 -bug#0001815: 1-minute with 5-minute crontab broken
 -bug#0001816: Cannot export graph data to CSV with IE 8 (8.0.7600.16385) 
+-bug#0001819: MySQL "TYPE=" command deprecated since MySQL 4.1 removed in MySQL 5.4.4 
 -bug#0001826: zoomed graph views should not have auto refresh since they do not change
 -bug#0001828: reapply suggested values gramatical errors
 -bug#0001835: invalid number of form tags on graphs.php?action=graph_edit

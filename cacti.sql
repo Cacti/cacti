@@ -7,7 +7,7 @@ CREATE TABLE cdef (
   hash varchar(32) NOT NULL default '',
   name varchar(255) NOT NULL default '',
   PRIMARY KEY  (id)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;
 
 --
 -- Dumping data for table `cdef`
@@ -33,7 +33,7 @@ CREATE TABLE cdef_items (
   value varchar(150) NOT NULL default '',
   PRIMARY KEY  (id),
   KEY cdef_id (cdef_id)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;
 
 --
 -- Dumping data for table `cdef_items`
@@ -64,7 +64,7 @@ CREATE TABLE colors (
   id mediumint(8) unsigned NOT NULL auto_increment,
   hex varchar(6) NOT NULL default '',
   PRIMARY KEY  (id)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;
 
 --
 -- Dumping data for table `colors`
@@ -184,7 +184,7 @@ CREATE TABLE data_input (
   type_id tinyint(2) NOT NULL default '0',
   PRIMARY KEY (id),
   KEY name (name)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;
 
 --
 -- Dumping data for table `data_input`
@@ -214,7 +214,7 @@ CREATE TABLE data_input_data (
   value text,
   PRIMARY KEY (data_input_field_id,data_template_data_id),
   KEY t_value (t_value)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;
 
 --
 -- Dumping data for table `data_input_data`
@@ -418,7 +418,7 @@ CREATE TABLE data_input_fields (
   PRIMARY KEY  (id),
   KEY data_input_id (data_input_id),
   KEY type_code (type_code)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;
 
 --
 -- Dumping data for table `data_input_fields`
@@ -482,7 +482,7 @@ CREATE TABLE data_local (
   snmp_query_id mediumint(8) NOT NULL default '0',
   snmp_index varchar(255) NOT NULL default '',
   PRIMARY KEY  (id)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;
 
 --
 -- Dumping data for table `data_local`
@@ -503,7 +503,7 @@ CREATE TABLE data_template (
   hash varchar(32) NOT NULL default '',
   name varchar(150) NOT NULL default '',
   PRIMARY KEY  (id)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;
 
 --
 -- Dumping data for table `data_template`
@@ -573,7 +573,7 @@ CREATE TABLE data_template_data (
   PRIMARY KEY  (id),
   KEY local_data_id (local_data_id),
   KEY data_template_id (data_template_id)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;
 
 --
 -- Dumping data for table `data_template_data`
@@ -635,7 +635,7 @@ CREATE TABLE data_template_data_rra (
   rra_id mediumint(8) unsigned NOT NULL default '0',
   PRIMARY KEY  (data_template_data_id,rra_id),
   KEY data_template_data_id (data_template_data_id)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;
 
 --
 -- Dumping data for table `data_template_data_rra`
@@ -852,7 +852,7 @@ CREATE TABLE data_template_rrd (
   KEY local_data_id (local_data_id),
   KEY data_template_id (data_template_id),
   KEY local_data_template_rrd_id (local_data_template_rrd_id)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;
 
 --
 -- Dumping data for table `data_template_rrd`
@@ -936,7 +936,7 @@ CREATE TABLE graph_local (
   KEY graph_template_id (graph_template_id),
   KEY snmp_query_id (snmp_query_id),
   KEY snmp_index (snmp_index)
-) TYPE=MyISAM COMMENT='Creates a relationship for each item in a custom graph.';
+) ENGINE=MyISAM COMMENT='Creates a relationship for each item in a custom graph.';
 
 --
 -- Dumping data for table `graph_local`
@@ -959,7 +959,7 @@ CREATE TABLE graph_template_input (
   description text,
   column_name varchar(50) NOT NULL default '',
   PRIMARY KEY  (id)
-) TYPE=MyISAM COMMENT='Stores the names for graph item input groups.';
+) ENGINE=MyISAM COMMENT='Stores the names for graph item input groups.';
 
 --
 -- Dumping data for table `graph_template_input`
@@ -1052,7 +1052,7 @@ CREATE TABLE graph_template_input_defs (
   graph_template_item_id int(12) unsigned NOT NULL default '0',
   PRIMARY KEY  (graph_template_input_id,graph_template_item_id),
   KEY graph_template_input_id (graph_template_input_id)
-) TYPE=MyISAM COMMENT='Stores the relationship for what graph iitems are associated';
+) ENGINE=MyISAM COMMENT='Stores the relationship for what graph iitems are associated';
 
 --
 -- Dumping data for table `graph_template_input_defs`
@@ -1326,7 +1326,7 @@ CREATE TABLE graph_templates (
   name char(255) NOT NULL default '',
   PRIMARY KEY  (id),
   KEY name (name)
-) TYPE=MyISAM COMMENT='Contains each graph template name.';
+) ENGINE=MyISAM COMMENT='Contains each graph template name.';
 
 --
 -- Dumping data for table `graph_templates`
@@ -1376,7 +1376,7 @@ CREATE TABLE graph_templates_gprint (
   name varchar(100) NOT NULL default '',
   gprint_text varchar(255) default NULL,
   PRIMARY KEY  (id)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;
 
 --
 -- Dumping data for table `graph_templates_gprint`
@@ -1438,7 +1438,7 @@ CREATE TABLE graph_templates_graph (
   KEY local_graph_id (local_graph_id),
   KEY graph_template_id (graph_template_id),
   KEY title_cache (title_cache)
-) TYPE=MyISAM COMMENT='Stores the actual graph data.';
+) ENGINE=MyISAM COMMENT='Stores the actual graph data.';
 
 --
 -- Dumping data for table `graph_templates_graph`
@@ -1507,7 +1507,7 @@ CREATE TABLE graph_templates_item (
   KEY graph_template_id (graph_template_id),
   KEY local_graph_id (local_graph_id),
   KEY task_item_id (task_item_id)
-) TYPE=MyISAM COMMENT='Stores the actual graph item data.';
+) ENGINE=MyISAM COMMENT='Stores the actual graph item data.';
 
 --
 -- Dumping data for table `graph_templates_item`
@@ -1803,7 +1803,7 @@ CREATE TABLE graph_tree (
   sort_type tinyint(3) unsigned NOT NULL default '1',
   name varchar(255) NOT NULL default '',
   PRIMARY KEY  (id)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;
 
 --
 -- Dumping data for table `graph_tree`
@@ -1830,7 +1830,7 @@ CREATE TABLE graph_tree_items (
   KEY host_id (host_id),
   KEY local_graph_id (local_graph_id),
   KEY order_key (order_key)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;
 
 --
 -- Dumping data for table `graph_tree_items`
@@ -1879,7 +1879,7 @@ CREATE TABLE host (
   availability decimal(8,5) NOT NULL default '100.00000',
   PRIMARY KEY  (id),
   KEY disabled (disabled)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;
 
 --
 -- Dumping data for table `host`
@@ -1895,7 +1895,7 @@ CREATE TABLE host_graph (
   host_id mediumint(8) unsigned NOT NULL default '0',
   graph_template_id mediumint(8) unsigned NOT NULL default '0',
   PRIMARY KEY  (host_id,graph_template_id)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;
 
 --
 -- Dumping data for table `host_graph`
@@ -1925,7 +1925,7 @@ CREATE TABLE host_snmp_cache (
   KEY field_value (field_value),
   KEY snmp_query_id (snmp_query_id),
   KEY present (present)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;
 
 --
 -- Dumping data for table `host_snmp_cache`
@@ -1944,7 +1944,7 @@ CREATE TABLE host_snmp_query (
   reindex_method tinyint(3) unsigned NOT NULL default '0',
   PRIMARY KEY  (host_id,snmp_query_id),
   KEY host_id (host_id)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;
 
 --
 -- Dumping data for table `host_snmp_query`
@@ -1961,7 +1961,7 @@ CREATE TABLE host_template (
   hash varchar(32) NOT NULL default '',
   name varchar(100) NOT NULL default '',
   PRIMARY KEY  (id)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;
 
 --
 -- Dumping data for table `host_template`
@@ -1984,7 +1984,7 @@ CREATE TABLE host_template_graph (
   graph_template_id mediumint(8) unsigned NOT NULL default '0',
   PRIMARY KEY  (host_template_id,graph_template_id),
   KEY host_template_id (host_template_id)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;
 
 --
 -- Dumping data for table `host_template_graph`
@@ -2014,7 +2014,7 @@ CREATE TABLE host_template_snmp_query (
   snmp_query_id mediumint(8) unsigned NOT NULL default '0',
   PRIMARY KEY  (host_template_id,snmp_query_id),
   KEY host_template_id (host_template_id)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;
 
 --
 -- Dumping data for table `host_template_snmp_query`
@@ -2044,7 +2044,7 @@ CREATE TABLE poller (
   ip_address int(11) unsigned NOT NULL default '0',
   last_update datetime NOT NULL default '0000-00-00 00:00:00',
   PRIMARY KEY  (id)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;
 
 --
 -- Dumping data for table `poller`
@@ -2061,7 +2061,7 @@ CREATE TABLE poller_command (
   action tinyint(3) unsigned NOT NULL default '0',
   command varchar(200) NOT NULL default '',
   PRIMARY KEY  (poller_id,action,command)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;
 
 --
 -- Dumping data for table `poller_command`
@@ -2103,7 +2103,7 @@ CREATE TABLE poller_item (
   KEY rrd_next_step (rrd_next_step),
   KEY action (action),
   KEY present (present)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;
 
 --
 -- Dumping data for table `poller_item`
@@ -2120,7 +2120,7 @@ CREATE TABLE poller_output (
   time datetime NOT NULL default '0000-00-00 00:00:00',
   output text NOT NULL,
   PRIMARY KEY  (local_data_id,rrd_name,time)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;
 
 --
 -- Dumping data for table `poller_output`
@@ -2141,7 +2141,7 @@ CREATE TABLE poller_reindex (
   arg1 varchar(255) NOT NULL default '',
   PRIMARY KEY  (host_id,data_query_id,arg1),
   KEY present (present)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;
 
 --
 -- Dumping data for table `poller_reindex`
@@ -2159,7 +2159,7 @@ CREATE TABLE poller_time (
   start_time datetime NOT NULL default '0000-00-00 00:00:00',
   end_time datetime NOT NULL default '0000-00-00 00:00:00',
   PRIMARY KEY  (id)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;
 
 --
 -- Dumping data for table `poller_time`
@@ -2179,7 +2179,7 @@ CREATE TABLE rra (
   rows int(12) NOT NULL default '600',
   timespan int(12) unsigned NOT NULL default '0',
   PRIMARY KEY  (id)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;
 
 --
 -- Dumping data for table `rra`
@@ -2200,7 +2200,7 @@ CREATE TABLE rra_cf (
   consolidation_function_id smallint(5) unsigned NOT NULL default '0',
   PRIMARY KEY  (rra_id,consolidation_function_id),
   KEY rra_id (rra_id)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;
 
 --
 -- Dumping data for table `rra_cf`
@@ -2225,7 +2225,7 @@ CREATE TABLE settings (
   name varchar(50) NOT NULL default '',
   value varchar(255) NOT NULL default '',
   PRIMARY KEY  (name)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;
 
 --
 -- Dumping data for table `settings`
@@ -2241,7 +2241,7 @@ CREATE TABLE settings_graphs (
   name varchar(50) NOT NULL default '',
   value varchar(255) NOT NULL default '',
   PRIMARY KEY  (user_id,name)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;
 
 --
 -- Dumping data for table `settings_graphs`
@@ -2257,7 +2257,7 @@ CREATE TABLE settings_tree (
   graph_tree_item_id mediumint(8) unsigned NOT NULL default '0',
   status tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (user_id,graph_tree_item_id)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;
 
 --
 -- Dumping data for table `settings_tree`
@@ -2278,7 +2278,7 @@ CREATE TABLE snmp_query (
   data_input_id mediumint(8) unsigned NOT NULL default '0',
   PRIMARY KEY  (id),
   KEY name (name)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;
 
 --
 -- Dumping data for table `snmp_query`
@@ -2304,7 +2304,7 @@ CREATE TABLE snmp_query_graph (
   name varchar(100) NOT NULL default '',
   graph_template_id mediumint(8) unsigned NOT NULL default '0',
   PRIMARY KEY  (id)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;
 
 --
 -- Dumping data for table `snmp_query_graph`
@@ -2342,7 +2342,7 @@ CREATE TABLE snmp_query_graph_rrd (
   PRIMARY KEY  (snmp_query_graph_id,data_template_id,data_template_rrd_id),
   KEY data_template_rrd_id (data_template_rrd_id),
   KEY snmp_query_graph_id (snmp_query_graph_id)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;
 
 --
 -- Dumping data for table `snmp_query_graph_rrd`
@@ -2403,7 +2403,7 @@ CREATE TABLE snmp_query_graph_rrd_sv (
   PRIMARY KEY  (id),
   KEY snmp_query_graph_id (snmp_query_graph_id),
   KEY data_template_id (data_template_id)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;
 
 --
 -- Dumping data for table `snmp_query_graph_rrd_sv`
@@ -2482,7 +2482,7 @@ CREATE TABLE snmp_query_graph_sv (
   text varchar(255) NOT NULL default '',
   PRIMARY KEY  (id),
   KEY snmp_query_graph_id (snmp_query_graph_id)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;
 
 --
 -- Dumping data for table `snmp_query_graph_sv`
@@ -2554,7 +2554,7 @@ CREATE TABLE user_auth (
   KEY username (username),
   KEY realm (realm),
   KEY enabled (enabled)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;
 
 --
 -- Dumping data for table `user_auth`
@@ -2573,7 +2573,7 @@ CREATE TABLE user_auth_perms (
   type tinyint(2) unsigned NOT NULL default '0',
   PRIMARY KEY  (user_id,item_id,type),
   KEY user_id (user_id,type)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;
 
 --
 -- Dumping data for table `user_auth_perms`
@@ -2589,7 +2589,7 @@ CREATE TABLE user_auth_realm (
   user_id mediumint(8) unsigned NOT NULL default '0',
   PRIMARY KEY  (realm_id,user_id),
   KEY user_id (user_id)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;
 
 --
 -- Dumping data for table `user_auth_realm`
@@ -2625,7 +2625,7 @@ CREATE TABLE user_log (
   ip varchar(40) NOT NULL default '',
   PRIMARY KEY  (username,user_id,time),
   KEY username (username)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;
 
 --
 -- Dumping data for table `user_log`
@@ -2638,7 +2638,7 @@ CREATE TABLE user_log (
 
 CREATE TABLE version (
   cacti char(20) default NULL
-) TYPE=MyISAM;
+) ENGINE=MyISAM;
 
 --
 -- Dumping data for table `version`
