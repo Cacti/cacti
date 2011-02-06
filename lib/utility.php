@@ -644,6 +644,10 @@ function duplicate_data_source($_local_data_id, $_data_template_id, $data_source
 
 		while (list($field, $array) = each($struct_data_source_item)) {
 			$save{$field} = $data_template_rrd{$field};
+
+			if (isset($data_template_rrd{"t_" . $field})) {
+				$save{"t_" . $field} = $data_template_rrd{"t_" . $field};
+			}
 		}
 
 		$data_template_rrd_id = sql_save($save, "data_template_rrd");

@@ -10,6 +10,7 @@ Cacti CHANGELOG
 -bug#0001678: Adding graphs to a device fails to add entries to poller_item if using the script server 
 -bug#0001768: perform consistency check on ds maximum vs. ds minimum
 -bug#0001783: Graph Export: The ExportDate is wrong -> we will print current time and number of graphs, then
+-bug#0001812: copying a data template ignores item templating
 -bug#0001814: CLI - Add Device Script problem when SNMP Default is Disabled 
 -bug#0001815: 1-minute with 5-minute crontab broken
 -bug#0001816: Cannot export graph data to CSV with IE 8 (8.0.7600.16385) 
