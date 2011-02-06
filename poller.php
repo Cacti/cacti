@@ -322,7 +322,9 @@ while ($poller_runs_completed < $poller_runs) {
 				if (($items_launched >= $items_per_process) ||
 					(sizeof($items_perhost) == $concurrent_processes)) {
 					$last_host      = $item["id"];
-					$change_proc    = true;
+					/* if this is the dummy entry for externally updated data sources 
+					 * that are not related to any host (host id = 0), do NOT change_proc */
+					$change_proc    = ($item["id"] == 0 ? false : true);
 					$items_launched = 0;
 				}
 			}
