@@ -6,7 +6,7 @@ Cacti CHANGELOG
 -bug#0001568: Cacti currently gives a lot of warnings of deprecated functions on PHP 5.3
 -bug#0001626: Cacti does not pass currency symbols ($) used in labels/gprint strings to rrdtool during graph generation.
 -bug#0001632: script server treats quoted arguments with spaces as multiple separate arguments
--bug#0001660: Modifying data template values is not working as expected. 
+-bug#0001660: Modifying data template values is not working as expected.
 -bug#0001678: Adding graphs to a device fails to add entries to poller_item if using the script server 
 -bug#0001768: perform consistency check on ds maximum vs. ds minimum
 -bug#0001783: Graph Export: The ExportDate is wrong -> we will print current time and number of graphs, then
@@ -46,6 +46,7 @@ Cacti CHANGELOG
 -bug: fixing issues with multiple "U" results for data input methods with multiple output parms
 -bug: when using template and search filter on graph management, sql error occurs
 -feature#0001519: spine enhancement for parallel collection of data at device level
+-feature#0001667: Get values of |host_*| variables in graph elements from data source
 -feature#0001922: Reindex method "Index Count Changed" requires that OID_NUM_INDEXES is given for SNMP Data Queries
 -feature#0001923: Implement counting for script (server) data queries just like OID_NUM_INDEXES
 -feature#0001924: Allow for reindex method "Index Count Changed" to apply to script (server) queries as well
