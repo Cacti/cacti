@@ -350,6 +350,7 @@ function export_ftp_ncftpput_execute($stExportDir) {
 	$stExecute .= ' -P ' . $aFtpExport['port'] . ' ' . $aFtpExport['server'] . ' ' . $aFtpExport['remotedir'] . ".";
 
 	/* run the command */
+	$iExecuteReturns = 0;
 	system($stExecute, $iExecuteReturns);
 
 	$aNcftpputStatusCodes = array (

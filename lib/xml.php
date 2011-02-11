@@ -27,6 +27,8 @@ function xml2array($data) {
 	original ripped from  on the php-manual:gdemartini@bol.com.br
 	to be used for data retrieval(result-structure is Data oriented) */
 	$p = xml_parser_create();
+	$vals = array();
+	$index = array();
 	xml_parser_set_option($p, XML_OPTION_SKIP_WHITE, 1);
 	xml_parser_set_option($p, XML_OPTION_CASE_FOLDING, 0);
 	xml_parse_into_struct($p, $data, $vals, $index);
@@ -105,6 +107,8 @@ function rrdxport2array($data) {
 	original ripped from  on the php-manual:gdemartini@bol.com.br
 	to be used for data retrieval(result-structure is Data oriented) */
 	$p = xml_parser_create();
+	$vals = array();
+	$index = array();
 	xml_parser_set_option($p, XML_OPTION_SKIP_WHITE, 1);
 	xml_parser_set_option($p, XML_OPTION_CASE_FOLDING, 0);
 	xml_parse_into_struct($p, $data, $vals, $index);

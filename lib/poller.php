@@ -136,6 +136,7 @@ function exec_background($filename, $args = "") {
 function file_exists_2gb($filename) {
 	global $config;
 
+	$rval = 0;
 	if ($config["cacti_server_os"] != "win32") {
 		system("test -f $filename", $rval);
 		return ($rval == 0);

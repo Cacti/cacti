@@ -403,7 +403,7 @@ function rrdtool_function_fetch($local_data_id, $start_time, $end_time, $resolut
 	global $rrd_fetch_cache;
 
 	if (empty($local_data_id)) {
-		unset($var);
+		$var = array();
 		return $var;
 	}
 

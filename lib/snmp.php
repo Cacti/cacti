@@ -80,6 +80,7 @@ function cacti_snmp_get($hostname, $community, $oid, $version, $username, $passw
 			cacti_log("WARNING: SNMP Get Timeout for Host:'$hostname', and OID:'$oid'", false);
 		}
 	}else {
+		$snmp_value = '';
 		/* ucd/net snmp want the timeout in seconds */
 		$timeout = ceil($timeout / 1000);
 
@@ -195,6 +196,7 @@ function cacti_snmp_getnext($hostname, $community, $oid, $version, $username, $p
 			cacti_log("WARNING: SNMP GetNext Timeout for Host:'$hostname', and OID:'$oid'", false);
 		}
 	}else {
+		$snmp_value = '';
 		/* ucd/net snmp want the timeout in seconds */
 		$timeout = ceil($timeout / 1000);
 
