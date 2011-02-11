@@ -1864,6 +1864,7 @@ CREATE TABLE host (
   ping_timeout int(12) unsigned default '500',
   ping_retries int(12) unsigned default '2',
   max_oids int(12) unsigned default '10',
+  device_threads tinyint(2) unsigned NOT NULL DEFAULT '1',
   disabled char(2) default NULL,
   status tinyint(2) NOT NULL default '0',
   status_event_count mediumint(8) unsigned NOT NULL default '0',
@@ -1885,7 +1886,7 @@ CREATE TABLE host (
 -- Dumping data for table `host`
 --
 
-INSERT INTO `host` VALUES (1, 8, 'Localhost', '127.0.0.1', '', 'public', 0, '', '', 'MD5', '', 'DES', '', 161, 500, 3, 2, 23, 400, 1, 10, '', 0, 0, '0000-00-00 00:00:00', '0000-00-00 00:00:00', '', 9.99999, 0.00000, 0.00000, 0.00000, 0, 0, 100.00000);
+INSERT INTO `host` VALUES (1, 8, 'Localhost', '127.0.0.1', '', 'public', 0, '', '', 'MD5', '', 'DES', '', 161, 500, 3, 2, 23, 400, 1, 10, 1, '', 0, 0, '0000-00-00 00:00:00', '0000-00-00 00:00:00', '', 9.99999, 0.00000, 0.00000, 0.00000, 0, 0, 100.00000);
 
 --
 -- Table structure for table `host_graph`
