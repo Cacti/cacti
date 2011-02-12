@@ -44,6 +44,7 @@ Cacti CHANGELOG
 -bug: Add some command escaping
 -bug: Change default font sizes
 -bug: fixing issues with multiple "U" results for data input methods with multiple output parms
+-bug: be smart for SNMP V3 and use AuthNoPriv when privacy passphrase is empty
 -bug: when using template and search filter on graph management, sql error occurs
 -feature#0001519: spine enhancement for parallel collection of data at device level
 -feature#0001667: Get values of |host_*| variables in graph elements from data source
