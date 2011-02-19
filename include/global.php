@@ -191,8 +191,8 @@ if ((bool)ini_get("register_globals")) {
 }
 
 /* include base modules */
-include($config["library_path"] . "/adodb/adodb.inc.php");
-include($config["library_path"] . "/database.php");
+include_once($config["library_path"] . "/adodb/adodb.inc.php");
+include_once($config["library_path"] . "/database.php");
 include_once($config["library_path"] . "/functions.php");
 include_once($config["include_path"] . "/global_constants.php");
 include_once($config["include_path"] . "/global_arrays.php");
