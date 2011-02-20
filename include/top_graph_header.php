@@ -148,7 +148,7 @@ if (isset($_REQUEST["action"]) && $_REQUEST["action"] == "zoom") {
 	load_current_session_value("action", "sess_cacti_graph_action", $graph_views[read_graph_config_option("default_tree_view_mode")]);
 	?>
 	<tr>
-		<?php if (basename($_SERVER["PHP_SELF"]) == "graph_view.php" && ($_REQUEST["action"] == "tree" || (isset($_REQUEST["view_type"]) && $_REQUEST["view_type"] == "tree"))) { ?>
+		<?php if (basename($_SERVER["PHP_SELF"]) == "graph_view.php" && (read_graph_config_option("default_tree_view_mode") == 2) && ($_REQUEST["action"] == "tree" || (isset($_REQUEST["view_type"]) && $_REQUEST["view_type"] == "tree"))) { ?>
 		<td valign="top" style="padding: 5px; border-right: #aaaaaa 1px solid;background-repeat:repeat-y;background-color:#efefef;" bgcolor='#efefef' width='<?php print htmlspecialchars(read_graph_config_option("default_dual_pane_width"));?>' class='noprint'>
 			<table border=0 cellpadding=0 cellspacing=0><tr><td><a style="font-size:7pt;text-decoration:none;color:silver" href="http://www.treemenu.net/" target=_blank></a></td></tr></table>
 			<?php grow_dhtml_trees(); ?>
