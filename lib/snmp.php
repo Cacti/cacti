@@ -27,15 +27,6 @@ define("REGEXP_SNMP_TRIM", "/(hex|counter(32|64)|gauge|gauge(32|64)|float|ipaddr
 define("SNMP_METHOD_PHP", 1);
 define("SNMP_METHOD_BINARY", 2);
 
-/* we must use an apostrophe to escape community names under Unix in case the user uses
-characters that the shell might interpret. the ucd-snmp binaries on Windows flip out when
-you do this, but are perfectly happy with a quotation mark. */
-if ($config["cacti_server_os"] == "unix") {
-	define("SNMP_ESCAPE_CHARACTER", "'");
-}else{
-	define("SNMP_ESCAPE_CHARACTER", "\"");
-}
-
 function cacti_snmp_get($hostname, $community, $oid, $version, $username, $password, $auth_proto, $priv_pass, $priv_proto, $context, $port = 161, $timeout = 500, $retries = 0, $environ = SNMP_POLLER) {
 	global $config;
 
@@ -266,7 +257,7 @@ function cacti_snmp_getnext($hostname, $community, $oid, $version, $username, $p
 function cacti_snmp_walk($hostname, $community, $oid, $version, $username, $password, $auth_proto, $priv_pass, $priv_proto, $context, $port = 161, $timeout = 500, $retries = 0, $max_oids = 10, $environ = SNMP_POLLER) {
 	global $config, $banned_snmp_strings;
 
-	$snmp_oid_included = false;
+	$snmp_oid_included = true;
 	$snmp_auth	       = '';
 	$snmp_array        = array();
 	$temp_array        = array();
@@ -308,7 +299,10 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $username, $pass
 		/* force php to return numeric oid's */
 		if (function_exists("snmp_set_oid_numeric_print")) {
 			snmp_set_oid_numeric_print(TRUE);
-			$snmp_oid_included = true;
+		}
+
+		if (function_exists("snmprealwalk")) {
+			$snmp_oid_included = false;
 		}
 
 		snmp_set_quick_print(0);
@@ -529,7 +523,7 @@ function format_snmp_string($string, $snmp_oid_included) {
 	}elseif (preg_match("/(hex:\?)?([a-fA-F0-9]{1,2}(:|\s)){5}/i", $string)) {
 		$octet = "";
 
-		/* strip of the 'hex:' */
+		/* strip off the 'hex:' */
 		$string = preg_replace("/hex: ?/i", "", $string);
 
 		/* split the hex on the delimiter */
@@ -561,6 +555,14 @@ function format_snmp_string($string, $snmp_oid_included) {
 }
 
 function snmp_escape_string($string) {
+	global $config;
+
+	if ($config["cacti_server_os"] == "win32") {
+		define("SNMP_ESCAPE_CHARACTER", "\"");
+	}else{
+		define("SNMP_ESCAPE_CHARACTER", "'");
+	}
+
 	if (substr_count($string, SNMP_ESCAPE_CHARACTER)) {
 		$string = substr_replace(SNMP_ESCAPE_CHARACTER, "\\" . SNMP_ESCAPE_CHARACTER, $string);
 	}
