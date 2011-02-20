@@ -182,7 +182,8 @@ while (1) {
 
 			if (!parseArgs($parameters, $parameter_array)) {
 				cacti_log("WARNING: Script Server count not parse '$parameters' for $function", false, "PHPSVR");
-				return "U";
+				fputs(STDOUT, "U\n");
+				continue;
 			}
 
 			if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_DEBUG) {
@@ -227,8 +228,8 @@ while (1) {
 
 				$ctr++;
 			} else {
-				cacti_log("WARNING: Function does not exist", false, "PHPSVR");
-				fputs(STDOUT, "WARNING: Function does not exist\n");
+				cacti_log("WARNING: Function does not exist '$function'", false, "PHPSVR");
+				fputs(STDOUT, "U\n");
 			}
 		}
 	}else{
@@ -343,7 +344,7 @@ function parseArgs($string, &$str_list, $debug = false) {
 
 	if (!$parse_ok) {
 		echo "ERROR: " . $msg . " '" . $string . "'\n";
-	}else{
+	}elseif (strlen($curstr)) {
 		$str_list[] = $curstr;
 	}
 
