@@ -590,6 +590,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, &$r
 	$seconds_between_graph_updates = ($ds_step * $rra["steps"]);
 
 	$graph = db_fetch_row("select
+		graph_local.id AS local_graph_id,
 		graph_local.host_id,
 		graph_local.snmp_query_id,
 		graph_local.snmp_index,
@@ -1478,6 +1479,7 @@ function rrdtool_function_xport($local_graph_id, $rra_id, $xport_data_array, &$x
 	}
 
 	$graph = db_fetch_row("select
+		graph_local.id AS local_graph_id,
 		graph_local.host_id,
 		graph_local.snmp_query_id,
 		graph_local.snmp_index,
@@ -2004,7 +2006,7 @@ function rrdtool_set_font($type, $no_legend = "") {
 
 function rrd_substitute_host_query_data($txt_graph_item, $graph, $graph_item) {
 	/* replace host variables in graph elements */
-	if (empty($graph["host_id"])) { 
+	if (empty($graph["host_id"])) {
 		/* if graph has no associated host determine host_id from graph item data source */
 		if (!empty($graph_item["local_data_id"])) {
 			$host_id = db_fetch_cell("select host_id from data_local where id='" . $graph_item["local_data_id"] . "'");
@@ -2019,15 +2021,20 @@ function rrd_substitute_host_query_data($txt_graph_item, $graph, $graph_item) {
 	if (preg_match("/\|query_[a-zA-Z0-9_]+\|/", $txt_graph_item)) {
 		/* default to the graph data query information from the graph */
 		if (empty($graph_item["local_data_id"])) {
-			return substitute_snmp_query_data($txt_graph_item, $graph["host_id"], $graph["snmp_query_id"], $graph["snmp_index"]);
+			$txt_graph_item = substitute_snmp_query_data($txt_graph_item, $graph["host_id"], $graph["snmp_query_id"], $graph["snmp_index"]);
 		/* use the data query information from the data source if possible */
 		}else{
 			$data_local = db_fetch_row("select snmp_index,snmp_query_id,host_id from data_local where id='" . $graph_item["local_data_id"] . "'");
-			return substitute_snmp_query_data($txt_graph_item, $data_local["host_id"], $data_local["snmp_query_id"], $data_local["snmp_index"]);
+			$txt_graph_item = substitute_snmp_query_data($txt_graph_item, $data_local["host_id"], $data_local["snmp_query_id"], $data_local["snmp_index"]);
 		}
-	}else{
-		return $txt_graph_item;
 	}
+
+	/* replace query variables in graph elements */
+	if (preg_match("/\|input_[a-zA-Z0-9_]+\|/", $txt_graph_item)) {
+		return substitute_data_input_data($txt_graph_item, $graph, $graph_item["local_data_id"]);
+	}
+
+	return $txt_graph_item;
 }
 
 ?>

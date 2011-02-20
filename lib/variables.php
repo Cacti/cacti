@@ -211,4 +211,47 @@ function substitute_snmp_query_data($string, $host_id, $snmp_query_id, $snmp_ind
 	return $string;
 }
 
+/* substitute_data_input_data - takes a string and substitutes all data input variables contained in it
+   @arg $string - the original string that contains the data input variables
+   @arg $local_data_id - (int) the local data id to match
+   @arg $max_chars - the maximum number of characters to substitute
+   @returns - the original string with all of the variable substitutions made */
+function substitute_data_input_data($string, $graph, $local_data_id, $max_chars = 0) {
+	if (empty($local_data_id)) {
+		$local_data_ids = array_rekey(db_fetch_assoc("SELECT DISTINCT local_data_id
+			FROM data_template_rrd
+			INNER JOIN graph_templates_item
+			ON data_template_rrd.id=graph_templates_item.task_item_id
+			WHERE local_graph_id=" . $graph["local_graph_id"]), "local_data_id", "local_data_id");
+
+		$data_template_data_id = db_fetch_cell("SELECT id FROM data_template_data WHERE local_data_id IN (" . implode(",", $local_data_ids) . ")");
+	}else{
+		$data_template_data_id = db_fetch_cell("SELECT id FROM data_template_data WHERE local_data_id=$local_data_id");
+	}
+
+	if (!empty($data_template_data_id)) {
+		$data = db_fetch_assoc("SELECT
+			dif.data_name, did.value
+			FROM data_input_fields AS dif
+			INNER JOIN data_input_data AS did
+			ON dif.id=did.data_input_field_id
+			WHERE data_template_data_id=$data_template_data_id
+			AND input_output='in'");
+
+		if (sizeof($data)) {
+			foreach ($data as $item) {
+				if ($item["value"] != "") {
+					if ($max_chars > 0) {
+						$item["value"] = substr($item["field_value"], 0, $max_chars);
+					}
+
+					$string = stri_replace("|input_" . $item["data_name"] . "|", $item["value"], $string);
+				}
+			}
+		}
+	}
+
+	return $string;
+}
+
 ?>

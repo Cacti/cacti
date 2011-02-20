@@ -53,6 +53,7 @@ Cacti CHANGELOG
 -feature#0001922: Reindex method "Index Count Changed" requires that OID_NUM_INDEXES is given for SNMP Data Queries
 -feature#0001923: Implement counting for script (server) data queries just like OID_NUM_INDEXES
 -feature#0001924: Allow for reindex method "Index Count Changed" to apply to script (server) queries as well
+-feature#0001952: Ability to use input field of a script in graph title 
 -feature: Make reindexing and repopulating the poller cache a lossless process, reduce time to index by 66%
 
 0.8.7g
