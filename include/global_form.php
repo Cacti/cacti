@@ -77,7 +77,7 @@ $fields_data_input_edit = array(
 	"type_id" => array(
 		"method" => "drop_array",
 		"friendly_name" => "Input Type",
-		"description" => "Choose what type of data input method this is.",
+		"description" => "Choose the method you wish to use to collect data for this Data Input method.",
 		"value" => "|arg1:type_id|",
 		"array" => $input_types,
 		),
@@ -668,7 +668,7 @@ $fields_host_edit = array(
 	"host_template_id" => array(
 		"method" => "drop_sql",
 		"friendly_name" => "Host Template",
-		"description" => "Choose what type of host, host template this is. The host template will govern what kinds of data should be gathered from this type of host.",
+		"description" => "Choose the Host Template to use to define the default Graph Templates and Data Queries associated with this Host.",
 		"value" => "|arg1:host_template_id|",
 		"none_value" => "None",
 		"sql" => "select id,name from host_template order by name",
@@ -969,7 +969,7 @@ $fields_data_query_edit = array(
 	"data_input_id" => array(
 		"method" => "drop_sql",
 		"friendly_name" => "Data Input Method",
-		"description" => "Choose what type of host, host template this is. The host template will govern what kinds of data should be gathered from this type of host.",
+		"description" => "Choose the input method for this Data Query.  This input method defines how data is collected for each Host associated with the Data Query.",
 		"value" => "|arg1:data_input_id|",
 		"sql" => "select id,name from data_input where (type_id=3 or type_id=4 or type_id=5 or type_id=6) order by name",
 		),
@@ -995,7 +995,7 @@ $fields_data_query_item_edit = array(
 	"graph_template_id" => array(
 		"method" => "drop_sql",
 		"friendly_name" => "Graph Template",
-		"description" => "Choose what type of host, host template this is. The host template will govern what kinds of data should be gathered from this type of host.",
+		"description" => "Choose the Graph Template to use for this Data Query Graph Template item.",
 		"value" => "|arg1:graph_template_id|",
 		"sql" => "select id,name from graph_templates order by name",
 		),

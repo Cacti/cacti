@@ -28,6 +28,7 @@ Cacti CHANGELOG
 -bug#0001882: lib/snmp.php fails if if max_oids undefined in snmp_walk function call
 -bug#0001885: ping.pl does not account for ping using icmp_req rather than icmp_seq in some versions of ping 
 -bug#0001890: Default Tree View Mode -->Single Pane setting not working
+-bug#0001893: wrong text on data query item edit page
 -bug#0001900: equal sign(=) not correctly parsed in snmp data results
 -bug#0001903: Undefined variable: mode in lib/ldap.php on line 375 
 -bug#0001912: Does not store negative values from script/command output
