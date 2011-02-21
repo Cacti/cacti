@@ -143,6 +143,8 @@ function branch_down($order_key, $table, $field, $where) {
 function move_branch($dir, $order_key, $table, $field, $where) {
 	$tier = tree_tier($order_key);
 
+	db_execute("LOCK TABLES $table");
+
 	if ($where != '') { $where = " AND $where"; }
 
 	$tree_order = $dir == 'up' ? 'ORDER BY order_key ASC' : 'ORDER BY order_key DESC';
@@ -168,6 +170,8 @@ function move_branch($dir, $order_key, $table, $field, $where) {
 
 	/* move session variables around */
 	reset_session_variables($pre_tree);
+
+	db_execute("UNLOCK TABLES");
 }
 
 function reset_session_variables($pre_tree) {
@@ -329,7 +333,9 @@ function reparent_branch($new_parent_id, $tree_item_id) {
 	$new_order_key = get_next_tree_id(db_fetch_cell("select order_key from graph_tree_items where id=$new_parent_id"), "graph_tree_items", "order_key", "graph_tree_id=$graph_tree_id");
 
 	/* yeah, this would be really bad */
-	if (empty($old_order_key)) { return 0; }
+	if (empty($old_order_key)) {
+		return 0;
+	}
 
 	$old_starting_tier = tree_tier($old_order_key);
 	$new_starting_tier = tree_tier($new_order_key);
@@ -354,17 +360,23 @@ function reparent_branch($new_parent_id, $tree_item_id) {
 function delete_branch($tree_item_id) {
 	if (empty($tree_item_id)) { return 0; }
 
+	db_execute("LOCK TABLES graph_tree_items");
+
 	$tree_item = db_fetch_row("select order_key,local_graph_id,host_id,graph_tree_id from graph_tree_items where id=$tree_item_id");
 
 	/* if this item is a graph/host, it will have NO children, so we can just delete the
 	graph and exit. */
 	if ((!empty($tree_item["local_graph_id"])) || (!empty($tree_item["host_id"]))) {
 		db_execute("delete from graph_tree_items where id=$tree_item_id");
+		db_execute("UNLOCK TABLES");
 		return 0;
 	}
 
 	/* yeah, this would be really bad */
-	if (empty($tree_item["order_key"])) { return 0; }
+	if (empty($tree_item["order_key"])) {
+		db_execute("UNLOCK TABLES");
+		return 0;
+	}
 
 	$starting_tier = tree_tier($tree_item["order_key"]);
 	$order_key = substr($tree_item["order_key"], 0, (CHARS_PER_TIER * $starting_tier));
@@ -420,6 +432,8 @@ function delete_branch($tree_item_id) {
 			$old_key_part = $new_key_part;
 		}
 	}
+
+	db_execute("UNLOCK TABLES");
 }
 
 ?>
