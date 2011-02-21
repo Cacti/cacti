@@ -59,7 +59,7 @@ function rrd_close($rrdtool_pipe) {
 	}
 }
 
-function rrdtool_execute($command_line, $log_to_stdout, $output_flag, &$rrdtool_pipe, $logopt = "WEBLOG") {
+function rrdtool_execute($command_line, $log_to_stdout, $output_flag, &$rrdtool_pipe = "", $logopt = "WEBLOG") {
 	global $config;
 
 	static $last_command;
@@ -182,7 +182,7 @@ function rrdtool_execute($command_line, $log_to_stdout, $output_flag, &$rrdtool_
 	}
 }
 
-function rrdtool_function_create($local_data_id, $show_source, &$rrdtool_pipe) {
+function rrdtool_function_create($local_data_id, $show_source, &$rrdtool_pipe = "") {
 	global $config;
 
 	include ($config["include_path"] . "/global_arrays.php");
@@ -288,7 +288,7 @@ function rrdtool_function_create($local_data_id, $show_source, &$rrdtool_pipe) {
 	}
 }
 
-function rrdtool_function_update($update_cache_array, &$rrdtool_pipe) {
+function rrdtool_function_update($update_cache_array, &$rrdtool_pipe = "") {
 	/* lets count the number of rrd files processed */
 	$rrds_processed = 0;
 
@@ -518,7 +518,7 @@ function rrdtool_function_fetch($local_data_id, $start_time, $end_time, $resolut
 	return $fetch_array;
 }
 
-function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, &$rrdtool_pipe) {
+function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, &$rrdtool_pipe = "") {
 	global $config, $consolidation_functions;
 
 	include_once($config["library_path"] . "/cdef.php");
