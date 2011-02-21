@@ -150,11 +150,11 @@ if ($rows > 0) {
 	echo "NOTE: $rows Invalid Data Input Data Rows " . ($force ? "Removed from":"Found in") . " Data Templates\n";
 }
 
-if ($total_rows > 0) {
+if ($total_rows > 0 && !$force) {
 	echo "\nWARNING: Serious Cacti Template Problems found in your Database.  Using the '--force' option will remove\n";
 	echo "the invalid records.  However, these changes can be catastrophic to existing data sources.  Therefore, you \n";
 	echo "should contact your support organization prior to proceeding with that repair.\n\n";
-}else{
+}elseif ($total_rows == 0) {
 	echo "NOTE: No Invalid Cacti Template Records found in your Database\n\n";
 }
 
