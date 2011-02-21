@@ -849,6 +849,7 @@ CREATE TABLE data_template_rrd (
   t_data_input_field_id char(2) default NULL,
   data_input_field_id mediumint(8) unsigned NOT NULL default '0',
   PRIMARY KEY  (id),
+  UNIQUE KEY `duplicate_dsname_contraint` (`local_data_id`,`data_source_name`,`data_template_id`),
   KEY local_data_id (local_data_id),
   KEY data_template_id (data_template_id),
   KEY local_data_template_rrd_id (local_data_template_rrd_id)
