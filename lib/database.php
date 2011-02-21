@@ -31,22 +31,22 @@
    @arg $db_type - the type of database server to connect to, only 'mysql' is currently supported
    @arg $retries - the number a time the server should attempt to connect before failing
    @returns - (bool) '1' for success, '0' for error */
-function db_connect_real($host, $user, $pass, $db_name, $db_type, $port = "3306", $retries = 20) {
+function db_connect_real($host, $user, $pass, $db_name, $db_type, $port = "3306", $db_ssl = false, $retries = 20) {
 	global $cnn_id;
 
 	$i = 0;
-	$cnn = NewADOConnection($db_type);
-	$class = get_class($cnn);
+	$dsn = "$db_type://$user:$pass@$host/$db_name?persist";
 
-	$hostport = $host . ":" . $port;
+	if ($db_ssl && $db_type == "mysql") {
+		$dsn .= "&clientflags=" . MYSQL_CLIENT_SSL;
+	}elseif ($db_ssl && $db_type == "mysqli") {
+		$dsn .= "&clientflags=" . MYSQLI_CLIENT_SSL;
+	}
 
 	while ($i <= $retries) {
-		if ($cnn->PConnect($hostport,$user,$pass,$db_name)) {
-			if (!is_a($cnn_id, $class)) {
-				$cnn_id = $cnn;
-			}
-
-			return($cnn);
+		$cnn_id = ADONewConnection($dsn);
+		if ($cnn_id) {
+			return($cnn_id);
 		}
 
 		$i++;
