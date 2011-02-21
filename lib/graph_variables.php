@@ -465,9 +465,9 @@ function variable_bandwidth_summation(&$regexp_match_array, &$graph_item, &$grap
 	}elseif ($regexp_match_array[2] == "total") {
 		for ($t=0;($t<count($graph_items));$t++) {
 			if ((preg_match("/(AREA|STACK|LINE[123])/", $graph_item_types{$graph_items[$t]["graph_type_id"]})) && (!empty($graph_items[$t]["data_template_rrd_id"]))) {
-				$local_summation = $summation_cache{$graph_items[$t]["local_data_id"]}{$graph_items[$t]["data_source_name"]};
-
-				$summation += $local_summation;
+				if (isset($summation_cache{$graph_items[$t]["local_data_id"]}{$graph_items[$t]["data_source_name"]})) {
+					$summation += $summation_cache{$graph_items[$t]["local_data_id"]}{$graph_items[$t]["data_source_name"]};
+				}
 			}
 		}
 	}
