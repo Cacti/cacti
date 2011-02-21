@@ -70,7 +70,31 @@ $messages = array(
 		"type" => "error"),
 	22 => array(
 		"message" => 'User delete not permitted for designated graph export user.',
-		"type" => "error")
+		"type" => "error"),
+	23 => array(
+		"message" => 'Data Template Includes Deleted Round Robin Archive.  Please run Database Repair Script to Identify and/or Correct.',
+		"type" => "error"),
+	24 => array(
+		"message" => 'Graph Template Includes Deleted GPrint Prefix.  Please run Database Repair Script to Identify and/or Correct.',
+		"type" => "error"),
+	25 => array(
+		"message" => 'Graph Template Includes Deleted CDEFs.  Please run Database Repair Script to Identify and/or Correct.',
+		"type" => "error"),
+	26 => array(
+		"message" => 'Graph Template Includes Deleted Data Input Method.  Please run Database Repair Script to Identify.',
+		"type" => "error"),
+	27 => array(
+		"message" => 'Data Template Not Found during Export.  Please run Database Repair Script to Identify.',
+		"type" => "error"),
+	28 => array(
+		"message" => 'Host Template Not Found during Export.  Please run Database Repair Script to Identify.',
+		"type" => "error"),
+	29 => array(
+		"message" => 'Data Query Not Found during Export.  Please run Database Repair Script to Identify.',
+		"type" => "error"),
+	30 => array(
+		"message" => 'Graph Template Not Found during Export.  Please run Database Repair Script to Identify.',
+		"type" => "error"),
 	);
 
 $cdef_operators = array(1 =>

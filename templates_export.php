@@ -47,13 +47,14 @@ switch ($_REQUEST["action"]) {
    -------------------------- */
 
 function form_save() {
-	global $export_types;
+	global $export_types, $export_errors;
 
     /* ================= input validation ================= */
     input_validate_input_number(get_request_var_post("export_item_id"));
     /* ==================================================== */
 
 	if (isset($_POST["save_component_export"])) {
+		$export_errors = 0;
 		$xml_data = get_item_xml($_POST["export_type"], $_POST["export_item_id"], (((isset($_POST["include_deps"]) ? $_POST["include_deps"] : "") == "") ? false : true));
 
 		if ($_POST["output_format"] == "1") {
@@ -62,11 +63,16 @@ function form_save() {
 			include_once("./include/bottom_footer.php");
 		}elseif ($_POST["output_format"] == "2") {
 			header("Content-type: application/xml");
+			if ($export_errors) echo "WARNING: Export Errors Encountered.  Refresh Browser Window for Details!\n";
 			print $xml_data;
 		}elseif ($_POST["output_format"] == "3") {
-			header("Content-type: application/xml");
-			header("Content-Disposition: attachment; filename=cacti_" . $_POST["export_type"] . "_" . strtolower(clean_up_file_name(db_fetch_cell(str_replace("|id|", $_POST["export_item_id"], $export_types{$_POST["export_type"]}["title_sql"])))) . ".xml");
-			print $xml_data;
+			if ($export_errors) {
+				header("Location: templates_export.php");
+			}else{
+				header("Content-type: application/xml");
+				header("Content-Disposition: attachment; filename=cacti_" . $_POST["export_type"] . "_" . strtolower(clean_up_file_name(db_fetch_cell(str_replace("|id|", $_POST["export_item_id"], $export_types{$_POST["export_type"]}["title_sql"])))) . ".xml");
+				print $xml_data;
+			}
 		}
 	}
 }
