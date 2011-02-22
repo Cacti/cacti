@@ -96,10 +96,10 @@ $config["php_snmp_support"] = function_exists("snmpget");
 
 /* used for includes */
 if ($config["cacti_server_os"] == "win32") {
-	$config["base_path"] = str_replace("\\", "/", substr(dirname(__FILE__),0,-8));
-	$config["base_path"] = str_replace("\\", "/lib", substr(dirname(__FILE__),0,-8));
+	$config["base_path"]    = str_replace("\\", "/", substr(dirname(__FILE__),0,-8));
+	$config["library_path"] = $config["base_path"] . "/lib";
 }else{
-	$config["base_path"] = preg_replace("/(.*)[\/]include/", "\\1", dirname(__FILE__));
+	$config["base_path"]    = preg_replace("/(.*)[\/]include/", "\\1", dirname(__FILE__));
 	$config["library_path"] = preg_replace("/(.*[\/])include/", "\\1lib", dirname(__FILE__));
 }
 $config["include_path"] = dirname(__FILE__);
