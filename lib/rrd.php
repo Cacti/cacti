@@ -59,7 +59,7 @@ function rrd_close($rrdtool_pipe) {
 	}
 }
 
-function rrdtool_execute($command_line, $log_to_stdout, $output_flag, &$rrdtool_pipe = "", $logopt = "WEBLOG") {
+function rrdtool_execute($command_line, $log_to_stdout, $output_flag, $rrdtool_pipe = "", $logopt = "WEBLOG") {
 	global $config;
 
 	static $last_command;
@@ -101,9 +101,8 @@ function rrdtool_execute($command_line, $log_to_stdout, $output_flag, &$rrdtool_
 		}
 	}else{
 		$i = 0;
-
 		while (1) {
-			if (fwrite($rrdtool_pipe, escape_command(" $command_line") . "\r\n") == false) {
+			if (fwrite($rrdtool_pipe, escape_command(" $command_line") . "\r\n") === false) {
 				cacti_log("ERROR: Detected RRDtool Crash on '$command_line'.  Last command was '$last_command'");
 
 				/* close the invalid pipe */
@@ -134,7 +133,7 @@ function rrdtool_execute($command_line, $log_to_stdout, $output_flag, &$rrdtool_
 
 	switch ($output_flag) {
 		case RRDTOOL_OUTPUT_NULL:
-			return; break;
+			return;
 		case RRDTOOL_OUTPUT_STDOUT:
 			if (isset($fp) && is_resource($fp)) {
 				$line = "";
@@ -182,7 +181,7 @@ function rrdtool_execute($command_line, $log_to_stdout, $output_flag, &$rrdtool_
 	}
 }
 
-function rrdtool_function_create($local_data_id, $show_source, &$rrdtool_pipe = "") {
+function rrdtool_function_create($local_data_id, $show_source, $rrdtool_pipe = "") {
 	global $config;
 
 	include ($config["include_path"] . "/global_arrays.php");
@@ -284,11 +283,11 @@ function rrdtool_function_create($local_data_id, $show_source, &$rrdtool_pipe = 
 	if ($show_source == true) {
 		return read_config_option("path_rrdtool") . " create" . RRD_NL . "$data_source_path$create_ds$create_rra";
 	}else{
-		@rrdtool_execute("create $data_source_path $create_ds$create_rra", true, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, "POLLER");
+		rrdtool_execute("create $data_source_path $create_ds$create_rra", true, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, "POLLER");
 	}
 }
 
-function rrdtool_function_update($update_cache_array, &$rrdtool_pipe = "") {
+function rrdtool_function_update($update_cache_array, $rrdtool_pipe = "") {
 	/* lets count the number of rrd files processed */
 	$rrds_processed = 0;
 
@@ -297,7 +296,7 @@ function rrdtool_function_update($update_cache_array, &$rrdtool_pipe = "") {
 
 		/* create the rrd if one does not already exist */
 		if (!file_exists($rrd_path)) {
-			@rrdtool_function_create($rrd_fields["local_data_id"], false, $rrdtool_pipe);
+			rrdtool_function_create($rrd_fields["local_data_id"], false, $rrdtool_pipe);
 
 			$create_rrd_file = true;
 		}
@@ -336,7 +335,7 @@ function rrdtool_function_update($update_cache_array, &$rrdtool_pipe = "") {
 					$i++;
 				}
 
-				@rrdtool_execute("update $rrd_path --template $rrd_update_template $rrd_update_values", true, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, "POLLER");
+				rrdtool_execute("update $rrd_path --template $rrd_update_template $rrd_update_values", true, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, "POLLER");
 				$rrds_processed++;
 			}
 		}
@@ -425,7 +424,7 @@ function rrdtool_function_fetch($local_data_id, $start_time, $end_time, $resolut
 	if ($resolution > 0) {
 		$cmd_line .= " -r $resolution";
 	}
-	$output = @rrdtool_execute($cmd_line, false, RRDTOOL_OUTPUT_STDOUT);
+	$output = rrdtool_execute($cmd_line, false, RRDTOOL_OUTPUT_STDOUT);
 
 	/* grab the first line of the output which contains a list of data sources
 	in this .rrd file */
@@ -518,7 +517,7 @@ function rrdtool_function_fetch($local_data_id, $start_time, $end_time, $resolut
 	return $fetch_array;
 }
 
-function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, &$rrdtool_pipe = "") {
+function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rrdtool_pipe = "") {
 	global $config, $consolidation_functions;
 
 	include_once($config["library_path"] . "/cdef.php");
@@ -1383,7 +1382,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, &$r
 		print "<PRE>" . htmlspecialchars(read_config_option("path_rrdtool") . " graph " . $graph_opts . $graph_defs . $txt_graph_items) . "</PRE>";
 	}else{
 		if (isset($graph_data_array["export"])) {
-			@rrdtool_execute("graph $graph_opts$graph_defs$txt_graph_items", false, RRDTOOL_OUTPUT_NULL, $rrdtool_pipe);
+			rrdtool_execute("graph $graph_opts$graph_defs$txt_graph_items", false, RRDTOOL_OUTPUT_NULL, $rrdtool_pipe);
 			return 0;
 		}else{
 			if (isset($graph_data_array["output_flag"])) {
@@ -1392,7 +1391,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, &$r
 				$output_flag = RRDTOOL_OUTPUT_GRAPH_DATA;
 			}
 
-			return @rrdtool_execute("graph $graph_opts$graph_defs$txt_graph_items", false, $output_flag, $rrdtool_pipe);
+			return rrdtool_execute("graph $graph_opts$graph_defs$txt_graph_items", false, $output_flag, $rrdtool_pipe);
 		}
 	}
 }
@@ -1953,7 +1952,7 @@ function rrdtool_function_xport($local_graph_id, $rra_id, $xport_data_array, &$x
 
 	$output_flag = RRDTOOL_OUTPUT_STDOUT;
 
-	$xport_array = rrdxport2array(@rrdtool_execute("xport $xport_opts$xport_defs$txt_xport_items", false, $output_flag));
+	$xport_array = rrdxport2array(rrdtool_execute("xport $xport_opts$xport_defs$txt_xport_items", false, $output_flag));
 
 	/* add host and graph information */
 	$xport_array["meta"]["stacked_columns"]= $stacked_columns;
