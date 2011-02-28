@@ -1,67 +1,61 @@
 Cacti CHANGELOG
 
 0.8.7h
--bug#0000401: Check for duplicate Data Source Item Names in Data Templates
--bug#0001403: 'reapply suggested names' doesn't work correctly for graphs and data sources
--bug#0001504: no newline fix
--bug#0001568: Cacti currently gives a lot of warnings of deprecated functions on PHP 5.3
+-bug#0000401: Do not allow duplicate Data Source Item Names in Data Templates
+-bug#0001403: Reapply Suggested Names does not work correctly for graphs and data sources not associated with Data Queries
+-bug#0001568: Cacti generates lot of warnings of deprecated functions on PHP 5.3
 -bug#0001584: Nodes on graph tree are in the wrong places, column order_key has strange values
--bug#0001626: Cacti does not pass currency symbols ($) used in labels/gprint strings to rrdtool during graph generation.
--bug#0001632: script server treats quoted arguments with spaces as multiple separate arguments
--bug#0001646: [patch] MySQL SSL connection support
--bug#0001660: Modifying data template values is not working as expected.
+-bug#0001626: Symbol ($) does not appear in labels/gprint strings to rrdtool during graph generation
+-bug#0001632: Script server treats quoted arguments with spaces incorrectly as multiple separate arguments
+-bug#0001646: MySQL SSL connection support
+-bug#0001660: Modifying data template values does not work as expected
 -bug#0001678: Adding graphs to a device fails to add entries to poller_item if using the script server 
--bug#0001768: perform consistency check on ds maximum vs. ds minimum
--bug#0001783: Graph Export: The ExportDate is wrong -> we will print current time and number of graphs, then
--bug#0001812: copying a data template ignores item templating
--bug#0001814: CLI - Add Device Script problem when SNMP Default is Disabled 
--bug#0001815: 1-minute with 5-minute crontab broken
--bug#0001816: Cannot export graph data to CSV with IE 8 (8.0.7600.16385) 
+-bug#0001768: Perform consistency check on ds maximum vs. ds minimum
+-bug#0001783: Graph Export export date is incorrect
+-bug#0001812: Data template copying ignores some item templating
+-bug#0001814: Command line device add script fails when SNMP default is disabled
+-bug#0001815: One minute polling not working correctly
+-bug#0001816: Cannot export graph data to CSV with IE 8
 -bug#0001819: MySQL "TYPE=" command deprecated since MySQL 4.1 removed in MySQL 5.4.4 
--bug#0001826: zoomed graph views should not have auto refresh since they do not change
--bug#0001828: reapply suggested values gramatical errors
--bug#0001835: invalid number of form tags on graphs.php?action=graph_edit
--bug#0001847: graph export is broken 
--bug#0001851: graph selector in graphs_new.php is broken when there is a data query without graphs 
--bug#0001855: Improper formatting of Data Queries Can Result in SQL Errors
--bug#0001862: ping graphs do not work with new version of iputils. 
--bug#0001867: rrdtool_funcion_fetch() wrong regex with some locales
--bug#0001876: strip_quotes from function.php altering hex values
--bug#0001880: When Performing Form Validation Error Message Areas Not Highlighted Upon Form Save
--bug#0001882: lib/snmp.php fails if if max_oids undefined in snmp_walk function call
--bug#0001885: ping.pl does not account for ping using icmp_req rather than icmp_seq in some versions of ping 
--bug#0001890: Default Tree View Mode -->Single Pane setting not working
--bug#0001893: wrong text on data query item edit page
--bug#0001900: equal sign(=) not correctly parsed in snmp data results
+-bug#0001826: Zoomed graph views should auto refresh
+-bug#0001828: Reapply Suggested Name prompt as spelling problems
+-bug#0001835: Graph edit page has more than one html form tag
+-bug#0001847: Graph export API function has required argument not defined
+-bug#0001851: Graph creation selector does not work with data query that has no associated graph templates
+-bug#0001855: Improper formatting of data queries can result in SQL errors
+-bug#0001862: Ping script does not process output of update ping utility
+-bug#0001867: RRDtool Cacti fetch function does not work for some locales
+-bug#0001876: PHP function strip_quotes causes HEX values to be truncated
+-bug#0001880: Form validation error message does not highlight text area control
+-bug#0001882: Cacti snmp_walk function fails if max_oids is an empty value
+-bug#0001890: Default tree view mode set to single pane mode not working
+-bug#0001893: Data input method description text does not make sense
+-bug#0001900: Equal sign not correctly parsed in snmp data results
 -bug#0001903: Undefined variable: mode in lib/ldap.php on line 375 
--bug#0001912: Does not store negative values from script/command output
--bug#0001918: Script server doesn't accept more than 1 blank space before the function name 
+-bug#0001918: Script server does not accept more than one blank space before the function name
 -bug#0001926: Importing templates "using defaults for this installation" associates all rra's defined
 -bug#0001928: graph_image.php does not check local_graph_id
 -bug#0001929: Error when exporting templates are not properly reported
--bug#0001934: Poller sig_handler Bug
--bug#0001936: Removing Data Sources is Inneficient 
--bug#0001937: The Cacti Technical Support Page Uses Check Table Which Blocks
--bug#0001938: Excessive processing poller_output before truncating it on poller start
--bug#0001939: Do not query for items_perhost if concurrent_processes == 1
--bug#0001941: Queries are run twice
--bug#0001956: Attempts to Update Existing Tree Items Fails
--bug: accept "Connection refused" on TCP ping tests
--bug: add missing row selection to graph preview
--bug: script server throws "undefined variable" error when in debug mode
--bug: Removing graphs was not taking advantage of bulk deletes causing major slowdowns
--bug: Add some command escaping
--bug: Change default font sizes
--bug: fixing issues with multiple "U" results for data input methods with multiple output parms
--bug: be smart for SNMP V3 and use AuthNoPriv when privacy passphrase is empty
--bug: when using template and search filter on graph management, sql error occurs
--feature#0001519: spine enhancement for parallel collection of data at device level
+-bug#0001934: Poller does not process SIGTERM signal correctly
+-bug#0001936: Removing multiple data sources is inefficient
+-bug#0001937: Technical support page uses check table which waits for table lock
+-bug#0001939: Do not query for number or items per host if concurrent polling processes is set to one
+-bug#0001956: Attempts to update existing tree item fail
+-bug: Accept "Connection refused" on TCP ping tests
+-bug: Add missing row selection javascript to graph preview
+-bug: Script server throws "undefined variable" error when in debug mode
+-bug: Removing graphs does not take advantage of bulk deletes
+-bug: Fixed issue with multiple "U" results for a data input method with multiple output parameters
+-bug: SNMP v3 use AuthNoPriv when privacy passphrase is empty
+-bug: Fixed sql errors when using template and search filter on graph management
+-feature#0001519: Spine enhancement for parallel collection of data at device level
 -feature#0001667: Get values of |host_*| variables in graph elements from data source
 -feature#0001922: Reindex method "Index Count Changed" requires that OID_NUM_INDEXES is given for SNMP Data Queries
 -feature#0001923: Implement counting for script (server) data queries just like OID_NUM_INDEXES
 -feature#0001924: Allow for reindex method "Index Count Changed" to apply to script (server) queries as well
 -feature#0001952: Ability to use input field of a script in graph title 
--feature: Make reindexing and repopulating the poller cache a lossless process, reduce time to index by 66%
+-feature: Make reindexing and repopulating the poller cache a lossless process
+-feature: Change default font sizes
 
 0.8.7g
 -bug: RRDTool 1.4.x not recognized during installation
