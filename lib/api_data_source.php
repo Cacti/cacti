@@ -71,7 +71,7 @@ function api_data_source_remove_multi($local_data_ids) {
 
 						$j++;
 
-						if ($j % 1000) {
+						if (($j % 1000) == 0) {
 							db_execute("DELETE FROM data_template_data_rra WHERE data_template_data_id IN ($dtd_ids_to_delete)");
 							db_execute("DELETE FROM data_input_data WHERE data_template_data_id IN ($dtd_ids_to_delete)");
 
