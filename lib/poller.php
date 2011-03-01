@@ -203,11 +203,11 @@ function update_reindex_cache($host_id, $data_query_id) {
 			 * the script parameters are usually enclosed in single tics: '
 			 * so we have to enclose the whole list of parameters in double tics: "
 			 * */
-			 
+
 			/* the assert_value counts the number of distinct indexes currently available in host_snmp_cache
 			 * we do NOT make use of <oid_num_indexes> or the like!
 			 * this works, even if no <oid_num_indexes> was given
-			 */ 
+			 */
 			$assert_value = sizeof(db_fetch_assoc("select snmp_index from host_snmp_cache where host_id=$host_id and snmp_query_id=$data_query_id group by snmp_index"));
 
 			/* now, we have to build the (list of) commands that are later used on a recache event
@@ -226,7 +226,7 @@ function update_reindex_cache($host_id, $data_query_id) {
 					if (isset($data_query_xml["arg_num_indexes"])) { /* we have a specific request for counting indexes */
 						$recache_stack[] = "($host_id, $data_query_id," . POLLER_ACTION_SCRIPT . ", '=', '$assert_value', '" . get_script_query_path((isset($data_query_xml["arg_prepend"]) ? $data_query_xml["arg_prepend"] . " ": "") . $data_query_xml["arg_num_indexes"], $data_query_xml["script_path"], $host_id) . "', '1')";
 					} else { /* count all indexes found */
-						$recache_stack[] = "($host_id, $data_query_id," . POLLER_ACTION_SCRIPT_COUNT . ", '=', '$assert_value', '" . get_script_query_path((isset($data_query_xml["arg_prepend"]) ? $data_query_xml["arg_prepend"] . " ": "") . $data_query_xml["arg_num_indexes"], $data_query_xml["script_path"], $host_id) . "', '1')";
+						$recache_stack[] = "($host_id, $data_query_id," . POLLER_ACTION_SCRIPT_COUNT . ", '=', '$assert_value', '" . get_script_query_path((isset($data_query_xml["arg_prepend"]) ? $data_query_xml["arg_prepend"] . " ": "") . $data_query_xml["arg_index"], $data_query_xml["script_path"], $host_id) . "', '1')";
 					}
 					break;
 				case DATA_INPUT_TYPE_QUERY_SCRIPT_SERVER:
@@ -234,7 +234,7 @@ function update_reindex_cache($host_id, $data_query_id) {
 						$recache_stack[] = "($host_id, $data_query_id," . POLLER_ACTION_SCRIPT_PHP . ", '=', '$assert_value', '" . get_script_query_path($data_query_xml["script_function"] . " " . (isset($data_query_xml["arg_prepend"]) ? $data_query_xml["arg_prepend"] . " ": "") . $data_query_xml["arg_num_indexes"], $data_query_xml["script_path"], $host_id) . "', '1')";
 					} else { /* count all indexes found */
 						# TODO: push the correct assert value
-						#$recache_stack[] = "($host_id, $data_query_id," . POLLER_ACTION_SCRIPT_PHP_COUNT . ", '=', '$assert_value', '" . get_script_query_path($data_query_xml["script_function"] . " " . (isset($data_query_xml["arg_prepend"]) ? $data_query_xml["arg_prepend"] . " ": "") . $data_query_xml["arg_num_indexes"], $data_query_xml["script_path"], $host_id) . "', '1')";
+						#$recache_stack[] = "($host_id, $data_query_id," . POLLER_ACTION_SCRIPT_PHP_COUNT . ", '=', '$assert_value', '" . get_script_query_path($data_query_xml["script_function"] . " " . (isset($data_query_xml["arg_prepend"]) ? $data_query_xml["arg_prepend"] . " ": "") . $data_query_xml["arg_index"], $data_query_xml["script_path"], $host_id) . "', '1')";
 						# omit the assert value until we are able to run an 'index' command through script server
 					}
 					break;
