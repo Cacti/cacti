@@ -48,6 +48,7 @@ Cacti CHANGELOG
 -bug: Fixed issue with multiple "U" results for a data input method with multiple output parameters
 -bug: SNMP v3 use AuthNoPriv when privacy passphrase is empty
 -bug: Fixed sql errors when using template and search filter on graph management
+-bug: Delete Data Source multi fails to perform bulk deletes on Data Source items
 -feature#0001519: Spine enhancement for parallel collection of data at device level
 -feature#0001667: Get values of |host_*| variables in graph elements from data source
 -feature#0001922: Reindex method "Index Count Changed" requires that OID_NUM_INDEXES is given for SNMP Data Queries
