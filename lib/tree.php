@@ -143,7 +143,7 @@ function branch_down($order_key, $table, $field, $where) {
 function move_branch($dir, $order_key, $table, $field, $where) {
 	$tier = tree_tier($order_key);
 
-	db_execute("LOCK TABLES $table");
+	db_execute("LOCK TABLES $table WRITE, graph_tree READ, graph_templates_graph READ, host READ");
 
 	if ($where != '') { $where = " AND $where"; }
 
@@ -360,7 +360,7 @@ function reparent_branch($new_parent_id, $tree_item_id) {
 function delete_branch($tree_item_id) {
 	if (empty($tree_item_id)) { return 0; }
 
-	db_execute("LOCK TABLES graph_tree_items");
+	db_execute("LOCK TABLES $table WRITE, graph_tree READ, graph_templates_graph READ, host READ");
 
 	$tree_item = db_fetch_row("select order_key,local_graph_id,host_id,graph_tree_id from graph_tree_items where id=$tree_item_id");
 
