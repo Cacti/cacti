@@ -311,9 +311,9 @@ function form_filepath_box($form_name, $form_previous_value, $form_default_value
 		}
 	}
 
-	if (is_file($form_previous_value)) {
+	if (is_file(trim($form_previous_value))) {
 		$extra_data = "<span style='color:green'><br>[OK: FILE FOUND]</span>";
-	}else if (is_dir($form_previous_value)) {
+	}else if (is_dir(trim($form_previous_value))) {
 		$extra_data = "<span style='color:red'><br>[ERROR: IS DIR]</span>";
 	}else if (strlen($form_previous_value) == 0) {
 		$extra_data = "";
