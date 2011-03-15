@@ -360,7 +360,7 @@ function reparent_branch($new_parent_id, $tree_item_id) {
 function delete_branch($tree_item_id) {
 	if (empty($tree_item_id)) { return 0; }
 
-	db_execute("LOCK TABLES $table WRITE, graph_tree READ, graph_templates_graph READ, host READ");
+	db_execute("LOCK TABLES graph_tree_items WRITE, graph_tree READ, graph_templates_graph READ, host READ");
 
 	$tree_item = db_fetch_row("select order_key,local_graph_id,host_id,graph_tree_id from graph_tree_items where id=$tree_item_id");
 
