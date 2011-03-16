@@ -60,7 +60,7 @@ if (isset($_REQUEST["action"]) && $_REQUEST["action"] == "zoom") {
 	<?php
 	if (isset($_SESSION["custom"]) && $_SESSION["custom"] == true) {
 		print "<meta http-equiv=refresh content='99999'>\r\n";
-	}else if (isset($_SESSION["action"]) && $_SESSION["action"] == 'zoom') {
+	}else if (isset($_REQUEST["action"]) && $_REQUEST["action"] == 'zoom') {
 		print "<meta http-equiv=refresh content='99999'>\r\n";
 	}else{
 		print "<meta http-equiv=refresh content='" . htmlspecialchars(read_graph_config_option("page_refresh"),ENT_QUOTES) . "'>\r\n";
