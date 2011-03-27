@@ -54,7 +54,7 @@ case 'changepassword':
 		if (sizeof(db_fetch_assoc("select user_auth_realm.realm_id from user_auth_realm where user_auth_realm.user_id = '" . $_SESSION["sess_user_id"] . "' and user_auth_realm.realm_id = '" . $realm_id . "'")) > 0) {
 			switch ($user["login_opts"]) {
 				case '1': /* referer */
-					header("Location: " . $_POST["ref"]); break;
+					header("Location: " . sanitize_search_string($_POST["ref"])); break;
 				case '2': /* default console page */
 					header("Location: index.php"); break;
 				case '3': /* default graph page */
@@ -125,7 +125,7 @@ case 'changepassword':
 </table>
 
 <input type="hidden" name="action" value="changepassword">
-<input type="hidden" name="ref" value="<?php print $_REQUEST["ref"];?>">
+<input type="hidden" name="ref" value="<?php print sanitize_search_string($_REQUEST["ref"]);?>">
 
 </form>
 

@@ -42,6 +42,7 @@ Cacti CHANGELOG
 -bug#0001939: Do not query for number or items per host if concurrent polling processes is set to one
 -bug#0001954: Usage of PHP_SELF without basename in html.php (at least partly fixed)
 -bug#0001956: Attempts to update existing tree item fail
+-bug#0001967: Reflected XSS on Cacti 0.8.7g
 -bug: Accept "Connection refused" on TCP ping tests
 -bug: Add missing row selection javascript to graph preview
 -bug: Script server throws "undefined variable" error when in debug mode
