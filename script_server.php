@@ -229,7 +229,7 @@ while (1) {
 
 				$ctr++;
 			} else {
-				cacti_log("WARNING: Function does not exist '$function'", false, "PHPSVR");
+				cacti_log("WARNING: Function does not exist  INC: '". basename($include_file) . "' FUNC: '" .$function . "' PARMS: '" . $parameters . "'", false, "PHPSVR");
 				fputs(STDOUT, "U\n");
 			}
 		}
