@@ -139,6 +139,7 @@ while (1) {
 	$result = "";
 
 	$input_string    = fgets(STDIN, 1024);
+	$function        = '';
 	$parameters      = "";
 	$parameter_array = array();
 
