@@ -36,6 +36,7 @@ Cacti CHANGELOG
 -bug#0001926: Importing templates "using defaults for this installation" associates all rra's defined
 -bug#0001928: graph_image.php does not check local_graph_id
 -bug#0001929: Error when exporting templates are not properly reported
+-bug#0001930: No error reporting for wrong RRA
 -bug#0001934: Poller does not process SIGTERM signal correctly
 -bug#0001936: Removing multiple data sources is inefficient
 -bug#0001937: Technical support page uses check table which waits for table lock

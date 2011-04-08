@@ -593,6 +593,14 @@ function form_text_area($form_name, $form_previous_value, $form_rows, $form_colu
      $array[0][$column_id] = key
    @arg $column_id - the name of the key used to reference the keys above */
 function form_multi_dropdown($form_name, $array_display, $sql_previous_values, $column_id, $class = "", $on_change = "") {
+
+	if (isset($_SESSION["sess_error_fields"])) {
+		if (!empty($_SESSION["sess_error_fields"][$form_name])) {
+			$class .= (strlen($class) ? " ":"") . "txtErrorTextBox";
+			unset($_SESSION["sess_error_fields"][$form_name]);
+		}
+	}
+
 	if (strlen($class)) {
 		$class = " class='$class' ";
 	}
@@ -601,7 +609,7 @@ function form_multi_dropdown($form_name, $array_display, $sql_previous_values, $
 		$on_change = " onChange='$on_change' ";
 	}
 
-	print "<select id='$form_name' name='$form_name" . "[]'" . $class . $class . " multiple>\n";
+	print "<select id='$form_name' name='$form_name" . "[]'" . $class . " multiple>\n";
 
 	foreach (array_keys($array_display) as $id) {
 		print "<option value='" . $id . "'";

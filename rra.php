@@ -62,6 +62,7 @@ function form_save() {
 		$save["id"] = $_POST["id"];
 		$save["hash"] = get_hash_round_robin_archive($_POST["id"]);
 		$save["name"] = form_input_validate($_POST["name"], "name", "", false, 3);
+		$dummy = form_input_validate(count($_POST["consolidation_function_id"]), "consolidation_function_id", "^[0-9]*$", false, 3);
 		$save["x_files_factor"] = form_input_validate($_POST["x_files_factor"], "x_files_factor", "^[01]?(\.[0-9]+)?$", false, 3);
 		$save["steps"] = form_input_validate($_POST["steps"], "steps", "^[0-9]*$", false, 3);
 		$save["rows"] = form_input_validate($_POST["rows"], "rows", "^[0-9]*$", false, 3);
@@ -84,6 +85,8 @@ function form_save() {
 						db_execute("insert into rra_cf (rra_id,consolidation_function_id)
 							values ($rra_id," . $_POST["consolidation_function_id"][$i] . ")");
 					}
+				}else{
+					raise_message(2);
 				}
 			}else{
 				raise_message(2);
