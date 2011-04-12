@@ -391,6 +391,7 @@ function template_edit() {
 	draw_edit_form(
 		array(
 			"config" => array(
+				"no_form_tag" => true
 				),
 			"fields" => $form_array
 			)
