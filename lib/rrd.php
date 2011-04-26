@@ -398,26 +398,31 @@ $rrd_fetch_cache = array();
    @returns - (array) an array containing all data in this data source broken down
      by each data source item. the maximum of all data source items is included in
      an item called 'ninety_fifth_percentile_maximum' */
-function rrdtool_function_fetch($local_data_id, $start_time, $end_time, $resolution = 0, $show_unknown = 0) {
+function rrdtool_function_fetch($local_data_id, $start_time, $end_time, $resolution = 0, $show_unknown = false, $rrdtool_file = null) {
 	global $rrd_fetch_cache;
 
-	if (empty($local_data_id)) {
-		$var = array();
-		return $var;
+	/* validate local data id */
+	if (empty($local_data_id) && is_null($rrdtool_file)) {
+		return array();
 	}
 
 	/* the cache hash is used to identify unique items in the cache */
-	$current_hash_cache = md5($local_data_id . $start_time . $end_time . $resolution . $show_unknown);
+	$current_hash_cache = md5($local_data_id . $start_time . $end_time . $resolution . $show_unknown . $rrdtool_file);
 
 	/* return the cached entry if available */
 	if (isset($rrd_fetch_cache[$current_hash_cache])) {
 		return $rrd_fetch_cache[$current_hash_cache];
 	}
 
-	$regexps = array();
+	/* initialize fetch array */
 	$fetch_array = array();
 
-	$data_source_path = get_data_source_path($local_data_id, true);
+	/* check if we have been passed a file instead of lodal data source to look up */
+	if (is_null($rrdtool_file)) {
+		$data_source_path = get_data_source_path($local_data_id, true);
+	}else{
+		$data_source_path = $rrdtool_file;
+	}
 
 	/* build and run the rrdtool fetch command with all of our data */
 	$cmd_line = "fetch $data_source_path AVERAGE -s $start_time -e $end_time";
@@ -426,82 +431,69 @@ function rrdtool_function_fetch($local_data_id, $start_time, $end_time, $resolut
 	}
 	$output = rrdtool_execute($cmd_line, false, RRDTOOL_OUTPUT_STDOUT);
 
-	/* grab the first line of the output which contains a list of data sources
-	in this .rrd file */
-	$line_one = substr($output, 0, strpos($output, "\n"));
+	/* grab the first line of the output which contains a list of data sources in this rrd output */
+	$line_one_eol = strpos($output, "\n");
+	$line_one = substr($output, 0, $line_one_eol);
+	$output = substr($output, $line_one_eol);
 
-	/* loop through each data source in this .rrd file ... */
-	if (preg_match_all("/\S+/", $line_one, $data_source_names)) {
-		/* version 1.0.49 changed the output slightly */
-		if (preg_match("/^timestamp/", $line_one)) {
+	/* split the output into an array */
+	$output = preg_split('/[\r\n]{1,2}/', $output, null, PREG_SPLIT_NO_EMPTY);
+
+	/* find the data sources in the rrdtool output */
+	if (preg_match_all('/\S+/', $line_one, $data_source_names)) {
+		/* version 1.0.49 changed the output slightly, remove the timestamp label if present */
+		if (preg_match('/^timestamp/', $line_one)) {
 			array_shift($data_source_names[0]);
 		}
-
 		$fetch_array["data_source_names"] = $data_source_names[0];
 
-		/* build a unique regexp to match each data source individually when
-		passed to preg_match_all() */
-		for ($i=0;$i<count($fetch_array["data_source_names"]);$i++) {
-			$regexps[$i] = '/[0-9]+:\s+';
+		/* build a regular expression to match each data source value in the rrdtool output line */
+		$regex = '/[0-9]+:\s+';
+		for ($i=0; $i < count($fetch_array["data_source_names"]); $i++) {
+			$regex .= '([\-]?[0-9]{1}[.,][0-9]+e[\+-][0-9]{2,3}|-?[Nn][Aa][Nn])';
 
-			for ($j=0;$j<count($fetch_array["data_source_names"]);$j++) {
-				/* it seems that at least some versions of the Windows RRDTool binary pads
-				the exponent to 3 digits, rather than 2 on every Unix version that I have
-				ever seen */
-				if ($j == $i) {
-					if ($show_unknown == 1) {
-						$regexps[$i] .= '([\-]?[0-9]{1}[.,][0-9]+)e([\+-][0-9]{2,3})|(nan)|(NaN)';
-					} else {
-						$regexps[$i] .= '([\-]?[0-9]{1}[.,][0-9]+)e([\+-][0-9]{2,3})';
+			if ($i < count($fetch_array["data_source_names"]) - 1) {
+				$regex .= '\s+';
+			}
+		}
+		$regex .= '/';
+	}
+
+	/* loop through each line of the output */
+	$fetch_array["values"] = array();
+	for ($j = 0; $j < count($output); $j++) {
+		$matches = array();
+		$max_array = array();
+		/* match the output line */
+		if (preg_match($regex, $output[$j], $matches)) {
+			/* only process the output line if we have the correct number of matches */
+			if (count($matches) - 1 == count($fetch_array["data_source_names"])) {
+				/* get all values from the line and set them to the appropriate data source */
+				for ($i=1; $i <= count($fetch_array["data_source_names"]); $i++) {
+					if (! isset($fetch_array["values"][$i - 1])) {
+						$fetch_array["values"][$i - 1] = array();
 					}
-				}else{
-					$regexps[$i] .= '[\-]?[0-9]{1}[.,][0-9]+e[\+-][0-9]{2,3}';
+					if ((strtolower($matches[$i]) == "nan") || (strtolower($matches[$i]) == "-nan")) {
+						if ($show_unknown) {
+							$fetch_array["values"][$i - 1][$j] = "U";
+						}
+					} else {
+						list($mantisa, $exponent) = explode('e', $matches[$i]);
+						$value = ($mantisa * (pow(10, (float)$exponent)));
+						$fetch_array["values"][$i - 1][$j] = ($value * 1);
+						$max_array[$i - 1] = $value;
+					}
 				}
-
-				if ($j < count($fetch_array["data_source_names"])) {
-					$regexps[$i] .= '\s+';
-				}
-			}
-
-			$regexps[$i] .= '/';
-		}
-	}
-
-	$max_array = array();
-
-	/* loop through each regexp determined above (or each data source) */
-	for ($i=0;$i<count($regexps);$i++) {
-		$fetch_array["values"][$i] = array();
-
-		/* match the regexp against the rrdtool fetch output to get a mantisa and
-		exponent for each line */
-		if (preg_match_all($regexps[$i], $output, $matches)) {
-			for ($j=0; ($j < count($matches[1])); $j++) {
-				$line = ($matches[1][$j] * (pow(10,(float)$matches[2][$j])));
-				if ((($line == "NaN") || ($line == "nan")) && ($show_unknown == 1)) {
-					array_push($fetch_array["values"][$i], "U");
-					$max_array[$j][$i] = "U";
-				} else {
-					array_push($fetch_array["values"][$i], ($line * 1));
-					$max_array[$j][$i] = $line;
+				/* get max value for values on the line */
+				if (count($max_array) > 0) {
+					$fetch_array["values"][count($fetch_array["data_source_names"])][$j] = max($max_array);
 				}
 			}
 		}
 	}
-
-
-	/* nth_percentile_maximum is removed if Unknown values are requested in the output.  This
-	is because the max_array function will give unpredictable results when there is a mix
-	of number and text data */
-	if ((isset($fetch_array["data_source_names"])) && ($show_unknown  == 0)) {
-		$next_index = count($fetch_array["data_source_names"]);
-
-		$fetch_array["data_source_names"][$next_index] = "nth_percentile_maximum";
-
-		/* calculate the max for each row */
-		for ($i=0; $i<count($max_array); $i++) {
-			$fetch_array["values"][$next_index][$i] = max($max_array[$i]);
-		}
+	/* add nth percentile maximum data source */
+	if (isset($fetch_array["values"][count($fetch_array["data_source_names"])])) {
+		$fetch_array["data_source_names"][count($fetch_array["data_source_names"])] = "nth_percentile_maximum";
 	}
 
 	/* clear the cache if it gets too big */
