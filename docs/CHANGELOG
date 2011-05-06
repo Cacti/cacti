@@ -44,6 +44,7 @@ Cacti CHANGELOG
 -bug#0001954: Usage of PHP_SELF without basename in html.php (at least partly fixed)
 -bug#0001956: Attempts to update existing tree item fail
 -bug#0001967: Reflected XSS on Cacti 0.8.7g
+-bug#0001989: IE9 breaks Cacti when objects are hidden using 'display:none;' style tag 
 -bug: RRDtool fetch in Cacti fails to function propertly on rrdtool files with NaN values in the output
 -bug: Accept "Connection refused" on TCP ping tests
 -bug: Add missing row selection javascript to graph preview
