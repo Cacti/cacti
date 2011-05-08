@@ -34,7 +34,6 @@ switch ($_REQUEST["action"]) {
 
 		break;
 	default:
-
 		// We must exempt ourselves from the page refresh, or else the settings page could update while the user is making changes
 		$_SESSION['custom'] = 1;
 		include_once("./include/top_graph_header.php");
@@ -68,7 +67,7 @@ function form_save() {
 	/* reset local settings cache so the user sees the new settings */
 	kill_session_var("sess_graph_config_array");
 
-	header("Location: " . sanitize_search_string($_POST["referer"]));
+	header("Location: " . $_SESSION["graph_settings_referer"]);
 }
 
 /* --------------------------
@@ -210,7 +209,7 @@ function settings() {
 		}
 	}
 
-	form_hidden_box("referer",(isset($_SERVER["HTTP_REFERER"]) ? $_SERVER["HTTP_REFERER"] : ""),"");
+	$_SESSION["graph_settings_referer"] = (isset($_SERVER["HTTP_REFERER"]) ? $_SERVER["HTTP_REFERER"]:"graph_view.php"); 
 	form_hidden_box("save_component_graph_config","1","");
 	form_save_button("graph_settings.php", "save");
 }
