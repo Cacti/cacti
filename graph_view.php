@@ -484,10 +484,10 @@ case 'preview':
 		"limit " . ($_REQUEST["rows"]*($_REQUEST["page"]-1)) . "," . $_REQUEST["rows"]);
 	
 	/* do some fancy navigation url construction so we don't have to try and rebuild the url string */
-	if (preg_match("/page=[0-9]+/",basename($_SERVER["QUERY_STRING"]))) {
-		$nav_url = str_replace("page=" . get_request_var_request("page"), "page=<PAGE>", basename($_SERVER["PHP_SELF"]) . "?" . $_SERVER["QUERY_STRING"]);
+	if (ereg("page=[0-9]+",basename($_SERVER["QUERY_STRING"]))) {
+		$nav_url = str_replace("page=" . get_request_var_request("page"), "page=<PAGE>", get_browser_query_string());
 	}else{
-		$nav_url = basename($_SERVER["PHP_SELF"]) . "?" . $_SERVER["QUERY_STRING"] . "&page=<PAGE>&host_id=" . get_request_var_request("host_id");
+		$nav_url = get_browser_query_string() . "&page=<PAGE>&host_id=" . get_request_var_request("host_id");
 	}
 
 	$nav_url = preg_replace("/((\?|&)host_id=[0-9]+|(\?|&)filter=[a-zA-Z0-9]*)/", "", $nav_url);

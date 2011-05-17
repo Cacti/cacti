@@ -46,6 +46,7 @@ Cacti CHANGELOG
 -bug#0001967: Reflected XSS on Cacti 0.8.7g
 -bug#0001989: IE9 breaks Cacti when objects are hidden using 'display:none;' style tag 
 -bug#0001993: "Undefined index: height in /var/www/html/cacti/lib/html.php on line 147" in PHP error log
+-bug#0001995: $_SERVER["REQUEST_URI"] not properly escaped in graph_view.php for preview mode
 -bug: RRDtool fetch in Cacti fails to function propertly on rrdtool files with NaN values in the output
 -bug: Accept "Connection refused" on TCP ping tests
 -bug: Add missing row selection javascript to graph preview

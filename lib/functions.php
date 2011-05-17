@@ -1882,9 +1882,9 @@ function get_associated_rras($local_graph_id) {
    @returns - the url requested by the browser */
 function get_browser_query_string() {
 	if (!empty($_SERVER["REQUEST_URI"])) {
-		return $_SERVER["REQUEST_URI"];
+		return sanitize_uri($_SERVER["REQUEST_URI"]);
 	}else{
-		return basename($_SERVER["PHP_SELF"]) . (empty($_SERVER["QUERY_STRING"]) ? "" : "?" . $_SERVER["QUERY_STRING"]);
+		return sanitize_uri(basename($_SERVER["PHP_SELF"]) . (empty($_SERVER["QUERY_STRING"]) ? "" : "?" . $_SERVER["QUERY_STRING"]));
 	}
 }
 
@@ -2111,6 +2111,20 @@ function sanitize_search_string($string) {
 	$string = str_replace('*', ' ', $string);
 
 	return $string;
+}
+
+/** cleans up a URI, e.g. from REQUEST_URI and/or QUERY_STRING
+ * in case of XSS attac, expect the result to be broken
+ * we do NOT sanitize in a way, that attacs are converted to valid HTML
+ * it is ok, when the result is broken but the application stays alive
+ * @arg string $uri   - the uri to be sanitized
+ * @returns string    - the sanitized uri
+ */
+function sanitize_uri($uri) {
+	static $drop_char_match =   array('^', '$', '<', '>', '`', '\'', '"', '|', '~', '+', '[', ']', '{', '}', ';', '!');
+	static $drop_char_replace = array( '',  '',  '',  '',  '',   '',  '',  '',  '',  '',  '',  '',  '',  '',  '',  '');
+
+	return str_replace($drop_char_match, $drop_char_replace, urldecode($uri));	
 }
 
 function cacti_escapeshellcmd($string) {
