@@ -557,10 +557,12 @@ function format_snmp_string($string, $snmp_oid_included) {
 function snmp_escape_string($string) {
 	global $config;
 
-	if ($config["cacti_server_os"] == "win32") {
-		define("SNMP_ESCAPE_CHARACTER", "\"");
-	}else{
-		define("SNMP_ESCAPE_CHARACTER", "'");
+	if (! defined("SNMP_ESCAPE_CHARACTER")) {
+		if ($config["cacti_server_os"] == "win32") {
+			define("SNMP_ESCAPE_CHARACTER", "\"");
+		}else{
+			define("SNMP_ESCAPE_CHARACTER", "'");
+		}
 	}
 
 	if (substr_count($string, SNMP_ESCAPE_CHARACTER)) {
