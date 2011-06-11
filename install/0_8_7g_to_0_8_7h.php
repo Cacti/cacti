@@ -58,6 +58,12 @@ function upgrade_to_0_8_7h() {
 		cacti_log(__FUNCTION__ . " upgrade table data_template_rrd", false, "UPGRADE");
 	}
 
+	$_keys = array_rekey(db_fetch_assoc("SHOW KEYS FROM data_input_fields"), "Key_name", "Key_name");
+	if (!in_array("duplicate_dsname_contraint", $_keys)) {
+		db_install_execute("0.8.7h", "ALTER TABLE `data_input_fields` ADD UNIQUE INDEX `data_input_id_data_name_input_output` USING BTREE (`data_input_id`,`data_name`,`input_output`)");
+		cacti_log(__FUNCTION__ . " upgrade table data_input_fields", false, "UPGRADE");
+	}
+
 	/* update the reindex cache, as we now introduced more options for "index count changed" */
 	$host_snmp_query = db_fetch_assoc("select host_id,snmp_query_id from host_snmp_query");
 	if (sizeof($host_snmp_query) > 0) {
