@@ -54,12 +54,12 @@ function upgrade_to_0_8_7h() {
 
 	$_keys = array_rekey(db_fetch_assoc("SHOW KEYS FROM data_template_rrd"), "Key_name", "Key_name");
 	if (!in_array("duplicate_dsname_contraint", $_keys)) {
-		db_install_execute("0.8.7h", "ALTER TABLE `data_template_rrd` ADD UNIQUE INDEX `duplicate_dsname_contraint`(`local_data_id`, `data_source_name`, `data_template_id`)");
+		db_install_execute("0.8.7h", "ALTER TABLE `data_template_rrd` ADD UNIQUE INDEX `duplicate_dsname_contraint` (`local_data_id`, `data_source_name`, `data_template_id`)");
 		cacti_log(__FUNCTION__ . " upgrade table data_template_rrd", false, "UPGRADE");
 	}
 
 	$_keys = array_rekey(db_fetch_assoc("SHOW KEYS FROM data_input_fields"), "Key_name", "Key_name");
-	if (!in_array("duplicate_dsname_contraint", $_keys)) {
+	if (!in_array("data_input_id_data_name_input_output", $_keys)) {
 		db_install_execute("0.8.7h", "ALTER TABLE `data_input_fields` ADD UNIQUE INDEX `data_input_id_data_name_input_output` USING BTREE (`data_input_id`,`data_name`,`input_output`)");
 		cacti_log(__FUNCTION__ . " upgrade table data_input_fields", false, "UPGRADE");
 	}
