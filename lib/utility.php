@@ -286,7 +286,8 @@ function update_poller_cache($local_data_id, $commit = false) {
 function push_out_data_input_method($data_input_id) {
 	$local_data_ids = db_fetch_assoc("SELECT DISTINCT local_data_id
 		FROM data_template_data
-		WHERE data_input_id='$data_input_id'");
+		WHERE data_input_id='$data_input_id'
+		AND local_data_id>0");
 
 	$poller_items = array();
 
