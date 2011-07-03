@@ -290,16 +290,17 @@ function push_out_data_input_method($data_input_id) {
 		AND local_data_id>0");
 
 	$poller_items = array();
+	$_my_local_data_ids = array();
 
 	if (sizeof($local_data_ids)) {
 	foreach($local_data_ids as $row) {
-		$local_data_ids[] = $row["local_data_id"];
+		$_my_local_data_ids[] = $row["local_data_id"];
 
 		$poller_items = array_merge($poller_items, update_poller_cache($row["local_data_id"]));
 	}
 	}
 
-	poller_update_poller_cache_from_buffer($local_data_ids, $poller_items);
+	poller_update_poller_cache_from_buffer($_my_local_data_ids, $poller_items);
 }
 
 function poller_update_poller_cache_from_buffer($local_data_ids, &$poller_items) {
@@ -315,7 +316,7 @@ function poller_update_poller_cache_from_buffer($local_data_ids, &$poller_items)
 			$count++;
 		}
 
-		db_execute("UPDATE poller_item SET present=0 WHERE local_data_id IN($ids)");
+		db_execute("UPDATE poller_item SET present=0 WHERE local_data_id IN ($ids)");
 	} else {
 		db_execute("UPDATE poller_item SET present=0");
 	}
