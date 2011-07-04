@@ -123,7 +123,7 @@ function query_script_host($host_id, $snmp_query_id) {
 			debug_log_insert("data_query", "&lt;arg_num_indexes&gt; missing in XML file, 'Index Count Changed' not supported");
 		} else {
 			debug_log_insert("data_query", "&lt;arg_num_indexes&gt; missing in XML file, 'Index Count Changed' emulated by counting arg_index entries");
-		}		
+		}
 	}
 
 	/* provide data for index, mandatory */
