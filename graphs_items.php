@@ -212,7 +212,7 @@ function item_edit() {
 
 	?>
 	<tr bgcolor="#<?php print $colors["panel"];?>">
-		<form name="form_graph_items" action="graph_items.php">
+		<form name="form_graph_items" action="graphs_items.php">
 		<td>
 			<table cellpadding="0" cellspacing="0">
 				<tr width="100%">
