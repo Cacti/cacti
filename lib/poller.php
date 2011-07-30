@@ -41,7 +41,7 @@ function exec_poll($command) {
 			return "U";
 		}
 
-		$output = fgets($fp, 4096);
+		$output = fgets($fp, 8192);
 
 		pclose($fp);
 	}else{
@@ -73,7 +73,7 @@ function exec_poll_php($command, $using_proc_function, $pipes, $proc_fd) {
 			/* send command to the php server */
 			fwrite($pipes[0], $command . "\r\n");
 
-			$output = fgets($pipes[1], 4096);
+			$output = fgets($pipes[1], 8192);
 
 			if (substr_count($output, "ERROR") > 0) {
 				$output = "U";
@@ -97,7 +97,7 @@ function exec_poll_php($command, $using_proc_function, $pipes, $proc_fd) {
 				return "U";
 			}
 
-			$output = fgets($fp, 4096);
+			$output = fgets($fp, 8192);
 
 			pclose($fp);
 		}else{
