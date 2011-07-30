@@ -417,7 +417,7 @@ function process_poller_output(&$rrdtool_pipe, $remainder = FALSE) {
 					$data_ids[] = $item["local_data_id"];
 					$k++;
 					if ($k % 10000 == 0) {
-						db_execute("DELETE FROM poller_output WHERE " . array_to_sql_or($data_ids, "local_data_id"));
+						db_execute("DELETE FROM poller_output WHERE local_data_id IN (" . implode(",", $data_ids) . ")");
 						$k = 0;
 						$data_ids = array();
 					}
@@ -428,7 +428,7 @@ function process_poller_output(&$rrdtool_pipe, $remainder = FALSE) {
 		}
 
 		if ($k > 0) {
-			db_execute("DELETE FROM poller_output WHERE " . array_to_sql_or($data_ids, "local_data_id"));
+			db_execute("DELETE FROM poller_output WHERE local_data_id IN (" . implode(",", $data_ids) . ")");
 		}
 
 		$rrds_processed = rrdtool_function_update($rrd_update_array, $rrdtool_pipe);
