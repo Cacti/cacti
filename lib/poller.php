@@ -333,6 +333,7 @@ function process_poller_output(&$rrdtool_pipe, $remainder = FALSE) {
 	$results = db_fetch_assoc("select
 		poller_output.output,
 		poller_output.time,
+		UNIX_TIMESTAMP(poller_output.time) as unix_time,
 		poller_output.local_data_id,
 		poller_item.rrd_path,
 		poller_item.rrd_name,
@@ -346,7 +347,7 @@ function process_poller_output(&$rrdtool_pipe, $remainder = FALSE) {
 		foreach ($results as $item) {
 			/* trim the default characters, but add single and double quotes */
 			$value = trim($item["output"], " \r\n\t\x0B\0\"'");
-			$unix_time = strtotime($item["time"]);
+			$unix_time = $item["unix_time"];
 
 			$rrd_update_array{$item["rrd_path"]}["local_data_id"] = $item["local_data_id"];
 
@@ -410,7 +411,7 @@ function process_poller_output(&$rrdtool_pipe, $remainder = FALSE) {
 		$k = 0;
 		$data_ids = array();
 		foreach ($results as $item) {
-			$unix_time = strtotime($item["time"]);
+			$unix_time = $item["unix_time"];
 
 			if (isset($rrd_update_array{$item["rrd_path"]}["times"][$unix_time])) {
 				if ($item["rrd_num"] <= sizeof($rrd_update_array{$item["rrd_path"]}["times"][$unix_time])) {
