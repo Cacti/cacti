@@ -38,6 +38,11 @@ input_validate_input_regex(get_request_var_request('graph_add'), "^([\,0-9]+)$")
 input_validate_input_regex(get_request_var_request('graph_remove'), "^([\,0-9]+)$");
 /* ==================================================== */
 
+/* clean up action string */
+if (isset($_REQUEST["action"])) {
+	$_REQUEST["action"] = sanitize_search_string(get_request_var("action"));
+}
+
 /* use cached url if available and applicable */
 if ((isset($_SESSION["sess_graph_view_url_cache"])) &&
 	(empty($_REQUEST["action"]))) {
@@ -403,9 +408,9 @@ case 'preview':
 	if ($_REQUEST["rows"] == -1) {
 		$_REQUEST["rows"] = read_graph_config_option("preview_graphs_per_page");
 	}
-	
+
 	$sql_or = ""; $sql_where = ""; $sql_join = "";
-	
+
 	/* graph permissions */
 	if (read_config_option("auth_method") != 0) {
 		$sql_where = "where " . get_graph_permissions_sql($current_user["policy_graphs"], $current_user["policy_hosts"], $current_user["policy_graph_templates"]);
@@ -482,7 +487,7 @@ case 'preview':
 		"GROUP BY graph_templates_graph.local_graph_id " .
 		"ORDER BY graph_templates_graph.title_cache " .
 		"limit " . ($_REQUEST["rows"]*($_REQUEST["page"]-1)) . "," . $_REQUEST["rows"]);
-	
+
 	/* do some fancy navigation url construction so we don't have to try and rebuild the url string */
 	if (ereg("page=[0-9]+",basename($_SERVER["QUERY_STRING"]))) {
 		$nav_url = str_replace("page=" . get_request_var_request("page"), "page=<PAGE>", get_browser_query_string());
