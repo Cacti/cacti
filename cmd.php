@@ -72,6 +72,9 @@ include_once($config["base_path"] . "/lib/rrd.php");
 include_once($config["base_path"] . "/lib/ping.php");
 include_once($config["library_path"] . "/variables.php");
 
+/* notify cacti processes that a poller is running */
+record_cmdphp_started();
+
 /* correct for a windows PHP bug. fixed in 5.2.0 */
 if ($config["cacti_server_os"] == "win32") {
 	/* check PHP versions first, we know 5.2.0 and above is fixed */
@@ -200,9 +203,6 @@ if ( $_SERVER["argc"] == 1 ) {
 		exit("-1");
 	}
 }
-
-/* notify cacti processes that a poller is running */
-record_cmdphp_started();
 
 if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on")) {
 	$failure_type = "";
