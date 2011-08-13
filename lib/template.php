@@ -274,7 +274,7 @@ function change_data_template($local_data_id, $data_template_id) {
 	}
 
 	/* some basic field values that ALL data sources should have */
-	$save["id"] = $data["id"];
+	$save["id"] = (isset($data["id"]) ? $data["id"] : 0);
 	$save["local_data_template_data_id"] = $template_data["id"];
 	$save["local_data_id"] = $local_data_id;
 	$save["data_template_id"] = $data_template_id;
@@ -509,7 +509,7 @@ function change_graph_template($local_graph_id, $graph_template_id, $intrusive) 
 	}
 
 	/* some basic field values that ALL graphs should have */
-	$save["id"] = $graph_list["id"];
+	$save["id"] = (isset($graph_list["id"]) ? $graph_list["id"] : 0);
 	$save["local_graph_template_graph_id"] = $template_graph_list["id"];
 	$save["local_graph_id"] = $local_graph_id;
 	$save["graph_template_id"] = $graph_template_id;

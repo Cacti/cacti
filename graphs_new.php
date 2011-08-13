@@ -836,7 +836,7 @@ function graphs() {
 					}
 
 					while (list($field_name, $field_array) = each($xml_array["fields"])) {
-						if ($field_array["direction"] == "input") {
+						if ($field_array["direction"] == "input" && sizeof($field_names)) {
 							foreach($field_names as $row) {
 								if ($row["field_name"] == $field_name) {
 									$html_dq_header .= "<td style='height:1px;'><strong><font color='#" . $colors["header_text"] . "'>" . $field_array["name"] . "</font></strong></td>\n";
