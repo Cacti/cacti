@@ -71,6 +71,7 @@ Cacti CHANGELOG
 -feature#0001952: Ability to use input field of a script in graph title 
 -feature: Make reindexing and repopulating the poller cache a lossless process
 -feature: Change default font sizes
+-feature: Add analyze database and push out host cli scripts
 
 0.8.7g
 -bug: RRDTool 1.4.x not recognized during installation
