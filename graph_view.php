@@ -492,7 +492,7 @@ case 'preview':
 	if (ereg("page=[0-9]+",basename($_SERVER["QUERY_STRING"]))) {
 		$nav_url = str_replace("page=" . get_request_var_request("page"), "page=<PAGE>", get_browser_query_string());
 	}else{
-		$nav_url = get_browser_query_string() . "&page=<PAGE>&host_id=" . get_request_var_request("host_id");
+		$nav_url = get_browser_query_string() . (substr_count(get_browser_query_string(), "?") ? "&":"?") . "page=<PAGE>&host_id=" . get_request_var_request("host_id");
 	}
 
 	$nav_url = preg_replace("/((\?|&)host_id=[0-9]+|(\?|&)filter=[a-zA-Z0-9]*)/", "", $nav_url);

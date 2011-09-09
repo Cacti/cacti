@@ -62,6 +62,7 @@ Cacti CHANGELOG
 -bug: The filepath api call should trim the filename before checking for the files existance
 -bug: Fix issues with IE9 while editing templates
 -bug: Form action in graph_items.php incorrect
+-bug: Initial drawing of tree causing Next/Previous with malformed URI
 -feature#0001519: Spine enhancement for parallel collection of data at device level
 -feature#0001667: Get values of |host_*| variables in graph elements from data source
 -feature#0001922: Reindex method "Index Count Changed" requires that OID_NUM_INDEXES is given for SNMP Data Queries
