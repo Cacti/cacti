@@ -59,13 +59,10 @@ function upgrade_to_0_8_7h() {
 	}
 
 	/* update the reindex cache, as we now introduced more options for "index count changed" */
-	$host_snmp_query = db_fetch_assoc("select host_id,snmp_query_id from host_snmp_query");
-	if (sizeof($host_snmp_query) > 0) {
-		foreach ($host_snmp_query as $item) {
-			update_reindex_cache($item["host_id"], $item["snmp_query_id"]);
-			cacti_log(__FUNCTION__ . " update_reindex_cache for Host[" . $item["host_id"] . "] DQ[" . $item["snmp_query_id"] . "]", false, "UPGRADE");
-		}
-	}
+	$command_string = read_config_option("path_php_binary");
+	$extra_args = "-q \"" . $config["base_path"] . "/cli/poller_reindex_hosts.php\" --id=all";
+	exec_background($command_string, "$extra_args");
+	cacti_log(__FUNCTION__ . " running $command_string $extra_args", false, "UPGRADE");
 
 }
 ?>
