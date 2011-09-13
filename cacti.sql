@@ -418,7 +418,6 @@ CREATE TABLE data_input_fields (
   PRIMARY KEY  (id),
   KEY data_input_id (data_input_id),
   KEY type_code (type_code),
-  UNIQUE KEY `data_input_id_data_name_input_output` (`data_input_id`,`data_name`,`input_output`) USING BTREE
 ) ENGINE=MyISAM;
 
 --
