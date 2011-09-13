@@ -247,8 +247,16 @@ function rrdtool_function_create($local_data_id, $show_source, $rrdtool_pipe = "
 		/* use the cacti ds name by default or the user defined one, if entered */
 		$data_source_name = get_data_source_item_name($data_source["id"]);
 
-		$create_ds .= "DS:$data_source_name:" . $data_source_types{$data_source["data_source_type_id"]} . ":" . $data_source["rrd_heartbeat"] . ":" . $data_source["rrd_minimum"] . ":" . (empty($data_source["rrd_maximum"]) ? "U" : ((int)$data_source["rrd_maximum"]<=(int)$data_source["rrd_minimum"]?(int)$data_source["rrd_minimum"]+1:$data_source["rrd_maximum"])) . RRD_NL;
- 	}
+		if (empty($data_source["rrd_maximum"])) {
+			$data_source["rrd_maximum"] = "U";
+		} elseif (strpos($data_source["rrd_maximum"], "|query_") !== false) {
+			$data_local = db_fetch_row("SELECT * FROM data_local WHERE id=" . $local_data_id);
+			$data_source["rrd_maximum"] = substitute_snmp_query_data($data_source["rrd_maximum"],$data_local["host_id"], $data_local["snmp_query_id"], $data_local["snmp_index"]);
+		} elseif ((int)$data_source["rrd_maximum"]<=(int)$data_source["rrd_minimum"]) {
+			$data_source["rrd_maximum"] = (int)$data_source["rrd_minimum"]+1;
+		}	
+		$create_ds .= "DS:$data_source_name:" . $data_source_types{$data_source["data_source_type_id"]} . ":" . $data_source["rrd_heartbeat"] . ":" . $data_source["rrd_minimum"] . ":" . $data_source["rrd_maximum"] . RRD_NL;
+	}	
 	}
 
 	$create_rra = "";
