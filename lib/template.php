@@ -685,6 +685,7 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 		/* suggested values for snmp query code */
 		$suggested_values = db_fetch_assoc("select text,field_name from snmp_query_graph_sv where snmp_query_graph_id=" . $snmp_query_array["snmp_query_graph_id"] . " order by sequence");
 
+		$suggested_values_graph = array();
 		if (sizeof($suggested_values) > 0) {
 		foreach ($suggested_values as $suggested_value) {
 			/* once we find a match; don't try to find more */
@@ -752,6 +753,7 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 			/* suggested values for snmp query code */
 			$suggested_values = db_fetch_assoc("select text,field_name from snmp_query_graph_rrd_sv where snmp_query_graph_id=" . $snmp_query_array["snmp_query_graph_id"] . " and data_template_id=" . $data_template["id"] . " order by sequence");
 
+			$suggested_values_ds = array();
 			if (sizeof($suggested_values) > 0) {
 			foreach ($suggested_values as $suggested_value) {
 				/* once we find a match; don't try to find more */
