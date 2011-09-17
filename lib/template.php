@@ -70,11 +70,12 @@ function push_out_data_source_custom_data($data_template_id) {
 	$dif_ct = 0;
 	$dif_in_str = "";
 	if (sizeof($template_input_fields)) {
+		$dif_in_str .= "AND data_input_fields.id IN (";
 		foreach ($template_input_fields as $key => $value) {
-			$dif_in_str .= ($dif_ct == 0 ? "(":",") . $key;
+			$dif_in_str .= ($dif_ct == 0 ? "":",") . $key;
 			$dif_ct++;
 		}
-		$dif_in_str .= ")";
+		$dif_in_str .= ") ";
 	}
 
 	/* pull out all templated 'input' values from all related data sources 
@@ -92,8 +93,8 @@ function push_out_data_source_custom_data($data_template_id) {
 			"INNER JOIN data_input_data " .
 			"ON data_template_data.id = data_input_data.data_template_data_id) " .
 			"ON data_input_fields.id = data_input_data.data_input_field_id " .
-			"WHERE (data_input_fields.input_output='in')" .
-			"AND data_input_fields.id IN " . $dif_in_str . " " .
+			"WHERE (data_input_fields.input_output='in') " . 
+			$dif_in_str .
 			"AND (data_input_data.t_value='' OR data_input_data.t_value IS NULL) " .
 			"AND (data_template_data.local_data_template_data_id=" . $data_template_data["id"] . ")");
 
