@@ -163,14 +163,17 @@ while (1) {
 				if ($pos > 0) {
 					switch ($i) {
 					case 0:
+						/* cut off include file as first part of input string and keep rest for further parsing */
 						$include_file = trim(substr($input_string,0,$pos));
-						$input_string = trim(strchr($input_string, " "));
+						$input_string = trim(strchr($input_string, " ")) . " ";
 						break;
 					case 1:
+						/* cut off function as second part of input string and keep rest for further parsing */
 						$function = trim(substr($input_string,0,$pos));
-						$input_string = trim(strchr($input_string, " "));
+						$input_string = trim(strchr($input_string, " ")) . " ";
 						break;
 					case 2:
+						/* take the rest as parameter(s) to the function stripped off previously */
 						$parameters = trim($input_string);
 						break 2;
 					}
@@ -188,7 +191,7 @@ while (1) {
 			}
 
 			if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_DEBUG) {
-				cacti_log("DEBUG: PID[$pid] CTR[$ctr] INC: '". basename($include_file) . "' FUNC: '" .$function . "' PARMS: '" . $parameters . "'", true, "PHPSVR");
+				cacti_log("DEBUG: PID[$pid] CTR[$ctr] INC: '". basename($include_file) . "' FUNC: '" .$function . "' PARMS: '" . $parameters . "'", false, "PHPSVR");
 			}
 
 			/* validate the existance of the function, and include if applicable */
