@@ -132,17 +132,17 @@ function api_reapply_suggested_graph_title($local_graph_id) {
 		"AND field_name = 'title' " .
 		"ORDER BY sequence");
 
-	$found = false;
+	$suggested_values_graph = array();
 	if (sizeof($suggested_values) > 0) {
 		foreach ($suggested_values as $suggested_value) {
 			/* once we find a match; don't try to find more */
-			if (!$found) {
+			if (!isset($suggested_values_graph{$suggested_value["field_name"]})) {
 				$subs_string = substitute_snmp_query_data($suggested_value["text"], $graph_local["host_id"], $graph_local["snmp_query_id"], $graph_local["snmp_index"], read_config_option("max_data_query_field_length"));
 				/* if there are no '|' characters, all of the substitutions were successful */
 				if ((!substr_count($subs_string, "|query"))) {
 					db_execute("UPDATE graph_templates_graph SET " . $suggested_value["field_name"] . "='" . $suggested_value["text"] . "' WHERE local_graph_id=" . $local_graph_id);
-					/* once we find a working value, stop */
-					$found = true;
+					/* once we find a working value for this very field, stop */
+					$suggested_values_graph{$suggested_value["field_name"]} = true;
 				}
 			}
 		}

@@ -183,18 +183,18 @@ function api_reapply_suggested_data_source_title($local_data_id) {
 		"AND field_name = 'name' " .
 		"ORDER BY sequence");
 
-	$found = false;
+	$suggested_values_data = array();
 	if (sizeof($suggested_values) > 0) {
 		foreach ($suggested_values as $suggested_value) {
-			if (!$found) {
+			if(!isset($suggested_values_data{$suggested_value["field_name"]})) {
  				$subs_string = substitute_snmp_query_data($suggested_value["text"],$data_local["host_id"],
 								$data_local["snmp_query_id"], $data_local["snmp_index"],
 								read_config_option("max_data_query_field_length"));
 				/* if there are no '|query' characters, all of the substitutions were successful */
 				if (!substr_count($subs_string, "|query")) {
 					db_execute("UPDATE data_template_data SET " . $suggested_value["field_name"] . "='" . $suggested_value["text"] . "' WHERE local_data_id=" . $local_data_id);
-					/* once we find a working value, stop */
-					$found = true;
+					/* once we find a working value for that very field, stop */
+					$suggested_values_data{$suggested_value["field_name"]} = true;
 				}
 			}
 		}
