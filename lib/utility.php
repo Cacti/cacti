@@ -93,7 +93,8 @@ function update_poller_cache($local_data_id, $commit = false) {
 			where snmp_query_graph_rrd.data_template_rrd_id=data_template_rrd.local_data_template_rrd_id
 			$output_type_sql
 			and snmp_query_graph_rrd.data_template_id=" . $data_input["data_template_id"] . "
-			and data_template_rrd.local_data_id=$local_data_id");
+			and data_template_rrd.local_data_id=$local_data_id
+			order by data_template_rrd.id");
 	}
 
 	if ($data_input["active"] == "on") {
