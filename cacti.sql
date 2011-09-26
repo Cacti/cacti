@@ -417,7 +417,7 @@ CREATE TABLE data_input_fields (
   allow_nulls char(2) default NULL,
   PRIMARY KEY  (id),
   KEY data_input_id (data_input_id),
-  KEY type_code (type_code),
+  KEY type_code (type_code)
 ) ENGINE=MyISAM;
 
 --
