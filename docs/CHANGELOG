@@ -49,6 +49,7 @@ Cacti CHANGELOG
 -bug#0001995: $_SERVER["REQUEST_URI"] not properly escaped in graph_view.php for preview mode
 -bug#0002005: Saving Script Server or Script Data Input Method Results in SQL Error
 -bug#0002060: NAN values in hdd utilisation graphs (Poller Output Table not Empty)
+-bug: Fix SQL injection issues in login page
 -bug: RRDtool fetch in Cacti fails to function propertly on rrdtool files with NaN values in the output
 -bug: Accept "Connection refused" on TCP ping tests
 -bug: Add missing row selection javascript to graph preview
