@@ -34,7 +34,11 @@ global $colors;
 	<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
 	<script type="text/javascript" src="include/layout.js"></script>
 	<?php if (isset($refresh)) {
-	print "<meta http-equiv=refresh content=\"" . $refresh["seconds"] . "; url='" . $refresh["page"] . "'\">";
+		if (is_array($refresh)) {
+			print "<meta http-equiv=refresh content=\"" . $refresh["seconds"] . "; url='" . $refresh["page"] . "'\">";
+		}else{
+			print "<meta http-equiv=refresh content='" . $refresh . ";'>";
+		}
 	}?>
 </head>
 
