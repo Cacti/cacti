@@ -900,7 +900,28 @@ function strip_quotes($result) {
    @arg $hexstr - the string to test
    @arg 1 if the argument is hex, 0 otherwise, and FALSE on error */
 function is_hexadecimal($hexstr) {
-	return preg_match('/^[a-fA-F0-9: \t]*$/', $hexstr);
+	$hexstr = trim($hexstr);
+	$i      = 0;
+	$length = strlen($hexstr);
+	while ($i < $length) {
+		$part = substr($hexstr,$i,2);
+		$i += 2;
+
+		if (!preg_match('/[a-fA-F0-9]/', $part)) {
+			return false;
+		} elseif ($i < $length) {
+			if (substr($hexstr,$i,1) != ":") {
+				return false;
+			}elseif ($i + 1 == $length) {
+				return false;
+			}
+			$i++;
+		}else{
+			$i++;
+		}
+	}
+
+	return true;
 }
 
 /* validate_result - determine's if the result value is valid or not.  If not valid returns a "U"
@@ -2122,9 +2143,9 @@ function sanitize_search_string($string) {
  */
 function sanitize_uri($uri) {
 	static $drop_char_match =   array('^', '$', '<', '>', '`', '\'', '"', '|', '+', '[', ']', '{', '}', ';', '!');
-	static $drop_char_replace = array( '',  '',  '',  '',  '',   '',  '',  '', '',  '',  '',  '',  '',  '',  '');
+	static $drop_char_replace = array( '', '',  '',  '',  '',  '',   '',  '',  '',  '',  '',  '',  '',  '',  '');
 
-	return str_replace($drop_char_match, $drop_char_replace, urldecode($uri));	
+	return str_replace($drop_char_match, $drop_char_replace, urldecode($uri));
 }
 
 function cacti_escapeshellcmd($string) {
