@@ -2,6 +2,7 @@ Cacti CHANGELOG
 
 SVN
 -feature: Properly support ifHighSpeed
+-bug#0002064: Removing '~' (tilde) by sanitize_uri() conflicts with Apache UserDir translation
 -bug#0002066: Graph without host id Notice: Undefined variable: host_id
 -bug#0002067: custom time range filter not working 
 -bug: Refresh of Cacti Log Broken wiht 0.8.7h
