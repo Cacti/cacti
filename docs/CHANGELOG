@@ -1,5 +1,9 @@
 Cacti CHANGELOG
 
+SVN
+-feature: Properly support ifHighSpeed
+-bug: Timespan Settings Broken with 0.8.7h
+
 0.8.7h
 -bug#0001403: Reapply Suggested Names does not work correctly for graphs and data sources not associated with Data Queries
 -bug#0001568: Remove PHP 5.3 deprecated functions
