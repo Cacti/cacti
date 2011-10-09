@@ -254,11 +254,11 @@ function rrdtool_function_create($local_data_id, $show_source, $rrdtool_pipe = "
 			/* in case a query variable is given, evaluate it */
 			$data_local = db_fetch_row("SELECT * FROM data_local WHERE id=" . $local_data_id);
 			if ($data_source["rrd_maximum"] == "|query_ifSpeed|" || $data_source["rrd_maximum"] == "|query_ifHighSpeed|") {
-				$highSpeed = db_fetch_cell("SELECT field_value 
-					FROM host_snmp_cache 
+				$highSpeed = db_fetch_cell("SELECT field_value
+					FROM host_snmp_cache
 					WHERE host_id=" . $data_local["host_id"] . "
 					AND snmp_query_id=" . $data_local["snmp_query_id"] . "
-					AND snmp_index='" . $data_local["snmp_index"] . "' 
+					AND snmp_index='" . $data_local["snmp_index"] . "'
 					AND field_name='ifHighSpeed'");
 
 				if (!empty($highSpeed)) {
@@ -272,7 +272,7 @@ function rrdtool_function_create($local_data_id, $show_source, $rrdtool_pipe = "
 		} elseif (($data_source["rrd_maximum"] != "U") && (int)$data_source["rrd_maximum"]<=(int)$data_source["rrd_minimum"]) {
 			/* max > min required, but take care of an "Undef" value */
 			$data_source["rrd_maximum"] = (int)$data_source["rrd_minimum"]+1;
-		}	
+		}
 
 		/* min==max==0 won't work with rrdtool */
 		if ($data_source["rrd_minimum"] == 0 && $data_source["rrd_maximum"] == 0) {
@@ -280,7 +280,7 @@ function rrdtool_function_create($local_data_id, $show_source, $rrdtool_pipe = "
 		}
 
 		$create_ds .= "DS:$data_source_name:" . $data_source_types{$data_source["data_source_type_id"]} . ":" . $data_source["rrd_heartbeat"] . ":" . $data_source["rrd_minimum"] . ":" . $data_source["rrd_maximum"] . RRD_NL;
-	}	
+	}
 	}
 
 	$create_rra = "";
@@ -2038,7 +2038,7 @@ function rrd_substitute_host_query_data($txt_graph_item, $graph, $graph_item) {
 	else {
 		$host_id = $graph["host_id"];
 	}
-	$txt_graph_item = substitute_host_data($txt_graph_item, '|','|', $host_id);
+	$txt_graph_item = substitute_host_data($txt_graph_item, '|','|', $graph['host_id']);
 
 	/* replace query variables in graph elements */
 	if (preg_match("/\|query_[a-zA-Z0-9_]+\|/", $txt_graph_item)) {
