@@ -253,7 +253,22 @@ function rrdtool_function_create($local_data_id, $show_source, $rrdtool_pipe = "
 		} elseif (strpos($data_source["rrd_maximum"], "|query_") !== false) {
 			/* in case a query variable is given, evaluate it */
 			$data_local = db_fetch_row("SELECT * FROM data_local WHERE id=" . $local_data_id);
-			$data_source["rrd_maximum"] = substitute_snmp_query_data($data_source["rrd_maximum"],$data_local["host_id"], $data_local["snmp_query_id"], $data_local["snmp_index"]);
+			if ($data_source["rrd_maximum"] == "|query_ifSpeed|" || $data_source["rrd_maximum"] == "|query_ifHighSpeed|") {
+				$highSpeed = db_fetch_cell("SELECT field_value 
+					FROM host_snmp_cache 
+					WHERE host_id=" . $data_local["host_id"] . "
+					AND snmp_query_id=" . $data_local["snmp_query_id"] . "
+					AND snmp_index='" . $data_local["snmp_index"] . "' 
+					AND field_name='ifHighSpeed'");
+
+				if (!empty($highSpeed)) {
+					$data_source["rrd_maximum"] = $highSpeed * 1000000;
+				}else{
+					$data_source["rrd_maximum"] = substitute_snmp_query_data("|query_ifSpeed|",$data_local["host_id"], $data_local["snmp_query_id"], $data_local["snmp_index"]);
+				}
+			}else{
+				$data_source["rrd_maximum"] = substitute_snmp_query_data($data_source["rrd_maximum"],$data_local["host_id"], $data_local["snmp_query_id"], $data_local["snmp_index"]);
+			}
 		} elseif (($data_source["rrd_maximum"] != "U") && (int)$data_source["rrd_maximum"]<=(int)$data_source["rrd_minimum"]) {
 			/* max > min required, but take care of an "Undef" value */
 			$data_source["rrd_maximum"] = (int)$data_source["rrd_minimum"]+1;
