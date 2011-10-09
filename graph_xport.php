@@ -37,6 +37,7 @@ input_validate_input_number(get_request_var("graph_height"));
 input_validate_input_number(get_request_var("graph_width"));
 input_validate_input_number(get_request_var("local_graph_id"));
 input_validate_input_number(get_request_var("rra_id"));
+input_validate_input_number(get_request_var("stdout"));
 /* ==================================================== */
 
 /* flush the headers now */
@@ -95,8 +96,11 @@ header("Content-type: application/vnd.ms-excel");
 if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') {
 	header("Pragma: cache");
 }
+
 header("Cache-Control: max-age=15");
-header("Content-Disposition: attachment; filename=\"" . $filename . "\"");
+if (!isset($_GET["stdout"])) {
+	header("Content-Disposition: attachment; filename=\"" . $filename . "\"");
+}
 
 if (is_array($xport_array["meta"])) {
 	print '"Title:","'          . $xport_array["meta"]["title_cache"]                . '"' . "\n";
