@@ -354,7 +354,7 @@ function poller_update_poller_cache_from_buffer($local_data_ids, &$poller_items)
 			$delim = " ";
 		} else {
 			$delim = ", ";
-	}
+		}
 
 		$buffer .= $delim . $record;
 
@@ -368,7 +368,7 @@ function poller_update_poller_cache_from_buffer($local_data_ids, &$poller_items)
 			$buf_count = 0;
 		} else {
 			$buf_count++;
-	}
+		}
 	}
 
 	if ($buf_count > 0) {
