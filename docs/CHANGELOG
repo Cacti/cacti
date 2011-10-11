@@ -7,6 +7,7 @@ SVN
 -bug#0002066: Graph without host id Notice: Undefined variable: host_id
 -bug#0002067: custom time range filter not working 
 -bug: Refresh of Cacti Log Broken wiht 0.8.7h
+-bug: Problems saving User Graph Permissions in IE9
 
 0.8.7h
 -bug#0001403: Reapply Suggested Names does not work correctly for graphs and data sources not associated with Data Queries

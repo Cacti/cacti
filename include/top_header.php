@@ -27,7 +27,7 @@ global $colors;
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7">
 	<title><?php echo draw_navigation_text("title");?></title>
 	<link href="include/main.css" type="text/css" rel="stylesheet">
 	<link href="images/favicon.ico" rel="shortcut icon"/>

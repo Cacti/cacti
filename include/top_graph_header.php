@@ -56,20 +56,20 @@ if (isset($_REQUEST["action"]) && $_REQUEST["action"] == "zoom") {
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7">
 	<title><?php echo draw_navigation_text("title");?></title>
 	<?php
 	if (isset($_SESSION["custom"]) && $_SESSION["custom"] == true) {
-		print "<meta http-equiv=refresh content='99999'>\r\n";
+		print "<meta http-equiv=refresh content='99999'>";
 	}else if (isset($_REQUEST["action"]) && $_REQUEST["action"] == 'zoom') {
-		print "<meta http-equiv=refresh content='99999'>\r\n";
+		print "<meta http-equiv=refresh content='99999'>";
 	}else{
-		print "<meta http-equiv=refresh content='" . htmlspecialchars(read_graph_config_option("page_refresh"),ENT_QUOTES) . "'>\r\n";
+		print "<meta http-equiv=refresh content='" . htmlspecialchars(read_graph_config_option("page_refresh"),ENT_QUOTES) . "'>";
 	}
 	?>
 	<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
 	<link href="include/main.css" type="text/css" rel="stylesheet">
-	<link href="images/favicon.ico" rel="shortcut icon"/>
+	<link href="images/favicon.ico" rel="shortcut icon">
 	<script type="text/javascript" src="include/layout.js"></script>
 	<script type="text/javascript" src="include/treeview/ua.js"></script>
 	<script type="text/javascript" src="include/treeview/ftiens4.js"></script>
