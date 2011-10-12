@@ -50,16 +50,20 @@ switch ($_REQUEST["action"]) {
    -------------------------- */
 
 function form_save() {
-	global $settings_graphs;
+	global $settings_graphs, $cnn_id;
 
 	while (list($tab_short_name, $tab_fields) = each($settings_graphs)) {
 		while (list($field_name, $field_array) = each($tab_fields)) {
 			if ((isset($field_array["items"])) && (is_array($field_array["items"]))) {
 				while (list($sub_field_name, $sub_field_array) = each($field_array["items"])) {
-					db_execute("replace into settings_graphs (user_id,name,value) values (" . $_SESSION["sess_user_id"] . ",'$sub_field_name', '" . (isset($_POST[$sub_field_name]) ? $_POST[$sub_field_name] : "") . "')");
+					if (isset($_POST[$sub_field_name])) {
+						$value = $cnn_id->qstr(sanitize_search_string(get_request_var_post($sub_field_name)));
+						db_execute("REPLACE INTO settings_graphs (user_id,name,value) values (" . $_SESSION["sess_user_id"] . ",'$sub_field_name', " . $value . ")");
+					}
 				}
-			}else{
-				db_execute("replace into settings_graphs (user_id,name,value) values (" . $_SESSION["sess_user_id"] . ",'$field_name', '" . (isset($_POST[$field_name]) ? $_POST[$field_name] : "") . "')");
+			}else if (isset($_POST[$field_name])) {
+				$value = $cnn_id->qstr(sanitize_search_string($_POST[$field_name]));
+				db_execute("REPLACE INTO settings_graphs (user_id,name,value) values (" . $_SESSION["sess_user_id"] . ",'$field_name', " . $value . ")");
 			}
 		}
 	}
