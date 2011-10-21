@@ -35,7 +35,7 @@ function db_connect_real($host, $user, $pass, $db_name, $db_type, $port = "3306"
 	global $cnn_id;
 
 	$i = 0;
-	$dsn = "$db_type://$user:$pass@$host/$db_name?persist";
+	$dsn = "$db_type://" . rawurlencode($user) . ":" . rawurlencode($pass) . "@" . rawurlencode($host) . "/" . rawurlencode($db_name) . "?persist";
 
 	if ($db_ssl && $db_type == "mysql") {
 		$dsn .= "&clientflags=" . MYSQL_CLIENT_SSL;
