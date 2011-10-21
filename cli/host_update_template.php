@@ -56,6 +56,7 @@ foreach($parms as $parameter) {
 
 	switch ($arg) {
 	case "--host-template":
+	case "--host-template-id":
 		$template = $value;
 		break;
 	case "--host-id":
@@ -65,17 +66,12 @@ foreach($parms as $parameter) {
 		displayHostTemplates(getHostTemplates());
 		exit(0);
 	case "-d":
+	case "--debug":
 		$debug = TRUE;
 		break;
 	case "-h":
-		display_help();
-		exit;
 	case "-v":
-		display_help();
-		exit;
 	case "--version":
-		display_help();
-		exit;
 	case "--help":
 		display_help();
 		exit;
@@ -149,11 +145,11 @@ if (db_fetch_cell("SELECT id FROM host_template WHERE id=$template") > 0) {
 /*	display_help - displays the usage of the function */
 function display_help () {
 print "Cacti Retemplate Host Script 1.0, Copyright 2004-2011 - The Cacti Group\n";
-	print "usage: host_update_template.php -host-id=[host-id|All] [--host-template=[ID]] [-d] [-h] [--help] [-v] [--version]\n\n";
+	print "usage: host_update_template.php --host-id=[host-id|All] [--host-template=[ID]] [-d] [-h] [--help] [-v] [--version]\n\n";
 	print "--host-id=host_id  - The host_id to have templates reapplied 'all' to do all hosts\n";
 	print "--host-template=ID - Which Host Template to Refresh\n\n";
 	print "Optional:\n";
-	print "-d            - Display verbose output during execution\n";
+	print "-d | --debug  - Display verbose output during execution\n";
 	print "-v --version  - Display this help message\n";
 	print "-h --help     - Display this help message\n";
 	print "List Options:\n\n";
