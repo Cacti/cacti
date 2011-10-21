@@ -1189,6 +1189,7 @@ function get_graph_title($local_graph_id) {
 		and graph_local.id=$local_graph_id");
 
 	if ((strstr($graph["title"], "|")) && (!empty($graph["host_id"]))) {
+		$graph["title"] = substitute_data_input_data($graph["title"], $graph, 0);
 		return expand_title($graph["host_id"], $graph["snmp_query_id"], $graph["snmp_index"], $graph["title"]);
 	}else{
 		return $graph["title"];
