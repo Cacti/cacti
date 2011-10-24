@@ -294,18 +294,19 @@ function push_out_data_input_method($data_input_id) {
 	$_my_local_data_ids = array();
 
 	if (sizeof($local_data_ids)) {
-	foreach($local_data_ids as $row) {
-		$_my_local_data_ids[] = $row["local_data_id"];
+		foreach($local_data_ids as $row) {
+			$_my_local_data_ids[] = $row["local_data_id"];
 
-		$poller_items = array_merge($poller_items, update_poller_cache($row["local_data_id"]));
-	}
-	}
+			$poller_items = array_merge($poller_items, update_poller_cache($row["local_data_id"]));
+		}
 
-	poller_update_poller_cache_from_buffer($_my_local_data_ids, $poller_items);
+		poller_update_poller_cache_from_buffer($_my_local_data_ids, $poller_items);
+	}
 }
 
 function poller_update_poller_cache_from_buffer($local_data_ids, &$poller_items) {
 	/* set all fields present value to 0, to mark the outliers when we are all done */
+	$ids = array();
 	if (sizeof($local_data_ids)) {
 		$count = 0;
 		foreach($local_data_ids as $id) {
@@ -346,6 +347,7 @@ function poller_update_poller_cache_from_buffer($local_data_ids, &$poller_items)
 	$buf_count    = 0;
 	$buffer       = "";
 
+	if (sizeof($poller_items)) {
 	foreach($poller_items AS $record) {
 		/* take care of invalid entries */
 		if (strlen($record) == 0) continue;
@@ -370,13 +372,18 @@ function poller_update_poller_cache_from_buffer($local_data_ids, &$poller_items)
 			$buf_count++;
 		}
 	}
+	}
 
 	if ($buf_count > 0) {
 		db_execute($sql_prefix . $buffer . $sql_suffix);
 	}
 
 	/* remove stale records from the poller cache */
-	db_execute("DELETE FROM poller_item WHERE present='0'");
+	if (sizeof($ids)) {
+		db_execute("DELETE FROM poller_item WHERE present=0 AND local_data_ids IN ($ids)");
+	}else{
+		db_execute("DELETE FROM poller_item WHERE present=0");
+	}
 }
 
 function push_out_host($host_id, $local_data_id = 0, $data_template_id = 0) {

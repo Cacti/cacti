@@ -7,6 +7,7 @@ HEAD
 -bug#0002064: Removing '~' (tilde) by sanitize_uri() conflicts with Apache UserDir translation
 -bug#0002066: Graph without host id Notice: Undefined variable: host_id
 -bug#0002067: custom time range filter not working 
+-bug#0002071: MySQL table poller_item is dropped always when "Data Input Method" is changed or added.
 -bug#0002079: Using input field of a script in graph title doesn't work 
 -bug#0002080: Database password containing "@" does not connect
 -bug: Update host template cli script help shows incorrect options
