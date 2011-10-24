@@ -1,6 +1,6 @@
 Cacti CHANGELOG
 
-SVN
+HEAD
 -feature: Properly support ifHighSpeed
 -bug#0002062: Multiple security vunerbilities
 -bug#0002063: multiple value poller output incorrectly interpreted as hexadecimal value
@@ -12,6 +12,7 @@ SVN
 -bug: Update host template cli script help shows incorrect options
 -bug: Refresh of Cacti Log Broken wiht 0.8.7h
 -bug: Problems saving User Graph Permissions in IE9
+-bug: Bandwidth summation fails if NAN values are present
 
 0.8.7h
 -bug#0001403: Reapply Suggested Names does not work correctly for graphs and data sources not associated with Data Queries

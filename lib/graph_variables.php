@@ -229,8 +229,8 @@ function bandwidth_summation($local_data_id, $start_time, $end_time, $rra_steps,
 		if (isset($fetch_array["values"][$i])) {
 			$values_array = $fetch_array["values"][$i];
 
-			for ($j=0;$j<count($fetch_array["values"][$i]);$j++) {
-				$sum += $fetch_array["values"][$i][$j];
+			foreach ($fetch_array["values"][$i] as $value) {
+				$sum += $value;
 			}
 
 			if (count($fetch_array["values"][$i]) != 0) {
@@ -239,8 +239,8 @@ function bandwidth_summation($local_data_id, $start_time, $end_time, $rra_steps,
 				$sum = 0;
 			}
 
-			/* collect 95th percentile values in this array so we can return them */
-			$return_array{$fetch_array["data_source_names"][$i]} = $sum;
+			/* collect summation alues in this array so we can return them */
+			$return_array[ $fetch_array["data_source_names"][$i] ] = $sum;
 		}
 	}
 
