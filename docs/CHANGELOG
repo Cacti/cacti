@@ -11,6 +11,7 @@ HEAD
 -bug#0002071: MySQL table poller_item is dropped always when "Data Input Method" is changed or added.
 -bug#0002079: Using input field of a script in graph title doesn't work 
 -bug#0002080: Database password containing "@" does not connect
+-bug#0002083: When adding a new users, apache generates errors
 -bug: Update host template cli script help shows incorrect options
 -bug: Refresh of Cacti Log Broken wiht 0.8.7h
 -bug: Problems saving User Graph Permissions in IE9

@@ -490,6 +490,13 @@ function graph_perms_edit() {
 		$policy = db_fetch_row("SELECT policy_graphs,policy_trees,policy_hosts,policy_graph_templates FROM user_auth WHERE id = " . get_request_var("id"));
 
 		$header_label = "[edit: " . db_fetch_cell("SELECT username FROM user_auth WHERE id = " . get_request_var("id")) . "]";
+	} else {
+		$policy = array(
+			'policy_graphs' => '1', 
+			'policy_trees'  => '1', 
+			'policy_hosts'  => '1', 
+			'policy_graph_templates' => '1'
+		);
 	}
 
 	?>
