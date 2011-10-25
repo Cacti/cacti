@@ -2,6 +2,7 @@ Cacti CHANGELOG
 
 HEAD
 -feature: Properly support ifHighSpeed
+-bug#0002040: ICMP ping errors for Win7 & PHP 5.3
 -bug#0002062: Multiple security vunerbilities
 -bug#0002063: multiple value poller output incorrectly interpreted as hexadecimal value
 -bug#0002064: Removing '~' (tilde) by sanitize_uri() conflicts with Apache UserDir translation
