@@ -75,6 +75,12 @@ a:hover {
 	font-weight: bold;
 }
 
+.tableSubHeaderColumn {
+	color: #ffffff;
+	font-weight:bold;
+	vertical-align:bottom;
+}
+
 .textArea {
 	font-size: 12px;
 }
