@@ -17,6 +17,7 @@ HEAD
 -bug: Refresh of Cacti Log Broken wiht 0.8.7h
 -bug: Problems saving User Graph Permissions in IE9
 -bug: Bandwidth summation fails if NAN values are present
+-bug: Special Type Code 'host_id' available in Data Queries by Not Data Input Methods
 
 0.8.7h
 -bug#0001403: Reapply Suggested Names does not work correctly for graphs and data sources not associated with Data Queries
