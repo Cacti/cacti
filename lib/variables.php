@@ -162,7 +162,11 @@ function substitute_script_query_path($path) {
    @returns - the original string with all of the variable substitutions made */
 function substitute_host_data($string, $l_escape_string, $r_escape_string, $host_id) {
 	if (!isset($_SESSION["sess_host_cache_array"][$host_id])) {
-		$host = db_fetch_row("select * from host where id=$host_id");
+		if ($host != '') {
+			$host = db_fetch_row("SELECT * FROM host WHERE id=$host_id");
+		} else {
+			$host = "None";
+		}
 		$_SESSION["sess_host_cache_array"][$host_id] = $host;
 	}
 
