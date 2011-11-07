@@ -161,31 +161,29 @@ function substitute_script_query_path($path) {
    @arg $host_id - (int) the host ID to match
    @returns - the original string with all of the variable substitutions made */
 function substitute_host_data($string, $l_escape_string, $r_escape_string, $host_id) {
-	if (!isset($_SESSION["sess_host_cache_array"][$host_id])) {
-		if ($host != '') {
+	if (!empty($host)) {
+		if (!isset($_SESSION["sess_host_cache_array"][$host_id])) {
 			$host = db_fetch_row("SELECT * FROM host WHERE id=$host_id");
-		} else {
-			$host = "None";
+			$_SESSION["sess_host_cache_array"][$host_id] = $host;
 		}
-		$_SESSION["sess_host_cache_array"][$host_id] = $host;
-	}
 
-	$string = str_replace($l_escape_string . "host_management_ip" . $r_escape_string, $_SESSION["sess_host_cache_array"][$host_id]["hostname"], $string); /* for compatability */
-	$string = str_replace($l_escape_string . "host_hostname" . $r_escape_string, $_SESSION["sess_host_cache_array"][$host_id]["hostname"], $string);
-	$string = str_replace($l_escape_string . "host_description" . $r_escape_string, $_SESSION["sess_host_cache_array"][$host_id]["description"], $string);
-	$string = str_replace($l_escape_string . "host_snmp_community" . $r_escape_string, $_SESSION["sess_host_cache_array"][$host_id]["snmp_community"], $string);
-	$string = str_replace($l_escape_string . "host_snmp_version" . $r_escape_string, $_SESSION["sess_host_cache_array"][$host_id]["snmp_version"], $string);
-	$string = str_replace($l_escape_string . "host_snmp_username" . $r_escape_string, $_SESSION["sess_host_cache_array"][$host_id]["snmp_username"], $string);
-	$string = str_replace($l_escape_string . "host_snmp_password" . $r_escape_string, $_SESSION["sess_host_cache_array"][$host_id]["snmp_password"], $string);
-	$string = str_replace($l_escape_string . "host_snmp_auth_protocol" . $r_escape_string, $_SESSION["sess_host_cache_array"][$host_id]["snmp_auth_protocol"], $string);
-	$string = str_replace($l_escape_string . "host_snmp_priv_passphrase" . $r_escape_string, $_SESSION["sess_host_cache_array"][$host_id]["snmp_priv_passphrase"], $string);
-	$string = str_replace($l_escape_string . "host_snmp_priv_protocol" . $r_escape_string, $_SESSION["sess_host_cache_array"][$host_id]["snmp_priv_protocol"], $string);
-	$string = str_replace($l_escape_string . "host_snmp_context" . $r_escape_string, $_SESSION["sess_host_cache_array"][$host_id]["snmp_context"], $string);
-	$string = str_replace($l_escape_string . "host_snmp_port" . $r_escape_string, $_SESSION["sess_host_cache_array"][$host_id]["snmp_port"], $string);
-	$string = str_replace($l_escape_string . "host_snmp_timeout" . $r_escape_string, $_SESSION["sess_host_cache_array"][$host_id]["snmp_timeout"], $string);
-	$string = str_replace($l_escape_string . "host_ping_retries" . $r_escape_string, $_SESSION["sess_host_cache_array"][$host_id]["ping_retries"], $string);
-	$string = str_replace($l_escape_string . "host_max_oids" . $r_escape_string, $_SESSION["sess_host_cache_array"][$host_id]["max_oids"], $string);
-	$string = str_replace($l_escape_string . "host_id" . $r_escape_string, $_SESSION["sess_host_cache_array"][$host_id]["id"], $string);
+		$string = str_replace($l_escape_string . "host_management_ip" . $r_escape_string, $_SESSION["sess_host_cache_array"][$host_id]["hostname"], $string); /* for compatability */
+		$string = str_replace($l_escape_string . "host_hostname" . $r_escape_string, $_SESSION["sess_host_cache_array"][$host_id]["hostname"], $string);
+		$string = str_replace($l_escape_string . "host_description" . $r_escape_string, $_SESSION["sess_host_cache_array"][$host_id]["description"], $string);
+		$string = str_replace($l_escape_string . "host_snmp_community" . $r_escape_string, $_SESSION["sess_host_cache_array"][$host_id]["snmp_community"], $string);
+		$string = str_replace($l_escape_string . "host_snmp_version" . $r_escape_string, $_SESSION["sess_host_cache_array"][$host_id]["snmp_version"], $string);
+		$string = str_replace($l_escape_string . "host_snmp_username" . $r_escape_string, $_SESSION["sess_host_cache_array"][$host_id]["snmp_username"], $string);
+		$string = str_replace($l_escape_string . "host_snmp_password" . $r_escape_string, $_SESSION["sess_host_cache_array"][$host_id]["snmp_password"], $string);
+		$string = str_replace($l_escape_string . "host_snmp_auth_protocol" . $r_escape_string, $_SESSION["sess_host_cache_array"][$host_id]["snmp_auth_protocol"], $string);
+		$string = str_replace($l_escape_string . "host_snmp_priv_passphrase" . $r_escape_string, $_SESSION["sess_host_cache_array"][$host_id]["snmp_priv_passphrase"], $string);
+		$string = str_replace($l_escape_string . "host_snmp_priv_protocol" . $r_escape_string, $_SESSION["sess_host_cache_array"][$host_id]["snmp_priv_protocol"], $string);
+		$string = str_replace($l_escape_string . "host_snmp_context" . $r_escape_string, $_SESSION["sess_host_cache_array"][$host_id]["snmp_context"], $string);
+		$string = str_replace($l_escape_string . "host_snmp_port" . $r_escape_string, $_SESSION["sess_host_cache_array"][$host_id]["snmp_port"], $string);
+		$string = str_replace($l_escape_string . "host_snmp_timeout" . $r_escape_string, $_SESSION["sess_host_cache_array"][$host_id]["snmp_timeout"], $string);
+		$string = str_replace($l_escape_string . "host_ping_retries" . $r_escape_string, $_SESSION["sess_host_cache_array"][$host_id]["ping_retries"], $string);
+		$string = str_replace($l_escape_string . "host_max_oids" . $r_escape_string, $_SESSION["sess_host_cache_array"][$host_id]["max_oids"], $string);
+		$string = str_replace($l_escape_string . "host_id" . $r_escape_string, $_SESSION["sess_host_cache_array"][$host_id]["id"], $string);
+	}
 
 	return $string;
 }
