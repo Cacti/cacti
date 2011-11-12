@@ -43,6 +43,10 @@ function db_connect_real($host, $user, $pass, $db_name, $db_type, $port = "3306"
 		$dsn .= "&clientflags=" . MYSQLI_CLIENT_SSL;
 	}
 
+	if ($port != "3306") {
+		$dsn .= "&port=" . $port;
+	}
+
 	while ($i <= $retries) {
 		$cnn_id = ADONewConnection($dsn);
 		if ($cnn_id) {
