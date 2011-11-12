@@ -717,6 +717,8 @@ function host_edit() {
 
 			break;
 		case "2": // snmp
+		case "5": // snmp sysDesc
+		case "6": // snmp getNext
 			document.getElementById('row_ping_method').style.display  = "none";
 			document.getElementById('row_ping_port').style.display    = "none";
 			document.getElementById('row_ping_timeout').style.display = "";
@@ -768,7 +770,9 @@ function host_edit() {
 		switch(type) {
 		case "NoSNMP":
 			/* remove snmp options */
-			if (am.length == 5) {
+			if (am.length == 7) {
+				am.remove(1);
+				am.remove(1);
 				am.remove(1);
 				am.remove(1);
 				am.remove(1);
@@ -791,22 +795,32 @@ function host_edit() {
 				var c=document.createElement('option');
 				var d=document.createElement('option');
 				var e=document.createElement('option');
+				var f=document.createElement('option');
+				var g=document.createElement('option');
 
 				a.value="0";
 				a.text="None";
 				addSelectItem(a,am);
 
 				b.value="1";
-				b.text="Ping and SNMP";
+				b.text="Ping and SNMP Uptime";
 				addSelectItem(b,am);
 
 				e.value="4";
-				e.text="Ping or SNMP";
+				e.text="Ping or SNMP Uptime";
 				addSelectItem(e,am);
 
 				c.value="2";
-				c.text="SNMP";
+				c.text="SNMP Uptime";
 				addSelectItem(c,am);
+
+				f.value="5";
+				f.text="SNMP Desc";
+				addSelectItem(f,am);
+
+				g.value="6";
+				g.text="SNMP getNext";
+				addSelectItem(g,am);
 
 				d.value="3";
 				d.text="Ping";
@@ -849,9 +863,9 @@ function host_edit() {
 				document.getElementById('ping_method').value=0;
 
 				break;
-			case "1": // ping and snmp
+			case "1": // ping and snmp sysUptime
 			case "3": // ping
-			case "4": // ping or snmp
+			case "4": // ping or snmp sysUptime
 				if ((document.getElementById('row_ping_method').style.display == "none") ||
 					(document.getElementById('row_ping_method').style.display == undefined)) {
 					document.getElementById('ping_method').value=ping_method;
@@ -859,7 +873,9 @@ function host_edit() {
 				}
 
 				break;
-			case "2": // snmp
+			case "2": // snmp sysUptime
+			case "5": // snmp sysDesc
+			case "6": // snmp getNext
 				document.getElementById('row_ping_method').style.display="none";
 				document.getElementById('ping_method').value="0";
 
@@ -1351,7 +1367,7 @@ function host() {
 		"nosort1" => array("Graphs", "ASC"),
 		"nosort2" => array("Data Sources", "ASC"),
 		"status" => array("Status", "ASC"),
-		"status_event_count" => array("Event Count", "ASC"),
+		"status_rec_date" => array("In State", "ASC"),
 		"hostname" => array("Hostname", "ASC"),
 		"cur_time" => array("Current (ms)", "DESC"),
 		"avg_time" => array("Average (ms)", "DESC"),
@@ -1369,7 +1385,7 @@ function host() {
 			form_selectable_cell((isset($host_graphs[$host["id"]]) ? $host_graphs[$host["id"]] : 0), $host["id"]);
 			form_selectable_cell((isset($host_data_sources[$host["id"]]) ? $host_data_sources[$host["id"]] : 0), $host["id"]);
 			form_selectable_cell(get_colored_device_status(($host["disabled"] == "on" ? true : false), $host["status"]), $host["id"]);
-			form_selectable_cell(round(($host["status_event_count"]), 2), $host["id"]);
+			form_selectable_cell(get_timeinstate($host), $host["id"]);
 			form_selectable_cell((strlen(get_request_var_request("filter")) ? preg_replace("/(" . preg_quote(get_request_var_request("filter")) . ")/i", "<span style='background-color: #F8D93D;'>\\1</span>", htmlspecialchars($host["hostname"])) : htmlspecialchars($host["hostname"])), $host["id"]);
 			form_selectable_cell(round(($host["cur_time"]), 2), $host["id"]);
 			form_selectable_cell(round(($host["avg_time"]), 2), $host["id"]);
@@ -1393,6 +1409,36 @@ function host() {
 
 	print "</form>\n";
 }
+
+function get_timeinstate($host) {
+        $interval = read_config_option("poller_interval");
+        if ($host['status_event_count'] > 0) {
+                $time = $host['status_event_count'] * $interval;
+        }elseif (strtotime($host['status_rec_date']) > 943916400) {
+                $time = time() - strtotime($host['status_rec_date']);
+        }else{
+                return "-";
+        }
+
+        if ($time > 86400) {
+                $days  = floor($time/86400);
+                $time %= 86400;
+        }else{
+                $days  = 0;
+        }
+
+        if ($time > 3600) {
+                $hours = floor($time/3600);
+                $time  %= 3600;
+        }else{
+                $hours = 0;
+        }
+
+        $minutes = floor($time/60);
+
+        return $days . "d " . $hours . "h " . $minutes . "m";
+}
+
 
 ?>
 

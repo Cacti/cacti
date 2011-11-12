@@ -68,7 +68,7 @@ define("GRAPH_ITEM_TYPE_LEGEND", 10);
 define("POLLER_ACTION_SNMP", 0);
 define("POLLER_ACTION_SCRIPT", 1);
 define("POLLER_ACTION_SCRIPT_PHP", 2);
-/* used for reindexing only: 
+/* used for reindexing only:
  * in case we do not have OID_NUM_INDEXES|ARG_NUM_INDEXES
  * we simply use the OID_INDEX|ARG_INDEX and count number of indexes found
  * so this is more of a REINDEX_ACTION_... thingy
@@ -92,6 +92,9 @@ define("AVAIL_SNMP_AND_PING", 1);
 define("AVAIL_SNMP", 2);
 define("AVAIL_PING", 3);
 define("AVAIL_SNMP_OR_PING", 4);
+define("AVAIL_SNMP_GET_UPTIME", 5);
+define("AVAIL_SNMP_GET_SYSDESC", 6);
+define("AVAIL_SNMP_GET_NEXT", 7);
 
 define("PING_ICMP", 1);
 define("PING_UDP", 2);

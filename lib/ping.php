@@ -243,74 +243,68 @@ class Net_Ping
 		/* get start time */
 		$this->start_time();
 
-		/* poll sysUptime for status */
-		$retry_count = 0;
-
-		/* getnext does not work in php versions less than 5 */
-		if (version_compare("5", phpversion(), "<")) {
-			$oid = ".1.3";
-		}else{
+		/* by default, we look at sysUptime */
+		if ($this->avail_method == AVAIL_SNMP_GET_NEXT) {
+			if (version_compare("5", phpversion(), "<")) {
+				$oid = ".1.3";
+			}else{
+				$oid = ".1.3.6.1.2.1.1.3.0";
+			}
+		}else if ($this->avail_method == AVAIL_SNMP_GET_SYSDESC) {
+			$oid = ".1.3.6.1.2.1.1.1.0";
+		}else {
 			$oid = ".1.3.6.1.2.1.1.3.0";
 		}
 
-		while (1) {
-			if ($retry_count >= $this->retries) {
-				$this->snmp_status   = "down";
-				$this->snmp_response = "Host did not respond to SNMP";
+		/* getnext does not work in php versions less than 5 */
+		if (($this->avail_method == AVAIL_SNMP_GET_NEXT) &&
+			(version_compare("5", phpversion(), "<"))) {
+			$output = cacti_snmp_getnext($this->host["hostname"],
+				$this->host["snmp_community"],
+				$oid,
+				$this->host["snmp_version"],
+				$this->host["snmp_username"],
+				$this->host["snmp_password"],
+				$this->host["snmp_auth_protocol"],
+				$this->host["snmp_priv_passphrase"],
+				$this->host["snmp_priv_protocol"],
+				$this->host["snmp_context"],
+				$this->host["snmp_port"],
+				$this->host["snmp_timeout"],
+				$this->retries,
+				SNMP_CMDPHP);
+		}else{
+			$output = cacti_snmp_get($this->host["hostname"],
+				$this->host["snmp_community"],
+				$oid,
+				$this->host["snmp_version"],
+				$this->host["snmp_username"],
+				$this->host["snmp_password"],
+				$this->host["snmp_auth_protocol"],
+				$this->host["snmp_priv_passphrase"],
+				$this->host["snmp_priv_protocol"],
+				$this->host["snmp_context"],
+				$this->host["snmp_port"],
+				$this->host["snmp_timeout"],
+				$this->retries,
+				SNMP_CMDPHP);
+		}
 
-				return false;
-			}
+		/* determine total time +- ~10% */
+		$this->time = $this->get_time($this->precision);
 
-			/* getnext does not work in php versions less than 5 */
-			if (version_compare("5", phpversion(), "<")) {
-				$output = cacti_snmp_getnext($this->host["hostname"],
-					$this->host["snmp_community"],
-					$oid,
-					$this->host["snmp_version"],
-					$this->host["snmp_username"],
-					$this->host["snmp_password"],
-					$this->host["snmp_auth_protocol"],
-					$this->host["snmp_priv_passphrase"],
-					$this->host["snmp_priv_protocol"],
-					$this->host["snmp_context"],
-					$this->host["snmp_port"],
-					$this->host["snmp_timeout"],
-					SNMP_CMDPHP);
-			}else{
-				$output = cacti_snmp_get($this->host["hostname"],
-					$this->host["snmp_community"],
-					$oid,
-					$this->host["snmp_version"],
-					$this->host["snmp_username"],
-					$this->host["snmp_password"],
-					$this->host["snmp_auth_protocol"],
-					$this->host["snmp_priv_passphrase"],
-					$this->host["snmp_priv_protocol"],
-					$this->host["snmp_context"],
-					$this->host["snmp_port"],
-					$this->host["snmp_timeout"],
-					SNMP_CMDPHP);
-			}
+		/* check result for uptime */
+		if (strlen($output)) {
+			/* calculte total time */
+			$this->snmp_status   = $this->time*1000;
+			$this->snmp_response = "Host responded to SNMP";
 
-			/* determine total time +- ~10% */
-			$this->time = $this->get_time($this->precision);
+			return true;
+		}else{
+			$this->snmp_status   = "down";
+			$this->snmp_response = "Host did not respond to SNMP";
 
-			/* check result for uptime */
-			if (strlen($output)) {
-				/* calculte total time */
-				$this->snmp_status   = $this->time*1000;
-				$this->snmp_response = "Host responded to SNMP";
-
-				return true;
-			}
-
-			if ($retry_count == 0) {
-				$oid = ".1.3.6.1.2.1.1.3.0";
-			}else{
-				$oid = ".1.3.6.1.2.1.1.1.0";
-			}
-
-			$retry_count++;
+			return false;
 		}
 	} /* ping_snmp */
 
@@ -526,6 +520,7 @@ class Net_Ping
 		$this->ping_response = "Ping not performed due to setting.";
 		$this->snmp_status   = "down";
 		$this->snmp_response = "SNMP not performed due to setting or ping result.";
+		$this->avail_method  = $avail_method;
 
 		/* short circuit for availability none */
 		if ($avail_method == AVAIL_NONE) {

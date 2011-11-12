@@ -209,9 +209,11 @@ $logfile_options = array(1 =>
 
 $availability_options = array(
 	AVAIL_NONE => "None",
-	AVAIL_SNMP_AND_PING => "Ping and SNMP",
-	AVAIL_SNMP_OR_PING => "Ping or SNMP",
-	AVAIL_SNMP => "SNMP",
+	AVAIL_SNMP_AND_PING => "Ping and SNMP Uptime",
+	AVAIL_SNMP_OR_PING => "Ping or SNMP Uptime",
+	AVAIL_SNMP => "SNMP Uptime",
+	AVAIL_SNMP_GET_SYSDESC => "SNMP Desc",
+	AVAIL_SNMP_GET_NEXT => "SNMP getNext",
 	AVAIL_PING => "Ping");
 
 $ping_methods = array(
