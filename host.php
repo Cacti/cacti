@@ -554,6 +554,8 @@ function host_edit() {
 			<tr>
 				<td class="textHeader">
 				<?php if (($host["availability_method"] == AVAIL_SNMP) ||
+					($host["availability_method"] == AVAIL_SNMP_GET_NEXT) ||
+					($host["availability_method"] == AVAIL_SNMP_GET_SYSDESC) ||
 					($host["availability_method"] == AVAIL_SNMP_AND_PING) ||
 					($host["availability_method"] == AVAIL_SNMP_OR_PING)) { ?>
 					SNMP Information<br>
