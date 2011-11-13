@@ -1183,6 +1183,7 @@ function get_graph_title($local_graph_id) {
 		graph_local.host_id,
 		graph_local.snmp_query_id,
 		graph_local.snmp_index,
+		graph_templates_graph.local_graph_id,
 		graph_templates_graph.title
 		from (graph_templates_graph,graph_local)
 		where graph_templates_graph.local_graph_id=graph_local.id
