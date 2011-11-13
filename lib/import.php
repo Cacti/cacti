@@ -53,7 +53,7 @@ function &import_xml_data(&$xml_data, $import_custom_rra_settings, $rra_array = 
 	$hash_cache = array();
 
 	/* the order of the $hash_type_codes array is ordered such that the items
-	with the most dependencies are last and the items with no dependenecies are first.
+	with the most dependencies are last and the items with no dependencies are first.
 	this means dependencies will just magically work themselves out :) */
 	reset($hash_type_codes);
 	while (list($type, $code) = each($hash_type_codes)) {
@@ -678,7 +678,21 @@ function &xml_to_cdef($hash, &$xml_array, &$hash_cache) {
 			while (list($field_name, $field_array) = each($fields_cdef_item_edit)) {
 				/* make sure this field exists in the xml array first */
 				if (isset($item_array[$field_name])) {
-					$save[$field_name] = addslashes(xml_character_decode($item_array[$field_name]));
+					/* check, if an inherited cdef as to be decoded (value == 5)
+					 * this whole procedure relies on the sequence during template export
+					 * inherited cdef's must come first, this has to be taken care of during export
+					 * so we do not have any specific dependency checks here */
+					if (($field_name == "value") && ($item_array["type"] == '5')) {
+						/* parse information from the hash, which in this case
+						 * is stored as a value of the current item being processed */
+						$parsed_item_hash = parse_xml_hash($item_array["value"]);
+						/* invalid/wrong hash */
+						if ($parsed_item_hash == false) { return false; }
+						$_cdef_id = db_fetch_cell("select id from cdef where hash='" . $parsed_item_hash["hash"] . "'");
+						$save[$field_name] = $_cdef_id;
+					} else {
+						$save[$field_name] = addslashes(xml_character_decode($item_array[$field_name]));
+					}
 				}
 			}
 

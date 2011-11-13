@@ -309,6 +309,11 @@ function data_input_method_to_xml($data_input_id) {
 	return $xml_text;
 }
 
+
+/** encode a cdef along with all cdef_items as XML text
+ * @param int $cdef_id	- the id of the cdef that has to be encoded
+ * @return string		- the resulting XML text
+ */
 function cdef_to_xml($cdef_id) {
 	global $fields_cdef_edit, $export_errors;
 
@@ -352,10 +357,16 @@ function cdef_to_xml($cdef_id) {
 
 		$xml_text .= "\t\t<hash_" . $hash["cdef_item"] . ">\n";
 
+		/* now do the encoding */
 		reset($fields_cdef_item_edit);
 		while (list($field_name, $field_array) = each($fields_cdef_item_edit)) {
 			if (($field_array["method"] != "hidden_zero") && ($field_array["method"] != "hidden")) {
-				$xml_text .= "\t\t\t<$field_name>" . xml_character_encode($item{$field_name}) . "</$field_name>\n";
+				/* check, if an inherited cdef as to be encoded */
+				if (($field_name == "value") && ($item["type"] == '5')) {
+					$xml_text .= "\t\t\t<$field_name>hash_" . get_hash_version("cdef") . get_hash_cdef($item{$field_name}) . "</$field_name>\n";
+				} else {
+					$xml_text .= "\t\t\t<$field_name>" . xml_character_encode($item{$field_name}) . "</$field_name>\n";				
+				}
 			}
 		}
 
@@ -684,14 +695,45 @@ function resolve_dependencies($type, $id, $dep_array) {
 		}
 
 		/* dep: cdef */
-		$graph_template_items = db_fetch_assoc("select cdef_id from graph_templates_item where graph_template_id=$id and local_graph_id=0 and cdef_id > 0 group by cdef_id");
-
-		if (sizeof($graph_template_items) > 0) {
-		foreach ($graph_template_items as $item) {
-			if (!isset($dep_array["cdef"]{$item["cdef_id"]})) {
-				$dep_array = resolve_dependencies("cdef", $item["cdef_id"], $dep_array);
+		$cdef_items = db_fetch_assoc("select cdef_id from graph_templates_item where graph_template_id=$id and local_graph_id=0 and cdef_id > 0 group by cdef_id");
+		
+		$recursive = true;
+		/* in the first turn, search all inherited cdef items related to all cdef's known on highest recursion level */
+		$search_cdef_items = $cdef_items;
+		if (sizeof($cdef_items) > 0) {
+			while ($recursive) {
+				/* are there any inherited cdef's within those referenced by any graph item? 
+				 * search for all cdef_items of type = 5 (inherited cdef) 
+				 * but fetch only those related to already given cdef's */
+				$sql = "SELECT value as cdef_id " .
+					"FROM cdef_items " .
+					"WHERE type = 5 " .
+					"AND " . array_to_sql_or($search_cdef_items, "cdef_id");
+				$inherited_cdef_items = db_fetch_assoc($sql);
+				
+				/* in case we found any */
+				if (sizeof($inherited_cdef_items) > 0) {
+					/* join all cdef's found 
+					 * ATTENTION!
+					 * sequence of parameters matters! 
+					 * we must place the newly found inherited items first
+					 * reason is, that during import, the leafes have to be tackled first,
+					 * that is, the inherited items must be placed first so that they are "resolved" (decoded)
+					 * first during re-import */
+					$cdef_items = array_merge_recursive($inherited_cdef_items, $cdef_items);
+					/* for the next turn, search only new cdef's */
+					$search_cdef_items = $inherited_cdef_items;
+				} else {
+					/* else stop recursion */
+					$recursive = false;
+				}
 			}
-		}
+
+			foreach ($cdef_items as $item) {
+				if (!isset($dep_array["cdef"]{$item["cdef_id"]})) {
+					$dep_array = resolve_dependencies("cdef", $item["cdef_id"], $dep_array);
+				}
+			}
 		}
 
 		/* dep: gprint preset */

@@ -16,6 +16,7 @@ HEAD
 -bug#0002083: When adding a new users, apache generates errors
 -bug#0002084: Incorrect normalisation of hrStorageTable values over 2^31
 -bug#0002086: incorrect usage of mysql custom tcp port in 0.8.7h 
+-bug#0002094: CDEF: "another cdef" references not included in template export
 -bug: Update host template cli script help shows incorrect options
 -bug: Refresh of Cacti Log Broken wiht 0.8.7h
 -bug: Problems saving User Graph Permissions in IE9
