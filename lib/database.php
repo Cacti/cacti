@@ -256,10 +256,8 @@ function db_fetch_insert_id($db_conn = FALSE) {
 	return $db_conn->Insert_ID();
 }
 
-/* array_to_sql_or - loops through a single dimentional array and converts each
-     item to a string that can be used in the OR portion of an sql query in the
-     following form:
-        column=item1 OR column=item2 OR column=item2 ...
+/* array_to_sql_or - loops through a single dimensional array and creates an sql like
+ *                   (sql_column in (value1, value2, value3, ...))
    @arg $array - the array to convert
    @arg $sql_column - the column to set each item in the array equal to
    @returns - a string that can be placed in a SQL OR statement */
