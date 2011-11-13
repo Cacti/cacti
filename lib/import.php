@@ -65,7 +65,7 @@ function &import_xml_data(&$xml_data, $import_custom_rra_settings, $rra_array = 
 
 				switch($type) {
 				case 'graph_template':
-					$hash_cache += xml_to_graph_template($dep_hash_cache[$type][$i]["hash"], $hash_array, $hash_cache);
+					$hash_cache += xml_to_graph_template($dep_hash_cache[$type][$i]["hash"], $hash_array, $hash_cache, $dep_hash_cache[$type][$i]["version"]);
 					break;
 				case 'data_template':
 					$hash_cache += xml_to_data_template($dep_hash_cache[$type][$i]["hash"], $hash_array, $hash_cache, $import_custom_rra_settings, $rra_array);
@@ -104,7 +104,7 @@ function &import_xml_data(&$xml_data, $import_custom_rra_settings, $rra_array = 
 	return $info_array;
 }
 
-function &xml_to_graph_template($hash, &$xml_array, &$hash_cache) {
+function &xml_to_graph_template($hash, &$xml_array, &$hash_cache, $hash_version) {
 	global $struct_graph, $struct_graph_item, $fields_graph_template_input_edit, $hash_version_codes;
 
 	/* import into: graph_templates */
@@ -121,9 +121,6 @@ function &xml_to_graph_template($hash, &$xml_array, &$hash_cache) {
 	$save["id"] = (empty($_graph_template_id) ? "0" : db_fetch_cell("select graph_templates_graph.id from (graph_templates,graph_templates_graph) where graph_templates.id=graph_templates_graph.graph_template_id and graph_templates.id=$graph_template_id and graph_templates_graph.local_graph_id=0"));
 	$save["graph_template_id"] = $graph_template_id;
 
-	/* parse information from the hash */
-	$parsed_hash = parse_xml_hash($hash);
-
 	reset($struct_graph);
 	while (list($field_name, $field_array) = each($struct_graph)) {
 		/* make sure this field exists in the xml array first */
@@ -133,7 +130,9 @@ function &xml_to_graph_template($hash, &$xml_array, &$hash_cache) {
 
 		/* make sure this field exists in the xml array first */
 		if (isset($xml_array["graph"][$field_name])) {
-			if (($field_name == "unit_exponent_value") && (get_version_index($parsed_hash["version"]) < get_version_index("0.8.5")) && ($xml_array["graph"][$field_name] == "0")) { /* backwards compatability */
+			/* Cacti pre 0.8.5 did handle a unit_exponent=0 differently
+			 * so we need to know the version of the current hash code we're just working on */
+			if (($field_name == "unit_exponent_value") && (get_version_index($hash_version) < get_version_index("0.8.5")) && ($xml_array["graph"][$field_name] == "0")) { /* backwards compatability */
 				$save[$field_name] = "";
 			}else{
 				$save[$field_name] = addslashes(xml_character_decode($xml_array["graph"][$field_name]));
@@ -842,10 +841,11 @@ function parse_xml_hash($hash) {
 		$parsed_hash["hash"] = $matches[3];
 
 		/* an error has occured */
-		if (($parsed_hash["type"] == false) || ($parsed_hash["version"] == false)) {
+		if (($parsed_hash["type"] === false) || ($parsed_hash["version"] === false)) {
 			return false;
 		}
 	}else{
+		cacti_log(__FUNCTION__ . " ERROR wrong hash format", false);
 		return false;
 	}
 
@@ -920,6 +920,7 @@ function get_version_index($string_version) {
 		$i++;
 	}
 
+	/* version index not found */
 	return -1;
 }
 
