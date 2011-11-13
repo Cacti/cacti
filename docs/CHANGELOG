@@ -4,6 +4,7 @@ HEAD
 -feature: Properly support ifHighSpeed
 -feature: Increase granularity of availability options to correct spine bug
 -feature: Replace 'event count' with last changed date for host availability
+-bug#0001963: "total in" and "total out" are always 0
 -bug#0002040: ICMP ping errors for Win7 & PHP 5.3
 -bug#0002062: Multiple security vunerbilities
 -bug#0002063: multiple value poller output incorrectly interpreted as hexadecimal value

@@ -511,6 +511,7 @@ function rrdtool_function_fetch($local_data_id, $start_time, $end_time, $resolut
 						}
 					} else {
 						list($mantisa, $exponent) = explode('e', $matches[$i]);
+						$mantisa = str_replace(",",".",$mantisa);
 						$value = ($mantisa * (pow(10, (float)$exponent)));
 						$fetch_array["values"][$i - 1][$j] = ($value * 1);
 						$max_array[$i - 1] = $value;
