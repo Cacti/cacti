@@ -220,13 +220,21 @@ function substitute_snmp_query_data($string, $host_id, $snmp_query_id, $snmp_ind
    @returns - the original string with all of the variable substitutions made */
 function substitute_data_input_data($string, $graph, $local_data_id, $max_chars = 0) {
 	if (empty($local_data_id)) {
-		$local_data_ids = array_rekey(db_fetch_assoc("SELECT DISTINCT local_data_id
-			FROM data_template_rrd
-			INNER JOIN graph_templates_item
-			ON data_template_rrd.id=graph_templates_item.task_item_id
-			WHERE local_graph_id=" . $graph["local_graph_id"]), "local_data_id", "local_data_id");
+		if (isset($graph['local_graph_id'])) {
+			$local_data_ids = array_rekey(db_fetch_assoc("SELECT DISTINCT local_data_id
+				FROM data_template_rrd
+				INNER JOIN graph_templates_item
+				ON data_template_rrd.id=graph_templates_item.task_item_id
+				WHERE local_graph_id=" . $graph["local_graph_id"]), "local_data_id", "local_data_id");
 
-		$data_template_data_id = db_fetch_cell("SELECT id FROM data_template_data WHERE local_data_id IN (" . implode(",", $local_data_ids) . ")");
+			if (sizeof($local_data_ids)) {
+				$data_template_data_id = db_fetch_cell("SELECT id FROM data_template_data WHERE local_data_id IN (" . implode(",", $local_data_ids) . ")");
+			}else{
+				$data_template_data_id = 0;
+			}
+		}else{
+			$data_template_data_id = 0;
+		}
 	}else{
 		$data_template_data_id = db_fetch_cell("SELECT id FROM data_template_data WHERE local_data_id=$local_data_id");
 	}
