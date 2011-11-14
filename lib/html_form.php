@@ -57,7 +57,7 @@ function draw_edit_form($array) {
 			}elseif ($field_array["method"] == "hidden_zero") {
 				form_hidden_box($field_name, $field_array["value"], "0");
 			}elseif ($field_array["method"] == "spacer") {
-				print "<tr id='row_$field_name' bgcolor='#" . $colors["header_panel"] . "'><td colspan='2' class='textSubHeaderDark'>" . $field_array["friendly_name"] . "</td></tr>\n";
+				print "<tr id='row_$field_name' bgcolor='#" . $colors["header_panel"] . "'><td colspan='2' class='tableSubHeaderColumn'>" . $field_array["friendly_name"] . "</td></tr>\n";
 			}else{
 				if (isset($config_array["force_row_color"])) {
 					print "<tr id='row_$field_name' bgcolor='#" . $config_array["force_row_color"] . "'>";
