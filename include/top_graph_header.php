@@ -146,6 +146,8 @@ if (isset($_REQUEST["action"]) && $_REQUEST["action"] == "zoom") {
 		</td>
 	</tr>
 	<?php }
+
+	global $graph_views;
 	load_current_session_value("action", "sess_cacti_graph_action", $graph_views[read_graph_config_option("default_tree_view_mode")]);
 	?>
 	<tr>
