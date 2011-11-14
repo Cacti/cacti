@@ -168,7 +168,7 @@ if ($action == 'login') {
 	/* Process the user  */
 	if (sizeof($user) > 0) {
 		cacti_log("LOGIN: User '" . $user["username"] . "' Authenticated", false, "AUTH");
-		db_execute("INSERT INTO user_log (username,user_id,result,ip,time) VALUES (" . $cnn_id->qstr($username) ."," . $user["id"] . ",1,'" . $_SERVER["REMOTE_ADDR"] . "',NOW())");
+		db_execute("INSERT INTO user_log (username,user_id,result,ip,time) VALUES (" . $cnn_id->qstr($username) . "," . $user["id"] . ",1,'" . $_SERVER["REMOTE_ADDR"] . "',NOW())");
 		/* is user enabled */
 		$user_enabled = $user["enabled"];
 		if ($user_enabled != "on") {
@@ -222,7 +222,7 @@ if ($action == 'login') {
 			exit;
 		}else{
 			/* BAD username/password builtin and LDAP */
-			db_execute("INSERT INTO user_log (username,user_id,result,ip,time) VALUES ('" . $username . "',0,0,'" . $_SERVER["REMOTE_ADDR"] . "',NOW())");
+			db_execute("INSERT INTO user_log (username,user_id,result,ip,time) VALUES (" . $cnn_id->qstr($username) . ",0,0,'" . $_SERVER["REMOTE_ADDR"] . "',NOW())");
 		}
 	}
 }
