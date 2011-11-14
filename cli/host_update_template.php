@@ -149,7 +149,7 @@ print "Cacti Retemplate Host Script 1.0, Copyright 2004-2011 - The Cacti Group\n
 	print "--host-id=host_id  - The host_id to have templates reapplied 'all' to do all hosts\n";
 	print "--host-template=ID - Which Host Template to Refresh\n\n";
 	print "Optional:\n";
-	print "-d | --debug  - Display verbose output during execution\n";
+	print "-d --debug  - Display verbose output during execution\n";
 	print "-v --version  - Display this help message\n";
 	print "-h --help     - Display this help message\n";
 	print "List Options:\n\n";
