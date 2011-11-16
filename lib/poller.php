@@ -231,10 +231,12 @@ function update_reindex_cache($host_id, $data_query_id) {
 					break;
 				case DATA_INPUT_TYPE_QUERY_SCRIPT_SERVER:
 					if (isset($data_query_xml["arg_num_indexes"])) { /* we have a specific request for counting indexes */
-						$recache_stack[] = "($host_id, $data_query_id," . POLLER_ACTION_SCRIPT_PHP . ", '=', '$assert_value', '" . get_script_query_path($data_query_xml["script_function"] . " " . (isset($data_query_xml["arg_prepend"]) ? $data_query_xml["arg_prepend"] . " ": "") . $data_query_xml["arg_num_indexes"], $data_query_xml["script_path"], $host_id) . "', '1')";
+						/* escape path (windows!) and parameters for use with database sql; TODO: replace by db specific escape function like mysql_real_escape_string? */
+						$recache_stack[] = "($host_id, $data_query_id," . POLLER_ACTION_SCRIPT_PHP . ", '=', '$assert_value', '" . addslashes(get_script_query_path($data_query_xml["script_function"] . " " . (isset($data_query_xml["arg_prepend"]) ? $data_query_xml["arg_prepend"] . " ": "") . $data_query_xml["arg_num_indexes"], $data_query_xml["script_path"], $host_id)) . "', '1')";
 					} else { /* count all indexes found */
 						# TODO: push the correct assert value
-						#$recache_stack[] = "($host_id, $data_query_id," . POLLER_ACTION_SCRIPT_PHP_COUNT . ", '=', '$assert_value', '" . get_script_query_path($data_query_xml["script_function"] . " " . (isset($data_query_xml["arg_prepend"]) ? $data_query_xml["arg_prepend"] . " ": "") . $data_query_xml["arg_index"], $data_query_xml["script_path"], $host_id) . "', '1')";
+						/* escape path (windows!) and parameters for use with database sql; TODO: replace by db specific escape function like mysql_real_escape_string? */
+						#$recache_stack[] = "($host_id, $data_query_id," . POLLER_ACTION_SCRIPT_PHP_COUNT . ", '=', '$assert_value', '" . addslashes(get_script_query_path($data_query_xml["script_function"] . " " . (isset($data_query_xml["arg_prepend"]) ? $data_query_xml["arg_prepend"] . " ": "") . $data_query_xml["arg_index"], $data_query_xml["script_path"], $host_id)) . "', '1')";
 						# omit the assert value until we are able to run an 'index' command through script server
 					}
 					break;
