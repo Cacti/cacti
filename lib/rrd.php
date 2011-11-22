@@ -2030,16 +2030,16 @@ function rrdtool_set_font($type, $no_legend = "") {
 
 function rrd_substitute_host_query_data($txt_graph_item, $graph, $graph_item) {
 	/* replace host variables in graph elements */
+	$host_id = 0;
 	if (empty($graph["host_id"])) {
 		/* if graph has no associated host determine host_id from graph item data source */
 		if (!empty($graph_item["local_data_id"])) {
 			$host_id = db_fetch_cell("select host_id from data_local where id='" . $graph_item["local_data_id"] . "'");
 		}
-	}
-	else {
+	} else {
 		$host_id = $graph["host_id"];
 	}
-	$txt_graph_item = substitute_host_data($txt_graph_item, '|','|', $graph['host_id']);
+	$txt_graph_item = substitute_host_data($txt_graph_item, '|','|', $host_id);
 
 	/* replace query variables in graph elements */
 	if (preg_match("/\|query_[a-zA-Z0-9_]+\|/", $txt_graph_item)) {

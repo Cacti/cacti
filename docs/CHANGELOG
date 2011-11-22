@@ -1,6 +1,6 @@
 Cacti CHANGELOG
 
-HEAD
+0.8.7i
 -feature: Properly support ifHighSpeed
 -feature: Increase granularity of availability options to correct spine bug
 -feature: Replace 'event count' with last changed date for host availability
@@ -28,6 +28,7 @@ HEAD
 -bug: Special Type Code 'host_id' available in Data Queries by Not Data Input Methods
 -bug: Dont generate error messages when creating non host based graphs
 -bug: wrong index used for Data Queries using VALUE/REGEXP
+-bug: fix issue with title variable replacement failing when no host is associated with graph
 
 0.8.7h
 -bug#0001403: Reapply Suggested Names does not work correctly for graphs and data sources not associated with Data Queries
