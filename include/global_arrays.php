@@ -298,17 +298,11 @@ $snmp_implimentations = array(
 	"ucd-snmp" => "UCD-SNMP 4.x",
 	"net-snmp" => "NET-SNMP 5.x");
 
-if ($config["cacti_server_os"] != "win32") {
-	$rrdtool_versions = array(
-		"rrd-1.0.x" => "RRDTool 1.0.x",
-		"rrd-1.2.x" => "RRDTool 1.2.x",
-		"rrd-1.3.x" => "RRDTool 1.3.x",
-		"rrd-1.4.x" => "RRDTool 1.4.x");
-}else{
-	$rrdtool_versions = array(
-		"rrd-1.0.x" => "RRDTool 1.0.x",
-		"rrd-1.2.x" => "RRDTool 1.2.x");
-}
+$rrdtool_versions = array(
+	"rrd-1.0.x" => "RRDTool 1.0.x",
+	"rrd-1.2.x" => "RRDTool 1.2.x",
+	"rrd-1.3.x" => "RRDTool 1.3.x",
+	"rrd-1.4.x" => "RRDTool 1.4.x");
 
 $cdef_item_types = array(
 	1 => "Function",
