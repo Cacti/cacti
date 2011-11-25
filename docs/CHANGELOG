@@ -29,6 +29,7 @@ Cacti CHANGELOG
 -bug: Dont generate error messages when creating non host based graphs
 -bug: wrong index used for Data Queries using VALUE/REGEXP
 -bug: fix issue with title variable replacement failing when no host is associated with graph
+-bug: Cacti generating MySQL 1100 Errors when Modifying the Tree
 
 0.8.7h
 -bug#0001403: Reapply Suggested Names does not work correctly for graphs and data sources not associated with Data Queries

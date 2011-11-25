@@ -248,8 +248,6 @@ function check_changed($request, $session) {
 function is_error_message() {
 	global $config, $messages;
 
-	include($config["include_path"] . "/global_arrays.php");
-
 	if (isset($_SESSION["sess_messages"])) {
 		if (is_array($_SESSION["sess_messages"])) {
 			foreach (array_keys($_SESSION["sess_messages"]) as $current_message_id) {
