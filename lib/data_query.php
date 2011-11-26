@@ -61,7 +61,7 @@ function get_data_query_array($snmp_query_id) {
 	global $config, $data_query_xml_arrays;
 
 	include_once($config["library_path"] . "/xml.php");
-	
+
 	/* load the array into memory if it hasn't been done yet */
 	if (!isset($data_query_xml_arrays[$snmp_query_id])) {
 		$xml_file_path = db_fetch_cell("select xml_path from snmp_query where id=$snmp_query_id");
@@ -75,7 +75,7 @@ function get_data_query_array($snmp_query_id) {
 		debug_log_insert("data_query", "Found data query XML file at '$xml_file_path'");
 
 		$data = implode("",file($xml_file_path));
-	
+
 		$xml_data = xml2array($data);
 
 		/* store the array value to the global array for future reference */
@@ -113,7 +113,7 @@ function query_script_host($host_id, $snmp_query_id) {
 
 		/* fetch specified index at specified OID */
 		$script_num_index_array = exec_into_array($script_path);
-	
+
 		debug_log_insert("data_query", "Executing script for num of indexes" . " '$script_path'");
 		for ($i=0;($i<sizeof($script_num_index_array));$i++) {
 			debug_log_insert("data_query", "Found number of indexes: " . $script_num_index_array[$i]);
@@ -218,7 +218,7 @@ function query_snmp_host($host_id, $snmp_query_id) {
 										$host["snmp_auth_protocol"], $host["snmp_priv_passphrase"], $host["snmp_priv_protocol"],
 										$host["snmp_context"], $host["snmp_port"], $host["snmp_timeout"],
 										$host["ping_retries"], $host["max_oids"], SNMP_WEBUI);
-	
+
 		debug_log_insert("data_query", "Executing SNMP get for num of indexes @ '" . $snmp_queries["oid_num_indexes"] . "' Index Count: " . $snmp_num_indexes);
 	} else {
 		debug_log_insert("data_query", "&lt;oid_num_indexes&gt; missing in XML file, 'Index Count Changed' emulated by counting oid_index entries");
@@ -233,7 +233,7 @@ function query_snmp_host($host_id, $snmp_query_id) {
 	debug_log_insert("data_query", "Executing SNMP walk for list of indexes @ '" . $snmp_queries["oid_index"] . "' Index Count: " . sizeof($snmp_indexes));
 
 	/* no data found; get out */
-	if (!$snmp_indexes) {
+	if (!sizeof($snmp_indexes)) {
 		debug_log_insert("data_query", "No SNMP data returned");
 		return false;
 	} else {
