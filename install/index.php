@@ -354,10 +354,6 @@ if ($_REQUEST["step"] == "4") {
 		run_data_query($host_id, 6);
 	}
 
-	/* it's always a good idea to re-populate the poller cache to make sure everything is refreshed and
-	up-to-date */
-	repopulate_poller_cache();
-
 	db_execute("delete from version");
 	db_execute("insert into version (cacti) values ('" . $config["cacti_version"] . "')");
 
