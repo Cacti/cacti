@@ -21,6 +21,7 @@ Cacti CHANGELOG
 -bug#0002087: PHP recache problems due to missing slashes in reindex table
 -bug#0002093: unit exponent value of 0 not imported with graph template
 -bug#0002094: CDEF: "another cdef" references not included in template export
+-bug#0002106: 'cli/add_device.php' doesn't accept "None" for host template
 -bug: Update host template cli script help shows incorrect options
 -bug: Refresh of Cacti Log Broken wiht 0.8.7h
 -bug: Problems saving User Graph Permissions in IE9

@@ -221,7 +221,7 @@ function form_input_validate($field_value, $field_name, $regexp_match, $allow_nu
 	/* php 4.2+ complains about empty regexps */
 	if (empty($regexp_match)) { $regexp_match = ".*"; }
 
-	if ((!preg_match('/' . $regexp_match . '/', $field_value) || (($allow_nulls == false) && ($field_value == "")))) {
+	if ((!preg_match('/' . $regexp_match . '/', $field_value) || (($allow_nulls == false) && ($field_value === "")))) {
 		raise_message($custom_message);
 
 		$_SESSION["sess_error_fields"][$field_name] = $field_name;
