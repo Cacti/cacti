@@ -2,8 +2,8 @@ Cacti CHANGELOG
 
 0.8.7i
 -bug#0001963: Bandwidth summation "total in" and "total out" are always 0
--bug#0002040: ICMP ping errors for Win7 and PHP 5.3
--bug#0002062: Multiple security vunerbilities
+-bug#0002040: ICMP ping errors for Windows 7 with PHP 5.3
+-bug#0002062: Multiple security vulnerabilities
 -bug#0002063: Multiple value poller output incorrectly interpreted as hexadecimal value
 -bug#0002064: Removing "~" (tilde) by sanitize_uri() conflicts with Apache UserDir translation
 -bug#0002066: Graph without host id "Notice: Undefined variable: host_id"
@@ -13,13 +13,13 @@ Cacti CHANGELOG
 -bug#0002079: Using input field of a script in graph title does not work 
 -bug#0002080: Database password containing "@" does not connect
 -bug#0002083: Adding a new users generates errors in apache logs
--bug#0002084: Incorrect normalisation of hrStorageTable values over 2^31
+-bug#0002084: Incorrect normalization of hrStorageTable values over 2^31
 -bug#0002086: Incorrect usage of mysql custom tcp port
 -bug#0002087: PHP recache problems due to missing slashes in reindex table
 -bug#0002093: Unit exponent value of 0 not imported with graph template
 -bug#0002094: CDEF: "another cdef" references not included in template export
 -bug#0002106: Command line add device does not accept "None" for host template
--bug: Update host template cli script help shows incorrect options
+-bug: Update host template cli script help to fix incorrect options
 -bug: Refresh of Cacti log viewer not working
 -bug: Problems saving User Graph Permissions in IE9
 -bug: Bandwidth summation fails if NAN values are present
@@ -27,7 +27,7 @@ Cacti CHANGELOG
 -bug: Do not generate error messages when creating non host based graphs
 -bug: Wrong index used for Data Queries using VALUE/REGEXP
 -bug: Fix issue with title variable replacement failing when no host is associated with graph
--bug: Cacti generating MySQL 1100 Errors when Modifying the Tree
+-bug: Cacti generating MySQL 1100 Errors when modifying the tree
 -bug: Resolved "Fatal error: Cannot use string offset as an array" in lib/data_query.php
 -feature: Properly support ifHighSpeed replacement variable
 -feature: Increase granularity of availability options to correct spine bug
@@ -36,7 +36,7 @@ Cacti CHANGELOG
 0.8.7h
 -bug#0001403: Reapply Suggested Names does not work correctly for graphs and data sources not associated with Data Queries
 -bug#0001568: Remove PHP 5.3 deprecated functions
--bug#0001584: Conncurrent changes to graph tree ordering can corrupt sort values
+-bug#0001584: Concurrent changes to graph tree ordering can corrupt sort values
 -bug#0001626: Symbol ($) does not appear in labels/gprint strings to rrdtool during graph generation
 -bug#0001632: Script server treats quoted arguments with spaces incorrectly as multiple separate arguments
 -bug#0001646: MySQL SSL connection support
