@@ -1,5 +1,8 @@
 Cacti CHANGELOG
 
+HEAD - Patches
+-bug: Graph settings and settings check boxes do not allow unchecking to be saved
+
 0.8.7i
 -bug#0001963: Bandwidth summation "total in" and "total out" are always 0
 -bug#0002040: ICMP ping errors for Windows 7 with PHP 5.3
