@@ -115,7 +115,7 @@ function associate($data_template_id, $data_rra, $debug, $quiet) {
 				foreach ($data_rra as $rra) {
 					db_execute("INSERT INTO data_template_data_rra
 									(data_template_data_id,rra_id)
-									VALUES (" . $data_source["id"] . "," . $rra["rra_id"] . ")");
+									VALUES (" . $data_source["id"] . "," . $rra . ")");
 				}
 			}
 		}

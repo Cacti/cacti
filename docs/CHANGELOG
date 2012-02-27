@@ -1,7 +1,12 @@
 Cacti CHANGELOG
 
-HEAD - Patches
+0.8.8
+-bug: Fix issue with data source template associate command line script inserting incorrect rra information
+-bug: Fix minor display issue on data source pages
+-bug: Fix minor issue with counting items in the poller_output table
 -bug: Graph settings and settings check boxes do not allow unchecking to be saved
+-bug: Fix minor issue with plugin library caused by non-session
+-feature: Merge Plugin Architecture into Cacti
 
 0.8.7i
 -bug#0001963: Bandwidth summation "total in" and "total out" are always 0
