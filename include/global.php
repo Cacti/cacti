@@ -42,6 +42,9 @@ $database_ssl = false;
 /* Default session name - Session name must contain alpha characters */
 $cacti_session_name = "Cacti";
 
+/* define default url path */
+$url_path = "/";
+
 /* Include configuration */
 include(dirname(__FILE__) . "/config.php");
 
@@ -206,19 +209,12 @@ include_once($config["library_path"] . "/database.php");
 db_connect_real($database_hostname, $database_username, $database_password, $database_default, $database_type, $database_port, $database_ssl);
 
 /* include additional modules */
-include_once($config["library_path"] . "/adodb/adodb.inc.php");
-include_once($config["library_path"] . "/database.php");
 include_once($config["library_path"] . "/functions.php");
 include_once($config["include_path"] . "/global_constants.php");
 include_once($config["library_path"] . "/plugins.php");
 include_once($config["include_path"] . "/plugins.php");
 include_once($config["include_path"] . "/global_arrays.php");
 include_once($config["include_path"] . "/global_settings.php");
-
-/* connect to the database server */
-db_connect_real($database_hostname, $database_username, $database_password, $database_default, $database_type, $database_port, $database_ssl);
-
-/* include additional modules */
 include_once($config["include_path"] . "/global_form.php");
 include_once($config["library_path"] . "/html.php");
 include_once($config["library_path"] . "/html_form.php");
