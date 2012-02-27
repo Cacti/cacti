@@ -1,6 +1,7 @@
 Cacti CHANGELOG
 
 0.8.8
+-bug: Fix input validation on cli/api_device.php
 -bug: Fix issue with data source template associate command line script inserting incorrect rra information
 -bug: Fix minor display issue on data source pages
 -bug: Fix minor issue with counting items in the poller_output table

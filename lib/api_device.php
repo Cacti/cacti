@@ -119,9 +119,9 @@ function api_device_save($id, $host_template_id, $description, $hostname, $snmp_
 	if ($save["snmp_version"] == 3) {
 		$save["snmp_username"]        = form_input_validate($snmp_username, "snmp_username", "", true, 3);
 		$save["snmp_password"]        = form_input_validate($snmp_password, "snmp_password", "", true, 3);
-		$save["snmp_auth_protocol"]   = form_input_validate($snmp_auth_protocol, "snmp_auth_protocol", "", true, 3);
+		$save["snmp_auth_protocol"]   = form_input_validate($snmp_auth_protocol, "snmp_auth_protocol", "^MD5|SHA$", true, 3);
 		$save["snmp_priv_passphrase"] = form_input_validate($snmp_priv_passphrase, "snmp_priv_passphrase", "", true, 3);
-		$save["snmp_priv_protocol"]   = form_input_validate($snmp_priv_protocol, "snmp_priv_protocol", "", true, 3);
+		$save["snmp_priv_protocol"]   = form_input_validate($snmp_priv_protocol, "snmp_priv_protocol", "^DES|AES128$", true, 3);
 		$save["snmp_context"]         = form_input_validate($snmp_context, "snmp_context", "", true, 3);
 	} else {
 		$save["snmp_username"]        = "";
@@ -131,7 +131,9 @@ function api_device_save($id, $host_template_id, $description, $hostname, $snmp_
 	$save["snmp_port"]            = form_input_validate($snmp_port, "snmp_port", "^[0-9]+$", false, 3);
 	$save["snmp_timeout"]         = form_input_validate($snmp_timeout, "snmp_timeout", "^[0-9]+$", false, 3);
 
-	$save["disabled"]             = form_input_validate($disabled, "disabled", "", true, 3);
+	/* disabled = "on"   => regexp "^on$"
+	 * not disabled = "" => no regexp, but allow nulls */
+	$save["disabled"]             = form_input_validate($disabled, "disabled", "^on$", true, 3);
 
 	$save["availability_method"]  = form_input_validate($availability_method, "availability_method", "^[0-9]+$", false, 3);
 	$save["ping_method"]          = form_input_validate($ping_method, "ping_method", "^[0-9]+$", false, 3);
