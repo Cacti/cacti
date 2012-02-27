@@ -882,6 +882,18 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 		update_graph_data_query_cache($cache_array["local_graph_id"]);
 	}
 
+	# now that we have the id of the new host, we may plugin postprocessing code
+	$save["id"] = $cache_array["local_graph_id"];
+	$save["graph_template_id"] = $graph_template_id;	// attention: unset!
+	if (is_array($snmp_query_array)) {
+		$save["snmp_query_id"] = $snmp_query_array["snmp_query_id"];
+		$save["snmp_index"] = $snmp_query_array["snmp_index"];
+	} else {
+		$save["snmp_query_id"] = 0;
+		$save["snmp_index"] = 0;
+	}
+	api_plugin_hook_function('create_complete_graph_from_template', $save);
+
 	return $cache_array;
 }
 

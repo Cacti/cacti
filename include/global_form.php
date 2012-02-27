@@ -22,8 +22,9 @@
  +-------------------------------------------------------------------------+
 */
 
-if (!defined("VALID_HOST_FIELDS")) {
-	define("VALID_HOST_FIELDS", "(hostname|host_id|snmp_community|snmp_username|snmp_password|snmp_auth_protocol|snmp_priv_passphrase|snmp_priv_protocol|snmp_context|snmp_version|snmp_port|snmp_timeout)");
+if (!defined('VALID_HOST_FIELDS')) {
+	$string = api_plugin_hook_function('valid_host_fields', '(hostname|host_id|snmp_community|snmp_username|snmp_password|snmp_auth_protocol|snmp_priv_passphrase|snmp_priv_protocol|snmp_context|snmp_version|snmp_port|snmp_timeout)');
+	define('VALID_HOST_FIELDS', $string);
 }
 
 /* file: cdef.php, action: edit */
@@ -1241,4 +1242,6 @@ $fields_template_import = array(
 		"sql_all" => "select rra.id from rra where id in (1,2,3,4) order by id",
 		),
 	);
+
+api_plugin_hook('config_form');
 ?>

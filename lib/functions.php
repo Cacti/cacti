@@ -311,24 +311,28 @@ function display_output_messages() {
 
 		if (is_array($_SESSION["sess_messages"])) {
 			foreach (array_keys($_SESSION["sess_messages"]) as $current_message_id) {
-				eval ('$message = "' . $messages[$current_message_id]["message"] . '";');
+				if (isset($messages[$current_message_id]["message"])) {
+					eval ('$message = "' . $messages[$current_message_id]["message"] . '";');
 
-				switch ($messages[$current_message_id]["type"]) {
-				case 'info':
-					if ($error_message == false) {
-						print "<div id='message' class='textInfo' style='margin-bottom:5px;padding:5px;background-color:#FFFFFF;border:1px solid #BBBBBB;max-width:100%;position:relative;'>";
-						print "$message";
+					switch ($messages[$current_message_id]["type"]) {
+					case 'info':
+						if ($error_message == false) {
+							print "<div id='message' class='textInfo' style='margin-bottom:5px;padding:5px;background-color:#FFFFFF;border:1px solid #BBBBBB;max-width:100%;position:relative;'>";
+							print "$message";
+							print "</div>";
+
+							/* we don't need these if there are no error messages */
+							kill_session_var("sess_field_values");
+						}
+						break;
+					case 'error':
+						print "<div id='message' class='textError' style='margin-bottom:5px;padding:5px;background-color:#FFFFFF;border:1px solid #BBBBBB;max-width:100%;position:relative;'>";
+						print "Error: $message";
 						print "</div>";
-
-						/* we don't need these if there are no error messages */
-						kill_session_var("sess_field_values");
+						break;
 					}
-					break;
-				case 'error':
-					print "<div id='message' class='textError' style='margin-bottom:5px;padding:5px;background-color:#FFFFFF;border:1px solid #BBBBBB;max-width:100%;position:relative;'>";
-					print "Error: $message";
-					print "</div>";
-					break;
+				}else{
+					cacti_log("ERROR: Cacti Error Message Id '$current_message_id' Not Defined", false, "WEBUI");
 				}
 			}
 		}else{
@@ -1712,6 +1716,8 @@ function get_host_array() {
    @arg $type - (string) Either 'url' or 'title'
    @returns (string> Either the navigation text or title */
 function draw_navigation_text($type = "url") {
+	global $config;
+
 	$nav_level_cache = (isset($_SESSION["sess_nav_level_cache"]) ? $_SESSION["sess_nav_level_cache"] : array());
 
 	$nav = array(
@@ -1724,8 +1730,8 @@ function draw_navigation_text($type = "url") {
 		"graph.php:zoom" => array("title" => "Zoom", "mapping" => "graph_view.php:,?,graph.php:view", "level" => "3"),
 		"graph.php:properties" => array("title" => "Properties", "mapping" => "graph_view.php:,?,graph.php:view", "level" => "3"),
 		"graph_settings.php:" => array("title" => "Settings", "mapping" => "graph_view.php:", "url" => "graph_settings.php", "level" => "1"),
-		"index.php:" => array("title" => "Console", "mapping" => "", "url" => "index.php", "level" => "0"),
-		"index.php:login" => array("title" => "Console", "mapping" => "", "url" => "index.php", "level" => "0"),
+		"index.php:" => array("title" => "Console", "mapping" => "", "url" => $config['url_path'] . "index.php", "level" => "0"),
+		"index.php:login" => array("title" => "Console", "mapping" => "", "url" => $config['url_path'] . "index.php", "level" => "0"),
 		"graphs.php:" => array("title" => "Graph Management", "mapping" => "index.php:", "url" => "graphs.php", "level" => "1"),
 		"graphs.php:graph_edit" => array("title" => "(Edit)", "mapping" => "index.php:,graphs.php:", "url" => "", "level" => "2"),
 		"graphs.php:graph_diff" => array("title" => "Change Graph Template", "mapping" => "index.php:,graphs.php:,graphs.php:graph_edit", "url" => "", "level" => "3"),
@@ -1802,6 +1808,8 @@ function draw_navigation_text($type = "url") {
 		"templates_export.php:save" => array("title" => "Export Results", "mapping" => "index.php:,templates_export.php:", "url" => "templates_export.php", "level" => "2"),
 		"templates_import.php:" => array("title" => "Import Templates", "mapping" => "index.php:", "url" => "templates_import.php", "level" => "1"),
 		);
+
+	$nav =  api_plugin_hook_function('draw_navigation_text', $nav);
 
 	$current_page = basename($_SERVER["PHP_SELF"]);
 

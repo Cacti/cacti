@@ -44,6 +44,8 @@ $ds_actions = array(
 	7 => "Disable"
 	);
 
+$ds_actions = api_plugin_hook_function('data_source_action_array', $ds_actions);
+
 /* set default action */
 if (!isset($_REQUEST["action"])) { $_REQUEST["action"] = ""; }
 
@@ -321,6 +323,8 @@ function form_actions() {
 						db_execute("delete from graph_templates_item where task_item_id IN (" . implode(",", $data_template_rrds) . ") and local_graph_id > 0");
 					}
 
+					api_plugin_hook_function('graph_items_remove', $data_template_rrds);
+
 					break;
 				case '3': /* delete all graphs tied to this data source */
 					$graphs = array_rekey(db_fetch_assoc("select
@@ -336,6 +340,8 @@ function form_actions() {
 						api_graph_remove_multi($graphs);
 					}
 
+					api_plugin_hook_function('graphs_remove', $graphs);
+
 					break;
 			}
 
@@ -346,6 +352,8 @@ function form_actions() {
 			}
 
 			api_data_source_remove_multi($selected_items);
+
+			api_plugin_hook_function('data_source_remove', $selected_items);
 		}elseif ($_POST["drp_action"] == "2") { /* change graph template */
 			for ($i=0;($i<count($selected_items));$i++) {
 				/* ================= input validation ================= */
@@ -398,6 +406,8 @@ function form_actions() {
 				api_reapply_suggested_data_source_title($selected_items[$i]);
 				update_data_source_title_cache($selected_items[$i]);
 			}
+		} else {
+			api_plugin_hook_function('data_source_action_execute', $_POST['drp_action']);
 		}
 		header("Location: data_sources.php");
 		exit;
@@ -541,6 +551,12 @@ function form_actions() {
 				</tr>\n
 				";
 			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Reapply Suggested Naming to Data Source(s)'>";
+		}else{
+			$save['drp_action'] = $_POST['drp_action'];
+			$save['ds_list'] = $ds_list;
+			$save['ds_array'] = (isset($ds_array)? $ds_array : array());
+			api_plugin_hook_function('data_source_action_prepare', $save);
+			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue'>";
 		}
 	}else{
 		print "<tr><td bgcolor='#" . $colors["form_alternate1"]. "'><span class='textError'>You must select at least one data source.</span></td></tr>\n";
@@ -678,6 +694,8 @@ function ds_edit() {
 	input_validate_input_number(get_request_var("id"));
 	input_validate_input_number(get_request_var("host_id"));
 	/* ==================================================== */
+
+	api_plugin_hook('data_source_edit_top');
 
 	$use_data_template = true;
 	$host_id = 0;
@@ -970,6 +988,8 @@ function ds_edit() {
 	}
 
 	form_save_button("data_sources.php");
+
+	api_plugin_hook('data_source_edit_bottom');
 
 	include_once("./include/bottom_footer.php");
 }
@@ -1305,10 +1325,35 @@ function ds() {
 	$i = 0;
 	if (sizeof($data_sources) > 0) {
 		foreach ($data_sources as $data_source) {
+			$data_source["data_template_name"] = htmlspecialchars($data_source["data_template_name"]);
+			$data_name_cache = title_trim(htmlspecialchars($data_source["name_cache"]), read_config_option("max_title_data_source"));
+
+			if (trim(get_request_var_request("filter") != "")) {
+				$data_source['data_input_name'] = (preg_replace("/(" . preg_quote(get_request_var_request("filter")) . ")/i", "<span style='background-color: #F8D93D;'>\\1</span>", htmlspecialchars($data_source['data_input_name'])));
+				$data_source['data_template_name'] = preg_replace("/(" . preg_quote(get_request_var_request("filter")) . ")/i", "<span style='background-color: #F8D93D;'>\\1</span>", $data_source['data_template_name']);
+				$data_name_cache = preg_replace("/(" . preg_quote(get_request_var_request("filter")) . ")/i", "<span style='background-color: #F8D93D;'>\\1</span>", ($data_name_cache));
+			}
+
+			/* keep copy of data source for comparison */
+			$data_source_orig = $data_source;
+			$data_source = api_plugin_hook_function('data_sources_table', $data_source);
 			/* we're escaping strings here, so no need to escape them on form_selectable_cell */
-			$data_template_name = ((empty($data_source["data_template_name"])) ? "<em>None</em>" : htmlspecialchars($data_source["data_template_name"]));
-			$data_input_name    = ((empty($data_source["data_input_name"])) ? "<em>External</em>" : htmlspecialchars($data_source["data_input_name"]));
+			if ($data_source_orig["data_template_name"] != $data_source["data_template_name"]) {
+				/* was changed by plugin, plugin has to take care for html-escaping */
+				$data_template_name = ((empty($data_source["data_template_name"])) ? "<em>None</em>" : $data_source["data_template_name"]);
+			} else {
+				/* we take care of html-escaping */
+				$data_template_name = ((empty($data_source["data_template_name"])) ? "<em>None</em>" : htmlspecialchars($data_source["data_template_name"]));
+			}
+			if ($data_source_orig["data_input_name"] != $data_source["data_input_name"]) {
+				/* was changed by plugin, plugin has to take care for html-escaping */
+				$data_input_name = ((empty($data_source["data_input_name"])) ? "<em>None</em>" : $data_source["data_input_name"]);
+			} else {
+				/* we take care of html-escaping */
+				$data_input_name = ((empty($data_source["data_input_name"])) ? "<em>External</em>" : htmlspecialchars($data_source["data_input_name"]));
+			}
 			$poller_interval    = ((isset($poller_intervals[$data_source["local_data_id"]])) ? $poller_intervals[$data_source["local_data_id"]] : 0);
+
 			form_alternate_row_color($colors["alternate"], $colors["light"], $i, 'line' . $data_source["local_data_id"]); $i++;
 			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars("data_sources.php?action=ds_edit&id=" . $data_source["local_data_id"]) . "' title='" . $data_source["name_cache"] . "'>" . ((get_request_var_request("filter") != "") ? preg_replace("/(" . preg_quote(get_request_var_request("filter")) . ")/i", "<span style='background-color: #F8D93D;'>\\1</span>", title_trim(htmlspecialchars($data_source["name_cache"]), read_config_option("max_title_data_source"))) : title_trim(htmlspecialchars($data_source["name_cache"]), read_config_option("max_title_data_source"))) . "</a>", $data_source["local_data_id"]);
 			form_selectable_cell($data_source['local_data_id'], $data_source['local_data_id']);

@@ -108,6 +108,8 @@ if (function_exists("pcntl_signal")) {
 	pcntl_signal(SIGINT, "sig_handler");
 }
 
+api_plugin_hook('poller_top');
+
 /* record the start time */
 list($micro,$seconds) = explode(" ", microtime());
 $poller_start         = $seconds + $micro;
@@ -304,6 +306,8 @@ while ($poller_runs_completed < $poller_runs) {
 			$total_procs    = $concurrent_processes;
 		}
 
+		$extra_args = api_plugin_hook_function ('poller_command_args', $extra_args);
+
 		/* Populate each execution file with appropriate information */
 		foreach ($polling_hosts as $item) {
 			if ($host_count == 1) {
@@ -449,7 +453,9 @@ while ($poller_runs_completed < $poller_runs) {
 
 		/* sleep the appripriate amount of time */
 		if ($poller_runs_completed < $poller_runs) {
+			api_plugin_hook('poller_bottom');
 			usleep($sleep_time * 1000000);
+			api_plugin_hook('poller_top');
 		}
 	}else if (read_config_option('log_verbosity') >= POLLER_VERBOSITY_MEDIUM || $debug) {
 		cacti_log("WARNING: Cacti Polling Cycle Exceeded Poller Interval by " . $loop_end-$loop_start-$poller_interval . " seconds", TRUE, "POLLER");
@@ -495,5 +501,7 @@ function display_help() {
 	echo "    --force        Override poller overrun detection and force a poller run\n";
 	echo "    --debug|-d     Output debug information.  Similar to cacti's DEBUG logging level.\n\n";
 }
+
+api_plugin_hook('poller_bottom');
 
 ?>

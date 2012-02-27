@@ -66,6 +66,7 @@ function update_data_source_title_cache_from_host($host_id) {
    @arg $local_data_id - (int) the ID of the data source to update the title cache for */
 function update_data_source_title_cache($local_data_id) {
 	db_execute("update data_template_data set name_cache='" . addslashes(get_data_source_title($local_data_id)) . "' where local_data_id=$local_data_id");
+	api_plugin_hook_function('update_data_source_title_cache', $local_data_id);
 }
 
 /* update_graph_title_cache_from_template - updates the title cache for all graphs

@@ -21,16 +21,23 @@
  | http://www.cacti.net/                                                   |
  +-------------------------------------------------------------------------+
 */
+
+$oper_mode = api_plugin_hook_function('bottom_footer', OPER_MODE_NATIVE);
+if (($oper_mode == OPER_MODE_NATIVE) || ($oper_mode == OPER_MODE_IFRAME_NONAV)) {
+
 ?>
 			</div>
 		</td>
 	</tr>
-
 </table>
+<?php api_plugin_hook('page_bottom');?>
 </body>
 </html>
 
 <?php
+
+}
+
 /* we use this session var to store field values for when a save fails,
 this way we can restore the field's previous values. we reset it here, because
 they only need to be stored for a single page */

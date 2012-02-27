@@ -1190,4 +1190,6 @@ $settings_graphs = array(
 		)
 	);
 
+api_plugin_hook('config_settings');
+
 ?>

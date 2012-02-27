@@ -512,6 +512,7 @@ function graphs() {
 			<td nowrap style='white-space: nowrap;' class="textInfo" align="center" valign="top">
 				<span style="white-space: nowrap; color: #c16921;">*</span><a href="<?php print htmlspecialchars("host.php?action=edit&id=" . $_REQUEST["host_id"]);?>">Edit this Host</a><br>
 				<span style="white-space: nowrap; color: #c16921;">*</span><a href="<?php print htmlspecialchars("host.php?action=edit");?>">Create New Host</a><br>
+				<?php api_plugin_hook('graphs_new_top_links'); ?>
 			</td>
 		</tr>
 	</table>

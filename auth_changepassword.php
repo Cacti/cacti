@@ -59,6 +59,8 @@ case 'changepassword':
 					header("Location: index.php"); break;
 				case '3': /* default graph page */
 					header("Location: graph_view.php"); break;
+				default:
+					api_plugin_hook_function('login_options_navigate', $user['login_opts']);
 			}
 		}else{
 			header("Location: graph_view.php");
@@ -71,6 +73,11 @@ case 'changepassword':
 
 	break;
 }
+
+if (api_plugin_hook_function('custom_password', OPER_MODE_NATIVE) == OPER_MODE_RESKIN) {
+	exit;
+}
+
 ?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>

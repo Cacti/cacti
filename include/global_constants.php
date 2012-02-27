@@ -184,4 +184,9 @@ define("SNMP_POLLER", 0);
 define("SNMP_CMDPHP", 1);
 define("SNMP_WEBUI", 2);
 
+define('OPER_MODE_NATIVE', 0);
+define('OPER_MODE_RESKIN', 1);
+define('OPER_MODE_IFRAME_NONAV', 2);
+define('OPER_MODE_NOTABS', 3);
+
 ?>

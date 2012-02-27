@@ -31,6 +31,13 @@ $database_password = "cactiuser";
 $database_port = "3306";
 $database_ssl = false;
 
+/*
+   Edit this to point to the default URL of your Cacti install
+   ex: if your cacti install as at http://serverip/cacti/ this
+   would be set to /cacti/
+*/
+$url_path = "/";
+
 /* Default session name - Session name must contain alpha characters */
 #$cacti_session_name = "Cacti";
 

@@ -94,6 +94,13 @@ $config["cacti_server_os"] = (strstr(PHP_OS, "WIN")) ? "win32" : "unix";
 /* built-in snmp support */
 $config["php_snmp_support"] = function_exists("snmpget");
 
+/* set URL path */
+if (! isset($url_path)) {
+	$url_path = "";
+}
+$config['url_path'] = $url_path;
+define('URL_PATH', $url_path);
+
 /* used for includes */
 if ($config["cacti_server_os"] == "win32") {
 	$config["base_path"]    = str_replace("\\", "/", substr(dirname(__FILE__),0,-8));
@@ -194,8 +201,17 @@ if ((bool)ini_get("register_globals")) {
 /* include base modules */
 include_once($config["library_path"] . "/adodb/adodb.inc.php");
 include_once($config["library_path"] . "/database.php");
+
+/* connect to the database server */
+db_connect_real($database_hostname, $database_username, $database_password, $database_default, $database_type, $database_port, $database_ssl);
+
+/* include additional modules */
+include_once($config["library_path"] . "/adodb/adodb.inc.php");
+include_once($config["library_path"] . "/database.php");
 include_once($config["library_path"] . "/functions.php");
 include_once($config["include_path"] . "/global_constants.php");
+include_once($config["library_path"] . "/plugins.php");
+include_once($config["include_path"] . "/plugins.php");
 include_once($config["include_path"] . "/global_arrays.php");
 include_once($config["include_path"] . "/global_settings.php");
 
@@ -210,6 +226,8 @@ include_once($config["library_path"] . "/html_utility.php");
 include_once($config["library_path"] . "/html_validate.php");
 include_once($config["library_path"] . "/variables.php");
 include_once($config["library_path"] . "/auth.php");
+
+api_plugin_hook("config_insert");
 
 /* current cacti version */
 $config["cacti_version"] = "0.8.7i";

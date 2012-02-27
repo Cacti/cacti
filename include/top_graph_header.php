@@ -22,8 +22,14 @@
  +-------------------------------------------------------------------------+
 */
 
+global $menu;
 $using_guest_account = false;
 $show_console_tab = true;
+
+$oper_mode = api_plugin_hook_function('top_graph_header', OPER_MODE_NATIVE);
+if ($oper_mode == OPER_MODE_RESKIN) {
+	return;
+}
 
 /* ================= input validation ================= */
 input_validate_input_number(get_request_var_request("local_graph_id"));
@@ -52,52 +58,69 @@ if (isset($_REQUEST["action"]) && $_REQUEST["action"] == "zoom") {
 	$_SESSION["sess_nav_level_cache"][2]["url"] = "graph.php?local_graph_id=" . $_REQUEST["local_graph_id"] . "&rra_id=all";
 }
 
+$page_title = api_plugin_hook_function('page_title', draw_navigation_text("title"));
+
 ?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
 	<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7">
-	<title><?php echo draw_navigation_text("title");?></title>
+	<title><?php echo $page_title; ?></title>
 	<?php
 	if (isset($_SESSION["custom"]) && $_SESSION["custom"] == true) {
 		print "<meta http-equiv=refresh content='99999'>";
 	}else if (isset($_REQUEST["action"]) && $_REQUEST["action"] == 'zoom') {
 		print "<meta http-equiv=refresh content='99999'>";
 	}else{
-		print "<meta http-equiv=refresh content='" . htmlspecialchars(read_graph_config_option("page_refresh"),ENT_QUOTES) . "'>";
+		$refresh = api_plugin_hook_function('top_graph_refresh', htmlspecialchars(read_graph_config_option("page_refresh"),ENT_QUOTES));
+		if (is_array($refresh)) {
+			print "<meta http-equiv=refresh content='" . $refresh["seconds"] . "; url=" . $refresh["page"] . "'>";
+		}else{
+			print "<meta http-equiv=refresh content='" . $refresh . "'>";
+		}
 	}
 	?>
 	<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
-	<link href="include/main.css" type="text/css" rel="stylesheet">
-	<link href="images/favicon.ico" rel="shortcut icon">
-	<script type="text/javascript" src="include/layout.js"></script>
-	<script type="text/javascript" src="include/treeview/ua.js"></script>
-	<script type="text/javascript" src="include/treeview/ftiens4.js"></script>
-	<script type="text/javascript" src="include/jscalendar/calendar.js"></script>
-	<script type="text/javascript" src="include/jscalendar/lang/calendar-en.js"></script>
-	<script type="text/javascript" src="include/jscalendar/calendar-setup.js"></script>
+	<link href="<?php echo $config['url_path']; ?>include/main.css" type="text/css" rel="stylesheet">
+	<link href="<?php echo $config['url_path']; ?>images/favicon.ico" rel="shortcut icon"/>
+	<script type="text/javascript" src="<?php echo $config['url_path']; ?>include/layout.js"></script>
+	<script type="text/javascript" src="<?php echo $config['url_path']; ?>include/treeview/ua.js"></script>
+	<script type="text/javascript" src="<?php echo $config['url_path']; ?>include/treeview/ftiens4.js"></script>
+	<script type="text/javascript" src="<?php echo $config['url_path']; ?>include/jscalendar/calendar.js"></script>
+	<script type="text/javascript" src="<?php echo $config['url_path']; ?>include/jscalendar/lang/calendar-en.js"></script>
+	<script type="text/javascript" src="<?php echo $config['url_path']; ?>include/jscalendar/calendar-setup.js"></script>
+	<?php api_plugin_hook('page_head'); ?>
 </head>
 
-<body>
+<?php if ($oper_mode == OPER_MODE_NATIVE) {?>
+<body <?php print api_plugin_hook_function("body_style", "");?>>
 <a name='page_top'></a>
+<?php }else{?>
+<body <?php print api_plugin_hook_function("body_style", "");?>>
+<?php }?>
+
 <table style="width:100%;height:100%;" cellspacing="0" cellpadding="0">
+<?php if ($oper_mode == OPER_MODE_NATIVE) { ;?>
 	<tr style="height:25px;" bgcolor="#a9a9a9" class="noprint">
 		<td colspan="2" valign="bottom" nowrap>
 			<table width="100%" cellspacing="0" cellpadding="0">
-				<tr style="background: transparent url('images/cacti_backdrop2.gif') no-repeat center right;">
+				<tr style="background: transparent url('<?php echo $config['url_path']; ?>images/cacti_backdrop2.gif') no-repeat center right;">
 					<td id="tabs" nowrap>
-						&nbsp;<?php if ($show_console_tab == true) {?><a href="index.php"><img src="images/tab_console.gif" alt="Console" align="absmiddle" border="0"></a><?php }?><a href="graph_view.php"><img src="images/tab_graphs<?php if ((substr(basename($_SERVER["PHP_SELF"]),0,5) == "graph") || (basename($_SERVER["PHP_SELF"]) == "graph_settings.php")) { print "_down"; } print ".gif";?>" alt="Graphs" align="absmiddle" border="0"></a>&nbsp;
+						&nbsp;<?php if ($show_console_tab == true) {?><a href="<?php echo $config['url_path']; ?>index.php"><img src="<?php echo $config['url_path']; ?>images/tab_console.gif" alt="Console" align="absmiddle" border="0"></a><?php }?><a href="<?php echo $config['url_path']; ?>graph_view.php"><img src="<?php echo $config['url_path']; ?>images/tab_graphs<?php if ((substr(basename($_SERVER["PHP_SELF"]),0,5) == "graph") || (basename($_SERVER["PHP_SELF"]) == "graph_settings.php")) { print "_down"; } print ".gif";?>" alt="Graphs" align="absmiddle" border="0"></a><?php
+						api_plugin_hook('top_graph_header_tabs');
+						?>
 					</td>
 					<td id="gtabs" align="right" nowrap>
-						<?php if ((!isset($_SESSION["sess_user_id"])) || ($current_user["graph_settings"] == "on")) { print '<a href="graph_settings.php"><img src="images/tab_settings'; if (basename($_SERVER["PHP_SELF"]) == "graph_settings.php") { print "_down"; } print '.gif" border="0" alt="Settings" align="absmiddle"></a>';}?>&nbsp;&nbsp;<?php if ((!isset($_SESSION["sess_user_id"])) || ($current_user["show_tree"] == "on")) {?><a href="<?php print htmlspecialchars("graph_view.php?action=tree");?>"><img src="images/tab_mode_tree<?php if (isset($_REQUEST["action"]) && $_REQUEST["action"] == "tree") { print "_down"; }?>.gif" border="0" title="Tree View" alt="Tree View" align="absmiddle"></a><?php }?><?php if ((!isset($_SESSION["sess_user_id"])) || ($current_user["show_list"] == "on")) {?><a href="graph_view.php?action=list"><img src="images/tab_mode_list<?php if (isset($_REQUEST["action"]) && $_REQUEST["action"] == "list") { print "_down"; }?>.gif" border="0" title="List View" alt="List View" align="absmiddle"></a><?php }?><?php if ((!isset($_SESSION["sess_user_id"])) || ($current_user["show_preview"] == "on")) {?><a href="graph_view.php?action=preview"><img src="images/tab_mode_preview<?php if (isset($_REQUEST["action"]) && $_REQUEST["action"] == "preview") { print "_down"; }?>.gif" border="0" title="Preview View" alt="Preview View" align="absmiddle"></a><?php }?>&nbsp;<br>
+						<?php if ((!isset($_SESSION["sess_user_id"])) || ($current_user["graph_settings"] == "on")) { print '<a href="' . $config['url_path'] . 'graph_settings.php"><img src="' . $config['url_path'] . 'images/tab_settings'; if (basename($_SERVER["PHP_SELF"]) == "graph_settings.php") { print "_down"; } print '.gif" border="0" alt="Settings" align="absmiddle"></a>';}?>&nbsp;&nbsp;<?php if ((!isset($_SESSION["sess_user_id"])) || ($current_user["show_tree"] == "on")) {?><a href="<?php print htmlspecialchars($config['url_path'] . "graph_view.php?action=tree");?>"><img src="<?php echo $config['url_path']; ?>images/tab_mode_tree<?php if (isset($_REQUEST["action"]) && $_REQUEST["action"] == "tree") { print "_down"; }?>.gif" border="0" title="Tree View" alt="Tree View" align="absmiddle"></a><?php }?><?php if ((!isset($_SESSION["sess_user_id"])) || ($current_user["show_list"] == "on")) {?><a href="<?php print htmlspecialchars($config['url_path'] . "graph_view.php?action=list");?>"><img src="<?php echo $config['url_path']; ?>images/tab_mode_list<?php if (isset($_REQUEST["action"]) && $_REQUEST["action"] == "list") { print "_down"; }?>.gif" border="0" title="List View" alt="List View" align="absmiddle"></a><?php }?><?php if ((!isset($_SESSION["sess_user_id"])) || ($current_user["show_preview"] == "on")) {?><a href="<?php print htmlspecialchars($config['url_path'] . "graph_view.php?action=preview");?>"><img src="<?php echo $config['url_path']; ?>images/tab_mode_preview<?php if (isset($_REQUEST["action"]) && $_REQUEST["action"] == "preview") { print "_down"; }?>.gif" border="0" title="Preview View" alt="Preview View" align="absmiddle"></a><?php }?>&nbsp;<br>
 					</td>
 				</tr>
 			</table>
 		</td>
 	</tr>
+<?php } elseif ($oper_mode == OPER_MODE_NOTABS) { api_plugin_hook_function('print_top_header'); } ?>
 	<tr style="height:2px;" bgcolor="#183c8f" class="noprint">
 		<td colspan="2">
-			<img src="images/transparent_line.gif" style="height:2px;width:170px;" border="0"><br>
+			<img src="<?php echo $config['url_path']; ?>images/transparent_line.gif" style="height:2px;width:170px;" border="0"><br>
 		</td>
 	</tr>
 	<tr style="height:5px;" bgcolor="#e9e9e9" class="noprint">
@@ -108,19 +131,19 @@ if (isset($_REQUEST["action"]) && $_REQUEST["action"] == "zoom") {
 						<?php echo draw_navigation_text();?>
 					</td>
 					<td align="right">
-						<?php if ((isset($_SESSION["sess_user_id"])) && ($using_guest_account == false)) { ?>
-						Logged in as <strong><?php print db_fetch_cell("select username from user_auth where id=" . $_SESSION["sess_user_id"]);?></strong> (<a href="logout.php">Logout</a>)&nbsp;
-						<?php } ?>
+						<?php if ((isset($_SESSION["sess_user_id"])) && ($using_guest_account == false)) { api_plugin_hook('nav_login_before'); ?>
+						Logged in as <strong><?php print db_fetch_cell("select username from user_auth where id=" . $_SESSION["sess_user_id"]);?></strong> (<a href="<?php echo $config['url_path']; ?>logout.php">Logout</a>)&nbsp;
+						<?php api_plugin_hook('nav_login_after'); } ?>
 					</td>
 				</tr>
 			</table>
 		</td>
 	</tr>
 	<tr class="noprint">
-		<td bgcolor="#efefef" colspan="1" style="height:8px;background-image: url(images/shadow_gray.gif); background-repeat: repeat-x; border-right: #aaaaaa 1px solid;">
-			<img src="images/transparent_line.gif" width="<?php print htmlspecialchars(read_graph_config_option("default_dual_pane_width"));?>" style="height:2px;" border="0"><br>
+		<td bgcolor="#efefef" colspan="1" style="height:8px;background-image: url(<?php echo $config['url_path']; ?>images/shadow_gray.gif); background-repeat: repeat-x; border-right: #aaaaaa 1px solid;">
+			<img src="<?php echo $config['url_path']; ?>images/transparent_line.gif" width="<?php print htmlspecialchars(read_graph_config_option("default_dual_pane_width"));?>" style="height:2px;" border="0"><br>
 		</td>
-		<td bgcolor="#ffffff" colspan="1" style="height:8px;background-image: url(images/shadow.gif); background-repeat: repeat-x;">
+		<td bgcolor="#ffffff" colspan="1" style="height:8px;background-image: url(<?php echo $config['url_path']; ?>images/shadow.gif); background-repeat: repeat-x;">
 
 		</td>
 	</tr>

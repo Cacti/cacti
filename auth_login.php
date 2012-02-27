@@ -124,10 +124,12 @@ if ($action == 'login') {
 		}
 
 	default:
-		/* Builtin Auth */
-		if ((!$user_auth) && (!$ldap_error)) {
-			/* if auth has not occured process for builtin - AKA Ldap fall through */
-			$user = db_fetch_row("SELECT * FROM user_auth WHERE username = " . $cnn_id->qstr($username) . " AND password = '" . md5(get_request_var_post("login_password")) . "' AND realm = 0");
+		if (!api_plugin_hook_function('login_process', false)) {
+			/* Builtin Auth */
+			if ((!$user_auth) && (!$ldap_error)) {
+				/* if auth has not occured process for builtin - AKA Ldap fall through */
+				$user = db_fetch_row("SELECT * FROM user_auth WHERE username = " . $cnn_id->qstr($username) . " AND password = '" . md5(get_request_var_post("login_password")) . "' AND realm = 0");
+			}
 		}
 	}
 	/* end of switch */
@@ -189,29 +191,42 @@ if ($action == 'login') {
 		decide what to do next */
 		switch ($user["login_opts"]) {
 			case '1': /* referer */
-				if (sizeof(db_fetch_assoc("SELECT realm_id FROM user_auth_realm WHERE realm_id = 8 AND user_id = " . $_SESSION["sess_user_id"])) == 0) {
-					header("Location: graph_view.php");
-				}else{
-					if (isset($_SERVER["HTTP_REFERER"])) {
-						$referer = $_SERVER["HTTP_REFERER"];
-						if (basename($referer) == "logout.php") {
-							$referer = "index.php";
-						}
-					} else if (isset($_SERVER["REQUEST_URI"])) {
-						$referer = $_SERVER["REQUEST_URI"];
-						if (basename($referer) == "logout.php") {
-							$referer = "index.php";
-						}
-					} else {
-						$referer = "index.php";
+				/* because we use plugins, we can't redirect back to graph_view.php if they don't
+				 * have console access
+				 */
+				if (isset($_SERVER["HTTP_REFERER"])) {
+					$referer = $_SERVER["HTTP_REFERER"];
+					if (basename($referer) == "logout.php") {
+						$referer = $config['url_path'] . "index.php";
 					}
-					header("Location: " . $referer);
+				} else if (isset($_SERVER["REQUEST_URI"])) {
+					$referer = $_SERVER["REQUEST_URI"];
+					if (basename($referer) == "logout.php") {
+						$referer = $config['url_path'] . "index.php";
+					}
+				} else {
+					$referer = $config['url_path'] . "index.php";
 				}
+
+				if (substr_count($referer, "plugins")) {
+					header("Location: " . $referer);
+				} elseif (sizeof(db_fetch_assoc("SELECT realm_id FROM user_auth_realm WHERE realm_id = 8 AND user_id = " . $_SESSION["sess_user_id"])) == 0) {
+					header("Location: graph_view.php");
+				} else {
+					header("Location: $referer");
+				}
+
 				break;
 			case '2': /* default console page */
-				header("Location: index.php"); break;
+				header("Location: " . $config['url_path'] . "index.php");
+
+				break;
 			case '3': /* default graph page */
-				header("Location: graph_view.php"); break;
+				header("Location: " . $config['url_path'] . "graph_view.php");
+
+				break;
+			default:
+				api_plugin_hook_function('login_options_navigate', $user['login_opts']);
 		}
 		exit;
 	}else{
@@ -245,11 +260,14 @@ function auth_display_custom_error_message($message) {
 	print "</body>\n</html>\n";
 }
 
+if (api_plugin_hook_function('custom_login', OPER_MODE_NATIVE) == OPER_MODE_RESKIN) {
+	return;
+}
 ?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-	<title>Login to Cacti</title>
+	<title><?php print api_plugin_hook_function("login_title", "Login to Cacti");?></title>
 	<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
 	<STYLE TYPE="text/css">
 	<!--
@@ -264,9 +282,17 @@ function auth_display_custom_error_message($message) {
 <body bgcolor="#FFFFFF" onload="document.login.login_username.focus()">
 	<form name="login" method="post" action="<?php print basename($_SERVER["PHP_SELF"]);?>">
 	<input type="hidden" name="action" value="login">
+<?php
+
+api_plugin_hook_function("login_before", array('ldap_error' => $ldap_error, 'ldap_error_message' => $ldap_error_message, 'username' => $username, 'user_enabled' => $user_enabled, 'action' => $action));
+
+$cacti_logo = $config['url_path'] . 'images/auth_login.gif';
+$cacti_logo = api_plugin_hook_function('cacti_image', $cacti_logo);
+
+?>
 	<table id="login" align="center">
 		<tr>
-			<td colspan="2"><img src="images/auth_login.gif" border="0" alt=""></td>
+			<td colspan="2"><center><?php if ($cacti_logo != '') { ?><img src="<?php echo $cacti_logo; ?>" border="0" alt=""><?php } ?></center></td>
 		</tr>
 		<?php
 
@@ -303,22 +329,29 @@ function auth_display_custom_error_message($message) {
 			<td><input type="password" name="login_password" size="40" style="width: 295px;"></td>
 		</tr>
 		<?php
-		if (read_config_option("auth_method") == "3") {?>
+		if (read_config_option("auth_method") == "3" || api_plugin_hook_function('login_realms_exist')) {
+			$realms = api_plugin_hook_function('login_realms', array("local" => array("name" => "Local", "selected" => false), "ldap" => array("name" => "LDAP", "selected" => true)));
+			?>
 		<tr id="realm_row">
 			<td>Realm:</td>
 			<td>
-				<select name="realm" style="width: 295px;">
-					<option value="local">Local</option>
-					<option value="ldap" selected>LDAP</option>
+				<select name="realm" style="width: 295px;"><?php
+				if (sizeof($realms)) {
+				foreach($realms as $name => $realm) {
+					print "\t\t\t\t\t<option value='" . $name . "'" . ($realm["selected"] ? " selected":"") . ">" . htmlspecialchars($realm["name"]) . "</option>\n";
+				}
+				}
+				?>
 				</select>
 			</td>
-			</tr>
+		</tr>
 		<?php }?>
 		<tr style="height:10px;"><td></td></tr>
 		<tr>
 			<td><input type="submit" value="Login"></td>
 		</tr>
 	</table>
+<?php api_plugin_hook('login_after'); ?>
 	</form>
 </body>
 </html>

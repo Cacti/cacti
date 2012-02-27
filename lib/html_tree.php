@@ -985,6 +985,16 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 	<?php
 	html_end_box();
 
+	api_plugin_hook_function('graph_tree_page_buttons',
+		array(
+			'treeid' => $tree_id,
+			'leafid' => $leaf_id,
+			'mode' => 'tree',
+			'timespan' => $_SESSION["sess_current_timespan"],
+			'starttime' => get_current_graph_start(),
+			'endtime' => get_current_graph_end())
+	);
+
 	html_start_box("", "100%", $colors["header"], "3", "center", "");
 
 	$graph_list = array();
@@ -1188,6 +1198,12 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 	}else{
 		html_graph_area($new_graph_list, "", "view_type=tree&graph_start=" . get_current_graph_start() . "&graph_end=" . get_current_graph_end());
 	}
+
+	if (!empty($leaf_id)) {
+		api_plugin_hook_function('tree_after',$host_name.','.get_request_var("leaf_id"));
+	}
+
+	api_plugin_hook_function('tree_view_page_end');
 
 	print $nav;
 

@@ -57,9 +57,11 @@ switch (get_request_var_request("action")) {
 		break;
 
 	default:
-		include_once("include/top_header.php");
-		user();
-		include_once("include/bottom_footer.php");
+		if (!api_plugin_hook_function('user_admin_action', get_request_var_request("action"))) {
+			include_once("include/top_header.php");
+			user();
+			include_once("include/bottom_footer.php");
+		}
 		break;
 }
 
@@ -83,6 +85,8 @@ function form_actions() {
 				/* ==================================================== */
 
 				user_remove($selected_items[$i]);
+
+				api_plugin_hook_function('user_remove', $selected_items[$i]);
 			}
 		}
 
@@ -402,6 +406,7 @@ function form_save() {
 		$save["policy_graph_templates"] = form_input_validate(get_request_var_post("policy_graph_templates", get_request_var_post("_policy_graph_templates")), "policy_graph_templates", "", true, 3);
 		$save["realm"] = get_request_var_post("realm", 0);
 		$save["enabled"] = form_input_validate(get_request_var_post("enabled", ""), "enabled", "", true, 3);
+		$save = api_plugin_hook_function('user_admin_setup_sql_save', $save);
 
 		if (!is_error_message()) {
 			$user_id = sql_save($save, "user_auth");
@@ -444,6 +449,8 @@ function form_save() {
 					policy_hosts = " . get_request_var_post("policy_hosts") . ",
 					policy_graph_templates = " . get_request_var_post("policy_graph_templates") . "
 					WHERE id = " . get_request_var_post("id"));
+			} else {
+				api_plugin_hook('user_admin_user_save');
 			}
 		}
 	}
@@ -896,6 +903,8 @@ function user_edit() {
 		$header_label = "[new]";
 	}
 
+	api_plugin_hook_function('user_admin_edit', (isset($user) ? get_request_var("id") : 0));
+
 	html_start_box("<strong>User Management</strong> $header_label", "100%", $colors["header"], "3", "center", "");
 
 	draw_edit_form(array(
@@ -922,6 +931,7 @@ function user_edit() {
 				<td <?php print ((get_request_var_request("tab") == "graph_settings_edit") ? "bgcolor='silver'" : "bgcolor='#DFDFDF'");?> nowrap='nowrap' width='130' align='center' class='tab'>
 					<span class='textHeader'><a href='<?php print htmlspecialchars("user_admin.php?action=user_edit&tab=graph_settings_edit&id=" . $_GET["id"]);?>'>Graph Settings</a></span>
 				</td>
+				<?php api_plugin_hook('user_admin_tab');?>				
 				<td></td>
 			</tr>
 		</table>
@@ -935,7 +945,9 @@ function user_edit() {
 	}elseif (get_request_var_request("tab") == "graph_perms_edit") {
 		graph_perms_edit();
 	}else{
-		user_realms_edit();
+		if (api_plugin_hook_function('user_admin_run_action', get_request_var_request("tab"))) {
+			user_realms_edit();
+		}
 	}
 
 	form_save_button("user_admin.php", "return");

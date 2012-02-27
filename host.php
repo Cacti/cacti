@@ -44,6 +44,8 @@ $device_actions = array(
 	6 => "Change Availability Options"
 	);
 
+$device_actions = api_plugin_hook_function('device_action_array', $device_actions);
+
 /* set default action */
 if (!isset($_REQUEST["action"])) { $_REQUEST["action"] = ""; }
 
@@ -137,6 +139,7 @@ function form_save() {
 		/* ==================================================== */
 
 		db_execute("replace into host_graph (host_id,graph_template_id) values (" . $_POST["id"] . "," . $_POST["graph_template_id"] . ")");
+		api_plugin_hook_function('add_graph_template_to_host', array("host_id" => $_POST["id"], "graph_template_id" => $_POST["graph_template_id"]));
 
 		header("Location: host.php?action=edit&id=" . $_POST["id"]);
 		exit;
@@ -289,16 +292,22 @@ function form_actions() {
 				case '1': /* leave graphs and data_sources in place, but disable the data sources */
 					api_data_source_disable_multi($data_sources_to_act_on);
 
+					api_plugin_hook_function('data_source_remove', $data_sources_to_act_on);
+
 					break;
 				case '2': /* delete graphs/data sources tied to this device */
 					api_data_source_remove_multi($data_sources_to_act_on);
 
 					api_graph_remove_multi($graphs_to_act_on);
 
+					api_plugin_hook_function('graphs_remove', $graphs_to_act_on);
+
 					break;
 			}
 
 			api_device_remove_multi($devices_to_act_on);
+
+			api_plugin_hook_function('device_remove', $devices_to_act_on);
 		}elseif (preg_match("/^tr_([0-9]+)$/", $_POST["drp_action"], $matches)) { /* place on tree */
 			for ($i=0;($i<count($selected_items));$i++) {
 				/* ================= input validation ================= */
@@ -309,6 +318,8 @@ function form_actions() {
 
 				api_tree_item_save(0, $_POST["tree_id"], TREE_ITEM_TYPE_HOST, $_POST["tree_item_id"], "", 0, read_graph_config_option("default_rra_id"), $selected_items[$i], 1, 1, false);
 			}
+		} else {
+			api_plugin_hook_function('device_action_execute', $_POST['drp_action']);
 		}
 
 		header("Location: host.php");
@@ -454,6 +465,12 @@ function form_actions() {
 				<input type='hidden' name='tree_id' value='" . $matches[1] . "'>\n
 				";
 			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Place Device(s) on Tree'>";
+		} else {
+			$save['drp_action'] = $_POST['drp_action'];
+			$save['host_list'] = $host_list;
+			$save['host_array'] = (isset($host_array)? $host_array : array());
+			api_plugin_hook_function('device_action_prepare', $save);
+			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue'>";
 		}
 	}else{
 		print "<tr><td bgcolor='#" . $colors["form_alternate1"]. "'><span class='textError'>You must select at least one device.</span></td></tr>\n";
@@ -535,6 +552,8 @@ function host_edit() {
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var("id"));
 	/* ==================================================== */
+
+	api_plugin_hook('host_edit_top');
 
 	if (!empty($_GET["id"])) {
 		$host = db_fetch_row("select * from host where id=" . $_GET["id"]);
@@ -649,6 +668,7 @@ function host_edit() {
 					<span style="color: #c16921;">*</span><a href="<?php print htmlspecialchars("graphs_new.php?host_id=" . $host["id"]);?>">Create Graphs for this Host</a><br>
 					<span style="color: #c16921;">*</span><a href="<?php print htmlspecialchars("data_sources.php?host_id=" . $host["id"] . "&ds_rows=30&filter=&template_id=-1&method_id=-1&page=1");?>">Data Source List</a><br>
 					<span style="color: #c16921;">*</span><a href="<?php print htmlspecialchars("graphs.php?host_id=" . $host["id"] . "&graph_rows=30&filter=&template_id=-1&page=1");?>">Graph List</a>
+					<?php api_plugin_hook('device_edit_top_links'); ?>
 				</td>
 			</tr>
 		</table>
@@ -1129,6 +1149,8 @@ function host_edit() {
 	}
 
 	form_save_button("host.php", "return");
+
+	api_plugin_hook('host_edit_bottom');
 }
 
 function host() {

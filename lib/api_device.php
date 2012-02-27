@@ -141,6 +141,8 @@ function api_device_save($id, $host_template_id, $description, $hostname, $snmp_
 	$save["max_oids"]             = form_input_validate($max_oids, "max_oids", "^[0-9]+$", true, 3);
 	$save["device_threads"]       = form_input_validate($device_threads, "device_threads", "^[0-9]+$", true, 3);
 
+	$save = api_plugin_hook_function('api_device_save', $save);
+
 	$host_id = 0;
 
 	if (!is_error_message()) {
@@ -180,10 +182,15 @@ function api_device_save($id, $host_template_id, $description, $hostname, $snmp_
 			if (sizeof($graph_templates) > 0) {
 			foreach ($graph_templates as $graph_template) {
 				db_execute("replace into host_graph (host_id,graph_template_id) values ($host_id," . $graph_template["graph_template_id"] . ")");
+				api_plugin_hook_function('add_graph_template_to_host', array("host_id" => $host_id, "graph_template_id" => $graph_template["graph_template_id"]));
 			}
 			}
 		}
 	}
+
+	# now that we have the id of the new host, we may plugin postprocessing code
+	$save["id"] = $host_id;
+	api_plugin_hook_function('api_device_new', $save);
 
 	return $host_id;
 }

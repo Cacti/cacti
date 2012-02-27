@@ -434,7 +434,11 @@ function process_poller_output(&$rrdtool_pipe, $remainder = FALSE) {
 			db_execute("DELETE FROM poller_output WHERE local_data_id IN (" . implode(",", $data_ids) . ")");
 		}
 
-		$rrds_processed = rrdtool_function_update($rrd_update_array, $rrdtool_pipe);
+		api_plugin_hook_function('poller_output', $rrd_update_array);
+
+		if (api_plugin_hook_function('poller_on_demand', $results)) {
+			$rrds_processed = rrdtool_function_update($rrd_update_array, $rrdtool_pipe);
+		}
 	}
 
 	return $rrds_processed;

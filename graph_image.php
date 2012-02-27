@@ -48,6 +48,8 @@ header("Content-type: image/png");
 /* flush the headers now */
 ob_end_clean();
 
+api_plugin_hook_function('graph_image');
+
 session_write_close();
 
 $graph_data_array = array();

@@ -45,6 +45,8 @@ $graph_actions = array(
 	4 => "Convert to Graph Template"
 	);
 
+$graph_actions = api_plugin_hook_function('graphs_action_array', $graph_actions);
+
 /* set default action */
 if (!isset($_REQUEST["action"])) { $_REQUEST["action"] = ""; }
 
@@ -287,12 +289,15 @@ function form_actions() {
 
 					if (sizeof($data_sources)) {
 						api_data_source_remove_multi($data_sources);
+						api_plugin_hook_function('data_source_remove', $data_sources);
 					}
 
 					break;
 			}
 
 			api_graph_remove_multi($selected_items);
+
+			api_plugin_hook_function('graphs_remove', $selected_items);
 		}elseif ($_POST["drp_action"] == "2") { /* change graph template */
 			input_validate_input_number(get_request_var_post("graph_template_id"));
 			for ($i=0;($i<count($selected_items));$i++) {
@@ -357,6 +362,8 @@ function form_actions() {
 
 				api_resize_graphs($selected_items[$i], $_POST["graph_width"], $_POST["graph_height"]);
 			}
+		} else {
+			api_plugin_hook_function('graphs_action_execute', $_POST['drp_action']);
 		}
 
 		header("Location: graphs.php");
@@ -509,6 +516,12 @@ function form_actions() {
 				";
 
 			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Resize Selected Graph(s)'>";
+		} else {
+			$save['drp_action'] = $_POST['drp_action'];
+			$save['graph_list'] = $graph_list;
+			$save['graph_array'] = (isset($graph_array) ? $graph_array : array());
+			api_plugin_hook_function('graphs_action_prepare', $save);
+			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue'>";
 		}
 	}else{
 		print "<tr><td bgcolor='#" . $colors["form_alternate1"]. "'><span class='textError'>You must select at least one graph.</span></td></tr>\n";
@@ -1246,6 +1259,9 @@ function graph() {
 	}elseif (!empty($_REQUEST["template_id"])) {
 		$sql_where .= " AND graph_templates_graph.graph_template_id=" . get_request_var_request("template_id");
 	}
+
+	/* allow plugins to modify sql_where */
+	$sql_where .= api_plugin_hook_function('graphs_sql_where', $sql_where);
 
 	/* print checkbox form for validation */
 	print "<form name='chk' method='post' action='graphs.php'>\n";
