@@ -2,7 +2,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2011 The Cacti Group                                 |
+ | Copyright (C) 2004-2012 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -327,7 +327,7 @@ if (sizeof($parms)) {
 }
 
 function display_help() {
-	echo "Add Tree Script 1.0, Copyright 2004-2011 - The Cacti Group\n\n";
+	echo "Add Tree Script 1.0, Copyright 2004-2012 - The Cacti Group\n\n";
 	echo "A simple command line utility to add objects to a tree in Cacti\n\n";
 	echo "usage: add_tree.php  --type=[tree|node] [type-options] [--quiet]\n\n";
 	echo "Tree options:\n";
