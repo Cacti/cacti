@@ -1117,6 +1117,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 					ORDER BY graph_templates_graph.title_cache");
 
 				/* re-key the results on data query index */
+				$snmp_index_to_graph = array();
 				if (sizeof($graphs) > 0) {
 					/* let's sort the graphs naturally */
 					usort($graphs, 'naturally_sort_graphs');

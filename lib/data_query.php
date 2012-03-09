@@ -586,6 +586,16 @@ function get_formatted_data_query_indexes($host_id, $data_query_id) {
 
 	/* from the xml; cached in 'host_snmp_query' */
 	$sort_cache = db_fetch_row("select sort_field,title_format from host_snmp_query where host_id='$host_id' and snmp_query_id='$data_query_id'");
+	/* in case no unique index is available, fallback to first field in XML */
+	if (strlen($sort_cache["sort_field"]) == 0){
+		$snmp_queries = get_data_query_array($data_query_id);
+		if (isset($snmp_queries["index_order"])){
+			$i = explode(":", $snmp_queries["index_order"]);
+			if (sizeof($i) > 0){
+				$sort_cache["sort_field"] = array_shift($i);
+			}
+		}
+	}
 
 	/* get a list of data query indexes and the field value that we are supposed
 	to sort */
