@@ -1,6 +1,7 @@
 Cacti CHANGELOG
 
 0.8.8
+-bug#0002156: CDEF strings are not escaped before passed to rrdtool command
 -bug: Fix input validation on cli/api_device.php
 -bug: Fix issue with data source template associate command line script inserting incorrect rra information
 -bug: Fix minor display issue on data source pages

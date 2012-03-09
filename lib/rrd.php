@@ -26,7 +26,7 @@ define("RRD_NL", " \\\n");
 define("MAX_FETCH_CACHE_SIZE", 5);
 
 function escape_command($command) {
-	return $command; # we escape every single argument now, no need for "special" escaping
+	return cacti_escapeshellcmd($command);
 	#return preg_replace("/(\\\$|`)/", "", $command); # current cacti code
 	#TODO return preg_replace((\\\$(?=\w+|\*|\@|\#|\?|\-|\\\$|\!|\_|[0-9]|\(.*\))|`(?=.*(?=`)))","$2", $command);  #suggested by ldevantier to allow for a single $
 }
