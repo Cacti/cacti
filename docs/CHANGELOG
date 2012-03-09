@@ -4,6 +4,7 @@ Cacti CHANGELOG
 -bug#0002141: cacti.sql missing BTREE PRIMARY KEY for poller_output 
 -bug#0002156: CDEF strings are not escaped before passed to rrdtool command
 -bug#0002174: poller_item.host_id has wrong type 
+-bug#0002178: typo in include/global_form.php: Mimimum -> Minimum
 -bug: Fix input validation on cli/api_device.php
 -bug: Fix issue with data source template associate command line script inserting incorrect rra information
 -bug: Fix minor display issue on data source pages

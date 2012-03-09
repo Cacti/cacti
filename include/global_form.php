@@ -278,7 +278,7 @@ $struct_data_source_item = array(
 		"description" => "Choose unique name to represent this piece of data inside of the rrd file."
 		),
 	"rrd_minimum" => array(
-		"friendly_name" => "Minimum Value ('U' for No Mimimum)",
+		"friendly_name" => "Minimum Value ('U' for No Minimum)",
 		"method" => "textbox",
 		"max_length" => "20",
 		"size" => "30",
