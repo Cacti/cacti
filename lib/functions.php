@@ -1171,6 +1171,7 @@ function get_data_source_title($local_data_id) {
 		and data_local.id=$local_data_id");
 
 	if ((strstr($data["name"], "|")) && (!empty($data["host_id"]))) {
+		$data["name"] = substitute_data_input_data($data["name"], "", $local_data_id);
 		return expand_title($data["host_id"], $data["snmp_query_id"], $data["snmp_index"], $data["name"]);
 	}else{
 		return $data["name"];
