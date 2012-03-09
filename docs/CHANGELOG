@@ -2,6 +2,7 @@ Cacti CHANGELOG
 
 0.8.8
 -bug#0002141: cacti.sql missing BTREE PRIMARY KEY for poller_output 
+-bug#0002146: Utilities -> View Log File -> refresh does not work
 -bug#0002156: CDEF strings are not escaped before passed to rrdtool command
 -bug#0002174: poller_item.host_id has wrong type 
 -bug#0002178: typo in include/global_form.php: Mimimum -> Minimum

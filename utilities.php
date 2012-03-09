@@ -798,7 +798,7 @@ function utilities_clear_user_log() {
 }
 
 function utilities_view_logfile() {
-	global $colors, $log_tail_lines, $page_refresh_interval;
+	global $colors, $log_tail_lines, $page_refresh_interval, $refresh;
 
 	$logfile = read_config_option("path_cactilog");
 
