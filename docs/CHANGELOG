@@ -4,6 +4,7 @@ Cacti CHANGELOG
 -bug#0002081: In Graph Management, search display graph title breaks when using pattern symbol "/"
 -bug#0002141: cacti.sql missing BTREE PRIMARY KEY for poller_output 
 -bug#0002146: Utilities -> View Log File -> refresh does not work
+-bug#0002150: usort_data_query_index() is broken -> graph order for hosts with data query sort option fails
 -bug#0002152: Issue with filter on graphs_new.php
 -bug#0002153: Cant search for patterns containing a forward-slash
 -bug#0002156: CDEF strings are not escaped before passed to rrdtool command
