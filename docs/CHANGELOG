@@ -7,6 +7,7 @@ Cacti CHANGELOG
 -bug#0002152: Issue with filter on graphs_new.php
 -bug#0002153: Cant search for patterns containing a forward-slash
 -bug#0002156: CDEF strings are not escaped before passed to rrdtool command
+-bug#0002158: Minor changes to grammar of displayed messages
 -bug#0002174: poller_item.host_id has wrong type 
 -bug#0002178: typo in include/global_form.php: Mimimum -> Minimum
 -bug: Fix input validation on cli/api_device.php

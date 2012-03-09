@@ -565,14 +565,14 @@ $settings = array(
 			),
 		"num_rows_log" => array(
 			"friendly_name" => "Default Log File Tail Lines",
-			"description" => "How many lines of the Cacti log file to you want to tail, by default.",
+			"description" => "Default number of lines of the Cacti log file to tail.",
 			"method" => "drop_array",
 			"default" => 500,
 			"array" => $log_tail_lines,
 			),
 		"log_refresh_interval" => array(
 			"friendly_name" => "Log File Tail Refresh",
-			"description" => "How many often do you want the Cacti log display to update.",
+			"description" => "How often do you want the Cacti log display to update.",
 			"method" => "drop_array",
 			"default" => 60,
 			"array" => $page_refresh_interval,
