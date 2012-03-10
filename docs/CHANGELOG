@@ -2,6 +2,7 @@ Cacti CHANGELOG
 
 0.8.8
 -bug#0002081: In Graph Management, search display graph title breaks when using pattern symbol "/"
+-bug#0002132: need to include pa.sql with the 0.8.7i and future releases
 -bug#0002141: cacti.sql missing BTREE PRIMARY KEY for poller_output 
 -bug#0002146: Utilities -> View Log File -> refresh does not work
 -bug#0002150: usort_data_query_index() is broken -> graph order for hosts with data query sort option fails
@@ -12,7 +13,7 @@ Cacti CHANGELOG
 -bug#0002165: Using data input field in data source name (related to 2079 in 0.8.7i)
 -bug#0002174: poller_item.host_id has wrong type 
 -bug#0002178: typo in include/global_form.php: Mimimum -> Minimum
--bug#0002182: When there is no sutable (unique) index, graphs are not shown in data query ordering on host leafs
+-bug#0002182: When there is no suitable (unique) index, graphs are not shown in data query ordering on host leafs
 -bug: Fix input validation on cli/api_device.php
 -bug: Fix issue with data source template associate command line script inserting incorrect rra information
 -bug: Fix minor display issue on data source pages

@@ -2649,6 +2649,7 @@ INSERT INTO user_auth_realm VALUES (14,1);
 INSERT INTO user_auth_realm VALUES (15,1);
 INSERT INTO user_auth_realm VALUES (16,1);
 INSERT INTO user_auth_realm VALUES (17,1);
+INSERT INTO user_auth_realm VALUES (101,1);
 
 --
 -- Table structure for table `user_log`
