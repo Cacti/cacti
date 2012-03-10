@@ -406,13 +406,17 @@ function clear_messages() {
 	kill_session_var("sess_messages");
 }
 
-/* kill_session_var - kills a session variable using two methods -- session_unregister() and unset() */
+/* kill_session_var - kills a session variable using unset() */
 function kill_session_var($var_name) {
-	/* register_global = off: reset local settings cache so the user sees the new settings */
-	session_unregister($var_name);
-
 	/* register_global = on: reset local settings cache so the user sees the new settings */
 	unset($_SESSION[$var_name]);
+	/* register_global = off: reset local settings cache so the user sees the new settings */
+	/* session_unregister is deprecated in PHP 5.3.0, unset is sufficient */
+	if (version_compare(PHP_VERSION, '5.3.0', '<')) {
+		session_unregister($var_name);
+	} else {
+		unset($var_name);
+	}
 }
 
 /* array_rekey - changes an array in the form:
