@@ -212,31 +212,33 @@ function form_save() {
 		/* first; get the current graph template id */
 		$graph_template_id = db_fetch_cell("select graph_template_id from graph_local where id=" . $_POST["local_graph_id"]);
 
-		/* get all inputs that go along with this graph template */
-		$input_list = db_fetch_assoc("select id,column_name from graph_template_input where graph_template_id=$graph_template_id");
-
-		if (sizeof($input_list) > 0) {
-		foreach ($input_list as $input) {
-			/* we need to find out which graph items will be affected by saving this particular item */
-			$item_list = db_fetch_assoc("select
-				graph_templates_item.id
-				from (graph_template_input_defs,graph_templates_item)
-				where graph_template_input_defs.graph_template_item_id=graph_templates_item.local_graph_template_item_id
-				and graph_templates_item.local_graph_id=" . $_POST["local_graph_id"] . "
-				and graph_template_input_defs.graph_template_input_id=" . $input["id"]);
-
-			/* loop through each item affected and update column data */
-			if (sizeof($item_list) > 0) {
-			foreach ($item_list as $item) {
-				/* if we are changing templates, the POST vars we are searching for here will not exist.
-				this is because the db and form are out of sync here, but it is ok to just skip over saving
-				the inputs in this case. */
-				if (isset($_POST{$input["column_name"] . "_" . $input["id"]})) {
-					db_execute("update graph_templates_item set " . $input["column_name"] . "='" . $_POST{$input["column_name"] . "_" . $input["id"]} . "' where id=" . $item["id"]);
+		/* get all inputs that go along with this graph template, if templated */
+		if ($graph_template_id > 0) {
+			$input_list = db_fetch_assoc("select id,column_name from graph_template_input where graph_template_id=$graph_template_id");
+			
+			if (sizeof($input_list) > 0) {
+				foreach ($input_list as $input) {
+					/* we need to find out which graph items will be affected by saving this particular item */
+					$item_list = db_fetch_assoc("select
+						graph_templates_item.id
+						from (graph_template_input_defs,graph_templates_item)
+						where graph_template_input_defs.graph_template_item_id=graph_templates_item.local_graph_template_item_id
+						and graph_templates_item.local_graph_id=" . $_POST["local_graph_id"] . "
+						and graph_template_input_defs.graph_template_input_id=" . $input["id"]);
+					
+					/* loop through each item affected and update column data */
+					if (sizeof($item_list) > 0) {
+						foreach ($item_list as $item) {
+							/* if we are changing templates, the POST vars we are searching for here will not exist.
+							 this is because the db and form are out of sync here, but it is ok to just skip over saving
+							 the inputs in this case. */
+							if (isset($_POST{$input["column_name"] . "_" . $input["id"]})) {
+								db_execute("update graph_templates_item set " . $input["column_name"] . "='" . $_POST{$input["column_name"] . "_" . $input["id"]} . "' where id=" . $item["id"]);
+							}
+						}
+					}
 				}
 			}
-			}
-		}
 		}
 	}
 

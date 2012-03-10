@@ -20,6 +20,7 @@ Cacti CHANGELOG
 -bug: Fix minor issue with counting items in the poller_output table
 -bug: Graph settings and settings check boxes do not allow unchecking to be saved
 -bug: Fix minor issue with plugin library caused by non-session
+-bug: Fix SQL error on data input save for non-templated graphs
 -feature: Merge Plugin Architecture into Cacti
 
 0.8.7i
