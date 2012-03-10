@@ -26,7 +26,7 @@ define("RRD_NL", " \\\n");
 define("MAX_FETCH_CACHE_SIZE", 5);
 
 function escape_command($command) {
-	return cacti_escapeshellcmd($command);
+	return $command;		# we escape every single argument now, no need for "special" escaping
 	#return preg_replace("/(\\\$|`)/", "", $command); # current cacti code
 	#TODO return preg_replace((\\\$(?=\w+|\*|\@|\#|\?|\-|\\\$|\!|\_|[0-9]|\(.*\))|`(?=.*(?=`)))","$2", $command);  #suggested by ldevantier to allow for a single $
 }
@@ -942,7 +942,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 					to a function that matches the digits with letters. rrdtool likes letters instead
 					of numbers in DEF names; especially with CDEF's. cdef's are created
 					the same way, except a 'cdef' is put on the beginning of the hash */
-					$graph_defs .= "DEF:" . generate_graph_def_name(strval($i)) . "=\"$data_source_path\":" . $graph_item["data_source_name"] . ":" . $consolidation_functions[$graph_cf] . RRD_NL;
+					$graph_defs .= "DEF:" . generate_graph_def_name(strval($i)) . "=\"$data_source_path\":\"" . $graph_item["data_source_name"] . "\":" . $consolidation_functions[$graph_cf] . RRD_NL;
 
 					$cf_ds_cache{$graph_item["data_template_rrd_id"]}[$graph_cf] = "$i";
 
@@ -1258,9 +1258,9 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 			$cdef_string = rrd_substitute_host_query_data($cdef_string, $graph, $graph_item);
 
 			/* make the initial "virtual" cdef name: 'cdef' + [a,b,c,d...] */
-			$cdef_graph_defs .= "CDEF:cdef" . generate_graph_def_name(strval($i)) . "=";
+			$cdef_graph_defs .= "CDEF:cdef" . generate_graph_def_name(strval($i)) . "='";
 			$cdef_graph_defs .= $cdef_string;
-			$cdef_graph_defs .= " \\\n";
+			$cdef_graph_defs .= "' \\\n";
 
 			/* the CDEF cache is so we do not create duplicate CDEF's on a graph */
 			$cdef_cache{$graph_item["cdef_id"]}{$graph_item["data_template_rrd_id"]}[$cf_id] = "$i";
@@ -1650,7 +1650,7 @@ function rrdtool_function_xport($local_graph_id, $rra_id, $xport_data_array, &$x
 					to a function that matches the digits with letters. rrdtool likes letters instead
 					of numbers in DEF names; especially with CDEF's. cdef's are created
 					the same way, except a 'cdef' is put on the beginning of the hash */
-					$xport_defs .= "DEF:" . generate_graph_def_name(strval($i)) . "=\"$data_source_path\":" . $xport_item["data_source_name"] . ":" . $consolidation_functions[$xport_cf] . RRD_NL;
+					$xport_defs .= "DEF:" . generate_graph_def_name(strval($i)) . "=\"$data_source_path\":\"" . $xport_item["data_source_name"] . "\":" . $consolidation_functions[$xport_cf] . RRD_NL;
 
 					$cf_ds_cache{$xport_item["data_template_rrd_id"]}[$xport_cf] = "$i";
 
@@ -1944,9 +1944,9 @@ function rrdtool_function_xport($local_graph_id, $rra_id, $xport_data_array, &$x
 			$cdef_string = rrd_substitute_host_query_data($cdef_string, $graph, $xport_item);
 
 			/* make the initial "virtual" cdef name: 'cdef' + [a,b,c,d...] */
-			$cdef_xport_defs .= "CDEF:cdef" . generate_graph_def_name(strval($i)) . "=";
+			$cdef_xport_defs .= "CDEF:cdef" . generate_graph_def_name(strval($i)) . "='";
 			$cdef_xport_defs .= $cdef_string;
-			$cdef_xport_defs .= " \\\n";
+			$cdef_xport_defs .= "' \\\n";
 
 			/* the CDEF cache is so we do not create duplicate CDEF's on a graph */
 			$cdef_cache{$xport_item["cdef_id"]}{$xport_item["data_template_rrd_id"]}[$cf_id] = "$i";
