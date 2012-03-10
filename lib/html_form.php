@@ -68,10 +68,13 @@ function draw_edit_form($array) {
 				print "<td width='" . ((isset($config_array["left_column_width"])) ? $config_array["left_column_width"] : "50%") . "'>\n<font class='textEditTitle'>" . $field_array["friendly_name"] . "</font><br>\n";
 
 				if (isset($field_array["sub_checkbox"])) {
-					form_checkbox($field_array["sub_checkbox"]["name"], $field_array["sub_checkbox"]["value"],
-							$field_array["sub_checkbox"]["friendly_name"], "",
-							((isset($check_array["on_change"])) ? $check_array["on_change"] : ""),
-							((isset($field_array["form_id"])) ? $field_array["form_id"] : ""));
+					form_checkbox($field_array["sub_checkbox"]["name"],
+						$field_array["sub_checkbox"]["value"],
+						$field_array["sub_checkbox"]["friendly_name"],
+						((isset($field_array["sub_checkbox"]["default"])) 	? $field_array["sub_checkbox"]["default"] : ""),
+						((isset($field_array["sub_checkbox"]["form_id"])) 	? $field_array["sub_checkbox"]["form_id"] : ""),
+						((isset($field_array["sub_checkbox"]["class"])) 	? $field_array["sub_checkbox"]["class"] : ""),
+						((isset($field_array["sub_checkbox"]["on_change"])) ? $field_array["sub_checkbox"]["on_change"] : ""));
 				}
 
 				print ((isset($field_array["description"])) ? $field_array["description"] : "") . "</td>\n";
@@ -472,16 +475,17 @@ function form_dropdown($form_name, $form_data, $column_display, $column_id, $for
 	print "</select>\n";
 }
 
-/* form_text_box - draws a standard html checkbox
-   @arg $form_name - the name of this form element
-   @arg $form_previous_value - the current value of this form element
-   @arg $form_caption - the text to display to the right of the checkbox
-   @arg $form_default_value - the value of this form element to use if there is
+/** form_checkbox - draws a standard html checkbox
+   @param string $form_name - the name of this form element
+   @param string $form_previous_value - the current value of this form element
+   @param string $form_caption - the text to display to the right of the checkbox
+   @param string $form_default_value - the value of this form element to use if there is
      no current value available
-   @arg $on_change - specify a javascript onchange action
-   @arg $current_id - used to determine if a current value for this form element
+   @param int $current_id - used to determine if a current value for this form element
      exists or not. a $current_id of '0' indicates that no current value exists,
-     a non-zero value indicates that a current value does exist */
+     a non-zero value indicates that a current value does exist
+   @param string $class - specify a css class
+   @param string $on_change - specify a javascript onchange action */
 function form_checkbox($form_name, $form_previous_value, $form_caption, $form_default_value, $current_id = 0, $class = "", $on_change = "") {
 	if (($form_previous_value == "") && (empty($current_id))) {
 		$form_previous_value = $form_default_value;
