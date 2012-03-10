@@ -362,10 +362,16 @@ while ($poller_runs_completed < $poller_runs) {
 		$rrdtool_pipe = rrd_init();
 
 		$rrds_processed = 0;
+		$poller_finishing_dispatched = FALSE;
 		while (1) {
 			$finished_processes = db_fetch_cell("SELECT count(*) FROM poller_time WHERE poller_id=0 AND end_time>'0000-00-00 00:00:00'");
 
 			if ($finished_processes >= $started_processes) {
+				/* all scheduled pollers are finished */
+				if ($poller_finishing_dispatched === FALSE) {
+					api_plugin_hook('poller_finishing');
+					$poller_finishing_dispatched = TRUE;
+				}
 				$rrds_processed = $rrds_processed + process_poller_output($rrdtool_pipe, TRUE);
 
 				log_cacti_stats($loop_start, $method, $concurrent_processes, $max_threads,
