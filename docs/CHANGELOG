@@ -13,7 +13,8 @@ Cacti CHANGELOG
 -bug#0002156: CDEF strings are not escaped before passed to rrdtool command
 -bug#0002158: Minor changes to grammar of displayed messages
 -bug#0002165: Using data input field in data source name (related to 2079 in 0.8.7i)
--bug#0002167: New poller hook poller_finishing 
+-bug#0002167: New poller hook poller_finishing
+-bug#0002172: structure_rra_paths.php does not handle disabled data sources
 -bug#0002174: poller_item.host_id has wrong type 
 -bug#0002178: typo in include/global_form.php: Mimimum -> Minimum
 -bug#0002181: session_unregister (use in functions.php) doesn't exist anymore in PHP 5.4 
