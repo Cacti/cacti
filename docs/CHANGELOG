@@ -18,6 +18,7 @@ Cacti CHANGELOG
 -bug#0002178: typo in include/global_form.php: Mimimum -> Minimum
 -bug#0002181: session_unregister (use in functions.php) doesn't exist anymore in PHP 5.4 
 -bug#0002182: When there is no suitable (unique) index, graphs are not shown in data query ordering on host leafs
+-bug#0002189: Proper graph hooks
 -bug: Fix input validation on cli/api_device.php
 -bug: Fix issue with data source template associate command line script inserting incorrect rra information
 -bug: Fix minor display issue on data source pages

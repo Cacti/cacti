@@ -111,6 +111,11 @@ function draw_edit_form_row($field_array, $field_name, $previous_value) {
    ------------------- */
 
 function host_reload_query() {
+	/* ================= input validation ================= */
+	input_validate_input_number(get_request_var("id"));
+	input_validate_input_number(get_request_var("host_id"));
+	/* ==================================================== */
+
 	run_data_query($_GET["host_id"], $_GET["id"]);
 }
 

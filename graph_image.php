@@ -30,6 +30,8 @@ $guest_account = true;
 include("./include/auth.php");
 include_once("./lib/rrd.php");
 
+api_plugin_hook_function('graph_image');
+
 /* ================= input validation ================= */
 input_validate_input_number(get_request_var("graph_start"));
 input_validate_input_number(get_request_var("graph_end"));
@@ -43,12 +45,15 @@ if (!is_numeric(get_request_var("local_graph_id"))) {
 	die_html_input_error();
 }
 
+if (!is_numeric(get_request_var("local_graph_id"))) {
+	die_html_input_error();
+}
+
 header("Content-type: image/png");
 
 /* flush the headers now */
 ob_end_clean();
 
-api_plugin_hook_function('graph_image');
 
 session_write_close();
 
