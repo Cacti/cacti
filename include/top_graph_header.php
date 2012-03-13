@@ -74,9 +74,9 @@ $page_title = api_plugin_hook_function('page_title', draw_navigation_text("title
 	}else{
 		$refresh = api_plugin_hook_function('top_graph_refresh', htmlspecialchars(read_graph_config_option("page_refresh"),ENT_QUOTES));
 		if (is_array($refresh)) {
-			print "<meta http-equiv=refresh content='" . $refresh["seconds"] . "; url=" . $refresh["page"] . "'>";
+			print "<meta http-equiv=refresh content='" . htmlspecialchars($refresh["seconds"],ENT_QUOTES) . "'; url='" . htmlspecialchars($refresh["page"],ENT_QUOTES) . "'>\r\n";
 		}else{
-			print "<meta http-equiv=refresh content='" . $refresh . "'>";
+			print "<meta http-equiv=refresh content='" . htmlspecialchars($refresh,ENT_QUOTES) . "'>\r\n";
 		}
 	}
 	?>

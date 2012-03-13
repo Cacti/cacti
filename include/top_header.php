@@ -44,9 +44,9 @@ $page_title = api_plugin_hook_function('page_title', draw_navigation_text("title
 	<?php
 	if (isset($refresh)) {
 		if (is_array($refresh)) {
-			print "<meta http-equiv=refresh content=\"" . $refresh["seconds"] . "; url='" . $refresh["page"] . "'\">";
+			print "<meta http-equiv=refresh content='" . htmlspecialchars($refresh["seconds"],ENT_QUOTES) . "'; url='" . htmlspecialchars($refresh["page"],ENT_QUOTES) . "'>\r\n";
 		}else{
-			print "<meta http-equiv=refresh content='" . $refresh . ";'>";
+			print "<meta http-equiv=refresh content='" . htmlspecialchars($refresh,ENT_QUOTES) . "'>\r\n";
 		}
 	}
 	api_plugin_hook('page_head'); ?>
