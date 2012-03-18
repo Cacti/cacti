@@ -28,6 +28,7 @@ Cacti CHANGELOG
 -bug: Graph settings and settings check boxes do not allow unchecking to be saved
 -bug: Fix minor issue with plugin library caused by non-session
 -bug: Fix SQL error on data input save for non-templated graphs
+-bug: user_log index added to increase performance
 -feature: Merge Plugin Architecture into Cacti
 
 0.8.7i
@@ -70,7 +71,7 @@ Cacti CHANGELOG
 -bug#0001626: Symbol ($) does not appear in labels/gprint strings to rrdtool during graph generation
 -bug#0001632: Script server treats quoted arguments with spaces incorrectly as multiple separate arguments
 -bug#0001646: MySQL SSL connection support
--bug#0001660: Modifying data template values does not proprogate as expected	
+-bug#0001660: Modifying data template values does not propagate as expected	
 -bug#0001678: Adding graphs to a device fails to add entries to poller_item if using the script server 
 -bug#0001768: Perform consistency check on ds maximum vs. ds minimum
 -bug#0001783: Graph Export export date is incorrect

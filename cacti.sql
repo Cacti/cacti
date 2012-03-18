@@ -2036,9 +2036,9 @@ INSERT INTO host_template_snmp_query VALUES (7,8);
 INSERT INTO host_template_snmp_query VALUES (7,9);
 INSERT INTO host_template_snmp_query VALUES (8,6);
 
--- 
+--
 -- Table structure for table `plugin_config`
--- 
+--
 
 CREATE TABLE `plugin_config` (
   `id` int(8) NOT NULL auto_increment,
@@ -2053,9 +2053,9 @@ CREATE TABLE `plugin_config` (
   KEY `directory` (`directory`)
 ) ENGINE=MyISAM;
 
--- 
+--
 -- Table structure for table `plugin_hooks`
--- 
+--
 
 CREATE TABLE `plugin_hooks` (
   `id` int(8) NOT NULL auto_increment,
@@ -2069,9 +2069,9 @@ CREATE TABLE `plugin_hooks` (
   KEY `status` (`status`)
 ) ENGINE=MyISAM;
 
--- 
+--
 -- Table structure for table `plugin_realms`
--- 
+--
 
 CREATE TABLE `plugin_realms` (
   `id` int(8) NOT NULL auto_increment,
@@ -2082,9 +2082,9 @@ CREATE TABLE `plugin_realms` (
   KEY `plugin` (`plugin`)
 ) ENGINE=MyISAM;
 
--- 
+--
 -- Table structure for table `plugin_db_changes`
--- 
+--
 
 CREATE TABLE `plugin_db_changes` (
   `id` int(10) NOT NULL auto_increment,
@@ -2662,7 +2662,8 @@ CREATE TABLE user_log (
   result tinyint(1) NOT NULL default '0',
   ip varchar(40) NOT NULL default '',
   PRIMARY KEY  (username,user_id,time),
-  KEY username (username)
+  KEY username (username),
+  KEY user_id (user_id)
 ) ENGINE=MyISAM;
 
 --

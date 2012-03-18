@@ -29,7 +29,7 @@ function upgrade_to_0_8_8() {
 		db_install_execute("0.8.8", "ALTER TABLE poller_item MODIFY COLUMN host_id MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0'");
 		cacti_log(__FUNCTION__ . " upgrade table poller_item", false, "UPGRADE");
 	}
-	
+
 	$_keys = array_rekey(db_fetch_assoc("SHOW KEYS FROM poller_output"), "Key_name", "Key_name");
 	if (in_array("PRIMARY", $_keys)) {
 		db_install_execute("0.8.8", "ALTER TABLE `poller_output` DROP PRIMARY KEY");
@@ -38,9 +38,12 @@ function upgrade_to_0_8_8() {
 	db_install_execute("0.8.8", "ALTER TABLE `poller_output` ADD PRIMARY KEY (`local_data_id`, `rrd_name`, `time`) USING BTREE");
 	cacti_log(__FUNCTION__ . " upgrade table poller_output", false, "UPGRADE");
 
+	/* speed up user management */
+	db_install_execute("0.8.8", "ALTER TABLE `user_log` ADD INDEX (`user_id`)");
+	cacti_log(__FUNCTION__ . " upgrade table user_log", false, "UPGRADE");
 
 	/* Plugin Architecture
-	 * be prepared to find those data already present 
+	 * be prepared to find those data already present
 	 * in case of upgrade of a cacti+PIA installation */
 	$sql =     "CREATE TABLE IF NOT EXISTS `plugin_config` (
 				`id` 		int(8) unsigned NOT NULL auto_increment,
@@ -95,8 +98,8 @@ function upgrade_to_0_8_8() {
 	db_install_execute("0.8.8", $sql);
 	cacti_log(__FUNCTION__ . " install table plugin_realms", false, "UPGRADE");
 
-	/* fill initial data into plugin tables 
-	 * be prepared to find those data already present 
+	/* fill initial data into plugin tables
+	 * be prepared to find those data already present
 	 * in case of upgrade of a cacti+PIA installation */
 	db_install_execute("0.8.8", "REPLACE INTO `plugin_realms` VALUES (1, 'internal', 'plugins.php', 'Plugin Management')");
 	db_install_execute("0.8.8", "REPLACE INTO `plugin_hooks` VALUES (1, 'internal', 'config_arrays', '', 'plugin_config_arrays', 1)");
