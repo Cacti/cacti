@@ -24,23 +24,27 @@
 
 function upgrade_to_0_8_8() {
 	/* speed up the joins */
-	$_columns = array_rekey(db_fetch_assoc("SHOW COLUMNS FROM poller_item"), "Field", "Field");
+	$_columns = array_rekey(db_fetch_assoc("SHOW COLUMNS FROM `poller_item`"), "Field", "Field");
 	if (in_array("host_id", $_columns)) {
-		db_install_execute("0.8.8", "ALTER TABLE poller_item MODIFY COLUMN host_id MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0'");
+		db_install_execute("0.8.8", "ALTER TABLE `poller_item` MODIFY COLUMN `host_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0'");
 		cacti_log(__FUNCTION__ . " upgrade table poller_item", false, "UPGRADE");
 	}
 
-	$_keys = array_rekey(db_fetch_assoc("SHOW KEYS FROM poller_output"), "Key_name", "Key_name");
+	$_keys = array_rekey(db_fetch_assoc("SHOW KEYS FROM `poller_output`"), "Key_name", "Key_name");
 	if (in_array("PRIMARY", $_keys)) {
 		db_install_execute("0.8.8", "ALTER TABLE `poller_output` DROP PRIMARY KEY");
 		cacti_log(__FUNCTION__ . " table poller_output: dropping old PRIMARY KEY", false, "UPGRADE");
 	}
+	/* now the KEY we want to create is definitively NOT present */
 	db_install_execute("0.8.8", "ALTER TABLE `poller_output` ADD PRIMARY KEY (`local_data_id`, `rrd_name`, `time`) USING BTREE");
 	cacti_log(__FUNCTION__ . " upgrade table poller_output", false, "UPGRADE");
 
 	/* speed up user management */
-	db_install_execute("0.8.8", "ALTER TABLE `user_log` ADD INDEX (`user_id`)");
-	cacti_log(__FUNCTION__ . " upgrade table user_log", false, "UPGRADE");
+	$_keys = array_rekey(db_fetch_assoc("SHOW KEYS FROM `user_log`"), "Key_name", "Key_name");
+	if (!in_array("user_id", $_keys)) {
+		db_install_execute("0.8.8", "ALTER TABLE `user_log` ADD KEY `user_id` (`user_id`)");
+		cacti_log(__FUNCTION__ . " upgrade table user_log", false, "UPGRADE");
+	}
 
 	/* Plugin Architecture
 	 * be prepared to find those data already present
