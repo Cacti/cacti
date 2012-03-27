@@ -110,5 +110,8 @@ function upgrade_to_0_8_8() {
 	db_install_execute("0.8.8", "REPLACE INTO `plugin_hooks` VALUES (2, 'internal', 'draw_navigation_text', '', 'plugin_draw_navigation_text', 1)");
 	/* allow admin user to access Plugin Management */
 	db_install_execute("0.8.8", "REPLACE INTO user_auth_realm VALUES (101,1)");
+
+	/* create index on data_template_data on data_input_id */
+	db_install_excute("0.8.8", "CREATE INDEX data_input_id ON data_template_data (data_input_id)");
 }
 ?>

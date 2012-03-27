@@ -572,7 +572,8 @@ CREATE TABLE data_template_data (
   t_rra_id char(2) default NULL,
   PRIMARY KEY  (id),
   KEY local_data_id (local_data_id),
-  KEY data_template_id (data_template_id)
+  KEY data_template_id (data_template_id),
+  KEY data_input_id (data_input_id)
 ) ENGINE=MyISAM;
 
 --

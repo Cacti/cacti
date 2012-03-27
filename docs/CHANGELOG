@@ -32,6 +32,7 @@ Cacti CHANGELOG
 -bug: Fix SQL error on data input save for non-templated graphs
 -bug: user_log index added to increase performance
 -feature: Merge Plugin Architecture into Cacti
+-feature: Added index to data_template_data to increase performance
 
 0.8.7i
 -bug#0001963: Bandwidth summation "total in" and "total out" are always 0
