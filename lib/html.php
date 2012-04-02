@@ -380,7 +380,7 @@ function html_header_sort($header_items, $sort_column, $sort_direction, $last_it
 		}
 
 		if (($db_column == "") || (substr_count($db_column, "nosort"))) {
-			print "<td " . ((($i+1) == count($header_items)) ? "colspan='$last_item_colspan' " : "") . "class='tableSubHeaderColumn'>" . $display_text . "</td>\n";
+			print "<td " . ((($i+1) == count($header_items)) ? "colspan='$last_item_colspan' " : "") . "class='tableSubHeaderColumn'><span class='textSubHeaderDark'>" . $display_text . "</span></td>\n";
 		}else{
 			print "<td class='tableSubHeaderColumn' " . ((($i) == count($header_items)) ? "colspan='$last_item_colspan'>" : ">");
 			print "<a class='textSubHeaderDark' href='" . htmlspecialchars(basename($_SERVER["PHP_SELF"]) . "?sort_column=" . $db_column . "&sort_direction=" . $direction) . "'>" . $display_text . "</a>";
