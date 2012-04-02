@@ -41,7 +41,7 @@ html_start_box("<strong>About Cacti</strong>", "100%", $colors["header"], "3", "
 		network administrator's job easier by taking care of all the necessary details necessary to create
 		meaningful graphs.
 
-		<p>Please see the <a href="http://www.cacti.net/">official Cacti website</a> for information, support, and updates.</p>
+		<p>Please see the offical <a href="http://www.cacti.net/?version=<?php print $config["cacti_version"];?>">Cacti website</a> for information, support, and updates.</p>
 
 		<p><strong>Current Cacti Developers</strong><br>
 		<ul type="disc">
