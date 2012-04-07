@@ -1,5 +1,8 @@
 Cacti CHANGELOG
 
+0.8.8a
+-bug#0002207: cannot export graph templates 
+
 0.8.8
 -bug#0002056: un-initialized datetime used for host status (was: Zero length string != NULL) 
 -bug#0002081: In Graph Management, search display graph title breaks when using pattern symbol "/"
