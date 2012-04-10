@@ -2,6 +2,7 @@ Cacti CHANGELOG
 
 0.8.8a
 -bug#0002207: cannot export graph templates
+-bug#0002208: Graphs with CDEFs fail to generate
 -bug#0002211: creating an index USING BTREE fails ony MySQL < 5.0.60
 
 0.8.8

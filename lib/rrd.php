@@ -552,8 +552,20 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 	include_once($config["library_path"] . "/cdef.php");
 	include_once($config["library_path"] . "/graph_variables.php");
 	include($config["include_path"] . "/global_arrays.php");
+	
+	
+	/* prevent command injection
+	 * This function prepares an rrdtool graph statement to be executed by the web server.
+	 * We have to take care, that the attacker does not insert shell code.
+	 * As some rrdtool parameters accept "Cacti variables", we have to perform the
+	 * variable substitution prior to vulnerability checks.
+	 * We will enclose all parameters in quotes and substitute quotation marks within
+	 * those parameters. 
+	 */
 
-	/* set the rrdtool default font */
+	/* rrdtool fetches the default font from it's execution environment
+	 * you won't find that default font on the rrdtool statement itself!
+	 * set the rrdtool default font via environment variable */
 	if (read_config_option("path_rrdtool_default_font")) {
 		putenv("RRD_DEFAULT_FONT=" . read_config_option("path_rrdtool_default_font"));
 	}
@@ -695,24 +707,24 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 			case "2": /* autoscale-max, accepts a given lower limit */
 				$scale = "--alt-autoscale-max" . RRD_NL;
 				if ( is_numeric($graph["lower_limit"])) {
-					$scale .= "--lower-limit=" . $graph["lower_limit"] . RRD_NL;
+					$scale .= "--lower-limit=" . cacti_escapeshellarg($graph["lower_limit"]) . RRD_NL;
 				}
 				break;
 			case "3": /* autoscale-min, accepts a given upper limit */
 				if (read_config_option("rrdtool_version") != "rrd-1.0.x") {
 					$scale = "--alt-autoscale-min" . RRD_NL;
 					if ( is_numeric($graph["upper_limit"])) {
-						$scale .= "--upper-limit=" . $graph["upper_limit"] . RRD_NL;
+						$scale .= "--upper-limit=" . cacti_escapeshellarg($graph["upper_limit"]) . RRD_NL;
 					}
 				}
 				break;
 			case "4": /* auto_scale with limits */
 				$scale = "--alt-autoscale" . RRD_NL;
 				if ( is_numeric($graph["upper_limit"])) {
-					$scale .= "--upper-limit=" . $graph["upper_limit"] . RRD_NL;
+					$scale .= "--upper-limit=" . cacti_escapeshellarg($graph["upper_limit"]) . RRD_NL;
 				}
 				if ( is_numeric($graph["lower_limit"])) {
-					$scale .= "--lower-limit=" . $graph["lower_limit"] . RRD_NL;
+					$scale .= "--lower-limit=" . cacti_escapeshellarg($graph["lower_limit"]) . RRD_NL;
 				}
 				break;
 		}
@@ -942,7 +954,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 					to a function that matches the digits with letters. rrdtool likes letters instead
 					of numbers in DEF names; especially with CDEF's. cdef's are created
 					the same way, except a 'cdef' is put on the beginning of the hash */
-					$graph_defs .= "DEF:" . generate_graph_def_name(strval($i)) . "=\"$data_source_path\":\"" . $graph_item["data_source_name"] . "\":" . $consolidation_functions[$graph_cf] . RRD_NL;
+					$graph_defs .= "DEF:" . generate_graph_def_name(strval($i)) . "=\"$data_source_path\":" . cacti_escapeshellarg($graph_item["data_source_name"], true) . ":" . $consolidation_functions[$graph_cf] . RRD_NL;
 
 					$cf_ds_cache{$graph_item["data_template_rrd_id"]}[$graph_cf] = "$i";
 
@@ -1258,9 +1270,10 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 			$cdef_string = rrd_substitute_host_query_data($cdef_string, $graph, $graph_item);
 
 			/* make the initial "virtual" cdef name: 'cdef' + [a,b,c,d...] */
-			$cdef_graph_defs .= "CDEF:cdef" . generate_graph_def_name(strval($i)) . "='";
-			$cdef_graph_defs .= $cdef_string;
-			$cdef_graph_defs .= "' \\\n";
+			$cdef_graph_defs .= "CDEF:cdef" . generate_graph_def_name(strval($i)) . "=";
+			/* prohibit command injection and provide platform specific quoting */
+			$cdef_graph_defs .= cacti_escapeshellarg(sanitize_cdef($cdef_string), true);
+			$cdef_graph_defs .= " \\\n";
 
 			/* the CDEF cache is so we do not create duplicate CDEF's on a graph */
 			$cdef_cache{$graph_item["cdef_id"]}{$graph_item["data_template_rrd_id"]}[$cf_id] = "$i";
@@ -1650,7 +1663,7 @@ function rrdtool_function_xport($local_graph_id, $rra_id, $xport_data_array, &$x
 					to a function that matches the digits with letters. rrdtool likes letters instead
 					of numbers in DEF names; especially with CDEF's. cdef's are created
 					the same way, except a 'cdef' is put on the beginning of the hash */
-					$xport_defs .= "DEF:" . generate_graph_def_name(strval($i)) . "=\"$data_source_path\":\"" . $xport_item["data_source_name"] . "\":" . $consolidation_functions[$xport_cf] . RRD_NL;
+					$xport_defs .= "DEF:" . generate_graph_def_name(strval($i)) . "=\"$data_source_path\":" . cacti_escapeshellarg($xport_item["data_source_name"], true) . ":" . $consolidation_functions[$xport_cf] . RRD_NL;
 
 					$cf_ds_cache{$xport_item["data_template_rrd_id"]}[$xport_cf] = "$i";
 
@@ -1944,9 +1957,10 @@ function rrdtool_function_xport($local_graph_id, $rra_id, $xport_data_array, &$x
 			$cdef_string = rrd_substitute_host_query_data($cdef_string, $graph, $xport_item);
 
 			/* make the initial "virtual" cdef name: 'cdef' + [a,b,c,d...] */
-			$cdef_xport_defs .= "CDEF:cdef" . generate_graph_def_name(strval($i)) . "='";
-			$cdef_xport_defs .= $cdef_string;
-			$cdef_xport_defs .= "' \\\n";
+			$cdef_xport_defs .= "CDEF:cdef" . generate_graph_def_name(strval($i)) . "=";
+			/* prohibit command injection and provide platform specific quoting */
+			$cdef_xport_defs .= cacti_escapeshellarg(sanitize_cdef($cdef_string), true);
+			$cdef_xport_defs .= " \\\n";
 
 			/* the CDEF cache is so we do not create duplicate CDEF's on a graph */
 			$cdef_cache{$xport_item["cdef_id"]}{$xport_item["data_template_rrd_id"]}[$cf_id] = "$i";

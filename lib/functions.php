@@ -211,6 +211,7 @@ function read_config_option($config_name, $force = FALSE) {
      $messages array in 'include/global_arrays.php'
    @returns - the original $field_value */
 function form_input_validate($field_value, $field_name, $regexp_match, $allow_nulls, $custom_message = 3) {
+	global $messages;
 	/* write current values to the "field_values" array so we can retain them */
 	$_SESSION["sess_field_values"][$field_name] = $field_value;
 
@@ -223,6 +224,7 @@ function form_input_validate($field_value, $field_name, $regexp_match, $allow_nu
 
 	if ((!preg_match('/' . $regexp_match . '/', $field_value) || (($allow_nulls == false) && ($field_value === "")))) {
 		raise_message($custom_message);
+		cacti_log("Validation Error on field '".$field_name."', value '".$field_value."': " . $messages[$custom_message]["message"], false);
 
 		$_SESSION["sess_error_fields"][$field_name] = $field_name;
 	}else{
@@ -2163,6 +2165,18 @@ function sanitize_uri($uri) {
 	return str_replace($drop_char_match, $drop_char_replace, urldecode($uri));
 }
 
+/** cleans up a CDEF/VDEF string
+ * the CDEF/VDEF must have passed all magic string replacements beforehand
+ * @arg string $cdef   - the CDEF/VDEF to be sanitized
+ * @returns string    - the sanitized CDEF/VDEF
+ */
+function sanitize_cdef($cdef) {
+	static $drop_char_match =   array('^', '$', '<', '>', '`', '\'', '"', '|', '[', ']', '{', '}', ';', '!');
+	static $drop_char_replace = array( '', '',  '',  '',  '',  '',   '',  '',  '',  '',  '',  '',  '',  '');
+
+	return str_replace($drop_char_match, $drop_char_replace, $cdef);
+}
+
 function cacti_escapeshellcmd($string) {
 	global $config;
 
@@ -2199,10 +2213,17 @@ function cacti_escapeshellarg($string, $quote=true) {
 			return substr($string, 1, (strlen($string)-2));
 		}
 	}else{
+		/* escapeshellarg takes care of different quotation for both linux and windows,
+		 * but unfortunately, it blanks out percent signs
+		 * we want to keep them, e.g. for GPRINT format strings
+		 * so we need to create our own escapeshellarg 
+		 * on windows, command injection requires to close any open quotation first
+		 * so we have to escape any quotation here */
 		if (substr_count($string, CACTI_ESCAPE_CHARACTER)) {
 			$string = str_replace(CACTI_ESCAPE_CHARACTER, "\\" . CACTI_ESCAPE_CHARACTER, $string);
 		}
 
+		/* ... before we add our own quotation */
 		if ( $quote ) {
 			return CACTI_ESCAPE_CHARACTER . $string . CACTI_ESCAPE_CHARACTER;
 		} else {
