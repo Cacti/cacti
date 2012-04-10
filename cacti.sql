@@ -2172,7 +2172,7 @@ CREATE TABLE poller_output (
   rrd_name varchar(19) NOT NULL default '',
   time datetime NOT NULL default '0000-00-00 00:00:00',
   output text NOT NULL,
-  PRIMARY KEY (local_data_id,rrd_name,time) USING BTREE
+  PRIMARY KEY (local_data_id,rrd_name,time) /*!50060 USING BTREE */
 ) ENGINE=MyISAM;
 
 --

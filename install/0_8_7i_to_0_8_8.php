@@ -35,8 +35,9 @@ function upgrade_to_0_8_8() {
 		db_install_execute("0.8.8", "ALTER TABLE `poller_output` DROP PRIMARY KEY");
 		cacti_log(__FUNCTION__ . " table poller_output: dropping old PRIMARY KEY", false, "UPGRADE");
 	}
-	/* now the KEY we want to create is definitively NOT present */
-	db_install_execute("0.8.8", "ALTER TABLE `poller_output` ADD PRIMARY KEY (`local_data_id`, `rrd_name`, `time`) USING BTREE");
+	/* now the KEY we want to create is definitively NOT present 
+	 * MySQL < 5.00.60 requires a different syntax, this was fixed in MySQL 5.00.60, so take care */
+	db_install_execute("0.8.8", "ALTER TABLE `poller_output` ADD PRIMARY KEY (`local_data_id`, `rrd_name`, `time`) /*!50060 USING BTREE */");
 	cacti_log(__FUNCTION__ . " upgrade table poller_output", false, "UPGRADE");
 
 	/* speed up user management */
