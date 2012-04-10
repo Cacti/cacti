@@ -95,7 +95,7 @@ function upgrade_to_0_8_8() {
 	$sql =     "CREATE TABLE IF NOT EXISTS `plugin_realms` (
 				`id` 		int(8) unsigned NOT NULL auto_increment,
 				`plugin` 	varchar(32) 	NOT NULL default '',
-				`file`		text		 	NOT NULL default '',
+				`file`		text		 	NOT NULL,
 				`display` 	varchar(64) 	NOT NULL default '',
 				PRIMARY KEY  (`id`),
 				KEY `plugin` (`plugin`)
