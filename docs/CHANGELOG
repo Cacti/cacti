@@ -4,6 +4,7 @@ Cacti CHANGELOG
 -bug#0002207: cannot export graph templates
 -bug#0002208: Graphs with CDEFs fail to generate
 -bug#0002211: creating an index USING BTREE fails ony MySQL < 5.0.60
+-bug#0002213: CLI upgrade script is missing 0.8.7i as a target
 
 0.8.8
 -bug#0002056: un-initialized datetime used for host status (was: Zero length string != NULL) 

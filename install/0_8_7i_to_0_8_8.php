@@ -113,6 +113,10 @@ function upgrade_to_0_8_8() {
 	db_install_execute("0.8.8", "REPLACE INTO user_auth_realm VALUES (101,1)");
 
 	/* create index on data_template_data on data_input_id */
-	db_install_execute("0.8.8", "CREATE INDEX data_input_id ON data_template_data (data_input_id)");
+	$_keys = array_rekey(db_fetch_assoc("SHOW KEYS FROM `data_template_data`"), "Key_name", "Key_name");
+	if (!in_array("data_input_id", $_keys)) {
+		db_install_execute("0.8.8", "ALTER TABLE `data_template_data` ADD KEY `data_input_id` (`data_input_id`)");
+		cacti_log(__FUNCTION__ . " upgrade table data_template_data", false, "UPGRADE");
+	}
 }
 ?>
