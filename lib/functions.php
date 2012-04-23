@@ -565,7 +565,7 @@ function cacti_log($string, $output = false, $environ = "CMDPHP") {
 function tail_file($file_name, $number_of_lines, $message_type = -1, $filter = "", $line_size = 256) {
 	$file_array = array();
 
-	if (file_exists($file_name)) {
+	if (file_exists($file_name) && is_readable($file_name)) {
 		$fp = fopen($file_name, "r");
 
 		/* reset back the number of bytes */
@@ -654,8 +654,10 @@ function tail_file($file_name, $number_of_lines, $message_type = -1, $filter = "
 		$file_array = array_slice($file_array, -$number_of_lines, count($file_array));
 
 		fclose($fp);
-	}else{
+	}elseif (! file_exists($file_name)) {
 		touch($file_name);
+	}else{
+		echo "Error $file_name is not readable";
 	}
 
 	return $file_array;
