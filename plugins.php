@@ -274,61 +274,63 @@ function plugins_load_temp_table() {
 
 	$path = $config['base_path'] . '/plugins/';
 	$dh = opendir($path);
-	while (($file = readdir($dh)) !== false) {
-		if ((is_dir("$path/$file")) && (file_exists("$path/$file/setup.php")) && (!in_array($file, $pluginslist))) {
-			include_once("$path/$file/setup.php");
-			if (!function_exists('plugin_' . $file . '_install') && function_exists($file . '_version')) {
-				$function = $file . '_version';
-				$cinfo[$file] = $function();
-				if (!isset($cinfo[$file]['author']))   $cinfo[$file]['author']   = 'Unknown';
-				if (!isset($cinfo[$file]['homepage'])) $cinfo[$file]['homepage'] = 'Not Stated';
-				if (isset($cinfo[$file]['webpage']))   $cinfo[$file]['homepage'] = $cinfo[$file]['webpage'];
-				if (!isset($cinfo[$file]['longname'])) $cinfo[$file]['longname'] = ucfirst($file);
-				$cinfo[$file]['status'] = -2;
-				if (in_array($file, $plugins)) {
-					$cinfo[$file]['status'] = -1;
-				}
-				db_execute("REPLACE INTO $table (directory, name, status, author, webpage, version)
-					VALUES ('" .
-						$file . "', '" .
-						$cinfo[$file]['longname'] . "', '" .
-						$cinfo[$file]['status']   . "', '" .
-						$cinfo[$file]['author']   . "', '" .
-						$cinfo[$file]['homepage'] . "', '" .
-						$cinfo[$file]['version']  . "')");
-				$pluginslist[] = $file;
-			} elseif (function_exists('plugin_' . $file . '_install') && function_exists('plugin_' . $file . '_version')) {
-				$function               = $file . '_version';
-				$cinfo[$file]           = $function();
-				$cinfo[$file]['status'] = 0;
-				if (!isset($cinfo[$file]['author']))   $cinfo[$file]['author']   = 'Unknown';
-				if (!isset($cinfo[$file]['homepage'])) $cinfo[$file]['homepage'] = 'Not Stated';
-				if (isset($cinfo[$file]['webpage']))   $cinfo[$file]['homepage'] = $cinfo[$file]['webpage'];
-				if (!isset($cinfo[$file]['longname'])) $cinfo[$file]['homepage'] = ucfirst($file);
+	if ($dh !== false) {
+		while (($file = readdir($dh)) !== false) {
+			if ((is_dir("$path/$file")) && (file_exists("$path/$file/setup.php")) && (!in_array($file, $pluginslist))) {
+				include_once("$path/$file/setup.php");
+				if (!function_exists('plugin_' . $file . '_install') && function_exists($file . '_version')) {
+					$function = $file . '_version';
+					$cinfo[$file] = $function();
+					if (!isset($cinfo[$file]['author']))   $cinfo[$file]['author']   = 'Unknown';
+					if (!isset($cinfo[$file]['homepage'])) $cinfo[$file]['homepage'] = 'Not Stated';
+					if (isset($cinfo[$file]['webpage']))   $cinfo[$file]['homepage'] = $cinfo[$file]['webpage'];
+					if (!isset($cinfo[$file]['longname'])) $cinfo[$file]['longname'] = ucfirst($file);
+					$cinfo[$file]['status'] = -2;
+					if (in_array($file, $plugins)) {
+						$cinfo[$file]['status'] = -1;
+					}
+					db_execute("REPLACE INTO $table (directory, name, status, author, webpage, version)
+						VALUES ('" .
+							$file . "', '" .
+							$cinfo[$file]['longname'] . "', '" .
+							$cinfo[$file]['status']   . "', '" .
+							$cinfo[$file]['author']   . "', '" .
+							$cinfo[$file]['homepage'] . "', '" .
+							$cinfo[$file]['version']  . "')");
+					$pluginslist[] = $file;
+				} elseif (function_exists('plugin_' . $file . '_install') && function_exists('plugin_' . $file . '_version')) {
+					$function               = $file . '_version';
+					$cinfo[$file]           = $function();
+					$cinfo[$file]['status'] = 0;
+					if (!isset($cinfo[$file]['author']))   $cinfo[$file]['author']   = 'Unknown';
+					if (!isset($cinfo[$file]['homepage'])) $cinfo[$file]['homepage'] = 'Not Stated';
+					if (isset($cinfo[$file]['webpage']))   $cinfo[$file]['homepage'] = $cinfo[$file]['webpage'];
+					if (!isset($cinfo[$file]['longname'])) $cinfo[$file]['homepage'] = ucfirst($file);
 
-				/* see if it's been installed as old, if so, remove from oldplugins array and session */
-				$oldplugins = read_config_option("oldplugins");
-				if (substr_count($oldplugins, $file)) {
-					$oldplugins = str_replace($file, "", $oldplugins);
-					$oldplugins = str_replace(",,", ",", $oldplugins);
-					$oldplugins = trim($oldplugins, ",");
-					set_config_option('oldplugins', $oldplugins);
-					$_SESSION['sess_config_array']['oldplugins'] = $oldplugins;
-				}
+					/* see if it's been installed as old, if so, remove from oldplugins array and session */
+					$oldplugins = read_config_option("oldplugins");
+					if (substr_count($oldplugins, $file)) {
+						$oldplugins = str_replace($file, "", $oldplugins);
+						$oldplugins = str_replace(",,", ",", $oldplugins);
+						$oldplugins = trim($oldplugins, ",");
+						set_config_option('oldplugins', $oldplugins);
+						$_SESSION['sess_config_array']['oldplugins'] = $oldplugins;
+					}
 
-				db_execute("REPLACE INTO $table (directory, name, status, author, webpage, version)
-					VALUES ('" .
-						$file . "', '" .
-						$cinfo[$file]['longname'] . "', '" .
-						$cinfo[$file]['status'] . "', '" .
-						$cinfo[$file]['author'] . "', '" .
-						$cinfo[$file]['homepage'] . "', '" .
-						$cinfo[$file]['version'] . "')");
-				$pluginslist[] = $file;
+					db_execute("REPLACE INTO $table (directory, name, status, author, webpage, version)
+						VALUES ('" .
+							$file . "', '" .
+							$cinfo[$file]['longname'] . "', '" .
+							$cinfo[$file]['status'] . "', '" .
+							$cinfo[$file]['author'] . "', '" .
+							$cinfo[$file]['homepage'] . "', '" .
+							$cinfo[$file]['version'] . "')");
+					$pluginslist[] = $file;
+				}
 			}
 		}
+		closedir($dh);
 	}
-	closedir($dh);
 
 	return $table;
 }

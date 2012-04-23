@@ -1,14 +1,15 @@
 Cacti CHANGELOG
 
 0.8.8a
--bug#0002216: use of define_syslog_variables() gone in PHP 5.4 
 -bug#0002207: cannot export graph templates
 -bug#0002208: Graphs with CDEFs fail to generate
+-bug#0002209: External auth does not work behind a reverse proxy 
 -bug#0002211: creating an index USING BTREE fails ony MySQL < 5.0.60
 -bug#0002213: CLI upgrade script is missing 0.8.7i as a target
 -bug#0002214: SQL error during non-PIA upgrade to 088 when giving a default for a text field in plugin_realms
+-bug#0002216: use of define_syslog_variables() gone in PHP 5.4 
 -bug#0002217: url_path should default to /cacti/
--bug#0002209: External auth does not work behind a reverse proxy 
+-bug#0002221: Missing plugin directory causes endless loop in plugins.php
 -bug#0002222: tail_logfile hangs when cacti.log not readable, filling apache log with fgets warnings
 
 0.8.8
