@@ -36,7 +36,7 @@ $database_ssl = false;
    ex: if your cacti install as at http://serverip/cacti/ this
    would be set to /cacti/
 */
-//$url_path = "/";
+//$url_path = "/cacti/";
 
 /* Default session name - Session name must contain alpha characters */
 //$cacti_session_name = "Cacti";
