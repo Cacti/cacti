@@ -8,6 +8,7 @@ Cacti CHANGELOG
 -bug#0002213: CLI upgrade script is missing 0.8.7i as a target
 -bug#0002214: SQL error during non-PIA upgrade to 088 when giving a default for a text field in plugin_realms
 -bug#0002217: url_path should default to /cacti/
+-bug#0002209: External auth does not work behind a reverse proxy 
 
 0.8.8
 -bug#0002056: un-initialized datetime used for host status (was: Zero length string != NULL) 
