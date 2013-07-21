@@ -125,14 +125,14 @@ function push_out_data_source_custom_data($data_template_id) {
 			
 			if (sizeof($input_fields)) {
 				foreach ($input_fields as $input_field) {
-					if ($data_source["id"] == $input_field["data_template_data_id"]) {
+					if ($data_source["id"] == $input_field["data_template_data_id"] &&
+						isset($template_input_fields[$input_field["id"]])) {
 						/* do not push out "host fields" */
 						if (!preg_match('/^' . VALID_HOST_FIELDS . '$/i', $input_field["type_code"])) {
 							/* this is not a "host field", so we should either push out the value if it is templated */
 							$did_vals .= ($did_cnt == 0 ? "":",") . "(" . $input_field["id"] . ", " . $data_source["id"] . ", '" . addslashes($template_input_fields[$input_field["id"]]["value"]) . "')";
 							$did_cnt++;
-						}elseif ((isset($template_input_fields[$input_field["id"]])) &&
-							($template_input_fields[$input_field["id"]]["value"] != $input_field["value"])) { # templated input field deviates from currenmt data source, so update required
+						}elseif ($template_input_fields[$input_field["id"]]["value"] != $input_field["value"]) { # templated input field deviates from currenmt data source, so update required
 							$did_vals .= ($did_cnt == 0 ? "":",") . "(" . $input_field["id"] . ", " . $data_source["id"] . ", '" . addslashes($template_input_fields[$input_field["id"]]["value"]) . "')";
 							$did_cnt++;
 						}
