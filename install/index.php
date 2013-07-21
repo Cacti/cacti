@@ -348,13 +348,19 @@ if ($_REQUEST["step"] == "4") {
 	kill_session_var("sess_config_array");
 	kill_session_var("sess_host_cache_array");
 
-	/* just in case we have hard drive graphs to deal with */
-	$host_id = db_fetch_cell("select id from host where hostname='127.0.0.1'");
+	/* pre-fill poller cache with initial data on a new install only */
+	if ($old_cacti_version == "new_install") {
+		/* just in case we have hard drive graphs to deal with */
+		$host_id = db_fetch_cell("select id from host where hostname='127.0.0.1'");
 
-	if (!empty($host_id)) {
-		run_data_query($host_id, 6);
+		if (!empty($host_id)) {
+			run_data_query($host_id, 6);
+		}
+
+		/* it's always a good idea to re-populate the poller cache to make sure everything is refreshed and up-to-date */ 	 
+		repopulate_poller_cache(); 	 
 	}
-
+	
 	db_execute("delete from version");
 	db_execute("insert into version (cacti) values ('" . $config["cacti_version"] . "')");
 
