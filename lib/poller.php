@@ -224,9 +224,11 @@ function update_reindex_cache($host_id, $data_query_id) {
 					break;
 				case DATA_INPUT_TYPE_SCRIPT_QUERY:
 					if (isset($data_query_xml["arg_num_indexes"])) { /* we have a specific request for counting indexes */
-						$recache_stack[] = "($host_id, $data_query_id," . POLLER_ACTION_SCRIPT . ", '=', '$assert_value', '" . get_script_query_path((isset($data_query_xml["arg_prepend"]) ? $data_query_xml["arg_prepend"] . " ": "") . $data_query_xml["arg_num_indexes"], $data_query_xml["script_path"], $host_id) . "', '1')";
+						/* escape path (windows!) and parameters for use with database sql; TODO: replace by db specific escape function like mysql_real_escape_string? */
+						$recache_stack[] = "($host_id, $data_query_id," . POLLER_ACTION_SCRIPT . ", '=', '$assert_value', '" . addslashes(get_script_query_path((isset($data_query_xml["arg_prepend"]) ? $data_query_xml["arg_prepend"] . " ": "") . $data_query_xml["arg_num_indexes"], $data_query_xml["script_path"], $host_id)) . "', '1')";
 					} else { /* count all indexes found */
-						$recache_stack[] = "($host_id, $data_query_id," . POLLER_ACTION_SCRIPT_COUNT . ", '=', '$assert_value', '" . get_script_query_path((isset($data_query_xml["arg_prepend"]) ? $data_query_xml["arg_prepend"] . " ": "") . $data_query_xml["arg_index"], $data_query_xml["script_path"], $host_id) . "', '1')";
+						/* escape path (windows!) and parameters for use with database sql; TODO: replace by db specific escape function like mysql_real_escape_string? */
+						$recache_stack[] = "($host_id, $data_query_id," . POLLER_ACTION_SCRIPT_COUNT . ", '=', '$assert_value', '" . addslashes(get_script_query_path((isset($data_query_xml["arg_prepend"]) ? $data_query_xml["arg_prepend"] . " ": "") . $data_query_xml["arg_index"], $data_query_xml["script_path"], $host_id)) . "', '1')";
 					}
 					break;
 				case DATA_INPUT_TYPE_QUERY_SCRIPT_SERVER:
