@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2012 The Cacti Group                                 |
+ | Copyright (C) 2004-2013 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -214,7 +214,7 @@ function disable_poller() {
 }
 
 function display_help() {
-	echo "Structured RRA Paths Utility, Copyright 2008-2012 - The Cacti Group\n\n";
+	echo "Structured RRA Paths Utility, Copyright 2008-2013 - The Cacti Group\n\n";
 	echo "A simple command line utility that converts a Cacti system from using\n";
 	echo "legacy RRA paths to using structured RRA paths with the following\n";
 	echo "naming convention: <path_rra>/host_id/local_data_id.rrd\n\n";

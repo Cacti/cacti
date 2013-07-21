@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2012 The Cacti Group                                 |
+ | Copyright (C) 2004-2013 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -160,7 +160,7 @@ if ($total_rows > 0 && !$force) {
 
 /*	display_help - displays the usage of the function */
 function display_help () {
-	print "Cacti Database Repair Tool 1.1, Copyright 2004-2012 - The Cacti Group\n\n";
+	print "Cacti Database Repair Tool 1.1, Copyright 2004-2013 - The Cacti Group\n\n";
 	print "usage: repair_database.php [--debug] [--force] [--form] [--help]\n\n";
 	print "--form  - Force rebuilding the indexes from the database creation syntax\n";
 	print "--force - Remove Invalid Records from the Database\n";
