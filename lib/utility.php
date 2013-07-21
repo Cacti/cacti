@@ -28,10 +28,13 @@ function repopulate_poller_cache() {
 	$local_data_ids = array();
 
 	if (sizeof($poller_data) > 0) {
-	foreach ($poller_data as $data) {
-			$poller_items = array_merge($poller_items, update_poller_cache($data["id"]));
-	}
+		foreach ($poller_data as $data) {
+				$poller_items = array_merge($poller_items, update_poller_cache($data["id"]));
+		}
 
+		/* delete all existing entries ... */
+		db_execute("DELETE FROM poller_item");
+		/* .. prior to recreating everything from scratch */
 		poller_update_poller_cache_from_buffer($local_data_ids, $poller_items);
 
 	}
@@ -40,7 +43,7 @@ function repopulate_poller_cache() {
 function update_poller_cache_from_query($host_id, $data_query_id) {
 	$poller_data = db_fetch_assoc("select id from data_local where host_id = '$host_id' and snmp_query_id = '$data_query_id'");
 
-	$poller_items = array();
+	$poller_items = $local_data_ids = array();
 
 	if (sizeof($poller_data) > 0) {
 		foreach ($poller_data as $data) {
@@ -49,7 +52,9 @@ function update_poller_cache_from_query($host_id, $data_query_id) {
 			$poller_items = array_merge($poller_items, update_poller_cache($data["id"]));
 		}
 
-		poller_update_poller_cache_from_buffer($local_data_ids, $poller_items);
+		if (sizeof($local_data_ids)) {
+			poller_update_poller_cache_from_buffer($local_data_ids, $poller_items);
+		}
 	}
 }
 
@@ -300,7 +305,9 @@ function push_out_data_input_method($data_input_id) {
 			$poller_items = array_merge($poller_items, update_poller_cache($row["local_data_id"]));
 		}
 
-		poller_update_poller_cache_from_buffer($_my_local_data_ids, $poller_items);
+		if (sizeof($_my_local_data_ids)) {
+			poller_update_poller_cache_from_buffer($_my_local_data_ids, $poller_items);
+		}
 	}
 }
 
@@ -320,7 +327,8 @@ function poller_update_poller_cache_from_buffer($local_data_ids, &$poller_items)
 
 		db_execute("UPDATE poller_item SET present=0 WHERE local_data_id IN ($ids)");
 	} else {
-		db_execute("UPDATE poller_item SET present=0");
+		/* don't mark anything in case we have no $local_data_ids => 
+		 *this would flush the whole table at bottom of this function */
 	}
 
 	/* setup the database call */
@@ -382,7 +390,7 @@ function poller_update_poller_cache_from_buffer($local_data_ids, &$poller_items)
 	if (sizeof($ids)) {
 		db_execute("DELETE FROM poller_item WHERE present=0 AND local_data_id IN ($ids)");
 	}else{
-		db_execute("DELETE FROM poller_item WHERE present=0");
+		/* only handle explicitely given local_data_ids */
 	}
 }
 

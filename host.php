@@ -186,7 +186,7 @@ function form_actions() {
 
 				/* update poller cache */
 				$data_sources = db_fetch_assoc("select id from data_local where host_id='" . $selected_items[$i] . "'");
-				$poller_items = array();
+				$poller_items = $local_data_ids = array();
 
 				if (sizeof($data_sources) > 0) {
 					foreach ($data_sources as $data_source) {
@@ -195,7 +195,9 @@ function form_actions() {
 					}
 				}
 
-				poller_update_poller_cache_from_buffer($local_data_ids, $poller_items);
+				if (sizeof($local_data_ids)) {
+					poller_update_poller_cache_from_buffer($local_data_ids, $poller_items);
+				}
 			}
 		}elseif ($_POST["drp_action"] == "3") { /* Disable Selected Devices */
 			for ($i=0;($i<count($selected_items));$i++) {
