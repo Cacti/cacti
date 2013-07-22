@@ -1,5 +1,12 @@
 Cacti CHANGELOG
 
+0.8.8b
+-bug: Fixed issue with custom data source information being lost when saved from edit
+-bug: Repopulate the poller cache on new installations
+-bug: Fix issue with poller not escaping the script query path correctly
+-bug: Allow snmpv3 priv proto none
+-bug: Fix issue where host activate may flush the entire poller item cache
+
 0.8.8a
 -bug#0002207: cannot export graph templates
 -bug#0002208: Graphs with CDEFs fail to generate
