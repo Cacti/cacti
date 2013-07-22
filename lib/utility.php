@@ -60,6 +60,7 @@ function update_poller_cache_from_query($host_id, $data_query_id) {
 
 function update_poller_cache($local_data_id, $commit = false) {
 	global $config;
+	global $cnn_id;
 
 	include_once($config["library_path"] . "/data_query.php");
 	include_once($config["library_path"] . "/api_poller.php");
@@ -86,7 +87,7 @@ function update_poller_cache($local_data_id, $commit = false) {
 		$field = data_query_field_list($data_input["data_template_data_id"]);
 
 		if (strlen($field["output_type"])) {
-			$output_type_sql = "and snmp_query_graph_rrd.snmp_query_graph_id='" . $field["output_type"] . "'";
+			$output_type_sql = "and snmp_query_graph_rrd.snmp_query_graph_id=" . $cnn_id->qstr($field["output_type"]);
 		}else{
 			$output_type_sql = "";
 		}
@@ -395,6 +396,8 @@ function poller_update_poller_cache_from_buffer($local_data_ids, &$poller_items)
 }
 
 function push_out_host($host_id, $local_data_id = 0, $data_template_id = 0) {
+	global $cnn_id;
+
 	/* ok here's the deal: first we need to find every data source that uses this host.
 	then we go through each of those data sources, finding each one using a data input method
 	with "special fields". if we find one, fill it will the data here from this host */
@@ -465,7 +468,7 @@ function push_out_host($host_id, $local_data_id = 0, $data_template_id = 0) {
 		if (sizeof($template_fields{$data_source["local_data_template_data_id"]})) {
 		foreach ($template_fields{$data_source["local_data_template_data_id"]} as $template_field) {
 			if ((preg_match('/^' . VALID_HOST_FIELDS . '$/i', $template_field["type_code"])) && ($template_field["value"] == "") && ($template_field["t_value"] == "")) {
-				db_execute("replace into data_input_data (data_input_field_id,data_template_data_id,value) values (" . $template_field["id"] . "," . $data_source["id"] . ",'" . $host{$template_field["type_code"]} . "')");
+				db_execute("replace into data_input_data (data_input_field_id,data_template_data_id,value) values (" . $template_field["id"] . "," . $data_source["id"] . "," . $cnn_id->qstr($host{$template_field["type_code"]}) . ")");
 			}
 		}
 		}
