@@ -76,9 +76,9 @@ function cacti_snmp_get($hostname, $community, $oid, $version, $username, $passw
 		$timeout = ceil($timeout / 1000);
 
 		if ($version == "1") {
-			$snmp_auth = (read_config_option("snmp_version") == "ucd-snmp") ? snmp_escape_string($community): "-c " . snmp_escape_string($community); /* v1/v2 - community string */
+			$snmp_auth = (read_config_option("snmp_version") == "ucd-snmp") ? escapeshellarg($community): "-c " . escapeshellarg($community); /* v1/v2 - community string */
 		}elseif ($version == "2") {
-			$snmp_auth = (read_config_option("snmp_version") == "ucd-snmp") ? snmp_escape_string($community) : "-c " . snmp_escape_string($community); /* v1/v2 - community string */
+			$snmp_auth = (read_config_option("snmp_version") == "ucd-snmp") ? escapeshellarg($community) : "-c " . escapeshellarg($community); /* v1/v2 - community string */
 			$version = "2c"; /* ucd/net snmp prefers this over '2' */
 		}elseif ($version == "3") {
 			if ($priv_proto == "[None]" || $priv_pass == '') {
@@ -89,21 +89,21 @@ function cacti_snmp_get($hostname, $community, $oid, $version, $username, $passw
 			}
 
 			if (strlen($priv_pass)) {
-				$priv_pass = "-X " . snmp_escape_string($priv_pass) . " -x " . snmp_escape_string($priv_proto);
+				$priv_pass = "-X " . escapeshellarg($priv_pass) . " -x " . escapeshellarg($priv_proto);
 			}else{
 				$priv_pass = "";
 			}
 
 			if (strlen($context)) {
-				$context = "-n " . snmp_escape_string($context);
+				$context = "-n " . escapeshellarg($context);
 			}else{
 				$context = "";
 			}
 
-			$snmp_auth = trim("-u " . snmp_escape_string($username) .
-				" -l " . snmp_escape_string($proto) .
-				" -a " . snmp_escape_string($auth_proto) .
-				" -A " . snmp_escape_string($password) .
+			$snmp_auth = trim("-u " . escapeshellarg($username) .
+				" -l " . escapeshellarg($proto) .
+				" -a " . escapeshellarg($auth_proto) .
+				" -A " . escapeshellarg($password) .
 				" "    . $priv_pass .
 				" "    . $context); /* v3 - username/password */
 		}
@@ -192,9 +192,9 @@ function cacti_snmp_getnext($hostname, $community, $oid, $version, $username, $p
 		$timeout = ceil($timeout / 1000);
 
 		if ($version == "1") {
-			$snmp_auth = (read_config_option("snmp_version") == "ucd-snmp") ? snmp_escape_string($community): "-c " . snmp_escape_string($community); /* v1/v2 - community string */
+			$snmp_auth = (read_config_option("snmp_version") == "ucd-snmp") ? escapeshellarg($community): "-c " . escapeshellarg($community); /* v1/v2 - community string */
 		}elseif ($version == "2") {
-			$snmp_auth = (read_config_option("snmp_version") == "ucd-snmp") ? snmp_escape_string($community): "-c " . snmp_escape_string($community); /* v1/v2 - community string */
+			$snmp_auth = (read_config_option("snmp_version") == "ucd-snmp") ? escapeshellarg($community): "-c " . escapeshellarg($community); /* v1/v2 - community string */
 			$version = "2c"; /* ucd/net snmp prefers this over '2' */
 		}elseif ($version == "3") {
 			if ($priv_proto == "[None]" || $priv_pass == '') {
@@ -205,21 +205,21 @@ function cacti_snmp_getnext($hostname, $community, $oid, $version, $username, $p
 			}
 
 			if (strlen($priv_pass)) {
-				$priv_pass = "-X " . snmp_escape_string($priv_pass) . " -x " . snmp_escape_string($priv_proto);
+				$priv_pass = "-X " . escapeshellarg($priv_pass) . " -x " . escapeshellarg($priv_proto);
 			}else{
 				$priv_pass = "";
 			}
 
 			if (strlen($context)) {
-				$context = "-n " . snmp_escape_string($context);
+				$context = "-n " . escapeshellarg($context);
 			}else{
 				$context = "";
 			}
 
-			$snmp_auth = trim("-u " . snmp_escape_string($username) .
-				" -l " . snmp_escape_string($proto) .
-				" -a " . snmp_escape_string($auth_proto) .
-				" -A " . snmp_escape_string($password) .
+			$snmp_auth = trim("-u " . escapeshellarg($username) .
+				" -l " . escapeshellarg($proto) .
+				" -a " . escapeshellarg($auth_proto) .
+				" -A " . escapeshellarg($password) .
 				" "    . $priv_pass .
 				" "    . $context); /* v3 - username/password */
 		}
@@ -351,9 +351,9 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $username, $pass
 		$timeout = ceil($timeout / 1000);
 
 		if ($version == "1") {
-			$snmp_auth = (read_config_option("snmp_version") == "ucd-snmp") ? snmp_escape_string($community): "-c " . snmp_escape_string($community); /* v1/v2 - community string */
+			$snmp_auth = (read_config_option("snmp_version") == "ucd-snmp") ? escapeshellarg($community): "-c " . escapeshellarg($community); /* v1/v2 - community string */
 		}elseif ($version == "2") {
-			$snmp_auth = (read_config_option("snmp_version") == "ucd-snmp") ? snmp_escape_string($community): "-c " . snmp_escape_string($community); /* v1/v2 - community string */
+			$snmp_auth = (read_config_option("snmp_version") == "ucd-snmp") ? escapeshellarg($community): "-c " . escapeshellarg($community); /* v1/v2 - community string */
 			$version = "2c"; /* ucd/net snmp prefers this over '2' */
 		}elseif ($version == "3") {
 			if ($priv_proto == "[None]" || $priv_pass == '') {
@@ -364,21 +364,21 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $username, $pass
 			}
 
 			if (strlen($priv_pass)) {
-				$priv_pass = "-X " . snmp_escape_string($priv_pass) . " -x " . snmp_escape_string($priv_proto);
+				$priv_pass = "-X " . escapeshellarg($priv_pass) . " -x " . escapeshellarg($priv_proto);
 			}else{
 				$priv_pass = "";
 			}
 
 			if (strlen($context)) {
-				$context = "-n " . snmp_escape_string($context);
+				$context = "-n " . escapeshellarg($context);
 			}else{
 				$context = "";
 			}
 
-			$snmp_auth = trim("-u " . snmp_escape_string($username) .
-				" -l " . snmp_escape_string($proto) .
-				" -a " . snmp_escape_string($auth_proto) .
-				" -A " . snmp_escape_string($password) .
+			$snmp_auth = trim("-u " . escapeshellarg($username) .
+				" -l " . escapeshellarg($proto) .
+				" -a " . escapeshellarg($auth_proto) .
+				" -A " . escapeshellarg($password) .
 				" "    . $priv_pass .
 				" "    . $context); /* v3 - username/password */
 		}
@@ -552,24 +552,6 @@ function format_snmp_string($string, $snmp_oid_included) {
 	}
 
 	return $string;
-}
-
-function snmp_escape_string($string) {
-	global $config;
-
-	if (! defined("SNMP_ESCAPE_CHARACTER")) {
-		if ($config["cacti_server_os"] == "win32") {
-			define("SNMP_ESCAPE_CHARACTER", "\"");
-		}else{
-			define("SNMP_ESCAPE_CHARACTER", "'");
-		}
-	}
-
-	if (substr_count($string, SNMP_ESCAPE_CHARACTER)) {
-		$string = substr_replace(SNMP_ESCAPE_CHARACTER, "\\" . SNMP_ESCAPE_CHARACTER, $string);
-	}
-
-	return SNMP_ESCAPE_CHARACTER . $string . SNMP_ESCAPE_CHARACTER;
 }
 
 function snmp_get_method($version = 1) {
