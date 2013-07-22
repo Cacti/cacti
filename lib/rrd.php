@@ -954,7 +954,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 					to a function that matches the digits with letters. rrdtool likes letters instead
 					of numbers in DEF names; especially with CDEF's. cdef's are created
 					the same way, except a 'cdef' is put on the beginning of the hash */
-					$graph_defs .= "DEF:" . generate_graph_def_name(strval($i)) . "=\"$data_source_path\":" . cacti_escapeshellarg($graph_item["data_source_name"], true) . ":" . $consolidation_functions[$graph_cf] . RRD_NL;
+					$graph_defs .= "DEF:" . generate_graph_def_name(strval($i)) . "=" . cacti_escapeshellarg($data_source_path) . ":" . cacti_escapeshellarg($graph_item["data_source_name"], true) . ":" . $consolidation_functions[$graph_cf] . RRD_NL;
 
 					$cf_ds_cache{$graph_item["data_template_rrd_id"]}[$graph_cf] = "$i";
 
@@ -1344,14 +1344,14 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 
 		if ($graph_item_types{$graph_item["graph_type_id"]} == "COMMENT") {
 			if (read_config_option("rrdtool_version") != "rrd-1.0.x") {
-				$comment_string = $graph_item_types{$graph_item["graph_type_id"]} . ":\"" . str_replace(":", "\:", $graph_variables["text_format"][$graph_item_id]) . $hardreturn[$graph_item_id] . "\" ";
+				$comment_string = $graph_item_types{$graph_item["graph_type_id"]} . ":" . str_replace(":", "\:", cacti_escapeshellarg($graph_variables["text_format"][$graph_item_id] . $hardreturn[$graph_item_id])) . " ";
 				if (trim($comment_string) == 'COMMENT:"\n"') {
 					$txt_graph_items .= 'COMMENT:" \n"'; # rrdtool will skip a COMMENT that holds a NL only; so add a blank to make NL work
 				} else if (trim($comment_string) != "COMMENT:\"\"") {
 					$txt_graph_items .= rrd_substitute_host_query_data($comment_string, $graph, $graph_item);
 				}
 			}else {
-				$comment_string = $graph_item_types{$graph_item["graph_type_id"]} . ":\"" . $graph_variables["text_format"][$graph_item_id] . $hardreturn[$graph_item_id] . "\" ";
+				$comment_string = $graph_item_types{$graph_item["graph_type_id"]} . ":" . cacti_escapeshellarg($graph_variables["text_format"][$graph_item_id] . $hardreturn[$graph_item_id]) . " ";
 				if (trim($comment_string) == 'COMMENT:"\n"') {
 					$txt_graph_items .= 'COMMENT:" \n"'; # rrdtool will skip a COMMENT that holds a NL only; so add a blank to make NL work
 				} else if (trim($comment_string) != "COMMENT:\"\"") {
@@ -1360,7 +1360,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 			}
 		}elseif (($graph_item_types{$graph_item["graph_type_id"]} == "GPRINT") && (!isset($graph_data_array["graph_nolegend"]))) {
 			$graph_variables["text_format"][$graph_item_id] = str_replace(":", "\:", $graph_variables["text_format"][$graph_item_id]); /* escape colons */
-			$txt_graph_items .= $graph_item_types{$graph_item["graph_type_id"]} . ":" . $data_source_name . ":" . $consolidation_functions{$graph_item["consolidation_function_id"]} . ":\"$text_padding" . $graph_variables["text_format"][$graph_item_id] . $graph_item["gprint_text"] . $hardreturn[$graph_item_id] . "\" ";
+			$txt_graph_items .= $graph_item_types{$graph_item["graph_type_id"]} . ":" . $data_source_name . ":" . $consolidation_functions{$graph_item["consolidation_function_id"]} . ":" . cacti_escapeshellarg($text_padding . $graph_variables["text_format"][$graph_item_id] . $graph_item["gprint_text"] . $hardreturn[$graph_item_id]) . " ";
 		}elseif (preg_match("/^(AREA|LINE[123]|STACK|HRULE|VRULE)$/", $graph_item_types{$graph_item["graph_type_id"]})) {
 
 			/* initialize any color syntax for graph item */
@@ -1376,14 +1376,14 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 			if (preg_match("/^(AREA|LINE[123])$/", $graph_item_types{$graph_item["graph_type_id"]})) {
 				$graph_item_stack_type = $graph_item_types{$graph_item["graph_type_id"]};
 				$graph_variables["text_format"][$graph_item_id] = str_replace(":", "\:", $graph_variables["text_format"][$graph_item_id]); /* escape colons */
-				$txt_graph_items .= $graph_item_types{$graph_item["graph_type_id"]} . ":" . $data_source_name . $graph_item_color_code . ":" . "\"" . $graph_variables["text_format"][$graph_item_id] . $hardreturn[$graph_item_id] . "\" ";
+				$txt_graph_items .= $graph_item_types{$graph_item["graph_type_id"]} . ":" . $data_source_name . $graph_item_color_code . ":" . cacti_escapeshellarg($graph_variables["text_format"][$graph_item_id] . $hardreturn[$graph_item_id]) . " ";
 			}elseif ($graph_item_types{$graph_item["graph_type_id"]} == "STACK") {
 				if (read_config_option("rrdtool_version") != "rrd-1.0.x") {
 					$graph_variables["text_format"][$graph_item_id] = str_replace(":", "\:", $graph_variables["text_format"][$graph_item_id]); /* escape colons */
-					$txt_graph_items .= $graph_item_stack_type . ":" . $data_source_name . $graph_item_color_code . ":" . "\"" . $graph_variables["text_format"][$graph_item_id] . $hardreturn[$graph_item_id] . "\":STACK";
+					$txt_graph_items .= $graph_item_stack_type . ":" . $data_source_name . $graph_item_color_code . ":" . cacti_escapeshellarg($graph_variables["text_format"][$graph_item_id] . $hardreturn[$graph_item_id]) . ":STACK";
 				}else {
 					$graph_variables["text_format"][$graph_item_id] = str_replace(":", "\:", $graph_variables["text_format"][$graph_item_id]); /* escape colons */
-					$txt_graph_items .= $graph_item_types{$graph_item["graph_type_id"]} . ":" . $data_source_name . $graph_item_color_code . ":" . "\"" . $graph_variables["text_format"][$graph_item_id] . $hardreturn[$graph_item_id] . "\" ";
+					$txt_graph_items .= $graph_item_types{$graph_item["graph_type_id"]} . ":" . $data_source_name . $graph_item_color_code . ":" . cacti_escapeshellarg($graph_variables["text_format"][$graph_item_id] . $hardreturn[$graph_item_id]) . " ";
 				}
 			}elseif ($graph_item_types{$graph_item["graph_type_id"]} == "HRULE") {
 				$graph_variables["text_format"][$graph_item_id] = str_replace(":", "\:", $graph_variables["text_format"][$graph_item_id]); /* escape colons */
@@ -1393,7 +1393,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 				if (is_numeric($substitute)) {
 					$graph_variables["value"][$graph_item_id] = $substitute;
 				}
-				$txt_graph_items .= $graph_item_types{$graph_item["graph_type_id"]} . ":" . $graph_variables["value"][$graph_item_id] . $graph_item_color_code . ":\"" . $graph_variables["text_format"][$graph_item_id] . $hardreturn[$graph_item_id] . "\" ";
+				$txt_graph_items .= $graph_item_types{$graph_item["graph_type_id"]} . ":" . $graph_variables["value"][$graph_item_id] . $graph_item_color_code . ":" . cacti_escapeshellarg($graph_variables["text_format"][$graph_item_id] . $hardreturn[$graph_item_id]) . " ";
 			}elseif ($graph_item_types{$graph_item["graph_type_id"]} == "VRULE") {
 				$graph_variables["text_format"][$graph_item_id] = str_replace(":", "\:", $graph_variables["text_format"][$graph_item_id]); /* escape colons */
 
@@ -1409,7 +1409,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 					$value = $graph_item["value"];
 				}
 
-				$txt_graph_items .= $graph_item_types{$graph_item["graph_type_id"]} . ":" . $value . $graph_item_color_code . ":\"" . $graph_variables["text_format"][$graph_item_id] . $hardreturn[$graph_item_id] . "\" ";
+				$txt_graph_items .= $graph_item_types{$graph_item["graph_type_id"]} . ":" . $value . $graph_item_color_code . ":" . cacti_escapeshellarg($graph_variables["text_format"][$graph_item_id] . $hardreturn[$graph_item_id]) . " ";
 			}
 		}else{
 			$need_rrd_nl = FALSE;
@@ -1663,7 +1663,7 @@ function rrdtool_function_xport($local_graph_id, $rra_id, $xport_data_array, &$x
 					to a function that matches the digits with letters. rrdtool likes letters instead
 					of numbers in DEF names; especially with CDEF's. cdef's are created
 					the same way, except a 'cdef' is put on the beginning of the hash */
-					$xport_defs .= "DEF:" . generate_graph_def_name(strval($i)) . "=\"$data_source_path\":" . cacti_escapeshellarg($xport_item["data_source_name"], true) . ":" . $consolidation_functions[$xport_cf] . RRD_NL;
+					$xport_defs .= "DEF:" . generate_graph_def_name(strval($i)) . "=" . cacti_escapeshellarg($data_source_path) . ":" . cacti_escapeshellarg($xport_item["data_source_name"], true) . ":" . $consolidation_functions[$xport_cf] . RRD_NL;
 
 					$cf_ds_cache{$xport_item["data_template_rrd_id"]}[$xport_cf] = "$i";
 
@@ -1997,7 +1997,7 @@ function rrdtool_function_xport($local_graph_id, $rra_id, $xport_data_array, &$x
 			$stacked_columns["col" . $j] = ($graph_item_types{$xport_item["graph_type_id"]} == "STACK") ? 1 : 0;
 			$j++;
 
-			$txt_xport_items .= "XPORT:" . $data_source_name . ":" . "\"" . str_replace(":", "", $legend_name) . "\"";
+			$txt_xport_items .= "XPORT:" . $data_source_name . ":" . str_replace(":", "", cacti_escapeshellarg($legend_name)) ;
 		}else{
 			$need_rrd_nl = FALSE;
 		}
