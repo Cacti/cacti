@@ -6,6 +6,7 @@ Cacti CHANGELOG
 -bug: Fix issue with poller not escaping the script query path correctly
 -bug: Allow snmpv3 priv proto none
 -bug: Fix issue where host activate may flush the entire poller item cache
+-security: SQL injection and shell escaping issues 
 
 0.8.8a
 -bug#0002207: cannot export graph templates
