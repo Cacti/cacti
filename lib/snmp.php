@@ -414,7 +414,12 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $username, $pass
 
 		for ($i=0; $i < count($temp_array); $i++) {
 			if ($temp_array[$i] != "NULL") {
-				$snmp_array[$i]["oid"]   = trim(preg_replace("/(.*) =.*/", "\\1", $temp_array[$i]));
+				/* returned SNMP string e.g. 
+				 * .1.3.6.1.2.1.31.1.1.1.18.1 = STRING: === bla ===
+				 * split off first chunk before the "="; this is the OID
+				 */
+				list($oid, $value) = explode("=", $temp_array[$i], 2);
+				$snmp_array[$i]["oid"]   = trim($oid);
 				$snmp_array[$i]["value"] = format_snmp_string($temp_array[$i], true);
 			}
 		}
@@ -433,8 +438,10 @@ function format_snmp_string($string, $snmp_oid_included) {
 	}
 
 	if ($snmp_oid_included) {
-		/* strip off all leading junk (the oid and stuff) */
-		$string_array = explode("=", $string);
+		/* returned SNMP string e.g. 
+		 * .1.3.6.1.2.1.31.1.1.1.18.1 = STRING: === bla ===
+		 * strip off all leading junk (the oid and stuff) */
+		$string_array = explode("=", $string, 2);
 		if (sizeof($string_array) == 1) {
 			/* trim excess first */
 			$string = trim($string);
