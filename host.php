@@ -149,6 +149,9 @@ function form_save() {
 		if ($_POST["snmp_version"] == 3 && ($_POST["snmp_password"] != $_POST["snmp_password_confirm"])) {
 			raise_message(4);
 		}else{
+			input_validate_input_number(get_request_var_post("id"));
+			input_validate_input_number(get_request_var_post("host_template_id"));
+
 			$host_id = api_device_save($_POST["id"], $_POST["host_template_id"], $_POST["description"],
 				trim($_POST["hostname"]), $_POST["snmp_community"], $_POST["snmp_version"],
 				$_POST["snmp_username"], $_POST["snmp_password"],
