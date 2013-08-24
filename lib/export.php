@@ -360,13 +360,11 @@ function cdef_to_xml($cdef_id) {
 		/* now do the encoding */
 		reset($fields_cdef_item_edit);
 		while (list($field_name, $field_array) = each($fields_cdef_item_edit)) {
-			if (($field_array["method"] != "hidden_zero") && ($field_array["method"] != "hidden")) {
-				/* check, if an inherited cdef as to be encoded */
-				if (($field_name == "value") && ($item["type"] == '5')) {
-					$xml_text .= "\t\t\t<$field_name>hash_" . get_hash_version("cdef") . get_hash_cdef($item{$field_name}) . "</$field_name>\n";
-				} else {
-					$xml_text .= "\t\t\t<$field_name>" . xml_character_encode($item{$field_name}) . "</$field_name>\n";				
-				}
+			/* check, if an inherited cdef as to be encoded */
+			if (($field_name == "value") && ($item["type"] == '5')) {
+				$xml_text .= "\t\t\t<$field_name>hash_" . get_hash_version("cdef") . get_hash_cdef($item{$field_name}) . "</$field_name>\n";
+			} else {
+				$xml_text .= "\t\t\t<$field_name>" . xml_character_encode($item{$field_name}) . "</$field_name>\n";				
 			}
 		}
 
