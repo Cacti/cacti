@@ -1329,8 +1329,6 @@ function ds() {
 			$data_name_cache = title_trim(htmlspecialchars($data_source["name_cache"]), read_config_option("max_title_data_source"));
 
 			if (trim(get_request_var_request("filter") != "")) {
-				$data_source['data_input_name'] = (preg_replace("/(" . preg_quote(get_request_var_request("filter"), "/") . ")/i", "<span style='background-color: #F8D93D;'>\\1</span>", htmlspecialchars($data_source['data_input_name'])));
-				$data_source['data_template_name'] = preg_replace("/(" . preg_quote(get_request_var_request("filter"), "/") . ")/i", "<span style='background-color: #F8D93D;'>\\1</span>", $data_source['data_template_name']);
 				$data_name_cache = preg_replace("/(" . preg_quote(get_request_var_request("filter"), "/") . ")/i", "<span style='background-color: #F8D93D;'>\\1</span>", ($data_name_cache));
 			}
 
@@ -1338,20 +1336,30 @@ function ds() {
 			$data_source_orig = $data_source;
 			$data_source = api_plugin_hook_function('data_sources_table', $data_source);
 			/* we're escaping strings here, so no need to escape them on form_selectable_cell */
-			if ($data_source_orig["data_template_name"] != $data_source["data_template_name"]) {
+			if (empty($data_source["data_template_name"])) {
+				$data_template_name = "<em>None</em>";
+			} elseif ($data_source_orig["data_template_name"] != $data_source["data_template_name"]) {
 				/* was changed by plugin, plugin has to take care for html-escaping */
 				$data_template_name = ((empty($data_source["data_template_name"])) ? "<em>None</em>" : $data_source["data_template_name"]);
-			} else {
+			} elseif (trim(get_request_var_request("filter") != "")) {
 				/* we take care of html-escaping */
-				$data_template_name = ((empty($data_source["data_template_name"])) ? "<em>None</em>" : htmlspecialchars($data_source["data_template_name"]));
+				$data_template_name = preg_replace("/(" . preg_quote(get_request_var_request("filter"), "/") . ")/i", "<span style='background-color: #F8D93D;'>\\1</span>", htmlspecialchars($data_source['data_template_name']));
+			} else {
+				$data_template_name = htmlspecialchars($data_source["data_template_name"]);
 			}
-			if ($data_source_orig["data_input_name"] != $data_source["data_input_name"]) {
+
+			if (empty($data_source["data_input_name"])) {
+				$data_input_name = "<em>None</em>";
+			} elseif ($data_source_orig["data_input_name"] != $data_source["data_input_name"]) {
 				/* was changed by plugin, plugin has to take care for html-escaping */
 				$data_input_name = ((empty($data_source["data_input_name"])) ? "<em>None</em>" : $data_source["data_input_name"]);
+			} elseif (trim(get_request_var_request("filter") != "")) {
+				/* we take care of html-escaping */
+				$data_input_name = preg_replace("/(" . preg_quote(get_request_var_request("filter"), "/") . ")/i", "<span style='background-color: #F8D93D;'>\\1</span>", htmlspecialchars($data_source['data_input_name']));
 			} else {
-				/* we take care of html-escaping, see above */
-				$data_input_name = ((empty($data_source["data_input_name"])) ? "<em>External</em>" : $data_source["data_input_name"]);
+				$data_input_name = htmlspecialchars($data_source["data_input_name"]);
 			}
+
 			$poller_interval    = ((isset($poller_intervals[$data_source["local_data_id"]])) ? $poller_intervals[$data_source["local_data_id"]] : 0);
 
 			form_alternate_row_color($colors["alternate"], $colors["light"], $i, 'line' . $data_source["local_data_id"]); $i++;
