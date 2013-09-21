@@ -6,6 +6,7 @@ Cacti CHANGELOG
 -bug. fix COMMENT handling, even in case COMMENT is empty, with or without HR and with variable substitution
 -bug: fix issues when SNMP data holds a "="; "explode" must be treated accordingly
 -bug: fix filter highlighting on data sources for the data template field
+-bug: correct description of SNMP V3 parameters
 
 0.8.8b
 -bug: Fixed issue with custom data source information being lost when saved from edit
