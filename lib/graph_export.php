@@ -339,7 +339,7 @@ function export_ftp_ncftpput_execute($stExportDir) {
 	chdir($stExportDir);
 
 	/* set the initial command structure */
-	$stExecute = 'ncftpput -R -V -r 1 -u '.$aFtpExport['username'].' -p '.$aFtpExport['password'];
+	$stExecute = 'ncftpput -R -V -r 1 -u ' . cacti_escapeshellarg($aFtpExport['username']) . ' -p ' . cacti_escapeshellarg($aFtpExport['password']);
 
 	/* if the user requested passive mode, use it */
 	if ($aFtpExport['passive']) {
@@ -347,7 +347,7 @@ function export_ftp_ncftpput_execute($stExportDir) {
 	}
 
 	/* setup the port, server, remote directory and all files */
-	$stExecute .= ' -P ' . $aFtpExport['port'] . ' ' . $aFtpExport['server'] . ' ' . $aFtpExport['remotedir'] . ".";
+	$stExecute .= ' -P ' . cacti_escapeshellarg($aFtpExport['port']) . ' ' . cacti_escapeshellarg($aFtpExport['server']) . ' ' . cacti_escapeshellarg($aFtpExport['remotedir']) . ".";
 
 	/* run the command */
 	$iExecuteReturns = 0;
