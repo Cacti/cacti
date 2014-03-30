@@ -431,7 +431,7 @@ function cdef_edit() {
 						<a class="linkEditMain" href="<?php print htmlspecialchars("cdef.php?action=item_edit&id=" . $cdef_item["id"] . "&cdef_id=" . $cdef["id"]);?>">Item #<?php print htmlspecialchars($i);?></a>
 					</td>
 					<td>
-						<em><?php $cdef_item_type = $cdef_item["type"]; print $cdef_item_types[$cdef_item_type];?></em>: <strong><?php print get_cdef_item_name($cdef_item["id"]);?></strong>
+						<em><?php $cdef_item_type = $cdef_item["type"]; print $cdef_item_types[$cdef_item_type];?></em>: <strong><?php print htmlspecialchars(get_cdef_item_name($cdef_item["id"]));?></strong>
 					</td>
 					<td>
 						<a href="<?php print htmlspecialchars("cdef.php?action=item_movedown&id=" . $cdef_item["id"] . "&cdef_id=" . $cdef["id"]);?>"><img src="images/move_down.gif" border="0" alt="Move Down"></a>
