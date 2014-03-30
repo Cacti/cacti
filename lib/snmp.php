@@ -76,9 +76,9 @@ function cacti_snmp_get($hostname, $community, $oid, $version, $username, $passw
 		$timeout = ceil($timeout / 1000);
 
 		if ($version == "1") {
-			$snmp_auth = (read_config_option("snmp_version") == "ucd-snmp") ? escapeshellarg($community): "-c " . escapeshellarg($community); /* v1/v2 - community string */
+			$snmp_auth = (read_config_option("snmp_version") == "ucd-snmp") ? cacti_escapeshellarg($community): "-c " . cacti_escapeshellarg($community); /* v1/v2 - community string */
 		}elseif ($version == "2") {
-			$snmp_auth = (read_config_option("snmp_version") == "ucd-snmp") ? escapeshellarg($community) : "-c " . escapeshellarg($community); /* v1/v2 - community string */
+			$snmp_auth = (read_config_option("snmp_version") == "ucd-snmp") ? cacti_escapeshellarg($community) : "-c " . cacti_escapeshellarg($community); /* v1/v2 - community string */
 			$version = "2c"; /* ucd/net snmp prefers this over '2' */
 		}elseif ($version == "3") {
 			if ($priv_proto == "[None]" || $priv_pass == '') {
@@ -89,21 +89,21 @@ function cacti_snmp_get($hostname, $community, $oid, $version, $username, $passw
 			}
 
 			if (strlen($priv_pass)) {
-				$priv_pass = "-X " . escapeshellarg($priv_pass) . " -x " . escapeshellarg($priv_proto);
+				$priv_pass = "-X " . cacti_escapeshellarg($priv_pass) . " -x " . cacti_escapeshellarg($priv_proto);
 			}else{
 				$priv_pass = "";
 			}
 
 			if (strlen($context)) {
-				$context = "-n " . escapeshellarg($context);
+				$context = "-n " . cacti_escapeshellarg($context);
 			}else{
 				$context = "";
 			}
 
-			$snmp_auth = trim("-u " . escapeshellarg($username) .
-				" -l " . escapeshellarg($proto) .
-				" -a " . escapeshellarg($auth_proto) .
-				" -A " . escapeshellarg($password) .
+			$snmp_auth = trim("-u " . cacti_escapeshellarg($username) .
+				" -l " . cacti_escapeshellarg($proto) .
+				" -a " . cacti_escapeshellarg($auth_proto) .
+				" -A " . cacti_escapeshellarg($password) .
 				" "    . $priv_pass .
 				" "    . $context); /* v3 - username/password */
 		}
@@ -192,9 +192,9 @@ function cacti_snmp_getnext($hostname, $community, $oid, $version, $username, $p
 		$timeout = ceil($timeout / 1000);
 
 		if ($version == "1") {
-			$snmp_auth = (read_config_option("snmp_version") == "ucd-snmp") ? escapeshellarg($community): "-c " . escapeshellarg($community); /* v1/v2 - community string */
+			$snmp_auth = (read_config_option("snmp_version") == "ucd-snmp") ? cacti_escapeshellarg($community): "-c " . cacti_escapeshellarg($community); /* v1/v2 - community string */
 		}elseif ($version == "2") {
-			$snmp_auth = (read_config_option("snmp_version") == "ucd-snmp") ? escapeshellarg($community): "-c " . escapeshellarg($community); /* v1/v2 - community string */
+			$snmp_auth = (read_config_option("snmp_version") == "ucd-snmp") ? cacti_escapeshellarg($community): "-c " . cacti_escapeshellarg($community); /* v1/v2 - community string */
 			$version = "2c"; /* ucd/net snmp prefers this over '2' */
 		}elseif ($version == "3") {
 			if ($priv_proto == "[None]" || $priv_pass == '') {
@@ -205,21 +205,21 @@ function cacti_snmp_getnext($hostname, $community, $oid, $version, $username, $p
 			}
 
 			if (strlen($priv_pass)) {
-				$priv_pass = "-X " . escapeshellarg($priv_pass) . " -x " . escapeshellarg($priv_proto);
+				$priv_pass = "-X " . cacti_escapeshellarg($priv_pass) . " -x " . cacti_escapeshellarg($priv_proto);
 			}else{
 				$priv_pass = "";
 			}
 
 			if (strlen($context)) {
-				$context = "-n " . escapeshellarg($context);
+				$context = "-n " . cacti_escapeshellarg($context);
 			}else{
 				$context = "";
 			}
 
-			$snmp_auth = trim("-u " . escapeshellarg($username) .
-				" -l " . escapeshellarg($proto) .
-				" -a " . escapeshellarg($auth_proto) .
-				" -A " . escapeshellarg($password) .
+			$snmp_auth = trim("-u " . cacti_escapeshellarg($username) .
+				" -l " . cacti_escapeshellarg($proto) .
+				" -a " . cacti_escapeshellarg($auth_proto) .
+				" -A " . cacti_escapeshellarg($password) .
 				" "    . $priv_pass .
 				" "    . $context); /* v3 - username/password */
 		}
@@ -351,9 +351,9 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $username, $pass
 		$timeout = ceil($timeout / 1000);
 
 		if ($version == "1") {
-			$snmp_auth = (read_config_option("snmp_version") == "ucd-snmp") ? escapeshellarg($community): "-c " . escapeshellarg($community); /* v1/v2 - community string */
+			$snmp_auth = (read_config_option("snmp_version") == "ucd-snmp") ? cacti_escapeshellarg($community): "-c " . cacti_escapeshellarg($community); /* v1/v2 - community string */
 		}elseif ($version == "2") {
-			$snmp_auth = (read_config_option("snmp_version") == "ucd-snmp") ? escapeshellarg($community): "-c " . escapeshellarg($community); /* v1/v2 - community string */
+			$snmp_auth = (read_config_option("snmp_version") == "ucd-snmp") ? cacti_escapeshellarg($community): "-c " . cacti_escapeshellarg($community); /* v1/v2 - community string */
 			$version = "2c"; /* ucd/net snmp prefers this over '2' */
 		}elseif ($version == "3") {
 			if ($priv_proto == "[None]" || $priv_pass == '') {
@@ -364,21 +364,21 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $username, $pass
 			}
 
 			if (strlen($priv_pass)) {
-				$priv_pass = "-X " . escapeshellarg($priv_pass) . " -x " . escapeshellarg($priv_proto);
+				$priv_pass = "-X " . cacti_escapeshellarg($priv_pass) . " -x " . cacti_escapeshellarg($priv_proto);
 			}else{
 				$priv_pass = "";
 			}
 
 			if (strlen($context)) {
-				$context = "-n " . escapeshellarg($context);
+				$context = "-n " . cacti_escapeshellarg($context);
 			}else{
 				$context = "";
 			}
 
-			$snmp_auth = trim("-u " . escapeshellarg($username) .
-				" -l " . escapeshellarg($proto) .
-				" -a " . escapeshellarg($auth_proto) .
-				" -A " . escapeshellarg($password) .
+			$snmp_auth = trim("-u " . cacti_escapeshellarg($username) .
+				" -l " . cacti_escapeshellarg($proto) .
+				" -a " . cacti_escapeshellarg($auth_proto) .
+				" -A " . cacti_escapeshellarg($password) .
 				" "    . $priv_pass .
 				" "    . $context); /* v3 - username/password */
 		}
