@@ -865,13 +865,13 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 	/* basic graph options */
 	$graph_opts .=
 		"--imgformat=" . $image_types{$graph["image_format_id"]} . RRD_NL .
-		"--start=$graph_start" . RRD_NL .
-		"--end=$graph_end" . RRD_NL .
+		"--start=" . cacti_escapeshellarg($graph_start) . RRD_NL .
+		"--end=" . cacti_escapeshellarg($graph_end) . RRD_NL .
 		"--title=" . cacti_escapeshellarg($graph["title_cache"]) . RRD_NL .
 		"$rigid" .
-		"--base=" . $graph["base_value"] . RRD_NL .
-		"--height=$graph_height" . RRD_NL .
-		"--width=$graph_width" . RRD_NL .
+		"--base=" . cacti_escapeshellarg($graph["base_value"]) . RRD_NL .
+		"--height=" . cacti_escapeshellarg($graph_height) . RRD_NL .
+		"--width=" . cacti_escapeshellarg($graph_width) . RRD_NL .
 		"$scale" .
 		"$unit_value" .
 		"$unit_exponent_value" .
@@ -1606,8 +1606,8 @@ function rrdtool_function_xport($local_graph_id, $rra_id, $xport_data_array, &$x
 
 	/* basic export options */
 	$xport_opts =
-		"--start=$xport_start" . RRD_NL .
-		"--end=$xport_end" . RRD_NL .
+		"--start=" . cacti_escapeshellarg($xport_start) . RRD_NL .
+		"--end=" . cacti_escapeshellarg($xport_end) . RRD_NL .
 		"--maxrows=10000" . RRD_NL;
 
 	$xport_defs = "";
@@ -1997,7 +1997,7 @@ function rrdtool_function_xport($local_graph_id, $rra_id, $xport_data_array, &$x
 			$stacked_columns["col" . $j] = ($graph_item_types{$xport_item["graph_type_id"]} == "STACK") ? 1 : 0;
 			$j++;
 
-			$txt_xport_items .= "XPORT:" . $data_source_name . ":" . str_replace(":", "", cacti_escapeshellarg($legend_name)) ;
+			$txt_xport_items .= "XPORT:" . cacti_escapeshellarg($data_source_name) . ":" . str_replace(":", "", cacti_escapeshellarg($legend_name)) ;
 		}else{
 			$need_rrd_nl = FALSE;
 		}

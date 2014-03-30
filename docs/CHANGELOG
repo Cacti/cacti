@@ -3,6 +3,7 @@ Cacti CHANGELOG
 -bug#0002383: Sanitize the step and id variables CVE-2013-5588, CVE-2013-5589
 -bug#0002385: Cannot export host templates while including dependencies
 -bug#0002386: cli/upgrade_database.php is missing the last two releases
+-bug#0002405: SQL injection in graph_xport.php
 -bug. fix COMMENT handling, even in case COMMENT is empty, with or without HR and with variable substitution
 -bug: fix issues when SNMP data holds a "="; "explode" must be treated accordingly
 -bug: fix filter highlighting on data sources for the data template field
