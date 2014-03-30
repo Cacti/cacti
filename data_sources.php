@@ -544,7 +544,7 @@ function form_actions() {
 		}elseif ($_POST["drp_action"] == "8") { /* reapply suggested data source naming */
 			print "	<tr>
 					<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
-						<p>When you click \"Continue\", the following Data Source(s) will will have their suggested naming conventions
+						<p>When you click \"Continue\", the following Data Source(s) will will have there suggested naming convention
 						recalculated.</p>
 						<p><ul>$ds_list</ul></p>
 					</td>
