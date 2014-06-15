@@ -52,6 +52,11 @@ function form_save() {
 		$graph_input_values = array();
 		$selected_graph_items = array();
 
+		/* ================= input validation ================= */
+		input_validate_input_number(get_request_var_post("graph_template_input_id"));
+		input_validate_input_number(get_request_var_post("graph_template_id"));
+		/* ==================================================== */
+		
 		$save["id"] = $_POST["graph_template_input_id"];
 		$save["hash"] = get_hash_graph_template($_POST["graph_template_input_id"], "graph_template_input");
 		$save["graph_template_id"] = $_POST["graph_template_id"];
