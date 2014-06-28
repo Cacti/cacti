@@ -2060,7 +2060,7 @@ function rrdtool_set_font($type, $no_legend = "") {
 		$size = 8;
 	}
 
-	return "--font " . strtoupper($type) . ":" . $size . ":" . $font . RRD_NL;
+	return "--font " . strtoupper($type) . ":" . floatval($size) . ":" . $font . RRD_NL;
 }
 
 function rrd_substitute_host_query_data($txt_graph_item, $graph, $graph_item) {

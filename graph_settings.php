@@ -54,6 +54,10 @@ function form_save() {
 
 	while (list($tab_short_name, $tab_fields) = each($settings_graphs)) {
 		while (list($field_name, $field_array) = each($tab_fields)) {
+			/* Check every field with a numeric default value and reset it to default if the inputted value is not numeric  */
+			if (isset($field_array["default"]) && is_numeric($field_array["default"]) && !is_numeric(get_request_var_post($field_name))) {
+				$_POST[$field_name] = $field_array["default"];
+			}
 			if ($field_array["method"] == "checkbox") {
 				if (isset($_POST[$field_name])) {
 					db_execute("REPLACE INTO settings_graphs (user_id,name,value) VALUES (" . $_SESSION["sess_user_id"] . ",'$field_name', 'on')");
