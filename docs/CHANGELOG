@@ -7,6 +7,7 @@ Cacti CHANGELOG
 -bug#0002390: Poller/script issue with slash and backslash
 -bug#0002431: CVE-2014-2326 Unspecified HTML Injection Vulnerability
 -bug#0002433: CVE-2014-2328 Unspecified Remote Command Execution Vulnerability 
+-bug#0002434: Suppress SNMP UNITS Suffix from cacti_snmp_get() output
 -bug#0002438: Down Host Detection issue when using SNMP Desc or SNMP getNext
 -bug#0002446: Subtract plugin processing time from Poller sleep time
 -bug#0002453: CVE-2014-4002 Cross-Site Scripting Vulnerability
