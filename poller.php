@@ -451,8 +451,14 @@ while ($poller_runs_completed < $poller_runs) {
 
 		/* sleep the appripriate amount of time */
 		if ($poller_runs_completed < $poller_runs) {
+			list($micro, $seconds) = split(' ', microtime());
+			$plugin_start = $seconds + $micro;
 			api_plugin_hook('poller_bottom');
-			usleep($sleep_time * 1000000);
+			list($micro, $seconds) = split(' ', microtime());
+			$plugin_end = $seconds + $micro;
+			if (($sleep_time - ($plugin_end - $plugin_start)) > 0) {
+				usleep(($sleep_time - ($plugin_end - $plugin_start)) * 1000000);
+			}
 			api_plugin_hook('poller_top');
 		}
 	}else if (read_config_option('log_verbosity') >= POLLER_VERBOSITY_MEDIUM || $debug) {
@@ -492,7 +498,7 @@ function log_cacti_stats($loop_start, $method, $concurrent_processes, $max_threa
 }
 
 function display_help() {
-	echo "Cacti Poller Version " . db_fetch_cell("SELECT cacti FROM version") . ", Copyright 2004-2014 - The Cacti Group\n\n";
+	echo "Cacti Poller Version " . db_fetch_cell("SELECT cacti FROM version") . ", Copyright 2004-2013 - The Cacti Group\n\n";
 	echo "A simple command line utility to run the Cacti Poller.\n\n";
 	echo "usage: poller.php [--force] [--debug|-d]\n\n";
 	echo "Options:\n";

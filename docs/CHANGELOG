@@ -7,6 +7,7 @@ Cacti CHANGELOG
 -bug#0002390: Poller/script issue with slash and backslash
 -bug#0002431: CVE-2014-2326 Unspecified HTML Injection Vulnerability
 -bug#0002433: CVE-2014-2328 Unspecified Remote Command Execution Vulnerability 
+-bug#0002446: Subtract plugin processing time from Poller sleep time
 -bug#0002453: CVE-2014-4002 Cross-Site Scripting Vulnerability
 -bug#0002455: Incomplete and incorrect input parsing leads to remote code execution and SQL injection attack scenarios
 -bug. fix COMMENT handling, even in case COMMENT is empty, with or without HR and with variable substitution
