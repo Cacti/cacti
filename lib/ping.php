@@ -571,7 +571,7 @@ class Net_Ping
 			$this->snmp_status = 0.000;
 		}else if (($avail_method == AVAIL_SNMP_AND_PING) && ($ping_result == false)) {
 			$snmp_result = false;
-		}else if (($avail_method == AVAIL_SNMP) || ($avail_method == AVAIL_SNMP_AND_PING)) {
+		}else if (($avail_method == AVAIL_SNMP) || ($avail_method == AVAIL_SNMP_AND_PING) || ($avail_method == AVAIL_SNMP_GET_SYSDESC) || ($avail_method == AVAIL_SNMP_GET_NEXT)) {
 			if (($this->host["snmp_community"] == "") && ($this->host["snmp_version"] != 3)) {
 				/* snmp version 1/2 without community string assume SNMP test to be successful
 				   due to backward compatibility issues */
@@ -610,6 +610,8 @@ class Net_Ping
 					return false;
 				}
 			case AVAIL_SNMP:
+			case AVAIL_SNMP_GET_NEXT:
+			case AVAIL_SNMP_GET_SYSDESC:
 				if ($snmp_result) {
 					return true;
 				}else{
