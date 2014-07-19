@@ -72,6 +72,10 @@ switch (get_request_var_request("action")) {
 function form_actions() {
 	global $colors, $user_actions, $auth_realms;
 
+	/* ================= input validation ================= */
+	input_validate_input_regex(get_request_var_post('drp_action'), "^([a-zA-Z0-9_]+)$");
+	/* ==================================================== */
+
 	/* if we are to save this form, instead of display it */
 	if (isset($_POST["selected_items"])) {
 		if (get_request_var_post("drp_action") != "2") {

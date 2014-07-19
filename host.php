@@ -176,7 +176,7 @@ function form_actions() {
 	global $colors, $device_actions, $fields_host_edit;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_post('drp_action'));
+	input_validate_input_regex(get_request_var_post('drp_action'), "^([a-zA-Z0-9_]+)$");
 	/* ==================================================== */
 
 	/* if we are to save this form, instead of display it */
