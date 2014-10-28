@@ -52,7 +52,7 @@ $GLOBALS['csrf']['rewrite-js'] = false;
  * place it here. If you change this value, all previously generated tokens
  * will become invalid.
  */
-$GLOBALS['csrf']['secret'] = 'PreventCactiCSRF';
+$GLOBALS['csrf']['secret'] = sha1($database_hostname . $database_default . $database_username . $database_password);
 // nota bene: library code should use csrf_get_secret() and not access
 // this global directly
 
@@ -182,7 +182,7 @@ function csrf_ob_handler($buffer, $flags) {
  * @return True if check passes or is not necessary, false if failure.
  */
 function csrf_check($fatal = true) {
-    if ($_SERVER['REQUEST_METHOD'] !== 'POST') return true;
+    if (!isset($_SERVER['REQUEST_METHOD']) || $_SERVER['REQUEST_METHOD'] !== 'POST') return true;
     csrf_start();
     $name = $GLOBALS['csrf']['input-name'];
     $ok = false;
@@ -215,7 +215,7 @@ function csrf_get_tokens() {
     // any cookies. It may or may not be used, depending on whether or not
     // the cookies "stick"
     $secret = csrf_get_secret();
-    if (!$has_cookies && $secret) {
+    if (!$has_cookies && $secret && isset($_SERVER['IP_ADDRESS'])) {
         // :TODO: Harden this against proxy-spoofing attacks
         $ip = ';ip:' . csrf_hash($_SERVER['IP_ADDRESS']);
     } else {
