@@ -13,7 +13,7 @@ Cacti CHANGELOG
 -bug#0002446: Subtract plugin processing time from Poller sleep time
 -bug#0002453: CVE-2014-4002 Cross-Site Scripting Vulnerability - Special Thanks to G. Geshev (munmap)
 -bug#0002455: Incomplete and incorrect input parsing leads to remote code execution and SQL injection attack scenarios
--bug#0002456: CVE-2014-5025 / CVE-2014-5026 - Cross-Site Scripting Vulnerability - Special Thanks to flekyy
+-bug#0002456: CVE-2014-5025 / CVE-2014-5026 - Cross-Site Scripting Vulnerability - Special Thanks to flekyy and Paul Gevers
 
 -bug. fix COMMENT handling, even in case COMMENT is empty, with or without HR and with variable substitution
 -bug: fix issues when SNMP data holds a "="; "explode" must be treated accordingly
