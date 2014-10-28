@@ -156,7 +156,7 @@ function form_actions() {
 			input_validate_input_number($matches[1]);
 			/* ==================================================== */
 
-			$host_list .= "<li>" . db_fetch_cell("select name from host_template where id=" . $matches[1]) . "<br>";
+			$host_list .= "<li>" . htmlspecialchars(db_fetch_cell("select name from host_template where id=" . $matches[1])) . "<br>";
 			$host_array[$i] = $matches[1];
 
 			$i++;

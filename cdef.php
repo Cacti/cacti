@@ -194,7 +194,7 @@ function form_actions() {
 			input_validate_input_number($matches[1]);
 			/* ==================================================== */
 
-			$cdef_list .= "<li>" . db_fetch_cell("select name from cdef where id=" . $matches[1]) . "<br>";
+			$cdef_list .= "<li>" . htmlspecialchars(db_fetch_cell("select name from cdef where id=" . $matches[1])) . "<br>";
 			$cdef_array[$i] = $matches[1];
 
 			$i++;

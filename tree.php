@@ -354,7 +354,7 @@ function item_remove() {
 		}
 
 		include("./include/top_header.php");
-		form_confirm("Are You Sure?", $text, htmlspecialchars("tree.php?action=edit&id=" . $_GET["tree_id"]), htmlspecialchars("tree.php?action=item_remove&id=" . $_GET["id"] . "&tree_id=" . $_GET["tree_id"]));
+		form_confirm("Are You Sure?", htmlspecialchars($text, ENT_QUOTES), htmlspecialchars("tree.php?action=edit&id=" . $_GET["tree_id"]), htmlspecialchars("tree.php?action=item_remove&id=" . $_GET["id"] . "&tree_id=" . $_GET["tree_id"]));
 		include("./include/bottom_footer.php");
 		exit;
 	}
@@ -383,7 +383,7 @@ function tree_remove() {
 
 	if ((read_config_option("deletion_verification") == "on") && (!isset($_GET["confirm"]))) {
 		include("./include/top_header.php");
-		form_confirm("Are You Sure?", "Are you sure you want to delete the tree <strong>'" . db_fetch_cell("select name from graph_tree where id=" . $_GET["id"]) . "'</strong>?", htmlspecialchars("tree.php"), htmlspecialchars("tree.php?action=remove&id=" . $_GET["id"]));
+		form_confirm("Are You Sure?", "Are you sure you want to delete the tree <strong>'" . htmlspecialchars(db_fetch_cell("select name from graph_tree where id=" . $_GET["id"]), ENT_QUOTES) . "'</strong>?", htmlspecialchars("tree.php"), htmlspecialchars("tree.php?action=remove&id=" . $_GET["id"]));
 		include("./include/bottom_footer.php");
 		exit;
 	}

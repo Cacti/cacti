@@ -179,7 +179,7 @@ function form_actions() {
 			/* ==================================================== */
 
 			if (get_request_var_post("drp_action") != "2") {
-				$user_list .= "<li>" . db_fetch_cell("SELECT username FROM user_auth WHERE id=" . $matches[1]) . "<br>";
+			  $user_list .= "<li>" . htmlspecialchars(db_fetch_cell("SELECT username FROM user_auth WHERE id=" . $matches[1])) . "<br>";
 			}
 			$user_array[$i] = $matches[1];
 

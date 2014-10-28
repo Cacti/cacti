@@ -746,7 +746,7 @@ function utilities_view_user_log() {
 			</td>
 			<td style='white-space:nowrap;'>
 				<?php if (isset($item["full_name"])) {
-						print (strlen(get_request_var_request("filter")) ? (preg_replace("/(" . preg_quote(get_request_var_request("filter"), "/") . ")/i", "<span style='background-color: #F8D93D;'>\\1</span>", $item["full_name"])) : $item["full_name"]);
+						print (strlen(get_request_var_request("filter")) ? (preg_replace("/(" . preg_quote(get_request_var_request("filter"), "/") . ")/i", "<span style='background-color: #F8D93D;'>\\1</span>", htmlspecialchars($item["full_name"]))) : htmlspecialchars($item["full_name"]));
 					}else{
 						print "(User Removed)";
 					}

@@ -185,7 +185,7 @@ function form_actions() {
 			input_validate_input_number($matches[1]);
 			/* ==================================================== */
 
-			$di_list .= "<li>" . db_fetch_cell("SELECT name FROM data_input WHERE id='" . $matches[1] . "'") . "</li>";
+			$di_list .= "<li>" . htmlspecialchars(db_fetch_cell("SELECT name FROM data_input WHERE id='" . $matches[1] . "'")) . "</li>";
 			$di_array[$i] = $matches[1];
 
 			$i++;
@@ -246,7 +246,7 @@ function field_remove() {
 
 	if ((read_config_option("deletion_verification") == "on") && (!isset($_GET["confirm"]))) {
 		include("./include/top_header.php");
-		form_confirm("Are You Sure?", "Are you sure you want to delete the field <strong>'" . db_fetch_cell("select name from data_input_fields where id=" . $_GET["id"]) . "'</strong>?", htmlspecialchars("data_input.php?action=edit&id=" . $_GET["data_input_id"]), htmlspecialchars("data_input.php?action=field_remove&id=" . $_GET["id"] . "&data_input_id=" . $_GET["data_input_id"]));
+		form_confirm("Are You Sure?", "Are you sure you want to delete the field <strong>'" . htmlspecialchars(db_fetch_cell("select name from data_input_fields where id=" . $_GET["id"]), ENT_QUOTES) . "'</strong>?", htmlspecialchars("data_input.php?action=edit&id=" . $_GET["data_input_id"]), htmlspecialchars("data_input.php?action=field_remove&id=" . $_GET["id"] . "&data_input_id=" . $_GET["data_input_id"]));
 		include("./include/bottom_footer.php");
 		exit;
 	}
