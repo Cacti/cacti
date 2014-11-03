@@ -120,6 +120,14 @@ case 'tree_content':
 		print "<strong><font size='+1' color='FF0000'>YOU DO NOT HAVE RIGHTS FOR TREE VIEW</font></strong>"; exit;
 	}
 
+	?>
+		<script type="text/javascript" >
+		$(document).ready(function() {
+			$(".graphimage").zoom({inputfieldStartTime : 'date1', inputfieldEndTime : 'date2'});
+		});
+	</script>
+	<?php
+
 	$access_denied = false;
 	$tree_parameters = array();
 	$_SESSION['sess_node_id'] = $_REQUEST['nodeid'];
@@ -236,6 +244,11 @@ case 'preview':
 	html_start_box('<strong>Graph Filters</strong>' . (isset($_REQUEST['style']) && strlen($_REQUEST['style']) ? ' [ Custom Graph List Applied - Filtering from List ]':''), '100%', $colors['header'], '2', 'center', '');
 
 	?>
+	<script type="text/javascript" >
+		$(document).ready(function() {
+			$(".graphimage").zoom({inputfieldStartTime : 'date1', inputfieldEndTime : 'date2'});
+		});
+	</script>
 	<tr bgcolor='#<?php print $colors['panel'];?>' class='noprint'>
 		<td class='noprint'>
 		<form style='margin:0px;padding:0px;' name='form_graph_view' method='post' onSubmit='applyGraphPreviewFilterChange(document.form_graph_view);return false;'>

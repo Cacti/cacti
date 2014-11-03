@@ -1,6 +1,6 @@
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2013 The Cacti Group                                 |
+ | Copyright (C) 2004-2014 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -262,11 +262,11 @@
 			if($("#zoom-menu").length == 0) {
 				$('<div id="zoom-menu" class="zoom-menu">'
 					+ '<div class="first_li">'
-					+ 		'<div class="ui-icon ui-icon-zoomin"></div>'
+					+ 		'<div class="ui-icon ui-icon-zoomin zoomContextMenuAction__zoom_in"></div>'
 					+       '<span class="zoomContextMenuAction__zoom_in">Zoom In</span>'
 					+ '</div>'
 					+ '<div class="first_li">'
-					+ 		'<div class="ui-icon ui-icon-zoomout"></div>'
+					+ 		'<div class="ui-icon ui-icon-zoomout zoomContextMenuAction__zoom_out"></div>'
 					+ 		'<span class="zoomContextMenuAction__zoom_out">Zoom Out (2x)</span>'
 					+ 		'<div class="inner_li advanced_mode">'
 					+ 			'<span class="zoomContextMenuAction__zoom_out__2">2x</span>'
@@ -328,7 +328,7 @@
 					+ 		'</div>'
 					+ '<div class="sep_li"></div>'
 					+ '<div class="first_li">'
-					+ 		'<div class="ui-icon ui-icon-close"></div><span class="zoomContextMenuAction__close">Close</span>'
+					+ 		'<div class="ui-icon ui-icon-close zoomContextMenuAction__close"></div><span class="zoomContextMenuAction__close">Close</span>'
 					+ '</div>').appendTo('body');
 			}
 			zoomElemtents_reset()
@@ -490,7 +490,13 @@
 								drag:
 									function(event, ui) {
 
+										if(ui.position["left"] < zoom.box.left) {
+											zoom.marker[marker].left = zoom.box.left;
+										}else if(ui.position["left"] > zoom.box.right) {
+											zoom.marker[marker].left = zoom.box.right;
+										}else {
 										zoom.marker[marker].left = ui.position["left"];
+										}
 
 										/* update the timestamp shown in tooltip */
 										zoom.marker[marker].unixtime = parseInt(parseInt(zoom.graph.start) + (zoom.marker[marker].left + 1 - zoom.box.left)*zoom.graph.secondsPerPixel);
@@ -645,8 +651,8 @@
 				}else if(zoom.custom.zoomOutPositioning == 'end') {
 					newGraphStartTime = newGraphStartTime - multiplier * selectedTimeSpan;
 				}else {
-					newGraphStartTime = newGraphStartTime - 0.5 * multiplier * selectedTimeSpan;
-					newGraphEndTime = newGraphEndTime + 0.5 * multiplier * selectedTimeSpan;
+					newGraphStartTime = parseInt(newGraphStartTime - 0.5 * multiplier * selectedTimeSpan);
+					newGraphEndTime = parseInt(newGraphEndTime + 0.5 * multiplier * selectedTimeSpan);
 				}
 			}
 
@@ -710,7 +716,7 @@
 			$('[class*=zoomContextMenuAction__]').off().on('click', function() {
 				var zoomContextMenuAction = false;
 				var zoomContextMenuActionValue = false;
-				var classList = $(this).attr('class').trim().split(/\s+/);
+				var classList = $.trim($(this).attr('class')).split(/\s+/);
 
 				$.each( classList, function(index, item){
 					if( item.search("zoomContextMenuAction__") != -1) {

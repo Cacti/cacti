@@ -190,16 +190,15 @@ case 'zoom':
 
 	$graph_height = $graph["height"];
 	$graph_width = $graph["width"];
-	if ((read_config_option("rrdtool_version")) != "rrd-1.0.x") {
-		if (read_graph_config_option("title_font") == "") {
-			if (read_config_option("title_font") == "") {
-				$title_font_size = 10;
-			}else {
-				$title_font_size = read_config_option("title_size");
-			}
-		}else {
+	if (read_config_option("rrdtool_version") != "rrd-1.0.x") {
+		 if (read_graph_config_option("custom_fonts") == "on" & read_graph_config_option("title_size") != "") {
 			$title_font_size = read_graph_config_option("title_size");
-		}
+		 }elseif (read_config_option("title_size") != "") {
+			$title_font_size = read_config_option("title_size");
+				$title_font_size = read_config_option("title_size");
+		 }else {
+		 	$title_font_size = 10;
+		 }
 	}else {
 		$title_font_size = 0;
 	}
@@ -210,21 +209,12 @@ case 'zoom':
 			<strong>Zooming Graph</strong> '<?php print htmlspecialchars($graph_title);?>'
 		</td>
 	</tr>
-	<div id='zoomBox' style='position:absolute; overflow:hidden; left:0px; top:0px; width:0px; height:0px; visibility:visible;'></div>
-	<div id='dragBox' style='position:absolute; overflow:hidden; left:0px; top:0px; width:0px; height:0px; visibility:visible; background:red; filter:alpha(opacity=50); -moz-opacity:0.5; -khtml-opacity:0.5; opacity:0.5'></div>
-	<div id='zoomSensitiveZone' style='position:absolute; overflow:hidden; left:0px; top:0px; width:0px; height:0px; visibility:visible; cursor:crosshair; background:blue; filter:alpha(opacity=0); -moz-opacity:0; -khtml-opacity:0; opacity:0' oncontextmenu='return false'></div>
-	<style media="print">
-	/*Turn off the zoomBox*/
-	div#zoomBox, div#zoomSensitiveZone, div#dragBox {display: none}
-	/*This keeps IE from cutting things off*/
-	#why {position: static; width: auto}
-	</style>
 	<tr>
 		<td align='center'>
 			<table width='1' cellpadding='0'>
 				<tr>
 					<td>
-						<img id='zoomGraphImage' src='<?php print htmlspecialchars("graph_image.php?action=zoom&local_graph_id=" . $_GET["local_graph_id"] . "&rra_id=" . $_GET["rra_id"] . "&view_type=" . $_REQUEST["view_type"] . "&graph_start=" . $graph_start . "&graph_end=" . $graph_end . "&graph_height=" . $graph_height . "&graph_width=" . $graph_width . "&title_font_size=" . $title_font_size);?>' border='0' alt='<?php print htmlspecialchars($graph_title);?>'>
+						<img id='zoomGraphImage' class="graphimage" src='<?php print htmlspecialchars("graph_image.php?action=zoom&local_graph_id=" . $_GET["local_graph_id"] . "&rra_id=" . $_GET["rra_id"] . "&view_type=" . $_REQUEST["view_type"] . "&graph_start=" . $graph_start . "&graph_end=" . $graph_end . "&graph_height=" . $graph_height . "&graph_width=" . $graph_width . "&title_font_size=" . $title_font_size);?>' border='0' alt='<?php print htmlspecialchars($graph_title);?>'>
 					</td>
 					<td valign='top' style='padding: 3px;' class='noprint'>
 						<a href='<?php print htmlspecialchars("graph.php?action=properties&local_graph_id=" . $_GET["local_graph_id"] . "&rra_id=" . $_GET["rra_id"] . "&view_type=" . $_REQUEST["view_type"] . "&graph_start=" . $graph_start . "&graph_end=" . $graph_end);?>'><img src='images/graph_properties.gif' border='0' alt='Graph Source/Properties' title='Graph Source/Properties' style='padding: 3px;'></a>
@@ -240,11 +230,13 @@ case 'zoom':
 			</table>
 		</td>
 	</tr>
+	<script type="text/javascript" >
+		$(document).ready(function() { $(".graphimage").zoom(); });
+	</script>
 	<?php
 
-	include("./include/zoom.js");
-
 	break;
+
 case 'properties':
 	?>
 	<tr bgcolor='#<?php print $colors["header"];?>'>
