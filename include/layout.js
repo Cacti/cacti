@@ -304,7 +304,9 @@ function applyGraphPreviewFilterChange(objForm) {
 	strURL = '?action=preview';
 	strURL = strURL + '&host_id=' + objForm.host_id.value;
 	strURL = strURL + '&rows=' + objForm.rows.value;
+	strURL = strURL + '&columns=' + objForm.columns.value;
 	strURL = strURL + '&graph_template_id=' + objForm.graph_template_id.value;
+	strURL = strURL + '&thumbnails=' + objForm.thumbnails.checked;
 	strURL = strURL + '&filter=' + objForm.filter.value;
 	document.location = strURL;
 }

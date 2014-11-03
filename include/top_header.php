@@ -35,12 +35,21 @@ $page_title = api_plugin_hook_function('page_title', draw_navigation_text("title
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-	<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7">
+	<meta http-equiv="X-UA-Compatible" content="edge">
 	<title><?php echo $page_title; ?></title>
-	<link href="<?php echo $config['url_path']; ?>include/main.css" type="text/css" rel="stylesheet">
-	<link href="<?php echo $config['url_path']; ?>images/favicon.ico" rel="shortcut icon">
 	<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+	<link href="<?php echo $config['url_path']; ?>include/main.css" type="text/css" rel="stylesheet">
+	<link href="<?php echo $config['url_path']; ?>include/js/jquery-ui.css" type="text/css" rel="stylesheet">
+	<link href="<?php echo $config['url_path']; ?>include/js/themes/proton/style.css" type="text/css" rel="stylesheet">
+	<link href="<?php echo $config['url_path']; ?>images/favicon.ico" rel="shortcut icon">
 	<script type="text/javascript" src="<?php echo $config['url_path']; ?>include/layout.js"></script>
+	<script type="text/javascript" src="<?php echo $config['url_path']; ?>include/js/jquery.js" language="javascript"></script>
+	<script type="text/javascript" src="<?php echo $config['url_path']; ?>include/js/jquery-ui.js" language="javascript"></script>
+	<script type="text/javascript" src="<?php echo $config['url_path']; ?>include/js/jquery.cookie.js" language="javascript"></script>
+	<script type="text/javascript" src="<?php echo $config['url_path']; ?>include/js/jstree.js"></script>
+	<script type="text/javascript" src="<?php echo $config['url_path']; ?>include/jscalendar/calendar.js"></script>
+	<script type="text/javascript" src="<?php echo $config['url_path']; ?>include/jscalendar/lang/calendar-en.js"></script>
+	<script type="text/javascript" src="<?php echo $config['url_path']; ?>include/jscalendar/calendar-setup.js"></script>
 	<?php
 	if (isset($refresh)) {
 		if (is_array($refresh)) {
@@ -58,7 +67,7 @@ $page_title = api_plugin_hook_function('page_title', draw_navigation_text("title
 <body style="background-image:url('<?php print $config['url_path'];?>images/left_border.gif');background-repeat:repeat-y;" <?php print api_plugin_hook_function("body_style", "");?>>
 <?php }?>
 
-<table width="100%" cellspacing="0" cellpadding="0">
+<table style="width:100%" cellspacing="0" cellpadding="0">
 <?php if ($oper_mode == OPER_MODE_NATIVE) { ;?>
 	<tr style="height:1px;" bgcolor="#a9a9a9">
 		<td valign="bottom" colspan="3" nowrap>

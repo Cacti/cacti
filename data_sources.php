@@ -1293,26 +1293,7 @@ function ds() {
 
 	html_start_box("", "100%", $colors["header"], "3", "center", "");
 
-	/* generate page list */
-	$url_page_select = get_page_list(get_request_var_request("page"), MAX_DISPLAY_PAGES, get_request_var_request("ds_rows"), $total_rows, "data_sources.php?filter=" . get_request_var_request("filter") . "&host_id=" . get_request_var_request("host_id"));
-
-	$nav = "<tr bgcolor='#" . $colors["header"] . "'>
-			<td colspan='7'>
-				<table width='100%' cellspacing='0' cellpadding='0' border='0'>
-					<tr>
-						<td align='left' class='textHeaderDark'>
-							<strong>&lt;&lt; "; if (get_request_var_request("page") > 1) { $nav .= "<a class='linkOverDark' href='" . htmlspecialchars("data_sources.php?filter=" . get_request_var_request("filter") . "&host_id=" . get_request_var_request("host_id") . "&page=" . (get_request_var_request("page")-1)) . "'>"; } $nav .= "Previous"; if (get_request_var_request("page") > 1) { $nav .= "</a>"; } $nav .= "</strong>
-						</td>\n
-						<td align='center' class='textHeaderDark'>
-							Showing Rows " . ((get_request_var_request("ds_rows")*(get_request_var_request("page")-1))+1) . " to " . ((($total_rows < get_request_var_request("ds_rows")) || ($total_rows < (get_request_var_request("ds_rows")*get_request_var_request("page")))) ? $total_rows : (get_request_var_request("ds_rows")*get_request_var_request("page"))) . " of $total_rows [$url_page_select]
-						</td>\n
-						<td align='right' class='textHeaderDark'>
-							<strong>"; if ((get_request_var_request("page") * get_request_var_request("ds_rows")) < $total_rows) { $nav .= "<a class='linkOverDark' href='" . htmlspecialchars("data_sources.php?filter=" . get_request_var_request("filter") . "&host_id=" . get_request_var_request("host_id") . "&page=" . (get_request_var_request("page")+1)) . "'>"; } $nav .= "Next"; if ((get_request_var_request("page") * get_request_var_request("ds_rows")) < $total_rows) { $nav .= "</a>"; } $nav .= " &gt;&gt;</strong>
-						</td>\n
-					</tr>
-				</table>
-			</td>
-		</tr>\n";
+	$nav = html_nav_bar("data_sources.php?filter=" . get_request_var_request("filter") . "&host_id=" . get_request_var_request("host_id"), MAX_DISPLAY_PAGES, get_request_var_request("page"), get_request_var_request("ds_rows"), $total_rows, 7);
 
 	print $nav;
 

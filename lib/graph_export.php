@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2014 The Cacti Group                                 |
+ | Copyright (C) 2004-2013 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -1365,15 +1365,6 @@ function draw_html_left_tree($fp, $tree_id)  {
 	/* create the treeview representation for the html data */
 	grow_dhtml_trees_export($fp,$tree_id);
 
-	fwrite($fp,"<script type='text/javascript'>initializeDocument();</script>\n");
-	fwrite($fp,"<script type='text/javascript'>\n");
-	fwrite($fp,"var obj;\n");
-	fwrite($fp,"obj = findObj(1);\n");
-	fwrite($fp,"if (!obj.isOpen) {\n");
-	fwrite($fp,"clickOnNode(1);\n");
-	fwrite($fp,"}\n");
-	fwrite($fp,"clickOnLink(2,'','main');\n");
-	fwrite($fp,"</script>\n");
 	fwrite($fp,"</td>\n");
 	fwrite($fp,"<td valign='top'>\n");
 }
@@ -1383,16 +1374,7 @@ function grow_dhtml_trees_export($fp, $tree_id) {
 	include_once($config["library_path"] . "/tree.php");
 	include_once($config["library_path"] . "/data_query.php");
 
-	fwrite($fp, "<script type='text/javascript'>\n");
-	fwrite($fp, "<!--
-			USETEXTLINKS = 1
-			STARTALLOPEN = 0
-			USEFRAMES = 0
-			USEICONS = 0
-			WRAPTEXT = 1
-			ICONPATH = 'treeview/'
-			PERSERVESTATE = 1
-			HIGHLIGHT = 1\n");
+	fwrite($fp, "<div id=\"jtree\">\n");
 
 	if (read_config_option("export_tree_isolation") == "off") {
 		$dhtml_tree_base = 0;
@@ -1413,9 +1395,34 @@ function grow_dhtml_trees_export($fp, $tree_id) {
 		}
 	}
 
-	fwrite($fp,"foldersTree.treeID = \"t2\"
-			//-->\n
-			</script>\n");
+	fwrite($fp, "</div>\n");
+	fwrite($fp, "<script type=\"text/javascript\">\n");
+	fwrite($fp, "$(function () {
+	$(\"#jtree\")
+		.jstree({
+                        \"plugins\" : [\"ui\",\"themes\",\"html_data\",\"cookies\"],
+        	        \"themes\" : {\"icons\" : false,
+				\"url\" : \"./js/style.css\"},
+			\"cookies\" : {
+				\"save_opened\" : \"Cacti_jstree_open\",
+				\"save_selected\" : \"Cacti_jstree_select\"
+				}
+
+                })
+
+                // Make sure that the nodes are actually used as links
+                // We need reselect to prevent endless loops
+                // https://groups.google.com/d/topic/jstree/j6XNq9hQdeA/discussion
+                .bind(\"reselect.jstree\", function (e, data) {
+                      data.inst.get_container().bind(\"select_node.jstree\", function (e, data) {
+                           // data.rstl.obj is the object that was selected.
+                           document.location.href = data.rslt.obj.children(\"a\").attr(\"href\");
+                       });
+                });
+
+});\n");
+	fwrite($fp, "</script>\n");
+
 }
 
 /* get_graph_tree_array_export - returns a list of graph trees taking permissions into account if
@@ -1478,8 +1485,7 @@ function create_dhtml_tree_export($tree_id) {
 	$dhtml_tree = array();
 	$dhtml_tree[0] = $start;
 	$dhtml_tree[1] = read_graph_config_option("expand_hosts");
-	$dhtml_tree[2] = "foldersTree = gFld(\"\", \"\")\n";
-	$i = 2;
+	$i = 1;
 
 	$tree_list = get_graph_tree_array_export();
 
@@ -1499,7 +1505,6 @@ function create_dhtml_tree_export($tree_id) {
 		if (((read_config_option("export_tree_isolation") == "on") && ($tree_id == $tree["id"])) ||
 			(read_config_option("export_tree_isolation") == "off")) {
 
-			$i++;
 
 			$hier_sql = "SELECT DISTINCT
 					graph_tree_items.id,
@@ -1522,19 +1527,53 @@ function create_dhtml_tree_export($tree_id) {
 			$dhtml_tree_id = 0;
 
 			if (sizeof($hierarchy) > 0) {
+				$last_tier = 1;
+				$openli = false;
+				$lasthost = false;
+				$opentree = false;
 				foreach ($hierarchy as $leaf) {
 					if ($dhtml_tree_id <> $tree["id"]) {
-						$dhtml_tree[$i] = "ou0 = insFld(foldersTree, gFld(\"" . get_tree_name($tree["id"]) . "\", \"" . clean_up_export_name(get_tree_name($tree["id"])) . "_leaf.html\"))\n";
+						if ($opentree) {
+							$i++;
+							$dhtml_tree[$i] = "\t\t\t</ul>\n\t\t</li>\n\t</ul>\n";
+						}
+						$i++;
+						$clean_id = clean_up_export_name(get_tree_name($tree["id"]));
+						$dhtml_tree[$i] = "\t<ul>\n\t\t<li id=\"" . $clean_id . "\"><a href=\"" . $clean_id . "_leaf.html\">" . get_tree_name($tree["id"]) . "</a>\n\t\t\t<ul>\n";
+						$opentree = true;
 					}
 					$dhtml_tree_id = $tree["id"];
 
-					$i++;
 					$tier = tree_tier($leaf["order_key"]);
 
 					if ($leaf["host_id"] > 0) {  //It's a host
-						$dhtml_tree[$i] = "ou" . ($tier) . " = insFld(ou" . ($tier-1) . ", gFld(\"Host: " . $leaf["hostname"] . "\", \"" . clean_up_export_name($leaf["hostname"] . "_" . $leaf["id"]) . ".html\"))\n";
+						if ($tier > $last_tier) {
+							$i++;
+							$dhtml_tree[$i] = "\t\t\t<ul>\n";
+						} elseif ($tier < $last_tier) {
+							if (!$lasthost) {
+								$i++;
+								$dhtml_tree[$i] = "\t\t\t\t</li>\n";
+							}
+							for ($x = $tier; $x < $last_tier; $x++) {
+								$i++;
+								$dhtml_tree[$i] = "\t\t\t</ul>\n\t\t\t\t</li>\n";
+								$openli = false;
+							}
+						} elseif ($openli && !$lasthost) {
+							$i++;
+							$dhtml_tree[$i] = "\t\t\t\t</li>\n";
+							$openli = false;
+						}
+						$last_tier = $tier;
+						$lasthost = true;
+						$i++;
+						$clean_id = clean_up_export_name($leaf["hostname"] . "_" . $leaf["id"]);
+						$dhtml_tree[$i] = "\t\t\t\t<li id=\"" . $clean_id . "\"><a href=\"" . $clean_id . ".html\">Host: " . htmlspecialchars($leaf["hostname"]) . "</a>\n";
 
 						if (read_config_option("export_tree_expand_hosts") == "on") {
+							$i++;
+							$dhtml_tree[$i] = "\t\t\t\t\t<ul>\n";
 							if ($leaf["host_grouping_type"] == HOST_GROUPING_GRAPH_TEMPLATE) {
 								$graph_templates = db_fetch_assoc("SELECT
 									graph_templates.id,
@@ -1552,7 +1591,8 @@ function create_dhtml_tree_export($tree_id) {
 							 	if (sizeof($graph_templates) > 0) {
 									foreach ($graph_templates as $graph_template) {
 										$i++;
-										$dhtml_tree[$i] = "ou" . ($tier+1) . " = insFld(ou" . ($tier) . ", gFld(\" " . $graph_template["name"] . "\", \"" . clean_up_export_name($leaf["hostname"] . "_gt_" . $leaf["id"]) . "_" . $graph_template["id"] . ".html\"))\n";
+										$clean_id = clean_up_export_name($leaf["hostname"] . "_gt_" . $leaf["id"] . "_" . $graph_template["id"]);
+										$dhtml_tree[$i] = "\t\t\t\t\t\t<li id=\"" . $clean_id . "\"><a href=\"" . $clean_id . ".html\">" . htmlspecialchars($graph_template["name"]) . "</a></li>\n";
 									}
 								}
 							}else if ($leaf["host_grouping_type"] == HOST_GROUPING_DATA_QUERY_INDEX) {
@@ -1567,36 +1607,77 @@ function create_dhtml_tree_export($tree_id) {
 
 								array_push($data_queries, array(
 									"id" => "0",
-									"name" => "Graph Template Based"
+									"name" => "Non Query Based"
 									));
 
 								if (sizeof($data_queries) > 0) {
-								foreach ($data_queries as $data_query) {
-									$i++;
+									foreach ($data_queries as $data_query) {
+										$i++;
+										$clean_id = clean_up_export_name($leaf["hostname"] . "_dq_" . $leaf["title"] . "_" . $leaf["id"] . "_" . $data_query["id"]);
+										$dhtml_tree[$i] = "\t\t\t\t\t\t<li id=\"" . $clean_id . "\"><a href=\"" . $clean_id . ".html\">" . htmlspecialchars($data_query["name"]) . "</a>\n";
 
-									$dhtml_tree[$i] = "ou" . ($tier+1) . " = insFld(ou" . ($tier) . ", gFld(\" " . $data_query["name"] . "\", \"" . clean_up_export_name($leaf["hostname"] . "_dq_" . $leaf["title"] . "_" . $leaf["id"]) . "_" . $data_query["id"] . ".html\"))\n";
+										/* fetch a list of field names that are sorted by the preferred sort field */
+										$sort_field_data = get_formatted_data_query_indexes($leaf["host_id"], $data_query["id"]);
 
-									/* fetch a list of field names that are sorted by the preferred sort field */
-									$sort_field_data = get_formatted_data_query_indexes($leaf["host_id"], $data_query["id"]);
-
-									if ($data_query["id"] > 0) {
-										while (list($snmp_index, $sort_field_value) = each($sort_field_data)) {
+										if ($data_query["id"] > 0) {
 											$i++;
-											$dhtml_tree[$i] = "ou" . ($tier+2) . " = insFld(ou" . ($tier+1) . ", gFld(\" " . $sort_field_value . "\", \"" . clean_up_export_name($leaf["hostname"] . "_dqi_" . $leaf["title"] . "_" . $leaf["id"]) . "_" . $data_query["id"] . "_" . $snmp_index . ".html\"))\n";
+											$dhtml_tree[$i] = "\t\t\t\t\t\t\t<ul>\n";
+											while (list($snmp_index, $sort_field_value) = each($sort_field_data)) {
+												$i++;
+												$clean_id = clean_up_export_name($leaf["hostname"] . "_dqi_" . $leaf["id"] . "_" . $data_query["id"] . "_" . $snmp_index);
+												$dhtml_tree[$i] = "\t\t\t\t\t\t\t\t<li id=\"" . $clean_id . "\"><a href=\"" . $clean_id . ".html\">" . htmlspecialchars($sort_field_value) . "</a></li>\n";
+											}
+											$i++;
+											$dhtml_tree[$i] = "\t\t\t\t\t\t\t</ul>\n";
 										}
+										$i++;
+										$dhtml_tree[$i] = "\t\t\t\t\t\t</li>\n";
 									}
 								}
-								}
 							}
+							$i++;
+							$dhtml_tree[$i] = "\t\t\t\t\t</ul>\n";
 						}
-					}else {
-						$dhtml_tree[$i] = "ou" . ($tier) . " = insFld(ou" . ($tier-1) . ", gFld(\"" . $leaf["title"] . "\", \"" . clean_up_export_name(get_tree_name($tree["id"]) . "_" . $leaf["title"] . "_" . $leaf["id"]) . "_leaf.html\"))\n";
+						$i++;
+						$dhtml_tree[$i] = "\t\t\t\t</li>\n";
+					}else { //It's not a host
+						if ($tier > $last_tier) {
+							$i++;
+							$dhtml_tree[$i] = "\t\t\t<ul>\n";
+						} elseif ($tier < $last_tier) {
+							if (!$lasthost) {
+								$i++;
+								$dhtml_tree[$i] = "</li>\n";
+							}
+							for ($x = $tier; $x < $last_tier; $x++) {
+								$i++;
+								$dhtml_tree[$i] = "\t\t\t\t</ul>\n\t\t\t\t</li>\n";
+								$openli = false;
+							}
+						} elseif ($openli && !$lasthost) {
+							$i++;
+							$dhtml_tree[$i] = "</li>\n";
+							$openli = false;
+						}
+						$last_tier = $tier;
+						$i++;
+						$clean_id = clean_up_export_name(get_tree_name($tree["id"]) . "_" . $leaf["title"] . "_" . $leaf["id"]);
+						$dhtml_tree[$i] = "\t\t\t\t<li id=\"" . $clean_id . "\"><a href=\"" . $clean_id . "_leaf.html\">" . htmlspecialchars($leaf["title"]) . "</a>\n";
+						$openli = true;
+						$lasthost = false;
 					}
 				}
+				for ($x = $last_tier; $x > 1; $x--) {
+					$i++;
+					$dhtml_tree[$i] = "\t\t\t\t\t</ul>\n\t\t\t\t</li>\n";
+				}
+				$i++;
+				$dhtml_tree[$i] = "\t\t\t</ul>\n\t\t</li>\n\t</ul>\n";
 			}else{
 				if ($dhtml_tree_id <> $tree["id"]) {
-					$dhtml_tree[$i] = "ou0 = insFld(foldersTree, gFld(\"" . get_tree_name($tree["id"]) . "\", \"" . clean_up_export_name(get_tree_name($tree["id"])) . "_leaf.html\"))\n";
 					$i++;
+					$clean_id = clean_up_export_name(get_tree_name($tree["id"]));
+					$dhtml_tree[$i] = "\t<ul>\n\t\t<li id=\"" . $clean_id . "_leaf\"><a href=\"" . $clean_id . "_leaf.html\">" . get_tree_name($tree["id"]) . "</a></li>\n\t</ul>";
 				}
 			}
 		}
@@ -1612,10 +1693,10 @@ function create_dhtml_tree_export($tree_id) {
         $dir - the export directory where graphs will either be staged or located.
 */
 function create_export_directory_structure($cacti_root_path, $dir) {
-	/* create the treeview sub-directory */
-	if (!is_dir("$dir/treeview")) {
-		if (!mkdir("$dir/treeview", 0755)) {
-			export_fatal("Create directory '" . $dir . "/treeview' failed.  Can not continue");
+	/* create the jquery sub-directory */
+	if (!is_dir("$dir/js")) {
+		if (!mkdir("$dir/js", 0755)) {
+			export_fatal("Create directory '" . $dir . "/js' failed.  Can not continue");
 		}
 	}
 
@@ -1625,8 +1706,6 @@ function create_export_directory_structure($cacti_root_path, $dir) {
 			export_fatal("Create directory '" . $dir . "/graphs' failed.  Can not continue");
 		}
 	}
-
-	$treeview_dir = $dir . "/treeview";
 
 	/* css */
 	copy("$cacti_root_path/include/main.css", "$dir/main.css");
@@ -1639,18 +1718,15 @@ function create_export_directory_structure($cacti_root_path, $dir) {
 	copy("$cacti_root_path/images/shadow_gray.gif", "$dir/shadow_gray.gif");
 
 	/* java scripts for the tree */
-	copy("$cacti_root_path/include/treeview/ftiens4_export.js", "$treeview_dir/ftiens4.js");
-	copy("$cacti_root_path/include/treeview/ua.js", "$treeview_dir/ua.js");
+	copy("$cacti_root_path/include/js/jquery/jquery.js", "$dir/js/jquery.js");
+	copy("$cacti_root_path/include/js/jquery/jquery.jstree.js", "$dir/js/jquery.jstree.js");
+	copy("$cacti_root_path/include/js/jquery/jquery.cookie.js", "$dir/js/jquery.cookie.js");
 
-	/* images for the tree */
-	copy("$cacti_root_path/include/treeview/ftv2blank.gif", "$treeview_dir/ftv2blank.gif");
-	copy("$cacti_root_path/include/treeview/ftv2lastnode.gif", "$treeview_dir/ftv2lastnode.gif");
-	copy("$cacti_root_path/include/treeview/ftv2mlastnode.gif", "$treeview_dir/ftv2mlastnode.gif");
-	copy("$cacti_root_path/include/treeview/ftv2mnode.gif", "$treeview_dir/ftv2mnode.gif");
-	copy("$cacti_root_path/include/treeview/ftv2node.gif", "$treeview_dir/ftv2node.gif");
-	copy("$cacti_root_path/include/treeview/ftv2plastnode.gif", "$treeview_dir/ftv2plastnode.gif");
-	copy("$cacti_root_path/include/treeview/ftv2pnode.gif", "$treeview_dir/ftv2pnode.gif");
-	copy("$cacti_root_path/include/treeview/ftv2vertline.gif", "$treeview_dir/ftv2vertline.gif");
+	/* theme info for java scripts */
+	copy("$cacti_root_path/include/js/jquery/themes/default/style.css", "$dir/js/style.css");
+	copy("$cacti_root_path/include/js/jquery/themes/default/d.png", "$dir/js/d.png");
+	copy("$cacti_root_path/include/js/jquery/themes/default/d.gif", "$dir/js/d.gif");
+	copy("$cacti_root_path/include/js/jquery/themes/default/throbber.gif", "$dir/js/throbber.gif");
 }
 
 function get_host_description($host_id) {
@@ -1738,8 +1814,9 @@ define("HTML_HEADER_TREE",
 	<meta http-equiv=refresh content='300'; url='index.html'>
 	<meta http-equiv=Pragma content=no-cache>
 	<meta http-equiv=cache-control content=no-cache>
-	<script type=\"text/javascript\" src=\"./treeview/ua.js\"></script>
-	<script type=\"text/javascript\" src=\"./treeview/ftiens4.js\"></script>
+	<script type=\"text/javascript\" src=\"./js/jquery.js\" language=\"javascript\"></script>
+	<script type=\"text/javascript\" src=\"./js/jquery.cookie.js\" language=\"javascript\"></script>
+	<script type=\"text/javascript\" src=\"./js/jquery.jstree.js\" language=\"javascript\"></script>
 </head>
 <body>
 <table style='width:100%;height:100%;' cellspacing='0' cellpadding='0'>

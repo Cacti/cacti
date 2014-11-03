@@ -1,10 +1,12 @@
 Cacti CHANGELOG
 
+0.8.8c
+-bug#0002228: GPL incompatible files included in Cacti project in include/treeview
 -bug#0002383: Sanitize the step and id variables CVE-2013-5588, CVE-2013-5589
 -bug#0002385: Cannot export host templates while including dependencies
 -bug#0002386: cli/upgrade_database.php is missing the last two releases
--bug#0002405: SQL injection in graph_xport.php
 -bug#0002390: Poller/script issue with slash and backslash
+-bug#0002405: SQL injection in graph_xport.php
 -bug#0002431: CVE-2014-2326 Unspecified HTML Injection Vulnerability
 -bug#0002432: CVE-2014-2327 Cross Site Request Forgery Vulnerability - Special Thanks to Deutsche Telekom CERT
 -bug#0002433: CVE-2014-2328 Unspecified Remote Command Execution Vulnerability 
@@ -14,11 +16,17 @@ Cacti CHANGELOG
 -bug#0002453: CVE-2014-4002 Cross-Site Scripting Vulnerability - Special Thanks to G. Geshev (munmap)
 -bug#0002455: Incomplete and incorrect input parsing leads to remote code execution and SQL injection attack scenarios
 -bug#0002456: CVE-2014-5025 / CVE-2014-5026 - Cross-Site Scripting Vulnerability - Special Thanks to Adan Alvarez and Paul Gevers
-
--bug. fix COMMENT handling, even in case COMMENT is empty, with or without HR and with variable substitution
--bug: fix issues when SNMP data holds a "="; "explode" must be treated accordingly
--bug: fix filter highlighting on data sources for the data template field
+-bug: Fix COMMENT handling, even in case COMMENT is empty, with or without HR and with variable substitution
+-bug: Fix issues when SNMP data holds a "="; "explode" must be treated accordingly
+-bug: Fix filter highlighting on data sources for the data template field
 -bug: correct description of SNMP V3 parameters
+-feature: Added native jquery, jqueryui, and jstree
+-feature: Fixed issues with 'Clear' under preview not working
+-feature: Added new Tree navigation
+-feature: Added Columns and Thumbnails to Preview
+-feature: Added Columns to Tree (Preview only)
+-feature: Both Graphs and Columns default to 'Default'
+-feature: Resolved Left hand navigation taking entire page
 
 0.8.8b
 -bug: Fixed issue with custom data source information being lost when saved from edit

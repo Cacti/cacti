@@ -304,7 +304,7 @@ function get_current_graph_end() {
    @arg $total_rows - the total number of available rows
    @arg $url - the url string to prepend to each page click
    @returns - a string containing html that represents the a page list */
-function get_page_list($current_page, $pages_per_screen, $rows_per_page, $total_rows, $url, $page_var = "page") {
+function get_page_list($current_page, $pages_per_screen, $rows_per_page, $total_rows, $url, $page_var = "page", $return_to = '') {
 	$url_page_select = "";
 
 	$total_pages = ceil($total_rows / $rows_per_page);
@@ -331,11 +331,12 @@ function get_page_list($current_page, $pages_per_screen, $rows_per_page, $total_
 	//print "start: $start_page, end: $end_page, total: $total_pages<br>";
 
 	for ($page_number=0; (($page_number+$start_page) <= $end_page); $page_number++) {
+		$page = $page_number + $start_page;
 		if ($page_number < $pages_per_screen) {
-			if ($current_page == ($page_number + $start_page)) {
-				$url_page_select .= "<strong><a class='linkOverDark' href='" . htmlspecialchars($url . "&" . $page_var . "=" . ($page_number + $start_page)) . "'>" . ($page_number + $start_page) . "</a></strong>";
+			if ($current_page == $page) {
+				$url_page_select .= "<strong><a class='linkOverDark' style='cursor:pointer;' onClick='gotoPage($page)'>$page</a></strong>";
 			}else{
-				$url_page_select .= "<a class='linkOverDark' href='" . htmlspecialchars($url . "&" . $page_var . "=" . ($page_number + $start_page)) . "'>" . ($page_number + $start_page) . "</a>";
+				$url_page_select .= "<a class='linkOverDark' style='cursor:pointer;' onClick='gotoPage($page)'>$page</a>";
 			}
 		}
 
@@ -346,6 +347,12 @@ function get_page_list($current_page, $pages_per_screen, $rows_per_page, $total_
 
 	if (($total_pages - $current_page) >= ceil(($pages_per_screen) / 2)) {
 		$url_page_select .= "...";
+	}
+
+	if ($return_to != '') {
+		$url_page_select .= "<script type='text/javascript'>function gotoPage(pageNo) { $.get('$url&$page_var='+pageNo,function(data) { $('#$return_to').html(data);}); }</script>";
+	}else{
+		$url_page_select .= "<script type='text/javascript'>function gotoPage(pageNo) { document.location='$url&$page_var='+pageNo}</script>";
 	}
 
 	return $url_page_select;

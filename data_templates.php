@@ -675,7 +675,12 @@ function template() {
 	html_end_box();
 
 	/* form the 'where' clause for our main sql query */
-	$sql_where = "where (data_template.name like '%%" . get_request_var_request("filter") . "%%')";
+	$sql_where = "WHERE data_template.id=data_template_data.data_template_id AND data_template_data.local_data_id=0";
+	$rows_where = "";
+	if (strlen($_REQUEST['filter'])) {
+		$sql_where .= "AND (data_template.name like '%%" . get_request_var_request("filter") . "%%')";
+		$rows_where = "WHERE (data_template.name like '%%" . get_request_var_request("filter") . "%%')";
+	}
 
 	/* print checkbox form for validation */
 	print "<form name='chk' method='post' action='data_templates.php'>\n";
@@ -685,7 +690,7 @@ function template() {
 	$total_rows = db_fetch_cell("SELECT
 		COUNT(data_template.id)
 		FROM data_template
-		$sql_where");
+		$rows_where");
 
 	$template_list = db_fetch_assoc("SELECT
 		data_template.id,
@@ -693,38 +698,20 @@ function template() {
 		data_input.name AS data_input_method,
 		data_template_data.active AS active
 		FROM (data_template,data_template_data)
-		LEFT JOIN data_input ON (data_template_data.data_input_id = data_input.id)
+		LEFT JOIN data_input
+		ON (data_template_data.data_input_id = data_input.id)
 		$sql_where
-		AND data_template.id = data_template_data.data_template_id
-		AND data_template_data.local_data_id = 0
+		GROUP BY data_template.id
 		ORDER BY " . get_request_var_request("sort_column") . " " . get_request_var_request("sort_direction") .
 		" LIMIT " . (read_config_option("num_rows_device")*(get_request_var_request("page")-1)) . "," . read_config_option("num_rows_device"));
 
-	/* generate page list */
-	$url_page_select = get_page_list(get_request_var_request("page"), MAX_DISPLAY_PAGES, read_config_option("num_rows_device"), $total_rows, "data_templates.php?filter=" . get_request_var_request("filter"));
-
-	$nav = "<tr bgcolor='#" . $colors["header"] . "'>
-		<td colspan='7'>
-			<table width='100%' cellspacing='0' cellpadding='0' border='0'>
-				<tr>
-					<td align='left' class='textHeaderDark'>
-						<strong>&lt;&lt; "; if (get_request_var_request("page") > 1) { $nav .= "<a class='linkOverDark' href='" . htmlspecialchars("data_templates.php?filter=" . get_request_var_request("filter") . "&page=" . (get_request_var_request("page")-1)) . "'>"; } $nav .= "Previous"; if (get_request_var_request("page") > 1) { $nav .= "</a>"; } $nav .= "</strong>
-					</td>\n
-					<td align='center' class='textHeaderDark'>
-						Showing Rows " . ((read_config_option("num_rows_device")*(get_request_var_request("page")-1))+1) . " to " . ((($total_rows < read_config_option("num_rows_device")) || ($total_rows < (read_config_option("num_rows_device")*get_request_var_request("page")))) ? $total_rows : (read_config_option("num_rows_device")*get_request_var_request("page"))) . " of $total_rows [$url_page_select]
-					</td>\n
-					<td align='right' class='textHeaderDark'>
-						<strong>"; if ((get_request_var_request("page") * read_config_option("num_rows_device")) < $total_rows) { $nav .= "<a class='linkOverDark' href='" . htmlspecialchars("data_templates.php?filter=" . get_request_var_request("filter") . "&page=" . (get_request_var_request("page")+1)) . "'>"; } $nav .= "Next"; if ((get_request_var_request("page") * read_config_option("num_rows_device")) < $total_rows) { $nav .= "</a>"; } $nav .= " &gt;&gt;</strong>
-					</td>\n
-				</tr>
-			</table>
-		</td>
-	</tr>\n";
+	$nav = html_nav_bar("data_templates.php?filter=" . get_request_var_request("filter"), MAX_DISPLAY_PAGES, get_request_var_request("page"), read_config_option("num_rows_device"), $total_rows, 5);
 
 	print $nav;
 
 	$display_text = array(
 		"name" => array("Template Name", "ASC"),
+		"id" => array("ID", "ASC"),
 		"data_input_method" => array("Data Input Method", "ASC"),
 		"active" => array("Status", "ASC"));
 
@@ -735,6 +722,7 @@ function template() {
 		foreach ($template_list as $template) {
 			form_alternate_row_color($colors["alternate"],$colors["light"],$i, 'line' . $template["id"]);
 			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars("data_templates.php?action=template_edit&id=" . $template["id"]) . "'>" . (strlen(get_request_var_request("filter")) ? preg_replace("/(" . preg_quote(get_request_var_request("filter"), "/") . ")/i", "<span style='background-color: #F8D93D;'>\\1</span>", htmlspecialchars($template["name"])) : htmlspecialchars($template["name"])) . "</a>", $template["id"]);
+			form_selectable_cell($template['id'], $template["id"]);
 			form_selectable_cell((empty($template["data_input_method"]) ? "<em>None</em>": htmlspecialchars($template["data_input_method"])), $template["id"]);
 			form_selectable_cell((($template["active"] == "on") ? "Active" : "Disabled"), $template["id"]);
 			form_checkbox_cell($template["name"], $template["id"]);

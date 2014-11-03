@@ -84,16 +84,24 @@ function html_graph_end_box() {
      $arr[0]["title_cache"] // graph title
    @arg $no_graphs_message - display this message if no graphs are found in $graph_array
    @arg $extra_url_args - extra arguments to append to the url
-   @arg $header - html to use as a header */
-function html_graph_area(&$graph_array, $no_graphs_message = "", $extra_url_args = "", $header = "") {
+   @arg $header - html to use as a header
+   @arg $columns - the number of columns to present */
+function html_graph_area(&$graph_array, $no_graphs_message = "", $extra_url_args = "", $header = "", $columns = 0) {
 	global $config;
+	$i = 0; $k = 0; $j = 0;
 
-	$i = 0;
-	if (sizeof($graph_array) > 0) {
+	$num_graphs = sizeof($graph_array);
+
+	if ($columns == 0) {
+		$columns = read_graph_config_option('num_columns');
+	}
+
+	if ($num_graphs > 0) {
 		if ($header != "") {
 			print $header;
 		}
 
+		$start = true;
 		foreach ($graph_array as $graph) {
 			if (isset($graph["graph_template_name"])) {
 				if (isset($prev_graph_template_name)) {
@@ -129,38 +137,76 @@ function html_graph_area(&$graph_array, $no_graphs_message = "", $extra_url_args
 				}
 
 				if ($print) {
-					print "<tr bgcolor='#a9b7cb'><td colspan='3' class='textHeaderDark'><strong>Data Query:</strong> " . htmlspecialchars($graph["data_query_name"]) . "</td></tr>";
+					if (!$start) {
+						while(($i % $columns) != 0) {
+							print "<td align='center' width='" . ceil(100 / $columns) . "%'></td>";
+							$i++;
+						}
+
+						print "</tr>";
+					}
+
+					print "<tr style='background-color:#a9b7cb;'>
+							<td style='background-color:#a9b7cb;' colspan='$columns' class='textHeaderDark'><strong>Data Query:</strong> " . $graph["data_query_name"] . "</td>
+						</tr>";
+					$i = 0;
 				}
-				print "<tr bgcolor='#a9b7cb'>
-					<td colspan='3' class='textHeaderDark'>
-						" . $graph["sort_field_value"]. "
-					</td>
-				</tr>";
+
+				if (!isset($prev_sort_field_value) || $prev_sort_field_value != $graph["sort_field_value"]){
+					$prev_sort_field_value = $graph["sort_field_value"];
+					print "<tr style='background-color:#a9b7cb;'>
+						<td style='background-color:#a9b7cb;' colspan='$columns' class='textHeaderDark'>
+							" . $graph["sort_field_value"] . "
+						</td>
+					</tr>";
+					$i = 0;
+					$j = 0;
+				}
+			}
+
+			if ($i == 0) {
+				print "<tr style='background-color: #" . ($j % 2 == 0 ? "F2F2F2" : "FFFFFF") . ";'>";
+				$start = false;
 			}
 
 			?>
-			<tr align='center' style='background-color: #<?php print ($i % 2 == 0 ? "f9f9f9" : "ffffff");?>;'>
-				<td align='center'>
-					<table align='center' cellpadding='0'>
-						<tr>
-							<td align='center'>
-								<div style="min-height: <?php echo (1.6 * $graph["height"]) . "px"?>;"><a href='<?php print htmlspecialchars($config['url_path'] . "graph.php?action=view&local_graph_id=" . $graph["local_graph_id"] . "&rra_id=all");?>'><img class='graphimage' id='graph_<?php print $graph["local_graph_id"] ?>' src='<?php print htmlspecialchars($config['url_path'] . "graph_image.php?local_graph_id=" . $graph["local_graph_id"] . "&rra_id=0" . (($extra_url_args == "") ? "" : "&$extra_url_args"));?>' border='0' alt='<?php print htmlspecialchars($graph["title_cache"]);?>'></a></div>
-								<?php print (read_graph_config_option("show_graph_title") == "on" ? "<p style='font-size: 10;' align='center'><strong>" . htmlspecialchars($graph["title_cache"]) . "</strong></p>" : "");?>
-							</td>
-							<td valign='top' style='align: left; padding: 3px;' class='noprint'>
-								<a href='<?php print htmlspecialchars($config['url_path'] . "graph.php?action=zoom&local_graph_id=" . $graph["local_graph_id"] . "&rra_id=0&". $extra_url_args);?>'><img src='<?php print $config['url_path'];?>images/graph_zoom.gif' border='0' alt='Zoom Graph' title='Zoom Graph' style='padding: 3px;'></a><br>
-								<a href='<?php print htmlspecialchars($config['url_path'] . "graph_xport.php?local_graph_id=" . $graph["local_graph_id"] . "&rra_id=0&" . $extra_url_args);?>'><img src='<?php print $config['url_path'];?>images/graph_query.png' border='0' alt='CSV Export' title='CSV Export' style='padding: 3px;'></a><br>
-								<a href='<?php print htmlspecialchars($config['url_path'] . "graph.php?action=properties&local_graph_id=" . $graph["local_graph_id"] . "&rra_id=0&" . $extra_url_args);?>'><img src='<?php print $config['url_path'];?>images/graph_properties.gif' border='0' alt='Graph Source/Properties' title='Graph Source/Properties' style='padding: 3px;'></a><br>
-								<?php api_plugin_hook('graph_buttons', array('hook' => 'graphs_thumbnails', 'local_graph_id' => $graph['local_graph_id'], 'rra' =>  0, 'view_type' => 'view')); ?>
-								<a href='#page_top'><img src='<?php print $config['url_path']; ?>images/graph_page_top.gif' border='0' alt='Page Top' title='Page Top' style='padding: 3px;'></a><br>
-							</td>
-						</tr>
-					</table>
-				</td>
-			</tr>
+			<td align='center' width='<?php print ceil(100 / $columns);?>%'>
+				<table align='center' cellpadding='0'>
+					<tr>
+						<td align='center'>
+							<div style="min-height: <?php echo (1.6 * $graph["height"]) . "px"?>;"><a href='<?php print htmlspecialchars($config['url_path'] . "graph.php?action=view&local_graph_id=" . $graph["local_graph_id"] . "&rra_id=all");?>'><img class='graphimage' id='graph_<?php print $graph["local_graph_id"] ?>' src='<?php print htmlspecialchars($config['url_path'] . "graph_image.php?local_graph_id=" . $graph["local_graph_id"] . "&rra_id=0" . (($extra_url_args == "") ? "" : "&$extra_url_args"));?>' border='0' alt='<?php print htmlspecialchars($graph["title_cache"]);?>'></a></div>
+							<?php print (read_graph_config_option("show_graph_title") == "on" ? "<p style='font-size: 10;' align='center'><strong>" . htmlspecialchars($graph["title_cache"]) . "</strong></p>" : "");?>
+						</td>
+						<td valign='top' style='align: left; padding: 3px;' class='noprint'>
+							<a href='<?php print htmlspecialchars($config['url_path'] . "graph.php?action=zoom&local_graph_id=" . $graph["local_graph_id"] . "&rra_id=0&". $extra_url_args);?>'><img src='<?php print $config['url_path'];?>images/graph_zoom.gif' border='0' alt='Zoom Graph' title='Zoom Graph' style='padding: 3px;'></a><br>
+							<a href='<?php print htmlspecialchars($config['url_path'] . "graph_xport.php?local_graph_id=" . $graph["local_graph_id"] . "&rra_id=0&" . $extra_url_args);?>'><img src='<?php print $config['url_path'];?>images/graph_query.png' border='0' alt='CSV Export' title='CSV Export' style='padding: 3px;'></a><br>
+							<a href='<?php print htmlspecialchars($config['url_path'] . "graph.php?action=properties&local_graph_id=" . $graph["local_graph_id"] . "&rra_id=0&" . $extra_url_args);?>'><img src='<?php print $config['url_path'];?>images/graph_properties.gif' border='0' alt='Graph Source/Properties' title='Graph Source/Properties' style='padding: 3px;'></a><br>
+							<?php api_plugin_hook('graph_buttons', array('hook' => 'graphs_thumbnails', 'local_graph_id' => $graph['local_graph_id'], 'rra' =>  0, 'view_type' => 'view')); ?>
+							<a href='#page_top'><img src='<?php print $config['url_path']; ?>images/graph_page_top.gif' border='0' alt='Page Top' title='Page Top' style='padding: 3px;'></a><br>
+						</td>
+					</tr>
+				</table>
+			</td>
 			<?php
 
 			$i++;
+			$k++;
+
+			if (($i % $columns) == 0 && ($k < $num_graphs)) {
+				$i=0;
+				$j++;
+				print "</tr>";
+				$start = true;
+			}
+		}
+
+		if (!$start) {
+			while(($i % $columns) != 0) {
+				print "<td align='center' width='" . ceil(100 / $columns) . "%'></td>";
+				$i++;
+			}
+
+			print "</tr>";
 		}
 	}else{
 		if ($no_graphs_message != "") {
@@ -176,12 +222,17 @@ function html_graph_area(&$graph_array, $no_graphs_message = "", $extra_url_args
      $arr[0]["title_cache"] // graph title
    @arg $no_graphs_message - display this message if no graphs are found in $graph_array
    @arg $extra_url_args - extra arguments to append to the url
-   @arg $header - html to use as a header */
-function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = "", $extra_url_args = "", $header = "") {
+   @arg $header - html to use as a header
+   @arg $columns - the number of columns to present */
+function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = "", $extra_url_args = "", $header = "", $columns = 0) {
 	global $config;
 	$i = 0; $k = 0; $j = 0;
 
 	$num_graphs = sizeof($graph_array);
+
+	if ($columns == 0) {
+		$columns = read_graph_config_option('num_columns');
+	}
 
 	if ($num_graphs > 0) {
 		if ($header != "") {
@@ -193,31 +244,10 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = "", $extr
 			if (isset($graph["graph_template_name"])) {
 				if (isset($prev_graph_template_name)) {
 					if ($prev_graph_template_name != $graph["graph_template_name"]) {
-						$print  = true;
 						$prev_graph_template_name = $graph["graph_template_name"];
-					}else{
-						$print = false;
 					}
 				}else{
-					$print  = true;
 					$prev_graph_template_name = $graph["graph_template_name"];
-				}
-
-				if ($print) {
-					if (!$start) {
-						while($i % read_graph_config_option("num_columns") != 0) {
-							print "<td align='center' width='" . ceil(100 / read_graph_config_option("num_columns")) . "%'></td>";
-							$i++;
-						}
-						print "</tr>";
-					}
-
-					print "<tr style='background-color:#a9b7cb;'>
-						<td style='background-color:#a9b7cb;' colspan='" . read_graph_config_option("num_columns") . "' class='textHeaderDark'>
-							<strong>Graph Template:</strong> " . $graph["graph_template_name"] . "
-						</td>
-					</tr>";
-					$i = 0;
 				}
 			}elseif (isset($graph["data_query_name"])) {
 				if (isset($prev_data_query_name)) {
@@ -234,8 +264,8 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = "", $extr
 
 				if ($print) {
 					if (!$start) {
-						while($i % read_graph_config_option("num_columns") != 0) {
-							print "<td align='center' width='" . ceil(100 / read_graph_config_option("num_columns")) . "%'></td>";
+						while(($i % $columns) != 0) {
+							print "<td align='center' width='" . ceil(100 / $columns) . "%'></td>";
 							$i++;
 						}
 
@@ -243,20 +273,9 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = "", $extr
 					}
 
 					print "<tr style='background-color:#a9b7cb;'>
-							<td style='background-color:#a9b7cb;' colspan='" . read_graph_config_option("num_columns") . "' class='textHeaderDark'><strong>Data Query:</strong> " . $graph["data_query_name"] . "</td>
+							<td style='background-color:#a9b7cb;' colspan='$columns' class='textHeaderDark'><strong>Data Query:</strong> " . $graph["data_query_name"] . "</td>
 						</tr>";
 					$i = 0;
-				}
-
-				if (!isset($prev_sort_field_value) || $prev_sort_field_value != $graph["sort_field_value"]){
-					$prev_sort_field_value = $graph["sort_field_value"];
-					print "<tr style='background-color:#a9b7cb;'>
-						<td style='background-color:#a9b7cb;' colspan='" . read_graph_config_option("num_columns") . "' class='textHeaderDark'>
-							" . $graph["sort_field_value"] . "
-						</td>
-					</tr>";
-					$i = 0;
-					$j = 0;
 				}
 			}
 
@@ -266,7 +285,7 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = "", $extr
 			}
 
 			?>
-			<td align='center' width='<?php print ceil(100 / read_graph_config_option("num_columns"));?>%'>
+			<td align='center' width='<?php print ceil(100 / $columns);?>%'>
 				<table align='center' cellpadding='0'>
 					<tr>
 						<td align='center'>
@@ -288,7 +307,7 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = "", $extr
 			$i++;
 			$k++;
 
-			if (($i % read_graph_config_option("num_columns") == 0) && ($k < $num_graphs)) {
+			if (($i % $columns) == 0 && ($k < $num_graphs)) {
 				$i=0;
 				$j++;
 				print "</tr>";
@@ -297,8 +316,8 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = "", $extr
 		}
 
 		if (!$start) {
-			while($i % read_graph_config_option("num_columns") != 0) {
-				print "<td align='center' width='" . ceil(100 / read_graph_config_option("num_columns")) . "%'></td>";
+			while(($i % $columns) != 0) {
+				print "<td align='center' width='" . ceil(100 / $columns) . "%'></td>";
 				$i++;
 			}
 
@@ -313,37 +332,50 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = "", $extr
 
 /* html_nav_bar - draws a navigation bar which includes previous/next links as well as current
      page information
-   @arg $background_color - the background color of this navigation bar row
-   @arg $colspan - the colspan for the entire row
+   @arg $base_url - the base URL will all filter options except page#
+   @arg $max_pages - the maximum number of pages to display
    @arg $current_page - the current page in the navigation system
    @arg $rows_per_page - the number of rows that are displayed on a single page
    @arg $total_rows - the total number of rows in the navigation system
-   @arg $nav_url - the url to use when presenting users with previous/next links. the variable
-     <PAGE> will be substituted with the correct page number if included */
-function html_nav_bar($background_color, $colspan, $current_page, $rows_per_page, $total_rows, $nav_url) {
-	?>
-	<tr bgcolor='#<?php print $background_color;?>' class='noprint'>
-		<td colspan='<?php print $colspan;?>'>
-			<table width='100%' cellspacing='0' cellpadding='3' border='0'>
-				<tr>
-					<td align='left' class='textHeaderDark' width='15%'>
-						<?php if ($current_page > 1) {
-							print "<strong><a class='linkOverDark' href='" . htmlspecialchars(str_replace("<PAGE>", ($current_page-1), $nav_url)) . "'> &lt;&lt; Previous</a></strong>";
-						} ?>
-					</td>
-					<td align='center' class='textHeaderDark' width='70%'>
-						Showing Rows <?php print (($rows_per_page*($current_page-1))+1);?> to <?php print ((($total_rows < $rows_per_page) || ($total_rows < ($rows_per_page*$current_page))) ? $total_rows : ($rows_per_page*$current_page));?> of <?php print $total_rows;?>
-					</td>
-					<td align='right' class='textHeaderDark' width='15%'>
-						<?php if (($current_page * $rows_per_page) < $total_rows) {
-							print "<strong><a class='linkOverDark' href='" . htmlspecialchars(str_replace("<PAGE>", ($current_page+1), $nav_url)) . "'> Next &gt;&gt; </a></strong>";
-						} ?>
-					</td>
-				</tr>
-			</table>
-		</td>
-	</tr>
-	<?php
+   @arg $object - the object types that is being displayed */
+function html_nav_bar($base_url, $max_pages, $current_page, $rows_per_page, $total_rows, $colspan=30, $object = "Rows") {
+	global $colors;
+
+	if ($total_rows > 0) {
+		$url_page_select = get_page_list($current_page, $max_pages, $rows_per_page, $total_rows, $base_url);
+
+		$nav = "<tr bgcolor='#" . $colors["header"] . "'>
+			<td colspan='$colspan'>
+				<table width='100%' cellspacing='0' cellpadding='0' border='0'>
+					<tr>
+						<td style='width:33%;' align='left' class='textHeaderDark'>
+							" . (($current_page > 1) ? "<strong>&lt;&lt;&nbsp<a class='linkOverDark' href='" . htmlspecialchars($base_url . "&page=" . ($current_page-1)) . "'>Previous</a></strong>":"") . "
+						</td>
+						<td style='width:33%;' align='center' class='textHeaderDark'>
+							Showing $object " . (($rows_per_page*($current_page-1))+1) . " to " . (($total_rows < $rows_per_page) || ($total_rows < ($rows_per_page*$current_page)) ? $total_rows : $rows_per_page*$current_page) . " of $total_rows [$url_page_select]
+						</td>
+						<td style='width:33%;' align='right' class='textHeaderDark'>
+							" . (($current_page*$rows_per_page) < $total_rows ? "<strong><a class='linkOverDark' href='" . htmlspecialchars($base_url . "&page=" . ($current_page+1)) . "'>Next</a>&nbsp;&gt;&gt;</strong>":"") . "
+						</td>
+					</tr>
+				</table>
+			</td>
+			</tr>\n";
+	}else{
+		$nav = "<tr bgcolor='#" . $colors["header"] . "'>
+			<td colspan='4'>
+				<table width='100%' cellspacing='0' cellpadding='0' border='0'>
+					<tr>
+						<td align='center' class='textHeaderDark'>
+							No $object Found
+						</td>
+					</tr>
+				</table>
+			</td>
+			</tr>\n";
+	}
+
+	return $nav;
 }
 
 /* html_header_sort - draws a header row suitable for display inside of a box element.  When
@@ -380,11 +412,11 @@ function html_header_sort($header_items, $sort_column, $sort_direction, $last_it
 		}
 
 		if (($db_column == "") || (substr_count($db_column, "nosort"))) {
-			print "<td " . ((($i+1) == count($header_items)) ? "colspan='$last_item_colspan' " : "") . "class='tableSubHeaderColumn'><span class='textSubHeaderDark'>" . $display_text . "</span></td>\n";
+			print "<th " . ((($i+1) == count($header_items)) ? "colspan='$last_item_colspan' " : "") . "class='tableSubHeaderColumn'><span class='textSubHeaderDark'>" . $display_text . "</span></th>\n";
 		}else{
-			print "<td class='tableSubHeaderColumn' " . ((($i) == count($header_items)) ? "colspan='$last_item_colspan'>" : ">");
+			print "<th class='tableSubHeaderColumn' " . ((($i) == count($header_items)) ? "colspan='$last_item_colspan'>" : ">");
 			print "<a class='textSubHeaderDark' href='" . htmlspecialchars(basename($_SERVER["PHP_SELF"]) . "?sort_column=" . $db_column . "&sort_direction=" . $direction) . "'>" . $display_text . "</a>";
-			print "</td>\n";
+			print "</th>\n";
 		}
 
 		$i++;
@@ -430,15 +462,15 @@ function html_header_sort_checkbox($header_items, $sort_column, $sort_direction,
 		}
 
 		if (($db_column == "") || (substr_count($db_column, "nosort"))) {
-			print "<td class='tableSubHeaderColumn'>" . $display_text . "</td>\n";
+			print "<th class='tableSubHeaderColumn'>" . $display_text . "</th>\n";
 		}else{
-			print "<td class='tableSubHeaderColumn'>";
+			print "<th class='tableSubHeaderColumn'>";
 			print "<a class='textSubHeaderDark' href='" . htmlspecialchars(basename($_SERVER["PHP_SELF"]) . "?sort_column=" . $db_column . "&sort_direction=" . $direction) . "'>" . $display_text . "</a>";
-			print "</td>\n";
+			print "</th>\n";
 		}
 	}
 
-	print "<td width='1%' class='tableSubHeaderColumn tdSelectAll' align='right' bgcolor='#819bc0' style='" . get_checkbox_style() . "'><input type='checkbox' style='margin: 0px;' name='all' title='Select All' onClick='SelectAll(\"chk_\",this.checked)'></td>\n" . ($include_form ? "<td style='display:none;'><form name='chk' method='post' action='$form_action'></td>\n":"");
+	print "<th width='1%' class='tableSubHeaderColumn tdSelectAll' align='right' bgcolor='#819bc0' style='" . get_checkbox_style() . "'><input type='checkbox' style='margin: 0px;' name='all' title='Select All' onClick='SelectAll(\"chk_\",this.checked)'></th>" . ($include_form ? "<th style='display:none;'><form name='chk' method='post' action='$form_action'></th>\n":"");
 	print "</tr>\n";
 }
 
@@ -451,7 +483,7 @@ function html_header($header_items, $last_item_colspan = 1) {
 	print "<tr bgcolor='#" . $colors["header_panel"] . "'>\n";
 
 	for ($i=0; $i<count($header_items); $i++) {
-		print "<td " . ((($i+1) == count($header_items)) ? "colspan='$last_item_colspan' " : "") . "class='tableSubHeaderColumn'>" . $header_items[$i] . "</td>\n";
+		print "<th " . ((($i+1) == count($header_items)) ? "colspan='$last_item_colspan' " : "") . "class='tableSubHeaderColumn'>" . $header_items[$i] . "</th>\n";
 	}
 
 	print "</tr>\n";
@@ -470,10 +502,10 @@ function html_header_checkbox($header_items, $include_form = true, $form_action 
 	print "<tr bgcolor='#" . $colors["header_panel"] . "'>\n";
 
 	for ($i=0; $i<count($header_items); $i++) {
-		print "<td class='tableSubHeaderColumn'>" . $header_items[$i] . "</td>\n";
+		print "<th class='tableSubHeaderColumn'>" . $header_items[$i] . "</th>\n";
 	}
 
-	print "<td width='1%' class='tableSubHeaderColumn tdSelectAll' align='right' bgcolor='#819bc0' style='" . get_checkbox_style() . "'><input type='checkbox' style='margin: 0px;' name='all' title='Select All' onClick='SelectAll(\"chk_\",this.checked)'></td>\n" . ($include_form ? "<td style='display:none;'><form name='chk' method='post' action='$form_action'></td>\n":"");
+	print "<th width='1%' class='tableSubHeaderColumn tdSelectAll' align='right' bgcolor='#819bc0' style='" . get_checkbox_style() . "'><input type='checkbox' style='margin: 0px;' name='all' title='Select All' onClick='SelectAll(\"chk_\",this.checked)'></th>\n" . ($include_form ? "<th style='display:none;'><form name='chk' method='post' action='$form_action'></th>\n":"");
 	print "</tr>\n";
 }
 
@@ -796,9 +828,9 @@ function draw_actions_dropdown($actions_array) {
  */
 
 function DrawMatrixHeaderItem($matrix_name, $matrix_text_color, $column_span = 1) { ?>
-		<td class="tableSubHeaderColumn" style="height:1px;" colspan="<?php print $column_span;?>">
+		<th class="tableSubHeaderColumn" style="height:1px;" colspan="<?php print $column_span;?>">
 			<strong><font color="#<?php print $matrix_text_color;?>"><?php print $matrix_name;?></font></strong>
-		</td>
+		</th>
 <?php }
 
 function form_area($text) { ?>

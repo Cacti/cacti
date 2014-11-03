@@ -252,9 +252,9 @@ function template_edit() {
 	html_start_box("<strong>Host Templates</strong> " . htmlspecialchars($header_label), "100%", $colors["header"], "3", "center", "");
 
 	draw_edit_form(array(
-		"config" => array(),
+		"config" => array("form_name" => "chk"),
 		"fields" => inject_form_variables($fields_host_template_edit, (isset($host_template) ? $host_template : array()))
-		));
+	));
 
 	/* we have to hide this button to make a form change in the main form trigger the correct
 	 * submit action */
@@ -440,7 +440,11 @@ function template() {
 	html_end_box();
 
 	/* form the 'where' clause for our main sql query */
-	$sql_where = "WHERE (host_template.name LIKE '%%" . get_request_var_request("filter") . "%%')";
+	if (strlen($_REQUEST['filter'])) {
+		$sql_where = "WHERE (host_template.name LIKE '%%" . get_request_var_request("filter") . "%%')";
+	}else{
+		$sql_where = "";
+	}
 
 	/* print checkbox form for validation */
 	print "<form name='chk' method='post' action='host_templates.php'>\n";
@@ -453,37 +457,23 @@ function template() {
 		$sql_where");
 
 	$template_list = db_fetch_assoc("SELECT
-		host_template.id,host_template.name
+		host_template.id,host_template.name, COUNT(*) AS hosts
 		FROM host_template
+		LEFT JOIN host ON host.host_template_id=host_template.id
 		$sql_where
+		GROUP BY host_template.id
 		ORDER BY " . get_request_var_request("sort_column") . " " . get_request_var_request("sort_direction") .
 		" LIMIT " . (read_config_option("num_rows_device")*(get_request_var_request("page")-1)) . "," . read_config_option("num_rows_device"));
 
-	/* generate page list */
-	$url_page_select = get_page_list(get_request_var_request("page"), MAX_DISPLAY_PAGES, read_config_option("num_rows_device"), $total_rows, "host_templates.php?filter=" . get_request_var_request("filter"));
-
-	$nav = "<tr bgcolor='#" . $colors["header"] . "'>
-		<td colspan='7'>
-			<table width='100%' cellspacing='0' cellpadding='0' border='0'>
-				<tr>
-					<td align='left' class='textHeaderDark'>
-						<strong>&lt;&lt; "; if (get_request_var_request("page") > 1) { $nav .= "<a class='linkOverDark' href='" . htmlspecialchars("host_templates.php?filter=" . get_request_var_request("filter") . "&page=" . (get_request_var_request("page")-1)) . "'>"; } $nav .= "Previous"; if (get_request_var_request("page") > 1) { $nav .= "</a>"; } $nav .= "</strong>
-					</td>\n
-					<td align='center' class='textHeaderDark'>
-						Showing Rows " . ((read_config_option("num_rows_device")*(get_request_var_request("page")-1))+1) . " to " . ((($total_rows < read_config_option("num_rows_device")) || ($total_rows < (read_config_option("num_rows_device")*get_request_var_request("page")))) ? $total_rows : (read_config_option("num_rows_device")*get_request_var_request("page"))) . " of $total_rows [$url_page_select]
-					</td>\n
-					<td align='right' class='textHeaderDark'>
-						<strong>"; if ((get_request_var_request("page") * read_config_option("num_rows_device")) < $total_rows) { $nav .= "<a class='linkOverDark' href='" . htmlspecialchars("host_templates.php?filter=" . get_request_var_request("filter") . "&page=" . (get_request_var_request("page")+1)) . "'>"; } $nav .= "Next"; if ((get_request_var_request("page") * read_config_option("num_rows_device")) < $total_rows) { $nav .= "</a>"; } $nav .= " &gt;&gt;</strong>
-					</td>\n
-				</tr>
-			</table>
-		</td>
-		</tr>\n";
+	$nav = html_nav_bar("host_templates.php?filter=" . get_request_var_request("filter"), MAX_DISPLAY_PAGES, get_request_var_request("page"), read_config_option("num_rows_device"), $total_rows, 4);
 
 	print $nav;
 
 	$display_text = array(
-		"name" => array("Template Title", "ASC"));
+		"name" => array("Template Title", "ASC"),
+		"host_template.id" => array("ID", "ASC"),
+		"hosts" => array("Hosts", "DESC")
+	);
 
 	html_header_sort_checkbox($display_text, get_request_var_request("sort_column"), get_request_var_request("sort_direction"), false);
 
@@ -492,6 +482,8 @@ function template() {
 		foreach ($template_list as $template) {
 			form_alternate_row_color($colors["alternate"], $colors["light"], $i, 'line' . $template["id"]);$i++;
 			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars("host_templates.php?action=edit&id=" . $template["id"]) . "'>" . (strlen(get_request_var_request("filter")) ? preg_replace("/(" . preg_quote(get_request_var_request("filter"), "/") . ")/i", "<span style='background-color: #F8D93D;'>\\1</span>", htmlspecialchars($template["name"])) : htmlspecialchars($template["name"])) . "</a>", $template["id"]);
+			form_selectable_cell($template["id"], $template["id"]);
+			form_selectable_cell(number_format($template["hosts"]), $template["id"]);
 			form_checkbox_cell($template["name"], $template["id"]);
 			form_end_row();
 		}

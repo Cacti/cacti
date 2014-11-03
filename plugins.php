@@ -480,52 +480,7 @@ function update_show_current () {
 
 	db_execute("DROP TABLE $table");
 
-	/* generate page list */
-	$url_page_select = get_page_list(get_request_var_request("page"), MAX_DISPLAY_PAGES, $rows, $total_rows, "plugins.php?filter=" . get_request_var_request("filter"));
-
-	if ($total_rows == 0) {
-		$nav = "<tr bgcolor='#" . $colors["header"] . "'>
-				<td colspan='9'>
-					<table width='100%' cellspacing='0' cellpadding='0' border='0'>
-						<tr>
-							<td align='center' class='textHeaderDark'>
-								No Plugins Found
-							</td>\n
-						</tr>
-					</table>
-				</td>
-			</tr>\n";
-	}elseif ($total_rows < $rows) {
-		$nav = "<tr bgcolor='#" . $colors["header"] . "'>
-				<td colspan='9'>
-					<table width='100%' cellspacing='0' cellpadding='0' border='0'>
-						<tr>
-							<td align='center' class='textHeaderDark'>
-								Showing All $total_rows Rows
-							</td>\n
-						</tr>
-					</table>
-				</td>
-			</tr>\n";
-	}else{
-		$nav = "<tr bgcolor='#" . $colors["header"] . "'>
-				<td colspan='9'>
-					<table width='100%' cellspacing='0' cellpadding='0' border='0'>
-						<tr>
-							<td align='left' class='textHeaderDark'>
-								<strong>&lt;&lt; "; if (get_request_var_request("page") > 1) { $nav .= "<a class='linkOverDark' href='" . htmlspecialchars("plugins.php?filter=" . get_request_var_request("filter") . "&page=" . (get_request_var_request("page")-1)) . "'>"; } $nav .= "Previous"; if (get_request_var_request("page") > 1) { $nav .= "</a>"; } $nav .= "</strong>
-							</td>\n
-							<td align='center' class='textHeaderDark'>
-								Showing Rows " . (($rows*(get_request_var_request("page")-1))+1) . " to " . ((($total_rows < $rows) || ($total_rows < ($rows*get_request_var_request("page")))) ? $total_rows : ($rows*get_request_var_request("page"))) . " of $total_rows [$url_page_select]
-							</td>\n
-							<td align='right' class='textHeaderDark'>
-								<strong>"; if ((get_request_var_request("page") * $rows) < $total_rows) { $nav .= "<a class='linkOverDark' href='" . htmlspecialchars("plugins.php?filter=" . get_request_var_request("filter") . "&page=" . (get_request_var_request("page")+1)) . "'>"; } $nav .= "Next"; if ((get_request_var_request("page") * $rows) < $total_rows) { $nav .= "</a>"; } $nav .= " &gt;&gt;</strong>
-							</td>\n
-						</tr>
-					</table>
-				</td>
-			</tr>\n";
-	}
+	$nav = html_nav_bar("plugins.php?filter=" . get_request_var_request("filter"), MAX_DISPLAY_PAGES, get_request_var_request("page"), $rows, $total_rows, 8);
 
 	print $nav;
 

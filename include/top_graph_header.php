@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2014 The Cacti Group                                 |
+ | Copyright (C) 2004-2013 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -64,7 +64,7 @@ $page_title = api_plugin_hook_function('page_title', draw_navigation_text("title
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-	<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7">
+	<meta http-equiv="X-UA-Compatible" content="edge">
 	<title><?php echo $page_title; ?></title>
 	<?php
 	if (isset($_SESSION["custom"]) && $_SESSION["custom"] == true) {
@@ -82,10 +82,14 @@ $page_title = api_plugin_hook_function('page_title', draw_navigation_text("title
 	?>
 	<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
 	<link href="<?php echo $config['url_path']; ?>include/main.css" type="text/css" rel="stylesheet">
-	<link href="<?php echo $config['url_path']; ?>images/favicon.ico" rel="shortcut icon"/>
+	<link href="<?php echo $config['url_path']; ?>include/js/jquery-ui.css" type="text/css" rel="stylesheet">
+	<link href="<?php echo $config['url_path']; ?>include/js/themes/proton/style.css" type="text/css" rel="stylesheet">
+	<link href="<?php echo $config['url_path']; ?>images/favicon.ico" rel="shortcut icon">
 	<script type="text/javascript" src="<?php echo $config['url_path']; ?>include/layout.js"></script>
-	<script type="text/javascript" src="<?php echo $config['url_path']; ?>include/treeview/ua.js"></script>
-	<script type="text/javascript" src="<?php echo $config['url_path']; ?>include/treeview/ftiens4.js"></script>
+	<script type="text/javascript" src="<?php echo $config['url_path']; ?>include/js/jquery.js" language="javascript"></script>
+	<script type="text/javascript" src="<?php echo $config['url_path']; ?>include/js/jquery-ui.js" language="javascript"></script>
+	<script type="text/javascript" src="<?php echo $config['url_path']; ?>include/js/jquery.cookie.js" language="javascript"></script>
+	<script type="text/javascript" src="<?php echo $config['url_path']; ?>include/js/jstree.js"></script>
 	<script type="text/javascript" src="<?php echo $config['url_path']; ?>include/jscalendar/calendar.js"></script>
 	<script type="text/javascript" src="<?php echo $config['url_path']; ?>include/jscalendar/lang/calendar-en.js"></script>
 	<script type="text/javascript" src="<?php echo $config['url_path']; ?>include/jscalendar/calendar-setup.js"></script>
@@ -99,7 +103,7 @@ $page_title = api_plugin_hook_function('page_title', draw_navigation_text("title
 <body <?php print api_plugin_hook_function("body_style", "");?>>
 <?php }?>
 
-<table style="width:100%;height:100%;" cellspacing="0" cellpadding="0">
+<table style="width:100%" cellspacing="0" cellpadding="0">
 <?php if ($oper_mode == OPER_MODE_NATIVE) { ;?>
 	<tr style="height:25px;" bgcolor="#a9a9a9" class="noprint">
 		<td colspan="2" valign="bottom" nowrap>
@@ -175,23 +179,8 @@ $page_title = api_plugin_hook_function('page_title', draw_navigation_text("title
 	?>
 	<tr>
 		<?php if (basename($_SERVER["PHP_SELF"]) == "graph_view.php" && (read_graph_config_option("default_tree_view_mode") == 2) && ($_REQUEST["action"] == "tree" || (isset($_REQUEST["view_type"]) && $_REQUEST["view_type"] == "tree"))) { ?>
-		<td valign="top" style="padding: 5px; border-right: #aaaaaa 1px solid;background-repeat:repeat-y;background-color:#efefef;" bgcolor='#efefef' width='<?php print htmlspecialchars(read_graph_config_option("default_dual_pane_width"));?>' class='noprint'>
-			<table border=0 cellpadding=0 cellspacing=0><tr><td><a style="font-size:7pt;text-decoration:none;color:silver" href="http://www.treemenu.net/" target=_blank></a></td></tr></table>
-			<?php grow_dhtml_trees(); ?>
-			<script type="text/javascript">initializeDocument();</script>
-
-			<?php if (isset($_GET["select_first"])) { ?>
-			<script type="text/javascript">
-			var tobj;
-			tobj = findObj(1);
-
-			if (tobj) {
-				if (!tobj.isOpen) {
-					clickOnNode(1);
-				}
-			}
-			</script>
-			<?php } ?>
+		<td id='navigation' valign='top' style='padding: 5px; border-right: #aaaaaa 1px solid;background-repeat:repeat-y;background-color:#efefef;' bgcolor='#efefef' width='<?php print htmlspecialchars(read_graph_config_option("default_dual_pane_width"));?>' class='noprint'>
+			<?php grow_dhtml_trees();?>
 		</td>
 		<?php } ?>
 		<td valign="top" style="padding: 5px; border-right: #aaaaaa 1px solid;"><div style='position:static;' id='main'>
