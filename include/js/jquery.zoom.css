@@ -99,7 +99,7 @@
 
 .zoom-marker-tooltip-value{
 	white-space: pre-line;
-	font-size: 0.8em;
+	font-size: 1em;
 	float: left;
 	background: #FFE87C;
 	padding-left: 3px;
@@ -159,7 +159,7 @@
 	position:absolute;
 	background:#fff;
 	display:none;
-	font-size:0.75em;
+	font-size:1em;
 	z-index:auto;
 }
 
@@ -172,7 +172,7 @@
 
 .zoom-menu .inner_li {
 	display:none;
-	margin-left:130px;
+	margin-left:125px;
 	position:absolute;
 	border:1px solid #aaa;
 	border-left:1px solid #ccc;
@@ -185,7 +185,7 @@
 }
 
 .zoom-menu .fill_title {
-	font-size:11px;
+	font-size:1em;
 	font-weight:bold;
 	overflow:hidden;
 	word-wrap:break-word;

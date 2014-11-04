@@ -976,7 +976,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 							<img style='padding-bottom:0px;cursor:pointer;' name='move_right' src='images/move_right.gif' align='middle' alt='' title='Shift Right' onClick='timeshiftFilterRight()'/>
 						</td>
 						<td>
-							<input type='button' value='Refresh' title='Refresh selected time span' onClick='refreshTimespanFilter()'>
+							<input type='button' name='button_refresh_x' value='Refresh' title='Refresh selected time span' onClick='refreshTimespanFilter()'>
 						</td>
 						<td>
 							<input type='button' name='button_clear_x' value='Clear' title='Return to the default time span' onClick='clearTimespanFilter()'>

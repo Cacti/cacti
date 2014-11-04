@@ -231,7 +231,7 @@ case 'zoom':
 		</td>
 	</tr>
 	<script type="text/javascript" >
-		$(document).ready(function() { $(".graphimage").zoom(); });
+		$(document).ready(function() { $(".graphimage").zoom({serverTimeOffset:<?php print date('Z');?>}); });
 	</script>
 	<?php
 

@@ -123,7 +123,7 @@ case 'tree_content':
 	?>
 		<script type="text/javascript" >
 		$(document).ready(function() {
-			$(".graphimage").zoom({inputfieldStartTime : 'date1', inputfieldEndTime : 'date2'});
+			$(".graphimage").zoom({inputfieldStartTime : 'date1', inputfieldEndTime : 'date2', serverTimeOffset : <?php print date('Z');?>});
 		});
 	</script>
 	<?php
@@ -246,7 +246,7 @@ case 'preview':
 	?>
 	<script type="text/javascript" >
 		$(document).ready(function() {
-			$(".graphimage").zoom({inputfieldStartTime : 'date1', inputfieldEndTime : 'date2'});
+			$(".graphimage").zoom({inputfieldStartTime : 'date1', inputfieldEndTime : 'date2', serverTimeOffset : <?php print date('Z');?>});
 		});
 	</script>
 	<tr bgcolor='#<?php print $colors['panel'];?>' class='noprint'>
