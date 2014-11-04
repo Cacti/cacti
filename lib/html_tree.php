@@ -532,24 +532,20 @@ function grow_dhtml_trees() {
 				$('#jstree').jstree('clear_state');
 			}
 			if (node!='') {
-				//console.log('Selecting node: '+node);
 				$('#jstree').jstree('set_theme', 'default', '<?php print $config['url_path'];?>include/js/themes/default/style.css');
 				$('#jstree').jstree('deselect_all');
 				$('#jstree').jstree('select_node', node);
 				href=$('#'+node+'_anchor').attr('href')+"&nodeid="+node;
-				//console.log('Object: '+node+'_anchor, HREF: '+href);
 				$.get($('#'+node+'_anchor').attr('href')+"&nodeid="+node, function(data) {
 					$('#main').html(data);
 				});
 			}
 		})
 		.on('set_state.jstree', function(e, data) {
-			//console.log('Setting state to node: '+node);
 			$('#jstree').jstree('deselect_all');
 			$('#jstree').jstree('select_node', node);
 		})
 		.on('activate_node.jstree', function(e, data) {
-			console.log('The node is: '+data.node.id);
 			if (data.node.id) {
 				$.get($('#'+data.node.id+'_anchor').attr('href')+"&nodeid="+data.node.id, function(data) {
 					$('#main').html(data);
@@ -856,6 +852,8 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 	$title_delimeter = '';
 	$search_key      = '';
 
+	if (empty($leaf_id)) return;
+
 	$leaf      = db_fetch_row("SELECT order_key, title, host_id, host_grouping_type
 					FROM graph_tree_items
 					WHERE id=$leaf_id");
@@ -1070,7 +1068,15 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 		});
 	}
 
-	function refreshFunction() {
+	function clearTimespanFilter() {
+		var json = { button_clear_x: 1, date1: $('#date1').val(), date2: $('#date2').val(), predefined_timespan: $('#predefined_timespan').val(), predefined_timeshift: $('#predefined_timeshift').val() };
+		var url  = 'graph_view.php?action=tree_content&tree_id=<?php print $_REQUEST['tree_id'];?>&leaf_id=<?php print $_REQUEST['leaf_id'];?>&host_group_data=<?php print $_REQUEST['host_group_data'];?>&nodeid=<?php print $_REQUEST['nodeid'];?>';
+		$.post(url, json).done(function(data) {
+			$('#main').html(data);
+		});
+	}
+
+	function refreshTimespanFilter() {
 		var json = { button_refresh_x: 1, date1: $('#date1').val(), date2: $('#date2').val(), predefined_timespan: $('#predefined_timespan').val(), predefined_timeshift: $('#predefined_timeshift').val() };
 		var url  = 'graph_view.php?action=tree_content&tree_id=<?php print $_REQUEST['tree_id'];?>&leaf_id=<?php print $_REQUEST['leaf_id'];?>&host_group_data=<?php print $_REQUEST['host_group_data'];?>&nodeid=<?php print $_REQUEST['nodeid'];?>';
 		$.post(url, json).done(function(data) {
@@ -1246,6 +1252,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 					foreach ($graphs as $graph) {
 						$snmp_index_to_graph{$graph['snmp_index']}{$graph['local_graph_id']} = $graph['title_cache'];
 						$graphs_height[$graph['local_graph_id']] = $graph['height'];
+						$graphs_width[$graph['local_graph_id']] = $graph['width'];
 					}
 				}
 
@@ -1255,7 +1262,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 					if (isset($snmp_index_to_graph[$snmp_index])) {
 						while (list($local_graph_id, $graph_title) = each($snmp_index_to_graph[$snmp_index])) {
 							/* reformat the array so it's compatable with the html_graph* area functions */
-							array_push($graph_list, array('data_query_name' => $data_query['name'], 'sort_field_value' => $sort_field_value, 'local_graph_id' => $local_graph_id, 'title_cache' => $graph_title, 'height' => $graphs_height[$graph['local_graph_id']]));
+							array_push($graph_list, array('data_query_name' => $data_query['name'], 'sort_field_value' => $sort_field_value, 'local_graph_id' => $local_graph_id, 'title_cache' => $graph_title, 'height' => $graphs_height[$graph['local_graph_id']], 'width' => $graphs_width[$graph['local_graph_id']]));
 						}
 					}
 				}

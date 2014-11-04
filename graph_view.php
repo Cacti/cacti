@@ -546,6 +546,7 @@ case 'preview':
 	$graphs = db_fetch_assoc('SELECT ' .
 		'graph_templates_graph.local_graph_id, ' .
 		'graph_templates_graph.height, ' .
+		'graph_templates_graph.width, ' .
 		'graph_templates_graph.title_cache ' .
 		$sql_base . ' ' .
 		'GROUP BY graph_templates_graph.local_graph_id ' .

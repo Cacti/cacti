@@ -39,7 +39,52 @@ include_once($config["base_path"] . "/lib/rrd.php");
 /* Let PHP Run Just as Long as It Has To */
 ini_set("max_execution_time", "0");
 
-/* graph export */
-graph_export();
+/* process calling arguments */
+$parms = $_SERVER["argv"];
+array_shift($parms);
 
+global $debug;
+
+$debug = FALSE;
+$force = FALSE;
+
+foreach($parms as $parameter) {
+	@list($arg, $value) = @explode("=", $parameter);
+
+	switch ($arg) {
+	case "-d":
+	case "--debug":
+		$debug = TRUE;
+		break;
+	case "-f":
+	case "--force":
+		$force = TRUE;
+		break;
+	case "-v":
+	case "-V":
+	case "--version":
+	case "--help":
+	case "-h":
+		display_help();
+		exit;
+	default:
+		print "ERROR: Invalid Parameter " . $parameter . "\n\n";
+		display_help();
+		exit;
+	}
+}
+
+/* graph export */
+graph_export($force);
+
+/*	display_help - displays the usage of the function */
+function display_help () {
+	$version = db_fetch_cell("SELECT cacti FROM version LIMIT 1");
+	print "Cacti Graph Export Tool Version $version, Copyright 2004-2014 - The Cacti Group\n\n";
+	print "usage: poller_export.php [-f|--force] [-d|--debug] [-h|--help|-v|-V|--version]\n\n";
+	print "-f | --force     - Force export to run now running now\n";
+	print "-d | --debug     - Display verbose output during execution\n";
+	print "-v -V --version  - Display this help message\n";
+	print "-h --help        - display this help message\n";
+}
 ?>
