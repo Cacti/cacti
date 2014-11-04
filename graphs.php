@@ -372,6 +372,7 @@ function form_actions() {
 		} else {
 			api_plugin_hook_function('graphs_action_execute', $_POST['drp_action']);
 		}
+		api_plugin_hook_function('graphs_action_bottom', array($_POST['drp_action'], $selected_items));
 
 		header("Location: graphs.php");
 		exit;
