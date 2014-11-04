@@ -36,7 +36,7 @@
 		var clientTime = new Date();
 		var clientTimeOffset = clientTime.getTimezoneOffset()*60*(-1);			//requires -1, because PHP return the opposite
 		var timeOffset = 0;
-		
+
 		// default values of the different options being offered
 		var defaults = {
 			inputfieldStartTime	: '',                                           // ID of the input field that contains the start date
@@ -153,7 +153,7 @@
 		 * converts a Unix time stamp to a formatted date string
 		 **/
 		function unixTime2Date(unixTime){
-			
+
 			var date	= new Date(unixTime*1000+timeOffset);
 			var year	= date.getFullYear();
 			var month	= ((date.getMonth()+1) < 9 ) ? '0' + (date.getMonth()+1) : date.getMonth()+1;
@@ -176,7 +176,7 @@
 			}else {
 				timeOffset = (clientTimeOffset - zoom.options.serverTimeOffset)*1000*(-1);
 			}
-			
+
 			var $this = image;
 			$this.mouseenter(
 				function(){
@@ -392,11 +392,23 @@
 				});
 
 				/* register the mouse up event */
+				$("#zoom-box").off("mouseup").on("mouseup", function(e) {
+					switch(e.which) {
+						/* leaving the left mouse button will execute a zoom in */
+						case 1:
+							if(zoom.attr.start != 'none') {
+								zoomAction_zoom_in();
+							}
+						break;
+					}
+				});
+
+				/* register the mouse up event */
 				$("#zoom-area").off("mouseup").on("mouseup", function(e) {
 					switch(e.which) {
 						/* leaving the left mouse button will execute a zoom in */
 						case 1:
-							if(zoom.custom.zoomMode == 'quick' && zoom.attr.start != 'none') {
+							if(zoom.attr.start != 'none') {
 								zoomAction_zoom_in();
 							}
 						break;
@@ -488,7 +500,7 @@
 								$("#zoom-marker-tooltip-2").css({ left: $("#zoom-marker-2").position().left - ( (zoom.marker.distance < 0) ? 0 : $("#zoom-marker-tooltip-2").width() ) + 'px' });
 								$("#zoom-marker-tooltip-2-arrow-left").css({ visibility: (($("#zoom-marker-tooltip-2").position().left < $("#zoom-marker-2").position().left ) ? 'hidden' : 'visible') });
 								$("#zoom-marker-tooltip-2-arrow-right").css({ visibility: (($("#zoom-marker-tooltip-2").position().left < $("#zoom-marker-2").position().left ) ? 'visible' : 'hidden') });
-							
+
 								/* change cursor */
 								$("#zoom-box").css({cursor: 'pointer'});
 							}
@@ -884,7 +896,7 @@
 		}
 
 		function zoomContextMenu_show(e){
-			
+
 			var menu_y_pos			= e.pageY;
 			var menu_y_offset		= 5;
 			var menu_x_pos			= e.pageX;
@@ -894,7 +906,7 @@
 			var window_size_x_2		= $(window).width() + $(document).scrollLeft();
 			var window_size_y_1		= $(document).scrollTop();
 			var window_size_y_2		= $(window).height() + $(document).scrollTop();
-		
+
 			var menu_height			= $(".zoom-menu").outerHeight();
 			var menu_width			= $(".zoom-menu").outerWidth();
 			var menu_width_level_1	= Math.abs($(".zoom-menu .first_li span").outerWidth());
@@ -917,7 +929,7 @@
 			if (( menu_y_pos + menu_y_offset + menu_height ) > window_size_y_2 ) {
 				menu_y_offset += (-1*menu_height);
 			}
-			
+
 			$("#zoom-menu").css({ left: menu_x_pos+menu_x_offset, top: menu_y_pos+menu_y_offset, zIndex: '101' }).show();
 		};
 
