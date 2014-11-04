@@ -388,7 +388,7 @@ while ($poller_runs_completed < $poller_runs) {
 				/* end the process if the runtime exceeds MAX_POLLER_RUNTIME */
 				if (($poller_start + MAX_POLLER_RUNTIME) < time()) {
 					cacti_log("Maximum runtime of " . MAX_POLLER_RUNTIME . " seconds exceeded. Exiting.", true, "POLLER");
-
+					api_plugin_hook_function('poller_exiting');
 					log_cacti_stats($loop_start, $method, $concurrent_processes, $max_threads,
 						sizeof($polling_hosts), $hosts_per_process, $num_polling_items, $rrds_processed);
 
@@ -495,6 +495,8 @@ function log_cacti_stats($loop_start, $method, $concurrent_processes, $max_threa
 
 	/* insert poller stats into the settings table */
 	db_execute("REPLACE INTO settings (name,value) VALUES ('stats_poller','$cacti_stats')");
+
+	api_plugin_hook_function('cacti_stats_update', array( round($loop_end-$loop_start,4), $method, $concurrent_processes, $max_threads, $num_hosts, $hosts_per_process, $num_polling_items, $rrds_processed));
 }
 
 function display_help() {
