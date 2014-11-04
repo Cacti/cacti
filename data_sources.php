@@ -413,6 +413,9 @@ function form_actions() {
 		} else {
 			api_plugin_hook_function('data_source_action_execute', $_POST['drp_action']);
 		}
+
+		api_plugin_hook_function('data_source_action_bottom', array($_POST['drp_action'], $selected_items));
+
 		header("Location: data_sources.php");
 		exit;
 	}
