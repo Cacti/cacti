@@ -7,7 +7,7 @@
 
 global $plugin_hooks, $plugins_system, $plugins;
 $plugin_hooks = array();
-$plugins_system = array('settings', 'boost', 'dsstats');
+$plugins_system = array('snmpagent', 'settings', 'boost', 'dsstats');
 
 function use_plugin ($name) {
 	global $config;
