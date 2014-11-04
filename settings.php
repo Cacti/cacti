@@ -67,7 +67,7 @@ case 'save':
 			db_execute("replace into settings (name,value) values ('$field_name', $value)");
 		}
 	}
-
+	api_plugin_hook_function('global_settings_update');
 	raise_message(1);
 
 	/* reset local settings cache so the user sees the new settings */
