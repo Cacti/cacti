@@ -25,16 +25,16 @@
 include("./include/auth.php");
 include("./include/top_header.php");
 
-html_start_box("<strong>About Cacti</strong>", "100%", $colors["header"], "3", "center", "");
+html_start_box("<strong>About Cacti</strong>", "100%", "", "3", "center", "");
 ?>
 
-<tr>
-	<td bgcolor="#<?php print $colors["header_panel"];?>" colspan="2">
-		<strong><font color="#<?php print $colors["header_text"];?>">Version <?php print $config["cacti_version"];?></font></strong>
+<tr class='tableHeader'>
+	<td class='tableSubHeaderColumn' colspan="2">
+		<font class='textSubHeaderDark'>Version <?php print $config["cacti_version"];?></font>
 	</td>
 </tr>
 <tr>
-	<td valign="top" bgcolor="#<?php print $colors["light"];?>" class="textArea">
+	<td valign="top" class="odd" class="textArea">
 		<a href="http://www.cacti.net/"><img align="right" src="images/cacti_about_logo.gif" border="0" alt="raXnet"></a>
 
 		Cacti is designed to be a complete graphing solution based on the RRDTool's framework. Its goal is to make a

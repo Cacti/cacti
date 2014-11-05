@@ -30,7 +30,7 @@ api_plugin_hook('console_before');
 ?>
 <table width="100%" align="center">
 	<tr>
-		<td class="textArea">
+		<td class="textAreaNotes">
 			<strong>You are now logged into <a href="about.php">Cacti</a>. You can follow these basic steps to get
 			started.</strong>
 
@@ -40,7 +40,7 @@ api_plugin_hook('console_before');
 				<li><a href="graph_view.php">View</a> your new graphs</li>
 			</ul>
 		</td>
-		<td class="textArea" align="right" valign="top">
+		<td class="textAreaNotes" align="right" valign="top">
 			<strong>Version <?php print $config["cacti_version"];?></strong>
 		</td>
 	</tr>

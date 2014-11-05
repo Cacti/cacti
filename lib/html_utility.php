@@ -91,18 +91,50 @@ function inject_form_variables(&$form_array, $arg1 = array(), $arg2 = array(), $
    @returns - the background color used for this particular row */
 function form_alternate_row_color($row_color1, $row_color2, $row_value, $row_id = "") {
 	if (($row_value % 2) == 1) {
-		$current_color = $row_color1;
+			$class='odd';
+			$current_color = $row_color1;
 	}else{
-		$current_color = $row_color2;
+		if ($row_color2 == '' || $row_color2 == "E5E5E5") {
+			$class = 'even';
+		}else{
+			$class = 'even-alternate';
+		}
+		$current_color = $row_color1;
 	}
 
 	if (strlen($row_id)) {
-		print "<tr id='$row_id' bgcolor='#$current_color'>\n";
+		print "<tr class='$class' id='$row_id'>\n";
 	}else{
-		print "<tr bgcolor='#$current_color'>\n";
+		print "<tr class='$class'>\n";
 	}
 
 	return $current_color;
+}
+
+/* form_alternate_row - starts an HTML row with an alternating color scheme
+   @arg $light - Alternate odd style
+   @arg $row_id - The id of the row
+   @arg $reset - Reset to top of table */
+function form_alternate_row($row_id = "", $light = false) {
+	static $i = 1;
+
+	if (($i % 2) == 1) {
+		$class = 'odd';
+	}else{
+		if ($light) {
+			$class = 'even-alternate';
+		}else{
+			$class = 'even';
+		}
+	}
+
+	$i++;
+
+	if (strlen($row_id)) {
+		print "<tr class='$class selectable' id='$row_id'>\n";
+	}else{
+		print "<tr class='$class'>\n";
+	}
 }
 
 /* form_selectable_cell - format's a table row such that it can be highlighted using cacti's js actions
@@ -328,8 +360,6 @@ function get_page_list($current_page, $pages_per_screen, $rows_per_page, $total_
 	$start_page = max(1, $start_page);
 	$end_page = min($total_pages, $end_page);
 
-	//print "start: $start_page, end: $end_page, total: $total_pages<br>";
-
 	for ($page_number=0; (($page_number+$start_page) <= $end_page); $page_number++) {
 		$page = $page_number + $start_page;
 		if ($page_number < $pages_per_screen) {
@@ -350,9 +380,9 @@ function get_page_list($current_page, $pages_per_screen, $rows_per_page, $total_
 	}
 
 	if ($return_to != '') {
-		$url_page_select .= "<script type='text/javascript'>function gotoPage(pageNo) { $.get('$url&$page_var='+pageNo,function(data) { $('#$return_to').html(data);}); }</script>";
+		$url_page_select .= "<script type='text/javascript'>function gotoPage(pageNo) { $.get('$url$page_var='+pageNo,function(data) { $('#$return_to').html(data);}); }</script>";
 	}else{
-		$url_page_select .= "<script type='text/javascript'>function gotoPage(pageNo) { document.location='$url&$page_var='+pageNo}</script>";
+		$url_page_select .= "<script type='text/javascript'>function gotoPage(pageNo) { document.location='$url$page_var='+pageNo}</script>";
 	}
 
 	return $url_page_select;

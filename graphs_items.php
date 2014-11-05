@@ -189,7 +189,7 @@ function item_remove() {
 }
 
 function item_edit() {
-	global $colors, $struct_graph_item, $graph_item_types, $consolidation_functions;
+	global $struct_graph_item, $graph_item_types, $consolidation_functions;
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var_request("id"));
@@ -208,10 +208,10 @@ function item_edit() {
 	$id = (!empty($_REQUEST["id"]) ? "&id=" . $_REQUEST["id"] : "");
 	$host = db_fetch_row("select hostname from host where id=" . get_request_var_request("host_id"));
 
-	html_start_box("<strong>Data Sources</strong> [host: " . (empty($host["hostname"]) ? "No Host" : $host["hostname"]) . "]", "100%", $colors["header"], "3", "center", "");
+	html_start_box("<strong>Data Sources</strong> [host: " . (empty($host["hostname"]) ? "No Host" : $host["hostname"]) . "]", "100%", "", "3", "center", "");
 
 	?>
-	<tr bgcolor="#<?php print $colors["panel"];?>">
+	<tr class='even noprint'>
 		<form name="form_graph_items" action="graphs_items.php">
 		<td>
 			<table cellpadding="0" cellspacing="0">
@@ -288,7 +288,7 @@ function item_edit() {
 
 	$header_label = "[edit graph: " . db_fetch_cell("select title_cache from graph_templates_graph where local_graph_id=" . get_request_var_request("local_graph_id")) . "]";
 
-	html_start_box("<strong>Graph Items</strong> $header_label", "100%", $colors["header"], "3", "center", "");
+	html_start_box("<strong>Graph Items</strong> $header_label", "100%", "", "3", "center", "");
 
 	/* by default, select the LAST DS chosen to make everyone's lives easier */
 	if (!empty($_REQUEST["local_graph_id"])) {

@@ -266,7 +266,7 @@ function form_save() {
    ------------------------ */
 
 function form_actions() {
-	global $colors, $graph_actions;
+	global $graph_actions;
 
 	/* ================= input validation ================= */
 	input_validate_input_regex(get_request_var_post('drp_action'), "^([a-zA-Z0-9_]+)$");
@@ -400,7 +400,7 @@ function form_actions() {
 	/* add a list of tree names to the actions dropdown */
 	add_tree_names_to_actions_array();
 
-	html_start_box("<strong>" . $graph_actions{$_POST["drp_action"]} . "</strong>", "60%", $colors["header_panel"], "3", "center", "");
+	html_start_box("<strong>" . $graph_actions{$_POST["drp_action"]} . "</strong>", "60%", "", "3", "center", "");
 
 	print "<form action='graphs.php' method='post'>\n";
 
@@ -423,13 +423,13 @@ function form_actions() {
 			}
 
 			print "	<tr>
-					<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
+					<td class='textArea'>
 						<p>When you click \"Continue\", the following Graph(s) will be deleted.  Please note, Data Source(s) should be deleted only if they are only used by these Graph(s)
 						and not others.</p>
 						<p><ul>$graph_list</ul></p>";
 
 						if (isset($data_sources) && sizeof($data_sources)) {
-							print "<tr bgcolor='#" . $colors["form_alternate1"] . "'><td class='textArea'><p class='textArea'>The following Data Source(s) are in use by these Graph(s):</p>\n";
+							print "<tr><td class='textArea'><p>The following Data Source(s) are in use by these Graph(s):</p>\n";
 
 							print "<ul>";
 							foreach ($data_sources as $data_source) {
@@ -449,7 +449,7 @@ function form_actions() {
 			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Delete Graph(s)'>";
 		}elseif ($_POST["drp_action"] == "2") { /* change graph template */
 			print "	<tr>
-					<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
+					<td class='textArea'>
 						<p>Choose a Graph Template and click \"Continue\" to change the Graph Template for
 						the following Graph(s). Be aware that all warnings will be suppressed during the
 						conversion, so Graph data loss is possible.</p>
@@ -461,7 +461,7 @@ function form_actions() {
 			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Change Graph Template'>";
 		}elseif ($_POST["drp_action"] == "3") { /* duplicate */
 			print "	<tr>
-					<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
+					<td class='textArea'>
 						<p>When you click \"Continue\", the following Graph(s) will be duplicated. You can
 						optionally change the title format for the new Graph(s).</p>
 						<p><ul>$graph_list</ul></p>
@@ -472,7 +472,7 @@ function form_actions() {
 			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Duplicate Graph(s)'>";
 		}elseif ($_POST["drp_action"] == "4") { /* graph -> graph template */
 			print "	<tr>
-					<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
+					<td class='textArea'>
 						<p>When you click \"Continue\", the following Graph(s) will be converted into Graph Template(s).
 						You can optionally change the title format for the new Graph Template(s).</p>
 						<p><ul>$graph_list</ul></p>
@@ -483,7 +483,7 @@ function form_actions() {
 			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Convert to Graph Template'>";
 		}elseif (preg_match("/^tr_([0-9]+)$/", $_POST["drp_action"], $matches)) { /* place on tree */
 			print "	<tr>
-					<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
+					<td class='textArea'>
 						<p>When you click \"Continue\", the following Graph(s) will be placed under the Tree Branch selected below.</p>
 						<p><ul>$graph_list</ul></p>
 						<p><strong>Destination Branch:</strong><br>"; grow_dropdown_tree($matches[1], "tree_item_id", "0"); print "</p>
@@ -494,7 +494,7 @@ function form_actions() {
 			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Place Graph(s) on Tree'>";
 		}elseif ($_POST["drp_action"] == "5") { /* change host */
 			print "	<tr>
-					<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
+					<td class='textArea'>
 						<p>Choose a new Device for these Graph(s) and click \"Continue\"</p>
 						<p><ul>$graph_list</ul></p>
 						<p><strong>New Host:</strong><br>"; form_dropdown("host_id",db_fetch_assoc("select id,CONCAT_WS('',description,' (',hostname,')') as name from host order by description,hostname"),"name","id","","","0"); print "</p>
@@ -504,7 +504,7 @@ function form_actions() {
 			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Change Graph(s) Associated Device'>";
 		}elseif ($_POST["drp_action"] == "6") { /* reapply suggested naming to host */
 			print "	<tr>
-					<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
+					<td class='textArea'>
 						<p>When you click \"Continue\", the following Graph(s) will have thier suggested naming convensions
 						recalculated and applied to the Graph(s).</p>
 						<p><ul>$graph_list</ul></p>
@@ -514,7 +514,7 @@ function form_actions() {
 			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Reapply Suggested Naming to Graph(s)'>";
 		}elseif ($_POST["drp_action"] == "7") { /* resize graphs */
 			print "	<tr>
-					<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
+					<td class='textArea'>
 						<p>When you click \"Continue\", the following Graph(s) will be resized per your specifications.</p>
 						<p><ul>$graph_list</ul></p>
 						<p><strong>Graph Height:</strong><br>"; form_text_box("graph_height", "", "", "255", "30", "text"); print "</p>
@@ -532,12 +532,12 @@ function form_actions() {
 			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue'>";
 		}
 	}else{
-		print "<tr><td bgcolor='#" . $colors["form_alternate1"]. "'><span class='textError'>You must select at least one graph.</span></td></tr>\n";
+		print "<tr><td class='even'><span class='textError'>You must select at least one graph.</span></td></tr>\n";
 		$save_html = "<input type='button' value='Return' onClick='window.history.back()'>";
 	}
 
 	print "	<tr>
-			<td align='right' bgcolor='#eaeaea'>
+			<td align='right' class='saveRow'>
 				<input type='hidden' name='action' value='actions'>
 				<input type='hidden' name='selected_items' value='" . (isset($graph_array) ? serialize($graph_array) : '') . "'>
 				<input type='hidden' name='drp_action' value='" . $_POST["drp_action"] . "'>
@@ -556,7 +556,7 @@ function form_actions() {
    ----------------------- */
 
 function item() {
-	global $colors, $consolidation_functions, $graph_item_types, $struct_graph_item;
+	global $consolidation_functions, $graph_item_types, $struct_graph_item;
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var("id"));
@@ -598,7 +598,7 @@ function item() {
 		$add_text = "";
 	}
 
-	html_start_box("<strong>Graph Items</strong> $header_label", "100%", $colors["header"], "3", "center", $add_text);
+	html_start_box("<strong>Graph Items</strong> $header_label", "100%", "", "3", "center", $add_text);
 	draw_graph_items_list($template_item_list, "graphs_items.php", "local_graph_id=" . $_GET["id"], (empty($graph_template_id) ? false : true));
 	html_end_box();
 }
@@ -608,7 +608,7 @@ function item() {
    ------------------------------------ */
 
 function graph_diff() {
-	global $colors, $struct_graph_item, $graph_item_types, $consolidation_functions;
+	global  $struct_graph_item, $graph_item_types, $consolidation_functions;
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var("id"));
@@ -662,7 +662,7 @@ function graph_diff() {
 	}
 
 	?>
-	<table style="background-color: #f5f5f5; border: 1px solid #aaaaaa;" width="100%" align="center">
+	<table class="tableConfirmation" width="100%" align="center">
 		<tr>
 			<td class="textArea">
 				The template you have selected requires some changes to be made to the structure of
@@ -674,7 +674,7 @@ function graph_diff() {
 	<br>
 	<?php
 
-	html_start_box("<strong>Graph Preview</strong>", "100%", $colors["header"], "3", "center", "");
+	html_start_box("<strong>Graph Preview</strong>", "100%", "", "3", "center", "");
 
 	$graph_item_actions = array("normal" => "", "add" => "+", "delete" => "-");
 
@@ -726,13 +726,13 @@ function graph_diff() {
 			$bold_this_row = true; $use_custom_row_color = true; $hard_return = "";
 
 			if ($group_counter % 2 == 0) {
-				$alternate_color_1 = "EEEEEE";
-				$alternate_color_2 = "EEEEEE";
-				$custom_row_color = "D5D5D5";
+				$alternate_color_1 = "graphItemGr1Alt1";
+				$alternate_color_2 = "graphItemGr1Alt2";
+				$custom_row_color  = "graphItemGr1Cust";
 			}else{
-				$alternate_color_1 = $colors["alternate"];
-				$alternate_color_2 = $colors["alternate"];
-				$custom_row_color = "D2D6E7";
+				$alternate_color_1 = "graphItemGr2Alt1";
+				$alternate_color_2 = "graphItemGr2Alt2";
+				$custom_row_color  = "graphItemGr2Cust";
 			}
 
 			$group_counter++;
@@ -751,14 +751,14 @@ function graph_diff() {
 			$action_column_color = $custom_row_color;
 		}
 
-		print "<tr bgcolor='#$action_column_color'>"; $i++;
+		print "<tr class='#$action_column_color'>"; $i++;
 
 		/* make the left-hand column blue or red depending on if "add"/"remove" mode is set */
 		if ($mode == "add") {
-			$action_column_color = $colors["header"];
+			$action_column_color = "graphItemAdd";
 			$action_css = "";
 		}elseif ($mode == "delete") {
-			$action_column_color = "C63636";
+			$action_column_color = "graphItemDel";
 			$action_css = "text-decoration: line-through;";
 		}
 
@@ -767,7 +767,7 @@ function graph_diff() {
 		}
 
 		/* draw the TD that shows the user whether we are going to: KEEP, ADD, or DROP the item */
-		print "<td width='1%' bgcolor='#$action_column_color' style='font-weight: bold; color: white;'>" . $graph_item_actions[$mode] . "</td>";
+		print "<td width='1%' class='#$action_column_color' style='font-weight: bold; color: white;'>" . $graph_item_actions[$mode] . "</td>";
 		print "<td style='$action_css'><strong>Item # " . $i . "</strong></td>\n";
 
 		if (empty($graph_preview_item_values["task_item_id"])) { $graph_preview_item_values["task_item_id"] = "No Task"; }
@@ -792,7 +792,7 @@ function graph_diff() {
 		}
 
 		if ($graph_preview_item_values["hard_return"] == "on") {
-			$hard_return = "<strong><font color=\"#FF0000\">&lt;HR&gt;</font></strong>";
+			$hard_return = "<strong><font class='graphItemHR'>&lt;HR&gt;</font></strong>";
 		}
 
 		print "<td style='$action_css'>" . htmlspecialchars($matrix_title) . $hard_return . "</td>\n";
@@ -804,17 +804,13 @@ function graph_diff() {
 		print "</tr>";
 	}
 	}else{
-		form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
-			<td colspan="7">
-				<em>No Items</em>
-			</td>
-		</tr><?php
+		print "<td colspan='7'><em>No Items</em></td></tr>\n";
 	}
 	html_end_box();
 
 	?>
 	<form action="graphs.php" method="post">
-	<table style="background-color: #f5f5f5; border: 1px solid #aaaaaa;" width="100%" align="center">
+	<table class='tableConfirmation' width="100%" align="center">
 		<tr>
 			<td class="textArea">
 				<input type='radio' name='type' value='1' checked>&nbsp;<?php print $user_message;?><br>
@@ -833,7 +829,7 @@ function graph_diff() {
 }
 
 function graph_edit() {
-	global $colors, $struct_graph, $image_types, $consolidation_functions, $graph_item_types, $struct_graph_item;
+	global $struct_graph, $image_types, $consolidation_functions, $graph_item_types, $struct_graph_item;
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var("id"));
@@ -875,13 +871,13 @@ function graph_edit() {
 					<?php print htmlspecialchars(get_graph_title($_GET["id"]));?>
 				</td>
 				<td class="textInfo" align="right" valign="top">
-					<span style="color: #c16921;">*<a href='<?php print htmlspecialchars("graphs.php?action=graph_edit&id=" . (isset($_GET["id"]) ? $_GET["id"] : "0") . "&debug=" . (isset($_SESSION["graph_debug_mode"]) ? "0" : "1"));?>'>Turn <strong><?php print (isset($_SESSION["graph_debug_mode"]) ? "Off" : "On");?></strong> Graph Debug Mode.</a></span><br>
+					<span class="linkMarker">*<a href='<?php print htmlspecialchars("graphs.php?action=graph_edit&id=" . (isset($_GET["id"]) ? $_GET["id"] : "0") . "&debug=" . (isset($_SESSION["graph_debug_mode"]) ? "0" : "1"));?>'>Turn <strong><?php print (isset($_SESSION["graph_debug_mode"]) ? "Off" : "On");?></strong> Graph Debug Mode.</a></span><br>
 					<?php
 						if (!empty($graphs["graph_template_id"])) {
-							?><span style="color: #c16921;">*<a href='<?php print htmlspecialchars("graph_templates.php?action=template_edit&id=" . (isset($graphs["graph_template_id"]) ? $graphs["graph_template_id"] : "0"));?>'>Edit Graph Template.</a></span><br><?php
+							?><span class="linkMarker">*<a href='<?php print htmlspecialchars("graph_templates.php?action=template_edit&id=" . (isset($graphs["graph_template_id"]) ? $graphs["graph_template_id"] : "0"));?>'>Edit Graph Template.</a></span><br><?php
 						}
 						if (!empty($_GET["host_id"]) || !empty($host_id)) {
-							?><span style="color: #c16921;">*<a href='<?php print htmlspecialchars("host.php?action=edit&id=" . (isset($_GET["host_id"]) ? $_GET["host_id"] : $host_id));?>'>Edit Host.</a></span><br><?php
+							?><span class="linkMarker">*<a href='<?php print htmlspecialchars("host.php?action=edit&id=" . (isset($_GET["host_id"]) ? $_GET["host_id"] : $host_id));?>'>Edit Host.</a></span><br><?php
 						}
 					?>
 				</td>
@@ -891,7 +887,7 @@ function graph_edit() {
 		<?php
 	}
 
-	html_start_box("<strong>Graph Template Selection</strong> $header_label", "100%", $colors["header"], "3", "center", "");
+	html_start_box("<strong>Graph Template Selection</strong> $header_label", "100%", "", "3", "center", "");
 
 	$form_array = array(
 		"graph_template_id" => array(
@@ -943,7 +939,7 @@ function graph_edit() {
 
 	/* only display the "inputs" area if we are using a graph template for this graph */
 	if (!empty($graphs["graph_template_id"])) {
-		html_start_box("<strong>Supplemental Graph Template Data</strong>", "100%", $colors["header"], "3", "center", "");
+		html_start_box("<strong>Supplemental Graph Template Data</strong>", "100%", "", "3", "center", "");
 
 		draw_nontemplated_fields_graph($graphs["graph_template_id"], $graphs, "|field|", "<strong>Graph Fields</strong>", true, true, 0);
 		draw_nontemplated_fields_graph_item($graphs["graph_template_id"], $_GET["id"], "|field|_|id|", "<strong>Graph Item Fields</strong>", true);
@@ -985,7 +981,7 @@ function graph_edit() {
 	}
 
 	if (((isset($_GET["id"])) || (isset($_GET["new"]))) && (empty($graphs["graph_template_id"]))) {
-		html_start_box("<strong>Graph Configuration</strong>", "100%", $colors["header"], "3", "center", "");
+		html_start_box("<strong>Graph Configuration</strong>", "100%", "", "3", "center", "");
 
 		$form_array = array();
 
@@ -1130,16 +1126,16 @@ function graph() {
 	</script>
 	<?php
 
-	html_start_box("<strong>Graph Management</strong>", "100%", $colors["header"], "3", "center", "graphs.php?action=graph_edit&host_id=" . htmlspecialchars(get_request_var_request("host_id")));
+	html_start_box("<strong>Graph Management</strong>", "100%", "", "3", "center", "graphs.php?action=graph_edit&host_id=" . htmlspecialchars(get_request_var_request("host_id")));
 
 	?>
-	<tr bgcolor="#<?php print $colors["panel"];?>">
+	<tr class='even noprint'>
 		<td>
 			<form name="form_graph_id" action="graphs.php">
-			<table cellpadding="1" cellspacing="0">
+			<table cellpadding="2" cellspacing="0">
 				<tr>
 					<td width="50">
-						Host:&nbsp;
+						Host:
 					</td>
 					<td width="1">
 						<select name="host_id" onChange="applyGraphsFilterChange(document.form_graph_id)">
@@ -1174,7 +1170,7 @@ function graph() {
 						</select>
 					</td>
 					<td width="70">
-						&nbsp;Template:&nbsp;
+						Template:
 					</td>
 					<td width="1">
 						<select name="template_id" onChange="applyGraphsFilterChange(document.form_graph_id)">
@@ -1205,22 +1201,22 @@ function graph() {
 							?>
 						</select>
 					</td>
-					<td width="120" nowrap style='white-space: nowrap;'>
-						&nbsp;<input type="submit" value="Go" title="Set/Refresh Filters">
+					<td>
+						<input type="submit" value="Go" title="Set/Refresh Filters">
+					</td>
+					<td>
 						<input type="submit" name="clear_x" value="Clear" title="Clear Filters">
 					</td>
 				</tr>
-			</table>
-			<table cellpadding="1" cellspacing="0">
 				<tr>
 					<td width="50">
-						&nbsp;Search:&nbsp;
+						Search:
 					</td>
 					<td>
 						<input type="text" name="filter" size="40" value="<?php print htmlspecialchars(get_request_var_request("filter"));?>">
 					</td>
-					<td nowrap style='white-space: nowrap;' width="50">
-						Rows per Page:&nbsp;
+					<td style='white-space: nowrap;'>
+						Rows per Page:
 					</td>
 					<td width="1">
 						<select name="graph_rows" onChange="applyGraphsFilterChange(document.form_graph_id)">
@@ -1274,7 +1270,7 @@ function graph() {
 	/* print checkbox form for validation */
 	print "<form name='chk' method='post' action='graphs.php'>\n";
 
-	html_start_box("", "100%", $colors["header"], "3", "center", "");
+	html_start_box("", "100%", "", "3", "center", "");
 
 	$total_rows = db_fetch_cell("SELECT
 		COUNT(graph_templates_graph.id)
@@ -1315,7 +1311,7 @@ function graph() {
 		foreach ($graph_list as $graph) {
 			/* we're escaping strings here, so no need to escape them on form_selectable_cell */
 			$template_name = ((empty($graph["name"])) ? "<em>None</em>" : htmlspecialchars($graph["name"]));
-			form_alternate_row_color($colors["alternate"], $colors["light"], $i, 'line' . $graph["local_graph_id"]); $i++;
+			form_alternate_row('line' . $graph["local_graph_id"], true);
 			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars("graphs.php?action=graph_edit&id=" . $graph["local_graph_id"]) . "' title='" . htmlspecialchars($graph["title_cache"]) . "'>" . ((get_request_var_request("filter") != "") ? preg_replace("/(" . preg_quote(get_request_var_request("filter"), "/") . ")/i", "<span style='background-color: #F8D93D;'>\\1</span>", title_trim(htmlspecialchars($graph["title_cache"]), read_config_option("max_title_graph"))) : title_trim(htmlspecialchars($graph["title_cache"]), read_config_option("max_title_graph"))) . "</a>", $graph["local_graph_id"]);
 			form_selectable_cell($graph["local_graph_id"], $graph["local_graph_id"]);
 			form_selectable_cell(((get_request_var_request("filter") != "") ? preg_replace("/(" . preg_quote(get_request_var_request("filter"), "/") . ")/i", "<span style='background-color: #F8D93D;'>\\1</span>", $template_name) : $template_name), $graph["local_graph_id"]);

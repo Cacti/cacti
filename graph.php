@@ -87,7 +87,7 @@ case 'view':
 			'rraid' => $_GET["rra_id"])
 		);
 	?>
-	<tr bgcolor='#<?php print $colors["header"];?>'>
+	<tr class='tableHeader'>
 		<td colspan='3' class='textHeaderDark'>
 			<strong>Viewing Graph</strong> '<?php print htmlspecialchars($graph_title);?>'
 		</td>
@@ -204,7 +204,7 @@ case 'zoom':
 	}
 
 	?>
-	<tr bgcolor='#<?php print $colors["header"];?>'>
+	<tr class='tableHeader'>
 		<td colspan='3' class='textHeaderDark'>
 			<strong>Zooming Graph</strong> '<?php print htmlspecialchars($graph_title);?>'
 		</td>
@@ -239,7 +239,7 @@ case 'zoom':
 
 case 'properties':
 	?>
-	<tr bgcolor='#<?php print $colors["header"];?>'>
+	<tr class='tableHeader'>
 		<td colspan='3' class='textHeaderDark'>
 			<strong>Viewing Graph Properties </strong> '<?php print htmlspecialchars($graph_title);?>'
 		</td>

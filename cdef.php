@@ -93,8 +93,8 @@ switch ($_REQUEST["action"]) {
    -------------------------- */
 
 function draw_cdef_preview($cdef_id) {
-	global $colors; ?>
-	<tr bgcolor="#<?php print $colors["panel"];?>">
+	?>
+	<tr class='even'>
 		<td>
 			<pre>cdef=<?php print get_cdef($cdef_id, true);?></pre>
 		</td>
@@ -156,7 +156,7 @@ function form_save() {
    ------------------------ */
 
 function form_actions() {
-	global $colors, $cdef_actions;
+	global $cdef_actions;
 
 	/* ================= input validation ================= */
 	input_validate_input_regex(get_request_var_post('drp_action'), "^([a-zA-Z0-9_]+)$");
@@ -205,12 +205,12 @@ function form_actions() {
 
 	print "<form action='cdef.php' method='post'>\n";
 
-	html_start_box("<strong>" . $cdef_actions{$_POST["drp_action"]} . "</strong>", "60%", $colors["header_panel"], "3", "center", "");
+	html_start_box("<strong>" . $cdef_actions{$_POST["drp_action"]} . "</strong>", "60%", "", "3", "center", "");
 
 	if (isset($cdef_array) && sizeof($cdef_array)) {
 		if ($_POST["drp_action"] == "1") { /* delete */
 			print "	<tr>
-					<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
+					<td class='textArea' class='odd'>
 						<p>When you click \"Continue\", the folling CDEF(s) will be deleted.</p>
 						<p><ul>$cdef_list</ul></p>
 					</td>
@@ -220,7 +220,7 @@ function form_actions() {
 			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Delete CDEF(s)'>";
 		}elseif ($_POST["drp_action"] == "2") { /* duplicate */
 			print "	<tr>
-					<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
+					<td class='textArea' class='odd'>
 						<p>When you click \"Continue\", the following CDEFs will be duplicated. You can
 						optionally change the title format for the new CDEFs.</p>
 						<p><ul>$cdef_list</ul></p>
@@ -232,12 +232,12 @@ function form_actions() {
 			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Duplicate CDEF(s)'>";
 		}
 	}else{
-		print "<tr><td bgcolor='#" . $colors["form_alternate1"]. "'><span class='textError'>You must select at least one CDEF.</span></td></tr>\n";
+		print "<tr><td class='odd'><span class='textError'>You must select at least one CDEF.</span></td></tr>\n";
 		$save_html = "<input type='button' value='Return' onClick='window.history.back()'>";
 	}
 
 	print "	<tr>
-			<td align='right' bgcolor='#eaeaea'>
+			<td align='right' class='saveRow'>
 				<input type='hidden' name='action' value='actions'>
 				<input type='hidden' name='selected_items' value='" . (isset($cdef_array) ? serialize($cdef_array) : '') . "'>
 				<input type='hidden' name='drp_action' value='" . $_POST["drp_action"] . "'>
@@ -283,7 +283,7 @@ function item_remove() {
 }
 
 function item_edit() {
-	global $colors, $cdef_item_types, $cdef_functions, $cdef_operators, $custom_data_source_types;
+	global $cdef_item_types, $cdef_functions, $cdef_operators, $custom_data_source_types;
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var("id"));
@@ -296,13 +296,13 @@ function item_edit() {
 		$values[$current_type] = $cdef["value"];
 	}
 
-	html_start_box("", "100%", "aaaaaa", "3", "center", "");
+	html_start_box("", "100%", "", "3", "center", "");
 	draw_cdef_preview($_GET["cdef_id"]);
 	html_end_box();
 
 	print "<form method='post' action='cdef.php' name='form_cdef'>\n";
 
-	html_start_box("<strong>CDEF Items</strong> [edit: " . htmlspecialchars(db_fetch_cell("select name from cdef where id=" . $_GET["cdef_id"])) . "]", "100%", $colors["header"], "3", "center", "");
+	html_start_box("<strong>CDEF Items</strong> [edit: " . htmlspecialchars(db_fetch_cell("select name from cdef where id=" . $_GET["cdef_id"])) . "]", "100%", "", "3", "center", "");
 
 	if (isset($_GET["type_select"])) {
 		$current_type = $_GET["type_select"];
@@ -312,7 +312,7 @@ function item_edit() {
 		$current_type = "1";
 	}
 
-	form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
+	form_alternate_row();?>
 		<td width="50%">
 			<font class="textEditTitle">CDEF Item Type</font><br>
 			Choose what type of CDEF item this is.
@@ -327,7 +327,7 @@ function item_edit() {
 			</select>
 		</td>
 	</tr>
-	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
+	form_alternate_row();?>
 		<td width="50%">
 			<font class="textEditTitle">CDEF Item Value</font><br>
 			Enter a value for this CDEF item.
@@ -389,7 +389,7 @@ function cdef_remove() {
 }
 
 function cdef_edit() {
-	global $colors, $cdef_item_types, $fields_cdef_edit;
+	global $cdef_item_types, $fields_cdef_edit;
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var("id"));
@@ -402,7 +402,7 @@ function cdef_edit() {
 		$header_label = "[new]";
 	}
 
-	html_start_box("<strong>CDEF's</strong> $header_label", "100%", $colors["header"], "3", "center", "");
+	html_start_box("<strong>CDEF's</strong> $header_label", "100%", "", "3", "center", "");
 
 	draw_edit_form(array(
 		"config" => array(),
@@ -412,16 +412,16 @@ function cdef_edit() {
 	html_end_box();
 
 	if (!empty($_GET["id"])) {
-		html_start_box("", "100%", "aaaaaa", "3", "center", "");
+		html_start_box("", "100%", "", "3", "center", "");
 		draw_cdef_preview($_GET["id"]);
 		html_end_box();
 
-		html_start_box("<strong>CDEF Items</strong>", "100%", $colors["header"], "3", "center", "cdef.php?action=item_edit&cdef_id=" . $cdef["id"]);
+		html_start_box("<strong>CDEF Items</strong>", "100%", "", "3", "center", "cdef.php?action=item_edit&cdef_id=" . $cdef["id"]);
 
-		print "<tr bgcolor='#" . $colors["header_panel"] . "'>";
-			DrawMatrixHeaderItem("Item",$colors["header_text"],1);
-			DrawMatrixHeaderItem("Item Value",$colors["header_text"],1);
-			DrawMatrixHeaderItem("&nbsp;",$colors["header_text"],2);
+		print "<tr class='tableHeader'>";
+			DrawMatrixHeaderItem("Item","",1);
+			DrawMatrixHeaderItem("Item Value","",1);
+			DrawMatrixHeaderItem("&nbsp;","",2);
 		print "</tr>";
 
 		$cdef_items = db_fetch_assoc("select * from cdef_items where cdef_id=" . $_GET["id"] . " order by sequence");
@@ -429,7 +429,7 @@ function cdef_edit() {
 		$i = 0;
 		if (sizeof($cdef_items) > 0) {
 			foreach ($cdef_items as $cdef_item) {
-				form_alternate_row_color($colors["alternate"],$colors["light"],$i); $i++;
+				form_alternate_row();$i++;?>
 					?>
 					<td>
 						<a class="linkEditMain" href="<?php print htmlspecialchars("cdef.php?action=item_edit&id=" . $cdef_item["id"] . "&cdef_id=" . $cdef["id"]);?>">Item #<?php print htmlspecialchars($i);?></a>
@@ -455,7 +455,7 @@ function cdef_edit() {
 }
 
 function cdef() {
-	global $colors, $cdef_actions;
+	global $cdef_actions;
 
 	/* clean up search string */
 	if (isset($_REQUEST["filter"])) {
@@ -492,10 +492,10 @@ function cdef() {
 	load_current_session_value("sort_column", "sess_cdef_sort_column", "name");
 	load_current_session_value("sort_direction", "sess_cdef_sort_direction", "ASC");
 
-	html_start_box("<strong>CDEF's</strong>", "100%", $colors["header"], "3", "center", "cdef.php?action=edit");
+	html_start_box("<strong>CDEF's</strong>", "100%", "", "3", "center", "cdef.php?action=edit");
 
 	?>
-	<tr bgcolor="#<?php print $colors["panel"];?>">
+	<tr class='even'>
 		<td>
 			<form name="form_cdef" action="cdef.php">
 			<table width="100%" cellpadding="0" cellspacing="0">
@@ -526,7 +526,7 @@ function cdef() {
 	/* print checkbox form for validation */
 	print "<form name='chk' method='post' action='cdef.php'>\n";
 
-	html_start_box("", "100%", $colors["header"], "3", "center", "");
+	html_start_box("", "100%", "", "3", "center", "");
 
 	$total_rows = db_fetch_cell("SELECT
 		COUNT(cdef.id)
@@ -552,8 +552,8 @@ function cdef() {
 	$i = 0;
 	if (sizeof($cdef_list) > 0) {
 		foreach ($cdef_list as $cdef) {
-			form_alternate_row_color($colors["alternate"], $colors["light"], $i, 'line' . $cdef["id"]);$i++;
-			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars("cdef.php?action=edit&id=" . $cdef["id"]) . "'>" . (strlen(get_request_var_request("filter")) ? preg_replace("/(" . preg_quote(get_request_var_request("filter"), "/") . ")/i", "<span style='background-color: #F8D93D;'>\\1</span>", htmlspecialchars($cdef["name"])) : htmlspecialchars($cdef["name"])) . "</a>", $cdef["id"]);
+			form_alternate_row('line' . $cdef["id"]);
+			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars("cdef.php?action=edit&id=" . $cdef["id"]) . "'>" . (strlen(get_request_var_request("filter")) ? preg_replace("/(" . preg_quote(get_request_var_request("filter"), "/") . ")/i", "<span class='filteredValue'>\\1</span>", htmlspecialchars($cdef["name"])) : htmlspecialchars($cdef["name"])) . "</a>", $cdef["id"]);
 			form_checkbox_cell($cdef["name"], $cdef["id"]);
 			form_end_row();
 		}

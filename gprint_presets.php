@@ -105,7 +105,7 @@ function gprint_presets_remove() {
 }
 
 function gprint_presets_edit() {
-	global $colors, $fields_grprint_presets_edit;
+	global $fields_grprint_presets_edit;
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var("id"));
@@ -118,7 +118,7 @@ function gprint_presets_edit() {
 		$header_label = "[new]";
 	}
 
-	html_start_box("<strong>GPRINT Presets</strong> $header_label", "100%", $colors["header"], "3", "center", "");
+	html_start_box("<strong>GPRINT Presets</strong> $header_label", "100%", "", "3", "center", "");
 
 	draw_edit_form(array(
 		"config" => array(),
@@ -131,11 +131,9 @@ function gprint_presets_edit() {
 }
 
 function gprint_presets() {
-	global $colors;
+	html_start_box("<strong>GPRINT Presets</strong>", "100%", "", "3", "center", "gprint_presets.php?action=edit");
 
-	html_start_box("<strong>GPRINT Presets</strong>", "100%", $colors["header"], "3", "center", "gprint_presets.php?action=edit");
-
-	print "	<tr bgcolor='#" . $colors["header_panel"] . "'>
+	print "<tr class='tableHeader'>
 			<td colspan='2' class='textSubHeaderDark'>GPRINT Preset Title</td>
 		</tr>";
 
@@ -147,7 +145,7 @@ function gprint_presets() {
 	$i = 0;
 	if (sizeof($template_list) > 0) {
 	foreach ($template_list as $template) {
-		form_alternate_row_color($colors["alternate"],$colors["light"],$i);
+		form_alternate_row('', true);
 			?>
 			<td>
 				<a class="linkEditMain" href="<?php print htmlspecialchars("gprint_presets.php?action=edit&id=" . $template["id"]);?>"><?php print htmlspecialchars($template["name"]);?></a>
@@ -157,10 +155,9 @@ function gprint_presets() {
 			</td>
 		</tr>
 		<?php
-		$i++;
 	}
 	}else{
-		form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
+		form_alternate_row('', true);?>
 			<td colspan="2">
 				<em>No Items</em>
 			</td>

@@ -162,7 +162,7 @@ function form_save() {
    ------------------------ */
 
 function form_actions() {
-	global $colors, $graph_actions;
+	global $graph_actions;
 
 	/* ================= input validation ================= */
 	input_validate_input_regex(get_request_var_post('drp_action'), "^([a-zA-Z0-9_]+)$");
@@ -225,14 +225,14 @@ function form_actions() {
 
 	include_once("./include/top_header.php");
 
-	html_start_box("<strong>" . $graph_actions{$_POST["drp_action"]} . "</strong>", "60%", $colors["header_panel"], "3", "center", "");
+	html_start_box("<strong>" . $graph_actions{$_POST["drp_action"]} . "</strong>", "60%", "", "3", "center", "");
 
 	print "<form action='graph_templates.php' method='post'>\n";
 
 	if (isset($graph_array) && sizeof($graph_array)) {
 		if ($_POST["drp_action"] == "1") { /* delete */
 			print "	<tr>
-					<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
+					<td class='textArea'>
 						<p>When you click \"Continue\", the following Graph Template(s) will be deleted.  Any Graph(s) associated with
 						the Template(s) will become individual Graph(s).</p>
 						<p><ul>$graph_list</ul></p>
@@ -242,7 +242,7 @@ function form_actions() {
 			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Delete Graph Template(s)'>";
 		}elseif ($_POST["drp_action"] == "2") { /* duplicate */
 			print "	<tr>
-					<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
+					<td class='textArea'>
 						<p>When you click \"Continue\", the following Graph Template(s) will be duplicated. You can
 						optionally change the title format for the new Graph Template(s).</p>
 						<p><ul>$graph_list</ul></p>
@@ -253,12 +253,12 @@ function form_actions() {
 			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Duplicate Graph Template(s)'>";
 		}
 	}else{
-		print "<tr><td bgcolor='#" . $colors["form_alternate1"]. "'><span class='textError'>You must select at least one graph template.</span></td></tr>\n";
+		print "<tr><td class='even'><span class='textError'>You must select at least one graph template.</span></td></tr>\n";
 		$save_html = "<input type='button' value='Return' onClick='window.history.back()'>";
 	}
 
 	print "	<tr>
-			<td align='right' bgcolor='#eaeaea'>
+			<td align='right' class='saveRow'>
 				<input type='hidden' name='action' value='actions'>
 				<input type='hidden' name='selected_items' value='" . (isset($graph_array) ? serialize($graph_array) : '') . "'>
 				<input type='hidden' name='drp_action' value='" . $_POST["drp_action"] . "'>
@@ -273,7 +273,7 @@ function form_actions() {
 }
 
 function item() {
-	global $colors, $consolidation_functions, $graph_item_types;
+	global $consolidation_functions, $graph_item_types;
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var("id"));
@@ -307,23 +307,23 @@ function item() {
 		$header_label = "[edit: " . db_fetch_cell("select name from graph_templates where id=" . $_GET["id"]) . "]";
 	}
 
-	html_start_box("<strong>Graph Template Items</strong> " . htmlspecialchars($header_label), "100%", $colors["header"], "3", "center", "graph_templates_items.php?action=item_edit&graph_template_id=" . htmlspecialchars(get_request_var("id")));
+	html_start_box("<strong>Graph Template Items</strong> " . htmlspecialchars($header_label), "100%", "", "3", "center", "graph_templates_items.php?action=item_edit&graph_template_id=" . htmlspecialchars(get_request_var("id")));
 	draw_graph_items_list($template_item_list, "graph_templates_items.php", "graph_template_id=" . $_GET["id"], false);
 	html_end_box();
 
-	html_start_box("<strong>Graph Item Inputs</strong>", "100%", $colors["header"], "3", "center", "graph_templates_inputs.php?action=input_edit&graph_template_id=" . htmlspecialchars(get_request_var("id")));
+	html_start_box("<strong>Graph Item Inputs</strong>", "100%", "", "3", "center", "graph_templates_inputs.php?action=input_edit&graph_template_id=" . htmlspecialchars(get_request_var("id")));
 
-	print "<tr bgcolor='#" . $colors["header_panel"] . "'>";
-		DrawMatrixHeaderItem("Name",$colors["header_text"],2);
+	print "<tr class='tableHeader'>";
+		DrawMatrixHeaderItem("Name","",2);
 	print "</tr>";
 
 	$template_item_list = db_fetch_assoc("select id,name from graph_template_input where graph_template_id=" . $_GET["id"] . " order by name");
 
 	$i = 0;
 	if (sizeof($template_item_list) > 0) {
-	foreach ($template_item_list as $item) {
-		form_alternate_row_color($colors["alternate"],$colors["light"],$i);
-	?>
+		foreach ($template_item_list as $item) {
+			form_alternate_row('', true);
+			?>
 			<td>
 				<a class="linkEditMain" href="<?php print htmlspecialchars("graph_templates_inputs.php?action=input_edit&id=" . $item["id"] . "&graph_template_id=" . $_GET["id"]);?>"><?php print htmlspecialchars($item["name"]);?></a>
 			</td>
@@ -331,11 +331,10 @@ function item() {
 				<a href="<?php print htmlspecialchars("graph_templates_inputs.php?action=input_remove&id=" . $item["id"] . "&graph_template_id=" . $_GET["id"]);?>"><img src="images/delete_icon.gif" style="height:10px;width:10px;" border="0" alt="Delete"></a>
 			</td>
 		</tr>
-	<?php
-	$i++;
-	}
+		<?php
+		}
 	}else{
-		print "<tr bgcolor='#" . $colors["form_alternate2"] . "'><td colspan='2'><em>No Inputs</em></td></tr>";
+		print "<tr><td colspan='2'><em>No Inputs</em></td></tr>";
 	}
 
 	html_end_box();
@@ -346,7 +345,7 @@ function item() {
    ---------------------------- */
 
 function template_edit() {
-	global $colors, $struct_graph, $image_types, $fields_graph_template_template_edit;
+	global $struct_graph, $image_types, $fields_graph_template_template_edit;
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var("id"));
@@ -366,7 +365,7 @@ function template_edit() {
 		$header_label = "[new]";
 	}
 
-	html_start_box("<strong>Template</strong> " . htmlspecialchars($header_label), "100%", $colors["header"], "3", "center", "");
+	html_start_box("<strong>Template</strong> " . htmlspecialchars($header_label), "100%", "", "3", "center", "");
 
 	draw_edit_form(array(
 		"config" => array(),
@@ -375,7 +374,7 @@ function template_edit() {
 
 	html_end_box();
 
-	html_start_box("<strong>Graph Template</strong>", "100%", $colors["header"], "3", "center", "");
+	html_start_box("<strong>Graph Template</strong>", "100%", "", "3", "center", "");
 
 	$form_array = array();
 
@@ -440,7 +439,7 @@ function changeScaleLog() {
 }
 
 function template() {
-	global $colors, $graph_actions;
+	global $graph_actions;
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var_request("page"));
@@ -481,10 +480,10 @@ function template() {
 	load_current_session_value("sort_column", "sess_graph_template_sort_column", "name");
 	load_current_session_value("sort_direction", "sess_graph_template_sort_direction", "ASC");
 
-	html_start_box("<strong>Graph Templates</strong>", "100%", $colors["header"], "3", "center", "graph_templates.php?action=template_edit");
+	html_start_box("<strong>Graph Templates</strong>", "100%", "", "3", "center", "graph_templates.php?action=template_edit");
 
 	?>
-	<tr bgcolor="#<?php print $colors["panel"];?>">
+	<tr class='even noprint'>
 		<td>
 		<form name="form_host_template" action="graph_templates.php">
 			<table width="100%" cellpadding="0" cellspacing="0">
@@ -519,7 +518,7 @@ function template() {
 	/* print checkbox form for validation */
 	print "<form name='chk' method='post' action='graph_templates.php'>\n";
 
-	html_start_box("", "100%", $colors["header"], "3", "center", "");
+	html_start_box("", "100%", "", "3", "center", "");
 
 	$total_rows = db_fetch_cell("SELECT
 		COUNT(graph_templates.id)
@@ -551,7 +550,7 @@ function template() {
 	$i = 0;
 	if (sizeof($template_list) > 0) {
 		foreach ($template_list as $template) {
-			form_alternate_row_color($colors["alternate"], $colors["light"], $i, 'line' . $template["id"]);$i++;
+			form_alternate_row('line' . $template["id"], true);
 			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars("graph_templates.php?action=template_edit&id=" . $template["id"]) . "'>" . (strlen(get_request_var_request("filter")) ? preg_replace("/(" . preg_quote(get_request_var_request("filter"), "/") . ")/i", "<span style='background-color: #F8D93D;'>\\1</span>", htmlspecialchars($template["name"])) : htmlspecialchars($template["name"])) . "</a>", $template["id"]);
 			form_selectable_cell($template["id"], $template["id"]);
 			form_selectable_cell(number_format($template["graphs"]), $template["id"]);

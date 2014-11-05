@@ -90,11 +90,11 @@ function graph_export($force = false) {
 					$total_graphs_created = config_graph_export();
 					config_export_stats($start, $total_graphs_created);
 				}else{
-				export_log("Export timing not specified. Updated config to disable exporting.");
-				db_execute("REPLACE INTO settings (name,value) VALUES ('export_timing','disabled')");
+					export_log("Export timing not specified. Updated config to disable exporting.");
+					db_execute("REPLACE INTO settings (name,value) VALUES ('export_timing','disabled')");
+				}
 		}
 	}
-}
 }
 
 function config_graph_export() {
@@ -1423,7 +1423,7 @@ function draw_html_left_tree($fp, $tree_id, $node)  {
 }
 
 function grow_dhtml_trees_export($fp, $tree_id, $node) {
-	global $colors, $config, $dhtml_trees;
+	global $config, $dhtml_trees;
 	include_once($config["library_path"] . "/tree.php");
 	include_once($config["library_path"] . "/data_query.php");
 	fwrite($fp, "\t<div id=\"jstree\">\n");
@@ -1469,7 +1469,7 @@ function grow_dhtml_trees_export($fp, $tree_id, $node) {
 
 			if (typeof suffix === 'string' && b.substr(b.length - suffix.length) == suffix) {
 				b = b.substr(0, b.length - suffix.length);
-				}
+			}
 
 			return b;
 		}
@@ -1478,7 +1478,7 @@ function grow_dhtml_trees_export($fp, $tree_id, $node) {
 			$('#navigation').css('height', ($(window).height()-80)+'px');
 			$(window).resize(function() {
 				$('#navigation').css('height', ($(window).height()-80)+'px');
-                       });
+			});
 
 			$('#jstree')
 			.on('ready.jstree', function(e, data) {
@@ -1514,9 +1514,8 @@ function grow_dhtml_trees_export($fp, $tree_id, $node) {
 					'dots' : true
 				},
 				'plugins' : [ 'state', 'wholerow' ]
-                });
-
-});\n");
+			});
+		});\n");
 
 	fwrite($fp, "\t\t</script>\n");
 	fwrite($fp, "\t</div>\n");
@@ -2087,8 +2086,8 @@ define("HTML_HEADER_CLASSIC", "
 /* Traditional Graph Export Representation Graph Headers */
 define("HTML_GRAPH_HEADER_ONE_CLASSIC", "
 	<table width='100%' style='background-color: #f5f5f5; border: 1px solid #bbbbbb;' align='center'>
-		<tr bgcolor='#" . $colors["header_panel"] . "'>
-			<td colspan='" . read_config_option("export_num_columns") . "'>
+		<tr>
+			<td class='textSubHeaderDark' colspan='" . read_config_option("export_num_columns") . "'>
 				<table width='100%' cellspacing='0' cellpadding='3' border='0'>
 					<tr>
 						<td align='center' class='textHeaderDark'>"

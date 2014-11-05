@@ -106,11 +106,11 @@ $page_title = api_plugin_hook_function('page_title', draw_navigation_text("title
 
 <table style="width:100%" cellspacing="0" cellpadding="0">
 <?php if ($oper_mode == OPER_MODE_NATIVE) { ;?>
-	<tr style="height:25px;" bgcolor="#a9a9a9" class="noprint">
+	<tr class="cactiPageHead noprint">
 		<td colspan="2" valign="bottom" nowrap>
 			<table width="100%" cellspacing="0" cellpadding="0">
-				<tr style="background: transparent url('<?php echo $config['url_path']; ?>images/cacti_backdrop2.gif') no-repeat center right;">
-					<td id="tabs" nowrap>
+				<tr class='cactiGraphPageHeadBackdrop'>
+					<td id="tabs" valign='bottom'>
 						&nbsp;<?php if ($show_console_tab == true) {?><a href="<?php echo $config['url_path']; ?>index.php"><img src="<?php echo $config['url_path']; ?>images/tab_console.gif" alt="Console" align="absmiddle" border="0"></a><?php }?><a href="<?php echo $config['url_path']; ?>graph_view.php"><img src="<?php echo $config['url_path']; ?>images/tab_graphs<?php if ((substr(basename($_SERVER["PHP_SELF"]),0,5) == "graph") || (basename($_SERVER["PHP_SELF"]) == "graph_settings.php")) { print "_down"; } print ".gif";?>" alt="Graphs" align="absmiddle" border="0"></a><?php
 						api_plugin_hook('top_graph_header_tabs');
 						?>
@@ -123,12 +123,7 @@ $page_title = api_plugin_hook_function('page_title', draw_navigation_text("title
 		</td>
 	</tr>
 <?php } elseif ($oper_mode == OPER_MODE_NOTABS) { api_plugin_hook_function('print_top_header'); } ?>
-	<tr style="height:2px;" bgcolor="#183c8f" class="noprint">
-		<td colspan="2">
-			<img src="<?php echo $config['url_path']; ?>images/transparent_line.gif" style="height:2px;width:170px;" border="0"><br>
-		</td>
-	</tr>
-	<tr style="height:5px;" bgcolor="#e9e9e9" class="noprint">
+	<tr class='breadCrumbBar noprint'>
 		<td colspan="2">
 			<table width="100%">
 				<tr>
@@ -144,18 +139,9 @@ $page_title = api_plugin_hook_function('page_title', draw_navigation_text("title
 			</table>
 		</td>
 	</tr>
-	<tr class="noprint">
-		<td bgcolor="#efefef" colspan="1" style="height:8px;background-image: url(<?php echo $config['url_path']; ?>images/shadow_gray.gif); background-repeat: repeat-x; border-right: #aaaaaa 1px solid;">
-			<img src="<?php echo $config['url_path']; ?>images/transparent_line.gif" width="<?php print htmlspecialchars(read_graph_config_option("default_dual_pane_width"));?>" style="height:2px;" border="0"><br>
-		</td>
-		<td bgcolor="#ffffff" colspan="1" style="height:8px;background-image: url(<?php echo $config['url_path']; ?>images/shadow.gif); background-repeat: repeat-x;">
-
-		</td>
-	</tr>
-
 	<?php if ((basename($_SERVER["PHP_SELF"]) == "graph.php") && ($_REQUEST["action"] == "properties")) {?>
 	<tr>
-		<td valign="top" style="height:1px;" colspan="3" bgcolor="#efefef">
+		<td valign="top" class='cactiTreeNavigationArea' colspan="3">
 			<?php
 			$graph_data_array["print_source"] = true;
 
@@ -180,8 +166,8 @@ $page_title = api_plugin_hook_function('page_title', draw_navigation_text("title
 	?>
 	<tr>
 		<?php if (basename($_SERVER["PHP_SELF"]) == "graph_view.php" && (read_graph_config_option("default_tree_view_mode") == 2) && ($_REQUEST["action"] == "tree" || (isset($_REQUEST["view_type"]) && $_REQUEST["view_type"] == "tree"))) { ?>
-		<td id='navigation' valign='top' style='padding: 5px; border-right: #aaaaaa 1px solid;background-repeat:repeat-y;background-color:#efefef;' bgcolor='#efefef' width='<?php print htmlspecialchars(read_graph_config_option("default_dual_pane_width"));?>' class='noprint'>
+		<td id='navigation' class='cactiTreeNavigationArea noprint' valign='top' width='<?php print htmlspecialchars(read_graph_config_option("default_dual_pane_width"));?>'>
 			<?php grow_dhtml_trees();?>
 		</td>
 		<?php } ?>
-		<td valign="top" style="padding: 5px; border-right: #aaaaaa 1px solid;"><div style='position:static;' id='main'>
+		<td class='cactiGraphContentArea' valign="top"><div style='position:static;' id='main'>

@@ -70,7 +70,7 @@ switch (get_request_var_request("action")) {
    -------------------------- */
 
 function form_actions() {
-	global $colors, $user_actions, $auth_realms;
+	global $user_actions, $auth_realms;
 
 	/* ================= input validation ================= */
 	input_validate_input_regex(get_request_var_post('drp_action'), "^([a-zA-Z0-9_]+)$");
@@ -199,7 +199,7 @@ function form_actions() {
 
 	include_once("./include/top_header.php");
 
-	html_start_box("<strong>" . $user_actions[get_request_var_post("drp_action")] . "</strong>", "60%", $colors["header_panel"], "3", "center", "");
+	html_start_box("<strong>" . $user_actions[get_request_var_post("drp_action")] . "</strong>", "60%", "", "3", "center", "");
 
 	print "<form action='user_admin.php' method='post'>\n";
 
@@ -207,7 +207,7 @@ function form_actions() {
 		if ((get_request_var_post("drp_action") == "1") && (sizeof($user_array))) { /* delete */
 			print "
 				<tr>
-					<td class='textArea' bgcolor='#" . $colors["form_alternate1"] . "'>
+					<td class='textArea'>
 						<p>When you click \"Continue\", the selected User(s) will be deleted.</p>
 						<p><ul>$user_list</ul></p>
 					</td>
@@ -222,25 +222,25 @@ function form_actions() {
 
 			print "
 				<tr>
-					<td class='textArea' bgcolor='#" . $colors["form_alternate1"] . "'>
+					<td class='textArea'>
 						When you click \"Continue\" the selected User will be copied to the new User below<br><br>
 					</td>
 				</tr><tr>
-					<td class='textArea' bgcolor='#" . $colors["form_alternate1"] . "'>
+					<td class='textArea'>
 						Template Username: <i>" . db_fetch_cell("SELECT username FROM user_auth WHERE id=" . $user_id) . "</i>
 					</td>
 				</tr><tr>
-					<td class='textArea' bgcolor='#" . $colors["form_alternate1"] . "'>
+					<td class='textArea'>
 					New Username: ";
 			print form_text_box("new_username", "", "", 25);
 			print "				</td>
 				</tr><tr>
-					<td class='textArea' bgcolor='#" . $colors["form_alternate1"] . "'>
+					<td class='textArea'>
 						New Full Name: ";
 			print form_text_box("new_fullname", "", "", 35);
 			print "				</td>
 				</tr><tr>
-					<td class='textArea' bgcolor='#" . $colors["form_alternate1"] . "'>
+					<td class='textArea'>
 						New Realm: \n";
 			print form_dropdown("new_realm", $auth_realms, "", "", $user_realm, "", 0);
 			print "				</td>
@@ -252,7 +252,7 @@ function form_actions() {
 		if ((get_request_var_post("drp_action") == "3") && (sizeof($user_array))) { /* enable */
 			print "
 				<tr>
-					<td class='textArea' bgcolor='#" . $colors["form_alternate1"] . "'>
+					<td class='textArea'>
 						<p>When you click \"Continue\" the selected User(s) will be enabled.</p>
 						<p><ul>$user_list</ul></p>
 					</td>
@@ -263,7 +263,7 @@ function form_actions() {
 		if ((get_request_var_post("drp_action") == "4") && (sizeof($user_array))) { /* disable */
 			print "
 				<tr>
-					<td class='textArea' bgcolor='#" . $colors["form_alternate1"] . "'>
+					<td class='textArea'>
 						<p>When you click \"Continue\" the selected User(s) will be disabled.</p>
 						<p><ul>$user_list</ul></p>
 					</td>
@@ -275,15 +275,15 @@ function form_actions() {
 			$usernames = db_fetch_assoc("SELECT id,username FROM user_auth WHERE realm = 0 ORDER BY username");
 			print "
 				<tr>
-					<td class='textArea' bgcolor='#" . $colors["form_alternate1"] . "'>When you click \"Continue\" you will overwrite selected the User(s) settings with the selected template User settings and permissions?  Original user Full Name, Password, Realm and Enable status will be retained, all other fields will be overwritten from Template User.<br><br></td>
+					<td class='textArea' class='odd'>When you click \"Continue\" you will overwrite selected the User(s) settings with the selected template User settings and permissions?  Original user Full Name, Password, Realm and Enable status will be retained, all other fields will be overwritten from Template User.<br><br></td>
 				</tr><tr>
-					<td class='textArea' bgcolor='#" . $colors["form_alternate1"] . "'>
+					<td class='textArea'>
 						Template User: \n";
 			print form_dropdown("template_user", $usernames, "username", "id", "", "", 0);
 			print "		</td>
 
 				</tr><tr>
-					<td class='textArea' bgcolor='#" . $colors["form_alternate1"] . "'>
+					<td class='textArea'>
 						<p>User(s) to update:
 						<ul>$user_list</ul></p>
 					</td>
@@ -291,7 +291,7 @@ function form_actions() {
 			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Reset User(s) Settings'>";
 		}
 	}else{
-		print "<tr><td bgcolor='#" . $colors["form_alternate1"]. "'><span class='textError'>You must select at least one user.</span></td></tr>\n";
+		print "<tr><td class='odd'><span class='textError'>You must select at least one user.</span></td></tr>\n";
 		$save_html = "<input type='button' value='Return' onClick='window.history.back()'>";
 	}
 
@@ -487,8 +487,6 @@ function perm_remove() {
 }
 
 function graph_perms_edit() {
-	global $colors;
-
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var("id"));
 	/* ==================================================== */
@@ -521,7 +519,7 @@ function graph_perms_edit() {
 	<?php
 
 	/* box: graph permissions */
-	html_start_box("<strong>Graph Permissions (By Graph)</strong>", "100%", $colors["header"], "3", "center", "");
+	html_start_box("<strong>Graph Permissions (By Graph)</strong>", "100%", "", "3", "center", "");
 
 	$graphs = db_fetch_assoc("SELECT
 		graph_templates_graph.local_graph_id,
@@ -534,7 +532,7 @@ function graph_perms_edit() {
 
 	?>
 	<form method="post" action="user_admin.php">
-	<tr bgcolor="#<?php print $colors["form_alternate1"];?>">
+	<tr class="odd">
 		<td width="50%">
 			<font class="textEditTitle">Default Policy</font><br>
 			The default allow/deny graph policy for this user.
@@ -581,7 +579,7 @@ function graph_perms_edit() {
 	<?php
 
 	/* box: device permissions */
-	html_start_box("<strong>Graph Permissions (By Device)</strong>", "100%", $colors["header"], "3", "center", "");
+	html_start_box("<strong>Graph Permissions (By Device)</strong>", "100%", "", "3", "center", "");
 
 	$hosts = db_fetch_assoc("SELECT
 		host.id,
@@ -592,7 +590,7 @@ function graph_perms_edit() {
 		ORDER BY host.description,host.hostname");
 
 	?>
-	<tr bgcolor="#<?php print $colors["form_alternate1"];?>">
+	<tr class="odd">
 		<td width="50%">
 			<font class="textEditTitle">Default Policy</font><br>
 			The default allow/deny graph policy for this user.
@@ -641,7 +639,7 @@ function graph_perms_edit() {
 	<?php
 
 	/* box: graph template permissions */
-	html_start_box("<strong>Graph Permissions (By Graph Template)</strong>", "100%", $colors["header"], "3", "center", "");
+	html_start_box("<strong>Graph Permissions (By Graph Template)</strong>", "100%", "", "3", "center", "");
 
 	$graph_templates = db_fetch_assoc("SELECT
 		graph_templates.id,
@@ -652,7 +650,7 @@ function graph_perms_edit() {
 		ORDER BY graph_templates.name");
 
 	?>
-	<tr bgcolor="#<?php print $colors["form_alternate1"];?>">
+	<tr class="odd">
 		<td width="50%">
 			<font class="textEditTitle">Default Policy</font><br>
 			The default allow/deny graph policy for this user.
@@ -700,7 +698,7 @@ function graph_perms_edit() {
 	<?php
 
 	/* box: tree permissions */
-	html_start_box("<strong>Tree Permissions</strong>", "100%", $colors["header"], "3", "center", "");
+	html_start_box("<strong>Tree Permissions</strong>", "100%", "", "3", "center", "");
 
 	$trees = db_fetch_assoc("SELECT
 		graph_tree.id,
@@ -711,7 +709,7 @@ function graph_perms_edit() {
 		ORDER BY graph_tree.name");
 
 	?>
-	<tr bgcolor="#<?php print $colors["form_alternate1"];?>">
+	<tr class="odd">
 		<td width="50%">
 			<font class="textEditTitle">Default Policy</font><br>
 			The default allow/deny graph policy for this user.
@@ -762,7 +760,7 @@ function graph_perms_edit() {
 }
 
 function user_realms_edit() {
-	global $colors, $user_auth_realms;
+	global $user_auth_realms;
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var("id"));
@@ -778,9 +776,9 @@ function user_realms_edit() {
 	</table>
 	<?php
 
-	html_start_box("", "100%", $colors["header"], "3", "center", "");
+	html_start_box("", "100%", "", "3", "center", "");
 
-	print "	<tr bgcolor='#" . $colors["header"] . "'>
+	print "<tr class='tableHeader'>
 			<td class='textHeaderDark'><strong>Realm Permissions</strong></td>
 			<td width='1%' align='center' bgcolor='#819bc0' style='" . get_checkbox_style() . "'><input type='checkbox' style='margin: 0px;' name='all' title='Select All' onClick='SelectAll(\"section\",this.checked)'></td>\n
 		</tr>\n";
@@ -825,7 +823,7 @@ function user_realms_edit() {
 }
 
 function graph_settings_edit() {
-	global $settings_graphs, $tabs_graphs, $colors, $graph_views, $graph_tree_views;
+	global $settings_graphs, $tabs_graphs, $graph_views, $graph_tree_views;
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var("id"));
@@ -841,11 +839,11 @@ function graph_settings_edit() {
 	</table>
 	<?php
 
-	html_start_box("<strong>Graph Settings</strong>", "100%", $colors["header"], "3", "center", "");
+	html_start_box("<strong>Graph Settings</strong>", "100%", "", "3", "center", "");
 
 	while (list($tab_short_name, $tab_fields) = each($settings_graphs)) {
 		?>
-		<tr bgcolor='#<?php print $colors["header_panel"];?>'>
+		<tr>
 			<td colspan='2' class='textSubHeaderDark' style='padding: 3px;'>
 				<?php print $tabs_graphs[$tab_short_name];?>
 			</td>
@@ -894,7 +892,7 @@ function graph_settings_edit() {
    -------------------------- */
 
 function user_edit() {
-	global $colors, $fields_user_user_edit_host;
+	global $fields_user_user_edit_host;
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var("id"));
@@ -909,7 +907,7 @@ function user_edit() {
 
 	api_plugin_hook_function('user_admin_edit', (isset($user) ? get_request_var("id") : 0));
 
-	html_start_box("<strong>User Management</strong> $header_label", "100%", $colors["header"], "3", "center", "");
+	html_start_box("<strong>User Management</strong> $header_label", "100%", "", "3", "center", "");
 
 	draw_edit_form(array(
 		"config" => array("form_name" => "chk"),
@@ -958,7 +956,7 @@ function user_edit() {
 }
 
 function user() {
-	global $colors, $auth_realms, $user_actions;
+	global $auth_realms, $user_actions;
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var_request("page"));
@@ -998,10 +996,10 @@ function user() {
 	load_current_session_value("sort_column", "sess_user_admin_sort_column", "username");
 	load_current_session_value("sort_direction", "sess_user_admin_sort_direction", "ASC");
 
-	html_start_box("<strong>User Management</strong>", "100%", $colors["header"], "3", "center", "user_admin.php?action=user_edit");
+	html_start_box("<strong>User Management</strong>", "100%", "", "3", "center", "user_admin.php?action=user_edit");
 
 	?>
-	<tr bgcolor="#<?php print $colors["panel"];?>">
+	<tr class='even noprint'>
 		<td>
 		<form name="form_user_admin" action="user_admin.php">
 			<table width="100%" cellpadding="0" cellspacing="0">
@@ -1036,7 +1034,7 @@ function user() {
 	/* print checkbox form for validation */
 	print "<form name='chk' method='post' action='user_admin.php'>\n";
 
-	html_start_box("", "100%", $colors["header"], "3", "center", "");
+	html_start_box("", "100%", "", "3", "center", "");
 
 	$total_rows = db_fetch_cell("SELECT
 		COUNT(user_auth.id)
@@ -1087,7 +1085,7 @@ function user() {
 				$enabled = "No";
 			}
 
-			form_alternate_row_color($colors["alternate"], $colors["light"], $i, 'line' . $user["id"]); $i++;
+			form_alternate_row('line' . $user["id"], true);
 			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars("user_admin.php?action=user_edit&tab=user_realms_edit&id=" . $user["id"]) . "'>" .
 			(strlen(get_request_var_request("filter")) ? preg_replace("/(" . preg_quote(get_request_var_request("filter"), "/") . ")/i", "<span style='background-color: #F8D93D;'>\\1</span>",  htmlspecialchars($user["username"])) : htmlspecialchars($user["username"]))
 			, $user["id"]);

@@ -123,7 +123,7 @@ function rra_remove() {
 }
 
 function rra_edit() {
-	global $colors, $fields_rra_edit;
+	global $fields_rra_edit;
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var("id"));
@@ -136,7 +136,7 @@ function rra_edit() {
 		$header_label = "[new]";
 	}
 
-	html_start_box("<strong>Round Robin Archives</strong> $header_label", "100%", $colors["header"], "3", "center", "");
+	html_start_box("<strong>Round Robin Archives</strong> $header_label", "100%", "", "3", "center", "");
 
 	draw_edit_form(array(
 		"config" => array(),
@@ -149,8 +149,6 @@ function rra_edit() {
 }
 
 function rra() {
-	global $colors;
-
 	/* clean up sort_column */
 	if (isset($_REQUEST["sort_column"])) {
 		$_REQUEST["sort_column"] = sanitize_search_string(get_request_var("sort_column"));
@@ -165,7 +163,7 @@ function rra() {
 	load_current_session_value("sort_column", "sess_rra_sort_column", "timespan");
 	load_current_session_value("sort_direction", "sess_rra_sort_direction", "ASC");
 
-	html_start_box("<strong>Round Robin Archives</strong>", "100%", $colors["header"], "3", "center", "rra.php?action=edit");
+	html_start_box("<strong>Round Robin Archives</strong>", "100%", "", "3", "center", "rra.php?action=edit");
 
 	$display_text = array(
 		"name" => array("Name", "ASC"),
@@ -187,7 +185,7 @@ function rra() {
 	$i = 0;
 	if (sizeof($rras) > 0) {
 	foreach ($rras as $rra) {
-		form_alternate_row_color($colors["alternate"],$colors["light"],$i); $i++;
+		form_alternate_row('', true);
 			?>
 			<td>
 				<a class="linkEditMain" href="<?php print htmlspecialchars("rra.php?action=edit&id=" . $rra["id"]);?>"><?php print htmlspecialchars($rra["name"]);?></a>

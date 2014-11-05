@@ -290,7 +290,7 @@ function item_remove() {
 }
 
 function item_edit() {
-	global $colors, $struct_graph_item, $graph_item_types, $consolidation_functions;
+	global $struct_graph_item, $graph_item_types, $consolidation_functions;
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var("id"));
@@ -299,7 +299,7 @@ function item_edit() {
 
 	$header_label = "[edit graph: " . db_fetch_cell("select name from graph_templates where id=" . $_GET["graph_template_id"]) . "]";
 
-	html_start_box("<strong>Graph Template Items</strong> " . htmlspecialchars($header_label), "100%", $colors["header"], "3", "center", "");
+	html_start_box("<strong>Graph Template Items</strong> " . htmlspecialchars($header_label), "100%", "", "3", "center", "");
 
 	if (!empty($_GET["id"])) {
 		$template_item = db_fetch_row("select * from graph_templates_item where id=" . $_GET["id"]);

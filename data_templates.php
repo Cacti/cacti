@@ -252,7 +252,7 @@ function form_save() {
    ------------------------ */
 
 function form_actions() {
-	global $colors, $ds_actions;
+	global $ds_actions;
 
 	/* ================= input validation ================= */
 	input_validate_input_regex(get_request_var_post('drp_action'), "^([a-zA-Z0-9_]+)$");
@@ -314,14 +314,14 @@ function form_actions() {
 
 	include_once("./include/top_header.php");
 
-	html_start_box("<strong>" . $ds_actions{$_POST["drp_action"]} . "</strong>", "60%", $colors["header_panel"], "3", "center", "");
+	html_start_box("<strong>" . $ds_actions{$_POST["drp_action"]} . "</strong>", "60%", "", "3", "center", "");
 
 	print "<form action='data_templates.php' method='post'>\n";
 
 	if (isset($ds_array) && sizeof($ds_array)) {
 		if ($_POST["drp_action"] == "1") { /* delete */
 			print "	<tr>
-					<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
+					<td class='textArea'>
 						<p>When you click \"Continue\", the following Data Template(s) will be deleted.  Any data sources attached
 						to these templates will become individual Data Source(s) and all Templating benefits will be removed.</p>
 						<p><ul>$ds_list</ul></p>
@@ -331,7 +331,7 @@ function form_actions() {
 			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Delete Data Template(s)'>";
 		}elseif ($_POST["drp_action"] == "2") { /* duplicate */
 			print "	<tr>
-					<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
+					<td class='textArea'>
 						<p>When you click \"Continue\", the following Data Template(s) will be duplicated. You can
 						optionally change the title format for the new Data Template(s).</p>
 						<p><ul>$ds_list</ul></p>
@@ -342,12 +342,12 @@ function form_actions() {
 			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Duplicate Data Template(s)'>";
 		}
 	}else{
-		print "<tr><td bgcolor='#" . $colors["form_alternate1"]. "'><span class='textError'>You must select at least one data template.</span></td></tr>\n";
+		print "<tr><td class='even'><span class='textError'>You must select at least one data template.</span></td></tr>\n";
 		$save_html = "<input type='button' value='Return' onClick='window.history.back()'>";
 	}
 
 	print "	<tr>
-			<td align='right' bgcolor='#eaeaea'>
+			<td align='right' class='saveRow'>
 				<input type='hidden' name='action' value='actions'>
 				<input type='hidden' name='selected_items' value='" . (isset($ds_array) ? serialize($ds_array) : '') . "'>
 				<input type='hidden' name='drp_action' value='" . $_POST["drp_action"] . "'>
@@ -410,7 +410,7 @@ function template_rrd_add() {
 }
 
 function template_edit() {
-	global $colors, $struct_data_source, $struct_data_source_item, $data_source_types, $fields_data_template_template_edit;
+	global $struct_data_source, $struct_data_source_item, $data_source_types, $fields_data_template_template_edit;
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var("id"));
@@ -426,7 +426,7 @@ function template_edit() {
 		$header_label = "[new]";
 	}
 
-	html_start_box("<strong>Data Templates</strong> " . htmlspecialchars($header_label), "100%", $colors["header"], "3", "center", "");
+	html_start_box("<strong>Data Templates</strong> " . htmlspecialchars($header_label), "100%", "", "3", "center", "");
 
 	draw_edit_form(array(
 		"config" => array(),
@@ -435,7 +435,7 @@ function template_edit() {
 
 	html_end_box();
 
-	html_start_box("<strong>Data Source</strong>", "100%", $colors["header"], "3", "center", "");
+	html_start_box("<strong>Data Source</strong>", "100%", "", "3", "center", "");
 
 	/* make sure 'data source path' doesn't show up for a template... we should NEVER template this field */
 	unset($struct_data_source["data_source_path"]);
@@ -496,7 +496,7 @@ function template_edit() {
 
 				foreach ($template_data_rrds as $template_data_rrd) {
 					$i++;
-					print "	<td " . (($template_data_rrd["id"] == $_GET["view_rrd"]) ? "bgcolor='silver'" : "bgcolor='#DFDFDF'") . " nowrap='nowrap' width='" . ((strlen($template_data_rrd["data_source_name"]) * 9) + 50) . "' align='center' class='tab'>
+					print "	<td " . (($template_data_rrd["id"] == $_GET["view_rrd"]) ? "class='tabSelected tab'" : "class='tabNotSelected tab'") . " width='" . ((strlen($template_data_rrd["data_source_name"]) * 9) + 50) . "' align='center'>
 							<span class='textHeader'><a href='" . htmlspecialchars("data_templates.php?action=template_edit&id=" . $_GET["id"] . "&view_rrd=" . $template_data_rrd["id"]) . "'>$i: " . htmlspecialchars($template_data_rrd["data_source_name"]) . "</a> <a href='" . htmlspecialchars("data_templates.php?action=rrd_remove&id=" . $template_data_rrd["id"] . "&data_template_id=" . $_GET["id"]) . "'><img src='images/delete_icon.gif' border='0' alt='Delete'></a></span>
 						</td>\n
 						<td width='1'></td>\n";
@@ -512,13 +512,13 @@ function template_edit() {
 		}
 	}
 
-	html_start_box("", "100%", $colors["header"], "3", "center", "");
+	html_start_box("", "100%", "", "3", "center", "");
 
 	print "	<tr>
-			<td bgcolor='#" . $colors["header"] . "' class='textHeaderDark'>
+			<td class='textHeaderDark'>
 				<strong>Data Source Item</strong> [" . (isset($template_rrd) ? htmlspecialchars($template_rrd["data_source_name"]) : "") . "]
 			</td>
-			<td class='textHeaderDark' align='right' bgcolor='#" . $colors["header"] . "'>
+			<td class='textHeaderDark' align='right'>
 				" . (!empty($_GET["id"]) ? "<strong><a class='linkOverDark' href='" . htmlspecialchars("data_templates.php?action=rrd_add&id=" . $_GET["id"]) . "'>New</a>&nbsp;</strong>" : "") . "
 			</td>
 		</tr>\n";
@@ -567,7 +567,7 @@ function template_edit() {
 		/* get each INPUT field for this data input source */
 		$fields = db_fetch_assoc("select * from data_input_fields where data_input_id=" . $template_data["data_input_id"] . " and input_output='in' order by name");
 
-		html_start_box("<strong>Custom Data</strong> [data input: " . htmlspecialchars(db_fetch_cell("select name from data_input where id=" . $template_data["data_input_id"])) . "]", "100%", $colors["header"], "3", "center", "");
+		html_start_box("<strong>Custom Data</strong> [data input: " . htmlspecialchars(db_fetch_cell("select name from data_input where id=" . $template_data["data_input_id"])) . "]", "100%", "", "3", "center", "");
 
 		/* loop through each field found */
 		if (sizeof($fields) > 0) {
@@ -580,7 +580,7 @@ function template_edit() {
 				$old_value = "";
 			}
 
-			form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i); ?>
+			form_alternate_row();?>
 				<td width="50%">
 					<strong><?php print $field["name"];?></strong><br>
 					<?php form_checkbox("t_value_" . $field["data_name"], $data_input_data["t_value"], "Use Per-Data Source Value (Ignore this Value)", "", "", $_GET["id"]);?>
@@ -605,7 +605,7 @@ function template_edit() {
 }
 
 function template() {
-	global $colors, $ds_actions;
+	global $ds_actions;
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var_request("page"));
@@ -646,10 +646,10 @@ function template() {
 	load_current_session_value("sort_direction", "sess_data_template_sort_direction", "ASC");
 
 
-	html_start_box("<strong>Data Templates</strong>", "100%", $colors["header"], "3", "center", "data_templates.php?action=template_edit");
+	html_start_box("<strong>Data Templates</strong>", "100%", "", "3", "center", "data_templates.php?action=template_edit");
 
 	?>
-	<tr bgcolor="#<?php print $colors["panel"];?>">
+	<tr class='even noprint'>
 		<td>
 		<form name="form_data_template" action="data_templates.php">
 			<table width="100%" cellpadding="0" cellspacing="0">
@@ -685,7 +685,7 @@ function template() {
 	/* print checkbox form for validation */
 	print "<form name='chk' method='post' action='data_templates.php'>\n";
 
-	html_start_box("", "100%", $colors["header"], "3", "center", "");
+	html_start_box("", "100%", "", "3", "center", "");
 
 	$total_rows = db_fetch_cell("SELECT
 		COUNT(data_template.id)
@@ -717,17 +717,15 @@ function template() {
 
 	html_header_sort_checkbox($display_text, get_request_var_request("sort_column"), get_request_var_request("sort_direction"), false);
 
-	$i = 0;
 	if (sizeof($template_list) > 0) {
 		foreach ($template_list as $template) {
-			form_alternate_row_color($colors["alternate"],$colors["light"],$i, 'line' . $template["id"]);
+			form_alternate_row('line' . $template["id"], true);
 			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars("data_templates.php?action=template_edit&id=" . $template["id"]) . "'>" . (strlen(get_request_var_request("filter")) ? preg_replace("/(" . preg_quote(get_request_var_request("filter"), "/") . ")/i", "<span style='background-color: #F8D93D;'>\\1</span>", htmlspecialchars($template["name"])) : htmlspecialchars($template["name"])) . "</a>", $template["id"]);
 			form_selectable_cell($template['id'], $template["id"]);
 			form_selectable_cell((empty($template["data_input_method"]) ? "<em>None</em>": htmlspecialchars($template["data_input_method"])), $template["id"]);
 			form_selectable_cell((($template["active"] == "on") ? "Active" : "Disabled"), $template["id"]);
 			form_checkbox_cell($template["name"], $template["id"]);
 			form_end_row();
-			$i++;
 		}
 
 		/* put the nav bar on the bottom as well */

@@ -173,7 +173,7 @@ function form_save() {
    ------------------------ */
 
 function form_actions() {
-	global $colors, $device_actions, $fields_host_edit;
+	global $device_actions, $fields_host_edit;
 
 	/* ================= input validation ================= */
 	input_validate_input_regex(get_request_var_post('drp_action'), "^([a-zA-Z0-9_]+)$");
@@ -359,14 +359,14 @@ function form_actions() {
 	/* add a list of tree names to the actions dropdown */
 	add_tree_names_to_actions_array();
 
-	html_start_box("<strong>" . $device_actions[get_request_var_post("drp_action")] . "</strong>", "60%", $colors["header_panel"], "3", "center", "");
+	html_start_box("<strong>" . $device_actions[get_request_var_post("drp_action")] . "</strong>", "60%", "", "3", "center", "");
 
 	print "<form action='host.php' autocomplete='off' method='post'>\n";
 
 	if (isset($host_array) && sizeof($host_array)) {
 		if ($_POST["drp_action"] == "2") { /* Enable Devices */
 			print "	<tr>
-					<td colspan='2' class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
+					<td colspan='2' class='textArea'>
 						<p>To enable the following Device(s), click \"Continue\".</p>
 						<p><ul>" . $host_list . "</ul></p>
 					</td>
@@ -375,7 +375,7 @@ function form_actions() {
 			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Enable Device(s)'>";
 		}elseif ($_POST["drp_action"] == "3") { /* Disable Devices */
 			print "	<tr>
-					<td colspan='2' class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
+					<td colspan='2' class='textArea'>
 						<p>To disable the following Device(s), click \"Continue\".</p>
 						<p><ul>" . $host_list . "</ul></p>
 					</td>
@@ -383,7 +383,7 @@ function form_actions() {
 			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Disable Device(s)'>";
 		}elseif ($_POST["drp_action"] == "4") { /* change snmp options */
 			print "	<tr>
-					<td colspan='2' class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
+					<td colspan='2' class='textArea'>
 						<p>To change SNMP parameters for the following Device(s), check the box next to the fields
 						you want to update, fill in the new value, and click \"Continue\".</p>
 						<p><ul>" . $host_list . "</ul></p>
@@ -415,7 +415,7 @@ function form_actions() {
 			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Change Device(s) SNMP Options'>";
 		}elseif ($_POST["drp_action"] == "6") { /* change availability options */
 			print "	<tr>
-					<td colspan='2' class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
+					<td colspan='2' class='textArea'>
 						<p>To change Availability parameters for the following Device(s), check the box next to the fields
 						you want to update, fill in the new value, and click \"Continue\".</p>
 						<p><ul>" . $host_list . "</ul></p>
@@ -446,7 +446,7 @@ function form_actions() {
 			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Change Device(s) Availability Options'>";
 		}elseif ($_POST["drp_action"] == "5") { /* Clear Statisitics for Selected Devices */
 			print "	<tr>
-					<td colspan='2' class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
+					<td colspan='2' class='textArea'>
 						<p>To clear the counters for the following Device(s), press the \"Continue\" button below.</p>
 						<p><ul>" . $host_list . "</ul></p>
 					</td>
@@ -454,7 +454,7 @@ function form_actions() {
 			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Clear Statistics on Device(s)'>";
 		}elseif ($_POST["drp_action"] == "1") { /* delete */
 			print "	<tr>
-					<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
+					<td class='textArea'>
 						<p>When you click \"Continue\" the following Device(s) will be deleted.</p>
 						<p><ul>" . $host_list . "</ul></p>";
 						form_radio_button("delete_type", "2", "1", "Leave all Graph(s) and Data Source(s) untouched.  Data Source(s) will be disabled however.", "1"); print "<br>";
@@ -466,7 +466,7 @@ function form_actions() {
 			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Delete Device(s)'>";
 		}elseif (preg_match("/^tr_([0-9]+)$/", $_POST["drp_action"], $matches)) { /* place on tree */
 			print "	<tr>
-					<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
+					<td class='textArea'>
 						<p>When you click \"Continue\", the following Device(s) will be placed under the branch selected
 						below.</p>
 						<p><ul>" . $host_list . "</ul></p>
@@ -484,12 +484,12 @@ function form_actions() {
 			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue'>";
 		}
 	}else{
-		print "<tr><td bgcolor='#" . $colors["form_alternate1"]. "'><span class='textError'>You must select at least one device.</span></td></tr>\n";
+		print "<tr><td class='even'><span class='textError'>You must select at least one device.</span></td></tr>\n";
 		$save_html = "<input type='button' value='Return' onClick='window.history.back()'>";
 	}
 
 	print "	<tr>
-			<td colspan='2' align='right' bgcolor='#eaeaea'>
+			<td colspan='2' align='right' class='saveRow'>
 				<input type='hidden' name='action' value='actions'>
 				<input type='hidden' name='selected_items' value='" . (isset($host_array) ? serialize($host_array) : '') . "'>
 				<input type='hidden' name='drp_action' value='" . $_POST["drp_action"] . "'>
@@ -558,7 +558,7 @@ function host_remove() {
 }
 
 function host_edit() {
-	global $colors, $fields_host_edit, $reindex_types;
+	global $fields_host_edit, $reindex_types;
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var("id"));
@@ -579,6 +579,12 @@ function host_edit() {
 			<tr>
 				<td class="textInfo" colspan="2">
 					<?php print htmlspecialchars($host["description"]);?> (<?php print htmlspecialchars($host["hostname"]);?>)
+				</td>
+				<td rowspan='2' class="textInfo" valign="top" align='right'>
+					<span class="linkMarker">*</span><a href="<?php print htmlspecialchars("graphs_new.php?host_id=" . $host["id"]);?>">Create Graphs for this Host</a><br>
+					<span class="linkMarker">*</span><a href="<?php print htmlspecialchars("data_sources.php?host_id=" . $host["id"] . "&ds_rows=30&filter=&template_id=-1&method_id=-1&page=1");?>">Data Source List</a><br>
+					<span class="linkMarker">*</span><a href="<?php print htmlspecialchars("graphs.php?host_id=" . $host["id"] . "&graph_rows=30&filter=&template_id=-1&page=1");?>">Graph List</a>
+					<?php api_plugin_hook('device_edit_top_links'); ?>
 				</td>
 			</tr>
 			<tr>
@@ -660,33 +666,27 @@ function host_edit() {
 					if ($ping->ping($host["availability_method"], $host["ping_method"],
 						$host["ping_timeout"], $host["ping_retries"])) {
 						$host_down = false;
-						$color     = "#000000";
+						$class     = 'hostUp';
 					}else{
 						$host_down = true;
-						$color     = "#ff0000";
+						$class     = 'hostDown';
 					}
 
 				?>
 					<br>Ping Results<br>
-					<span style="font-size: 10px; font-weight: normal; color: <?php print $color; ?>; font-family: monospace;">
+					<span class='<?php print $class;?>'>
 					<?php print $ping->ping_response; ?>
 					</span>
 				<?php }else if ($host["availability_method"] == AVAIL_NONE) { ?>
 					No Availability Check In Use<br>
 				<?php } ?>
 				</td>
-				<td class="textInfo" valign="top">
-					<span style="color: #c16921;">*</span><a href="<?php print htmlspecialchars("graphs_new.php?host_id=" . $host["id"]);?>">Create Graphs for this Host</a><br>
-					<span style="color: #c16921;">*</span><a href="<?php print htmlspecialchars("data_sources.php?host_id=" . $host["id"] . "&ds_rows=30&filter=&template_id=-1&method_id=-1&page=1");?>">Data Source List</a><br>
-					<span style="color: #c16921;">*</span><a href="<?php print htmlspecialchars("graphs.php?host_id=" . $host["id"] . "&graph_rows=30&filter=&template_id=-1&page=1");?>">Graph List</a>
-					<?php api_plugin_hook('device_edit_top_links'); ?>
-				</td>
 			</tr>
 		</table>
 		<?php
 	}
 
-	html_start_box("<strong>Devices</strong> $header_label", "100%", $colors["header"], "3", "center", "");
+	html_start_box("<strong>Device</strong> $header_label", "100%", "", "3", "center", "");
 
 	/* preserve the host template id if passed in via a GET variable */
 	if (!empty($_GET["host_template_id"])) {
@@ -1005,7 +1005,7 @@ function host_edit() {
 	<?php
 
 	if ((isset($_GET["display_dq_details"])) && (isset($_SESSION["debug_log"]["data_query"]))) {
-		html_start_box("<strong>Data Query Debug Information</strong>", "100%", $colors["header"], "3", "center", "");
+		html_start_box("<strong>Data Query Debug Information</strong>", "100%", "", "3", "center", "");
 
 		print "<tr><td><span style='font-family: monospace;'>" . debug_log_return("data_query") . "</span></td></tr>";
 
@@ -1013,7 +1013,7 @@ function host_edit() {
 	}
 
 	if (!empty($host["id"])) {
-		html_start_box("<strong>Associated Graph Templates</strong>", "100%", $colors["header"], "3", "center", "");
+		html_start_box("<strong>Associated Graph Templates</strong>", "100%", "", "3", "center", "");
 
 		html_header(array("Graph Template Name", "Status"), 2);
 
@@ -1034,13 +1034,12 @@ function host_edit() {
 		$i = 0;
 		if (sizeof($selected_graph_templates) > 0) {
 		foreach ($selected_graph_templates as $item) {
-			$i++;
+			form_alternate_row('', true);
 
 			/* get status information for this graph template */
 			$is_being_graphed = (sizeof(db_fetch_assoc("select id from graph_local where graph_template_id=" . $item["id"] . " and host_id=" . $_GET["id"])) > 0) ? true : false;
 
 			?>
-			<tr>
 				<td style="padding: 4px;">
 					<strong><?php print $i;?>)</strong> <?php print htmlspecialchars($item["name"]);?>
 				</td>
@@ -1050,13 +1049,13 @@ function host_edit() {
 				<td align='right' nowrap>
 					<a href='<?php print htmlspecialchars("host.php?action=gt_remove&id=" . $item["id"] . "&host_id=" . $_GET["id"]);?>'><img src='images/delete_icon_large.gif' title='Delete Graph Template Association' alt='Delete Graph Template Association' border='0' align='middle'></a>
 				</td>
-			</tr>
 			<?php
+			form_end_row();
 		}
-		}else{ print "<tr><td><em>No associated graph templates.</em></td></tr>"; }
+		}else{ print "<tr><td colspan='2'><em>No associated graph templates.</em></td></tr>"; }
 
 		?>
-		<tr bgcolor="#<?php print $colors["form_alternate1"];?>">
+		<tr class='odd'>
 			<td colspan="4">
 				<table cellspacing="0" cellpadding="1" width="100%">
 					<td nowrap>Add Graph Template:&nbsp;
@@ -1072,7 +1071,7 @@ function host_edit() {
 		<?php
 		html_end_box();
 
-		html_start_box("<strong>Associated Data Queries</strong>", "100%", $colors["header"], "3", "center", "");
+		html_start_box("<strong>Associated Data Queries</strong>", "100%", "", "3", "center", "");
 
 		html_header(array("Data Query Name", "Debugging", "Re-Index Method", "Status"), 2);
 
@@ -1107,7 +1106,7 @@ function host_edit() {
 		$i = 0;
 		if (sizeof($selected_data_queries) > 0) {
 		foreach ($selected_data_queries as $item) {
-			$i++;
+			form_alternate_row('', true);
 
 			/* get status information for this data query */
 			$num_dq_items = sizeof(db_fetch_assoc("select snmp_index from host_snmp_cache where host_id=" . $_GET["id"] . " and snmp_query_id=" . $item["id"]));
@@ -1116,7 +1115,6 @@ function host_edit() {
 			$status = "success";
 
 			?>
-			<tr>
 				<td style="padding: 4px;">
 					<strong><?php print $i;?>)</strong> <?php print htmlspecialchars($item["name"]);?>
 				</td>
@@ -1133,13 +1131,13 @@ function host_edit() {
 					<a href='<?php print htmlspecialchars("host.php?action=query_reload&id=" . $item["id"] . "&host_id=" . $_GET["id"]);?>'><img src='images/reload_icon_small.gif' title='Reload Data Query' alt='Reload Data Query' border='0' align='middle'></a>&nbsp;
 					<a href='<?php print htmlspecialchars("host.php?action=query_remove&id=" . $item["id"] . "&host_id=" . $_GET["id"]);?>'><img src='images/delete_icon_large.gif' title='Delete Data Query Association' alt='Delete Data Query Association' border='0' align='middle'></a>
 				</td>
-			</tr>
 			<?php
+			form_end_row();
 		}
-		}else{ print "<tr><td><em>No associated data queries.</em></td></tr>"; }
+		}else{ print "<tr><td colspan='4'><em>No associated data queries.</em></td></tr>"; }
 
 		?>
-		<tr bgcolor="#<?php print $colors["form_alternate1"];?>">
+		<tr class='odd'>
 			<td colspan="5">
 				<table cellspacing="0" cellpadding="1" width="100%">
 					<td nowrap>Add Data Query:&nbsp;
@@ -1165,7 +1163,7 @@ function host_edit() {
 }
 
 function host() {
-	global $colors, $device_actions, $item_rows;
+	global $device_actions, $item_rows;
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var_request("host_template_id"));
@@ -1244,10 +1242,10 @@ function host() {
 	</script>
 	<?php
 
-	html_start_box("<strong>Devices</strong>", "100%", $colors["header"], "3", "center", "host.php?action=edit&host_template_id=" . htmlspecialchars(get_request_var_request("host_template_id")) . "&host_status=" . htmlspecialchars(get_request_var_request("host_status")));
+	html_start_box("<strong>Devices</strong>", "100%", "", "3", "center", "host.php?action=edit&host_template_id=" . htmlspecialchars(get_request_var_request("host_template_id")) . "&host_status=" . htmlspecialchars(get_request_var_request("host_status")));
 
 	?>
-	<tr bgcolor="#<?php print $colors["panel"];?>">
+	<tr class='even noprint'>
 		<td>
 		<form name="form_devices" action="host.php">
 			<table width="100%" cellpadding="0" cellspacing="0">
@@ -1350,7 +1348,7 @@ function host() {
 	/* print checkbox form for validation */
 	print "<form name='chk' method='post' action='host.php'>\n";
 
-	html_start_box("", "100%", $colors["header"], "3", "center", "");
+	html_start_box("", "100%", "", "3", "center", "");
 
 	$total_rows = db_fetch_cell("select
 		COUNT(host.id)
@@ -1394,7 +1392,7 @@ function host() {
 	$i = 0;
 	if (sizeof($hosts) > 0) {
 		foreach ($hosts as $host) {
-			form_alternate_row_color($colors["alternate"], $colors["light"], $i, 'line' . $host["id"]); $i++;
+			form_alternate_row('line' . $host["id"], true);
 			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars("host.php?action=edit&id=" . $host["id"]) . "'>" .
 				(strlen(get_request_var_request("filter")) ? preg_replace("/(" . preg_quote(get_request_var_request("filter"), "/") . ")/i", "<span style='background-color: #F8D93D;'>\\1</span>", htmlspecialchars($host["description"])) : htmlspecialchars($host["description"])) . "</a>", $host["id"], 250);
 			form_selectable_cell(round(($host["id"]), 2), $host["id"]);

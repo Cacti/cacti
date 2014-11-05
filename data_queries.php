@@ -193,7 +193,7 @@ function form_save() {
 }
 
 function form_actions() {
-	global $colors, $dq_actions;
+	global $dq_actions;
 
 	/* ================= input validation ================= */
 	input_validate_input_regex(get_request_var_post('drp_action'), "^([a-zA-Z0-9_]+)$");
@@ -236,7 +236,7 @@ function form_actions() {
 
 	include_once("./include/top_header.php");
 
-	html_start_box("<strong>" . $dq_actions{$_POST["drp_action"]} . "</strong>", "60%", $colors["header_panel"], "3", "center", "");
+	html_start_box("<strong>" . $dq_actions{$_POST["drp_action"]} . "</strong>", "60%", "", "3", "center", "");
 
 	print "<form action='data_queries.php' method='post'>\n";
 
@@ -246,7 +246,7 @@ function form_actions() {
 
 			print "
 				<tr>
-					<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
+					<td class='textArea' class='odd'>
 						<p>When you click \"Continue\" the following Data Querie(s) will be deleted.</p>
 						<p><ul>$dq_list</ul></p>
 					</td>
@@ -255,12 +255,12 @@ function form_actions() {
 
 		$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Delete Data Querie(s)'>";
 	}else{
-		print "<tr><td bgcolor='#" . $colors["form_alternate1"]. "'><span class='textError'>You must select at least one data query.</span></td></tr>\n";
+		print "<tr><td class='odd'><span class='textError'>You must select at least one data query.</span></td></tr>\n";
 		$save_html = "<input type='button' value='Return' onClick='window.history.back()'>";
 	}
 
 	print "	<tr>
-			<td align='right' bgcolor='#eaeaea'>
+			<td align='right' class='saveRow'>
 				<input type='hidden' name='action' value='actions'>
 				<input type='hidden' name='selected_items' value='" . (isset($dq_array) ? serialize($dq_array) : '') . "'>
 				<input type='hidden' name='drp_action' value='" . $_POST["drp_action"] . "'>
@@ -354,7 +354,7 @@ function data_query_item_remove() {
 }
 
 function data_query_item_edit() {
-	global $colors, $fields_data_query_item_edit;
+	global $fields_data_query_item_edit;
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var("id"));
@@ -368,7 +368,7 @@ function data_query_item_edit() {
 	$snmp_query = db_fetch_row("select name,xml_path from snmp_query where id=" . $_GET["snmp_query_id"]);
 	$header_label = "[edit: " . htmlspecialchars($snmp_query["name"]) . "]";
 
-	html_start_box("<strong>Associated Graph/Data Templates</strong> $header_label", "100%", $colors["header"], "3", "center", "");
+	html_start_box("<strong>Associated Graph/Data Templates</strong> $header_label", "100%", "", "3", "center", "");
 
 	draw_edit_form(array(
 		"config" => array(),
@@ -378,7 +378,7 @@ function data_query_item_edit() {
 	html_end_box();
 
 	if (!empty($snmp_query_item["id"])) {
-		html_start_box("<strong>Associated Data Templates</strong>", "100%", $colors["header"], "3", "center", "");
+		html_start_box("<strong>Associated Data Templates</strong>", "100%", "", "3", "center", "");
 
 		$data_templates = db_fetch_assoc("select
 			data_template.id,
@@ -395,8 +395,8 @@ function data_query_item_edit() {
 		$i = 0;
 		if (sizeof($data_templates) > 0) {
 			foreach ($data_templates as $data_template) {
-				print "	<tr bgcolor='#" . $colors["header_panel"] . "'>
-						<td><span style='color: white; font-weight: bold;'>Data Template - " . $data_template["name"] . "</span></td>
+				print "<tr class='tableHeader'>
+						<td class='textSubHeaderDark'>Data Template - " . $data_template["name"] . "</td>
 					</tr>";
 
 				$data_template_rrds = db_fetch_assoc("select
@@ -419,7 +419,7 @@ function data_query_item_edit() {
 							$old_value = "on";
 						}
 
-						form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++;
+						form_alternate_row();
 						?>
 							<td>
 								<table cellspacing="0" cellpadding="0" border="0" width="100%">
@@ -449,8 +449,8 @@ function data_query_item_edit() {
 									</tr>
 								</table>
 							</td>
-						</tr>
 						<?php
+						form_end_row();
 					}
 				}
 			}
@@ -458,7 +458,7 @@ function data_query_item_edit() {
 
 		html_end_box();
 
-		html_start_box("<strong>Suggested Values</strong>", "100%", $colors["header"], "0", "center", "");
+		html_start_box("<strong>Suggested Values</strong>", "100%", "", "3", "center", "");
 
 		reset($data_templates);
 
@@ -474,16 +474,16 @@ function data_query_item_edit() {
 				and data_template_id=" . $data_template["id"] . "
 				order by field_name,sequence");
 
-			print "	<tr bgcolor='#" . $colors["header_panel"] . "'>
-					<td style='padding: 3px;'><span style='color: white; font-weight: bold;'>Data Template - " . htmlspecialchars($data_template["name"]) . "</span></td>
+			print "<tr class='tableHeader'>
+					<td class='textSubHeaderDark'>Data Template - " . htmlspecialchars($data_template["name"]) . "</td>
 				</tr>";
 
 			$i = 0;
 			if (sizeof($suggested_values) > 0) {
-				print "<tr><td><table cellspacing='0' cellpadding='3' border='0' width='100%'>\n";
+				print "<tr><td><table cellspacing='0' cellpadding='0' border='0' width='100%'>\n";
 
 				foreach ($suggested_values as $suggested_value) {
-					form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++;
+					form_alternate_row();
 					?>
 						<td width="120">
 							<strong><?php print htmlspecialchars($suggested_value["field_name"]);?></strong>
@@ -505,7 +505,7 @@ function data_query_item_edit() {
 				print "</table></td></tr>\n";
 			}
 
-			form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i);
+			form_alternate_row();
 			?>
 				<td>
 					<table cellspacing="0" cellpadding="3" border="0" width="100%">
@@ -536,16 +536,16 @@ function data_query_item_edit() {
 			where snmp_query_graph_id=" . $_GET["id"] . "
 			order by field_name,sequence");
 
-		print "	<tr bgcolor='#" . $colors["header_panel"] . "'>
-				<td style='padding: 3px;'><span style='color: white; font-weight: bold;'>Graph Template - " . htmlspecialchars(db_fetch_cell("select name from graph_templates where id=" . $snmp_query_item["graph_template_id"])) . "</span></td>
+		print "<tr class='tableHeader'>
+				<td class='textSubHeaderDark'>Graph Template - " . htmlspecialchars(db_fetch_cell("select name from graph_templates where id=" . $snmp_query_item["graph_template_id"])) . "</td>
 			</tr>";
 
 		$i = 0;
 		if (sizeof($suggested_values) > 0) {
-			print "<tr><td><table cellspacing='0' cellpadding='3' border='0' width='100%'>\n";
+			print "<tr><td><table cellspacing='0' cellpadding='0' border='0' width='100%'>\n";
 
 			foreach ($suggested_values as $suggested_value) {
-				form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++;
+				form_alternate_row();
 				?>
 					<td width="120">
 						<strong><?php print htmlspecialchars($suggested_value["field_name"]);?></strong>
@@ -567,7 +567,7 @@ function data_query_item_edit() {
 			print "</table></td></tr>\n";
 		}
 
-		form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i);
+		form_alternate_row();
 		?>
 			<td>
 				<table cellspacing="0" cellpadding="3" border="0" width="100%">
@@ -614,7 +614,7 @@ function data_query_remove($id) {
 }
 
 function data_query_edit() {
-	global $colors, $fields_data_query_edit, $config;
+	global $fields_data_query_edit, $config;
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var("id"));
@@ -627,7 +627,7 @@ function data_query_edit() {
 		$header_label = "[new]";
 	}
 
-	html_start_box("<strong>Data Queries</strong> $header_label", "100%", $colors["header"], "3", "center", "");
+	html_start_box("<strong>Data Queries</strong> $header_label", "100%", "", "3", "center", "");
 
 	draw_edit_form(array(
 		"config" => array(),
@@ -647,16 +647,16 @@ function data_query_edit() {
 			$xml_file_exists = false;
 		}
 
-		html_start_box("", "100%", "aaaaaa", "3", "center", "");
-		print "<tr bgcolor='#f5f5f5'><td>$text</td></tr>";
+		html_start_box("", "100%", "", "3", "center", "");
+		print "<tr class='textInfo'><td>$text</td></tr>";
 		html_end_box();
 
 		if ($xml_file_exists == true) {
-			html_start_box("<strong>Associated Graph Templates</strong>", "100%", $colors["header"], "3", "center", "data_queries.php?action=item_edit&snmp_query_id=" . $snmp_query["id"]);
+			html_start_box("<strong>Associated Graph Templates</strong>", "100%", "", "3", "center", "data_queries.php?action=item_edit&snmp_query_id=" . $snmp_query["id"]);
 
-			print "	<tr bgcolor='#" . $colors["header_panel"] . "'>
-					<td><span style='color: white; font-weight: bold;'>Name</span></td>
-					<td><span style='color: white; font-weight: bold;'>Graph Template Name</span></td>
+			print "<tr class='tableHeader'>
+					<td class='textSubHeaderDark'>Name</td>
+					<td class='textSubHeaderDark'>Graph Template Name</td>
 					<td></td>
 				</tr>";
 
@@ -672,7 +672,7 @@ function data_query_edit() {
 			$i = 0;
 			if (sizeof($snmp_query_graphs) > 0) {
 			foreach ($snmp_query_graphs as $snmp_query_graph) {
-				form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++;
+				form_alternate_row();
 				?>
 					<td>
 						<strong><a href="<?php print htmlspecialchars("data_queries.php?action=item_edit&id=" . $snmp_query_graph["id"] . "&snmp_query_id=" . $snmp_query["id"]);?>"><?php print htmlspecialchars($snmp_query_graph["name"]);?></a></strong>
@@ -698,7 +698,7 @@ function data_query_edit() {
 }
 
 function data_query() {
-	global $colors, $dq_actions;
+	global $dq_actions;
 
 	/* clean up search string */
 	if (isset($_REQUEST["filter"])) {
@@ -734,10 +734,10 @@ function data_query() {
 	load_current_session_value("page", "sess_data_queries_current_page", "1");
 	load_current_session_value("filter", "sess_data_queries_filter", "");
 
-	html_start_box("<strong>Data Queries</strong>", "100%", $colors["header"], "3", "center", "data_queries.php?action=edit");
+	html_start_box("<strong>Data Queries</strong>", "100%", "", "3", "center", "data_queries.php?action=edit");
 
 	?>
-	<tr bgcolor="#<?php print $colors["panel"];?>" class="noprint">
+	<tr class='even noprint'>
 		<td class="noprint">
 		<form name="form_graph_id" method="get" action="data_queries.php">
 			<table width="100%" cellpadding="0" cellspacing="0">
@@ -765,7 +765,7 @@ function data_query() {
 	/* print checkbox form for validation */
 	print "<form name='chk' method='post' action='data_queries.php'>\n";
 
-	html_start_box("", "100%", $colors["header"], "3", "center", "");
+	html_start_box("", "100%", "", "3", "center", "");
 
 	/* form the 'where' clause for our main sql query */
 	if (strlen(get_request_var_request("filter"))) {
@@ -800,7 +800,7 @@ function data_query() {
 	$i = 0;
 	if (sizeof($snmp_queries) > 0) {
 		foreach ($snmp_queries as $snmp_query) {
-			form_alternate_row_color($colors["alternate"],$colors["light"],$i, 'line' . $snmp_query["id"]); $i++;
+			form_alternate_row('line' . $snmp_query["id"], true);
 			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars("data_queries.php?action=edit&id=" . $snmp_query["id"]) . "'>" . (strlen(get_request_var_request("filter")) ? preg_replace("/(" . preg_quote(get_request_var_request("filter"), "/") . ")/i", "<span style='background-color: #F8D93D;'>\\1</span>", htmlspecialchars($snmp_query["name"])) : htmlspecialchars($snmp_query["name"])) . "</a>", $snmp_query["id"]);
 			form_selectable_cell((strlen(get_request_var_request("filter")) ? preg_replace("/(" . preg_quote(get_request_var_request("filter"), "/") . ")/i", "<span style='background-color: #F8D93D;'>\\1</span>", $snmp_query["data_input_method"]) : $snmp_query["data_input_method"]), $snmp_query["id"]);
 			form_checkbox_cell($snmp_query["name"], $snmp_query["id"]);

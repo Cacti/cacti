@@ -36,7 +36,7 @@
    @arg $snmp_query_graph_id - if this graph template is part of a data query, specify the graph id here. this
      will be used to determine if a given field is using suggested values */
 function draw_nontemplated_fields_graph($graph_template_id, &$values_array, $field_name_format = "|field|", $header_title = "", $alternate_colors = true, $include_hidden_fields = true, $snmp_query_graph_id = 0) {
-	global $struct_graph, $colors;
+	global $struct_graph;
 
 	$form_array = array();
 	$draw_any_items = false;
@@ -69,7 +69,7 @@ function draw_nontemplated_fields_graph($graph_template_id, &$values_array, $fie
 			}
 		}else{
 			if (($draw_any_items == false) && ($header_title != "")) {
-				print "<tr bgcolor='#" . $colors["header_panel"] . "'><td colspan='2' style='font-size: 10px; color: white;'>$header_title</td></tr>\n";
+				print "<tr><td colspan='2' class='tableSubHeaderColumn'>$header_title</td></tr>\n";
 			}
 
 			$draw_any_items = true;
@@ -80,7 +80,7 @@ function draw_nontemplated_fields_graph($graph_template_id, &$values_array, $fie
 	if ($alternate_colors == true) {
 		$form_config_array = array("no_form_tag" => true);
 	}else{
-		$form_config_array = array("no_form_tag" => true, "force_row_color" => $colors["form_alternate1"]);
+		$form_config_array = array("no_form_tag" => true, "force_row_color" => true);
 	}
 
 	draw_edit_form(
@@ -104,7 +104,7 @@ function draw_nontemplated_fields_graph($graph_template_id, &$values_array, $fie
    @arg $header_title - the title to use on the header for this form
    @arg $alternate_colors (bool) - whether to alternate colors for each row on the form or not */
 function draw_nontemplated_fields_graph_item($graph_template_id, $local_graph_id, $field_name_format = "|field|_|id|", $header_title = "", $alternate_colors = true) {
-	global $struct_graph_item, $colors;
+	global $struct_graph_item;
 
 	$form_array = array();
 	$draw_any_items = false;
@@ -169,7 +169,7 @@ function draw_nontemplated_fields_graph_item($graph_template_id, $local_graph_id
 				unset($form_array[$form_field_name]);
 			}else{
 				if (($draw_any_items == false) && ($header_title != "")) {
-					print "<tr bgcolor='#" . $colors["header_panel"] . "'><td colspan='2' style='font-size: 10px; color: white;'>$header_title</td></tr>\n";
+					print "<tr class='tableHeader'><td colspan='2' class='tableSubHeaderColumn'>$header_title</td></tr>\n";
 				}
 
 				$draw_any_items = true;
@@ -181,7 +181,7 @@ function draw_nontemplated_fields_graph_item($graph_template_id, $local_graph_id
 	if ($alternate_colors == true) {
 		$form_config_array = array("no_form_tag" => true);
 	}else{
-		$form_config_array = array("no_form_tag" => true, "force_row_color" => $colors["form_alternate1"]);
+		$form_config_array = array("no_form_tag" => true, "force_row_color" => true);
 	}
 
 	if (sizeof($input_item_list > 0)) {
@@ -211,7 +211,7 @@ function draw_nontemplated_fields_graph_item($graph_template_id, $local_graph_id
    @arg $snmp_query_graph_id - if this data template is part of a data query, specify the graph id here. this
      will be used to determine if a given field is using suggested values */
 function draw_nontemplated_fields_data_source($data_template_id, $local_data_id, &$values_array, $field_name_format = "|field|", $header_title = "", $alternate_colors = true, $include_hidden_fields = true, $snmp_query_graph_id = 0) {
-	global $struct_data_source, $colors;
+	global $struct_data_source;
 
 	$form_array = array();
 	$draw_any_items = false;
@@ -253,7 +253,7 @@ function draw_nontemplated_fields_data_source($data_template_id, $local_data_id,
 			}
 		}else{
 			if (($draw_any_items == false) && ($header_title != "")) {
-				print "<tr bgcolor='#" . $colors["header_panel"] . "'><td colspan='2' style='font-size: 10px; color: white;'>$header_title</td></tr>\n";
+				print "<tr class='tableHeader'><td colspan='2' class='tableSubHeaderColumn'>$header_title</td></tr>\n";
 			}
 
 			$draw_any_items = true;
@@ -264,7 +264,7 @@ function draw_nontemplated_fields_data_source($data_template_id, $local_data_id,
 	if ($alternate_colors == true) {
 		$form_config_array = array("no_form_tag" => true);
 	}else{
-		$form_config_array = array("no_form_tag" => true, "force_row_color" => $colors["form_alternate1"]);
+		$form_config_array = array("no_form_tag" => true, "force_row_color" => true);
 	}
 
 	draw_edit_form(
@@ -294,7 +294,7 @@ function draw_nontemplated_fields_data_source($data_template_id, $local_data_id,
    @arg $snmp_query_graph_id - if this graph template is part of a data query, specify the graph id here. this
      will be used to determine if a given field is using suggested values */
 function draw_nontemplated_fields_data_source_item($data_template_id, &$values_array, $field_name_format = "|field_id|", $header_title = "", $draw_title_for_each_item = true, $alternate_colors = true, $include_hidden_fields = true, $snmp_query_graph_id = 0) {
-	global $struct_data_source_item, $colors;
+	global $struct_data_source_item;
 
 	$draw_any_items = false;
 	$num_fields_drawn = 0;
@@ -303,7 +303,7 @@ function draw_nontemplated_fields_data_source_item($data_template_id, &$values_a
 	if ($alternate_colors == true) {
 		$form_config_array = array("no_form_tag" => true);
 	}else{
-		$form_config_array = array("no_form_tag" => true, "force_row_color" => $colors["form_alternate1"]);
+		$form_config_array = array("no_form_tag" => true, "force_row_color" => true);
 	}
 
 	if (sizeof($values_array) > 0) {
@@ -354,9 +354,9 @@ function draw_nontemplated_fields_data_source_item($data_template_id, &$values_a
 					}
 				}else{
 					if (($draw_any_items == false) && ($draw_title_for_each_item == false) && ($header_title != "")) {
-						print "<tr bgcolor='#" . $colors["header_panel"] . "'><td colspan='2' style='font-size: 10px; color: white;'>$header_title</td></tr>\n";
+						print "<tr class='tableHeader'><td colspan='2' class='tableSubHeaderColumn'>$header_title</td></tr>\n";
 					}elseif (($draw_any_items == false) && ($draw_title_for_each_item == true) && ($header_title != "")) {
-						print "<tr bgcolor='#" . $colors["header_panel"] . "'><td colspan='2' style='font-size: 10px; color: white;'>$header_title [" . $rrd["data_source_name"] . "]</td></tr>\n";
+						print "<tr class='tableHeader'><td colspan='2' class='tableSubHeaderColumn'>$header_title [" . $rrd["data_source_name"] . "]</td></tr>\n";
 					}
 
 					$draw_any_items = true;
@@ -400,8 +400,6 @@ function draw_nontemplated_fields_data_source_item($data_template_id, &$values_a
    @arg $snmp_query_id - if this graph template is part of a data query, specify the data query id here. this
      will be used to determine if a given field is associated with a suggested value */
 function draw_nontemplated_fields_custom_data($data_template_data_id, $field_name_format = "|field|", $header_title = "", $alternate_colors = true, $include_hidden_fields = true, $snmp_query_id = 0) {
-	global $colors;
-
 	$data = db_fetch_row("select id,data_input_id,data_template_id,name,local_data_id from data_template_data where id=$data_template_data_id");
 	$host_id = db_fetch_cell("select host.id from (data_local,host) where data_local.host_id=host.id and data_local.id=" . $data["local_data_id"]);
 	$template_data = db_fetch_row("select id,data_input_id from data_template_data where data_template_id=" . $data["data_template_id"] . " and local_data_id=0");
@@ -447,13 +445,13 @@ function draw_nontemplated_fields_custom_data($data_template_data_id, $field_nam
 				}
 			}else{
 				if (($draw_any_items == false) && ($header_title != "")) {
-					print "<tr bgcolor='#" . $colors["header_panel"] . "'><td colspan='2' style='font-size: 10px; color: white;'>$header_title</td></tr>\n";
+					print "<tr class='tableHeader'><td colspan='2' class='tableSubHeaderColumn'>$header_title</td></tr>\n";
 				}
 
 				if ($alternate_colors == true) {
-					form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i);
+					form_alternate_row();
 				}else{
-					print "<tr bgcolor='#" . $colors["form_alternate1"] . "'>\n";
+					print "<tr class='odd'>\n";
 				}
 
 				print "<td width='50%'><strong>" . $field["name"] . "</strong></td>\n";

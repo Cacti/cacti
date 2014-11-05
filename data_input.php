@@ -151,7 +151,7 @@ function form_save() {
 }
 
 function form_actions() {
-	global $colors, $di_actions;
+	global $di_actions;
 
 	/* ================= input validation ================= */
 	input_validate_input_regex(get_request_var_post('drp_action'), "^([a-zA-Z0-9_]+)$");
@@ -194,7 +194,7 @@ function form_actions() {
 
 	include_once("./include/top_header.php");
 
-	html_start_box("<strong>" . $di_actions{$_POST["drp_action"]} . "</strong>", "60%", $colors["header_panel"], "3", "center", "");
+	html_start_box("<strong>" . $di_actions{$_POST["drp_action"]} . "</strong>", "60%", "", "3", "center", "");
 
 	print "<form action='data_input.php' method='post'>\n";
 
@@ -204,7 +204,7 @@ function form_actions() {
 
 			print "
 				<tr>
-					<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
+					<td class='textArea' class='odd'>
 						<p>When you click \"Continue\", the following Data Input Method(s) will be deleted.</p>
 						<p><ul>$di_list</ul></p>
 					</td>
@@ -213,12 +213,12 @@ function form_actions() {
 
 		$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Delete Data Input Method(s)'>";
 	}else{
-		print "<tr><td bgcolor='#" . $colors["form_alternate1"]. "'><span class='textError'>You must select at least one data input method.</span></td></tr>\n";
+		print "<tr><td class='odd'><span class='textError'>You must select at least one data input method.</span></td></tr>\n";
 		$save_html = "<input type='button' value='Return' onClick='window.history.back()'>";
 	}
 
 	print "	<tr>
-			<td align='right' bgcolor='#eaeaea'>
+			<td align='right' class='saveRow'>
 				<input type='hidden' name='action' value='actions'>
 				<input type='hidden' name='selected_items' value='" . (isset($di_array) ? serialize($di_array) : '') . "'>
 				<input type='hidden' name='drp_action' value='" . $_POST["drp_action"] . "'>
@@ -271,7 +271,7 @@ function field_remove() {
 }
 
 function field_edit() {
-	global $colors, $registered_cacti_names, $fields_data_input_field_edit_1, $fields_data_input_field_edit_2, $fields_data_input_field_edit;
+	global $registered_cacti_names, $fields_data_input_field_edit_1, $fields_data_input_field_edit_2, $fields_data_input_field_edit;
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var("id"));
@@ -313,7 +313,7 @@ function field_edit() {
 		return;
 	}
 
-	html_start_box("<strong>$header_name Fields</strong> [edit: " . htmlspecialchars($data_input["name"]) . "]", "100%", $colors["header"], "3", "center", "");
+	html_start_box("<strong>$header_name Fields</strong> [edit: " . htmlspecialchars($data_input["name"]) . "]", "100%", "", "3", "center", "");
 
 	$form_array = array();
 
@@ -367,7 +367,7 @@ function data_remove($id) {
 }
 
 function data_edit() {
-	global $colors, $fields_data_input_edit;
+	global $fields_data_input_edit;
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var("id"));
@@ -380,7 +380,7 @@ function data_edit() {
 		$header_label = "[new]";
 	}
 
-	html_start_box("<strong>Data Input Methods</strong> $header_label", "100%", $colors["header"], "3", "center", "");
+	html_start_box("<strong>Data Input Methods</strong> $header_label", "100%", "", "3", "center", "");
 
 	draw_edit_form(array(
 		"config" => array(),
@@ -390,11 +390,11 @@ function data_edit() {
 	html_end_box();
 
 	if (!empty($_GET["id"])) {
-		html_start_box("<strong>Input Fields</strong>", "100%", $colors["header"], "3", "center", "data_input.php?action=field_edit&type=in&data_input_id=" . htmlspecialchars(get_request_var("id")));
-		print "<tr bgcolor='#" . $colors["header_panel"] . "'>";
-			DrawMatrixHeaderItem("Name",$colors["header_text"],1);
-			DrawMatrixHeaderItem("Field Order",$colors["header_text"],1);
-			DrawMatrixHeaderItem("Friendly Name",$colors["header_text"],2);
+		html_start_box("<strong>Input Fields</strong>", "100%", "", "3", "center", "data_input.php?action=field_edit&type=in&data_input_id=" . htmlspecialchars(get_request_var("id")));
+		print "<tr class='tableHeader'>";
+			DrawMatrixHeaderItem("Name","",1);
+			DrawMatrixHeaderItem("Field Order","",1);
+			DrawMatrixHeaderItem("Friendly Name","",2);
 		print "</tr>";
 
 		$fields = db_fetch_assoc("select id,data_name,name,sequence from data_input_fields where data_input_id=" . $_GET["id"] . " and input_output='in' order by sequence, data_name");
@@ -402,7 +402,7 @@ function data_edit() {
 		$i = 0;
 		if (sizeof($fields) > 0) {
 		foreach ($fields as $field) {
-			form_alternate_row_color($colors["alternate"],$colors["light"],$i); $i++;
+			form_alternate_row('', true);
 				?>
 				<td>
 					<a class="linkEditMain" href="<?php print htmlspecialchars("data_input.php?action=field_edit&id=" . $field["id"] . "&data_input_id=" . $_GET["id"]);?>"><?php print htmlspecialchars($field["data_name"]);?></a>
@@ -424,12 +424,12 @@ function data_edit() {
 		}
 		html_end_box();
 
-		html_start_box("<strong>Output Fields</strong>", "100%", $colors["header"], "3", "center", "data_input.php?action=field_edit&type=out&data_input_id=" . $_GET["id"]);
-		print "<tr bgcolor='#" . $colors["header_panel"] . "'>";
-			DrawMatrixHeaderItem("Name",$colors["header_text"],1);
-			DrawMatrixHeaderItem("Field Order",$colors["header_text"],1);
-			DrawMatrixHeaderItem("Friendly Name",$colors["header_text"],1);
-			DrawMatrixHeaderItem("Update RRA",$colors["header_text"],2);
+		html_start_box("<strong>Output Fields</strong>", "100%", "", "3", "center", "data_input.php?action=field_edit&type=out&data_input_id=" . $_GET["id"]);
+		print "<tr class='tableHeader'>";
+			DrawMatrixHeaderItem("Name","",1);
+			DrawMatrixHeaderItem("Field Order","",1);
+			DrawMatrixHeaderItem("Friendly Name","",1);
+			DrawMatrixHeaderItem("Update RRA","",2);
 		print "</tr>";
 
 		$fields = db_fetch_assoc("select id,name,data_name,update_rra,sequence from data_input_fields where data_input_id=" . $_GET["id"] . " and input_output='out' order by sequence, data_name");
@@ -437,7 +437,7 @@ function data_edit() {
 		$i = 0;
 		if (sizeof($fields) > 0) {
 		foreach ($fields as $field) {
-			form_alternate_row_color($colors["alternate"],$colors["light"],$i); $i++;
+			form_alternate_row('', true);
 				?>
 				<td>
 					<a class="linkEditMain" href="<?php print htmlspecialchars("data_input.php?action=field_edit&id=" . $field["id"] . "&data_input_id=" . $_GET["id"]);?>"><?php print htmlspecialchars($field["data_name"]);?></a>
@@ -467,7 +467,7 @@ function data_edit() {
 }
 
 function data() {
-	global $colors, $input_types, $di_actions;
+	global $input_types, $di_actions;
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var_request("page"));
@@ -507,10 +507,10 @@ function data() {
 	load_current_session_value("sort_direction", "sess_data_input_sort_direction", "ASC");
 	load_current_session_value("page", "sess_data_input_current_page", "1");
 
-	html_start_box("<strong>Data Input Methods</strong>", "100%", $colors["header"], "3", "center", "data_input.php?action=edit");
+	html_start_box("<strong>Data Input Methods</strong>", "100%", "", "3", "center", "data_input.php?action=edit");
 
 	?>
-	<tr bgcolor="#<?php print $colors["panel"];?>" class="noprint">
+	<tr class='even noprint'>
 		<td class="noprint">
 		<form name="form_graph_id" method="get" action="data_input.php">
 			<table width="100%" cellpadding="0" cellspacing="0">
@@ -538,7 +538,7 @@ function data() {
 	/* print checkbox form for validation */
 	print "<form name='chk' method='post' action='data_input.php'>\n";
 
-	html_start_box("", "100%", $colors["header"], "3", "center", "");
+	html_start_box("", "100%", "", "3", "center", "");
 
 	/* form the 'where' clause for our main sql query */
 	$sql_where = "WHERE (data_input.name like '%%" . get_request_var_request("filter") . "%%')";
@@ -573,7 +573,7 @@ function data() {
 	if (sizeof($data_inputs) > 0) {
 		foreach ($data_inputs as $data_input) {
 			/* hide system types */
-			form_alternate_row_color($colors["alternate"], $colors["light"], $i, 'line' . $data_input["id"]); $i++;
+			form_alternate_row('line' . $data_input["id"], true);
 			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars("data_input.php?action=edit&id=" . $data_input["id"]) . "'>" . (strlen(get_request_var_request("filter")) ? preg_replace("/(" . preg_quote(get_request_var_request("filter"), "/") . ")/i", "<span style='background-color: #F8D93D;'>\\1</span>", htmlspecialchars($data_input["name"])) : htmlspecialchars($data_input["name"])) . "</a>", $data_input["id"]);
 			form_selectable_cell($input_types{$data_input["type_id"]}, $data_input["id"]);
 			form_checkbox_cell($data_input["name"], $data_input["id"]);

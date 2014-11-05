@@ -83,16 +83,16 @@ function form_save() {
    --------------------------- */
 
 function import() {
-	global $colors, $hash_type_names, $fields_template_import;
+	global $hash_type_names, $fields_template_import;
 
 	?>
 	<form method="post" action="templates_import.php" enctype="multipart/form-data">
 	<?php
 
 	if ((isset($_SESSION["import_debug_info"])) && (is_array($_SESSION["import_debug_info"]))) {
-		html_start_box("<strong>Import Results</strong>", "100%", "aaaaaa", "3", "center", "");
+		html_start_box("<strong>Import Results</strong>", "100%", "", "3", "center", "");
 
-		print "<tr bgcolor='#" . $colors["form_alternate1"] . "'><td><p class='textArea'>Cacti has imported the following items:</p>";
+		print "<tr class='odd'><td><p class='textArea'>Cacti has imported the following items:</p>";
 
 		while (list($type, $type_array) = each($_SESSION["import_debug_info"])) {
 			print "<p><strong>" . $hash_type_names[$type] . "</strong></p>";
@@ -140,7 +140,7 @@ function import() {
 		kill_session_var("import_debug_info");
 	}
 
-	html_start_box("<strong>Import Templates</strong>", "100%", $colors["header"], "3", "center", "");
+	html_start_box("<strong>Import Templates</strong>", "100%", "", "3", "center", "");
 
 	draw_edit_form(array(
 		"config" => array("no_form_tag" => true),

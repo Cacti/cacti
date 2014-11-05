@@ -115,7 +115,7 @@ function form_save() {
    ------------------------ */
 
 function form_actions() {
-	global $colors, $host_actions;
+	global $host_actions;
 
 	/* ================= input validation ================= */
 	input_validate_input_regex(get_request_var_post('drp_action'), "^([a-zA-Z0-9_]+)$");
@@ -165,14 +165,14 @@ function form_actions() {
 
 	include_once("./include/top_header.php");
 
-	html_start_box("<strong>" . $host_actions{$_POST["drp_action"]} . "</strong>", "60%", $colors["header_panel"], "3", "center", "");
+	html_start_box("<strong>" . $host_actions{$_POST["drp_action"]} . "</strong>", "60%", "", "3", "center", "");
 
 	print "<form action='host_templates.php' autocomplete='off' method='post'>\n";
 
 	if (isset($host_array) && sizeof($host_array)) {
 		if ($_POST["drp_action"] == "1") { /* delete */
 			print "	<tr>
-					<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
+					<td class='textArea'>
 						<p>Are you sure you want to delete the following Host Template(s)? All Devices currently associated
 						with these Host Template(s) will lose that assocation.</p>
 						<p><ul>$host_list</ul></p>
@@ -182,7 +182,7 @@ function form_actions() {
 			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Delete Host Template(s)'>";
 		}elseif ($_POST["drp_action"] == "2") { /* duplicate */
 			print "	<tr>
-					<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
+					<td class='textArea'>
 						<p>When you click \"Continue\", the following Host Template(s) will be duplicated. You can
 						optionally change the title format for the new Host Template(s).</p>
 						<p><ul>$host_list</ul></p>
@@ -193,12 +193,12 @@ function form_actions() {
 			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Duplicate Host Template(s)'>";
 		}
 	}else{
-		print "<tr><td bgcolor='#" . $colors["form_alternate1"]. "'><span class='textError'>You must select at least one host template.</span></td></tr>\n";
+		print "<tr><td class='even'><span class='textError'>You must select at least one host template.</span></td></tr>\n";
 		$save_html = "<input type='button' value='Return' onClick='window.history.back()'>";
 	}
 
 	print "	<tr>
-			<td align='right' bgcolor='#eaeaea'>
+			<td align='right' class='saveRow'>
 				<input type='hidden' name='action' value='actions'>
 				<input type='hidden' name='selected_items' value='" . (isset($host_array) ? serialize($host_array) : '') . "'>
 				<input type='hidden' name='drp_action' value='" . $_POST["drp_action"] . "'>
@@ -235,7 +235,7 @@ function template_item_remove_dq() {
 }
 
 function template_edit() {
-	global $colors, $fields_host_template_edit;
+	global $fields_host_template_edit;
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var("id"));
@@ -249,7 +249,7 @@ function template_edit() {
 		$_GET["id"] = 0;
 	}
 
-	html_start_box("<strong>Host Templates</strong> " . htmlspecialchars($header_label), "100%", $colors["header"], "3", "center", "");
+	html_start_box("<strong>Host Templates</strong> " . htmlspecialchars($header_label), "100%", "", "3", "center", "");
 
 	draw_edit_form(array(
 		"config" => array("form_name" => "chk"),
@@ -263,7 +263,7 @@ function template_edit() {
 	html_end_box();
 
 	if (!empty($_GET["id"])) {
-		html_start_box("<strong>Associated Graph Templates</strong>", "100%", $colors["header"], "3", "center", "");
+		html_start_box("<strong>Associated Graph Templates</strong>", "100%", "", "3", "center", "");
 
 		$selected_graph_templates = db_fetch_assoc("select
 			graph_templates.id,
@@ -276,22 +276,21 @@ function template_edit() {
 		$i = 0;
 		if (sizeof($selected_graph_templates) > 0) {
 		foreach ($selected_graph_templates as $item) {
-			$i++;
+			form_alternate_row('', true);
 			?>
-			<tr>
 				<td style="padding: 4px;">
 					<strong><?php print $i;?>)</strong> <?php print htmlspecialchars($item["name"]);?>
 				</td>
 				<td align="right">
 					<a href='<?php print htmlspecialchars("host_templates.php?action=item_remove_gt&id=" . $item["id"] . "&host_template_id=" . $_GET["id"]);?>'><img src='images/delete_icon.gif' style="height:10px;width:10px;" border='0' alt='Delete'></a>
 				</td>
-			</tr>
 			<?php
+			form_end_row();
 		}
 		}else{ print "<tr><td><em>No associated graph templates.</em></td></tr>"; }
 
 		?>
-		<tr bgcolor="#<?php print $colors["form_alternate1"];?>">
+		<tr class='odd'>
 			<td colspan="2">
 				<table cellspacing="0" cellpadding="1" width="100%">
 					<td nowrap>Add Graph Template:&nbsp;
@@ -313,7 +312,7 @@ function template_edit() {
 		<?php
 		html_end_box();
 
-		html_start_box("<strong>Associated Data Queries</strong>", "100%", $colors["header"], "3", "center", "");
+		html_start_box("<strong>Associated Data Queries</strong>", "100%", "", "3", "center", "");
 
 		$selected_data_queries = db_fetch_assoc("select
 			snmp_query.id,
@@ -326,22 +325,21 @@ function template_edit() {
 		$i = 0;
 		if (sizeof($selected_data_queries) > 0) {
 		foreach ($selected_data_queries as $item) {
-			$i++;
+			form_alternate_row('', true);
 			?>
-			<tr>
 				<td style="padding: 4px;">
 					<strong><?php print $i;?>)</strong> <?php print htmlspecialchars($item["name"]);?>
 				</td>
 				<td align='right'>
 					<a href='<?php print htmlspecialchars("host_templates.php?action=item_remove_dq&id=" . $item["id"] . "&host_template_id=" . $_GET["id"]);?>'><img src='images/delete_icon.gif' style="height:10px;width:10px;" border='0' alt='Delete'></a>
 				</td>
-			</tr>
 			<?php
+			form_end_row();
 		}
 		}else{ print "<tr><td><em>No associated data queries.</em></td></tr>"; }
 
 		?>
-		<tr bgcolor="#<?php print $colors["form_alternate1"];?>">
+		<tr class='odd'>
 			<td colspan="2">
 				<table cellspacing="0" cellpadding="1" width="100%">
 					<td nowrap>Add Data Query:&nbsp;
@@ -368,7 +366,7 @@ function template_edit() {
 }
 
 function template() {
-	global $colors, $host_actions;
+	global $host_actions;
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var_request("page"));
@@ -410,10 +408,10 @@ function template() {
 
 	display_output_messages();
 
-	html_start_box("<strong>Host Templates</strong>", "100%", $colors["header"], "3", "center", "host_templates.php?action=edit");
+	html_start_box("<strong>Host Templates</strong>", "100%", "", "3", "center", "host_templates.php?action=edit");
 
 	?>
-	<tr bgcolor="#<?php print $colors["panel"];?>">
+	<tr class='even noprint'>
 		<td>
 		<form name="form_graph_template" action="host_templates.php">
 			<table width="100%" cellpadding="0" cellspacing="0">
@@ -449,7 +447,7 @@ function template() {
 	/* print checkbox form for validation */
 	print "<form name='chk' method='post' action='host_templates.php'>\n";
 
-	html_start_box("", "100%", $colors["header"], "3", "center", "");
+	html_start_box("", "100%", "", "3", "center", "");
 
 	$total_rows = db_fetch_cell("SELECT
 		COUNT(host_template.id)
@@ -480,7 +478,7 @@ function template() {
 	$i = 0;
 	if (sizeof($template_list) > 0) {
 		foreach ($template_list as $template) {
-			form_alternate_row_color($colors["alternate"], $colors["light"], $i, 'line' . $template["id"]);$i++;
+			form_alternate_row('line' . $template["id"], true);
 			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars("host_templates.php?action=edit&id=" . $template["id"]) . "'>" . (strlen(get_request_var_request("filter")) ? preg_replace("/(" . preg_quote(get_request_var_request("filter"), "/") . ")/i", "<span style='background-color: #F8D93D;'>\\1</span>", htmlspecialchars($template["name"])) : htmlspecialchars($template["name"])) . "</a>", $template["id"]);
 			form_selectable_cell($template["id"], $template["id"]);
 			form_selectable_cell(number_format($template["hosts"]), $template["id"]);

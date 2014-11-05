@@ -201,7 +201,7 @@ function memory_readable($val) {
 
 
 function utilities_view_tech($php_info = "") {
-	global $database_default, $colors, $config, $rrdtool_versions, $poller_options, $input_types;
+	global $database_default, $config, $rrdtool_versions, $poller_options, $input_types;
 
 	/* Get table status */
 	$tables = db_fetch_assoc("SHOW TABLES");
@@ -285,39 +285,39 @@ function utilities_view_tech($php_info = "") {
 	}
 
 	/* Display tech information */
-	html_start_box("<strong>Technical Support</strong>", "100%", $colors["header"], "3", "center", "");
+	html_start_box("<strong>Technical Support</strong>", "100%", "", "3", "center", "");
 	html_header(array("General Information"), 2);
-	print "<tr bgcolor='#" . $colors["form_alternate1"] . "'>\n";
+	print "<tr class='odd'>\n";
 	print "		<td class='textArea'>Date</td>\n";
 	print "		<td class='textArea'>" . date("r") . "</td>\n";
 	print "</tr>\n";
 	api_plugin_hook_function('custom_version_info');
-	print "<tr bgcolor='#" . $colors["form_alternate2"] . "'>\n";
+	print "<tr class='even'>\n";
 	print "		<td class='textArea'>Cacti Version</td>\n";
 	print "		<td class='textArea'>" . $config["cacti_version"] . "</td>\n";
 	print "</tr>\n";
-	print "<tr bgcolor='#" . $colors["form_alternate1"] . "'>\n";
+	print "<tr class='odd'>\n";
 	print "		<td class='textArea'>Cacti OS</td>\n";
 	print "		<td class='textArea'>" . $config["cacti_server_os"] . "</td>\n";
 	print "</tr>\n";
-	print "<tr bgcolor='#" . $colors["form_alternate2"] . "'>\n";
+	print "<tr class='even'>\n";
 	print "		<td class='textArea'>SNMP Version</td>\n";
 	print "		<td class='textArea'>" . $snmp_version . "</td>\n";
 	print "</tr>\n";
 
-	print "<tr bgcolor='#" . $colors["form_alternate1"] . "'>\n";
+	print "<tr class='odd'>\n";
 	print "		<td class='textArea'>RRDTool Version</td>\n";
 	print "		<td class='textArea'>" . $rrdtool_versions[$rrdtool_version] . " " . $rrdtool_error . "</td>\n";
 	print "</tr>\n";
-	print "<tr bgcolor='#" . $colors["form_alternate2"] . "'>\n";
+	print "<tr class='even'>\n";
 	print "		<td class='textArea'>Hosts</td>\n";
 	print "		<td class='textArea'>" . $host_count . "</td>\n";
 	print "</tr>\n";
-	print "<tr bgcolor='#" . $colors["form_alternate1"] . "'>\n";
+	print "<tr class='odd'>\n";
 	print "		<td class='textArea'>Graphs</td>\n";
 	print "		<td class='textArea'>" . $graph_count . "</td>\n";
 	print "</tr>\n";
-	print "<tr bgcolor='#" . $colors["form_alternate2"] . "'>\n";
+	print "<tr class='even'>\n";
 	print "		<td class='textArea'>Data Sources</td>\n";
 	print "		<td class='textArea'>";
 	$data_total = 0;
@@ -334,7 +334,7 @@ function utilities_view_tech($php_info = "") {
 	print "</tr>\n";
 
 	html_header(array("Poller Information"), 2);
-	print "<tr bgcolor='#" . $colors["form_alternate1"] . "'>\n";
+	print "<tr class='odd'>\n";
 	print "		<td class='textArea'>Interval</td>\n";
 	print "		<td class='textArea'>" . read_config_option("poller_interval") . "</td>\n";
 	if (file_exists(read_config_option("path_spine")) && $poller_options[read_config_option("poller_type")] == 'spine') {
@@ -343,11 +343,11 @@ function utilities_view_tech($php_info = "") {
 		$type = $poller_options[read_config_option("poller_type")];
 	}
 	print "</tr>\n";
-	print "<tr bgcolor='#" . $colors["form_alternate2"] . "'>\n";
+	print "<tr class='even'>\n";
 	print "		<td class='textArea'>Type</td>\n";
 	print "		<td class='textArea'>" . $type . "</td>\n";
 	print "</tr>\n";
-	print "<tr bgcolor='#" . $colors["form_alternate1"] . "'>\n";
+	print "<tr class='odd'>\n";
 	print "		<td class='textArea'>Items</td>\n";
 	print "		<td class='textArea'>";
 	$total = 0;
@@ -363,48 +363,48 @@ function utilities_view_tech($php_info = "") {
 	print "</td>\n";
 	print "</tr>\n";
 
-	print "<tr bgcolor='#" . $colors["form_alternate2"] . "'>\n";
+	print "<tr class='even'>\n";
 	print "		<td class='textArea'>Concurrent Processes</td>\n";
 	print "		<td class='textArea'>" . read_config_option("concurrent_processes") . "</td>\n";
 	print "</tr>\n";
 
-	print "<tr bgcolor='#" . $colors["form_alternate1"] . "'>\n";
+	print "<tr class='odd'>\n";
 	print "		<td class='textArea'>Max Threads</td>\n";
 	print "		<td class='textArea'>" . read_config_option("max_threads") . "</td>\n";
 	print "</tr>\n";
 
-	print "<tr bgcolor='#" . $colors["form_alternate2"] . "'>\n";
+	print "<tr class='even'>\n";
 	print "		<td class='textArea'>PHP Servers</td>\n";
 	print "		<td class='textArea'>" . read_config_option("php_servers") . "</td>\n";
 	print "</tr>\n";
 
-	print "<tr bgcolor='#" . $colors["form_alternate1"] . "'>\n";
+	print "<tr class='odd'>\n";
 	print "		<td class='textArea'>Script Timeout</td>\n";
 	print "		<td class='textArea'>" . read_config_option("script_timeout") . "</td>\n";
 	print "</tr>\n";
 
-	print "<tr bgcolor='#" . $colors["form_alternate2"] . "'>\n";
+	print "<tr class='even'>\n";
 	print "		<td class='textArea'>Max OID</td>\n";
 	print "		<td class='textArea'>" . read_config_option("max_get_size") . "</td>\n";
 	print "</tr>\n";
 
 
-	print "<tr bgcolor='#" . $colors["form_alternate1"] . "'>\n";
+	print "<tr class='odd'>\n";
 	print "		<td class='textArea'>Last Run Statistics</td>\n";
 	print "		<td class='textArea'>" . read_config_option("stats_poller") . "</td>\n";
 	print "</tr>\n";
 
 
 	html_header(array("PHP Information"), 2);
-	print "<tr bgcolor='#" . $colors["form_alternate1"] . "'>\n";
+	print "<tr class='odd'>\n";
 	print "		<td class='textArea'>PHP Version</td>\n";
 	print "		<td class='textArea'>" . phpversion() . "</td>\n";
 	print "</tr>\n";
-	print "<tr bgcolor='#" . $colors["form_alternate2"] . "'>\n";
+	print "<tr class='even'>\n";
 	print "		<td class='textArea'>PHP OS</td>\n";
 	print "		<td class='textArea'>" . PHP_OS . "</td>\n";
 	print "</tr>\n";
-	print "<tr bgcolor='#" . $colors["form_alternate1"] . "'>\n";
+	print "<tr class='odd'>\n";
 	print "		<td class='textArea'>PHP uname</td>\n";
 	print "		<td class='textArea'>";
 	if (function_exists("php_uname")) {
@@ -414,7 +414,7 @@ function utilities_view_tech($php_info = "") {
 	}
 	print "</td>\n";
 	print "</tr>\n";
-	print "<tr bgcolor='#" . $colors["form_alternate2"] . "'>\n";
+	print "<tr class='even'>\n";
 	print "		<td class='textArea'>PHP SNMP</td>\n";
 	print "		<td class='textArea'>";
 	if (function_exists("snmpget")) {
@@ -424,11 +424,11 @@ function utilities_view_tech($php_info = "") {
 	}
 	print "</td>\n";
 	print "</tr>\n";
-	print "<tr bgcolor='#" . $colors["form_alternate1"] . "'>\n";
+	print "<tr class='odd'>\n";
 	print "		<td class='textArea'>max_execution_time</td>\n";
 	print "		<td class='textArea'>" . ini_get("max_execution_time") . "</td>\n";
 	print "</tr>\n";
-	print "<tr bgcolor='#" . $colors["form_alternate2"] . "'>\n";
+	print "<tr class='even'>\n";
 	print "		<td class='textArea'>memory_limit</td>\n";
 	print "		<td class='textArea'>" . ini_get("memory_limit");
 
@@ -457,7 +457,7 @@ function utilities_view_tech($php_info = "") {
 	print "</tr>\n";
 
 	html_header(array("MySQL Table Information"), 2);
-	print "<tr bgcolor='#" . $colors["form_alternate1"] . "'>\n";
+	print "<tr class='odd'>\n";
 	print "		<td class='textArea' colspan='2' align='center'>";
 	if (sizeof($table_status) > 0) {
 		print "<table border='1' cellpadding='2' cellspacing='0'>\n";
@@ -501,7 +501,7 @@ function utilities_view_tech($php_info = "") {
 	print "</tr>\n";
 
 	html_header(array("PHP Module Information"), 2);
-	print "<tr bgcolor='#" . $colors["form_alternate1"] . "'>\n";
+	print "<tr class='odd'>\n";
 	print "		<td class='textArea' colspan='2'>" . $php_info . "</td>\n";
 	print "</tr>\n";
 
@@ -511,7 +511,7 @@ function utilities_view_tech($php_info = "") {
 
 
 function utilities_view_user_log() {
-	global $colors, $auth_realms;
+	global $auth_realms;
 
 	define("MAX_DISPLAY_PAGES", 21);
 
@@ -583,10 +583,10 @@ function utilities_view_user_log() {
 	</script>
 	<?php
 
-	html_start_box("<strong>User Login History</strong>", "100%", $colors["header"], "3", "center", "");
+	html_start_box("<strong>User Login History</strong>", "100%", "", "3", "center", "");
 
 	?>
-	<tr bgcolor="#<?php print $colors["panel"];?>">
+	<tr class='even noprint'>
 		<td>
 		<form name="form_userlog" action="utilities.php">
 			<table cellpadding="0" cellspacing="0">
@@ -672,7 +672,7 @@ function utilities_view_user_log() {
 		}
 	}
 
-	html_start_box("", "100%", $colors["header"], "3", "center", "");
+	html_start_box("", "100%", "", "3", "center", "");
 
 	$total_rows = db_fetch_cell("SELECT
 		COUNT(*)
@@ -711,14 +711,9 @@ function utilities_view_user_log() {
 
 	html_header_sort($display_text, get_request_var_request("sort_column"), get_request_var_request("sort_direction"));
 
-	$i = 0;
 	if (sizeof($user_log) > 0) {
 		foreach ($user_log as $item) {
-			if (isset($item["full_name"])) {
-				form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i);
-			}else{
-				form_alternate_row_color("FF9D9D","FFAFAF",$i);
-			}
+			form_alternate_row('', true);
 			?>
 			<td style='white-space:nowrap;'>
 				<?php print (strlen(get_request_var_request("filter")) ? (preg_replace("/(" . preg_quote(get_request_var_request("filter"), "/") . ")/i", "<span style='background-color: #F8D93D;'>\\1</span>", $item["username"])) : $item["username"]);?>
@@ -750,7 +745,6 @@ function utilities_view_user_log() {
 			</td>
 			</tr>
 			<?php
-			$i++;
 		}
 
 		print $nav;
@@ -779,7 +773,7 @@ function utilities_clear_user_log() {
 }
 
 function utilities_view_logfile() {
-	global $colors, $log_tail_lines, $page_refresh_interval, $refresh;
+	global $log_tail_lines, $page_refresh_interval, $refresh;
 
 	$logfile = read_config_option("path_cactilog");
 
@@ -842,10 +836,10 @@ function utilities_view_logfile() {
 	</script>
 	<?php
 
-	html_start_box("<strong>Log File Filters</strong>", "100%", $colors["header"], "3", "center", "");
+	html_start_box("<strong>Log File Filters</strong>", "100%", "", "3", "center", "");
 
 	?>
-	<tr bgcolor="#<?php print $colors["panel"];?>">
+	<tr class='even noprint'>
 		<td>
 		<form name="form_logfile" action="utilities.php">
 			<table cellpadding="1" cellspacing="0">
@@ -937,7 +931,7 @@ function utilities_view_logfile() {
 		$start_string = "<strong>Log File</strong> [Total Lines: " . sizeof($logcontents) . " - All Items Shown]";
 	}
 
-	html_start_box($start_string, "100%", $colors["header"], "3", "center", "");
+	html_start_box($start_string, "100%", "", "3", "center", "");
 
 	$i = 0;
 	$j = 0;
@@ -1020,8 +1014,6 @@ function utilities_view_logfile() {
 }
 
 function utilities_clear_logfile() {
-	global $colors;
-
 	load_current_session_value("refresh", "sess_logfile_refresh", read_config_option("log_refresh_interval"));
 
 	$refresh["seconds"] = get_request_var_request("refresh");
@@ -1035,7 +1027,7 @@ function utilities_clear_logfile() {
 		$logfile = "./log/cacti.log";
 	}
 
-	html_start_box("<strong>Clear Cacti Log File</strong>", "100%", $colors["header"], "1", "center", "");
+	html_start_box("<strong>Clear Cacti Log File</strong>", "100%", "", "1", "center", "");
 	if (file_exists($logfile)) {
 		if (is_writable($logfile)) {
 			$timestamp = date("m/d/Y h:i:s A");
@@ -1053,7 +1045,7 @@ function utilities_clear_logfile() {
 }
 
 function utilities_view_snmp_cache() {
-	global $colors, $poller_actions;
+	global $poller_actions;
 
 	define("MAX_DISPLAY_PAGES", 21);
 
@@ -1107,10 +1099,10 @@ function utilities_view_snmp_cache() {
 	</script>
 	<?php
 
-	html_start_box("<strong>SNMP Cache Items</strong>", "100%", $colors["header"], "3", "center", "");
+	html_start_box("<strong>SNMP Cache Items</strong>", "100%", "", "3", "center", "");
 
 	?>
-	<tr bgcolor="#<?php print $colors["panel"];?>">
+	<tr class='even noprint'>
 		<td>
 		<form name="form_snmpcache" action="utilities.php">
 			<table cellpadding="0" cellspacing="0">
@@ -1232,7 +1224,7 @@ function utilities_view_snmp_cache() {
 			OR host_snmp_cache.oid LIKE '%%" . get_request_var_request("filter") . "%%')";
 	}
 
-	html_start_box("", "100%", $colors["header"], "3", "center", "");
+	html_start_box("", "100%", "", "3", "center", "");
 
 	$total_rows = db_fetch_cell("SELECT
 		COUNT(*)
@@ -1262,7 +1254,7 @@ function utilities_view_snmp_cache() {
 	$i = 0;
 	if (sizeof($snmp_cache) > 0) {
 		foreach ($snmp_cache as $item) {
-			form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i);
+			form_alternate_row();
 			?>
 			<td>
 				Host: <?php print (strlen(get_request_var_request("filter")) ? (preg_replace("/(" . preg_quote(get_request_var_request("filter"), "/") . ")/i", "<span style='background-color: #F8D93D;'>\\1</span>", $item["description"])) : $item["description"]);?>
@@ -1270,7 +1262,7 @@ function utilities_view_snmp_cache() {
 			</td>
 			</tr>
 			<?php
-			form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i);
+			form_alternate_row();
 			?>
 			<td>
 				Index: <?php print $item["snmp_index"];?>
@@ -1279,7 +1271,7 @@ function utilities_view_snmp_cache() {
 			</td>
 			</tr>
 			<?php
-			form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++;
+			form_alternate_row();
 			?>
 			<td>
 				OID: <?php print (strlen(get_request_var_request("filter")) ? (preg_replace("/(" . preg_quote(get_request_var_request("filter"), "/") . ")/i", "<span style='background-color: #F8D93D;'>\\1</span>", $item["oid"])) : $item["oid"]);?>
@@ -1295,7 +1287,7 @@ function utilities_view_snmp_cache() {
 }
 
 function utilities_view_poller_cache() {
-	global $colors, $poller_actions;
+	global $poller_actions;
 
 	define("MAX_DISPLAY_PAGES", 21);
 
@@ -1366,10 +1358,10 @@ function utilities_view_poller_cache() {
 	</script>
 	<?php
 
-	html_start_box("<strong>Poller Cache Items</strong>", "100%", $colors["header"], "3", "center", "");
+	html_start_box("<strong>Poller Cache Items</strong>", "100%", "", "3", "center", "");
 
 	?>
-	<tr bgcolor="#<?php print $colors["panel"];?>">
+	<tr class='even noprint'>
 		<td>
 		<form name="form_pollercache" action="utilities.php">
 			<table cellpadding="0" cellspacing="0">
@@ -1447,7 +1439,7 @@ function utilities_view_poller_cache() {
 			OR poller_item.rrd_path  LIKE '%%" . get_request_var_request("filter") . "%%')";
 	}
 
-	html_start_box("", "100%", $colors["header"], "3", "center", "");
+	html_start_box("", "100%", "", "3", "center", "");
 
 	$total_rows = db_fetch_cell("SELECT
 		COUNT(*)
@@ -1486,7 +1478,7 @@ function utilities_view_poller_cache() {
 	$i = 0;
 	if (sizeof($poller_cache) > 0) {
 	foreach ($poller_cache as $item) {
-		form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i);
+		form_alternate_row();
 			?>
 			<td width="375">
 				<a class="linkEditMain" href="<?php print htmlspecialchars("data_sources.php?action=ds_edit&id=" . $item["local_data_id"]);?>"><?php print (strlen(get_request_var_request("filter")) ? preg_replace("/(" . preg_quote(get_request_var_request("filter"), "/") . ")/i", "<span style='background-color: #F8D93D;'>\\1</span>", $item["name_cache"]):$item["name_cache"]);?></a>
@@ -1517,7 +1509,7 @@ function utilities_view_poller_cache() {
 		</tr>
 		<?php
 
-		form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i);
+		form_alternate_row();
 		?>
 			<td>
 			</td>
@@ -1536,9 +1528,7 @@ function utilities_view_poller_cache() {
 }
 
 function utilities() {
-	global $colors;
-
-	html_start_box("<strong>Cacti System Utilities</strong>", "100%", $colors["header"], "3", "center", "");
+	html_start_box("<strong>Cacti System Utilities</strong>", "100%", "", "3", "center", "");
 
 	?>
 	<colgroup span="3">
@@ -1546,8 +1536,7 @@ function utilities() {
 		<col valign="top" width="80%"></col>
 	</colgroup>
 
-	<?php html_header(array("Technical Support"), 2); ?>
-	<tr bgcolor="#<?php print $colors["form_alternate1"];?>">
+	<?php html_header(array("Technical Support"), 2); form_alternate_row(); ?>
 		<td class="textArea">
 			<a href='<?php print htmlspecialchars("utilities.php?action=view_tech");?>'>Technical Support</a>
 		</td>
@@ -1556,9 +1545,7 @@ function utilities() {
 		</td>
 	</tr>
 
-	<?php html_header(array("Log Administration"), 2);?>
-
-	<tr bgcolor="#<?php print $colors["form_alternate1"];?>">
+	<?php html_header(array("Log Administration"), 2); form_alternate_row(); ?>
 		<td class="textArea">
 			<a href='<?php print htmlspecialchars("utilities.php?action=view_logfile");?>'>View Cacti Log File</a>
 		</td>
@@ -1566,7 +1553,7 @@ function utilities() {
 			The Cacti Log File stores statistic, error and other message depending on system settings.  This information can be used to identify problems with the poller and application.
 		</td>
 	</tr>
-	<tr bgcolor="#<?php print $colors["form_alternate1"];?>">
+	<?php form_alternate_row(); ?>
 		<td class="textArea">
 			<a href='<?php print htmlspecialchars("utilities.php?action=view_user_log");?>'>View User Log</a>
 		</td>
@@ -1575,9 +1562,7 @@ function utilities() {
 		</td>
 	</tr>
 
-	<?php html_header(array("Poller Cache Administration"), 2); ?>
-
-	<tr bgcolor="#<?php print $colors["form_alternate1"];?>">
+	<?php html_header(array("Poller Cache Administration"), 2); form_alternate_row(); ?>
 		<td class="textArea">
 			<a href='<?php print htmlspecialchars("utilities.php?action=view_poller_cache");?>'>View Poller Cache</a>
 		</td>
@@ -1585,7 +1570,7 @@ function utilities() {
 			This is the data that is being passed to the poller each time it runs. This data is then in turn executed/interpreted and the results are fed into the rrd files for graphing or the database for display.
 		</td>
 	</tr>
-	<tr bgcolor="#<?php print $colors["form_alternate2"];?>">
+	<?php form_alternate_row(); ?>
 		<td class="textArea">
 			<a href='<?php print htmlspecialchars("utilities.php?action=view_snmp_cache");?>'>View SNMP Cache</a>
 		</td>
@@ -1593,7 +1578,7 @@ function utilities() {
 			The SNMP cache stores information gathered from SNMP queries. It is used by cacti to determine the OID to use when gathering information from an SNMP-enabled host.
 		</td>
 	</tr>
-	<tr bgcolor="#<?php print $colors["form_alternate1"];?>">
+	<?php form_alternate_row(); ?>
 		<td class="textArea">
 			<a href='<?php print htmlspecialchars("utilities.php?action=clear_poller_cache");?>'>Rebuild Poller Cache</a>
 		</td>

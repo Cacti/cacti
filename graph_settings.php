@@ -105,7 +105,7 @@ function form_save() {
    -------------------------- */
 
 function settings() {
-	global $colors, $tabs_graphs, $settings_graphs, $current_user, $graph_views, $current_user, $graph_tree_views;
+	global $tabs_graphs, $settings_graphs, $current_user, $graph_views, $current_user, $graph_tree_views;
 
 	/* you cannot have per-user graph settings if cacti's user management is not turned on */
 	if (read_config_option("auth_method") == 0) {
@@ -133,11 +133,11 @@ function settings() {
 
 	print "<form method='post' action='graph_settings.php'>\n";
 
-	html_start_box("<strong>Graph Settings</strong>", "100%", $colors["header"], "3", "center", "");
+	html_start_box("<strong>Graph Settings</strong>", "100%", "", "3", "center", "");
 
 	while (list($tab_short_name, $tab_fields) = each($settings_graphs)) {
 		?>
-		<tr bgcolor='#<?php print $colors["header_panel"];?>'>
+		<tr>
 			<td colspan='2' class='textSubHeaderDark' style='padding: 3px;'>
 				<?php print $tabs_graphs[$tab_short_name];?>
 			</td>

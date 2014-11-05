@@ -177,7 +177,7 @@ function api_plugin_uninstall_old ($plugin) {
 }
 
 function update_show_updates () {
-	global $pluginslist, $colors, $config, $plugin_architecture;
+	global $pluginslist, $config, $plugin_architecture;
 
 	$cinfo = array();
 	sort($pluginslist);
@@ -199,18 +199,18 @@ function update_show_updates () {
 		$x++;
 		print "<tr><td width='25%' valign=top><table width='100%'>";
 		html_header(array("Cacti"), 2);
-		form_alternate_row_color($colors["alternate"],$colors["light"], 0);
+		form_alternate_row('', true);
 		print "<td width='25%'><strong>Version:</strong></td><td>" . $config["cacti_version"] . "</td></tr>";
-		form_alternate_row_color($colors["alternate"],$colors["light"], 0);
+		form_alternate_row('', true);
 		print "<td valign=top><strong>Changes:</strong></td><td>" . str_replace("\n", '<br>', $info['cacti']['changes']) . "</td></tr></table>";
 	}
 	if (isset($plugin_architecture['version']) && $archnew) {
 		$x++;
 		print "<table width='100%'>";
 		html_header(array("Plugin Architecture"), 2);
-		form_alternate_row_color($colors["alternate"],$colors["light"], 0);
+		form_alternate_row('', true);
 		print "<td width='25%'><strong>Version:</strong></td><td>" . $plugin_architecture['version'] . "</td>";
-		form_alternate_row_color($colors["alternate"],$colors["light"], 0);
+		form_alternate_row('', true);
 		print "<td valign=top><strong>Changes:</strong></td><td>" . str_replace("\n", '<br>', $info['cacti_plugin_arch']['changes']) . "</td></tr></table>";
 	}
 	print "<table width='100%' cellspacing=0 cellpadding=3>";
@@ -220,15 +220,15 @@ function update_show_updates () {
 			$x++;
 			print "<table width='100%'>";
 			html_header(array((isset($cinfo[$plugin]['longname']) ? $cinfo[$plugin]['longname'] : $plugin)), 2);
-			form_alternate_row_color($colors["alternate"],$colors["light"], 0);
+			form_alternate_row('', true);
 			print "<td width='50%'><strong>Directory:</strong></td><td>$plugin</td>";
-			form_alternate_row_color($colors["alternate"],$colors["light"], 0);
+			form_alternate_row('', true);
 			print "<td><strong>Version:</strong></td><td>" . $info[$plugin]['version'] . "</td>";
-			form_alternate_row_color($colors["alternate"],$colors["light"], 0);
+			form_alternate_row('', true);
 			print "<td><strong>Author:</strong></td><td>" . (isset($cinfo[$plugin]['author']) && $cinfo[$plugin]['author'] != '' ? (isset($cinfo[$plugin]['email']) && $cinfo[$plugin]['email'] != '' ? "<a href='mailto:" . $cinfo[$plugin]['email'] . "'>" . $cinfo[$plugin]['author'] . "</a>"  : $cinfo[$plugin]['author']) : "") . "</td>";
-			form_alternate_row_color($colors["alternate"],$colors["light"], 0);
+			form_alternate_row('', true);
 			print "<td><strong>Home Page:</strong></td><td>" . (isset($cinfo[$plugin]['webpage']) && $cinfo[$plugin]['webpage'] != '' ? "<a href='" . $cinfo[$plugin]['webpage'] . "'>" . $cinfo[$plugin]['webpage'] . "</a>" : "") . "</td>";
-			form_alternate_row_color($colors["alternate"],$colors["light"], 0);
+			form_alternate_row('', true);
 			print "<td valign=top><strong>Changes:</strong></td><td>" . str_replace("\n", '<br>', $info[$plugin]['changes']) . "</td>";
 
 			print "</tr></table>";
@@ -336,7 +336,7 @@ function plugins_load_temp_table() {
 }
 
 function update_show_current () {
-	global $plugins, $pluginslist, $colors, $plugin_architecture, $config, $status_names, $actions, $item_rows;
+	global $plugins, $pluginslist, $plugin_architecture, $config, $status_names, $actions, $item_rows;
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var_request("page"));
@@ -396,10 +396,10 @@ function update_show_current () {
 
 	html_start_box("<strong>Plugin Management</strong> (Cacti Version: " . $config["cacti_version"] .
 		(isset($plugin_architecture['version']) ? ", Plugin Architecture Version: " . $plugin_architecture['version']:"") .
-		")", "100%", $colors["header"], "3", "center", "");
+		")", "100%", "", "3", "center", "");
 
 	?>
-	<tr bgcolor="#<?php print $colors['panel'];?>">
+	<tr class='even noprint'>
 		<td class="noprint">
 		<form name="form_plugins" method="get" action="plugins.php">
 			<table cellpadding="0" cellspacing="0">
@@ -444,7 +444,7 @@ function update_show_current () {
 	/* print checkbox form for validation */
 	print "<form name='chk' method='post' action='plugins.php'>\n";
 
-	html_start_box("", "100%", $colors["header"], "3", "center", "");
+	html_start_box("", "100%", "", "3", "center", "");
 
 	/* form the 'where' clause for our main sql query */
 	$sql_where = "WHERE ($table.name LIKE '%%" . get_request_var_request("filter") . "%%')";
@@ -502,7 +502,7 @@ function update_show_current () {
 			$inst_system_plugins = get_system_plugins($plugins);
 			if (sizeof($inst_system_plugins)) {
 				foreach($inst_system_plugins as $plugin) {
-					form_alternate_row_color($colors["alternate"], $colors["light"], $i); $i++;
+					form_alternate_row('', true);
 					print format_plugin_row($plugin, false, false, true);
 				}
 			}
@@ -523,12 +523,12 @@ function update_show_current () {
 
 			if (get_request_var_request("sort_column") == "id") {
 				if (!is_system_plugin($plugin)) {
-					form_alternate_row_color($colors["alternate"], $colors["light"], $i);
+					form_alternate_row('', true);
 					print format_plugin_row($plugin, $last_plugin, $load_ordering, false);
 					$i++;
 				}
 			}else{
-				form_alternate_row_color($colors["alternate"], $colors["light"], $i);
+				form_alternate_row('', true);
 				print format_plugin_row($plugin, $last_plugin, $load_ordering, is_system_plugin($plugin));
 				$i++;
 			}
@@ -543,7 +543,7 @@ function update_show_current () {
 
 	html_end_box(false);
 
-	html_start_box("", "100%", $colors["header"], "3", "center", "");
+	html_start_box("", "100%", "", "3", "center", "");
 	echo "<tr><td colspan=10><strong>NOTE:</strong> Please sort by 'Load Order' to change plugin load ordering.<br><strong>NOTE:</strong> SYSTEM plugins can not be ordered.</td></tr>";
 	html_end_box();
 

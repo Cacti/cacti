@@ -306,7 +306,7 @@ function raise_message($message_id) {
 /* display_output_messages - displays all of the cached messages from the raise_message() function and clears
      the message cache */
 function display_output_messages() {
-	global $config, $colors, $messages;
+	global $config, $messages;
 
 	if (isset($_SESSION["sess_messages"])) {
 		$error_message = is_error_message();
@@ -357,11 +357,7 @@ function display_output_messages() {
 			}
 			var opacity=1;
 
-			obj.style.zIndex = 2;
-			obj.style.position = "absolute";
-			obj.style.backgroundColor = "#<?php print $colors["light"];?>";
-			obj.style.border = "1px solid #<?php print $colors["header"];?>";
-			obj.style.padding = "10px";
+			obj.class = "popupBox";
 			cw = obj.scrollWidth;
 			// Adjust for IE6
 			if (!cw) cw = 150;
@@ -1827,7 +1823,12 @@ function draw_navigation_text($type = "url") {
 	$current_action = (isset($_REQUEST["action"]) ? $_REQUEST["action"] : "");
 
 	/* find the current page in the big array */
-	$current_array = $nav{$current_page . ":" . $current_action};
+	if (isset($nav[$current_page . ":" . $current_action])) {
+		$current_array = $nav{$current_page . ":" . $current_action};
+	}else{
+		$current_array = array('mapping' => 'index.php:', 'title' => ucwords(str_replace("_", " ", basename($_SERVER['PHP_SELF'], '.php'))), 'level' => 1);
+	}
+
 	$current_mappings = explode(",", $current_array["mapping"]);
 	$current_nav = "";
 	$title       = "";

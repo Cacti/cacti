@@ -31,8 +31,6 @@
      the html form. see the arrays contained in include/global_settings.php
      for the extact syntax of this array */
 function draw_edit_form($array) {
-	global $colors;
-
 	if (sizeof($array) > 0) {
 		while (list($top_branch, $top_children) = each($array)) {
 			if ($top_branch == "config") {
@@ -57,12 +55,12 @@ function draw_edit_form($array) {
 			}elseif ($field_array["method"] == "hidden_zero") {
 				form_hidden_box($field_name, $field_array["value"], "0");
 			}elseif ($field_array["method"] == "spacer") {
-				print "<tr id='row_$field_name' bgcolor='#" . $colors["header_panel"] . "'><td colspan='2' class='tableSubHeaderColumn'>" . $field_array["friendly_name"] . "</td></tr>\n";
+				print "<tr class='tableHeader' id='row_$field_name'><td colspan='2' class='tableSubHeaderColumn'>" . $field_array["friendly_name"] . "</td></tr>\n";
 			}else{
 				if (isset($config_array["force_row_color"])) {
-					print "<tr id='row_$field_name' bgcolor='#" . $config_array["force_row_color"] . "'>";
+					print "<tr class='even-alternate'>";
 				}else{
-					form_alternate_row_color($colors["form_alternate1"], $colors["form_alternate2"], $i, 'row_' . $field_name);
+					form_alternate_row('row_' . $field_name);
 				}
 
 				print "<td width='" . ((isset($config_array["left_column_width"])) ? $config_array["left_column_width"] : "50%") . "'>\n<font class='textEditTitle'>" . $field_array["friendly_name"] . "</font><br>\n";
@@ -417,7 +415,7 @@ function form_hidden_box($form_name, $form_previous_value, $form_default_value) 
 		$form_previous_value = $form_default_value;
 	}
 
-	print "<div style='display:none;'><input type='hidden' id='$form_name' name='$form_name' value='" . htmlspecialchars($form_previous_value, ENT_QUOTES) . "'></div>\n";
+	print "<input style='height:0px;' type='hidden' id='$form_name' name='$form_name' value='" . htmlspecialchars($form_previous_value, ENT_QUOTES) . "'>\n";
 }
 
 /* form_dropdown - draws a standard html dropdown box
@@ -774,7 +772,7 @@ function form_confirm_buttons($action_url, $cancel_url) {
 	global $config;
 	?>
 	<tr>
-		<td bgcolor="#E1E1E1">
+		<td>
 			<input type='button' onClick='cactiReturnTo("<?php print $config['url_path'] . $cancel_url;?>")' value='Cancel'>
 			<input type='submit' onClick='cactiReturnTo("<?php print $config['url_path'] . $action_url;?>&confirm=true")' value='Delete'>
 		</td>

@@ -25,24 +25,24 @@
 /* html_start_box - draws the start of an HTML box with an optional title
    @arg $title - the title of this box ("" for no title)
    @arg $width - the width of the box in pixels or percent
-   @arg $background_color - the color of the box border and title row background
-     color
+   @arg $background_color - deprecated
    @arg $cell_padding - the amount of cell padding to use inside of the box
    @arg $align - the HTML alignment to use for the box (center, left, or right)
    @arg $add_text - the url to use when the user clicks 'Add' in the upper-right
      corner of the box ("" for no 'Add' link) */
 function html_start_box($title, $width, $background_color, $cell_padding, $align, $add_text) {
-	global $colors; ?>
-	<table align="<?php print $align;?>" width="<?php print $width;?>" cellpadding=0 cellspacing=0 border=0 class="cactiTable" bgcolor="#<?php print $background_color;?>">
+	?>
+	<table align="<?php print $align;?>" width="<?php print $width;?>" cellpadding=0 cellspacing=0 border=0 class="cactiTable">
 		<tr>
 			<td>
-				<table cellpadding=<?php print $cell_padding;?> cellspacing=0 border=0 bgcolor="#<?php print $colors["form_background_dark"];?>" width="100%">
-					<?php if ($title != "") {?><tr>
-						<td bgcolor="#<?php print $background_color;?>" style="padding: 3px;" colspan="100">
+				<table class='tableBody' cellpadding=<?php print $cell_padding;?> cellspacing=0 border=0 width="100%">
+					<?php if ($title != "") {?>
+					<tr class='cactiTableTitle'>
+						<td style="padding: 3px;" colspan="100">
 							<table width="100%" cellpadding="0" cellspacing="0">
 								<tr>
-									<td bgcolor="#<?php print $background_color;?>" class="textHeaderDark"><?php print $title;?></td>
-										<?php if ($add_text != "") {?><td class="textHeaderDark" align="right" bgcolor="#<?php print $colors["header"];?>"><strong><a class="linkOverDark" href="<?php print htmlspecialchars($add_text);?>">Add</a>&nbsp;</strong></td><?php }?>
+									<td class="textHeaderDark"><?php print $title;?></td>
+										<?php if ($add_text != "") {?><td class="textHeaderDark" align="right"><strong><a class="linkOverDark" href="<?php print htmlspecialchars($add_text);?>">Add</a>&nbsp;</strong></td><?php }?>
 								</tr>
 							</table>
 						</td>
@@ -337,33 +337,51 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = "", $extr
    @arg $current_page - the current page in the navigation system
    @arg $rows_per_page - the number of rows that are displayed on a single page
    @arg $total_rows - the total number of rows in the navigation system
-   @arg $object - the object types that is being displayed */
-function html_nav_bar($base_url, $max_pages, $current_page, $rows_per_page, $total_rows, $colspan=30, $object = "Rows") {
-	global $colors;
+   @arg $object - the object types that is being displayed
+   @arg $page_var - the object types that is being displayed */
+function html_nav_bar($base_url, $max_pages, $current_page, $rows_per_page, $total_rows, $colspan=30, $object = "Rows", $page_var = "page") {
+	if ($total_rows > $rows_per_page) {
+		if (substr_count($base_url, '?') == 0) {
+			$base_url = trim($base_url) . '?';
+		}else{
+			$base_url = trim($base_url) . '&';
+		}
 
-	if ($total_rows > 0) {
-		$url_page_select = get_page_list($current_page, $max_pages, $rows_per_page, $total_rows, $base_url);
+		$url_page_select = get_page_list($current_page, $max_pages, $rows_per_page, $total_rows, $base_url, $page_var);
 
-		$nav = "<tr bgcolor='#" . $colors["header"] . "'>
+		$nav = "<tr class='cactiNavBarTop'>
 			<td colspan='$colspan'>
 				<table width='100%' cellspacing='0' cellpadding='0' border='0'>
 					<tr>
 						<td style='width:33%;' align='left' class='textHeaderDark'>
-							" . (($current_page > 1) ? "<strong>&lt;&lt;&nbsp<a class='linkOverDark' href='" . htmlspecialchars($base_url . "&page=" . ($current_page-1)) . "'>Previous</a></strong>":"") . "
+							" . (($current_page > 1) ? "<a class='navBarPrevious' href='" . htmlspecialchars($base_url . "$page_var=" . ($current_page-1)) . "'><span>&lt;&lt;&nbsp;</span>Previous</a>":"") . "
 						</td>
 						<td style='width:33%;' align='center' class='textHeaderDark'>
 							Showing $object " . (($rows_per_page*($current_page-1))+1) . " to " . (($total_rows < $rows_per_page) || ($total_rows < ($rows_per_page*$current_page)) ? $total_rows : $rows_per_page*$current_page) . " of $total_rows [$url_page_select]
 						</td>
 						<td style='width:33%;' align='right' class='textHeaderDark'>
-							" . (($current_page*$rows_per_page) < $total_rows ? "<strong><a class='linkOverDark' href='" . htmlspecialchars($base_url . "&page=" . ($current_page+1)) . "'>Next</a>&nbsp;&gt;&gt;</strong>":"") . "
+							" . (($current_page*$rows_per_page) < $total_rows ? "<a class='navBarPrevious' href='" . htmlspecialchars($base_url . "$page_var=" . ($current_page+1)) . "'>Next<span>&nbsp;&gt;&gt;</span></a>":"") . "
 						</td>
 					</tr>
 				</table>
 			</td>
 			</tr>\n";
+	}elseif ($total_rows > 0) {
+		$nav = "<tr class='cactiNavBarTop'>
+			<td colspan='$colspan'>
+				<table width='100%' cellspacing='0' cellpadding='0' border='0'>
+					<tr>
+						<td align='center' class='textHeaderDark'>
+							Showing All $object
+						</td>
+					</tr>
+				</table>
+			</td>
+			</tr>\n";
+	
 	}else{
-		$nav = "<tr bgcolor='#" . $colors["header"] . "'>
-			<td colspan='4'>
+		$nav = "<tr class='cactiNavBarTop'>
+			<td colspan='$colspan'>
 				<table width='100%' cellspacing='0' cellpadding='0' border='0'>
 					<tr>
 						<td align='center' class='textHeaderDark'>
@@ -389,8 +407,6 @@ function html_nav_bar($base_url, $max_pages, $current_page, $rows_per_page, $tot
         will be opposite this direction if the user selects the same named column.
    @arg $last_item_colspan - the TD 'colspan' to apply to the last cell in the row */
 function html_header_sort($header_items, $sort_column, $sort_direction, $last_item_colspan = 1) {
-	global $colors;
-
 	/* reverse the sort direction */
 	if ($sort_direction == "ASC") {
 		$new_sort_direction = "DESC";
@@ -398,7 +414,7 @@ function html_header_sort($header_items, $sort_column, $sort_direction, $last_it
 		$new_sort_direction = "ASC";
 	}
 
-	print "<tr bgcolor='#" . $colors["header_panel"] . "'>\n";
+	print "<tr class='tableHeader'>\n";
 
 	$i = 1;
 	foreach ($header_items as $db_column => $display_array) {
@@ -412,9 +428,9 @@ function html_header_sort($header_items, $sort_column, $sort_direction, $last_it
 		}
 
 		if (($db_column == "") || (substr_count($db_column, "nosort"))) {
-			print "<th " . ((($i+1) == count($header_items)) ? "colspan='$last_item_colspan' " : "") . "class='tableSubHeaderColumn'><span class='textSubHeaderDark'>" . $display_text . "</span></th>\n";
+			print "<th " . ((($i+1) == count($header_items)) ? "colspan='$last_item_colspan' " : "") . ">" . $display_text . "</th>\n";
 		}else{
-			print "<th class='tableSubHeaderColumn' " . ((($i) == count($header_items)) ? "colspan='$last_item_colspan'>" : ">");
+			print "<th " . ((($i) == count($header_items)) ? "colspan='$last_item_colspan'>" : ">");
 			print "<a class='textSubHeaderDark' href='" . htmlspecialchars(basename($_SERVER["PHP_SELF"]) . "?sort_column=" . $db_column . "&sort_direction=" . $direction) . "'>" . $display_text . "</a>";
 			print "</th>\n";
 		}
@@ -437,8 +453,6 @@ function html_header_sort($header_items, $sort_column, $sort_direction, $last_it
         will be opposite this direction if the user selects the same named column.
    @arg $form_action - the url to post the 'select all' form to */
 function html_header_sort_checkbox($header_items, $sort_column, $sort_direction, $include_form = true, $form_action = "") {
-	global $colors;
-
 	/* reverse the sort direction */
 	if ($sort_direction == "ASC") {
 		$new_sort_direction = "DESC";
@@ -449,7 +463,7 @@ function html_header_sort_checkbox($header_items, $sort_column, $sort_direction,
 	/* default to the 'current' file */
 	if ($form_action == "") { $form_action = basename($_SERVER["PHP_SELF"]); }
 
-	print "<tr bgcolor='#" . $colors["header_panel"] . "'>\n";
+	print "<tr class='tableHeader'>\n";
 
 	foreach($header_items as $db_column => $display_array) {
 		/* by default, you will always sort ascending, with the exception of an already sorted column */
@@ -462,15 +476,15 @@ function html_header_sort_checkbox($header_items, $sort_column, $sort_direction,
 		}
 
 		if (($db_column == "") || (substr_count($db_column, "nosort"))) {
-			print "<th class='tableSubHeaderColumn'>" . $display_text . "</th>\n";
+			print "<th>" . $display_text . "</th>\n";
 		}else{
-			print "<th class='tableSubHeaderColumn'>";
+			print "<th>";
 			print "<a class='textSubHeaderDark' href='" . htmlspecialchars(basename($_SERVER["PHP_SELF"]) . "?sort_column=" . $db_column . "&sort_direction=" . $direction) . "'>" . $display_text . "</a>";
 			print "</th>\n";
 		}
 	}
 
-	print "<th width='1%' class='tableSubHeaderColumn tdSelectAll' align='right' bgcolor='#819bc0' style='" . get_checkbox_style() . "'><input type='checkbox' style='margin: 0px;' name='all' title='Select All' onClick='SelectAll(\"chk_\",this.checked)'></th>" . ($include_form ? "<th style='display:none;'><form name='chk' method='post' action='$form_action'></th>\n":"");
+	print "<th width='1%' class='tdSelectAll' align='right' bgcolor='#819bc0' style='" . get_checkbox_style() . "'><input type='checkbox' style='margin: 0px;' name='all' title='Select All' onClick='SelectAll(\"chk_\",this.checked)'></th>" . ($include_form ? "<th style='display:none;'><form name='chk' method='post' action='$form_action'></th>\n":"");
 	print "</tr>\n";
 }
 
@@ -478,12 +492,10 @@ function html_header_sort_checkbox($header_items, $sort_column, $sort_direction,
    @arg $header_items - an array containing a list of items to be included in the header
    @arg $last_item_colspan - the TD 'colspan' to apply to the last cell in the row */
 function html_header($header_items, $last_item_colspan = 1) {
-	global $colors;
-
-	print "<tr bgcolor='#" . $colors["header_panel"] . "'>\n";
+	print "<tr class='tableHeader'>\n";
 
 	for ($i=0; $i<count($header_items); $i++) {
-		print "<th " . ((($i+1) == count($header_items)) ? "colspan='$last_item_colspan' " : "") . "class='tableSubHeaderColumn'>" . $header_items[$i] . "</th>\n";
+		print "<th " . ((($i+1) == count($header_items)) ? "colspan='$last_item_colspan' " : "") . ">" . $header_items[$i] . "</th>\n";
 	}
 
 	print "</tr>\n";
@@ -494,18 +506,16 @@ function html_header($header_items, $last_item_colspan = 1) {
    @arg $header_items - an array containing a list of items to be included in the header
    @arg $form_action - the url to post the 'select all' form to */
 function html_header_checkbox($header_items, $include_form = true, $form_action = "") {
-	global $colors;
-
 	/* default to the 'current' file */
 	if ($form_action == "") { $form_action = basename($_SERVER["PHP_SELF"]); }
 
-	print "<tr bgcolor='#" . $colors["header_panel"] . "'>\n";
+	print "<tr class='tableHeader'>\n";
 
 	for ($i=0; $i<count($header_items); $i++) {
-		print "<th class='tableSubHeaderColumn'>" . $header_items[$i] . "</th>\n";
+		print "<th>" . $header_items[$i] . "</th>\n";
 	}
 
-	print "<th width='1%' class='tableSubHeaderColumn tdSelectAll' align='right' bgcolor='#819bc0' style='" . get_checkbox_style() . "'><input type='checkbox' style='margin: 0px;' name='all' title='Select All' onClick='SelectAll(\"chk_\",this.checked)'></th>\n" . ($include_form ? "<th style='display:none;'><form name='chk' method='post' action='$form_action'></th>\n":"");
+	print "<th width='1%' class='tdSelectAll' align='right' bgcolor='#819bc0' style='" . get_checkbox_style() . "'><input type='checkbox' style='margin: 0px;' name='all' title='Select All' onClick='SelectAll(\"chk_\",this.checked)'></th>\n" . ($include_form ? "<th style='display:none;'><form name='chk' method='post' action='$form_action'></th>\n":"");
 	print "</tr>\n";
 }
 
@@ -598,12 +608,12 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 
 	include($config["include_path"] . "/global_arrays.php");
 
-	print "<tr bgcolor='#" . $colors["header_panel"] . "'>";
-		DrawMatrixHeaderItem("Graph Item",$colors["header_text"],1);
-		DrawMatrixHeaderItem("Data Source",$colors["header_text"],1);
-		DrawMatrixHeaderItem("Graph Item Type",$colors["header_text"],1);
-		DrawMatrixHeaderItem("CF Type",$colors["header_text"],1);
-		DrawMatrixHeaderItem("Item Color",$colors["header_text"],4);
+	print "<tr class='tableHeader'>";
+		DrawMatrixHeaderItem("Graph Item","",1);
+		DrawMatrixHeaderItem("Data Source","",1);
+		DrawMatrixHeaderItem("Graph Item Type","",1);
+		DrawMatrixHeaderItem("CF Type","",1);
+		DrawMatrixHeaderItem("Item Color","",4);
 	print "</tr>";
 
 	$group_counter = 0; $_graph_type_name = ""; $i = 0;
@@ -634,7 +644,7 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 
 		/* alternating row color */
 		if ($use_custom_row_color == false) {
-			form_alternate_row_color($alternate_color_1,$alternate_color_2,$i);
+			form_alternate_row();
 		}else{
 			print "<tr bgcolor='#$custom_row_color'>";
 		}
@@ -683,13 +693,13 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 		$i++;
 	}
 	}else{
-		print "<tr bgcolor='#" . $colors["form_alternate2"] . "'><td colspan='7'><em>No Items</em></td></tr>";
+		print "<tr><td colspan='7'><em>No Items</em></td></tr>";
 	}
 }
 
 /* draw_menu - draws the cacti menu for display in the console */
 function draw_menu($user_menu = "") {
-	global $colors, $config, $user_auth_realms, $user_auth_realm_filenames, $menu;
+	global $config, $user_auth_realms, $user_auth_realm_filenames, $menu;
 
 	if (strlen($user_menu == 0)) {
 		$user_menu = $menu;
@@ -828,14 +838,14 @@ function draw_actions_dropdown($actions_array) {
  */
 
 function DrawMatrixHeaderItem($matrix_name, $matrix_text_color, $column_span = 1) { ?>
-		<th class="tableSubHeaderColumn" style="height:1px;" colspan="<?php print $column_span;?>">
-			<strong><font color="#<?php print $matrix_text_color;?>"><?php print $matrix_name;?></font></strong>
+		<th style="height:1px;" colspan="<?php print $column_span;?>">
+			<font class='textSubHeaderDark'><?php print $matrix_name;?></font>
 		</th>
 <?php }
 
 function form_area($text) { ?>
 	<tr>
-		<td bgcolor="#E1E1E1" class="textArea">
+		<td class="textArea">
 			<?php print $text;?>
 		</td>
 	</tr>

@@ -241,7 +241,7 @@ case 'preview':
 	load_current_session_value('graph_remove', 'sess_graph_view_graph_remove', '');
 
 	/* include graph view filter selector */
-	html_start_box('<strong>Graph Filters</strong>' . (isset($_REQUEST['style']) && strlen($_REQUEST['style']) ? ' [ Custom Graph List Applied - Filtering from List ]':''), '100%', $colors['header'], '2', 'center', '');
+	html_start_box('<strong>Graph Filters</strong>' . (isset($_REQUEST['style']) && strlen($_REQUEST['style']) ? ' [ Custom Graph List Applied - Filtering from List ]':''), '100%', "", '2', 'center', '');
 
 	?>
 	<script type="text/javascript" >
@@ -249,7 +249,7 @@ case 'preview':
 			$(".graphimage").zoom({inputfieldStartTime : 'date1', inputfieldEndTime : 'date2', serverTimeOffset : <?php print date('Z');?>});
 		});
 	</script>
-	<tr bgcolor='#<?php print $colors['panel'];?>' class='noprint'>
+	<tr class='even noprint'>
 		<td class='noprint'>
 		<form style='margin:0px;padding:0px;' name='form_graph_view' method='post' onSubmit='applyGraphPreviewFilterChange(document.form_graph_view);return false;'>
 			<table cellpadding='1' cellspacing='0'>
@@ -382,7 +382,7 @@ case 'preview':
 	/* include time span selector */
 	if (read_graph_config_option('timespan_sel') == 'on') {
 		?>
-		<tr bgcolor='#<?php print $colors['panel'];?>' class='noprint'>
+		<tr class='even noprint'>
 			<td class='noprint'>
 			<form style='margin:0px;padding:0px;' name='form_timespan_selector' method='post' action='graph_view.php'>
 				<table cellpadding='1' cellspacing='0'>
@@ -562,7 +562,7 @@ case 'preview':
 
 	$nav_url = preg_replace('/((\?|&)host_id=[0-9]+|(\?|&)filter=[a-zA-Z0-9]*)/', '', $nav_url);
 
-	html_start_box('', '100%', $colors['header'], '3', 'center', '');
+	html_start_box('', '100%', "", '3', 'center', '');
 
 	$nav = html_nav_bar("graph_view.php?action=preview" . $nav_url, MAX_DISPLAY_PAGES, get_request_var_request("page"), get_request_var_request("rows"), $total_rows, get_request_var_request('columns'), "Graphs");
 
@@ -671,10 +671,10 @@ case 'list':
 	$nav_url = 'graph_view.php?action=list&page=<PAGE>';
 
 	/* display graph view filter selector */
-	html_start_box('<strong>Graph Filters</strong>' . (isset($_REQUEST['style']) && strlen($_REQUEST['style']) ? ' [ Custom Graph List Applied - Filter from List ]':''), '100%', $colors['header'], '2', 'center', '');
+	html_start_box('<strong>Graph Filters</strong>' . (isset($_REQUEST['style']) && strlen($_REQUEST['style']) ? ' [ Custom Graph List Applied - Filter from List ]':''), '100%', '', '2', 'center', '');
 
 	?>
-	<tr bgcolor='#<?php print $colors['panel'];?>'>
+	<tr class='even noprint'>
 		<td>
 		<form style='margin:0px;padding:0px;' name='form_graph_list' method='post' onSubmit='form_graph(document.chk,document.form_graph_list)'>
 			<table cellpadding='1' cellspacing='0'>
@@ -834,7 +834,7 @@ case 'list':
 
 	<?php
 
-	html_start_box('', '100%', $colors['header'], '3', 'center', '');
+	html_start_box('', '100%', '', '3', 'center', '');
 
 	$nav = html_nav_bar("graph_view.php?action=list" . $nav_url, MAX_DISPLAY_PAGES, get_request_var_request("page"), get_request_var_request("rows"), $total_rows, 5, "Graphs");
 
@@ -845,7 +845,7 @@ case 'list':
 	$i = 0;
 	if (sizeof($graphs)) {
 		foreach ($graphs as $graph) {
-			form_alternate_row_color($colors['alternate'], $colors['light'], $i, 'line' . $graph['local_graph_id']); $i++;
+			form_alternate_row('line' . $graph['local_graph_id'], true);
 			form_selectable_cell("<strong><a href='" . htmlspecialchars('graph.php?local_graph_id=' . $graph['local_graph_id'] . '&rra_id=all') . "'>" . htmlspecialchars($graph['title_cache']) . '</a></strong>', $graph['local_graph_id'], '30%');
 			form_selectable_cell($graph['description'], $graph['local_graph_id']);
 			form_selectable_cell($graph['template_name'], $graph['local_graph_id']);

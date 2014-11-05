@@ -468,7 +468,8 @@ if ($step == "4") {
 <head>
 	<title>cacti</title>
 	<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
-	<style>
+	<link href="<?php echo $config['url_path']; ?>include/main.css" type="text/css" rel="stylesheet">
+	<style type='text/css'>>
 	<!--
 		BODY,TABLE,TR,TD
 		{
@@ -494,17 +495,15 @@ if ($step == "4") {
 
 <form method="post" action="index.php">
 
-<table width="500" align="center" cellpadding="1" cellspacing="0" border="0" bgcolor="#104075">
-	<tr bgcolor="#FFFFFF" style="height:10px;">
-		<td>&nbsp;</td>
-	</tr>
+<table width="700" align="center" cellpadding="0" cellspacing="0" border="0">
+	<tr><td height='40'></td></tr>
 	<tr>
-		<td width="100%">
-			<table cellpadding="3" cellspacing="0" border="0" bgcolor="#E6E6E6" width="100%">
-				<tr>
-					<td bgcolor="#104075" class="header-text">Cacti Installation Guide</td>
+		<td width="100%" valign='middle'>
+			<table class='cactiTable' cellpadding="3" cellspacing="0" border="0" width="100%">
+				<tr class='cactiTableTitle'>
+					<td class='textHeaderDark'><strong>Cacti Installation Guide</strong></td>
 				</tr>
-				<tr>
+				<tr class='installArea'>
 					<td width="100%" style="font-size: 12px;">
 						<?php if ($step == "1") { ?>
 
@@ -674,9 +673,11 @@ if ($step == "4") {
 
 						<?php }?>
 
-						<p align="right"><input type="image" src="install_<?php if ($step == "3") {?>finish<?php }else{?>next<?php }?>.gif" alt="<?php if ($step == "3"){?>Finish<?php }else{?>Next<?php }?>"></p>
 					</td>
 				</tr>
+				<tr>
+					<td class='saveRow' align="right"><input type="button" value="<?php if ($step == "3"){?>Finish<?php }else{?>Next<?php }?>"></td>
+				<tr>
 			</table>
 		</td>
 	</tr>

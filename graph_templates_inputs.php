@@ -146,7 +146,7 @@ function input_remove() {
 }
 
 function input_edit() {
-	global $colors, $consolidation_functions, $graph_item_types, $struct_graph_item, $fields_graph_template_input_edit;
+	global $consolidation_functions, $graph_item_types, $struct_graph_item, $fields_graph_template_input_edit;
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var("id"));
@@ -166,7 +166,7 @@ function input_edit() {
 		$graph_template_input = db_fetch_row("select * from graph_template_input where id=" . $_GET["id"]);
 	}
 
-	html_start_box("<strong>Graph Item Inputs</strong> " . htmlspecialchars($header_label), "100%", $colors["header"], "3", "center", "");
+	html_start_box("<strong>Graph Item Inputs</strong> " . htmlspecialchars($header_label), "100%", "", "3", "center", "");
 
 	draw_edit_form(array(
 		"config" => array(),
@@ -191,7 +191,7 @@ function input_edit() {
 		and graph_templates_item.graph_template_id=" . $_GET["graph_template_id"] . "
 		order by graph_templates_item.sequence");
 
-	form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
+	form_alternate_row();?>
 		<td width="50%">
 			<font class="textEditTitle">Associated Graph Items</font><br>
 			Select the graph items that you want to accept user input for.

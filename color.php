@@ -93,7 +93,7 @@ function color_remove() {
 }
 
 function color_edit() {
-	global $colors, $fields_color_edit;
+	global $fields_color_edit;
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var("id"));
@@ -106,7 +106,7 @@ function color_edit() {
 		$header_label = "[new]";
 	}
 
-	html_start_box("<strong>Colors</strong> $header_label", "100%", $colors["header"], "3", "center", "");
+	html_start_box("<strong>Colors</strong> $header_label", "100%", "", "3", "center", "");
 
 	draw_edit_form(array(
 		"config" => array(),
@@ -119,29 +119,27 @@ function color_edit() {
 }
 
 function color() {
-	global $colors;
+	html_start_box("<strong>Colors</strong>", "100%", "", "3", "center", "color.php?action=edit");
 
-	html_start_box("<strong>Colors</strong>", "100%", $colors["header"], "3", "center", "color.php?action=edit");
+	print "<tr class='tableHeader'>";
+		DrawMatrixHeaderItem("Hex Value","",1);
+		DrawMatrixHeaderItem("Color","",1);
+		DrawMatrixHeaderItem("&nbsp;","",1);
 
-	print "<tr bgcolor='#" . $colors["header_panel"] . "'>";
-		DrawMatrixHeaderItem("Hex Value",$colors["header_text"],1);
-		DrawMatrixHeaderItem("Color",$colors["header_text"],1);
-		DrawMatrixHeaderItem("&nbsp;",$colors["header_text"],1);
+		DrawMatrixHeaderItem("&nbsp;","",1);
+		DrawMatrixHeaderItem("Hex Value","",1);
+		DrawMatrixHeaderItem("Color","",1);
+		DrawMatrixHeaderItem("&nbsp;","",1);
 
-		DrawMatrixHeaderItem("&nbsp;",$colors["header_text"],1);
-		DrawMatrixHeaderItem("Hex Value",$colors["header_text"],1);
-		DrawMatrixHeaderItem("Color",$colors["header_text"],1);
-		DrawMatrixHeaderItem("&nbsp;",$colors["header_text"],1);
+		DrawMatrixHeaderItem("&nbsp;","",1);
+		DrawMatrixHeaderItem("Hex Value","",1);
+		DrawMatrixHeaderItem("Color","",1);
+		DrawMatrixHeaderItem("&nbsp;","",1);
 
-		DrawMatrixHeaderItem("&nbsp;",$colors["header_text"],1);
-		DrawMatrixHeaderItem("Hex Value",$colors["header_text"],1);
-		DrawMatrixHeaderItem("Color",$colors["header_text"],1);
-		DrawMatrixHeaderItem("&nbsp;",$colors["header_text"],1);
-
-		DrawMatrixHeaderItem("&nbsp;",$colors["header_text"],1);
-		DrawMatrixHeaderItem("Hex Value",$colors["header_text"],1);
-		DrawMatrixHeaderItem("Color",$colors["header_text"],1);
-		DrawMatrixHeaderItem("&nbsp;",$colors["header_text"],1);
+		DrawMatrixHeaderItem("&nbsp;","",1);
+		DrawMatrixHeaderItem("Hex Value","",1);
+		DrawMatrixHeaderItem("Color","",1);
+		DrawMatrixHeaderItem("&nbsp;","",1);
 	print "</tr>";
 
 	$color_list = db_fetch_assoc("select * from colors order by hex");
@@ -152,7 +150,7 @@ function color() {
 		foreach ($color_list as $color) {
 			$j++;
 			if ($j % 4 == 1) {
-				form_alternate_row_color($colors["alternate"],$colors["light"],$i); $i++;
+				form_alternate_row('',true);
 					?>
 					<td width='1'>
 						<a class="linkEditMain" style='display:block;' href="<?php print htmlspecialchars("color.php?action=edit&id=" . $color["id"]);?>"><?php print $color["hex"];?></a>

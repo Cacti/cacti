@@ -286,7 +286,7 @@ if (api_plugin_hook_function('custom_login', OPER_MODE_NATIVE) == OPER_MODE_RESK
 	-->
 	</style>
 </head>
-<body bgcolor="#FFFFFF" onload="document.login.login_username.focus()">
+<body onload="document.login.login_username.focus()">
 	<form name="login" method="post" action="<?php print basename($_SERVER["PHP_SELF"]);?>">
 	<input type="hidden" name="action" value="login">
 <?php

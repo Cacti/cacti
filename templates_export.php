@@ -82,37 +82,44 @@ function form_save() {
    --------------------------- */
 
 function export() {
-	global $colors, $export_types;
+	global $export_types;
 
 	/* 'graph_template' should be the default */
 	if (!isset($_REQUEST["export_type"])) {
 		$_REQUEST["export_type"] = "graph_template";
 	}
 
+	html_start_box("<strong>Export Templates</strong>", "100%", "", "3", "center", "");
 	?>
-	<form name="form_graph_id" action="templates_export.php">
-	<table width='100%' style='background-color: #f5f5f5; border: 1px solid #bbbbbb;' align='center'>
-		<tr bgcolor="#<?php print $colors["light"];?>">
-			<td class="textArea" style="padding: 3px;">
-				What would you like to export?&nbsp;
-
-				<select name="cbo_graph_id" onChange="window.location=document.form_graph_id.cbo_graph_id.options[document.form_graph_id.cbo_graph_id.selectedIndex].value">
-					<?php
-					while (list($key, $array) = each($export_types)) {
-						print "<option value='templates_export.php?export_type=" . htmlspecialchars($key) . "'"; if ($_REQUEST["export_type"] == $key) { print " selected"; } print ">" . $array["name"] . "</option>\n";
-					}
-					?>
-				</select>
-			</td>
-		</tr>
-	</table>
-	</form>
-	<form method="post" action="templates_export.php">
+	<tr>
+		<td>
+			<form name="form_graph_id" action="templates_export.php">
+			<table align='left' cellpadding='3' cellspacing='0'>
+				<tr>
+					<td style='font-size:1.2em;'>What would you like to export?</td>
+					<td>
+						<select name="cbo_graph_id" onChange="window.location=document.form_graph_id.cbo_graph_id.options[document.form_graph_id.cbo_graph_id.selectedIndex].value">
+							<?php
+							while (list($key, $array) = each($export_types)) {
+								print "<option value='templates_export.php?export_type=" . htmlspecialchars($key) . "'"; if ($_REQUEST["export_type"] == $key) { print " selected"; } print ">" . $array["name"] . "</option>\n";
+							}
+							?>
+						</select>
+					</td>
+				</tr>
+			</table>
+			</form>
+		</td>
+	</tr>
 	<?php
 
-	html_start_box("<strong>Export Template</strong> [" . $export_types{$_REQUEST["export_type"]}["name"] . "]", "100%", $colors["header"], "3", "center", "");
+	html_end_box();
 
-	form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
+	print "<form method='post' action='templates_export.php'>\n";
+
+	html_start_box("<strong>Available Templates</strong> [" . $export_types{$_REQUEST["export_type"]}["name"] . "]", "100%", "", "3", "center", "");
+
+	form_alternate_row();?>
 		<td width="50%">
 			<font class="textEditTitle"><?php print $export_types{$_REQUEST["export_type"]}["name"];?> to Export</font><br>
 			Choose the exact item to export to XML.
@@ -122,7 +129,7 @@ function export() {
 		</td>
 	</tr>
 
-	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],1); ?>
+	<?php form_alternate_row(); ?>
 		<td width="50%">
 			<font class="textEditTitle">Include Dependencies</font><br>
 			Some templates rely on other items in Cacti to function properly. It is highly recommended that you select
@@ -133,7 +140,7 @@ function export() {
 		</td>
 	</tr>
 
-	<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
+	<?php form_alternate_row(); ?>
 		<td width="50%">
 			<font class="textEditTitle">Output Format</font><br>
 			Choose the format to output the resulting XML file in.

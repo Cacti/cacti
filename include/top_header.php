@@ -22,7 +22,7 @@
  +-------------------------------------------------------------------------+
 */
 
-global $colors, $config, $menu, $refresh;
+global $config, $menu, $refresh;
 
 $oper_mode = api_plugin_hook_function('top_header', OPER_MODE_NATIVE);
 if ($oper_mode == OPER_MODE_RESKIN) {
@@ -69,10 +69,10 @@ $page_title = api_plugin_hook_function('page_title', draw_navigation_text("title
 
 <table style="width:100%" cellspacing="0" cellpadding="0">
 <?php if ($oper_mode == OPER_MODE_NATIVE) { ;?>
-	<tr style="height:1px;" bgcolor="#a9a9a9">
-		<td valign="bottom" colspan="3" nowrap>
+	<tr class='cactiPageHead noprint'>
+		<td valign="bottom" colspan="3">
 			<table width="100%" cellspacing="0" cellpadding="0">
-				<tr style="background: transparent url('<?php echo $config['url_path']; ?>images/cacti_backdrop.gif') no-repeat center right;">
+				<tr class='cactiConsolePageHeadBackdrop'>
 					<td id="tabs" valign="bottom">
 						&nbsp;<a href="<?php echo $config['url_path']; ?>index.php"><img src="<?php echo $config['url_path']; ?>images/tab_console_down.gif" alt="Console" align="absmiddle" border="0"></a><a href="<?php echo $config['url_path']; ?>graph_view.php"><img src="<?php echo $config['url_path']; ?>images/tab_graphs.gif" alt="Graphs" align="absmiddle" border="0"></a><?php
 						api_plugin_hook('top_header_tabs');
@@ -81,12 +81,7 @@ $page_title = api_plugin_hook_function('page_title', draw_navigation_text("title
 			</table>
 		</td>
 	</tr>
-	<tr style="height:2px;" bgcolor="#183c8f">
-		<td colspan="3">
-			<img src="<?php echo $config['url_path']; ?>images/transparent_line.gif" style="height:2px;" border="0"><br>
-		</td>
-	</tr>
-	<tr style="height:5px;" bgcolor="#e9e9e9">
+	<tr class='breadCrumbBar noprint'>
 		<td colspan="3">
 			<table width="100%">
 				<tr>
@@ -103,25 +98,18 @@ $page_title = api_plugin_hook_function('page_title', draw_navigation_text("title
 		</td>
 	</tr>
 	<tr>
-		<td bgcolor="#f5f5f5" colspan="1" style="height:8px;width:135px;background-image: url(<?php echo $config['url_path']; ?>images/shadow_gray.gif); background-repeat: repeat-x; border-right: #aaaaaa 1px solid;">
-			<img src="<?php echo $config['url_path']; ?>images/transparent_line.gif" style="height:2px;width:135px;" border="0"><br>
-		</td>
-		<td colspan="2" style="height:8px;background-image: url(<?php echo $config['url_path']; ?>images/shadow.gif); background-repeat: repeat-x;" bgcolor="#ffffff">
-
-		</td>
-	</tr>
-	<tr>
-		<td valign="top" colspan="1" rowspan="2" style="width:135px;padding:5px;border-right:#aaaaaa 1px solid;" bgcolor='#f5f5f5'>
-			<table bgcolor="#f5f5f5" width="100%" cellpadding="1" cellspacing="0" border="0" style="width:135px;">
+		<td id='navigation' class='cactiConsoleNavigationArea' valign='top'>
+			<table>
 				<?php draw_menu();?>
+				<tr>
+					<td>
+						<p style="width:135px;" align="center"><a href='<?php echo $config['url_path']; ?>about.php'><img src="<?php echo $config['url_path']; ?>images/cacti_logo.gif" border="0"></a></p>
+					</td>
+				</tr>
 			</table>
-
-			<img src="<?php echo $config['url_path']; ?>images/transparent_line.gif" style="height:5px;width:135px;" border="0"><br>
-			<p style="width:135px;" align="center"><a href='<?php echo $config['url_path']; ?>about.php'><img src="<?php echo $config['url_path']; ?>images/cacti_logo.gif" border="0"></a></p>
-			<img src="<?php echo $config['url_path']; ?>images/transparent_line.gif" style="height:5px;width:135px;" border="0"><br>
 		</td>
-		<td width="100%" colspan="2" valign="top" style="padding: 5px; border-right: #aaaaaa 1px solid;"><?php display_output_messages();?><div style='position:relative;' id='main'>
+		<td class='cactiConsoleContentArea' width="100%" valign="top"><?php display_output_messages();?><div style='position:relative;' id='main'>
 <?php }else{ ?>
 	<tr>
-		<td width="100%" valign="top"><?php display_output_messages();?>
+		<td class='cactiConsoleContentArea' width="100%" valign="top"><?php display_output_messages();?><div style='position:relative;' id='main'>
 <?php } ?>
