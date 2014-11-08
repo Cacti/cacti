@@ -319,7 +319,7 @@ function display_output_messages() {
 					switch ($messages[$current_message_id]["type"]) {
 					case 'info':
 						if ($error_message == false) {
-							print "<div id='message' class='textInfo' style='margin-bottom:5px;padding:5px;background-color:#FFFFFF;border:1px solid #BBBBBB;max-width:100%;position:relative;'>";
+							print "<div id='message' class='textInfo messageBox'>";
 							print "$message";
 							print "</div>";
 
@@ -328,7 +328,7 @@ function display_output_messages() {
 						}
 						break;
 					case 'error':
-						print "<div id='message' class='textError' style='margin-bottom:5px;padding:5px;background-color:#FFFFFF;border:1px solid #BBBBBB;max-width:100%;position:relative;'>";
+						print "<div id='message' class='textError messageBox'>";
 						print "Error: $message";
 						print "</div>";
 						break;
@@ -340,51 +340,6 @@ function display_output_messages() {
 		}else{
 			display_custom_error_message($_SESSION["sess_messages"]);
 		}
-
-		if (read_config_option("cacti_popup_messages") == "on") {
-		?>
-		<script type="text/javascript">
-		<!--
-		var obj = document.getElementById('message');
-
-		if (obj) {
-			if (window.innerHeight) {
-				height = window.innerHeight;
-				width  = window.innerWidth;
-			}else{
-				height = document.body.clientHeight;
-				width  = document.body.clientWidth;
-			}
-			var opacity=1;
-
-			obj.class = "popupBox";
-			cw = obj.scrollWidth;
-			// Adjust for IE6
-			if (!cw) cw = 150;
-			ch = obj.scrollHeight;
-			obj.style.top = '65px';
-			obj.style.left = ((width/2) - (cw/2) + 60)+'px';
-			opacity = 1;
-			obj.style.opacity = opacity;
-			obj.zoom = "100%";
-			if (document.getElementById('message')) {
-				setTimeout("removeMessage()", 2000);
-			}
-
-			function removeMessage() {
-				if (obj.style.opacity <= 0) return;
-				opacity-=0.15;
-				iopacity = opacity * 100;
-				obj.style.opacity = opacity;
-				obj.style.filter = 'alpha(opacity='+iopacity+')';
-
-				setTimeout("removeMessage()",40);
-			}
-		}
-		-->
-		</script>
-		<?php
-		}
 	}
 
 	kill_session_var("sess_messages");
@@ -394,7 +349,7 @@ function display_output_messages() {
      the pre-defined error messages
    @arg $text - the actual text of the error message to display */
 function display_custom_error_message($message) {
-	print "<div id='message' class='textError' style='margin-bottom:5px;padding:5px;background-color:#FFFFFF;border:1px solid #BBBBBB;max-width:100%;position:relative;'>";
+	print "<div id='message' class='textError messageBox'>";
 	print "Error: $message";
 	print "</div>";
 }
@@ -1830,7 +1785,7 @@ function draw_navigation_text($type = "url") {
 	}
 
 	$current_mappings = explode(",", $current_array["mapping"]);
-	$current_nav = "";
+	$current_nav = "<ul id='breadcrumbs'>";
 	$title       = "";
 
 	/* resolve all mappings to build the navigation string */
@@ -1854,17 +1809,17 @@ function draw_navigation_text($type = "url") {
 		if ($current_mappings[$i] == "?") {
 			/* '?' tells us to pull title from the cache at this level */
 			if (isset($nav_level_cache{$i})) {
-				$current_nav .= (empty($url) ? "" : "<a href='" . htmlspecialchars($url) . "'>") . htmlspecialchars(resolve_navigation_variables($nav{$nav_level_cache{$i}["id"]}["title"])) . (empty($url) ? "" : "</a>") . " -> ";
-				$title       .= htmlspecialchars(resolve_navigation_variables($nav{$nav_level_cache{$i}["id"]}["title"])) . " -> ";
+				$current_nav .= (empty($url) ? "" : "<li><a href='" . htmlspecialchars($url) . "'>") . htmlspecialchars(resolve_navigation_variables($nav{$nav_level_cache{$i}["id"]}["title"])) . (empty($url) ? "" : "</a></li>");
+				$title       .= htmlspecialchars(resolve_navigation_variables($nav{$nav_level_cache{$i}["id"]}["title"])) . ' -> ';
 			}
 		}else{
 			/* there is no '?' - pull from the above array */
-			$current_nav .= (empty($url) ? "" : "<a href='" . htmlspecialchars($url) . "'>") . htmlspecialchars(resolve_navigation_variables($nav{$current_mappings[$i]}["title"])) . (empty($url) ? "" : "</a>") . " -> ";
-			$title       .= htmlspecialchars(resolve_navigation_variables($nav{$current_mappings[$i]}["title"])) . " -> ";
+			$current_nav .= (empty($url) ? "" : "<li><a href='" . htmlspecialchars($url) . "'>") . htmlspecialchars(resolve_navigation_variables($nav{$current_mappings[$i]}["title"])) . (empty($url) ? "" : "</a></li>");
+			$title       .= htmlspecialchars(resolve_navigation_variables($nav{$current_mappings[$i]}["title"])) . ' -> ';
 		}
 	}
 
-	$current_nav .= htmlspecialchars(resolve_navigation_variables($current_array["title"]));
+	$current_nav .= '<li><a href=#>' . htmlspecialchars(resolve_navigation_variables($current_array["title"])) . '</a></li></ul>';
 	$title       .= htmlspecialchars(resolve_navigation_variables($current_array["title"]));
 
 	/* keep a cache for each level we encounter */
@@ -2230,6 +2185,30 @@ function cacti_escapeshellarg($string, $quote=true) {
 		} else {
 			return $string;
 		}
+	}
+}
+
+function bottom_footer() {
+	if (!isset($_REQUEST['header']) || $_REQUEST['header'] == false) {
+		include("./include/bottom_footer.php");
+	}
+}
+
+function top_header() {
+	if (!isset($_REQUEST['header']) || $_REQUEST['header'] == false) {
+		include("./include/top_header.php");
+	}
+}
+
+function top_graph_header() {
+	if (!isset($_REQUEST['header']) || $_REQUEST['header'] == false) {
+		include("./include/top_graph_header.php");
+	}
+}
+
+function general_header() {
+	if (!isset($_REQUEST['header']) || $_REQUEST['header'] == false) {
+		include("./include/top_general_header.php");
 	}
 }
 

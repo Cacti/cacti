@@ -67,11 +67,11 @@ switch ($_REQUEST["action"]) {
 
 		break;
 	case 'data_edit':
-		include_once("./include/top_header.php");
+		top_header();
 
 		data_edit();
 
-		include_once("./include/bottom_footer.php");
+		bottom_footer();
 		break;
 	case 'ds_remove':
 		ds_remove();
@@ -83,11 +83,11 @@ switch ($_REQUEST["action"]) {
 
 		break;
 	default:
-		include_once("./include/top_header.php");
+		top_header();
 
 		ds();
 
-		include_once("./include/bottom_footer.php");
+		bottom_footer();
 		break;
 }
 
@@ -437,7 +437,7 @@ function form_actions() {
 		}
 	}
 
-	include_once("./include/top_header.php");
+	top_header();
 
 	html_start_box("<strong>" . $ds_actions{$_POST["drp_action"]} . "</strong>", "60%", "", "3", "center", "");
 
@@ -582,7 +582,7 @@ function form_actions() {
 
 	html_end_box();
 
-	include_once("./include/bottom_footer.php");
+	bottom_footer();
 }
 
 /* ----------------------------
@@ -740,7 +740,7 @@ function ds_edit() {
 		}
 	}
 
-	include_once("./include/top_header.php");
+	top_header();
 
 	if (!empty($_GET["id"])) {
 		?>
@@ -998,7 +998,7 @@ function ds_edit() {
 
 	api_plugin_hook('data_source_edit_bottom');
 
-	include_once("./include/bottom_footer.php");
+	bottom_footer();
 }
 
 function get_poller_interval($seconds) {
@@ -1100,10 +1100,10 @@ function ds() {
 	<tr class='even noprint'>
 		<td>
 		<form name="form_data_sources" action="data_sources.php">
-			<table cellpadding="1" cellspacing="0">
+			<table cellpadding="2" cellspacing="0">
 				<tr>
 					<td width="50">
-						Host:&nbsp;
+						Host:
 					</td>
 					<td>
 						<select name="host_id" onChange="applyDSFilterChange(document.form_data_sources)">
@@ -1122,7 +1122,7 @@ function ds() {
 						</select>
 					</td>
 					<td width="50">
-						&nbsp;Template:&nbsp;
+						Template:
 					</td>
 					<td width="1">
 						<select name="template_id" onChange="applyDSFilterChange(document.form_data_sources)">
@@ -1146,14 +1146,16 @@ function ds() {
 
 						</select>
 					</td>
-					<td nowrap style='white-space: nowrap;'>
-						&nbsp;<input type="submit" value="Go" title="Set/Refresh Filters">
+					<td>
+						<input type="submit" value="Go" title="Set/Refresh Filters">
+					</td>
+					<td>
 						<input type="submit" name="clear_x" value="Clear" title="Clear Filters">
 					</td>
 				</tr>
 				<tr>
 					<td width="50">
-						Method:&nbsp;
+						Method:
 					</td>
 					<td width="1">
 						<select name="method_id" onChange="applyDSFilterChange(document.form_data_sources)">
@@ -1176,8 +1178,8 @@ function ds() {
 							?>
 						</select>
 					</td>
-					<td nowrap style='white-space: nowrap;' width="50">
-						&nbsp;Rows per Page:&nbsp;
+					<td style='white-space: nowrap;' width="50">
+						Data Sources:
 					</td>
 					<td width="1">
 						<select name="ds_rows" onChange="applyDSFilterChange(document.form_data_sources)">
@@ -1193,10 +1195,10 @@ function ds() {
 					</td>
 				</tr>
 			</table>
-			<table cellpadding="1" cellspacing="0">
+			<table cellpadding="2" cellspacing="0">
 				<tr>
 					<td width="50">
-						Search:&nbsp;
+						Search:
 					</td>
 					<td width="1">
 						<input type="text" name="filter" size="40" value="<?php print htmlspecialchars(get_request_var_request("filter"));?>">
@@ -1296,7 +1298,7 @@ function ds() {
 
 	html_start_box("", "100%", "", "3", "center", "");
 
-	$nav = html_nav_bar("data_sources.php?filter=" . get_request_var_request("filter") . "&host_id=" . get_request_var_request("host_id"), MAX_DISPLAY_PAGES, get_request_var_request("page"), get_request_var_request("ds_rows"), $total_rows, 7);
+	$nav = html_nav_bar("data_sources.php?filter=" . get_request_var_request("filter") . "&host_id=" . get_request_var_request("host_id"), MAX_DISPLAY_PAGES, get_request_var_request("page"), get_request_var_request("ds_rows"), $total_rows, 7, 'Data Sources');
 
 	print $nav;
 
@@ -1317,7 +1319,7 @@ function ds() {
 			$data_name_cache = title_trim(htmlspecialchars($data_source["name_cache"]), read_config_option("max_title_data_source"));
 
 			if (trim(get_request_var_request("filter") != "")) {
-				$data_name_cache = preg_replace("/(" . preg_quote(get_request_var_request("filter"), "/") . ")/i", "<span style='background-color: #F8D93D;'>\\1</span>", ($data_name_cache));
+				$data_name_cache = preg_replace("/(" . preg_quote(get_request_var_request("filter"), "/") . ")/i", "<span class='filteredValue'>\\1</span>", ($data_name_cache));
 			}
 
 			/* keep copy of data source for comparison */
@@ -1331,7 +1333,7 @@ function ds() {
 				$data_template_name = ((empty($data_source["data_template_name"])) ? "<em>None</em>" : $data_source["data_template_name"]);
 			} elseif (trim(get_request_var_request("filter") != "")) {
 				/* we take care of html-escaping */
-				$data_template_name = preg_replace("/(" . preg_quote(get_request_var_request("filter"), "/") . ")/i", "<span style='background-color: #F8D93D;'>\\1</span>", htmlspecialchars($data_source['data_template_name']));
+				$data_template_name = preg_replace("/(" . preg_quote(get_request_var_request("filter"), "/") . ")/i", "<span class='filteredValue'>\\1</span>", htmlspecialchars($data_source['data_template_name']));
 			} else {
 				$data_template_name = htmlspecialchars($data_source["data_template_name"]);
 			}
@@ -1343,7 +1345,7 @@ function ds() {
 				$data_input_name = ((empty($data_source["data_input_name"])) ? "<em>None</em>" : $data_source["data_input_name"]);
 			} elseif (trim(get_request_var_request("filter") != "")) {
 				/* we take care of html-escaping */
-				$data_input_name = preg_replace("/(" . preg_quote(get_request_var_request("filter"), "/") . ")/i", "<span style='background-color: #F8D93D;'>\\1</span>", htmlspecialchars($data_source['data_input_name']));
+				$data_input_name = preg_replace("/(" . preg_quote(get_request_var_request("filter"), "/") . ")/i", "<span class='filteredValue'>\\1</span>", htmlspecialchars($data_source['data_input_name']));
 			} else {
 				$data_input_name = htmlspecialchars($data_source["data_input_name"]);
 			}
@@ -1351,7 +1353,7 @@ function ds() {
 			$poller_interval    = ((isset($poller_intervals[$data_source["local_data_id"]])) ? $poller_intervals[$data_source["local_data_id"]] : 0);
 
 			form_alternate_row('line' . $data_source["local_data_id"], true);
-			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars("data_sources.php?action=ds_edit&id=" . $data_source["local_data_id"]) . "' title='" . htmlspecialchars($data_source["name_cache"], ENT_QUOTES) . "'>" . ((get_request_var_request("filter") != "") ? preg_replace("/(" . preg_quote(get_request_var_request("filter"), "/") . ")/i", "<span style='background-color: #F8D93D;'>\\1</span>", title_trim(htmlspecialchars($data_source["name_cache"]), read_config_option("max_title_data_source"))) : title_trim(htmlspecialchars($data_source["name_cache"]), read_config_option("max_title_data_source"))) . "</a>", $data_source["local_data_id"]);
+			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars("data_sources.php?action=ds_edit&id=" . $data_source["local_data_id"]) . "' title='" . htmlspecialchars($data_source["name_cache"], ENT_QUOTES) . "'>" . ((get_request_var_request("filter") != "") ? preg_replace("/(" . preg_quote(get_request_var_request("filter"), "/") . ")/i", "<span class='filteredValue'>\\1</span>", title_trim(htmlspecialchars($data_source["name_cache"]), read_config_option("max_title_data_source"))) : title_trim(htmlspecialchars($data_source["name_cache"]), read_config_option("max_title_data_source"))) . "</a>", $data_source["local_data_id"]);
 			form_selectable_cell($data_source['local_data_id'], $data_source['local_data_id']);
 			form_selectable_cell($data_input_name, $data_source["local_data_id"]);
 			form_selectable_cell(get_poller_interval($poller_interval), $data_source["local_data_id"]);

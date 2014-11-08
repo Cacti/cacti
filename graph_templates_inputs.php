@@ -39,11 +39,11 @@ switch ($_REQUEST["action"]) {
 		header("Location: graph_templates.php?action=template_edit&id=" . $_GET["graph_template_id"]);
 		break;
 	case 'input_edit':
-		include_once("./include/top_header.php");
+		top_header();
 
 		input_edit();
 
-		include_once("./include/bottom_footer.php");
+		bottom_footer();
 		break;
 }
 
@@ -133,9 +133,11 @@ function input_remove() {
 	/* ==================================================== */
 
 	if ((read_config_option("deletion_verification") == "on") && (!isset($_GET["confirm"]))) {
-		include("./include/top_header.php");
+		top_header();
+
 		form_confirm("Are You Sure?", "Are you sure you want to delete the input item <strong>'" . htmlspecialchars(db_fetch_cell("select name from graph_template_input where id=" . $_GET["id"]), ENT_QUOTES) . "'</strong>? NOTE: Deleting this item will NOT affect graphs that use this template.", htmlspecialchars("graph_templates.php?action=template_edit&id=" . $_GET["graph_template_id"]), htmlspecialchars("graph_templates_inputs.php?action=input_remove&id=" . $_GET["id"] . "&graph_template_id=" . $_GET["graph_template_id"]));
-		include("./include/bottom_footer.php");
+
+		bottom_footer();
 		exit;
 	}
 

@@ -51,16 +51,16 @@ switch (get_request_var_request("action")) {
 		break;
 
 	case 'user_edit':
-		include_once("include/top_header.php");
+		top_header();
 		user_edit();
-		include_once("include/bottom_footer.php");
+		bottom_footer();
 		break;
 
 	default:
 		if (!api_plugin_hook_function('user_admin_action', get_request_var_request("action"))) {
-			include_once("include/top_header.php");
+			top_header();
 			user();
-			include_once("include/bottom_footer.php");
+			bottom_footer();
 		}
 		break;
 }
@@ -197,7 +197,7 @@ function form_actions() {
 		}
 	}
 
-	include_once("./include/top_header.php");
+	top_header();
 
 	html_start_box("<strong>" . $user_actions[get_request_var_post("drp_action")] . "</strong>", "60%", "", "3", "center", "");
 
@@ -311,7 +311,7 @@ function form_actions() {
 
 	html_end_box();
 
-	include_once("./include/bottom_footer.php");
+	bottom_footer();
 }
 
 /* --------------------------
@@ -508,16 +508,6 @@ function graph_perms_edit() {
 		);
 	}
 
-	?>
-	<table width='100%' align='center' cellpadding="5">
-		<tr>
-			<td>
-				<span style='font-size: 12px; font-weight: bold;'>Graph policies will be evaluated in the order shown until a match is found.</span>
-			</td>
-		</tr>
-	</table>
-	<?php
-
 	/* box: graph permissions */
 	html_start_box("<strong>Graph Permissions (By Graph)</strong>", "100%", "", "3", "center", "");
 
@@ -541,9 +531,9 @@ function graph_perms_edit() {
 			<?php form_dropdown("policy_graphs",$graph_policy_array,"","",$policy["policy_graphs"],"",""); ?>
 		</td>
 	</tr>
-	<tr>
+	<tr class='tableRow'>
 		<td colspan="2">
-			<table width="100%" cellpadding="1">
+			<table width='100%' cellpadding='2' cellspacing='0' border='0'>
 				<?php
 				$i = 0;
 				if (sizeof($graphs) > 0) {
@@ -599,9 +589,9 @@ function graph_perms_edit() {
 			<?php form_dropdown("policy_hosts",$graph_policy_array,"","",$policy["policy_hosts"],"",""); ?>
 		</td>
 	</tr>
-	<tr>
+	<tr class='tableRow'>
 		<td colspan="2">
-			<table width="100%" cellpadding="1">
+			<table width='100%' cellpadding='2' cellspacing='0' border='0'>
 				<?php
 				$i = 0;
 				if (sizeof($hosts) > 0) {
@@ -659,9 +649,9 @@ function graph_perms_edit() {
 			<?php form_dropdown("policy_graph_templates",$graph_policy_array,"","",$policy["policy_graph_templates"],"",""); ?>
 		</td>
 	</tr>
-	<tr>
+	<tr class='tableRow'>
 		<td colspan="2">
-			<table width="100%" cellpadding="1">
+			<table width='100%' cellpadding='2' cellspacing='0' border='0'>
 				<?php
 				$i = 0;
 				if (sizeof($graph_templates) > 0) {
@@ -698,7 +688,7 @@ function graph_perms_edit() {
 	<?php
 
 	/* box: tree permissions */
-	html_start_box("<strong>Tree Permissions</strong>", "100%", "", "3", "center", "");
+	html_start_box("<strong>Tree Permissions (By Tree)</strong>", "100%", "", "3", "center", "");
 
 	$trees = db_fetch_assoc("SELECT
 		graph_tree.id,
@@ -718,9 +708,9 @@ function graph_perms_edit() {
 			<?php form_dropdown("policy_trees",$graph_policy_array,"","",$policy["policy_trees"],"",""); ?>
 		</td>
 	</tr>
-	<tr>
+	<tr class='tableRow'>
 		<td colspan="2">
-			<table width="100%" cellpadding="1">
+			<table width='100%' cellpadding='2' cellspacing='0' border='0'>
 				<?php
 				$i = 0;
 				if (sizeof($trees) > 0) {
@@ -766,29 +756,19 @@ function user_realms_edit() {
 	input_validate_input_number(get_request_var("id"));
 	/* ==================================================== */
 
-	?>
-	<table width='100%' align='center' cellpadding="5">
-		<tr>
-			<td>
-				<span style='font-size: 12px; font-weight: bold;'>Realm permissions control which sections of Cacti this user will have access to.</span>
-			</td>
-		</tr>
-	</table>
-	<?php
+	html_start_box("", "100%", "", "0", "center", "");
 
-	html_start_box("", "100%", "", "3", "center", "");
-
-	print "<tr class='tableHeader'>
+	print "<tr>
 			<td class='textHeaderDark'><strong>Realm Permissions</strong></td>
-			<td width='1%' align='center' bgcolor='#819bc0' style='" . get_checkbox_style() . "'><input type='checkbox' style='margin: 0px;' name='all' title='Select All' onClick='SelectAll(\"section\",this.checked)'></td>\n
+			<td width='1%' align='center' bgcolor='#819bc0' style='" . get_checkbox_style() . "'><input type='checkbox' style='margin: 0px;' name='all' title='Select All' onClick='SelectAllRealms(\"section\",this.checked)'></td>\n
 		</tr>\n";
 
 	?>
 
-	<tr>
+	<tr class='tableRob'>
 		<td colspan="2" width="100%">
-			<table width="100%">
-				<tr>
+			<table width='100%' cellpadding='0' cellspacing='0' border='0'>
+				<tr class='tableRow'>
 					<td align="top" width="50%">
 						<?php
 						$i = 0;
@@ -829,19 +809,9 @@ function graph_settings_edit() {
 	input_validate_input_number(get_request_var("id"));
 	/* ==================================================== */
 
-	?>
-	<table width='100%' align='center' cellpadding="5">
-		<tr>
-			<td>
-				<span style='font-size: 12px; font-weight: bold;'>Graph settings control how graphs are displayed for this user.</span>
-			</td>
-		</tr>
-	</table>
-	<?php
-
 	html_start_box("<strong>Graph Settings</strong>", "100%", "", "3", "center", "");
 
-	while (list($tab_short_name, $tab_fields) = each($settings_graphs)) {
+	foreach($settings_graphs as $tab_short_name => $tab_fields) {
 		?>
 		<tr>
 			<td colspan='2' class='textSubHeaderDark' style='padding: 3px;'>
@@ -919,24 +889,16 @@ function user_edit() {
 	if (!empty($_GET["id"])) {
 		/* draw user admin nav tabs */
 		?>
-		<table class='tabs' width='100%' cellspacing='0' cellpadding='3' align='center'>
-			<tr>
-				<td width='1'></td>
-				<td <?php print ((get_request_var_request("tab") == "user_realms_edit") ? "bgcolor='silver'" : "bgcolor='#DFDFDF'");?> nowrap='nowrap' width='150' align='center' class='tab'>
-					<span class='textHeader'><a href='<?php print htmlspecialchars("user_admin.php?action=user_edit&tab=user_realms_edit&id=" . $_GET["id"]);?>'>Realm Permissions</a></span>
-				</td>
-				<td width='1'></td>
-				<td <?php print ((get_request_var_request("tab") == "graph_perms_edit") ? "bgcolor='silver'" : "bgcolor='#DFDFDF'");?> nowrap='nowrap' width='150' align='center' class='tab'>
-					<span class='textHeader'><a href='<?php print htmlspecialchars("user_admin.php?action=user_edit&tab=graph_perms_edit&id=" . $_GET["id"]);?>'>Graph Permissions</a></span>
-				</td>
-				<td width='1'></td>
-				<td <?php print ((get_request_var_request("tab") == "graph_settings_edit") ? "bgcolor='silver'" : "bgcolor='#DFDFDF'");?> nowrap='nowrap' width='130' align='center' class='tab'>
-					<span class='textHeader'><a href='<?php print htmlspecialchars("user_admin.php?action=user_edit&tab=graph_settings_edit&id=" . $_GET["id"]);?>'>Graph Settings</a></span>
-				</td>
+		<div class='tabs' style='float:left;'>
+			<nav>
+				<ul>
+					<li><a <?php print ((get_request_var_request("tab") == "user_realms_edit") ? "class='selected'":"");?> href='<?php print htmlspecialchars("user_admin.php?action=user_edit&tab=user_realms_edit&id=" . $_GET["id"]);?>'>Realm Permissions</a></li>
+					<li><a <?php print ((get_request_var_request("tab") == "graph_perms_edit") ? "class='selected'":"");?> href='<?php print htmlspecialchars("user_admin.php?action=user_edit&tab=graph_perms_edit&id=" . $_GET["id"]);?>'>Graph Permissions</a></li>
+					<li><a <?php print ((get_request_var_request("tab") == "graph_settings_edit") ? "class='selected'":"");?> href='<?php print htmlspecialchars("user_admin.php?action=user_edit&tab=graph_settings_edit&id=" . $_GET["id"]);?>'>Graph Settings</a></li>
+				</ul>
 				<?php api_plugin_hook('user_admin_tab');?>				
-				<td></td>
-			</tr>
-		</table>
+			</nav>
+		</div>
 		<?php
 	}
 
@@ -1087,9 +1049,9 @@ function user() {
 
 			form_alternate_row('line' . $user["id"], true);
 			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars("user_admin.php?action=user_edit&tab=user_realms_edit&id=" . $user["id"]) . "'>" .
-			(strlen(get_request_var_request("filter")) ? preg_replace("/(" . preg_quote(get_request_var_request("filter"), "/") . ")/i", "<span style='background-color: #F8D93D;'>\\1</span>",  htmlspecialchars($user["username"])) : htmlspecialchars($user["username"]))
+			(strlen(get_request_var_request("filter")) ? preg_replace("/(" . preg_quote(get_request_var_request("filter"), "/") . ")/i", "<span class='filteredValue'>\\1</span>",  htmlspecialchars($user["username"])) : htmlspecialchars($user["username"]))
 			, $user["id"]);
-			form_selectable_cell((strlen(get_request_var_request("filter")) ? preg_replace("/(" . preg_quote(get_request_var_request("filter"), "/") . ")/i", "<span style='background-color: #F8D93D;'>\\1</span>", htmlspecialchars($user["full_name"])) : htmlspecialchars($user["full_name"])), $user["id"]);
+			form_selectable_cell((strlen(get_request_var_request("filter")) ? preg_replace("/(" . preg_quote(get_request_var_request("filter"), "/") . ")/i", "<span class='filteredValue'>\\1</span>", htmlspecialchars($user["full_name"])) : htmlspecialchars($user["full_name"])), $user["id"]);
 			form_selectable_cell($enabled, $user["id"]);
 			form_selectable_cell($auth_realms[$user["realm"]], $user["id"]);
 			if ($user["policy_graphs"] == "1") {
@@ -1104,7 +1066,7 @@ function user() {
 
 		print $nav;
 	}else{
-		print "<tr><td><em>No Users</em></td></tr>";
+		print "<tr class='tableRow'><td><em>No Users</em></td></tr>";
 	}
 	html_end_box(false);
 

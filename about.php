@@ -23,7 +23,8 @@
 */
 
 include("./include/auth.php");
-include("./include/top_header.php");
+
+top_header();
 
 html_start_box("<strong>About Cacti</strong>", "100%", "", "3", "center", "");
 ?>
@@ -98,5 +99,5 @@ GNU General Public License for more details.</tt></p>
 
 <?php
 html_end_box();
-include("./include/bottom_footer.php");
+bottom_footer();
 ?>

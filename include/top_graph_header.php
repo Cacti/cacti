@@ -22,7 +22,7 @@
  +-------------------------------------------------------------------------+
 */
 
-global $menu;
+global $menu, $config;
 $using_guest_account = false;
 $show_console_tab = true;
 
@@ -81,20 +81,22 @@ $page_title = api_plugin_hook_function('page_title', draw_navigation_text("title
 	}
 	?>
 	<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
-	<link href="<?php echo $config['url_path']; ?>include/main.css" type="text/css" rel="stylesheet">
-	<link href="<?php echo $config['url_path']; ?>include/js/jquery.zoom.css" type="text/css" rel="stylesheet">
-	<link href="<?php echo $config['url_path']; ?>include/js/jquery-ui.css" type="text/css" rel="stylesheet">
+	<link href="<?php echo $config['url_path']; ?>include/themes/<?php print read_config_option('selected_theme');?>/main.css" type="text/css" rel="stylesheet">
+	<link href="<?php echo $config['url_path']; ?>include/themes/<?php print read_config_option('selected_theme');?>/jquery.zoom.css" type="text/css" rel="stylesheet">
+	<link href="<?php echo $config['url_path']; ?>include/themes/<?php print read_config_option('selected_theme');?>/jquery-ui.css" type="text/css" rel="stylesheet">
+	<link href="<?php echo $config['url_path']; ?>include/themes/<?php print read_config_option('selected_theme');?>/default/style.css" type="text/css" rel="stylesheet">
 	<link href="<?php echo $config['url_path']; ?>images/favicon.ico" rel="shortcut icon">
-	<script type="text/javascript" src="<?php echo $config['url_path']; ?>include/layout.js"></script>
+	<?php api_plugin_hook('page_head'); ?>
 	<script type="text/javascript" src="<?php echo $config['url_path']; ?>include/js/jquery.js" language="javascript"></script>
 	<script type="text/javascript" src="<?php echo $config['url_path']; ?>include/js/jquery-ui.js" language="javascript"></script>
 	<script type="text/javascript" src="<?php echo $config['url_path']; ?>include/js/jquery.cookie.js" language="javascript"></script>
 	<script type="text/javascript" src="<?php echo $config['url_path']; ?>include/js/jstree.js"></script>
+	<script type="text/javascript" src="<?php echo $config['url_path']; ?>include/js/jquery.easytabs.js"></script>
 	<script type="text/javascript" src="<?php echo $config['url_path']; ?>include/js/jquery.zoom.js" language="javascript"></script>
 	<script type="text/javascript" src="<?php echo $config['url_path']; ?>include/jscalendar/calendar.js"></script>
 	<script type="text/javascript" src="<?php echo $config['url_path']; ?>include/jscalendar/lang/calendar-en.js"></script>
 	<script type="text/javascript" src="<?php echo $config['url_path']; ?>include/jscalendar/calendar-setup.js"></script>
-	<?php api_plugin_hook('page_head'); ?>
+	<script type="text/javascript" src="<?php echo $config['url_path']; ?>include/layout.js"></script>
 </head>
 
 <?php if ($oper_mode == OPER_MODE_NATIVE) {?>
@@ -107,16 +109,14 @@ $page_title = api_plugin_hook_function('page_title', draw_navigation_text("title
 <table style="width:100%" cellspacing="0" cellpadding="0">
 <?php if ($oper_mode == OPER_MODE_NATIVE) { ;?>
 	<tr class="cactiPageHead noprint">
-		<td colspan="2" valign="bottom" nowrap>
+		<td class='cactiGraphPageHeadBackdrop' colspan="2" valign="bottom" nowrap>
 			<table width="100%" cellspacing="0" cellpadding="0">
-				<tr class='cactiGraphPageHeadBackdrop'>
+				<tr>
 					<td id="tabs" valign='bottom'>
-						&nbsp;<?php if ($show_console_tab == true) {?><a href="<?php echo $config['url_path']; ?>index.php"><img src="<?php echo $config['url_path']; ?>images/tab_console.gif" alt="Console" align="absmiddle" border="0"></a><?php }?><a href="<?php echo $config['url_path']; ?>graph_view.php"><img src="<?php echo $config['url_path']; ?>images/tab_graphs<?php if ((substr(basename($_SERVER["PHP_SELF"]),0,5) == "graph") || (basename($_SERVER["PHP_SELF"]) == "graph_settings.php")) { print "_down"; } print ".gif";?>" alt="Graphs" align="absmiddle" border="0"></a><?php
-						api_plugin_hook('top_graph_header_tabs');
-						?>
+						<?php print html_show_tabs_left($show_console_tab); ?>
 					</td>
 					<td id="gtabs" align="right" nowrap>
-						<?php if ((!isset($_SESSION["sess_user_id"])) || ($current_user["graph_settings"] == "on")) { print '<a href="' . $config['url_path'] . 'graph_settings.php"><img src="' . $config['url_path'] . 'images/tab_settings'; if (basename($_SERVER["PHP_SELF"]) == "graph_settings.php") { print "_down"; } print '.gif" border="0" alt="Settings" align="absmiddle"></a>';}?>&nbsp;&nbsp;<?php if ((!isset($_SESSION["sess_user_id"])) || ($current_user["show_tree"] == "on")) {?><a href="<?php print htmlspecialchars($config['url_path'] . "graph_view.php?action=tree");?>"><img src="<?php echo $config['url_path']; ?>images/tab_mode_tree<?php if (isset($_REQUEST["action"]) && $_REQUEST["action"] == "tree") { print "_down"; }?>.gif" border="0" title="Tree View" alt="Tree View" align="absmiddle"></a><?php }?><?php if ((!isset($_SESSION["sess_user_id"])) || ($current_user["show_list"] == "on")) {?><a href="<?php print htmlspecialchars($config['url_path'] . "graph_view.php?action=list");?>"><img src="<?php echo $config['url_path']; ?>images/tab_mode_list<?php if (isset($_REQUEST["action"]) && $_REQUEST["action"] == "list") { print "_down"; }?>.gif" border="0" title="List View" alt="List View" align="absmiddle"></a><?php }?><?php if ((!isset($_SESSION["sess_user_id"])) || ($current_user["show_preview"] == "on")) {?><a href="<?php print htmlspecialchars($config['url_path'] . "graph_view.php?action=preview");?>"><img src="<?php echo $config['url_path']; ?>images/tab_mode_preview<?php if (isset($_REQUEST["action"]) && $_REQUEST["action"] == "preview") { print "_down"; }?>.gif" border="0" title="Preview View" alt="Preview View" align="absmiddle"></a><?php }?>&nbsp;<br>
+						<?php print html_graph_tabs_right($current_user);?>
 					</td>
 				</tr>
 			</table>
@@ -127,10 +127,12 @@ $page_title = api_plugin_hook_function('page_title', draw_navigation_text("title
 		<td colspan="2">
 			<table width="100%">
 				<tr>
-					<td>
+					<td width='30%'>
 						<?php echo draw_navigation_text();?>
 					</td>
-					<td align="right">
+					<td width='40%'><div class='scrollBar'></div></td>
+					<td width='30%' class='infoBar' align="right">
+						<?php api_plugin_hook('nav_login_before'); ?>
 						<?php if ((isset($_SESSION["sess_user_id"])) && ($using_guest_account == false)) { api_plugin_hook('nav_login_before'); ?>
 						Logged in as <strong><?php print db_fetch_cell("select username from user_auth where id=" . $_SESSION["sess_user_id"]);?></strong> (<a href="<?php echo $config['url_path']; ?>logout.php">Logout</a>)&nbsp;
 						<?php api_plugin_hook('nav_login_after'); } ?>

@@ -49,25 +49,25 @@ switch ($_REQUEST["action"]) {
 		header("Location: data_input.php?action=edit&id=" . $_GET["data_input_id"]);
 		break;
 	case 'field_edit':
-		include_once("./include/top_header.php");
+		top_header();
 
 		field_edit();
 
-		include_once("./include/bottom_footer.php");
+		bottom_footer();
 		break;
 	case 'edit':
-		include_once("./include/top_header.php");
+		top_header();
 
 		data_edit();
 
-		include_once("./include/bottom_footer.php");
+		bottom_footer();
 		break;
 	default:
-		include_once("./include/top_header.php");
+		top_header();
 
 		data();
 
-		include_once("./include/bottom_footer.php");
+		bottom_footer();
 		break;
 }
 
@@ -192,7 +192,7 @@ function form_actions() {
 		}
 	}
 
-	include_once("./include/top_header.php");
+	top_header();
 
 	html_start_box("<strong>" . $di_actions{$_POST["drp_action"]} . "</strong>", "60%", "", "3", "center", "");
 
@@ -229,7 +229,7 @@ function form_actions() {
 
 	html_end_box();
 
-	include_once("./include/bottom_footer.php");
+	bottom_footer();
 }
 
 /* --------------------------
@@ -245,9 +245,11 @@ function field_remove() {
 	/* ==================================================== */
 
 	if ((read_config_option("deletion_verification") == "on") && (!isset($_GET["confirm"]))) {
-		include("./include/top_header.php");
+		top_header();
+
 		form_confirm("Are You Sure?", "Are you sure you want to delete the field <strong>'" . htmlspecialchars(db_fetch_cell("select name from data_input_fields where id=" . $_GET["id"]), ENT_QUOTES) . "'</strong>?", htmlspecialchars("data_input.php?action=edit&id=" . $_GET["data_input_id"]), htmlspecialchars("data_input.php?action=field_remove&id=" . $_GET["id"] . "&data_input_id=" . $_GET["data_input_id"]));
-		include("./include/bottom_footer.php");
+
+		bottom_footer();
 		exit;
 	}
 
@@ -513,16 +515,18 @@ function data() {
 	<tr class='even noprint'>
 		<td class="noprint">
 		<form name="form_graph_id" method="get" action="data_input.php">
-			<table width="100%" cellpadding="0" cellspacing="0">
+			<table cellpadding="2" cellspacing="0">
 				<tr class="noprint">
-					<td nowrap style='white-space: nowrap;' width="50">
-						Search:&nbsp;
+					<td width="50">
+						Search:
 					</td>
 					<td width="1">
 						<input type="text" name="filter" size="40" value="<?php print htmlspecialchars(get_request_var_request("filter"));?>">
 					</td>
-					<td nowrap style='white-space: nowrap;'>
-						&nbsp;<input type="submit" value="Go" title="Set/Refresh Filters">
+					<td>
+						<input type="submit" value="Go" title="Set/Refresh Filters">
+					</td>
+					<td>
 						<input type="submit" name="clear_x" value="Clear" title="Clear Filters">
 					</td>
 				</tr>
@@ -559,7 +563,7 @@ function data() {
 		ORDER BY " . get_request_var_request('sort_column') . " " . get_request_var_request('sort_direction') . "
 		LIMIT " . (read_config_option("num_rows_device")*(get_request_var_request("page")-1)) . "," . read_config_option("num_rows_device"));
 
-	$nav = html_nav_bar("data_input.php?filter=" . get_request_var_request("filter"), MAX_DISPLAY_PAGES, get_request_var_request("page"), read_config_option("num_rows_device"), $total_rows, 3);
+	$nav = html_nav_bar("data_input.php?filter=" . get_request_var_request("filter"), MAX_DISPLAY_PAGES, get_request_var_request("page"), read_config_option("num_rows_device"), $total_rows, 3, 'Data Input Methods');
 
 	print $nav;
 
@@ -574,7 +578,7 @@ function data() {
 		foreach ($data_inputs as $data_input) {
 			/* hide system types */
 			form_alternate_row('line' . $data_input["id"], true);
-			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars("data_input.php?action=edit&id=" . $data_input["id"]) . "'>" . (strlen(get_request_var_request("filter")) ? preg_replace("/(" . preg_quote(get_request_var_request("filter"), "/") . ")/i", "<span style='background-color: #F8D93D;'>\\1</span>", htmlspecialchars($data_input["name"])) : htmlspecialchars($data_input["name"])) . "</a>", $data_input["id"]);
+			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars("data_input.php?action=edit&id=" . $data_input["id"]) . "'>" . (strlen(get_request_var_request("filter")) ? preg_replace("/(" . preg_quote(get_request_var_request("filter"), "/") . ")/i", "<span class='filteredValue'>\\1</span>", htmlspecialchars($data_input["name"])) : htmlspecialchars($data_input["name"])) . "</a>", $data_input["id"]);
 			form_selectable_cell($input_types{$data_input["type_id"]}, $data_input["id"]);
 			form_checkbox_cell($data_input["name"], $data_input["id"]);
 			form_end_row();

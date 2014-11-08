@@ -536,12 +536,12 @@ function grow_dhtml_trees() {
 				$('#jstree').jstree('clear_state');
 			}
 			if (node!='') {
-				$('#jstree').jstree('set_theme', 'default', '<?php print $config['url_path'];?>include/js/themes/default/style.css');
 				$('#jstree').jstree('deselect_all');
 				$('#jstree').jstree('select_node', node);
 				href=$('#'+node+'_anchor').attr('href')+"&nodeid="+node;
 				$.get($('#'+node+'_anchor').attr('href')+"&nodeid="+node, function(data) {
 					$('#main').html(data);
+					applySkin();
 				});
 			}
 		})
@@ -553,6 +553,7 @@ function grow_dhtml_trees() {
 			if (data.node.id) {
 				$.get($('#'+data.node.id+'_anchor').attr('href')+"&nodeid="+data.node.id, function(data) {
 					$('#main').html(data);
+					applySkin();
 				});
 				node = data.node.id;
 			}
@@ -856,8 +857,6 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 	$title_delimeter = '';
 	$search_key      = '';
 
-	if (empty($leaf_id)) return;
-
 	$leaf = db_fetch_row("SELECT order_key, title, host_id, host_grouping_type
 		FROM graph_tree_items
 		WHERE id=$leaf_id");
@@ -993,7 +992,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 		<?php
 	}
 	?>
-	<tr class='noprint' bgcolor='#e5e5e5'>
+	<tr class='even noprint'>
 		<td class='noprint'>
 		<form style='margin:0px;padding:0px;' name='form_graph_view' method='post' onSubmit='changeFilter();return false'>
 			<table cellspacing='0' cellpadding='1'>
@@ -1057,18 +1056,21 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 	function changeFilter() {
 		$.get('graph_view.php?action=tree_content&tree_id=<?php print $_REQUEST['tree_id'];?>&leaf_id=<?php print $_REQUEST['leaf_id'];?>&host_group_data=<?php print $_REQUEST['host_group_data'];?>&graphs='+$('#graphs').val()+'&filter='+$('#filter').val()+'&thumbnails='+$('#thumbnails').is(':checked')+'&columns='+$('#columns').val()+'&nodeid='+'<?php print $_REQUEST['nodeid'];?>', function(data) {
 			$('#main').html(data);
+			applySkin();
 		});
 	}
 
 	function clearFilter() {
 		$.get('graph_view.php?action=tree_content&tree_id=<?php print $_REQUEST['tree_id'];?>&leaf_id=<?php print $_REQUEST['leaf_id'];?>&host_group_data=<?php print $_REQUEST['host_group_data'];?>&clear_x=1&nodeid='+'<?php print $_REQUEST['nodeid'];?>', function(data) {
 			$('#main').html(data);
+			applySkin();
 		});
 	}
 
 	function spanTime() {
 		$.get('graph_view.php?action=tree_content&tree_id=<?php print $_REQUEST['tree_id'];?>&leaf_id=<?php print $_REQUEST['leaf_id'];?>&host_group_data=<?php print $_REQUEST['host_group_data'];?>&nodeid='+'<?php print $_REQUEST['nodeid'];?>&predefined_timespan='+$('#predefined_timespan').val()+'&predefined_timeshift='+$('#predefined_timeshift').val(), function(data) {
 			$('#main').html(data);
+			applySkin();
 		});
 	}
 
@@ -1077,6 +1079,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 		var url  = 'graph_view.php?action=tree_content&tree_id=<?php print $_REQUEST['tree_id'];?>&leaf_id=<?php print $_REQUEST['leaf_id'];?>&host_group_data=<?php print $_REQUEST['host_group_data'];?>&nodeid=<?php print $_REQUEST['nodeid'];?>';
 		$.post(url, json).done(function(data) {
 			$('#main').html(data);
+			applySkin();
 		});
 	}
 
@@ -1085,6 +1088,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 		var url  = 'graph_view.php?action=tree_content&tree_id=<?php print $_REQUEST['tree_id'];?>&leaf_id=<?php print $_REQUEST['leaf_id'];?>&host_group_data=<?php print $_REQUEST['host_group_data'];?>&nodeid=<?php print $_REQUEST['nodeid'];?>';
 		$.post(url, json).done(function(data) {
 			$('#main').html(data);
+			applySkin();
 		});
 	}
 
@@ -1093,6 +1097,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 		var url  = 'graph_view.php?action=tree_content&tree_id=<?php print $_REQUEST['tree_id'];?>&leaf_id=<?php print $_REQUEST['leaf_id'];?>&host_group_data=<?php print $_REQUEST['host_group_data'];?>&nodeid=<?php print $_REQUEST['nodeid'];?>';
 		$.post(url, json).done(function(data) {
 			$('#main').html(data);
+			applySkin();
 		});
 	}
 
@@ -1101,6 +1106,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 		var url  = 'graph_view.php?action=tree_content&tree_id=<?php print $_REQUEST['tree_id'];?>&leaf_id=<?php print $_REQUEST['leaf_id'];?>&host_group_data=<?php print $_REQUEST['host_group_data'];?>&nodeid=<?php print $_REQUEST['nodeid'];?>';
 		$.post(url, json).done(function(data) {
 			$('#main').html(data);
+			applySkin();
 		});
 	}
 
@@ -1278,61 +1284,12 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 	$total_rows = sizeof($graph_list);
 
 	/* generate page list */
-	if ($total_rows > get_request_var_request('graphs')) {
-		$url_page_select = get_page_list(get_request_var_request('page'), MAX_DISPLAY_PAGES, get_request_var_request('graphs'), $total_rows, "graph_view.php?action=tree_content&tree_id=$tree_id&leaf_id=$leaf_id&nodeid=" . get_request_var_request('nodeid') . '&host_group_data=' . get_request_var_request('host_group_data'), 'page', 'main');
-
-		$nav = "<tr class='tableHeader'>
-				<td colspan='11'>
-					<table width='100%' cellspacing='0' cellpadding='0' border='0'>
-						<tr>
-							<td align='left' class='textHeaderDark' style='width:33%;'>
-								" . (get_request_var_request('page') > 1 ? "<strong>&lt;&lt;<a class='linkOverDark' onClick='pageBack()' href='#'>Previous</a></strong>":'') . "
-							</td>
-							<td align='center' class='textHeaderDark' style='width:33%;'>
-								Showing Graphs " . ((get_request_var_request('graphs')*(get_request_var_request('page')-1))+1) . ' to ' . ((($total_rows < get_request_var_request('graphs')) || ($total_rows < (get_request_var_request('graphs')*get_request_var_request('page')))) ? $total_rows : (get_request_var_request('graphs')*get_request_var_request('page'))) . " of $total_rows [$url_page_select]
-							</td>
-							<td align='right' class='textHeaderDark' style='width:33%;'>
-								" . ((get_request_var_request('page') * get_request_var_request('graphs')) < $total_rows ? "<strong><a class='linkOverDark' onClick='pageForward()' href='#'>Next</a>&gt;&gt;</strong>":"") . "
-							</td>
-						</tr>
-					</table>
-				</td>
-			</tr>\n";
-	}else{
-		$nav = "<tr class='tableHeader'>
-				<td colspan='11'>
-					<table width='100%' cellspacing='0' cellpadding='0' border='0'>
-						<tr>
-							<td align='center' class='textHeaderDark'>
-								Showing All Graphs
-							</td>
-						</tr>
-					</table>
-				</td>
-			</tr>\n";
-	}
-
-	?>
-	<script type='text/javascript'>
-	function pageForward() {
-		var url = 'graph_view.php?action=tree_content&tree_id=<?php print $_REQUEST['tree_id'];?>&leaf_id=<?php print $_REQUEST['leaf_id'];?>&host_group_data=<?php print get_request_var_request('host_group_data');?>&nodeid=<?php print $_REQUEST['nodeid'];?>&page=<?php print (get_request_var_request('page')+1);?>';
-		$.get(url, function(data) {
-			$('#main').html(data);
-		});
-	}
-	function pageBack() {
-		var url = 'graph_view.php?action=tree_content&tree_id=<?php print $_REQUEST['tree_id'];?>&leaf_id=<?php print $_REQUEST['leaf_id'];?>&host_group_data=<?php print get_request_var_request('host_group_data');?>&nodeid=<?php print $_REQUEST['nodeid'];?>&page=<?php print (get_request_var_request('page')-1);?>';
-		$.get(url, function(data) {
-			$('#main').html(data);
-		});
-	}
-	</script>
-	<?php
+	$nav = html_nav_bar("graph_view.php?action=tree_content&tree_id=$tree_id&leaf_id=$leaf_id&nodeid=" . get_request_var_request('nodeid') . '&host_group_data=' . get_request_var_request('host_group_data'), MAX_DISPLAY_PAGES, get_request_var_request('page'), get_request_var_request('graphs'), $total_rows, 5, 'Graphs', 'page', 'main');
 
 	print $nav;
 
 	/* start graph display */
-	print "<tr><td width='390' colspan='11' class='textHeaderDark'>$title</td></tr>";
+	print "<tr class='tableHeader'><td width='390' colspan='11' class='graphSubHeaderColumn textHeaderDark'>$title</td></tr>";
 
 	$i = get_request_var_request('graphs') * (get_request_var_request('page') - 1);
 	$last_graph = $i + get_request_var_request('graphs');
@@ -1355,7 +1312,9 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 
 	api_plugin_hook_function('tree_view_page_end');
 
-	print $nav;
+	if ($total_rows > 0) {
+		print $nav;
+	}
 
 	html_end_box();
 }

@@ -23,7 +23,7 @@
 */
 
 include("./include/auth.php");
-include("./include/top_header.php");
+top_header();
 
 api_plugin_hook('console_before');
 
@@ -50,6 +50,6 @@ api_plugin_hook('console_before');
 
 api_plugin_hook('console_after');
 
-include("./include/bottom_footer.php");
+bottom_footer();
 
 ?>

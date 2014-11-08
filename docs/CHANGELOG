@@ -27,6 +27,7 @@ Cacti CHANGELOG
 -feature: Added Columns to Tree (Preview only)
 -feature: Both Graphs and Columns default to 'Default'
 -feature: Resolved Left hand navigation taking entire page
+-feature: Themes
 
 0.8.8b
 -bug: Fixed issue with custom data source information being lost when saved from edit

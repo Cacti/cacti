@@ -21,226 +21,141 @@
  +-------------------------------------------------------------------------+
 */
 
-/* graph template stuff */
-function gt_update_selection_indicators() {
-	there_are_any_unchecked_ones = false;
+/** basename - this function will return the basename
+ *  of the php script called
+ *  @args path - the document.url
+ *  @args suffix - remove the named suffix from the file */
+function basename(path, suffix) {
+	var b = path;
+	var lastChar = b.charAt(b.length - 1);
 
-	for (var j = 0; j < document.chk.elements.length; j++) {
-		if (document.chk.elements[j].name.substr(0,3) == 'cg_') {
-			if (document.chk.elements[j].checked == false) {
-				there_are_any_unchecked_ones = true;
-			}
-
-			if (!isNaN(document.chk.elements[j].name.substr(3))) {
-				lineid = document.getElementById('gt_line' + document.chk.elements[j].name.substr(3));
-
-				if (document.chk.elements[j].checked) {
-					lineid.style.backgroundColor = 'khaki';
-				}else{
-					lineid.style.backgroundColor = '';
-				}
-			}
-		}
-	}
-}
-
-function gt_select_line(graph_template_id, update) {
-	if (gt_is_disabled(graph_template_id)) { return; }
-
-	msgid = document.getElementById('cg_' + graph_template_id);
-	if (!update) msgid.checked = !msgid.checked;
-	gt_update_selection_indicators();
-}
-
-function gt_is_disabled(graph_template_id) {
-	for (var i = 0; i < gt_created_graphs.length; i++) {
-		if (gt_created_graphs[i] == graph_template_id) {
-			return true;
-		}
+	if (lastChar === '/' || lastChar === '\\\\') {
+		b = b.slice(0, -1);
 	}
 
-	return false;
-}
+	b = b.replace(/^.*[\\/\\\\]/g, '');
 
-function gt_update_deps(num_columns) {
-	gt_reset_deps(num_columns);
-
-	for (var i = 0; i < gt_created_graphs.length; i++) {
-		for (var j = 0; j < num_columns; j++) {
-			lineid = document.getElementById('gt_text' + gt_created_graphs[i] + '_' + j);
-			if (lineid) {
-				lineid.style.color = '#999999';
-			}
-		}
-
-		chkbx = document.getElementById('cg_' + gt_created_graphs[i]);
-		chkbx.style.visibility = 'hidden';
-		chkbx.checked = false;
-
-		lineid = document.getElementById('gt_line' + gt_created_graphs[i]);
-		if (lineid) {
-			lineid.style.backgroundColor = '';
-		}
-	}
-}
-
-function gt_reset_deps(num_columns) {
-	var prefix = 'cg_'
-
-	for (var i = 0; i < document.chk.elements.length; i++) {
-		if (document.chk.elements[i].name.substr( 0, prefix.length ) == prefix) {
-			for (var j = 0; j < num_columns; j++) {
-				lineid = document.getElementById('gt_text' + document.chk.elements[i].name.substr(prefix.length) + '_' + j);
-				if (lineid) {
-					lineid.style.color = '#000000';
-				}
-			}
-
-			chkbx = document.getElementById('cg_' + document.chk.elements[i].name.substr(prefix.length));
-			chkbx.style.visibility = 'visible';
-		}
-	}
-}
-
-/* general id based selects */
-function update_selection_indicators() {
-	there_are_any_unchecked_ones = false;
-
-	for (var j = 0; j < document.chk.elements.length; j++) {
-		if( document.chk.elements[j].name.substr( 0, 4 ) == 'chk_') {
-			if (document.chk.elements[j].checked == false) {
-				there_are_any_unchecked_ones = true;
-			}
-
-			lineid = document.getElementById('line'+ document.chk.elements[j].name.substr(4));
-			if (lineid) {
-				if (document.chk.elements[j].checked) {
-					lineid.style.backgroundColor = 'khaki';
-				}else{
-					lineid.style.backgroundColor = '';
-				}
-			}
-		}
-	}
-}
-
-function select_line(id, update) {
-	msgid  = document.getElementById('chk_' + id);
-	if (!update) msgid.checked = !msgid.checked;
-	update_selection_indicators();
-}
-
-/* data query stuff */
-function dq_update_selection_indicators() {
-	there_are_any_unchecked_ones = false;
-
-	for (var j = 0; j < document.chk.elements.length; j++) {
-		if( document.chk.elements[j].name.substr( 0, 3 ) == 'sg_') {
-			if (document.chk.elements[j].checked == false) {
-				there_are_any_unchecked_ones = true;
-			}
-
-			lineid = document.getElementById('line'+ document.chk.elements[j].name.substr(3));
-			if (lineid) {
-				if (document.chk.elements[j].checked) {
-					lineid.style.backgroundColor = 'khaki';
-				}else{
-					lineid.style.backgroundColor = '';
-				}
-			}
-		}
-	}
-}
-
-function dq_select_line(snmp_query_id, snmp_index, update) {
-	if (dq_is_disabled(snmp_query_id, snmp_index)) { return; }
-
-	msgid  = document.getElementById('sg_' + snmp_query_id + '_' + snmp_index);
-	lineid = document.getElementById('line'+ snmp_query_id + '_' + snmp_index);
-
-	if (!update) msgid.checked = !msgid.checked;
-
-	dq_update_selection_indicators();
-}
-
-function dq_is_disabled(snmp_query_id, snmp_index) {
-	dropdown = document.getElementById('sgg_' + snmp_query_id);
-	if(dropdown == null){
-		return false;
-	}
-	var snmp_query_graph_id = dropdown.value
-
-	for (var i = 0; i < created_graphs[snmp_query_graph_id].length; i++) {
-		if (created_graphs[snmp_query_graph_id][i] == snmp_index) {
-			return true;
-		}
+	if (typeof suffix === 'string' && b.substr(b.length - suffix.length) == suffix) {
+		b = b.substr(0, b.length - suffix.length);
 	}
 
-	return false;
+	return b;
 }
 
-function dq_update_deps(snmp_query_id, num_columns) {
-	dq_reset_deps(snmp_query_id, num_columns);
-
-	dropdown = document.getElementById('sgg_' + snmp_query_id);
-	if(dropdown == null){
-		return;
-	}
-	var snmp_query_graph_id = dropdown.value
-
-	for (var i = 0; i < created_graphs[snmp_query_graph_id].length; i++) {
-		for (var j = 0; j < num_columns; j++) {
-			lineid = document.getElementById('text' + snmp_query_id + '_' + created_graphs[snmp_query_graph_id][i] + '_' + j);
-			if ( lineid ) { lineid.style.color = '#999999' };
+/** applySelectorVisibility - This function set's the initial visibility
+ *  of graphs for creation. Is will scan the against preset variables
+ *  taking action as required to enable or disable rows. */
+function applySelectorVisibilityAndActions() {
+	// Apply disabled/enabled status first for Graph Templates
+	$('tr[id^=gt_line]').each(function(data) {
+		var id = $(this).attr('id');
+		var search = id.substr(7);
+		//console.log('The id is : '+id+', The search is : '+search);
+		if ($.inArray(search, gt_created_graphs) >= 0) {
+			//console.log('The id is : '+id+', The search is : '+search+', Result found');
+			$(this).addClass('disabled');
+			$(this).css('color', '#999999');
+			$(this).find(':checkbox').prop('disabled', true);
 		}
+	});
 
-		chkbx = document.getElementById('sg_' + snmp_query_id + '_' + created_graphs[snmp_query_graph_id][i]);
-		if ( chkbx ) {
-			chkbx.style.visibility = 'hidden';
-			chkbx.checked          = false;
+	// Create Actions for Rows
+	$('tr.selectable').find('td').not('.checkbox').each(function(data) {
+		if (!$(this).parent().hasClass('disabled')) {
+			$(this).click(function(data) {
+				$(this).parent().toggleClass('selected');
+				var $checkbox = $(this).parent().find(':checkbox');
+				$checkbox.prop('checked', !$checkbox.is(':checked'));
+			});
 		}
+	});
 
-		lineid = document.getElementById('line' + snmp_query_id + '_' + created_graphs[snmp_query_graph_id][i]);
-		if ( lineid ) { lineid.style.backgroundColor = '' };
-	}
+	// Create Actions for Checkboxes
+	$('tr.selectable').find('.checkbox').click(function(data) {
+		if (!$(this).is(':disabled')) {
+			$(this).parent().toggleClass('selected');
+			var checked = $(this).is(':checkbox');
+			$(this).prop('checked', checked);
+		}
+	});
 }
 
-function dq_reset_deps(snmp_query_id, num_columns) {
+/** dqUpdateDeps - When a user changes the Graph dropdown for a data query
+ *  we have to check to see if those graphs are already created.
+ *  @arg snmp_query_id - The snmp query id the is current */
+function dqUpdateDeps(snmp_query_id) {
+	dqResetDeps(snmp_query_id);
+
+	var snmp_query_graph_id = $('#sgg_'+snmp_query_id).val();
+
+	// Next for Data Queries
+	$('tr[id^=line'+snmp_query_id+'_]').each(function(data) {
+		var id = $(this).attr('id');
+		var pieces = id.split('_');
+		var dq = pieces[0].substr(4);
+		var hash = pieces[1];
+
+		if ($.inArray(hash, created_graphs[snmp_query_graph_id]) >= 0) {
+			$(this).addClass('disabled');
+			$(this).find(':checkbox').prop('disabled', true);
+		}
+	});
+}
+
+/** dqResetDeps - This function will make all rows selectable.
+ *  It is done just before a new data query is checked.
+ *  @arg snmp_query_id - The snmp query id the is current */
+function dqResetDeps(snmp_query_id) {
 	var prefix = 'sg_' + snmp_query_id + '_'
 
-	for (var i = 0; i < document.chk.elements.length; i++) {
-		if (document.chk.elements[i].name.substr( 0, prefix.length ) == prefix) {
-			for (var j = 0; j < num_columns; j++) {
-				lineid = document.getElementById('text' + snmp_query_id + '_' + document.chk.elements[i].name.substr(prefix.length) + '_' + j);
-				lineid.style.color = '#000000';
-			}
-
-			chkbx = document.getElementById('sg_' + snmp_query_id + '_' + document.chk.elements[i].name.substr(prefix.length));
-			chkbx.style.visibility = 'visible';
-		}
-	}
+	$('tr[id^=line'+snmp_query_id+'_]').removeClass('disabled').removeClass('selected').find(':checkbox').prop('disabled', false);
 }
 
-function SelectAll(prefix, checkbox_state) {
-	for (var i = 0; i < document.chk.elements.length; i++) {
-		if ((document.chk.elements[i].name.substr(0, prefix.length) == prefix) && (document.chk.elements[i].style.visibility != 'hidden')) {
-			document.chk.elements[i].checked = checkbox_state;
-		}
-
-		if (prefix == "chk_") {
-			lineid = document.getElementById('line'+ document.chk.elements[i].name.substr(4));
-			if (lineid) {
-				if (document.chk.elements[i].checked) {
-					if ( lineid ) { lineid.style.backgroundColor = 'khaki'; }
-				}else{
-					if ( lineid ) { lineid.style.backgroundColor = ''; }
+/** SelectAll - This function will select all non-disabled rows
+ *  @arg attrib - The Graph Type either graph template, or data query */
+function SelectAll(attrib, checked) {
+	console.log("Im Here the attrib is "+attrib);
+	if (attrib == 'sg') {
+		if (checked == true) {
+			$('tr[id^=gt_line]').each(function(data) {
+				if (!$(this).hasClass('disabled')) {
+					$(this).addClass('selected');
+					$(this).find(':checkbox').prop('checked', true);
 				}
-			}
+			});
+		}else{
+			$('tr[id^=gt_line]').each(function(data) {
+				if (!$(this).hasClass('disabled')) {
+					$(this).removeClass('selected');
+					$(this).find(':checkbox').prop('checked', false);
+				}
+			});
+		}
+	}else{
+		var attribSplit = attrib.split('_');
+		var dq = attribSplit[1];
+
+		if (checked == true) {
+			$('tr[id^=line'+dq+'_]').each(function(data) {
+				if (!$(this).hasClass('disabled')) {
+					$(this).addClass('selected');
+					$(this).find(':checkbox').prop('checked', true);
+				}
+			});
+		}else{
+			$('tr[id^=line'+dq+'_]').each(function(data) {
+				if (!$(this).hasClass('disabled')) {
+					$(this).removeClass('selected');
+					$(this).find(':checkbox').prop('checked', false);
+				}
+			});
 		}
 	}
-
 }
 
+/** SelectAllGraphs - Right now, need to remediate...
+ *  It is done just before a new data query is checked.
+ *  @arg prefix - Ok, prefix */
 function SelectAllGraphs(prefix, checkbox_state) {
 	for (var i = 0; i < document.graphs.elements.length; i++) {
 		if ((document.graphs.elements[i].name.substr(0, prefix.length) == prefix) && (document.graphs.elements[i].style.visibility != 'hidden')) {
@@ -300,17 +215,6 @@ function applyTimespanFilterChange(objForm) {
 	document.location = strURL;
 }
 
-function applyGraphPreviewFilterChange(objForm) {
-	strURL = '?action=preview';
-	strURL = strURL + '&host_id=' + objForm.host_id.value;
-	strURL = strURL + '&rows=' + objForm.rows.value;
-	strURL = strURL + '&columns=' + objForm.columns.value;
-	strURL = strURL + '&graph_template_id=' + objForm.graph_template_id.value;
-	strURL = strURL + '&thumbnails=' + objForm.thumbnails.checked;
-	strURL = strURL + '&filter=' + objForm.filter.value;
-	document.location = strURL;
-}
-
 function applyGraphListFilterChange(objForm) {
 	strURL = 'graph_view.php?action=list&page=1';
 	strURL = strURL + '&host_id=' + objForm.host_id.value;
@@ -329,3 +233,50 @@ function cactiReturnTo(location) {
 		document.history.back();
 	}
 }
+
+function applySkin() {
+	$('input[type=submit], input[type=button]').button();
+
+	// Select All Action for everyone but graphs_new, else do ugly shit
+	if (basename(document.location.pathname, '.php') != 'graphs_new') {
+		$('.tableSubHeaderCheckbox').find(':checkbox').click(function(data) {
+			if ($(this).is(':checked')) {
+				$('input[id^=chk_]').prop('checked',true);
+				$('tr.selectable').addClass('selected');
+			}else{
+				$('input[id^=chk_]').prop('checked',false);
+				$('tr.selectable').removeClass('selected');
+			}
+		});
+
+		// Allows selection of a non disabled row
+		$('tr.selectable').find('td').not('.checkbox').each(function(data) {
+			$(this).click(function(data) {
+				$(this).parent().toggleClass('selected');
+				var $checkbox = $(this).parent().find(':checkbox');
+				$checkbox.prop('checked', !$checkbox.is(':checked'));
+			});
+		});
+
+		// Generic Checkbox Function
+		$('tr.selectable').find('.checkbox').click(function(data) {
+			if (!$(this).is(':disabled')) {
+				$(this).parent().toggleClass('selected');
+				var checked = $(this).is(':checkbox');
+				$(this).prop('checked', !checked);
+			}
+		});
+	}else{
+		applySelectorVisibilityAndActions();
+	}
+}
+
+$(function() {
+	applySkin();
+
+	$('#navigation').css('height', ($(window).height())+'px');
+	$(window).resize(function() {
+		$('#navigation').css('height', ($(window).height())+'px');
+	});
+});
+

@@ -817,9 +817,9 @@ function form_save_button($cancel_url, $force_type = "", $key_field = "id") {
 	}
 
 	?>
-	<table align='center' width='100%' style='background-color: #ffffff; border: 1px solid #bbbbbb;'>
+	<table align='center' width='100%'>
 		<tr>
-			<td bgcolor="#f5f5f5" align="right">
+			<td class="saveRow" align="right">
 				<input type='hidden' name='action' value='save'>
 				<?php print $cancel_action;?>
 				<input type='submit' value='<?php print $alt;?>'>

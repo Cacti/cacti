@@ -223,6 +223,13 @@ include_once($config["library_path"] . "/html_validate.php");
 include_once($config["library_path"] . "/variables.php");
 include_once($config["library_path"] . "/auth.php");
 
+if (read_config_option('force_https') == 'on') {
+	if (!isset($_SERVER['HTTPS']) && isset($_SERVER['HTTP_HOST']) && isset($_SERVER['REQUEST_URI'])) {
+		Header('Location: https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] . "\n\n");
+		exit;
+	}
+}
+
 api_plugin_hook("config_insert");
 
 /* current cacti version */

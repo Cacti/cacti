@@ -79,18 +79,18 @@ switch ($_REQUEST["action"]) {
 		header("Location: host.php?action=edit&id=" . $_GET["host_id"] . "&display_dq_details=true");
 		break;
 	case 'edit':
-		include_once("./include/top_header.php");
+		top_header();
 
 		host_edit();
 
-		include_once("./include/bottom_footer.php");
+		bottom_footer();
 		break;
 	default:
-		include_once("./include/top_header.php");
+		top_header();
 
 		host();
 
-		include_once("./include/bottom_footer.php");
+		bottom_footer();
 		break;
 }
 
@@ -354,7 +354,7 @@ function form_actions() {
 		}
 	}
 
-	include_once("./include/top_header.php");
+	top_header();
 
 	/* add a list of tree names to the actions dropdown */
 	add_tree_names_to_actions_array();
@@ -500,7 +500,7 @@ function form_actions() {
 
 	html_end_box();
 
-	include_once("./include/bottom_footer.php");
+	bottom_footer();
 }
 
 /* -------------------
@@ -546,9 +546,11 @@ function host_remove() {
 	/* ==================================================== */
 
 	if ((read_config_option("deletion_verification") == "on") && (!isset($_GET["confirm"]))) {
-		include("./include/top_header.php");
+		top_header();
+
 		form_confirm("Are You Sure?", "Are you sure you want to delete the host <strong>'" . htmlspecialchars(db_fetch_cell("select description from host where id=" . $_GET["id"])) . "'</strong>?", htmlspecialchars("host.php"), htmlspecialchars("host.php?action=remove&id=" . $_GET["id"]));
-		include("./include/bottom_footer.php");
+
+		bottom_footer();
 		exit;
 	}
 
@@ -1248,10 +1250,10 @@ function host() {
 	<tr class='even noprint'>
 		<td>
 		<form name="form_devices" action="host.php">
-			<table width="100%" cellpadding="0" cellspacing="0">
+			<table cellpadding="2" cellspacing="0">
 				<tr>
-					<td nowrap style='white-space: nowrap;' width="50">
-						Type:&nbsp;
+					<td width="50">
+						Type:
 					</td>
 					<td width="1">
 						<select name="host_template_id" onChange="applyViewDeviceFilterChange(document.form_devices)">
@@ -1268,8 +1270,8 @@ function host() {
 							?>
 						</select>
 					</td>
-					<td nowrap style='white-space: nowrap;' width="50">
-						&nbsp;Status:&nbsp;
+					<td>
+						Status:
 					</td>
 					<td width="1">
 						<select name="host_status" onChange="applyViewDeviceFilterChange(document.form_devices)">
@@ -1283,14 +1285,14 @@ function host() {
 							<option value="0"<?php if (get_request_var_request("host_status") == "0") {?> selected<?php }?>>Unknown</option>
 						</select>
 					</td>
-					<td nowrap style='white-space: nowrap;' width="20">
-						&nbsp;Search:&nbsp;
+					<td>
+						Search:
 					</td>
 					<td width="1">
 						<input type="text" name="filter" size="20" value="<?php print htmlspecialchars(get_request_var_request("filter"));?>">
 					</td>
-					<td nowrap style='white-space: nowrap;' width="50">
-						&nbsp;Rows per Page:&nbsp;
+					<td>
+						Devices:
 					</td>
 					<td width="1">
 						<select name="host_rows" onChange="applyViewDeviceFilterChange(document.form_devices)">
@@ -1304,8 +1306,10 @@ function host() {
 							?>
 						</select>
 					</td>
-					<td nowrap>
-						&nbsp;<input type="submit" value="Go" title="Set/Refresh Filters">
+					<td>
+						<input type="submit" value="Go" title="Set/Refresh Filters">
+					</td>
+					<td>
 						<input type="submit" name="clear_x" value="Clear" title="Clear Filters">
 					</td>
 				</tr>
@@ -1371,7 +1375,7 @@ function host() {
 
 	$hosts = db_fetch_assoc($sql_query);
 
-	$nav = html_nav_bar("host.php?filter=" . get_request_var_request("filter") . "&host_template_id=" . get_request_var_request("host_template_id") . "&host_status=" . get_request_var_request("host_status"), MAX_DISPLAY_PAGES, get_request_var_request("page"), get_request_var_request("host_rows"), $total_rows, 11);
+	$nav = html_nav_bar("host.php?filter=" . get_request_var_request("filter") . "&host_template_id=" . get_request_var_request("host_template_id") . "&host_status=" . get_request_var_request("host_status"), MAX_DISPLAY_PAGES, get_request_var_request("page"), get_request_var_request("host_rows"), $total_rows, 11, 'Devices');
 
 	print $nav;
 
@@ -1394,13 +1398,13 @@ function host() {
 		foreach ($hosts as $host) {
 			form_alternate_row('line' . $host["id"], true);
 			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars("host.php?action=edit&id=" . $host["id"]) . "'>" .
-				(strlen(get_request_var_request("filter")) ? preg_replace("/(" . preg_quote(get_request_var_request("filter"), "/") . ")/i", "<span style='background-color: #F8D93D;'>\\1</span>", htmlspecialchars($host["description"])) : htmlspecialchars($host["description"])) . "</a>", $host["id"], 250);
+				(strlen(get_request_var_request("filter")) ? preg_replace("/(" . preg_quote(get_request_var_request("filter"), "/") . ")/i", "<span class='filteredValue'>\\1</span>", htmlspecialchars($host["description"])) : htmlspecialchars($host["description"])) . "</a>", $host["id"], 250);
 			form_selectable_cell(round(($host["id"]), 2), $host["id"]);
 			form_selectable_cell((isset($host_graphs[$host["id"]]) ? $host_graphs[$host["id"]] : 0), $host["id"]);
 			form_selectable_cell((isset($host_data_sources[$host["id"]]) ? $host_data_sources[$host["id"]] : 0), $host["id"]);
 			form_selectable_cell(get_colored_device_status(($host["disabled"] == "on" ? true : false), $host["status"]), $host["id"]);
 			form_selectable_cell(get_timeinstate($host), $host["id"]);
-			form_selectable_cell((strlen(get_request_var_request("filter")) ? preg_replace("/(" . preg_quote(get_request_var_request("filter"), "/") . ")/i", "<span style='background-color: #F8D93D;'>\\1</span>", htmlspecialchars($host["hostname"])) : htmlspecialchars($host["hostname"])), $host["id"]);
+			form_selectable_cell((strlen(get_request_var_request("filter")) ? preg_replace("/(" . preg_quote(get_request_var_request("filter"), "/") . ")/i", "<span class='filteredValue'>\\1</span>", htmlspecialchars($host["hostname"])) : htmlspecialchars($host["hostname"])), $host["id"]);
 			form_selectable_cell(round(($host["cur_time"]), 2), $host["id"]);
 			form_selectable_cell(round(($host["avg_time"]), 2), $host["id"]);
 			form_selectable_cell(round($host["availability"], 2), $host["id"]);

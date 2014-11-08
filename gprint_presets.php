@@ -38,18 +38,18 @@ switch ($_REQUEST["action"]) {
 		header("Location: gprint_presets.php");
 		break;
 	case 'edit':
-		include_once("./include/top_header.php");
+		top_header();
 
 		gprint_presets_edit();
 
-		include_once("./include/bottom_footer.php");
+		bottom_footer();
 		break;
 	default:
-		include_once("./include/top_header.php");
+		top_header();
 
 		gprint_presets();
 
-		include_once("./include/bottom_footer.php");
+		bottom_footer();
 		break;
 }
 
@@ -94,8 +94,11 @@ function gprint_presets_remove() {
 	/* ==================================================== */
 
 	if ((read_config_option("deletion_verification") == "on") && (!isset($_GET["confirm"]))) {
-		include_once("./include/top_header.php");
+		top_header();
+
 		form_confirm("Are You Sure?", "Are you sure you want to delete the GPRINT preset <strong>'" . htmlspecialchars(db_fetch_cell("select name from graph_templates_gprint where id=" . $_GET["id"])) . "'</strong>? This could affect every graph that uses this preset, make sure you know what you are doing first!", htmlspecialchars("gprint_presets.php"), htmlspecialchars("gprint_presets.php?action=remove&id=" . $_GET["id"]));
+
+		bottom_footer();
 		exit;
 	}
 

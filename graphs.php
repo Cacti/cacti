@@ -60,18 +60,18 @@ switch ($_REQUEST["action"]) {
 
 		break;
 	case 'graph_diff':
-		include_once("./include/top_header.php");
+		top_header();
 
 		graph_diff();
 
-		include_once("./include/bottom_footer.php");
+		bottom_footer();
 		break;
 	case 'item':
-		include_once("./include/top_header.php");
+		top_header();
 
 		item();
 
-		include_once("./include/bottom_footer.php");
+		bottom_footer();
 		break;
 	case 'graph_remove':
 		graph_remove();
@@ -79,18 +79,18 @@ switch ($_REQUEST["action"]) {
 		header("Location: graphs.php");
 		break;
 	case 'graph_edit':
-		include_once("./include/top_header.php");
+		top_header();
 
 		graph_edit();
 
-		include_once("./include/bottom_footer.php");
+		bottom_footer();
 		break;
 	default:
-		include_once("./include/top_header.php");
+		top_header();
 
 		graph();
 
-		include_once("./include/bottom_footer.php");
+		bottom_footer();
 		break;
 }
 
@@ -395,7 +395,7 @@ function form_actions() {
 		}
 	}
 
-	include_once("./include/top_header.php");
+	top_header();
 
 	/* add a list of tree names to the actions dropdown */
 	add_tree_names_to_actions_array();
@@ -548,7 +548,7 @@ function form_actions() {
 
 	html_end_box();
 
-	include_once("./include/bottom_footer.php");
+	bottom_footer();
 }
 
 /* -----------------------
@@ -1215,8 +1215,8 @@ function graph() {
 					<td>
 						<input type="text" name="filter" size="40" value="<?php print htmlspecialchars(get_request_var_request("filter"));?>">
 					</td>
-					<td style='white-space: nowrap;'>
-						Rows per Page:
+					<td>
+						Graphs:
 					</td>
 					<td width="1">
 						<select name="graph_rows" onChange="applyGraphsFilterChange(document.form_graph_id)">
@@ -1294,7 +1294,7 @@ function graph() {
 		ORDER BY " . $_REQUEST["sort_column"] . " " . get_request_var_request("sort_direction") .
 		" LIMIT " . (get_request_var_request("graph_rows")*(get_request_var_request("page")-1)) . "," . get_request_var_request("graph_rows"));
 
-	$nav = html_nav_bar("graphs.php?filter=" . get_request_var_request("filter") . "&host_id=" . get_request_var_request("host_id"), MAX_DISPLAY_PAGES, get_request_var_request("page"), get_request_var_request("graph_rows"), $total_rows, 5);
+	$nav = html_nav_bar("graphs.php?filter=" . get_request_var_request("filter") . "&host_id=" . get_request_var_request("host_id"), MAX_DISPLAY_PAGES, get_request_var_request("page"), get_request_var_request("graph_rows"), $total_rows, 5, 'Graphs');
 
 	print $nav;
 
@@ -1312,9 +1312,9 @@ function graph() {
 			/* we're escaping strings here, so no need to escape them on form_selectable_cell */
 			$template_name = ((empty($graph["name"])) ? "<em>None</em>" : htmlspecialchars($graph["name"]));
 			form_alternate_row('line' . $graph["local_graph_id"], true);
-			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars("graphs.php?action=graph_edit&id=" . $graph["local_graph_id"]) . "' title='" . htmlspecialchars($graph["title_cache"]) . "'>" . ((get_request_var_request("filter") != "") ? preg_replace("/(" . preg_quote(get_request_var_request("filter"), "/") . ")/i", "<span style='background-color: #F8D93D;'>\\1</span>", title_trim(htmlspecialchars($graph["title_cache"]), read_config_option("max_title_graph"))) : title_trim(htmlspecialchars($graph["title_cache"]), read_config_option("max_title_graph"))) . "</a>", $graph["local_graph_id"]);
+			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars("graphs.php?action=graph_edit&id=" . $graph["local_graph_id"]) . "' title='" . htmlspecialchars($graph["title_cache"]) . "'>" . ((get_request_var_request("filter") != "") ? preg_replace("/(" . preg_quote(get_request_var_request("filter"), "/") . ")/i", "<span class='filteredValue'>\\1</span>", title_trim(htmlspecialchars($graph["title_cache"]), read_config_option("max_title_graph"))) : title_trim(htmlspecialchars($graph["title_cache"]), read_config_option("max_title_graph"))) . "</a>", $graph["local_graph_id"]);
 			form_selectable_cell($graph["local_graph_id"], $graph["local_graph_id"]);
-			form_selectable_cell(((get_request_var_request("filter") != "") ? preg_replace("/(" . preg_quote(get_request_var_request("filter"), "/") . ")/i", "<span style='background-color: #F8D93D;'>\\1</span>", $template_name) : $template_name), $graph["local_graph_id"]);
+			form_selectable_cell(((get_request_var_request("filter") != "") ? preg_replace("/(" . preg_quote(get_request_var_request("filter"), "/") . ")/i", "<span class='filteredValue'>\\1</span>", $template_name) : $template_name), $graph["local_graph_id"]);
 			form_selectable_cell($graph["height"] . "x" . $graph["width"], $graph["local_graph_id"]);
 			form_checkbox_cell($graph["title_cache"], $graph["local_graph_id"]);
 			form_end_row();

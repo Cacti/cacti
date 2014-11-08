@@ -22,6 +22,15 @@
  +-------------------------------------------------------------------------+
 */
 
+$dir = dir($config['base_path'] . '/include/themes/');
+while (false !== ($entry = $dir->read())) {
+	if ($entry != '.' && $entry != '..') {
+		$themes[$entry] = ucwords($entry);
+	}
+}
+asort($themes);
+$dir->close();
+
 /* tab information */
 $tabs = array(
 	"general" => "General",
@@ -294,8 +303,14 @@ $settings = array(
 			"friendly_name" => "Deletion Verification",
 			"description" => "Prompt user before item deletion.",
 			"default" => "on",
-			"method" => "checkbox"
-			)
+			"method" => "checkbox",
+			),
+		"force_https" => array(
+			"friendly_name" => "Force Connections over HTTPS",
+			"description" => "When checked, any attempts to access Cacti will be redirected to HTTPS to insure high security.",
+			"default" => "",
+			"method" => "checkbox",
+			),
 		),
 	"export" => array(
 		"export_hdr_general" => array(
@@ -480,6 +495,17 @@ $settings = array(
 			)
 		),
 	"visual" => array(
+		"themes_header" => array(
+			"friendly_name" => "Theme Settings",
+			"method" => "spacer",
+			),
+		"selected_theme" => array(
+			"friendly_name" => "Themes Found",
+			"description" => "Please select one of the available Themes.",
+			"method" => "drop_array",
+			"default" => "classic",
+			"array" => $themes
+			),
 		"graphmgmt_header" => array(
 			"friendly_name" => "Graph Management",
 			"method" => "spacer",

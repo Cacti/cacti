@@ -81,12 +81,12 @@ if (isset($_REQUEST['hide'])) {
 
 switch ($_REQUEST['action']) {
 case 'tree':
-	include_once('./include/top_graph_header.php');
+	top_graph_header();
 
 	validate_tree_vars();
 
 	if ((read_config_option('auth_method') != 0) && (empty($current_user['show_tree']))) {
-		print "<strong><font size='+1' color='FF0000'>YOU DO NOT HAVE RIGHTS FOR TREE VIEW</font></strong>"; exit;
+		print "<strong><font class='txtErrorTextBox'>YOU DO NOT HAVE RIGHTS FOR TREE VIEW</font></strong>"; exit;
 	}
 
 	if ((!isset($_REQUEST['tree_id'])) && (isset($_SESSION['dhtml_tree']))) {
@@ -98,7 +98,7 @@ case 'tree':
 	/* don't even print the table if there is not >1 tree */
 	if ((!empty($tree_dropdown_html)) && (read_graph_config_option('default_tree_view_mode') == '1')) {
 		print "
-		<table width='100%' style='background-color: #f5f5f5; border: 1px solid #bbbbbb;' align='center' cellpadding='3'>
+		<table width='100%' class='tableConfirm' align='center' cellpadding='3'>
 			<tr>
 				$tree_dropdown_html
 			</tr>
@@ -110,14 +110,14 @@ case 'tree':
 		grow_graph_tree($_SESSION['sess_view_tree_id'], (!empty($start_branch) ? $start_branch : 0), isset($_SESSION['sess_user_id']) ? $_SESSION['sess_user_id'] : 0, $tree_parameters);
 	}
 
-	include_once('./include/bottom_footer.php');
+	bottom_footer();
 
 	break;
 case 'tree_content':
 	validate_tree_vars();
 
 	if ((read_config_option('auth_method') != 0) && (empty($current_user['show_tree']))) {
-		print "<strong><font size='+1' color='FF0000'>YOU DO NOT HAVE RIGHTS FOR TREE VIEW</font></strong>"; exit;
+		print "<strong><font class='txtErrorTextBox'>YOU DO NOT HAVE RIGHTS FOR TREE VIEW</font></strong>"; exit;
 	}
 
 	?>
@@ -137,14 +137,14 @@ case 'tree_content':
 	particular graph; do not show it. they will get an access denied message
 	if they try and view the graph directly. */
 
-	if (isset($_SESSION['sess_view_tree_id'])) {
+	if (isset($_REQUEST['tree_id'])) {
 		if (read_config_option('auth_method') != 0) {
 			/* take tree permissions into account here, if the user does not have permission
 			give an "access denied" message */
-			$access_denied = !(is_tree_allowed($_SESSION['sess_view_tree_id']));
+			$access_denied = !(is_tree_allowed($_REQUEST['tree_id']));
 
 			if ($access_denied == true) {
-				print "<strong><font size='+1' color='FF0000'>ACCESS DENIED</font></strong>"; exit;
+				print "<strong><font class='txtErrorTextBox'>ACCESS DENIED</font></strong>"; exit;
 			}
 		}
 
@@ -153,12 +153,10 @@ case 'tree_content':
 
 	break;
 case 'preview':
-	if (!isset($_REQUEST['header']) || $_REQUEST['header'] == false) {
-		include_once('./include/top_graph_header.php');
-	}
+	top_graph_header();
 
 	if ((read_config_option('auth_method') != 0) && (empty($current_user['show_preview']))) {
-		print "<strong><font size='+1' color='FF0000'>YOU DO NOT HAVE RIGHTS FOR PREVIEW VIEW</font></strong>"; exit;
+		print "<strong><font class='txtErrorTextBox'>YOU DO NOT HAVE RIGHTS FOR PREVIEW VIEW</font></strong>"; exit;
 	}
 
 	/* ================= input validation ================= */
@@ -241,7 +239,7 @@ case 'preview':
 	load_current_session_value('graph_remove', 'sess_graph_view_graph_remove', '');
 
 	/* include graph view filter selector */
-	html_start_box('<strong>Graph Filters</strong>' . (isset($_REQUEST['style']) && strlen($_REQUEST['style']) ? ' [ Custom Graph List Applied - Filtering from List ]':''), '100%', "", '2', 'center', '');
+	html_start_box('<strong>Graph Filters</strong>' . (isset($_REQUEST['style']) && strlen($_REQUEST['style']) ? ' [ Custom Graph List Applied - Filtering from List ]':''), '100%', "", '3', 'center', '');
 
 	?>
 	<script type="text/javascript" >
@@ -251,14 +249,14 @@ case 'preview':
 	</script>
 	<tr class='even noprint'>
 		<td class='noprint'>
-		<form style='margin:0px;padding:0px;' name='form_graph_view' method='post' onSubmit='applyGraphPreviewFilterChange(document.form_graph_view);return false;'>
-			<table cellpadding='1' cellspacing='0'>
+		<form style='margin:0px;padding:0px;' name='form_graph_view' method='post' onSubmit='applyGraphPreviewFilterChange();return false;'>
+			<table cellpadding='2' cellspacing='0'>
 				<tr class='noprint'>
 					<td width='55'>
 						Host:
 					</td>
 					<td width='1'>
-						<select id='host_id' name='host_id' onChange='applyGraphPreviewFilterChange(document.form_graph_view)'>
+						<select id='host_id' name='host_id' onChange='applyGraphPreviewFilterChange();return false;'>
 							<option value='0'<?php if (get_request_var_request('host_id') == '0') {?> selected<?php }?>>Any</option>
 
 							<?php
@@ -293,7 +291,7 @@ case 'preview':
 						Template:
 					</td>
 					<td width='1'>
-						<select id='graph_template_id' name='graph_template_id' onChange='applyGraphPreviewFilterChange(document.form_graph_view)'>
+						<select id='graph_template_id' name='graph_template_id' onChange='applyGraphPreviewFilterChange();return false;'>
 							<option value='0'<?php if (get_request_var_request('graph_template_id') == '0') {?> selected<?php }?>>Any</option>
 
 							<?php
@@ -325,7 +323,7 @@ case 'preview':
 						Graphs:
 					</td>
 					<td width='1'>
-						<select id='rows' name='rows' onChange='applyGraphPreviewFilterChange(document.form_graph_view)'>
+						<select id='rows' name='rows' onChange='applyGraphPreviewFilterChange();return false;'>
 							<option value='-1'<?php if (get_request_var_request('rows') == '-1') {?> selected<?php }?>>Default</option>
 							<?php
 							if (sizeof($item_rows) > 0) {
@@ -340,7 +338,7 @@ case 'preview':
 						Columns:
 					</td>
 					<td width='1'>
-						<select id='columns' name='columns' onChange='applyGraphPreviewFilterChange(document.form_graph_view)'>
+						<select id='columns' name='columns' onChange='applyGraphPreviewFilterChange();return false;'>
 							<option value='-1'<?php if (get_request_var_request('columns') == '-1') {?> selected<?php }?>>Default</option>
 							<option value='1'<?php if (get_request_var_request('columns') == '1') {?> selected<?php }?>>1 Column</option>
 							<option value='2'<?php if (get_request_var_request('columns') == '2') {?> selected<?php }?>>2 Columns</option>
@@ -353,7 +351,7 @@ case 'preview':
 						<label for='thumbnails'>Thumbnails:</label>
 					</td>
 					<td>
-						<input id='thumbnails' type='checkbox' name='thumbnails' onClick='applyGraphPreviewFilterChange(document.form_graph_view)' <?php print (($_REQUEST['thumbnails'] == 'true') ? 'checked':'');?>>
+						<input id='thumbnails' type='checkbox' name='thumbnails' onClick='applyGraphPreviewFilterChange();return false;' <?php print (($_REQUEST['thumbnails'] == 'true') ? 'checked':'');?>>
 					</td>
 					<td>
 						Search:
@@ -362,7 +360,7 @@ case 'preview':
 						<input type='text' name='filter' size='40' value='<?php print htmlspecialchars(get_request_var_request('filter'));?>'>
 					</td>
 					<td>
-						<input type='button' value='Go' title='Set/Refresh Filters' onClick='applyGraphPreviewFilterChange(document.form_graph_view)'>
+						<input type='button' value='Go' title='Set/Refresh Filters' onClick='applyGraphPreviewFilterChange();return false;'>
 					</td>
 					<td>
 						<input type='button' name='clear_x' value='Clear' title='Clear Filters' onClick='clearFilter()'>
@@ -374,7 +372,18 @@ case 'preview':
 	</tr>
 	<script type='text/javascript'>
 	function clearFilter() {
-		document.location = '?action=preview&clear_x=1';
+		$.get('graph_view?action=preview&header=false&clear_x=1', function(data) {
+			$('#main').html(data);
+		});
+	}
+
+	function applyGraphPreviewFilterChange() {
+		$.get('graph_view?action=preview&header=false'+
+			'&flter='+$('#filter').val()+'&host_id='+$('#host_id').val()+'&columns='+$('#columns').val()+
+			'&rows='+$('#rows').val()+'&graph_template_id='+$('#graph_template_id').val()+
+			'&thumbnails='+$('#thumbnails').checked(), function(data) {
+			$('#main').html(data);
+		});
 	}
 	</script>
 	<?php
@@ -555,16 +564,16 @@ case 'preview':
 
 	/* do some fancy navigation url construction so we don't have to try and rebuild the url string */
 	if (ereg('page=[0-9]+',basename($_SERVER['QUERY_STRING']))) {
-		$nav_url = str_replace('page=' . get_request_var_request('page'), 'page=<PAGE>', get_browser_query_string());
+		$nav_url = str_replace('&page=' . get_request_var_request('page'), '', get_browser_query_string());
 	}else{
-		$nav_url = get_browser_query_string() . (substr_count(get_browser_query_string(), '?') ? '&':'?') . 'page=<PAGE>&host_id=' . get_request_var_request('host_id');
+		$nav_url = get_browser_query_string() . '&host_id=' . get_request_var_request('host_id');
 	}
 
 	$nav_url = preg_replace('/((\?|&)host_id=[0-9]+|(\?|&)filter=[a-zA-Z0-9]*)/', '', $nav_url);
 
 	html_start_box('', '100%', "", '3', 'center', '');
 
-	$nav = html_nav_bar("graph_view.php?action=preview" . $nav_url, MAX_DISPLAY_PAGES, get_request_var_request("page"), get_request_var_request("rows"), $total_rows, get_request_var_request('columns'), "Graphs");
+	$nav = html_nav_bar($nav_url, MAX_DISPLAY_PAGES, get_request_var_request("page"), get_request_var_request("rows"), $total_rows, get_request_var_request('columns'), "Graphs", 'page', 'main');
 
 	print $nav;
 
@@ -574,20 +583,22 @@ case 'preview':
 		html_graph_area($graphs, '', 'graph_start=' . get_current_graph_start() . '&graph_end=' . get_current_graph_end(), '', get_request_var_request('columns'));
 	}
 
-	print $nav;
+	if ($total_rows > 0) {
+		print $nav;
+	}
 
 	html_end_box();
 
 	if (!isset($_REQUEST['header']) || $_REQUEST['header'] == false) {
-		include_once('./include/bottom_footer.php');
+		bottom_footer();
 	}
 
 	break;
 case 'list':
-	include_once('./include/top_graph_header.php');
+	top_graph_header();
 
 	if ((read_config_option('auth_method') != 0) && (empty($current_user['show_list']))) {
-		print "<strong><font size='+1' color='FF0000'>YOU DO NOT HAVE RIGHTS FOR LIST VIEW</font></strong>"; exit;
+		print "<strong><font class='txtErrorTextBox'>YOU DO NOT HAVE RIGHTS FOR LIST VIEW</font></strong>"; exit;
 	}
 
 	/* ================= input validation ================= */
@@ -664,11 +675,6 @@ case 'list':
 	/* update the revised graph list session variable */
 	$_REQUEST['graph_list'] = implode(',', array_keys($graph_list));
 	load_current_session_value('graph_list', 'sess_graph_view_list_graph_list', '');
-
-	// debugging
-	//echo "GraphList:" . (strlen($_REQUEST["graph_list"]) ? $_REQUEST["graph_list"]:"-") . ", GraphRemove:" . (isset($_REQUEST["graph_remove"]) && strlen($_REQUEST["graph_remove"]) ? $_REQUEST["graph_remove"]:"-") . ", GraphAdd:" . (isset($_REQUEST["graph_add"]) && strlen($_REQUEST["graph_add"]) ? $_REQUEST["graph_add"]:"-");
-
-	$nav_url = 'graph_view.php?action=list&page=<PAGE>';
 
 	/* display graph view filter selector */
 	html_start_box('<strong>Graph Filters</strong>' . (isset($_REQUEST['style']) && strlen($_REQUEST['style']) ? ' [ Custom Graph List Applied - Filter from List ]':''), '100%', '', '2', 'center', '');
@@ -836,7 +842,7 @@ case 'list':
 
 	html_start_box('', '100%', '', '3', 'center', '');
 
-	$nav = html_nav_bar("graph_view.php?action=list" . $nav_url, MAX_DISPLAY_PAGES, get_request_var_request("page"), get_request_var_request("rows"), $total_rows, 5, "Graphs");
+	$nav = html_nav_bar("graph_view.php?action=list", MAX_DISPLAY_PAGES, get_request_var_request("page"), get_request_var_request("rows"), $total_rows, 5, "Graphs", 'page', 'main');
 
 	print $nav;
 
@@ -948,7 +954,7 @@ case 'list':
 	</script>
 	<?php
 
-	include_once('./include/bottom_footer.php');
+	bottom_footer();
 
 	break;
 }

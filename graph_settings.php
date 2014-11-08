@@ -36,12 +36,13 @@ switch ($_REQUEST["action"]) {
 	default:
 		// We must exempt ourselves from the page refresh, or else the settings page could update while the user is making changes
 		$_SESSION['custom'] = 1;
-		include_once("./include/top_graph_header.php");
+		top_graph_header();
+
 		unset($_SESSION['custom']);
 
 		settings();
 
-		include_once("./include/bottom_footer.php");
+		bottom_footer();
 		break;
 }
 
@@ -107,6 +108,8 @@ function form_save() {
 function settings() {
 	global $tabs_graphs, $settings_graphs, $current_user, $graph_views, $current_user, $graph_tree_views;
 
+	$current_user = db_fetch_row("SELECT * FROM user_auth WHERE id=" . $_SESSION['sess_user_id']);
+
 	/* you cannot have per-user graph settings if cacti's user management is not turned on */
 	if (read_config_option("auth_method") == 0) {
 		raise_message(6);
@@ -116,8 +119,8 @@ function settings() {
 
 	/* Find out whether this user has right here */
 	if($current_user["graph_settings"] == "") {
-		print "<strong><font size='+1' color='#FF0000'>YOU DO NOT HAVE RIGHTS TO CHANGE GRAPH SETTINGS</font></strong>";
-		include_once("./include/bottom_footer.php");
+		print "<strong><font class='txtErrorTextBox'>YOU DO NOT HAVE RIGHTS TO CHANGE GRAPH SETTINGS</font></strong>";
+		bottom_footer();
 		exit;
 	}
 
@@ -137,7 +140,7 @@ function settings() {
 
 	while (list($tab_short_name, $tab_fields) = each($settings_graphs)) {
 		?>
-		<tr>
+		<tr class='tableHeader'>
 			<td colspan='2' class='textSubHeaderDark' style='padding: 3px;'>
 				<?php print $tabs_graphs[$tab_short_name];?>
 			</td>

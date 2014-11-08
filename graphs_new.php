@@ -44,11 +44,11 @@ switch ($_REQUEST["action"]) {
 		header("Location: graphs_new.php?host_id=" . $_GET["host_id"]);
 		break;
 	default:
-		include_once("./include/top_header.php");
+		top_header();
 
 		graphs();
 
-		include_once("./include/bottom_footer.php");
+		bottom_footer();
 		break;
 }
 
@@ -237,7 +237,7 @@ function host_new_graphs($host_id, $host_template_id, $selected_graphs_array) {
 	fields are actually drawn */
 	ob_start();
 
-	include_once("./include/top_header.php");
+	top_header();
 
 	print "<form method='post' action='graphs_new.php'>\n";
 
@@ -356,7 +356,7 @@ function host_new_graphs($host_id, $host_template_id, $selected_graphs_array) {
 
 	form_save_button($_REQUEST["returnto"]);
 
-	include_once("./include/bottom_footer.php");
+	bottom_footer();
 }
 
 /* -------------------
@@ -405,44 +405,10 @@ function graphs() {
 
 	if (!empty($debug_log)) {
 		debug_log_clear("new_graphs");
-		if (read_config_option("cacti_popup_messages") == "on") { ?>
-		<div id='message'>
-			<?php print "<table align='center' class='cactiTable' width='100%'><tr><td style='align:center;padding:3px;font-weight:bold;font-size:10pt;text-align:center;'>Graphs Created</td><td style='width:1px;align:right;'><input type='button' value='Clear' onClick='javascript:document.getElementById(\"message\").style.display=\"none\"' style='align=right;'></td></tr></table>";?>
-			<?php print "<table align='left' style='width:100%;'><tr><td><ul style='text-align:left;white-space:nowrap;color:#000000;padding:2px 10px;margin:10px;'>" . $debug_log . "</ul></td></tr></table>";?>
-		</div>
-		<?php }else{ ?>
-		<table width='100%' class='textArea' align='center'>
-			<tr class='even'>
-				<td style="padding: 3px; font-family: monospace;">
-					<ul style='margin:0px 5px;padding-left:10px'><?php print $debug_log;?></ul>
-				</td>
-			</tr>
-		</table>
-		<br><?php }
 	}
 	?>
 	<script type="text/javascript">
 	<!--
-	<?php if (read_config_option("cacti_popup_messages") == "on") {?>
-	var obj = document.getElementById('message');
-
-	if (obj) {
-		if (window.innerHeight) {
-			height = window.innerHeight;
-			width  = window.innerWidth;
-		}else{
-			height = document.body.clientHeight;
-			width  = document.body.clientWidth;
-		}
-		obj.style.class = "popupBox";
-		cw = obj.offsetWidth;
-		// Adjust for IE6
-		if (!cw) cw = 150;
-		ch = obj.offsetHeight;
-		obj.style.top = '65px';
-		obj.style.left = ((width/2) - (cw/2) - 88)+'px';
-	}
-	<?php } ?>
 
 	function applyGraphsNewFilterChange(objForm) {
 		strURL = '?graph_type=' + objForm.graph_type.value;
@@ -556,7 +522,7 @@ function graphs() {
 
 		print "<tr class='tableHeader'>
 				<td class='tableSubHeaderColumn'>Graph Template Name</td>
-				<td width='1%' align='center' class='tableSubHeaderCheckbox' style='" . get_checkbox_style() . "'><input type='checkbox' style='margin: 0px;' name='all_cg' title='Select All' onClick='SelectAll(\"cg\",this.checked);gt_update_selection_indicators();'></td>\n
+				<td width='1%' align='center' class='tableSubHeaderCheckbox' style='" . get_checkbox_style() . "'><input type='checkbox' style='margin: 0px;' name='all_cg' title='Select All' onClick='SelectAll(\"sg\",this.checked);'></td>\n
 			</tr>\n";
 
 		$graph_templates = db_fetch_assoc("SELECT
@@ -593,19 +559,20 @@ function graphs() {
 		foreach ($graph_templates as $graph_template) {
 			$query_row = $graph_template["graph_template_id"];
 
-			print "<tr id='gt_line$query_row' class='" . (($i % 2 == 0) ? "odd" : "even") . "'>"; $i++;
+			print "<tr id='gt_line$query_row' class='selectable " . (($i % 2 == 0) ? "odd" : "even") . "'>"; $i++;
 
-			print "		<td onClick='gt_select_line(" . $graph_template["graph_template_id"] . ");'>
+			//print "		<td onClick='gt_select_line(" . $graph_template["graph_template_id"] . ");'>
+			print "		<td>
 						<span id='gt_text$query_row" . "_0'><strong>Create:</strong> " . htmlspecialchars($graph_template["graph_template_name"]) . "</span>
 					</td>
-					<td align='right'>
-						<input type='checkbox' name='cg_$query_row' id='cg_$query_row' onClick='gt_update_selection_indicators();'>
+					<td align='right' class='checkbox'>
+						<input type='checkbox' name='cg_$query_row' id='cg_$query_row'>
 					</td>
 				</tr>";
 		}
 		}
 
-		$script .= "gt_update_deps(1);\n";
+//		$script .= "gt_update_deps(1);\n";
 
 		$available_graph_templates = db_fetch_assoc("SELECT
 			graph_templates.id, graph_templates.name
@@ -614,7 +581,7 @@ function graphs() {
 			WHERE (((snmp_query_graph.name) Is Null)) ORDER BY graph_templates.name");
 
 		/* create a row at the bottom that lets the user create any graph they choose */
-		print "	<tr class='" . (($i % 2 == 0) ? "odd" : "even") . "'>
+		print "	<tr class='selectable " . (($i % 2 == 0) ? "odd" : "even") . "'>
 				<td colspan='2' width='60' nowrap>
 					<strong>Create:</strong>&nbsp;";
 					form_dropdown("cg_g", $available_graph_templates, "name", "id", "", "(Select a graph type to create)", "", "textArea");
@@ -824,7 +791,7 @@ function graphs() {
 					}else{
 						print "<tr class='tableHeader'>
 								$html_dq_header
-								<td width='1%' align='center' class='tableSubHeaderCheckbox' style='" . get_checkbox_style() . "'><input type='checkbox' style='margin: 0px;' name='all_" . $snmp_query["id"] . "' title='Select All' onClick='SelectAll(\"sg_" . $snmp_query["id"] . "\",this.checked);dq_update_selection_indicators();'></td>\n
+								<td width='1%' align='center' class='tableSubHeaderCheckbox' style='" . get_checkbox_style() . "'><input type='checkbox' style='margin: 0px;' name='all_" . $snmp_query["id"] . "' title='Select All' onClick='SelectAll(\"sg_" . $snmp_query["id"] . "\",this.checked)'></td>\n
 							</tr>\n";
 					}
 
@@ -835,7 +802,7 @@ function graphs() {
 					foreach($snmp_query_indexes as $row) {
 						$query_row = $snmp_query["id"] . "_" . encode_data_query_index($row["snmp_index"]);
 
-						print "<tr id='line$query_row' class='" . (($row_counter % 2 == 0) ? "odd" : "even") . "'>"; $i++;
+						print "<tr id='line$query_row' class='selectable " . (($row_counter % 2 == 0) ? "odd" : "even") . "'>"; $i++;
 
 						$column_counter = 0;
 						reset($xml_array["fields"]);
@@ -843,9 +810,11 @@ function graphs() {
 							if ($field_array["direction"] == "input") {
 								if (in_array($field_name, $fields)) {
 									if (isset($row[$field_name])) {
-										print "<td onClick='dq_select_line(" . $snmp_query["id"] . ",\"" . encode_data_query_index($row["snmp_index"]) . "\");'><span id='text$query_row" . "_" . $column_counter . "'>" . (strlen($_REQUEST["filter"]) ? preg_replace("/(" . preg_quote($_REQUEST["filter"]) . ")/i", "<span style='background-color: #F8D93D;'>\\1</span>", $row[$field_name]) : $row[$field_name]) . "</span></td>";
+										//print "<td onClick='dq_select_line(" . $snmp_query["id"] . ",\"" . encode_data_query_index($row["snmp_index"]) . "\");'><span id='text$query_row" . "_" . $column_counter . "'>" . (strlen($_REQUEST["filter"]) ? preg_replace("/(" . preg_quote($_REQUEST["filter"]) . ")/i", "<span class='filteredValue'>\\1</span>", $row[$field_name]) : $row[$field_name]) . "</span></td>";
+										print "<td><span id='text$query_row" . "_" . $column_counter . "'>" . (strlen($_REQUEST["filter"]) ? preg_replace("/(" . preg_quote($_REQUEST["filter"]) . ")/i", "<span class='filteredValue'>\\1</span>", $row[$field_name]) : $row[$field_name]) . "</span></td>";
 									}else{
-										print "<td onClick='dq_select_line(" . $snmp_query["id"] . ",\"" . encode_data_query_index($row["snmp_index"]) . "\");'><span id='text$query_row" . "_" . $column_counter . "'></span></td>";
+										//print "<td onClick='dq_select_line(" . $snmp_query["id"] . ",\"" . encode_data_query_index($row["snmp_index"]) . "\");'><span id='text$query_row" . "_" . $column_counter . "'></span></td>";
+										print "<td><span id='text$query_row" . "_" . $column_counter . "'></span></td>";
 									}
 
 									$column_counter++;
@@ -853,8 +822,8 @@ function graphs() {
 							}
 						}
 
-						print "<td align='right'>";
-						print "<input type='checkbox' name='sg_$query_row' id='sg_$query_row' onClick='dq_update_selection_indicators();'>";
+						print "<td class='checkbox' align='right'>";
+						print "<input type='checkbox' name='sg_$query_row' id='sg_$query_row'>";
 						print "</td>";
 						print "</tr>\n";
 
@@ -866,10 +835,10 @@ function graphs() {
 						print $nav;
 					}
 				}else{
-					print "<tr class='odd'><td colspan='2' style='color: red; font-size: 12px; font-weight: bold;'>Search Returned no Rows.</td></tr>\n";
+					print "<tr class='odd'><td class='textError'>Search Returned no Rows.</td></tr>\n";
 				}
 			}else{
-				print "<tr class='odd'><td colspan='2' style='color: red; font-size: 12px; font-weight: bold;'>Error in data query.</td></tr>\n";
+				print "<tr class='odd'><td class='textError'>Error in data query.</td></tr>\n";
 			}
 
 			print "</table>";
@@ -887,7 +856,7 @@ function graphs() {
 							</td>
 							<td align='right'>
 								<span style='font-size: 12px; font-style: italic;'>Select a graph type:</span>&nbsp;
-								<select name='sgg_" . $snmp_query["id"] . "' id='sgg_" . $snmp_query["id"] . "' onChange='dq_update_deps(" . $snmp_query["id"] . "," . (isset($column_counter) ? $column_counter:"") . ");'>
+								<select name='sgg_" . $snmp_query["id"] . "' id='sgg_" . $snmp_query["id"] . "' onChange='dqUpdateDeps(" . $snmp_query["id"] . "," . (isset($column_counter) ? $column_counter:"") . ");'>
 									"; html_create_list($data_query_graphs,"name","id","0"); print "
 								</select>
 							</td>
@@ -897,7 +866,7 @@ function graphs() {
 
 			print "<br>";
 
-			$script .= "dq_update_deps(" . $snmp_query["id"] . "," . $num_visible_fields . ");\n";
+			$script .= "dqUpdateDeps(" . $snmp_query["id"] . "," . $num_visible_fields . ");\n";
 		}
 		}
 	}
@@ -917,8 +886,5 @@ function graphs() {
 	load_current_session_value("returnto", "sess_graphs_new_returnto", "");
 
 	form_save_button($_REQUEST["returnto"]);
-
-	print "<script type='text/javascript'>dq_update_selection_indicators();</script>\n";
-	print "<script type='text/javascript'>gt_update_selection_indicators();</script>\n";
 }
 ?>

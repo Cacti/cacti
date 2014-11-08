@@ -79,11 +79,11 @@ switch ($_REQUEST["action"]) {
 		header("Location: data_queries.php?action=edit&id=" . $_GET["snmp_query_id"]);
 		break;
 	case 'item_edit':
-		include_once("./include/top_header.php");
+		top_header();
 
 		data_query_item_edit();
 
-		include_once("./include/bottom_footer.php");
+		bottom_footer();
 		break;
 	case 'remove':
 		data_query_remove();
@@ -91,18 +91,18 @@ switch ($_REQUEST["action"]) {
 		header ("Location: data_queries.php");
 		break;
 	case 'edit':
-		include_once("./include/top_header.php");
+		top_header();
 
 		data_query_edit();
 
-		include_once("./include/bottom_footer.php");
+		bottom_footer();
 		break;
 	default:
-		include_once("./include/top_header.php");
+		top_header();
 
 		data_query();
 
-		include_once("./include/bottom_footer.php");
+		bottom_footer();
 		break;
 }
 
@@ -234,7 +234,7 @@ function form_actions() {
 		}
 	}
 
-	include_once("./include/top_header.php");
+	top_header();
 
 	html_start_box("<strong>" . $dq_actions{$_POST["drp_action"]} . "</strong>", "60%", "", "3", "center", "");
 
@@ -271,7 +271,7 @@ function form_actions() {
 
 	html_end_box();
 
-	include_once("./include/bottom_footer.php");
+	bottom_footer();
 }
 
 /* ----------------------------
@@ -339,9 +339,11 @@ function data_query_item_remove() {
 	/* ==================================================== */
 
 	if ((read_config_option("deletion_verification") == "on") && (!isset($_GET["confirm"]))) {
-		include("./include/top_header.php");
+		top_header();
+
 		form_confirm("Are You Sure?", "Are you sure you want to delete the Data Query Graph <strong>'" . htmlspecialchars(db_fetch_cell("select name from snmp_query_graph where id=" . $_GET["id"]), ENT_QUOTES) . "'</strong>?", htmlspecialchars("data_queries.php?action=edit&id=" . $_GET["snmp_query_id"]), htmlspecialchars("data_queries.php?action=item_remove&id=" . $_GET["id"] . "&snmp_query_id=" . $_GET["snmp_query_id"]));
-		include("./include/bottom_footer.php");
+
+		bottom_footer();
 		exit;
 	}
 
@@ -788,7 +790,7 @@ function data_query() {
 		ORDER BY " . get_request_var_request("sort_column") . " " . get_request_var_request("sort_direction") . "
 		LIMIT " . (read_config_option("num_rows_device")*(get_request_var_request("page")-1)) . "," . read_config_option("num_rows_device"));
 
-	$nav = html_nav_bar("data_queries.php?filter=" . get_request_var_request("filter"), MAX_DISPLAY_PAGES, get_request_var_request("page"), read_config_option("num_rows_device"), $total_rows, 3);
+	$nav = html_nav_bar("data_queries.php?filter=" . get_request_var_request("filter"), MAX_DISPLAY_PAGES, get_request_var_request("page"), read_config_option("num_rows_device"), $total_rows, 3, 'Data Queries');
 	print $nav;
 
 	$display_text = array(
@@ -801,8 +803,8 @@ function data_query() {
 	if (sizeof($snmp_queries) > 0) {
 		foreach ($snmp_queries as $snmp_query) {
 			form_alternate_row('line' . $snmp_query["id"], true);
-			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars("data_queries.php?action=edit&id=" . $snmp_query["id"]) . "'>" . (strlen(get_request_var_request("filter")) ? preg_replace("/(" . preg_quote(get_request_var_request("filter"), "/") . ")/i", "<span style='background-color: #F8D93D;'>\\1</span>", htmlspecialchars($snmp_query["name"])) : htmlspecialchars($snmp_query["name"])) . "</a>", $snmp_query["id"]);
-			form_selectable_cell((strlen(get_request_var_request("filter")) ? preg_replace("/(" . preg_quote(get_request_var_request("filter"), "/") . ")/i", "<span style='background-color: #F8D93D;'>\\1</span>", $snmp_query["data_input_method"]) : $snmp_query["data_input_method"]), $snmp_query["id"]);
+			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars("data_queries.php?action=edit&id=" . $snmp_query["id"]) . "'>" . (strlen(get_request_var_request("filter")) ? preg_replace("/(" . preg_quote(get_request_var_request("filter"), "/") . ")/i", "<span class='filteredValue'>\\1</span>", htmlspecialchars($snmp_query["name"])) : htmlspecialchars($snmp_query["name"])) . "</a>", $snmp_query["id"]);
+			form_selectable_cell((strlen(get_request_var_request("filter")) ? preg_replace("/(" . preg_quote(get_request_var_request("filter"), "/") . ")/i", "<span class='filteredValue'>\\1</span>", $snmp_query["data_input_method"]) : $snmp_query["data_input_method"]), $snmp_query["id"]);
 			form_checkbox_cell($snmp_query["name"], $snmp_query["id"]);
 			form_end_row();
 		}

@@ -103,7 +103,7 @@ function form_alternate_row_color($row_color1, $row_color2, $row_value, $row_id 
 	}
 
 	if (strlen($row_id)) {
-		print "<tr class='$class' id='$row_id'>\n";
+		print "<tr class='$class selectable' id='$row_id'>\n";
 	}else{
 		print "<tr class='$class'>\n";
 	}
@@ -130,8 +130,10 @@ function form_alternate_row($row_id = "", $light = false) {
 
 	$i++;
 
-	if (strlen($row_id)) {
+	if (strlen($row_id) && substr($row_id,0,4) != 'row_') {
 		print "<tr class='$class selectable' id='$row_id'>\n";
+	}elseif (substr($row_id,0,4) == 'row_') {
+		print "<tr class='$class' id='$row_id'>\n";
 	}else{
 		print "<tr class='$class'>\n";
 	}
@@ -143,13 +145,15 @@ function form_alternate_row($row_id = "", $light = false) {
    @arg $width - the width of the table element
    @arg $style - the style to apply to the table element */
 function form_selectable_cell($contents, $id, $width="", $style="") {
-	print "\t<td" . (strlen($width) ? " width='$width'" : "") . (strlen($style) ? " style='$style;'" : "") . " onClick='select_line(\"$id\")'>" . $contents . "</td>\n";
+	#print "\t<td" . (strlen($width) ? " width='$width'" : "") . (strlen($style) ? " style='$style;'" : "") . " onClick='select_line(\"$id\")'>" . $contents . "</td>\n";
+	print "\t<td" . (strlen($width) ? " width='$width'" : "") . (strlen($style) ? " style='$style;'" : "") . ">" . $contents . "</td>\n";
 }
 
 /* form_checkbox_cell - format's a tables checkbox form element so that the cacti js actions work on it
    @arg $title - the text that will be displayed if your hover over the checkbox */
 function form_checkbox_cell($title, $id) {
-	print "\t<td onClick='select_line(\"$id\", true)' style='" . get_checkbox_style() . "' width='1%' align='right'>\n";
+	print "\t<td class='checkbox' style='" . get_checkbox_style() . "' width='1%' align='right'>\n";
+	//print "\t<td onClick='select_line(\"$id\", true)' style='" . get_checkbox_style() . "' width='1%' align='right'>\n";
 	print "\t\t<input type='checkbox' style='margin: 0px;' id='chk_" . $id . "' name='chk_" . $id . "'>\n";
 	print "\t</td>\n";
 }
@@ -364,9 +368,9 @@ function get_page_list($current_page, $pages_per_screen, $rows_per_page, $total_
 		$page = $page_number + $start_page;
 		if ($page_number < $pages_per_screen) {
 			if ($current_page == $page) {
-				$url_page_select .= "<strong><a class='linkOverDark' style='cursor:pointer;' onClick='gotoPage($page)'>$page</a></strong>";
+				$url_page_select .= "<strong><span class='linkOverDark' style='cursor:pointer;' onClick='gotoPage($page)'>$page</span></strong>";
 			}else{
-				$url_page_select .= "<a class='linkOverDark' style='cursor:pointer;' onClick='gotoPage($page)'>$page</a>";
+				$url_page_select .= "<span class='linkOverDark' style='cursor:pointer;' onClick='gotoPage($page)'>$page</span>";
 			}
 		}
 
@@ -380,7 +384,7 @@ function get_page_list($current_page, $pages_per_screen, $rows_per_page, $total_
 	}
 
 	if ($return_to != '') {
-		$url_page_select .= "<script type='text/javascript'>function gotoPage(pageNo) { $.get('$url$page_var='+pageNo,function(data) { $('#$return_to').html(data);}); }</script>";
+		$url_page_select .= "<script type='text/javascript'>function gotoPage(pageNo) { $.get('${url}header=false&$page_var='+pageNo,function(data) { $('#$return_to').html(data);}); }</script>";
 	}else{
 		$url_page_select .= "<script type='text/javascript'>function gotoPage(pageNo) { document.location='$url$page_var='+pageNo}</script>";
 	}

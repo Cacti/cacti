@@ -58,25 +58,25 @@ switch ($_REQUEST["action"]) {
 		header("Location: graph_templates.php?action=template_edit&id=" . $_GET["graph_template_id"]);
 		break;
 	case 'input_edit':
-		include_once("./include/top_header.php");
+		top_header();
 
 		input_edit();
 
-		include_once("./include/bottom_footer.php");
+		bottom_footer();
 		break;
 	case 'template_edit':
-		include_once ("./include/top_header.php");
+		top_header();
 
 		template_edit();
 
-		include_once ("./include/bottom_footer.php");
+		bottom_footer();
 		break;
 	default:
-		include_once("./include/top_header.php");
+		top_header();
 
 		template();
 
-		include_once("./include/bottom_footer.php");
+		bottom_footer();
 		break;
 }
 
@@ -223,7 +223,7 @@ function form_actions() {
 		}
 	}
 
-	include_once("./include/top_header.php");
+	top_header();
 
 	html_start_box("<strong>" . $graph_actions{$_POST["drp_action"]} . "</strong>", "60%", "", "3", "center", "");
 
@@ -269,7 +269,7 @@ function form_actions() {
 
 	html_end_box();
 
-	include_once("./include/bottom_footer.php");
+	bottom_footer();
 }
 
 function item() {
@@ -486,16 +486,18 @@ function template() {
 	<tr class='even noprint'>
 		<td>
 		<form name="form_host_template" action="graph_templates.php">
-			<table width="100%" cellpadding="0" cellspacing="0">
+			<table cellpadding="2" cellspacing="0">
 				<tr>
-					<td nowrap style='white-space: nowrap;' width="50">
-						Search:&nbsp;
+					<td width="50">
+						Search:
 					</td>
 					<td width="1">
 						<input type="text" name="filter" size="40" value="<?php print htmlspecialchars(get_request_var_request("filter"));?>">
 					</td>
-					<td nowrap style='white-space: nowrap;'>
-						&nbsp;<input type="submit" value="Go" title="Set/Refresh Filters">
+					<td>
+						<input type="submit" value="Go" title="Set/Refresh Filters">
+					</td>
+					<td>
 						<input type="submit" name="clear_x" value="Clear" title="Clear Filters">
 					</td>
 				</tr>
@@ -535,7 +537,7 @@ function template() {
 		ORDER BY " . get_request_var_request("sort_column") . " " . get_request_var_request("sort_direction") .
 		" LIMIT " . (read_config_option("num_rows_device")*(get_request_var_request("page")-1)) . "," . read_config_option("num_rows_device"));
 
-	$nav = html_nav_bar("graph_templates.php?filter=" . get_request_var_request("filter"), MAX_DISPLAY_PAGES, get_request_var_request("page"), read_config_option("num_rows_device"), $total_rows);
+	$nav = html_nav_bar("graph_templates.php?filter=" . get_request_var_request("filter"), MAX_DISPLAY_PAGES, get_request_var_request("page"), read_config_option("num_rows_device"), $total_rows, 4, 'Graph Templates');
 
 	print $nav;
 
@@ -551,7 +553,7 @@ function template() {
 	if (sizeof($template_list) > 0) {
 		foreach ($template_list as $template) {
 			form_alternate_row('line' . $template["id"], true);
-			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars("graph_templates.php?action=template_edit&id=" . $template["id"]) . "'>" . (strlen(get_request_var_request("filter")) ? preg_replace("/(" . preg_quote(get_request_var_request("filter"), "/") . ")/i", "<span style='background-color: #F8D93D;'>\\1</span>", htmlspecialchars($template["name"])) : htmlspecialchars($template["name"])) . "</a>", $template["id"]);
+			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars("graph_templates.php?action=template_edit&id=" . $template["id"]) . "'>" . (strlen(get_request_var_request("filter")) ? preg_replace("/(" . preg_quote(get_request_var_request("filter"), "/") . ")/i", "<span class='filteredValue'>\\1</span>", htmlspecialchars($template["name"])) : htmlspecialchars($template["name"])) . "</a>", $template["id"]);
 			form_selectable_cell($template["id"], $template["id"]);
 			form_selectable_cell(number_format($template["graphs"]), $template["id"]);
 			form_checkbox_cell($template["name"], $template["id"]);

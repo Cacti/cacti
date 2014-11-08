@@ -34,11 +34,11 @@ switch ($_REQUEST["action"]) {
 
 		break;
 	default:
-		include_once("./include/top_header.php");
+		top_header();
 
 		import();
 
-		include_once("./include/bottom_footer.php");
+		bottom_footer();
 		break;
 }
 

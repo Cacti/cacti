@@ -39,11 +39,11 @@ switch ($_REQUEST["action"]) {
 		header("Location: graphs.php?action=graph_edit&id=" . $_GET["local_graph_id"]);
 		break;
 	case 'item_edit':
-		include_once("./include/top_header.php");
+		top_header();
 
 		item_edit();
 
-		include_once("./include/bottom_footer.php");
+		bottom_footer();
 		break;
 	case 'item_movedown':
 		item_movedown();

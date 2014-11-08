@@ -38,18 +38,18 @@ switch ($_REQUEST["action"]) {
 		header ("Location: color.php");
 		break;
 	case 'edit':
-		include_once("./include/top_header.php");
+		top_header();
 
 		color_edit();
 
-		include_once("./include/bottom_footer.php");
+		bottom_footer();
 		break;
 	default:
-		include_once("./include/top_header.php");
+		top_header();
 
 		color();
 
-		include_once("./include/bottom_footer.php");
+		bottom_footer();
 		break;
 }
 

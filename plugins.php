@@ -118,11 +118,11 @@ function retrieve_plugin_list () {
 	return $pluginslist;
 }
 
-include("./include/top_header.php");
+top_header();
 
 update_show_current();
 
-include("./include/bottom_footer.php");
+bottom_footer();
 
 function api_plugin_install_old ($plugin) {
 	global $config;
@@ -555,7 +555,7 @@ function format_plugin_row($plugin, $last_plugin, $include_ordering, $system_plu
 	static $first_plugin = true;
 
 	$row = plugin_actions($plugin);
-	$row .= "<td><a href='" . htmlspecialchars($plugin["webpage"]) . "' target='_blank'><strong>" . (strlen(get_request_var_request("filter")) ? eregi_replace("(" . preg_quote(get_request_var_request("filter")) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", ucfirst($plugin["directory"])) : ucfirst($plugin["directory"])) . "</strong></a></td>";
+	$row .= "<td><a href='" . htmlspecialchars($plugin["webpage"]) . "' target='_blank'><strong>" . (strlen(get_request_var_request("filter")) ? eregi_replace("(" . preg_quote(get_request_var_request("filter")) . ")", "<span class='filteredValue'>\\1</span>", ucfirst($plugin["directory"])) : ucfirst($plugin["directory"])) . "</strong></a></td>";
 	$row .= "<td>" . $plugin["version"] . "</td>\n";
 	if ($include_ordering) {
 		$row .= "<td style='white-space:nowrap;'>";
@@ -574,7 +574,7 @@ function format_plugin_row($plugin, $last_plugin, $include_ordering, $system_plu
 		$row .= "<td></td>\n";
 	}
 
-	$row .= "<td style='white-space:nowrap;'>" . (strlen(get_request_var_request("filter")) ? eregi_replace("(" . preg_quote(get_request_var_request("filter")) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $plugin["name"]) : $plugin["name"]) . "</td>\n";
+	$row .= "<td style='white-space:nowrap;'>" . (strlen(get_request_var_request("filter")) ? eregi_replace("(" . preg_quote(get_request_var_request("filter")) . ")", "<span class='filteredValue'>\\1</span>", $plugin["name"]) : $plugin["name"]) . "</td>\n";
 	$row .= "<td style='white-space:nowrap;'>" . ($system_plugin ? "System": ($plugin['status'] < 0 ? "Old PIA":"General")) . "</td>\n";
 	$row .= "<td style='white-space:nowrap;'>" . $status_names[$plugin["status"]] . "</td>\n";
 	$row .= "<td style='white-space:nowrap;'>" . $plugin["author"] . "</td>\n";

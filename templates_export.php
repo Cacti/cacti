@@ -34,11 +34,11 @@ switch ($_REQUEST["action"]) {
 
 		break;
 	default:
-		include_once("./include/top_header.php");
+		top_header();
 
 		export();
 
-		include_once("./include/bottom_footer.php");
+		bottom_footer();
 		break;
 }
 
@@ -58,9 +58,11 @@ function form_save() {
 		$xml_data = get_item_xml($_POST["export_type"], $_POST["export_item_id"], (((isset($_POST["include_deps"]) ? $_POST["include_deps"] : "") == "") ? false : true));
 
 		if ($_POST["output_format"] == "1") {
-			include_once("./include/top_header.php");
+			top_header();
+
 			print "<table width='100%' align='center'><tr><td><pre>" . htmlspecialchars($xml_data) . "</pre></td></tr></table>";
-			include_once("./include/bottom_footer.php");
+
+			bottom_footer();
 		}elseif ($_POST["output_format"] == "2") {
 			header("Content-type: application/xml");
 			if ($export_errors) echo "WARNING: Export Errors Encountered.  Refresh Browser Window for Details!\n";
@@ -91,7 +93,7 @@ function export() {
 
 	html_start_box("<strong>Export Templates</strong>", "100%", "", "3", "center", "");
 	?>
-	<tr>
+	<tr class='tableRow'>
 		<td>
 			<form name="form_graph_id" action="templates_export.php">
 			<table align='left' cellpadding='3' cellspacing='0'>

@@ -76,7 +76,7 @@ case 'save':
 	header("Location: settings.php?tab=" . $_POST["tab"]);
 	break;
 default:
-	include("./include/top_header.php");
+	top_header();
 
 	/* set the default settings category */
 	if (!isset($_GET["tab"])) {
@@ -89,15 +89,15 @@ default:
 
 	/* draw the categories tabs on the top of the page */
 	print "<table cellpadding='0' cellspacing='0' border='0'><tr><td>\n";
-	print "<table class='tabs' cellspacing='0' cellpadding='3' align='left'><tr class='tabsMarginLeft'>\n";
+	print "<div class='tabs' style='float:left;'><nav><ul>\n";
 
 	if (sizeof($tabs) > 0) {
 	foreach (array_keys($tabs) as $tab_short_name) {
-		print "<td " . (($tab_short_name == $current_tab) ? "class='tabSelected tab'" : "class='tabNotSelected tab'") . " align='center'><span class='textHeader'><a href='" . htmlspecialchars("settings.php?tab=$tab_short_name") . "'>$tabs[$tab_short_name]</a></span></td><td class='tabSpacer'></td>\n";
+		print "<li><a " . (($tab_short_name == $current_tab) ? "class='selected'" : "class=''") . " href='" . htmlspecialchars("settings.php?tab=$tab_short_name") . "'>$tabs[$tab_short_name]</a></li>\n";
 	}
 	}
 
-	print "</tr></table></td>\n";
+	print "</ul></nav></div>\n";
 	print "</tr></table><table width='100%' cellpadding='0' cellspacing='0' border='0'><tr><td>\n";
 
 	html_start_box("<strong>Cacti Settings (" . $tabs[$current_tab] . ")</strong>", "100%", "", "3", "center", "");
@@ -138,7 +138,7 @@ default:
 
 	print "</td></tr></table>\n";
 
-	include("./include/bottom_footer.php");
+	bottom_footer();
 
 	break;
 }

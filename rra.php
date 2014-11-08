@@ -38,18 +38,18 @@ switch ($_REQUEST["action"]) {
 		header("Location: rra.php");
 		break;
 	case 'edit':
-		include_once("./include/top_header.php");
+		top_header();
 
 		rra_edit();
 
-		include_once("./include/bottom_footer.php");
+		bottom_footer();
 		break;
 	default:
-		include_once("./include/top_header.php");
+		top_header();
 
 		rra();
 
-		include_once("./include/bottom_footer.php");
+		bottom_footer();
 		break;
 }
 
@@ -111,8 +111,11 @@ function rra_remove() {
 	/* ==================================================== */
 
 	if ((read_config_option("deletion_verification") == "on") && (!isset($_GET["confirm"]))) {
-		include_once("./include/top_header.php");
+		top_header();
+
 		form_confirm("Are You Sure?", "Are you sure you want to delete the round robin archive <strong>'" . htmlspecialchars(db_fetch_cell("select name from rra where id=" . $_GET["id"])) . "'</strong>?", htmlspecialchars("rra.php"), htmlspecialchars("rra.php?action=remove&id=" . $_GET["id"]));
+
+		bottom_footer();
 		exit;
 	}
 

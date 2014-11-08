@@ -61,18 +61,18 @@ switch ($_REQUEST["action"]) {
 		header("Location: data_templates.php");
 		break;
 	case 'template_edit':
-		include_once("./include/top_header.php");
+		top_header();
 
 		template_edit();
 
-		include_once ("./include/bottom_footer.php");
+		bottom_footer();
 		break;
 	default:
-		include_once("./include/top_header.php");
+		top_header();
 
 		template();
 
-		include_once("./include/bottom_footer.php");
+		bottom_footer();
 		break;
 }
 
@@ -312,7 +312,7 @@ function form_actions() {
 		}
 	}
 
-	include_once("./include/top_header.php");
+	top_header();
 
 	html_start_box("<strong>" . $ds_actions{$_POST["drp_action"]} . "</strong>", "60%", "", "3", "center", "");
 
@@ -358,7 +358,7 @@ function form_actions() {
 
 	html_end_box();
 
-	include_once("./include/bottom_footer.php");
+	bottom_footer();
 }
 
 /* ----------------------------
@@ -491,21 +491,18 @@ function template_edit() {
 		if (sizeof($template_data_rrds) > 1) {
 
 		/* draw the data source tabs on the top of the page */
-		print "	<table class='tabs' width='100%' cellspacing='0' cellpadding='3' align='center'>
-				<tr>\n";
+		print "	<div class='tabs' style='float:left;'><nav><ul>\n";
 
-				foreach ($template_data_rrds as $template_data_rrd) {
-					$i++;
-					print "	<td " . (($template_data_rrd["id"] == $_GET["view_rrd"]) ? "class='tabSelected tab'" : "class='tabNotSelected tab'") . " width='" . ((strlen($template_data_rrd["data_source_name"]) * 9) + 50) . "' align='center'>
-							<span class='textHeader'><a href='" . htmlspecialchars("data_templates.php?action=template_edit&id=" . $_GET["id"] . "&view_rrd=" . $template_data_rrd["id"]) . "'>$i: " . htmlspecialchars($template_data_rrd["data_source_name"]) . "</a> <a href='" . htmlspecialchars("data_templates.php?action=rrd_remove&id=" . $template_data_rrd["id"] . "&data_template_id=" . $_GET["id"]) . "'><img src='images/delete_icon.gif' border='0' alt='Delete'></a></span>
-						</td>\n
-						<td width='1'></td>\n";
-				}
+		foreach ($template_data_rrds as $template_data_rrd) {
+			$i++;
+			print "	<li " . (($template_data_rrd["id"] == $_GET["view_rrd"]) ? "class='selected'" : "class=''") . ">
+				<a href='" . htmlspecialchars("data_templates.php?action=template_edit&id=" . $_GET["id"] . "&view_rrd=" . $template_data_rrd["id"]) . "'>$i: " . htmlspecialchars($template_data_rrd["data_source_name"]) . "</a>
+				<span><a style='padding-bottom:8px;' class='deleteMarker' href='" . htmlspecialchars("data_templates.php?action=rrd_remove&id=" . $template_data_rrd["id"] . "&data_template_id=" . $_GET["id"]) . "'><img src='images/delete_icon.gif' border='0' alt='Delete'></a></span></li>\n";
+		}
 
-				print "
-				<td></td>\n
-				</tr>
-			</table>\n";
+		print "
+		</ul></nav>\n
+		</div>\n";
 
 		}elseif (sizeof($template_data_rrds) == 1) {
 			$_GET["view_rrd"] = $template_data_rrds[0]["id"];
@@ -652,16 +649,18 @@ function template() {
 	<tr class='even noprint'>
 		<td>
 		<form name="form_data_template" action="data_templates.php">
-			<table width="100%" cellpadding="0" cellspacing="0">
+			<table cellpadding="2" cellspacing="0">
 				<tr>
-					<td nowrap style='white-space: nowrap;' width="50">
-						Search:&nbsp;
+					<td width="50">
+						Search:
 					</td>
 					<td width="1">
 						<input type="text" name="filter" size="40" value="<?php print htmlspecialchars(get_request_var_request("filter"));?>">
 					</td>
-					<td nowrap style='white-space: nowrap;'>
-						&nbsp;<input type="submit" value="Go" title="Set/Refresh Filters">
+					<td>
+						<input type="submit" value="Go" title="Set/Refresh Filters">
+					</td>
+					<td>
 						<input type="submit" name="clear_x" value="Clear" title="Clear Filters">
 					</td>
 				</tr>
@@ -705,7 +704,7 @@ function template() {
 		ORDER BY " . get_request_var_request("sort_column") . " " . get_request_var_request("sort_direction") .
 		" LIMIT " . (read_config_option("num_rows_device")*(get_request_var_request("page")-1)) . "," . read_config_option("num_rows_device"));
 
-	$nav = html_nav_bar("data_templates.php?filter=" . get_request_var_request("filter"), MAX_DISPLAY_PAGES, get_request_var_request("page"), read_config_option("num_rows_device"), $total_rows, 5);
+	$nav = html_nav_bar("data_templates.php?filter=" . get_request_var_request("filter"), MAX_DISPLAY_PAGES, get_request_var_request("page"), read_config_option("num_rows_device"), $total_rows, 5, 'Data Templates');
 
 	print $nav;
 
@@ -720,7 +719,7 @@ function template() {
 	if (sizeof($template_list) > 0) {
 		foreach ($template_list as $template) {
 			form_alternate_row('line' . $template["id"], true);
-			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars("data_templates.php?action=template_edit&id=" . $template["id"]) . "'>" . (strlen(get_request_var_request("filter")) ? preg_replace("/(" . preg_quote(get_request_var_request("filter"), "/") . ")/i", "<span style='background-color: #F8D93D;'>\\1</span>", htmlspecialchars($template["name"])) : htmlspecialchars($template["name"])) . "</a>", $template["id"]);
+			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars("data_templates.php?action=template_edit&id=" . $template["id"]) . "'>" . (strlen(get_request_var_request("filter")) ? preg_replace("/(" . preg_quote(get_request_var_request("filter"), "/") . ")/i", "<span class='filteredValue'>\\1</span>", htmlspecialchars($template["name"])) : htmlspecialchars($template["name"])) . "</a>", $template["id"]);
 			form_selectable_cell($template['id'], $template["id"]);
 			form_selectable_cell((empty($template["data_input_method"]) ? "<em>None</em>": htmlspecialchars($template["data_input_method"])), $template["id"]);
 			form_selectable_cell((($template["active"] == "on") ? "Active" : "Disabled"), $template["id"]);

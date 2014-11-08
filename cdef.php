@@ -61,11 +61,11 @@ switch ($_REQUEST["action"]) {
 		header("Location: cdef.php?action=edit&id=" . $_GET["cdef_id"]);
 		break;
 	case 'item_edit':
-		include_once("./include/top_header.php");
+		top_header();
 
 		item_edit();
 
-		include_once("./include/bottom_footer.php");
+		bottom_footer();
 		break;
 	case 'remove':
 		cdef_remove();
@@ -73,18 +73,18 @@ switch ($_REQUEST["action"]) {
 		header ("Location: cdef.php");
 		break;
 	case 'edit':
-		include_once("./include/top_header.php");
+		top_header();
 
 		cdef_edit();
 
-		include_once("./include/bottom_footer.php");
+		bottom_footer();
 		break;
 	default:
-		include_once("./include/top_header.php");
+		top_header();
 
 		cdef();
 
-		include_once("./include/bottom_footer.php");
+		bottom_footer();
 		break;
 }
 
@@ -201,7 +201,7 @@ function form_actions() {
 		}
 	}
 
-	include_once("./include/top_header.php");
+	top_header();
 
 	print "<form action='cdef.php' method='post'>\n";
 
@@ -248,7 +248,7 @@ function form_actions() {
 
 	html_end_box();
 
-	include_once("./include/bottom_footer.php");
+	bottom_footer();
 }
 
 /* --------------------------
@@ -376,9 +376,12 @@ function cdef_remove() {
 	/* ==================================================== */
 
 	if ((read_config_option("deletion_verification") == "on") && (!isset($_GET["confirm"]))) {
-		include("./include/top_header.php");
+		top_header();
+
 		form_confirm("Are You Sure?", "Are you sure you want to delete the CDEF <strong>'" . htmlspecialchars(db_fetch_cell("select name from cdef where id=" . $_GET["id"])) . "'</strong>?", htmlspecialchars("cdef.php"), htmlspecialchars("cdef.php?action=remove&id=" . $_GET["id"]));
-		include("./include/bottom_footer.php");
+
+		bottom_footer();
+
 		exit;
 	}
 

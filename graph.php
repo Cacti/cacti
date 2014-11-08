@@ -33,7 +33,7 @@ include_once("./lib/rrd.php");
 api_plugin_hook_function('graph');
 
 include_once("./lib/html_tree.php");
-include_once("./include/top_graph_header.php");
+top_graph_header();
 
 /* ================= input validation ================= */
 input_validate_input_regex(get_request_var("rra_id"), "^([0-9]+|all)$");
@@ -55,7 +55,7 @@ if ($_GET["rra_id"] == "all") {
 
 /* make sure the graph requested exists (sanity) */
 if (!(db_fetch_cell("select local_graph_id from graph_templates_graph where local_graph_id=" . $_GET["local_graph_id"]))) {
-	print "<strong><font size='+1' color='FF0000'>GRAPH DOES NOT EXIST</font></strong>"; exit;
+	print "<strong><font class='txtErrorTextBox'>GRAPH DOES NOT EXIST</font></strong>"; exit;
 }
 
 /* take graph permissions into account here, if the user does not have permission
@@ -64,7 +64,7 @@ if (read_config_option("auth_method") != 0) {
 	$access_denied = !(is_graph_allowed($_GET["local_graph_id"]));
 
 	if ($access_denied == true) {
-		print "<strong><font size='+1' color='FF0000'>ACCESS DENIED</font></strong>"; exit;
+		print "<strong><font class='txtErrorTextBox'>ACCESS DENIED</font></strong>"; exit;
 	}
 }
 
@@ -273,6 +273,6 @@ case 'properties':
 print "</table>";
 print "<br><br>";
 
-include_once("./include/bottom_footer.php");
+bottom_footer();
 
 ?>

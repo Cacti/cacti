@@ -51,11 +51,11 @@ switch ($_REQUEST["action"]) {
 		header("Location: tree.php?action=edit&id=" . $_GET["tree_id"]);
 		break;
 	case 'item_edit':
-		include_once("./include/top_header.php");
+		top_header();
 
 		item_edit();
 
-		include_once("./include/bottom_footer.php");
+		bottom_footer();
 		break;
 	case 'item_remove':
 		item_remove();
@@ -68,18 +68,18 @@ switch ($_REQUEST["action"]) {
 		header("Location: tree.php");
 		break;
 	case 'edit':
-		include_once("./include/top_header.php");
+		top_header();
 
 		tree_edit();
 
-		include_once("./include/bottom_footer.php");
+		bottom_footer();
 		break;
 	default:
-		include_once("./include/top_header.php");
+		top_header();
 
 		tree();
 
-		include_once("./include/bottom_footer.php");
+		bottom_footer();
 		break;
 }
 
@@ -353,9 +353,11 @@ function item_remove() {
 			$text = "Are you sure you want to delete the host item <strong>'" . db_fetch_cell("select CONCAT_WS('',description,' (',hostname,')') as hostname from host where id=" . $graph_tree_item["host_id"]) . "'</strong>?";
 		}
 
-		include("./include/top_header.php");
+		top_header();
+
 		form_confirm("Are You Sure?", htmlspecialchars($text, ENT_QUOTES), htmlspecialchars("tree.php?action=edit&id=" . $_GET["tree_id"]), htmlspecialchars("tree.php?action=item_remove&id=" . $_GET["id"] . "&tree_id=" . $_GET["tree_id"]));
-		include("./include/bottom_footer.php");
+
+		bottom_footer();
 		exit;
 	}
 
@@ -382,9 +384,11 @@ function tree_remove() {
 	/* ==================================================== */
 
 	if ((read_config_option("deletion_verification") == "on") && (!isset($_GET["confirm"]))) {
-		include("./include/top_header.php");
+		top_header();
+
 		form_confirm("Are You Sure?", "Are you sure you want to delete the tree <strong>'" . htmlspecialchars(db_fetch_cell("select name from graph_tree where id=" . $_GET["id"]), ENT_QUOTES) . "'</strong>?", htmlspecialchars("tree.php"), htmlspecialchars("tree.php?action=remove&id=" . $_GET["id"]));
-		include("./include/bottom_footer.php");
+
+		bottom_footer();
 		exit;
 	}
 

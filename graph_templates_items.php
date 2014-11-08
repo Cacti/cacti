@@ -49,18 +49,18 @@ switch ($_REQUEST["action"]) {
 		header("Location: graph_templates.php?action=template_edit&id=" . $_GET["graph_template_id"]);
 		break;
 	case 'item_edit':
-		include_once("./include/top_header.php");
+		top_header();
 
 		item_edit();
 
-		include_once("./include/bottom_footer.php");
+		bottom_footer();
 		break;
 	case 'item':
-		include_once("./include/top_header.php");
+		top_header();
 
 		item();
 
-		include_once ("./include/bottom_footer.php");
+		bottom_footer();
 		break;
 }
 
