@@ -393,7 +393,7 @@ function template_rrd_add() {
 	$hash = get_hash_data_template(0, "data_template_item");
 
 	db_execute("insert into data_template_rrd (hash,data_template_id,rrd_maximum,rrd_minimum,rrd_heartbeat,data_source_type_id,
-		data_source_name) values ('$hash'," . $_GET["id"] . ",100,0,600,1,'ds')");
+		data_source_name) values ('$hash'," . $_GET["id"] . ",0,0,600,1,'ds')");
 	$data_template_rrd_id = db_fetch_insert_id();
 
 	/* add this data template item to each data source using this data template */
@@ -402,7 +402,7 @@ function template_rrd_add() {
 	if (sizeof($children) > 0) {
 	foreach ($children as $item) {
 		db_execute("insert into data_template_rrd (local_data_template_rrd_id,local_data_id,data_template_id,rrd_maximum,rrd_minimum,rrd_heartbeat,data_source_type_id,
-			data_source_name) values ($data_template_rrd_id," . $item["local_data_id"] . "," . $_GET["id"] . ",100,0,600,1,'ds')");
+			data_source_name) values ($data_template_rrd_id," . $item["local_data_id"] . "," . $_GET["id"] . ",0,0,600,1,'ds')");
 	}
 	}
 
@@ -509,16 +509,7 @@ function template_edit() {
 		}
 	}
 
-	html_start_box("", "100%", "", "3", "center", "");
-
-	print "	<tr>
-			<td class='textHeaderDark'>
-				<strong>Data Source Item</strong> [" . (isset($template_rrd) ? htmlspecialchars($template_rrd["data_source_name"]) : "") . "]
-			</td>
-			<td class='textHeaderDark' align='right'>
-				" . (!empty($_GET["id"]) ? "<strong><a class='linkOverDark' href='" . htmlspecialchars("data_templates.php?action=rrd_add&id=" . $_GET["id"]) . "'>New</a>&nbsp;</strong>" : "") . "
-			</td>
-		</tr>\n";
+	html_start_box("<strong>Data Source Item</strong> [" . (isset($template_rrd) ? htmlspecialchars($template_rrd["data_source_name"]) : "") . "]", "100%", "", "3", "center", (!empty($_GET["id"]) ? htmlspecialchars("data_templates.php?action=rrd_add&id=" . $_GET["id"]):""), "<strong>New</scrong>");
 
 	/* data input fields list */
 	if ((empty($template_data["data_input_id"])) ||
@@ -730,7 +721,7 @@ function template() {
 		/* put the nav bar on the bottom as well */
 		print $nav;
 	}else{
-		print "<tr><td><em>No Data Templates</em></td></tr>\n";
+		print "<tr class='tableRow'><td colspan='5'><em>No Data Templates</em></td></tr>\n";
 	}
 	html_end_box(false);
 

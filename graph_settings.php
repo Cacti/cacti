@@ -185,49 +185,35 @@ function settings() {
 	<!--
 
 	function graphSettings() {
-		var custom_fonts = document.getElementById('custom_fonts').checked;
+		var custom_fonts = $('#custom_fonts').is(':checked');
 
 		switch(custom_fonts) {
 		case true:
-			document.getElementById('row_title_size').style.display  = "";
-			document.getElementById('row_title_font').style.display  = "";
-			document.getElementById('row_legend_size').style.display = "";
-			document.getElementById('row_legend_font').style.display = "";
-			document.getElementById('row_axis_size').style.display   = "";
-			document.getElementById('row_axis_font').style.display   = "";
-			document.getElementById('row_unit_size').style.display   = "";
-			document.getElementById('row_unit_font').style.display   = "";
-
+			$('#row_title_size').css('display', '');
+			$('#row_title_font').css('display', '');
+			$('#row_legend_size').css('display', '');
+			$('#row_legend_font').css('display', '');
+			$('#row_axis_size').css('display', '');
+			$('#row_axis_font').css('display', '');
+			$('#row_unit_size').css('display', '');
+			$('#row_unit_font').css('display', '');
 			break;
 		case false:
-			document.getElementById('row_title_size').style.display  = "none";
-			document.getElementById('row_title_font').style.display  = "none";
-			document.getElementById('row_legend_size').style.display = "none";
-			document.getElementById('row_legend_font').style.display = "none";
-			document.getElementById('row_axis_size').style.display   = "none";
-			document.getElementById('row_axis_font').style.display   = "none";
-			document.getElementById('row_unit_size').style.display   = "none";
-			document.getElementById('row_unit_font').style.display   = "none";
-
+			$('#row_title_size').css('display', 'none');
+			$('#row_title_font').css('display', 'none');
+			$('#row_legend_size').css('display', 'none');
+			$('#row_legend_font').css('display', 'none');
+			$('#row_axis_size').css('display', 'none');
+			$('#row_axis_font').css('display', 'none');
+			$('#row_unit_size').css('display', 'none');
+			$('#row_unit_font').css('display', 'none');
 			break;
 		}
 	}
 
-	function addLoadEvent(func) {
-		var oldonload = window.onload;
-		if (typeof window.onload != 'function') {
-			window.onload = func;
-		} else {
-			window.onload = function() {
-				if (oldonload) {
-					oldonload();
-				}
-				func();
-			}
-		}
-	}
-
-	addLoadEvent(graphSettings);
+	$(function() {
+		graphSettings();
+	});
 
 	-->
 	</script>

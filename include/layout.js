@@ -114,7 +114,7 @@ function dqResetDeps(snmp_query_id) {
 /** SelectAll - This function will select all non-disabled rows
  *  @arg attrib - The Graph Type either graph template, or data query */
 function SelectAll(attrib, checked) {
-	console.log("Im Here the attrib is "+attrib);
+	//console.log("Im Here the attrib is "+attrib);
 	if (attrib == 'sg') {
 		if (checked == true) {
 			$('tr[id^=gt_line]').each(function(data) {
@@ -215,17 +215,6 @@ function applyTimespanFilterChange(objForm) {
 	document.location = strURL;
 }
 
-function applyGraphListFilterChange(objForm) {
-	strURL = 'graph_view.php?action=list&page=1';
-	strURL = strURL + '&host_id=' + objForm.host_id.value;
-	strURL = strURL + '&rows=' + objForm.rows.value;
-	strURL = strURL + '&graph_template_id=' + objForm.graph_template_id.value;
-	strURL = strURL + '&filter=' + objForm.filter.value;
-	strURL = strURL + url_graph('');
-	document.location = strURL;
-	return false;
-}
-
 function cactiReturnTo(location) {
 	if (location != "") {
 		document.location = location;
@@ -235,7 +224,9 @@ function cactiReturnTo(location) {
 }
 
 function applySkin() {
-	$('input[type=submit], input[type=button]').button();
+	if (theme != 'classic') {
+		$('input[type=submit], input[type=button]').button();
+	}
 
 	// Select All Action for everyone but graphs_new, else do ugly shit
 	if (basename(document.location.pathname, '.php') != 'graphs_new') {
@@ -274,9 +265,78 @@ function applySkin() {
 $(function() {
 	applySkin();
 
+	var tablesInit = new Array;
+
 	$('#navigation').css('height', ($(window).height())+'px');
 	$(window).resize(function() {
 		$('#navigation').css('height', ($(window).height())+'px');
+	});
+
+	$(".tableHeader th").resizable({
+		handles: "e",
+
+		start: function(event, ui) {
+			var page  = basename(location.pathname, '.php');
+			var table = $(this).parentsUntil('table[id^=cactiTable]').parent().attr('id');
+			var key   = page+'_'+table;
+
+			// See if sizes have been loaded
+			var found = false;
+			tablesInit.forEach(function(entry) {
+				if (entry == key) {
+					found = true;
+				}
+			});
+
+			if (!found) {
+				var sizes = $.cookie(table);
+				var items = sizes ? sizes.split(/,/) : new Array();
+
+				var i = 0;
+				$(this).parent().find('th').each(function(data) {
+					$(this).css('width', items[i]+'px');
+				});
+			}
+
+			colWidth = $(this).width();
+			originalSize = ui.size.width;
+			originalSize = $(this).width();
+		 },
+ 
+		resize: function(event, ui) {
+			var resizeDelta = ui.size.width - originalSize;
+			var newColWidth = colWidth + resizeDelta;
+			$(this).css("height", "auto");
+		},
+
+		stop: function(event, ui) {
+			var page = basename(location.pathname, '.php');
+			var table = $(this).parentsUntil('table[id^=cactiTable]').parent().attr('id');
+			var sizes = new Array;
+			var i = 0;
+			$(this).parent().find('th').each(function(data) {
+				//console.log('On page '+page+', of Index '+table+', with Column '+i+' with width '+$(this).width()+' wide');
+				sizes[i] = $(this).width();
+				i++;
+			});
+			$.cookie(page+'_'+table, sizes, { expires: 31, path: '/cacti/' } );
+		}
+	});
+
+	// Initialize table width on the page
+	$('table[id^=cactiTable]').each(function(data) {
+		var page  = basename(location.pathname, '.php');
+		var table = $(this).attr('id');
+		var sizes = $.cookie(page+'_'+table);
+		var items = sizes ? sizes.split(/,/) : new Array();
+
+		var i = 0;
+		if (items.length) {
+			$(this).find('th').each(function(data) {
+				$(this).css('width', items[i]+'px');
+				i++;
+			});
+		}
 	});
 });
 

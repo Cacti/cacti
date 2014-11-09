@@ -500,6 +500,22 @@ function grow_dhtml_trees() {
 
 	$default_tree_id = read_graph_config_option('default_tree_id');
 
+	if (empty($default_tree_id)) {
+		$user = db_fetch_row('SELECT * FROM user_auth WHERE id=' . $_SESSION['sess_user_id']);
+
+		if ($user['policy_trees'] == 1) {
+			$default_tree_id = db_fetch_cell("SELECT id 
+				FROM graph_tree
+				WHERE id NOT IN (SELECT item_id FROM user_auth_perms WHERE type=2 AND user_id=" . $_SESSION['sess_user_id'] . ")
+				ORDER BY id LIMIT 1");
+		}else{
+			$default_tree_id = db_fetch_cell("SELECT id 
+				FROM graph_tree
+				WHERE id IN (SELECT item_id FROM user_auth_perms WHERE type=2 AND user_id=" . $_SESSION['sess_user_id'] . ")
+				ORDER BY id LIMIT 1");
+		}
+	}
+
 	$dhtml_tree = create_dhtml_tree();
 
 	$total_tree_items = sizeof($dhtml_tree) - 1;
@@ -625,7 +641,7 @@ function create_dhtml_tree() {
 				order by graph_tree_items.order_key");
 
 			$i++;
-			$dhtml_tree[$i] = "\t<ul>\n\t\t<li id='tree_" . $tree['id'] . "'><a href=\"" . htmlspecialchars('graph_view.php?action=tree_content&tree_id=' . $tree['id']) . '&leaf_id=&host_group_data=">' . htmlspecialchars($tree['name']) . "</a>\n";
+			$dhtml_tree[$i] = "\t<ul>\n\t\t<li id='tree_" . $tree['id'] . "'><a href=\"" . htmlspecialchars('graph_view.php?action=tree_content&tree_id=' . $tree['id'] . '&leaf_id=&host_group_data='). '">' . htmlspecialchars($tree['name']) . "</a>\n";
 
 			if (sizeof($hierarchy) > 0) {
 				$i++;
@@ -658,7 +674,7 @@ function create_dhtml_tree() {
 						$last_tier = $tier;
 						$lasthost = true;
 						$i++;
-						$dhtml_tree[$i] = "\t\t\t\t<li data-jstree='{ \"icon\" : \"" . $config['url_path'] . "images/server.png\" }'><a href=\"" . htmlspecialchars('graph_view.php?action=tree_content&tree_id=' . $tree['id'] . '&leaf_id=' . $leaf['id']) . '&host_group_data=">Host: ' . htmlspecialchars($leaf['hostname']) . "</a>\n";
+						$dhtml_tree[$i] = "\t\t\t\t<li data-jstree='{ \"icon\" : \"" . $config['url_path'] . "images/server.png\" }'><a href=\"" . htmlspecialchars('graph_view.php?action=tree_content&tree_id=' . $tree['id'] . '&leaf_id=' . $leaf['id'] . '&host_group_data=') . '">Host: ' . htmlspecialchars($leaf['hostname']) . "</a>\n";
 
 						if (read_graph_config_option('expand_hosts') == 'on') {
 							$i++;
@@ -757,7 +773,7 @@ function create_dhtml_tree() {
 						}
 						$last_tier = $tier;
 						$i++;
-						$dhtml_tree[$i] = "\t\t\t\t<li><a href=\"" . htmlspecialchars('graph_view.php?action=tree_content&tree_id=' . $tree['id'] . '&leaf_id=' . $leaf['id']) . '&host_group_data=">' . htmlspecialchars($leaf['title']) . "</a>\n";
+						$dhtml_tree[$i] = "\t\t\t\t<li><a href=\"" . htmlspecialchars('graph_view.php?action=tree_content&tree_id=' . $tree['id'] . '&leaf_id=' . $leaf['id'] . '&host_group_data=') . '">' . htmlspecialchars($leaf['title']) . "</a>\n";
 						$openli = true;
 						$lasthost = false;
 					}

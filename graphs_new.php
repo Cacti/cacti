@@ -410,10 +410,10 @@ function graphs() {
 	<script type="text/javascript">
 	<!--
 
-	function applyGraphsNewFilterChange(objForm) {
-		strURL = '?graph_type=' + objForm.graph_type.value;
-		strURL = strURL + '&host_id=' + objForm.host_id.value;
-		strURL = strURL + '&filter=' + objForm.filter.value;;
+	function applyGraphsNewFilterChange() {
+		strURL = '?graph_type=' + $('#graph_type').val();
+		strURL = strURL + '&host_id=' + $('#host_id').val();
+		strURL = strURL + '&filter=' + $('#filter').val();;
 		document.location = strURL;
 	}
 
@@ -426,7 +426,7 @@ function graphs() {
 				Host:
 			</td>
 			<td width="1" valign='top'>
-				<select name="host_id" onChange="applyGraphsNewFilterChange(document.form_graphs_new)">
+				<select id='host_id' name="host_id" onChange="applyGraphsNewFilterChange()">
 				<?php
 				$hosts = db_fetch_assoc("select id,CONCAT_WS('',description,' (',hostname,')') as name from host order by description,hostname");
 
@@ -442,7 +442,7 @@ function graphs() {
 				Graph Types:
 			</td>
 			<td width="1" valign='top'>
-				<select name="graph_type" onChange="applyGraphsNewFilterChange(document.form_graphs_new)">
+				<select id='graph_type' name="graph_type" onChange="applyGraphsNewFilterChange()">
 				<option value="-2"<?php if ($_REQUEST["graph_type"] == "-2") {?> selected<?php }?>>All</option>
 				<option value="-1"<?php if ($_REQUEST["graph_type"] == "-1") {?> selected<?php }?>>Graph Template Based</option>
 				<?php
@@ -476,7 +476,7 @@ function graphs() {
 				Search:
 			</td>
 			<td valign='top'>
-				<input type="text" name="filter" size="30" value="<?php print htmlspecialchars(get_request_var_request("filter"));?>">
+				<input id='filter' type="text" name="filter" size="30" value="<?php print htmlspecialchars(get_request_var_request("filter"));?>">
 			</td>
 			<td colspan='2' valign='top'>
 				<input type="submit" value="Go" title="Set/Refresh Filters">

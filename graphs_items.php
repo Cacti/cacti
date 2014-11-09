@@ -214,10 +214,10 @@ function item_edit() {
 	<tr class='even noprint'>
 		<form name="form_graph_items" action="graphs_items.php">
 		<td>
-			<table cellpadding="0" cellspacing="0">
-				<tr width="100%">
-					<td nowrap style='white-space: nowrap;' width="50">
-						Host:&nbsp;
+			<table cellpadding="2" cellspacing="0">
+				<tr>
+					<td width="50">
+						Host:
 					</td>
 					<td>
 						<select name="cbo_host_id" onChange="window.location=document.form_graph_items.cbo_host_id.options[document.form_graph_items.cbo_host_id.selectedIndex].value">
@@ -237,8 +237,8 @@ function item_edit() {
 					</td>
 				</tr>
 				<tr>
-					<td nowrap style='white-space: nowrap;' width="100">
-						Data Template:&nbsp;
+					<td style='white-space: nowrap;'>
+						Data Template:
 					</td>
 					<td>
 						<select name="cbo_data_template_id" onChange="window.location=document.form_graph_items.cbo_data_template_id.options[document.form_graph_items.cbo_data_template_id.selectedIndex].value">
@@ -356,23 +356,23 @@ function item_edit() {
 ?>
 <script language="JavaScript">
 
-dynamic();
+$(function() {
+	dynamic();
+});
 
 function dynamic() {
-	//alert("RRDTool Version is '" + document.getElementById('rrdtool_version').value + "'");
-	//alert("Color is '" + document.getElementById('color_id').value + "'");
-	document.getElementById('alpha').disabled=true;
-	if ((document.getElementById('rrdtool_version').value != 'rrd-1.0.x') &&
-		(document.getElementById('color_id').value != 0)) {
-		document.getElementById('alpha').disabled=false;
+	$('#alpha').prop('disabled', true);
+	if (($('#rrdtool_version').val() != 'rrd-1.0.x') &&
+		($('#color_id').val() != 0)) {
+		$('#alpha').prop('disabled', false);
 	}
 }
 
 function changeColorId() {
-	//alert("Selected Color Index is '" + document.getElementById('color_id').selectedIndex + "'");
-	if ((document.getElementById('rrdtool_version').value != 'rrd-1.0.x') &&
-		(document.getElementById('color_id').selectedIndex != 0)) {
-		document.getElementById('alpha').disabled=false;
+	if (($('#rrdtool_version').val() != 'rrd-1.0.x') &&
+		($('#color_id').val() != 0)) {
+		$('#alpha').prop('disabled', false);
 	}
 }
+
 </script>

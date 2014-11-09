@@ -409,28 +409,27 @@ function template_edit() {
 ?>
 <script language="JavaScript">
 
-dynamic();
+$(function() {
+	dynamic();
+});
 
 function dynamic() {
-	//alert("RRDTool Version is '" + document.getElementById('rrdtool_version').value + "'");
-	//alert("Log is '" + document.getElementById('auto_scale_log').checked + "'");
-	document.getElementById('t_scale_log_units').disabled=true;
-	document.getElementById('scale_log_units').disabled=true;
-	if ((document.getElementById('rrdtool_version').value != 'rrd-1.0.x') &&
-		(document.getElementById('auto_scale_log').checked)) {
-		document.getElementById('t_scale_log_units').disabled=false;
-		document.getElementById('scale_log_units').disabled=false;
+	$('#t_scale_log_units').prop('disabled'), true);
+	$('#scale_log_units').prop('disabled', true);
+	if (($('#rrdtool_version').val() != 'rrd-1.0.x') &&
+		($('#auto_scale_log').is(':checked'))) {
+		$('#t_scale_log_units').prop('disabled', false);
+		$('#scale_log_units').prop('disabled', false);
 	}
 }
 
 function changeScaleLog() {
-	//alert("Log changed to '" + document.getElementById('auto_scale_log').checked + "'");
-	document.getElementById('t_scale_log_units').disabled=true;
-	document.getElementById('scale_log_units').disabled=true;
-	if ((document.getElementById('rrdtool_version').value != 'rrd-1.0.x') &&
-		(document.getElementById('auto_scale_log').checked)) {
-		document.getElementById('t_scale_log_units').disabled=false;
-		document.getElementById('scale_log_units').disabled=false;
+	$('#t_scale_log_units').prop('disabled', true);
+	$('#scale_log_units').prop('disabled', true);
+	if (($('#rrdtool_version').val() != 'rrd-1.0.x') &&
+		($('#auto_scale_log').is(':checked'))) {
+		$('#t_scale_log_units').prop('disabled', false);
+		$('#scale_log_units').prop('disabled', false);
 	}
 }
 </script>
@@ -561,7 +560,7 @@ function template() {
 		}
 		print $nav;
 	}else{
-		print "<tr><td><em>No Graph Templates</em></td></tr>\n";
+		print "<tr class='tableRow'><td colspan='4'><em>No Graph Templates</em></td></tr>\n";
 	}
 	html_end_box(false);
 

@@ -437,7 +437,7 @@ function tree_edit() {
 
 		?>
 		<tr class='tableHeader'>
-		<td colspan='4' class='tableSubHeaderColumn'>
+		<td colspan='4' class='tableRow'>
 		<input type='button' onClick='return document.location="tree.php?action=edit&id=<?php print htmlspecialchars(get_request_var("id"));?>&subaction=expand_all"' value='Expand All' title='Expand All Trees'>
 		<input type='button' onClick='return document.location="tree.php?action=edit&id=<?php print htmlspecialchars(get_request_var("id"));?>&subaction=collapse_all"' value='Collapse All' title='Collapse All Trees'></a>
 		</td>

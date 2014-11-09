@@ -249,7 +249,7 @@ case 'preview':
 	</script>
 	<tr class='even noprint'>
 		<td class='noprint'>
-		<form style='margin:0px;padding:0px;' name='form_graph_view' method='post' onSubmit='applyGraphPreviewFilterChange();return false;'>
+		<form style='margin:0px;padding:0px;' name='form_graph_view' method='post' action='graph_view.php?action=preview' onSubmit='applyGraphPreviewFilterChange();return false;'>
 			<table cellpadding='2' cellspacing='0'>
 				<tr class='noprint'>
 					<td width='55'>
@@ -372,16 +372,16 @@ case 'preview':
 	</tr>
 	<script type='text/javascript'>
 	function clearFilter() {
-		$.get('graph_view?action=preview&header=false&clear_x=1', function(data) {
+		$.get('graph_view.php?action=preview&header=false&clear_x=1', function(data) {
 			$('#main').html(data);
 		});
 	}
 
 	function applyGraphPreviewFilterChange() {
-		$.get('graph_view?action=preview&header=false'+
+		$.get('graph_view.php?action=preview&header=false'+
 			'&flter='+$('#filter').val()+'&host_id='+$('#host_id').val()+'&columns='+$('#columns').val()+
 			'&rows='+$('#rows').val()+'&graph_template_id='+$('#graph_template_id').val()+
-			'&thumbnails='+$('#thumbnails').checked(), function(data) {
+			'&thumbnails='+$('#thumbnails').is(':checked'), function(data) {
 			$('#main').html(data);
 		});
 	}
@@ -393,14 +393,14 @@ case 'preview':
 		?>
 		<tr class='even noprint'>
 			<td class='noprint'>
-			<form style='margin:0px;padding:0px;' name='form_timespan_selector' method='post' action='graph_view.php'>
+			<form style='margin:0px;padding:0px;' name='form_timespan_selector' action='graph_view.php?action=preview' method='post' action='graph_view.php'>
 				<table cellpadding='1' cellspacing='0'>
 					<tr>
 						<td width='55'>
 							Presets:
 						</td>
 						<td>
-							<select name='predefined_timespan' onChange='applyTimespanFilterChange(document.form_timespan_selector)'>
+							<select id='predefined_timespan' name='predefined_timespan' onChange='applyTimespanFilterChange(document.form_timespan_selector)'>
 								<?php
 								if ($_SESSION['custom']) {
 									$graph_timespans[GT_CUSTOM] = 'Custom';
@@ -445,7 +445,7 @@ case 'preview':
 							<input type='image' name='move_left' src='images/move_left.gif' align='middle' alt='Left' title='Shift Left'>
 						</td>
 						<td>
-							<select name='predefined_timeshift' title='Define Shifting Interval' onChange='applyTimespanFilterChange(document.form_timespan_selector)'>
+							<select id='predefined_timeshift' name='predefined_timeshift' title='Define Shifting Interval' onChange='applyTimespanFilterChange(document.form_timespan_selector)'>
 								<?php
 								$start_val = 1;
 								$end_val = sizeof($graph_timeshifts)+1;
@@ -682,14 +682,14 @@ case 'list':
 	?>
 	<tr class='even noprint'>
 		<td>
-		<form style='margin:0px;padding:0px;' name='form_graph_list' method='post' onSubmit='form_graph(document.chk,document.form_graph_list)'>
+		<form style='margin:0px;padding:0px;' name='form_graph_list' method='post' action='graph_view.php?action=list' onSubmit='form_graph(document.chk,document.form_graph_list)'>
 			<table cellpadding='1' cellspacing='0'>
 				<tr>
 					<td nowrap style='white-space: nowrap;' width='55'>
 						Host:
 					</td>
 					<td width='1'>
-						<select name='host_id' onChange='applyGraphListFilterChange(document.form_graph_list)'>
+						<select id='host_id' name='host_id' onChange='applyGraphListFilterChange()'>
 							<option value='0'<?php if (get_request_var_request('host_id') == '0') {?> selected<?php }?>>Any</option>
 							<?php
 							if (read_config_option('auth_method') != 0) {
@@ -723,7 +723,7 @@ case 'list':
 						Template:
 					</td>
 					<td width='1'>
-						<select name='graph_template_id' onChange='applyGraphListFilterChange(document.form_graph_list)'>
+						<select id='graph_template_id' name='graph_template_id' onChange='applyGraphListFilterChange()'>
 							<option value='0'<?php print htmlspecialchars(get_request_var_request('filter'));?><?php if (get_request_var_request('host_id') == '0') {?> selected<?php }?>>Any</option>
 							<?php
 							if (read_config_option('auth_method') != 0) {
@@ -754,7 +754,7 @@ case 'list':
 						Graphs per Page:
 					</td>
 					<td width='1'>
-						<select name='rows' onChange='applyGraphListFilterChange(document.form_graph_list)'>
+						<select id='rows' name='rows' onChange='applyGraphListFilterChange()'>
 							<option value='-1'<?php if (get_request_var_request('rows') == '-1') {?> selected<?php }?>>Default</option>
 							<?php
 							if (sizeof($item_rows) > 0) {
@@ -769,11 +769,15 @@ case 'list':
 						Search:
 					</td>
 					<td width='1'>
-						<input type='text' name='filter' size='40' value='<?php print htmlspecialchars(get_request_var_request('filter'));?>'>
+						<input id='filter' type='text' name='filter' size='40' value='<?php print htmlspecialchars(get_request_var_request('filter'));?>'>
 					</td>
-					<td style='white-space:nowrap;' nowrap>
-						<input type='submit' value='Go' title='Set/Refresh Filters'>
-						<input type='submit' name='clear_x' value='Clear' title='Clear Filters'>
+					<td>
+						<input type='button' value='Go' title='Set/Refresh Filters' onClick='applyGraphListFilterChange()'>
+					</td>
+					<td>
+						<input type='button' name='clear_x' value='Clear' title='Clear Filters' onClick='clearFilter()'>
+					</td>
+					<td>
 						<input type='button' value='View' title='View Graphs' onClick='viewGraphs()'>
 					</td>
 				</tr>
@@ -876,6 +880,28 @@ case 'list':
 	<!--
 	var graph_list_array = new Array(<?php print $_REQUEST['graph_list'];?>);
 	initializeChecks();
+
+	$(function() {
+		applySkin();
+	});
+
+	function clearFilter() {
+		$.get('graph_view.php?action=list&header=false&clear_x=1', function(data) {
+			$('#main').html(data);
+		});
+	}
+
+	function applyGraphListFilterChange() {
+		strURL = 'graph_view.php?action=list&header=false;&page=1';
+		strURL += '&host_id=' + $('#host_id').val();
+		strURL += '&rows=' + $('#rows').val();
+		strURL += '&graph_template_id=' + $('#graph_template_id').val();
+		strURL += '&filter=' + $('#filter').val();
+		strURL += url_graph('');
+		$.get(strURL, function(data) {
+			$('#main').html(data);
+		});
+	}
 
 	function initializeChecks() {
 		for (var i = 0; i < graph_list_array.length; i++) {

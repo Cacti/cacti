@@ -154,17 +154,18 @@ function import() {
 ?>
 <script language="JavaScript">
 
-changeRRA();
+$(function() {
+	changeRRA();
+});
 
 function changeRRA() {
-	//alert("changed to '" + document.getElementById('import_rra_1').checked + "'");
-	
-	if ((document.getElementById('import_rra_1').checked == '1')) {
-		document.getElementById('row_rra_id').style.display="";
+	if ($('#import_rra_1').is(':checked')) {
+		$('#row_rra_id').show();
 	}else{
-		document.getElementById('row_rra_id').style.display="none";
+		$('#row_rra_id').hide();
 	}
 }
+
 </script>
 <?php
 }

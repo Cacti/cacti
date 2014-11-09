@@ -572,9 +572,9 @@ function utilities_view_user_log() {
 	<script type="text/javascript">
 	<!--
 
-	function applyViewLogFilterChange(objForm) {
-		strURL = '?username=' + objForm.username.value;
-		strURL = strURL + '&result=' + objForm.result.value;
+	function applyViewLogFilterChange() {
+		strURL = '?username=' + $('#username').val();
+		strURL = strURL + '&result=' + $('#result').val();
 		strURL = strURL + '&action=view_user_log';
 		document.location = strURL;
 	}
@@ -589,13 +589,13 @@ function utilities_view_user_log() {
 	<tr class='even noprint'>
 		<td>
 		<form name="form_userlog" action="utilities.php">
-			<table cellpadding="0" cellspacing="0">
+			<table cellpadding="2" cellspacing="0">
 				<tr>
-					<td nowrap style='white-space: nowrap;' width="50">
-						Username:&nbsp;
+					<td width="50">
+						Username:
 					</td>
 					<td width="1">
-						<select name="username" onChange="applyViewLogFilterChange(document.form_userlog)">
+						<select id='username' name="username" onChange="applyViewLogFilterChange()">
 							<option value="-1"<?php if (get_request_var_request("username") == "-1") {?> selected<?php }?>>All</option>
 							<option value="-2"<?php if (get_request_var_request("username") == "-2") {?> selected<?php }?>>Deleted/Invalid</option>
 							<?php
@@ -609,25 +609,29 @@ function utilities_view_user_log() {
 							?>
 						</select>
 					</td>
-					<td nowrap style='white-space: nowrap;' width="50">
-						&nbsp;Result:&nbsp;
+					<td>
+						Result:
 					</td>
 					<td width="1">
-						<select name="result" onChange="applyViewLogFilterChange(document.form_userlog)">
+						<select id='result' name="result" onChange="applyViewLogFilterChange()">
 							<option value="-1"<?php if (get_request_var_request("result") == '-1') {?> selected<?php }?>>Any</option>
 							<option value="1"<?php if (get_request_var_request("result") == '1') {?> selected<?php }?>>Success</option>
 							<option value="0"<?php if (get_request_var_request("result") == '0') {?> selected<?php }?>>Failed</option>
 						</select>
 					</td>
-					<td nowrap style='white-space: nowrap;' width="50">
-						&nbsp;Search:&nbsp;
+					<td>
+						Search:
 					</td>
 					<td width="1">
-						<input type="text" name="filter" size="20" value="<?php print htmlspecialchars(get_request_var_request("filter"));?>">
+						<input id='filter' type="text" name="filter" size="20" value="<?php print htmlspecialchars(get_request_var_request("filter"));?>">
 					</td>
-					<td nowrap style='white-space: nowrap;'>
-						&nbsp;<input type="submit" name="go" value="Go" title="Set/Refresh Filters">
+					<td>
+						<input type="submit" name="go" value="Go" title="Set/Refresh Filters">
+					</td>
+					<td>
 						<input type="submit" name="clear_x" value="Clear" title="Clear Filters">
+					</td>
+					<td>
 						<input type="submit" name="purge_x" value="Purge" title="Purge User Log">
 					</td>
 				</tr>
@@ -1105,10 +1109,10 @@ function utilities_view_snmp_cache() {
 	<tr class='even noprint'>
 		<td>
 		<form name="form_snmpcache" action="utilities.php">
-			<table cellpadding="0" cellspacing="0">
+			<table cellpadding="2" cellspacing="0">
 				<tr>
-					<td nowrap style='white-space: nowrap;' width="50">
-						Host:&nbsp;
+					<td width="50">
+						Host:
 					</td>
 					<td width="1">
 						<select name="host_id" onChange="applyViewSNMPFilterChange(document.form_snmpcache)">
@@ -1143,8 +1147,8 @@ function utilities_view_snmp_cache() {
 							?>
 						</select>
 					</td>
-					<td nowrap style='white-space: nowrap;' width="90">
-						&nbsp;Query Name:&nbsp;
+					<td>
+						Query Name:
 					</td>
 					<td width="1">
 						<select name="snmp_query_id" onChange="applyViewSNMPFilterChange(document.form_snmpcache)">
@@ -1176,14 +1180,16 @@ function utilities_view_snmp_cache() {
 							?>
 						</select>
 					</td>
-					<td nowrap style='white-space: nowrap;' width="50">
-						&nbsp;Search:&nbsp;
+					<td>
+						Search:
 					</td>
 					<td width="1">
 						<input type="text" name="filter" size="20" value="<?php print htmlspecialchars(get_request_var_request("filter"));?>">
 					</td>
-					<td nowrap style='white-space: nowrap;'>
-						&nbsp;<input type="submit" name="go" value="Go" title="Set/Refresh Filters">
+					<td>
+						<input type="submit" name="go" value="Go" title="Set/Refresh Filters">
+					</td>
+					<td>
 						<input type="submit" name="clear_x" value="Clear" title="Clear Fitlers">
 					</td>
 				</tr>
@@ -1364,10 +1370,10 @@ function utilities_view_poller_cache() {
 	<tr class='even noprint'>
 		<td>
 		<form name="form_pollercache" action="utilities.php">
-			<table cellpadding="0" cellspacing="0">
+			<table cellpadding="2" cellspacing="0">
 				<tr>
-					<td nowrap style='white-space: nowrap;' width="50">
-						Host:&nbsp;
+					<td width="50">
+						Host:
 					</td>
 					<td width="1">
 						<select name="host_id" onChange="applyPItemFilterChange(document.form_pollercache)">
@@ -1384,8 +1390,8 @@ function utilities_view_poller_cache() {
 							?>
 						</select>
 					</td>
-					<td nowrap style='white-space: nowrap;' width="50">
-						&nbsp;Action:&nbsp;
+					<td>
+						Action:
 					</td>
 					<td width="1">
 						<select name="poller_action" onChange="applyPItemFilterChange(document.form_pollercache)">
@@ -1395,14 +1401,16 @@ function utilities_view_poller_cache() {
 							<option value="2"<?php if (get_request_var_request("poller_action") == '2') {?> selected<?php }?>>Script Server</option>
 						</select>
 					</td>
-					<td nowrap style='white-space: nowrap;' width="50">
-						&nbsp;Search:&nbsp;
+					<td>
+						Search:
 					</td>
 					<td width="1">
 						<input type="text" name="filter" size="40" value="<?php print htmlspecialchars(get_request_var_request("filter"));?>">
 					</td>
-					<td nowrap style='white-space: nowrap;'>
-						&nbsp;<input type="submit" name="go" value="Go" title="Set/Refresh Filters">
+					<td>
+						<input type="submit" name="go" value="Go" title="Set/Refresh Filters">
+					</td>
+					<td>
 						<input type="submit" name="clear_x" value="Clear" title="Clear Filters">
 					</td>
 				</tr>

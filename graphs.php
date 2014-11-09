@@ -804,7 +804,7 @@ function graph_diff() {
 		print "</tr>";
 	}
 	}else{
-		print "<td colspan='7'><em>No Items</em></td></tr>\n";
+		print "<tr class='tableRow'><td colspan='7'><em>No Items</em></td></tr>\n";
 	}
 	html_end_box();
 
@@ -1019,37 +1019,33 @@ function graph_edit() {
 	form_hidden_box("rrdtool_version", read_config_option("rrdtool_version"), "");
 	form_save_button("graphs.php");
 
-//Now we need some javascript to make it dynamic
-?>
-<script language="JavaScript">
+	//Now we need some javascript to make it dynamic
+	?>
+	<script language="JavaScript">
 
-dynamic();
+	dynamic();
 
-function dynamic() {
-	//alert("RRDTool Version is '" + document.getElementById('rrdtool_version').value + "'");
-	//alert("Log is '" + document.getElementById('auto_scale_log').checked + "'");
-	if (document.getElementById('scale_log_units')) {
-		document.getElementById('scale_log_units').disabled=true;
-		if ((document.getElementById('rrdtool_version').value != 'rrd-1.0.x') &&
-			(document.getElementById('auto_scale_log').checked)) {
-			document.getElementById('scale_log_units').disabled=false;
+	function dynamic() {
+		if ($('#scale_log_units').is(':checked')) {
+			$('#scale_log_units').prop('disabled', true);
+			if (($('#rrdtool_version').val() != 'rrd-1.0.x') &&
+				($('#auto_scale_log').is(':checked'))) {
+				$('#scale_log_units').prop('disabled', false);
+			}
 		}
 	}
-}
 
-function changeScaleLog() {
-	//alert("Log changed to '" + document.getElementById('auto_scale_log').checked + "'");
-	if (document.getElementById('scale_log_units')) {
-		document.getElementById('scale_log_units').disabled=true;
-		if ((document.getElementById('rrdtool_version').value != 'rrd-1.0.x') &&
-			(document.getElementById('auto_scale_log').checked)) {
-			document.getElementById('scale_log_units').disabled=false;
+	function changeScaleLog() {
+		if ($('#scale_log_units').is(':checked')) {
+			$('#scale_log_units').prop('disabled', true);
+			if (($('#rrdtool_version').val() != 'rrd-1.0.x') &&
+				($('#auto_scale_log').is(':checked'))) {
+				$('#scale_log_units').prop('disabled', false);
+			}
 		}
 	}
-}
-</script>
-<?php
-
+	</script>
+	<?php
 }
 
 function graph() {
@@ -1114,11 +1110,11 @@ function graph() {
 	<script type="text/javascript">
 	<!--
 
-	function applyGraphsFilterChange(objForm) {
-		strURL = '?host_id=' + objForm.host_id.value;
-		strURL = strURL + '&graph_rows=' + objForm.graph_rows.value;
-		strURL = strURL + '&filter=' + objForm.filter.value;
-		strURL = strURL + '&template_id=' + objForm.template_id.value;
+	function applyGraphsFilterChange() {
+		strURL = '?host_id=' + $('#host_id').val();
+		strURL = strURL + '&graph_rows=' + $('#graph_rows').val();
+		strURL = strURL + '&filter=' + $('#filter').val();
+		strURL = strURL + '&template_id=' + $('#template_id').val();
 		document.location = strURL;
 	}
 
@@ -1138,7 +1134,7 @@ function graph() {
 						Host:
 					</td>
 					<td width="1">
-						<select name="host_id" onChange="applyGraphsFilterChange(document.form_graph_id)">
+						<select id='host_id' name='host_id' onChange="applyGraphsFilterChange()">
 							<option value="-1"<?php if (get_request_var_request("host_id") == "-1") {?> selected<?php }?>>Any</option>
 							<option value="0"<?php if (get_request_var_request("host_id") == "0") {?> selected<?php }?>>None</option>
 							<?php
@@ -1169,11 +1165,11 @@ function graph() {
 							?>
 						</select>
 					</td>
-					<td width="70">
+					<td>
 						Template:
 					</td>
 					<td width="1">
-						<select name="template_id" onChange="applyGraphsFilterChange(document.form_graph_id)">
+						<select id='template_id' name='template_id' onChange='applyGraphsFilterChange()'>
 							<option value="-1"<?php if (get_request_var_request("template_id") == "-1") {?> selected<?php }?>>Any</option>
 							<option value="0"<?php if (get_request_var_request("template_id") == "0") {?> selected<?php }?>>None</option>
 							<?php
@@ -1213,13 +1209,13 @@ function graph() {
 						Search:
 					</td>
 					<td>
-						<input type="text" name="filter" size="40" value="<?php print htmlspecialchars(get_request_var_request("filter"));?>">
+						<input id='filter' type="text" name="filter" size="40" value="<?php print htmlspecialchars(get_request_var_request("filter"));?>">
 					</td>
 					<td>
 						Graphs:
 					</td>
 					<td width="1">
-						<select name="graph_rows" onChange="applyGraphsFilterChange(document.form_graph_id)">
+						<select id='graph_rows' name='graph_rows' onChange='applyGraphsFilterChange()'>
 							<option value="-1"<?php if (get_request_var_request("graph_rows") == "-1") {?> selected<?php }?>>Default</option>
 							<?php
 							if (sizeof($item_rows) > 0) {
@@ -1323,7 +1319,7 @@ function graph() {
 		/* put the nav bar on the bottom as well */
 		print $nav;
 	}else{
-		print "<tr><td><em>No Graphs Found</em></td></tr>";
+		print "<tr class='tableRow'><td colspan='5'><em>No Graphs Found</em></td></tr>";
 	}
 
 	html_end_box(false);

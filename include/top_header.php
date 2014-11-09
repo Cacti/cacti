@@ -30,6 +30,7 @@ if ($oper_mode == OPER_MODE_RESKIN) {
 }
 
 $page_title = api_plugin_hook_function('page_title', draw_navigation_text("title"));
+$using_guest_account = false;
 
 ?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -88,15 +89,17 @@ $page_title = api_plugin_hook_function('page_title', draw_navigation_text("title
 			<table width="100%">
 				<tr>
 					<td width='30%'>
+						<div class='navBar'>
 						<?php echo draw_navigation_text();?>
+						</div>
 					</td>
-					<td width='40%'><div class='scrollBar'></div>
-					<td width='30%' align="right"><div class='infoBar'>
-						<?php if (read_config_option("auth_method") != 0) { api_plugin_hook('nav_login_before'); ?>
-							<?php api_plugin_hook('nav_login_before'); ?>
-							Logged in as <strong><?php print db_fetch_cell("select username from user_auth where id=" . $_SESSION["sess_user_id"]);?></strong> (<a href="<?php echo $config['url_path']; ?>logout.php">Logout</a>)&nbsp;
-							<?php api_plugin_hook('nav_login_after'); } ?>
-					</div></td>
+					<td width='40%'>
+						<div class='scrollBar'></div>
+					<td width='30%' align="right">
+						<div class='infoBar'>
+						<?php echo draw_login_status($using_guest_account);?>
+						</div>
+					</td>
 				</tr>
 			</table>
 		</td>

@@ -185,12 +185,10 @@ function color() {
 			}
 		}
 		## check for completion of odd number second column:
-		if ($j == 1) {
-			?>
-				<td colspan=4></td>
-				</tr>
-			<?php
-		}
+		?>
+		<td colspan=<?php print ((4 - $j) * 4);?>></td>
+		</tr>
+		<?php
 	}
 	html_end_box();
 }

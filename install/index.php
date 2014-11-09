@@ -468,7 +468,7 @@ if ($step == "4") {
 <head>
 	<title>cacti</title>
 	<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
-	<link href="<?php echo $config['url_path']; ?>include/main.css" type="text/css" rel="stylesheet">
+	<link href="<?php echo $config['url_path']; ?>include/themes/classic/main.css" type="text/css" rel="stylesheet">
 	<style type='text/css'>>
 	<!--
 		BODY,TABLE,TR,TD
@@ -676,7 +676,7 @@ if ($step == "4") {
 					</td>
 				</tr>
 				<tr>
-					<td class='saveRow' align="right"><input type="button" value="<?php if ($step == "3"){?>Finish<?php }else{?>Next<?php }?>"></td>
+					<td class='saveRow' align="right"><input type="submit" value="<?php if ($step == "3"){?>Finish<?php }else{?>Next<?php }?>"></td>
 				<tr>
 			</table>
 		</td>

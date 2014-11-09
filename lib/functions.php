@@ -1672,6 +1672,21 @@ function get_host_array() {
 	return $host_list;
 }
 
+/* draw_login_status - provides a consistent login status page for all pages that use it */
+function draw_login_status($using_guest_account = false) {
+	global $config;
+
+	$guest_account = db_fetch_cell("SELECT id FROM user_auth WHERE username='" . read_config_option('guest_user') . "'");
+
+	if (isset($_SESSION['sess_user_id']) && $_SESSION['sess_user_id'] == $guest_account) {
+		print "Logged in as <strong>Guest</strong> (<a href='" . $config['url_path'] . "index.php'>Login as Regular User</a>)\n";
+	}elseif (isset($_SESSION["sess_user_id"]) && $using_guest_account == false) {
+		api_plugin_hook('nav_login_before');
+		print "Logged in as <strong>" . db_fetch_cell("select username from user_auth where id=" . $_SESSION["sess_user_id"]) . "</strong> (<a href='" . $config['url_path'] . "logout.php'>Logout</a>)\n";
+		api_plugin_hook('nav_login_after');
+	}
+}
+
 /* draw_navigation_text - determines the top header navigation text for the current page and displays it to
    @arg $type - (string) Either 'url' or 'title'
    @returns (string> Either the navigation text or title */
@@ -1809,12 +1824,12 @@ function draw_navigation_text($type = "url") {
 		if ($current_mappings[$i] == "?") {
 			/* '?' tells us to pull title from the cache at this level */
 			if (isset($nav_level_cache{$i})) {
-				$current_nav .= (empty($url) ? "" : "<li><a href='" . htmlspecialchars($url) . "'>") . htmlspecialchars(resolve_navigation_variables($nav{$nav_level_cache{$i}["id"]}["title"])) . (empty($url) ? "" : "</a></li>");
+				$current_nav .= (empty($url) ? "" : "<li><a href='" . htmlspecialchars($url) . "'>") . htmlspecialchars(resolve_navigation_variables($nav{$nav_level_cache{$i}["id"]}["title"])) . (empty($url) ? "" : "</a>" . (read_config_option('selected_theme') == 'classic' ? ' -> ':'') . "</li>");
 				$title       .= htmlspecialchars(resolve_navigation_variables($nav{$nav_level_cache{$i}["id"]}["title"])) . ' -> ';
 			}
 		}else{
 			/* there is no '?' - pull from the above array */
-			$current_nav .= (empty($url) ? "" : "<li><a href='" . htmlspecialchars($url) . "'>") . htmlspecialchars(resolve_navigation_variables($nav{$current_mappings[$i]}["title"])) . (empty($url) ? "" : "</a></li>");
+			$current_nav .= (empty($url) ? "" : "<li><a href='" . htmlspecialchars($url) . "'>") . htmlspecialchars(resolve_navigation_variables($nav{$current_mappings[$i]}["title"])) . (empty($url) ? "" : "</a>" . (read_config_option('selected_theme') == 'classic' ? ' -> ':'') . "</li>");
 			$title       .= htmlspecialchars(resolve_navigation_variables($nav{$current_mappings[$i]}["title"])) . ' -> ';
 		}
 	}

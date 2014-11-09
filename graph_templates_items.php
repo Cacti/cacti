@@ -380,23 +380,22 @@ function item_edit() {
 ?>
 <script language="JavaScript">
 
-dynamic();
+$(function() {
+	dynamic();
+});
 
 function dynamic() {
-	//alert("RRDTool Version is '" + document.getElementById('rrdtool_version').value + "'");
-	//alert("Color is '" + document.getElementById('color_id').value + "'");
-	document.getElementById('alpha').disabled=true;
-	if ((document.getElementById('rrdtool_version').value != 'rrd-1.0.x') &&
-		(document.getElementById('color_id').value != 0)) {
-		document.getElementById('alpha').disabled=false;
+	$('#alpha').prop('disabled', true);
+	if (($('#rrdtool_version').val() != 'rrd-1.0.x') &&
+		($('#color_id').val() != 0)) {
+		$('#alpha').prop('disabled', false);
 	}
 }
 
 function changeColorId() {
-	//alert("Selected Color Index is '" + document.getElementById('color_id').selectedIndex + "'");
-	if ((document.getElementById('rrdtool_version').value != 'rrd-1.0.x') &&
-		(document.getElementById('color_id').selectedIndex != 0)) {
-		document.getElementById('alpha').disabled=false;
+	if (($('#rrdtool_version').val() != 'rrd-1.0.x') &&
+		($('#color_id').val() != 0)) {
+		$('#alpha').prop('disabled', false);
 	}
 }
 </script>

@@ -645,12 +645,12 @@ function data_query_edit() {
 			$text = "<font color='#0d7c09'><strong>Successfully located XML file</strong></font>";
 			$xml_file_exists = true;
 		}else{
-			$text = "<font color='#ff0000'><strong>Could not locate XML file.</strong></font>";
+			$text = "<font class='txtErrorText'><strong>Could not locate XML file.</strong></font>";
 			$xml_file_exists = false;
 		}
 
 		html_start_box("", "100%", "", "3", "center", "");
-		print "<tr class='textInfo'><td>$text</td></tr>";
+		print "<tr class='tableRow'><td>$text</td></tr>";
 		html_end_box();
 
 		if ($xml_file_exists == true) {
@@ -673,23 +673,23 @@ function data_query_edit() {
 
 			$i = 0;
 			if (sizeof($snmp_query_graphs) > 0) {
-			foreach ($snmp_query_graphs as $snmp_query_graph) {
-				form_alternate_row();
-				?>
-					<td>
-						<strong><a href="<?php print htmlspecialchars("data_queries.php?action=item_edit&id=" . $snmp_query_graph["id"] . "&snmp_query_id=" . $snmp_query["id"]);?>"><?php print htmlspecialchars($snmp_query_graph["name"]);?></a></strong>
-					</td>
-					<td>
-						<?php print htmlspecialchars($snmp_query_graph["graph_template_name"]);?>
-					</td>
-					<td align="right">
-						<a href="<?php print htmlspecialchars("data_queries.php?action=item_remove&id=" . $snmp_query_graph["id"] . "&snmp_query_id=" . $snmp_query["id"]);?>"><img src="images/delete_icon.gif" style="height:10px;width:10px;" border="0" alt="Delete"></a>
-					</td>
-				</tr>
-				<?php
-			}
+				foreach ($snmp_query_graphs as $snmp_query_graph) {
+					form_alternate_row();
+					?>
+						<td>
+							<strong><a href="<?php print htmlspecialchars("data_queries.php?action=item_edit&id=" . $snmp_query_graph["id"] . "&snmp_query_id=" . $snmp_query["id"]);?>"><?php print htmlspecialchars($snmp_query_graph["name"]);?></a></strong>
+						</td>
+						<td>
+							<?php print htmlspecialchars($snmp_query_graph["graph_template_name"]);?>
+						</td>
+						<td align="right">
+							<a href="<?php print htmlspecialchars("data_queries.php?action=item_remove&id=" . $snmp_query_graph["id"] . "&snmp_query_id=" . $snmp_query["id"]);?>"><img src="images/delete_icon.gif" style="height:10px;width:10px;" border="0" alt="Delete"></a>
+						</td>
+					</tr>
+					<?php
+				}
 			}else{
-				print "<tr><td><em>No Graph Templates Defined.</em></td></tr>";
+				print "<tr class='tableRow'><td><em>No Graph Templates Defined.</em></td></tr>";
 			}
 
 			html_end_box();
@@ -742,16 +742,18 @@ function data_query() {
 	<tr class='even noprint'>
 		<td class="noprint">
 		<form name="form_graph_id" method="get" action="data_queries.php">
-			<table width="100%" cellpadding="0" cellspacing="0">
+			<table cellpadding="2" cellspacing="0">
 				<tr class="noprint">
-					<td nowrap style='white-space: nowrap;' width="50">
-						Search:&nbsp;
+					<td width="50">
+						Search:
 					</td>
 					<td width="1">
 						<input type="text" name="filter" size="40" value="<?php print htmlspecialchars(get_request_var_request("filter"));?>">
 					</td>
-					<td nowrap style='white-space: nowrap;'>
-						&nbsp;<input type="submit" value="Go" title="Set/Refresh Filters">
+					<td>
+						<input type="submit" value="Go" title="Set/Refresh Filters">
+					</td>
+					<td>
 						<input type="submit" name="clear_x" value="Clear" title="Clear Filters">
 					</td>
 				</tr>
@@ -811,7 +813,7 @@ function data_query() {
 
 		print $nav;
 	}else{
-		print "<tr><td><em>No Data Queries</em></td></tr>";
+		print "<tr class='tableRow'><td colspan='3'><em>No Data Queries</em></td></tr>";
 	}
 
 	html_end_box(false);

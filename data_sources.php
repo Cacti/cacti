@@ -1081,12 +1081,12 @@ function ds() {
 	<script type="text/javascript">
 	<!--
 
-	function applyDSFilterChange(objForm) {
-		strURL = '?host_id=' + objForm.host_id.value;
-		strURL = strURL + '&filter=' + objForm.filter.value;
-		strURL = strURL + '&ds_rows=' + objForm.ds_rows.value;
-		strURL = strURL + '&template_id=' + objForm.template_id.value;
-		strURL = strURL + '&method_id=' + objForm.method_id.value;
+	function applyDSFilterChange() {
+		strURL = '?host_id=' + $('#host_id').val();
+		strURL = strURL + '&filter=' + $('#filter').val();
+		strURL = strURL + '&ds_rows=' + $('#ds_rows').val();
+		strURL = strURL + '&template_id=' + $('#template_id').val();
+		strURL = strURL + '&method_id=' + $('#method_id').val();
 		document.location = strURL;
 	}
 
@@ -1106,7 +1106,7 @@ function ds() {
 						Host:
 					</td>
 					<td>
-						<select name="host_id" onChange="applyDSFilterChange(document.form_data_sources)">
+						<select id='host_id' name="host_id" onChange="applyDSFilterChange()">
 							<option value="-1"<?php if (get_request_var_request("host_id") == "-1") {?> selected<?php }?>>Any</option>
 							<option value="0"<?php if (get_request_var_request("host_id") == "0") {?> selected<?php }?>>None</option>
 							<?php
@@ -1125,7 +1125,7 @@ function ds() {
 						Template:
 					</td>
 					<td width="1">
-						<select name="template_id" onChange="applyDSFilterChange(document.form_data_sources)">
+						<select id='template_id' name="template_id" onChange="applyDSFilterChange()">
 							<option value="-1"<?php if (get_request_var_request("template_id") == "-1") {?> selected<?php }?>>Any</option>
 							<option value="0"<?php if (get_request_var_request("template_id") == "0") {?> selected<?php }?>>None</option>
 							<?php
@@ -1158,7 +1158,7 @@ function ds() {
 						Method:
 					</td>
 					<td width="1">
-						<select name="method_id" onChange="applyDSFilterChange(document.form_data_sources)">
+						<select id='method_id' name="method_id" onChange="applyDSFilterChange()">
 							<option value="-1"<?php if (get_request_var_request("method_id") == "-1") {?> selected<?php }?>>Any</option>
 							<option value="0"<?php if (get_request_var_request("method_id") == "0") {?> selected<?php }?>>None</option>
 							<?php
@@ -1182,7 +1182,7 @@ function ds() {
 						Data Sources:
 					</td>
 					<td width="1">
-						<select name="ds_rows" onChange="applyDSFilterChange(document.form_data_sources)">
+						<select id='ds_rows' name="ds_rows" onChange="applyDSFilterChange()">
 							<option value="-1"<?php if (get_request_var_request("ds_rows") == "-1") {?> selected<?php }?>>Default</option>
 							<?php
 							if (sizeof($item_rows) > 0) {
@@ -1201,7 +1201,7 @@ function ds() {
 						Search:
 					</td>
 					<td width="1">
-						<input type="text" name="filter" size="40" value="<?php print htmlspecialchars(get_request_var_request("filter"));?>">
+						<input id='filter' type="text" name="filter" size="40" value="<?php print htmlspecialchars(get_request_var_request("filter"));?>">
 					</td>
 				</tr>
 			</table>
@@ -1366,7 +1366,7 @@ function ds() {
 		/* put the nav bar on the bottom as well */
 		print $nav;
 	}else{
-		print "<tr><td><em>No Data Sources</em></td></tr>";
+		print "<tr class='tableRow'><td colspan='7'><em>No Data Sources</em></td></tr>";
 	}
 
 	html_end_box(false);

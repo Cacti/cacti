@@ -30,25 +30,27 @@
    @arg $align - the HTML alignment to use for the box (center, left, or right)
    @arg $add_text - the url to use when the user clicks 'Add' in the upper-right
      corner of the box ("" for no 'Add' link) */
-function html_start_box($title, $width, $background_color, $cell_padding, $align, $add_text) {
+function html_start_box($title, $width, $background_color, $cell_padding, $align, $add_text, $add_label = 'Add') {
+	static $table_id = 1;
+
 	?>
-	<table align="<?php print $align;?>" width="<?php print $width;?>" cellpadding=0 cellspacing=0 border=0 class="cactiTable">
+	<table id='cactiTable<?php print $table_id;?>' align="<?php print $align;?>" width="<?php print $width;?>" cellpadding=0 cellspacing=0 border=0 class="cactiTable">
 		<tr>
 			<td>
-				<table cellpadding=<?php print $cell_padding;?> cellspacing=0 border=0 width="100%">
-					<?php if ($title != "") {?>
-					<tr class='cactiTableTitle'>
-						<td style="padding: 3px;" colspan="100">
-							<table width="100%" cellpadding="0" cellspacing="0">
-								<tr>
-									<td class="textHeaderDark"><?php print $title;?></td>
-										<?php if ($add_text != "") {?><td class="textHeaderDark" align="right"><strong><a class="linkOverDark" href="<?php print htmlspecialchars($add_text);?>">Add</a>&nbsp;</strong></td><?php }?>
-								</tr>
-							</table>
-						</td>
-					</tr><?php }?>
+				<?php if ($title != "") {?>
+				<table width='100%' class='cactiTableTitle' cellpadding='<?php print $cell_padding;?>' cellspacing='0' border='0'>
+					<tr>
+						<td class='textHeaderDark'><?php print $title;?></td>
+						<?php if ($add_text!= "") {?>
+						<td class='textHeaderDark' align='right'><a class="linkOverDark" href="<?php print htmlspecialchars($add_text);?>"><?php print $add_label;?></a>&nbsp;</td><?php }?>
+					</tr>
+				</table>
+				<?php }?>
+				<table class='cactiTable' cellpadding=<?php print $cell_padding;?> cellspacing=0 border=0 width="100%">
+	<?php 
 
-<?php }
+	$table_id++;
+}
 
 /* html_end_box - draws the end of an HTML box
    @arg $trailing_br (bool) - whether to draw a trailing <br> tag after ending
@@ -694,7 +696,7 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 		$i++;
 	}
 	}else{
-		print "<tr><td colspan='7'><em>No Items</em></td></tr>";
+		print "<tr class='tableRow'><td colspan='7'><em>No Items</em></td></tr>";
 	}
 }
 
@@ -798,10 +800,12 @@ function draw_menu($user_menu = "") {
 	<script type='text/javascript'>
 	$(function () {
 		$('#navigation').css('height', ($(window).height()-80)+'px');
+	<?php if (read_config_option('selected_theme') != 'classic') {?>
 
+		// Initialize the navigation settings
 		$('#nav > li > a').each(function() {
 			active = $.cookie($(this).text());
-			if (active !== null) {
+			if (active != null) {
 				if (active == 'active') {
 					$(this).next().show();
 				}else{
@@ -810,12 +814,13 @@ function draw_menu($user_menu = "") {
 			}
 		});
 
-		$('#nav li:has(ul) a').click(function() {
+		// Functon to give life to the Navigation pane
+		$('#nav li:has(ul) a.active').click(function() {
 			if ($(this).next().is(':visible')){
-				$(this).next().slideUp();
-		        $.cookie($(this).text(), 'collapsed', { expires: 31, path: '/cacti/' } );
+				$(this).next().slideUp( { duration: 200, easing: 'swing' } );
+				$.cookie($(this).text(), 'collapsed', { expires: 31, path: '/cacti/' } );
 			} else {
-				$(this).next().slideToggle();
+				$(this).next().slideToggle( { duration: 200, easing: 'swing' } );
 				if ($(this).next().is(':visible')) {
 					$.cookie($(this).text(), 'active', { expires: 31, path: '/cacti/' } );
 				}else{
@@ -824,6 +829,7 @@ function draw_menu($user_menu = "") {
 			}
 		});
 
+	<?php }?>
 		$('#menu').show();
 	});
 	</script>
@@ -865,7 +871,7 @@ function draw_actions_dropdown($actions_array) {
 
 function DrawMatrixHeaderItem($matrix_name, $matrix_text_color, $column_span = 1) { ?>
 		<th style="height:1px;" colspan="<?php print $column_span;?>">
-			<font class='textSubHeaderDark'><?php print $matrix_name;?></font>
+			<div class='textSubHeaderDark'><?php print $matrix_name;?></div>
 		</th>
 <?php }
 
@@ -902,182 +908,226 @@ function is_console_page($url) {
 function html_show_tabs_left($show_console_tab) {
 	global $config;
 
-	include_once($config['base_path'] . '/lib/xml.php');
+	if (read_config_option("selected_theme") == 'classic') {
+		?>&nbsp;<?php 
+		if ($show_console_tab == true) {
+			?><a href="<?php echo $config['url_path']; ?>index.php"><img src="<?php echo $config['url_path']; ?>images/tab_console<?php print (is_console_page(basename($_SERVER['PHP_SELF'])) ? '_down':'');?>.gif" alt="Console" align="absmiddle" border="0"></a><?php 
+		}
 
-	$tabs = array(
-		array(
-			'title' => 'Console',
-			'image' => '',
-			'url'   => 'index.php',
-		),
-		array(
-			'title' => 'Graphs',
-			'image' => '',
-			'url'   => 'graph_view.php',
-		)
-	);
+		?><a href="<?php echo $config['url_path']; ?>graph_view.php"><img src="<?php echo $config['url_path']; ?>images/tab_graphs<?php 
 
-	// Get Plugin Text Out of Band
-	ob_start();
-	api_plugin_hook('top_graph_header_tabs');
+		if ((substr(basename($_SERVER["PHP_SELF"]),0,5) == "graph") || (basename($_SERVER["PHP_SELF"]) == "graph_settings.php")) { 
+			print "_down"; 
+		} print ".gif";?>" alt="Graphs" align="absmiddle" border="0"></a><?php
+		api_plugin_hook('top_graph_header_tabs');
+	}else{
+		$tabs = array(
+			array(
+				'title' => 'Console',
+				'image' => '',
+				'url'   => 'index.php',
+			),
+			array(
+				'title' => 'Graphs',
+				'image' => '',
+				'url'   => 'graph_view.php',
+			)
+		);
 
-	$tab_text = trim(ob_get_clean());
-	$tab_text = str_replace('<a', '', $tab_text);
-	$tab_text = str_replace('</a>', '|', $tab_text);
-	$tab_text = str_replace('<img', '', $tab_text);
-	$tab_text = str_replace('<', '', $tab_text);
-	$tab_text = str_replace('"', "'", $tab_text);
-	$tab_text = str_replace('>', '', $tab_text);
-	$elements = explode('|', $tab_text);
+		// Get Plugin Text Out of Band
+		ob_start();
+		api_plugin_hook('top_graph_header_tabs');
 
-	foreach($elements as $p) {
-		$p = trim($p);
+		$tab_text = trim(ob_get_clean());
+		$tab_text = str_replace('<a', '', $tab_text);
+		$tab_text = str_replace('</a>', '|', $tab_text);
+		$tab_text = str_replace('<img', '', $tab_text);
+		$tab_text = str_replace('<', '', $tab_text);
+		$tab_text = str_replace('"', "'", $tab_text);
+		$tab_text = str_replace('>', '', $tab_text);
+		$elements = explode('|', $tab_text);
 
-		if ($p == '') continue;
+		foreach($elements as $p) {
+			$p = trim($p);
 
-		$altpos  = strpos($p, 'alt=');
-		$hrefpos = strpos($p, 'href=');
+			if ($p == '') continue;
 
-		if ($altpos >= 0) {
-			$alt = substr($p, $altpos+4);
-			$parts = explode("'", $alt);
-			if ($parts[0] == '') {
-				$alt = $parts[1];
+			$altpos  = strpos($p, 'alt=');
+			$hrefpos = strpos($p, 'href=');
+
+			if ($altpos >= 0) {
+				$alt = substr($p, $altpos+4);
+				$parts = explode("'", $alt);
+				if ($parts[0] == '') {
+					$alt = $parts[1];
+				}else{
+					$alt = $parts[0];
+				}
 			}else{
-				$alt = $parts[0];
+				$alt = 'Title';
 			}
-		}else{
-			$alt = 'Title';
-		}
 
-		if ($hrefpos >= 0) {
-			$href = substr($p, $hrefpos+5);
-			$parts = explode("'", $href);
-			if ($parts[0] == '') {
-				$href = $parts[1];
+			if ($hrefpos >= 0) {
+				$href = substr($p, $hrefpos+5);
+				$parts = explode("'", $href);
+				if ($parts[0] == '') {
+					$href = $parts[1];
+				}else{
+					$href = $parts[0];
+				}
 			}else{
-				$href = $parts[0];
+				$href = 'unknown';
 			}
-		}else{
-			$href = 'unknown';
+
+			$tabs[] = array('title' => ucwords($alt), 'url' => $href);
 		}
 
-		$tabs[] = array('title' => ucwords($alt), 'url' => $href);
-	}
-
-	$i = 0;
-	foreach($tabs as $tab) {
-		if ($tab['url'] == 'graph_view.php' && (basename($_SERVER['PHP_SELF']) == 'graph_view.php' || basename($_SERVER['PHP_SELF']) == 'graph.php')) {
-			$tabs[$i]['selected'] = true;
-		}elseif ($tab['url'] == 'index.php' && is_console_page($_SERVER['PHP_SELF'])) {
-			$tabs[$i]['selected'] = true;
-		}elseif ($tab['url'] == basename($_SERVER['PHP_SELF'])) {
-			$tabs[$i]['selected'] = true;
+		$i = 0;
+		foreach($tabs as $tab) {
+			if ($tab['url'] == 'graph_view.php' && (basename($_SERVER['PHP_SELF']) == 'graph_view.php' || basename($_SERVER['PHP_SELF']) == 'graph.php')) {
+				$tabs[$i]['selected'] = true;
+			}elseif ($tab['url'] == 'index.php' && is_console_page($_SERVER['PHP_SELF'])) {
+				$tabs[$i]['selected'] = true;
+			}elseif ($tab['url'] == basename($_SERVER['PHP_SELF'])) {
+				$tabs[$i]['selected'] = true;
+			}
+			$i++;
 		}
-		$i++;
-	}
 
-	print "<div class='tabs'><nav><ul>\n";
-	foreach($tabs as $tab) {
-		print "<li><a class='" . (isset($tab['selected']) ? 'selected':'') . "' href='" . $tab['url'] . "'>" . $tab['title'] . "</a></li>\n";
+		print "<div class='tabs'><nav><ul>\n";
+		foreach($tabs as $tab) {
+			print "<li><a class='" . (isset($tab['selected']) ? 'selected':'') . "' href='" . $tab['url'] . "'>" . $tab['title'] . "</a></li>\n";
+		}
+		print "</ul></nav></div>\n";
 	}
-	print "</ul></nav></div>\n";
 }
 
 function html_graph_tabs_right($current_user) {
 	global $config;
 
-	$tabs = array(
-		array(
-			'title' => 'Settings',
-			'image' => '',
-			'id'    => 'settings',
-			'url'   => 'graph_settings.php',
-		),
-		array(
-			'title' => 'Tree View',
-			'image' => 'images/tab_tree.gif',
-			'id'    => 'tree',
-			'url'   => 'graph_view.php?action=tree',
-		),
-		array(
-			'title' => 'List View',
-			'image' => 'images/tab_list.gif',
-			'id'    => 'list',
-			'url'   => 'graph_view.php?action=list',
-		),
-		array(
-			'title' => 'Preview',
-			'image' => 'images/tab_preview.gif',
-			'id'    => 'preview',
-			'url'   => 'graph_view.php?action=preview',
-		),
-	);
+	if (read_config_option("selected_theme") == 'classic') {
+		if ((!isset($_SESSION["sess_user_id"])) || ($current_user["graph_settings"] == "on")) { 
+			print '<a href="' . $config['url_path'] . 'graph_settings.php"><img src="' . $config['url_path'] . 'images/tab_settings'; 
+			if (basename($_SERVER["PHP_SELF"]) == "graph_settings.php") { 
+				print "_down"; 
+			} 
+			print '.gif" border="0" alt="Settings" align="absmiddle"></a>';
+		}?>&nbsp;&nbsp;<?php 
 
-	$i = 0;
-	foreach($tabs as $tab) {
-		if ($tab['url'] == 'graph_settings.php' && (basename($_SERVER['PHP_SELF']) == 'graph_settings.php')) {
-			$tabs[$i]['selected'] = true;
-		}elseif ($tab['id'] == 'tree') {
-			if (isset($_REQUEST['action']) && $_REQUEST['action'] == 'tree') {
+		if ((!isset($_SESSION["sess_user_id"])) || ($current_user["show_tree"] == "on")) {
+			?><a href="<?php print htmlspecialchars($config['url_path'] . "graph_view.php?action=tree");?>"><img src="<?php echo $config['url_path']; ?>images/tab_mode_tree<?php 
+			if (isset($_REQUEST["action"]) && $_REQUEST["action"] == "tree") { 
+				print "_down"; 
+			}?>.gif" border="0" title="Tree View" alt="Tree View" align="absmiddle"></a><?php 
+		}?><?php 
+
+		if ((!isset($_SESSION["sess_user_id"])) || ($current_user["show_list"] == "on")) {
+			?><a href="<?php print htmlspecialchars($config['url_path'] . "graph_view.php?action=list");?>"><img src="<?php echo $config['url_path']; ?>images/tab_mode_list<?php 
+			if (isset($_REQUEST["action"]) && $_REQUEST["action"] == "list") { 
+				print "_down"; 
+			}?>.gif" border="0" title="List View" alt="List View" align="absmiddle"></a><?php 
+		}?><?php 
+
+		if ((!isset($_SESSION["sess_user_id"])) || ($current_user["show_preview"] == "on")) {
+			?><a href="<?php print htmlspecialchars($config['url_path'] . "graph_view.php?action=preview");?>"><img src="<?php echo $config['url_path']; ?>images/tab_mode_preview<?php 
+			if (isset($_REQUEST["action"]) && $_REQUEST["action"] == "preview") { 
+				print "_down"; 
+			}?>.gif" border="0" title="Preview View" alt="Preview View" align="absmiddle"></a><?php 
+		}?>&nbsp;<br>
+		<?php
+	}else{
+		$tabs = array(
+			array(
+				'title' => 'Settings',
+				'image' => '',
+				'id'    => 'settings',
+				'url'   => 'graph_settings.php',
+			),
+			array(
+				'title' => 'Tree View',
+				'image' => 'images/tab_tree.gif',
+				'id'    => 'tree',
+				'url'   => 'graph_view.php?action=tree',
+			),
+			array(
+				'title' => 'List View',
+				'image' => 'images/tab_list.gif',
+				'id'    => 'list',
+				'url'   => 'graph_view.php?action=list',
+			),
+			array(
+				'title' => 'Preview',
+				'image' => 'images/tab_preview.gif',
+				'id'    => 'preview',
+				'url'   => 'graph_view.php?action=preview',
+			),
+		);
+
+		$i = 0;
+		foreach($tabs as $tab) {
+			if ($tab['url'] == 'graph_settings.php' && (basename($_SERVER['PHP_SELF']) == 'graph_settings.php')) {
+				$tabs[$i]['selected'] = true;
+			}elseif ($tab['id'] == 'tree') {
+				if (isset($_REQUEST['action']) && $_REQUEST['action'] == 'tree') {
+					$tabs[$i]['selected'] = true;
+				}
+			}elseif ($tab['id'] == 'list') {
+				if (isset($_REQUEST['action']) && $_REQUEST['action'] == 'list') {
+					$tabs[$i]['selected'] = true;
+				}
+			}elseif ($tab['id'] == 'preview') {
+				if (isset($_REQUEST['action']) && $_REQUEST['action'] == 'preview') {
+					$tabs[$i]['selected'] = true;
+				}
+			}elseif (strstr($_SERVER['PHP_SELF'], $tab['url'])) {
 				$tabs[$i]['selected'] = true;
 			}
-		}elseif ($tab['id'] == 'list') {
-			if (isset($_REQUEST['action']) && $_REQUEST['action'] == 'list') {
-				$tabs[$i]['selected'] = true;
-			}
-		}elseif ($tab['id'] == 'preview') {
-			if (isset($_REQUEST['action']) && $_REQUEST['action'] == 'preview') {
-				$tabs[$i]['selected'] = true;
-			}
-		}elseif (strstr($_SERVER['PHP_SELF'], $tab['url'])) {
-			$tabs[$i]['selected'] = true;
+
+			$i++;
 		}
 
-		$i++;
-	}
-
-	print "<div class='tabs' style='float:right;'><nav><ul>\n";
-	foreach($tabs as $tab) {
-		switch($tab['id']) {
-		case 'settings':
-			if ((!isset($_SESSION['sess_user_id'])) || ($current_user['graph_settings'] == 'on')) { 
-				if (isset($tab['image']) && $tab['image'] != '') {
-					print "<li><a title='" . $tab['title'] . "' class='" . (isset($tab['selected']) ? 'selected':'') . "' href='" . $tab['url'] . "'><img src='" . $config['url_path'] . $tab['image'] . "' border='0' align='bottom'></a></li>\n";
-				}else{
-					print "<li><a title='" . $tab['title'] . "' class='" . (isset($tab['selected']) ? 'selected':'') . "' href='" . $tab['url'] . "'>" . $tab['title'] . "</a></li>\n";
+		print "<div class='tabs' style='float:right;'><nav><ul>\n";
+		foreach($tabs as $tab) {
+			switch($tab['id']) {
+			case 'settings':
+				if ((!isset($_SESSION['sess_user_id'])) || ($current_user['graph_settings'] == 'on')) { 
+					if (isset($tab['image']) && $tab['image'] != '') {
+						print "<li><a title='" . $tab['title'] . "' class='" . (isset($tab['selected']) ? 'selected':'') . "' href='" . $tab['url'] . "'><img src='" . $config['url_path'] . $tab['image'] . "' border='0' align='bottom'></a></li>\n";
+					}else{
+						print "<li><a title='" . $tab['title'] . "' class='" . (isset($tab['selected']) ? 'selected':'') . "' href='" . $tab['url'] . "'>" . $tab['title'] . "</a></li>\n";
+					}
+					break;
 				}
-				break;
-			}
-		case 'tree':
-			if ((!isset($_SESSION['sess_user_id'])) || ($current_user['show_tree'] == 'on')) {
-				if (isset($tab['image']) && $tab['image'] != '') {
-					print "<li><a title='" . $tab['title'] . "' class='" . (isset($tab['selected']) ? 'selected':'') . "' href='" . $tab['url'] . "'><img src='" . $config['url_path'] . $tab['image'] . "' border='0' align='bottom'></a></li>\n";
-				}else{
-					print "<li><a title='" . $tab['title'] . "' class='" . (isset($tab['selected']) ? 'selected':'') . "' href='" . $tab['url'] . "'>" . $tab['title'] . "</a></li>\n";
+			case 'tree':
+				if ((!isset($_SESSION['sess_user_id'])) || ($current_user['show_tree'] == 'on')) {
+					if (isset($tab['image']) && $tab['image'] != '') {
+						print "<li><a title='" . $tab['title'] . "' class='" . (isset($tab['selected']) ? 'selected':'') . "' href='" . $tab['url'] . "'><img src='" . $config['url_path'] . $tab['image'] . "' border='0' align='bottom'></a></li>\n";
+					}else{
+						print "<li><a title='" . $tab['title'] . "' class='" . (isset($tab['selected']) ? 'selected':'') . "' href='" . $tab['url'] . "'>" . $tab['title'] . "</a></li>\n";
+					}
+					break;
 				}
-				break;
-			}
-		case 'list':
-			if ((!isset($_SESSION['sess_user_id'])) || ($current_user['show_list'] == 'on')) {
-				if (isset($tab['image']) && $tab['image'] != '') {
-					print "<li><a title='" . $tab['title'] . "' class='" . (isset($tab['selected']) ? 'selected':'') . "' href='" . $tab['url'] . "'><img src='" . $config['url_path'] . $tab['image'] . "' border='0' align='bottom'></a></li>\n";
-				}else{
-					print "<li><a title='" . $tab['title'] . "' class='" . (isset($tab['selected']) ? 'selected':'') . "' href='" . $tab['url'] . "'>" . $tab['title'] . "</a></li>\n";
+			case 'list':
+				if ((!isset($_SESSION['sess_user_id'])) || ($current_user['show_list'] == 'on')) {
+					if (isset($tab['image']) && $tab['image'] != '') {
+						print "<li><a title='" . $tab['title'] . "' class='" . (isset($tab['selected']) ? 'selected':'') . "' href='" . $tab['url'] . "'><img src='" . $config['url_path'] . $tab['image'] . "' border='0' align='bottom'></a></li>\n";
+					}else{
+						print "<li><a title='" . $tab['title'] . "' class='" . (isset($tab['selected']) ? 'selected':'') . "' href='" . $tab['url'] . "'>" . $tab['title'] . "</a></li>\n";
+					}
+					break;
 				}
-				break;
-			}
-		case 'preview':
-			if ((!isset($_SESSION['sess_user_id'])) || ($current_user['show_preview'] == 'on')) {
-				if (isset($tab['image']) && $tab['image'] != '') {
-					print "<li><a title='" . $tab['title'] . "' class='" . (isset($tab['selected']) ? 'selected':'') . "' href='" . $tab['url'] . "'><img src='" . $config['url_path'] . $tab['image'] . "' border='0' align='bottom'></a></li>\n";
-				}else{
-					print "<li><a title='" . $tab['title'] . "' class='" . (isset($tab['selected']) ? 'selected':'') . "' href='" . $tab['url'] . "'>" . $tab['title'] . "</a></li>\n";
+			case 'preview':
+				if ((!isset($_SESSION['sess_user_id'])) || ($current_user['show_preview'] == 'on')) {
+					if (isset($tab['image']) && $tab['image'] != '') {
+						print "<li><a title='" . $tab['title'] . "' class='" . (isset($tab['selected']) ? 'selected':'') . "' href='" . $tab['url'] . "'><img src='" . $config['url_path'] . $tab['image'] . "' border='0' align='bottom'></a></li>\n";
+					}else{
+						print "<li><a title='" . $tab['title'] . "' class='" . (isset($tab['selected']) ? 'selected':'') . "' href='" . $tab['url'] . "'>" . $tab['title'] . "</a></li>\n";
+					}
+					break;
 				}
-				break;
 			}
 		}
+		print "</ul></nav></div>\n";
 	}
-	print "</ul></nav></div>\n";
 }
 ?>

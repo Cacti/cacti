@@ -711,33 +711,26 @@ function host_edit() {
 	<!--
 
 	// default snmp information
-	var snmp_community       = document.getElementById('snmp_community').value;
-	var snmp_username        = document.getElementById('snmp_username').value;
-	var snmp_password        = document.getElementById('snmp_password').value;
-	var snmp_auth_protocol   = document.getElementById('snmp_auth_protocol').value;
-	var snmp_priv_passphrase = document.getElementById('snmp_priv_passphrase').value;
-	var snmp_priv_protocol   = document.getElementById('snmp_priv_protocol').value;
-	var snmp_context         = document.getElementById('snmp_context').value;
-	var snmp_port            = document.getElementById('snmp_port').value;
-	var snmp_timeout         = document.getElementById('snmp_timeout').value;
-	var max_oids             = document.getElementById('max_oids').value;
+	var snmp_community       = $('#snmp_community').val();
+	var snmp_username        = $('#snmp_username').val();
+	var snmp_password        = $('#snmp_password').val();
+	var snmp_auth_protocol   = $('#snmp_auth_protocol').val();
+	var snmp_priv_passphrase = $('#snmp_priv_passphrase').val();
+	var snmp_priv_protocol   = $('#snmp_priv_protocol').val();
+	var snmp_context         = $('#snmp_context').val();
+	var snmp_port            = $('#snmp_port').val();
+	var snmp_timeout         = $('#snmp_timeout').val();
+	var max_oids             = $('#max_oids').val();
 
 	// default ping methods
-	var ping_method    = document.getElementById('ping_method').value;
-	var ping_port      = document.getElementById('ping_port').value;
-	var ping_timeout   = document.getElementById('ping_timeout').value;
-	var ping_retries   = document.getElementById('ping_retries').value;
+	var ping_method    = $('#ping_method').val();
+	var ping_port      = $('#ping_port').val();
+	var ping_timeout   = $('#ping_timeout').val();
+	var ping_retries   = $('#ping_retries').val();
 
-	var availability_methods = document.getElementById('availability_method').options;
-	var num_methods          = document.getElementById('availability_method').length;
-	var selectedIndex        = document.getElementById('availability_method').selectedIndex;
-
-	var agent = navigator.userAgent;
-	agent = agent.match("MSIE");
-
-	function setPingVisibility() {
-		availability_method = document.getElementById('availability_method').value;
-		ping_method         = document.getElementById('ping_method').value;
+	function setPing() {
+		availability_method = $('#availability_method').val();
+		ping_method         = $('#ping_method').val();
 
 		/* debugging, uncomment as required */
 		//alert("The availability method is '" + availability_method + "'");
@@ -745,36 +738,36 @@ function host_edit() {
 
 		switch(availability_method) {
 		case "0": // none
-			document.getElementById('row_ping_method').style.display  = "none";
-			document.getElementById('row_ping_port').style.display    = "none";
-			document.getElementById('row_ping_timeout').style.display = "none";
-			document.getElementById('row_ping_retries').style.display = "none";
+			$('#row_ping_method').css('display', 'none');
+			$('#row_ping_port').css('display', 'none');
+			$('#row_ping_timeout').css('display', 'none');
+			$('#row_ping_retries').css('display', 'none');
 
 			break;
 		case "2": // snmp
 		case "5": // snmp sysDesc
 		case "6": // snmp getNext
-			document.getElementById('row_ping_method').style.display  = "none";
-			document.getElementById('row_ping_port').style.display    = "none";
-			document.getElementById('row_ping_timeout').style.display = "";
-			document.getElementById('row_ping_retries').style.display = "";
+			$('#row_ping_method').css('display', 'none');
+			$('#row_ping_port').css('display', 'none');
+			$('#row_ping_timeout').css('display', '');
+			$('#row_ping_retries').css('display', '');
 
 			break;
 		default: // ping ok
 			switch(ping_method) {
 			case "1": // ping icmp
-				document.getElementById('row_ping_method').style.display  = "";
-				document.getElementById('row_ping_port').style.display    = "none";
-				document.getElementById('row_ping_timeout').style.display = "";
-				document.getElementById('row_ping_retries').style.display = "";
+				$('#row_ping_method').css('display', '');
+				$('#row_ping_port').css('display', 'none');
+				$('#row_ping_timeout').css('display', '');
+				$('#row_ping_retries').css('display', '');
 
 				break;
 			case "2": // ping udp
 			case "3": // ping tcp
-				document.getElementById('row_ping_method').style.display  = "";
-				document.getElementById('row_ping_port').style.display    = "";
-				document.getElementById('row_ping_timeout').style.display = "";
-				document.getElementById('row_ping_retries').style.display = "";
+				$('#row_ping_method').css('display', '');
+				$('#row_ping_port').css('display', '');
+				$('#row_ping_timeout').css('display', '');
+				$('#row_ping_retries').css('display', '');
 
 				break;
 			}
@@ -783,224 +776,110 @@ function host_edit() {
 		}
 	}
 
-	function addSelectItem(item, formObj) {
-		if (agent != "MSIE") {
-			formObj.add(item,null); // standards compliant
-		}else{
-			formObj.add(item);      // IE only
-		}
-	}
-
-	function setAvailability(type) {
-		/* get the availability structure */
-		var am=document.getElementById('availability_method');
-
-		/* get current selectedIndex */
-		selectedIndex = document.getElementById('availability_method').selectedIndex;
-
-		/* debugging uncomment as required */
-		//alert("The selectedIndex is '" + selectedIndex + "'");
-		//alert("The array length is '" + am.length + "'");
-
-		switch(type) {
-		case "NoSNMP":
+	function setAvailability() {
+		if ($('#snmp_version').val() == 0) {
 			/* remove snmp options */
-			if (am.length == 7) {
-				am.remove(1);
-				am.remove(1);
-				am.remove(1);
-				am.remove(1);
-				am.remove(1);
+			$('#availability_method option[value="0"]').show();
+			$('#availability_method option[value="1"]').hide();
+			$('#availability_method option[value="4"]').hide();
+			$('#availability_method option[value="2"]').hide();
+			$('#availability_method option[value="5"]').hide();
+			$('#availability_method option[value="6"]').hide();
+
+			if ($('#availability_method').val() != "3" && $('#availability_method').val() != "0") {
+				$('#availability_method').val('3');
 			}
-
-			/* set the index to something valid, like "ping" */
-			if (selectedIndex > 1) {
-				am.selectedIndex=1;
-			}
-
-			break;
-		case "All":
-			/* restore all options */
-			if (am.length == 2) {
-				am.remove(0);
-				am.remove(0);
-
-				var a=document.createElement('option');
-				var b=document.createElement('option');
-				var c=document.createElement('option');
-				var d=document.createElement('option');
-				var e=document.createElement('option');
-				var f=document.createElement('option');
-				var g=document.createElement('option');
-
-				a.value="0";
-				a.text="None";
-				addSelectItem(a,am);
-
-				b.value="1";
-				b.text="Ping and SNMP Uptime";
-				addSelectItem(b,am);
-
-				e.value="4";
-				e.text="Ping or SNMP Uptime";
-				addSelectItem(e,am);
-
-				c.value="2";
-				c.text="SNMP Uptime";
-				addSelectItem(c,am);
-
-				f.value="5";
-				f.text="SNMP Desc";
-				addSelectItem(f,am);
-
-				g.value="6";
-				g.text="SNMP getNext";
-				addSelectItem(g,am);
-
-				d.value="3";
-				d.text="Ping";
-				addSelectItem(d,am);
-
-				/* restore the correct index number */
-				if (selectedIndex == 0) {
-					am.selectedIndex = 0;
-				}else{
-					am.selectedIndex = 3;
-				}
-			}
-
-			break;
+		}else{
+			$('#availability_method option[value="0"]').show();
+			$('#availability_method option[value="1"]').show();
+			$('#availability_method option[value="4"]').show();
+			$('#availability_method option[value="2"]').show();
+			$('#availability_method option[value="5"]').show();
+			$('#availability_method option[value="6"]').show();
 		}
 
-		setAvailabilityVisibility(type, am.selectedIndex);
-		setPingVisibility();
-	}
-
-	function setAvailabilityVisibility(type, selectedIndex) {
-		switch(type) {
-		case "NoSNMP":
-			switch(selectedIndex) {
+		switch($('#availibility_method').val()) {
 			case "0": // availability none
-				document.getElementById('row_ping_method').style.display="none";
-				document.getElementById('ping_method').value=0;
-
-				break;
-			case "1": // ping
-				document.getElementById('row_ping_method').style.display="";
-				document.getElementById('ping_method').value=ping_method;
-
-				break;
-			}
-		case "All":
-			switch(selectedIndex) {
-			case "0": // availability none
-				document.getElementById('row_ping_method').style.display="none";
-				document.getElementById('ping_method').value=0;
+				$('#row_ping_method').hide();
+				$('#ping_method').val(0);
+				$('#row_ping_timeout').hide();
+				$('#row_ping_port').hide();
+				$('#row_ping_timeout').hide();
+				$('#row_ping_retrie').hide();
 
 				break;
 			case "1": // ping and snmp sysUptime
 			case "3": // ping
 			case "4": // ping or snmp sysUptime
-				if ((document.getElementById('row_ping_method').style.display == "none") ||
-					(document.getElementById('row_ping_method').style.display == undefined)) {
-					document.getElementById('ping_method').value=ping_method;
-					document.getElementById('row_ping_method').style.display="";
+				if (($('#row_ping_method').css('display', 'none')) ||
+					($('#row_ping_method').css('display') == undefined)) {
+					$('#ping_method').val(ping_method);
+					$('#row_ping_method').css('display', '');
 				}
 
 				break;
 			case "2": // snmp sysUptime
 			case "5": // snmp sysDesc
 			case "6": // snmp getNext
-				document.getElementById('row_ping_method').style.display="none";
-				document.getElementById('ping_method').value="0";
+				$('#row_ping_method').css('display', 'none');
+				$('#ping_method').val(0);
 
 				break;
-			}
 		}
 	}
 
 	function changeHostForm() {
-		snmp_version        = document.getElementById('snmp_version').value;
+		setSNMP();
+		setAvailability();
+		setPing();
+	}
 
+	function setSNMP() {
+		snmp_version = $('#snmp_version').val();
 		switch(snmp_version) {
-		case "0":
-			setAvailability("NoSNMP");
-			setSNMP("None");
-
+		case "0": // No SNMP
+			$('#row_snmp_username').hide();
+			$('#row_snmp_password').hide();
+			$('#row_snmp_community').hide();
+			$('#row_snmp_auth_protocol').hide();
+			$('#row_snmp_priv_passphrase').hide();
+			$('#row_snmp_priv_protocol').hide();
+			$('#row_snmp_context').hide();
+			$('#row_snmp_port').hide();
+			$('#row_snmp_timeout').hide();
+			$('#row_max_oids').hide();
 			break;
-		case "1":
-		case "2":
-			setAvailability("All");
-			setSNMP("v1v2");
-
+		case "1": // SNMP v1
+		case "2": // SNMP v2c
+			$('#row_snmp_username').hide();
+			$('#row_snmp_password').hide();
+			$('#row_snmp_community').show();
+			$('#row_snmp_auth_protocol').hide();
+			$('#row_snmp_priv_passphrase').hide();
+			$('#row_snmp_priv_protocol').hide();
+			$('#row_snmp_context').hide();
+			$('#row_snmp_port').show();
+			$('#row_snmp_timeout').show();
+			$('#row_max_oids').show();
 			break;
-		case "3":
-			setAvailability("All");
-			setSNMP("v3");
-
-			break;
-		}
-	}
-
-	function setSNMP(snmp_type) {
-		switch(snmp_type) {
-		case "None":
-			document.getElementById('row_snmp_username').style.display        = "none";
-			document.getElementById('row_snmp_password').style.display        = "none";
-			document.getElementById('row_snmp_community').style.display       = "none";
-			document.getElementById('row_snmp_auth_protocol').style.display   = "none";
-			document.getElementById('row_snmp_priv_passphrase').style.display = "none";
-			document.getElementById('row_snmp_priv_protocol').style.display   = "none";
-			document.getElementById('row_snmp_context').style.display         = "none";
-			document.getElementById('row_snmp_port').style.display            = "none";
-			document.getElementById('row_snmp_timeout').style.display         = "none";
-			document.getElementById('row_max_oids').style.display             = "none";
-
-			break;
-		case "v1v2":
-			document.getElementById('row_snmp_username').style.display        = "none";
-			document.getElementById('row_snmp_password').style.display        = "none";
-			document.getElementById('row_snmp_community').style.display       = "";
-			document.getElementById('row_snmp_auth_protocol').style.display   = "none";
-			document.getElementById('row_snmp_priv_passphrase').style.display = "none";
-			document.getElementById('row_snmp_priv_protocol').style.display   = "none";
-			document.getElementById('row_snmp_context').style.display         = "none";
-			document.getElementById('row_snmp_port').style.display            = "";
-			document.getElementById('row_snmp_timeout').style.display         = "";
-			document.getElementById('row_max_oids').style.display             = "";
-
-			break;
-		case "v3":
-			document.getElementById('row_snmp_username').style.display        = "";
-			document.getElementById('row_snmp_password').style.display        = "";
-			document.getElementById('row_snmp_community').style.display       = "none";
-			document.getElementById('row_snmp_auth_protocol').style.display   = "";
-			document.getElementById('row_snmp_priv_passphrase').style.display = "";
-			document.getElementById('row_snmp_priv_protocol').style.display   = "";
-			document.getElementById('row_snmp_context').style.display         = "";
-			document.getElementById('row_snmp_port').style.display            = "";
-			document.getElementById('row_snmp_timeout').style.display         = "";
-			document.getElementById('row_max_oids').style.display             = "";
-
+		case "3": // SNMP v3
+			$('#row_snmp_username').show();
+			$('#row_snmp_password').show();
+			$('#row_snmp_community').hide();
+			$('#row_snmp_auth_protocol').show();
+			$('#row_snmp_priv_passphrase').show();
+			$('#row_snmp_priv_protocol').show();
+			$('#row_snmp_context').show();
+			$('#row_snmp_port').show();
+			$('#row_snmp_timeout').show();
+			$('#row_max_oids').show();
 			break;
 		}
 	}
 
-	function addLoadEvent(func) {
-		var oldonload = window.onload;
-		if (typeof window.onload != 'function') {
-			window.onload = func;
-		} else {
-			window.onload = function() {
-				if (oldonload) {
-					oldonload();
-				}
-				func();
-			}
-		}
-	}
-
-	addLoadEvent(changeHostForm);
+	$(function() {
+		changeHostForm();
+	});
 
 	-->
 	</script>
@@ -1054,11 +933,11 @@ function host_edit() {
 			<?php
 			form_end_row();
 		}
-		}else{ print "<tr><td colspan='2'><em>No associated graph templates.</em></td></tr>"; }
+		}else{ print "<tr class='tableRow'><td colspan='2'><em>No associated graph templates.</em></td></tr>"; }
 
 		?>
 		<tr class='odd'>
-			<td colspan="4">
+			<td class='saveRow' colspan="4">
 				<table cellspacing="0" cellpadding="1" width="100%">
 					<td nowrap>Add Graph Template:&nbsp;
 						<?php form_dropdown("graph_template_id",$available_graph_templates,"name","id","","","");?>
@@ -1136,11 +1015,11 @@ function host_edit() {
 			<?php
 			form_end_row();
 		}
-		}else{ print "<tr><td colspan='4'><em>No associated data queries.</em></td></tr>"; }
+		}else{ print "<tr class='tableRow'><td colspan='4'><em>No associated data queries.</em></td></tr>"; }
 
 		?>
 		<tr class='odd'>
-			<td colspan="5">
+			<td class='saveRow' colspan="5">
 				<table cellspacing="0" cellpadding="1" width="100%">
 					<td nowrap>Add Data Query:&nbsp;
 						<?php form_dropdown("snmp_query_id",$available_data_queries,"name","id","","","");?>
@@ -1232,11 +1111,11 @@ function host() {
 	<script type="text/javascript">
 	<!--
 
-	function applyViewDeviceFilterChange(objForm) {
-		strURL = '?host_status=' + objForm.host_status.value;
-		strURL = strURL + '&host_template_id=' + objForm.host_template_id.value;
-		strURL = strURL + '&host_rows=' + objForm.host_rows.value;
-		strURL = strURL + '&filter=' + objForm.filter.value;
+	function applyViewDeviceFilterChange() {
+		strURL = '?host_status=' + $('#host_status').val();
+		strURL = strURL + '&host_template_id=' + $('#host_template_id').val();
+		strURL = strURL + '&host_rows=' + $('#host_rows').val();
+		strURL = strURL + '&filter=' + $('#filter').val();
 		document.location = strURL;
 	}
 
@@ -1256,7 +1135,7 @@ function host() {
 						Type:
 					</td>
 					<td width="1">
-						<select name="host_template_id" onChange="applyViewDeviceFilterChange(document.form_devices)">
+						<select id='host_template_id' name="host_template_id" onChange="applyViewDeviceFilterChange()">
 							<option value="-1"<?php if (get_request_var_request("host_template_id") == "-1") {?> selected<?php }?>>Any</option>
 							<option value="0"<?php if (get_request_var_request("host_template_id") == "0") {?> selected<?php }?>>None</option>
 							<?php
@@ -1274,7 +1153,7 @@ function host() {
 						Status:
 					</td>
 					<td width="1">
-						<select name="host_status" onChange="applyViewDeviceFilterChange(document.form_devices)">
+						<select id='host_status' name="host_status" onChange="applyViewDeviceFilterChange()">
 							<option value="-1"<?php if (get_request_var_request("host_status") == "-1") {?> selected<?php }?>>Any</option>
 							<option value="-3"<?php if (get_request_var_request("host_status") == "-3") {?> selected<?php }?>>Enabled</option>
 							<option value="-2"<?php if (get_request_var_request("host_status") == "-2") {?> selected<?php }?>>Disabled</option>
@@ -1289,13 +1168,13 @@ function host() {
 						Search:
 					</td>
 					<td width="1">
-						<input type="text" name="filter" size="20" value="<?php print htmlspecialchars(get_request_var_request("filter"));?>">
+						<input id='filter' type="text" name="filter" size="20" value="<?php print htmlspecialchars(get_request_var_request("filter"));?>">
 					</td>
 					<td>
 						Devices:
 					</td>
 					<td width="1">
-						<select name="host_rows" onChange="applyViewDeviceFilterChange(document.form_devices)">
+						<select id='host_rows' name="host_rows" onChange="applyViewDeviceFilterChange()">
 							<option value="-1"<?php if (get_request_var_request("host_rows") == "-1") {?> selected<?php }?>>Default</option>
 							<?php
 							if (sizeof($item_rows) > 0) {
@@ -1415,7 +1294,7 @@ function host() {
 		/* put the nav bar on the bottom as well */
 		print $nav;
 	}else{
-		print "<tr><td><em>No Hosts</em></td></tr>";
+		print "<tr class='tableRow'><td colspan='11'><em>No Hosts</em></td></tr>";
 	}
 	html_end_box(false);
 

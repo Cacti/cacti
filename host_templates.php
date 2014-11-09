@@ -490,7 +490,7 @@ function template() {
 		/* put the nav bar on the bottom as well */
 		print $nav;
 	}else{
-		print "<tr><td><em>No Host Templates</em></td></tr>\n";
+		print "<tr class='tableRow'><td colspan='4'><em>No Host Templates</em></td></tr>\n";
 	}
 	html_end_box(false);
 

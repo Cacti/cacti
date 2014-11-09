@@ -385,9 +385,9 @@ function update_show_current () {
 	?>
 	<script type="text/javascript">
 	<!--
-	function applyFilterChange(objForm) {
-		strURL = '?rows=' + objForm.rows.value;
-		strURL = strURL + '&filter=' + objForm.filter.value;
+	function applyFilterChange() {
+		strURL = '?rows=' + $('#rows').val();
+		strURL = strURL + '&filter=' + $('#filter').val();
 		document.location = strURL;
 	}
 	-->
@@ -402,19 +402,19 @@ function update_show_current () {
 	<tr class='even noprint'>
 		<td class="noprint">
 		<form name="form_plugins" method="get" action="plugins.php">
-			<table cellpadding="0" cellspacing="0">
+			<table cellpadding="2" cellspacing="0">
 				<tr class="noprint">
-					<td nowrap style='white-space: nowrap;' width="50">
-						Search:&nbsp;
+					<td width="50">
+						Search:
 					</td>
 					<td width="1">
-						<input type="text" name="filter" size="40" value="<?php print get_request_var_request("filter");?>">
+						<input id='filter' type="text" name="filter" size="40" value="<?php print get_request_var_request("filter");?>">
 					</td>
-					<td nowrap style='white-space: nowrap;' width="50">
-						&nbsp;Rows:&nbsp;
+					<td>
+						Rows:
 					</td>
 					<td width="1">
-						<select name="rows" onChange="applyFilterChange(document.form_plugins)">
+						<select id='rows' name="rows" onChange="applyFilterChange()">
 							<option value="-1"<?php if (get_request_var_request("rows") == "-1") {?> selected<?php }?>>Default</option>
 							<?php
 							if (sizeof($item_rows) > 0) {
@@ -426,10 +426,10 @@ function update_show_current () {
 						</select>
 					</td>
 					<td nowrap style='white-space: nowrap;'>
-						&nbsp;<input type="submit" value="Go" title="Set/Refresh Filters">
+						<input type="submit" value="Go" title="Set/Refresh Filters">
 					</td>
 					<td nowrap style='white-space: nowrap;'>
-						&nbsp;<input type="submit" name="clear_x" value="Clear" title="Clear Filters">
+						<input type="submit" name="clear_x" value="Clear" title="Clear Filters">
 					</td>
 				</tr>
 			</table>
@@ -544,7 +544,7 @@ function update_show_current () {
 	html_end_box(false);
 
 	html_start_box("", "100%", "", "3", "center", "");
-	echo "<tr><td colspan=10><strong>NOTE:</strong> Please sort by 'Load Order' to change plugin load ordering.<br><strong>NOTE:</strong> SYSTEM plugins can not be ordered.</td></tr>";
+	echo "<tr class='tableRow'><td colspan=10><strong>NOTE:</strong> Please sort by 'Load Order' to change plugin load ordering.<br><strong>NOTE:</strong> SYSTEM plugins can not be ordered.</td></tr>";
 	html_end_box();
 
 	print "</form>\n";

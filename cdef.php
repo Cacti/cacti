@@ -501,16 +501,18 @@ function cdef() {
 	<tr class='even'>
 		<td>
 			<form name="form_cdef" action="cdef.php">
-			<table width="100%" cellpadding="0" cellspacing="0">
+			<table cellpadding="2" cellspacing="0">
 				<tr>
-					<td nowrap style='white-space: nowrap;' width="50">
+					<td width="50">
 						Search:&nbsp;
 					</td>
 					<td width="1">
 						<input type="text" name="filter" size="40" value="<?php print htmlspecialchars(get_request_var_request("filter"));?>">
 					</td>
-					<td nowrap style='white-space: nowrap;'>
-						&nbsp;<input type="submit" value="Go" title="Set/Refresh Filters">
+					<td>
+						<input type="submit" value="Go" title="Set/Refresh Filters">
+					</td>
+					<td>
 						<input type="submit" name="clear_x" value="Clear" title="Clear Filters">
 					</td>
 				</tr>
@@ -562,7 +564,7 @@ function cdef() {
 		}
 		print $nav;
 	}else{
-		print "<tr><td><em>No CDEFs</em></td></tr>\n";
+		print "<tr class='tableRow'><td colspan='2'><em>No CDEFs</em></td></tr>\n";
 	}
 	html_end_box(false);
 

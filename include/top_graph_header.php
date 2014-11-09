@@ -124,18 +124,21 @@ $page_title = api_plugin_hook_function('page_title', draw_navigation_text("title
 	</tr>
 <?php } elseif ($oper_mode == OPER_MODE_NOTABS) { api_plugin_hook_function('print_top_header'); } ?>
 	<tr class='breadCrumbBar noprint'>
-		<td colspan="2">
+		<td colspan="3">
 			<table width="100%">
 				<tr>
 					<td width='30%'>
-						<?php echo draw_navigation_text();?>
+						<div class='navBar'>
+							<?php echo draw_navigation_text();?>
+						</div>
 					</td>
-					<td width='40%'><div class='scrollBar'></div></td>
-					<td width='30%' class='infoBar' align="right">
-						<?php api_plugin_hook('nav_login_before'); ?>
-						<?php if ((isset($_SESSION["sess_user_id"])) && ($using_guest_account == false)) { api_plugin_hook('nav_login_before'); ?>
-						Logged in as <strong><?php print db_fetch_cell("select username from user_auth where id=" . $_SESSION["sess_user_id"]);?></strong> (<a href="<?php echo $config['url_path']; ?>logout.php">Logout</a>)&nbsp;
-						<?php api_plugin_hook('nav_login_after'); } ?>
+					<td width='40%'>
+						<div class='scrollBar'></div>
+					</td>
+					<td width='30%' align="right">
+						<div class='infoBar'>
+							<?php echo draw_login_status();?>
+						</div>
 					</td>
 				</tr>
 			</table>

@@ -500,8 +500,8 @@ $settings = array(
 			"method" => "spacer",
 			),
 		"selected_theme" => array(
-			"friendly_name" => "Themes Found",
-			"description" => "Please select one of the available Themes.",
+			"friendly_name" => "Theme",
+			"description" => "Please select one of the available Themes to skin your Cacti with.",
 			"method" => "drop_array",
 			"default" => "classic",
 			"array" => $themes

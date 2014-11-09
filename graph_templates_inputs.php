@@ -224,7 +224,7 @@ function input_edit() {
 			$i++;
 		}
 		}else{
-			print "<em>No Items</em>";
+			print "<tr class='tableRow'><td><em>No Items</em></td></tr>";
 		}
 		?>
 		</td>
