@@ -500,6 +500,13 @@ $struct_graph = array(
 
 /* file: (graphs.php|graph_templates.php), action: item_edit */
 $struct_graph_item = array(
+	"graph_type_id" => array(
+		"friendly_name" => "Graph Item Type",
+		"method" => "drop_array",
+		"array" => $graph_item_types,
+		"default" => "0",
+		"description" => "How data for this item is represented visually on the graph."
+		),
 	"task_item_id" => array(
 		"friendly_name" => "Data Source",
 		"method" => "drop_sql",
@@ -528,13 +535,6 @@ $struct_graph_item = array(
 		"default" => "FF",
 		"array" => $graph_color_alpha,
 		"description" => "The opacity/alpha channel of the color. Not available for rrdtool-1.0.x."
-		),
-	"graph_type_id" => array(
-		"friendly_name" => "Graph Item Type",
-		"method" => "drop_array",
-		"array" => $graph_item_types,
-		"default" => "0",
-		"description" => "How data for this item is represented visually on the graph."
 		),
 	"consolidation_function_id" => array(
 		"friendly_name" => "Consolidation Function",

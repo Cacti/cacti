@@ -364,9 +364,12 @@ function host_new_graphs($host_id, $host_template_id, $selected_graphs_array) {
    ------------------- */
 
 function graphs() {
+	global $item_rows;
+
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var_request("host_id"));
 	input_validate_input_number(get_request_var_request("graph_type"));
+	input_validate_input_number(get_request_var_request("rows"));
 	/* ==================================================== */
 
 	/* clean up search string */
@@ -377,7 +380,9 @@ function graphs() {
 	/* if the user pushed the 'clear' button */
 	if (isset($_REQUEST["clear_x"])) {
 		kill_session_var("sess_graphs_new_filter");
+		kill_session_var("sess_default_rows");
 		unset($_REQUEST["filter"]);
+		unset($_REQUEST["rows"]);
 		$changed = true;
 	}else{
 		/* if any of the settings changed, reset the page number */
@@ -385,14 +390,16 @@ function graphs() {
 		$changed += check_changed("host_id",    "sess_graphs_new_host_id");
 		$changed += check_changed("graph_type", "sess_graphs_new_graph_type");
 		$changed += check_changed("filter",     "sess_graphs_new_filter");
+		$changed += check_changed("rows",       "sess_default_rows");
 	}
 
 	load_current_session_value("host_id",    "sess_graphs_new_host_id",    db_fetch_cell("select id from host order by description,hostname limit 1"));
 	load_current_session_value("graph_type", "sess_graphs_new_graph_type", read_config_option("default_graphs_new_dropdown"));
 	load_current_session_value("filter",     "sess_graphs_new_filter",     "");
+	load_current_session_value('rows',       'sess_default_rows',          read_config_option('num_rows_table'));
 
 	$host      = db_fetch_row("select id,description,hostname,host_template_id from host where id=" . $_REQUEST["host_id"]);
-	$row_limit = read_config_option("num_rows_data_query");
+	$row_limit = get_request_var_request("rows");
 	$debug_log = debug_log_return("new_graphs");
 
 	$header =  " [ " . htmlspecialchars($host["description"]) . " (" . htmlspecialchars($host["hostname"]) . ") " . 
@@ -414,18 +421,19 @@ function graphs() {
 		strURL = '?graph_type=' + $('#graph_type').val();
 		strURL = strURL + '&host_id=' + $('#host_id').val();
 		strURL = strURL + '&filter=' + $('#filter').val();;
+		strURL = strURL + '&rows=' + $('#rows').val();;
 		document.location = strURL;
 	}
 
 	-->
 	</script>
 	<form name="form_graphs_new" action="graphs_new.php">
-	<table width="100%" class="textHeader" cellpadding="2" align="left">
+	<table width="100%" cellpadding='2' cellspacing='0' border='0' align="left">
 		<tr>
-			<td width="55" valign='top'>
+			<td width="55">
 				Host:
 			</td>
-			<td width="1" valign='top'>
+			<td width="1">
 				<select id='host_id' name="host_id" onChange="applyGraphsNewFilterChange()">
 				<?php
 				$hosts = db_fetch_assoc("select id,CONCAT_WS('',description,' (',hostname,')') as name from host order by description,hostname");
@@ -441,7 +449,7 @@ function graphs() {
 			<td style='white-space:nowrap;' valign='top' width="100">
 				Graph Types:
 			</td>
-			<td width="1" valign='top'>
+			<td width="1">
 				<select id='graph_type' name="graph_type" onChange="applyGraphsNewFilterChange()">
 				<option value="-2"<?php if ($_REQUEST["graph_type"] == "-2") {?> selected<?php }?>>All</option>
 				<option value="-1"<?php if ($_REQUEST["graph_type"] == "-1") {?> selected<?php }?>>Graph Template Based</option>
@@ -464,21 +472,37 @@ function graphs() {
 				?>
 				</select>
 			</td>
-			<td rowspan="2" class="textInfo" align="right" valign="top">
+			<td rowspan="3" class="textInfo" align="right" valign="top">
 				<span class="linkMarker">*</span><a href="<?php print htmlspecialchars("host.php?action=edit&id=" . $_REQUEST["host_id"]);?>">Edit this Host</a><br>
 				<span class="linkMarker">*</span><a href="<?php print htmlspecialchars("host.php?action=edit");?>">Create New Host</a><br>
 				<?php api_plugin_hook('graphs_new_top_links'); ?>
 			</td>
 		</tr>
+		<tr>
+			<td width='55'>
+				Rows:
+			</td>
+			<td>
+				<select id='rows' name="rows" onChange="applyGraphsNewFilterChange()">
+					<?php
+					if (sizeof($item_rows) > 0) {
+						foreach ($item_rows as $key => $value) {
+							print "<option value='" . $key . "'"; if (get_request_var_request("rows") == $key) { print " selected"; } print ">" . htmlspecialchars($value) . "</option>\n";
+						}
+					}
+					?>
+				</select>
+			</td>
+		</tr>
 	<?php if ($_REQUEST["graph_type"] > 0) {?>
 		<tr>
-			<td width="55" valign='top'>
+			<td width="55">
 				Search:
 			</td>
-			<td valign='top'>
+			<td>
 				<input id='filter' type="text" name="filter" size="30" value="<?php print htmlspecialchars(get_request_var_request("filter"));?>">
 			</td>
-			<td colspan='2' valign='top'>
+			<td style='white-space:nowrap;'>
 				<input type="submit" value="Go" title="Set/Refresh Filters">
 				<input type="submit" name="clear_x" value="Clear" title="Clear Filters">
 			</td>

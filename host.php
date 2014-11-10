@@ -914,25 +914,27 @@ function host_edit() {
 
 		$i = 0;
 		if (sizeof($selected_graph_templates) > 0) {
-		foreach ($selected_graph_templates as $item) {
-			form_alternate_row('', true);
+			foreach ($selected_graph_templates as $item) {
+				form_alternate_row('', true);
 
-			/* get status information for this graph template */
-			$is_being_graphed = (sizeof(db_fetch_assoc("select id from graph_local where graph_template_id=" . $item["id"] . " and host_id=" . $_GET["id"])) > 0) ? true : false;
+				/* get status information for this graph template */
+				$is_being_graphed = (sizeof(db_fetch_assoc("select id from graph_local where graph_template_id=" . $item["id"] . " and host_id=" . $_GET["id"])) > 0) ? true : false;
 
-			?>
-				<td style="padding: 4px;">
-					<strong><?php print $i;?>)</strong> <?php print htmlspecialchars($item["name"]);?>
-				</td>
-				<td>
-					<?php print (($is_being_graphed == true) ? "<span style='color: green;'>Is Being Graphed</span> (<a href='" . htmlspecialchars("graphs.php?action=graph_edit&id=" . db_fetch_cell("select id from graph_local where graph_template_id=" . $item["id"] . " and host_id=" . $_GET["id"] . " limit 0,1")) . "'>Edit</a>)" : "<span style='color: #484848;'>Not Being Graphed</span>");?>
-				</td>
-				<td align='right' nowrap>
-					<a href='<?php print htmlspecialchars("host.php?action=gt_remove&id=" . $item["id"] . "&host_id=" . $_GET["id"]);?>'><img src='images/delete_icon_large.gif' title='Delete Graph Template Association' alt='Delete Graph Template Association' border='0' align='middle'></a>
-				</td>
-			<?php
-			form_end_row();
-		}
+				?>
+					<td style="padding: 4px;">
+						<strong><?php print $i;?>)</strong> <?php print htmlspecialchars($item["name"]);?>
+					</td>
+					<td>
+						<?php print (($is_being_graphed == true) ? "<span style='color: green;'>Is Being Graphed</span> (<a href='" . htmlspecialchars("graphs.php?action=graph_edit&id=" . db_fetch_cell("select id from graph_local where graph_template_id=" . $item["id"] . " and host_id=" . $_GET["id"] . " limit 0,1")) . "'>Edit</a>)" : "<span style='color: #484848;'>Not Being Graphed</span>");?>
+					</td>
+					<td align='right' nowrap>
+						<a href='<?php print htmlspecialchars("host.php?action=gt_remove&id=" . $item["id"] . "&host_id=" . $_GET["id"]);?>'><img src='images/delete_icon_large.gif' title='Delete Graph Template Association' alt='Delete Graph Template Association' border='0' align='middle'></a>
+					</td>
+				<?php
+				form_end_row();
+
+				$i++;
+			}
 		}else{ print "<tr class='tableRow'><td colspan='2'><em>No associated graph templates.</em></td></tr>"; }
 
 		?>
@@ -986,35 +988,37 @@ function host_edit() {
 
 		$i = 0;
 		if (sizeof($selected_data_queries) > 0) {
-		foreach ($selected_data_queries as $item) {
-			form_alternate_row('', true);
+			foreach ($selected_data_queries as $item) {
+				form_alternate_row('', true);
 
-			/* get status information for this data query */
-			$num_dq_items = sizeof(db_fetch_assoc("select snmp_index from host_snmp_cache where host_id=" . $_GET["id"] . " and snmp_query_id=" . $item["id"]));
-			$num_dq_rows = sizeof(db_fetch_assoc("select snmp_index from host_snmp_cache where host_id=" . $_GET["id"] . " and snmp_query_id=" . $item["id"] . " group by snmp_index"));
+				/* get status information for this data query */
+				$num_dq_items = sizeof(db_fetch_assoc("select snmp_index from host_snmp_cache where host_id=" . $_GET["id"] . " and snmp_query_id=" . $item["id"]));
+				$num_dq_rows = sizeof(db_fetch_assoc("select snmp_index from host_snmp_cache where host_id=" . $_GET["id"] . " and snmp_query_id=" . $item["id"] . " group by snmp_index"));
 
-			$status = "success";
+				$status = "success";
 
-			?>
-				<td style="padding: 4px;">
-					<strong><?php print $i;?>)</strong> <?php print htmlspecialchars($item["name"]);?>
-				</td>
-				<td>
-					(<a href="<?php print htmlspecialchars("host.php?action=query_verbose&id=" . $item["id"] . "&host_id=" . $_GET["id"]);?>">Verbose Query</a>)
-				</td>
-				<td>
+				?>
+					<td style="padding: 4px;">
+						<strong><?php print $i;?>)</strong> <?php print htmlspecialchars($item["name"]);?>
+					</td>
+					<td>
+						(<a href="<?php print htmlspecialchars("host.php?action=query_verbose&id=" . $item["id"] . "&host_id=" . $_GET["id"]);?>">Verbose Query</a>)
+					</td>
+					<td>
 					<?php print $reindex_types{$item["reindex_method"]};?>
-				</td>
-				<td>
-					<?php print (($status == "success") ? "<span style='color: green;'>Success</span>" : "<span style='color: green;'>Fail</span>");?> [<?php print $num_dq_items;?> Item<?php print ($num_dq_items == 1 ? "" : "s");?>, <?php print $num_dq_rows;?> Row<?php print ($num_dq_rows == 1 ? "" : "s");?>]
-				</td>
-				<td align='right' nowrap>
-					<a href='<?php print htmlspecialchars("host.php?action=query_reload&id=" . $item["id"] . "&host_id=" . $_GET["id"]);?>'><img src='images/reload_icon_small.gif' title='Reload Data Query' alt='Reload Data Query' border='0' align='middle'></a>&nbsp;
-					<a href='<?php print htmlspecialchars("host.php?action=query_remove&id=" . $item["id"] . "&host_id=" . $_GET["id"]);?>'><img src='images/delete_icon_large.gif' title='Delete Data Query Association' alt='Delete Data Query Association' border='0' align='middle'></a>
-				</td>
-			<?php
-			form_end_row();
-		}
+					</td>
+					<td>
+						<?php print (($status == "success") ? "<span style='color: green;'>Success</span>" : "<span style='color: green;'>Fail</span>");?> [<?php print $num_dq_items;?> Item<?php print ($num_dq_items == 1 ? "" : "s");?>, <?php print $num_dq_rows;?> Row<?php print ($num_dq_rows == 1 ? "" : "s");?>]
+					</td>
+					<td align='right' nowrap>
+						<a href='<?php print htmlspecialchars("host.php?action=query_reload&id=" . $item["id"] . "&host_id=" . $_GET["id"]);?>'><img src='images/reload_icon_small.gif' title='Reload Data Query' alt='Reload Data Query' border='0' align='middle'></a>&nbsp;
+						<a href='<?php print htmlspecialchars("host.php?action=query_remove&id=" . $item["id"] . "&host_id=" . $_GET["id"]);?>'><img src='images/delete_icon_large.gif' title='Delete Data Query Association' alt='Delete Data Query Association' border='0' align='middle'></a>
+					</td>
+				<?php
+				form_end_row();
+
+				$i++;
+			}
 		}else{ print "<tr class='tableRow'><td colspan='4'><em>No associated data queries.</em></td></tr>"; }
 
 		?>
@@ -1050,7 +1054,7 @@ function host() {
 	input_validate_input_number(get_request_var_request("host_template_id"));
 	input_validate_input_number(get_request_var_request("page"));
 	input_validate_input_number(get_request_var_request("host_status"));
-	input_validate_input_number(get_request_var_request("host_rows"));
+	input_validate_input_number(get_request_var_request("rows"));
 	/* ==================================================== */
 
 	/* clean up search string */
@@ -1074,7 +1078,7 @@ function host() {
 		kill_session_var("sess_device_filter");
 		kill_session_var("sess_device_host_template_id");
 		kill_session_var("sess_host_status");
-		kill_session_var("sess_host_rows");
+		kill_session_var("sess_default_rows");
 		kill_session_var("sess_host_sort_column");
 		kill_session_var("sess_host_sort_direction");
 
@@ -1082,7 +1086,7 @@ function host() {
 		unset($_REQUEST["filter"]);
 		unset($_REQUEST["host_template_id"]);
 		unset($_REQUEST["host_status"]);
-		unset($_REQUEST["host_rows"]);
+		unset($_REQUEST["rows"]);
 		unset($_REQUEST["sort_column"]);
 		unset($_REQUEST["sort_direction"]);
 	}
@@ -1098,13 +1102,13 @@ function host() {
 	load_current_session_value("filter", "sess_device_filter", "");
 	load_current_session_value("host_template_id", "sess_device_host_template_id", "-1");
 	load_current_session_value("host_status", "sess_host_status", "-1");
-	load_current_session_value("host_rows", "sess_host_rows", read_config_option("num_rows_device"));
+	load_current_session_value('rows', 'sess_default_rows', read_config_option('num_rows_table'));
 	load_current_session_value("sort_column", "sess_host_sort_column", "description");
 	load_current_session_value("sort_direction", "sess_host_sort_direction", "ASC");
 
 	/* if the number of rows is -1, set it to the default */
-	if ($_REQUEST["host_rows"] == -1) {
-		$_REQUEST["host_rows"] = read_config_option("num_rows_device");
+	if ($_REQUEST["rows"] == -1) {
+		$_REQUEST["rows"] = read_config_option("num_rows_table");
 	}
 
 	?>
@@ -1114,7 +1118,7 @@ function host() {
 	function applyViewDeviceFilterChange() {
 		strURL = '?host_status=' + $('#host_status').val();
 		strURL = strURL + '&host_template_id=' + $('#host_template_id').val();
-		strURL = strURL + '&host_rows=' + $('#host_rows').val();
+		strURL = strURL + '&rows=' + $('#rows').val();
 		strURL = strURL + '&filter=' + $('#filter').val();
 		document.location = strURL;
 	}
@@ -1174,12 +1178,12 @@ function host() {
 						Devices:
 					</td>
 					<td width="1">
-						<select id='host_rows' name="host_rows" onChange="applyViewDeviceFilterChange()">
-							<option value="-1"<?php if (get_request_var_request("host_rows") == "-1") {?> selected<?php }?>>Default</option>
+						<select id='rows' name="rows" onChange="applyViewDeviceFilterChange()">
+							<option value="-1"<?php if (get_request_var_request("rows") == "-1") {?> selected<?php }?>>Default</option>
 							<?php
 							if (sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var_request("host_rows") == $key) { print " selected"; } print ">" . htmlspecialchars($value) . "</option>\n";
+									print "<option value='" . $key . "'"; if (get_request_var_request("rows") == $key) { print " selected"; } print ">" . htmlspecialchars($value) . "</option>\n";
 								}
 							}
 							?>
@@ -1250,11 +1254,11 @@ function host() {
 		FROM host
 		$sql_where
 		ORDER BY " . $sortby . " " . get_request_var_request("sort_direction") . "
-		LIMIT " . (get_request_var_request("host_rows")*(get_request_var_request("page")-1)) . "," . get_request_var_request("host_rows");
+		LIMIT " . (get_request_var_request("rows")*(get_request_var_request("page")-1)) . "," . get_request_var_request("rows");
 
 	$hosts = db_fetch_assoc($sql_query);
 
-	$nav = html_nav_bar("host.php?filter=" . get_request_var_request("filter") . "&host_template_id=" . get_request_var_request("host_template_id") . "&host_status=" . get_request_var_request("host_status"), MAX_DISPLAY_PAGES, get_request_var_request("page"), get_request_var_request("host_rows"), $total_rows, 11, 'Devices');
+	$nav = html_nav_bar("host.php?filter=" . get_request_var_request("filter") . "&host_template_id=" . get_request_var_request("host_template_id") . "&host_status=" . get_request_var_request("host_status"), MAX_DISPLAY_PAGES, get_request_var_request("page"), get_request_var_request("rows"), $total_rows, 11, 'Devices');
 
 	print $nav;
 
@@ -1277,7 +1281,7 @@ function host() {
 		foreach ($hosts as $host) {
 			form_alternate_row('line' . $host["id"], true);
 			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars("host.php?action=edit&id=" . $host["id"]) . "'>" .
-				(strlen(get_request_var_request("filter")) ? preg_replace("/(" . preg_quote(get_request_var_request("filter"), "/") . ")/i", "<span class='filteredValue'>\\1</span>", htmlspecialchars($host["description"])) : htmlspecialchars($host["description"])) . "</a>", $host["id"], 250);
+				(strlen(get_request_var_request("filter")) ? preg_replace("/(" . preg_quote(get_request_var_request("filter"), "/") . ")/i", "<span class='filteredValue'>\\1</span>", htmlspecialchars($host["description"])) : htmlspecialchars($host["description"])) . "</a>", $host["id"]);
 			form_selectable_cell(round(($host["id"]), 2), $host["id"]);
 			form_selectable_cell((isset($host_graphs[$host["id"]]) ? $host_graphs[$host["id"]] : 0), $host["id"]);
 			form_selectable_cell((isset($host_data_sources[$host["id"]]) ? $host_data_sources[$host["id"]] : 0), $host["id"]);

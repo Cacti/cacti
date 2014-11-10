@@ -48,17 +48,17 @@ switch ($_REQUEST["action"]) {
 	case 'item_movedown':
 		item_movedown();
 
-		header("Location: cdef.php?action=edit&id=" . $_GET["cdef_id"]);
+		header("Location: cdef.php?action=edit&id=" . $_REQUEST["cdef_id"]);
 		break;
 	case 'item_moveup':
 		item_moveup();
 
-		header("Location: cdef.php?action=edit&id=" . $_GET["cdef_id"]);
+		header("Location: cdef.php?action=edit&id=" . $_REQUEST["cdef_id"]);
 		break;
 	case 'item_remove':
 		item_remove();
 
-		header("Location: cdef.php?action=edit&id=" . $_GET["cdef_id"]);
+		header("Location: cdef.php?action=edit&id=" . $_REQUEST["cdef_id"]);
 		break;
 	case 'item_edit':
 		top_header();
@@ -257,55 +257,55 @@ function form_actions() {
 
 function item_movedown() {
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var("id"));
-	input_validate_input_number(get_request_var("cdef_id"));
+	input_validate_input_number(get_request_var_request("id"));
+	input_validate_input_number(get_request_var_request("cdef_id"));
 	/* ==================================================== */
 
-	move_item_down("cdef_items", $_GET["id"], "cdef_id=" . $_GET["cdef_id"]);
+	move_item_down("cdef_items", $_REQUEST["id"], "cdef_id=" . $_REQUEST["cdef_id"]);
 }
 
 function item_moveup() {
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var("id"));
-	input_validate_input_number(get_request_var("cdef_id"));
+	input_validate_input_number(get_request_var_request("id"));
+	input_validate_input_number(get_request_var_request("cdef_id"));
 	/* ==================================================== */
 
-	move_item_up("cdef_items", $_GET["id"], "cdef_id=" . $_GET["cdef_id"]);
+	move_item_up("cdef_items", $_REQUEST["id"], "cdef_id=" . $_REQUEST["cdef_id"]);
 }
 
 function item_remove() {
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var("id"));
-	input_validate_input_number(get_request_var("cdef_id"));
+	input_validate_input_number(get_request_var_request("id"));
+	input_validate_input_number(get_request_var_request("cdef_id"));
 	/* ==================================================== */
 
-	db_execute("delete from cdef_items where id=" . $_GET["id"]);
+	db_execute("delete from cdef_items where id=" . $_REQUEST["id"]);
 }
 
 function item_edit() {
 	global $cdef_item_types, $cdef_functions, $cdef_operators, $custom_data_source_types;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var("id"));
-	input_validate_input_number(get_request_var("cdef_id"));
+	input_validate_input_number(get_request_var_request("id"));
+	input_validate_input_number(get_request_var_request("cdef_id"));
 	/* ==================================================== */
 
-	if (!empty($_GET["id"])) {
-		$cdef = db_fetch_row("select * from cdef_items where id=" . $_GET["id"]);
+	if (!empty($_REQUEST["id"])) {
+		$cdef = db_fetch_row("select * from cdef_items where id=" . $_REQUEST["id"]);
 		$current_type = $cdef["type"];
 		$values[$current_type] = $cdef["value"];
 	}
 
 	html_start_box("", "100%", "", "3", "center", "");
-	draw_cdef_preview($_GET["cdef_id"]);
+	draw_cdef_preview($_REQUEST["cdef_id"]);
 	html_end_box();
 
 	print "<form method='post' action='cdef.php' name='form_cdef'>\n";
 
-	html_start_box("<strong>CDEF Items</strong> [edit: " . htmlspecialchars(db_fetch_cell("select name from cdef where id=" . $_GET["cdef_id"])) . "]", "100%", "", "3", "center", "");
+	html_start_box("<strong>CDEF Items</strong> [edit: " . htmlspecialchars(db_fetch_cell("select name from cdef where id=" . $_REQUEST["cdef_id"])) . "]", "100%", "", "3", "center", "");
 
-	if (isset($_GET["type_select"])) {
-		$current_type = $_GET["type_select"];
+	if (isset($_REQUEST["type_select"])) {
+		$current_type = $_REQUEST["type_select"];
 	}elseif (isset($cdef["type"])) {
 		$current_type = $cdef["type"];
 	}else{
@@ -321,7 +321,7 @@ function item_edit() {
 			<select name="type_select" onChange="window.location=document.form_cdef.type_select.options[document.form_cdef.type_select.selectedIndex].value">
 				<?php
 				while (list($var, $val) = each($cdef_item_types)) {
-					print "<option value='cdef.php?action=item_edit" . (isset($_GET["id"]) ? "&id=" . $_GET["id"] : "") . "&cdef_id=" . $_GET["cdef_id"] . "&type_select=$var'"; if ($var == $current_type) { print " selected"; } print ">$val</option>\n";
+					print "<option value='cdef.php?action=item_edit" . (isset($_REQUEST["id"]) ? "&id=" . $_REQUEST["id"] : "") . "&cdef_id=" . $_REQUEST["cdef_id"] . "&type_select=$var'"; if ($var == $current_type) { print " selected"; } print ">$val</option>\n";
 				}
 				?>
 			</select>
@@ -348,7 +348,7 @@ function item_edit() {
 				form_dropdown("value", db_fetch_assoc("select name,id from cdef order by name"), "name", "id", (isset($cdef["value"]) ? $cdef["value"] : ""), "", "");
 				break;
 			case '6':
-				form_text_box("value", (isset($cdef["value"]) ? $cdef["value"] : ""), "", "255", 30, "text", (isset($_GET["id"]) ? $_GET["id"] : "0"));
+				form_text_box("value", (isset($cdef["value"]) ? $cdef["value"] : ""), "", "255", 30, "text", (isset($_REQUEST["id"]) ? $_REQUEST["id"] : "0"));
 				break;
 			}
 			?>
@@ -356,14 +356,14 @@ function item_edit() {
 	</tr>
 	<?php
 
-	form_hidden_box("id", (isset($_GET["id"]) ? $_GET["id"] : "0"), "");
+	form_hidden_box("id", (isset($_REQUEST["id"]) ? $_REQUEST["id"] : "0"), "");
 	form_hidden_box("type", $current_type, "");
-	form_hidden_box("cdef_id", $_GET["cdef_id"], "");
+	form_hidden_box("cdef_id", $_REQUEST["cdef_id"], "");
 	form_hidden_box("save_component_item", "1", "");
 
 	html_end_box();
 
-	form_save_button("cdef.php?action=edit&id=" . $_GET["cdef_id"]);
+	form_save_button("cdef.php?action=edit&id=" . $_REQUEST["cdef_id"]);
 }
 
 /* ---------------------
@@ -372,22 +372,22 @@ function item_edit() {
 
 function cdef_remove() {
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var("id"));
+	input_validate_input_number(get_request_var_request("id"));
 	/* ==================================================== */
 
-	if ((read_config_option("deletion_verification") == "on") && (!isset($_GET["confirm"]))) {
+	if ((read_config_option("deletion_verification") == "on") && (!isset($_REQUEST["confirm"]))) {
 		top_header();
 
-		form_confirm("Are You Sure?", "Are you sure you want to delete the CDEF <strong>'" . htmlspecialchars(db_fetch_cell("select name from cdef where id=" . $_GET["id"])) . "'</strong>?", htmlspecialchars("cdef.php"), htmlspecialchars("cdef.php?action=remove&id=" . $_GET["id"]));
+		form_confirm("Are You Sure?", "Are you sure you want to delete the CDEF <strong>'" . htmlspecialchars(db_fetch_cell("select name from cdef where id=" . $_REQUEST["id"])) . "'</strong>?", htmlspecialchars("cdef.php"), htmlspecialchars("cdef.php?action=remove&id=" . $_REQUEST["id"]));
 
 		bottom_footer();
 
 		exit;
 	}
 
-	if ((read_config_option("deletion_verification") == "") || (isset($_GET["confirm"]))) {
-		db_execute("delete from cdef where id=" . $_GET["id"]);
-		db_execute("delete from cdef_items where cdef_id=" . $_GET["id"]);
+	if ((read_config_option("deletion_verification") == "") || (isset($_REQUEST["confirm"]))) {
+		db_execute("delete from cdef where id=" . $_REQUEST["id"]);
+		db_execute("delete from cdef_items where cdef_id=" . $_REQUEST["id"]);
 	}
 }
 
@@ -395,11 +395,11 @@ function cdef_edit() {
 	global $cdef_item_types, $fields_cdef_edit;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var("id"));
+	input_validate_input_number(get_request_var_request("id"));
 	/* ==================================================== */
 
-	if (!empty($_GET["id"])) {
-		$cdef = db_fetch_row("select * from cdef where id=" . $_GET["id"]);
+	if (!empty($_REQUEST["id"])) {
+		$cdef = db_fetch_row("select * from cdef where id=" . $_REQUEST["id"]);
 		$header_label = "[edit: " . htmlspecialchars($cdef["name"]) . "]";
 	}else{
 		$header_label = "[new]";
@@ -414,9 +414,9 @@ function cdef_edit() {
 
 	html_end_box();
 
-	if (!empty($_GET["id"])) {
+	if (!empty($_REQUEST["id"])) {
 		html_start_box("", "100%", "", "3", "center", "");
-		draw_cdef_preview($_GET["id"]);
+		draw_cdef_preview($_REQUEST["id"]);
 		html_end_box();
 
 		html_start_box("<strong>CDEF Items</strong>", "100%", "", "3", "center", "cdef.php?action=item_edit&cdef_id=" . $cdef["id"]);
@@ -427,7 +427,7 @@ function cdef_edit() {
 			DrawMatrixHeaderItem("&nbsp;","",2);
 		print "</tr>";
 
-		$cdef_items = db_fetch_assoc("select * from cdef_items where cdef_id=" . $_GET["id"] . " order by sequence");
+		$cdef_items = db_fetch_assoc("select * from cdef_items where cdef_id=" . $_REQUEST["id"] . " order by sequence");
 
 		$i = 0;
 		if (sizeof($cdef_items) > 0) {
@@ -458,32 +458,39 @@ function cdef_edit() {
 }
 
 function cdef() {
-	global $cdef_actions;
+	global $cdef_actions, $item_rows;
+
+	/* ================= input validation ================= */
+	input_validate_input_number(get_request_var_request("page"));
+	input_validate_input_number(get_request_var_request("rows"));
+	/* ==================================================== */
 
 	/* clean up search string */
 	if (isset($_REQUEST["filter"])) {
-		$_REQUEST["filter"] = sanitize_search_string(get_request_var("filter"));
+		$_REQUEST["filter"] = sanitize_search_string(get_request_var_request("filter"));
 	}
 
 	/* clean up sort_column string */
 	if (isset($_REQUEST["sort_column"])) {
-		$_REQUEST["sort_column"] = sanitize_search_string(get_request_var("sort_column"));
+		$_REQUEST["sort_column"] = sanitize_search_string(get_request_var_request("sort_column"));
 	}
 
 	/* clean up sort_direction string */
 	if (isset($_REQUEST["sort_direction"])) {
-		$_REQUEST["sort_direction"] = sanitize_search_string(get_request_var("sort_direction"));
+		$_REQUEST["sort_direction"] = sanitize_search_string(get_request_var_request("sort_direction"));
 	}
 
 	/* if the user pushed the 'clear' button */
 	if (isset($_REQUEST["clear_x"])) {
 		kill_session_var("sess_cdef_current_page");
 		kill_session_var("sess_cdef_filter");
+		kill_session_var("sess_default_rows");
 		kill_session_var("sess_cdef_sort_column");
 		kill_session_var("sess_cdef_sort_direction");
 
 		unset($_REQUEST["page"]);
 		unset($_REQUEST["filter"]);
+		unset($_REQUEST["rows"]);
 		unset($_REQUEST["sort_column"]);
 		unset($_REQUEST["sort_direction"]);
 
@@ -494,6 +501,7 @@ function cdef() {
 	load_current_session_value("filter", "sess_cdef_filter", "");
 	load_current_session_value("sort_column", "sess_cdef_sort_column", "name");
 	load_current_session_value("sort_direction", "sess_cdef_sort_direction", "ASC");
+	load_current_session_value('rows', 'sess_default_rows', read_config_option('num_rows_table'));
 
 	html_start_box("<strong>CDEF's</strong>", "100%", "", "3", "center", "cdef.php?action=edit");
 
@@ -504,10 +512,24 @@ function cdef() {
 			<table cellpadding="2" cellspacing="0">
 				<tr>
 					<td width="50">
-						Search:&nbsp;
+						Search:
 					</td>
 					<td width="1">
-						<input type="text" name="filter" size="40" value="<?php print htmlspecialchars(get_request_var_request("filter"));?>">
+						<input id='filter' type="text" name="filter" size="40" value="<?php print htmlspecialchars(get_request_var_request("filter"));?>">
+					</td>
+					<td>
+						CDEFs:
+					</td>
+					<td>
+						<select id='rows' name="rows" onChange="applyChangeFilter()">
+							<?php
+							if (sizeof($item_rows) > 0) {
+								foreach ($item_rows as $key => $value) {
+									print "<option value='" . $key . "'"; if (get_request_var_request("rows") == $key) { print " selected"; } print ">" . htmlspecialchars($value) . "</option>\n";
+								}
+							}
+							?>
+						</select>
 					</td>
 					<td>
 						<input type="submit" value="Go" title="Set/Refresh Filters">
@@ -519,6 +541,12 @@ function cdef() {
 			</table>
 			<input type='hidden' name='page' value='1'>
 			</form>
+			<script type='text/javascript'>
+			function applyChangeFilter() {
+				strURL = '?filter='+$('#filter').val()+'&rows='+$('#rows').val();
+				document.location = strURL;
+			}
+			</script>
 		</td>
 	</tr>
 	<?php
@@ -543,9 +571,9 @@ function cdef() {
 		FROM cdef
 		$sql_where
 		ORDER BY " . get_request_var_request("sort_column") . " " . get_request_var_request("sort_direction") .
-		" LIMIT " . (read_config_option("num_rows_device")*(get_request_var_request("page")-1)) . "," . read_config_option("num_rows_device"));
+		" LIMIT " . (get_request_var_request("rows")*(get_request_var_request("page")-1)) . "," . get_request_var_request("rows"));
 
-	$nav = html_nav_bar("cdef.php?filter=" . get_request_var_request("filter"), MAX_DISPLAY_PAGES, get_request_var_request("page"), read_config_option("num_rows_device"), $total_rows);
+	$nav = html_nav_bar("cdef.php?filter=" . get_request_var_request("filter"), MAX_DISPLAY_PAGES, get_request_var_request("page"), get_request_var_request("rows"), $total_rows);
 
 	print $nav;
 

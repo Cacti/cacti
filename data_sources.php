@@ -1017,7 +1017,7 @@ function ds() {
 	global $ds_actions, $item_rows;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_request("ds_rows"));
+	input_validate_input_number(get_request_var_request("rows"));
 	input_validate_input_number(get_request_var_request("host_id"));
 	input_validate_input_number(get_request_var_request("template_id"));
 	input_validate_input_number(get_request_var_request("method_id"));
@@ -1045,7 +1045,7 @@ function ds() {
 		kill_session_var("sess_ds_filter");
 		kill_session_var("sess_ds_sort_column");
 		kill_session_var("sess_ds_sort_direction");
-		kill_session_var("sess_ds_rows");
+		kill_session_var("sess_default_rows");
 		kill_session_var("sess_ds_host_id");
 		kill_session_var("sess_ds_template_id");
 		kill_session_var("sess_ds_method_id");
@@ -1054,7 +1054,7 @@ function ds() {
 		unset($_REQUEST["filter"]);
 		unset($_REQUEST["sort_column"]);
 		unset($_REQUEST["sort_direction"]);
-		unset($_REQUEST["ds_rows"]);
+		unset($_REQUEST["rows"]);
 		unset($_REQUEST["host_id"]);
 		unset($_REQUEST["template_id"]);
 		unset($_REQUEST["method_id"]);
@@ -1065,7 +1065,7 @@ function ds() {
 	load_current_session_value("filter", "sess_ds_filter", "");
 	load_current_session_value("sort_column", "sess_ds_sort_column", "name_cache");
 	load_current_session_value("sort_direction", "sess_ds_sort_direction", "ASC");
-	load_current_session_value("ds_rows", "sess_ds_rows", read_config_option("num_rows_data_source"));
+	load_current_session_value('rows', 'sess_default_rows', read_config_option('num_rows_table'));
 	load_current_session_value("host_id", "sess_ds_host_id", "-1");
 	load_current_session_value("template_id", "sess_ds_template_id", "-1");
 	load_current_session_value("method_id", "sess_ds_method_id", "-1");
@@ -1073,8 +1073,8 @@ function ds() {
 	$host = db_fetch_row("select hostname from host where id=" . get_request_var_request("host_id"));
 
 	/* if the number of rows is -1, set it to the default */
-	if (get_request_var_request("ds_rows") == -1) {
-		$_REQUEST["ds_rows"] = read_config_option("num_rows_data_source");
+	if (get_request_var_request("rows") == -1) {
+		$_REQUEST["rows"] = read_config_option("num_rows_table");
 	}
 
 	?>
@@ -1084,7 +1084,7 @@ function ds() {
 	function applyDSFilterChange() {
 		strURL = '?host_id=' + $('#host_id').val();
 		strURL = strURL + '&filter=' + $('#filter').val();
-		strURL = strURL + '&ds_rows=' + $('#ds_rows').val();
+		strURL = strURL + '&rows=' + $('#rows').val();
 		strURL = strURL + '&template_id=' + $('#template_id').val();
 		strURL = strURL + '&method_id=' + $('#method_id').val();
 		document.location = strURL;
@@ -1094,7 +1094,13 @@ function ds() {
 	</script>
 	<?php
 
-	html_start_box("<strong>Data Sources</strong> [host: " . (empty($host["hostname"]) ? "No Host" : htmlspecialchars($host["hostname"])) . "]", "100%", "", "3", "center", "data_sources.php?action=ds_edit&host_id=" . get_request_var_request("host_id"));
+	if (read_config_option('grds_creation_method') == 1 ) {
+		$add_url = htmlspecialchars('data_sources.php?action=ds_edit&host_id=' . get_request_var_request('host_id'));
+	}else{
+		$add_url = '';
+	}
+
+	html_start_box("<strong>Data Sources</strong> [host: " . (empty($host["hostname"]) ? "No Host" : htmlspecialchars($host["hostname"])) . "]", "100%", "", "3", "center", $add_url);
 
 	?>
 	<tr class='even noprint'>
@@ -1182,12 +1188,11 @@ function ds() {
 						Data Sources:
 					</td>
 					<td width="1">
-						<select id='ds_rows' name="ds_rows" onChange="applyDSFilterChange()">
-							<option value="-1"<?php if (get_request_var_request("ds_rows") == "-1") {?> selected<?php }?>>Default</option>
+						<select id='rows' name="rows" onChange="applyDSFilterChange()">
 							<?php
 							if (sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var_request("ds_rows") == $key) { print " selected"; } print ">" . htmlspecialchars($value) . "</option>\n";
+									print "<option value='" . $key . "'"; if (get_request_var_request("rows") == $key) { print " selected"; } print ">" . htmlspecialchars($value) . "</option>\n";
 								}
 							}
 							?>
@@ -1292,13 +1297,13 @@ function ds() {
 		WHERE data_local.id=data_template_data.local_data_id
 		$sql_where1
 		ORDER BY ". get_request_var_request("sort_column") . " " . get_request_var_request("sort_direction") .
-		" LIMIT " . (get_request_var_request("ds_rows")*(get_request_var_request("page")-1)) . "," . get_request_var_request("ds_rows"));
+		" LIMIT " . (get_request_var_request("rows")*(get_request_var_request("page")-1)) . "," . get_request_var_request("rows"));
 
 	print "<form name='chk' method='post' action='data_sources.php'>\n";
 
 	html_start_box("", "100%", "", "3", "center", "");
 
-	$nav = html_nav_bar("data_sources.php?filter=" . get_request_var_request("filter") . "&host_id=" . get_request_var_request("host_id"), MAX_DISPLAY_PAGES, get_request_var_request("page"), get_request_var_request("ds_rows"), $total_rows, 7, 'Data Sources');
+	$nav = html_nav_bar("data_sources.php?filter=" . get_request_var_request("filter") . "&host_id=" . get_request_var_request("host_id"), MAX_DISPLAY_PAGES, get_request_var_request("page"), get_request_var_request("rows"), $total_rows, 7, 'Data Sources');
 
 	print $nav;
 
@@ -1316,7 +1321,7 @@ function ds() {
 	if (sizeof($data_sources) > 0) {
 		foreach ($data_sources as $data_source) {
 			$data_source["data_template_name"] = htmlspecialchars($data_source["data_template_name"]);
-			$data_name_cache = title_trim(htmlspecialchars($data_source["name_cache"]), read_config_option("max_title_data_source"));
+			$data_name_cache = title_trim(htmlspecialchars($data_source["name_cache"]), read_config_option("max_title_length"));
 
 			if (trim(get_request_var_request("filter") != "")) {
 				$data_name_cache = preg_replace("/(" . preg_quote(get_request_var_request("filter"), "/") . ")/i", "<span class='filteredValue'>\\1</span>", ($data_name_cache));
@@ -1353,7 +1358,7 @@ function ds() {
 			$poller_interval    = ((isset($poller_intervals[$data_source["local_data_id"]])) ? $poller_intervals[$data_source["local_data_id"]] : 0);
 
 			form_alternate_row('line' . $data_source["local_data_id"], true);
-			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars("data_sources.php?action=ds_edit&id=" . $data_source["local_data_id"]) . "' title='" . htmlspecialchars($data_source["name_cache"], ENT_QUOTES) . "'>" . ((get_request_var_request("filter") != "") ? preg_replace("/(" . preg_quote(get_request_var_request("filter"), "/") . ")/i", "<span class='filteredValue'>\\1</span>", title_trim(htmlspecialchars($data_source["name_cache"]), read_config_option("max_title_data_source"))) : title_trim(htmlspecialchars($data_source["name_cache"]), read_config_option("max_title_data_source"))) . "</a>", $data_source["local_data_id"]);
+			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars("data_sources.php?action=ds_edit&id=" . $data_source["local_data_id"]) . "' title='" . htmlspecialchars($data_source["name_cache"], ENT_QUOTES) . "'>" . ((get_request_var_request("filter") != "") ? preg_replace("/(" . preg_quote(get_request_var_request("filter"), "/") . ")/i", "<span class='filteredValue'>\\1</span>", title_trim(htmlspecialchars($data_source["name_cache"]), read_config_option("max_title_length"))) : title_trim(htmlspecialchars($data_source["name_cache"]), read_config_option("max_title_length"))) . "</a>", $data_source["local_data_id"]);
 			form_selectable_cell($data_source['local_data_id'], $data_source['local_data_id']);
 			form_selectable_cell($data_input_name, $data_source["local_data_id"]);
 			form_selectable_cell(get_poller_interval($poller_interval), $data_source["local_data_id"]);

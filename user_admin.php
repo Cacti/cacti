@@ -918,10 +918,11 @@ function user_edit() {
 }
 
 function user() {
-	global $auth_realms, $user_actions;
+	global $auth_realms, $user_actions, $item_rows;
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var_request("page"));
+	input_validate_input_number(get_request_var_request("rows"));
 	/* ==================================================== */
 
 	/* clean up search string */
@@ -943,11 +944,13 @@ function user() {
 	if (isset($_REQUEST["clear_x"])) {
 		kill_session_var("sess_user_admin_current_page");
 		kill_session_var("sess_user_admin_filter");
+		kill_session_var("sess_default_rows");
 		kill_session_var("sess_user_admin_sort_column");
 		kill_session_var("sess_user_admin_sort_direction");
 
 		unset($_REQUEST["page"]);
 		unset($_REQUEST["filter"]);
+		unset($_REQUEST["rows"]);
 		unset($_REQUEST["sort_column"]);
 		unset($_REQUEST["sort_direction"]);
 	}
@@ -957,6 +960,7 @@ function user() {
 	load_current_session_value("filter", "sess_user_admin_filter", "");
 	load_current_session_value("sort_column", "sess_user_admin_sort_column", "username");
 	load_current_session_value("sort_direction", "sess_user_admin_sort_direction", "ASC");
+	load_current_session_value("rows", "sess_default_rows", read_config_option('num_rows_table'));
 
 	html_start_box("<strong>User Management</strong>", "100%", "", "3", "center", "user_admin.php?action=user_edit");
 
@@ -967,10 +971,24 @@ function user() {
 			<table cellpadding="2" cellspacing="0">
 				<tr>
 					<td width="50">
-						Search:&nbsp;
+						Search:
 					</td>
 					<td width="1">
-						<input type="text" name="filter" size="40" value="<?php print htmlspecialchars(get_request_var_request("filter"));?>">
+						<input id='filter' type="text" name="filter" size="40" value="<?php print htmlspecialchars(get_request_var_request("filter"));?>">
+					</td>
+					<td>
+						Users:
+					</td>
+					<td>
+						<select id='rows' name="rows" onChange="applyChangeFilter()">
+							<?php
+							if (sizeof($item_rows) > 0) {
+								foreach ($item_rows as $key => $value) {
+									print "<option value='" . $key . "'"; if (get_request_var_request("rows") == $key) { print " selected"; } print ">" . htmlspecialchars($value) . "</option>\n";
+								}
+							}
+							?>
+						</select>
 					</td>
 					<td>
 						<input type="submit" value="Go" title="Set/Refresh Filters">
@@ -982,6 +1000,12 @@ function user() {
 			</table>
 			<input type='hidden' name='page' value='1'>
 		</form>
+		<script type='text/javascript'>
+		function applyChangeFilter() {
+			strURL = '?filter='+$('#filter').val()+'&rows='+$('#rows').val()
+			document.location = strURL;
+		}
+		</script>
 		</td>
 	</tr>
 	<?php
@@ -1019,9 +1043,9 @@ function user() {
 		$sql_where
 		GROUP BY id
 		ORDER BY " . get_request_var_request("sort_column") . " " . get_request_var_request("sort_direction") .
-		" LIMIT " . (read_config_option("num_rows_device") * (get_request_var_request("page") - 1)) . "," . read_config_option("num_rows_device"));
+		" LIMIT " . (get_request_var_request("rows") * (get_request_var_request("page") - 1)) . "," . get_request_var_request("rows"));
 
-	$nav = html_nav_bar("user_admin.php?filter=" . get_request_var_request("filter"), MAX_DISPLAY_PAGES, get_request_var_request("page"), read_config_option("num_rows_device"), $total_rows, 7);
+	$nav = html_nav_bar("user_admin.php?filter=" . get_request_var_request("filter"), MAX_DISPLAY_PAGES, get_request_var_request("page"), get_request_var_request("rows"), $total_rows, 7, 'Users');
 
 	print $nav;
 

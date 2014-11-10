@@ -438,8 +438,8 @@ function form_actions() {
 							print "</ul>";
 
 							print "<br>";
-							form_radio_button("delete_type", "1", "1", "Leave the Data Source(s) untouched.", "1"); print "<br>";
-							form_radio_button("delete_type", "1", "2", "Delete all <strong>Data Source(s)</strong> referenced by these Graph(s).", "1"); print "<br>";
+							form_radio_button("delete_type", "1", "2", "Leave the Data Source(s) untouched.  Not applicable for Graphs created under 'New Graphs' or where the Graphs were created automatically.", "2"); print "<br>";
+							form_radio_button("delete_type", "2", "2", "Delete all <strong>Data Source(s)</strong> referenced by these Graph(s).", "2"); print "<br>";
 							print "</td></tr>";
 						}
 					print "
@@ -1021,7 +1021,7 @@ function graph_edit() {
 
 	//Now we need some javascript to make it dynamic
 	?>
-	<script language="JavaScript">
+	<script type='text/javascript'>
 
 	dynamic();
 
@@ -1053,7 +1053,7 @@ function graph() {
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var_request("host_id"));
-	input_validate_input_number(get_request_var_request("graph_rows"));
+	input_validate_input_number(get_request_var_request("rows"));
 	input_validate_input_number(get_request_var_request("template_id"));
 	input_validate_input_number(get_request_var_request("page"));
 	/* ==================================================== */
@@ -1080,7 +1080,7 @@ function graph() {
 		kill_session_var("sess_graph_sort_column");
 		kill_session_var("sess_graph_sort_direction");
 		kill_session_var("sess_graph_host_id");
-		kill_session_var("sess_graph_rows");
+		kill_session_var("sess_default_rows");
 		kill_session_var("sess_graph_template_id");
 
 		unset($_REQUEST["page"]);
@@ -1088,7 +1088,7 @@ function graph() {
 		unset($_REQUEST["sort_column"]);
 		unset($_REQUEST["sort_direction"]);
 		unset($_REQUEST["host_id"]);
-		unset($_REQUEST["graph_rows"]);
+		unset($_REQUEST["rows"]);
 		unset($_REQUEST["template_id"]);
 	}
 
@@ -1098,12 +1098,12 @@ function graph() {
 	load_current_session_value("sort_column", "sess_graph_sort_column", "title_cache");
 	load_current_session_value("sort_direction", "sess_graph_sort_direction", "ASC");
 	load_current_session_value("host_id", "sess_graph_host_id", "-1");
-	load_current_session_value("graph_rows", "sess_graph_rows", read_config_option("num_rows_graph"));
+	load_current_session_value('rows', 'sess_default_rows', read_config_option('num_rows_table'));
 	load_current_session_value("template_id", "sess_graph_template_id", "-1");
 
 	/* if the number of rows is -1, set it to the default */
-	if (get_request_var_request("graph_rows") == -1) {
-		$_REQUEST["graph_rows"] = read_config_option("num_rows_graph");
+	if (get_request_var_request("rows") == -1) {
+		$_REQUEST["rows"] = read_config_option("num_rows_table");
 	}
 
 	?>
@@ -1112,7 +1112,7 @@ function graph() {
 
 	function applyGraphsFilterChange() {
 		strURL = '?host_id=' + $('#host_id').val();
-		strURL = strURL + '&graph_rows=' + $('#graph_rows').val();
+		strURL = strURL + '&rows=' + $('#rows').val();
 		strURL = strURL + '&filter=' + $('#filter').val();
 		strURL = strURL + '&template_id=' + $('#template_id').val();
 		document.location = strURL;
@@ -1122,7 +1122,13 @@ function graph() {
 	</script>
 	<?php
 
-	html_start_box("<strong>Graph Management</strong>", "100%", "", "3", "center", "graphs.php?action=graph_edit&host_id=" . htmlspecialchars(get_request_var_request("host_id")));
+	if (read_config_option('grds_creation_method') == 1) {
+		$add_url = htmlspecialchars('graphs.php?action=graph_edit&host_id=' . get_request_var_request('host_id'));
+	}else{
+		$add_url = '';
+	}
+
+	html_start_box("<strong>Graph Management</strong>", "100%", "", "3", "center", $add_url);
 
 	?>
 	<tr class='even noprint'>
@@ -1215,12 +1221,12 @@ function graph() {
 						Graphs:
 					</td>
 					<td width="1">
-						<select id='graph_rows' name='graph_rows' onChange='applyGraphsFilterChange()'>
-							<option value="-1"<?php if (get_request_var_request("graph_rows") == "-1") {?> selected<?php }?>>Default</option>
+						<select id='rows' name='rows' onChange='applyGraphsFilterChange()'>
+							<option value="-1"<?php if (get_request_var_request("rows") == "-1") {?> selected<?php }?>>Default</option>
 							<?php
 							if (sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var_request("graph_rows") == $key) { print " selected"; } print ">" . htmlspecialchars($value) . "</option>\n";
+									print "<option value='" . $key . "'"; if (get_request_var_request("rows") == $key) { print " selected"; } print ">" . htmlspecialchars($value) . "</option>\n";
 								}
 							}
 							?>
@@ -1288,9 +1294,9 @@ function graph() {
 		WHERE graph_local.id=graph_templates_graph.local_graph_id
 		$sql_where
 		ORDER BY " . $_REQUEST["sort_column"] . " " . get_request_var_request("sort_direction") .
-		" LIMIT " . (get_request_var_request("graph_rows")*(get_request_var_request("page")-1)) . "," . get_request_var_request("graph_rows"));
+		" LIMIT " . (get_request_var_request("rows")*(get_request_var_request("page")-1)) . "," . get_request_var_request("rows"));
 
-	$nav = html_nav_bar("graphs.php?filter=" . get_request_var_request("filter") . "&host_id=" . get_request_var_request("host_id"), MAX_DISPLAY_PAGES, get_request_var_request("page"), get_request_var_request("graph_rows"), $total_rows, 5, 'Graphs');
+	$nav = html_nav_bar("graphs.php?filter=" . get_request_var_request("filter") . "&host_id=" . get_request_var_request("host_id"), MAX_DISPLAY_PAGES, get_request_var_request("page"), get_request_var_request("rows"), $total_rows, 5, 'Graphs');
 
 	print $nav;
 
@@ -1308,7 +1314,7 @@ function graph() {
 			/* we're escaping strings here, so no need to escape them on form_selectable_cell */
 			$template_name = ((empty($graph["name"])) ? "<em>None</em>" : htmlspecialchars($graph["name"]));
 			form_alternate_row('line' . $graph["local_graph_id"], true);
-			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars("graphs.php?action=graph_edit&id=" . $graph["local_graph_id"]) . "' title='" . htmlspecialchars($graph["title_cache"]) . "'>" . ((get_request_var_request("filter") != "") ? preg_replace("/(" . preg_quote(get_request_var_request("filter"), "/") . ")/i", "<span class='filteredValue'>\\1</span>", title_trim(htmlspecialchars($graph["title_cache"]), read_config_option("max_title_graph"))) : title_trim(htmlspecialchars($graph["title_cache"]), read_config_option("max_title_graph"))) . "</a>", $graph["local_graph_id"]);
+			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars("graphs.php?action=graph_edit&id=" . $graph["local_graph_id"]) . "' title='" . htmlspecialchars($graph["title_cache"]) . "'>" . ((get_request_var_request("filter") != "") ? preg_replace("/(" . preg_quote(get_request_var_request("filter"), "/") . ")/i", "<span class='filteredValue'>\\1</span>", title_trim(htmlspecialchars($graph["title_cache"]), read_config_option("max_title_length"))) : title_trim(htmlspecialchars($graph["title_cache"]), read_config_option("max_title_length"))) . "</a>", $graph["local_graph_id"]);
 			form_selectable_cell($graph["local_graph_id"], $graph["local_graph_id"]);
 			form_selectable_cell(((get_request_var_request("filter") != "") ? preg_replace("/(" . preg_quote(get_request_var_request("filter"), "/") . ")/i", "<span class='filteredValue'>\\1</span>", $template_name) : $template_name), $graph["local_graph_id"]);
 			form_selectable_cell($graph["height"] . "x" . $graph["width"], $graph["local_graph_id"]);

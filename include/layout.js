@@ -21,6 +21,8 @@
  +-------------------------------------------------------------------------+
 */
 
+var theme;
+
 /** basename - this function will return the basename
  *  of the php script called
  *  @args path - the document.url
@@ -224,7 +226,9 @@ function cactiReturnTo(location) {
 }
 
 function applySkin() {
-	if (theme != 'classic') {
+	if (!theme || theme == 'classic') {
+		theme = 'classic';
+	}else{
 		$('input[type=submit], input[type=button]').button();
 	}
 

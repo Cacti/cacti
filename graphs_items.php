@@ -350,29 +350,90 @@ function item_edit() {
 	html_end_box();
 
 	form_save_button("graphs.php?action=graph_edit&id=" . get_request_var_request("local_graph_id"));
-}
+	?>
+	<script type='text/javascript'>
 
-//Now we need some javascript to make it dynamic
-?>
-<script language="JavaScript">
+	$(function() {
+		setRowVisibility();
+		$('#graph_type_id').change(function(data) {
+			setRowVisibility();
+		});
+	});
 
-$(function() {
-	dynamic();
-});
+	/* 
+	columns - task_item_id color_id alpha graph_type_id consolidation_function_id cdef_id value gprint_id text_format hard_return
 
-function dynamic() {
-	$('#alpha').prop('disabled', true);
-	if (($('#rrdtool_version').val() != 'rrd-1.0.x') &&
-		($('#color_id').val() != 0)) {
-		$('#alpha').prop('disabled', false);
+	graph_type_ids - 1 - Comment 2 - HRule 3 - Vrule 4 - Line1 5 - Line2 6 - Line3 7 - Area 8 - Stack 9 - Gprint 10 - Legend
+	*/
+
+	function setRowVisibility() {
+		switch($('#graph_type_id').val()) {
+		case "1":
+			$('#row_task_item_id').hide();
+			$('#row_color_id').hide();
+			$('#row_alpha').hide();
+			$('#row_consolidation_function_id').hide();
+			$('#row_cdef_id').hide();
+			$('#row_value').hide();
+			$('#row_gprint_id').hide();
+			$('#row_text_format').show();
+			$('#row_hard_return').show();
+			break;
+		case "2":
+		case "3":
+			$('#row_task_item_id').hide();
+			$('#row_color_id').hide();
+			$('#row_alpha').hide();
+			$('#row_consolidation_function_id').hide();
+			$('#row_cdef_id').hide();
+			$('#row_value').show();
+			$('#row_gprint_id').hide();
+			$('#row_text_format').hide();
+			$('#row_hard_return').show();
+			break;
+		case "4":
+		case "5":
+		case "6":
+		case "7":
+		case "8":
+			$('#row_task_item_id').show();
+			$('#row_color_id').show();
+			$('#row_alpha').show();
+			$('#row_consolidation_function_id').show();
+			$('#row_cdef_id').show();
+			$('#row_value').hide();
+			$('#row_gprint_id').show();
+			$('#row_text_format').show();
+			$('#row_hard_return').show();
+
+			break;
+		case "9":
+		case "10":
+			$('#row_task_item_id').show();
+			$('#row_color_id').hide();
+			$('#row_alpha').hide();
+			$('#row_consolidation_function_id').hide();
+			$('#row_cdef_id').show();
+			$('#row_value').hide();
+			$('#row_gprint_id').show();
+			$('#row_text_format').hide();
+			if ($('#graph_type_id').val() == 9) {
+				$('#row_hard_return').show();
+			}else{
+				$('#row_hard_return').hide();
+			}
+
+			break;
+		}
+
+		$('#alpha').prop('disabled', true);
+		if (($('#rrdtool_version').val() != 'rrd-1.0.x') &&
+			($('#color_id').val() != 0)) {
+			$('#alpha').prop('disabled', false);
+		}
 	}
+
+	</script>
+	<?php
 }
 
-function changeColorId() {
-	if (($('#rrdtool_version').val() != 'rrd-1.0.x') &&
-		($('#color_id').val() != 0)) {
-		$('#alpha').prop('disabled', false);
-	}
-}
-
-</script>

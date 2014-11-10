@@ -438,10 +438,11 @@ function changeScaleLog() {
 }
 
 function template() {
-	global $graph_actions;
+	global $graph_actions, $item_rows;
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var_request("page"));
+	input_validate_input_number(get_request_var_request("rows"));
 	/* ==================================================== */
 
 	/* clean up search string */
@@ -463,10 +464,12 @@ function template() {
 	if (isset($_REQUEST["clear_x"])) {
 		kill_session_var("sess_graph_template_current_page");
 		kill_session_var("sess_graph_template_filter");
+		kill_session_var("sess_default_rows");
 		kill_session_var("sess_graph_template_sort_column");
 		kill_session_var("sess_graph_template_sort_direction");
 
 		unset($_REQUEST["page"]);
+		unset($_REQUEST["rows"]);
 		unset($_REQUEST["filter"]);
 		unset($_REQUEST["sort_column"]);
 		unset($_REQUEST["sort_direction"]);
@@ -478,6 +481,7 @@ function template() {
 	load_current_session_value("filter", "sess_graph_template_filter", "");
 	load_current_session_value("sort_column", "sess_graph_template_sort_column", "name");
 	load_current_session_value("sort_direction", "sess_graph_template_sort_direction", "ASC");
+	load_current_session_value('rows', 'sess_default_rows', read_config_option('num_rows_table'));
 
 	html_start_box("<strong>Graph Templates</strong>", "100%", "", "3", "center", "graph_templates.php?action=template_edit");
 
@@ -491,7 +495,21 @@ function template() {
 						Search:
 					</td>
 					<td width="1">
-						<input type="text" name="filter" size="40" value="<?php print htmlspecialchars(get_request_var_request("filter"));?>">
+						<input id='filter' type="text" name="filter" size="40" value="<?php print htmlspecialchars(get_request_var_request("filter"));?>">
+					</td>
+					<td style='white-space:nowrap;'>
+						Graph Templates:
+					</td>
+					<td>
+						<select id='rows' name="rows" onChange="applyChangeFilter()">
+							<?php
+							if (sizeof($item_rows) > 0) {
+								foreach ($item_rows as $key => $value) {
+									print "<option value='" . $key . "'"; if (get_request_var_request("rows") == $key) { print " selected"; } print ">" . htmlspecialchars($value) . "</option>\n";
+								}
+							}
+							?>
+						</select>
 					</td>
 					<td>
 						<input type="submit" value="Go" title="Set/Refresh Filters">
@@ -503,6 +521,12 @@ function template() {
 			</table>
 			<input type='hidden' name='page' value='1'>
 		</form>
+		<script type='text/javascript'>
+		function applyChangeFilter() {
+			strURL = '?filter='+$('#filter').val()+'&rows='+$('#rows').val()
+			document.location = strURL;
+		}
+		</script>
 		</td>
 	</tr>
 	<?php
@@ -534,9 +558,9 @@ function template() {
 		$sql_where
 		GROUP BY graph_templates.id
 		ORDER BY " . get_request_var_request("sort_column") . " " . get_request_var_request("sort_direction") .
-		" LIMIT " . (read_config_option("num_rows_device")*(get_request_var_request("page")-1)) . "," . read_config_option("num_rows_device"));
+		" LIMIT " . (get_request_var_request("rows")*(get_request_var_request("page")-1)) . "," . get_request_var_request("rows"));
 
-	$nav = html_nav_bar("graph_templates.php?filter=" . get_request_var_request("filter"), MAX_DISPLAY_PAGES, get_request_var_request("page"), read_config_option("num_rows_device"), $total_rows, 4, 'Graph Templates');
+	$nav = html_nav_bar("graph_templates.php?filter=" . get_request_var_request("filter"), MAX_DISPLAY_PAGES, get_request_var_request("page"), get_request_var_request("rows"), $total_rows, 4, 'Graph Templates');
 
 	print $nav;
 

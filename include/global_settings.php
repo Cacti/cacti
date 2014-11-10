@@ -299,6 +299,13 @@ $settings = array(
 			"default" => "1",
 			"array" => $reindex_types,
 			),
+		"grds_creation_method" => array(
+			"method" => "drop_array",
+			"friendly_name" => "Graph/Data Source Creation Method",
+			"description" => "If set to Simple, Graphs and Data Sources can only be created from New Graphs.  If Advanced, legacy Graph and Data Source creation is supported.",
+			"default" => '0',
+			"array" => array('0' => 'Simple', '1' => 'Advanced')
+			),
 		"deletion_verification" => array(
 			"friendly_name" => "Deletion Verification",
 			"description" => "Prompt user before item deletion.",
@@ -506,32 +513,32 @@ $settings = array(
 			"default" => "classic",
 			"array" => $themes
 			),
-		"graphmgmt_header" => array(
-			"friendly_name" => "Graph Management",
+		"table_header" => array(
+			"friendly_name" => "Table Settings",
 			"method" => "spacer",
 			),
-		"num_rows_graph" => array(
+		"num_rows_table" => array(
 			"friendly_name" => "Rows Per Page",
-			"description" => "The number of rows to display on a single page for graph management.",
+			"description" => "The default number of rows to display on for a table.",
 			"method" => "drop_array",
 			"default" => "30",
 			"array" => $item_rows
 			),
-		"max_title_graph" => array(
+		"object_creation_header" => array(
+			"friendly_name" => "Graph/Data Source/Data Query Settings",
+			"method" => "spacer",
+			),
+		"max_title_length" => array(
 			"friendly_name" => "Maximum Title Length",
-			"description" => "The maximum number of characters to display for a graph title.",
+			"description" => "The maximum allowable Graph or Data Source titles.",
 			"method" => "textbox",
 			"default" => "80",
 			"max_length" => "10",
 			"size" => "5"
 			),
-		"dataqueries_header" => array(
-			"friendly_name" => "Data Queries",
-			"method" => "spacer",
-			),
 		"max_data_query_field_length" => array(
-			"friendly_name" => "Maximum Field Length",
-			"description" => "The maximum number of characters to display for a data query field.",
+			"friendly_name" => "Data Source Field Length",
+			"description" => "The maximum Data Query field length.",
 			"method" => "textbox",
 			"default" => "15",
 			"max_length" => "10",
@@ -542,48 +549,11 @@ $settings = array(
 			"method" => "spacer",
 			),
 		"default_graphs_new_dropdown" => array(
-			"friendly_name" => "Default Dropdown Selector",
-			"description" => "When creating graphs, how would you like the page to appear by default",
+			"friendly_name" => "Default Graph Type",
+			"description" => "When creating graphs, what Graph Type would you like pre-selected?",
 			"method" => "drop_array",
 			"default" => "-2",
 			"array" => array("-2" => "All Types", "-1" => "By Template/Data Query"),
-			),
-		"num_rows_data_query" => array(
-			"friendly_name" => "Data Query Graph Rows",
-			"description" => "The maximum number Data Query rows to place on a page per Data Query.  This applies to the 'New Graphs' page.",
-			"method" => "drop_array",
-			"default" => "30",
-			"array" => $item_rows
-			),
-		"datasources_header" => array(
-			"friendly_name" => "Data Sources",
-			"method" => "spacer",
-			),
-		"num_rows_data_source" => array(
-			"friendly_name" => "Rows Per Page",
-			"description" => "The number of rows to display on a single page for data sources.",
-			"method" => "drop_array",
-			"default" => "30",
-			"array" => $item_rows
-			),
-		"max_title_data_source" => array(
-			"friendly_name" => "Maximum Title Length",
-			"description" => "The maximum number of characters to display for a data source title.",
-			"method" => "textbox",
-			"default" => "45",
-			"max_length" => "10",
-			"size" => "5"
-			),
-		"devices_header" => array(
-			"friendly_name" => "Devices",
-			"method" => "spacer",
-			),
-		"num_rows_device" => array(
-			"friendly_name" => "Rows Per Page",
-			"description" => "The number of rows to display on a single page for devices.",
-			"method" => "drop_array",
-			"default" => "30",
-			"array" => $item_rows
 			),
 		"logmgmt_header" => array(
 			"friendly_name" => "Log Management",

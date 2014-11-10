@@ -97,6 +97,7 @@ $page_title = api_plugin_hook_function('page_title', draw_navigation_text("title
 	<script type="text/javascript" src="<?php echo $config['url_path']; ?>include/jscalendar/lang/calendar-en.js"></script>
 	<script type="text/javascript" src="<?php echo $config['url_path']; ?>include/jscalendar/calendar-setup.js"></script>
 	<script type="text/javascript" src="<?php echo $config['url_path']; ?>include/layout.js"></script>
+	<script type='text/javascript'>var theme='<?php print read_config_option('selected_theme');?>';</script>
 </head>
 
 <?php if ($oper_mode == OPER_MODE_NATIVE) {?>

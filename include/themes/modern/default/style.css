@@ -15,7 +15,7 @@
   display: inline-block;
   color: black;
   white-space: nowrap;
-  padding: 0 4px 0 1px;
+/* padding: 0 4px 0 1px; */
   margin: 0;
   vertical-align: top;
 }
@@ -386,20 +386,20 @@
 .jstree-default .jstree-node {
   min-height: 24px;
   line-height: 24px;
-  margin-left: 24px;
-  min-width: 24px;
+  margin-left: 7px;
+  min-width: 22px;
 }
 .jstree-default .jstree-anchor {
   line-height: 24px;
   height: 24px;
 }
 .jstree-default .jstree-icon {
-  width: 24px;
+  width: 22px;
   height: 24px;
   line-height: 24px;
 }
 .jstree-default .jstree-icon:empty {
-  width: 24px;
+  width: 22px;
   height: 24px;
   line-height: 24px;
 }

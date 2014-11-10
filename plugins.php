@@ -361,7 +361,7 @@ function update_show_current () {
 	/* if the user pushed the 'clear' button */
 	if (isset($_REQUEST["clear_x"])) {
 		kill_session_var("sess_plugins_filter");
-		kill_session_var("sess_plugins_rows");
+		kill_session_var("sess_default_rows");
 		kill_session_var("sess_plugins_sort_column");
 		kill_session_var("sess_plugins_sort_direction");
 
@@ -375,7 +375,7 @@ function update_show_current () {
 
 	/* remember these search fields in session vars so we don't have to keep passing them around */
 	load_current_session_value("filter", "sess_plugins_filter", "");
-	load_current_session_value("rows", "sess_plugins_rows", "-1");
+	load_current_session_value("rows", "sess_default_rows", read_config_option('num_rows_table'));
 	load_current_session_value("sort_column", "sess_plugins_sort_column", "name");
 	load_current_session_value("sort_direction", "sess_plugins_sort_direction", "ASC");
 	load_current_session_value("page", "sess_plugins_current_page", "1");
@@ -411,7 +411,7 @@ function update_show_current () {
 						<input id='filter' type="text" name="filter" size="40" value="<?php print get_request_var_request("filter");?>">
 					</td>
 					<td>
-						Rows:
+						Plugins:
 					</td>
 					<td width="1">
 						<select id='rows' name="rows" onChange="applyFilterChange()">
@@ -462,7 +462,7 @@ function update_show_current () {
 	}
 
 	if ($_REQUEST['rows'] == '-1') {
-		$rows = read_config_option('num_rows_device');
+		$rows = read_config_option('num_rows_table');
 	}else{
 		$rows = get_request_var_request('rows');
 	}
@@ -480,7 +480,7 @@ function update_show_current () {
 
 	db_execute("DROP TABLE $table");
 
-	$nav = html_nav_bar("plugins.php?filter=" . get_request_var_request("filter"), MAX_DISPLAY_PAGES, get_request_var_request("page"), $rows, $total_rows, 8);
+	$nav = html_nav_bar("plugins.php?filter=" . get_request_var_request("filter"), MAX_DISPLAY_PAGES, get_request_var_request("page"), $rows, $total_rows, 8, 'Plugins');
 
 	print $nav;
 

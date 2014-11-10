@@ -469,10 +469,11 @@ function data_edit() {
 }
 
 function data() {
-	global $input_types, $di_actions;
+	global $input_types, $di_actions, $item_rows;
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var_request("page"));
+	input_validate_input_number(get_request_var_request("rows"));
 	/* ==================================================== */
 
 	/* clean up search string */
@@ -493,11 +494,13 @@ function data() {
 	/* if the user pushed the 'clear' button */
 	if (isset($_REQUEST["clear_x"])) {
 		kill_session_var("sess_data_input_filter");
+		kill_session_var("sess_default_rows");
 		kill_session_var("sess_data_input_sort_column");
 		kill_session_var("sess_data_input_sort_direction");
 
 		unset($_REQUEST["page"]);
 		unset($_REQUEST["filter"]);
+		unset($_REQUEST["rows"]);
 		unset($_REQUEST["sort_column"]);
 		unset($_REQUEST["sort_direction"]);
 		$_REQUEST["page"] = 1;
@@ -508,6 +511,7 @@ function data() {
 	load_current_session_value("sort_column", "sess_data_input_sort_column", "name");
 	load_current_session_value("sort_direction", "sess_data_input_sort_direction", "ASC");
 	load_current_session_value("page", "sess_data_input_current_page", "1");
+	load_current_session_value('rows', 'sess_default_rows', read_config_option('num_rows_table'));
 
 	html_start_box("<strong>Data Input Methods</strong>", "100%", "", "3", "center", "data_input.php?action=edit");
 
@@ -521,7 +525,21 @@ function data() {
 						Search:
 					</td>
 					<td width="1">
-						<input type="text" name="filter" size="40" value="<?php print htmlspecialchars(get_request_var_request("filter"));?>">
+						<input id='filter' type="text" name="filter" size="40" value="<?php print htmlspecialchars(get_request_var_request("filter"));?>">
+					</td>
+					<td style='white-space:nowrap;'>
+						Input Methods:
+					</td>
+					<td>
+						<select id='rows' name="rows" onChange="applyChangeFilter()">
+							<?php
+							if (sizeof($item_rows) > 0) {
+								foreach ($item_rows as $key => $value) {
+									print "<option value='" . $key . "'"; if (get_request_var_request("rows") == $key) { print " selected"; } print ">" . htmlspecialchars($value) . "</option>\n";
+								}
+							}
+							?>
+						</select>
 					</td>
 					<td>
 						<input type="submit" value="Go" title="Set/Refresh Filters">
@@ -533,6 +551,12 @@ function data() {
 			</table>
 			<input type='hidden' name='page' value='1'>
 		</form>
+		<script type='text/javascript'>
+		function applyChangeFilter() {
+			strURL = '?filter='+$('#filter').val()+'&rows='+$('#rows').val()
+			document.location = strURL;
+		}
+		</script>
 		</td>
 	</tr>
 	<?php
@@ -561,9 +585,9 @@ function data() {
 		FROM data_input
 		$sql_where
 		ORDER BY " . get_request_var_request('sort_column') . " " . get_request_var_request('sort_direction') . "
-		LIMIT " . (read_config_option("num_rows_device")*(get_request_var_request("page")-1)) . "," . read_config_option("num_rows_device"));
+		LIMIT " . (get_request_var_request("rows")*(get_request_var_request("page")-1)) . "," . get_request_var_request("rows"));
 
-	$nav = html_nav_bar("data_input.php?filter=" . get_request_var_request("filter"), MAX_DISPLAY_PAGES, get_request_var_request("page"), read_config_option("num_rows_device"), $total_rows, 3, 'Data Input Methods');
+	$nav = html_nav_bar("data_input.php?filter=" . get_request_var_request("filter"), MAX_DISPLAY_PAGES, get_request_var_request("page"), get_request_var_request("rows"), $total_rows, 3, 'Input Methods');
 
 	print $nav;
 
