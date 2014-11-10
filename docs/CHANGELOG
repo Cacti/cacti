@@ -9,7 +9,7 @@ Cacti CHANGELOG
 -bug#0002405: SQL injection in graph_xport.php
 -bug#0002431: CVE-2014-2326 Unspecified HTML Injection Vulnerability
 -bug#0002432: CVE-2014-2327 Cross Site Request Forgery Vulnerability - Special Thanks to Deutsche Telekom CERT
--bug#0002433: CVE-2014-2328 Unspecified Remote Command Execution Vulnerability 
+-bug#0002433: CVE-2014-2328 Unspecified Remote Command Execution Vulnerability
 -bug#0002434: Suppress SNMP UNITS Suffix from cacti_snmp_get() output
 -bug#0002438: Down Host Detection issue when using SNMP Desc or SNMP getNext
 -bug#0002446: Subtract plugin processing time from Poller sleep time
@@ -27,6 +27,7 @@ Cacti CHANGELOG
 -feature: Added Columns to Tree (Preview only)
 -feature: Both Graphs and Columns default to 'Default'
 -feature: Resolved Left hand navigation taking entire page
+-feature: Added new graph zoom to tree view and preview offering a "quick" (default) and an "advanced" mode
 -feature: Themes
 
 0.8.8b
@@ -35,29 +36,29 @@ Cacti CHANGELOG
 -bug: Fix issue with poller not escaping the script query path correctly
 -bug: Allow snmpv3 priv proto none
 -bug: Fix issue where host activate may flush the entire poller item cache
--security: SQL injection and shell escaping issues 
+-security: SQL injection and shell escaping issues
 
 0.8.8a
 -bug#0002207: cannot export graph templates
 -bug#0002208: Graphs with CDEFs fail to generate
--bug#0002209: External auth does not work behind a reverse proxy 
+-bug#0002209: External auth does not work behind a reverse proxy
 -bug#0002211: creating an index USING BTREE fails ony MySQL < 5.0.60
 -bug#0002213: CLI upgrade script is missing 0.8.7i as a target
 -bug#0002214: SQL error during non-PIA upgrade to 088 when giving a default for a text field in plugin_realms
--bug#0002216: use of define_syslog_variables() gone in PHP 5.4 
+-bug#0002216: use of define_syslog_variables() gone in PHP 5.4
 -bug#0002217: url_path should default to /cacti/
 -bug#0002221: Missing plugin directory causes endless loop in plugins.php
 -bug#0002222: tail_logfile hangs when cacti.log not readable, filling apache log with fgets warnings
 
 0.8.8
--bug#0002056: un-initialized datetime used for host status (was: Zero length string != NULL) 
+-bug#0002056: un-initialized datetime used for host status (was: Zero length string != NULL)
 -bug#0002081: In Graph Management, search display graph title breaks when using pattern symbol "/"
 -bug#0002132: need to include pa.sql with the 0.8.7i and future releases
 -bug#0002134: rebuild_poller_cache.php --host-id deletes table poller_item completely
--bug#0002141: cacti.sql missing BTREE PRIMARY KEY for poller_output 
+-bug#0002141: cacti.sql missing BTREE PRIMARY KEY for poller_output
 -bug#0002146: Utilities -> View Log File -> refresh does not work
 -bug#0002150: usort_data_query_index() is broken -> graph order for hosts with data query sort option fails
--bug#0002151: When building HTML forms with sub_checkbox on_change parameter is not used 
+-bug#0002151: When building HTML forms with sub_checkbox on_change parameter is not used
 -bug#0002152: Issue with filter on graphs_new.php
 -bug#0002153: Cant search for patterns containing a forward-slash
 -bug#0002156: CDEF strings are not escaped before passed to rrdtool command
@@ -65,13 +66,13 @@ Cacti CHANGELOG
 -bug#0002165: Using data input field in data source name (related to 2079 in 0.8.7i)
 -bug#0002167: New poller hook poller_finishing
 -bug#0002172: structure_rra_paths.php does not handle disabled data sources
--bug#0002174: poller_item.host_id has wrong type 
+-bug#0002174: poller_item.host_id has wrong type
 -bug#0002178: typo in include/global_form.php: Mimimum -> Minimum
--bug#0002181: session_unregister (use in functions.php) doesn't exist anymore in PHP 5.4 
+-bug#0002181: session_unregister (use in functions.php) doesn't exist anymore in PHP 5.4
 -bug#0002182: When there is no suitable (unique) index, graphs are not shown in data query ordering on host leafs
 -bug#0002189: Proper graph hooks
 -bug#0002191: Refresh issues
--bug#0002194: changing data query XML <index_order> does not propagate to existing data sources 
+-bug#0002194: changing data query XML <index_order> does not propagate to existing data sources
 -bug: Fix input validation on cli/api_device.php
 -bug: Fix issue with data source template associate command line script inserting incorrect rra information
 -bug: Fix minor display issue on data source pages
@@ -90,10 +91,10 @@ Cacti CHANGELOG
 -bug#0002063: Multiple value poller output incorrectly interpreted as hexadecimal value
 -bug#0002064: Removing "~" (tilde) by sanitize_uri() conflicts with Apache UserDir translation
 -bug#0002066: Graph without host id "Notice: Undefined variable: host_id"
--bug#0002067: Custom time range filter not working 
+-bug#0002067: Custom time range filter not working
 -bug#0002068: Missing header include in analyze_database.php
 -bug#0002071: MySQL table poller_item is dropped always when "Data Input Method" is changed or added.
--bug#0002079: Using input field of a script in graph title does not work 
+-bug#0002079: Using input field of a script in graph title does not work
 -bug#0002080: Database password containing "@" does not connect
 -bug#0002083: Adding a new users generates errors in apache logs
 -bug#0002084: Incorrect normalization of hrStorageTable values over 2^31
@@ -123,15 +124,15 @@ Cacti CHANGELOG
 -bug#0001626: Symbol ($) does not appear in labels/gprint strings to rrdtool during graph generation
 -bug#0001632: Script server treats quoted arguments with spaces incorrectly as multiple separate arguments
 -bug#0001646: MySQL SSL connection support
--bug#0001660: Modifying data template values does not propagate as expected	
--bug#0001678: Adding graphs to a device fails to add entries to poller_item if using the script server 
+-bug#0001660: Modifying data template values does not propagate as expected
+-bug#0001678: Adding graphs to a device fails to add entries to poller_item if using the script server
 -bug#0001768: Perform consistency check on ds maximum vs. ds minimum
 -bug#0001783: Graph Export export date is incorrect
 -bug#0001812: Data template copying ignores some item templating
 -bug#0001814: Command line device add script fails when SNMP default is disabled
 -bug#0001815: One minute polling not working correctly
 -bug#0001816: Cannot export graph data to CSV with IE 8
--bug#0001819: MySQL "TYPE=" command deprecated since MySQL 4.1 removed in MySQL 5.4.4 
+-bug#0001819: MySQL "TYPE=" command deprecated since MySQL 4.1 removed in MySQL 5.4.4
 -bug#0001826: Zoomed graph views should auto refresh
 -bug#0001828: Reapply Suggested Name prompt as spelling problems
 -bug#0001835: Graph edit page has more than one html form tag
@@ -146,7 +147,7 @@ Cacti CHANGELOG
 -bug#0001890: Default tree view mode set to single pane mode not working
 -bug#0001893: Data input method description text does not make sense
 -bug#0001900: Equal sign not correctly parsed in snmp data results
--bug#0001903: Undefined variable: mode in lib/ldap.php on line 375 
+-bug#0001903: Undefined variable: mode in lib/ldap.php on line 375
 -bug#0001918: Script server does not accept more than one blank space before the function name
 -bug#0001926: Importing templates "using defaults for this installation" associates all rra's defined
 -bug#0001928: graph_image.php does not check local_graph_id
@@ -159,7 +160,7 @@ Cacti CHANGELOG
 -bug#0001954: Usage of PHP_SELF without basename in html.php (at least partly fixed)
 -bug#0001956: Attempts to update existing tree item fail
 -bug#0001967: Reflected XSS on Cacti 0.8.7g
--bug#0001989: IE9 breaks Cacti when objects are hidden using 'display:none;' style tag 
+-bug#0001989: IE9 breaks Cacti when objects are hidden using 'display:none;' style tag
 -bug#0001993: Undefined index in lib/html.php
 -bug#0001995: REQUEST_URI not properly escaped in graph_view.php for preview mode
 -bug#0002005: Saving Script Server or Script Data Input Method Results in SQL Error
@@ -185,7 +186,7 @@ Cacti CHANGELOG
 -feature#0001922: Reindex method "Index Count Changed" requires that OID_NUM_INDEXES is given for SNMP Data Queries
 -feature#0001923: Implement counting for script (server) data queries just like OID_NUM_INDEXES
 -feature#0001924: Allow for reindex method "Index Count Changed" to apply to script (server) queries as well
--feature#0001952: Ability to use input field of a script in graph title 
+-feature#0001952: Ability to use input field of a script in graph title
 -feature: Make reindexing and repopulating the poller cache a lossless process
 -feature: Change default font sizes
 -feature: Add analyze database and push out host cli scripts
@@ -194,15 +195,15 @@ Cacti CHANGELOG
 -bug: RRDTool 1.4.x not recognized during installation
 -bug: Implement windows-aware shell escaping
 -bug: Fixed multiple cross site scripting vulnerabilities reported by Tomas Hoger of the Red Hat Security Response Team
--bug#0001292: Over 8TByte Partition in Windows cant get correct data from snmp 
+-bug#0001292: Over 8TByte Partition in Windows cant get correct data from snmp
 -bug#0001486: Unable to login after redirection to access denied page
 -bug#0001516: "Show the page that user pointed their browser" does not seem to work
 -bug#0001561: Over zelous HTML excaping on filter strings
 -bug#0001575: LDAP-Authentifications does not work due to ldap_host being set incorrect
--bug#0001587: Feature from bug#0001271 breaks on large values 
--bug#0001607: Web Basic authentication does not work with fastcgi 
+-bug#0001587: Feature from bug#0001271 breaks on large values
+-bug#0001607: Web Basic authentication does not work with fastcgi
 -bug#0001620: Max OID's max value reported incorrectly in Web UI
--bug#0001747: oid_suffix do not work correctly for input direction on data queries 
+-bug#0001747: oid_suffix do not work correctly for input direction on data queries
 -bug#0001756: Alternate font styles do not work correctly
 -bug#0001757: LDAP realm authentication outputs warning for undefined index
 -bug#0001763: Unable to add graph permissions on a user
@@ -210,18 +211,18 @@ Cacti CHANGELOG
 -bug#0001766: Page refresh setting not being honored
 -bug#0001771: "index count changed" not implemented for query_unix_partitions.pl, query_host_partitions.pl, query_cpu_partitions.pl, ss_host_cpu.php and ss_host_disk.php
 -bug#0001773: Character encoding problem after upgrade to 0.8.7f
--bug#0001775: Tech support page does account for no memory limit set for PHP 
+-bug#0001775: Tech support page does account for no memory limit set for PHP
 -bug#0001776: Simultaneous databases connections are not supported
 
 0.8.7f
 -security: SQL injection and shell escaping issues reported by Bonsai Information Security (http://www.bonsai-sec.com)
 -security: Cross-site scripting issues reported by VUPEN Security (http://www.vupen.com)
 -security: MOPS-2010-023: Cacti Graph Viewer SQL Injection Vulnerability (http://php-security.org)
--bug#0001125: XML parse error on template import with degree symbol 
+-bug#0001125: XML parse error on template import with degree symbol
 -bug#0001311: Access denied for graph-only users when accessing index.php directly
--bug#0001366: Exported data templates do not import special characters properly 
--bug#0001416: Graph Export fails with EXPORT FATAL ERROR: Export path /some/path/root/export is within a system path /root. Can not continue. 
--bug#0001452: Missing "<" and ">" in "Collection Methods=>Data Input Methods=>"Input String" after importing template 
+-bug#0001366: Exported data templates do not import special characters properly
+-bug#0001416: Graph Export fails with EXPORT FATAL ERROR: Export path /some/path/root/export is within a system path /root. Can not continue.
+-bug#0001452: Missing "<" and ">" in "Collection Methods=>Data Input Methods=>"Input String" after importing template
 -bug#0001461: Data query export/import fails
 -bug#0001492: RRDTool 1.3 series fonts (fontconfig) support
 -bug#0001506: Reindexing fails due to global include issue in lib/snmp.php
@@ -237,7 +238,7 @@ Cacti CHANGELOG
 -bug#0001609: Script server timeout too aggressive with 10 second poller interval
 -bug#0001628: Inconsistent message for Change SNMP Options related to available buttons
 -bug#0001695: Suppress deprecated warnings in Cacti code
--bug#0001725: PHP Fatal Error while trying to add a tree node via cli 
+-bug#0001725: PHP Fatal Error while trying to add a tree node via cli
 -bug: When creating new graphs without a data source, print error to user instead of throwing php error
 -bug: Browser query string does not contain arguments
 -bug: Function inject_form_variables does not operate if more than 1 variable needs replacing
@@ -263,26 +264,26 @@ Cacti CHANGELOG
 
 0.8.7e
 -bug#0001044: Creating a DS, Output field can't be selected for DT with a DIM when "Use Per-Data Source Value" is on
--bug#0001341: SNMP query: add oid_suffix for weird SNMP queries 
+-bug#0001341: SNMP query: add oid_suffix for weird SNMP queries
 -bug#0001345: Overwriting $snmp_index in query_snmp_host() breaks SNMP Data query if using get method
--bug#0001346: Strip out noisy 'No Such Instance currently exists at this OID' 
+-bug#0001346: Strip out noisy 'No Such Instance currently exists at this OID'
 -bug#0001404: timeout in "function ping_icmp" (lib/ping.php)
 -bug#0001405: Spaces in DS when .rrd file is created, so it fails
 -bug#0001407: Place graph thumbnail into div to lower page length changes on load graphs
 -bug#0001410: Thumbnail Columns is not honored for host display with snmp index group style
 -bug#0001411: Graph searching issue
--bug#0001413: strip_quotes fails 
--bug#0001426: multiple form opening due to bug in draw_edit_form() 
--bug#0001436: CSV Export Start Date and End Date are always 1970-01-01 01:00:00 
--bug#0001443: format_snmp_string can return a number with a leading space 
--bug#0001446: Wrong dates override in CSV export 
--bug#0001456: oid_uptime is not parsed correctly 
+-bug#0001413: strip_quotes fails
+-bug#0001426: multiple form opening due to bug in draw_edit_form()
+-bug#0001436: CSV Export Start Date and End Date are always 1970-01-01 01:00:00
+-bug#0001443: format_snmp_string can return a number with a leading space
+-bug#0001446: Wrong dates override in CSV export
+-bug#0001456: oid_uptime is not parsed correctly
 -bug#0001460: Skiping input parameters in data_query_field_list() may lead to SQL errors
--bug#0001464: Typo in install/index.php 
+-bug#0001464: Typo in install/index.php
 -bug#0001467: Customisable oid index parse regexp for weird MIBs
 -bug#0001468: Tree is not expanded correctly
 -bug#0001469: Tree is not being expanded if user followed link outside of cacti
--bug#0001476: Mark stacked columns in rrdtool_function_xport() output 
+-bug#0001476: Mark stacked columns in rrdtool_function_xport() output
 -bug#0001477: Spelling error in a variable in html_tree.php
 -bug#0001478: Combo boxes on Graph Management page produce URLs with leading spaces
 -bug: Top Graph Header Breaks When Plugins Used
@@ -292,21 +293,21 @@ Cacti CHANGELOG
 
 0.8.7d
 -bug#0001336: Allow to specify on_change handler for checkbox_group
--bug#0001338: When Using Web Basic Authentication HTML Bookmarks Do Not Work 
--bug#0001388: Spine uses illegal flag for ping on Mac OS X 
+-bug#0001338: When Using Web Basic Authentication HTML Bookmarks Do Not Work
+-bug#0001388: Spine uses illegal flag for ping on Mac OS X
 -bug#0001351: Deleting 1000 graphs along with their Data Sources crashes the Server
--bug#0001361: SNMP query: 'No more variables left in this MIB View' instead of value of input field 
+-bug#0001361: SNMP query: 'No more variables left in this MIB View' instead of value of input field
 -bug#0001374: ss_host_disk.php etc. error corrected when using SNMP V3 (index off by 1)
 -bug#0001376: graph_items.php variable $id defined in wrong place
 -bug#0001377: Several bugs in new cli script "structured_rra_paths"
--bug#0001378: ping.pl script fails when using tcp:hostname    
+-bug#0001378: ping.pl script fails when using tcp:hostname
 -bug#0001382: cdef.php error due to wrong function name
 -bug#0001383: syntax error in lib/rrd.php with PHP 4.4.4
 -bug#0001384: utilities.php does not handle view_snmp_cache when host_id = -1 (Any)
 -bug#0001385: LDAP Error: Group DN could not be found
 -bug#0001391: parsing snmp string with "=" ?? --> WARNING: Result from SNMP not valid
--bug#0001392: Problem on CDEF function ALL|SIMILAR_DATA_SOURCES_(NO)?DUPS 
--bug#0001394: Error of variable in lib/html_tree.php 
+-bug#0001392: Problem on CDEF function ALL|SIMILAR_DATA_SOURCES_(NO)?DUPS
+-bug#0001394: Error of variable in lib/html_tree.php
 -bug#0001398: Cross site scripting checking is overly protective on search filters
 -bug#0001400: LDAP authentication results in PHP warning message
 -bug: Resolved issue with reapply suggested names not working for data sources under certain conditions
@@ -315,11 +316,11 @@ Cacti CHANGELOG
 -feature: SNMP cli version information added to tech support page
 
 0.8.7c
--bug#0000157: Dual pane tree does not have the option of not rendering all trees in one page 
+-bug#0000157: Dual pane tree does not have the option of not rendering all trees in one page
 -bug#0000486: RRA template edit allows invalid XFF values
 -bug#0000626: Setting "Default Graph Tree" does not work with dual pane view
 -bug#0000828: Truncated IOS description in |query_ifAlias|
--bug#0000909: ALL_DATA_SOURCES_NODUPS breaks graphing when using "Consolidation Function" MAX 
+-bug#0000909: ALL_DATA_SOURCES_NODUPS breaks graphing when using "Consolidation Function" MAX
 -bug#0000943: scripts/ping.pl has incorrect response when "icmp hop redirect" occurs
 -bug#0000948: Exporting graphs to a local path does not work correctly in some cases
 -bug#0000986: Graphs that are done by graph type are not exported when using the tree view
@@ -330,50 +331,50 @@ Cacti CHANGELOG
 -bug#0001138: Lack of error checking causes graphs to not update when rrdtool crashes
 -bug#0001141: Script server appears broken for "index" and "query" requests (Documentation Fix)
 -bug#0001145: Save Failed error when changing Graph Details
--bug#0001153: Undefined variable: local_graph_id in graphs.php on line 201 
+-bug#0001153: Undefined variable: local_graph_id in graphs.php on line 201
 -bug#0001166: Installer does not properly handle disabled guest_user conversion
 -bug#0001174: Unidentified index warning
 -bug#0001175: Hide hosts in Graph Permissions that you already have access to
 -bug#0001176: Problem validating IPv6 addresses
--bug#0001188: Graph export issues in tree mode 
+-bug#0001188: Graph export issues in tree mode
 -bug#0001191: Faulty IP address validation by ping.php script
 -bug#0001180: Graph Export to CSV failed by using IE 6 SP2
 -bug#0001194: RRDtool URL is incorrect on the about page
 -bug#0001204: Since upgrade to 0.87b the hosts with ip address with 255 are down and have no datas
 -bug#0001206: Graphs are not zoom-able with PHP warnings turned on
 -bug#0001211: Allow use of "REMOTE_USER" if "PHP_AUTH_USER" is not set for authentication
--bug#0001213: Template Copy does not hash copied template_items 
+-bug#0001213: Template Copy does not hash copied template_items
 -bug#0001215: Impossible to define a none availability with the client cli/add_device.php
 -bug#0001216: CSV Export for zoomed graph, results in Validation error
 -bug#0001217: Default Graph Tree is not reflected in Left Pane of the graph page
 -bug#0001223: Missing Hard return on last GPRINT causes bad formatting
--bug#0001228: LDAP server port not honored 
+-bug#0001228: LDAP server port not honored
 -bug#0001230: Poller stops updating rrd files
 -bug#0001236: Set 'stats_recache' to zero when no re-index is present
 -bug#0001238: Guest user has access to change password
--bug#0001239: Using the TOTAL_ALL_DATA_SOURCES in a graph where all item are using the MAX CF yields an invalid(empty) CDEF 
+-bug#0001239: Using the TOTAL_ALL_DATA_SOURCES in a graph where all item are using the MAX CF yields an invalid(empty) CDEF
 -bug#0001240: SNMP string cleanup removes too many '=' signs
 -bug#0001244: Missing closing </form> on host.php
 -bug#0001247: Snmp ping won't work for snmp v3
--bug#0001256: Spine-poller.c : Bug in size string sysUptime 
+-bug#0001256: Spine-poller.c : Bug in size string sysUptime
 -bug#0001258: "Remove Verification" is an ambiguous definition, leads to data loss
 -bug#0001259: LDAP Authentication using Solaris 10 standard ldap client fails
 -bug#0001262: Do not allow deletion of Graph Export User
--bug#0001264: CDEFs can't recognize |query_*| 
+-bug#0001264: CDEFs can't recognize |query_*|
 -bug#0001268: resource/snmp_queries/net-snmp_disk.xml has incorrect name for "Percent Available"
 -bug#0001271: Hex string to decimal conversion for proper RRDtool storage
 -bug#0001273: Escape windows paths to accommodate spaces
 -bug#0001281: ICMP Ping fails if an octet == 255
 -bug#0001283: graph_image.php causes PHP Notice errors on view
--bug#0001286: poller_item cache is not updated when "Data Input Method" is changed 
+-bug#0001286: poller_item cache is not updated when "Data Input Method" is changed
 -bug#0001288: A host with ICMP ping selected as method does not properly perform ping
 -bug#0001291: Reapply Suggested Names fails on Script Queries
 -bug#0001293: When Creating Data Query Graphs, Performing Search will Cause List to Disappear
 -bug#0001294: Stack overflow if database is not correctly initialized
 -bug#0001295: Division by zero when rrd_step < poller_interval
--bug#0001296: add_graphs.php does not add the graph template to the host 
+-bug#0001296: add_graphs.php does not add the graph template to the host
 -bug#0001299: When creating graphs the entire poller cache is recreated for a host
--bug#0001314: Use Data Query variables as HRULE input for graph templates  
+-bug#0001314: Use Data Query variables as HRULE input for graph templates
 -bug#0001318: Graph Export with 1 minute poller re-exports graphs 5 times
 -bug#0001320: Invalid PHP_SELF Path
 -bug#0001326: If a user's password contains a single quote the login fails
