@@ -69,7 +69,8 @@ $includes = array(
 	'0.8.7i' => '0_8_7h_to_0_8_7i.php',
 	'0.8.8'  => '0_8_7i_to_0_8_8.php',
 	'0.8.8a' => '0_8_8_to_0_8_8a.php',
-	'0.8.8b' => '0_8_8_to_0_8_8b.php',
+	'0.8.8b' => '0_8_8a_to_0_8_8b.php',
+	'0.8.8c' => '0_8_8b_to_0_8_8c.php',
 );
 
 $old_cacti_version = db_fetch_cell('select cacti from version');
@@ -113,12 +114,7 @@ foreach ($includes as $v => $file) {
 /* it's always a good idea to re-populate the poller cache to make sure everything is refreshed and up-to-date */
 repopulate_poller_cache();
 
-db_execute('delete from version');
-db_execute("INSERT INTO version (cacti) values ('" . $config['cacti_version'] . "')");
-
-
-
-
+db_execute("UPDATE version SET cacti = '" . $config['cacti_version'] . "'");
 
 function db_install_errors ($cacti_version) {
 	if (isset($_SESSION["sess_sql_install_cache"])) {
