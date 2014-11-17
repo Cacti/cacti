@@ -907,6 +907,12 @@ case 'list':
 	html_end_box();
 
 	?>
+	<table align='right'>
+	<tr>
+		<td align='right'><img src='images/arrow.gif' alt=''>&nbsp;</td>
+		<td align='right'><input type='submit' value='View' title='View Graphs'></td>
+	</tr>
+	</table>
 	<input type='hidden' name='style' value='selective'>
 	<input type='hidden' name='action' value='preview'>
 	<input type='hidden' id='graph_list' name='graph_list' value='<?php print $_REQUEST['graph_list']; ?>'>
