@@ -866,6 +866,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 	include_once($config['library_path'] . '/html_utility.php');
 
 	if (empty($tree_id)) { return; }
+	if (empty($leaf_id)) { $leaf_id = 0; }
 
 	$sql_where       = '';
 	$sql_join        = '';
