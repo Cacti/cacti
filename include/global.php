@@ -222,6 +222,7 @@ include_once($config["library_path"] . "/html_utility.php");
 include_once($config["library_path"] . "/html_validate.php");
 include_once($config["library_path"] . "/variables.php");
 include_once($config["library_path"] . "/auth.php");
+include_once($config["include_path"] . "/csrf/csrf-magic.php");
 
 if (read_config_option('force_https') == 'on') {
 	if (!isset($_SERVER['HTTPS']) && isset($_SERVER['HTTP_HOST']) && isset($_SERVER['REQUEST_URI'])) {
