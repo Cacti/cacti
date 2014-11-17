@@ -124,7 +124,7 @@ function process_html_variables() {
 function process_user_input(&$timespan, $timeshift) {
 	if (isset($_POST["date1"])) {
 		/* the dates have changed, therefore, I am now custom */
-		if (($_SESSION["sess_current_date1"] != $_POST["date1"]) || ($_SESSION["sess_current_date2"] != $_POST["date2"])) {
+		if (($_SESSION["sess_current_date1"] != $_POST["date1"]) || ($_SESSION["sess_current_date2"] != $_POST["date2"]) || (isset($_REQUEST['custom']))) {
 			$timespan["current_value_date1"] = sanitize_search_string($_POST["date1"]);
 			$timespan["begin_now"] =strtotime($timespan["current_value_date1"]);
 			$timespan["current_value_date2"] = sanitize_search_string($_POST["date2"]);

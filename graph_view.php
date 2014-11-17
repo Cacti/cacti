@@ -385,6 +385,43 @@ case 'preview':
 			$('#main').html(data);
 		});
 	}
+
+	function refreshTimespanFilter() {
+		var json = { custom: 1, button_refresh_x: 1, date1: $('#date1').val(), date2: $('#date2').val(), predefined_timespan: $('#predefined_timespan').val(), predefined_timeshift: $('#predefined_timeshift').val() };
+		var url  = 'graph_view.php?action=preview&header=false';
+		$.post(url, json).done(function(data) {
+			$('#main').html(data);
+			applySkin();
+		});
+	}
+
+	function timeshiftFilterLeft() {
+		var json = { move_left_x: 1, move_left_y: 1, date1: $('#date1').val(), date2: $('#date2').val(), predefined_timespan: $('#predefined_timespan').val(), predefined_timeshift: $('#predefined_timeshift').val() };
+		var url  = 'graph_view.php?action=preview&header=false';
+		$.post(url, json).done(function(data) {
+			$('#main').html(data);
+			applySkin();
+		});
+	}
+
+	function timeshiftFilterRight() {
+		var json = { move_right_x: 1, move_right_y: 1, date1: $('#date1').val(), date2: $('#date2').val(), predefined_timespan: $('#predefined_timespan').val(), predefined_timeshift: $('#predefined_timeshift').val() };
+		var url  = 'graph_view.php?action=preview&header=false';
+		$.post(url, json).done(function(data) {
+			$('#main').html(data);
+			applySkin();
+		});
+	}
+
+	function clearTimespanFilter() {
+		var json = { button_clear_x: 1, date1: $('#date1').val(), date2: $('#date2').val(), predefined_timespan: $('#predefined_timespan').val(), predefined_timeshift: $('#predefined_timeshift').val() };
+		var url  = 'graph_view.php?action=preview&header=false';
+		$.post(url, json).done(function(data) {
+			$('#main').html(data);
+			applySkin();
+		});
+	}
+
 	</script>
 	<?php
 
@@ -442,10 +479,10 @@ case 'preview':
 							<input type='image' src='images/calendar.gif' align='middle' alt='End date selector' title='End date selector' onclick="return showCalendar('date2');">
 						</td>
 						<td>
-							<input type='image' name='move_left' src='images/move_left.gif' align='middle' alt='Left' title='Shift Left'>
+							<img style='padding-bottom:0px;cursor:pointer;' border='0' src='images/move_left.gif' align='middle' alt='' title='Shift Left' onClick='timeshiftFilterLeft()'/>
 						</td>
 						<td>
-							<select id='predefined_timeshift' name='predefined_timeshift' title='Define Shifting Interval' onChange='applyTimespanFilterChange(document.form_timespan_selector)'>
+							<select id='predefined_timeshift' name='predefined_timeshift' title='Define Shifting Interval'>
 								<?php
 								$start_val = 1;
 								$end_val = sizeof($graph_timeshifts)+1;
@@ -458,13 +495,13 @@ case 'preview':
 							</select>
 						</td>
 						<td>
-							<input type='image' name='move_right' src='images/move_right.gif' align='middle' alt='Right' title='Shift Right'>
+							<img style='padding-bottom:0px;cursor:pointer;' name='move_right' src='images/move_right.gif' align='middle' alt='' title='Shift Right' onClick='timeshiftFilterRight()'/>
 						</td>
 						<td>
-							<input type='submit' name='button_refresh_x' value='Refresh' title='Refresh selected time span'>
+							<input type='button' value='Refresh' title='Refresh selected time span' onClick='refreshTimespanFilter()'>
 						</td>
 						<td>
-							<input type='submit' name='button_clear_x' value='Clear' title='Return to the default time span'>
+							<input type='button' value='Clear' title='Return to the default time span' onClick='clearTimespanFilter()'>
 						</td>
 					</tr>
 				</table>
