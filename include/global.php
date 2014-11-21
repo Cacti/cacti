@@ -222,6 +222,9 @@ include_once($config["library_path"] . "/html_utility.php");
 include_once($config["library_path"] . "/html_validate.php");
 include_once($config["library_path"] . "/variables.php");
 include_once($config["library_path"] . "/auth.php");
+
+/* cross site request forgery library */
+function csrf_startup() { csrf_conf('rewrite-js', $config['url_path'] . 'include/csrf/csrf-magic.js'); }
 include_once($config["include_path"] . "/csrf/csrf-magic.php");
 
 if (read_config_option('force_https') == 'on') {
