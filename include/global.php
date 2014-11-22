@@ -224,8 +224,11 @@ include_once($config["library_path"] . "/variables.php");
 include_once($config["library_path"] . "/auth.php");
 
 /* cross site request forgery library */
-function csrf_startup() { csrf_conf('rewrite-js', $config['url_path'] . 'include/csrf/csrf-magic.js'); }
 include_once($config["include_path"] . "/csrf/csrf-magic.php");
+function csrf_startup() {
+	global $config;
+	csrf_conf('rewrite-js', $config['url_path'] . 'include/csrf/csrf-magic.js');
+}
 
 if (read_config_option('force_https') == 'on') {
 	if (!isset($_SERVER['HTTPS']) && isset($_SERVER['HTTP_HOST']) && isset($_SERVER['REQUEST_URI'])) {
