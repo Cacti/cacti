@@ -91,14 +91,13 @@
 		 * checks if an image has been already loaded or if the link is broken
 		 **/
 		function isReady(image){
-			if(typeof image[0].naturalWidth !== undefined && image[0].naturalWidth == 0) {
-				return false;
+			var $this = image;
+
+			if ($this.width() > 0) {
+				return true;
 			}
-			// support older versions of IE(6-8)
-			if(!image[0].complete) {
-				return false;
-			}
-			return true;
+			
+			return false;
 		}
 
 		/**
@@ -192,16 +191,43 @@
 			);
 		}
 
+		function zoomFunction_sleep(milliseconds) {
+			var start = new Date().getTime();
+			for (var i = 0; i < 1e7; i++) {
+				if ((new Date().getTime() - start) > milliseconds){
+					break;
+				}
+			}
+		}
+
 		function zoomFunction_init(image) {
 			var $this = image;
+			var image_loaded = isReady($this);
+
 			// exit if image has not been already loaded or if image is not available
-			if(isReady($this)) {
+			if (image_loaded == false) {
+				var i = 0;
+				var sleep = 100;
+
+				while (i < 100) {
+					zoomFunction_sleep(sleep);
+
+					image_loaded = isReady($this);
+
+					if (image_loaded) {
+						break;
+					}
+					i++;
+				}
+			}
+
+			if (image_loaded) {
 				// update zoom.image object with the attributes of this image
 				zoom.image.width	= parseInt($this.width());
 				zoom.image.height	= parseInt($this.height());
-				zoom.image.top		= parseInt($this.offset().top);
-				zoom.image.left		= parseInt($this.offset().left);
-			}else {
+				zoom.image.top	= parseInt($this.offset().top);
+				zoom.image.left	= parseInt($this.offset().left);
+			} else {
 				return;
 			}
 
