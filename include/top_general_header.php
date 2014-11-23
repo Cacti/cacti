@@ -43,7 +43,6 @@ $page_title = api_plugin_hook_function('page_title', draw_navigation_text("title
 	<link href="<?php echo $config['url_path']; ?>include/themes/<?php print read_config_option('selected_theme');?>/jquery-ui.css" type="text/css" rel="stylesheet">
 	<link href="<?php echo $config['url_path']; ?>include/themes/<?php print read_config_option('selected_theme');?>/default/style.css" type="text/css" rel="stylesheet">
 	<link href="<?php echo $config['url_path']; ?>images/favicon.ico" rel="shortcut icon">
-	<?php api_plugin_hook('page_head'); ?>
 	<script type="text/javascript" src="<?php echo $config['url_path']; ?>include/js/jquery.js" language="javascript"></script>
 	<script type="text/javascript" src="<?php echo $config['url_path']; ?>include/js/jquery-ui.js" language="javascript"></script>
 	<script type="text/javascript" src="<?php echo $config['url_path']; ?>include/js/jquery.cookie.js" language="javascript"></script>
@@ -54,7 +53,8 @@ $page_title = api_plugin_hook_function('page_title', draw_navigation_text("title
 	<script type="text/javascript" src="<?php echo $config['url_path']; ?>include/jscalendar/calendar-setup.js"></script>
 	<script type="text/javascript" src="<?php echo $config['url_path']; ?>include/layout.js"></script>
 	<script type='text/javascript'>var theme='<?php print read_config_option('selected_theme');?>';</script>
-	<?php
+	<?php 
+	api_plugin_hook('page_head');
 	if (isset($refresh)) {
 		if (is_array($refresh)) {
 			print "<meta http-equiv=refresh content='" . htmlspecialchars($refresh["seconds"],ENT_QUOTES) . "'; url='" . htmlspecialchars($refresh["page"],ENT_QUOTES) . "'>\r\n";
@@ -89,7 +89,7 @@ $page_title = api_plugin_hook_function('page_title', draw_navigation_text("title
 			<table width="100%">
 				<tr>
 					<td width='30%'>
-						<div class='infoBar'>
+						<div class='navBar'>
 							<?php echo draw_navigation_text();?>
 						</div>
 					</td>

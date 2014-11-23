@@ -44,6 +44,14 @@ function basename(path, suffix) {
 	return b;
 }
 
+/** getQueryString - this function will return the value
+ *  of the get request variable defined as input.
+ *  @args name - the variable name to return */
+function getQueryString(name) {
+	var match = RegExp('[?&]' + name + '=([^&]*)').exec(window.location.search);
+	return match && decodeURIComponent(match[1].replace(/\+/g, ' '));
+}
+
 /** applySelectorVisibility - This function set's the initial visibility
  *  of graphs for creation. Is will scan the against preset variables
  *  taking action as required to enable or disable rows. */
@@ -193,7 +201,7 @@ function showCalendar(id) {
 	calendar.sel = el;                           // inform it what input field we use
 
 	// Display the calendar below the input field
-	calendar.showAtElement(el, "Br");        // show the calendar
+	calendar.showAtElement(el, 'Br');        // show the calendar
 
 	return false;
 }
@@ -218,7 +226,7 @@ function applyTimespanFilterChange(objForm) {
 }
 
 function cactiReturnTo(location) {
-	if (location != "") {
+	if (location != '') {
 		document.location = location;
 	}else{
 		document.history.back();
@@ -276,13 +284,17 @@ $(function() {
 		$('#navigation').css('height', ($(window).height())+'px');
 	});
 
-	$(".tableHeader th").resizable({
-		handles: "e",
+	$('.tableHeader th').resizable({
+		handles: 'e',
 
 		start: function(event, ui) {
-			var page  = basename(location.pathname, '.php');
-			var table = $(this).parentsUntil('table[id^=cactiTable]').parent().attr('id');
-			var key   = page+'_'+table;
+			var page   = basename(location.pathname, '.php');
+			var action = getQueryString('action');
+			if (action == null) {
+				action    = getQueryString('tab');
+			}
+			var table  = $(this).parentsUntil('table[id^=cactiTable]').parent().attr('id');
+			var key    = page+'_'+table+'_'+action;
 
 			// See if sizes have been loaded
 			var found = false;
@@ -302,7 +314,7 @@ $(function() {
 				});
 			}
 
-			colWidth = $(this).width();
+			colWidth     = $(this).width();
 			originalSize = ui.size.width;
 			originalSize = $(this).width();
 		 },
@@ -310,36 +322,59 @@ $(function() {
 		resize: function(event, ui) {
 			var resizeDelta = ui.size.width - originalSize;
 			var newColWidth = colWidth + resizeDelta;
-			$(this).css("height", "auto");
+			$(this).css('height', 'auto');
 		},
 
 		stop: function(event, ui) {
-			var page = basename(location.pathname, '.php');
-			var table = $(this).parentsUntil('table[id^=cactiTable]').parent().attr('id');
-			var sizes = new Array;
+			var page   = basename(location.pathname, '.php');
+			var action = getQueryString('action');
+			if (action == null) {
+				action    = getQueryString('tab');
+			}
+			var table  = $(this).parentsUntil('table[id^=cactiTable]').parent().attr('id');
+			var key    = page+'_'+table+'_'+action;
+			var sizes  = new Array;
 			var i = 0;
 			$(this).parent().find('th').each(function(data) {
 				//console.log('On page '+page+', of Index '+table+', with Column '+i+' with width '+$(this).width()+' wide');
 				sizes[i] = $(this).width();
 				i++;
 			});
-			$.cookie(page+'_'+table, sizes, { expires: 31, path: '/cacti/' } );
+			$.cookie(key, sizes, { expires: 31, path: '/cacti/' } );
 		}
 	});
 
 	// Initialize table width on the page
-	$('table[id^=cactiTable]').each(function(data) {
-		var page  = basename(location.pathname, '.php');
-		var table = $(this).attr('id');
-		var sizes = $.cookie(page+'_'+table);
-		var items = sizes ? sizes.split(/,/) : new Array();
+	$('.cactiTable').each(function(data) {
+		var page   = basename(location.pathname, '.php');
+		var action = getQueryString('action');
+		if (action == null) {
+			action    = getQueryString('tab');
+		}
+		var table  = $(this).attr('id');
+		var key    = page+'_'+table+'_'+action;
+		var sizes  = $.cookie(key);
+		var items  = sizes ? sizes.split(/,/) : new Array();
+		//console.log('Setting sizes for '+table+', with sizes: '+sizes);
 
 		var i = 0;
-		if (items.length) {
-			$(this).find('th').each(function(data) {
-				$(this).css('width', items[i]+'px');
-				i++;
-			});
+		if (table !== undefined) {
+			if (items.length) {
+				$(this).find('th').each(function(data) {
+					$(this).css('width', items[i]+'px');
+					i++;
+				});
+			}else{
+				var sizes = new Array();
+				$(this).find('th').each(function(data) {
+					sizes[i] = $(this).css('width');
+					i++;
+				});
+
+				if (i > 0) {
+					$.cookie(key, sizes, { expires: 31, path: '/cacti/' } );
+				}
+			}
 		}
 	});
 });

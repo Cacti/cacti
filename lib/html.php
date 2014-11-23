@@ -926,16 +926,16 @@ function html_show_tabs_left($show_console_tab) {
 			array(
 				'title' => 'Console',
 				'image' => '',
-				'url'   => 'index.php',
-				);
+				'url'   => $config['url_path'] . 'index.php',
+			);
 		}
 
 		$tabs_left[] =
 			array(
 				'title' => 'Graphs',
 				'image' => '',
-				'url'   => 'graph_view.php',
-		);
+				'url'   => $config['url_path'] . 'graph_view.php',
+			);
 
 		// Get Plugin Text Out of Band
 		ob_start();
@@ -991,7 +991,7 @@ function html_show_tabs_left($show_console_tab) {
 				$tabs_left[$i]['selected'] = true;
 			}elseif ($tab['url'] == 'index.php' && is_console_page($_SERVER['PHP_SELF'])) {
 				$tabs_left[$i]['selected'] = true;
-			}elseif ($tab['url'] == basename($_SERVER['PHP_SELF'])) {
+			}elseif (basename($tab['url']) == basename($_SERVER['PHP_SELF'])) {
 				$tabs_left[$i]['selected'] = true;
 			}
 			$i++;
