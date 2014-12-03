@@ -840,6 +840,10 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 		});
 	}
 
+	function url_graph(strNavURL) {
+		return '';
+	}
+
 	</script>
 	<?php
 	html_end_box();

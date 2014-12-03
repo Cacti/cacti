@@ -566,6 +566,7 @@ case 'list':
 	input_validate_input_number(get_request_var_request('host_id'));
 	input_validate_input_number(get_request_var_request('graph_template_id'));
 	input_validate_input_number(get_request_var_request('rows'));
+	input_validate_input_number(get_request_var_request('page'));
 	/* ==================================================== */
 
 	/* clean up search string */
@@ -643,7 +644,7 @@ case 'list':
 	?>
 	<tr class='even noprint'>
 		<td class='noprint'>
-		<form style='margin:0px;padding:0px;' name='form_graph_list' method='post' action='graph_view.php?action=list' onSubmit='form_graph(document.chk,document.form_graph_list)'>
+		<form style='margin:0px;padding:0px;' name='form_graph_list' method='post' action='graph_view.php?action=list'>
 			<table cellpadding='2' cellspacing='0'>
 				<tr class='noprint'>
 					<td width='55'>
@@ -715,6 +716,7 @@ case 'list':
 			<input type='hidden' name='graph_add' value=''>
 			<input type='hidden' name='graph_remove' value=''>
 			<input type='hidden' name='graph_list' value='<?php print $_REQUEST['graph_list'];?>'>
+			<input type='hidden' id='page' name='page' value='<?php print $_REQUEST['page'];?>'>
 		</form>
 		</td>
 	</tr>
@@ -739,7 +741,7 @@ case 'list':
 
 	?>
 
-	<form name='chk' id='chk' action='graph_view.php' method='get' onSubmit='form_graph(document.chk,document.chk)'>
+	<form name='chk' id='chk' action='graph_view.php' method='get'>
 
 	<?php
 
@@ -784,6 +786,7 @@ case 'list':
 	<script type='text/javascript'>
 	<!--
 	var graph_list_array = new Array(<?php print $_REQUEST['graph_list'];?>);
+	console.log('<?php print $_REQUEST['graph_list'];?>');
 
 	$(function() {
 		initializeChecks();
@@ -802,6 +805,7 @@ case 'list':
 		strURL += '&rows=' + $('#rows').val();
 		strURL += '&graph_template_id=' + $('#graph_template_id').val();
 		strURL += '&filter=' + $('#filter').val();
+		strURL += '&page=' + $('#page').val();
 		strURL += url_graph('');
 		$.get(strURL, function(data) {
 			$('#main').html(data);
@@ -819,13 +823,12 @@ case 'list':
 
 	function viewGraphs() {
 		graphList = $('#graph_list').val();
-		for(var i = 0; i < document.chk.elements.length; i++) {
-			if (document.chk.elements[i].name.substr(0,4) == 'chk_') {
-				if (document.chk.elements[i].checked) {
-					graphList += document.chk.elements[i].id.substr(4) + ',';
-				}
+		$('input[id^=chk_]').each(function(data) {
+			graphID = $(this).attr('id').replace('chk_','');
+			if ($(this).is(':checked')) {
+				graphList += (graphList.length > 0 ? ',':'') + graphID;
 			}
-		}
+		});
 		$('#graph_list').val(graphList);
 
 		document.chk.submit();
@@ -835,17 +838,14 @@ case 'list':
 		var strURL = '';
 		var strAdd = '';
 		var strDel = '';
-		for(var i = 0; i < document.chk.elements.length; i++) {
-			if (document.chk.elements[i].name.substr(0,4) == 'chk_') {
-				if (document.chk.elements[i].checked) {
-					strAdd = strAdd + document.chk.elements[i].id.substr(4) + ',';
-				} else if (graphChecked(document.chk.elements[i].id.substr(4))) {
-					strDel = strDel + document.chk.elements[i].id.substr(4) + ',';
-				}
+		$('input[id^=chk_]').each(function(data) {
+			graphID = $(this).attr('id').replace('chk_','');
+			if ($(this).is(':checked')) {
+				strAdd += (strAdd.length > 0 ? ',':'') + graphID;
+			} else if (graphChecked(graphID)) {
+				strDel += (strDel.length > 0 ? ',':'') + graphID;
 			}
-		}
-		strAdd = strAdd.substring(0,strAdd.length - 1);
-		strDel = strDel.substring(0,strDel.length - 1);
+		});
 		strURL = '&graph_add=' + strAdd + '&graph_remove=' + strDel;
 		return strNavURL + strURL;
 	}
@@ -863,17 +863,14 @@ case 'list':
 	function form_graph(objForm,objFormSubmit) {
 		var strAdd = '';
 		var strDel = '';
-		for(var i = 0; i < objForm.elements.length; i++) {
-			if (objForm.elements[i].id.substring(0,4) == 'chk_') {
-				if (objForm.elements[i].checked) {
-					strAdd = strAdd + objForm.elements[i].id.substr(4) + ',';
-				} else if (graphChecked(document.chk.elements[i].id.substr(4))) {
-					strDel = strDel + objForm.elements[i].id.substr(4) + ',';
-				}
+		$('input[id^=chk_]').each(function(data) {
+			graphID = $(this).attr('id').replace('chk_','');
+			if ($(this).is(':checked')) {
+				strAdd += (strAdd.length > 0 ? ',':'') + graphID;
+			} else if (graphChecked(graphID)) {
+				strAdd += (strAdd.length > 0 ? ',':'') + graphID;
 			}
-		}
-		strAdd = strAdd.substring(0,strAdd.length - 1);
-		strDel = strDel.substring(0,strDel.length - 1);
+		});
 		objFormSubmit.graph_add.value = strAdd;
 		objFormSubmit.graph_remove.value = strDel;
 	}
