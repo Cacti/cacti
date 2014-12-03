@@ -186,16 +186,16 @@ if (isset($_POST['update_policy'])) {
 
 		break;
 	case 'edit':
-		include_once("include/top_header.php");
+		top_header();
 		group_edit();
-		include_once("include/bottom_footer.php");
+		bottom_footer();
 
 		break;
 	default:
 		if (!api_plugin_hook_function('user_group_admin_action', get_request_var_request("action"))) {
-			include_once("include/top_header.php");
+			top_header();
 			user_group();
-			include_once("include/bottom_footer.php");
+			bottom_footer();
 		}
 
 		break;
@@ -384,7 +384,7 @@ function form_actions() {
 		}
 	}
 
-	include_once("./include/top_header.php");
+	top_header();
 
 	html_start_box("<strong>" . $group_actions[get_request_var_post("drp_action")] . "</strong>", "60%", "", "3", "center", "");
 
@@ -445,7 +445,7 @@ function form_actions() {
 
 	html_end_box();
 
-	include_once("./include/bottom_footer.php");
+	bottom_footer();
 }
 
 /* --------------------------
