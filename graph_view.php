@@ -66,7 +66,7 @@ if ($_REQUEST['action'] != 'tree_content') {
 }
 
 if (read_config_option('auth_method') != 0) {
-	$current_user = db_fetch_row('select * from user_auth where id=' . $_SESSION['sess_user_id']);
+	$current_user = db_fetch_row('SELECT * FROM user_auth WHERE id=' . $_SESSION['sess_user_id']);
 }
 
 if (isset($_REQUEST['hide'])) {
@@ -85,8 +85,8 @@ case 'tree':
 
 	validate_tree_vars();
 
-	if ((read_config_option('auth_method') != 0) && (empty($current_user['show_tree']))) {
-		print "<strong><font class='txtErrorTextBox'>YOU DO NOT HAVE RIGHTS FOR TREE VIEW</font></strong>"; exit;
+	if (!is_view_allowed('show_tree')) {
+		print "<strong><font class='txtErrorTextBox'>YOU DO NOT HAVE RIGHTS FOR TREE VIEW</font></strong>"; return;
 	}
 
 	if ((!isset($_REQUEST['tree_id'])) && (isset($_SESSION['dhtml_tree']))) {
@@ -95,29 +95,14 @@ case 'tree':
 
 	$tree_dropdown_html = draw_tree_dropdown((isset($_REQUEST['tree_id']) ? $_REQUEST['tree_id'] : '0'));
 
-	/* don't even print the table if there is not >1 tree */
-	if ((!empty($tree_dropdown_html)) && (read_graph_config_option('default_tree_view_mode') == '1')) {
-		print "
-		<table width='100%' class='tableConfirm' align='center' cellpadding='3'>
-			<tr>
-				$tree_dropdown_html
-			</tr>
-		</table>\n";
-	}
-
-	if (read_graph_config_option('default_tree_view_mode') == '1') {
-		$tree_parameters = array();
-		grow_graph_tree($_SESSION['sess_view_tree_id'], (!empty($start_branch) ? $start_branch : 0), isset($_SESSION['sess_user_id']) ? $_SESSION['sess_user_id'] : 0, $tree_parameters);
-	}
-
 	bottom_footer();
 
 	break;
 case 'tree_content':
 	validate_tree_vars();
 
-	if ((read_config_option('auth_method') != 0) && (empty($current_user['show_tree']))) {
-		print "<strong><font class='txtErrorTextBox'>YOU DO NOT HAVE RIGHTS FOR TREE VIEW</font></strong>"; exit;
+	if (!is_view_allowed('show_tree')) {
+		print "<strong><font class='txtErrorTextBox'>YOU DO NOT HAVE RIGHTS FOR TREE VIEW</font></strong>"; return;
 	}
 
 	?>
@@ -138,14 +123,9 @@ case 'tree_content':
 	if they try and view the graph directly. */
 
 	if (isset($_REQUEST['tree_id'])) {
-		if (read_config_option('auth_method') != 0) {
-			/* take tree permissions into account here, if the user does not have permission
-			give an "access denied" message */
-			$access_denied = !(is_tree_allowed($_REQUEST['tree_id']));
-
-			if ($access_denied == true) {
-				print "<strong><font class='txtErrorTextBox'>ACCESS DENIED</font></strong>"; exit;
-			}
+		if (!is_tree_allowed($_REQUEST['tree_id'])) {
+			print "<strong><font class='txtErrorTextBox'>ACCESS DENIED</font></strong>"; 
+			exit;
 		}
 
 		grow_right_pane_tree((isset($_REQUEST['tree_id']) ? $_REQUEST['tree_id'] : 0), (isset($_REQUEST['leaf_id']) ? $_REQUEST['leaf_id'] : 0), (isset($_REQUEST['host_group_data']) ? urldecode($_REQUEST['host_group_data']) : 0));
@@ -155,8 +135,8 @@ case 'tree_content':
 case 'preview':
 	top_graph_header();
 
-	if ((read_config_option('auth_method') != 0) && (empty($current_user['show_preview']))) {
-		print "<strong><font class='txtErrorTextBox'>YOU DO NOT HAVE RIGHTS FOR PREVIEW VIEW</font></strong>"; exit;
+	if (!is_view_allowed('show_preview')) {
+		print "<strong><font class='txtErrorTextBox'>YOU DO NOT HAVE RIGHTS FOR PREVIEW VIEW</font></strong>"; return;
 	}
 
 	/* ================= input validation ================= */
@@ -255,33 +235,14 @@ case 'preview':
 					<td width='55'>
 						Host:
 					</td>
-					<td width='1'>
+					<td>
 						<select id='host_id' name='host_id' onChange='applyGraphPreviewFilterChange();return false;'>
 							<option value='0'<?php if (get_request_var_request('host_id') == '0') {?> selected<?php }?>>Any</option>
-
 							<?php
-							if (read_config_option('auth_method') != 0) {
-								/* get policy information for the sql where clause */
-								$sql_where = get_graph_permissions_sql($current_user['policy_graphs'], $current_user['policy_hosts'], $current_user['policy_graph_templates']);
-
-								$hosts = db_fetch_assoc('SELECT DISTINCT host.id, host.description as name
-									FROM host
-									LEFT JOIN graph_local ON ( host.id = graph_local.host_id )
-									LEFT JOIN graph_templates_graph ON ( graph_templates_graph.local_graph_id = graph_local.id )
-									LEFT JOIN graph_templates ON (graph_templates.id=graph_local.graph_template_id)
-									LEFT JOIN user_auth_perms ON ((graph_templates_graph.local_graph_id=user_auth_perms.item_id and user_auth_perms.type=1 and user_auth_perms.user_id=' . $_SESSION['sess_user_id'] . ') OR (host.id=user_auth_perms.item_id and user_auth_perms.type=3 and user_auth_perms.user_id=' . $_SESSION['sess_user_id'] . ') OR (graph_templates.id=user_auth_perms.item_id and user_auth_perms.type=4 and user_auth_perms.user_id=' . $_SESSION['sess_user_id'] . '))
-									WHERE graph_templates_graph.local_graph_id=graph_local.id
-									' . (empty($sql_where) ? '' : "and $sql_where") . '
-									ORDER BY name');
-							}else{
-								$hosts = db_fetch_assoc('SELECT DISTINCT host.id, host.description as name
-									FROM host
-									ORDER BY name');
-							}
-
+							$hosts = get_allowed_devices();
 							if (sizeof($hosts) > 0) {
 								foreach ($hosts as $host) {
-									print "<option value='" . $host['id'] . "'"; if (get_request_var_request('host_id') == $host['id']) { print ' selected'; } print '>' . htmlspecialchars($host['name']) . "</option>\n";
+									print "<option value='" . $host['id'] . "'"; if (get_request_var_request('host_id') == $host['id']) { print ' selected'; } print '>' . htmlspecialchars($host['description']) . "</option>\n";
 								}
 							}
 							?>
@@ -290,26 +251,12 @@ case 'preview':
 					<td>
 						Template:
 					</td>
-					<td width='1'>
+					<td>
 						<select id='graph_template_id' name='graph_template_id' onChange='applyGraphPreviewFilterChange();return false;'>
 							<option value='0'<?php if (get_request_var_request('graph_template_id') == '0') {?> selected<?php }?>>Any</option>
-
 							<?php
-							if (read_config_option('auth_method') != 0) {
-								$graph_templates = db_fetch_assoc('SELECT DISTINCT graph_templates.*
-									FROM host
-									LEFT JOIN graph_local ON ( host.id = graph_local.host_id )
-									LEFT JOIN graph_templates_graph ON ( graph_templates_graph.local_graph_id = graph_local.id )
-									LEFT JOIN graph_templates ON (graph_templates.id=graph_local.graph_template_id)
-									LEFT JOIN user_auth_perms ON ((graph_templates_graph.local_graph_id=user_auth_perms.item_id and user_auth_perms.type=1 and user_auth_perms.user_id=' . $_SESSION['sess_user_id'] . ') OR (host.id=user_auth_perms.item_id and user_auth_perms.type=3 and user_auth_perms.user_id=' . $_SESSION['sess_user_id'] . ') OR (graph_templates.id=user_auth_perms.item_id and user_auth_perms.type=4 and user_auth_perms.user_id=' . $_SESSION['sess_user_id'] . '))
-									WHERE graph_templates_graph.local_graph_id=graph_local.id
-									' . (empty($sql_where) ? '' : "and $sql_where") . '
-									ORDER BY name');
-							}else{
-								$graph_templates = db_fetch_assoc('SELECT DISTINCT graph_templates.*
-									FROM graph_templates
-									ORDER BY name');
-							}
+
+							$graph_templates = get_allowed_graph_templates();
 
 							if (sizeof($graph_templates) > 0) {
 								foreach ($graph_templates as $template) {
@@ -322,7 +269,7 @@ case 'preview':
 					<td>
 						Graphs:
 					</td>
-					<td width='1'>
+					<td>
 						<select id='rows' name='rows' onChange='applyGraphPreviewFilterChange();return false;'>
 							<option value='-1'<?php if (get_request_var_request('rows') == '-1') {?> selected<?php }?>>Default</option>
 							<?php
@@ -337,7 +284,7 @@ case 'preview':
 					<td>
 						Columns:
 					</td>
-					<td width='1'>
+					<td>
 						<select id='columns' name='columns' onChange='applyGraphPreviewFilterChange();return false;'>
 							<option value='-1'<?php if (get_request_var_request('columns') == '-1') {?> selected<?php }?>>Default</option>
 							<option value='1'<?php if (get_request_var_request('columns') == '1') {?> selected<?php }?>>1 Column</option>
@@ -347,7 +294,7 @@ case 'preview':
 							<option value='5'<?php if (get_request_var_request('columns') == '5') {?> selected<?php }?>>5 Columns</option>
 						</select>
 					</td>
-					<td width='40'>
+					<td>
 						<label for='thumbnails'>Thumbnails:</label>
 					</td>
 					<td>
@@ -356,7 +303,7 @@ case 'preview':
 					<td>
 						Search:
 					</td>
-					<td width='1'>
+					<td>
 						<input type='text' name='filter' size='40' value='<?php print htmlspecialchars(get_request_var_request('filter'));?>'>
 					</td>
 					<td>
@@ -374,6 +321,7 @@ case 'preview':
 	function clearFilter() {
 		$.get('graph_view.php?action=preview&header=false&clear_x=1', function(data) {
 			$('#main').html(data);
+			applySkin();
 		});
 	}
 
@@ -383,6 +331,7 @@ case 'preview':
 			'&rows='+$('#rows').val()+'&graph_template_id='+$('#graph_template_id').val()+
 			'&thumbnails='+$('#thumbnails').is(':checked'), function(data) {
 			$('#main').html(data);
+			applySkin();
 		});
 	}
 
@@ -431,7 +380,7 @@ case 'preview':
 		<tr class='even noprint'>
 			<td class='noprint'>
 			<form style='margin:0px;padding:0px;' name='form_timespan_selector' action='graph_view.php?action=preview' method='post' action='graph_view.php'>
-				<table cellpadding='1' cellspacing='0'>
+				<table cellpadding='2' cellspacing='0'>
 					<tr>
 						<td width='55'>
 							Presets:
@@ -498,7 +447,7 @@ case 'preview':
 							<img style='padding-bottom:0px;cursor:pointer;' name='move_right' src='images/move_right.gif' align='middle' alt='' title='Shift Right' onClick='timeshiftFilterRight()'/>
 						</td>
 						<td>
-							<input type='button' value='Refresh' title='Refresh selected time span' onClick='refreshTimespanFilter()'>
+							<input type='button' value='Refresh' name='button_refresh_x' title='Refresh selected time span' onClick='refreshTimespanFilter()'>
 						</td>
 						<td>
 							<input type='button' value='Clear' title='Return to the default time span' onClick='clearTimespanFilter()'>
@@ -522,21 +471,8 @@ case 'preview':
 		$_REQUEST['columns'] = read_graph_config_option('num_columns');
 	}
 
-	$sql_or = ''; $sql_where = ''; $sql_join = '';
-
-	/* graph permissions */
-	if (read_config_option('auth_method') != 0) {
-		$sql_where = 'where ' . get_graph_permissions_sql($current_user['policy_graphs'], $current_user['policy_hosts'], $current_user['policy_graph_templates']);
-
-		$sql_join = 'left join host on (host.id=graph_local.host_id)
-			left join graph_templates on (graph_templates.id=graph_local.graph_template_id)
-			left join user_auth_perms on ((graph_templates_graph.local_graph_id=user_auth_perms.item_id and user_auth_perms.type=1 and user_auth_perms.user_id=' . $_SESSION['sess_user_id'] . ') OR (host.id=user_auth_perms.item_id and user_auth_perms.type=3 and user_auth_perms.user_id=' . $_SESSION['sess_user_id'] . ') OR (graph_templates.id=user_auth_perms.item_id and user_auth_perms.type=4 and user_auth_perms.user_id=' . $_SESSION['sess_user_id'] . '))';
-	}else{
-		$sql_where = '';
-		$sql_join = '';
-	}
-
 	/* the user select a bunch of graphs of the 'list' view and wants them displayed here */
+	$sql_or = '';
 	if (isset($_REQUEST['style'])) {
 		if (get_request_var_request('style') == 'selective') {
 
@@ -568,36 +504,24 @@ case 'preview':
 
 			if ((isset($graph_array)) && (sizeof($graph_array) > 0)) {
 				/* build sql string including each graph the user checked */
-				$sql_or = 'AND ' . array_to_sql_or($graph_array, 'graph_templates_graph.local_graph_id');
+				$sql_or = array_to_sql_or($graph_array, 'gtg.local_graph_id');
 
 				$set_rra_id = empty($rra_id) ? read_graph_config_option('default_rra_id') : get_request_var_request('rra_id');
 			}
 		}
 	}
 
-	$sql_base = "FROM (graph_templates_graph,graph_local)
-		$sql_join
-		$sql_where
-		" . (empty($sql_where) ? 'WHERE' : 'AND') . "   graph_templates_graph.local_graph_id > 0
-		AND graph_templates_graph.local_graph_id=graph_local.id
-		AND graph_templates_graph.title_cache like '%%" . get_request_var_request('filter') . "%%'
-		" . (empty($_REQUEST['host_id']) ? '' : ' and graph_local.host_id=' . get_request_var_request('host_id')) . "
-		" . (empty($_REQUEST['graph_template_id']) ? '' : ' and graph_local.graph_template_id=' . get_request_var_request('graph_template_id')) . "
-		$sql_or";
+	$total_rows = 0;
 
-	$total_rows = count(db_fetch_assoc('SELECT ' .
-		'graph_templates_graph.local_graph_id ' .
-		$sql_base));
+	$sql_where  = (strlen($_REQUEST['filter']) ? "'gtg.title_cache LIKE '%%" . get_request_var_request('filter') . "%%'":"");
+	$sql_where .= (strlen($sql_or) && strlen($sql_where) ? ' AND ':'') . $sql_or;
+	$sql_where .= ($_REQUEST['host_id'] > 0 ? (strlen($sql_where) ? ' AND':'') . " gl.host_id=" . $_REQUEST['host_id']:"");
+	$sql_where .= ($_REQUEST['graph_template_id'] > 0 ? (strlen($sql_where) ? ' AND':'') . "gl.graph_template_id=" . $_REQUEST['graph_template_id']:"");
 
-	$graphs = db_fetch_assoc('SELECT ' .
-		'graph_templates_graph.local_graph_id, ' .
-		'graph_templates_graph.height, ' .
-		'graph_templates_graph.width, ' .
-		'graph_templates_graph.title_cache ' .
-		$sql_base . ' ' .
-		'GROUP BY graph_templates_graph.local_graph_id ' .
-		'ORDER BY graph_templates_graph.title_cache ' .
-		'limit ' . ($_REQUEST['rows']*($_REQUEST['page']-1)) . ',' . $_REQUEST['rows']);
+	$limit      = ($_REQUEST['rows']*($_REQUEST['page']-1)) . ',' . $_REQUEST['rows'];
+	$order      = 'gtg.title_cache';
+
+	$graphs     = get_allowed_graphs($sql_where, $order, $limit, $total_rows);	
 
 	/* do some fancy navigation url construction so we don't have to try and rebuild the url string */
 	if (ereg('page=[0-9]+',basename($_SERVER['QUERY_STRING']))) {
@@ -634,8 +558,8 @@ case 'preview':
 case 'list':
 	top_graph_header();
 
-	if ((read_config_option('auth_method') != 0) && (empty($current_user['show_list']))) {
-		print "<strong><font class='txtErrorTextBox'>YOU DO NOT HAVE RIGHTS FOR LIST VIEW</font></strong>"; exit;
+	if (!is_view_allowed('show_list')) {
+		print "<strong><font class='txtErrorTextBox'>YOU DO NOT HAVE RIGHTS FOR LIST VIEW</font></strong>"; return;
 	}
 
 	/* ================= input validation ================= */
@@ -714,70 +638,39 @@ case 'list':
 	load_current_session_value('graph_list', 'sess_graph_view_list_graph_list', '');
 
 	/* display graph view filter selector */
-	html_start_box('<strong>Graph Filters</strong>' . (isset($_REQUEST['style']) && strlen($_REQUEST['style']) ? ' [ Custom Graph List Applied - Filter from List ]':''), '100%', '', '2', 'center', '');
+	html_start_box('<strong>Graph Filters</strong>' . (isset($_REQUEST['style']) && strlen($_REQUEST['style']) ? ' [ Custom Graph List Applied - Filter from List ]':''), '100%', '', '3', 'center', '');
 
 	?>
 	<tr class='even noprint'>
-		<td>
+		<td class='noprint'>
 		<form style='margin:0px;padding:0px;' name='form_graph_list' method='post' action='graph_view.php?action=list' onSubmit='form_graph(document.chk,document.form_graph_list)'>
-			<table cellpadding='1' cellspacing='0'>
-				<tr>
-					<td nowrap style='white-space: nowrap;' width='55'>
+			<table cellpadding='2' cellspacing='0'>
+				<tr class='noprint'>
+					<td width='55'>
 						Host:
 					</td>
 					<td width='1'>
 						<select id='host_id' name='host_id' onChange='applyGraphListFilterChange()'>
 							<option value='0'<?php if (get_request_var_request('host_id') == '0') {?> selected<?php }?>>Any</option>
 							<?php
-							if (read_config_option('auth_method') != 0) {
-								/* get policy information for the sql where clause */
-								$sql_where = get_graph_permissions_sql($current_user['policy_graphs'], $current_user['policy_hosts'], $current_user['policy_graph_templates']);
-
-								$hosts = db_fetch_assoc('SELECT DISTINCT host.id, host.description as name
-									FROM host
-									LEFT JOIN graph_local ON ( host.id = graph_local.host_id )
-									LEFT JOIN graph_templates_graph ON ( graph_templates_graph.local_graph_id = graph_local.id )
-									LEFT JOIN graph_templates ON (graph_templates.id=graph_local.graph_template_id)
-									LEFT JOIN user_auth_perms ON ((graph_templates_graph.local_graph_id=user_auth_perms.item_id and user_auth_perms.type=1 and user_auth_perms.user_id=' . $_SESSION['sess_user_id'] . ') OR (host.id=user_auth_perms.item_id and user_auth_perms.type=3 and user_auth_perms.user_id=' . $_SESSION['sess_user_id'] . ') OR (graph_templates.id=user_auth_perms.item_id and user_auth_perms.type=4 and user_auth_perms.user_id=' . $_SESSION['sess_user_id'] . '))
-									WHERE graph_templates_graph.local_graph_id=graph_local.id
-									' . (empty($sql_where) ? '' : "and $sql_where") . '
-									ORDER BY name');
-							}else{
-								$hosts = db_fetch_assoc('SELECT DISTINCT host.id, host.description as name
-									FROM host
-									ORDER BY name');
-							}
-
+							$hosts = get_allowed_devices();
 							if (sizeof($hosts) > 0) {
 								foreach ($hosts as $host) {
-									print "<option value='" . $host['id'] . "'"; if (get_request_var_request('host_id') == $host['id']) { print ' selected'; } print '>' . htmlspecialchars($host['name']) . "</option>\n";
+									print "<option value='" . $host['id'] . "'"; if (get_request_var_request('host_id') == $host['id']) { print ' selected'; } print '>' . htmlspecialchars($host['description']) . "</option>\n";
 								}
 							}
 							?>
 						</select>
 					</td>
-					<td width='70'>
+					<td>
 						Template:
 					</td>
 					<td width='1'>
 						<select id='graph_template_id' name='graph_template_id' onChange='applyGraphListFilterChange()'>
 							<option value='0'<?php print htmlspecialchars(get_request_var_request('filter'));?><?php if (get_request_var_request('host_id') == '0') {?> selected<?php }?>>Any</option>
 							<?php
-							if (read_config_option('auth_method') != 0) {
-								$graph_templates = db_fetch_assoc('SELECT DISTINCT graph_templates.*
-									FROM host
-									LEFT JOIN graph_local ON ( host.id = graph_local.host_id )
-									LEFT JOIN graph_templates_graph ON ( graph_templates_graph.local_graph_id = graph_local.id )
-									LEFT JOIN graph_templates ON (graph_templates.id=graph_local.graph_template_id)
-									LEFT JOIN user_auth_perms ON ((graph_templates_graph.local_graph_id=user_auth_perms.item_id and user_auth_perms.type=1 and user_auth_perms.user_id=' . $_SESSION['sess_user_id'] . ') OR (host.id=user_auth_perms.item_id and user_auth_perms.type=3 and user_auth_perms.user_id=' . $_SESSION['sess_user_id'] . ') OR (graph_templates.id=user_auth_perms.item_id and user_auth_perms.type=4 and user_auth_perms.user_id=' . $_SESSION['sess_user_id'] . '))
-									WHERE graph_templates_graph.local_graph_id=graph_local.id
-									' . (empty($sql_where) ? '' : "and $sql_where") . '
-									ORDER BY name');
-							}else{
-								$graph_templates = db_fetch_assoc('SELECT DISTINCT graph_templates.*
-									FROM graph_templates
-									ORDER BY name');
-							}
+
+							$graph_templates = get_allowed_graph_templates();
 
 							if (sizeof($graph_templates) > 0) {
 								foreach ($graph_templates as $template) {
@@ -787,10 +680,10 @@ case 'list':
 							?>
 						</select>
 					</td>
-					<td style='white-space: nowrap;' width='50'>
-						Graphs per Page:
+					<td>
+						Graphs:
 					</td>
-					<td width='1'>
+					<td>
 						<select id='rows' name='rows' onChange='applyGraphListFilterChange()'>
 							<option value='-1'<?php if (get_request_var_request('rows') == '-1') {?> selected<?php }?>>Default</option>
 							<?php
@@ -802,10 +695,10 @@ case 'list':
 							?>
 						</select>
 					</td>
-					<td style='white-space: nowrap;' width='50'>
+					<td>
 						Search:
 					</td>
-					<td width='1'>
+					<td>
 						<input id='filter' type='text' name='filter' size='40' value='<?php print htmlspecialchars(get_request_var_request('filter'));?>'>
 					</td>
 					<td>
@@ -834,47 +727,16 @@ case 'list':
 	}
 
 	/* create filter for sql */
-	$sql_filter = '';
-	$sql_filter .= (empty($_REQUEST['filter']) ? '' : " graph_templates_graph.title_cache like '%" . get_request_var_request('filter') . "%'");
-	$sql_filter .= (empty($_REQUEST['host_id']) ? '' : (empty($sql_filter) ? '' : ' and') . ' graph_local.host_id=' . get_request_var_request('host_id'));
-	$sql_filter .= (empty($_REQUEST['graph_template_id']) ? '' : (empty($sql_filter) ? '' : ' and') . ' graph_local.graph_template_id=' . get_request_var_request('graph_template_id'));
+	$sql_where  = '';
+	$sql_where .= (empty($_REQUEST['filter']) ? '' : " gtg.title_cache LIKE '%" . get_request_var_request('filter') . "%'");
+	$sql_where .= (empty($_REQUEST['host_id']) ? '' : (empty($sql_filter) ? '' : ' AND') . ' gl.host_id=' . get_request_var_request('host_id'));
+	$sql_where .= (empty($_REQUEST['graph_template_id']) ? '' : (empty($sql_filter) ? '' : ' AND') . ' gl.graph_template_id=' . get_request_var_request('graph_template_id'));
 
-	/* graph permissions */
-	if (read_config_option('auth_method') != 0) {
-		/* get policy information for the sql where clause */
-		$sql_where = 'where ' . get_graph_permissions_sql($current_user['policy_graphs'], $current_user['policy_hosts'], $current_user['policy_graph_templates']);
-		$sql_join = 'left join host on (host.id=graph_local.host_id)
-			left join graph_templates on (graph_templates.id=graph_local.graph_template_id)
-			left join user_auth_perms on ((graph_templates_graph.local_graph_id=user_auth_perms.item_id and user_auth_perms.type=1 and user_auth_perms.user_id=' . $_SESSION['sess_user_id'] . ') OR (host.id=user_auth_perms.item_id and user_auth_perms.type=3 and user_auth_perms.user_id=' . $_SESSION['sess_user_id'] . ') OR (graph_templates.id=user_auth_perms.item_id and user_auth_perms.type=4 and user_auth_perms.user_id=' . $_SESSION['sess_user_id'] . '))';
+	$total_rows = 0;
+	$limit      = ($_REQUEST['rows']*($_REQUEST['page']-1)) . ',' . $_REQUEST['rows'];
 
-	}else{
-		$sql_where = '';
-		$sql_join = '';
-	}
+	$graphs = get_allowed_graphs($sql_where, 'gtg.title_cache', $limit, $total_rows);
 
-	$sql_base = "from (graph_templates_graph,graph_local)
-		$sql_join
-		$sql_where
-		" . (empty($sql_where) ? 'where' : 'and') . " graph_templates_graph.local_graph_id > 0
-		and graph_templates_graph.local_graph_id=graph_local.id
-		and graph_templates_graph.title_cache like '%" . $_REQUEST['filter'] . "%'
-		" . (empty($_REQUEST['host_id']) ? '' : ' and graph_local.host_id=' . $_REQUEST['host_id']) . '
-		' . (empty($_REQUEST['graph_template_id']) ? '' : ' and graph_local.graph_template_id=' . $_REQUEST['graph_template_id']);
-
-	$total_rows = count(db_fetch_assoc("select
-		graph_templates_graph.local_graph_id
-		$sql_base"));
-	$graphs = db_fetch_assoc("select
-		graph_templates_graph.local_graph_id,
-		host.description,
-		graph_templates.name AS template_name,
-		graph_templates_graph.title_cache,
-		graph_templates_graph.height,
-		graph_templates_graph.width
-		$sql_base
-		group by graph_templates_graph.local_graph_id
-		order by graph_templates_graph.title_cache
-		limit " . ($_REQUEST['rows']*($_REQUEST['page']-1)) . ',' . $_REQUEST['rows']);
 	?>
 
 	<form name='chk' id='chk' action='graph_view.php' method='get' onSubmit='form_graph(document.chk,document.chk)'>
@@ -893,7 +755,7 @@ case 'list':
 	if (sizeof($graphs)) {
 		foreach ($graphs as $graph) {
 			form_alternate_row('line' . $graph['local_graph_id'], true);
-			form_selectable_cell("<strong><a href='" . htmlspecialchars('graph.php?local_graph_id=' . $graph['local_graph_id'] . '&rra_id=all') . "'>" . htmlspecialchars($graph['title_cache']) . '</a></strong>', $graph['local_graph_id'], '30%');
+			form_selectable_cell("<strong><a href='" . htmlspecialchars('graph.php?local_graph_id=' . $graph['local_graph_id'] . '&rra_id=all') . "'>" . htmlspecialchars($graph['title_cache']) . '</a></strong>', $graph['local_graph_id']);
 			form_selectable_cell($graph['description'], $graph['local_graph_id']);
 			form_selectable_cell($graph['template_name'], $graph['local_graph_id']);
 			form_selectable_cell($graph['height'] . 'x' . $graph['width'], $graph['local_graph_id']);
@@ -922,15 +784,15 @@ case 'list':
 	<script type='text/javascript'>
 	<!--
 	var graph_list_array = new Array(<?php print $_REQUEST['graph_list'];?>);
-	initializeChecks();
 
 	$(function() {
-		applySkin();
+		initializeChecks();
 	});
 
 	function clearFilter() {
 		$.get('graph_view.php?action=list&header=false&clear_x=1', function(data) {
 			$('#main').html(data);
+			applySkin();
 		});
 	}
 
@@ -943,14 +805,15 @@ case 'list':
 		strURL += url_graph('');
 		$.get(strURL, function(data) {
 			$('#main').html(data);
+			applySkin();
 		});
 	}
 
 	function initializeChecks() {
 		for (var i = 0; i < graph_list_array.length; i++) {
-			if (document.getElementById('chk_'+graph_list_array[i])) {
-				select_line(graph_list_array[i]);
-			}
+			$('#line'+graph_list_array[i]).addClass('selected');
+			$('#chk_'+graph_list_array[i]).prop('checked', true);
+			$('#chk_'+graph_list_array[i]).parent().addClass('selected');
 		}
 	}
 
@@ -985,11 +848,6 @@ case 'list':
 		strDel = strDel.substring(0,strDel.length - 1);
 		strURL = '&graph_add=' + strAdd + '&graph_remove=' + strDel;
 		return strNavURL + strURL;
-	}
-
-	function url_go(strURL) {
-		document.location = strURL;
-		return false;
 	}
 
 	function graphChecked(graph_id) {

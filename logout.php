@@ -24,6 +24,8 @@
 
 include("./include/auth.php");
 
+global $config;
+
 api_plugin_hook('logout_pre_session_destroy');
 
 /* Clear session */
@@ -33,39 +35,48 @@ session_destroy();
 api_plugin_hook('logout_post_session_destroy');
 
 /* Check to see if we are using Web Basic Auth */
-if (read_config_option("auth_method") == "2") {
+if (isset($_REQUEST['action']) && $_REQUEST['action'] == 'timeout') {
+	print "<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.01 Transitional//EN' 'http://www.w3.org/TR/html4/loose.dtd'>\n";
+	print "<html>\n";
+	print "<head>\n";
+	print "\t<title>Logout of Cacti</title>\n";
+	print "\t<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>\n";
+	print "\t<link href='" . $config['url_path'] . "include/themes/" . read_config_option('selected_theme') . "/main.css' type='text/css' rel='stylesheet'>\n";
+	print "\t<link href='" . $config['url_path'] . "images/favicon.ico' rel='shortcut icon'>\n";
+	print "</head>\n";
+	print "<body>\n";
+	print "\t<table align='center'>\n";
+	print "\t\t<tr>\n";
+	print "\t\t\t<td><img src='images/auth_logout.gif' border='0' alt=''></td>\n";
+	print "\t\t</tr><tr>\n";
+	print "\t\t\t<td><br>You have been logged out of Cacti due to a session timeout.<br>Please close your browser or <a href='index.php'>Login again</a>.</td>\n";
+	print "\t\t</tr>\n";
+	print "\t</table>\n";
+	print "</body>\n";
+	print "</html>\n";
+}elseif (read_config_option("auth_method") == "2") {
 	if (api_plugin_hook_function('custom_logout_message', OPER_MODE_NATIVE) == OPER_MODE_RESKIN) {
 		exit;
 	}
 
-	?>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
-<head>
-	<title>Logout of Cacti</title>
-	<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
-	<STYLE TYPE="text/css">
-	<!--
-		BODY, TABLE, TR, TD {font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 12px;}
-		A {text-decoration: none;}
-		A:active { text-decoration: none;}
-		A:hover {text-decoration: underline; color: #333333;}
-		A:visited {color: Blue;}
-	-->
-	</style>
-</head>
-<body>
-<table align="center">
-	<tr>
-		<td><img src="images/auth_logout.gif" border="0" alt=""></td>
-	</tr><tr>
-		<td><br>To end your Cacti session please close your web browser.<br><br><a href="index.php">Return to Cacti</a></td>
-	</tr>
-</table>
-</body>
-</html>
-		<?php
-
+	print "<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.01 Transitional//EN' 'http://www.w3.org/TR/html4/loose.dtd'>\n";
+	print "<html>\n";
+	print "<head>\n";
+	print "\t<title>Logout of Cacti</title>\n";
+	print "\t<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>\n";
+	print "\t<link href='" . $config['url_path'] . "include/themes/" . read_config_option('selected_theme') . "/main.css' type='text/css' rel='stylesheet'>\n";
+	print "\t<link href='" . $config['url_path'] . "images/favicon.ico' rel='shortcut icon'>\n";
+	print "</head>\n";
+	print "<body>\n";
+	print "\t<table align='center'>\n";
+	print "\t\t<tr>\n";
+	print "\t\t\t<td><img src='images/auth_logout.gif' border='0' alt=''></td>\n";
+	print "\t\t</tr><tr>\n";
+	print "\t\t\t<td><br>To end your Cacti session please close your web browser or <a href='index.php'>Return to Cacti</a></td>\n";
+	print "\t\t</tr>\n";
+	print "\t</table>\n";
+	print "</body>\n";
+	print "</html>\n";
 }else{
 	/* Default action */
 	header("Location: index.php");

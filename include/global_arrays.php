@@ -264,10 +264,6 @@ $graph_views = array(1 =>
 	"List View",
 	"Preview View");
 
-$graph_tree_views = array(1 =>
-	"Single Pane",
-	"Dual Pane");
-
 $auth_methods = array(
 	0 => "None",
 	1 => "Builtin Authentication",
@@ -394,7 +390,8 @@ $menu = array(
 		),
 	"Utilities" => array(
 		"utilities.php" => "System Utilities",
-		"user_admin.php" => "User Management",
+		"user_admin.php" => "Users",
+		"user_group_admin.php" => "User Groups",
 		"logout.php" => "Logout User"
 	));
 
@@ -502,6 +499,7 @@ $user_auth_realm_filenames = array(
 	"templates_import.php" => 17,
 	"tree.php" => 4,
 	"user_admin.php" => 1,
+	"user_group_admin.php" => 1,
 	"utilities.php" => 15,
 	"smtp_servers.php" => 8,
 	"email_templates.php" => 8,
@@ -557,7 +555,8 @@ $hash_version_codes = array(
 	"0.8.8"  => "0024",
 	"0.8.8a" => "0024",
 	"0.8.8b" => "0024",
-	"0.8.8c" => "0025"
+	"0.8.8c" => "0025",
+	"0.8.8d" => "0026"
 	);
 
 $hash_type_names = array(

@@ -584,8 +584,6 @@ function graphs() {
 			$query_row = $graph_template["graph_template_id"];
 
 			print "<tr id='gt_line$query_row' class='selectable " . (($i % 2 == 0) ? "odd" : "even") . "'>"; $i++;
-
-			//print "		<td onClick='gt_select_line(" . $graph_template["graph_template_id"] . ");'>
 			print "		<td>
 						<span id='gt_text$query_row" . "_0'><strong>Create:</strong> " . htmlspecialchars($graph_template["graph_template_name"]) . "</span>
 					</td>
@@ -834,10 +832,8 @@ function graphs() {
 							if ($field_array["direction"] == "input") {
 								if (in_array($field_name, $fields)) {
 									if (isset($row[$field_name])) {
-										//print "<td onClick='dq_select_line(" . $snmp_query["id"] . ",\"" . encode_data_query_index($row["snmp_index"]) . "\");'><span id='text$query_row" . "_" . $column_counter . "'>" . (strlen($_REQUEST["filter"]) ? preg_replace("/(" . preg_quote($_REQUEST["filter"]) . ")/i", "<span class='filteredValue'>\\1</span>", $row[$field_name]) : $row[$field_name]) . "</span></td>";
 										print "<td><span id='text$query_row" . "_" . $column_counter . "'>" . (strlen($_REQUEST["filter"]) ? preg_replace("/(" . preg_quote($_REQUEST["filter"]) . ")/i", "<span class='filteredValue'>\\1</span>", $row[$field_name]) : $row[$field_name]) . "</span></td>";
 									}else{
-										//print "<td onClick='dq_select_line(" . $snmp_query["id"] . ",\"" . encode_data_query_index($row["snmp_index"]) . "\");'><span id='text$query_row" . "_" . $column_counter . "'></span></td>";
 										print "<td><span id='text$query_row" . "_" . $column_counter . "'></span></td>";
 									}
 

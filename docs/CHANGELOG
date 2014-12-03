@@ -1,5 +1,27 @@
 Cacti CHANGELOG
 
+0.8.8d
+-bug: Make Cacti's permissions consistent for RBAC
+-feature: Add Themes to WebGUI (deprecation of $colors array)
+-feature: Add Theme settings for RRDtool Graph Rendering (fonts, colors, border)
+-feature; Add resizable columns
+-feature: Remove Single Pane Tree View feature
+-feature: Add 'Classic' and 'Modern' Themes
+-feature: Use jQuery for Settings and Graph Settings pages to remove clutter
+-feature: Add Role Based Access Control (RBAC) 
+-feature: Redesign User Management pages
+-feature: Allow Graphs and Data Source columns to be sorted on Devices page
+-feature: When running Verbose Query, and Re-query from Device page return to a meaninful location
+-feature: Adding number of in use Graphs, Data Sources, and Devices to Template pages
+-feature: Move CDEFs, Colors, GPrint Presets, and RRA's to Presets menu
+-feature: Allow login, logout and access denied pages to have CSS
+-feature: Remove most inline styles in Cacti
+-feature: Add session timeout and automatic logout due to inactivity
+-feature: Merge SSL Plugin
+-feature: Merge Watermark Plugin
+-feature: Merge UGroup Plugin
+-feature: Make all page refresh Ajax based
+
 0.8.8c
 -bug#0002228: GPL incompatible files included in Cacti project in include/treeview
 -bug#0002383: Sanitize the step and id variables CVE-2013-5588, CVE-2013-5589
@@ -28,7 +50,6 @@ Cacti CHANGELOG
 -feature: Both Graphs and Columns default to 'Default'
 -feature: Resolved Left hand navigation taking entire page
 -feature: Added new graph zoom to tree view and preview offering a "quick" (default) and an "advanced" mode
--feature: Themes
 
 0.8.8b
 -bug: Fixed issue with custom data source information being lost when saved from edit

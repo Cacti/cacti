@@ -418,7 +418,8 @@ function api_plugin_remove_realms ($plugin) {
 	$realms = db_fetch_assoc("SELECT id FROM plugin_realms WHERE plugin = '$plugin'", false);
 	foreach ($realms as $realm) {
 		$id = $realm['id'] + 100;
-		db_execute("DELETE FROM user_auth_realm WHERE realm_id = '$id'");
+		db_execute("DELETE FROM user_auth_realm WHERE realm_id='$id'");
+		db_execute("DELETE FROM user_auth_group_realm WHERE realm_id='$id'");
 	}
 	db_execute("DELETE FROM plugin_realms WHERE plugin = '$plugin'");
 }
@@ -438,20 +439,15 @@ function api_plugin_load_realms () {
 }
 
 function api_plugin_user_realm_auth ($filename = '') {
-	global $user_realms, $user_auth_realms, $user_auth_realm_filenames;
+	global $user_auth_realm_filenames;
 	/* list all realms that this user has access to */
-	if (!isset($user_realms)) {
-		if (isset($_SESSION["sess_user_id"]) && (read_config_option('global_auth') == 'on' || read_config_option('auth_method') != 0)) {
-			$user_realms = db_fetch_assoc("select realm_id from user_auth_realm where user_id=" . $_SESSION["sess_user_id"], false);
-			$user_realms = array_rekey($user_realms, "realm_id", "realm_id");
-		}else{
-			$user_realms = $user_auth_realms;
+
+	if ($filename != '' && isset($user_auth_realm_filenames[basename($filename)])) {
+		if (is_realm_allowed($user_auth_realm_filenames[basename($filename)])) {
+			return TRUE;
 		}
 	}
-	if ($filename != '' && isset($user_auth_realm_filenames[basename($filename)])) {
-		if (isset($user_realms[$user_auth_realm_filenames[basename($filename)]]))
-			return TRUE;
-	}
+
 	return FALSE;
 }
 

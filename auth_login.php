@@ -194,6 +194,16 @@ if ($action == 'login') {
 			$_SESSION["sess_change_password"] = true;
 		}
 
+		$group_options = db_fetch_cell("SELECT MAX(login_opts)
+	                FROM user_auth_group AS uag
+			INNER JOIN user_auth_group_members AS uagm
+			ON uag.id=uagm.group_id
+			WHERE user_id=" . $_SESSION["sess_user_id"]);
+
+		if ($group_options > 0) {
+			$user['login_opts'] = $group_options;
+		}
+
 		/* ok, at the point the user has been sucessfully authenticated; so we must
 		decide what to do next */
 		switch ($user["login_opts"]) {

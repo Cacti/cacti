@@ -66,20 +66,6 @@ $page_title = api_plugin_hook_function('page_title', draw_navigation_text("title
 <head>
 	<meta http-equiv="X-UA-Compatible" content="edge">
 	<title><?php echo $page_title; ?></title>
-	<?php
-	if (isset($_SESSION["custom"]) && $_SESSION["custom"] == true) {
-		print "<meta http-equiv=refresh content='99999'>";
-	}else if (isset($_REQUEST["action"]) && $_REQUEST["action"] == 'zoom') {
-		print "<meta http-equiv=refresh content='99999'>";
-	}else{
-		$refresh = api_plugin_hook_function('top_graph_refresh', htmlspecialchars(read_graph_config_option("page_refresh"),ENT_QUOTES));
-		if (is_array($refresh)) {
-			print "<meta http-equiv=refresh content='" . htmlspecialchars($refresh["seconds"],ENT_QUOTES) . "'; url='" . htmlspecialchars($refresh["page"],ENT_QUOTES) . "'>\r\n";
-		}else{
-			print "<meta http-equiv=refresh content='" . htmlspecialchars($refresh,ENT_QUOTES) . "'>\r\n";
-		}
-	}
-	?>
 	<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
 	<link href="<?php echo $config['url_path']; ?>include/themes/<?php print read_config_option('selected_theme');?>/main.css" type="text/css" rel="stylesheet">
 	<link href="<?php echo $config['url_path']; ?>include/themes/<?php print read_config_option('selected_theme');?>/jquery.zoom.css" type="text/css" rel="stylesheet">
@@ -97,7 +83,7 @@ $page_title = api_plugin_hook_function('page_title', draw_navigation_text("title
 	<script type="text/javascript" src="<?php echo $config['url_path']; ?>include/jscalendar/lang/calendar-en.js"></script>
 	<script type="text/javascript" src="<?php echo $config['url_path']; ?>include/jscalendar/calendar-setup.js"></script>
 	<script type="text/javascript" src="<?php echo $config['url_path']; ?>include/layout.js"></script>
-	<script type='text/javascript'>var theme='<?php print read_config_option('selected_theme');?>';</script>
+	<?php include($config['base_path'] . '/include/global_session.php');?>
 </head>
 
 <?php if ($oper_mode == OPER_MODE_NATIVE) {?>
@@ -168,11 +154,11 @@ $page_title = api_plugin_hook_function('page_title', draw_navigation_text("title
 	<?php }
 
 	global $graph_views;
-	load_current_session_value("action", "sess_cacti_graph_action", $graph_views[read_graph_config_option("default_tree_view_mode")]);
+	load_current_session_value("action", "sess_cacti_graph_action", $graph_views["2"]);
 	?>
 	<tr>
-		<?php if (basename($_SERVER["PHP_SELF"]) == "graph_view.php" && (read_graph_config_option("default_tree_view_mode") == 2) && ($_REQUEST["action"] == "tree" || (isset($_REQUEST["view_type"]) && $_REQUEST["view_type"] == "tree"))) { ?>
-		<td style='display:none;' id='navigation' class='cactiTreeNavigationArea noprint' valign='top' width='<?php print htmlspecialchars(read_graph_config_option("default_dual_pane_width"));?>'>
+		<?php if (basename($_SERVER["PHP_SELF"]) == "graph_view.php" && ($_REQUEST["action"] == "tree" || (isset($_REQUEST["view_type"]) && $_REQUEST["view_type"] == "tree"))) { ?>
+		<td id='navigation' class='cactiTreeNavigationArea noprint' valign='top' width='<?php print htmlspecialchars(read_graph_config_option("default_dual_pane_width"));?>'>
 			<?php grow_dhtml_trees();?>
 		</td>
 		<?php } ?>

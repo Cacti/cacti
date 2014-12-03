@@ -210,6 +210,7 @@ db_connect_real($database_hostname, $database_username, $database_password, $dat
 
 /* include additional modules */
 include_once($config["library_path"] . "/functions.php");
+include_once($config["library_path"] . "/auth.php");
 include_once($config["include_path"] . "/global_constants.php");
 include_once($config["library_path"] . "/plugins.php");
 include_once($config["include_path"] . "/plugins.php");
@@ -221,7 +222,6 @@ include_once($config["library_path"] . "/html_form.php");
 include_once($config["library_path"] . "/html_utility.php");
 include_once($config["library_path"] . "/html_validate.php");
 include_once($config["library_path"] . "/variables.php");
-include_once($config["library_path"] . "/auth.php");
 
 /* cross site request forgery library */
 include_once($config["include_path"] . "/csrf/csrf-magic.php");
@@ -240,6 +240,6 @@ if (read_config_option('force_https') == 'on') {
 api_plugin_hook("config_insert");
 
 /* current cacti version */
-$config["cacti_version"] = "0.8.8c";
+$config["cacti_version"] = "0.8.8d";
 
 ?>

@@ -573,9 +573,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 	/* before we do anything; make sure the user has permission to view this graph,
 	if not then get out */
 	if ((read_config_option("auth_method") != 0) && (isset($_SESSION["sess_user_id"]))) {
-		$access_denied = !(is_graph_allowed($local_graph_id));
-
-		if ($access_denied == true) {
+		if (!is_graph_allowed($local_graph_id)) {
 			return "GRAPH ACCESS DENIED";
 		}
 	}
@@ -862,6 +860,29 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 		}
 	}
 
+	/* implement theme colors */
+	$themeopts  = '';
+	$themefonts = array();
+	$rrdtheme   = $config['base_path'] . '/include/themes/' . read_config_option('selected_theme') . '/rrdtheme.php';
+	if (file_exists($rrdtheme) && is_readable($rrdtheme)) {
+		$rrdversion = str_replace('rrd-', '', str_replace('.x', '', read_config_option('rrdtool_version')));
+		include_once($rrdtheme);
+		
+		if (sizeof($rrdcolors)) {
+		foreach($rrdcolors as $colortag => $color) {
+			$themeopts .= "--color " . strtoupper($colortag) . "#" . strtoupper($color) . RRD_NL;
+		}
+		}
+
+		if (isset($rrdborder) && $rrdversion >= 1.4) {
+			$themeopts .= "--border $rrdborder " ;
+		}
+
+		if (sizeof($rrdfonts)) {
+			$themefonts = $rrdfonts;
+		}
+	}
+
 	/* basic graph options */
 	$graph_opts .=
 		"--imgformat=" . $image_types{$graph["image_format_id"]} . RRD_NL .
@@ -876,6 +897,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 		"$unit_value" .
 		"$unit_exponent_value" .
 		"$graph_legend" .
+		"$themeopts" .
 		"--vertical-label=" . cacti_escapeshellarg($graph["vertical_label"]) . RRD_NL;
 
 	/* rrdtool 1.2.x does not provide smooth lines, let's force it */
@@ -885,19 +907,26 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 		}
 	}
 
+	if (read_config_option("graph_wathermark") != "") {
+		$graph_opts .= "--watermark " . cacti_escapeshellarg(read_config_option("graph_wathermark")) . RRD_NL;
+	}
+
 	/* rrdtool 1.2 font options */
 	if (read_config_option("rrdtool_version") != "rrd-1.0.x") {
 		/* title fonts */
-		$graph_opts .= rrdtool_set_font("title", ((!empty($graph_data_array["graph_nolegend"])) ? $graph_data_array["graph_nolegend"] : ""));
+		$graph_opts .= rrdtool_set_font("title", ((!empty($graph_data_array["graph_nolegend"])) ? $graph_data_array["graph_nolegend"] : ""), $themefonts);
 
 		/* axis fonts */
-		$graph_opts .= rrdtool_set_font("axis");
+		$graph_opts .= rrdtool_set_font("axis", "", $themefonts);
 
 		/* legend fonts */
-		$graph_opts .= rrdtool_set_font("legend");
+		$graph_opts .= rrdtool_set_font("legend", "", $themefonts);
 
 		/* unit fonts */
-		$graph_opts .= rrdtool_set_font("unit");
+		$graph_opts .= rrdtool_set_font("unit", "", $themefonts);
+
+		/* watermark fonts */
+		$graph_opts .= rrdtool_set_font("watermark", "", $themefonts);
 	}
 
 	$i = 0; $j = 0;
@@ -1466,9 +1495,7 @@ function rrdtool_function_xport($local_graph_id, $rra_id, $xport_data_array, &$x
 	/* before we do anything; make sure the user has permission to view this graph,
 	if not then get out */
 	if ((read_config_option("auth_method") != 0) && (isset($_SESSION["sess_user_id"]))) {
-		$access_denied = !(is_graph_allowed($local_graph_id));
-
-		if ($access_denied == true) {
+		if (!is_graph_allowed($local_graph_id)) {
 			return "GRAPH ACCESS DENIED";
 		}
 	}
@@ -2024,15 +2051,22 @@ function rrdtool_function_xport($local_graph_id, $rra_id, $xport_data_array, &$x
 	return $xport_array;
 }
 
-function rrdtool_set_font($type, $no_legend = "") {
+function rrdtool_set_font($type, $no_legend, $themefonts) {
 	global $config;
 
-	if (read_graph_config_option("custom_fonts") == "on") {
-		$font = read_graph_config_option($type . "_font");
-		$size = read_graph_config_option($type . "_size");
+	if (read_config_option('font_method') == 0) {
+		if (read_graph_config_option("custom_fonts") == "on") {
+			$font = read_graph_config_option($type . "_font");
+			$size = read_graph_config_option($type . "_size");
+		}else{
+			$font = read_config_option($type . "_font");
+			$size = read_config_option($type . "_size");
+		}
+	}elseif (isset($themefonts[$type]['font']) && isset($themefonts[$type]['size'])) {
+		$font = $themefonts[$type]['font'];
+		$size = $themefonts[$type]['size'];
 	}else{
-		$font = read_config_option($type . "_font");
-		$size = read_config_option($type . "_size");
+		return;
 	}
 
 	if(strlen($font)) {

@@ -22,7 +22,7 @@
  +-------------------------------------------------------------------------+
 */
 
-global $config, $menu, $refresh;
+global $config, $menu;
 
 $oper_mode = api_plugin_hook_function('top_header', OPER_MODE_NATIVE);
 if ($oper_mode == OPER_MODE_RESKIN) {
@@ -52,17 +52,7 @@ $page_title = api_plugin_hook_function('page_title', draw_navigation_text("title
 	<script type="text/javascript" src="<?php echo $config['url_path']; ?>include/jscalendar/lang/calendar-en.js"></script>
 	<script type="text/javascript" src="<?php echo $config['url_path']; ?>include/jscalendar/calendar-setup.js"></script>
 	<script type="text/javascript" src="<?php echo $config['url_path']; ?>include/layout.js"></script>
-	<script type='text/javascript'>var theme='<?php print read_config_option('selected_theme');?>';</script>
-	<?php 
-	api_plugin_hook('page_head');
-	if (isset($refresh)) {
-		if (is_array($refresh)) {
-			print "<meta http-equiv=refresh content='" . htmlspecialchars($refresh["seconds"],ENT_QUOTES) . "'; url='" . htmlspecialchars($refresh["page"],ENT_QUOTES) . "'>\r\n";
-		}else{
-			print "<meta http-equiv=refresh content='" . htmlspecialchars($refresh,ENT_QUOTES) . "'>\r\n";
-		}
-	}
-	?>
+	<?php include($config['base_path'] . '/include/global_session.php'); api_plugin_hook('page_head'); ?>
 </head>
 
 <?php if ($oper_mode == OPER_MODE_NATIVE) {?>

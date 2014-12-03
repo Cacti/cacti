@@ -1601,75 +1601,7 @@ function get_web_browser() {
 	@arg $force_refresh - (bool) Force the refresh of the array from the database
    @returns - (array) an array containing a list of graph trees */
 function get_graph_tree_array($return_sql = false, $force_refresh = false) {
-
-	/* set the tree update time if not already set */
-	if (!isset($_SESSION["tree_update_time"])) {
-		$_SESSION["tree_update_time"] = time();
-	}
-
-	/* build tree array */
-	if (!isset($_SESSION["tree_array"]) || ($force_refresh) ||
-		(($_SESSION["tree_update_time"] + read_graph_config_option("page_refresh")) < time())) {
-
-		if (read_config_option("auth_method") != 0) {
-			$current_user = db_fetch_row("select policy_trees from user_auth where id=" . $_SESSION["sess_user_id"]);
-
-			if ($current_user["policy_trees"] == "1") {
-				$sql_where = "where user_auth_perms.user_id is null";
-			}elseif ($current_user["policy_trees"] == "2") {
-				$sql_where = "where user_auth_perms.user_id is not null";
-			}
-
-			$sql = "select
-				graph_tree.id,
-				graph_tree.name,
-				user_auth_perms.user_id
-				from graph_tree
-				left join user_auth_perms on (graph_tree.id=user_auth_perms.item_id and user_auth_perms.type=2 and user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . ")
-				$sql_where
-				order by graph_tree.name";
-		}else{
-			$sql = "select * from graph_tree order by name";
-		}
-
-		$_SESSION["tree_array"] = $sql;
-		$_SESSION["tree_update_time"] = time();
-	} else {
-		$sql = $_SESSION["tree_array"];
-	}
-
-	if ($return_sql == true) {
-		return $sql;
-	}else{
-		return db_fetch_assoc($sql);
-	}
-}
-
-/* get_host_array - returns a list of hosts taking permissions into account if necessary
-   @returns - (array) an array containing a list of hosts */
-function get_host_array() {
-	if (read_config_option("auth_method") != 0) {
-		$current_user = db_fetch_row("select policy_hosts from user_auth where id=" . $_SESSION["sess_user_id"]);
-
-		if ($current_user["policy_hosts"] == "1") {
-			$sql_where = "where user_auth_perms.user_id is null";
-		}elseif ($current_user["policy_hosts"] == "2") {
-			$sql_where = "where user_auth_perms.user_id is not null";
-		}
-
-		$host_list = db_fetch_assoc("select
-			host.id,
-			CONCAT_WS('',host.description,' (',host.hostname,')') as name,
-			user_auth_perms.user_id
-			from host
-			left join user_auth_perms on (host.id=user_auth_perms.item_id and user_auth_perms.type=3 and user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . ")
-			$sql_where
-			order by host.description,host.hostname");
-	}else{
-		$host_list = db_fetch_assoc("select id,CONCAT_WS('',description,' (',hostname,')') as name from host order by description,hostname");
-	}
-
-	return $host_list;
+	return get_allowed_trees($return_sql);
 }
 
 /* draw_login_status - provides a consistent login status page for all pages that use it */

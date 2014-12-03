@@ -82,6 +82,7 @@ function applySelectorVisibilityAndActions() {
 
 	// Create Actions for Checkboxes
 	$('tr.selectable').find('.checkbox').click(function(data) {
+		console.log('Graph List Click'+page);
 		if (!$(this).is(':disabled')) {
 			$(this).parent().toggleClass('selected');
 			var checked = $(this).is(':checkbox');
@@ -124,7 +125,6 @@ function dqResetDeps(snmp_query_id) {
 /** SelectAll - This function will select all non-disabled rows
  *  @arg attrib - The Graph Type either graph template, or data query */
 function SelectAll(attrib, checked) {
-	//console.log("Im Here the attrib is "+attrib);
 	if (attrib == 'sg') {
 		if (checked == true) {
 			$('tr[id^=gt_line]').each(function(data) {
@@ -143,7 +143,7 @@ function SelectAll(attrib, checked) {
 		}
 	}else{
 		var attribSplit = attrib.split('_');
-		var dq = attribSplit[1];
+		var dq   = attribSplit[1];
 
 		if (checked == true) {
 			$('tr[id^=line'+dq+'_]').each(function(data) {
@@ -159,17 +159,6 @@ function SelectAll(attrib, checked) {
 					$(this).find(':checkbox').prop('checked', false);
 				}
 			});
-		}
-	}
-}
-
-/** SelectAllGraphs - Right now, need to remediate...
- *  It is done just before a new data query is checked.
- *  @arg prefix - Ok, prefix */
-function SelectAllGraphs(prefix, checkbox_state) {
-	for (var i = 0; i < document.graphs.elements.length; i++) {
-		if ((document.graphs.elements[i].name.substr(0, prefix.length) == prefix) && (document.graphs.elements[i].style.visibility != 'hidden')) {
-			document.graphs.elements[i].checked = checkbox_state;
 		}
 	}
 }
@@ -272,48 +261,59 @@ function applySkin() {
 	}else{
 		applySelectorVisibilityAndActions();
 	}
+
+	applyTableSizing();
+
+	setupPageTimeout();
+
+	CsrfMagic.end();
+
+	$('#message').delay(2000).slideUp('fast');
 }
 
-$(function() {
-	applySkin();
+function saveTableWidths(initial) {
+	// Initialize table width on the page
+	$('.cactiTable').each(function(data) {
+		var page   = basename(location.pathname, '.php');
+		var action = getQueryString('tab');
+		if (action == null) {
+			action = getQueryString('action');
+		}
+		var table  = $(this).attr('id');
+		var key    = page+'_'+table+'_'+action;
+		var sizes  = $.cookie(key);
+		var items  = sizes ? sizes.split(/,/) : new Array();
 
-	var tablesInit = new Array;
+		var i = 0;
+		if (table !== undefined) {
+			//console.log('Setting sizes for '+table+', with sizes: '+sizes);
+			if (initial && items.length) {
+				$(this).find('th').each(function(data) {
+					$(this).css('width', items[i]);
+					i++;
+				});
+			}else{
+				var sizes = new Array();
+				$(this).find('th').each(function(data) {
+					sizes[i] = $(this).css('width');
+					i++;
+				});
 
-	$('#navigation').css('height', ($(window).height())+'px');
-	$(window).resize(function() {
-		$('#navigation').css('height', ($(window).height())+'px');
+				if (i > 1) {
+					$.cookie(key, sizes, { expires: 31, path: '/cacti/' } );
+				}
+			}
+		}
 	});
+}
+
+function applyTableSizing() {
+	saveTableWidths(true)
 
 	$('.tableHeader th').resizable({
 		handles: 'e',
 
 		start: function(event, ui) {
-			var page   = basename(location.pathname, '.php');
-			var action = getQueryString('action');
-			if (action == null) {
-				action    = getQueryString('tab');
-			}
-			var table  = $(this).parentsUntil('table[id^=cactiTable]').parent().attr('id');
-			var key    = page+'_'+table+'_'+action;
-
-			// See if sizes have been loaded
-			var found = false;
-			tablesInit.forEach(function(entry) {
-				if (entry == key) {
-					found = true;
-				}
-			});
-
-			if (!found) {
-				var sizes = $.cookie(table);
-				var items = sizes ? sizes.split(/,/) : new Array();
-
-				var i = 0;
-				$(this).parent().find('th').each(function(data) {
-					$(this).css('width', items[i]+'px');
-				});
-			}
-
 			colWidth     = $(this).width();
 			originalSize = ui.size.width;
 			originalSize = $(this).width();
@@ -326,56 +326,42 @@ $(function() {
 		},
 
 		stop: function(event, ui) {
-			var page   = basename(location.pathname, '.php');
-			var action = getQueryString('action');
-			if (action == null) {
-				action    = getQueryString('tab');
+			//saveTableWidths(false);
+		}
+	});
+}
+
+function setupPageTimeout() {
+	console.log('Page Timeout is :'+refreshMSeconds+', and going to Page :'+refreshPage);
+	var myrefresh = setTimeout(function() {
+		clearTimeout(myrefresh);
+		if (refreshIsLogout) {
+			document.location = refreshPage;
+		}else{
+			if (previousPage != '') {
+				refreshPage = previousPage;
 			}
-			var table  = $(this).parentsUntil('table[id^=cactiTable]').parent().attr('id');
-			var key    = page+'_'+table+'_'+action;
-			var sizes  = new Array;
-			var i = 0;
-			$(this).parent().find('th').each(function(data) {
-				//console.log('On page '+page+', of Index '+table+', with Column '+i+' with width '+$(this).width()+' wide');
-				sizes[i] = $(this).width();
-				i++;
+
+			/* fix coner case with tree refresh */
+			refreshPage = refreshPage.replace('action=tree&', 'action=tree_content&');
+
+			$.get(refreshPage, function(data) {
+				$('#main').html(data);
+				applySkin();
 			});
-			$.cookie(key, sizes, { expires: 31, path: '/cacti/' } );
 		}
+	}, refreshMSeconds);
+}
+
+$(function() {
+	$('#navigation').css('height', ($(window).height())+'px');
+	$(window).resize(function(event) {
+		if (!$(event.target).hasClass('ui-resizable')) {
+			$('#navigation').css('height', ($(window).height())+'px');
+		}
+		saveTableWidths(false);
 	});
 
-	// Initialize table width on the page
-	$('.cactiTable').each(function(data) {
-		var page   = basename(location.pathname, '.php');
-		var action = getQueryString('action');
-		if (action == null) {
-			action    = getQueryString('tab');
-		}
-		var table  = $(this).attr('id');
-		var key    = page+'_'+table+'_'+action;
-		var sizes  = $.cookie(key);
-		var items  = sizes ? sizes.split(/,/) : new Array();
-		//console.log('Setting sizes for '+table+', with sizes: '+sizes);
-
-		var i = 0;
-		if (table !== undefined) {
-			if (items.length) {
-				$(this).find('th').each(function(data) {
-					$(this).css('width', items[i]+'px');
-					i++;
-				});
-			}else{
-				var sizes = new Array();
-				$(this).find('th').each(function(data) {
-					sizes[i] = $(this).css('width');
-					i++;
-				});
-
-				if (i > 0) {
-					$.cookie(key, sizes, { expires: 31, path: '/cacti/' } );
-				}
-			}
-		}
-	});
+	applySkin();
 });
 

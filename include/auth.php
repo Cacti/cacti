@@ -30,6 +30,10 @@ if (db_fetch_cell("select cacti from version") != $config["cacti_version"]) {
 	exit;
 }
 
+if (basename($_SERVER['PHP_SELF']) == 'logout.php') {
+	return true;
+}
+
 if (read_config_option("auth_method") != 0) {
 	/* handle alternate authentication realms */
 	api_plugin_hook_function('auth_alternate_realms');
@@ -67,47 +71,60 @@ if (read_config_option("auth_method") != 0) {
 			$realm_id = $user_auth_realm_filenames{basename($_SERVER["PHP_SELF"])};
 		}
 
-		if ($realm_id != -1 && ((!db_fetch_assoc("select
-			user_auth_realm.realm_id
-			from
-			user_auth_realm
-			where user_auth_realm.user_id='" . $_SESSION["sess_user_id"] . "'
-			and user_auth_realm.realm_id='$realm_id'")) || (empty($realm_id)))) {
+		if ($realm_id > 0) {
+			$authorized = db_fetch_cell("SELECT COUNT(*) 
+				FROM (
+					SELECT realm_id
+					FROM user_auth_realm AS uar
+					WHERE uar.user_id=" . $_SESSION['sess_user_id'] . "
+					AND uar.realm_id=$realm_id
+					UNION
+					SELECT realm_id
+					FROM user_auth_group_realm AS uagr
+					INNER JOIN user_auth_group_members AS uagm
+					ON uagr.group_id=uagm.group_id
+					INNER JOIN user_auth_group AS uag
+					ON uag.id=uagr.group_id
+					WHERE uag.enabled='on'
+					AND uagm.user_id=" . $_SESSION['sess_user_id'] . "
+					AND uagr.realm_id=$realm_id
+				) AS authorized");
+		}else{
+			$authroized = false;
+		}
 
+
+		if ($realm_id != -1 && !$authorized) {
 			if (isset($_SERVER["HTTP_REFERER"])) {
 				$goBack = "<td class='textArea' colspan='2' align='center'>( <a href='" . htmlspecialchars($_SERVER["HTTP_REFERER"]) . "'>Return</a> | <a href='" . $config['url_path'] . "logout.php'>Login Again</a> )</td>";
 			}else{
 				$goBack = "<td class='textArea' colspan='2' align='center'>( <a href='" . $config['url_path'] . "logout.php'>Login Again</a> )</td>";
 			}
 
-			?>
-			<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-			<html>
-			<head>
-				<title>Cacti</title>
-				<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
-				<link href="<?php echo $config['url_path']; ?>include/main.css" type="text/css" rel="stylesheet">
-			</head>
-			<body>
-			<br><br>
-
-			<table width="450" align='center'>
-				<tr>
-					<td colspan='2'><img src='<?php echo $config['url_path']; ?>images/auth_deny.gif' border='0' alt='Access Denied'></td>
-				</tr>
-				<tr style='height:10px;'><td></td></tr>
-				<tr>
-					<td class='textArea' colspan='2'>You are not permitted to access this section of Cacti. If you feel that you
-					need access to this particular section, please contact the Cacti administrator.</td>
-				</tr>
-				<tr>
-					<?php print $goBack;?>
-				</tr>
-			</table>
-
-			</body>
-			</html>
-			<?php
+			print "<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.01 Transitional//EN' 'http://www.w3.org/TR/html4/loose.dtd'>\n";
+			print "<html>\n";
+			print "<head>\n";
+			print "\t<title>Cacti</title>\n";
+			print "\t<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>\n";
+			print "\t<link href='" . $config['url_path'] . "include/themes/" . read_config_option('selected_theme') . "/main.css' type='text/css' rel='stylesheet'>\n";
+			print "\t<link href='" . $config['url_path'] . "images/favicon.ico' rel='shortcut icon'>\n";
+			print "</head>\n";
+			print "<body>\n";
+			print "\t<br><br>\n";
+			print "\t<table width='450' align='center'>\n";
+			print "\t\t<tr>\n";
+			print "\t\t\t<td colspan='2'><img src='" . $config['url_path'] . "images/auth_deny.gif' border='0' alt='Access Denied'></td>\n";
+			print "\t\t</tr>\n";
+			print "\t\t<tr style='height:10px;'><td></td></tr>\n";
+			print "\t\t<tr>\n";
+			print "\t\t\t<td class='textArea' colspan='2'>You are not permitted to access this section of Cacti. If you feel that you tneed access to this particular section, please contact the Cacti administrator.</td>\n";
+			print "\t\t</tr>\n";
+			print "\t\t<tr>\n";
+			print $goBack . "\n";
+			print "\t\t</tr>\n";
+			print "\t</table>\n";
+			print "</body>\n";
+			print "</html>\n";
 			exit;
 		}
 	}

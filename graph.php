@@ -48,24 +48,21 @@ if (!isset($_GET['rra_id'])) {
 }
 
 if ($_GET["rra_id"] == "all") {
-	$sql_where = " where id is not null";
+	$sql_where = " WHERE id IS NOT NULL";
 }else{
-	$sql_where = " where id=" . $_GET["rra_id"];
+	$sql_where = " WHERE id=" . $_GET["rra_id"];
 }
 
 /* make sure the graph requested exists (sanity) */
-if (!(db_fetch_cell("select local_graph_id from graph_templates_graph where local_graph_id=" . $_GET["local_graph_id"]))) {
-	print "<strong><font class='txtErrorTextBox'>GRAPH DOES NOT EXIST</font></strong>"; exit;
+if (!(db_fetch_cell("SELECT local_graph_id FROM graph_templates_graph WHERE local_graph_id=" . $_GET["local_graph_id"]))) {
+	print "<strong><font class='txtErrorTextBox'>GRAPH DOES NOT EXIST</font></strong>"; 
+	exit;
 }
 
-/* take graph permissions into account here, if the user does not have permission
-give an "access denied" message */
-if (read_config_option("auth_method") != 0) {
-	$access_denied = !(is_graph_allowed($_GET["local_graph_id"]));
-
-	if ($access_denied == true) {
-		print "<strong><font class='txtErrorTextBox'>ACCESS DENIED</font></strong>"; exit;
-	}
+/* take graph permissions into account here */
+if (!is_graph_allowed($_GET["local_graph_id"])) {
+	print "<strong><font class='txtErrorTextBox'>ACCESS DENIED</font></strong>"; 
+	exit;
 }
 
 $graph_title = get_graph_title($_GET["local_graph_id"]);

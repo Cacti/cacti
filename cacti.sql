@@ -2602,6 +2602,79 @@ INSERT INTO user_auth VALUES (1,'admin','21232f297a57a5a743894a0e4a801fc3',0,'Ad
 INSERT INTO user_auth VALUES (3,'guest','43e9a4ab75570f5b',0,'Guest Account','on','on','on','on','on',3,1,1,1,1,'');
 
 --
+-- Table structure for table `user_auth_group`
+--
+
+CREATE TABLE `user_auth_group` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(20) NOT NULL,
+  `description` varchar(255) NOT NULL DEFAULT '',
+  `graph_settings` varchar(2) DEFAULT NULL,
+  `login_opts` tinyint(1) NOT NULL DEFAULT '1',
+  `show_tree` varchar(2) DEFAULT 'on',
+  `show_list` varchar(2) DEFAULT 'on',
+  `show_preview` varchar(2) NOT NULL DEFAULT 'on',
+  `policy_graphs` tinyint(1) unsigned NOT NULL DEFAULT '1',
+  `policy_trees` tinyint(1) unsigned NOT NULL DEFAULT '1',
+  `policy_hosts` tinyint(1) unsigned NOT NULL DEFAULT '1',
+  `policy_graph_templates` tinyint(1) unsigned NOT NULL DEFAULT '1',
+  `enabled` char(2) NOT NULL DEFAULT 'on',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=1 COMMENT='Table that Contains User Groups';
+
+--
+-- Dumping data for table `user_auth_group`
+--
+
+--
+-- Table structure for table `user_auth_group_members`
+--
+
+CREATE TABLE `user_auth_group_members` (
+  `group_id` int(10) unsigned NOT NULL,
+  `user_id` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`group_id`,`user_id`),
+  KEY `group_id` (`group_id`),
+  KEY `realm_id` (`user_id`)
+) ENGINE=MyISAM COMMENT='Table that Contains User Group Members';
+
+--
+-- Dumping data for table `user_auth_group_members`
+--
+
+--
+-- Table structure for table `user_auth_group_perms`
+--
+
+CREATE TABLE `user_auth_group_perms` (
+  `group_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `item_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `type` tinyint(2) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`group_id`,`item_id`,`type`),
+  KEY `group_id` (`group_id`,`type`)
+) ENGINE=MyISAM COMMENT='Table that Contains User Group Permissions';
+
+--
+-- Dumping data for table `user_auth_group_perms`
+--
+
+--
+-- Table structure for table `user_auth_group_realm`
+--
+
+CREATE TABLE `user_auth_group_realm` (
+  `group_id` int(10) unsigned NOT NULL,
+  `realm_id` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`group_id`,`realm_id`),
+  KEY `group_id` (`group_id`),
+  KEY `realm_id` (`realm_id`)
+) ENGINE=MyISAM COMMENT='Table that Contains User Group Realm Permissions';
+
+--
+-- Dumping data for table `user_auth_group_realm`
+--
+
+--
 -- Table structure for table `user_auth_perms`
 --
 

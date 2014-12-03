@@ -71,12 +71,12 @@ switch ($_REQUEST["action"]) {
 	case 'query_reload':
 		host_reload_query();
 
-		header("Location: host.php?action=edit&id=" . $_GET["host_id"]);
+		header("Location: host.php?action=edit&id=" . $_GET["host_id"] . "#dqtop");
 		break;
 	case 'query_verbose':
 		host_reload_query();
 
-		header("Location: host.php?action=edit&id=" . $_GET["host_id"] . "&display_dq_details=true");
+		header("Location: host.php?action=edit&id=" . $_GET["host_id"] . "&display_dq_details=true#dqdbg");
 		break;
 	case 'edit':
 		top_header();
@@ -563,81 +563,81 @@ function host_edit() {
 	global $fields_host_edit, $reindex_types;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var("id"));
+	input_validate_input_number(get_request_var('id'));
 	/* ==================================================== */
 
 	api_plugin_hook('host_edit_top');
 
-	if (!empty($_GET["id"])) {
-		$host = db_fetch_row("select * from host where id=" . $_GET["id"]);
-		$header_label = "[edit: " . htmlspecialchars($host["description"]) . "]";
+	if (!empty($_GET['id'])) {
+		$host = db_fetch_row('select * from host where id=' . $_GET['id']);
+		$header_label = '[edit: ' . htmlspecialchars($host['description']) . ']';
 	}else{
-		$header_label = "[new]";
+		$header_label = '[new]';
 	}
 
-	if (!empty($host["id"])) {
+	if (!empty($host['id'])) {
 		?>
-		<table width="100%" align="center">
+		<table width='100%' align='center'>
 			<tr>
-				<td class="textInfo" colspan="2">
-					<?php print htmlspecialchars($host["description"]);?> (<?php print htmlspecialchars($host["hostname"]);?>)
+				<td class='textInfo' colspan='2'>
+					<?php print htmlspecialchars($host['description']);?> (<?php print htmlspecialchars($host['hostname']);?>)
 				</td>
-				<td rowspan='2' class="textInfo" valign="top" align='right'>
-					<span class="linkMarker">*</span><a href="<?php print htmlspecialchars("graphs_new.php?host_id=" . $host["id"]);?>">Create Graphs for this Host</a><br>
-					<span class="linkMarker">*</span><a href="<?php print htmlspecialchars("data_sources.php?host_id=" . $host["id"] . "&ds_rows=30&filter=&template_id=-1&method_id=-1&page=1");?>">Data Source List</a><br>
-					<span class="linkMarker">*</span><a href="<?php print htmlspecialchars("graphs.php?host_id=" . $host["id"] . "&graph_rows=30&filter=&template_id=-1&page=1");?>">Graph List</a>
+				<td rowspan='2' class='textInfo' valign='top' align='right'>
+					<span class='linkMarker'>*</span><a href='<?php print htmlspecialchars('graphs_new.php?host_id=' . $host['id']);?>'>Create Graphs for this Host</a><br>
+					<span class='linkMarker'>*</span><a href='<?php print htmlspecialchars('data_sources.php?host_id=' . $host['id'] . '&ds_rows=30&filter=&template_id=-1&method_id=-1&page=1');?>'>Data Source List</a><br>
+					<span class='linkMarker'>*</span><a href='<?php print htmlspecialchars('graphs.php?host_id=' . $host['id'] . '&graph_rows=30&filter=&template_id=-1&page=1');?>'>Graph List</a>
 					<?php api_plugin_hook('device_edit_top_links'); ?>
 				</td>
 			</tr>
 			<tr>
-				<td class="textHeader">
-				<?php if (($host["availability_method"] == AVAIL_SNMP) ||
-					($host["availability_method"] == AVAIL_SNMP_GET_NEXT) ||
-					($host["availability_method"] == AVAIL_SNMP_GET_SYSDESC) ||
-					($host["availability_method"] == AVAIL_SNMP_AND_PING) ||
-					($host["availability_method"] == AVAIL_SNMP_OR_PING)) { ?>
+				<td class='textHeader'>
+				<?php if (($host['availability_method'] == AVAIL_SNMP) ||
+					($host['availability_method'] == AVAIL_SNMP_GET_NEXT) ||
+					($host['availability_method'] == AVAIL_SNMP_GET_SYSDESC) ||
+					($host['availability_method'] == AVAIL_SNMP_AND_PING) ||
+					($host['availability_method'] == AVAIL_SNMP_OR_PING)) { ?>
 					SNMP Information<br>
 
-					<span style="font-size: 10px; font-weight: normal; font-family: monospace;">
+					<span style='font-size: 10px; font-weight: normal; font-family: monospace;'>
 					<?php
-					if ((($host["snmp_community"] == "") && ($host["snmp_username"] == "")) ||
-						($host["snmp_version"] == 0)) {
+					if ((($host['snmp_community'] == '') && ($host['snmp_username'] == '')) ||
+						($host['snmp_version'] == 0)) {
 						print "<span style='color: #ab3f1e; font-weight: bold;'>SNMP not in use</span>\n";
 					}else{
-						$snmp_system = cacti_snmp_get($host["hostname"], $host["snmp_community"], ".1.3.6.1.2.1.1.1.0", $host["snmp_version"],
-							$host["snmp_username"], $host["snmp_password"],
-							$host["snmp_auth_protocol"], $host["snmp_priv_passphrase"], $host["snmp_priv_protocol"],
-							$host["snmp_context"], $host["snmp_port"], $host["snmp_timeout"], read_config_option("snmp_retries"),SNMP_WEBUI);
+						$snmp_system = cacti_snmp_get($host['hostname'], $host['snmp_community'], '.1.3.6.1.2.1.1.1.0', $host['snmp_version'],
+							$host['snmp_username'], $host['snmp_password'],
+							$host['snmp_auth_protocol'], $host['snmp_priv_passphrase'], $host['snmp_priv_protocol'],
+							$host['snmp_context'], $host['snmp_port'], $host['snmp_timeout'], read_config_option('snmp_retries'),SNMP_WEBUI);
 
 						/* modify for some system descriptions */
 						/* 0000937: System output in host.php poor for Alcatel */
-						if (substr_count($snmp_system, "00:")) {
-							$snmp_system = str_replace("00:", "", $snmp_system);
-							$snmp_system = str_replace(":", " ", $snmp_system);
+						if (substr_count($snmp_system, '00:')) {
+							$snmp_system = str_replace('00:', '', $snmp_system);
+							$snmp_system = str_replace(':', ' ', $snmp_system);
 						}
 
-						if ($snmp_system == "") {
+						if ($snmp_system == '') {
 							print "<span style='color: #ff0000; font-weight: bold;'>SNMP error</span>\n";
 						}else{
-							$snmp_uptime   = cacti_snmp_get($host["hostname"], $host["snmp_community"], ".1.3.6.1.2.1.1.3.0", $host["snmp_version"],
-								$host["snmp_username"], $host["snmp_password"],
-								$host["snmp_auth_protocol"], $host["snmp_priv_passphrase"], $host["snmp_priv_protocol"],
-								$host["snmp_context"], $host["snmp_port"], $host["snmp_timeout"], read_config_option("snmp_retries"), SNMP_WEBUI);
+							$snmp_uptime   = cacti_snmp_get($host['hostname'], $host['snmp_community'], '.1.3.6.1.2.1.1.3.0', $host['snmp_version'],
+								$host['snmp_username'], $host['snmp_password'],
+								$host['snmp_auth_protocol'], $host['snmp_priv_passphrase'], $host['snmp_priv_protocol'],
+								$host['snmp_context'], $host['snmp_port'], $host['snmp_timeout'], read_config_option('snmp_retries'), SNMP_WEBUI);
 
-							$snmp_hostname = cacti_snmp_get($host["hostname"], $host["snmp_community"], ".1.3.6.1.2.1.1.5.0", $host["snmp_version"],
-								$host["snmp_username"], $host["snmp_password"],
-								$host["snmp_auth_protocol"], $host["snmp_priv_passphrase"], $host["snmp_priv_protocol"],
-								$host["snmp_context"], $host["snmp_port"], $host["snmp_timeout"], read_config_option("snmp_retries"), SNMP_WEBUI);
+							$snmp_hostname = cacti_snmp_get($host['hostname'], $host['snmp_community'], '.1.3.6.1.2.1.1.5.0', $host['snmp_version'],
+								$host['snmp_username'], $host['snmp_password'],
+								$host['snmp_auth_protocol'], $host['snmp_priv_passphrase'], $host['snmp_priv_protocol'],
+								$host['snmp_context'], $host['snmp_port'], $host['snmp_timeout'], read_config_option('snmp_retries'), SNMP_WEBUI);
 
-							$snmp_location = cacti_snmp_get($host["hostname"], $host["snmp_community"], ".1.3.6.1.2.1.1.6.0", $host["snmp_version"],
-								$host["snmp_username"], $host["snmp_password"],
-								$host["snmp_auth_protocol"], $host["snmp_priv_passphrase"], $host["snmp_priv_protocol"],
-								$host["snmp_context"], $host["snmp_port"], $host["snmp_timeout"], read_config_option("snmp_retries"), SNMP_WEBUI);
+							$snmp_location = cacti_snmp_get($host['hostname'], $host['snmp_community'], '.1.3.6.1.2.1.1.6.0', $host['snmp_version'],
+								$host['snmp_username'], $host['snmp_password'],
+								$host['snmp_auth_protocol'], $host['snmp_priv_passphrase'], $host['snmp_priv_protocol'],
+								$host['snmp_context'], $host['snmp_port'], $host['snmp_timeout'], read_config_option('snmp_retries'), SNMP_WEBUI);
 
-							$snmp_contact  = cacti_snmp_get($host["hostname"], $host["snmp_community"], ".1.3.6.1.2.1.1.4.0", $host["snmp_version"],
-								$host["snmp_username"], $host["snmp_password"],
-								$host["snmp_auth_protocol"], $host["snmp_priv_passphrase"], $host["snmp_priv_protocol"],
-								$host["snmp_context"], $host["snmp_port"], $host["snmp_timeout"], read_config_option("snmp_retries"), SNMP_WEBUI);
+							$snmp_contact  = cacti_snmp_get($host['hostname'], $host['snmp_community'], '.1.3.6.1.2.1.1.4.0', $host['snmp_version'],
+								$host['snmp_username'], $host['snmp_password'],
+								$host['snmp_auth_protocol'], $host['snmp_priv_passphrase'], $host['snmp_priv_protocol'],
+								$host['snmp_context'], $host['snmp_port'], $host['snmp_timeout'], read_config_option('snmp_retries'), SNMP_WEBUI);
 
 							print "<strong>System:</strong>" . html_split_string($snmp_system) . "<br>\n";
 							$days      = intval($snmp_uptime / (60*60*24*100));
@@ -879,6 +879,9 @@ function host_edit() {
 
 	$(function() {
 		changeHostForm();
+		$('#dbghide').click(function(data) {
+			$('#dqdebug').fadeOut('fast');
+		});
 	});
 
 	-->
@@ -886,11 +889,14 @@ function host_edit() {
 	<?php
 
 	if ((isset($_GET["display_dq_details"])) && (isset($_SESSION["debug_log"]["data_query"]))) {
-		html_start_box("<strong>Data Query Debug Information</strong>", "100%", "", "3", "center", "");
-
-		print "<tr><td><span style='font-family: monospace;'>" . debug_log_return("data_query") . "</span></td></tr>";
-
-		html_end_box();
+		print "<table id='dqdebug' width='100%' class='cactiDebugTable' cellpadding='0' cellspacing='0' border='0' align='center'><tr><td>\n";
+		print "<table width='100%' class='cactiTableTitle' cellspacing='0' cellpadding='3' border='0'>\n";
+		print "<tr><td class='textHeaderDark'><a name='dqdbg'></a><strong>Data Query Debug Information</strong></td><td class='textHeaderDark' align='right'><a style='cursor:pointer;' id='dbghide' class='linkOverDark'>Hide</a></td></tr>\n";
+		print "</table>\n";
+		print "<table width='100%' class='cactiTable' cellspacing='0' cellpadding='3' border='0'>\n";
+		print "<tr><td class='odd'><span style='font-family: monospace;'>" . debug_log_return("data_query") . "</span></td></tr>";
+		print "</table>\n";
+		print "</table>\n";
 	}
 
 	if (!empty($host["id"])) {
@@ -1035,6 +1041,7 @@ function host_edit() {
 						&nbsp;<input type="submit" value="Add" name="add_dq_x" title="Add Data Query to Host">
 					</td>
 				</table>
+				<a name='dqtop'></a>
 			</td>
 		</tr>
 
@@ -1247,12 +1254,15 @@ function host() {
 		$sortby = "INET_ATON(hostname)";
 	}
 
-	$host_graphs       = array_rekey(db_fetch_assoc("SELECT host_id, count(*) as graphs FROM graph_local GROUP BY host_id"), "host_id", "graphs");
-	$host_data_sources = array_rekey(db_fetch_assoc("SELECT host_id, count(*) as data_sources FROM data_local GROUP BY host_id"), "host_id", "data_sources");
-
-	$sql_query = "SELECT *
+	$sql_query = "SELECT host.*, COUNT(gl.id) AS graphs,
+		COUNT(dl.id) AS data_sources
 		FROM host
+		LEFT JOIN graph_local AS gl
+		ON host.id=gl.host_id
+		LEFT JOIN data_local AS dl
+		ON host.id=dl.host_id
 		$sql_where
+		GROUP BY host.id
 		ORDER BY " . $sortby . " " . get_request_var_request("sort_direction") . "
 		LIMIT " . (get_request_var_request("rows")*(get_request_var_request("page")-1)) . "," . get_request_var_request("rows");
 
@@ -1265,8 +1275,8 @@ function host() {
 	$display_text = array(
 		"description" => array("Description", "ASC"),
 		"id" => array("ID", "ASC"),
-		"nosort1" => array("Graphs", "ASC"),
-		"nosort2" => array("Data Sources", "ASC"),
+		"graphs" => array("Graphs", "ASC"),
+		"data_sources" => array("Data Sources", "ASC"),
 		"status" => array("Status", "ASC"),
 		"status_rec_date" => array("In State", "ASC"),
 		"hostname" => array("Hostname", "ASC"),
@@ -1283,8 +1293,8 @@ function host() {
 			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars("host.php?action=edit&id=" . $host["id"]) . "'>" .
 				(strlen(get_request_var_request("filter")) ? preg_replace("/(" . preg_quote(get_request_var_request("filter"), "/") . ")/i", "<span class='filteredValue'>\\1</span>", htmlspecialchars($host["description"])) : htmlspecialchars($host["description"])) . "</a>", $host["id"]);
 			form_selectable_cell(round(($host["id"]), 2), $host["id"]);
-			form_selectable_cell((isset($host_graphs[$host["id"]]) ? $host_graphs[$host["id"]] : 0), $host["id"]);
-			form_selectable_cell((isset($host_data_sources[$host["id"]]) ? $host_data_sources[$host["id"]] : 0), $host["id"]);
+			form_selectable_cell(number_format($host["graphs"]), $host["id"]);
+			form_selectable_cell(number_format($host["data_sources"]), $host["id"]);
 			form_selectable_cell(get_colored_device_status(($host["disabled"] == "on" ? true : false), $host["status"]), $host["id"]);
 			form_selectable_cell(get_timeinstate($host), $host["id"]);
 			form_selectable_cell((strlen(get_request_var_request("filter")) ? preg_replace("/(" . preg_quote(get_request_var_request("filter"), "/") . ")/i", "<span class='filteredValue'>\\1</span>", htmlspecialchars($host["hostname"])) : htmlspecialchars($host["hostname"])), $host["id"]);

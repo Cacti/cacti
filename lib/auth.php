@@ -238,25 +238,28 @@ function get_graph_permissions_sql($policy_graphs, $policy_hosts, $policy_graph_
    @arg $local_graph_id - (int) the ID of the graph to check permissions for
    @returns - (bool) whether the current user is allowed the view the specified graph or not */
 function is_graph_allowed($local_graph_id) {
-	$current_user = db_fetch_row("select policy_graphs,policy_hosts,policy_graph_templates from user_auth where id=" . $_SESSION["sess_user_id"]);
+	$rows  = 0;
+	$graph = get_allowed_graphs('', '', '', $rows, 0, $local_graph_id);
 
-	/* get policy information for the sql where clause */
-	$sql_where = get_graph_permissions_sql($current_user["policy_graphs"], $current_user["policy_hosts"], $current_user["policy_graph_templates"]);
-
-	$graphs = db_fetch_assoc("select
-		graph_templates_graph.local_graph_id
-		from (graph_templates_graph,graph_local)
-		left join host on (host.id=graph_local.host_id)
-		left join graph_templates on (graph_templates.id=graph_local.graph_template_id)
-		left join user_auth_perms on ((graph_templates_graph.local_graph_id=user_auth_perms.item_id and user_auth_perms.type=1 and user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . ") OR (host.id=user_auth_perms.item_id and user_auth_perms.type=3 and user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . ") OR (graph_templates.id=user_auth_perms.item_id and user_auth_perms.type=4 and user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . "))
-		where graph_templates_graph.local_graph_id=graph_local.id
-		" . (empty($sql_where) ? "" : "and $sql_where") . "
-		and graph_templates_graph.local_graph_id=$local_graph_id
-		group by graph_templates_graph.local_graph_id");
-
-	if (sizeof($graphs) > 0) {
+	if ($rows > 0) {
 		return true;
 	}else{
+		return false;
+	}
+}
+
+function auth_check_perms(&$objects, $policy) {
+	/* policy == allow AND matches = DENY */
+	if (sizeof($objects) && $policy == 1) {
+		return false;
+	/* policy == deny AND matches = ALLOW */
+	}elseif (sizeof($objects) && $policy == 2) {
+		return true;
+	/* policy == allow AND no matches = ALLOW */
+	}elseif (!sizeof($objects) && $policy == 1) {
+		return true;
+	/* policy == deny AND no matches = DENY */
+	}elseif (!sizeof($objects) && $policy == 2) {
 		return false;
 	}
 }
@@ -265,28 +268,783 @@ function is_graph_allowed($local_graph_id) {
    @arg $tree_id - (int) the ID of the graph tree to check permissions for
    @returns - (bool) whether the current user is allowed the view the specified graph tree or not */
 function is_tree_allowed($tree_id) {
-	$current_user = db_fetch_row("select policy_trees from user_auth where id=" . $_SESSION["sess_user_id"]);
+	if (read_config_option("auth_method") != 0 && (isset($_SESSION["sess_user_id"]))) {
+		$user   = $_SESSION['sess_user_id'];
+		$policy = db_fetch_cell("SELECT policy_trees FROM user_auth WHERE id=$user");
+		$trees  = db_fetch_assoc("SELECT user_id
+			FROM user_auth_perms
+			WHERE user_id=$user AND type=2 AND item_id=$tree_id");
 
-	$trees = db_fetch_assoc("select
-		user_id
-		from user_auth_perms
-		where user_id=" . $_SESSION["sess_user_id"] . "
-		and type=2
-		and item_id=$tree_id");
+		$authorized = auth_check_perms($trees, $policy);
 
-	/* policy == allow AND matches = DENY */
-	if ((sizeof($trees) > 0) && ($current_user["policy_trees"] == "1")) {
-		return false;
-	/* policy == deny AND matches = ALLOW */
-	}elseif ((sizeof($trees) > 0) && ($current_user["policy_trees"] == "2")) {
+		/* check for group perms */
+		if (!$authorized) {
+			$groups = db_fetch_assoc("SELECT uag.* 
+				FROM user_auth_group AS uag
+				INNER JOIN user_auth_group_members AS uagm
+				ON uag.id=uagm.group_id
+				WHERE uag.enabled='on' AND uagm.user_id=$user");
+
+			if (sizeof($groups)) {
+				foreach($groups as $g) {
+					$policy = $g['policy_trees'];
+					$trees  = db_fetch_assoc("SELECT user_id
+						FROM user_auth_perms
+						WHERE user_id=$user AND type=2 AND item_id=$tree_id");
+
+					$authorized = auth_check_perms($trees, $policy);
+
+					if ($authorized) {
+						return true;
+					}
+				}
+
+				return false;
+			}else{
+				return false;
+			}
+		}else{
+			return true;
+		}
+	}else{
 		return true;
-	/* policy == allow AND no matches = ALLOW */
-	}elseif ((sizeof($trees) == 0) && ($current_user["policy_trees"] == "1")) {
-		return true;
-	/* policy == deny AND no matches = DENY */
-	}elseif ((sizeof($trees) == 0) && ($current_user["policy_trees"] == "2")) {
-		return false;
 	}
+}
+
+/* is_device_allowed - determines whether the current user is allowed to view a certain device
+   @arg $host_id - (int) the ID of the device to check permissions for
+   @returns - (bool) whether the current user is allowed the view the specified device or not */
+function is_device_allowed($host_id) {
+	if (read_config_option("auth_method") != 0 && (isset($_SESSION["sess_user_id"]))) {
+		$user   = $_SESSION['sess_user_id'];
+		$policy = db_fetch_cell("SELECT policy_hosts FROM user_auth WHERE id=$user");
+		$hosts  = db_fetch_assoc("SELECT user_id
+			FROM user_auth_perms
+			WHERE user_id=$user AND type=3 AND item_id=$host_id");
+
+		$authorized = auth_check_perms($hosts, $policy);
+
+		/* check for group perms */
+		if (!$authorized) {
+			$groups = db_fetch_assoc("SELECT uag.* 
+				FROM user_auth_group AS uag
+				INNER JOIN user_auth_group_members AS uagm
+				ON uag.id=uagm.group_id
+				WHERE uag.enabled='on' AND uagm.user_id=$user");
+
+			if (sizeof($groups)) {
+				foreach($groups as $g) {
+					$policy = $g['policy_hosts'];
+					$hosts  = db_fetch_assoc("SELECT user_id
+						FROM user_auth_perms
+						WHERE user_id=$user AND type=3 AND item_id=$host_id");
+
+					$authorized = auth_check_perms($hosts, $policy);
+
+					if ($authorized) {
+						return true;
+					}
+				}
+
+				return false;
+			}else{
+				return false;
+			}
+		}else{
+			return true;
+		}
+	}else{
+		return true;
+	}
+}
+
+/* is_graph_template_allowed - determines whether the current user is allowed to view a certain graph template
+   @arg $graph_template_id - (int) the ID of the graph template to check permissions for
+   @returns - (bool) whether the current user is allowed the view the specified graph template or not */
+function is_graph_template_allowed($graph_template_id) {
+	if (read_config_option("auth_method") != 0 && (isset($_SESSION["sess_user_id"]))) {
+		$user   = $_SESSION['sess_user_id'];
+		$policy = db_fetch_cell("SELECT policy_graph_templates FROM user_auth WHERE id=$user");
+		$grtemp = db_fetch_assoc("SELECT user_id
+			FROM user_auth_perms
+			WHERE user_id=$user AND type=4 AND item_id=$graph_template_id");
+
+		$authorized = auth_check_perms($grtemp, $policy);
+
+		/* check for group perms */
+		if (!$authorized) {
+			$groups = db_fetch_assoc("SELECT uag.* 
+				FROM user_auth_group AS uag
+				INNER JOIN user_auth_group_members AS uagm
+				ON uag.id=uagm.group_id
+				WHERE uag.enabled='on' AND uagm.user_id=$user");
+
+			if (sizeof($groups)) {
+				foreach($groups as $g) {
+					$policy = $g['policy_graph_templates'];
+					$grtemp  = db_fetch_assoc("SELECT user_id
+						FROM user_auth_perms
+						WHERE user_id=$user AND type=4 AND item_id=$graph_template_id");
+
+					$authorized = auth_check_perms($grtemp, $policy);
+
+					if ($authorized) {
+						return true;
+					}
+				}
+
+				return false;
+			}else{
+				return false;
+			}
+		}else{
+			return true;
+		}
+	}else{
+		return true;
+	}
+}
+
+/* is_view_allowed - Returns a true or false as to wether or not a specific view type is allowed
+ *                   View options include 'show_tree', 'show_list', 'show_preview', 'graph_settings'
+ */
+function is_view_allowed($view = 'show_tree') {
+	$values = array_rekey(db_fetch_assoc("SELECT DISTINCT $view
+		FROM user_auth_group AS uag
+		INNER JOIN user_auth_group_members AS uagm
+		ON uag.id=uagm.user_id
+		WHERE uag.enabled='on' 
+		AND uagm.user_id=" . $_SESSION["sess_user_id"]), $view, $view);
+
+	if (isset($values[3])) {
+		return false;
+	}elseif (isset($values['on'])) {
+		return true;
+	}elseif (isset($values[2])) {
+		return true;
+	}else{
+		$value = db_fetch_cell("SELECT $view FROM user_auth WHERE id=" . $_SESSION['sess_user_id']);
+
+		if ($value == 'on') {
+			return true;
+		}else{
+			return false;
+		}
+	}
+}
+
+function is_realm_allowed($realm) {
+	global $user_auth_realms;
+
+	/* list all realms that this user has access to */
+	if (isset($_SESSION['sess_user_id']) && read_config_option('global_auth') == 'on') {
+		if (read_config_option("auth_method") != 0) {
+			$user_realms = db_fetch_assoc("SELECT realm_id 
+				FROM user_auth_realm 
+				WHERE user_id=" . $_SESSION['sess_user_id'] . "
+				UNION
+				SELECT realm_id
+				FROM user_auth_group_realm AS uagr
+				INNER JOIN user_auth_group AS uag
+				ON uag.id=uagr.group_id
+				INNER JOIN user_auth_group_members AS uagm
+				ON uag.id=uagm.group_id
+				WHERE uag.enabled='on'
+				AND uagm.user_id=" . $_SESSION['sess_user_id'], false);
+	
+			$_SESSION['sess_user_realms'] = array_rekey($user_realms, "realm_id", "realm_id");
+		}else{
+			$_SESSION['sess_user_realms'] = $user_auth_realms;
+		}
+	}else{
+		$_SESSION['sess_user_realms'] = $user_auth_realms;
+	}
+
+	return isset($_SESSION['sess_user_realms']);
+}
+
+function get_allowed_tree_content($tree_id, $sql_where = '', $order_by = '', $limit = '', &$total_rows, $user = 0) {
+	if ($limit != '') {
+		$limit = "LIMIT $limit";
+	}
+
+	if ($order_by != '') {
+		$order_by = "ORDER BY $order_by";
+	}
+
+	$i          = 0;
+	$sql_where1 = '';
+	$sql_select = '';
+	$sql_join   = '';
+
+	if (read_config_option('auth_method') != 0) {
+		if ($user == 0) {
+			$user = $_SESSION['sess_user_id'];
+		}
+
+		/* get policies for all groups and user */
+		$policies   = db_fetch_assoc("SELECT uag.id, 'group' AS type, policy_hosts FROM user_auth_group AS uag
+			INNER JOIN user_auth_group_members AS uagm
+			ON uag.id=uagm.group_id
+			WHERE uag.enabled='on' AND uagm.user_id=$user");
+		$policies[] = db_fetch_row("SELECT id, 'user' as type, policy_hosts FROM user_auth WHERE id=$user");
+
+		foreach($policies as $policy) {
+			if ($policy['policy_hosts'] == "1") {
+				$sql_where1 .= (strlen($sql_where1) ? ' OR':'') . " uap$i." . $policy['type'] . "_id IS NULL";
+			}elseif ($policy['policy_hosts'] == "2") {
+				$sql_where1 .= (strlen($sql_where1) ? ' OR':'') . " uap$i." . $policy['type'] . "_id IS NOT NULL";
+			}
+
+			$sql_join .= "LEFT JOIN user_auth_" . ($policy['type'] == 'group' ? 'group_':'') . "perms AS uap$i
+				ON (gti.host_id=uap$i.item_id AND uap$i.type=3 AND uap$i." . $policy['type'] . "_id=" . $policy['id'] . ") ";
+
+			$i++;
+		}
+
+		if (strlen($sql_where)) {
+			$sql_where = "WHERE (gti.graph_tree_id=$tree_id) AND (" . $sql_where . ") AND (" . $sql_where1 . ')';
+		}else{
+			$sql_where = "WHERE (gti.graph_tree_id=$tree_id) AND (" . $sql_where1 . ")";
+		}
+	}else{
+		$sql_join  = '';
+		$sql_where = '';
+	}
+
+	$hierarchy = db_fetch_assoc("SELECT gti.id, gti.title, gti.order_key, gti.host_id,
+		gti.host_grouping_type, h.description as hostname
+		FROM graph_tree_items AS gti
+		LEFT JOIN host AS h
+		ON h.id=gti.host_id
+		$sql_join
+		$sql_where
+		AND gti.local_graph_id = 0
+		ORDER BY gti.order_key");
+
+	return $hierarchy;
+}
+
+function get_allowed_tree_header_graphs($tree_id, $search_key, $sql_where = '', $order_by = 'gti.order_key', $limit = '', &$total_rows = 0, $user = 0) {
+	if ($limit != '') {
+		$limit = "LIMIT $limit";
+	}
+
+	if ($order_by != '') {
+		$order_by = "ORDER BY $order_by";
+	}
+
+	if (strlen($sql_where)) {
+		$sql_where = " AND ($sql_where)";
+	}
+
+	$sql_where = "WHERE (gti.graph_tree_id=$tree_id
+		AND gti.order_key LIKE '$search_key" . str_repeat('_', CHARS_PER_TIER) . str_repeat('0', (MAX_TREE_DEPTH * CHARS_PER_TIER) - (strlen($search_key) + CHARS_PER_TIER)) . "')" . $sql_where;
+
+	$i          = 0;
+	$sql_having = '';
+	$sql_select = '';
+	$sql_join   = '';
+
+	if (read_config_option("auth_method") != 0) {
+		if ($user == 0) {
+			$user = $_SESSION['sess_user_id'];
+		}
+
+		if (read_config_option("graph_auth_method") == 1) {
+			$sql_operator = "OR";
+		}else{
+			$sql_operator = "AND";
+		}
+
+		/* get policies for all groups and user */
+		$policies   = db_fetch_assoc("SELECT uag.id, 'group' AS type, policy_graphs, policy_hosts, policy_graph_templates FROM user_auth_group AS uag
+			INNER JOIN user_auth_group_members AS uagm
+			ON uag.id=uagm.group_id
+			WHERE uag.enabled='on' AND uagm.user_id=$user");
+		$policies[] = db_fetch_row("SELECT id, 'user' AS type, policy_graphs, policy_hosts, policy_graph_templates FROM user_auth WHERE id=$user");
+		
+		foreach($policies as $policy) {
+			if ($policy['policy_graphs'] == 1) {
+				$sql_having .= (strlen($sql_having) ? ' OR':'') . " (user$i IS NULL";
+			}else{
+				$sql_having .= (strlen($sql_having) ? ' OR':'') . " (user$i=" . $policy['id'];
+			}
+			$sql_join   .= "LEFT JOIN user_auth_" . ($policy['type'] == 'user' ? '':'group_') . "perms AS uap$i ON (gl.id=uap$i.item_id AND uap$i.type=1) ";
+			$sql_select .= (strlen($sql_select) ? ', ':'') . "uap$i." . $policy['type'] . "_id AS user$i";
+			$i++;
+
+			if ($policy['policy_hosts'] == 1) {
+				$sql_having .= " OR (user$i IS NULL";
+			}else{
+				$sql_having .= " OR (user$i=" . $policy['id'];
+			}
+			$sql_join   .= "LEFT JOIN user_auth_" . ($policy['type'] == 'user' ? '':'group_') . "perms AS uap$i ON (gl.host_id=uap$i.item_id AND uap$i.type=3) ";
+			$sql_select .= (strlen($sql_select) ? ', ':'') . "uap$i." . $policy['type'] . "_id AS user$i";
+			$i++;
+
+			if ($policy['policy_graph_templates'] == 1) {
+				$sql_having .= " $sql_operator user$i IS NULL))";
+			}else{
+				$sql_having .= " $sql_operator user$i=" . $policy['id'] . "))";
+			}
+			$sql_join   .= "LEFT JOIN user_auth_" . ($policy['type'] == 'user' ? '':'group_') . "perms AS uap$i ON (gl.graph_template_id=uap$i.item_id AND uap$i.type=4) ";
+			$sql_select .= (strlen($sql_select) ? ', ':'') . "uap$i." . $policy['type'] . "_id AS user$i";
+			$i++;
+		}
+
+		$sql_having = "HAVING $sql_having";
+
+		$graphs = db_fetch_assoc("SELECT gti.id, gti.title, gti.rra_id, gti.order_key, gtg.local_graph_id, 
+			h.description, gt.name AS template_name, gtg.title_cache, 
+			gtg.width, gtg.height, gl.snmp_index, gl.snmp_query_id,
+			$sql_select
+			FROM graph_templates_graph AS gtg 
+			INNER JOIN graph_local AS gl 
+			ON gl.id=gtg.local_graph_id 
+			INNER JOIN graph_tree_items AS gti
+			ON gti.local_graph_id=gl.id
+			LEFT JOIN graph_templates AS gt 
+			ON gt.id=gl.graph_template_id 
+			LEFT JOIN host AS h 
+			ON h.id=gl.host_id 
+			$sql_join
+			$sql_where
+			$sql_having
+			$order_by
+			$limit");
+
+		$total_rows = db_fetch_cell("SELECT COUNT(*)
+			FROM (
+				SELECT $sql_select
+				FROM graph_templates_graph AS gtg 
+				INNER JOIN graph_local AS gl 
+				ON gl.id=gtg.local_graph_id 
+				INNER JOIN graph_tree_items AS gti
+				ON gti.local_graph_id=gl.id
+				LEFT JOIN graph_templates AS gt 
+				ON gt.id=gl.graph_template_id 
+				LEFT JOIN host AS h 
+				ON h.id=gl.host_id 
+				$sql_join
+				$sql_where
+				$sql_having
+			) AS rower");
+	}else{
+		$graphs = db_fetch_assoc("SELECT 
+			gti.id, gti.title, 
+			gti.rra_id, gti.order_key,
+			gtg.local_graph_id, 
+			host.description, 
+			gt.name AS template_name, 
+			gtg.title_cache, 
+			gtg.width, 
+			gtg.height,
+			gl.snmp_index,
+			gl.snmp_query_id
+			FROM graph_templates_graph AS gtg 
+			INNER JOIN graph_local AS gl 
+			ON gl.id=gtg.local_graph_id 
+			INNER JOIN graph_tree_items AS gti
+			ON gti.local_graph_id=gl.id
+			LEFT JOIN graph_templates AS gt 
+			ON gt.id=gl.graph_template_id 
+			LEFT JOIN host AS h 
+			ON h.id=gl.host_id 
+			$sql_where
+			$order_by
+			$limit");
+
+		$total_rows = db_fetch_cell("SELECT COUNT(*)
+			FROM graph_templates_graph AS gtg 
+			INNER JOIN graph_local AS gl 
+			ON gl.id=gtg.local_graph_id 
+			INNER JOIN graph_tree_items AS gti
+			ON gti.local_graph_id=gl.id
+			LEFT JOIN graph_templates AS gt 
+			ON gt.id=gl.graph_template_id 
+			LEFT JOIN host AS h 
+			ON h.id=gl.host_id 
+			$sql_where");
+	}
+
+	return $graphs;
+}
+
+function get_allowed_graphs($sql_where = '', $order_by = 'gtg.title_cache', $limit = '', &$total_rows = 0, $user = 0, $graph_id = 0) {
+	if ($limit != '') {
+		$limit = "LIMIT $limit";
+	}
+
+	if ($order_by != '') {
+		$order_by = "ORDER BY $order_by";
+	}
+
+	if ($graph_id > 0) {
+		$sql_where .= (strlen($sql_where) ? ' AND ':' ') . " gl.id=$graph_id";
+	}
+
+	if (strlen($sql_where)) {
+		$sql_where = "WHERE $sql_where";
+	}
+
+	$i          = 0;
+	$sql_having = '';
+	$sql_select = '';
+	$sql_join   = '';
+
+	if (read_config_option("auth_method") != 0) {
+		if ($user == 0) {
+			$user = $_SESSION['sess_user_id'];
+		}
+
+		if (read_config_option("graph_auth_method") == 1) {
+			$sql_operator = "OR";
+		}else{
+			$sql_operator = "AND";
+		}
+
+		/* get policies for all groups and user */
+		$policies   = db_fetch_assoc("SELECT uag.id, 'group' AS type, policy_graphs, policy_hosts, policy_graph_templates FROM user_auth_group AS uag
+			INNER JOIN user_auth_group_members AS uagm
+			ON uag.id=uagm.group_id
+			WHERE uag.enabled='on' AND uagm.user_id=$user");
+		$policies[] = db_fetch_row("SELECT id, 'user' AS type, policy_graphs, policy_hosts, policy_graph_templates FROM user_auth WHERE id=$user");
+		
+		foreach($policies as $policy) {
+			if ($policy['policy_graphs'] == 1) {
+				$sql_having .= (strlen($sql_having) ? ' OR':'') . " (user$i IS NULL";
+			}else{
+				$sql_having .= (strlen($sql_having) ? ' OR':'') . " (user$i=" . $policy['id'];
+			}
+			$sql_join   .= "LEFT JOIN user_auth_" . ($policy['type'] == 'user' ? '':'group_') . "perms AS uap$i ON (gl.id=uap$i.item_id AND uap$i.type=1) ";
+			$sql_select .= (strlen($sql_select) ? ', ':'') . "uap$i." . $policy['type'] . "_id AS user$i";
+			$i++;
+
+			if ($policy['policy_hosts'] == 1) {
+				$sql_having .= " OR (user$i IS NULL";
+			}else{
+				$sql_having .= " OR (user$i=" . $policy['id'];
+			}
+			$sql_join   .= "LEFT JOIN user_auth_" . ($policy['type'] == 'user' ? '':'group_') . "perms AS uap$i ON (gl.host_id=uap$i.item_id AND uap$i.type=3) ";
+			$sql_select .= (strlen($sql_select) ? ', ':'') . "uap$i." . $policy['type'] . "_id AS user$i";
+			$i++;
+
+			if ($policy['policy_graph_templates'] == 1) {
+				$sql_having .= " $sql_operator user$i IS NULL))";
+			}else{
+				$sql_having .= " $sql_operator user$i=" . $policy['id'] . "))";
+			}
+			$sql_join   .= "LEFT JOIN user_auth_" . ($policy['type'] == 'user' ? '':'group_') . "perms AS uap$i ON (gl.graph_template_id=uap$i.item_id AND uap$i.type=4) ";
+			$sql_select .= (strlen($sql_select) ? ', ':'') . "uap$i." . $policy['type'] . "_id AS user$i";
+			$i++;
+		}
+
+		$sql_having = "HAVING $sql_having";
+
+		$graphs = db_fetch_assoc("SELECT gtg.local_graph_id, h.description, gt.name AS template_name, 
+			gtg.title_cache, gtg.width, gtg.height, gl.snmp_index, gl.snmp_query_id,
+			$sql_select
+			FROM graph_templates_graph AS gtg 
+			INNER JOIN graph_local AS gl 
+			ON gl.id=gtg.local_graph_id 
+			LEFT JOIN graph_templates AS gt 
+			ON gt.id=gl.graph_template_id 
+			LEFT JOIN host AS h 
+			ON h.id=gl.host_id 
+			$sql_join
+			$sql_where
+			$sql_having
+			$order_by
+			$limit");
+
+		$total_rows = db_fetch_cell("SELECT COUNT(*)
+			FROM (
+				SELECT $sql_select
+				FROM graph_templates_graph AS gtg 
+				INNER JOIN graph_local AS gl 
+				ON gl.id=gtg.local_graph_id 
+				LEFT JOIN graph_templates AS gt 
+				ON gt.id=gl.graph_template_id 
+				LEFT JOIN host AS h 
+				ON h.id=gl.host_id 
+				$sql_join
+				$sql_where
+				$sql_having
+			) AS rower");
+	}else{
+		$graphs = db_fetch_assoc("SELECT 
+			gtg.local_graph_id, 
+			host.description, 
+			gt.name AS template_name, 
+			gtg.title_cache, 
+			gtg.width, 
+			gtg.height,
+			gl.snmp_index,
+			gl.snmp_query_id
+			FROM graph_templates_graph AS gtg 
+			INNER JOIN graph_local AS gl 
+			ON gl.id=gtg.local_graph_id 
+			LEFT JOIN graph_templates AS gt 
+			ON gt.id=gl.graph_template_id 
+			LEFT JOIN host AS h 
+			ON h.id=gl.host_id 
+			$sql_where
+			$order_by
+			$limit");
+
+		$total_rows = db_fetch_cell("SELECT COUNT(*)
+			FROM graph_templates_graph AS gtg 
+			INNER JOIN graph_local AS gl 
+			ON gl.id=gtg.local_graph_id 
+			LEFT JOIN graph_templates AS gt 
+			ON gt.id=gl.graph_template_id 
+			LEFT JOIN host AS h 
+			ON h.id=gl.host_id 
+			$sql_where");
+	}
+
+	return $graphs;
+}
+
+function get_allowed_trees($return_sql = false, $sql_where = '', $order_by = 'name', $limit = '', &$total_rows = 0, $user = 0) {
+	if ($limit != '') {
+		$limit = "LIMIT $limit";
+	}
+
+	if ($order_by != '') {
+		$order_by = "ORDER BY $order_by";
+	}
+
+	$i          = 0;
+	$sql_where1 = '';
+	$sql_select = '';
+	$sql_join   = '';
+
+	if (read_config_option("auth_method") != 0) {
+		if ($user == 0) {
+			$user = $_SESSION['sess_user_id'];
+		}
+
+		/* get policies for all groups and user */
+		$policies   = db_fetch_assoc("SELECT uag.id, 'group' AS type, policy_trees FROM user_auth_group AS uag
+			INNER JOIN user_auth_group_members AS uagm
+			ON uag.id=uagm.group_id
+			WHERE uag.enabled='on' AND uagm.user_id=$user");
+		$policies[] = db_fetch_row("SELECT id, 'user' as type, policy_trees FROM user_auth WHERE id=$user");
+
+		foreach($policies as $policy) {
+			if ($policy['policy_trees'] == "1") {
+				$sql_where1 .= (strlen($sql_where1) ? ' OR':'') . " uap$i." . $policy['type'] . "_id IS NULL";
+			}elseif ($policy['policy_trees'] == "2") {
+				$sql_where1 .= (strlen($sql_where1) ? ' OR':'') . " uap$i." . $policy['type'] . "_id IS NOT NULL";
+			}
+
+			$sql_join .= "LEFT JOIN user_auth_" . ($policy['type'] == 'group' ? 'group_':'') . "perms AS uap$i
+				ON (gt.id=uap$i.item_id AND uap$i.type=2 AND uap$i." . $policy['type'] . "_id=" . $policy['id'] . ") ";
+
+			$i++;
+		}
+
+		if (strlen($sql_where)) {
+			$sql_where = 'WHERE (' . $sql_where . ') AND (' . $sql_where1 . ')';
+		}else{
+			$sql_where = 'WHERE (' . $sql_where1 . ')';
+		}
+
+		$sql = "SELECT id, name 
+			FROM graph_tree AS gt
+			$sql_join
+			$sql_where
+			$order_by
+			$limit";
+
+		if ($return_sql) {
+			return $sql;
+		}else{
+			$trees = db_fetch_assoc($sql);
+
+			$total_rows = db_fetch_cell("SELECT COUNT(gt.id) 
+				FROM graph_tree AS gt
+				$sql_join
+				$sql_where");
+		}
+	}else{
+		if (strlen($sql_where)) {
+			$sql_where = "WHERE $sql_where";
+		}
+
+		if ($return_sql) {
+			return "SELECT id, name FROM graph_tree $sql_where $order_by";
+		}else{
+			$templates  = db_fetch_assoc("SELECT id, name FROM graph_tree $sql_where $order_by");
+			$total_rows = db_fetch_cell("SELECT COUNT(*) FROM graph_tree $sql_where");
+		}
+	}
+
+	return $trees;
+}
+
+function get_allowed_devices($sql_where = '', $order_by = 'description', $limit = '', &$total_rows = 0, $user = 0) {
+	if ($limit != '') {
+		$limit = "LIMIT $limit";
+	}
+
+	if ($order_by != '') {
+		$order_by = "ORDER BY $order_by";
+	}
+
+	$i          = 0;
+	$sql_where1 = '';
+	$sql_select = '';
+	$sql_join   = '';
+
+	if (read_config_option("auth_method") != 0) {
+		if ($user == 0) {
+			$user = $_SESSION['sess_user_id'];
+		}
+
+		/* get policies for all groups and user */
+		$policies   = db_fetch_assoc("SELECT uag.id, 'group' AS type, policy_hosts FROM user_auth_group AS uag
+			INNER JOIN user_auth_group_members AS uagm
+			ON uag.id=uagm.group_id
+			WHERE uag.enabled='on' AND uagm.user_id=$user");
+		$policies[] = db_fetch_row("SELECT id, 'user' as type, policy_hosts FROM user_auth WHERE id=$user");
+
+		foreach($policies as $policy) {
+			if ($policy['policy_hosts'] == "1") {
+				$sql_where1 .= (strlen($sql_where1) ? ' OR':'') . " uap$i." . $policy['type'] . "_id IS NULL";
+			}elseif ($policy['policy_hosts'] == "2") {
+				$sql_where1 .= (strlen($sql_where1) ? ' OR':'') . " uap$i." . $policy['type'] . "_id IS NOT NULL";
+			}
+
+			$sql_join .= "LEFT JOIN user_auth_" . ($policy['type'] == 'group' ? 'group_':'') . "perms AS uap$i
+				ON (h.id=uap$i.item_id AND uap$i.type=3 AND uap$i." . $policy['type'] . "_id=" . $policy['id'] . ") ";
+
+			$i++;
+		}
+
+		if (strlen($sql_where)) {
+			$sql_where = 'WHERE (' . $sql_where . ') AND (' . $sql_where1 . ')';
+		}else{
+			$sql_where = 'WHERE (' . $sql_where1 . ')';
+		}
+
+		$host_list = db_fetch_assoc("SELECT *
+			FROM host AS h
+			$sql_join
+			$sql_where
+			$order_by
+			$limit");
+
+		$total_rows = db_fetch_cell("SELECT COUNT(h.id)
+			FROM host AS h
+			$sql_join
+			$sql_where");
+	}else{
+		if (strlen($sql_where)) {
+			$sql_where = "WHERE $sql_where";
+		}
+
+		$host_list  = db_fetch_assoc("SELECT * 
+			FROM host AS h
+			$order_by
+			$limit");
+
+		$total_rows = db_fetch_cell("SELECT COUNT(*) FROM host AS h $sql_where");
+	}
+
+	return $host_list;
+}
+
+function get_allowed_graph_templates($sql_where = '', $order_by = 'name', $limit = '', &$total_rows = 0, $user = 0) {
+	if ($limit != '') {
+		$limit = "LIMIT $limit";
+	}
+
+	if ($order_by != '') {
+		$order_by = "ORDER BY $order_by";
+	}
+
+	$i          = 0;
+	$sql_where1 = '';
+	$sql_select = '';
+	$sql_join   = '';
+
+	if (read_config_option("auth_method") != 0) {
+		if ($user == 0) {
+			$user = $_SESSION['sess_user_id'];
+		}
+
+		/* get policies for all groups and user */
+		$policies   = db_fetch_assoc("SELECT uag.id, 'group' AS type, policy_graph_templates 
+			FROM user_auth_group AS uag
+			INNER JOIN user_auth_group_members AS uagm
+			ON uag.id=uagm.group_id
+			WHERE uag.enabled='on' AND uagm.user_id=$user");
+		$policies[] = db_fetch_row("SELECT id, 'user' as type, policy_graph_templates FROM user_auth WHERE id=$user");
+
+		foreach($policies as $policy) {
+			if ($policy['policy_graph_templates'] == "1") {
+				$sql_where1 .= (strlen($sql_where1) ? ' OR':'') . " uap$i." . $policy['type'] . "_id IS NULL";
+			}elseif ($policy['policy_graph_templates'] == "2") {
+				$sql_where1 .= (strlen($sql_where1) ? ' OR':'') . " uap$i." . $policy['type'] . "_id IS NOT NULL";
+			}
+
+			$sql_join .= "LEFT JOIN user_auth_" . ($policy['type'] == 'group' ? 'group_':'') . "perms AS uap$i
+				ON (gt.id=uap$i.item_id AND uap$i.type=4 AND uap$i." . $policy['type'] . "_id=" . $policy['id'] . ") ";
+
+			$i++;
+		}
+
+		if (strlen($sql_where)) {
+			$sql_where = 'WHERE (' . $sql_where . ') AND (' . $sql_where1 . ')';
+		}else{
+			$sql_where = 'WHERE (' . $sql_where1 . ')';
+		}
+
+		$templates = db_fetch_assoc("SELECT DISTINCT gt.id, gt.name
+			FROM graph_templates AS gt
+			INNER JOIN graph_local AS gl
+			ON gl.graph_template_id=gt.id
+			$sql_join
+			$sql_where
+			$order_by
+			$limit");
+
+		$total_rows = db_fetch_cell("SELECT COUNT(gt.id) 
+			FROM graph_templates AS gt
+			INNER JOIN graph_local AS gl
+			ON gl.graph_template_id=gt.id
+			$sql_join
+			$sql_where");
+	}else{
+		if (strlen($sql_where)) {
+			$sql_where = "WHERE $sql_where";
+		}
+
+		$templates  = db_fetch_assoc("SELECT * 
+			FROM graph_templates AS gt
+			$sql_where 
+			$order_by
+			$limit");
+
+		$total_rows = db_fetch_cell("SELECT COUNT(*) FROM graph_templates AS gt $sql_where");
+	}
+
+	return $templates;
+}
+
+/* get_host_array - returns a list of hosts taking permissions into account if necessary
+   @returns - (array) an array containing a list of hosts */
+function get_host_array() {
+	$hosts = get_allowed_devices();
+
+	foreach($hosts as $host) {
+		$return_devices[] = $host['description'] . ' (' . $host['hostname'] . ')';
+	}
+
+	return $return_devices;
 }
 
 ?>

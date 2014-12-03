@@ -22,7 +22,7 @@
  +-------------------------------------------------------------------------+
 */
 
-global $config, $menu, $refresh;
+global $config, $menu;
 
 $oper_mode = api_plugin_hook_function('top_header', OPER_MODE_NATIVE);
 if ($oper_mode == OPER_MODE_RESKIN) {
@@ -44,7 +44,6 @@ $using_guest_account = false;
 	<link href="<?php echo $config['url_path']; ?>include/themes/<?php print read_config_option('selected_theme');?>/jquery-ui.css" type="text/css" rel="stylesheet">
 	<link href="<?php echo $config['url_path']; ?>include/themes/<?php print read_config_option('selected_theme');?>/default/style.css" type="text/css" rel="stylesheet">
 	<link href="<?php echo $config['url_path']; ?>images/favicon.ico" rel="shortcut icon">
-	<?php api_plugin_hook('page_head'); ?>
 	<script type="text/javascript" src="<?php echo $config['url_path']; ?>include/js/jquery.js" language="javascript"></script>
 	<script type="text/javascript" src="<?php echo $config['url_path']; ?>include/js/jquery-ui.js" language="javascript"></script>
 	<script type="text/javascript" src="<?php echo $config['url_path']; ?>include/js/jquery.cookie.js" language="javascript"></script>
@@ -55,15 +54,7 @@ $using_guest_account = false;
 	<script type="text/javascript" src="<?php echo $config['url_path']; ?>include/jscalendar/calendar-setup.js"></script>
 	<script type="text/javascript" src="<?php echo $config['url_path']; ?>include/layout.js"></script>
 	<script type='text/javascript'>var theme='<?php print read_config_option('selected_theme');?>';</script>
-	<?php
-	if (isset($refresh)) {
-		if (is_array($refresh)) {
-			print "<meta http-equiv=refresh content='" . htmlspecialchars($refresh["seconds"],ENT_QUOTES) . "'; url='" . htmlspecialchars($refresh["page"],ENT_QUOTES) . "'>\r\n";
-		}else{
-			print "<meta http-equiv=refresh content='" . htmlspecialchars($refresh,ENT_QUOTES) . "'>\r\n";
-		}
-	}
-	?>
+	<?php include($config['base_path'] . '/include/global_session.php'); api_plugin_hook('page_head'); ?>
 </head>
 
 <?php if ($oper_mode == OPER_MODE_NATIVE) {?>

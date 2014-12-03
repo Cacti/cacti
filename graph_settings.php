@@ -106,7 +106,7 @@ function form_save() {
    -------------------------- */
 
 function settings() {
-	global $tabs_graphs, $settings_graphs, $current_user, $graph_views, $current_user, $graph_tree_views;
+	global $tabs_graphs, $settings_graphs, $current_user, $graph_views, $current_user;
 
 	$current_user = db_fetch_row("SELECT * FROM user_auth WHERE id=" . $_SESSION['sess_user_id']);
 
@@ -118,19 +118,13 @@ function settings() {
 	}
 
 	/* Find out whether this user has right here */
-	if($current_user["graph_settings"] == "") {
+	if (!is_view_allowed('graph_settings')) {
 		print "<strong><font class='txtErrorTextBox'>YOU DO NOT HAVE RIGHTS TO CHANGE GRAPH SETTINGS</font></strong>";
 		bottom_footer();
 		exit;
 	}
 
 	if (read_config_option("auth_method") != 0) {
-		if ($current_user["policy_graphs"] == "1") {
-			$sql_where = "where user_auth_tree.user_id is null";
-		}elseif ($current_user["policy_graphs"] == "2") {
-			$sql_where = "where user_auth_tree.user_id is not null";
-		}
-
 		$settings_graphs["tree"]["default_tree_id"]["sql"] = get_graph_tree_array(true);
 	}
 
@@ -140,7 +134,7 @@ function settings() {
 
 	while (list($tab_short_name, $tab_fields) = each($settings_graphs)) {
 		?>
-		<tr class='tableHeader'>
+		<tr id='row_<?php print $tab_short_name;?>' class='tableHeader'>
 			<td colspan='2' class='textSubHeaderDark' style='padding: 3px;'>
 				<?php print $tabs_graphs[$tab_short_name];?>
 			</td>
@@ -183,31 +177,47 @@ function settings() {
 	?>
 	<script type="text/javascript">
 	<!--
+	var themeFonts=<?php print read_config_option('font_method');?>;
 
 	function graphSettings() {
-		var custom_fonts = $('#custom_fonts').is(':checked');
+		if (themeFonts == 1) {
+				$('#row_fonts').hide();
+				$('#row_custom_fonts').hide();
+				$('#row_title_size').hide();
+				$('#row_title_font').hide();
+				$('#row_legend_size').hide();
+				$('#row_legend_font').hide();
+				$('#row_axis_size').hide();
+				$('#row_axis_font').hide();
+				$('#row_unit_size').hide();
+				$('#row_unit_font').hide();
+		}else{
+			var custom_fonts = $('#custom_fonts').is(':checked');
 
-		switch(custom_fonts) {
-		case true:
-			$('#row_title_size').css('display', '');
-			$('#row_title_font').css('display', '');
-			$('#row_legend_size').css('display', '');
-			$('#row_legend_font').css('display', '');
-			$('#row_axis_size').css('display', '');
-			$('#row_axis_font').css('display', '');
-			$('#row_unit_size').css('display', '');
-			$('#row_unit_font').css('display', '');
-			break;
-		case false:
-			$('#row_title_size').css('display', 'none');
-			$('#row_title_font').css('display', 'none');
-			$('#row_legend_size').css('display', 'none');
-			$('#row_legend_font').css('display', 'none');
-			$('#row_axis_size').css('display', 'none');
-			$('#row_axis_font').css('display', 'none');
-			$('#row_unit_size').css('display', 'none');
-			$('#row_unit_font').css('display', 'none');
-			break;
+			switch(custom_fonts) {
+			case true:
+				$('#row_fonts').show();
+				$('#row_title_size').show();
+				$('#row_title_font').show();
+				$('#row_legend_size').show();
+				$('#row_legend_font').show();
+				$('#row_axis_size').show();
+				$('#row_axis_font').show();
+				$('#row_unit_size').show();
+				$('#row_unit_font').show();
+				break;
+			case false:
+				$('#row_fonts').show();
+				$('#row_title_size').hide();
+				$('#row_title_font').hide();
+				$('#row_legend_size').hide();
+				$('#row_legend_font').hide();
+				$('#row_axis_size').hide();
+				$('#row_axis_font').hide();
+				$('#row_unit_size').hide();
+				$('#row_unit_font').hide();
+				break;
+			}
 		}
 	}
 

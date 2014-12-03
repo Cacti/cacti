@@ -148,8 +148,8 @@ function html_graph_area(&$graph_array, $no_graphs_message = "", $extra_url_args
 						print "</tr>";
 					}
 
-					print "<tr class='templateHeader'>
-							<td colspan='$columns' class='textHeaderDark'><strong>Data Query:</strong> " . $graph["data_query_name"] . "</td>
+					print "<tr class='tableHeader'>
+							<td colspan='$columns' class='graphSubHeaderColumn textHeaderDark'><strong>Data Query:</strong> " . $graph["data_query_name"] . "</td>
 						</tr>";
 					$i = 0;
 				}
@@ -275,7 +275,7 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = "", $extr
 					}
 
 					print "<tr class='tableHeader'>
-							<td class='graphSubHeaderColumn' colspan='$columns'><strong>Data Query:</strong> " . $graph["data_query_name"] . "</td>
+							<td class='graphSubHeaderColumn textHeaderDark' colspan='$columns'><strong>Data Query:</strong> " . $graph["data_query_name"] . "</td>
 						</tr>";
 					$i = 0;
 				}
@@ -357,13 +357,13 @@ function html_nav_bar($base_url, $max_pages, $current_page, $rows_per_page, $tot
 				<table width='100%' cellspacing='0' cellpadding='0' border='0'>
 					<tr>
 						<td style='width:5%;' align='left' class='textHeaderDark'>
-							" . (($current_page > 1) ? "<span class='navBarPrevious'  style='cursor:pointer;' href='#' onClick='gotoPage(" . ($current_page-1) . ")'><span>&lt;&lt;&nbsp;</span>Previous</span>":"") . "
+							" . (($current_page > 1) ? "<span class='navBarPrevious'  style='cursor:pointer;' onClick='gotoPage(" . ($current_page-1) . ")'><span>&lt;&lt;&nbsp;</span>Previous</span>":"") . "
 						</td>
 						<td style='width:90%;' align='center' class='textHeaderDark'>
 							Showing $object " . (($rows_per_page*($current_page-1))+1) . " to " . (($total_rows < $rows_per_page) || ($total_rows < ($rows_per_page*$current_page)) ? $total_rows : $rows_per_page*$current_page) . " of $total_rows [$url_page_select]
 						</td>
 						<td style='width:5%;' align='right' class='textHeaderDark'>
-							" . (($current_page*$rows_per_page) < $total_rows ? "<span class='navBarPrevious' style='cursor:pointer;' href='#' onClick='gotoPage(" . ($current_page+1) . ")'>Next<span>&nbsp;&gt;&gt;</span></span>":"") . "
+							" . (($current_page*$rows_per_page) < $total_rows ? "<span class='navBarPrevious' style='cursor:pointer;' onClick='gotoPage(" . ($current_page+1) . ")'>Next<span>&nbsp;&gt;&gt;</span></span>":"") . "
 						</td>
 					</tr>
 				</table>
@@ -702,18 +702,10 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 
 /* draw_menu - draws the cacti menu for display in the console */
 function draw_menu($user_menu = "") {
-	global $config, $user_auth_realms, $user_auth_realm_filenames, $menu;
+	global $config, $user_auth_realm_filenames, $menu;
 
 	if (strlen($user_menu == 0)) {
 		$user_menu = $menu;
-	}
-
-	/* list all realms that this user has access to */
-	if (read_config_option("auth_method") != 0) {
-		$user_realms = db_fetch_assoc("select realm_id from user_auth_realm where user_id=" . $_SESSION["sess_user_id"]);
-		$user_realms = array_rekey($user_realms, "realm_id", "realm_id");
-	}else{
-		$user_realms = $user_auth_realms;
 	}
 
 	?>
@@ -734,7 +726,7 @@ function draw_menu($user_menu = "") {
 		foreach ($header_array as $item_url => $item_title) {
 			$current_realm_id = (isset($user_auth_realm_filenames{basename($item_url)}) ? $user_auth_realm_filenames{basename($item_url)} : 0);
 
-			if ((isset($user_realms[$current_realm_id])) || (!isset($user_auth_realm_filenames{basename($item_url)}))) {
+			if (is_realm_allowed($current_realm_id)) {
 				$show_header_items = true;
 			}
 		}
@@ -752,7 +744,7 @@ function draw_menu($user_menu = "") {
 				if (is_array($item_title)) {
 					$i = 0;
 
-					if ($current_realm_id == -1 || (isset($user_realms[$current_realm_id])) || (!isset($user_auth_realm_filenames{basename($item_url)}))) {
+					if ($current_realm_id == -1 || is_realm_allowed($current_realm_id) || !isset($user_auth_realm_filenames{basename($item_url)})) {
 						/* if the current page exists in the sub-items array, draw each sub-item */
 						if (array_key_exists(basename($_SERVER["PHP_SELF"]), $item_title) == true) {
 							$draw_sub_items = true;
@@ -777,7 +769,7 @@ function draw_menu($user_menu = "") {
 						}
 					}
 				}else{
-					if ($current_realm_id == -1 || (isset($user_realms[$current_realm_id])) || (!isset($user_auth_realm_filenames{basename($item_url)}))) {
+					if ($current_realm_id == -1 || is_realm_allowed($current_realm_id) || !isset($user_auth_realm_filenames{basename($item_url)})) {
 						/* draw normal (non sub-item) menu item */
 						$item_url = $config['url_path'] . $item_url;
 						if (basename($_SERVER["PHP_SELF"]) == basename($item_url)) {
@@ -916,7 +908,8 @@ function html_show_tabs_left($show_console_tab) {
 
 		?><a href="<?php echo $config['url_path']; ?>graph_view.php"><img src="<?php echo $config['url_path']; ?>images/tab_graphs<?php
 
-		if ((substr(basename($_SERVER["PHP_SELF"]),0,5) == "graph") || (basename($_SERVER["PHP_SELF"]) == "graph_settings.php")) {
+		$file = basename($_SERVER['PHP_SELF']);
+		if ($file == "graph_view.php" || $file == "graph_settings.php" || $file == "graph.php") {
 			print "_down";
 		} print ".gif";?>" alt="Graphs" align="absmiddle" border="0"></a><?php
 		api_plugin_hook('top_graph_header_tabs');
@@ -1009,7 +1002,7 @@ function html_graph_tabs_right($current_user) {
 	global $config, $tabs_right;
 
 	if (read_config_option("selected_theme") == 'classic') {
-		if ((!isset($_SESSION["sess_user_id"])) || ($current_user["graph_settings"] == "on")) {
+		if (is_view_allowed('graph_settings')) {
 			print '<a href="' . $config['url_path'] . 'graph_settings.php"><img src="' . $config['url_path'] . 'images/tab_settings';
 			if (basename($_SERVER["PHP_SELF"]) == "graph_settings.php") {
 				print "_down";
@@ -1017,21 +1010,21 @@ function html_graph_tabs_right($current_user) {
 			print '.gif" border="0" alt="Settings" align="absmiddle"></a>';
 		}?>&nbsp;&nbsp;<?php
 
-		if ((!isset($_SESSION["sess_user_id"])) || ($current_user["show_tree"] == "on")) {
+		if (is_view_allowed('show_tree')) {
 			?><a href="<?php print htmlspecialchars($config['url_path'] . "graph_view.php?action=tree");?>"><img src="<?php echo $config['url_path']; ?>images/tab_mode_tree<?php
 			if (isset($_REQUEST["action"]) && $_REQUEST["action"] == "tree") {
 				print "_down";
 			}?>.gif" border="0" title="Tree View" alt="Tree View" align="absmiddle"></a><?php
 		}?><?php
 
-		if ((!isset($_SESSION["sess_user_id"])) || ($current_user["show_list"] == "on")) {
+		if (is_view_allowed('show_list')) {
 			?><a href="<?php print htmlspecialchars($config['url_path'] . "graph_view.php?action=list");?>"><img src="<?php echo $config['url_path']; ?>images/tab_mode_list<?php
 			if (isset($_REQUEST["action"]) && $_REQUEST["action"] == "list") {
 				print "_down";
 			}?>.gif" border="0" title="List View" alt="List View" align="absmiddle"></a><?php
 		}?><?php
 
-		if ((!isset($_SESSION["sess_user_id"])) || ($current_user["show_preview"] == "on")) {
+		if (is_view_allowed('show_preview')) {
 			?><a href="<?php print htmlspecialchars($config['url_path'] . "graph_view.php?action=preview");?>"><img src="<?php echo $config['url_path']; ?>images/tab_mode_preview<?php
 			if (isset($_REQUEST["action"]) && $_REQUEST["action"] == "preview") {
 				print "_down";
@@ -1093,7 +1086,7 @@ function html_graph_tabs_right($current_user) {
 		foreach($tabs_right as $tab) {
 			switch($tab['id']) {
 			case 'settings':
-				if ((!isset($_SESSION['sess_user_id'])) || ($current_user['graph_settings'] == 'on')) {
+				if (is_view_allowed('graph_settings') == true) {
 					if (isset($tab['image']) && $tab['image'] != '') {
 						print "<li><a title='" . $tab['title'] . "' class='" . (isset($tab['selected']) ? 'selected':'') . "' href='" . $tab['url'] . "'><img src='" . $config['url_path'] . $tab['image'] . "' border='0' align='bottom'></a></li>\n";
 					}else{
@@ -1101,8 +1094,10 @@ function html_graph_tabs_right($current_user) {
 					}
 					break;
 				}
+
+				break;
 			case 'tree':
-				if ((!isset($_SESSION['sess_user_id'])) || ($current_user['show_tree'] == 'on')) {
+				if (is_view_allowed('show_tree')) {
 					if (isset($tab['image']) && $tab['image'] != '') {
 						print "<li><a title='" . $tab['title'] . "' class='" . (isset($tab['selected']) ? 'selected':'') . "' href='" . $tab['url'] . "'><img src='" . $config['url_path'] . $tab['image'] . "' border='0' align='bottom'></a></li>\n";
 					}else{
@@ -1110,8 +1105,10 @@ function html_graph_tabs_right($current_user) {
 					}
 					break;
 				}
+
+				break;
 			case 'list':
-				if ((!isset($_SESSION['sess_user_id'])) || ($current_user['show_list'] == 'on')) {
+				if (is_view_allowed('show_list')) {
 					if (isset($tab['image']) && $tab['image'] != '') {
 						print "<li><a title='" . $tab['title'] . "' class='" . (isset($tab['selected']) ? 'selected':'') . "' href='" . $tab['url'] . "'><img src='" . $config['url_path'] . $tab['image'] . "' border='0' align='bottom'></a></li>\n";
 					}else{
@@ -1119,8 +1116,10 @@ function html_graph_tabs_right($current_user) {
 					}
 					break;
 				}
+
+				break;
 			case 'preview':
-				if ((!isset($_SESSION['sess_user_id'])) || ($current_user['show_preview'] == 'on')) {
+				if (is_view_allowed('show_preview')) {
 					if (isset($tab['image']) && $tab['image'] != '') {
 						print "<li><a title='" . $tab['title'] . "' class='" . (isset($tab['selected']) ? 'selected':'') . "' href='" . $tab['url'] . "'><img src='" . $config['url_path'] . $tab['image'] . "' border='0' align='bottom'></a></li>\n";
 					}else{
@@ -1128,6 +1127,8 @@ function html_graph_tabs_right($current_user) {
 					}
 					break;
 				}
+
+				break;
 			}
 		}
 		print "</ul></nav></div>\n";

@@ -624,12 +624,10 @@
 		* executes a dynamic zoom in
 		*/
 		function zoomAction_zoom_in(){
-
 			/* hide context menu if open */
 			zoomContextMenu_hide();
 
 			if(zoom.custom.zoomMode == 'quick') {
-
 				var newGraphStartTime 	= (zoom.attr.action == 'left2right') 	? parseInt(parseInt(zoom.graph.start) + (zoom.attr.start - zoom.box.left)*zoom.graph.secondsPerPixel)
 																				: parseInt(parseInt(zoom.graph.start) + (zoom.attr.end - zoom.box.left)*zoom.graph.secondsPerPixel);
 				var newGraphEndTime 	= (zoom.attr.action == 'left2right')	? parseInt(newGraphStartTime + (zoom.attr.end-zoom.attr.start)*zoom.graph.secondsPerPixel)
@@ -666,7 +664,7 @@
 				zoom_init($('#' + zoom.attr.activeElement));
 				return false;
 			}else {
-				/* graph view is alread in zoom status */
+				/* graph view is already in zoom status */
 				open(zoom.attr.location[0] + "?action=" + zoom.graph.action + "&local_graph_id=" + zoom.graph.local_graph_id + "&rra_id=" + zoom.graph.rra_id + "&view_type=" + zoom.graph.view_type + "&graph_start=" + newGraphStartTime + "&graph_end=" + newGraphEndTime + "&graph_height=" + zoom.graph.height + "&graph_width=" + zoom.graph.width + "&title_font_size=" + zoom.graph.title_font_size, "_self");
 			}
 
@@ -739,12 +737,12 @@
 			if((event.pageX-zoom.attr.start)<0) {
 				zoom.attr.action = 'right2left';
 				zoom.attr.end = (event.pageX < zoom.box.left) ? zoom.box.left : event.pageX;
-				$("#zoom-area").css({ background:'red', left:(zoom.attr.end+1)+'px', width:Math.abs(zoom.attr.start-zoom.attr.end-1)+'px' });
+				$("#zoom-area").css({ background:'forestgreen', left:(zoom.attr.end+1)+'px', width:Math.abs(zoom.attr.start-zoom.attr.end-1)+'px' });
 			/* mouse has been moved from left to right*/
 			}else {
 				zoom.attr.action = 'left2right';
 				zoom.attr.end = (event.pageX > zoom.box.right) ? zoom.box.right : event.pageX;
-				$("#zoom-area").css({ background:'red', left:zoom.attr.start+'px', width:Math.abs(zoom.attr.end-zoom.attr.start-1)+'px' });
+				$("#zoom-area").css({ background:'forestgreen', left:zoom.attr.start+'px', width:Math.abs(zoom.attr.end-zoom.attr.start-1)+'px' });
 			}
 			/* move second marker if necessary */
 			if(zoom.custom.zoomMode != 'quick') {

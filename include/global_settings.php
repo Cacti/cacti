@@ -42,11 +42,12 @@ $tabs = array(
 
 $tabs_graphs = array(
 	"general" => "General",
+	"timespan" => "Time Spanning/Shifting",
 	"thumbnail" => "Graph Thumbnails",
 	"tree" => "Tree View Mode",
 	"preview" => "Preview Mode",
 	"list" => "List View Mode",
-	"fonts" => "Graph Fonts (RRDtool 1.2.x and Above)");
+	"fonts" => "Graph Fonts");
 
 /* setting information */
 $settings = array(
@@ -291,6 +292,13 @@ $settings = array(
 		"other_header" => array(
 			"friendly_name" => "Other Defaults",
 			"method" => "spacer",
+			),
+		"graph_auth_method" => array(
+			"friendly_name" => "Graph Permission Method",
+			"description" => "There are two methods for determining a Users Graph Permissions.  The first is 'Permissive'.  Under the 'Permissive' setting, a User only needs access to either the Graph, Host or Graph Template to gain access to the Graphs that apply to them.  Under 'Restrictive', the User must have access to the Graph, the Host, and the Graph Template to gain access to the Graph.",
+			"method" => "drop_array",
+			"default" => "1",
+			"array" => array('1' => 'Permissive', '2' => 'Restrictive')
 			),
 		"reindex_method" => array(
 			"friendly_name" => "Reindex Method for Data Queries",
@@ -573,9 +581,28 @@ $settings = array(
 			"default" => 60,
 			"array" => $page_refresh_interval,
 			),
+		"wathermark_header" => array(
+			"friendly_name" => "RRDtool Graph Watermark",
+			"method" => "spacer"
+			),
+		"graph_wathermark" => array(
+			"friendly_name" => "Watermark Text",
+			"description" => "Test to place at the bottom center of every Graph.",
+			"method" => "textbox",
+			"default" => "",
+			"max_length" => "80",
+			"size" => "60"
+			),
 		"fonts_header" => array(
-			"friendly_name" => "Default RRDtool 1.2 Fonts",
+			"friendly_name" => "RRDtool Graph Font Control",
 			"method" => "spacer",
+			),
+		"font_method" => array(
+			"friendly_name" => "Font Selection Method",
+			"description" => "How do you wish fonts to be handled by default?",
+			"method" => "drop_array",
+			"default" => 1,
+			"array" => array(0 => 'User', 1 => 'Theme')
 			),
 		"title_size" => array(
 			"friendly_name" => "Title Font Size",
@@ -952,6 +979,41 @@ $settings_graphs = array(
 			"array" => $graph_views,
 			"default" => "1"
 			),
+		"show_graph_title" => array(
+			"friendly_name" => "Show Graph Title",
+			"description" => "Display the graph title on the page so that it may be searched using the browser.",
+			"method" => "checkbox",
+			"default" => ""
+			),
+		"default_date_format" => array(
+			"friendly_name" => "Graph Date Display Format",
+			"description" => "The date format to use for graphs",
+			"method" => "drop_array",
+			"array" => $graph_dateformats,
+			"default" => GD_Y_MO_D
+			),
+		"default_datechar" => array(
+			"friendly_name" => "Graph Date Separator",
+			"description" => "The date separator to be used for graphs",
+			"method" => "drop_array",
+			"array" => $graph_datechar,
+			"default" => GDC_SLASH
+			),
+		"page_refresh" => array(
+			"friendly_name" => "Page Refresh",
+			"description" => "The number of seconds between automatic page refreshes.",
+			"method" => "drop_array",
+			"default" => "300",
+			"array" => array('15' => '15 Seconds', '20' => '20 Seconds', '30' => '30 Seconds', '60' => '1 Minute', '300' => '5 Minutes')
+			)
+		),
+	"timespan" => array(
+		"timespan_sel" => array(
+			"friendly_name" => "Display Graph View Timespan Selector",
+			"description" => "Choose if you want the time span selection box to be displayed.",
+			"method" => "checkbox",
+			"default" => "on"
+		),
 		"default_timespan" => array(
 			"friendly_name" => "Default Graph View Timespan",
 			"description" => "The default timespan you wish to be displayed when you display graphs",
@@ -959,12 +1021,6 @@ $settings_graphs = array(
 			"array" => $graph_timespans,
 			"default" => GT_LAST_DAY
 			),
-		"timespan_sel" => array(
-			"friendly_name" => "Display Graph View Timespan Selector",
-			"description" => "Choose if you want the time span selection box to be displayed.",
-			"method" => "checkbox",
-			"default" => "on"
-		),
 		"default_timeshift" => array(
 			"friendly_name" => "Default Graph View Timeshift",
 			"description" => "The default timeshift you wish to be displayed when you display graphs",
@@ -990,36 +1046,17 @@ $settings_graphs = array(
 			"description" => "Start Time of the Daily Shift.",
 			"method" => "textbox",
 			"default" => "07:00",
-			"max_length" => "5"
+			"max_length" => "5",
+			"size" => "7"
 			),
 		"day_shift_end" => array(
 			"friendly_name" => "End of Daily Shift",
 			"description" => "End Time of the Daily Shift.",
 			"method" => "textbox",
 			"default" => "18:00",
-			"max_length" => "5"
+			"max_length" => "5",
+			"size" => "7"
 			),
-		"default_date_format" => array(
-			"friendly_name" => "Graph Date Display Format",
-			"description" => "The date format to use for graphs",
-			"method" => "drop_array",
-			"array" => $graph_dateformats,
-			"default" => GD_Y_MO_D
-			),
-		"default_datechar" => array(
-			"friendly_name" => "Graph Date Separator",
-			"description" => "The date separator to be used for graphs",
-			"method" => "drop_array",
-			"array" => $graph_datechar,
-			"default" => GDC_SLASH
-			),
-		"page_refresh" => array(
-			"friendly_name" => "Page Refresh",
-			"description" => "The number of seconds between automatic page refreshes.",
-			"method" => "textbox",
-			"default" => "300",
-			"max_length" => "10"
-			)
 		),
 	"thumbnail" => array(
 		"default_height" => array(
@@ -1027,21 +1064,24 @@ $settings_graphs = array(
 			"description" => "The height of thumbnail graphs in pixels.",
 			"method" => "textbox",
 			"default" => "100",
-			"max_length" => "10"
+			"max_length" => "10",
+			"size" => "7"
 			),
 		"default_width" => array(
 			"friendly_name" => "Thumbnail Width",
 			"description" => "The width of thumbnail graphs in pixels.",
 			"method" => "textbox",
 			"default" => "300",
-			"max_length" => "10"
+			"max_length" => "10",
+			"size" => "7"
 			),
 		"num_columns" => array(
 			"friendly_name" => "Thumbnail Columns",
 			"description" => "The number of columns to use when displaying thumbnail graphs.",
 			"method" => "textbox",
 			"default" => "2",
-			"max_length" => "5"
+			"max_length" => "5",
+			"size" => "7"
 			),
 		"thumbnail_sections" => array(
 			"friendly_name" => "Thumbnail Sections",
@@ -1071,13 +1111,6 @@ $settings_graphs = array(
 			"sql" => "select id,name from graph_tree order by name",
 			"default" => "0"
 			),
-		"default_tree_view_mode" => array(
-			"friendly_name" => "Default Tree View Mode",
-			"description" => "The default mode that will be used when viewing tree mode.",
-			"method" => "drop_array",
-			"array" => $graph_tree_views,
-			"default" => "2"
-			),
 		"treeview_graphs_per_page" => array(
 			"friendly_name" => "Graphs Per-Page",
 			"description" => "The number of graphs to display on one page in preview mode.",
@@ -1090,17 +1123,12 @@ $settings_graphs = array(
 			"description" => "When choosing dual pane Tree View, what width should the tree occupy in pixels.",
 			"method" => "textbox",
 			"max_length" => "5",
-			"default" => "200"
+			"default" => "200",
+			"size" => "7"
 			),
 		"expand_hosts" => array(
 			"friendly_name" => "Expand Hosts",
 			"description" => "Choose whether to expand the graph templates used for a host on the dual pane tree.",
-			"method" => "checkbox",
-			"default" => ""
-			),
-		"show_graph_title" => array(
-			"friendly_name" => "Show Graph Title",
-			"description" => "Display the graph title on the page so that it may be searched using the browser.",
 			"method" => "checkbox",
 			"default" => ""
 			)

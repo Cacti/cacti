@@ -145,7 +145,6 @@ function form_alternate_row($row_id = "", $light = false) {
    @arg $width - the width of the table element
    @arg $style - the style to apply to the table element */
 function form_selectable_cell($contents, $id, $width="", $style="") {
-	#print "\t<td" . (strlen($width) ? " width='$width'" : "") . (strlen($style) ? " style='$style;'" : "") . " onClick='select_line(\"$id\")'>" . $contents . "</td>\n";
 	print "\t<td" . (strlen($width) ? " width='$width'" : "") . (strlen($style) ? " style='$style;'" : "") . ">" . $contents . "</td>\n";
 }
 
@@ -153,7 +152,6 @@ function form_selectable_cell($contents, $id, $width="", $style="") {
    @arg $title - the text that will be displayed if your hover over the checkbox */
 function form_checkbox_cell($title, $id) {
 	print "\t<td class='checkbox' style='" . get_checkbox_style() . "' width='1%' align='right'>\n";
-	//print "\t<td onClick='select_line(\"$id\", true)' style='" . get_checkbox_style() . "' width='1%' align='right'>\n";
 	print "\t\t<input type='checkbox' style='margin: 0px;' id='chk_" . $id . "' name='chk_" . $id . "'>\n";
 	print "\t</td>\n";
 }
@@ -161,6 +159,21 @@ function form_checkbox_cell($title, $id) {
 /* form_end_row - ends a table row that is started with form_alternate_row */
 function form_end_row() {
 	print "</tr>\n";
+}
+
+/* form_confirm_buttons - provides confirm buttons in the gui
+   @arg $message - the value of the HTML checkbox */
+function form_confim_buttons($post_variable, $item_array, $save_message, $return = false) {
+	print "<tr>
+		<td align='right' class='saveRow'>
+			<input type='hidden' name='action' value='actions'>
+			<input type='hidden' name='selected_items' value='" . (isset($item_array) ? serialize($item_array) : '') . "'>
+			<input type='hidden' name='drp_action' value='" . $post_variable . "'>" . ($return ? "
+			<input type='button' value='Return' onClick='window.history.back()'>
+			":"
+			<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='$message'>") . "
+		</td>
+	</tr>\n";
 }
 
 /* html_boolean - returns the boolean equivalent of an HTML checkbox value
@@ -384,7 +397,7 @@ function get_page_list($current_page, $pages_per_screen, $rows_per_page, $total_
 	}
 
 	if ($return_to != '') {
-		$url_page_select .= "<script type='text/javascript'>function gotoPage(pageNo) { $.get('${url}header=false&$page_var='+pageNo,function(data) { $('#$return_to').html(data);}); }</script>";
+		$url_page_select .= "<script type='text/javascript'>function gotoPage(pageNo) { var url_add=url_graph('');$.get('${url}header=false&$page_var='+pageNo+url_add,function(data) { $('#$return_to').html(data); applySkin(); }); }</script>";
 	}else{
 		$url_page_select .= "<script type='text/javascript'>function gotoPage(pageNo) { document.location='$url$page_var='+pageNo}</script>";
 	}

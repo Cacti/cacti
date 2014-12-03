@@ -138,6 +138,375 @@ default:
 
 	print "</td></tr></table>\n";
 
+	?>
+	<script type='text/javascript'>
+	if ($('#row_font_method')) {
+		initFonts();
+		$('#font_method').change(function() {
+			initFonts();
+		});
+	}
+
+	if ($('#row_snmp_ver')) {
+		initSNMP();
+		$('#snmp_ver').change(function() {
+			initSNMP();
+		});
+	}
+
+	if ($('#row_availability_method')) {
+		initAvail();
+		$('#availability_method').change(function() {
+			initAvail();
+		});
+	}
+
+	if ($('#row_export_type')) {
+		initFTPExport();
+		initPresentation();
+		initTiming();
+		$('#export_type').change(function() {
+			initFTPExport();
+		});
+		$('#export_presentation').change(function() {
+			initPresentation();
+		});
+		$('#export_timing').change(function() {
+			initTiming();
+		});
+	}
+
+	if ($('#row_auth_method')) {
+		initAuth();
+		initSearch();
+		initGroupMember();
+		$('#auth_method').change(function() {
+			initAuth();
+		});
+		$('#ldap_mode').change(function() {
+			initSearch();
+		});
+		$('#ldap_group_require').change(function() {
+			initGroupMember();
+		});
+	}
+
+	function initFonts() {
+		if ($('#font_method').val() == 1) {
+			$('#row_title_size').hide();
+			$('#row_title_font').hide();
+			$('#row_legend_size').hide();
+			$('#row_legend_font').hide();
+			$('#row_axis_size').hide();
+			$('#row_axis_font').hide();
+			$('#row_unit_size').hide();
+			$('#row_unit_font').hide();
+		}else{
+			$('#row_title_size').show();
+			$('#row_title_font').show();
+			$('#row_legend_size').show();
+			$('#row_legend_font').show();
+			$('#row_axis_size').show();
+			$('#row_axis_font').show();
+			$('#row_unit_size').show();
+			$('#row_unit_font').show();
+		}
+	}
+
+	function initSearch() {
+		switch($('#ldap_mode').val()) {
+		case "0":
+			$('#row_ldap_search_base_header').hide();
+			$('#row_ldap_search_base').hide();
+			$('#row_ldap_search_filter').hide();
+			$('#row_ldap_specific_dn').hide();
+			$('#row_ldap_specific_password').hide();
+			break;
+		case "1":
+			$('#row_ldap_search_base_header').show();
+			$('#row_ldap_search_base').show();
+			$('#row_ldap_search_filter').show();
+			$('#row_ldap_specific_dn').hide();
+			$('#row_ldap_specific_password').hide();
+			break;
+		case "2":
+			$('#row_ldap_search_base_header').show();
+			$('#row_ldap_search_base').show();
+			$('#row_ldap_search_filter').show();
+			$('#row_ldap_specific_dn').show();
+			$('#row_ldap_specific_password').show();
+			break;
+		}
+	}
+
+	function initGroupMember() {
+		if ($('#ldap_group_require').is(':checked')) {
+			$('#row_ldap_group_header').show();
+			$('#row_ldap_group_dn').show();
+			$('#row_ldap_group_attrib').show();
+			$('#row_ldap_group_member_type').show();
+		}else{
+			$('#row_ldap_group_header').hide();
+			$('#row_ldap_group_dn').hide();
+			$('#row_ldap_group_attrib').hide();
+			$('#row_ldap_group_member_type').hide();
+		}
+	}
+
+	function initAuth() {
+		switch($('#auth_method').val()) {
+		case "0":
+			$('#row_special_users_header').hide();
+			$('#row_guest_user').hide();
+			$('#row_user_template').hide();
+			$('#row_ldap_general_header').hide();
+			$('#row_ldap_server').hide();
+			$('#row_ldap_port').hide();
+			$('#row_ldap_port_ssl').hide();
+			$('#row_ldap_version').hide();
+			$('#row_ldap_encryption').hide();
+			$('#row_ldap_referrals').hide();
+			$('#row_ldap_mode').hide();
+			$('#row_ldap_dn').hide();
+			$('#row_ldap_group_require').hide();
+			$('#row_ldap_attrib').hide();
+			$('#row_ldap_member_type').hide();
+			$('#row_ldap_group_header').hide();
+			$('#row_ldap_group_dn').hide();
+			$('#row_ldap_group_attrib').hide();
+			$('#row_ldap_group_member_type').hide();
+			$('#row_ldap_search_base_header').hide();
+			$('#row_ldap_search_base').hide();
+			$('#row_ldap_search_filter').hide();
+			$('#row_ldap_specific_dn').hide();
+			$('#row_ldap_specific_password').hide();
+			break;
+		case "1":
+		case "2":
+			$('#row_special_users_header').show();
+			$('#row_guest_user').show();
+			$('#row_user_template').show();
+			$('#row_ldap_general_header').hide();
+			$('#row_ldap_server').hide();
+			$('#row_ldap_port').hide();
+			$('#row_ldap_port_ssl').hide();
+			$('#row_ldap_version').hide();
+			$('#row_ldap_encryption').hide();
+			$('#row_ldap_referrals').hide();
+			$('#row_ldap_mode').hide();
+			$('#row_ldap_dn').hide();
+			$('#row_ldap_group_require').hide();
+			$('#row_ldap_attrib').hide();
+			$('#row_ldap_member_type').hide();
+			$('#row_ldap_group_header').hide();
+			$('#row_ldap_group_dn').hide();
+			$('#row_ldap_group_attrib').hide();
+			$('#row_ldap_group_member_type').hide();
+			$('#row_ldap_search_base_header').hide();
+			$('#row_ldap_search_base').hide();
+			$('#row_ldap_search_filter').hide();
+			$('#row_ldap_specific_dn').hide();
+			$('#row_ldap_specific_password').hide();
+			break;
+		case "3":
+			$('#row_special_users_header').show();
+			$('#row_guest_user').show();
+			$('#row_user_template').show();
+			$('#row_ldap_general_header').show();
+			$('#row_ldap_server').show();
+			$('#row_ldap_port').show();
+			$('#row_ldap_port_ssl').show();
+			$('#row_ldap_version').show();
+			$('#row_ldap_encryption').show();
+			$('#row_ldap_referrals').show();
+			$('#row_ldap_mode').show();
+			$('#row_ldap_dn').show();
+			$('#row_ldap_group_require').show();
+			$('#row_ldap_attrib').show();
+			$('#row_ldap_member_type').show();
+			$('#row_ldap_group_header').show();
+			$('#row_ldap_group_dn').show();
+			$('#row_ldap_group_attrib').show();
+			$('#row_ldap_group_member_type').show();
+			$('#row_ldap_search_base_header').show();
+			$('#row_ldap_search_base').show();
+			$('#row_ldap_search_filter').show();
+			$('#row_ldap_specific_dn').show();
+			$('#row_ldap_specific_password').show();
+			initSearch();
+			initGroupMember();
+			break;
+		default:
+			$('#row_special_users_header').show();
+			$('#row_guest_user').show();
+			$('#row_user_template').show();
+			$('#row_ldap_general_header').hide();
+			$('#row_ldap_server').hide();
+			$('#row_ldap_port').hide();
+			$('#row_ldap_port_ssl').hide();
+			$('#row_ldap_version').hide();
+			$('#row_ldap_encryption').hide();
+			$('#row_ldap_referrals').hide();
+			$('#row_ldap_mode').hide();
+			$('#row_ldap_dn').hide();
+			$('#row_ldap_group_require').hide();
+			$('#row_ldap_attrib').hide();
+			$('#row_ldap_member_type').hide();
+			$('#row_ldap_group_header').hide();
+			$('#row_ldap_group_dn').hide();
+			$('#row_ldap_group_attrib').hide();
+			$('#row_ldap_group_member_type').hide();
+			$('#row_ldap_search_base_header').hide();
+			$('#row_ldap_search_base').hide();
+			$('#row_ldap_search_filter').hide();
+			$('#row_ldap_specific_dn').hide();
+			$('#row_ldap_specific_password').hide();
+			break;
+		}
+	}
+
+	function initAvail() {
+		switch($('#availability_method').val()) {
+		case "0":
+			$('#row_ping_method').hide();
+			$('#row_ping_port').hide();
+			$('#row_ping_timeout').hide();
+			$('#row_ping_retries').hide();
+			break;
+		case "1":
+		case "4":
+			$('#row_ping_method').show();
+			$('#row_ping_port').show();
+			$('#row_ping_timeout').show();
+			$('#row_ping_retries').show();
+			break;
+		case "3":
+			$('#row_ping_method').show();
+			$('#row_ping_port').show();
+			$('#row_ping_timeout').show();
+			$('#row_ping_retries').show();
+			break;
+		case "2":
+		case "5":
+		case "6":
+			$('#row_ping_method').hide();
+			$('#row_ping_port').hide();
+			$('#row_ping_timeout').show();
+			$('#row_ping_retries').show();
+			break;
+		}
+	}
+
+	function initSNMP() {
+		switch($('#snmp_ver').val()) {
+		case "0":
+			$('#row_snmp_community').hide();
+			$('#row_snmp_username').hide();
+			$('#row_snmp_password').hide();
+			$('#row_snmp_auth_protocol').hide();
+			$('#row_snmp_priv_passphrase').hide();
+			$('#row_snmp_priv_protocol').hide();
+			$('#row_snmp_timeout').hide();
+			$('#row_snmp_port').hide();
+			$('#row_snmp_retries').hide();
+			break;
+		case "1":
+		case "2":
+			$('#row_snmp_community').show();
+			$('#row_snmp_username').hide();
+			$('#row_snmp_password').hide();
+			$('#row_snmp_auth_protocol').hide();
+			$('#row_snmp_priv_passphrase').hide();
+			$('#row_snmp_priv_protocol').hide();
+			$('#row_snmp_timeout').show();
+			$('#row_snmp_port').show();
+			$('#row_snmp_retries').show();
+			break;
+		case "3":
+			$('#row_snmp_community').hide();
+			$('#row_snmp_username').show();
+			$('#row_snmp_password').show();
+			$('#row_snmp_auth_protocol').show();
+			$('#row_snmp_priv_passphrase').show();
+			$('#row_snmp_priv_protocol').show();
+			$('#row_snmp_timeout').show();
+			$('#row_snmp_port').show();
+			$('#row_snmp_retries').show();
+			break;
+		}
+	}
+
+	function initFTPExport() {
+		switch($('#export_type').val()) {
+		case "disabled":
+		case "local":
+			$('#row_export_hdr_ftp').hide();
+			$('#row_export_ftp_sanitize').hide();
+			$('#row_export_ftp_host').hide();
+			$('#row_export_ftp_port').hide();
+			$('#row_export_ftp_passive').hide();
+			$('#row_export_ftp_user').hide();
+			$('#row_export_ftp_password').hide();
+			break;
+		case "ftp_php":
+		case "ftp_ncftpput":
+		case "sftp_php":
+			$('#row_export_hdr_ftp').hide();
+			$('#row_export_ftp_sanitize').hide();
+			$('#row_export_ftp_host').hide();
+			$('#row_export_ftp_port').hide();
+			$('#row_export_ftp_passive').hide();
+			$('#row_export_ftp_user').hide();
+			$('#row_export_ftp_password').hide();
+			break;
+		}
+	}
+
+	function initPresentation() {
+		switch($('#export_presentation').val()) {
+		case "classical":
+			$('#row_export_tree_options').hide();
+			$('#row_export_tree_isolation').hide();
+			$('#row_export_user_id').hide();
+			$('#row_export_tree_expand_hosts').hide();
+			break;
+		case "tree":
+			$('#row_export_tree_options').show();
+			$('#row_export_tree_isolation').show();
+			$('#row_export_user_id').show();
+			$('#row_export_tree_expand_hosts').show();
+			break;
+		}
+	}
+
+	function initTiming() {
+		switch($('#export_timing').val()) {
+		case "disabled":
+			$('#row_path_html_export_skip').hide();
+			$('#row_export_hourly').hide();
+			$('#row_export_daily').hide();
+			break;
+		case "classic":
+			$('#row_path_html_export_skip').show();
+			$('#row_export_hourly').hide();
+			$('#row_export_daily').hide();
+			break;
+		case "export_hourly":
+			$('#row_path_html_export_skip').hide();
+			$('#row_export_hourly').show();
+			$('#row_export_daily').hide();
+			break;
+		case "export_daily":
+			$('#row_path_html_export_skip').hide();
+			$('#row_export_hourly').hide();
+			$('#row_export_daily').show();
+			break;
+		}
+	}
+
+	</script>
+	<?php
+
 	bottom_footer();
 
 	break;
