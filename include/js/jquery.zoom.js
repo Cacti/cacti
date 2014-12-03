@@ -737,12 +737,12 @@
 			if((event.pageX-zoom.attr.start)<0) {
 				zoom.attr.action = 'right2left';
 				zoom.attr.end = (event.pageX < zoom.box.left) ? zoom.box.left : event.pageX;
-				$("#zoom-area").css({ background:'forestgreen', left:(zoom.attr.end+1)+'px', width:Math.abs(zoom.attr.start-zoom.attr.end-1)+'px' });
+				$("#zoom-area").css({ left:(zoom.attr.end+1)+'px', width:Math.abs(zoom.attr.start-zoom.attr.end-1)+'px' });
 			/* mouse has been moved from left to right*/
 			}else {
 				zoom.attr.action = 'left2right';
 				zoom.attr.end = (event.pageX > zoom.box.right) ? zoom.box.right : event.pageX;
-				$("#zoom-area").css({ background:'forestgreen', left:zoom.attr.start+'px', width:Math.abs(zoom.attr.end-zoom.attr.start-1)+'px' });
+				$("#zoom-area").css({ left:zoom.attr.start+'px', width:Math.abs(zoom.attr.end-zoom.attr.start-1)+'px' });
 			}
 			/* move second marker if necessary */
 			if(zoom.custom.zoomMode != 'quick') {
