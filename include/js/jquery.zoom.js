@@ -79,7 +79,7 @@
 		if(zoom.custom.zoom3rdMouseButton == undefined) zoom.custom.zoom3rdMouseButton = false;
 
 		// create or update a session cookie
-		$.cookie( zoom.options.cookieName, serialize(zoom.custom), {expires: null} );
+		$.cookie( zoom.options.cookieName, serialize(zoom.custom), {expires: 30} );
 
 		// support jQuery's concatination
 		return this.each(function() { zoom_init( $(this) ); });
@@ -96,7 +96,7 @@
 			if ($this.width() > 0) {
 				return true;
 			}
-			
+
 			return false;
 		}
 
