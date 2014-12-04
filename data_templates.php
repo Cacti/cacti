@@ -642,20 +642,20 @@ function template() {
 	?>
 	<tr class='even noprint'>
 		<td>
-		<form name="form_data_template" action="data_templates.php">
+		<form id="form_data_template" action="data_templates.php">
 			<table cellpadding="2" cellspacing="0">
 				<tr>
 					<td width="50">
 						Search:
 					</td>
-					<td width="1">
+					<td>
 						<input id='filter' type="text" name="filter" size="40" value="<?php print htmlspecialchars(get_request_var_request("filter"));?>">
 					</td>
-					<td style='white-space: nowrap;' width="50">
+					<td style='white-space: nowrap;'>
 						Data Templates:
 					</td>
-					<td width="1">
-						<select id='rows' name="rows" onChange="applyChangeFilter()">
+					<td>
+						<select id='rows' name="rows" onChange="applyFilter()">
 							<?php
 							if (sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
@@ -666,21 +666,47 @@ function template() {
 						</select>
 					</td>
 					<td>
-						<input type="submit" value="Go" title="Set/Refresh Filters">
+						<input type="button" id='refrehs' value="Go" title="Set/Refresh Filters">
 					</td>
 					<td>
-						<input type="submit" name="clear_x" value="Clear" title="Clear Filters">
+						<input type="button" id='clear' name="clear_x" value="Clear" title="Clear Filters">
 					</td>
 				</tr>
 			</table>
-			<input type='hidden' name='page' value='1'>
+			<input type='hidden' id='page' name='page' value='<?php print $_REQUEST['page'];?>'>
 		</form>
 		</td>
 		<script type='text/javascript'>
-		function applyChangeFilter() {
-			strURL = '?filter='+$('#filter').val()+'&rows='+$('#rows').val();
-			document.location = strURL;
+		function applyFilter() {
+			strURL = '?filter='+$('#filter').val()+'&rows='+$('#rows').val()+'&page='+$('#page').val()+'&header=false';
+			$.get(strURL, function(data) {
+				$('#main').html(data);
+				applySkin();
+			});
 		}
+
+		function clearFilter() {
+			strURL = '?clear_x=1&header=false';
+			$.get(strURL, function(data) {
+				$('#main').html(data);
+				applySkin();
+			});
+		}
+
+		$(function() {
+			$('#refresh').click(function() {
+				applyFilter();
+			});
+
+			$('#clear').click(function() {
+				clearFilter();
+			});
+	
+			$('#form_data_template').submit(function(event) {
+				event.preventDefault();
+				applyFilter();
+			});
+		});
 		</script>
 	</tr>
 	<?php
@@ -691,7 +717,7 @@ function template() {
 	$sql_where = "WHERE data_template.id=data_template_data.data_template_id AND data_template_data.local_data_id=0";
 	$rows_where = "";
 	if (strlen($_REQUEST['filter'])) {
-		$sql_where .= "AND (data_template.name like '%%" . get_request_var_request("filter") . "%%')";
+		$sql_where .= " AND (data_template.name like '%%" . get_request_var_request("filter") . "%%')";
 		$rows_where = "WHERE (data_template.name like '%%" . get_request_var_request("filter") . "%%')";
 	}
 
@@ -718,7 +744,7 @@ function template() {
 		ORDER BY " . get_request_var_request("sort_column") . " " . get_request_var_request("sort_direction") .
 		" LIMIT " . (get_request_var_request("rows")*(get_request_var_request("page")-1)) . "," . get_request_var_request("rows"));
 
-	$nav = html_nav_bar("data_templates.php?filter=" . get_request_var_request("filter"), MAX_DISPLAY_PAGES, get_request_var_request("page"), get_request_var_request("rows"), $total_rows, 5, 'Data Templates');
+	$nav = html_nav_bar("data_templates.php?filter=" . get_request_var_request("filter"), MAX_DISPLAY_PAGES, get_request_var_request("page"), get_request_var_request("rows"), $total_rows, 5, 'Data Templates', 'page', 'main');
 
 	print $nav;
 

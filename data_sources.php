@@ -1081,14 +1081,42 @@ function ds() {
 	<script type="text/javascript">
 	<!--
 
-	function applyDSFilterChange() {
+	function applyFilter() {
 		strURL = '?host_id=' + $('#host_id').val();
 		strURL = strURL + '&filter=' + $('#filter').val();
 		strURL = strURL + '&rows=' + $('#rows').val();
 		strURL = strURL + '&template_id=' + $('#template_id').val();
 		strURL = strURL + '&method_id=' + $('#method_id').val();
-		document.location = strURL;
+		strURL = strURL + '&page=' + $('#page').val();
+		strURL = strURL + '&header=false';
+		$.get(strURL, function(data) {
+			$('#main').html(data);
+			applySkin();
+		});
 	}
+
+	function clearFilter() {
+		strURL = '?clear_x=1&header=false';
+		$.get(strURL, function(data) {
+			$('#main').html(data);
+			applySkin();
+		});
+	}
+
+	$(function() {
+		$('#refresh').click(function() {
+			applyFilter()
+		});
+
+		$('#clear').click(function() {
+			clearFilter()
+		});
+
+		$('#form_data_sources').submit(function(event) {
+			event.preventDefault();
+			applyFilter();
+		});
+	});
 
 	-->
 	</script>
@@ -1105,14 +1133,14 @@ function ds() {
 	?>
 	<tr class='even noprint'>
 		<td>
-		<form name="form_data_sources" action="data_sources.php">
+		<form id='form_data_sources' name="form_data_sources" action="data_sources.php">
 			<table cellpadding="2" cellspacing="0">
 				<tr>
 					<td width="50">
 						Host:
 					</td>
 					<td>
-						<select id='host_id' name="host_id" onChange="applyDSFilterChange()">
+						<select id='host_id' name="host_id" onChange="applyFilter()">
 							<option value="-1"<?php if (get_request_var_request("host_id") == "-1") {?> selected<?php }?>>Any</option>
 							<option value="0"<?php if (get_request_var_request("host_id") == "0") {?> selected<?php }?>>None</option>
 							<?php
@@ -1131,7 +1159,7 @@ function ds() {
 						Template:
 					</td>
 					<td width="1">
-						<select id='template_id' name="template_id" onChange="applyDSFilterChange()">
+						<select id='template_id' name="template_id" onChange="applyFilter()">
 							<option value="-1"<?php if (get_request_var_request("template_id") == "-1") {?> selected<?php }?>>Any</option>
 							<option value="0"<?php if (get_request_var_request("template_id") == "0") {?> selected<?php }?>>None</option>
 							<?php
@@ -1153,10 +1181,10 @@ function ds() {
 						</select>
 					</td>
 					<td>
-						<input type="submit" value="Go" title="Set/Refresh Filters">
+						<input type="button" id='refresh' value="Go" title="Set/Refresh Filters">
 					</td>
 					<td>
-						<input type="submit" name="clear_x" value="Clear" title="Clear Filters">
+						<input type="button" id='clear' name="clear_x" value="Clear" title="Clear Filters">
 					</td>
 				</tr>
 				<tr>
@@ -1164,7 +1192,7 @@ function ds() {
 						Method:
 					</td>
 					<td width="1">
-						<select id='method_id' name="method_id" onChange="applyDSFilterChange()">
+						<select id='method_id' name="method_id" onChange="applyFilter()">
 							<option value="-1"<?php if (get_request_var_request("method_id") == "-1") {?> selected<?php }?>>Any</option>
 							<option value="0"<?php if (get_request_var_request("method_id") == "0") {?> selected<?php }?>>None</option>
 							<?php
@@ -1188,7 +1216,7 @@ function ds() {
 						Data Sources:
 					</td>
 					<td width="1">
-						<select id='rows' name="rows" onChange="applyDSFilterChange()">
+						<select id='rows' name="rows" onChange="applyFilter()">
 							<?php
 							if (sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
@@ -1210,7 +1238,7 @@ function ds() {
 					</td>
 				</tr>
 			</table>
-			<input type='hidden' name='page' value='1'>
+			<input type='hidden' id='page' name='page' value='<?php print $_REQUEST['page'];?>'>
 		</form>
 		</td>
 	</tr>
@@ -1303,7 +1331,7 @@ function ds() {
 
 	html_start_box("", "100%", "", "3", "center", "");
 
-	$nav = html_nav_bar("data_sources.php?filter=" . get_request_var_request("filter") . "&host_id=" . get_request_var_request("host_id"), MAX_DISPLAY_PAGES, get_request_var_request("page"), get_request_var_request("rows"), $total_rows, 7, 'Data Sources');
+	$nav = html_nav_bar("data_sources.php?filter=" . get_request_var_request("filter") . "&host_id=" . get_request_var_request("host_id"), MAX_DISPLAY_PAGES, get_request_var_request("page"), get_request_var_request("rows"), $total_rows, 7, 'Data Sources', 'page', 'main');
 
 	print $nav;
 

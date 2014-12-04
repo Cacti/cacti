@@ -1122,13 +1122,41 @@ function host() {
 	<script type="text/javascript">
 	<!--
 
-	function applyViewDeviceFilterChange() {
+	function applyFilter() {
 		strURL = '?host_status=' + $('#host_status').val();
 		strURL = strURL + '&host_template_id=' + $('#host_template_id').val();
 		strURL = strURL + '&rows=' + $('#rows').val();
 		strURL = strURL + '&filter=' + $('#filter').val();
-		document.location = strURL;
+		strURL = strURL + '&page=' + $('#page').val();
+		strURL = strURL + '&header=false';
+		$.get(strURL, function(data) {
+			$('#main').html(data);
+			applySkin();
+		});
 	}
+
+	function clearFilter() {
+		strURL = '?clear_x=1&header=false';
+		$.get(strURL, function(data) {
+			$('#main').html(data);
+			applySkin();
+		});
+	}
+
+	$(function(data) {
+		$('#refresh').click(function() {
+			applyFilter();
+		});
+
+		$('#clear').click(function() {
+			clearFilter();
+		});
+
+		$('#form_devices').submit(function(event) {
+			event.preventDefault();
+			applyFilter();
+		});
+	});
 
 	-->
 	</script>
@@ -1139,14 +1167,14 @@ function host() {
 	?>
 	<tr class='even noprint'>
 		<td>
-		<form name="form_devices" action="host.php">
+		<form id='form_devices' name="form_devices" action="host.php">
 			<table cellpadding="2" cellspacing="0">
 				<tr>
 					<td width="50">
 						Type:
 					</td>
 					<td width="1">
-						<select id='host_template_id' name="host_template_id" onChange="applyViewDeviceFilterChange()">
+						<select id='host_template_id' name="host_template_id" onChange="applyFilter()">
 							<option value="-1"<?php if (get_request_var_request("host_template_id") == "-1") {?> selected<?php }?>>Any</option>
 							<option value="0"<?php if (get_request_var_request("host_template_id") == "0") {?> selected<?php }?>>None</option>
 							<?php
@@ -1164,7 +1192,7 @@ function host() {
 						Status:
 					</td>
 					<td width="1">
-						<select id='host_status' name="host_status" onChange="applyViewDeviceFilterChange()">
+						<select id='host_status' name="host_status" onChange="applyFilter()">
 							<option value="-1"<?php if (get_request_var_request("host_status") == "-1") {?> selected<?php }?>>Any</option>
 							<option value="-3"<?php if (get_request_var_request("host_status") == "-3") {?> selected<?php }?>>Enabled</option>
 							<option value="-2"<?php if (get_request_var_request("host_status") == "-2") {?> selected<?php }?>>Disabled</option>
@@ -1179,13 +1207,13 @@ function host() {
 						Search:
 					</td>
 					<td width="1">
-						<input id='filter' type="text" name="filter" size="20" value="<?php print htmlspecialchars(get_request_var_request("filter"));?>">
+						<input id='filter' type="text" name="filter" size="20" value="<?php print htmlspecialchars(get_request_var_request("filter"));?>" onChange='applyFilter()'>
 					</td>
 					<td>
 						Devices:
 					</td>
 					<td width="1">
-						<select id='rows' name="rows" onChange="applyViewDeviceFilterChange()">
+						<select id='rows' name="rows" onChange="applyFilter()">
 							<option value="-1"<?php if (get_request_var_request("rows") == "-1") {?> selected<?php }?>>Default</option>
 							<?php
 							if (sizeof($item_rows) > 0) {
@@ -1197,14 +1225,14 @@ function host() {
 						</select>
 					</td>
 					<td>
-						<input type="submit" value="Go" title="Set/Refresh Filters">
+						<input type="button" id='refresh' value="Go" title="Set/Refresh Filters">
 					</td>
 					<td>
-						<input type="submit" name="clear_x" value="Clear" title="Clear Filters">
+						<input type="button" id='clear' name="clear_x" value="Clear" title="Clear Filters">
 					</td>
 				</tr>
 			</table>
-			<input type='hidden' name='page' value='1'>
+			<input type='hidden' id='page' name='page' value='<?php print $_REQUEST['page'];?>'>
 		</form>
 		</td>
 	</tr>
@@ -1268,7 +1296,7 @@ function host() {
 
 	$hosts = db_fetch_assoc($sql_query);
 
-	$nav = html_nav_bar("host.php?filter=" . get_request_var_request("filter") . "&host_template_id=" . get_request_var_request("host_template_id") . "&host_status=" . get_request_var_request("host_status"), MAX_DISPLAY_PAGES, get_request_var_request("page"), get_request_var_request("rows"), $total_rows, 11, 'Devices');
+	$nav = html_nav_bar("host.php?filter=" . get_request_var_request("filter") . "&host_template_id=" . get_request_var_request("host_template_id") . "&host_status=" . get_request_var_request("host_status"), MAX_DISPLAY_PAGES, get_request_var_request("page"), get_request_var_request("rows"), $total_rows, 11, 'Devices', 'page', 'main');
 
 	print $nav;
 

@@ -821,15 +821,15 @@ function draw_menu($user_menu = "") {
 			}
 		});
 
-		$('.pic').click(function(event) {
-			event.preventDefault();
-			href = $(this).attr('href');
-			href = href+ (href.indexOf('?') > 0 ? '&':'?') + 'header=false';
-			$.get(href, function(data) {
-				$('#main').html(data);
-				applySkin();
-			});
-		});
+//		$('.pic').click(function(event) {
+//			event.preventDefault();
+//			href = $(this).attr('href');
+//			href = href+ (href.indexOf('?') > 0 ? '&':'?') + 'header=false';
+//			$.get(href, function(data) {
+//				$('#main').html(data);
+//				applySkin();
+//			});
+//		});
 
 	<?php }?>
 		$('#menu').show();

@@ -574,17 +574,56 @@ function utilities_view_user_log() {
 
 	?>
 	<script type="text/javascript">
-	<!--
 
-	function applyViewLogFilterChange() {
+	function clearFilter() {
+		strURL = '?clear_x=1&header=false';
+		$.get(strURL, function(data) {
+			$('#main').html(data);
+			applySkin();
+		});
+	}
+
+	function purgeLog() {
+		strURL = '?action=clear_user_log&header=false';
+		$.get(strURL, function(data) {
+			$('#main').html(data);
+			applySkin();
+		});
+	}
+
+	$(function() {
+		$('#refresh').click(function() {
+			applyFilter();
+		});
+
+		$('#clear').click(function() {
+			clearFilter();
+		});
+
+		$('#purge').click(function() {
+			purgeLog();
+		});
+
+		$('#form_userlog').submit(function(event) {
+			event.preventDefault();
+			applyFilter();
+		});
+	});
+
+	function applyFilter() {
 		strURL = '?username=' + $('#username').val();
 		strURL = strURL + '&result=' + $('#result').val();
 		strURL = strURL + '&rows=' + $('#rows').val();
+		strURL = strURL + '&filter=' + $('#filter').val();
+		strURL = strURL + '&page=' + $('#page').val();
 		strURL = strURL + '&action=view_user_log';
-		document.location = strURL;
+		strURL = strURL + '&header=false';
+		$.get(strURL, function(data) {
+			$('#main').html(data);
+			applySkin();
+		});
 	}
 
-	-->
 	</script>
 	<?php
 
@@ -593,14 +632,14 @@ function utilities_view_user_log() {
 	?>
 	<tr class='even noprint'>
 		<td>
-		<form name="form_userlog" action="utilities.php">
+		<form id="form_userlog" action="utilities.php">
 			<table cellpadding="2" cellspacing="0">
 				<tr>
 					<td width="50">
 						User:
 					</td>
-					<td width="1">
-						<select id='username' name="username" onChange="applyViewLogFilterChange()">
+					<td>
+						<select id='username' name="username" onChange="applyFilter()">
 							<option value="-1"<?php if (get_request_var_request("username") == "-1") {?> selected<?php }?>>All</option>
 							<option value="-2"<?php if (get_request_var_request("username") == "-2") {?> selected<?php }?>>Deleted/Invalid</option>
 							<?php
@@ -617,8 +656,8 @@ function utilities_view_user_log() {
 					<td>
 						Result:
 					</td>
-					<td width="1">
-						<select id='result' name="result" onChange="applyViewLogFilterChange()">
+					<td>
+						<select id='result' name="result" onChange="applyFilter()">
 							<option value="-1"<?php if (get_request_var_request("result") == '-1') {?> selected<?php }?>>Any</option>
 							<option value="1"<?php if (get_request_var_request("result") == '1') {?> selected<?php }?>>Success</option>
 							<option value="0"<?php if (get_request_var_request("result") == '0') {?> selected<?php }?>>Failed</option>
@@ -628,7 +667,7 @@ function utilities_view_user_log() {
 						Rows:
 					</td>
 					<td>
-						<select id='rows' name="rows" onChange="applyViewLogFilterChange()">
+						<select id='rows' name="rows" onChange="applyFilter()">
 							<?php
 							if (sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
@@ -639,13 +678,13 @@ function utilities_view_user_log() {
 						</select>
 					</td>
 					<td>
-						<input type="submit" name="go" value="Go" title="Set/Refresh Filters">
+						<input type="button" id='refresh' name="go" value="Go" title="Set/Refresh Filters">
 					</td>
 					<td>
-						<input type="submit" name="clear_x" value="Clear" title="Clear Filters">
+						<input type="button" id='clear' name="clear_x" value="Clear" title="Clear Filters">
 					</td>
 					<td>
-						<input type="submit" name="purge_x" value="Purge" title="Purge User Log">
+						<input type="button" id='purge' name="purge_x" value="Purge" title="Purge User Log">
 					</td>
 				</tr>
 			</table>
@@ -659,7 +698,7 @@ function utilities_view_user_log() {
 					</td>
 				</tr>
 			</table>
-			<input type='hidden' name='page' value='1'>
+			<input type='hidden' id='page' name='page' value='<?php print $_REQUEST['page'];?>'>
 			<input type='hidden' name='action' value='view_user_log'>
 		</form>
 		</td>
@@ -691,10 +730,12 @@ function utilities_view_user_log() {
 		if (strlen($sql_where)) {
 			$sql_where .= " AND (user_log.username LIKE '%%" . get_request_var_request("filter") . "%%'
 				OR user_log.time LIKE '%%" . get_request_var_request("filter") . "%%'
+				OR user_auth.full_name LIKE '%%" . get_request_var_request("filter") . "%%'
 				OR user_log.ip LIKE '%%" . get_request_var_request("filter") . "%%')";
 		}else{
 			$sql_where = "WHERE (user_log.username LIKE '%%" . get_request_var_request("filter") . "%%'
 				OR user_log.time LIKE '%%" . get_request_var_request("filter") . "%%'
+				OR user_auth.full_name LIKE '%%" . get_request_var_request("filter") . "%%'
 				OR user_log.ip LIKE '%%" . get_request_var_request("filter") . "%%')";
 		}
 	}
@@ -724,7 +765,7 @@ function utilities_view_user_log() {
 
 	$user_log = db_fetch_assoc($user_log_sql);
 
-	$nav = html_nav_bar("utilities.php?action=view_user_log&username=" . get_request_var_request("username") . "&filter=" . get_request_var_request("filter"), MAX_DISPLAY_PAGES, get_request_var_request("page"), get_request_var_request("rows"), $total_rows, 6);
+	$nav = html_nav_bar("utilities.php?action=view_user_log&username=" . get_request_var_request("username") . "&filter=" . get_request_var_request("filter"), MAX_DISPLAY_PAGES, get_request_var_request("page"), get_request_var_request("rows"), $total_rows, 6, 'User Logins', 'page', 'main');
 
 	print $nav;
 
@@ -850,14 +891,56 @@ function utilities_view_logfile() {
 	<script type="text/javascript">
 	<!--
 
-	function applyViewLogFilterChange() {
+	function purgeLog() {
+		strURL = '?action=view_logfile&purge_x=1&header=false';
+		$.get(strURL, function(data) {
+			$('#main').html(data);
+			applySkin();
+		});
+	}
+
+	$(function() {
+		$('#refreshme').click(function() {
+			applyFilter();
+		});
+
+		$('#clear').click(function() {
+			clearFilter();
+		});
+
+		$('#purge').click(function() {
+			purgeLog();
+		});
+
+		$('#form_logfile').submit(function(event) {
+			event.preventDefault();
+			applyFilter();
+		});
+	});
+
+	function applyFilter() {
 		strURL = '?tail_lines=' + $('#tail_lines').val();
 		strURL = strURL + '&message_type=' + $('#message_type').val();
 		strURL = strURL + '&refresh=' + $('#refresh').val();
 		strURL = strURL + '&reverse=' + $('#reverse').val();
 		strURL = strURL + '&filter=' + $('#filter').val();
 		strURL = strURL + '&action=view_logfile';
-		document.location = strURL;
+		strURL = strURL + '&header=false';
+		refreshMSeconds=$('#refresh').val()*1000;
+		$.get(strURL, function(data) {
+			$('#main').html(data);
+			applySkin();
+		});
+	}
+
+	function clearFilter() {
+		strURL = '?clear_x=1';
+		strURL = strURL + '&action=view_logfile';
+		strURL = strURL + '&header=false';
+		$.get(strURL, function(data) {
+			$('#main').html(data);
+			applySkin();
+		});
 	}
 
 	-->
@@ -869,14 +952,14 @@ function utilities_view_logfile() {
 	?>
 	<tr class='even noprint'>
 		<td>
-		<form name="form_logfile" action="utilities.php">
+		<form id="form_logfile" action="utilities.php">
 			<table cellpadding="2" cellspacing="0">
 				<tr>
 					<td style='white-space: nowrap;' width="80">
 						Tail Lines:
 					</td>
 					<td width="1">
-						<select id='tail_lines' name="tail_lines" onChange="applyViewLogFilterChange()">
+						<select id='tail_lines' name="tail_lines" onChange="applyFilter()">
 							<?php
 							foreach($log_tail_lines AS $tail_lines => $display_text) {
 								print "<option value='" . $tail_lines . "'"; if (get_request_var_request("tail_lines") == $tail_lines) { print " selected"; } print ">" . $display_text . "</option>\n";
@@ -888,7 +971,7 @@ function utilities_view_logfile() {
 						Message Type:
 					</td>
 					<td width="1">
-						<select id='message_type' name="message_type" onChange="applyViewLogFilterChange()">
+						<select id='message_type' name="message_type" onChange="applyFilter()">
 							<option value="-1"<?php if (get_request_var_request("message_type") == '-1') {?> selected<?php }?>>All</option>
 							<option value="1"<?php if (get_request_var_request("message_type") == '1') {?> selected<?php }?>>Stats</option>
 							<option value="2"<?php if (get_request_var_request("message_type") == '2') {?> selected<?php }?>>Warnings</option>
@@ -898,13 +981,13 @@ function utilities_view_logfile() {
 						</select>
 					</td>
 					<td>
-						<input type="submit" name="go" value="Go" title="Set/Refresh Filters">
+						<input type="button" id='refreshme' name="go" value="Go" title="Set/Refresh Filters">
 					</td>
 					<td>
-						<input type="submit" name="clear_x" value="Clear" title="Clear Filters">
+						<input type="button" id='clear' name="clear_x" value="Clear" title="Clear Filters">
 					</td>
 					<td>
-						<input type="submit" name="purge_x" value="Purge" title="Purge Log File">
+						<input type="button" id='purge' name="purge_x" value="Purge" title="Purge Log File">
 					</td>
 				</tr>
 				<tr>
@@ -912,7 +995,7 @@ function utilities_view_logfile() {
 						Refresh:
 					</td>
 					<td width="1">
-						<select id='refresh' name="refresh" onChange="applyViewLogFilterChange()">
+						<select id='refresh' name="refresh" onChange="applyFilter()">
 							<?php
 							foreach($page_refresh_interval AS $seconds => $display_text) {
 								print "<option value='" . $seconds . "'"; if (get_request_var_request("refresh") == $seconds) { print " selected"; } print ">" . $display_text . "</option>\n";
@@ -924,7 +1007,7 @@ function utilities_view_logfile() {
 						Display Order:
 					</td>
 					<td width="1">
-						<select id='reverse' name="reverse" onChange="applyViewLogFilterChange()">
+						<select id='reverse' name="reverse" onChange="applyFilter()">
 							<option value="1"<?php if (get_request_var_request("reverse") == '1') {?> selected<?php }?>>Newest First</option>
 							<option value="2"<?php if (get_request_var_request("reverse") == '2') {?> selected<?php }?>>Oldest First</option>
 						</select>
@@ -941,7 +1024,7 @@ function utilities_view_logfile() {
 					</td>
 				</tr>
 			</table>
-			<input type='hidden' name='page' value='1'>
+			<input type='hidden' id='page' name='page' value='<?php print $_REQUEST['page'];?>'>
 			<input type='hidden' name='action' value='view_logfile'>
 		</form>
 		</td>
@@ -1059,7 +1142,7 @@ function utilities_clear_logfile() {
 		$logfile = "./log/cacti.log";
 	}
 
-	html_start_box("<strong>Clear Cacti Log File</strong>", "100%", "", "1", "center", "");
+	html_start_box("<strong>Clear Cacti Log File</strong>", "100%", "", "3", "center", "");
 	if (file_exists($logfile)) {
 		if (is_writable($logfile)) {
 			$timestamp = date("m/d/Y h:i:s A");
@@ -1120,14 +1203,42 @@ function utilities_view_snmp_cache() {
 	<script type="text/javascript">
 	<!--
 
-	function applyViewSNMPFilterChange() {
+	function applyFilter() {
 		strURL = '?host_id=' + $('#host_id').val();
 		strURL = strURL + '&snmp_query_id=' + $('#snmp_query_id').val();
 		strURL = strURL + '&filter=' + $('#filter').val();
 		strURL = strURL + '&rows=' + $('#rows').val();
+		strURL = strURL + '&page=' + $('#page').val();
 		strURL = strURL + '&action=view_snmp_cache';
-		document.location = strURL;
+		strURL = strURL + '&header=false';
+		$.get(strURL, function(data) {
+			$('#main').html(data);
+			applySkin();
+		});
 	}
+
+	function clearFilter() {
+		strURL = '?action=view_snmp_cache&clear_x=1&header=false';
+		$.get(strURL, function(data) {
+			$('#main').html(data);
+			applySkin();
+		});
+	}
+
+	$(function() {
+		$('#refresh').click(function() {
+			applyFilter();
+		});
+
+		$('#clear').click(function() {
+			clearFilter();
+		});
+
+		$('#form_snmpcache').submit(function(event) {
+			event.preventDefault();
+			applyFilter();
+		});
+	});
 
 	-->
 	</script>
@@ -1138,14 +1249,14 @@ function utilities_view_snmp_cache() {
 	?>
 	<tr class='even noprint'>
 		<td>
-		<form name="form_snmpcache" action="utilities.php">
+		<form id="form_snmpcache" action="utilities.php">
 			<table cellpadding="2" cellspacing="0">
 				<tr>
 					<td width="50">
 						Host:
 					</td>
-					<td width="1">
-						<select id='host_id' name="host_id" onChange="applyViewSNMPFilterChange()">
+					<td>
+						<select id='host_id' name="host_id" onChange="applyFilter()">
 							<option value="-1"<?php if (get_request_var_request("host_id") == "-1") {?> selected<?php }?>>Any</option>
 							<option value="0"<?php if (get_request_var_request("host_id") == "0") {?> selected<?php }?>>None</option>
 							<?php
@@ -1180,8 +1291,8 @@ function utilities_view_snmp_cache() {
 					<td>
 						Query Name:
 					</td>
-					<td width="1">
-						<select id='snmp_query_id' name="snmp_query_id" onChange="applyViewSNMPFilterChange()">
+					<td>
+						<select id='snmp_query_id' name="snmp_query_id" onChange="applyFilter()">
 							<option value="-1"<?php if (get_request_var_request("host_id") == "-1") {?> selected<?php }?>>Any</option>
 							<?php
 							if (get_request_var_request("host_id") == -1) {
@@ -1214,7 +1325,7 @@ function utilities_view_snmp_cache() {
 						Rows:
 					</td>
 					<td>
-						<select id='rows' name="rows" onChange="applyViewSNMPFilterChange()">
+						<select id='rows' name="rows" onChange="applyFilter()">
 							<?php
 							if (sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
@@ -1225,10 +1336,10 @@ function utilities_view_snmp_cache() {
 						</select>
 					</td>
 					<td>
-						<input type="submit" name="go" value="Go" title="Set/Refresh Filters">
+						<input type="button" id='refresh' name="go" value="Go" title="Set/Refresh Filters">
 					</td>
 					<td>
-						<input type="submit" name="clear_x" value="Clear" title="Clear Fitlers">
+						<input type="button" id='clear' name="clear_x" value="Clear" title="Clear Fitlers">
 					</td>
 				</tr>
 			</table>
@@ -1237,12 +1348,12 @@ function utilities_view_snmp_cache() {
 					<td width='50'>
 						Search:
 					</td>
-					<td width="1">
+					<td>
 						<input id='filter' type="text" name="filter" size="40" value="<?php print htmlspecialchars(get_request_var_request("filter"));?>">
 					</td>
 				</tr>
 			</table>
-			<input type='hidden' name='page' value='1'>
+			<input type='hidden' id='page' name='page' value='<?php print $_REQUEST['page'];?>'>
 			<input type='hidden' name='action' value='view_snmp_cache'>
 		</form>
 		</td>
@@ -1299,7 +1410,7 @@ function utilities_view_snmp_cache() {
 
 	$snmp_cache = db_fetch_assoc($snmp_cache_sql);
 
-	$nav = html_nav_bar("utilities.php?action=view_snmp_cache&host_id=" . get_request_var_request("host_id") . "&filter=" . get_request_var_request("filter"), MAX_DISPLAY_PAGES, get_request_var_request("page"), get_request_var_request("rows"), $total_rows, 3);
+	$nav = html_nav_bar("utilities.php?action=view_snmp_cache&host_id=" . get_request_var_request("host_id") . "&filter=" . get_request_var_request("filter"), MAX_DISPLAY_PAGES, get_request_var_request("page"), get_request_var_request("rows"), $total_rows, 3, 'Entries', 'page', 'main');
 
 	print $nav;
 
@@ -1402,18 +1513,44 @@ function utilities_view_poller_cache() {
 
 	?>
 	<script type="text/javascript">
-	<!--
 
-	function applyPItemFilterChange() {
+	function applyFilter() {
 		strURL = '?poller_action=' + $('#poller_action').val();
 		strURL = strURL + '&host_id=' + $('#host_id').val();
 		strURL = strURL + '&filter=' + $('#filter').val();
 		strURL = strURL + '&rows=' + $('#rows').val();
+		strURL = strURL + '&page=' + $('#page').val();
 		strURL = strURL + '&action=view_poller_cache';
-		document.location = strURL;
+		strURL = strURL + '&header=false';
+		$.get(strURL, function(data) {
+			$('#main').html(data);
+			applySkin();
+		});
 	}
 
-	-->
+	function clearFilter() {
+		strURL = '?clear_x=1&header=false';
+		$.get(strURL, function(data) {
+			$('#main').html(data);
+			applySkin();
+		});
+	}
+
+	$(function() {
+		$('#refresh').click(function() {
+			applyFilter();
+		});
+
+		$('#clear').click(function() {
+			clearFilter();
+		});
+
+		$('#form_pollercache').submit(function(event) {
+			event.preventDefault();
+			applyFilter();
+		});
+	});
+
 	</script>
 	<?php
 
@@ -1422,14 +1559,14 @@ function utilities_view_poller_cache() {
 	?>
 	<tr class='even noprint'>
 		<td>
-		<form name="form_pollercache" action="utilities.php">
+		<form id="form_pollercache" action="utilities.php">
 			<table cellpadding="2" cellspacing="0">
 				<tr>
 					<td width="50">
 						Host:
 					</td>
-					<td width="1">
-						<select id='host_id' name="host_id" onChange="applyPItemFilterChange()">
+					<td>
+						<select id='host_id' name="host_id" onChange="applyFilter()">
 							<option value="-1"<?php if (get_request_var_request("host_id") == "-1") {?> selected<?php }?>>Any</option>
 							<option value="0"<?php if (get_request_var_request("host_id") == "0") {?> selected<?php }?>>None</option>
 							<?php
@@ -1446,8 +1583,8 @@ function utilities_view_poller_cache() {
 					<td>
 						Action:
 					</td>
-					<td width="1">
-						<select id='poller_action' name="poller_action" onChange="applyPItemFilterChange()">
+					<td>
+						<select id='poller_action' name="poller_action" onChange="applyFilter()">
 							<option value="-1"<?php if (get_request_var_request("poller_action") == '-1') {?> selected<?php }?>>Any</option>
 							<option value="0"<?php if (get_request_var_request("poller_action") == '0') {?> selected<?php }?>>SNMP</option>
 							<option value="1"<?php if (get_request_var_request("poller_action") == '1') {?> selected<?php }?>>Script</option>
@@ -1458,7 +1595,7 @@ function utilities_view_poller_cache() {
 						Rows:
 					</td>
 					<td>
-						<select id='rows' name="rows" onChange="applyPItemFilterChange()">
+						<select id='rows' name="rows" onChange="applyFilter()">
 							<?php
 							if (sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
@@ -1469,10 +1606,10 @@ function utilities_view_poller_cache() {
 						</select>
 					</td>
 					<td>
-						<input type="submit" name="go" value="Go" title="Set/Refresh Filters">
+						<input type="button" id='refresh' name="go" value="Go" title="Set/Refresh Filters">
 					</td>
 					<td>
-						<input type="submit" name="clear_x" value="Clear" title="Clear Filters">
+						<input type="button" id='clear' name="clear_x" value="Clear" title="Clear Filters">
 					</td>
 				</tr>
 			</table>
@@ -1481,12 +1618,12 @@ function utilities_view_poller_cache() {
 					<td width='50'>
 						Search:
 					</td>
-					<td width="1">
+					<td>
 						<input id='filter' type="text" name="filter" size="40" value="<?php print htmlspecialchars(get_request_var_request("filter"));?>">
 					</td>
 				</tr>
 			</table>
-			<input type='hidden' name='page' value='1'>
+			<input type='hidden' id='page' name='page' value='<?php print $_REQUEST['page'];?>'>
 			<input type='hidden' name='action' value='view_poller_cache'>
 		</form>
 		</td>
@@ -1544,7 +1681,7 @@ function utilities_view_poller_cache() {
 
 	$poller_cache = db_fetch_assoc($poller_sql);
 
-	$nav = html_nav_bar("utilities.php?action=view_poller_cache&host_id=" . get_request_var_request("host_id") . "&poller_action=" . get_request_var_request("poller_action"), MAX_DISPLAY_PAGES, get_request_var_request("page"), get_request_var_request("rows"), $total_rows, 3);
+	$nav = html_nav_bar("utilities.php?action=view_poller_cache&host_id=" . get_request_var_request("host_id") . "&poller_action=" . get_request_var_request("poller_action"), MAX_DISPLAY_PAGES, get_request_var_request("page"), get_request_var_request("rows"), $total_rows, 3, 'Entries', 'page', 'main');
 
 	print $nav;
 

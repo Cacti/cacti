@@ -749,7 +749,7 @@ function data_query() {
 	?>
 	<tr class='even noprint'>
 		<td class="noprint">
-		<form name="form_graph_id" method="get" action="data_queries.php">
+		<form id="form_data_queries" method="get" action="data_queries.php">
 			<table cellpadding="2" cellspacing="0">
 				<tr class="noprint">
 					<td width="50">
@@ -762,7 +762,7 @@ function data_query() {
 						Data Queries:
 					</td>
 					<td>
-						<select id='rows' name="rows" onChange="applyChangeFilter()">
+						<select id='rows' name="rows" onChange="applyFilter()">
 							<?php
 							if (sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
@@ -773,20 +773,46 @@ function data_query() {
 						</select>
 					</td>
 					<td>
-						<input type="submit" value="Go" title="Set/Refresh Filters">
+						<input type="button" id='refresh' value="Go" title="Set/Refresh Filters">
 					</td>
 					<td>
-						<input type="submit" name="clear_x" value="Clear" title="Clear Filters">
+						<input type="button" id='clear' name="clear_x" value="Clear" title="Clear Filters">
 					</td>
 				</tr>
 			</table>
-			<input type='hidden' name='page' value='1'>
+			<input type='hidden' id='page' name='page' value='<?php print $_REQUEST['page'];?>'>
 		</form>
 		<script type='text/javascript'>
-		function applyChangeFilter() {
-			strURL = '?filter='+$('#filter').val()+'&rows='+$('#rows').val()
-			document.location = strURL;
+		function applyFilter() {
+			strURL = '?filter='+$('#filter').val()+'&rows='+$('#rows').val()+'&page='+$('#page').val()+'&header=false';
+			$.get(strURL, function(data) {
+				$('#main').html(data);
+				applySkin();
+			});
 		}
+
+		function clearFilter() {
+			strURL = '?clear_x=1&header=false';
+			$.get(strURL, function(data) {
+				$('#main').html(data);
+				applySkin();
+			});
+		}
+
+		$(function() {
+			$('#refresh').click(function() {
+				applyFilter();
+			});
+
+			$('#clear').click(function() {
+				clearFilter();
+			});
+	
+			$('#form_data_queries').submit(function(event) {
+				event.preventDefault();
+				applyFilter();
+			});
+		});
 		</script>
 		</td>
 	</tr>
@@ -820,7 +846,7 @@ function data_query() {
 		ORDER BY " . get_request_var_request("sort_column") . " " . get_request_var_request("sort_direction") . "
 		LIMIT " . (get_request_var_request("rows")*(get_request_var_request("page")-1)) . "," . get_request_var_request("rows"));
 
-	$nav = html_nav_bar("data_queries.php?filter=" . get_request_var_request("filter"), MAX_DISPLAY_PAGES, get_request_var_request("page"), get_request_var_request("rows"), $total_rows, 3, 'Data Queries');
+	$nav = html_nav_bar("data_queries.php?filter=" . get_request_var_request("filter"), MAX_DISPLAY_PAGES, get_request_var_request("page"), get_request_var_request("rows"), $total_rows, 3, 'Data Queries', 'page', 'main');
 	print $nav;
 
 	$display_text = array(

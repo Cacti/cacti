@@ -341,6 +341,7 @@ function update_show_current () {
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var_request("page"));
 	input_validate_input_number(get_request_var_request("rows"));
+	input_validate_input_number(get_request_var_request("state"));
 	/* ==================================================== */
 
 	/* clean up search string */
@@ -362,11 +363,13 @@ function update_show_current () {
 	if (isset($_REQUEST["clear_x"])) {
 		kill_session_var("sess_plugins_filter");
 		kill_session_var("sess_default_rows");
+		kill_session_var("sess_plugins_state");
 		kill_session_var("sess_plugins_sort_column");
 		kill_session_var("sess_plugins_sort_direction");
 
 		unset($_REQUEST["page"]);
 		unset($_REQUEST["rows"]);
+		unset($_REQUEST["state"]);
 		unset($_REQUEST["filter"]);
 		unset($_REQUEST["sort_column"]);
 		unset($_REQUEST["sort_direction"]);
@@ -376,21 +379,46 @@ function update_show_current () {
 	/* remember these search fields in session vars so we don't have to keep passing them around */
 	load_current_session_value("filter", "sess_plugins_filter", "");
 	load_current_session_value("rows", "sess_default_rows", read_config_option('num_rows_table'));
+	load_current_session_value("state", "sess_plugins_state", "5");
 	load_current_session_value("sort_column", "sess_plugins_sort_column", "name");
 	load_current_session_value("sort_direction", "sess_plugins_sort_direction", "ASC");
 	load_current_session_value("page", "sess_plugins_current_page", "1");
 
 	$table = plugins_load_temp_table();
+	//print "<pre>";print_r(db_fetch_assoc("SELECT * FROM $table"));print "</pre>";exit;
 
 	?>
 	<script type="text/javascript">
-	<!--
-	function applyFilterChange() {
-		strURL = '?rows=' + $('#rows').val();
-		strURL = strURL + '&filter=' + $('#filter').val();
-		document.location = strURL;
+	function applyFilter() {
+		strURL = '?filter='+$('#filter').val()+'&rows='+$('#rows').val()+'&page='+$('#page').val()+'&state='+$('#state').val()+'&header=false';
+		$.get(strURL, function(data) {
+			$('#main').html(data);
+			applySkin();
+		});
 	}
-	-->
+
+	function clearFilter() {
+		strURL = '?clear_x=1&header=false';
+		$.get(strURL, function(data) {
+			$('#main').html(data);
+			applySkin();
+		});
+	}
+
+	$(function() {
+		$('#refresh').click(function() {
+			applyFilter();
+		});
+
+		$('#clear').click(function() {
+			clearFilter();
+		});
+
+		$('#form_plugins').submit(function(event) {
+			event.preventDefault();
+			applyFilter();
+		});
+	});
 	</script>
 	<?php
 
@@ -401,20 +429,34 @@ function update_show_current () {
 	?>
 	<tr class='even noprint'>
 		<td class="noprint">
-		<form name="form_plugins" method="get" action="plugins.php">
+		<form id="form_plugins" method="get" action="plugins.php">
 			<table cellpadding="2" cellspacing="0">
 				<tr class="noprint">
 					<td width="50">
 						Search:
 					</td>
-					<td width="1">
+					<td>
 						<input id='filter' type="text" name="filter" size="40" value="<?php print get_request_var_request("filter");?>">
+					</td>
+					<td>
+						Status:
+					</td>
+					<td>
+						<select id='state' name="state" onChange="applyFilter()">
+							<option value="-3"<?php if (get_request_var_request("state") == "-3") {?> selected<?php }?>>All</option>
+							<option value="1"<?php if (get_request_var_request("state") == "1") {?> selected<?php }?>>Active</option>
+							<option value="4"<?php if (get_request_var_request("state") == "4") {?> selected<?php }?>>Installed</option>
+							<option value="5"<?php if (get_request_var_request("state") == "5") {?> selected<?php }?>>Active/Installed</option>
+							<option value="0"<?php if (get_request_var_request("state") == "0") {?> selected<?php }?>>Not Installed</option>
+							<option value="-1"<?php if (get_request_var_request("state") == "-1") {?> selected<?php }?>>Legacy Installed</option>
+							<option value="-2"<?php if (get_request_var_request("state") == "-2") {?> selected<?php }?>>Legacy Not Intalled</option>
+						</select>
 					</td>
 					<td>
 						Plugins:
 					</td>
-					<td width="1">
-						<select id='rows' name="rows" onChange="applyFilterChange()">
+					<td>
+						<select id='rows' name="rows" onChange="applyFilter()">
 							<option value="-1"<?php if (get_request_var_request("rows") == "-1") {?> selected<?php }?>>Default</option>
 							<?php
 							if (sizeof($item_rows) > 0) {
@@ -425,15 +467,15 @@ function update_show_current () {
 							?>
 						</select>
 					</td>
-					<td nowrap style='white-space: nowrap;'>
-						<input type="submit" value="Go" title="Set/Refresh Filters">
+					<td>
+						<input type="button" id='refresh' value="Go" title="Set/Refresh Filters">
 					</td>
-					<td nowrap style='white-space: nowrap;'>
-						<input type="submit" name="clear_x" value="Clear" title="Clear Filters">
+					<td>
+						<input type="button" id='clear' name="clear_x" value="Clear" title="Clear Filters">
 					</td>
 				</tr>
 			</table>
-			<input type='hidden' name='page' value='1'>
+			<input type='hidden' id='page' name='page' value='<?php print $_REQUEST['page'];?>'>
 		</form>
 		</td>
 	</tr>
@@ -447,7 +489,17 @@ function update_show_current () {
 	html_start_box("", "100%", "", "3", "center", "");
 
 	/* form the 'where' clause for our main sql query */
-	$sql_where = "WHERE ($table.name LIKE '%%" . get_request_var_request("filter") . "%%')";
+	if (strlen($_REQUEST['filter'])) {
+		$sql_where = "WHERE ($table.name LIKE '%%" . get_request_var_request("filter") . "%%')";
+	}
+
+	if ($_REQUEST['state'] > -3) {
+		if ($_REQUEST['state'] == 5) {
+			$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') . ' status IN(1,4)';
+		}else{
+			$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') . ' status=' . $_REQUEST['state'];
+		}
+	}
 
 	if (get_request_var_request("sort_column") == "version") {
 		$sortc = "version+0";
@@ -480,7 +532,7 @@ function update_show_current () {
 
 	db_execute("DROP TABLE $table");
 
-	$nav = html_nav_bar("plugins.php?filter=" . get_request_var_request("filter"), MAX_DISPLAY_PAGES, get_request_var_request("page"), $rows, $total_rows, 8, 'Plugins');
+	$nav = html_nav_bar("plugins.php?filter=" . get_request_var_request("filter"), MAX_DISPLAY_PAGES, get_request_var_request("page"), $rows, $total_rows, 8, 'Plugins', 'page', 'main');
 
 	print $nav;
 

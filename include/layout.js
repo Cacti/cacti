@@ -22,6 +22,7 @@
 */
 
 var theme;
+var myRefresh;
 
 /** basename - this function will return the basename
  *  of the php script called
@@ -295,7 +296,7 @@ function saveTableWidths(initial) {
 			}else{
 				var sizes = new Array();
 				$(this).find('th').each(function(data) {
-					sizes[i] = $(this).css('width');
+					sizes[i] = parseInt($(this).css('width'));
 					i++;
 				});
 
@@ -308,33 +309,33 @@ function saveTableWidths(initial) {
 }
 
 function applyTableSizing() {
-	saveTableWidths(true)
+	saveTableWidths(true);
 
 	$('.tableHeader th').resizable({
 		handles: 'e',
 
 		start: function(event, ui) {
-			colWidth     = $(this).width();
-			originalSize = ui.size.width;
-			originalSize = $(this).width();
+			colWidth     = parseInt($(this).width());
+			originalSize = parseInt(ui.size.width);
+			originalSize = parseInt($(this).width());
 		 },
  
 		resize: function(event, ui) {
-			var resizeDelta = ui.size.width - originalSize;
-			var newColWidth = colWidth + resizeDelta;
+			var resizeDelta = parseInt(ui.size.width - originalSize);
+			var newColWidth = parseInt(colWidth + resizeDelta);
 			$(this).css('height', 'auto');
 		},
 
 		stop: function(event, ui) {
-			//saveTableWidths(false);
+			saveTableWidths(false);
 		}
 	});
 }
 
 function setupPageTimeout() {
-	console.log('Page Timeout is :'+refreshMSeconds+', and going to Page :'+refreshPage);
-	var myrefresh = setTimeout(function() {
-		clearTimeout(myrefresh);
+	//console.log('Page Timeout is :'+refreshMSeconds+', and going to Page :'+refreshPage);
+	clearTimeout(myRefresh);
+	myRefresh = setTimeout(function() {
 		if (refreshIsLogout) {
 			document.location = refreshPage;
 		}else{

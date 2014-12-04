@@ -1110,13 +1110,42 @@ function graph() {
 	<script type="text/javascript">
 	<!--
 
-	function applyGraphsFilterChange() {
+	function applyFilter() {
 		strURL = '?host_id=' + $('#host_id').val();
 		strURL = strURL + '&rows=' + $('#rows').val();
+		strURL = strURL + '&page=' + $('#page').val();
 		strURL = strURL + '&filter=' + $('#filter').val();
 		strURL = strURL + '&template_id=' + $('#template_id').val();
-		document.location = strURL;
+		strURL = strURL + '&header=false';
+		$.get(strURL, function(data) {
+			$('#main').html(data);
+			applySkin();
+		});
 	}
+
+	function clearFilter() {
+		strURL = '?clear_x=1&header=false';
+		$.get(strURL, function(data) {
+			$('#main').html(data);
+			applySkin();
+		});
+	}
+
+
+	$(function() {
+		$('#refresh').click(function() {
+			applyFilter();
+		});
+
+		$('#clear').click(function() {
+			clearFilter();
+		});
+
+		$('#form_graphs').submit(function(event) {
+			event.preventDefault();
+			applyFilter();
+		});
+	});
 
 	-->
 	</script>
@@ -1133,14 +1162,14 @@ function graph() {
 	?>
 	<tr class='even noprint'>
 		<td>
-			<form name="form_graph_id" action="graphs.php">
+			<form id='form_graphs' name="form_graphs" action="graphs.php">
 			<table cellpadding="2" cellspacing="0">
 				<tr>
 					<td width="50">
 						Host:
 					</td>
 					<td width="1">
-						<select id='host_id' name='host_id' onChange="applyGraphsFilterChange()">
+						<select id='host_id' name='host_id' onChange="applyFilter()">
 							<option value="-1"<?php if (get_request_var_request("host_id") == "-1") {?> selected<?php }?>>Any</option>
 							<option value="0"<?php if (get_request_var_request("host_id") == "0") {?> selected<?php }?>>None</option>
 							<?php
@@ -1157,7 +1186,7 @@ function graph() {
 						Template:
 					</td>
 					<td width="1">
-						<select id='template_id' name='template_id' onChange='applyGraphsFilterChange()'>
+						<select id='template_id' name='template_id' onChange='applyFilter()'>
 							<option value="-1"<?php if (get_request_var_request("template_id") == "-1") {?> selected<?php }?>>Any</option>
 							<option value="0"<?php if (get_request_var_request("template_id") == "0") {?> selected<?php }?>>None</option>
 							<?php
@@ -1171,10 +1200,10 @@ function graph() {
 						</select>
 					</td>
 					<td>
-						<input type="submit" value="Go" title="Set/Refresh Filters">
+						<input type="button" id='refresh' value="Go" title="Set/Refresh Filters">
 					</td>
 					<td>
-						<input type="submit" name="clear_x" value="Clear" title="Clear Filters">
+						<input type="button" id='clear' name="clear_x" value="Clear" title="Clear Filters">
 					</td>
 				</tr>
 				<tr>
@@ -1188,7 +1217,7 @@ function graph() {
 						Graphs:
 					</td>
 					<td width="1">
-						<select id='rows' name='rows' onChange='applyGraphsFilterChange()'>
+						<select id='rows' name='rows' onChange='applyFilter()'>
 							<option value="-1"<?php if (get_request_var_request("rows") == "-1") {?> selected<?php }?>>Default</option>
 							<?php
 							if (sizeof($item_rows) > 0) {
@@ -1201,7 +1230,7 @@ function graph() {
 					</td>
 				</tr>
 			</table>
-			<input type='hidden' name='page' value='1'>
+			<input type='hidden' id='page' name='page' value='<?php print $_REQUEST['page'];?>'>
 			</form>
 		</td>
 	</tr>
@@ -1263,7 +1292,7 @@ function graph() {
 		ORDER BY " . $_REQUEST["sort_column"] . " " . get_request_var_request("sort_direction") .
 		" LIMIT " . (get_request_var_request("rows")*(get_request_var_request("page")-1)) . "," . get_request_var_request("rows"));
 
-	$nav = html_nav_bar("graphs.php?filter=" . get_request_var_request("filter") . "&host_id=" . get_request_var_request("host_id"), MAX_DISPLAY_PAGES, get_request_var_request("page"), get_request_var_request("rows"), $total_rows, 5, 'Graphs');
+	$nav = html_nav_bar("graphs.php?filter=" . get_request_var_request("filter") . "&host_id=" . get_request_var_request("host_id"), MAX_DISPLAY_PAGES, get_request_var_request("page"), get_request_var_request("rows"), $total_rows, 5, 'Graphs', 'page', 'main');
 
 	print $nav;
 
