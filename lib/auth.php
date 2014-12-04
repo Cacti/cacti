@@ -135,7 +135,7 @@ function user_remove($user_id) {
 	/* ==================================================== */
 
 	/* check for guest or template user */
-	$username = db_fetch_cell("select username from user_auth where id = " . $user_id);
+	$username = db_fetch_cell("SELECT username FROM user_auth WHERE id=" . $user_id);
 	if ($username != get_request_var_post("username")) {
 		if ($username == read_config_option("user_template")) {
 			raise_message(21);
@@ -147,11 +147,12 @@ function user_remove($user_id) {
 		}
 	}
 
-	db_execute("delete from user_auth where id=" . $user_id);
-	db_execute("delete from user_auth_realm where user_id=" . $user_id);
-	db_execute("delete from user_auth_perms where user_id=" . $user_id);
-	db_execute("delete from settings_graphs where user_id=" . $user_id);
-	db_execute("delete from settings_tree where user_id=" . $user_id);
+	db_execute("DELETE FROM user_auth WHERE id=" . $user_id);
+	db_execute("DELETE FROM user_auth_realm WHERE user_id=" . $user_id);
+	db_execute("DELETE FROM user_auth_perms WHERE user_id=" . $user_id);
+	db_execute("DELETE FROM user_auth_group_members WHERE user_id=" . $user_id);
+	db_execute("DELETE FROM settings_graphs WHERE user_id=" . $user_id);
+	db_execute("DELETE FROM settings_tree WHERE user_id=" . $user_id);
 
 	api_plugin_hook_function('user_remove', $user_id);
 }
@@ -163,7 +164,7 @@ function user_disable($user_id) {
 	input_validate_input_number($user_id);
 	/* ==================================================== */
 
-	db_execute("UPDATE user_auth SET enabled = '' where id=" . $user_id);
+	db_execute("UPDATE user_auth SET enabled='' WHERE id=" . $user_id);
 }
 
 /* user_enable - enable a user account
@@ -173,7 +174,7 @@ function user_enable($user_id) {
 	input_validate_input_number($user_id);
 	/* ==================================================== */
 
-	db_execute("UPDATE user_auth SET enabled = 'on' where id=" . $user_id);
+	db_execute("UPDATE user_auth SET enabled='on' WHERE id=" . $user_id);
 }
 
 

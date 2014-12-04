@@ -141,6 +141,23 @@ function form_actions() {
 
 		header("Location: user_admin.php?action=user_edit&tab=permste&id=" . get_request_var_post("id"));
 		exit;
+	}elseif (isset($_POST["associate_groups"])) {
+		while (list($var,$val) = each($_POST)) {
+			if (ereg("^chk_([0-9]+)$", $var, $matches)) {
+				/* ================= input validation ================= */
+				input_validate_input_number($matches[1]);
+				/* ==================================================== */
+
+				if (get_request_var_post("drp_action") == "1") {
+					db_execute("REPLACE INTO user_auth_group_members (user_id, group_id) VALUES (" . get_request_var_post("id") . "," . $matches[1] . ")");
+				}else{
+					db_execute("DELETE FROM user_auth_group_members WHERE user_id=" . get_request_var_post("id") . " AND group_id=" . $matches[1]);
+				}
+			}
+		}
+
+		header("Location: user_admin.php?action=user_edit&tab=permsgr&id=" . get_request_var_post("id"));
+		exit;
 	}elseif (isset($_POST["associate_tree"])) {
 		while (list($var,$val) = each($_POST)) {
 			if (ereg("^chk_([0-9]+)$", $var, $matches)) {
@@ -565,10 +582,113 @@ function perm_remove() {
 	header("Location: user_admin.php?action=user_edit&tab=graph_perms_edit&id=" . get_request_var_request("user_id"));
 }
 
+function get_permission_string(&$graph, &$policies) {
+	$grantStr = '';
+
+	if (read_config_option("graph_auth_method") == 1) {
+		$method = 'loose';
+	}else{
+		$method = 'strong';
+	}
+
+	$i = 1;
+	foreach($policies as $p) {
+		if ($p['policy_graphs'] == 1) {
+			if ($graph["user$i"] == '') {
+				$grantStr  = $grantStr . (strlen($grantStr) ? ', ':'') . 'Graph:(' . ucfirst($p['type']) . ($p['type'] != 'user' ? "/" . $p['name'] . ')':')');
+			}else{
+				$rejectStr = $rejectStr . (strlen($rejectStr) ? ', ':'') . 'Graph:(' . ucfirst($p['type']) . ($p['type'] != 'user' ? "/" . $p['name'] . ')':')');
+			}
+		}elseif ($graph["user$i"] != '') {
+			$grantStr = $grantStr . (strlen($grantStr) ? ', ':'') . 'Graph:(' . ucfirst($p['type']) . ($p['type'] != 'user' ? "/" . $p['name'] . ')':')');
+		}elseif ($method == 'loose') {
+			$reject++;
+		}else{
+			$rejectStr = $rejectStr . (strlen($rejectStr) ? ', ':'') . 'Graph:(' . ucfirst($p['type']) . ($p['type'] != 'user' ? "/" . $p['name'] . ')':')');
+		}
+		$i++;
+
+		$allowed = 0;
+		$reject  = 0;
+		if ($p['policy_hosts'] == 1) {
+			if ($graph["user$i"] == '') {
+				if ($method == 'loose') {
+					$grantStr = $grantStr . (strlen($grantStr) ? ', ':'') . 'Host:(' . ucfirst($p['type']) . ($p['type'] != 'user' ? "/" . $p['name'] . ')':')');
+				}else{
+					$allowed++;
+				}
+			}else{
+				$rejectStr = $rejectStr . (strlen($rejectStr) ? ', ':'') . 'Host:(' . ucfirst($p['type']) . ($p['type'] != 'user' ? "/" . $p['name'] . ')':')');
+			}
+		}elseif ($graph["user$i"] != '') {
+			if ($method == 'loose') {
+				$grantStr = $grantStr . (strlen($grantStr) ? ', ':'') . 'Host:(' . ucfirst($p['type']) . ($p['type'] != 'user' ? "/" . $p['name'] . ')':')');
+			}else{
+				$allowed++;
+			}
+		}elseif ($method == 'loose') {
+			$reject++;
+		}
+		$i++;
+
+		
+		if ($p['policy_graph_templates'] == 1) {
+			if ($graph["user$i"] == '') {
+				if ($method == 'loose') {
+					$grantStr = $grantStr . (strlen($grantStr) ? ', ':'') . 'Template:(' . ucfirst($p['type']) . ($p['type'] != 'user' ? "/" . $p['name'] . ')':')');
+				}else{
+					$allowed++;
+				}
+			}else{
+				$rejectStr = $rejectStr . (strlen($rejectStr) ? ', ':'') . 'Template:(' . ucfirst($p['type']) . ($p['type'] != 'user' ? "/" . $p['name'] . ')':')');
+			}
+		}elseif ($graph["user$i"] != '') {
+			if ($method == 'loose') {
+				$grantStr = $grantStr . (strlen($grantStr) ? ', ':'') . 'Template:(' . ucfirst($p['type']) . ($p['type'] != 'user' ? "/" . $p['name'] . ')':')');
+			}else{
+				$allowed++;
+			}
+		}elseif ($method == 'loose') {
+			$reject++;
+		}
+		$i++;
+
+		if ($method != 'loose') {
+			if ($allowed == 2) {
+				$grantStr = $grantStr . (strlen($grantStr) ? ', ':'') . 'Host+Template:(' . ucfirst($p['type']) . ($p['type'] != 'user' ? "/" . $p['name'] . ')':')');
+			}else{
+				$rejectStr = $rejectStr . (strlen($rejectStr) ? ', ':'') . 'Host+Template:(' . ucfirst($p['type']) . ($p['type'] != 'user' ? "/" . $p['name'] . ')':')');
+			}
+		}elseif ($reject == 3) {
+			$rejectStr = $rejectStr . (strlen($rejectStr) ? ', ':'') . 'Graph+Host+Template:(' . ucfirst($p['type']) . ($p['type'] != 'user' ? "/" . $p['name'] . ')':')');
+		}
+	}
+
+	$permStr = '';
+	if (strlen($grantStr)) {
+		$permStr = "<span style='color:green;font-weight:bold;'>Granted:</span> <span style='color:green;'>" . trim($grantStr,',') . "</span>";
+	}
+
+	if (strlen($rejectStr)) {
+		if ($grantStr == '') {
+			$permStr = "<span style='color:red;font-weight:bold;'>Restricted:</span> <span style='color:red;'>" . trim($rejectStr,',') . "</span>";
+		}else{
+			$permStr .= ", <span style='color:red;'>" . trim($rejectStr,',') . "</span>";
+		}
+	}
+
+	return $permStr;;
+}
+
 function graph_perms_edit($tab, $header_label) {
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var_request("id"));
 	/* ==================================================== */
+
+	$sql_where  = '';
+	$sql_join   = '';
+	$limit      = '';
+	$sql_having = '';
 
 	$policy_array = array(
 		1 => "Allow",
@@ -626,48 +746,125 @@ function graph_perms_edit($tab, $header_label) {
 			$rows = $_REQUEST["rows"];
 		}
 
-		/* form the 'where' clause for our main sql query */
-		if (strlen(get_request_var_request("filter"))) {
-			$sql_where = "WHERE (gtg.title_cache LIKE '%%" . get_request_var_request("filter") . "%%' AND gtg.local_graph_id>0)";
-		} else {
-			$sql_where = "WHERE (gtg.local_graph_id>0)";
-		}
-
-		if (get_request_var_request("graph_template_id") == "-1") {
-			/* Show all items */
-		}elseif (get_request_var_request("graph_template_id") == "0") {
-			$sql_where .= (strlen($sql_where) ? " AND ":"WHERE ") . " gtg.graph_template_id=0";
-		}elseif (!empty($_REQUEST["graph_template_id"])) {
-			$sql_where .= (strlen($sql_where) ? " AND ":"WHERE ") . " gtg.graph_template_id=" . get_request_var_request("graph_template_id");
-		}
-
-		if (get_request_var_request("associated") == "false") {
-			/* Show all items */
-		} else {
-			$sql_where .= (strlen($sql_where) ? " AND ":"WHERE ") . " (user_auth_perms.type=1 AND user_auth_perms.user_id=" . get_request_var_request("id", 0) . ")";
-		}
-
 		/* print checkbox form for validation */
 		print "<form name='chk' method='post' action='" . htmlspecialchars("user_admin.php?action=user_edit&tab=permsg&id=" . get_request_var_request("id")) . "'>\n";
 
 		html_start_box("", "100%", "", "3", "center", "");
 
-		$total_rows = db_fetch_cell("select
-			COUNT(gtg.id)
-			FROM graph_templates_graph AS gtg
-			LEFT JOIN user_auth_perms 
-			ON (gtg.local_graph_id=user_auth_perms.item_id AND user_auth_perms.type=1)
-			$sql_where");
+		$user = $_SESSION['sess_user_id'];
 
-		$sql_query = "SELECT gtg.local_graph_id, gtg.title_cache, user_auth_perms.user_id
-			FROM graph_templates_graph AS gtg
-			LEFT JOIN user_auth_perms 
-			ON (gtg.local_graph_id=user_auth_perms.item_id AND user_auth_perms.type=1)
-			$sql_where 
-			ORDER BY title_cache
-			LIMIT " . ($rows*(get_request_var_request("page")-1)) . "," . $rows;
+		if (read_config_option("graph_auth_method") == 1) {
+			$sql_operator = "OR";
+		}else{
+			$sql_operator = "AND";
+		}
 
-		$graphs = db_fetch_assoc($sql_query);
+		$limit = "LIMIT " . ($rows*(get_request_var_request("page")-1)) . "," . $rows;
+
+		/* get policies for all groups and user */
+		$policies   = db_fetch_assoc("SELECT uag.id, 'group' AS type, uag.name, 
+			policy_graphs, policy_hosts, policy_graph_templates 
+			FROM user_auth_group AS uag
+			INNER JOIN user_auth_group_members AS uagm
+			ON uag.id=uagm.group_id
+			WHERE uag.enabled='on' AND uagm.user_id=$user");
+		$policies[] = db_fetch_row("SELECT id, 'user' AS type, 'user' AS name, 
+			policy_graphs, policy_hosts, policy_graph_templates 
+			FROM user_auth WHERE id=$user");
+
+		//print "<pre>";print_r($policies);print "</pre>";exit;
+
+		/* form the 'where' clause for our main sql query */
+		if (strlen(get_request_var_request("filter"))) {
+			$sql_where = "WHERE (gtg.title_cache LIKE '%%" . get_request_var_request('filter') . "%%' AND gtg.local_graph_id>0)";
+		} else {
+			$sql_where = "WHERE (gtg.local_graph_id>0)";
+		}
+
+		if (get_request_var_request('graph_template_id') == '-1') {
+			/* Show all items */
+		}elseif (get_request_var_request('graph_template_id') == '0') {
+			$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') . ' gtg.graph_template_id=0';
+		}elseif (!empty($_REQUEST['graph_template_id'])) {
+			$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') . ' gtg.graph_template_id=' . get_request_var_request('graph_template_id');
+		}
+
+		$i = 1;
+		$user_perm = '';
+		foreach($policies as $policy) {
+			if ($policy['type'] == 'user' && $user_perm == '') {
+				$user_perm = $i;
+			}
+			if (get_request_var_request('associated') == 'false') {
+				if ($policy['policy_graphs'] == 1) {
+					$sql_having .= (strlen($sql_having) ? ' OR':'') . " (user$i IS NULL";
+				}else{
+					$sql_having .= (strlen($sql_having) ? ' OR':'') . " (user$i=" . $policy['id'];
+				}
+			}
+			$sql_join   .= 'LEFT JOIN user_auth_' . ($policy['type'] == 'user' ? '':'group_') . "perms AS uap$i ON (gl.id=uap$i.item_id AND uap$i.type=1) ";
+			$sql_select .= (strlen($sql_select) ? ', ':'') . "uap$i." . $policy['type'] . "_id AS user$i";
+			$i++;
+
+			if (get_request_var_request('associated') == 'false') {
+				if ($policy['policy_hosts'] == 1) {
+					$sql_having .= " OR (user$i IS NULL";
+				}else{
+					$sql_having .= " OR (user$i=" . $policy['id'];
+				}
+			}
+			$sql_join   .= 'LEFT JOIN user_auth_' . ($policy['type'] == 'user' ? '':'group_') . "perms AS uap$i ON (gl.host_id=uap$i.item_id AND uap$i.type=3) ";
+			$sql_select .= (strlen($sql_select) ? ', ':'') . "uap$i." . $policy['type'] . "_id AS user$i";
+			$i++;
+
+			if (get_request_var_request('associated') == 'false') {
+				if ($policy['policy_graph_templates'] == 1) {
+					$sql_having .= " $sql_operator user$i IS NULL))";
+				}else{
+					$sql_having .= " $sql_operator user$i=" . $policy['id'] . "))";
+				}
+			}
+			$sql_join   .= 'LEFT JOIN user_auth_' . ($policy['type'] == 'user' ? '':'group_') . "perms AS uap$i ON (gl.graph_template_id=uap$i.item_id AND uap$i.type=4) ";
+			$sql_select .= (strlen($sql_select) ? ', ':'') . "uap$i." . $policy['type'] . "_id AS user$i";
+			$i++;
+		}
+
+		if (strlen($sql_having)) {
+			$sql_having = 'HAVING ' . $sql_having;
+		}
+
+		$graphs = db_fetch_assoc("SELECT gtg.local_graph_id, h.description, gt.name AS template_name, 
+			gtg.title_cache, gtg.width, gtg.height, gl.snmp_index, gl.snmp_query_id,
+			$sql_select
+			FROM graph_templates_graph AS gtg 
+			INNER JOIN graph_local AS gl 
+			ON gl.id=gtg.local_graph_id 
+			LEFT JOIN graph_templates AS gt 
+			ON gt.id=gl.graph_template_id 
+			LEFT JOIN host AS h 
+			ON h.id=gl.host_id 
+			$sql_join
+			$sql_where
+			$sql_having
+			ORDER BY gtg.title_cache
+			$limit");
+
+		$total_rows = db_fetch_cell("SELECT COUNT(*)
+			FROM (
+				SELECT $sql_select
+				FROM graph_templates_graph AS gtg 
+				INNER JOIN graph_local AS gl 
+				ON gl.id=gtg.local_graph_id 
+				LEFT JOIN graph_templates AS gt 
+				ON gt.id=gl.graph_template_id 
+				LEFT JOIN host AS h 
+				ON h.id=gl.host_id 
+				$sql_join
+				$sql_where
+				$sql_having
+			) AS rows");
+
+		//print "<pre>";print_r($graphs);print "</pre>";
 
 		$nav = html_nav_bar("user_admin.php?action=user_edit&tab=permsg&id=" . get_request_var_request("id"), MAX_DISPLAY_PAGES, get_request_var_request("page"), $rows, $total_rows, 11, "Graphs", 'page', 'main');
 
@@ -682,19 +879,7 @@ function graph_perms_edit($tab, $header_label) {
 				form_alternate_row('line' . $g["local_graph_id"], true);
 				form_selectable_cell((strlen(get_request_var_request("filter")) ? preg_replace("/(" . preg_quote(get_request_var_request("filter")) . ")/i", "<span class='filteredValue'>\\1</span>", htmlspecialchars($g["title_cache"])) : htmlspecialchars($g["title_cache"])), $g["local_graph_id"]);
 				form_selectable_cell($g["local_graph_id"], $g["local_graph_id"]);
-				if (empty($g['user_id']) || $g['user_id'] == NULL) {
-					if ($policy['policy_graphs'] == 1) {
-						form_selectable_cell('<span style="color:green;font-weight:bold;">Access Granted</span>', $g['local_graph_id']);
-					}else{
-						form_selectable_cell('<span style="color:red;font-weight:bold;">Access Restricted</span>', $g['local_graph_id']);
-					}
-				} else {
-					if ($policy['policy_graphs'] == 1) {
-						form_selectable_cell('<span style="color:red;font-weight:bold;">Access Restricted</span>', $g['local_graph_id']);
-					}else{
-						form_selectable_cell('<span style="color:green;font-weight:bold;">Access Granted</span>', $g['local_graph_id']);
-					}
-				}
+				form_selectable_cell(get_permission_string($g, $policies), $g['local_graph_id']);
 				form_checkbox_cell($g["title_cache"], $g["local_graph_id"]);
 				form_end_row();
 			}
@@ -722,6 +907,98 @@ function graph_perms_edit($tab, $header_label) {
 				2 => "Revoke Access"
 			);
 		}
+
+		/* draw the dropdown containing a list of available actions for this form */
+		draw_actions_dropdown($assoc_actions);
+
+		print "</form>";
+
+		break;
+	case 'permsgr':
+		process_group_request_vars();
+
+		group_filter($header_label);
+
+		/* if the number of rows is -1, set it to the default */
+		if ($_REQUEST["rows"] == -1) {
+			$rows = read_config_option("num_rows_table");
+		}else{
+			$rows = $_REQUEST["rows"];
+		}
+
+		/* form the 'where' clause for our main sql query */
+		/* form the 'where' clause for our main sql query */
+		if (strlen(get_request_var_request("filter"))) {
+			$sql_where = "WHERE ((uag.name LIKE '%" . get_request_var_request("filter") . "%') OR (uag.description LIKE '%" . get_request_var_request("filter") . "%'))";
+		} else {
+			$sql_where = "";
+		}
+
+		if (get_request_var_request("associated") != "false") {
+			/* Show all items */
+		} else {
+			$sql_where .= (strlen($sql_where) ? " AND ":"WHERE ") . " uagm.user_id=" . get_request_var_request("id", 0);
+		}
+
+		/* print checkbox form for validation */
+		print "<form name='chk' method='post' action='" . htmlspecialchars("user_admin.php?action=user_edit&tab=permsd&id=" . get_request_var_request("id")) . "'>\n";
+
+		html_start_box("", "100%", "", "3", "center", "");
+
+		$total_rows = db_fetch_cell("SELECT
+			COUNT(uag.id)
+			FROM user_auth_group AS uag
+			LEFT JOIN user_auth_group_members AS uagm
+			ON uag.id=uagm.group_id
+			$sql_where");
+
+		$sql_query = "SELECT uag.*, uagm.user_id
+			FROM user_auth_group AS uag
+			LEFT JOIN user_auth_group_members AS uagm
+			ON uag.id=uagm.group_id
+			$sql_where 
+			ORDER BY name
+			LIMIT " . ($rows*(get_request_var_request("page")-1)) . "," . $rows;
+
+		$groups = db_fetch_assoc($sql_query);
+
+		$nav = html_nav_bar("user_admin.php?action=user_edit&tab=permsgr&id=" . get_request_var_request("id"), MAX_DISPLAY_PAGES, get_request_var_request("page"), $rows, $total_rows, 11, "Hosts", 'page', 'main');
+	
+		print $nav;
+
+		$display_text = array("Name", "Description", "Member", "ID", "Policies (Graph/Host/Template)", "Enabled");
+
+		html_header_checkbox($display_text, false);
+
+		if (sizeof($groups)) {
+			foreach ($groups as $g) {
+				form_alternate_row('line' . $g["id"], true);
+				form_selectable_cell("<a class='linkEditMain' href='user_group_admin.php?action=edit&id=" . $g['id'] . "'>" . (strlen(get_request_var_request("filter")) ? preg_replace("/(" . preg_quote(get_request_var_request("filter")) . ")/i", "<span class='filteredValue'>\\1</span>", htmlspecialchars($g["name"])) : htmlspecialchars($g["name"])) . "</a>", $g["id"]);
+				form_selectable_cell((strlen(get_request_var_request("filter")) ? preg_replace("/(" . preg_quote(get_request_var_request("filter")) . ")/i", "<span class='filteredValue'>\\1</span>", htmlspecialchars($g["description"])) : htmlspecialchars($g["description"])), $g["id"]);
+				form_selectable_cell($g["user_id"] > 0 ? 'Member':'Non Member', $g["id"]);
+				form_selectable_cell(($g["id"]), $g["id"]);
+				form_selectable_cell(($g['policy_graphs'] == 1 ? 'ALLOW':'DENY') . '/' . ($g['policy_hosts'] == 1 ? 'ALLOW':'DENY') . '/' . ($g['policy_graph_templates'] == 1 ? 'ALLOC':'DENY'), $g["id"]);
+				form_selectable_cell($g['enabled'] == 'on' ? 'Enabled':'Disabled', $g['id']);
+				form_checkbox_cell($g["name"], $g["id"]);
+				form_end_row();
+			}
+	
+			/* put the nav bar on the bottom as well */
+			print $nav;
+		} else {
+			print "<tr><td><em>No Matching User Groups Found</em></td></tr>";
+		}
+		html_end_box(false);
+
+		form_hidden_box("action", "user_edit", "");
+		form_hidden_box("tab",$tab,"");
+		form_hidden_box("id", get_request_var_request("id"), "");
+		form_hidden_box("associate_groups", "1", "");
+
+		$assoc_actions = array(
+			1 => "Assign Membership",
+			2 => "Remove Membership"
+		);
 
 		/* draw the dropdown containing a list of available actions for this form */
 		draw_actions_dropdown($assoc_actions);
@@ -876,13 +1153,6 @@ function graph_perms_edit($tab, $header_label) {
 		draw_actions_dropdown($assoc_actions);
 
 		print "</form>";
-
-		/* if the number of rows is -1, set it to the default */
-		if ($_REQUEST["rows"] == -1) {
-			$rows = read_config_option("num_rows_table");
-		}else{
-			$rows = $_REQUEST["rows"];
-		}
 
 		break;
 	case 'permste':
@@ -1427,6 +1697,7 @@ function user_edit() {
 	$tabs = array(
 		"general" => "General",
 		"realms" => "Realm Perms",
+		"permsgr" => "Group Membership",
 		"permsg" => "Graph Perms",
 		"permsd" => "Device Perms",
 		"permste" => "Template Perms",
@@ -1434,13 +1705,9 @@ function user_edit() {
 		"settings" => "Graph Settings"
 	);
 
-//	if (!empty($_REQUEST['id']) && !ugroup_user_console_authorized($_REQUEST['id'])) {
-//		unset($fields_user_user_edit_host["login_opts"]["items"][1]);
-//	}
-
-    /* set the default tab */
-    load_current_session_value("tab", "sess_user_admin_tab", "general");
-    $current_tab = $_REQUEST["tab"];
+	/* set the default tab */
+	load_current_session_value("tab", "sess_user_admin_tab", "general");
+	$current_tab = $_REQUEST["tab"];
 
 	if (!empty($_REQUEST["id"])) {
 		$user = db_fetch_row("SELECT * FROM user_auth WHERE id = " . get_request_var_request("id"));
@@ -1492,6 +1759,7 @@ function user_edit() {
 		break;
 	case 'permsg':
 	case 'permsd':
+	case 'permsgr':
 	case 'permste':
 	case 'permstr':
 		graph_perms_edit($current_tab, $header_label);
@@ -1754,6 +2022,66 @@ function process_graph_request_vars() {
     load_current_session_value("associated", "sess_uag_associated", "true");
     load_current_session_value("graph_template_id", "sess_uad_graph_template_id", "-1");
     load_current_session_value("rows", "sess_default_rows", read_config_option('num_rows_table'));
+}
+
+function process_group_request_vars() {
+	/* ================= input validation ================= */
+	input_validate_input_number(get_request_var_request("rows"));
+	input_validate_input_number(get_request_var_request("page"));
+	/* ==================================================== */
+
+	/* clean up search string */
+	if (isset($_REQUEST["filter"])) {
+		$_REQUEST["filter"] = sanitize_search_string(get_request_var_request("filter"));
+	}
+
+	/* clean up sort solumn */
+	if (isset($_REQUEST['sort_column'])) {
+		$_REQUEST['sort_column'] = sanitize_search_string(get_request_var_request('sort_column'));
+	}
+
+	/* clean up sort direction */
+	if (isset($_REQUEST['sort_direction'])) {
+		$_REQUEST['sort_direction'] = sanitize_search_string(get_request_var_request('sort_direction'));
+	}
+
+	/* clean up associated */
+	if (isset($_REQUEST['associated'])) {
+		$_REQUEST['associated'] = sanitize_search_string(get_request_var_request('associated'));
+	}
+
+	/* if the user pushed the 'clear' button */
+	if (isset($_REQUEST["clearf"])) {
+		kill_session_var("sess_uagr_page");
+		kill_session_var("sess_default_rows");
+		kill_session_var("sess_uagr_filter");
+		kill_session_var("sess_uagr_associated");
+		kill_session_var("sess_uagr_sort_column");
+		kill_session_var("sess_uagr_sort_direction");
+
+		unset($_REQUEST["page"]);
+		unset($_REQUEST["rows"]);
+		unset($_REQUEST["filter"]);
+		unset($_REQUEST["associated"]);
+		unset($_REQUEST["sort_column"]);
+		unset($_REQUEST["sort_direction"]);
+	}else{
+		$changed = 0;
+		$changed += check_changed('rows', 'sess_default_rows');
+		$changed += check_changed('filter', 'sess_uagr_filter');
+		$changed += check_changed('associated', 'sess_uagr_associated');
+		$changed += check_changed('sort_column', 'sess_uagr_sort_column');
+		$changed += check_changed('sort_direction', 'sess_uagr_sort_direction');
+		if ($changed) {
+			$_REQUEST['page'] = '1';
+		}
+	}
+
+	/* remember these search fields in session vars so we don't have to keep passing them around */
+	load_current_session_value("page", "sess_uagr_page", "1");
+	load_current_session_value("filter", "sess_uagr_filter", "");
+	load_current_session_value("associated", "sess_uagr_associated", "true");
+	load_current_session_value("rows", "sess_default_rows", read_config_option('num_rows_table'));
 }
 
 function process_device_request_vars() {
@@ -2022,7 +2350,7 @@ function graph_filter($header_label) {
 						<input type='checkbox' name='associated' id='associated' onChange='applyFilterChange(document.forms)' <?php print ($_REQUEST['associated'] == 'true' || $_REQUEST['associated'] == 'on' ? 'checked':'');?>>
 					</td>
 					<td>
-						<label style='white-space:nowrap;' for='associated'>Show Exceptions</label>
+						<label style='white-space:nowrap;' for='associated'>Show All</label>
 					</td>
 					<td nowrap>
 						<input type="button" value="Go" onClick='applyFilterChange(document.forms)' title="Set/Refresh Filters">
@@ -2035,6 +2363,84 @@ function graph_filter($header_label) {
 			<input type='hidden' name='page' value='1'>
 			<input type='hidden' name='action' value='user_edit'>
 			<input type='hidden' name='tab' value='permsg'>
+			<input type='hidden' name='id' value='<?php print get_request_var_request('id');?>'>
+		</form>
+		</td>
+	</tr>
+	<?php
+
+	html_end_box();
+}
+
+function group_filter($header_label) {
+	global $config, $item_rows;
+
+	?>
+	<script type="text/javascript">
+	<!--
+
+	function applyFilterChange(objForm) {
+		strURL = '?action=user_edit&tab=permsgr&id=<?php print get_request_var_request('id');?>'
+		strURL = strURL + '&rows=' + objForm.rows.value;
+		strURL = strURL + '&associated=' + objForm.associated.checked;
+		strURL = strURL + '&filter=' + objForm.filter.value;
+		document.location = strURL;
+	}
+
+	function clearFilterChange(objForm) {
+		strURL = '?action=user_edit&tab=permsgr&id=<?php print get_request_var_request('id');?>&clearf=true'
+		document.location = strURL;
+	}
+
+	-->
+	</script>
+	<?php
+
+	html_start_box("<strong>Group Membership</strong> " . htmlspecialchars($header_label), "100%", "", "3", "center", "");
+
+	?>
+	<tr class='even'>
+		<td>
+		<form name="forms" method="post" action="user_admin.php">
+			<table cellpadding="2" cellspacing="0">
+				<tr>
+					<td>
+						Search:
+					</td>
+					<td>
+						<input type="text" name="filter" size="20" value="<?php print htmlspecialchars(get_request_var_request("filter"));?>" onChange="applyFilterChange(document.forms)">
+					</td>
+					<td>
+						Groups:
+					</td>
+					<td width="1">
+						<select name="rows" onChange="applyFilterChange(document.forms)">
+							<?php
+							if (sizeof($item_rows) > 0) {
+								foreach ($item_rows as $key => $value) {
+									print "<option value='" . $key . "'"; if (get_request_var_request("rows") == $key) { print " selected"; } print ">" . htmlspecialchars($value) . "</option>\n";
+								}
+							}
+							?>
+						</select>
+					</td>
+					<td>
+						<input type='checkbox' name='associated' id='associated' onChange='applyFilterChange(document.forms)' <?php print ($_REQUEST['associated'] == 'true' || $_REQUEST['associated'] == 'on' ? 'checked':'');?>>
+					</td>
+					<td>
+						<label style='white-space:nowrap;' for='associated'>Show All</label>
+					</td>
+					<td>
+						<input type="button" value="Go" onClick='applyFilterChange(document.forms)' title="Set/Refresh Filters">
+					</td>
+					<td>
+						<input type="button" name="clearf" value="Clear" onClick='clearFilterChange(document.forms)' title="Clear Filters">
+					</td>
+				</tr>
+			</table>
+			<input type='hidden' name='page' value='1'>
+			<input type='hidden' name='action' value='user_edit'>
+			<input type='hidden' name='tab' value='permsgr'>
 			<input type='hidden' name='id' value='<?php print get_request_var_request('id');?>'>
 		</form>
 		</td>
