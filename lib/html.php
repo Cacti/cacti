@@ -31,10 +31,20 @@
    @arg $add_text - the url to use when the user clicks 'Add' in the upper-right
      corner of the box ("" for no 'Add' link) */
 function html_start_box($title, $width, $background_color, $cell_padding, $align, $add_text, $add_label = 'Add') {
-	static $table_id = 1;
+	static $table_suffix = 1;
+
+	$table_prefix = basename($_SERVER['PHP_SELF'], '.php');;
+	if (isset($_REQUEST['report']) && $_REQUEST['report'] != '') {
+		$table_prefix .= '_' . $_REQUEST['report'];
+	} elseif (isset($_REQUEST['tab']) && $_REQUEST['tab'] != '') {
+		$table_prefix .= '_' . $_REQUEST['tab'];
+	} elseif (isset($_REQUEST['action']) && $_REQUEST['action'] != '') {
+		$table_prefix .= '_' . $_REQUEST['action'];
+	}
+	$table_id = $table_prefix . $table_suffix;
 
 	?>
-	<table id='cactiTable<?php print $table_id;?>' align="<?php print $align;?>" width="<?php print $width;?>" cellpadding=0 cellspacing=0 border=0 class="cactiTable">
+	<table id='<?php print $table_id;?>' align="<?php print $align;?>" width="<?php print $width;?>" cellpadding=0 cellspacing=0 border=0 class="cactiTable">
 		<tr>
 			<td>
 				<?php if ($title != "") {?>
@@ -49,7 +59,7 @@ function html_start_box($title, $width, $background_color, $cell_padding, $align
 				<table class='cactiTable' cellpadding=<?php print $cell_padding;?> cellspacing=0 border=0 width="100%">
 	<?php
 
-	$table_id++;
+	$table_suffix++;
 }
 
 /* html_end_box - draws the end of an HTML box
@@ -821,17 +831,19 @@ function draw_menu($user_menu = "") {
 			}
 		});
 
-//		$('.pic').click(function(event) {
-//			event.preventDefault();
-//			href = $(this).attr('href');
-//			href = href+ (href.indexOf('?') > 0 ? '&':'?') + 'header=false';
-//			$.get(href, function(data) {
-//				$('#main').html(data);
-//				applySkin();
-//			});
-//		});
+		<?php if (read_config_option('legacy_menu_nav') != 'on') { ?>
 
-	<?php }?>
+		$('.pic').click(function(event) {
+			event.preventDefault();
+			href = $(this).attr('href');
+			href = href+ (href.indexOf('?') > 0 ? '&':'?') + 'header=false';
+			$.get(href, function(data) {
+				$('#main').html(data);
+				applySkin();
+			});
+		});
+
+	<?php }}?>
 		$('#menu').show();
 	});
 	</script>
@@ -1000,7 +1012,7 @@ function html_show_tabs_left($show_console_tab) {
 			$i++;
 		}
 
-		print "<div class='tabs'><nav><ul>\n";
+		print "<div class='maintabs'><nav><ul>\n";
 		foreach($tabs_left as $tab) {
 			print "<li><a class='" . (isset($tab['selected']) ? 'selected':'') . "' href='" . $tab['url'] . "'>" . $tab['title'] . "</a></li>\n";
 		}

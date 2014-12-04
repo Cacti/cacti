@@ -326,6 +326,12 @@ $settings = array(
 			"default" => "",
 			"method" => "checkbox",
 			),
+		"legacy_menu_nav" => array(
+			"friendly_name" => "Use Legacy Menu Navigation",
+			"description" => "If you have plugins that are not fully converted to Cacti's new approach to rendering content, enable this option.  <b>Note:</b> It will be removed in a future release.",
+			"default" => "on",
+			"method" => "checkbox",
+			),
 		),
 	"export" => array(
 		"export_hdr_general" => array(
