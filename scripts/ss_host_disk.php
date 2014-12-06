@@ -108,4 +108,3 @@ function ss_host_disk_reindex($arr) {
 	return $return_arr;
 }
 
-?>

@@ -134,4 +134,3 @@ function ss_host_cpu_reindex($arr) {
 	return $return_arr;
 }
 
-?>
