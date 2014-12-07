@@ -99,8 +99,6 @@ function form_save() {
 
 	/* reset local settings cache so the user sees the new settings */
 	kill_session_var("sess_graph_config_array");
-
-	header("Location: " . $_SESSION["graph_settings_referer"] . (strstr($_SESSION["graph_settings_referer"], '?') ? '&':'?') . 'header=false');
 }
 
 /* --------------------------
@@ -176,6 +174,7 @@ function settings() {
 	}
 
 	html_end_box();
+
 	?>
 	<script type="text/javascript">
 	<!--
@@ -238,10 +237,10 @@ function settings() {
 
 		$('input[value="Save"]').click(function(event) {
 			event.preventDefault();
+			href='<?php  print $_SERVER['HTTP_REFERER'];?>';
+			href=href+(href.indexOf('?') > 0 ? '&':'?')+'header=false';
 			$.post('graph_settings.php?header=false', $('input, select, textarea').serialize()).done(function(data) {
-				$('#main').html(data);
-				applySkin();
-				window.scrollTo(0,0);
+				document.location='<?php  print $_SERVER['HTTP_REFERER'];?>';
 			});
 		});
 	});

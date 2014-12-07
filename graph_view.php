@@ -368,6 +368,8 @@ case 'preview':
 
 	$(function(data) {
 		$('#navigation_right').show();
+
+		$('#message').show().delay(2000).slideUp('fast');
 	});
 
 	</script>
@@ -785,11 +787,12 @@ case 'list':
 	<script type='text/javascript'>
 	<!--
 	var graph_list_array = new Array(<?php print $_REQUEST['graph_list'];?>);
-	console.log('<?php print $_REQUEST['graph_list'];?>');
 
 	$(function() {
 		$('#navigation_right').show();
 		initializeChecks();
+
+		$('#message').show().delay(2000).slideUp('fast');
 	});
 
 	function clearFilter() {
