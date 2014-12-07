@@ -583,7 +583,8 @@ function perm_remove() {
 }
 
 function get_permission_string(&$graph, &$policies) {
-	$grantStr = '';
+	$grantStr  = '';
+	$rejectStr = '';
 
 	if (read_config_option("graph_auth_method") == 1) {
 		$method = 'loose';
@@ -791,6 +792,7 @@ function graph_perms_edit($tab, $header_label) {
 
 		$i = 1;
 		$user_perm = '';
+		$sql_select = '';
 		foreach($policies as $policy) {
 			if ($policy['type'] == 'user' && $user_perm == '') {
 				$user_perm = $i;

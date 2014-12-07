@@ -398,7 +398,7 @@ function is_realm_allowed($realm) {
 	return isset($_SESSION['sess_user_realms']);
 }
 
-function get_allowed_tree_content($tree_id, $sql_where = '', $order_by = '', $limit = '', &$total_rows, $user = 0) {
+function get_allowed_tree_content($tree_id, $sql_where = '', $order_by = '', $limit = '', &$total_rows = 0, $user = 0) {
 	if ($limit != '') {
 		$limit = "LIMIT $limit";
 	}
@@ -418,7 +418,6 @@ function get_allowed_tree_content($tree_id, $sql_where = '', $order_by = '', $li
 		FROM graph_tree_items AS gti
 		LEFT JOIN host AS h
 		ON h.id=gti.host_id
-		$sql_join
 		$sql_where
 		AND gti.local_graph_id = 0
 		ORDER BY gti.order_key");
@@ -812,7 +811,7 @@ function get_allowed_devices($sql_where = '', $order_by = 'description', $limit 
 		$order_by = "ORDER BY $order_by";
 	}
 
-	if ($graph_id > 0) {
+	if ($host_id > 0) {
 		$sql_where .= (strlen($sql_where) ? ' AND ':' ') . " gl.host_id=$host_id";
 	}
 
@@ -934,7 +933,7 @@ function get_allowed_graph_templates($sql_where = '', $order_by = 'name', $limit
 		$order_by = "ORDER BY $order_by";
 	}
 
-	if ($graph_id > 0) {
+	if ($graph_template_id > 0) {
 		$sql_where .= (strlen($sql_where) ? ' AND ':' ') . " gl.graph_template_id=$graph_template_id";
 	}
 

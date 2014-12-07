@@ -488,6 +488,8 @@ function update_show_current () {
 
 	html_start_box("", "100%", "", "3", "center", "");
 
+	$sql_where = '';
+
 	/* form the 'where' clause for our main sql query */
 	if (strlen($_REQUEST['filter'])) {
 		$sql_where = "WHERE ($table.name LIKE '%%" . get_request_var_request("filter") . "%%')";

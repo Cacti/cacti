@@ -162,11 +162,6 @@ case 'preview':
 		$_REQUEST['page'] = 1;
 	}
 
-	/* reset the page counter to '1' if a search in initiated */
-	if (isset($_REQUEST['filter'])) {
-		$_REQUEST['page'] = '1';
-	}
-
 	/* if the user pushed the 'clear' button */
 	if (isset($_REQUEST['clear_x']) || isset($_REQUEST['style'])) {
 		kill_session_var('sess_graph_view_current_page');
@@ -304,7 +299,7 @@ case 'preview':
 						Search:
 					</td>
 					<td>
-						<input type='text' name='filter' size='40' value='<?php print htmlspecialchars(get_request_var_request('filter'));?>'>
+						<input type='text' id='filter' name='filter' size='40' value='<?php print htmlspecialchars(get_request_var_request('filter'));?>'>
 					</td>
 					<td>
 						<input type='button' value='Go' title='Set/Refresh Filters' onClick='applyGraphPreviewFilterChange();return false;'>
@@ -327,7 +322,7 @@ case 'preview':
 
 	function applyGraphPreviewFilterChange() {
 		$.get('graph_view.php?action=preview&header=false'+
-			'&flter='+$('#filter').val()+'&host_id='+$('#host_id').val()+'&columns='+$('#columns').val()+
+			'&filter='+$('#filter').val()+'&host_id='+$('#host_id').val()+'&columns='+$('#columns').val()+
 			'&rows='+$('#rows').val()+'&graph_template_id='+$('#graph_template_id').val()+
 			'&thumbnails='+$('#thumbnails').is(':checked'), function(data) {
 			$('#main').html(data);
@@ -517,7 +512,7 @@ case 'preview':
 
 	$total_rows = 0;
 
-	$sql_where  = (strlen($_REQUEST['filter']) ? "'gtg.title_cache LIKE '%%" . get_request_var_request('filter') . "%%'":"");
+	$sql_where  = (strlen($_REQUEST['filter']) ? "gtg.title_cache LIKE '%%" . get_request_var_request('filter') . "%%'":"");
 	$sql_where .= (strlen($sql_or) && strlen($sql_where) ? ' AND ':'') . $sql_or;
 	$sql_where .= ($_REQUEST['host_id'] > 0 ? (strlen($sql_where) ? ' AND':'') . " gl.host_id=" . $_REQUEST['host_id']:"");
 	$sql_where .= ($_REQUEST['graph_template_id'] > 0 ? (strlen($sql_where) ? ' AND':'') . "gl.graph_template_id=" . $_REQUEST['graph_template_id']:"");
