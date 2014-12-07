@@ -163,4 +163,4 @@ $page_title = api_plugin_hook_function('page_title', draw_navigation_text("title
 			<?php grow_dhtml_trees();?>
 		</td>
 		<?php } ?>
-		<td id='navigation_right' class='cactiGraphContentArea' valign="top" style='display:none;'><div style='position:static;' id='main'>
+		<td id='navigation_right' class='cactiGraphContentArea' valign="top" style='display:none;'><div style='display:none;' id='message' class='textInfo messageBox'></div><div style='position:static;' id='main'>

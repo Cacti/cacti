@@ -95,10 +95,12 @@ function form_save() {
 		}
 	}
 
+	raise_message(1);
+
 	/* reset local settings cache so the user sees the new settings */
 	kill_session_var("sess_graph_config_array");
 
-	header("Location: " . $_SESSION["graph_settings_referer"]);
+	header("Location: " . $_SESSION["graph_settings_referer"] . (strstr($_SESSION["graph_settings_referer"], '?') ? '&':'?') . 'header=false');
 }
 
 /* --------------------------
@@ -223,6 +225,25 @@ function settings() {
 
 	$(function() {
 		graphSettings();
+
+		var message = "<?php print display_output_messages();?>";
+
+		if (message != '') {
+			$('#message').replaceWith(message).show().delay(2000).slideUp('fast');
+			window.scrollTo(0,0);
+		}
+
+		$('#navigation').show();
+		$('#navigation_right').show();
+
+		$('input[value="Save"]').click(function(event) {
+			event.preventDefault();
+			$.post('graph_settings.php?header=false', $('input, select, textarea').serialize()).done(function(data) {
+				$('#main').html(data);
+				applySkin();
+				window.scrollTo(0,0);
+			});
+		});
 	});
 
 	-->
