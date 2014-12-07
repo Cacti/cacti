@@ -73,7 +73,7 @@ case 'save':
 	/* reset local settings cache so the user sees the new settings */
 	kill_session_var("sess_config_array");
 
-	header("Location: settings.php?tab=" . $_POST["tab"]);
+	header("Location: settings.php?header=false&tab=" . $_POST["tab"]);
 	break;
 default:
 	top_header();
@@ -93,7 +93,7 @@ default:
 
 	if (sizeof($tabs) > 0) {
 	foreach (array_keys($tabs) as $tab_short_name) {
-		print "<li><a " . (($tab_short_name == $current_tab) ? "class='selected'" : "class=''") . " href='" . htmlspecialchars("settings.php?tab=$tab_short_name") . "'>$tabs[$tab_short_name]</a></li>\n";
+		print "<li class='subTab'><a " . (($tab_short_name == $current_tab) ? "class='selected'" : "class=''") . " href='" . htmlspecialchars("settings.php?tab=$tab_short_name") . "'>$tabs[$tab_short_name]</a></li>\n";
 	}
 	}
 
@@ -140,6 +140,33 @@ default:
 
 	?>
 	<script type='text/javascript'>
+	$(function() {
+		var message = "<?php print display_output_messages();?>";
+
+		if (message != '') {
+			$('#message').replaceWith(message).show().delay(2000).slideUp('fast');
+			window.scrollTo(0,0);
+		}
+
+		$('.subTab').find('a').click(function(event) {
+			event.preventDefault();
+			href = $(this).attr('href');
+			href = href+ (href.indexOf('?') > 0 ? '&':'?') + 'header=false';
+			$.get(href, function(data) {
+				$('#main').html(data);
+				applySkin();
+			});
+		});
+
+		$('input[value="Save"]').click(function(event) {
+			event.preventDefault();
+			$.post('settings.php?tab='+$('#tab').val()+'&header=false', $('input, select, textarea').serialize()).done(function(data) {
+				$('#main').html(data);
+				applySkin();
+			});
+		});
+	});
+
 	if ($('#row_font_method')) {
 		initFonts();
 		$('#font_method').change(function() {

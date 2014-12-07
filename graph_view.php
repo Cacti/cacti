@@ -515,7 +515,7 @@ case 'preview':
 	$sql_where  = (strlen($_REQUEST['filter']) ? "gtg.title_cache LIKE '%%" . get_request_var_request('filter') . "%%'":"");
 	$sql_where .= (strlen($sql_or) && strlen($sql_where) ? ' AND ':'') . $sql_or;
 	$sql_where .= ($_REQUEST['host_id'] > 0 ? (strlen($sql_where) ? ' AND':'') . " gl.host_id=" . $_REQUEST['host_id']:"");
-	$sql_where .= ($_REQUEST['graph_template_id'] > 0 ? (strlen($sql_where) ? ' AND':'') . "gl.graph_template_id=" . $_REQUEST['graph_template_id']:"");
+	$sql_where .= ($_REQUEST['graph_template_id'] > 0 ? (strlen($sql_where) ? ' AND':'') . " gl.graph_template_id=" . $_REQUEST['graph_template_id']:"");
 
 	$limit      = ($_REQUEST['rows']*($_REQUEST['page']-1)) . ',' . $_REQUEST['rows'];
 	$order      = 'gtg.title_cache';
