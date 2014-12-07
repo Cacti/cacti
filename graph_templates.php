@@ -523,7 +523,7 @@ function template() {
 		</form>
 		<script type='text/javascript'>
 		function applyFilter() {
-			strURL = '?filter='+$('#filter').val()+'&rows='+$('#rows').val()+'&page='+$('#page').val()+'&header=false';
+			strURL = 'graph_templates.php?filter='+$('#filter').val()+'&rows='+$('#rows').val()+'&page='+$('#page').val()+'&header=false';
 			$.get(strURL, function(data) {
 				$('#main').html(data);
 				applySkin();
@@ -531,7 +531,7 @@ function template() {
 		}
 
 		function clearFilter() {
-			strURL = '?clear_x=1&header=false';
+			strURL = 'graph_templates.php?clear_x=1&header=false';
 			$.get(strURL, function(data) {
 				$('#main').html(data);
 				applySkin();

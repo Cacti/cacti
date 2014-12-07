@@ -312,6 +312,7 @@ function grow_dhtml_trees() {
 			}
 
 			$('#navigation').show();
+			$('#navigation_right').show();
 		})
 		.on('set_state.jstree', function(e, data) {
 			$('#jstree').jstree('deselect_all');

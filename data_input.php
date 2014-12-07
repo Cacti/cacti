@@ -553,7 +553,7 @@ function data() {
 		</form>
 		<script type='text/javascript'>
 		function applyFilter() {
-			strURL = '?filter='+$('#filter').val()+'&rows='+$('#rows').val()+'&page='+$('#page').val()+'&header=false';
+			strURL = 'data_input.php?filter='+$('#filter').val()+'&rows='+$('#rows').val()+'&page='+$('#page').val()+'&header=false';
 			$.get(strURL, function(data) {
 				$('#main').html(data);
 				applySkin();
@@ -561,7 +561,7 @@ function data() {
 		}
 
 		function clearFilter() {
-			strURL = '?clear_x=1&header=false';
+			strURL = 'data_input.php?clear_x=1&header=false';
 			$.get(strURL, function(data) {
 				$('#main').html(data);
 				applySkin();

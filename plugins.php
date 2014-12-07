@@ -390,7 +390,7 @@ function update_show_current () {
 	?>
 	<script type="text/javascript">
 	function applyFilter() {
-		strURL = '?filter='+$('#filter').val()+'&rows='+$('#rows').val()+'&page='+$('#page').val()+'&state='+$('#state').val()+'&header=false';
+		strURL = 'plugins.php?filter='+$('#filter').val()+'&rows='+$('#rows').val()+'&page='+$('#page').val()+'&state='+$('#state').val()+'&header=false';
 		$.get(strURL, function(data) {
 			$('#main').html(data);
 			applySkin();
@@ -398,7 +398,7 @@ function update_show_current () {
 	}
 
 	function clearFilter() {
-		strURL = '?clear_x=1&header=false';
+		strURL = 'plugins.php?clear_x=1&header=false';
 		$.get(strURL, function(data) {
 			$('#main').html(data);
 			applySkin();

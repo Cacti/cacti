@@ -543,7 +543,7 @@ function cdef() {
 			</form>
 			<script type='text/javascript'>
 			function applyFilter() {
-				strURL = '?filter='+$('#filter').val()+'&rows='+$('#rows').val()+'&page='+$('#page').val()+'&header=false';
+				strURL = 'cdef.php?filter='+$('#filter').val()+'&rows='+$('#rows').val()+'&page='+$('#page').val()+'&header=false';
 				$.get(strURL, function(data) {
 					$('#main').html(data);
 					applySkin();
@@ -551,7 +551,7 @@ function cdef() {
 			}
 
 			function clearFilter() {
-				strURL = '?clear_x=1&header=false';
+				strURL = 'cdef.php?clear_x=1&header=false';
 				$.get(strURL, function(data) {
 					$('#main').html(data);
 					applySkin();

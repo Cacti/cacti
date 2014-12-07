@@ -31,7 +31,9 @@ if (($oper_mode == OPER_MODE_NATIVE) || ($oper_mode == OPER_MODE_IFRAME_NONAV)) 
 	</tr>
 </table>
 <?php api_plugin_hook('page_bottom');?>
-<script type='text/javascript'>var theme='<?php print read_config_option('selected_theme');?>';</script>
+<script type='text/javascript'>
+	$(function() { $('#navigation').show(); });
+</script>
 </body>
 </html>
 

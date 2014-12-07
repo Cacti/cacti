@@ -1111,7 +1111,7 @@ function graph() {
 	<!--
 
 	function applyFilter() {
-		strURL = '?host_id=' + $('#host_id').val();
+		strURL = 'graphs.php?host_id=' + $('#host_id').val();
 		strURL = strURL + '&rows=' + $('#rows').val();
 		strURL = strURL + '&page=' + $('#page').val();
 		strURL = strURL + '&filter=' + $('#filter').val();
@@ -1124,7 +1124,7 @@ function graph() {
 	}
 
 	function clearFilter() {
-		strURL = '?clear_x=1&header=false';
+		strURL = 'graphs.php?clear_x=1&header=false';
 		$.get(strURL, function(data) {
 			$('#main').html(data);
 			applySkin();

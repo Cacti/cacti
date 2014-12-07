@@ -91,6 +91,7 @@ $page_title = api_plugin_hook_function('page_title', draw_navigation_text("title
 <a name='page_top'></a>
 <?php }else{?>
 <body <?php print api_plugin_hook_function("body_style", "");?>>
+<a name='page_top'></a>
 <?php }?>
 
 <table style="width:100%" cellspacing="0" cellpadding="0">
@@ -158,8 +159,8 @@ $page_title = api_plugin_hook_function('page_title', draw_navigation_text("title
 	?>
 	<tr>
 		<?php if (basename($_SERVER["PHP_SELF"]) == "graph_view.php" && ($_REQUEST["action"] == "tree" || (isset($_REQUEST["view_type"]) && $_REQUEST["view_type"] == "tree"))) { ?>
-		<td id='navigation' class='cactiTreeNavigationArea noprint' valign='top' width='<?php print htmlspecialchars(read_graph_config_option("default_dual_pane_width"));?>'>
+		<td id='navigation' class='cactiTreeNavigationArea noprint' style='display:none;' valign='top' width='<?php print htmlspecialchars(read_graph_config_option("default_dual_pane_width"));?>'>
 			<?php grow_dhtml_trees();?>
 		</td>
 		<?php } ?>
-		<td class='cactiGraphContentArea' valign="top"><div style='position:static;' id='main'>
+		<td id='navigation_right' class='cactiGraphContentArea' valign="top" style='display:none;'><div style='position:static;' id='main'>

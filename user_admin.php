@@ -1721,7 +1721,7 @@ function user_edit() {
 		print "<div class='tabs'><nav><ul>\n";
 
 		foreach (array_keys($tabs) as $tab_short_name) {
-			print "<li><a " . (($tab_short_name == $current_tab) ? "class='selected'" : "") . 
+			print "<li class='subTab'><a " . (($tab_short_name == $current_tab) ? "class='selected'" : "") . 
 				" href='" . htmlspecialchars($config['url_path'] .
 				"user_admin.php?action=user_edit&id=" . get_request_var_request('id') .
 				"&tab=" . $tab_short_name) .
@@ -1731,6 +1731,21 @@ function user_edit() {
 		api_plugin_hook('user_admin_tab');
 
 		print "</ul></nav></div>\n";
+
+		if (read_config_option('legacy_menu_nav') != 'on') { ?>
+		<script type='text/javascript'>
+
+		$('.subTab').find('a').click(function(event) {
+			event.preventDefault();
+			href = $(this).attr('href');
+			href = href+ (href.indexOf('?') > 0 ? '&':'?') + 'header=false';
+			$.get(href, function(data) {
+				$('#main').html(data);
+				applySkin();
+			});
+		});
+		</script>
+		<?php }
 	}
 
 	switch($current_tab) {
@@ -1820,11 +1835,39 @@ function user() {
 
 	?>
 	<script type="text/javascript">
-	function applyFilterChange(objForm) {
-		strURL = '?rows=' + objForm.rows.value;
-		strURL = strURL + '&filter=' + objForm.filter.value;
-		document.location = strURL;
+	function applyFilter() {
+		strURL = 'user_admin.php?rows=' + $('#rows').val();
+		strURL = strURL + '&filter=' + $('#filter').val();
+		strURL = strURL + '&page=' + $('#page').val();
+		strURL = strURL + '&header=false';
+		$.get(strURL, function(data) {
+			$('#main').html(data);
+			applySkin();
+		});
 	}
+
+	function clearFilter() {
+		strURL = 'user_admin.php?clear_x=1&header=false';
+		$.get(strURL, function(data) {
+			$('#main').html(data);
+			applySkin();
+		});
+	}
+
+	$(function(data) {
+		$('#refresh').click(function() {
+			applyFilter();
+		});
+
+		$('#clear').click(function() {
+			clearFilter();
+		});
+
+		$('#form_user_admin').submit(function(event) {
+			event.preventDefault();
+			applyFilter();
+		});
+	});
 	</script>
 	<?php
 
@@ -1839,20 +1882,20 @@ function user() {
 	?>
 	<tr class='even'>
 		<td>
-		<form name="form_user_admin" action="user_admin.php">
+		<form id="form_user_admin" action="user_admin.php">
 			<table cellpadding="2" cellspacing="0">
 				<tr>
 					<td width="55">
 						Search:
 					</td>
 					<td>
-						<input type="text" name="filter" size="40" value="<?php print htmlspecialchars(get_request_var_request("filter"));?>">
+						<input id='filter' type="text" name="filter" size="40" value="<?php print htmlspecialchars(get_request_var_request("filter"));?>">
 					</td>
 					<td>
 						Users:
 					</td>
 					<td>
-						<select name="rows" onChange="applyFilterChange(document.form_user_admin)">
+						<select id='rows' name="rows" onChange="applyFilter()">
 							<?php
 							if (sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
@@ -1863,14 +1906,14 @@ function user() {
 						</select>
 					</td>
 					<td>
-						<input type="submit" value="Go" title="Set/Refresh Filters">
+						<input type="button" id='refresh' value="Go" title="Set/Refresh Filters">
 					</td>
 					<td>
-						<input type="submit" name="clear_x" value="Clear" title="Clear Filters">
+						<input type="button" id='clear' name="clear_x" value="Clear" title="Clear Filters">
 					</td>
 				</tr>
 			</table>
-			<input type='hidden' name='page' value='1'>
+			<input type='hidden' id='page' name='page' value='<?php print $_REQUEST['page'];?>'>
 		</form>
 		</td>
 	</tr>
@@ -1960,16 +2003,16 @@ function user() {
 }
 
 function process_graph_request_vars() {
-    /* ================= input validation ================= */
-    input_validate_input_number(get_request_var_request("graph_template_id"));
-    input_validate_input_number(get_request_var_request("rows"));
-    input_validate_input_number(get_request_var_request("page"));
-    /* ==================================================== */
+	/* ================= input validation ================= */
+	input_validate_input_number(get_request_var_request("graph_template_id"));
+	input_validate_input_number(get_request_var_request("rows"));
+	input_validate_input_number(get_request_var_request("page"));
+	/* ==================================================== */
 
-    /* clean up search string */
-    if (isset($_REQUEST["filter"])) {
-        $_REQUEST["filter"] = sanitize_search_string(get_request_var_request("filter"));
-    }
+	/* clean up search string */
+	if (isset($_REQUEST["filter"])) {
+		$_REQUEST["filter"] = sanitize_search_string(get_request_var_request("filter"));
+	}
 
 	/* clean up sort solumn */
 	if (isset($_REQUEST['sort_column'])) {
@@ -1986,42 +2029,42 @@ function process_graph_request_vars() {
 		$_REQUEST['associated'] = sanitize_search_string(get_request_var_request('associated'));
 	}
 
-    /* if the user pushed the 'clear' button */
-    if (isset($_REQUEST["clearf"])) {
-        kill_session_var("sess_uag_page");
-        kill_session_var("sess_default_rows");
-        kill_session_var("sess_uag_filter");
-        kill_session_var("sess_uag_graph_template_id");
-        kill_session_var("sess_uag_associated");
-        kill_session_var("sess_uag_sort_column");
-        kill_session_var("sess_uag_sort_direction");
+	/* if the user pushed the 'clear' button */
+	if (isset($_REQUEST["clearf"])) {
+		kill_session_var("sess_uag_page");
+		kill_session_var("sess_default_rows");
+		kill_session_var("sess_uag_filter");
+		kill_session_var("sess_uag_graph_template_id");
+		kill_session_var("sess_uag_associated");
+		kill_session_var("sess_uag_sort_column");
+		kill_session_var("sess_uag_sort_direction");
 
-        unset($_REQUEST["page"]);
-        unset($_REQUEST["rows"]);
-        unset($_REQUEST["filter"]);
-        unset($_REQUEST["graph_template_id"]);
-        unset($_REQUEST["associated"]);
-        unset($_REQUEST["sort_column"]);
-        unset($_REQUEST["sort_direction"]);
-    }else{
-        $changed = 0;
-        $changed += check_changed('rows', 'sess_default_rows');
-        $changed += check_changed('filter', 'sess_uag_filter');
-        $changed += check_changed('graph_template_id', 'sess_uag_graph_template_id');
-        $changed += check_changed('associated', 'sess_uag_associated');
-        $changed += check_changed('sort_column', 'sess_uag_sort_column');
-        $changed += check_changed('sort_direction', 'sess_uag_sort_direction');
-        if ($changed) {
-            $_REQUEST['page'] = '1';
-        }
+		unset($_REQUEST["page"]);
+		unset($_REQUEST["rows"]);
+		unset($_REQUEST["filter"]);
+		unset($_REQUEST["graph_template_id"]);
+		unset($_REQUEST["associated"]);
+		unset($_REQUEST["sort_column"]);
+		unset($_REQUEST["sort_direction"]);
+	}else{
+		$changed = 0;
+		$changed += check_changed('rows', 'sess_default_rows');
+		$changed += check_changed('filter', 'sess_uag_filter');
+		$changed += check_changed('graph_template_id', 'sess_uag_graph_template_id');
+		$changed += check_changed('associated', 'sess_uag_associated');
+		$changed += check_changed('sort_column', 'sess_uag_sort_column');
+		$changed += check_changed('sort_direction', 'sess_uag_sort_direction');
+		if ($changed) {
+			$_REQUEST['page'] = '1';
+		}
 	}
 
-    /* remember these search fields in session vars so we don't have to keep passing them around */
-    load_current_session_value("page", "sess_uag_page", "1");
-    load_current_session_value("filter", "sess_uag_filter", "");
-    load_current_session_value("associated", "sess_uag_associated", "true");
-    load_current_session_value("graph_template_id", "sess_uad_graph_template_id", "-1");
-    load_current_session_value("rows", "sess_default_rows", read_config_option('num_rows_table'));
+	/* remember these search fields in session vars so we don't have to keep passing them around */
+	load_current_session_value("page", "sess_uag_page", "1");
+	load_current_session_value("filter", "sess_uag_filter", "");
+	load_current_session_value("associated", "sess_uag_associated", "true");
+	load_current_session_value("graph_template_id", "sess_uag_graph_template_id", "-1");
+	load_current_session_value("rows", "sess_default_rows", read_config_option('num_rows_table'));
 }
 
 function process_group_request_vars() {
@@ -2085,16 +2128,16 @@ function process_group_request_vars() {
 }
 
 function process_device_request_vars() {
-    /* ================= input validation ================= */
-    input_validate_input_number(get_request_var_request("host_template_id"));
-    input_validate_input_number(get_request_var_request("rows"));
-    input_validate_input_number(get_request_var_request("page"));
-    /* ==================================================== */
+	/* ================= input validation ================= */
+	input_validate_input_number(get_request_var_request("host_template_id"));
+	input_validate_input_number(get_request_var_request("rows"));
+	input_validate_input_number(get_request_var_request("page"));
+	/* ==================================================== */
 
-    /* clean up search string */
-    if (isset($_REQUEST["filter"])) {
-        $_REQUEST["filter"] = sanitize_search_string(get_request_var_request("filter"));
-    }
+	/* clean up search string */
+	if (isset($_REQUEST["filter"])) {
+		$_REQUEST["filter"] = sanitize_search_string(get_request_var_request("filter"));
+	}
 
 	/* clean up sort solumn */
 	if (isset($_REQUEST['sort_column'])) {
@@ -2111,54 +2154,54 @@ function process_device_request_vars() {
 		$_REQUEST['associated'] = sanitize_search_string(get_request_var_request('associated'));
 	}
 
-    /* if the user pushed the 'clear' button */
-    if (isset($_REQUEST["clearf"])) {
-        kill_session_var("sess_uad_page");
-        kill_session_var("sess_default_rows");
-        kill_session_var("sess_uad_filter");
-        kill_session_var("sess_uad_host_template_id");
-        kill_session_var("sess_uad_associated");
-        kill_session_var("sess_uad_sort_column");
-        kill_session_var("sess_uad_sort_direction");
+	/* if the user pushed the 'clear' button */
+	if (isset($_REQUEST["clearf"])) {
+		kill_session_var("sess_uad_page");
+		kill_session_var("sess_default_rows");
+		kill_session_var("sess_uad_filter");
+		kill_session_var("sess_uad_host_template_id");
+		kill_session_var("sess_uad_associated");
+		kill_session_var("sess_uad_sort_column");
+		kill_session_var("sess_uad_sort_direction");
 
-        unset($_REQUEST["page"]);
-        unset($_REQUEST["rows"]);
-        unset($_REQUEST["filter"]);
-        unset($_REQUEST["host_template_id"]);
-        unset($_REQUEST["associated"]);
-        unset($_REQUEST["sort_column"]);
-        unset($_REQUEST["sort_direction"]);
-    }else{
-        $changed = 0;
-        $changed += check_changed('rows', 'sess_default_rows');
-        $changed += check_changed('filter', 'sess_uad_filter');
-        $changed += check_changed('host_template_id', 'sess_uad_host_template_id');
-        $changed += check_changed('associated', 'sess_uad_associated');
-        $changed += check_changed('sort_column', 'sess_uad_sort_column');
-        $changed += check_changed('sort_direction', 'sess_uad_sort_direction');
-        if ($changed) {
-            $_REQUEST['page'] = '1';
-        }
+		unset($_REQUEST["page"]);
+		unset($_REQUEST["rows"]);
+		unset($_REQUEST["filter"]);
+		unset($_REQUEST["host_template_id"]);
+		unset($_REQUEST["associated"]);
+		unset($_REQUEST["sort_column"]);
+		unset($_REQUEST["sort_direction"]);
+	}else{
+		$changed = 0;
+		$changed += check_changed('rows', 'sess_default_rows');
+		$changed += check_changed('filter', 'sess_uad_filter');
+		$changed += check_changed('host_template_id', 'sess_uad_host_template_id');
+		$changed += check_changed('associated', 'sess_uad_associated');
+		$changed += check_changed('sort_column', 'sess_uad_sort_column');
+		$changed += check_changed('sort_direction', 'sess_uad_sort_direction');
+		if ($changed) {
+			$_REQUEST['page'] = '1';
+		}
 	}
 
-    /* remember these search fields in session vars so we don't have to keep passing them around */
-    load_current_session_value("page", "sess_uad_page", "1");
-    load_current_session_value("filter", "sess_uad_filter", "");
-    load_current_session_value("associated", "sess_uad_associated", "true");
-    load_current_session_value("host_template_id", "sess_uad_host_template_id", "-1");
-    load_current_session_value("rows", "sess_default_rows", read_config_option('num_rows_table'));
+	/* remember these search fields in session vars so we don't have to keep passing them around */
+	load_current_session_value("page", "sess_uad_page", "1");
+	load_current_session_value("filter", "sess_uad_filter", "");
+	load_current_session_value("associated", "sess_uad_associated", "true");
+	load_current_session_value("host_template_id", "sess_uad_host_template_id", "-1");
+	load_current_session_value("rows", "sess_default_rows", read_config_option('num_rows_table'));
 }
 
 function process_template_request_vars() {
-    /* ================= input validation ================= */
-    input_validate_input_number(get_request_var_request("rows"));
-    input_validate_input_number(get_request_var_request("page"));
-    /* ==================================================== */
+	/* ================= input validation ================= */
+	input_validate_input_number(get_request_var_request("rows"));
+	input_validate_input_number(get_request_var_request("page"));
+	/* ==================================================== */
 
-    /* clean up search string */
-    if (isset($_REQUEST["filter"])) {
-        $_REQUEST["filter"] = sanitize_search_string(get_request_var_request("filter"));
-    }
+	/* clean up search string */
+	if (isset($_REQUEST["filter"])) {
+		$_REQUEST["filter"] = sanitize_search_string(get_request_var_request("filter"));
+	}
 
 	/* clean up sort solumn */
 	if (isset($_REQUEST['sort_column'])) {
@@ -2175,50 +2218,50 @@ function process_template_request_vars() {
 		$_REQUEST['associated'] = sanitize_search_string(get_request_var_request('associated'));
 	}
 
-    /* if the user pushed the 'clear' button */
-    if (isset($_REQUEST["clearf"])) {
-        kill_session_var("sess_uate_page");
-        kill_session_var("sess_default_rows");
-        kill_session_var("sess_uate_filter");
-        kill_session_var("sess_uate_associated");
-        kill_session_var("sess_uate_sort_column");
-        kill_session_var("sess_uate_sort_direction");
+	/* if the user pushed the 'clear' button */
+	if (isset($_REQUEST["clearf"])) {
+		kill_session_var("sess_uate_page");
+		kill_session_var("sess_default_rows");
+		kill_session_var("sess_uate_filter");
+		kill_session_var("sess_uate_associated");
+		kill_session_var("sess_uate_sort_column");
+		kill_session_var("sess_uate_sort_direction");
 
-        unset($_REQUEST["page"]);
-        unset($_REQUEST["rows"]);
-        unset($_REQUEST["filter"]);
-        unset($_REQUEST["associated"]);
-        unset($_REQUEST["sort_column"]);
-        unset($_REQUEST["sort_direction"]);
-    }else{
-        $changed = 0;
-        $changed += check_changed('rows', 'sess_default_rows');
-        $changed += check_changed('filter', 'sess_uate_filter');
-        $changed += check_changed('associated', 'sess_uate_associated');
-        $changed += check_changed('sort_column', 'sess_uate_sort_column');
-        $changed += check_changed('sort_direction', 'sess_uate_sort_direction');
-        if ($changed) {
-            $_REQUEST['page'] = '1';
-        }
+		unset($_REQUEST["page"]);
+		unset($_REQUEST["rows"]);
+		unset($_REQUEST["filter"]);
+		unset($_REQUEST["associated"]);
+		unset($_REQUEST["sort_column"]);
+		unset($_REQUEST["sort_direction"]);
+	}else{
+		$changed = 0;
+		$changed += check_changed('rows', 'sess_default_rows');
+		$changed += check_changed('filter', 'sess_uate_filter');
+		$changed += check_changed('associated', 'sess_uate_associated');
+		$changed += check_changed('sort_column', 'sess_uate_sort_column');
+		$changed += check_changed('sort_direction', 'sess_uate_sort_direction');
+		if ($changed) {
+			$_REQUEST['page'] = '1';
+		}
 	}
 
-    /* remember these search fields in session vars so we don't have to keep passing them around */
-    load_current_session_value("page", "sess_uate_page", "1");
-    load_current_session_value("filter", "sess_uate_filter", "");
-    load_current_session_value("associated", "sess_uate_associated", "true");
-    load_current_session_value("rows", "sess_default_rows", read_config_option('num_rows_table'));
+	/* remember these search fields in session vars so we don't have to keep passing them around */
+	load_current_session_value("page", "sess_uate_page", "1");
+	load_current_session_value("filter", "sess_uate_filter", "");
+	load_current_session_value("associated", "sess_uate_associated", "true");
+	load_current_session_value("rows", "sess_default_rows", read_config_option('num_rows_table'));
 }
 
 function process_tree_request_vars() {
-    /* ================= input validation ================= */
-    input_validate_input_number(get_request_var_request("rows"));
-    input_validate_input_number(get_request_var_request("page"));
-    /* ==================================================== */
+	/* ================= input validation ================= */
+	input_validate_input_number(get_request_var_request("rows"));
+	input_validate_input_number(get_request_var_request("page"));
+	/* ==================================================== */
 
-    /* clean up search string */
-    if (isset($_REQUEST["filter"])) {
-        $_REQUEST["filter"] = sanitize_search_string(get_request_var_request("filter"));
-    }
+	/* clean up search string */
+	if (isset($_REQUEST["filter"])) {
+		$_REQUEST["filter"] = sanitize_search_string(get_request_var_request("filter"));
+	}
 
 	/* clean up sort solumn */
 	if (isset($_REQUEST['sort_column'])) {
@@ -2235,40 +2278,40 @@ function process_tree_request_vars() {
 		$_REQUEST['associated'] = sanitize_search_string(get_request_var_request('associated'));
 	}
 
-    /* if the user pushed the 'clear' button */
-    if (isset($_REQUEST["clearf"])) {
-        kill_session_var("sess_uatr_page");
-        kill_session_var("sess_default_rows");
-        kill_session_var("sess_uatr_filter");
-        kill_session_var("sess_uatr_associated");
-        kill_session_var("sess_uatr_sort_column");
-        kill_session_var("sess_uatr_sort_direction");
+	/* if the user pushed the 'clear' button */
+	if (isset($_REQUEST["clearf"])) {
+		kill_session_var("sess_uatr_page");
+		kill_session_var("sess_default_rows");
+		kill_session_var("sess_uatr_filter");
+		kill_session_var("sess_uatr_associated");
+		kill_session_var("sess_uatr_sort_column");
+		kill_session_var("sess_uatr_sort_direction");
 
-        unset($_REQUEST["page"]);
-        unset($_REQUEST["rows"]);
-        unset($_REQUEST["filter"]);
-        unset($_REQUEST["associated"]);
-        unset($_REQUEST["sort_column"]);
-        unset($_REQUEST["sort_direction"]);
-    }else{
-        $changed = 0;
-        $changed += check_changed('rows', 'sess_default_rows');
-        $changed += check_changed('filter', 'sess_uatr_filter');
-        $changed += check_changed('associated', 'sess_uatr_associated');
-        $changed += check_changed('sort_column', 'sess_uatr_sort_column');
-        $changed += check_changed('sort_direction', 'sess_uatr_sort_direction');
-        if ($changed) {
-            $_REQUEST['page'] = '1';
-        }
+		unset($_REQUEST["page"]);
+		unset($_REQUEST["rows"]);
+		unset($_REQUEST["filter"]);
+		unset($_REQUEST["associated"]);
+		unset($_REQUEST["sort_column"]);
+		unset($_REQUEST["sort_direction"]);
+	}else{
+		$changed = 0;
+		$changed += check_changed('rows', 'sess_default_rows');
+		$changed += check_changed('filter', 'sess_uatr_filter');
+		$changed += check_changed('associated', 'sess_uatr_associated');
+		$changed += check_changed('sort_column', 'sess_uatr_sort_column');
+		$changed += check_changed('sort_direction', 'sess_uatr_sort_direction');
+		if ($changed) {
+			$_REQUEST['page'] = '1';
+		}
 
-        $reset_multi = false;
+		$reset_multi = false;
 	}
 
-    /* remember these search fields in session vars so we don't have to keep passing them around */
-    load_current_session_value("page", "sess_uatr_page", "1");
-    load_current_session_value("filter", "sess_uatr_filter", "");
-    load_current_session_value("associated", "sess_uatr_associated", "true");
-    load_current_session_value("rows", "sess_default_rows", read_config_option('num_rows_table'));
+	/* remember these search fields in session vars so we don't have to keep passing them around */
+	load_current_session_value("page", "sess_uatr_page", "1");
+	load_current_session_value("filter", "sess_uatr_filter", "");
+	load_current_session_value("associated", "sess_uatr_associated", "true");
+	load_current_session_value("rows", "sess_default_rows", read_config_option('num_rows_table'));
 }
 
 function graph_filter($header_label) {
@@ -2278,20 +2321,35 @@ function graph_filter($header_label) {
 	<script type="text/javascript">
 	<!--
 
-	function applyFilterChange(objForm) {
-		strURL = '?action=user_edit&tab=permsg&id=<?php print get_request_var_request('id');?>'
-		strURL = strURL + '&rows=' + objForm.rows.value;
-		strURL = strURL + '&graph_template_id=' + objForm.graph_template_id.value;
-		strURL = strURL + '&associated=' + objForm.associated.checked;
-		strURL = strURL + '&filter=' + objForm.filter.value;
-		document.location = strURL;
+	function applyFilter() {
+		strURL = 'user_admin.php?action=user_edit&tab=permsg&id=<?php print get_request_var_request('id');?>'
+		strURL = strURL + '&rows=' + $('#rows').val();
+		strURL = strURL + '&page=' + $('#page').val();
+		strURL = strURL + '&graph_template_id=' + $('#graph_template_id').val();
+		strURL = strURL + '&associated=' + $('#associated').is(':checked');
+		strURL = strURL + '&filter=' + $('#filter').val();
+		strURL = strURL + '&header=false';
+		$.get(strURL, function(data) {
+			$('#main').html(data);
+			applySkin();
+		});
 	}
 
-	function clearFilterChange(objForm) {
-		strURL = '?action=user_edit&tab=permsg&id=<?php print get_request_var_request('id');?>&clearf=true'
-		document.location = strURL;
+	function clearFilter(objForm) {
+		strURL = 'user_admin.php?action=user_edit&tab=permsg&id=<?php print get_request_var_request('id');?>&clearf=true'
+		strURL = strURL + '&header=false';
+		$.get(strURL, function(data) {
+			$('#main').html(data);
+			applySkin();
+		});
 	}
 
+	$(function(data) {
+		$('#forms').submit(function(event) {
+			event.preventDefault();
+			applyFilter();
+		});
+	});
 	-->
 	</script>
 	<?php
@@ -2301,14 +2359,14 @@ function graph_filter($header_label) {
 	?>
 	<tr class='even'>
 		<td>
-		<form name="forms" method="post" action="user_admin.php">
+		<form id="forms" method="post" action="user_admin.php">
 			<table cellpadding="2" cellspacing="0">
 				<tr>
 					<td>
 						Template:
 					</td>
 					<td>
-						<select name="graph_template_id" onChange="applyFilterChange(document.forms)">
+						<select id='graph_template_id' name="graph_template_id" onChange="applyFilter()">
 							<option value="-1"<?php if (get_request_var_request("graph_template_id") == "-1") {?> selected<?php }?>>Any</option>
 							<option value="0"<?php if (get_request_var_request("graph_template_id") == "0") {?> selected<?php }?>>None</option>
 							<?php
@@ -2330,13 +2388,13 @@ function graph_filter($header_label) {
 						Search:
 					</td>
 					<td>
-						<input type="text" name="filter" size="20" value="<?php print htmlspecialchars(get_request_var_request("filter"));?>" onChange="applyFilterChange(document.forms)">
+						<input id='filter' type="text" name="filter" size="20" value="<?php print htmlspecialchars(get_request_var_request("filter"));?>" onChange="applyFilter()">
 					</td>
 					<td>
 						Graphs:
 					</td>
 					<td>
-						<select name="rows" onChange="applyFilterChange(document.forms)">
+						<select id='rows' name="rows" onChange="applyFilter()">
 							<?php
 							if (sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
@@ -2347,20 +2405,20 @@ function graph_filter($header_label) {
 						</select>
 					</td>
 					<td>
-						<input type='checkbox' name='associated' id='associated' onChange='applyFilterChange(document.forms)' <?php print ($_REQUEST['associated'] == 'true' || $_REQUEST['associated'] == 'on' ? 'checked':'');?>>
+						<input type='checkbox' name='associated' id='associated' onChange='applyFilter()' <?php print ($_REQUEST['associated'] == 'true' || $_REQUEST['associated'] == 'on' ? 'checked':'');?>>
 					</td>
 					<td>
 						<label style='white-space:nowrap;' for='associated'>Show All</label>
 					</td>
 					<td nowrap>
-						<input type="button" value="Go" onClick='applyFilterChange(document.forms)' title="Set/Refresh Filters">
+						<input type="button" value="Go" onClick='applyFilter()' title="Set/Refresh Filters">
 					</td>
 					<td nowrap>
-						<input type="button" name="clearf" value="Clear" onClick='clearFilterChange(document.forms)' title="Clear Filters">
+						<input type="button" name="clearf" value="Clear" onClick='clearFilter()' title="Clear Filters">
 					</td>
 				</tr>
 			</table>
-			<input type='hidden' name='page' value='1'>
+			<input type='hidden' id='page' name='page' value='<?php print $_REQUEST['page'];?>'>
 			<input type='hidden' name='action' value='user_edit'>
 			<input type='hidden' name='tab' value='permsg'>
 			<input type='hidden' name='id' value='<?php print get_request_var_request('id');?>'>
@@ -2377,22 +2435,34 @@ function group_filter($header_label) {
 
 	?>
 	<script type="text/javascript">
-	<!--
-
-	function applyFilterChange(objForm) {
-		strURL = '?action=user_edit&tab=permsgr&id=<?php print get_request_var_request('id');?>'
-		strURL = strURL + '&rows=' + objForm.rows.value;
-		strURL = strURL + '&associated=' + objForm.associated.checked;
-		strURL = strURL + '&filter=' + objForm.filter.value;
-		document.location = strURL;
+	function applyFilter() {
+		strURL = 'user_admin.php?action=user_edit&tab=permsgr&id=<?php print get_request_var_request('id');?>'
+		strURL = strURL + '&rows=' + $('#rows').val();
+		strURL = strURL + '&page=' + $('#page').val();
+		strURL = strURL + '&associated=' + $('#associated').is(':checked');
+		strURL = strURL + '&filter=' + $('#filter').val();
+		strURL = strURL + '&header=false';
+		$.get(strURL, function(data) {
+			$('#main').html(data);
+			applySkin();
+		});
 	}
 
-	function clearFilterChange(objForm) {
-		strURL = '?action=user_edit&tab=permsgr&id=<?php print get_request_var_request('id');?>&clearf=true'
-		document.location = strURL;
+	function clearFilter() {
+		strURL = 'user_admin.php?action=user_edit&tab=permsgr&id=<?php print get_request_var_request('id');?>&clearf=true'
+		strURL = strURL + '&header=false';
+		$.get(strURL, function(data) {
+			$('#main').html(data);
+			applySkin();
+		});
 	}
 
-	-->
+	$(function(data) {
+		$('#forms').submit(function(event) {
+			event.preventDefault();
+			applyFilter();
+		});
+	});
 	</script>
 	<?php
 
@@ -2401,20 +2471,20 @@ function group_filter($header_label) {
 	?>
 	<tr class='even'>
 		<td>
-		<form name="forms" method="post" action="user_admin.php">
+		<form id="forms" method="post" action="user_admin.php">
 			<table cellpadding="2" cellspacing="0">
 				<tr>
 					<td>
 						Search:
 					</td>
 					<td>
-						<input type="text" name="filter" size="20" value="<?php print htmlspecialchars(get_request_var_request("filter"));?>" onChange="applyFilterChange(document.forms)">
+						<input id='filter' type="text" name="filter" size="20" value="<?php print htmlspecialchars(get_request_var_request("filter"));?>" onChange="applyFilter()">
 					</td>
 					<td>
 						Groups:
 					</td>
 					<td width="1">
-						<select name="rows" onChange="applyFilterChange(document.forms)">
+						<select id='rows' name="rows" onChange="applyFilter()">
 							<?php
 							if (sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
@@ -2425,20 +2495,20 @@ function group_filter($header_label) {
 						</select>
 					</td>
 					<td>
-						<input type='checkbox' name='associated' id='associated' onChange='applyFilterChange(document.forms)' <?php print ($_REQUEST['associated'] == 'true' || $_REQUEST['associated'] == 'on' ? 'checked':'');?>>
+						<input type='checkbox' name='associated' id='associated' onChange='applyFilter()' <?php print ($_REQUEST['associated'] == 'true' || $_REQUEST['associated'] == 'on' ? 'checked':'');?>>
 					</td>
 					<td>
 						<label style='white-space:nowrap;' for='associated'>Show All</label>
 					</td>
 					<td>
-						<input type="button" value="Go" onClick='applyFilterChange(document.forms)' title="Set/Refresh Filters">
+						<input type="button" value="Go" onClick='applyFilter()' title="Set/Refresh Filters">
 					</td>
 					<td>
-						<input type="button" name="clearf" value="Clear" onClick='clearFilterChange(document.forms)' title="Clear Filters">
+						<input type="button" name="clearf" value="Clear" onClick='clearFilter()' title="Clear Filters">
 					</td>
 				</tr>
 			</table>
-			<input type='hidden' name='page' value='1'>
+			<input type='hidden' id='page' name='page' value='<?php print $_REQUEST['page'];?>'>
 			<input type='hidden' name='action' value='user_edit'>
 			<input type='hidden' name='tab' value='permsgr'>
 			<input type='hidden' name='id' value='<?php print get_request_var_request('id');?>'>
@@ -2455,23 +2525,35 @@ function device_filter($header_label) {
 
 	?>
 	<script type="text/javascript">
-	<!--
-
-	function applyFilterChange(objForm) {
-		strURL = '?action=user_edit&tab=permsd&id=<?php print get_request_var_request('id');?>'
-		strURL = strURL + '&rows=' + objForm.rows.value;
-		strURL = strURL + '&host_template_id=' + objForm.host_template_id.value;
-		strURL = strURL + '&associated=' + objForm.associated.checked;
-		strURL = strURL + '&filter=' + objForm.filter.value;
-		document.location = strURL;
+	function applyFilter() {
+		strURL = 'user_admin.php?action=user_edit&tab=permsd&id=<?php print get_request_var_request('id');?>'
+		strURL = strURL + '&rows=' + $('#rows').val();
+		strURL = strURL + '&page=' + $('#page').val();
+		strURL = strURL + '&host_template_id=' + $('#host_template_id').val();
+		strURL = strURL + '&associated=' + $('#associated').is(':checked');
+		strURL = strURL + '&filter=' + $('#filter').val();
+		strURL = strURL + '&header=false';
+		$.get(strURL, function(data) {
+			$('#main').html(data);
+			applySkin();
+		});
 	}
 
-	function clearFilterChange(objForm) {
-		strURL = '?action=user_edit&tab=permsd&id=<?php print get_request_var_request('id');?>&clearf=true'
-		document.location = strURL;
+	function clearFilter(objForm) {
+		strURL = 'user_admin.php?action=user_edit&tab=permsd&id=<?php print get_request_var_request('id');?>&clearf=true'
+		strURL = strURL + '&header=false';
+		$.get(strURL, function(data) {
+			$('#main').html(data);
+			applySkin();
+		});
 	}
 
-	-->
+	$(function(data) {
+		$('#forms').submit(function(event) {
+			event.preventDefault();
+			applyFilter();
+		});
+	});
 	</script>
 	<?php
 
@@ -2480,14 +2562,14 @@ function device_filter($header_label) {
 	?>
 	<tr class='even'>
 		<td>
-		<form name="forms" method="post" action="user_admin.php">
+		<form id="forms" method="post" action="user_admin.php">
 			<table cellpadding="2" cellspacing="0">
 				<tr>
 					<td>
 						Template:
 					</td>
 					<td>
-						<select name="host_template_id" onChange="applyFilterChange(document.forms)">
+						<select id='host_template_id' name="host_template_id" onChange="applyFilter()">
 							<option value="-1"<?php if (get_request_var_request("host_template_id") == "-1") {?> selected<?php }?>>Any</option>
 							<option value="0"<?php if (get_request_var_request("host_template_id") == "0") {?> selected<?php }?>>None</option>
 							<?php
@@ -2505,13 +2587,13 @@ function device_filter($header_label) {
 						Search:
 					</td>
 					<td>
-						<input type="text" name="filter" size="20" value="<?php print htmlspecialchars(get_request_var_request("filter"));?>" onChange="applyFilterChange(document.forms)">
+						<input id='filter' type="text" name="filter" size="20" value="<?php print htmlspecialchars(get_request_var_request("filter"));?>" onChange="applyFilter()">
 					</td>
 					<td>
 						Devices:
 					</td>
 					<td width="1">
-						<select name="rows" onChange="applyFilterChange(document.forms)">
+						<select id='rows' name="rows" onChange="applyFilter()">
 							<?php
 							if (sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
@@ -2522,20 +2604,20 @@ function device_filter($header_label) {
 						</select>
 					</td>
 					<td>
-						<input type='checkbox' name='associated' id='associated' onChange='applyFilterChange(document.forms)' <?php print ($_REQUEST['associated'] == 'true' || $_REQUEST['associated'] == 'on' ? 'checked':'');?>>
+						<input type='checkbox' name='associated' id='associated' onChange='applyFilter()' <?php print ($_REQUEST['associated'] == 'true' || $_REQUEST['associated'] == 'on' ? 'checked':'');?>>
 					</td>
 					<td>
 						<label style='white-space:nowrap;' for='associated'>Show Exceptions</label>
 					</td>
 					<td>
-						<input type="button" value="Go" onClick='applyFilterChange(document.forms)' title="Set/Refresh Filters">
+						<input type="button" value="Go" onClick='applyFilter()' title="Set/Refresh Filters">
 					</td>
 					<td>
-						<input type="button" name="clearf" value="Clear" onClick='clearFilterChange(document.forms)' title="Clear Filters">
+						<input type="button" name="clearf" value="Clear" onClick='clearFilter()' title="Clear Filters">
 					</td>
 				</tr>
 			</table>
-			<input type='hidden' name='page' value='1'>
+			<input type='hidden' id='page' name='page' value='<?php print $_REQUEST['page'];?>'>
 			<input type='hidden' name='action' value='user_edit'>
 			<input type='hidden' name='tab' value='permsd'>
 			<input type='hidden' name='id' value='<?php print get_request_var_request('id');?>'>
@@ -2552,22 +2634,34 @@ function template_filter($header_label) {
 
 	?>
 	<script type="text/javascript">
-	<!--
-
-	function applyFilterChange(objForm) {
-		strURL = '?action=user_edit&tab=permste&id=<?php print get_request_var_request('id');?>'
-		strURL = strURL + '&rows=' + objForm.rows.value;
-		strURL = strURL + '&associated=' + objForm.associated.checked;
-		strURL = strURL + '&filter=' + objForm.filter.value;
-		document.location = strURL;
+	function applyFilter() {
+		strURL = 'user_admin.php?action=user_edit&tab=permste&id=<?php print get_request_var_request('id');?>'
+		strURL = strURL + '&rows=' + $('#rows').val();
+		strURL = strURL + '&page=' + $('#page').val();
+		strURL = strURL + '&associated=' + $('#associated').is(':checked');
+		strURL = strURL + '&filter=' + $('#filter').val();
+		strURL = strURL + '&header=false';
+		$.get(strURL, function(data) {
+			$('#main').html(data);
+			applySkin();
+		});
 	}
 
-	function clearFilterChange(objForm) {
-		strURL = '?action=user_edit&tab=permste&id=<?php print get_request_var_request('id');?>&clearf=true'
-		document.location = strURL;
+	function clearFilter() {
+		strURL = 'user_admin.php?action=user_edit&tab=permste&id=<?php print get_request_var_request('id');?>&clearf=true'
+		strURL = strURL + '&header=false';
+		$.get(strURL, function(data) {
+			$('#main').html(data);
+			applySkin();
+		});
 	}
 
-	-->
+	$(function(data) {
+		$('#forms').submit(function(event) {
+			event.preventDefault();
+			applyFilter();
+		});
+	});
 	</script>
 	<?php
 
@@ -2576,20 +2670,20 @@ function template_filter($header_label) {
 	?>
 	<tr class='even'>
 		<td>
-		<form name="forms" method="post" action="user_admin.php">
+		<form id="forms" method="post" action="user_admin.php">
 			<table cellpadding="2" cellspacing="0">
 				<tr>
 					<td width='55'>
-						&nbsp;Search:&nbsp;
+						Search:
 					</td>
 					<td>
-						<input type="text" name="filter" size="20" value="<?php print htmlspecialchars(get_request_var_request("filter"));?>" onChange="applyFilterChange(document.forms)">
+						<input id='filter' type="text" name="filter" size="20" value="<?php print htmlspecialchars(get_request_var_request("filter"));?>" onChange="applyFilter()">
 					</td>
 					<td>
 						Templates:
 					</td>
-					<td width="1">
-						<select name="rows" onChange="applyFilterChange(document.forms)">
+					<td>
+						<select id='rows' name="rows" onChange="applyFilter()">
 							<?php
 							if (sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
@@ -2600,20 +2694,20 @@ function template_filter($header_label) {
 						</select>
 					</td>
 					<td>
-						<input type='checkbox' name='associated' id='associated' onChange='applyFilterChange(document.forms)' <?php print ($_REQUEST['associated'] == 'true' || $_REQUEST['associated'] == 'on' ? 'checked':'');?>>
+						<input type='checkbox' name='associated' id='associated' onChange='applyFilter()' <?php print ($_REQUEST['associated'] == 'true' || $_REQUEST['associated'] == 'on' ? 'checked':'');?>>
 					</td>
 					<td>
 						<label style='white-space:nowrap;' for='associated'>Show Exceptions</label>
 					</td>
 					<td>
-						<input type="button" value="Go" onClick='applyFilterChange(document.forms)' title="Set/Refresh Filters">
+						<input type="button" value="Go" onClick='applyFilter()' title="Set/Refresh Filters">
 					</td>
 					<td>
-						<input type="button" name="clearf" value="Clear" onClick='clearFilterChange(document.forms)' title="Clear Filters">
+						<input type="button" name="clearf" value="Clear" onClick='clearFilter()' title="Clear Filters">
 					</td>
 				</tr>
 			</table>
-			<input type='hidden' name='page' value='1'>
+			<input type='hidden' id='page' name='page' value='<?php print $_REQUEST['page'];?>'>
 			<input type='hidden' name='action' value='user_edit'>
 			<input type='hidden' name='tab' value='permste'>
 			<input type='hidden' name='id' value='<?php print get_request_var_request('id');?>'>
@@ -2630,22 +2724,34 @@ function tree_filter($header_label) {
 
 	?>
 	<script type="text/javascript">
-	<!--
-
-	function applyFilterChange(objForm) {
-		strURL = '?action=user_edit&tab=permstr&id=<?php print get_request_var_request('id');?>'
-		strURL = strURL + '&rows=' + objForm.rows.value;
-		strURL = strURL + '&associated=' + objForm.associated.checked;
-		strURL = strURL + '&filter=' + objForm.filter.value;
-		document.location = strURL;
+	function applyFilter() {
+		strURL = 'user_admin.php?action=user_edit&tab=permstr&id=<?php print get_request_var_request('id');?>'
+		strURL = strURL + '&rows=' + $('#rows').val();
+		strURL = strURL + '&page=' + $('#page').val();
+		strURL = strURL + '&associated=' + $('#associated').is(':checked');
+		strURL = strURL + '&filter=' + $('#filter').val();
+		strURL = strURL + '&header=false';
+		$.get(strURL, function(data) {
+			$('#main').html(data);
+			applySkin();
+		});
 	}
 
-	function clearFilterChange(objForm) {
-		strURL = '?action=user_edit&tab=permstr&id=<?php print get_request_var_request('id');?>&clearf=true'
-		document.location = strURL;
+	function clearFilter() {
+		strURL = 'user_admin.php?action=user_edit&tab=permstr&id=<?php print get_request_var_request('id');?>&clearf=true'
+		strURL = strURL + '&header=false';
+		$.get(strURL, function(data) {
+			$('#main').html(data);
+			applySkin();
+		});
 	}
 
-	-->
+	$(function(data) {
+		$('#forms').submit(function(event) {
+			event.preventDefault();
+			applyFilter();
+		});
+	});
 	</script>
 	<?php
 
@@ -2654,20 +2760,20 @@ function tree_filter($header_label) {
 	?>
 	<tr class='even'>
 		<td>
-		<form name="forms" method="post" action="user_admin.php">
+		<form id="forms" method="post" action="user_admin.php">
 			<table cellpadding="2" cellspacing="0">
 				<tr>
 					<td width='55'>
 						Search:
 					</td>
 					<td>
-						<input type="text" name="filter" size="20" value="<?php print htmlspecialchars(get_request_var_request("filter"));?>" onChange="applyFilterChange(document.forms)">
+						<input id='filter' type="text" name="filter" size="20" value="<?php print htmlspecialchars(get_request_var_request("filter"));?>" onChange="applyFilter()">
 					</td>
 					<td>
 						Trees:
 					</td>
 					<td>
-						<select name="rows" onChange="applyFilterChange(document.forms)">
+						<select id='rows' name="rows" onChange="applyFilter()">
 							<?php
 							if (sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
@@ -2678,20 +2784,20 @@ function tree_filter($header_label) {
 						</select>
 					</td>
 					<td>
-						<input type='checkbox' name='associated' id='associated' onChange='applyFilterChange(document.forms)' <?php print ($_REQUEST['associated'] == 'true' || $_REQUEST['associated'] == 'on' ? 'checked':'');?>>
+						<input type='checkbox' name='associated' id='associated' onChange='applyFilter()' <?php print ($_REQUEST['associated'] == 'true' || $_REQUEST['associated'] == 'on' ? 'checked':'');?>>
 					</td>
 					<td>
 						<label style='white-space:nowrap;' for='associated'>Show Exceptions</label>
 					</td>
 					<td>
-						<input type="button" value="Go" onClick='applyFilterChange(document.forms)' title="Set/Refresh Filters">
+						<input type="button" id='refresh' value="Go" onClick='applyFilter()' title="Set/Refresh Filters">
 					</td>
 					<td>
-						<input type="button" name="clearf" value="Clear" onClick='clearFilterChange(document.forms)' title="Clear Filters">
+						<input type="button" id='clear' name="clearf" value="Clear" onClick='clearFilter()' title="Clear Filters">
 					</td>
 				</tr>
 			</table>
-			<input type='hidden' name='page' value='1'>
+			<input type='hidden' id='page' name='page' value='<?php print $_REQUEST['page'];?>'>
 			<input type='hidden' name='action' value='user_edit'>
 			<input type='hidden' name='tab' value='permstr'>
 			<input type='hidden' name='id' value='<?php print get_request_var_request('id');?>'>
@@ -2708,22 +2814,34 @@ function member_filter($header_label) {
 
 	?>
 	<script type="text/javascript">
-	<!--
-
-	function applyFilterChange(objForm) {
-		strURL = '?action=user_edit&tab=members&id=<?php print get_request_var_request('id');?>'
-		strURL = strURL + '&rows=' + objForm.rows.value;
-		strURL = strURL + '&associated=' + objForm.associated.checked;
-		strURL = strURL + '&filter=' + objForm.filter.value;
-		document.location = strURL;
+	function applyFilter(objForm) {
+		strURL = 'user_admin.php?action=user_edit&tab=members&id=<?php print get_request_var_request('id');?>'
+		strURL = strURL + '&rows=' + $('#rows').val();
+		strURL = strURL + '&page=' + $('#page').val();
+		strURL = strURL + '&associated=' + $('#associated').is(':checked');
+		strURL = strURL + '&filter=' + $('#filter').val();
+		strURL = strURL + '&header=false';
+		$.get(strURL, function(data) {
+			$('#main').html(data);
+			applySkin();
+		});
 	}
 
-	function clearFilterChange(objForm) {
-		strURL = '?action=user_edit&tab=members&id=<?php print get_request_var_request('id');?>&clearf=true'
-		document.location = strURL;
+	function clearFilter(objForm) {
+		strURL = 'user_admin.php?action=user_edit&tab=members&id=<?php print get_request_var_request('id');?>&clearf=true'
+		strURL = strURL + '&header=false';
+		$.get(strURL, function(data) {
+			$('#main').html(data);
+			applySkin();
+		});
 	}
 
-	-->
+	$(function(data) {
+		$('#forms').submit(function(event) {
+			event.preventDefault();
+			applyFilter();
+		});
+	});
 	</script>
 	<?php
 
@@ -2732,20 +2850,20 @@ function member_filter($header_label) {
 	?>
 	<tr class='even'>
 		<td>
-		<form name="forms" method="post" action="user_admin.php">
+		<form id="forms" method="post" action="user_admin.php">
 			<table cellpadding="2" cellspacing="0">
 				<tr>
 					<td>
 						Search:
 					</td>
 					<td>
-						<input type="text" name="filter" size="20" value="<?php print htmlspecialchars(get_request_var_request("filter"));?>" onChange="applyFilterChange(document.forms)">
+						<input id='filter' type="text" name="filter" size="20" value="<?php print htmlspecialchars(get_request_var_request("filter"));?>" onChange="applyFilter()">
 					</td>
 					<td>
 						Rows:
 					</td>
 					<td width="1">
-						<select name="rows" onChange="applyFilterChange(document.forms)">
+						<select id='rows' name="rows" onChange="applyFilter()">
 							<?php
 							if (sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
@@ -2756,20 +2874,20 @@ function member_filter($header_label) {
 						</select>
 					</td>
 					<td>
-						<input type='checkbox' name='associated' id='associated' onChange='applyFilterChange(document.forms)' <?php print ($_REQUEST['associated'] == 'true' || $_REQUEST['associated'] == 'on' ? 'checked':'');?>>
+						<input type='checkbox' name='associated' id='associated' onChange='applyFilter()' <?php print ($_REQUEST['associated'] == 'true' || $_REQUEST['associated'] == 'on' ? 'checked':'');?>>
 					</td>
 					<td>
 						<label style='white-space:nowrap;' for='associated'>Show Exceptions</label>
 					</td>
 					<td>
-						<input type="button" value="Go" onClick='applyFilterChange(document.forms)' title="Set/Refresh Filters">
+						<input type="button" id='refresh' value="Go" onClick='applyFilter()' title="Set/Refresh Filters">
 					</td>
 					<td>
-						<input type="button" name="clearf" value="Clear" onClick='clearFilterChange(document.forms)' title="Clear Filters">
+						<input type="button" id='clear' name="clearf" value="Clear" onClick='clearFilter()' title="Clear Filters">
 					</td>
 				</tr>
 			</table>
-			<input type='hidden' name='page' value='1'>
+			<input type='hidden' id='page' name='page' value='<?php print $_REQUEST['page'];?>'>
 			<input type='hidden' name='action' value='user_edit'>
 			<input type='hidden' name='tab' value='members'>
 			<input type='hidden' name='id' value='<?php print get_request_var_request('id');?>'>

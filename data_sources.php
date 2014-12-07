@@ -1082,7 +1082,7 @@ function ds() {
 	<!--
 
 	function applyFilter() {
-		strURL = '?host_id=' + $('#host_id').val();
+		strURL = 'data_sources.php?host_id=' + $('#host_id').val();
 		strURL = strURL + '&filter=' + $('#filter').val();
 		strURL = strURL + '&rows=' + $('#rows').val();
 		strURL = strURL + '&template_id=' + $('#template_id').val();
@@ -1096,7 +1096,7 @@ function ds() {
 	}
 
 	function clearFilter() {
-		strURL = '?clear_x=1&header=false';
+		strURL = 'data_sources.php?clear_x=1&header=false';
 		$.get(strURL, function(data) {
 			$('#main').html(data);
 			applySkin();

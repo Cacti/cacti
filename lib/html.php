@@ -724,7 +724,7 @@ function draw_menu($user_menu = "") {
 	<td>
 	<table width='100%' cellpadding='0' cellspacing='0' border='0'>
 	<tr><td>
-	<div id='menu' style='display:none;'>
+	<div id='menu'>
 	<ul id='nav'>
 
 	<?php
@@ -830,21 +830,7 @@ function draw_menu($user_menu = "") {
 				}
 			}
 		});
-
-		<?php if (read_config_option('legacy_menu_nav') != 'on') { ?>
-
-		$('.pic').click(function(event) {
-			event.preventDefault();
-			href = $(this).attr('href');
-			href = href+ (href.indexOf('?') > 0 ? '&':'?') + 'header=false';
-			$.get(href, function(data) {
-				$('#main').html(data);
-				applySkin();
-			});
-		});
-
-	<?php }}?>
-		$('#menu').show();
+	<?php }?>
 	});
 	</script>
 	</td>

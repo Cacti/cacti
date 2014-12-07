@@ -371,6 +371,10 @@ case 'preview':
 		});
 	}
 
+	$(function(data) {
+		$('#navigation_right').show();
+	});
+
 	</script>
 	<?php
 
@@ -789,6 +793,7 @@ case 'list':
 	console.log('<?php print $_REQUEST['graph_list'];?>');
 
 	$(function() {
+		$('#navigation_right').show();
 		initializeChecks();
 	});
 

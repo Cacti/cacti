@@ -122,6 +122,10 @@ a:hover {
 	background: transparent url('./../../../images/cacti_backdrop.gif') no-repeat center right;
 }
 
+.navigation {
+//	width:400px;
+}
+
 .breadCrumbBar {
 	height:5px;
 	background: rgba(167,217,134,1);
@@ -454,6 +458,10 @@ ul#breadcrumbs {
 	background-color:#f5f5f5;
 }
 
+.textArea a {
+	font-size: 1.1em;
+}
+
 .popupBox {
 	z-index: 2;
 	position: absolute;
@@ -555,7 +563,7 @@ td.tab {
 	-moz-border-radius-topleft: 4px;
 }
 
-.tabs a {
+.tabs a, .maintabs a {
 	-moz-border-radius:5px 5px 0 0;
 	background-color:#ddd;
 	background-image:-moz-linear-gradient(#f0f0f0,#ddd);
@@ -573,7 +581,7 @@ td.tab {
 	font-size: 11px;
 }
 
-.tabs a:hover {
+.tabs a:hover, .maintabs a:hover {
 	background-color:#ddd;
 	background-image:-moz-linear-gradient(#e0e0e0,#ccc);
 	background-image:-ms-linear-gradient(#e0e0e0,#ccc);
@@ -582,7 +590,7 @@ td.tab {
 	background-repeat:repeat-x;
 }
 
-.tabs a.selected {
+.tabs a.selected, .maintabs a.selected {
 	background: rgba(242,246,248,1);
 	background: -moz-linear-gradient(top, rgba(242,246,248,1) 0%, rgba(216,225,231,1) 50%, rgba(181,198,208,1) 51%, rgba(224,239,249,1) 100%);
 	background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(242,246,248,1)), color-stop(50%, rgba(216,225,231,1)), color-stop(51%, rgba(181,198,208,1)), color-stop(100%, rgba(224,239,249,1)));
@@ -593,35 +601,35 @@ td.tab {
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f2f6f8', endColorstr='#e0eff9', GradientType=0 );
 }
 
-.tabs li {
+.tabs li, .maintabs li {
 	bottom:-1px;
 	float:left;
 	margin:0 3px 0 0;
 	position:relative;
 }
 
-.tabs li.current a {
+.tabs li.current a, .maintabs li.current a {
 	background:#fff;
 	border-bottom:1px solid #fff;
 }
-.tabs li.current a:hover {
+.tabs li.current a:hover, .maintabs li.current a:hover {
 	background:#fff;
 	border-bottom:1px solid #fff;
 }
-.tabs nav {
+.tabs nav, .maintabs nav {
 	border-bottom:1px solid #ccc;
 	padding:0 0 0 4px;
 	zoom:1;
 }
 
-.tabs nav:after {
+.tabs nav:after, .maintabs nav:after {
 	clear:both;
 	content:".";
 	display:block;
 	height:0;
 	visibility:hidden;
 }
-.tabs ul {
+.tabs ul, .maintabs ul {
 	list-style:none;
 	margin:0;
 	padding:0;

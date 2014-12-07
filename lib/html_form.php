@@ -747,12 +747,12 @@ function form_font_box($form_name, $form_previous_value, $form_default_value, $f
    @arg $action_url - the url to go to when the user clicks 'delete' */
 function form_confirm($title_text, $body_text, $cancel_url, $action_url) { ?>
 	<br>
-	<table align="center" cellpadding="1" cellspacing="0" border="0" bgcolor="#B61D22" width="60%">
+	<table align="center" cellpadding="1" cellspacing="0" border="0" width="60%">
 		<tr>
-			<td bgcolor="#B61D22" colspan="10">
+			<td class='even' colspan="10">
 				<table width="100%" cellpadding="3" cellspacing="0">
-					<tr>
-						<td bgcolor="#B61D22" class="textHeaderDark"><strong><?php print $title_text;?></strong></td>
+					<tr class='cactiTableTitle'>
+						<td class="textHeaderDark"><strong><?php print $title_text;?></strong></td>
 					</tr>
 					<?php
 					form_area($body_text);
@@ -772,7 +772,7 @@ function form_confirm_buttons($action_url, $cancel_url) {
 	global $config;
 	?>
 	<tr>
-		<td>
+		<td align='right'>
 			<input type='button' onClick='cactiReturnTo("<?php print $config['url_path'] . $cancel_url;?>")' value='Cancel'>
 			<input type='submit' onClick='cactiReturnTo("<?php print $config['url_path'] . $action_url;?>&confirm=true")' value='Delete'>
 		</td>

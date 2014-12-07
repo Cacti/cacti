@@ -1123,7 +1123,7 @@ function host() {
 	<!--
 
 	function applyFilter() {
-		strURL = '?host_status=' + $('#host_status').val();
+		strURL = 'host.php?host_status=' + $('#host_status').val();
 		strURL = strURL + '&host_template_id=' + $('#host_template_id').val();
 		strURL = strURL + '&rows=' + $('#rows').val();
 		strURL = strURL + '&filter=' + $('#filter').val();
@@ -1136,7 +1136,7 @@ function host() {
 	}
 
 	function clearFilter() {
-		strURL = '?clear_x=1&header=false';
+		strURL = 'host.php?clear_x=1&header=false';
 		$.get(strURL, function(data) {
 			$('#main').html(data);
 			applySkin();

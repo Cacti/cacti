@@ -215,11 +215,22 @@ function applyTimespanFilterChange(objForm) {
 	document.location = strURL;
 }
 
-function cactiReturnTo(location) {
-	if (location != '') {
-		document.location = location;
+function cactiReturnTo(href) {
+	if (href != '') {
+		href = href+ (href.indexOf('?') > 0 ? '&':'?') + 'header=false';
+		$.get(href, function(data) {
+			$('#main').html(data);
+			window.scrollTo(0,0);
+			applySkin();
+		});
 	}else{
-		document.history.back();
+		href = document.location;
+		href = href+ (href.indexOf('?') > 0 ? '&':'?') + 'header=false';
+		$.get(href, function(data) {
+			$('#main').html(data);
+			window.scrollTo(0,0);
+			applySkin();
+		});
 	}
 }
 

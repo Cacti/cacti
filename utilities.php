@@ -1419,7 +1419,13 @@ function utilities_view_snmp_cache() {
 	$i = 0;
 	if (sizeof($snmp_cache) > 0) {
 		foreach ($snmp_cache as $item) {
-			form_alternate_row();
+			if ($i % 2 == 0) {
+				$class = 'even';
+			}else{
+				$class = 'odd';
+			}
+
+			print "<tr class='$class'>\n";
 			?>
 			<td>
 				Host: <?php print (strlen(get_request_var_request("filter")) ? (preg_replace("/(" . preg_quote(get_request_var_request("filter"), "/") . ")/i", "<span class='filteredValue'>\\1</span>", $item["description"])) : $item["description"]);?>
@@ -1427,7 +1433,7 @@ function utilities_view_snmp_cache() {
 			</td>
 			</tr>
 			<?php
-			form_alternate_row();
+			print "<tr class='$class'>\n";
 			?>
 			<td>
 				Index: <?php print $item["snmp_index"];?>
@@ -1436,13 +1442,14 @@ function utilities_view_snmp_cache() {
 			</td>
 			</tr>
 			<?php
-			form_alternate_row();
+			print "<tr class='$class'>\n";
 			?>
 			<td>
 				OID: <?php print (strlen(get_request_var_request("filter")) ? (preg_replace("/(" . preg_quote(get_request_var_request("filter"), "/") . ")/i", "<span class='filteredValue'>\\1</span>", $item["oid"])) : $item["oid"]);?>
 			</td>
 			</tr>
 			<?php
+			$i++;
 		}
 
 		print $nav;
@@ -1694,7 +1701,12 @@ function utilities_view_poller_cache() {
 	$i = 0;
 	if (sizeof($poller_cache) > 0) {
 	foreach ($poller_cache as $item) {
-		form_alternate_row();
+		if ($i % 2 == 0) {
+			$class = 'odd';
+		}else{
+			$class = 'even';
+		}
+		print "<tr class='$class'>\n";
 			?>
 			<td width="375">
 				<a class="linkEditMain" href="<?php print htmlspecialchars("data_sources.php?action=ds_edit&id=" . $item["local_data_id"]);?>"><?php print (strlen(get_request_var_request("filter")) ? preg_replace("/(" . preg_quote(get_request_var_request("filter"), "/") . ")/i", "<span class='filteredValue'>\\1</span>", $item["name_cache"]):$item["name_cache"]);?></a>
@@ -1724,8 +1736,7 @@ function utilities_view_poller_cache() {
 			</td>
 		</tr>
 		<?php
-
-		form_alternate_row();
+		print "<tr class='$class'>\n";
 		?>
 			<td>
 			</td>

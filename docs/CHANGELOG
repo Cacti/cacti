@@ -21,6 +21,9 @@ Cacti CHANGELOG
 -feature: Merge Watermark Plugin
 -feature: Merge UGroup Plugin
 -feature: Make all page refresh Ajax based
+-feature: Make Suggest Naming more consistent
+-feature: Add State Filter for Pugins Page
+-feature: All Filters Handled in Ajax
 
 0.8.8c
 -bug#0002228: GPL incompatible files included in Cacti project in include/treeview
