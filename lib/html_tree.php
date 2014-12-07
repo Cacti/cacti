@@ -432,8 +432,7 @@ function create_dhtml_tree() {
 									/* fetch a list of field names that are sorted by the preferred sort field */
 									$sort_field_data = get_formatted_data_query_indexes($leaf['host_id'], $data_query['id']);
 									if ($data_query['id'] == 0) {
-										//$non_template_graphs = get_allowed_graphs('gl.host_id=' . $leaf['host_id'] . ' AND gl.snmp_query_id=0');
-										$non_template_graphs = db_fetch_cell("SELECT COUNT(*) FROM graph_local WHERE host_id='" . $leaf['host_id'] . "' AND snmp_query_id='0'");
+										$non_template_graphs = get_allowed_graphs('gl.host_id=' . $leaf['host_id'] . ' AND gl.snmp_query_id=0');
 									}else{
 										$non_template_graphs = 0;
 									}
