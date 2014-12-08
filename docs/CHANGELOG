@@ -1,6 +1,7 @@
 Cacti CHANGELOG
 
 0.8.8d
+-bug#0002482: Correct count of hosts using a Host Template
 -bug: Make Cacti's permissions consistent for RBAC
 -feature: Add Themes to WebGUI (deprecation of $colors array)
 -feature: Add Theme settings for RRDtool Graph Rendering (fonts, colors, border)
