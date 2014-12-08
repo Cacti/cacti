@@ -497,7 +497,7 @@ function template_edit() {
 			$i++;
 			print "	<li " . (($template_data_rrd["id"] == $_GET["view_rrd"]) ? "class='selected'" : "class=''") . ">
 				<a href='" . htmlspecialchars("data_templates.php?action=template_edit&id=" . $_GET["id"] . "&view_rrd=" . $template_data_rrd["id"]) . "'>$i: " . htmlspecialchars($template_data_rrd["data_source_name"]) . "</a>
-				<span><a style='padding-bottom:8px;' class='deleteMarker' href='" . htmlspecialchars("data_templates.php?action=rrd_remove&id=" . $template_data_rrd["id"] . "&data_template_id=" . $_GET["id"]) . "'><img src='images/delete_icon.gif' border='0' alt='Delete'></a></span></li>\n";
+				<span><a class='deleteMarker' href='" . htmlspecialchars("data_templates.php?action=rrd_remove&id=" . $template_data_rrd["id"] . "&data_template_id=" . $_GET["id"]) . "'><img src='images/delete_icon.gif' border='0' alt='Delete'></a></span></li>\n";
 		}
 
 		print "

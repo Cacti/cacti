@@ -22,11 +22,11 @@
  +-------------------------------------------------------------------------+
 */
 
-include("./include/global.php");
+include('./include/global.php');
 
 /* check to see if this is a new installation */
-if (db_fetch_cell("select cacti from version") != $config["cacti_version"]) {
-	header ("Location: " . $config['url_path'] . "install/");
+if (db_fetch_cell('select cacti from version') != $config['cacti_version']) {
+	header ('Location: ' . $config['url_path'] . 'install/');
 	exit;
 }
 
@@ -34,41 +34,41 @@ if (basename($_SERVER['PHP_SELF']) == 'logout.php') {
 	return true;
 }
 
-if (read_config_option("auth_method") != 0) {
+if (read_config_option('auth_method') != 0) {
 	/* handle alternate authentication realms */
 	api_plugin_hook_function('auth_alternate_realms');
 
 	/* handle change password dialog */
-	if ((isset($_SESSION['sess_change_password'])) && (read_config_option("webbasic_enabled") != "on")) {
-		header ("Location: " . $config['url_path'] . "auth_changepassword.php?ref=" . (isset($_SERVER["HTTP_REFERER"]) ? $_SERVER["HTTP_REFERER"] : "index.php"));
+	if ((isset($_SESSION['sess_change_password'])) && (read_config_option('webbasic_enabled') != 'on')) {
+		header ('Location: ' . $config['url_path'] . 'auth_changepassword.php?ref=' . (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : 'index.php'));
 		exit;
 	}
 
 	/* don't even bother with the guest code if we're already logged in */
-	if ((isset($guest_account)) && (empty($_SESSION["sess_user_id"]))) {
-		$guest_user_id = db_fetch_cell("select id from user_auth where username='" . read_config_option("guest_user") . "' and realm = 0 and enabled = 'on'");
+	if ((isset($guest_account)) && (empty($_SESSION['sess_user_id']))) {
+		$guest_user_id = db_fetch_cell("select id from user_auth where username='" . read_config_option('guest_user') . "' and realm = 0 and enabled = 'on'");
 
 		/* cannot find guest user */
 		if (!empty($guest_user_id)) {
-			$_SESSION["sess_user_id"] = $guest_user_id;
+			$_SESSION['sess_user_id'] = $guest_user_id;
 		}
 	}
 
 	/* if we are a guest user in a non-guest area, wipe credentials */
-	if (!empty($_SESSION["sess_user_id"])) {
-		if ((!isset($guest_account)) && (db_fetch_cell("select id from user_auth where username='" . read_config_option("guest_user") . "'") == $_SESSION["sess_user_id"])) {
-			kill_session_var("sess_user_id");
+	if (!empty($_SESSION['sess_user_id'])) {
+		if ((!isset($guest_account)) && (db_fetch_cell("select id from user_auth where username='" . read_config_option('guest_user') . "'") == $_SESSION['sess_user_id'])) {
+			kill_session_var('sess_user_id');
 		}
 	}
 
-	if (empty($_SESSION["sess_user_id"])) {
-		include("./auth_login.php");
+	if (empty($_SESSION['sess_user_id'])) {
+		include('./auth_login.php');
 		exit;
-	}elseif (!empty($_SESSION["sess_user_id"])) {
+	}elseif (!empty($_SESSION['sess_user_id'])) {
 		$realm_id = 0;
 
-		if (isset($user_auth_realm_filenames{basename($_SERVER["PHP_SELF"])})) {
-			$realm_id = $user_auth_realm_filenames{basename($_SERVER["PHP_SELF"])};
+		if (isset($user_auth_realm_filenames{basename($_SERVER['PHP_SELF'])})) {
+			$realm_id = $user_auth_realm_filenames{basename($_SERVER['PHP_SELF'])};
 		}
 
 		if ($realm_id > 0) {
@@ -95,8 +95,8 @@ if (read_config_option("auth_method") != 0) {
 
 
 		if ($realm_id != -1 && !$authorized) {
-			if (isset($_SERVER["HTTP_REFERER"])) {
-				$goBack = "<td class='textArea' colspan='2' align='center'>( <a href='" . htmlspecialchars($_SERVER["HTTP_REFERER"]) . "'>Return</a> | <a href='" . $config['url_path'] . "logout.php'>Login Again</a> )</td>";
+			if (isset($_SERVER['HTTP_REFERER'])) {
+				$goBack = "<td class='textArea' colspan='2' align='center'>( <a href='" . htmlspecialchars($_SERVER['HTTP_REFERER']) . "'>Return</a> | <a href='" . $config['url_path'] . "logout.php'>Login Again</a> )</td>";
 			}else{
 				$goBack = "<td class='textArea' colspan='2' align='center'>( <a href='" . $config['url_path'] . "logout.php'>Login Again</a> )</td>";
 			}

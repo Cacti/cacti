@@ -26,12 +26,12 @@ global $config, $refresh;
 
 $script = basename($_SERVER['SCRIPT_NAME']);
 if ($script == 'graph_view.php' || $script == 'graph.php') {
-	if (isset($_SESSION["custom"]) && $_SESSION["custom"] == true) {
+	if (isset($_SESSION['custom']) && $_SESSION['custom'] == true) {
 		$refreshIsLogout = 'true';
-	}else if (isset($_REQUEST["action"]) && $_REQUEST["action"] == 'zoom') {
+	}else if (isset($_REQUEST['action']) && $_REQUEST['action'] == 'zoom') {
 		$refreshIsLogout = 'true';
 	}else{
-		$refresh = api_plugin_hook_function('top_graph_refresh', read_graph_config_option("page_refresh"));
+		$refresh = api_plugin_hook_function('top_graph_refresh', read_graph_config_option('page_refresh'));
 		$refreshIsLogout = 'false';
 	}
 } elseif (strstr($_SERVER['SCRIPT_NAME'], 'plugins')) {
@@ -58,7 +58,7 @@ if (!empty($refresh)) {
 	$refreshIsLogout = 'true';
 } ?> 
 <script type='text/javascript'>
-	var theme='<?php print read_config_option("selected_theme");?>';
+	var theme='<?php print read_config_option('selected_theme');?>';
 	var refreshIsLogout=<?php print $refreshIsLogout;?>;
 	var refreshPage='<?php print $myrefresh['page'];?>';
 	var refreshMSeconds=<?php print $myrefresh['seconds']*1000;?>;

@@ -79,10 +79,11 @@ if (sizeof($tables)) {
 
 /*	display_help - displays the usage of the function */
 function display_help () {
-	print "Cacti Database Analyze Tool v1.0, Copyright 2004-2014 - The Cacti Group\n\n";
-	print "usage: analyze_database.php [-d|--debug] [-h|--help|-v|-V|--version]\n\n";
-	print "-d | --debug     - Display verbose output during execution\n";
-	print "-v -V --version  - Display this help message\n";
-	print "-h --help        - display this help message\n";
+	$version = db_fetch_cell('SELECT cacti FROM version');
+	echo "Cacti Database Analyze Utility, Version $version, " . COPYRIGHT_YEARS . "\n\n";
+	echo "usage: analyze_database.php [-d|--debug] [-h|--help|-v|-V|--version]\n\n";
+	echo "-d | --debug     - Display verbose output during execution\n";
+	echo "-v -V --version  - Display this help message\n";
+	echo "-h --help        - display this help message\n";
 }
 ?>

@@ -548,7 +548,8 @@ if (sizeof($parms)) {
 }
 
 function display_help() {
-	echo "Add Graphs Script 1.2, Copyright 2008 - The Cacti Group\n\n";
+	$version = db_fetch_cell('SELECT cacti FROM version');
+	echo "Add Graphs Utility, Version $version, " . COPYRIGHT_YEARS . "\n\n";
 	echo "A simple command line utility to add graphs in Cacti\n\n";
 	echo "usage: add_graphs.php --graph-type=[cg|ds] --graph-template-id=[ID]\n";
 	echo "    --host-id=[ID] [--graph-title=title] [graph options] [--force] [--quiet]\n\n";

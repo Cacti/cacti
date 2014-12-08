@@ -153,7 +153,8 @@ if (sizeof($parms)) {
 }
 
 function display_help() {
-	echo "Add Graphs Script 1.1, Copyright 2010 - The Cacti Group\n\n";
+	$version = db_fetch_cell('SELECT cacti FROM version');
+	echo "Add Graphs Utility, Version $version, " . COPYRIGHT_YEARS . "\n\n";
 	echo "A simple command line utility to import a Template into Cacti\n\n";
 	echo "usage: import_template.php --filename=[filename] [--with-template-rras] [--with-user-rras=[n[:m]...]]\n";
 	echo "Required:\n";

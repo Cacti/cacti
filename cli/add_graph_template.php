@@ -160,7 +160,8 @@ if (sizeof($parms)) {
 }
 
 function display_help() {
-	echo "Add Graph Template Script 1.0, Copyright 2008 - The Cacti Group\n\n";
+	$version = db_fetch_cell('SELECT cacti FROM version');
+	echo "Add Graph Template Utility, Version $version, " . COPYRIGHT_YEARS . "\n\n";
 	echo "A simple command line utility to associate a graph template with a host in Cacti\n\n";
 	echo "usage: add_graph_template.php --host-id=[ID] --graph-template-id=[ID]\n";
 	echo "    [--quiet]\n\n";

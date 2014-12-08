@@ -1,0 +1,92 @@
+#!/bin/bash
+#
+# boost_server.php
+#
+#
+# chkconfig: 2345 95 00
+# description: Cacti RRDTool Processor
+#
+
+# please provide the path to the boost_server here
+DEBUGLOG="/var/www/html/cacti/log/boost.log"
+PROGPATH="/var/www/html/cacti/plugins/plugins/boost/"
+PROG="boost_server.php"
+
+[ -f $PROGPATH$PROG ] || exit 0
+
+RETVAL=0
+
+start() {
+ 	echo -n $"Starting Cacti RRDTool Process: "	
+	if [ -e /var/lock/subsys/$PROG ]; then
+		echo "    [  [31;01mFAIL[m  ]"
+	else
+		if [ $debug = "1" ]; then
+			$PROGPATH$PROG > /dev/null 2>&1 &
+		else
+			$PROGPATH$PROG > $DEBUGLOG 2>&1 &
+		fi
+
+		touch /var/lock/subsys/$PROG
+		echo "    [  [32;01m OK [m  ]"
+	fi
+	return 0
+}
+
+stop() {
+	echo -n $"Stopping Cacti RRDTool Process: "
+	if [ -e /var/lock/subsys/$PROG ]; then
+		killall $PROG > /dev/null 2>&1
+		rm -f /var/lock/subsys/$PROG  > /dev/null 2>&1
+		echo "    [  [32;01m OK [m  ]"
+	else
+		echo "    [  [31;01mFAIL[m  ]"
+	fi
+	return 0
+}
+
+restart() {
+	stop
+	start
+}
+
+status() {
+ 	echo -n $"Status of Cacti RRDTool Process: "	
+	if [ -e /var/lock/subsys/$PROG ]; then
+		echo "running ..."
+	else
+		echo "down"
+	fi
+	return 0
+}
+
+debug=0
+if [ "$2" = "debug" ]; then
+	debug=1
+fi
+
+case "$1" in
+  start)
+  	start
+	;;
+  stop)
+  	stop
+	;;
+  restart|reload)
+  	restart
+	;;
+  status) 
+	status
+	;;
+  *)
+	echo $"Usage: $0 {start|stop|restart|status}"
+	exit 1
+esac
+
+exit $?
+
+
+
+
+
+

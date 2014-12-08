@@ -327,7 +327,8 @@ if (sizeof($parms)) {
 }
 
 function display_help() {
-	echo "Add Tree Script 1.0, Copyright 2004-2014 - The Cacti Group\n\n";
+	$version = db_fetch_cell('SELECT cacti FROM version');
+	echo "Add Tree Utility, Version $version, " . COPYRIGHT_YEARS . "\n\n";
 	echo "A simple command line utility to add objects to a tree in Cacti\n\n";
 	echo "usage: add_tree.php  --type=[tree|node] [type-options] [--quiet]\n\n";
 	echo "Tree options:\n";

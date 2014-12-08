@@ -28,6 +28,11 @@ a:hover {
 	color: #333333;
 }
 
+.emailtest {
+	cursor:pointer;
+	display:block;
+}
+
 .odd {
 	background-color:#F5F5F5;
 }
@@ -200,7 +205,7 @@ ul#breadcrumbs {
   margin-top: -1.5em;   
   border-top: 1.5em solid transparent;
   border-bottom: 1.5em solid transparent;
-  border-left: 1em solid;
+  border-left: 1.1em solid;
   right: -1em;
 }
 
@@ -546,7 +551,7 @@ ul#breadcrumbs {
 }
 
 .deleteMarker {
-	padding-bottom: 8px; 
+	padding-bottom: 9px !important; 
 }
 
 td.tab {

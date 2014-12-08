@@ -22,113 +22,96 @@
  +-------------------------------------------------------------------------+
 */
 
-include("./include/auth.php");
-include_once("./lib/utility.php");
+include('./include/auth.php');
+include_once('./lib/utility.php');
+include_once('./lib/boost.php');
 
-load_current_session_value("page_referrer", "page_referrer", "");
+load_current_session_value('page_referrer', 'page_referrer', '');
 
 /* set default action */
-if (!isset($_REQUEST["action"])) { $_REQUEST["action"] = ""; }
+if (!isset($_REQUEST['action'])) { $_REQUEST['action'] = ''; }
 
-if (isset($_REQUEST["sort_direction"])) {
-	if ($_REQUEST['page_referrer'] == "view_snmp_cache") {
-		$_REQUEST["action"] = "view_snmp_cache";
-	}else if ($_REQUEST['page_referrer'] == "view_poller_cache") {
-		$_REQUEST["action"] = "view_poller_cache";
+if (isset($_REQUEST['sort_direction'])) {
+	if ($_REQUEST['page_referrer'] == 'view_snmp_cache') {
+		$_REQUEST['action'] = 'view_snmp_cache';
+	}else if ($_REQUEST['page_referrer'] == 'view_poller_cache') {
+		$_REQUEST['action'] = 'view_poller_cache';
 	}else{
-		$_REQUEST["action"] = "view_user_log";
+		$_REQUEST['action'] = 'view_user_log';
 	}
 }
 
-if ((isset($_REQUEST["clear_x"])) || (isset($_REQUEST["go_x"]))) {
-	if ($_REQUEST['page_referrer'] == "view_snmp_cache") {
-		$_REQUEST["action"] = "view_snmp_cache";
-	}else if ($_REQUEST['page_referrer'] == "view_poller_cache") {
-		$_REQUEST["action"] = "view_poller_cache";
-	}else if ($_REQUEST['page_referrer'] == "view_user_log") {
-		$_REQUEST["action"] = "view_user_log";
+if ((isset($_REQUEST['clear_x'])) || (isset($_REQUEST['go_x']))) {
+	if ($_REQUEST['page_referrer'] == 'view_snmp_cache') {
+		$_REQUEST['action'] = 'view_snmp_cache';
+	}else if ($_REQUEST['page_referrer'] == 'view_poller_cache') {
+		$_REQUEST['action'] = 'view_poller_cache';
+	}else if ($_REQUEST['page_referrer'] == 'view_user_log') {
+		$_REQUEST['action'] = 'view_user_log';
 	}else{
-		$_REQUEST["action"] = "view_logfile";
+		$_REQUEST['action'] = 'view_logfile';
 	}
 }
 
-if (isset($_REQUEST["purge_x"])) {
-	if ($_REQUEST['page_referrer'] == "view_user_log") {
-		$_REQUEST["action"] = "clear_user_log";
+if (isset($_REQUEST['purge_x'])) {
+	if ($_REQUEST['page_referrer'] == 'view_user_log') {
+		$_REQUEST['action'] = 'clear_user_log';
 	}else{
-		$_REQUEST["action"] = "clear_logfile";
+		$_REQUEST['action'] = 'clear_logfile';
 	}
 }
 
-switch ($_REQUEST["action"]) {
+switch ($_REQUEST['action']) {
 	case 'clear_poller_cache':
-		top_header();
-
 		/* obtain timeout settings */
-		$max_execution = ini_get("max_execution_time");
-		ini_set("max_execution_time", "0");
+		$max_execution = ini_get('max_execution_time');
+		ini_set('max_execution_time', '0');
 		repopulate_poller_cache();
-		ini_set("max_execution_time", $max_execution);
-
-		utilities_view_poller_cache();
-
-		bottom_footer();
+		ini_set('max_execution_time', $max_execution);
+		header('Location: utilities.php?action=view_poller_cache');exit;
 		break;
 	case 'view_snmp_cache':
 		top_header();
-
 		utilities_view_snmp_cache();
-
 		bottom_footer();
 		break;
 	case 'view_poller_cache':
 		top_header();
-
 		utilities_view_poller_cache();
-
 		bottom_footer();
 		break;
 	case 'view_logfile':
 		utilities_view_logfile();
-
 		break;
 	case 'clear_logfile':
 		utilities_clear_logfile();
 		utilities_view_logfile();
-
-		bottom_footer();
 		break;
 	case 'view_user_log':
 		top_header();
-
 		utilities_view_user_log();
-
 		bottom_footer();
 		break;
 	case 'clear_user_log':
-		top_header();
-
 		utilities_clear_user_log();
 		utilities_view_user_log();
-
-		bottom_footer();
 		break;
 	case 'view_tech':
 		$php_info = utilities_php_modules();
 
 		top_header();
-
 		utilities_view_tech($php_info);
-
+		bottom_footer();
+		break;
+	case 'view_boost_status':
+		top_header();
+		boost_display_run_status();
 		bottom_footer();
 		break;
 	default:
-
 		if (!api_plugin_hook_function('utilities_action', $_REQUEST['action'])) {
 			top_header();
-
 			utilities();
-
 			bottom_footer();
 		}
 		break;
@@ -152,7 +135,7 @@ function utilities_php_modules() {
 	ob_end_clean();
 
 	/* Remove nasty style sheets, links and other junk */
-	$php_info = str_replace("\n", "", $php_info);
+	$php_info = str_replace("\n", '', $php_info);
 	$php_info = preg_replace('/^.*\<body\>/', '', $php_info);
 	$php_info = preg_replace('/\<\/body\>.*$/', '', $php_info);
 	$php_info = preg_replace('/\<a.*\>/U', '', $php_info);
@@ -165,58 +148,58 @@ function utilities_php_modules() {
 
 
 function memory_bytes($val) {
-    $val = trim($val);
-    $last = strtolower($val{strlen($val)-1});
-    switch($last) {
-        // The 'G' modifier is available since PHP 5.1.0
-        case 'g':
-            $val *= 1024;
-        case 'm':
-            $val *= 1024;
-        case 'k':
-            $val *= 1024;
-    }
+	$val = trim($val);
+	$last = strtolower($val{strlen($val)-1});
+	switch($last) {
+		// The 'G' modifier is available since PHP 5.1.0
+		case 'g':
+			$val *= 1024;
+		case 'm':
+			$val *= 1024;
+		case 'k':
+			$val *= 1024;
+	}
 
-    return $val;
+	return $val;
 }
 
 
 function memory_readable($val) {
 
 	if ($val < 1024) {
-		$val_label = "bytes";
+		$val_label = 'bytes';
 	}elseif ($val < 1048576) {
-		$val_label = "K";
+		$val_label = 'K';
 		$val /= 1024;
 	}elseif ($val < 1073741824) {
-		$val_label = "M";
+		$val_label = 'M';
 		$val /= 1048576;
 	}else{
-		$val_label = "G";
+		$val_label = 'G';
 		$val /= 1073741824;
 	}
 
-    return $val . $val_label;
+	return $val . $val_label;
 }
 
 
-function utilities_view_tech($php_info = "") {
+function utilities_view_tech($php_info = '') {
 	global $database_default, $config, $rrdtool_versions, $poller_options, $input_types;
 
 	/* Get table status */
-	$tables = db_fetch_assoc("SHOW TABLES");
+	$tables = db_fetch_assoc('SHOW TABLES');
 	$skip_tables  = array();
 	$table_status = array();
 
 	if (sizeof($tables)) {
 	foreach($tables as $table) {
-		$create_syntax = db_fetch_row("SHOW CREATE TABLE " . $table["Tables_in_" . $database_default]);
+		$create_syntax = db_fetch_row('SHOW CREATE TABLE ' . $table['Tables_in_' . $database_default]);
 
 		if (sizeof($create_syntax)) {
-			if (substr_count(strtoupper($create_syntax["Create Table"]), "INNODB")) {
-				$skip_tables[] = $table["Tables_in_" . $database_default];
+			if (substr_count(strtoupper($create_syntax['Create Table']), 'INNODB')) {
+				$skip_tables[] = $table['Tables_in_' . $database_default];
 			}else{
-				$include_tables[] = $table["Tables_in_" . $database_default];
+				$include_tables[] = $table['Tables_in_' . $database_default];
 			}
 		}
 	}
@@ -231,62 +214,62 @@ function utilities_view_tech($php_info = "") {
 	}
 
 	/* Get poller stats */
-	$poller_item = db_fetch_assoc("SELECT action, count(action) as total FROM poller_item GROUP BY action");
+	$poller_item = db_fetch_assoc('SELECT action, count(action) as total FROM poller_item GROUP BY action');
 
 	/* Get system stats */
-	$host_count = db_fetch_cell("SELECT COUNT(*) FROM host");
-	$graph_count = db_fetch_cell("SELECT COUNT(*) FROM graph_local");
-	$data_count = db_fetch_assoc("SELECT i.type_id, COUNT(i.type_id) AS total FROM data_template_data AS d, data_input AS i WHERE d.data_input_id = i.id AND local_data_id <> 0 GROUP BY i.type_id");
+	$host_count = db_fetch_cell('SELECT COUNT(*) FROM host');
+	$graph_count = db_fetch_cell('SELECT COUNT(*) FROM graph_local');
+	$data_count = db_fetch_assoc('SELECT i.type_id, COUNT(i.type_id) AS total FROM data_template_data AS d, data_input AS i WHERE d.data_input_id = i.id AND local_data_id <> 0 GROUP BY i.type_id');
 
 	/* Get RRDtool version */
-	$rrdtool_version = "Unknown";
-	if ((file_exists(read_config_option("path_rrdtool"))) && ((function_exists('is_executable')) && (is_executable(read_config_option("path_rrdtool"))))) {
+	$rrdtool_version = 'Unknown';
+	if ((file_exists(read_config_option('path_rrdtool'))) && ((function_exists('is_executable')) && (is_executable(read_config_option('path_rrdtool'))))) {
 
 		$out_array = array();
-		exec(cacti_escapeshellcmd(read_config_option("path_rrdtool")), $out_array);
+		exec(cacti_escapeshellcmd(read_config_option('path_rrdtool')), $out_array);
 
 		if (sizeof($out_array) > 0) {
-			if (preg_match("/^RRDtool 1\.4/", $out_array[0])) {
-				$rrdtool_version = "rrd-1.4.x";
-			}else if (preg_match("/^RRDtool 1\.3\./", $out_array[0])) {
-				$rrdtool_version = "rrd-1.3.x";
-			}else if (preg_match("/^RRDtool 1\.2\./", $out_array[0])) {
-				$rrdtool_version = "rrd-1.2.x";
-			}else if (preg_match("/^RRDtool 1\.0\./", $out_array[0])) {
-				$rrdtool_version = "rrd-1.0.x";
+			if (preg_match('/^RRDtool 1\.4/', $out_array[0])) {
+				$rrdtool_version = 'rrd-1.4.x';
+			}else if (preg_match('/^RRDtool 1\.3\./', $out_array[0])) {
+				$rrdtool_version = 'rrd-1.3.x';
+			}else if (preg_match('/^RRDtool 1\.2\./', $out_array[0])) {
+				$rrdtool_version = 'rrd-1.2.x';
+			}else if (preg_match('/^RRDtool 1\.0\./', $out_array[0])) {
+				$rrdtool_version = 'rrd-1.0.x';
 			}
 		}
 	}
 
 	/* Get SNMP cli version */
-	$snmp_version = read_config_option("snmp_version");
-	if ((file_exists(read_config_option("path_snmpget"))) && ((function_exists('is_executable')) && (is_executable(read_config_option("path_snmpget"))))) {
-		$snmp_version = shell_exec(cacti_escapeshellcmd(read_config_option("path_snmpget")) . " -V 2>&1");
+	$snmp_version = read_config_option('snmp_version');
+	if ((file_exists(read_config_option('path_snmpget'))) && ((function_exists('is_executable')) && (is_executable(read_config_option('path_snmpget'))))) {
+		$snmp_version = shell_exec(cacti_escapeshellcmd(read_config_option('path_snmpget')) . ' -V 2>&1');
 	}
 
 	/* Check RRDTool issues */
-	$rrdtool_error = "";
-	if ($rrdtool_version != read_config_option("rrdtool_version")) {
+	$rrdtool_error = '';
+	if ($rrdtool_version != read_config_option('rrdtool_version')) {
 		$rrdtool_error .= "<br><font color='red'>ERROR: Installed RRDTool version does not match configured version.<br>Please visit the <a href='" . htmlspecialchars("settings.php?tab=general") . "'>Configuration Settings</a> and select the correct RRDTool Utility Version.</font><br>";
 	}
-	$graph_gif_count = db_fetch_cell("SELECT COUNT(*) FROM graph_templates_graph WHERE image_format_id = 2");
-	if (($graph_gif_count > 0) && (read_config_option("rrdtool_version") != "rrd-1.0.x")) {
-		$rrdtool_error .= "<br><font color='red'>ERROR: RRDTool 1.2.x does not support the GIF images format, but " . $graph_gif_count . " graph(s) and/or templates have GIF set as the image format.</font><br>";
+	$graph_gif_count = db_fetch_cell('SELECT COUNT(*) FROM graph_templates_graph WHERE image_format_id = 2');
+	if (($graph_gif_count > 0) && (read_config_option('rrdtool_version') != 'rrd-1.0.x')) {
+		$rrdtool_error .= "<br><font color='red'>ERROR: RRDTool 1.2.x does not support the GIF images format, but " . $graph_gif_count . ' graph(s) and/or templates have GIF set as the image format.</font><br>';
 	}
 
 	/* Get spine version */
-	$spine_version = "Unknown";
-	if ((file_exists(read_config_option("path_spine"))) && ((function_exists('is_executable')) && (is_executable(read_config_option("path_spine"))))) {
+	$spine_version = 'Unknown';
+	if ((file_exists(read_config_option('path_spine'))) && ((function_exists('is_executable')) && (is_executable(read_config_option('path_spine'))))) {
 		$out_array = array();
-		exec(read_config_option("path_spine") . " --version", $out_array);
+		exec(read_config_option('path_spine') . ' --version', $out_array);
 		if (sizeof($out_array) > 0) {
 			$spine_version = $out_array[0];
 		}
 	}
 
 	/* Display tech information */
-	html_start_box("<strong>Technical Support</strong>", "100%", "", "3", "center", "");
-	html_header(array("General Information"), 2);
+	html_start_box('<strong>Technical Support</strong>', '100%', '', '3', 'center', '');
+	html_header(array('General Information'), 2);
 	print "<tr class='odd'>\n";
 	print "		<td class='textArea'>Date</td>\n";
 	print "		<td class='textArea'>" . date("r") . "</td>\n";
@@ -323,24 +306,24 @@ function utilities_view_tech($php_info = "") {
 	$data_total = 0;
 	if (sizeof($data_count)) {
 		foreach ($data_count as $item) {
-			print $input_types[$item["type_id"]] . ": " . $item["total"] . "<br>";
-			$data_total += $item["total"];
+			print $input_types[$item['type_id']] . ': ' . $item['total'] . '<br>';
+			$data_total += $item['total'];
 		}
-		print "Total: " . $data_total;
+		print 'Total: ' . $data_total;
 	}else{
 		print "<font color='red'>0</font>";
 	}
 	print "</td>\n";
 	print "</tr>\n";
 
-	html_header(array("Poller Information"), 2);
+	html_header(array('Poller Information'), 2);
 	print "<tr class='odd'>\n";
 	print "		<td class='textArea'>Interval</td>\n";
-	print "		<td class='textArea'>" . read_config_option("poller_interval") . "</td>\n";
-	if (file_exists(read_config_option("path_spine")) && $poller_options[read_config_option("poller_type")] == 'spine') {
+	print "		<td class='textArea'>" . read_config_option('poller_interval') . "</td>\n";
+	if (file_exists(read_config_option('path_spine')) && $poller_options[read_config_option('poller_type')] == 'spine') {
 		$type = $spine_version;
 	} else {
-		$type = $poller_options[read_config_option("poller_type")];
+		$type = $poller_options[read_config_option('poller_type')];
 	}
 	print "</tr>\n";
 	print "<tr class='even'>\n";
@@ -353,10 +336,10 @@ function utilities_view_tech($php_info = "") {
 	$total = 0;
 	if (sizeof($poller_item)) {
 		foreach ($poller_item as $item) {
-			print "Action[" . $item["action"] . "]: " . $item["total"] . "<br>";
-			$total += $item["total"];
+			print 'Action[' . $item['action'] . ']: ' . $item['total'] . '<br>';
+			$total += $item['total'];
 		}
-		print "Total: " . $total;
+		print 'Total: ' . $total;
 	}else{
 		print "<font color='red'>No items to poll</font>";
 	}
@@ -1024,7 +1007,6 @@ function utilities_view_logfile() {
 					</td>
 				</tr>
 			</table>
-			<input type='hidden' id='page' name='page' value='<?php print $_REQUEST['page'];?>'>
 			<input type='hidden' name='action' value='view_logfile'>
 		</form>
 		</td>
@@ -1755,62 +1737,70 @@ function utilities_view_poller_cache() {
 }
 
 function utilities() {
-	html_start_box("<strong>Cacti System Utilities</strong>", "100%", "", "3", "center", "");
+	html_start_box('<strong>Cacti System Utilities</strong>', '100%', '', '3', 'center', '');
 
 	?>
-	<colgroup span="3">
-		<col valign="top" width="20%"></col>
-		<col valign="top" width="80%"></col>
+	<colgroup span='3'>
+		<col valign='top' width='20%'></col>
+		<col valign='top' width='80%'></col>
 	</colgroup>
 
-	<?php html_header(array("Technical Support"), 2); form_alternate_row(); ?>
-		<td class="textArea">
-			<a href='<?php print htmlspecialchars("utilities.php?action=view_tech");?>'>Technical Support</a>
+	<?php html_header(array('Technical Support'), 2); form_alternate_row(); ?>
+		<td class='textArea'>
+			<a href='<?php print htmlspecialchars('utilities.php?action=view_tech');?>'>Technical Support</a>
 		</td>
-		<td class="textArea">
+		<td class='textArea'>
 			Cacti technical support page.  Used by developers and technical support persons to assist with issues in Cacti.  Includes checks for common configuration issues.
 		</td>
 	</tr>
 
-	<?php html_header(array("Log Administration"), 2); form_alternate_row(); ?>
-		<td class="textArea">
-			<a href='<?php print htmlspecialchars("utilities.php?action=view_logfile");?>'>View Cacti Log File</a>
+	<?php html_header(array('Log Administration'), 2); form_alternate_row(); ?>
+		<td class='textArea'>
+			<a href='<?php print htmlspecialchars('utilities.php?action=view_logfile');?>'>View Cacti Log File</a>
 		</td>
-		<td class="textArea">
+		<td class='textArea'>
 			The Cacti Log File stores statistic, error and other message depending on system settings.  This information can be used to identify problems with the poller and application.
 		</td>
 	</tr>
 	<?php form_alternate_row(); ?>
-		<td class="textArea">
-			<a href='<?php print htmlspecialchars("utilities.php?action=view_user_log");?>'>View User Log</a>
+		<td class='textArea'>
+			<a href='<?php print htmlspecialchars('utilities.php?action=view_user_log');?>'>View User Log</a>
 		</td>
-		<td class="textArea">
+		<td class='textArea'>
 			Allows Administrators to browse the user log.  Administrators can filter and export the log as well.
 		</td>
 	</tr>
 
-	<?php html_header(array("Poller Cache Administration"), 2); form_alternate_row(); ?>
-		<td class="textArea">
-			<a href='<?php print htmlspecialchars("utilities.php?action=view_poller_cache");?>'>View Poller Cache</a>
+	<?php html_header(array('Poller Cache Administration'), 2); form_alternate_row(); ?>
+		<td class='textArea'>
+			<a href='<?php print htmlspecialchars('utilities.php?action=view_poller_cache');?>'>View Poller Cache</a>
 		</td>
-		<td class="textArea">
+		<td class='textArea'>
 			This is the data that is being passed to the poller each time it runs. This data is then in turn executed/interpreted and the results are fed into the rrd files for graphing or the database for display.
 		</td>
 	</tr>
 	<?php form_alternate_row(); ?>
-		<td class="textArea">
-			<a href='<?php print htmlspecialchars("utilities.php?action=view_snmp_cache");?>'>View SNMP Cache</a>
+		<td class='textArea'>
+			<a href='<?php print htmlspecialchars('utilities.php?action=view_snmp_cache');?>'>View SNMP Cache</a>
 		</td>
-		<td class="textArea">
+		<td class='textArea'>
 			The SNMP cache stores information gathered from SNMP queries. It is used by cacti to determine the OID to use when gathering information from an SNMP-enabled host.
 		</td>
 	</tr>
 	<?php form_alternate_row(); ?>
-		<td class="textArea">
-			<a href='<?php print htmlspecialchars("utilities.php?action=clear_poller_cache");?>'>Rebuild Poller Cache</a>
+		<td class='textArea'>
+			<a href='<?php print htmlspecialchars('utilities.php?action=clear_poller_cache');?>'>Rebuild Poller Cache</a>
 		</td>
-		<td class="textArea">
+		<td class='textArea'>
 			The poller cache will be cleared and re-generated if you select this option. Sometimes host/data source data can get out of sync with the cache in which case it makes sense to clear the cache and start over.
+		</td>
+	</tr>
+	<?php html_header(array('Boost Utilities'), 2); form_alternate_row(); ?>
+		<td class='textArea'>
+			<a href='<?php print htmlspecialchars('utilities.php?action=view_boost_status');?>'>View Boost Status</a>
+		</td>
+		<td class='textArea'>
+			This menu pick allows you to view various boost settings and statistics associated with the current running Boost configuration.	
 		</td>
 	</tr>
 
@@ -1821,6 +1811,328 @@ function utilities() {
 	html_end_box();
 }
 
+function boost_display_run_status() {
+	global $refresh, $config, $refresh_interval, $boost_utilities_interval, $boost_refresh_interval, $boost_max_runtime;
+
+	/* ================= input validation ================= */
+	input_validate_input_number(get_request_var_request('refresh'));
+	/* ==================================================== */
+
+	load_current_session_value('refresh', 'sess_boost_utilities_refresh', '30');
+
+	$refresh['seconds'] = $_REQUEST['refresh'];
+	$refresh['page'] = 'utilities.php?action=view_boost_status';
+
+	$last_run_time   = read_config_option("boost_last_run_time", TRUE);
+	$next_run_time   = read_config_option("boost_next_run_time", TRUE);
+
+	$rrd_updates     = read_config_option("boost_rrd_update_enable", TRUE);
+	$boost_server    = read_config_option("boost_server_enable", TRUE);
+	$boost_cache     = read_config_option("boost_png_cache_enable", TRUE);
+
+	$max_records     = read_config_option("boost_rrd_update_max_records", TRUE);
+	$max_runtime     = read_config_option("boost_rrd_update_max_runtime", TRUE);
+	$update_interval = read_config_option("boost_rrd_update_interval", TRUE);
+	$peak_memory     = read_config_option('boost_peak_memory', TRUE);
+	$detail_stats    = read_config_option('stats_detail_boost', TRUE);
+
+	html_start_box("<strong>Boost Status</strong>", "100%", '', "3", "center", "");
+	?>
+	<script type="text/javascript">
+	<!--
+	function applyStatsRefresh(objForm) {
+		strURL = '?action=view_boost_status&refresh=' + objForm.refresh[objForm.refresh.selectedIndex].value;
+		document.location = strURL;
+	}
+	-->
+	</script>
+	<tr class='even'>
+		<form name="form_boost_utilities_stats" method="post">
+		<td>
+			<table cellpadding="1" cellspacing="0">
+				<tr>
+					<td width="120" style="white-space:nowrap;">
+						&nbsp;Refresh Interval:
+					</td>
+					<td width="1">
+						<select name="refresh" onChange="applyStatsRefresh(document.form_boost_utilities_stats)">
+						<?php
+						foreach ($boost_utilities_interval as $key => $interval) {
+							print '<option value="' . $key . '"'; if ($_REQUEST["refresh"] == $key) { print " selected"; } print ">" . $interval . "</option>";
+						}
+						?>
+					</td>
+					<td>
+						&nbsp;<input type="submit" value="Refresh">
+					</td>
+				</tr>
+			</table>
+		</td>
+		</form>
+	</tr>
+	<?php
+	html_end_box(TRUE);
+	html_start_box("", "100%", '', "3", "center", "");
+
+	/* get the boost table status */
+	$boost_table_status = db_fetch_assoc("SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE table_schema=SCHEMA()
+						AND (table_name LIKE 'poller_output_boost_arch_%' OR table_name LIKE 'poller_output_boost')");
+	$pending_records = 0;
+	$arch_records = 0;
+	$data_length = 0;
+	$engine = "";
+	$max_data_length = 0;
+	foreach($boost_table_status as $table) {
+		if ($table["TABLE_NAME"] == "poller_output_boost") {
+			$pending_records += $table["TABLE_ROWS"];
+		} else {
+			$arch_records += $table["TABLE_ROWS"];
+		}
+		$data_length += $table["DATA_LENGTH"];
+		$data_length -= $table["DATA_FREE"];
+		$engine = $table["ENGINE"];
+		$max_data_length = $table["MAX_DATA_LENGTH"];
+	}
+	$total_records = $pending_records + $arch_records;
+	$avg_row_length = ($total_records ? intval($data_length / $total_records) : 0);
+
+	$total_data_sources = db_fetch_cell("SELECT COUNT(*) FROM poller_item");
+
+	$boost_status = read_config_option("boost_poller_status", TRUE);
+	if (strlen($boost_status)) {
+		$boost_status_array = explode(":", $boost_status);
+
+		$boost_status_date = $boost_status_array[1];
+
+		if (substr_count($boost_status_array[0], "complete")) $boost_status_text = "Idle";
+		elseif (substr_count($boost_status_array[0], "running"))  $boost_status_text = "Running";
+		elseif (substr_count($boost_status_array[0], "overrun"))    $boost_status_text = "Overrun Warning";
+		elseif (substr_count($boost_status_array[0], "timeout"))  $boost_status_text = "Timed Out";
+		else   $boost_status_text = "Other";
+	}else{
+		$boost_status_text = "Never Run";
+		$boost_status_date = "";
+	}
+
+	$stats_boost = read_config_option("stats_boost", TRUE);
+	if (strlen($stats_boost)) {
+		$stats_boost_array = explode(" ", $stats_boost);
+
+		$stats_duration = explode(":", $stats_boost_array[0]);
+		$boost_last_run_duration = $stats_duration[1];
+
+		$stats_rrds = explode(":", $stats_boost_array[1]);
+		$boost_rrds_updated = $stats_rrds[1];
+	}else{
+		$boost_last_run_duration = "";
+		$boost_rrds_updated = "";
+	}
+
+
+	/* get cache directory size/contents */
+	$cache_directory = read_config_option("boost_png_cache_directory", TRUE);
+	$directory_contents = array();
+
+	if (is_dir($cache_directory)) {
+		if ($handle = @opendir($cache_directory)) {
+			/* This is the correct way to loop over the directory. */
+			while (FALSE !== ($file = readdir($handle))) {
+				$directory_contents[] = $file;
+			}
+
+			closedir($handle);
+
+			/* get size of directory */
+			$directory_size = 0;
+			$cache_files = 0;
+			if (sizeof($directory_contents)) {
+				/* goto the cache directory */
+				chdir($cache_directory);
+
+				/* check and fry as applicable */
+				foreach($directory_contents as $file) {
+					/* only remove jpeg's and png's */
+					if ((substr_count(strtolower($file), ".png")) ||
+						(substr_count(strtolower($file), ".jpg"))) {
+						$cache_files++;
+						$directory_size += filesize($file);
+					}
+				}
+			}
+
+			$directory_size = boost_file_size_display($directory_size);
+			$cache_files = $cache_files . " Files";
+		}else{
+			$directory_size = "<strong>WARNING:</strong> Can not open directory";
+			$cache_files = "<strong>WARNING:</strong> Unknown";
+		}
+	}else{
+		$directory_size = "<strong>WARNING:</strong> Directory Does NOT Exist!!";
+		$cache_files = "<strong>WARNING:</strong> N/A";
+	}
+
+	$i = 0;
+
+	/* boost status display */
+	html_header(array("Current Boost Status"), 2);
+
+	form_alternate_row();
+	print "<td><strong>Boost On Demand Updating:</strong></td><td><strong>" . ($rrd_updates == "" ? "Disabled" : $boost_status_text) . "</strong></td>";
+
+	form_alternate_row();
+	print "<td><strong>Total Data Sources:</strong></td><td>" . $total_data_sources . "</td>";
+
+	if ($total_records > 0) {
+		form_alternate_row();
+		print "<td><strong>Pending Boost Records:</strong></td><td>" . $pending_records . "</td>";
+
+		form_alternate_row();
+		print "<td><strong>Archived Boost Records:</strong></td><td>" . $arch_records . "</td>";
+
+		form_alternate_row();
+		print "<td><strong>Total Boost Records:</strong></td><td>" . $total_records . "</td>";
+	}
+
+	/* boost status display */
+	html_header(array("Boost Storage Statistics"), 2);
+
+	/* describe the table format */
+	form_alternate_row();
+	print "<td><strong>Database Engine:</strong></td><td>" . $engine . "</td>";
+
+	/* tell the user how big the table is */
+	form_alternate_row();
+	print "<td><strong>Current Boost Tables Size:</strong></td><td>" . boost_file_size_display($data_length, 2) . "</td>";
+
+	/* tell the user about the average size/record */
+	form_alternate_row();
+	print "<td><strong>Avg Bytes/Record:</strong></td><td>" . boost_file_size_display($avg_row_length) . "</td>";
+
+	/* tell the user about the average size/record */
+	$output_length = read_config_option("boost_max_output_length");
+	if (strlen($output_length)) {
+		$parts = explode(":", $output_length);
+		if ((time()-1200) > $parts[0]) {
+			$refresh = TRUE;
+		}else{
+			$refresh = FALSE;
+		}
+	}else{
+		$refresh = TRUE;
+	}
+
+	if ($refresh) {
+		if (strcmp($engine, "MEMORY") == 0) {
+			$max_length = db_fetch_cell("SELECT MAX(LENGTH(output)) FROM poller_output_boost");
+		}else{
+			$max_length = "0";
+		}
+		db_execute("REPLACE INTO settings (name,value) VALUES ('boost_max_output_length', '" . time() . ":" . $max_length . "')");
+	}else{
+		$max_length = $parts[1];
+	}
+
+	if ($max_length != 0) {
+		form_alternate_row();
+		print "<td><strong>Max Record Length:</strong></td><td>" . $max_length . " Bytes</td>";
+	}
+
+	/* tell the user about the "Maximum Size" this table can be */
+	form_alternate_row();
+	if (strcmp($engine, "MEMORY")) {
+		$max_table_allowed = "Unlimited";
+		$max_table_records = "Unlimited";
+	}else{
+		$max_table_allowed = boost_file_size_display($max_data_length, 2);
+		$max_table_records = ($avg_row_length ? round($max_data_length/$avg_row_length, 0) : 0);
+	}
+	print "<td><strong>Max Allowed Boost Table Size:</strong></td><td>" . $max_table_allowed . "</td>";
+
+	/* tell the user about the estimated records that "could" be held in memory */
+	form_alternate_row();
+	print "<td><strong>Estimated Maximum Records:</strong></td><td>" . $max_table_records  . " Records</td>";
+
+	/* boost last runtime display */
+	html_header(array("Runtime Statistics"), 2);
+
+	form_alternate_row();
+	print "<td width=200><strong>Last Start Time:</strong></td><td>" . $last_run_time . "</td>";
+
+	form_alternate_row();
+	print "<td width=200><strong>Last Run Duration:</strong></td><td>";
+	print (($boost_last_run_duration > 60) ? (int)($boost_last_run_duration/60) . " minutes " : "" ) . $boost_last_run_duration%60 . " seconds";
+	if ($rrd_updates != ""){ print " (" . round(100*$boost_last_run_duration/$update_interval/60) . "% of update frequency)";}
+	print "</td>";
+
+	form_alternate_row();
+	print "<td width=200><strong>RRD Updates:</strong></td><td>" . $boost_rrds_updated . "</td>";
+
+	form_alternate_row();
+	print "<td width=200><strong>Peak Poller Memory:</strong></td><td>" . ((read_config_option('boost_peak_memory') != '') ? (round(read_config_option('boost_peak_memory')/1024/1024,2)) . " MBytes" : "N/A") . "</td>";
+
+	form_alternate_row();
+	print "<td width=200><strong>Detailed Runtime Timers:</strong></td><td>" . (($detail_stats != '') ? $detail_stats:"N/A") . "</td>";
+
+	form_alternate_row();
+	print "<td width=200><strong>Max Poller Memory Allowed:</strong></td><td>" . ((read_config_option('boost_poller_mem_limit') != '') ? (read_config_option('boost_poller_mem_limit')) . " MBytes" : "N/A") . "</td>";
+
+	/* boost runtime display */
+	html_header(array("Run Time Configuration"), 2);
+
+	form_alternate_row();
+	print "<td width=200><strong>Update Frequency:</strong></td><td><strong>" . ($rrd_updates == "" ? "N/A" : $boost_refresh_interval[$update_interval]) . "</strong></td>";
+
+	form_alternate_row();
+	print "<td width=200><strong>Next Start Time:</strong></td><td>" . $next_run_time . "</td>";
+
+	form_alternate_row();
+	print "<td width=200><strong>Maximum Records:</strong></td><td>" . $max_records . " Records</td>";
+
+	form_alternate_row();
+	print "<td width=200><strong>Maximum Allowed Runtime:</strong></td><td>" . $boost_max_runtime[$max_runtime] . "</td>";
+
+	/* boost runtime display */
+	html_header(array("Boost Server Details"), 2);
+
+	form_alternate_row();
+	print "<td><strong>Server Config Status:</strong></td><td><strong>" . ($boost_server == "" ? "Disabled" : "Enabled") . "</strong></td>";
+
+	form_alternate_row();
+	print "<td><strong>Multiprocess Server:</td><td>" . (read_config_option("boost_server_multiprocess", TRUE) == "1" ? "Multiple Process" : "Single Process") . "</strong></td>";
+
+	form_alternate_row();
+	print "<td><strong>Update Timeout:</td><td>" . read_config_option("boost_server_timeout", TRUE) . " Seconds</strong></td>";
+
+	form_alternate_row();
+	print "<td><strong>Server/Port:</td><td>" . read_config_option("boost_server_hostname", TRUE) . "@" . read_config_option("boost_server_listen_port", TRUE) . "</strong></td>";
+
+	form_alternate_row();
+	print "<td><strong>Authorized Update Web Servers:</td><td>" . read_config_option("boost_server_clients", TRUE) . "</strong></td>";
+
+	if (strlen(read_config_option("boost_path_rrdupdate")) && (read_config_option("boost_server_multiprocess") == 1)) {
+		form_alternate_row();
+		print "<td><strong>RRDtool Binary Used:</td><td>" . read_config_option("boost_path_rrdupdate") . "</strong></td>";
+	}else{
+		form_alternate_row();
+		print "<td><strong>RRDtool Binary Used:</td><td>" . read_config_option("path_rrdtool") . "</strong></td>";
+	}
+
+	/* boost caching */
+	html_header(array("Image Caching"), 2);
+
+	form_alternate_row();
+	print "<td><strong>Image Caching Status:</strong></td><td><strong>" . ($boost_cache == "" ? "Disabled" : "Enabled") . "</strong></td>";
+
+	form_alternate_row();
+	print "<td><strong>Cache Directory:</strong></td><td>" . $cache_directory . "</td>";
+
+	form_alternate_row();
+	print "<td><strong>Cached Files:</strong></td><td>" . $cache_files . "</td>";
+
+	form_alternate_row();
+	print "<td><strong>Cached Files Size:</strong></td><td>" . $directory_size . "</td>";
+
+	html_end_box(TRUE);
+}
+
 ?>
-
-

@@ -87,6 +87,12 @@ case 'view':
 	<tr class='tableHeader'>
 		<td colspan='3' class='textHeaderDark'>
 			<strong>Viewing Graph</strong> '<?php print htmlspecialchars($graph_title);?>'
+		<script type="text/javascript" >
+		$(function() { 
+			$('#navigation').show();
+			$('#navigation_right').show();
+		});
+		</script>
 		</td>
 	</tr>
 	<?php
@@ -228,7 +234,11 @@ case 'zoom':
 		</td>
 	</tr>
 	<script type="text/javascript" >
-		$(document).ready(function() { $(".graphimage").zoom({serverTimeOffset:<?php print date('Z');?>}); });
+	$(function() { 
+		$(".graphimage").zoom({serverTimeOffset:<?php print date('Z');?>}); 
+		$('#navigation').show();
+		$('#navigation_right').show();
+	});
 	</script>
 	<?php
 
@@ -262,6 +272,12 @@ case 'properties':
 			</table>
 		</td>
 	</tr>
+	<script type="text/javascript" >
+	$(function() { 
+		$('#navigation').show();
+		$('#navigation_right').show();
+	});
+	</script>
 	<?php
 
 	break;

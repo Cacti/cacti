@@ -214,7 +214,8 @@ function disable_poller() {
 }
 
 function display_help() {
-	echo "Structured RRA Paths Utility, Copyright 2008-2014 - The Cacti Group\n\n";
+	$version = db_fetch_cell('SELECT cacti FROM version');
+	echo "Structured RRA Paths Utility, Version $version, " . COPYRIGHT_YEARS . "\n\n";
 	echo "A simple command line utility that converts a Cacti system from using\n";
 	echo "legacy RRA paths to using structured RRA paths with the following\n";
 	echo "naming convention: <path_rra>/host_id/local_data_id.rrd\n\n";

@@ -83,7 +83,8 @@ rrd_close($rrdtool_pipe);
 
 /*	display_help - displays the usage of the function */
 function display_help () {
-	print "Cacti Empty Poller Output Table Script 1.0, Copyright 2004-2014 - The Cacti Group\n\n";
+	$version = db_fetch_cell('SELECT cacti FROM version');
+	echo "Empty Poller Output Table Utility, Version $version, " . COPYRIGHT_YEARS . "\n\n";
 	print "usage: poller_output_empty.php [-h] [--help] [-v] [--version]\n\n";
 	print "-v --version  - Display this help message\n";
 	print "-h --help     - Display this help message\n";

@@ -109,11 +109,12 @@ foreach($tables AS $table) {
 
 /*	display_help - displays the usage of the function */
 function display_help () {
-	print "Cacti Database Conversion Tool v1.0, Copyright 2010 - The Cacti Group\n\n";
-	print "usage: convert_innodb.php [-d] [-h] [--form] [--help] [-v] [-V] [--version]\n\n";
-	print "-d | --debug     - Display verbose output during execution\n";
-	print "-s | --size=N    - The largest table size in records to convert\n";
-	print "-v -V --version  - Display this help message\n";
-	print "-h --help        - display this help message\n";
+	$version = db_fetch_cell('SELECT cacti FROM version');
+	echo "Cacti Database Conversion Utility, Version $version, " . COPYRIGHT_YEARS . "\n\n";
+	echo "usage: convert_innodb.php [-d] [-h] [--form] [--help] [-v] [-V] [--version]\n\n";
+	echo "-d | --debug     - Display verbose output during execution\n";
+	echo "-s | --size=N    - The largest table size in records to convert\n";
+	echo "-v -V --version  - Display this help message\n";
+	echo "-h --help        - display this help message\n";
 }
 ?>

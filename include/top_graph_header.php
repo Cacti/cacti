@@ -32,78 +32,78 @@ if ($oper_mode == OPER_MODE_RESKIN) {
 }
 
 /* ================= input validation ================= */
-input_validate_input_number(get_request_var_request("local_graph_id"));
-input_validate_input_number(get_request_var_request("graph_start"));
-input_validate_input_number(get_request_var_request("graph_end"));
+input_validate_input_number(get_request_var_request('local_graph_id'));
+input_validate_input_number(get_request_var_request('graph_start'));
+input_validate_input_number(get_request_var_request('graph_end'));
 /* ==================================================== */
 
-if (read_config_option("auth_method") != 0) {
+if (read_config_option('auth_method') != 0) {
 	/* at this point this user is good to go... so get some setting about this
 	user and put them into variables to save excess SQL in the future */
-	$current_user = db_fetch_row("select * from user_auth where id=" . $_SESSION["sess_user_id"]);
+	$current_user = db_fetch_row('SELECT * FROM user_auth WHERE id=' . $_SESSION['sess_user_id']);
 
 	/* find out if we are logged in as a 'guest user' or not */
-	if (db_fetch_cell("select id from user_auth where username='" . read_config_option("guest_user") . "'") == $_SESSION["sess_user_id"]) {
+	if (db_fetch_cell("SELECT id FROM user_auth WHERE username='" . read_config_option('guest_user') . "'") == $_SESSION['sess_user_id']) {
 		$using_guest_account = true;
 	}
 
 	/* find out if we should show the "console" tab or not, based on this user's permissions */
-	if (sizeof(db_fetch_assoc("select realm_id from user_auth_realm where realm_id=8 and user_id=" . $_SESSION["sess_user_id"])) == 0) {
+	if (sizeof(db_fetch_assoc('SELECT realm_id FROM user_auth_realm WHERE realm_id=8 AND user_id=' . $_SESSION['sess_user_id'])) == 0) {
 		$show_console_tab = false;
 	}
 }
 
 /* need to correct $_SESSION["sess_nav_level_cache"] in zoom view */
-if (isset($_REQUEST["action"]) && $_REQUEST["action"] == "zoom") {
-	$_SESSION["sess_nav_level_cache"][2]["url"] = "graph.php?local_graph_id=" . $_REQUEST["local_graph_id"] . "&rra_id=all";
+if (isset($_REQUEST['action']) && $_REQUEST['action'] == 'zoom') {
+	$_SESSION['sess_nav_level_cache'][2]['url'] = 'graph.php?local_graph_id=' . $_REQUEST['local_graph_id'] . '&rra_id=all';
 }
 
-$page_title = api_plugin_hook_function('page_title', draw_navigation_text("title"));
+$page_title = api_plugin_hook_function('page_title', draw_navigation_text('title'));
 
 ?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-	<meta http-equiv="X-UA-Compatible" content="edge">
+	<meta http-equiv='X-UA-Compatible' content='edge'>
 	<title><?php echo $page_title; ?></title>
-	<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
-	<link href="<?php echo $config['url_path']; ?>include/themes/<?php print read_config_option('selected_theme');?>/main.css" type="text/css" rel="stylesheet">
-	<link href="<?php echo $config['url_path']; ?>include/themes/<?php print read_config_option('selected_theme');?>/jquery.zoom.css" type="text/css" rel="stylesheet">
-	<link href="<?php echo $config['url_path']; ?>include/themes/<?php print read_config_option('selected_theme');?>/jquery-ui.css" type="text/css" rel="stylesheet">
-	<link href="<?php echo $config['url_path']; ?>include/themes/<?php print read_config_option('selected_theme');?>/default/style.css" type="text/css" rel="stylesheet">
-	<link href="<?php echo $config['url_path']; ?>images/favicon.ico" rel="shortcut icon">
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print read_config_option('selected_theme');?>/main.css' type='text/css' rel='stylesheet'>
+	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print read_config_option('selected_theme');?>/jquery.zoom.css' type='text/css' rel='stylesheet'>
+	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print read_config_option('selected_theme');?>/jquery-ui.css' type='text/css' rel='stylesheet'>
+	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print read_config_option('selected_theme');?>/default/style.css' type='text/css' rel='stylesheet'>
+	<link href='<?php echo $config['url_path']; ?>images/favicon.ico' rel='shortcut icon'>
 	<?php api_plugin_hook('page_head'); ?>
-	<script type="text/javascript" src="<?php echo $config['url_path']; ?>include/js/jquery.js" language="javascript"></script>
-	<script type="text/javascript" src="<?php echo $config['url_path']; ?>include/js/jquery-ui.js" language="javascript"></script>
-	<script type="text/javascript" src="<?php echo $config['url_path']; ?>include/js/jquery.cookie.js" language="javascript"></script>
-	<script type="text/javascript" src="<?php echo $config['url_path']; ?>include/js/jstree.js"></script>
-	<script type="text/javascript" src="<?php echo $config['url_path']; ?>include/js/jquery.easytabs.js"></script>
-	<script type="text/javascript" src="<?php echo $config['url_path']; ?>include/js/jquery.zoom.js" language="javascript"></script>
-	<script type="text/javascript" src="<?php echo $config['url_path']; ?>include/jscalendar/calendar.js"></script>
-	<script type="text/javascript" src="<?php echo $config['url_path']; ?>include/jscalendar/lang/calendar-en.js"></script>
-	<script type="text/javascript" src="<?php echo $config['url_path']; ?>include/jscalendar/calendar-setup.js"></script>
-	<script type="text/javascript" src="<?php echo $config['url_path']; ?>include/layout.js"></script>
+	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery.js' language='javascript'></script>
+	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery-ui.js' language='javascript'></script>
+	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery.cookie.js' language='javascript'></script>
+	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jstree.js'></script>
+	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery.easytabs.js'></script>
+	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery.zoom.js' language='javascript'></script>
+	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/jscalendar/calendar.js'></script>
+	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/jscalendar/lang/calendar-en.js'></script>
+	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/jscalendar/calendar-setup.js'></script>
+	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/layout.js'></script>
 	<?php include($config['base_path'] . '/include/global_session.php');?>
 </head>
 
 <?php if ($oper_mode == OPER_MODE_NATIVE) {?>
-<body <?php print api_plugin_hook_function("body_style", "");?>>
+<body <?php print api_plugin_hook_function('body_style', '');?>>
 <a name='page_top'></a>
 <?php }else{?>
-<body <?php print api_plugin_hook_function("body_style", "");?>>
+<body <?php print api_plugin_hook_function('body_style', '');?>>
 <a name='page_top'></a>
 <?php }?>
 
-<table style="width:100%" cellspacing="0" cellpadding="0">
+<table style='width:100%' cellspacing='0' cellpadding='0'>
 <?php if ($oper_mode == OPER_MODE_NATIVE) { ;?>
-	<tr class="cactiPageHead noprint">
-		<td class='cactiGraphPageHeadBackdrop' colspan="2" valign="bottom" nowrap>
-			<table width="100%" cellspacing="0" cellpadding="0">
+	<tr class='cactiPageHead noprint'>
+		<td class='cactiGraphPageHeadBackdrop' colspan='2' valign='bottom' nowrap>
+			<table width='100%' cellspacing='0' cellpadding='0'>
 				<tr>
-					<td id="tabs" valign='bottom'>
+					<td id='tabs' valign='bottom'>
 						<?php print html_show_tabs_left($show_console_tab); ?>
 					</td>
-					<td id="gtabs" align="right" nowrap>
+					<td id='gtabs' align='right' nowrap>
 						<?php print html_graph_tabs_right($current_user);?>
 					</td>
 				</tr>
@@ -112,18 +112,17 @@ $page_title = api_plugin_hook_function('page_title', draw_navigation_text("title
 	</tr>
 <?php } elseif ($oper_mode == OPER_MODE_NOTABS) { api_plugin_hook_function('print_top_header'); } ?>
 	<tr class='breadCrumbBar noprint'>
-		<td colspan="3">
-			<table width="100%">
+		<td colspan='3'>
+			<table width='100%'>
 				<tr>
-					<td width='30%'>
-						<div class='navBar'>
+					<td width='40%'>
+						<div style='min-width:30%:white-space:nowrap;' id='navBar' class='navBar'>
 							<?php echo draw_navigation_text();?>
 						</div>
 					</td>
-					<td width='40%'>
-						<div class='scrollBar'></div>
+					<td width='30%'>
 					</td>
-					<td width='30%' align="right">
+					<td width='30%' align='right'>
 						<div class='infoBar'>
 							<?php echo draw_login_status();?>
 						</div>
@@ -132,35 +131,35 @@ $page_title = api_plugin_hook_function('page_title', draw_navigation_text("title
 			</table>
 		</td>
 	</tr>
-	<?php if ((basename($_SERVER["PHP_SELF"]) == "graph.php") && ($_REQUEST["action"] == "properties")) {?>
+	<?php if ((basename($_SERVER['PHP_SELF']) == 'graph.php') && ($_REQUEST['action'] == 'properties')) {?>
 	<tr>
-		<td valign="top" class='cactiTreeNavigationArea' colspan="3">
+		<td valign='top' class='cactiTreeNavigationArea' colspan='3'>
 			<?php
-			$graph_data_array["print_source"] = true;
+			$graph_data_array['print_source'] = true;
 
 			/* override: graph start time (unix time) */
-			if (!empty($_GET["graph_start"])) {
-				$graph_data_array["graph_start"] = get_request_var_request("graph_start");
+			if (!empty($_GET['graph_start'])) {
+				$graph_data_array['graph_start'] = get_request_var_request('graph_start');
 			}
 
 			/* override: graph end time (unix time) */
-			if (!empty($_GET["graph_end"])) {
-				$graph_data_array["graph_end"] = get_request_var_request("graph_end");
+			if (!empty($_GET['graph_end'])) {
+				$graph_data_array['graph_end'] = get_request_var_request('graph_end');
 			}
 
-			print trim(@rrdtool_function_graph(get_request_var_request("local_graph_id"), get_request_var_request("rra_id"), $graph_data_array));
+			print trim(@rrdtool_function_graph(get_request_var_request('local_graph_id'), get_request_var_request('rra_id'), $graph_data_array));
 			?>
 		</td>
 	</tr>
 	<?php }
 
 	global $graph_views;
-	load_current_session_value("action", "sess_cacti_graph_action", $graph_views["2"]);
+	load_current_session_value('action', 'sess_cacti_graph_action', $graph_views['2']);
 	?>
 	<tr>
-		<?php if (basename($_SERVER["PHP_SELF"]) == "graph_view.php" && ($_REQUEST["action"] == "tree" || (isset($_REQUEST["view_type"]) && $_REQUEST["view_type"] == "tree"))) { ?>
-		<td id='navigation' class='cactiTreeNavigationArea noprint' style='display:none;' valign='top' width='<?php print htmlspecialchars(read_graph_config_option("default_dual_pane_width"));?>'>
+		<?php if (basename($_SERVER['PHP_SELF']) == 'graph_view.php' && ($_REQUEST['action'] == 'tree' || (isset($_REQUEST['view_type']) && $_REQUEST['view_type'] == 'tree'))) { ?>
+		<td id='navigation' class='cactiTreeNavigationArea noprint' style='display:none;' valign='top' width='<?php print htmlspecialchars(read_graph_config_option('default_dual_pane_width'));?>'>
 			<?php grow_dhtml_trees();?>
 		</td>
 		<?php } ?>
-		<td id='navigation_right' class='cactiGraphContentArea' valign="top" style='display:none;'><?php print display_output_messages();?></div><div style='position:static;' id='main'>
+		<td id='navigation_right' class='cactiGraphContentArea' valign='top' style='display:none;'><?php print display_output_messages();?></div><div style='position:static;' id='main'>

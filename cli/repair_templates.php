@@ -128,9 +128,11 @@ if (sizeof($damaged_template_ids)) {
 
 /* display_help - displays the usage of the function */
 function display_help () {
-	print "Cacti Database Template Repair Tool v1.0, Copyright 2004-2014 - The Cacti Group\n\n";
-	print "usage: repair_templates.php --execute [--help]\n\n";
-	print "--execute        - Perform the repair\n";
-	print "--help           - display this help message\n";
+	$version = db_fetch_cell('SELECT cacti FROM version');
+	echo "Database Template Repair Utility, Version $version, " . COPYRIGHT_YEARS . "\n\n";
+	echo "Cacti Database Template Repair Tool v1.0, Copyright 2004-2014 - The Cacti Group\n\n";
+	echo "usage: repair_templates.php --execute [--help]\n\n";
+	echo "--execute        - Perform the repair\n";
+	echo "--help           - display this help message\n";
 }
 ?>

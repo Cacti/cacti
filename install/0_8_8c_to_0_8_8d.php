@@ -75,5 +75,87 @@ function upgrade_to_0_8_8d() {
 		PRIMARY KEY (`group_id`,`name`))
 		ENGINE=MyISAM
 		COMMENT='Stores the Default User Group Graph Settings';");
+
+	db_execute("CREATE TABLE IF NOT EXISTS `data_source_stats_daily` (
+		`local_data_id` mediumint(8) unsigned NOT NULL,
+		`rrd_name` varchar(19) NOT NULL,
+		`average` DOUBLE DEFAULT NULL,
+		`peak` DOUBLE DEFAULT NULL,
+		PRIMARY KEY  (`local_data_id`,`rrd_name`)
+		) ENGINE=MyISAM;"
+	);
+
+	db_execute("CREATE TABLE IF NOT EXISTS `data_source_stats_hourly` (
+		`local_data_id` mediumint(8) unsigned NOT NULL,
+		`rrd_name` varchar(19) NOT NULL,
+		`average` DOUBLE DEFAULT NULL,
+		`peak` DOUBLE DEFAULT NULL,
+		PRIMARY KEY  (`local_data_id`,`rrd_name`)
+		) ENGINE=MyISAM;"
+	);
+
+	db_execute("CREATE TABLE IF NOT EXISTS `data_source_stats_hourly_cache` (
+		`local_data_id` mediumint(8) unsigned NOT NULL,
+		`rrd_name` varchar(19) NOT NULL,
+		`time` timestamp NOT NULL default '0000-00-00 00:00:00',
+		`value` DOUBLE DEFAULT NULL,
+		PRIMARY KEY  (`local_data_id`,`time`,`rrd_name`),
+		KEY `time` USING BTREE (`time`)
+		) ENGINE=MEMORY;"
+	);
+
+	db_execute("CREATE TABLE IF NOT EXISTS `data_source_stats_hourly_last` (
+		`local_data_id` mediumint(8) unsigned NOT NULL,
+		`rrd_name` varchar(19) NOT NULL,
+		`value` DOUBLE DEFAULT NULL,
+		`calculated` DOUBLE NOT NULL,
+		PRIMARY KEY  (`local_data_id`,`rrd_name`)
+		) ENGINE=MEMORY;"
+	);
+
+	if (!sizeof(db_fetch_row("SHOW COLUMNS from data_source_stats_hourly_last where Field='calculated'"))) {
+		db_execute("ALTER TABLE data_source_stats_hourly_last ADD calculated DOUBLE DEFAULT NULL AFTER `value`");
+	};
+
+	db_execute("CREATE TABLE IF NOT EXISTS `data_source_stats_monthly` (
+		`local_data_id` mediumint(8) unsigned NOT NULL,
+		`rrd_name` varchar(19) NOT NULL,
+		`average` DOUBLE DEFAULT NULL,
+		`peak` DOUBLE DEFAULT NULL,
+		PRIMARY KEY  (`local_data_id`,`rrd_name`)
+		) ENGINE=MyISAM;"
+	);
+
+	db_execute("CREATE TABLE IF NOT EXISTS `data_source_stats_weekly` (
+		`local_data_id` mediumint(8) unsigned NOT NULL,
+		`rrd_name` varchar(19) NOT NULL,
+		`average` DOUBLE DEFAULT NULL,
+		`peak` DOUBLE DEFAULT NULL,
+		PRIMARY KEY  (`local_data_id`,`rrd_name`)
+		) ENGINE=MyISAM;"
+	);
+
+	db_execute("CREATE TABLE IF NOT EXISTS `data_source_stats_yearly` (
+		`local_data_id` mediumint(8) unsigned NOT NULL,
+		`rrd_name` varchar(19) NOT NULL,
+		`average` DOUBLE DEFAULT NULL,
+		`peak` DOUBLE DEFAULT NULL,
+		PRIMARY KEY  (`local_data_id`,`rrd_name`)
+		) ENGINE=MyISAM;"
+	);
+
+	db_execute("CREATE TABLE IF NOT EXISTS `poller_output_boost` (
+		`local_data_id` mediumint(8) unsigned NOT NULL default '0',
+		`rrd_name` varchar(19) NOT NULL default '',
+		`time` datetime NOT NULL default '0000-00-00 00:00:00',
+		`output` varchar(512) NOT NULL,
+		PRIMARY KEY USING BTREE (`local_data_id`,`time`,`rrd_name`))
+		ENGINE=MEMORY;");
+
+	db_execute("CREATE TABLE IF NOT EXISTS `poller_output_boost_processes` (
+		`sock_int_value` bigint(20) unsigned NOT NULL auto_increment,
+		`status` varchar(255) default NULL,
+		PRIMARY KEY (`sock_int_value`))
+		ENGINE=MEMORY;");
 }
 ?>

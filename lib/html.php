@@ -869,11 +869,13 @@ function draw_actions_dropdown($actions_array) {
  * Deprecated functions
  */
 
-function DrawMatrixHeaderItem($matrix_name, $matrix_text_color, $column_span = 1) { ?>
-		<th style="height:1px;" colspan="<?php print $column_span;?>">
-			<div class='textSubHeaderDark'><?php print $matrix_name;?></div>
-		</th>
-<?php }
+function DrawMatrixHeaderItem($matrix_name, $matrix_text_color, $column_span = 1) { 
+	?>
+	<th style='height:1px;' colspan='<?php print $column_span;?>'>
+		<div class='textSubHeaderDark'><?php print $matrix_name;?></div>
+	</th>
+	<?php 
+}
 
 function form_area($text) { ?>
 	<tr>
@@ -987,12 +989,14 @@ function html_show_tabs_left($show_console_tab) {
 		}
 
 		$i = 0;
+		$me_base = basename($_SERVER['PHP_SELF']);
 		foreach($tabs_left as $tab) {
-			if ($tab['url'] == 'graph_view.php' && (basename($_SERVER['PHP_SELF']) == 'graph_view.php' || basename($_SERVER['PHP_SELF']) == 'graph.php')) {
+			$tab_base = basename($tab['url']);
+			if ($tab_base == 'graph_view.php' && ($me_base == 'graph_view.php' || $me_base == 'graph.php')) {
 				$tabs_left[$i]['selected'] = true;
-			}elseif ($tab['url'] == 'index.php' && is_console_page($_SERVER['PHP_SELF'])) {
+			}elseif ($tab_base == 'index.php' && is_console_page($me_base)) {
 				$tabs_left[$i]['selected'] = true;
-			}elseif (basename($tab['url']) == basename($_SERVER['PHP_SELF'])) {
+			}elseif ($tab_base == $me_base) {
 				$tabs_left[$i]['selected'] = true;
 			}
 			$i++;

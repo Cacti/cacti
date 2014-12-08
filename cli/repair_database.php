@@ -160,11 +160,12 @@ if ($total_rows > 0 && !$force) {
 
 /*	display_help - displays the usage of the function */
 function display_help () {
-	print "Cacti Database Repair Tool 1.1, Copyright 2004-2014 - The Cacti Group\n\n";
-	print "usage: repair_database.php [--debug] [--force] [--form] [--help]\n\n";
-	print "--form  - Force rebuilding the indexes from the database creation syntax\n";
-	print "--force - Remove Invalid Records from the Database\n";
-	print "--debug - Display verbose output during execution\n";
-	print "--help  - Display this help message\n";
+	$version = db_fetch_cell('SELECT cacti FROM version');
+	echo "Database Repair Utility, Version $version, " . COPYRIGHT_YEARS . "\n\n";
+	echo "usage: repair_database.php [--debug] [--force] [--form] [--help]\n\n";
+	echo "--form  - Force rebuilding the indexes from the database creation syntax\n";
+	echo "--force - Remove Invalid Records from the Database\n";
+	echo "--debug - Display verbose output during execution\n";
+	echo "--help  - Display this help message\n";
 }
 ?>

@@ -65,6 +65,8 @@ include_once($config["base_path"] . "/lib/poller.php");
 include_once($config["base_path"] . "/lib/data_query.php");
 include_once($config["base_path"] . "/lib/graph_export.php");
 include_once($config["base_path"] . "/lib/rrd.php");
+include_once($config["base_path"] . "/lib/dsstats.php");
+include_once($config["base_path"] . "/lib/boost.php");
 
 /* initialize some variables */
 $force = FALSE;
@@ -453,6 +455,8 @@ while ($poller_runs_completed < $poller_runs) {
 		if ($poller_runs_completed < $poller_runs) {
 			list($micro, $seconds) = split(' ', microtime());
 			$plugin_start = $seconds + $micro;
+			dsstats_poller_bottom();
+			boost_poller_bottom();
 			api_plugin_hook('poller_bottom');
 			list($micro, $seconds) = split(' ', microtime());
 			$plugin_end = $seconds + $micro;
@@ -500,13 +504,18 @@ function log_cacti_stats($loop_start, $method, $concurrent_processes, $max_threa
 }
 
 function display_help() {
-	echo "Cacti Poller Version " . db_fetch_cell("SELECT cacti FROM version") . ", Copyright 2004-2013 - The Cacti Group\n\n";
+	$version = db_fetch_cell('SELECT cacti FROM version');
+	echo "Cacti Main Poller, Version $version, " . COPYRIGHT_YEARS . "\n\n";
 	echo "A simple command line utility to run the Cacti Poller.\n\n";
 	echo "usage: poller.php [--force] [--debug|-d]\n\n";
 	echo "Options:\n";
 	echo "    --force        Override poller overrun detection and force a poller run\n";
 	echo "    --debug|-d     Output debug information.  Similar to cacti's DEBUG logging level.\n\n";
 }
+
+/* start post data processing */
+dsstats_poller_bottom();
+boost_poller_bottom();
 
 api_plugin_hook('poller_bottom');
 

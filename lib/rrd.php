@@ -457,7 +457,7 @@ function rrdtool_function_fetch($local_data_id, $start_time, $end_time, $resolut
 	}
 
 	/* update the rrdfile if performing a fetch */
-	api_plugin_hook_function('rrdtool_function_fetch_cache_check', $local_data_id);
+	boost_fetch_cache_check($local_data_id);
 
 	/* build and run the rrdtool fetch command with all of our data */
 	$cmd_line = "fetch $data_source_path AVERAGE -s $start_time -e $end_time";
@@ -551,8 +551,8 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 
 	include_once($config["library_path"] . "/cdef.php");
 	include_once($config["library_path"] . "/graph_variables.php");
+	include_once($config['library_path'] . '/boost.php');
 	include($config["include_path"] . "/global_arrays.php");
-	
 	
 	/* prevent command injection
 	 * This function prepares an rrdtool graph statement to be executed by the web server.
@@ -578,9 +578,10 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 		}
 	}
 
-	$data = api_plugin_hook_function('rrdtool_function_graph_cache_check', array('local_graph_id' => $local_graph_id,'rra_id' => $rra_id,'rrd_struc' => $rrdtool_pipe,'graph_data_array' => $graph_data_array, 'return' => false));
-	if (isset($data['return']) && $data['return'] != false)
-		return $data['return'];
+	$graph_data = boost_graph_cache_check($local_graph_id, $rra_id, $rrdtool_pipe, $graph_data_array, false);
+	if ($graph_data != false) {
+		return $graph_data;
+	}
 
 	/* find the step and how often this graph is updated with new data */
 	$ds_step = db_fetch_cell("select
@@ -866,9 +867,9 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 	$rrdtheme   = $config['base_path'] . '/include/themes/' . read_config_option('selected_theme') . '/rrdtheme.php';
 	if (file_exists($rrdtheme) && is_readable($rrdtheme)) {
 		$rrdversion = str_replace('rrd-', '', str_replace('.x', '', read_config_option('rrdtool_version')));
-		include_once($rrdtheme);
+		include($rrdtheme);
 		
-		if (sizeof($rrdcolors)) {
+		if (isset($rrdcolors)) {
 		foreach($rrdcolors as $colortag => $color) {
 			$themeopts .= "--color " . strtoupper($colortag) . "#" . strtoupper($color) . RRD_NL;
 		}
@@ -878,7 +879,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 			$themeopts .= "--border $rrdborder " ;
 		}
 
-		if (sizeof($rrdfonts)) {
+		if (isset($rrdfonts)) {
 			$themefonts = $rrdfonts;
 		}
 	}
@@ -932,7 +933,6 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 	$i = 0; $j = 0;
 	$last_graph_cf = array();
 	if (sizeof($graph_items) > 0) {
-
 		/* we need to add a new column "cf_reference", so unless PHP 5 is used, this foreach syntax is required */
 		foreach ($graph_items as $key => $graph_item) {
 			/* mimic the old behavior: LINE[123], AREA and STACK items use the CF specified in the graph item */
@@ -1467,7 +1467,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 			rrdtool_execute("graph $graph_opts$graph_defs$txt_graph_items", false, RRDTOOL_OUTPUT_NULL, $rrdtool_pipe);
 			return 0;
 		}else{
-			$graph_data_array = api_plugin_hook_function('prep_graph_array', $graph_data_array);
+			$graph_data_array = boost_prep_graph_array($graph_data_array);
 
 			if (isset($graph_data_array["output_flag"])) {
 				$output_flag = $graph_data_array["output_flag"];
@@ -1477,7 +1477,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 
 			$output = rrdtool_execute("graph $graph_opts$graph_defs$txt_graph_items", false, $output_flag, $rrdtool_pipe);
 
-			api_plugin_hook_function('rrdtool_function_graph_set_file', array('output' => $output, 'local_graph_id' => $local_graph_id, 'rra_id' => $rra_id));
+			boost_graph_set_file($output, $local_graph_id, $rra_id);
 
 			return $output;
 		}

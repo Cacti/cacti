@@ -783,6 +783,15 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 		</td>
 	</tr>
 	<script type='text/javascript'>
+
+	$(function() {
+		var navBar = "<div id='navBar' class='navBar'><?php print draw_navigation_text();?></div>";
+		if (navBar != '') {
+			$('#navBar').replaceWith(navBar);
+		}
+		setupBreadcrumbs();
+	});
+
 	function changeFilter() {
 		$.get('graph_view.php?action=tree_content&tree_id=<?php print $_REQUEST['tree_id'];?>&leaf_id=<?php print $_REQUEST['leaf_id'];?>&host_group_data=<?php print $_REQUEST['host_group_data'];?>&graphs='+$('#graphs').val()+'&filter='+$('#filter').val()+'&thumbnails='+$('#thumbnails').is(':checked')+'&columns='+$('#columns').val()+'&nodeid='+'<?php print $_REQUEST['nodeid'];?>', function(data) {
 			$('#main').html(data);

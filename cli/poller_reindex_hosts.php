@@ -131,15 +131,16 @@ if (sizeof($data_queries)) {
 
 /*	display_help - displays the usage of the function */
 function display_help () {
-	print "Cacti Reindex Host Script 1.2, Copyright 2004-2014 - The Cacti Group\n\n";
-	print "usage: poller_reindex_hosts.php --id=[host_id|All] [--qid=[ID|All]] [--host-descr=[description]]\n";
-	print "                           [-d] [-h] [--help] [-v] [--version]\n\n";
-	print "--id=host_id             - The host_id to have data queries reindexed or 'All' to reindex all hosts\n";
-	print "--qid=query_id           - Only index on a specific data query id; defaults to 'All'\n";
-	print "--host-descr=description - The host description to filter by (SQL filters acknowledged)\n";
-	print "--debug                  - Display verbose output during execution\n";
-	print "-v --version             - Display this help message\n";
-	print "-h --help                - Display this help message\n";
+	$version = db_fetch_cell('SELECT cacti FROM version');
+	echo "Reindex Host Utility, Version $version, " . COPYRIGHT_YEARS . "\n\n";
+	echo "usage: poller_reindex_hosts.php --id=[host_id|All] [--qid=[ID|All]] [--host-descr=[description]]\n";
+	echo "                           [-d] [-h] [--help] [-v] [--version]\n\n";
+	echo "--id=host_id             - The host_id to have data queries reindexed or 'All' to reindex all hosts\n";
+	echo "--qid=query_id           - Only index on a specific data query id; defaults to 'All'\n";
+	echo "--host-descr=description - The host description to filter by (SQL filters acknowledged)\n";
+	echo "--debug                  - Display verbose output during execution\n";
+	echo "-v --version             - Display this help message\n";
+	echo "-h --help                - Display this help message\n";
 }
 
 function debug($message) {

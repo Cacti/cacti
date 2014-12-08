@@ -199,7 +199,8 @@ if (sizeof($parms)) {
 }
 
 function display_help() {
-	echo "Add Data Query Script 1.0, Copyright 2008 - The Cacti Group\n\n";
+	$version = db_fetch_cell('SELECT cacti FROM version');
+	echo "Add Data Query Utility, Version $version, " . COPYRIGHT_YEARS . "\n\n";
 	echo "A simple command line utility to add a data query to an existing device in Cacti\n\n";
 	echo "usage: add_data_query.php --host-id=[ID] --data-query-id=[dq_id] --reindex-method=[method] [--quiet]\n\n";
 	echo "Required:\n";

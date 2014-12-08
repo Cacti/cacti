@@ -274,6 +274,8 @@ function applySkin() {
 		applySelectorVisibilityAndActions();
 	}
 
+	setupBreadcrumbs();
+
 	applyTableSizing();
 
 	setupPageTimeout();
@@ -283,22 +285,27 @@ function applySkin() {
 	$('#message').delay(2000).slideUp('fast');
 }
 
+function setupBreadcrumbs() {
+	$('#breadcrumbs > li > a').click(function(event) {
+		event.preventDefault;
+		href =  $(this).attr('href');
+		if (href != '#') {
+			href = href.replace('tree_content', 'tree');
+			$(this).prop('href', href);
+			document.location = href;
+		}
+	});
+}
+
 function saveTableWidths(initial) {
 	// Initialize table width on the page
 	$('.cactiTable').each(function(data) {
-		var page   = basename(location.pathname, '.php');
-		var action = getQueryString('tab');
-		if (action == null) {
-			action = getQueryString('action');
-		}
-		var table  = $(this).attr('id');
-		var key    = page+'_'+table+'_'+action;
+		var key    = $(this).attr('id');
 		var sizes  = $.cookie(key);
 		var items  = sizes ? sizes.split(/,/) : new Array();
 
 		var i = 0;
-		if (table !== undefined) {
-			//console.log('Setting sizes for '+table+', with sizes: '+sizes);
+		if (key !== undefined) {
 			if (initial && items.length) {
 				$(this).find('th').each(function(data) {
 					$(this).css('width', items[i]);
@@ -308,6 +315,7 @@ function saveTableWidths(initial) {
 				var sizes = new Array();
 				$(this).find('th').each(function(data) {
 					sizes[i] = parseInt($(this).css('width'));
+					$(this).css('width', sizes[i]);
 					i++;
 				});
 

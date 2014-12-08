@@ -29,47 +29,47 @@ if ($oper_mode == OPER_MODE_RESKIN) {
 	return;
 }
 
-$page_title = api_plugin_hook_function('page_title', draw_navigation_text("title"));
+$page_title = api_plugin_hook_function('page_title', draw_navigation_text('title'));
 $using_guest_account = false;
 
 ?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-	<meta http-equiv="X-UA-Compatible" content="edge">
+	<meta http-equiv='X-UA-Compatible' content='edge'>
 	<title><?php echo $page_title; ?></title>
-	<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
-	<link href="<?php echo $config['url_path']; ?>include/themes/<?php print read_config_option('selected_theme');?>/main.css" type="text/css" rel="stylesheet">
-	<link href="<?php echo $config['url_path']; ?>include/themes/<?php print read_config_option('selected_theme');?>/jquery.zoom.css" type="text/css" rel="stylesheet">
-	<link href="<?php echo $config['url_path']; ?>include/themes/<?php print read_config_option('selected_theme');?>/jquery-ui.css" type="text/css" rel="stylesheet">
-	<link href="<?php echo $config['url_path']; ?>include/themes/<?php print read_config_option('selected_theme');?>/default/style.css" type="text/css" rel="stylesheet">
-	<link href="<?php echo $config['url_path']; ?>images/favicon.ico" rel="shortcut icon">
-	<script type="text/javascript" src="<?php echo $config['url_path']; ?>include/js/jquery.js" language="javascript"></script>
-	<script type="text/javascript" src="<?php echo $config['url_path']; ?>include/js/jquery-ui.js" language="javascript"></script>
-	<script type="text/javascript" src="<?php echo $config['url_path']; ?>include/js/jquery.cookie.js" language="javascript"></script>
-	<script type="text/javascript" src="<?php echo $config['url_path']; ?>include/js/jstree.js"></script>
-	<script type="text/javascript" src="<?php echo $config['url_path']; ?>include/js/jquery.easytabs.js"></script>
-	<script type="text/javascript" src="<?php echo $config['url_path']; ?>include/jscalendar/calendar.js"></script>
-	<script type="text/javascript" src="<?php echo $config['url_path']; ?>include/jscalendar/lang/calendar-en.js"></script>
-	<script type="text/javascript" src="<?php echo $config['url_path']; ?>include/jscalendar/calendar-setup.js"></script>
-	<script type="text/javascript" src="<?php echo $config['url_path']; ?>include/layout.js"></script>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print read_config_option('selected_theme');?>/main.css' type='text/css' rel='stylesheet'>
+	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print read_config_option('selected_theme');?>/jquery.zoom.css' type='text/css' rel='stylesheet'>
+	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print read_config_option('selected_theme');?>/jquery-ui.css' type='text/css' rel='stylesheet'>
+	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print read_config_option('selected_theme');?>/default/style.css' type='text/css' rel='stylesheet'>
+	<link href='<?php echo $config['url_path']; ?>images/favicon.ico' rel='shortcut icon'>
+	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery.js' language='javascript'></script>
+	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery-ui.js' language='javascript'></script>
+	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery.cookie.js' language='javascript'></script>
+	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jstree.js'></script>
+	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery.easytabs.js'></script>
+	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/jscalendar/calendar.js'></script>
+	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/jscalendar/lang/calendar-en.js'></script>
+	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/jscalendar/calendar-setup.js'></script>
+	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/layout.js'></script>
 	<script type='text/javascript'>var theme='<?php print read_config_option('selected_theme');?>';</script>
 	<?php include($config['base_path'] . '/include/global_session.php'); api_plugin_hook('page_head'); ?>
 </head>
 
 <?php if ($oper_mode == OPER_MODE_NATIVE) {?>
-<body class='cactiConsoleBody' <?php print api_plugin_hook_function("body_style", "");?>>
+<body class='cactiConsoleBody' <?php print api_plugin_hook_function('body_style', '');?>>
 <?php }else{?>
-<body class='cactiConsoleBody' <?php print api_plugin_hook_function("body_style", "");?>>
+<body class='cactiConsoleBody' <?php print api_plugin_hook_function('body_style', '');?>>
 <?php }?>
 
-<table style="width:100%" cellspacing="0" cellpadding="0">
+<table style='width:100%' cellspacing='0' cellpadding='0'>
 <?php if ($oper_mode == OPER_MODE_NATIVE) { ;?>
 	<tr class='cactiPageHead noprint'>
-		<td class='cactiConsolePageHeadBackdrop' valign="bottom" colspan="3">
-			<table width="100%" cellspacing="0" cellpadding="0">
+		<td class='cactiConsolePageHeadBackdrop' valign='bottom' colspan='3'>
+			<table width='100%' cellspacing='0' cellpadding='0'>
 				<tr>
-					<td id="tabs" valign="bottom">
+					<td id='tabs' valign='bottom'>
 						<?php html_show_tabs_left(true);?>
 					</td>
 				</tr>
@@ -77,17 +77,17 @@ $using_guest_account = false;
 		</td>
 	</tr>
 	<tr class='breadCrumbBar noprint'>
-		<td colspan="3">
-			<table width="100%">
+		<td colspan='3'>
+			<table width='100%'>
 				<tr>
 					<td width='30%'>
-						<div class='navBar'>
+						<div id='navBar' class='navBar'>
 						<?php echo draw_navigation_text();?>
 						</div>
 					</td>
 					<td width='40%'>
 						<div class='scrollBar'></div>
-					<td width='30%' align="right">
+					<td width='30%' align='right'>
 						<div class='infoBar'>
 						<?php echo draw_login_status($using_guest_account);?>
 						</div>
@@ -102,13 +102,13 @@ $using_guest_account = false;
 				<?php draw_menu();?>
 				<tr>
 					<td class='cactiLogo' align='center'>
-						<a href='<?php echo $config['url_path']; ?>about.php'><img src="<?php echo $config['url_path']; ?>images/cacti_logo.gif" border="0"></a>
+						<a href='<?php echo $config['url_path']; ?>about.php'><img src='<?php echo $config['url_path']; ?>images/cacti_logo.gif' border='0'></a>
 					</td>
 				</tr>
 			</table>
 		</td>
-		<td class='cactiConsoleContentArea' width="100%" valign="top"><div style='display:none;' id='message' class='textInfo messageBox'></div><?php display_output_messages();?><div style='position:relative;' id='main'>
+		<td class='cactiConsoleContentArea' width='100%' valign='top'><div style='display:none;' id='message' class='textInfo messageBox'></div><?php display_output_messages();?><div style='position:relative;' id='main'>
 <?php }else{ ?>
 	<tr>
-		<td class='cactiConsoleContentArea' width="100%" valign="top"><div style='display:none;' id='message' class='textInfo messageBox'></div><?php display_output_messages();?><div style='position:relative;' id='main'>
+		<td class='cactiConsoleContentArea' width='100%' valign='top'><div style='display:none;' id='message' class='textInfo messageBox'></div><?php display_output_messages();?><div style='position:relative;' id='main'>
 <?php } ?>

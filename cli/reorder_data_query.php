@@ -202,14 +202,15 @@ function update_snmp_index_order($data_query) {
 
 /*	display_help - displays the usage of the function */
 function display_help () {
-	print "Cacti Reorder Data Query Script 1.0, Copyright 2004-2014 - The Cacti Group\n\n";
-	print "usage: reorder_data_query.php --id=[host_id|All] [--qid=[query_id]]\n";
-	print "                           [-d] [-h] [--help] [-v] [--version]\n\n";
-	print "--id=host_id             - The host_id to have data queries reindexed; defaults to 'All' to reindex all hosts\n";
-	print "--qid=query_id           - Only index on a specific data query id\n";
-	print "--debug                  - Display verbose output during execution\n";
-	print "-v --version             - Display this help message\n";
-	print "-h --help                - Display this help message\n";
+	$version = db_fetch_cell('SELECT cacti FROM version');
+	echo "Reorder Data Query Utility, Version $version, " . COPYRIGHT_YEARS . "\n\n";
+	echo "usage: reorder_data_query.php --id=[host_id|All] [--qid=[query_id]]\n";
+	echo "                           [-d] [-h] [--help] [-v] [--version]\n\n";
+	echo "--id=host_id             - The host_id to have data queries reindexed; defaults to 'All' to reindex all hosts\n";
+	echo "--qid=query_id           - Only index on a specific data query id\n";
+	echo "--debug                  - Display verbose output during execution\n";
+	echo "-v --version             - Display this help message\n";
+	echo "-h --help                - Display this help message\n";
 }
 
 function debug($message) {

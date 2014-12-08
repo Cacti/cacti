@@ -75,6 +75,9 @@ case 'save':
 
 	header("Location: settings.php?header=false&tab=" . $_POST["tab"]);
 	break;
+case 'send_test':
+	email_test();
+	break;
 default:
 	top_header();
 
@@ -165,6 +168,32 @@ default:
 				applySkin();
 			});
 		});
+
+		if ($('#row_settings_email_header')) {
+			$('#emailtest').click(function() {
+				var $div = $('<div />').appendTo('body');
+				$div.attr('id', 'testmail');
+				$('#testmail').prop('title', 'Test E-Mail Results');
+				$('#testmail').dialog({
+					autoOpen: false,
+					modal: true,
+					height: 300,
+					width: 400,
+					show: {
+						effect: 'appear',
+						duration: 100
+					},
+					hide: {
+						effect: 'appear',
+						duratin: 100
+					}
+				});
+				$.get('settings.php?action=send_test', function(data) {
+					$('#testmail').html(data);
+					$('#testmail').dialog('open');
+				});
+			});
+		}
 	});
 
 	if ($('#row_font_method')) {
