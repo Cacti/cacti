@@ -515,7 +515,7 @@ function template() {
 		$sql_where");
 
 	$template_list = db_fetch_assoc("SELECT
-		host_template.id,host_template.name, COUNT(host.id) AS hosts
+		host_template.id,host_template.name, COUNT(*) AS hosts
 		FROM host_template
 		LEFT JOIN host ON host.host_template_id=host_template.id
 		$sql_where

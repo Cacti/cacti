@@ -266,7 +266,10 @@ $auth_methods = array(
 	2 => 'Web Basic Authentication');
 if (function_exists('ldap_connect')) {
 	$auth_methods[3] = 'LDAP Authentication';
+	$auth_methods[4] = 'Multiple LDAP/AD Domains';
 }
+
+$domain_types = array('1' => 'LDAP', '2' => 'Active Directory');
 
 $auth_realms = array(0 =>
 	'Local',
@@ -383,6 +386,7 @@ $menu = array(
 		'utilities.php' => 'System Utilities',
 		'user_admin.php' => 'Users',
 		'user_group_admin.php' => 'User Groups',
+		'user_domains.php' => 'User Domains',
 		'logout.php' => 'Logout User'
 	));
 
@@ -425,10 +429,16 @@ $graphs_per_page = array(
 	12 => '12',
 	14 => '14',
 	15 => '15',
+	16 => '16',
 	18 => '18',
 	20 => '20',
 	24 => '24',
+	25 => '25',
+	27 => '27',
+	28 => '28',
 	30 => '30',
+	32 => '32',
+	35 => '35',
 	40 => '40',
 	50 => '50',
 	100 => '100');
@@ -490,6 +500,7 @@ $user_auth_realm_filenames = array(
 	'templates_import.php' => 17,
 	'tree.php' => 4,
 	'user_admin.php' => 1,
+	'user_domains.php' => 1,
 	'user_group_admin.php' => 1,
 	'utilities.php' => 15,
 	'smtp_servers.php' => 8,

@@ -1709,6 +1709,8 @@ function draw_navigation_text($type = "url") {
 		"user_admin.php:" => array("title" => "Users", "mapping" => "index.php:", "url" => "user_admin.php", "level" => "1"),
 		"user_admin.php:user_edit" => array("title" => "(Edit)", "mapping" => "index.php:,user_admin.php:", "url" => "", "level" => "2"),
 		"user_admin.php:actions" => array("title" => "(Action)", "mapping" => "index.php:,user_admin.php:", "url" => "", "level" => "2"),
+		"user_domains.php:" => array("title" => "User Domains", "mapping" => "index.php:", "url" => "user_domains.php", "level" => "1"),
+		"user_domains.php:edit" => array("title" => "(Edit)", "mapping" => "user_domains.php:,index.php:", "url" => "user_domains.php:edit", "level" => "2"),
 		"user_group_admin.php:" => array("title" => "User Groups", "mapping" => "index.php:", "url" => "user_group_admin.php", "level" => "1"),
 		"user_group_admin.php:edit" => array("title" => "(Edit)", "mapping" => "index.php:,user_group_admin.php:", "url" => "", "level" => "2"),
 		"user_group_admin.php:actions" => array("title" => "(Action)", "mapping" => "index.php:,user_group_admin.php:", "url" => "", "level" => "2"),
