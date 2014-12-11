@@ -397,7 +397,7 @@ function get_page_list($current_page, $pages_per_screen, $rows_per_page, $total_
 	}
 
 	if ($return_to != '') {
-		$url_page_select .= "<script type='text/javascript'>function gotoPage(pageNo) { if (\$.isFunction('url_graph')) { var url_add=url_graph('') }else{ var url_add=''; };$.get('${url}header=false&$page_var='+pageNo+url_add,function(data) { $('#$return_to').html(data); applySkin(); }); }</script>";
+		$url_page_select .= "<script type='text/javascript'>function gotoPage(pageNo) { if (typeof url_graph === 'function') { var url_add=url_graph('') }else{ var url_add=''; };$.get('${url}header=false&$page_var='+pageNo+url_add,function(data) { $('#$return_to').html(data); applySkin(); }); }</script>";
 	}else{
 		$url_page_select .= "<script type='text/javascript'>function gotoPage(pageNo) { document.location='$url$page_var='+pageNo}</script>";
 	}

@@ -144,13 +144,6 @@ default:
 	?>
 	<script type='text/javascript'>
 	$(function() {
-		var message = "<?php print display_output_messages();?>";
-
-		if (message != '') {
-			$('#message').replaceWith(message).show().delay(2000).slideUp('fast');
-			window.scrollTo(0,0);
-		}
-
 		$('.subTab').find('a').click(function(event) {
 			event.preventDefault();
 			href = $(this).attr('href');
@@ -247,6 +240,18 @@ default:
 		});
 	}
 
+	if ($('#rrd_autoclean')) {
+		initRRDClean();
+
+		$('#rrd_autoclean').change(function() {
+			initRRDClean();
+		});
+
+		$('#rrd_autoclean_method').change(function() {
+			initRRDClean();
+		});
+	}
+
 	function initFonts() {
 		if ($('#font_method').val() == 1) {
 			$('#row_title_size').hide();
@@ -266,6 +271,20 @@ default:
 			$('#row_axis_font').show();
 			$('#row_unit_size').show();
 			$('#row_unit_font').show();
+		}
+	}
+
+	function initRRDClean() {
+		if ($('#rrd_autoclean').is(':checked')) {
+			$('#row_rrd_autoclean_method').show();
+			if ($('#rrd_autoclean_method').val() == '3') {
+				$('#row_rrd_archive').show();
+			}else{
+				$('#row_rrd_archive').hide();
+			}
+		}else{
+			$('#row_rrd_autoclean_method').hide();
+			$('#row_rrd_archive').hide();
 		}
 	}
 
@@ -339,6 +358,7 @@ default:
 			break;
 		case "1":
 		case "2":
+		case "4":
 			$('#row_special_users_header').show();
 			$('#row_guest_user').show();
 			$('#row_user_template').show();

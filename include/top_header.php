@@ -107,8 +107,8 @@ $using_guest_account = false;
 				</tr>
 			</table>
 		</td>
-		<td class='cactiConsoleContentArea' width='100%' valign='top'><div style='display:none;' id='message' class='textInfo messageBox'></div><?php display_output_messages();?><div style='position:relative;' id='main'>
+		<td class='cactiConsoleContentArea' width='100%' valign='top'><div style='display:none;' id='message_container'><?php display_output_messages();?></div><div style='position:relative;' id='main'>
 <?php }else{ ?>
 	<tr>
-		<td class='cactiConsoleContentArea' width='100%' valign='top'><div style='display:none;' id='message' class='textInfo messageBox'></div><?php display_output_messages();?><div style='position:relative;' id='main'>
+		<td class='cactiConsoleContentArea' width='100%' valign='top'><div style='display:none;' id='message_container'><?php display_output_messages();?></div><div style='position:relative;' id='main'>
 <?php } ?>

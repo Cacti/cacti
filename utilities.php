@@ -87,6 +87,11 @@ switch ($_REQUEST['action']) {
 		utilities_clear_logfile();
 		utilities_view_logfile();
 		break;
+	case 'view_cleaner':
+		top_header();
+		utilities_view_cleaner();
+		bottom_footer();
+		break;
 	case 'view_user_log':
 		top_header();
 		utilities_view_user_log();
@@ -1801,6 +1806,14 @@ function utilities() {
 		</td>
 		<td class='textArea'>
 			This menu pick allows you to view various boost settings and statistics associated with the current running Boost configuration.	
+		</td>
+	</tr>
+	<?php html_header(array('RRD Utilities'), 2); form_alternate_row(); ?>
+		<td class='textArea'>
+			<a href='<?php print htmlspecialchars('rrdcleaner.php');?>'>RRDfile Cleaner</a>
+		</td>
+		<td class='textArea'>
+			When you delete Data Sources from Cacti, the corresponding RRDfiles are not removed automatically.  Use this utility to facilitate the removal of these old files.
 		</td>
 	</tr>
 

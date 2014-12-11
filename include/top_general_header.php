@@ -106,8 +106,8 @@ $page_title = api_plugin_hook_function('page_title', draw_navigation_text('title
 				</tr>
 			</table>
 		</td><?php }?>
-		<td class='cactiConsoleContentArea' width='100%' valign='top'><?php display_output_messages();?><div style='position:relative;' id='main'>
+		<td class='cactiConsoleContentArea' width='100%' valign='top'><div style='display:none;' id='message_container'><?php display_output_messages();?></div><div style='position:relative;' id='main'>
 <?php }else{ ?>
 	<tr>
-		<td class='cactiConsoleContentArea' width='100%' valign='top'><?php display_output_messages();?><div style='position:relative;' id='main'>
+		<td class='cactiConsoleContentArea' width='100%' valign='top'><div style='display:none;' id='message_container'><?php display_output_messages();?></div><div style='position:relative;' id='main'>
 <?php } ?>

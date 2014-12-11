@@ -494,6 +494,7 @@ $user_auth_realm_filenames = array(
 	'host_templates.php' => 12,
 	'index.php' => 8,
 	'rra.php' => 9,
+	'rrdcleaner.php' => 15,
 	'settings.php' => 15,
 	'data_queries.php' => 13,
 	'templates_export.php' => 16,

@@ -368,8 +368,6 @@ case 'preview':
 
 	$(function(data) {
 		$('#navigation_right').show();
-
-		$('#message').show().delay(2000).slideUp('fast');
 	});
 
 	</script>
@@ -791,8 +789,6 @@ case 'list':
 	$(function() {
 		$('#navigation_right').show();
 		initializeChecks();
-
-		$('#message').show().delay(2000).slideUp('fast');
 	});
 
 	function clearFilter() {

@@ -892,6 +892,14 @@ function is_console_page($url) {
 		return true;
 	}
 
+	if (basename($url) == 'rrdcleaner.php') {
+		return true;
+	}
+
+	if (api_plugin_hook_function('is_console_page', $url) != $url) {
+		return true;
+	}
+
 	if (sizeof($menu)) {
 	foreach($menu as $section => $children) {
 		if (sizeof($children)) {

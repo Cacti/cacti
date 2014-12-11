@@ -132,7 +132,31 @@ $settings = array(
 			'friendly_name' => 'Structured RRA Path (/host_id/local_data_id.rrd)',
 			'description' => 'Use a seperate subfolder for each hosts RRD files.',
 			'method' => 'checkbox'
- 			)
+ 			),
+		'rrdclean_header' => array(
+			'friendly_name' => 'RRD Cleaner',
+			'method' => 'spacer',
+			),
+		'rrd_autoclean' => array(
+			'friendly_name' => 'RRDfile Auto Clean',
+			'description' => 'Automatically Delete, Archive, or Delete RRDfiles when removed from Cacti',
+			'method' => 'checkbox',
+			'default' => ''
+ 			),
+		'rrd_autoclean_method' => array(
+			'friendly_name' => 'RRDfile Auto Clean Method',
+			'description' => 'The method used to Clean RRDfiles from Cacti after their deletion.',
+			'method' => 'drop_array',
+			'array' => array('1' => 'Delete', '3' => 'Archive'),
+			'default' => '1'
+ 			),
+		'rrd_archive' => array(
+			'friendly_name' => 'Archive directory',
+			'description' => 'This is the directory where rrd files are <strong>moved</strong> for <strong>Archive</strong>',
+			'method' => 'dirpath',
+			'default' => $config['base_path'] . '/rra/archive/',
+			'max_length' => 255,
+			),
 		),
 	'general' => array(
 		'logging_header' => array(
@@ -598,7 +622,7 @@ $settings = array(
 			'friendly_name' => 'Watermark Text',
 			'description' => 'Test to place at the bottom center of every Graph.',
 			'method' => 'textbox',
-			'default' => '',
+			'default' => 'Copyright (c) The Cacti Group, Inc.',
 			'max_length' => '80',
 			'size' => '60'
 			),
@@ -827,7 +851,7 @@ $settings = array(
 			),
 		'auth_method' => array(
 			'friendly_name' => 'Authentication Method',
-			'description' => '<blockquote><i>None</i> - No authentication will be used, all users will have full access.<br><br><i>Builtin Authentication</i> - Cacti handles user authentication, which allows you to create users and give them rights to different areas within Cacti.<br><br><i>Web Basic Authentication</i> - Authentication is handled by the web server. Users can be added or created automatically on first login if the Template User is defined, otherwise the defined guest permissions will be used.<br><br><i>LDAP Authentication</i> - Allows for authentication against a LDAP server. Users will be created automatically on first login if the Template User is defined, otherwise the defined guest permissions will be used.  If PHPs LDAP module is not enabled, LDAP Authentication will not appear as a selectable option.</blockquote>',
+			'description' => '<blockquote><i>None</i> - No authentication will be used, all users will have full access.<br><br><i>Builtin Authentication</i> - Cacti handles user authentication, which allows you to create users and give them rights to different areas within Cacti.<br><br><i>Web Basic Authentication</i> - Authentication is handled by the web server. Users can be added or created automatically on first login if the Template User is defined, otherwise the defined guest permissions will be used.<br><br><i>LDAP Authentication</i> - Allows for authentication against a LDAP server. Users will be created automatically on first login if the Template User is defined, otherwise the defined guest permissions will be used.  If PHPs LDAP module is not enabled, LDAP Authentication will not appear as a selectable option.<br><br><i>Multiple LDAP/AD Domain Authentication</i> - Allows administrators to support multiple desparate groups from different LDAP/AD directories to access Cacti resources.  Just as LDAP Authentication, the PHP LDAP module is required to utilize this method.</blockquote>',
 			'method' => 'drop_array',
 			'default' => 1,
 			'array' => $auth_methods
@@ -1426,12 +1450,8 @@ $settings_graphs = array(
 					'friendly_name' => 'Preview Mode',
 					'default' => 'on'
 					),
-				'thumbnail_section_tree_1' => array(
-					'friendly_name' => 'Tree View (Single Pane)',
-					'default' => 'on'
-					),
 				'thumbnail_section_tree_2' => array(
-					'friendly_name' => 'Tree View (Dual Pane)',
+					'friendly_name' => 'Tree View',
 					'default' => ''
 					)
 				)
@@ -1453,8 +1473,8 @@ $settings_graphs = array(
 			'array' => $graphs_per_page
 			),
 		'default_dual_pane_width' => array(
-			'friendly_name' => 'Dual Pane Tree Width',
-			'description' => 'When choosing dual pane Tree View, what width should the tree occupy in pixels.',
+			'friendly_name' => 'Minimum Tree Width',
+			'description' => 'When using Tree View, what width should the minimum Tree width be.',
 			'method' => 'textbox',
 			'max_length' => '5',
 			'default' => '200',
@@ -1462,7 +1482,7 @@ $settings_graphs = array(
 			),
 		'expand_hosts' => array(
 			'friendly_name' => 'Expand Hosts',
-			'description' => 'Choose whether to expand the graph templates used for a host on the dual pane tree.',
+			'description' => 'Choose whether to expand the Graph Templates and Data Queries used by a Device on Tree.',
 			'method' => 'checkbox',
 			'default' => ''
 			)

@@ -1695,6 +1695,9 @@ function draw_navigation_text($type = "url") {
 		"data_queries.php:edit" => array("title" => "(Edit)", "mapping" => "index.php:,data_queries.php:", "url" => "", "level" => "2"),
 		"data_queries.php:item_edit" => array("title" => "Associated Graph Templates", "mapping" => "index.php:,data_queries.php:,data_queries.php:edit", "url" => "", "level" => "3"),
 		"data_queries.php:item_remove" => array("title" => "(Remove Item)", "mapping" => "index.php:,data_queries.php:,data_queries.php:edit", "url" => "", "level" => "3"),
+		"rrdcleaner.php:" => array("title" => "RRD Cleaner", "mapping" => "index.php:", "url" => "rrdcleaner.php", "level" => "1"),
+		"rrdcleaner.php:actions" => array("title" => "Actions", "mapping" => "index.php:,rrdcleaner.php:", "url" => "rrdcleaner.php?action=actions", "level" => "2"),
+		"rrdcleaner.php:restart" => array("title" => "List unused Files", "mapping" => "rrdcleaner.php:", "url" => "rrdcleaner.php?action=restart", "level" => "2"),
 		"utilities.php:" => array("title" => "Utilities", "mapping" => "index.php:", "url" => "utilities.php", "level" => "1"),
 		"utilities.php:view_poller_cache" => array("title" => "View Poller Cache", "mapping" => "index.php:,utilities.php:", "url" => "utilities.php", "level" => "2"),
 		"utilities.php:view_snmp_cache" => array("title" => "View SNMP Cache", "mapping" => "index.php:,utilities.php:", "url" => "utilities.php", "level" => "2"),
@@ -2196,6 +2199,17 @@ function cacti_escapeshellarg($string, $quote=true) {
 function bottom_footer() {
 	if (!isset($_REQUEST['header']) || $_REQUEST['header'] == false) {
 		include("./include/bottom_footer.php");
+	}else{
+		?>
+		<script type='text/javascript'>
+		var message = "<?php print display_output_messages();?>";
+
+		if (message != '') {
+			$('#message_container').html(message).show().delay(2000).slideUp('fast');
+			window.scrollTo(0,0);
+		}
+		</script>
+		<?php
 	}
 }
 
@@ -2490,6 +2504,21 @@ function email_test() {
 
 	print "<center><table width='95%' cellpadding=1 cellspacing=0 bgcolor=black><tr><td>";
 	print "<table width='100%' bgcolor=white><tr><td>$errors</td><tr></table></table></center>";
+}
+
+function poller_maintenance () {
+	global $config;
+
+	$command_string = trim(read_config_option("path_php_binary"));
+
+	// If its not set, just assume its in the path
+	if (trim($command_string) == '') {
+		$command_string = "php";
+	}
+
+	$extra_args = ' -q ' . $config['base_path'] . '/poller_maintenance.php';
+
+	exec_background($command_string, $extra_args);
 }
 
 ?>

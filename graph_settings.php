@@ -225,13 +225,6 @@ function settings() {
 	$(function() {
 		graphSettings();
 
-		var message = "<?php print display_output_messages();?>";
-
-		if (message != '') {
-			$('#message').replaceWith(message).show().delay(2000).slideUp('fast');
-			window.scrollTo(0,0);
-		}
-
 		$('#navigation').show();
 		$('#navigation_right').show();
 

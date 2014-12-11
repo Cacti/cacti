@@ -282,7 +282,7 @@ function applySkin() {
 
 	CsrfMagic.end();
 
-	$('#message').delay(2000).slideUp('fast');
+	$('#message_container').delay(2000).slideUp('fast');
 }
 
 function setupBreadcrumbs() {
@@ -371,6 +371,10 @@ function setupPageTimeout() {
 			});
 		}
 	}, refreshMSeconds);
+}
+
+function pulsate(element) {
+	$(element || this).delay(100).fadeOut(800).delay(100).fadeIn(800, pulsate);
 }
 
 $(function() {
