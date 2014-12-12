@@ -191,6 +191,14 @@ function get_files() {
 	set_error_handler('rrdclean_error_handler');
 
 	$files_unused = array ();
+	$arc_path = read_config_option('rrd_archive');
+	if (substr_count($arc_path, $rra_path)) {
+		$archive = true;
+		$arcbase = basename($arc_path);
+	}else{
+		$archive = false;
+		$arcbase = '';
+	}
 
 	/* insert the files into the table from cacti */
 	db_execute("INSERT INTO data_source_purge_temp
@@ -205,7 +213,7 @@ function get_files() {
 	$size = 0;
 	$sql  = array();
 	foreach ($iterator as $file) {
-		if (substr($file->getPathname(),-3) == 'rrd') {
+		if (substr($file->getPathname(),-3) == 'rrd' && !($archive && strstr($file->getPathname(), $arcbase . '/') !== false)) {
 			$sql[] = "('" . str_replace($rra_path, '', $file->getPathname()) . "', " . $file->getSize() . ", '" . date('Y-m-d H:i:s', $file->getMTime()) . "',0)";
 			$size++;
 
