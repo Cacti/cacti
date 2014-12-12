@@ -80,7 +80,7 @@ function db_close($db_conn = FALSE) {
    @arg $log - whether to log error messages, defaults to true
    @returns - '1' for success, '0' for error */
 function db_execute($sql, $log = TRUE, $db_conn = FALSE) {
-	global $cnn_id;
+	global $cnn_id, $config;
 
 	/* check for a connection being passed, if not use legacy behavior */
 	if (!$db_conn) {
@@ -112,9 +112,16 @@ function db_execute($sql, $log = TRUE, $db_conn = FALSE) {
 					continue;
 				}
 			}else{
+				cacti_log("ERROR: A DB Exec Failed!, Error:'" . $db_conn->ErrorNo() . "', SQL:\"" . str_replace("\n", "", str_replace("\r", "", str_replace("\t", " ", $sql))) . "'", FALSE);
 				$callers = debug_backtrace();
-				$func = $callers[1]['function'];
-				cacti_log("ERROR: A DB Exec Failed!, Error:'" . $db_conn->ErrorNo() . "', Func: $func, SQL:\"" . str_replace("\n", "", str_replace("\r", "", str_replace("\t", " ", $sql))) . "'", FALSE);
+				$s = "";
+				foreach ($callers as $c) {
+					$file = str_replace($config['base_path'], '', $c['file']);
+					$line = $c['line'];
+					$func = $c['function'];
+					$s = "($file:$line $func)" . $s;
+				}
+				cacti_log("SQL Backtrace: $s", false);
 				return(0);
 			}
 		}
@@ -128,7 +135,7 @@ function db_execute($sql, $log = TRUE, $db_conn = FALSE) {
    @arg $log - whether to log error messages, defaults to true
    @returns - (bool) the output of the sql query as a single variable */
 function db_fetch_cell($sql, $col_name = '', $log = TRUE, $db_conn = FALSE) {
-	global $cnn_id;
+	global $cnn_id, $config;
 
 	/* check for a connection being passed, if not use legacy behavior */
 	if (!$db_conn) {
@@ -165,9 +172,16 @@ function db_fetch_cell($sql, $col_name = '', $log = TRUE, $db_conn = FALSE) {
 		printf("FATAL: Database or Table does not exist");
 		exit;
 	}else if (($log) || (read_config_option("log_verbosity") >= POLLER_VERBOSITY_DEBUG)) {
+		cacti_log("ERROR: SQL Cell Failed!, Error:'" . $db_conn->ErrorNo() . "', SQL:\"" . str_replace("\n", "", str_replace("\r", "", str_replace("\t", " ", $sql))) . "\"", FALSE);
 		$callers = debug_backtrace();
-		$func = $callers[1]['function'];
-		cacti_log("ERROR: SQL Cell Failed!, Error:'" . $db_conn->ErrorNo() . "', Func: $func, SQL:\"" . str_replace("\n", "", str_replace("\r", "", str_replace("\t", " ", $sql))) . "\"", FALSE);
+		$s = "";
+		foreach ($callers as $c) {
+			$file = str_replace($config['base_path'], '', $c['file']);
+			$line = $c['line'];
+			$func = $c['function'];
+			$s = "($file:$line $func)" . $s;
+		}
+		cacti_log("SQL Backtrace: $s", false);
 	}
 }
 
@@ -176,7 +190,7 @@ function db_fetch_cell($sql, $col_name = '', $log = TRUE, $db_conn = FALSE) {
    @arg $log - whether to log error messages, defaults to true
    @returns - the first row of the result as a hash */
 function db_fetch_row($sql, $log = TRUE, $db_conn = FALSE) {
-	global $cnn_id;
+	global $cnn_id, $config;
 
 	/* check for a connection being passed, if not use legacy behavior */
 	if (!$db_conn) {
@@ -204,9 +218,16 @@ function db_fetch_row($sql, $log = TRUE, $db_conn = FALSE) {
 		printf("FATAL: Database or Table does not exist");
 		exit;
 	}else if (($log) || (read_config_option("log_verbosity") >= POLLER_VERBOSITY_DEBUG)) {
+		cacti_log("ERROR: SQL Row Failed!, Error:'" . $db_conn->ErrorNo() . "', SQL:\"" . str_replace("\n", "", str_replace("\r", "", str_replace("\t", " ", $sql))) . "\"", FALSE);
 		$callers = debug_backtrace();
-		$func = $callers[1]['function'];
-		cacti_log("ERROR: SQL Row Failed!, Error:'" . $db_conn->ErrorNo() . "', Func: $func, SQL:\"" . str_replace("\n", "", str_replace("\r", "", str_replace("\t", " ", $sql))) . "\"", FALSE);
+		$s = "";
+		foreach ($callers as $c) {
+			$file = str_replace($config['base_path'], '', $c['file']);
+			$line = $c['line'];
+			$func = $c['function'];
+			$s = "($file:$line $func)" . $s;
+		}
+		cacti_log("SQL Backtrace: $s", false);
 	}
 }
 
@@ -215,7 +236,7 @@ function db_fetch_row($sql, $log = TRUE, $db_conn = FALSE) {
    @arg $log - whether to log error messages, defaults to true
    @returns - the entire result set as a multi-dimensional hash */
 function db_fetch_assoc($sql, $log = TRUE, $db_conn = FALSE) {
-	global $cnn_id;
+	global $cnn_id, $config;
 
 	/* check for a connection being passed, if not use legacy behavior */
 	if (!$db_conn) {
@@ -245,9 +266,16 @@ function db_fetch_assoc($sql, $log = TRUE, $db_conn = FALSE) {
 		printf("FATAL: Database or Table does not exist");
 		exit;
 	}else if (($log) || (read_config_option("log_verbosity") >= POLLER_VERBOSITY_DEBUG)) {
+		cacti_log("ERROR: SQL Assoc Failed!, Error:'" . $db_conn->ErrorNo() . "', SQL:\"" . str_replace("\n", "", str_replace("\r", "", str_replace("\t", " ", $sql))) . "\"");
 		$callers = debug_backtrace();
-		$func = $callers[1]['function'];
-		cacti_log("ERROR: SQL Assoc Failed!, Error:'" . $db_conn->ErrorNo() . "', Func: $func, SQL:\"" . str_replace("\n", "", str_replace("\r", "", str_replace("\t", " ", $sql))) . "\"");
+		$s = "";
+		foreach ($callers as $c) {
+			$file = str_replace($config['base_path'], '', $c['file']);
+			$line = $c['line'];
+			$func = $c['function'];
+			$s = "($file:$line $func)" . $s;
+		}
+		cacti_log("SQL Backtrace: $s", false);
 	}
 }
 
