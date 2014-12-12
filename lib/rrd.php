@@ -431,7 +431,9 @@ $rrd_fetch_cache = array();
      by each data source item. the maximum of all data source items is included in
      an item called 'ninety_fifth_percentile_maximum' */
 function rrdtool_function_fetch($local_data_id, $start_time, $end_time, $resolution = 0, $show_unknown = false, $rrdtool_file = null) {
-	global $rrd_fetch_cache;
+	global $rrd_fetch_cache, $config;
+
+	include_once($config["library_path"] . "/boost.php");
 
 	/* validate local data id */
 	if (empty($local_data_id) && is_null($rrdtool_file)) {
