@@ -112,7 +112,9 @@ function db_execute($sql, $log = TRUE, $db_conn = FALSE) {
 					continue;
 				}
 			}else{
-				cacti_log("ERROR: A DB Exec Failed!, Error:'" . $db_conn->ErrorNo() . "', SQL:\"" . str_replace("\n", "", str_replace("\r", "", str_replace("\t", " ", $sql))) . "'", FALSE);
+				$callers = debug_backtrace();
+				$func = $callers[1]['function'];
+				cacti_log("ERROR: A DB Exec Failed!, Error:'" . $db_conn->ErrorNo() . "', Func: $func, SQL:\"" . str_replace("\n", "", str_replace("\r", "", str_replace("\t", " ", $sql))) . "'", FALSE);
 				return(0);
 			}
 		}
@@ -163,7 +165,9 @@ function db_fetch_cell($sql, $col_name = '', $log = TRUE, $db_conn = FALSE) {
 		printf("FATAL: Database or Table does not exist");
 		exit;
 	}else if (($log) || (read_config_option("log_verbosity") >= POLLER_VERBOSITY_DEBUG)) {
-		cacti_log("ERROR: SQL Cell Failed!, Error:'" . $db_conn->ErrorNo() . "', SQL:\"" . str_replace("\n", "", str_replace("\r", "", str_replace("\t", " ", $sql))) . "\"", FALSE);
+		$callers = debug_backtrace();
+		$func = $callers[1]['function'];
+		cacti_log("ERROR: SQL Cell Failed!, Error:'" . $db_conn->ErrorNo() . "', Func: $func, SQL:\"" . str_replace("\n", "", str_replace("\r", "", str_replace("\t", " ", $sql))) . "\"", FALSE);
 	}
 }
 
@@ -200,7 +204,9 @@ function db_fetch_row($sql, $log = TRUE, $db_conn = FALSE) {
 		printf("FATAL: Database or Table does not exist");
 		exit;
 	}else if (($log) || (read_config_option("log_verbosity") >= POLLER_VERBOSITY_DEBUG)) {
-		cacti_log("ERROR: SQL Row Failed!, Error:'" . $db_conn->ErrorNo() . "', SQL:\"" . str_replace("\n", "", str_replace("\r", "", str_replace("\t", " ", $sql))) . "\"", FALSE);
+		$callers = debug_backtrace();
+		$func = $callers[1]['function'];
+		cacti_log("ERROR: SQL Row Failed!, Error:'" . $db_conn->ErrorNo() . "', Func: $func, SQL:\"" . str_replace("\n", "", str_replace("\r", "", str_replace("\t", " ", $sql))) . "\"", FALSE);
 	}
 }
 
@@ -239,7 +245,9 @@ function db_fetch_assoc($sql, $log = TRUE, $db_conn = FALSE) {
 		printf("FATAL: Database or Table does not exist");
 		exit;
 	}else if (($log) || (read_config_option("log_verbosity") >= POLLER_VERBOSITY_DEBUG)) {
-		cacti_log("ERROR: SQL Assoc Failed!, Error:'" . $db_conn->ErrorNo() . "', SQL:\"" . str_replace("\n", "", str_replace("\r", "", str_replace("\t", " ", $sql))) . "\"");
+		$callers = debug_backtrace();
+		$func = $callers[1]['function'];
+		cacti_log("ERROR: SQL Assoc Failed!, Error:'" . $db_conn->ErrorNo() . "', Func: $func, SQL:\"" . str_replace("\n", "", str_replace("\r", "", str_replace("\t", " ", $sql))) . "\"");
 	}
 }
 
