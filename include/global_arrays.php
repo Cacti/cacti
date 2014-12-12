@@ -682,9 +682,6 @@ $graph_datechar = array(
 	GDC_HYPHEN => '-',
 	GDC_SLASH => '/');
 
-$plugin_architecture = array(
-	'version' => '3.1');
-
 $dsstats_refresh_interval = array(
 	'boost' => 'After Boost',
 	'60'  => '1 Hour',

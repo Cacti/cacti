@@ -176,74 +176,6 @@ function api_plugin_uninstall_old ($plugin) {
 	return false;
 }
 
-function update_show_updates () {
-	global $pluginslist, $config, $plugin_architecture;
-
-	$cinfo = array();
-	sort($pluginslist);
-
-	$cinfo = update_get_plugin_info ();
-
-	$x = 0;
-
-	$info = update_get_cached_plugin_info();
-
-	$cactinew = update_check_if_newer($cinfo['cacti']['version'], $info['cacti']['version']) ;
-	if (isset($cinfo['cacti_plugin_arch']['version'])) {
-		$archnew =  update_check_if_newer($cinfo['cacti_plugin_arch']['version'], $info['cacti_plugin_arch']['version']);
-	} else {
-		$archnew = 0;
-	}
-
-	if ($cactinew) {
-		$x++;
-		print "<tr><td width='25%' valign=top><table width='100%'>";
-		html_header(array("Cacti"), 2);
-		form_alternate_row('', true);
-		print "<td width='25%'><strong>Version:</strong></td><td>" . $config["cacti_version"] . "</td></tr>";
-		form_alternate_row('', true);
-		print "<td valign=top><strong>Changes:</strong></td><td>" . str_replace("\n", '<br>', $info['cacti']['changes']) . "</td></tr></table>";
-	}
-	if (isset($plugin_architecture['version']) && $archnew) {
-		$x++;
-		print "<table width='100%'>";
-		html_header(array("Plugin Architecture"), 2);
-		form_alternate_row('', true);
-		print "<td width='25%'><strong>Version:</strong></td><td>" . $plugin_architecture['version'] . "</td>";
-		form_alternate_row('', true);
-		print "<td valign=top><strong>Changes:</strong></td><td>" . str_replace("\n", '<br>', $info['cacti_plugin_arch']['changes']) . "</td></tr></table>";
-	}
-	print "<table width='100%' cellspacing=0 cellpadding=3>";
-
-	foreach ($pluginslist as $plugin) {
-		if (isset($cinfo[$plugin]) && update_check_if_newer($cinfo[$plugin]['version'], $info[$plugin]['version'])) {
-			$x++;
-			print "<table width='100%'>";
-			html_header(array((isset($cinfo[$plugin]['longname']) ? $cinfo[$plugin]['longname'] : $plugin)), 2);
-			form_alternate_row('', true);
-			print "<td width='50%'><strong>Directory:</strong></td><td>$plugin</td>";
-			form_alternate_row('', true);
-			print "<td><strong>Version:</strong></td><td>" . $info[$plugin]['version'] . "</td>";
-			form_alternate_row('', true);
-			print "<td><strong>Author:</strong></td><td>" . (isset($cinfo[$plugin]['author']) && $cinfo[$plugin]['author'] != '' ? (isset($cinfo[$plugin]['email']) && $cinfo[$plugin]['email'] != '' ? "<a href='mailto:" . $cinfo[$plugin]['email'] . "'>" . $cinfo[$plugin]['author'] . "</a>"  : $cinfo[$plugin]['author']) : "") . "</td>";
-			form_alternate_row('', true);
-			print "<td><strong>Home Page:</strong></td><td>" . (isset($cinfo[$plugin]['webpage']) && $cinfo[$plugin]['webpage'] != '' ? "<a href='" . $cinfo[$plugin]['webpage'] . "'>" . $cinfo[$plugin]['webpage'] . "</a>" : "") . "</td>";
-			form_alternate_row('', true);
-			print "<td valign=top><strong>Changes:</strong></td><td>" . str_replace("\n", '<br>', $info[$plugin]['changes']) . "</td>";
-
-			print "</tr></table>";
-		}
-	}
-	if ($x == 0)
-		print "<br><center><b>There are currently no Updates!</b></center><br>";
-	print "</table>";
-	html_end_box(TRUE);
-}
-
-function update_check_if_newer() {
-	return false;
-}
-
 function plugins_temp_table_exists($table) {
 	return sizeof(db_fetch_row("SHOW TABLES LIKE '$table'"));
 }
@@ -336,7 +268,7 @@ function plugins_load_temp_table() {
 }
 
 function update_show_current () {
-	global $plugins, $pluginslist, $plugin_architecture, $config, $status_names, $actions, $item_rows;
+	global $plugins, $pluginslist, $config, $status_names, $actions, $item_rows;
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var_request("page"));
@@ -422,9 +354,7 @@ function update_show_current () {
 	</script>
 	<?php
 
-	html_start_box("<strong>Plugin Management</strong> (Cacti Version: " . $config["cacti_version"] .
-		(isset($plugin_architecture['version']) ? ", Plugin Architecture Version: " . $plugin_architecture['version']:"") .
-		")", "100%", "", "3", "center", "");
+	html_start_box("<strong>Plugin Management</strong> (Cacti Version: " . $config["cacti_version"] . ")", "100%", "", "3", "center", "");
 
 	?>
 	<tr class='even noprint'>
