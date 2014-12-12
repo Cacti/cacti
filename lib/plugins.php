@@ -20,7 +20,7 @@ function api_user_realm_auth ($filename = '') {
  * @return mixed $data
  */
 function api_plugin_hook ($name) {
-	global $config, $plugin_hooks, $plugins_system;
+	global $config, $plugin_hooks, $plugins_system, $plugins_integrated;
 	$data = func_get_args();
 	$ret = '';
 	$p = array();
@@ -51,13 +51,15 @@ function api_plugin_hook ($name) {
 
 	if (count($result)) {
 		foreach ($result as $hdata) {
-			$p[] = $hdata['name'];
-			if (file_exists($config['base_path'] . '/plugins/' . $hdata['name'] . '/' . $hdata['file'])) {
-				include_once($config['base_path'] . '/plugins/' . $hdata['name'] . '/' . $hdata['file']);
-			}
-			$function = $hdata['function'];
-			if (function_exists($function)) {
-				$function($data);
+			if (!in_array($hdata['name'], $plugins_integrated)) {
+				$p[] = $hdata['name'];
+				if (file_exists($config['base_path'] . '/plugins/' . $hdata['name'] . '/' . $hdata['file'])) {
+					include_once($config['base_path'] . '/plugins/' . $hdata['name'] . '/' . $hdata['file']);
+				}
+				$function = $hdata['function'];
+				if (function_exists($function)) {
+					$function($data);
+				}
 			}
 		}
 	}
@@ -76,7 +78,7 @@ function api_plugin_hook ($name) {
 }
 
 function api_plugin_hook_function ($name, $parm=NULL) {
-	global $config, $plugin_hooks, $plugins_system;
+	global $config, $plugin_hooks, $plugins_system, $plugins_integrated;
 	$ret = $parm;
 	$p = array();
 	$ps_where = '';
@@ -106,13 +108,15 @@ function api_plugin_hook_function ($name, $parm=NULL) {
 
 	if (count($result)) {
 		foreach ($result as $hdata) {
-			$p[] = $hdata['name'];
-			if (file_exists($config['base_path'] . '/plugins/' . $hdata['name'] . '/' . $hdata['file'])) {
-				include_once($config['base_path'] . '/plugins/' . $hdata['name'] . '/' . $hdata['file']);
-			}
-			$function = $hdata['function'];
-			if (function_exists($function)) {
-				$ret = $function($ret);
+			if (!in_array($hdata['name'], $plugins_integrated)) {
+				$p[] = $hdata['name'];
+				if (file_exists($config['base_path'] . '/plugins/' . $hdata['name'] . '/' . $hdata['file'])) {
+					include_once($config['base_path'] . '/plugins/' . $hdata['name'] . '/' . $hdata['file']);
+				}
+				$function = $hdata['function'];
+				if (function_exists($function)) {
+					$ret = $function($ret);
+				}
 			}
 		}
 	}

@@ -470,6 +470,14 @@ if ($step == "4") {
 			upgrade_to_0_8_8d();
 		}
 	}
+
+	foreach ($plugins_integrated as $plugin) {
+		if (api_plugin_is_enabled ($plugin)) {
+			api_plugin_remove_hooks ($plugin);
+			api_plugin_remove_realms ($plugin);
+			db_execute("DELETE FROM plugin_config WHERE directory = '$plugin'");
+		}
+	}
 }
 
 ?>

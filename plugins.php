@@ -57,7 +57,9 @@ if (isset($_GET['mode']) && in_array($_GET['mode'], $modes)  && isset($_GET['id'
 
 	switch ($mode) {
 		case 'installold':
-			api_plugin_install_old($id);
+			if (!in_array($id, $plugins_integrated)) {
+				api_plugin_install_old($id);
+			}
 			header("Location: plugins.php");
 			exit;
 			break;
@@ -67,7 +69,9 @@ if (isset($_GET['mode']) && in_array($_GET['mode'], $modes)  && isset($_GET['id'
 			exit;
 			break;
 		case 'install':
-			api_plugin_install($id);
+			if (!in_array($id, $plugins_integrated)) {
+				api_plugin_install($id);
+			}
 			header("Location: plugins.php");
 			exit;
 			break;
@@ -85,7 +89,9 @@ if (isset($_GET['mode']) && in_array($_GET['mode'], $modes)  && isset($_GET['id'
 			break;
 		case 'enable':
 			if (!in_array($id, $pluginslist)) break;
-			api_plugin_enable($id);
+			if (!in_array($id, $plugins_integrated)) {
+				api_plugin_enable($id);
+			}
 			header("Location: plugins.php");
 			exit;
 			break;
@@ -94,6 +100,7 @@ if (isset($_GET['mode']) && in_array($_GET['mode'], $modes)  && isset($_GET['id'
 			break;
 		case 'moveup':
 			if (!in_array($id, $pluginslist)) break;
+			if (in_array($id, $plugins_integrated)) break;
 			if (is_system_plugin($id)) break;
 			api_plugin_moveup($id);
 			header("Location: plugins.php");
@@ -101,6 +108,7 @@ if (isset($_GET['mode']) && in_array($_GET['mode'], $modes)  && isset($_GET['id'
 			break;
 		case 'movedown':
 			if (!in_array($id, $pluginslist)) break;
+			if (in_array($id, $plugins_integrated)) break;
 			if (is_system_plugin($id)) break;
 			api_plugin_movedown($id);
 			header("Location: plugins.php");
@@ -181,7 +189,7 @@ function plugins_temp_table_exists($table) {
 }
 
 function plugins_load_temp_table() {
-	global $config, $plugins;
+	global $config, $plugins, $plugins_integrated;
 
 	$pluginslist = retrieve_plugin_list();
 
@@ -208,7 +216,7 @@ function plugins_load_temp_table() {
 	$dh = opendir($path);
 	if ($dh !== false) {
 		while (($file = readdir($dh)) !== false) {
-			if ((is_dir("$path/$file")) && (file_exists("$path/$file/setup.php")) && (!in_array($file, $pluginslist))) {
+			if (is_dir("$path/$file") && file_exists("$path/$file/setup.php") && !in_array($file, $pluginslist) && !in_array($file, $plugins_integrated)) {
 				include_once("$path/$file/setup.php");
 				if (!function_exists('plugin_' . $file . '_install') && function_exists($file . '_version')) {
 					$function = $file . '_version';
