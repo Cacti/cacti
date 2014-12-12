@@ -161,7 +161,7 @@ function form_actions() {
 	/* ================= input validation ================= */
 	input_validate_input_regex(get_request_var_post('drp_action'), '^([a-zA-Z0-9_]+)$');
 	/* ==================================================== */
-	
+
 	/* if we are to save this form, instead of display it */
 	if (isset($_POST['selected_items'])) {
 		$selected_items = unserialize(stripslashes($_POST['selected_items']));
@@ -324,7 +324,7 @@ function item_edit() {
 			</select>
 		</td>
 	</tr>
-	form_alternate_row();?>
+	<?php form_alternate_row();?>
 		<td width='50%'>
 			<font class='textEditTitle'>CDEF Item Value</font><br>
 			Enter a value for this CDEF item.
