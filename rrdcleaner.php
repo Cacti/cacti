@@ -2,7 +2,7 @@
 
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2007-2014 Reinhard Scheck aka gandalf                     |
+ | Copyright (C) 2004-2014 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -10,9 +10,16 @@
  | of the License, or (at your option) any later version.                  |
  |                                                                         |
  | This program is distributed in the hope that it will be useful,         |
- | but ANY WARRANTY; without even the implied warranty of          |
+ | but WITHOUT ANY WARRANTY; without even the implied warranty of          |
  | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
  | GNU General Public License for more details.                            |
+ +-------------------------------------------------------------------------+
+ | Cacti: The Complete RRDTool-based Graphing Solution                     |
+ +-------------------------------------------------------------------------+
+ | This code is designed, written, and maintained by the Cacti Group. See  |
+ | about.php and/or the AUTHORS file for specific developer information.   |
+ +-------------------------------------------------------------------------+
+ | http://www.cacti.net/                                                   |
  +-------------------------------------------------------------------------+
 */
 
@@ -85,10 +92,7 @@ function rrdclean_fill_table() {
  	set_error_handler('rrdclean_error_handler');
 
 	/* delete old file names table */
-	rrdclean_delete_table();
-
-	/* create new file names table */
-	rrdclean_create_table();
+	rrdclean_truncate_tables();
 
 	get_files();
 
@@ -112,7 +116,7 @@ function rrdcleaner_lastupdate() {
 /*
  * Delete RRDCleaner's intermediate tables
  */
-function rrdclean_delete_table() {
+function rrdclean_truncate_tables() {
 	global $config;
 
 	/* suppress warnings */
@@ -121,64 +125,15 @@ function rrdclean_delete_table() {
 	/* install the rrdclean error handler */
 	set_error_handler('rrdclean_error_handler');
 
-	$sql = 'DROP TABLE IF EXISTS `data_source_purge_temp`';
+	$sql = 'TRUNCATE TABLE `data_source_purge_temp`';
 	db_execute($sql);
 
-	/* drop old data_source_purge_action table */
-	$sql = 'DROP TABLE IF EXISTS `data_source_purge_action`';
+	/* clear old data_source_purge_action table */
+	$sql = 'TRUNCATE TABLE `data_source_purge_action`';
 	db_execute($sql);
 
 	/* restore original error handler */
 	restore_error_handler();
-}
-
-/*
- * Create intermediate tables for RRDCleaner by fetching files
- * from disk and comparing to unused files
- */
-function rrdclean_create_table() {
-	global $config;
-
-	/* suppress warnings */
-	error_reporting(0);
-
-	/* install the rrdclean error handler */
-	set_error_handler('rrdclean_error_handler');
-
-	$sql = "CREATE TABLE IF NOT EXISTS `data_source_purge_temp` (
-		`id` integer UNSIGNED auto_increment,
-		`name_cache` varchar(255) NOT NULL default '',
-		`local_data_id` mediumint(8) unsigned NOT NULL default '0',
-		`name` varchar(128) NOT NULL default '',
-		`size` integer UNSIGNED NOT NULL default '0',
-		`last_mod` TIMESTAMP NOT NULL default '0000-00-00 00:00:00',
-		`in_cacti` tinyint NOT NULL default '0',
-		`data_template_id` mediumint(8) unsigned NOT NULL default '0',
-		PRIMARY KEY (`id`),
-		UNIQUE KEY name (`name`), 
-		KEY local_data_id (`local_data_id`), 
-		KEY in_cacti (`in_cacti`), 
-		KEY data_template_id (`data_template_id`)) 
-		ENGINE=MyISAM 
-		COMMENT='RRD Cleaner File Repository'";
-
-	db_execute($sql);
-
-	/* create fresh data_source_purge_action table */
-	$sql = "CREATE TABLE IF NOT EXISTS `data_source_purge_action` (
-		`id` integer UNSIGNED auto_increment,
-		`name` varchar(128) NOT NULL default '',
-		`local_data_id` mediumint(8) unsigned NOT NULL default '0',
-		`action` tinyint(2) NOT NULL default 0,
-		PRIMARY KEY (`id`),
-		UNIQUE KEY name (`name`))
-		ENGINE=MyISAM 
-		COMMENT='RRD Cleaner File Actions'";
-
-	db_execute($sql);
-
-	/* restore original error handler */
- 	restore_error_handler();
 }
 
 /*
@@ -283,9 +238,6 @@ function get_files() {
 function list_rrd() {
 	global $config, $item_rows, $ds_actions, $rra_path, $hash_version_codes;
  
-	/* create the tables if they don't exist */
-	rrdclean_create_table();
-
 	/* suppress warnings */
 	error_reporting(0);
 
@@ -388,7 +340,7 @@ function list_rrd() {
 		ORDER BY " . $_REQUEST['sort_column'] . ' ' . $_REQUEST['sort_direction'] . '
 		LIMIT ' . ($_REQUEST['rows'] * ($_REQUEST['page'] - 1)) . ',' . $_REQUEST['rows']);
 
-	$nav = html_nav_bar($config['url_path'] . 'plugins/rrdclean/rrdcleaner.php?filter'. get_request_var_request('filter'), MAX_DISPLAY_PAGES, get_request_var_request('page'), get_request_var_request('rows'), $total_rows, 8, 'RRD Files', 'page', 'main');
+	$nav = html_nav_bar($config['url_path'] . 'rrdcleaner.php?filter'. get_request_var_request('filter'), MAX_DISPLAY_PAGES, get_request_var_request('page'), get_request_var_request('rows'), $total_rows, 8, 'RRD Files', 'page', 'main');
 
 	print $nav;
 
@@ -631,4 +583,3 @@ function filter() {
 	<?php
 }
 
-?>

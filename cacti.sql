@@ -495,6 +495,41 @@ INSERT INTO data_local VALUES (6,17,1,0,'');
 INSERT INTO data_local VALUES (7,16,1,0,'');
 
 --
+-- Table structure for table `data_source_purge_action`
+--
+
+CREATE TABLE IF NOT EXISTS `data_source_purge_action` (
+		`id` integer UNSIGNED auto_increment,
+		`name` varchar(128) NOT NULL default '',
+		`local_data_id` mediumint(8) unsigned NOT NULL default '0',
+		`action` tinyint(2) NOT NULL default 0,
+		PRIMARY KEY (`id`),
+		UNIQUE KEY name (`name`))
+		ENGINE=MyISAM 
+		COMMENT='RRD Cleaner File Actions';
+
+--
+-- Table structure for table `data_source_purge_temp`
+--
+
+CREATE TABLE `data_source_purge_temp` (
+		`id` integer UNSIGNED auto_increment,
+		`name_cache` varchar(255) NOT NULL default '',
+		`local_data_id` mediumint(8) unsigned NOT NULL default '0',
+		`name` varchar(128) NOT NULL default '',
+		`size` integer UNSIGNED NOT NULL default '0',
+		`last_mod` TIMESTAMP NOT NULL default '0000-00-00 00:00:00',
+		`in_cacti` tinyint NOT NULL default '0',
+		`data_template_id` mediumint(8) unsigned NOT NULL default '0',
+		PRIMARY KEY (`id`),
+		UNIQUE KEY name (`name`), 
+		KEY local_data_id (`local_data_id`), 
+		KEY in_cacti (`in_cacti`), 
+		KEY data_template_id (`data_template_id`)) 
+		ENGINE=MyISAM 
+		COMMENT='RRD Cleaner File Repository';
+
+--
 -- Table structure for table `data_template`
 --
 

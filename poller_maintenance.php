@@ -39,7 +39,7 @@ $poller_start         = $seconds + $micro;
 
 include ('./include/global.php');
 
-global $config, $database_default;
+global $config, $database_default, $archived, $purged;
 
 /* process calling arguments */
 $parms = $_SERVER['argv'];
@@ -108,8 +108,7 @@ if (($purge)) {
 	/* record the start time */
 	list($micro,$seconds) = explode(" ", microtime());
 	$poller_end         = $seconds + $micro;
-
-	$string = sprintf("MAINT STATS: Time:%4.4f Purged:%i Archived:%i RRDfiles", ($poller_end - $poller_start), $purged, $archived);
+	$string = sprintf("MAINT STATS: Time:%4.4f Purged:%s Archived:%s RRDfiles", ($poller_end - $poller_start), $purged, $archived);
 	cacti_log($string, true, 'SYSTEM');
 }
 
@@ -321,5 +320,3 @@ function display_help() {
 	print "-v --version  - Display this help message\n";
 	print "-h --help     - display this help message\n";
 }
-
-?>
