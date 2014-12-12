@@ -91,6 +91,10 @@ function db_install_execute($cacti_version, $sql) {
 	$_SESSION["sess_sql_install_cache"] = $sql_install_cache;
 }
 
+function db_table_exists($table) {
+	return (db_fetch_cell("SHOW TABLES LIKE '$table'") ? true : false);
+}
+
 function find_best_path($binary_name) {
 	global $config;
 	if ($config["cacti_server_os"] == "win32") {

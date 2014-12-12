@@ -23,7 +23,7 @@
 */
 
 function upgrade_to_0_8_8d() {
-	db_install_execute("0.8.8d", "CREATE TABLE IF NOT EXISTS `user_auth_group` (
+	db_install_execute('0.8.8d', "CREATE TABLE IF NOT EXISTS `user_auth_group` (
 		`id` int(10) unsigned NOT NULL auto_increment,
 		`name` varchar(20) NOT NULL,
 		`description` varchar(255) NOT NULL default '',
@@ -41,7 +41,7 @@ function upgrade_to_0_8_8d() {
 		ENGINE=MyISAM
 		COMMENT='Table that Contains User Groups';");
 
-	db_install_execute("0.8.8d", "CREATE TABLE IF NOT EXISTS `user_auth_group_perms` (
+	db_install_execute('0.8.8d', "CREATE TABLE IF NOT EXISTS `user_auth_group_perms` (
 		`group_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
 		`item_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
 		`type` tinyint(2) unsigned NOT NULL DEFAULT '0',
@@ -50,7 +50,7 @@ function upgrade_to_0_8_8d() {
 		ENGINE=MyISAM
 		COMMENT='Table that Contains User Group Permissions';");
 
-	db_install_execute("0.8.8d", "CREATE TABLE IF NOT EXISTS `user_auth_group_realm` (
+	db_install_execute('0.8.8d', "CREATE TABLE IF NOT EXISTS `user_auth_group_realm` (
 		`group_id` int(10) unsigned NOT NULL,
 		`realm_id` int(10) unsigned NOT NULL,
 		PRIMARY KEY  (`group_id`, `realm_id`),
@@ -59,7 +59,7 @@ function upgrade_to_0_8_8d() {
 		ENGINE=MyISAM
 		COMMENT='Table that Contains User Group Realm Permissions';");
 
-	db_install_execute("0.8.8d", "CREATE TABLE IF NOT EXISTS `user_auth_group_members` (
+	db_install_execute('0.8.8d', "CREATE TABLE IF NOT EXISTS `user_auth_group_members` (
 		`group_id` int(10) unsigned NOT NULL,
 		`user_id` int(10) unsigned NOT NULL,
 		PRIMARY KEY  (`group_id`, `user_id`),
@@ -68,7 +68,7 @@ function upgrade_to_0_8_8d() {
 		ENGINE=MyISAM
 		COMMENT='Table that Contains User Group Members';");
 
-	db_install_execute("0.8.8d", "CREATE TABLE IF NOT EXISTS `settings_graphs_group` (
+	db_install_execute('0.8.8d', "CREATE TABLE IF NOT EXISTS `settings_graphs_group` (
 		`group_id` smallint(8) unsigned NOT NULL DEFAULT '0',
 		`name` varchar(50) NOT NULL DEFAULT '',
 		`value` varchar(255) NOT NULL DEFAULT '',
@@ -76,48 +76,44 @@ function upgrade_to_0_8_8d() {
 		ENGINE=MyISAM
 		COMMENT='Stores the Default User Group Graph Settings';");
 
-	db_install_execute("0.8.8d", "CREATE TABLE IF NOT EXISTS `data_source_stats_daily` (
+	db_install_execute('0.8.8d', "CREATE TABLE IF NOT EXISTS `data_source_stats_daily` (
 		`local_data_id` mediumint(8) unsigned NOT NULL,
 		`rrd_name` varchar(19) NOT NULL,
 		`average` DOUBLE DEFAULT NULL,
 		`peak` DOUBLE DEFAULT NULL,
 		PRIMARY KEY  (`local_data_id`,`rrd_name`)
-		) ENGINE=MyISAM;"
-	);
+		) ENGINE=MyISAM;");
 
-	db_install_execute("0.8.8d", "CREATE TABLE IF NOT EXISTS `data_source_stats_hourly` (
+	db_install_execute('0.8.8d', "CREATE TABLE IF NOT EXISTS `data_source_stats_hourly` (
 		`local_data_id` mediumint(8) unsigned NOT NULL,
 		`rrd_name` varchar(19) NOT NULL,
 		`average` DOUBLE DEFAULT NULL,
 		`peak` DOUBLE DEFAULT NULL,
 		PRIMARY KEY  (`local_data_id`,`rrd_name`)
-		) ENGINE=MyISAM;"
-	);
+		) ENGINE=MyISAM;");
 
-	db_install_execute("0.8.8d", "CREATE TABLE IF NOT EXISTS `data_source_stats_hourly_cache` (
+	db_install_execute('0.8.8d', "CREATE TABLE IF NOT EXISTS `data_source_stats_hourly_cache` (
 		`local_data_id` mediumint(8) unsigned NOT NULL,
 		`rrd_name` varchar(19) NOT NULL,
 		`time` timestamp NOT NULL default '0000-00-00 00:00:00',
 		`value` DOUBLE DEFAULT NULL,
 		PRIMARY KEY  (`local_data_id`,`time`,`rrd_name`),
 		KEY `time` USING BTREE (`time`)
-		) ENGINE=MEMORY;"
-	);
+		) ENGINE=MEMORY;");
 
-	db_install_execute("0.8.8d", "CREATE TABLE IF NOT EXISTS `data_source_stats_hourly_last` (
+	db_install_execute('0.8.8d', "CREATE TABLE IF NOT EXISTS `data_source_stats_hourly_last` (
 		`local_data_id` mediumint(8) unsigned NOT NULL,
 		`rrd_name` varchar(19) NOT NULL,
 		`value` DOUBLE DEFAULT NULL,
 		`calculated` DOUBLE NOT NULL,
 		PRIMARY KEY  (`local_data_id`,`rrd_name`)
-		) ENGINE=MEMORY;"
-	);
+		) ENGINE=MEMORY;");
 
 	if (!sizeof(db_fetch_row("SHOW COLUMNS from data_source_stats_hourly_last where Field='calculated'"))) {
-		db_install_execute("0.8.8d", "ALTER TABLE data_source_stats_hourly_last ADD calculated DOUBLE DEFAULT NULL AFTER `value`");
+		db_install_execute('0.8.8d', "ALTER TABLE data_source_stats_hourly_last ADD calculated DOUBLE DEFAULT NULL AFTER `value`");
 	};
 
-	db_install_execute("0.8.8d", "CREATE TABLE IF NOT EXISTS `data_source_stats_monthly` (
+	db_install_execute('0.8.8d', "CREATE TABLE IF NOT EXISTS `data_source_stats_monthly` (
 		`local_data_id` mediumint(8) unsigned NOT NULL,
 		`rrd_name` varchar(19) NOT NULL,
 		`average` DOUBLE DEFAULT NULL,
@@ -126,7 +122,7 @@ function upgrade_to_0_8_8d() {
 		) ENGINE=MyISAM;"
 	);
 
-	db_install_execute("0.8.8d", "CREATE TABLE IF NOT EXISTS `data_source_stats_weekly` (
+	db_install_execute('0.8.8d', "CREATE TABLE IF NOT EXISTS `data_source_stats_weekly` (
 		`local_data_id` mediumint(8) unsigned NOT NULL,
 		`rrd_name` varchar(19) NOT NULL,
 		`average` DOUBLE DEFAULT NULL,
@@ -135,7 +131,7 @@ function upgrade_to_0_8_8d() {
 		) ENGINE=MyISAM;"
 	);
 
-	db_install_execute("0.8.8d", "CREATE TABLE IF NOT EXISTS `data_source_stats_yearly` (
+	db_install_execute('0.8.8d', "CREATE TABLE IF NOT EXISTS `data_source_stats_yearly` (
 		`local_data_id` mediumint(8) unsigned NOT NULL,
 		`rrd_name` varchar(19) NOT NULL,
 		`average` DOUBLE DEFAULT NULL,
@@ -144,7 +140,7 @@ function upgrade_to_0_8_8d() {
 		) ENGINE=MyISAM;"
 	);
 
-	db_install_execute("0.8.8d", "CREATE TABLE IF NOT EXISTS `poller_output_boost` (
+	db_install_execute('0.8.8d', "CREATE TABLE IF NOT EXISTS `poller_output_boost` (
 		`local_data_id` mediumint(8) unsigned NOT NULL default '0',
 		`rrd_name` varchar(19) NOT NULL default '',
 		`time` datetime NOT NULL default '0000-00-00 00:00:00',
@@ -152,15 +148,17 @@ function upgrade_to_0_8_8d() {
 		PRIMARY KEY USING BTREE (`local_data_id`,`time`,`rrd_name`))
 		ENGINE=MEMORY;");
 
-	db_install_execute("0.8.8d", "CREATE TABLE IF NOT EXISTS `poller_output_boost_processes` (
+	db_install_execute('0.8.8d', "CREATE TABLE IF NOT EXISTS `poller_output_boost_processes` (
 		`sock_int_value` bigint(20) unsigned NOT NULL auto_increment,
 		`status` varchar(255) default NULL,
 		PRIMARY KEY (`sock_int_value`))
 		ENGINE=MEMORY;");
 
-	db_install_execute("0.8.8d", "RENAME TABLE IF EXISTS plugin_domains TO user_domains");
+	if (db_table_exists('plugin_domains')) {
+		db_install_execute('0.8.8d', 'RENAME TABLE plugin_domains TO user_domains');
+	}
 
-	db_install_execute("0.8.8d", "CREATE TABLE IF NOT EXISTS `user_domains` (
+	db_install_execute('0.8.8d', "CREATE TABLE IF NOT EXISTS `user_domains` (
 		`domain_id` int(10) unsigned NOT NULL auto_increment,
 		`domain_name` varchar(20) NOT NULL,
 		`type` int(10) UNSIGNED NOT NULL DEFAULT '0',
@@ -171,9 +169,11 @@ function upgrade_to_0_8_8d() {
 		ENGINE=MyISAM
 		COMMENT='Table to Hold Login Domains';");
 
-	db_install_execute("0.8.8d", "RENAME TABLE IF EXISTS plugin_domains_ldsp TO user_domains_ldap");
+	if (db_table_exists('plugin_domains_ldsp')) {
+		db_install_execute('0.8.8d', 'RENAME TABLE plugin_domains_ldsp TO user_domains_ldap');
+	}
 
-	db_install_execute("0.8.8d", "CREATE TABLE IF NOT EXISTS `user_domains_ldap` (
+	db_install_execute('0.8.8d', "CREATE TABLE IF NOT EXISTS `user_domains_ldap` (
 		`domain_id` int(10) unsigned NOT NULL,
 		`server` varchar(128) NOT NULL,
 		`port` int(10) unsigned NOT NULL,
@@ -196,7 +196,7 @@ function upgrade_to_0_8_8d() {
 		COMMENT='Table to Hold Login Domains for LDAP';");
 		
 		
-	db_install_execute("0.8.8d", "CREATE TABLE IF NOT EXISTS `data_source_purge_temp` (
+	db_install_execute('0.8.8d', "CREATE TABLE IF NOT EXISTS `data_source_purge_temp` (
 		`id` integer UNSIGNED auto_increment,
 		`name_cache` varchar(255) NOT NULL default '',
 		`local_data_id` mediumint(8) unsigned NOT NULL default '0',
@@ -213,7 +213,7 @@ function upgrade_to_0_8_8d() {
 		ENGINE=MyISAM 
 		COMMENT='RRD Cleaner File Repository';");
 
-	db_install_execute("0.8.8d", "CREATE TABLE IF NOT EXISTS `data_source_purge_action` (
+	db_install_execute('0.8.8d', "CREATE TABLE IF NOT EXISTS `data_source_purge_action` (
 		`id` integer UNSIGNED auto_increment,
 		`name` varchar(128) NOT NULL default '',
 		`local_data_id` mediumint(8) unsigned NOT NULL default '0',
