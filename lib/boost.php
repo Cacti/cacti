@@ -1029,6 +1029,7 @@ function boost_rrdtool_function_create($local_data_id, $initial_time, $show_sour
 			/* in case no maximum is given, use "Undef" value */
 			$data_source["rrd_maximum"] = "U";
 		} elseif (strpos($data_source["rrd_maximum"], "|query_") !== false) {
+			$data_local = db_fetch_row('SELECT * FROM data_local WHERE id = ' . $local_data_id);
 			if ($data_source["rrd_maximum"] == "|query_ifSpeed|" || $data_source["rrd_maximum"] == "|query_ifHighSpeed|") {
 				$highSpeed = db_fetch_cell("SELECT field_value
 					FROM host_snmp_cache
