@@ -67,11 +67,6 @@ switch ($_REQUEST['action']) {
 
 		bottom_footer();
 		break;
-	case 'remove':
-		cdef_remove();
-
-		header ('Location: cdef.php');
-		break;
 	case 'edit':
 		top_header();
 
@@ -161,7 +156,7 @@ function form_actions() {
 	/* ================= input validation ================= */
 	input_validate_input_regex(get_request_var_post('drp_action'), '^([a-zA-Z0-9_]+)$');
 	/* ==================================================== */
-
+	
 	/* if we are to save this form, instead of display it */
 	if (isset($_POST['selected_items'])) {
 		$selected_items = unserialize(stripslashes($_POST['selected_items']));
@@ -324,7 +319,7 @@ function item_edit() {
 			</select>
 		</td>
 	</tr>
-	<?php form_alternate_row();?>
+	form_alternate_row();?>
 		<td width='50%'>
 			<font class='textEditTitle'>CDEF Item Value</font><br>
 			Enter a value for this CDEF item.
@@ -342,7 +337,7 @@ function item_edit() {
 				form_dropdown('value', $custom_data_source_types, '', '', (isset($cdef['value']) ? $cdef['value'] : ''), '', '');
 				break;
 			case '5':
-				form_dropdown('value', db_fetch_assoc('select name,id from cdef order by name'), 'name', 'id', (isset($cdef['value']) ? $cdef['value'] : ''), '', '');
+				form_dropdown('value', db_fetch_assoc('select name,id from cdef where id != ' . $_REQUEST['cdef_id'] . ' order by name'), 'name', 'id', (isset($cdef['value']) ? $cdef['value'] : ''), '', '');
 				break;
 			case '6':
 				form_text_box('value', (isset($cdef['value']) ? $cdef['value'] : ''), '', '255', 30, 'text', (isset($_REQUEST['id']) ? $_REQUEST['id'] : '0'));
@@ -366,27 +361,6 @@ function item_edit() {
 /* ---------------------
     CDEF Functions
    --------------------- */
-
-function cdef_remove() {
-	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_request('id'));
-	/* ==================================================== */
-
-	if ((read_config_option('deletion_verification') == 'on') && (!isset($_REQUEST['confirm']))) {
-		top_header();
-
-		form_confirm('Are You Sure?', "Are you sure you want to delete the CDEF <strong>'" . htmlspecialchars(db_fetch_cell('select name from cdef where id=' . $_REQUEST['id'])) . "'</strong>?", htmlspecialchars('cdef.php'), htmlspecialchars('cdef.php?action=remove&id=' . $_REQUEST['id']));
-
-		bottom_footer();
-
-		exit;
-	}
-
-	if ((read_config_option('deletion_verification') == '') || (isset($_REQUEST['confirm']))) {
-		db_execute('delete from cdef where id=' . $_REQUEST['id']);
-		db_execute('delete from cdef_items where cdef_id=' . $_REQUEST['id']);
-	}
-}
 
 function cdef_edit() {
 	global $cdef_item_types, $fields_cdef_edit;
@@ -466,6 +440,11 @@ function cdef() {
 		$_REQUEST['filter'] = sanitize_search_string(get_request_var_request('filter'));
 	}
 
+	/* clean up has_graphs string */
+	if (isset($_REQUEST['has_graphs'])) {
+		$_REQUEST['has_graphs'] = sanitize_search_string(get_request_var_request('has_graphs'));
+	}
+
 	/* clean up sort_column string */
 	if (isset($_REQUEST['sort_column'])) {
 		$_REQUEST['sort_column'] = sanitize_search_string(get_request_var_request('sort_column'));
@@ -480,12 +459,14 @@ function cdef() {
 	if (isset($_REQUEST['clear_x'])) {
 		kill_session_var('sess_cdef_current_page');
 		kill_session_var('sess_cdef_filter');
+		kill_session_var('sess_cdef_has_graphs');
 		kill_session_var('sess_default_rows');
 		kill_session_var('sess_cdef_sort_column');
 		kill_session_var('sess_cdef_sort_direction');
 
 		unset($_REQUEST['page']);
 		unset($_REQUEST['filter']);
+		unset($_REQUEST['has_graphs']);
 		unset($_REQUEST['rows']);
 		unset($_REQUEST['sort_column']);
 		unset($_REQUEST['sort_direction']);
@@ -495,6 +476,7 @@ function cdef() {
 	/* remember these search fields in session vars so we don't have to keep passing them around */
 	load_current_session_value('page', 'sess_cdef_current_page', '1');
 	load_current_session_value('filter', 'sess_cdef_filter', '');
+	load_current_session_value('has_graphs', 'sess_cdef_has_graphs', 'true');
 	load_current_session_value('sort_column', 'sess_cdef_sort_column', 'name');
 	load_current_session_value('sort_direction', 'sess_cdef_sort_direction', 'ASC');
 	load_current_session_value('rows', 'sess_default_rows', read_config_option('num_rows_table'));
@@ -511,7 +493,7 @@ function cdef() {
 						Search:
 					</td>
 					<td width='1'>
-						<input id='filter' type='text' name='filter' size='40' value='<?php print htmlspecialchars(get_request_var_request('filter'));?>'>
+						<input id='filter' type='text' name='filter' size='25' value='<?php print htmlspecialchars(get_request_var_request('filter'));?>'>
 					</td>
 					<td>
 						CDEFs:
@@ -528,6 +510,12 @@ function cdef() {
 						</select>
 					</td>
 					<td>
+						<input type="checkbox" id='has_graphs' <?php print ($_REQUEST['has_graphs'] == 'true' ? 'checked':'');?>>
+					</td>
+					<td>
+						<label for='has_graphs' style='white-space:nowrap;'>Has Graphs</label>
+					</td>
+					<td>
 						<input type='button' id='refresh' value='Go' title='Set/Refresh Filters'>
 					</td>
 					<td>
@@ -539,7 +527,7 @@ function cdef() {
 			</form>
 			<script type='text/javascript'>
 			function applyFilter() {
-				strURL = 'cdef.php?filter='+$('#filter').val()+'&rows='+$('#rows').val()+'&page='+$('#page').val()+'&header=false';
+				strURL = 'cdef.php?filter='+$('#filter').val()+'&rows='+$('#rows').val()+'&page='+$('#page').val()+'&has_graphs='+$('#has_graphs').is(':checked')+'&header=false';
 				$.get(strURL, function(data) {
 					$('#main').html(data);
 					applySkin();
@@ -556,6 +544,10 @@ function cdef() {
 
 			$(function() {
 				$('#refresh').click(function() {
+					applyFilter();
+				});
+
+				$('#has_graphs').click(function() {
 					applyFilter();
 				});
 
@@ -576,7 +568,17 @@ function cdef() {
 	html_end_box();
 
 	/* form the 'where' clause for our main sql query */
-	$sql_where = "WHERE (cdef.name LIKE '%%" . get_request_var_request('filter') . "%%')";
+	if ($_REQUEST['filter'] != '') {
+		$sql_where = "WHERE (name LIKE '%" . get_request_var_request('filter') . "%')";
+	}else{
+		$sql_where = '';
+	}
+
+	if ($_REQUEST['has_graphs'] == 'true') {
+		$sql_having = 'HAVING graphs>0';
+	}else{
+		$sql_having = '';
+	}
 
 	/* print checkbox form for validation */
 	print "<form name='chk' method='post' action='cdef.php'>\n";
@@ -584,37 +586,64 @@ function cdef() {
 	html_start_box('', '100%', '', '3', 'center', '');
 
 	$total_rows = db_fetch_cell("SELECT
-		COUNT(cdef.id)
-		FROM cdef
-		$sql_where");
+		COUNT(rows)
+		FROM (
+			SELECT cd.id AS rows,
+			SUM(CASE WHEN local_graph_id>0 THEN 1 ELSE 0 END) AS graphs
+			FROM cdef AS cd
+			LEFT JOIN graph_templates_item AS gti
+			ON gti.cdef_id=cd.id
+			$sql_where
+			GROUP BY cd.id, gti.graph_template_id, gti.local_graph_id
+			$sql_having
+		) AS rs");
 
-	$cdef_list = db_fetch_assoc("SELECT
-		cdef.id,cdef.name
-		FROM cdef
+	$cdef_list = db_fetch_assoc("SELECT rs.*,
+		SUM(CASE WHEN local_graph_id=0 THEN 1 ELSE 0 END) AS templates,
+		SUM(CASE WHEN local_graph_id>0 THEN 1 ELSE 0 END) AS graphs
+		FROM (
+			SELECT cd.*, gti.local_graph_id
+			FROM cdef AS cd
+			LEFT JOIN graph_templates_item AS gti
+			ON gti.cdef_id=cd.id
+			GROUP BY cd.id, gti.graph_template_id, gti.local_graph_id
+		) AS rs
 		$sql_where
+		GROUP BY rs.id
+		$sql_having
 		ORDER BY " . get_request_var_request('sort_column') . ' ' . get_request_var_request('sort_direction') .
 		' LIMIT ' . (get_request_var_request('rows')*(get_request_var_request('page')-1)) . ',' . get_request_var_request('rows'));
 
-	$nav = html_nav_bar('cdef.php?filter=' . get_request_var_request('filter'), MAX_DISPLAY_PAGES, get_request_var_request('page'), get_request_var_request('rows'), $total_rows, 2, 'CDEFs', 'page', 'main');
+	$nav = html_nav_bar('cdef.php?filter=' . get_request_var_request('filter'), MAX_DISPLAY_PAGES, get_request_var_request('page'), get_request_var_request('rows'), $total_rows, 4, 'CDEFs', 'page', 'main');
 
 	print $nav;
 
 	$display_text = array(
-		'name' => array('CDEF Title', 'ASC'));
+		'name' => array('CDEF Title', 'ASC'),
+		'graphs' => array('display' => 'Graphs Using', 'align' => 'right', 'sort' => 'DESC'),
+		'templates' => array('display' => 'Templates Using', 'align' => 'right', 'sort' => 'DESC'));
 
 	html_header_sort_checkbox($display_text, get_request_var_request('sort_column'), get_request_var_request('sort_direction'), false);
 
 	$i = 0;
 	if (sizeof($cdef_list) > 0) {
 		foreach ($cdef_list as $cdef) {
-			form_alternate_row('line' . $cdef['id']);
+			if ($cdef['graphs'] == 0 && $cdef['templates'] == 0) {
+				$disabled = false;
+			}else{
+				$disabled = true;
+			}
+
+			form_alternate_row('line' . $cdef['id'], false, $disabled);
 			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars('cdef.php?action=edit&id=' . $cdef['id']) . "'>" . (strlen(get_request_var_request('filter')) ? preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($cdef['name'])) : htmlspecialchars($cdef['name'])) . '</a>', $cdef['id']);
-			form_checkbox_cell($cdef['name'], $cdef['id']);
+			form_selectable_cell($cdef['graphs'], $cdef['id'], '', 'text-align:right');
+			form_selectable_cell($cdef['templates'], $cdef['id'], '', 'text-align:right');
+			form_checkbox_cell($cdef['name'], $cdef['id'], $disabled);
 			form_end_row();
 		}
 		print $nav;
 	}else{
-		print "<tr class='tableRow'><td colspan='2'><em>No CDEFs</em></td></tr>\n";
+		print "<tr class='tableRow'><td colspan='4'><em>No CDEFs</em></td></tr>\n";
 	}
 	html_end_box(false);
 

@@ -500,7 +500,7 @@ function graphs() {
 				Search:
 			</td>
 			<td>
-				<input id='filter' type='text' name='filter' size='30' value='<?php print htmlspecialchars(get_request_var_request('filter'));?>'>
+				<input id='filter' type='text' name='filter' size='25' value='<?php print htmlspecialchars(get_request_var_request('filter'));?>'>
 			</td>
 			<td style='white-space:nowrap;'>
 				<input type='submit' value='Go' title='Set/Refresh Filters'>

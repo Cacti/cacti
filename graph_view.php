@@ -299,7 +299,7 @@ case 'preview':
 						Search:
 					</td>
 					<td>
-						<input type='text' id='filter' name='filter' size='40' value='<?php print htmlspecialchars(get_request_var_request('filter'));?>'>
+						<input type='text' id='filter' name='filter' size='25' value='<?php print htmlspecialchars(get_request_var_request('filter'));?>'>
 					</td>
 					<td>
 						<input type='button' value='Go' title='Set/Refresh Filters' onClick='applyGraphPreviewFilterChange();return false;'>
@@ -699,7 +699,7 @@ case 'list':
 						Search:
 					</td>
 					<td>
-						<input id='filter' type='text' name='filter' size='40' value='<?php print htmlspecialchars(get_request_var_request('filter'));?>'>
+						<input id='filter' type='text' name='filter' size='25' value='<?php print htmlspecialchars(get_request_var_request('filter'));?>'>
 					</td>
 					<td>
 						<input type='button' value='Go' title='Set/Refresh Filters' onClick='applyGraphListFilterChange()'>

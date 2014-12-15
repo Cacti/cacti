@@ -398,7 +398,7 @@ function is_realm_allowed($realm) {
 	return isset($_SESSION['sess_user_realms']);
 }
 
-function get_allowed_tree_content($tree_id, $sql_where = '', $order_by = '', $limit = '', &$total_rows = 0, $user = 0) {
+function get_allowed_tree_content($tree_id, $graphs = false, $edit = false, $sql_where = '', $order_by = '', $limit = '', &$total_rows = 0, $user = 0) {
 	if ($limit != '') {
 		$limit = "LIMIT $limit";
 	}
@@ -408,18 +408,23 @@ function get_allowed_tree_content($tree_id, $sql_where = '', $order_by = '', $li
 	}
 
 	if ($sql_where != '') {
-		$sql_where = "WHERE (gti.graph_tree_id=$tree_id) AND (" . $sql_where . ")";
+		$sql_where = "WHERE (gti.graph_tree_id=$tree_id) AND (" . $sql_where . ")" . ($edit == false ? " AND (gt.enabled='on')":"");
 	}else{
-		$sql_where = "WHERE (gti.graph_tree_id=$tree_id)";
+		$sql_where = "WHERE (gti.graph_tree_id=$tree_id)" . ($edit == false ? " AND (gt.enabled='on')":"");
 	}
 
-	$hierarchy = db_fetch_assoc("SELECT gti.id, gti.title, gti.order_key, gti.host_id,
-		gti.host_grouping_type, h.description as hostname
+	if (!$graphs) {
+		$sql_where .= " AND gti.local_graph_id=0";
+	}
+
+	$hierarchy = db_fetch_assoc("SELECT gti.id, gti.title, gti.order_key, gti.host_id, 
+		gti.local_graph_id, gti.host_grouping_type, h.description as hostname
 		FROM graph_tree_items AS gti
+		INNER JOIN graph_tree AS gt
+		ON gt.id=gti.graph_tree_id
 		LEFT JOIN host AS h
 		ON h.id=gti.host_id
 		$sql_where
-		AND gti.local_graph_id = 0
 		ORDER BY gti.order_key");
 
 	if (read_config_option('auth_method') != 0) {
@@ -724,7 +729,7 @@ function get_allowed_graphs($sql_where = '', $order_by = 'gtg.title_cache', $lim
 	return $graphs;
 }
 
-function get_allowed_trees($return_sql = false, $sql_where = '', $order_by = 'name', $limit = '', &$total_rows = 0, $user = 0) {
+function get_allowed_trees($edit = false, $return_sql = false, $sql_where = '', $order_by = 'name', $limit = '', &$total_rows = 0, $user = 0) {
 	if ($limit != '') {
 		$limit = "LIMIT $limit";
 	}
@@ -764,9 +769,9 @@ function get_allowed_trees($return_sql = false, $sql_where = '', $order_by = 'na
 		}
 
 		if (strlen($sql_where)) {
-			$sql_where = 'WHERE (' . $sql_where . ') AND (' . $sql_where1 . ')';
+			$sql_where = 'WHERE ' . ($edit == false ? '(gt.enabled="on") AND ':'') . '(' . $sql_where . ') AND (' . $sql_where1 . ')';
 		}else{
-			$sql_where = 'WHERE (' . $sql_where1 . ')';
+			$sql_where = 'WHERE ' . ($edit == false ? '(gt.enabled="on") AND ':'') . '(gt.enabled="on") AND (' . $sql_where1 . ')';
 		}
 
 		$sql = "SELECT id, name 

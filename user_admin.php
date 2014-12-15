@@ -979,7 +979,7 @@ function graph_perms_edit($tab, $header_label) {
 				form_selectable_cell((strlen(get_request_var_request("filter")) ? preg_replace("/(" . preg_quote(get_request_var_request("filter")) . ")/i", "<span class='filteredValue'>\\1</span>", htmlspecialchars($g["description"])) : htmlspecialchars($g["description"])), $g["id"]);
 				form_selectable_cell($g["user_id"] > 0 ? 'Member':'Non Member', $g["id"]);
 				form_selectable_cell(($g["id"]), $g["id"]);
-				form_selectable_cell(($g['policy_graphs'] == 1 ? 'ALLOW':'DENY') . '/' . ($g['policy_hosts'] == 1 ? 'ALLOW':'DENY') . '/' . ($g['policy_graph_templates'] == 1 ? 'ALLOC':'DENY'), $g["id"]);
+				form_selectable_cell(($g['policy_graphs'] == 1 ? 'ALLOW':'DENY') . '/' . ($g['policy_hosts'] == 1 ? 'ALLOW':'DENY') . '/' . ($g['policy_graph_templates'] == 1 ? 'ALLOW':'DENY'), $g["id"]);
 				form_selectable_cell($g['enabled'] == 'on' ? 'Enabled':'Disabled', $g['id']);
 				form_checkbox_cell($g["name"], $g["id"]);
 				form_end_row();
@@ -1891,7 +1891,7 @@ function user() {
 						Search:
 					</td>
 					<td>
-						<input id='filter' type="text" name="filter" size="40" value="<?php print htmlspecialchars(get_request_var_request("filter"));?>">
+						<input id='filter' type="text" name="filter" size="25" value="<?php print htmlspecialchars(get_request_var_request("filter"));?>">
 					</td>
 					<td>
 						Users:
@@ -2390,7 +2390,7 @@ function graph_filter($header_label) {
 						Search:
 					</td>
 					<td>
-						<input id='filter' type="text" name="filter" size="20" value="<?php print htmlspecialchars(get_request_var_request("filter"));?>" onChange="applyFilter()">
+						<input id='filter' type="text" name="filter" size="25" value="<?php print htmlspecialchars(get_request_var_request("filter"));?>" onChange="applyFilter()">
 					</td>
 					<td>
 						Graphs:
@@ -2480,7 +2480,7 @@ function group_filter($header_label) {
 						Search:
 					</td>
 					<td>
-						<input id='filter' type="text" name="filter" size="20" value="<?php print htmlspecialchars(get_request_var_request("filter"));?>" onChange="applyFilter()">
+						<input id='filter' type="text" name="filter" size="25" value="<?php print htmlspecialchars(get_request_var_request("filter"));?>" onChange="applyFilter()">
 					</td>
 					<td>
 						Groups:
@@ -2589,7 +2589,7 @@ function device_filter($header_label) {
 						Search:
 					</td>
 					<td>
-						<input id='filter' type="text" name="filter" size="20" value="<?php print htmlspecialchars(get_request_var_request("filter"));?>" onChange="applyFilter()">
+						<input id='filter' type="text" name="filter" size="25" value="<?php print htmlspecialchars(get_request_var_request("filter"));?>" onChange="applyFilter()">
 					</td>
 					<td>
 						Devices:
@@ -2679,7 +2679,7 @@ function template_filter($header_label) {
 						Search:
 					</td>
 					<td>
-						<input id='filter' type="text" name="filter" size="20" value="<?php print htmlspecialchars(get_request_var_request("filter"));?>" onChange="applyFilter()">
+						<input id='filter' type="text" name="filter" size="25" value="<?php print htmlspecialchars(get_request_var_request("filter"));?>" onChange="applyFilter()">
 					</td>
 					<td>
 						Templates:
@@ -2769,7 +2769,7 @@ function tree_filter($header_label) {
 						Search:
 					</td>
 					<td>
-						<input id='filter' type="text" name="filter" size="20" value="<?php print htmlspecialchars(get_request_var_request("filter"));?>" onChange="applyFilter()">
+						<input id='filter' type="text" name="filter" size="25" value="<?php print htmlspecialchars(get_request_var_request("filter"));?>" onChange="applyFilter()">
 					</td>
 					<td>
 						Trees:
@@ -2859,7 +2859,7 @@ function member_filter($header_label) {
 						Search:
 					</td>
 					<td>
-						<input id='filter' type="text" name="filter" size="20" value="<?php print htmlspecialchars(get_request_var_request("filter"));?>" onChange="applyFilter()">
+						<input id='filter' type="text" name="filter" size="25" value="<?php print htmlspecialchars(get_request_var_request("filter"));?>" onChange="applyFilter()">
 					</td>
 					<td>
 						Rows:

@@ -1211,7 +1211,7 @@ function graph() {
 						Search:
 					</td>
 					<td>
-						<input id='filter' type="text" name="filter" size="40" value="<?php print htmlspecialchars(get_request_var_request("filter"));?>">
+						<input id='filter' type="text" name="filter" size="25" value="<?php print htmlspecialchars(get_request_var_request("filter"));?>">
 					</td>
 					<td>
 						Graphs:
@@ -1298,7 +1298,7 @@ function graph() {
 
 	$display_text = array(
 		"title_cache" => array("Graph Title", "ASC"),
-		"local_graph_id" => array("ID", "ASC"),
+		"local_graph_id" => array('display' => "ID", 'align' => 'right', 'sort' => "ASC"),
 		"name" => array("Template Name", "ASC"),
 		"height" => array("Size", "ASC"));
 
@@ -1311,7 +1311,7 @@ function graph() {
 			$template_name = ((empty($graph["name"])) ? "<em>None</em>" : htmlspecialchars($graph["name"]));
 			form_alternate_row('line' . $graph["local_graph_id"], true);
 			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars("graphs.php?action=graph_edit&id=" . $graph["local_graph_id"]) . "' title='" . htmlspecialchars($graph["title_cache"]) . "'>" . ((get_request_var_request("filter") != "") ? preg_replace("/(" . preg_quote(get_request_var_request("filter"), "/") . ")/i", "<span class='filteredValue'>\\1</span>", title_trim(htmlspecialchars($graph["title_cache"]), read_config_option("max_title_length"))) : title_trim(htmlspecialchars($graph["title_cache"]), read_config_option("max_title_length"))) . "</a>", $graph["local_graph_id"]);
-			form_selectable_cell($graph["local_graph_id"], $graph["local_graph_id"]);
+			form_selectable_cell($graph["local_graph_id"], $graph["local_graph_id"], '', 'text-align:right');
 			form_selectable_cell(((get_request_var_request("filter") != "") ? preg_replace("/(" . preg_quote(get_request_var_request("filter"), "/") . ")/i", "<span class='filteredValue'>\\1</span>", $template_name) : $template_name), $graph["local_graph_id"]);
 			form_selectable_cell($graph["height"] . "x" . $graph["width"], $graph["local_graph_id"]);
 			form_checkbox_cell($graph["title_cache"], $graph["local_graph_id"]);

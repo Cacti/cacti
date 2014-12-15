@@ -53,6 +53,57 @@ function getQueryString(name) {
 	return match && decodeURIComponent(match[1].replace(/\+/g, ' '));
 }
 
+
+/** delayKeyup - this function will delay the keyup to 
+ *  provide debouncing of input strokes on the keyboard
+ *  this preventing your backend server from becoming overloaded
+ *  usage: $("#yourid").delayKeyup(function(){ console.log('do something'); }, 500);
+ *  @args name - the variable name to return */
+$.fn.delayKeyup = function(callback, ms){
+	var timer = 0;
+	$(this).keyup(function(){                   
+		clearTimeout (timer);
+		timer = setTimeout(callback, ms);
+	});
+	return $(this);
+};
+
+/** textWidth - This function will return the natural width of a string
+ *  without any wrapping. */
+$.fn.textWidth = function(text){
+	var org = $(this)
+	var html = $('<span style="display:none;postion:absolute;width:auto;left:-9999px">' + (text || org.html()) + '</span>');
+	if (!text) {
+		html.css("font-family", org.css("font-family"));
+		html.css("font-size", org.css("font-size"));
+	}
+	$('body').append(html);
+	var width = html.width();
+	html.remove();
+	return width;
+}
+
+/** classes - This function will return an array of all
+ *  classes of an element */
+$.fn.classes = function(callback) {
+	var classes = [];
+	$.each(this, function(i, v) {
+		var splitClassName = v.className.split(/\s+/);
+		for (var j in splitClassName) {
+			var className = splitClassName[j];
+			if (-1 === classes.indexOf(className)) {
+				classes.push(className);
+			}
+		}
+	});
+	if ('function' === typeof callback) {
+		for (var i in classes) {
+			callback(classes[i]);
+		}
+	}
+	return classes;
+};
+
 /** applySelectorVisibility - This function set's the initial visibility
  *  of graphs for creation. Is will scan the against preset variables
  *  taking action as required to enable or disable rows. */
@@ -83,7 +134,6 @@ function applySelectorVisibilityAndActions() {
 
 	// Create Actions for Checkboxes
 	$('tr.selectable').find('.checkbox').click(function(data) {
-		console.log('Graph List Click'+page);
 		if (!$(this).is(':disabled')) {
 			$(this).parent().toggleClass('selected');
 			var checked = $(this).is(':checkbox');
@@ -215,6 +265,8 @@ function applyTimespanFilterChange(objForm) {
 	document.location = strURL;
 }
 
+/** cactiReturnTo - This function simply returns to the previous page
+ *  @args href - the previous page */
 function cactiReturnTo(href) {
 	if (href != '') {
 		href = href+ (href.indexOf('?') > 0 ? '&':'?') + 'header=false';
@@ -234,6 +286,8 @@ function cactiReturnTo(href) {
 	}
 }
 
+/** applySkin - This function re-asserts all javascript behavior to a page
+ *  that can't be set using a live attrbute 'on()' */
 function applySkin() {
 	if (!theme || theme == 'classic') {
 		theme = 'classic';
@@ -245,10 +299,10 @@ function applySkin() {
 	if (basename(document.location.pathname, '.php') != 'graphs_new') {
 		$('.tableSubHeaderCheckbox').find(':checkbox').click(function(data) {
 			if ($(this).is(':checked')) {
-				$('input[id^=chk_]').prop('checked',true);
+				$('input[id^=chk_]').not(':disabled').prop('checked',true);
 				$('tr.selectable').addClass('selected');
 			}else{
-				$('input[id^=chk_]').prop('checked',false);
+				$('input[id^=chk_]').not(':disabled').prop('checked',false);
 				$('tr.selectable').removeClass('selected');
 			}
 		});
@@ -274,6 +328,8 @@ function applySkin() {
 		applySelectorVisibilityAndActions();
 	}
 
+	setupSortable();
+
 	setupBreadcrumbs();
 
 	applyTableSizing();
@@ -283,6 +339,23 @@ function applySkin() {
 	CsrfMagic.end();
 
 	$('#message_container').delay(2000).slideUp('fast');
+}
+
+/** setupSortable - This function will set all actions for sortable columns
+ *  every time a page is regenerated */
+function setupSortable() {
+	$('th.sortable').on('click', function(e) {
+		var $target = $(e.target);
+		if (!$target.is('.ui-resizable-handle')) {
+			var page=$(this).find('.sortinfo').attr('sort-page');
+			var column=$(this).find('.sortinfo').attr('sort-column');
+			var direction=$(this).find('.sortinfo').attr('sort-direction');
+			$.get(page+'?sort_column='+column+'&sort_direction='+direction+'&header=false', function(data) {
+				$('#main').html(data);
+				applySkin();
+			});
+		}
+	});
 }
 
 function setupBreadcrumbs() {
@@ -297,6 +370,8 @@ function setupBreadcrumbs() {
 	});
 }
 
+/** saveTableWidths - This function will initialize table widths on page
+ *  load.  It includes the 'initial' boolean to initialize the page */
 function saveTableWidths(initial) {
 	// Initialize table width on the page
 	$('.cactiTable').each(function(data) {
@@ -327,6 +402,9 @@ function saveTableWidths(initial) {
 	});
 }
 
+/** applyTableSizing - This function sets all table headers to be resizable using
+ *  the jQueryUI function resizable.  It also calls the saveTableWidths function
+ *  to store the cookie value every time a column is resized. */
 function applyTableSizing() {
 	saveTableWidths(true);
 
@@ -351,6 +429,11 @@ function applyTableSizing() {
 	});
 }
 
+/** setupPageTimeout - This function will setup the page timeout based upon
+ *  the plugin developers $refresh requirements.  It also sets up a location
+ *  to redirect the user to upon timeout.  This is generally done for automatically
+ *  logging out the user, but can be used for simply refreshing the page as in the 
+ *  case of the Graphs page. */
 function setupPageTimeout() {
 	//console.log('Page Timeout is :'+refreshMSeconds+', and going to Page :'+refreshPage);
 	clearTimeout(myRefresh);
@@ -381,11 +464,12 @@ $(function() {
 	$('#navigation').css('height', ($(window).height())+'px');
 	$(window).resize(function(event) {
 		if (!$(event.target).hasClass('ui-resizable')) {
-			$('#navigation').css('height', ($(window).height())+'px');
+			$('#navigation').css('height', ($(window).height()-20)+'px');
 		}
 		saveTableWidths(false);
 	});
 
+	$('#message_container').show().delay(2000).slideUp('fast');
+
 	applySkin();
 });
-

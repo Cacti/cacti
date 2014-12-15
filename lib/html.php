@@ -415,6 +415,7 @@ function html_nav_bar($base_url, $max_pages, $current_page, $rows_per_page, $tot
    @arg $header_items - an array containing a list of column items to display.  The
         format is similar to the html_header, with the exception that it has three
         dimensions associated with each element (db_column => display_text, default_sort_order)
+		alternatively (db_column => array('display' = 'blah', 'align' = 'blah', 'sort' = 'blah'))
    @arg $sort_column - the value of current sort column.
    @arg $sort_direction - the value the current sort direction.  The actual sort direction
         will be opposite this direction if the user selects the same named column.
@@ -431,21 +432,53 @@ function html_header_sort($header_items, $sort_column, $sort_direction, $last_it
 
 	$i = 1;
 	foreach ($header_items as $db_column => $display_array) {
-		/* by default, you will always sort ascending, with the exception of an already sorted column */
-		if ($sort_column == $db_column) {
-			$direction = $new_sort_direction;
-			$display_text = $display_array[0] . "**";
+		if (array_key_exists('display', $display_array)) {
+			$display_text = $display_array['display'];
+			if ($sort_column == $db_column) {
+				$icon = $sort_direction;
+				$direction = $new_sort_direction;
+			}else{
+				$icon = '';
+				if (isset($display_array['sort'])) {
+					$direction = $display_array['sort'];
+				}else{
+					$direction = 'ASC';
+				}
+			}
+
+			if (isset($display_array['align'])) {
+				$align = $display_array['align'];
+			}else{
+				$align = 'left';
+			}
 		}else{
-			$display_text = $display_array[0];
-			$direction = $display_array[1];
+			/* by default, you will always sort ascending, with the exception of an already sorted column */
+			if ($sort_column == $db_column) {
+				$icon = $sort_direction;
+				$direction = $new_sort_direction;
+				$display_text = $display_array[0];
+			}else{
+				$icon = '';
+				$display_text = $display_array[0];
+				$direction = $display_array[1];
+			}
+
+			$align = 'left';
+		}
+
+		if (strtolower($icon) == 'asc') {
+			$icon = 'ui-icon ui-icon-carat-1-n';
+		}elseif (strtolower($icon) == 'desc') {
+			$icon = 'ui-icon ui-icon-carat-1-s';
+		}else{
+			$icon = 'ui-icon ui-icon-carat-2-n-s';
 		}
 
 		if (($db_column == "") || (substr_count($db_column, "nosort"))) {
-			print "<th " . ((($i+1) == count($header_items)) ? "colspan='$last_item_colspan' " : "") . ">" . $display_text . "</th>\n";
+			print "<th style='text-align:$align;' " . ((($i+1) == count($header_items)) ? "colspan='$last_item_colspan' " : "") . ">" . $display_text . "</th>\n";
 		}else{
-			print "<th " . ((($i) == count($header_items)) ? "colspan='$last_item_colspan'>" : ">");
-			print "<a class='textSubHeaderDark' href='" . htmlspecialchars(basename($_SERVER["PHP_SELF"]) . "?sort_column=" . $db_column . "&sort_direction=" . $direction) . "'>" . $display_text . "</a>";
-			print "</th>\n";
+			print "<th class='sortable' style='text-align:$align;'>";
+			print "<div class='sortinfo' sort-page='" . htmlspecialchars($_SERVER['PHP_SELF']) . "' sort-column='$db_column' sort-direction='$direction'><div class='textSubHeaderDark'>" . $display_text . "<i class='$icon'></i></div></div></th>\n";
 		}
 
 		$i++;
@@ -461,11 +494,14 @@ function html_header_sort($header_items, $sort_column, $sort_direction, $last_it
    @arg $header_items - an array containing a list of column items to display.  The
         format is similar to the html_header, with the exception that it has three
         dimensions associated with each element (db_column => display_text, default_sort_order)
+		alternatively (db_column => array('display' = 'blah', 'align' = 'blah', 'sort' = 'blah'))
    @arg $sort_column - the value of current sort column.
    @arg $sort_direction - the value the current sort direction.  The actual sort direction
         will be opposite this direction if the user selects the same named column.
    @arg $form_action - the url to post the 'select all' form to */
 function html_header_sort_checkbox($header_items, $sort_column, $sort_direction, $include_form = true, $form_action = "") {
+	static $page = 0;
+
 	/* reverse the sort direction */
 	if ($sort_direction == "ASC") {
 		$new_sort_direction = "DESC";
@@ -479,36 +515,77 @@ function html_header_sort_checkbox($header_items, $sort_column, $sort_direction,
 	print "<tr class='tableHeader'>\n";
 
 	foreach($header_items as $db_column => $display_array) {
-		/* by default, you will always sort ascending, with the exception of an already sorted column */
-		if ($sort_column == $db_column) {
-			$direction = $new_sort_direction;
-			$display_text = $display_array[0] . "**";
+		$icon = '';
+		if (array_key_exists('display', $display_array)) {
+			$display_text = $display_array['display'];
+			if ($sort_column == $db_column) {
+				$icon = $sort_direction;
+				$direction = $new_sort_direction;
+			}else{
+				$icon = '';
+
+				if (isset($display_array['sort'])) {
+					$direction = $display_array['sort'];
+				}else{
+					$direction = 'ASC';
+				}
+			}
+
+			if (isset($display_array['align'])) {
+				$align = $display_array['align'];
+			}else{
+				$align = 'left';
+			}
 		}else{
-			$display_text = $display_array[0];
-			$direction = $display_array[1];
+			/* by default, you will always sort ascending, with the exception of an already sorted column */
+			if ($sort_column == $db_column) {
+				$icon = $sort_direction;
+				$direction = $new_sort_direction;
+				$display_text = $display_array[0];
+			}else{
+				$icon = '';
+				$display_text = $display_array[0];
+				$direction = $display_array[1];
+			}
+
+			$align = 'left';
+		}
+
+		if (strtolower($icon) == 'asc') {
+			$icon = 'ui-icon ui-icon-carat-1-n';
+		}elseif (strtolower($icon) == 'desc') {
+			$icon = 'ui-icon ui-icon-carat-1-s';
+		}else{
+			$icon = 'ui-icon ui-icon-carat-2-n-s';
 		}
 
 		if (($db_column == "") || (substr_count($db_column, "nosort"))) {
-			print "<th>" . $display_text . "</th>\n";
+			print "<th style='text-align:$align;'>" . $display_text . "</th>\n";
 		}else{
-			print "<th>";
-			print "<a class='textSubHeaderDark' href='" . htmlspecialchars(basename($_SERVER["PHP_SELF"]) . "?sort_column=" . $db_column . "&sort_direction=" . $direction) . "'>" . $display_text . "</a>";
-			print "</th>\n";
+			print "<th class='sortable' style='text-align:$align;'>";
+			print "<div class='sortinfo' sort-page='" . htmlspecialchars($_SERVER['PHP_SELF']) . "' sort-column='$db_column' sort-direction='$direction'><div class='textSubHeaderDark'>" . $display_text . "<i class='$icon'></i></div></div></th>\n";
 		}
 	}
 
 	print "<th width='1%' class='tableSubHeaderCheckbox' align='right' style='" . get_checkbox_style() . "'><input type='checkbox' style='margin: 0px;' name='all' title='Select All' onClick='SelectAll(\"chk_\",this.checked)'></th>" . ($include_form ? "<th style='display:none;'><form name='chk' method='post' action='$form_action'></th>\n":"");
 	print "</tr>\n";
+
+	$page++;
 }
 
 /* html_header - draws a header row suitable for display inside of a box element
    @arg $header_items - an array containing a list of items to be included in the header
+		alternatively and array of header names and alignment array('display' = 'blah', 'align' = 'blah')
    @arg $last_item_colspan - the TD 'colspan' to apply to the last cell in the row */
 function html_header($header_items, $last_item_colspan = 1) {
 	print "<tr class='tableHeader'>\n";
 
 	for ($i=0; $i<count($header_items); $i++) {
-		print "<th " . ((($i+1) == count($header_items)) ? "colspan='$last_item_colspan' " : "") . ">" . $header_items[$i] . "</th>\n";
+		if (is_array($header_items[$i])) {
+			print "<th style='text-align:" . $header_items[$i]['align'] . ";'" . ((($i+1) == count($header_items)) ? "colspan='$last_item_colspan' " : "") . ">" . $header_items[$i] . "</th>\n";
+		}else{
+			print "<th style='text-align:left;'" . ((($i+1) == count($header_items)) ? "colspan='$last_item_colspan' " : "") . ">" . $header_items[$i] . "</th>\n";
+		}
 	}
 
 	print "</tr>\n";
@@ -517,6 +594,7 @@ function html_header($header_items, $last_item_colspan = 1) {
 /* html_header_checkbox - draws a header row with a 'select all' checkbox in the last cell
      suitable for display inside of a box element
    @arg $header_items - an array containing a list of items to be included in the header
+		alternatively and array of header names and alignment array('display' = 'blah', 'align' = 'blah')
    @arg $form_action - the url to post the 'select all' form to */
 function html_header_checkbox($header_items, $include_form = true, $form_action = "") {
 	/* default to the 'current' file */
@@ -525,7 +603,11 @@ function html_header_checkbox($header_items, $include_form = true, $form_action 
 	print "<tr class='tableHeader'>\n";
 
 	for ($i=0; $i<count($header_items); $i++) {
-		print "<th>" . $header_items[$i] . "</th>\n";
+		if (is_array($header_items[$i])) {
+			print "<th style='text-align:" . $header_items[$i]['align'] . ";'>" . $header_items[$i]['display'] . "</td>";
+		}else{
+			print "<th style='text-align:left;'>" . $header_items[$i] . "</th>\n";
+		}
 	}
 
 	print "<th width='1%' class='tableSubHeaderCheckbox' align='right' style='" . get_checkbox_style() . "'><input type='checkbox' style='margin: 0px;' name='all' title='Select All' onClick='SelectAll(\"chk_\",this.checked)'></th>\n" . ($include_form ? "<th style='display:none;'><form name='chk' method='post' action='$form_action'></th>\n":"");

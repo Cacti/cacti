@@ -24,6 +24,10 @@
 
 include("./include/auth.php");
 
+define('MAX_DISPLAY_PAGES', 21);
+
+$gprint_actions = array(1 => 'Delete');
+
 /* set default action */
 if (!isset($_REQUEST["action"])) { $_REQUEST["action"] = ""; }
 
@@ -32,10 +36,9 @@ switch ($_REQUEST["action"]) {
 		form_save();
 
 		break;
-	case 'remove':
-		gprint_presets_remove();
+	case 'actions':
+		form_actions();
 
-		header("Location: gprint_presets.php");
 		break;
 	case 'edit':
 		top_header();
@@ -88,23 +91,76 @@ function form_save() {
     gprint_presets - GPRINT Presets
    ----------------------------------- */
 
-function gprint_presets_remove() {
+function form_actions() {
+	global $gprint_actions;
+
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var("id"));
+	input_validate_input_regex(get_request_var_post('drp_action'), '^([a-zA-Z0-9_]+)$');
 	/* ==================================================== */
+	
+	/* if we are to save this form, instead of display it */
+	if (isset($_POST['selected_items'])) {
+		$selected_items = unserialize(stripslashes($_POST['selected_items']));
 
-	if ((read_config_option("deletion_verification") == "on") && (!isset($_GET["confirm"]))) {
-		top_header();
+		if ($_POST['drp_action'] == '1') { /* delete */
+			db_execute('DELETE FROM graph_templates_gprint WHERE ' . array_to_sql_or($selected_items, 'id'));
+		}
 
-		form_confirm("Are You Sure?", "Are you sure you want to delete the GPRINT preset <strong>'" . htmlspecialchars(db_fetch_cell("select name from graph_templates_gprint where id=" . $_GET["id"])) . "'</strong>? This could affect every graph that uses this preset, make sure you know what you are doing first!", htmlspecialchars("gprint_presets.php"), htmlspecialchars("gprint_presets.php?action=remove&id=" . $_GET["id"]));
-
-		bottom_footer();
+		header('Location: gprint_presets.php');
 		exit;
 	}
 
-	if ((read_config_option("deletion_verification") == "") || (isset($_GET["confirm"]))) {
-		db_execute("delete from graph_templates_gprint where id=" . $_GET["id"]);
+	/* setup some variables */
+	$gprint_list = ''; $i = 0;
+
+	/* loop through each of the graphs selected on the previous page and get more info about them */
+	while (list($var,$val) = each($_POST)) {
+		if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
+			/* ================= input validation ================= */
+			input_validate_input_number($matches[1]);
+			/* ==================================================== */
+
+			$gprint_list .= '<li>' . htmlspecialchars(db_fetch_cell('SELECT name FROM graph_templates_gprint WHERE id=' . $matches[1])) . '</li>';
+			$gprint_array[$i] = $matches[1];
+
+			$i++;
+		}
 	}
+
+	top_header();
+
+	print "<form action='gprint_presets.php' method='post'>\n";
+
+	html_start_box('<strong>' . $gprint_actions{$_POST['drp_action']} . '</strong>', '60%', '', '3', 'center', '');
+
+	if (isset($gprint_array) && sizeof($gprint_array)) {
+		if ($_POST['drp_action'] == '1') { /* delete */
+			print "	<tr>
+					<td class='textArea' class='odd'>
+						<p>When you click \"Continue\", the folling GPRINT Preset(s) will be deleted.</p>
+						<ul>$gprint_list</ul>
+					</td>
+				</tr>\n";
+
+			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Delete GPRINT Preset(s)'>";
+		}
+	}else{
+		print "<tr><td class='odd'><span class='textError'>You must select at least one GPRINT Preset.</span></td></tr>\n";
+		$save_html = "<input type='button' value='Return' onClick='window.history.back()'>";
+	}
+
+	print "	<tr>
+			<td align='right' class='saveRow'>
+				<input type='hidden' name='action' value='actions'>
+				<input type='hidden' name='selected_items' value='" . (isset($gprint_array) ? serialize($gprint_array) : '') . "'>
+				<input type='hidden' name='drp_action' value='" . $_POST['drp_action'] . "'>
+				$save_html
+			</td>
+		</tr>\n";
+
+	html_end_box();
+
+	bottom_footer();
 }
 
 function gprint_presets_edit() {
@@ -134,37 +190,227 @@ function gprint_presets_edit() {
 }
 
 function gprint_presets() {
+	global $gprint_actions, $item_rows;
+
+	/* ================= input validation ================= */
+	input_validate_input_number(get_request_var_request('page'));
+	input_validate_input_number(get_request_var_request('rows'));
+	/* ==================================================== */
+
+	/* clean up search string */
+	if (isset($_REQUEST['filter'])) {
+		$_REQUEST['filter'] = sanitize_search_string(get_request_var_request('filter'));
+	}
+
+	/* clean up search string */
+	if (isset($_REQUEST['has_graphs'])) {
+		$_REQUEST['has_graphs'] = sanitize_search_string(get_request_var_request('has_graphs'));
+	}
+
+	/* clean up sort_column string */
+	if (isset($_REQUEST['sort_column'])) {
+		$_REQUEST['sort_column'] = sanitize_search_string(get_request_var_request('sort_column'));
+	}
+
+	/* clean up sort_direction string */
+	if (isset($_REQUEST['sort_direction'])) {
+		$_REQUEST['sort_direction'] = sanitize_search_string(get_request_var_request('sort_direction'));
+	}
+
+	/* if the user pushed the 'clear' button */
+	if (isset($_REQUEST['clear_x'])) {
+		kill_session_var('sess_gprint_current_page');
+		kill_session_var('sess_gprint_filter');
+		kill_session_var('sess_gprint_has_graphs');
+		kill_session_var('sess_default_rows');
+		kill_session_var('sess_gprint_sort_column');
+		kill_session_var('sess_gprint_sort_direction');
+
+		unset($_REQUEST['page']);
+		unset($_REQUEST['filter']);
+		unset($_REQUEST['has_graphs']);
+		unset($_REQUEST['rows']);
+		unset($_REQUEST['sort_column']);
+		unset($_REQUEST['sort_direction']);
+	}
+
+    /* remember these search fields in session vars so we don't have to keep passing them around */
+    load_current_session_value('page', 'sess_gprint_current_page', '1');
+    load_current_session_value('filter', 'sess_gprint_filter', '');
+    load_current_session_value('has_graphs', 'sess_gprint_has_graphs', 'true');
+    load_current_session_value('sort_column', 'sess_gprint_sort_column', 'name');
+    load_current_session_value('sort_direction', 'sess_gprint_sort_direction', 'ASC');
+    load_current_session_value('rows', 'sess_default_rows', read_config_option('num_rows_table'));
+
 	html_start_box("<strong>GPRINT Presets</strong>", "100%", "", "3", "center", "gprint_presets.php?action=edit");
 
-	print "<tr class='tableHeader'>
-			<td colspan='2' class='textSubHeaderDark'>GPRINT Preset Title</td>
-		</tr>";
+	?>
+	<tr class='even'>
+		<td>
+			<form id='form_gprint' action='gprint_presets.php'>
+			<table cellpadding='2' cellspacing='0'>
+				<tr>
+					<td width='50'>
+						Search:
+					</td>
+					<td width='1'>
+						<input id='filter' type='text' name='filter' size='25' value='<?php print htmlspecialchars(get_request_var_request('filter'));?>'>
+					</td>
+					<td>
+						GPRINTs:
+					</td>
+					<td>
+						<select id='rows' name='rows' onChange='applyFilter()'>
+							<?php
+							if (sizeof($item_rows) > 0) {
+								foreach ($item_rows as $key => $value) {
+									print "<option value='" . $key . "'"; if (get_request_var_request('rows') == $key) { print ' selected'; } print '>' . htmlspecialchars($value) . "</option>\n";
+								}
+							}
+							?>
+						</select>
+					</td>
+					<td>
+						<input type="checkbox" id='has_graphs' <?php print ($_REQUEST['has_graphs'] == 'true' ? 'checked':'');?>>
+					</td>
+					<td>
+						<label for='has_graphs' style='white-space:nowrap;'>Has Graphs</label>
+					</td>
+					<td>
+						<input type='button' id='refresh' value='Go' title='Set/Refresh Filters'>
+					</td>
+					<td>
+						<input type='button' id='clear' name='clear_x' value='Clear' title='Clear Filters'>
+					</td>
+				</tr>
+			</table>
+			<input type='hidden' id='page' name='page' value='<?php print $_REQUEST['page'];?>'>
+			</form>
+			<script type='text/javascript'>
+			function applyFilter() {
+				strURL = 'gprint_presets.php?filter='+$('#filter').val()+'&rows='+$('#rows').val()+'&page='+$('#page').val()+'&has_graphs='+$('#has_graphs').is(':checked')+'&header=false';
+				$.get(strURL, function(data) {
+					$('#main').html(data);
+					applySkin();
+				});
+			}
 
-	$template_list = db_fetch_assoc("select
-		graph_templates_gprint.id,
-		graph_templates_gprint.name
-		from graph_templates_gprint");
+			function clearFilter() {
+				strURL = 'gprint_presets.php?clear_x=1&header=false';
+				$.get(strURL, function(data) {
+					$('#main').html(data);
+					applySkin();
+				});
+			}
+
+			$(function() {
+				$('#refresh').click(function() {
+					applyFilter();
+				});
+
+				$('#has_graphs').click(function() {
+					applyFilter();
+				});
+
+				$('#clear').click(function() {
+					clearFilter();
+				});
+
+				$('#form_gprint').submit(function(event) {
+					event.preventDefault();
+					applyFilter();
+				});
+			});
+			</script>
+		</td>
+	</tr>
+	<?php
+
+	html_end_box();
+
+	/* form the 'where' clause for our main sql query */
+	if ($_REQUEST['filter'] != '') {
+		$sql_where = "WHERE (name LIKE '%" . get_request_var_request('filter') . "%')";
+	}else{
+		$sql_where = '';
+	}
+
+	if ($_REQUEST['has_graphs'] == 'true') {
+		$sql_having = 'HAVING graphs>0';
+	}else{
+		$sql_having = '';
+	}
+
+	/* print checkbox form for validation */
+	print "<form name='chk' method='post' action='gprint_presets.php'>\n";
+
+	html_start_box('', '100%', '', '3', 'center', '');
+
+	$total_rows = db_fetch_cell("SELECT
+		COUNT(rows)
+		FROM (
+			SELECT gp.id AS rows,
+			SUM(CASE WHEN local_graph_id>0 THEN 1 ELSE 0 END) AS graphs
+			FROM graph_templates_gprint AS gp
+			LEFT JOIN graph_templates_item AS gti
+			ON gti.gprint_id=gp.id
+			$sql_where
+			GROUP BY gp.id
+			$sql_having
+		) AS rs");
+			
+	$gprint_list = db_fetch_assoc("SELECT rs.*,
+		SUM(CASE WHEN local_graph_id=0 THEN 1 ELSE 0 END) AS templates,
+		SUM(CASE WHEN local_graph_id>0 THEN 1 ELSE 0 END) AS graphs
+		FROM (
+			SELECT gp.*, gti.local_graph_id
+			FROM graph_templates_gprint AS gp
+			LEFT JOIN graph_templates_item AS gti
+			ON gti.gprint_id=gp.id
+			GROUP BY gp.id, gti.graph_template_id, gti.local_graph_id
+		) AS rs
+		$sql_where
+		GROUP BY rs.id
+		$sql_having
+		ORDER BY " . get_request_var_request('sort_column') . ' ' . get_request_var_request('sort_direction') .
+		' LIMIT ' . (get_request_var_request('rows')*(get_request_var_request('page')-1)) . ',' . get_request_var_request('rows'));
+
+	$nav = html_nav_bar('gprint_presets.php?filter=' . get_request_var_request('filter'), MAX_DISPLAY_PAGES, get_request_var_request('page'), get_request_var_request('rows'), $total_rows, 4, 'GPRINTs', 'page', 'main');
+
+	print $nav;
+
+	$display_text = array(
+		'name' => array('GPRINT Preset Title', 'ASC'),
+		'graphs' => array('display' => 'Graphs Using', 'align' => 'right', 'sort' => 'DESC'),
+		'templates' => array('display' => 'Templates Using', 'align' => 'right', 'sort' => 'DESC'));
+
+	html_header_sort_checkbox($display_text, get_request_var_request('sort_column'), get_request_var_request('sort_direction'), false);
 
 	$i = 0;
-	if (sizeof($template_list) > 0) {
-	foreach ($template_list as $template) {
-		form_alternate_row('', true);
-			?>
-			<td>
-				<a class="linkEditMain" href="<?php print htmlspecialchars("gprint_presets.php?action=edit&id=" . $template["id"]);?>"><?php print htmlspecialchars($template["name"]);?></a>
-			</td>
-			<td align="right">
-				<a href="<?php print htmlspecialchars("gprint_presets.php?action=remove&id=" . $template["id"]);?>"><img src="images/delete_icon.gif" style="height:10px;width:10px;" border="0" alt="Delete"></a>
-			</td>
-		</tr>
-		<?php
-	}
+	if (sizeof($gprint_list) > 0) {
+		foreach ($gprint_list as $gp) {
+			if ($gp['graphs'] == 0 && $gp['templates'] == 0) {
+				$disabled = false;
+			}else{
+				$disabled = true;
+			}
+
+            form_alternate_row('line' . $gp['id'], false, $disabled);
+            form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars('gprint_presets.php?action=edit&id=' . $gp['id']) . "'>" . (strlen(get_request_var_request('filter')) ? preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($gp['name'])) : htmlspecialchars($gp['name'])) . '</a>', $gp['id']);
+            form_selectable_cell($gp['graphs'], $gp['id'], '', 'text-align:right');
+            form_selectable_cell($gp['templates'], $gp['id'], '', 'text-align:right');
+            form_checkbox_cell($gp['name'], $gp['id'], $disabled);
+            form_end_row();
+		}
+		print $nav;
 	}else{
-		form_alternate_row('', true);?>
-			<td colspan="2">
-				<em>No Items</em>
-			</td>
-		</tr><?php
+		print "<tr class='tableRow'><td colspan='4'><em>No GPRINT Presets</em></td></tr>\n";
 	}
+
 	html_end_box();
+
+	/* draw the dropdown containing a list of available actions for this form */
+	draw_actions_dropdown($gprint_actions);
+
+	print "</form>\n";
 }

@@ -986,19 +986,19 @@ $fields_data_query_edit = array(
 
 /* file: data_queries.php, action: item_edit */
 $fields_data_query_item_edit = array(
-	'name' => array(
-		'method' => 'textbox',
-		'friendly_name' => 'Name',
-		'description' => 'A name for this associated graph.',
-		'value' => '|arg1:name|',
-		'max_length' => '100',
-		),
 	'graph_template_id' => array(
 		'method' => 'drop_sql',
 		'friendly_name' => 'Graph Template',
 		'description' => 'Choose the Graph Template to use for this Data Query Graph Template item.',
 		'value' => '|arg1:graph_template_id|',
 		'sql' => 'select id,name from graph_templates order by name',
+		),
+	'name' => array(
+		'method' => 'textbox',
+		'friendly_name' => 'Name',
+		'description' => 'A name for this associated graph.',
+		'value' => '|arg1:name|',
+		'max_length' => '100',
 		),
 	'id' => array(
 		'method' => 'hidden_zero',
@@ -1033,6 +1033,13 @@ $fields_tree_edit = array(
 		'description' => 'Choose how items in this tree will be sorted.',
 		'value' => '|arg1:sort_type|',
 		'array' => $tree_sort_types,
+		),
+	'enabled' => array(
+		'method' => 'checkbox',
+		'friendly_name' => 'Publish',
+		'description' => 'Should this Tree be published for users to access?',
+		'value' => '|arg1:enabled|',
+		'default' => 'on'
 		),
 	'id' => array(
 		'method' => 'hidden_zero',

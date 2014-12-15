@@ -480,7 +480,7 @@ function filter() {
 						Search:
 					</td>
 					<td>
-						<input id='filter' type='text' name='filter' size='20' value='<?php print $_REQUEST['filter'];?>'>
+						<input id='filter' type='text' name='filter' size='25' value='<?php print $_REQUEST['filter'];?>'>
 					</td>
 					<td style='white-space: nowrap;'>
 						Time Since Update:

@@ -642,7 +642,7 @@ function domains() {
 						Search:
 					</td>
 					<td>
-						<input id='filter' type='text' name='filter' size='20' value='<?php print get_request_var_request('filter');?>'>
+						<input id='filter' type='text' name='filter' size='25' value='<?php print get_request_var_request('filter');?>'>
 					</td>
 					<td>
 						Domains:

@@ -80,12 +80,12 @@ $using_guest_account = false;
 		<td colspan='3'>
 			<table width='100%'>
 				<tr>
-					<td width='30%'>
+					<td width='40%'>
 						<div id='navBar' class='navBar'>
 						<?php echo draw_navigation_text();?>
 						</div>
 					</td>
-					<td width='40%'>
+					<td width='30%'>
 						<div class='scrollBar'></div>
 					<td width='30%' align='right'>
 						<div class='infoBar'>

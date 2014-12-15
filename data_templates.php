@@ -605,6 +605,11 @@ function template() {
 		$_REQUEST["filter"] = sanitize_search_string(get_request_var("filter"));
 	}
 
+	/* clean up has_data string */
+	if (isset($_REQUEST["has_data"])) {
+		$_REQUEST["has_data"] = sanitize_search_string(get_request_var("has_data"));
+	}
+
 	/* clean up sort_column string */
 	if (isset($_REQUEST["sort_column"])) {
 		$_REQUEST["sort_column"] = sanitize_search_string(get_request_var("sort_column"));
@@ -618,6 +623,7 @@ function template() {
 	/* if the user pushed the 'clear' button */
 	if (isset($_REQUEST["clear_x"])) {
 		kill_session_var("sess_data_template_current_page");
+		kill_session_var("sess_data_template_has_data");
 		kill_session_var("sess_data_template_filter");
 		kill_session_var("sess_default_rows");
 		kill_session_var("sess_data_template_sort_column");
@@ -625,13 +631,24 @@ function template() {
 
 		unset($_REQUEST["page"]);
 		unset($_REQUEST["rows"]);
+		unset($_REQUEST["has_data"]);
 		unset($_REQUEST["filter"]);
 		unset($_REQUEST["sort_column"]);
 		unset($_REQUEST["sort_direction"]);
+	}else{
+		$changed = 0;
+		$changed += check_changed('has_data', 'sess_data_template_has_data');
+		$changed += check_changed('rows', 'sess_default_rows');
+		$changed += check_changed('filter', 'sess_data_template_filter');
+
+		if ($changed) {
+			$_REQUEST['page'] = 1;
+		}
 	}
 
 	/* remember these search fields in session vars so we don't have to keep passing them around */
 	load_current_session_value("page", "sess_data_template_current_page", "1");
+	load_current_session_value("has_data", "sess_data_template_has_data", "true");
 	load_current_session_value("filter", "sess_data_template_filter", "");
 	load_current_session_value("sort_column", "sess_data_template_sort_column", "name");
 	load_current_session_value("sort_direction", "sess_data_template_sort_direction", "ASC");
@@ -649,7 +666,7 @@ function template() {
 						Search:
 					</td>
 					<td>
-						<input id='filter' type="text" name="filter" size="40" value="<?php print htmlspecialchars(get_request_var_request("filter"));?>">
+						<input id='filter' type="text" name="filter" size="25" value="<?php print htmlspecialchars(get_request_var_request("filter"));?>">
 					</td>
 					<td style='white-space: nowrap;'>
 						Data Templates:
@@ -666,7 +683,13 @@ function template() {
 						</select>
 					</td>
 					<td>
-						<input type="button" id='refrehs' value="Go" title="Set/Refresh Filters">
+						<input type="checkbox" id='has_data' <?php print ($_REQUEST['has_data'] == 'true' ? 'checked':'');?>>
+					</td>
+					<td>
+						<label for='has_data' style='white-space:nowrap;'>Has Data Sources</label>
+					</td>
+					<td>
+						<input type="button" id='refresh' value="Go" title="Set/Refresh Filters">
 					</td>
 					<td>
 						<input type="button" id='clear' name="clear_x" value="Clear" title="Clear Filters">
@@ -678,7 +701,7 @@ function template() {
 		</td>
 		<script type='text/javascript'>
 		function applyFilter() {
-			strURL = 'data_templates.php?filter='+$('#filter').val()+'&rows='+$('#rows').val()+'&page='+$('#page').val()+'&header=false';
+			strURL = 'data_templates.php?filter='+$('#filter').val()+'&rows='+$('#rows').val()+'&page='+$('#page').val()+'&has_data='+$('#has_data').is(':checked')+'&header=false';
 			$.get(strURL, function(data) {
 				$('#main').html(data);
 				applySkin();
@@ -694,6 +717,10 @@ function template() {
 		}
 
 		$(function() {
+			$('#has_data').click(function() {
+				applyFilter();
+			});
+
 			$('#refresh').click(function() {
 				applyFilter();
 			});
@@ -714,11 +741,17 @@ function template() {
 	html_end_box();
 
 	/* form the 'where' clause for our main sql query */
-	$sql_where = "WHERE data_template.id=data_template_data.data_template_id AND data_template_data.local_data_id=0";
 	$rows_where = "";
 	if (strlen($_REQUEST['filter'])) {
-		$sql_where .= " AND (data_template.name like '%%" . get_request_var_request("filter") . "%%')";
-		$rows_where = "WHERE (data_template.name like '%%" . get_request_var_request("filter") . "%%')";
+		$sql_where = " WHERE (dt.name like '%" . get_request_var_request("filter") . "%')";
+	}else{
+		$sql_where = '';
+	}
+
+	if ($_REQUEST['has_data'] == 'true') {
+		$sql_having = 'HAVING data_sources>0';
+	}else{
+		$sql_having = '';
 	}
 
 	/* print checkbox form for validation */
@@ -726,51 +759,69 @@ function template() {
 
 	html_start_box("", "100%", "", "3", "center", "");
 
-	$total_rows = db_fetch_cell("SELECT
-		COUNT(data_template.id)
-		FROM data_template
-		$rows_where");
+	$total_rows = db_fetch_cell("SELECT COUNT(rows)
+		FROM (SELECT
+			COUNT(dt.id) rows,
+			SUM(CASE WHEN dtd.local_data_id>0 THEN 1 ELSE 0 END) AS data_sources
+			FROM data_template AS dt
+			INNER JOIN data_template_data AS dtd
+			ON dt.id=dtd.data_template_id
+			LEFT JOIN data_input AS di
+			ON dtd.data_input_id=di.id
+			$sql_where
+			GROUP BY dt.id
+			$sql_having
+		) AS rs");
 
-	$template_list = db_fetch_assoc("SELECT
-		data_template.id,
-		data_template.name,
-		data_input.name AS data_input_method,
-		data_template_data.active AS active
-		FROM (data_template,data_template_data)
-		LEFT JOIN data_input
-		ON (data_template_data.data_input_id = data_input.id)
+	$template_list = db_fetch_assoc("SELECT dt.id, dt.name, 
+		di.name AS data_input_method, dtd.active AS active,
+		SUM(CASE WHEN dtd.local_data_id>0 THEN 1 ELSE 0 END) AS data_sources
+		FROM data_template AS dt
+		INNER JOIN data_template_data AS dtd
+		ON dt.id=dtd.data_template_id
+		LEFT JOIN data_input AS di
+		ON dtd.data_input_id=di.id
 		$sql_where
-		GROUP BY data_template.id
+		GROUP BY dt.id
+		$sql_having
 		ORDER BY " . get_request_var_request("sort_column") . " " . get_request_var_request("sort_direction") .
 		" LIMIT " . (get_request_var_request("rows")*(get_request_var_request("page")-1)) . "," . get_request_var_request("rows"));
 
-	$nav = html_nav_bar("data_templates.php?filter=" . get_request_var_request("filter"), MAX_DISPLAY_PAGES, get_request_var_request("page"), get_request_var_request("rows"), $total_rows, 5, 'Data Templates', 'page', 'main');
+	$nav = html_nav_bar("data_templates.php?filter=" . get_request_var_request("filter"), MAX_DISPLAY_PAGES, get_request_var_request("page"), get_request_var_request("rows"), $total_rows, 6, 'Data Templates', 'page', 'main');
 
 	print $nav;
 
 	$display_text = array(
 		"name" => array("Template Name", "ASC"),
-		"id" => array("ID", "ASC"),
+		"data_sources" => array('display' => "Data Sources", 'align' => 'right', 'sort' => "ASC"),
 		"data_input_method" => array("Data Input Method", "ASC"),
-		"active" => array("Status", "ASC"));
+		"active" => array("Status", "ASC"),
+		"id" => array('display' => "ID", 'align' => 'right', 'sort' => "ASC")
+	);
 
 	html_header_sort_checkbox($display_text, get_request_var_request("sort_column"), get_request_var_request("sort_direction"), false);
 
 	if (sizeof($template_list) > 0) {
 		foreach ($template_list as $template) {
-			form_alternate_row('line' . $template["id"], true);
+			if ($template['data_sources'] > 0) {
+				$disabled = true;
+			}else{
+				$disabled = false;
+			}
+			form_alternate_row('line' . $template["id"], true, $disabled);
 			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars("data_templates.php?action=template_edit&id=" . $template["id"]) . "'>" . (strlen(get_request_var_request("filter")) ? preg_replace("/(" . preg_quote(get_request_var_request("filter"), "/") . ")/i", "<span class='filteredValue'>\\1</span>", htmlspecialchars($template["name"])) : htmlspecialchars($template["name"])) . "</a>", $template["id"]);
-			form_selectable_cell($template['id'], $template["id"]);
+			form_selectable_cell($template['data_sources'], $template["id"], '', 'text-align:right');
 			form_selectable_cell((empty($template["data_input_method"]) ? "<em>None</em>": htmlspecialchars($template["data_input_method"])), $template["id"]);
 			form_selectable_cell((($template["active"] == "on") ? "Active" : "Disabled"), $template["id"]);
-			form_checkbox_cell($template["name"], $template["id"]);
+			form_selectable_cell($template['id'], $template["id"], '', 'text-align:right');
+			form_checkbox_cell($template["name"], $template["id"], $disabled);
 			form_end_row();
 		}
 
 		/* put the nav bar on the bottom as well */
 		print $nav;
 	}else{
-		print "<tr class='tableRow'><td colspan='5'><em>No Data Templates</em></td></tr>\n";
+		print "<tr class='tableRow'><td colspan='6'><em>No Data Templates</em></td></tr>\n";
 	}
 	html_end_box(false);
 

@@ -253,7 +253,7 @@ function form_actions() {
 			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Duplicate Graph Template(s)'>";
 		}
 	}else{
-		print "<tr><td class='even'><span class='textError'>You must select at least one graph template.</span></td></tr>\n";
+		print "<tr><td class='even'><p><span class='textError'>ERROR: You must select at least one graph template.</span></p></td></tr>\n";
 		$save_html = "<input type='button' value='Return' onClick='window.history.back()'>";
 	}
 
@@ -450,6 +450,11 @@ function template() {
 		$_REQUEST["filter"] = sanitize_search_string(get_request_var("filter"));
 	}
 
+	/* clean up has_graphs string */
+	if (isset($_REQUEST["has_graphs"])) {
+		$_REQUEST["has_graphs"] = sanitize_search_string(get_request_var("has_graphs"));
+	}
+
 	/* clean up sort_column string */
 	if (isset($_REQUEST["sort_column"])) {
 		$_REQUEST["sort_column"] = sanitize_search_string(get_request_var("sort_column"));
@@ -464,6 +469,7 @@ function template() {
 	if (isset($_REQUEST["clear_x"])) {
 		kill_session_var("sess_graph_template_current_page");
 		kill_session_var("sess_graph_template_filter");
+		kill_session_var("sess_graph_template_graphs");
 		kill_session_var("sess_default_rows");
 		kill_session_var("sess_graph_template_sort_column");
 		kill_session_var("sess_graph_template_sort_direction");
@@ -471,14 +477,24 @@ function template() {
 		unset($_REQUEST["page"]);
 		unset($_REQUEST["rows"]);
 		unset($_REQUEST["filter"]);
+		unset($_REQUEST["has_graphs"]);
 		unset($_REQUEST["sort_column"]);
 		unset($_REQUEST["sort_direction"]);
+	}else{
+		$changed = 0;
+		$changed += check_changed('has_graphs', 'sess_graph_template_has_hosts');
+		$changed += check_changed('rows', 'sess_default_rows');
+		$changed += check_changed('filter', 'sess_graph_template_filter');
 
+		if ($changed) {
+			$_REQUEST['page'] = 1;
+		}
 	}
 
 	/* remember these search fields in session vars so we don't have to keep passing them around */
 	load_current_session_value("page", "sess_graph_template_current_page", "1");
 	load_current_session_value("filter", "sess_graph_template_filter", "");
+	load_current_session_value("has_graphs", "sess_graph_template_graphs", "true");
 	load_current_session_value("sort_column", "sess_graph_template_sort_column", "name");
 	load_current_session_value("sort_direction", "sess_graph_template_sort_direction", "ASC");
 	load_current_session_value('rows', 'sess_default_rows', read_config_option('num_rows_table'));
@@ -495,7 +511,7 @@ function template() {
 						Search:
 					</td>
 					<td width="1">
-						<input id='filter' type="text" name="filter" size="40" value="<?php print htmlspecialchars(get_request_var_request("filter"));?>">
+						<input id='filter' type="text" name="filter" size="25" value="<?php print htmlspecialchars(get_request_var_request("filter"));?>">
 					</td>
 					<td style='white-space:nowrap;'>
 						Graph Templates:
@@ -512,6 +528,12 @@ function template() {
 						</select>
 					</td>
 					<td>
+						<input type="checkbox" id='has_graphs' <?php print ($_REQUEST['has_graphs'] == 'true' ? 'checked':'');?>>
+					</td>
+					<td>
+						<label for='has_graphs' style='white-space:nowrap;'>Has Graphs</label>
+					</td>
+					<td>
 						<input type="button" id='refresh' value="Go" title="Set/Refresh Filters">
 					</td>
 					<td>
@@ -523,7 +545,7 @@ function template() {
 		</form>
 		<script type='text/javascript'>
 		function applyFilter() {
-			strURL = 'graph_templates.php?filter='+$('#filter').val()+'&rows='+$('#rows').val()+'&page='+$('#page').val()+'&header=false';
+			strURL = 'graph_templates.php?filter='+$('#filter').val()+'&rows='+$('#rows').val()+'&page='+$('#page').val()+'&has_graphs='+$('#has_graphs').is(':checked')+'&header=false';
 			$.get(strURL, function(data) {
 				$('#main').html(data);
 				applySkin();
@@ -540,6 +562,10 @@ function template() {
 
 		$(function() {
 			$('#refresh').click(function() {
+				applyFilter();
+			});
+
+			$('#has_graphs').click(function() {
 				applyFilter();
 			});
 
@@ -566,15 +592,28 @@ function template() {
 		$sql_where = "";
 	}
 
+	if ($_REQUEST['has_graphs'] == 'true') {
+		$sql_having = 'HAVING graphs>0';
+	}else{
+		$sql_having = '';
+	}
+
 	/* print checkbox form for validation */
 	print "<form name='chk' method='post' action='graph_templates.php'>\n";
 
 	html_start_box("", "100%", "", "3", "center", "");
 
-	$total_rows = db_fetch_cell("SELECT
-		COUNT(graph_templates.id)
-		FROM graph_templates
-		$sql_where");
+	$total_rows = db_fetch_cell("SELECT COUNT(rows)
+		FROM (SELECT
+			COUNT(graph_templates.id) AS rows,
+			COUNT(graph_local.id) AS graphs
+			FROM graph_templates
+			LEFT JOIN graph_local
+			ON graph_templates.id=graph_local.graph_template_id
+			$sql_where
+			GROUP BY graph_templates.id
+			$sql_having
+		) AS rs");
 
 	$template_list = db_fetch_assoc("SELECT
 		graph_templates.id,graph_templates.name, COUNT(graph_local.id) AS graphs
@@ -583,6 +622,7 @@ function template() {
 		ON graph_templates.id=graph_local.graph_template_id
 		$sql_where
 		GROUP BY graph_templates.id
+		$sql_having
 		ORDER BY " . get_request_var_request("sort_column") . " " . get_request_var_request("sort_direction") .
 		" LIMIT " . (get_request_var_request("rows")*(get_request_var_request("page")-1)) . "," . get_request_var_request("rows"));
 
@@ -591,9 +631,9 @@ function template() {
 	print $nav;
 
 	$display_text = array(
-		"name" => array("Template Title", "ASC"),
-		"graph_templates.id" => array("ID", "ASC"),
-		"graphs" => array("Graphs", "DESC")
+		"name" => array("Template Name", "ASC"),
+		"graphs" => array('display' => "Graphs", 'align' => 'right', 'sort' => "DESC"),
+		"graph_templates.id" => array('display' => "ID", 'align' => 'right', 'sort' => "ASC")
 	);
 
 	html_header_sort_checkbox($display_text, get_request_var_request("sort_column"), get_request_var_request("sort_direction"), false);
@@ -601,11 +641,16 @@ function template() {
 	$i = 0;
 	if (sizeof($template_list) > 0) {
 		foreach ($template_list as $template) {
-			form_alternate_row('line' . $template["id"], true);
+			if ($template['graphs'] > 0) {
+				$disabled = true;
+			}else{
+				$disabled = false;
+			}
+			form_alternate_row('line' . $template["id"], true, $disabled);
 			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars("graph_templates.php?action=template_edit&id=" . $template["id"]) . "'>" . (strlen(get_request_var_request("filter")) ? preg_replace("/(" . preg_quote(get_request_var_request("filter"), "/") . ")/i", "<span class='filteredValue'>\\1</span>", htmlspecialchars($template["name"])) : htmlspecialchars($template["name"])) . "</a>", $template["id"]);
-			form_selectable_cell($template["id"], $template["id"]);
-			form_selectable_cell(number_format($template["graphs"]), $template["id"]);
-			form_checkbox_cell($template["name"], $template["id"]);
+			form_selectable_cell(number_format($template["graphs"]), $template["id"], '', 'text-align:right');
+			form_selectable_cell($template["id"], $template["id"], '', 'text-align:right');
+			form_checkbox_cell($template["name"], $template["id"], $disabled);
 			form_end_row();
 		}
 		print $nav;

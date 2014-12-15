@@ -115,7 +115,7 @@ function form_alternate_row_color($row_color1, $row_color2, $row_value, $row_id 
    @arg $light - Alternate odd style
    @arg $row_id - The id of the row
    @arg $reset - Reset to top of table */
-function form_alternate_row($row_id = "", $light = false) {
+function form_alternate_row($row_id = "", $light = false, $disabled = false) {
 	static $i = 1;
 
 	if (($i % 2) == 1) {
@@ -130,7 +130,7 @@ function form_alternate_row($row_id = "", $light = false) {
 
 	$i++;
 
-	if (strlen($row_id) && substr($row_id,0,4) != 'row_') {
+	if (strlen($row_id) && substr($row_id,0,4) != 'row_' && !$disabled) {
 		print "<tr class='$class selectable' id='$row_id'>\n";
 	}elseif (substr($row_id,0,4) == 'row_') {
 		print "<tr class='$class' id='$row_id'>\n";
@@ -150,9 +150,9 @@ function form_selectable_cell($contents, $id, $width="", $style="") {
 
 /* form_checkbox_cell - format's a tables checkbox form element so that the cacti js actions work on it
    @arg $title - the text that will be displayed if your hover over the checkbox */
-function form_checkbox_cell($title, $id) {
+function form_checkbox_cell($title, $id, $disabled = false) {
 	print "\t<td class='checkbox' style='" . get_checkbox_style() . "' width='1%' align='right'>\n";
-	print "\t\t<input type='checkbox' style='margin: 0px;' id='chk_" . $id . "' name='chk_" . $id . "'>\n";
+	print "\t\t<input type='checkbox' " . ($disabled ? 'disabled=disabled':'') . " style='margin: 0px;' id='chk_" . $id . "' name='chk_" . $id . "'>\n";
 	print "\t</td>\n";
 }
 
@@ -355,6 +355,12 @@ function get_current_graph_end() {
    @returns - a string containing html that represents the a page list */
 function get_page_list($current_page, $pages_per_screen, $rows_per_page, $total_rows, $url, $page_var = "page", $return_to = '') {
 	$url_page_select = "";
+
+	if (strpos($url, '?') !== false) {
+		$url . '&';
+	}else{
+		$url . '?';
+	}
 
 	$total_pages = ceil($total_rows / $rows_per_page);
 

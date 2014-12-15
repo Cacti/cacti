@@ -774,7 +774,7 @@ function form_confirm_buttons($action_url, $cancel_url) {
 	<tr>
 		<td align='right'>
 			<input type='button' onClick='cactiReturnTo("<?php print $config['url_path'] . $cancel_url;?>")' value='Cancel'>
-			<input type='submit' onClick='cactiReturnTo("<?php print $config['url_path'] . $action_url;?>&confirm=true")' value='Delete'>
+			<input type='button' onClick='cactiReturnTo("<?php print $config['url_path'] . $action_url;?>&confirm=true")' value='Delete'>
 		</td>
 	</tr>
 <?php }

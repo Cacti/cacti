@@ -22,184 +22,6 @@
  +-------------------------------------------------------------------------+
 */
 
-function grow_edit_graph_tree($tree_id, $user_id, $options) {
-	global $config;
-
-	input_validate_input_number(get_request_var_request('id'));
-
-	include_once($config['library_path'] . '/tree.php');
-
-	$tree_sorting_type = db_fetch_cell("SELECT sort_type FROM graph_tree WHERE id='$tree_id'");
-
-	$tree = db_fetch_assoc("SELECT gti.id, gti.title, gti.graph_tree_id, gti.local_graph_id,
-		gti.host_id, gti.order_key, gti.sort_children_type, gtg.title_cache as graph_title,
-		CONCAT_WS('',description,' (',hostname,')') as hostname
-		FROM graph_tree_items AS gti
-		LEFT JOIN graph_templates_graph AS gtg 
-		ON (gti.local_graph_id=gtg.local_graph_id and gti.local_graph_id>0)
-		LEFT JOIN host 
-		ON (host.id=gti.host_id)
-		WHERE gti.graph_tree_id=$tree_id
-		ORDER BY gti.graph_tree_id, gti.order_key");
-
-	/* change the visibility session variable if applicable */
-	set_tree_visibility_status();
-
-	$i = 0;
-	if (sizeof($tree) > 0) {
-	foreach ($tree as $leaf) {
-		$tier = tree_tier($leaf['order_key']);
-		$transparent_indent = "<img src='images/transparent_line.gif' style='padding-right:" . (($tier-1) * 20) . "px;' style='height:1px;' align='middle' alt=''>&nbsp;";
-		$sort_cache[$tier] = $leaf['sort_children_type'];
-
-		if ($i % 2 == 0) { $class = 'odd'; }else{ $class = 'even'; } $i++;
-
-		form_alternate_row();
-
-		$visible = get_visibility($leaf);
-
-		if ($leaf['local_graph_id'] > 0) {
-			if ($visible) {
-				print "<td>$transparent_indent<a href='" . htmlspecialchars('tree.php?action=item_edit&tree_id=' . $_REQUEST['id'] . '&id=' . $leaf['id']) . "'>" . $leaf['graph_title'] . "</a></td>\n";
-				print "<td>Graph</td>";
-			}
-		}elseif ($leaf['title'] != '') {
-			$icon = get_icon($leaf['graph_tree_id'], $leaf['order_key']);
-			if ($visible) {
-				print "<td>$transparent_indent<a href='" . htmlspecialchars('tree.php?action=edit&id=' . $_REQUEST['id'] . '&leaf_id=' . $leaf['id'] . '&subaction=change') . "'><img src='" . $icon . "' border='0'></a><a href='" . htmlspecialchars('tree.php?action=item_edit&tree_id=' . $_REQUEST['id'] . '&id=' . $leaf['id']) . "'>&nbsp;<strong>" . htmlspecialchars($leaf['title']) . "</strong></a> (<a href='" . htmlspecialchars('tree.php?action=item_edit&tree_id=' . $_REQUEST['id'] . '&parent_id=' . $leaf['id']) . "'>Add</a>)</td>\n";
-				print "<td>Heading</td>";
-			}
-		}elseif ($leaf['host_id'] > 0) {
-			if ($visible) {
-				print "<td>$transparent_indent<a href='" . htmlspecialchars('tree.php?action=item_edit&tree_id=' . $_REQUEST['id'] . '&id=' . $leaf['id']) . "'><strong>Host:</strong> " . htmlspecialchars($leaf['hostname']) . "</a>&nbsp;<a href='" . htmlspecialchars('host.php?action=edit&id=' . $leaf['host_id']) . "'>(Edit host)</a></td>\n";
-				print "<td>Host</td>";
-			}
-		}
-
-		if ($visible) {
-			if ( ((isset($sort_cache{$tier-1})) && ($sort_cache{$tier-1} != TREE_ORDERING_NONE)) || ($tree_sorting_type != TREE_ORDERING_NONE) )  {
-				print "<td width='80'></td>\n";
-			}else{
-				print "<td width='80' align='center'>\n
-					<a href='" . htmlspecialchars('tree.php?action=item_movedown&id=' . $leaf['id'] . '&tree_id=' . $_REQUEST['id']) . "'><img src='images/move_down.gif' border='0' alt='Move Down'></a>\n
-					<a href='" . htmlspecialchars('tree.php?action=item_moveup&id=' . $leaf['id'] . '&tree_id=' . $_REQUEST['id']) . "'><img src='images/move_up.gif' border='0' alt='Move Up'></a>\n
-					</td>\n";
-			}
-
-			print 	"<td align='right'>\n
-				<a href='" . htmlspecialchars('tree.php?action=item_remove&id=' . $leaf['id'] . '&tree_id=' . $tree_id) . "'><img src='images/delete_icon.gif' style='height:10px;width:10px;' border='0' alt='Delete'></a>\n
-				</td></tr>\n";
-		}
-
-		form_end_row();
-	}
-	}else{
-		print '<tr><td><em>No Graph Tree Items</em></td></tr>';
-	}
-}
-
-function set_tree_visibility_status() {
-	if (!isset($_REQUEST['subaction'])) {
-		$headers = db_fetch_assoc("SELECT graph_tree_id, order_key 
-			FROM graph_tree_items 
-			WHERE host_id='0' 
-			AND local_graph_id='0' 
-			AND graph_tree_id='" . get_request_var_request('id') . "'");
-
-		foreach ($headers as $header) {
-			$variable = 'sess_tree_leaf_expand_' . $header['graph_tree_id'] . '_' . tree_tier_string($header['order_key']);
-
-			if (!isset($_SESSION[$variable])) {
-				$_SESSION[$variable] = true;
-			}
-		}
-	}else if ((get_request_var_request('subaction') == 'expand_all') ||
-		(get_request_var_request('subaction') == 'collapse_all')) {
-
-		$headers = db_fetch_assoc("SELECT graph_tree_id, order_key 
-			FROM graph_tree_items 
-			WHERE host_id='0' 
-			AND local_graph_id='0' 
-			AND graph_tree_id='" . get_request_var_request('id') . "'");
-
-		foreach ($headers as $header) {
-			$variable = 'sess_tree_leaf_expand_' . $header['graph_tree_id'] . '_' . tree_tier_string($header['order_key']);
-
-			if (get_request_var_request('subaction') == 'expand_all') {
-				$_SESSION[$variable] = true;
-			}else{
-				$_SESSION[$variable] = false;
-			}
-		}
-	}else{
-		$order_key = db_fetch_cell('SELECT order_key FROM graph_tree_items WHERE id=' . get_request_var_request('leaf_id'));
-		$variable = 'sess_tree_leaf_expand_' . get_request_var_request('id') . '_' . tree_tier_string($order_key);
-
-		if (isset($_SESSION[$variable])) {
-			if ($_SESSION[$variable]) {
-				$_SESSION[$variable] = false;
-			}else{
-				$_SESSION[$variable] = true;
-			}
-		}else{
-			$_SESSION[$variable] = true;
-		}
-	}
-}
-
-function get_visibility($leaf) {
-	$tier = tree_tier($leaf['order_key']);
-
-	$tier_string = tree_tier_string($leaf['order_key']);
-
-	$variable = 'sess_tree_leaf_expand_' . $leaf['graph_tree_id'] . '_' . $tier_string;
-
-	/* you must always show the base tier */
-	if ($tier <= 1) {
-		return true;
-	}
-
-	/* get the default status */
-	$default = true;
-	if (isset($_SESSION[$variable])) {
-		$default = $_SESSION[$variable];
-	}
-
-	/* now work backwards to get the current visibility stauts */
-	$i = $tier;
-	$effective = $default;
-	while ($i > 1) {
-		$i--;
-
-		$parent_tier = tree_tier_string(substr($tier_string, 0, $i * CHARS_PER_TIER));
-		$parent_variable = 'sess_tree_leaf_expand_' . $leaf['graph_tree_id'] . '_' . $parent_tier;
-
-		$effective = @$_SESSION[$parent_variable];
-
-		if (!$effective) {
-			return $effective;
-		}
-	}
-
-	return $effective;
-}
-
-function get_icon($graph_tree_id, $order_key) {
-	$variable = 'sess_tree_leaf_expand_' . $graph_tree_id . '_' . tree_tier_string($order_key);
-
-	if (isset($_SESSION[$variable])) {
-		if ($_SESSION[$variable]) {
-			$icon = 'images/hide.gif';
-		}else{
-			$icon = 'images/show.gif';
-		}
-	}else{
-		$icon = 'images/hide.gif';
-	}
-
-	return $icon;
-}
-
 /* tree_tier_string - returns the tier key information to be used to determine
    visibility status of the tree item.
    @arg $order_key - the order key of the branch to fetch the depth for
@@ -344,6 +166,126 @@ function grow_dhtml_trees() {
 	});
 	</script>
 	<?php
+}
+
+function create_dhtml_tree_edit($tree_id) {
+	global $config;
+
+	/* Record Start Time */
+	list($micro,$seconds) = explode(' ', microtime());
+	$start = $seconds + $micro;
+
+	$dhtml_tree = array();
+
+	$dhtml_tree[0] = $start;
+	$dhtml_tree[1] = read_graph_config_option('expand_hosts');
+	$dhtml_tree[2] = "\n<div id=\"jstree\">\n";
+	$i = 2;
+
+	$hierarchy = get_allowed_tree_content($tree_id, true, true);
+
+	if (sizeof($hierarchy) > 0) {
+		$i++;
+		$dhtml_tree[$i] = "\t\t\t<ul>\n";
+		$last_tier = 1;
+		$openli = false;
+		$lasthost = false;
+		foreach ($hierarchy as $leaf) {
+			$tier = tree_tier($leaf['order_key']);
+
+			if ($leaf['host_id'] > 0) {  //It's a host
+				if ($tier > $last_tier) {
+					$i++;
+					$dhtml_tree[$i] = "\t\t\t<ul>\n";
+				} elseif ($tier < $last_tier) {
+					if (!$lasthost) {
+						$i++;
+						$dhtml_tree[$i] = "\t\t\t\t</li>\n";
+					}
+					for ($x = $tier; $x < $last_tier; $x++) {
+						$i++;
+						$dhtml_tree[$i] = "\t\t\t</ul>\n\t\t\t\t</li>\n";
+						$openli = false;
+					}
+				} elseif ($openli && !$lasthost) {
+					$i++;
+					$dhtml_tree[$i] = "\t\t\t\t</li>\n";
+					$openli = false;
+				}
+				$last_tier = $tier;
+				$lasthost = true;
+				$i++;
+				$dhtml_tree[$i] = "\t\t\t\t<li id='tbranch_" . $leaf['id'] . "_thost_" . $leaf['host_id'] . "' data-jstree='{ \"type\" : \"device\" }'>Host: " . htmlspecialchars($leaf['hostname']) . "\n";
+
+				$i++;
+				$dhtml_tree[$i] = "\t\t\t\t</li>\n";
+			}elseif ($leaf['local_graph_id'] > 0) {
+				if ($tier > $last_tier) {
+					$i++;
+					$dhtml_tree[$i] = "\t\t\t<ul>\n";
+				} elseif ($tier < $last_tier) {
+					if (!$lasthost) {
+						$i++;
+						$dhtml_tree[$i] = "\t\t\t\t</li>\n";
+					}
+					for ($x = $tier; $x < $last_tier; $x++) {
+						$i++;
+						$dhtml_tree[$i] = "\t\t\t</ul>\n\t\t\t\t</li>\n";
+						$openli = false;
+					}
+				} elseif ($openli && !$lasthost) {
+					$i++;
+					$dhtml_tree[$i] = "\t\t\t\t</li>\n";
+					$openli = false;
+				}
+				$last_tier = $tier;
+				$lasthost = true;
+				$i++;
+				$dhtml_tree[$i] = "\t\t\t\t<li id='tbranch_" . $leaf['id'] . "_tgraph_" . $leaf['local_graph_id'] . "' data-jstree='{ \"type\" : \"graph\" }'>Graph: " . htmlspecialchars(get_graph_title($leaf['local_graph_id'])) . "</a>\n";
+
+				$i++;
+				$dhtml_tree[$i] = "\t\t\t\t</li>\n";
+			}else{ //It's not a host
+				if ($tier > $last_tier) {
+					$i++;
+					$dhtml_tree[$i] = "\t\t\t<ul>\n";
+				} elseif ($tier < $last_tier) {
+					if (!$lasthost) {
+						$i++;
+						$dhtml_tree[$i] = "</li>\n";
+					}
+					for ($x = $tier; $x < $last_tier; $x++) {
+						$i++;
+						$dhtml_tree[$i] = "\t\t\t\t</ul>\n\t\t\t\t</li>\n";
+						$openli = false;
+					}
+				} elseif ($openli && !$lasthost) {
+					$i++;
+					$dhtml_tree[$i] = "</li>\n";
+					$openli = false;
+				}
+
+				$last_tier = $tier;
+				$i++;
+				$dhtml_tree[$i] = "\t\t\t\t<li id='tbranch_" . $leaf['id'] . "'>" . htmlspecialchars($leaf['title']) . "\n";
+				$openli = true;
+				$lasthost = false;
+			}
+		}
+
+		for ($x = $last_tier; $x > 1; $x--) {
+			$i++;
+			$dhtml_tree[$i] = "\t\t\t\t\t</ul>\n\t\t\t\t</li>\n";
+		}
+
+		$i++;
+		$dhtml_tree[$i] = "\t\t\t</ul>\n";
+	}
+
+	$i++;
+	$dhtml_tree[$i] = "</div>\n";
+
+	return $dhtml_tree;
 }
 
 function create_dhtml_tree() {

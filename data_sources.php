@@ -1234,7 +1234,7 @@ function ds() {
 						Search:
 					</td>
 					<td width="1">
-						<input id='filter' type="text" name="filter" size="40" value="<?php print htmlspecialchars(get_request_var_request("filter"));?>">
+						<input id='filter' type="text" name="filter" size="25" value="<?php print htmlspecialchars(get_request_var_request("filter"));?>">
 					</td>
 				</tr>
 			</table>
@@ -1337,7 +1337,7 @@ function ds() {
 
 	$display_text = array(
 		"name_cache" => array("Name", "ASC"),
-		"local_data_id" => array("ID","ASC"),
+		"local_data_id" => array('display' => "ID",'align' => 'right', 'sort' => "ASC"),
 		"data_input_name" => array("Data Input Method", "ASC"),
 		"nosort" => array("Poller Interval", "ASC"),
 		"active" => array("Active", "ASC"),
@@ -1387,7 +1387,7 @@ function ds() {
 
 			form_alternate_row('line' . $data_source["local_data_id"], true);
 			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars("data_sources.php?action=ds_edit&id=" . $data_source["local_data_id"]) . "' title='" . htmlspecialchars($data_source["name_cache"], ENT_QUOTES) . "'>" . ((get_request_var_request("filter") != "") ? preg_replace("/(" . preg_quote(get_request_var_request("filter"), "/") . ")/i", "<span class='filteredValue'>\\1</span>", title_trim(htmlspecialchars($data_source["name_cache"]), read_config_option("max_title_length"))) : title_trim(htmlspecialchars($data_source["name_cache"]), read_config_option("max_title_length"))) . "</a>", $data_source["local_data_id"]);
-			form_selectable_cell($data_source['local_data_id'], $data_source['local_data_id']);
+			form_selectable_cell($data_source['local_data_id'], $data_source['local_data_id'], '', 'text-align:right');
 			form_selectable_cell($data_input_name, $data_source["local_data_id"]);
 			form_selectable_cell(get_poller_interval($poller_interval), $data_source["local_data_id"]);
 			form_selectable_cell(($data_source['active'] == "on" ? "Yes" : "No"), $data_source["local_data_id"]);

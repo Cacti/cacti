@@ -1207,7 +1207,7 @@ function host() {
 						Search:
 					</td>
 					<td width="1">
-						<input id='filter' type="text" name="filter" size="20" value="<?php print htmlspecialchars(get_request_var_request("filter"));?>" onChange='applyFilter()'>
+						<input id='filter' type="text" name="filter" size="25" value="<?php print htmlspecialchars(get_request_var_request("filter"));?>" onChange='applyFilter()'>
 					</td>
 					<td>
 						Devices:
@@ -1301,16 +1301,16 @@ function host() {
 	print $nav;
 
 	$display_text = array(
-		"description" => array("Description", "ASC"),
-		"id" => array("ID", "ASC"),
-		"graphs" => array("Graphs", "ASC"),
-		"data_sources" => array("Data Sources", "ASC"),
-		"status" => array("Status", "ASC"),
-		"status_rec_date" => array("In State", "ASC"),
+		"description" => array('display' => "Description", 'align' => 'left', 'sort' => 'ASC'),
 		"hostname" => array("Hostname", "ASC"),
-		"cur_time" => array("Current (ms)", "DESC"),
-		"avg_time" => array("Average (ms)", "DESC"),
-		"availability" => array("Availability", "ASC"));
+		"id" => array('display' => "ID", 'align' => 'right', 'sort' => "ASC"),
+		"graphs" => array('display' => "Graphs", 'align' => 'right', 'sort' => "ASC"),
+		"data_sources" => array('display' => "Data Sources", 'align' => 'right', 'sort' => "ASC"),
+		"status" => array('display' => "Status", 'align' => 'center', 'sort' => "ASC"),
+		"status_rec_date" => array('display' => "In State", 'align' => 'right', 'sort' => "ASC"),
+		"cur_time" => array('display' => "Current (ms)", 'align' => 'right', 'sort' => "DESC"),
+		"avg_time" => array('display' => "Average (ms)", 'align' => 'right', 'sort' => "DESC"),
+		"availability" => array('display' => "Availability", 'align' => 'right', 'sort' => "ASC"));
 
 	html_header_sort_checkbox($display_text, get_request_var_request("sort_column"), get_request_var_request("sort_direction"), false);
 
@@ -1320,15 +1320,15 @@ function host() {
 			form_alternate_row('line' . $host["id"], true);
 			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars("host.php?action=edit&id=" . $host["id"]) . "'>" .
 				(strlen(get_request_var_request("filter")) ? preg_replace("/(" . preg_quote(get_request_var_request("filter"), "/") . ")/i", "<span class='filteredValue'>\\1</span>", htmlspecialchars($host["description"])) : htmlspecialchars($host["description"])) . "</a>", $host["id"]);
-			form_selectable_cell(round(($host["id"]), 2), $host["id"]);
-			form_selectable_cell(number_format($host["graphs"]), $host["id"]);
-			form_selectable_cell(number_format($host["data_sources"]), $host["id"]);
-			form_selectable_cell(get_colored_device_status(($host["disabled"] == "on" ? true : false), $host["status"]), $host["id"]);
-			form_selectable_cell(get_timeinstate($host), $host["id"]);
 			form_selectable_cell((strlen(get_request_var_request("filter")) ? preg_replace("/(" . preg_quote(get_request_var_request("filter"), "/") . ")/i", "<span class='filteredValue'>\\1</span>", htmlspecialchars($host["hostname"])) : htmlspecialchars($host["hostname"])), $host["id"]);
-			form_selectable_cell(round(($host["cur_time"]), 2), $host["id"]);
-			form_selectable_cell(round(($host["avg_time"]), 2), $host["id"]);
-			form_selectable_cell(round($host["availability"], 2), $host["id"]);
+			form_selectable_cell($host["id"], $host["id"], '', 'text-align:right');
+			form_selectable_cell(number_format($host["graphs"]), $host["id"], '', 'text-align:right');
+			form_selectable_cell(number_format($host["data_sources"]), $host["id"], '', 'text-align:right');
+			form_selectable_cell(get_colored_device_status(($host["disabled"] == "on" ? true : false), $host["status"]), $host["id"], '', 'text-align:center');
+			form_selectable_cell(get_timeinstate($host), $host["id"], '', 'text-align:right');
+			form_selectable_cell(round(($host["cur_time"]), 2), $host["id"], '', 'text-align:right');
+			form_selectable_cell(round(($host["avg_time"]), 2), $host["id"], '', 'text-align:right');
+			form_selectable_cell(round($host["availability"], 2) . ' %', $host["id"], '', 'text-align:right');
 			form_checkbox_cell($host["description"], $host["id"]);
 			form_end_row();
 		}

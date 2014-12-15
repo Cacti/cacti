@@ -369,15 +369,15 @@ $menu = array(
 		'host_templates.php' => 'Host Templates',
 		'data_templates.php' => 'Data Templates'
 		),
-	'Import/Export' => array(
-		'templates_import.php' => 'Import Templates',
-		'templates_export.php' => 'Export Templates'
-		),
 	'Presets' => array(
 			'cdef.php' => 'CDEFs',
 			'color.php' => 'Colors',
 			'gprint_presets.php' => 'GPRINT Presets',
 			'rra.php' => 'RRAs'
+		),
+	'Import/Export' => array(
+		'templates_import.php' => 'Import Templates',
+		'templates_export.php' => 'Export Templates'
 		),
 	'Configuration'  => array(
 		'settings.php' => 'Settings'

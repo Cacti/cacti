@@ -72,7 +72,12 @@ if (isset($_GET['mode']) && in_array($_GET['mode'], $modes)  && isset($_GET['id'
 			if (!in_array($id, $plugins_integrated)) {
 				api_plugin_install($id);
 			}
-			header("Location: plugins.php");
+
+			if ($_SESSION['sess_plugins_state'] != '-3') {
+				header("Location: plugins.php?state=5");
+			}else{
+				header("Location: plugins.php");
+			}
 			exit;
 			break;
 		case 'uninstall':
@@ -374,7 +379,7 @@ function update_show_current () {
 						Search:
 					</td>
 					<td>
-						<input id='filter' type="text" name="filter" size="40" value="<?php print get_request_var_request("filter");?>">
+						<input id='filter' type="text" name="filter" size="25" value="<?php print get_request_var_request("filter");?>">
 					</td>
 					<td>
 						Status:

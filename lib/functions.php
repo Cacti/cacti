@@ -1159,6 +1159,13 @@ function get_graph_title($local_graph_id) {
 	}
 }
 
+/* get_username - returns the username for the selected user
+   @arg $user_id - (int) the ID of the user
+   @returns - the username */
+function get_username($user_id) {
+	return db_fetch_cell("SELECT username FROM user_auth WHERE id=$user_id");
+}
+
 /* generate_data_source_path - creates a new data source path from scratch using the first data source
      item name and updates the database with the new value
    @arg $local_data_id - (int) the ID of the data source to generate a new path for
@@ -1599,9 +1606,10 @@ function get_web_browser() {
      necessary
    @arg $return_sql - (bool) Whether to return the SQL to create the dropdown rather than an array
 	@arg $force_refresh - (bool) Force the refresh of the array from the database
+	@arg $edit - (bool) Shows the content even though the graph may not be published
    @returns - (array) an array containing a list of graph trees */
-function get_graph_tree_array($return_sql = false, $force_refresh = false) {
-	return get_allowed_trees($return_sql);
+function get_graph_tree_array($return_sql = false, $force_refresh = false, $edit = false) {
+	return get_allowed_trees($edit, $return_sql);
 }
 
 /* draw_login_status - provides a consistent login status page for all pages that use it */

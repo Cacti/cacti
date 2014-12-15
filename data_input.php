@@ -27,9 +27,7 @@ include_once("./lib/utility.php");
 
 define("MAX_DISPLAY_PAGES", 21);
 
-$di_actions = array(
-	1 => "Delete"
-	);
+$di_actions = array(1 => "Delete");
 
 /* set default action */
 if (!isset($_REQUEST["action"])) { $_REQUEST["action"] = ""; }
@@ -356,16 +354,16 @@ function field_edit() {
    ----------------------- */
 
 function data_remove($id) {
-	$data_input_fields = db_fetch_assoc("select id from data_input_fields where data_input_id=" . $id);
+	$data_input_fields = db_fetch_assoc("SELECT id FROM data_input_fields WHERE data_input_id=" . $id);
 
 	if (is_array($data_input_fields)) {
 		foreach ($data_input_fields as $data_input_field) {
-			db_execute("delete from data_input_data where data_input_field_id=" . $data_input_field["id"]);
+			db_execute("DELETE FROM data_input_data WHERE data_input_field_id=" . $data_input_field["id"]);
 		}
 	}
 
-	db_execute("delete from data_input where id=" . $id);
-	db_execute("delete from data_input_fields where data_input_id=" . $id);
+	db_execute("DELETE FROM data_input WHERE id=" . $id);
+	db_execute("DELETE FROM data_input_fields WHERE data_input_id=" . $id);
 }
 
 function data_edit() {
@@ -525,7 +523,7 @@ function data() {
 						Search:
 					</td>
 					<td width="1">
-						<input id='filter' type="text" name="filter" size="40" value="<?php print htmlspecialchars(get_request_var_request("filter"));?>">
+						<input id='filter' type="text" name="filter" size="25" value="<?php print htmlspecialchars(get_request_var_request("filter"));?>">
 					</td>
 					<td style='white-space:nowrap;'>
 						Input Methods:
@@ -595,30 +593,41 @@ function data() {
 	html_start_box("", "100%", "", "3", "center", "");
 
 	/* form the 'where' clause for our main sql query */
-	$sql_where = "WHERE (data_input.name like '%%" . get_request_var_request("filter") . "%%')";
+	if ($_REQUEST['filter'] != '') {
+		$sql_where = "WHERE (di.name like '%" . get_request_var_request("filter") . "%')";
+	}else{
+		$sql_where = '';
+	}
 
-	$sql_where .= " AND (data_input.name!='Get Script Data (Indexed)'
-		AND data_input.name!='Get Script Server Data (Indexed)'
-		AND data_input.name!='Get SNMP Data'
-		AND data_input.name!='Get SNMP Data (Indexed)')";
+	$sql_where .= (strlen($sql_where) ? " AND":"WHERE") . " (di.name!='Get Script Data (Indexed)'
+		AND di.name!='Get Script Server Data (Indexed)'
+		AND di.name!='Get SNMP Data'
+		AND di.name!='Get SNMP Data (Indexed)')";
 
 	$total_rows = db_fetch_cell("SELECT
 		count(*)
-		FROM data_input
+		FROM data_input AS di
 		$sql_where");
 
-	$data_inputs = db_fetch_assoc("SELECT *
-		FROM data_input
+	$data_inputs = db_fetch_assoc("SELECT di.*,
+		SUM(CASE WHEN dtd.local_data_id=0 THEN 1 ELSE 0 END) AS templates,
+		SUM(CASE WHEN dtd.local_data_id>0 THEN 1 ELSE 0 END) AS data_sources
+		FROM data_input AS di
+		LEFT JOIN data_template_data AS dtd
+		ON di.id=dtd.data_template_id
 		$sql_where
+		GROUP BY di.id
 		ORDER BY " . get_request_var_request('sort_column') . " " . get_request_var_request('sort_direction') . "
 		LIMIT " . (get_request_var_request("rows")*(get_request_var_request("page")-1)) . "," . get_request_var_request("rows"));
 
-	$nav = html_nav_bar("data_input.php?filter=" . get_request_var_request("filter"), MAX_DISPLAY_PAGES, get_request_var_request("page"), get_request_var_request("rows"), $total_rows, 3, 'Input Methods', 'page', 'main');
+	$nav = html_nav_bar("data_input.php?filter=" . get_request_var_request("filter"), MAX_DISPLAY_PAGES, get_request_var_request("page"), get_request_var_request("rows"), $total_rows, 5, 'Input Methods', 'page', 'main');
 
 	print $nav;
 
 	$display_text = array(
 		"name" => array("Name", "ASC"),
+		'templates' => array('display' => 'Data Templates', 'align' => 'right', 'sort' => 'DESC'),
+		'data_sources' => array('display' => 'Data Sources', 'align' => 'right', 'sort' => 'DESC'),
 		"type_id" => array("Data Input Method", "ASC"));
 
 	html_header_sort_checkbox($display_text, get_request_var_request("sort_column"), get_request_var_request("sort_direction"), false);
@@ -627,16 +636,23 @@ function data() {
 	if (sizeof($data_inputs) > 0) {
 		foreach ($data_inputs as $data_input) {
 			/* hide system types */
-			form_alternate_row('line' . $data_input["id"], true);
+			if ($data_input['templates'] > 0 || $data_input['data_sources'] > 0) {
+				$disabled = true;
+			}else{
+				$disabled = false;
+			}
+			form_alternate_row('line' . $data_input["id"], true, $disabled);
 			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars("data_input.php?action=edit&id=" . $data_input["id"]) . "'>" . (strlen(get_request_var_request("filter")) ? preg_replace("/(" . preg_quote(get_request_var_request("filter"), "/") . ")/i", "<span class='filteredValue'>\\1</span>", htmlspecialchars($data_input["name"])) : htmlspecialchars($data_input["name"])) . "</a>", $data_input["id"]);
+			form_selectable_cell(number_format($data_input['templates']), $data_input['id'],'', 'text-align:right');
+			form_selectable_cell(number_format($data_input['data_sources']), $data_input['id'],'', 'text-align:right');
 			form_selectable_cell($input_types{$data_input["type_id"]}, $data_input["id"]);
-			form_checkbox_cell($data_input["name"], $data_input["id"]);
+			form_checkbox_cell($data_input["name"], $data_input["id"], $disabled);
 			form_end_row();
 		}
 
 		print $nav;
 	}else{
-		print "<tr><td><em>No Data Input Methods</em></td></tr>";
+		print "<tr><td colspan='5'><em>No Data Input Methods</em></td></tr>";
 	}
 
 	html_end_box(false);

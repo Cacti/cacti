@@ -381,6 +381,11 @@ function template() {
 	input_validate_input_number(get_request_var_request("rows"));
 	/* ==================================================== */
 
+	/* clean up has_hosts string */
+	if (isset($_REQUEST["has_hosts"])) {
+		$_REQUEST["has_hosts"] = sanitize_search_string(get_request_var("has_hosts"));
+	}
+
 	/* clean up search string */
 	if (isset($_REQUEST["filter"])) {
 		$_REQUEST["filter"] = sanitize_search_string(get_request_var("filter"));
@@ -399,20 +404,32 @@ function template() {
 	/* if the user pushed the 'clear' button */
 	if (isset($_REQUEST["clear_x"])) {
 		kill_session_var("sess_host_template_current_page");
+		kill_session_var("sess_host_template_hosts");
 		kill_session_var("sess_host_template_filter");
 		kill_session_var("sess_default_rows");
 		kill_session_var("sess_host_template_sort_column");
 		kill_session_var("sess_host_template_sort_direction");
 
 		unset($_REQUEST["page"]);
+		unset($_REQUEST["has_hosts"]);
 		unset($_REQUEST["filter"]);
 		unset($_REQUEST["rows"]);
 		unset($_REQUEST["sort_column"]);
 		unset($_REQUEST["sort_direction"]);
+	}else{
+		$changed = 0;
+		$changed += check_changed('has_hosts', 'sess_host_template_has_hosts');
+		$changed += check_changed('rows', 'sess_default_rows');
+		$changed += check_changed('filter', 'sess_host_template_filter');
+
+		if ($changed) {
+			$_REQUEST['page'] = 1;
+		}
 	}
 
 	/* remember these search fields in session vars so we don't have to keep passing them around */
 	load_current_session_value("page", "sess_host_template_current_page", "1");
+	load_current_session_value("has_hosts", "sess_host_template_has_hosts", "true");
 	load_current_session_value("filter", "sess_host_template_filter", "");
 	load_current_session_value("sort_column", "sess_host_template_sort_column", "name");
 	load_current_session_value("sort_direction", "sess_host_template_sort_direction", "ASC");
@@ -432,7 +449,7 @@ function template() {
 						Search:
 					</td>
 					<td width="1">
-						<input id='filter' type="text" name="filter" size="40" value="<?php print htmlspecialchars(get_request_var_request("filter"));?>">
+						<input id='filter' type="text" name="filter" size="25" value="<?php print htmlspecialchars(get_request_var_request("filter"));?>">
 					</td>
 					<td style='white-space:nowrap;'>
 						Host Templates:
@@ -449,6 +466,12 @@ function template() {
 						</select>
 					</td>
 					<td>
+						<input type="checkbox" id='has_hosts' <?php print ($_REQUEST['has_hosts'] == 'true' ? 'checked':'');?>>
+					</td>
+					<td>
+						<label for='has_hosts' style='white-space:nowrap;'>Has Hosts</label>
+					</td>
+					<td>
 						<input type="button" id='refresh' value="Go" title="Set/Refresh Filters">
 					</td>
 					<td>
@@ -461,7 +484,7 @@ function template() {
 		</td>
 		<script type='text/javascript'>
 		function applyFilter() {
-			strURL = 'host_templates.php?filter='+$('#filter').val()+'&rows='+$('#rows').val()+'&page='+$('#page').val()+'&header=false';
+			strURL = 'host_templates.php?filter='+$('#filter').val()+'&rows='+$('#rows').val()+'&page='+$('#page').val()+'&has_hosts='+$('#has_hosts').is(':checked')+'&header=false';
 			$.get(strURL, function(data) {
 				$('#main').html(data);
 				applySkin();
@@ -477,7 +500,7 @@ function template() {
 		}
 
 		$(function() {
-			$('#refresh').click(function() {
+			$('#refresh, #has_hosts').click(function() {
 				applyFilter();
 			});
 
@@ -509,17 +532,30 @@ function template() {
 
 	html_start_box("", "100%", "", "3", "center", "");
 
-	$total_rows = db_fetch_cell("SELECT
-		COUNT(host_template.id)
-		FROM host_template
-		$sql_where");
+	if ($_REQUEST['has_hosts'] == 'true') {
+		$sql_having = 'HAVING hosts>0';
+	}else{
+		$sql_having = '';
+	}
+
+	$total_rows = db_fetch_cell("SELECT COUNT(rows)
+		FROM (
+			SELECT
+			COUNT(host_template.id) AS rows, COUNT(DISTINCT host.id) AS hosts
+			FROM host_template
+			LEFT JOIN host ON host.host_template_id=host_template.id
+			$sql_where
+			GROUP BY host_template.id
+			$sql_having
+		) AS rs");
 
 	$template_list = db_fetch_assoc("SELECT
-		host_template.id,host_template.name, COUNT(*) AS hosts
+		host_template.id,host_template.name, COUNT(DISTINCT host.id) AS hosts
 		FROM host_template
 		LEFT JOIN host ON host.host_template_id=host_template.id
 		$sql_where
 		GROUP BY host_template.id
+		$sql_having
 		ORDER BY " . get_request_var_request("sort_column") . " " . get_request_var_request("sort_direction") .
 		" LIMIT " . (get_request_var_request("rows")*(get_request_var_request("page")-1)) . "," . get_request_var_request("rows"));
 
@@ -529,8 +565,8 @@ function template() {
 
 	$display_text = array(
 		"name" => array("Template Title", "ASC"),
-		"host_template.id" => array("ID", "ASC"),
-		"hosts" => array("Hosts", "DESC")
+		"hosts" => array('display' => "Hosts", 'align' => 'right', 'sort' => "DESC"),
+		"host_template.id" => array('display' => "ID", 'align' => 'right', 'sort' => "ASC")
 	);
 
 	html_header_sort_checkbox($display_text, get_request_var_request("sort_column"), get_request_var_request("sort_direction"), false);
@@ -538,11 +574,17 @@ function template() {
 	$i = 0;
 	if (sizeof($template_list) > 0) {
 		foreach ($template_list as $template) {
-			form_alternate_row('line' . $template["id"], true);
+			if ($template['hosts'] > 0) {
+				$disable = true;
+			}else{
+				$disable = false;
+			}
+
+			form_alternate_row('line' . $template["id"], true, $disable);
 			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars("host_templates.php?action=edit&id=" . $template["id"]) . "'>" . (strlen(get_request_var_request("filter")) ? preg_replace("/(" . preg_quote(get_request_var_request("filter"), "/") . ")/i", "<span class='filteredValue'>\\1</span>", htmlspecialchars($template["name"])) : htmlspecialchars($template["name"])) . "</a>", $template["id"]);
-			form_selectable_cell($template["id"], $template["id"]);
-			form_selectable_cell(number_format($template["hosts"]), $template["id"]);
-			form_checkbox_cell($template["name"], $template["id"]);
+			form_selectable_cell(number_format($template["hosts"]), $template["id"], '', 'text-align:right');
+			form_selectable_cell($template["id"], $template["id"], '', 'text-align:right');
+			form_checkbox_cell($template["name"], $template["id"], $disable);
 			form_end_row();
 		}
 		/* put the nav bar on the bottom as well */

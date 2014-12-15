@@ -195,7 +195,6 @@ function upgrade_to_0_8_8d() {
 		ENGINE=MyISAM
 		COMMENT='Table to Hold Login Domains for LDAP';");
 		
-		
 	db_install_execute('0.8.8d', "CREATE TABLE IF NOT EXISTS `data_source_purge_temp` (
 		`id` integer UNSIGNED auto_increment,
 		`name_cache` varchar(255) NOT NULL default '',
@@ -223,5 +222,13 @@ function upgrade_to_0_8_8d() {
 		ENGINE=MyISAM 
 		COMMENT='RRD Cleaner File Actions';");
 
-		
+	db_install_execute('0.8.8d', "ALTER TABLE graph_tree_items ADD COLUMN parent INT unsigned default NULL AFTER id, ADD INDEX parent(parent)");
+	db_install_execute('0.8.8d', "ALTER TABLE graph_tree_items ADD COLUMN position INT unsigned default NULL AFTER parent, ADD INDEX position(position)");
+
+	db_install_execute('0.8.8d', "ALTER TABLE graph_tree 
+		ADD COLUMN locked TINYINT default '0' AFTER enabled, 
+		ADD COLUMN locked_date TIMESTAMP default '0000-00-00' AFTER locked, 
+		ADD COLUMN last_modified TIMESTAMP default '0000-00-00' AFTER name, 
+		ADD COLUMN user_id INT UNSIGNED default '1' AFTER name, 
+		ADD COLUMN modified_by INT UNSIGNED default '1'");
 }
