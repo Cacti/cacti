@@ -337,7 +337,7 @@ function item_edit() {
 				form_dropdown('value', $custom_data_source_types, '', '', (isset($cdef['value']) ? $cdef['value'] : ''), '', '');
 				break;
 			case '5':
-				form_dropdown('value', db_fetch_assoc('select name,id from cdef where id != ' . $_REQUEST['cdef_id'] . ' order by name'), 'name', 'id', (isset($cdef['value']) ? $cdef['value'] : ''), '', '');
+				form_dropdown('value', db_fetch_assoc('select name,id from cdef order by name'), 'name', 'id', (isset($cdef['value']) ? $cdef['value'] : ''), '', '');
 				break;
 			case '6':
 				form_text_box('value', (isset($cdef['value']) ? $cdef['value'] : ''), '', '255', 30, 'text', (isset($_REQUEST['id']) ? $_REQUEST['id'] : '0'));
@@ -594,7 +594,7 @@ function cdef() {
 			LEFT JOIN graph_templates_item AS gti
 			ON gti.cdef_id=cd.id
 			$sql_where
-			GROUP BY cd.id, gti.graph_template_id, gti.local_graph_id
+			GROUP BY cd.id
 			$sql_having
 		) AS rs");
 

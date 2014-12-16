@@ -2,7 +2,7 @@
 
 body, table, tr, td {
 	font-family: Verdana, Arial, Helvetica, sans-serif;
-	font-size: 10px;
+	font-size: 12px;
 }
 
 body {
@@ -23,6 +23,13 @@ a:hover {
 	color: #333333;
 }
 
+th .ui-icon {
+    margin-top: -8px;
+    position: absolute;
+    right: 3px;
+    top: 50%;
+}
+
 tr.selected {
 	background-color: khaki;
 }
@@ -41,6 +48,12 @@ tr.selected {
 
 .saveRow {
 	background-color:#EAEAEA;
+	padding:4px;
+}
+
+.treeArea, .treeItemsArea {
+	width:33%;
+	border:1px solid #006400;
 }
 
 .linkMarker {
@@ -122,18 +135,25 @@ tr.selected {
 }
 
 ul#breadcrumbs {
-	font-size:10px;
+  font-size:8px;
 	margin: 0;
 	padding: 0;
 	list-style: none;
 }
+.infoBar {
+	vertical-align: middle;
+	float:right;
+}
 
 #breadcrumbs li {
   float: left;
+  padding:3px 0px 0px 0px;
+  font-size:10px;
 }
 
 #breadcrumbs a {
-  padding: 0px 5px;
+  padding-left:5px;
+  padding-right:5px;
   float: left;
   text-decoration: none;
   color: blue;
@@ -250,6 +270,10 @@ ul#breadcrumbs {
 	border-style: solid;
 }
 
+.break {
+	height:8px;
+}
+
 .cactiTableTitle {
 	background-color: #00438c;
 }
@@ -289,9 +313,15 @@ ul#breadcrumbs {
 .tableHeader th {
 	color: #ffffff;
 	font-weight:bold;
+	cursor: pointer;
 	vertical-align:bottom;
 	text-align:left;
 	border-right: 1px groove #efefef;
+}
+
+.tableHeader th div {
+	display:block;
+	padding-right: 8px;
 }
 
 .tableSubHeaderColumn {
@@ -388,6 +418,9 @@ ul#breadcrumbs {
 
 .txtErrorTextBox {
 	border: 2px solid #ff0000;
+}
+.txtErrorText {
+	color: #FF0000;
 }
 
 /* tabs */
@@ -553,7 +586,7 @@ div.calendar { position: relative; }
 }
 
 .calendar .nav {
-  background: #778 url(./../../../images/menuarrow.gif) no-repeat 100% 100%;
+  background: #778 url(../../../images/menuarrow.gif) no-repeat 100% 100%;
 }
 
 .calendar thead .title { /* This holds the current "month, year" */

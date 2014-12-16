@@ -88,10 +88,10 @@ $page_title = api_plugin_hook_function('page_title', draw_navigation_text('title
 
 <?php if ($oper_mode == OPER_MODE_NATIVE) {?>
 <body <?php print api_plugin_hook_function('body_style', '');?>>
-<a name='page_top'></a>
+<a style='height:0px;padding:0px;' name='page_top'></a>
 <?php }else{?>
 <body <?php print api_plugin_hook_function('body_style', '');?>>
-<a name='page_top'></a>
+<a style='height:0px;padding:0px;' name='page_top'></a>
 <?php }?>
 
 <table style='width:100%' cellspacing='0' cellpadding='0'>
@@ -115,14 +115,11 @@ $page_title = api_plugin_hook_function('page_title', draw_navigation_text('title
 		<td colspan='3'>
 			<table width='100%'>
 				<tr>
-					<td width='40%'>
-						<div style='min-width:30%:white-space:nowrap;' id='navBar' class='navBar'>
+					<td>
+						<div id='navBar' class='navBar'>
 							<?php echo draw_navigation_text();?>
 						</div>
-					</td>
-					<td width='30%'>
-					</td>
-					<td width='30%' align='right'>
+						<div class='scrollBar'></div>
 						<div class='infoBar'>
 							<?php echo draw_login_status();?>
 						</div>
@@ -162,4 +159,4 @@ $page_title = api_plugin_hook_function('page_title', draw_navigation_text('title
 			<?php grow_dhtml_trees();?>
 		</td>
 		<?php } ?>
-		<td id='navigation_right' class='cactiGraphContentArea' valign='top' style='display:none;'><div id='message_container'><?php print display_output_messages();?></div></div><div style='position:static;' id='main'>
+		<td id='navigation_right' class='cactiGraphContentArea' valign='top' style='display:none;'><div id='message_container'><?php print display_output_messages();?></div><div style='position:static;' id='main'>

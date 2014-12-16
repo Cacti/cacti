@@ -929,7 +929,9 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 		$graph_opts .= rrdtool_set_font("unit", "", $themefonts);
 
 		/* watermark fonts */
-		$graph_opts .= rrdtool_set_font("watermark", "", $themefonts);
+		if (isset($rrdversion) && $rrdversion > 1.3) {
+			$graph_opts .= rrdtool_set_font("watermark", "", $themefonts);
+		}
 	}
 
 	$i = 0; $j = 0;

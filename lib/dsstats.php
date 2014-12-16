@@ -692,7 +692,6 @@ function dsstats_boost_bottom() {
 	global $config;
 
 	include_once($config["base_path"] . "/lib/rrd.php");
-	include_once($config["base_path"] . "/lib/dsstats.php");
 
 	/* run the daily stats. log to database to prevent secondary runs */
 	db_execute("REPLACE INTO settings (name, value) VALUES ('dsstats_last_daily_run_time', '" . date("Y-m-d G:i:s", time()) . "')");
@@ -722,7 +721,9 @@ function dsstats_poller_bottom () {
 
 	include_once($config["library_path"] . "/poller.php");
 
-	if (read_config_option('dsstats_enable' == 'on')) {
+	chdir($config["base_path"]);
+
+	if (read_config_option('dsstats_enable') == 'on') {
 		$command_string = read_config_option("path_php_binary");
 		if (read_config_option("path_dsstats_log") != "") {
 			if ($config["cacti_server_os"] == "unix") {

@@ -1333,6 +1333,8 @@ function boost_poller_bottom () {
 
 	include_once($config["library_path"] . "/poller.php");
 
+	chdir($config["base_path"]);
+
 	if (read_config_option('boost_rrd_update_enable') == 'on') {
 		$command_string = read_config_option("path_php_binary");
 		if (read_config_option("path_boost_log") != "") {

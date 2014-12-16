@@ -514,8 +514,8 @@ function display_help() {
 }
 
 /* start post data processing */
-dsstats_poller_bottom();
 boost_poller_bottom();
+dsstats_poller_bottom();
 poller_maintenance();
 
 api_plugin_hook('poller_bottom');

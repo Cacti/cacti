@@ -265,7 +265,7 @@ button.ui-button-icons-only {
 }
 /* no icon support for input elements, provide padding by default */
 input.ui-button {
-	padding: .4em 1em;
+	padding: .1em .8em;
 }
 
 /* button icon element(s) */

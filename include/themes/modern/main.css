@@ -1,9 +1,8 @@
 /* main styles */
 
 body, table, tr, td {
-	/*font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;*/
 	font-family: Verdana, Arial, Helvetica, sans-serif;
-	font-size: 10px;
+	font-size: 12px;
 }
 
 body {
@@ -17,8 +16,8 @@ body {
 a, a:active, a:visited {
 	color: #006400;
 	text-decoration: none;
-	font-size: 18;
-	padding: 7;
+	font-size: 12px;
+	padding: 3px;
   	text-shadow: 0 1px 0 rgba(255,255,255,.5);
 }
 
@@ -166,11 +165,14 @@ ul#breadcrumbs {
   background: #eee;
   border-width: 1px;
   border-style: solid;
+  padding:0.5px 5px 0.5px 5px;
+  white-space:nowrap;
   border-color: #f5f5f5 #e5e5e5 #ccc;
   border-radius: 5px;
   box-shadow: 0 0 2px rgba(0,0,0,.2);
   overflow: hidden;
-  width: 80%;
+  max-width: 40%;
+  float:right;
 }
 
 #breadcrumbs {
@@ -179,9 +181,13 @@ ul#breadcrumbs {
   border-style: solid;
   border-color: #f5f5f5 #e5e5e5 #ccc;
   border-radius: 5px;
+  white-space:nowrap;
+  max-width:100%;
   box-shadow: 0 0 2px rgba(0,0,0,.2);
   overflow: hidden;
-  width: 80%;
+  max-width: 60%;
+  min-width: 30%;
+  float:left;
 }
 
 #breadcrumbs li {
@@ -194,6 +200,7 @@ ul#breadcrumbs {
   text-decoration: none;
   color: #444;
   position: relative;
+  font-size:10px;
   text-shadow: 0 1px 0 rgba(255,255,255,.5);
   background-color: #ddd;
   background-image: linear-gradient(to right, #f5f5f5, #ddd);  
@@ -287,9 +294,9 @@ ul#breadcrumbs {
 .linkEditMain, .linkEditMain:visited, .linkEditMain:active {
 	color: rgba(44,130,29,1);
 	text-decoration: none;
-	font-size: 18;
+	font-size: 12px;
 	font-weight: bold;
-	padding: 7;
+	padding: 3px;
   	text-shadow: 0 1px 0 rgba(255,255,255,.5);
 }
 
@@ -362,10 +369,6 @@ ul#breadcrumbs {
 	font-weight: bold;
 }
 
-.tableRow {
-	background-color: #e1e1e1;*/
-}
-
 .cactiTableTitle {
 	background: rgba(98,125,77,1);
 	background: -moz-linear-gradient(top, rgba(98,125,77,1) 0%, rgba(31,59,8,1) 100%);
@@ -375,14 +378,13 @@ ul#breadcrumbs {
 	background: -ms-linear-gradient(top, rgba(98,125,77,1) 0%, rgba(31,59,8,1) 100%);
 	background: linear-gradient(to bottom, rgba(98,125,77,1) 0%, rgba(31,59,8,1) 100%);
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#627d4d', endColorstr='#1f3b08', GradientType=0 );
-	#background: rgba(75,106,232,1);
-	#background: -moz-linear-gradient(top, rgba(75,106,232,1) 0%, rgba(22,22,196,1) 100%);
-	#background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(75,106,232,1)), color-stop(100%, rgba(22,22,196,1)));
-	#background: -webkit-linear-gradient(top, rgba(75,106,232,1) 0%, rgba(22,22,196,1) 100%);
-	#background: -o-linear-gradient(top, rgba(75,106,232,1) 0%, rgba(22,22,196,1) 100%);
-	#background: -ms-linear-gradient(top, rgba(75,106,232,1) 0%, rgba(22,22,196,1) 100%);
-	#background: linear-gradient(to bottom, rgba(75,106,232,1) 0%, rgba(22,22,196,1) 100%);
-	#filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#4b6ae8', endColorstr='#1616c4', GradientType=0 );
+}
+
+.cactiTable {
+}
+
+.break {
+	height:8px;
 }
 
 .cactiNavBarTop {
@@ -452,6 +454,11 @@ ul#breadcrumbs {
 .tableConfirmation {
 	background-color: #f5f5f5;
 	border: 1px solid #aaaaaa;
+}
+
+.navBar {
+	min-width:30%;
+	white-space:nowrap;
 }
 
 .navBarNext, .navBarNext:visited, .navBarNext:active, .navBarNext:hover {

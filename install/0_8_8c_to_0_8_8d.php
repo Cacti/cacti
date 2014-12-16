@@ -105,7 +105,7 @@ function upgrade_to_0_8_8d() {
 		`local_data_id` mediumint(8) unsigned NOT NULL,
 		`rrd_name` varchar(19) NOT NULL,
 		`value` DOUBLE DEFAULT NULL,
-		`calculated` DOUBLE NOT NULL,
+		`calculated` DOUBLE DEFAULT NULL,
 		PRIMARY KEY  (`local_data_id`,`rrd_name`)
 		) ENGINE=MEMORY;");
 
@@ -222,10 +222,11 @@ function upgrade_to_0_8_8d() {
 		ENGINE=MyISAM 
 		COMMENT='RRD Cleaner File Actions';");
 
-	db_install_execute('0.8.8d', "ALTER TABLE graph_tree_items ADD COLUMN parent INT unsigned default NULL AFTER id, ADD INDEX parent(parent)");
-	db_install_execute('0.8.8d', "ALTER TABLE graph_tree_items ADD COLUMN position INT unsigned default NULL AFTER parent, ADD INDEX position(position)");
+	db_install_execute('0.8.8d', "ALTER TABLE graph_tree_items ADD COLUMN parent INT unsigned default NULL AFTER id, ADD INDEX parent (parent)");
+	db_install_execute('0.8.8d', "ALTER TABLE graph_tree_items ADD COLUMN position INT unsigned default NULL AFTER parent, ADD INDEX position (position)");
 
 	db_install_execute('0.8.8d', "ALTER TABLE graph_tree 
+		ADD COLUMN enabled char(2) DEFAULT 'on' AFTER id,
 		ADD COLUMN locked TINYINT default '0' AFTER enabled, 
 		ADD COLUMN locked_date TIMESTAMP default '0000-00-00' AFTER locked, 
 		ADD COLUMN last_modified TIMESTAMP default '0000-00-00' AFTER name, 

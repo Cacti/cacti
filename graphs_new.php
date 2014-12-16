@@ -408,7 +408,7 @@ function graphs() {
 	html_start_box("<strong>New Graphs for</strong> $header" , '100%', '', '3', 'center', '');
 
 	form_alternate_row();
-	print '<td>';
+	print '<td class="even">';
 
 	if (!empty($debug_log)) {
 		debug_log_clear('new_graphs');
@@ -685,7 +685,7 @@ function graphs() {
 			}
 
 			print "	<table width='100%' class='cactiTable' align='center' cellpadding='3' cellspacing='0'>\n
-					<tr>
+					<tr class='cactiTableTitle'>
 						<td colspan='" . ($num_input_fields+1) . "'>
 							<table  cellspacing='0' cellpadding='0' width='100%' >
 								<tr>
@@ -693,7 +693,7 @@ function graphs() {
 										<strong>Data Query</strong> [" . $snmp_query['name'] . "]
 									</td>
 									<td align='right' nowrap>
-										<a href='" . htmlspecialchars('graphs_new.php?action=query_reload&id=' . $snmp_query['id'] . '&host_id=' . $host['id']) . "'><img src='images/reload_icon_small.gif' title='Reload Associated Query' alt='' border='0' align='middle'></a>
+										<a href='" . htmlspecialchars('graphs_new.php?action=query_reload&id=' . $snmp_query['id'] . '&host_id=' . $host['id']) . "'><img src='images/reload_icon_small.gif' title='Reload Associated Query' alt='' border='0' align='absmiddle'></a>
 									</td>
 								</tr>
 							</table>

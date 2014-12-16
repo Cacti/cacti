@@ -1272,9 +1272,9 @@ function host() {
 
 	html_start_box("", "100%", "", "3", "center", "");
 
-	$total_rows = db_fetch_cell("select
+	$total_rows = db_fetch_cell("SELECT
 		COUNT(host.id)
-		from host
+		FROM host
 		$sql_where");
 
 	$sortby = get_request_var_request("sort_column");
@@ -1282,12 +1282,11 @@ function host() {
 		$sortby = "INET_ATON(hostname)";
 	}
 
-	$sql_query = "SELECT host.*, COUNT(gl.id) AS graphs,
-		COUNT(dl.id) AS data_sources
+	$sql_query = "SELECT host.*, graphs, data_sources
 		FROM host
-		LEFT JOIN graph_local AS gl
+		LEFT JOIN (SELECT host_id, COUNT(*) AS graphs FROM graph_local GROUP BY host_id) AS gl
 		ON host.id=gl.host_id
-		LEFT JOIN data_local AS dl
+		LEFT JOIN (SELECT host_id, COUNT(*) AS data_sources FROM data_local GROUP BY host_id) AS dl
 		ON host.id=dl.host_id
 		$sql_where
 		GROUP BY host.id

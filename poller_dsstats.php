@@ -146,6 +146,7 @@ if ((read_config_option("dsstats_enable") == "on") || $forcerun) {
 		FROM (SELECT local_data_id, rrd_name, `value` FROM data_source_stats_hourly_cache WHERE `value` IS NOT NULL) AS sally
 		GROUP BY local_data_id, rrd_name)
 		ON DUPLICATE KEY UPDATE average=VALUES(average), peak=VALUES(peak)");
+
 	log_dsstats_statistics("HOURLY");
 
 	/* see if boost is active or not */

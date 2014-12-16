@@ -205,7 +205,8 @@ function get_files() {
 		(local_data_id, data_template_id, name_cache, name, in_cacti) 
 		SELECT local_data_id, data_template_id, name_cache, replace(data_source_path, '<path_rra>/', '') AS file, '1' AS in_cacti
 		FROM data_template_data
-		WHERE local_data_id>0");
+		WHERE local_data_id>0
+		ON DUPLICATE KEY UPDATE local_data_id=VALUES(local_data_id)");
 
 	$dir_iterator = new RecursiveDirectoryIterator($rra_path);
 	$iterator = new RecursiveIteratorIterator($dir_iterator, RecursiveIteratorIterator::SELF_FIRST);
@@ -453,7 +454,8 @@ function do_rrd() {
 			$sql = "INSERT INTO data_source_purge_action VALUES('','" . 
 				$unused_file['name']          . "','" .
 				$unused_file['local_data_id'] . "','" .
-				$_POST['drp_action']          . "')";
+				$_POST['drp_action']          . "') 
+				ON DUPLICATE KEY UPDATE local_data_id=VALUES(local_data_id)";
 
 			db_execute($sql);
 

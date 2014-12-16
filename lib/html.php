@@ -70,7 +70,7 @@ function html_end_box($trailing_br = true) { ?>
 			</td>
 		</tr>
 	</table>
-	<?php if ($trailing_br == true) { print "<br>"; } ?>
+	<?php if ($trailing_br == true) { print "<div class='break'></div>"; } ?>
 <?php }
 
 /* html_graph_start_box - draws the start of an HTML graph view box
