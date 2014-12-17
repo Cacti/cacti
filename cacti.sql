@@ -1837,8 +1837,14 @@ INSERT INTO graph_templates_item VALUES (410,'03e5bd2151fea3c90843eb1130b84458',
 
 CREATE TABLE graph_tree (
   id smallint(5) unsigned NOT NULL auto_increment,
+  enabled char(2) DEFAULT 'on',
+  locked tinyint(4) DEFAULT '0',
+  locked_date timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   sort_type tinyint(3) unsigned NOT NULL default '1',
   name varchar(255) NOT NULL default '',
+  user_id int(10) unsigned DEFAULT '1',
+  last_modified timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  modified_by int(10) unsigned DEFAULT '1',
   PRIMARY KEY  (id)
 ) ENGINE=MyISAM;
 
