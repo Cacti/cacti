@@ -2205,8 +2205,10 @@ function cacti_escapeshellarg($string, $quote=true) {
 }
 
 function bottom_footer() {
+	global $config;
+
 	if (!isset($_REQUEST['header']) || $_REQUEST['header'] == false) {
-		include("./include/bottom_footer.php");
+		include($config['base_path'] . "/include/bottom_footer.php");
 	}else{
 		?>
 		<script type='text/javascript'>
@@ -2222,20 +2224,25 @@ function bottom_footer() {
 }
 
 function top_header() {
+	global $config;
+
 	if (!isset($_REQUEST['header']) || $_REQUEST['header'] == false) {
-		include("./include/top_header.php");
+		include($config['base_path'] . "/include/top_header.php");
 	}
 }
 
 function top_graph_header() {
+	global $config;
+
 	if (!isset($_REQUEST['header']) || $_REQUEST['header'] == false) {
-		include("./include/top_graph_header.php");
+		include($config['base_path'] . "/include/top_graph_header.php");
 	}
 }
 
 function general_header() {
+	global $config;
 	if (!isset($_REQUEST['header']) || $_REQUEST['header'] == false) {
-		include("./include/top_general_header.php");
+		include($config['base_path'] . "/include/top_general_header.php");
 	}
 }
 
@@ -2529,4 +2536,3 @@ function poller_maintenance () {
 	exec_background($command_string, $extra_args);
 }
 
-?>

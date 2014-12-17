@@ -599,7 +599,7 @@ function data_query_item_edit() {
 				$('.remover').click(function() {
 					href=$(this).attr('href');
 					$.get(href, function(data) {
-						$('form[action="data_queryies.php"]').unbind();
+						$('form[action="data_queries.php"]').unbind();
 						$('#main').html(data);
 						applySkin();
 					});

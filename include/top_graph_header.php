@@ -77,7 +77,7 @@ $page_title = api_plugin_hook_function('page_title', draw_navigation_text('title
 	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery-ui.js' language='javascript'></script>
 	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery.cookie.js' language='javascript'></script>
 	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jstree.js'></script>
-	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery.easytabs.js'></script>
+	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery.hotkeys.js'></script>
 	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery.zoom.js' language='javascript'></script>
 	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/jscalendar/calendar.js'></script>
 	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/jscalendar/lang/calendar-en.js'></script>

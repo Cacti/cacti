@@ -106,10 +106,10 @@ case 'tree_content':
 	}
 
 	?>
-		<script type="text/javascript" >
-		$(document).ready(function() {
-			$(".graphimage").zoom({inputfieldStartTime : 'date1', inputfieldEndTime : 'date2', serverTimeOffset : <?php print date('Z');?>});
-		});
+	<script type="text/javascript" >
+	$(document).ready(function() {
+		$(".graphimage").zoom({inputfieldStartTime : 'date1', inputfieldEndTime : 'date2', serverTimeOffset : <?php print date('Z');?>});
+	});
 	</script>
 	<?php
 
@@ -218,20 +218,20 @@ case 'preview':
 
 	?>
 	<script type="text/javascript" >
-		$(document).ready(function() {
-			$(".graphimage").zoom({inputfieldStartTime : 'date1', inputfieldEndTime : 'date2', serverTimeOffset : <?php print date('Z');?>});
-		});
+	$(document).ready(function() {
+		$(".graphimage").zoom({inputfieldStartTime : 'date1', inputfieldEndTime : 'date2', serverTimeOffset : <?php print date('Z');?>});
+	});
 	</script>
 	<tr class='even noprint'>
 		<td class='noprint'>
-		<form style='margin:0px;padding:0px;' name='form_graph_view' method='post' action='graph_view.php?action=preview' onSubmit='applyGraphPreviewFilterChange();return false;'>
+		<form id='form_graph_view' style='margin:0px;padding:0px;' name='form_graph_view' method='post' action='graph_view.php?action=preview'>
 			<table cellpadding='2' cellspacing='0'>
 				<tr class='noprint'>
 					<td width='55'>
 						Host:
 					</td>
 					<td>
-						<select id='host_id' name='host_id' onChange='applyGraphPreviewFilterChange();return false;'>
+						<select id='host_id' name='host_id' onChange='applyFilter()'>
 							<option value='0'<?php if (get_request_var_request('host_id') == '0') {?> selected<?php }?>>Any</option>
 							<?php
 							$hosts = get_allowed_devices();
@@ -247,7 +247,7 @@ case 'preview':
 						Template:
 					</td>
 					<td>
-						<select id='graph_template_id' name='graph_template_id' onChange='applyGraphPreviewFilterChange();return false;'>
+						<select id='graph_template_id' name='graph_template_id' onChange='applyFilter()'>
 							<option value='0'<?php if (get_request_var_request('graph_template_id') == '0') {?> selected<?php }?>>Any</option>
 							<?php
 
@@ -265,7 +265,7 @@ case 'preview':
 						Graphs:
 					</td>
 					<td>
-						<select id='rows' name='rows' onChange='applyGraphPreviewFilterChange();return false;'>
+						<select id='rows' name='rows' onChange='applyFilter()'>
 							<option value='-1'<?php if (get_request_var_request('rows') == '-1') {?> selected<?php }?>>Default</option>
 							<?php
 							if (sizeof($graphs_per_page) > 0) {
@@ -280,7 +280,7 @@ case 'preview':
 						Columns:
 					</td>
 					<td>
-						<select id='columns' name='columns' onChange='applyGraphPreviewFilterChange();return false;'>
+						<select id='columns' name='columns' onChange='applyFilter()'>
 							<option value='-1'<?php if (get_request_var_request('columns') == '-1') {?> selected<?php }?>>Default</option>
 							<option value='1'<?php if (get_request_var_request('columns') == '1') {?> selected<?php }?>>1 Column</option>
 							<option value='2'<?php if (get_request_var_request('columns') == '2') {?> selected<?php }?>>2 Columns</option>
@@ -293,7 +293,7 @@ case 'preview':
 						<label for='thumbnails'>Thumbnails:</label>
 					</td>
 					<td>
-						<input id='thumbnails' type='checkbox' name='thumbnails' onClick='applyGraphPreviewFilterChange();return false;' <?php print (($_REQUEST['thumbnails'] == 'true') ? 'checked':'');?>>
+						<input id='thumbnails' type='checkbox' name='thumbnails' onClick='applyFilter()' <?php print (($_REQUEST['thumbnails'] == 'true') ? 'checked':'');?>>
 					</td>
 					<td>
 						Search:
@@ -302,7 +302,7 @@ case 'preview':
 						<input type='text' id='filter' name='filter' size='25' value='<?php print htmlspecialchars(get_request_var_request('filter'));?>'>
 					</td>
 					<td>
-						<input type='button' value='Go' title='Set/Refresh Filters' onClick='applyGraphPreviewFilterChange();return false;'>
+						<input type='button' value='Go' title='Set/Refresh Filters' onClick='applyFilter()'>
 					</td>
 					<td>
 						<input type='button' name='clear_x' value='Clear' title='Clear Filters' onClick='clearFilter()'>
@@ -320,7 +320,7 @@ case 'preview':
 		});
 	}
 
-	function applyGraphPreviewFilterChange() {
+	function applyFilter() {
 		$.get('graph_view.php?action=preview&header=false'+
 			'&filter='+$('#filter').val()+'&host_id='+$('#host_id').val()+'&columns='+$('#columns').val()+
 			'&rows='+$('#rows').val()+'&graph_template_id='+$('#graph_template_id').val()+
@@ -366,8 +366,11 @@ case 'preview':
 		});
 	}
 
-	$(function(data) {
-		$('#navigation_right').show();
+	$(function() {
+		$('#form_graph_view').on('submit', function(event) {
+			event.preventDefault();
+			applyFilter();
+		});
 	});
 
 	</script>
@@ -643,14 +646,14 @@ case 'list':
 	?>
 	<tr class='even noprint'>
 		<td class='noprint'>
-		<form style='margin:0px;padding:0px;' name='form_graph_list' method='post' action='graph_view.php?action=list'>
+		<form id='form_graph_list' name='form_graph_list' method='post' action='graph_view.php?action=list'>
 			<table cellpadding='2' cellspacing='0'>
 				<tr class='noprint'>
 					<td width='55'>
 						Host:
 					</td>
 					<td width='1'>
-						<select id='host_id' name='host_id' onChange='applyGraphListFilterChange()'>
+						<select id='host_id' name='host_id' onChange='applyFilter()'>
 							<option value='0'<?php if (get_request_var_request('host_id') == '0') {?> selected<?php }?>>Any</option>
 							<?php
 							$hosts = get_allowed_devices();
@@ -666,7 +669,7 @@ case 'list':
 						Template:
 					</td>
 					<td width='1'>
-						<select id='graph_template_id' name='graph_template_id' onChange='applyGraphListFilterChange()'>
+						<select id='graph_template_id' name='graph_template_id' onChange='applyFilter()'>
 							<option value='0'<?php print htmlspecialchars(get_request_var_request('filter'));?><?php if (get_request_var_request('host_id') == '0') {?> selected<?php }?>>Any</option>
 							<?php
 
@@ -684,7 +687,7 @@ case 'list':
 						Graphs:
 					</td>
 					<td>
-						<select id='rows' name='rows' onChange='applyGraphListFilterChange()'>
+						<select id='rows' name='rows' onChange='applyFilter()'>
 							<option value='-1'<?php if (get_request_var_request('rows') == '-1') {?> selected<?php }?>>Default</option>
 							<?php
 							if (sizeof($item_rows) > 0) {
@@ -702,7 +705,7 @@ case 'list':
 						<input id='filter' type='text' name='filter' size='25' value='<?php print htmlspecialchars(get_request_var_request('filter'));?>'>
 					</td>
 					<td>
-						<input type='button' value='Go' title='Set/Refresh Filters' onClick='applyGraphListFilterChange()'>
+						<input type='button' value='Go' title='Set/Refresh Filters' onClick='applyFilter()'>
 					</td>
 					<td>
 						<input type='button' name='clear_x' value='Clear' title='Clear Filters' onClick='clearFilter()'>
@@ -773,7 +776,7 @@ case 'list':
 	<table align='right'>
 	<tr>
 		<td align='right'><img src='images/arrow.gif' alt=''>&nbsp;</td>
-		<td align='right'><input type='submit' value='View' title='View Graphs'></td>
+		<td align='right'><input type='button' value='View' title='View Graphs' onClick='viewGraphs()'></td>
 	</tr>
 	</table>
 	<input type='hidden' name='style' value='selective'>
@@ -783,11 +786,9 @@ case 'list':
 	<input type='hidden' id='graph_remove' name='graph_remove' value=''>
 	</form>
 	<script type='text/javascript'>
-	<!--
 	var graph_list_array = new Array(<?php print $_REQUEST['graph_list'];?>);
 
 	$(function() {
-		$('#navigation_right').show();
 		initializeChecks();
 	});
 
@@ -798,8 +799,8 @@ case 'list':
 		});
 	}
 
-	function applyGraphListFilterChange() {
-		strURL = 'graph_view.php?action=list&header=false;&page=1';
+	function applyFilter() {
+		strURL = 'graph_view.php?action=list&header=false&page=1';
 		strURL += '&host_id=' + $('#host_id').val();
 		strURL += '&rows=' + $('#rows').val();
 		strURL += '&graph_template_id=' + $('#graph_template_id').val();
@@ -845,7 +846,9 @@ case 'list':
 				strDel += (strDel.length > 0 ? ',':'') + graphID;
 			}
 		});
+
 		strURL = '&graph_add=' + strAdd + '&graph_remove=' + strDel;
+
 		return strNavURL + strURL;
 	}
 
@@ -873,7 +876,13 @@ case 'list':
 		objFormSubmit.graph_add.value = strAdd;
 		objFormSubmit.graph_remove.value = strDel;
 	}
-	-->
+
+	$(function() {
+		$('#form_graph_list').on('submit', function(event) {
+			event.preventDefault();
+			applyFilter();
+		});
+	});
 	</script>
 	<?php
 

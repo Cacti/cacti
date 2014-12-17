@@ -38,14 +38,14 @@ function user_copy($template_user, $new_user, $template_realm = 0, $new_realm = 
 	/* ==================================================== */
 
 	/* Check get template users array */
-	$user_auth = db_fetch_row("SELECT * FROM user_auth WHERE username = '" . $template_user . "' AND realm = " . $template_realm);
+	$user_auth = db_fetch_row("SELECT * FROM user_auth WHERE username='" . $template_user . "' AND realm=" . $template_realm);
 	if (! isset($user_auth)) {
 		return false;
 	}
 	$template_id = $user_auth["id"];
 
 	/* Create update/insert for new/existing user */
-	$user_exist = db_fetch_row("SELECT * FROM user_auth WHERE username = '" . $new_user . "' AND realm = " . $new_realm);
+	$user_exist = db_fetch_row("SELECT * FROM user_auth WHERE username='" . $new_user . "' AND realm=" . $new_realm);
 	if (isset($user_exist)) {
 		if ($overwrite) {
 			/* Overwrite existing user */
@@ -83,13 +83,13 @@ function user_copy($template_user, $new_user, $template_realm = 0, $new_realm = 
 
 	/* Create/Update permissions and settings */
 	if ((isset($user_exist)) && ($overwrite )) {
-		db_execute("DELETE FROM user_auth_perms WHERE user_id = " . $user_exist["id"]);
-		db_execute("DELETE FROM user_auth_realm WHERE user_id = " . $user_exist["id"]);
-		db_execute("DELETE FROM settings_graphs WHERE user_id = " . $user_exist["id"]);
-		db_execute("DELETE FROM settings_tree WHERE user_id = " . $user_exist["id"]);
+		db_execute("DELETE FROM user_auth_perms WHERE user_id=" . $user_exist["id"]);
+		db_execute("DELETE FROM user_auth_realm WHERE user_id=" . $user_exist["id"]);
+		db_execute("DELETE FROM settings_graphs WHERE user_id=" . $user_exist["id"]);
+		db_execute("DELETE FROM settings_tree WHERE user_id=" . $user_exist["id"]);
 	}
 
-	$user_auth_perms = db_fetch_assoc("SELECT * FROM user_auth_perms WHERE user_id = " . $template_id);
+	$user_auth_perms = db_fetch_assoc("SELECT * FROM user_auth_perms WHERE user_id=" . $template_id);
 	if (isset($user_auth_perms)) {
 		foreach ($user_auth_perms as $row) {
 			$row['user_id'] = $new_id;
@@ -97,7 +97,7 @@ function user_copy($template_user, $new_user, $template_realm = 0, $new_realm = 
 		}
 	}
 
-	$user_auth_realm = db_fetch_assoc("SELECT * FROM user_auth_realm WHERE user_id = " . $template_id);
+	$user_auth_realm = db_fetch_assoc("SELECT * FROM user_auth_realm WHERE user_id=" . $template_id);
 	if (isset($user_auth_realm)) {
 		foreach ($user_auth_realm as $row) {
 			$row['user_id'] = $new_id;
@@ -105,7 +105,7 @@ function user_copy($template_user, $new_user, $template_realm = 0, $new_realm = 
 		}
 	}
 
-	$settings_graphs = db_fetch_assoc("SELECT * FROM settings_graphs WHERE user_id = " . $template_id);
+	$settings_graphs = db_fetch_assoc("SELECT * FROM settings_graphs WHERE user_id=" . $template_id);
 	if (isset($settings_graphs)) {
 		foreach ($settings_graphs as $row) {
 			$row['user_id'] = $new_id;
@@ -113,12 +113,22 @@ function user_copy($template_user, $new_user, $template_realm = 0, $new_realm = 
 		}
 	}
 
-	$settings_tree = db_fetch_assoc("SELECT * FROM settings_tree WHERE user_id = " . $template_id);
+	$settings_tree = db_fetch_assoc("SELECT * FROM settings_tree WHERE user_id=" . $template_id);
 	if (isset($settings_tree)) {
 		foreach ($settings_tree as $row) {
 			$row['user_id'] = $new_id;
 			sql_save($row, 'settings_tree', array('user_id', 'graph_tree_item_id'), false);
 		}
+	}
+
+	/* apply group permissions for the user */
+	$groups = db_fetch_assoc("SELECT group_id FROM user_auth_group_members WHERE user_id=" . $template_id);
+	if (sizeof($groups)) {
+		foreach($groups as $g) {
+			$sql[] = "(" . $new_id . ", " . $g['group_id'] . ")";
+		}
+
+		db_execute("INSERT IGNORE INTO user_auth_group_members (user_id, group_id) VALUES " . implode(',', $sql));
 	}
 
 	api_plugin_hook_function('copy_user', array('template_id' => $template_id, 'new_id' => $new_id));
@@ -372,11 +382,14 @@ function is_realm_allowed($realm) {
 	global $user_auth_realms;
 
 	/* list all realms that this user has access to */
-	if (isset($_SESSION['sess_user_id']) && read_config_option('global_auth') == 'on') {
-		if (read_config_option("auth_method") != 0) {
-			$user_realms = db_fetch_assoc("SELECT realm_id 
+	if (isset($_SESSION['sess_user_id'])) {
+		if (isset($_SESSION['sess_user_realms'][$realm])) {
+			return true;
+		}elseif (read_config_option("auth_method") != 0) {
+			$user_realm = db_fetch_cell("SELECT realm_id 
 				FROM user_auth_realm 
 				WHERE user_id=" . $_SESSION['sess_user_id'] . "
+				AND realm_id=$realm
 				UNION
 				SELECT realm_id
 				FROM user_auth_group_realm AS uagr
@@ -384,18 +397,23 @@ function is_realm_allowed($realm) {
 				ON uag.id=uagr.group_id
 				INNER JOIN user_auth_group_members AS uagm
 				ON uag.id=uagm.group_id
-				WHERE uag.enabled='on'
+				WHERE uag.enabled='on' AND uagr.realm_id=$realm
 				AND uagm.user_id=" . $_SESSION['sess_user_id'], false);
 	
-			$_SESSION['sess_user_realms'] = array_rekey($user_realms, "realm_id", "realm_id");
+
+			if (!empty($user_realm)) {
+				$_SESSION['sess_user_realms'][$realm] = $realm;
+
+				return true;
+			}else{
+				return false;
+			}
 		}else{
-			$_SESSION['sess_user_realms'] = $user_auth_realms;
+			$_SESSION['sess_user_realms'][$realm] = $realm;
 		}
 	}else{
-		$_SESSION['sess_user_realms'] = $user_auth_realms;
+		return false;
 	}
-
-	return isset($_SESSION['sess_user_realms']);
 }
 
 function get_allowed_tree_content($tree_id, $graphs = false, $edit = false, $sql_where = '', $order_by = '', $limit = '', &$total_rows = 0, $user = 0) {
@@ -1063,4 +1081,3 @@ function get_host_array() {
 	return $return_devices;
 }
 
-?>

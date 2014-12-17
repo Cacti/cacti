@@ -339,6 +339,16 @@ function applySkin() {
 	CsrfMagic.end();
 
 	$('#message_container').delay(2000).slideUp('fast');
+
+	setupSpecialKeys();
+}
+
+function setupSpecialKeys() {
+	$('#filter').unbind('keypress').attr('title', 'Press Ctrl+C to Clear Filter');
+	$('#filter').bind('keypress', 'ctrl+c', function() {
+		clearFilter();
+	});
+	$('#filter').focus();
 }
 
 /** setupSortable - This function will set all actions for sortable columns
@@ -436,24 +446,26 @@ function applyTableSizing() {
  *  case of the Graphs page. */
 function setupPageTimeout() {
 	//console.log('Page Timeout is :'+refreshMSeconds+', and going to Page :'+refreshPage);
-	clearTimeout(myRefresh);
-	myRefresh = setTimeout(function() {
-		if (refreshIsLogout) {
-			document.location = refreshPage;
-		}else{
-			if (previousPage != '') {
-				refreshPage = previousPage;
+	if (typeof refreshMSeconds !== undefined) {
+		clearTimeout(myRefresh);
+		myRefresh = setTimeout(function() {
+			if (refreshIsLogout) {
+				document.location = refreshPage;
+			}else{
+				if (previousPage != '') {
+					refreshPage = previousPage;
+				}
+
+				/* fix coner case with tree refresh */
+				refreshPage = refreshPage.replace('action=tree&', 'action=tree_content&');
+
+				$.get(refreshPage, function(data) {
+					$('#main').html(data);
+					applySkin();
+				});
 			}
-
-			/* fix coner case with tree refresh */
-			refreshPage = refreshPage.replace('action=tree&', 'action=tree_content&');
-
-			$.get(refreshPage, function(data) {
-				$('#main').html(data);
-				applySkin();
-			});
-		}
-	}, refreshMSeconds);
+		}, refreshMSeconds);
+	}
 }
 
 function pulsate(element) {
@@ -462,6 +474,7 @@ function pulsate(element) {
 
 $(function() {
 	$('#navigation').css('height', ($(window).height())+'px');
+	$('#navigation_right').show();
 	$(window).resize(function(event) {
 		if (!$(event.target).hasClass('ui-resizable')) {
 			$('#navigation').css('height', ($(window).height()-20)+'px');

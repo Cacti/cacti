@@ -409,17 +409,22 @@ if (api_plugin_hook_function('custom_login', OPER_MODE_NATIVE) == OPER_MODE_RESK
 <head>
 	<title><?php print api_plugin_hook_function('login_title', 'Login to Cacti');?></title>
 	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
-	<STYLE TYPE='text/css'>
-	<!--
-		BODY, TABLE, TR, TD {font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 12px;}
-		A {text-decoration: none;}
-		A:active { text-decoration: none;}
-		A:hover {text-decoration: underline; color: #333333;}
-		A:visited {color: Blue;}
-	-->
-	</style>
+	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print read_config_option('selected_theme');?>/main.css' type='text/css' rel='stylesheet'>
+	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print read_config_option('selected_theme');?>/jquery-ui.css' type='text/css' rel='stylesheet'>
+	<link href='<?php echo $config['url_path']; ?>images/favicon.ico' rel='shortcut icon'>
+	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery.js' language='javascript'></script>
+	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery-ui.js' language='javascript'></script>
+	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery.cookie.js' language='javascript'></script>
+	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery.hotkeys.js'></script>
+	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/layout.js'></script>
+	<script type='text/javascript'>var theme='<?php print read_config_option('selected_theme');?>';</script>
+	<script type='text/javascript'>
+	$(function() {
+			$('#login_username').focus();
+	});
+	</script>
 </head>
-<body onload='document.login.login_username.focus()'>
+<body>
 	<form name='login' method='post' action='<?php print basename($_SERVER['PHP_SELF']);?>'>
 	<input type='hidden' name='action' value='login'>
 <?php
@@ -462,7 +467,7 @@ $cacti_logo = api_plugin_hook_function('cacti_image', $cacti_logo);
 		<tr style='height:10px;'><td></td></tr>
 		<tr id='user_row'>
 			<td>User Name:</td>
-			<td><input type='text' name='login_username' size='40' style='width: 295px;' value='<?php print htmlspecialchars($username); ?>'></td>
+			<td><input type='text' id='login_username' name='login_username' size='40' style='width: 295px;' value='<?php print htmlspecialchars($username); ?>'></td>
 		</tr>
 		<tr id='password_row'>
 			<td>Password:</td>
