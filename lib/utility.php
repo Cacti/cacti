@@ -774,4 +774,3 @@ function duplicate_cdef($_cdef_id, $cdef_title) {
 	}
 }
 
-?>

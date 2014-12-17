@@ -165,4 +165,3 @@ function api_get_graphs_from_datasource($local_data_id) {
 		AND data_template_rrd.local_data_id=$local_data_id"), "id", "name");
 }
 
-?>

@@ -686,4 +686,3 @@ class Net_Ping
 	}
 }
 
-?>

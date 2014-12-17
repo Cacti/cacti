@@ -69,4 +69,3 @@ function get_cdef($cdef_id) {
 	return $cdef_string;
 }
 
-?>

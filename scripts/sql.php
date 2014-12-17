@@ -17,4 +17,3 @@ if ($database_password == "") {
 
 print trim($sql);
 
-?>

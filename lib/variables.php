@@ -265,4 +265,3 @@ function substitute_data_input_data($string, $graph, $local_data_id, $max_chars 
 	return $string;
 }
 
-?>

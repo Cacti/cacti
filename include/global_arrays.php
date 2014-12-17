@@ -757,4 +757,3 @@ $boost_max_memory = array(
 
 api_plugin_hook('config_arrays');
 
-?>

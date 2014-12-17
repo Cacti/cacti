@@ -411,4 +411,3 @@ function get_page_list($current_page, $pages_per_screen, $rows_per_page, $total_
 	return $url_page_select;
 }
 
-?>

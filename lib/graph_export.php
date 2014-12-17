@@ -2113,4 +2113,3 @@ define("HTML_FOOTER_CLASSIC", "
 	</html>"
 );
 
-?>

@@ -516,4 +516,3 @@ function draw_custom_data_row($field_name, $data_input_field_id, $data_template_
 	}
 }
 
-?>

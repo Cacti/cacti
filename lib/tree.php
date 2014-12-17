@@ -436,4 +436,3 @@ function delete_branch($tree_item_id) {
 	db_execute("UNLOCK TABLES");
 }
 
-?>

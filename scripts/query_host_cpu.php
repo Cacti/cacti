@@ -135,4 +135,3 @@ function reindex($arr) {
 	return $return_arr;
 }
 
-?>

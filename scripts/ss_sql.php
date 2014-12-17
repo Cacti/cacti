@@ -37,4 +37,3 @@ function ss_sql() {
 	return trim($result);
 }
 
-?>

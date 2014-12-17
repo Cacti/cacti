@@ -598,4 +598,3 @@ function displayUsers($quietMode = FALSE) {
 	}
 }
 
-?>

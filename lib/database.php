@@ -391,4 +391,3 @@ function sql_sanitize($value) {
 	return $value;
 }
 
-?>

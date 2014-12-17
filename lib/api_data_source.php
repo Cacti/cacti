@@ -233,4 +233,3 @@ function api_reapply_suggested_data_source_title($local_data_id) {
 		}
 	}
 }
-?>

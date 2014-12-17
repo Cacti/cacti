@@ -959,4 +959,3 @@ class Mailer {
 /* end of class */
 }
 
-?>

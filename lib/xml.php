@@ -192,4 +192,3 @@ function get_rrd_children($vals, &$i, &$column, &$row) {
 	}
 }
 
-?>

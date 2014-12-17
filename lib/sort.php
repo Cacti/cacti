@@ -95,5 +95,3 @@ function usort_natural($a, $b) {
 	return strnatcmp($a, $b);
 }
 
-
-?>

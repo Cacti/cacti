@@ -146,4 +146,4 @@ function api_poller_get_rrd_next_step($rrd_step=300, $num_rrd_items=1) {
 
 	return $rrd_next_step;
 }
-?>
+

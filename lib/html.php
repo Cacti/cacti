@@ -1236,4 +1236,4 @@ function html_graph_tabs_right($current_user) {
 		print "</ul></nav></div>\n";
 	}
 }
-?>
+

@@ -57,4 +57,3 @@ function die_html_input_error() {
 	exit;
 }
 
-?>

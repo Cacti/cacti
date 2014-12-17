@@ -148,4 +148,3 @@ function api_tree_item_save($id, $tree_id, $type, $parent_tree_item_id, $title, 
 	return $tree_item_id;
 }
 
-?>

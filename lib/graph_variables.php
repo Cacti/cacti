@@ -507,4 +507,3 @@ function variable_bandwidth_summation(&$regexp_match_array, &$graph_item, &$grap
 	}
 }
 
-?>

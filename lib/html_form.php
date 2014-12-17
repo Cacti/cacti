@@ -830,4 +830,3 @@ function form_save_button($cancel_url, $force_type = "", $key_field = "id") {
 	<?php
 }
 
-?>

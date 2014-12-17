@@ -934,4 +934,3 @@ function xml_character_decode($text) {
 	}
 }
 
-?>

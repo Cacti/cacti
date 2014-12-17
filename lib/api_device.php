@@ -201,4 +201,3 @@ function api_device_save($id, $host_template_id, $description, $hostname, $snmp_
 	return $host_id;
 }
 
-?>

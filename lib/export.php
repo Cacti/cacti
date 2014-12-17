@@ -888,4 +888,3 @@ function xml_character_encode($text) {
 	}
 }
 
-?>

@@ -270,4 +270,3 @@ function date_time_format() {
 	return $graph_date;
 }
 
-?>

@@ -2134,4 +2134,3 @@ function rrd_substitute_host_query_data($txt_graph_item, $graph, $graph_item) {
 	return $txt_graph_item;
 }
 
-?>

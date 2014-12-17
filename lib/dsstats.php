@@ -739,4 +739,3 @@ function dsstats_poller_bottom () {
 	}
 }
 
-?>

@@ -827,4 +827,3 @@ function verify_index_order($raw_xml) {
 	return $all_index_order_fields_found;
 }
 
-?>
