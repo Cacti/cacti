@@ -51,7 +51,7 @@ switch ($_REQUEST["action"]) {
    -------------------------- */
 
 function form_save() {
-	global $settings_graphs, $cnn_id;
+	global $settings_graphs;
 
 	while (list($tab_short_name, $tab_fields) = each($settings_graphs)) {
 		while (list($field_name, $field_array) = each($tab_fields)) {
@@ -78,18 +78,18 @@ function form_save() {
 					raise_message(4);
 					break;
 				}elseif (isset($_POST[$field_name])) {
-					$value = $cnn_id->qstr(get_request_var_post($field_name));
+					$value = db_qstr(get_request_var_post($field_name));
 					db_execute("REPLACE INTO settings_graphs (user_id,name,value) VALUES (" .  $_SESSION["sess_user_id"] . ",'$field_name', $value)");
 				}
 			}elseif ((isset($field_array["items"])) && (is_array($field_array["items"]))) {
 				while (list($sub_field_name, $sub_field_array) = each($field_array["items"])) {
 					if (isset($_POST[$sub_field_name])) {
-						$value = $cnn_id->qstr(get_request_var_post($sub_field_name));
+						$value = db_qstr(get_request_var_post($sub_field_name));
 						db_execute("REPLACE INTO settings_graphs (user_id,name,value) values (" . $_SESSION["sess_user_id"] . ",'$sub_field_name', " . $value . ")");
 					}
 				}
 			}else if (isset($_POST[$field_name])) {
-				$value = $cnn_id->qstr($_POST[$field_name]);
+				$value = db_qstr($_POST[$field_name]);
 				db_execute("REPLACE INTO settings_graphs (user_id,name,value) values (" . $_SESSION["sess_user_id"] . ",'$field_name', " . $value . ")");
 			}
 		}
@@ -256,4 +256,3 @@ function settings() {
 	form_save_button("graph_settings.php", "save");
 }
 
-?>

@@ -78,7 +78,7 @@ if (!strlen(trim($result))) {
 /* add the value to the table */
 db_execute("INSERT INTO poller_output_boost_processes
 	(sock_int_value, status)
-	VALUES ('" . $socket_int_value . "'," . $cnn_id->qstr($result, get_magic_quotes_gpc()) . ")");
+	VALUES ('" . $socket_int_value . "'," . db_qstr($result, get_magic_quotes_gpc()) . ")");
 
 /* close the connection */
 pclose($handle);
@@ -86,4 +86,3 @@ pclose($handle);
 /* return the rrdupdate results */
 return $result;
 
-?>

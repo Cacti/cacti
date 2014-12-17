@@ -84,7 +84,7 @@ if ($action == 'login') {
 		$user_auth = true;
 		$realm = 2;
 		/* Locate user in database */
-		$user = db_fetch_row('SELECT * FROM user_auth WHERE username = ' . $cnn_id->qstr($username) . ' AND realm = 2');
+		$user = db_fetch_row('SELECT * FROM user_auth WHERE username = ' . db_qstr($username) . ' AND realm = 2');
 
 		break;
 	case '3':
@@ -117,7 +117,7 @@ if ($action == 'login') {
 					$realm = 1;
 					/* Locate user in database */
 					cacti_log("LOGIN: LDAP User '" . $username . "' Authenticated", false, 'AUTH');
-					$user = db_fetch_row('SELECT * FROM user_auth WHERE username = ' . $cnn_id->qstr($username) . ' AND realm = 1');
+					$user = db_fetch_row('SELECT * FROM user_auth WHERE username = ' . db_qstr($username) . ' AND realm = 1');
 				}else{
 					/* error */
 					cacti_log('LOGIN: LDAP Error: ' . $ldap_auth_response['error_text'], false, 'AUTH');
@@ -140,7 +140,7 @@ if ($action == 'login') {
 			/* Builtin Auth */
 			if ((!$user_auth) && (!$ldap_error)) {
 				/* if auth has not occured process for builtin - AKA Ldap fall through */
-				$user = db_fetch_row('SELECT * FROM user_auth WHERE username = ' . $cnn_id->qstr($username) . " AND password = '" . md5(get_request_var_post('login_password')) . "' AND realm = 0");
+				$user = db_fetch_row('SELECT * FROM user_auth WHERE username = ' . db_qstr($username) . " AND password = '" . md5(get_request_var_post('login_password')) . "' AND realm = 0");
 			}
 		}
 	}
@@ -154,7 +154,7 @@ if ($action == 'login') {
 			/* template user found */
 			user_copy(read_config_option('user_template'), $username, 0, $realm);
 			/* requery newly created user */
-			$user = db_fetch_row('SELECT * FROM user_auth WHERE username = ' . $cnn_id->qstr($username) . ' AND realm = ' . $realm);
+			$user = db_fetch_row('SELECT * FROM user_auth WHERE username = ' . db_qstr($username) . ' AND realm = ' . $realm);
 		}else{
 			/* error */
 			cacti_log("LOGIN: Template user '" . read_config_option('user_template') . "' does not exist.", false, 'AUTH');
@@ -182,7 +182,7 @@ if ($action == 'login') {
 	/* Process the user  */
 	if (sizeof($user) > 0) {
 		cacti_log("LOGIN: User '" . $user['username'] . "' Authenticated", false, 'AUTH');
-		db_execute('INSERT INTO user_log (username,user_id,result,ip,time) VALUES (' . $cnn_id->qstr($username) . ',' . $user['id'] . ",1,'" . $_SERVER['REMOTE_ADDR'] . "',NOW())");
+		db_execute('INSERT INTO user_log (username,user_id,result,ip,time) VALUES (' . db_qstr($username) . ',' . $user['id'] . ",1,'" . $_SERVER['REMOTE_ADDR'] . "',NOW())");
 		/* is user enabled */
 		$user_enabled = $user['enabled'];
 		if ($user_enabled != 'on') {
@@ -259,7 +259,7 @@ if ($action == 'login') {
 			exit;
 		}else{
 			/* BAD username/password builtin and LDAP */
-			db_execute('INSERT INTO user_log (username,user_id,result,ip,time) VALUES (' . $cnn_id->qstr($username) . ",0,0,'" . $_SERVER['REMOTE_ADDR'] . "',NOW())");
+			db_execute('INSERT INTO user_log (username,user_id,result,ip,time) VALUES (' . db_qstr($username) . ",0,0,'" . $_SERVER['REMOTE_ADDR'] . "',NOW())");
 		}
 	}
 }

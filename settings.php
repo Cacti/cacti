@@ -51,19 +51,19 @@ case 'save':
 				raise_message(4);
 				break;
 			}elseif (isset($_POST[$field_name])) {
-				$value = $cnn_id->qstr(get_request_var_post($field_name));
+				$value = db_qstr(get_request_var_post($field_name));
 				db_execute("replace into settings (name,value) values ('$field_name', $value)");
 			}
 		}elseif ((isset($field_array["items"])) && (is_array($field_array["items"]))) {
 			while (list($sub_field_name, $sub_field_array) = each($field_array["items"])) {
 				if (isset($_POST[$sub_field_name])) {
-					$value = $cnn_id->qstr(get_request_var_post($sub_field_name));
+					$value = db_qstr(get_request_var_post($sub_field_name));
 
 					db_execute("replace into settings (name,value) values ('$sub_field_name', $value)");
 				}
 			}
 		}elseif (isset($_POST[$field_name])) {
-			$value = $cnn_id->qstr(get_request_var_post($field_name));
+			$value = db_qstr(get_request_var_post($field_name));
 			db_execute("replace into settings (name,value) values ('$field_name', $value)");
 		}
 	}
@@ -587,4 +587,4 @@ default:
 
 	break;
 }
-?>
+
