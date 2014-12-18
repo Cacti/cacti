@@ -190,6 +190,7 @@ function query_snmp_host($host_id, $snmp_query_id) {
 		ping_retries,
 		max_oids
 		FROM host
+
 		WHERE id='$host_id'");
 
 	$snmp_queries = get_data_query_array($snmp_query_id);
@@ -366,9 +367,7 @@ function query_snmp_host($host_id, $snmp_query_id) {
 }
 
 function data_query_format_record($host_id, $snmp_query_id, $field_name, $value, $snmp_index, $oid) {
-	global $cnn_id;
-
-	return "($host_id, $snmp_query_id, " . $cnn_id->qstr($field_name) . ", " . $cnn_id->qstr($value) . ", " . $cnn_id->qstr($snmp_index) . ", " . $cnn_id->qstr($oid) . ", 1)";
+	return "($host_id, $snmp_query_id, " . db_qstr($field_name) . ", " . db_qstr($value) . ", " . db_qstr($snmp_index) . ", " . db_qstr($oid) . ", 1)";
 }
 
 function data_query_update_host_cache_from_buffer($host_id, $snmp_query_id, &$output_array) {
