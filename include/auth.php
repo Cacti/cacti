@@ -96,9 +96,9 @@ if (read_config_option('auth_method') != 0) {
 
 		if ($realm_id != -1 && !$authorized) {
 			if (isset($_SERVER['HTTP_REFERER'])) {
-				$goBack = "<td class='textArea' colspan='2' align='center'>( <a href='" . htmlspecialchars($_SERVER['HTTP_REFERER']) . "'>Return</a> | <a href='" . $config['url_path'] . "logout.php'>Login Again</a> )</td>";
+				$goBack = "<td colspan='2' align='center'>[<a href='" . htmlspecialchars($_SERVER['HTTP_REFERER']) . "'>Return</a> | <a href='" . $config['url_path'] . "logout.php'>Login Again</a>]</td>";
 			}else{
-				$goBack = "<td class='textArea' colspan='2' align='center'>( <a href='" . $config['url_path'] . "logout.php'>Login Again</a> )</td>";
+				$goBack = "<td colspan='2' align='center'>[<a href='" . $config['url_path'] . "logout.php'>Login Again</a>]</td>";
 			}
 
 			print "<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.01 Transitional//EN' 'http://www.w3.org/TR/html4/loose.dtd'>\n";
@@ -107,22 +107,29 @@ if (read_config_option('auth_method') != 0) {
 			print "\t<title>Cacti</title>\n";
 			print "\t<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>\n";
 			print "\t<link href='" . $config['url_path'] . "include/themes/" . read_config_option('selected_theme') . "/main.css' type='text/css' rel='stylesheet'>\n";
+			print "\t<link href='" . $config['url_path'] . "include/themes/" . read_config_option('selected_theme') . "/jquery-ui.css' type='text/css' rel='stylesheet'>\n";
 			print "\t<link href='" . $config['url_path'] . "images/favicon.ico' rel='shortcut icon'>\n";
+			print "\t<script type='text/javascript' src='" . $config['url_path'] . "include/js/jquery.js' language='javascript'></script>\n";
+			print "\t<script type='text/javascript' src='" . $config['url_path'] . "include/js/jquery-ui.js' language='javascript'></script>\n";
+			print "\t<script type='text/javascript' src='" . $config['url_path'] . "include/js/jquery.cookie.js' language='javascript'></script>\n";
+			print "\t<script type='text/javascript' src='" . $config['url_path'] . "include/js/jquery.hotkeys.js'></script>\n";
+			print "\t<script type='text/javascript' src='" . $config['url_path'] . "include/layout.js'></script>\n";
+			print "<script type='text/javascript'>var theme='" . read_config_option('selected_theme') . "';</script>\n";
 			print "</head>\n";
 			print "<body>\n";
-			print "\t<br><br>\n";
-			print "\t<table width='450' align='center'>\n";
-			print "\t\t<tr>\n";
-			print "\t\t\t<td colspan='2'><img src='" . $config['url_path'] . "images/auth_deny.gif' border='0' alt='Access Denied'></td>\n";
-			print "\t\t</tr>\n";
-			print "\t\t<tr style='height:10px;'><td></td></tr>\n";
-			print "\t\t<tr>\n";
-			print "\t\t\t<td class='textArea' colspan='2'>You are not permitted to access this section of Cacti. If you feel that you tneed access to this particular section, please contact the Cacti administrator.</td>\n";
-			print "\t\t</tr>\n";
-			print "\t\t<tr>\n";
+			print "\t<div class='logonArea'>\n";
+			print "\t\t<table class='logonPanel' align='center'>\n";
+			print "\t\t\t<tr>\n";
+			print "\t\t\t\t<td><div class='cactiPermissions'></div></td>\n";
+			print "\t\t\t</tr><tr>\n";
+			print "\t\t\t\t<td>Your are not permitted to access this section of Cacti.<br>\n";
+			print "\t\t\t\tIf you feel that you need access to this particular seciton,<br>\n";
+			print "\t\t\t\tplease contact your Cacti administrator, or.</td>\n";
+			print "\t\t\t</tr><tr>\n";
 			print $goBack . "\n";
-			print "\t\t</tr>\n";
-			print "\t</table>\n";
+			print "\t\t\t</tr>\n";
+			print "\t\t</table>\n";
+			print "\t</div>\n";
 			print "</body>\n";
 			print "</html>\n";
 			exit;

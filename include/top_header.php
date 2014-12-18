@@ -98,8 +98,9 @@ $using_guest_account = false;
 			<table>
 				<?php draw_menu();?>
 				<tr>
-					<td class='cactiLogo' align='center'>
-						<a href='<?php echo $config['url_path']; ?>about.php'><img src='<?php echo $config['url_path']; ?>images/cacti_logo.gif' border='0'></a>
+					<td align='center'>
+						<div class='cactiLogo' onClick='document.location="about.php";'>
+						</div>
 					</td>
 				</tr>
 			</table>

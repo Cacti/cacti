@@ -291,7 +291,7 @@ function array_to_sql_or($array, $sql_column) {
 /* db_replace - replaces the data contained in a particular row
    @param $table_name - the name of the table to make the replacement in
    @param $array_items - an array containing each column -> value mapping in the row
-   @param $keyCols - the name of the column containing the primary key
+   @param $keyCols - a string or array of primary keys
    @param $autoQuote - whether to use intelligent quoting or not
    @returns - the auto incriment id column (if applicable) */
 function db_replace($table_name, $array_items, $keyCols, $db_conn = FALSE) {
@@ -313,36 +313,43 @@ function db_replace($table_name, $array_items, $keyCols, $db_conn = FALSE) {
 
 // FIXME:  Need to Rename and cleanup a bit
 
-function _db_replace($db_conn, $table, $fieldArray, $keyCol, $has_autoinc) {
+function _db_replace($db_conn, $table, $fieldArray, $keyCols, $has_autoinc) {
 
 
-	if (!is_array($keyCol)) {
-		$keyCol = array($keyCol);
+	if (!is_array($keyCols)) {
+		$keyCols = array($keyCols);
 	}
 
 	$sql  = "INSERT INTO `$table` (";
 	$sql2 = '';
 	$sql3 = '';
 
-	$first = true;
+	$first  = true;
 	$first3 = true;
 	foreach($fieldArray as $k => $v) {
 		if (!$first) {
-			$sql .= ', ';
+			$sql  .= ', ';
 			$sql2 .= ', ';
 		}
-		$sql .= "`$k`";
-		$sql2 .= $v;
-		$first = false;
-		if (in_array($k, $keyCol)) continue; // skip UPDATE if is key
+		$sql   .= "`$k`";
+		$sql2  .= $v;
+		$first  = false;
+
+		if (in_array($k, $keyCols)) continue; // skip UPDATE if is key
+
 		if (!$first3) {
 			$sql3 .= ', ';
 		}
+
 		$sql3 .= "`$k`=VALUES(`$k`)";
+
 		$first3 = false;
 	}
-	$sql .= ") VALUES ($sql2) ON DUPLICATE KEY UPDATE $sql3";
+
+	$sql .= ") VALUES ($sql2)" . ($sql3 != '' ? " ON DUPLICATE KEY UPDATE $sql3":"");
+
 	@db_execute($sql);
+
 	return db_fetch_insert_id();
 }
 

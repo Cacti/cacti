@@ -446,7 +446,7 @@ function applyTableSizing() {
  *  case of the Graphs page. */
 function setupPageTimeout() {
 	//console.log('Page Timeout is :'+refreshMSeconds+', and going to Page :'+refreshPage);
-	if (typeof refreshMSeconds !== undefined) {
+	if (typeof refreshMSeconds != 'undefined') {
 		clearTimeout(myRefresh);
 		myRefresh = setTimeout(function() {
 			if (refreshIsLogout) {

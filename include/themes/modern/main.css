@@ -271,6 +271,33 @@ ul#breadcrumbs {
 
 .cactiLogo {
 	padding-top:20px;
+	background: #efefef url('./../../../images/cacti_logo.gif') no-repeat center;
+	display:block;
+	width:90px;
+	cursor:pointer;
+	height:140px;
+}
+
+.cactiLogon {
+	background: snow url('./../../../images/auth_login.gif') no-repeat center bottom;
+	width:400px;
+	height:200px;
+}
+
+.cactiLogout {
+	background: snow url('./../../../images/auth_logout.gif') no-repeat center bottom;
+	width:400px;
+	height:200px;
+}
+
+.cactiPermissions {
+	background: snow url('./../../../images/auth_deny.gif') no-repeat center bottom;
+	width:400px;
+	height:200px;
+}
+
+.logonPanel td {
+	padding:4px 0px;
 }
 
 .cactiConsoleNavigationArea table {

@@ -1757,6 +1757,8 @@ function draw_navigation_text($type = "url") {
 		if  ($i == 0) {
 			/* always use the default for level == 0 */
 			$url = $nav{$current_mappings[$i]}["url"];
+
+			if (basename($url) == 'graph_view.php') continue;
 		}elseif (!empty($nav_level_cache{$i}["url"])) {
 			/* found a match in the url cache for this level */
 			$url = $nav_level_cache{$i}["url"];

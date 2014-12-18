@@ -198,13 +198,13 @@ function form_actions() {
 			input_validate_input_number(get_request_var_post("new_realm"));
 			/* ==================================================== */
 
-			$new_username = get_request_var_post("new_username");
-			$new_realm = get_request_var_post("new_realm", 0);
+			$new_username  = get_request_var_post("new_username");
+			$new_realm     = get_request_var_post("new_realm", 0);
 			$template_user = db_fetch_row("SELECT username, realm FROM user_auth WHERE id = " . get_request_var_post("selected_items"));
-			$overwrite = array( "full_name" => get_request_var_post("new_fullname") );
+			$overwrite     = array( "full_name" => get_request_var_post("new_fullname") );
 
 			if (strlen($new_username)) {
-				if (sizeof(db_fetch_assoc("SELECT username FROM user_auth WHERE username = '" . $new_username . "' AND realm = " . $new_realm))) {
+				if (sizeof(db_fetch_assoc("SELECT username FROM user_auth WHERE username='" . $new_username . "' AND realm=" . $new_realm))) {
 					raise_message(19);
 				} else {
 					if (user_copy($template_user["username"], $new_username, $template_user["realm"], $new_realm, false, $overwrite) === false) {
@@ -297,7 +297,7 @@ function form_actions() {
 
 	top_header();
 
-	html_start_box("<strong>" . $user_actions[get_request_var_post("drp_action")] . "</strong>", "60%", "", "3", "center", "");
+	html_start_box("<strong>" . $user_actions[get_request_var_post("drp_action")] . "</strong>", "40%", "", "3", "center", "");
 
 	print "<form action='user_admin.php' method='post'>\n";
 
@@ -323,27 +323,32 @@ function form_actions() {
 					<td class='textArea'>
 						When you click \"Continue\" the selected User will be copied to the new User below<br><br>
 					</td>
-				</tr><tr>
+				</tr>
+				<tr>
 					<td class='textArea'>
 						Template Username: <i>" . db_fetch_cell("SELECT username FROM user_auth WHERE id=" . $user_id) . "</i>
 					</td>
-				</tr><tr>
+				</tr>
+				<tr>
 					<td class='textArea'>
-					New Username: ";
+					Username: ";
 			print form_text_box("new_username", "", "", 25);
 			print "				</td>
-				</tr><tr>
+				</tr>
+				<tr>
 					<td class='textArea'>
-						New Full Name: ";
+						Full Name: ";
 			print form_text_box("new_fullname", "", "", 35);
 			print "				</td>
-				</tr><tr>
+				</tr>
+				<tr>
 					<td class='textArea'>
-						New Realm: \n";
+						Realm: \n";
 			print form_dropdown("new_realm", $auth_realms, "", "", $user_realm, "", 0);
 			print "				</td>
 
 				</tr>\n";
+
 			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Copy User'>";
 		}
 
@@ -352,9 +357,10 @@ function form_actions() {
 				<tr>
 					<td class='textArea'>
 						<p>When you click \"Continue\" the selected User(s) will be enabled.</p>
-						<p><ul>$user_list</ul></p>
+						<ul>$user_list</ul>
 					</td>
 				</tr>\n";
+
 			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Enable User(s)'>";
 		}
 
@@ -363,14 +369,16 @@ function form_actions() {
 				<tr>
 					<td class='textArea'>
 						<p>When you click \"Continue\" the selected User(s) will be disabled.</p>
-						<p><ul>$user_list</ul></p>
+						<ul>$user_list</ul>
 					</td>
 				</tr>\n";
+
 			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Disable User(s)'>";
 		}
 
 		if ((get_request_var_post("drp_action") == "5") && (sizeof($user_array))) { /* batch copy */
 			$usernames = db_fetch_assoc("SELECT id,username FROM user_auth WHERE realm = 0 ORDER BY username");
+
 			print "
 				<tr>
 					<td class='textArea'>When you click \"Continue\" you will overwrite selected the User(s) settings with the selected template User settings and permissions?  Original user Full Name, Password, Realm and Enable status will be retained, all other fields will be overwritten from Template User.<br><br></td>
@@ -379,17 +387,18 @@ function form_actions() {
 						Template User: \n";
 			print form_dropdown("template_user", $usernames, "username", "id", "", "", 0);
 			print "		</td>
-
 				</tr><tr>
 					<td class='textArea'>
 						<p>User(s) to update:
 						<ul>$user_list</ul></p>
 					</td>
 				</tr>\n";
+
 			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Reset User(s) Settings'>";
 		}
 	}else{
 		print "<tr><td class='even'><span class='textError'>You must select at least one user.</span></td></tr>\n";
+
 		$save_html = "<input type='button' value='Return' onClick='window.history.back()'>";
 	}
 
@@ -401,6 +410,7 @@ function form_actions() {
 	}else{
 		print "				<input type='hidden' name='selected_items' value='" . (isset($user_array) ? serialize($user_array) : '') . "'>\n";
 	}
+
 	print "				<input type='hidden' name='drp_action' value='" . get_request_var_post("drp_action") . "'>
 				$save_html
 			</td>
@@ -469,17 +479,21 @@ function form_save() {
 		}
 
 		/* check duplicate username */
-		if (sizeof(db_fetch_row("select * from user_auth where realm = " . get_request_var_post("realm") . " and username = '" . get_request_var_post("username") . "' and id != " . get_request_var_post("id")))) {
+		if (sizeof(db_fetch_row("SELECT * FROM user_auth WHERE realm=" . get_request_var_post("realm") . " AND username='" . get_request_var_post("username") . "' AND id != " . get_request_var_post("id")))) {
 			raise_message(12);
 		}
 
 		/* check for guest or template user */
-		$username = db_fetch_cell("select username from user_auth where id = " . get_request_var_post("id"));
-		if ($username != get_request_var_post("username")) {
-			if ($username == read_config_option("user_template")) {
+		$username = db_fetch_cell("SELECT username FROM user_auth WHERE id=" . get_request_var_post("id"));
+		if ($username != '' && $username != get_request_var_post("username")) {
+			$template_user = read_config_option("user_template");
+			$guest_user    = read_config_option("guest_user");
+
+			if ($username == $template_user) {
 				raise_message(20);
 			}
-			if ($username == read_config_option("guest_user")) {
+
+			if ($username == $guest_user) {
 				raise_message(20);
 			}
 		}
@@ -1873,7 +1887,7 @@ function user() {
 	</script>
 	<?php
 
-	html_start_box("<strong>User Management</strong>", "100%", "", "3", "center", "user_admin.php?action=user_edit");
+	html_start_box("<strong>User Management</strong>", "100%", "", "3", "center", "user_admin.php?tab=general&action=user_edit");
 
 	if ($_REQUEST["rows"] == '-1') {
 		$rows = read_config_option("num_rows_table");

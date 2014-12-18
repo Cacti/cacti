@@ -84,11 +84,16 @@ default:
 	/* set the default settings category */
 	if (!isset($_GET["tab"])) {
 		/* there is no selected tab; select the first one */
-		$current_tab = array_keys($tabs);
-		$current_tab = $current_tab[0];
+		if (isset($_SESSION['sess_settings_tab'])) {
+			$current_tab = $_SESSION['sess_settings_tab'];
+		}else{
+			$current_tab = array_keys($tabs);
+			$current_tab = $current_tab[0];
+		}
 	}else{
 		$current_tab = $_GET["tab"];
 	}
+	$_SESSION['sess_settings_tab'] = $current_tab;
 
 	/* draw the categories tabs on the top of the page */
 	print "<table cellpadding='0' cellspacing='0' border='0'><tr><td>\n";
@@ -250,6 +255,72 @@ default:
 		$('#rrd_autoclean_method').change(function() {
 			initRRDClean();
 		});
+	}
+
+	if ($('#boost_rrd_update_enable')) {
+		initBoostOD();
+		initBoostServer();
+		initBoostCache();
+
+		$('#boost_rrd_update_enable').change(function() {
+			initBoostOD();
+		});
+
+		$('#boost_server_enable').change(function() {
+			initBoostServer();
+		});
+
+		$('#boost_png_cache_enable').change(function() {
+			initBoostCache();
+		});
+	}
+
+	function initBoostCache() {
+		if ($('#boost_png_cache_enable').is(':checked')){
+			$('#row_boost_png_cache_directory').show();
+		}else{
+			$('#row_boost_png_cache_directory').hide();
+		}
+	}
+
+	function initBoostOD() {
+		if ($('#boost_rrd_update_enable').is(':checked')){
+			$('#row_boost_rrd_update_interval').show();
+			$('#row_boost_rrd_update_max_records').show();
+			$('#row_boost_rrd_update_max_records_per_select').show();
+			$('#row_boost_rrd_update_string_length').show();
+			$('#row_boost_poller_mem_limit').show();
+			$('#row_boost_rrd_update_max_runtime').show();
+			$('#row_boost_redirect').show();
+		}else{
+			$('#row_boost_rrd_update_interval').hide();
+			$('#row_boost_rrd_update_max_records').hide();
+			$('#row_boost_rrd_update_max_records_per_select').hide();
+			$('#row_boost_rrd_update_string_length').hide();
+			$('#row_boost_poller_mem_limit').hide();
+			$('#row_boost_rrd_update_max_runtime').hide();
+			$('#row_boost_redirect').hide();
+		}
+	}
+
+	function initBoostServer() {
+		if ($('#boost_server_enable').is(':checked')){
+			$('#row_boost_server_effective_user').show();
+			$('#row_boost_server_multiprocess').show();
+			$('#row_boost_path_rrdupdate').show();
+			$('#row_boost_server_hostname').show();
+			$('#row_boost_server_listen_port').show();
+			$('#row_boost_server_timeout').show();
+			$('#row_boost_server_clients').show();
+		}else{
+			$('#row_boost_server_effective_user').hide();
+			$('#row_boost_server_multiprocess').hide();
+			$('#row_boost_path_rrdupdate').hide();
+			$('#row_boost_server_hostname').hide();
+			$('#row_boost_server_listen_port').hide();
+			$('#row_boost_server_timeout').hide();
+			$('#row_boost_server_clients').hide();
+		}
 	}
 
 	function initFonts() {

@@ -46,16 +46,16 @@ function user_copy($template_user, $new_user, $template_realm = 0, $new_realm = 
 
 	/* Create update/insert for new/existing user */
 	$user_exist = db_fetch_row("SELECT * FROM user_auth WHERE username='" . $new_user . "' AND realm=" . $new_realm);
-	if (isset($user_exist)) {
+	if (sizeof($user_exist)) {
 		if ($overwrite) {
 			/* Overwrite existing user */
-			$user_auth["id"] = $user_exist["id"];
-			$user_auth["username"] = $user_exist["username"];
-			$user_auth["password"] = $user_exist["password"];
-			$user_auth["realm"] = $user_exist["realm"];
+			$user_auth["id"]        = $user_exist["id"];
+			$user_auth["username"]  = $user_exist["username"];
+			$user_auth["password"]  = $user_exist["password"];
+			$user_auth["realm"]     = $user_exist["realm"];
 			$user_auth["full_name"] = $user_exist["full_name"];
 			$user_auth["must_change_password"] = $user_exist["must_change_password"];
-			$user_auth["enabled"] = $user_exist["enabled"];
+			$user_auth["enabled"]   = $user_exist["enabled"];
 		}else{
 			/* User already exists, duplicate users are bad */
 			raise_message(19);

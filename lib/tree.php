@@ -33,9 +33,11 @@ define("SORT_TYPE_TREE_ITEM", 2);
    @returns - a string reprenting the type of the tree item. valid return
      values are 'header', 'graph', and 'host' */
 function get_tree_item_type($tree_item_id) {
-	$tree_item = db_fetch_row("select title,local_graph_id,host_id from graph_tree_items where id=$tree_item_id");
+	$tree_item = db_fetch_row("SELECT title,local_graph_id,host_id FROM graph_tree_items WHERE id=$tree_item_id");
 
-	if ($tree_item["local_graph_id"] > 0) {
+	if (!sizeof($tree_item)) {
+		return "";
+	}elseif ($tree_item["local_graph_id"] > 0) {
 		return "graph";
 	}elseif ($tree_item["title"] != "") {
 		return "header";
