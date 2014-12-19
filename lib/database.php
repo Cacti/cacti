@@ -150,6 +150,69 @@ function db_execute($sql, $log = TRUE, $db_conn = FALSE) {
 	return FALSE;
 }
 
+/* db_execute_prepared - run an sql query and do not return any output
+   @param $sql - the sql query to execute
+   @param $log - whether to log error messages, defaults to true
+   @returns - '1' for success, '0' for error */
+function db_execute_prepared($sql, $parms = array(), $log = TRUE, $db_conn = FALSE) {
+	global $database_sessions, $database_default, $database_prepared_cache, $config;
+
+	/* check for a connection being passed, if not use legacy behavior */
+	if (!$db_conn) {
+		$db_conn = $database_sessions[$database_default];
+	}
+	if (!$db_conn) return FALSE;
+
+	$sql = str_replace("\n", '', str_replace("\r", '', str_replace("\t", ' ', $sql)));
+
+	if (read_config_option('log_verbosity') == POLLER_VERBOSITY_DEVDBG) {
+		cacti_log('DEVEL: SQL Exec: "' . $sql . '"', FALSE);
+	}
+	$errors = 0;
+	while (1) {
+		$query = $db_conn->prepare($sql);
+		$query->execute($parms);
+
+		$en = $db_conn->errorCode();
+		// With PDO, we have to free this up
+		$query->fetchAll(PDO::FETCH_ASSOC);
+		unset($query);
+		if ($en == '00000') {
+			return TRUE;
+		} else if ($en == "42000" || $en == '42S02') {
+			printf('FATAL: Database or Table does not exist');
+			exit;
+		} else if (($log) || (read_config_option('log_verbosity') >= POLLER_VERBOSITY_DEBUG)) {
+			if ($en == 1213 || $en == 1205) { //substr_count(mysql_error($db_conn), 'Deadlock')
+				$errors++;
+				if ($errors > 30) {
+					cacti_log("ERROR: Too many Lock/Deadlock errors occurred! SQL:'" . str_replace("\n", '', str_replace("\r", '', str_replace("\t", ' ', $sql))) . "'", TRUE);
+					return FALSE;
+				} else {
+					usleep(500000);
+					continue;
+				}
+			} else {
+				cacti_log("ERROR: A DB Exec Failed!, Error:$en, SQL:\"" . str_replace("\n", '', str_replace("\r", '', str_replace("\t", ' ', $sql))) . "'", FALSE);
+				$en = $db_conn->errorInfo();
+				cacti_log('ERROR: A DB Exec Failed!, Error: ' . $en[2]);
+ 				$callers = debug_backtrace();
+				$s = '';
+				foreach ($callers as $c) {
+					$file = str_replace($config['base_path'], '', $c['file']);
+					$line = $c['line'];
+					$func = $c['function'];
+					$s = "($file:$line $func)" . $s;
+				}
+				cacti_log("SQL Backtrace: $s", false);
+				return FALSE;
+			}
+		}
+	}
+	return FALSE;
+}
+
+
 /* db_fetch_cell - run a 'select' sql query and return the first column of the
      first row found
    @param $sql - the sql query to execute
@@ -203,6 +266,61 @@ function db_fetch_cell($sql, $col_name = '', $log = TRUE, $db_conn = FALSE) {
 	return FALSE;
 }
 
+/* db_fetch_cell_prepared - run a 'select' sql query and return the first column of the
+     first row found
+   @param $sql - the sql query to execute
+   @param $col_name - use this column name instead of the first one
+   @param $log - whether to log error messages, defaults to true
+   @returns - (bool) the output of the sql query as a single variable */
+function db_fetch_cell_prepared($sql, $parms = array(), $col_name = '', $log = TRUE, $db_conn = FALSE) {
+	global $database_sessions, $database_default, $database_prepared_cache, $config;
+
+	/* check for a connection being passed, if not use legacy behavior */
+	if (!$db_conn) {
+		$db_conn = $database_sessions[$database_default];
+	}
+	if (!$db_conn) return FALSE;
+	$sql = str_replace("\n", '', str_replace("\r", '', str_replace("\t", ' ', $sql)));
+
+	if (read_config_option('log_verbosity') == POLLER_VERBOSITY_DEVDBG) {
+		cacti_log('DEVEL: SQL Cell: "' . $sql . '"', FALSE);
+	}
+
+	$query = $db_conn->prepare($sql);
+	$query->execute($parms);
+	$en = $db_conn->errorCode();
+
+	if ($en == '00000') {
+		$q = $query->fetchAll(PDO::FETCH_BOTH);
+		unset($query);
+		if (isset($q[0]) && is_array($q[0])) {
+			if ($col_name != '') {
+				return $q[0][$col_name];
+			} else {
+				return $q[0][0];
+			}
+		}
+		return FALSE;
+	}else if ($en == "42000" || $en == '42S02') {
+		printf('FATAL: Database or Table does not exist');
+		exit;
+	}else if (($log) || (read_config_option('log_verbosity') >= POLLER_VERBOSITY_DEBUG)) {
+		cacti_log("ERROR: SQL Cell Failed!, Error:$en, SQL:\"" . str_replace("\n", '', str_replace("\r", '', str_replace("\t", ' ', $sql))) . '"', FALSE);
+		$en = $db_conn->errorInfo();
+		cacti_log('ERROR: SQL Cell Failed!, Error: ' . $en[2]);
+		$callers = debug_backtrace();
+		$s = '';
+		foreach ($callers as $c) {
+			$file = str_replace($config['base_path'], '', $c['file']);
+			$line = $c['line'];
+			$func = $c['function'];
+			$s = "($file:$line $func)" . $s;
+		}
+		cacti_log("SQL Backtrace: $s", false);
+	}
+	if (isset($query)) unset($query);
+	return FALSE;
+}
 
 /* db_fetch_row - run a 'select' sql query and return the first row found
    @param $sql - the sql query to execute
@@ -260,6 +378,63 @@ function db_fetch_row($sql, $log = TRUE, $db_conn = FALSE) {
 	return array();
 }
 
+/* db_fetch_row_prepared - run a 'select' sql query and return the first row found
+   @param $sql - the sql query to execute
+   @param $log - whether to log error messages, defaults to true
+   @returns - the first row of the result as a hash */
+function db_fetch_row_prepared($sql, $parms = array(), $log = TRUE, $db_conn = FALSE) {
+	global $database_sessions, $database_default, $database_prepared_cache, $config;
+
+	/* check for a connection being passed, if not use legacy behavior */
+	if (!$db_conn) {
+		$db_conn = $database_sessions[$database_default];
+	}
+	if (!$db_conn) return FALSE;
+
+	$sql = str_replace("\n", '', str_replace("\r", '', str_replace("\t", ' ', $sql)));
+
+	if (($log) && (read_config_option('log_verbosity') == POLLER_VERBOSITY_DEVDBG)) {
+		cacti_log('DEVEL: SQL Row: "' . $sql . '"', FALSE);
+	}
+
+	$query = $db_conn->prepare($sql);
+	$query->execute($parms);
+	$en = $db_conn->errorCode();
+
+	if ($en == '00000') {
+		$q = $query->fetchAll(PDO::FETCH_ASSOC);
+		$query->closeCursor();
+		unset($query);
+		if (isset($q[0])) {
+			return $q[0];
+		} else {
+			return array();
+		}
+	}else if ($en == "42000" || $en == 1051) {
+		printf('FATAL: Database or Table does not exist');
+		exit;
+	}else if (($log) || (read_config_option('log_verbosity') >= POLLER_VERBOSITY_DEBUG)) {
+		cacti_log("ERROR: SQL Row Failed!, Error:$en, SQL:\"" . str_replace("\n", '', str_replace("\r", '', str_replace("\t", ' ', $sql))) . '"', FALSE);
+		$en = $db_conn->errorInfo();
+		cacti_log('ERROR: SQL Row Failed!, Error: ' . $en[2]);
+		$callers = debug_backtrace();
+		$s = '';
+		foreach ($callers as $c) {
+			$file = str_replace($config['base_path'], '', $c['file']);
+			$line = $c['line'];
+			$func = $c['function'];
+			$s = "($file:$line $func)" . $s;
+		}
+		cacti_log("SQL Backtrace: $s", false);
+
+	}
+	if ($query) {
+		//mysql_free_result($query);
+	}
+	if (isset($query)) unset($query);
+	return array();
+}
+
 /* db_fetch_assoc - run a 'select' sql query and return all rows found
    @param $sql - the sql query to execute
    @param $log - whether to log error messages, defaults to true
@@ -280,6 +455,64 @@ function db_fetch_assoc($sql, $log = TRUE, $db_conn = FALSE) {
 	}
 
 	$query = $db_conn->query($sql);
+	$en = $db_conn->errorCode();
+
+	if ($en == '00000') {
+		$a = $query->fetchAll(PDO::FETCH_ASSOC);
+		$query->closeCursor();
+		unset($query);
+		if (!is_array($a)) {
+			$a = array();
+		}
+		return $a;
+
+	}else if ($en == "42000" || $en == '42S02') {
+		printf('FATAL: Database or Table does not exist');
+		exit;
+	}else if (($log) || (read_config_option('log_verbosity') >= POLLER_VERBOSITY_DEBUG)) {
+		cacti_log("ERROR: SQL Assoc Failed!, Error:$en, SQL:\"" . str_replace("\n", '', str_replace("\r", '', str_replace("\t", ' ', $sql))) . '"');
+		$en = $db_conn->errorInfo();
+		cacti_log('ERROR: SQL Assoc Failed!, Error: ' . $en[2]);
+
+		$callers = debug_backtrace();
+		$s = '';
+		foreach ($callers as $c) {
+			$file = str_replace($config['base_path'], '', $c['file']);
+			$line = $c['line'];
+			$func = $c['function'];
+			$s = "($file:$line $func)" . $s;
+		}
+		cacti_log("SQL Backtrace: $s", false);
+
+	}
+	if ($query) {
+		//mysql_free_result($query);
+	}
+	if (isset($query)) unset($query);
+	return array();
+}
+
+/* db_fetch_assoc_prepared - run a 'select' sql query and return all rows found
+   @param $sql - the sql query to execute
+   @param $log - whether to log error messages, defaults to true
+   @returns - the entire result set as a multi-dimensional hash */
+function db_fetch_assoc_prepared($sql, $parms = array(), $log = TRUE, $db_conn = FALSE) {
+	global $database_sessions, $database_default, $database_prepared_cache, $config;
+
+	/* check for a connection being passed, if not use legacy behavior */
+	if (!$db_conn) {
+		$db_conn = $database_sessions[$database_default];
+	}
+	if (!$db_conn) return FALSE;
+
+	$sql = str_replace("\n", '', str_replace("\r", '', str_replace("\t", ' ', $sql)));
+
+	if (read_config_option('log_verbosity') == POLLER_VERBOSITY_DEVDBG) {
+		cacti_log('DEVEL: SQL Assoc: "' . $sql . '"', FALSE);
+	}
+
+	$query = $db_conn->prepare($sql);
+	$query->execute($parms);
 	$en = $db_conn->errorCode();
 
 	if ($en == '00000') {
