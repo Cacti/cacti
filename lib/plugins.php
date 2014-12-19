@@ -34,20 +34,20 @@ function api_plugin_hook ($name) {
 	}
 
 	/* order the plugin functions by system first, then followed by order */
-	$result = db_fetch_assoc("SELECT 1 AS id, ph.name, ph.file, ph.function
+	$result = db_fetch_assoc_prepared("SELECT 1 AS id, ph.name, ph.file, ph.function
 		FROM plugin_hooks AS ph
 		LEFT JOIN plugin_config AS pc
 		ON pc.directory=ph.name
-		WHERE ph.status = 1 AND hook = '$name'
+		WHERE ph.status = 1 AND hook = ?
 		AND ph.name IN $ps_where
 		UNION
 		SELECT pc.id, ph.name, ph.file, ph.function
 		FROM plugin_hooks AS ph
 		LEFT JOIN plugin_config AS pc
 		ON pc.directory=ph.name
-		WHERE ph.status = 1 AND hook = '$name'
+		WHERE ph.status = 1 AND hook = ?
 		AND ph.name NOT IN $ps_where
-		ORDER BY id ASC", true);
+		ORDER BY id ASC", array($name, $name), true);
 
 	if (count($result)) {
 		foreach ($result as $hdata) {
