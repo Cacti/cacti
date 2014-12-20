@@ -103,7 +103,7 @@ function draw_cdef_preview($cdef_id) {
 
 function form_save() {
 	if (isset($_POST['save_component_cdef'])) {
-		$save['id'] = $_POST['id'];
+		$save['id']   = form_input_validate($_POST['id'], 'id', '^[0-9]+$', false, 3);
 		$save['hash'] = get_hash_cdef($_POST['id']);
 		$save['name'] = form_input_validate($_POST['name'], 'name', '', false, 3);
 
@@ -121,12 +121,12 @@ function form_save() {
 	}elseif (isset($_POST['save_component_item'])) {
 		$sequence = get_sequence($_POST['id'], 'sequence', 'cdef_items', 'cdef_id=' . $_POST['cdef_id']);
 
-		$save['id'] = $_POST['id'];
-		$save['hash'] = get_hash_cdef($_POST['id'], 'cdef_item');
-		$save['cdef_id'] = $_POST['cdef_id'];
+		$save['id']       = form_input_validate($_POST['id'], 'id', '^[0-9]+$', false, 3);
+		$save['hash']     = get_hash_cdef($_POST['id'], 'cdef_item');
+		$save['cdef_id']  = form_input_validate($_POST['cdef_id'], 'cdef_id', '^[0-9]+$', false, 3);
 		$save['sequence'] = $sequence;
-		$save['type'] = $_POST['type'];
-		$save['value'] = $_POST['value'];
+		$save['type']     = form_input_validate($_POST['type'], 'type', '^[0-9]+$', false, 3);
+		$save['value']    = form_input_validate($_POST['value'], 'value', '', false, 3);
 
 		if (!is_error_message()) {
 			$cdef_item_id = sql_save($save, 'cdef_items');
@@ -147,7 +147,7 @@ function form_save() {
 }
 
 /* ------------------------
-    The "actions" function
+    The 'actions' function
    ------------------------ */
 
 function form_actions() {

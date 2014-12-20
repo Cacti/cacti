@@ -65,7 +65,7 @@ class Net_Ping
 	function build_udp_packet() {
 		$data  = "cacti-monitoring-system"; // the actual test data
 
-		// now lets build the actual icmp packet
+		// now lets build the actual UDP packet
 		$this->request = chr(0) . chr(1) . chr(0) . $data . chr(0);
 		$this->request_len = strlen($this->request);
 	}
@@ -141,7 +141,7 @@ class Net_Ping
 			$pattern  = bin2hex("cacti-monitoring-system"); // the actual test data
 
 			/* host timeout given in ms, recalculate to sec, but make it an integer
-			 * we might consider to use escapeshellarh on hostname,
+			 * we might consider to use escapeshellarg on hostname,
 			 * but this field has already been verified.
 			 * The other fields are numerical fields only and thus
 			 * not vulnerable for command injection */
@@ -162,6 +162,10 @@ class Net_Ping
 			}else if (substr_count(strtolower(PHP_OS), "winnt")) {
 				$result = shell_exec("ping -w " . $this->timeout . " -n " . $this->retries . " " . $this->host["hostname"]);
 			}else{
+				/* please know, that when running SELinux, httpd will throw
+				 * ping: cap_set_proc: Permission denied
+				 * as it now tries to open an ICMP socket and fails 
+				 * $result will be empty, then. */
 				$result = shell_exec("ping -W " . ceil($this->timeout/1000) . " -c " . $this->retries . " -p " . $pattern . " " . $this->host["hostname"]);
 			}
 
@@ -362,11 +366,7 @@ class Net_Ping
 			while (1) {
 				if ($retry_count >= $this->retries) {
 					$this->status = "down";
-					if ($error == "timeout") {
-						$this->ping_response = "UDP ping Timed out";
-					}else{
-						$this->ping_response = "UDP ping Refused";
-					}
+					$this->ping_response = "UDP ping error: " . $error;
 					$this->close_socket();
 
 					return false;
@@ -379,31 +379,35 @@ class Net_Ping
 				socket_write($this->socket, $this->request, $this->request_len);
 
 				/* get the socket response */
-				switch(socket_select($r = array($this->socket), $w = NULL, $f = NULL, $to_sec, $to_usec)) {
-				case 2:
-					/* connection refused */
-					$error = "refused";
-					break;
-				case 1:
-					/* get the end time */
-					$this->time = $this->get_time($this->precision);
+				$w = $f = array();
+				$r = array($this->socket);
+				$num_changed_sockets = socket_select($r, $w, $f, $to_sec, $to_usec);
+				if ($num_changed_sockets === false) {	
+					$error = "socket_select() failed, reason: " . socket_strerror(socket_last_error());
+				} else {
+					switch($num_changed_sockets) {
+						case 2: /* response received, so host is available */
+						case 1:
+							/* get the end time */
+							$this->time = $this->get_time($this->precision);
 
-					/* get packet response */
-					$code = @socket_recv($this->socket, $this->reply, 256, 0);
+							/* get packet response */
+							$code = @socket_recv($this->socket, $this->reply, 256, 0);
 
-					/* get the error, if applicable */
-					$err = socket_last_error($this->socket);
+							/* get the error, if applicable */
+							$err = socket_last_error($this->socket);
 
-					/* set the return message */
-					$this->ping_status = $this->time * 1000;
-					$this->ping_response = "UDP Ping Success (" . $this->time*1000 . " ms)";
+							/* set the return message */
+							$this->ping_status = $this->time * 1000;
+							$this->ping_response = "UDP Ping Success (" . $this->time*1000 . " ms)";
 
-					$this->close_socket();
-					return true;
-				case 0:
-					/* timeout */
-					$error = "timeout";
-					break;
+							$this->close_socket();
+							return true;
+						case 0:
+							/* timeout */
+							$error = "timeout";
+							break;
+					}
 				}
 
 				$retry_count++;
@@ -468,39 +472,40 @@ class Net_Ping
 				@socket_connect($this->socket, $host_ip, $this->port);
 				socket_set_block($this->socket);
 
-				switch(socket_select($r = array($this->socket), $w = array($this->socket), $f = array($this->socket), $to_sec, $to_usec)){
-				case 2:
-					/* connection refused */
-					$this->time = $this->get_time($this->precision);
-
-					if (($this->time*1000) <= $this->timeout) {
-						$this->ping_response = "TCP Ping connection refused (" . $this->time*1000 . " ms)";
-						$this->ping_status   = $this->time*1000;
-					}
-
-					$this->close_socket();
-
-					return true; /* "connection refused" says: host is alive (else ping would time out) */
-				case 1:
-					/* connected, so calculate the total time and return */
-					$this->time = $this->get_time($this->precision);
-
-					if (($this->time*1000) <= $this->timeout) {
-						$this->ping_response = "TCP Ping Success (" . $this->time*1000 . " ms)";
-						$this->ping_status   = $this->time*1000;
-					}
-
-					$this->close_socket();
-
-					return true;
-				case 0:
-					/* timeout */
-					$this->ping_response = "TCP ping timed out";
+				$w = $f = array();
+				$r = array($this->socket);
+				$num_changed_sockets = socket_select($r, $w, $f, $to_sec, $to_usec);
+				if ($num_changed_sockets === false) {	
+					$this->ping_response = "TCP ping: " . "socket_select() failed, reason: " . socket_strerror(socket_last_error());
 					$this->ping_status   = "down";
 
 					$this->close_socket();
 
 					return false;
+				} else {
+					switch($num_changed_sockets) {
+					case 2: /* response received, so host is available */
+					case 1:
+						/* connected, so calculate the total time and return */
+						$this->time = $this->get_time($this->precision);
+
+						if (($this->time*1000) <= $this->timeout) {
+							$this->ping_response = "TCP Ping Success (" . $this->time*1000 . " ms)";
+							$this->ping_status   = $this->time*1000;
+						}
+
+						$this->close_socket();
+
+						return true;
+					case 0:
+						/* timeout */
+						$this->ping_response = "TCP ping timed out";
+						$this->ping_status   = "down";
+
+						$this->close_socket();
+
+						return false;
+					}
 				}
 			}
 		} else {

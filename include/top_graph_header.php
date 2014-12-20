@@ -155,7 +155,7 @@ $page_title = api_plugin_hook_function('page_title', draw_navigation_text('title
 	?>
 	<tr>
 		<?php if (basename($_SERVER['PHP_SELF']) == 'graph_view.php' && ($_REQUEST['action'] == 'tree' || (isset($_REQUEST['view_type']) && $_REQUEST['view_type'] == 'tree'))) { ?>
-		<td id='navigation' class='cactiTreeNavigationArea noprint' style='display:none;' valign='top' width='<?php print htmlspecialchars(read_graph_config_option('default_dual_pane_width'));?>'>
+		<td id='navigation' class='cactiTreeNavigationArea noprint' style='display:none;' valign='top' width='200'>
 			<?php grow_dhtml_trees();?>
 		</td>
 		<?php } ?>

@@ -310,6 +310,10 @@ function push_out_data_input_method($data_input_id) {
 		}
 	}
 }
+/** mass update of poller cache - can run in parallel to poller
+ * @param array/int $local_data_ids - either a scalar (all ids) or an array of data source to act on
+ * @param array $poller_items - the new items for poller cache
+ */
 
 function poller_update_poller_cache_from_buffer($local_data_ids, &$poller_items) {
 	/* set all fields present value to 0, to mark the outliers when we are all done */
@@ -393,6 +397,12 @@ function poller_update_poller_cache_from_buffer($local_data_ids, &$poller_items)
 		/* only handle explicitely given local_data_ids */
 	}
 }
+/** for a given data template, update all input data and the poller cache
+ * @param int $host_id - id of host, if any
+ * @param int $local_data_id - id of a single data source, if any
+ * @param int $data_template_id - id of data template
+ * works on table data_input_data and poller cache
+ */
 
 function push_out_host($host_id, $local_data_id = 0, $data_template_id = 0) {
 
@@ -413,12 +423,12 @@ function push_out_host($host_id, $local_data_id = 0, $data_template_id = 0) {
 		$sql_where .= " AND data_local.host_id=$host_id";
 	}
 
-	/* sql where fom local_data_id */
+	/* sql where for local_data_id */
 	if ($local_data_id != 0) {
 		$sql_where .= " AND data_local.id=$local_data_id";
 	}
 
-	/* sql where fom data_template_id */
+	/* sql where for data_template_id */
 	if ($data_template_id != 0) {
 		$sql_where .= " AND data_template_data.data_template_id=$data_template_id";
 	}

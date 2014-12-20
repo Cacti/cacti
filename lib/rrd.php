@@ -133,7 +133,9 @@ function rrdtool_execute($command_line, $log_to_stdout, $output_flag, $rrdtool_p
 
 	switch ($output_flag) {
 		case RRDTOOL_OUTPUT_NULL:
-			return;
+			return; 
+
+			break;
 		case RRDTOOL_OUTPUT_STDOUT:
 			if (isset($fp) && is_resource($fp)) {
 				$line = "";
@@ -159,6 +161,10 @@ function rrdtool_execute($command_line, $log_to_stdout, $output_flag, $rrdtool_p
 
 				if (substr($output, 0, 5) == "GIF87") {
 					return "OK";
+				}
+
+				if (substr($output, 0, 5) == "<?xml") {
+					return "SVG/XML Output OK";
 				}
 
 				print $output;

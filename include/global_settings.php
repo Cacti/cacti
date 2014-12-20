@@ -44,12 +44,10 @@ $tabs = array(
 	'mail' => 'Mail / DNS');
 
 $tabs_graphs = array(
-	'general' => 'General',
+	'general' => 'General Settings',
 	'timespan' => 'Time Spanning/Shifting',
-	'thumbnail' => 'Graph Thumbnails',
-	'tree' => 'Tree View Mode',
-	'preview' => 'Preview Mode',
-	'list' => 'List View Mode',
+	'thumbnail' => 'Graph Thumbnail Settings',
+	'tree' => 'Tree Settings',
 	'fonts' => 'Graph Fonts');
 
 /* setting information */
@@ -745,6 +743,12 @@ $settings = array(
 			'method' => 'checkbox',
 			'default' => 'on'
 			),
+		'oid_increasing_check_disable' => array(
+			'friendly_name' => 'Disable increasing OID Check',
+			'description' => 'Controls disabling check for increasing OID while walking OID tree.',
+			'method' => 'checkbox',
+			'default' => ''
+			),
 		'spine_header' => array(
 			'friendly_name' => 'Spine Specific Execution Parameters',
 			'method' => 'spacer',
@@ -1323,13 +1327,6 @@ $settings = array(
 
 $settings_graphs = array(
 	'general' => array(
-		'default_rra_id' => array(
-			'friendly_name' => 'Default RRA',
-			'description' => 'The default RRA to use when thumbnail graphs are not being displayed or when Thumbnail Timespan is set to "0".',
-			'method' => 'drop_sql',
-			'sql' => 'select id,name from rra order by timespan',
-			'default' => '1'
-			),
 		'default_view_mode' => array(
 			'friendly_name' => 'Default View Mode',
 			'description' => 'Which mode you want displayed when you visit "graph_view.php"',
@@ -1363,6 +1360,13 @@ $settings_graphs = array(
 			'method' => 'drop_array',
 			'default' => '300',
 			'array' => array('15' => '15 Seconds', '20' => '20 Seconds', '30' => '30 Seconds', '60' => '1 Minute', '300' => '5 Minutes')
+			),
+		'preview_graphs_per_page' => array(
+			'friendly_name' => 'Preview Graphs Per Page',
+			'description' => 'The number of graphs to display on one page in preview mode.',
+			'method' => 'drop_array',
+			'default' => '10',
+			'array' => $graphs_per_page
 			)
 		),
 	'timespan' => array(
@@ -1372,6 +1376,13 @@ $settings_graphs = array(
 			'method' => 'checkbox',
 			'default' => 'on'
 		),
+		'default_rra_id' => array(
+			'friendly_name' => 'Default Time Range',
+			'description' => 'The default RRA to use when for Graphs the Timespan selector is disabled.',
+			'method' => 'drop_sql',
+			'sql' => 'select id,name from rra order by timespan',
+			'default' => '1'
+			),
 		'default_timespan' => array(
 			'friendly_name' => 'Default Graph View Timespan',
 			'description' => 'The default timespan you wish to be displayed when you display graphs',
@@ -1417,33 +1428,9 @@ $settings_graphs = array(
 			),
 		),
 	'thumbnail' => array(
-		'default_height' => array(
-			'friendly_name' => 'Thumbnail Height',
-			'description' => 'The height of thumbnail graphs in pixels.',
-			'method' => 'textbox',
-			'default' => '100',
-			'max_length' => '10',
-			'size' => '7'
-			),
-		'default_width' => array(
-			'friendly_name' => 'Thumbnail Width',
-			'description' => 'The width of thumbnail graphs in pixels.',
-			'method' => 'textbox',
-			'default' => '300',
-			'max_length' => '10',
-			'size' => '7'
-			),
-		'num_columns' => array(
-			'friendly_name' => 'Thumbnail Columns',
-			'description' => 'The number of columns to use when displaying thumbnail graphs.',
-			'method' => 'textbox',
-			'default' => '2',
-			'max_length' => '5',
-			'size' => '7'
-			),
 		'thumbnail_sections' => array(
 			'friendly_name' => 'Thumbnail Sections',
-			'description' => 'Which sections of Cacti thumbnail graphs should be used for.',
+			'description' => 'Which portions of Cacti display Thumbnails by default.',
 			'method' => 'checkbox_group',
 			'items' => array(
 				'thumbnail_section_preview' => array(
@@ -1455,7 +1442,30 @@ $settings_graphs = array(
 					'default' => ''
 					)
 				)
-			)
+			),
+		'num_columns' => array(
+			'friendly_name' => 'Thumbnail Columns',
+			'description' => 'The number of columns to use when displaying Thumbnail graphs.',
+			'method' => 'drop_array',
+			'default' => '2',
+			'array' => array('1' => '1 Column','2' => '2 Columns', '3' => '3 Columns', '4' => '4 Columns', '5' => '5 Columns'),
+			),
+		'default_height' => array(
+			'friendly_name' => 'Thumbnail Height',
+			'description' => 'The height of Thumbnail graphs in pixels.',
+			'method' => 'textbox',
+			'default' => '100',
+			'max_length' => '10',
+			'size' => '7'
+			),
+		'default_width' => array(
+			'friendly_name' => 'Thumbnail Width',
+			'description' => 'The width of Thumbnail graphs in pixels.',
+			'method' => 'textbox',
+			'default' => '300',
+			'max_length' => '10',
+			'size' => '7'
+			),
 		),
 	'tree' => array(
 		'default_tree_id' => array(
@@ -1466,43 +1476,17 @@ $settings_graphs = array(
 			'default' => '0'
 			),
 		'treeview_graphs_per_page' => array(
-			'friendly_name' => 'Graphs Per-Page',
+			'friendly_name' => 'Graphs Per Page',
 			'description' => 'The number of graphs to display on one page in preview mode.',
 			'method' => 'drop_array',
 			'default' => '10',
 			'array' => $graphs_per_page
-			),
-		'default_dual_pane_width' => array(
-			'friendly_name' => 'Minimum Tree Width',
-			'description' => 'When using Tree View, what width should the minimum Tree width be.',
-			'method' => 'textbox',
-			'max_length' => '5',
-			'default' => '200',
-			'size' => '7'
 			),
 		'expand_hosts' => array(
 			'friendly_name' => 'Expand Hosts',
 			'description' => 'Choose whether to expand the Graph Templates and Data Queries used by a Device on Tree.',
 			'method' => 'checkbox',
 			'default' => ''
-			)
-		),
-	'preview' => array(
-		'preview_graphs_per_page' => array(
-			'friendly_name' => 'Graphs Per-Page',
-			'description' => 'The number of graphs to display on one page in preview mode.',
-			'method' => 'drop_array',
-			'default' => '10',
-			'array' => $graphs_per_page
-			)
-		),
-	'list' => array(
-		'list_graphs_per_page' => array(
-			'friendly_name' => 'Graphs Per-Page',
-			'description' => 'The number of graphs to display on one page in list view mode.',
-			'method' => 'drop_array',
-			'default' => '30',
-			'array' => $graphs_per_page
 			)
 		),
 	'fonts' => array(

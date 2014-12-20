@@ -613,7 +613,7 @@ case 'list':
 	load_current_session_value('graph_template_id', 'sess_graph_view_list_graph_template', '0');
 	load_current_session_value('filter', 'sess_graph_view_list_filter', '');
 	load_current_session_value('page', 'sess_graph_view_list_current_page', '1');
-	load_current_session_value('rows', 'sess_graph_view_list_rows', '-1');
+	load_current_session_value('rows', 'sess_default_rows', read_config_option('num_rows_table'));
 	load_current_session_value('graph_list', 'sess_graph_view_list_graph_list', '');
 
 	/* save selected graphs into url */
@@ -727,7 +727,7 @@ case 'list':
 
 	/* if the number of rows is -1, set it to the default */
 	if ($_REQUEST['rows'] == -1) {
-		$_REQUEST['rows'] = read_graph_config_option('list_graphs_per_page');
+		$_REQUEST['rows'] = read_graph_config_option('num_rows_table');
 	}
 
 	/* create filter for sql */

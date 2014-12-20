@@ -1,6 +1,8 @@
 Cacti CHANGELOG
 
 0.8.8d
+-feature#0002225: Make -Cc SNMP option system wide configurable (disable increasing OID check)
+-bug#0002257: status_fail_date and status_rec_date are initialised when a host recovers
 -bug#0002482: Correct count of hosts using a Host Template
 -bug: Make Cacti's permissions consistent for RBAC
 -feature: Add Themes to WebGUI (deprecation of $colors array)

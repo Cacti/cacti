@@ -163,6 +163,13 @@ function grow_dhtml_trees() {
 			},
 			'plugins' : [ 'state', 'wholerow' ]
 		});
+
+		$('#jstree').css('overflow-y','initial').css('overflow-x', 'initial');
+		$('#navigation').resizable();
+		$(window).resize(function() {
+			height      = parseInt($(window).height()-$('#jstree').offset().top-10)+'px';
+			$('#jstree').css('overflow-y','initial').css('overflow-x', 'initial');
+		});
 	});
 	</script>
 	<?php

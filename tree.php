@@ -459,6 +459,19 @@ function tree_edit() {
 				});
 			});
 
+			var height      = parseInt($(window).height()-$('#jstree').offset().top-10)+'px';
+			var hheight     = parseInt($(window).height()-$('#hosts').offset().top-10)+'px';
+			var gheight     = parseInt($(window).height()-$('#graphs').offset().top-10)+'px';
+
+			$(window).resize(function() {
+				height      = parseInt($(window).height()-$('#jstree').offset().top-10)+'px';
+				hheight     = parseInt($(window).height()-$('#hosts').offset().top-10)+'px';
+				gheight     = parseInt($(window).height()-$('#graphs').offset().top-10)+'px';
+				$('#jstree').css('height', height).css('overflow','auto');;
+				$('#hosts').css('height', hheight).css('overflow','auto');;
+				$('#graphs').css('height', gheight).css('overflow','auto');;
+			});
+
 			$("#jstree")
 			.jstree({
 				'types' : {
@@ -531,6 +544,8 @@ function tree_edit() {
 					$('#data .default').html('Select a file from the tree.').show();
 				}
 			});
+
+			$('#jstree').css('height', height).css('overflow','auto');;
 
 			dragable('#graphs');
 			dragable('#hosts');

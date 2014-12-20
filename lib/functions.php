@@ -625,8 +625,14 @@ function update_host_status($status, $host_id, &$hosts, &$ping, $ping_availabili
 	$issue_log_message   = false;
 	$ping_failure_count  = read_config_option("ping_failure_count");
 	$ping_recovery_count = read_config_option("ping_recovery_count");
-	$hosts[$host_id]["status_fail_date"] = '0000-00-00 00:00:00';
-	$hosts[$host_id]["status_rec_date"] = '0000-00-00 00:00:00';
+	/* initialize fail and recovery dates correctly */
+	if ($hosts[$host_id]["status_fail_date"] == ""){
+		$hosts[$host_id]["status_fail_date"] = '0000-00-00 00:00:00';
+	}
+	
+	if ($hosts[$host_id]["status_rec_date"] == ""){
+		$hosts[$host_id]["status_rec_date"] = '0000-00-00 00:00:00';
+	}
 
 	if ($status == HOST_DOWN) {
 		/* update total polls, failed polls and availability */
