@@ -32,6 +32,8 @@ api_plugin_hook('logout_pre_session_destroy');
 setcookie(session_name(),"",time() - 3600,"/");
 session_destroy();
 
+$version = db_fetch_cell("SELECT cacti FROM version");
+
 api_plugin_hook('logout_post_session_destroy');
 
 /* Check to see if we are using Web Basic Auth */
@@ -51,21 +53,30 @@ if (isset($_REQUEST['action']) && $_REQUEST['action'] == 'timeout') {
 	print "\t<script type='text/javascript' src='" . $config['url_path'] . "include/layout.js'></script>\n";
 	print "<script type='text/javascript'>var theme='" . read_config_option('selected_theme') . "';</script>\n";
 	print "</head>\n";
-	print "<body>\n";
-	print "\t<div class='logonArea'>\n";
-	print "\t\t<table class='logonPanel' align='center'>\n";
-	print "\t\t\t<tr>\n";
-	print "\t\t\t\t<td><div class='cactiLogout'></div></td>\n";
-	print "\t\t\t</tr><tr>\n";
-	print "\t\t\t\t<td>You have been logged out of Cacti due to a session timeout.<br>\n";
-	print "\t\t\t\tPlease close your browser or</td>\n";
-	print "\t\t\t</tr><tr>\n";
-	print "\t\t\t\t<td align='center'>[<a href='index.php'>Login again</a>]</td>\n";
-	print "\t\t\t</tr>\n";
-	print "\t\t</table>\n";
-	print "\t</div>\n";
-	print "</body>\n";
-	print "</html>\n";
+	print "<body class='logoutBody'>
+	<div class='logoutLeft'></div>
+	<div class='logoutCenter'>
+		<div class='logoutArea'>
+			<div class='cactiLogoutLogo'></div>
+			<legend>Automatic Logout</legend>
+			<div class='logoutTitle'>
+				<p>You have been logged out of Cacti due to a session timeout.</p>
+				<p>Please close your broser or</p>
+				<center>[<a href='index.php'>Login Again</a>]</center>
+			</div>
+			<div class='logoutErrors'></div>
+		</div>
+		<div class='versionInfo'>Version " . $version . " | Copyright 2014, The Cacti Group, Inc.</div>
+	</div>
+	<div class='logoutRight'></div>
+	<script type='text/javascript'>
+	$(function() {
+		$('.loginLeft').css('width',parseInt($(window).width()*0.33)+'px');
+		$('.loginRight').css('width',parseInt($(window).width()*0.33)+'px');
+	});
+	</script>
+	</body>
+	</html>\n";
 }elseif (read_config_option("auth_method") == "2") {
 	if (api_plugin_hook_function('custom_logout_message', OPER_MODE_NATIVE) == OPER_MODE_RESKIN) {
 		exit;
@@ -86,20 +97,30 @@ if (isset($_REQUEST['action']) && $_REQUEST['action'] == 'timeout') {
 	print "\t<script type='text/javascript' src='" . $config['url_path'] . "include/layout.js'></script>\n";
 	print "<script type='text/javascript'>var theme='" . read_config_option('selected_theme') . "';</script>\n";
 	print "</head>\n";
-	print "<body>\n";
-	print "\t<div class='logonArea'>\n";
-	print "\t\t<table class='logonPanel' align='center'>\n";
-	print "\t\t\t<tr>\n";
-	print "\t\t\t\t<td><div class='cactiLogout'</div></td>\n";
-	print "\t\t\t</tr><tr>\n";
-	print "\t\t\t\t<td>To end your Cacti session, please close your web browser or</td>\n";
-	print "\t\t\t</tr><tr>\n";
-	print "\t\t\t\t<td align='center'>[<a href='index.php'>Return to Cacti</a>]</td>\n";
-	print "\t\t\t</tr>\n";
-	print "\t\t</table>\n";
-	print "\t</div>\n";
-	print "</body>\n";
-	print "</html>\n";
+	print "<body class='logoutBody'>
+	<div class='logoutLeft'></div>
+	<div class='logoutCenter'>
+		<div class='logoutArea'>
+			<div class='cactiLogoutLogo'></div>
+			<legend>Automatic Logout</legend>
+			<div class='logoutTitle'>
+				<p>You have been logged out of Cacti. To end your session,</p>
+				<p>Please close your broser or</p>
+				<center>[<a href='index.php'>Return to Cacti</a>]</center>
+			</div>
+			<div class='logoutErrors'></div>
+		</div>
+		<div class='versionInfo'>Version " . $version . " | Copyright 2014, The Cacti Group, Inc.</div>
+	</div>
+	<div class='logoutRight'></div>
+	<script type='text/javascript'>
+	$(function() {
+		$('.loginLeft').css('width',parseInt($(window).width()*0.33)+'px');
+		$('.loginRight').css('width',parseInt($(window).width()*0.33)+'px');
+	});
+	</script>
+	</body>
+	</html>\n";
 }else{
 	/* Default action */
 	header("Location: index.php");

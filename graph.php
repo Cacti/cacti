@@ -61,8 +61,7 @@ if (!(db_fetch_cell("SELECT local_graph_id FROM graph_templates_graph WHERE loca
 
 /* take graph permissions into account here */
 if (!is_graph_allowed($_GET["local_graph_id"])) {
-	print "<strong><font class='txtErrorTextBox'>ACCESS DENIED</font></strong>"; 
-	exit;
+	header("Location: permission_denied.php");
 }
 
 $graph_title = get_graph_title($_GET["local_graph_id"]);

@@ -473,10 +473,13 @@ function pulsate(element) {
 }
 
 $(function() {
+	$('body').css('height', $(window).height());
 	$('#navigation').css('height', ($(window).height())+'px').css('overflow-y', 'initial').css('overflow-x', 'initial');
 	$('#navigation_right').show();
 
 	$(window).resize(function(event) {
+		$('body').css('height', $(window).height());
+
 		if (!$(event.target).hasClass('ui-resizable')) {
 			$('#navigation').css('height', ($(window).height()-20)+'px');
 		}

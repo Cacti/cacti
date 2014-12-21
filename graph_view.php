@@ -124,7 +124,7 @@ case 'tree_content':
 
 	if (isset($_REQUEST['tree_id'])) {
 		if (!is_tree_allowed($_REQUEST['tree_id'])) {
-			print "<strong><font class='txtErrorTextBox'>ACCESS DENIED</font></strong>"; 
+			header("Location: permission_denied.php");
 			exit;
 		}
 

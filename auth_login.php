@@ -63,6 +63,7 @@ if (read_config_option('auth_method') == '2') {
 }
 
 $username = sanitize_search_string($username);
+$version  = db_fetch_cell("SELECT cacti FROM version");
 
 /* process login */
 $copy_user = false;
@@ -424,89 +425,127 @@ if (api_plugin_hook_function('custom_login', OPER_MODE_NATIVE) == OPER_MODE_RESK
 	});
 	</script>
 </head>
-<body>
-	<div class='logonArea'>
-		<form name='login' method='post' action='<?php print basename($_SERVER['PHP_SELF']);?>'>
-		<input type='hidden' name='action' value='login'>
-<?php
-
-api_plugin_hook_function('login_before', array('ldap_error' => $ldap_error, 'ldap_error_message' => $ldap_error_message, 'username' => $username, 'user_enabled' => $user_enabled, 'action' => $action));
-
-$cacti_logo = $config['url_path'] . 'images/auth_login.gif';
-$cacti_logo = api_plugin_hook_function('cacti_image', $cacti_logo);
-
-?>
-		<table class='logonPanel' align='center'>
-			<tr>
-				<td colspan='2'><div class='cactiLogon'></div></td>
-			</tr>
-			<?php
-
-			if ($ldap_error) {?>
-			<tr><td id='error' colspan='2'><font color='#FF0000'><strong><?php print $ldap_error_message; ?></strong></font></td></tr>
-			<?php }else{
-			if ($action == 'login') {?>
-			<tr><td id='error' colspan='2'><font color='#FF0000'><strong>Invalid User Name/Password Please Retype</strong></font></td></tr>
-			<?php }
-			if ($user_enabled == '0') {?>
-			<tr><td id='error' colspan='2'><font color='#FF0000'><strong>User Account Disabled</strong></font></td></tr>
-			<?php } } ?>
-
-			<tr id='login_row'>
-				<td colspan='2'>Please enter your Cacti user name and password below:</td>
-			</tr>
-			<tr id='user_row'><td width='90'>User Name:</td>
-				<td><input type='text' id='login_username' name='login_username' size='20' value='<?php print htmlspecialchars($username); ?>'></td>
-			</tr>
-			<tr id='password_row'><td width='90'>Password:</td>
-				<td><input type='password' name='login_password' size='20'></td>
-			</tr>
-			<?php
-			if (read_config_option('auth_method') == '3' || read_config_option('auth_method') == '4') {
-				if (read_config_option('auth_method') == '3') {
-					$realms = api_plugin_hook_function('login_realms', array('local' => array('name' => 'Local', 'selected' => false), 'ldap' => array('name' => 'LDAP', 'selected' => true)));
-				}else{
-					$realms = db_fetch_assoc('SELECT * FROM user_domains WHERE enabled="on" ORDER BY domain_name');
-					$default_realm = db_fetch_cell('SELECT domain_id FROM user_domains WHERE defdomain=1 AND enabled="on"');
-
-					if (sizeof($realms)) {
-						$new_realms['local'] = array('name' => 'Local', 'selected' => false);
-						foreach($realms as $realm) {
-							$new_realms[1000+$realm['domain_id']] = array('name' => $realm['domain_name'], 'selected' => false);
-						}
-
-						if (!empty($default_realm)) {
-							$new_realms[1000+$default_realm]['selected'] = true;
-						}else{
-							$new_realms['local']['selected'] = true;
-						}
-
-						return $new_realms;
-					}else{
-						return $auth_realms;
-					}
-				}
+<body class='loginBody'>
+	<div class='loginLeft'></div>
+	<div class='loginCenter'>
+	<div class='loginArea'>
+		<div class='cactiLoginLogo'></div>
+			<legend>User Login</legend>
+			<form name='login' method='post' action='<?php print basename($_SERVER['PHP_SELF']);?>'>
+				<input type='hidden' name='action' value='login'>
+				<?php api_plugin_hook_function('login_before', 
+					array(
+						'ldap_error' => $ldap_error, 
+						'ldap_error_message' => $ldap_error_message, 
+						'username' => $username, 
+						'user_enabled' => $user_enabled, 
+						'action' => $action)); 
 				?>
-			<tr id='realm_row'>
-				<td>Realm:</td>
-				<td>
-					<select name='realm' style='width: 295px;'><?php
-					if (sizeof($realms)) {
-					foreach($realms as $name => $realm) {
-						print "\t\t\t\t\t<option value='" . $name . "'" . ($realm['selected'] ? ' selected':'') . '>' . htmlspecialchars($realm['name']) . "</option>\n";
-					}
-					}
-					?>
-					</select>
-				</td>
-			</tr>
-			<?php }?>
-			<tr>
-				<td colspan='2' align='left'><input type='submit' value='Login'></td>
-			</tr>
-		</table>
-		<?php api_plugin_hook('login_after'); ?>
-		</form>
+				<div class='loginTitle'>
+					<p>Enter your Username and Password below</p>
+				</div>
+				<div class='cactiLogin'>
+					<table cellpadding='0' cellspacing='0' border='0' class='cactiLoginTable'>
+						<tr>
+							<td>
+								<label for='login_username'>Username</label>
+							</td>
+							<td>
+								<input type='text' id='login_username' name='login_username' size='20' value='<?php print htmlspecialchars($username); ?>' placeholder='Username'>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<label for='login_password'>Password</label>
+							</td>
+							<td>
+								<input type='password' id='login_password' name='login_password' size='20' placeholder='********'>
+							</td>
+						</tr>
+						<?php
+						if (read_config_option('auth_method') == '3' || read_config_option('auth_method') == '4') {
+							if (read_config_option('auth_method') == '3') {
+								$realms = api_plugin_hook_function('login_realms', 
+									array(
+										'local' => array(
+											'name' => 'Local', 
+											'selected' => false
+										), 
+										'ldap' => array(
+											'name' => 'LDAP', 
+											'selected' => true
+										)
+									)
+								);
+							}else{
+								$realms = db_fetch_assoc('SELECT * FROM user_domains WHERE enabled="on" ORDER BY domain_name');
+								$default_realm = db_fetch_cell('SELECT domain_id FROM user_domains WHERE defdomain=1 AND enabled="on"');
+	
+								if (sizeof($realms)) {
+									$new_realms['local'] = array('name' => 'Local', 'selected' => false);
+									foreach($realms as $realm) {
+										$new_realms[1000+$realm['domain_id']] = array('name' => $realm['domain_name'], 'selected' => false);
+									}
+	
+									if (!empty($default_realm)) {
+										$new_realms[1000+$default_realm]['selected'] = true;
+									}else{
+										$new_realms['local']['selected'] = true;
+									}
+	
+									return $new_realms;
+								}else{
+									return $auth_realms;
+								}
+							}
+						?>
+						<tr>
+							<td>
+								<label for='realm'>Realm</label>
+							</td>
+							<td>
+								<select id='realm' name='realm' style='width: 295px;'><?php
+									if (sizeof($realms)) {
+									foreach($realms as $name => $realm) {
+										print "\t\t\t\t\t<option value='" . $name . "'" . ($realm['selected'] ? ' selected':'') . '>' . htmlspecialchars($realm['name']) . "</option>\n";
+									}
+									}
+									?>
+								</select>
+							</td>
+						</tr>
+					<?php }?>
+						<tr>
+							<td cospan='2'>
+								<input type='submit' value='Login'>
+							</td>
+						</tr>
+					</table>
+				</div>
+			<?php api_plugin_hook('login_after'); ?>
+			</form>
+			<div class='loginErrors'>
+				<?php
+				if ($ldap_error) {?>
+				<?php print $ldap_error_message; ?>
+				<?php }else{
+				if ($action == 'login') {?>
+				Invalid User Name/Password Please Retype
+				<?php }
+				if ($user_enabled == '0') {?>
+				<strong>User Account Disabled</strong>
+				<?php } } ?>
+			</div>
+		</div>
+		<div class='versionInfo'>Version <?php print $version;?> | Copyright 2014, The Cacti Group, Inc.</div>
 	</div>
+	<div class='loginRight'></div>
+	<script type='text/javascript'>
+	$(function() {
+		$('body').css('height', $(window).height());
+		$('.loginLeft').css('width',parseInt($(window).width()*0.33)+'px');
+		$('.loginRight').css('width',parseInt($(window).width()*0.33)+'px');
+	});
+	</script>
 </body>
 </html>

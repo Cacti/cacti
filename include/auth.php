@@ -34,6 +34,8 @@ if (basename($_SERVER['PHP_SELF']) == 'logout.php') {
 	return true;
 }
 
+$version = db_fetch_cell("SELECT cacti FROM version");
+
 if (read_config_option('auth_method') != 0) {
 	/* handle alternate authentication realms */
 	api_plugin_hook_function('auth_alternate_realms');
@@ -104,10 +106,10 @@ if (read_config_option('auth_method') != 0) {
 			print "<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.01 Transitional//EN' 'http://www.w3.org/TR/html4/loose.dtd'>\n";
 			print "<html>\n";
 			print "<head>\n";
-			print "\t<title>Cacti</title>\n";
+			print "\t<title>Permission Denied</title>\n";
 			print "\t<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>\n";
 			print "\t<link href='" . $config['url_path'] . "include/themes/" . read_config_option('selected_theme') . "/main.css' type='text/css' rel='stylesheet'>\n";
-			print "\t<link href='" . $config['url_path'] . "include/themes/" . read_config_option('selected_theme') . "/jquery-ui.css' type='text/css' rel='stylesheet'>\n";
+		    print "\t<link href='" . $config['url_path'] . "include/themes/" . read_config_option('selected_theme') . "/jquery-ui.css' type='text/css' rel='stylesheet'>\n";
 			print "\t<link href='" . $config['url_path'] . "images/favicon.ico' rel='shortcut icon'>\n";
 			print "\t<script type='text/javascript' src='" . $config['url_path'] . "include/js/jquery.js' language='javascript'></script>\n";
 			print "\t<script type='text/javascript' src='" . $config['url_path'] . "include/js/jquery-ui.js' language='javascript'></script>\n";
@@ -116,22 +118,31 @@ if (read_config_option('auth_method') != 0) {
 			print "\t<script type='text/javascript' src='" . $config['url_path'] . "include/layout.js'></script>\n";
 			print "<script type='text/javascript'>var theme='" . read_config_option('selected_theme') . "';</script>\n";
 			print "</head>\n";
-			print "<body>\n";
-			print "\t<div class='logonArea'>\n";
-			print "\t\t<table class='logonPanel' align='center'>\n";
-			print "\t\t\t<tr>\n";
-			print "\t\t\t\t<td><div class='cactiPermissions'></div></td>\n";
-			print "\t\t\t</tr><tr>\n";
-			print "\t\t\t\t<td>Your are not permitted to access this section of Cacti.<br>\n";
-			print "\t\t\t\tIf you feel that you need access to this particular seciton,<br>\n";
-			print "\t\t\t\tplease contact your Cacti administrator, or.</td>\n";
-			print "\t\t\t</tr><tr>\n";
-			print $goBack . "\n";
-			print "\t\t\t</tr>\n";
-			print "\t\t</table>\n";
-			print "\t</div>\n";
-			print "</body>\n";
-			print "</html>\n";
+			print "<body class='logoutBody'>
+			<div class='logoutLeft'></div>
+			<div class='logoutCenter'>
+				<div class='logoutArea'>
+					<div class='cactiLogoutLogo'></div>
+					<legend>Permission Denied</legend>
+					<div class='logoutTitle'>
+						<p>You are not permitted to access this section of Cacti.<br>
+						If you feel that this is an error.  Please contact your<br>
+						Cacti Administrator.</p>
+						<center>" . $goBack . "</center>
+					</div>
+					<div class='logoutErrors'></div>
+				</div>
+				<div class='versionInfo'>Version " . $version . " | Copyright 2014, The Cacti Group, Inc.</div>
+			</div>
+			<div class='logoutRight'></div>
+			<script type='text/javascript'>
+			$(function() {
+				$('.loginLeft').css('width',parseInt($(window).width()*0.33)+'px');
+				$('.loginRight').css('width',parseInt($(window).width()*0.33)+'px');
+			});
+			</script>
+			</body>
+			</html>\n";
 			exit;
 		}
 	}

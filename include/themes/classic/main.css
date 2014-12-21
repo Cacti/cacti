@@ -176,6 +176,94 @@ ul#breadcrumbs {
 	padding-top:8px;
 }
 
+.cactiLogo {
+	padding-top:20px;
+	background: #efefef url('./../../../images/cacti_logo.gif') no-repeat center;
+	display:block;
+	width:90px;
+	cursor:pointer;
+	height:140px;
+}
+
+.cactiLogout {
+	background: snow url('./../../../images/auth_logout.gif') no-repeat center bottom;
+	width:400px;
+	height:200px;
+}
+
+.cactiPermissions {
+	background: snow url('./../../../images/auth_deny.gif') no-repeat center bottom;
+	width:400px;
+	height:200px;
+}
+
+.loginLeft, .logoutLeft {
+	width:33%;
+	float:left;
+}
+
+.loginCenter, .logoutCenter {
+	position:relative;
+	padding:30px 0px 5px 20px;
+	top:15%;
+	max-width:350px;
+	max-height:300px;
+	margin-left:auto;
+	margin-right:auto;
+}
+
+.cactiLoginLogo, .cactiLogoutLogo {
+	position:relative;
+	float:right:
+	top:15%;
+	background: transparent url('./../../../images/auth_background.gif') no-repeat center;
+	width:350px;
+	height:128px;
+	z-index:2;
+	margin-top:-90px;
+	margin-left:0px;
+	margin-bottom:-20px;
+}
+
+.loginArea, .logoutArea {
+	position:relative;
+}
+
+.cactiLoginTable td {
+	padding-bottom:6px;
+	padding-right:6px;
+}
+
+.loginErrors, .logoutErrors {
+	color:red;
+	height:15px;
+}
+
+legend {
+	font-size:22px;
+	font-weight:bold;
+	text-align:right;
+}
+
+.loginRight, .logoutRight {
+	width:33%;
+	float:right;
+}
+
+.loginBody, .logoutBody {
+}
+
+.versionInfo {
+	padding-top:5px;
+	float:right;
+	font-size:10px;
+	color:black;
+}
+
+.loginPanel {
+	padding:4px 0px;
+}
+
 .cactiGraphContentArea {
 	background: #ffffff url('./../../../images/shadow.gif') repeat-x center top;
 	padding-top:10px;

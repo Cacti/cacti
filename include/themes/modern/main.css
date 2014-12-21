@@ -278,12 +278,6 @@ ul#breadcrumbs {
 	height:140px;
 }
 
-.cactiLogon {
-	background: snow url('./../../../images/auth_login.gif') no-repeat center bottom;
-	width:400px;
-	height:200px;
-}
-
 .cactiLogout {
 	background: snow url('./../../../images/auth_logout.gif') no-repeat center bottom;
 	width:400px;
@@ -296,7 +290,93 @@ ul#breadcrumbs {
 	height:200px;
 }
 
-.logonPanel td {
+.loginLeft, .logoutLeft {
+	width:33%;
+	float:left;
+}
+
+.loginCenter, .logoutCenter {
+	-moz-border-radius:10px;
+	border-radius:10px;
+	position:relative;
+	padding:30px 0px 5px 20px;
+	background-color:snow;
+	top:30%;
+	max-width:360px;
+	max-height:220px;
+	margin-left:auto;
+	margin-right:auto;
+	background: rgba(255,255,255,1);
+	background: -moz-linear-gradient(top, rgba(255,255,255,1) 0%, rgba(246,246,246,1) 47%, rgba(237,237,237,1) 100%);
+	background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(255,255,255,1)), color-stop(47%, rgba(246,246,246,1)), color-stop(100%, rgba(237,237,237,1)));
+	background: -webkit-linear-gradient(top, rgba(255,255,255,1) 0%, rgba(246,246,246,1) 47%, rgba(237,237,237,1) 100%);
+	background: -o-linear-gradient(top, rgba(255,255,255,1) 0%, rgba(246,246,246,1) 47%, rgba(237,237,237,1) 100%);
+	background: -ms-linear-gradient(top, rgba(255,255,255,1) 0%, rgba(246,246,246,1) 47%, rgba(237,237,237,1) 100%);
+	background: linear-gradient(to bottom, rgba(255,255,255,1) 0%, rgba(246,246,246,1) 47%, rgba(237,237,237,1) 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#ededed', GradientType=0 );
+	/*text-shadow: 1px 1px 2px rgba(9, 61, 16, 1);*/
+	text-shadow: 1px 1px 1px rgba(9, 61, 16, .66);
+}
+
+.cactiLoginLogo, .cactiLogoutLogo {
+	position:relative;
+	float:right:
+	top:30%;
+	background: transparent url('./../../../images/cacti_logo_new.gif') no-repeat center;
+	width:90px;
+	height:128px;
+	z-index:2;
+	margin-top:-90px;
+	margin-left:255px;
+	margin-bottom:-20px;
+}
+
+.loginArea, .logoutArea {
+	-moz-border-radius:10px;
+	border-radius:10px;
+	position:relative;
+	min-height:200px;
+}
+
+.cactiLoginTable td {
+	padding-bottom:6px;
+	padding-right:6px;
+}
+
+.loginErrors, .logoutErrors {
+	color:red;
+	height:15px;
+}
+
+legend {
+	font-size:22px;
+	font-weight:bold;
+}
+
+.loginRight, .logoutRight {
+	width:33%;
+	float:right;
+}
+
+.loginBody, .logoutBody {
+	background: rgba(12,31,16,1);
+	background: -moz-linear-gradient(top, rgba(12,31,16,1) 0%, rgba(13,61,28,1) 56%, rgba(9,59,6,1) 100%);
+	background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(12,31,16,1)), color-stop(56%, rgba(13,61,28,1)), color-stop(100%, rgba(9,59,6,1)));
+	background: -webkit-linear-gradient(top, rgba(12,31,16,1) 0%, rgba(13,61,28,1) 56%, rgba(9,59,6,1) 100%);
+	background: -o-linear-gradient(top, rgba(12,31,16,1) 0%, rgba(13,61,28,1) 56%, rgba(9,59,6,1) 100%);
+	background: -ms-linear-gradient(top, rgba(12,31,16,1) 0%, rgba(13,61,28,1) 56%, rgba(9,59,6,1) 100%);
+	background: linear-gradient(to bottom, rgba(12,31,16,1) 0%, rgba(13,61,28,1) 56%, rgba(9,59,6,1) 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#0c1f10', endColorstr='#093b06', GradientType=0 );
+}
+
+.versionInfo {
+	padding-top:5px;
+	float:right;
+	margin-top:10px;
+	color:snow;
+}
+
+.loginPanel {
 	padding:4px 0px;
 }
 
@@ -612,6 +692,7 @@ td.tab {
 
 .tabs a, .maintabs a {
 	-moz-border-radius:5px 5px 0 0;
+	border-radius:5px 5px 0 0;
 	background-color:#ddd;
 	background-image:-moz-linear-gradient(#f0f0f0,#ddd);
 	background-image:-ms-linear-gradient(#f0f0f0,#ddd);
@@ -620,7 +701,6 @@ td.tab {
 	background-repeat:repeat-x;
 	border:1px solid #555;
 	border-color:#eee #ccc #ccc #eee;
-	border-radius:5px 5px 0 0;
 	color:#333;
 	float:left !important;
 	padding:5px 8px;
