@@ -114,6 +114,7 @@ function db_execute($sql, $log = TRUE, $db_conn = FALSE) {
 		$en = $db_conn->errorCode();
 		// With PDO, we have to free this up
 		$query->fetchAll(PDO::FETCH_ASSOC);
+		$db_conn->affect_rows = $query->rowCount();
 		unset($query);
 		if ($en == '00000') {
 			return TRUE;
@@ -176,6 +177,7 @@ function db_execute_prepared($sql, $parms = array(), $log = TRUE, $db_conn = FAL
 		$en = $db_conn->errorCode();
 		// With PDO, we have to free this up
 		$query->fetchAll(PDO::FETCH_ASSOC);
+		$db_conn->affect_rows = $query->rowCount();
 		unset($query);
 		if ($en == '00000') {
 			return TRUE;
@@ -233,6 +235,7 @@ function db_fetch_cell($sql, $col_name = '', $log = TRUE, $db_conn = FALSE) {
 		cacti_log('DEVEL: SQL Cell: "' . $sql . '"', FALSE);
 	}
 	$query = $db_conn->query($sql);
+	$db_conn->affect_rows = $query->rowCount();
 	$en = $db_conn->errorCode();
 	if ($en == '00000') {
 		$q = $query->fetchAll(PDO::FETCH_BOTH);
@@ -288,6 +291,7 @@ function db_fetch_cell_prepared($sql, $parms = array(), $col_name = '', $log = T
 
 	$query = $db_conn->prepare($sql);
 	$query->execute($parms);
+	$db_conn->affect_rows = $query->rowCount();
 	$en = $db_conn->errorCode();
 
 	if ($en == '00000') {
@@ -342,6 +346,7 @@ function db_fetch_row($sql, $log = TRUE, $db_conn = FALSE) {
 	}
 
 	$query = $db_conn->query($sql);
+	$db_conn->affect_rows = $query->rowCount();
 	$en = $db_conn->errorCode();
 
 	if ($en == '00000') {
@@ -399,6 +404,7 @@ function db_fetch_row_prepared($sql, $parms = array(), $log = TRUE, $db_conn = F
 
 	$query = $db_conn->prepare($sql);
 	$query->execute($parms);
+	$db_conn->affect_rows = $query->rowCount();
 	$en = $db_conn->errorCode();
 
 	if ($en == '00000') {
@@ -455,6 +461,7 @@ function db_fetch_assoc($sql, $log = TRUE, $db_conn = FALSE) {
 	}
 
 	$query = $db_conn->query($sql);
+	$db_conn->affect_rows = $query->rowCount();
 	$en = $db_conn->errorCode();
 
 	if ($en == '00000') {
@@ -513,6 +520,7 @@ function db_fetch_assoc_prepared($sql, $parms = array(), $log = TRUE, $db_conn =
 
 	$query = $db_conn->prepare($sql);
 	$query->execute($parms);
+	$db_conn->affect_rows = $query->rowCount();
 	$en = $db_conn->errorCode();
 
 	if ($en == '00000') {
@@ -575,8 +583,7 @@ function db_affected_rows($db_conn = FALSE) {
 		$db_conn = $database_sessions[$database_default];
 	}
 	if (!$db_conn) return FALSE;
-
-	return $db_conn->query('SELECT FOUND_ROWS()')->fetchColumn();
+	return $db_conn->affect_rows;
 }
 
 
