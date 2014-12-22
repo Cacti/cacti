@@ -37,7 +37,7 @@ function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $p
 	$i = 0;
 	$error = '';
 	if (isset($database_sessions[$db_name])) {
-		return TRUE;
+		return $database_sessions[$db_name];
 	}
 
 	$flags = array();
@@ -63,7 +63,7 @@ function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $p
 			$cnn_id = new PDO("$db_type:host=$device;port=$port;dbname=$db_name;charset=utf8", $user, $pass, $flags);
 			$cnn_id->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_SILENT);
 			$database_sessions[$db_name] = $cnn_id;
-			return TRUE;
+			return $cnn_id;
 		} catch (PDOException $e) {
 			// Must catch this exception or else PDO will display an error with our username/password
 			//print $e->getMessage();
