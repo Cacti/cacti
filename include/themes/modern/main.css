@@ -278,18 +278,6 @@ ul#breadcrumbs {
 	height:140px;
 }
 
-.cactiLogout {
-	background: snow url('./../../../images/auth_logout.gif') no-repeat center bottom;
-	width:400px;
-	height:200px;
-}
-
-.cactiPermissions {
-	background: snow url('./../../../images/auth_deny.gif') no-repeat center bottom;
-	width:400px;
-	height:200px;
-}
-
 .loginLeft, .logoutLeft {
 	width:33%;
 	float:left;
@@ -303,7 +291,7 @@ ul#breadcrumbs {
 	background-color:snow;
 	top:30%;
 	max-width:360px;
-	max-height:220px;
+	max-height:300px;
 	margin-left:auto;
 	margin-right:auto;
 	background: rgba(255,255,255,1);
@@ -345,7 +333,7 @@ ul#breadcrumbs {
 
 .loginErrors, .logoutErrors {
 	color:red;
-	height:15px;
+	min-height:15px;
 }
 
 legend {
@@ -526,11 +514,13 @@ legend {
 	cursor:pointer;
 	vertical-align:bottom;
 	text-align:left;
+	font-size: 11px;
 }
 
 .tableHeader th div {
 	display:block;
 	padding-right:8px;
+	font-size: 11px;
 }
 
 .tableSubHeaderColumn {

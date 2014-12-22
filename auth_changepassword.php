@@ -22,48 +22,85 @@
  +-------------------------------------------------------------------------+
 */
 
-include("./include/global.php");
+include('./include/auth.php');
 
-/* find out if we are logged in as a 'guest user' or not, if we are redirect away from password change */
-if (db_fetch_cell("select id from user_auth where username='" . read_config_option("guest_user") . "'") == $_SESSION["sess_user_id"]) {
-	header("Location: index.php");
+// If the user is not logged in, redirect them to the login page
+if (!isset($_SESSION['sess_user_id'])) {
+	header('Location: index.php');
+	exit;
 }
 
-$user = db_fetch_row("select * from user_auth where id=" . $_SESSION["sess_user_id"]);
+$user    = db_fetch_row('SELECT * FROM user_auth WHERE id=' . $_SESSION['sess_user_id']);
+$version = db_fetch_cell('SELECT cacti FROM version');
+$auth_method = read_config_option('auth_method');
+
+if ($auth_method != 1) {
+	header('Location: index.php');
+	exit;
+}
+
+/* find out if we are logged in as a 'guest user' or not, if we are redirect away from password change */
+if (sizeof($user) && $user['username'] == read_config_option('guest_user')) {
+	header('Location: graph_view.php');
+	exit;
+}
 
 /* default to !bad_password */
 $bad_password = false;
+$errorMessage = '';
 
 /* set default action */
-if (!isset($_REQUEST["action"])) { $_REQUEST["action"] = ""; }
+if (!isset($_REQUEST['action'])) { $_REQUEST['action'] = ''; }
 
-switch ($_REQUEST["action"]) {
+switch ($_REQUEST['action']) {
 case 'changepassword':
-	if (($_POST["password"] == $_POST["confirm"]) && ($_POST["password"] != "")) {
-		db_execute("insert into user_log (username,result,ip) values('" . $user["username"] . "',3,'" . $_SERVER["REMOTE_ADDR"] . "')");
-		db_execute("update user_auth set must_change_password='',password='" . md5($_POST["password"]) . "' where id=" . $_SESSION["sess_user_id"]);
+	if ($user['password'] != md5($_POST['current_password'])) {
+		$bad_password = true;
+		$errorMessage = "<span color='#FF0000'><strong>Your current password is not correct.  Please try again.</strong></span>";
+	}
 
-		kill_session_var("sess_change_password");
+	if ($user['password'] == md5($_POST['password'])) {
+		$bad_password = true;
+		$errorMessage = "<span color='#FF0000'><strong>Your new password can not be the same as the old password.  Please try again.</strong></span>";
+	}
+
+	if ($bad_password == false && $_POST['password'] == $_POST['confirm'] && $_POST['password'] != '') {
+		db_execute("INSERT IGNORE INTO user_log (username,result,ip) VALUES ('" . $user['username'] . "',3,'" . $_SERVER['REMOTE_ADDR'] . "')");
+		db_execute("UPDATE user_auth SET must_change_password='', password='" . md5($_POST['password']) . "' WHERE id=" . $_SESSION['sess_user_id']);
+
+		kill_session_var('sess_change_password');
 
 		/* ok, at the point the user has been sucessfully authenticated; so we must
 		decide what to do next */
 
 		/* if no console permissions show graphs otherwise, pay attention to user setting */
-		$realm_id = $user_auth_realm_filenames["index.php"];
+		$realm_id    = $user_auth_realm_filenames['index.php'];
+		$has_console = db_fetch_cell('SELECT realm_id 
+			FROM user_auth_realm 
+			WHERE user_id=' . $_SESSION['sess_user_id'] . ' 
+			AND realm_id=' . $realm_id);
 
-		if (sizeof(db_fetch_assoc("select user_auth_realm.realm_id from user_auth_realm where user_auth_realm.user_id = '" . $_SESSION["sess_user_id"] . "' and user_auth_realm.realm_id = '" . $realm_id . "'")) > 0) {
-			switch ($user["login_opts"]) {
+		if (basename($_POST['ref']) == 'auth_changepassword.php' || basename($_POST['ref']) == '') {
+			if ($has_console) {
+				$_POST['ref'] = 'index.php';
+			}else{
+				$_POST['ref'] = 'graph_view.php';
+			}
+		}
+
+		if (!empty($has_console)) {
+			switch ($user['login_opts']) {
 				case '1': /* referer */
-					header("Location: " . sanitize_uri($_POST["ref"])); break;
+					header('Location: ' . sanitize_uri($_POST['ref'])); break;
 				case '2': /* default console page */
-					header("Location: index.php"); break;
+					header('Location: index.php'); break;
 				case '3': /* default graph page */
-					header("Location: graph_view.php"); break;
+					header('Location: graph_view.php'); break;
 				default:
 					api_plugin_hook_function('login_options_navigate', $user['login_opts']);
 			}
 		}else{
-			header("Location: graph_view.php");
+			header('Location: graph_view.php');
 		}
 		exit;
 
@@ -78,63 +115,71 @@ if (api_plugin_hook_function('custom_password', OPER_MODE_NATIVE) == OPER_MODE_R
 	exit;
 }
 
-?>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
-<head>
-	<title>Login to cacti</title>
-	<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
-	<STYLE TYPE="text/css">
-	<!--
-		BODY, TABLE, TR, TD {font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 12px;}
-		A {text-decoration: none;}
-		A:active { text-decoration: none;}
-		A:hover {text-decoration: underline; color: #333333;}
-		A:visited {color: Blue;}
-	-->
-	</style>
-</head>
+if ($bad_password && $errorMessage == "") {
+	$errorMessage = "<span color='#FF0000'><strong>Your new passwords do not match, please retype.</strong></span>";
+}elseif ($_REQUEST['action'] == 'force') {
+	$errorMessage = "<span color='#FF0000'><strong>*** Forced password change ***</strong></span>";
+}
 
-<body onload="document.login.password.focus()">
-
-<form name="login" method="post" action="<?php print basename($_SERVER["PHP_SELF"]);?>">
-
-<table align="center">
-	<tr>
-		<td colspan="2"><img src="images/auth_login.gif" border="0" alt=""></td>
-	</tr>
-	<?php if ($bad_password == true) {?>
-	<tr style="height:10px;"><td></td></tr>
-	<tr>
-		<td colspan="2"><font color="#FF0000"><strong>Your passwords do not match, please retype:</strong></font></td>
-	</tr>
-	<?php }?>
-	<tr style="height:10px;"><td></td></tr>
-	<tr>
-		<td colspan="2">
-			<strong><font color="#FF0000">*** Forced Password Change ***</font></strong><br><br>
-			Please enter a new password for cacti:
-		</td>
-	</tr>
-	<tr style="height:10px;"><td></td></tr>
-	<tr>
-		<td>Password:</td>
-		<td><input type="password" name="password" size="40"></td>
-	</tr>
-	<tr>
-		<td>Confirm:</td>
-		<td><input type="password" name="confirm" size="40"></td>
-	</tr>
-	<tr style="height:10px;"><td></td></tr>
-	<tr>
-		<td><input type="submit" value="Save"></td>
-	</tr>
-</table>
-
-<input type="hidden" name="action" value="changepassword">
-<input type="hidden" name="ref" value="<?php print (isset($_REQUEST["ref"]) ? sanitize_uri($_REQUEST["ref"]) : '');?>">
-
-</form>
-
-</body>
-</html>
+print "<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.01 Transitional//EN' 'http://www.w3.org/TR/html4/loose.dtd'>\n";
+print "<html>\n";
+print "<head>\n";
+print "\t<title>Change Password</title>\n";
+print "\t<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>\n";
+print "\t<link href='" . $config['url_path'] . "include/themes/" . read_config_option('selected_theme') . "/main.css' type='text/css' rel='stylesheet'>\n";
+   print "\t<link href='" . $config['url_path'] . "include/themes/" . read_config_option('selected_theme') . "/jquery-ui.css' type='text/css' rel='stylesheet'>\n";
+print "\t<link href='" . $config['url_path'] . "images/favicon.ico' rel='shortcut icon'>\n";
+print "\t<script type='text/javascript' src='" . $config['url_path'] . "include/js/jquery.js' language='javascript'></script>\n";
+print "\t<script type='text/javascript' src='" . $config['url_path'] . "include/js/jquery-ui.js' language='javascript'></script>\n";
+print "\t<script type='text/javascript' src='" . $config['url_path'] . "include/js/jquery.cookie.js' language='javascript'></script>\n";
+print "\t<script type='text/javascript' src='" . $config['url_path'] . "include/js/jquery.hotkeys.js'></script>\n";
+print "\t<script type='text/javascript' src='" . $config['url_path'] . "include/layout.js'></script>\n";
+print "<script type='text/javascript'>var theme='" . read_config_option('selected_theme') . "';</script>\n";
+print "</head>\n";
+print "<body class='loginBody'>
+	<div class='loginLeft'></div>
+	<div class='loginCenter'>
+		<div class='loginArea'>
+			<div class='cactiLogoutLogo'></div>
+			<legend>Change Password</legend>
+			<form name='login' method='post' action='" . basename($_SERVER['PHP_SELF']) . "'>
+				<input type='hidden' name='action' value='changepassword'>
+				<input type='hidden' name='ref' value='" . (isset($_REQUEST['ref']) ? sanitize_uri($_REQUEST['ref']) : '') . "'>
+				<input type='hidden' name='name' value='" . (isset($user['username']) ? $user['username'] : '') . "'>
+				<div class='loginTitle'>
+					<p>Please enter your current password and your new<br>Cacti password.</p>
+				</div>
+				<div class='cactiLogin'>
+					<table class='cactiLoginTable' cellpadding='0' cellspacing='0' border='0'>
+						<tr>
+							<td>Current password</td>
+							<td><input type='password' id='current' name='current_password' autocomplete='off' size='20' placeholder='********'></td>
+						</tr>
+						<tr>
+							<td>New password</td>
+							<td><input type='password' name='password' autocomplete='off' size='20' placeholder='********'></td>
+						</tr>
+						<tr>
+							<td>Confirm new password</td>
+							<td><input type='password' name='confirm' autocomplete='off' size='20' placeholder='********'></td>
+						</tr>
+						<tr>
+							<td><input type='submit' value='Save'></td>
+						</tr>
+					</table>
+				</div>
+			</form>
+			<div class='loginErrors'>" . $errorMessage . "</div>
+		</div>
+		<div class='versionInfo'>Version " . $version . " | Copyright 2014, The Cacti Group, Inc.</div>
+	</div>
+	<div class='loginRight'></div>
+	<script type='text/javascript'>
+	$(function() {
+		$('#current').focus();
+		$('.loginLeft').css('width',parseInt($(window).width()*0.33)+'px');
+		$('.loginRight').css('width',parseInt($(window).width()*0.33)+'px');
+	});
+	</script>
+	</body>
+	</html>\n";

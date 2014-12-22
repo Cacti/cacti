@@ -1628,7 +1628,7 @@ function draw_login_status($using_guest_account = false) {
 		print "Logged in as <strong>Guest</strong> (<a href='" . $config['url_path'] . "index.php'>Login as Regular User</a>)\n";
 	}elseif (isset($_SESSION["sess_user_id"]) && $using_guest_account == false) {
 		api_plugin_hook('nav_login_before');
-		print "Logged in as <strong>" . db_fetch_cell("select username from user_auth where id=" . $_SESSION["sess_user_id"]) . "</strong> (<a href='" . $config['url_path'] . "logout.php'>Logout</a>)\n";
+		print "Logged in as <strong>" . db_fetch_cell("SELECT username FROM user_auth WHERE id=" . $_SESSION["sess_user_id"]) . "</strong> ( <a href='" . $config['url_path'] . "logout.php'>Logout</a> | <a href='" . $config['url_path'] . "auth_changepassword.php'>Change Password</a> )\n";
 		api_plugin_hook('nav_login_after');
 	}
 }
@@ -1671,9 +1671,6 @@ function draw_navigation_text($type = "url") {
 		"cdef.php:actions" => array("title" => "Actions", "mapping" => "index.php:,cdef.php:", "url" => "", "level" => "2"),
 		"tree.php:" => array("title" => "Graph Trees", "mapping" => "index.php:", "url" => "tree.php", "level" => "1"),
 		"tree.php:edit" => array("title" => "(Edit)", "mapping" => "index.php:,tree.php:", "url" => "", "level" => "2"),
-		"tree.php:remove" => array("title" => "(Remove)", "mapping" => "index.php:,tree.php:", "url" => "", "level" => "2"),
-		"tree.php:item_edit" => array("title" => "Graph Tree Items", "mapping" => "index.php:,tree.php:,tree.php:edit", "url" => "", "level" => "3"),
-		"tree.php:item_remove" => array("title" => "(Remove Item)", "mapping" => "index.php:,tree.php:,tree.php:edit", "url" => "", "level" => "3"),
 		"color.php:" => array("title" => "Colors", "mapping" => "index.php:", "url" => "color.php", "level" => "1"),
 		"color.php:edit" => array("title" => "(Edit)", "mapping" => "index.php:,color.php:", "url" => "", "level" => "2"),
 		"graph_templates.php:" => array("title" => "Graph Templates", "mapping" => "index.php:", "url" => "graph_templates.php", "level" => "1"),
@@ -1838,7 +1835,7 @@ function draw_navigation_text($type = "url") {
 
 		$tree_title = $tree_name . ($leaf_name != '' ? ' (' . $leaf_name:'') . ($leaf_sub != '' ? ':' . $leaf_sub . ')':($leaf_name != '' ? ')':''));
 
-		$current_nav .= "<li><a id='nav_title' href=#>" . htmlspecialchars($tree_title) . '</a></li>';
+		$current_nav .= "<li><a id='nav_title' href=#>" . htmlspecialchars($tree_title) . '</a></li></ul>';
 	}else{
 		$current_nav .= '</ul>';
 		$tree_title = '';

@@ -509,6 +509,7 @@ $user_auth_realm_filenames = array(
 	'event_queue.php' => 8,
 	'smtp_queue.php' => 8,
 	'logout.php' => -1,
+	'auth_changepassword.php' => -1,
 	'permission_denied.php' => -1);
 
 $hash_type_codes = array(
