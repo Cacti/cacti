@@ -49,7 +49,7 @@ function api_plugin_hook ($name) {
 		AND ph.name NOT IN $ps_where
 		ORDER BY id ASC", array($name, $name), true);
 
-	if (count($result)) {
+	if (!empty($result)) {
 		foreach ($result as $hdata) {
 			if (!in_array($hdata['name'], $plugins_integrated)) {
 				$p[] = $hdata['name'];
@@ -106,7 +106,7 @@ function api_plugin_hook_function ($name, $parm=NULL) {
 		AND ph.name NOT IN $ps_where
 		ORDER BY id ASC", true);
 
-	if (count($result)) {
+	if (!empty($result)) {
 		foreach ($result as $hdata) {
 			if (!in_array($hdata['name'], $plugins_integrated)) {
 				$p[] = $hdata['name'];
