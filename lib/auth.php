@@ -23,6 +23,91 @@
 */
 
 
+/* clear_auth_cookie - clears a users security token
+ * @return - NULL */
+function clear_auth_cookie() {
+	if (isset($_COOKIE['cacti_remembers']) && read_config_option('auth_cache_enabled') == 'on') {
+		$parts = explode(',', $_COOKIE['cacti_remembers']);
+		$user  = $parts[0];
+
+		if ($user != '') {
+			$user_id = db_fetch_cell("SELECT id FROM user_auth WHERE username='$user'");
+
+			if (!empty($user_id)) {
+				if (isset($parts[1])) {
+					$nssecret  = $parts[1];
+					$secret = hash('sha512', $nssecret, false);
+					setcookie('cacti_remembers', '', time() - 3600, '/cacti/');
+					db_execute("DELETE FROM user_auth_cache WHERE user_id=$user_id AND token='$secret'");
+				}
+			}
+		}
+	}
+}
+
+/* set_auth_cookie - sets a users security token
+ * @arg - (string) $user - The user_auth row for the user
+ * @return - (boolean) True if token set worked, otherwise false */
+function set_auth_cookie($user) {
+	clear_auth_cookie();
+
+	$nssecret = md5($_SERVER['REQUEST_TIME'] .  mt_rand(10000,10000000)) . md5($_SERVER['REMOTE_ADDR']);
+
+	$secret = hash('sha512', $nssecret, false);
+
+	db_execute("REPLACE INTO user_auth_cache 
+		(user_id, hostname, last_update, token) 
+		VALUES 
+		(" . $user['id'] . ",'" . $_SERVER['HTTP_HOST'] . "', NOW(), '" . $secret . "');");
+
+	setcookie('cacti_remembers', $user['username'] . "," . $nssecret, time()+(86400*30), '/cacti/');
+}
+
+/* check_auth_cookie - clears a users security token
+ * @return - (int) The user of the session cookie, otherwise false */
+function check_auth_cookie() {
+	if (isset($_COOKIE['cacti_remembers']) && read_config_option('auth_cache_enabled') == 'on') {
+		$parts = explode(',', $_COOKIE['cacti_remembers']);
+		$user  = $parts[0];
+
+		if ($user != '') {
+			$user_info = db_fetch_row("SELECT id, username 
+				FROM user_auth 
+				WHERE username='$user'");
+
+			if (!empty($user_info)) {
+				if (isset($parts[1])) {
+					$nssecret = $parts[1];
+
+					$secret = hash('sha512', $nssecret, false);
+
+					$found  = db_fetch_cell("SELECT user_id 
+						FROM user_auth_cache 
+						WHERE user_id=" . $user_info['id'] . " 
+						AND token='$secret'");
+
+					if (empty($found)) {
+						return false;
+					}else{
+						set_auth_cookie($user_info);
+
+						cacti_log("LOGIN: User '" . $user_info['username'] . "' Authenticated via Authentication Cookie", false, 'AUTH');
+
+						db_execute('INSERT INTO user_log 
+							(username, user_id, result, ip, time) 
+							VALUES 
+							(' . db_qstr($user) . ', ' . $user_info['id'] . ", 2, '" . $_SERVER['REMOTE_ADDR'] . "', NOW())");
+
+						return $user_info['id'];;
+					}
+				}
+			}
+		}
+	}
+
+	return false;
+}
+
 /* user_copy - copies user account
    @arg $template_user - username of the user account that should be used as the template
    @arg $new_user - new username of the account to be created/overwritten

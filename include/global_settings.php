@@ -860,6 +860,12 @@ $settings = array(
 			'default' => 1,
 			'array' => $auth_methods
 			),
+		'auth_cache_enabled' => array(
+			'friendly_name' => 'Support Authentication Cookies',
+			'description' => "If a user authenticates and selects 'Keep me signed in', an authentication cookie will be created on the users computer allowing that user to stay logged in.  The authentication cookie expires after 90 days of non-use.",
+			'default' => '',
+			'method' => 'checkbox'
+			),
 		'special_users_header' => array(
 			'friendly_name' => 'Special Users',
 			'method' => 'spacer',

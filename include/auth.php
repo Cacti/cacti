@@ -25,7 +25,8 @@
 include('./include/global.php');
 
 /* check to see if this is a new installation */
-if (db_fetch_cell('select cacti from version') != $config['cacti_version']) {
+$version = db_fetch_cell('SELECT cacti FROM version');
+if ($version != $config['cacti_version']) {
 	header ('Location: ' . $config['url_path'] . 'install/');
 	exit;
 }
@@ -33,8 +34,6 @@ if (db_fetch_cell('select cacti from version') != $config['cacti_version']) {
 if (basename($_SERVER['PHP_SELF']) == 'logout.php') {
 	return true;
 }
-
-$version = db_fetch_cell("SELECT cacti FROM version");
 
 if (read_config_option('auth_method') != 0) {
 	/* handle alternate authentication realms */
@@ -46,19 +45,28 @@ if (read_config_option('auth_method') != 0) {
 		exit;
 	}
 
+	/* check for remember me function ality */
+	if (!isset($_SESSION['sess_user_id'])) {
+		$cookie_user = check_auth_cookie();
+		if ($cookie_user !== false) {
+			$_SESSION['sess_user_id'] = $cookie_user;
+		}
+	}
+
 	/* don't even bother with the guest code if we're already logged in */
 	if ((isset($guest_account)) && (empty($_SESSION['sess_user_id']))) {
-		$guest_user_id = db_fetch_cell("select id from user_auth where username='" . read_config_option('guest_user') . "' and realm = 0 and enabled = 'on'");
+		$guest_user_id = db_fetch_cell("SELECT id FROM user_auth WHERE username='" . read_config_option('guest_user') . "' AND realm=0 AND enabled='on'");
 
 		/* cannot find guest user */
 		if (!empty($guest_user_id)) {
 			$_SESSION['sess_user_id'] = $guest_user_id;
+			return true;
 		}
 	}
 
 	/* if we are a guest user in a non-guest area, wipe credentials */
 	if (!empty($_SESSION['sess_user_id'])) {
-		if ((!isset($guest_account)) && (db_fetch_cell("select id from user_auth where username='" . read_config_option('guest_user') . "'") == $_SESSION['sess_user_id'])) {
+		if ((!isset($guest_account)) && (db_fetch_cell("SELECT id FROM user_auth WHERE username='" . read_config_option('guest_user') . "'") == $_SESSION['sess_user_id'])) {
 			kill_session_var('sess_user_id');
 		}
 	}

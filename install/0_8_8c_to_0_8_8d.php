@@ -232,4 +232,20 @@ function upgrade_to_0_8_8d() {
 		ADD COLUMN last_modified TIMESTAMP default '0000-00-00' AFTER name, 
 		ADD COLUMN user_id INT UNSIGNED default '1' AFTER name, 
 		ADD COLUMN modified_by INT UNSIGNED default '1'");
+
+	db_install_execute('0.8.8d', "ALTER TABLE graph_tree_items 
+		MODIFY COLUMN id BIGINT UNSIGNED NOT NULL auto_increment, 
+		ADD COLUMN parent BIGINT UNSIGNED default NULL AFTER id, 
+		ADD COLUMN position int UNSIGNED default NULL AFTER parent, 
+		ADD COLUMN level int UNSIGNED default NULL AFTER position, 
+		ADD COLUMN left_id BIGINT UNSIGNED default NULL AFTER level, 
+		ADD COLUMN right_id BIGINT UNSIGNED default NULL AFTER left_id;");
+
+	db_install_execute('0.8.8d', "CREATE TABLE IF NOT EXISTS `user_auth_cache` (
+		`user_id` int(10) unsigned NOT NULL DEFAULT '0',
+		`hostname` varchar(64) NOT NULL DEFAULT '',
+		`last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+		`token` varchar(1024) NOT NULL DEFAULT '') 
+		ENGINE=MyISAM 
+		COMMENT='Caches Remember Me Details'");
 }

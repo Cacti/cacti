@@ -647,7 +647,8 @@ function utilities_view_user_log() {
 					<td>
 						<select id='result' name="result" onChange="applyFilter()">
 							<option value="-1"<?php if (get_request_var_request("result") == '-1') {?> selected<?php }?>>Any</option>
-							<option value="1"<?php if (get_request_var_request("result") == '1') {?> selected<?php }?>>Success</option>
+							<option value="1"<?php if (get_request_var_request("result") == '1') {?> selected<?php }?>>Success - Pswd</option>
+							<option value="2"<?php if (get_request_var_request("result") == '2') {?> selected<?php }?>>Success - Token</option>
 							<option value="0"<?php if (get_request_var_request("result") == '0') {?> selected<?php }?>>Failed</option>
 						</select>
 					</td>
@@ -794,7 +795,7 @@ function utilities_view_user_log() {
 				<?php print (strlen(get_request_var_request("filter")) ? (preg_replace("/(" . preg_quote(get_request_var_request("filter"), "/") . ")/i", "<span style='filteredValue'>\\1</span>", $item["time"])) : $item["time"]);?>
 			</td>
 			<td style='white-space:nowrap;'>
-				<?php print $item["result"] == 0 ? "Failed" : "Success";?>
+				<?php print $item['result'] == 0 ? 'Failed' : $item['result'] == 1 ? 'Success - Pswd':'Success - Token';?>
 			</td>
 			<td style='white-space:nowrap;'>
 				<?php print (strlen(get_request_var_request("filter")) ? (preg_replace("/(" . preg_quote(get_request_var_request("filter"), "/") . ")/i", "<span class='filteredValue'>\\1</span>", $item["ip"])) : $item["ip"]);?>

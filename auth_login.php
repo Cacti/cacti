@@ -66,12 +66,13 @@ $username = sanitize_search_string($username);
 $version  = db_fetch_cell("SELECT cacti FROM version");
 
 /* process login */
-$copy_user = false;
-$user_auth = false;
+$copy_user    = false;
+$user_auth    = false;
 $user_enabled = 1;
-$ldap_error = false;
+$ldap_error   = false;
 $ldap_error_message = '';
-$realm = 0;
+$realm        = 0;
+
 if ($action == 'login') {
 	switch (read_config_option('auth_method')) {
 	case '0':
@@ -151,7 +152,7 @@ if ($action == 'login') {
 	if ((!sizeof($user)) && ($copy_user) && (read_config_option('user_template') != '0') && (strlen($username) > 0)) {
 		cacti_log("WARN: User '" . $username . "' does not exist, copying template user", false, 'AUTH');
 		/* check that template user exists */
-		if (db_fetch_row("SELECT id FROM user_auth WHERE username = '" . read_config_option('user_template') . "' AND realm = 0")) {
+		if (db_fetch_row("SELECT id FROM user_auth WHERE username='" . read_config_option('user_template') . "' AND realm=0")) {
 			/* template user found */
 			user_copy(read_config_option('user_template'), $username, 0, $realm);
 			/* requery newly created user */
@@ -166,9 +167,9 @@ if ($action == 'login') {
 
 	/* Guest account checking - Not for builtin */
 	$guest_user = false;
-	if ((sizeof($user) < 1) && ($user_auth) && (read_config_option('guest_user') != '0')) {
+	if ((!sizeof($user)) && ($user_auth) && (read_config_option('guest_user') != '0')) {
 		/* Locate guest user record */
-		$user = db_fetch_row("SELECT * FROM user_auth WHERE username = '" . read_config_option('guest_user') . "'");
+		$user = db_fetch_row("SELECT * FROM user_auth WHERE username='" . read_config_option('guest_user') . "'");
 		if ($user) {
 			cacti_log("LOGIN: Authenicated user '" . $username . "' using guest account '" . $user['username'] . "'", false, 'AUTH');
 			$guest_user = true;
@@ -181,15 +182,21 @@ if ($action == 'login') {
 	}
 
 	/* Process the user  */
-	if (sizeof($user) > 0) {
+	if (sizeof($user)) {
 		cacti_log("LOGIN: User '" . $user['username'] . "' Authenticated", false, 'AUTH');
 		db_execute('INSERT INTO user_log (username,user_id,result,ip,time) VALUES (' . db_qstr($username) . ',' . $user['id'] . ",1,'" . $_SERVER['REMOTE_ADDR'] . "',NOW())");
+
 		/* is user enabled */
 		$user_enabled = $user['enabled'];
 		if ($user_enabled != 'on') {
 			/* Display error */
 			auth_display_custom_error_message('Access Denied, user account disabled.');
 			exit;
+		}
+
+		/* remember this user */
+		if (isset($_POST['remember_me']) && read_config_option('auth_cache_enabled') == 'on') {
+			set_auth_cookie($user);
 		}
 
 		/* set the php session */
@@ -201,7 +208,7 @@ if ($action == 'login') {
 		}
 
 		$group_options = db_fetch_cell('SELECT MAX(login_opts)
-	                FROM user_auth_group AS uag
+			FROM user_auth_group AS uag
 			INNER JOIN user_auth_group_members AS uagm
 			ON uag.id=uagm.group_id
 			WHERE user_id=' . $_SESSION['sess_user_id']);
@@ -514,7 +521,14 @@ if (api_plugin_hook_function('custom_login', OPER_MODE_NATIVE) == OPER_MODE_RESK
 								</select>
 							</td>
 						</tr>
-					<?php }?>
+					<?php } if (read_config_option('auth_cache_enabled') == 'on') { ?>
+
+						<tr>
+							<td colspan='2'>
+								<label for='remember_me'><input style='vertical-align:-3px;' type='checkbox' id='remember_me' name='remember_me' <?php print (isset($_COOKIE['cacti_remembers']) ? 'checked':'');?>>Keep me signed in</label>
+							</td>
+						</tr>
+					<?php } ?>
 						<tr>
 							<td cospan='2'>
 								<input type='submit' value='Login'>

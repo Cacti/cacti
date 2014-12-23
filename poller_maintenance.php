@@ -112,6 +112,13 @@ if (($purge)) {
 	cacti_log($string, true, 'SYSTEM');
 }
 
+/* removing security tokens older than 90 days */
+if (read_config_option('auth_cache_enabled') == 'on') {
+	db_execute("DELETE FROM user_auth_cache WHERE last_update<'" . date("Y-m-d H:i:s", time()-(86400*90)) . "'");
+}else{
+	db_execute("TRUNCATE TABLE user_auth_cache");
+}
+
 /*
  * remove_files
  * remove all unwanted files; the list is given by table data_source_purge_action

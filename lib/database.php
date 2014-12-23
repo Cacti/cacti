@@ -109,8 +109,8 @@ function db_execute($sql, $log = TRUE, $db_conn = FALSE) {
 		cacti_log('DEVEL: SQL Exec: "' . $sql . '"', FALSE);
 	}
 	$errors = 0;
+	$db_conn->affect_rows = 0;
 	while (1) {
-
 		$query = $db_conn->query($sql);
 		$en = $db_conn->errorCode();
 		if ($en == '00000') {
@@ -149,6 +149,7 @@ function db_execute($sql, $log = TRUE, $db_conn = FALSE) {
 			}
 		}
 	}
+	unset($query);
 	return FALSE;
 }
 
@@ -171,10 +172,10 @@ function db_execute_prepared($sql, $parms = array(), $log = TRUE, $db_conn = FAL
 		cacti_log('DEVEL: SQL Exec: "' . $sql . '"', FALSE);
 	}
 	$errors = 0;
+	$db_conn->affect_rows = 0;
 	while (1) {
 		$query = $db_conn->prepare($sql);
 		$query->execute($parms);
-
 		$en = $db_conn->errorCode();
 		if ($en == '00000') {
 			// With PDO, we have to free this up
@@ -212,6 +213,7 @@ function db_execute_prepared($sql, $parms = array(), $log = TRUE, $db_conn = FAL
 			}
 		}
 	}
+	unset($query);
 	return FALSE;
 }
 

@@ -2643,6 +2643,21 @@ INSERT INTO user_auth VALUES (1,'admin','21232f297a57a5a743894a0e4a801fc3',0,'Ad
 INSERT INTO user_auth VALUES (3,'guest','43e9a4ab75570f5b',0,'Guest Account','on','on','on','on','on',3,1,1,1,1,'');
 
 --
+-- Table structure for table `user_auth_cache`
+--
+
+CREATE TABLE IF NOT EXISTS `user_auth_cache` (
+  `user_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `hostname` varchar(64) NOT NULL DEFAULT '',
+  `last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `token` varchar(1024) NOT NULL DEFAULT ''
+) ENGINE=MyISAM COMMENT='Caches Remember Me Details';
+
+--
+-- Dumping data for table `user_auth`
+--
+
+--
 -- Table structure for table `user_auth_group`
 --
 

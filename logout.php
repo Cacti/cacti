@@ -78,6 +78,8 @@ if (isset($_REQUEST['action']) && $_REQUEST['action'] == 'timeout') {
 	</body>
 	</html>\n";
 }elseif (read_config_option("auth_method") == "2") {
+	clear_auth_cookie();
+
 	if (api_plugin_hook_function('custom_logout_message', OPER_MODE_NATIVE) == OPER_MODE_RESKIN) {
 		exit;
 	}
@@ -123,8 +125,9 @@ if (isset($_REQUEST['action']) && $_REQUEST['action'] == 'timeout') {
 	</html>\n";
 }else{
 	/* Default action */
+	clear_auth_cookie();
+
 	header("Location: index.php");
-	exit;
 }
 
 ?>

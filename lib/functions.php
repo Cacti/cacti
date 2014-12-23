@@ -1623,12 +1623,13 @@ function draw_login_status($using_guest_account = false) {
 	global $config;
 
 	$guest_account = db_fetch_cell("SELECT id FROM user_auth WHERE username='" . read_config_option('guest_user') . "'");
+	$auth_method   = read_config_option('auth_method');
 
 	if (isset($_SESSION['sess_user_id']) && $_SESSION['sess_user_id'] == $guest_account) {
 		print "Logged in as <strong>Guest</strong> (<a href='" . $config['url_path'] . "index.php'>Login as Regular User</a>)\n";
 	}elseif (isset($_SESSION["sess_user_id"]) && $using_guest_account == false) {
 		api_plugin_hook('nav_login_before');
-		print "Logged in as <strong>" . db_fetch_cell("SELECT username FROM user_auth WHERE id=" . $_SESSION["sess_user_id"]) . "</strong> ( <a href='" . $config['url_path'] . "logout.php'>Logout</a> | <a href='" . $config['url_path'] . "auth_changepassword.php'>Change Password</a> )\n";
+		print "Logged in as <strong>" . db_fetch_cell("SELECT username FROM user_auth WHERE id=" . $_SESSION["sess_user_id"]) . "</strong> ( <a href='" . $config['url_path'] . "logout.php'>Logout</a>" . ($auth_method == 1 ? " | <a href='" . $config['url_path'] . "auth_changepassword.php'>Change Password</a> ":"") . ")\n";
 		api_plugin_hook('nav_login_after');
 	}
 }
