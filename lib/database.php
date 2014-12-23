@@ -110,13 +110,14 @@ function db_execute($sql, $log = TRUE, $db_conn = FALSE) {
 	}
 	$errors = 0;
 	while (1) {
+
 		$query = $db_conn->query($sql);
 		$en = $db_conn->errorCode();
-		// With PDO, we have to free this up
-		$query->fetchAll(PDO::FETCH_ASSOC);
-		$db_conn->affect_rows = $query->rowCount();
-		unset($query);
 		if ($en == '00000') {
+			// With PDO, we have to free this up
+			$query->fetchAll(PDO::FETCH_ASSOC);
+			$db_conn->affect_rows = $query->rowCount();
+			unset($query);
 			return TRUE;
 		} else if ($en == "42000" || $en == '42S02') {
 			printf('FATAL: Database or Table does not exist');
@@ -175,11 +176,11 @@ function db_execute_prepared($sql, $parms = array(), $log = TRUE, $db_conn = FAL
 		$query->execute($parms);
 
 		$en = $db_conn->errorCode();
-		// With PDO, we have to free this up
-		$query->fetchAll(PDO::FETCH_ASSOC);
-		$db_conn->affect_rows = $query->rowCount();
-		unset($query);
 		if ($en == '00000') {
+			// With PDO, we have to free this up
+			$query->fetchAll(PDO::FETCH_ASSOC);
+			$db_conn->affect_rows = $query->rowCount();
+			unset($query);
 			return TRUE;
 		} else if ($en == "42000" || $en == '42S02') {
 			printf('FATAL: Database or Table does not exist');
