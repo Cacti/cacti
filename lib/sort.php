@@ -34,8 +34,8 @@ function usort_data_query_index($a, $b) {
 	/* split strings to be compared into chunks
 	 * that shall be compared seperately,
 	 * e.g. for gi0/1, gi0/2, ... */
-	$arr_a = explode("/", $a);
-	$arr_b = explode("/", $b);
+	$arr_a = explode('/', $a);
+	$arr_b = explode('/', $b);
 
 	for ($i=0; $i<min(count($arr_a), count($arr_b)); $i++) {
 		if ((is_numeric($arr_a[$i])) && (is_numeric($arr_b[$i]))) {

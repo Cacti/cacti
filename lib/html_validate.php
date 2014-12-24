@@ -29,13 +29,13 @@ function input_validate_input_equals($value, $c_value) {
 }
 
 function input_validate_input_number($value) {
-	if ((!is_numeric($value)) && ($value != "")) {
+	if ((!is_numeric($value)) && ($value != '')) {
 		die_html_input_error();
 	}
 }
 
 function input_validate_input_regex($value, $regex) {
-	if ((!preg_match('/' . $regex . '/', $value)) && ($value != "")) {
+	if ((!preg_match('/' . $regex . '/', $value)) && ($value != '')) {
 		die_html_input_error();
 	}
 }
@@ -53,7 +53,7 @@ function die_html_input_error() {
 	</table>
 	<?php
 
-	include_once("./include/bottom_footer.php");
+	include_once('./include/bottom_footer.php');
 	exit;
 }
 

@@ -26,16 +26,16 @@
    @arg $cdef_item_id - the id of the individual cdef item
    @returns - a text-based representation of the cdef item */
 function get_cdef_item_name($cdef_item_id) 	{
-	global $config, $cdef_functions, $cdef_operators;
+	global $cdef_functions, $cdef_operators;
 
-	$cdef_item = db_fetch_row("select type,value from cdef_items where id=$cdef_item_id");
-	$current_cdef_value = $cdef_item["value"];
+	$cdef_item = db_fetch_row_prepared('SELECT type, value FROM cdef_items WHERE id = ?', array($cdef_item_id));
+	$current_cdef_value = $cdef_item['value'];
 
-	switch ($cdef_item["type"]) {
+	switch ($cdef_item['type']) {
 		case '1': return $cdef_functions[$current_cdef_value]; break;
 		case '2': return $cdef_operators[$current_cdef_value]; break;
 		case '4': return $current_cdef_value; break;
-		case '5': return db_fetch_cell("select name from cdef where id=$current_cdef_value"); break;
+		case '5': return db_fetch_cell_prepared('SELECT name FROM cdef WHERE id = ?', array($current_cdef_value)); break;
 		case '6': return $current_cdef_value; break;
 	}
 }
@@ -45,27 +45,24 @@ function get_cdef_item_name($cdef_item_id) 	{
    @arg $cdef_id - the id of the cdef to resolve
    @returns - a text-based representation of the cdef */
 function get_cdef($cdef_id) {
-	$cdef_items = db_fetch_assoc("select * from cdef_items where cdef_id=$cdef_id order by sequence");
+	$cdef_items = db_fetch_assoc_prepared('SELECT * FROM cdef_items WHERE cdef_id = ? ORDER BY sequence', array($cdef_id));
 
-	$i = 0; $cdef_string = "";
+	$i = 0; $cdef_string = '';
 
 	if (sizeof($cdef_items) > 0) {
-	foreach ($cdef_items as $cdef_item) {
-		if ($i > 0) {
-			$cdef_string .= ",";
+		foreach ($cdef_items as $cdef_item) {
+			if ($i > 0) {
+				$cdef_string .= ',';
+			}
+			if ($cdef_item['type'] == 5) {
+				$current_cdef_id = $cdef_item['value'];
+				$cdef_string .= get_cdef($current_cdef_id);
+			}else{
+				$cdef_string .= get_cdef_item_name($cdef_item['id']);
+			}
+			$i++;
 		}
-
-		if ($cdef_item["type"] == 5) {
-			$current_cdef_id = $cdef_item["value"];
-			$cdef_string .= get_cdef($current_cdef_id);
-		}else{
-			$cdef_string .= get_cdef_item_name($cdef_item["id"]);
-		}
-
-		$i++;
 	}
-	}
-
 	return $cdef_string;
 }
 

@@ -48,7 +48,7 @@ function get_children($vals, &$i) {
 		if ($vals[$i]['value']) array_push($children, $vals[$i]['value']);
 	}
 
-	$prevtag = ""; $j = 0;
+	$prevtag = ''; $j = 0;
 
 	while (++$i < count($vals)) {
 		switch ($vals[$i]['type']) {
@@ -61,7 +61,7 @@ function get_children($vals, &$i) {
 			if (isset($vals[$i]['value'])) {
 				$children{($vals[$i]['tag'])} = $vals[$i]['value'];
 			}else{
-				$children{($vals[$i]['tag'])} = "";
+				$children{($vals[$i]['tag'])} = '';
 			}
 
 			break;
@@ -87,12 +87,12 @@ function rrdxport2array($data) {
 	$array = explode("\n", $data);
 
 	if (sizeof($array)){
-		if ((substr(trim($array[0]),0,1)) == "<") {
+		if ((substr(trim($array[0]),0,1)) == '<') {
 			/* continue */
 		}else{
 			$new_array = array();
 			foreach($array as $element) {
-				if ((substr(trim($element),0,1)) == "<") {
+				if ((substr(trim($element),0,1)) == '<') {
 					$new_array[] = $element;
 				}
 			}
@@ -130,7 +130,7 @@ function get_rrd_children($vals, &$i, &$column, &$row) {
 		if ($vals[$i]['value']) array_push($children, $vals[$i]['value']);
 	}
 
-	$prevtag = ""; $j = 0;
+	$prevtag = ''; $j = 0;
 
 	while (++$i < count($vals)) {
 		switch ($vals[$i]['type']) {
@@ -142,22 +142,22 @@ function get_rrd_children($vals, &$i, &$column, &$row) {
 			in its array, so we need to check for this first */
 			if (isset($vals[$i]['value'])) {
 				switch($vals[$i]['tag']) {
-					case "entry":
+					case 'entry':
 						$column++;
-						$children["col" . $column] = $vals[$i]['value'];
+						$children['col' . $column] = $vals[$i]['value'];
 						break;
-					case "t":
-						$children["timestamp"] = $vals[$i]['value'];
+					case 't':
+						$children['timestamp'] = $vals[$i]['value'];
 						break;
-					case "v":
+					case 'v':
 						$column++;
-						$children["col" . $column] = $vals[$i]['value'];
+						$children['col' . $column] = $vals[$i]['value'];
 						break;
 					default:
 						$children{($vals[$i]['tag'])} = $vals[$i]['value'];
 				}
 			}else{
-				$children{($vals[$i]['tag'])} = "";
+				$children{($vals[$i]['tag'])} = '';
 			}
 
 			break;
@@ -170,17 +170,17 @@ function get_rrd_children($vals, &$i, &$column, &$row) {
 			}
 
 			switch($vals[$i]['tag']) {
-				case "meta":
-				case "xport":
-				case "legend":
+				case 'meta':
+				case 'xport':
+				case 'legend':
 					$children{($vals[$i]['tag'])} = get_rrd_children($vals,$i,$column,$row);
 					break;
-				case "data":
+				case 'data':
 					break;
-				case "row":
+				case 'row':
 					$row++;
 					$column=0;
-					$children["data"][$row] = get_rrd_children($vals,$i,$column,$row);
+					$children['data'][$row] = get_rrd_children($vals,$i,$column,$row);
 
 					break;
 			}
