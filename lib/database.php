@@ -488,6 +488,7 @@ function db_fetch_assoc_prepared($sql, $parms = array(), $log = TRUE, $db_conn =
 	}
 	$db_conn->affect_rows = 0;
 	$query = $db_conn->prepare($sql);
+	$query->execute($parms);
 	$errorinfo = $db_conn->errorInfo();
 	$en = $errorinfo[1];
 	if ($en == '') {
