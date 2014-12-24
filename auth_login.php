@@ -63,7 +63,7 @@ if (read_config_option('auth_method') == '2') {
 }
 
 $username = sanitize_search_string($username);
-$version  = db_fetch_cell("SELECT cacti FROM version");
+$version  = db_fetch_cell('SELECT cacti FROM version');
 
 /* process login */
 $copy_user    = false;
@@ -86,7 +86,7 @@ if ($action == 'login') {
 		$user_auth = true;
 		$realm = 2;
 		/* Locate user in database */
-		$user = db_fetch_row('SELECT * FROM user_auth WHERE username = ' . db_qstr($username) . ' AND realm = 2');
+		$user = db_fetch_row_prepared('SELECT * FROM user_auth WHERE username = ? AND realm = 2', array($username));
 
 		break;
 	case '3':
@@ -119,7 +119,7 @@ if ($action == 'login') {
 					$realm = 1;
 					/* Locate user in database */
 					cacti_log("LOGIN: LDAP User '" . $username . "' Authenticated", false, 'AUTH');
-					$user = db_fetch_row('SELECT * FROM user_auth WHERE username = ' . db_qstr($username) . ' AND realm = 1');
+					$user = db_fetch_row_prepared('SELECT * FROM user_auth WHERE username = ? AND realm = 1', array($username));
 				}else{
 					/* error */
 					cacti_log('LOGIN: LDAP Error: ' . $ldap_auth_response['error_text'], false, 'AUTH');
@@ -142,7 +142,7 @@ if ($action == 'login') {
 			/* Builtin Auth */
 			if ((!$user_auth) && (!$ldap_error)) {
 				/* if auth has not occured process for builtin - AKA Ldap fall through */
-				$user = db_fetch_row('SELECT * FROM user_auth WHERE username = ' . db_qstr($username) . " AND password = '" . md5(get_request_var_post('login_password')) . "' AND realm = 0");
+				$user = db_fetch_row_prepared('SELECT * FROM user_auth WHERE username = ? AND password = ? AND realm = 0', array($username, md5(get_request_var_post('login_password'))));
 			}
 		}
 	}
@@ -152,11 +152,11 @@ if ($action == 'login') {
 	if ((!sizeof($user)) && ($copy_user) && (read_config_option('user_template') != '0') && (strlen($username) > 0)) {
 		cacti_log("WARN: User '" . $username . "' does not exist, copying template user", false, 'AUTH');
 		/* check that template user exists */
-		if (db_fetch_row("SELECT id FROM user_auth WHERE username='" . read_config_option('user_template') . "' AND realm=0")) {
+		if (db_fetch_row_prepared('SELECT id FROM user_auth WHERE username = ? AND realm = 0', array(read_config_option('user_template')))) {
 			/* template user found */
 			user_copy(read_config_option('user_template'), $username, 0, $realm);
 			/* requery newly created user */
-			$user = db_fetch_row('SELECT * FROM user_auth WHERE username = ' . db_qstr($username) . ' AND realm = ' . $realm);
+			$user = db_fetch_row_prepared('SELECT * FROM user_auth WHERE username = ? AND realm = ?', array($username, $realm));
 		}else{
 			/* error */
 			cacti_log("LOGIN: Template user '" . read_config_option('user_template') . "' does not exist.", false, 'AUTH');
@@ -169,7 +169,7 @@ if ($action == 'login') {
 	$guest_user = false;
 	if ((!sizeof($user)) && ($user_auth) && (read_config_option('guest_user') != '0')) {
 		/* Locate guest user record */
-		$user = db_fetch_row("SELECT * FROM user_auth WHERE username='" . read_config_option('guest_user') . "'");
+		$user = db_fetch_row_prepared('SELECT * FROM user_auth WHERE username = ?', array(read_config_option('guest_user')));
 		if ($user) {
 			cacti_log("LOGIN: Authenicated user '" . $username . "' using guest account '" . $user['username'] . "'", false, 'AUTH');
 			$guest_user = true;
@@ -184,7 +184,7 @@ if ($action == 'login') {
 	/* Process the user  */
 	if (sizeof($user)) {
 		cacti_log("LOGIN: User '" . $user['username'] . "' Authenticated", false, 'AUTH');
-		db_execute('INSERT INTO user_log (username,user_id,result,ip,time) VALUES (' . db_qstr($username) . ',' . $user['id'] . ",1,'" . $_SERVER['REMOTE_ADDR'] . "',NOW())");
+		db_execute_prepared('INSERT INTO user_log (username, user_id, result, ip, time) VALUES (?, ?, 1, ?, NOW())', array($username, $user['id'], $_SERVER['REMOTE_ADDR']));
 
 		/* is user enabled */
 		$user_enabled = $user['enabled'];
@@ -207,11 +207,11 @@ if ($action == 'login') {
 			$_SESSION['sess_change_password'] = true;
 		}
 
-		$group_options = db_fetch_cell('SELECT MAX(login_opts)
+		$group_options = db_fetch_cell_prepared('SELECT MAX(login_opts)
 			FROM user_auth_group AS uag
 			INNER JOIN user_auth_group_members AS uagm
 			ON uag.id=uagm.group_id
-			WHERE user_id=' . $_SESSION['sess_user_id']);
+			WHERE user_id=?', array($_SESSION['sess_user_id']));
 
 		if ($group_options > 0) {
 			$user['login_opts'] = $group_options;
@@ -240,7 +240,7 @@ if ($action == 'login') {
 
 				if (substr_count($referer, 'plugins')) {
 					header('Location: ' . $referer);
-				} elseif (sizeof(db_fetch_assoc('SELECT realm_id FROM user_auth_realm WHERE realm_id = 8 AND user_id = ' . $_SESSION['sess_user_id'])) == 0) {
+				} elseif (sizeof(db_fetch_assoc_prepared('SELECT realm_id FROM user_auth_realm WHERE realm_id = 8 AND user_id = ?', array($_SESSION['sess_user_id']))) == 0) {
 					header('Location: graph_view.php');
 				} else {
 					header("Location: $referer");
@@ -267,7 +267,7 @@ if ($action == 'login') {
 			exit;
 		}else{
 			/* BAD username/password builtin and LDAP */
-			db_execute('INSERT INTO user_log (username,user_id,result,ip,time) VALUES (' . db_qstr($username) . ",0,0,'" . $_SERVER['REMOTE_ADDR'] . "',NOW())");
+			db_execute_prepared('INSERT INTO user_log (username, user_id, result, ip, time) VALUES (?, 0, 0, ?, NOW())', array($username, $_SERVER['REMOTE_ADDR']));
 		}
 	}
 }
@@ -319,20 +319,20 @@ function domains_login_process() {
 				$copy_user = true;
 				$realm = get_request_var_post("realm");
 				/* Locate user in database */
-				cacti_log("LOGIN: LDAP User '" . $username . "' Authenticated from Domain '" . db_fetch_cell("SELECT domain_name FROM user_domains WHERE domain_id=" . ($realm-1000)) . "'", false, "AUTH");
-				$user = db_fetch_row("SELECT * FROM user_auth WHERE username='" . $username . "' AND realm=$realm");
+				cacti_log("LOGIN: LDAP User '" . $username . "' Authenticated from Domain '" . db_fetch_cell('SELECT domain_name FROM user_domains WHERE domain_id=' . ($realm-1000)) . "'", false, "AUTH");
+				$user = db_fetch_row_prepared('SELECT * FROM user_auth WHERE username = ? AND realm = ?', array($username, $realm));
 
 				/* Create user from template if requested */
-				$template_user = db_fetch_cell("SELECT user_id FROM user_domains WHERE domain_id=" . (get_request_var_post("realm")-1000));
-				$template_username = db_fetch_cell("SELECT username FROM user_auth WHERE id=$template_user");
+				$template_user = db_fetch_cell_prepared('SELECT user_id FROM user_domains WHERE domain_id = ?', array(get_request_var_post('realm')-1000));
+				$template_username = db_fetch_cell_prepared('SELECT username FROM user_auth WHERE id = ?', array($template_user));
 				if ((!sizeof($user)) && ($copy_user) && ($template_user != "0") && (strlen($username) > 0)) {
 					cacti_log("WARN: User '" . $username . "' does not exist, copying template user", false, "AUTH");
 					/* check that template user exists */
-					if (db_fetch_row("SELECT id FROM user_auth WHERE id=" . $template_user . " AND realm = 0")) {
+					if (db_fetch_row_prepared('SELECT id FROM user_auth WHERE id = ? AND realm = 0', array($template_user))) {
 						/* template user found */
 						user_copy($template_username, $username, 0, $realm);
 						/* requery newly created user */
-						$user = db_fetch_row("SELECT * FROM user_auth WHERE username='" . $username . "' AND realm=" . $realm);
+						$user = db_fetch_row_prepared('SELECT * FROM user_auth WHERE username = ? AND realm = ?', array($username, $realm));
 					}else{
 						/* error */
 						cacti_log("LOGIN: Template user '" . $template_username . "' does not exist.", false, "AUTH");
@@ -360,7 +360,7 @@ function domains_ldap_auth($username, $password = "", $dn = "", $realm) {
 	if (!empty($password)) $ldap->password = $password;
 	if (!empty($dn))       $ldap->dn       = $dn;
 
-	$ld = db_fetch_row("SELECT * FROM user_domains_ldap WHERE domain_id=" . ($realm-1000));
+	$ld = db_fetch_row_prepared('SELECT * FROM user_domains_ldap WHERE domain_id = ?', array($realm-1000));
 
 	if (sizeof($ld)) {
 		if (!empty($ld["dn"]))                $ldap->dn                = $ld["dn"];
@@ -386,7 +386,7 @@ function domains_ldap_search_dn($username, $realm) {
 
 	if (!empty($username)) $ldap->username = $username;
 
-	$ld = db_fetch_row("SELECT * FROM user_domains_ldap WHERE domain_id=" . ($realm-1000));
+	$ld = db_fetch_row_prepared('SELECT * FROM user_domains_ldap WHERE domain_id = ?', array($realm-1000));
 
 	if (sizeof($ld)) {
 		if (!empty($ld["dn"]))                $ldap->dn                = $ld["dn"];
