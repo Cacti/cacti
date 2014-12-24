@@ -202,7 +202,6 @@ if ((bool)ini_get("register_globals")) {
 }
 
 /* include base modules */
-include_once($config["library_path"] . "/adodb/adodb.inc.php");
 include_once($config["library_path"] . "/database.php");
 
 /* connect to the database server */
