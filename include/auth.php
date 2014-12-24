@@ -55,7 +55,7 @@ if (read_config_option('auth_method') != 0) {
 
 	/* don't even bother with the guest code if we're already logged in */
 	if ((isset($guest_account)) && (empty($_SESSION['sess_user_id']))) {
-		$guest_user_id = db_fetch_cell("SELECT id FROM user_auth WHERE username='" . read_config_option('guest_user') . "' AND realm=0 AND enabled='on'");
+		$guest_user_id = db_fetch_cell_prepared('SELECT id FROM user_auth WHERE username = ? AND realm = 0 AND enabled = "on"', array(read_config_option('guest_user')));
 
 		/* cannot find guest user */
 		if (!empty($guest_user_id)) {
@@ -66,7 +66,7 @@ if (read_config_option('auth_method') != 0) {
 
 	/* if we are a guest user in a non-guest area, wipe credentials */
 	if (!empty($_SESSION['sess_user_id'])) {
-		if ((!isset($guest_account)) && (db_fetch_cell("SELECT id FROM user_auth WHERE username='" . read_config_option('guest_user') . "'") == $_SESSION['sess_user_id'])) {
+		if ((!isset($guest_account)) && (db_fetch_cell_prepared('SELECT id FROM user_auth WHERE username = ?', array(read_config_option('guest_user'))) == $_SESSION['sess_user_id'])) {
 			kill_session_var('sess_user_id');
 		}
 	}
@@ -82,12 +82,12 @@ if (read_config_option('auth_method') != 0) {
 		}
 
 		if ($realm_id > 0) {
-			$authorized = db_fetch_cell("SELECT COUNT(*) 
+			$authorized = db_fetch_cell_prepared('SELECT COUNT(*) 
 				FROM (
 					SELECT realm_id
 					FROM user_auth_realm AS uar
-					WHERE uar.user_id=" . $_SESSION['sess_user_id'] . "
-					AND uar.realm_id=$realm_id
+					WHERE uar.user_id = ?
+					AND uar.realm_id = ?
 					UNION
 					SELECT realm_id
 					FROM user_auth_group_realm AS uagr
@@ -95,10 +95,10 @@ if (read_config_option('auth_method') != 0) {
 					ON uagr.group_id=uagm.group_id
 					INNER JOIN user_auth_group AS uag
 					ON uag.id=uagr.group_id
-					WHERE uag.enabled='on'
-					AND uagm.user_id=" . $_SESSION['sess_user_id'] . "
-					AND uagr.realm_id=$realm_id
-				) AS authorized");
+					WHERE uag.enabled="on"
+					AND uagm.user_id = ?
+					AND uagr.realm_id = ?
+				) AS authorized', array($_SESSION['sess_user_id'], $realm_id, $_SESSION['sess_user_id'], $realm_id));
 		}else{
 			$authroized = false;
 		}
@@ -117,7 +117,7 @@ if (read_config_option('auth_method') != 0) {
 			print "\t<title>Permission Denied</title>\n";
 			print "\t<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>\n";
 			print "\t<link href='" . $config['url_path'] . "include/themes/" . read_config_option('selected_theme') . "/main.css' type='text/css' rel='stylesheet'>\n";
-		    print "\t<link href='" . $config['url_path'] . "include/themes/" . read_config_option('selected_theme') . "/jquery-ui.css' type='text/css' rel='stylesheet'>\n";
+			print "\t<link href='" . $config['url_path'] . "include/themes/" . read_config_option('selected_theme') . "/jquery-ui.css' type='text/css' rel='stylesheet'>\n";
 			print "\t<link href='" . $config['url_path'] . "images/favicon.ico' rel='shortcut icon'>\n";
 			print "\t<script type='text/javascript' src='" . $config['url_path'] . "include/js/jquery.js' language='javascript'></script>\n";
 			print "\t<script type='text/javascript' src='" . $config['url_path'] . "include/js/jquery-ui.js' language='javascript'></script>\n";

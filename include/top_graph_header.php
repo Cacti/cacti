@@ -40,15 +40,15 @@ input_validate_input_number(get_request_var_request('graph_end'));
 if (read_config_option('auth_method') != 0) {
 	/* at this point this user is good to go... so get some setting about this
 	user and put them into variables to save excess SQL in the future */
-	$current_user = db_fetch_row('SELECT * FROM user_auth WHERE id=' . $_SESSION['sess_user_id']);
+	$current_user = db_fetch_row_prepared('SELECT * FROM user_auth WHERE id = ?', array($_SESSION['sess_user_id']));
 
 	/* find out if we are logged in as a 'guest user' or not */
-	if (db_fetch_cell("SELECT id FROM user_auth WHERE username='" . read_config_option('guest_user') . "'") == $_SESSION['sess_user_id']) {
+	if (db_fetch_cell_prepared('SELECT id FROM user_auth WHERE username = ?', array(read_config_option('guest_user'))) == $_SESSION['sess_user_id']) {
 		$using_guest_account = true;
 	}
 
 	/* find out if we should show the "console" tab or not, based on this user's permissions */
-	if (sizeof(db_fetch_assoc('SELECT realm_id FROM user_auth_realm WHERE realm_id=8 AND user_id=' . $_SESSION['sess_user_id'])) == 0) {
+	if (sizeof(db_fetch_assoc_prepared('SELECT realm_id FROM user_auth_realm WHERE realm_id = 8 AND user_id = ?', array($_SESSION['sess_user_id']))) == 0) {
 		$show_console_tab = false;
 	}
 }
