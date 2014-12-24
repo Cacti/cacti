@@ -413,7 +413,7 @@ function data_query_item_edit() {
 		if (sizeof($data_templates)) {
 		foreach ($data_templates as $data_template) {
 			print "<tr class='tableHeader'>
-					<td class='textSubHeaderDark'>Data Template - " . $data_template["name"] . "</td>
+					<th>Data Template - " . $data_template["name"] . "</th>
 				</tr>";
 
 			$data_template_rrds = db_fetch_assoc("SELECT
@@ -439,7 +439,7 @@ function data_query_item_edit() {
 				form_alternate_row();
 				?>
 					<td>
-						<table cellspacing="0" cellpadding="0" border="0" width="100%">
+						<table cellspacing="0" cellpadding="2" border="0">
 							<tr>
 								<td width="200">
 									<strong>Data Source:</strong>
@@ -447,7 +447,7 @@ function data_query_item_edit() {
 								<td width="200">
 									<?php print $data_template_rrd["data_source_name"];?>
 								</td>
-								<td width="1">
+								<td>
 									<?php
 									$snmp_queries = get_data_query_array($_REQUEST["snmp_query_id"]);
 									$xml_outputs = array();
@@ -819,7 +819,7 @@ function data_query() {
 					<td width="50">
 						Search:
 					</td>
-					<td width="1">
+					<td>
 						<input id='filter' type="text" name="filter" size="25" value="<?php print htmlspecialchars(get_request_var_request("filter"));?>">
 					</td>
 					<td style='white-space:nowrap;'>

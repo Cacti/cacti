@@ -636,7 +636,7 @@ function domains() {
 	<tr class='even' class='noprint'>
 		<td class='noprint'>
 		<form id='form_domains' method='get' action='user_domains.php'>
-			<table cellpadding='2' cellspacing='0'>
+			<table cellpadding='2' cellspacing='0' border='0'>
 				<tr class='noprint'>
 					<td width='50'>
 						Search:
@@ -647,7 +647,7 @@ function domains() {
 					<td>
 						Domains:
 					</td>
-					<td width="1">
+					<td>
 						<select id='rows' name="rows" onChange="applyFilter()">
 							<option value="-1"<?php if (get_request_var_request("rows") == "-1") {?> selected<?php }?>>Default</option>
 							<?php

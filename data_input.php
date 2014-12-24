@@ -522,7 +522,7 @@ function data() {
 					<td width="50">
 						Search:
 					</td>
-					<td width="1">
+					<td>
 						<input id='filter' type="text" name="filter" size="25" value="<?php print htmlspecialchars(get_request_var_request("filter"));?>">
 					</td>
 					<td style='white-space:nowrap;'>

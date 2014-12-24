@@ -24,6 +24,27 @@
 var theme;
 var myRefresh;
 
+var isMobile = {
+	Android: function() {
+		return navigator.userAgent.match(/Android/i);
+	},
+	BlackBerry: function() {
+		return navigator.userAgent.match(/BlackBerry/i);
+	},
+	iOS: function() {
+		return navigator.userAgent.match(/iPhone|iPad|iPod/i);
+	},
+	Opera: function() {
+		return navigator.userAgent.match(/Opera Mini/i);
+	},
+	Windows: function() {
+		return navigator.userAgent.match(/IEMobile/i);
+	},
+	any: function() {
+		return (isMobile.Android() || isMobile.BlackBerry() || isMobile.iOS() || isMobile.Opera() || isMobile.Windows());
+	}
+};
+
 /** basename - this function will return the basename
  *  of the php script called
  *  @args path - the document.url
@@ -338,9 +359,30 @@ function applySkin() {
 
 	CsrfMagic.end();
 
-	$('#message_container').delay(2000).slideUp('fast');
-
 	setupSpecialKeys();
+
+	$('#message_container').delay(2000).slideUp('fast');
+}
+
+function setupUserMenu() {
+	$('.user').click(function(data) {
+		if ($(this).hasClass('usermenuup')) {
+			$('.user').removeClass('usermenuup').addClass('usermenudown');
+			$('.menuoptions').slideDown(120, 'easeInOutCubic');
+		}else{
+			$('.user').removeClass('usermenudown').addClass('usermenuup');
+			$('.menuoptions').slideUp(120, 'easeInOutCubic');
+		}
+	});
+
+	$('body').click(function(event) {
+		if (!$(event.target).hasClass('user')) {
+			if ($('.user').hasClass('usermenudown')) {
+				$('.user').removeClass('usermenudown').addClass('usermenuup');
+				$('.menuoptions').slideUp(120, 'easeInOutCubic');
+			}
+		}
+	});
 }
 
 function setupSpecialKeys() {
@@ -348,7 +390,10 @@ function setupSpecialKeys() {
 	$('#filter').bind('keypress', 'ctrl+c', function() {
 		clearFilter();
 	});
-	$('#filter').focus();
+
+	if (!isMobile.any()) {
+		$('#filter').focus();
+	}
 }
 
 /** setupSortable - This function will set all actions for sortable columns
@@ -487,6 +532,8 @@ $(function() {
 	});
 
 	$('#message_container').show().delay(2000).slideUp('fast');
+
+	setupUserMenu();
 
 	applySkin();
 });

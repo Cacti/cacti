@@ -505,12 +505,12 @@ function template() {
 	<tr class='even noprint'>
 		<td>
 		<form id="form_graph_template" action="graph_templates.php">
-			<table cellpadding="2" cellspacing="0">
+			<table cellpadding="2" cellspacing="0" border="0">
 				<tr>
 					<td width="50">
 						Search:
 					</td>
-					<td width="1">
+					<td>
 						<input id='filter' type="text" name="filter" size="25" value="<?php print htmlspecialchars(get_request_var_request("filter"));?>">
 					</td>
 					<td style='white-space:nowrap;'>

@@ -451,25 +451,25 @@ function graphs() {
 			</td>
 			<td width='1'>
 				<select id='graph_type' name='graph_type' onChange='applyGraphsNewFilterChange()'>
-				<option value='-2'<?php if ($_REQUEST['graph_type'] == '-2') {?> selected<?php }?>>All</option>
-				<option value='-1'<?php if ($_REQUEST['graph_type'] == '-1') {?> selected<?php }?>>Graph Template Based</option>
-				<?php
+					<option value='-2'<?php if ($_REQUEST['graph_type'] == '-2') {?> selected<?php }?>>All</option>
+					<option value='-1'<?php if ($_REQUEST['graph_type'] == '-1') {?> selected<?php }?>>Graph Template Based</option>
+					<?php
 
-				$snmp_queries = db_fetch_assoc('SELECT
-					snmp_query.id,
-					snmp_query.name,
-					snmp_query.xml_path
-					FROM (snmp_query,host_snmp_query)
-					WHERE host_snmp_query.snmp_query_id=snmp_query.id
-					AND host_snmp_query.host_id=' . $host['id'] . '
-					ORDER BY snmp_query.name');
+					$snmp_queries = db_fetch_assoc('SELECT
+						snmp_query.id,
+						snmp_query.name,
+						snmp_query.xml_path
+						FROM (snmp_query,host_snmp_query)
+						WHERE host_snmp_query.snmp_query_id=snmp_query.id
+						AND host_snmp_query.host_id=' . $host['id'] . '
+						ORDER BY snmp_query.name');
 
-				if (sizeof($snmp_queries) > 0) {
-				foreach ($snmp_queries as $query) {
-					print "<option value='" . $query['id'] . "'"; if ($_REQUEST['graph_type'] == $query['id']) { print ' selected'; } print '>' . $query['name'] . "</option>\n";
-				}
-				}
-				?>
+					if (sizeof($snmp_queries) > 0) {
+					foreach ($snmp_queries as $query) {
+						print "<option value='" . $query['id'] . "'"; if ($_REQUEST['graph_type'] == $query['id']) { print ' selected'; } print '>' . $query['name'] . "</option>\n";
+					}
+					}
+					?>
 				</select>
 			</td>
 			<td rowspan='3' class='textInfo' align='right' valign='top'>

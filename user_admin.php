@@ -2488,7 +2488,7 @@ function group_filter($header_label) {
 	<tr class='even'>
 		<td>
 		<form id="forms" method="post" action="user_admin.php">
-			<table cellpadding="2" cellspacing="0">
+			<table cellpadding="2" cellspacing="0" border="0">
 				<tr>
 					<td>
 						Search:
@@ -2499,7 +2499,7 @@ function group_filter($header_label) {
 					<td>
 						Groups:
 					</td>
-					<td width="1">
+					<td>
 						<select id='rows' name="rows" onChange="applyFilter()">
 							<?php
 							if (sizeof($item_rows) > 0) {
@@ -2579,7 +2579,7 @@ function device_filter($header_label) {
 	<tr class='even'>
 		<td>
 		<form id="forms" method="post" action="user_admin.php">
-			<table cellpadding="2" cellspacing="0">
+			<table cellpadding="2" cellspacing="0" border="0">
 				<tr>
 					<td>
 						Template:
@@ -2608,7 +2608,7 @@ function device_filter($header_label) {
 					<td>
 						Devices:
 					</td>
-					<td width="1">
+					<td>
 						<select id='rows' name="rows" onChange="applyFilter()">
 							<?php
 							if (sizeof($item_rows) > 0) {
@@ -2867,7 +2867,7 @@ function member_filter($header_label) {
 	<tr class='even'>
 		<td>
 		<form id="forms" method="post" action="user_admin.php">
-			<table cellpadding="2" cellspacing="0">
+			<table cellpadding="2" cellspacing="0" border="0">
 				<tr>
 					<td>
 						Search:
@@ -2878,7 +2878,7 @@ function member_filter($header_label) {
 					<td>
 						Rows:
 					</td>
-					<td width="1">
+					<td>
 						<select id='rows' name="rows" onChange="applyFilter()">
 							<?php
 							if (sizeof($item_rows) > 0) {

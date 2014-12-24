@@ -1134,7 +1134,7 @@ function ds() {
 	<tr class='even noprint'>
 		<td>
 		<form id='form_data_sources' name="form_data_sources" action="data_sources.php">
-			<table cellpadding="2" cellspacing="0">
+			<table cellpadding="2" cellspacing="0" border="0">
 				<tr>
 					<td width="50">
 						Host:
@@ -1158,7 +1158,7 @@ function ds() {
 					<td width="50">
 						Template:
 					</td>
-					<td width="1">
+					<td>
 						<select id='template_id' name="template_id" onChange="applyFilter()">
 							<option value="-1"<?php if (get_request_var_request("template_id") == "-1") {?> selected<?php }?>>Any</option>
 							<option value="0"<?php if (get_request_var_request("template_id") == "0") {?> selected<?php }?>>None</option>
@@ -1191,7 +1191,7 @@ function ds() {
 					<td width="50">
 						Method:
 					</td>
-					<td width="1">
+					<td>
 						<select id='method_id' name="method_id" onChange="applyFilter()">
 							<option value="-1"<?php if (get_request_var_request("method_id") == "-1") {?> selected<?php }?>>Any</option>
 							<option value="0"<?php if (get_request_var_request("method_id") == "0") {?> selected<?php }?>>None</option>
@@ -1212,10 +1212,10 @@ function ds() {
 							?>
 						</select>
 					</td>
-					<td style='white-space: nowrap;' width="50">
+					<td style='white-space:nowrap;'>
 						Data Sources:
 					</td>
-					<td width="1">
+					<td>
 						<select id='rows' name="rows" onChange="applyFilter()">
 							<?php
 							if (sizeof($item_rows) > 0) {
@@ -1228,12 +1228,12 @@ function ds() {
 					</td>
 				</tr>
 			</table>
-			<table cellpadding="2" cellspacing="0">
+			<table cellpadding="2" cellspacing="0" border="0">
 				<tr>
 					<td width="50">
 						Search:
 					</td>
-					<td width="1">
+					<td>
 						<input id='filter' type="text" name="filter" size="25" value="<?php print htmlspecialchars(get_request_var_request("filter"));?>">
 					</td>
 				</tr>

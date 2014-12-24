@@ -621,7 +621,7 @@ function utilities_view_user_log() {
 	<tr class='even noprint'>
 		<td>
 		<form id="form_userlog" action="utilities.php">
-			<table cellpadding="2" cellspacing="0">
+			<table cellpadding="2" cellspacing="0" border="0">
 				<tr>
 					<td width="50">
 						User:
@@ -677,12 +677,12 @@ function utilities_view_user_log() {
 					</td>
 				</tr>
 			</table>
-			<table cellpadding="2" cellspacing="0">
+			<table cellpadding="2" cellspacing="0" border="0">
 				<tr>
 					<td width='50'>
 						Search:
 					</td>
-					<td width="1">
+					<td>
 						<input id='filter' type="text" name="filter" size="25" value="<?php print htmlspecialchars(get_request_var_request("filter"));?>">
 					</td>
 				</tr>
@@ -942,12 +942,12 @@ function utilities_view_logfile() {
 	<tr class='even noprint'>
 		<td>
 		<form id="form_logfile" action="utilities.php">
-			<table cellpadding="2" cellspacing="0">
+			<table cellpadding="2" cellspacing="0" border="0">
 				<tr>
 					<td style='white-space: nowrap;' width="80">
 						Tail Lines:
 					</td>
-					<td width="1">
+					<td>
 						<select id='tail_lines' name="tail_lines" onChange="applyFilter()">
 							<?php
 							foreach($log_tail_lines AS $tail_lines => $display_text) {
@@ -959,7 +959,7 @@ function utilities_view_logfile() {
 					<td style='white-space: nowrap;'>
 						Message Type:
 					</td>
-					<td width="1">
+					<td>
 						<select id='message_type' name="message_type" onChange="applyFilter()">
 							<option value="-1"<?php if (get_request_var_request("message_type") == '-1') {?> selected<?php }?>>All</option>
 							<option value="1"<?php if (get_request_var_request("message_type") == '1') {?> selected<?php }?>>Stats</option>
@@ -983,7 +983,7 @@ function utilities_view_logfile() {
 					<td>
 						Refresh:
 					</td>
-					<td width="1">
+					<td>
 						<select id='refresh' name="refresh" onChange="applyFilter()">
 							<?php
 							foreach($page_refresh_interval AS $seconds => $display_text) {
@@ -995,7 +995,7 @@ function utilities_view_logfile() {
 					<td style='white-space: nowrap;'>
 						Display Order:
 					</td>
-					<td width="1">
+					<td>
 						<select id='reverse' name="reverse" onChange="applyFilter()">
 							<option value="1"<?php if (get_request_var_request("reverse") == '1') {?> selected<?php }?>>Newest First</option>
 							<option value="2"<?php if (get_request_var_request("reverse") == '2') {?> selected<?php }?>>Oldest First</option>
@@ -1003,12 +1003,12 @@ function utilities_view_logfile() {
 					</td>
 				</tr>
 			</table>
-			<table cellpadding="2" cellspacing="0">
+			<table cellpadding="2" cellspacing="0" border="0">
 				<tr>
 					<td width="80">
 						Search:
 					</td>
-					<td width="1">
+					<td>
 						<input id='filter' type="text" name="filter" size="75" value="<?php print htmlspecialchars(get_request_var_request("filter"));?>">
 					</td>
 				</tr>
@@ -1863,12 +1863,12 @@ function boost_display_run_status() {
 	<tr class='even'>
 		<form name="form_boost_utilities_stats" method="post">
 		<td>
-			<table cellpadding="1" cellspacing="0">
+			<table cellpadding="2" cellspacing="0" border="0">
 				<tr>
-					<td width="120" style="white-space:nowrap;">
-						&nbsp;Refresh Interval:
+					<td style="white-space:nowrap;">
+						Refresh Interval:
 					</td>
-					<td width="1">
+					<td>
 						<select name="refresh" onChange="applyStatsRefresh(document.form_boost_utilities_stats)">
 						<?php
 						foreach ($boost_utilities_interval as $key => $interval) {
@@ -1877,7 +1877,7 @@ function boost_display_run_status() {
 						?>
 					</td>
 					<td>
-						&nbsp;<input type="submit" value="Refresh">
+						<input type="submit" value="Refresh">
 					</td>
 				</tr>
 			</table>

@@ -2171,12 +2171,12 @@ function graph_filter($header_label) {
 	<tr class='even'>
 		<td>
 		<form id='forms' method='post' action='user_group_admin.php'>
-			<table cellpadding="2" cellspacing="0">
+			<table cellpadding="2" cellspacing="0" border="0">
 				<tr>
 					<td>
 						Template:
 					</td>
-					<td width="1">
+					<td>
 						<select id="graph_template_id" onChange='applyFilter()'>
 							<option value="-1"<?php if (get_request_var_request("graph_template_id") == "-1") {?> selected<?php }?>>Any</option>
 							<option value="0"<?php if (get_request_var_request("graph_template_id") == "0") {?> selected<?php }?>>None</option>

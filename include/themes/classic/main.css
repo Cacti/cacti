@@ -34,6 +34,50 @@ tr.selected {
 	background-color: khaki;
 }
 
+.usermenudown {
+	background: transparent url('./../../../images/bullet_arrow_down.png') no-repeat center right;
+}
+
+.usermenuup {
+	background: transparent url('./../../../images/bullet_arrow_up.png') no-repeat center right;
+}
+
+.user {
+	padding-right:16px;
+	font-weight:bold;
+	cursor:pointer;
+}
+
+.menuoptions {
+	background: none repeat scroll 0 0 #eee;
+    border-color: #f5f5f5 #e5e5e5 #ccc;
+    border-style: solid;
+    border-width: 0px 1px 1px 1px;
+	z-index:2;
+	display:block;
+	float:right;
+	position:absolute;
+	right:16px;
+	top:60px;
+  	list-style: none;
+	text-align:right;
+	margin:0px;
+	padding:0px;
+}
+
+.menuoptions li a {
+	border-top: 1px solid #ccc;
+	display:block;
+	height:14px;
+	padding: 4px;
+}
+
+.menuoptions li a:hover {
+	display:block;
+	text-decoration:none;
+	background-color: #e1e1e1;
+}
+
 .odd {
 	background-color:#F5F5F5;
 }
@@ -425,16 +469,23 @@ legend {
 	border: 1px solid #aaaaaa;
 }
 
-.navBarNext, .navBarNext:visited, .navBarNext:active, .navBarNext:hover {
+.navBarNavigation {
 	color: white;
 	font-weight: bold;
-	text-decoration: none;
+	display:block;
+	cursor:pointer;
 }
 
-.navBarPrevious, .navBarPrevious:visited, .navBarPrevious:active, .navBarPrevious:hover {
-	color: white;
-	font-weight: bold;
-	text-decoration: none;
+.navBarNavigationNext i.ui-icon {
+	margin-top: -16px;
+	margin-right: -16px;
+	top:50%;
+}
+
+.navBarNavigationPrevious i.ui-icon {
+	margin-bottom: -16px;
+	margin-left: -16px;
+	top:50%;
 }
 
 .textArea {

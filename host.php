@@ -882,6 +882,9 @@ function host_edit() {
 		$('#dbghide').click(function(data) {
 			$('#dqdebug').fadeOut('fast');
 		});
+
+		$('#host_template_id').scombobox();
+		$('#host_status').scombobox();
 	});
 
 	-->
@@ -1173,7 +1176,7 @@ function host() {
 					<td width="50">
 						Type:
 					</td>
-					<td width="1">
+					<td>
 						<select id='host_template_id' name="host_template_id" onChange="applyFilter()">
 							<option value="-1"<?php if (get_request_var_request("host_template_id") == "-1") {?> selected<?php }?>>Any</option>
 							<option value="0"<?php if (get_request_var_request("host_template_id") == "0") {?> selected<?php }?>>None</option>
@@ -1191,7 +1194,7 @@ function host() {
 					<td>
 						Status:
 					</td>
-					<td width="1">
+					<td>
 						<select id='host_status' name="host_status" onChange="applyFilter()">
 							<option value="-1"<?php if (get_request_var_request("host_status") == "-1") {?> selected<?php }?>>Any</option>
 							<option value="-3"<?php if (get_request_var_request("host_status") == "-3") {?> selected<?php }?>>Enabled</option>
@@ -1206,13 +1209,13 @@ function host() {
 					<td>
 						Search:
 					</td>
-					<td width="1">
+					<td>
 						<input id='filter' type="text" name="filter" size="25" value="<?php print htmlspecialchars(get_request_var_request("filter"));?>" onChange='applyFilter()'>
 					</td>
 					<td>
 						Devices:
 					</td>
-					<td width="1">
+					<td>
 						<select id='rows' name="rows" onChange="applyFilter()">
 							<option value="-1"<?php if (get_request_var_request("rows") == "-1") {?> selected<?php }?>>Default</option>
 							<?php

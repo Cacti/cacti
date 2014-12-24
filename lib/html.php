@@ -366,15 +366,15 @@ function html_nav_bar($base_url, $max_pages, $current_page, $rows_per_page, $tot
 			<td colspan='$colspan'>
 				<table width='100%' cellspacing='0' cellpadding='0' border='0'>
 					<tr>
-						<td style='width:5%;' align='left' class='textHeaderDark'>
-							" . (($current_page > 1) ? "<span class='navBarPrevious'  style='cursor:pointer;' onClick='gotoPage(" . ($current_page-1) . ")'><span>&lt;&lt;&nbsp;</span>Previous</span>":"") . "
-						</td>
+						<td style='width:5%;' align='left' class='textHeaderDark'><div style='display:block;padding-left:16px;'>
+							" . (($current_page > 1) ? "<div class='navBarNavigation navBarNavigationPrevious' onClick='gotoPage(" . ($current_page-1) . ")'><i class='ui-icon ui-icon-triangle-1-w'></i>Previous</div>":"") . "
+						</div></td>
 						<td style='width:90%;' align='center' class='textHeaderDark'>
 							Showing $object " . (($rows_per_page*($current_page-1))+1) . " to " . (($total_rows < $rows_per_page) || ($total_rows < ($rows_per_page*$current_page)) ? $total_rows : $rows_per_page*$current_page) . " of $total_rows [$url_page_select]
 						</td>
-						<td style='width:5%;' align='right' class='textHeaderDark'>
-							" . (($current_page*$rows_per_page) < $total_rows ? "<span class='navBarPrevious' style='cursor:pointer;' onClick='gotoPage(" . ($current_page+1) . ")'>Next<span>&nbsp;&gt;&gt;</span></span>":"") . "
-						</td>
+						<td align='right' class='textHeaderDark'><div style='display:block;padding-right:16px;'>
+							" . (($current_page*$rows_per_page) < $total_rows ? "<div class='navBarNavigation navBarNavigationNext' onClick='gotoPage(" . ($current_page+1) . ")'>Next<i class='ui-icon ui-icon-triangle-1-e'></i></div>":"") . "
+						</div></td>
 					</tr>
 				</table>
 			</td>
@@ -883,7 +883,6 @@ function draw_menu($user_menu = "") {
 	</div>
 	<script type='text/javascript'>
 	$(function () {
-		$('#navigation').css('height', ($(window).height()-80)+'px');
 	<?php if (read_config_option('selected_theme') != 'classic') {?>
 
 		// Initialize the navigation settings

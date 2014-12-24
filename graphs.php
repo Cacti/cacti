@@ -1163,12 +1163,12 @@ function graph() {
 	<tr class='even noprint'>
 		<td>
 			<form id='form_graphs' name="form_graphs" action="graphs.php">
-			<table cellpadding="2" cellspacing="0">
+			<table cellpadding="2" cellspacing="0" border="0">
 				<tr>
 					<td width="50">
 						Host:
 					</td>
-					<td width="1">
+					<td>
 						<select id='host_id' name='host_id' onChange="applyFilter()">
 							<option value="-1"<?php if (get_request_var_request("host_id") == "-1") {?> selected<?php }?>>Any</option>
 							<option value="0"<?php if (get_request_var_request("host_id") == "0") {?> selected<?php }?>>None</option>
@@ -1185,7 +1185,7 @@ function graph() {
 					<td>
 						Template:
 					</td>
-					<td width="1">
+					<td>
 						<select id='template_id' name='template_id' onChange='applyFilter()'>
 							<option value="-1"<?php if (get_request_var_request("template_id") == "-1") {?> selected<?php }?>>Any</option>
 							<option value="0"<?php if (get_request_var_request("template_id") == "0") {?> selected<?php }?>>None</option>
@@ -1216,7 +1216,7 @@ function graph() {
 					<td>
 						Graphs:
 					</td>
-					<td width="1">
+					<td>
 						<select id='rows' name='rows' onChange='applyFilter()'>
 							<option value="-1"<?php if (get_request_var_request("rows") == "-1") {?> selected<?php }?>>Default</option>
 							<?php

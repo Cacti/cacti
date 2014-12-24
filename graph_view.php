@@ -647,12 +647,12 @@ case 'list':
 	<tr class='even noprint'>
 		<td class='noprint'>
 		<form id='form_graph_list' name='form_graph_list' method='post' action='graph_view.php?action=list'>
-			<table cellpadding='2' cellspacing='0'>
+			<table cellpadding='2' cellspacing='0' border='0'>
 				<tr class='noprint'>
 					<td width='55'>
 						Host:
 					</td>
-					<td width='1'>
+					<td>
 						<select id='host_id' name='host_id' onChange='applyFilter()'>
 							<option value='0'<?php if (get_request_var_request('host_id') == '0') {?> selected<?php }?>>Any</option>
 							<?php
@@ -668,7 +668,7 @@ case 'list':
 					<td>
 						Template:
 					</td>
-					<td width='1'>
+					<td>
 						<select id='graph_template_id' name='graph_template_id' onChange='applyFilter()'>
 							<option value='0'<?php print htmlspecialchars(get_request_var_request('filter'));?><?php if (get_request_var_request('host_id') == '0') {?> selected<?php }?>>Any</option>
 							<?php
