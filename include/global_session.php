@@ -43,7 +43,10 @@ if ($script == 'graph_view.php' || $script == 'graph.php') {
 	}
 }
 
-if (!empty($refresh)) {
+if (read_config_option('auth_cache_enabled') == 'on' && isset($_COOKIE['cacti_remembers'])) {
+	$myrefresh['seconds'] = 99999999;
+	$myrefresh['page'] = 'index.php';
+}elseif (!empty($refresh)) {
 	$refreshIsLogout = 'false';
 	if (!is_array($refresh)) {
 		$myrefresh['seconds'] = $refresh;
