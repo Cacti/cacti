@@ -31,14 +31,14 @@ function clear_auth_cookie() {
 		$user  = $parts[0];
 
 		if ($user != '') {
-			$user_id = db_fetch_cell("SELECT id FROM user_auth WHERE username='$user'");
+			$user_id = db_fetch_cell_prepared('SELECT id FROM user_auth WHERE username = ?', array($user));
 
 			if (!empty($user_id)) {
 				if (isset($parts[1])) {
 					$nssecret  = $parts[1];
 					$secret = hash('sha512', $nssecret, false);
 					setcookie('cacti_remembers', '', time() - 3600, '/cacti/');
-					db_execute("DELETE FROM user_auth_cache WHERE user_id=$user_id AND token='$secret'");
+					db_execute_prepared('DELETE FROM user_auth_cache WHERE user_id = ? AND token = ?', array($user_id, $secret));
 				}
 			}
 		}
@@ -55,10 +55,10 @@ function set_auth_cookie($user) {
 
 	$secret = hash('sha512', $nssecret, false);
 
-	db_execute("REPLACE INTO user_auth_cache 
+	db_execute_prepared('REPLACE INTO user_auth_cache 
 		(user_id, hostname, last_update, token) 
 		VALUES 
-		(" . $user['id'] . ",'" . $_SERVER['HTTP_HOST'] . "', NOW(), '" . $secret . "');");
+		(?, ?, NOW(), ?);', array($user['id'], $_SERVER['HTTP_HOST'], $secret));
 
 	setcookie('cacti_remembers', $user['username'] . "," . $nssecret, time()+(86400*30), '/cacti/');
 }
@@ -71,9 +71,9 @@ function check_auth_cookie() {
 		$user  = $parts[0];
 
 		if ($user != '') {
-			$user_info = db_fetch_row("SELECT id, username 
+			$user_info = db_fetch_row_prepared('SELECT id, username 
 				FROM user_auth 
-				WHERE username='$user'");
+				WHERE username = ?', array($user));
 
 			if (!empty($user_info)) {
 				if (isset($parts[1])) {
@@ -81,10 +81,9 @@ function check_auth_cookie() {
 
 					$secret = hash('sha512', $nssecret, false);
 
-					$found  = db_fetch_cell("SELECT user_id 
+					$found  = db_fetch_cell_prepared('SELECT user_id 
 						FROM user_auth_cache 
-						WHERE user_id=" . $user_info['id'] . " 
-						AND token='$secret'");
+						WHERE user_id = ? AND token = ?', array($user_info['id'], $secret));
 
 					if (empty($found)) {
 						return false;
