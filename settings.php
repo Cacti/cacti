@@ -69,7 +69,12 @@ case 'save':
 	/* reset local settings cache so the user sees the new settings */
 	kill_session_var("sess_config_array");
 
-	header("Location: settings.php?header=false&tab=" . $_POST["tab"]);
+	if (isset($_REQUEST['header']) && $_REQUEST['header'] == 'false') {
+		header("Location: settings.php?header=false&tab=" . $_POST["tab"]);
+	}else{
+		header("Location: settings.php?tab=" . $_POST["tab"]);
+	}
+
 	break;
 case 'send_test':
 	email_test();
@@ -144,6 +149,10 @@ default:
 
 	?>
 	<script type='text/javascript'>
+
+	var themeChanged = false;
+	var currentTheme = '';
+
 	$(function() {
 		$('.subTab').find('a').click(function(event) {
 			event.preventDefault();
@@ -157,10 +166,16 @@ default:
 
 		$('input[value="Save"]').click(function(event) {
 			event.preventDefault();
-			$.post('settings.php?tab='+$('#tab').val()+'&header=false', $('input, select, textarea').serialize()).done(function(data) {
-				$('#main').html(data);
-				applySkin();
-			});
+			if (themeChanged != true) {
+				$.post('settings.php?tab='+$('#tab').val()+'&header=false', $('input, select, textarea').serialize()).done(function(data) {
+					$('#main').html(data);
+					applySkin();
+				});
+			}else{
+				$.post('settings.php?tab='+$('#tab').val()+'&header=false', $('input, select, textarea').serialize()).done(function(data) {
+					document.location = 'settings.php?tab='+$('#tab').val();
+				});
+			}
 		});
 
 		if ($('#row_settings_email_header')) {
@@ -191,9 +206,16 @@ default:
 	});
 
 	if ($('#row_font_method')) {
+		currentTheme = $('#selected_theme').val();
+
 		initFonts();
+
 		$('#font_method').change(function() {
 			initFonts();
+		});
+
+		$('#selected_theme').change(function() {
+			themeChanger();
 		});
 	}
 
@@ -316,6 +338,14 @@ default:
 			$('#row_boost_server_listen_port').hide();
 			$('#row_boost_server_timeout').hide();
 			$('#row_boost_server_clients').hide();
+		}
+	}
+
+	function themeChanger() {
+		if ($('#selected_theme').val() != currentTheme) {
+			themeChanged = true;
+		}else{
+			themeChanged = false;
 		}
 	}
 

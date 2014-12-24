@@ -23,6 +23,7 @@
 
 var theme;
 var myRefresh;
+var userMenuTimer;
 
 var isMobile = {
 	Android: function() {
@@ -364,23 +365,30 @@ function applySkin() {
 	$('#message_container').delay(2000).slideUp('fast');
 }
 
+function openUserMenu() {
+	$('.user').removeClass('usermenuup').addClass('usermenudown');
+	$('.menuoptions').slideDown(120, 'easeInOutCubic');
+}
+
+function closeUserMenu() {
+	$('.user').removeClass('usermenudown').addClass('usermenuup');
+	$('.menuoptions').slideUp(120, 'easeInOutCubic');
+}
+
 function setupUserMenu() {
-	$('.user').click(function(data) {
-		if ($(this).hasClass('usermenuup')) {
-			$('.user').removeClass('usermenuup').addClass('usermenudown');
-			$('.menuoptions').slideDown(120, 'easeInOutCubic');
-		}else{
-			$('.user').removeClass('usermenudown').addClass('usermenuup');
-			$('.menuoptions').slideUp(120, 'easeInOutCubic');
+	$('.menuoptions').mouseenter(function() {
+		clearTimeout(userMenuTimer);
+	}).mouseleave(function() {
+		if ($('.menuoptions').is(':visible')) {
+			userMenuTimer = setTimeout('closeUserMenu()', 1000);
 		}
 	});
 
-	$('body').click(function(event) {
-		if (!$(event.target).hasClass('user')) {
-			if ($('.user').hasClass('usermenudown')) {
-				$('.user').removeClass('usermenudown').addClass('usermenuup');
-				$('.menuoptions').slideUp(120, 'easeInOutCubic');
-			}
+	$('.user').mouseenter(function(data) {
+		openUserMenu();
+	}).mouseleave(function(data) {
+		if ($('.menuoptions').is(':visible')) {
+			userMenuTimer = setTimeout('closeUserMenu()', 1000);
 		}
 	});
 }
