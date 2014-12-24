@@ -85,21 +85,25 @@ function update_poller_cache($local_data_id, $commit = false) {
 		($data_input["type_id"] == DATA_INPUT_TYPE_QUERY_SCRIPT_SERVER)){
 		$field = data_query_field_list($data_input["data_template_data_id"]);
 
+		$params = array();
 		if (strlen($field["output_type"])) {
-			$output_type_sql = "and snmp_query_graph_rrd.snmp_query_graph_id=" . db_qstr($field["output_type"]);
+			$output_type_sql = ' AND snmp_query_graph_rrd.snmp_query_graph_id = ?';
+			$params[] = $field['output_type'];
 		}else{
-			$output_type_sql = "";
+			$output_type_sql = '';
 		}
+		$params[] = $data_input['data_template_id'];
+		$params[] = $local_data_id;
 
-		$outputs = db_fetch_assoc("select
+		$outputs = db_fetch_assoc_prepared("SELECT
 			snmp_query_graph_rrd.snmp_field_name,
 			data_template_rrd.id as data_template_rrd_id
-			from (snmp_query_graph_rrd,data_template_rrd)
-			where snmp_query_graph_rrd.data_template_rrd_id=data_template_rrd.local_data_template_rrd_id
+			FROM (snmp_query_graph_rrd,data_template_rrd)
+			WHERE snmp_query_graph_rrd.data_template_rrd_id = data_template_rrd.local_data_template_rrd_id
 			$output_type_sql
-			and snmp_query_graph_rrd.data_template_id=" . $data_input["data_template_id"] . "
-			and data_template_rrd.local_data_id=$local_data_id
-			order by data_template_rrd.id");
+			AND snmp_query_graph_rrd.data_template_id = ?
+			AND data_template_rrd.local_data_id = ?
+			ORDER BY data_template_rrd.id", $params);
 	}
 
 	if ($data_input["active"] == "on") {
@@ -476,7 +480,7 @@ function push_out_host($host_id, $local_data_id = 0, $data_template_id = 0) {
 		if (sizeof($template_fields{$data_source["local_data_template_data_id"]})) {
 		foreach ($template_fields{$data_source["local_data_template_data_id"]} as $template_field) {
 			if ((preg_match('/^' . VALID_HOST_FIELDS . '$/i', $template_field["type_code"])) && ($template_field["value"] == "") && ($template_field["t_value"] == "")) {
-				db_execute("replace into data_input_data (data_input_field_id,data_template_data_id,value) values (" . $template_field["id"] . "," . $data_source["id"] . "," . db_qstr($host{$template_field["type_code"]}) . ")");
+				db_execute_prepared('REPLACE INTO data_input_data (data_input_field_id, data_template_data_id, value) values (?, ?, ?)', array($template_field['id'], $data_source['id'], $host{$template_field['type_code']}));
 			}
 		}
 		}

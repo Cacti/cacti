@@ -93,12 +93,11 @@ function check_auth_cookie() {
 
 						cacti_log("LOGIN: User '" . $user_info['username'] . "' Authenticated via Authentication Cookie", false, 'AUTH');
 
-						db_execute('INSERT INTO user_log 
+						db_execute_prepared('INSERT INTO user_log 
 							(username, user_id, result, ip, time) 
 							VALUES 
-							(' . db_qstr($user) . ', ' . $user_info['id'] . ", 2, '" . $_SERVER['REMOTE_ADDR'] . "', NOW())");
-
-						return $user_info['id'];;
+							(?, ?, 2, ?, NOW())', array($user, $user_info['id'], $_SERVER['REMOTE_ADDR']));
+						return $user_info['id'];
 					}
 				}
 			}
