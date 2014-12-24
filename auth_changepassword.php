@@ -22,7 +22,7 @@
  +-------------------------------------------------------------------------+
 */
 
-include('./include/auth.php');
+include('./include/global.php');
 
 // If the user is not logged in, redirect them to the login page
 if (!isset($_SESSION['sess_user_id'])) {

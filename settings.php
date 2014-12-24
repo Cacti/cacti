@@ -186,8 +186,10 @@ default:
 				$('#testmail').dialog({
 					autoOpen: false,
 					modal: true,
-					height: 300,
-					width: 400,
+					minHeight: 300,
+					maxHeight: 600,
+					height: 450,
+					width: 500,
 					show: {
 						effect: 'appear',
 						duration: 100

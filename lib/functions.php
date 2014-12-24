@@ -2256,76 +2256,78 @@ function general_header() {
 	}
 }
 
-function send_mail($to, $from, $subject, $message, $filename = '', $headers = '') {
+function send_mail($to, $from, $subject, $message, $filename = '', $headers = '', $html = false) {
 	global $config;
-	include_once($config["base_path"] . "/lib/mailer.php");
+
+	include_once($config["base_path"] . "/lib/PHPMailer/PHPMailerAutoload.php");
 
 	$message = str_replace('<SUBJECT>', $subject, $message);
 	$message = str_replace('<TO>', $to, $message);
 	$message = str_replace('<FROM>', $from, $message);
 
+	// Create the PHPMailer instance
+	$mail = new PHPMailer;
+
+	// Set a reasonable timeout of 5 seconds
+	$mail->Timeout = 5;
+
+	// Set the subject
+	$mail->Subject = $subject;
+
 	$how = read_config_option("settings_how");
-	if ($how < 0 || $how > 2)
+	if ($how < 0 || $how > 2) {
 		$how = 0;
+	}
+
 	if ($how == 0) {
-		$Mailer = new Mailer(array(
-			'Type' => 'PHP'));
+		$mail->isMail();
 	} else if ($how == 1) {
-		$sendmail = read_config_option('settings_sendmail_path');
-		$Mailer = new Mailer(array(
-			'Type' => 'DirectInject',
-			'DirectInject_Path' => $sendmail));
+		$mail->Sendmail = read_config_option('settings_sendmail_path');
+		$mail->isSendmail();
 	} else if ($how == 2) {
-		$smtp_host = read_config_option("settings_smtp_host");
-		$smtp_port = read_config_option("settings_smtp_port");
-		$smtp_username = read_config_option("settings_smtp_username");
-		$smtp_password = read_config_option("settings_smtp_password");
-
-		$Mailer = new Mailer(array(
-			'Type' => 'SMTP',
-			'SMTP_Host' => $smtp_host,
-			'SMTP_Port' => $smtp_port,
-			'SMTP_Username' => $smtp_username,
-			'SMTP_Password' => $smtp_password));
+		$mail->isSMTP();
+		$mail->Host     = read_config_option("settings_smtp_host");
+		$mail->Port     = read_config_option("settings_smtp_port");
+		$mail->Username = read_config_option("settings_smtp_username");
+		$mail->Password = read_config_option("settings_smtp_password");
+		if ($mail->Username != '') {
+			$mail->SMTPAuth = true;
+		}
 	}
 
+	// Set the from information
+	$fromname = '';
 	if ($from == '') {
-		$from = read_config_option('settings_from_email');
+		$from     = read_config_option('settings_from_email');
 		$fromname = read_config_option('settings_from_name');
-		if ($from == "") {
-			if (isset($_SERVER['HOSTNAME'])) {
-				$from = 'Cacti@' . $_SERVER['HOSTNAME'];
-			} else {
-				$from = 'Cacti@cactiusers.org';
-			}
+		if (isset($_SERVER['HOSTNAME'])) {
+			$from = 'Cacti@' . $_SERVER['HOSTNAME'];
+		} else {
+			$from = 'Cacti@cacti.net';
 		}
-		if ($fromname == "")
-			$fromname = "Cacti";
 
-		$from = $Mailer->email_format($fromname, $from);
-		if ($Mailer->header_set('From', $from) === false) {
-			print "ERROR: " . $Mailer->error() . "\n";
-			return $Mailer->error();
-		}
-	} else {
-		$from = $Mailer->email_format('Cacti', $from);
-		if ($Mailer->header_set('From', $from) === false) {
-			print "ERROR: " . $Mailer->error() . "\n";
-			return $Mailer->error();
+		if ($fromname == "") {
+			$fromname = "Cacti";
 		}
 	}
 
-	if ($to == '')
+	$mail->setFrom($from, $fromname);
+
+	// Set the to informaiotn
+	if ($to == '') {
 		return "Mailer Error: No <b>TO</b> address set!!<br>If using the <i>Test Mail</i> link, please set the <b>Alert e-mail</b> setting.";
+	}
+
 	$to = explode(',', $to);
 
 	foreach($to as $t) {
-		if (trim($t) != '' && !$Mailer->header_set("To", $t)) {
-			print "ERROR: " . $Mailer->error() . "\n";
-			return $Mailer->error();
+		$t = trim($t);
+		if ($t != '') {
+			$mail->addAddress($t);
 		}
 	}
 
+	// Set the wordwrap limits
 	$wordwrap = read_config_option("settings_wordwrap");
 	if ($wordwrap == '')
 		$wordwrap = 76;
@@ -2334,47 +2336,172 @@ function send_mail($to, $from, $subject, $message, $filename = '', $headers = ''
 	if ($wordwrap < 0)
 		$wordwrap = 76;
 
-	$Mailer->Config["Mail"]["WordWrap"] = $wordwrap;
+	$mail->WordWrap = $wordwrap;
+	$mail->setWordWrap();
 
-	if (! $Mailer->header_set("Subject", $subject)) {
-		print "ERROR: " . $Mailer->error() . "\n";
-		return $Mailer->error();
-	}
+	$i = 0;
 
-	if (is_array($filename) && !empty($filename) && strstr($message, '<GRAPH>') !==0) {
+	// Handle Graph Attachments
+	if (is_array($filename) && sizeof($filename) && strstr($message, '<GRAPH>') !==0) {
 		foreach($filename as $val) {
 			$graph_data_array = array("output_flag"=> RRDTOOL_OUTPUT_STDOUT);
   			$data = rrdtool_function_graph($val['local_graph_id'], $val['rra_id'], $graph_data_array);
 			if ($data != "") {
-				$cid = $Mailer->content_id();
-				if ($Mailer->attach($data, $val['filename'].'.png', "image/png", "inline", $cid) == false) {
-					print "ERROR: " . $Mailer->error() . "\n";
-					return $Mailer->error();
-				}
+				$cid = getmypid() . '_' . $i . '@' . 'localhost';
+				$mail->addStringEmbededImage($data, $cid, $val['filename'].'.png', '8bit', 'image/png');
 				$message = str_replace('<GRAPH>', "<br><br><img src='cid:$cid'>", $message);
 			} else {
 				$message = str_replace('<GRAPH>', "<br><img src='" . $val['file'] . "'><br>Could not open!<br>" . $val['file'], $message);
 			}
+
+			$i++;
 		}
 	}
+
+	// Set both html and non-html bodies
 	$text = array('text' => '', 'html' => '');
-	if ($filename == '') {
+	if ($filename == '' && $html == false) {
 		$message = str_replace('<br>',  "\n", $message);
 		$message = str_replace('<BR>',  "\n", $message);
 		$message = str_replace('</BR>', "\n", $message);
-		$text['text'] = strip_tags($message);
+
+		$text['text']  = strip_tags($message);
+		$mail->isHTML(false);
+		$mail->Body    = $text['text'];
+		$mail->AltBody = $text['text'];
 	} else {
-		$text['html'] = $message . '<br>';
-		$text['text'] = strip_tags(str_replace('<br>', "\n", $message));
+		$text['html']  = $message . '<br>';
+		$text['text']  = strip_tags(str_replace('<br>', "\n", $message));
+		$mail->isHTML(true);
+		$mail->Body    = $text['html'];
+		$mail->AltBody = $text['text'];
 	}
 
-	if ($Mailer->send($text) == false) {
-		print "ERROR: " . $Mailer->error() . "\n";
-		return $Mailer->error();
+	if ($mail->send()) {
+		return '';
+	}else{
+		return $mail->ErrorInfo;
+	}
+}
+
+function ping_mail_server($host, $port, $user, $password, $secure, $timeout = 5) {
+	global $config;
+
+	include_once($config["base_path"] . "/lib/PHPMailer/PHPMailerAutoload.php");
+
+	//Create a new SMTP instance
+	$smtp = new SMTP;
+
+	if ($secure == 'tls') {
+		$smtp->SMTPSecure = 'tls';
+	}elseif($secure == 'ssl') {
+		$smtp->SMTPSecure = 'ssl';
 	}
 
-	return '';
+	//Enable connection-level debug output
+	//$smtp->do_debug = SMTP::DEBUG_CONNECTION;
 
+	$results = true;
+	try {
+		//Connect to an SMTP server
+		if ($smtp->connect($host, $port, $timeout)) {
+			//Say hello
+			if ($smtp->hello(gethostbyname(gethostname()))) { //Put your host name in here
+	            //Authenticate
+	            if ($smtp->authenticate($user, $password)) {
+					$results = true;
+				} else {
+					throw new Exception('Authentication failed: ' . $smtp->getLastReply());
+				}
+			} else {
+				throw new Exception('HELO failed: '. $smtp->getLastReply());
+			}
+		} else {
+			throw new Exception('Connect failed');
+		}
+	} catch (Exception $e) {
+		$results = 'SMTP error: ' . $e->getMessage();
+	}
+
+	//Whatever happened, close the connection.
+	$smtp->quit(true);
+
+	return $results;
+}
+
+function email_test() {
+	global $config;
+
+	$message =  "This is a test message generated from Cacti.  This message was sent to test the configuration of your Mail Settings.<br><br>";
+	$message .= "Your email settings are currently set as follows<br><br>";
+	$message .= "<b>Method</b>: ";
+
+	print "Checking Configuration...<br>";
+
+	$ping_results = true;
+	$how = read_config_option("settings_how");
+	if ($how < 0 || $how > 2)
+		$how = 0;
+	if ($how == 0) {
+		$mail = "PHP's Mailer Class";
+	} else if ($how == 1) {
+		$mail = "Sendmail<br><b>Sendmail Path</b>: ";
+		$sendmail = read_config_option("settings_sendmail_path");
+		$mail .= $sendmail;
+	} else if ($how == 2) {
+		print "Method: SMTP<br>";
+		$mail = "SMTP<br>";
+		$smtp_host = read_config_option("settings_smtp_host");
+		$smtp_port = read_config_option("settings_smtp_port");
+		$smtp_username = read_config_option("settings_smtp_username");
+		$smtp_password = read_config_option("settings_smtp_password");
+		$smtp_password = read_config_option("settings_smtp_password");
+		$smtp_secure   = read_config_option("settings_smtp_secure");
+
+		$mail .= "<b>Host</b>: $smtp_host<br>";
+		$mail .= "<b>Port</b>: $smtp_port<br>";
+
+		if ($smtp_username != '' && $smtp_password != '') {
+			$mail .= "<b>Authentication</b>: true<br>";
+			$mail .= "<b>Username</b>: $smtp_username<br>";
+			$mail .= "<b>Password</b>: (Not Shown for Security Reasons)<br>";
+			$mail .= "<b>Security</b>: $smtp_secure<br>";
+		} else {
+			$mail .= "<b>Authentication</b>: false<br>";
+		}
+
+		$ping_results = ping_mail_server($smtp_host, $smtp_port, $smtp_username, $smtp_password, $smtp_secure);
+
+		print "Ping Results: " . ($ping_results == 1 ? 'Success':$ping_results) . "<br>";
+
+		if ($ping_results != 1) {
+			$mail .= '<b>Ping Results</b>: ' . $ping_results . '<br>';
+		}else{
+			$mail .= '<b>Ping Results</b>: Success<br>';
+		}
+	}
+	$message .= $mail;
+	$message .= "<br>";
+
+	$errors = '';
+	if ($ping_results == 1) {
+		print "Creating Message Text...<br><br>";
+		print "<center><table width='95%' cellpadding=1 cellspacing=0 bgcolor=black><tr><td>";
+		print "<table width='100%' bgcolor=white><tr><td>$message</td><tr></table></table></center><br>";
+		print "Sending Message...<br><br>";
+
+		$global_alert_address = read_config_option("settings_test_email");
+
+		$errors = send_mail($global_alert_address, '', "Cacti Test Message", $message, '', '', true);
+		if ($errors == '') {
+			$errors = "Success!";
+		}
+	}else{
+		print "Message Not Sent due to ping failure.<br><br>";
+	}
+
+	print "<center><table width='95%' cellpadding=1 cellspacing=0 bgcolor=black><tr><td>";
+	print "<table width='100%' bgcolor=white><tr><td>$errors</td><tr></table></table></center>";
 }
 
 /*	gethostbyaddr_wtimeout - This function provides a good method of performing
@@ -2478,57 +2605,6 @@ function get_dns_from_ip ($ip, $dns, $timeout = 1000) {
 
 	/* error - return the hostname */
 	return strtoupper($ip);
-}
-
-function email_test() {
-	global $config;
-
-	$message =  "This is a test message generated from Cacti.  This message was sent to test the configuration of your Mail Settings.<br><br>";
-	$message .= "Your email settings are currently set as follows<br><br>";
-	$message .= "<b>Method</b>: ";
-	print "Checking Configuration...<br>";
-	$how = read_config_option("settings_how");
-	if ($how < 0 || $how > 2)
-		$how = 0;
-	if ($how == 0) {
-		$mail = "PHP's Mailer Class";
-	} else if ($how == 1) {
-		$mail = "Sendmail<br><b>Sendmail Path</b>: ";
-		$sendmail = read_config_option("settings_sendmail_path");
-		$mail .= $sendmail;
-	} else if ($how == 2) {
-		print "Method: SMTP<br>";
-		$mail = "SMTP<br>";
-		$smtp_host = read_config_option("settings_smtp_host");
-		$smtp_port = read_config_option("settings_smtp_port");
-		$smtp_username = read_config_option("settings_smtp_username");
-		$smtp_password = read_config_option("settings_smtp_password");
-
-		$mail .= "<b>Host</b>: $smtp_host<br>";
-		$mail .= "<b>Port</b>: $smtp_port<br>";
-
-		if ($smtp_username != '' && $smtp_password != '') {
-			$mail .= "<b>Authenication</b>: true<br>";
-			$mail .= "<b>Username</b>: $smtp_username<br>";
-			$mail .= "<b>Password</b>: (Not Shown for Security Reasons)";
-		} else {
-			$mail .= "<b>Authenication</b>: false";
-		}
-	}
-	$message .= $mail;
-	$message .= "<br>";
-
-	print "Creating Message Text...<br><br>";
-	print "<center><table width='95%' cellpadding=1 cellspacing=0 bgcolor=black><tr><td>";
-	print "<table width='100%' bgcolor=white><tr><td>$message</td><tr></table></table></center><br>";
-	print "Sending Message...<br><br>";
-	$global_alert_address = read_config_option("settings_test_email");
-	$errors = send_mail($global_alert_address, '', "Cacti Test Message", $message, '');
-	if ($errors == '')
-		$errors = "Success!";
-
-	print "<center><table width='95%' cellpadding=1 cellspacing=0 bgcolor=black><tr><td>";
-	print "<table width='100%' bgcolor=white><tr><td>$errors</td><tr></table></table></center>";
 }
 
 function poller_maintenance () {

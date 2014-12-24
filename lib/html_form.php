@@ -96,109 +96,174 @@ function draw_edit_form($array) {
 function draw_edit_control($field_name, &$field_array) {
 	switch ($field_array["method"]) {
 	case 'textbox':
-		form_text_box($field_name, $field_array["value"],
+		form_text_box(
+			$field_name, 
+			$field_array["value"],
 			((isset($field_array["default"])) ? $field_array["default"] : ""),
 			$field_array["max_length"],
-			((isset($field_array["size"])) ? $field_array["size"] : "40"), "text",
-			((isset($field_array["form_id"])) ? $field_array["form_id"] : ""));
+			((isset($field_array["size"])) ? $field_array["size"] : "40"), 
+			"text",
+			((isset($field_array["form_id"])) ? $field_array["form_id"] : ""),
+			0,
+			((isset($field_array["placeholder"])) ? $field_array["placeholder"] : $field_name)
+		);
 
 		break;
 	case 'filepath':
-		form_filepath_box($field_name, $field_array["value"],
+		form_filepath_box($field_name, 
+			$field_array["value"],
 			((isset($field_array["default"])) ? $field_array["default"] : ""),
 			$field_array["max_length"],
-			((isset($field_array["size"])) ? $field_array["size"] : "40"), "text",
-			((isset($field_array["form_id"])) ? $field_array["form_id"] : ""));
+			((isset($field_array["size"])) ? $field_array["size"] : "40"), 
+			"text",
+			((isset($field_array["form_id"])) ? $field_array["form_id"] : "")
+		);
 
 		break;
 	case 'dirpath':
-		form_dirpath_box($field_name, $field_array["value"],
+		form_dirpath_box(
+			$field_name, 
+			$field_array["value"],
 			((isset($field_array["default"])) ? $field_array["default"] : ""),
 			$field_array["max_length"],
-			((isset($field_array["size"])) ? $field_array["size"] : "40"), "text",
-			((isset($field_array["form_id"])) ? $field_array["form_id"] : ""));
+			((isset($field_array["size"])) ? $field_array["size"] : "40"), 
+			"text",
+			((isset($field_array["form_id"])) ? $field_array["form_id"] : "")
+		);
 
 		break;
 	case 'textbox_password':
-		form_text_box($field_name, $field_array["value"],
+		form_text_box(
+			$field_name, 
+			$field_array["value"],
 			((isset($field_array["default"])) ? $field_array["default"] : ""),
 			$field_array["max_length"],
-			((isset($field_array["size"])) ? $field_array["size"] : "40"), "password");
+			((isset($field_array["size"])) ? $field_array["size"] : "40"), 
+			"password",
+			((isset($field_array["form_id"])) ? $field_array["form_id"] : ""),
+			0,
+			((isset($field_array["placeholder"])) ? $field_array["placeholder"] : "")
+		);
 
 		print "<br>";
 
-		form_text_box($field_name . "_confirm", $field_array["value"],
+		form_text_box(
+			$field_name . "_confirm", 
+			$field_array["value"],
 			((isset($field_array["default"])) ? $field_array["default"] : ""),
 			$field_array["max_length"],
-			((isset($field_array["size"])) ? $field_array["size"] : "40"), "password");
+			((isset($field_array["size"])) ? $field_array["size"] : "40"), 
+			"password",
+			((isset($field_array["form_id"])) ? $field_array["form_id"] : ""),
+			0,
+			((isset($field_array["placeholder"])) ? $field_array["placeholder"] : "")
+		);
 
 		break;
 	case 'textarea':
-		form_text_area($field_name, $field_array["value"], $field_array["textarea_rows"],
+		form_text_area(
+			$field_name, 
+			$field_array["value"], 
+			$field_array["textarea_rows"],
 			$field_array["textarea_cols"],
 			((isset($field_array["default"])) ? $field_array["default"] : ""),
 			((isset($field_array["class"])) ? $field_array["class"] : ""),
-			((isset($field_array["on_change"])) ? $field_array["on_change"] : ""));
+			((isset($field_array["on_change"])) ? $field_array["on_change"] : "")
+		);
 
 		break;
 	case 'drop_array':
-		form_dropdown($field_name, $field_array["array"], "", "", $field_array["value"],
+		form_dropdown(
+			$field_name, 
+			$field_array["array"], 
+			"", 
+			"", 
+			$field_array["value"],
 			((isset($field_array["none_value"])) ? $field_array["none_value"] : ""),
 			((isset($field_array["default"])) ? $field_array["default"] : ""),
 			((isset($field_array["class"])) ? $field_array["class"] : ""),
-			((isset($field_array["on_change"])) ? $field_array["on_change"] : ""));
+			((isset($field_array["on_change"])) ? $field_array["on_change"] : "")
+		);
 
 		break;
 	case 'drop_sql':
-		form_dropdown($field_name,
-			db_fetch_assoc($field_array["sql"]), "name", "id", $field_array["value"],
-				((isset($field_array["none_value"])) ? $field_array["none_value"] : ""),
-				((isset($field_array["default"])) ? $field_array["default"] : ""),
-				((isset($field_array["class"])) ? $field_array["class"] : ""),
-				((isset($field_array["on_change"])) ? $field_array["on_change"] : ""));
+		form_dropdown(
+			$field_name,
+			db_fetch_assoc($field_array["sql"]), 
+			"name", 
+			"id", 
+			$field_array["value"],
+			((isset($field_array["none_value"])) ? $field_array["none_value"] : ""),
+			((isset($field_array["default"])) ? $field_array["default"] : ""),
+			((isset($field_array["class"])) ? $field_array["class"] : ""),
+			((isset($field_array["on_change"])) ? $field_array["on_change"] : "")
+		);
 
 		break;
 	case 'drop_multi':
-		form_multi_dropdown($field_name, $field_array["array"], db_fetch_assoc($field_array["sql"]), "id",
+		form_multi_dropdown(
+			$field_name, 
+			$field_array["array"], 
+			db_fetch_assoc($field_array["sql"]), 
+			"id",
 			((isset($field_array["class"])) ? $field_array["class"] : ""),
-			((isset($field_array["on_change"])) ? $field_array["on_change"] : ""));
+			((isset($field_array["on_change"])) ? $field_array["on_change"] : "")
+		);
 
 		break;
 	case 'drop_multi_rra':
-		form_multi_dropdown($field_name, array_rekey(db_fetch_assoc("select id,name from rra order by timespan"), "id", "name"),
-			(empty($field_array["form_id"]) ? db_fetch_assoc($field_array["sql_all"]) : db_fetch_assoc($field_array["sql"])), "id",
+		form_multi_dropdown(
+			$field_name, 
+			array_rekey(db_fetch_assoc("select id,name from rra order by timespan"), "id", "name"),
+			(empty($field_array["form_id"]) ? db_fetch_assoc($field_array["sql_all"]) : db_fetch_assoc($field_array["sql"])), 
+			"id",
 			((isset($field_array["class"])) ? $field_array["class"] : ""),
-			((isset($field_array["on_change"])) ? $field_array["on_change"] : ""));
+			((isset($field_array["on_change"])) ? $field_array["on_change"] : "")
+		);
 
 		break;
 	case 'drop_tree':
-		grow_dropdown_tree($field_array["tree_id"], $field_name, $field_array["value"]);
+		grow_dropdown_tree(
+			$field_array["tree_id"], 
+			$field_name, 
+			$field_array["value"]
+		);
 
 		break;
 	case 'drop_color':
-		form_color_dropdown($field_name, $field_array["value"], "None",
+		form_color_dropdown(
+			$field_name, 
+			$field_array["value"], 
+			"None",
 			((isset($field_array["default"])) ? $field_array["default"] : ""),
 			((isset($field_array["class"])) ? $field_array["class"] : ""),
-			((isset($field_array["on_change"])) ? $field_array["on_change"] : ""));
+			((isset($field_array["on_change"])) ? $field_array["on_change"] : "")
+		);
 
 		break;
 	case 'checkbox':
-		form_checkbox($field_name,
+		form_checkbox(
+			$field_name,
 			$field_array["value"],
 			$field_array["friendly_name"],
 			((isset($field_array["default"])) ? $field_array["default"] : ""),
 			((isset($field_array["form_id"])) ? $field_array["form_id"] : ""),
 			((isset($field_array["class"])) ? $field_array["class"] : ""),
-			((isset($field_array["on_change"])) ? $field_array["on_change"] : ""));
+			((isset($field_array["on_change"])) ? $field_array["on_change"] : "")
+		);
 
 		break;
 	case 'checkbox_group':
 		while (list($check_name, $check_array) = each($field_array["items"])) {
-			form_checkbox($check_name, $check_array["value"], $check_array["friendly_name"],
+			form_checkbox(
+				$check_name, 
+				$check_array["value"], 
+				$check_array["friendly_name"],
 				((isset($check_array["default"])) ? $check_array["default"] : ""),
 				((isset($check_array["form_id"])) ? $check_array["form_id"] : ""),
 				((isset($field_array["class"])) ? $field_array["class"] : ""),
-				((isset($check_array["on_change"])) ? $check_array["on_change"] : (((isset($field_array["on_change"])) ? $field_array["on_change"] : ""))));
+				((isset($check_array["on_change"])) ? $check_array["on_change"] : (((isset($field_array["on_change"])) ? $field_array["on_change"] : "")))
+			);
 
 			print "<br>";
 		}
@@ -206,10 +271,15 @@ function draw_edit_control($field_name, &$field_array) {
 		break;
 	case 'radio':
 		while (list($radio_index, $radio_array) = each($field_array["items"])) {
-			form_radio_button($field_name, $field_array["value"], $radio_array["radio_value"], $radio_array["radio_caption"],
+			form_radio_button(
+				$field_name, 
+				$field_array["value"], 
+				$radio_array["radio_value"], 
+				$radio_array["radio_caption"],
 				((isset($field_array["default"])) ? $field_array["default"] : ""),
 				((isset($field_array["class"])) ? $field_array["class"] : ""),
-				((isset($field_array["on_change"])) ? $field_array["on_change"] : ""));
+				((isset($field_array["on_change"])) ? $field_array["on_change"] : "")
+			);
 
 			print "<br>";
 		}
@@ -322,7 +392,7 @@ function form_filepath_box($form_name, $form_previous_value, $form_default_value
 		$extra_data = "<span style='color:red'><br>[ERROR: FILE NOT FOUND]</span>";
 	}
 
-	print " id='$form_name' name='$form_name' size='$form_size'" . (!empty($form_max_length) ? " maxlength='$form_max_length'" : "") . " value='" . htmlspecialchars($form_previous_value, ENT_QUOTES) . "'>" . $extra_data;
+	print " id='$form_name' placeholder='Enter a valid file path' name='$form_name' size='$form_size'" . (!empty($form_max_length) ? " maxlength='$form_max_length'" : "") . " value='" . htmlspecialchars($form_previous_value, ENT_QUOTES) . "'>" . $extra_data;
 }
 
 /* form_dirpath_box - draws a standard html textbox and provides status of a directories existence
@@ -367,7 +437,7 @@ function form_dirpath_box($form_name, $form_previous_value, $form_default_value,
 		$extra_data = "<span style='color:red'><br>[ERROR: DIR NOT FOUND]";
 	}
 
-	print " id='$form_name' name='$form_name' size='$form_size'" . (!empty($form_max_length) ? " maxlength='$form_max_length'" : "") . " value='" . htmlspecialchars($form_previous_value, ENT_QUOTES) . "'>" . $extra_data;
+	print " id='$form_name' name='$form_name' placeholder='Enter a valid directory path' size='$form_size'" . (!empty($form_max_length) ? " maxlength='$form_max_length'" : "") . " value='" . htmlspecialchars($form_previous_value, ENT_QUOTES) . "'>" . $extra_data;
 }
 
 /* form_text_box - draws a standard html textbox
@@ -382,7 +452,7 @@ function form_dirpath_box($form_name, $form_previous_value, $form_default_value,
    @arg $current_id - used to determine if a current value for this form element
      exists or not. a $current_id of '0' indicates that no current value exists,
      a non-zero value indicates that a current value does exist */
-function form_text_box($form_name, $form_previous_value, $form_default_value, $form_max_length, $form_size = 30, $type = "text", $current_id = 0) {
+function form_text_box($form_name, $form_previous_value, $form_default_value, $form_max_length, $form_size = 30, $type = "text", $current_id = 0, $placeholder = '') {
 	if (($form_previous_value == "") && (empty($current_id))) {
 		$form_previous_value = $form_default_value;
 	}
@@ -402,7 +472,7 @@ function form_text_box($form_name, $form_previous_value, $form_default_value, $f
 		}
 	}
 
-	print " id='$form_name' name='$form_name' size='$form_size'" . (!empty($form_max_length) ? " maxlength='$form_max_length'" : "") . " value='" . htmlspecialchars($form_previous_value, ENT_QUOTES) . "'>\n";
+	print " id='$form_name' autocomplete='off' " . ($placeholder != '' ? "placeholder='$placeholder'":"") . " name='$form_name' size='$form_size'" . (!empty($form_max_length) ? " maxlength='$form_max_length'" : "") . " value='" . htmlspecialchars($form_previous_value, ENT_QUOTES) . "'>\n";
 }
 
 /* form_hidden_box - draws a standard html hidden element
@@ -549,7 +619,7 @@ function form_radio_button($form_name, $form_previous_value, $form_current_value
 	print "<input type='radio' id='$css_id' name='$form_name' value='$form_current_value'" . $class . $on_change . $checked . "><label for='$css_id'>$form_caption</label>\n";
 }
 
-/* form_text_box - draws a standard html text area box
+/* form_text_area - draws a standard html text area box
    @arg $form_name - the name of this form element
    @arg $form_previous_value - the current value of this form element (selected or not)
    @arg $form_rows - the number of rows in the text area box

@@ -78,6 +78,11 @@ tr.selected {
 	background-color: #e1e1e1;
 }
 
+.emailtest {
+	cursor:pointer;
+	display:block;
+}
+
 .odd {
 	background-color:#F5F5F5;
 }

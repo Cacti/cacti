@@ -350,13 +350,7 @@ $settings = array(
 			'description' => 'When checked, any attempts to access Cacti will be redirected to HTTPS to insure high security.',
 			'default' => '',
 			'method' => 'checkbox',
-			),
-		'legacy_menu_nav' => array(
-			'friendly_name' => 'Use Legacy Menu Navigation',
-			'description' => 'If you have plugins that are not fully converted to Cactis new approach to rendering content, enable this option.  <b>Note:</b> It will be removed in a future release.',
-			'default' => 'on',
-			'method' => 'checkbox',
-			),
+			)
 		),
 	'export' => array(
 		'export_hdr_general' => array(
@@ -1040,6 +1034,7 @@ $settings = array(
 			'method' => 'textbox',
 			'default' => 120,
 			'max_length' => 4,
+			'size' => 5
 			),
 		'settings_sendmail_header' => array(
 			'friendly_name' => 'Sendmail Options',
@@ -1065,22 +1060,30 @@ $settings = array(
 			),
 		'settings_smtp_port' => array(
 			'friendly_name' => 'SMTP Port',
-			'description' => 'This is the port on the SMTP Server that SMTP uses.',
+			'description' => 'The port on the SMTP Server to use.',
 			'method' => 'textbox',
 			'max_length' => 255,
 			'default' => 25,
+			'size' => 5
 			),
 		'settings_smtp_username' => array(
 			'friendly_name' => 'SMTP Username',
-			'description' => 'This is the username to authenticate with when sending via SMTP. (Leave blank if you do not require authentication.)',
+			'description' => 'The username to authenticate with when sending via SMTP. (Leave blank if you do not require authentication.)',
 			'method' => 'textbox',
 			'max_length' => 255,
 			),
 		'settings_smtp_password' => array(
 			'friendly_name' => 'SMTP Password',
-			'description' => 'This is the password to authenticate with when sending via SMTP. (Leave blank if you do not require authentication.)',
+			'description' => 'The password to authenticate with when sending via SMTP. (Leave blank if you do not require authentication.)',
 			'method' => 'textbox_password',
 			'max_length' => 255,
+			),
+		'settings_smtp_secure' => array(
+			'friendly_name' => 'SMTP Security',
+			'description' => 'The encryption method to use for the email.',
+			'method' => 'drop_array',
+			'array' => array('none' => 'None', 'ssl' => 'SSL', 'tls' => 'TLS'),
+			'default' => 'none'
 			),
 		'settings_dns_header' => array(
 			'friendly_name' => 'DNS Options',
@@ -1105,7 +1108,8 @@ $settings = array(
 			'description' => 'Please enter the DNS timeout in milliseconds.  Cacti uses a PHP based DNS resolver.',
 			'method' => 'textbox',
 			'default' => '500',
-			'max_length' => '10'
+			'max_length' => '10',
+			'size' => '5'
 			),
 		),
 	'dsstats' => array(
@@ -1139,7 +1143,8 @@ $settings = array(
 			'description' => 'What time of day should Weekly, Monthly, and Yearly Data be updated?  Format is HH:MM [am/pm]',
 			'method' => 'textbox',
 			'default' => '12:00am',
-			'max_length' => '20'
+			'max_length' => '20',
+			'size' => '10'
 			),
 		'dsstats_poller_mem_limit' => array(
 			'friendly_name' => 'Memory Limit for dsstats and Poller',
@@ -1197,7 +1202,8 @@ $settings = array(
 			'description' => 'If the boost output table exceeds this size, in records, an update will take place.',
 			'method' => 'textbox',
 			'default' => '1000000',
-			'max_length' => '20'
+			'max_length' => '20',
+			'size' => '10'
 			),
 		'boost_rrd_update_max_records_per_select' => array(
 			'friendly_name' => 'Maximum Data Source Items Per Pass',
@@ -1216,7 +1222,8 @@ $settings = array(
 			Windows 2000 <= 2048, FreeBSD <= 65535, Linux 2.6.22-- <= 131072, Linux 2.6.23++ unlimited',
 			'method' => 'textbox',
 			'default' => '2000',
-			'max_length' => '20'
+			'max_length' => '20',
+			'size' => '10'
 			),
 		'boost_poller_mem_limit' => array(
 			'friendly_name' => 'Memory Limit for Boost and Poller',
