@@ -117,25 +117,25 @@ function boost_poller_on_demand(&$results) {
 
 	if (read_config_option('boost_rrd_update_enable') == 'on') {
 		/* suppress warnings */
-		if (defined("E_DEPRECATED")) {
+		if (defined('E_DEPRECATED')) {
 			error_reporting(E_ALL ^ E_DEPRECATED);
 		}else{
 			error_reporting(E_ALL);
 		}
 
 		/* install the boost error handler */
-		set_error_handler("boost_error_handler");
+		set_error_handler('boost_error_handler');
 	
-		$outbuf      = "";
-		$sql_prefix  = "INSERT INTO poller_output_boost (local_data_id, rrd_name, time, output) VALUES";
-		$sql_suffix  = " ON DUPLICATE KEY UPDATE output=VALUES(output)";
+		$outbuf      = '';
+		$sql_prefix  = 'INSERT INTO poller_output_boost (local_data_id, rrd_name, time, output) VALUES ';
+		$sql_suffix  = ' ON DUPLICATE KEY UPDATE output=VALUES(output)';
 		$overhead    = strlen($sql_prefix) + strlen($sql_suffix);
 
 		if (boost_check_correct_enabled()) {
 			/* if boost redirect is on, rows are being inserted directly */
-			if (read_config_option("boost_redirect") == "on") {
-				if (read_config_option("poller_type") == "1") {
-					cacti_log("WARNING: Boost Redirect is enabled, but you are using cmd.php", false, "BOOST");
+			if (read_config_option('boost_redirect') == 'on') {
+				if (read_config_option('poller_type') == '1') {
+					cacti_log('WARNING: Boost Redirect is enabled, but you are using cmd.php', false, 'BOOST');
 				}else{
 					restore_error_handler();
 					return false;
@@ -143,7 +143,7 @@ function boost_poller_on_demand(&$results) {
 			}
 
 			$max_allowed_packet = db_fetch_row("SHOW VARIABLES LIKE 'max_allowed_packet'");
-			$max_allowed_packet = $max_allowed_packet["Value"];
+			$max_allowed_packet = $max_allowed_packet['Value'];
 
 			if (sizeof($results)) {
 				$i          = 1;
@@ -151,26 +151,27 @@ function boost_poller_on_demand(&$results) {
 
 				foreach($results as $result) {
 					if ($i == 1) {
-						$delim = " ";
+						$delim = '';
 					}else{
-						$delim = ", ";
+						$delim = ',';
 					}
 
-					$outbuf .=
+					$outbuf2 =
 						$delim . "('" .
-						$result["local_data_id"] . "','" .
-						$result["rrd_name"] . "','" .
-						$result["time"] . "','" .
-						$result["output"] .	"')";
+						$result['local_data_id'] . "','" .
+						$result['rrd_name'] . "','" .
+						$result['time'] . "','" .
+						$result['output'] .	"')";
 
-					$out_length += strlen($outbuf);
+					$out_length += strlen($outbuf2);
 
 					if (($out_length + $overhead) > $max_allowed_packet) {
 						db_execute($sql_prefix . $outbuf . $sql_suffix);
-						$outbuf     = "";
-						$out_length = 0;
+						$outbuf     = $outbuf2;
+						$out_length = strlen($outbuf2);
 						$i          = 1;
 					}else{
+						$outbuf .= $outbuf2;
 						$i++;
 					}
 				}
