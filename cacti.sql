@@ -1852,7 +1852,7 @@ CREATE TABLE graph_tree (
 -- Dumping data for table `graph_tree`
 --
 
-INSERT INTO graph_tree VALUES (1,1,'Default Tree');
+INSERT INTO graph_tree VALUES (1,DEFAULT,DEFAULT,DEFAULT,DEFAULT,'Default Tree',DEFAULT,DEFAULT,DEFAULT);
 
 --
 -- Table structure for table `graph_tree_items`
