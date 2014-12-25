@@ -48,7 +48,6 @@ function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $p
 		}
 
 		$flags[PDO::ATTR_PERSISTENT] =  true;
-		$flags[PDO::MYSQL_ATTR_FOUND_ROWS] =  true;
 		if ($db_ssl) {
 			// PDO requires paths to certificates for SSL support, will have to figure out the best way to handle this
 			// I believe they can instead setup these parameters in their mysql config file in [client]
