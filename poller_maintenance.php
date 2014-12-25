@@ -34,7 +34,7 @@ $dir = dirname(__FILE__);
 chdir($dir);
 
 /* record the start time */
-list($micro,$seconds) = explode(" ", microtime());
+list($micro,$seconds) = explode(' ', microtime());
 $poller_start         = $seconds + $micro;
 
 include ('./include/global.php');
@@ -73,10 +73,10 @@ foreach ($parms as $parameter) {
 	}
 }
 
-maint_debug("Checking for Purge Actions");
+maint_debug('Checking for Purge Actions');
 
 /* are my tables already present? */
-$purge = db_fetch_cell("SELECT count(*) FROM data_source_purge_action");
+$purge = db_fetch_cell('SELECT count(*) FROM data_source_purge_action');
 
 /* if the table that holds the actions is present, work on it */
 if (($purge)) {
@@ -84,7 +84,7 @@ if (($purge)) {
 
 	/* take the purge in steps */
 	while (true) {
-		maint_debug("Grabbing 1000 RRDfiles to Remove");
+		maint_debug('Grabbing 1000 RRDfiles to Remove');
 
 		$file_array = db_fetch_assoc('SELECT id, name, local_data_id, action 
 			FROM data_source_purge_action
@@ -106,17 +106,17 @@ if (($purge)) {
 	}
 
 	/* record the start time */
-	list($micro,$seconds) = explode(" ", microtime());
+	list($micro,$seconds) = explode(' ', microtime());
 	$poller_end         = $seconds + $micro;
-	$string = sprintf("MAINT STATS: Time:%4.4f Purged:%s Archived:%s RRDfiles", ($poller_end - $poller_start), $purged, $archived);
+	$string = sprintf('MAINT STATS: Time:%4.4f Purged:%s Archived:%s RRDfiles', ($poller_end - $poller_start), $purged, $archived);
 	cacti_log($string, true, 'SYSTEM');
 }
 
 /* removing security tokens older than 90 days */
 if (read_config_option('auth_cache_enabled') == 'on') {
-	db_execute("DELETE FROM user_auth_cache WHERE last_update<'" . date("Y-m-d H:i:s", time()-(86400*90)) . "'");
+	db_execute("DELETE FROM user_auth_cache WHERE last_update<'" . date('Y-m-d H:i:s', time()-(86400*90)) . "'");
 }else{
-	db_execute("TRUNCATE TABLE user_auth_cache");
+	db_execute('TRUNCATE TABLE user_auth_cache');
 }
 
 /*
@@ -174,12 +174,12 @@ function remove_files($file_array) {
 		}
 
 		/* drop from data_source_purge_action table */
-		db_execute("DELETE FROM `data_source_purge_action` WHERE name = '" . $file['name'] . "'");
+		db_execute_prepared('DELETE FROM `data_source_purge_action` WHERE name = ?', array($file['name']));
 
 		maint_debug('Delete from data_source_purge_action: ' . $file['name']);
 
 		//fetch all local_graph_id's according to this data source
-		$lgis = db_fetch_assoc('SELECT DISTINCT gl.id
+		$lgis = db_fetch_assoc_prepared('SELECT DISTINCT gl.id
 			FROM graph_local AS gl
 			INNER JOIN graph_templates_item AS gti
 			ON gl.id = gti.local_graph_id
@@ -187,7 +187,7 @@ function remove_files($file_array) {
 			ON dtr.id=gti.task_item_id
 			INNER JOIN data_local AS dl
 			ON dtr.local_data_id=dl.id
-			WHERE (local_data_id=' . $file['local_data_id'] .	')');
+			WHERE (local_data_id=?)', array($file['local_data_id']));
 
 		if (sizeof($lgis)) {
 			/* anything found? */
@@ -257,7 +257,7 @@ function cleanup_ds_and_graphs() {
 	//fetch all local_data_id's which have appropriate data-sources
 	$rrds = db_fetch_assoc("SELECT local_data_id, name_cache, data_source_path 
 		FROM data_template_data 
-		WHERE name_cache >''");
+		WHERE name_cache > ''");
 
 	//filter those whose rrd files doesn't exist
 	foreach ($rrds as $item) {

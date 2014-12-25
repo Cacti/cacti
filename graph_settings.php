@@ -23,12 +23,12 @@
 */
 
 $guest_account = true;
-include("./include/auth.php");
+include('./include/auth.php');
 
 /* set default action */
-if (!isset($_REQUEST["action"])) { $_REQUEST["action"] = ""; }
+if (!isset($_REQUEST['action'])) { $_REQUEST['action'] = ''; }
 
-switch ($_REQUEST["action"]) {
+switch ($_REQUEST['action']) {
 	case 'save':
 		form_save();
 
@@ -56,34 +56,34 @@ function form_save() {
 	while (list($tab_short_name, $tab_fields) = each($settings_graphs)) {
 		while (list($field_name, $field_array) = each($tab_fields)) {
 			/* Check every field with a numeric default value and reset it to default if the inputted value is not numeric  */
-			if (isset($field_array["default"]) && is_numeric($field_array["default"]) && !is_numeric(get_request_var_post($field_name))) {
-				$_POST[$field_name] = $field_array["default"];
+			if (isset($field_array['default']) && is_numeric($field_array['default']) && !is_numeric(get_request_var_post($field_name))) {
+				$_POST[$field_name] = $field_array['default'];
 			}
-			if ($field_array["method"] == "checkbox") {
+			if ($field_array['method'] == 'checkbox') {
 				if (isset($_POST[$field_name])) {
-					db_execute("REPLACE INTO settings_graphs (user_id,name,value) VALUES (" . $_SESSION["sess_user_id"] . ",'$field_name', 'on')");
+					db_execute_prepared("REPLACE INTO settings_graphs (user_id,name,value) VALUES (?, ?, 'on')", array($_SESSION['sess_user_id'], $field_name));
 				}else{
-					db_execute("REPLACE INTO settings_graphs (user_id,name,value) VALUES (" . $_SESSION["sess_user_id"] . ",'$field_name', '')");
+					db_execute_prepared("REPLACE INTO settings_graphs (user_id,name,value) VALUES (?, ?, '')", array($_SESSION['sess_user_id'], $field_name));
 				}
-			}elseif ($field_array["method"] == "checkbox_group") {
-				while (list($sub_field_name, $sub_field_array) = each($field_array["items"])) {
+			}elseif ($field_array['method'] == 'checkbox_group') {
+				while (list($sub_field_name, $sub_field_array) = each($field_array['items'])) {
 					if (isset($_POST[$sub_field_name])) {
-						db_execute("REPLACE INTO settings_graphs (user_id,name,value) VALUES (" . $_SESSION["sess_user_id"] . ",'$sub_field_name', 'on')");
+						db_execute_prepared("REPLACE INTO settings_graphs (user_id,name,value) VALUES (?, ?, 'on')", array($_SESSION['sess_user_id'], $sub_field_name));
 					}else{
-						db_execute("REPLACE INTO settings_graphs (user_id,name,value) VALUES (" . $_SESSION["sess_user_id"] . ",'$sub_field_name', '')");
+						db_execute_prepared("REPLACE INTO settings_graphs (user_id,name,value) VALUES (?, ?, '')", array($_SESSION['sess_user_id'], $sub_field_name));
 					}
 				}
-			}elseif ($field_array["method"] == "textbox_password") {
-				if ($_POST[$field_name] != $_POST[$field_name."_confirm"]) {
+			}elseif ($field_array['method'] == 'textbox_password') {
+				if ($_POST[$field_name] != $_POST[$field_name.'_confirm']) {
 					raise_message(4);
 					break;
 				}elseif (isset($_POST[$field_name])) {
-					db_execute_prepared('REPLACE INTO settings_graphs (user_id, name, value) VALUES (?, ?, ?)', array($_SESSION["sess_user_id"], $field_name, get_request_var_post($field_name)));
+					db_execute_prepared('REPLACE INTO settings_graphs (user_id, name, value) VALUES (?, ?, ?)', array($_SESSION['sess_user_id'], $field_name, get_request_var_post($field_name)));
 				}
-			}elseif ((isset($field_array["items"])) && (is_array($field_array["items"]))) {
-				while (list($sub_field_name, $sub_field_array) = each($field_array["items"])) {
+			}elseif ((isset($field_array['items'])) && (is_array($field_array['items']))) {
+				while (list($sub_field_name, $sub_field_array) = each($field_array['items'])) {
 					if (isset($_POST[$sub_field_name])) {
-						db_execute_prepared('REPLACE INTO settings_graphs (user_id, name, value) values (?, ?, ?)', array($_SESSION["sess_user_id"], $sub_field_name, get_request_var_post($sub_field_name)));
+						db_execute_prepared('REPLACE INTO settings_graphs (user_id, name, value) values (?, ?, ?)', array($_SESSION['sess_user_id'], $sub_field_name, get_request_var_post($sub_field_name)));
 					}
 				}
 			}else if (isset($_POST[$field_name])) {
@@ -95,7 +95,7 @@ function form_save() {
 	raise_message(1);
 
 	/* reset local settings cache so the user sees the new settings */
-	kill_session_var("sess_graph_config_array");
+	kill_session_var('sess_graph_config_array');
 }
 
 /* --------------------------
@@ -105,10 +105,10 @@ function form_save() {
 function settings() {
 	global $tabs_graphs, $settings_graphs, $current_user, $graph_views, $current_user;
 
-	$current_user = db_fetch_row("SELECT * FROM user_auth WHERE id=" . $_SESSION['sess_user_id']);
+	$current_user = db_fetch_row_prepared('SELECT * FROM user_auth WHERE id = ?', array($_SESSION['sess_user_id']));
 
 	/* you cannot have per-user graph settings if cacti's user management is not turned on */
-	if (read_config_option("auth_method") == 0) {
+	if (read_config_option('auth_method') == 0) {
 		raise_message(6);
 		display_output_messages();
 		return;
@@ -121,13 +121,13 @@ function settings() {
 		exit;
 	}
 
-	if (read_config_option("auth_method") != 0) {
-		$settings_graphs["tree"]["default_tree_id"]["sql"] = get_graph_tree_array(true);
+	if (read_config_option('auth_method') != 0) {
+		$settings_graphs['tree']['default_tree_id']['sql'] = get_graph_tree_array(true);
 	}
 
 	print "<form method='post' action='graph_settings.php'>\n";
 
-	html_start_box("<strong>Graph Settings</strong>", "100%", "", "3", "center", "");
+	html_start_box('<strong>Graph Settings</strong>', '100%', '', '3', 'center', '');
 
 	while (list($tab_short_name, $tab_fields) = each($settings_graphs)) {
 		?>
@@ -143,29 +143,29 @@ function settings() {
 		while (list($field_name, $field_array) = each($tab_fields)) {
 			$form_array += array($field_name => $tab_fields[$field_name]);
 
-			if ((isset($field_array["items"])) && (is_array($field_array["items"]))) {
-				while (list($sub_field_name, $sub_field_array) = each($field_array["items"])) {
-					if (graph_config_value_exists($sub_field_name, $_SESSION["sess_user_id"])) {
-						$form_array[$field_name]["items"][$sub_field_name]["form_id"] = 1;
+			if ((isset($field_array['items'])) && (is_array($field_array['items']))) {
+				while (list($sub_field_name, $sub_field_array) = each($field_array['items'])) {
+					if (graph_config_value_exists($sub_field_name, $_SESSION['sess_user_id'])) {
+						$form_array[$field_name]['items'][$sub_field_name]['form_id'] = 1;
 					}
 
-					$form_array[$field_name]["items"][$sub_field_name]["value"] =  db_fetch_cell("select value from settings_graphs where name='$sub_field_name' and user_id=" . $_SESSION["sess_user_id"]);
+					$form_array[$field_name]['items'][$sub_field_name]['value'] =  db_fetch_cell_prepared('SELECT value FROM settings_graphs WHERE name = ? AND user_id = ?', array($sub_field_name, $_SESSION['sess_user_id']));
 				}
 			}else{
-				if (graph_config_value_exists($field_name, $_SESSION["sess_user_id"])) {
-					$form_array[$field_name]["form_id"] = 1;
+				if (graph_config_value_exists($field_name, $_SESSION['sess_user_id'])) {
+					$form_array[$field_name]['form_id'] = 1;
 				}
 
-				$form_array[$field_name]["value"] = db_fetch_cell("select value from settings_graphs where name='$field_name' and user_id=" . $_SESSION["sess_user_id"]);
+				$form_array[$field_name]['value'] = db_fetch_cell_prepared('SELECT value FROM settings_graphs WHERE name = ? AND user_id = ?', array($field_name, $_SESSION['sess_user_id']));
 			}
 		}
 
 		draw_edit_form(
 			array(
-				"config" => array(
-					"no_form_tag" => true
+				'config' => array(
+					'no_form_tag' => true
 					),
-				"fields" => $form_array
+				'fields' => $form_array
 				)
 			);
 	}
@@ -261,17 +261,17 @@ function settings() {
 	</script>
 	<?php
 
-	print "<br>";
+	print '<br>';
 
-	if (isset($_SERVER["HTTP_REFERER"])) {
-		$timespan_sel_pos = strpos($_SERVER["HTTP_REFERER"],"&predefined_timespan");
+	if (isset($_SERVER['HTTP_REFERER'])) {
+		$timespan_sel_pos = strpos($_SERVER['HTTP_REFERER'],'&predefined_timespan');
 		if ($timespan_sel_pos) {
-			$_SERVER["HTTP_REFERER"] = substr($_SERVER["HTTP_REFERER"],0,$timespan_sel_pos);
+			$_SERVER['HTTP_REFERER'] = substr($_SERVER['HTTP_REFERER'],0,$timespan_sel_pos);
 		}
 	}
 
-	$_SESSION["graph_settings_referer"] = (isset($_SERVER["HTTP_REFERER"]) ? $_SERVER["HTTP_REFERER"]:"graph_view.php"); 
-	form_hidden_box("save_component_graph_config","1","");
-	form_save_button("graph_settings.php", "save");
+	$_SESSION['graph_settings_referer'] = (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER']:'graph_view.php'); 
+	form_hidden_box('save_component_graph_config','1','');
+	form_save_button('graph_settings.php', 'save');
 }
 

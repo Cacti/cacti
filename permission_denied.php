@@ -24,7 +24,7 @@
 
 include('./include/auth.php');
 
-$version = db_fetch_cell("SELECT cacti FROM version");
+$version = db_fetch_cell('SELECT cacti FROM version');
 
 if (isset($_SERVER['HTTP_REFERER'])) {
 	$goBack = "<td colspan='2' align='center'>[<a href='" . htmlspecialchars($_SERVER['HTTP_REFERER']) . "'>Return</a> | <a href='" . $config['url_path'] . "logout.php'>Login Again</a>]</td>";

@@ -24,23 +24,23 @@
 */
 
 /* do NOT run this script through a web browser */
-if (!isset($_SERVER["argv"][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($_SERVER['REMOTE_ADDR'])) {
-	die("<br><strong>This script is only meant to run at the command line.</strong>");
+if (!isset($_SERVER['argv'][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($_SERVER['REMOTE_ADDR'])) {
+	die('<br><strong>This script is only meant to run at the command line.</strong>');
 }
 
 /* We are not talking to the browser */
 $no_http_headers = true;
 
 /* include important functions */
-include_once("./include/global.php");
-include_once($config["base_path"] . "/lib/poller.php");
-include_once($config["base_path"] . "/lib/boost.php");
+include_once('./include/global.php');
+include_once($config['base_path'] . '/lib/poller.php');
+include_once($config['base_path'] . '/lib/boost.php');
 
 /* get the boost polling cycle */
-$max_run_duration = read_config_option("boost_rrd_update_max_runtime");
+$max_run_duration = read_config_option('boost_rrd_update_max_runtime');
 
 /* process calling arguments, first remove the script name */
-$parms = $_SERVER["argv"];
+$parms = $_SERVER['argv'];
 array_shift($parms);
 
 /* second, get the socket integer value */
@@ -48,37 +48,37 @@ $socket_int_value = $parms[0];
 array_shift($parms);
 
 /* last, recombine the arguments */
-$command = implode(" ", $parms);
+$command = implode(' ', $parms);
 
 /* execute the command */
-if ($config["cacti_server_os"] == "win32") {
-	$handle = popen($command, "rb");
+if ($config['cacti_server_os'] == 'win32') {
+	$handle = popen($command, 'rb');
 }else{
-	$handle = popen($command, "r");
+	$handle = popen($command, 'r');
 }
 
 /* get the results */
 $result = fread($handle, 1024);
 
 if (!strlen(trim($result))) {
-	$result = "OK";
+	$result = 'OK';
 }else{
 	if (substr_count($result, "\r")) {
-		$result = str_replace("\r", "", $result);
+		$result = str_replace("\r", '', $result);
 	}
 	$result_array = explode("\n", $result);
 
 	if (sizeof($result_array)) {
 		$result = $result_array[sizeof($result_array)-2];
 	}else{
-		$result = "ERROR: Detected unknown error";
+		$result = 'ERROR: Detected unknown error';
 	}
 }
 
 /* add the value to the table */
 db_execute("INSERT INTO poller_output_boost_processes
 	(sock_int_value, status)
-	VALUES ('" . $socket_int_value . "'," . db_qstr($result, get_magic_quotes_gpc()) . ")");
+	VALUES ('" . $socket_int_value . "'," . db_qstr($result, get_magic_quotes_gpc()) . ')');
 
 /* close the connection */
 pclose($handle);

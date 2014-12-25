@@ -22,7 +22,7 @@
  +-------------------------------------------------------------------------+
 */
 
-include("./include/auth.php");
+include('./include/auth.php');
 top_header();
 
 api_plugin_hook('console_before');
@@ -41,7 +41,7 @@ api_plugin_hook('console_before');
 			</ul>
 		</td>
 		<td class="textAreaNotes" align="right" valign="top">
-			<strong>Version <?php print $config["cacti_version"];?></strong>
+			<strong>Version <?php print $config['cacti_version'];?></strong>
 		</td>
 	</tr>
 </table>
@@ -52,4 +52,3 @@ api_plugin_hook('console_after');
 
 bottom_footer();
 
-?>

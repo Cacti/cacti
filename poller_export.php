@@ -23,24 +23,24 @@
 */
 
 /* do NOT run this script through a web browser */
-if (!isset($_SERVER["argv"][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($_SERVER['REMOTE_ADDR'])) {
-	die("<br><strong>This script is only meant to run at the command line.</strong>");
+if (!isset($_SERVER['argv'][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($_SERVER['REMOTE_ADDR'])) {
+	die('<br><strong>This script is only meant to run at the command line.</strong>');
 }
 
 /* We are not talking to the browser */
 $no_http_headers = true;
 
 /* Start Initialization Section */
-include(dirname(__FILE__) . "/include/global.php");
-include_once($config["base_path"] . "/lib/poller.php");
-include_once($config["base_path"] . "/lib/graph_export.php");
-include_once($config["base_path"] . "/lib/rrd.php");
+include(dirname(__FILE__) . '/include/global.php');
+include_once($config['base_path'] . '/lib/poller.php');
+include_once($config['base_path'] . '/lib/graph_export.php');
+include_once($config['base_path'] . '/lib/rrd.php');
 
 /* Let PHP Run Just as Long as It Has To */
-ini_set("max_execution_time", "0");
+ini_set('max_execution_time', '0');
 
 /* process calling arguments */
-$parms = $_SERVER["argv"];
+$parms = $_SERVER['argv'];
 array_shift($parms);
 
 global $debug;
@@ -49,26 +49,26 @@ $debug = FALSE;
 $force = FALSE;
 
 foreach($parms as $parameter) {
-	@list($arg, $value) = @explode("=", $parameter);
+	@list($arg, $value) = @explode('=', $parameter);
 
 	switch ($arg) {
-	case "-d":
-	case "--debug":
+	case '-d':
+	case '--debug':
 		$debug = TRUE;
 		break;
-	case "-f":
-	case "--force":
+	case '-f':
+	case '--force':
 		$force = TRUE;
 		break;
-	case "-v":
-	case "-V":
-	case "--version":
-	case "--help":
-	case "-h":
+	case '-v':
+	case '-V':
+	case '--version':
+	case '--help':
+	case '-h':
 		display_help();
 		exit;
 	default:
-		print "ERROR: Invalid Parameter " . $parameter . "\n\n";
+		print 'ERROR: Invalid Parameter ' . $parameter . "\n\n";
 		display_help();
 		exit;
 	}
@@ -79,7 +79,7 @@ graph_export($force);
 
 /*	display_help - displays the usage of the function */
 function display_help () {
-	$version = db_fetch_cell("SELECT cacti FROM version LIMIT 1");
+	$version = db_fetch_cell('SELECT cacti FROM version LIMIT 1');
 	print "Cacti Graph Export Tool Version $version, Copyright 2004-2014 - The Cacti Group\n\n";
 	print "usage: poller_export.php [-f|--force] [-d|--debug] [-h|--help|-v|-V|--version]\n\n";
 	print "-f | --force     - Force export to run now running now\n";
@@ -87,4 +87,3 @@ function display_help () {
 	print "-v -V --version  - Display this help message\n";
 	print "-h --help        - display this help message\n";
 }
-?>

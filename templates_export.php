@@ -22,13 +22,13 @@
  +-------------------------------------------------------------------------+
 */
 
-include("./include/auth.php");
-include_once("./lib/export.php");
+include('./include/auth.php');
+include_once('./lib/export.php');
 
 /* set default action */
-if (!isset($_REQUEST["action"])) { $_REQUEST["action"] = ""; }
+if (!isset($_REQUEST['action'])) { $_REQUEST['action'] = ''; }
 
-switch ($_REQUEST["action"]) {
+switch ($_REQUEST['action']) {
 	case 'save':
 		form_save();
 
@@ -50,29 +50,29 @@ function form_save() {
 	global $export_types, $export_errors;
 
     /* ================= input validation ================= */
-    input_validate_input_number(get_request_var_post("export_item_id"));
+    input_validate_input_number(get_request_var_post('export_item_id'));
     /* ==================================================== */
 
-	if (isset($_POST["save_component_export"])) {
+	if (isset($_POST['save_component_export'])) {
 		$export_errors = 0;
-		$xml_data = get_item_xml($_POST["export_type"], $_POST["export_item_id"], (((isset($_POST["include_deps"]) ? $_POST["include_deps"] : "") == "") ? false : true));
+		$xml_data = get_item_xml($_POST['export_type'], $_POST['export_item_id'], (((isset($_POST['include_deps']) ? $_POST['include_deps'] : '') == '') ? false : true));
 
-		if ($_POST["output_format"] == "1") {
+		if ($_POST['output_format'] == '1') {
 			top_header();
 
-			print "<table width='100%' align='center'><tr><td><pre>" . htmlspecialchars($xml_data) . "</pre></td></tr></table>";
+			print "<table width='100%' align='center'><tr><td><pre>" . htmlspecialchars($xml_data) . '</pre></td></tr></table>';
 
 			bottom_footer();
-		}elseif ($_POST["output_format"] == "2") {
-			header("Content-type: application/xml");
+		}elseif ($_POST['output_format'] == '2') {
+			header('Content-type: application/xml');
 			if ($export_errors) echo "WARNING: Export Errors Encountered.  Refresh Browser Window for Details!\n";
 			print $xml_data;
-		}elseif ($_POST["output_format"] == "3") {
+		}elseif ($_POST['output_format'] == '3') {
 			if ($export_errors) {
-				header("Location: templates_export.php");
+				header('Location: templates_export.php');
 			}else{
-				header("Content-type: application/xml");
-				header("Content-Disposition: attachment; filename=cacti_" . $_POST["export_type"] . "_" . strtolower(clean_up_file_name(db_fetch_cell(str_replace("|id|", $_POST["export_item_id"], $export_types{$_POST["export_type"]}["title_sql"])))) . ".xml");
+				header('Content-type: application/xml');
+				header('Content-Disposition: attachment; filename=cacti_' . $_POST['export_type'] . '_' . strtolower(clean_up_file_name(db_fetch_cell(str_replace('|id|', $_POST['export_item_id'], $export_types{$_POST['export_type']}['title_sql'])))) . '.xml');
 				print $xml_data;
 			}
 		}
@@ -87,11 +87,11 @@ function export() {
 	global $export_types;
 
 	/* 'graph_template' should be the default */
-	if (!isset($_REQUEST["export_type"])) {
-		$_REQUEST["export_type"] = "graph_template";
+	if (!isset($_REQUEST['export_type'])) {
+		$_REQUEST['export_type'] = 'graph_template';
 	}
 
-	html_start_box("<strong>Export Templates</strong>", "100%", "", "3", "center", "");
+	html_start_box('<strong>Export Templates</strong>', '100%', '', '3', 'center', '');
 	?>
 	<tr class='tableRow'>
 		<td>
@@ -103,7 +103,7 @@ function export() {
 						<select name="cbo_graph_id" onChange="window.location=document.form_graph_id.cbo_graph_id.options[document.form_graph_id.cbo_graph_id.selectedIndex].value">
 							<?php
 							while (list($key, $array) = each($export_types)) {
-								print "<option value='templates_export.php?export_type=" . htmlspecialchars($key) . "'"; if ($_REQUEST["export_type"] == $key) { print " selected"; } print ">" . $array["name"] . "</option>\n";
+								print "<option value='templates_export.php?export_type=" . htmlspecialchars($key) . "'"; if ($_REQUEST['export_type'] == $key) { print ' selected'; } print '>' . $array['name'] . "</option>\n";
 							}
 							?>
 						</select>
@@ -119,15 +119,15 @@ function export() {
 
 	print "<form method='post' action='templates_export.php'>\n";
 
-	html_start_box("<strong>Available Templates</strong> [" . $export_types{$_REQUEST["export_type"]}["name"] . "]", "100%", "", "3", "center", "");
+	html_start_box('<strong>Available Templates</strong> [' . $export_types{$_REQUEST['export_type']}['name'] . ']', '100%', '', '3', 'center', '');
 
 	form_alternate_row();?>
 		<td width="50%">
-			<font class="textEditTitle"><?php print $export_types{$_REQUEST["export_type"]}["name"];?> to Export</font><br>
+			<font class="textEditTitle"><?php print $export_types{$_REQUEST['export_type']}['name'];?> to Export</font><br>
 			Choose the exact item to export to XML.
 		</td>
 		<td>
-			<?php form_dropdown("export_item_id",db_fetch_assoc($export_types{$_REQUEST["export_type"]}["dropdown_sql"]),"name","id","","","0");?>
+			<?php form_dropdown('export_item_id', db_fetch_assoc($export_types{$_REQUEST['export_type']}['dropdown_sql']),'name','id','','','0');?>
 		</td>
 	</tr>
 
@@ -138,7 +138,7 @@ function export() {
 			this box or the resulting import may fail.
 		</td>
 		<td>
-			<?php form_checkbox("include_deps", "on", "Include Dependencies", "on", "", true);?>
+			<?php form_checkbox('include_deps', 'on', 'Include Dependencies', 'on', '', true);?>
 		</td>
 	</tr>
 
@@ -149,11 +149,11 @@ function export() {
 		</td>
 		<td>
 			<?php
-			form_radio_button("output_format", "3", "1", "Output to the Browser (within Cacti)","1",true); print "<br>";
-			form_radio_button("output_format", "3", "2", "Output to the Browser (raw XML)","1",true); print "<br>";
-			form_radio_button("output_format", "3", "3", "Save File Locally","1",true);
-			form_hidden_box("export_type", $_REQUEST["export_type"], "");
-			form_hidden_box("save_component_export","1","");
+			form_radio_button('output_format', '3', '1', 'Output to the Browser (within Cacti)','1',true); print '<br>';
+			form_radio_button('output_format', '3', '2', 'Output to the Browser (raw XML)','1',true); print '<br>';
+			form_radio_button('output_format', '3', '3', 'Save File Locally','1',true);
+			form_hidden_box('export_type', $_REQUEST['export_type'], '');
+			form_hidden_box('save_component_export','1','');
 			?>
 		</td>
 	</tr>
@@ -161,6 +161,6 @@ function export() {
 
 	html_end_box();
 
-	form_save_button("", "export");
+	form_save_button('', 'export');
 }
-?>
+

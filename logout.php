@@ -22,17 +22,17 @@
  +-------------------------------------------------------------------------+
 */
 
-include("./include/auth.php");
+include('./include/auth.php');
 
 global $config;
 
 api_plugin_hook('logout_pre_session_destroy');
 
 /* Clear session */
-setcookie(session_name(),"",time() - 3600,"/");
+setcookie(session_name(),'',time() - 3600,'/');
 session_destroy();
 
-$version = db_fetch_cell("SELECT cacti FROM version");
+$version = db_fetch_cell('SELECT cacti FROM version');
 
 api_plugin_hook('logout_post_session_destroy');
 
@@ -77,7 +77,7 @@ if (isset($_REQUEST['action']) && $_REQUEST['action'] == 'timeout') {
 	</script>
 	</body>
 	</html>\n";
-}elseif (read_config_option("auth_method") == "2") {
+}elseif (read_config_option('auth_method') == '2') {
 	clear_auth_cookie();
 
 	if (api_plugin_hook_function('custom_logout_message', OPER_MODE_NATIVE) == OPER_MODE_RESKIN) {
@@ -127,7 +127,6 @@ if (isset($_REQUEST['action']) && $_REQUEST['action'] == 'timeout') {
 	/* Default action */
 	clear_auth_cookie();
 
-	header("Location: index.php");
+	header('Location: index.php');
 }
 
-?>

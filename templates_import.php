@@ -22,13 +22,13 @@
  +-------------------------------------------------------------------------+
 */
 
-include("./include/auth.php");
-include_once("./lib/import.php");
+include('./include/auth.php');
+include_once('./lib/import.php');
 
 /* set default action */
-if (!isset($_REQUEST["action"])) { $_REQUEST["action"] = ""; }
+if (!isset($_REQUEST['action'])) { $_REQUEST['action'] = ''; }
 
-switch ($_REQUEST["action"]) {
+switch ($_REQUEST['action']) {
 	case 'save':
 		form_save();
 
@@ -47,22 +47,22 @@ switch ($_REQUEST["action"]) {
    -------------------------- */
 
 function form_save() {
-	if (isset($_POST["save_component_import"])) {
-		if (trim($_POST["import_text"] != "")) {
+	if (isset($_POST['save_component_import'])) {
+		if (trim($_POST['import_text'] != '')) {
 			/* textbox input */
-			$xml_data = $_POST["import_text"];
-		}elseif (($_FILES["import_file"]["tmp_name"] != "none") && ($_FILES["import_file"]["tmp_name"] != "")) {
+			$xml_data = $_POST['import_text'];
+		}elseif (($_FILES['import_file']['tmp_name'] != 'none') && ($_FILES['import_file']['tmp_name'] != '')) {
 			/* file upload */
-			$fp = fopen($_FILES["import_file"]["tmp_name"],"r");
-			$xml_data = fread($fp,filesize($_FILES["import_file"]["tmp_name"]));
+			$fp = fopen($_FILES['import_file']['tmp_name'],'r');
+			$xml_data = fread($fp,filesize($_FILES['import_file']['tmp_name']));
 			fclose($fp);
 		}else{
-			header("Location: templates_import.php"); exit;
+			header('Location: templates_import.php'); exit;
 		}
 
-		if ($_POST["import_rra"] == "1") {
+		if ($_POST['import_rra'] == '1') {
 			$import_custom_rra_settings = false;
-			$rra_array = (isset($_POST["rra_id"]) ? $_POST["rra_id"] : array());
+			$rra_array = (isset($_POST['rra_id']) ? $_POST['rra_id'] : array());
 		}else{
 			$import_custom_rra_settings = true;
 			$rra_array = array();
@@ -71,10 +71,10 @@ function form_save() {
 		/* obtain debug information if it's set */
 		$debug_data = import_xml_data($xml_data, $import_custom_rra_settings, $rra_array);
 		if(sizeof($debug_data) > 0) {
-			$_SESSION["import_debug_info"] = $debug_data;
+			$_SESSION['import_debug_info'] = $debug_data;
 		}
 
-		header("Location: templates_import.php");
+		header('Location: templates_import.php');
 	}
 }
 
@@ -89,33 +89,34 @@ function import() {
 	<form method="post" action="templates_import.php" enctype="multipart/form-data">
 	<?php
 
-	if ((isset($_SESSION["import_debug_info"])) && (is_array($_SESSION["import_debug_info"]))) {
-		html_start_box("<strong>Import Results</strong>", "100%", "", "3", "center", "");
+	if ((isset($_SESSION['import_debug_info'])) && (is_array($_SESSION['import_debug_info']))) {
+		html_start_box('<strong>Import Results</strong>', '100%', '', '3', 'center', '');
 
 		print "<tr class='odd'><td><p class='textArea'>Cacti has imported the following items:</p>";
 
-		while (list($type, $type_array) = each($_SESSION["import_debug_info"])) {
-			print "<p><strong>" . $hash_type_names[$type] . "</strong></p>";
+		while (list($type, $type_array) = each($_SESSION['import_debug_info'])) {
+			print '<p><strong>' . $hash_type_names[$type] . '</strong></p>';
 
 			while (list($index, $vals) = each($type_array)) {
-				if ($vals["result"] == "success") {
+				if ($vals['result'] == 'success') {
 					$result_text = "<span style='color: green;'>[success]</span>";
 				}else{
 					$result_text = "<span style='color: red;'>[fail]</span>";
 				}
 
-				if ($vals["type"] == "update") {
+				if ($vals['type'] == 'update') {
 					$type_text = "<span style='color: gray;'>[update]</span>";
 				}else{
 					$type_text = "<span style='color: blue;'>[new]</span>";
 				}
 
-				print "<span style='font-family: monospace;'>$result_text " . htmlspecialchars($vals["title"]) . " $type_text</span><br>\n";
+				print "<span style='font-family: monospace;'>$result_text " . htmlspecialchars($vals['title']) . " $type_text</span><br>\n";
 
-				$dep_text = ""; $there_are_dep_errors = false;
-				if ((isset($vals["dep"])) && (sizeof($vals["dep"]) > 0)) {
-					while (list($dep_hash, $dep_status) = each($vals["dep"])) {
-						if ($dep_status == "met") {
+				$dep_text = '';
+				$there_are_dep_errors = false;
+				if ((isset($vals['dep'])) && (sizeof($vals['dep']) > 0)) {
+					while (list($dep_hash, $dep_status) = each($vals['dep'])) {
+						if ($dep_status == 'met') {
 							$dep_status_text = "<span style='color: navy;'>Found Dependency:</span>";
 						}else{
 							$dep_status_text = "<span style='color: red;'>Unmet Dependency:</span>";
@@ -133,24 +134,24 @@ function import() {
 			}
 		}
 
-		print "</td></tr>";
+		print '</td></tr>';
 
 		html_end_box();
 
-		kill_session_var("import_debug_info");
+		kill_session_var('import_debug_info');
 	}
 
-	html_start_box("<strong>Import Templates</strong>", "100%", "", "3", "center", "");
+	html_start_box('<strong>Import Templates</strong>', '100%', '', '3', 'center', '');
 
 	draw_edit_form(array(
-		"config" => array("no_form_tag" => true),
-		"fields" => $fields_template_import
+		'config' => array('no_form_tag' => true),
+		'fields' => $fields_template_import
 		));
 
 	html_end_box();
-	form_hidden_box("save_component_import","1","");
+	form_hidden_box('save_component_import','1','');
 
-	form_save_button("", "import");
+	form_save_button('', 'import');
 ?>
 <script language="JavaScript">
 

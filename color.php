@@ -22,12 +22,12 @@
  +-------------------------------------------------------------------------+
 */
 
-include("./include/auth.php");
+include('./include/auth.php');
 
 /* set default action */
-if (!isset($_REQUEST["action"])) { $_REQUEST["action"] = ""; }
+if (!isset($_REQUEST['action'])) { $_REQUEST['action'] = ''; }
 
-switch ($_REQUEST["action"]) {
+switch ($_REQUEST['action']) {
 	case 'save':
 		form_save();
 
@@ -35,7 +35,7 @@ switch ($_REQUEST["action"]) {
 	case 'remove':
 		color_remove();
 
-		header ("Location: color.php");
+		header ('Location: color.php');
 		break;
 	case 'edit':
 		top_header();
@@ -58,12 +58,12 @@ switch ($_REQUEST["action"]) {
    -------------------------- */
 
 function form_save() {
-	if (isset($_POST["save_component_color"])) {
-		$save["id"] = $_POST["id"];
-		$save["hex"] = form_input_validate($_POST["hex"], "hex", "^[a-fA-F0-9]+$", false, 3);
+	if (isset($_POST['save_component_color'])) {
+		$save['id'] = $_POST['id'];
+		$save['hex'] = form_input_validate($_POST['hex'], 'hex', '^[a-fA-F0-9]+$', false, 3);
 
 		if (!is_error_message()) {
-			$color_id = sql_save($save, "colors");
+			$color_id = sql_save($save, 'colors');
 
 			if ($color_id) {
 				raise_message(1);
@@ -73,9 +73,9 @@ function form_save() {
 		}
 
 		if (is_error_message()) {
-			header("Location: color.php?action=edit&id=" . (empty($color_id) ? $_POST["id"] : $color_id));
+			header('Location: color.php?action=edit&id=' . (empty($color_id) ? $_POST['id'] : $color_id));
 		}else{
-			header("Location: color.php");
+			header('Location: color.php');
 		}
 	}
 }
@@ -86,63 +86,63 @@ function form_save() {
 
 function color_remove() {
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var("id"));
+	input_validate_input_number(get_request_var('id'));
 	/* ==================================================== */
 
-	db_execute("delete from colors where id=" . $_GET["id"]);
+	db_execute_prepared('DELETE FROM colors WHERE id = ?', array(get_request_var('id')));
 }
 
 function color_edit() {
 	global $fields_color_edit;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var("id"));
+	input_validate_input_number(get_request_var('id'));
 	/* ==================================================== */
 
-	if (!empty($_GET["id"])) {
-		$color = db_fetch_row("select * from colors where id=" . $_GET["id"]);
-		$header_label = "[edit: " . $color["hex"] . "]";
+	if (!empty($_GET['id'])) {
+		$color = db_fetch_row_prepared('SELECT * FROM colors WHERE id = ?', array(get_request_var('id')));
+		$header_label = '[edit: ' . $color['hex'] . ']';
 	}else{
-		$header_label = "[new]";
+		$header_label = '[new]';
 	}
 
-	html_start_box("<strong>Colors</strong> $header_label", "100%", "", "3", "center", "");
+	html_start_box("<strong>Colors</strong> $header_label", '100%', '', '3', 'center', '');
 
 	draw_edit_form(array(
-		"config" => array(),
-		"fields" => inject_form_variables($fields_color_edit, (isset($color) ? $color : array()))
+		'config' => array(),
+		'fields' => inject_form_variables($fields_color_edit, (isset($color) ? $color : array()))
 		));
 
 	html_end_box();
 
-	form_save_button("color.php");
+	form_save_button('color.php');
 }
 
 function color() {
-	html_start_box("<strong>Colors</strong>", "100%", "", "3", "center", "color.php?action=edit");
+	html_start_box('<strong>Colors</strong>', '100%', '', '3', 'center', 'color.php?action=edit');
 
 	print "<tr class='tableHeader'>";
-		DrawMatrixHeaderItem("Hex Value","",1);
-		DrawMatrixHeaderItem("Color","",1);
-		DrawMatrixHeaderItem("&nbsp;","",1);
+		DrawMatrixHeaderItem('Hex Value','',1);
+		DrawMatrixHeaderItem('Color','',1);
+		DrawMatrixHeaderItem('&nbsp;','',1);
 
-		DrawMatrixHeaderItem("&nbsp;","",1);
-		DrawMatrixHeaderItem("Hex Value","",1);
-		DrawMatrixHeaderItem("Color","",1);
-		DrawMatrixHeaderItem("&nbsp;","",1);
+		DrawMatrixHeaderItem('&nbsp;','',1);
+		DrawMatrixHeaderItem('Hex Value','',1);
+		DrawMatrixHeaderItem('Color','',1);
+		DrawMatrixHeaderItem('&nbsp;','',1);
 
-		DrawMatrixHeaderItem("&nbsp;","",1);
-		DrawMatrixHeaderItem("Hex Value","",1);
-		DrawMatrixHeaderItem("Color","",1);
-		DrawMatrixHeaderItem("&nbsp;","",1);
+		DrawMatrixHeaderItem('&nbsp;','',1);
+		DrawMatrixHeaderItem('Hex Value','',1);
+		DrawMatrixHeaderItem('Color','',1);
+		DrawMatrixHeaderItem('&nbsp;','',1);
 
-		DrawMatrixHeaderItem("&nbsp;","",1);
-		DrawMatrixHeaderItem("Hex Value","",1);
-		DrawMatrixHeaderItem("Color","",1);
-		DrawMatrixHeaderItem("&nbsp;","",1);
-	print "</tr>";
+		DrawMatrixHeaderItem('&nbsp;','',1);
+		DrawMatrixHeaderItem('Hex Value','',1);
+		DrawMatrixHeaderItem('Color','',1);
+		DrawMatrixHeaderItem('&nbsp;','',1);
+	print '</tr>';
 
-	$color_list = db_fetch_assoc("select * from colors order by hex");
+	$color_list = db_fetch_assoc('SELECT * FROM colors ORDER BY hex');
 
 	$i = 0;
 	if (sizeof($color_list) > 0) {
@@ -153,32 +153,32 @@ function color() {
 				form_alternate_row('',true);
 					?>
 					<td width='1'>
-						<a class="linkEditMain" style='display:block;' href="<?php print htmlspecialchars("color.php?action=edit&id=" . $color["id"]);?>"><?php print $color["hex"];?></a>
+						<a class="linkEditMain" style='display:block;' href="<?php print htmlspecialchars('color.php?action=edit&id=' . $color['id']);?>"><?php print $color['hex'];?></a>
 					</td>
-					<td bgcolor="#<?php print $color["hex"];?>" width="10%">&nbsp;</td>
+					<td bgcolor="#<?php print $color['hex'];?>" width="10%">&nbsp;</td>
 					<td align="right">
-						<a href="<?php print htmlspecialchars("color.php?action=remove&id=" . $color["id"]);?>"><img src="images/delete_icon.gif" style="height:10px;width:10px;" border="0" alt="Delete"></a>
+						<a href="<?php print htmlspecialchars('color.php?action=remove&id=' . $color['id']);?>"><img src="images/delete_icon.gif" style="height:10px;width:10px;" border="0" alt="Delete"></a>
 					</td>
 				<?php	$j=1;
 			}elseif (($j % 4 == 2) || ($j % 4 == 3)) {
 					?>
 					<td></td>
 					<td width='1'>
-						<a class="linkEditMain" style='display:block;' href="<?php print htmlspecialchars("color.php?action=edit&id=" . $color["id"]);?>"><?php print $color["hex"];?></a>
+						<a class="linkEditMain" style='display:block;' href="<?php print htmlspecialchars('color.php?action=edit&id=' . $color['id']);?>"><?php print $color['hex'];?></a>
 					</td>
-					<td bgcolor="#<?php print $color["hex"];?>" width="10%">&nbsp;</td>
+					<td bgcolor="#<?php print $color['hex'];?>" width="10%">&nbsp;</td>
 					<td align="right">
-						<a href="<?php print htmlspecialchars("color.php?action=remove&id=" . $color["id"]);?>"><img src="images/delete_icon.gif" style="height:10px;width:10px;" border="0" alt="Delete"></a>
+						<a href="<?php print htmlspecialchars('color.php?action=remove&id=' . $color['id']);?>"><img src="images/delete_icon.gif" style="height:10px;width:10px;" border="0" alt="Delete"></a>
 					</td>
 				<?php	$j=$j++;
 			} else { ?>
 					<td></td>
 					<td width='1'>
-						<a class="linkEditMain" style='display:block;' href="<?php print htmlspecialchars("color.php?action=edit&id=" . $color["id"]);?>"><?php print $color["hex"];?></a>
+						<a class="linkEditMain" style='display:block;' href="<?php print htmlspecialchars('color.php?action=edit&id=' . $color['id']);?>"><?php print $color['hex'];?></a>
 					</td>
-					<td bgcolor="#<?php print $color["hex"];?>" width="10%">&nbsp;</td>
+					<td bgcolor="#<?php print $color['hex'];?>" width="10%">&nbsp;</td>
 					<td align="right">
-						<a href="<?php print htmlspecialchars("color.php?action=remove&id=" . $color["id"]);?>"><img src="images/delete_icon.gif" style="height:10px;width:10px;" border="0" alt="Delete"></a>
+						<a href="<?php print htmlspecialchars('color.php?action=remove&id=' . $color['id']);?>"><img src="images/delete_icon.gif" style="height:10px;width:10px;" border="0" alt="Delete"></a>
 					</td>
 				</tr>
 			<?php
@@ -193,4 +193,3 @@ function color() {
 	html_end_box();
 }
 
-?>

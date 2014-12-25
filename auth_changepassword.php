@@ -30,7 +30,7 @@ if (!isset($_SESSION['sess_user_id'])) {
 	exit;
 }
 
-$user    = db_fetch_row('SELECT * FROM user_auth WHERE id=' . $_SESSION['sess_user_id']);
+$user    = db_fetch_row_prepared('SELECT * FROM user_auth WHERE id = ?', array($_SESSION['sess_user_id']));
 $version = db_fetch_cell('SELECT cacti FROM version');
 $auth_method = read_config_option('auth_method');
 
@@ -65,8 +65,8 @@ case 'changepassword':
 	}
 
 	if ($bad_password == false && $_POST['password'] == $_POST['confirm'] && $_POST['password'] != '') {
-		db_execute("INSERT IGNORE INTO user_log (username,result,ip) VALUES ('" . $user['username'] . "',3,'" . $_SERVER['REMOTE_ADDR'] . "')");
-		db_execute("UPDATE user_auth SET must_change_password='', password='" . md5($_POST['password']) . "' WHERE id=" . $_SESSION['sess_user_id']);
+		db_execute_prepared('INSERT IGNORE INTO user_log (username, result, ip) VALUES (?, 3, ?)', array($user['username'], $_SERVER['REMOTE_ADDR']));
+		db_execute_prepared("UPDATE user_auth SET must_change_password = '', password = ? WHERE id = ?", array(md5($_POST['password']), $_SESSION['sess_user_id']));
 
 		kill_session_var('sess_change_password');
 
@@ -75,10 +75,7 @@ case 'changepassword':
 
 		/* if no console permissions show graphs otherwise, pay attention to user setting */
 		$realm_id    = $user_auth_realm_filenames['index.php'];
-		$has_console = db_fetch_cell('SELECT realm_id 
-			FROM user_auth_realm 
-			WHERE user_id=' . $_SESSION['sess_user_id'] . ' 
-			AND realm_id=' . $realm_id);
+		$has_console = db_fetch_cell('SELECT realm_id FROM user_auth_realm WHERE user_id = ? AND realm_id = ?', array($_SESSION['sess_user_id'], $realm_id));
 
 		if (basename($_POST['ref']) == 'auth_changepassword.php' || basename($_POST['ref']) == '') {
 			if ($has_console) {
