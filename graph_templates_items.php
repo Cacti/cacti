@@ -132,16 +132,16 @@ function form_save() {
 
 			if (!is_error_message()) {
 				/* Before we save the item, let's get a look at task_item_id <-> input associations */
-				$orig_data_source_graph_inputs = db_fetch_assoc("select
+				$orig_data_source_graph_inputs = db_fetch_assoc("SELECT
 					graph_template_input.id,
 					graph_template_input.name,
 					graph_templates_item.task_item_id
-					from (graph_template_input,graph_template_input_defs,graph_templates_item)
-					where graph_template_input.id=graph_template_input_defs.graph_template_input_id
-					and graph_template_input_defs.graph_template_item_id=graph_templates_item.id
-					and graph_template_input.graph_template_id=" . $save["graph_template_id"] . "
-					and graph_template_input.column_name='task_item_id'
-					group by graph_templates_item.task_item_id");
+					FROM (graph_template_input,graph_template_input_defs,graph_templates_item)
+					WHERE graph_template_input.id=graph_template_input_defs.graph_template_input_id
+					AND graph_template_input_defs.graph_template_item_id=graph_templates_item.id
+					AND graph_template_input.graph_template_id=" . $save["graph_template_id"] . "
+					AND graph_template_input.column_name='task_item_id'
+					GROUP BY graph_templates_item.task_item_id");
 
 				$orig_data_source_to_input = array_rekey($orig_data_source_graph_inputs, "task_item_id", "id");
 
@@ -154,7 +154,7 @@ function form_save() {
 						/* old item clean-up.  Don't delete anything if the item <-> task_item_id association remains the same. */
 						if ($_POST["_task_item_id"] != $_POST["task_item_id"]) {
 							/* It changed.  Delete any old associations */
-							db_execute("delete from graph_template_input_defs where graph_template_item_id=$graph_template_item_id");
+							db_execute("DELETE FROM graph_template_input_defs WHERE graph_template_item_id=$graph_template_item_id");
 
 							/* Input for current data source exists and has changed.  Update the association */
 							if (isset($orig_data_source_to_input{$save["task_item_id"]})) {
@@ -166,7 +166,7 @@ function form_save() {
 
 						/* an input for the current data source does NOT currently exist, let's create one */
 						if (!isset($orig_data_source_to_input{$save["task_item_id"]})) {
-							$ds_name = db_fetch_cell("select data_source_name from data_template_rrd where id=" . $_POST["task_item_id"]);
+							$ds_name = db_fetch_cell("SELECT data_source_name FROM data_template_rrd WHERE id=" . $_POST["task_item_id"]);
 
 							db_execute("replace into graph_template_input (hash,graph_template_id,name,column_name) values (
 								'" . get_hash_graph_template(0, "graph_template_input") . "'," . $save["graph_template_id"] . ",
@@ -174,7 +174,7 @@ function form_save() {
 
 							$graph_template_input_id = db_fetch_insert_id();
 
-							$graph_items = db_fetch_assoc("select id from graph_templates_item where graph_template_id=" . $save["graph_template_id"] . " and task_item_id=" . $_POST["task_item_id"]);
+							$graph_items = db_fetch_assoc("SELECT id FROM graph_templates_item WHERE graph_template_id=" . $save["graph_template_id"] . " and task_item_id=" . $_POST["task_item_id"]);
 
 							if (sizeof($graph_items) > 0) {
 							foreach ($graph_items as $graph_item) {
@@ -225,14 +225,14 @@ function item_movedown() {
 
 	if ((!empty($next_id)) && (isset($arr{$_GET["id"]}))) {
 		move_graph_group($_GET["id"], $arr, $next_id, "next");
-	}elseif (preg_match("/(GPRINT|VRULE|HRULE|COMMENT)/", $graph_item_types{db_fetch_cell("select graph_type_id from graph_templates_item where id=" . $_GET["id"])})) {
+	}elseif (preg_match("/(GPRINT|VRULE|HRULE|COMMENT)/", $graph_item_types{db_fetch_cell("SELECT graph_type_id FROM graph_templates_item WHERE id=" . $_GET["id"])})) {
 		/* this is so we know the "other" graph item to propagate the changes to */
 		$next_item = get_item("graph_templates_item", "sequence", $_GET["id"], "graph_template_id=" . $_GET["graph_template_id"] . " and local_graph_id=0", "next");
 
 		move_item_down("graph_templates_item", $_GET["id"], "graph_template_id=" . $_GET["graph_template_id"] . " and local_graph_id=0");
 
-		db_execute("update graph_templates_item set sequence=" . db_fetch_cell("select sequence from graph_templates_item where id=" . $_GET["id"]) . " where local_graph_template_item_id=" . $_GET["id"]);
-		db_execute("update graph_templates_item set sequence=" . db_fetch_cell("select sequence from graph_templates_item where id=" . $next_item). " where local_graph_template_item_id=" . $next_item);
+		db_execute("UPDATE graph_templates_item set sequence=" . db_fetch_cell("SELECT sequence FROM graph_templates_item WHERE id=" . $_GET["id"]) . " where local_graph_template_item_id=" . $_GET["id"]);
+		db_execute("UPDATE graph_templates_item set sequence=" . db_fetch_cell("SELECT sequence FROM graph_templates_item WHERE id=" . $next_item). " where local_graph_template_item_id=" . $next_item);
 	}
 }
 
@@ -249,14 +249,14 @@ function item_moveup() {
 
 	if ((!empty($next_id)) && (isset($arr{$_GET["id"]}))) {
 		move_graph_group($_GET["id"], $arr, $next_id, "previous");
-	}elseif (preg_match("/(GPRINT|VRULE|HRULE|COMMENT)/", $graph_item_types{db_fetch_cell("select graph_type_id from graph_templates_item where id=" . $_GET["id"])})) {
+	}elseif (preg_match("/(GPRINT|VRULE|HRULE|COMMENT)/", $graph_item_types{db_fetch_cell("SELECT graph_type_id FROM graph_templates_item WHERE id=" . $_GET["id"])})) {
 		/* this is so we know the "other" graph item to propagate the changes to */
 		$last_item = get_item("graph_templates_item", "sequence", $_GET["id"], "graph_template_id=" . $_GET["graph_template_id"] . " and local_graph_id=0", "previous");
 
 		move_item_up("graph_templates_item", $_GET["id"], "graph_template_id=" . $_GET["graph_template_id"] . " and local_graph_id=0");
 
-		db_execute("update graph_templates_item set sequence=" . db_fetch_cell("select sequence from graph_templates_item where id=" . $_GET["id"]) . " where local_graph_template_item_id=" . $_GET["id"]);
-		db_execute("update graph_templates_item set sequence=" . db_fetch_cell("select sequence from graph_templates_item where id=" . $last_item). " where local_graph_template_item_id=" . $last_item);
+		db_execute("UPDATE graph_templates_item SET sequence=" . db_fetch_cell("SELECT sequence FROM graph_templates_item WHERE id=" . $_GET["id"]) . " where local_graph_template_item_id=" . $_GET["id"]);
+		db_execute("UPDATE graph_templates_item SET sequence=" . db_fetch_cell("SELECT sequence FROM graph_templates_item WHERE id=" . $last_item). " where local_graph_template_item_id=" . $last_item);
 	}
 }
 
@@ -266,27 +266,27 @@ function item_remove() {
 	input_validate_input_number(get_request_var("graph_template_id"));
 	/* ==================================================== */
 
-	db_execute("delete from graph_templates_item where id=" . $_GET["id"]);
-	db_execute("delete from graph_templates_item where local_graph_template_item_id=" . $_GET["id"]);
+	db_execute("DELETE FROM graph_templates_item WHERE id=" . $_GET["id"]);
+	db_execute("DELETE FROM graph_templates_item WHERE local_graph_template_item_id=" . $_GET["id"]);
 
 	/* delete the graph item input if it is empty */
-	$graph_item_inputs = db_fetch_assoc("select
+	$graph_item_inputs = db_fetch_assoc("SELECT
 		graph_template_input.id
-		from (graph_template_input,graph_template_input_defs)
-		where graph_template_input.id=graph_template_input_defs.graph_template_input_id
-		and graph_template_input.graph_template_id=" . $_GET["graph_template_id"] . "
-		and graph_template_input_defs.graph_template_item_id=" . $_GET["id"] . "
-		group by graph_template_input.id");
+		FROM (graph_template_input,graph_template_input_defs)
+		WHERE graph_template_input.id=graph_template_input_defs.graph_template_input_id
+		AND graph_template_input.graph_template_id=" . $_GET["graph_template_id"] . "
+		AND graph_template_input_defs.graph_template_item_id=" . $_GET["id"] . "
+		GROUP BY graph_template_input.id");
 
 	if (sizeof($graph_item_inputs) > 0) {
 	foreach ($graph_item_inputs as $graph_item_input) {
-		if (sizeof(db_fetch_assoc("select graph_template_input_id from graph_template_input_defs where graph_template_input_id=" . $graph_item_input["id"])) == 1) {
-			db_execute("delete from graph_template_input where id=" . $graph_item_input["id"]);
+		if (sizeof(db_fetch_assoc("SELECT graph_template_input_id FROM graph_template_input_defs WHERE graph_template_input_id=" . $graph_item_input["id"])) == 1) {
+			db_execute("DELETE FROM graph_template_input WHERE id=" . $graph_item_input["id"]);
 		}
 	}
 	}
 
-	db_execute("delete from graph_template_input_defs where graph_template_item_id=" . $_GET["id"]);
+	db_execute("DELETE FROM graph_template_input_defs WHERE graph_template_item_id=" . $_GET["id"]);
 }
 
 function item_edit() {
@@ -297,19 +297,19 @@ function item_edit() {
 	input_validate_input_number(get_request_var("graph_template_id"));
 	/* ==================================================== */
 
-	$header_label = "[edit graph: " . db_fetch_cell("select name from graph_templates where id=" . $_GET["graph_template_id"]) . "]";
+	$header_label = "[edit graph: " . db_fetch_cell("SELECT name FROM graph_templates WHERE id=" . $_GET["graph_template_id"]) . "]";
 
 	html_start_box("<strong>Graph Template Items</strong> " . htmlspecialchars($header_label), "100%", "", "3", "center", "");
 
 	print "<form id='graph_items' name='graph_items' method='post' action='graph_templates_items.php'>\n";
 
 	if (!empty($_GET["id"])) {
-		$template_item = db_fetch_row("select * from graph_templates_item where id=" . $_GET["id"]);
+		$template_item = db_fetch_row("SELECT * FROM graph_templates_item WHERE id=" . $_GET["id"]);
 	}
 
 	/* by default, select the LAST DS chosen to make everyone's lives easier */
 	if (!empty($_GET["graph_template_id"])) {
-		$default = db_fetch_row("select task_item_id from graph_templates_item where graph_template_id=" . $_GET["graph_template_id"] . " and local_graph_id=0 order by sequence DESC");
+		$default = db_fetch_row("SELECT task_item_id FROM graph_templates_item WHERE graph_template_id=" . $_GET["graph_template_id"] . " and local_graph_id=0 ORDER BY sequence DESC");
 
 		if (sizeof($default) > 0) {
 			$struct_graph_item["task_item_id"]["default"] = $default["task_item_id"];
@@ -319,15 +319,15 @@ function item_edit() {
 	}
 
 	/* modifications to the default graph items array */
-	$struct_graph_item["task_item_id"]["sql"] = "select
-		CONCAT_WS('',data_template.name,' - ',' (',data_template_rrd.data_source_name,')') as name,
+	$struct_graph_item["task_item_id"]["sql"] = "SELECT
+		CONCAT_WS('',data_template.name,' - ',' (',data_template_rrd.data_source_name,')') AS name,
 		data_template_rrd.id
-		from (data_template_data,data_template_rrd,data_template)
-		where data_template_rrd.data_template_id=data_template.id
-		and data_template_data.data_template_id=data_template.id
-		and data_template_data.local_data_id=0
-		and data_template_rrd.local_data_id=0
-		order by data_template.name,data_template_rrd.data_source_name";
+		FROM (data_template_data,data_template_rrd,data_template)
+		WHERE data_template_rrd.data_template_id=data_template.id
+		AND data_template_data.data_template_id=data_template.id
+		AND data_template_data.local_data_id=0
+		AND data_template_rrd.local_data_id=0
+		ORDER BY data_template.name,data_template_rrd.data_source_name";
 
 	$form_array = array();
 
@@ -341,14 +341,14 @@ function item_edit() {
 
 	if (!empty($_GET["id"])) {
 		/* we want to mark the fields that are associated with a graph item input */
-		$graph_item_input_fields = db_fetch_assoc("select
+		$graph_item_input_fields = db_fetch_assoc("SELECT
 			graph_template_input.id,
 			graph_template_input.column_name
-			from (graph_template_input,graph_template_input_defs)
-			where graph_template_input.id=graph_template_input_defs.graph_template_input_id
-			and graph_template_input.graph_template_id=" . $_GET["graph_template_id"] . "
-			and graph_template_input_defs.graph_template_item_id=" . $_GET["id"] . "
-			group by graph_template_input.column_name");
+			FROM (graph_template_input,graph_template_input_defs)
+			WHERE graph_template_input.id=graph_template_input_defs.graph_template_input_id
+			AND graph_template_input.graph_template_id=" . $_GET["graph_template_id"] . "
+			AND graph_template_input_defs.graph_template_item_id=" . $_GET["id"] . "
+			GROUP BY graph_template_input.column_name");
 
 		if (sizeof($graph_item_input_fields) > 0) {
 		foreach ($graph_item_input_fields as $field) {

@@ -126,16 +126,16 @@ function form_save() {
 		$save3["data_input_field_id"] = form_input_validate((isset($_POST["data_input_field_id"]) ? $_POST["data_input_field_id"] : "0"), "data_input_field_id", "", true, 3);
 
 		/* ok, first pull out all 'input' values so we know how much to save */
-		$input_fields = db_fetch_assoc("select
+		$input_fields = db_fetch_assoc("SELECT
 			id,
 			input_output,
 			regexp_match,
 			allow_nulls,
 			type_code,
 			data_name
-			from data_input_fields
-			where data_input_id=" . $_POST["data_input_id"] . "
-			and input_output='in'");
+			FROM data_input_fields
+			WHERE data_input_id=" . $_POST["data_input_id"] . "
+			AND input_output='in'");
 
 		/* pass 1 for validation */
 		if (sizeof($input_fields) > 0) {
@@ -180,7 +180,7 @@ function form_save() {
 
 		/* update actual host template information for live hosts */
 		if ((!is_error_message()) && ($save2["id"] > 0)) {
-			db_execute("update data_template_data set data_input_id = '" . $_POST["data_input_id"] . "' where data_template_id = " . $_POST["data_template_id"] . ";");
+			db_execute("UPDATE data_template_data set data_input_id = '" . $_POST["data_input_id"] . "' WHERE data_template_id = " . $_POST["data_template_id"] . ";");
 		}
 
 		if (!is_error_message()) {
@@ -196,7 +196,7 @@ function form_save() {
 
 		if (!is_error_message()) {
 			/* save entries in 'selected rras' field */
-			db_execute("delete from data_template_data_rra where data_template_data_id=$data_template_data_id");
+			db_execute("DELETE FROM data_template_data_rra WHERE data_template_data_id=$data_template_data_id");
 
 			if (isset($_POST["rra_id"])) {
 				for ($i=0; ($i < count($_POST["rra_id"])); $i++) {
@@ -214,7 +214,7 @@ function form_save() {
 				push_out_data_source($data_template_data_id);
 				push_out_data_source_item($data_template_rrd_id);
 
-				db_execute("delete from data_input_data where data_template_data_id=$data_template_data_id");
+				db_execute("DELETE FROM data_input_data WHERE data_template_data_id=$data_template_data_id");
 
 				reset($input_fields);
 				if (sizeof($input_fields) > 0) {
@@ -263,24 +263,24 @@ function form_actions() {
 		$selected_items = unserialize(stripslashes($_POST["selected_items"]));
 
 		if ($_POST["drp_action"] == "1") { /* delete */
-			$data_template_datas = db_fetch_assoc("select id from data_template_data where " . array_to_sql_or($selected_items, "data_template_id") . " and local_data_id=0");
+			$data_template_datas = db_fetch_assoc("SELECT id FROM data_template_data WHERE " . array_to_sql_or($selected_items, "data_template_id") . " AND local_data_id=0");
 
 			if (sizeof($data_template_datas) > 0) {
 			foreach ($data_template_datas as $data_template_data) {
-				db_execute("delete from data_template_data_rra where data_template_data_id=" . $data_template_data["id"]);
+				db_execute("DELETE FROM data_template_data_rra WHERE data_template_data_id=" . $data_template_data["id"]);
 			}
 			}
 
-			db_execute("delete from data_template_data where " . array_to_sql_or($selected_items, "data_template_id") . " and local_data_id=0");
-			db_execute("delete from data_template_rrd where " . array_to_sql_or($selected_items, "data_template_id") . " and local_data_id=0");
-			db_execute("delete from snmp_query_graph_rrd where " . array_to_sql_or($selected_items, "data_template_id"));
-			db_execute("delete from snmp_query_graph_rrd_sv where " . array_to_sql_or($selected_items, "data_template_id"));
-			db_execute("delete from data_template where " . array_to_sql_or($selected_items, "id"));
+			db_execute("DELETE FROM data_template_data WHERE " . array_to_sql_or($selected_items, "data_template_id") . " AND local_data_id=0");
+			db_execute("DELETE FROM data_template_rrd WHERE " . array_to_sql_or($selected_items, "data_template_id") . " AND local_data_id=0");
+			db_execute("DELETE FROM snmp_query_graph_rrd WHERE " . array_to_sql_or($selected_items, "data_template_id"));
+			db_execute("DELETE FROM snmp_query_graph_rrd_sv WHERE " . array_to_sql_or($selected_items, "data_template_id"));
+			db_execute("DELETE FROM data_template WHERE " . array_to_sql_or($selected_items, "id"));
 
 			/* "undo" any graph that is currently using this template */
-			db_execute("update data_template_data set local_data_template_data_id=0,data_template_id=0 where " . array_to_sql_or($selected_items, "data_template_id"));
-			db_execute("update data_template_rrd set local_data_template_rrd_id=0,data_template_id=0 where " . array_to_sql_or($selected_items, "data_template_id"));
-			db_execute("update data_local set data_template_id=0 where " . array_to_sql_or($selected_items, "data_template_id"));
+			db_execute("UPDATE data_template_data set local_data_template_data_id=0,data_template_id=0 WHERE " . array_to_sql_or($selected_items, "data_template_id"));
+			db_execute("UPDATE data_template_rrd set local_data_template_rrd_id=0,data_template_id=0 WHERE " . array_to_sql_or($selected_items, "data_template_id"));
+			db_execute("UPDATE data_local set data_template_id=0 WHERE " . array_to_sql_or($selected_items, "data_template_id"));
 		}elseif ($_POST["drp_action"] == "2") { /* duplicate */
 			for ($i=0;($i<count($selected_items));$i++) {
 				/* ================= input validation ================= */
@@ -305,7 +305,7 @@ function form_actions() {
 			input_validate_input_number($matches[1]);
 			/* ==================================================== */
 
-			$ds_list .= "<li>" . htmlspecialchars(db_fetch_cell("select name from data_template where id=" . $matches[1])) . "<br>";
+			$ds_list .= "<li>" . htmlspecialchars(db_fetch_cell("SELECT name FROM data_template WHERE id=" . $matches[1])) . "<br>";
 			$ds_array[$i] = $matches[1];
 
 			$i++;
@@ -371,13 +371,13 @@ function template_rrd_remove() {
 	input_validate_input_number(get_request_var("data_template_id"));
 	/* ==================================================== */
 
-	$children = db_fetch_assoc("select id from data_template_rrd where local_data_template_rrd_id=" . $_GET["id"] . " or id=" . $_GET["id"]);
+	$children = db_fetch_assoc("SELECT id FROM data_template_rrd WHERE local_data_template_rrd_id=" . $_GET["id"] . " or id=" . $_GET["id"]);
 
 	if (sizeof($children) > 0) {
 	foreach ($children as $item) {
-		db_execute("delete from data_template_rrd where id=" . $item["id"]);
-		db_execute("delete from snmp_query_graph_rrd where data_template_rrd_id=" . $item["id"]);
-		db_execute("update graph_templates_item set task_item_id=0 where task_item_id=" . $item["id"]);
+		db_execute("DELETE FROM data_template_rrd WHERE id=" . $item["id"]);
+		db_execute("DELETE FROM snmp_query_graph_rrd WHERE data_template_rrd_id=" . $item["id"]);
+		db_execute("UPDATE graph_templates_item set task_item_id=0 WHERE task_item_id=" . $item["id"]);
 	}
 	}
 
@@ -397,7 +397,7 @@ function template_rrd_add() {
 	$data_template_rrd_id = db_fetch_insert_id();
 
 	/* add this data template item to each data source using this data template */
-	$children = db_fetch_assoc("select local_data_id from data_template_data where data_template_id=" . $_GET["id"] . " and local_data_id>0");
+	$children = db_fetch_assoc("SELECT local_data_id FROM data_template_data WHERE data_template_id=" . $_GET["id"] . " AND local_data_id>0");
 
 	if (sizeof($children) > 0) {
 	foreach ($children as $item) {
@@ -418,8 +418,8 @@ function template_edit() {
 	/* ==================================================== */
 
 	if (!empty($_GET["id"])) {
-		$template_data = db_fetch_row("select * from data_template_data where data_template_id=" . $_GET["id"] . " and local_data_id=0");
-		$template = db_fetch_row("select * from data_template where id=" . $_GET["id"]);
+		$template_data = db_fetch_row("SELECT * FROM data_template_data WHERE data_template_id=" . $_GET["id"] . " AND local_data_id=0");
+		$template = db_fetch_row("SELECT * FROM data_template WHERE id=" . $_GET["id"]);
 
 		$header_label = "[edit: " . $template["name"] . "]";
 	}else{
@@ -473,7 +473,7 @@ function template_edit() {
 
 	/* fetch ALL rrd's for this data source */
 	if (!empty($_GET["id"])) {
-		$template_data_rrds = db_fetch_assoc("select id,data_source_name from data_template_rrd where data_template_id=" . $_GET["id"] . " and local_data_id=0 order by data_source_name");
+		$template_data_rrds = db_fetch_assoc("SELECT id,data_source_name FROM data_template_rrd WHERE data_template_id=" . $_GET["id"] . " AND local_data_id=0 ORDER BY data_source_name");
 	}
 
 	/* select the first "rrd" of this data source by default */
@@ -483,7 +483,7 @@ function template_edit() {
 
 	/* get more information about the rrd we chose */
 	if (!empty($_GET["view_rrd"])) {
-		$template_rrd = db_fetch_row("select * from data_template_rrd where id=" . $_GET["view_rrd"]);
+		$template_rrd = db_fetch_row("SELECT * FROM data_template_rrd WHERE id=" . $_GET["view_rrd"]);
 	}
 
 	$i = 0;
@@ -513,11 +513,11 @@ function template_edit() {
 
 	/* data input fields list */
 	if ((empty($template_data["data_input_id"])) ||
-		((db_fetch_cell("select type_id from data_input where id=" . $template_data["data_input_id"]) != "1") &&
-		(db_fetch_cell("select type_id from data_input where id=" . $template_data["data_input_id"]) != "5"))) {
+		((db_fetch_cell("SELECT type_id FROM data_input WHERE id=" . $template_data["data_input_id"]) != "1") &&
+		(db_fetch_cell("SELECT type_id FROM data_input WHERE id=" . $template_data["data_input_id"]) != "5"))) {
 		unset($struct_data_source_item["data_input_field_id"]);
 	}else{
-		$struct_data_source_item["data_input_field_id"]["sql"] = "select id,CONCAT(data_name,' - ',name) as name from data_input_fields where data_input_id=" . $template_data["data_input_id"] . " and input_output='out' and update_rra='on' order by data_name,name";
+		$struct_data_source_item["data_input_field_id"]["sql"] = "SELECT id,CONCAT(data_name,' - ',name) AS name FROM data_input_fields WHERE data_input_id=" . $template_data["data_input_id"] . " AND input_output='out' AND update_rra='on' ORDER BY data_name,name";
 	}
 
 	$form_array = array();
@@ -553,14 +553,14 @@ function template_edit() {
 	$i = 0;
 	if (!empty($_GET["id"])) {
 		/* get each INPUT field for this data input source */
-		$fields = db_fetch_assoc("select * from data_input_fields where data_input_id=" . $template_data["data_input_id"] . " and input_output='in' order by name");
+		$fields = db_fetch_assoc("SELECT * FROM data_input_fields WHERE data_input_id=" . $template_data["data_input_id"] . " AND input_output='in' ORDER BY name");
 
-		html_start_box("<strong>Custom Data</strong> [data input: " . htmlspecialchars(db_fetch_cell("select name from data_input where id=" . $template_data["data_input_id"])) . "]", "100%", "", "3", "center", "");
+		html_start_box("<strong>Custom Data</strong> [data input: " . htmlspecialchars(db_fetch_cell("SELECT name FROM data_input WHERE id=" . $template_data["data_input_id"])) . "]", "100%", "", "3", "center", "");
 
 		/* loop through each field found */
 		if (sizeof($fields) > 0) {
 		foreach ($fields as $field) {
-			$data_input_data = db_fetch_row("select t_value,value from data_input_data where data_template_data_id=" . $template_data["id"] . " and data_input_field_id=" . $field["id"]);
+			$data_input_data = db_fetch_row("SELECT t_value,value FROM data_input_data WHERE data_template_data_id=" . $template_data["id"] . " AND data_input_field_id=" . $field["id"]);
 
 			if (sizeof($data_input_data) > 0) {
 				$old_value = $data_input_data["value"];

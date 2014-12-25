@@ -77,7 +77,7 @@ function form_save() {
 			if ($rra_id) {
 				raise_message(1);
 
-				db_execute("delete from rra_cf where rra_id=$rra_id");
+				db_execute("DELETE FROM rra_cf WHERE rra_id=$rra_id");
 
 				if (isset($_POST["consolidation_function_id"])) {
 					for ($i=0; ($i < count($_POST["consolidation_function_id"])); $i++) {
@@ -85,8 +85,8 @@ function form_save() {
 						input_validate_input_number($_POST["consolidation_function_id"][$i]);
 						/* ==================================================== */
 
-						db_execute("insert into rra_cf (rra_id,consolidation_function_id)
-							values ($rra_id," . $_POST["consolidation_function_id"][$i] . ")");
+						db_execute("INSERT INTO rra_cf (rra_id,consolidation_function_id)
+							VALUES ($rra_id," . $_POST["consolidation_function_id"][$i] . ")");
 					}
 				}else{
 					raise_message(2);
@@ -189,7 +189,7 @@ function rra_edit() {
 	/* ==================================================== */
 
 	if (!empty($_GET["id"])) {
-		$rra = db_fetch_row("select * from rra where id=" . $_GET["id"]);
+		$rra = db_fetch_row("SELECT * FROM rra WHERE id=" . $_GET["id"]);
 		$header_label = "[edit: " . htmlspecialchars($rra["name"]) . "]";
 	}else{
 		$header_label = "[new]";

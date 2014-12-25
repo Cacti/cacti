@@ -34,16 +34,16 @@ case 'save':
 			/* do nothing */
 		}elseif ($field_array["method"] == "checkbox") {
 			if (isset($_POST[$field_name])) {
-				db_execute("replace into settings (name,value) values ('$field_name', 'on')");
+				db_execute("REPLACE INTO settings (name, value) VALUES ('$field_name', 'on')");
 			}else{
-				db_execute("replace into settings (name,value) values ('$field_name', '')");
+				db_execute("REPLACE INTO settings (name, value) VALUES ('$field_name', '')");
 			}
 		}elseif ($field_array["method"] == "checkbox_group") {
 			while (list($sub_field_name, $sub_field_array) = each($field_array["items"])) {
 				if (isset($_POST[$sub_field_name])) {
-					db_execute("replace into settings (name,value) values ('$sub_field_name', 'on')");
+					db_execute("REPLACE INTO settings (name, value) VALUES ('$sub_field_name', 'on')");
 				}else{
-					db_execute("replace into settings (name,value) values ('$sub_field_name', '')");
+					db_execute("REPLACE INTO settings (name, value) VALUES ('$sub_field_name', '')");
 				}
 			}
 		}elseif ($field_array["method"] == "textbox_password") {
@@ -122,14 +122,14 @@ default:
 					$form_array[$field_name]["items"][$sub_field_name]["form_id"] = 1;
 				}
 
-				$form_array[$field_name]["items"][$sub_field_name]["value"] = db_fetch_cell("select value from settings where name='$sub_field_name'");
+				$form_array[$field_name]["items"][$sub_field_name]["value"] = db_fetch_cell("SELECT value FROM settings WHERE name='$sub_field_name'");
 			}
 		}else{
 			if (config_value_exists($field_name)) {
 				$form_array[$field_name]["form_id"] = 1;
 			}
 
-			$form_array[$field_name]["value"] = db_fetch_cell("select value from settings where name='$field_name'");
+			$form_array[$field_name]["value"] = db_fetch_cell("SELECT value FROM settings WHERE name='$field_name'");
 		}
 	}
 

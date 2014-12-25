@@ -102,7 +102,7 @@ function add_tree_names_to_actions_array() {
 	global $graph_actions;
 
 	/* add a list of tree names to the actions dropdown */
-	$trees = db_fetch_assoc("select id,name from graph_tree order by name");
+	$trees = db_fetch_assoc("SELECT id,name FROM graph_tree ORDER BY name");
 
 	if (sizeof($trees) > 0) {
 	foreach ($trees as $tree) {
@@ -179,11 +179,11 @@ function form_save() {
 				/* if template information chanegd, update all necessary template information */
 				if ($_POST["graph_template_id"] != $_POST["_graph_template_id"]) {
 					/* check to see if the number of graph items differs, if it does; we need user input */
-					if ((!empty($_POST["graph_template_id"])) && (!empty($_POST["local_graph_id"])) && (sizeof(db_fetch_assoc("select id from graph_templates_item where local_graph_id=$local_graph_id")) != sizeof(db_fetch_assoc("select id from graph_templates_item where local_graph_id=0 and graph_template_id=" . $_POST["graph_template_id"])))) {
+					if ((!empty($_POST["graph_template_id"])) && (!empty($_POST["local_graph_id"])) && (sizeof(db_fetch_assoc("SELECT id FROM graph_templates_item WHERE local_graph_id=$local_graph_id")) != sizeof(db_fetch_assoc("SELECT id from graph_templates_item WHERE local_graph_id=0 AND graph_template_id=" . $_POST["graph_template_id"])))) {
 						/* set the template back, since the user may choose not to go through with the change
 						at this point */
-						db_execute("update graph_local set graph_template_id=" . $_POST["_graph_template_id"] . " where id=$local_graph_id");
-						db_execute("update graph_templates_graph set graph_template_id=" . $_POST["_graph_template_id"] . " where local_graph_id=$local_graph_id");
+						db_execute("UPDATE graph_local SET graph_template_id=" . $_POST["_graph_template_id"] . " WHERE id=$local_graph_id");
+						db_execute("UPDATE graph_templates_graph SET graph_template_id=" . $_POST["_graph_template_id"] . " WHERE local_graph_id=$local_graph_id");
 
 						header("Location: graphs.php?action=graph_diff&id=$local_graph_id&graph_template_id=" . $_POST["graph_template_id"]);
 						exit;
@@ -210,11 +210,11 @@ function form_save() {
 		/* ==================================================== */
 
 		/* first; get the current graph template id */
-		$graph_template_id = db_fetch_cell("select graph_template_id from graph_local where id=" . $_POST["local_graph_id"]);
+		$graph_template_id = db_fetch_cell("SELECT graph_template_id FROM graph_local WHERE id=" . $_POST["local_graph_id"]);
 
 		/* get all inputs that go along with this graph template, if templated */
 		if ($graph_template_id > 0) {
-			$input_list = db_fetch_assoc("select id,column_name from graph_template_input where graph_template_id=$graph_template_id");
+			$input_list = db_fetch_assoc("SELECT id,column_name FROM graph_template_input WHERE graph_template_id=$graph_template_id");
 			
 			if (sizeof($input_list) > 0) {
 				foreach ($input_list as $input) {
@@ -233,7 +233,7 @@ function form_save() {
 							 this is because the db and form are out of sync here, but it is ok to just skip over saving
 							 the inputs in this case. */
 							if (isset($_POST{$input["column_name"] . "_" . $input["id"]})) {
-								db_execute("update graph_templates_item set " . $input["column_name"] . "='" . $_POST{$input["column_name"] . "_" . $input["id"]} . "' where id=" . $item["id"]);
+								db_execute("UPDATE graph_templates_item set " . $input["column_name"] . "='" . $_POST{$input["column_name"] . "_" . $input["id"]} . "' WHERE id=" . $item["id"]);
 							}
 						}
 					}
@@ -347,7 +347,7 @@ function form_actions() {
 				input_validate_input_number($selected_items[$i]);
 				/* ==================================================== */
 
-				db_execute("update graph_local set host_id=" . $_POST["host_id"] . " where id=" . $selected_items[$i]);
+				db_execute("UPDATE graph_local SET host_id=" . $_POST["host_id"] . " WHERE id=" . $selected_items[$i]);
 				update_graph_title_cache($selected_items[$i]);
 			}
 		}elseif ($_POST["drp_action"] == "6") { /* reapply suggested naming */
@@ -438,7 +438,7 @@ function form_actions() {
 							print "</ul>";
 
 							print "<br>";
-							form_radio_button("delete_type", "1", "2", "Leave the Data Source(s) untouched.  Not applicable for Graphs created under 'New Graphs' or where the Graphs were created automatically.", "2"); print "<br>";
+							form_radio_button("delete_type", "1", "2", "Leave the Data Source(s) untouched.  Not applicable for Graphs created under 'New Graphs' or WHERE the Graphs were created automatically.", "2"); print "<br>";
 							form_radio_button("delete_type", "2", "2", "Delete all <strong>Data Source(s)</strong> referenced by these Graph(s).", "2"); print "<br>";
 							print "</td></tr>";
 						}
@@ -454,7 +454,7 @@ function form_actions() {
 						the following Graph(s). Be aware that all warnings will be suppressed during the
 						conversion, so Graph data loss is possible.</p>
 						<p><ul>$graph_list</ul></p>
-						<p><strong>New Graph Template:</strong><br>"; form_dropdown("graph_template_id",db_fetch_assoc("select graph_templates.id,graph_templates.name from graph_templates order by name"),"name","id","","","0"); print "</p>
+						<p><strong>New Graph Template:</strong><br>"; form_dropdown("graph_template_id",db_fetch_assoc("SELECT graph_templates.id,graph_templates.name FROM graph_templates ORDER BY name"),"name","id","","","0"); print "</p>
 					</td>
 				</tr>\n
 				";
@@ -497,7 +497,7 @@ function form_actions() {
 					<td class='textArea'>
 						<p>Choose a new Device for these Graph(s) and click \"Continue\"</p>
 						<p><ul>$graph_list</ul></p>
-						<p><strong>New Host:</strong><br>"; form_dropdown("host_id",db_fetch_assoc("select id,CONCAT_WS('',description,' (',hostname,')') as name from host order by description,hostname"),"name","id","","","0"); print "</p>
+						<p><strong>New Host:</strong><br>"; form_dropdown("host_id",db_fetch_assoc("SELECT id,CONCAT_WS('',description,' (',hostname,')') as name FROM host ORDER BY description,hostname"),"name","id","","","0"); print "</p>
 					</td>
 				</tr>\n
 				";
@@ -578,19 +578,19 @@ function item() {
 			cdef.name as cdef_name,
 			colors.hex
 			from graph_templates_item
-			left join data_template_rrd on (graph_templates_item.task_item_id=data_template_rrd.id)
-			left join data_local on (data_template_rrd.local_data_id=data_local.id)
-			left join data_template_data on (data_local.id=data_template_data.local_data_id)
-			left join cdef on (cdef_id=cdef.id)
-			left join colors on (color_id=colors.id)
+			LEFT JOIN data_template_rrd on (graph_templates_item.task_item_id=data_template_rrd.id)
+			LEFT JOIN data_local on (data_template_rrd.local_data_id=data_local.id)
+			LEFT JOIN data_template_data on (data_local.id=data_template_data.local_data_id)
+			LEFT JOIN cdef on (cdef_id=cdef.id)
+			LEFT JOIN colors on (color_id=colors.id)
 			where graph_templates_item.local_graph_id=" . $_GET["id"] . "
 			order by graph_templates_item.sequence");
 
-		$host_id = db_fetch_cell("select host_id from graph_local where id=" . $_GET["id"]);
+		$host_id = db_fetch_cell("SELECT host_id FROM graph_local WHERE id=" . $_GET["id"]);
 		$header_label = "[edit: " . htmlspecialchars(get_graph_title($_GET["id"])) . "]";
 	}
 
-	$graph_template_id = db_fetch_cell("select graph_template_id from graph_local where id=" . $_GET["id"]);
+	$graph_template_id = db_fetch_cell("SELECT graph_template_id FROM graph_local WHERE id=" . $_GET["id"]);
 
 	if (empty($graph_template_id)) {
 		$add_text = "graphs_items.php?action=item_edit&local_graph_id=" . $_GET["id"] . "&host_id=$host_id";
@@ -622,36 +622,36 @@ function graph_diff() {
 		graph_templates_item.hard_return,
 		graph_templates_item.consolidation_function_id,
 		graph_templates_item.graph_type_id,
-		CONCAT_WS(' - ',data_template_data.name,data_template_rrd.data_source_name) as task_item_id,
-		cdef.name as cdef_id,
-		colors.hex as color_id
-		from graph_templates_item
-		left join data_template_rrd on (graph_templates_item.task_item_id=data_template_rrd.id)
-		left join data_local on (data_template_rrd.local_data_id=data_local.id)
-		left join data_template_data on (data_local.id=data_template_data.local_data_id)
-		left join cdef on (cdef_id=cdef.id)
-		left join colors on (color_id=colors.id)";
+		CONCAT_WS(' - ',data_template_data.name,data_template_rrd.data_source_name) AS task_item_id,
+		cdef.name AS cdef_id,
+		colors.hex AS color_id
+		FROM graph_templates_item
+		LEFT JOIN data_template_rrd ON (graph_templates_item.task_item_id=data_template_rrd.id)
+		LEFT JOIN data_local ON (data_template_rrd.local_data_id=data_local.id)
+		LEFT JOIN data_template_data ON (data_local.id=data_template_data.local_data_id)
+		LEFT JOIN cdef ON (cdef_id=cdef.id)
+		LEFT JOIN colors ON (color_id=colors.id)";
 
 	/* first, get information about the graph template as that's what we're going to model this
 	graph after */
 	$graph_template_items = db_fetch_assoc("
 		$template_query
-		where graph_templates_item.graph_template_id=" . $_GET["graph_template_id"] . "
-		and graph_templates_item.local_graph_id=0
-		order by graph_templates_item.sequence");
+		WHERE graph_templates_item.graph_template_id=" . $_GET["graph_template_id"] . "
+		AND graph_templates_item.local_graph_id=0
+		ORDER BY graph_templates_item.sequence");
 
 	/* next, get information about the current graph so we can make the appropriate comparisons */
 	$graph_items = db_fetch_assoc("
 		$template_query
-		where graph_templates_item.local_graph_id=" . $_GET["id"] . "
-		order by graph_templates_item.sequence");
+		WHERE graph_templates_item.local_graph_id=" . $_GET["id"] . "
+		ORDER BY graph_templates_item.sequence");
 
 	$graph_template_inputs = db_fetch_assoc("select
 		graph_template_input.column_name,
 		graph_template_input_defs.graph_template_item_id
-		from (graph_template_input,graph_template_input_defs)
-		where graph_template_input.id=graph_template_input_defs.graph_template_input_id
-		and graph_template_input.graph_template_id=" . $_GET["graph_template_id"]);
+		FROM (graph_template_input,graph_template_input_defs)
+		WHERE graph_template_input.id=graph_template_input_defs.graph_template_input_id
+		AND graph_template_input.graph_template_id=" . $_GET["graph_template_id"]);
 
 	/* ok, we want to loop through the array with the GREATEST number of items so we don't have to worry
 	about tacking items on the end */
@@ -701,14 +701,14 @@ function graph_diff() {
 		for ($j=0; ($j < count($graph_template_inputs)); $j++) {
 			if ($graph_template_inputs[$j]["graph_template_item_id"] == (isset($graph_template_items[$i]["id"]) ? $graph_template_items[$i]["id"] : "")) {
 				/* if we find out that there is an "input" covering this field/item, use the
-				value from the graph, not the template */
+				value FROM the graph, not the template */
 				$graph_item_field_name = (isset($graph_template_inputs[$j]["column_name"]) ? $graph_template_inputs[$j]["column_name"] : "");
 				$graph_preview_item_values[$graph_item_field_name] = (isset($graph_items[$i][$graph_item_field_name]) ? $graph_items[$i][$graph_item_field_name] : "");
 			}
 		}
 
 		/* go back through each graph field and find out which ones haven't been covered by the
-		"inputs" above. for each one, use the value from the template */
+		"inputs" above. for each one, use the value FROM the template */
 		while (list($field_name, $field_array) = each($struct_graph_item)) {
 			if ($mode == "delete") {
 				$graph_preview_item_values[$field_name] = (isset($graph_items[$i][$field_name]) ? $graph_items[$i][$field_name] : "");
@@ -838,12 +838,12 @@ function graph_edit() {
 	$use_graph_template = true;
 
 	if (!empty($_GET["id"])) {
-		$local_graph_template_graph_id = db_fetch_cell("select local_graph_template_graph_id from graph_templates_graph where local_graph_id=" . $_GET["id"]);
+		$local_graph_template_graph_id = db_fetch_cell("SELECT local_graph_template_graph_id FROM graph_templates_graph WHERE local_graph_id=" . $_GET["id"]);
 
-		$graphs = db_fetch_row("select * from graph_templates_graph where local_graph_id=" . $_GET["id"]);
-		$graphs_template = db_fetch_row("select * from graph_templates_graph where id=$local_graph_template_graph_id");
+		$graphs = db_fetch_row("SELECT * FROM graph_templates_graph WHERE local_graph_id=" . $_GET["id"]);
+		$graphs_template = db_fetch_row("SELECT * FROM graph_templates_graph WHERE id=$local_graph_template_graph_id");
 
-		$host_id = db_fetch_cell("select host_id from graph_local where id=" . $_GET["id"]);
+		$host_id = db_fetch_cell("SELECT host_id FROM graph_local WHERE id=" . $_GET["id"]);
 		$header_label = "[edit: " . htmlspecialchars(get_graph_title($_GET["id"])) . "]";
 
 		if ($graphs["graph_template_id"] == "0") {
@@ -896,7 +896,7 @@ function graph_edit() {
 			"description" => "Choose a graph template to apply to this graph. Please note that graph data may be lost if you change the graph template after one is already applied.",
 			"value" => (isset($graphs) ? $graphs["graph_template_id"] : "0"),
 			"none_value" => "None",
-			"sql" => "select graph_templates.id,graph_templates.name from graph_templates order by name"
+			"sql" => "SELECT graph_templates.id,graph_templates.name FROM graph_templates ORDER BY name"
 			),
 		"host_id" => array(
 			"method" => "drop_sql",
@@ -904,7 +904,7 @@ function graph_edit() {
 			"description" => "Choose the host that this graph belongs to.",
 			"value" => (isset($_GET["host_id"]) ? $_GET["host_id"] : $host_id),
 			"none_value" => "None",
-			"sql" => "select id,CONCAT_WS('',description,' (',hostname,')') as name from host order by description,hostname"
+			"sql" => "SELECT id,CONCAT_WS('',description,' (',hostname,')') as name FROM host ORDER BY description,hostname"
 			),
 		"graph_template_graph_id" => array(
 			"method" => "hidden",

@@ -73,8 +73,8 @@ if (isset($_REQUEST['hide'])) {
 	if (($_REQUEST['hide'] == '0') || ($_REQUEST['hide'] == '1')) {
 		/* only update expand/contract info is this user has rights to keep their own settings */
 		if ((isset($current_user)) && ($current_user['graph_settings'] == 'on')) {
-			db_execute('delete from settings_tree where graph_tree_item_id=' . $_REQUEST['branch_id'] . ' and user_id=' . $_SESSION['sess_user_id']);
-			db_execute('insert into settings_tree (graph_tree_item_id,user_id,status) values (' . $_REQUEST['branch_id'] . ',' . $_SESSION['sess_user_id'] . ',' . $_REQUEST['hide'] . ')');
+			db_execute('DELETE FROM settings_tree WHERE graph_tree_item_id=' . $_REQUEST['branch_id'] . ' AND user_id=' . $_SESSION['sess_user_id']);
+			db_execute('INSERT INTO settings_tree (graph_tree_item_id,user_id,status) values (' . $_REQUEST['branch_id'] . ',' . $_SESSION['sess_user_id'] . ',' . $_REQUEST['hide'] . ')');
 		}
 	}
 }
@@ -214,7 +214,7 @@ case 'preview':
 	load_current_session_value('graph_remove', 'sess_graph_view_graph_remove', '');
 
 	/* include graph view filter selector */
-	html_start_box('<strong>Graph Filters</strong>' . (isset($_REQUEST['style']) && strlen($_REQUEST['style']) ? ' [ Custom Graph List Applied - Filtering from List ]':''), '100%', "", '3', 'center', '');
+	html_start_box('<strong>Graph Filters</strong>' . (isset($_REQUEST['style']) && strlen($_REQUEST['style']) ? ' [ Custom Graph List Applied - Filtering FROM List ]':''), '100%', "", '3', 'center', '');
 
 	?>
 	<script type="text/javascript" >
@@ -641,7 +641,7 @@ case 'list':
 	load_current_session_value('graph_list', 'sess_graph_view_list_graph_list', '');
 
 	/* display graph view filter selector */
-	html_start_box('<strong>Graph Filters</strong>' . (isset($_REQUEST['style']) && strlen($_REQUEST['style']) ? ' [ Custom Graph List Applied - Filter from List ]':''), '100%', '', '3', 'center', '');
+	html_start_box('<strong>Graph Filters</strong>' . (isset($_REQUEST['style']) && strlen($_REQUEST['style']) ? ' [ Custom Graph List Applied - Filter FROM List ]':''), '100%', '', '3', 'center', '');
 
 	?>
 	<tr class='even noprint'>

@@ -133,7 +133,7 @@ function form_save() {
 				raise_message(1);
 
 				if ((!empty($data_input_field_id)) && ($_POST["input_output"] == "in")) {
-					generate_data_input_field_sequences(db_fetch_cell("select input_string from data_input where id=" . $_POST["data_input_id"]), $_POST["data_input_id"]);
+					generate_data_input_field_sequences(db_fetch_cell("SELECT input_string FROM data_input WHERE id=" . $_POST["data_input_id"]), $_POST["data_input_id"]);
 				}
 			}else{
 				raise_message(2);
@@ -245,7 +245,7 @@ function field_remove() {
 	if ((read_config_option("deletion_verification") == "on") && (!isset($_GET["confirm"]))) {
 		top_header();
 
-		form_confirm("Are You Sure?", "Are you sure you want to delete the field <strong>'" . htmlspecialchars(db_fetch_cell("select name from data_input_fields where id=" . $_GET["id"]), ENT_QUOTES) . "'</strong>?", htmlspecialchars("data_input.php?action=edit&id=" . $_GET["data_input_id"]), htmlspecialchars("data_input.php?action=field_remove&id=" . $_GET["id"] . "&data_input_id=" . $_GET["data_input_id"]));
+		form_confirm("Are You Sure?", "Are you sure you want to delete the field <strong>'" . htmlspecialchars(db_fetch_cell("SELECT name FROM data_input_fields WHERE id=" . $_GET["id"]), ENT_QUOTES) . "'</strong>?", htmlspecialchars("data_input.php?action=edit&id=" . $_GET["data_input_id"]), htmlspecialchars("data_input.php?action=field_remove&id=" . $_GET["id"] . "&data_input_id=" . $_GET["data_input_id"]));
 
 		bottom_footer();
 		exit;
@@ -253,13 +253,13 @@ function field_remove() {
 
 	if ((read_config_option("deletion_verification") == "") || (isset($_GET["confirm"]))) {
 		/* get information about the field we're going to delete so we can re-order the seqs */
-		$field = db_fetch_row("select input_output,data_input_id from data_input_fields where id=" . $_GET["id"]);
+		$field = db_fetch_row("SELECT input_output,data_input_id FROM data_input_fields WHERE id=" . $_GET["id"]);
 
-		db_execute("delete from data_input_fields where id=" . $_GET["id"]);
-		db_execute("delete from data_input_data where data_input_field_id=" . $_GET["id"]);
+		db_execute("DELETE FROM data_input_fields WHERE id=" . $_GET["id"]);
+		db_execute("DELETE FROM data_input_data WHERE data_input_field_id=" . $_GET["id"]);
 
 		/* when a field is deleted; we need to re-order the field sequences */
-		if (($field["input_output"] == "in") && (preg_match_all("/<([_a-zA-Z0-9]+)>/", db_fetch_cell("select input_string from data_input where id=" . $field["data_input_id"]), $matches))) {
+		if (($field["input_output"] == "in") && (preg_match_all("/<([_a-zA-Z0-9]+)>/", db_fetch_cell("SELECT input_string FROM data_input WHERE id=" . $field["data_input_id"]), $matches))) {
 			$j = 0;
 			for ($i=0; ($i < count($matches[1])); $i++) {
 				if (in_array($matches[1][$i], $registered_cacti_names) == false) {
@@ -280,7 +280,7 @@ function field_edit() {
 	/* ==================================================== */
 
 	if (!empty($_GET["id"])) {
-		$field = db_fetch_row("select * from data_input_fields where id=" . $_GET["id"]);
+		$field = db_fetch_row("SELECT * FROM data_input_fields WHERE id=" . $_GET["id"]);
 	}
 
 	if (!empty($_GET["type"])) {
@@ -295,10 +295,10 @@ function field_edit() {
 		$header_name = "Input";
 	}
 
-	$data_input = db_fetch_row("select type_id,name from data_input where id=" . $_GET["data_input_id"]);
+	$data_input = db_fetch_row("SELECT type_id,name FROM data_input WHERE id=" . $_GET["data_input_id"]);
 
 	/* obtain a list of available fields for this given field type (input/output) */
-	if (($current_field_type == "in") && (preg_match_all("/<([_a-zA-Z0-9]+)>/", db_fetch_cell("select input_string from data_input where id=" . ($_GET["data_input_id"] ? $_GET["data_input_id"] : $field["data_input_id"])), $matches))) {
+	if (($current_field_type == "in") && (preg_match_all("/<([_a-zA-Z0-9]+)>/", db_fetch_cell("SELECT input_string FROM data_input WHERE id=" . ($_GET["data_input_id"] ? $_GET["data_input_id"] : $field["data_input_id"])), $matches))) {
 		for ($i=0; ($i < count($matches[1])); $i++) {
 			if (in_array($matches[1][$i], $registered_cacti_names) == false) {
 				$current_field_name = $matches[1][$i];
@@ -374,7 +374,7 @@ function data_edit() {
 	/* ==================================================== */
 
 	if (!empty($_GET["id"])) {
-		$data_input = db_fetch_row("select * from data_input where id=" . $_GET["id"]);
+		$data_input = db_fetch_row("SELECT * FROM data_input WHERE id=" . $_GET["id"]);
 		$header_label = "[edit: " . htmlspecialchars($data_input["name"]) . "]";
 	}else{
 		$header_label = "[new]";
@@ -397,7 +397,7 @@ function data_edit() {
 			DrawMatrixHeaderItem("Friendly Name","",2);
 		print "</tr>";
 
-		$fields = db_fetch_assoc("select id,data_name,name,sequence from data_input_fields where data_input_id=" . $_GET["id"] . " and input_output='in' order by sequence, data_name");
+		$fields = db_fetch_assoc("SELECT id,data_name,name,sequence FROM data_input_fields WHERE data_input_id=" . $_GET["id"] . " AND input_output='in' ORDER BY sequence, data_name");
 
 		$i = 0;
 		if (sizeof($fields) > 0) {
@@ -432,7 +432,7 @@ function data_edit() {
 			DrawMatrixHeaderItem("Update RRA","",2);
 		print "</tr>";
 
-		$fields = db_fetch_assoc("select id,name,data_name,update_rra,sequence from data_input_fields where data_input_id=" . $_GET["id"] . " and input_output='out' order by sequence, data_name");
+		$fields = db_fetch_assoc("SELECT id,name,data_name,update_rra,sequence FROM data_input_fields where data_input_id=" . $_GET["id"] . " and input_output='out' ORDER BY sequence, data_name");
 
 		$i = 0;
 		if (sizeof($fields) > 0) {

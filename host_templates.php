@@ -95,10 +95,10 @@ function form_save() {
 				raise_message(1);
 
 				if (isset($_POST["add_gt_x"])) {
-					db_execute("replace into host_template_graph (host_template_id,graph_template_id) values($host_template_id," . $_POST["graph_template_id"] . ")");
+					db_execute("REPLACE INTO host_template_graph (host_template_id,graph_template_id) values($host_template_id," . $_POST["graph_template_id"] . ")");
 					$redirect_back = true;
 				}elseif (isset($_POST["add_dq_x"])) {
-					db_execute("replace into host_template_snmp_query (host_template_id,snmp_query_id) values($host_template_id," . $_POST["snmp_query_id"] . ")");
+					db_execute("REPLACE INTO host_template_snmp_query (host_template_id,snmp_query_id) values($host_template_id," . $_POST["snmp_query_id"] . ")");
 					$redirect_back = true;
 				}
 			}else{
@@ -126,12 +126,12 @@ function form_actions() {
 		$selected_items = unserialize(stripslashes($_POST["selected_items"]));
 
 		if ($_POST["drp_action"] == "1") { /* delete */
-			db_execute("delete from host_template where " . array_to_sql_or($selected_items, "id"));
-			db_execute("delete from host_template_snmp_query where " . array_to_sql_or($selected_items, "host_template_id"));
-			db_execute("delete from host_template_graph where " . array_to_sql_or($selected_items, "host_template_id"));
+			db_execute("DELETE FROM host_template WHERE " . array_to_sql_or($selected_items, "id"));
+			db_execute("DELETE FROM host_template_snmp_query WHERE " . array_to_sql_or($selected_items, "host_template_id"));
+			db_execute("DELETE FROM host_template_graph WHERE " . array_to_sql_or($selected_items, "host_template_id"));
 
 			/* "undo" any device that is currently using this template */
-			db_execute("update host set host_template_id=0 where " . array_to_sql_or($selected_items, "host_template_id"));
+			db_execute("UPDATE host SET host_template_id=0 WHERE " . array_to_sql_or($selected_items, "host_template_id"));
 		}elseif ($_POST["drp_action"] == "2") { /* duplicate */
 			for ($i=0;($i<count($selected_items));$i++) {
 				/* ================= input validation ================= */
@@ -156,7 +156,7 @@ function form_actions() {
 			input_validate_input_number($matches[1]);
 			/* ==================================================== */
 
-			$host_list .= "<li>" . htmlspecialchars(db_fetch_cell("select name from host_template where id=" . $matches[1])) . "<br>";
+			$host_list .= "<li>" . htmlspecialchars(db_fetch_cell("SELECT name FROM host_template WHERE id=" . $matches[1])) . "<br>";
 			$host_array[$i] = $matches[1];
 
 			$i++;
@@ -222,7 +222,7 @@ function template_item_remove_gt() {
 	input_validate_input_number(get_request_var("host_template_id"));
 	/* ==================================================== */
 
-	db_execute("delete from host_template_graph where graph_template_id=" . $_GET["id"] . " and host_template_id=" . $_GET["host_template_id"]);
+	db_execute("DELETE FROM host_template_graph WHERE graph_template_id=" . $_GET["id"] . " AND host_template_id=" . $_GET["host_template_id"]);
 }
 
 function template_item_remove_dq() {
@@ -231,7 +231,7 @@ function template_item_remove_dq() {
 	input_validate_input_number(get_request_var("host_template_id"));
 	/* ==================================================== */
 
-	db_execute("delete from host_template_snmp_query where snmp_query_id=" . $_GET["id"] . " and host_template_id=" . $_GET["host_template_id"]);
+	db_execute("DELETE FROM host_template_snmp_query WHERE snmp_query_id=" . $_GET["id"] . " AND host_template_id=" . $_GET["host_template_id"]);
 }
 
 function template_edit() {
@@ -242,7 +242,7 @@ function template_edit() {
 	/* ==================================================== */
 
 	if (!empty($_GET["id"])) {
-		$host_template = db_fetch_row("select * from host_template where id=" . $_GET["id"]);
+		$host_template = db_fetch_row("SELECT * FROM host_template WHERE id=" . $_GET["id"]);
 		$header_label = "[edit: " . $host_template["name"] . "]";
 	}else{
 		$header_label = "[new]";
@@ -298,13 +298,13 @@ function template_edit() {
 			<td colspan="2">
 				<table cellspacing="0" cellpadding="1" width="100%">
 					<td nowrap>Add Graph Template:&nbsp;
-						<?php form_dropdown("graph_template_id",db_fetch_assoc("select
+						<?php form_dropdown("graph_template_id",db_fetch_assoc("SELECT
 							graph_templates.id,
 							graph_templates.name
-							from graph_templates left join host_template_graph
-							on (graph_templates.id=host_template_graph.graph_template_id and host_template_graph.host_template_id=" . $_GET["id"] . ")
-							where host_template_graph.host_template_id is null
-							order by graph_templates.name"),"name","id","","","");?>
+							FROM graph_templates left join host_template_graph
+							ON (graph_templates.id=host_template_graph.graph_template_id AND host_template_graph.host_template_id=" . $_GET["id"] . ")
+							WHERE host_template_graph.host_template_id is null
+							ORDER BY graph_templates.name"),"name","id","","","");?>
 					</td>
 					<td align="right">
 						&nbsp;<input type="submit" value="Add" name="add_gt_x" title="Add Graph Template to Host Template">
@@ -351,13 +351,13 @@ function template_edit() {
 			<td colspan="2">
 				<table cellspacing="0" cellpadding="1" width="100%">
 					<td nowrap>Add Data Query:&nbsp;
-						<?php form_dropdown("snmp_query_id",db_fetch_assoc("select
+						<?php form_dropdown("snmp_query_id",db_fetch_assoc("SELECT
 							snmp_query.id,
 							snmp_query.name
-							from snmp_query left join host_template_snmp_query
-							on (snmp_query.id=host_template_snmp_query.snmp_query_id and host_template_snmp_query.host_template_id=" . $_GET["id"] . ")
-							where host_template_snmp_query.host_template_id is null
-							order by snmp_query.name"),"name","id","","","");?>
+							FROM snmp_query left join host_template_snmp_query
+							ON (snmp_query.id=host_template_snmp_query.snmp_query_id AND host_template_snmp_query.host_template_id=" . $_GET["id"] . ")
+							WHERE host_template_snmp_query.host_template_id is null
+							ORDER BY snmp_query.name"),"name","id","","","");?>
 					</td>
 					<td align="right">
 						&nbsp;<input type="submit" value="Add" name="add_dq_x" title="Add Data Query to Host Template">

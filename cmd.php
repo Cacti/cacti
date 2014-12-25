@@ -119,7 +119,7 @@ if ( $_SERVER["argc"] == 1 ) {
 
 	$print_data_to_stdout = true;
 	/* get the number of polling items from the database */
-	$hosts = db_fetch_assoc("select * from host where disabled = '' order by id");
+	$hosts = db_fetch_assoc("SELECT * from host WHERE disabled = '' order by id");
 
 	/* rework the hosts array to be searchable */
 	$hosts = array_rekey($hosts, "id", $host_struc);
@@ -275,14 +275,14 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 
 			if (!$host_down) {
 				/* do the reindex check for this host */
-				$reindex = db_fetch_assoc("select
+				$reindex = db_fetch_assoc("SELECT *
 					poller_reindex.data_query_id,
 					poller_reindex.action,
 					poller_reindex.op,
 					poller_reindex.assert_value,
 					poller_reindex.arg1
 					from poller_reindex
-					where poller_reindex.host_id=" . $item["host_id"]);
+					WHERE poller_reindex.host_id=" . $item["host_id"]);
 
 				if ((sizeof($reindex) > 0) && (!$host_down)) {
 					if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_DEBUG) {
@@ -446,15 +446,15 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 						/* TODO: remove magic ":" from poller_command["command"]; this may interfere with scripts */
 						if (($index_item["op"] == "=") && ($index_item["assert_value"] != trim($output))) {
 							cacti_log("ASSERT: '" . $index_item["assert_value"] . "=" . trim($output) . "' failed. Recaching host '" . $item["hostname"] . "', data query #" . $index_item["data_query_id"], $print_data_to_stdout);
-							db_execute("replace into poller_command (poller_id, time, action, command) values (0, NOW(), " . POLLER_COMMAND_REINDEX . ", '" . $item["host_id"] . ":" . $index_item["data_query_id"] . "')");
+							db_execute("REPLACE INTO poller_command (poller_id, time, action, command) VALUES (0, NOW(), " . POLLER_COMMAND_REINDEX . ", '" . $item["host_id"] . ":" . $index_item["data_query_id"] . "')");
 							$assert_fail = true;
 						}else if (($index_item["op"] == ">") && ($index_item["assert_value"] < trim($output))) {
 							cacti_log("ASSERT: '" . $index_item["assert_value"] . ">" . trim($output) . "' failed. Recaching host '" . $item["hostname"] . "', data query #" . $index_item["data_query_id"], $print_data_to_stdout);
-							db_execute("replace into poller_command (poller_id, time, action, command) values (0, NOW(), " . POLLER_COMMAND_REINDEX . ", '" . $item["host_id"] . ":" . $index_item["data_query_id"] . "')");
+							db_execute("REPLACE INTO poller_command (poller_id, time, action, command) VALUES (0, NOW(), " . POLLER_COMMAND_REINDEX . ", '" . $item["host_id"] . ":" . $index_item["data_query_id"] . "')");
 							$assert_fail = true;
 						}else if (($index_item["op"] == "<") && ($index_item["assert_value"] > trim($output))) {
 							cacti_log("ASSERT: '" . $index_item["assert_value"] . "<" . trim($output) . "' failed. Recaching host '" . $item["hostname"] . "', data query #" . $index_item["data_query_id"], $print_data_to_stdout);
-							db_execute("replace into poller_command (poller_id, time, action, command) values (0, NOW(), " . POLLER_COMMAND_REINDEX . ", '" . $item["host_id"] . ":" . $index_item["data_query_id"] . "')");
+							db_execute("REPLACE INTO poller_command (poller_id, time, action, command) VALUES (0, NOW(), " . POLLER_COMMAND_REINDEX . ", '" . $item["host_id"] . ":" . $index_item["data_query_id"] . "')");
 							$assert_fail = true;
 						}
 
@@ -463,7 +463,7 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 						 * 2) the OP code is > or < meaning the current value could have changed without causing
 						 *     the assert to fail */
 						if (($assert_fail == true) || ($index_item["op"] == ">") || ($index_item["op"] == "<")) {
-							db_execute("update poller_reindex set assert_value='$output' where host_id='$host_id' and data_query_id='" . $index_item["data_query_id"] . "' and arg1='" . $index_item["arg1"] . "'");
+							db_execute("UPDATE poller_reindex SET assert_value='$output' WHERE host_id='$host_id' AND data_query_id='" . $index_item["data_query_id"] . "' AND arg1='" . $index_item["arg1"] . "'");
 
 							/* spike kill logic */
 							if (($assert_fail) &&
@@ -575,10 +575,10 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 			if (isset($output)) {
 				/* insert a U in place of the actual value if the snmp agent restarts */
 				if (($set_spike_kill) && (!substr_count($output, ":"))) {
-					db_execute("insert into poller_output (local_data_id,rrd_name,time,output) values (" . $item["local_data_id"] . ",'" . $item["rrd_name"] . "','$host_update_time','" . addslashes("U") . "')");
+					db_execute("INSERT INTO poller_output (local_data_id,rrd_name,time,output) VALUES (" . $item["local_data_id"] . ",'" . $item["rrd_name"] . "','$host_update_time','" . addslashes("U") . "')");
 				/* otherwise, just insert the value received from the poller */
 				}else{
-					db_execute("insert into poller_output (local_data_id, rrd_name, time, output) values (" . $item["local_data_id"] . ", '" . $item["rrd_name"] . "', '$host_update_time', '" . addslashes($output) . "')");
+					db_execute("INSERT INTO poller_output (local_data_id, rrd_name, time, output) VALUES (" . $item["local_data_id"] . ", '" . $item["rrd_name"] . "', '$host_update_time', '" . addslashes($output) . "')");
 				}
 			}
 		} /* Next Cache Item */

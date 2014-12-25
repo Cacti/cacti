@@ -102,7 +102,7 @@ function add_tree_names_to_actions_array() {
 	global $device_actions;
 
 	/* add a list of tree names to the actions dropdown */
-	$trees = db_fetch_assoc("select id,name from graph_tree order by name");
+	$trees = db_fetch_assoc("SELECT id,name FROM graph_tree ORDER BY name");
 
 	if (sizeof($trees) > 0) {
 		foreach ($trees as $tree) {
@@ -123,7 +123,7 @@ function form_save() {
 		input_validate_input_number(get_request_var_post("reindex_method"));
 		/* ==================================================== */
 
-		db_execute("replace into host_snmp_query (host_id,snmp_query_id,reindex_method) values (" . $_POST["id"] . "," . $_POST["snmp_query_id"] . "," . $_POST["reindex_method"] . ")");
+		db_execute("REPLACE INTO host_snmp_query (host_id,snmp_query_id,reindex_method) values (" . $_POST["id"] . "," . $_POST["snmp_query_id"] . "," . $_POST["reindex_method"] . ")");
 
 		/* recache snmp data */
 		run_data_query($_POST["id"], $_POST["snmp_query_id"]);
@@ -138,7 +138,7 @@ function form_save() {
 		input_validate_input_number(get_request_var_post("graph_template_id"));
 		/* ==================================================== */
 
-		db_execute("replace into host_graph (host_id,graph_template_id) values (" . $_POST["id"] . "," . $_POST["graph_template_id"] . ")");
+		db_execute("REPLACE INTO host_graph (host_id,graph_template_id) values (" . $_POST["id"] . "," . $_POST["graph_template_id"] . ")");
 		api_plugin_hook_function('add_graph_template_to_host', array("host_id" => $_POST["id"], "graph_template_id" => $_POST["graph_template_id"]));
 
 		header("Location: host.php?action=edit&id=" . $_POST["id"]);
@@ -189,10 +189,10 @@ function form_actions() {
 				input_validate_input_number($selected_items[$i]);
 				/* ==================================================== */
 
-				db_execute("update host set disabled='' where id='" . $selected_items[$i] . "'");
+				db_execute("UPDATE host SET disabled='' WHERE id='" . $selected_items[$i] . "'");
 
 				/* update poller cache */
-				$data_sources = db_fetch_assoc("select id from data_local where host_id='" . $selected_items[$i] . "'");
+				$data_sources = db_fetch_assoc("SELECT id FROM data_local WHERE host_id='" . $selected_items[$i] . "'");
 				$poller_items = $local_data_ids = array();
 
 				if (sizeof($data_sources) > 0) {
@@ -212,11 +212,11 @@ function form_actions() {
 				input_validate_input_number($selected_items[$i]);
 				/* ==================================================== */
 
-				db_execute("update host set disabled='on' where id='" . $selected_items[$i] . "'");
+				db_execute("UPDATE host SET disabled='on' WHERE id='" . $selected_items[$i] . "'");
 
 				/* update poller cache */
-				db_execute("delete from poller_item where host_id='" . $selected_items[$i] . "'");
-				db_execute("delete from poller_reindex where host_id='" . $selected_items[$i] . "'");
+				db_execute("DELETE FROM poller_item WHERE host_id='" . $selected_items[$i] . "'");
+				db_execute("DELETE FROM poller_reindex WHERE host_id='" . $selected_items[$i] . "'");
 			}
 		}elseif ($_POST["drp_action"] == "4") { /* change snmp options */
 			for ($i=0;($i<count($selected_items));$i++) {
@@ -227,7 +227,7 @@ function form_actions() {
 				reset($fields_host_edit);
 				while (list($field_name, $field_array) = each($fields_host_edit)) {
 					if (isset($_POST["t_$field_name"])) {
-						db_execute("update host set $field_name = '" . $_POST[$field_name] . "' where id='" . $selected_items[$i] . "'");
+						db_execute("UPDATE host SET $field_name = '" . $_POST[$field_name] . "' WHERE id='" . $selected_items[$i] . "'");
 					}
 				}
 
@@ -239,7 +239,7 @@ function form_actions() {
 				input_validate_input_number($selected_items[$i]);
 				/* ==================================================== */
 
-				db_execute("update host set min_time = '9.99999', max_time = '0', cur_time = '0',	avg_time = '0',
+				db_execute("UPDATE host SET min_time = '9.99999', max_time = '0', cur_time = '0',	avg_time = '0',
 						total_polls = '0', failed_polls = '0',	availability = '100.00'
 						where id = '" . $selected_items[$i] . "'");
 			}
@@ -252,7 +252,7 @@ function form_actions() {
 				reset($fields_host_edit);
 				while (list($field_name, $field_array) = each($fields_host_edit)) {
 					if (isset($_POST["t_$field_name"])) {
-						db_execute("update host set $field_name = '" . $_POST[$field_name] . "' where id='" . $selected_items[$i] . "'");
+						db_execute("UPDATE host SET $field_name = '" . $_POST[$field_name] . "' WHERE id='" . $selected_items[$i] . "'");
 					}
 				}
 
@@ -347,7 +347,7 @@ function form_actions() {
 			input_validate_input_number($matches[1]);
 			/* ==================================================== */
 
-			$host_list .= "<li>" . htmlspecialchars(db_fetch_cell("select description from host where id=" . $matches[1])) . "<br>";
+			$host_list .= "<li>" . htmlspecialchars(db_fetch_cell("SELECT description FROM host WHERE id=" . $matches[1])) . "<br>";
 			$host_array[$i] = $matches[1];
 
 			$i++;
@@ -548,7 +548,7 @@ function host_remove() {
 	if ((read_config_option("deletion_verification") == "on") && (!isset($_GET["confirm"]))) {
 		top_header();
 
-		form_confirm("Are You Sure?", "Are you sure you want to delete the host <strong>'" . htmlspecialchars(db_fetch_cell("select description from host where id=" . $_GET["id"])) . "'</strong>?", htmlspecialchars("host.php"), htmlspecialchars("host.php?action=remove&id=" . $_GET["id"]));
+		form_confirm("Are You Sure?", "Are you sure you want to delete the host <strong>'" . htmlspecialchars(db_fetch_cell("SELECT description FROM host WHERE id=" . $_GET["id"])) . "'</strong>?", htmlspecialchars("host.php"), htmlspecialchars("host.php?action=remove&id=" . $_GET["id"]));
 
 		bottom_footer();
 		exit;
@@ -569,7 +569,7 @@ function host_edit() {
 	api_plugin_hook('host_edit_top');
 
 	if (!empty($_GET['id'])) {
-		$host = db_fetch_row('select * from host where id=' . $_GET['id']);
+		$host = db_fetch_row('SELECT * FROM host WHERE id=' . $_GET['id']);
 		$header_label = '[edit: ' . htmlspecialchars($host['description']) . ']';
 	}else{
 		$header_label = '[new]';
@@ -927,14 +927,14 @@ function host_edit() {
 				form_alternate_row('', true);
 
 				/* get status information for this graph template */
-				$is_being_graphed = (sizeof(db_fetch_assoc("select id from graph_local where graph_template_id=" . $item["id"] . " and host_id=" . $_GET["id"])) > 0) ? true : false;
+				$is_being_graphed = (sizeof(db_fetch_assoc("SELECT id FROM graph_local WHERE graph_template_id=" . $item["id"] . " and host_id=" . $_GET["id"])) > 0) ? true : false;
 
 				?>
 					<td style="padding: 4px;">
 						<strong><?php print $i;?>)</strong> <?php print htmlspecialchars($item["name"]);?>
 					</td>
 					<td>
-						<?php print (($is_being_graphed == true) ? "<span style='color: green;'>Is Being Graphed</span> (<a href='" . htmlspecialchars("graphs.php?action=graph_edit&id=" . db_fetch_cell("select id from graph_local where graph_template_id=" . $item["id"] . " and host_id=" . $_GET["id"] . " limit 0,1")) . "'>Edit</a>)" : "<span style='color: #484848;'>Not Being Graphed</span>");?>
+						<?php print (($is_being_graphed == true) ? "<span style='color: green;'>Is Being Graphed</span> (<a href='" . htmlspecialchars("graphs.php?action=graph_edit&id=" . db_fetch_cell("SELECT id FROM graph_local WHERE graph_template_id=" . $item["id"] . " and host_id=" . $_GET["id"] . " limit 0,1")) . "'>Edit</a>)" : "<span style='color: #484848;'>Not Being Graphed</span>");?>
 					</td>
 					<td align='right' nowrap>
 						<a href='<?php print htmlspecialchars("host.php?action=gt_remove&id=" . $item["id"] . "&host_id=" . $_GET["id"]);?>'><img src='images/delete_icon_large.gif' title='Delete Graph Template Association' alt='Delete Graph Template Association' border='0' align='middle'></a>
@@ -1001,8 +1001,8 @@ function host_edit() {
 				form_alternate_row('', true);
 
 				/* get status information for this data query */
-				$num_dq_items = sizeof(db_fetch_assoc("select snmp_index from host_snmp_cache where host_id=" . $_GET["id"] . " and snmp_query_id=" . $item["id"]));
-				$num_dq_rows = sizeof(db_fetch_assoc("select snmp_index from host_snmp_cache where host_id=" . $_GET["id"] . " and snmp_query_id=" . $item["id"] . " group by snmp_index"));
+				$num_dq_items = sizeof(db_fetch_assoc("SELECT snmp_index FROM host_snmp_cache WHERE host_id=" . $_GET["id"] . " and snmp_query_id=" . $item["id"]));
+				$num_dq_rows = sizeof(db_fetch_assoc("SELECT snmp_index FROM host_snmp_cache WHERE host_id=" . $_GET["id"] . " and snmp_query_id=" . $item["id"] . " group by snmp_index"));
 
 				$status = "success";
 
@@ -1181,7 +1181,7 @@ function host() {
 							<option value="-1"<?php if (get_request_var_request("host_template_id") == "-1") {?> selected<?php }?>>Any</option>
 							<option value="0"<?php if (get_request_var_request("host_template_id") == "0") {?> selected<?php }?>>None</option>
 							<?php
-							$host_templates = db_fetch_assoc("select id,name from host_template order by name");
+							$host_templates = db_fetch_assoc("SELECT id,name FROM host_template ORDER BY name");
 
 							if (sizeof($host_templates) > 0) {
 								foreach ($host_templates as $host_template) {
@@ -1253,21 +1253,21 @@ function host() {
 	if (get_request_var_request("host_status") == "-1") {
 		/* Show all items */
 	}elseif (get_request_var_request("host_status") == "-2") {
-		$sql_where .= (strlen($sql_where) ? " and host.disabled='on'" : "where host.disabled='on'");
+		$sql_where .= (strlen($sql_where) ? " AND host.disabled='on'" : " WHERE host.disabled='on'");
 	}elseif (get_request_var_request("host_status") == "-3") {
-		$sql_where .= (strlen($sql_where) ? " and host.disabled=''" : "where host.disabled=''");
+		$sql_where .= (strlen($sql_where) ? " AND host.disabled=''" : " WHERE host.disabled=''");
 	}elseif (get_request_var_request("host_status") == "-4") {
-		$sql_where .= (strlen($sql_where) ? " and (host.status!='3' or host.disabled='on')" : "where (host.status!='3' or host.disabled='on')");
+		$sql_where .= (strlen($sql_where) ? " AND (host.status!='3' OR host.disabled='on')" : " WHERE (host.status!='3' OR host.disabled='on')");
 	}else {
-		$sql_where .= (strlen($sql_where) ? " and (host.status=" . get_request_var_request("host_status") . " AND host.disabled = '')" : "where (host.status=" . get_request_var_request("host_status") . " AND host.disabled = '')");
+		$sql_where .= (strlen($sql_where) ? " AND (host.status=" . get_request_var_request("host_status") . " AND host.disabled = '')" : "where (host.status=" . get_request_var_request("host_status") . " AND host.disabled = '')");
 	}
 
 	if (get_request_var_request("host_template_id") == "-1") {
 		/* Show all items */
 	}elseif (get_request_var_request("host_template_id") == "0") {
-		$sql_where .= (strlen($sql_where) ? " and host.host_template_id=0" : "where host.host_template_id=0");
+		$sql_where .= (strlen($sql_where) ? " AND host.host_template_id=0" : " WHERE host.host_template_id=0");
 	}elseif (!empty($_REQUEST["host_template_id"])) {
-		$sql_where .= (strlen($sql_where) ? " and host.host_template_id=" . get_request_var_request("host_template_id") : "where host.host_template_id=" . get_request_var_request("host_template_id"));
+		$sql_where .= (strlen($sql_where) ? " AND host.host_template_id=" . get_request_var_request("host_template_id") : " WHERE host.host_template_id=" . get_request_var_request("host_template_id"));
 	}
 
 	/* print checkbox form for validation */
