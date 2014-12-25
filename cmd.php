@@ -275,7 +275,7 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 
 			if (!$host_down) {
 				/* do the reindex check for this host */
-				$reindex = db_fetch_assoc("SELECT *
+				$reindex = db_fetch_assoc("SELECT
 					poller_reindex.data_query_id,
 					poller_reindex.action,
 					poller_reindex.op,
