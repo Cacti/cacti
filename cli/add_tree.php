@@ -210,7 +210,7 @@ if (sizeof($parms)) {
 			exit(1);
 		}
 
-		$existsAlready = db_fetch_cell("select id from graph_tree where name = '$name'");
+		$existsAlready = db_fetch_cell("SELECT id FROM graph_tree WHERE name = '$name'");
 		if ($existsAlready) {
 			echo "ERROR: Not adding tree - it already exists - tree-id: ($existsAlready)\n";
 			exit(1);

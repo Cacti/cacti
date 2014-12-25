@@ -869,7 +869,7 @@ $settings = array(
 			'description' => 'The name of the guest user for viewing graphs; is "No User" by default.',
 			'method' => 'drop_sql',
 			'none_value' => 'No User',
-			'sql' => 'select username as id, username as name from user_auth where realm = 0 order by username',
+			'sql' => 'SELECT username AS id, username AS name FROM user_auth WHERE realm = 0 ORDER BY username',
 			'default' => '0'
 			),
 		'user_template' => array(
@@ -877,7 +877,7 @@ $settings = array(
 			'description' => 'The name of the user that cacti will use as a template for new Web Basic and LDAP users; is "guest" by default.',
 			'method' => 'drop_sql',
 			'none_value' => 'No User',
-			'sql' => 'select username as id, username as name from user_auth where realm = 0 order by username',
+			'sql' => 'SELECT username AS id, username AS name FROM user_auth WHERE realm = 0 ORDER BY username',
 			'default' => '0'
 			),
 		'ldap_general_header' => array(
@@ -1393,7 +1393,7 @@ $settings_graphs = array(
 			'friendly_name' => 'Default Time Range',
 			'description' => 'The default RRA to use when for Graphs the Timespan selector is disabled.',
 			'method' => 'drop_sql',
-			'sql' => 'select id,name from rra order by timespan',
+			'sql' => 'SELECT id,name FROM rra ORDER BY timespan',
 			'default' => '1'
 			),
 		'default_timespan' => array(
@@ -1485,7 +1485,7 @@ $settings_graphs = array(
 			'friendly_name' => 'Default Graph Tree',
 			'description' => 'The default graph tree to use when displaying graphs in tree mode.',
 			'method' => 'drop_sql',
-			'sql' => 'select id,name from graph_tree order by name',
+			'sql' => 'SELECT id,name FROM graph_tree ORDER BY name',
 			'default' => '0'
 			),
 		'treeview_graphs_per_page' => array(

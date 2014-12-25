@@ -235,7 +235,7 @@ $struct_data_source = array(
 	'data_input_id' => array(
 		'friendly_name' => 'Data Input Method',
 		'method' => 'drop_sql',
-		'sql' => 'select id,name from data_input order by name',
+		'sql' => 'SELECT id,name FROM data_input ORDER BY name',
 		'default' => '',
 		'none_value' => 'None',
 		'description' => 'The script/source used to gather data for this data source.',
@@ -246,9 +246,9 @@ $struct_data_source = array(
 		'friendly_name' => 'Associated RRAs',
 		'description' => 'Which RRAs to use when entering data. (It is recommended that you select all of these values).',
 		'form_id' => '|arg1:id|',
-		'sql' => 'select rra_id as id,data_template_data_id from data_template_data_rra where data_template_data_id=|arg1:id|',
-		'sql_all' => 'select rra.id from rra order by id',
-		'sql_print' => 'select rra.name from (data_template_data_rra,rra) where data_template_data_rra.rra_id=rra.id and data_template_data_rra.data_template_data_id=|arg1:id|',
+		'sql' => 'SELECT rra_id AS id,data_template_data_id FROM data_template_data_rra WHERE data_template_data_id=|arg1:id|',
+		'sql_all' => 'SELECT rra.id FROM rra ORDER BY id',
+		'sql_print' => 'SELECT rra.name FROM (data_template_data_rra,rra) WHERE data_template_data_rra.rra_id=rra.id AND data_template_data_rra.data_template_data_id=|arg1:id|',
 		'flags' => 'ALWAYSTEMPLATE'
 		),
 	'rrd_step' => array(
@@ -511,7 +511,7 @@ $struct_graph_item = array(
 		'friendly_name' => 'Data Source',
 		'method' => 'drop_sql',
 		'sql' => 'SELECT
-			CONCAT_WS("",case when host.description is null then "No Host" when host.description is not null then host.description end," - ",data_template_data.name," (",data_template_rrd.data_source_name,")") as name,
+			CONCAT_WS("",case when host.description is null then "No Host" when host.description is not null then host.description end," - ",data_template_data.name," (",data_template_rrd.data_source_name,")") AS name,
 			data_template_rrd.id
 			FROM (data_template_data,data_template_rrd,data_local)
 			LEFT JOIN host ON (data_local.host_id=host.id)
@@ -546,7 +546,7 @@ $struct_graph_item = array(
 	'cdef_id' => array(
 		'friendly_name' => 'CDEF Function',
 		'method' => 'drop_sql',
-		'sql' => 'select id,name from cdef order by name',
+		'sql' => 'SELECT id,name FROM cdef ORDER BY name',
 		'default' => '0',
 		'none_value' => 'None',
 		'description' => 'A CDEF (math) function to apply to this item on the graph.'
@@ -561,7 +561,7 @@ $struct_graph_item = array(
 	'gprint_id' => array(
 		'friendly_name' => 'GPRINT Type',
 		'method' => 'drop_sql',
-		'sql' => 'select id,name from graph_templates_gprint order by name',
+		'sql' => 'SELECT id,name FROM graph_templates_gprint ORDER BY name',
 		'default' => '2',
 		'description' => 'If this graph item is a GPRINT, you can optionally choose another format
 			here. You can define additional types under "GPRINT Presets".'
@@ -672,7 +672,7 @@ $fields_host_edit = array(
 		'description' => 'Choose the Host Template to use to define the default Graph Templates and Data Queries associated with this Host.',
 		'value' => '|arg1:host_template_id|',
 		'none_value' => 'None',
-		'sql' => 'select id,name from host_template order by name',
+		'sql' => 'SELECT id,name FROM Host_template ORDER BY name',
 		),
 	'device_threads' => array(
 		'method' => 'drop_array',
@@ -901,7 +901,7 @@ $fields_rra_edit = array(
 		'friendly_name' => 'Consolidation Functions',
 		'description' => 'How data is to be entered in RRAs.',
 		'array' => $consolidation_functions,
-		'sql' => 'select consolidation_function_id as id,rra_id from rra_cf where rra_id=|arg1:id|',
+		'sql' => 'SELECT consolidation_function_id AS id,rra_id FROM rra_cf WHERE rra_id=|arg1:id|',
 		),
 	'x_files_factor' => array(
 		'method' => 'textbox',
@@ -972,7 +972,7 @@ $fields_data_query_edit = array(
 		'friendly_name' => 'Data Input Method',
 		'description' => 'Choose the input method for this Data Query.  This input method defines how data is collected for each Host associated with the Data Query.',
 		'value' => '|arg1:data_input_id|',
-		'sql' => 'select id,name from data_input where (type_id=3 or type_id=4 or type_id=5 or type_id=6) order by name',
+		'sql' => 'SELECT id,name FROM data_input WHERE (type_id=3 OR type_id=4 OR type_id=5 OR type_id=6) ORDER BY name',
 		),
 	'id' => array(
 		'method' => 'hidden_zero',
@@ -991,7 +991,7 @@ $fields_data_query_item_edit = array(
 		'friendly_name' => 'Graph Template',
 		'description' => 'Choose the Graph Template to use for this Data Query Graph Template item.',
 		'value' => '|arg1:graph_template_id|',
-		'sql' => 'select id,name from graph_templates order by name',
+		'sql' => 'SELECT id,name from graph_templates ORDER BY name',
 		),
 	'name' => array(
 		'method' => 'textbox',
@@ -1187,23 +1187,23 @@ $fields_user_user_edit_host = array(
 $export_types = array(
 	'graph_template' => array(
 		'name' => 'Graph Template',
-		'title_sql' => 'select name from graph_templates where id=|id|',
-		'dropdown_sql' => 'select id,name from graph_templates order by name'
+		'title_sql' => 'SELECT name FROM graph_templates WHERE id=|id|',
+		'dropdown_sql' => 'SELECT id,name FROM graph_templates ORDER BY name'
 		),
 	'data_template' => array(
 		'name' => 'Data Template',
-		'title_sql' => 'select name from data_template where id=|id|',
-		'dropdown_sql' => 'select id,name from data_template order by name'
+		'title_sql' => 'SELECT name FROM data_template WHERE id=|id|',
+		'dropdown_sql' => 'SELECT id,name FROM data_template ORDER BY name'
 		),
 	'host_template' => array(
 		'name' => 'Host Template',
-		'title_sql' => 'select name from host_template where id=|id|',
-		'dropdown_sql' => 'select id,name from host_template order by name'
+		'title_sql' => 'SELECT name FROM host_template WHERE id=|id|',
+		'dropdown_sql' => 'SELECT id,name FROM host_template ORDER BY name'
 		),
 	'data_query' => array(
 		'name' => 'Data Query',
-		'title_sql' => 'select name from snmp_query where id=|id|',
-		'dropdown_sql' => 'select id,name from snmp_query order by name'
+		'title_sql' => 'SELECT name FROM snmp_query WHERE id=|id|',
+		'dropdown_sql' => 'SELECT id,name FROM snmp_query ORDER BY name'
 		)
 	);
 
@@ -1246,7 +1246,7 @@ $fields_template_import = array(
 		'friendly_name' => 'Associated RRAs',
 		'description' => 'Which RRAs to use when entering data (It is recommended that you <strong>deselect unwanted values</strong>).',
 		'form_id' => '',
-		'sql_all' => 'select rra.id from rra where id in (1,2,3,4) order by id',
+		'sql_all' => 'SELECT rra.id FROM rra WHERE id IN (1,2,3,4) ORDER BY id',
 		),
 	);
 
