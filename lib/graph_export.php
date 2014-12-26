@@ -50,7 +50,7 @@ function graph_export($force = false) {
 					db_execute("REPLACE INTO settings (name,value) VALUES ('path_html_export_ctr','1')");
 					db_execute("REPLACE INTO settings (name,value) VALUES ('path_html_export_skip','1')");
 				} else {
-					db_execute("update settings set value='" . (read_config_option("path_html_export_ctr") + 1) . "' where name='path_html_export_ctr'");
+					db_execute("UPDATE settings set value='" . (read_config_option("path_html_export_ctr") + 1) . "' WHERE name='path_html_export_ctr'");
 				}
 				break;
 			case "export_hourly":
@@ -938,7 +938,7 @@ function build_html_file($leaf, $type = "", $array_data = array(), $snmp_index =
 
 		break;
 	case "leaf":
-		$sql_join = "LEFT JOIN user_auth_perms ON ((graph_templates_graph.local_graph_id=user_auth_perms.item_id and user_auth_perms.type=1 and user_auth_perms.user_id=" . $current_user["id"] . ") OR (host.id=user_auth_perms.item_id and user_auth_perms.type=3 and user_auth_perms.user_id=" . $current_user["id"] . ") OR (graph_templates.id=user_auth_perms.item_id and user_auth_perms.type=4 and user_auth_perms.user_id=" . $current_user["id"] . "))";
+		$sql_join = "LEFT JOIN user_auth_perms ON ((graph_templates_graph.local_graph_id=user_auth_perms.item_id AND user_auth_perms.type=1 AND user_auth_perms.user_id=" . $current_user["id"] . ") OR (host.id=user_auth_perms.item_id AND user_auth_perms.type=3 AND user_auth_perms.user_id=" . $current_user["id"] . ") OR (graph_templates.id=user_auth_perms.item_id AND user_auth_perms.type=4 AND user_auth_perms.user_id=" . $current_user["id"] . "))";
 
 		/* searching for the graph_tree_items of the tree_id which are graphs */
 		if ($leaf["tree_id"] == 0) {
@@ -1187,14 +1187,14 @@ function explore_tree($path, $tree_id, $parent_tree_item_id) {
    @arg $tree_id - (int) the ID of the graph tree to check permissions for
    @returns - (bool) whether the current user is allowed the view the specified graph tree or not */
 function export_is_tree_allowed($tree_id) {
-	$current_user = db_fetch_row("select policy_trees from user_auth where id=" . read_config_option("export_user_id"));
+	$current_user = db_fetch_row("SELECT policy_trees from user_auth WHERE id=" . read_config_option("export_user_id"));
 
-	$trees = db_fetch_assoc("select
+	$trees = db_fetch_assoc("SELECT
 		user_id
-		from user_auth_perms
-		where user_id=" . read_config_option("export_user_id") . "
-		and type=2
-		and item_id=$tree_id");
+		FROM user_auth_perms
+		WHERE user_id=" . read_config_option("export_user_id") . "
+		AND type=2
+		AND item_id=$tree_id");
 
 	/* policy == allow AND matches = DENY */
 	if ((sizeof($trees) > 0) && ($current_user["policy_trees"] == "1")) {
@@ -1232,7 +1232,7 @@ function export_tree_graphs_and_graph_html($path, $tree_id) {
 	$sql_join = "LEFT JOIN graph_local ON (graph_templates_graph.local_graph_id=graph_local.id)
 		LEFT JOIN graph_templates ON (graph_templates.id=graph_local.graph_template_id)
 		LEFT JOIN host ON (host.id=graph_local.host_id)
-		LEFT JOIN user_auth_perms ON ((graph_templates_graph.local_graph_id=user_auth_perms.item_id and user_auth_perms.type=1 AND user_auth_perms.user_id=" . $current_user["id"] . ") OR (host.id=user_auth_perms.item_id AND user_auth_perms.type=3 AND user_auth_perms.user_id=" . $current_user["id"] . ") OR (graph_templates.id=user_auth_perms.item_id AND user_auth_perms.type=4 AND user_auth_perms.user_id=" . $current_user["id"] . "))";
+		LEFT JOIN user_auth_perms ON ((graph_templates_graph.local_graph_id=user_auth_perms.item_id AND user_auth_perms.type=1 AND user_auth_perms.user_id=" . $current_user["id"] . ") OR (host.id=user_auth_perms.item_id AND user_auth_perms.type=3 AND user_auth_perms.user_id=" . $current_user["id"] . ") OR (graph_templates.id=user_auth_perms.item_id AND user_auth_perms.type=4 AND user_auth_perms.user_id=" . $current_user["id"] . "))";
 
 	$sql_where = get_graph_permissions_sql($current_user["policy_graphs"], $current_user["policy_hosts"], $current_user["policy_graph_templates"]);
 	$sql_where = (empty($sql_where) ? "" : "AND $sql_where");
@@ -1588,7 +1588,7 @@ function create_dhtml_tree_export($tree_id) {
 	/* auth check for hosts on the trees */
 	$current_user = db_fetch_row("SELECT * FROM user_auth WHERE id=" . read_config_option("export_user_id"));
 
-	$sql_join  = "LEFT JOIN user_auth_perms ON ((graph_templates_graph.local_graph_id=user_auth_perms.item_id and user_auth_perms.type=1 AND user_auth_perms.user_id=" . $current_user["id"] . ") OR (host.id=user_auth_perms.item_id AND user_auth_perms.type=3 AND user_auth_perms.user_id=" . $current_user["id"] . ") OR (graph_templates.id=user_auth_perms.item_id AND user_auth_perms.type=4 AND user_auth_perms.user_id=" . $current_user["id"] . "))";
+	$sql_join  = "LEFT JOIN user_auth_perms ON ((graph_templates_graph.local_graph_id=user_auth_perms.item_id AND user_auth_perms.type=1 AND user_auth_perms.user_id=" . $current_user["id"] . ") OR (host.id=user_auth_perms.item_id AND user_auth_perms.type=3 AND user_auth_perms.user_id=" . $current_user["id"] . ") OR (graph_templates.id=user_auth_perms.item_id AND user_auth_perms.type=4 AND user_auth_perms.user_id=" . $current_user["id"] . "))";
 
 	if ($current_user["policy_hosts"] == "1") {
 		$sql_where = "AND !(user_auth_perms.user_id IS NOT NULL AND graph_tree_items.host_id>0)";

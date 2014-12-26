@@ -23,7 +23,7 @@
  */
 
 function getHostTemplates() {
-	$tmpArray = db_fetch_assoc("select id, name from host_template order by id");
+	$tmpArray = db_fetch_assoc("SELECT id, name FROM host_template ORDER BY id");
 
 	$host_templates[0] = "None";
 
@@ -38,7 +38,7 @@ function getHostTemplates() {
 
 function getHostsByDescription() {
 	$hosts = array();
-	$tmpArray = db_fetch_assoc("select id, description from host order by description");
+	$tmpArray = db_fetch_assoc("SELECT id, description FROM host ORDER BY description");
 
 	if (sizeof($tmpArray)) {
 		foreach ($tmpArray as $tmp) {
@@ -51,7 +51,7 @@ function getHostsByDescription() {
 
 function getHosts() {
 	$hosts    = array();
-	$tmpArray = db_fetch_assoc("select * from host order by id");
+	$tmpArray = db_fetch_assoc("SELECT * FROM host ORDER BY id");
 
 	if (sizeof($tmpArray)) {
 		foreach ($tmpArray as $host) {

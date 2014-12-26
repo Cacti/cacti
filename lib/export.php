@@ -28,10 +28,10 @@ function graph_template_to_xml($graph_template_id) {
 	$hash["graph_template"] = get_hash_version("graph_template") . get_hash_graph_template($graph_template_id);
 	$xml_text = "";
 
-	$graph_template = db_fetch_row("select id,name from graph_templates where id=$graph_template_id");
-	$graph_template_graph = db_fetch_row("select * from graph_templates_graph where graph_template_id=$graph_template_id and local_graph_id=0");
-	$graph_template_items = db_fetch_assoc("select * from graph_templates_item where graph_template_id=$graph_template_id and local_graph_id=0 order by sequence");
-	$graph_template_inputs = db_fetch_assoc("select * from graph_template_input where graph_template_id=$graph_template_id");
+	$graph_template = db_fetch_row("SELECT id,name from graph_templates WHERE id=$graph_template_id");
+	$graph_template_graph = db_fetch_row("SELECT * from graph_templates_graph WHERE graph_template_id=$graph_template_id AND local_graph_id=0");
+	$graph_template_items = db_fetch_assoc("SELECT * from graph_templates_item WHERE graph_template_id=$graph_template_id AND local_graph_id=0 ORDER BY sequence");
+	$graph_template_inputs = db_fetch_assoc("SELECT * from graph_template_input WHERE graph_template_id=$graph_template_id");
 
 	if ((empty($graph_template["id"])) || (empty($graph_template_graph["id"]))) {
 		$export_errors++;
@@ -71,7 +71,7 @@ function graph_template_to_xml($graph_template_id) {
 			}elseif (($field_name == "gprint_id") && (!empty($item{$field_name}))) {
 				$xml_text .= "\t\t\t<$field_name>hash_" . get_hash_version("gprint_preset") . get_hash_gprint($item{$field_name}) . "</$field_name>\n";
 			}elseif (($field_name == "color_id") && (!empty($item{$field_name}))) {
-				$xml_text .= "\t\t\t<$field_name>" . db_fetch_cell("select hex from colors where id=" . $item{$field_name}) . "</$field_name>\n";
+				$xml_text .= "\t\t\t<$field_name>" . db_fetch_cell("SELECT hex from colors WHERE id=" . $item{$field_name}) . "</$field_name>\n";
 			}else{
 				$xml_text .= "\t\t\t<$field_name>" . xml_character_encode($item{$field_name}) . "</$field_name>\n";
 			}
@@ -103,7 +103,7 @@ function graph_template_to_xml($graph_template_id) {
 			}
 		}
 
-		$graph_template_input_items = db_fetch_assoc("select graph_template_item_id from graph_template_input_defs where graph_template_input_id=" . $item["id"]);
+		$graph_template_input_items = db_fetch_assoc("SELECT graph_template_item_id from graph_template_input_defs WHERE graph_template_input_id=" . $item["id"]);
 
 		$xml_text .= "\t\t\t<items>";
 
@@ -139,11 +139,11 @@ function data_template_to_xml($data_template_id) {
 	$hash["data_template"] = get_hash_version("data_template") . get_hash_data_template($data_template_id);
 	$xml_text = "";
 
-	$data_template = db_fetch_row("select id,name from data_template where id=$data_template_id");
-	$data_template_data = db_fetch_row("select * from data_template_data where data_template_id=$data_template_id and local_data_id=0");
-	$data_template_rrd = db_fetch_assoc("select * from data_template_rrd where data_template_id=$data_template_id and local_data_id=0");
-	$data_template_data_rra = db_fetch_assoc("select * from data_template_data_rra where data_template_data_id=" . $data_template_data["id"]);
-	$data_input_data = db_fetch_assoc("select * from data_input_data where data_template_data_id=" . $data_template_data["id"]);
+	$data_template = db_fetch_row("SELECT id,name from data_template WHERE id=$data_template_id");
+	$data_template_data = db_fetch_row("SELECT * from data_template_data WHERE data_template_id=$data_template_id AND local_data_id=0");
+	$data_template_rrd = db_fetch_assoc("SELECT * from data_template_rrd WHERE data_template_id=$data_template_id AND local_data_id=0");
+	$data_template_data_rra = db_fetch_assoc("SELECT * from data_template_data_rra WHERE data_template_data_id=" . $data_template_data["id"]);
+	$data_input_data = db_fetch_assoc("SELECT * from data_input_data WHERE data_template_data_id=" . $data_template_data["id"]);
 
 	if ((empty($data_template["id"])) || (empty($data_template_data["id"]))) {
 		$export_errors++;
@@ -257,8 +257,8 @@ function data_input_method_to_xml($data_input_id) {
 	$hash["data_input_method"] = get_hash_version("data_input_method") . get_hash_data_input($data_input_id);
 	$xml_text = "";
 
-	$data_input = db_fetch_row("select * from data_input where id=$data_input_id");
-	$data_input_fields = db_fetch_assoc("select * from data_input_fields where data_input_id=$data_input_id");
+	$data_input = db_fetch_row("SELECT * from data_input WHERE id=$data_input_id");
+	$data_input_fields = db_fetch_assoc("SELECT * from data_input_fields WHERE data_input_id=$data_input_id");
 
 	if (empty($data_input["id"])) {
 		$export_errors++;
@@ -326,8 +326,8 @@ function cdef_to_xml($cdef_id) {
 	$hash["cdef"] = get_hash_version("cdef") . get_hash_cdef($cdef_id);
 	$xml_text = "";
 
-	$cdef = db_fetch_row("select * from cdef where id=$cdef_id");
-	$cdef_items = db_fetch_assoc("select * from cdef_items where cdef_id=$cdef_id order by sequence");
+	$cdef = db_fetch_row("SELECT * from cdef WHERE id=$cdef_id");
+	$cdef_items = db_fetch_assoc("SELECT * from cdef_items WHERE cdef_id=$cdef_id ORDER BY sequence");
 
 	if (empty($cdef["id"])) {
 		$export_errors++;
@@ -386,7 +386,7 @@ function gprint_preset_to_xml($gprint_preset_id) {
 	$hash = get_hash_version("gprint_preset") . get_hash_gprint($gprint_preset_id);
 	$xml_text = "";
 
-	$graph_templates_gprint = db_fetch_row("select * from graph_templates_gprint where id=$gprint_preset_id");
+	$graph_templates_gprint = db_fetch_row("SELECT * from graph_templates_gprint WHERE id=$gprint_preset_id");
 
 	if (empty($graph_templates_gprint["id"])) {
 		$export_errors++;
@@ -416,8 +416,8 @@ function round_robin_archive_to_xml($round_robin_archive_id) {
 	$hash = get_hash_version("round_robin_archive") . get_hash_round_robin_archive($round_robin_archive_id);
 	$xml_text = "";
 
-	$rra = db_fetch_row("select * from rra where id=$round_robin_archive_id");
-	$rra_cf = db_fetch_assoc("select * from rra_cf where rra_id=$round_robin_archive_id");
+	$rra = db_fetch_row("SELECT * from rra WHERE id=$round_robin_archive_id");
+	$rra_cf = db_fetch_assoc("SELECT * from rra_cf WHERE rra_id=$round_robin_archive_id");
 
 	if (empty($rra["id"])) {
 		$export_errors++;
@@ -467,9 +467,9 @@ function host_template_to_xml($host_template_id) {
 	$hash = get_hash_version("host_template") . get_hash_host_template($host_template_id);
 	$xml_text = "";
 
-	$host_template = db_fetch_row("select * from host_template where id=$host_template_id");
-	$host_template_graph = db_fetch_assoc("select * from host_template_graph where host_template_id=$host_template_id");
-	$host_template_snmp_query = db_fetch_assoc("select * from host_template_snmp_query where host_template_id=$host_template_id");
+	$host_template = db_fetch_row("SELECT * from host_template WHERE id=$host_template_id");
+	$host_template_graph = db_fetch_assoc("SELECT * from host_template_graph WHERE host_template_id=$host_template_id");
+	$host_template_snmp_query = db_fetch_assoc("SELECT * from host_template_snmp_query WHERE host_template_id=$host_template_id");
 
 	if (empty($host_template["id"])) {
 		$export_errors++;
@@ -535,8 +535,8 @@ function data_query_to_xml($data_query_id) {
 	$hash["data_query"] = get_hash_version("data_query") . get_hash_data_query($data_query_id);
 	$xml_text = "";
 
-	$snmp_query = db_fetch_row("select * from snmp_query where id=$data_query_id");
-	$snmp_query_graph = db_fetch_assoc("select * from snmp_query_graph where snmp_query_id=$data_query_id");
+	$snmp_query = db_fetch_row("SELECT * from snmp_query WHERE id=$data_query_id");
+	$snmp_query_graph = db_fetch_assoc("SELECT * from snmp_query_graph WHERE snmp_query_id=$data_query_id");
 
 	if (empty($snmp_query["id"])) {
 		$export_errors++;
@@ -581,9 +581,9 @@ function data_query_to_xml($data_query_id) {
 			}
 		}
 
-		$snmp_query_graph_rrd_sv = db_fetch_assoc("select * from snmp_query_graph_rrd_sv where snmp_query_graph_id=" . $item["id"] . " order by sequence");
-		$snmp_query_graph_sv = db_fetch_assoc("select * from snmp_query_graph_sv where snmp_query_graph_id=" . $item["id"] . " order by sequence");
-		$snmp_query_graph_rrd = db_fetch_assoc("select * from snmp_query_graph_rrd where snmp_query_graph_id=" . $item["id"] . " and data_template_id > 0");
+		$snmp_query_graph_rrd_sv = db_fetch_assoc("SELECT * from snmp_query_graph_rrd_sv WHERE snmp_query_graph_id=" . $item["id"] . " ORDER BY sequence");
+		$snmp_query_graph_sv = db_fetch_assoc("SELECT * from snmp_query_graph_sv WHERE snmp_query_graph_id=" . $item["id"] . " ORDER BY sequence");
+		$snmp_query_graph_rrd = db_fetch_assoc("SELECT * from snmp_query_graph_rrd WHERE snmp_query_graph_id=" . $item["id"] . " AND data_template_id > 0");
 
 		/* XML Branch: <graphs/rrd> */
 
@@ -675,14 +675,14 @@ function resolve_dependencies($type, $id, $dep_array) {
 	switch ($type) {
 	case 'graph_template':
 		/* dep: data template */
-		$graph_template_items = db_fetch_assoc("select
+		$graph_template_items = db_fetch_assoc("SELECT
 			data_template_rrd.data_template_id
-			from (graph_templates_item,data_template_rrd)
-			where graph_templates_item.task_item_id=data_template_rrd.id
-			and graph_templates_item.graph_template_id=$id
-			and graph_templates_item.local_graph_id=0
-			and graph_templates_item.task_item_id > 0
-			group by data_template_rrd.data_template_id");
+			FROM (graph_templates_item,data_template_rrd)
+			WHERE graph_templates_item.task_item_id=data_template_rrd.id
+			AND graph_templates_item.graph_template_id=$id
+			AND graph_templates_item.local_graph_id=0
+			AND graph_templates_item.task_item_id > 0
+			GROUP BY data_template_rrd.data_template_id");
 
 		if (sizeof($graph_template_items) > 0) {
 		foreach ($graph_template_items as $item) {
@@ -693,7 +693,7 @@ function resolve_dependencies($type, $id, $dep_array) {
 		}
 
 		/* dep: cdef */
-		$cdef_items = db_fetch_assoc("select cdef_id from graph_templates_item where graph_template_id=$id and local_graph_id=0 and cdef_id > 0 group by cdef_id");
+		$cdef_items = db_fetch_assoc("SELECT cdef_id from graph_templates_item WHERE graph_template_id=$id AND local_graph_id=0 AND cdef_id > 0 GROUP BY cdef_id");
 		
 		$recursive = true;
 		/* in the first turn, search all inherited cdef items related to all cdef's known on highest recursion level */
@@ -735,7 +735,7 @@ function resolve_dependencies($type, $id, $dep_array) {
 		}
 
 		/* dep: gprint preset */
-		$graph_template_items = db_fetch_assoc("select gprint_id from graph_templates_item where graph_template_id=$id and local_graph_id=0 and gprint_id > 0 group by gprint_id");
+		$graph_template_items = db_fetch_assoc("SELECT gprint_id from graph_templates_item WHERE graph_template_id=$id AND local_graph_id=0 AND gprint_id > 0 GROUP BY gprint_id");
 
 		if (sizeof($graph_template_items) > 0) {
 		foreach ($graph_template_items as $item) {
@@ -748,14 +748,14 @@ function resolve_dependencies($type, $id, $dep_array) {
 		break;
 	case 'data_template':
 		/* dep: data input method */
-		$item = db_fetch_row("select data_input_id from data_template_data where data_template_id=$id and local_data_id=0 and data_input_id > 0");
+		$item = db_fetch_row("SELECT data_input_id from data_template_data WHERE data_template_id=$id AND local_data_id=0 AND data_input_id > 0");
 
 		if ((!empty($item)) && (!isset($dep_array["data_input_method"]{$item["data_input_id"]}))) {
 			$dep_array = resolve_dependencies("data_input_method", $item["data_input_id"], $dep_array);
 		}
 
 		/* dep: round robin archive */
-		$rras = db_fetch_assoc("select rra_id from data_template_data_rra where data_template_data_id=" . db_fetch_cell("select id from data_template_data where data_template_id=$id and local_data_id = 0"));
+		$rras = db_fetch_assoc("SELECT rra_id from data_template_data_rra WHERE data_template_data_id=" . db_fetch_cell("select id from data_template_data WHERE data_template_id=$id AND local_data_id = 0"));
 
 		if (sizeof($rras) > 0) {
 		foreach ($rras as $item) {
@@ -768,14 +768,14 @@ function resolve_dependencies($type, $id, $dep_array) {
 		break;
 	case 'data_query':
 		/* dep: data input method */
-		$item = db_fetch_row("select data_input_id from snmp_query where id=$id and data_input_id > 0");
+		$item = db_fetch_row("SELECT data_input_id from snmp_query WHERE id=$id AND data_input_id > 0");
 
 		if ((!empty($item)) && (!isset($dep_array["data_input_method"]{$item["data_input_id"]}))) {
 			$dep_array = resolve_dependencies("data_input_method", $item["data_input_id"], $dep_array);
 		}
 
 		/* dep: graph template */
-		$snmp_query_graph = db_fetch_assoc("select graph_template_id from snmp_query_graph where snmp_query_id=$id and graph_template_id > 0 group by graph_template_id");
+		$snmp_query_graph = db_fetch_assoc("SELECT graph_template_id from snmp_query_graph WHERE snmp_query_id=$id AND graph_template_id > 0 GROUP BY graph_template_id");
 
 		if (sizeof($snmp_query_graph) > 0) {
 		foreach ($snmp_query_graph as $item) {
@@ -788,7 +788,7 @@ function resolve_dependencies($type, $id, $dep_array) {
 		break;
 	case 'host_template':
 		/* dep: graph template */
-		$host_template_graph = db_fetch_assoc("select graph_template_id from host_template_graph where host_template_id=$id and graph_template_id > 0 group by graph_template_id");
+		$host_template_graph = db_fetch_assoc("SELECT graph_template_id from host_template_graph WHERE host_template_id=$id AND graph_template_id > 0 GROUP BY graph_template_id");
 
 		if (sizeof($host_template_graph) > 0) {
 		foreach ($host_template_graph as $item) {
@@ -799,7 +799,7 @@ function resolve_dependencies($type, $id, $dep_array) {
 		}
 
 		/* dep: data query */
-		$host_template_snmp_query = db_fetch_assoc("select snmp_query_id from host_template_snmp_query where host_template_id=$id and snmp_query_id > 0 group by snmp_query_id");
+		$host_template_snmp_query = db_fetch_assoc("SELECT snmp_query_id from host_template_snmp_query WHERE host_template_id=$id AND snmp_query_id > 0 GROUP BY snmp_query_id");
 
 		if (sizeof($host_template_snmp_query) > 0) {
 		foreach ($host_template_snmp_query as $item) {

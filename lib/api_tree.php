@@ -33,7 +33,7 @@ function api_tree_item_save($id, $tree_id, $type, $parent_tree_item_id, $title, 
 
 	db_execute("LOCK TABLES graph_tree_items WRITE, graph_tree READ, graph_templates_graph READ, host READ");
 
-	$parent_order_key = db_fetch_cell("select order_key from graph_tree_items where id=$parent_tree_item_id");
+	$parent_order_key = db_fetch_cell("SELECT order_key FROM graph_tree_items WHERE id=$parent_tree_item_id");
 
 	/* fetch some cache variables */
 	if (empty($id)) {
@@ -41,29 +41,29 @@ function api_tree_item_save($id, $tree_id, $type, $parent_tree_item_id, $title, 
 		$order_key = get_next_tree_id($parent_order_key, "graph_tree_items", "order_key", "graph_tree_id=$tree_id");
 	}else{
 		/* edit/save - use old order_key */
-		$order_key = db_fetch_cell("select order_key from graph_tree_items where id=$id");
+		$order_key = db_fetch_cell("SELECT order_key FROM graph_tree_items WHERE id=$id");
 	}
 
 	/* duplicate graph check */
 	$search_key = substr($parent_order_key, 0, (tree_tier($parent_order_key) * CHARS_PER_TIER));
-	if ($id == 0 && ($type == TREE_ITEM_TYPE_GRAPH) && (sizeof(db_fetch_assoc("select id from graph_tree_items where local_graph_id='$local_graph_id' and graph_tree_id='$tree_id' and order_key like '$search_key" . str_repeat('_', CHARS_PER_TIER) . str_repeat('0', (MAX_TREE_DEPTH * CHARS_PER_TIER) - (strlen($search_key) + CHARS_PER_TIER)) . "'")) > 0)) {
-		$value = db_fetch_cell("select id from graph_tree_items where local_graph_id='$local_graph_id' and graph_tree_id='$tree_id' and order_key like '$search_key" . str_repeat('_', CHARS_PER_TIER) . str_repeat('0', (MAX_TREE_DEPTH * CHARS_PER_TIER) - (strlen($search_key) + CHARS_PER_TIER)) . "'");
+	if ($id == 0 && ($type == TREE_ITEM_TYPE_GRAPH) && (sizeof(db_fetch_assoc("SELECT id FROM graph_tree_items WHERE local_graph_id='$local_graph_id' AND graph_tree_id='$tree_id' AND order_key like '$search_key" . str_repeat('_', CHARS_PER_TIER) . str_repeat('0', (MAX_TREE_DEPTH * CHARS_PER_TIER) - (strlen($search_key) + CHARS_PER_TIER)) . "'")) > 0)) {
+		$value = db_fetch_cell("SELECT id FROM graph_tree_items WHERE local_graph_id='$local_graph_id' AND graph_tree_id='$tree_id' AND order_key like '$search_key" . str_repeat('_', CHARS_PER_TIER) . str_repeat('0', (MAX_TREE_DEPTH * CHARS_PER_TIER) - (strlen($search_key) + CHARS_PER_TIER)) . "'");
 		db_execute("UNLOCK TABLES");
 		return $value;
 	}
 
 	/* Duplicate header check */
 	if ($id == 0 && ($type == TREE_ITEM_TYPE_HEADER)) {
-		if ((sizeof(db_fetch_assoc("select id from graph_tree_items where title='$title' and graph_tree_id='$tree_id' and order_key like '$search_key" . str_repeat('_', CHARS_PER_TIER) . str_repeat('0', (MAX_TREE_DEPTH * CHARS_PER_TIER) - (strlen($search_key) + CHARS_PER_TIER)) . "'")) > 0)) {
-			$value = db_fetch_cell("select id from graph_tree_items where title='$title' and graph_tree_id='$tree_id' and order_key like '$search_key" . str_repeat('_', CHARS_PER_TIER) . str_repeat('0', (MAX_TREE_DEPTH * CHARS_PER_TIER) - (strlen($search_key) + CHARS_PER_TIER)) . "'");
+		if ((sizeof(db_fetch_assoc("SELECT id FROM graph_tree_items WHERE title='$title' AND graph_tree_id='$tree_id' AND order_key like '$search_key" . str_repeat('_', CHARS_PER_TIER) . str_repeat('0', (MAX_TREE_DEPTH * CHARS_PER_TIER) - (strlen($search_key) + CHARS_PER_TIER)) . "'")) > 0)) {
+			$value = db_fetch_cell("SELECT id FROM graph_tree_items WHERE title='$title' AND graph_tree_id='$tree_id' AND order_key like '$search_key" . str_repeat('_', CHARS_PER_TIER) . str_repeat('0', (MAX_TREE_DEPTH * CHARS_PER_TIER) - (strlen($search_key) + CHARS_PER_TIER)) . "'");
 			db_execute("UNLOCK TABLES");
 			return $value;
 		}
 	}
 
 	/* Duplicate host check */
-	if ($id == 0 && ($type == TREE_ITEM_TYPE_HOST) && (sizeof(db_fetch_assoc("select id from graph_tree_items where host_id='$host_id' and local_graph_id='$local_graph_id' and graph_tree_id='$tree_id' and order_key like '$search_key" . str_repeat('_', CHARS_PER_TIER) . str_repeat('0', (MAX_TREE_DEPTH * CHARS_PER_TIER) - (strlen($search_key) + CHARS_PER_TIER)) . "'")) > 0)) {
-		$value = db_fetch_cell("select id from graph_tree_items where host_id='$host_id' and local_graph_id='$local_graph_id' and graph_tree_id='$tree_id' and order_key like '$search_key" . str_repeat('_', CHARS_PER_TIER) . str_repeat('0', (MAX_TREE_DEPTH * CHARS_PER_TIER) - (strlen($search_key) + CHARS_PER_TIER)) . "'");
+	if ($id == 0 && ($type == TREE_ITEM_TYPE_HOST) && (sizeof(db_fetch_assoc("SELECT id FROM graph_tree_items WHERE host_id='$host_id' AND local_graph_id='$local_graph_id' AND graph_tree_id='$tree_id' AND order_key like '$search_key" . str_repeat('_', CHARS_PER_TIER) . str_repeat('0', (MAX_TREE_DEPTH * CHARS_PER_TIER) - (strlen($search_key) + CHARS_PER_TIER)) . "'")) > 0)) {
+		$value = db_fetch_cell("SELECT id FROM graph_tree_items WHERE host_id='$host_id' AND local_graph_id='$local_graph_id' AND graph_tree_id='$tree_id' AND order_key like '$search_key" . str_repeat('_', CHARS_PER_TIER) . str_repeat('0', (MAX_TREE_DEPTH * CHARS_PER_TIER) - (strlen($search_key) + CHARS_PER_TIER)) . "'");
 		db_execute("UNLOCK TABLES");
 		return $value;
 	}
@@ -91,12 +91,12 @@ function api_tree_item_save($id, $tree_id, $type, $parent_tree_item_id, $title, 
 				reparent_branch($parent_tree_item_id, $tree_item_id);
 			}
 
-			$tree_sort_type = db_fetch_cell("select sort_type from graph_tree where id='$tree_id'");
+			$tree_sort_type = db_fetch_cell("SELECT sort_type FROM graph_tree WHERE id='$tree_id'");
 
 			/* tree item ordering */
 			if ($tree_sort_type == TREE_ORDERING_NONE) {
 				/* resort our parent */
-				$parent_sorting_type = db_fetch_cell("select sort_children_type from graph_tree_items where id=$parent_tree_item_id");
+				$parent_sorting_type = db_fetch_cell("SELECT sort_children_type FROM graph_tree_items WHERE id=$parent_tree_item_id");
 				if ((!empty($parent_tree_item_id)) && ($parent_sorting_type != TREE_ORDERING_NONE)) {
 					sort_tree(SORT_TYPE_TREE_ITEM, $parent_tree_item_id, $parent_sorting_type);
 				}
@@ -119,18 +119,18 @@ function api_tree_item_save($id, $tree_id, $type, $parent_tree_item_id, $title, 
 			if (($type == TREE_ITEM_TYPE_HEADER) && ($propagate_changes == true)) {
 				$search_key = preg_replace("/0+$/", "", $order_key);
 
-				$tree_items = db_fetch_assoc("select
+				$tree_items = db_fetch_assoc("SELECT
 					graph_tree_items.id
-					from graph_tree_items
-					where graph_tree_items.host_id = 0
-					and graph_tree_items.local_graph_id = 0
-					and graph_tree_items.title != ''
-					and graph_tree_items.order_key like '$search_key%%'
-					and graph_tree_items.graph_tree_id='$tree_id'");
+					FROM graph_tree_items
+					WHERE graph_tree_items.host_id = 0
+					AND graph_tree_items.local_graph_id = 0
+					AND graph_tree_items.title != ''
+					AND graph_tree_items.order_key like '$search_key%%'
+					AND graph_tree_items.graph_tree_id='$tree_id'");
 
 				if (sizeof($tree_items) > 0) {
 					foreach ($tree_items as $item) {
-						db_execute("update graph_tree_items set sort_children_type = '$sort_children_type' where id = '" . $item["id"] . "'");
+						db_execute("UPDATE graph_tree_items set sort_children_type = '$sort_children_type' WHERE id = '" . $item["id"] . "'");
 
 						if ($sort_children_type != TREE_ORDERING_NONE) {
 							sort_tree(SORT_TYPE_TREE_ITEM, $item["id"], $sort_children_type);

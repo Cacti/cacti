@@ -29,7 +29,7 @@ function run_data_query($host_id, $snmp_query_id) {
 	include_once($config["library_path"] . "/utility.php");
 
 	debug_log_insert("data_query", "Running data query [$snmp_query_id].");
-	$type_id = db_fetch_cell("select data_input.type_id from (snmp_query,data_input) where snmp_query.data_input_id=data_input.id and snmp_query.id=$snmp_query_id");
+	$type_id = db_fetch_cell("SELECT data_input.type_id FROM (snmp_query,data_input) WHERE snmp_query.data_input_id=data_input.id AND snmp_query.id=$snmp_query_id");
 	if (isset($input_types[$type_id])) debug_log_insert("data_query", "Found type = '" . $type_id . "' [" . $input_types[$type_id] . "].");
 
 	if ($type_id == DATA_INPUT_TYPE_SNMP_QUERY) {
@@ -66,7 +66,7 @@ function get_data_query_array($snmp_query_id) {
 
 	/* load the array into memory if it hasn't been done yet */
 	if (!isset($data_query_xml_arrays[$snmp_query_id])) {
-		$xml_file_path = db_fetch_cell("select xml_path from snmp_query where id=$snmp_query_id");
+		$xml_file_path = db_fetch_cell("SELECT xml_path FROM snmp_query WHERE id=$snmp_query_id");
 		$xml_file_path = str_replace("<path_cacti>", $config["base_path"], $xml_file_path);
 
 		if (!file_exists($xml_file_path)) {
@@ -413,25 +413,25 @@ function data_query_update_host_cache_from_buffer($host_id, $snmp_query_id, &$ou
 		db_execute($sql_prefix . $buffer . $sql_suffix);
 	}
 
-	/* remove stale records from the host cache */
+	/* remove stale records FROM the host cache */
 	db_execute("DELETE FROM host_snmp_cache WHERE host_id='$host_id' AND snmp_query_id='$snmp_query_id' AND present='0'");
 }
 
-/* data_query_index - returns an array containing the data query ID and index value given
-	a data query index type/value combination and a host ID
+/* data_query_index - returns an array containing the data query ID AND index value given
+	a data query index type/value combination AND a host ID
    @arg $index_type - the name of the index to match
    @arg $index_value - the value of the index to match
    @arg $host_id - (int) the host ID to match
    @arg $data_query_id - (int) the data query ID to match
-   @returns - (array) the data query ID and index that matches the three arguments */
+   @returns - (array) the data query ID AND index that matches the three arguments */
 function data_query_index($index_type, $index_value, $host_id, $data_query_id) {
-	return db_fetch_cell("select
+	return db_fetch_cell("SELECT
 		host_snmp_cache.snmp_index
-		from host_snmp_cache
-		where host_snmp_cache.field_name='$index_type'
-		and host_snmp_cache.field_value='" . addslashes($index_value) . "'
-		and host_snmp_cache.host_id='$host_id'
-		and host_snmp_cache.snmp_query_id='$data_query_id'");
+		FROM host_snmp_cache
+		WHERE host_snmp_cache.field_name='$index_type'
+		AND host_snmp_cache.field_value='" . addslashes($index_value) . "'
+		AND host_snmp_cache.host_id='$host_id'
+		AND host_snmp_cache.snmp_query_id='$data_query_id'");
 }
 
 /* data_query_field_list - returns an array containing data query information for a given data source
@@ -448,13 +448,13 @@ function data_query_field_list($data_template_data_id) {
 		return 0;
 	}
 
-	$field = db_fetch_assoc("select
+	$field = db_fetch_assoc("SELECT
 		data_input_fields.type_code,
 		data_input_data.value
-		from (data_input_fields,data_input_data)
-		where data_input_fields.id=data_input_data.data_input_field_id
-		and data_input_data.data_template_data_id=$data_template_data_id
-		and (data_input_fields.type_code='index_type' or data_input_fields.type_code='index_value' or data_input_fields.type_code='output_type')");
+		FROM (data_input_fields,data_input_data)
+		WHERE data_input_fields.id=data_input_data.data_input_field_id
+		AND data_input_data.data_template_data_id=$data_template_data_id
+		AND (data_input_fields.type_code='index_type' OR data_input_fields.type_code='index_value' OR data_input_fields.type_code='output_type')");
 	$field = array_rekey($field, "type_code", "value");
 
 	if ((!isset($field["index_type"])) || (!isset($field["index_value"])) || (!isset($field["output_type"]))) {
@@ -481,7 +481,7 @@ function encode_data_query_index($index) {
 function decode_data_query_index($encoded_index, $data_query_id, $host_id) {
 	/* yes, i know MySQL has a MD5() function that would make this a bit quicker. however i would like to
 	keep things abstracted for now so Cacti works with ADODB fully when i get around to porting my db calls */
-	$indexes = db_fetch_assoc("select snmp_index from host_snmp_cache where host_id=$host_id and snmp_query_id=$data_query_id  group by snmp_index");
+	$indexes = db_fetch_assoc("SELECT snmp_index FROM host_snmp_cache WHERE host_id=$host_id AND snmp_query_id=$data_query_id  group by snmp_index");
 
 	if (sizeof($indexes) > 0) {
 	foreach ($indexes as $index) {
@@ -492,12 +492,12 @@ function decode_data_query_index($encoded_index, $data_query_id, $host_id) {
 	}
 }
 
-/* update_data_query_cache - updates the local data query cache for each graph and data
+/* update_data_query_cache - updates the local data query cache for each graph AND data
 	source tied to this host/data query
    @arg $host_id - the id of the host to refresh
    @arg $data_query_id - the id of the data query to refresh */
 function update_data_query_cache($host_id, $data_query_id) {
-	$graphs = db_fetch_assoc("select id from graph_local where host_id = '$host_id' and snmp_query_id = '$data_query_id'");
+	$graphs = db_fetch_assoc("SELECT id FROM graph_local WHERE host_id = '$host_id' AND snmp_query_id = '$data_query_id'");
 
 	if (sizeof($graphs) > 0) {
 		foreach ($graphs as $graph) {
@@ -505,7 +505,7 @@ function update_data_query_cache($host_id, $data_query_id) {
 		}
 	}
 
-	$data_sources = db_fetch_assoc("select id from data_local where host_id = '$host_id' and snmp_query_id = '$data_query_id'");
+	$data_sources = db_fetch_assoc("SELECT id FROM data_local WHERE host_id = '$host_id' AND snmp_query_id = '$data_query_id'");
 
 	if (sizeof($data_sources) > 0) {
 		foreach ($data_sources as $data_source) {
@@ -518,7 +518,7 @@ function update_data_query_cache($host_id, $data_query_id) {
 	graph
    @arg $local_graph_id - the id of the graph to update the data query cache for */
 function update_graph_data_query_cache($local_graph_id) {
-	$host_id = db_fetch_cell("select host_id from graph_local where id=$local_graph_id");
+	$host_id = db_fetch_cell("SELECT host_id FROM graph_local WHERE id=$local_graph_id");
 
 	$field = data_query_field_list(db_fetch_cell("select
 		data_template_data.id
@@ -530,12 +530,12 @@ function update_graph_data_query_cache($local_graph_id) {
 
 	if (empty($field)) { return; }
 
-	$data_query_id = db_fetch_cell("select snmp_query_id from snmp_query_graph where id='" . $field["output_type"] . "'");
+	$data_query_id = db_fetch_cell("SELECT snmp_query_id FROM snmp_query_graph WHERE id='" . $field["output_type"] . "'");
 
 	$index = data_query_index($field["index_type"], $field["index_value"], $host_id, $data_query_id);
 
 	if (($data_query_id != "0") && ($index != "")) {
-		db_execute("update graph_local set snmp_query_id='$data_query_id',snmp_index='$index' where id=$local_graph_id");
+		db_execute("UPDATE graph_local SET snmp_query_id='$data_query_id',snmp_index='$index' WHERE id=$local_graph_id");
 
 		/* update graph title cache */
 		update_graph_title_cache($local_graph_id);
@@ -546,7 +546,7 @@ function update_graph_data_query_cache($local_graph_id) {
 	data source
    @arg $local_data_id - the id of the data source to update the data query cache for */
 function update_data_source_data_query_cache($local_data_id) {
-	$host_id = db_fetch_cell("select host_id from data_local where id=$local_data_id");
+	$host_id = db_fetch_cell("SELECT host_id FROM data_local WHERE id=$local_data_id");
 
 	$field = data_query_field_list(db_fetch_cell("select
 		data_template_data.id
@@ -555,12 +555,12 @@ function update_data_source_data_query_cache($local_data_id) {
 
 	if (empty($field)) { return; }
 
-	$data_query_id = db_fetch_cell("select snmp_query_id from snmp_query_graph where id='" . $field["output_type"] . "'");
+	$data_query_id = db_fetch_cell("SELECT snmp_query_id FROM snmp_query_graph WHERE id='" . $field["output_type"] . "'");
 
 	$index = data_query_index($field["index_type"], $field["index_value"], $host_id, $data_query_id);
 
 	if (($data_query_id != "0") && ($index != "")) {
-		db_execute("update data_local set snmp_query_id='$data_query_id',snmp_index='$index' where id='$local_data_id'");
+		db_execute("UPDATE data_local SET snmp_query_id='$data_query_id',snmp_index='$index' WHERE id='$local_data_id'");
 
 		/* update data source title cache */
 		update_data_source_title_cache($local_data_id);
@@ -568,7 +568,7 @@ function update_data_source_data_query_cache($local_data_id) {
 }
 
 /* get_formatted_data_query_indexes - obtains a list of indexes for a host/data query that
-	is sorted by the chosen index field and formatted using the data query index title
+	is sorted by the chosen index field AND formatted using the data query index title
 	format
    @arg $host_id - the id of the host which contains the data query
    @arg $data_query_id - the id of the data query to retrieve a list of indexes for
@@ -583,8 +583,8 @@ function get_formatted_data_query_indexes($host_id, $data_query_id) {
 		return array("" => "Unknown Index");
 	}
 
-	/* from the xml; cached in 'host_snmp_query' */
-	$sort_cache = db_fetch_row("select sort_field,title_format from host_snmp_query where host_id='$host_id' and snmp_query_id='$data_query_id'");
+	/* FROM the xml; cached in 'host_snmp_query' */
+	$sort_cache = db_fetch_row("SELECT sort_field,title_format FROM host_snmp_query WHERE host_id='$host_id' AND snmp_query_id='$data_query_id'");
 	/* in case no unique index is available, fallback to first field in XML */
 	if (strlen($sort_cache["sort_field"]) == 0){
 		$snmp_queries = get_data_query_array($data_query_id);
@@ -596,7 +596,7 @@ function get_formatted_data_query_indexes($host_id, $data_query_id) {
 		}
 	}
 
-	/* get a list of data query indexes and the field value that we are supposed
+	/* get a list of data query indexes AND the field value that we are supposed
 	to sort */
 	$sort_field_data = array_rekey(db_fetch_assoc("select
 		graph_local.snmp_index,
@@ -629,8 +629,8 @@ function get_formatted_data_query_indexes($host_id, $data_query_id) {
    @arg $data_query_index - the index to retrieve the formatted name for
    @returns - a string containing the formatted name for the given data query index */
 function get_formatted_data_query_index($host_id, $data_query_id, $data_query_index) {
-	/* from the xml; cached in 'host_snmp_query' */
-	$sort_cache = db_fetch_row("select sort_field,title_format from host_snmp_query where host_id='$host_id' and snmp_query_id='$data_query_id'");
+	/* FROM the xml; cached in 'host_snmp_query' */
+	$sort_cache = db_fetch_row("SELECT sort_field,title_format FROM host_snmp_query WHERE host_id='$host_id' AND snmp_query_id='$data_query_id'");
 
 	return substitute_snmp_query_data($sort_cache["title_format"], $host_id, $data_query_id, $data_query_index);
 }
@@ -674,9 +674,9 @@ function get_ordered_index_type_list($host_id, $data_query_id, $data_query_index
 		if ($field_array["direction"] == "input") {
 			/* create a list of all values for this index */
 			if (sizeof($data_query_index_array) == 0) {
-				$field_values = db_fetch_assoc("select field_value from host_snmp_cache where host_id=$host_id and snmp_query_id=$data_query_id and field_name='$field_name'");
+				$field_values = db_fetch_assoc("SELECT field_value FROM host_snmp_cache WHERE host_id=$host_id AND snmp_query_id=$data_query_id and field_name='$field_name'");
 			}else{
-				$field_values = db_fetch_assoc("select field_value from host_snmp_cache where host_id=$host_id and snmp_query_id=$data_query_id and field_name='$field_name' and $sql_or");
+				$field_values = db_fetch_assoc("SELECT field_value FROM host_snmp_cache WHERE host_id=$host_id AND snmp_query_id=$data_query_id and field_name='$field_name' and $sql_or");
 			}
 
 			/* aggregate the above list so there is no duplicates */
@@ -711,7 +711,7 @@ function get_ordered_index_type_list($host_id, $data_query_id, $data_query_index
 }
 
 /* update_data_query_sort_cache - updates the sort cache for a particular host/data query
-	combination. this works by fetching a list of valid data query index types and choosing
+	combination. this works by fetching a list of valid data query index types AND choosing
 	the first one in the list. the user can optionally override how the cache is updated
 	in the data query xml file
    @arg $host_id - the id of the host which contains the data query
@@ -738,15 +738,15 @@ function update_data_query_sort_cache($host_id, $data_query_id) {
 	}
 
 	/* update the cache */
-	/* TODO: if both $sort field and $title_format are empty, this yields funny results */
-	db_execute("update host_snmp_query set sort_field = '$sort_field', title_format = '$title_format' where host_id = '$host_id' and snmp_query_id = '$data_query_id'");
+	/* TODO: if both $sort field AND $title_format are empty, this yields funny results */
+	db_execute("UPDATE host_snmp_query SET sort_field = '$sort_field', title_format = '$title_format' WHERE host_id = '$host_id' AND snmp_query_id = '$data_query_id'");
 }
 
 /* update_data_query_sort_cache_by_host - updates the sort cache for all data queries associated
 	with a particular host. see update_data_query_sort_cache() for details about updating the cache
    @arg $host_id - the id of the host to update the cache for */
 function update_data_query_sort_cache_by_host($host_id) {
-	$data_queries = db_fetch_assoc("select snmp_query_id from host_snmp_query where host_id = '$host_id'");
+	$data_queries = db_fetch_assoc("SELECT snmp_query_id FROM host_snmp_query WHERE host_id = '$host_id'");
 
 	if (sizeof($data_queries) > 0) {
 		foreach ($data_queries as $data_query) {
@@ -762,7 +762,7 @@ function update_data_query_sort_cache_by_host($host_id) {
    @returns - a string containing containing best data query index type. this will be one of the
 	valid input field names as specified in the data query xml file */
 function get_best_data_query_index_type($host_id, $data_query_id) {
-	return db_fetch_cell("select sort_field from host_snmp_query where host_id = '$host_id' and snmp_query_id = '$data_query_id'");
+	return db_fetch_cell("SELECT sort_field FROM host_snmp_query WHERE host_id = '$host_id' AND snmp_query_id = '$data_query_id'");
 }
 
 /* get_script_query_path - builds the complete script query executable path

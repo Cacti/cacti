@@ -79,7 +79,7 @@ function read_graph_config_option($config_name, $force = FALSE) {
 			$effective_uid = 0;
 		}
 
-		$db_setting = db_fetch_row("select value from settings_graphs where name='$config_name' and user_id=" . $effective_uid);
+		$db_setting = db_fetch_row("SELECT value FROM settings_graphs WHERE name='$config_name' AND user_id=" . $effective_uid);
 
 		if (isset($db_setting["value"])) {
 			return $db_setting["value"];
@@ -101,7 +101,7 @@ function read_graph_config_option($config_name, $force = FALSE) {
 	}
 
 	if (!isset($graph_config_array[$config_name])) {
-		$db_setting = db_fetch_row("select value from settings_graphs where name='$config_name' and user_id=" . $effective_uid);
+		$db_setting = db_fetch_row("SELECT value FROM settings_graphs WHERE name='$config_name' AND user_id=" . $effective_uid);
 
 		if (isset($db_setting["value"])) {
 			$graph_config_array[$config_name] = $db_setting["value"];
@@ -125,7 +125,7 @@ function read_graph_config_option($config_name, $force = FALSE) {
    @returns (bool) - true if a value exists, false if a value does not exist */
 function config_value_exists($config_name) {
 	global $database_default;
-	return sizeof(db_fetch_assoc("select value from `$database_default`.`settings` where name='$config_name'"));
+	return sizeof(db_fetch_assoc("SELECT value FROM `$database_default`.`settings` WHERE name='$config_name'"));
 }
 
 /* graph_config_value_exists - determines if a value exists for the current user/setting specified
@@ -134,7 +134,7 @@ function config_value_exists($config_name) {
    @arg $user_id - the id of the user to check the configuration value for
    @returns (bool) - true if a value exists, false if a value does not exist */
 function graph_config_value_exists($config_name, $user_id) {
-	return sizeof(db_fetch_assoc("select value from settings_graphs where name='$config_name' and user_id='$user_id'"));
+	return sizeof(db_fetch_assoc("SELECT value FROM settings_graphs WHERE name='$config_name' AND user_id='$user_id'"));
 }
 
 /* read_default_config_option - finds the default value of a Cacti configuration setting
@@ -183,7 +183,7 @@ function read_config_option($config_name, $force = FALSE) {
 	}
 
 	if ((!isset($config_array[$config_name])) || ($force)) {
-		$db_setting = db_fetch_row("select value from `$database_default`.`settings` where name='$config_name'", FALSE);
+		$db_setting = db_fetch_row("SELECT value FROM `$database_default`.`settings` WHERE name='$config_name'", FALSE);
 
 		if (isset($db_setting["value"])) {
 			$config_array[$config_name] = $db_setting["value"];
@@ -201,7 +201,7 @@ function read_config_option($config_name, $force = FALSE) {
 	return $config_array[$config_name];
 }
 
-/* form_input_validate - validates the value of a form field and takes the appropriate action if the input
+/* form_input_validate - validates the value of a form field and Takes the appropriate action if the input
      is not valid
    @arg $field_value - the value of the form field
    @arg $field_name - the name of the $_POST field as specified in the HTML
@@ -819,11 +819,11 @@ function update_host_status($status, $host_id, &$hosts, &$ping, $ping_availabili
 		if ($hosts[$host_id]["status"] == HOST_DOWN) {
 			cacti_log("Host[$host_id] ERROR: HOST EVENT: Host is DOWN Message: " . $hosts[$host_id]["status_last_error"], $print_data_to_stdout);
 		} else {
-			cacti_log("Host[$host_id] NOTICE: HOST EVENT: Host Returned from DOWN State: ", $print_data_to_stdout);
+			cacti_log("Host[$host_id] NOTICE: HOST EVENT: Host Returned FROM DOWN State: ", $print_data_to_stdout);
 		}
 	}
 
-	db_execute("update host set
+	db_execute("UPDATE host set
 		status = '" . $hosts[$host_id]["status"] . "',
 		status_event_count = '" . $hosts[$host_id]["status_event_count"] . "',
 		status_fail_date = '" . $hosts[$host_id]["status_fail_date"] . "',
@@ -1040,7 +1040,7 @@ function get_data_source_path($local_data_id, $expand_paths) {
 
 	if (empty($local_data_id)) { return ""; }
 
-	$data_source = db_fetch_row("select name,data_source_path from data_template_data where local_data_id=$local_data_id");
+	$data_source = db_fetch_row("SELECT name,data_source_path FROM data_template_data WHERE local_data_id=$local_data_id");
 
 	if (sizeof($data_source) > 0) {
 		if (empty($data_source["data_source_path"])) {
@@ -1344,7 +1344,7 @@ function generate_data_input_field_sequences($string, $data_input_id) {
 		$j = 0;
 		for ($i=0; ($i < count($matches[1])); $i++) {
 			if (in_array($matches[1][$i], $registered_cacti_names) == false) {
-				$j++; db_execute("update data_input_fields set sequence=$j where data_input_id=$data_input_id and input_output='in' and data_name='" . $matches[1][$i] . "'");
+				$j++; db_execute("UPDATE data_input_fields set sequence=$j WHERE data_input_id=$data_input_id AND input_output='in' and data_name='" . $matches[1][$i] . "'");
 			}
 		}
 	}
@@ -1358,15 +1358,15 @@ function generate_data_input_field_sequences($string, $data_input_id) {
    @arg $direction - ('next' or 'previous') whether the graph group is to be swapped with
       group above or below the current group */
 function move_graph_group($graph_template_item_id, $graph_group_array, $target_id, $direction) {
-	$graph_item = db_fetch_row("select local_graph_id,graph_template_id from graph_templates_item where id=$graph_template_item_id");
+	$graph_item = db_fetch_row("SELECT local_graph_id,graph_template_id FROM graph_templates_item WHERE id=$graph_template_item_id");
 
 	if (empty($graph_item["local_graph_id"])) {
-		$sql_where = "graph_template_id = " . $graph_item["graph_template_id"] . " and local_graph_id=0";
+		$sql_where = "graph_template_id = " . $graph_item["graph_template_id"] . " AND local_graph_id=0";
 	}else{
 		$sql_where = "local_graph_id = " . $graph_item["local_graph_id"];
 	}
 
-	$graph_items = db_fetch_assoc("select id,sequence from graph_templates_item where $sql_where order by sequence");
+	$graph_items = db_fetch_assoc("SELECT id,sequence FROM graph_templates_item WHERE $sql_where ORDER BY sequence");
 
 	/* get a list of parent+children of our target group */
 	$target_graph_group_array = get_graph_group($target_id);
@@ -1398,22 +1398,22 @@ function move_graph_group($graph_template_item_id, $graph_group_array, $target_i
 			}
 
 			while (list($sequence,$graph_template_item_id) = each($group_array1)) {
-				db_execute("update graph_templates_item set sequence=$sequence_counter where id=$graph_template_item_id");
+				db_execute("UPDATE graph_templates_item set sequence=$sequence_counter WHERE id=$graph_template_item_id");
 
 				/* propagate to ALL graphs using this template */
 				if (empty($graph_item["local_graph_id"])) {
-					db_execute("update graph_templates_item set sequence=$sequence_counter where local_graph_template_item_id=$graph_template_item_id");
+					db_execute("UPDATE graph_templates_item set sequence=$sequence_counter WHERE local_graph_template_item_id=$graph_template_item_id");
 				}
 
 				$sequence_counter++;
 			}
 
 			while (list($sequence,$graph_template_item_id) = each($group_array2)) {
-				db_execute("update graph_templates_item set sequence=$sequence_counter where id=$graph_template_item_id");
+				db_execute("UPDATE graph_templates_item set sequence=$sequence_counter WHERE id=$graph_template_item_id");
 
 				/* propagate to ALL graphs using this template */
 				if (empty($graph_item["local_graph_id"])) {
-					db_execute("update graph_templates_item set sequence=$sequence_counter where local_graph_template_item_id=$graph_template_item_id");
+					db_execute("UPDATE graph_templates_item set sequence=$sequence_counter WHERE local_graph_template_item_id=$graph_template_item_id");
 				}
 
 				$sequence_counter++;
@@ -1422,7 +1422,7 @@ function move_graph_group($graph_template_item_id, $graph_group_array, $target_i
 
 		/* make sure to "ignore" the items that we handled above */
 		if ((!isset($graph_group_array{$item["id"]})) && (!isset($target_graph_group_array{$item["id"]}))) {
-			db_execute("update graph_templates_item set sequence=$sequence_counter where id=" . $item["id"]);
+			db_execute("UPDATE graph_templates_item set sequence=$sequence_counter WHERE id=" . $item["id"]);
 			$sequence_counter++;
 		}
 	}
@@ -1436,10 +1436,10 @@ function move_graph_group($graph_template_item_id, $graph_group_array, $target_i
 function get_graph_group($graph_template_item_id) {
 	global $graph_item_types;
 
-	$graph_item = db_fetch_row("select graph_type_id,sequence,local_graph_id,graph_template_id from graph_templates_item where id=$graph_template_item_id");
+	$graph_item = db_fetch_row("SELECT graph_type_id,sequence,local_graph_id,graph_template_id FROM graph_templates_item WHERE id=$graph_template_item_id");
 
 	if (empty($graph_item["local_graph_id"])) {
-		$sql_where = "graph_template_id = " . $graph_item["graph_template_id"] . " and local_graph_id=0";
+		$sql_where = "graph_template_id = " . $graph_item["graph_template_id"] . " AND local_graph_id=0";
 	}else{
 		$sql_where = "local_graph_id = " . $graph_item["local_graph_id"];
 	}
@@ -1454,7 +1454,7 @@ function get_graph_group($graph_template_item_id) {
 	/* put the parent item in the array as well */
 	$graph_item_children_array[$graph_template_item_id] = $graph_template_item_id;
 
-	$graph_items = db_fetch_assoc("select id,graph_type_id from graph_templates_item where sequence > " . $graph_item["sequence"] . " and $sql_where order by sequence");
+	$graph_items = db_fetch_assoc("SELECT id,graph_type_id FROM graph_templates_item WHERE sequence > " . $graph_item["sequence"] . " AND $sql_where ORDER BY sequence");
 
 	if (sizeof($graph_items) > 0) {
 	foreach ($graph_items as $item) {
@@ -1476,10 +1476,10 @@ function get_graph_group($graph_template_item_id) {
    @arg $direction - ('next' or 'previous') whether to find the next or previous parent
    @returns - (int) the ID of the next or previous parent graph item id */
 function get_graph_parent($graph_template_item_id, $direction) {
-	$graph_item = db_fetch_row("select sequence,local_graph_id,graph_template_id from graph_templates_item where id=$graph_template_item_id");
+	$graph_item = db_fetch_row("SELECT sequence,local_graph_id,graph_template_id FROM graph_templates_item WHERE id=$graph_template_item_id");
 
 	if (empty($graph_item["local_graph_id"])) {
-		$sql_where = "graph_template_id = " . $graph_item["graph_template_id"] . " and local_graph_id=0";
+		$sql_where = "graph_template_id = " . $graph_item["graph_template_id"] . " AND local_graph_id=0";
 	}else{
 		$sql_where = "local_graph_id = " . $graph_item["local_graph_id"];
 	}
@@ -1492,7 +1492,7 @@ function get_graph_parent($graph_template_item_id, $direction) {
 		$sql_order = "DESC";
 	}
 
-	$next_parent_id = db_fetch_cell("select id from graph_templates_item where sequence $sql_operator " . $graph_item["sequence"] . " and graph_type_id != 9 and $sql_where order by sequence $sql_order limit 1");
+	$next_parent_id = db_fetch_cell("SELECT id FROM graph_templates_item WHERE sequence $sql_operator " . $graph_item["sequence"] . " AND graph_type_id != 9 and $sql_where ORDER BY sequence $sql_order limit 1");
 
 	if (empty($next_parent_id)) {
 		return 0;
@@ -1517,8 +1517,8 @@ function get_item($tblname, $field, $startid, $lmt_query, $direction) {
 		$sql_order = "DESC";
 	}
 
-	$current_sequence = db_fetch_cell("select $field from $tblname where id=$startid");
-	$new_item_id = db_fetch_cell("select id from $tblname where $field $sql_operator $current_sequence and $lmt_query order by $field $sql_order limit 1");
+	$current_sequence = db_fetch_cell("SELECT $field FROM $tblname WHERE id=$startid");
+	$new_item_id = db_fetch_cell("SELECT id FROM $tblname WHERE $field $sql_operator $current_sequence AND $lmt_query ORDER BY $field $sql_order limit 1");
 
 	if (empty($new_item_id)) {
 		return $startid;
@@ -1535,7 +1535,7 @@ function get_item($tblname, $field, $startid, $lmt_query, $direction) {
    @returns - (int) the next available sequence id */
 function get_sequence($id, $field, $table_name, $group_query) {
 	if (empty($id)) {
-		$data = db_fetch_row("select max($field)+1 as seq from $table_name where $group_query");
+		$data = db_fetch_row("SELECT max($field)+1 as seq FROM $table_name WHERE $group_query");
 
 		if ($data["seq"] == "") {
 			return 1;
@@ -1543,7 +1543,7 @@ function get_sequence($id, $field, $table_name, $group_query) {
 			return $data["seq"];
 		}
 	}else{
-		$data = db_fetch_row("select $field from $table_name where id=$id");
+		$data = db_fetch_row("SELECT $field FROM $table_name WHERE id=$id");
 		return $data[$field];
 	}
 }
@@ -1555,10 +1555,10 @@ function get_sequence($id, $field, $table_name, $group_query) {
 function move_item_down($table_name, $current_id, $group_query) {
 	$next_item = get_item($table_name, "sequence", $current_id, $group_query, "next");
 
-	$sequence = db_fetch_cell("select sequence from $table_name where id=$current_id");
-	$sequence_next = db_fetch_cell("select sequence from $table_name where id=$next_item");
-	db_execute("update $table_name set sequence=$sequence_next where id=$current_id");
-	db_execute("update $table_name set sequence=$sequence where id=$next_item");
+	$sequence = db_fetch_cell("SELECT sequence FROM $table_name WHERE id=$current_id");
+	$sequence_next = db_fetch_cell("SELECT sequence FROM $table_name WHERE id=$next_item");
+	db_execute("UPDATE $table_name set sequence=$sequence_next WHERE id=$current_id");
+	db_execute("UPDATE $table_name set sequence=$sequence WHERE id=$next_item");
 }
 
 /* move_item_up - moves an item down by swapping it with the item above it
@@ -1568,10 +1568,10 @@ function move_item_down($table_name, $current_id, $group_query) {
 function move_item_up($table_name, $current_id, $group_query) {
 	$last_item = get_item($table_name, "sequence", $current_id, $group_query, "previous");
 
-	$sequence = db_fetch_cell("select sequence from $table_name where id=$current_id");
-	$sequence_last = db_fetch_cell("select sequence from $table_name where id=$last_item");
-	db_execute("update $table_name set sequence=$sequence_last where id=$current_id");
-	db_execute("update $table_name set sequence=$sequence where id=$last_item");
+	$sequence = db_fetch_cell("SELECT sequence FROM $table_name WHERE id=$current_id");
+	$sequence_last = db_fetch_cell("SELECT sequence FROM $table_name WHERE id=$last_item");
+	db_execute("UPDATE $table_name set sequence=$sequence_last WHERE id=$current_id");
+	db_execute("UPDATE $table_name set sequence=$sequence WHERE id=$last_item");
 }
 
 /* exec_into_array - executes a command and puts each line of its output into
@@ -1892,7 +1892,7 @@ function get_associated_rras($local_graph_id) {
 		LEFT JOIN data_template_data ON (data_template_rrd.local_data_id=data_template_data.local_data_id)
 		LEFT JOIN data_template_data_rra ON (data_template_data.id=data_template_data_rra.data_template_data_id)
 		LEFT JOIN rra ON (data_template_data_rra.rra_id=rra.id)
-                where graph_templates_item.local_graph_id=$local_graph_id
+                WHERE graph_templates_item.local_graph_id=$local_graph_id
 		AND data_template_rrd.local_data_id != 0
 		group by rra.id
 		order by rra.timespan");
@@ -1914,11 +1914,11 @@ function get_browser_query_string() {
    @returns - a 128-bit, hexadecimal hash */
 function get_hash_graph_template($graph_template_id, $sub_type = "graph_template") {
 	if ($sub_type == "graph_template") {
-		$hash = db_fetch_cell("select hash from graph_templates where id=$graph_template_id");
+		$hash = db_fetch_cell("SELECT hash FROM graph_templates WHERE id=$graph_template_id");
 	}elseif ($sub_type == "graph_template_item") {
-		$hash = db_fetch_cell("select hash from graph_templates_item where id=$graph_template_id");
+		$hash = db_fetch_cell("SELECT hash FROM graph_templates_item WHERE id=$graph_template_id");
 	}elseif ($sub_type == "graph_template_input") {
-		$hash = db_fetch_cell("select hash from graph_template_input where id=$graph_template_id");
+		$hash = db_fetch_cell("SELECT hash FROM graph_template_input WHERE id=$graph_template_id");
 	}
 
 	if (preg_match("/[a-fA-F0-9]{32}/", $hash)) {
@@ -1934,9 +1934,9 @@ function get_hash_graph_template($graph_template_id, $sub_type = "graph_template
    @returns - a 128-bit, hexadecimal hash */
 function get_hash_data_template($data_template_id, $sub_type = "data_template") {
 	if ($sub_type == "data_template") {
-		$hash = db_fetch_cell("select hash from data_template where id=$data_template_id");
+		$hash = db_fetch_cell("SELECT hash FROM data_template WHERE id=$data_template_id");
 	}elseif ($sub_type == "data_template_item") {
-		$hash = db_fetch_cell("select hash from data_template_rrd where id=$data_template_id");
+		$hash = db_fetch_cell("SELECT hash FROM data_template_rrd WHERE id=$data_template_id");
 	}
 
 	if (preg_match("/[a-fA-F0-9]{32}/", $hash)) {
@@ -1952,9 +1952,9 @@ function get_hash_data_template($data_template_id, $sub_type = "data_template") 
    @returns - a 128-bit, hexadecimal hash */
 function get_hash_data_input($data_input_id, $sub_type = "data_input_method") {
 	if ($sub_type == "data_input_method") {
-		$hash = db_fetch_cell("select hash from data_input where id=$data_input_id");
+		$hash = db_fetch_cell("SELECT hash FROM data_input WHERE id=$data_input_id");
 	}elseif ($sub_type == "data_input_field") {
-		$hash = db_fetch_cell("select hash from data_input_fields where id=$data_input_id");
+		$hash = db_fetch_cell("SELECT hash FROM data_input_fields WHERE id=$data_input_id");
 	}
 
 	if (preg_match("/[a-fA-F0-9]{32}/", $hash)) {
@@ -1970,9 +1970,9 @@ function get_hash_data_input($data_input_id, $sub_type = "data_input_method") {
    @returns - a 128-bit, hexadecimal hash */
 function get_hash_cdef($cdef_id, $sub_type = "cdef") {
 	if ($sub_type == "cdef") {
-		$hash = db_fetch_cell("select hash from cdef where id=$cdef_id");
+		$hash = db_fetch_cell("SELECT hash FROM cdef WHERE id=$cdef_id");
 	}elseif ($sub_type == "cdef_item") {
-		$hash = db_fetch_cell("select hash from cdef_items where id=$cdef_id");
+		$hash = db_fetch_cell("SELECT hash FROM cdef_items WHERE id=$cdef_id");
 	}
 
 	if (preg_match("/[a-fA-F0-9]{32}/", $hash)) {
@@ -1986,7 +1986,7 @@ function get_hash_cdef($cdef_id, $sub_type = "cdef") {
    @arg $graph_template_id - (int) the ID of the gprint preset to return a hash for
    @returns - a 128-bit, hexadecimal hash */
 function get_hash_gprint($gprint_id) {
-	$hash = db_fetch_cell("select hash from graph_templates_gprint where id=$gprint_id");
+	$hash = db_fetch_cell("SELECT hash FROM graph_templates_gprint WHERE id=$gprint_id");
 
 	if (preg_match("/[a-fA-F0-9]{32}/", $hash)) {
 		return $hash;
@@ -1999,7 +1999,7 @@ function get_hash_gprint($gprint_id) {
    @arg $host_template_id - (int) the ID of the host template to return a hash for
    @returns - a 128-bit, hexadecimal hash */
 function get_hash_host_template($host_template_id) {
-	$hash = db_fetch_cell("select hash from host_template where id=$host_template_id");
+	$hash = db_fetch_cell("SELECT hash FROM host_template WHERE id=$host_template_id");
 
 	if (preg_match("/[a-fA-F0-9]{32}/", $hash)) {
 		return $hash;
@@ -2014,13 +2014,13 @@ function get_hash_host_template($host_template_id) {
    @returns - a 128-bit, hexadecimal hash */
 function get_hash_data_query($data_query_id, $sub_type = "data_query") {
 	if ($sub_type == "data_query") {
-		$hash = db_fetch_cell("select hash from snmp_query where id=$data_query_id");
+		$hash = db_fetch_cell("SELECT hash FROM snmp_query WHERE id=$data_query_id");
 	}elseif ($sub_type == "data_query_graph") {
-		$hash = db_fetch_cell("select hash from snmp_query_graph where id=$data_query_id");
+		$hash = db_fetch_cell("SELECT hash FROM snmp_query_graph WHERE id=$data_query_id");
 	}elseif ($sub_type == "data_query_sv_data_source") {
-		$hash = db_fetch_cell("select hash from snmp_query_graph_rrd_sv where id=$data_query_id");
+		$hash = db_fetch_cell("SELECT hash FROM snmp_query_graph_rrd_sv WHERE id=$data_query_id");
 	}elseif ($sub_type == "data_query_sv_graph") {
-		$hash = db_fetch_cell("select hash from snmp_query_graph_sv where id=$data_query_id");
+		$hash = db_fetch_cell("SELECT hash FROM snmp_query_graph_sv WHERE id=$data_query_id");
 	}
 
 	if (preg_match("/[a-fA-F0-9]{32}/", $hash)) {
@@ -2034,7 +2034,7 @@ function get_hash_data_query($data_query_id, $sub_type = "data_query") {
    @arg $rra_id - (int) the ID of the round robin archive to return a hash for
    @returns - a 128-bit, hexadecimal hash */
 function get_hash_round_robin_archive($rra_id) {
-	$hash = db_fetch_cell("select hash from rra where id=$rra_id");
+	$hash = db_fetch_cell("SELECT hash FROM rra WHERE id=$rra_id");
 
 	if (preg_match("/[a-fA-F0-9]{32}/", $hash)) {
 		return $hash;
