@@ -146,7 +146,11 @@ case 'zoom':
 	}
 
 	/* fetch information for the current RRA */
-	$rra = db_fetch_row_prepared('SELECT id, timespan, steps, name FROM rra WHERE id = ?', array($_GET['rra_id']));
+	if (isset($_GET['rra_id']) && $_GET['rra_id'] > 0) {
+		$rra = db_fetch_row_prepared('SELECT id, timespan, steps, name FROM rra WHERE id = ?', array($_GET['rra_id']));
+	}else{
+		$rra = db_fetch_row_prepared('SELECT id, timespan, steps, name FROM rra WHERE id = ?', array($rras[0]['id']));
+	}
 
 	/* define the time span, which decides which rra to use */
 	$timespan = -($rra['timespan']);
@@ -225,7 +229,7 @@ case 'zoom':
 				</tr>
 				<tr>
 					<td colspan='2' align='center'>
-						<strong><?php print htmlspecialchars($rra['name']);?></strong>
+						<strong>Zooming</strong>
 					</td>
 				</tr>
 			</table>
