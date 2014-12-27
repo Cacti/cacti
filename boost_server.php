@@ -330,9 +330,9 @@ function run_command($socket, $command, $multiprocess) {
 
 		if ((strlen($rrd_update_path)) && (!substr_count($command, 'create '))) {
 			$command = str_replace('update ', '', $command);
-			exec_background($php_binary_path, 'plugins/boost/boost_rrdupdate.php ' . intval($socket) . ' ' . $rrd_update_path . ' ' . $command);
+			exec_background($php_binary_path, 'boost_rrdupdate.php ' . intval($socket) . ' ' . $rrd_update_path . ' ' . $command);
 		}else{
-			exec_background($php_binary_path, 'plugins/boost/boost_rrdupdate.php ' . intval($socket) . ' ' . $rrd_path . ' ' . $command);
+			exec_background($php_binary_path, 'boost_rrdupdate.php ' . intval($socket) . ' ' . $rrd_path . ' ' . $command);
 		}
 	}
 
