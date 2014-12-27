@@ -33,7 +33,7 @@ $ds_actions = array (
 	3 => 'Archive'
 );
 
-$rra_path = $config["rra_path"] . '/';
+$rra_path = $config['rra_path'] . '/';
 
 /* set default action */
 if (!isset ($_REQUEST['action'])) {
@@ -171,7 +171,7 @@ function rrdclean_error_handler($errno, $errmsg, $filename, $linenum, $vars) {
 		if (substr_count($errmsg, 'Only variables'))
 			return;
 
-		print ("PROGERR: " . $err . "\n"); # print_r($vars); print("</pre>");
+		print ('PROGERR: ' . $err . "\n"); # print_r($vars); print('</pre>');
 	}
 
 	return;
@@ -206,7 +206,7 @@ function get_files() {
 		SELECT local_data_id, data_template_id, name_cache, replace(data_source_path, '<path_rra>/', '') AS file, '1' AS in_cacti
 		FROM data_template_data
 		WHERE local_data_id>0
-		ON DUPLICATE KEY UPDATE local_data_id=VALUES(local_data_id)");
+		ON DUPLICATE KEY UPDATE local_data_id = VALUES(local_data_id)");
 
 	$dir_iterator = new RecursiveDirectoryIterator($rra_path);
 	$iterator = new RecursiveIteratorIterator($dir_iterator, RecursiveIteratorIterator::SELF_FIRST);
@@ -222,7 +222,7 @@ function get_files() {
 				db_execute('INSERT INTO data_source_purge_temp 
 					(name, size, last_mod, in_cacti) 
 					VALUES ' . implode(',', $sql) . ' 
-					ON DUPLICATE KEY UPDATE size=VALUES(size), last_mod=VALUES(last_mod)');
+					ON DUPLICATE KEY UPDATE siz e =VALUES(size), last_mod = VALUES(last_mod)');
 	
 				$size = 0;
 				$sql  = array();
@@ -234,7 +234,7 @@ function get_files() {
 		db_execute('INSERT INTO data_source_purge_temp
 			(name, size, last_mod, in_cacti) 
 			VALUES ' . implode(',', $sql) . ' 
-			ON DUPLICATE KEY UPDATE size=VALUES(size), last_mod=VALUES(last_mod)');
+			ON DUPLICATE KEY UPDATE size = VALUES(size), last_mod = VALUES(last_mod)');
 	}
 
 	/* restore original error handler */
@@ -331,20 +331,20 @@ function list_rrd() {
 	$total_rows = db_fetch_cell("SELECT COUNT(rc.name) 
 		FROM data_source_purge_temp AS rc
 		LEFT JOIN data_template AS dt
-		ON dt.id=rc.data_template_id
+		ON dt.id = rc.data_template_id
 		$sql_where");
 
 	$total_size = db_fetch_cell("SELECT ROUND(SUM(size),2) 
 		FROM data_source_purge_temp AS rc
 		LEFT JOIN data_template AS dt
-		ON dt.id=rc.data_template_id
+		ON dt.id = rc.data_template_id
 		$sql_where");
 
 	$file_list = db_fetch_assoc("SELECT rc.id, rc.name, rc.last_mod, rc.size, 
 		rc.name_cache, rc.local_data_id, rc.data_template_id, dt.name AS data_template_name
 		FROM data_source_purge_temp AS rc
 		LEFT JOIN data_template AS dt
-		ON dt.id=rc.data_template_id
+		ON dt.id = rc.data_template_id
 		$sql_where 
 		ORDER BY " . $_REQUEST['sort_column'] . ' ' . $_REQUEST['sort_direction'] . '
 		LIMIT ' . ($_REQUEST['rows'] * ($_REQUEST['page'] - 1)) . ',' . $_REQUEST['rows']);
@@ -421,10 +421,10 @@ function remove_all_rrds() {
 	$action = $_REQUEST['raction'];
 
 	/* add to data_source_purge_action table */
-	db_execute("INSERT INTO data_source_purge_action SELECT '' AS id, name, local_data_id, '$action' AS action FROM data_source_purge_temp WHERE in_cacti=0 ON DUPLICATE KEY UPDATE action=VALUES(action)");
+	db_execute("INSERT INTO data_source_purge_action SELECT '' AS id, name, local_data_id, '$action' AS action FROM data_source_purge_temp WHERE in_cacti = 0 ON DUPLICATE KEY UPDATE action = VALUES(action)");
 
 	/* remove the entries from the data_source_purge_temp location */
-	db_execute("DELETE FROM data_source_purge_temp WHERE in_cacti=0");
+	db_execute('DELETE FROM data_source_purge_temp WHERE in_cacti = 0');
 
 	/* restore original error handler */
 	restore_error_handler();
@@ -446,22 +446,16 @@ function do_rrd() {
 	while (list ($var, $val) = each($_POST)) {
 		if (ereg('^chk_(.*)$', $var, $matches)) {
 			/* recreate the file name */
-			$unused_file = db_fetch_row('SELECT id, name, local_data_id 
+			$unused_file = db_fetch_row_prepared('SELECT id, name, local_data_id 
 				FROM data_source_purge_temp
-				WHERE id=' . $matches[1]);
+				WHERE id = ?', array($matches[1]));
 
 			/* add to data_source_purge_action table */
-			$sql = "INSERT INTO data_source_purge_action VALUES('','" . 
-				$unused_file['name']          . "','" .
-				$unused_file['local_data_id'] . "','" .
-				$_POST['drp_action']          . "') 
-				ON DUPLICATE KEY UPDATE local_data_id=VALUES(local_data_id)";
-
-			db_execute($sql);
+			$sql = "INSERT INTO data_source_purge_action VALUES('', ?, ?, ?) ON DUPLICATE KEY UPDATE local_data_id = VALUES(local_data_id)";
+			db_execute_prepared($sql, array($unused_file['name'], $unused_file['local_data_id'], $_POST['drp_action']));
 
 			/* drop from data_source_purge table */
-			$sql = 	'DELETE FROM data_source_purge_temp WHERE id=' . $matches[1];
-			db_execute($sql);
+			db_execute_prepared('DELETE FROM data_source_purge_temp WHERE id = ?', array($matches[1]));
 		}
 	}
 

@@ -24,8 +24,8 @@
 */
 
 /* do NOT run this script through a web browser */
-if (!isset($_SERVER["argv"][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($_SERVER['REMOTE_ADDR'])) {
-	die("<br><strong>This script is only meant to run at the command line.</strong>");
+if (!isset($_SERVER['argv'][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($_SERVER['REMOTE_ADDR'])) {
+	die('<br><strong>This script is only meant to run at the command line.</strong>');
 }
 
 /* we are not talking to the browser */
@@ -42,41 +42,41 @@ set_time_limit(0);
 ob_implicit_flush();
 
 /* Start Initialization Section */
-include_once("./include/global.php");
-include_once("./lib/rrd.php");
-include_once("./lib/poller.php");
-include_once("./lib/boost.php");
+include_once('./include/global.php');
+include_once('./lib/rrd.php');
+include_once('./lib/poller.php');
+include_once('./lib/boost.php');
 
 /* suppress warnings */
 error_reporting(0);
 
 /* install the boost error handler */
-set_error_handler("boost_error_handler");
+set_error_handler('boost_error_handler');
 
 /* in UNIX/LINUX we change the effective user of the process to the
  * cacti users specified in the <path_cacti>/include/global.php file.
  */
-$username = read_config_option("boost_server_effective_user");
-if (function_exists("posix_getpwnam")) {
+$username = read_config_option('boost_server_effective_user');
+if (function_exists('posix_getpwnam')) {
 	if (strlen($username)) {
 		$user_info = posix_getpwnam($username);
 
-		if (strlen($user_info["uid"])) {
-			posix_setuid($user_info["uid"]);
+		if (strlen($user_info['uid'])) {
+			posix_setuid($user_info['uid']);
 		}
 	}
-} elseif ($username != "") {
+} elseif ($username != '') {
 	boost_svr_log("INFO: no support for switching the effective user\n");
 }
 
 /* setup global variables */
-$listen_port     = read_config_option("boost_server_listen_port");
-$rrd_path        = read_config_option("path_rrdtool");
-$rrd_update_path = read_config_option("boost_path_rrdupdate");
-$php_binary_path = read_config_option("path_php_binary");
-$log_file        = read_config_option("path_cactilog");
+$listen_port     = read_config_option('boost_server_listen_port');
+$rrd_path        = read_config_option('path_rrdtool');
+$rrd_update_path = read_config_option('boost_path_rrdupdate');
+$php_binary_path = read_config_option('path_php_binary');
+$log_file        = read_config_option('path_cactilog');
 
-if (strstr(PHP_OS, "WIN")) {
+if (strstr(PHP_OS, 'WIN')) {
 	$eol = "\r\n";
 }else{
 	$eol = "\n";
@@ -86,7 +86,7 @@ if (strstr(PHP_OS, "WIN")) {
 $sock = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
 
 if (!socket_set_option($sock, SOL_SOCKET, SO_REUSEADDR, 1)) {
-	boost_svr_log("WARNING: " . socket_strerror(socket_last_error()));
+	boost_svr_log('WARNING: ' . socket_strerror(socket_last_error()));
 }
 
 /*---------------------------------------------------------------------------*/
@@ -111,7 +111,7 @@ $commands = array();
 $hosts = array();
 
 /* give the debugging developer some indication that we are working */
-boost_svr_log("Cacti RRDtool Service Started");
+boost_svr_log('Cacti RRDtool Service Started');
 
 /* initially, we will block indefinately waiting for a client to connect. */
 $wait_value = NULL;
@@ -121,7 +121,7 @@ $rrdupdates_in_process = array();
 
 /* start and endless loop waiting for clients to connect and issue commands  */
 while (true) {
-	if (read_config_option("boost_server_multiprocess", TRUE)) {
+	if (read_config_option('boost_server_multiprocess', TRUE)) {
 		$multiprocess = TRUE;
 	}else{
 		$multiprocess = FALSE;
@@ -129,24 +129,24 @@ while (true) {
 
 	/* if there were call's to generate rrdupdates, then let's see if any finished */
 	if (sizeof($rrdupdates_in_process)) {
-		$finished_rrds = db_fetch_assoc("SELECT * FROM poller_output_boost_processes");
+		$finished_rrds = db_fetch_assoc('SELECT * FROM poller_output_boost_processes');
 
 		if (sizeof($finished_rrds)) {
 		foreach($finished_rrds as $finished_rrd) {
 			/* remove the finished entry from the table */
-			db_execute("DELETE FROM poller_output_boost_processes WHERE sock_int_value='" . $finished_rrd["sock_int_value"] . "'");
+			db_execute("DELETE FROM poller_output_boost_processes WHERE sock_int_value='" . $finished_rrd['sock_int_value'] . "'");
 
 			/* send the output back to the cleint.  make sure we mask errors from broken connections */
-			@socket_write($rrdupdates_in_process[$finished_rrd["sock_int_value"]]["socket"], $finished_rrd["status"] . $eol, strlen($finished_rrd["status"] . $eol));
+			@socket_write($rrdupdates_in_process[$finished_rrd['sock_int_value']]['socket'], $finished_rrd['status'] . $eol, strlen($finished_rrd['status'] . $eol));
 
-			if (substr_count($finished_rrd["status"], "OK") == 0) {
-				cacti_log($finished_rrd["status"], true, "BOOST_SERVER");
+			if (substr_count($finished_rrd['status'], 'OK') == 0) {
+				cacti_log($finished_rrd['status'], true, 'BOOST_SERVER');
 			}else{
-				echo date("Y:m:d H:i:s") . " - RRDUpdate OK Message: '" . $finished_rrd["status"] . "'" . $eol;
+				echo date('Y:m:d H:i:s') . " - RRDUpdate OK Message: '" . $finished_rrd['status'] . "'" . $eol;
 			}
 
 			/* remove the item from the rrdupdates_in_process array.  make sure we mask errors from broken connections */
-			unset($rrdupdates_in_process[$finished_rrd["sock_int_value"]]);
+			unset($rrdupdates_in_process[$finished_rrd['sock_int_value']]);
 		}
 		}
 
@@ -200,7 +200,7 @@ while (true) {
 		$hosts[$key] = $ip;
 
 		/* verify that the client is authorized */
-		$valid_hosts = explode(",", read_config_option("boost_server_clients", TRUE));
+		$valid_hosts = explode(',', read_config_option('boost_server_clients', TRUE));
 
 		if (!in_array($ip, $valid_hosts)) {
 			$connect_hostname = gethostbyaddr($ip);
@@ -218,7 +218,7 @@ while (true) {
 	/* loop through all the clients that have data to read from */
 	foreach ($read as $read_sock) {
 		if (!isset($command[intval($read_sock)])) {
-			$command[intval($read_sock)] = "";
+			$command[intval($read_sock)] = '';
 		}
 
 		/* read until newline or 100k bytes */
@@ -227,7 +227,7 @@ while (true) {
 		/* check if the client is disconnected */
 		if (ord($data) == 0) {
 			/* remove client for $clients array */
-			close_connection($read_sock, "WARNING: Broken connection detected");
+			close_connection($read_sock, 'WARNING: Broken connection detected');
 
 			/* let's make sure we don't enter into a race conditiion waiting on an rrdupdate that
 			 * may never happen.
@@ -241,7 +241,7 @@ while (true) {
 		}else if (ord($data) == 3 || ord($data) == 17) {
 			/* client is attempting to disconnect, so do it */
 			/* write message to the socket and close */
-			close_connection($read_sock, "WARNING: Host broke connection");
+			close_connection($read_sock, 'WARNING: Host broke connection');
 
 			/* let's make sure we don't enter into a race conditiion waiting on an rrdupdate that
 			 * may never happen.
@@ -251,10 +251,10 @@ while (true) {
 			}
 		}else if (ord($data) == 13) {
 			$response = run_command($read_sock,$command[intval($read_sock)], $multiprocess);
-			$command[intval($read_sock)] = "";
+			$command[intval($read_sock)] = '';
 		}else if (strlen($data) > 1) {
 			$response = run_command($read_sock,$data, $multiprocess);
-			$command[intval($read_sock)] = "";
+			$command[intval($read_sock)] = '';
 		}else{
 			$command[intval($read_sock)] .= $data;
 		}
@@ -262,7 +262,7 @@ while (true) {
 }
 
 /* close the rrdtool command if this is single process boost */
-if (!read_config_option("boost_server_multiprocess")) {
+if (!read_config_option('boost_server_multiprocess')) {
 	rrd_close($rrdtool_pipe);
 }
 
@@ -276,28 +276,28 @@ socket_close($sock);
 function run_command($socket, $command, $multiprocess) {
 	global $config, $eol, $rrdtool_pipe, $rrd_path, $php_binary_path, $rrd_update_path, $rrdupdates_in_process;
 
-	$output = "OK";
+	$output = 'OK';
 
 	/* process the command, don't accept bad commands */
-	if (substr_count(strtolower($command), "quit")) {
-		close_connection($socket, "Host Disconnect Request Received.");
-		return "OK";
-	}elseif (substr_count(strtolower(substr($command,0,10)), "update")) {
+	if (substr_count(strtolower($command), 'quit')) {
+		close_connection($socket, 'Host Disconnect Request Received.');
+		return 'OK';
+	}elseif (substr_count(strtolower(substr($command,0,10)), 'update')) {
 		/* ok to run */
-	}elseif (substr_count(strtolower(substr($command,0,10)), "graph")) {
+	}elseif (substr_count(strtolower(substr($command,0,10)), 'graph')) {
 		/* ok to run */
-	}elseif (substr_count(strtolower(substr($command,0,10)), "tune")) {
+	}elseif (substr_count(strtolower(substr($command,0,10)), 'tune')) {
 		/* ok to run */
-	}elseif (substr_count(strtolower(substr($command,0,10)), "create")) {
+	}elseif (substr_count(strtolower(substr($command,0,10)), 'create')) {
 		/* ok to run, check for structured paths */
-		if (read_config_option("extended_paths") == "on") {
-			$parts = explode(" ", $command);
+		if (read_config_option('extended_paths') == 'on') {
+			$parts = explode(' ', $command);
 			$data_source_path = $parts[1];
 			if (!is_dir(dirname($data_source_path))) {
 				if (mkdir(dirname($data_source_path), 0775)) {
-					if ($config["cacti_server_os"] != "win32") {
-						$owner_id      = fileowner($config["rra_path"]);
-						$group_id      = filegroup($config["rra_path"]);
+					if ($config['cacti_server_os'] != 'win32') {
+						$owner_id      = fileowner($config['rra_path']);
+						$group_id      = filegroup($config['rra_path']);
 
 						if ((chown(dirname($data_source_path), $owner_id)) &&
 							(chgrp(dirname($data_source_path), $group_id))) {
@@ -311,28 +311,28 @@ function run_command($socket, $command, $multiprocess) {
 				}
 			}
 		}
-	}elseif (substr_count(strtolower(substr($command,0,10)), "status")) {
-		close_connection($socket, "Server Status OK");
-		return "OK";
+	}elseif (substr_count(strtolower(substr($command,0,10)), 'status')) {
+		close_connection($socket, 'Server Status OK');
+		return 'OK';
 	}else{
 		close_connection($socket, "WARNING: Unknown RRD Command '" . $command . "' This activity will be logged!! Goodbye.");
-		return "OK";
+		return 'OK';
 	}
 
 	boost_svr_log("RRD Command '" . $command . "'");
 
 	/* update/create the rrd */
 	if (!$multiprocess) {
-		boost_rrdtool_execute_internal($command, false, RRDTOOL_OUTPUT_STDOUT, "BOOST SERVER");
+		boost_rrdtool_execute_internal($command, false, RRDTOOL_OUTPUT_STDOUT, 'BOOST SERVER');
 	}else{
 		/* store the correct information in the array */
-		$rrdupdates_in_process[intval($socket)]["socket"] = $socket;
+		$rrdupdates_in_process[intval($socket)]['socket'] = $socket;
 
-		if ((strlen($rrd_update_path)) && (!substr_count($command, "create "))) {
-			$command = str_replace("update ", "", $command);
-			exec_background($php_binary_path, "plugins/boost/boost_rrdupdate.php " . intval($socket) . " " . $rrd_update_path . " " . $command);
+		if ((strlen($rrd_update_path)) && (!substr_count($command, 'create '))) {
+			$command = str_replace('update ', '', $command);
+			exec_background($php_binary_path, 'plugins/boost/boost_rrdupdate.php ' . intval($socket) . ' ' . $rrd_update_path . ' ' . $command);
 		}else{
-			exec_background($php_binary_path, "plugins/boost/boost_rrdupdate.php " . intval($socket) . " " . $rrd_path . " " . $command);
+			exec_background($php_binary_path, 'plugins/boost/boost_rrdupdate.php ' . intval($socket) . ' ' . $rrd_path . ' ' . $command);
 		}
 	}
 
@@ -349,13 +349,13 @@ function boost_svr_log($message) {
 	global $log_file, $eol;
 
 	if (strlen($message)) {
-		if ((substr_count($message, "ERROR")) ||
-			(substr_count($message, "WARNING")) ||
-			(substr_count($message, "FATAL")) ||
-			(read_config_option("poller_verbosity") >= POLLER_VERBOSITY_HIGH)) {
-			cacti_log($message, true, "BOOST SERVER");
+		if ((substr_count($message, 'ERROR')) ||
+			(substr_count($message, 'WARNING')) ||
+			(substr_count($message, 'FATAL')) ||
+			(read_config_option('poller_verbosity') >= POLLER_VERBOSITY_HIGH)) {
+			cacti_log($message, true, 'BOOST SERVER');
 		}else{
-			echo date("Y:m:d H:i:s") . " - " . $message . $eol;
+			echo date('Y:m:d H:i:s') . ' - ' . $message . $eol;
 		}
 	}
 }
@@ -363,7 +363,7 @@ function boost_svr_log($message) {
 /*---------------------------------------------------------------------------*/
 /* this function will close a connection to a peer.  Plain and simple        */
 /*---------------------------------------------------------------------------*/
-function close_connection($socket, $message = "") {
+function close_connection($socket, $message = '') {
 	global $clients, $hosts;
 
 	/* remove the socket from the connected clients list */
@@ -383,4 +383,3 @@ function close_connection($socket, $message = "") {
 	unset($hosts[$key]);
 }
 
-?>

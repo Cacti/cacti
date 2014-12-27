@@ -22,16 +22,16 @@
  +-------------------------------------------------------------------------+
 */
 
-include("./include/auth.php");
+include('./include/auth.php');
 
 define('MAX_DISPLAY_PAGES', 21);
 
 $gprint_actions = array(1 => 'Delete');
 
 /* set default action */
-if (!isset($_REQUEST["action"])) { $_REQUEST["action"] = ""; }
+if (!isset($_REQUEST['action'])) { $_REQUEST['action'] = ''; }
 
-switch ($_REQUEST["action"]) {
+switch ($_REQUEST['action']) {
 	case 'save':
 		form_save();
 
@@ -61,14 +61,14 @@ switch ($_REQUEST["action"]) {
    -------------------------- */
 
 function form_save() {
-	if (isset($_POST["save_component_gprint_presets"])) {
-		$save["id"] = $_POST["id"];
-		$save["hash"] = get_hash_gprint($_POST["id"]);
-		$save["name"] = form_input_validate($_POST["name"], "name", "", false, 3);
-		$save["gprint_text"] = form_input_validate($_POST["gprint_text"], "gprint_text", "", false, 3);
+	if (isset($_POST['save_component_gprint_presets'])) {
+		$save['id'] = $_POST['id'];
+		$save['hash'] = get_hash_gprint($_POST['id']);
+		$save['name'] = form_input_validate($_POST['name'], 'name', '', false, 3);
+		$save['gprint_text'] = form_input_validate($_POST['gprint_text'], 'gprint_text', '', false, 3);
 
 		if (!is_error_message()) {
-			$gprint_preset_id = sql_save($save, "graph_templates_gprint");
+			$gprint_preset_id = sql_save($save, 'graph_templates_gprint');
 
 			if ($gprint_preset_id) {
 				raise_message(1);
@@ -78,10 +78,10 @@ function form_save() {
 		}
 
 		if (is_error_message()) {
-			header("Location: gprint_presets.php?action=edit&id=" . (empty($gprint_preset_id) ? $_POST["id"] : $gprint_preset_id));
+			header('Location: gprint_presets.php?action=edit&id=' . (empty($gprint_preset_id) ? $_POST['id'] : $gprint_preset_id));
 			exit;
 		}else{
-			header("Location: gprint_presets.php");
+			header('Location: gprint_presets.php');
 			exit;
 		}
 	}
@@ -120,7 +120,7 @@ function form_actions() {
 			input_validate_input_number($matches[1]);
 			/* ==================================================== */
 
-			$gprint_list .= '<li>' . htmlspecialchars(db_fetch_cell('SELECT name FROM graph_templates_gprint WHERE id=' . $matches[1])) . '</li>';
+			$gprint_list .= '<li>' . htmlspecialchars(db_fetch_cell_prepared('SELECT name FROM graph_templates_gprint WHERE id = ?', array($matches[1]))) . '</li>';
 			$gprint_array[$i] = $matches[1];
 
 			$i++;
@@ -167,26 +167,26 @@ function gprint_presets_edit() {
 	global $fields_grprint_presets_edit;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var("id"));
+	input_validate_input_number(get_request_var('id'));
 	/* ==================================================== */
 
-	if (!empty($_GET["id"])) {
-		$gprint_preset = db_fetch_row("select * from graph_templates_gprint where id=" . $_GET["id"]);
-		$header_label = "[edit: " . htmlspecialchars($gprint_preset["name"]) . "]";
+	if (!empty($_GET['id'])) {
+		$gprint_preset = db_fetch_row_prepared('SELECT * FROM graph_templates_gprint WHERE id = ?', array(get_request_var('id')));
+		$header_label = '[edit: ' . htmlspecialchars($gprint_preset['name']) . ']';
 	}else{
-		$header_label = "[new]";
+		$header_label = '[new]';
 	}
 
-	html_start_box("<strong>GPRINT Presets</strong> $header_label", "100%", "", "3", "center", "");
+	html_start_box("<strong>GPRINT Presets</strong> $header_label", '100%', '', '3', 'center', '');
 
 	draw_edit_form(array(
-		"config" => array(),
-		"fields" => inject_form_variables($fields_grprint_presets_edit, (isset($gprint_preset) ? $gprint_preset : array()))
+		'config' => array(),
+		'fields' => inject_form_variables($fields_grprint_presets_edit, (isset($gprint_preset) ? $gprint_preset : array()))
 		));
 
 	html_end_box();
 
-	form_save_button("gprint_presets.php");
+	form_save_button('gprint_presets.php');
 }
 
 function gprint_presets() {
@@ -242,7 +242,7 @@ function gprint_presets() {
     load_current_session_value('sort_direction', 'sess_gprint_sort_direction', 'ASC');
     load_current_session_value('rows', 'sess_default_rows', read_config_option('num_rows_table'));
 
-	html_start_box("<strong>GPRINT Presets</strong>", "100%", "", "3", "center", "gprint_presets.php?action=edit");
+	html_start_box('<strong>GPRINT Presets</strong>', '100%', '', '3', 'center', 'gprint_presets.php?action=edit');
 
 	?>
 	<tr class='even'>

@@ -22,16 +22,16 @@
  +-------------------------------------------------------------------------+
 */
 
-include("./include/auth.php");
+include('./include/auth.php');
 
 define('MAX_DISPLAY_PAGES', 21);
 
 $rra_actions = array(1 => 'Delete');
 
 /* set default action */
-if (!isset($_REQUEST["action"])) { $_REQUEST["action"] = ""; }
+if (!isset($_REQUEST['action'])) { $_REQUEST['action'] = ''; }
 
-switch ($_REQUEST["action"]) {
+switch ($_REQUEST['action']) {
 	case 'save':
 		form_save();
 
@@ -61,32 +61,31 @@ switch ($_REQUEST["action"]) {
    -------------------------- */
 
 function form_save() {
-	if (isset($_POST["save_component_rra"])) {
-		$save["id"] = $_POST["id"];
-		$save["hash"] = get_hash_round_robin_archive($_POST["id"]);
-		$save["name"] = form_input_validate($_POST["name"], "name", "", false, 3);
-		$dummy = form_input_validate(count($_POST["consolidation_function_id"]), "consolidation_function_id", "^[0-9]*$", false, 3);
-		$save["x_files_factor"] = form_input_validate($_POST["x_files_factor"], "x_files_factor", "^[01]?(\.[0-9]+)?$", false, 3);
-		$save["steps"] = form_input_validate($_POST["steps"], "steps", "^[0-9]*$", false, 3);
-		$save["rows"] = form_input_validate($_POST["rows"], "rows", "^[0-9]*$", false, 3);
-		$save["timespan"] = form_input_validate($_POST["timespan"], "timespan", "^[0-9]*$", false, 3);
+	if (isset($_POST['save_component_rra'])) {
+		$save['id'] = $_POST['id'];
+		$save['hash'] = get_hash_round_robin_archive($_POST['id']);
+		$save['name'] = form_input_validate($_POST['name'], 'name', '', false, 3);
+		$dummy = form_input_validate(count($_POST['consolidation_function_id']), 'consolidation_function_id', '^[0-9]*$', false, 3);
+		$save['x_files_factor'] = form_input_validate($_POST['x_files_factor'], 'x_files_factor', "^[01]?(\.[0-9]+)?$", false, 3);
+		$save['steps'] = form_input_validate($_POST['steps'], 'steps', '^[0-9]*$', false, 3);
+		$save['rows'] = form_input_validate($_POST['rows'], 'rows', '^[0-9]*$', false, 3);
+		$save['timespan'] = form_input_validate($_POST['timespan'], 'timespan', '^[0-9]*$', false, 3);
 
 		if (!is_error_message()) {
-			$rra_id = sql_save($save, "rra");
+			$rra_id = sql_save($save, 'rra');
 
 			if ($rra_id) {
 				raise_message(1);
 
-				db_execute("DELETE FROM rra_cf WHERE rra_id=$rra_id");
+				db_execute_prepared('DELETE FROM rra_cf WHERE rra_id = ?', array($rra_id));
 
-				if (isset($_POST["consolidation_function_id"])) {
-					for ($i=0; ($i < count($_POST["consolidation_function_id"])); $i++) {
+				if (isset($_POST['consolidation_function_id'])) {
+					for ($i = 0; ($i < count($_POST['consolidation_function_id'])); $i++) {
 						/* ================= input validation ================= */
-						input_validate_input_number($_POST["consolidation_function_id"][$i]);
+						input_validate_input_number($_POST['consolidation_function_id'][$i]);
 						/* ==================================================== */
 
-						db_execute("INSERT INTO rra_cf (rra_id,consolidation_function_id)
-							VALUES ($rra_id," . $_POST["consolidation_function_id"][$i] . ")");
+						db_execute_prepared('INSERT INTO rra_cf (rra_id, consolidation_function_id) VALUES (?, ?)', array($rra_id, $_POST['consolidation_function_id'][$i]));
 					}
 				}else{
 					raise_message(2);
@@ -97,10 +96,11 @@ function form_save() {
 		}
 
 		if (is_error_message()) {
-			header("Location: rra.php?action=edit&id=" . (empty($rra_id) ? $_POST["id"] : $rra_id));
+			header('Location: rra.php?action=edit&id=' . (empty($rra_id) ? $_POST['id'] : $rra_id));
 		}else{
-			header("Location: rra.php");
+			header('Location: rra.php');
 		}
+		exit;
 	}
 }
 
@@ -138,7 +138,7 @@ function form_actions() {
 			input_validate_input_number($matches[1]);
 			/* ==================================================== */
 
-			$rra_list .= '<li>' . htmlspecialchars(db_fetch_cell('SELECT name FROM rra WHERE id=' . $matches[1])) . '</li>';
+			$rra_list .= '<li>' . htmlspecialchars(db_fetch_cell_prepared('SELECT name FROM rra WHERE id = ?', array($matches[1]))) . '</li>';
 			$rra_array[$i] = $matches[1];
 
 			$i++;
@@ -185,26 +185,26 @@ function rra_edit() {
 	global $fields_rra_edit;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var("id"));
+	input_validate_input_number(get_request_var('id'));
 	/* ==================================================== */
 
-	if (!empty($_GET["id"])) {
-		$rra = db_fetch_row("SELECT * FROM rra WHERE id=" . $_GET["id"]);
-		$header_label = "[edit: " . htmlspecialchars($rra["name"]) . "]";
+	if (!empty($_GET['id'])) {
+		$rra = db_fetch_row_prepared('SELECT * FROM rra WHERE id = ?', array(get_request_var('id')));
+		$header_label = '[edit: ' . htmlspecialchars($rra['name']) . ']';
 	}else{
-		$header_label = "[new]";
+		$header_label = '[new]';
 	}
 
-	html_start_box("<strong>Round Robin Archives</strong> $header_label", "100%", "", "3", "center", "");
+	html_start_box("<strong>Round Robin Archives</strong> $header_label", '100%', '', '3', 'center', '');
 
 	draw_edit_form(array(
-		"config" => array(),
-		"fields" => inject_form_variables($fields_rra_edit, (isset($rra) ? $rra : array()))
+		'config' => array(),
+		'fields' => inject_form_variables($fields_rra_edit, (isset($rra) ? $rra : array()))
 		));
 
 	html_end_box();
 
-	form_save_button("rra.php");
+	form_save_button('rra.php');
 }
 
 function rra() {
@@ -260,7 +260,7 @@ function rra() {
     load_current_session_value('sort_direction', 'sess_rra_sort_direction', 'ASC');
     load_current_session_value('rows', 'sess_default_rows', read_config_option('num_rows_table'));
 
-	html_start_box("<strong>Round Robin Archives</strong>", "100%", "", "3", "center", "rra.php?action=edit");
+	html_start_box('<strong>Round Robin Archives</strong>', '100%', '', '3', 'center', 'rra.php?action=edit');
 
 	?>
 	<tr class='even'>
@@ -395,21 +395,21 @@ function rra() {
 		$sql_where
 		GROUP BY rs.id
 		$sql_having
-		ORDER BY " . $_REQUEST['sort_column'] . " " . $_REQUEST['sort_direction']);
+		ORDER BY " . $_REQUEST['sort_column'] . ' ' . $_REQUEST['sort_direction']);
 
     $nav = html_nav_bar('rra.php?filter=' . get_request_var_request('filter'), MAX_DISPLAY_PAGES, get_request_var_request('page'), get_request_var_request('rows'), $total_rows, 7, 'RRAs', 'page', 'main');
 
     print $nav;
 
 	$display_text = array(
-		"name" => array("Name", "ASC"),
-		"steps" => array('display' => "Steps", 'align' => 'right', 'sort' => "DESC"),
-		"rows" => array('display' => "Rows", 'align' => 'right', 'sort' => "DESC"),
-		"timespan" => array('display' => "Timespan", 'align' => 'right', 'sort' => "DESC"),
+		'name' => array('Name', 'ASC'),
+		'steps' => array('display' => 'Steps', 'align' => 'right', 'sort' => 'DESC'),
+		'rows' => array('display' => 'Rows', 'align' => 'right', 'sort' => 'DESC'),
+		'timespan' => array('display' => 'Timespan', 'align' => 'right', 'sort' => 'DESC'),
 		'data_sources' => array('display' => 'Data Sources Using', 'align' => 'right', 'sort' => 'DESC'),
 		'templates' => array('display' => 'Templates Using', 'align' => 'right', 'sort' => 'DESC'));
 
-	html_header_sort_checkbox($display_text, $_REQUEST["sort_column"], $_REQUEST["sort_direction"], false);
+	html_header_sort_checkbox($display_text, $_REQUEST['sort_column'], $_REQUEST['sort_direction'], false);
 
 	$i = 0;
 	if (sizeof($rras) > 0) {
@@ -442,4 +442,3 @@ function rra() {
 
 	print "</form>\n";
 }
-?>
