@@ -247,22 +247,27 @@ class SMTP
         if (is_null($streamok)) {
             $streamok = function_exists('stream_socket_client');
         }
+
         // Clear errors to avoid confusion
         $this->error = array();
+
         // Make sure we are __not__ connected
         if ($this->connected()) {
             // Already connected, generate error
             $this->error = array('error' => 'Already connected to a server');
             return false;
         }
+
         if (empty($port)) {
             $port = self::DEFAULT_SMTP_PORT;
         }
+
         // Connect to the SMTP server
         $this->edebug(
             "Connection: opening to $host:$port, t=$timeout, opt=".var_export($options, true),
             self::DEBUG_CONNECTION
         );
+
         $errno = 0;
         $errstr = '';
         if ($streamok) {
@@ -290,6 +295,7 @@ class SMTP
                 $timeout
             );
         }
+
         // Verify we connected properly
         if (!is_resource($this->smtp_conn)) {
             $this->error = array(

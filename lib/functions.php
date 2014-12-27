@@ -2269,7 +2269,12 @@ function send_mail($to, $from, $subject, $message, $filename = '', $headers = ''
 	$mail = new PHPMailer;
 
 	// Set a reasonable timeout of 5 seconds
-	$mail->Timeout = 5;
+	$timeout = read_config_option('settings_smtp_timeout');
+	if (empty($timeout) || $timeout < 0 || $timeout > 300) {
+		$mail->Timeout = 5;
+	}else{
+		$mail->Timeout = $timeout;
+	}
 
 	// Set the subject
 	$mail->Subject = $subject;
@@ -2292,6 +2297,22 @@ function send_mail($to, $from, $subject, $message, $filename = '', $headers = ''
 		$mail->Password = read_config_option("settings_smtp_password");
 		if ($mail->Username != '') {
 			$mail->SMTPAuth = true;
+		}
+
+		// Set a reasonable timeout of 5 seconds
+		$timeout = read_config_option('settings_smtp_timeout');
+		if (empty($timeout) || $timeout < 0 || $timeout > 300) {
+			$mail->Timeout = 5;
+		}else{
+			$mail->Timeout = $timeout;
+		}
+
+		$secure  = read_config_option('settings_smtp_secure');
+		if (!empty($secure) && $secure != 'none') {
+			$smtp->SMTPSecure = $secure;
+			if (substr_count($mail->Host, ':') == 0) {
+				$mail->Host = $secure . '://' . $mail->Host;
+			}
 		}
 	}
 
@@ -2384,7 +2405,7 @@ function send_mail($to, $from, $subject, $message, $filename = '', $headers = ''
 	}
 }
 
-function ping_mail_server($host, $port, $user, $password, $secure, $timeout = 5) {
+function ping_mail_server($host, $port, $user, $password, $timeout = 5, $secure = 'none') {
 	global $config;
 
 	include_once($config["base_path"] . "/lib/PHPMailer/PHPMailerAutoload.php");
@@ -2392,14 +2413,16 @@ function ping_mail_server($host, $port, $user, $password, $secure, $timeout = 5)
 	//Create a new SMTP instance
 	$smtp = new SMTP;
 
-	if ($secure == 'tls') {
-		$smtp->SMTPSecure = 'tls';
-	}elseif($secure == 'ssl') {
-		$smtp->SMTPSecure = 'ssl';
+	if ($secure != 'tls' && $secure != 'none') {
+		$smtp->SMTPSecure = $secure;
+		if (substr_count($host, ':') == 0) {
+			$host = $secure . '://' . $host;
+		}
 	}
 
 	//Enable connection-level debug output
-	//$smtp->do_debug = SMTP::DEBUG_CONNECTION;
+	$smtp->do_debug = 0;
+	//$smtp->do_debug = SMTP::DEBUG_LOWLEVEL;
 
 	$results = true;
 	try {
@@ -2407,8 +2430,8 @@ function ping_mail_server($host, $port, $user, $password, $secure, $timeout = 5)
 		if ($smtp->connect($host, $port, $timeout)) {
 			//Say hello
 			if ($smtp->hello(gethostbyname(gethostname()))) { //Put your host name in here
-	            //Authenticate
-	            if ($smtp->authenticate($user, $password)) {
+				//Authenticate
+				if ($smtp->authenticate($user, $password)) {
 					$results = true;
 				} else {
 					throw new Exception('Authentication failed: ' . $smtp->getLastReply());
@@ -2457,6 +2480,7 @@ function email_test() {
 		$smtp_password = read_config_option("settings_smtp_password");
 		$smtp_password = read_config_option("settings_smtp_password");
 		$smtp_secure   = read_config_option("settings_smtp_secure");
+		$smtp_timeout  = read_config_option("settings_smtp_timeout");
 
 		$mail .= "<b>Host</b>: $smtp_host<br>";
 		$mail .= "<b>Port</b>: $smtp_port<br>";
@@ -2470,7 +2494,7 @@ function email_test() {
 			$mail .= "<b>Authentication</b>: false<br>";
 		}
 
-		$ping_results = ping_mail_server($smtp_host, $smtp_port, $smtp_username, $smtp_password, $smtp_secure);
+		$ping_results = ping_mail_server($smtp_host, $smtp_port, $smtp_username, $smtp_password, $smtp_timeout, $smtp_secure);
 
 		print "Ping Results: " . ($ping_results == 1 ? 'Success':$ping_results) . "<br>";
 

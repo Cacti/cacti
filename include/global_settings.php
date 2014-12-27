@@ -1053,7 +1053,7 @@ $settings = array(
 			),
 		'settings_smtp_host' => array(
 			'friendly_name' => 'SMTP Hostname',
-			'description' => 'This is the hostname/IP of the SMTP Server you will send the email to.',
+			'description' => 'This is the hostname/IP of the SMTP Server you will send the email to. For failover, separate your hosts using a semi-colon.',
 			'method' => 'textbox',
 			'default' => 'localhost',
 			'max_length' => 255,
@@ -1084,6 +1084,14 @@ $settings = array(
 			'method' => 'drop_array',
 			'array' => array('none' => 'None', 'ssl' => 'SSL', 'tls' => 'TLS'),
 			'default' => 'none'
+			),
+		'settings_smtp_timeout' => array(
+			'friendly_name' => 'SMTP Timeout',
+			'description' => 'Please enter the SMTP timeout in seconds.',
+			'method' => 'textbox',
+			'default' => '5',
+			'max_length' => '10',
+			'size' => '5'
 			),
 		'settings_dns_header' => array(
 			'friendly_name' => 'DNS Options',
