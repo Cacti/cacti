@@ -102,7 +102,7 @@ function add_tree_names_to_actions_array() {
 	global $graph_actions;
 
 	/* add a list of tree names to the actions dropdown */
-	$trees = db_fetch_assoc("SELECT id,name FROM graph_tree ORDER BY name");
+	$trees = db_fetch_assoc('SELECT id,name FROM graph_tree ORDER BY name');
 
 	if (sizeof($trees) > 0) {
 	foreach ($trees as $tree) {
@@ -454,7 +454,7 @@ function form_actions() {
 						the following Graph(s). Be aware that all warnings will be suppressed during the
 						conversion, so Graph data loss is possible.</p>
 						<p><ul>$graph_list</ul></p>
-						<p><strong>New Graph Template:</strong><br>"; form_dropdown("graph_template_id",db_fetch_assoc("SELECT graph_templates.id,graph_templates.name FROM graph_templates ORDER BY name"),"name","id","","","0"); print "</p>
+						<p><strong>New Graph Template:</strong><br>"; form_dropdown("graph_template_id",db_fetch_assoc('SELECT graph_templates.id,graph_templates.name FROM graph_templates ORDER BY name'),"name","id","","","0"); print "</p>
 					</td>
 				</tr>\n
 				";

@@ -31,7 +31,7 @@ function sig_handler($signo) {
 		case SIGINT:
 			cacti_log('WARNING: Cacti Master Poller process terminated by user', TRUE);
 
-			$running_processes = db_fetch_assoc("SELECT * FROM poller_time WHERE end_time='0000-00-00 00:00:00'");
+			$running_processes = db_fetch_assoc('SELECT * FROM poller_time WHERE end_time=\'0000-00-00 00:00:00\'');
 
 			if (sizeof($running_processes)) {
 			foreach($running_processes as $process) {
@@ -214,7 +214,7 @@ ini_set('memory_limit', '512M');
 
 $poller_runs_completed = 0;
 $poller_items_total    = 0;
-$polling_hosts         = array_merge(array(0 => array('id' => '0')), db_fetch_assoc("SELECT id FROM host WHERE disabled='' ORDER BY id"));
+$polling_hosts         = array_merge(array(0 => array('id' => '0')), db_fetch_assoc('SELECT id FROM host WHERE disabled=\'\' ORDER BY id'));
 
 while ($poller_runs_completed < $poller_runs) {
 	/* record the start time for this loop */
@@ -245,7 +245,7 @@ while ($poller_runs_completed < $poller_runs) {
 	$max_threads = read_config_option('max_threads');
 
 	/* initialize poller_time and poller_output tables, check poller_output for issues */
-	$running_processes = db_fetch_cell("SELECT count(*) FROM poller_time WHERE end_time='0000-00-00 00:00:00'");
+	$running_processes = db_fetch_cell('SELECT count(*) FROM poller_time WHERE end_time=\'0000-00-00 00:00:00\'');
 	if ($running_processes) {
 		cacti_log("WARNING: There are '$running_processes' detected as overrunning a polling process, please investigate", TRUE, 'POLLER');
 	}
@@ -366,7 +366,7 @@ while ($poller_runs_completed < $poller_runs) {
 		$rrds_processed = 0;
 		$poller_finishing_dispatched = FALSE;
 		while (1) {
-			$finished_processes = db_fetch_cell("SELECT count(*) FROM poller_time WHERE poller_id = 0 AND end_time  >'0000-00-00 00:00:00'");
+			$finished_processes = db_fetch_cell('SELECT count(*) FROM poller_time WHERE poller_id = 0 AND end_time  >\'0000-00-00 00:00:00\'');
 
 			if ($finished_processes >= $started_processes) {
 				/* all scheduled pollers are finished */

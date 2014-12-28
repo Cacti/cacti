@@ -102,7 +102,7 @@ function add_tree_names_to_actions_array() {
 	global $device_actions;
 
 	/* add a list of tree names to the actions dropdown */
-	$trees = db_fetch_assoc("SELECT id,name FROM graph_tree ORDER BY name");
+	$trees = db_fetch_assoc('SELECT id,name FROM graph_tree ORDER BY name');
 
 	if (sizeof($trees) > 0) {
 		foreach ($trees as $tree) {
@@ -915,11 +915,11 @@ function host_edit() {
 			and host_graph.host_id=" . $_GET["id"] . "
 			order by graph_templates.name");
 
-		$available_graph_templates = db_fetch_assoc("SELECT
+		$available_graph_templates = db_fetch_assoc('SELECT
 			graph_templates.id, graph_templates.name
 			FROM snmp_query_graph RIGHT JOIN graph_templates
 			ON (snmp_query_graph.graph_template_id = graph_templates.id)
-			WHERE (((snmp_query_graph.name) Is Null)) ORDER BY graph_templates.name");
+			WHERE (((snmp_query_graph.name) Is Null)) ORDER BY graph_templates.name');
 
 		$i = 0;
 		if (sizeof($selected_graph_templates) > 0) {
@@ -1181,7 +1181,7 @@ function host() {
 							<option value="-1"<?php if (get_request_var_request("host_template_id") == "-1") {?> selected<?php }?>>Any</option>
 							<option value="0"<?php if (get_request_var_request("host_template_id") == "0") {?> selected<?php }?>>None</option>
 							<?php
-							$host_templates = db_fetch_assoc("SELECT id,name FROM host_template ORDER BY name");
+							$host_templates = db_fetch_assoc('SELECT id,name FROM host_template ORDER BY name');
 
 							if (sizeof($host_templates) > 0) {
 								foreach ($host_templates as $host_template) {

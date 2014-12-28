@@ -377,7 +377,7 @@ function form_actions() {
 		}
 
 		if ((get_request_var_post("drp_action") == "5") && (sizeof($user_array))) { /* batch copy */
-			$usernames = db_fetch_assoc("SELECT id,username FROM user_auth WHERE realm = 0 ORDER BY username");
+			$usernames = db_fetch_assoc('SELECT id,username FROM user_auth WHERE realm = 0 ORDER BY username');
 
 			print "
 				<tr>
