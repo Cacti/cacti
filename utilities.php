@@ -219,7 +219,7 @@ function utilities_view_tech($php_info = '') {
 	}
 
 	/* Get poller stats */
-	$poller_item = db_fetch_assoc('SELECT action, count(action) as total FROM poller_item GROUP BY action');
+	$poller_item = db_fetch_assoc('SELECT action, count(action) AS total FROM poller_item GROUP BY action');
 
 	/* Get system stats */
 	$host_count = db_fetch_cell('SELECT COUNT(*) FROM host');
@@ -255,7 +255,7 @@ function utilities_view_tech($php_info = '') {
 	/* Check RRDTool issues */
 	$rrdtool_error = '';
 	if ($rrdtool_version != read_config_option('rrdtool_version')) {
-		$rrdtool_error .= "<br><font color='red'>ERROR: Installed RRDTool version does not match configured version.<br>Please visit the <a href='" . htmlspecialchars("settings.php?tab=general") . "'>Configuration Settings</a> and select the correct RRDTool Utility Version.</font><br>";
+		$rrdtool_error .= "<br><font color='red'>ERROR: Installed RRDTool version does not match configured version.<br>Please visit the <a href='" . htmlspecialchars('settings.php?tab=general') . "'>Configuration Settings</a> and select the correct RRDTool Utility Version.</font><br>";
 	}
 	$graph_gif_count = db_fetch_cell('SELECT COUNT(*) FROM graph_templates_graph WHERE image_format_id = 2');
 	if (($graph_gif_count > 0) && (read_config_option('rrdtool_version') != 'rrd-1.0.x')) {
@@ -277,16 +277,16 @@ function utilities_view_tech($php_info = '') {
 	html_header(array('General Information'), 2);
 	print "<tr class='odd'>\n";
 	print "		<td class='textArea'>Date</td>\n";
-	print "		<td class='textArea'>" . date("r") . "</td>\n";
+	print "		<td class='textArea'>" . date('r') . "</td>\n";
 	print "</tr>\n";
 	api_plugin_hook_function('custom_version_info');
 	print "<tr class='even'>\n";
 	print "		<td class='textArea'>Cacti Version</td>\n";
-	print "		<td class='textArea'>" . $config["cacti_version"] . "</td>\n";
+	print "		<td class='textArea'>" . $config['cacti_version'] . "</td>\n";
 	print "</tr>\n";
 	print "<tr class='odd'>\n";
 	print "		<td class='textArea'>Cacti OS</td>\n";
-	print "		<td class='textArea'>" . $config["cacti_server_os"] . "</td>\n";
+	print "		<td class='textArea'>" . $config['cacti_server_os'] . "</td>\n";
 	print "</tr>\n";
 	print "<tr class='even'>\n";
 	print "		<td class='textArea'>SNMP Version</td>\n";
@@ -295,7 +295,7 @@ function utilities_view_tech($php_info = '') {
 
 	print "<tr class='odd'>\n";
 	print "		<td class='textArea'>RRDTool Version</td>\n";
-	print "		<td class='textArea'>" . $rrdtool_versions[$rrdtool_version] . " " . $rrdtool_error . "</td>\n";
+	print "		<td class='textArea'>" . $rrdtool_versions[$rrdtool_version] . ' ' . $rrdtool_error . "</td>\n";
 	print "</tr>\n";
 	print "<tr class='even'>\n";
 	print "		<td class='textArea'>Hosts</td>\n";
@@ -353,37 +353,37 @@ function utilities_view_tech($php_info = '') {
 
 	print "<tr class='even'>\n";
 	print "		<td class='textArea'>Concurrent Processes</td>\n";
-	print "		<td class='textArea'>" . read_config_option("concurrent_processes") . "</td>\n";
+	print "		<td class='textArea'>" . read_config_option('concurrent_processes') . "</td>\n";
 	print "</tr>\n";
 
 	print "<tr class='odd'>\n";
 	print "		<td class='textArea'>Max Threads</td>\n";
-	print "		<td class='textArea'>" . read_config_option("max_threads") . "</td>\n";
+	print "		<td class='textArea'>" . read_config_option('max_threads') . "</td>\n";
 	print "</tr>\n";
 
 	print "<tr class='even'>\n";
 	print "		<td class='textArea'>PHP Servers</td>\n";
-	print "		<td class='textArea'>" . read_config_option("php_servers") . "</td>\n";
+	print "		<td class='textArea'>" . read_config_option('php_servers') . "</td>\n";
 	print "</tr>\n";
 
 	print "<tr class='odd'>\n";
 	print "		<td class='textArea'>Script Timeout</td>\n";
-	print "		<td class='textArea'>" . read_config_option("script_timeout") . "</td>\n";
+	print "		<td class='textArea'>" . read_config_option('script_timeout') . "</td>\n";
 	print "</tr>\n";
 
 	print "<tr class='even'>\n";
 	print "		<td class='textArea'>Max OID</td>\n";
-	print "		<td class='textArea'>" . read_config_option("max_get_size") . "</td>\n";
+	print "		<td class='textArea'>" . read_config_option('max_get_size') . "</td>\n";
 	print "</tr>\n";
 
 
 	print "<tr class='odd'>\n";
 	print "		<td class='textArea'>Last Run Statistics</td>\n";
-	print "		<td class='textArea'>" . read_config_option("stats_poller") . "</td>\n";
+	print "		<td class='textArea'>" . read_config_option('stats_poller') . "</td>\n";
 	print "</tr>\n";
 
 
-	html_header(array("PHP Information"), 2);
+	html_header(array('PHP Information'), 2);
 	print "<tr class='odd'>\n";
 	print "		<td class='textArea'>PHP Version</td>\n";
 	print "		<td class='textArea'>" . phpversion() . "</td>\n";
@@ -395,30 +395,30 @@ function utilities_view_tech($php_info = '') {
 	print "<tr class='odd'>\n";
 	print "		<td class='textArea'>PHP uname</td>\n";
 	print "		<td class='textArea'>";
-	if (function_exists("php_uname")) {
+	if (function_exists('php_uname')) {
 		print php_uname();
 	}else{
-		print "N/A";
+		print 'N/A';
 	}
 	print "</td>\n";
 	print "</tr>\n";
 	print "<tr class='even'>\n";
 	print "		<td class='textArea'>PHP SNMP</td>\n";
 	print "		<td class='textArea'>";
-	if (function_exists("snmpget")) {
-		print "Installed";
+	if (function_exists('snmpget')) {
+		print 'Installed';
 	} else {
-		print "Not Installed";
+		print 'Not Installed';
 	}
 	print "</td>\n";
 	print "</tr>\n";
 	print "<tr class='odd'>\n";
 	print "		<td class='textArea'>max_execution_time</td>\n";
-	print "		<td class='textArea'>" . ini_get("max_execution_time") . "</td>\n";
+	print "		<td class='textArea'>" . ini_get('max_execution_time') . "</td>\n";
 	print "</tr>\n";
 	print "<tr class='even'>\n";
 	print "		<td class='textArea'>memory_limit</td>\n";
-	print "		<td class='textArea'>" . ini_get("memory_limit");
+	print "		<td class='textArea'>" . ini_get('memory_limit');
 
 	/* Calculate memory suggestion based off of data source count */
 	$memory_suggestion = $data_total * 32768;
@@ -437,14 +437,14 @@ function utilities_view_tech($php_info = '') {
 		if ((ini_get('memory_limit') == -1)) {
 			print "You've set memory limit to 'unlimited'.<br/>";
 		}
-		print "It is highly suggested that you alter you php.ini memory_limit to " . memory_readable($memory_suggestion) . " or higher. <br/>
-			This suggested memory value is calculated based on the number of data source present and is only to be used as a suggestion, actual values may vary system to system based on requirements.";
-		print "</font><br>";
+		print 'It is highly suggested that you alter you php.ini memory_limit to ' . memory_readable($memory_suggestion) . ' or higher. <br/>
+			This suggested memory value is calculated based on the number of data source present and is only to be used as a suggestion, actual values may vary system to system based on requirements.';
+		print '</font><br>';
 	}
 	print "</td>\n";
 	print "</tr>\n";
 
-	html_header(array("MySQL Table Information"), 2);
+	html_header(array('MySQL Table Information'), 2);
 	print "<tr class='odd'>\n";
 	print "		<td class='textArea' colspan='2' align='center'>";
 	if (sizeof($table_status) > 0) {
@@ -457,15 +457,15 @@ function utilities_view_tech($php_info = '') {
 		print "</tr>\n";
 		foreach ($table_status as $item) {
 			print "<tr>\n";
-			print "  <td>" . $item["Name"] . "</td>\n";
-			print "  <td>" . $item["Rows"] . "</td>\n";
-			if (isset($item["Engine"])) {
-				print "  <td>" . $item["Engine"] . "</td>\n";
+			print '  <td>' . $item['Name'] . "</td>\n";
+			print '  <td>' . $item['Rows'] . "</td>\n";
+			if (isset($item['Engine'])) {
+				print '  <td>' . $item['Engine'] . "</td>\n";
 			}else{
 				print "  <td>Unknown</td>\n";
 			}
-			if (isset($item["Collation"])) {
-				print "  <td>" . $item["Collation"] . "</td>\n";
+			if (isset($item['Collation'])) {
+				print '  <td>' . $item['Collation'] . "</td>\n";
 			} else {
 				print "  <td>Unknown</td>\n";
 			}
@@ -476,19 +476,19 @@ function utilities_view_tech($php_info = '') {
 			print "<tr><td colspan='20' align='center'><strong>The Following Tables were Skipped Due to being INNODB</strong></td></tr>";
 
 			foreach($skip_tables as $table) {
-				print "<tr><td colspan='20' align='center'>" . $table . "</td></tr>";
+				print "<tr><td colspan='20' align='center'>" . $table . '</td></tr>';
 			}
 		}
 
 		print "</table>\n";
 	}else{
-		print "Unable to retrieve table status";
+		print 'Unable to retrieve table status';
 	}
 
 	print "</td>\n";
 	print "</tr>\n";
 
-	html_header(array("PHP Module Information"), 2);
+	html_header(array('PHP Module Information'), 2);
 	print "<tr class='odd'>\n";
 	print "		<td class='textArea' colspan='2'>" . $php_info . "</td>\n";
 	print "</tr>\n";
@@ -501,61 +501,61 @@ function utilities_view_tech($php_info = '') {
 function utilities_view_user_log() {
 	global $auth_realms, $item_rows;
 
-	define("MAX_DISPLAY_PAGES", 21);
+	define('MAX_DISPLAY_PAGES', 21);
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_request("result"));
-	input_validate_input_number(get_request_var_request("page"));
-	input_validate_input_number(get_request_var_request("rows"));
+	input_validate_input_number(get_request_var_request('result'));
+	input_validate_input_number(get_request_var_request('page'));
+	input_validate_input_number(get_request_var_request('rows'));
 	/* ==================================================== */
 
 	/* clean up username */
-	if (isset($_REQUEST["username"])) {
-		$_REQUEST["username"] = sanitize_search_string(get_request_var("username"));
+	if (isset($_REQUEST['username'])) {
+		$_REQUEST['username'] = sanitize_search_string(get_request_var('username'));
 	}
 
 	/* clean up search filter */
-	if (isset($_REQUEST["filter"])) {
-		$_REQUEST["filter"] = sanitize_search_string(get_request_var("filter"));
+	if (isset($_REQUEST['filter'])) {
+		$_REQUEST['filter'] = sanitize_search_string(get_request_var('filter'));
 	}
 
 	/* clean up sort_column */
-	if (isset($_REQUEST["sort_column"])) {
-		$_REQUEST["sort_column"] = sanitize_search_string(get_request_var("sort_column"));
+	if (isset($_REQUEST['sort_column'])) {
+		$_REQUEST['sort_column'] = sanitize_search_string(get_request_var('sort_column'));
 	}
 
 	/* clean up sort direction */
-	if (isset($_REQUEST["sort_direction"])) {
-		$_REQUEST["sort_direction"] = sanitize_search_string(get_request_var("sort_direction"));
+	if (isset($_REQUEST['sort_direction'])) {
+		$_REQUEST['sort_direction'] = sanitize_search_string(get_request_var('sort_direction'));
 	}
 
 	/* if the user pushed the 'clear' button */
-	if (isset($_REQUEST["clear_x"])) {
-		kill_session_var("sess_userlog_current_page");
-		kill_session_var("sess_userlog_username");
-		kill_session_var("sess_userlog_result");
-		kill_session_var("sess_userlog_filter");
-		kill_session_var("sess_default_rows");
-		kill_session_var("sess_userlog_sort_column");
-		kill_session_var("sess_userlog_sort_direction");
+	if (isset($_REQUEST['clear_x'])) {
+		kill_session_var('sess_userlog_current_page');
+		kill_session_var('sess_userlog_username');
+		kill_session_var('sess_userlog_result');
+		kill_session_var('sess_userlog_filter');
+		kill_session_var('sess_default_rows');
+		kill_session_var('sess_userlog_sort_column');
+		kill_session_var('sess_userlog_sort_direction');
 
-		unset($_REQUEST["page"]);
-		unset($_REQUEST["result"]);
-		unset($_REQUEST["filter"]);
-		unset($_REQUEST["rows"]);
-		unset($_REQUEST["username"]);
-		unset($_REQUEST["sort_column"]);
-		unset($_REQUEST["sort_direction"]);
+		unset($_REQUEST['page']);
+		unset($_REQUEST['result']);
+		unset($_REQUEST['filter']);
+		unset($_REQUEST['rows']);
+		unset($_REQUEST['username']);
+		unset($_REQUEST['sort_column']);
+		unset($_REQUEST['sort_direction']);
 	}
 
 	/* remember these search fields in session vars so we don't have to keep passing them around */
-	load_current_session_value("page", "sess_userlog_current_page", "1");
-	load_current_session_value("username", "sess_userlog_username", "-1");
-	load_current_session_value("result", "sess_userlog_result", "-1");
-	load_current_session_value("filter", "sess_userlog_filter", "");
-	load_current_session_value("sort_column", "sess_userlog_sort_column", "time");
-	load_current_session_value("sort_direction", "sess_userlog_sort_direction", "DESC");
-	load_current_session_value("rows", "sess_default_rows", read_config_option('num_rows_table'));
+	load_current_session_value('page', 'sess_userlog_current_page', '1');
+	load_current_session_value('username', 'sess_userlog_username', '-1');
+	load_current_session_value('result', 'sess_userlog_result', '-1');
+	load_current_session_value('filter', 'sess_userlog_filter', '');
+	load_current_session_value('sort_column', 'sess_userlog_sort_column', 'time');
+	load_current_session_value('sort_direction', 'sess_userlog_sort_direction', 'DESC');
+	load_current_session_value('rows', 'sess_default_rows', read_config_option('num_rows_table'));
 
 	$_REQUEST['page_referrer'] = 'view_user_log';
 	load_current_session_value('page_referrer', 'page_referrer', 'view_user_log');
@@ -615,7 +615,7 @@ function utilities_view_user_log() {
 	</script>
 	<?php
 
-	html_start_box("<strong>User Login History</strong>", "100%", "", "3", "center", "");
+	html_start_box('<strong>User Login History</strong>', '100%', '', '3', 'center', '');
 
 	?>
 	<tr class='even noprint'>
@@ -628,14 +628,14 @@ function utilities_view_user_log() {
 					</td>
 					<td>
 						<select id='username' name="username" onChange="applyFilter()">
-							<option value="-1"<?php if (get_request_var_request("username") == "-1") {?> selected<?php }?>>All</option>
-							<option value="-2"<?php if (get_request_var_request("username") == "-2") {?> selected<?php }?>>Deleted/Invalid</option>
+							<option value="-1"<?php if (get_request_var_request('username') == '-1') {?> selected<?php }?>>All</option>
+							<option value="-2"<?php if (get_request_var_request('username') == '-2') {?> selected<?php }?>>Deleted/Invalid</option>
 							<?php
-							$users = db_fetch_assoc("SELECT DISTINCT username FROM user_auth ORDER BY username");
+							$users = db_fetch_assoc('SELECT DISTINCT username FROM user_auth ORDER BY username');
 
 							if (sizeof($users) > 0) {
 							foreach ($users as $user) {
-								print "<option value='" . $user["username"] . "'"; if (get_request_var_request("username") == $user["username"]) { print " selected"; } print ">" . $user["username"] . "</option>\n";
+								print "<option value='" . $user['username'] . "'"; if (get_request_var_request('username') == $user['username']) { print ' selected'; } print '>' . $user['username'] . "</option>\n";
 							}
 							}
 							?>
@@ -646,10 +646,10 @@ function utilities_view_user_log() {
 					</td>
 					<td>
 						<select id='result' name="result" onChange="applyFilter()">
-							<option value="-1"<?php if (get_request_var_request("result") == '-1') {?> selected<?php }?>>Any</option>
-							<option value="1"<?php if (get_request_var_request("result") == '1') {?> selected<?php }?>>Success - Pswd</option>
-							<option value="2"<?php if (get_request_var_request("result") == '2') {?> selected<?php }?>>Success - Token</option>
-							<option value="0"<?php if (get_request_var_request("result") == '0') {?> selected<?php }?>>Failed</option>
+							<option value="-1"<?php if (get_request_var_request('result') == '-1') {?> selected<?php }?>>Any</option>
+							<option value="1"<?php if (get_request_var_request('result') == '1') {?> selected<?php }?>>Success - Pswd</option>
+							<option value="2"<?php if (get_request_var_request('result') == '2') {?> selected<?php }?>>Success - Token</option>
+							<option value="0"<?php if (get_request_var_request('result') == '0') {?> selected<?php }?>>Failed</option>
 						</select>
 					</td>
 					<td>
@@ -660,7 +660,7 @@ function utilities_view_user_log() {
 							<?php
 							if (sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var_request("rows") == $key) { print " selected"; } print ">" . htmlspecialchars($value) . "</option>\n";
+									print "<option value='" . $key . "'"; if (get_request_var_request('rows') == $key) { print ' selected'; } print '>' . htmlspecialchars($value) . "</option>\n";
 								}
 							}
 							?>
@@ -683,7 +683,7 @@ function utilities_view_user_log() {
 						Search:
 					</td>
 					<td>
-						<input id='filter' type="text" name="filter" size="25" value="<?php print htmlspecialchars(get_request_var_request("filter"));?>">
+						<input id='filter' type="text" name="filter" size="25" value="<?php print htmlspecialchars(get_request_var_request('filter'));?>">
 					</td>
 				</tr>
 			</table>
@@ -696,40 +696,40 @@ function utilities_view_user_log() {
 
 	html_end_box();
 
-	$sql_where = "";
+	$sql_where = '';
 
 	/* filter by username */
-	if (get_request_var_request("username") == "-2") {
-		$sql_where = "WHERE user_log.username NOT IN (SELECT DISTINCT username from user_auth)";
-	}elseif (get_request_var_request("username") != "-1") {
-		$sql_where = "WHERE user_log.username='" . get_request_var_request("username") . "'";
+	if (get_request_var_request('username') == '-2') {
+		$sql_where = 'WHERE user_log.username NOT IN (SELECT DISTINCT username FROM user_auth)';
+	}elseif (get_request_var_request('username') != '-1') {
+		$sql_where = "WHERE user_log.username='" . get_request_var_request('username') . "'";
 	}
 
 	/* filter by result */
-	if (get_request_var_request("result") != "-1") {
+	if (get_request_var_request('result') != '-1') {
 		if (strlen($sql_where)) {
-			$sql_where .= " AND user_log.result=" . get_request_var_request("result");
+			$sql_where .= ' AND user_log.result=' . get_request_var_request('result');
 		}else{
-			$sql_where = "WHERE user_log.result=" . get_request_var_request("result");
+			$sql_where = 'WHERE user_log.result=' . get_request_var_request('result');
 		}
 	}
 
 	/* filter by search string */
-	if (get_request_var_request("filter") <> "") {
+	if (get_request_var_request('filter') <> '') {
 		if (strlen($sql_where)) {
-			$sql_where .= " AND (user_log.username LIKE '%%" . get_request_var_request("filter") . "%%'
-				OR user_log.time LIKE '%%" . get_request_var_request("filter") . "%%'
-				OR user_auth.full_name LIKE '%%" . get_request_var_request("filter") . "%%'
-				OR user_log.ip LIKE '%%" . get_request_var_request("filter") . "%%')";
+			$sql_where .= " AND (user_log.username LIKE '%%" . get_request_var_request('filter') . "%%'
+				OR user_log.time LIKE '%%" . get_request_var_request('filter') . "%%'
+				OR user_auth.full_name LIKE '%%" . get_request_var_request('filter') . "%%'
+				OR user_log.ip LIKE '%%" . get_request_var_request('filter') . "%%')";
 		}else{
-			$sql_where = "WHERE (user_log.username LIKE '%%" . get_request_var_request("filter") . "%%'
-				OR user_log.time LIKE '%%" . get_request_var_request("filter") . "%%'
-				OR user_auth.full_name LIKE '%%" . get_request_var_request("filter") . "%%'
-				OR user_log.ip LIKE '%%" . get_request_var_request("filter") . "%%')";
+			$sql_where = "WHERE (user_log.username LIKE '%%" . get_request_var_request('filter') . "%%'
+				OR user_log.time LIKE '%%" . get_request_var_request('filter') . "%%'
+				OR user_auth.full_name LIKE '%%" . get_request_var_request('filter') . "%%'
+				OR user_log.ip LIKE '%%" . get_request_var_request('filter') . "%%')";
 		}
 	}
 
-	html_start_box("", "100%", "", "3", "center", "");
+	html_start_box('', '100%', '', '3', 'center', '');
 
 	$total_rows = db_fetch_cell("SELECT
 		COUNT(*)
@@ -749,56 +749,56 @@ function utilities_view_user_log() {
 		RIGHT JOIN user_log
 		ON user_auth.username = user_log.username
 		$sql_where
-		ORDER BY " . get_request_var_request("sort_column") . " " . get_request_var_request("sort_direction") . "
-		LIMIT " . (get_request_var_request("rows")*(get_request_var_request("page")-1)) . "," . get_request_var_request("rows");
+		ORDER BY " . get_request_var_request('sort_column') . ' ' . get_request_var_request('sort_direction') . '
+		LIMIT ' . (get_request_var_request('rows')*(get_request_var_request('page')-1)) . ',' . get_request_var_request('rows');
 
 	$user_log = db_fetch_assoc($user_log_sql);
 
-	$nav = html_nav_bar("utilities.php?action=view_user_log&username=" . get_request_var_request("username") . "&filter=" . get_request_var_request("filter"), MAX_DISPLAY_PAGES, get_request_var_request("page"), get_request_var_request("rows"), $total_rows, 6, 'User Logins', 'page', 'main');
+	$nav = html_nav_bar('utilities.php?action=view_user_log&username=' . get_request_var_request('username') . '&filter=' . get_request_var_request('filter'), MAX_DISPLAY_PAGES, get_request_var_request('page'), get_request_var_request('rows'), $total_rows, 6, 'User Logins', 'page', 'main');
 
 	print $nav;
 
 	$display_text = array(
-		"username" => array("User", "ASC"),
-		"full_name" => array("Full Name", "ASC"),
-		"realm" => array("Authentication Realm", "ASC"),
-		"time" => array("Date", "ASC"),
-		"result" => array("Result", "DESC"),
-		"ip" => array("IP Address", "DESC"));
+		'username' => array('User', 'ASC'),
+		'full_name' => array('Full Name', 'ASC'),
+		'realm' => array('Authentication Realm', 'ASC'),
+		'time' => array('Date', 'ASC'),
+		'result' => array('Result', 'DESC'),
+		'ip' => array('IP Address', 'DESC'));
 
-	html_header_sort($display_text, get_request_var_request("sort_column"), get_request_var_request("sort_direction"));
+	html_header_sort($display_text, get_request_var_request('sort_column'), get_request_var_request('sort_direction'));
 
 	if (sizeof($user_log) > 0) {
 		foreach ($user_log as $item) {
 			form_alternate_row('', true);
 			?>
 			<td style='white-space:nowrap;'>
-				<?php print (strlen(get_request_var_request("filter")) ? (preg_replace("/(" . preg_quote(get_request_var_request("filter"), "/") . ")/i", "<span class='filteredValue'>\\1</span>", $item["username"])) : $item["username"]);?>
+				<?php print (strlen(get_request_var_request('filter')) ? (preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", $item['username'])) : $item['username']);?>
 			</td>
 			<td style='white-space:nowrap;'>
-				<?php if (isset($item["full_name"])) {
-						print (strlen(get_request_var_request("filter")) ? (preg_replace("/(" . preg_quote(get_request_var_request("filter"), "/") . ")/i", "<span style='filteredValue'>\\1</span>", htmlspecialchars($item["full_name"]))) : htmlspecialchars($item["full_name"]));
+				<?php if (isset($item['full_name'])) {
+						print (strlen(get_request_var_request('filter')) ? (preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span style='filteredValue'>\\1</span>", htmlspecialchars($item['full_name']))) : htmlspecialchars($item['full_name']));
 					}else{
-						print "(User Removed)";
+						print '(User Removed)';
 					}
 				?>
 			</td>
 			<td style='white-space:nowrap;'>
-				<?php if (isset($auth_realms[$item["realm"]])) {
-						print (strlen(get_request_var_request("filter")) ? (preg_replace("/(" . preg_quote(get_request_var_request("filter"), "/") . ")/i", "<span style='filteredValue'>\\1</span>", $auth_realms[$item["realm"]])) : $auth_realms[$item["realm"]]);
+				<?php if (isset($auth_realms[$item['realm']])) {
+						print (strlen(get_request_var_request('filter')) ? (preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span style='filteredValue'>\\1</span>", $auth_realms[$item['realm']])) : $auth_realms[$item['realm']]);
 					}else{
-						print "N/A";
+						print 'N/A';
 					}
 				?>
 			</td>
 			<td style='white-space:nowrap;'>
-				<?php print (strlen(get_request_var_request("filter")) ? (preg_replace("/(" . preg_quote(get_request_var_request("filter"), "/") . ")/i", "<span style='filteredValue'>\\1</span>", $item["time"])) : $item["time"]);?>
+				<?php print (strlen(get_request_var_request('filter')) ? (preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span style='filteredValue'>\\1</span>", $item['time'])) : $item['time']);?>
 			</td>
 			<td style='white-space:nowrap;'>
 				<?php print $item['result'] == 0 ? 'Failed' : $item['result'] == 1 ? 'Success - Pswd':'Success - Token';?>
 			</td>
 			<td style='white-space:nowrap;'>
-				<?php print (strlen(get_request_var_request("filter")) ? (preg_replace("/(" . preg_quote(get_request_var_request("filter"), "/") . ")/i", "<span class='filteredValue'>\\1</span>", $item["ip"])) : $item["ip"]);?>
+				<?php print (strlen(get_request_var_request('filter')) ? (preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", $item['ip'])) : $item['ip']);?>
 			</td>
 			</tr>
 			<?php
@@ -811,20 +811,20 @@ function utilities_view_user_log() {
 }
 
 function utilities_clear_user_log() {
-	$users = db_fetch_assoc("SELECT DISTINCT username FROM user_auth");
+	$users = db_fetch_assoc('SELECT DISTINCT username FROM user_auth');
 
 	if (sizeof($users)) {
 		/* remove active users */
 		foreach ($users as $user) {
-			$total_rows = db_fetch_cell("SELECT COUNT(username) FROM user_log WHERE username = '" . $user['username'] . "' AND result = 1");
+			$total_rows = db_fetch_cell_prepared('SELECT COUNT(username) FROM user_log WHERE username = ? AND result = 1', array($user['username']));
 			if ($total_rows > 1) {
-				db_execute("DELETE FROM user_log WHERE username = '" . $user['username'] . "' AND result = 1 ORDER BY time LIMIT " . ($total_rows - 1));
+				db_execute_prepared('DELETE FROM user_log WHERE username = ? AND result = 1 ORDER BY time LIMIT ' . ($total_rows - 1), array($user['username']));
 			}
-			db_execute("DELETE FROM user_log WHERE username = '" . $user['username'] . "' AND result = 0");
+			db_execute_prepared('DELETE FROM user_log WHERE username = ? AND result = 0', array($user['username']));
 		}
 
 		/* delete inactive users */
-		db_execute("DELETE FROM user_log WHERE user_id NOT IN (SELECT id FROM user_auth) OR username NOT IN (SELECT username FROM user_auth)");
+		db_execute('DELETE FROM user_log WHERE user_id NOT IN (SELECT id FROM user_auth) OR username NOT IN (SELECT username FROM user_auth)');
 
 	}
 }
@@ -832,47 +832,47 @@ function utilities_clear_user_log() {
 function utilities_view_logfile() {
 	global $log_tail_lines, $page_refresh_interval, $refresh;
 
-	$logfile = read_config_option("path_cactilog");
+	$logfile = read_config_option('path_cactilog');
 
-	if ($logfile == "") {
-		$logfile = "./log/rrd.log";
+	if ($logfile == '') {
+		$logfile = './log/rrd.log';
 	}
 
 	/* helps determine output color */
 	$linecolor = True;
 
-	input_validate_input_number(get_request_var_request("tail_files"));
-	input_validate_input_number(get_request_var_request("message_type"));
-	input_validate_input_number(get_request_var_request("refresh"));
-	input_validate_input_number(get_request_var_request("reverse"));
+	input_validate_input_number(get_request_var_request('tail_files'));
+	input_validate_input_number(get_request_var_request('message_type'));
+	input_validate_input_number(get_request_var_request('refresh'));
+	input_validate_input_number(get_request_var_request('reverse'));
 
 	/* if the user pushed the 'clear' button */
-	if (isset($_REQUEST["clear_x"])) {
-		kill_session_var("sess_logfile_tail_lines");
-		kill_session_var("sess_logfile_message_type");
-		kill_session_var("sess_logfile_filter");
-		kill_session_var("sess_logfile_refresh");
-		kill_session_var("sess_logfile_reverse");
+	if (isset($_REQUEST['clear_x'])) {
+		kill_session_var('sess_logfile_tail_lines');
+		kill_session_var('sess_logfile_message_type');
+		kill_session_var('sess_logfile_filter');
+		kill_session_var('sess_logfile_refresh');
+		kill_session_var('sess_logfile_reverse');
 
-		unset($_REQUEST["tail_lines"]);
-		unset($_REQUEST["message_type"]);
-		unset($_REQUEST["filter"]);
-		unset($_REQUEST["refresh"]);
-		unset($_REQUEST["reverse"]);
+		unset($_REQUEST['tail_lines']);
+		unset($_REQUEST['message_type']);
+		unset($_REQUEST['filter']);
+		unset($_REQUEST['refresh']);
+		unset($_REQUEST['reverse']);
 	}
 
-	load_current_session_value("tail_lines", "sess_logfile_tail_lines", read_config_option("num_rows_log"));
-	load_current_session_value("message_type", "sess_logfile_message_type", "-1");
-	load_current_session_value("filter", "sess_logfile_filter", "");
-	load_current_session_value("refresh", "sess_logfile_refresh", read_config_option("log_refresh_interval"));
-	load_current_session_value("reverse", "sess_logfile_reverse", 1);
-	load_current_session_value("rows", "sess_default_rows", read_config_option('num_rows_table'));
+	load_current_session_value('tail_lines', 'sess_logfile_tail_lines', read_config_option('num_rows_log'));
+	load_current_session_value('message_type', 'sess_logfile_message_type', '-1');
+	load_current_session_value('filter', 'sess_logfile_filter', '');
+	load_current_session_value('refresh', 'sess_logfile_refresh', read_config_option('log_refresh_interval'));
+	load_current_session_value('reverse', 'sess_logfile_reverse', 1);
+	load_current_session_value('rows', 'sess_default_rows', read_config_option('num_rows_table'));
 
 	$_REQUEST['page_referrer'] = 'view_logfile';
 	load_current_session_value('page_referrer', 'page_referrer', 'view_logfile');
 
-	$refresh["seconds"] = get_request_var_request("refresh");
-	$refresh["page"] = "utilities.php?action=view_logfile";
+	$refresh['seconds'] = get_request_var_request('refresh');
+	$refresh['page'] = 'utilities.php?action=view_logfile';
 
 	top_header();
 
@@ -936,7 +936,7 @@ function utilities_view_logfile() {
 	</script>
 	<?php
 
-	html_start_box("<strong>Log File Filters</strong>", "100%", "", "3", "center", "");
+	html_start_box('<strong>Log File Filters</strong>', '100%', '', '3', 'center', '');
 
 	?>
 	<tr class='even noprint'>
@@ -951,7 +951,7 @@ function utilities_view_logfile() {
 						<select id='tail_lines' name="tail_lines" onChange="applyFilter()">
 							<?php
 							foreach($log_tail_lines AS $tail_lines => $display_text) {
-								print "<option value='" . $tail_lines . "'"; if (get_request_var_request("tail_lines") == $tail_lines) { print " selected"; } print ">" . $display_text . "</option>\n";
+								print "<option value='" . $tail_lines . "'"; if (get_request_var_request('tail_lines') == $tail_lines) { print ' selected'; } print '>' . $display_text . "</option>\n";
 							}
 							?>
 						</select>
@@ -961,12 +961,12 @@ function utilities_view_logfile() {
 					</td>
 					<td>
 						<select id='message_type' name="message_type" onChange="applyFilter()">
-							<option value="-1"<?php if (get_request_var_request("message_type") == '-1') {?> selected<?php }?>>All</option>
-							<option value="1"<?php if (get_request_var_request("message_type") == '1') {?> selected<?php }?>>Stats</option>
-							<option value="2"<?php if (get_request_var_request("message_type") == '2') {?> selected<?php }?>>Warnings</option>
-							<option value="3"<?php if (get_request_var_request("message_type") == '3') {?> selected<?php }?>>Errors</option>
-							<option value="4"<?php if (get_request_var_request("message_type") == '4') {?> selected<?php }?>>Debug</option>
-							<option value="5"<?php if (get_request_var_request("message_type") == '5') {?> selected<?php }?>>SQL Calls</option>
+							<option value="-1"<?php if (get_request_var_request('message_type') == '-1') {?> selected<?php }?>>All</option>
+							<option value="1"<?php if (get_request_var_request('message_type') == '1') {?> selected<?php }?>>Stats</option>
+							<option value="2"<?php if (get_request_var_request('message_type') == '2') {?> selected<?php }?>>Warnings</option>
+							<option value="3"<?php if (get_request_var_request('message_type') == '3') {?> selected<?php }?>>Errors</option>
+							<option value="4"<?php if (get_request_var_request('message_type') == '4') {?> selected<?php }?>>Debug</option>
+							<option value="5"<?php if (get_request_var_request('message_type') == '5') {?> selected<?php }?>>SQL Calls</option>
 						</select>
 					</td>
 					<td>
@@ -987,7 +987,7 @@ function utilities_view_logfile() {
 						<select id='refresh' name="refresh" onChange="applyFilter()">
 							<?php
 							foreach($page_refresh_interval AS $seconds => $display_text) {
-								print "<option value='" . $seconds . "'"; if (get_request_var_request("refresh") == $seconds) { print " selected"; } print ">" . $display_text . "</option>\n";
+								print "<option value='" . $seconds . "'"; if (get_request_var_request('refresh') == $seconds) { print ' selected'; } print '>' . $display_text . "</option>\n";
 							}
 							?>
 						</select>
@@ -997,8 +997,8 @@ function utilities_view_logfile() {
 					</td>
 					<td>
 						<select id='reverse' name="reverse" onChange="applyFilter()">
-							<option value="1"<?php if (get_request_var_request("reverse") == '1') {?> selected<?php }?>>Newest First</option>
-							<option value="2"<?php if (get_request_var_request("reverse") == '2') {?> selected<?php }?>>Oldest First</option>
+							<option value="1"<?php if (get_request_var_request('reverse') == '1') {?> selected<?php }?>>Newest First</option>
+							<option value="2"<?php if (get_request_var_request('reverse') == '2') {?> selected<?php }?>>Oldest First</option>
 						</select>
 					</td>
 				</tr>
@@ -1009,7 +1009,7 @@ function utilities_view_logfile() {
 						Search:
 					</td>
 					<td>
-						<input id='filter' type="text" name="filter" size="75" value="<?php print htmlspecialchars(get_request_var_request("filter"));?>">
+						<input id='filter' type="text" name="filter" size="75" value="<?php print htmlspecialchars(get_request_var_request('filter'));?>">
 					</td>
 				</tr>
 			</table>
@@ -1022,68 +1022,68 @@ function utilities_view_logfile() {
 	html_end_box();
 
 	/* read logfile into an array and display */
-	$logcontents = tail_file($logfile, get_request_var_request("tail_lines"), get_request_var_request("message_type"), get_request_var_request("filter"));
+	$logcontents = tail_file($logfile, get_request_var_request('tail_lines'), get_request_var_request('message_type'), get_request_var_request('filter'));
 
-	if (get_request_var_request("reverse") == 1) {
+	if (get_request_var_request('reverse') == 1) {
 		$logcontents = array_reverse($logcontents);
 	}
 
-	if (get_request_var_request("message_type") > 0) {
-		$start_string = "<strong>Log File</strong> [Total Lines: " . sizeof($logcontents) . " - Non-Matching Items Hidden]";
+	if (get_request_var_request('message_type') > 0) {
+		$start_string = '<strong>Log File</strong> [Total Lines: ' . sizeof($logcontents) . ' - Non-Matching Items Hidden]';
 	}else{
-		$start_string = "<strong>Log File</strong> [Total Lines: " . sizeof($logcontents) . " - All Items Shown]";
+		$start_string = '<strong>Log File</strong> [Total Lines: ' . sizeof($logcontents) . ' - All Items Shown]';
 	}
 
-	html_start_box($start_string, "100%", "", "3", "center", "");
+	html_start_box($start_string, '100%', '', '3', 'center', '');
 
 	$i = 0;
 	$j = 0;
 	$linecolor = false;
 	foreach ($logcontents as $item) {
-		$host_start = strpos($item, "Host[");
-		$ds_start   = strpos($item, "DS[");
+		$host_start = strpos($item, 'Host[');
+		$ds_start   = strpos($item, 'DS[');
 
-		$new_item = "";
+		$new_item = '';
 
 		if ((!$host_start) && (!$ds_start)) {
 			$new_item = $item;
 		}else{
 			while ($host_start) {
-				$host_end   = strpos($item, "]", $host_start);
+				$host_end   = strpos($item, ']', $host_start);
 				$host_id    = substr($item, $host_start+5, $host_end-($host_start+5));
-				$new_item   = $new_item . substr($item, 0, $host_start + 5) . "<a href='" . htmlspecialchars("host.php?action=edit&id=" . $host_id) . "'>" . substr($item, $host_start + 5, $host_end-($host_start + 5)) . "</a>";
+				$new_item   = $new_item . substr($item, 0, $host_start + 5) . "<a href='" . htmlspecialchars('host.php?action=edit&id=' . $host_id) . "'>" . substr($item, $host_start + 5, $host_end-($host_start + 5)) . '</a>';
 				$item       = substr($item, $host_end);
-				$host_start = strpos($item, "Host[");
+				$host_start = strpos($item, 'Host[');
 			}
 
-			$ds_start = strpos($item, "DS[");
+			$ds_start = strpos($item, 'DS[');
 			while ($ds_start) {
-				$ds_end   = strpos($item, "]", $ds_start);
+				$ds_end   = strpos($item, ']', $ds_start);
 				$ds_id    = substr($item, $ds_start+3, $ds_end-($ds_start+3));
-				$new_item = $new_item . substr($item, 0, $ds_start + 3) . "<a href='" . htmlspecialchars("data_sources.php?action=ds_edit&id=" . $ds_id) . "'>" . substr($item, $ds_start + 3, $ds_end-($ds_start + 3)) . "</a>";
+				$new_item = $new_item . substr($item, 0, $ds_start + 3) . "<a href='" . htmlspecialchars('data_sources.php?action=ds_edit&id=' . $ds_id) . "'>" . substr($item, $ds_start + 3, $ds_end-($ds_start + 3)) . '</a>';
 				$item     = substr($item, $ds_end);
-				$ds_start = strpos($item, "DS[");
+				$ds_start = strpos($item, 'DS[');
 			}
 
 			$new_item = $new_item . $item;
 		}
 
 		/* get the background color */
-		if ((substr_count($new_item, "ERROR")) || (substr_count($new_item, "FATAL"))) {
-			$bgcolor = "FF3932";
-		}elseif (substr_count($new_item, "WARN")) {
-			$bgcolor = "EACC00";
-		}elseif (substr_count($new_item, " SQL ")) {
-			$bgcolor = "6DC8FE";
-		}elseif (substr_count($new_item, "DEBUG")) {
-			$bgcolor = "C4FD3D";
-		}elseif (substr_count($new_item, "STATS")) {
-			$bgcolor = "96E78A";
+		if ((substr_count($new_item, 'ERROR')) || (substr_count($new_item, 'FATAL'))) {
+			$bgcolor = 'FF3932';
+		}elseif (substr_count($new_item, 'WARN')) {
+			$bgcolor = 'EACC00';
+		}elseif (substr_count($new_item, ' SQL ')) {
+			$bgcolor = '6DC8FE';
+		}elseif (substr_count($new_item, 'DEBUG')) {
+			$bgcolor = 'C4FD3D';
+		}elseif (substr_count($new_item, 'STATS')) {
+			$bgcolor = '96E78A';
 		}else{
 			if ($linecolor) {
-				$bgcolor = "CCCCCC";
+				$bgcolor = 'CCCCCC';
 			}else{
-				$bgcolor = "FFFFFF";
+				$bgcolor = 'FFFFFF';
 			}
 			$linecolor = !$linecolor;
 		}
@@ -1102,7 +1102,7 @@ function utilities_view_logfile() {
 			?>
 			<tr bgcolor='#EACC00'>
 				<td>
-					<?php print ">>>>  LINE LIMIT OF 1000 LINES REACHED!!  <<<<";?>
+					<?php print '>>>>  LINE LIMIT OF 1000 LINES REACHED!!  <<<<';?>
 				</td>
 			</tr>
 			<?php
@@ -1117,27 +1117,27 @@ function utilities_view_logfile() {
 }
 
 function utilities_clear_logfile() {
-	load_current_session_value("refresh", "sess_logfile_refresh", read_config_option("log_refresh_interval"));
+	load_current_session_value('refresh', 'sess_logfile_refresh', read_config_option('log_refresh_interval'));
 
-	$refresh["seconds"] = get_request_var_request("refresh");
-	$refresh["page"] = "utilities.php?action=view_logfile";
+	$refresh['seconds'] = get_request_var_request('refresh');
+	$refresh['page'] = 'utilities.php?action=view_logfile';
 
 	top_header();
 
-	$logfile = read_config_option("path_cactilog");
+	$logfile = read_config_option('path_cactilog');
 
-	if ($logfile == "") {
-		$logfile = "./log/cacti.log";
+	if ($logfile == '') {
+		$logfile = './log/cacti.log';
 	}
 
-	html_start_box("<strong>Clear Cacti Log File</strong>", "100%", "", "3", "center", "");
+	html_start_box('<strong>Clear Cacti Log File</strong>', '100%', '', '3', 'center', '');
 	if (file_exists($logfile)) {
 		if (is_writable($logfile)) {
-			$timestamp = date("m/d/Y h:i:s A");
-			$log_fh = fopen($logfile, "w");
+			$timestamp = date('m/d/Y h:i:s A');
+			$log_fh = fopen($logfile, 'w');
 			fwrite($log_fh, $timestamp . " - WEBUI: Cacti Log Cleared from Web Management Interface\n");
 			fclose($log_fh);
-			print "<tr><td>Cacti Log File Cleared</td></tr>";
+			print '<tr><td>Cacti Log File Cleared</td></tr>';
 		}else{
 			print "<tr><td><font color='red'><b>Error: Unable to clear log, no write permissions.<b></font></td></tr>";
 		}
@@ -1150,39 +1150,39 @@ function utilities_clear_logfile() {
 function utilities_view_snmp_cache() {
 	global $poller_actions, $item_rows;
 
-	define("MAX_DISPLAY_PAGES", 21);
+	define('MAX_DISPLAY_PAGES', 21);
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_request("host_id"));
-	input_validate_input_number(get_request_var_request("snmp_query_id"));
-	input_validate_input_number(get_request_var_request("page"));
-	input_validate_input_number(get_request_var_request("poller_action"));
+	input_validate_input_number(get_request_var_request('host_id'));
+	input_validate_input_number(get_request_var_request('snmp_query_id'));
+	input_validate_input_number(get_request_var_request('page'));
+	input_validate_input_number(get_request_var_request('poller_action'));
 	/* ==================================================== */
 
 	/* clean up search filter */
-	if (isset($_REQUEST["filter"])) {
-		$_REQUEST["filter"] = sanitize_search_string(get_request_var("filter"));
+	if (isset($_REQUEST['filter'])) {
+		$_REQUEST['filter'] = sanitize_search_string(get_request_var('filter'));
 	}
 
 	/* if the user pushed the 'clear' button */
-	if (isset($_REQUEST["clear_x"])) {
-		kill_session_var("sess_snmp_current_page");
-		kill_session_var("sess_snmp_host_id");
-		kill_session_var("sess_snmp_snmp_query_id");
-		kill_session_var("sess_snmp_filter");
+	if (isset($_REQUEST['clear_x'])) {
+		kill_session_var('sess_snmp_current_page');
+		kill_session_var('sess_snmp_host_id');
+		kill_session_var('sess_snmp_snmp_query_id');
+		kill_session_var('sess_snmp_filter');
 
-		unset($_REQUEST["page"]);
-		unset($_REQUEST["filter"]);
-		unset($_REQUEST["host_id"]);
-		unset($_REQUEST["snmp_query_id"]);
+		unset($_REQUEST['page']);
+		unset($_REQUEST['filter']);
+		unset($_REQUEST['host_id']);
+		unset($_REQUEST['snmp_query_id']);
 	}
 
 	/* remember these search fields in session vars so we don't have to keep passing them around */
-	load_current_session_value("page", "sess_snmp_current_page", "1");
-	load_current_session_value("host_id", "sess_snmp_host_id", "-1");
-	load_current_session_value("snmp_query_id", "sess_snmp_snmp_query_id", "-1");
-	load_current_session_value("filter", "sess_snmp_filter", "");
-	load_current_session_value("rows", "sess_default_rows", read_config_option('num_rows_table'));
+	load_current_session_value('page', 'sess_snmp_current_page', '1');
+	load_current_session_value('host_id', 'sess_snmp_host_id', '-1');
+	load_current_session_value('snmp_query_id', 'sess_snmp_snmp_query_id', '-1');
+	load_current_session_value('filter', 'sess_snmp_filter', '');
+	load_current_session_value('rows', 'sess_default_rows', read_config_option('num_rows_table'));
 
 	$_REQUEST['page_referrer'] = 'view_snmp_cache';
 	load_current_session_value('page_referrer', 'page_referrer', 'view_snmp_cache');
@@ -1232,7 +1232,7 @@ function utilities_view_snmp_cache() {
 	</script>
 	<?php
 
-	html_start_box("<strong>SNMP Cache Items</strong>", "100%", "", "3", "center", "");
+	html_start_box('<strong>SNMP Cache Items</strong>', '100%', '', '3', 'center', '');
 
 	?>
 	<tr class='even noprint'>
@@ -1245,32 +1245,32 @@ function utilities_view_snmp_cache() {
 					</td>
 					<td>
 						<select id='host_id' name="host_id" onChange="applyFilter()">
-							<option value="-1"<?php if (get_request_var_request("host_id") == "-1") {?> selected<?php }?>>Any</option>
-							<option value="0"<?php if (get_request_var_request("host_id") == "0") {?> selected<?php }?>>None</option>
+							<option value="-1"<?php if (get_request_var_request('host_id') == '-1') {?> selected<?php }?>>Any</option>
+							<option value="0"<?php if (get_request_var_request('host_id') == '0') {?> selected<?php }?>>None</option>
 							<?php
-							if (get_request_var_request("snmp_query_id") == -1) {
-								$hosts = db_fetch_assoc("SELECT DISTINCT
+							if (get_request_var_request('snmp_query_id') == -1) {
+								$hosts = db_fetch_assoc('SELECT DISTINCT
 											host.id,
 											host.description,
 											host.hostname
-											FROM (host_snmp_cache,snmp_query,host)
-											WHERE host_snmp_cache.host_id=host.id
-											AND host_snmp_cache.snmp_query_id=snmp_query.id
-											ORDER by host.description");
+											FROM (host_snmp_cache, snmp_query,host)
+											WHERE host_snmp_cache.host_id = host.id
+											AND host_snmp_cache.snmp_query_id = snmp_query.id
+											ORDER by host.description');
 							}else{
-								$hosts = db_fetch_assoc("SELECT DISTINCT
+								$hosts = db_fetch_assoc_prepared('SELECT DISTINCT
 											host.id,
 											host.description,
 											host.hostname
-											FROM (host_snmp_cache,snmp_query,host)
-											WHERE host_snmp_cache.host_id=host.id
-											AND host_snmp_cache.snmp_query_id=snmp_query.id
-											AND host_snmp_cache.snmp_query_id='" . get_request_var_request("snmp_query_id") . "'
-											ORDER by host.description");
+											FROM (host_snmp_cache, snmp_query,host)
+											WHERE host_snmp_cache.host_id = host.id
+											AND host_snmp_cache.snmp_query_id = snmp_query.id
+											AND host_snmp_cache.snmp_query_id = ?
+											ORDER by host.description', array(get_request_var_request('snmp_query_id')));
 							}
 							if (sizeof($hosts) > 0) {
 							foreach ($hosts as $host) {
-								print "<option value='" . $host["id"] . "'"; if (get_request_var_request("host_id") == $host["id"]) { print " selected"; } print ">" . $host["description"] . "</option>\n";
+								print "<option value='" . $host['id'] . "'"; if (get_request_var_request('host_id') == $host['id']) { print ' selected'; } print '>' . $host['description'] . "</option>\n";
 							}
 							}
 							?>
@@ -1281,29 +1281,29 @@ function utilities_view_snmp_cache() {
 					</td>
 					<td>
 						<select id='snmp_query_id' name="snmp_query_id" onChange="applyFilter()">
-							<option value="-1"<?php if (get_request_var_request("host_id") == "-1") {?> selected<?php }?>>Any</option>
+							<option value="-1"<?php if (get_request_var_request('host_id') == '-1') {?> selected<?php }?>>Any</option>
 							<?php
-							if (get_request_var_request("host_id") == -1) {
-								$snmp_queries = db_fetch_assoc("SELECT DISTINCT
+							if (get_request_var_request('host_id') == -1) {
+								$snmp_queries = db_fetch_assoc('SELECT DISTINCT
 											snmp_query.id,
 											snmp_query.name
-											FROM (host_snmp_cache,snmp_query,host)
-											WHERE host_snmp_cache.host_id=host.id
-											AND host_snmp_cache.snmp_query_id=snmp_query.id
-											ORDER by snmp_query.name");
+											FROM (host_snmp_cache, snmp_query,host)
+											WHERE host_snmp_cache.host_id = host.id
+											AND host_snmp_cache.snmp_query_id = snmp_query.id
+											ORDER by snmp_query.name');
 							}else{
-								$snmp_queries = db_fetch_assoc("SELECT DISTINCT
+								$snmp_queries = db_fetch_assoc_prepared("SELECT DISTINCT
 											snmp_query.id,
 											snmp_query.name
-											FROM (host_snmp_cache,snmp_query,host)
-											WHERE host_snmp_cache.host_id=host.id
-											AND host_snmp_cache.host_id='" . get_request_var_request("host_id") . "'
-											AND host_snmp_cache.snmp_query_id=snmp_query.id
-											ORDER by snmp_query.name");
+											FROM (host_snmp_cache, snmp_query,host)
+											WHERE host_snmp_cache.host_id = host.id
+											AND host_snmp_cache.host_id = ?
+											AND host_snmp_cache.snmp_query_id = snmp_query.id
+											ORDER by snmp_query.name", array(get_request_var_request('host_id')));
 							}
 							if (sizeof($snmp_queries) > 0) {
 							foreach ($snmp_queries as $snmp_query) {
-								print "<option value='" . $snmp_query["id"] . "'"; if (get_request_var_request("snmp_query_id") == $snmp_query["id"]) { print " selected"; } print ">" . $snmp_query["name"] . "</option>\n";
+								print "<option value='" . $snmp_query['id'] . "'"; if (get_request_var_request('snmp_query_id') == $snmp_query['id']) { print ' selected'; } print '>' . $snmp_query['name'] . "</option>\n";
 							}
 							}
 							?>
@@ -1317,7 +1317,7 @@ function utilities_view_snmp_cache() {
 							<?php
 							if (sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var_request("rows") == $key) { print " selected"; } print ">" . htmlspecialchars($value) . "</option>\n";
+									print "<option value='" . $key . "'"; if (get_request_var_request('rows') == $key) { print ' selected'; } print '>' . htmlspecialchars($value) . "</option>\n";
 								}
 							}
 							?>
@@ -1337,7 +1337,7 @@ function utilities_view_snmp_cache() {
 						Search:
 					</td>
 					<td>
-						<input id='filter' type="text" name="filter" size="25" value="<?php print htmlspecialchars(get_request_var_request("filter"));?>">
+						<input id='filter' type="text" name="filter" size="25" value="<?php print htmlspecialchars(get_request_var_request('filter'));?>">
 					</td>
 				</tr>
 			</table>
@@ -1350,59 +1350,59 @@ function utilities_view_snmp_cache() {
 
 	html_end_box();
 
-	$sql_where = "";
+	$sql_where = '';
 
 	/* filter by host */
-	if (get_request_var_request("host_id") == "-1") {
+	if (get_request_var_request('host_id') == '-1') {
 		/* Show all items */
-	}elseif (get_request_var_request("host_id") == "0") {
-		$sql_where .= " AND host.id=0";
-	}elseif (!empty($_REQUEST["host_id"])) {
-		$sql_where .= " AND host.id=" . get_request_var_request("host_id");
+	}elseif (get_request_var_request('host_id') == '0') {
+		$sql_where .= ' AND host.id=0';
+	}elseif (!empty($_REQUEST['host_id'])) {
+		$sql_where .= ' AND host.id=' . get_request_var_request('host_id');
 	}
 
 	/* filter by query name */
-	if (get_request_var_request("snmp_query_id") == "-1") {
+	if (get_request_var_request('snmp_query_id') == '-1') {
 		/* Show all items */
-	}elseif (!empty($_REQUEST["snmp_query_id"])) {
-		$sql_where .= " AND host_snmp_cache.snmp_query_id=" . get_request_var_request("snmp_query_id");
+	}elseif (!empty($_REQUEST['snmp_query_id'])) {
+		$sql_where .= ' AND host_snmp_cache.snmp_query_id=' . get_request_var_request('snmp_query_id');
 	}
 
 	/* filter by search string */
-	if (get_request_var_request("filter") != "") {
-		$sql_where .= " AND (host.description LIKE '%%" . get_request_var_request("filter") . "%%'
-			OR snmp_query.name LIKE '%%" . get_request_var_request("filter") . "%%'
-			OR host_snmp_cache.field_name LIKE '%%" . get_request_var_request("filter") . "%%'
-			OR host_snmp_cache.field_value LIKE '%%" . get_request_var_request("filter") . "%%'
-			OR host_snmp_cache.oid LIKE '%%" . get_request_var_request("filter") . "%%')";
+	if (get_request_var_request('filter') != '') {
+		$sql_where .= " AND (host.description LIKE '%%" . get_request_var_request('filter') . "%%'
+			OR snmp_query.name LIKE '%%" . get_request_var_request('filter') . "%%'
+			OR host_snmp_cache.field_name LIKE '%%" . get_request_var_request('filter') . "%%'
+			OR host_snmp_cache.field_value LIKE '%%" . get_request_var_request('filter') . "%%'
+			OR host_snmp_cache.oid LIKE '%%" . get_request_var_request('filter') . "%%')";
 	}
 
-	html_start_box("", "100%", "", "3", "center", "");
+	html_start_box('', '100%', '', '3', 'center', '');
 
 	$total_rows = db_fetch_cell("SELECT
 		COUNT(*)
-		FROM (host_snmp_cache,snmp_query,host)
-		WHERE host_snmp_cache.host_id=host.id
-		AND host_snmp_cache.snmp_query_id=snmp_query.id
+		FROM (host_snmp_cache, snmp_query,host)
+		WHERE host_snmp_cache.host_id = host.id
+		AND host_snmp_cache.snmp_query_id = snmp_query.id
 		$sql_where");
 
 	$snmp_cache_sql = "SELECT
 		host_snmp_cache.*,
 		host.description,
 		snmp_query.name
-		FROM (host_snmp_cache,snmp_query,host)
-		WHERE host_snmp_cache.host_id=host.id
-		AND host_snmp_cache.snmp_query_id=snmp_query.id
+		FROM (host_snmp_cache, snmp_query,host)
+		WHERE host_snmp_cache.host_id = host.id
+		AND host_snmp_cache.snmp_query_id = snmp_query.id
 		$sql_where
-		LIMIT " . (get_request_var_request("rows")*(get_request_var_request("page")-1)) . "," . get_request_var_request("rows");
+		LIMIT " . (get_request_var_request('rows')*(get_request_var_request('page')-1)) . ',' . get_request_var_request('rows');
 
 	$snmp_cache = db_fetch_assoc($snmp_cache_sql);
 
-	$nav = html_nav_bar("utilities.php?action=view_snmp_cache&host_id=" . get_request_var_request("host_id") . "&filter=" . get_request_var_request("filter"), MAX_DISPLAY_PAGES, get_request_var_request("page"), get_request_var_request("rows"), $total_rows, 3, 'Entries', 'page', 'main');
+	$nav = html_nav_bar('utilities.php?action=view_snmp_cache&host_id=' . get_request_var_request('host_id') . '&filter=' . get_request_var_request('filter'), MAX_DISPLAY_PAGES, get_request_var_request('page'), get_request_var_request('rows'), $total_rows, 3, 'Entries', 'page', 'main');
 
 	print $nav;
 
-	html_header(array("Details"));
+	html_header(array('Details'));
 
 	$i = 0;
 	if (sizeof($snmp_cache) > 0) {
@@ -1416,24 +1416,24 @@ function utilities_view_snmp_cache() {
 			print "<tr class='$class'>\n";
 			?>
 			<td>
-				Host: <?php print (strlen(get_request_var_request("filter")) ? (preg_replace("/(" . preg_quote(get_request_var_request("filter"), "/") . ")/i", "<span class='filteredValue'>\\1</span>", $item["description"])) : $item["description"]);?>
-				, SNMP Query: <?php print (strlen(get_request_var_request("filter")) ? (preg_replace("/(" . preg_quote(get_request_var_request("filter"), "/") . ")/i", "<span class='filteredValue'>\\1</span>", $item["name"])) : $item["name"]);?>
+				Host: <?php print (strlen(get_request_var_request('filter')) ? (preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", $item['description'])) : $item['description']);?>
+				, SNMP Query: <?php print (strlen(get_request_var_request('filter')) ? (preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", $item['name'])) : $item['name']);?>
 			</td>
 			</tr>
 			<?php
 			print "<tr class='$class'>\n";
 			?>
 			<td>
-				Index: <?php print $item["snmp_index"];?>
-				, Field Name: <?php print (strlen(get_request_var_request("filter")) ? (preg_replace("/(" . preg_quote(get_request_var_request("filter"), "/") . ")/i", "<span class='filteredValue'>\\1</span>", $item["field_name"])) : $item["field_name"]);?>
-				, Field Value: <?php print (strlen(get_request_var_request("filter")) ? (preg_replace("/(" . preg_quote(get_request_var_request("filter"), "/") . ")/i", "<span class='filteredValue'>\\1</span>", $item["field_value"])) : $item["field_value"]);?>
+				Index: <?php print $item['snmp_index'];?>
+				, Field Name: <?php print (strlen(get_request_var_request('filter')) ? (preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", $item['field_name'])) : $item['field_name']);?>
+				, Field Value: <?php print (strlen(get_request_var_request('filter')) ? (preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", $item['field_value'])) : $item['field_value']);?>
 			</td>
 			</tr>
 			<?php
 			print "<tr class='$class'>\n";
 			?>
 			<td>
-				OID: <?php print (strlen(get_request_var_request("filter")) ? (preg_replace("/(" . preg_quote(get_request_var_request("filter"), "/") . ")/i", "<span class='filteredValue'>\\1</span>", $item["oid"])) : $item["oid"]);?>
+				OID: <?php print (strlen(get_request_var_request('filter')) ? (preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", $item['oid'])) : $item['oid']);?>
 			</td>
 			</tr>
 			<?php
@@ -1449,59 +1449,59 @@ function utilities_view_snmp_cache() {
 function utilities_view_poller_cache() {
 	global $poller_actions, $item_rows;
 
-	define("MAX_DISPLAY_PAGES", 21);
+	define('MAX_DISPLAY_PAGES', 21);
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_request("host_id"));
-	input_validate_input_number(get_request_var_request("page"));
-	input_validate_input_number(get_request_var_request("rows"));
-	input_validate_input_number(get_request_var_request("poller_action"));
+	input_validate_input_number(get_request_var_request('host_id'));
+	input_validate_input_number(get_request_var_request('page'));
+	input_validate_input_number(get_request_var_request('rows'));
+	input_validate_input_number(get_request_var_request('poller_action'));
 	/* ==================================================== */
 
 	/* clean up search filter */
-	if (isset($_REQUEST["filter"])) {
-		$_REQUEST["filter"] = sanitize_search_string(get_request_var("filter"));
+	if (isset($_REQUEST['filter'])) {
+		$_REQUEST['filter'] = sanitize_search_string(get_request_var('filter'));
 	}
 
 	/* clean up sort_column */
-	if (isset($_REQUEST["sort_column"])) {
-		$_REQUEST["sort_column"] = sanitize_search_string(get_request_var("sort_column"));
+	if (isset($_REQUEST['sort_column'])) {
+		$_REQUEST['sort_column'] = sanitize_search_string(get_request_var('sort_column'));
 	}
 
 	/* clean up sort direction */
-	if (isset($_REQUEST["sort_direction"])) {
-		$_REQUEST["sort_direction"] = sanitize_search_string(get_request_var("sort_direction"));
+	if (isset($_REQUEST['sort_direction'])) {
+		$_REQUEST['sort_direction'] = sanitize_search_string(get_request_var('sort_direction'));
 	}
 
 	/* if the user pushed the 'clear' button */
-	if (isset($_REQUEST["clear_x"])) {
-		kill_session_var("sess_poller_current_page");
-		kill_session_var("sess_poller_host_id");
-		kill_session_var("sess_poller_poller_action");
-		kill_session_var("sess_poller_filter");
-		kill_session_var("sess_default_rows");
+	if (isset($_REQUEST['clear_x'])) {
+		kill_session_var('sess_poller_current_page');
+		kill_session_var('sess_poller_host_id');
+		kill_session_var('sess_poller_poller_action');
+		kill_session_var('sess_poller_filter');
+		kill_session_var('sess_default_rows');
 
-		unset($_REQUEST["page"]);
-		unset($_REQUEST["filter"]);
-		unset($_REQUEST["rows"]);
-		unset($_REQUEST["host_id"]);
-		unset($_REQUEST["poller_action"]);
+		unset($_REQUEST['page']);
+		unset($_REQUEST['filter']);
+		unset($_REQUEST['rows']);
+		unset($_REQUEST['host_id']);
+		unset($_REQUEST['poller_action']);
 	}
 
-	if ((!empty($_SESSION["sess_poller_action"])) && (!empty($_REQUEST["poller_action"]))) {
-		if ($_SESSION["sess_poller_poller_action"] != $_REQUEST["poller_action"]) {
-			$_REQUEST["page"] = 1;
+	if ((!empty($_SESSION['sess_poller_action'])) && (!empty($_REQUEST['poller_action']))) {
+		if ($_SESSION['sess_poller_poller_action'] != $_REQUEST['poller_action']) {
+			$_REQUEST['page'] = 1;
 		}
 	}
 
 	/* remember these search fields in session vars so we don't have to keep passing them around */
-	load_current_session_value("page", "sess_poller_current_page", "1");
-	load_current_session_value("host_id", "sess_poller_host_id", "-1");
-	load_current_session_value("poller_action", "sess_poller_poller_action", "-1");
-	load_current_session_value("filter", "sess_poller_filter", "");
-	load_current_session_value("sort_column", "sess_poller_sort_column", "data_template_data.name_cache");
-	load_current_session_value("sort_direction", "sess_poller_sort_direction", "ASC");
-	load_current_session_value("rows", "sess_default_rows", read_config_option('num_rows_table'));
+	load_current_session_value('page', 'sess_poller_current_page', '1');
+	load_current_session_value('host_id', 'sess_poller_host_id', '-1');
+	load_current_session_value('poller_action', 'sess_poller_poller_action', '-1');
+	load_current_session_value('filter', 'sess_poller_filter', '');
+	load_current_session_value('sort_column', 'sess_poller_sort_column', 'data_template_data.name_cache');
+	load_current_session_value('sort_direction', 'sess_poller_sort_direction', 'ASC');
+	load_current_session_value('rows', 'sess_default_rows', read_config_option('num_rows_table'));
 
 	$_REQUEST['page_referrer'] = 'view_poller_cache';
 	load_current_session_value('page_referrer', 'page_referrer', 'view_poller_cache');
@@ -1549,7 +1549,7 @@ function utilities_view_poller_cache() {
 	</script>
 	<?php
 
-	html_start_box("<strong>Poller Cache Items</strong>", "100%", "", "3", "center", "");
+	html_start_box('<strong>Poller Cache Items</strong>', '100%', '', '3', 'center', '');
 
 	?>
 	<tr class='even noprint'>
@@ -1562,14 +1562,14 @@ function utilities_view_poller_cache() {
 					</td>
 					<td>
 						<select id='host_id' name="host_id" onChange="applyFilter()">
-							<option value="-1"<?php if (get_request_var_request("host_id") == "-1") {?> selected<?php }?>>Any</option>
-							<option value="0"<?php if (get_request_var_request("host_id") == "0") {?> selected<?php }?>>None</option>
+							<option value="-1"<?php if (get_request_var_request('host_id') == '-1') {?> selected<?php }?>>Any</option>
+							<option value="0"<?php if (get_request_var_request('host_id') == '0') {?> selected<?php }?>>None</option>
 							<?php
-							$hosts = db_fetch_assoc("select id,description,hostname from host order by description");
+							$hosts = db_fetch_assoc('SELECT id, description, hostname FROM host ORDER BY description');
 
 							if (sizeof($hosts) > 0) {
 							foreach ($hosts as $host) {
-								print "<option value='" . $host["id"] . "'"; if (get_request_var_request("host_id") == $host["id"]) { print " selected"; } print ">" . $host["description"] . "</option>\n";
+								print "<option value='" . $host['id'] . "'"; if (get_request_var_request('host_id') == $host['id']) { print ' selected'; } print '>' . $host['description'] . "</option>\n";
 							}
 							}
 							?>
@@ -1580,10 +1580,10 @@ function utilities_view_poller_cache() {
 					</td>
 					<td>
 						<select id='poller_action' name="poller_action" onChange="applyFilter()">
-							<option value="-1"<?php if (get_request_var_request("poller_action") == '-1') {?> selected<?php }?>>Any</option>
-							<option value="0"<?php if (get_request_var_request("poller_action") == '0') {?> selected<?php }?>>SNMP</option>
-							<option value="1"<?php if (get_request_var_request("poller_action") == '1') {?> selected<?php }?>>Script</option>
-							<option value="2"<?php if (get_request_var_request("poller_action") == '2') {?> selected<?php }?>>Script Server</option>
+							<option value="-1"<?php if (get_request_var_request('poller_action') == '-1') {?> selected<?php }?>>Any</option>
+							<option value="0"<?php if (get_request_var_request('poller_action') == '0') {?> selected<?php }?>>SNMP</option>
+							<option value="1"<?php if (get_request_var_request('poller_action') == '1') {?> selected<?php }?>>Script</option>
+							<option value="2"<?php if (get_request_var_request('poller_action') == '2') {?> selected<?php }?>>Script Server</option>
 						</select>
 					</td>
 					<td>
@@ -1594,7 +1594,7 @@ function utilities_view_poller_cache() {
 							<?php
 							if (sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var_request("rows") == $key) { print " selected"; } print ">" . htmlspecialchars($value) . "</option>\n";
+									print "<option value='" . $key . "'"; if (get_request_var_request('rows') == $key) { print ' selected'; } print '>' . htmlspecialchars($value) . "</option>\n";
 								}
 							}
 							?>
@@ -1614,7 +1614,7 @@ function utilities_view_poller_cache() {
 						Search:
 					</td>
 					<td>
-						<input id='filter' type="text" name="filter" size="25" value="<?php print htmlspecialchars(get_request_var_request("filter"));?>">
+						<input id='filter' type="text" name="filter" size="25" value="<?php print htmlspecialchars(get_request_var_request('filter'));?>">
 					</td>
 				</tr>
 			</table>
@@ -1628,37 +1628,37 @@ function utilities_view_poller_cache() {
 	html_end_box();
 
 	/* form the 'where' clause for our main sql query */
-	$sql_where = "WHERE poller_item.local_data_id=data_template_data.local_data_id";
+	$sql_where = 'WHERE poller_item.local_data_id = data_template_data.local_data_id';
 
-	if (get_request_var_request("poller_action") != "-1") {
-		$sql_where .= " AND poller_item.action='" . get_request_var_request("poller_action") . "'";
+	if (get_request_var_request('poller_action') != '-1') {
+		$sql_where .= " AND poller_item.action='" . get_request_var_request('poller_action') . "'";
 	}
 
-	if (get_request_var_request("host_id") == "-1") {
+	if (get_request_var_request('host_id') == '-1') {
 		/* Show all items */
-	}elseif (get_request_var_request("host_id") == "0") {
-		$sql_where .= " AND poller_item.host_id=0";
-	}elseif (!empty($_REQUEST["host_id"])) {
-		$sql_where .= " AND poller_item.host_id=" . get_request_var_request("host_id");
+	}elseif (get_request_var_request('host_id') == '0') {
+		$sql_where .= ' AND poller_item.host_id = 0';
+	}elseif (!empty($_REQUEST['host_id'])) {
+		$sql_where .= ' AND poller_item.host_id = ' . get_request_var_request('host_id');
 	}
 
-	if (strlen(get_request_var_request("filter"))) {
-		$sql_where .= " AND (data_template_data.name_cache LIKE '%%" . get_request_var_request("filter") . "%%'
-			OR host.description LIKE '%%" . get_request_var_request("filter") . "%%'
-			OR poller_item.arg1 LIKE '%%" . get_request_var_request("filter") . "%%'
-			OR poller_item.hostname LIKE '%%" . get_request_var_request("filter") . "%%'
-			OR poller_item.rrd_path  LIKE '%%" . get_request_var_request("filter") . "%%')";
+	if (strlen(get_request_var_request('filter'))) {
+		$sql_where .= " AND (data_template_data.name_cache LIKE '%%" . get_request_var_request('filter') . "%%'
+			OR host.description LIKE '%%" . get_request_var_request('filter') . "%%'
+			OR poller_item.arg1 LIKE '%%" . get_request_var_request('filter') . "%%'
+			OR poller_item.hostname LIKE '%%" . get_request_var_request('filter') . "%%'
+			OR poller_item.rrd_path  LIKE '%%" . get_request_var_request('filter') . "%%')";
 	}
 
-	html_start_box("", "100%", "", "3", "center", "");
+	html_start_box('', '100%', '', '3', 'center', '');
 
 	$total_rows = db_fetch_cell("SELECT
 		COUNT(*)
 		FROM data_template_data
 		RIGHT JOIN (poller_item
 		LEFT JOIN host
-		ON poller_item.host_id=host.id)
-		ON data_template_data.local_data_id=poller_item.local_data_id
+		ON poller_item.host_id = host.id)
+		ON data_template_data.local_data_id = poller_item.local_data_id
 		$sql_where");
 
 	$poller_sql = "SELECT
@@ -1668,23 +1668,23 @@ function utilities_view_poller_cache() {
 		FROM data_template_data
 		RIGHT JOIN (poller_item
 		LEFT JOIN host
-		ON poller_item.host_id=host.id)
-		ON data_template_data.local_data_id=poller_item.local_data_id
+		ON poller_item.host_id = host.id)
+		ON data_template_data.local_data_id = poller_item.local_data_id
 		$sql_where
-		ORDER BY " . get_request_var_request("sort_column") . " " . get_request_var_request("sort_direction") . ", action ASC
-		LIMIT " . (get_request_var_request("rows")*(get_request_var_request("page")-1)) . "," . get_request_var_request("rows");
+		ORDER BY " . get_request_var_request('sort_column') . ' ' . get_request_var_request('sort_direction') . ', action ASC
+		LIMIT ' . (get_request_var_request('rows')*(get_request_var_request('page')-1)) . ',' . get_request_var_request('rows');
 
 	$poller_cache = db_fetch_assoc($poller_sql);
 
-	$nav = html_nav_bar("utilities.php?action=view_poller_cache&host_id=" . get_request_var_request("host_id") . "&poller_action=" . get_request_var_request("poller_action"), MAX_DISPLAY_PAGES, get_request_var_request("page"), get_request_var_request("rows"), $total_rows, 3, 'Entries', 'page', 'main');
+	$nav = html_nav_bar('utilities.php?action=view_poller_cache&host_id=' . get_request_var_request('host_id') . '&poller_action=' . get_request_var_request('poller_action'), MAX_DISPLAY_PAGES, get_request_var_request('page'), get_request_var_request('rows'), $total_rows, 3, 'Entries', 'page', 'main');
 
 	print $nav;
 
 	$display_text = array(
-		"data_template_data.name_cache" => array("Data Source Name", "ASC"),
-		"nosort" => array("Details", "ASC"));
+		'data_template_data.name_cache' => array('Data Source Name', 'ASC'),
+		'nosort' => array('Details', 'ASC'));
 
-	html_header_sort($display_text, get_request_var_request("sort_column"), get_request_var_request("sort_direction"));
+	html_header_sort($display_text, get_request_var_request('sort_column'), get_request_var_request('sort_direction'));
 
 	$i = 0;
 	if (sizeof($poller_cache) > 0) {
@@ -1697,26 +1697,26 @@ function utilities_view_poller_cache() {
 		print "<tr class='$class'>\n";
 			?>
 			<td width="375">
-				<a class="linkEditMain" href="<?php print htmlspecialchars("data_sources.php?action=ds_edit&id=" . $item["local_data_id"]);?>"><?php print (strlen(get_request_var_request("filter")) ? preg_replace("/(" . preg_quote(get_request_var_request("filter"), "/") . ")/i", "<span class='filteredValue'>\\1</span>", $item["name_cache"]):$item["name_cache"]);?></a>
+				<a class="linkEditMain" href="<?php print htmlspecialchars('data_sources.php?action=ds_edit&id=' . $item['local_data_id']);?>"><?php print (strlen(get_request_var_request('filter')) ? preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", $item['name_cache']):$item['name_cache']);?></a>
 			</td>
 
 			<td>
 			<?php
-			if ($item["action"] == 0) {
-				if ($item["snmp_version"] != 3) {
+			if ($item['action'] == 0) {
+				if ($item['snmp_version'] != 3) {
 					$details =
-						"SNMP Version: " . $item["snmp_version"] . ", " .
-						"Community: " . $item["snmp_community"] . ", " .
-						"OID: " . (strlen(get_request_var_request("filter")) ? (preg_replace("/(" . preg_quote(get_request_var_request("filter"), "/") . ")/i", "<span class='filteredValue'>\\1</span>", $item["arg1"])) : $item["arg1"]);
+						'SNMP Version: ' . $item['snmp_version'] . ', ' .
+						'Community: ' . $item['snmp_community'] . ', ' .
+						'OID: ' . (strlen(get_request_var_request('filter')) ? (preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", $item['arg1'])) : $item['arg1']);
 				}else{
 					$details =
-						"SNMP Version: " . $item["snmp_version"] . ", " .
-						"User: " . $item["snmp_username"] . ", OID: " . $item["arg1"];
+						'SNMP Version: ' . $item['snmp_version'] . ', ' .
+						'User: ' . $item['snmp_username'] . ', OID: ' . $item['arg1'];
 				}
-			}elseif ($item["action"] == 1) {
-					$details = "Script: " . (strlen(get_request_var_request("filter")) ? (preg_replace("/(" . preg_quote(get_request_var_request("filter"), "/") . ")/i", "<span class='filteredValue'>\\1</span>", $item["arg1"])) : $item["arg1"]);
+			}elseif ($item['action'] == 1) {
+					$details = 'Script: ' . (strlen(get_request_var_request('filter')) ? (preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", $item['arg1'])) : $item['arg1']);
 			}else{
-					$details = "Script Server: " . (strlen(get_request_var_request("filter")) ? (preg_replace("/(" . preg_quote(get_request_var_request("filter"), "/") . ")/i", "<span class='filteredValue'>\\1</span>", $item["arg1"])) : $item["arg1"]);
+					$details = 'Script Server: ' . (strlen(get_request_var_request('filter')) ? (preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", $item['arg1'])) : $item['arg1']);
 			}
 
 			print $details;
@@ -1729,7 +1729,7 @@ function utilities_view_poller_cache() {
 			<td>
 			</td>
 			<td>
-				RRD: <?php print $item["rrd_path"];?>
+				RRD: <?php print $item['rrd_path'];?>
 			</td>
 		</tr>
 		<?php
@@ -1837,20 +1837,20 @@ function boost_display_run_status() {
 	$refresh['seconds'] = $_REQUEST['refresh'];
 	$refresh['page'] = 'utilities.php?action=view_boost_status';
 
-	$last_run_time   = read_config_option("boost_last_run_time", TRUE);
-	$next_run_time   = read_config_option("boost_next_run_time", TRUE);
+	$last_run_time   = read_config_option('boost_last_run_time', TRUE);
+	$next_run_time   = read_config_option('boost_next_run_time', TRUE);
 
-	$rrd_updates     = read_config_option("boost_rrd_update_enable", TRUE);
-	$boost_server    = read_config_option("boost_server_enable", TRUE);
-	$boost_cache     = read_config_option("boost_png_cache_enable", TRUE);
+	$rrd_updates     = read_config_option('boost_rrd_update_enable', TRUE);
+	$boost_server    = read_config_option('boost_server_enable', TRUE);
+	$boost_cache     = read_config_option('boost_png_cache_enable', TRUE);
 
-	$max_records     = read_config_option("boost_rrd_update_max_records", TRUE);
-	$max_runtime     = read_config_option("boost_rrd_update_max_runtime", TRUE);
-	$update_interval = read_config_option("boost_rrd_update_interval", TRUE);
+	$max_records     = read_config_option('boost_rrd_update_max_records', TRUE);
+	$max_runtime     = read_config_option('boost_rrd_update_max_runtime', TRUE);
+	$update_interval = read_config_option('boost_rrd_update_interval', TRUE);
 	$peak_memory     = read_config_option('boost_peak_memory', TRUE);
 	$detail_stats    = read_config_option('stats_detail_boost', TRUE);
 
-	html_start_box("<strong>Boost Status</strong>", "100%", '', "3", "center", "");
+	html_start_box('<strong>Boost Status</strong>', '100%', '', '3', 'center', '');
 	?>
 	<script type="text/javascript">
 	<!--
@@ -1872,7 +1872,7 @@ function boost_display_run_status() {
 						<select name="refresh" onChange="applyStatsRefresh(document.form_boost_utilities_stats)">
 						<?php
 						foreach ($boost_utilities_interval as $key => $interval) {
-							print '<option value="' . $key . '"'; if ($_REQUEST["refresh"] == $key) { print " selected"; } print ">" . $interval . "</option>";
+							print '<option value="' . $key . '"'; if ($_REQUEST['refresh'] == $key) { print ' selected'; } print '>' . $interval . '</option>';
 						}
 						?>
 					</td>
@@ -1886,7 +1886,7 @@ function boost_display_run_status() {
 	</tr>
 	<?php
 	html_end_box(TRUE);
-	html_start_box("", "100%", '', "3", "center", "");
+	html_start_box('', '100%', '', '3', 'center', '');
 
 	/* get the boost table status */
 	$boost_table_status = db_fetch_assoc("SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE table_schema=SCHEMA()
@@ -1894,57 +1894,57 @@ function boost_display_run_status() {
 	$pending_records = 0;
 	$arch_records = 0;
 	$data_length = 0;
-	$engine = "";
+	$engine = '';
 	$max_data_length = 0;
 	foreach($boost_table_status as $table) {
-		if ($table["TABLE_NAME"] == "poller_output_boost") {
-			$pending_records += $table["TABLE_ROWS"];
+		if ($table['TABLE_NAME'] == 'poller_output_boost') {
+			$pending_records += $table['TABLE_ROWS'];
 		} else {
-			$arch_records += $table["TABLE_ROWS"];
+			$arch_records += $table['TABLE_ROWS'];
 		}
-		$data_length += $table["DATA_LENGTH"];
-		$data_length -= $table["DATA_FREE"];
-		$engine = $table["ENGINE"];
-		$max_data_length = $table["MAX_DATA_LENGTH"];
+		$data_length += $table['DATA_LENGTH'];
+		$data_length -= $table['DATA_FREE'];
+		$engine = $table['ENGINE'];
+		$max_data_length = $table['MAX_DATA_LENGTH'];
 	}
 	$total_records = $pending_records + $arch_records;
 	$avg_row_length = ($total_records ? intval($data_length / $total_records) : 0);
 
-	$total_data_sources = db_fetch_cell("SELECT COUNT(*) FROM poller_item");
+	$total_data_sources = db_fetch_cell('SELECT COUNT(*) FROM poller_item');
 
-	$boost_status = read_config_option("boost_poller_status", TRUE);
+	$boost_status = read_config_option('boost_poller_status', TRUE);
 	if (strlen($boost_status)) {
-		$boost_status_array = explode(":", $boost_status);
+		$boost_status_array = explode(':', $boost_status);
 
 		$boost_status_date = $boost_status_array[1];
 
-		if (substr_count($boost_status_array[0], "complete")) $boost_status_text = "Idle";
-		elseif (substr_count($boost_status_array[0], "running"))  $boost_status_text = "Running";
-		elseif (substr_count($boost_status_array[0], "overrun"))    $boost_status_text = "Overrun Warning";
-		elseif (substr_count($boost_status_array[0], "timeout"))  $boost_status_text = "Timed Out";
-		else   $boost_status_text = "Other";
+		if (substr_count($boost_status_array[0], 'complete')) $boost_status_text = 'Idle';
+		elseif (substr_count($boost_status_array[0], 'running'))  $boost_status_text = 'Running';
+		elseif (substr_count($boost_status_array[0], 'overrun'))    $boost_status_text = 'Overrun Warning';
+		elseif (substr_count($boost_status_array[0], 'timeout'))  $boost_status_text = 'Timed Out';
+		else   $boost_status_text = 'Other';
 	}else{
-		$boost_status_text = "Never Run";
-		$boost_status_date = "";
+		$boost_status_text = 'Never Run';
+		$boost_status_date = '';
 	}
 
-	$stats_boost = read_config_option("stats_boost", TRUE);
+	$stats_boost = read_config_option('stats_boost', TRUE);
 	if (strlen($stats_boost)) {
-		$stats_boost_array = explode(" ", $stats_boost);
+		$stats_boost_array = explode(' ', $stats_boost);
 
-		$stats_duration = explode(":", $stats_boost_array[0]);
+		$stats_duration = explode(':', $stats_boost_array[0]);
 		$boost_last_run_duration = $stats_duration[1];
 
-		$stats_rrds = explode(":", $stats_boost_array[1]);
+		$stats_rrds = explode(':', $stats_boost_array[1]);
 		$boost_rrds_updated = $stats_rrds[1];
 	}else{
-		$boost_last_run_duration = "";
-		$boost_rrds_updated = "";
+		$boost_last_run_duration = '';
+		$boost_rrds_updated = '';
 	}
 
 
 	/* get cache directory size/contents */
-	$cache_directory = read_config_option("boost_png_cache_directory", TRUE);
+	$cache_directory = read_config_option('boost_png_cache_directory', TRUE);
 	$directory_contents = array();
 
 	if (is_dir($cache_directory)) {
@@ -1966,8 +1966,8 @@ function boost_display_run_status() {
 				/* check and fry as applicable */
 				foreach($directory_contents as $file) {
 					/* only remove jpeg's and png's */
-					if ((substr_count(strtolower($file), ".png")) ||
-						(substr_count(strtolower($file), ".jpg"))) {
+					if ((substr_count(strtolower($file), '.png')) ||
+						(substr_count(strtolower($file), '.jpg'))) {
 						$cache_files++;
 						$directory_size += filesize($file);
 					}
@@ -1975,57 +1975,57 @@ function boost_display_run_status() {
 			}
 
 			$directory_size = boost_file_size_display($directory_size);
-			$cache_files = $cache_files . " Files";
+			$cache_files = $cache_files . ' Files';
 		}else{
-			$directory_size = "<strong>WARNING:</strong> Can not open directory";
-			$cache_files = "<strong>WARNING:</strong> Unknown";
+			$directory_size = '<strong>WARNING:</strong> Can not open directory';
+			$cache_files = '<strong>WARNING:</strong> Unknown';
 		}
 	}else{
-		$directory_size = "<strong>WARNING:</strong> Directory Does NOT Exist!!";
-		$cache_files = "<strong>WARNING:</strong> N/A";
+		$directory_size = '<strong>WARNING:</strong> Directory Does NOT Exist!!';
+		$cache_files = '<strong>WARNING:</strong> N/A';
 	}
 
 	$i = 0;
 
 	/* boost status display */
-	html_header(array("Current Boost Status"), 2);
+	html_header(array('Current Boost Status'), 2);
 
 	form_alternate_row();
-	print "<td><strong>Boost On Demand Updating:</strong></td><td><strong>" . ($rrd_updates == "" ? "Disabled" : $boost_status_text) . "</strong></td>";
+	print '<td><strong>Boost On Demand Updating:</strong></td><td><strong>' . ($rrd_updates == '' ? 'Disabled' : $boost_status_text) . '</strong></td>';
 
 	form_alternate_row();
-	print "<td><strong>Total Data Sources:</strong></td><td>" . $total_data_sources . "</td>";
+	print '<td><strong>Total Data Sources:</strong></td><td>' . $total_data_sources . '</td>';
 
 	if ($total_records > 0) {
 		form_alternate_row();
-		print "<td><strong>Pending Boost Records:</strong></td><td>" . $pending_records . "</td>";
+		print '<td><strong>Pending Boost Records:</strong></td><td>' . $pending_records . '</td>';
 
 		form_alternate_row();
-		print "<td><strong>Archived Boost Records:</strong></td><td>" . $arch_records . "</td>";
+		print '<td><strong>Archived Boost Records:</strong></td><td>' . $arch_records . '</td>';
 
 		form_alternate_row();
-		print "<td><strong>Total Boost Records:</strong></td><td>" . $total_records . "</td>";
+		print '<td><strong>Total Boost Records:</strong></td><td>' . $total_records . '</td>';
 	}
 
 	/* boost status display */
-	html_header(array("Boost Storage Statistics"), 2);
+	html_header(array('Boost Storage Statistics'), 2);
 
 	/* describe the table format */
 	form_alternate_row();
-	print "<td><strong>Database Engine:</strong></td><td>" . $engine . "</td>";
+	print '<td><strong>Database Engine:</strong></td><td>' . $engine . '</td>';
 
 	/* tell the user how big the table is */
 	form_alternate_row();
-	print "<td><strong>Current Boost Tables Size:</strong></td><td>" . boost_file_size_display($data_length, 2) . "</td>";
+	print '<td><strong>Current Boost Tables Size:</strong></td><td>' . boost_file_size_display($data_length, 2) . '</td>';
 
 	/* tell the user about the average size/record */
 	form_alternate_row();
-	print "<td><strong>Avg Bytes/Record:</strong></td><td>" . boost_file_size_display($avg_row_length) . "</td>";
+	print '<td><strong>Avg Bytes/Record:</strong></td><td>' . boost_file_size_display($avg_row_length) . '</td>';
 
 	/* tell the user about the average size/record */
-	$output_length = read_config_option("boost_max_output_length");
+	$output_length = read_config_option('boost_max_output_length');
 	if (strlen($output_length)) {
-		$parts = explode(":", $output_length);
+		$parts = explode(':', $output_length);
 		if ((time()-1200) > $parts[0]) {
 			$refresh = TRUE;
 		}else{
@@ -2036,117 +2036,116 @@ function boost_display_run_status() {
 	}
 
 	if ($refresh) {
-		if (strcmp($engine, "MEMORY") == 0) {
-			$max_length = db_fetch_cell("SELECT MAX(LENGTH(output)) FROM poller_output_boost");
+		if (strcmp($engine, 'MEMORY') == 0) {
+			$max_length = db_fetch_cell('SELECT MAX(LENGTH(output)) FROM poller_output_boost');
 		}else{
-			$max_length = "0";
+			$max_length = '0';
 		}
-		db_execute("REPLACE INTO settings (name,value) VALUES ('boost_max_output_length', '" . time() . ":" . $max_length . "')");
+		db_execute("REPLACE INTO settings (name, value) VALUES ('boost_max_output_length', '" . time() . ':' . $max_length . "')");
 	}else{
 		$max_length = $parts[1];
 	}
 
 	if ($max_length != 0) {
 		form_alternate_row();
-		print "<td><strong>Max Record Length:</strong></td><td>" . $max_length . " Bytes</td>";
+		print '<td><strong>Max Record Length:</strong></td><td>' . $max_length . ' Bytes</td>';
 	}
 
 	/* tell the user about the "Maximum Size" this table can be */
 	form_alternate_row();
-	if (strcmp($engine, "MEMORY")) {
-		$max_table_allowed = "Unlimited";
-		$max_table_records = "Unlimited";
+	if (strcmp($engine, 'MEMORY')) {
+		$max_table_allowed = 'Unlimited';
+		$max_table_records = 'Unlimited';
 	}else{
 		$max_table_allowed = boost_file_size_display($max_data_length, 2);
 		$max_table_records = ($avg_row_length ? round($max_data_length/$avg_row_length, 0) : 0);
 	}
-	print "<td><strong>Max Allowed Boost Table Size:</strong></td><td>" . $max_table_allowed . "</td>";
+	print '<td><strong>Max Allowed Boost Table Size:</strong></td><td>' . $max_table_allowed . '</td>';
 
 	/* tell the user about the estimated records that "could" be held in memory */
 	form_alternate_row();
-	print "<td><strong>Estimated Maximum Records:</strong></td><td>" . $max_table_records  . " Records</td>";
+	print '<td><strong>Estimated Maximum Records:</strong></td><td>' . $max_table_records  . ' Records</td>';
 
 	/* boost last runtime display */
-	html_header(array("Runtime Statistics"), 2);
+	html_header(array('Runtime Statistics'), 2);
 
 	form_alternate_row();
-	print "<td width=200><strong>Last Start Time:</strong></td><td>" . $last_run_time . "</td>";
+	print '<td width=200><strong>Last Start Time:</strong></td><td>' . $last_run_time . '</td>';
 
 	form_alternate_row();
-	print "<td width=200><strong>Last Run Duration:</strong></td><td>";
-	print (($boost_last_run_duration > 60) ? (int)($boost_last_run_duration/60) . " minutes " : "" ) . $boost_last_run_duration%60 . " seconds";
-	if ($rrd_updates != ""){ print " (" . round(100*$boost_last_run_duration/$update_interval/60) . "% of update frequency)";}
-	print "</td>";
+	print '<td width=200><strong>Last Run Duration:</strong></td><td>';
+	print (($boost_last_run_duration > 60) ? (int)($boost_last_run_duration/60) . ' minutes ' : '' ) . $boost_last_run_duration%60 . ' seconds';
+	if ($rrd_updates != ''){ print ' (' . round(100*$boost_last_run_duration/$update_interval/60) . '% of update frequency)';}
+	print '</td>';
 
 	form_alternate_row();
-	print "<td width=200><strong>RRD Updates:</strong></td><td>" . $boost_rrds_updated . "</td>";
+	print '<td width=200><strong>RRD Updates:</strong></td><td>' . $boost_rrds_updated . '</td>';
 
 	form_alternate_row();
-	print "<td width=200><strong>Peak Poller Memory:</strong></td><td>" . ((read_config_option('boost_peak_memory') != '') ? (round(read_config_option('boost_peak_memory')/1024/1024,2)) . " MBytes" : "N/A") . "</td>";
+	print '<td width=200><strong>Peak Poller Memory:</strong></td><td>' . ((read_config_option('boost_peak_memory') != '') ? (round(read_config_option('boost_peak_memory')/1024/1024,2)) . ' MBytes' : 'N/A') . '</td>';
 
 	form_alternate_row();
-	print "<td width=200><strong>Detailed Runtime Timers:</strong></td><td>" . (($detail_stats != '') ? $detail_stats:"N/A") . "</td>";
+	print '<td width=200><strong>Detailed Runtime Timers:</strong></td><td>' . (($detail_stats != '') ? $detail_stats:'N/A') . '</td>';
 
 	form_alternate_row();
-	print "<td width=200><strong>Max Poller Memory Allowed:</strong></td><td>" . ((read_config_option('boost_poller_mem_limit') != '') ? (read_config_option('boost_poller_mem_limit')) . " MBytes" : "N/A") . "</td>";
+	print '<td width=200><strong>Max Poller Memory Allowed:</strong></td><td>' . ((read_config_option('boost_poller_mem_limit') != '') ? (read_config_option('boost_poller_mem_limit')) . ' MBytes' : 'N/A') . '</td>';
 
 	/* boost runtime display */
-	html_header(array("Run Time Configuration"), 2);
+	html_header(array('Run Time Configuration'), 2);
 
 	form_alternate_row();
-	print "<td width=200><strong>Update Frequency:</strong></td><td><strong>" . ($rrd_updates == "" ? "N/A" : $boost_refresh_interval[$update_interval]) . "</strong></td>";
+	print '<td width=200><strong>Update Frequency:</strong></td><td><strong>' . ($rrd_updates == '' ? 'N/A' : $boost_refresh_interval[$update_interval]) . '</strong></td>';
 
 	form_alternate_row();
-	print "<td width=200><strong>Next Start Time:</strong></td><td>" . $next_run_time . "</td>";
+	print '<td width=200><strong>Next Start Time:</strong></td><td>' . $next_run_time . '</td>';
 
 	form_alternate_row();
-	print "<td width=200><strong>Maximum Records:</strong></td><td>" . $max_records . " Records</td>";
+	print '<td width=200><strong>Maximum Records:</strong></td><td>' . $max_records . ' Records</td>';
 
 	form_alternate_row();
-	print "<td width=200><strong>Maximum Allowed Runtime:</strong></td><td>" . $boost_max_runtime[$max_runtime] . "</td>";
+	print '<td width=200><strong>Maximum Allowed Runtime:</strong></td><td>' . $boost_max_runtime[$max_runtime] . '</td>';
 
 	/* boost runtime display */
-	html_header(array("Boost Server Details"), 2);
+	html_header(array('Boost Server Details'), 2);
 
 	form_alternate_row();
-	print "<td><strong>Server Config Status:</strong></td><td><strong>" . ($boost_server == "" ? "Disabled" : "Enabled") . "</strong></td>";
+	print '<td><strong>Server Config Status:</strong></td><td><strong>' . ($boost_server == '' ? 'Disabled' : 'Enabled') . '</strong></td>';
 
 	form_alternate_row();
-	print "<td><strong>Multiprocess Server:</td><td>" . (read_config_option("boost_server_multiprocess", TRUE) == "1" ? "Multiple Process" : "Single Process") . "</strong></td>";
+	print '<td><strong>Multiprocess Server:</td><td>' . (read_config_option('boost_server_multiprocess', TRUE) == '1' ? 'Multiple Process' : 'Single Process') . '</strong></td>';
 
 	form_alternate_row();
-	print "<td><strong>Update Timeout:</td><td>" . read_config_option("boost_server_timeout", TRUE) . " Seconds</strong></td>";
+	print '<td><strong>Update Timeout:</td><td>' . read_config_option('boost_server_timeout', TRUE) . ' Seconds</strong></td>';
 
 	form_alternate_row();
-	print "<td><strong>Server/Port:</td><td>" . read_config_option("boost_server_hostname", TRUE) . "@" . read_config_option("boost_server_listen_port", TRUE) . "</strong></td>";
+	print '<td><strong>Server/Port:</td><td>' . read_config_option('boost_server_hostname', TRUE) . '@' . read_config_option('boost_server_listen_port', TRUE) . '</strong></td>';
 
 	form_alternate_row();
-	print "<td><strong>Authorized Update Web Servers:</td><td>" . read_config_option("boost_server_clients", TRUE) . "</strong></td>";
+	print '<td><strong>Authorized Update Web Servers:</td><td>' . read_config_option('boost_server_clients', TRUE) . '</strong></td>';
 
-	if (strlen(read_config_option("boost_path_rrdupdate")) && (read_config_option("boost_server_multiprocess") == 1)) {
+	if (strlen(read_config_option('boost_path_rrdupdate')) && (read_config_option('boost_server_multiprocess') == 1)) {
 		form_alternate_row();
-		print "<td><strong>RRDtool Binary Used:</td><td>" . read_config_option("boost_path_rrdupdate") . "</strong></td>";
+		print '<td><strong>RRDtool Binary Used:</td><td>' . read_config_option('boost_path_rrdupdate') . '</strong></td>';
 	}else{
 		form_alternate_row();
-		print "<td><strong>RRDtool Binary Used:</td><td>" . read_config_option("path_rrdtool") . "</strong></td>";
+		print '<td><strong>RRDtool Binary Used:</td><td>' . read_config_option('path_rrdtool') . '</strong></td>';
 	}
 
 	/* boost caching */
-	html_header(array("Image Caching"), 2);
+	html_header(array('Image Caching'), 2);
 
 	form_alternate_row();
-	print "<td><strong>Image Caching Status:</strong></td><td><strong>" . ($boost_cache == "" ? "Disabled" : "Enabled") . "</strong></td>";
+	print '<td><strong>Image Caching Status:</strong></td><td><strong>' . ($boost_cache == '' ? 'Disabled' : 'Enabled') . '</strong></td>';
 
 	form_alternate_row();
-	print "<td><strong>Cache Directory:</strong></td><td>" . $cache_directory . "</td>";
+	print '<td><strong>Cache Directory:</strong></td><td>' . $cache_directory . '</td>';
 
 	form_alternate_row();
-	print "<td><strong>Cached Files:</strong></td><td>" . $cache_files . "</td>";
+	print '<td><strong>Cached Files:</strong></td><td>' . $cache_files . '</td>';
 
 	form_alternate_row();
-	print "<td><strong>Cached Files Size:</strong></td><td>" . $directory_size . "</td>";
+	print '<td><strong>Cached Files Size:</strong></td><td>' . $directory_size . '</td>';
 
 	html_end_box(TRUE);
 }
 
-?>
