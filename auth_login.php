@@ -281,7 +281,7 @@ function auth_display_custom_error_message($message) {
 	/* print error */
 	print '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">';
 	print "<html>\n<head>\n";
-	print "     <title>" . "Cacti" . "</title>\n";
+	print '     <title>' . 'Cacti' . "</title>\n";
 	print "     <meta http-equiv='Content-Type' content='text/html;charset=utf-8'>";
 	print "     <link href=\"include/main.css\" type=\"text/css\" rel=\"stylesheet\">";
 	print "</head>\n";
@@ -292,41 +292,41 @@ function auth_display_custom_error_message($message) {
 
 function domains_login_process() {
 	global $user, $realm, $username, $user_auth, $ldap_error, $ldap_error_message;
-	if (is_numeric(get_request_var_post("realm")) && (strlen(get_request_var_post("login_password")) > 0)) {
+	if (is_numeric(get_request_var_post('realm')) && (strlen(get_request_var_post('login_password')) > 0)) {
 		/* include LDAP lib */
-		include_once("./lib/ldap.php");
+		include_once('./lib/ldap.php');
 
 		/* get user DN */
-		$ldap_dn_search_response = domains_ldap_search_dn($username, get_request_var_post("realm"));
-		if ($ldap_dn_search_response["error_num"] == "0") {
-			$ldap_dn = $ldap_dn_search_response["dn"];
+		$ldap_dn_search_response = domains_ldap_search_dn($username, get_request_var_post('realm'));
+		if ($ldap_dn_search_response['error_num'] == '0') {
+			$ldap_dn = $ldap_dn_search_response['dn'];
 		}else{
 			/* Error searching */
-			cacti_log("LOGIN: LDAP Error: " . $ldap_dn_search_response["error_text"], false, "AUTH");
+			cacti_log('LOGIN: LDAP Error: ' . $ldap_dn_search_response['error_text'], false, 'AUTH');
 			$ldap_error = true;
-			$ldap_error_message = "LDAP Search Error: " . $ldap_dn_search_response["error_text"];
+			$ldap_error_message = 'LDAP Search Error: ' . $ldap_dn_search_response['error_text'];
 			$user_auth = false;
 			$user = array();
 		}
 
 		if (!$ldap_error) {
 			/* auth user with LDAP */
-			$ldap_auth_response = domains_ldap_auth($username, stripslashes(get_request_var_post("login_password")), $ldap_dn, get_request_var_post("realm"));
+			$ldap_auth_response = domains_ldap_auth($username, stripslashes(get_request_var_post('login_password')), $ldap_dn, get_request_var_post('realm'));
 
-			if ($ldap_auth_response["error_num"] == "0") {
+			if ($ldap_auth_response['error_num'] == '0') {
 				/* User ok */
 				$user_auth = true;
 				$copy_user = true;
-				$realm = get_request_var_post("realm");
+				$realm = get_request_var_post('realm');
 				/* Locate user in database */
-				cacti_log("LOGIN: LDAP User '" . $username . "' Authenticated from Domain '" . db_fetch_cell('SELECT domain_name FROM user_domains WHERE domain_id=' . ($realm-1000)) . "'", false, "AUTH");
+				cacti_log("LOGIN: LDAP User '" . $username . "' Authenticated from Domain '" . db_fetch_cell('SELECT domain_name FROM user_domains WHERE domain_id=' . ($realm-1000)) . "'", false, 'AUTH');
 				$user = db_fetch_row_prepared('SELECT * FROM user_auth WHERE username = ? AND realm = ?', array($username, $realm));
 
 				/* Create user from template if requested */
 				$template_user = db_fetch_cell_prepared('SELECT user_id FROM user_domains WHERE domain_id = ?', array(get_request_var_post('realm')-1000));
 				$template_username = db_fetch_cell_prepared('SELECT username FROM user_auth WHERE id = ?', array($template_user));
-				if ((!sizeof($user)) && ($copy_user) && ($template_user != "0") && (strlen($username) > 0)) {
-					cacti_log("WARN: User '" . $username . "' does not exist, copying template user", false, "AUTH");
+				if ((!sizeof($user)) && ($copy_user) && ($template_user != '0') && (strlen($username) > 0)) {
+					cacti_log("WARN: User '" . $username . "' does not exist, copying template user", false, 'AUTH');
 					/* check that template user exists */
 					if (db_fetch_row_prepared('SELECT id FROM user_auth WHERE id = ? AND realm = 0', array($template_user))) {
 						/* template user found */
@@ -335,16 +335,16 @@ function domains_login_process() {
 						$user = db_fetch_row_prepared('SELECT * FROM user_auth WHERE username = ? AND realm = ?', array($username, $realm));
 					}else{
 						/* error */
-						cacti_log("LOGIN: Template user '" . $template_username . "' does not exist.", false, "AUTH");
+						cacti_log("LOGIN: Template user '" . $template_username . "' does not exist.", false, 'AUTH');
 						auth_display_custom_error_message("Template user '" . $template_username . "' does not exist.");
 						exit;
 					}
 				}
 			}else{
 				/* error */
-				cacti_log("LOGIN: LDAP Error: " . $ldap_auth_response["error_text"], false, "AUTH");
+				cacti_log('LOGIN: LDAP Error: ' . $ldap_auth_response['error_text'], false, 'AUTH');
 				$ldap_error = true;
-				$ldap_error_message = "LDAP Error: " . $ldap_auth_response["error_text"];
+				$ldap_error_message = 'LDAP Error: ' . $ldap_auth_response['error_text'];
 				$user_auth = false;
 				$user = array();
 			}
@@ -353,7 +353,7 @@ function domains_login_process() {
 	}
 }
 
-function domains_ldap_auth($username, $password = "", $dn = "", $realm) {
+function domains_ldap_auth($username, $password = '', $dn = '', $realm) {
 	$ldap = new Ldap;
 
 	if (!empty($username)) $ldap->username = $username;
@@ -363,17 +363,17 @@ function domains_ldap_auth($username, $password = "", $dn = "", $realm) {
 	$ld = db_fetch_row_prepared('SELECT * FROM user_domains_ldap WHERE domain_id = ?', array($realm-1000));
 
 	if (sizeof($ld)) {
-		if (!empty($ld["dn"]))                $ldap->dn                = $ld["dn"];
-		if (!empty($ld["server"]))            $ldap->host              = $ld["server"];
-		if (!empty($ld["port"]))              $ldap->port              = $ld["port"];
-		if (!empty($ld["port_ssl"]))          $ldap->port_ssl          = $ld["port_ssl"];
-		if (!empty($ld["proto_version"]))     $ldap->version           = $ld["proto_version"];
-		if (!empty($ld["encryption"]))        $ldap->encryption        = $ld["encryption"];
-		if (!empty($ld["referrals"]))         $ldap->referrals         = $ld["referrals"];
-		if (!empty($ld["group_require"]))     $ldap->group_require     = $ld["group_require"];
-		if (!empty($ld["group_dn"]))          $ldap->group_dn          = $ld["group_dn"];
-		if (!empty($ld["group_attrib"]))      $ldap->group_attrib      = $ld["group_attrib"];
-		if (!empty($ld["group_member_type"])) $ldap->group_member_type = $ld["group_member_type"];
+		if (!empty($ld['dn']))                $ldap->dn                = $ld['dn'];
+		if (!empty($ld['server']))            $ldap->host              = $ld['server'];
+		if (!empty($ld['port']))              $ldap->port              = $ld['port'];
+		if (!empty($ld['port_ssl']))          $ldap->port_ssl          = $ld['port_ssl'];
+		if (!empty($ld['proto_version']))     $ldap->version           = $ld['proto_version'];
+		if (!empty($ld['encryption']))        $ldap->encryption        = $ld['encryption'];
+		if (!empty($ld['referrals']))         $ldap->referrals         = $ld['referrals'];
+		if (!empty($ld['group_require']))     $ldap->group_require     = $ld['group_require'];
+		if (!empty($ld['group_dn']))          $ldap->group_dn          = $ld['group_dn'];
+		if (!empty($ld['group_attrib']))      $ldap->group_attrib      = $ld['group_attrib'];
+		if (!empty($ld['group_member_type'])) $ldap->group_member_type = $ld['group_member_type'];
 
 		return $ldap->Authenticate();
 	}else{
@@ -389,18 +389,18 @@ function domains_ldap_search_dn($username, $realm) {
 	$ld = db_fetch_row_prepared('SELECT * FROM user_domains_ldap WHERE domain_id = ?', array($realm-1000));
 
 	if (sizeof($ld)) {
-		if (!empty($ld["dn"]))                $ldap->dn                = $ld["dn"];
-		if (!empty($ld["server"]))            $ldap->host              = $ld["server"];
-		if (!empty($ld["port"]))              $ldap->port              = $ld["port"];
-		if (!empty($ld["port_ssl"]))          $ldap->port_ssl          = $ld["port_ssl"];
-		if (!empty($ld["proto_version"]))     $ldap->version           = $ld["proto_version"];
-		if (!empty($ld["encryption"]))        $ldap->encryption        = $ld["encryption"];
-		if (!empty($ld["referrals"]))         $ldap->referrals         = $ld["referrals"];
-		if (!empty($ld["mode"]))              $ldap->group_require     = $ld["mode"];
-		if (!empty($ld["search_base"]))       $ldap->group_dn          = $ld["search_base"];
-		if (!empty($ld["search_filter"]))     $ldap->group_attrib      = $ld["search_filter"];
-		if (!empty($ld["specific_dn"]))       $ldap->group_member_type = $ld["specific_dn"];
-		if (!empty($ld["specific_password"])) $ldap->group_member_type = $ld["specific_password"];
+		if (!empty($ld['dn']))                $ldap->dn                = $ld['dn'];
+		if (!empty($ld['server']))            $ldap->host              = $ld['server'];
+		if (!empty($ld['port']))              $ldap->port              = $ld['port'];
+		if (!empty($ld['port_ssl']))          $ldap->port_ssl          = $ld['port_ssl'];
+		if (!empty($ld['proto_version']))     $ldap->version           = $ld['proto_version'];
+		if (!empty($ld['encryption']))        $ldap->encryption        = $ld['encryption'];
+		if (!empty($ld['referrals']))         $ldap->referrals         = $ld['referrals'];
+		if (!empty($ld['mode']))              $ldap->group_require     = $ld['mode'];
+		if (!empty($ld['search_base']))       $ldap->group_dn          = $ld['search_base'];
+		if (!empty($ld['search_filter']))     $ldap->group_attrib      = $ld['search_filter'];
+		if (!empty($ld['specific_dn']))       $ldap->group_member_type = $ld['specific_dn'];
+		if (!empty($ld['specific_password'])) $ldap->group_member_type = $ld['specific_password'];
 
 		return $ldap->Search();
 	}else{

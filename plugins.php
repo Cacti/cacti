@@ -22,15 +22,15 @@
  +-------------------------------------------------------------------------+
 */
 
-include("./include/auth.php");
+include('./include/auth.php');
 
-define("MAX_DISPLAY_PAGES", 21);
+define('MAX_DISPLAY_PAGES', 21);
 
-$actions = array("install" => "Install",
-	"enable" => "Enable",
-	"disable" => "Disable",
-	"uninstall" => "Uninstall",
-//	"check" => "Check"
+$actions = array('install' => 'Install',
+	'enable' => 'Enable',
+	'disable' => 'Disable',
+	'uninstall' => 'Uninstall',
+//	'check' => 'Check'
 );
 
 $status_names = array(
@@ -50,7 +50,7 @@ $pluginslist = retrieve_plugin_list();
 $modes = array('installold', 'uninstallold', 'install', 'uninstall', 'disable', 'enable', 'check', 'moveup', 'movedown');
 
 if (isset($_GET['mode']) && in_array($_GET['mode'], $modes)  && isset($_GET['id'])) {
-	input_validate_input_regex(get_request_var("id"), "^([a-zA-Z0-9]+)$");
+	input_validate_input_regex(get_request_var('id'), '^([a-zA-Z0-9]+)$');
 
 	$mode = $_GET['mode'];
 	$id   = sanitize_search_string($_GET['id']);
@@ -60,12 +60,12 @@ if (isset($_GET['mode']) && in_array($_GET['mode'], $modes)  && isset($_GET['id'
 			if (!in_array($id, $plugins_integrated)) {
 				api_plugin_install_old($id);
 			}
-			header("Location: plugins.php");
+			header('Location: plugins.php');
 			exit;
 			break;
 		case 'uninstallold':
 			api_plugin_uninstall_old($id);
-			header("Location: plugins.php");
+			header('Location: plugins.php');
 			exit;
 			break;
 		case 'install':
@@ -74,22 +74,22 @@ if (isset($_GET['mode']) && in_array($_GET['mode'], $modes)  && isset($_GET['id'
 			}
 
 			if ($_SESSION['sess_plugins_state'] != '-3') {
-				header("Location: plugins.php?state=5");
+				header('Location: plugins.php?state=5');
 			}else{
-				header("Location: plugins.php");
+				header('Location: plugins.php');
 			}
 			exit;
 			break;
 		case 'uninstall':
 			if (!in_array($id, $pluginslist)) break;
 			api_plugin_uninstall($id);
-			header("Location: plugins.php");
+			header('Location: plugins.php');
 			exit;
 			break;
 		case 'disable':
 			if (!in_array($id, $pluginslist)) break;
 			api_plugin_disable($id);
-			header("Location: plugins.php");
+			header('Location: plugins.php');
 			exit;
 			break;
 		case 'enable':
@@ -97,7 +97,7 @@ if (isset($_GET['mode']) && in_array($_GET['mode'], $modes)  && isset($_GET['id'
 			if (!in_array($id, $plugins_integrated)) {
 				api_plugin_enable($id);
 			}
-			header("Location: plugins.php");
+			header('Location: plugins.php');
 			exit;
 			break;
 		case 'check':
@@ -108,7 +108,7 @@ if (isset($_GET['mode']) && in_array($_GET['mode'], $modes)  && isset($_GET['id'
 			if (in_array($id, $plugins_integrated)) break;
 			if (is_system_plugin($id)) break;
 			api_plugin_moveup($id);
-			header("Location: plugins.php");
+			header('Location: plugins.php');
 			exit;
 			break;
 		case 'movedown':
@@ -116,7 +116,7 @@ if (isset($_GET['mode']) && in_array($_GET['mode'], $modes)  && isset($_GET['id'
 			if (in_array($id, $plugins_integrated)) break;
 			if (is_system_plugin($id)) break;
 			api_plugin_movedown($id);
-			header("Location: plugins.php");
+			header('Location: plugins.php');
 			exit;
 			break;
 	}
@@ -198,21 +198,21 @@ function plugins_load_temp_table() {
 
 	$pluginslist = retrieve_plugin_list();
 
-	if (isset($_SESSION["plugin_temp_table"])) {
-		$table = $_SESSION["plugin_temp_table"];
+	if (isset($_SESSION['plugin_temp_table'])) {
+		$table = $_SESSION['plugin_temp_table'];
 	}else{
-		$table = "plugin_temp_table_" . rand();
+		$table = 'plugin_temp_table_' . rand();
 	}
 	$x = 0;
 	while ($x < 30) {
 		if (!plugins_temp_table_exists($table)) {
-			$_SESSION["plugin_temp_table"] = $table;
+			$_SESSION['plugin_temp_table'] = $table;
 			db_execute("CREATE TEMPORARY TABLE IF NOT EXISTS $table LIKE plugin_config");
 			db_execute("TRUNCATE $table");
 			db_execute("INSERT INTO $table SELECT * FROM plugin_config");
 			break;
 		}else{
-			$table = "plugin_temp_table_" . rand();
+			$table = 'plugin_temp_table_' . rand();
 		}
 		$x++;
 	}
@@ -253,11 +253,11 @@ function plugins_load_temp_table() {
 					if (!isset($cinfo[$file]['longname'])) $cinfo[$file]['homepage'] = ucfirst($file);
 
 					/* see if it's been installed as old, if so, remove from oldplugins array and session */
-					$oldplugins = read_config_option("oldplugins");
+					$oldplugins = read_config_option('oldplugins');
 					if (substr_count($oldplugins, $file)) {
-						$oldplugins = str_replace($file, "", $oldplugins);
-						$oldplugins = str_replace(",,", ",", $oldplugins);
-						$oldplugins = trim($oldplugins, ",");
+						$oldplugins = str_replace($file, '', $oldplugins);
+						$oldplugins = str_replace(',,', ',', $oldplugins);
+						$oldplugins = trim($oldplugins, ',');
 						set_config_option('oldplugins', $oldplugins);
 						$_SESSION['sess_config_array']['oldplugins'] = $oldplugins;
 					}
@@ -284,53 +284,52 @@ function update_show_current () {
 	global $plugins, $pluginslist, $config, $status_names, $actions, $item_rows;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_request("page"));
-	input_validate_input_number(get_request_var_request("rows"));
-	input_validate_input_number(get_request_var_request("state"));
+	input_validate_input_number(get_request_var_request('page'));
+	input_validate_input_number(get_request_var_request('rows'));
+	input_validate_input_number(get_request_var_request('state'));
 	/* ==================================================== */
 
 	/* clean up search string */
-	if (isset($_REQUEST["filter"])) {
-		$_REQUEST["filter"] = sanitize_search_string(get_request_var("filter"));
+	if (isset($_REQUEST['filter'])) {
+		$_REQUEST['filter'] = sanitize_search_string(get_request_var('filter'));
 	}
 
 	/* clean up sort_column */
-	if (isset($_REQUEST["sort_column"])) {
-		$_REQUEST["sort_column"] = sanitize_search_string(get_request_var("sort_column"));
+	if (isset($_REQUEST['sort_column'])) {
+		$_REQUEST['sort_column'] = sanitize_search_string(get_request_var('sort_column'));
 	}
 
 	/* clean up search string */
-	if (isset($_REQUEST["sort_direction"])) {
-		$_REQUEST["sort_direction"] = sanitize_search_string(get_request_var("sort_direction"));
+	if (isset($_REQUEST['sort_direction'])) {
+		$_REQUEST['sort_direction'] = sanitize_search_string(get_request_var('sort_direction'));
 	}
 
 	/* if the user pushed the 'clear' button */
-	if (isset($_REQUEST["clear_x"])) {
-		kill_session_var("sess_plugins_filter");
-		kill_session_var("sess_default_rows");
-		kill_session_var("sess_plugins_state");
-		kill_session_var("sess_plugins_sort_column");
-		kill_session_var("sess_plugins_sort_direction");
+	if (isset($_REQUEST['clear_x'])) {
+		kill_session_var('sess_plugins_filter');
+		kill_session_var('sess_default_rows');
+		kill_session_var('sess_plugins_state');
+		kill_session_var('sess_plugins_sort_column');
+		kill_session_var('sess_plugins_sort_direction');
 
-		unset($_REQUEST["page"]);
-		unset($_REQUEST["rows"]);
-		unset($_REQUEST["state"]);
-		unset($_REQUEST["filter"]);
-		unset($_REQUEST["sort_column"]);
-		unset($_REQUEST["sort_direction"]);
-		$_REQUEST["page"] = 1;
+		unset($_REQUEST['page']);
+		unset($_REQUEST['rows']);
+		unset($_REQUEST['state']);
+		unset($_REQUEST['filter']);
+		unset($_REQUEST['sort_column']);
+		unset($_REQUEST['sort_direction']);
+		$_REQUEST['page'] = 1;
 	}
 
 	/* remember these search fields in session vars so we don't have to keep passing them around */
-	load_current_session_value("filter", "sess_plugins_filter", "");
-	load_current_session_value("rows", "sess_default_rows", read_config_option('num_rows_table'));
-	load_current_session_value("state", "sess_plugins_state", "5");
-	load_current_session_value("sort_column", "sess_plugins_sort_column", "name");
-	load_current_session_value("sort_direction", "sess_plugins_sort_direction", "ASC");
-	load_current_session_value("page", "sess_plugins_current_page", "1");
+	load_current_session_value('filter', 'sess_plugins_filter', '');
+	load_current_session_value('rows', 'sess_default_rows', read_config_option('num_rows_table'));
+	load_current_session_value('state', 'sess_plugins_state', '5');
+	load_current_session_value('sort_column', 'sess_plugins_sort_column', 'name');
+	load_current_session_value('sort_direction', 'sess_plugins_sort_direction', 'ASC');
+	load_current_session_value('page', 'sess_plugins_current_page', '1');
 
 	$table = plugins_load_temp_table();
-	//print "<pre>";print_r(db_fetch_assoc("SELECT * FROM $table"));print "</pre>";exit;
 
 	?>
 	<script type="text/javascript">
@@ -367,7 +366,7 @@ function update_show_current () {
 	</script>
 	<?php
 
-	html_start_box("<strong>Plugin Management</strong> (Cacti Version: " . $config["cacti_version"] . ")", "100%", "", "3", "center", "");
+	html_start_box('<strong>Plugin Management</strong> (Cacti Version: ' . $config['cacti_version'] . ')', '100%', '', '3', 'center', '');
 
 	?>
 	<tr class='even noprint'>
@@ -379,20 +378,20 @@ function update_show_current () {
 						Search:
 					</td>
 					<td>
-						<input id='filter' type="text" name="filter" size="25" value="<?php print get_request_var_request("filter");?>">
+						<input id='filter' type="text" name="filter" size="25" value="<?php print get_request_var_request('filter');?>">
 					</td>
 					<td>
 						Status:
 					</td>
 					<td>
 						<select id='state' name="state" onChange="applyFilter()">
-							<option value="-3"<?php if (get_request_var_request("state") == "-3") {?> selected<?php }?>>All</option>
-							<option value="1"<?php if (get_request_var_request("state") == "1") {?> selected<?php }?>>Active</option>
-							<option value="4"<?php if (get_request_var_request("state") == "4") {?> selected<?php }?>>Installed</option>
-							<option value="5"<?php if (get_request_var_request("state") == "5") {?> selected<?php }?>>Active/Installed</option>
-							<option value="0"<?php if (get_request_var_request("state") == "0") {?> selected<?php }?>>Not Installed</option>
-							<option value="-1"<?php if (get_request_var_request("state") == "-1") {?> selected<?php }?>>Legacy Installed</option>
-							<option value="-2"<?php if (get_request_var_request("state") == "-2") {?> selected<?php }?>>Legacy Not Intalled</option>
+							<option value="-3"<?php if (get_request_var_request('state') == '-3') {?> selected<?php }?>>All</option>
+							<option value="1"<?php if (get_request_var_request('state') == '1') {?> selected<?php }?>>Active</option>
+							<option value="4"<?php if (get_request_var_request('state') == '4') {?> selected<?php }?>>Installed</option>
+							<option value="5"<?php if (get_request_var_request('state') == '5') {?> selected<?php }?>>Active/Installed</option>
+							<option value="0"<?php if (get_request_var_request('state') == '0') {?> selected<?php }?>>Not Installed</option>
+							<option value="-1"<?php if (get_request_var_request('state') == '-1') {?> selected<?php }?>>Legacy Installed</option>
+							<option value="-2"<?php if (get_request_var_request('state') == '-2') {?> selected<?php }?>>Legacy Not Intalled</option>
 						</select>
 					</td>
 					<td>
@@ -400,11 +399,11 @@ function update_show_current () {
 					</td>
 					<td>
 						<select id='rows' name="rows" onChange="applyFilter()">
-							<option value="-1"<?php if (get_request_var_request("rows") == "-1") {?> selected<?php }?>>Default</option>
+							<option value="-1"<?php if (get_request_var_request('rows') == '-1') {?> selected<?php }?>>Default</option>
 							<?php
 							if (sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var_request("rows") == $key) { print " selected"; } print ">" . htmlspecialchars($value) . "</option>\n";
+									print "<option value='" . $key . "'"; if (get_request_var_request('rows') == $key) { print ' selected'; } print '>' . htmlspecialchars($value) . "</option>\n";
 								}
 							}
 							?>
@@ -429,13 +428,13 @@ function update_show_current () {
 	/* print checkbox form for validation */
 	print "<form name='chk' method='post' action='plugins.php'>\n";
 
-	html_start_box("", "100%", "", "3", "center", "");
+	html_start_box('', '100%', '', '3', 'center', '');
 
 	$sql_where = '';
 
 	/* form the 'where' clause for our main sql query */
 	if (strlen($_REQUEST['filter'])) {
-		$sql_where = "WHERE ($table.name LIKE '%%" . get_request_var_request("filter") . "%%')";
+		$sql_where = "WHERE ($table.name LIKE '%%" . get_request_var_request('filter') . "%%')";
 	}
 
 	if ($_REQUEST['state'] > -3) {
@@ -446,16 +445,16 @@ function update_show_current () {
 		}
 	}
 
-	if (get_request_var_request("sort_column") == "version") {
-		$sortc = "version+0";
+	if (get_request_var_request('sort_column') == 'version') {
+		$sortc = 'version+0';
 	}else{
-		$sortc = get_request_var_request("sort_column");
+		$sortc = get_request_var_request('sort_column');
 	}
 
-	if (get_request_var_request("sort_column") == "id") {
-		$sortd = "ASC";
+	if (get_request_var_request('sort_column') == 'id') {
+		$sortd = 'ASC';
 	}else{
-		$sortd = get_request_var_request("sort_direction");
+		$sortd = get_request_var_request('sort_direction');
 	}
 
 	if ($_REQUEST['rows'] == '-1') {
@@ -472,30 +471,30 @@ function update_show_current () {
 	$plugins = db_fetch_assoc("SELECT *
 		FROM $table
 		$sql_where
-		ORDER BY " . $sortc . " " . $sortd . "
-		LIMIT " . ($rows*(get_request_var_request("page")-1)) . "," . $rows);
+		ORDER BY " . $sortc . ' ' . $sortd . '
+		LIMIT ' . ($rows*(get_request_var_request('page')-1)) . ',' . $rows);
 
 	db_execute("DROP TABLE $table");
 
-	$nav = html_nav_bar("plugins.php?filter=" . get_request_var_request("filter"), MAX_DISPLAY_PAGES, get_request_var_request("page"), $rows, $total_rows, 8, 'Plugins', 'page', 'main');
+	$nav = html_nav_bar('plugins.php?filter=' . get_request_var_request('filter'), MAX_DISPLAY_PAGES, get_request_var_request('page'), $rows, $total_rows, 8, 'Plugins', 'page', 'main');
 
 	print $nav;
 
 	$display_text = array(
-		"nosort" => array("Actions", ""),
-		"directory" => array("Name", "ASC"),
-		"version" => array("Version", "ASC"),
-		"id" => array("Load Order", "ASC"),
-		"name" => array("Description", "ASC"),
-		"nosort1" => array("Type", "ASC"),
-		"status" => array("Status", "ASC"),
-		"author" => array("Author", "ASC"));
+		'nosort' => array('Actions', ''),
+		'directory' => array('Name', 'ASC'),
+		'version' => array('Version', 'ASC'),
+		'id' => array('Load Order', 'ASC'),
+		'name' => array('Description', 'ASC'),
+		'nosort1' => array('Type', 'ASC'),
+		'status' => array('Status', 'ASC'),
+		'author' => array('Author', 'ASC'));
 
-	html_header_sort($display_text, get_request_var_request("sort_column"), get_request_var_request("sort_direction"), 1);
+	html_header_sort($display_text, get_request_var_request('sort_column'), get_request_var_request('sort_direction'), 1);
 
 	$i = 0;
 	if (sizeof($plugins)) {
-		if (get_request_var_request("sort_column") == "id") {
+		if (get_request_var_request('sort_column') == 'id') {
 			$inst_system_plugins = get_system_plugins($plugins);
 			if (sizeof($inst_system_plugins)) {
 				foreach($inst_system_plugins as $plugin) {
@@ -518,7 +517,7 @@ function update_show_current () {
 				$load_ordering = true;
 			}
 
-			if (get_request_var_request("sort_column") == "id") {
+			if (get_request_var_request('sort_column') == 'id') {
 				if (!is_system_plugin($plugin)) {
 					form_alternate_row('', true);
 					print format_plugin_row($plugin, $last_plugin, $load_ordering, false);
@@ -535,12 +534,12 @@ function update_show_current () {
 
 		print $nav;
 	}else{
-		print "<tr><td><em>No Plugins Found</em></td></tr>";
+		print '<tr><td><em>No Plugins Found</em></td></tr>';
 	}
 
 	html_end_box(false);
 
-	html_start_box("", "100%", "", "3", "center", "");
+	html_start_box('', '100%', '', '3', 'center', '');
 	echo "<tr class='tableRow'><td colspan=10><strong>NOTE:</strong> Please sort by 'Load Order' to change plugin load ordering.<br><strong>NOTE:</strong> SYSTEM plugins can not be ordered.</td></tr>";
 	html_end_box();
 
@@ -552,17 +551,17 @@ function format_plugin_row($plugin, $last_plugin, $include_ordering, $system_plu
 	static $first_plugin = true;
 
 	$row = plugin_actions($plugin);
-	$row .= "<td><a href='" . htmlspecialchars($plugin["webpage"]) . "' target='_blank'><strong>" . (strlen(get_request_var_request("filter")) ? eregi_replace("(" . preg_quote(get_request_var_request("filter")) . ")", "<span class='filteredValue'>\\1</span>", ucfirst($plugin["directory"])) : ucfirst($plugin["directory"])) . "</strong></a></td>";
-	$row .= "<td>" . $plugin["version"] . "</td>\n";
+	$row .= "<td><a href='" . htmlspecialchars($plugin['webpage']) . "' target='_blank'><strong>" . (strlen(get_request_var_request('filter')) ? eregi_replace('(' . preg_quote(get_request_var_request('filter')) . ')', "<span class='filteredValue'>\\1</span>", ucfirst($plugin['directory'])) : ucfirst($plugin['directory'])) . '</strong></a></td>';
+	$row .= '<td>' . $plugin['version'] . "</td>\n";
 	if ($include_ordering) {
 		$row .= "<td style='white-space:nowrap;'>";
 		if (!$first_plugin) {
-			$row .= "<a href='" . htmlspecialchars("plugins.php?mode=moveup&id=" . $plugin['directory']) . "' title='Order Before Prevous Plugin' class='linkEditMain'><img style='padding:1px;' border='0' align='absmiddle' src='images/move_up.gif'></a>";
+			$row .= "<a href='" . htmlspecialchars('plugins.php?mode=moveup&id=' . $plugin['directory']) . "' title='Order Before Prevous Plugin' class='linkEditMain'><img style='padding:1px;' border='0' align='absmiddle' src='images/move_up.gif'></a>";
 		}else{
 			$row .= "<a href='#' title='Can NOT Reduce Load Order' class='linkEditMain'><img style='padding:1px;' border='0' align='absmiddle' src='images/view_none.gif'></a>";
 		}
 		if (!$last_plugin) {
-			$row .= "<a href='" . htmlspecialchars("plugins.php?mode=movedown&id=" . $plugin['directory']) . "' title='Order After Next Plugin' class='linkEditMain'><img style='padding:1px;' border='0' align='absmiddle' src='images/move_down.gif'></a>";
+			$row .= "<a href='" . htmlspecialchars('plugins.php?mode=movedown&id=' . $plugin['directory']) . "' title='Order After Next Plugin' class='linkEditMain'><img style='padding:1px;' border='0' align='absmiddle' src='images/move_down.gif'></a>";
 		}else{
 			$row .= "<a href='#' title='Can Increase Load Order' class='linkEditMain'><img style='padding:1px;' border='0' align='absmiddle' src='images/view_none.gif'></a>";
 		}
@@ -571,10 +570,10 @@ function format_plugin_row($plugin, $last_plugin, $include_ordering, $system_plu
 		$row .= "<td></td>\n";
 	}
 
-	$row .= "<td style='white-space:nowrap;'>" . (strlen(get_request_var_request("filter")) ? eregi_replace("(" . preg_quote(get_request_var_request("filter")) . ")", "<span class='filteredValue'>\\1</span>", $plugin["name"]) : $plugin["name"]) . "</td>\n";
-	$row .= "<td style='white-space:nowrap;'>" . ($system_plugin ? "System": ($plugin['status'] < 0 ? "Old PIA":"General")) . "</td>\n";
-	$row .= "<td style='white-space:nowrap;'>" . $status_names[$plugin["status"]] . "</td>\n";
-	$row .= "<td style='white-space:nowrap;'>" . $plugin["author"] . "</td>\n";
+	$row .= "<td style='white-space:nowrap;'>" . (strlen(get_request_var_request('filter')) ? eregi_replace('(' . preg_quote(get_request_var_request('filter')) . ')', "<span class='filteredValue'>\\1</span>", $plugin['name']) : $plugin['name']) . "</td>\n";
+	$row .= "<td style='white-space:nowrap;'>" . ($system_plugin ? 'System': ($plugin['status'] < 0 ? 'Old PIA':'General')) . "</td>\n";
+	$row .= "<td style='white-space:nowrap;'>" . $status_names[$plugin['status']] . "</td>\n";
+	$row .= "<td style='white-space:nowrap;'>" . $plugin['author'] . "</td>\n";
 	$row .= "</tr>\n";
 
 	if ($include_ordering) {
@@ -585,13 +584,13 @@ function format_plugin_row($plugin, $last_plugin, $include_ordering, $system_plu
 }
 
 function plugin_actions($plugin) {
-	$link = "<td>";
+	$link = '<td>';
 	switch ($plugin['status']) {
-		case "-2": // Old PA Not Installed
-			$link .= "<a href='" . htmlspecialchars("plugins.php?mode=installold&id=" . $plugin['directory']) . "' title='Install Old Plugin' class='linkEditMain'><img style='padding:1px;' border='0' align='absmiddle' src='images/install_icon.png'></a>";
+		case '-2': // Old PA Not Installed
+			$link .= "<a href='" . htmlspecialchars('plugins.php?mode=installold&id=' . $plugin['directory']) . "' title='Install Old Plugin' class='linkEditMain'><img style='padding:1px;' border='0' align='absmiddle' src='images/install_icon.png'></a>";
 			$link .= "<img style='padding:1px;' border='0' align='absmiddle' src='images/view_none.gif'>";
 			break;
-		case "-1":	// Old PA Currently Active
+		case '-1':	// Old PA Currently Active
 			$oldplugins = read_config_option('oldplugins');
 			if (strlen(trim($oldplugins))) {
 				$oldplugins = explode(',', $oldplugins);
@@ -599,30 +598,30 @@ function plugin_actions($plugin) {
 				$oldplugins = array();
 			}
 			if (in_array($plugin['directory'], $oldplugins)) {
-				$link .= "<a href='" . htmlspecialchars("plugins.php?mode=uninstallold&id=" . $plugin['directory']) . "' title='Uninstall Old Plugin' class='linkEditMain'><img style='padding:1px;' border='0' align='absmiddle' src='images/uninstall_icon.gif'></a>";
+				$link .= "<a href='" . htmlspecialchars('plugins.php?mode=uninstallold&id=' . $plugin['directory']) . "' title='Uninstall Old Plugin' class='linkEditMain'><img style='padding:1px;' border='0' align='absmiddle' src='images/uninstall_icon.gif'></a>";
 			} else {
 				$link .= "<a href='#' title='Please Uninstall from config.php' class='linkEditMain'><img style='padding:1px;' align='absmiddle' border='0' src='images/install_icon_disabled.png'></a>";
 			}
 			$link .= "<img style='padding:1px;' border='0' align='absmiddle' src='images/view_none.gif'>";
 			break;
-		case "0": // Not Installed
-			$link .= "<a href='" . htmlspecialchars("plugins.php?mode=install&id=" . $plugin['directory']) . "' title='Install Plugin' class='linkEditMain'><img style='padding:1px;' border='0' align='absmiddle' src='images/install_icon.png'></a>";
+		case '0': // Not Installed
+			$link .= "<a href='" . htmlspecialchars('plugins.php?mode=install&id=' . $plugin['directory']) . "' title='Install Plugin' class='linkEditMain'><img style='padding:1px;' border='0' align='absmiddle' src='images/install_icon.png'></a>";
 			$link .= "<img style='padding:1px;' border='0' align='absmiddle' src='images/view_none.gif'>";
 			break;
-		case "1":	// Currently Active
-			$link .= "<a href='" . htmlspecialchars("plugins.php?mode=uninstall&id=" . $plugin['directory']) . "' title='Uninstall Plugin' class='linkEditMain'><img style='padding:1px;' border='0' align='absmiddle' src='images/uninstall_icon.gif'></a>";
-			$link .= "<a href='" . htmlspecialchars("plugins.php?mode=disable&id=" . $plugin['directory']) . "' title='Disable Plugin' class='linkEditMain'><img style='padding:1px;' border='0' align='absmiddle' src='images/disable_icon.png'></a>";
+		case '1':	// Currently Active
+			$link .= "<a href='" . htmlspecialchars('plugins.php?mode=uninstall&id=' . $plugin['directory']) . "' title='Uninstall Plugin' class='linkEditMain'><img style='padding:1px;' border='0' align='absmiddle' src='images/uninstall_icon.gif'></a>";
+			$link .= "<a href='" . htmlspecialchars('plugins.php?mode=disable&id=' . $plugin['directory']) . "' title='Disable Plugin' class='linkEditMain'><img style='padding:1px;' border='0' align='absmiddle' src='images/disable_icon.png'></a>";
 			break;
-		case "4":	// Installed but not active
-			$link .= "<a href='" . htmlspecialchars("plugins.php?mode=uninstall&id=" . $plugin['directory']) . "' title='Uninstall Plugin' class='linkEditMain'><img style='padding:1px;' border='0' align='absmiddle' src='images/uninstall_icon.gif'></a>";
-			$link .= "<a href='" . htmlspecialchars("plugins.php?mode=enable&id=" . $plugin['directory']) . "' title='Enable Plugin' class='linkEditMain'><img style='padding:1px;' border='0' align='absmiddle' src='images/enable_icon.png'></a>";
+		case '4':	// Installed but not active
+			$link .= "<a href='" . htmlspecialchars('plugins.php?mode=uninstall&id=' . $plugin['directory']) . "' title='Uninstall Plugin' class='linkEditMain'><img style='padding:1px;' border='0' align='absmiddle' src='images/uninstall_icon.gif'></a>";
+			$link .= "<a href='" . htmlspecialchars('plugins.php?mode=enable&id=' . $plugin['directory']) . "' title='Enable Plugin' class='linkEditMain'><img style='padding:1px;' border='0' align='absmiddle' src='images/enable_icon.png'></a>";
 			break;
 		default: // Old PIA
 			$link .= "<a href='#' title='Please Install/Uninstall from config.php' class='linkEditMain'><img style='padding:1px;' align='absmiddle' border='0' src='images/install_icon_disabled.png'></a>";
 			$link .= "<a href='#' title='Enabling from the UI is not supported' class='linkEditMain'><img style='padding:1px;' align='absmiddle' border='0' src='images/enable_icon_disabled.png'></a>";
 			break;
 	}
-	$link .= "</td>";
+	$link .= '</td>';
 
 	return $link;
 }
@@ -631,7 +630,7 @@ function is_system_plugin($plugin) {
 	global $plugins_system;
 
 	if (is_array($plugin)) {
-		$plugin = $plugin["directory"];
+		$plugin = $plugin['directory'];
 	}
 
 	if (!in_array($plugin, $plugins_system)) {

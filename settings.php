@@ -22,39 +22,39 @@
  +-------------------------------------------------------------------------+
 */
 
-include("./include/auth.php");
+include('./include/auth.php');
 
 /* set default action */
-if (!isset($_REQUEST["action"])) { $_REQUEST["action"] = ""; }
+if (!isset($_REQUEST['action'])) { $_REQUEST['action'] = ''; }
 
-switch ($_REQUEST["action"]) {
+switch ($_REQUEST['action']) {
 case 'save':
-	while (list($field_name, $field_array) = each($settings{$_POST["tab"]})) {
-		if (($field_array["method"] == "header") || ($field_array["method"] == "spacer" )){
+	while (list($field_name, $field_array) = each($settings{$_POST['tab']})) {
+		if (($field_array['method'] == 'header') || ($field_array['method'] == 'spacer' )){
 			/* do nothing */
-		}elseif ($field_array["method"] == "checkbox") {
+		}elseif ($field_array['method'] == 'checkbox') {
 			if (isset($_POST[$field_name])) {
-				db_execute("REPLACE INTO settings (name, value) VALUES ('$field_name', 'on')");
+				db_execute_prepared("REPLACE INTO settings (name, value) VALUES (?, 'on')", array($field_name));
 			}else{
-				db_execute("REPLACE INTO settings (name, value) VALUES ('$field_name', '')");
+				db_execute_prepared("REPLACE INTO settings (name, value) VALUES (?, '')", array($field_name));
 			}
-		}elseif ($field_array["method"] == "checkbox_group") {
-			while (list($sub_field_name, $sub_field_array) = each($field_array["items"])) {
+		}elseif ($field_array['method'] == 'checkbox_group') {
+			while (list($sub_field_name, $sub_field_array) = each($field_array['items'])) {
 				if (isset($_POST[$sub_field_name])) {
-					db_execute("REPLACE INTO settings (name, value) VALUES ('$sub_field_name', 'on')");
+					db_execute_prepared("REPLACE INTO settings (name, value) VALUES (?, 'on')", array($sub_field_name));
 				}else{
-					db_execute("REPLACE INTO settings (name, value) VALUES ('$sub_field_name', '')");
+					db_execute_prepared("REPLACE INTO settings (name, value) VALUES (?, '')", array($sub_field_name));
 				}
 			}
-		}elseif ($field_array["method"] == "textbox_password") {
-			if ($_POST[$field_name] != $_POST[$field_name."_confirm"]) {
+		}elseif ($field_array['method'] == 'textbox_password') {
+			if ($_POST[$field_name] != $_POST[$field_name.'_confirm']) {
 				raise_message(4);
 				break;
 			}elseif (isset($_POST[$field_name])) {
 				db_execute_prepared('REPLACE INTO settings (name, value) VALUES (?, ?)', array($field_name, get_request_var_post($field_name)));
 			}
-		}elseif ((isset($field_array["items"])) && (is_array($field_array["items"]))) {
-			while (list($sub_field_name, $sub_field_array) = each($field_array["items"])) {
+		}elseif ((isset($field_array['items'])) && (is_array($field_array['items']))) {
+			while (list($sub_field_name, $sub_field_array) = each($field_array['items'])) {
 				if (isset($_POST[$sub_field_name])) {
 					db_execute_prepared('REPLACE INTO settings (name, value) VALUES (?, ?)', array($sub_field_name, get_request_var_post($sub_field_name)));
 				}
@@ -67,12 +67,12 @@ case 'save':
 	raise_message(1);
 
 	/* reset local settings cache so the user sees the new settings */
-	kill_session_var("sess_config_array");
+	kill_session_var('sess_config_array');
 
 	if (isset($_REQUEST['header']) && $_REQUEST['header'] == 'false') {
-		header("Location: settings.php?header=false&tab=" . $_POST["tab"]);
+		header('Location: settings.php?header=false&tab=' . $_POST['tab']);
 	}else{
-		header("Location: settings.php?tab=" . $_POST["tab"]);
+		header('Location: settings.php?tab=' . $_POST['tab']);
 	}
 
 	break;
@@ -83,7 +83,7 @@ default:
 	top_header();
 
 	/* set the default settings category */
-	if (!isset($_GET["tab"])) {
+	if (!isset($_GET['tab'])) {
 		/* there is no selected tab; select the first one */
 		if (isset($_SESSION['sess_settings_tab'])) {
 			$current_tab = $_SESSION['sess_settings_tab'];
@@ -92,7 +92,7 @@ default:
 			$current_tab = $current_tab[0];
 		}
 	}else{
-		$current_tab = $_GET["tab"];
+		$current_tab = $_GET['tab'];
 	}
 	$_SESSION['sess_settings_tab'] = $current_tab;
 
@@ -109,41 +109,41 @@ default:
 	print "</ul></nav></div>\n";
 	print "</tr></table><table width='100%' cellpadding='0' cellspacing='0' border='0'><tr><td>\n";
 
-	html_start_box("<strong>Cacti Settings (" . $tabs[$current_tab] . ")</strong>", "100%", "", "3", "center", "");
+	html_start_box('<strong>Cacti Settings (' . $tabs[$current_tab] . ')</strong>', '100%', '', '3', 'center', '');
 
 	$form_array = array();
 
 	while (list($field_name, $field_array) = each($settings[$current_tab])) {
 		$form_array += array($field_name => $field_array);
 
-		if ((isset($field_array["items"])) && (is_array($field_array["items"]))) {
-			while (list($sub_field_name, $sub_field_array) = each($field_array["items"])) {
+		if ((isset($field_array['items'])) && (is_array($field_array['items']))) {
+			while (list($sub_field_name, $sub_field_array) = each($field_array['items'])) {
 				if (config_value_exists($sub_field_name)) {
-					$form_array[$field_name]["items"][$sub_field_name]["form_id"] = 1;
+					$form_array[$field_name]['items'][$sub_field_name]['form_id'] = 1;
 				}
 
-				$form_array[$field_name]["items"][$sub_field_name]["value"] = db_fetch_cell("SELECT value FROM settings WHERE name='$sub_field_name'");
+				$form_array[$field_name]['items'][$sub_field_name]['value'] = db_fetch_cell_prepared('SELECT value FROM settings WHERE name = ?', array($sub_field_name));
 			}
 		}else{
 			if (config_value_exists($field_name)) {
-				$form_array[$field_name]["form_id"] = 1;
+				$form_array[$field_name]['form_id'] = 1;
 			}
 
-			$form_array[$field_name]["value"] = db_fetch_cell("SELECT value FROM settings WHERE name='$field_name'");
+			$form_array[$field_name]['value'] = db_fetch_cell_prepared('SELECT value FROM settings WHERE name = ?', array($field_name));
 		}
 	}
 
 	draw_edit_form(
 		array(
-			"config" => array(),
-			"fields" => $form_array)
+			'config' => array(),
+			'fields' => $form_array)
 			);
 
 	html_end_box();
 
-	form_hidden_box("tab", $current_tab, "");
+	form_hidden_box('tab', $current_tab, '');
 
-	form_save_button("", "save");
+	form_save_button('', 'save');
 
 	print "</td></tr></table>\n";
 
@@ -164,7 +164,7 @@ default:
 			});
 		});
 
-		$('input[value="Save"]').click(function(event) {
+		$('input[value='Save']').click(function(event) {
 			event.preventDefault();
 			if (themeChanged != true) {
 				$.post('settings.php?tab='+$('#tab').val()+'&header=false', $('input, select, textarea').serialize()).done(function(data) {

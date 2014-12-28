@@ -27,7 +27,7 @@ include('./include/auth.php');
 include_once('./lib/html_tree.php');
 include_once('./lib/timespan_settings.php');
 
-define("MAX_DISPLAY_PAGES", 21);
+define('MAX_DISPLAY_PAGES', 21);
 
 /* ================= input validation ================= */
 input_validate_input_number(get_request_var_request('branch_id'));
@@ -66,15 +66,15 @@ if ($_REQUEST['action'] != 'tree_content') {
 }
 
 if (read_config_option('auth_method') != 0) {
-	$current_user = db_fetch_row('SELECT * FROM user_auth WHERE id=' . $_SESSION['sess_user_id']);
+	$current_user = db_fetch_row_prepared('SELECT * FROM user_auth WHERE id = ?', array($_SESSION['sess_user_id']));
 }
 
 if (isset($_REQUEST['hide'])) {
 	if (($_REQUEST['hide'] == '0') || ($_REQUEST['hide'] == '1')) {
 		/* only update expand/contract info is this user has rights to keep their own settings */
 		if ((isset($current_user)) && ($current_user['graph_settings'] == 'on')) {
-			db_execute('DELETE FROM settings_tree WHERE graph_tree_item_id=' . $_REQUEST['branch_id'] . ' AND user_id=' . $_SESSION['sess_user_id']);
-			db_execute('INSERT INTO settings_tree (graph_tree_item_id,user_id,status) values (' . $_REQUEST['branch_id'] . ',' . $_SESSION['sess_user_id'] . ',' . $_REQUEST['hide'] . ')');
+			db_execute_prepared('DELETE FROM settings_tree WHERE graph_tree_item_id = ? AND user_id = ?', array($_REQUEST['branch_id'], $_SESSION['sess_user_id']));
+			db_execute_prepared('INSERT INTO settings_tree (graph_tree_item_id, user_id,status) values (?, ?, ?)', array($_REQUEST['branch_id'], $_SESSION['sess_user_id'], $_REQUEST['hide']));
 		}
 	}
 }
@@ -124,7 +124,7 @@ case 'tree_content':
 
 	if (isset($_REQUEST['tree_id'])) {
 		if (!is_tree_allowed($_REQUEST['tree_id'])) {
-			header("Location: permission_denied.php");
+			header('Location: permission_denied.php');
 			exit;
 		}
 
@@ -214,7 +214,7 @@ case 'preview':
 	load_current_session_value('graph_remove', 'sess_graph_view_graph_remove', '');
 
 	/* include graph view filter selector */
-	html_start_box('<strong>Graph Filters</strong>' . (isset($_REQUEST['style']) && strlen($_REQUEST['style']) ? ' [ Custom Graph List Applied - Filtering FROM List ]':''), '100%', "", '3', 'center', '');
+	html_start_box('<strong>Graph Filters</strong>' . (isset($_REQUEST['style']) && strlen($_REQUEST['style']) ? ' [ Custom Graph List Applied - Filtering FROM List ]':''), '100%', '', '3', 'center', '');
 
 	?>
 	<script type="text/javascript" >
@@ -515,10 +515,10 @@ case 'preview':
 
 	$total_rows = 0;
 
-	$sql_where  = (strlen($_REQUEST['filter']) ? "gtg.title_cache LIKE '%%" . get_request_var_request('filter') . "%%'":"");
+	$sql_where  = (strlen($_REQUEST['filter']) ? "gtg.title_cache LIKE '%%" . get_request_var_request('filter') . "%%'":'');
 	$sql_where .= (strlen($sql_or) && strlen($sql_where) ? ' AND ':'') . $sql_or;
-	$sql_where .= ($_REQUEST['host_id'] > 0 ? (strlen($sql_where) ? ' AND':'') . " gl.host_id=" . $_REQUEST['host_id']:"");
-	$sql_where .= ($_REQUEST['graph_template_id'] > 0 ? (strlen($sql_where) ? ' AND':'') . " gl.graph_template_id=" . $_REQUEST['graph_template_id']:"");
+	$sql_where .= ($_REQUEST['host_id'] > 0 ? (strlen($sql_where) ? ' AND':'') . ' gl.host_id=' . $_REQUEST['host_id']:'');
+	$sql_where .= ($_REQUEST['graph_template_id'] > 0 ? (strlen($sql_where) ? ' AND':'') . ' gl.graph_template_id=' . $_REQUEST['graph_template_id']:'');
 
 	$limit      = ($_REQUEST['rows']*($_REQUEST['page']-1)) . ',' . $_REQUEST['rows'];
 	$order      = 'gtg.title_cache';
@@ -534,9 +534,9 @@ case 'preview':
 
 	$nav_url = preg_replace('/((\?|&)host_id=[0-9]+|(\?|&)filter=[a-zA-Z0-9]*)/', '', $nav_url);
 
-	html_start_box('', '100%', "", '3', 'center', '');
+	html_start_box('', '100%', '', '3', 'center', '');
 
-	$nav = html_nav_bar($nav_url, MAX_DISPLAY_PAGES, get_request_var_request("page"), get_request_var_request("rows"), $total_rows, get_request_var_request('columns'), "Graphs", 'page', 'main');
+	$nav = html_nav_bar($nav_url, MAX_DISPLAY_PAGES, get_request_var_request('page'), get_request_var_request('rows'), $total_rows, get_request_var_request('columns'), 'Graphs', 'page', 'main');
 
 	print $nav;
 
@@ -749,7 +749,7 @@ case 'list':
 
 	html_start_box('', '100%', '', '3', 'center', '');
 
-	$nav = html_nav_bar("graph_view.php?action=list", MAX_DISPLAY_PAGES, get_request_var_request("page"), get_request_var_request("rows"), $total_rows, 5, "Graphs", 'page', 'main');
+	$nav = html_nav_bar('graph_view.php?action=list', MAX_DISPLAY_PAGES, get_request_var_request('page'), get_request_var_request('rows'), $total_rows, 5, 'Graphs', 'page', 'main');
 
 	print $nav;
 
@@ -891,4 +891,3 @@ case 'list':
 	break;
 }
 
-?>

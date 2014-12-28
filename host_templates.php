@@ -22,20 +22,20 @@
  +-------------------------------------------------------------------------+
 */
 
-include("./include/auth.php");
-include_once("./lib/utility.php");
+include('./include/auth.php');
+include_once('./lib/utility.php');
 
-define("MAX_DISPLAY_PAGES", 21);
+define('MAX_DISPLAY_PAGES', 21);
 
 $host_actions = array(
-	1 => "Delete",
-	2 => "Duplicate"
+	1 => 'Delete',
+	2 => 'Duplicate'
 	);
 
 /* set default action */
-if (!isset($_REQUEST["action"])) { $_REQUEST["action"] = ""; }
+if (!isset($_REQUEST['action'])) { $_REQUEST['action'] = ''; }
 
-switch ($_REQUEST["action"]) {
+switch ($_REQUEST['action']) {
 	case 'save':
 		form_save();
 
@@ -47,12 +47,12 @@ switch ($_REQUEST["action"]) {
 	case 'item_remove_gt':
 		template_item_remove_gt();
 
-		header("Location: host_templates.php?action=edit&id=" . $_GET["host_template_id"]);
+		header('Location: host_templates.php?action=edit&id=' . $_GET['host_template_id']);
 		break;
 	case 'item_remove_dq':
 		template_item_remove_dq();
 
-		header("Location: host_templates.php?action=edit&id=" . $_GET["host_template_id"]);
+		header('Location: host_templates.php?action=edit&id=' . $_GET['host_template_id']);
 		break;
 	case 'edit':
 		top_header();
@@ -76,29 +76,29 @@ switch ($_REQUEST["action"]) {
 
 function form_save() {
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_post("host_template_id"));
-	input_validate_input_number(get_request_var_post("snmp_query_id"));
-	input_validate_input_number(get_request_var_post("graph_template_id"));
+	input_validate_input_number(get_request_var_post('host_template_id'));
+	input_validate_input_number(get_request_var_post('snmp_query_id'));
+	input_validate_input_number(get_request_var_post('graph_template_id'));
 	/* ==================================================== */
 
-	if (isset($_POST["save_component_template"])) {
+	if (isset($_POST['save_component_template'])) {
 		$redirect_back = false;
 
-		$save["id"] = $_POST["id"];
-		$save["hash"] = get_hash_host_template($_POST["id"]);
-		$save["name"] = form_input_validate($_POST["name"], "name", "", false, 3);
+		$save['id'] = $_POST['id'];
+		$save['hash'] = get_hash_host_template($_POST['id']);
+		$save['name'] = form_input_validate($_POST['name'], 'name', '', false, 3);
 
 		if (!is_error_message()) {
-			$host_template_id = sql_save($save, "host_template");
+			$host_template_id = sql_save($save, 'host_template');
 
 			if ($host_template_id) {
 				raise_message(1);
 
-				if (isset($_POST["add_gt_x"])) {
-					db_execute("REPLACE INTO host_template_graph (host_template_id,graph_template_id) values($host_template_id," . $_POST["graph_template_id"] . ")");
+				if (isset($_POST['add_gt_x'])) {
+					db_execute_prepared('REPLACE INTO host_template_graph (host_template_id, graph_template_id) VALUES (?, ?)', array($host_template_id, $_POST['graph_template_id']));
 					$redirect_back = true;
-				}elseif (isset($_POST["add_dq_x"])) {
-					db_execute("REPLACE INTO host_template_snmp_query (host_template_id,snmp_query_id) values($host_template_id," . $_POST["snmp_query_id"] . ")");
+				}elseif (isset($_POST['add_dq_x'])) {
+					db_execute_prepared('REPLACE INTO host_template_snmp_query (host_template_id, snmp_query_id) VALUES (?, ?)', array($host_template_id, $_POST['snmp_query_id']));
 					$redirect_back = true;
 				}
 			}else{
@@ -106,7 +106,7 @@ function form_save() {
 			}
 		}
 
-		header("Location: host_templates.php?action=edit&id=" . (empty($host_template_id) ? $_POST["id"] : $host_template_id));
+		header('Location: host_templates.php?action=edit&id=' . (empty($host_template_id) ? $_POST['id'] : $host_template_id));
 	}
 }
 
@@ -118,45 +118,45 @@ function form_actions() {
 	global $host_actions;
 
 	/* ================= input validation ================= */
-	input_validate_input_regex(get_request_var_post('drp_action'), "^([a-zA-Z0-9_]+)$");
+	input_validate_input_regex(get_request_var_post('drp_action'), '^([a-zA-Z0-9_]+)$');
 	/* ==================================================== */
 
 	/* if we are to save this form, instead of display it */
-	if (isset($_POST["selected_items"])) {
-		$selected_items = unserialize(stripslashes($_POST["selected_items"]));
+	if (isset($_POST['selected_items'])) {
+		$selected_items = unserialize(stripslashes($_POST['selected_items']));
 
-		if ($_POST["drp_action"] == "1") { /* delete */
-			db_execute("DELETE FROM host_template WHERE " . array_to_sql_or($selected_items, "id"));
-			db_execute("DELETE FROM host_template_snmp_query WHERE " . array_to_sql_or($selected_items, "host_template_id"));
-			db_execute("DELETE FROM host_template_graph WHERE " . array_to_sql_or($selected_items, "host_template_id"));
+		if ($_POST['drp_action'] == '1') { /* delete */
+			db_execute('DELETE FROM host_template WHERE ' . array_to_sql_or($selected_items, 'id'));
+			db_execute('DELETE FROM host_template_snmp_query WHERE ' . array_to_sql_or($selected_items, 'host_template_id'));
+			db_execute('DELETE FROM host_template_graph WHERE ' . array_to_sql_or($selected_items, 'host_template_id'));
 
 			/* "undo" any device that is currently using this template */
-			db_execute("UPDATE host SET host_template_id=0 WHERE " . array_to_sql_or($selected_items, "host_template_id"));
-		}elseif ($_POST["drp_action"] == "2") { /* duplicate */
+			db_execute('UPDATE host SET host_template_id=0 WHERE ' . array_to_sql_or($selected_items, 'host_template_id'));
+		}elseif ($_POST['drp_action'] == '2') { /* duplicate */
 			for ($i=0;($i<count($selected_items));$i++) {
 				/* ================= input validation ================= */
 				input_validate_input_number($selected_items[$i]);
 				/* ==================================================== */
 
-				duplicate_host_template($selected_items[$i], $_POST["title_format"]);
+				duplicate_host_template($selected_items[$i], $_POST['title_format']);
 			}
 		}
 
-		header("Location: host_templates.php");
+		header('Location: host_templates.php');
 		exit;
 	}
 
 	/* setup some variables */
-	$host_list = ""; $i = 0;
+	$host_list = ''; $i = 0;
 
 	/* loop through each of the host templates selected on the previous page and get more info about them */
 	while (list($var,$val) = each($_POST)) {
-		if (preg_match("/^chk_([0-9]+)$/", $var, $matches)) {
+		if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
 			/* ================= input validation ================= */
 			input_validate_input_number($matches[1]);
 			/* ==================================================== */
 
-			$host_list .= "<li>" . htmlspecialchars(db_fetch_cell("SELECT name FROM host_template WHERE id=" . $matches[1])) . "<br>";
+			$host_list .= '<li>' . htmlspecialchars(db_fetch_cell_prepared('SELECT name FROM host_template WHERE id = ?'), array($matches[1])) . '<br>';
 			$host_array[$i] = $matches[1];
 
 			$i++;
@@ -165,12 +165,12 @@ function form_actions() {
 
 	top_header();
 
-	html_start_box("<strong>" . $host_actions{$_POST["drp_action"]} . "</strong>", "60%", "", "3", "center", "");
+	html_start_box('<strong>' . $host_actions{$_POST['drp_action']} . '</strong>', '60%', '', '3', 'center', '');
 
 	print "<form action='host_templates.php' autocomplete='off' method='post'>\n";
 
 	if (isset($host_array) && sizeof($host_array)) {
-		if ($_POST["drp_action"] == "1") { /* delete */
+		if ($_POST['drp_action'] == '1') { /* delete */
 			print "	<tr>
 					<td class='textArea'>
 						<p>Are you sure you want to delete the following Host Template(s)? All Devices currently associated
@@ -180,13 +180,13 @@ function form_actions() {
 				</tr>\n
 				";
 			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Delete Host Template(s)'>";
-		}elseif ($_POST["drp_action"] == "2") { /* duplicate */
+		}elseif ($_POST['drp_action'] == '2') { /* duplicate */
 			print "	<tr>
 					<td class='textArea'>
 						<p>When you click \"Continue\", the following Host Template(s) will be duplicated. You can
 						optionally change the title format for the new Host Template(s).</p>
 						<p><ul>$host_list</ul></p>
-						<p><strong>Title Format:</strong><br>"; form_text_box("title_format", "<template_title> (1)", "", "255", "30", "text"); print "</p>
+						<p><strong>Title Format:</strong><br>"; form_text_box('title_format', '<template_title> (1)', '', '255', '30', 'text'); print "</p>
 					</td>
 				</tr>\n
 				";
@@ -201,7 +201,7 @@ function form_actions() {
 			<td align='right' class='saveRow'>
 				<input type='hidden' name='action' value='actions'>
 				<input type='hidden' name='selected_items' value='" . (isset($host_array) ? serialize($host_array) : '') . "'>
-				<input type='hidden' name='drp_action' value='" . $_POST["drp_action"] . "'>
+				<input type='hidden' name='drp_action' value='" . $_POST['drp_action'] . "'>
 				$save_html
 			</td>
 		</tr>
@@ -218,42 +218,42 @@ function form_actions() {
 
 function template_item_remove_gt() {
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var("id"));
-	input_validate_input_number(get_request_var("host_template_id"));
+	input_validate_input_number(get_request_var('id'));
+	input_validate_input_number(get_request_var('host_template_id'));
 	/* ==================================================== */
 
-	db_execute("DELETE FROM host_template_graph WHERE graph_template_id=" . $_GET["id"] . " AND host_template_id=" . $_GET["host_template_id"]);
+	db_execute_prepared('DELETE FROM host_template_graph WHERE graph_template_id = ? AND host_template_id = ?', array(get_request_var('id'), get_request_var('host_template_id')));
 }
 
 function template_item_remove_dq() {
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var("id"));
-	input_validate_input_number(get_request_var("host_template_id"));
+	input_validate_input_number(get_request_var('id'));
+	input_validate_input_number(get_request_var('host_template_id'));
 	/* ==================================================== */
 
-	db_execute("DELETE FROM host_template_snmp_query WHERE snmp_query_id=" . $_GET["id"] . " AND host_template_id=" . $_GET["host_template_id"]);
+	db_execute_prepared('DELETE FROM host_template_snmp_query WHERE snmp_query_id = ? AND host_template_id = ?', array(get_request_var('id'), get_request_var('host_template_id')));
 }
 
 function template_edit() {
 	global $fields_host_template_edit;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var("id"));
+	input_validate_input_number(get_request_var('id'));
 	/* ==================================================== */
 
-	if (!empty($_GET["id"])) {
-		$host_template = db_fetch_row("SELECT * FROM host_template WHERE id=" . $_GET["id"]);
-		$header_label = "[edit: " . $host_template["name"] . "]";
+	if (!empty($_GET['id'])) {
+		$host_template = db_fetch_row_prepared('SELECT * FROM host_template WHERE id = ?', array(get_request_var('id')));
+		$header_label = '[edit: ' . $host_template['name'] . ']';
 	}else{
-		$header_label = "[new]";
-		$_GET["id"] = 0;
+		$header_label = '[new]';
+		$_GET['id'] = 0;
 	}
 
-	html_start_box("<strong>Host Templates</strong> " . htmlspecialchars($header_label), "100%", "", "3", "center", "");
+	html_start_box('<strong>Host Templates</strong> ' . htmlspecialchars($header_label), '100%', '', '3', 'center', '');
 
 	draw_edit_form(array(
-		"config" => array("form_name" => "chk"),
-		"fields" => inject_form_variables($fields_host_template_edit, (isset($host_template) ? $host_template : array()))
+		'config' => array('form_name' => 'chk'),
+		'fields' => inject_form_variables($fields_host_template_edit, (isset($host_template) ? $host_template : array()))
 	));
 
 	/* we have to hide this button to make a form change in the main form trigger the correct
@@ -262,16 +262,16 @@ function template_edit() {
 
 	html_end_box();
 
-	if (!empty($_GET["id"])) {
-		html_start_box("<strong>Associated Graph Templates</strong>", "100%", "", "3", "center", "");
+	if (!empty($_GET['id'])) {
+		html_start_box('<strong>Associated Graph Templates</strong>', '100%', '', '3', 'center', '');
 
-		$selected_graph_templates = db_fetch_assoc("select
+		$selected_graph_templates = db_fetch_assoc_prepared('SELECT
 			graph_templates.id,
 			graph_templates.name
-			from (graph_templates,host_template_graph)
-			where graph_templates.id=host_template_graph.graph_template_id
-			and host_template_graph.host_template_id=" . $_GET["id"] . "
-			order by graph_templates.name");
+			FROM (graph_templates,host_template_graph)
+			WHERE graph_templates.id = host_template_graph.graph_template_id
+			AND host_template_graph.host_template_id = ?
+			ORDER BY graph_templates.name', array(get_request_var('id')));
 
 		$i = 0;
 		if (sizeof($selected_graph_templates) > 0) {
@@ -279,10 +279,10 @@ function template_edit() {
 				form_alternate_row('', true);
 				?>
 					<td style="padding: 4px;">
-						<strong><?php print $i;?>)</strong> <?php print htmlspecialchars($item["name"]);?>
+						<strong><?php print $i;?>)</strong> <?php print htmlspecialchars($item['name']);?>
 					</td>
 					<td align="right">
-						<a href='<?php print htmlspecialchars("host_templates.php?action=item_remove_gt&id=" . $item["id"] . "&host_template_id=" . $_GET["id"]);?>'><img src='images/delete_icon.gif' style="height:10px;width:10px;" border='0' alt='Delete'></a>
+						<a href='<?php print htmlspecialchars('host_templates.php?action=item_remove_gt&id=' . $item['id'] . '&host_template_id=' . $_GET['id']);?>'><img src='images/delete_icon.gif' style="height:10px;width:10px;" border='0' alt='Delete'></a>
 					</td>
 				<?php
 				form_end_row();
@@ -290,7 +290,7 @@ function template_edit() {
 				$i++;
 			}
 		}else{ 
-			print "<tr><td><em>No associated graph templates.</em></td></tr>"; 
+			print '<tr><td><em>No associated graph templates.</em></td></tr>'; 
 		}
 
 		?>
@@ -298,13 +298,13 @@ function template_edit() {
 			<td colspan="2">
 				<table cellspacing="0" cellpadding="1" width="100%">
 					<td nowrap>Add Graph Template:&nbsp;
-						<?php form_dropdown("graph_template_id",db_fetch_assoc("SELECT
+						<?php form_dropdown('graph_template_id',db_fetch_assoc_prepared('SELECT
 							graph_templates.id,
 							graph_templates.name
-							FROM graph_templates left join host_template_graph
-							ON (graph_templates.id=host_template_graph.graph_template_id AND host_template_graph.host_template_id=" . $_GET["id"] . ")
+							FROM graph_templates LEFT JOIN host_template_graph
+							ON (graph_templates.id = host_template_graph.graph_template_id AND host_template_graph.host_template_id = ?)
 							WHERE host_template_graph.host_template_id is null
-							ORDER BY graph_templates.name"),"name","id","","","");?>
+							ORDER BY graph_templates.name', array(get_request_var('id'))),'name','id','','','');?>
 					</td>
 					<td align="right">
 						&nbsp;<input type="submit" value="Add" name="add_gt_x" title="Add Graph Template to Host Template">
@@ -316,15 +316,15 @@ function template_edit() {
 		<?php
 		html_end_box();
 
-		html_start_box("<strong>Associated Data Queries</strong>", "100%", "", "3", "center", "");
+		html_start_box('<strong>Associated Data Queries</strong>', '100%', '', '3', 'center', '');
 
-		$selected_data_queries = db_fetch_assoc("select
+		$selected_data_queries = db_fetch_assoc_prepared('SELECT
 			snmp_query.id,
 			snmp_query.name
-			from (snmp_query,host_template_snmp_query)
-			where snmp_query.id=host_template_snmp_query.snmp_query_id
-			and host_template_snmp_query.host_template_id=" . $_GET["id"] . "
-			order by snmp_query.name");
+			FROM (snmp_query, host_template_snmp_query)
+			WHERE snmp_query.id = host_template_snmp_query.snmp_query_id
+			AND host_template_snmp_query.host_template_id = ?
+			ORDER BY snmp_query.name', array(get_request_var('id')));
 
 		$i = 0;
 		if (sizeof($selected_data_queries) > 0) {
@@ -332,10 +332,10 @@ function template_edit() {
 				form_alternate_row('', true);
 				?>
 					<td style="padding: 4px;">
-						<strong><?php print $i;?>)</strong> <?php print htmlspecialchars($item["name"]);?>
+						<strong><?php print $i;?>)</strong> <?php print htmlspecialchars($item['name']);?>
 					</td>
 					<td align='right'>
-						<a href='<?php print htmlspecialchars("host_templates.php?action=item_remove_dq&id=" . $item["id"] . "&host_template_id=" . $_GET["id"]);?>'><img src='images/delete_icon.gif' style="height:10px;width:10px;" border='0' alt='Delete'></a>
+						<a href='<?php print htmlspecialchars('host_templates.php?action=item_remove_dq&id=' . $item['id'] . '&host_template_id=' . $_GET['id']);?>'><img src='images/delete_icon.gif' style="height:10px;width:10px;" border='0' alt='Delete'></a>
 					</td>
 				<?php
 				form_end_row();
@@ -343,7 +343,7 @@ function template_edit() {
 				$i++;
 			}
 		}else{ 
-			print "<tr><td><em>No associated data queries.</em></td></tr>"; 
+			print '<tr><td><em>No associated data queries.</em></td></tr>'; 
 		}
 
 		?>
@@ -351,13 +351,13 @@ function template_edit() {
 			<td colspan="2">
 				<table cellspacing="0" cellpadding="1" width="100%">
 					<td nowrap>Add Data Query:&nbsp;
-						<?php form_dropdown("snmp_query_id",db_fetch_assoc("SELECT
+						<?php form_dropdown('snmp_query_id',db_fetch_assoc_prepared('SELECT
 							snmp_query.id,
 							snmp_query.name
-							FROM snmp_query left join host_template_snmp_query
-							ON (snmp_query.id=host_template_snmp_query.snmp_query_id AND host_template_snmp_query.host_template_id=" . $_GET["id"] . ")
+							FROM snmp_query LEFT JOIN host_template_snmp_query
+							ON (snmp_query.id = host_template_snmp_query.snmp_query_id AND host_template_snmp_query.host_template_id = ?)
 							WHERE host_template_snmp_query.host_template_id is null
-							ORDER BY snmp_query.name"),"name","id","","","");?>
+							ORDER BY snmp_query.name', array(get_request_var('id'))),'name','id','','','');?>
 					</td>
 					<td align="right">
 						&nbsp;<input type="submit" value="Add" name="add_dq_x" title="Add Data Query to Host Template">
@@ -370,52 +370,52 @@ function template_edit() {
 		html_end_box();
 	}
 
-	form_save_button("host_templates.php", "return");
+	form_save_button('host_templates.php', 'return');
 }
 
 function template() {
 	global $host_actions, $item_rows;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_request("page"));
-	input_validate_input_number(get_request_var_request("rows"));
+	input_validate_input_number(get_request_var_request('page'));
+	input_validate_input_number(get_request_var_request('rows'));
 	/* ==================================================== */
 
 	/* clean up has_hosts string */
-	if (isset($_REQUEST["has_hosts"])) {
-		$_REQUEST["has_hosts"] = sanitize_search_string(get_request_var("has_hosts"));
+	if (isset($_REQUEST['has_hosts'])) {
+		$_REQUEST['has_hosts'] = sanitize_search_string(get_request_var('has_hosts'));
 	}
 
 	/* clean up search string */
-	if (isset($_REQUEST["filter"])) {
-		$_REQUEST["filter"] = sanitize_search_string(get_request_var("filter"));
+	if (isset($_REQUEST['filter'])) {
+		$_REQUEST['filter'] = sanitize_search_string(get_request_var('filter'));
 	}
 
 	/* clean up sort_column */
-	if (isset($_REQUEST["sort_column"])) {
-		$_REQUEST["sort_column"] = sanitize_search_string(get_request_var("sort_column"));
+	if (isset($_REQUEST['sort_column'])) {
+		$_REQUEST['sort_column'] = sanitize_search_string(get_request_var('sort_column'));
 	}
 
 	/* clean up sort_direction string */
-	if (isset($_REQUEST["sort_direction"])) {
-		$_REQUEST["sort_direction"] = sanitize_search_string(get_request_var("sort_direction"));
+	if (isset($_REQUEST['sort_direction'])) {
+		$_REQUEST['sort_direction'] = sanitize_search_string(get_request_var('sort_direction'));
 	}
 
 	/* if the user pushed the 'clear' button */
-	if (isset($_REQUEST["clear_x"])) {
-		kill_session_var("sess_host_template_current_page");
-		kill_session_var("sess_host_template_hosts");
-		kill_session_var("sess_host_template_filter");
-		kill_session_var("sess_default_rows");
-		kill_session_var("sess_host_template_sort_column");
-		kill_session_var("sess_host_template_sort_direction");
+	if (isset($_REQUEST['clear_x'])) {
+		kill_session_var('sess_host_template_current_page');
+		kill_session_var('sess_host_template_hosts');
+		kill_session_var('sess_host_template_filter');
+		kill_session_var('sess_default_rows');
+		kill_session_var('sess_host_template_sort_column');
+		kill_session_var('sess_host_template_sort_direction');
 
-		unset($_REQUEST["page"]);
-		unset($_REQUEST["has_hosts"]);
-		unset($_REQUEST["filter"]);
-		unset($_REQUEST["rows"]);
-		unset($_REQUEST["sort_column"]);
-		unset($_REQUEST["sort_direction"]);
+		unset($_REQUEST['page']);
+		unset($_REQUEST['has_hosts']);
+		unset($_REQUEST['filter']);
+		unset($_REQUEST['rows']);
+		unset($_REQUEST['sort_column']);
+		unset($_REQUEST['sort_direction']);
 	}else{
 		$changed = 0;
 		$changed += check_changed('has_hosts', 'sess_host_template_has_hosts');
@@ -428,16 +428,16 @@ function template() {
 	}
 
 	/* remember these search fields in session vars so we don't have to keep passing them around */
-	load_current_session_value("page", "sess_host_template_current_page", "1");
-	load_current_session_value("has_hosts", "sess_host_template_has_hosts", "true");
-	load_current_session_value("filter", "sess_host_template_filter", "");
-	load_current_session_value("sort_column", "sess_host_template_sort_column", "name");
-	load_current_session_value("sort_direction", "sess_host_template_sort_direction", "ASC");
-	load_current_session_value("rows", "sess_default_rows", read_config_option('num_rows_table'));
+	load_current_session_value('page', 'sess_host_template_current_page', '1');
+	load_current_session_value('has_hosts', 'sess_host_template_has_hosts', 'true');
+	load_current_session_value('filter', 'sess_host_template_filter', '');
+	load_current_session_value('sort_column', 'sess_host_template_sort_column', 'name');
+	load_current_session_value('sort_direction', 'sess_host_template_sort_direction', 'ASC');
+	load_current_session_value('rows', 'sess_default_rows', read_config_option('num_rows_table'));
 
 	display_output_messages();
 
-	html_start_box("<strong>Host Templates</strong>", "100%", "", "3", "center", "host_templates.php?action=edit");
+	html_start_box('<strong>Host Templates</strong>', '100%', '', '3', 'center', 'host_templates.php?action=edit');
 
 	?>
 	<tr class='even noprint'>
@@ -449,7 +449,7 @@ function template() {
 						Search:
 					</td>
 					<td>
-						<input id='filter' type="text" name="filter" size="25" value="<?php print htmlspecialchars(get_request_var_request("filter"));?>">
+						<input id='filter' type="text" name="filter" size="25" value="<?php print htmlspecialchars(get_request_var_request('filter'));?>">
 					</td>
 					<td style='white-space:nowrap;'>
 						Host Templates:
@@ -459,7 +459,7 @@ function template() {
 							<?php
 							if (sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var_request("rows") == $key) { print " selected"; } print ">" . htmlspecialchars($value) . "</option>\n";
+									print "<option value='" . $key . "'"; if (get_request_var_request('rows') == $key) { print ' selected'; } print '>' . htmlspecialchars($value) . "</option>\n";
 								}
 							}
 							?>
@@ -522,15 +522,15 @@ function template() {
 
 	/* form the 'where' clause for our main sql query */
 	if (strlen($_REQUEST['filter'])) {
-		$sql_where = "WHERE (host_template.name LIKE '%%" . get_request_var_request("filter") . "%%')";
+		$sql_where = "WHERE (host_template.name LIKE '%%" . get_request_var_request('filter') . "%%')";
 	}else{
-		$sql_where = "";
+		$sql_where = '';
 	}
 
 	/* print checkbox form for validation */
 	print "<form name='chk' method='post' action='host_templates.php'>\n";
 
-	html_start_box("", "100%", "", "3", "center", "");
+	html_start_box('', '100%', '', '3', 'center', '');
 
 	if ($_REQUEST['has_hosts'] == 'true') {
 		$sql_having = 'HAVING hosts>0';
@@ -556,20 +556,20 @@ function template() {
 		$sql_where
 		GROUP BY host_template.id
 		$sql_having
-		ORDER BY " . get_request_var_request("sort_column") . " " . get_request_var_request("sort_direction") .
-		" LIMIT " . (get_request_var_request("rows")*(get_request_var_request("page")-1)) . "," . get_request_var_request("rows"));
+		ORDER BY " . get_request_var_request('sort_column') . ' ' . get_request_var_request('sort_direction') .
+		' LIMIT ' . (get_request_var_request('rows')*(get_request_var_request('page')-1)) . ',' . get_request_var_request('rows'));
 
-	$nav = html_nav_bar("host_templates.php?filter=" . get_request_var_request("filter"), MAX_DISPLAY_PAGES, get_request_var_request("page"), get_request_var_request("rows"), $total_rows, 4, 'Host Templates', 'page', 'main');
+	$nav = html_nav_bar('host_templates.php?filter=' . get_request_var_request('filter'), MAX_DISPLAY_PAGES, get_request_var_request('page'), get_request_var_request('rows'), $total_rows, 4, 'Host Templates', 'page', 'main');
 
 	print $nav;
 
 	$display_text = array(
-		"name" => array("Template Title", "ASC"),
-		"hosts" => array('display' => "Hosts", 'align' => 'right', 'sort' => "DESC"),
-		"host_template.id" => array('display' => "ID", 'align' => 'right', 'sort' => "ASC")
+		'name' => array('Template Title', 'ASC'),
+		'hosts' => array('display' => 'Hosts', 'align' => 'right', 'sort' => 'DESC'),
+		'host_template.id' => array('display' => 'ID', 'align' => 'right', 'sort' => 'ASC')
 	);
 
-	html_header_sort_checkbox($display_text, get_request_var_request("sort_column"), get_request_var_request("sort_direction"), false);
+	html_header_sort_checkbox($display_text, get_request_var_request('sort_column'), get_request_var_request('sort_direction'), false);
 
 	$i = 0;
 	if (sizeof($template_list) > 0) {
@@ -580,11 +580,11 @@ function template() {
 				$disable = false;
 			}
 
-			form_alternate_row('line' . $template["id"], true, $disable);
-			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars("host_templates.php?action=edit&id=" . $template["id"]) . "'>" . (strlen(get_request_var_request("filter")) ? preg_replace("/(" . preg_quote(get_request_var_request("filter"), "/") . ")/i", "<span class='filteredValue'>\\1</span>", htmlspecialchars($template["name"])) : htmlspecialchars($template["name"])) . "</a>", $template["id"]);
-			form_selectable_cell(number_format($template["hosts"]), $template["id"], '', 'text-align:right');
-			form_selectable_cell($template["id"], $template["id"], '', 'text-align:right');
-			form_checkbox_cell($template["name"], $template["id"], $disable);
+			form_alternate_row('line' . $template['id'], true, $disable);
+			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars('host_templates.php?action=edit&id=' . $template['id']) . "'>" . (strlen(get_request_var_request('filter')) ? preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($template['name'])) : htmlspecialchars($template['name'])) . '</a>', $template['id']);
+			form_selectable_cell(number_format($template['hosts']), $template['id'], '', 'text-align:right');
+			form_selectable_cell($template['id'], $template['id'], '', 'text-align:right');
+			form_checkbox_cell($template['name'], $template['id'], $disable);
 			form_end_row();
 		}
 		/* put the nav bar on the bottom as well */
@@ -599,5 +599,5 @@ function template() {
 
 	print "</form>\n";
 }
-?>
+
 

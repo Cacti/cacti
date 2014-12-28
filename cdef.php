@@ -162,8 +162,8 @@ function form_actions() {
 		$selected_items = unserialize(stripslashes($_POST['selected_items']));
 
 		if ($_POST['drp_action'] == '1') { /* delete */
-			db_execute('delete from cdef where ' . array_to_sql_or($selected_items, 'id'));
-			db_execute('delete from cdef_items where ' . array_to_sql_or($selected_items, 'cdef_id'));
+			db_execute('DELETE FROM cdef WHERE ' . array_to_sql_or($selected_items, 'id'));
+			db_execute('DELETE FROM cdef_items WHERE ' . array_to_sql_or($selected_items, 'cdef_id'));
 
 		}elseif ($_POST['drp_action'] == '2') { /* duplicate */
 			for ($i=0;($i<count($selected_items));$i++) {
@@ -189,7 +189,7 @@ function form_actions() {
 			input_validate_input_number($matches[1]);
 			/* ==================================================== */
 
-			$cdef_list .= '<li>' . htmlspecialchars(db_fetch_cell('select name from cdef where id=' . $matches[1])) . '</li>';
+			$cdef_list .= '<li>' . htmlspecialchars(db_fetch_cell_prepared('SELECT name FROM cdef WHERE id = ?', array($matches[1]))) . '</li>';
 			$cdef_array[$i] = $matches[1];
 
 			$i++;
@@ -218,7 +218,7 @@ function form_actions() {
 						<p>When you click \"Continue\", the following CDEFs will be duplicated. You can
 						optionally change the title format for the new CDEFs.</p>
 						<p><ul>$cdef_list</ul></p>
-						<p><strong>Title Format:</strong><br>"; form_text_box("title_format", "<cdef_title> (1)", "", "255", "30", "text"); print "</p>
+						<p><strong>Title Format:</strong><br>"; form_text_box('title_format', '<cdef_title> (1)', '', '255', '30', 'text'); print "</p>
 					</td>
 				</tr>\n";
 
@@ -271,7 +271,7 @@ function item_remove() {
 	input_validate_input_number(get_request_var_request('cdef_id'));
 	/* ==================================================== */
 
-	db_execute('delete from cdef_items where id=' . $_REQUEST['id']);
+	db_execute_prepared('DELETE FROM cdef_items WHERE id = ?', array(get_request_var_request('id')));
 }
 
 function item_edit() {
@@ -283,7 +283,7 @@ function item_edit() {
 	/* ==================================================== */
 
 	if (!empty($_REQUEST['id'])) {
-		$cdef = db_fetch_row('select * from cdef_items where id=' . $_REQUEST['id']);
+		$cdef = db_fetch_row_prepared('SELECT * FROM cdef_items WHERE id = ?', array(get_request_var_request('id')));
 		$current_type = $cdef['type'];
 		$values[$current_type] = $cdef['value'];
 	}
@@ -294,7 +294,7 @@ function item_edit() {
 
 	print "<form method='post' action='cdef.php' name='form_cdef'>\n";
 
-	html_start_box('<strong>CDEF Items</strong> [edit: ' . htmlspecialchars(db_fetch_cell('SELECT name FROM cdef WHERE id=' . $_REQUEST['cdef_id'])) . ']', '100%', '', '3', 'center', '');
+	html_start_box('<strong>CDEF Items</strong> [edit: ' . htmlspecialchars(db_fetch_cell_prepared('SELECT name FROM cdef WHERE id = ?', array(get_request_var_request('cdef_id')))) . ']', '100%', '', '3', 'center', '');
 
 	if (isset($_REQUEST['type_select'])) {
 		$current_type = $_REQUEST['type_select'];
@@ -337,7 +337,7 @@ function item_edit() {
 				form_dropdown('value', $custom_data_source_types, '', '', (isset($cdef['value']) ? $cdef['value'] : ''), '', '');
 				break;
 			case '5':
-				form_dropdown('value', db_fetch_assoc('select name,id from cdef order by name'), 'name', 'id', (isset($cdef['value']) ? $cdef['value'] : ''), '', '');
+				form_dropdown('value', db_fetch_assoc('SELECT name, id FROM cdef ORDER BY name'), 'name', 'id', (isset($cdef['value']) ? $cdef['value'] : ''), '', '');
 				break;
 			case '6':
 				form_text_box('value', (isset($cdef['value']) ? $cdef['value'] : ''), '', '255', 30, 'text', (isset($_REQUEST['id']) ? $_REQUEST['id'] : '0'));
@@ -370,7 +370,7 @@ function cdef_edit() {
 	/* ==================================================== */
 
 	if (!empty($_REQUEST['id'])) {
-		$cdef = db_fetch_row('select * from cdef where id=' . $_REQUEST['id']);
+		$cdef = db_fetch_row_prepared('SELECT * FROM cdef WHERE id = ?', array(get_request_var_request('id')));
 		$header_label = '[edit: ' . htmlspecialchars($cdef['name']) . ']';
 	}else{
 		$header_label = '[new]';
@@ -398,7 +398,7 @@ function cdef_edit() {
 			DrawMatrixHeaderItem('Item Value', '', 2);
 		print '</tr>';
 
-		$cdef_items = db_fetch_assoc('SELECT * FROM cdef_items WHERE cdef_id=' . $_REQUEST['id'] . ' ORDER BY sequence');
+		$cdef_items = db_fetch_assoc_prepared('SELECT * FROM cdef_items WHERE cdef_id = ? ORDER BY sequence', array(get_request_var_request('id')));
 
 		$i = 0;
 		if (sizeof($cdef_items) > 0) {
@@ -652,5 +652,4 @@ function cdef() {
 
 	print "</form>\n";
 }
-?>
 

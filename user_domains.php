@@ -220,7 +220,7 @@ function form_actions() {
 			input_validate_input_number($matches[1]);
 			/* ==================================================== */
 
-			$d_list .= '<li>' . db_fetch_cell('SELECT domain_name FROM user_domains WHERE domain_id="' . $matches[1] . '"') . '</li>';
+			$d_list .= '<li>' . db_fetch_cell_prepared('SELECT domain_name FROM user_domains WHERE domain_id = ?', array($matches[1])) . '</li>';
 			$d_array[] = $matches[1];
 		}
 	}
@@ -297,21 +297,21 @@ function form_actions() {
    ----------------------- */
 
 function domain_remove($domain_id) {
-	db_execute('DELETE FROM user_domains WHERE domain_id=' . $domain_id);
-	db_execute('DELETE FROM user_domains_ldap WHERE domain_id=' . $domain_id);
+	db_execute_prepared('DELETE FROM user_domains WHERE domain_id = ?', array($domain_id));
+	db_execute_prepared('DELETE FROM user_domains_ldap WHERE domain_id = ?', array($domain_id));
 }
 
 function domain_disable($domain_id) {
-	db_execute('UPDATE user_domains SET enabled="" WHERE domain_id=' . $domain_id);
+	db_execute_prepared('UPDATE user_domains SET enabled = "" WHERE domain_id = ?', array($domain_id));
 }
 
 function domain_enable($domain_id) {
-	db_execute('UPDATE user_domains SET enabled="on" WHERE domain_id=' . $domain_id);
+	db_execute_prepared('UPDATE user_domains SET enabled = "on" WHERE domain_id = ?', array($domain_id));
 }
 
 function domain_default($domain_id) {
-	db_execute('UPDATE user_domains SET defdomain=0');
-	db_execute('UPDATE user_domains SET defdomain=1 WHERE domain_id=' . $domain_id);
+	db_execute('UPDATE user_domains SET defdomain = 0');
+	db_execute_prepared('UPDATE user_domains SET defdomain = 1 WHERE domain_id = ?', array($domain_id));
 }
 
 function domain_edit() {
@@ -322,7 +322,7 @@ function domain_edit() {
 	/* ==================================================== */
 
 	if (!empty($_GET['domain_id'])) {
-		$domain = db_fetch_row('SELECT * FROM user_domains WHERE domain_id=' . $_GET['domain_id']);
+		$domain = db_fetch_row_prepared('SELECT * FROM user_domains WHERE domain_id = ?', array($_GET['domain_id']));
 		$header_label = '[edit: ' . $domain['domain_name'] . ']';
 	}else{
 		$header_label = '[new]';
@@ -513,7 +513,7 @@ function domain_edit() {
 	html_end_box();
 
 	if (!empty($_GET['domain_id'])) {
-		$domain = db_fetch_row('SELECT * FROM user_domains_ldap WHERE domain_id=' . $_GET['domain_id']);
+		$domain = db_fetch_row_prepared('SELECT * FROM user_domains_ldap WHERE domain_id = ?', array($_GET['domain_id']));
 
 		html_start_box('<strong>Domain Properties</strong>', '100%', '', '3', 'center', '');
 
@@ -649,11 +649,11 @@ function domains() {
 					</td>
 					<td>
 						<select id='rows' name="rows" onChange="applyFilter()">
-							<option value="-1"<?php if (get_request_var_request("rows") == "-1") {?> selected<?php }?>>Default</option>
+							<option value="-1"<?php if (get_request_var_request('rows') == '-1') {?> selected<?php }?>>Default</option>
 							<?php
 							if (sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var_request("rows") == $key) { print " selected"; } print ">" . htmlspecialchars($value) . "</option>\n";
+									print "<option value='" . $key . "'"; if (get_request_var_request('rows') == $key) { print ' selected'; } print '>' . htmlspecialchars($value) . "</option>\n";
 								}
 							}
 							?>
@@ -731,8 +731,8 @@ function domains() {
 	$domains = db_fetch_assoc("SELECT *
 		FROM user_domains
 		$sql_where
-		ORDER BY " . get_request_var_request('sort_column') . " " . get_request_var_request('sort_direction') . "
-		LIMIT " . (get_request_var_request('rows')*(get_request_var_request('page')-1)) . ',' . get_request_var_request('rows'));
+		ORDER BY " . get_request_var_request('sort_column') . ' ' . get_request_var_request('sort_direction') . '
+		LIMIT ' . (get_request_var_request('rows')*(get_request_var_request('page')-1)) . ',' . get_request_var_request('rows'));
 
 	$nav = html_nav_bar('user_user_domains.php?filter=' . get_request_var_request('filter'), MAX_DISPLAY_PAGES, get_request_var_request('page'), get_request_var_request('rows'), $total_rows, 6, 'User Domains', 'page', 'main');
 
@@ -755,7 +755,7 @@ function domains() {
 			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars('user_domains.php?action=edit&domain_id=' . $domain['domain_id']) . "'>" . (strlen(get_request_var_request('filter')) ? eregi_replace('(' . preg_quote(get_request_var_request('filter')) . ')', "<span class='filteredValue>\\1</span>", $domain['domain_name']) : $domain['domain_name']) . '</a>', $domain['domain_id']);
 			form_selectable_cell($domain_types{$domain['type']}, $domain['domain_id']);
 			form_selectable_cell(($domain['defdomain'] == '0' ? '--':'Yes'), $domain['domain_id']);
-			form_selectable_cell(($domain['user_id'] == '0' ? 'None Selected': db_fetch_cell('SELECT username FROM user_auth WHERE id=' . $domain['user_id'])), $domain['domain_id']);
+			form_selectable_cell(($domain['user_id'] == '0' ? 'None Selected': db_fetch_cell_prepared('SELECT username FROM user_auth WHERE id = ?', array($domain['user_id']))), $domain['domain_id']);
 			form_selectable_cell(($domain['enabled'] == 'on' ? 'Yes':'No'), $domain['domain_id']);
 			form_checkbox_cell($domain['domain_name'], $domain['domain_id']);
 			form_end_row();
@@ -774,5 +774,5 @@ function domains() {
 	print "</form>\n";
 
 }
-?>
+
 
