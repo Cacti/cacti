@@ -566,13 +566,13 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 	$host_group_data_array = explode(':', $host_group_data);
 
 	if ($host_group_data_array[0] == 'graph_template') {
-		$host_group_data_name = '<strong>Graph Template:</strong> ' . db_fetch_cell('select name from graph_templates where id=' . $host_group_data_array[1]);
+		$host_group_data_name = '<strong>Graph Template:</strong> ' . db_fetch_cell('SELECT name FROM graph_templates WHERE id=' . $host_group_data_array[1]);
 		$graph_template_id = $host_group_data_array[1];
 	}elseif ($host_group_data_array[0] == 'data_query') {
-		$host_group_data_name = '<strong>Graph Template:</strong> ' . (empty($host_group_data_array[1]) ? 'Non Query Based' : db_fetch_cell('select name from snmp_query where id=' . $host_group_data_array[1]));
+		$host_group_data_name = '<strong>Graph Template:</strong> ' . (empty($host_group_data_array[1]) ? 'Non Query Based' : db_fetch_cell('SELECT name FROM snmp_query WHERE id=' . $host_group_data_array[1]));
 		$data_query_id = $host_group_data_array[1];
 	}elseif ($host_group_data_array[0] == 'data_query_index') {
-		$host_group_data_name = '<strong>Graph Template:</strong> ' . (empty($host_group_data_array[1]) ? 'Non Query Based' : db_fetch_cell('select name from snmp_query where id=' . $host_group_data_array[1])) . '-> ' . (empty($host_group_data_array[2]) ? 'Template Based' : get_formatted_data_query_index($leaf['host_id'], $host_group_data_array[1], $host_group_data_array[2]));
+		$host_group_data_name = '<strong>Graph Template:</strong> ' . (empty($host_group_data_array[1]) ? 'Non Query Based' : db_fetch_cell('SELECT name FROM snmp_query WHERE id=' . $host_group_data_array[1])) . '-> ' . (empty($host_group_data_array[2]) ? 'Template Based' : get_formatted_data_query_index($leaf['host_id'], $host_group_data_array[1], $host_group_data_array[2]));
 		$data_query_id = $host_group_data_array[1];
 		$data_query_index = $host_group_data_array[2];
 	}
@@ -1032,7 +1032,7 @@ function draw_tree_graph_row($already_open, $graph_counter, $next_leaf_type, $cu
 			}
 		}else{
 			print "<td><a href='" . htmlspecialchars("graph.php?local_graph_id=$local_graph_id&rra_id=all") . "'><img align='middle' alt='" . htmlspecialchars($graph_title) . "' class='graphimage' id='graph_$local_graph_id'
-				src='" . htmlspecialchars("graph_image.php?action=view&local_graph_id=$local_graph_id&rra_id=$rra_id&graph_start=" . -(db_fetch_cell("select timespan from rra where id=$rra_id")) . '&graph_height=' .
+				src='" . htmlspecialchars("graph_image.php?action=view&local_graph_id=$local_graph_id&rra_id=$rra_id&graph_start=" . -(db_fetch_cell("SELECT timespan FROM rra WHERE id=$rra_id")) . '&graph_height=' .
 				read_graph_config_option('default_height') . '&graph_width=' . read_graph_config_option('default_width') . '&graph_nolegend=true') . "' border='0'></a></td>\n";
 
 			/* if we are at the end of a row, start a new one */
@@ -1073,13 +1073,13 @@ function draw_tree_dropdown($current_tree_id) {
 	}
 
 	/* if there is a current tree, make sure it still exists before going on */
-	if ((!empty($_SESSION['sess_view_tree_id'])) && (db_fetch_cell('select id from graph_tree where id=' . $_SESSION['sess_view_tree_id']) == '')) {
+	if ((!empty($_SESSION['sess_view_tree_id'])) && (db_fetch_cell('SELECT id FROM graph_tree WHERE id=' . $_SESSION['sess_view_tree_id']) == '')) {
 		$_SESSION['sess_view_tree_id'] = 0;
 	}
 
 	/* set a default tree if none is already selected */
 	if (empty($_SESSION['sess_view_tree_id'])) {
-		if (db_fetch_cell('select id from graph_tree where id=' . read_graph_config_option('default_tree_id')) > 0) {
+		if (db_fetch_cell('SELECT id FROM graph_tree WHERE id=' . read_graph_config_option('default_tree_id')) > 0) {
 			$_SESSION['sess_view_tree_id'] = read_graph_config_option('default_tree_id');
 		}else{
 			if (sizeof($tree_list) > 0) {

@@ -209,20 +209,20 @@ function rrdtool_function_create($local_data_id, $show_source, $rrdtool_pipe = "
 	not a big deal however since this function gets called once per
 	data source */
 
-	$rras = db_fetch_assoc("select
+	$rras = db_fetch_assoc("SELECT
 		data_template_data.rrd_step,
 		rra.x_files_factor,
 		rra.steps,
 		rra.rows,
 		rra_cf.consolidation_function_id,
 		(rra.rows*rra.steps) as rra_order
-		from data_template_data
-		left join data_template_data_rra on (data_template_data.id=data_template_data_rra.data_template_data_id)
-		left join rra on (data_template_data_rra.rra_id=rra.id)
-		left join rra_cf on (rra.id=rra_cf.rra_id)
-		where data_template_data.local_data_id=$local_data_id
-		and (rra.steps is not null or rra.rows is not null)
-		order by rra_cf.consolidation_function_id,rra_order");
+		FROM data_template_data
+		LEFT JOIN data_template_data_rra ON (data_template_data.id=data_template_data_rra.data_template_data_id)
+		LEFT JOIN rra on (data_template_data_rra.rra_id=rra.id)
+		LEFT JOIN rra_cf ON (rra.id=rra_cf.rra_id)
+		WHERE data_template_data.local_data_id=$local_data_id
+		AND (rra.steps IS NOT NULL OR rra.rows IS NOT NULL)
+		ORDER BY rra_cf.consolidation_function_id,rra_order");
 
 	/* if we find that this DS has no RRA associated; get out */
 	if (sizeof($rras) <= 0) {
@@ -592,13 +592,13 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 	}
 
 	/* find the step and how often this graph is updated with new data */
-	$ds_step = db_fetch_cell("select
+	$ds_step = db_fetch_cell("SELECT
 		data_template_data.rrd_step
-		from (data_template_data,data_template_rrd,graph_templates_item)
-		where graph_templates_item.task_item_id=data_template_rrd.id
-		and data_template_rrd.local_data_id=data_template_data.local_data_id
-		and graph_templates_item.local_graph_id=$local_graph_id
-		limit 0,1");
+		FROM (data_template_data,data_template_rrd,graph_templates_item)
+		WHERE graph_templates_item.task_item_id=data_template_rrd.id
+		AND data_template_rrd.local_data_id=data_template_data.local_data_id
+		AND graph_templates_item.local_graph_id=$local_graph_id
+		LIMIT 0,1");
 	$ds_step = empty($ds_step) ? 300 : $ds_step;
 
 	/* if no rra was specified, we need to figure out which one RRDTool will choose using
@@ -635,12 +635,12 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 			}
 		}
 	}else{
-		$rra = db_fetch_row("select timespan,rows,steps from rra where id=$rra_id");
+		$rra = db_fetch_row("SELECT timespan,rows,steps FROM rra WHERE id=$rra_id");
 	}
 
 	$seconds_between_graph_updates = ($ds_step * $rra["steps"]);
 
-	$graph = db_fetch_row("select
+	$graph = db_fetch_row("SELECT
 		graph_local.id AS local_graph_id,
 		graph_local.host_id,
 		graph_local.snmp_query_id,
@@ -663,13 +663,13 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 		graph_templates_graph.unit_value,
 		graph_templates_graph.unit_exponent_value,
 		graph_templates_graph.export
-		from (graph_templates_graph,graph_local)
-		where graph_local.id=graph_templates_graph.local_graph_id
-		and graph_templates_graph.local_graph_id=$local_graph_id");
+		FROM (graph_templates_graph,graph_local)
+		WHERE graph_local.id=graph_templates_graph.local_graph_id
+		AND graph_templates_graph.local_graph_id=$local_graph_id");
 
 	/* lets make that sql query... */
-	$graph_items = db_fetch_assoc("select
-		graph_templates_item.id as graph_templates_item_id,
+	$graph_items = db_fetch_assoc("SELECT
+		graph_templates_item.id AS graph_templates_item_id,
 		graph_templates_item.cdef_id,
 		graph_templates_item.text_format,
 		graph_templates_item.value,
@@ -679,18 +679,18 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 		graph_templates_gprint.gprint_text,
 		colors.hex,
 		graph_templates_item.alpha,
-		data_template_rrd.id as data_template_rrd_id,
+		data_template_rrd.id AS data_template_rrd_id,
 		data_template_rrd.local_data_id,
 		data_template_rrd.rrd_minimum,
 		data_template_rrd.rrd_maximum,
 		data_template_rrd.data_source_name,
 		data_template_rrd.local_data_template_rrd_id
-		from graph_templates_item
-		left join data_template_rrd on (graph_templates_item.task_item_id=data_template_rrd.id)
-		left join colors on (graph_templates_item.color_id=colors.id)
-		left join graph_templates_gprint on (graph_templates_item.gprint_id=graph_templates_gprint.id)
-		where graph_templates_item.local_graph_id=$local_graph_id
-		order by graph_templates_item.sequence");
+		FROM graph_templates_item
+		LEFT JOIN data_template_rrd ON (graph_templates_item.task_item_id=data_template_rrd.id)
+		LEFT JOIN colors ON (graph_templates_item.color_id=colors.id)
+		LEFT JOIN graph_templates_gprint ON (graph_templates_item.gprint_id=graph_templates_gprint.id)
+		WHERE graph_templates_item.local_graph_id=$local_graph_id
+		ORDER BY graph_templates_item.sequence");
 
 	/* +++++++++++++++++++++++ GRAPH OPTIONS +++++++++++++++++++++++ */
 
@@ -1040,7 +1040,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 
 				/* date/time substitution */
 				if (strstr($graph_variables[$field_name][$graph_item_id], "|date_time|")) {
-					$graph_variables[$field_name][$graph_item_id] = str_replace("|date_time|", date('D d M H:i:s T Y', strtotime(db_fetch_cell("select value from settings where name='date'"))), $graph_variables[$field_name][$graph_item_id]);
+					$graph_variables[$field_name][$graph_item_id] = str_replace("|date_time|", date('D d M H:i:s T Y', strtotime(db_fetch_cell("SELECT value FROM settings WHERE name='date'"))), $graph_variables[$field_name][$graph_item_id]);
 				}
 
 				/* data source title substitution */
@@ -1511,13 +1511,13 @@ function rrdtool_function_xport($local_graph_id, $rra_id, $xport_data_array, &$x
 	}
 
 	/* find the step and how often this graph is updated with new data */
-	$ds_step = db_fetch_cell("select
+	$ds_step = db_fetch_cell("SELECT
 		data_template_data.rrd_step
-		from (data_template_data,data_template_rrd,graph_templates_item)
-		where graph_templates_item.task_item_id=data_template_rrd.id
-		and data_template_rrd.local_data_id=data_template_data.local_data_id
-		and graph_templates_item.local_graph_id=$local_graph_id
-		limit 0,1");
+		FROM (data_template_data,data_template_rrd,graph_templates_item)
+		WHERE graph_templates_item.task_item_id=data_template_rrd.id
+		AND data_template_rrd.local_data_id=data_template_data.local_data_id
+		AND graph_templates_item.local_graph_id=$local_graph_id
+		LIMIT 0,1");
 	$ds_step = empty($ds_step) ? 300 : $ds_step;
 
 	/* if no rra was specified, we need to figure out which one RRDTool will choose using
@@ -1554,7 +1554,7 @@ function rrdtool_function_xport($local_graph_id, $rra_id, $xport_data_array, &$x
 			}
 		}
 	}else{
-		$rra = db_fetch_row("select timespan,rows,steps from rra where id=$rra_id");
+		$rra = db_fetch_row("SELECT timespan,rows,steps FROM rra WHERE id=$rra_id");
 	}
 
 	$seconds_between_graph_updates = ($ds_step * $rra["steps"]);
@@ -1573,7 +1573,7 @@ function rrdtool_function_xport($local_graph_id, $rra_id, $xport_data_array, &$x
 		$graph_end = $xport_data_array["graph_end"];
 	}
 
-	$graph = db_fetch_row("select
+	$graph = db_fetch_row("SELECT
 		graph_local.id AS local_graph_id,
 		graph_local.host_id,
 		graph_local.snmp_query_id,
@@ -1596,13 +1596,13 @@ function rrdtool_function_xport($local_graph_id, $rra_id, $xport_data_array, &$x
 		graph_templates_graph.unit_value,
 		graph_templates_graph.unit_exponent_value,
 		graph_templates_graph.export
-		from (graph_templates_graph,graph_local)
-		where graph_local.id=graph_templates_graph.local_graph_id
-		and graph_templates_graph.local_graph_id=$local_graph_id");
+		FROM (graph_templates_graph,graph_local)
+		WHERE graph_local.id=graph_templates_graph.local_graph_id
+		AND graph_templates_graph.local_graph_id=$local_graph_id");
 
 	/* lets make that sql query... */
-	$xport_items = db_fetch_assoc("select
-		graph_templates_item.id as graph_templates_item_id,
+	$xport_items = db_fetch_assoc("SELECT
+		graph_templates_item.id AS graph_templates_item_id,
 		graph_templates_item.cdef_id,
 		graph_templates_item.text_format,
 		graph_templates_item.value,
@@ -1612,18 +1612,18 @@ function rrdtool_function_xport($local_graph_id, $rra_id, $xport_data_array, &$x
 		graph_templates_gprint.gprint_text,
 		colors.hex,
 		graph_templates_item.alpha,
-		data_template_rrd.id as data_template_rrd_id,
+		data_template_rrd.id AS data_template_rrd_id,
 		data_template_rrd.local_data_id,
 		data_template_rrd.rrd_minimum,
 		data_template_rrd.rrd_maximum,
 		data_template_rrd.data_source_name,
 		data_template_rrd.local_data_template_rrd_id
-		from graph_templates_item
-		left join data_template_rrd on (graph_templates_item.task_item_id=data_template_rrd.id)
-		left join colors on (graph_templates_item.color_id=colors.id)
-		left join graph_templates_gprint on (graph_templates_item.gprint_id=graph_templates_gprint.id)
-		where graph_templates_item.local_graph_id=$local_graph_id
-		order by graph_templates_item.sequence");
+		FROM graph_templates_item
+		LEFT JOIN data_template_rrd ON (graph_templates_item.task_item_id=data_template_rrd.id)
+		LEFT JOIN colors ON (graph_templates_item.color_id=colors.id)
+		LEFT JOIN graph_templates_gprint ON (graph_templates_item.gprint_id=graph_templates_gprint.id)
+		WHERE graph_templates_item.local_graph_id=$local_graph_id
+		ORDER BY graph_templates_item.sequence");
 
 	/* +++++++++++++++++++++++ XPORT OPTIONS +++++++++++++++++++++++ */
 
@@ -1747,7 +1747,7 @@ function rrdtool_function_xport($local_graph_id, $rra_id, $xport_data_array, &$x
 
 				/* date/time substitution */
 				if (strstr($xport_variables[$field_name][$xport_item_id], "|date_time|")) {
-					$xport_variables[$field_name][$xport_item_id] = str_replace("|date_time|", date('D d M H:i:s T Y', strtotime(db_fetch_cell("select value from settings where name='date'"))), $xport_variables[$field_name][$xport_item_id]);
+					$xport_variables[$field_name][$xport_item_id] = str_replace("|date_time|", date('D d M H:i:s T Y', strtotime(db_fetch_cell("SELECT value FROM settings WHERE name='date'"))), $xport_variables[$field_name][$xport_item_id]);
 				}
 
 				/* data query variables */
@@ -2113,7 +2113,7 @@ function rrd_substitute_host_query_data($txt_graph_item, $graph, $graph_item) {
 	if (empty($graph["host_id"])) {
 		/* if graph has no associated host determine host_id from graph item data source */
 		if (!empty($graph_item["local_data_id"])) {
-			$host_id = db_fetch_cell("select host_id from data_local where id='" . $graph_item["local_data_id"] . "'");
+			$host_id = db_fetch_cell("SELECT host_id FROM data_local WHERE id='" . $graph_item["local_data_id"] . "'");
 		}
 	} else {
 		$host_id = $graph["host_id"];
@@ -2127,7 +2127,7 @@ function rrd_substitute_host_query_data($txt_graph_item, $graph, $graph_item) {
 			$txt_graph_item = substitute_snmp_query_data($txt_graph_item, $graph["host_id"], $graph["snmp_query_id"], $graph["snmp_index"]);
 		/* use the data query information from the data source if possible */
 		}else{
-			$data_local = db_fetch_row("select snmp_index,snmp_query_id,host_id from data_local where id='" . $graph_item["local_data_id"] . "'");
+			$data_local = db_fetch_row("SELECT snmp_index,snmp_query_id,host_id FROM data_local WHERE id='" . $graph_item["local_data_id"] . "'");
 			$txt_graph_item = substitute_snmp_query_data($txt_graph_item, $data_local["host_id"], $data_local["snmp_query_id"], $data_local["snmp_index"]);
 		}
 	}

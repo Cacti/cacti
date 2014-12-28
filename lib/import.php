@@ -108,7 +108,7 @@ function &xml_to_graph_template($hash, &$xml_array, &$hash_cache, $hash_version)
 	global $struct_graph, $struct_graph_item, $fields_graph_template_input_edit, $hash_version_codes;
 
 	/* import into: graph_templates */
-	$_graph_template_id = db_fetch_cell("select id from graph_templates where hash='$hash'");
+	$_graph_template_id = db_fetch_cell("SELECT id FROM graph_templates WHERE hash='$hash'");
 	$save["id"] = (empty($_graph_template_id) ? "0" : $_graph_template_id);
 	$save["hash"] = $hash;
 	$save["name"] = $xml_array["name"];
@@ -118,7 +118,7 @@ function &xml_to_graph_template($hash, &$xml_array, &$hash_cache, $hash_version)
 
 	/* import into: graph_templates_graph */
 	unset($save);
-	$save["id"] = (empty($_graph_template_id) ? "0" : db_fetch_cell("select graph_templates_graph.id from (graph_templates,graph_templates_graph) where graph_templates.id=graph_templates_graph.graph_template_id and graph_templates.id=$graph_template_id and graph_templates_graph.local_graph_id=0"));
+	$save["id"] = (empty($_graph_template_id) ? "0" : db_fetch_cell("SELECT graph_templates_graph.id FROM (graph_templates,graph_templates_graph) WHERE graph_templates.id=graph_templates_graph.graph_template_id AND graph_templates.id=$graph_template_id AND graph_templates_graph.local_graph_id=0"));
 	$save["graph_template_id"] = $graph_template_id;
 
 	reset($struct_graph);
@@ -152,7 +152,7 @@ function &xml_to_graph_template($hash, &$xml_array, &$hash_cache, $hash_version)
 			if ($parsed_hash == false) { return false; }
 
 			unset($save);
-			$_graph_template_item_id = db_fetch_cell("select id from graph_templates_item where hash='" . $parsed_hash["hash"] . "' and graph_template_id=$graph_template_id and local_graph_id=0");
+			$_graph_template_item_id = db_fetch_cell("SELECT id FROM graph_templates_item WHERE hash='" . $parsed_hash["hash"] . "' AND graph_template_id=$graph_template_id AND local_graph_id=0");
 			$save["id"] = (empty($_graph_template_item_id) ? "0" : $_graph_template_item_id);
 			$save["hash"] = $parsed_hash["hash"];
 			$save["graph_template_id"] = $graph_template_id;
@@ -165,7 +165,7 @@ function &xml_to_graph_template($hash, &$xml_array, &$hash_cache, $hash_version)
 					if (preg_match("/hash_([a-f0-9]{2})([a-f0-9]{4})([a-f0-9]{32})/", $item_array[$field_name])) {
 						$save[$field_name] = resolve_hash_to_id($item_array[$field_name], $hash_cache);
 					}elseif (($field_name == "color_id") && (preg_match("/^[a-fA-F0-9]{6}$/", $item_array[$field_name])) && (get_version_index($parsed_hash["version"]) >= get_version_index("0.8.5"))) { /* treat the 'color' field differently */
-						$color_id = db_fetch_cell("select id from colors where hex='" . $item_array[$field_name] . "'");
+						$color_id = db_fetch_cell("SELECT id FROM colors WHERE hex='" . $item_array[$field_name] . "'");
 
 						if (empty($color_id)) {
 							db_execute("insert into colors (hex) values ('" . $item_array[$field_name] . "')");
@@ -195,7 +195,7 @@ function &xml_to_graph_template($hash, &$xml_array, &$hash_cache, $hash_version)
 			if ($parsed_hash == false) { return false; }
 
 			unset($save);
-			$_graph_template_input_id = db_fetch_cell("select id from graph_template_input where hash='" . $parsed_hash["hash"] . "' and graph_template_id=$graph_template_id");
+			$_graph_template_input_id = db_fetch_cell("SELECT id FROM graph_template_input WHERE hash='" . $parsed_hash["hash"] . "' AND graph_template_id=$graph_template_id");
 			$save["id"] = (empty($_graph_template_input_id) ? "0" : $_graph_template_input_id);
 			$save["hash"] = $parsed_hash["hash"];
 			$save["graph_template_id"] = $graph_template_id;
@@ -243,7 +243,7 @@ function &xml_to_data_template($hash, &$xml_array, &$hash_cache, $import_custom_
 	global $struct_data_source, $struct_data_source_item;
 
 	/* import into: data_template */
-	$_data_template_id = db_fetch_cell("select id from data_template where hash='$hash'");
+	$_data_template_id = db_fetch_cell("SELECT id FROM data_template WHERE hash='$hash'");
 	$save["id"] = (empty($_data_template_id) ? "0" : $_data_template_id);
 	$save["hash"] = $hash;
 	$save["name"] = $xml_array["name"];
@@ -254,7 +254,7 @@ function &xml_to_data_template($hash, &$xml_array, &$hash_cache, $import_custom_
 
 	/* import into: data_template_data */
 	unset($save);
-	$save["id"] = (empty($_data_template_id) ? "0" : db_fetch_cell("select data_template_data.id from (data_template,data_template_data) where data_template.id=data_template_data.data_template_id and data_template.id=$data_template_id and data_template_data.local_data_id=0"));
+	$save["id"] = (empty($_data_template_id) ? "0" : db_fetch_cell("SELECT data_template_data.id FROM (data_template,data_template_data) WHERE data_template.id=data_template_data.data_template_id AND data_template.id=$data_template_id AND data_template_data.local_data_id=0"));
 	$save["data_template_id"] = $data_template_id;
 
 	reset($struct_data_source);
@@ -282,7 +282,7 @@ function &xml_to_data_template($hash, &$xml_array, &$hash_cache, $import_custom_
 
 	$data_template_data_id = sql_save($save, "data_template_data");
 
-	/* use custom rra settings from the xml */
+	/* use custom rra settings From the xml */
 	if ($import_custom_rra_settings === true) {
 		/* import into: data_template_data_rra */
 		$hash_items = explode("|", $xml_array["ds"]["rra_items"]);
@@ -321,7 +321,7 @@ function &xml_to_data_template($hash, &$xml_array, &$hash_cache, $import_custom_
 			if ($parsed_hash == false) { return false; }
 
 			unset($save);
-			$_data_template_rrd_id = db_fetch_cell("select id from data_template_rrd where hash='" . $parsed_hash["hash"] . "' and data_template_id=$data_template_id and local_data_id=0");
+			$_data_template_rrd_id = db_fetch_cell("SELECT id FROM data_template_rrd WHERE hash='" . $parsed_hash["hash"] . "' AND data_template_id=$data_template_id AND local_data_id=0");
 			$save["id"] = (empty($_data_template_rrd_id) ? "0" : $_data_template_rrd_id);
 			$save["hash"] = $parsed_hash["hash"];
 			$save["data_template_id"] = $data_template_id;
@@ -380,7 +380,7 @@ function &xml_to_data_query($hash, &$xml_array, &$hash_cache) {
 	global $fields_data_query_edit, $fields_data_query_item_edit;
 
 	/* import into: snmp_query */
-	$_data_query_id = db_fetch_cell("select id from snmp_query where hash='$hash'");
+	$_data_query_id = db_fetch_cell("SELECT id FROM snmp_query WHERE hash='$hash'");
 	$save["id"] = (empty($_data_query_id) ? "0" : $_data_query_id);
 	$save["hash"] = $hash;
 
@@ -411,7 +411,7 @@ function &xml_to_data_query($hash, &$xml_array, &$hash_cache) {
 			if ($parsed_hash == false) { return false; }
 
 			unset($save);
-			$_data_query_graph_id = db_fetch_cell("select id from snmp_query_graph where hash='" . $parsed_hash["hash"] . "' and snmp_query_id=$data_query_id");
+			$_data_query_graph_id = db_fetch_cell("SELECT id FROM snmp_query_graph WHERE hash='" . $parsed_hash["hash"] . "' AND snmp_query_id=$data_query_id");
 			$save["id"] = (empty($_data_query_graph_id) ? "0" : $_data_query_graph_id);
 			$save["hash"] = $parsed_hash["hash"];
 			$save["snmp_query_id"] = $data_query_id;
@@ -456,7 +456,7 @@ function &xml_to_data_query($hash, &$xml_array, &$hash_cache) {
 					if ($parsed_hash == false) { return false; }
 
 					unset($save);
-					$_data_query_graph_sv_id = db_fetch_cell("select id from snmp_query_graph_sv where hash='" . $parsed_hash["hash"] . "' and snmp_query_graph_id=$data_query_graph_id");
+					$_data_query_graph_sv_id = db_fetch_cell("SELECT id FROM snmp_query_graph_sv WHERE hash='" . $parsed_hash["hash"] . "' AND snmp_query_graph_id=$data_query_graph_id");
 					$save["id"] = (empty($_data_query_graph_sv_id) ? "0" : $_data_query_graph_sv_id);
 					$save["hash"] = $parsed_hash["hash"];
 					$save["snmp_query_graph_id"] = $data_query_graph_id;
@@ -480,7 +480,7 @@ function &xml_to_data_query($hash, &$xml_array, &$hash_cache) {
 					if ($parsed_hash == false) { return false; }
 
 					unset($save);
-					$_data_query_graph_rrd_sv_id = db_fetch_cell("select id from snmp_query_graph_rrd_sv where hash='" . $parsed_hash["hash"] . "' and snmp_query_graph_id=$data_query_graph_id");
+					$_data_query_graph_rrd_sv_id = db_fetch_cell("SELECT id FROM snmp_query_graph_rrd_sv WHERE hash='" . $parsed_hash["hash"] . "' AND snmp_query_graph_id=$data_query_graph_id");
 					$save["id"] = (empty($_data_query_graph_rrd_sv_id) ? "0" : $_data_query_graph_rrd_sv_id);
 					$save["hash"] = $parsed_hash["hash"];
 					$save["snmp_query_graph_id"] = $data_query_graph_id;
@@ -509,7 +509,7 @@ function &xml_to_gprint_preset($hash, &$xml_array, &$hash_cache) {
 	global $fields_grprint_presets_edit;
 
 	/* import into: graph_templates_gprint */
-	$_gprint_preset_id = db_fetch_cell("select id from graph_templates_gprint where hash='$hash'");
+	$_gprint_preset_id = db_fetch_cell("SELECT id FROM graph_templates_gprint WHERE hash='$hash'");
 	$save["id"] = (empty($_gprint_preset_id) ? "0" : $_gprint_preset_id);
 	$save["hash"] = $hash;
 
@@ -537,7 +537,7 @@ function &xml_to_round_robin_archive($hash, &$xml_array, &$hash_cache) {
 	global $fields_rra_edit;
 
 	/* import into: rra */
-	$_rra_id = db_fetch_cell("select id from rra where hash='$hash'");
+	$_rra_id = db_fetch_cell("SELECT id FROM rra WHERE hash='$hash'");
 	$save["id"] = (empty($_rra_id) ? "0" : $_rra_id);
 	$save["hash"] = $hash;
 
@@ -574,7 +574,7 @@ function &xml_to_host_template($hash, &$xml_array, &$hash_cache) {
 	global $fields_host_template_edit;
 
 	/* import into: graph_templates_gprint */
-	$_host_template_id = db_fetch_cell("select id from host_template where hash='$hash'");
+	$_host_template_id = db_fetch_cell("SELECT id FROM host_template WHERE hash='$hash'");
 	$save["id"] = (empty($_host_template_id) ? "0" : $_host_template_id);
 	$save["hash"] = $hash;
 
@@ -642,7 +642,7 @@ function &xml_to_cdef($hash, &$xml_array, &$hash_cache) {
 		);
 
 	/* import into: cdef */
-	$_cdef_id = db_fetch_cell("select id from cdef where hash='$hash'");
+	$_cdef_id = db_fetch_cell("SELECT id FROM cdef WHERE hash='$hash'");
 	$save["id"] = (empty($_cdef_id) ? "0" : $_cdef_id);
 	$save["hash"] = $hash;
 
@@ -668,7 +668,7 @@ function &xml_to_cdef($hash, &$xml_array, &$hash_cache) {
 			if ($parsed_hash == false) { return false; }
 
 			unset($save);
-			$_cdef_item_id = db_fetch_cell("select id from cdef_items where hash='" . $parsed_hash["hash"] . "' and cdef_id=$cdef_id");
+			$_cdef_item_id = db_fetch_cell("SELECT id FROM cdef_items WHERE hash='" . $parsed_hash["hash"] . "' AND cdef_id=$cdef_id");
 			$save["id"] = (empty($_cdef_item_id) ? "0" : $_cdef_item_id);
 			$save["hash"] = $parsed_hash["hash"];
 			$save["cdef_id"] = $cdef_id;
@@ -687,7 +687,7 @@ function &xml_to_cdef($hash, &$xml_array, &$hash_cache) {
 						$parsed_item_hash = parse_xml_hash($item_array["value"]);
 						/* invalid/wrong hash */
 						if ($parsed_item_hash == false) { return false; }
-						$_cdef_id = db_fetch_cell("select id from cdef where hash='" . $parsed_item_hash["hash"] . "'");
+						$_cdef_id = db_fetch_cell("SELECT id FROM cdef WHERE hash='" . $parsed_item_hash["hash"] . "'");
 						$save[$field_name] = $_cdef_id;
 					} else {
 						$save[$field_name] = addslashes(xml_character_decode($item_array[$field_name]));
@@ -716,7 +716,7 @@ function &xml_to_data_input_method($hash, &$xml_array, &$hash_cache) {
 	$fields_data_input_field_edit += $fields_data_input_field_edit_1;
 
 	/* import into: data_input */
-	$_data_input_id = db_fetch_cell("select id from data_input where hash='$hash'");
+	$_data_input_id = db_fetch_cell("SELECT id FROM data_input WHERE hash='$hash'");
 	$save["id"] = (empty($_data_input_id) ? "0" : $_data_input_id);
 	$save["hash"] = $hash;
 
@@ -747,7 +747,7 @@ function &xml_to_data_input_method($hash, &$xml_array, &$hash_cache) {
 			if ($parsed_hash == false) { return false; }
 
 			unset($save);
-			$_data_input_field_id = db_fetch_cell("select id from data_input_fields where hash='" . $parsed_hash["hash"] . "' and data_input_id=$data_input_id");
+			$_data_input_field_id = db_fetch_cell("SELECT id FROM data_input_fields WHERE hash='" . $parsed_hash["hash"] . "' AND data_input_id=$data_input_id");
 			$save["id"] = (empty($_data_input_field_id) ? "0" : $_data_input_field_id);
 			$save["hash"] = $parsed_hash["hash"];
 			$save["data_input_id"] = $data_input_id;
@@ -796,25 +796,25 @@ function hash_to_friendly_name($hash, $display_type_name) {
 
 	switch ($parsed_hash["type"]) {
 	case 'graph_template':
-		return $prepend . db_fetch_cell("select name from graph_templates where hash='" . $parsed_hash["hash"] . "'");
+		return $prepend . db_fetch_cell("SELECT name FROM graph_templates WHERE hash='" . $parsed_hash["hash"] . "'");
 	case 'data_template':
-		return $prepend . db_fetch_cell("select name from data_template where hash='" . $parsed_hash["hash"] . "'");
+		return $prepend . db_fetch_cell("SELECT name FROM data_template WHERE hash='" . $parsed_hash["hash"] . "'");
 	case 'data_template_item':
-		return $prepend . db_fetch_cell("select data_source_name from data_template_rrd where hash='" . $parsed_hash["hash"] . "'");
+		return $prepend . db_fetch_cell("SELECT data_source_name FROM data_template_rrd WHERE hash='" . $parsed_hash["hash"] . "'");
 	case 'host_template':
-		return $prepend . db_fetch_cell("select name from host_template where hash='" . $parsed_hash["hash"] . "'");
+		return $prepend . db_fetch_cell("SELECT name FROM host_template WHERE hash='" . $parsed_hash["hash"] . "'");
 	case 'data_input_method':
-		return $prepend . db_fetch_cell("select name from data_input where hash='" . $parsed_hash["hash"] . "'");
+		return $prepend . db_fetch_cell("SELECT name FROM data_input WHERE hash='" . $parsed_hash["hash"] . "'");
 	case 'data_input_field':
-		return $prepend . db_fetch_cell("select name from data_input_fields where hash='" . $parsed_hash["hash"] . "'");
+		return $prepend . db_fetch_cell("SELECT name FROM data_input_fields WHERE hash='" . $parsed_hash["hash"] . "'");
 	case 'data_query':
-		return $prepend . db_fetch_cell("select name from snmp_query where hash='" . $parsed_hash["hash"] . "'");
+		return $prepend . db_fetch_cell("SELECT name FROM snmp_query WHERE hash='" . $parsed_hash["hash"] . "'");
 	case 'gprint_preset':
-		return $prepend . db_fetch_cell("select name from graph_templates_gprint where hash='" . $parsed_hash["hash"] . "'");
+		return $prepend . db_fetch_cell("SELECT name FROM graph_templates_gprint WHERE hash='" . $parsed_hash["hash"] . "'");
 	case 'cdef':
-		return $prepend . db_fetch_cell("select name from cdef where hash='" . $parsed_hash["hash"] . "'");
+		return $prepend . db_fetch_cell("SELECT name FROM cdef WHERE hash='" . $parsed_hash["hash"] . "'");
 	case 'round_robin_archive':
-		return $prepend . db_fetch_cell("select name from rra where hash='" . $parsed_hash["hash"] . "'");
+		return $prepend . db_fetch_cell("SELECT name FROM rra WHERE hash='" . $parsed_hash["hash"] . "'");
 	}
 }
 

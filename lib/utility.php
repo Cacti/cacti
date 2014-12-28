@@ -23,7 +23,7 @@
 */
 
 function repopulate_poller_cache() {
-	$poller_data = db_fetch_assoc("select id from data_local");
+	$poller_data = db_fetch_assoc("SELECT id FROM data_local");
 	$poller_items   = array();
 	$local_data_ids = array();
 
@@ -34,14 +34,14 @@ function repopulate_poller_cache() {
 
 		/* delete all existing entries ... */
 		db_execute("DELETE FROM poller_item");
-		/* .. prior to recreating everything from scratch */
+		/* .. prior to recreating everything FROM scratch */
 		poller_update_poller_cache_from_buffer($local_data_ids, $poller_items);
 
 	}
 }
 
 function update_poller_cache_from_query($host_id, $data_query_id) {
-	$poller_data = db_fetch_assoc("select id from data_local where host_id = '$host_id' and snmp_query_id = '$data_query_id'");
+	$poller_data = db_fetch_assoc("SELECT id FROM data_local WHERE host_id = '$host_id' AND snmp_query_id = '$data_query_id'");
 
 	$poller_items = $local_data_ids = array();
 
@@ -66,18 +66,18 @@ function update_poller_cache($local_data_id, $commit = false) {
 
 	$poller_items = array();
 
-	$data_input = db_fetch_row("select
+	$data_input = db_fetch_row("SELECT
 		data_input.id,
 		data_input.type_id,
-		data_template_data.id as data_template_data_id,
+		data_template_data.id AS data_template_data_id,
 		data_template_data.data_template_id,
 		data_template_data.active,
 		data_template_data.rrd_step
-		from (data_template_data,data_input)
-		where data_template_data.data_input_id=data_input.id
-		and data_template_data.local_data_id=$local_data_id");
+		FROM (data_template_data,data_input)
+		WHERE data_template_data.data_input_id=data_input.id
+		AND data_template_data.local_data_id=$local_data_id");
 
-	$data_source = db_fetch_row("select host_id,snmp_query_id,snmp_index from data_local where id=$local_data_id");
+	$data_source = db_fetch_row("SELECT host_id,snmp_query_id,snmp_index FROM data_local WHERE id=$local_data_id");
 
 	/* we have to perform some additional sql queries if this is a "query" */
 	if (($data_input["type_id"] == DATA_INPUT_TYPE_SNMP_QUERY) ||
@@ -120,10 +120,10 @@ function update_poller_cache($local_data_id, $commit = false) {
 				$script_path = get_full_script_path($local_data_id);
 			}
 
-			$num_output_fields = sizeof(db_fetch_assoc("select id from data_input_fields where data_input_id=" . $data_input["id"] . " and input_output='out' and update_rra='on'"));
+			$num_output_fields = sizeof(db_fetch_assoc("SELECT id FROM data_input_fields WHERE data_input_id=" . $data_input["id"] . " AND input_output='out' AND update_rra='on'"));
 
 			if ($num_output_fields == 1) {
-				$data_template_rrd_id = db_fetch_cell("select id from data_template_rrd where local_data_id=$local_data_id");
+				$data_template_rrd_id = db_fetch_cell("SELECT id FROM data_template_rrd WHERE local_data_id=$local_data_id");
 				$data_source_item_name = get_data_source_item_name($data_template_rrd_id);
 			}else{
 				$data_source_item_name = "";
@@ -140,7 +140,7 @@ function update_poller_cache($local_data_id, $commit = false) {
 				data_input_data.value
 				FROM data_input_fields
 				LEFT JOIN data_input_data
-				ON (data_input_fields.id=data_input_data.data_input_field_id and data_input_data.data_template_data_id=" . $data_input["data_template_data_id"] . ")
+				ON (data_input_fields.id=data_input_data.data_input_field_id AND data_input_data.data_template_data_id=" . $data_input["data_template_data_id"] . ")
 				WHERE ((type_code LIKE 'snmp_%') OR (type_code='hostname') OR (type_code='host_id'))
 				AND data_input_data.value != ''"), "type_code", "value");
 
@@ -149,7 +149,7 @@ function update_poller_cache($local_data_id, $commit = false) {
 				data_input_data.value
 				FROM data_input_fields
 				LEFT JOIN data_input_data
-				ON (data_input_fields.id=data_input_data.data_input_field_id and data_input_data.data_template_data_id=$data_template_id)
+				ON (data_input_fields.id=data_input_data.data_input_field_id AND data_input_data.data_template_data_id=$data_template_id)
 				WHERE ((type_code LIKE 'snmp_%') OR (type_code='hostname'))
 				AND data_template_data_id=$data_template_id
 				AND data_input_data.value != ''"), "type_code", "value");
@@ -166,7 +166,7 @@ function update_poller_cache($local_data_id, $commit = false) {
 				$host_fields = $data_template_fields;
 			}
 
-			$data_template_rrd_id = db_fetch_cell("select id from data_template_rrd where local_data_id=$local_data_id");
+			$data_template_rrd_id = db_fetch_cell("SELECT id FROM data_template_rrd WHERE local_data_id=$local_data_id");
 
 			$poller_items[] = api_poller_cache_item_add($data_source["host_id"], $host_fields, $local_data_id, $data_input["rrd_step"], 0, get_data_source_item_name($data_template_rrd_id), 1, (isset($host_fields["snmp_oid"]) ? $host_fields["snmp_oid"] : ""));
 		}else if ($data_input["type_id"] == DATA_INPUT_TYPE_SNMP_QUERY) { /* snmp query */
@@ -181,7 +181,7 @@ function update_poller_cache($local_data_id, $commit = false) {
 				data_input_data.value
 				FROM data_input_fields
 				LEFT JOIN data_input_data
-				ON (data_input_fields.id=data_input_data.data_input_field_id and data_input_data.data_template_data_id=" . $data_input["data_template_data_id"] . ")
+				ON (data_input_fields.id=data_input_data.data_input_field_id AND data_input_data.data_template_data_id=" . $data_input["data_template_data_id"] . ")
 				WHERE ((type_code LIKE 'snmp_%') OR (type_code='hostname'))
 				AND data_input_data.value != ''"), "type_code", "value");
 
@@ -190,7 +190,7 @@ function update_poller_cache($local_data_id, $commit = false) {
 				data_input_data.value
 				FROM data_input_fields
 				LEFT JOIN data_input_data
-				ON (data_input_fields.id=data_input_data.data_input_field_id and data_input_data.data_template_data_id=$data_template_id)
+				ON (data_input_fields.id=data_input_data.data_input_field_id AND data_input_data.data_template_data_id=$data_template_id)
 				WHERE ((type_code LIKE 'snmp_%') OR (type_code='hostname'))
 				AND data_template_data_id=$data_template_id
 				AND data_input_data.value != ''"), "type_code", "value");
@@ -234,7 +234,7 @@ function update_poller_cache($local_data_id, $commit = false) {
 				data_input_data.value
 				FROM data_input_fields
 				LEFT JOIN data_input_data
-				ON (data_input_fields.id=data_input_data.data_input_field_id and data_input_data.data_template_data_id=" . $data_input["data_template_data_id"] . ")
+				ON (data_input_fields.id=data_input_data.data_input_field_id AND data_input_data.data_template_data_id=" . $data_input["data_template_data_id"] . ")
 				WHERE ((type_code LIKE 'snmp_%') OR (type_code='hostname'))
 				AND data_input_data.value != ''"), "type_code", "value");
 
@@ -243,7 +243,7 @@ function update_poller_cache($local_data_id, $commit = false) {
 				data_input_data.value
 				FROM data_input_fields
 				LEFT JOIN data_input_data
-				ON (data_input_fields.id=data_input_data.data_input_field_id and data_input_data.data_template_data_id=$data_template_id)
+				ON (data_input_fields.id=data_input_data.data_input_field_id AND data_input_data.data_template_data_id=$data_template_id)
 				WHERE ((type_code LIKE 'snmp_%') OR (type_code='hostname'))
 				AND data_template_data_id=$data_template_id
 				AND data_input_data.value != ''"), "type_code", "value");
@@ -394,7 +394,7 @@ function poller_update_poller_cache_from_buffer($local_data_ids, &$poller_items)
 		db_execute($sql_prefix . $buffer . $sql_suffix);
 	}
 
-	/* remove stale records from the poller cache */
+	/* remove stale records FROM the poller cache */
 	if (sizeof($ids)) {
 		db_execute("DELETE FROM poller_item WHERE present=0 AND local_data_id IN ($ids)");
 	}else{
@@ -412,7 +412,7 @@ function push_out_host($host_id, $local_data_id = 0, $data_template_id = 0) {
 
 	/* ok here's the deal: first we need to find every data source that uses this host.
 	then we go through each of those data sources, finding each one using a data input method
-	with "special fields". if we find one, fill it will the data here from this host */
+	with "special fields". if we find one, fill it will the data here FROM this host */
 	/* setup the poller items array */
 	$poller_items   = array();
 	$local_data_ids = array();
@@ -422,17 +422,17 @@ function push_out_host($host_id, $local_data_id = 0, $data_template_id = 0) {
 	/* setup the sql where, and if using a host, get it's host information */
 	if ($host_id != 0) {
 		/* get all information about this host so we can write it to the data source */
-		$hosts[$host_id] = db_fetch_row("select id AS host_id, host.* from host where id=$host_id");
+		$hosts[$host_id] = db_fetch_row("SELECT id AS host_id, host.* FROM host WHERE id=$host_id");
 
 		$sql_where .= " AND data_local.host_id=$host_id";
 	}
 
-	/* sql where for local_data_id */
+	/* sql WHERE for local_data_id */
 	if ($local_data_id != 0) {
 		$sql_where .= " AND data_local.id=$local_data_id";
 	}
 
-	/* sql where for data_template_id */
+	/* sql WHERE for data_template_id */
 	if ($data_template_id != 0) {
 		$sql_where .= " AND data_template_data.data_template_id=$data_template_id";
 	}
@@ -453,22 +453,23 @@ function push_out_host($host_id, $local_data_id = 0, $data_template_id = 0) {
 	foreach ($data_sources as $data_source) {
 		/* set the host information */
 		if (!isset($hosts[$data_source["host_id"]])) {
-			$hosts[$data_source["host_id"]] = db_fetch_row("select * from host where id=" . $data_source["host_id"]);
+			$hosts[$data_source["host_id"]] = db_fetch_row("SELECT * FROM host WHERE id=" . $data_source["host_id"]);
 		}
 		$host = $hosts[$data_source["host_id"]];
 
-		/* get field information from the data template */
+		/* get field information FROM the data template */
 		if (!isset($template_fields{$data_source["local_data_template_data_id"]})) {
-			$template_fields{$data_source["local_data_template_data_id"]} = db_fetch_assoc("select
+			$template_fields{$data_source["local_data_template_data_id"]} = db_fetch_assoc("SELECT
 				data_input_data.value,
 				data_input_data.t_value,
 				data_input_fields.id,
 				data_input_fields.type_code
-				from data_input_fields left join data_input_data
-				on (data_input_fields.id=data_input_data.data_input_field_id and data_input_data.data_template_data_id=" . $data_source["local_data_template_data_id"] . ")
-				where data_input_fields.data_input_id=" . $data_source["data_input_id"] . "
-				and (data_input_data.t_value='' or data_input_data.t_value is null)
-				and data_input_fields.input_output='in'");
+                FROM data_input_fields 
+                LEFT JOIN data_input_data
+				ON (data_input_fields.id=data_input_data.data_input_field_id AND data_input_data.data_template_data_id=" . $data_source["local_data_template_data_id"] . ")
+				WHERE data_input_fields.data_input_id=" . $data_source["data_input_id"] . "
+				AND (data_input_data.t_value='' OR data_input_data.t_value is null)
+				AND data_input_fields.input_output='in'");
 		}
 
 		reset($template_fields{$data_source["local_data_template_data_id"]});
@@ -480,7 +481,7 @@ function push_out_host($host_id, $local_data_id = 0, $data_template_id = 0) {
 		if (sizeof($template_fields{$data_source["local_data_template_data_id"]})) {
 		foreach ($template_fields{$data_source["local_data_template_data_id"]} as $template_field) {
 			if ((preg_match('/^' . VALID_HOST_FIELDS . '$/i', $template_field["type_code"])) && ($template_field["value"] == "") && ($template_field["t_value"] == "")) {
-				db_execute_prepared('REPLACE INTO data_input_data (data_input_field_id, data_template_data_id, value) values (?, ?, ?)', array($template_field['id'], $data_source['id'], $host{$template_field['type_code']}));
+				db_execute_prepared('REPLACE INTO data_input_data (data_input_field_id, data_template_data_id, value) VALUES (?, ?, ?)', array($template_field['id'], $data_source['id'], $host{$template_field['type_code']}));
 			}
 		}
 		}
@@ -500,9 +501,9 @@ function duplicate_graph($_local_graph_id, $_graph_template_id, $graph_title) {
 	global $struct_graph, $struct_graph_item;
 
 	if (!empty($_local_graph_id)) {
-		$graph_local = db_fetch_row("select * from graph_local where id=$_local_graph_id");
-		$graph_template_graph = db_fetch_row("select * from graph_templates_graph where local_graph_id=$_local_graph_id");
-		$graph_template_items = db_fetch_assoc("select * from graph_templates_item where local_graph_id=$_local_graph_id");
+		$graph_local = db_fetch_row("SELECT * FROM graph_local WHERE id=$_local_graph_id");
+		$graph_template_graph = db_fetch_row("SELECT * FROM graph_templates_graph WHERE local_graph_id=$_local_graph_id");
+		$graph_template_items = db_fetch_assoc("SELECT * FROM graph_templates_item WHERE local_graph_id=$_local_graph_id");
 
 		/* create new entry: graph_local */
 		$save["id"] = 0;
@@ -515,10 +516,10 @@ function duplicate_graph($_local_graph_id, $_graph_template_id, $graph_title) {
 
 		$graph_template_graph["title"] = str_replace("<graph_title>", $graph_template_graph["title"], $graph_title);
 	}elseif (!empty($_graph_template_id)) {
-		$graph_template = db_fetch_row("select * from graph_templates where id=$_graph_template_id");
-		$graph_template_graph = db_fetch_row("select * from graph_templates_graph where graph_template_id=$_graph_template_id and local_graph_id=0");
-		$graph_template_items = db_fetch_assoc("select * from graph_templates_item where graph_template_id=$_graph_template_id and local_graph_id=0");
-		$graph_template_inputs = db_fetch_assoc("select * from graph_template_input where graph_template_id=$_graph_template_id");
+		$graph_template = db_fetch_row("SELECT * FROM graph_templates WHERE id=$_graph_template_id");
+		$graph_template_graph = db_fetch_row("SELECT * FROM graph_templates_graph WHERE graph_template_id=$_graph_template_id AND local_graph_id=0");
+		$graph_template_items = db_fetch_assoc("SELECT * FROM graph_templates_item WHERE graph_template_id=$_graph_template_id AND local_graph_id=0");
+		$graph_template_inputs = db_fetch_assoc("SELECT * FROM graph_template_input WHERE graph_template_id=$_graph_template_id");
 
 		/* create new entry: graph_templates */
 		$save["id"] = 0;
@@ -582,12 +583,12 @@ function duplicate_graph($_local_graph_id, $_graph_template_id, $graph_title) {
 
 			$graph_template_input_id   = sql_save($save, "graph_template_input");
 
-			$graph_template_input_defs = db_fetch_assoc("select * from graph_template_input_defs where graph_template_input_id=" . $graph_template_input["id"]);
+			$graph_template_input_defs = db_fetch_assoc("SELECT * FROM graph_template_input_defs WHERE graph_template_input_id=" . $graph_template_input["id"]);
 
 			/* create new entry(s): graph_template_input_defs (graph template only) */
 			if (sizeof($graph_template_input_defs) > 0) {
 			foreach ($graph_template_input_defs as $graph_template_input_def) {
-				db_execute("insert into graph_template_input_defs (graph_template_input_id,graph_template_item_id)
+				db_execute("INSERT INTO graph_template_input_defs (graph_template_input_id,graph_template_item_id)
 					values ($graph_template_input_id," . $graph_item_mappings{$graph_template_input_def["graph_template_item_id"]} . ")");
 			}
 			}
@@ -604,12 +605,12 @@ function duplicate_data_source($_local_data_id, $_data_template_id, $data_source
 	global $struct_data_source, $struct_data_source_item;
 
 	if (!empty($_local_data_id)) {
-		$data_local = db_fetch_row("select * from data_local where id=$_local_data_id");
-		$data_template_data = db_fetch_row("select * from data_template_data where local_data_id=$_local_data_id");
-		$data_template_rrds = db_fetch_assoc("select * from data_template_rrd where local_data_id=$_local_data_id");
+		$data_local = db_fetch_row("SELECT * FROM data_local WHERE id=$_local_data_id");
+		$data_template_data = db_fetch_row("SELECT * FROM data_template_data WHERE local_data_id=$_local_data_id");
+		$data_template_rrds = db_fetch_assoc("SELECT * FROM data_template_rrd WHERE local_data_id=$_local_data_id");
 
-		$data_input_datas = db_fetch_assoc("select * from data_input_data where data_template_data_id=" . $data_template_data["id"]);
-		$data_template_data_rras = db_fetch_assoc("select * from data_template_data_rra where data_template_data_id=" . $data_template_data["id"]);
+		$data_input_datas = db_fetch_assoc("SELECT * FROM data_input_data WHERE data_template_data_id=" . $data_template_data["id"]);
+		$data_template_data_rras = db_fetch_assoc("SELECT * FROM data_template_data_rra WHERE data_template_data_id=" . $data_template_data["id"]);
 
 		/* create new entry: data_local */
 		$save["id"] = 0;
@@ -622,12 +623,12 @@ function duplicate_data_source($_local_data_id, $_data_template_id, $data_source
 
 		$data_template_data["name"] = str_replace("<ds_title>", $data_template_data["name"], $data_source_title);
 	}elseif (!empty($_data_template_id)) {
-		$data_template = db_fetch_row("select * from data_template where id=$_data_template_id");
-		$data_template_data = db_fetch_row("select * from data_template_data where data_template_id=$_data_template_id and local_data_id=0");
-		$data_template_rrds = db_fetch_assoc("select * from data_template_rrd where data_template_id=$_data_template_id and local_data_id=0");
+		$data_template = db_fetch_row("SELECT * FROM data_template WHERE id=$_data_template_id");
+		$data_template_data = db_fetch_row("SELECT * FROM data_template_data WHERE data_template_id=$_data_template_id AND local_data_id=0");
+		$data_template_rrds = db_fetch_assoc("SELECT * FROM data_template_rrd WHERE data_template_id=$_data_template_id AND local_data_id=0");
 
-		$data_input_datas = db_fetch_assoc("select * from data_input_data where data_template_data_id=" . $data_template_data["id"]);
-		$data_template_data_rras = db_fetch_assoc("select * from data_template_data_rra where data_template_data_id=" . $data_template_data["id"]);
+		$data_input_datas = db_fetch_assoc("SELECT * FROM data_input_data WHERE data_template_data_id=" . $data_template_data["id"]);
+		$data_template_data_rras = db_fetch_assoc("SELECT * FROM data_template_data_rra WHERE data_template_data_id=" . $data_template_data["id"]);
 
 		/* create new entry: data_template */
 		$save["id"] = 0;
@@ -690,7 +691,7 @@ function duplicate_data_source($_local_data_id, $_data_template_id, $data_source
 	/* create new entry(s): data_input_data */
 	if (sizeof($data_input_datas) > 0) {
 	foreach ($data_input_datas as $data_input_data) {
-		db_execute("insert into data_input_data (data_input_field_id,data_template_data_id,t_value,value) values
+		db_execute("INSERT INTO data_input_data (data_input_field_id,data_template_data_id,t_value,value) VALUES
 			(" . $data_input_data["data_input_field_id"] . ",$data_template_data_id,'" . $data_input_data["t_value"] .
 			"','" . $data_input_data["value"] . "')");
 	}
@@ -699,7 +700,7 @@ function duplicate_data_source($_local_data_id, $_data_template_id, $data_source
 	/* create new entry(s): data_template_data_rra */
 	if (sizeof($data_template_data_rras) > 0) {
 	foreach ($data_template_data_rras as $data_template_data_rra) {
-		db_execute("insert into data_template_data_rra (data_template_data_id,rra_id) values ($data_template_data_id,
+		db_execute("INSERT INTO data_template_data_rra (data_template_data_id,rra_id) VALUES ($data_template_data_id,
 			" . $data_template_data_rra["rra_id"] . ")");
 	}
 	}
@@ -712,9 +713,9 @@ function duplicate_data_source($_local_data_id, $_data_template_id, $data_source
 function duplicate_host_template($_host_template_id, $host_template_title) {
 	global $fields_host_template_edit;
 
-	$host_template = db_fetch_row("select * from host_template where id=$_host_template_id");
-	$host_template_graphs = db_fetch_assoc("select * from host_template_graph where host_template_id=$_host_template_id");
-	$host_template_data_queries = db_fetch_assoc("select * from host_template_snmp_query where host_template_id=$_host_template_id");
+	$host_template = db_fetch_row("SELECT * FROM host_template WHERE id=$_host_template_id");
+	$host_template_graphs = db_fetch_assoc("SELECT * FROM host_template_graph WHERE host_template_id=$_host_template_id");
+	$host_template_data_queries = db_fetch_assoc("SELECT * FROM host_template_snmp_query WHERE host_template_id=$_host_template_id");
 
 	/* substitute the title variable */
 	$host_template["name"] = str_replace("<template_title>", $host_template["name"], $host_template_title);
@@ -735,14 +736,14 @@ function duplicate_host_template($_host_template_id, $host_template_title) {
 	/* create new entry(s): host_template_graph */
 	if (sizeof($host_template_graphs) > 0) {
 	foreach ($host_template_graphs as $host_template_graph) {
-		db_execute("insert into host_template_graph (host_template_id,graph_template_id) values ($host_template_id," . $host_template_graph["graph_template_id"] . ")");
+		db_execute("INSERT INTO host_template_graph (host_template_id,graph_template_id) VALUES ($host_template_id," . $host_template_graph["graph_template_id"] . ")");
 	}
 	}
 
 	/* create new entry(s): host_template_snmp_query */
 	if (sizeof($host_template_data_queries) > 0) {
 	foreach ($host_template_data_queries as $host_template_data_query) {
-		db_execute("insert into host_template_snmp_query (host_template_id,snmp_query_id) values ($host_template_id," . $host_template_data_query["snmp_query_id"] . ")");
+		db_execute("INSERT INTO host_template_snmp_query (host_template_id,snmp_query_id) VALUES ($host_template_id," . $host_template_data_query["snmp_query_id"] . ")");
 	}
 	}
 }
@@ -750,8 +751,8 @@ function duplicate_host_template($_host_template_id, $host_template_title) {
 function duplicate_cdef($_cdef_id, $cdef_title) {
 	global $fields_cdef_edit;
 
-	$cdef = db_fetch_row("select * from cdef where id=$_cdef_id");
-	$cdef_items = db_fetch_assoc("select * from cdef_items where cdef_id=$_cdef_id");
+	$cdef = db_fetch_row("SELECT * FROM cdef WHERE id=$_cdef_id");
+	$cdef_items = db_fetch_assoc("SELECT * FROM cdef_items WHERE cdef_id=$_cdef_id");
 
 	/* substitute the title variable */
 	$cdef["name"] = str_replace("<cdef_title>", $cdef["name"], $cdef_title);

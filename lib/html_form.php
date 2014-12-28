@@ -214,7 +214,7 @@ function draw_edit_control($field_name, &$field_array) {
 	case 'drop_multi_rra':
 		form_multi_dropdown(
 			$field_name, 
-			array_rekey(db_fetch_assoc("select id,name from rra order by timespan"), "id", "name"),
+			array_rekey(db_fetch_assoc("SELECT id,name FROM rra ORDER BY timespan"), "id", "name"),
 			(empty($field_array["form_id"]) ? db_fetch_assoc($field_array["sql_all"]) : db_fetch_assoc($field_array["sql"])), 
 			"id",
 			((isset($field_array["class"])) ? $field_array["class"] : ""),
@@ -728,7 +728,7 @@ function form_color_dropdown($form_name, $form_previous_value, $form_none_entry,
 
 	$on_change = " onChange='this.style.backgroundColor=this.options[this.selectedIndex].style.backgroundColor;$on_change'";
 
-	$colors_list = db_fetch_assoc("select id,hex from colors order by hex desc");
+	$colors_list = db_fetch_assoc("SELECT id,hex FROM colors ORDER BY hex desc");
 
 	print "<select style='background-color: #$current_color;' id='$form_name' name='$form_name'" . $class . $on_change . ">\n";
 

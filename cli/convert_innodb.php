@@ -82,7 +82,7 @@ foreach($engines as $engine) {
 	}
 }
 
-$file_per_table = db_fetch_row("show global variables like 'innodb_file_per_table'");
+$file_per_table = db_fetch_row("SHOW GLOBAL VARIABLES LIKE 'innodb_file_per_table'");
 
 if (strtolower($file_per_table["Value"]) != "on") {
 	echo "innodb_file_per_table not enabled";

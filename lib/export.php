@@ -755,7 +755,7 @@ function resolve_dependencies($type, $id, $dep_array) {
 		}
 
 		/* dep: round robin archive */
-		$rras = db_fetch_assoc("SELECT rra_id from data_template_data_rra WHERE data_template_data_id=" . db_fetch_cell("select id from data_template_data WHERE data_template_id=$id AND local_data_id = 0"));
+		$rras = db_fetch_assoc("SELECT rra_id from data_template_data_rra WHERE data_template_data_id=" . db_fetch_cell("SELECT id FROM data_template_data WHERE data_template_id=$id AND local_data_id = 0"));
 
 		if (sizeof($rras) > 0) {
 		foreach ($rras as $item) {

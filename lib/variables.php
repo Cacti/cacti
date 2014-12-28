@@ -26,7 +26,7 @@
 	that match a given data template
    @arg $data_template_id - (int) the ID of the data template to match */
 function update_data_source_title_cache_from_template($data_template_id) {
-	$data = db_fetch_assoc("select local_data_id from data_template_data where data_template_id=$data_template_id and local_data_id>0");
+	$data = db_fetch_assoc("SELECT local_data_id FROM data_template_data WHERE data_template_id=$data_template_id AND local_data_id>0");
 
 	if (sizeof($data) > 0) {
 	foreach ($data as $item) {
@@ -40,7 +40,7 @@ function update_data_source_title_cache_from_template($data_template_id) {
    @arg $snmp_query_id - (int) the ID of the data query to match
    @arg $snmp_index - the index within the data query to match */
 function update_data_source_title_cache_from_query($snmp_query_id, $snmp_index) {
-	$data = db_fetch_assoc("select id from data_local where snmp_query_id=$snmp_query_id and snmp_index='$snmp_index'");
+	$data = db_fetch_assoc("SELECT id FROM data_local WHERE snmp_query_id=$snmp_query_id AND snmp_index='$snmp_index'");
 
 	if (sizeof($data) > 0) {
 	foreach ($data as $item) {
@@ -53,7 +53,7 @@ function update_data_source_title_cache_from_query($snmp_query_id, $snmp_index) 
 	that match a given host
    @arg $host_id - (int) the ID of the host to match */
 function update_data_source_title_cache_from_host($host_id) {
-	$data = db_fetch_assoc("select id from data_local where host_id=$host_id");
+	$data = db_fetch_assoc("SELECT id FROM data_local WHERE host_id=$host_id");
 
 	if (sizeof($data) > 0) {
 	foreach ($data as $item) {
@@ -65,7 +65,7 @@ function update_data_source_title_cache_from_host($host_id) {
 /* update_data_source_title_cache - updates the title cache for a single data source
    @arg $local_data_id - (int) the ID of the data source to update the title cache for */
 function update_data_source_title_cache($local_data_id) {
-	db_execute("update data_template_data set name_cache='" . addslashes(get_data_source_title($local_data_id)) . "' where local_data_id=$local_data_id");
+	db_execute("UPDATE data_template_data set name_cache='" . addslashes(get_data_source_title($local_data_id)) . "' WHERE local_data_id=$local_data_id");
 	api_plugin_hook_function('update_data_source_title_cache', $local_data_id);
 }
 
@@ -73,7 +73,7 @@ function update_data_source_title_cache($local_data_id) {
 	that match a given graph template
    @arg $graph_template_id - (int) the ID of the graph template to match */
 function update_graph_title_cache_from_template($graph_template_id) {
-	$graphs = db_fetch_assoc("select local_graph_id from graph_templates_graph where graph_template_id=$graph_template_id and local_graph_id>0");
+	$graphs = db_fetch_assoc("SELECT local_graph_id FROM graph_templates_graph WHERE graph_template_id=$graph_template_id AND local_graph_id>0");
 
 	if (sizeof($graphs) > 0) {
 	foreach ($graphs as $item) {
@@ -87,7 +87,7 @@ function update_graph_title_cache_from_template($graph_template_id) {
    @arg $snmp_query_id - (int) the ID of the data query to match
    @arg $snmp_index - the index within the data query to match */
 function update_graph_title_cache_from_query($snmp_query_id, $snmp_index) {
-	$graphs = db_fetch_assoc("select id from graph_local where snmp_query_id=$snmp_query_id and snmp_index='$snmp_index'");
+	$graphs = db_fetch_assoc("SELECT id FROM graph_local WHERE snmp_query_id=$snmp_query_id AND snmp_index='$snmp_index'");
 
 	if (sizeof($graphs) > 0) {
 	foreach ($graphs as $item) {
@@ -100,7 +100,7 @@ function update_graph_title_cache_from_query($snmp_query_id, $snmp_index) {
 	that match a given host
    @arg $host_id - (int) the ID of the host to match */
 function update_graph_title_cache_from_host($host_id) {
-	$graphs = db_fetch_assoc("select id from graph_local where host_id=$host_id");
+	$graphs = db_fetch_assoc("SELECT id FROM graph_local WHERE host_id=$host_id");
 
 	if (sizeof($graphs) > 0) {
 	foreach ($graphs as $item) {
@@ -112,7 +112,7 @@ function update_graph_title_cache_from_host($host_id) {
 /* update_graph_title_cache - updates the title cache for a single graph
    @arg $local_graph_id - (int) the ID of the graph to update the title cache for */
 function update_graph_title_cache($local_graph_id) {
-	db_execute("update graph_templates_graph set title_cache='" . addslashes(get_graph_title($local_graph_id)) . "' where local_graph_id=$local_graph_id");
+	db_execute("UPDATE graph_templates_graph set title_cache='" . addslashes(get_graph_title($local_graph_id)) . "' WHERE local_graph_id=$local_graph_id");
 }
 
 /* null_out_substitutions - takes a string and cleans out any host variables that do not have values
@@ -197,7 +197,7 @@ function substitute_host_data($string, $l_escape_string, $r_escape_string, $host
    @arg $max_chars - the maximum number of characters to substitute
    @returns - the original string with all of the variable substitutions made */
 function substitute_snmp_query_data($string, $host_id, $snmp_query_id, $snmp_index, $max_chars = 0) {
-	$snmp_cache_data = db_fetch_assoc("select field_name,field_value from host_snmp_cache where host_id=$host_id and snmp_query_id=$snmp_query_id and snmp_index='$snmp_index'");
+	$snmp_cache_data = db_fetch_assoc("SELECT field_name,field_value FROM host_snmp_cache WHERE host_id=$host_id AND snmp_query_id=$snmp_query_id AND snmp_index='$snmp_index'");
 
 	if (sizeof($snmp_cache_data) > 0) {
 		foreach ($snmp_cache_data as $data) {

@@ -42,7 +42,7 @@ function draw_nontemplated_fields_graph($graph_template_id, &$values_array, $fie
 	$draw_any_items = false;
 
 	/* fetch information about the graph template */
-	$graph_template = db_fetch_row("select * from graph_templates_graph where graph_template_id=$graph_template_id and local_graph_id=0");
+	$graph_template = db_fetch_row("SELECT * FROM graph_templates_graph WHERE graph_template_id=$graph_template_id AND local_graph_id=0");
 
 	while (list($field_name, $field_array) = each($struct_graph)) {
 		/* find our field name */
@@ -61,7 +61,7 @@ function draw_nontemplated_fields_graph($graph_template_id, &$values_array, $fie
 			}else{
 				unset($form_array[$form_field_name]);
 			}
-		}elseif ((!empty($snmp_query_graph_id)) && (sizeof(db_fetch_assoc("select id from snmp_query_graph_sv where snmp_query_graph_id=$snmp_query_graph_id and field_name='$field_name'")) > 0)) {
+		}elseif ((!empty($snmp_query_graph_id)) && (sizeof(db_fetch_assoc("SELECT id FROM snmp_query_graph_sv WHERE snmp_query_graph_id=$snmp_query_graph_id AND field_name='$field_name'")) > 0)) {
 			if ($include_hidden_fields == true) {
 				$form_array[$form_field_name]["method"] = "hidden";
 			}else{
@@ -110,24 +110,24 @@ function draw_nontemplated_fields_graph_item($graph_template_id, $local_graph_id
 	$draw_any_items = false;
 
 	/* fetch information about the graph template */
-	$input_item_list = db_fetch_assoc("select * from graph_template_input where graph_template_id=$graph_template_id order by column_name,name");
+	$input_item_list = db_fetch_assoc("SELECT * FROM graph_template_input WHERE graph_template_id=$graph_template_id ORDER BY column_name,name");
 
 	/* modifications to the default graph items array */
 	if (!empty($local_graph_id)) {
-		$host_id = db_fetch_cell("select host_id from graph_local where id=$local_graph_id");
+		$host_id = db_fetch_cell("SELECT host_id FROM graph_local WHERE id=$local_graph_id");
 
-		$struct_graph_item["task_item_id"]["sql"] = "select
+		$struct_graph_item["task_item_id"]["sql"] = "SELECT
 			CONCAT_WS('',
 			case
-			when host.description is null then 'No Host - '
-			when host.description is not null then ''
-			end,data_template_data.name_cache,' (',data_template_rrd.data_source_name,')') as name,
+			WHEN host.description IS NULL THEN 'No Host - '
+			when host.description IS NOT NULL THEN ''
+			end,data_template_data.name_cache,' (',data_template_rrd.data_source_name,')') AS name,
 			data_template_rrd.id
-			from (data_template_data,data_template_rrd,data_local)
-			left join host on (data_local.host_id=host.id)
+			FROM (data_template_data,data_template_rrd,data_local)
+			LEFT JOIN host ON (data_local.host_id=host.id)
 			where data_template_rrd.local_data_id=data_local.id
 			and data_template_data.local_data_id=data_local.id
-			" . (empty($host_id) ? "" : " and data_local.host_id=$host_id") . "
+			" . (empty($host_id) ? "" : " AND data_local.host_id=$host_id") . "
 			order by name";
 	}
 
@@ -217,7 +217,7 @@ function draw_nontemplated_fields_data_source($data_template_id, $local_data_id,
 	$draw_any_items = false;
 
 	/* fetch information about the data template */
-	$data_template = db_fetch_row("select * from data_template_data where data_template_id=$data_template_id and local_data_id=0");
+	$data_template = db_fetch_row("SELECT * FROM data_template_data WHERE data_template_id=$data_template_id AND local_data_id=0");
 
 	while (list($field_name, $field_array) = each($struct_data_source)) {
 		/* find our field name */
@@ -239,7 +239,7 @@ function draw_nontemplated_fields_data_source($data_template_id, $local_data_id,
 			}else{
 				unset($form_array[$form_field_name]);
 			}
-		}elseif ((!empty($snmp_query_graph_id)) && (sizeof(db_fetch_assoc("select id from snmp_query_graph_rrd_sv where snmp_query_graph_id=$snmp_query_graph_id and data_template_id=$data_template_id and field_name='$field_name'")) > 0)) {
+		}elseif ((!empty($snmp_query_graph_id)) && (sizeof(db_fetch_assoc("SELECT id FROM snmp_query_graph_rrd_sv WHERE snmp_query_graph_id=$snmp_query_graph_id AND data_template_id=$data_template_id AND field_name='$field_name'")) > 0)) {
 			if ($include_hidden_fields == true) {
 				$form_array[$form_field_name]["method"] = "hidden";
 			}else{
@@ -320,7 +320,7 @@ function draw_nontemplated_fields_data_source_item($data_template_id, &$values_a
 			if (empty($rrd["local_data_id"])) { /* this is a template */
 				$data_template_rrd = $rrd;
 			}else{ /* this is not a template */
-				$data_template_rrd = db_fetch_row("select * from data_template_rrd where id=" . $rrd["local_data_template_rrd_id"]);
+				$data_template_rrd = db_fetch_row("SELECT * FROM data_template_rrd WHERE id=" . $rrd["local_data_template_rrd_id"]);
 			}
 
 			while (list($field_name, $field_array) = each($struct_data_source_item)) {
@@ -346,7 +346,7 @@ function draw_nontemplated_fields_data_source_item($data_template_id, &$values_a
 					}else{
 						unset($form_array[$form_field_name]);
 					}
-				}elseif ((!empty($snmp_query_graph_id)) && (sizeof(db_fetch_assoc("select id from snmp_query_graph_rrd_sv where snmp_query_graph_id=$snmp_query_graph_id and data_template_id=$data_template_id and field_name='$field_name'")) > 0)) {
+				}elseif ((!empty($snmp_query_graph_id)) && (sizeof(db_fetch_assoc("SELECT id FROM snmp_query_graph_rrd_sv WHERE snmp_query_graph_id=$snmp_query_graph_id AND data_template_id=$data_template_id AND field_name='$field_name'")) > 0)) {
 					if ($include_hidden_fields == true) {
 						$form_array[$form_field_name]["method"] = "hidden";
 					}else{
@@ -365,8 +365,8 @@ function draw_nontemplated_fields_data_source_item($data_template_id, &$values_a
 					   valid choices for the drop-down box must be fetched from the associated
 					   data input method */
 					if ($field_name == "data_input_field_id") {
-						$data_input_id = db_fetch_cell("select data_input_id from data_template_data where data_template_id=".$rrd["data_template_id"]." and local_data_id=0");
-						$form_array[$form_field_name]["sql"] = "select id,CONCAT(data_name,' - ',name) as name from data_input_fields where data_input_id=".$data_input_id." and input_output='out' and update_rra='on' order by data_name,name";
+						$data_input_id = db_fetch_cell("SELECT data_input_id FROM data_template_data WHERE data_template_id=".$rrd["data_template_id"]." AND local_data_id=0");
+						$form_array[$form_field_name]["sql"] = "SELECT id,CONCAT(data_name,' - ',name) AS name FROM data_input_fields WHERE data_input_id=".$data_input_id." AND input_output='out' AND update_rra='on' ORDER BY data_name,name";
 					}
 				}
 			}
@@ -400,20 +400,20 @@ function draw_nontemplated_fields_data_source_item($data_template_id, &$values_a
    @arg $snmp_query_id - if this graph template is part of a data query, specify the data query id here. this
      will be used to determine if a given field is associated with a suggested value */
 function draw_nontemplated_fields_custom_data($data_template_data_id, $field_name_format = "|field|", $header_title = "", $alternate_colors = true, $include_hidden_fields = true, $snmp_query_id = 0) {
-	$data = db_fetch_row("select id,data_input_id,data_template_id,name,local_data_id from data_template_data where id=$data_template_data_id");
-	$host_id = db_fetch_cell("select host.id from (data_local,host) where data_local.host_id=host.id and data_local.id=" . $data["local_data_id"]);
-	$template_data = db_fetch_row("select id,data_input_id from data_template_data where data_template_id=" . $data["data_template_id"] . " and local_data_id=0");
+	$data = db_fetch_row("SELECT id,data_input_id,data_template_id,name,local_data_id FROM data_template_data WHERE id=$data_template_data_id");
+	$host_id = db_fetch_cell("SELECT host.id FROM (data_local,host) WHERE data_local.host_id=host.id AND data_local.id=" . $data["local_data_id"]);
+	$template_data = db_fetch_row("SELECT id,data_input_id FROM data_template_data WHERE data_template_id=" . $data["data_template_id"] . " AND local_data_id=0");
 
 	$draw_any_items = false;
 
 	/* get each INPUT field for this data input source */
-	$fields = db_fetch_assoc("select * from data_input_fields where data_input_id=" . $data["data_input_id"] . " and input_output='in' order by sequence");
+	$fields = db_fetch_assoc("SELECT * FROM data_input_fields WHERE data_input_id=" . $data["data_input_id"] . " AND input_output='in' ORDER BY sequence");
 
 	/* loop through each field found */
 	$i = 0;
 	if (sizeof($fields) > 0) {
 		foreach ($fields as $field) {
-			$data_input_data = db_fetch_row("select * from data_input_data where data_template_data_id=" . $data["id"] . " and data_input_field_id=" . $field["id"]);
+			$data_input_data = db_fetch_row("SELECT * FROM data_input_data WHERE data_template_data_id=" . $data["id"] . " AND data_input_field_id=" . $field["id"]);
 
 			if (sizeof($data_input_data) > 0) {
 				$old_value = $data_input_data["value"];
@@ -425,7 +425,7 @@ function draw_nontemplated_fields_custom_data($data_template_data_id, $field_nam
 			if (empty($data["data_template_id"])) {
 				$can_template = "on";
 			}else{
-				$can_template = db_fetch_cell("select t_value from data_input_data where data_template_data_id=" . $template_data["id"] . " and data_input_field_id=" . $field["id"]);
+				$can_template = db_fetch_cell("SELECT t_value FROM data_input_data WHERE data_template_data_id=" . $template_data["id"] . " AND data_input_field_id=" . $field["id"]);
 			}
 
 			/* find our field name */
@@ -480,23 +480,23 @@ function draw_nontemplated_fields_custom_data($data_template_data_id, $field_nam
      belongs to
    @arg $current_value - the current value of this field */
 function draw_custom_data_row($field_name, $data_input_field_id, $data_template_data_id, $current_value) {
-	$field = db_fetch_row("select data_name,type_code from data_input_fields where id=$data_input_field_id");
+	$field = db_fetch_row("SELECT data_name,type_code FROM data_input_fields WHERE id=$data_input_field_id");
 
-	if (($field["type_code"] == "index_type") && (db_fetch_cell("select local_data_id from data_template_data where id=$data_template_data_id") > 0)) {
-		$index_type = db_fetch_assoc("select
+	if (($field["type_code"] == "index_type") && (db_fetch_cell("SELECT local_data_id FROM data_template_data WHERE id=$data_template_data_id") > 0)) {
+		$index_type = db_fetch_assoc("SELECT
 			host_snmp_cache.field_name
-			from (data_template_data,data_local,host_snmp_cache)
-			where data_template_data.local_data_id=data_local.id
-			and data_local.snmp_query_id=host_snmp_cache.snmp_query_id
-			and data_template_data.id=$data_template_data_id
-			group by host_snmp_cache.field_name");
+			FROM (data_template_data,data_local,host_snmp_cache)
+			WHERE data_template_data.local_data_id=data_local.id
+			AND data_local.snmp_query_id=host_snmp_cache.snmp_query_id
+			AND data_template_data.id=$data_template_data_id
+			GROUP BY host_snmp_cache.field_name");
 
 		if (sizeof($index_type) == 0) {
 			print "<em>Data query data sources must be created through <a href='" . htmlspecialchars("graphs_new.php") . "'>New Graphs</a>.</em>\n";
 		}else{
 			form_dropdown($field_name, $index_type, "field_name", "field_name", $current_value, "", "", "");
 		}
-	}elseif (($field["type_code"] == "output_type") && (db_fetch_cell("select local_data_id from data_template_data where id=$data_template_data_id") > 0)) {
+	}elseif (($field["type_code"] == "output_type") && (db_fetch_cell("SELECT local_data_id FROM data_template_data WHERE id=$data_template_data_id") > 0)) {
 		$output_type = db_fetch_assoc("select
 			snmp_query_graph.id,
 			snmp_query_graph.name
