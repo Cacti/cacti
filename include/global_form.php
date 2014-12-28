@@ -672,7 +672,7 @@ $fields_host_edit = array(
 		'description' => 'Choose the Host Template to use to define the default Graph Templates and Data Queries associated with this Host.',
 		'value' => '|arg1:host_template_id|',
 		'none_value' => 'None',
-		'sql' => 'SELECT id,name FROM Host_template ORDER BY name',
+		'sql' => 'SELECT id,name FROM host_template ORDER BY name',
 		),
 	'device_threads' => array(
 		'method' => 'drop_array',
