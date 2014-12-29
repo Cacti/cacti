@@ -246,8 +246,6 @@ function upgrade_to_0_8_8d() {
 
 
 	// Convert all trees to new format
-	include_once('./include/global.php');
-
 	define('CHARS_PER_TIER', 3);
 
 	$trees      = db_fetch_assoc("SELECT id FROM graph_tree ORDER BY id");
