@@ -25,6 +25,7 @@
 $guest_account = true;
 include('./include/auth.php');
 include_once('./lib/html_tree.php');
+include_once('./lib/api_tree.php');
 include_once('./lib/timespan_settings.php');
 
 define('MAX_DISPLAY_PAGES', 21);
@@ -32,7 +33,6 @@ define('MAX_DISPLAY_PAGES', 21);
 /* ================= input validation ================= */
 input_validate_input_number(get_request_var_request('branch_id'));
 input_validate_input_number(get_request_var_request('hide'));
-input_validate_input_number(get_request_var_request('tree_id'));
 input_validate_input_number(get_request_var_request('leaf_id'));
 input_validate_input_number(get_request_var_request('rra_id'));
 input_validate_input_regex(get_request_var_request('graph_list'), '^([\,0-9]+)$');
@@ -61,7 +61,7 @@ if (!isset($_REQUEST['action'])) {
 	}
 }
 
-if ($_REQUEST['action'] != 'tree_content') {
+if ($_REQUEST['action'] != 'tree_content' && $_REQUEST['action'] != 'get_node') {
 	$_SESSION['sess_graph_view_action'] = $_REQUEST['action'];
 }
 
@@ -83,20 +83,42 @@ switch ($_REQUEST['action']) {
 case 'tree':
 	top_graph_header();
 
-	validate_tree_vars();
-
-	if (!is_view_allowed('show_tree')) {
-		print "<strong><font class='txtErrorTextBox'>YOU DO NOT HAVE RIGHTS FOR TREE VIEW</font></strong>"; return;
-	}
-
-	if ((!isset($_REQUEST['tree_id'])) && (isset($_SESSION['dhtml_tree']))) {
-		unset($_SESSION['dhtml_tree']);
-	}
-
-	$tree_dropdown_html = draw_tree_dropdown((isset($_REQUEST['tree_id']) ? $_REQUEST['tree_id'] : '0'));
-
 	bottom_footer();
 
+	break;
+case 'get_node':
+	$parent = -1;
+	if (isset($_REQUEST['tree_id'])) {
+		if ($_REQUEST['tree_id'] == 'default' || $_REQUEST['tree_id'] == 'undefined') {
+			$tree_id = read_graph_config_option('default_tree_id');
+		}else{
+			$tree_id = $_REQUEST['tree_id'];
+			input_validate_input_number($tree_id);
+		}
+	}else{
+		$tree_id = read_graph_config_option('default_tree_id');
+	}
+
+	if (isset($_REQUEST['id']) && $_REQUEST['id'] != '#') {
+		if (substr_count($_REQUEST['id'], 'tree_anchor')) {
+			$parent = 0;
+		}else{
+			$ndata = explode('_', $_REQUEST['id']);
+
+			foreach($ndata as $node) {
+				$pnode = explode('-', $node);
+	
+				if ($pnode[0] == 'tbranch') {
+					$parent = $pnode[1];
+					input_validate_input_number($parent);
+					break;
+				}
+			}
+		}
+	}
+
+	api_tree_get_main($tree_id, $parent); exit;
+	
 	break;
 case 'tree_content':
 	validate_tree_vars();
@@ -115,12 +137,7 @@ case 'tree_content':
 
 	$access_denied = false;
 	$tree_parameters = array();
-	$_SESSION['sess_node_id'] = $_REQUEST['nodeid'];
-
-	/* if cacti's builtin authentication is turned on then make sure to take
-	graph permissions into account here. if a user does not have rights to a
-	particular graph; do not show it. they will get an access denied message
-	if they try and view the graph directly. */
+	$_SESSION['sess_node_id'] = 'tbranch-' . $_REQUEST['nodeid'];
 
 	if (isset($_REQUEST['tree_id'])) {
 		if (!is_tree_allowed($_REQUEST['tree_id'])) {

@@ -499,7 +499,39 @@ function is_realm_allowed($realm) {
 	}
 }
 
-function get_allowed_tree_content($tree_id, $graphs = false, $edit = false, $sql_where = '', $order_by = '', $limit = '', &$total_rows = 0, $user = 0) {
+function get_allowed_tree_level($tree_id, $parent_id) {
+	$items = db_fetch_assoc("SELECT gti.id, gti.title, gti.host_id, 
+		gti.local_graph_id, gti.host_grouping_type, h.description as hostname
+		FROM graph_tree_items AS gti
+		INNER JOIN graph_tree AS gt
+		ON gt.id=gti.graph_tree_id
+		LEFT JOIN host AS h
+		ON h.id=gti.host_id
+		WHERE graph_tree_id=$tree_id 
+		AND parent=$parent_id
+		ORDER BY position ASC");
+
+	$i     = 0;
+	if (sizeof($items)) {
+	foreach($items as $item) {
+		if ($item['host_id'] > 0) {
+			if (!is_device_allowed($item['host_id'])) {
+				unset($items[$i]);
+			}
+		}elseif($item['local_graph_id'] > 0) {
+			if (!is_graph_allowed($item['local_graph_id'])) {
+				unset($items[$i]);
+			}
+		}
+
+		$i++;
+	}
+	}
+
+	return $items;
+}
+
+function get_allowed_tree_content($tree_id, $parent = 0, $sql_where = '', $order_by = '', $limit = '', &$total_rows = 0, $user = 0) {
 	if ($limit != '') {
 		$limit = "LIMIT $limit";
 	}
@@ -509,16 +541,12 @@ function get_allowed_tree_content($tree_id, $graphs = false, $edit = false, $sql
 	}
 
 	if ($sql_where != '') {
-		$sql_where = "WHERE (gti.graph_tree_id=$tree_id) AND (" . $sql_where . ")" . ($edit == false ? " AND (gt.enabled='on')":"");
+		$sql_where = "WHERE gti.local_graph_id=0 AND gti.parent=$parent AND gti.graph_tree_id=$tree_id AND (" . $sql_where . ")";
 	}else{
-		$sql_where = "WHERE (gti.graph_tree_id=$tree_id)" . ($edit == false ? " AND (gt.enabled='on')":"");
+		$sql_where = "WHERE gti.local_graph_id=0 AND gti.parent=$parent AND gti.graph_tree_id=$tree_id";
 	}
 
-	if (!$graphs) {
-		$sql_where .= " AND gti.local_graph_id=0";
-	}
-
-	$hierarchy = db_fetch_assoc("SELECT gti.id, gti.title, gti.order_key, gti.host_id, 
+	$hierarchy = db_fetch_assoc("SELECT gti.id, gti.title, gti.host_id, 
 		gti.local_graph_id, gti.host_grouping_type, h.description as hostname
 		FROM graph_tree_items AS gti
 		INNER JOIN graph_tree AS gt
@@ -526,7 +554,7 @@ function get_allowed_tree_content($tree_id, $graphs = false, $edit = false, $sql
 		LEFT JOIN host AS h
 		ON h.id=gti.host_id
 		$sql_where
-		ORDER BY gti.order_key");
+		ORDER BY gti.position");
 
 	if (read_config_option('auth_method') != 0) {
 		$new_hierarchy = array();
@@ -548,7 +576,7 @@ function get_allowed_tree_content($tree_id, $graphs = false, $edit = false, $sql
 	}
 }
 
-function get_allowed_tree_header_graphs($tree_id, $search_key, $sql_where = '', $order_by = 'gti.order_key', $limit = '', &$total_rows = 0, $user = 0) {
+function get_allowed_tree_header_graphs($tree_id, $leaf_id = 0, $sql_where = '', $order_by = 'gti.position', $limit = '', &$total_rows = 0, $user = 0) {
 	if ($limit != '') {
 		$limit = "LIMIT $limit";
 	}
@@ -561,8 +589,7 @@ function get_allowed_tree_header_graphs($tree_id, $search_key, $sql_where = '', 
 		$sql_where = " AND ($sql_where)";
 	}
 
-	$sql_where = "WHERE (gti.graph_tree_id=$tree_id
-		AND gti.order_key LIKE '$search_key" . str_repeat('_', CHARS_PER_TIER) . str_repeat('0', (MAX_TREE_DEPTH * CHARS_PER_TIER) - (strlen($search_key) + CHARS_PER_TIER)) . "')" . $sql_where;
+	$sql_where = "WHERE (gti.graph_tree_id=$tree_id AND gti.parent=$leaf_id)" . $sql_where;
 
 	$i          = 0;
 	$sql_having = '';
@@ -618,7 +645,7 @@ function get_allowed_tree_header_graphs($tree_id, $search_key, $sql_where = '', 
 
 		$sql_having = "HAVING $sql_having";
 
-		$graphs = db_fetch_assoc("SELECT gti.id, gti.title, gti.rra_id, gti.order_key, gtg.local_graph_id, 
+		$graphs = db_fetch_assoc("SELECT gti.id, gti.title, gti.rra_id, gtg.local_graph_id, 
 			h.description, gt.name AS template_name, gtg.title_cache, 
 			gtg.width, gtg.height, gl.snmp_index, gl.snmp_query_id,
 			$sql_select
@@ -656,8 +683,7 @@ function get_allowed_tree_header_graphs($tree_id, $search_key, $sql_where = '', 
 	}else{
 		$graphs = db_fetch_assoc("SELECT 
 			gti.id, gti.title, 
-			gti.rra_id, gti.order_key,
-			gtg.local_graph_id, 
+			gti.rra_id, gtg.local_graph_id, 
 			host.description, 
 			gt.name AS template_name, 
 			gtg.title_cache, 

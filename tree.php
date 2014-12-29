@@ -47,11 +47,9 @@ if (!isset($_REQUEST['action'])) { $_REQUEST['action'] = ''; }
 switch ($_REQUEST['action']) {
 	case 'save':
 		form_save();
-
 		break;
-   case 'actions':
+	case 'actions':
         form_actions();
-
         break;
 	case 'edit':
 		top_header();
@@ -69,6 +67,24 @@ switch ($_REQUEST['action']) {
 		break;
 	case 'unlock':
 		unlock_tree();
+		break;
+	case 'copy_node':
+		api_tree_copy_node();
+		break;
+	case 'create_node':
+		api_tree_create_node();
+		break;
+	case 'delete_node':
+		api_tree_delete_node();
+		break;
+	case 'move_node':
+		api_tree_move_node();
+		break;
+	case 'rename_node':
+		api_tree_rename_node();
+		break;
+	case 'get_node':
+		api_tree_get_node();
 		break;
 	default:
 		top_header();
@@ -323,31 +339,35 @@ function tree_edit() {
 
 	html_end_box();
 
-	form_save_button('tree.php', 'return');
-
 	if (isset($tree['locked']) && $tree['locked'] == 0) {
-		print "<div style='padding:3px;'><input id='lock' type='button' value='Lock Tree'></div>\n";
+		$lockdiv = "<div style='padding:3px;'><table><tr><td><input id='lock' type='button' value='Lock Tree'></td><td style='font-weight:bold;'>To edit this tree, you must first lock it.</td></tr></table></div>\n";
+		$editable = false;
 	}elseif (isset($tree['locked']) && $tree['locked'] == 1) {
-		print "<div style='padding:3px;'><input id='unlock' type='button' value='Unlock Tree'>&nbsp;Locked on '" . $tree['locked_date'] . "'</div>\n";
+		$lockdiv = "<div style='padding:3px;'><table><tr><td><input id='unlock' type='button' value='Unlock Tree'></td><td><input id='addbranch' type='button' value='Add Root Branch' onClick='createNode()'></td><td style='font-weight:bold;'>The tree was locked on '" . $tree['locked_date'] . "' by '" . get_username($tree['modified_by']) . "'";
+		if ($tree['modified_by'] == $_SESSION['sess_user_id']) {
+			$editable = true;
+			$lockdiv .= "</td></tr></table></div>";
+		}else{
+			$editable = false;
+			$lockdiv .= ". To edit the tree, you must first unlock it and then lock it as yourself</td></tr></table></div>";
+		}
 	}else{
 		$tree['id'] = 0;
+		$editable = true;
 	}
+
+	if ($editable) {
+		form_save_button('tree.php', 'return');
+	}
+		
+	print $lockdiv;
 
 	print "<table class='treeTable' cellpadding='0' cellspacing='0' width='100%' border='0' valign='top'><tr valign='top'><td class='treeArea'>\n";
 
 	if (!empty($_REQUEST['id'])) {
 		html_start_box('<strong>Tree Items</strong>', '100%', '', '3', 'center', '');
 
-		$dhtml_tree = create_dhtml_tree_edit($_REQUEST['id']);
-
-		$total_tree_items = sizeof($dhtml_tree) - 1;
-
-		echo "<tr><td style='padding:7px;'>\n";
-		for ($i = 2; $i <= $total_tree_items; $i++) {
-			print $dhtml_tree[$i];
-		}
-
-		echo "</td></tr>\n";
+		echo "<tr><td style='padding:7px;'><div id='jstree'></div></td></tr>\n";
 
 		html_end_box();
 
@@ -436,6 +456,15 @@ function tree_edit() {
 		}
 		?>
 
+		function createNode() {
+			console.log("Attempting to create");
+			var ref = $('#jstree').jstree(true),
+			sel = ref.create_node('#', 'New Node', '0');
+			if (sel) {
+				ref.edit(sel);
+			}
+		};
+
 		$(function() {
 			$('input[value="Save"]').click(function(event) {
 				event.preventDefault();
@@ -485,6 +514,12 @@ function tree_edit() {
 					}
 				},
 				'core' : {
+					'data' : {
+						'url' : 'tree.php?action=get_node&tree_id='+$('#id').val(),
+						'data' : function(node) {
+							return { 'id' : node.id }
+						}
+					},
 					'animation' : 0,
 					'check_callback' : true
 				},
@@ -494,21 +529,21 @@ function tree_edit() {
 					'url' : true,
 					'dots' : false
 				},
-				'plugins' : [ 'state', 'wholerow', 'contextmenu', 'dnd', 'types' ]
+				'plugins' : [ 'state', 'wholerow', 'contextmenu', <?php if ($editable) {?>'dnd', <?php }?>'types' ]
 			})
 			.on('ready.jstree', function(e, data) {
 				if (reset == true) {
 					$('#jstree').jstree('clear_state');
 				}
-			})
+			}) <?php if ($editable) {?>
 			.on('delete_node.jstree', function (e, data) {
-				$.get('?operation=delete_node', { 'id' : data.node.id })
+				$.get('?action=delete_node', { 'id' : data.node.id, 'tree_id' : $('#id').val() })
 					.fail(function () {
 						data.instance.refresh();
 					});
 				})
 			.on('create_node.jstree', function (e, data) {
-				$.get('?operation=create_node', { 'id' : data.node.parent, 'position' : data.position, 'text' : data.node.text })
+				$.get('?action=create_node', { 'id' : data.node.parent, 'tree_id' : $('#id').val(), 'position' : data.position, 'text' : data.node.text })
 					.done(function (d) {
 						data.instance.set_id(data.node, d.id);
 					})
@@ -517,33 +552,26 @@ function tree_edit() {
 					});
 			})
 			.on('rename_node.jstree', function (e, data) {
-				$.get('?operation=rename_node', { 'id' : data.node.id, 'text' : data.text })
+				$.get('?action=rename_node', { 'id' : data.node.id, 'tree_id' : $('#id').val(), 'text' : data.text })
 					.fail(function () {
 						data.instance.refresh();
 					});
 			})
 			.on('move_node.jstree', function (e, data) {
-				$.get('?operation=move_node', { 'id' : data.node.id, 'parent' : data.parent, 'position' : data.position })
+				$.get('?action=move_node', { 'id' : data.node.id, 'tree_id' : $('#id').val(), 'parent' : data.parent, 'position' : data.position })
+					.done(function () {
+						data.instance.refresh();
+					})
 					.fail(function () {
 						data.instance.refresh();
 					});
 			})
 			.on('copy_node.jstree', function (e, data) {
-				$.get('?operation=copy_node', { 'id' : data.original.id, 'parent' : data.parent, 'position' : data.position })
+				$.get('?action=copy_node', { 'id' : data.original.id, 'tree_id' : $('#id').val(), 'parent' : data.parent, 'position' : data.position })
 					.always(function () {
 						data.instance.refresh();
 					});
-			})
-			.on('changed.jstree', function (e, data) {
-				if(data && data.selected && data.selected.length) {
-					$.get('?operation=get_content&id=' + data.selected.join(':'), function (d) {
-						$('#data .default').html(d.content).show();
-					});
-				} else {
-					$('#data .content').hide();
-					$('#data .default').html('Select a file from the tree.').show();
-				}
-			});
+			})<?php }?>;
 
 			$('#jstree').css('height', height).css('overflow','auto');;
 
@@ -572,56 +600,19 @@ function tree_edit() {
 						'always_copy' : true
 					},
 					'themes' : { 'stripes' : true },
-					'plugins' : [ 'wholerow', 'state', 'dnd', 'types' ]
+					'plugins' : [ 'wholerow', 'state', <?php if ($editable) {?>'dnd', <?php }?>'types' ]
 				})
 				.on('ready.jstree', function(e, data) {
 					if (reset == true) {
 						$('#jstree').jstree('clear_state');
 					}
-				})
-				.on('delete_node.jstree', function (e, data) {
-					$.get('?operation=delete_node', { 'id' : data.node.id })
-						.fail(function () {
-							data.instance.refresh();
-						});
-					})
-				.on('create_node.jstree', function (e, data) {
-					$.get('?operation=create_node', { 'id' : data.node.parent, 'position' : data.position, 'text' : data.node.text })
-						.done(function (d) {
-							data.instance.set_id(data.node, d.id);
-						})
-						.fail(function () {
-							data.instance.refresh();
-						});
-				})
-				.on('rename_node.jstree', function (e, data) {
-					$.get('?operation=rename_node', { 'id' : data.node.id, 'text' : data.text })
-						.fail(function () {
-							data.instance.refresh();
-						});
-				})
-				.on('move_node.jstree', function (e, data) {
-					$.get('?operation=move_node', { 'id' : data.node.id, 'parent' : data.parent, 'position' : data.position })
-						.fail(function () {
-							data.instance.refresh();
-						});
-				})
+				})<?php if ($editable) {?>
 				.on('copy_node.jstree', function (e, data) {
-					$.get('?operation=copy_node', { 'id' : data.original.id, 'parent' : data.parent, 'position' : data.position })
+					$.get('?action=copy_node', { 'id' : data.original.id, 'parent' : data.parent, 'position' : data.position })
 						.always(function () {
 							data.instance.refresh();
 						});
-				})
-				.on('changed.jstree', function (e, data) {
-					if(data && data.selected && data.selected.length) {
-						$.get('?operation=get_content&id=' + data.selected.join(':'), function (d) {
-							$('#data .default').html(d.content).show();
-						});
-					} else {
-						$('#data .content').hide();
-						$('#data .default').html('Select a file from the tree.').show();
-					}
-				});
+				})<?php }?>;
 				$(element).find('.jstree-ocl').hide();
 				$(element).children().bind('contextmenu', function(event) {
 					return false;
@@ -680,7 +671,9 @@ function display_hosts() {
 
 	if (sizeof($hosts)) {
 		foreach($hosts as $h) {
-			echo "<ul><li id='host_" . $h['id'] . "' data-jstree='{ \"type\" : \"device\"}'>" . $h['host'] . "</li></ul>\n";
+			if (is_device_allowed($h['id'])) {
+				echo "<ul><li id='thost:" . $h['id'] . "' data-jstree='{ \"type\" : \"device\"}'>" . $h['host'] . "</li></ul>\n";
+			}
 		}
 	}
 }
@@ -703,11 +696,11 @@ function display_graphs() {
 			ORDER BY title_cache 
 			LIMIT 10");
 
-		$i = 0;
 		if (sizeof($graphs)) {
 			foreach($graphs as $g) {
-				echo "<ul><li id='graph_" . $g['id'] . "' data-jstree='{ \"type\": \"graph\" }'>" . $g['title'] . "</li></ul>";	
-				$i++;
+				if (is_graph_allowed($g['id'])) {
+					echo "<ul><li id='tgraph:" . $g['id'] . "' data-jstree='{ \"type\": \"graph\" }'>" . $g['title'] . "</li></ul>";	
+				}
 			}
 		}
 }

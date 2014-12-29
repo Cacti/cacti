@@ -222,9 +222,6 @@ function upgrade_to_0_8_8d() {
 		ENGINE=MyISAM 
 		COMMENT='RRD Cleaner File Actions';");
 
-	db_install_execute('0.8.8d', "ALTER TABLE graph_tree_items ADD COLUMN parent INT unsigned default NULL AFTER id, ADD INDEX parent (parent)");
-	db_install_execute('0.8.8d', "ALTER TABLE graph_tree_items ADD COLUMN position INT unsigned default NULL AFTER parent, ADD INDEX position (position)");
-
 	db_install_execute('0.8.8d', "ALTER TABLE graph_tree 
 		ADD COLUMN enabled char(2) DEFAULT 'on' AFTER id,
 		ADD COLUMN locked TINYINT default '0' AFTER enabled, 
@@ -236,10 +233,8 @@ function upgrade_to_0_8_8d() {
 	db_install_execute('0.8.8d', "ALTER TABLE graph_tree_items 
 		MODIFY COLUMN id BIGINT UNSIGNED NOT NULL auto_increment, 
 		ADD COLUMN parent BIGINT UNSIGNED default NULL AFTER id, 
-		ADD COLUMN position int UNSIGNED default NULL AFTER parent, 
-		ADD COLUMN level int UNSIGNED default NULL AFTER position, 
-		ADD COLUMN left_id BIGINT UNSIGNED default NULL AFTER level, 
-		ADD COLUMN right_id BIGINT UNSIGNED default NULL AFTER left_id;");
+		ADD COLUMN position int UNSIGNED default NULL AFTER parent,
+		ADD INDEX parent (parent)");
 
 	db_install_execute('0.8.8d', "CREATE TABLE IF NOT EXISTS `user_auth_cache` (
 		`user_id` int(10) unsigned NOT NULL DEFAULT '0',
@@ -248,4 +243,77 @@ function upgrade_to_0_8_8d() {
 		`token` varchar(1024) NOT NULL DEFAULT '') 
 		ENGINE=MyISAM 
 		COMMENT='Caches Remember Me Details'");
+
+
+	// Convert all trees to new format
+	include_once('./include/global.php');
+
+	define('CHARS_PER_TIER', 3);
+
+	$trees      = db_fetch_assoc("SELECT id FROM graph_tree ORDER BY id");
+
+	if (sizeof($trees)) {
+	foreach($trees as $t) {
+		$tree_items = db_fetch_assoc("SELECT * 
+			FROM graph_tree_items 
+			WHERE graph_tree_id=" . $t['id'] . " 
+			AND order_key NOT LIKE '___000%' 
+			ORDER BY order_key");
+
+		/* reset the position variable in case we run more than once */
+		db_execute("UPDATE graph_tree_items SET position=0 WHERE graph_tree_id=" . $t['id']);
+
+		$prev_parent = 0;
+		$prev_id     = 0;
+		$position    = 0;
+
+		if (sizeof($tree_items)) {
+			foreach($tree_items AS $item) {
+				$translated_key = rtrim($item["order_key"], "0\r\n");
+				$missing_len    = strlen($translated_key) % CHARS_PER_TIER;
+				if ($missing_len > 0) {
+					$translated_key .= substr("000", 0, $missing_len);
+				}
+				$parent_key_len = strlen($translated_key) - CHARS_PER_TIER;
+				$parent_key     = substr($translated_key, 0, $parent_key_len);
+				$parent_id      = db_fetch_cell("SELECT id FROM graph_tree_items WHERE graph_tree_id=" . $item["graph_tree_id"] . " AND order_key LIKE '" . $parent_key . "000%'");
+
+				if (!empty($parent_id)) {
+					/* get order */
+					if ($parent_id != $prev_parent) {
+						$position = 0;
+					}
+
+					$position = db_fetch_cell("SELECT MAX(position) 
+						FROM graph_tree_items 
+						WHERE graph_tree_id=" . $item['graph_tree_id'] . " 
+						AND parent=" . $parent_id) + 1;
+
+					db_execute("UPDATE graph_tree_items SET parent=$parent_id, position=$position WHERE id=" . $item["id"]);
+				}else{
+					db_execute("UPDATE graph_tree_items SET parent=0, position=$position WHERE id=" . $item["id"]);
+				}
+
+				$prev_parent = $parent_id;
+			}
+		}
+
+		/* get base tree items and set position */
+		$tree_items = db_fetch_assoc("SELECT * 
+			FROM graph_tree_items
+			WHERE graph_tree_id=" . $t['id'] . " 
+			AND order_key LIKE '___000%' 
+			ORDER BY order_key");
+
+		$position = 0;
+		if (sizeof($tree_items)) {
+			foreach($tree_items as $item) {
+				db_execute("UPDATE graph_tree_items SET parent=0, position=$position WHERE id=" . $item['id']);
+				$position++;
+			}
+		}
+	}
+	}
+
+	db_install_execute('0.8.8d', "ALTER TABLE graph_tree_items DROP COLUMN order_key");
 }

@@ -391,126 +391,103 @@ function displayTrees($quietMode = FALSE) {
 	}
 }
 
-function displayTreeNodes($tree_id, $nodeType = "", $parentNode = "", $quietMode = FALSE) {
+function displayTreeNodes($tree_id, $nodeType = "", $parentNode = 0, $quietMode = FALSE) {
 	global $tree_sort_types, $tree_item_types, $host_group_types;
 
-	if (!$quietMode) {
-		echo "Known Tree Nodes:\n";
-		echo "type\tid\tparentid\ttitle\tattribs\n";
+	if ($parentNode == 0) {
+		if (!$quietMode) {
+			echo "Known Tree Nodes:\n";
+			echo "type\tid\tparentid\ttitle\tattribs\n";
+		}
 	}
 
 	$parentID = 0;
 
-	$nodes = db_fetch_assoc("SELECT
-		id,
-		local_graph_id,
-		rra_id,
-		title,
-		host_id,
-		host_grouping_type,
-		order_key,
-		sort_children_type
+	$nodes = db_fetch_assoc("SELECT id, local_graph_id, rra_id, title,
+		host_id, host_grouping_type, sort_children_type
 		FROM graph_tree_items
 		WHERE graph_tree_id=$tree_id
-		ORDER BY order_key");
+		AND parent=$parentNode
+		ORDER BY position");
 
 	if (sizeof($nodes)) {
 		foreach ($nodes as $node) {
 			/* taken from tree.php, funtion item_edit() */
 			$current_type = TREE_ITEM_TYPE_HEADER;
 			if ($node["local_graph_id"] > 0) { $current_type = TREE_ITEM_TYPE_GRAPH; }
-			if ($node["title"] != "") { $current_type = TREE_ITEM_TYPE_HEADER; }
 			if ($node["host_id"] > 0) { $current_type = TREE_ITEM_TYPE_HOST; }
 
 			switch ($current_type) {
 				case TREE_ITEM_TYPE_HEADER:
-					$starting_tier = tree_tier($node["order_key"]);
-					if ($starting_tier == 1) {
-						$parentID = 0;
-					}else{
-						$parent_tier = substr($node["order_key"], 0, (($starting_tier - 1) * CHARS_PER_TIER));
-						$parentID = db_fetch_cell("SELECT id FROM graph_tree_items WHERE order_key LIKE '$parent_tier%%' AND graph_tree_id=$tree_id ORDER BY order_key LIMIT 1");
-					}
-
 					if ($nodeType == '' || $nodeType == 'header') {
-						if ($parentNode == '' || $parentNode == $parentID) {
-							echo $tree_item_types[$current_type]."\t";
-							echo $node["id"]."\t";
-							if ($parentID == 0) {
-								echo "N/A\t";
-							}else{
-								echo $parentID."\t";
-							}
-
-							echo $node["title"]."\t";
-							echo $tree_sort_types[$node["sort_children_type"]]."\t";
-							echo "\n";
+						echo $tree_item_types[$current_type]."\t";
+						echo $node["id"]."\t";
+						if ($parentNode == 0) {
+							echo "N/A\t";
+						}else{
+							echo $parentNode . "\t";
 						}
+
+						echo $node["title"] . "\t";
+						echo $tree_sort_types[$node["sort_children_type"]] . "\t";
+						echo "\n";
 					}
-					$parentID = $node["id"];
+
+					displayTreeNodes($tree_id, $nodeType, $node['id'], $quietMode);
 
 					break;
-
 				case TREE_ITEM_TYPE_GRAPH:
 					if ($nodeType == '' || $nodeType == 'graph') {
-						if ($parentNode == '' || $parentNode == $parentID) {
-							echo $tree_item_types[$current_type]."\t";
-							echo $node["id"]."\t";
-							if ($parentID == 0) {
-								echo "N/A\t";
-							}else{
-								echo $parentID."\t";
-							}
-
-							/* fetch the title for that graph */
-							$graph_title = db_fetch_cell("SELECT
-							graph_templates_graph.title_cache as name
-							FROM (
-								graph_templates_graph,
-								graph_local)
-							WHERE
-								graph_local.id=graph_templates_graph.local_graph_id and
-								local_graph_id = " . $node["local_graph_id"]);
-
-							$rra = db_fetch_cell("SELECT
-								name
-								FROM rra
-								WHERE id =" . $node["rra_id"]);
-
-							echo $graph_title ."\t";
-							echo $rra . "\t";
-							echo "\n";
+						echo $tree_item_types[$current_type] . "\t";
+						echo $node["id"] . "\t";
+						if ($parentNode == 0) {
+							echo "N/A\t";
+						}else{
+							echo $parentNode . "\t";
 						}
-					}
-					break;
 
+						/* fetch the title for that graph */
+						$graph_title = db_fetch_cell("SELECT gtg.title_cache as name
+							FROM graph_templates_graph AS gtg
+							WHERE gtg.local_graph_id=" . $node['local_graph_id']);
+
+						$rra = db_fetch_cell("SELECT name
+							FROM rra
+							WHERE id=" . $node["rra_id"]);
+
+						echo $graph_title . "\t";
+						echo $rra . "\t";
+						echo "\n";
+					}
+
+					break;
 				case TREE_ITEM_TYPE_HOST:
 					if ($nodeType == '' || $nodeType == 'host') {
-						if ($parentNode == '' || $parentNode == $parentID) {
-							echo $tree_item_types[$current_type]."\t";
-							echo $node["id"]."\t";
-							if ($parentID == 0) {
-								echo "N/A\t";
-							}else{
-								echo $parentID."\t";
-							}
+						echo $tree_item_types[$current_type] . "\t";
+						echo $node["id"] . "\t";
+						if ($parentNode == 0) {
+							echo "N/A\t";
+						}else{
+							echo $parentNode . "\t";
+						}
 
-							$name = db_fetch_cell("SELECT
-							hostname
+						$name = db_fetch_cell("SELECT hostname
 							FROM host
 							WHERE id = " . $node["host_id"]);
-							echo $name . "\t";
-							echo $host_group_types[$node["host_grouping_type"]]."\t";
-							echo "\n";
-						}
+
+						echo $name . "\t";
+						echo $host_group_types[$node["host_grouping_type"]] . "\t";
+						echo "\n";
 					}
 				break;
 			}
 		}
 	}
 
-	if (!$quietMode) {
-		echo "\n";
+	if ($parentNode == 0) {
+		if (!$quietMode) {
+			echo "\n";
+		}
 	}
 }
 

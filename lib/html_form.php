@@ -225,6 +225,7 @@ function draw_edit_control($field_name, &$field_array) {
 	case 'drop_tree':
 		grow_dropdown_tree(
 			$field_array["tree_id"], 
+			'0',
 			$field_name, 
 			$field_array["value"]
 		);

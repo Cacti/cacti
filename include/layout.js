@@ -94,7 +94,7 @@ $.fn.delayKeyup = function(callback, ms){
  *  without any wrapping. */
 $.fn.textWidth = function(text){
 	var org = $(this)
-	var html = $('<span style="display:none;postion:absolute;width:auto;left:-9999px">' + (text || org.html()) + '</span>');
+	var html = $('<span style="display:none;position:absolute;width:auto;left:-9999px">' + (text || org.html()) + '</span>');
 	if (!text) {
 		html.css("font-family", org.css("font-family"));
 		html.css("font-size", org.css("font-size"));

@@ -486,7 +486,7 @@ function form_actions() {
 					<td class='textArea'>
 						<p>When you click \"Continue\", the following Graph(s) will be placed under the Tree Branch selected below.</p>
 						<p><ul>$graph_list</ul></p>
-						<p><strong>Destination Branch:</strong><br>"; grow_dropdown_tree($matches[1], 'tree_item_id', '0'); print "</p>
+						<p><strong>Destination Branch:</strong><br>"; grow_dropdown_tree($matches[1], '0', 'tree_item_id', '0'); print "</p>
 					</td>
 				</tr>\n
 				<input type='hidden' name='tree_id' value='" . $matches[1] . "'>\n

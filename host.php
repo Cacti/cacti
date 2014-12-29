@@ -470,7 +470,7 @@ function form_actions() {
 						<p>When you click \"Continue\", the following Device(s) will be placed under the branch selected
 						below.</p>
 						<p><ul>" . $host_list . '</ul></p>
-						<p><strong>Destination Branch:</strong><br>'; grow_dropdown_tree($matches[1], 'tree_item_id', '0'); print "</p>
+						<p><strong>Destination Branch:</strong><br>'; grow_dropdown_tree($matches[1], '0', 'tree_item_id', '0'); print "</p>
 					</td>
 				</tr>\n
 				<input type='hidden' name='tree_id' value='" . $matches[1] . "'>\n
