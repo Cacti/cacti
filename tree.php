@@ -86,11 +86,38 @@ switch ($_REQUEST['action']) {
 	case 'get_node':
 		api_tree_get_node();
 		break;
+	case 'get_host_sort':
+		get_host_sort_type();
+		break;
 	default:
 		top_header();
 		tree();
 		bottom_footer();
 		break;
+}
+
+function get_host_sort_type() {
+	if (isset($_REQUEST['nodeid'])) {
+		$ndata = explode('_', $_REQUEST['nodeid']);
+		if (sizeof($ndata)) {
+		foreach($ndata as $n) {
+			$parts = explode(':', $n);
+
+			if (isset($parts[0]) && $parts[0] == 'tbranch') {
+				$branch = $parts[1];
+				input_validate_input_number($branch);
+				$sort_type = db_fetch_cell("SELECT host_grouping_type FROM graph_tree_items WHERE id=$branch");
+				if ($sort_type == HOST_GROUPING_GRAPH_TEMPLATE) {
+					print 'hsgt';
+				}else{
+					print 'hsdq';
+				}
+			}
+		}
+		}
+	}else{
+		return '';
+	}
 }
 
 /* --------------------------
@@ -460,6 +487,10 @@ function tree_edit() {
 		}
 		?>
 
+		var graphMeTimer;
+		var hostMeTimer;
+		var hostSortInfo = {};
+
 		function createNode() {
 			var ref = $('#jstree').jstree(true),
 			sel = ref.create_node('#', 'New Node', '0');
@@ -467,6 +498,40 @@ function tree_edit() {
 				ref.edit(sel);
 			}
 		};
+
+		function getGraphData() {
+			$.get('tree.php?action=graphs&filter='+$('#grfilter').val(), function(data) {
+				$('#graphs').jstree('destroy');
+				$('#graphs').html(data);
+				dragable('#graphs');
+			});
+		}
+
+		function getHostData() {
+			$.get('tree.php?action=hosts&filter='+$('#hfilter').val(), function(data) {
+				$('#hosts').jstree('destroy');
+				$('#hosts').html(data);
+				dragable('#hosts');
+			});
+		}
+
+		function setHostSortIcon(nodeid) {
+			if (hostSortInfo[nodeid]) {
+				// Already set
+			}else{
+				$.get('tree.php?action=get_host_sort&nodeid='+nodeid, function(data) {
+					hostSortInfo[nodeid] = data;
+				});
+			}
+		}
+
+		function getHostSortIcon(type, nodeid) {
+			if (hostSortInfo[nodeid] == type) {
+				return 'fa fa-check';
+			}else{
+				return 'false';
+			}
+		}
 
 		$(function() {
 			$('input[value="Save"]').click(function(event) {
@@ -516,6 +581,24 @@ function tree_edit() {
 						max_children : 0
 					}
 				},
+				'contextmenu' : {
+					'items': function(node) {
+						if (node.id.search('tgraph') > 0) {
+							var dataType = 'graph';
+						}else if (node.id.search('thost') > 0) {
+							var dataType = 'host';
+						}else {
+							var dataType = 'branch';
+						}
+						if (dataType == 'graph') {
+							return graphContext(node.id);
+						}else if (dataType == 'host') {
+							return hostContext(node.id);
+						}else{
+							return branchContext(node.id);
+						}
+					}
+				},
 				'core' : {
 					'data' : {
 						'url' : 'tree.php?action=get_node&tree_id='+$('#id').val(),
@@ -544,6 +627,11 @@ function tree_edit() {
 						data.instance.refresh();
 					});
 				})
+			.on('hover_node.jstree', function (e, data) {
+				if (data.node.id.search('thost') >= 0) {
+					setHostSortIcon(data.node.id);
+				}
+			})
 			.on('create_node.jstree', function (e, data) {
 				$.get('?action=create_node', { 'id' : data.node.parent, 'tree_id' : $('#id').val(), 'position' : data.position, 'text' : data.node.text })
 					.done(function (d) {
@@ -620,23 +708,298 @@ function tree_edit() {
 				});
 		}
 
-		var graphMeTimer;
-		var hostMeTimer;
-
-		function getGraphData() {
-			$.get('tree.php?action=graphs&filter='+$('#grfilter').val(), function(data) {
-				$('#graphs').jstree('destroy');
-				$('#graphs').html(data);
-				dragable('#graphs');
-			});
+		function branchContext(nodeid) {
+			return {
+				'create' : {
+					'separator_before'	: false,
+					'separator_after'	: true,
+					'icon'				: 'fa fa-folder',
+					'_disabled'			: false,
+					'label'				: 'Create',
+					'action'			: function (data) {
+						var inst = $.jstree.reference(data.reference),
+							obj = inst.get_node(data.reference);
+						inst.create_node(obj, {}, 'last', function (new_node) {
+							setTimeout(function () { inst.edit(new_node); },0);
+						});
+					}
+				},
+				'rename' : {
+					'separator_before'	: false,
+					'separator_after'	: false,
+					'icon'				: 'fa fa-pencil',
+					'_disabled'			: false,
+					'label'				: 'Rename',
+					'action'			: function (data) {
+						var inst = $.jstree.reference(data.reference),
+							obj = inst.get_node(data.reference);
+						inst.edit(obj);
+					}
+				},
+				'remove' : {
+					'separator_before'	: false,
+					'icon'				: 'fa fa-remove',
+					'separator_after'	: false,
+					'_disabled'			: false,
+					'label'				: 'Delete',
+					'action'			: function (data) {
+						var inst = $.jstree.reference(data.reference),
+							obj = inst.get_node(data.reference);
+						if(inst.is_selected(obj)) {
+							inst.delete_node(inst.get_selected());
+						}
+						else {
+							inst.delete_node(obj);
+						}
+					}
+				},
+				'bst' : {
+					'separator_before'	: true,
+					'icon'				: 'fa fa-sort',
+					'separator_after'	: false,
+					'label'				: 'Branch Sorting',
+					'action'			: false,
+					'submenu' : {
+						'manual' : {
+							'separator_before'	: false,
+							'separator_after'	: false,
+							'label'				: 'Manual',
+							'action'			: function (data) {
+							}
+						},
+						'alpha' : {
+							'separator_before'	: false,
+							'icon'				: false,
+							'separator_after'	: false,
+							'label'				: 'Alphabetic',
+							'action'			: function (data) {
+							}
+						},
+						'natural' : {
+							'separator_before'	: false,
+							'icon'				: false,
+							'separator_after'	: false,
+							'label'				: 'Natural',
+							'action'			: function (data) {
+							}
+						},
+						'numeric' : {
+							'separator_before'	: false,
+							'icon'				: false,
+							'separator_after'	: false,
+							'label'				: 'Numeric',
+							'action'			: function (data) {
+							}
+						}
+					}
+				},
+				'ccp' : {
+					'separator_before'	: true,
+					'icon'				: 'fa fa-edit',
+					'separator_after'	: false,
+					'label'				: 'Edit',
+					'action'			: false,
+					'submenu' : {
+						'cut' : {
+							'separator_before'	: false,
+							'separator_after'	: false,
+							'icon'				: 'fa fa-cut',
+							'label'				: 'Cut',
+							'action'			: function (data) {
+								var inst = $.jstree.reference(data.reference),
+									obj = inst.get_node(data.reference);
+								if(inst.is_selected(obj)) {
+									inst.cut(inst.get_selected());
+								}
+								else {
+									inst.cut(obj);
+								}
+							}
+						},
+						'copy' : {
+							'separator_before'	: false,
+							'icon'				: 'fa fa-copy',
+							'separator_after'	: false,
+							'label'				: 'Copy',
+							'action'			: function (data) {
+								var inst = $.jstree.reference(data.reference),
+									obj = inst.get_node(data.reference);
+								if(inst.is_selected(obj)) {
+									inst.copy(inst.get_selected());
+								}
+								else {
+									inst.copy(obj);
+								}
+							}
+						},
+						'paste' : {
+							'separator_before'	: false,
+							'icon'				: 'fa fa-paste',
+							'_disabled'			: function (data) {
+								return !$.jstree.reference(data.reference).can_paste();
+							},
+							'separator_after'	: false,
+							'label'				: 'Paste',
+							'action'			: function (data) {
+								var inst = $.jstree.reference(data.reference),
+									obj = inst.get_node(data.reference);
+								inst.paste(obj);
+							}
+						}
+					}
+				}
+			};
 		}
 
-		function getHostData() {
-			$.get('tree.php?action=hosts&filter='+$('#hfilter').val(), function(data) {
-				$('#hosts').jstree('destroy');
-				$('#hosts').html(data);
-				dragable('#hosts');
-			});
+		function graphContext(nodeid) {
+			return {
+				'remove' : {
+					'separator_before'	: false,
+					'icon'				: 'fa fa-remove',
+					'separator_after'	: false,
+					'_disabled'			: false, //(this.check('delete_node', data.reference, this.get_parent(data.reference), '')),
+					'label'				: 'Delete',
+					'action'			: function (data) {
+						var inst = $.jstree.reference(data.reference),
+							obj = inst.get_node(data.reference);
+						if(inst.is_selected(obj)) {
+							inst.delete_node(inst.get_selected());
+						}
+						else {
+							inst.delete_node(obj);
+						}
+					}
+				},
+				'ccp' : {
+					'separator_before'	: true,
+					'icon'				: 'fa fa-edit',
+					'separator_after'	: false,
+					'label'				: 'Edit',
+					'action'			: false,
+					'submenu' : {
+						'cut' : {
+							'separator_before'	: false,
+							'separator_after'	: false,
+							'icon'				: 'fa fa-cut',
+							'label'				: 'Cut',
+							'action'			: function (data) {
+								var inst = $.jstree.reference(data.reference),
+									obj = inst.get_node(data.reference);
+								if(inst.is_selected(obj)) {
+									inst.cut(inst.get_selected());
+								}
+								else {
+									inst.cut(obj);
+								}
+							}
+						},
+						'copy' : {
+							'separator_before'	: false,
+							'icon'				: 'fa fa-copy',
+							'separator_after'	: false,
+							'label'				: 'Copy',
+							'action'			: function (data) {
+								var inst = $.jstree.reference(data.reference),
+									obj = inst.get_node(data.reference);
+								if(inst.is_selected(obj)) {
+									inst.copy(inst.get_selected());
+								}
+								else {
+									inst.copy(obj);
+								}
+							}
+						}
+					}
+				}
+			};
+		}
+
+		function hostContext(nodeid) {
+			return {
+				'remove' : {
+					'separator_before'	: false,
+					'icon'				: 'fa fa-remove',
+					'separator_after'	: false,
+					'_disabled'			: false,
+					'label'				: 'Delete',
+					'action'			: function (data) {
+						var inst = $.jstree.reference(data.reference),
+							obj = inst.get_node(data.reference);
+						if(inst.is_selected(obj)) {
+							inst.delete_node(inst.get_selected());
+						}
+						else {
+							inst.delete_node(obj);
+						}
+					}
+				},
+				'hso' : {
+					'separator_before'	: true,
+					'separator_after'	: false,
+					'icon'				: 'fa fa-sort',
+					'label'				: 'Sorting Type',
+					'action'			: false,
+					'submenu' : {
+						'hsgt' : {
+							'separator_before'	: false,
+							'icon'				: getHostSortIcon('hsgt', nodeid),
+							'separator_after'	: false,
+							'label'				: 'Graph Template',
+							'action'			: function (data) {
+							}
+						},
+						'hsdq' : {
+							'separator_before'	: false,
+							'icon'				: getHostSortIcon('hsdq', nodeid),
+							'separator_after'	: false,
+							'label'				: 'Data Query Index',
+							'action'			: function (data) {
+							}
+						}
+					}
+				},
+				'ccp' : {
+					'separator_before'	: true,
+					'icon'				: 'fa fa-edit',
+					'separator_after'	: false,
+					'label'				: 'Edit',
+					'action'			: false,
+					'submenu' : {
+						'cut' : {
+							'separator_before'	: false,
+							'separator_after'	: false,
+							'icon'				: 'fa fa-cut',
+							'label'				: 'Cut',
+							'action'			: function (data) {
+								var inst = $.jstree.reference(data.reference),
+									obj = inst.get_node(data.reference);
+								if(inst.is_selected(obj)) {
+									inst.cut(inst.get_selected());
+								}
+								else {
+									inst.cut(obj);
+								}
+							}
+						},
+						'copy' : {
+							'separator_before'	: false,
+							'icon'				: 'fa fa-copy',
+							'separator_after'	: false,
+							'label'				: 'Copy',
+							'action'			: function (data) {
+								var inst = $.jstree.reference(data.reference),
+									obj = inst.get_node(data.reference);
+								if(inst.is_selected(obj)) {
+									inst.copy(inst.get_selected());
+								}
+								else {
+									inst.copy(obj);
+								}
+							}
+						}
+					}
+				}
+			};
 		}
 
 		$('#grfilter').keyup(function(data) {
