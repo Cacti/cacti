@@ -330,6 +330,14 @@ function tree_edit() {
 		$header_label = '[new]';
 	}
 
+	// Reset the cookie state if tree id has changed
+	if (isset($_SESSION['sess_tree_id']) && $_SESSION['sess_tree_id'] != $_REQUEST['id']) {
+		$select_first = true;
+	}else{
+		$select_first = false;
+	}
+	$_SESSION['sess_tree_id'] = $_REQUEST['id'];
+
 	html_start_box('<strong>Graph Trees</strong> ' . $header_label, '100%', '', '3', 'center', '');
 
 	draw_edit_form(array(
@@ -445,19 +453,14 @@ function tree_edit() {
 		?>
 		<script type='text/javascript'>
 		<?php
-		if ((!isset($_SESSION['sess_node_id']) && !isset($_REQUEST['tree_id'])) || isset($_REQUEST['select_first'])) {
+		if ($select_first) {
 			print "var reset=true;\n";
-		}elseif (isset($_REQUEST['tree_id'])) {
-			print "var reset=false;\n";
-		}elseif (isset($_SESSION['sess_node_id'])) {
-			print "var reset=false;\n";
 		}else{
-			print "var reset=true;\n";
+			print "var reset=false;\n";
 		}
 		?>
 
 		function createNode() {
-			console.log("Attempting to create");
 			var ref = $('#jstree').jstree(true),
 			sel = ref.create_node('#', 'New Node', '0');
 			if (sel) {
@@ -529,14 +532,13 @@ function tree_edit() {
 					'url' : true,
 					'dots' : false
 				},
-				'plugins' : [ 'state', 'wholerow', 'contextmenu', <?php if ($editable) {?>'dnd', <?php }?>'types' ]
+				'plugins' : [ 'state', 'wholerow', <?php if ($editable) {?>'contextmenu', 'dnd', <?php }?>'types' ]
 			})
 			.on('ready.jstree', function(e, data) {
 				if (reset == true) {
 					$('#jstree').jstree('clear_state');
 				}
-			}) <?php if ($editable) {?>
-			.on('delete_node.jstree', function (e, data) {
+			})<?php if ($editable) {?>.on('delete_node.jstree', function (e, data) {
 				$.get('?action=delete_node', { 'id' : data.node.id, 'tree_id' : $('#id').val() })
 					.fail(function () {
 						data.instance.refresh();
@@ -559,10 +561,7 @@ function tree_edit() {
 			})
 			.on('move_node.jstree', function (e, data) {
 				$.get('?action=move_node', { 'id' : data.node.id, 'tree_id' : $('#id').val(), 'parent' : data.parent, 'position' : data.position })
-					.done(function () {
-						data.instance.refresh();
-					})
-					.fail(function () {
+					.always(function () {
 						data.instance.refresh();
 					});
 			})
@@ -571,6 +570,8 @@ function tree_edit() {
 					.always(function () {
 						data.instance.refresh();
 					});
+			})<?php }else{?>.children().bind('contextmenu', function(event) {
+				return false;
 			})<?php }?>;
 
 			$('#jstree').css('height', height).css('overflow','auto');;
@@ -667,7 +668,7 @@ function display_hosts() {
 		ON ht.id=h.host_template_id 
 		$sql_where 
 		ORDER BY description 
-		LIMIT 10");
+		LIMIT 20");
 
 	if (sizeof($hosts)) {
 		foreach($hosts as $h) {
@@ -679,30 +680,30 @@ function display_hosts() {
 }
 
 function display_graphs() {
-		if ($_REQUEST['filter'] != '') {
-			$sql_where = "WHERE (title_cache LIKE '%" . $_REQUEST['filter'] . "%' OR gt.name LIKE '%" . $_REQUEST['filter'] . "%') AND local_graph_id>0";
-		}else{
-			$sql_where = "WHERE local_graph_id>0";
-		}
+	if ($_REQUEST['filter'] != '') {
+		$sql_where = "WHERE (title_cache LIKE '%" . $_REQUEST['filter'] . "%' OR gt.name LIKE '%" . $_REQUEST['filter'] . "%') AND local_graph_id>0";
+	}else{
+		$sql_where = "WHERE local_graph_id>0";
+	}
 
-		$graphs = db_fetch_assoc("SELECT 
-			gtg.local_graph_id AS id, 
-			gtg.title_cache AS title,
-			gt.name AS template_name
-			FROM graph_templates_graph AS gtg
-			LEFT JOIN graph_templates AS gt
-			ON gt.id=gtg.graph_template_id
-			$sql_where 
-			ORDER BY title_cache 
-			LIMIT 10");
+	$graphs = db_fetch_assoc("SELECT 
+		gtg.local_graph_id AS id, 
+		gtg.title_cache AS title,
+		gt.name AS template_name
+		FROM graph_templates_graph AS gtg
+		LEFT JOIN graph_templates AS gt
+		ON gt.id=gtg.graph_template_id
+		$sql_where 
+		ORDER BY title_cache 
+		LIMIT 20");
 
-		if (sizeof($graphs)) {
-			foreach($graphs as $g) {
-				if (is_graph_allowed($g['id'])) {
-					echo "<ul><li id='tgraph:" . $g['id'] . "' data-jstree='{ \"type\": \"graph\" }'>" . $g['title'] . "</li></ul>";	
-				}
+	if (sizeof($graphs)) {
+		foreach($graphs as $g) {
+			if (is_graph_allowed($g['id'])) {
+				echo "<ul><li id='tgraph:" . $g['id'] . "' data-jstree='{ \"type\": \"graph\" }'>" . $g['title'] . "</li></ul>";	
 			}
 		}
+	}
 }
 
 function tree() {
