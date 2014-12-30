@@ -137,7 +137,10 @@ case 'tree_content':
 
 	$access_denied = false;
 	$tree_parameters = array();
-	$_SESSION['sess_node_id'] = 'tbranch-' . $_REQUEST['nodeid'];
+
+	if (isset($_REQUEST['nodeid'])) {
+		$_SESSION['sess_node_id'] = 'tbranch-' . $_REQUEST['nodeid'];
+	}
 
 	if (isset($_REQUEST['tree_id'])) {
 		if (!is_tree_allowed($_REQUEST['tree_id'])) {

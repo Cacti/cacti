@@ -89,6 +89,15 @@ switch ($_REQUEST['action']) {
 	case 'get_host_sort':
 		get_host_sort_type();
 		break;
+	case 'set_host_sort':
+		set_host_sort_type();
+		break;
+	case 'get_branch_sort':
+		get_branch_sort_type();
+		break;
+	case 'set_branch_sort':
+		set_branch_sort_type();
+		break;
 	default:
 		top_header();
 		tree();
@@ -117,6 +126,132 @@ function get_host_sort_type() {
 		}
 	}else{
 		return '';
+	}
+}
+
+function set_host_sort_type() {
+	$type   = '';
+	$branch = '';
+
+	/* clean up type string */
+	if (isset($_REQUEST['type'])) {
+		$_REQUEST['type'] = sanitize_search_string(get_request_var_request('type'));
+	}
+
+	if (isset($_REQUEST['nodeid'])) {
+		$ndata = explode('_', $_REQUEST['nodeid']);
+		if (sizeof($ndata)) {
+		foreach($ndata as $n) {
+			$parts = explode(':', $n);
+
+			if (isset($parts[0]) && $parts[0] == 'tbranch') {
+				$branch = $parts[1];
+				input_validate_input_number($branch);
+
+				if ($_REQUEST['type'] == 'hsgt') {
+					$type = HOST_GROUPING_GRAPH_TEMPLATE;
+				}else{
+					$type = HOST_GROUPING_DATA_QUERY_INDEX;
+				}
+
+				db_fetch_cell("UPDATE graph_tree_items SET host_grouping_type=$type WHERE id=$branch");
+
+				break;
+			}
+		}
+		}
+	}
+
+	return;
+}
+
+function get_branch_sort_type() {
+	if (isset($_REQUEST['nodeid'])) {
+		$ndata = explode('_', $_REQUEST['nodeid']);
+		if (sizeof($ndata)) {
+		foreach($ndata as $n) {
+			$parts = explode(':', $n);
+
+			if (isset($parts[0]) && $parts[0] == 'tbranch') {
+				$branch = $parts[1];
+				input_validate_input_number($branch);
+				$sort_type = db_fetch_cell("SELECT sort_children_type FROM graph_tree_items WHERE id=$branch");
+				switch($sort_type) {
+				case TREE_ORDERING_INHERIT:
+					print 'inherit';
+					break;
+				case TREE_ORDERING_NONE:
+					print 'manual';
+					break;
+				case TREE_ORDERING_ALPHABETIC:
+					print 'alpha';
+					break;
+				case TREE_ORDERING_NATURAL:
+					print 'natural';
+					break;
+				case TREE_ORDERING_NUMERIC:
+					print 'numeric';
+					break;
+				default:
+					print '';
+					break;
+				}
+				break;
+			}
+		}
+		}
+	}else{
+		print '';
+	}
+}
+
+function set_branch_sort_type() {
+	$type   = '';
+	$branch = '';
+
+	/* clean up type string */
+	if (isset($_REQUEST['type'])) {
+		$_REQUEST['type'] = sanitize_search_string(get_request_var_request('type'));
+	}
+
+	if (isset($_REQUEST['nodeid'])) {
+		$ndata = explode('_', $_REQUEST['nodeid']);
+		if (sizeof($ndata)) {
+		foreach($ndata as $n) {
+			$parts = explode(':', $n);
+
+			if (isset($parts[0]) && $parts[0] == 'tbranch') {
+				$branch = $parts[1];
+				input_validate_input_number($branch);
+
+				switch($_REQUEST['type']) {
+				case 'inherit':
+					$type = TREE_ORDERING_INHERIT;
+					break;
+				case 'manual':
+					$type = TREE_ORDERING_NONE;
+					break;
+				case 'alpha':
+					$type = TREE_ORDERING_ALPHABETIC;
+					break;
+				case 'natural':
+					$type = TREE_ORDERING_NATURAL;
+					break;
+				case 'numeric':
+					$type = TREE_ORDERING_NUMERIC;
+					break;
+				default:
+					break;
+				}
+
+				if ($type != '' && $branch != '') {
+					db_fetch_cell("UPDATE graph_tree_items SET sort_children_type=$type WHERE id=$branch");
+				}
+
+				break;
+			}
+		}
+		}
 	}
 }
 
@@ -201,7 +336,7 @@ function form_actions() {
 	/* ================= input validation ================= */
 	input_validate_input_regex(get_request_var_post('drp_action'), '^([a-zA-Z0-9_]+)$');
 	/* ==================================================== */
-	
+
 	/* if we are to save this form, instead of display it */
 	if (isset($_POST['selected_items'])) {
 		$selected_items = unserialize(stripslashes($_POST['selected_items']));
@@ -489,7 +624,8 @@ function tree_edit() {
 
 		var graphMeTimer;
 		var hostMeTimer;
-		var hostSortInfo = {};
+		var hostSortInfo   = {};
+		var branchSortInfo = {};
 
 		function createNode() {
 			var ref = $('#jstree').jstree(true),
@@ -525,12 +661,42 @@ function tree_edit() {
 			}
 		}
 
+		function setBranchSortIcon(nodeid) {
+			if (branchSortInfo[nodeid]) {
+				// Already set
+			}else{
+				$.get('tree.php?action=get_branch_sort&nodeid='+nodeid, function(data) {
+					branchSortInfo[nodeid] = data;
+				});
+			}
+		}
+
 		function getHostSortIcon(type, nodeid) {
 			if (hostSortInfo[nodeid] == type) {
 				return 'fa fa-check';
 			}else{
 				return 'false';
 			}
+		}
+
+		function getBranchSortIcon(type, nodeid) {
+			if (branchSortInfo[nodeid] == type) {
+				return 'fa fa-check';
+			}else{
+				return 'false';
+			}
+		}
+
+		function setBranchSortOrder(type, nodeid) {
+			$.get('tree.php?action=set_branch_sort&type='+type+'&nodeid='+nodeid, function(data) {
+				branchSortInfo[nodeid] = type;
+			});
+		}
+
+		function setHostSortOrder(type, nodeid) {
+			$.get('tree.php?action=set_host_sort&type='+type+'&nodeid='+nodeid, function(data) {
+				hostSortInfo[nodeid] = type;
+			});
 		}
 
 		$(function() {
@@ -615,6 +781,7 @@ function tree_edit() {
 					'url' : true,
 					'dots' : false
 				},
+				'state': { 'key': 'tree_<?php print $_REQUEST['id'];?>' },
 				'plugins' : [ 'state', 'wholerow', <?php if ($editable) {?>'contextmenu', 'dnd', <?php }?>'types' ]
 			})
 			.on('ready.jstree', function(e, data) {
@@ -630,6 +797,8 @@ function tree_edit() {
 			.on('hover_node.jstree', function (e, data) {
 				if (data.node.id.search('thost') >= 0) {
 					setHostSortIcon(data.node.id);
+				}else if (data.node.id.search('thost') < 0 && data.node.id.search('tgraph') < 0) {
+					setBranchSortIcon(data.node.id);
 				}
 			})
 			.on('create_node.jstree', function (e, data) {
@@ -674,10 +843,12 @@ function tree_edit() {
 					'types' : {
 						'device' : {
 							icon : 'images/server.png',
+							valid_children: 'none',
 							max_children : 0
 						},
 						'graph' : {
 							icon : 'images/server_chart_curve.png',
+							valid_children: 'none',
 							max_children : 0
 						}
 					},
@@ -760,35 +931,49 @@ function tree_edit() {
 					'label'				: 'Branch Sorting',
 					'action'			: false,
 					'submenu' : {
+						'inherit' : {
+							'separator_before'	: false,
+							'separator_after'	: false,
+							'icon'				: getBranchSortIcon('inherit', nodeid),
+							'label'				: 'Inherit',
+							'action'			: function (data) {
+								setBranchSortOrder('inherit', nodeid);
+							}
+						},
 						'manual' : {
 							'separator_before'	: false,
 							'separator_after'	: false,
+							'icon'				: getBranchSortIcon('manual', nodeid),
 							'label'				: 'Manual',
 							'action'			: function (data) {
+								setBranchSortOrder('manual', nodeid);
 							}
 						},
 						'alpha' : {
 							'separator_before'	: false,
-							'icon'				: false,
+							'icon'				: getBranchSortIcon('alpha', nodeid),
 							'separator_after'	: false,
 							'label'				: 'Alphabetic',
 							'action'			: function (data) {
+								setBranchSortOrder('alpha', nodeid);
 							}
 						},
 						'natural' : {
 							'separator_before'	: false,
-							'icon'				: false,
+							'icon'				: getBranchSortIcon('natural', nodeid),
 							'separator_after'	: false,
 							'label'				: 'Natural',
 							'action'			: function (data) {
+								setBranchSortOrder('natural', nodeid);
 							}
 						},
 						'numeric' : {
 							'separator_before'	: false,
-							'icon'				: false,
+							'icon'				: getBranchSortIcon('numeric', nodeid),
 							'separator_after'	: false,
 							'label'				: 'Numeric',
 							'action'			: function (data) {
+								setBranchSortOrder('numeric', nodeid);
 							}
 						}
 					}
@@ -946,6 +1131,7 @@ function tree_edit() {
 							'separator_after'	: false,
 							'label'				: 'Graph Template',
 							'action'			: function (data) {
+								setHostSortOrder('hsgt', nodeid);
 							}
 						},
 						'hsdq' : {
@@ -954,6 +1140,7 @@ function tree_edit() {
 							'separator_after'	: false,
 							'label'				: 'Data Query Index',
 							'action'			: function (data) {
+								setHostSortOrder('hsdq', nodeid);
 							}
 						}
 					}
@@ -1223,8 +1410,8 @@ function tree() {
 		ON t.id=ti.graph_tree_id
 		$sql_where
 		GROUP BY t.id
-        ORDER BY " . get_request_var_request('sort_column') . ' ' . get_request_var_request('sort_direction') . "
-        LIMIT " . (get_request_var_request('rows')*(get_request_var_request('page')-1)) . ',' . get_request_var_request('rows'));
+		ORDER BY " . get_request_var_request('sort_column') . ' ' . get_request_var_request('sort_direction') . "
+		LIMIT " . (get_request_var_request('rows')*(get_request_var_request('page')-1)) . ',' . get_request_var_request('rows'));
 
 	$total_rows = db_fetch_cell("SELECT COUNT(*)
 		FROM graph_tree AS t
@@ -1249,13 +1436,13 @@ function tree() {
 		'hosts' => array('display' => 'Hosts', 'align' => 'right', 'sort' => 'DESC'),
 		'graphs' => array('display' => 'Graphs', 'align' => 'right', 'sort' => 'DESC'));
 
-    html_header_sort_checkbox($display_text, get_request_var_request('sort_column'), get_request_var_request('sort_direction'), false);
+	html_header_sort_checkbox($display_text, get_request_var_request('sort_column'), get_request_var_request('sort_direction'), false);
 
-    $i = 0;
-    if (sizeof($trees) > 0) {
-        foreach ($trees as $tree) {
-            form_alternate_row('line' . $tree['id'], true);
-            form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars('tree.php?action=edit&id=' . $tree['id']) . "'>" .
+	$i = 0;
+	if (sizeof($trees) > 0) {
+		foreach ($trees as $tree) {
+			form_alternate_row('line' . $tree['id'], true);
+			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars('tree.php?action=edit&id=' . $tree['id']) . "'>" .
 				(strlen(get_request_var_request('filter')) ? preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($tree['name'])) : htmlspecialchars($tree['name'])) . '</a>', $tree['id']);
 			form_selectable_cell($tree['id'], $tree['id'], '', 'text-align:right');
 			form_selectable_cell($tree['enabled'] == 'on' ? 'Yes':'No', $tree['id']);

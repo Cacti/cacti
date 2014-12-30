@@ -130,8 +130,9 @@ function grow_dhtml_trees() {
 			.on('set_state.jstree', function(e, data) {
 				if (node!='') {
 					//console.log('The node is :'+node);
-					$('#jstree').jstree('deselect_all');
-					$('#jstree').jstree('select_node', node);
+					$(this).jstree('deselect_all');
+					$(this).jstree('select_node', node);
+
 					if (node.search('tree_anchor') >= 0) {
 						href=$('#'+node).find('a:first').attr('href')+"&nodeid=0";
 					}else if (node.search('-j') >= 0) {
@@ -194,8 +195,9 @@ function grow_dhtml_trees() {
 					'name' : 'default',
 					'responsive' : true,
 					'url' : true,
-					'dots' : true
+					'dots' : false
 				},
+				'state' : { 'key' : 'graph_tree_'+id },
 				'plugins' : [ 'types', 'state', 'wholerow' ]
 			});
 		});

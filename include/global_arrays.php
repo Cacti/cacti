@@ -321,6 +321,7 @@ $graph_color_alpha = array(
 	'FF' => '100%');
 
 $tree_sort_types = array(
+	TREE_ORDERING_INHERIT => 'Inherit Parent Sorting',
 	TREE_ORDERING_NONE => 'Manual Ordering (No Sorting)',
 	TREE_ORDERING_ALPHABETIC => 'Alphabetic Ordering',
 	TREE_ORDERING_NATURAL => 'Natural Ordering',

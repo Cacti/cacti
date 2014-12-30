@@ -28,6 +28,7 @@ define('COPYRIGHT_YEARS', 'Copyright (c) 2004-2014 - The Cacti Group, Inc.');
 define('HOST_GROUPING_GRAPH_TEMPLATE', 1);
 define('HOST_GROUPING_DATA_QUERY_INDEX', 2);
 
+define('TREE_ORDERING_INHERIT', 0);
 define('TREE_ORDERING_NONE', 1);
 define('TREE_ORDERING_ALPHABETIC', 2);
 define('TREE_ORDERING_NUMERIC', 3);
