@@ -700,6 +700,12 @@ function tree_edit() {
 		}
 
 		$(function() {
+			<?php if ($editable == false) {?>
+			$('select, input').not('#lock').prop('disabled', true);
+			<?php }else{?>
+			$('select, input').prop('disabled', false);
+			<?php }?>
+
 			$('input[value="Save"]').click(function(event) {
 				event.preventDefault();
 				$.post('tree.php', { action: 'save', name: $('#name').val(), sort_type: $('#sort_type').val(), enabled: $('#enabled').is(':checked'), id: $('#id').val(), save_component_tree: 1 } ).done(function(data) {

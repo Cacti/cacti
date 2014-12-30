@@ -893,6 +893,87 @@ $settings = array(
 			'sql' => 'SELECT username AS id, username AS name FROM user_auth WHERE realm = 0 ORDER BY username',
 			'default' => '0'
 			),
+		'secpass_header' => array(
+			'friendly_name' => 'Local Account Complexity Requirements',
+			'method' => 'spacer',
+			),
+		'secpass_minlen' => array(
+			'friendly_name' => 'Minimum Length',
+			'description' => 'This is minimal length of allowed passwords.',
+			'method' => 'textbox',
+			'default' => '8',
+			'max_length' => 2,
+			'size' => 4
+			),
+		'secpass_reqmixcase' => array(
+			'friendly_name' => 'Require Mix Case',
+			'description' => 'This will require new passwords to contains both lower and upper case characters.',
+			'method' => 'checkbox',
+			'default' => 'on',
+			),
+		'secpass_reqnum' => array(
+			'friendly_name' => 'Require Number',
+			'description' => 'This will require new passwords to contain at least 1 numberical character.',
+			'method' => 'checkbox',
+			'default' => 'on',
+			),
+		'secpass_reqspec' => array(
+			'friendly_name' => 'Require Special Character',
+			'description' => 'This will require new passwords to contain at least 1 special character.',
+			'method' => 'checkbox',
+			'default' => 'on',
+			),
+		'secpass_forceold' => array(
+			'friendly_name' => 'Force Complexity Upon Old Passwords',
+			'description' => 'This will require all old passwords to also meet the new complexity requirements upon login.  If not met, it will force a password change.',
+			'method' => 'checkbox',
+			'default' => '',
+			),
+		'secpass_expireaccount' => array(
+			'friendly_name' => 'Expire Inactive Accounts',
+			'description' => 'This is maximum number of days before inactive accounts are disabled.  The Admin account is excluded from this policy.  Set to 0 to disable.',
+			'method' => 'textbox',
+			'default' => '0',
+			'max_length' => 4,
+			'size' => 4
+			),
+		'secpass_expirepass' => array(
+			'friendly_name' => 'Expire Password',
+			'description' => 'This is maximum number of days before a password is set to expire.  Set to 0 to disable.',
+			'method' => 'textbox',
+			'default' => '0',
+			'max_length' => 4,
+			'size' => 4
+			),
+		'secpass_history' => array(
+			'friendly_name' => 'Password History',
+			'description' => 'Remember this number of old passwords and disallow re-using them.  Set to 0 to disable.',
+			'method' => 'textbox',
+			'default' => '0',
+			'max_length' => 2,
+			'size' => 4
+			),
+
+		'secpass_lock_header' => array(
+			'friendly_name' => 'Account Locking',
+			'method' => 'spacer',
+			),
+		'secpass_lockfailed' => array(
+			'friendly_name' => 'Lock Accounts',
+			'description' => 'Lock an account after this many failed attempts in 1 hour.  Set to 0 to disable.',
+			'method' => 'textbox',
+			'default' => '0',
+			'max_length' => 2,
+			'size' => 4
+			),
+		'secpass_unlocktime' => array(
+			'friendly_name' => 'Auto Unlock',
+			'description' => 'An account will automatically be unlocked after this many minutes.  Even if the correct password is entered, the account will not unlock until this time limit has been met.  Set to 0 to disable.  Max of 1440 minutes (1 Day)',
+			'method' => 'textbox',
+			'default' => '60',
+			'max_length' => 4,
+			'size' => 4
+			),
 		'ldap_general_header' => array(
 			'friendly_name' => 'LDAP General Settings',
 			'method' => 'spacer'
@@ -1009,81 +1090,6 @@ $settings = array(
 			'description' => 'Password for Specific Searching binding to the LDAP directory.',
 			'method' => 'textbox_password',
 			'max_length' => '255'
-			),
-		'secpass_header' => array(
-			"friendly_name" => "Complexity Requirements",
-			"method" => "spacer",
-			),
-		'secpass_minlen' => array(
-			"friendly_name" => "Minimum Length",
-			"description" => "This is minimal length of allowed passwords.",
-			"method" => "textbox",
-			"default" => "8",
-			"max_length" => 2,
-			),
-		'secpass_reqmixcase' => array(
-			"friendly_name" => "Require Mix Case",
-			"description" => "This will require new passwords to contains both lower and upper case characters.",
-			"method" => "checkbox",
-			"default" => 'on',
-			),
-		'secpass_reqnum' => array(
-			"friendly_name" => "Require Number",
-			"description" => "This will require new passwords to contain at least 1 numberical character.",
-			"method" => "checkbox",
-			"default" => 'on',
-			),
-		'secpass_reqspec' => array(
-			"friendly_name" => "Require Special Character",
-			"description" => "This will require new passwords to contain at least 1 special character.",
-			"method" => "checkbox",
-			"default" => 'on',
-			),
-		'secpass_forceold' => array(
-			"friendly_name" => "Force Complexity Upon Old Passwords",
-			"description" => "This will require all old passwords to also meet the new complexity requirements upon login.  If not met, it will force a password change.",
-			"method" => "checkbox",
-			"default" => '',
-			),
-		'secpass_expireaccount' => array(
-			"friendly_name" => "Expire Inactive Accounts",
-			"description" => "This is maximum number of days before inactive accounts are disabled.  The Admin account is excluded from this policy.  Set to 0 to disable.",
-			"method" => "textbox",
-			"default" => "0",
-			"max_length" => 4,
-			),
-		'secpass_expirepass' => array(
-			"friendly_name" => "Expire Password",
-			"description" => "This is maximum number of days before a password is set to expire.  Set to 0 to disable.",
-			"method" => "textbox",
-			"default" => "0",
-			"max_length" => 4,
-			),
-		'secpass_history' => array(
-			"friendly_name" => "Password History",
-			"description" => "Remember this number of old passwords and disallow re-using them.  Set to 0 to disable.",
-			"method" => "textbox",
-			"default" => "0",
-			"max_length" => 2,
-			),
-
-		'secpass_lock_header' => array(
-			"friendly_name" => "Account Locking",
-			"method" => "spacer",
-			),
-		'secpass_lockfailed' => array(
-			"friendly_name" => "Lock Accounts",
-			"description" => "Lock an account after this many failed attempts in 1 hour.  Set to 0 to disable.",
-			"method" => "textbox",
-			"default" => "0",
-			"max_length" => 2,
-			),
-		'secpass_unlocktime' => array(
-			"friendly_name" => "Auto Unlock",
-			"description" => "An account will automatically be unlocked after this many minutes.  Even if the correct password is entered, the account will not unlock until this time limit has been met.  Set to 0 to disable.  Max of 1440 minutes (1 Day)",
-			"method" => "textbox",
-			"default" => "60",
-			"max_length" => 4,
 			),
 		),
 	'mail' => array(

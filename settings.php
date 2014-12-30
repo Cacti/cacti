@@ -431,6 +431,7 @@ default:
 		switch($('#auth_method').val()) {
 		case "0":
 			$('#row_special_users_header').hide();
+			$('#row_auth_cache_enabled').hide();
 			$('#row_guest_user').hide();
 			$('#row_user_template').hide();
 			$('#row_ldap_general_header').hide();
@@ -469,6 +470,7 @@ default:
 			break;
 		case "1":
 			$('#row_special_users_header').show();
+			$('#row_auth_cache_enabled').show();
 			$('#row_guest_user').show();
 			$('#row_user_template').show();
 			$('#row_ldap_general_header').hide();
@@ -506,8 +508,8 @@ default:
 			$('#row_secpass_unlocktime').show();
 			break;
 		case "2":
-		case "4":
 			$('#row_special_users_header').show();
+			$('#row_auth_cache_enabled').show();
 			$('#row_guest_user').show();
 			$('#row_user_template').show();
 			$('#row_ldap_general_header').hide();
@@ -544,8 +546,48 @@ default:
 			$('#row_secpass_lockfailed').hide();
 			$('#row_secpass_unlocktime').hide();
 			break;
+		case "4":
+			$('#row_special_users_header').show();
+			$('#row_auth_cache_enabled').show();
+			$('#row_guest_user').show();
+			$('#row_user_template').show();
+			$('#row_ldap_general_header').hide();
+			$('#row_ldap_server').hide();
+			$('#row_ldap_port').hide();
+			$('#row_ldap_port_ssl').hide();
+			$('#row_ldap_version').hide();
+			$('#row_ldap_encryption').hide();
+			$('#row_ldap_referrals').hide();
+			$('#row_ldap_mode').hide();
+			$('#row_ldap_dn').hide();
+			$('#row_ldap_group_require').hide();
+			$('#row_ldap_attrib').hide();
+			$('#row_ldap_member_type').hide();
+			$('#row_ldap_group_header').hide();
+			$('#row_ldap_group_dn').hide();
+			$('#row_ldap_group_attrib').hide();
+			$('#row_ldap_group_member_type').hide();
+			$('#row_ldap_search_base_header').hide();
+			$('#row_ldap_search_base').hide();
+			$('#row_ldap_search_filter').hide();
+			$('#row_ldap_specific_dn').hide();
+			$('#row_ldap_specific_password').hide();
+			$('#row_secpass_header').show();
+			$('#row_secpass_minlen').show();
+			$('#row_secpass_reqmixcase').show();
+			$('#row_secpass_reqnum').show();
+			$('#row_secpass_reqspec').show();
+			$('#row_secpass_forceold').show();
+			$('#row_secpass_expireaccount').show();
+			$('#row_secpass_expirepass').show();
+			$('#row_secpass_history').show();
+			$('#row_secpass_lock_header').show();
+			$('#row_secpass_lockfailed').show();
+			$('#row_secpass_unlocktime').show();
+			break;
 		case "3":
 			$('#row_special_users_header').show();
+			$('#row_auth_cache_enabled').hide();
 			$('#row_guest_user').show();
 			$('#row_user_template').show();
 			$('#row_ldap_general_header').show();
@@ -569,23 +611,24 @@ default:
 			$('#row_ldap_search_filter').show();
 			$('#row_ldap_specific_dn').show();
 			$('#row_ldap_specific_password').show();
-			$('#row_secpass_header').hide();
-			$('#row_secpass_minlen').hide();
-			$('#row_secpass_reqmixcase').hide();
-			$('#row_secpass_reqnum').hide();
-			$('#row_secpass_reqspec').hide();
-			$('#row_secpass_forceold').hide();
-			$('#row_secpass_expireaccount').hide();
-			$('#row_secpass_expirepass').hide();
-			$('#row_secpass_history').hide();
-			$('#row_secpass_lock_header').hide();
-			$('#row_secpass_lockfailed').hide();
-			$('#row_secpass_unlocktime').hide();
+			$('#row_secpass_header').show();
+			$('#row_secpass_minlen').show();
+			$('#row_secpass_reqmixcase').show();
+			$('#row_secpass_reqnum').show();
+			$('#row_secpass_reqspec').show();
+			$('#row_secpass_forceold').show();
+			$('#row_secpass_expireaccount').show();
+			$('#row_secpass_expirepass').show();
+			$('#row_secpass_history').show();
+			$('#row_secpass_lock_header').show();
+			$('#row_secpass_lockfailed').show();
+			$('#row_secpass_unlocktime').show();
 			initSearch();
 			initGroupMember();
 			break;
 		default:
 			$('#row_special_users_header').show();
+			$('#row_auth_cache_enabled').show();
 			$('#row_guest_user').show();
 			$('#row_user_template').show();
 			$('#row_ldap_general_header').hide();
