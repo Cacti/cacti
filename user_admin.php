@@ -518,6 +518,11 @@ function form_save() {
 		$save['login_opts'] = form_input_validate(get_request_var_post('login_opts'), 'login_opts', '', true, 3);
 		$save['realm'] = get_request_var_post('realm', 0);
 		$save['enabled'] = form_input_validate(get_request_var_post('enabled', ''), 'enabled', '', true, 3);
+		$save['locked'] = form_input_validate(get_request_var_post('locked', ''), 'locked', '', true, 3);
+		if ($save['locked'] == '') {
+			$save['failed_attempts'] = 0;
+		}		
+
 		$save = api_plugin_hook_function('user_admin_setup_sql_save', $save);
 
 		if (!is_error_message()) {

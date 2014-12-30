@@ -138,6 +138,8 @@ if ($action == 'login') {
 
 		break;
 	default:
+		secpass_login_process ();
+
 		if (!api_plugin_hook_function('login_process', false)) {
 			/* Builtin Auth */
 			if ((!$user_auth) && (!$ldap_error)) {

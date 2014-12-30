@@ -1081,6 +1081,13 @@ $fields_user_user_edit_host = array(
 		'value' => '|arg1:enabled|',
 		'default' => ''
 		),
+	'locked' => array(
+		'method' => 'checkbox',
+		'friendly_name' => 'Locked',
+		'description' => 'Determines if the user account is locked.',
+		'value' => '|arg1:locked|',
+		'default' => ''
+		),
 	'grp1' => array(
 		'friendly_name' => 'Account Options',
 		'method' => 'checkbox_group',

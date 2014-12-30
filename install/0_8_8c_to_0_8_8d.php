@@ -244,6 +244,15 @@ function upgrade_to_0_8_8d() {
 		ENGINE=MyISAM 
 		COMMENT='Caches Remember Me Details'");
 
+	// Add secpass fields
+	db_add_column ('0.8.8d', 'user_auth', array('name' => 'lastchange', 'type' => 'int(12)', 'NULL' => false, 'default' => '-1'));
+	db_add_column ('0.8.8d', 'user_auth', array('name' => 'lastlogin', 'type' => 'int(12)', 'NULL' => false, 'default' => '-1'));
+	db_add_column ('0.8.8d', 'user_auth', array('name' => 'password_history', 'type' => 'text', 'NULL' => false, 'default' => ''));
+	db_add_column ('0.8.8d', 'user_auth', array('name' => 'locked', 'type' => 'varchar(3)', 'NULL' => false, 'default' => ''));
+	db_add_column ('0.8.8d', 'user_auth', array('name' => 'failed_attempts', 'type' => 'int(5)', 'NULL' => false, 'default' => '0'));
+	db_add_column ('0.8.8d', 'user_auth', array('name' => 'lastfail', 'type' => 'int(12)', 'NULL' => false, 'default' => '0'));
+
+
 
 	// Convert all trees to new format
 	define('CHARS_PER_TIER', 3);

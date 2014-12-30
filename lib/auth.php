@@ -1190,3 +1190,116 @@ function get_host_array() {
 	return $return_devices;
 }
 
+function secpass_login_process () {
+	$users = db_fetch_assoc('SELECT username FROM user_auth WHERE realm = 0');
+	$username = sanitize_search_string(get_request_var_post('login_username'));
+
+	# Mark failed login attempts
+	if (read_config_option('secpass_lockfailed') > 0) {
+		$max = intval(read_config_option('secpass_lockfailed'));
+		if ($max > 0) {
+			$p = get_request_var_post('login_password');
+			foreach ($users as $fa) {
+				if ($fa['username'] == $username) {
+
+					$user = db_fetch_assoc_prepared("SELECT * FROM user_auth WHERE username = ? AND realm = 0 AND enabled = 'on'", array($username));
+					if (isset($user[0]['username'])) {
+						$user = $user[0];
+						$unlock = intval(read_config_option('secpass_unlocktime'));
+						if ($unlock > 1440) $unlock = 1440;
+
+						if ($unlock > 0 && (time() - $user['lastfail'] > 60 * $unlock)) {
+							db_execute_prepared("UPDATE user_auth SET lastfail = 0, failed_attempts = 0, locked = '' WHERE username = ? AND realm = 0 AND enabled = 'on'", array($username));
+							$user['failed_attempts'] = $user['lastfail'] = 0;
+							$user['locked'] == '';
+						}
+
+						if ($user['password'] != md5($p)) {
+							$failed = $user['failed_attempts'] + 1;
+							if ($failed >= $max) {
+								db_execute_prepared("UPDATE user_auth SET locked = 'on' WHERE username = " . db_qstr($username) . " AND realm = 0 AND enabled = 'on'");
+								$user['locked'] = 'on';
+							}
+							$user['lastfail'] = time();
+							db_execute_prepared("UPDATE user_auth SET lastfail = ?, failed_attempts = ? WHERE username = ? AND realm = 0 AND enabled = 'on'", array($user['lastfail'], $failed, $username));
+
+							if ($user['locked'] != '') {
+								auth_display_custom_error_message('This account has been locked.');
+								exit;
+							}
+							return false;
+						}
+						if ($user['locked'] != '') {
+							auth_display_custom_error_message('This account has been locked.');
+							exit;						}
+					}
+				}
+			}
+		}
+	}
+
+	# Check if old password doesn't meet specifications and must be changed
+	if (read_config_option('secpass_forceold') == 'on') {
+		$p = get_request_var_post('login_password');
+		$error = secpass_check_pass($p);
+		if ($error != '') {
+			foreach ($users as $fa) {
+				if ($fa['username'] == $username) {
+					db_execute_prepared("UPDATE user_auth SET must_change_password = 'on' WHERE username = ? AND password = ? AND realm = 0 AND enabled = 'on'", array($username, md5(get_request_var_post('login_password'))));
+					return true;
+				}
+			}
+		}
+	}
+	# Set the last Login time
+	if (read_config_option('secpass_expireaccount') > 0) {
+		$p = get_request_var_post('login_password');
+		foreach ($users as $fa) {
+			if ($fa['username'] == $username) {
+				db_execute_prepared("UPDATE user_auth SET lastlogin = ? WHERE username = ? AND password = ? AND realm = 0 AND enabled = 'on'", array(time(), $username, md5(get_request_var_post('login_password'))));
+			}
+		}
+	}
+	return true;
+}
+
+function secpass_check_pass($p) {
+	$minlen = read_config_option('secpass_minlen');
+	
+	$reqmixcase = (read_config_option('secpass_reqmixcase') == 'on' ? true : false);
+	$reqnum = (read_config_option('secpass_reqnum') == 'on' ? true : false);
+	$reqspec = (read_config_option('secpass_reqspec') == 'on' ? true : false);
+	if (strlen($p) < $minlen) {
+		return "Password must be at least $minlen characters!";
+	}
+	if ($reqnum && str_replace(array('0', '1', '2', '3', '4', '5', '6', '7', '8', '9'), '', $p) == $p) {
+		return 'Your password must contain at least 1 numerical character!';
+	}
+	if ($reqmixcase && strtolower($p) == $p) {
+		return 'Your password must contain a mix of lower case and upper case characters!';
+	}
+	if ($reqspec && str_replace(array('~', '`', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '-', '_', '+', '=', '[', '{', ']', '}', ';', ':', '<', ',', '.', '>', '?', '|', '/', '\\'), '', $p) == $p) {
+		return 'Your password must contain at least 1 special character!';
+	}
+	return '';
+}
+
+function secpass_check_history($id, $p) {
+	$history = intval(read_config_option('secpass_history'));
+	if ($history > 0) {
+		$p = md5($p);
+		$user = db_fetch_row_prepared("SELECT password, password_history FROM user_auth WHERE id = ? AND realm = 0 AND enabled = 'on'", array($id));
+		if ($p == $user['password']) {
+			return false;
+		}
+		$passes = explode('|', $user['password_history']);
+		// Double check this incase the password history setting was changed
+		while (count($passes) > $history) {
+			array_shift($passes);
+		}
+		if (!empty($passes) && in_array($p, $passes)) {
+			return false;
+		}
+	}
+	return true;
+}

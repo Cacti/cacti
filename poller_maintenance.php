@@ -119,6 +119,34 @@ if (read_config_option('auth_cache_enabled') == 'on') {
 	db_execute('TRUNCATE TABLE user_auth_cache');
 }
 
+secpass_check_expired ();
+
+
+/*
+ * secpass_check_expired
+ * Checks user accounts to determine if the accounts and/or their passwords should be expired
+ */
+
+function secpass_check_expired () {
+	maint_debug('Checking for Account / Password expiration');
+
+	// Expire Old Accounts
+	$e = read_config_option('secpass_expireaccount');
+	if ($e > 0 && is_numeric($e)) {
+		$t = time();
+		db_execute("UPDATE user_auth SET lastlogin = $t WHERE lastlogin = -1 AND realm = 0 AND enabled = 'on'");
+		$t = $t - (intval($e) * 86400);
+		db_execute("UPDATE user_auth SET enabled = '' WHERE realm = 0 AND enabled = 'on' AND lastlogin < $t AND id > 1");
+	}
+	$e = read_config_option('secpass_expirepass');
+	if ($e > 0 && is_numeric($e)) {
+		$t = time();
+		db_execute("UPDATE user_auth SET lastchange = $t WHERE lastchange = -1 AND realm = 0 AND enabled = 'on'");
+		$t = $t - (intval($e) * 86400);
+		db_execute("UPDATE user_auth SET must_change_password = 'on' WHERE realm = 0 AND enabled = 'on' AND lastchange < $t");
+	}
+}
+
 /*
  * remove_files
  * remove all unwanted files; the list is given by table data_source_purge_action

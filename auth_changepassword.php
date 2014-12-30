@@ -64,7 +64,37 @@ case 'changepassword':
 		$errorMessage = "<span color='#FF0000'><strong>Your new password can not be the same as the old password.  Please try again.</strong></span>";
 	}
 
+	// Secpass checking
+
+	$error = secpass_check_pass($_POST['password']);
+	if ($error != '') {
+		$bad_password = true;
+		$errorMessage = "<span color='#FF0000'><strong>$error</strong></span>";
+
+	}
+	if (!secpass_check_history($_SESSION['sess_user_id'], $_POST['password'])) {
+		$bad_password = true;
+		$errorMessage = "<span color='#FF0000'><strong>You can not use a previously entered password!</strong></span>";
+	}
+
 	if ($bad_password == false && $_POST['password'] == $_POST['confirm'] && $_POST['password'] != '') {
+		// Password change is good to go
+		if (read_config_option('secpass_expirepass') > 0) {
+				db_execute("UPDATE user_auth SET lastchange = " . time() . " WHERE id = " . intval($_SESSION['sess_user_id']) . " AND realm = 0 AND enabled = 'on'");
+		}
+		$history = intval(read_config_option('secpass_history'));
+		if ($history > 0) {
+				$h = db_fetch_row_prepared("SELECT password, password_history FROM user_auth WHERE id = ? AND realm = 0 AND enabled = 'on'", array($_SESSION['sess_user_id']));
+				$op = $h['password'];
+				$h = explode('|', $h['password_history']);
+				while (count($h) > $history - 1) {
+					array_shift($h);
+			}
+				$h[] = $op;
+				$h = implode('|', $h);
+				db_execute_prepared("UPDATE user_auth SET password_history = ? WHERE id = ? AND realm = 0 AND enabled = 'on'", array($h, $_SESSION['sess_user_id']));
+		}
+
 		db_execute_prepared('INSERT IGNORE INTO user_log (username, result, ip) VALUES (?, 3, ?)', array($user['username'], $_SERVER['REMOTE_ADDR']));
 		db_execute_prepared("UPDATE user_auth SET must_change_password = '', password = ? WHERE id = ?", array(md5($_POST['password']), $_SESSION['sess_user_id']));
 

@@ -96,6 +96,38 @@ function db_table_exists($table) {
 	return (db_fetch_cell("SHOW TABLES LIKE '$table'") ? true : false);
 }
 
+function db_add_column ($cacti_version, $table, $column) {
+	// Example: db_add_column ('plugin_config', array('name' => 'test' . rand(1, 200), 'type' => 'varchar (255)', 'NULL' => false));
+	global $config, $database_default;
+
+	$result = db_fetch_assoc('show columns from `' . $table . '`');
+	$columns = array();
+	foreach($result as $index => $arr) {
+		foreach ($arr as $t) {
+			$columns[] = $t;
+		}
+	}
+	if (isset($column['name']) && !in_array($column['name'], $columns)) {
+		$sql = 'ALTER TABLE `' . $table . '` ADD `' . $column['name'] . '`';
+		if (isset($column['type']))
+			$sql .= ' ' . $column['type'];
+		if (isset($column['unsigned']))
+			$sql .= ' unsigned';
+		if (isset($column['NULL']) && $column['NULL'] == false)
+			$sql .= ' NOT NULL';
+		if (isset($column['NULL']) && $column['NULL'] == true && !isset($column['default']))
+			$sql .= ' default NULL';
+		if (isset($column['default']))
+			$sql .= ' default ' . (is_numeric($column['default']) ? $column['default'] : "'" . $column['default'] . "'");
+		if (isset($column['auto_increment']))
+			$sql .= ' auto_increment';
+		if (isset($column['after']))
+			$sql .= ' AFTER ' . $column['after'];
+
+		db_install_execute($cacti_version, $sql);
+	}
+}
+
 function find_best_path($binary_name) {
 	global $config;
 	if ($config["cacti_server_os"] == "win32") {
