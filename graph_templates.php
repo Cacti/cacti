@@ -416,8 +416,7 @@ $(function() {
 function dynamic() {
 	$('#t_scale_log_units').prop('disabled'), true);
 	$('#scale_log_units').prop('disabled', true);
-	if (($('#rrdtool_version').val() != 'rrd-1.0.x') &&
-		($('#auto_scale_log').is(':checked'))) {
+	if ($('#auto_scale_log').is(':checked')) {
 		$('#t_scale_log_units').prop('disabled', false);
 		$('#scale_log_units').prop('disabled', false);
 	}
@@ -426,8 +425,7 @@ function dynamic() {
 function changeScaleLog() {
 	$('#t_scale_log_units').prop('disabled', true);
 	$('#scale_log_units').prop('disabled', true);
-	if (($('#rrdtool_version').val() != 'rrd-1.0.x') &&
-		($('#auto_scale_log').is(':checked'))) {
+	if ($('#auto_scale_log').is(':checked')) {
 		$('#t_scale_log_units').prop('disabled', false);
 		$('#scale_log_units').prop('disabled', false);
 	}

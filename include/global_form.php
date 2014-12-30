@@ -408,7 +408,7 @@ $struct_graph = array(
 				),
 			2 => array(
 				'radio_value' => '3',
-				'radio_caption' => 'Use --alt-autoscale-min (accepting an upper limit, requires rrdtool 1.2.x)'
+				'radio_caption' => 'Use --alt-autoscale-min (accepting an upper limit)'
 				),
 			3 => array(
 				'radio_value' => '4',
@@ -427,7 +427,7 @@ $struct_graph = array(
 		'friendly_name' => 'SI Units for Logarithmic Scaling (--units=si)',
 		'method' => 'checkbox',
 		'default' => '',
-		'description' => 'Use SI Units for Logarithmic Scaling instead of using exponential notation (not available for rrdtool-1.0.x).<br>
+		'description' => 'Use SI Units for Logarithmic Scaling instead of using exponential notation.<br>
 			Note: Linear graphs use SI notation by default.'
 		),
 	'auto_scale_rigid' => array(
@@ -477,9 +477,9 @@ $struct_graph = array(
 		'method' => 'textbox',
 		'max_length' => '50',
 		'default' => '',
-		'description' => 'Sets the xponent value on the Y-axis for numbers. Note: This option was
-			added in rrdtool 1.0.36 and depricated in 1.2.x.  In RRDtool 1.2.x, this value is replaced by the --y-grid option.
-			In this option, Y-axis grid lines appear at each grid step interval.  Labels are placed every label factor lines.'
+		'description' => 'Sets the xponent value on the Y-axis for numbers. Note: This option is
+			depricated and replaced by the --y-grid option.  In this option, Y-axis grid lines appear 
+			at each grid step interval.  Labels are placed every label factor lines.'
 		),
 	'unit_exponent_value' => array(
 		'friendly_name' => 'Unit Exponent Value (--units-exponent)',
@@ -534,7 +534,7 @@ $struct_graph_item = array(
 		'method' => 'drop_array',
 		'default' => 'FF',
 		'array' => $graph_color_alpha,
-		'description' => 'The opacity/alpha channel of the color. Not available for rrdtool-1.0.x.'
+		'description' => 'The opacity/alpha channel of the color.'
 		),
 	'consolidation_function_id' => array(
 		'friendly_name' => 'Consolidation Function',

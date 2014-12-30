@@ -427,8 +427,7 @@ function item_edit() {
 		}
 
 		$('#alpha').prop('disabled', true);
-		if (($('#rrdtool_version').val() != 'rrd-1.0.x') &&
-			($('#color_id').val() != 0)) {
+		if ($('#color_id').val() != 0) {
 			$('#alpha').prop('disabled', false);
 		}
 	}

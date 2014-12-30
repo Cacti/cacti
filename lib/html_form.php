@@ -791,8 +791,7 @@ function form_font_box($form_name, $form_previous_value, $form_default_value, $f
 	} else {
 
 		/* do some simple checks */
-		if (read_config_option("rrdtool_version") == "rrd-1.0.x" ||
-			read_config_option("rrdtool_version") == "rrd-1.2.x") { # rrdtool 1.0 and 1.2 use font files
+		if (read_config_option("rrdtool_version") == "rrd-1.2.x") { # rrdtool 1.2 uses font files
 			if (is_file($form_previous_value)) {
 				$extra_data = "<span style='color:green'><br>[" . "OK: FILE FOUND" . "]</span>";
 			}else if (is_dir($form_previous_value)) {

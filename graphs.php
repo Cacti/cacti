@@ -1028,8 +1028,7 @@ function graph_edit() {
 	function dynamic() {
 		if ($('#scale_log_units').is(':checked')) {
 			$('#scale_log_units').prop('disabled', true);
-			if (($('#rrdtool_version').val() != 'rrd-1.0.x') &&
-				($('#auto_scale_log').is(':checked'))) {
+			if ($('#auto_scale_log').is(':checked')) {
 				$('#scale_log_units').prop('disabled', false);
 			}
 		}
@@ -1038,8 +1037,7 @@ function graph_edit() {
 	function changeScaleLog() {
 		if ($('#scale_log_units').is(':checked')) {
 			$('#scale_log_units').prop('disabled', true);
-			if (($('#rrdtool_version').val() != 'rrd-1.0.x') &&
-				($('#auto_scale_log').is(':checked'))) {
+			if ($('#auto_scale_log').is(':checked')) {
 				$('#scale_log_units').prop('disabled', false);
 			}
 		}

@@ -177,10 +177,7 @@ $graph_item_types = array(
 	GRAPH_ITEM_TYPE_GPRINT  => 'GPRINT',
 	GRAPH_ITEM_TYPE_LEGEND  => 'LEGEND');
 
-$image_types = array(1 =>
-	'PNG',
-	'GIF',
-	'SVG');
+$image_types = array(1 => 'PNG', 3 => 'SVG');
 
 $snmp_versions = array(0 =>
 	'Not In Use',
@@ -295,7 +292,6 @@ $snmp_implimentations = array(
 	'net-snmp' => 'NET-SNMP 5.x');
 
 $rrdtool_versions = array(
-	'rrd-1.0.x' => 'RRDTool 1.0.x',
 	'rrd-1.2.x' => 'RRDTool 1.2.x',
 	'rrd-1.3.x' => 'RRDTool 1.3.x',
 	'rrd-1.4.x' => 'RRDTool 1.4.x');

@@ -240,8 +240,6 @@ function utilities_view_tech($php_info = '') {
 				$rrdtool_version = 'rrd-1.3.x';
 			}else if (preg_match('/^RRDtool 1\.2\./', $out_array[0])) {
 				$rrdtool_version = 'rrd-1.2.x';
-			}else if (preg_match('/^RRDtool 1\.0\./', $out_array[0])) {
-				$rrdtool_version = 'rrd-1.0.x';
 			}
 		}
 	}
@@ -258,8 +256,8 @@ function utilities_view_tech($php_info = '') {
 		$rrdtool_error .= "<br><font color='red'>ERROR: Installed RRDTool version does not match configured version.<br>Please visit the <a href='" . htmlspecialchars('settings.php?tab=general') . "'>Configuration Settings</a> and select the correct RRDTool Utility Version.</font><br>";
 	}
 	$graph_gif_count = db_fetch_cell('SELECT COUNT(*) FROM graph_templates_graph WHERE image_format_id = 2');
-	if (($graph_gif_count > 0) && (read_config_option('rrdtool_version') != 'rrd-1.0.x')) {
-		$rrdtool_error .= "<br><font color='red'>ERROR: RRDTool 1.2.x does not support the GIF images format, but " . $graph_gif_count . ' graph(s) and/or templates have GIF set as the image format.</font><br>';
+	if ($graph_gif_count > 0) {
+		$rrdtool_error .= "<br><font color='red'>ERROR: RRDTool 1.2.x+ does not support the GIF images format, but " . $graph_gif_count . ' graph(s) and/or templates have GIF set as the image format.</font><br>';
 	}
 
 	/* Get spine version */

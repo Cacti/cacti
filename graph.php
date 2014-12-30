@@ -194,18 +194,14 @@ case 'zoom':
 		WHERE graph_templates_graph.local_graph_id = ?', array(get_request_var('local_graph_id')));
 
 	$graph_height = $graph['height'];
-	$graph_width = $graph['width'];
-	if (read_config_option('rrdtool_version') != 'rrd-1.0.x') {
-		 if (read_graph_config_option('custom_fonts') == 'on' & read_graph_config_option('title_size') != '') {
-			$title_font_size = read_graph_config_option('title_size');
-		 }elseif (read_config_option('title_size') != '') {
-			$title_font_size = read_config_option('title_size');
-				$title_font_size = read_config_option('title_size');
-		 }else {
-		 	$title_font_size = 10;
-		 }
+	$graph_width  = $graph['width'];
+
+	if (read_graph_config_option('custom_fonts') == 'on' & read_graph_config_option('title_size') != '') {
+		$title_font_size = read_graph_config_option('title_size');
+	}elseif (read_config_option('title_size') != '') {
+		$title_font_size = read_config_option('title_size');
 	}else {
-		$title_font_size = 0;
+	 	$title_font_size = 10;
 	}
 
 	?>
