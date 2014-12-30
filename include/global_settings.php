@@ -112,6 +112,19 @@ $settings = array(
 			'default' => $config['base_path'] . '/log/cacti.log',
 			'max_length' => '255'
 			),
+		'logrotate_enabled' => array(
+			'friendly_name' => 'Rotate the Cacti Log Nightly',
+			'description' => 'This will rotate the Cacti Log every night at midnight.',
+			'method' => 'checkbox',
+			'default' => '',
+			),
+		'logrotate_retain' => array(
+			'friendly_name' => 'Log Retention',
+			'description' => 'The number of days to retain old logs.  Use 0 to never remove any logs. (0-365)',
+			'method' => 'textbox',
+			'default' => '7',
+			'max_length' => 3,
+			),
 		'pollerpaths_header' => array(
 			'friendly_name' => 'Alternate Poller Path',
 			'method' => 'spacer',

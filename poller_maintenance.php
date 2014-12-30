@@ -119,7 +119,92 @@ if (read_config_option('auth_cache_enabled') == 'on') {
 	db_execute('TRUNCATE TABLE user_auth_cache');
 }
 
+// Check expired accounts
 secpass_check_expired ();
+
+// Check whether the cacti log needs rotating
+if (read_config_option('logrotate_enabled') == 'on') {
+	if (date('G') == 0 && date('i') < 5 && (time() - read_config_option('logrotate_lastrun') > 3600)) {
+		logrotate_rotatenow();
+	}
+}
+
+
+
+
+
+
+
+
+/*
+ * logrotate_rotatenow
+ * Rotates the cacti log
+ */
+function logrotate_rotatenow () {
+	global $config;
+	$log = $config['base_path'] . '/log/cacti.log';
+	set_config_option('logrotate_lastrun', time());
+	clearstatcache();
+	if (is_writable($config['base_path'] . '/log/') && is_writable($log)) {
+		$perms = octdec(substr(decoct( fileperms($log) ), 2));
+		$owner = fileowner($log);
+		$group = filegroup($log);
+		if ($owner !== FALSE) {
+			$ext = date('Ymd');
+			if (file_exists($log . '-' . $ext)) {
+				$ext = date('YmdHis');
+			}
+			if (rename($log, $log . '-' . $ext)) {
+				touch($log);
+				chown($log, $owner);
+				chgrp($log, $group);
+				chmod($log, $perms);
+				cacti_log('Cacti Log Rotation - Created Log cacti.log-' . $ext);
+			} else {
+				cacti_log('Cacti Log Rotation - ERROR: Could not rename cacti.log to ' . $log . '-' . $ext);
+			}
+		} else {
+			cacti_log('Cacti Log Rotation - ERROR: Permissions issue.  Please check your log directory');
+		}
+	} else {
+		cacti_log('Cacti Log Rotation - ERROR: Permissions issue.  Directory / Log not writable.');
+	}
+	logrotate_cleanold();
+}
+
+/*
+ * logrotate_cleanold
+ * Cleans up any old log files that should be removed
+ */
+function logrotate_cleanold () {
+	global $config;
+	$dir = scandir($config['base_path'] . '/log/');
+	$r = read_config_option('logrotate_retain');
+	if ($r == '' || $r < 0) {
+		$r = 7;
+	}
+	if ($r > 365) {
+		$r = 365;
+	}
+	if ($r == 0) {
+		return;
+	}
+	foreach ($dir as $d) {
+		if (substr($d, 0, 10) == "cacti.log-" && strlen($d) >= 18) {
+			$e = date('Ymd', time() - ($r * 86400));
+			$f = substr($d, 10, 8);
+			if ($f < $e) {
+				if (is_writable($config['base_path'] . '/log/' . $d)) {
+					@unlink($config['base_path'] . '/log/' . $d);
+					cacti_log('Cacti Log Rotation - Purging Log : ' . $d);
+				} else {
+					cacti_log('Cacti Log Rotation - ERROR: Can not purge log : ' . $d);
+				}
+			}
+		}
+	}
+	clearstatcache();
+}
 
 
 /*
