@@ -163,8 +163,8 @@ default:
 				applySkin();
 			});
 		});
-
-		$('input[value='Save']').click(function(event) {
+		
+		$('input[value="Save"]').click(function(event) {
 			event.preventDefault();
 			if (themeChanged != true) {
 				$.post('settings.php?tab='+$('#tab').val()+'&header=false', $('input, select, textarea').serialize()).done(function(data) {
