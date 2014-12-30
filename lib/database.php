@@ -84,6 +84,7 @@ function db_close($db_conn = FALSE) {
 	if (!$db_conn) {
 		$db_conn = $database_sessions[$database_default];
 
+
 	}
 	if (!$db_conn) return FALSE;
 	$db_conn = null;
@@ -96,59 +97,7 @@ function db_close($db_conn = FALSE) {
    @param $log - whether to log error messages, defaults to true
    @returns - '1' for success, '0' for error */
 function db_execute($sql, $log = TRUE, $db_conn = FALSE) {
-	global $database_sessions, $database_default, $config;
-
-	/* check for a connection being passed, if not use legacy behavior */
-	if (!$db_conn) {
-		$db_conn = $database_sessions[$database_default];
-	}
-	if (!$db_conn) return FALSE;
-
-	$sql = str_replace("\n", '', str_replace("\r", '', str_replace("\t", ' ', $sql)));
-
-	if (read_config_option('log_verbosity') == POLLER_VERBOSITY_DEVDBG) {
-		cacti_log('DEVEL: SQL Exec: "' . $sql . '"', FALSE);
-	}
-	$errors = 0;
-	$db_conn->affect_rows = 0;
-	while (1) {
-		$query = $db_conn->query($sql);
-		$errorinfo = $db_conn->errorInfo();
-		$en = $errorinfo[1];
-		if ($en == '') {
-			// With PDO, we have to free this up
-			$db_conn->affect_rows = $query->rowCount();
-			$query->fetchAll(PDO::FETCH_ASSOC);
-			unset($query);
-			return TRUE;
-		} else if (($log) || (read_config_option('log_verbosity') >= POLLER_VERBOSITY_DEBUG)) {
-			if ($en == 1213 || $en == 1205) { //substr_count(mysql_error($db_conn), 'Deadlock')
-				$errors++;
-				if ($errors > 30) {
-					cacti_log("ERROR: Too many Lock/Deadlock errors occurred! SQL:'" . str_replace("\n", '', str_replace("\r", '', str_replace("\t", ' ', $sql))) . "'", TRUE);
-					return FALSE;
-				} else {
-					usleep(500000);
-					continue;
-				}
-			} else {
-				cacti_log("ERROR: A DB Exec Failed!, Error:$en, SQL:\"" . str_replace("\n", '', str_replace("\r", '', str_replace("\t", ' ', $sql))) . "'", FALSE);
-				cacti_log('ERROR: A DB Exec Failed!, Error: ' . $errorinfo[2]);
- 				$callers = debug_backtrace();
-				$s = '';
-				foreach ($callers as $c) {
-					$file = str_replace($config['base_path'], '', $c['file']);
-					$line = $c['line'];
-					$func = $c['function'];
-					$s = "($file:$line $func)" . $s;
-				}
-				cacti_log("SQL Backtrace: $s", false);
-				return FALSE;
-			}
-		}
-	}
-	unset($query);
-	return FALSE;
+	return db_execute_prepared($sql, array(), $log, $db_conn);
 }
 
 /* db_execute_prepared - run an sql query and do not return any output
@@ -221,49 +170,7 @@ function db_execute_prepared($sql, $parms = array(), $log = TRUE, $db_conn = FAL
    @param $log - whether to log error messages, defaults to true
    @returns - (bool) the output of the sql query as a single variable */
 function db_fetch_cell($sql, $col_name = '', $log = TRUE, $db_conn = FALSE) {
-	global $database_sessions, $database_default, $config;
-
-	/* check for a connection being passed, if not use legacy behavior */
-	if (!$db_conn) {
-		$db_conn = $database_sessions[$database_default];
-	}
-	if (!$db_conn) return FALSE;
-	$sql = str_replace("\n", '', str_replace("\r", '', str_replace("\t", ' ', $sql)));
-
-	if (read_config_option('log_verbosity') == POLLER_VERBOSITY_DEVDBG) {
-		cacti_log('DEVEL: SQL Cell: "' . $sql . '"', FALSE);
-	}
-	$db_conn->affect_rows = 0;
-	$query = $db_conn->query($sql);
-	$errorinfo = $db_conn->errorInfo();
-	$en = $errorinfo[1];
-	if ($en == '') {
-		$q = $query->fetchAll(PDO::FETCH_BOTH);
-		$db_conn->affect_rows = $query->rowCount();
-		unset($query);
-		if (isset($q[0]) && is_array($q[0])) {
-			if ($col_name != '') {
-				return $q[0][$col_name];
-			} else {
-				return $q[0][0];
-			}
-		}
-		return FALSE;
-	}else if (($log) || (read_config_option('log_verbosity') >= POLLER_VERBOSITY_DEBUG)) {
-		cacti_log("ERROR: SQL Cell Failed!, Error:$en, SQL:\"" . str_replace("\n", '', str_replace("\r", '', str_replace("\t", ' ', $sql))) . '"', FALSE);
-		cacti_log('ERROR: SQL Cell Failed!, Error: ' . $errorinfo[2]);
-		$callers = debug_backtrace();
-		$s = '';
-		foreach ($callers as $c) {
-			$file = str_replace($config['base_path'], '', $c['file']);
-			$line = $c['line'];
-			$func = $c['function'];
-			$s = "($file:$line $func)" . $s;
-		}
-		cacti_log("SQL Backtrace: $s", false);
-	}
-	if (isset($query)) unset($query);
-	return FALSE;
+	return db_fetch_cell_prepared($sql, array(), $col_name, $log, $db_conn);
 }
 
 /* db_fetch_cell_prepared - run a 'select' sql query and return the first column of the
@@ -324,49 +231,7 @@ function db_fetch_cell_prepared($sql, $parms = array(), $col_name = '', $log = T
    @param $log - whether to log error messages, defaults to true
    @returns - the first row of the result as a hash */
 function db_fetch_row($sql, $log = TRUE, $db_conn = FALSE) {
-	global $database_sessions, $database_default, $config;
-
-	/* check for a connection being passed, if not use legacy behavior */
-	if (!$db_conn) {
-		$db_conn = $database_sessions[$database_default];
-	}
-	if (!$db_conn) return FALSE;
-
-	$sql = str_replace("\n", '', str_replace("\r", '', str_replace("\t", ' ', $sql)));
-
-	if (($log) && (read_config_option('log_verbosity') == POLLER_VERBOSITY_DEVDBG)) {
-		cacti_log('DEVEL: SQL Row: "' . $sql . '"', FALSE);
-	}
-	$db_conn->affect_rows = 0;
-	$query = $db_conn->query($sql);
-	$errorinfo = $db_conn->errorInfo();
-	$en = $errorinfo[1];
-	if ($en == '') {
-		$db_conn->affect_rows = $query->rowCount();
-		$q = $query->fetchAll(PDO::FETCH_ASSOC);
-		$query->closeCursor();
-		unset($query);
-		if (isset($q[0])) {
-			return $q[0];
-		} else {
-			return array();
-		}
-	}else if (($log) || (read_config_option('log_verbosity') >= POLLER_VERBOSITY_DEBUG)) {
-		cacti_log("ERROR: SQL Row Failed!, Error:$en, SQL:\"" . str_replace("\n", '', str_replace("\r", '', str_replace("\t", ' ', $sql))) . '"', FALSE);
-		cacti_log('ERROR: SQL Row Failed!, Error: ' . $errorinfo[2]);
-		$callers = debug_backtrace();
-		$s = '';
-		foreach ($callers as $c) {
-			$file = str_replace($config['base_path'], '', $c['file']);
-			$line = $c['line'];
-			$func = $c['function'];
-			$s = "($file:$line $func)" . $s;
-		}
-		cacti_log("SQL Backtrace: $s", false);
-
-	}
-	if (isset($query)) unset($query);
-	return array();
+	return db_fetch_row_prepared($sql, array(), $log, $db_conn);
 }
 
 /* db_fetch_row_prepared - run a 'select' sql query and return the first row found
@@ -425,47 +290,7 @@ function db_fetch_row_prepared($sql, $parms = array(), $log = TRUE, $db_conn = F
    @param $log - whether to log error messages, defaults to true
    @returns - the entire result set as a multi-dimensional hash */
 function db_fetch_assoc($sql, $log = TRUE, $db_conn = FALSE) {
-	global $database_sessions, $database_default, $config;
-
-	/* check for a connection being passed, if not use legacy behavior */
-	if (!$db_conn) {
-		$db_conn = $database_sessions[$database_default];
-	}
-	if (!$db_conn) return FALSE;
-
-	$sql = str_replace("\n", '', str_replace("\r", '', str_replace("\t", ' ', $sql)));
-
-	if (read_config_option('log_verbosity') == POLLER_VERBOSITY_DEVDBG) {
-		cacti_log('DEVEL: SQL Assoc: "' . $sql . '"', FALSE);
-	}
-	$db_conn->affect_rows = 0;
-	$query = $db_conn->query($sql);
-	$errorinfo = $db_conn->errorInfo();
-	$en = $errorinfo[1];
-	if ($en == '') {
-		$db_conn->affect_rows = $query->rowCount();
-		$a = $query->fetchAll(PDO::FETCH_ASSOC);
-		$query->closeCursor();
-		unset($query);
-		if (!is_array($a)) {
-			$a = array();
-		}
-		return $a;
-	}else if (($log) || (read_config_option('log_verbosity') >= POLLER_VERBOSITY_DEBUG)) {
-		cacti_log("ERROR: SQL Assoc Failed!, Error:$en, SQL:\"" . str_replace("\n", '', str_replace("\r", '', str_replace("\t", ' ', $sql))) . '"');
-		cacti_log('ERROR: SQL Assoc Failed!, Error: ' . $errorinfo[2]);
-		$callers = debug_backtrace();
-		$s = '';
-		foreach ($callers as $c) {
-			$file = str_replace($config['base_path'], '', $c['file']);
-			$line = $c['line'];
-			$func = $c['function'];
-			$s = "($file:$line $func)" . $s;
-		}
-		cacti_log("SQL Backtrace: $s", false);
-	}
-	if (isset($query)) unset($query);
-	return array();
+	return db_fetch_assoc_prepared($sql, array(), $log, $db_conn);
 }
 
 /* db_fetch_assoc_prepared - run a 'select' sql query and return all rows found
