@@ -109,20 +109,20 @@ function get_host_sort_type() {
 	if (isset($_REQUEST['nodeid'])) {
 		$ndata = explode('_', $_REQUEST['nodeid']);
 		if (sizeof($ndata)) {
-		foreach($ndata as $n) {
-			$parts = explode(':', $n);
+			foreach($ndata as $n) {
+				$parts = explode(':', $n);
 
-			if (isset($parts[0]) && $parts[0] == 'tbranch') {
-				$branch = $parts[1];
-				input_validate_input_number($branch);
-				$sort_type = db_fetch_cell("SELECT host_grouping_type FROM graph_tree_items WHERE id=$branch");
-				if ($sort_type == HOST_GROUPING_GRAPH_TEMPLATE) {
-					print 'hsgt';
-				}else{
-					print 'hsdq';
+				if (isset($parts[0]) && $parts[0] == 'tbranch') {
+					$branch = $parts[1];
+					input_validate_input_number($branch);
+					$sort_type = db_fetch_cell_prepared('SELECT host_grouping_type FROM graph_tree_items WHERE id = ?', array($branch));
+					if ($sort_type == HOST_GROUPING_GRAPH_TEMPLATE) {
+						print 'hsgt';
+					}else{
+						print 'hsdq';
+					}
 				}
 			}
-		}
 		}
 	}else{
 		return '';
@@ -141,24 +141,23 @@ function set_host_sort_type() {
 	if (isset($_REQUEST['nodeid'])) {
 		$ndata = explode('_', $_REQUEST['nodeid']);
 		if (sizeof($ndata)) {
-		foreach($ndata as $n) {
-			$parts = explode(':', $n);
+			foreach($ndata as $n) {
+				$parts = explode(':', $n);
 
-			if (isset($parts[0]) && $parts[0] == 'tbranch') {
-				$branch = $parts[1];
-				input_validate_input_number($branch);
+				if (isset($parts[0]) && $parts[0] == 'tbranch') {
+					$branch = $parts[1];
+					input_validate_input_number($branch);
 
-				if ($_REQUEST['type'] == 'hsgt') {
-					$type = HOST_GROUPING_GRAPH_TEMPLATE;
-				}else{
-					$type = HOST_GROUPING_DATA_QUERY_INDEX;
+					if ($_REQUEST['type'] == 'hsgt') {
+						$type = HOST_GROUPING_GRAPH_TEMPLATE;
+					}else{
+						$type = HOST_GROUPING_DATA_QUERY_INDEX;
+					}
+
+					db_execute_prepared('UPDATE graph_tree_items SET host_grouping_type=$type WHERE id = ?', array($branch));
+					break;
 				}
-
-				db_fetch_cell("UPDATE graph_tree_items SET host_grouping_type=$type WHERE id=$branch");
-
-				break;
 			}
-		}
 		}
 	}
 
@@ -175,7 +174,7 @@ function get_branch_sort_type() {
 			if (isset($parts[0]) && $parts[0] == 'tbranch') {
 				$branch = $parts[1];
 				input_validate_input_number($branch);
-				$sort_type = db_fetch_cell("SELECT sort_children_type FROM graph_tree_items WHERE id=$branch");
+				$sort_type = db_fetch_cell_prepared('SELECT sort_children_type FROM graph_tree_items WHERE id = ?', array($branch));
 				switch($sort_type) {
 				case TREE_ORDERING_INHERIT:
 					print 'inherit';
@@ -245,7 +244,7 @@ function set_branch_sort_type() {
 				}
 
 				if ($type != '' && $branch != '') {
-					db_fetch_cell("UPDATE graph_tree_items SET sort_children_type=$type WHERE id=$branch");
+					db_execute_prepared('UPDATE graph_tree_items SET sort_children_type=$type WHERE id = ?', array($branch));
 				}
 
 				break;
@@ -269,7 +268,7 @@ function form_save() {
 		$save['id']            = $_POST['id'];
 		$save['name']          = form_input_validate($_POST['name'], 'name', '', false, 3);
 		$save['sort_type']     = form_input_validate($_POST['sort_type'], 'sort_type', '', true, 3);
-		$save['last_modified'] = date("Y-m-d H:i:s", time());
+		$save['last_modified'] = date('Y-m-d H:i:s', time());
 		$save['modified_by']   = $_SESSION['sess_user_id'];
 		if (empty($save['id'])) {
 			$save['user_id'] = $_SESSION['sess_user_id'];
@@ -306,12 +305,12 @@ function lock_tree() {
 	input_validate_input_number(get_request_var_request('id'));
 	/* ==================================================== */
 
-	db_execute("UPDATE graph_tree 
-		SET locked=1, 
-		locked_date=NOW(), 
-		last_modified=NOW(), 
-		modified_by=" . $_SESSION['sess_user_id'] . " 
-		WHERE id=" . $_REQUEST['id']);
+	db_execute_prepared('UPDATE graph_tree 
+		SET locked = 1, 
+		locked_date = NOW(), 
+		last_modified = NOW(), 
+		modified_by = ? 
+		WHERE id = ?', array($_SESSION['sess_user_id'], $_REQUEST['id']));
 
 	header('Location: tree.php?action=edit&header=false&id=' . $_REQUEST['id']);
 }
@@ -321,11 +320,11 @@ function unlock_tree() {
 	input_validate_input_number(get_request_var_request('id'));
 	/* ==================================================== */
 
-	db_execute("UPDATE graph_tree 
-		SET locked=0, 
-		last_modified=NOW(), 
-		modified_by=" . $_SESSION['sess_user_id'] . " 
-		WHERE id=" . $_REQUEST['id']);
+	db_execute_prepared('UPDATE graph_tree 
+		SET locked = 0, 
+		last_modified = NOW(), 
+		modified_by = ?
+		WHERE id = ?', array($_SESSION['sess_user_id'], $_REQUEST['id']));
 
 	header('Location: tree.php?action=edit&header=false&id=' . $_REQUEST['id']);
 }
@@ -354,14 +353,14 @@ function form_actions() {
 			db_execute("UPDATE graph_tree 
 				SET enabled='on',
 				last_modified=NOW(),
-				modified_by=" . $_SESSION['sess_user_id'] . "
-				WHERE " . array_to_sql_or($selected_items, 'id'));
+				modified_by=" . $_SESSION['sess_user_id'] . '
+				WHERE ' . array_to_sql_or($selected_items, 'id'));
 		}elseif ($_POST['drp_action'] == '3') { /* un-publish */
 			db_execute("UPDATE graph_tree 
 				SET enabled='',
 				last_modified=NOW(),
-				modified_by=" . $_SESSION['sess_user_id'] . "
-				WHERE " . array_to_sql_or($selected_items, 'id'));
+				modified_by=" . $_SESSION['sess_user_id'] . '
+				WHERE ' . array_to_sql_or($selected_items, 'id'));
 		}
 
 		header('Location: tree.php');
@@ -378,7 +377,7 @@ function form_actions() {
 			input_validate_input_number($matches[1]);
 			/* ==================================================== */
 
-			$tree_list .= '<li>' . htmlspecialchars(db_fetch_cell('SELECT name FROM graph_tree WHERE id=' . $matches[1])) . '</li>';
+			$tree_list .= '<li>' . htmlspecialchars(db_fetch_cell_prepared('SELECT name FROM graph_tree WHERE id = ?', array($matches[1]))) . '</li>';
 			$tree_array[$i] = $matches[1];
 
 			$i++;
@@ -451,15 +450,15 @@ function tree_remove() {
 	if ((read_config_option('deletion_verification') == 'on') && (!isset($_REQUEST['confirm']))) {
 		top_header();
 
-		form_confirm('Are You Sure?', "Are you sure you want to delete the tree <strong>'" . htmlspecialchars(db_fetch_cell('select name from graph_tree where id=' . $_REQUEST['id']), ENT_QUOTES) . "'</strong>?", htmlspecialchars('tree.php'), htmlspecialchars('tree.php?action=remove&id=' . $_REQUEST['id']));
+		form_confirm('Are You Sure?', "Are you sure you want to delete the tree <strong>'" . htmlspecialchars(db_fetch_cell_prepared('SELECT name FROM graph_tree WHERE id = ?', array($_REQUEST['id'])), ENT_QUOTES) . "'</strong>?", htmlspecialchars('tree.php'), htmlspecialchars('tree.php?action=remove&id=' . $_REQUEST['id']));
 
 		bottom_footer();
 		exit;
 	}
 
 	if ((read_config_option('deletion_verification') == '') || (isset($_REQUEST['confirm']))) {
-		db_execute('delete from graph_tree where id=' . $_REQUEST['id']);
-		db_execute('delete from graph_tree_items where graph_tree_id=' . $_REQUEST['id']);
+		db_execute_prepared('DELETE FROM graph_tree WHERE id = ?', array($_REQUEST['id']));
+		db_execute_prepared('DELETE FROM graph_tree_items WHERE graph_tree_id = ?', array($_REQUEST['id']));
 	}
 
 	/* clear graph tree cache on save - affects current user only, other users should see changes in <5 minutes */
@@ -486,7 +485,7 @@ function tree_edit() {
 	load_current_session_value('type', 'sess_tree_edit_type', '0');
 
 	if (!empty($_REQUEST['id'])) {
-		$tree = db_fetch_row('select * from graph_tree where id=' . $_REQUEST['id']);
+		$tree = db_fetch_row_prepared('SELECT * FROM graph_tree WHERE id = ?', array($_REQUEST['id']));
 		$header_label = '[edit: ' . htmlspecialchars($tree['name']) . ']';
 	}else{
 		$header_label = '[new]';
@@ -516,10 +515,10 @@ function tree_edit() {
 		$lockdiv = "<div style='padding:3px;'><table><tr><td><input id='unlock' type='button' value='Unlock Tree'></td><td><input id='addbranch' type='button' value='Add Root Branch' onClick='createNode()'></td><td style='font-weight:bold;'>The tree was locked on '" . $tree['locked_date'] . "' by '" . get_username($tree['modified_by']) . "'";
 		if ($tree['modified_by'] == $_SESSION['sess_user_id']) {
 			$editable = true;
-			$lockdiv .= "</td></tr></table></div>";
+			$lockdiv .= '</td></tr></table></div>';
 		}else{
 			$editable = false;
-			$lockdiv .= ". To edit the tree, you must first unlock it and then lock it as yourself</td></tr></table></div>";
+			$lockdiv .= '. To edit the tree, you must first unlock it and then lock it as yourself</td></tr></table></div>';
 		}
 	}else{
 		$tree['id'] = 0;
@@ -1213,7 +1212,7 @@ function display_hosts() {
 	if ($_REQUEST['filter'] != '') {
 		$sql_where = "WHERE hostname LIKE '%" . $_REQUEST['filter'] . "%' OR description LIKE '%" . $_REQUEST['filter'] . "%'";
 	}else{
-		$sql_where = "";
+		$sql_where = '';
 	}
 
 	$hosts = db_fetch_assoc("SELECT h.id, CONCAT_WS('', 
@@ -1239,7 +1238,7 @@ function display_graphs() {
 	if ($_REQUEST['filter'] != '') {
 		$sql_where = "WHERE (title_cache LIKE '%" . $_REQUEST['filter'] . "%' OR gt.name LIKE '%" . $_REQUEST['filter'] . "%') AND local_graph_id>0";
 	}else{
-		$sql_where = "WHERE local_graph_id>0";
+		$sql_where = 'WHERE local_graph_id>0';
 	}
 
 	$graphs = db_fetch_assoc("SELECT 
@@ -1256,7 +1255,7 @@ function display_graphs() {
 	if (sizeof($graphs)) {
 		foreach($graphs as $g) {
 			if (is_graph_allowed($g['id'])) {
-				echo "<ul><li id='tgraph:" . $g['id'] . "' data-jstree='{ \"type\": \"graph\" }'>" . $g['title'] . "</li></ul>";	
+				echo "<ul><li id='tgraph:" . $g['id'] . "' data-jstree='{ \"type\": \"graph\" }'>" . $g['title'] . '</li></ul>';	
 			}
 		}
 	}
@@ -1416,8 +1415,8 @@ function tree() {
 		ON t.id=ti.graph_tree_id
 		$sql_where
 		GROUP BY t.id
-		ORDER BY " . get_request_var_request('sort_column') . ' ' . get_request_var_request('sort_direction') . "
-		LIMIT " . (get_request_var_request('rows')*(get_request_var_request('page')-1)) . ',' . get_request_var_request('rows'));
+		ORDER BY " . get_request_var_request('sort_column') . ' ' . get_request_var_request('sort_direction') . '
+		LIMIT ' . (get_request_var_request('rows')*(get_request_var_request('page')-1)) . ',' . get_request_var_request('rows'));
 
 	$total_rows = db_fetch_cell("SELECT COUNT(*)
 		FROM graph_tree AS t
@@ -1475,4 +1474,3 @@ function tree() {
 	print "</form>\n";
 }
 
-?>
