@@ -55,16 +55,26 @@ define('DATA_INPUT_TYPE_SCRIPT_QUERY', 4);
 define('DATA_INPUT_TYPE_PHP_SCRIPT_SERVER', 5);
 define('DATA_INPUT_TYPE_QUERY_SCRIPT_SERVER', 6);
 
-define('GRAPH_ITEM_TYPE_COMMENT', 1);
-define('GRAPH_ITEM_TYPE_HRULE',   2);
-define('GRAPH_ITEM_TYPE_VRULE',   3);
-define('GRAPH_ITEM_TYPE_LINE1',   4);
-define('GRAPH_ITEM_TYPE_LINE2',   5);
-define('GRAPH_ITEM_TYPE_LINE3',   6);
-define('GRAPH_ITEM_TYPE_AREA',    7);
-define('GRAPH_ITEM_TYPE_STACK',   8);
-define('GRAPH_ITEM_TYPE_GPRINT',  9);
-define('GRAPH_ITEM_TYPE_LEGEND', 10);
+define('GRAPH_ITEM_TYPE_COMMENT',            1);
+define('GRAPH_ITEM_TYPE_HRULE',              2);
+define('GRAPH_ITEM_TYPE_VRULE',              3);
+define('GRAPH_ITEM_TYPE_LINE1',              4);
+define('GRAPH_ITEM_TYPE_LINE2',              5);
+define('GRAPH_ITEM_TYPE_LINE3',              6);
+define('GRAPH_ITEM_TYPE_AREA',               7);
+define('GRAPH_ITEM_TYPE_STACK',              8);
+define('GRAPH_ITEM_TYPE_GPRINT',             9);
+define('GRAPH_ITEM_TYPE_LEGEND',            10);
+define('GRAPH_ITEM_TYPE_LINE1_LEGEND_CAX',  11);
+define('GRAPH_ITEM_TYPE_LINE1_LEGEND_CAXM', 12);
+define('GRAPH_ITEM_TYPE_LINE2_LEGEND_CAX',  13);
+define('GRAPH_ITEM_TYPE_LINE2_LEGEND_CAXM', 14);
+define('GRAPH_ITEM_TYPE_LINE3_LEGEND_CAX',  15);
+define('GRAPH_ITEM_TYPE_LINE3_LEGEND_CAXM', 16);
+define('GRAPH_ITEM_TYPE_AREA_LEGEND_CAX',   17);
+define('GRAPH_ITEM_TYPE_AREA_LEGEND_CAXM',  18);
+define('GRAPH_ITEM_TYPE_STACK_LEGEND_CAX',  19);
+define('GRAPH_ITEM_TYPE_STACK_LEGEND_CAXM', 20);
 
 /* used both for polling and reindexing */
 define('POLLER_ACTION_SNMP', 0);

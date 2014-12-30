@@ -362,15 +362,15 @@ $menu = array(
 		'data_input.php' => 'Data Input Methods'
 		),
 	'Templates' => array(
-		'graph_templates.php' => 'Graph Templates',
-		'host_templates.php' => 'Host Templates',
-		'data_templates.php' => 'Data Templates'
+		'graph_templates.php' => 'Graphs',
+		'host_templates.php' => 'Hosts',
+		'data_templates.php' => 'Data Sources'
 		),
 	'Presets' => array(
-			'cdef.php' => 'CDEFs',
-			'color.php' => 'Colors',
-			'gprint_presets.php' => 'GPRINT Presets',
-			'rra.php' => 'RRAs'
+		'cdef.php' => 'CDEFs',
+		'color.php' => 'Colors',
+		'gprint_presets.php' => 'GPRINTs',
+		'rra.php' => 'RRAs'
 		),
 	'Import/Export' => array(
 		'templates_import.php' => 'Import Templates',
