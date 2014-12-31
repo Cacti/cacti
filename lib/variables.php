@@ -26,12 +26,12 @@
 	that match a given data template
    @arg $data_template_id - (int) the ID of the data template to match */
 function update_data_source_title_cache_from_template($data_template_id) {
-	$data = db_fetch_assoc("SELECT local_data_id FROM data_template_data WHERE data_template_id=$data_template_id AND local_data_id>0");
+	$data = db_fetch_assoc_prepared('SELECT local_data_id FROM data_template_data WHERE data_template_id = ? AND local_data_id > 0', array($data_template_id));
 
 	if (sizeof($data) > 0) {
-	foreach ($data as $item) {
-		update_data_source_title_cache($item["local_data_id"]);
-	}
+		foreach ($data as $item) {
+			update_data_source_title_cache($item['local_data_id']);
+		}
 	}
 }
 
@@ -40,12 +40,12 @@ function update_data_source_title_cache_from_template($data_template_id) {
    @arg $snmp_query_id - (int) the ID of the data query to match
    @arg $snmp_index - the index within the data query to match */
 function update_data_source_title_cache_from_query($snmp_query_id, $snmp_index) {
-	$data = db_fetch_assoc("SELECT id FROM data_local WHERE snmp_query_id=$snmp_query_id AND snmp_index='$snmp_index'");
+	$data = db_fetch_assoc_prepared('SELECT id FROM data_local WHERE snmp_query_id = ? AND snmp_index = ?', array($snmp_query_id, $snmp_index));
 
 	if (sizeof($data) > 0) {
-	foreach ($data as $item) {
-		update_data_source_title_cache($item["id"]);
-	}
+		foreach ($data as $item) {
+			update_data_source_title_cache($item['id']);
+		}
 	}
 }
 
@@ -53,19 +53,19 @@ function update_data_source_title_cache_from_query($snmp_query_id, $snmp_index) 
 	that match a given host
    @arg $host_id - (int) the ID of the host to match */
 function update_data_source_title_cache_from_host($host_id) {
-	$data = db_fetch_assoc("SELECT id FROM data_local WHERE host_id=$host_id");
+	$data = db_fetch_assoc_prepared('SELECT id FROM data_local WHERE host_id = ?', array($host_id));
 
 	if (sizeof($data) > 0) {
-	foreach ($data as $item) {
-		update_data_source_title_cache($item["id"]);
-	}
+		foreach ($data as $item) {
+			update_data_source_title_cache($item['id']);
+		}
 	}
 }
 
 /* update_data_source_title_cache - updates the title cache for a single data source
    @arg $local_data_id - (int) the ID of the data source to update the title cache for */
 function update_data_source_title_cache($local_data_id) {
-	db_execute("UPDATE data_template_data set name_cache='" . addslashes(get_data_source_title($local_data_id)) . "' WHERE local_data_id=$local_data_id");
+	db_execute_prepared('UPDATE data_template_data SET name_cache = ? WHERE local_data_id = ?', array(get_data_source_title($local_data_id), $local_data_id));
 	api_plugin_hook_function('update_data_source_title_cache', $local_data_id);
 }
 
@@ -73,12 +73,12 @@ function update_data_source_title_cache($local_data_id) {
 	that match a given graph template
    @arg $graph_template_id - (int) the ID of the graph template to match */
 function update_graph_title_cache_from_template($graph_template_id) {
-	$graphs = db_fetch_assoc("SELECT local_graph_id FROM graph_templates_graph WHERE graph_template_id=$graph_template_id AND local_graph_id>0");
+	$graphs = db_fetch_assoc_prepared('SELECT local_graph_id FROM graph_templates_graph WHERE graph_template_id = ? AND local_graph_id > 0', array($graph_template_id));
 
 	if (sizeof($graphs) > 0) {
-	foreach ($graphs as $item) {
-		update_graph_title_cache($item["local_graph_id"]);
-	}
+		foreach ($graphs as $item) {
+			update_graph_title_cache($item['local_graph_id']);
+		}
 	}
 }
 
@@ -87,12 +87,12 @@ function update_graph_title_cache_from_template($graph_template_id) {
    @arg $snmp_query_id - (int) the ID of the data query to match
    @arg $snmp_index - the index within the data query to match */
 function update_graph_title_cache_from_query($snmp_query_id, $snmp_index) {
-	$graphs = db_fetch_assoc("SELECT id FROM graph_local WHERE snmp_query_id=$snmp_query_id AND snmp_index='$snmp_index'");
+	$graphs = db_fetch_assoc_prepared('SELECT id FROM graph_local WHERE snmp_query_id = ? AND snmp_index = ?', array($snmp_query_id, $snmp_index));
 
 	if (sizeof($graphs) > 0) {
-	foreach ($graphs as $item) {
-		update_graph_title_cache($item["id"]);
-	}
+		foreach ($graphs as $item) {
+			update_graph_title_cache($item['id']);
+		}
 	}
 }
 
@@ -100,19 +100,19 @@ function update_graph_title_cache_from_query($snmp_query_id, $snmp_index) {
 	that match a given host
    @arg $host_id - (int) the ID of the host to match */
 function update_graph_title_cache_from_host($host_id) {
-	$graphs = db_fetch_assoc("SELECT id FROM graph_local WHERE host_id=$host_id");
+	$graphs = db_fetch_assoc_prepared('SELECT id FROM graph_local WHERE host_id = ?', array($host_id));
 
 	if (sizeof($graphs) > 0) {
-	foreach ($graphs as $item) {
-		update_graph_title_cache($item["id"]);
-	}
+		foreach ($graphs as $item) {
+			update_graph_title_cache($item['id']);
+		}
 	}
 }
 
 /* update_graph_title_cache - updates the title cache for a single graph
    @arg $local_graph_id - (int) the ID of the graph to update the title cache for */
 function update_graph_title_cache($local_graph_id) {
-	db_execute("UPDATE graph_templates_graph set title_cache='" . addslashes(get_graph_title($local_graph_id)) . "' WHERE local_graph_id=$local_graph_id");
+	db_execute_prepared('UPDATE graph_templates_graph SET title_cache = ? WHERE local_graph_id = ?', array(get_graph_title($local_graph_id), $local_graph_id));
 }
 
 /* null_out_substitutions - takes a string and cleans out any host variables that do not have values
@@ -121,7 +121,7 @@ function update_graph_title_cache($local_graph_id) {
 function null_out_substitutions($string) {
 	global $regexps;
 
-	return preg_replace("/\|host_" . VALID_HOST_FIELDS . "\|( - )?/i", "", $string);
+	return preg_replace("/\|host_" . VALID_HOST_FIELDS . "\|( - )?/i", '', $string);
 }
 
 /* expand_title - takes a string and substitutes all data query variables contained in it or cleans
@@ -132,11 +132,11 @@ function null_out_substitutions($string) {
    @arg $title - the original string that contains the data query variables
    @returns - the original string with all of the variable substitutions made */
 function expand_title($host_id, $snmp_query_id, $snmp_index, $title) {
-	if ((strstr($title, "|")) && (!empty($host_id))) {
-		if (($snmp_query_id != "0") && ($snmp_index != "")) {
-			return substitute_snmp_query_data(null_out_substitutions(substitute_host_data($title, "|", "|", $host_id)), $host_id, $snmp_query_id, $snmp_index, read_config_option("max_data_query_field_length"));
+	if ((strstr($title, '|')) && (!empty($host_id))) {
+		if (($snmp_query_id != '0') && ($snmp_index != '')) {
+			return substitute_snmp_query_data(null_out_substitutions(substitute_host_data($title, '|', '|', $host_id)), $host_id, $snmp_query_id, $snmp_index, read_config_option('max_data_query_field_length'));
 		}else{
-			return null_out_substitutions(substitute_host_data($title, "|", "|", $host_id));
+			return null_out_substitutions(substitute_host_data($title, '|', '|', $host_id));
 		}
 	}else{
 		return null_out_substitutions($title);
@@ -149,8 +149,8 @@ function expand_title($host_id, $snmp_query_id, $snmp_index, $title) {
 function substitute_script_query_path($path) {
 	global $config;
 
-	$path = clean_up_path(str_replace("|path_cacti|", $config["base_path"], $path));
-	$path = clean_up_path(str_replace("|path_php_binary|", read_config_option("path_php_binary"), $path));
+	$path = clean_up_path(str_replace('|path_cacti|', $config['base_path'], $path));
+	$path = clean_up_path(str_replace('|path_php_binary|', read_config_option('path_php_binary'), $path));
 
 	return $path;
 }
@@ -163,27 +163,27 @@ function substitute_script_query_path($path) {
    @returns - the original string with all of the variable substitutions made */
 function substitute_host_data($string, $l_escape_string, $r_escape_string, $host_id) {
 	if (!empty($host_id)) {
-		if (!isset($_SESSION["sess_host_cache_array"][$host_id])) {
-			$host = db_fetch_row("SELECT * FROM host WHERE id=$host_id");
-			$_SESSION["sess_host_cache_array"][$host_id] = $host;
+		if (!isset($_SESSION['sess_host_cache_array'][$host_id])) {
+			$host = db_fetch_row_prepared('SELECT * FROM host WHERE id = ?', array($host_id));
+			$_SESSION['sess_host_cache_array'][$host_id] = $host;
 		}
 
-		$string = str_replace($l_escape_string . "host_management_ip" . $r_escape_string, $_SESSION["sess_host_cache_array"][$host_id]["hostname"], $string); /* for compatability */
-		$string = str_replace($l_escape_string . "host_hostname" . $r_escape_string, $_SESSION["sess_host_cache_array"][$host_id]["hostname"], $string);
-		$string = str_replace($l_escape_string . "host_description" . $r_escape_string, $_SESSION["sess_host_cache_array"][$host_id]["description"], $string);
-		$string = str_replace($l_escape_string . "host_snmp_community" . $r_escape_string, $_SESSION["sess_host_cache_array"][$host_id]["snmp_community"], $string);
-		$string = str_replace($l_escape_string . "host_snmp_version" . $r_escape_string, $_SESSION["sess_host_cache_array"][$host_id]["snmp_version"], $string);
-		$string = str_replace($l_escape_string . "host_snmp_username" . $r_escape_string, $_SESSION["sess_host_cache_array"][$host_id]["snmp_username"], $string);
-		$string = str_replace($l_escape_string . "host_snmp_password" . $r_escape_string, $_SESSION["sess_host_cache_array"][$host_id]["snmp_password"], $string);
-		$string = str_replace($l_escape_string . "host_snmp_auth_protocol" . $r_escape_string, $_SESSION["sess_host_cache_array"][$host_id]["snmp_auth_protocol"], $string);
-		$string = str_replace($l_escape_string . "host_snmp_priv_passphrase" . $r_escape_string, $_SESSION["sess_host_cache_array"][$host_id]["snmp_priv_passphrase"], $string);
-		$string = str_replace($l_escape_string . "host_snmp_priv_protocol" . $r_escape_string, $_SESSION["sess_host_cache_array"][$host_id]["snmp_priv_protocol"], $string);
-		$string = str_replace($l_escape_string . "host_snmp_context" . $r_escape_string, $_SESSION["sess_host_cache_array"][$host_id]["snmp_context"], $string);
-		$string = str_replace($l_escape_string . "host_snmp_port" . $r_escape_string, $_SESSION["sess_host_cache_array"][$host_id]["snmp_port"], $string);
-		$string = str_replace($l_escape_string . "host_snmp_timeout" . $r_escape_string, $_SESSION["sess_host_cache_array"][$host_id]["snmp_timeout"], $string);
-		$string = str_replace($l_escape_string . "host_ping_retries" . $r_escape_string, $_SESSION["sess_host_cache_array"][$host_id]["ping_retries"], $string);
-		$string = str_replace($l_escape_string . "host_max_oids" . $r_escape_string, $_SESSION["sess_host_cache_array"][$host_id]["max_oids"], $string);
-		$string = str_replace($l_escape_string . "host_id" . $r_escape_string, $_SESSION["sess_host_cache_array"][$host_id]["id"], $string);
+		$string = str_replace($l_escape_string . 'host_management_ip' . $r_escape_string, $_SESSION['sess_host_cache_array'][$host_id]['hostname'], $string); /* for compatability */
+		$string = str_replace($l_escape_string . 'host_hostname' . $r_escape_string, $_SESSION['sess_host_cache_array'][$host_id]['hostname'], $string);
+		$string = str_replace($l_escape_string . 'host_description' . $r_escape_string, $_SESSION['sess_host_cache_array'][$host_id]['description'], $string);
+		$string = str_replace($l_escape_string . 'host_snmp_community' . $r_escape_string, $_SESSION['sess_host_cache_array'][$host_id]['snmp_community'], $string);
+		$string = str_replace($l_escape_string . 'host_snmp_version' . $r_escape_string, $_SESSION['sess_host_cache_array'][$host_id]['snmp_version'], $string);
+		$string = str_replace($l_escape_string . 'host_snmp_username' . $r_escape_string, $_SESSION['sess_host_cache_array'][$host_id]['snmp_username'], $string);
+		$string = str_replace($l_escape_string . 'host_snmp_password' . $r_escape_string, $_SESSION['sess_host_cache_array'][$host_id]['snmp_password'], $string);
+		$string = str_replace($l_escape_string . 'host_snmp_auth_protocol' . $r_escape_string, $_SESSION['sess_host_cache_array'][$host_id]['snmp_auth_protocol'], $string);
+		$string = str_replace($l_escape_string . 'host_snmp_priv_passphrase' . $r_escape_string, $_SESSION['sess_host_cache_array'][$host_id]['snmp_priv_passphrase'], $string);
+		$string = str_replace($l_escape_string . 'host_snmp_priv_protocol' . $r_escape_string, $_SESSION['sess_host_cache_array'][$host_id]['snmp_priv_protocol'], $string);
+		$string = str_replace($l_escape_string . 'host_snmp_context' . $r_escape_string, $_SESSION['sess_host_cache_array'][$host_id]['snmp_context'], $string);
+		$string = str_replace($l_escape_string . 'host_snmp_port' . $r_escape_string, $_SESSION['sess_host_cache_array'][$host_id]['snmp_port'], $string);
+		$string = str_replace($l_escape_string . 'host_snmp_timeout' . $r_escape_string, $_SESSION['sess_host_cache_array'][$host_id]['snmp_timeout'], $string);
+		$string = str_replace($l_escape_string . 'host_ping_retries' . $r_escape_string, $_SESSION['sess_host_cache_array'][$host_id]['ping_retries'], $string);
+		$string = str_replace($l_escape_string . 'host_max_oids' . $r_escape_string, $_SESSION['sess_host_cache_array'][$host_id]['max_oids'], $string);
+		$string = str_replace($l_escape_string . 'host_id' . $r_escape_string, $_SESSION['sess_host_cache_array'][$host_id]['id'], $string);
 	}
 
 	return $string;
@@ -197,16 +197,16 @@ function substitute_host_data($string, $l_escape_string, $r_escape_string, $host
    @arg $max_chars - the maximum number of characters to substitute
    @returns - the original string with all of the variable substitutions made */
 function substitute_snmp_query_data($string, $host_id, $snmp_query_id, $snmp_index, $max_chars = 0) {
-	$snmp_cache_data = db_fetch_assoc("SELECT field_name,field_value FROM host_snmp_cache WHERE host_id=$host_id AND snmp_query_id=$snmp_query_id AND snmp_index='$snmp_index'");
+	$snmp_cache_data = db_fetch_assoc_prepared('SELECT field_name, field_value FROM host_snmp_cache WHERE host_id = ? AND snmp_query_id = ? AND snmp_index = ?', array($host_id, $snmp_query_id, $snmp_index));
 
 	if (sizeof($snmp_cache_data) > 0) {
 		foreach ($snmp_cache_data as $data) {
-			if ($data["field_value"] != "") {
+			if ($data['field_value'] != '') {
 				if ($max_chars > 0) {
-					$data["field_value"] = substr($data["field_value"], 0, $max_chars);
+					$data['field_value'] = substr($data['field_value'], 0, $max_chars);
 				}
 
-				$string = stri_replace("|query_" . $data["field_name"] . "|", $data["field_value"], $string);
+				$string = stri_replace('|query_' . $data['field_name'] . '|', $data['field_value'], $string);
 			}
 		}
 	}
@@ -222,14 +222,14 @@ function substitute_snmp_query_data($string, $host_id, $snmp_query_id, $snmp_ind
 function substitute_data_input_data($string, $graph, $local_data_id, $max_chars = 0) {
 	if (empty($local_data_id)) {
 		if (isset($graph['local_graph_id'])) {
-			$local_data_ids = array_rekey(db_fetch_assoc("SELECT DISTINCT local_data_id
+			$local_data_ids = array_rekey(db_fetch_assoc_prepared('SELECT DISTINCT local_data_id
 				FROM data_template_rrd
 				INNER JOIN graph_templates_item
-				ON data_template_rrd.id=graph_templates_item.task_item_id
-				WHERE local_graph_id=" . $graph["local_graph_id"]), "local_data_id", "local_data_id");
+				ON data_template_rrd.id = graph_templates_item.task_item_id
+				WHERE local_graph_id = ?', array($graph['local_graph_id'])), 'local_data_id', 'local_data_id');
 
 			if (sizeof($local_data_ids)) {
-				$data_template_data_id = db_fetch_cell("SELECT id FROM data_template_data WHERE local_data_id IN (" . implode(",", $local_data_ids) . ")");
+				$data_template_data_id = db_fetch_cell('SELECT id FROM data_template_data WHERE local_data_id IN (' . implode(',', $local_data_ids) . ')');
 			}else{
 				$data_template_data_id = 0;
 			}
@@ -237,26 +237,26 @@ function substitute_data_input_data($string, $graph, $local_data_id, $max_chars 
 			$data_template_data_id = 0;
 		}
 	}else{
-		$data_template_data_id = db_fetch_cell("SELECT id FROM data_template_data WHERE local_data_id=$local_data_id");
+		$data_template_data_id = db_fetch_cell_prepared('SELECT id FROM data_template_data WHERE local_data_id = ?', array($local_data_id));
 	}
 
 	if (!empty($data_template_data_id)) {
-		$data = db_fetch_assoc("SELECT
+		$data = db_fetch_assoc_prepared("SELECT
 			dif.data_name, did.value
 			FROM data_input_fields AS dif
 			INNER JOIN data_input_data AS did
-			ON dif.id=did.data_input_field_id
-			WHERE data_template_data_id=$data_template_data_id
-			AND input_output='in'");
+			ON dif.id = did.data_input_field_id
+			WHERE data_template_data_id = ?
+			AND input_output = 'in'", array($data_template_data_id));
 
 		if (sizeof($data)) {
 			foreach ($data as $item) {
-				if ($item["value"] != "") {
+				if ($item['value'] != '') {
 					if ($max_chars > 0) {
-						$item["value"] = substr($item["field_value"], 0, $max_chars);
+						$item['value'] = substr($item['field_value'], 0, $max_chars);
 					}
 
-					$string = stri_replace("|input_" . $item["data_name"] . "|", $item["value"], $string);
+					$string = stri_replace('|input_' . $item['data_name'] . '|', $item['value'], $string);
 				}
 			}
 		}

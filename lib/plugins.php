@@ -1,4 +1,26 @@
 <?php
+/*
+ +-------------------------------------------------------------------------+
+ | Copyright (C) 2004-2014 The Cacti Group                                 |
+ |                                                                         |
+ | This program is free software; you can redistribute it and/or           |
+ | modify it under the terms of the GNU General Public License             |
+ | as published by the Free Software Foundation; either version 2          |
+ | of the License, or (at your option) any later version.                  |
+ |                                                                         |
+ | This program is distributed in the hope that it will be useful,         |
+ | but WITHOUT ANY WARRANTY; without even the implied warranty of          |
+ | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
+ | GNU General Public License for more details.                            |
+ +-------------------------------------------------------------------------+
+ | Cacti: The Complete RRDTool-based Graphing Solution                     |
+ +-------------------------------------------------------------------------+
+ | This code is designed, written, and maintained by the Cacti Group. See  |
+ | about.php and/or the AUTHORS file for specific developer information.   |
+ +-------------------------------------------------------------------------+
+ | http://www.cacti.net/                                                   |
+ +-------------------------------------------------------------------------+
+*/
 
 function do_hook ($name) {
 	$data = func_get_args();
@@ -37,14 +59,14 @@ function api_plugin_hook ($name) {
 	$result = db_fetch_assoc_prepared("SELECT 1 AS id, ph.name, ph.file, ph.function
 		FROM plugin_hooks AS ph
 		LEFT JOIN plugin_config AS pc
-		ON pc.directory=ph.name
+		ON pc.directory = ph.name
 		WHERE ph.status = 1 AND hook = ?
 		AND ph.name IN $ps_where
 		UNION
 		SELECT pc.id, ph.name, ph.file, ph.function
 		FROM plugin_hooks AS ph
 		LEFT JOIN plugin_config AS pc
-		ON pc.directory=ph.name
+		ON pc.directory = ph.name
 		WHERE ph.status = 1 AND hook = ?
 		AND ph.name NOT IN $ps_where
 		ORDER BY id ASC", array($name, $name), true);
@@ -91,20 +113,20 @@ function api_plugin_hook_function ($name, $parm=NULL) {
 	}
 
 	/* order the plugin functions by system first, then followed by order */
-	$result = db_fetch_assoc("SELECT 1 AS id, ph.name, ph.file, ph.function
+	$result = db_fetch_assoc_prepared("SELECT 1 AS id, ph.name, ph.file, ph.function
 		FROM plugin_hooks AS ph
 		LEFT JOIN plugin_config AS pc
-		ON pc.directory=ph.name
-		WHERE ph.status = 1 AND hook = '$name'
+		ON pc.directory = ph.name
+		WHERE ph.status = 1 AND hook = ?
 		AND ph.name IN $ps_where
 		UNION
 		SELECT pc.id, ph.name, ph.file, ph.function
 		FROM plugin_hooks AS ph
 		LEFT JOIN plugin_config AS pc
-		ON pc.directory=ph.name
-		WHERE ph.status = 1 AND hook = '$name'
+		ON pc.directory = ph.name
+		WHERE ph.status = 1 AND hook = ?
 		AND ph.name NOT IN $ps_where
-		ORDER BY id ASC", true);
+		ORDER BY id ASC", array($name, $name), true);
 
 	if (!empty($result)) {
 		foreach ($result as $hdata) {
@@ -135,10 +157,10 @@ function api_plugin_hook_function ($name, $parm=NULL) {
 }
 
 function api_plugin_db_table_create ($plugin, $table, $data) {
-	global $config, $database_default;
-	include_once($config["library_path"] . "/database.php");
+	global $config;
+	include_once($config['library_path'] . '/database.php');
 
-	$result = db_fetch_assoc("show tables from `" . $database_default . "`") or die (mysql_error());
+	$result = db_fetch_assoc('SHOW TABLES');
 	$tables = array();
 	foreach($result as $index => $arr) {
 		foreach ($arr as $t) {
@@ -186,27 +208,25 @@ function api_plugin_db_table_create ($plugin, $table, $data) {
 			$sql .= " COMMENT = '" . $data['comment'] . "'";
 		}
 		if (db_execute($sql)) {
-			db_execute("INSERT INTO plugin_db_changes (plugin, `table`, method) VALUES ('$plugin', '$table', 'create')");
+			db_execute_prepared("INSERT INTO plugin_db_changes (plugin, `table`, method) VALUES (?, ?, 'create')", array($plugin, $table));
 		}
 	}
 }
 
 function api_plugin_db_changes_remove ($plugin) {
-	// Example: api_plugin_db_changes_remove ('thold');
-
-	$tables = db_fetch_assoc("SELECT `table` FROM plugin_db_changes WHERE plugin = '$plugin' AND method ='create'", false);
+	$tables = db_fetch_assoc_prepared("SELECT `table` FROM plugin_db_changes WHERE plugin = ? AND method ='create'", array($plugin), false);
 	if (count($tables)) {
 		foreach ($tables as $table) {
-			db_execute("DROP TABLE IF EXISTS `" . $table['table'] . "`;");
+			db_execute('DROP TABLE IF EXISTS `' . $table['table'] . '`;');
 		}
-		db_execute("DELETE FROM plugin_db_changes where plugin = '$plugin' AND method ='create'", false);
+		db_execute_prepared("DELETE FROM plugin_db_changes where plugin = ? AND method ='create'", array($plugin), false);
 	}
-	$columns = db_fetch_assoc("SELECT `table`, `column` FROM plugin_db_changes WHERE plugin = '$plugin' AND method ='addcolumn'", false);
+	$columns = db_fetch_assoc_prepared("SELECT `table`, `column` FROM plugin_db_changes WHERE plugin = ? AND method ='addcolumn'", array($plugin), false);
 	if (count($columns)) {
 		foreach ($columns as $column) {
 			db_execute('ALTER TABLE `' . $column['table'] . '` DROP `' . $column['column'] . '`');
 		}
-		db_execute("DELETE FROM plugin_db_changes where plugin = '$plugin' AND method = 'addcolumn'", false);
+		db_execute_prepared("DELETE FROM plugin_db_changes WHERE plugin = ? AND method = 'addcolumn'", array($plugin), false);
 	}
 }
 
@@ -216,7 +236,7 @@ function api_plugin_db_add_column ($plugin, $table, $column) {
 	global $config, $database_default;
 	include_once($config['library_path'] . '/database.php');
 
-	$result = db_fetch_assoc('show columns from `' . $table . '`') or die (mysql_error());
+	$result = db_fetch_assoc('SHOW COLUMNS FROM `' . $table . '`');
 	$columns = array();
 	foreach($result as $index => $arr) {
 		foreach ($arr as $t) {
@@ -241,7 +261,7 @@ function api_plugin_db_add_column ($plugin, $table, $column) {
 			$sql .= ' AFTER ' . $column['after'];
 
 		if (db_execute($sql)) {
-			db_execute("INSERT INTO plugin_db_changes (plugin, `table`, `column`, `method`) VALUES ('$plugin', '$table', '" . $column['name'] . "', 'addcolumn')");
+			db_execute_prepared("INSERT INTO plugin_db_changes (plugin, `table`, `column`, `method`) VALUES (?, ?, ?, 'addcolumn')", array($plugin, $table, $column['name']));
 		}
 	}
 }
@@ -250,9 +270,9 @@ function api_plugin_install ($plugin) {
 	global $config;
 	include_once($config['base_path'] . "/plugins/$plugin/setup.php");
 
-	$exists = db_fetch_assoc("SELECT id FROM plugin_config WHERE directory = '$plugin'", false);
+	$exists = db_fetch_assoc_prepared('SELECT id FROM plugin_config WHERE directory = ?', array($plugin), false);
 	if (sizeof($exists)) {
-		db_execute("DELETE FROM plugin_config WHERE directory = '$plugin'");
+		db_execute_prepared('DELETE FROM plugin_config WHERE directory = ?', array($plugin));
 	}
 
 	$name = $author = $webpage = $version = '';
@@ -265,13 +285,13 @@ function api_plugin_install ($plugin) {
 		}elseif (isset($info['webpage'])) {
 			$webpage = $info['webpage'];
 		}else{
-			$webpage = "Not Stated";
+			$webpage = 'Not Stated';
 		}
 		$author = $info['author'];
 		$version = $info['version'];
 	}
 
-	db_execute("INSERT INTO plugin_config (directory, name, author, webpage, version) VALUES ('$plugin', '$name', '$author', '$webpage', '$version')");
+	db_execute_prepared('INSERT INTO plugin_config (directory, name, author, webpage, version) VALUES (?, ?, ?, ?, ?)', array($plugin, $name, $author, $webpage, $version));
 
 	$function = 'plugin_' . $plugin . '_install';
 	if (function_exists($function)){
@@ -279,10 +299,10 @@ function api_plugin_install ($plugin) {
 		$ready = api_plugin_check_config ($plugin);
 		if ($ready) {
 			// Set the plugin as "disabled" so it can go live
-			db_execute("UPDATE plugin_config SET status = 4 WHERE directory = '$plugin'");
+			db_execute_prepared('UPDATE plugin_config SET status = 4 WHERE directory = ?', array($plugin));
 		} else {
 			// Set the plugin as "needs configuration"
-			db_execute("UPDATE plugin_config SET status = 2 WHERE directory = '$plugin'");
+			db_execute_prepared('UPDATE plugin_config SET status = 2 WHERE directory = ?', array($plugin));
 		}
 	}
 }
@@ -297,7 +317,7 @@ function api_plugin_uninstall ($plugin) {
 	}
 	api_plugin_remove_hooks ($plugin);
 	api_plugin_remove_realms ($plugin);
-	db_execute("DELETE FROM plugin_config WHERE directory = '$plugin'");
+	db_execute_prepared('DELETE FROM plugin_config WHERE directory = ?', array($plugin));
 	api_plugin_db_changes_remove ($plugin);
 }
 
@@ -315,12 +335,12 @@ function api_plugin_enable ($plugin) {
 	$ready = api_plugin_check_config ($plugin);
 	if ($ready) {
 		api_plugin_enable_hooks ($plugin);
-		db_execute("UPDATE plugin_config SET status = 1 WHERE directory = '$plugin'");
+		db_execute_prepared('UPDATE plugin_config SET status = 1 WHERE directory = ?', array($plugin));
 	}
 }
 
 function api_plugin_is_enabled ($plugin) {
-	$status = db_fetch_cell("SELECT status FROM plugin_config WHERE directory = '$plugin'", false);
+	$status = db_fetch_cell_prepared('SELECT status FROM plugin_config WHERE directory = ?', array($plugin), false);
 	if ($status == '1')
 		return true;
 	return false;
@@ -328,90 +348,90 @@ function api_plugin_is_enabled ($plugin) {
 
 function api_plugin_disable ($plugin) {
 	api_plugin_disable_hooks ($plugin);
-	db_execute("UPDATE plugin_config SET status = 4 WHERE directory = '$plugin'");
+	db_execute_prepared('UPDATE plugin_config SET status = 4 WHERE directory = ?', array($plugin));
 }
 
 function api_plugin_moveup($plugin) {
 	global $plugins_system;
 
-	$sql_where = "";
+	$sql_where = '';
 	if (sizeof($plugins_system)) {
 		foreach($plugins_system as $s) {
-			$sql_where .= (strlen($sql_where) ? " AND ":"(") . " directory!='$s'";
+			$sql_where .= (strlen($sql_where) ? ' AND ':'(') . " directory!='$s'";
 		}
 
-		$sql_where .= ")";
+		$sql_where .= ')';
 	}
 
-	$id = db_fetch_cell("SELECT id FROM plugin_config WHERE directory='$plugin'" . (strlen($sql_where) ? " AND " . $sql_where:""));
-	$temp_id = db_fetch_cell("SELECT MAX(id) FROM plugin_config")+1;
-	$prior_id = db_fetch_cell("SELECT MAX(id) FROM plugin_config WHERE id<$id" . (strlen($sql_where) ? " AND " . $sql_where:""));
+	$id = db_fetch_cell("SELECT id FROM plugin_config WHERE directory = '$plugin'" . (strlen($sql_where) ? ' AND ' . $sql_where: ''));
+	$temp_id = db_fetch_cell('SELECT MAX(id) FROM plugin_config')+1;
+	$prior_id = db_fetch_cell("SELECT MAX(id) FROM plugin_config WHERE id < $id" . (strlen($sql_where) ? ' AND ' . $sql_where: ''));
 
 	/* update the above plugin to the prior temp id */
-	db_execute("UPDATE plugin_config SET id=$temp_id WHERE id=$prior_id");
-	db_execute("UPDATE plugin_config SET id=$prior_id WHERE id=$id");
-	db_execute("UPDATE plugin_config SET id=$id WHERE id=$temp_id");
+	db_execute_prepared('UPDATE plugin_config SET id = ? WHERE id = ?', array($temp_id, $prior_id));
+	db_execute_prepared('UPDATE plugin_config SET id = ? WHERE id = ?', array($prior_id, $id));
+	db_execute_prepared('UPDATE plugin_config SET id = ? WHERE id = ?', array($id, $temp_id));
 }
 
 function api_plugin_movedown($plugin) {
 	global $plugins_system;
 
-	$sql_where = "";
+	$sql_where = '';
 	if (sizeof($plugins_system)) {
 		foreach($plugins_system as $s) {
-			$sql_where .= (strlen($sql_where) ? " AND ":"(") . " directory!='$s'";
+			$sql_where .= (strlen($sql_where) ? ' AND ': '(') . " directory!='$s'";
 		}
 
-		$sql_where .= ")";
+		$sql_where .= ')';
 	}
 
-	$id = db_fetch_cell("SELECT id FROM plugin_config WHERE directory='$plugin'" . (strlen($sql_where) ? " AND " . $sql_where:""));
-	$temp_id = db_fetch_cell("SELECT MAX(id) FROM plugin_config")+1;
-	$next_id = db_fetch_cell("SELECT MIN(id) FROM plugin_config WHERE id>$id" . (strlen($sql_where) ? " AND " . $sql_where:""));
+	$id = db_fetch_cell("SELECT id FROM plugin_config WHERE directory = '$plugin'" . (strlen($sql_where) ? ' AND ' . $sql_where: ''));
+	$temp_id = db_fetch_cell('SELECT MAX(id) FROM plugin_config')+1;
+	$next_id = db_fetch_cell("SELECT MIN(id) FROM plugin_config WHERE id > $id" . (strlen($sql_where) ? ' AND ' . $sql_where: ''));
 
 	/* update the above plugin to the prior temp id */
-	db_execute("UPDATE plugin_config SET id=$temp_id WHERE id=$next_id");
-	db_execute("UPDATE plugin_config SET id=$next_id WHERE id=$id");
-	db_execute("UPDATE plugin_config SET id=$id WHERE id=$temp_id");
+	db_execute_prepared('UPDATE plugin_config SET id = ? WHERE id = ?', array($temp_id, $next_id));
+	db_execute_prepared('UPDATE plugin_config SET id = ? WHERE id = ?', array($next_id, $id));
+	db_execute_prepared('UPDATE plugin_config SET id = ? WHERE id = ?', array($id, $temp_id));
 }
 
 function api_plugin_register_hook ($plugin, $hook, $function, $file) {
-	$exists = db_fetch_assoc("SELECT id FROM plugin_hooks WHERE name = '$plugin' AND hook = '$hook'", false);
+	$exists = db_fetch_assoc_prepared('SELECT id FROM plugin_hooks WHERE name = ? AND hook = ?', array($plugin, $hook), false);
 	if (!count($exists)) {
 		$settings = array('config_settings', 'config_arrays', 'config_form');
 		if (!in_array($hook, $settings)) {
-			db_execute("INSERT INTO plugin_hooks (name, hook, function, file) VALUES ('$plugin', '$hook', '$function', '$file')");
+			db_execute_prepared('INSERT INTO plugin_hooks (name, hook, function, file) VALUES (?, ?, ?, ?)', array($plugin, $hook, $function, $file));
 		} else {
-			db_execute("INSERT INTO plugin_hooks (name, hook, function, file, status) VALUES ('$plugin', '$hook', '$function', '$file', 1)");
+			db_execute_prepared('INSERT INTO plugin_hooks (name, hook, function, file, status) VALUES (?, ?, ?, ?, 1)', array($plugin, $hook, $function, $file));
 		}
 	}
 }
 
 function api_plugin_remove_hooks ($plugin) {
-	db_execute("DELETE FROM plugin_hooks WHERE name = '$plugin'");
+	db_execute_prepared('DELETE FROM plugin_hooks WHERE name = ?', array($plugin));
 }
 
 function api_plugin_enable_hooks ($plugin) {
-	db_execute("UPDATE plugin_hooks SET status = 1 WHERE name = '$plugin'");
+	db_execute_prepared('UPDATE plugin_hooks SET status = 1 WHERE name = ?', array($plugin));
 }
 
 function api_plugin_disable_hooks ($plugin) {
-	db_execute("UPDATE plugin_hooks SET status = 0 WHERE name = '$plugin' AND hook != 'config_settings' AND hook != 'config_arrays' AND hook != 'config_form'");
+	db_execute_prepared("UPDATE plugin_hooks SET status = 0 WHERE name = ? AND hook != 'config_settings' AND hook != 'config_arrays' AND hook != 'config_form'", array($plugin));
 }
 
 function api_plugin_register_realm ($plugin, $file, $display, $admin = false) {
-	$exists = db_fetch_assoc("SELECT id FROM plugin_realms WHERE plugin = '$plugin' AND file = '$file'", false);
+	$exists = db_fetch_assoc_prepared('SELECT id FROM plugin_realms WHERE plugin = ? AND file = ?', array($plugin, $file), false);
 	if (!count($exists)) {
-		db_execute("INSERT INTO plugin_realms (plugin, file, display) VALUES ('$plugin', '$file', '$display')");
+		db_execute_prepared('INSERT INTO plugin_realms (plugin, file, display) VALUES (?, ?, ?)', array($plugin, $file, $display));
 		if ($admin) {
-			$realm_id = db_fetch_assoc("SELECT id FROM plugin_realms WHERE plugin = '$plugin' AND file = '$file'", false);
+			$realm_id = db_fetch_assoc_prepared('SELECT id FROM plugin_realms WHERE plugin = ? AND file = ?', array($plugin, $file), false);
 			$realm_id = $realm_id[0]['id'] + 100;
 			$user_id = db_fetch_assoc("SELECT id FROM user_auth WHERE username = 'admin'", false);
 			if (count($user_id)) {
 				$user_id = $user_id[0]['id'];
-				$exists = db_fetch_assoc("SELECT realm_id FROM user_auth_realm WHERE user_id = $user_id and realm_id = $realm_id", false);
+				$exists = db_fetch_assoc_prepared('SELECT realm_id FROM user_auth_realm WHERE user_id = ? and realm_id = ?', array($user_id, $realm_id), false);
 				if (!count($exists)) {
-					db_execute("INSERT INTO user_auth_realm (user_id, realm_id) VALUES ($user_id, $realm_id)");
+					db_execute_prepared('INSERT INTO user_auth_realm (user_id, realm_id) VALUES (?, ?)', array($user_id, $realm_id));
 				}
 			}
 		}
@@ -419,18 +439,18 @@ function api_plugin_register_realm ($plugin, $file, $display, $admin = false) {
 }
 
 function api_plugin_remove_realms ($plugin) {
-	$realms = db_fetch_assoc("SELECT id FROM plugin_realms WHERE plugin = '$plugin'", false);
+	$realms = db_fetch_assoc_prepared('SELECT id FROM plugin_realms WHERE plugin = ?', array($plugin), false);
 	foreach ($realms as $realm) {
 		$id = $realm['id'] + 100;
-		db_execute("DELETE FROM user_auth_realm WHERE realm_id='$id'");
-		db_execute("DELETE FROM user_auth_group_realm WHERE realm_id='$id'");
+		db_execute_prepared('DELETE FROM user_auth_realm WHERE realm_id = ?', array($id));
+		db_execute_prepared('DELETE FROM user_auth_group_realm WHERE realm_id = ?', array($id));
 	}
-	db_execute("DELETE FROM plugin_realms WHERE plugin = '$plugin'");
+	db_execute_prepared('DELETE FROM plugin_realms WHERE plugin = ?', array($plugin));
 }
 
 function api_plugin_load_realms () {
 	global $user_auth_realms, $user_auth_realm_filenames;
-	$plugin_realms = db_fetch_assoc("SELECT * FROM plugin_realms ORDER BY plugin, display", false);
+	$plugin_realms = db_fetch_assoc('SELECT * FROM plugin_realms ORDER BY plugin, display', false);
 	if (count($plugin_realms)) {
 		foreach ($plugin_realms as $plugin_realm) {
 			$plugin_files = explode(',', $plugin_realm['file']);
@@ -462,6 +482,6 @@ function plugin_config_arrays () {
 }
 
 function plugin_draw_navigation_text ($nav) {
-	$nav["plugins.php:"] = array("title" => "Plugin Management", "mapping" => "index.php:", "url" => "plugins.php", "level" => "1");
+	$nav['plugins.php:'] = array('title' => 'Plugin Management', 'mapping' => 'index.php:', 'url' => 'plugins.php', 'level' => '1');
 	return $nav;
 }

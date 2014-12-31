@@ -33,30 +33,30 @@ function api_data_source_remove($local_data_id) {
 	$acmethod  = read_config_option('rrd_autoclean_method');
 
 	if ($autoclean == 'on') {
-		$dsinfo = db_fetch_row('SELECT local_data_id, data_source_path FROM data_template_data WHERE local_data_id=' . $local_data_id);
+		$dsinfo = db_fetch_row_prepared('SELECT local_data_id, data_source_path FROM data_template_data WHERE local_data_id = ?', array($local_data_id));
 
 		if (sizeof($dsinfo)) {
 			$filename = str_replace('<path_cacti>/', '', $dsinfo['data_source_path']);
-			db_execute("INSERT INTO data_source_purge_action (local_data_id, name, action) VALUES ($local_data_id, '$filename', $acmethod) ON DUPLICATE KEY UPDATE action=VALUES(action)");
+			db_execute_prepared('INSERT INTO data_source_purge_action (local_data_id, name, action) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE action=VALUES(action)', array($local_data_id, $filename, $acmethod));
 		}
 	}
 
-	$data_template_data_id = db_fetch_cell("SELECT id FROM data_template_data WHERE local_data_id=$local_data_id");
+	$data_template_data_id = db_fetch_cell_prepared('SELECT id FROM data_template_data WHERE local_data_id = ?', array($local_data_id));
 
 	if (!empty($data_template_data_id)) {
-		db_execute("DELETE FROM data_template_data_rra WHERE data_template_data_id=$data_template_data_id");
-		db_execute("DELETE FROM data_input_data WHERE data_template_data_id=$data_template_data_id");
+		db_execute_prepared('DELETE FROM data_template_data_rra WHERE data_template_data_id = ?', array($data_template_data_id));
+		db_execute_prepared('DELETE FROM data_input_data WHERE data_template_data_id = ?', array($data_template_data_id));
 	}
 
-	db_execute("DELETE FROM data_template_data WHERE local_data_id=$local_data_id");
-	db_execute("DELETE FROM data_template_rrd WHERE local_data_id=$local_data_id");
-	db_execute("DELETE FROM poller_item WHERE local_data_id=$local_data_id");
-	db_execute("DELETE FROM data_local WHERE id=$local_data_id");
+	db_execute_prepared('DELETE FROM data_template_data WHERE local_data_id = ?', array($local_data_id));
+	db_execute_prepared('DELETE FROM data_template_rrd WHERE local_data_id = ?', array($local_data_id));
+	db_execute_prepared('DELETE FROM poller_item WHERE local_data_id = ?', array($local_data_id));
+	db_execute_prepared('DELETE FROM data_local WHERE id = ?', array($local_data_id));
 }
 
 function api_data_source_remove_multi($local_data_ids) {
-	$ids_to_delete     = "";
-	$dtd_ids_to_delete = "";
+	$ids_to_delete     = '';
+	$dtd_ids_to_delete = '';
 	$i = 0;
 	$j = 0;
 
@@ -68,7 +68,7 @@ function api_data_source_remove_multi($local_data_ids) {
 			if ($i == 0) {
 				$ids_to_delete .= $local_data_id;
 			}else{
-				$ids_to_delete .= ", " . $local_data_id;
+				$ids_to_delete .= ', ' . $local_data_id;
 			}
 
 			$i++;
@@ -89,9 +89,9 @@ function api_data_source_remove_multi($local_data_ids) {
 				if (sizeof($data_template_data_ids)) {
 					foreach($data_template_data_ids as $data_template_data_id) {
 						if ($j == 0) {
-							$dtd_ids_to_delete .= $data_template_data_id["id"];
+							$dtd_ids_to_delete .= $data_template_data_id['id'];
 						}else{
-							$dtd_ids_to_delete .= ", " . $data_template_data_id["id"];
+							$dtd_ids_to_delete .= ', ' . $data_template_data_id['id'];
 						}
 
 						$j++;
@@ -100,7 +100,7 @@ function api_data_source_remove_multi($local_data_ids) {
 							db_execute("DELETE FROM data_template_data_rra WHERE data_template_data_id IN ($dtd_ids_to_delete)");
 							db_execute("DELETE FROM data_input_data WHERE data_template_data_id IN ($dtd_ids_to_delete)");
 
-							$dtd_ids_to_delete = "";
+							$dtd_ids_to_delete = '';
 							$j = 0;
 						}
 					}
@@ -117,7 +117,7 @@ function api_data_source_remove_multi($local_data_ids) {
 				db_execute("DELETE FROM data_local WHERE id IN ($ids_to_delete)");
 
 				$i = 0;
-				$ids_to_delete = "";
+				$ids_to_delete = '';
 			}
 		}
 	}
@@ -139,18 +139,18 @@ function api_data_source_remove_multi($local_data_ids) {
 }
 
 function api_data_source_enable($local_data_id) {
-	db_execute("UPDATE data_template_data SET active='on' WHERE local_data_id=$local_data_id");
+	db_execute_prepared("UPDATE data_template_data SET active = 'on' WHERE local_data_id = ?", array($local_data_id));
 	update_poller_cache($local_data_id, true);
  }
 
 function api_data_source_disable($local_data_id) {
-	db_execute("DELETE FROM poller_item WHERE local_data_id=$local_data_id");
-	db_execute("UPDATE data_template_data SET active='' WHERE local_data_id=$local_data_id");
+	db_execute_prepared('DELETE FROM poller_item WHERE local_data_id = ?', array($local_data_id));
+	db_execute_prepared("UPDATE data_template_data SET active='' WHERE local_data_id = ?", array($local_data_id));
 }
 
 function api_data_source_disable_multi($local_data_ids) {
 	/* initialize variables */
-	$ids_to_disable = "";
+	$ids_to_disable = '';
 	$i = 0;
 
 	/* build the array */
@@ -159,7 +159,7 @@ function api_data_source_disable_multi($local_data_ids) {
 			if ($i == 0) {
 				$ids_to_disable .= $local_data_id;
 			}else{
-				$ids_to_disable .= ", " . $local_data_id;
+				$ids_to_disable .= ', ' . $local_data_id;
 			}
 
 			$i++;
@@ -169,7 +169,7 @@ function api_data_source_disable_multi($local_data_ids) {
 				db_execute("UPDATE data_template_data SET active='' WHERE local_data_id IN ($ids_to_disable)");
 
 				$i = 0;
-				$ids_to_disable = "";
+				$ids_to_disable = '';
 			}
 		}
 
@@ -183,51 +183,51 @@ function api_data_source_disable_multi($local_data_ids) {
 function api_reapply_suggested_data_source_title($local_data_id) {
 	global $config;
 
-	$data_template_data_id = db_fetch_cell("SELECT id FROM data_template_data WHERE local_data_id=$local_data_id");
+	$data_template_data_id = db_fetch_cell_prepared('SELECT id FROM data_template_data WHERE local_data_id = ?', array($local_data_id));
 	if (empty($data_template_data_id)) {
 		return;
 	}
 
 	/* require query type data sources only (snmp_query_id > 0) */
-	$data_local = db_fetch_row("SELECT id, host_id, data_template_id, snmp_query_id, snmp_index FROM data_local WHERE snmp_query_id>0 AND id=$local_data_id");
+	$data_local = db_fetch_row_prepared('SELECT id, host_id, data_template_id, snmp_query_id, snmp_index FROM data_local WHERE snmp_query_id > 0 AND id = ?', array($local_data_id));
 	/* if this is not a data query graph, simply return */
-	if (!isset($data_local["host_id"])) {
+	if (!isset($data_local['host_id'])) {
 		return;
 	}
 
-	$snmp_query_graph_id = db_fetch_cell("SELECT " .
-		"data_input_data.value FROM data_input_data " .
-		"JOIN data_input_fields ON (data_input_data.data_input_field_id=data_input_fields.id) " .
-		"JOIN data_template_data ON (data_template_data.id = data_input_data.data_template_data_id) ".
-		"WHERE data_input_fields.type_code = 'output_type' " .
-		"AND data_template_data.local_data_id=" . $data_local["id"] );
+	$snmp_query_graph_id = db_fetch_cell_prepared("SELECT 
+		data_input_data.value FROM data_input_data 
+		JOIN data_input_fields ON (data_input_data.data_input_field_id = data_input_fields.id) 
+		JOIN data_template_data ON (data_template_data.id = data_input_data.data_template_data_id) 
+		WHERE data_input_fields.type_code = 'output_type' 
+		AND data_template_data.local_data_id = ?", array($data_local['id']));
 
 	/* no snmp query graph id found */
 	if ($snmp_query_graph_id == 0) {
 		return;
 	}
 
-	$suggested_values = db_fetch_assoc("SELECT " .
-		"text, " .
-		"field_name " .
-		"FROM snmp_query_graph_rrd_sv " .
-		"WHERE snmp_query_graph_id=" . $snmp_query_graph_id . " " . 
-		"AND data_template_id=" . $data_local["data_template_id"] . " " .
-		"AND field_name = 'name' " .
-		"ORDER BY sequence");
+	$suggested_values = db_fetch_assoc_prepared("SELECT 
+		text, 
+		field_name 
+		FROM snmp_query_graph_rrd_sv 
+		WHERE snmp_query_graph_id = ?
+		AND data_template_id = ?
+		AND field_name = 'name'
+		ORDER BY sequence", array($snmp_query_graph_id, $data_local['data_template_id']));
 
 	$suggested_values_data = array();
 	if (sizeof($suggested_values) > 0) {
 		foreach ($suggested_values as $suggested_value) {
-			if(!isset($suggested_values_data{$suggested_value["field_name"]})) {
- 				$subs_string = substitute_snmp_query_data($suggested_value["text"],$data_local["host_id"],
-								$data_local["snmp_query_id"], $data_local["snmp_index"],
-								read_config_option("max_data_query_field_length"));
+			if(!isset($suggested_values_data{$suggested_value['field_name']})) {
+ 				$subs_string = substitute_snmp_query_data($suggested_value['text'],$data_local['host_id'],
+								$data_local['snmp_query_id'], $data_local['snmp_index'],
+								read_config_option('max_data_query_field_length'));
 				/* if there are no '|query' characters, all of the substitutions were successful */
-				if (!substr_count($subs_string, "|query")) {
-					db_execute("UPDATE data_template_data SET " . $suggested_value["field_name"] . "='" . $suggested_value["text"] . "' WHERE local_data_id=" . $local_data_id);
+				if (!substr_count($subs_string, '|query')) {
+					db_execute_prepared('UPDATE data_template_data SET ' . $suggested_value['field_name'] . ' = ? WHERE local_data_id = ?', array($suggested_value['text'], $local_data_id));
 					/* once we find a working value for that very field, stop */
-					$suggested_values_data{$suggested_value["field_name"]} = true;
+					$suggested_values_data{$suggested_value['field_name']} = true;
 				}
 			}
 		}
