@@ -85,6 +85,9 @@ switch ($_REQUEST['action']) {
 
 		bottom_footer();
 		break;
+	case 'ping_host':
+		ping_host();
+		break;
 	default:
 		top_header();
 
@@ -559,6 +562,105 @@ function host_remove() {
 	}
 }
 
+function ping_host() {
+	input_validate_input_number($_REQUEST['id']);
+
+	$host = db_fetch_row_prepared('SELECT * FROM host WHERE id = ?', array($_REQUEST['id']));
+	$am   = $host['availability_method'];
+	$anym = false;
+
+	if ($am == AVAIL_SNMP || $am == AVAIL_SNMP_GET_NEXT ||
+		$am == AVAIL_SNMP_GET_SYSDESC || $am == AVAIL_SNMP_AND_PING ||
+		$am == AVAIL_SNMP_OR_PING) {
+
+		$anym = true;
+
+		print "SNMP Information<br>\n";
+		print "<span style='font-size: 10px; font-weight: normal; font-family: monospace;'>\n";
+
+		if (($host['snmp_community'] == '' && $host['snmp_username'] == '') || $host['snmp_version'] == 0) {
+			print "<span style='color: #ab3f1e; font-weight: bold;'>SNMP not in use</span>\n";
+		}else{
+			$snmp_system = cacti_snmp_get($host['hostname'], $host['snmp_community'], '.1.3.6.1.2.1.1.1.0', $host['snmp_version'],
+				$host['snmp_username'], $host['snmp_password'],
+				$host['snmp_auth_protocol'], $host['snmp_priv_passphrase'], $host['snmp_priv_protocol'],
+				$host['snmp_context'], $host['snmp_port'], $host['snmp_timeout'], read_config_option('snmp_retries'),SNMP_WEBUI);
+
+			/* modify for some system descriptions */
+			/* 0000937: System output in host.php poor for Alcatel */
+			if (substr_count($snmp_system, '00:')) {
+				$snmp_system = str_replace('00:', '', $snmp_system);
+				$snmp_system = str_replace(':', ' ', $snmp_system);
+			}
+
+			if ($snmp_system == '') {
+				print "<span class='hostDown'>SNMP error</span>\n";
+			}else{
+				$snmp_uptime   = cacti_snmp_get($host['hostname'], $host['snmp_community'], '.1.3.6.1.2.1.1.3.0', $host['snmp_version'],
+					$host['snmp_username'], $host['snmp_password'],
+					$host['snmp_auth_protocol'], $host['snmp_priv_passphrase'], $host['snmp_priv_protocol'],
+					$host['snmp_context'], $host['snmp_port'], $host['snmp_timeout'], read_config_option('snmp_retries'), SNMP_WEBUI);
+
+				$snmp_hostname = cacti_snmp_get($host['hostname'], $host['snmp_community'], '.1.3.6.1.2.1.1.5.0', $host['snmp_version'],
+					$host['snmp_username'], $host['snmp_password'],
+					$host['snmp_auth_protocol'], $host['snmp_priv_passphrase'], $host['snmp_priv_protocol'],
+					$host['snmp_context'], $host['snmp_port'], $host['snmp_timeout'], read_config_option('snmp_retries'), SNMP_WEBUI);
+
+				$snmp_location = cacti_snmp_get($host['hostname'], $host['snmp_community'], '.1.3.6.1.2.1.1.6.0', $host['snmp_version'],
+					$host['snmp_username'], $host['snmp_password'],
+					$host['snmp_auth_protocol'], $host['snmp_priv_passphrase'], $host['snmp_priv_protocol'],
+					$host['snmp_context'], $host['snmp_port'], $host['snmp_timeout'], read_config_option('snmp_retries'), SNMP_WEBUI);
+
+				$snmp_contact  = cacti_snmp_get($host['hostname'], $host['snmp_community'], '.1.3.6.1.2.1.1.4.0', $host['snmp_version'],
+					$host['snmp_username'], $host['snmp_password'],
+					$host['snmp_auth_protocol'], $host['snmp_priv_passphrase'], $host['snmp_priv_protocol'],
+					$host['snmp_context'], $host['snmp_port'], $host['snmp_timeout'], read_config_option('snmp_retries'), SNMP_WEBUI);
+
+				print '<strong>System:</strong>' . html_split_string($snmp_system) . "<br>\n";
+				$days      = intval($snmp_uptime / (60*60*24*100));
+				$remainder = $snmp_uptime % (60*60*24*100);
+				$hours     = intval($remainder / (60*60*100));
+				$remainder = $remainder % (60*60*100);
+				$minutes   = intval($remainder / (60*100));
+				print "<strong>Uptime:</strong> $snmp_uptime";
+				print "&nbsp;($days days, $hours hours, $minutes minutes)<br>\n";
+				print "<strong>Hostname:</strong> $snmp_hostname<br>\n";
+				print "<strong>Location:</strong> $snmp_location<br>\n";
+				print "<strong>Contact:</strong> $snmp_contact<br>\n";
+			}
+		}
+		print "</span><br>\n";
+	}
+
+	if ($am == AVAIL_PING || $am == AVAIL_SNMP_AND_PING || $am == AVAIL_SNMP_OR_PING) {
+		$anym = true;
+
+		/* create new ping socket for host pinging */
+		$ping = new Net_Ping;
+
+		$ping->host = $host;
+		$ping->port = $host['ping_port'];
+
+		/* perform the appropriate ping check of the host */
+		$ping_results = $ping->ping(AVAIL_PING, $host['ping_method'], $host['ping_timeout'], $host['ping_retries']);
+
+		if ($ping_results == true) {
+			$host_down = false;
+			$class     = 'hostUp';
+		}else{
+			$host_down = true;
+			$class     = 'hostDown';
+		}
+
+		print "Ping Results<br>\n";
+		print "<span class='" . $class . "'>" . $ping->ping_response . "</span>\n";
+	}
+
+	if ($anym == false) {
+		print "No Ping or SNMP Availability Check In Use<br><br>\n";
+	}
+}
+
 function host_edit() {
 	global $fields_host_edit, $reindex_types;
 
@@ -590,98 +692,8 @@ function host_edit() {
 				</td>
 			</tr>
 			<tr>
-				<td class='textHeader'>
-				<?php if (($host['availability_method'] == AVAIL_SNMP) ||
-					($host['availability_method'] == AVAIL_SNMP_GET_NEXT) ||
-					($host['availability_method'] == AVAIL_SNMP_GET_SYSDESC) ||
-					($host['availability_method'] == AVAIL_SNMP_AND_PING) ||
-					($host['availability_method'] == AVAIL_SNMP_OR_PING)) { ?>
-					SNMP Information<br>
-
-					<span style='font-size: 10px; font-weight: normal; font-family: monospace;'>
-					<?php
-					if ((($host['snmp_community'] == '') && ($host['snmp_username'] == '')) ||
-						($host['snmp_version'] == 0)) {
-						print "<span style='color: #ab3f1e; font-weight: bold;'>SNMP not in use</span>\n";
-					}else{
-						$snmp_system = cacti_snmp_get($host['hostname'], $host['snmp_community'], '.1.3.6.1.2.1.1.1.0', $host['snmp_version'],
-							$host['snmp_username'], $host['snmp_password'],
-							$host['snmp_auth_protocol'], $host['snmp_priv_passphrase'], $host['snmp_priv_protocol'],
-							$host['snmp_context'], $host['snmp_port'], $host['snmp_timeout'], read_config_option('snmp_retries'),SNMP_WEBUI);
-
-						/* modify for some system descriptions */
-						/* 0000937: System output in host.php poor for Alcatel */
-						if (substr_count($snmp_system, '00:')) {
-							$snmp_system = str_replace('00:', '', $snmp_system);
-							$snmp_system = str_replace(':', ' ', $snmp_system);
-						}
-
-						if ($snmp_system == '') {
-							print "<span style='color: #ff0000; font-weight: bold;'>SNMP error</span>\n";
-						}else{
-							$snmp_uptime   = cacti_snmp_get($host['hostname'], $host['snmp_community'], '.1.3.6.1.2.1.1.3.0', $host['snmp_version'],
-								$host['snmp_username'], $host['snmp_password'],
-								$host['snmp_auth_protocol'], $host['snmp_priv_passphrase'], $host['snmp_priv_protocol'],
-								$host['snmp_context'], $host['snmp_port'], $host['snmp_timeout'], read_config_option('snmp_retries'), SNMP_WEBUI);
-
-							$snmp_hostname = cacti_snmp_get($host['hostname'], $host['snmp_community'], '.1.3.6.1.2.1.1.5.0', $host['snmp_version'],
-								$host['snmp_username'], $host['snmp_password'],
-								$host['snmp_auth_protocol'], $host['snmp_priv_passphrase'], $host['snmp_priv_protocol'],
-								$host['snmp_context'], $host['snmp_port'], $host['snmp_timeout'], read_config_option('snmp_retries'), SNMP_WEBUI);
-
-							$snmp_location = cacti_snmp_get($host['hostname'], $host['snmp_community'], '.1.3.6.1.2.1.1.6.0', $host['snmp_version'],
-								$host['snmp_username'], $host['snmp_password'],
-								$host['snmp_auth_protocol'], $host['snmp_priv_passphrase'], $host['snmp_priv_protocol'],
-								$host['snmp_context'], $host['snmp_port'], $host['snmp_timeout'], read_config_option('snmp_retries'), SNMP_WEBUI);
-
-							$snmp_contact  = cacti_snmp_get($host['hostname'], $host['snmp_community'], '.1.3.6.1.2.1.1.4.0', $host['snmp_version'],
-								$host['snmp_username'], $host['snmp_password'],
-								$host['snmp_auth_protocol'], $host['snmp_priv_passphrase'], $host['snmp_priv_protocol'],
-								$host['snmp_context'], $host['snmp_port'], $host['snmp_timeout'], read_config_option('snmp_retries'), SNMP_WEBUI);
-
-							print '<strong>System:</strong>' . html_split_string($snmp_system) . "<br>\n";
-							$days      = intval($snmp_uptime / (60*60*24*100));
-							$remainder = $snmp_uptime % (60*60*24*100);
-							$hours     = intval($remainder / (60*60*100));
-							$remainder = $remainder % (60*60*100);
-							$minutes   = intval($remainder / (60*100));
-							print "<strong>Uptime:</strong> $snmp_uptime";
-							print "&nbsp;($days days, $hours hours, $minutes minutes)<br>\n";
-							print "<strong>Hostname:</strong> $snmp_hostname<br>\n";
-							print "<strong>Location:</strong> $snmp_location<br>\n";
-							print "<strong>Contact:</strong> $snmp_contact<br>\n";
-						}
-					}
-					?>
-					</span>
-				<?php }
-				if (($host['availability_method'] == AVAIL_PING) ||
-					($host['availability_method'] == AVAIL_SNMP_AND_PING) ||
-					($host['availability_method'] == AVAIL_SNMP_OR_PING)) {
-					/* create new ping socket for host pinging */
-					$ping = new Net_Ping;
-
-					$ping->host = $host;
-					$ping->port = $host['ping_port'];
-
-					/* perform the appropriate ping check of the host */
-					if ($ping->ping($host['availability_method'], $host['ping_method'],
-						$host['ping_timeout'], $host['ping_retries'])) {
-						$host_down = false;
-						$class     = 'hostUp';
-					}else{
-						$host_down = true;
-						$class     = 'hostDown';
-					}
-
-				?>
-					<br>Ping Results<br>
-					<span class='<?php print $class;?>'>
-					<?php print $ping->ping_response; ?>
-					</span>
-				<?php }else if ($host['availability_method'] == AVAIL_NONE) { ?>
-					No Availability Check In Use<br>
-				<?php } ?>
+				<td valign='top' class='textHeader'>
+					<div id='ping_results'>Pinging Device&nbsp;<i style='font-size:12px;' class='fa fa-spin fa-spinner'></i><br><br></div>
 				</td>
 			</tr>
 		</table>
@@ -883,8 +895,9 @@ function host_edit() {
 			$('#dqdebug').fadeOut('fast');
 		});
 
-		$('#host_template_id').scombobox();
-		$('#host_status').scombobox();
+		$.get('host.php?action=ping_host&id='+$('#id').val(), function(data) {
+			$('#ping_results').html(data);
+		});
 	});
 
 	-->
@@ -1377,5 +1390,4 @@ function get_timeinstate($host) {
 
         return $days . 'd ' . $hours . 'h ' . $minutes . 'm';
 }
-
 

@@ -648,8 +648,9 @@ $fields_graph_template_input_edit = array(
 
 /* file: host.php, action: edit */
 $fields_host_edit = array(
-	'host_header' => array(
+	'host_gen_head' => array(
 		'method' => 'spacer',
+		'collapsible' => 'true',
 		'friendly_name' => 'General Host Options'
 		),
 	'description' => array(
@@ -690,56 +691,7 @@ $fields_host_edit = array(
 		'default' => '',
 		'form_id' => false
 		),
-	'availability_header' => array(
-		'method' => 'spacer',
-		'friendly_name' => 'Availability/Reachability Options'
-		),
-	'availability_method' => array(
-		'friendly_name' => 'Downed Device Detection',
-		'description' => 'The method Cacti will use to determine if a host is available for polling.  <br><i>NOTE: It is recommended that, at a minimum, SNMP always be selected.</i>',
-		'on_change' => 'changeHostForm()',
-		'value' => '|arg1:availability_method|',
-		'method' => 'drop_array',
-		'default' => read_config_option('availability_method'),
-		'array' => $availability_options
-		),
-	'ping_method' => array(
-		'friendly_name' => 'Ping Method',
-		'description' => 'The type of ping packet to sent.  <br><i>NOTE: ICMP on Linux/UNIX requires root privileges.</i>',
-		'on_change' => 'changeHostForm()',
-		'value' => '|arg1:ping_method|',
-		'method' => 'drop_array',
-		'default' => read_config_option('ping_method'),
-		'array' => $ping_methods
-		),
-	'ping_port' => array(
-		'method' => 'textbox',
-		'friendly_name' => 'Ping Port',
-		'value' => '|arg1:ping_port|',
-		'description' => 'TCP or UDP port to attempt connection.',
-		'default' => read_config_option('ping_port'),
-		'max_length' => '50',
-		'size' => '15'
-		),
-	'ping_timeout' => array(
-		'friendly_name' => 'Ping Timeout Value',
-		'description' => 'The timeout value to use for host ICMP and UDP pinging.  This host SNMP timeout value applies for SNMP pings.',
-		'method' => 'textbox',
-		'value' => '|arg1:ping_timeout|',
-		'default' => read_config_option('ping_timeout'),
-		'max_length' => '10',
-		'size' => '15'
-		),
-	'ping_retries' => array(
-		'friendly_name' => 'Ping Retry Count',
-		'description' => 'After an initial failure, the number of ping retries Cacti will attempt before failing.',
-		'method' => 'textbox',
-		'value' => '|arg1:ping_retries|',
-		'default' => read_config_option('ping_retries'),
-		'max_length' => '10',
-		'size' => '15'
-		),
-	'spacer1' => array(
+	'host_snmp_head' => array(
 		'method' => 'spacer',
 		'friendly_name' => 'SNMP Options'
 		),
@@ -841,8 +793,58 @@ $fields_host_edit = array(
 		'default' => read_config_option('max_get_size'),
 		'size' => '15'
 		),
-	'header4' => array(
+	'host_avail_head' => array(
 		'method' => 'spacer',
+		'friendly_name' => 'Availability/Reachability Options'
+		),
+	'availability_method' => array(
+		'friendly_name' => 'Downed Device Detection',
+		'description' => 'The method Cacti will use to determine if a host is available for polling.  <br><i>NOTE: It is recommended that, at a minimum, SNMP always be selected.</i>',
+		'on_change' => 'changeHostForm()',
+		'value' => '|arg1:availability_method|',
+		'method' => 'drop_array',
+		'default' => read_config_option('availability_method'),
+		'array' => $availability_options
+		),
+	'ping_method' => array(
+		'friendly_name' => 'Ping Method',
+		'description' => 'The type of ping packet to sent.  <br><i>NOTE: ICMP on Linux/UNIX requires root privileges.</i>',
+		'on_change' => 'changeHostForm()',
+		'value' => '|arg1:ping_method|',
+		'method' => 'drop_array',
+		'default' => read_config_option('ping_method'),
+		'array' => $ping_methods
+		),
+	'ping_port' => array(
+		'method' => 'textbox',
+		'friendly_name' => 'Ping Port',
+		'value' => '|arg1:ping_port|',
+		'description' => 'TCP or UDP port to attempt connection.',
+		'default' => read_config_option('ping_port'),
+		'max_length' => '50',
+		'size' => '15'
+		),
+	'ping_timeout' => array(
+		'friendly_name' => 'Ping Timeout Value',
+		'description' => 'The timeout value to use for host ICMP and UDP pinging.  This host SNMP timeout value applies for SNMP pings.',
+		'method' => 'textbox',
+		'value' => '|arg1:ping_timeout|',
+		'default' => read_config_option('ping_timeout'),
+		'max_length' => '10',
+		'size' => '15'
+		),
+	'ping_retries' => array(
+		'friendly_name' => 'Ping Retry Count',
+		'description' => 'After an initial failure, the number of ping retries Cacti will attempt before failing.',
+		'method' => 'textbox',
+		'value' => '|arg1:ping_retries|',
+		'default' => read_config_option('ping_retries'),
+		'max_length' => '10',
+		'size' => '15'
+		),
+	'host_add_head' => array(
+		'method' => 'spacer',
+		'collapsible' => 'true',
 		'friendly_name' => 'Additional Options'
 		),
 	'notes' => array(

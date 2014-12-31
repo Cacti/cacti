@@ -55,7 +55,13 @@ function draw_edit_form($array) {
 			}elseif ($field_array["method"] == "hidden_zero") {
 				form_hidden_box($field_name, $field_array["value"], "0");
 			}elseif ($field_array["method"] == "spacer") {
-				print "<tr class='tableHeader' id='row_$field_name'><td colspan='2' class='tableSubHeaderColumn'>" . $field_array["friendly_name"] . "</td></tr>\n";
+				if (isset($field_array['collapsible']) && $field_array['collapsible'] == 'true') {
+					$collapsible = true;
+				}else{
+					$collapsible = false;
+				}
+
+				print "<tr class='spacer tableHeader" . ($collapsible ? ' collapsible':'') . "' id='row_$field_name'><td colspan='2' style='cursor:pointer;' class='tableSubHeaderColumn'>" . $field_array["friendly_name"] . ($collapsible ? "<div style='float:right;padding-right:4px;'><i class='fa fa-angle-double-up'></i></div>":"") . "</td></tr>\n";
 			}else{
 				if (isset($config_array["force_row_color"])) {
 					print "<tr class='even-alternate'>";
@@ -104,8 +110,7 @@ function draw_edit_control($field_name, &$field_array) {
 			((isset($field_array["size"])) ? $field_array["size"] : "40"), 
 			"text",
 			((isset($field_array["form_id"])) ? $field_array["form_id"] : ""),
-			0,
-			((isset($field_array["placeholder"])) ? $field_array["placeholder"] : $field_name)
+			((isset($field_array["placeholder"])) ? $field_array["placeholder"] : '')
 		);
 
 		break;
@@ -141,8 +146,7 @@ function draw_edit_control($field_name, &$field_array) {
 			((isset($field_array["size"])) ? $field_array["size"] : "40"), 
 			"password",
 			((isset($field_array["form_id"])) ? $field_array["form_id"] : ""),
-			0,
-			((isset($field_array["placeholder"])) ? $field_array["placeholder"] : "")
+			'********'
 		);
 
 		print "<br>";
@@ -155,8 +159,7 @@ function draw_edit_control($field_name, &$field_array) {
 			((isset($field_array["size"])) ? $field_array["size"] : "40"), 
 			"password",
 			((isset($field_array["form_id"])) ? $field_array["form_id"] : ""),
-			0,
-			((isset($field_array["placeholder"])) ? $field_array["placeholder"] : "")
+			'********'
 		);
 
 		break;
@@ -313,11 +316,15 @@ function draw_edit_control($field_name, &$field_array) {
 
 		break;
 	case 'font':
-		form_font_box($field_name, $field_array["value"],
+		form_font_box(
+			$field_name, 
+			$field_array["value"],
 			((isset($field_array["default"])) ? $field_array["default"] : ""),
 			$field_array["max_length"],
 			((isset($field_array["size"])) ? $field_array["size"] : "40"), "text",
-			((isset($field_array["form_id"])) ? $field_array["form_id"] : ""));
+			((isset($field_array["form_id"])) ? $field_array["form_id"] : ""),
+			((isset($field_array["placeholder"])) ? $field_array["placeholder"] : "")
+		);
 
 		break;
 	case 'file':
@@ -583,7 +590,7 @@ function form_checkbox($form_name, $form_previous_value, $form_caption, $form_de
 	print "<input type='checkbox' id='$form_name' name='$form_name'" . $on_change . $class . $checked . ">" . ($form_caption != "" ? " <label for='$form_name'>$form_caption</label>\n":"");
 }
 
-/* form_text_box - draws a standard html radio button
+/* form_radio_button - draws a standard html radio button
    @arg $form_name - the name of this form element
    @arg $form_previous_value - the current value of this form element (selected or not)
    @arg $form_current_value - the current value of this form element (element id)
@@ -764,7 +771,7 @@ function form_color_dropdown($form_name, $form_previous_value, $form_none_entry,
    @arg $current_id - used to determine if a current value for this form element
      exists or not. a $current_id of '0' indicates that no current value exists,
      a non-zero value indicates that a current value does exist */
-function form_font_box($form_name, $form_previous_value, $form_default_value, $form_max_length, $form_size = 30, $type = "text", $current_id = 0) {
+function form_font_box($form_name, $form_previous_value, $form_default_value, $form_max_length, $form_size = 30, $type = "text", $current_id = 0, $placeholder = '') {
 	global $config;
 
 	if (($form_previous_value == "") && (empty($current_id))) {
@@ -807,7 +814,7 @@ function form_font_box($form_name, $form_previous_value, $form_default_value, $f
 		}
 	}
 
-	print " id='$form_name' name='$form_name' size='$form_size'" . (!empty($form_max_length) ? " maxlength='$form_max_length'" : "") . " value='" . htmlspecialchars($form_previous_value, ENT_QUOTES) . "'>" . $extra_data;
+	print " id='$form_name' " . ($placeholder != '' ? "placeholder='" . htmlspecialchars($placeholder) . "'":'') . " name='$form_name' size='$form_size'" . (!empty($form_max_length) ? " maxlength='$form_max_length'" : "") . " value='" . htmlspecialchars($form_previous_value, ENT_QUOTES) . "'>" . $extra_data;
 }
 
 /* form_confirm - draws a table presenting the user with some choice and allowing

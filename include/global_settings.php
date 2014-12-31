@@ -55,6 +55,7 @@ $settings = array(
 	'path' => array(
 		'dependent_header' => array(
 			'friendly_name' => 'Required Tool Paths',
+			'collapsible' => 'true',
 			'method' => 'spacer',
 			),
 		'path_snmpwalk' => array(
@@ -87,14 +88,6 @@ $settings = array(
 			'method' => 'filepath',
 			'max_length' => '255'
 			),
-		'path_rrdtool_default_font' => array(
-			'friendly_name' => 'RRDTool Default Font',
-			'description' => 'For RRDtool 1.2, the path to the True Type Font File.' . '<br/>' .
-							'For RRDtool 1.3 and above, the font name conforming to the pango naming convention:' . '<br/>' .
-							'You can to use the full Pango syntax when selecting your font: The font name has the form "[FAMILY-LIST] [STYLE-OPTIONS] [SIZE]", where FAMILY-LIST is a comma separated list of families optionally terminated by a comma, STYLE_OPTIONS is a whitespace separated list of words where each WORD describes one of style, variant, weight, stretch, or gravity, and SIZE is a decimal number (size in points) or optionally followed by the unit modifier "px" for absolute size. Any one of the options may be absent.',
-			'method' => 'font',
-			'max_length' => '255'
-			),
 		'path_php_binary' => array(
 			'friendly_name' => 'PHP Binary Path',
 			'description' => 'The path to your PHP binary file (may require a php recompile to get this file).',
@@ -103,6 +96,7 @@ $settings = array(
 			),
 		'logging_header' => array(
 			'friendly_name' => 'Logging',
+			'collapsible' => 'true',
 			'method' => 'spacer',
 			),
 		'path_cactilog' => array(
@@ -127,6 +121,7 @@ $settings = array(
 			),
 		'pollerpaths_header' => array(
 			'friendly_name' => 'Alternate Poller Path',
+			'collapsible' => 'true',
 			'method' => 'spacer',
 			),
 		'path_spine' => array(
@@ -137,6 +132,7 @@ $settings = array(
 			),
 		'extendedpaths_header' => array(
 			'friendly_name' => 'Structured RRD Path',
+			'collapsible' => 'true',
 			'method' => 'spacer',
 			),
 		'extended_paths' => array(
@@ -172,6 +168,7 @@ $settings = array(
 	'general' => array(
 		'logging_header' => array(
 			'friendly_name' => 'Event Logging',
+			'collapsible' => 'true',
 			'method' => 'spacer',
 			),
 		'log_destination' => array(
@@ -203,6 +200,7 @@ $settings = array(
 			),
 		'poller_header' => array(
 			'friendly_name' => 'Poller Specific Logging',
+			'collapsible' => 'true',
 			'method' => 'spacer',
 			),
 		'log_verbosity' => array(
@@ -234,6 +232,7 @@ $settings = array(
 			),
 		'versions_header' => array(
 			'friendly_name' => 'Required Tool Versions',
+			'collapsible' => 'true',
 			'method' => 'spacer',
 			),
 		'snmp_version' => array(
@@ -329,6 +328,7 @@ $settings = array(
 			),
 		'other_header' => array(
 			'friendly_name' => 'Other Defaults',
+			'collapsible' => 'true',
 			'method' => 'spacer',
 			),
 		'graph_auth_method' => array(
@@ -368,6 +368,7 @@ $settings = array(
 	'export' => array(
 		'export_hdr_general' => array(
 			'friendly_name' => 'General',
+			'collapsible' => 'true',
 			'method' => 'spacer',
 			),
 		'export_type' => array(
@@ -426,6 +427,7 @@ $settings = array(
 			),
 		'export_thumb_options' => array(
 			'friendly_name' => 'Thumbnail Settings',
+			'collapsible' => 'true',
 			'method' => 'spacer',
 			),
 		'export_default_height' => array(
@@ -454,6 +456,7 @@ $settings = array(
 			),
 		'export_hdr_paths' => array(
 			'friendly_name' => 'Paths',
+			'collapsible' => 'true',
 			'method' => 'spacer',
 			),
 		'path_html_export' => array(
@@ -518,12 +521,14 @@ $settings = array(
 		'export_ftp_host' => array(
 			'friendly_name' => 'FTP Host',
 			'description' => 'Denotes the host to upload your graphs by ftp.',
+			'placeholder' => 'hostname',
 			'method' => 'textbox',
 			'max_length' => '255'
 			),
 		'export_ftp_port' => array(
 			'friendly_name' => 'FTP Port',
 			'description' => 'Communication port with the ftp server (leave empty for defaults). Default: 21.',
+			'placeholder' => '23',
 			'method' => 'textbox',
 			'max_length' => '10',
 			'size' => '5'
@@ -538,6 +543,7 @@ $settings = array(
 			'friendly_name' => 'FTP User',
 			'description' => 'Account to logon on the remote server (leave empty for defaults). Default: Anonymous.',
 			'method' => 'textbox',
+			'placeholder' => 'anonymous',
 			'max_length' => '255'
 			),
 		'export_ftp_password' => array(
@@ -640,7 +646,14 @@ $settings = array(
 			'description' => 'How do you wish fonts to be handled by default?',
 			'method' => 'drop_array',
 			'default' => 1,
-			'array' => array(0 => 'User', 1 => 'Theme')
+			'array' => array(0 => 'System', 1 => 'Theme')
+			),
+		'path_rrdtool_default_font' => array(
+			'friendly_name' => 'Default Font',
+			'description' => (read_config_option('rrdtool_version') == 'rrd-1.2.x' ? 'When not using Theme based fonts, the path to the default True Type Font File.':'When not using Theme based font control, the Pangon font-config font name to use for all Graphs.') . '  Optionally, you may leave blank and control font settings on a per object basis.',
+			'method' => 'font',
+			'placeholder' => (read_config_option('rrdtool_version') == 'rrd-1.2.x' ? 'Enter valid True Type Font File Path':'Enter Valid Font Config Value'),
+			'max_length' => '255'
 			),
 		'title_size' => array(
 			'friendly_name' => 'Title Font Size',
@@ -651,12 +664,10 @@ $settings = array(
 			'size' => '5'
 			),
 		'title_font' => array(
-			'friendly_name' => 'Title Font File',
-			'description' => 'The font to use for Graph Titles' . '<br/>' .
-			'For RRDtool 1.2, the path to the True Type Font File.' . '<br/>' .
-			'For RRDtool 1.3 and above, the font name conforming to the pango naming convention:' . '<br/>' .
-			'You can to use the full Pango syntax when selecting your font: The font name has the form "[FAMILY-LIST] [STYLE-OPTIONS] [SIZE]", where FAMILY-LIST is a comma separated list of families optionally terminated by a comma, STYLE_OPTIONS is a whitespace separated list of words where each WORD describes one of style, variant, weight, stretch, or gravity, and SIZE is a decimal number (size in points) or optionally followed by the unit modifier "px" for absolute size. Any one of the options may be absent.',
+			'friendly_name' => 'Title Font Setting',
+			'description' => 'The font to use for Graph Titles.  Enter either a valid True Type Font file or valid Pango font-config value.',
 			'method' => 'font',
+			'placeholder' => (read_config_option('rrdtool_version') == 'rrd-1.2.x' ? 'Enter True Type Font Path':'Enter Valid Font Config Value'),
 			'max_length' => '100'
 			),
 		'legend_size' => array(
@@ -668,9 +679,10 @@ $settings = array(
 			'size' => '5'
 			),
 		'legend_font' => array(
-			'friendly_name' => 'Legend Font File',
-			'description' => 'The font file to be used for Graph Legend items',
+			'friendly_name' => 'Legend Font Setting',
+			'description' => 'The font to use for Graph Legends.  Enter either a valid True Type Font file or valid Pango font-config value.',
 			'method' => 'font',
+			'placeholder' => (read_config_option('rrdtool_version') == 'rrd-1.2.x' ? 'Enter True Type Font Path':'Enter Valid Font Config Value'),
 			'max_length' => '100'
 			),
 		'axis_size' => array(
@@ -682,9 +694,10 @@ $settings = array(
 			'size' => '5'
 			),
 		'axis_font' => array(
-			'friendly_name' => 'Axis Font File',
-			'description' => 'The font file to be used for Graph Axis items',
+			'friendly_name' => 'Axis Font Setting',
+			'description' => 'The font to use for Graph Axis items.  Enter either a valid True Type Font file or valid Pango font-config value.',
 			'method' => 'font',
+			'placeholder' => (read_config_option('rrdtool_version') == 'rrd-1.2.x' ? 'Enter True Type Font Path':'Enter Valid Font Config Value'),
 			'max_length' => '100'
 			),
 		'unit_size' => array(
@@ -696,15 +709,17 @@ $settings = array(
 			'size' => '5'
 			),
 		'unit_font' => array(
-			'friendly_name' => 'Unit Font File',
-			'description' => 'The font file to be used for Graph Unit items',
+			'friendly_name' => 'Unit Font Setting',
+			'description' => 'The font to use for Graph Unit items.  Enter either a valid True Type Font file or valid Pango font-config value.',
 			'method' => 'font',
+			'placeholder' => (read_config_option('rrdtool_version') == 'rrd-1.2.x' ? 'Enter True Type Font Path':'Enter Valid Font Config Value'),
 			'max_length' => '100'
 			)
 		),
 	'poller' => array(
 		'poller_header' => array(
 			'friendly_name' => 'General',
+			'collapsible' => 'true',
 			'method' => 'spacer',
 			),
 		'poller_enabled' => array(
@@ -758,6 +773,7 @@ $settings = array(
 			),
 		'spine_header' => array(
 			'friendly_name' => 'Spine Specific Execution Parameters',
+			'collapsible' => 'true',
 			'method' => 'spacer',
 			),
 		'max_threads' => array(
@@ -836,6 +852,7 @@ $settings = array(
 			),
 		'updown_header' => array(
 			'friendly_name' => 'Host Up/Down Settings',
+			'collapsible' => 'true',
 			'method' => 'spacer',
 			),
 		'ping_failure_count' => array(
@@ -1132,6 +1149,7 @@ $settings = array(
 			),
 		'settings_sendmail_header' => array(
 			'friendly_name' => 'Sendmail Options',
+			'collapsible' => 'true',
 			'method' => 'spacer',
 			),
 		'settings_sendmail_path' => array(
@@ -1143,6 +1161,7 @@ $settings = array(
 			),
 		'settings_smtp_header' => array(
 			'friendly_name' => 'SMTP Options',
+			'collapsible' => 'true',
 			'method' => 'spacer',
 			),
 		'settings_smtp_host' => array(
@@ -1189,6 +1208,7 @@ $settings = array(
 			),
 		'settings_dns_header' => array(
 			'friendly_name' => 'DNS Options',
+			'collapsible' => 'true',
 			'method' => 'spacer',
 			),
 		'settings_dns_primary' => array(
@@ -1217,6 +1237,7 @@ $settings = array(
 	'dsstats' => array(
 		'dsstats_hq_header' => array(
 			'friendly_name' => 'Data Sources Statistics',
+			'collapsible' => 'true',
 			'method' => 'spacer',
 			),
 		'dsstats_enable' => array(
@@ -1257,6 +1278,7 @@ $settings = array(
 			),
 		'dsstats_debug_header' => array(
 			'friendly_name' => 'Debugging',
+			'collapsible' => 'true',
 			'method' => 'spacer',
 			),
 		'dsstats_rrdtool_pipe' => array(
@@ -1426,6 +1448,7 @@ $settings = array(
 			),
 		'boost_process_header' => array(
 			'friendly_name' => 'Process Interlocking',
+			'collapsible' => 'true',
 			'method' => 'spacer',
 			),
 		'path_boost_log' => array(

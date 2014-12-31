@@ -386,27 +386,30 @@ class Net_Ping
 					$error = "socket_select() failed, reason: " . socket_strerror(socket_last_error());
 				} else {
 					switch($num_changed_sockets) {
-						case 2: /* response received, so host is available */
-						case 1:
-							/* get the end time */
-							$this->time = $this->get_time($this->precision);
+					case 2: /* response received, so host is available */
+					case 1:
+						/* get the end time */
+						$this->time = $this->get_time($this->precision);
 
-							/* get packet response */
-							$code = @socket_recv($this->socket, $this->reply, 256, 0);
+						/* get packet response */
+						$code = @socket_recv($this->socket, $this->reply, 256, 0);
 
-							/* get the error, if applicable */
-							$err = socket_last_error($this->socket);
+						/* get the error, if applicable */
+						$err = socket_last_error($this->socket);
 
-							/* set the return message */
-							$this->ping_status = $this->time * 1000;
-							$this->ping_response = "UDP Ping Success (" . $this->time*1000 . " ms)";
+						/* set the return message */
+						$this->ping_status = $this->time * 1000;
+						$this->ping_response = "UDP Ping Success (" . $this->time*1000 . " ms)";
 
-							$this->close_socket();
-							return true;
-						case 0:
-							/* timeout */
-							$error = "timeout";
-							break;
+						$this->close_socket();
+						return true;
+
+						break;
+					case 0:
+						/* timeout */
+						$error = "timeout";
+
+						break;
 					}
 				}
 

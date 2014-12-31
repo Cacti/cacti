@@ -248,6 +248,9 @@ default:
 		$('#export_timing').change(function() {
 			initTiming();
 		});
+		$('#export_type').change(function() {
+			initFTPExport();
+		});
 	}
 
 	if ($('#row_auth_method')) {
@@ -353,6 +356,7 @@ default:
 
 	function initFonts() {
 		if ($('#font_method').val() == 1) {
+			$('#row_path_rrdtool_default_font').hide();
 			$('#row_title_size').hide();
 			$('#row_title_font').hide();
 			$('#row_legend_size').hide();
@@ -362,13 +366,14 @@ default:
 			$('#row_unit_size').hide();
 			$('#row_unit_font').hide();
 		}else{
+			$('#row_path_rrdtool_default_font').show();
 			$('#row_title_size').show();
-			$('#row_title_font').show();
 			$('#row_legend_size').show();
-			$('#row_legend_font').show();
 			$('#row_axis_size').show();
-			$('#row_axis_font').show();
 			$('#row_unit_size').show();
+			$('#row_title_font').show();
+			$('#row_legend_font').show();
+			$('#row_axis_font').show();
 			$('#row_unit_font').show();
 		}
 	}
@@ -754,13 +759,13 @@ default:
 		case "ftp_php":
 		case "ftp_ncftpput":
 		case "sftp_php":
-			$('#row_export_hdr_ftp').hide();
-			$('#row_export_ftp_sanitize').hide();
-			$('#row_export_ftp_host').hide();
-			$('#row_export_ftp_port').hide();
-			$('#row_export_ftp_passive').hide();
-			$('#row_export_ftp_user').hide();
-			$('#row_export_ftp_password').hide();
+			$('#row_export_hdr_ftp').show();
+			$('#row_export_ftp_sanitize').show();
+			$('#row_export_ftp_host').show();
+			$('#row_export_ftp_port').show();
+			$('#row_export_ftp_passive').show();
+			$('#row_export_ftp_user').show();
+			$('#row_export_ftp_password').show();
 			break;
 		}
 	}

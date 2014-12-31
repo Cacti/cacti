@@ -56,7 +56,7 @@ function html_start_box($title, $width, $background_color, $cell_padding, $align
 					</tr>
 				</table>
 				<?php }?>
-				<table class='cactiTable' cellpadding=<?php print $cell_padding;?> cellspacing=0 border=0 width="100%">
+				<table class='cactiTable' cellpadding='<?php print $cell_padding;?>' cellspacing='0' border='0' width="100%">
 	<?php
 
 	$table_suffix++;

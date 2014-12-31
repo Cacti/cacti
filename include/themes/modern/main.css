@@ -505,7 +505,7 @@ legend {
 }
 
 .textSubHeaderDark, .textSubHeaderDark:visited {
-	font-size: 10px;
+	font-size: 11px;
 	color: snow;
 	font-weight: bold;
 }
@@ -521,7 +521,9 @@ legend {
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#627d4d', endColorstr='#1f3b08', GradientType=0 );
 }
 
-.cactiTable {
+.cactiTable td {
+	overflow: hidden;
+	text-overflow: ellipsis;
 }
 
 .break {
@@ -654,7 +656,6 @@ legend {
 }
 
 .textEditTitle {
-	font-size: 10px;
 	font-weight: bold;
 }
 
