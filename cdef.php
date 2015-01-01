@@ -614,12 +614,13 @@ function cdef() {
 		ORDER BY " . get_request_var_request('sort_column') . ' ' . get_request_var_request('sort_direction') .
 		' LIMIT ' . (get_request_var_request('rows')*(get_request_var_request('page')-1)) . ',' . get_request_var_request('rows'));
 
-	$nav = html_nav_bar('cdef.php?filter=' . get_request_var_request('filter'), MAX_DISPLAY_PAGES, get_request_var_request('page'), get_request_var_request('rows'), $total_rows, 4, 'CDEFs', 'page', 'main');
+	$nav = html_nav_bar('cdef.php?filter=' . get_request_var_request('filter'), MAX_DISPLAY_PAGES, get_request_var_request('page'), get_request_var_request('rows'), $total_rows, 5, 'CDEFs', 'page', 'main');
 
 	print $nav;
 
 	$display_text = array(
 		'name' => array('CDEF Title', 'ASC'),
+		'nosort' => array('display' => 'Deletable', 'align' => 'right', 'tip' => 'CDEFs that are in use can not be Deleted'), 
 		'graphs' => array('display' => 'Graphs Using', 'align' => 'right', 'sort' => 'DESC'),
 		'templates' => array('display' => 'Templates Using', 'align' => 'right', 'sort' => 'DESC'));
 
@@ -636,6 +637,7 @@ function cdef() {
 
 			form_alternate_row('line' . $cdef['id'], false, $disabled);
 			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars('cdef.php?action=edit&id=' . $cdef['id']) . "'>" . (strlen(get_request_var_request('filter')) ? preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($cdef['name'])) : htmlspecialchars($cdef['name'])) . '</a>', $cdef['id']);
+			form_selectable_cell($disabled ? 'No':'Yes', $cdef['id'], '', 'text-align:right');
 			form_selectable_cell($cdef['graphs'], $cdef['id'], '', 'text-align:right');
 			form_selectable_cell($cdef['templates'], $cdef['id'], '', 'text-align:right');
 			form_checkbox_cell($cdef['name'], $cdef['id'], $disabled);

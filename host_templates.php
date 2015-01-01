@@ -559,13 +559,14 @@ function template() {
 		ORDER BY " . get_request_var_request('sort_column') . ' ' . get_request_var_request('sort_direction') .
 		' LIMIT ' . (get_request_var_request('rows')*(get_request_var_request('page')-1)) . ',' . get_request_var_request('rows'));
 
-	$nav = html_nav_bar('host_templates.php?filter=' . get_request_var_request('filter'), MAX_DISPLAY_PAGES, get_request_var_request('page'), get_request_var_request('rows'), $total_rows, 4, 'Device Templates', 'page', 'main');
+	$nav = html_nav_bar('host_templates.php?filter=' . get_request_var_request('filter'), MAX_DISPLAY_PAGES, get_request_var_request('page'), get_request_var_request('rows'), $total_rows, 5, 'Device Templates', 'page', 'main');
 
 	print $nav;
 
 	$display_text = array(
 		'name' => array('Template Title', 'ASC'),
-		'hosts' => array('display' => 'Devices', 'align' => 'right', 'sort' => 'DESC'),
+		"nosort" => array('display' => 'Deletable', 'align' => 'right', 'sort' => '', 'tip' => 'Device Templates in use can not be Deleted'),
+		'hosts' => array('display' => 'Devices Using', 'align' => 'right', 'sort' => 'DESC', 'tip' => 'The number of Devices using this Device Template'),
 		'host_template.id' => array('display' => 'ID', 'align' => 'right', 'sort' => 'ASC')
 	);
 
@@ -575,16 +576,17 @@ function template() {
 	if (sizeof($template_list) > 0) {
 		foreach ($template_list as $template) {
 			if ($template['hosts'] > 0) {
-				$disable = true;
+				$disabled = true;
 			}else{
-				$disable = false;
+				$disabled = false;
 			}
 
-			form_alternate_row('line' . $template['id'], true, $disable);
+			form_alternate_row('line' . $template['id'], true, $disabled);
 			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars('host_templates.php?action=edit&id=' . $template['id']) . "'>" . (strlen(get_request_var_request('filter')) ? preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($template['name'])) : htmlspecialchars($template['name'])) . '</a>', $template['id']);
+			form_selectable_cell($disabled ? 'No':'Yes', $template['id'], '', 'text-align:right');
 			form_selectable_cell(number_format($template['hosts']), $template['id'], '', 'text-align:right');
 			form_selectable_cell($template['id'], $template['id'], '', 'text-align:right');
-			form_checkbox_cell($template['name'], $template['id'], $disable);
+			form_checkbox_cell($template['name'], $template['id'], $disabled);
 			form_end_row();
 		}
 		/* put the nav bar on the bottom as well */

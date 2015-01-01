@@ -397,17 +397,19 @@ function rra() {
 		$sql_having
 		ORDER BY " . $_REQUEST['sort_column'] . ' ' . $_REQUEST['sort_direction']);
 
-    $nav = html_nav_bar('rra.php?filter=' . get_request_var_request('filter'), MAX_DISPLAY_PAGES, get_request_var_request('page'), get_request_var_request('rows'), $total_rows, 7, 'RRAs', 'page', 'main');
+    $nav = html_nav_bar('rra.php?filter=' . get_request_var_request('filter'), MAX_DISPLAY_PAGES, get_request_var_request('page'), get_request_var_request('rows'), $total_rows, 8, 'RRAs', 'page', 'main');
 
     print $nav;
 
 	$display_text = array(
 		'name' => array('Name', 'ASC'),
-		'steps' => array('display' => 'Steps', 'align' => 'right', 'sort' => 'DESC'),
-		'rows' => array('display' => 'Rows', 'align' => 'right', 'sort' => 'DESC'),
-		'timespan' => array('display' => 'Timespan', 'align' => 'right', 'sort' => 'DESC'),
-		'data_sources' => array('display' => 'Data Sources Using', 'align' => 'right', 'sort' => 'DESC'),
-		'templates' => array('display' => 'Templates Using', 'align' => 'right', 'sort' => 'DESC'));
+		"nosort" => array('display' => 'Deletable', 'align' => 'right', 'sort' => '', 'tip' => 'RRAs in use can not be Deleted'),
+		'steps' => array('display' => 'Steps', 'align' => 'right', 'sort' => 'DESC', 'tip' => 'The number of Rows inserted into the RRDfile over the polling interval before aggregation occurs.  A value of 1 means that this will be the first RRA that will be inserted into.'),
+		'rows' => array('display' => 'Rows', 'align' => 'right', 'sort' => 'DESC', 'tip' => 'The number of Rows in the RRDfile.  The more rows in the RRDfile, the longer data will be retained for.'),
+		'timespan' => array('display' => 'Timespan', 'align' => 'right', 'sort' => 'DESC', 'tip' => 'An arbitrary number as a way for Cacti to determine which RRA to use for Graphing operations.  However, RRDtool can override this value.'),
+		'data_sources' => array('display' => 'Data Sources Using', 'align' => 'right', 'sort' => 'DESC', 'tip' => 'The number of Data Sources using this RRA definition'),
+		'templates' => array('display' => 'Templates Using', 'align' => 'right', 'sort' => 'DESC', 'tip' => 'The number of Data Templates using this RRA definition')
+	);
 
 	html_header_sort_checkbox($display_text, $_REQUEST['sort_column'], $_REQUEST['sort_direction'], false);
 
@@ -422,6 +424,7 @@ function rra() {
 
 			form_alternate_row('line' . $rra['id'], false, $disabled);
 			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars('rra.php?action=edit&id=' . $rra['id']) . "'>" . (strlen(get_request_var_request('filter')) ? preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($rra['name'])) : htmlspecialchars($rra['name'])) . '</a>', $rra['id']);
+			form_selectable_cell($disabled ? 'No':'Yes', $rra['id'], '', 'text-align:right');
 			form_selectable_cell(number_format($rra['steps']), $rra['id'], '', 'text-align:right');
 			form_selectable_cell(number_format($rra['rows']), $rra['id'], '', 'text-align:right');
 			form_selectable_cell(number_format($rra['timespan']), $rra['id'], '', 'text-align:right');

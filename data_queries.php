@@ -919,13 +919,14 @@ function data_query() {
 		ORDER BY " . get_request_var_request('sort_column') . ' ' . get_request_var_request('sort_direction') . '
 		LIMIT ' . (get_request_var_request('rows')*(get_request_var_request('page')-1)) . ',' . get_request_var_request('rows'));
 
-	$nav = html_nav_bar('data_queries.php?filter=' . get_request_var_request('filter'), MAX_DISPLAY_PAGES, get_request_var_request('page'), get_request_var_request('rows'), $total_rows, 5, 'Data Queries', 'page', 'main');
+	$nav = html_nav_bar('data_queries.php?filter=' . get_request_var_request('filter'), MAX_DISPLAY_PAGES, get_request_var_request('page'), get_request_var_request('rows'), $total_rows, 6, 'Data Queries', 'page', 'main');
 	print $nav;
 
 	$display_text = array(
 		'name' => array('Name', 'ASC'),
-		'graphs' => array('display' => 'Graphs', 'align' => 'right', 'sort' => 'DESC'),
-		'templates' => array('display' => 'Graph Templates', 'align' => 'right', 'sort' => 'DESC'),
+		'nosort' => array('display' => 'Deletable', 'align' => 'right', 'tip' => 'Data Queries that are in use can not be Deleted'), 
+		'graphs' => array('display' => 'Graphs Using', 'align' => 'right', 'sort' => 'DESC', 'tip' => 'The number of Graphs using this Data Query'),
+		'templates' => array('display' => 'Templates Using', 'align' => 'right', 'sort' => 'DESC', 'tip' => 'The number of Graphs Templates using this Data Query'),
 		'data_input_method' => array('Data Input Method', 'ASC'));
 
 	html_header_sort_checkbox($display_text, get_request_var_request('sort_column'), get_request_var_request('sort_direction'), false);
@@ -941,6 +942,7 @@ function data_query() {
 
 			form_alternate_row('line' . $snmp_query['id'], true, $disabled);
 			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars('data_queries.php?action=edit&id=' . $snmp_query['id']) . "'>" . (strlen(get_request_var_request('filter')) ? preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($snmp_query['name'])) : htmlspecialchars($snmp_query['name'])) . '</a>', $snmp_query['id']);
+			form_selectable_cell($disabled ? 'No':'Yes', $snmp_query['id'], '', 'text-align:right');
 			form_selectable_cell(number_format($snmp_query['graphs']), $snmp_query['id'], '', 'text-align:right');
 			form_selectable_cell(number_format($snmp_query['templates']), $snmp_query['id'], '', 'text-align:right');
 			form_selectable_cell((strlen(get_request_var_request('filter')) ? preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", $snmp_query['data_input_method']) : $snmp_query['data_input_method']), $snmp_query['id']);

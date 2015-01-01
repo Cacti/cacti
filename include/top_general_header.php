@@ -36,6 +36,7 @@ $page_title = api_plugin_hook_function('page_title', draw_navigation_text('title
 <html>
 <head>
 	<meta http-equiv='X-UA-Compatible' content='edge'>
+	<meta content='width=720, initial-scale=1.2, maximum-scale=1.2, minimum-scale=1.2' name='viewport'>
 	<title><?php echo $page_title; ?></title>
 	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
 	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print read_config_option('selected_theme');?>/main.css' type='text/css' rel='stylesheet'>

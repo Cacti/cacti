@@ -787,15 +787,16 @@ function template() {
 		ORDER BY " . get_request_var_request('sort_column') . ' ' . get_request_var_request('sort_direction') .
 		' LIMIT ' . (get_request_var_request('rows')*(get_request_var_request('page')-1)) . ',' . get_request_var_request('rows'));
 
-	$nav = html_nav_bar('data_templates.php?filter=' . get_request_var_request('filter'), MAX_DISPLAY_PAGES, get_request_var_request('page'), get_request_var_request('rows'), $total_rows, 6, 'Data Templates', 'page', 'main');
+	$nav = html_nav_bar('data_templates.php?filter=' . get_request_var_request('filter'), MAX_DISPLAY_PAGES, get_request_var_request('page'), get_request_var_request('rows'), $total_rows, 7, 'Data Templates', 'page', 'main');
 
 	print $nav;
 
 	$display_text = array(
 		'name' => array('Template Name', 'ASC'),
-		'data_sources' => array('display' => 'Data Sources', 'align' => 'right', 'sort' => 'ASC'),
-		'data_input_method' => array('Data Input Method', 'ASC'),
-		'active' => array('Status', 'ASC'),
+		'nosort' => array('display' => 'Deletable', 'align' => 'right', 'tip' => 'Data Templates that are in use can not be Deleted'), 
+		'data_sources' => array('display' => 'Data Sources Using', 'align' => 'right', 'sort' => 'ASC', 'tip' => 'The number of Data Sources using this Data Template'),
+		'data_input_method' => array('display' => 'Data Input Method', 'align' => 'left', 'sort' => 'ASC', 'tip' => 'The method that is used to place Data into the Data Source RRDfile'),
+		'active' => array('display' => 'Status', 'align' => 'left', 'sort' => 'ASC', 'tip' => 'Data Sources based on Inactive Data Templates wont be updated when the poller runs'),
 		'id' => array('display' => 'ID', 'align' => 'right', 'sort' => 'ASC')
 	);
 
@@ -810,6 +811,7 @@ function template() {
 			}
 			form_alternate_row('line' . $template['id'], true, $disabled);
 			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars('data_templates.php?action=template_edit&id=' . $template['id']) . "'>" . (strlen(get_request_var_request('filter')) ? preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($template['name'])) : htmlspecialchars($template['name'])) . '</a>', $template['id']);
+			form_selectable_cell($disabled ? 'No':'Yes', $template['id'], '', 'text-align:right');
 			form_selectable_cell($template['data_sources'], $template['id'], '', 'text-align:right');
 			form_selectable_cell((empty($template['data_input_method']) ? '<em>None</em>': htmlspecialchars($template['data_input_method'])), $template['id']);
 			form_selectable_cell((($template['active'] == 'on') ? 'Active' : 'Disabled'), $template['id']);

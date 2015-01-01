@@ -624,13 +624,14 @@ function template() {
 		ORDER BY " . get_request_var_request("sort_column") . " " . get_request_var_request("sort_direction") .
 		" LIMIT " . (get_request_var_request("rows")*(get_request_var_request("page")-1)) . "," . get_request_var_request("rows"));
 
-	$nav = html_nav_bar("graph_templates.php?filter=" . get_request_var_request("filter"), MAX_DISPLAY_PAGES, get_request_var_request("page"), get_request_var_request("rows"), $total_rows, 4, 'Graph Templates', 'page', 'main');
+	$nav = html_nav_bar("graph_templates.php?filter=" . get_request_var_request("filter"), MAX_DISPLAY_PAGES, get_request_var_request("page"), get_request_var_request("rows"), $total_rows, 5, 'Graph Templates', 'page', 'main');
 
 	print $nav;
 
 	$display_text = array(
 		"name" => array("Template Name", "ASC"),
-		"graphs" => array('display' => "Graphs", 'align' => 'right', 'sort' => "DESC"),
+		'nosort' => array('display' => 'Deletable', 'align' => 'right', 'tip' => 'Graph Templates that are in use can not be Deleted'), 
+		"graphs" => array('display' => 'Graphs Using', 'align' => 'right', 'sort' => "DESC", 'tip' => 'The number of Graphs using this Graph Template'),
 		"graph_templates.id" => array('display' => "ID", 'align' => 'right', 'sort' => "ASC")
 	);
 
@@ -646,6 +647,7 @@ function template() {
 			}
 			form_alternate_row('line' . $template["id"], true, $disabled);
 			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars("graph_templates.php?action=template_edit&id=" . $template["id"]) . "'>" . (strlen(get_request_var_request("filter")) ? preg_replace("/(" . preg_quote(get_request_var_request("filter"), "/") . ")/i", "<span class='filteredValue'>\\1</span>", htmlspecialchars($template["name"])) : htmlspecialchars($template["name"])) . "</a>", $template["id"]);
+			form_selectable_cell($disabled ? 'No':'Yes', $template["id"], '', 'text-align:right');
 			form_selectable_cell(number_format($template["graphs"]), $template["id"], '', 'text-align:right');
 			form_selectable_cell($template["id"], $template["id"], '', 'text-align:right');
 			form_checkbox_cell($template["name"], $template["id"], $disabled);

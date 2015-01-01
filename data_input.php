@@ -621,14 +621,15 @@ function data() {
 		ORDER BY " . get_request_var_request('sort_column') . ' ' . get_request_var_request('sort_direction') . '
 		LIMIT ' . (get_request_var_request('rows')*(get_request_var_request('page')-1)) . ',' . get_request_var_request('rows'));
 
-	$nav = html_nav_bar('data_input.php?filter=' . get_request_var_request('filter'), MAX_DISPLAY_PAGES, get_request_var_request('page'), get_request_var_request('rows'), $total_rows, 5, 'Input Methods', 'page', 'main');
+	$nav = html_nav_bar('data_input.php?filter=' . get_request_var_request('filter'), MAX_DISPLAY_PAGES, get_request_var_request('page'), get_request_var_request('rows'), $total_rows, 6, 'Input Methods', 'page', 'main');
 
 	print $nav;
 
 	$display_text = array(
 		'name' => array('Name', 'ASC'),
-		'templates' => array('display' => 'Data Templates', 'align' => 'right', 'sort' => 'DESC'),
-		'data_sources' => array('display' => 'Data Sources', 'align' => 'right', 'sort' => 'DESC'),
+		'nosort' => array('display' => 'Deletable', 'align' => 'right', 'tip' => 'Data Inputs that are in use can not be Deleted'), 
+		'data_sources' => array('display' => 'Data Sources Using', 'align' => 'right', 'sort' => 'DESC', 'tip' => 'The number of Data Sources that use this Data Input Method'),
+		'templates' => array('display' => 'Templates Using', 'align' => 'right', 'sort' => 'DESC', 'tip' => 'The number of Data Templates that use this Data Input Method'),
 		'type_id' => array('Data Input Method', 'ASC'));
 
 	html_header_sort_checkbox($display_text, get_request_var_request('sort_column'), get_request_var_request('sort_direction'), false);
@@ -644,8 +645,9 @@ function data() {
 			}
 			form_alternate_row('line' . $data_input['id'], true, $disabled);
 			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars('data_input.php?action=edit&id=' . $data_input['id']) . "'>" . (strlen(get_request_var_request('filter')) ? preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($data_input['name'])) : htmlspecialchars($data_input['name'])) . '</a>', $data_input['id']);
-			form_selectable_cell(number_format($data_input['templates']), $data_input['id'],'', 'text-align:right');
+			form_selectable_cell($disabled ? 'No':'Yes', $data_input['id'],'', 'text-align:right');
 			form_selectable_cell(number_format($data_input['data_sources']), $data_input['id'],'', 'text-align:right');
+			form_selectable_cell(number_format($data_input['templates']), $data_input['id'],'', 'text-align:right');
 			form_selectable_cell($input_types{$data_input['type_id']}, $data_input['id']);
 			form_checkbox_cell($data_input['name'], $data_input['id'], $disabled);
 			form_end_row();

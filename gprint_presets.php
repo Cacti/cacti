@@ -375,14 +375,16 @@ function gprint_presets() {
 		ORDER BY " . get_request_var_request('sort_column') . ' ' . get_request_var_request('sort_direction') .
 		' LIMIT ' . (get_request_var_request('rows')*(get_request_var_request('page')-1)) . ',' . get_request_var_request('rows'));
 
-	$nav = html_nav_bar('gprint_presets.php?filter=' . get_request_var_request('filter'), MAX_DISPLAY_PAGES, get_request_var_request('page'), get_request_var_request('rows'), $total_rows, 4, 'GPRINTs', 'page', 'main');
+	$nav = html_nav_bar('gprint_presets.php?filter=' . get_request_var_request('filter'), MAX_DISPLAY_PAGES, get_request_var_request('page'), get_request_var_request('rows'), $total_rows, 5, 'GPRINTs', 'page', 'main');
 
 	print $nav;
 
 	$display_text = array(
 		'name' => array('GPRINT Preset Title', 'ASC'),
-		'graphs' => array('display' => 'Graphs Using', 'align' => 'right', 'sort' => 'DESC'),
-		'templates' => array('display' => 'Templates Using', 'align' => 'right', 'sort' => 'DESC'));
+		'nosort' => array('display' => 'Deletable', 'align' => 'right', 'tip' => 'GPRINTs that are in use can not be Deleted'), 
+		'graphs' => array('display' => 'Graphs Using', 'align' => 'right', 'sort' => 'DESC', 'tip' => 'The number of Graphs using this GPRINT'),
+		'templates' => array('display' => 'Templates Using', 'align' => 'right', 'sort' => 'DESC', 'tip' => 'The number of Graphs Templates using this GPRINT')
+	);
 
 	html_header_sort_checkbox($display_text, get_request_var_request('sort_column'), get_request_var_request('sort_direction'), false);
 
@@ -397,6 +399,7 @@ function gprint_presets() {
 
             form_alternate_row('line' . $gp['id'], false, $disabled);
             form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars('gprint_presets.php?action=edit&id=' . $gp['id']) . "'>" . (strlen(get_request_var_request('filter')) ? preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($gp['name'])) : htmlspecialchars($gp['name'])) . '</a>', $gp['id']);
+            form_selectable_cell($disabled ? 'No':'Yes', $gp['id'], '', 'text-align:right');
             form_selectable_cell($gp['graphs'], $gp['id'], '', 'text-align:right');
             form_selectable_cell($gp['templates'], $gp['id'], '', 'text-align:right');
             form_checkbox_cell($gp['name'], $gp['id'], $disabled);

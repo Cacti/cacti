@@ -362,9 +362,9 @@ $menu = array(
 		'data_input.php' => 'Data Input Methods'
 		),
 	'Templates' => array(
-		'graph_templates.php' => 'Graphs',
-		'host_templates.php' => 'Devices',
-		'data_templates.php' => 'Data Sources'
+		'graph_templates.php' => 'Graph',
+		'host_templates.php' => 'Device',
+		'data_templates.php' => 'Data Source'
 		),
 	'Presets' => array(
 		'cdef.php' => 'CDEFs',
