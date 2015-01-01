@@ -46,21 +46,20 @@ html_start_box('<strong>About Cacti</strong>', '100%', '', '3', 'center', '');
 
 		<p><strong>Current Cacti Developers</strong><br>
 		<ul type="disc">
-			<li><strong>Ian Berry</strong> (raX) is original creator of Cacti which was first released to the world in 2001. He remained the sole
-				developer for over two years, writing code, supporting users, and keeping the project active. Today, Ian continues
-				to actively develop Cacti, focusing on backend components such as templates, data queries, and graph management.</li>
+			<li><strong>Ian Berry</strong> (raX) was the original creator of Cacti which was first released to the world in 2001. He remained the sole
+				developer for over two years, writing code, supporting users, and keeping the project active. Over the years, Ian has moved from
+				hist role as a fledgling developer to starting multiple companies focusing on building unique internet based services for customers worldwide.</li>
 			<li><strong>Larry Adams</strong> (TheWitness) joined the Cacti Group in June of 2004 right before the major 0.8.6 release. He helped bring the new poller
-				architecture to life by providing ideas, writing code, and managing an active group of beta testers. Larry continues
-				to focus on the poller as well as RRDTool integration and SNMP in a Windows environment.</li>
+				architecture to life by providing ideas, writing code, and managing an active group of beta testers. Larry, has since moved on to creating unique Cacti based solutions for HPC customers across the globe.  Over the years, Larry has developed dozens of Cacti add-ons, and now leads a group of Cacti development and support personel where he works today.</li>
 			<li><strong>Tony Roman</strong> (rony) joined the Cacti Group in October of 2004 offering years of programming and system administration
-				experience to the project.</li>
-			<li><strong>J.P. Pasnak, CD</strong> (Linegod) joined the Cacti Group in August of 2005.  He is contributing to releases and maintains the <a href="http://docs.cacti.net/">Documentation System</a>.
+				experience to the project.  Tony has gone on to holding key roles with his employers and uses Cacti every day at his current employer.</li>
+			<li><strong>J.P. Pasnak, CD</strong> (Linegod) joined the Cacti Group in August of 2005.  He is contributing to releases and maintains the <a href="http://docs.cacti.net/">Documentation System</a>  Jeff is one of our true leaders on the team.  He plays a diminished role, but when he speaks, the rest of the team listen, if for nothing else, but to prep the pallete for another swig of hard cider and shephards pie!
 			</li>
 			<li><strong>Jimmy Conner</strong> (cigamit) joined the Cacti Group in January of 2006.  He is currently in charge of the Plug-in Architecture, the new events system and maintaining many of the popular plugins.
 			</li>
-			<li><strong>Reinhard Scheck</strong> (gandalf) joined the Cacti team in June of 2007.  Reinhard is focusing on howto's and graph presentation as well as being the 'European Arm' of the Cacti Group.
+			<li><strong>Reinhard Scheck</strong> (gandalf) joined the Cacti team in June of 2007.  Reinhard is focusing on howto's and graph presentation as well as being the 'European Arm' of the Cacti Group.  He is our RRDtool expert on the team.
 			</li>
-			<li><strong>Andreas Braun</strong> (browniebraun) joined the Cacti Group in July of 2009. As the second european developer Andreas is focusing on internationalization of Cacti.
+			<li><strong>Andreas Braun</strong> (browniebraun) joined the Cacti Group in July of 2009. As the second european developer Andreas is focusing on internationalization of Cacti.  Andreas has developed many unique plugins for his current employer, and enjoys interacting with the team.
 			</li>
 		</ul>
 		</p>
@@ -85,20 +84,16 @@ modify it under the terms of the GNU General Public License
 as published by the Free Software Foundation; either version 2
 of the License, or (at your option) any later version.</tt></p>
 
-<p><tt>This program is distributed in the hope that it will be useful,
+		<p><tt>This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.</tt></p>
-
-		<p><strong>Cacti Variables</a></strong><span style="font-family: monospace; font-size: 10px;"><br>
-		<strong>Operating System:</strong> <?php print $config['cacti_server_os'];?><br>
-		<strong>PHP SNMP Support:</strong> <?php print $config['php_snmp_support'] ? 'yes' : 'no';?><br>
-		</span></p>
 	</td>
 </tr>
 
 <?php
 html_end_box();
+
 bottom_footer();
 
 

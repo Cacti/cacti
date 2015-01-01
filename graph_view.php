@@ -61,7 +61,7 @@ if (!isset($_REQUEST['action'])) {
 	}
 }
 
-if ($_REQUEST['action'] != 'tree_content' && $_REQUEST['action'] != 'get_node') {
+if ($_REQUEST['action'] != 'get_node' && $_REQUEST['action'] != 'tree_content') {
 	$_SESSION['sess_graph_view_action'] = $_REQUEST['action'];
 }
 
@@ -91,6 +91,10 @@ case 'get_node':
 	if (isset($_REQUEST['tree_id'])) {
 		if ($_REQUEST['tree_id'] == 'default' || $_REQUEST['tree_id'] == 'undefined') {
 			$tree_id = read_graph_config_option('default_tree_id');
+		}elseif ($_REQUEST['tree_id'] == 0 && strpos($_REQUEST['id'], 'tree_anchor') >= 0) {
+			$ndata = explode('-', $_REQUEST['id']);
+			$tree_id = $ndata[1];
+			input_validate_input_number($tree_id);
 		}else{
 			$tree_id = $_REQUEST['tree_id'];
 			input_validate_input_number($tree_id);
@@ -101,7 +105,7 @@ case 'get_node':
 
 	if (isset($_REQUEST['id']) && $_REQUEST['id'] != '#') {
 		if (substr_count($_REQUEST['id'], 'tree_anchor')) {
-			$parent = 0;
+			$parent = -1;
 		}else{
 			$ndata = explode('_', $_REQUEST['id']);
 

@@ -538,31 +538,42 @@ function get_allowed_tree_content($tree_id, $parent = 0, $sql_where = '', $order
 		$sql_where = "WHERE gti.local_graph_id = 0 AND gti.parent = $parent AND gti.graph_tree_id = $tree_id";
 	}
 
-	$hierarchy = db_fetch_assoc("SELECT gti.id, gti.title, gti.host_id, 
-		gti.local_graph_id, gti.host_grouping_type, h.description AS hostname
-		FROM graph_tree_items AS gti
-		INNER JOIN graph_tree AS gt
-		ON gt.id = gti.graph_tree_id
-		LEFT JOIN host AS h
-		ON h.id = gti.host_id
-		$sql_where
-		ORDER BY gti.position");
+	if ($tree_id > 0) {
+		$heirarchy = db_fetch_assoc("SELECT gti.graph_tree_id AS tree_id, gti.id, gti.title, gti.host_id, 
+			gti.local_graph_id, gti.host_grouping_type, h.description AS hostname
+			FROM graph_tree_items AS gti
+			INNER JOIN graph_tree AS gt
+			ON gt.id = gti.graph_tree_id
+			LEFT JOIN host AS h
+			ON h.id = gti.host_id
+			$sql_where
+			ORDER BY gti.position");
+	}else{
+		$heirarchy = db_fetch_assoc("SELECT gt.id AS tree_id, '0' AS id, gt.name AS title, '0' AS host_id, 
+			'0' AS local_graph_id, '1' AS host_grouping_type, '' AS hostname
+			FROM graph_tree AS gt
+			ORDER BY gt.name");
+	}
 
 	if (read_config_option('auth_method') != 0) {
-		$new_hierarchy = array();
-		if (sizeof($hierarchy)) {
-		foreach($hierarchy as $h) {
+		$new_heirarchy = array();
+		if (sizeof($heirarchy)) {
+		foreach($heirarchy as $h) {
 			if ($h['host_id'] > 0) {
 				if (is_device_allowed($h['host_id'])) {
-					$new_hierarchy[] = $h;
+					$new_heirarchy[] = $h;
+				}
+			}elseif ($h['id'] == 0) {
+				if (is_tree_allowed($h['tree_id'])) {
+					$new_heirarchy[] = $h;
 				}
 			}else{
-				$new_hierarchy[] = $h;
+				$new_heirarchy[] = $h;
 			}
 		}
 		}
 
-		return $new_hierarchy;
+		return $new_heirarchy;
 	}else{
 		return $heirarchy;
 	}

@@ -371,16 +371,28 @@ function api_tree_get_main($tree_id, $parent = 0) {
 	if ($parent == -1) {
 		$parent  = 0;
 		$is_root = true;
-		$name = db_fetch_cell("SELECT name FROM graph_tree WHERE id=$tree_id");
-		print "<ul><li class='jstree-closed' id='tree_anchor-$tree_id'><a href='" . htmlspecialchars('graph_view.php?action=tree&tree_id=' . $tree_id . '&leaf_id=&host_group_data='). "'>" . htmlspecialchars($name) . "</a>\n";
-	}
 
-	$heirarchy = draw_dhtml_tree_level_graphing($tree_id, $parent);
+		if ($tree_id > 0) {
+			$name = db_fetch_cell("SELECT name FROM graph_tree WHERE id=$tree_id");
 
-	if (sizeof($heirarchy)) {
-	foreach($heirarchy as $h) {
-		print $h;
-	}
+			print "<ul><li class='jstree-closed' id='tree_anchor-$tree_id'><a href='" . htmlspecialchars('graph_view.php?action=tree&tree_id=' . $tree_id . '&leaf_id=&host_group_data='). "'>" . htmlspecialchars($name) . "</a>\n";
+
+			$heirarchy = draw_dhtml_tree_level_graphing($tree_id, $parent);
+
+			if (sizeof($heirarchy)) {
+			foreach($heirarchy as $h) {
+				print $h;
+			}
+			}
+		}else{
+			$heirarchy = draw_dhtml_tree_level_graphing($tree_id, $parent);
+
+			if (sizeof($heirarchy)) {
+			foreach($heirarchy as $h) {
+				print $h;
+			}
+			}
+		}
 	}
 
 	if ($is_root) {
