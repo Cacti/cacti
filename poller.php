@@ -412,7 +412,7 @@ while ($poller_runs_completed < $poller_runs) {
 			/* no re-index or Rechache present on this run
 			 * in case, we have more PCOMMANDS than recaching, this has to be moved to poller_commands.php
 			 * but then we'll have to call it each time to make sure, stats are updated */
-			db_execute("REPLACE INTO settings (name,value) VALUES ('stats_recache','RecacheTime:0.0 HostsRecached:0')");
+			db_execute("REPLACE INTO settings (name,value) VALUES ('stats_recache','RecacheTime:0.0 DevicesRecached:0')");
 		}
 
 		/* graph export */
@@ -483,8 +483,8 @@ function log_cacti_stats($loop_start, $method, $concurrent_processes, $max_threa
 		'Method:%s ' .
 		'Processes:%s ' .
 		'Threads:%s ' .
-		'Hosts:%s ' .
-		'HostsPerProcess:%s ' .
+		'Devicess:%s ' .
+		'DevicesPerProcess:%s ' .
 		'DataSources:%s ' .
 		'RRDsProcessed:%s',
 		round($loop_end-$loop_start,4),

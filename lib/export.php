@@ -474,7 +474,7 @@ function host_template_to_xml($host_template_id) {
 	if (empty($host_template["id"])) {
 		$export_errors++;
 		raise_message(28);
-		cacti_log("ERROR: Invalid Host Template found during Export.  Please run database repair script to identify and/or correct.", false, "WEBUI");
+		cacti_log("ERROR: Invalid Device Template found during Export.  Please run database repair script to identify and/or correct.", false, "WEBUI");
 		return;
 	}
 

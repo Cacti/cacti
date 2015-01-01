@@ -1785,8 +1785,7 @@ function user_group() {
 
 			form_alternate_row('line' . $group['id'], true);
 			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars('user_group_admin.php?action=edit&tab=general&id=' . $group['id']) . "'>" .
-			(strlen(get_request_var_request('filter')) ? eregi_replace('(' . preg_quote(get_request_var_request('filter')) . ')', "<span class='filteredValue'>\\1</span>",  htmlspecialchars($group['name'])) : htmlspecialchars($group['name']))
-			, $group['id']);
+			(strlen(get_request_var_request('filter')) ? eregi_replace('(' . preg_quote(get_request_var_request('filter')) . ')', "<span class='filteredValue'>\\1</span>",  htmlspecialchars($group['name'])) : htmlspecialchars($group['name'])) . '</a>', $group['id']);
 			form_selectable_cell(($group['members'] > 0 ? number_format($group['members']):'None'), $group['id']);
 			form_selectable_cell((strlen(get_request_var_request('filter')) ? eregi_replace('(' . preg_quote(get_request_var_request('filter')) . ')', "<span class='filteredValue'>\\1</span>", htmlspecialchars($group['description'])) : htmlspecialchars($group['description'])), $group['id']);
 			form_selectable_cell(($group['policy_graphs'] == 1 ? 'ALLOW':'DENY'), $group['id']);
@@ -2394,7 +2393,7 @@ function template_filter($header_label) {
 		<form id='forms' method='post' action='user_group_admin.php'>
 			<table cellpadding="2" cellspacing="0">
 				<tr>
-					<td  width='55'>
+					<td  width='50'>
 						Search
 					</td>
 					<td>
@@ -2484,11 +2483,11 @@ function tree_filter($header_label) {
 		<form id='forms' method='post' action='user_group_admin.php'>
 			<table cellpadding="2" cellspacing="0">
 				<tr>
-					<td width='55'>
+					<td width='50'>
 						Search
 					</td>
 					<td>
-						<input type='text' id='filter' size='25' value="<?php print htmlspecialchars(get_request_var_request('filter'));?>" onChange='applyFilter()'>
+						<input type='text' name='filter' id='filter' size='25' value="<?php print htmlspecialchars(get_request_var_request('filter'));?>" onChange='applyFilter()'>
 					</td>
 					<td>
 						Trees
@@ -2574,11 +2573,11 @@ function member_filter($header_label) {
 		<form id='forms' method='post' action='user_group_admin.php'>
 			<table cellpadding="2" cellspacing="0">
 				<tr>
-					<td width='55'>
+					<td width='50'>
 						Search
 					</td>
 					<td>
-						<input type='text' id='filter' size='25' value="<?php print htmlspecialchars(get_request_var_request('filter'));?>" onChange='applyFilter()'>
+						<input type='text' id='filter' name='filter' size='25' value="<?php print htmlspecialchars(get_request_var_request('filter'));?>" onChange='applyFilter()'>
 					</td>
 					<td>
 						Users

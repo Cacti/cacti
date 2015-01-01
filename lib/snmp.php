@@ -70,7 +70,7 @@ function cacti_snmp_get($hostname, $community, $oid, $version, $username, $passw
 		}
 
 		if ($snmp_value === false) {
-			cacti_log("WARNING: PHP-SNMP Get Timeout for Host:'$hostname', and OID:'$oid'", false);
+			cacti_log("WARNING: PHP-SNMP Get Timeout for Device:'$hostname', and OID:'$oid'", false);
 		}
 	}else {
 		$snmp_value = '';
@@ -136,7 +136,7 @@ function cacti_snmp_get($hostname, $community, $oid, $version, $username, $passw
 	}
 
 	if (substr_count($snmp_value, "Timeout:")) {
-		cacti_log("WARNING: NET-SNMP Get Timeout for Host:'$hostname', and OID:'$oid'", false);
+		cacti_log("WARNING: NET-SNMP Get Timeout for Device:'$hostname', and OID:'$oid'", false);
 	}
 
 	/* strip out non-snmp data */
@@ -186,7 +186,7 @@ function cacti_snmp_getnext($hostname, $community, $oid, $version, $username, $p
 		}
 
 		if ($snmp_value === false) {
-			cacti_log("WARNING: SNMP GetNext Timeout for Host:'$hostname', and OID:'$oid'", false);
+			cacti_log("WARNING: SNMP GetNext Timeout for Device:'$hostname', and OID:'$oid'", false);
 		}
 	}else {
 		$snmp_value = '';
@@ -253,7 +253,7 @@ function cacti_snmp_getnext($hostname, $community, $oid, $version, $username, $p
 	}
 
 	if (substr_count($snmp_value, "Timeout:")) {
-		cacti_log("WARNING: SNMP GetNext Timeout for Host:'$hostname', and OID:'$oid'", false);
+		cacti_log("WARNING: SNMP GetNext Timeout for Device:'$hostname', and OID:'$oid'", false);
 	}
 
 	/* strip out non-snmp data */
@@ -331,7 +331,7 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $username, $pass
 		}
 
 		if ($temp_array === false) {
-			cacti_log("WARNING: SNMP Walk Timeout for Host:'$hostname', and OID:'$oid'", false);
+			cacti_log("WARNING: SNMP Walk Timeout for Device:'$hostname', and OID:'$oid'", false);
 		}
 
 		/* check for bad entries */
@@ -413,7 +413,7 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $username, $pass
 		}
 
 		if (substr_count(implode(" ", $temp_array), "Timeout:")) {
-			cacti_log("WARNING: SNMP Walk Timeout for Host:'$hostname', and OID:'$oid'", false);
+			cacti_log("WARNING: SNMP Walk Timeout for Device:'$hostname', and OID:'$oid'", false);
 		}
 
 		/* check for bad entries */

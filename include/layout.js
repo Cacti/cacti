@@ -446,6 +446,12 @@ function setupSortable() {
 			});
 		}
 	});
+
+	// Add nice search filter to filters
+	$('input[id="filter"]').after("<i class='fa fa-search filter'/>").attr('autocomplete', 'off').attr('placeholder', 'Enter a search term');
+
+	// Setup tool tips for all titles to match the jQueryUI theme
+	$('th').tooltip();
 }
 
 function setupBreadcrumbs() {

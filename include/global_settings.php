@@ -333,7 +333,7 @@ $settings = array(
 			),
 		'graph_auth_method' => array(
 			'friendly_name' => 'Graph Permission Method',
-			'description' => 'There are two methods for determining a Users Graph Permissions.  The first is "Permissive".  Under the "Permissive" setting, a User only needs access to either the Graph, Host or Graph Template to gain access to the Graphs that apply to them.  Under "Restrictive", the User must have access to the Graph, the Host, and the Graph Template to gain access to the Graph.',
+			'description' => 'There are two methods for determining a Users Graph Permissions.  The first is "Permissive".  Under the "Permissive" setting, a User only needs access to either the Graph, Device or Graph Template to gain access to the Graphs that apply to them.  Under "Restrictive", the User must have access to the Graph, the Device, and the Graph Template to gain access to the Graph.',
 			'method' => 'drop_array',
 			'default' => '1',
 			'array' => array('1' => 'Permissive', '2' => 'Restrictive')
@@ -416,7 +416,7 @@ $settings = array(
 			'default' => '1'
 			),
 		'export_tree_expand_hosts' => array(
-			'friendly_name' => 'Expand Tree Hosts',
+			'friendly_name' => 'Expand Tree Devices',
 			'description' => 'This settings determines if the tree hosts will be expanded or not.  If set to expanded, each host will have a sub-folder containing either data templates or data query items.',
 			'method' => 'drop_array',
 			'default' => 'off',
@@ -809,11 +809,11 @@ $settings = array(
 			'size' => '5'
 			),
 		'availability_header' => array(
-			'friendly_name' => 'Host Availability Settings',
+			'friendly_name' => 'Device Availability Settings',
 			'method' => 'spacer',
 			),
 		'availability_method' => array(
-			'friendly_name' => 'Downed Host Detection',
+			'friendly_name' => 'Downed Device Detection',
 			'description' => 'The method Cacti will use to determine if a host is available for polling.  <br><i>NOTE: It is recommended that, at a minimum, SNMP always be selected.</i>',
 			'method' => 'drop_array',
 			'default' => AVAIL_SNMP,
@@ -851,7 +851,7 @@ $settings = array(
 			'size' => '5'
 			),
 		'updown_header' => array(
-			'friendly_name' => 'Host Up/Down Settings',
+			'friendly_name' => 'Device Up/Down Settings',
 			'collapsible' => 'true',
 			'method' => 'spacer',
 			),
@@ -1621,7 +1621,7 @@ $settings_graphs = array(
 			'array' => $graphs_per_page
 			),
 		'expand_hosts' => array(
-			'friendly_name' => 'Expand Hosts',
+			'friendly_name' => 'Expand Devices',
 			'description' => 'Choose whether to expand the Graph Templates and Data Queries used by a Device on Tree.',
 			'method' => 'checkbox',
 			'default' => ''

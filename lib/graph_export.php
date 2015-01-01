@@ -1110,16 +1110,16 @@ function build_html_file($leaf, $type = "", $array_data = array(), $snmp_index =
 		fwrite($fp, "<strong>Tree:</strong> " . get_tree_name($leaf["tree_id"]) . "</td></tr><tr bgcolor='#a9b7cb'><td colspan='3' class='textHeaderDark'><strong>Leaf:</strong> " . $leaf["title"] . " - Associated Graphs" . "</td></tr><tr>");
 		break;
 	case "host":
-		fwrite($fp, "<strong>Host:</strong> " . $leaf["hostname"] . " - Associated Graphs" . "</td></tr><tr>");
+		fwrite($fp, "<strong>Device:</strong> " . $leaf["hostname"] . " - Associated Graphs" . "</td></tr><tr>");
 		break;
 	case "gt":
-		fwrite($fp, "<strong>Host:</strong> " . $leaf["hostname"] . "</td></tr><tr bgcolor='#a9b7cb'><td colspan='3' class='textHeaderDark'><strong>Graph Template:</strong> " . $array_data["name"] . " - Associated Graphs" . "</td></tr><tr>");
+		fwrite($fp, "<strong>Device:</strong> " . $leaf["hostname"] . "</td></tr><tr bgcolor='#a9b7cb'><td colspan='3' class='textHeaderDark'><strong>Graph Template:</strong> " . $array_data["name"] . " - Associated Graphs" . "</td></tr><tr>");
 		break;
 	case "dq":
-		fwrite($fp, "<strong>Host:</strong> " . $leaf["hostname"] . "</td></tr><tr bgcolor='#a9b7cb'><td colspan='3' class='textHeaderDark'><strong>Data Query:</strong> " . $array_data["name"] . " - Associated Graphs" . "</td></tr><tr>");
+		fwrite($fp, "<strong>Device:</strong> " . $leaf["hostname"] . "</td></tr><tr bgcolor='#a9b7cb'><td colspan='3' class='textHeaderDark'><strong>Data Query:</strong> " . $array_data["name"] . " - Associated Graphs" . "</td></tr><tr>");
 		break;
 	case "dqi":
-		fwrite($fp, "<strong>Host:</strong> " . $leaf["hostname"] . "</td></tr><tr bgcolor='#a9b7cb'><td colspan='3' class='textHeaderDark'><strong>Data Query Index:</strong> " . $array_data["name"] . " " . $snmp_index . " - Graph" . "</td></tr><tr>");
+		fwrite($fp, "<strong>Device:</strong> " . $leaf["hostname"] . "</td></tr><tr bgcolor='#a9b7cb'><td colspan='3' class='textHeaderDark'><strong>Data Query Index:</strong> " . $array_data["name"] . " " . $snmp_index . " - Graph" . "</td></tr><tr>");
 		break;
 	}
 
@@ -1665,7 +1665,7 @@ function create_dhtml_tree_export($tree_id) {
 						$lasthost = true;
 						$i++;
 						$clean_id = clean_up_export_name($leaf["hostname"] . "_" . $leaf["id"]);
-						$dhtml_tree[$i] = "\t\t\t\t<li id='$clean_id' data-jstree='{ \"icon\" : \"./server.png\" }'><a href=\"" . $clean_id . ".html\">Host: " . htmlspecialchars($leaf["hostname"]) . "</a>\n";
+						$dhtml_tree[$i] = "\t\t\t\t<li id='$clean_id' data-jstree='{ \"icon\" : \"./server.png\" }'><a href=\"" . $clean_id . ".html\">Device: " . htmlspecialchars($leaf["hostname"]) . "</a>\n";
 
 						if (read_config_option("export_tree_expand_hosts") == "on") {
 							$i++;

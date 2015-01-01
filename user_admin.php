@@ -629,16 +629,16 @@ function get_permission_string(&$graph, &$policies) {
 		if ($p['policy_hosts'] == 1) {
 			if ($graph["user$i"] == '') {
 				if ($method == 'loose') {
-					$grantStr = $grantStr . (strlen($grantStr) ? ', ':'') . 'Host:(' . ucfirst($p['type']) . ($p['type'] != 'user' ? '/' . $p['name'] . ')':')');
+					$grantStr = $grantStr . (strlen($grantStr) ? ', ':'') . 'Device:(' . ucfirst($p['type']) . ($p['type'] != 'user' ? '/' . $p['name'] . ')':')');
 				}else{
 					$allowed++;
 				}
 			}else{
-				$rejectStr = $rejectStr . (strlen($rejectStr) ? ', ':'') . 'Host:(' . ucfirst($p['type']) . ($p['type'] != 'user' ? '/' . $p['name'] . ')':')');
+				$rejectStr = $rejectStr . (strlen($rejectStr) ? ', ':'') . 'Device:(' . ucfirst($p['type']) . ($p['type'] != 'user' ? '/' . $p['name'] . ')':')');
 			}
 		}elseif ($graph["user$i"] != '') {
 			if ($method == 'loose') {
-				$grantStr = $grantStr . (strlen($grantStr) ? ', ':'') . 'Host:(' . ucfirst($p['type']) . ($p['type'] != 'user' ? '/' . $p['name'] . ')':')');
+				$grantStr = $grantStr . (strlen($grantStr) ? ', ':'') . 'Device:(' . ucfirst($p['type']) . ($p['type'] != 'user' ? '/' . $p['name'] . ')':')');
 			}else{
 				$allowed++;
 			}
@@ -671,12 +671,12 @@ function get_permission_string(&$graph, &$policies) {
 
 		if ($method != 'loose') {
 			if ($allowed == 2) {
-				$grantStr = $grantStr . (strlen($grantStr) ? ', ':'') . 'Host+Template:(' . ucfirst($p['type']) . ($p['type'] != 'user' ? '/' . $p['name'] . ')':')');
+				$grantStr = $grantStr . (strlen($grantStr) ? ', ':'') . 'Device+Template:(' . ucfirst($p['type']) . ($p['type'] != 'user' ? '/' . $p['name'] . ')':')');
 			}else{
-				$rejectStr = $rejectStr . (strlen($rejectStr) ? ', ':'') . 'Host+Template:(' . ucfirst($p['type']) . ($p['type'] != 'user' ? '/' . $p['name'] . ')':')');
+				$rejectStr = $rejectStr . (strlen($rejectStr) ? ', ':'') . 'Device+Template:(' . ucfirst($p['type']) . ($p['type'] != 'user' ? '/' . $p['name'] . ')':')');
 			}
 		}elseif ($reject == 3) {
-			$rejectStr = $rejectStr . (strlen($rejectStr) ? ', ':'') . 'Graph+Host+Template:(' . ucfirst($p['type']) . ($p['type'] != 'user' ? '/' . $p['name'] . ')':')');
+			$rejectStr = $rejectStr . (strlen($rejectStr) ? ', ':'') . 'Graph+Device+Template:(' . ucfirst($p['type']) . ($p['type'] != 'user' ? '/' . $p['name'] . ')':')');
 		}
 	}
 
@@ -977,11 +977,11 @@ function graph_perms_edit($tab, $header_label) {
 
 		$groups = db_fetch_assoc($sql_query);
 
-		$nav = html_nav_bar('user_admin.php?action=user_edit&tab=permsgr&id=' . get_request_var_request('id'), MAX_DISPLAY_PAGES, get_request_var_request('page'), $rows, $total_rows, 11, 'Hosts', 'page', 'main');
+		$nav = html_nav_bar('user_admin.php?action=user_edit&tab=permsgr&id=' . get_request_var_request('id'), MAX_DISPLAY_PAGES, get_request_var_request('page'), $rows, $total_rows, 11, 'Devices', 'page', 'main');
 	
 		print $nav;
 
-		$display_text = array('Name', 'Description', 'Member', 'ID', 'Policies (Graph/Host/Template)', 'Enabled');
+		$display_text = array('Name', 'Description', 'Member', 'ID', 'Policies (Graph/Device/Template)', 'Enabled');
 
 		html_header_checkbox($display_text, false);
 
@@ -1106,7 +1106,7 @@ function graph_perms_edit($tab, $header_label) {
 
 		$hosts = db_fetch_assoc($sql_query);
 
-		$nav = html_nav_bar('user_admin.php?action=user_edit&tab=permsd&id=' . get_request_var_request('id'), MAX_DISPLAY_PAGES, get_request_var_request('page'), $rows, $total_rows, 11, 'Hosts', 'page', 'main');
+		$nav = html_nav_bar('user_admin.php?action=user_edit&tab=permsd&id=' . get_request_var_request('id'), MAX_DISPLAY_PAGES, get_request_var_request('page'), $rows, $total_rows, 11, 'Devices', 'page', 'main');
 	
 		print $nav;
 
@@ -1900,7 +1900,7 @@ function user() {
 		<form id="form_user_admin" action="user_admin.php">
 			<table cellpadding="2" cellspacing="0">
 				<tr>
-					<td width="55">
+					<td width="50">
 						Search
 					</td>
 					<td>

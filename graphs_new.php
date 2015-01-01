@@ -430,7 +430,7 @@ function graphs() {
 	<form name='form_graphs_new' action='graphs_new.php'>
 	<table width='100%' cellpadding='2' cellspacing='0' border='0' align='left'>
 		<tr>
-			<td width='55'>
+			<td width='50'>
 				Device
 			</td>
 			<td width='1'>
@@ -472,14 +472,7 @@ function graphs() {
 					?>
 				</select>
 			</td>
-			<td rowspan='3' class='textInfo' align='right' valign='top'>
-				<span class='linkMarker'>*</span><a href='<?php print htmlspecialchars('host.php?action=edit&id=' . $_REQUEST['host_id']);?>'>Edit this Host</a><br>
-				<span class='linkMarker'>*</span><a href='<?php print htmlspecialchars('host.php?action=edit');?>'>Create New Host</a><br>
-				<?php api_plugin_hook('graphs_new_top_links'); ?>
-			</td>
-		</tr>
-		<tr>
-			<td width='55'>
+			<td width='50'>
 				Rows
 			</td>
 			<td>
@@ -493,10 +486,15 @@ function graphs() {
 					?>
 				</select>
 			</td>
+			<td rowspan='3' class='textInfo' align='right' valign='top'>
+				<span class='linkMarker'>*</span><a href='<?php print htmlspecialchars('host.php?action=edit&id=' . $_REQUEST['host_id']);?>'>Edit this Device</a><br>
+				<span class='linkMarker'>*</span><a href='<?php print htmlspecialchars('host.php?action=edit');?>'>Create New Device</a><br>
+				<?php api_plugin_hook('graphs_new_top_links'); ?>
+			</td>
 		</tr>
 	<?php if ($_REQUEST['graph_type'] > 0) {?>
 		<tr>
-			<td width='55'>
+			<td width='50'>
 				Search
 			</td>
 			<td>

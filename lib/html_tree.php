@@ -228,7 +228,7 @@ function draw_dhtml_tree_level($tree_id, $parent = 0, $graphing = false) {
 		$dhtml_tree[] = "\t\t\t<ul>\n";
 		foreach ($hierarchy as $leaf) {
 			if ($leaf['host_id'] > 0) {  //It's a host
-				$dhtml_tree[] = "\t\t\t\t<li id='tbranch:" . $leaf['id'] . "_thost:" . $leaf['host_id'] . "' data-jstree='{ \"type\" : \"device\" }'>Host: " . htmlspecialchars($leaf['hostname']) . "\n";
+				$dhtml_tree[] = "\t\t\t\t<li id='tbranch:" . $leaf['id'] . "_thost:" . $leaf['host_id'] . "' data-jstree='{ \"type\" : \"device\" }'>Device: " . htmlspecialchars($leaf['hostname']) . "\n";
 				$dhtml_tree[] = "\t\t\t\t</li>\n";
 			}elseif ($leaf['local_graph_id'] > 0) {
 				$dhtml_tree[] = "\t\t\t\t<li id='tbranch:" . $leaf['id'] . "_tgraph:" . $leaf['local_graph_id'] . "' data-jstree='{ \"type\" : \"graph\" }'>Graph: " . htmlspecialchars(get_graph_title($leaf['local_graph_id'])) . "</a>\n";
@@ -260,7 +260,7 @@ function draw_dhtml_tree_level_graphing($tree_id, $parent = 0) {
 		$dhtml_tree[] = "\t\t\t<ul>\n";
 		foreach ($hierarchy as $leaf) {
 			if ($leaf['host_id'] > 0) {  //It's a host
-				$dhtml_tree[] = "\t\t\t\t<li id='tbranch-" . $leaf['id'] . "' data-jstree='{ \"icon\" : \"" . $config['url_path'] . "images/server.png\" }'><a href=\"" . htmlspecialchars('graph_view.php?action=tree&tree_id=' . $tree['id'] . '&leaf_id=' . $leaf['id'] . '&host_group_data=') . '">Host: ' . htmlspecialchars($leaf['hostname']) . "</a>\n";
+				$dhtml_tree[] = "\t\t\t\t<li id='tbranch-" . $leaf['id'] . "' data-jstree='{ \"icon\" : \"" . $config['url_path'] . "images/server.png\" }'><a href=\"" . htmlspecialchars('graph_view.php?action=tree&tree_id=' . $tree['id'] . '&leaf_id=' . $leaf['id'] . '&host_group_data=') . '">Device: ' . htmlspecialchars($leaf['hostname']) . "</a>\n";
 
 				if (read_graph_config_option('expand_hosts') == 'on') {
 					$dhtml_tree[] = "\t\t\t\t\t<ul>\n";
@@ -453,7 +453,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 
 	if (!empty($tree_name)) { $title .= $title_delimeter . '<strong>Tree:</strong>' . htmlspecialchars($tree_name); $title_delimeter = '-> '; }
 	if (!empty($leaf_name)) { $title .= $title_delimeter . '<strong>Leaf:</strong>' . htmlspecialchars($leaf_name); $title_delimeter = '-> '; }
-	if (!empty($host_name)) { $title .= $title_delimeter . '<strong>Host:</strong>' . htmlspecialchars($host_name); $title_delimeter = '-> '; }
+	if (!empty($host_name)) { $title .= $title_delimeter . '<strong>Device:</strong>' . htmlspecialchars($host_name); $title_delimeter = '-> '; }
 	if (!empty($host_group_data_name)) { $title .= $title_delimeter . " $host_group_data_name"; $title_delimeter = '-> '; }
 
 	validate_tree_vars($tree_id, $leaf_id, $host_group_data);
@@ -467,8 +467,8 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 			<form name='form_timespan_selector' method='post' action='graph_view.php'>
 				<table cellpadding='2' cellspacing='0'>
 					<tr>
-						<td width='55'>
-							Presets:
+						<td width='50'>
+							Presets
 						</td>
 						<td>
 							<select id='predefined_timespan' name='predefined_timespan' onChange='spanTime()'>
@@ -495,7 +495,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 							</select>
 						</td>
 						<td>
-							From:
+							From
 						</td>
 						<td>
 							<input type='text' name='date1' id='date1' title='Graph Begin Timestamp' size='15' value='<?php print (isset($_SESSION['sess_current_date1']) ? $_SESSION['sess_current_date1'] : '');?>'>
@@ -504,7 +504,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 							<input type='image' src='images/calendar.gif' align='middle' alt='Start date selector' title='Start date selector' onclick="return showCalendar('date1');">
 						</td>
 						<td>
-							To:
+							To
 						</td>
 						<td>
 							<input type='text' name='date2' id='date2' title='Graph End Timestamp' size='15' value='<?php print (isset($_SESSION['sess_current_date2']) ? $_SESSION['sess_current_date2'] : '');?>'>
@@ -550,14 +550,14 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 		<form name='form_graph_view' method='post' onSubmit='changeFilter();return false'>
 			<table cellpadding='2' cellspacing='0'>
 				<tr>
-					<td width='55'>
-						Search:
+					<td width='50'>
+						Search
 					</td>
 					<td>
 						<input id='filter' size='30' name='filter' value='<?php print htmlspecialchars(get_request_var_request('filter'));?>'>
 					</td>
 					<td>
-						Graphs:
+						Graphs
 					</td>
 					<td>
 						<select name='graphs' id='graphs' onChange='changeFilter()'>
@@ -571,7 +571,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 						</select>
 					</td>
 					<td>
-						Columns:
+						Columns
 					</td>
 					<td>
 						<select name='columns' id='columns' onChange='changeFilter()' <?php print get_request_var_request('thumbnails') == 'false' ? 'disabled':'';?>>

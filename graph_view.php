@@ -247,7 +247,7 @@ case 'preview':
 		<form id='form_graph_view' style='margin:0px;padding:0px;' name='form_graph_view' method='post' action='graph_view.php?action=preview'>
 			<table cellpadding='2' cellspacing='0'>
 				<tr class='noprint'>
-					<td width='55'>
+					<td width='50'>
 						Device
 					</td>
 					<td>
@@ -402,8 +402,8 @@ case 'preview':
 			<form style='margin:0px;padding:0px;' name='form_timespan_selector' action='graph_view.php?action=preview' method='post' action='graph_view.php'>
 				<table cellpadding='2' cellspacing='0'>
 					<tr>
-						<td width='55'>
-							Presets:
+						<td width='50'>
+							Presets
 						</td>
 						<td>
 							<select id='predefined_timespan' name='predefined_timespan' onChange='applyTimespanFilterChange(document.form_timespan_selector)'>
@@ -430,7 +430,7 @@ case 'preview':
 							</select>
 						</td>
 						<td>
-							From:
+							From
 						</td>
 						<td>
 							<input type='text' name='date1' id='date1' title='Graph Begin Timestamp' size='15' value='<?php print (isset($_SESSION['sess_current_date1']) ? $_SESSION['sess_current_date1'] : '');?>'>
@@ -439,7 +439,7 @@ case 'preview':
 							<input type='image' src='images/calendar.gif' align='middle' alt='Start date selector' title='Start date selector' onclick="return showCalendar('date1');">
 						</td>
 						<td>
-							To:
+							To
 						</td>
 						<td>
 							<input type='text' name='date2' id='date2' title='Graph End Timestamp' size='15' value='<?php print (isset($_SESSION['sess_current_date2']) ? $_SESSION['sess_current_date2'] : '');?>'>
@@ -667,8 +667,8 @@ case 'list':
 		<form id='form_graph_list' name='form_graph_list' method='post' action='graph_view.php?action=list'>
 			<table cellpadding='2' cellspacing='0' border='0'>
 				<tr class='noprint'>
-					<td width='55'>
-						Host:
+					<td width='50'>
+						Device
 					</td>
 					<td>
 						<select id='host_id' name='host_id' onChange='applyFilter()'>
@@ -684,7 +684,7 @@ case 'list':
 						</select>
 					</td>
 					<td>
-						Template:
+						Template
 					</td>
 					<td>
 						<select id='graph_template_id' name='graph_template_id' onChange='applyFilter()'>
@@ -702,7 +702,7 @@ case 'list':
 						</select>
 					</td>
 					<td>
-						Graphs:
+						Graphs
 					</td>
 					<td>
 						<select id='rows' name='rows' onChange='applyFilter()'>
@@ -716,7 +716,7 @@ case 'list':
 						</select>
 					</td>
 					<td>
-						Search:
+						Search
 					</td>
 					<td>
 						<input id='filter' type='text' name='filter' size='25' value='<?php print htmlspecialchars(get_request_var_request('filter'));?>'>
@@ -770,7 +770,7 @@ case 'list':
 
 	print $nav;
 
-	html_header_checkbox(array('Graph Title', 'Host', 'Graph Template', 'Graph Size'), false);
+	html_header_checkbox(array('Graph Title', 'Device', 'Graph Template', 'Graph Size'), false);
 
 	$i = 0;
 	if (sizeof($graphs)) {

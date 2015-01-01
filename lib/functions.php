@@ -789,25 +789,25 @@ function update_host_status($status, $host_id, &$hosts, &$ping, $ping_availabili
 		if (($hosts[$host_id]['status'] == HOST_UP) || ($hosts[$host_id]['status'] == HOST_RECOVERING)) {
 			/* log ping result if we are to use a ping for reachability testing */
 			if ($ping_availability == AVAIL_SNMP_AND_PING) {
-				cacti_log("Host[$host_id] PING: " . $ping->ping_response, $print_data_to_stdout);
-				cacti_log("Host[$host_id] SNMP: " . $ping->snmp_response, $print_data_to_stdout);
+				cacti_log("Device[$host_id] PING: " . $ping->ping_response, $print_data_to_stdout);
+				cacti_log("Device[$host_id] SNMP: " . $ping->snmp_response, $print_data_to_stdout);
 			} elseif ($ping_availability == AVAIL_SNMP) {
 				if (($hosts[$host_id]['snmp_community'] == '') && ($hosts[$host_id]['snmp_version'] != 3)) {
-					cacti_log("Host[$host_id] SNMP: Device does not require SNMP", $print_data_to_stdout);
+					cacti_log("Device[$host_id] SNMP: Device does not require SNMP", $print_data_to_stdout);
 				}else{
-					cacti_log("Host[$host_id] SNMP: " . $ping->snmp_response, $print_data_to_stdout);
+					cacti_log("Device[$host_id] SNMP: " . $ping->snmp_response, $print_data_to_stdout);
 				}
 			} else {
-				cacti_log("Host[$host_id] PING: " . $ping->ping_response, $print_data_to_stdout);
+				cacti_log("Device[$host_id] PING: " . $ping->ping_response, $print_data_to_stdout);
 			}
 		} else {
 			if ($ping_availability == AVAIL_SNMP_AND_PING) {
-				cacti_log("Host[$host_id] PING: " . $ping->ping_response, $print_data_to_stdout);
-				cacti_log("Host[$host_id] SNMP: " . $ping->snmp_response, $print_data_to_stdout);
+				cacti_log("Device[$host_id] PING: " . $ping->ping_response, $print_data_to_stdout);
+				cacti_log("Device[$host_id] SNMP: " . $ping->snmp_response, $print_data_to_stdout);
 			} elseif ($ping_availability == AVAIL_SNMP) {
-				cacti_log("Host[$host_id] SNMP: " . $ping->snmp_response, $print_data_to_stdout);
+				cacti_log("Device[$host_id] SNMP: " . $ping->snmp_response, $print_data_to_stdout);
 			} else {
-				cacti_log("Host[$host_id] PING: " . $ping->ping_response, $print_data_to_stdout);
+				cacti_log("Device[$host_id] PING: " . $ping->ping_response, $print_data_to_stdout);
 			}
 		}
 	}
@@ -815,9 +815,9 @@ function update_host_status($status, $host_id, &$hosts, &$ping, $ping_availabili
 	/* if there is supposed to be an event generated, do it */
 	if ($issue_log_message) {
 		if ($hosts[$host_id]['status'] == HOST_DOWN) {
-			cacti_log("Host[$host_id] ERROR: HOST EVENT: Host is DOWN Message: " . $hosts[$host_id]['status_last_error'], $print_data_to_stdout);
+			cacti_log("Device[$host_id] ERROR: HOST EVENT: Device is DOWN Message: " . $hosts[$host_id]['status_last_error'], $print_data_to_stdout);
 		} else {
-			cacti_log("Host[$host_id] NOTICE: HOST EVENT: Host Returned FROM DOWN State: ", $print_data_to_stdout);
+			cacti_log("Device[$host_id] NOTICE: HOST EVENT: Device Returned FROM DOWN State: ", $print_data_to_stdout);
 		}
 	}
 
@@ -1700,7 +1700,7 @@ function draw_navigation_text($type = 'url') {
 		'graph_templates_items.php:item_edit' => array('title' => 'Graph Template Items', 'mapping' => 'index.php:,graph_templates.php:,graph_templates.php:template_edit', 'url' => '', 'level' => '3'),
 		'graph_templates_inputs.php:input_edit' => array('title' => 'Graph Item Inputs', 'mapping' => 'index.php:,graph_templates.php:,graph_templates.php:template_edit', 'url' => '', 'level' => '3'),
 		'graph_templates_inputs.php:input_remove' => array('title' => '(Remove)', 'mapping' => 'index.php:,graph_templates.php:,graph_templates.php:template_edit', 'url' => '', 'level' => '3'),
-		'host_templates.php:' => array('title' => 'Host Templates', 'mapping' => 'index.php:', 'url' => 'host_templates.php', 'level' => '1'),
+		'host_templates.php:' => array('title' => 'Device Templates', 'mapping' => 'index.php:', 'url' => 'host_templates.php', 'level' => '1'),
 		'host_templates.php:edit' => array('title' => '(Edit)', 'mapping' => 'index.php:,host_templates.php:', 'url' => '', 'level' => '2'),
 		'host_templates.php:actions' => array('title' => 'Actions', 'mapping' => 'index.php:,host_templates.php:', 'url' => '', 'level' => '2'),
 		'graph_templates.php:actions' => array('title' => 'Actions', 'mapping' => 'index.php:,graph_templates.php:', 'url' => '', 'level' => '2'),
@@ -2497,7 +2497,7 @@ function email_test() {
 		$smtp_secure   = read_config_option('settings_smtp_secure');
 		$smtp_timeout  = read_config_option('settings_smtp_timeout');
 
-		$mail .= "<b>Host</b>: $smtp_host<br>";
+		$mail .= "<b>Device</b>: $smtp_host<br>";
 		$mail .= "<b>Port</b>: $smtp_port<br>";
 
 		if ($smtp_username != '' && $smtp_password != '') {

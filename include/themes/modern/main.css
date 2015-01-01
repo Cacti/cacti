@@ -33,6 +33,10 @@ th .ui-icon {
     top: 50%;
 }
 
+input, select {
+	padding: 3px;
+}
+
 .usermenudown {
 	background: transparent url('./../../../images/bullet_arrow_down.png') no-repeat center right;
 }
@@ -45,6 +49,17 @@ th .ui-icon {
 	padding-right:16px;
 	font-weight:bold;
 	cursor:pointer;
+}
+
+.filter {
+	position:relative;
+	left: -20px;
+	margin-right: -10px;
+	font-size: 13px !important;
+}
+
+input#filter {
+	padding-right: 24px;
 }
 
 .menuoptions {

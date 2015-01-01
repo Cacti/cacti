@@ -38,7 +38,7 @@ define('MAX_DISPLAY_PAGES', 21);
 $graph_actions = array(
 	1 => 'Delete',
 	2 => 'Change Graph Template',
-	5 => 'Change Host',
+	5 => 'Change Device',
 	6 => 'Reapply Suggested Names',
 	7 => 'Resize Graphs',
 	3 => 'Duplicate',
@@ -497,7 +497,7 @@ function form_actions() {
 					<td class='textArea'>
 						<p>Choose a new Device for these Graph(s) and click \"Continue\"</p>
 						<p><ul>$graph_list</ul></p>
-						<p><strong>New Host:</strong><br>"; form_dropdown('host_id',db_fetch_assoc("SELECT id,CONCAT_WS('',description,' (',hostname,')') as name FROM host ORDER BY description,hostname"),'name','id','','','0'); print "</p>
+						<p><strong>New Device:</strong><br>"; form_dropdown('host_id',db_fetch_assoc("SELECT id,CONCAT_WS('',description,' (',hostname,')') as name FROM host ORDER BY description,hostname"),'name','id','','','0'); print "</p>
 					</td>
 				</tr>\n
 				";
@@ -877,7 +877,7 @@ function graph_edit() {
 							?><span class="linkMarker">*<a href='<?php print htmlspecialchars('graph_templates.php?action=template_edit&id=' . (isset($graphs['graph_template_id']) ? $graphs['graph_template_id'] : '0'));?>'>Edit Graph Template.</a></span><br><?php
 						}
 						if (!empty($_GET['host_id']) || !empty($host_id)) {
-							?><span class="linkMarker">*<a href='<?php print htmlspecialchars('host.php?action=edit&id=' . (isset($_GET['host_id']) ? $_GET['host_id'] : $host_id));?>'>Edit Host.</a></span><br><?php
+							?><span class="linkMarker">*<a href='<?php print htmlspecialchars('host.php?action=edit&id=' . (isset($_GET['host_id']) ? $_GET['host_id'] : $host_id));?>'>Edit Device.</a></span><br><?php
 						}
 					?>
 				</td>
@@ -900,7 +900,7 @@ function graph_edit() {
 			),
 		'host_id' => array(
 			'method' => 'drop_sql',
-			'friendly_name' => 'Host',
+			'friendly_name' => 'Device',
 			'description' => 'Choose the host that this graph belongs to.',
 			'value' => (isset($_GET['host_id']) ? $_GET['host_id'] : $host_id),
 			'none_value' => 'None',
@@ -1204,6 +1204,8 @@ function graph() {
 						<input type="button" id='clear' name="clear_x" value="Clear" title="Clear Filters">
 					</td>
 				</tr>
+			</table>
+			<table cellpadding="2" cellspacing="0" border="0">
 				<tr>
 					<td width="50">
 						Search

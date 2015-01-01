@@ -89,7 +89,7 @@ $messages = array(
 		'message' => 'Data Template Not Found during Export.  Please run Database Repair Script to Identify.',
 		'type' => 'error'),
 	28 => array(
-		'message' => 'Host Template Not Found during Export.  Please run Database Repair Script to Identify.',
+		'message' => 'Device Template Not Found during Export.  Please run Database Repair Script to Identify.',
 		'type' => 'error'),
 	29 => array(
 		'message' => 'Data Query Not Found during Export.  Please run Database Repair Script to Identify.',
@@ -326,7 +326,7 @@ $tree_sort_types = array(
 $tree_item_types = array(
 	TREE_ITEM_TYPE_HEADER => 'Header',
 	TREE_ITEM_TYPE_GRAPH => 'Graph',
-	TREE_ITEM_TYPE_HOST => 'Host');
+	TREE_ITEM_TYPE_HOST => 'Device');
 
 $host_group_types = array(
 	HOST_GROUPING_GRAPH_TEMPLATE => 'Graph Template',
@@ -363,7 +363,7 @@ $menu = array(
 		),
 	'Templates' => array(
 		'graph_templates.php' => 'Graphs',
-		'host_templates.php' => 'Hosts',
+		'host_templates.php' => 'Devices',
 		'data_templates.php' => 'Data Sources'
 		),
 	'Presets' => array(
@@ -461,7 +461,7 @@ $user_auth_realms = array(
 	9 => 'Update Round Robin Archives',
 	10 => 'Update Graph Templates',
 	11 => 'Update Data Templates',
-	12 => 'Update Host Templates',
+	12 => 'Update Device Templates',
 	13 => 'Data Queries',
 	14 => 'Update CDEFs',
 	15 => 'Global Settings',
@@ -570,7 +570,7 @@ $hash_type_names = array(
 	'graph_template_item' => 'Graph Template Item',
 	'graph_template_input' => 'Graph Template Input',
 	'data_query' => 'Data Query',
-	'host_template' => 'Host Template',
+	'host_template' => 'Device Template',
 	'round_robin_archive' => 'Round Robin Archive');
 
 $host_struc = array(

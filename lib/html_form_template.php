@@ -119,7 +119,7 @@ function draw_nontemplated_fields_graph_item($graph_template_id, $local_graph_id
 		$struct_graph_item["task_item_id"]["sql"] = "SELECT
 			CONCAT_WS('',
 			case
-			WHEN host.description IS NULL THEN 'No Host - '
+			WHEN host.description IS NULL THEN 'No Device - '
 			when host.description IS NOT NULL THEN ''
 			end,data_template_data.name_cache,' (',data_template_rrd.data_source_name,')') AS name,
 			data_template_rrd.id

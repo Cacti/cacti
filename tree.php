@@ -542,7 +542,7 @@ function tree_edit() {
 
 		print "</td><td></td><td class='treeItemsArea'>\n";
 
-		html_start_box('<strong>Available Hosts</strong>', '100%', '', '3', 'center', '');
+		html_start_box('<strong>Available Devices</strong>', '100%', '', '3', 'center', '');
 		?>
 		<tr id='treeFilter' class='even noprint'>
 			<td>
@@ -1438,7 +1438,7 @@ function tree() {
 		'last_modified' => array('display' => 'Last Edited', 'align' => 'right', 'sort' => 'ASC'),
 		'modified_by' => array('display' => 'Edited By', 'align' => 'right', 'sort' => 'ASC'),
 		'branches' => array('display' => 'Branches', 'align' => 'right', 'sort' => 'DESC'),
-		'hosts' => array('display' => 'Hosts', 'align' => 'right', 'sort' => 'DESC'),
+		'hosts' => array('display' => 'Devices', 'align' => 'right', 'sort' => 'DESC'),
 		'graphs' => array('display' => 'Graphs', 'align' => 'right', 'sort' => 'DESC'));
 
 	html_header_sort_checkbox($display_text, get_request_var_request('sort_column'), get_request_var_request('sort_direction'), false);

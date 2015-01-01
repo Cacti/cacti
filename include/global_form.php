@@ -511,7 +511,7 @@ $struct_graph_item = array(
 		'friendly_name' => 'Data Source',
 		'method' => 'drop_sql',
 		'sql' => 'SELECT
-			CONCAT_WS("",case when host.description is null then "No Host" when host.description is not null then host.description end," - ",data_template_data.name," (",data_template_rrd.data_source_name,")") AS name,
+			CONCAT_WS("",case when host.description is null then "No Device" when host.description is not null then host.description end," - ",data_template_data.name," (",data_template_rrd.data_source_name,")") AS name,
 			data_template_rrd.id
 			FROM (data_template_data,data_template_rrd,data_local)
 			LEFT JOIN host ON (data_local.host_id=host.id)
@@ -651,7 +651,7 @@ $fields_host_edit = array(
 	'host_gen_head' => array(
 		'method' => 'spacer',
 		'collapsible' => 'true',
-		'friendly_name' => 'General Host Options'
+		'friendly_name' => 'General Device Options'
 		),
 	'description' => array(
 		'method' => 'textbox',
@@ -669,8 +669,8 @@ $fields_host_edit = array(
 		),
 	'host_template_id' => array(
 		'method' => 'drop_sql',
-		'friendly_name' => 'Host Template',
-		'description' => 'Choose the Host Template to use to define the default Graph Templates and Data Queries associated with this Host.',
+		'friendly_name' => 'Device Template',
+		'description' => 'Choose the Device Template to use to define the default Graph Templates and Data Queries associated with this Device.',
 		'value' => '|arg1:host_template_id|',
 		'none_value' => 'None',
 		'sql' => 'SELECT id,name FROM host_template ORDER BY name',
@@ -685,7 +685,7 @@ $fields_host_edit = array(
 		),
 	'disabled' => array(
 		'method' => 'checkbox',
-		'friendly_name' => 'Disable Host',
+		'friendly_name' => 'Disable Device',
 		'description' => 'Check this box to disable all checks for this host.',
 		'value' => '|arg1:disabled|',
 		'default' => '',
@@ -972,7 +972,7 @@ $fields_data_query_edit = array(
 	'data_input_id' => array(
 		'method' => 'drop_sql',
 		'friendly_name' => 'Data Input Method',
-		'description' => 'Choose the input method for this Data Query.  This input method defines how data is collected for each Host associated with the Data Query.',
+		'description' => 'Choose the input method for this Data Query.  This input method defines how data is collected for each Device associated with the Data Query.',
 		'value' => '|arg1:data_input_id|',
 		'sql' => 'SELECT id,name FROM data_input WHERE (type_id=3 OR type_id=4 OR type_id=5 OR type_id=6) ORDER BY name',
 		),
@@ -1205,7 +1205,7 @@ $export_types = array(
 		'dropdown_sql' => 'SELECT id,name FROM data_template ORDER BY name'
 		),
 	'host_template' => array(
-		'name' => 'Host Template',
+		'name' => 'Device Template',
 		'title_sql' => 'SELECT name FROM host_template WHERE id=|id|',
 		'dropdown_sql' => 'SELECT id,name FROM host_template ORDER BY name'
 		),

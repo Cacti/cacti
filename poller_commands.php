@@ -62,17 +62,17 @@ if (sizeof($poller_commands) > 0) {
 			}
 
 			if ($first_host) {
-				cacti_log("Host[$host_id] WARNING: Recache Event Detected for Host", true, 'PCOMMAND');
+				cacti_log("Device[$host_id] WARNING: Recache Event Detected for Device", true, 'PCOMMAND');
 			}
 
 			if (read_config_option('log_verbosity') >= POLLER_VERBOSITY_DEBUG) {
-				cacti_log("Host[$host_id] RECACHE: Recache for Host, data query #$data_query_id", true, 'PCOMMAND');
+				cacti_log("Device[$host_id] RECACHE: Recache for Device, data query #$data_query_id", true, 'PCOMMAND');
 			}
 
 			run_data_query($host_id, $data_query_id);
 
 			if (read_config_option('log_verbosity') >= POLLER_VERBOSITY_DEBUG) {
-				cacti_log("Host[$host_id] RECACHE: Recache successful.", true, 'PCOMMAND');
+				cacti_log("Device[$host_id] RECACHE: Recache successful.", true, 'PCOMMAND');
 			}
 			break;
 		default:
@@ -97,7 +97,7 @@ if (sizeof($poller_commands) > 0) {
 list($micro,$seconds) = explode(' ', microtime());
 $recache = $seconds + $micro;
 
-$recache_stats = sprintf('RecacheTime:%01.4f HostsRecached:%s',	round($recache - $start, 4), $recached_hosts);
+$recache_stats = sprintf('RecacheTime:%01.4f DevicesRecached:%s',	round($recache - $start, 4), $recached_hosts);
 
 if ($recached_hosts > 0) {
 	cacti_log('STATS: ' . $recache_stats, true, 'RECACHE');

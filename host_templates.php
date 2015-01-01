@@ -173,24 +173,24 @@ function form_actions() {
 		if ($_POST['drp_action'] == '1') { /* delete */
 			print "	<tr>
 					<td class='textArea'>
-						<p>Are you sure you want to delete the following Host Template(s)? All Devices currently associated
-						with these Host Template(s) will lose that assocation.</p>
+						<p>Are you sure you want to delete the following Device Template(s)? All Devices currently associated
+						with these Device Template(s) will lose that assocation.</p>
 						<p><ul>$host_list</ul></p>
 					</td>
 				</tr>\n
 				";
-			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Delete Host Template(s)'>";
+			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Delete Device Template(s)'>";
 		}elseif ($_POST['drp_action'] == '2') { /* duplicate */
 			print "	<tr>
 					<td class='textArea'>
-						<p>When you click \"Continue\", the following Host Template(s) will be duplicated. You can
-						optionally change the title format for the new Host Template(s).</p>
+						<p>When you click \"Continue\", the following Device Template(s) will be duplicated. You can
+						optionally change the title format for the new Device Template(s).</p>
 						<p><ul>$host_list</ul></p>
 						<p><strong>Title Format:</strong><br>"; form_text_box('title_format', '<template_title> (1)', '', '255', '30', 'text'); print "</p>
 					</td>
 				</tr>\n
 				";
-			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Duplicate Host Template(s)'>";
+			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Duplicate Device Template(s)'>";
 		}
 	}else{
 		print "<tr><td class='even'><span class='textError'>You must select at least one host template.</span></td></tr>\n";
@@ -249,7 +249,7 @@ function template_edit() {
 		$_GET['id'] = 0;
 	}
 
-	html_start_box('<strong>Host Templates</strong> ' . htmlspecialchars($header_label), '100%', '', '3', 'center', '');
+	html_start_box('<strong>Device Templates</strong> ' . htmlspecialchars($header_label), '100%', '', '3', 'center', '');
 
 	draw_edit_form(array(
 		'config' => array('form_name' => 'chk'),
@@ -307,7 +307,7 @@ function template_edit() {
 							ORDER BY graph_templates.name', array(get_request_var('id'))),'name','id','','','');?>
 					</td>
 					<td align="right">
-						&nbsp;<input type="submit" value="Add" name="add_gt_x" title="Add Graph Template to Host Template">
+						&nbsp;<input type="submit" value="Add" name="add_gt_x" title="Add Graph Template to Device Template">
 					</td>
 				</table>
 			</td>
@@ -360,7 +360,7 @@ function template_edit() {
 							ORDER BY snmp_query.name', array(get_request_var('id'))),'name','id','','','');?>
 					</td>
 					<td align="right">
-						&nbsp;<input type="submit" value="Add" name="add_dq_x" title="Add Data Query to Host Template">
+						&nbsp;<input type="submit" value="Add" name="add_dq_x" title="Add Data Query to Device Template">
 					</td>
 				</table>
 			</td>
@@ -437,7 +437,7 @@ function template() {
 
 	display_output_messages();
 
-	html_start_box('<strong>Host Templates</strong>', '100%', '', '3', 'center', 'host_templates.php?action=edit');
+	html_start_box('<strong>Device Templates</strong>', '100%', '', '3', 'center', 'host_templates.php?action=edit');
 
 	?>
 	<tr class='even noprint'>
@@ -452,7 +452,7 @@ function template() {
 						<input id='filter' type="text" name="filter" size="25" value="<?php print htmlspecialchars(get_request_var_request('filter'));?>">
 					</td>
 					<td style='white-space:nowrap;'>
-						Host Templates
+						Device Templates
 					</td>
 					<td>
 						<select id='rows' name="rows" onChange="applyFilter()">
@@ -469,7 +469,7 @@ function template() {
 						<input type="checkbox" id='has_hosts' <?php print ($_REQUEST['has_hosts'] == 'true' ? 'checked':'');?>>
 					</td>
 					<td>
-						<label for='has_hosts' style='white-space:nowrap;'>Has Hosts</label>
+						<label for='has_hosts' style='white-space:nowrap;'>Has Devices</label>
 					</td>
 					<td>
 						<input type="button" id='refresh' value="Go" title="Set/Refresh Filters">
@@ -559,13 +559,13 @@ function template() {
 		ORDER BY " . get_request_var_request('sort_column') . ' ' . get_request_var_request('sort_direction') .
 		' LIMIT ' . (get_request_var_request('rows')*(get_request_var_request('page')-1)) . ',' . get_request_var_request('rows'));
 
-	$nav = html_nav_bar('host_templates.php?filter=' . get_request_var_request('filter'), MAX_DISPLAY_PAGES, get_request_var_request('page'), get_request_var_request('rows'), $total_rows, 4, 'Host Templates', 'page', 'main');
+	$nav = html_nav_bar('host_templates.php?filter=' . get_request_var_request('filter'), MAX_DISPLAY_PAGES, get_request_var_request('page'), get_request_var_request('rows'), $total_rows, 4, 'Device Templates', 'page', 'main');
 
 	print $nav;
 
 	$display_text = array(
 		'name' => array('Template Title', 'ASC'),
-		'hosts' => array('display' => 'Hosts', 'align' => 'right', 'sort' => 'DESC'),
+		'hosts' => array('display' => 'Devices', 'align' => 'right', 'sort' => 'DESC'),
 		'host_template.id' => array('display' => 'ID', 'align' => 'right', 'sort' => 'ASC')
 	);
 
@@ -590,7 +590,7 @@ function template() {
 		/* put the nav bar on the bottom as well */
 		print $nav;
 	}else{
-		print "<tr class='tableRow'><td colspan='4'><em>No Host Templates</em></td></tr>\n";
+		print "<tr class='tableRow'><td colspan='4'><em>No Device Templates</em></td></tr>\n";
 	}
 	html_end_box(false);
 

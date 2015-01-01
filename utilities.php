@@ -296,7 +296,7 @@ function utilities_view_tech($php_info = '') {
 	print "		<td class='textArea'>" . $rrdtool_versions[$rrdtool_version] . ' ' . $rrdtool_error . "</td>\n";
 	print "</tr>\n";
 	print "<tr class='even'>\n";
-	print "		<td class='textArea'>Hosts</td>\n";
+	print "		<td class='textArea'>Devices</td>\n";
 	print "		<td class='textArea'>" . $host_count . "</td>\n";
 	print "</tr>\n";
 	print "<tr class='odd'>\n";
@@ -1038,7 +1038,7 @@ function utilities_view_logfile() {
 	$j = 0;
 	$linecolor = false;
 	foreach ($logcontents as $item) {
-		$host_start = strpos($item, 'Host[');
+		$host_start = strpos($item, 'Device[');
 		$ds_start   = strpos($item, 'DS[');
 
 		$new_item = '';
@@ -1051,7 +1051,7 @@ function utilities_view_logfile() {
 				$host_id    = substr($item, $host_start+5, $host_end-($host_start+5));
 				$new_item   = $new_item . substr($item, 0, $host_start + 5) . "<a href='" . htmlspecialchars('host.php?action=edit&id=' . $host_id) . "'>" . substr($item, $host_start + 5, $host_end-($host_start + 5)) . '</a>';
 				$item       = substr($item, $host_end);
-				$host_start = strpos($item, 'Host[');
+				$host_start = strpos($item, 'Device[');
 			}
 
 			$ds_start = strpos($item, 'DS[');

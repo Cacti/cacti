@@ -241,7 +241,7 @@ class Net_Ping
 	function ping_snmp() {
 		/* initialize variables */
 		$this->snmp_status   = "down";
-		$this->snmp_response = "Host did not respond to SNMP";
+		$this->snmp_response = "Device did not respond to SNMP";
 		$output              = "";
 
 		/* get start time */
@@ -301,19 +301,19 @@ class Net_Ping
 		if (strlen($output)) {
 			/* calculte total time */
 			$this->snmp_status   = $this->time*1000;
-			$this->snmp_response = "Host responded to SNMP";
+			$this->snmp_response = "Device responded to SNMP";
 
 			return true;
 		}else{
 			$this->snmp_status   = "down";
-			$this->snmp_response = "Host did not respond to SNMP";
+			$this->snmp_response = "Device did not respond to SNMP";
 
 			return false;
 		}
 	} /* ping_snmp */
 
 	function ping_udp() {
-		/* Host must be nonblank */
+		/* hostname must be nonblank */
 		if ($this->host["hostname"]) {
 			/* initialize variables */
 			$this->ping_status   = "down";
@@ -424,7 +424,7 @@ class Net_Ping
 	} /* end ping_udp */
 
 	function ping_tcp() {
-		/* Host must be nonblank */
+		/* hostname must be nonblank */
 		if ($this->host["hostname"]) {
 			/* initialize variables */
 			$this->ping_status   = "down";

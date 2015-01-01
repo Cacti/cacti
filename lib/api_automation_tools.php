@@ -232,7 +232,7 @@ function displayQueryTypes($types, $quietMode = FALSE) {
 
 function displayHostTemplates($host_templates, $quietMode = FALSE) {
 	if (!$quietMode) {
-		echo "Valid Host Templates: (id, name)\n";
+		echo "Valid Device Templates: (id, name)\n";
 	}
 
 	if (sizeof($host_templates)) {
@@ -338,7 +338,7 @@ function displayGraphTemplates($templates, $quietMode = FALSE) {
 
 function displayHosts($hosts, $quietMode = FALSE) {
 	if (!$quietMode) {
-		echo "Known Hosts: (id, hostname, template, description)\n";
+		echo "Known Devices: (id, hostname, template, description)\n";
 	}
 
 	if (sizeof($hosts)) {
@@ -495,7 +495,7 @@ function displayRRAs($quietMode = FALSE) {
 function displayHostGraphs($host_id, $quietMode = FALSE) {
 
 	if (!$quietMode) {
-		echo "Known Host Graphs: (id, name, template)\n";
+		echo "Known Device Graphs: (id, name, template)\n";
 	}
 
 	$graphs = db_fetch_assoc('SELECT

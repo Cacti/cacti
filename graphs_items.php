@@ -208,7 +208,7 @@ function item_edit() {
 	$id = (!empty($_REQUEST['id']) ? '&id=' . $_REQUEST['id'] : '');
 	$host = db_fetch_row_prepared('SELECT hostname FROM host WHERE id = ?', array(get_request_var_request('host_id')));
 
-	html_start_box('<strong>Data Sources</strong> [host: ' . (empty($host['hostname']) ? 'No Host' : $host['hostname']) . ']', '100%', '', '3', 'center', '');
+	html_start_box('<strong>Data Sources</strong> [host: ' . (empty($host['hostname']) ? 'No Device' : $host['hostname']) . ']', '100%', '', '3', 'center', '');
 
 	?>
 	<tr class='even noprint'>
@@ -217,7 +217,7 @@ function item_edit() {
 			<table cellpadding="2" cellspacing="0">
 				<tr>
 					<td width="50">
-						Host:
+						Device
 					</td>
 					<td>
 						<select name="cbo_host_id" onChange="window.location=document.form_graph_items.cbo_host_id.options[document.form_graph_items.cbo_host_id.selectedIndex].value">
@@ -238,7 +238,7 @@ function item_edit() {
 				</tr>
 				<tr>
 					<td style='white-space: nowrap;'>
-						Data Template:
+						Data Template
 					</td>
 					<td>
 						<select name="cbo_data_template_id" onChange="window.location=document.form_graph_items.cbo_data_template_id.options[document.form_graph_items.cbo_data_template_id.selectedIndex].value">

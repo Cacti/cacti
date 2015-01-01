@@ -538,7 +538,7 @@ function host_remove_gt() {
 }
 
 /* ---------------------
-    Host Functions
+    Device Functions
    --------------------- */
 
 function host_remove() {
@@ -685,7 +685,7 @@ function host_edit() {
 					<?php print htmlspecialchars($host['description']);?> (<?php print htmlspecialchars($host['hostname']);?>)
 				</td>
 				<td rowspan='2' class='textInfo' valign='top' align='right'>
-					<span class='linkMarker'>*</span><a href='<?php print htmlspecialchars('graphs_new.php?host_id=' . $host['id']);?>'>Create Graphs for this Host</a><br>
+					<span class='linkMarker'>*</span><a href='<?php print htmlspecialchars('graphs_new.php?host_id=' . $host['id']);?>'>Create Graphs for this Device</a><br>
 					<span class='linkMarker'>*</span><a href='<?php print htmlspecialchars('data_sources.php?host_id=' . $host['id'] . '&ds_rows=30&filter=&template_id=-1&method_id=-1&page=1');?>'>Data Source List</a><br>
 					<span class='linkMarker'>*</span><a href='<?php print htmlspecialchars('graphs.php?host_id=' . $host['id'] . '&graph_rows=30&filter=&template_id=-1&page=1');?>'>Graph List</a>
 					<?php api_plugin_hook('device_edit_top_links'); ?>
@@ -967,7 +967,7 @@ function host_edit() {
 						<?php form_dropdown('graph_template_id',$available_graph_templates,'name','id','','','');?>
 					</td>
 					<td align="right">
-						&nbsp;<input type="submit" value="Add" name="add_gt_x" title="Add Graph Template to Host">
+						&nbsp;<input type="submit" value="Add" name="add_gt_x" title="Add Graph Template to Device">
 					</td>
 				</table>
 			</td>
@@ -1052,7 +1052,7 @@ function host_edit() {
 						<?php form_dropdown('reindex_method',$reindex_types,'','',read_config_option('reindex_method'),'','');?>
 					</td>
 					<td align="right">
-						&nbsp;<input type="submit" value="Add" name="add_dq_x" title="Add Data Query to Host">
+						&nbsp;<input type="submit" value="Add" name="add_dq_x" title="Add Data Query to Device">
 					</td>
 				</table>
 				<a name='dqtop'></a>
@@ -1184,7 +1184,13 @@ function host() {
 		<form id='form_devices' name="form_devices" action="host.php">
 			<table cellpadding="2" cellspacing="0">
 				<tr>
-					<td width="50">
+					<td width='50'>
+						Search
+					</td>
+					<td>
+						<input id='filter' type="text" name="filter" size="25" value="<?php print htmlspecialchars(get_request_var_request('filter'));?>" onChange='applyFilter()'>
+					</td>
+					<td>
 						Template
 					</td>
 					<td>
@@ -1216,12 +1222,6 @@ function host() {
 							<option value="2"<?php if (get_request_var_request('host_status') == '2') {?> selected<?php }?>>Recovering</option>
 							<option value="0"<?php if (get_request_var_request('host_status') == '0') {?> selected<?php }?>>Unknown</option>
 						</select>
-					</td>
-					<td>
-						Search
-					</td>
-					<td>
-						<input id='filter' type="text" name="filter" size="25" value="<?php print htmlspecialchars(get_request_var_request('filter'));?>" onChange='applyFilter()'>
 					</td>
 					<td>
 						Devices
@@ -1348,7 +1348,7 @@ function host() {
 		/* put the nav bar on the bottom as well */
 		print $nav;
 	}else{
-		print "<tr class='tableRow'><td colspan='11'><em>No Hosts</em></td></tr>";
+		print "<tr class='tableRow'><td colspan='11'><em>No Devices</em></td></tr>";
 	}
 	html_end_box(false);
 

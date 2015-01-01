@@ -36,7 +36,7 @@ define('MAX_DISPLAY_PAGES', 21);
 $ds_actions = array(
 	1 => 'Delete',
 	2 => 'Change Data Template',
-	3 => 'Change Host',
+	3 => 'Change Device',
 	8 => 'Reapply Suggested Names',
 	4 => 'Duplicate',
 	5 => 'Convert to Data Template',
@@ -503,7 +503,7 @@ function form_actions() {
 					<td class='textArea'>
 						<p>Choose a new Device for these Data Source(s) and click \"Continue\"</p>
 						<p><ul>$ds_list</ul></p>
-						<p><strong>New Host:</strong><br>"; form_dropdown('host_id',db_fetch_assoc("SELECT id, CONCAT_WS('',description,' (',hostname,')') AS name FROM host ORDER BY description, hostname"),'name','id','','','0'); print "</p>
+						<p><strong>New Device:</strong><br>"; form_dropdown('host_id',db_fetch_assoc("SELECT id, CONCAT_WS('',description,' (',hostname,')') AS name FROM host ORDER BY description, hostname"),'name','id','','','0'); print "</p>
 					</td>
 				</tr>\n
 				";
@@ -637,7 +637,7 @@ function data_edit() {
 			form_alternate_row();
 
 			if ((!empty($host['id'])) && (preg_match('/^' . VALID_HOST_FIELDS . '$/i', $field['type_code']))) {
-				print "<td width='50%'><strong>" . $field['name'] . '</strong> (From Host: ' . $host['hostname'] . ")</td>\n";
+				print "<td width='50%'><strong>" . $field['name'] . '</strong> (From Device: ' . $host['hostname'] . ")</td>\n";
 				print "<td><em>$old_value</em></td>\n";
 			}elseif (empty($can_template)) {
 				print "<td width='50%'><strong>" . $field['name'] . "</strong> (From Data Template)</td>\n";
@@ -755,7 +755,7 @@ function ds_edit() {
 							?><span style="color: #c16921;">*<a href='<?php print htmlspecialchars('data_templates.php?action=template_edit&id=' . (isset($data_template['id']) ? $data_template['id'] : '0'));?>'>Edit Data Template.</a><br><?php
 						}
 						if (!empty($_GET['host_id']) || !empty($data_local['host_id'])) {
-							?><span style="color: #c16921;">*<a href='<?php print htmlspecialchars('host.php?action=edit&id=' . (isset($_GET['host_id']) ? $_GET['host_id'] : $data_local['host_id']));?>'>Edit Host.</a><br><?php
+							?><span style="color: #c16921;">*<a href='<?php print htmlspecialchars('host.php?action=edit&id=' . (isset($_GET['host_id']) ? $_GET['host_id'] : $data_local['host_id']));?>'>Edit Device.</a><br><?php
 						}
 					?>
 				</td>
@@ -778,7 +778,7 @@ function ds_edit() {
 			),
 		'host_id' => array(
 			'method' => 'drop_sql',
-			'friendly_name' => 'Host',
+			'friendly_name' => 'Device',
 			'description' => 'Choose the host that this graph belongs to.',
 			'value' => (isset($_GET['host_id']) ? $_GET['host_id'] : $data_local['host_id']),
 			'none_value' => 'None',
@@ -1127,7 +1127,7 @@ function ds() {
 		$add_url = '';
 	}
 
-	html_start_box('<strong>Data Sources</strong> [host: ' . (empty($host['hostname']) ? 'No Host' : htmlspecialchars($host['hostname'])) . ']', '100%', '', '3', 'center', $add_url);
+	html_start_box('<strong>Data Sources</strong> [host: ' . (empty($host['hostname']) ? 'No Device' : htmlspecialchars($host['hostname'])) . ']', '100%', '', '3', 'center', $add_url);
 
 	?>
 	<tr class='even noprint'>
