@@ -1185,7 +1185,7 @@ function host() {
 			<table cellpadding="2" cellspacing="0">
 				<tr>
 					<td width="50">
-						Type:
+						Template
 					</td>
 					<td>
 						<select id='host_template_id' name="host_template_id" onChange="applyFilter()">
@@ -1203,7 +1203,7 @@ function host() {
 						</select>
 					</td>
 					<td>
-						Status:
+						Status
 					</td>
 					<td>
 						<select id='host_status' name="host_status" onChange="applyFilter()">
@@ -1218,17 +1218,16 @@ function host() {
 						</select>
 					</td>
 					<td>
-						Search:
+						Search
 					</td>
 					<td>
 						<input id='filter' type="text" name="filter" size="25" value="<?php print htmlspecialchars(get_request_var_request('filter'));?>" onChange='applyFilter()'>
 					</td>
 					<td>
-						Devices:
+						Devices
 					</td>
 					<td>
 						<select id='rows' name="rows" onChange="applyFilter()">
-							<option value="-1"<?php if (get_request_var_request('rows') == '-1') {?> selected<?php }?>>Default</option>
 							<?php
 							if (sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {

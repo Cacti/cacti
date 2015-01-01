@@ -639,17 +639,16 @@ function domains() {
 			<table cellpadding='2' cellspacing='0' border='0'>
 				<tr class='noprint'>
 					<td width='50'>
-						Search:
+						Search
 					</td>
 					<td>
 						<input id='filter' type='text' name='filter' size='25' value='<?php print get_request_var_request('filter');?>'>
 					</td>
 					<td>
-						Domains:
+						Domains
 					</td>
 					<td>
 						<select id='rows' name="rows" onChange="applyFilter()">
-							<option value="-1"<?php if (get_request_var_request('rows') == '-1') {?> selected<?php }?>>Default</option>
 							<?php
 							if (sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {

@@ -549,8 +549,8 @@ function tree_edit() {
 			<form id='form_tree' action='tree.php'>
 				<table cellpadding='2' cellspacing='0'>
 					<tr>
-						<td>
-							Search:
+						<td width='50'>
+							Search
 						</td>
 						<td>
 							<input id='hfilter' type='text' name='hfilter' size='25' value='<?php print htmlspecialchars(get_request_var_request('hfilter'));?>'>
@@ -585,7 +585,7 @@ function tree_edit() {
 				<table cellpadding='2' cellspacing='0'>
 					<tr>
 						<td>
-							Search:
+							Search
 						</td>
 						<td>
 							<input id='grfilter' type='text' name='grfilter' size='25' value='<?php print htmlspecialchars(get_request_var_request('grfilter'));?>'>
@@ -1359,13 +1359,13 @@ function tree() {
 			<table cellpadding='2' cellspacing='0' border='0'>
 				<tr>
 					<td width='50'>
-						Search:
+						Search
 					</td>
 					<td>
 						<input id='filter' type='text' name='filter' size='25' value='<?php print htmlspecialchars(get_request_var_request('filter'));?>'>
 					</td>
-					<td style='white-space:nowrap;'>
-						Graph Templates:
+					<td>
+						Trees
 					</td>
 					<td>
 						<select id='rows' name='rows' onChange='applyFilter()'>

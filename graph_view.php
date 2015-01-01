@@ -248,7 +248,7 @@ case 'preview':
 			<table cellpadding='2' cellspacing='0'>
 				<tr class='noprint'>
 					<td width='55'>
-						Host:
+						Device
 					</td>
 					<td>
 						<select id='host_id' name='host_id' onChange='applyFilter()'>
@@ -264,7 +264,7 @@ case 'preview':
 						</select>
 					</td>
 					<td>
-						Template:
+						Template
 					</td>
 					<td>
 						<select id='graph_template_id' name='graph_template_id' onChange='applyFilter()'>
@@ -282,11 +282,10 @@ case 'preview':
 						</select>
 					</td>
 					<td>
-						Graphs:
+						Graphs
 					</td>
 					<td>
 						<select id='rows' name='rows' onChange='applyFilter()'>
-							<option value='-1'<?php if (get_request_var_request('rows') == '-1') {?> selected<?php }?>>Default</option>
 							<?php
 							if (sizeof($graphs_per_page) > 0) {
 							foreach ($graphs_per_page as $key => $value) {
@@ -297,11 +296,10 @@ case 'preview':
 						</select>
 					</td>
 					<td>
-						Columns:
+						Columns
 					</td>
 					<td>
 						<select id='columns' name='columns' onChange='applyFilter()'>
-							<option value='-1'<?php if (get_request_var_request('columns') == '-1') {?> selected<?php }?>>Default</option>
 							<option value='1'<?php if (get_request_var_request('columns') == '1') {?> selected<?php }?>>1 Column</option>
 							<option value='2'<?php if (get_request_var_request('columns') == '2') {?> selected<?php }?>>2 Columns</option>
 							<option value='3'<?php if (get_request_var_request('columns') == '3') {?> selected<?php }?>>3 Columns</option>
@@ -316,7 +314,7 @@ case 'preview':
 						<input id='thumbnails' type='checkbox' name='thumbnails' onClick='applyFilter()' <?php print (($_REQUEST['thumbnails'] == 'true') ? 'checked':'');?>>
 					</td>
 					<td>
-						Search:
+						Search
 					</td>
 					<td>
 						<input type='text' id='filter' name='filter' size='25' value='<?php print htmlspecialchars(get_request_var_request('filter'));?>'>
@@ -708,7 +706,6 @@ case 'list':
 					</td>
 					<td>
 						<select id='rows' name='rows' onChange='applyFilter()'>
-							<option value='-1'<?php if (get_request_var_request('rows') == '-1') {?> selected<?php }?>>Default</option>
 							<?php
 							if (sizeof($item_rows) > 0) {
 							foreach ($item_rows as $key => $value) {

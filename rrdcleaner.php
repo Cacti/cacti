@@ -472,14 +472,14 @@ function filter() {
 			<form id='form_rrdclean' name='form_rrdclean' method='get' action='rrdcleaner.php'>
 			<table cellpadding='2' cellspacing='0'>
 				<tr>
-					<td width='55'>
-						Search:
+					<td width='50'>
+						Search
 					</td>
 					<td>
 						<input id='filter' type='text' name='filter' size='25' value='<?php print $_REQUEST['filter'];?>'>
 					</td>
 					<td style='white-space: nowrap;'>
-						Time Since Update:
+						Time Since Update
 					</td>
 					<td>
 						<select id='age' name='age' onChange='refreshForm()'>
@@ -495,7 +495,7 @@ function filter() {
 						</select>
 					</td>
 					<td>
-						RRDfiles:
+						RRDfiles
 					</td>
 					<td>
 						<select id='rows' name='rows'>

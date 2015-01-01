@@ -622,7 +622,7 @@ function utilities_view_user_log() {
 			<table cellpadding="2" cellspacing="0" border="0">
 				<tr>
 					<td width="50">
-						User:
+						User
 					</td>
 					<td>
 						<select id='username' name="username" onChange="applyFilter()">
@@ -640,7 +640,7 @@ function utilities_view_user_log() {
 						</select>
 					</td>
 					<td>
-						Result:
+						Result
 					</td>
 					<td>
 						<select id='result' name="result" onChange="applyFilter()">
@@ -651,7 +651,7 @@ function utilities_view_user_log() {
 						</select>
 					</td>
 					<td>
-						Rows:
+						Attempts
 					</td>
 					<td>
 						<select id='rows' name="rows" onChange="applyFilter()">
@@ -678,7 +678,7 @@ function utilities_view_user_log() {
 			<table cellpadding="2" cellspacing="0" border="0">
 				<tr>
 					<td width='50'>
-						Search:
+						Search
 					</td>
 					<td>
 						<input id='filter' type="text" name="filter" size="25" value="<?php print htmlspecialchars(get_request_var_request('filter'));?>">
@@ -943,7 +943,7 @@ function utilities_view_logfile() {
 			<table cellpadding="2" cellspacing="0" border="0">
 				<tr>
 					<td style='white-space: nowrap;' width="80">
-						Tail Lines:
+						Tail Lines
 					</td>
 					<td>
 						<select id='tail_lines' name="tail_lines" onChange="applyFilter()">
@@ -955,7 +955,7 @@ function utilities_view_logfile() {
 						</select>
 					</td>
 					<td style='white-space: nowrap;'>
-						Message Type:
+						Message Type
 					</td>
 					<td>
 						<select id='message_type' name="message_type" onChange="applyFilter()">
@@ -979,7 +979,7 @@ function utilities_view_logfile() {
 				</tr>
 				<tr>
 					<td>
-						Refresh:
+						Refresh
 					</td>
 					<td>
 						<select id='refresh' name="refresh" onChange="applyFilter()">
@@ -991,7 +991,7 @@ function utilities_view_logfile() {
 						</select>
 					</td>
 					<td style='white-space: nowrap;'>
-						Display Order:
+						Display Order
 					</td>
 					<td>
 						<select id='reverse' name="reverse" onChange="applyFilter()">
@@ -1004,7 +1004,7 @@ function utilities_view_logfile() {
 			<table cellpadding="2" cellspacing="0" border="0">
 				<tr>
 					<td width="80">
-						Search:
+						Search
 					</td>
 					<td>
 						<input id='filter' type="text" name="filter" size="75" value="<?php print htmlspecialchars(get_request_var_request('filter'));?>">
@@ -1239,7 +1239,7 @@ function utilities_view_snmp_cache() {
 			<table cellpadding="2" cellspacing="0">
 				<tr>
 					<td width="50">
-						Host:
+						Device
 					</td>
 					<td>
 						<select id='host_id' name="host_id" onChange="applyFilter()">
@@ -1275,7 +1275,7 @@ function utilities_view_snmp_cache() {
 						</select>
 					</td>
 					<td>
-						Query Name:
+						Query Name
 					</td>
 					<td>
 						<select id='snmp_query_id' name="snmp_query_id" onChange="applyFilter()">
@@ -1308,7 +1308,7 @@ function utilities_view_snmp_cache() {
 						</select>
 					</td>
 					<td>
-						Rows:
+						Rows
 					</td>
 					<td>
 						<select id='rows' name="rows" onChange="applyFilter()">
@@ -1332,7 +1332,7 @@ function utilities_view_snmp_cache() {
 			<table cellpadding='2' cellspacing='0' border='0'>
 				<tr>
 					<td width='50'>
-						Search:
+						Search
 					</td>
 					<td>
 						<input id='filter' type="text" name="filter" size="25" value="<?php print htmlspecialchars(get_request_var_request('filter'));?>">
@@ -1414,7 +1414,7 @@ function utilities_view_snmp_cache() {
 			print "<tr class='$class'>\n";
 			?>
 			<td>
-				Host: <?php print (strlen(get_request_var_request('filter')) ? (preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", $item['description'])) : $item['description']);?>
+				Device: <?php print (strlen(get_request_var_request('filter')) ? (preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", $item['description'])) : $item['description']);?>
 				, SNMP Query: <?php print (strlen(get_request_var_request('filter')) ? (preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", $item['name'])) : $item['name']);?>
 			</td>
 			</tr>
@@ -1556,7 +1556,7 @@ function utilities_view_poller_cache() {
 			<table cellpadding="2" cellspacing="0">
 				<tr>
 					<td width="50">
-						Host:
+						Device
 					</td>
 					<td>
 						<select id='host_id' name="host_id" onChange="applyFilter()">
@@ -1574,7 +1574,7 @@ function utilities_view_poller_cache() {
 						</select>
 					</td>
 					<td>
-						Action:
+						Action
 					</td>
 					<td>
 						<select id='poller_action' name="poller_action" onChange="applyFilter()">
@@ -1585,7 +1585,7 @@ function utilities_view_poller_cache() {
 						</select>
 					</td>
 					<td>
-						Rows:
+						Rows
 					</td>
 					<td>
 						<select id='rows' name="rows" onChange="applyFilter()">
@@ -1609,7 +1609,7 @@ function utilities_view_poller_cache() {
 			<table cellpadding='2' cellspacing='2' border='0'>
 				<tr>
 					<td width='50'>
-						Search:
+						Search
 					</td>
 					<td>
 						<input id='filter' type="text" name="filter" size="25" value="<?php print htmlspecialchars(get_request_var_request('filter'));?>">
@@ -1864,7 +1864,7 @@ function boost_display_run_status() {
 			<table cellpadding="2" cellspacing="0" border="0">
 				<tr>
 					<td style="white-space:nowrap;">
-						Refresh Interval:
+						Refresh Interval
 					</td>
 					<td>
 						<select name="refresh" onChange="applyStatsRefresh(document.form_boost_utilities_stats)">

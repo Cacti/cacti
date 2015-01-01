@@ -446,13 +446,13 @@ function template() {
 			<table cellpadding="2" cellspacing="0" border="0">
 				<tr>
 					<td width="50">
-						Search:
+						Search
 					</td>
 					<td>
 						<input id='filter' type="text" name="filter" size="25" value="<?php print htmlspecialchars(get_request_var_request('filter'));?>">
 					</td>
 					<td style='white-space:nowrap;'>
-						Host Templates:
+						Host Templates
 					</td>
 					<td>
 						<select id='rows' name="rows" onChange="applyFilter()">

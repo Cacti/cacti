@@ -817,13 +817,13 @@ function data_query() {
 			<table cellpadding="2" cellspacing="0">
 				<tr class="noprint">
 					<td width="50">
-						Search:
+						Search
 					</td>
 					<td>
 						<input id='filter' type="text" name="filter" size="25" value="<?php print htmlspecialchars(get_request_var_request('filter'));?>">
 					</td>
 					<td style='white-space:nowrap;'>
-						Data Queries:
+						Data Queries
 					</td>
 					<td>
 						<select id='rows' name="rows" onChange="applyFilter()">

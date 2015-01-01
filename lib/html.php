@@ -187,7 +187,7 @@ function html_graph_area(&$graph_array, $no_graphs_message = "", $extra_url_args
 					<tr>
 						<td align='center'>
 							<div style="min-height: <?php echo (1.6 * $graph["height"]) . "px"?>;"><a href='<?php print htmlspecialchars($config['url_path'] . "graph.php?action=view&local_graph_id=" . $graph["local_graph_id"] . "&rra_id=all");?>'><img class='graphimage' id='graph_<?php print $graph["local_graph_id"] ?>' src='<?php print htmlspecialchars($config['url_path'] . "graph_image.php?local_graph_id=" . $graph["local_graph_id"] . "&rra_id=0&graph_height=" . $graph["height"] . "&graph_width=" . $graph["width"] . "&title_font_size=" . ((read_graph_config_option("custom_fonts") == "on") ? read_graph_config_option("title_size") : read_config_option("title_size")) . (($extra_url_args == "") ? "" : "&$extra_url_args"));?>' border='0' alt='<?php print htmlspecialchars($graph["title_cache"]);?>'></a></div>
-							<?php print (read_graph_config_option("show_graph_title") == "on" ? "<p style='font-size: 10;' align='center'><strong>" . htmlspecialchars($graph["title_cache"]) . "</strong></p>" : "");?>
+							<?php print (read_graph_config_option("show_graph_title") == "on" ? "<span align='center'><strong>" . htmlspecialchars($graph["title_cache"]) . "</strong></span>" : "");?>
 						</td>
 						<td valign='top' style='align: left; padding: 3px;' class='noprint'>
 							<a href='<?php print htmlspecialchars($config['url_path'] . "graph.php?action=zoom&local_graph_id=" . $graph["local_graph_id"] . "&rra_id=0&". $extra_url_args);?>'><img src='<?php print $config['url_path'];?>images/graph_zoom.gif' border='0' alt='Zoom Graph' title='Zoom Graph' style='padding: 3px;'></a><br>
@@ -302,7 +302,7 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = "", $extr
 					<tr>
 						<td align='center'>
 							<div style="min-height: <?php echo (1.6 * read_graph_config_option("default_height")) . "px"?>;"><a href='<?php print htmlspecialchars($config['url_path'] . "graph.php?action=view&rra_id=all&local_graph_id=" . $graph["local_graph_id"]);?>'><img class='graphimage' id='graph_<?php print $graph["local_graph_id"] ?>' src='<?php print htmlspecialchars($config['url_path'] . "graph_image.php?local_graph_id=" . $graph["local_graph_id"] . "&rra_id=0&graph_height=" . read_graph_config_option("default_height") . "&graph_width=" . read_graph_config_option("default_width") . "&graph_nolegend=true&title_font_size=" . ((read_graph_config_option("custom_fonts") == "on") ? read_graph_config_option("title_size") : read_config_option("title_size")) . (($extra_url_args == "") ? "" : "&$extra_url_args"));?>' border='0' alt='<?php print htmlspecialchars($graph["title_cache"]);?>'></a></div>
-							<?php print (read_graph_config_option("show_graph_title") == "on" ? "<p style='font-size: 10;' align='center'><strong>" . htmlspecialchars($graph["title_cache"]) . "</strong></p>" : "");?>
+							<?php print (read_graph_config_option("show_graph_title") == "on" ? "<span align='center'><strong>" . htmlspecialchars($graph["title_cache"]) . "</strong></span>" : "");?>
 						</td>
 						<td valign='top' style='align: left; padding: 3px;'>
 							<a href='<?php print htmlspecialchars($config['url_path'] . "graph.php?action=zoom&local_graph_id=" . $graph["local_graph_id"] . "&rra_id=0&" . $extra_url_args);?>'><img src='<?php print $config['url_path'];?>images/graph_zoom.gif' border='0' alt='Zoom Graph' title='Zoom Graph' style='padding: 3px;'></a><br>
@@ -366,14 +366,14 @@ function html_nav_bar($base_url, $max_pages, $current_page, $rows_per_page, $tot
 			<td colspan='$colspan'>
 				<table width='100%' cellspacing='0' cellpadding='0' border='0'>
 					<tr>
-						<td style='width:5%;' align='left' class='textHeaderDark'><div style='display:block;padding-left:16px;'>
-							" . (($current_page > 1) ? "<div class='navBarNavigation navBarNavigationPrevious' onClick='gotoPage(" . ($current_page-1) . ")'><i class='ui-icon ui-icon-triangle-1-w'></i>Previous</div>":"") . "
+						<td style='width:5%;' align='left' class='textHeaderDark'><div style='display:block;'>
+							" . (($current_page > 1) ? "<div class='navBarNavigation navBarNavigationPrevious' onClick='gotoPage(" . ($current_page-1) . ")'><i class='fa fa-angle-double-left previous'></i>Previous</div>":"") . "
 						</div></td>
 						<td style='width:90%;' align='center' class='textHeaderDark'>
 							Showing $object " . (($rows_per_page*($current_page-1))+1) . " to " . (($total_rows < $rows_per_page) || ($total_rows < ($rows_per_page*$current_page)) ? $total_rows : $rows_per_page*$current_page) . " of $total_rows [$url_page_select]
 						</td>
-						<td align='right' class='textHeaderDark'><div style='display:block;padding-right:16px;'>
-							" . (($current_page*$rows_per_page) < $total_rows ? "<div class='navBarNavigation navBarNavigationNext' onClick='gotoPage(" . ($current_page+1) . ")'>Next<i class='ui-icon ui-icon-triangle-1-e'></i></div>":"") . "
+						<td align='right' class='textHeaderDark'><div style='display:block;'>
+							" . (($current_page*$rows_per_page) < $total_rows ? "<div class='navBarNavigation navBarNavigationNext' onClick='gotoPage(" . ($current_page+1) . ")'>Next<i class='fa fa-angle-double-right next'></i></div>":"") . "
 						</div></td>
 					</tr>
 				</table>

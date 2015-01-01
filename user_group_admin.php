@@ -1689,14 +1689,14 @@ function user_group() {
 		<form id="form_group" action='user_group_admin.php'>
 			<table cellpadding="2" cellspacing="0">
 				<tr>
-					<td width='55'>
-						Search:
+					<td width='50'>
+						Search
 					</td>
 					<td>
 						<input type='text' id='filter' size="25" value="<?php print htmlspecialchars(get_request_var_request('filter'));?>">
 					</td>
 					<td>
-						Rows:
+						Groups
 					</td>
 					<td>
 						<select id='rows' onChange='applyFilter()'>
@@ -2174,7 +2174,7 @@ function graph_filter($header_label) {
 			<table cellpadding="2" cellspacing="0" border="0">
 				<tr>
 					<td>
-						Template:
+						Template
 					</td>
 					<td>
 						<select id="graph_template_id" onChange='applyFilter()'>
@@ -2196,13 +2196,13 @@ function graph_filter($header_label) {
 						</select>
 					</td>
 					<td>
-						Search:
+						Search
 					</td>
 					<td>
 						<input type='text' id='filter' size='25' value="<?php print htmlspecialchars(get_request_var_request('filter'));?>" onChange='applyFilter()'>
 					</td>
 					<td>
-						Graphs:
+						Graphs
 					</td>
 					<td>
 						<select id='rows' onChange='applyFilter()'>
@@ -2287,7 +2287,7 @@ function device_filter($header_label) {
 			<table cellpadding="2" cellspacing="0">
 				<tr>
 					<td>
-						Template:
+						Template
 					</td>
 					<td>
 						<select id="host_template_id" onChange='applyFilter()'>
@@ -2305,13 +2305,13 @@ function device_filter($header_label) {
 						</select>
 					</td>
 					<td>
-						Search:
+						Search
 					</td>
 					<td>
 						<input type='text' id='filter' size='25' value="<?php print htmlspecialchars(get_request_var_request('filter'));?>" onChange='applyFilter()'>
 					</td>
 					<td>
-						Devices:
+						Devices
 					</td>
 					<td>
 						<select id='rows' onChange='applyFilter()'>
@@ -2395,13 +2395,13 @@ function template_filter($header_label) {
 			<table cellpadding="2" cellspacing="0">
 				<tr>
 					<td  width='55'>
-						Search:
+						Search
 					</td>
 					<td>
 						<input type='text' id='filter' size='25' value="<?php print htmlspecialchars(get_request_var_request('filter'));?>" onChange='applyFilter()'>
 					</td>
 					<td>
-						Templates:
+						Templates
 					</td>
 					<td>
 						<select id='rows' onChange='applyFilter()'>
@@ -2485,13 +2485,13 @@ function tree_filter($header_label) {
 			<table cellpadding="2" cellspacing="0">
 				<tr>
 					<td width='55'>
-						Search:
+						Search
 					</td>
 					<td>
 						<input type='text' id='filter' size='25' value="<?php print htmlspecialchars(get_request_var_request('filter'));?>" onChange='applyFilter()'>
 					</td>
 					<td>
-						Trees:
+						Trees
 					</td>
 					<td>
 						<select id='rows' onChange='applyFilter()'>
@@ -2575,13 +2575,13 @@ function member_filter($header_label) {
 			<table cellpadding="2" cellspacing="0">
 				<tr>
 					<td width='55'>
-						Search:
+						Search
 					</td>
 					<td>
 						<input type='text' id='filter' size='25' value="<?php print htmlspecialchars(get_request_var_request('filter'));?>" onChange='applyFilter()'>
 					</td>
 					<td>
-						Users:
+						Users
 					</td>
 					<td>
 						<select id='rows' onChange='applyFilter()'>

@@ -375,13 +375,13 @@ function update_show_current () {
 			<table cellpadding="2" cellspacing="0">
 				<tr class="noprint">
 					<td width="50">
-						Search:
+						Search
 					</td>
 					<td>
 						<input id='filter' type="text" name="filter" size="25" value="<?php print get_request_var_request('filter');?>">
 					</td>
 					<td>
-						Status:
+						Status
 					</td>
 					<td>
 						<select id='state' name="state" onChange="applyFilter()">
@@ -395,11 +395,10 @@ function update_show_current () {
 						</select>
 					</td>
 					<td>
-						Plugins:
+						Plugins
 					</td>
 					<td>
 						<select id='rows' name="rows" onChange="applyFilter()">
-							<option value="-1"<?php if (get_request_var_request('rows') == '-1') {?> selected<?php }?>>Default</option>
 							<?php
 							if (sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {

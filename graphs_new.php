@@ -431,7 +431,7 @@ function graphs() {
 	<table width='100%' cellpadding='2' cellspacing='0' border='0' align='left'>
 		<tr>
 			<td width='55'>
-				Host:
+				Device
 			</td>
 			<td width='1'>
 				<select id='host_id' name='host_id' onChange='applyGraphsNewFilterChange()'>
@@ -447,7 +447,7 @@ function graphs() {
 				</select>
 			</td>
 			<td style='white-space:nowrap;' width='1'>
-				Graph Types:
+				Graph Types
 			</td>
 			<td width='1'>
 				<select id='graph_type' name='graph_type' onChange='applyGraphsNewFilterChange()'>
@@ -480,7 +480,7 @@ function graphs() {
 		</tr>
 		<tr>
 			<td width='55'>
-				Rows:
+				Rows
 			</td>
 			<td>
 				<select id='rows' name='rows' onChange='applyGraphsNewFilterChange()'>
@@ -497,7 +497,7 @@ function graphs() {
 	<?php if ($_REQUEST['graph_type'] > 0) {?>
 		<tr>
 			<td width='55'>
-				Search:
+				Search
 			</td>
 			<td>
 				<input id='filter' type='text' name='filter' size='25' value='<?php print htmlspecialchars(get_request_var_request('filter'));?>'>

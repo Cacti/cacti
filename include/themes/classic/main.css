@@ -399,6 +399,16 @@ legend {
 	height:8px;
 }
 
+.next {
+	padding-right:6px;
+	padding-left:6px;
+}
+
+.previous {
+	padding-right:6px;
+	padding-left:6px;
+}
+
 .cactiTableTitle {
 	background-color: #00438c;
 }

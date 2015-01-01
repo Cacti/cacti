@@ -530,6 +530,16 @@ legend {
 	height:8px;
 }
 
+.next {
+	padding-right:6px;
+	padding-left:6px;
+}
+
+.previous {
+	padding-right:6px;
+	padding-left:6px;
+}
+
 .cactiNavBarTop {
 	background: rgba(98,125,77,1);
 	background: -moz-linear-gradient(top, rgba(98,125,77,1) 0%, rgba(31,59,8,1) 100%);

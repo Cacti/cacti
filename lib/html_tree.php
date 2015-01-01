@@ -561,7 +561,6 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 					</td>
 					<td>
 						<select name='graphs' id='graphs' onChange='changeFilter()'>
-							<option value='-1'<?php if (get_request_var_request('graphs') == '-1') {?> selected<?php }?>>Default</option>
 							<?php
 							if (sizeof($graphs_per_page) > 0) {
 							foreach ($graphs_per_page as $key => $value) {
@@ -579,7 +578,6 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 							<?php if ( get_request_var_request('thumbnails') == 'false') {?>
 							<option value='<?php print get_request_var_request('columns');?>' selected>N/A</option>
 							<?php }else{?>
-							<option value='-1' <?php print (get_request_var_request('columns') == '-1' ? ' selected':'');?>>Default</option>
 							<option value='1' <?php print (get_request_var_request('columns') == '1' ? ' selected':'');?>>1 Column</option>
 							<option value='2' <?php print (get_request_var_request('columns') == '2' ? ' selected':'');?>>2 Columns</option>
 							<option value='3' <?php print (get_request_var_request('columns') == '3' ? ' selected':'');?>>3 Columns</option>

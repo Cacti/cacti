@@ -1136,7 +1136,7 @@ function ds() {
 			<table cellpadding="2" cellspacing="0" border="0">
 				<tr>
 					<td width="50">
-						Host:
+						Device
 					</td>
 					<td>
 						<select id='host_id' name="host_id" onChange="applyFilter()">
@@ -1155,7 +1155,7 @@ function ds() {
 						</select>
 					</td>
 					<td width="50">
-						Template:
+						Template
 					</td>
 					<td>
 						<select id='template_id' name="template_id" onChange="applyFilter()">
@@ -1188,7 +1188,7 @@ function ds() {
 				</tr>
 				<tr>
 					<td width="50">
-						Method:
+						Method
 					</td>
 					<td>
 						<select id='method_id' name="method_id" onChange="applyFilter()">
@@ -1212,7 +1212,7 @@ function ds() {
 						</select>
 					</td>
 					<td style='white-space:nowrap;'>
-						Data Sources:
+						Data Sources
 					</td>
 					<td>
 						<select id='rows' name="rows" onChange="applyFilter()">
@@ -1230,7 +1230,7 @@ function ds() {
 			<table cellpadding="2" cellspacing="0" border="0">
 				<tr>
 					<td width="50">
-						Search:
+						Search
 					</td>
 					<td>
 						<input id='filter' type="text" name="filter" size="25" value="<?php print htmlspecialchars(get_request_var_request('filter'));?>">
