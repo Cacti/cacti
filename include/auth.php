@@ -100,7 +100,7 @@ if (read_config_option('auth_method') != 0) {
 					AND uagr.realm_id = ?
 				) AS authorized', array($_SESSION['sess_user_id'], $realm_id, $_SESSION['sess_user_id'], $realm_id));
 		}else{
-			$authroized = false;
+			$authorized = false;
 		}
 
 
