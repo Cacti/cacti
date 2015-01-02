@@ -334,6 +334,9 @@ function form_actions() {
 			api_plugin_hook_function('device_action_execute', $_POST['drp_action']);
 		}
 
+		/* update snmpcache */
+		snmpagent_device_action_bottom(array($_POST['drp_action'], $selected_items));
+		
 		api_plugin_hook_function('device_action_bottom', array($_POST['drp_action'], $selected_items));
 
 		header('Location: host.php');

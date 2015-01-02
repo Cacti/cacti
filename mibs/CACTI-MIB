@@ -1,0 +1,1256 @@
+-- *****************************************************************
+-- CACTI-MIB: CACTI Management Information Base
+--
+-- Dec 2012, Andreas Braun (aka browniebraun)
+--
+-- Copyright (c) 2004-2014 by The Cacti Group
+-- All rights reserved.
+--
+-- *****************************************************************
+
+CACTI-MIB DEFINITIONS ::= BEGIN
+
+IMPORTS
+    OBJECT-TYPE,
+    MODULE-IDENTITY,
+    OBJECT-IDENTITY,
+    NOTIFICATION-TYPE,
+    enterprises,
+    Unsigned32
+        FROM SNMPv2-SMI
+
+    OBJECT-GROUP,
+    NOTIFICATION-GROUP
+        FROM SNMPv2-CONF
+
+    TEXTUAL-CONVENTION,
+    DisplayString,
+    TruthValue
+        FROM SNMPv2-TC
+;
+
+cacti MODULE-IDENTITY
+    LAST-UPDATED    "201402030000Z"
+    ORGANIZATION    "The Cacti Group"
+    CONTACT-INFO
+            "The Cacti Group
+
+            E-mail: developers@cacti.net"
+    DESCRIPTION
+        "The Structure of Management Information for the
+        Cacti enterprise.
+            +- cactiAppl
+            |  |
+            |  +- cactiApplLastUpdate
+            |  +- cactiApplVersion
+            |  +- cactiApplSnmpVersion
+            |  +- cactiApplRrdtoolVersion
+            |  +- cactiApplPollerEnabled
+            |  +- cactiApplPollerType
+            |  +- cactiApplPollerInterval
+            |  +- cactiApplLoadBalance
+            |  +- cactiApplSpineMaxThreads
+            |  +- cactiApplSpineScriptServers
+            |  +- cactiApplSpineScriptTimeout
+            |  +- cactiApplSpineMaxOids
+            |  |
+            |  +- cactiApplDeviceTable
+            |  |  |
+            |  |  +- cactiApplDevicEntry
+            |  |     |
+            |  |     +- cactiApplDeviceIndex
+            |  |     +- cactiApplDeviceDescription
+            |  |     +- cactiApplDeviceHostname
+            |  |     +- cactiApplDeviceStatus
+            |  |     +- cactiApplDeviceEventCount
+            |  |     +- cactiApplDeviceFailDate
+            |  |     +- cactiApplDeviceRecoveryDate
+            |  |     +- cactiApplDeviceLastError
+            |  |
+            |  +- cactiApplPollerTable
+            |  |  |
+            |  |  +- cactiApplPollerEntry
+            |  |     |
+            |  |     +- cactiApplPollerIndex
+            |  |     +- cactiApplPollerHostname
+            |  |     +- cactiApplPollerIpAddress
+            |  |     +- cactiApplPollerLastUpdate
+            |  |
+            |  +- cactiApplPluginTable
+            |     |
+            |     +- cactiApplPluginEntry
+            |        |
+            |        +- cactiApplPluginIndex
+            |        +- cactiApplPluginType
+            |        +- cactiApplPluginName
+            |        +- cactiApplPluginStatus
+            |        +- cactiApplPluginVersion
+            |
+            +- cactiStats
+            |  |
+            |  +- cactiStatsLastUpdate
+            |  +- cactiStatsRecacheTime
+            |  +- cactiStatsRecachedHosts
+            |  +- cactiStatsLocalPollerRuntime
+            |  +- cactiStatsTotalsDevices
+            |  +- cactiStatsTotalsDataSources
+            |  +- cactiStatsTotalsGraphs
+            |  |
+            |  +- cactiStatsTotalsDeviceStatusTable
+            |  |  |
+            |  |  +- cactiStatsTotalsDeviceStatusEntry
+            |  |     |
+            |  |     +- cactiStatsTotalsDeviceStatusIndex
+            |  |     +- cactiStatsTotalsDeviceStatusCounter
+            |  |
+            |  +- cactiStatsDeviceTable
+            |  |  |
+            |  |  +- cactiStatsDeviceEntry
+            |  |     |
+            |  |     +- cactiStatsDeviceIndex
+            |  |     +- cactiStatsDeviceHostname
+            |  |     +- cactiStatsDeviceMinTime
+            |  |     +- cactiStatsDeviceMaxTime
+            |  |     +- cactiStatsdeviceCurTime
+            |  |     +- cactiStatsDeviceAvgTime
+            |  |     +- cactiStatsDeviceTotalPolls
+            |  |     +- cactiStatsDeviceFailedPolls
+            |  |     +- cactiStatsDeviceAvailability
+            |  |
+            |  +- cactiStatsPollerTable
+            |  |  |
+            |  |  +- cactiStatsPollerEntry
+            |  |     |
+            |  |     +- cactiStatsPollerIndex
+            |  |     +- cactiStatsPollerHostname
+            |  |     +- cactiStatsPollerRunTime
+            |  |     +- cactiStatsPollerMethod
+            |  |     +- cactiStatsPollerConcurrentProcesses
+            |  |     +- cactiStatsPollerThreads
+            |  |     +- cactiStatsPollerHosts
+            |  |     +- cactiStatsPollerHostsPerProcess
+            |  |     +- cactiStatsPollerItems
+            |  |     +- cactiStatsPollerRrrdsProcessed
+            |  |     +- cactiStatsPollerUtilization
+            |  |
+            |  +- cactiStatsTotalsDeviceStatusUnknown
+            |  +- cactiStatsTotalsDeviceStatusDown
+            |  +- cactiStatsTotalsDeviceStatusRecovering
+            |  +- cactiStatsTotalsDeviceStatusUp
+            |  +- cactiStatsTotalsDeviceStatusDisabled
+            |
+            +- cactiEvents
+            |  |
+            |  +- cactiEventAttributes
+            |  |  |
+            |  |  + - cactiEventDescription
+            |  |
+            |  +- cactiEventNotifications
+            |     |
+            |     + - cactiNotify
+            |     + - cactiNotifyDeviceDown
+            |     + - cactiNotifyDeviceRecovering
+            |     + - cactiNotifyPollerRuntimeExceeding
+            |     + - cactiNotifyDeviceFailedPoll
+            |
+            +- cactiPlugins
+            |  |
+            |  +- thold(1)
+            |  +- boost(2)
+            |  +- dsstats(3)
+            |
+            +- cactiMibGroups
+               |
+               + - cactiApplPollerGroup
+               + - cactiApplSpineGroup
+               + - cactiStatsTotalsDeviceGroup
+               + - cactiNotifyGroup
+    "
+    REVISION        "201402030000Z"
+    DESCRIPTION
+        "- Event notification cactiNotifyDeviceFailedPoll added."
+    REVISION        "201401180000Z"
+    DESCRIPTION
+        "- Event notifications and notification group added.
+         - Update MIB tree shown in module description."
+    REVISION        "201303230000Z"
+    DESCRIPTION
+        "- Branches for Boost, Thold and DSSTATS added."
+    REVISION        "201301270000Z"
+    DESCRIPTION
+        "- introduce cactiStatsPollerUtilization"
+    REVISION        "201301240000Z"
+    DESCRIPTION
+        "- Rename/update different states a Cacti plugin can have.
+         - Rename single MIB object cactiStatsPollerRunTime to
+           cactiStatsLocalPollerRunTime and change type to store float values."
+    REVISION        "201212230000Z"
+    DESCRIPTION
+        "- Add stats table cactiStatsPollerTable to take care of distributed
+           systems.
+         - Units to several objects added.
+         - Status 'unknown' missing in definition of cactiApplDeviceStatus and
+           cactiStatsTotalsDeviceStatusIndex.
+         - Status 'notinstalled' missing in definition of cactiApplPluginStatus"
+    REVISION        "201211160000Z"
+    DESCRIPTION
+        "- Cacti Application object and data items added."
+    REVISION        "201210150000Z"
+    DESCRIPTION
+        "- Cacti Mib Groups added.
+         - Clean up: Convert tabs to spaces.
+                     Remove superfluos tabs and spaces.
+	                 Add notes to the different object identities"
+    REVISION        "201210110000Z"
+    DESCRIPTION
+        "Initial version of this MIB module."
+    ::= { enterprises 23925 }    -- assigned by IANA
+
+--
+-- TEXTUAL CONVENTIONS
+--
+
+--
+-- TC: SNMP Version
+--
+TcCactiApplSnmpVersion ::= TEXTUAL-CONVENTION
+    STATUS          current
+    DESCRIPTION
+        "The type of SNMP being used:
+
+        NET-SNMP
+        UCD-SNMP
+        PHP-SNMP"
+    SYNTAX          INTEGER
+    {
+        netsnmp(1),
+        ucdsnmp(2),
+        phpsnmp(3)
+    }
+
+--
+-- TC: Poller Type
+--
+TcCactiApplPollerType ::= TEXTUAL-CONVENTION
+    STATUS          current
+    DESCRIPTION
+        "Poller types:
+
+        cmd         - php based poller
+        spine       - high performance C-based polling engine"
+    SYNTAX          INTEGER
+    {
+        cmd(1),
+        spine(2)
+    }
+
+--
+-- CACTI APPLICATION DATA
+--
+cactiAppl OBJECT-IDENTITY
+    STATUS          current
+    DESCRIPTION
+        "reserved for Cacti application data"
+    ::= { cacti 1 }
+
+--
+-- Global Cacti Monitoring Variables
+--
+cactiApplLastUpdate OBJECT-TYPE
+    SYNTAX          Unsigned32
+    UNITS           "seconds"
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "Unix timestamp when this data has been updated for the last time."
+    ::= { cactiAppl 1 }
+
+cactiApplVersion OBJECT-TYPE
+    SYNTAX          DisplayString (SIZE(1..48))
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "Returns the version string of Cacti"
+    ::= { cactiAppl 2 }
+
+cactiApplSnmpVersion OBJECT-TYPE
+    SYNTAX          TcCactiApplSnmpVersion
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "Represents the type of SNMP used by Cacti:
+
+        NET-SNMP
+        UCD-SNMP
+        PHP-SNMP"
+    DEFVAL { netsnmp }
+    ::= { cactiAppl 3 }
+
+cactiApplRrdtoolVersion OBJECT-TYPE
+    SYNTAX          DisplayString (SIZE(1..48))
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "The version of RRDTool used by Cacti"
+    ::= { cactiAppl 4 }
+
+--
+-- Global Poller Settings
+--
+cactiApplPollerEnabled OBJECT-TYPE
+    SYNTAX          TruthValue
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "If Cacti polling has been enabled this object is set to true(1)."
+    DEFVAL          { true }
+    ::= { cactiAppl 5 }
+
+cactiApplPollerType OBJECT-TYPE
+    SYNTAX          TcCactiApplPollerType
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "Describes the polling engine used by Cacti:
+
+        cmd         - php based poller
+        spine       - high performance C-based polling engine"
+    DEFVAL { cmd }
+    ::= { cactiAppl 6 }
+
+cactiApplPollerInterval OBJECT-TYPE
+    SYNTAX          Unsigned32 (10|15|20|30|60|300)
+    UNITS           "seconds"
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "The polling interval in seconds which determines how often
+        data sources will be checked and updated."
+    ::= { cactiAppl 7 }
+
+cactiApplPollerMaxProcesses OBJECT-TYPE
+    SYNTAX          Unsigned32 (1..4294967295)
+    UNITS           "processes"
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "Represents the number of maximum poller processes Cacti is allowed to
+         perform in parallel."
+    ::= { cactiAppl 8 }
+
+cactiApplPollerLoadBalance OBJECT-TYPE
+    SYNTAX          TruthValue
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "If true Cacti attempt to balance the load of each poller process."
+    DEFVAL          { false }
+    ::= { cactiAppl 9 }
+
+--
+-- Spine Specific Execution Parameters
+--
+cactiApplSpineMaxThreads OBJECT-TYPE
+    SYNTAX          Unsigned32
+    UNITS           "threads"
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "Represents the maximum threads allowed per process."
+    ::= { cactiAppl 10 }
+
+cactiApplSpineScriptServers OBJECT-TYPE
+    SYNTAX          Unsigned32 (1..10)
+    UNITS           "instances"
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "Represents the maximum number of script servers a spine process is
+         allowed to run."
+    ::= { cactiAppl 11 }
+
+cactiApplSpineScriptTimeout OBJECT-TYPE
+    SYNTAX          Unsigned32
+    UNITS           "seconds"
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "Describes the maximum time Cacti will wait on a script to complete."
+    ::= { cactiAppl 12 }
+
+cactiApplSpineMaxOids OBJECT-TYPE
+    SYNTAX          Unsigned32 (0..100)
+    UNITS           "oids"
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "The maximum number of snmp get OID's to issue per snmpbulkwalk
+         request."
+    ::= { cactiAppl 13 }
+
+--
+-- Registered Devices for Monitoring
+--
+cactiApplDeviceTable OBJECT-TYPE
+    SYNTAX          SEQUENCE OF CactiApplDeviceEntry
+    MAX-ACCESS      not-accessible
+    STATUS          current
+    DESCRIPTION
+        "A table of registered hosts on a Cacti system.
+         The maximum number of entries is implementation dependent."
+    ::= { cactiAppl 14 }
+
+cactiApplDeviceEntry OBJECT-TYPE
+    SYNTAX          CactiApplDeviceEntry
+    MAX-ACCESS      not-accessible
+    STATUS          current
+    DESCRIPTION
+        "An entry in the table of registered hosts on a Cacti system. A row
+         in this table cannot be created or deleted by SNMP operations on
+         columns of the table."
+    INDEX           { cactiApplDeviceIndex }
+    ::= { cactiApplDeviceTable 1 }
+
+CactiApplDeviceEntry ::=
+    SEQUENCE {
+        cactiApplDeviceIndex            Unsigned32,
+        cactiApplDeviceDescription      DisplayString,
+        cactiApplDeviceHostname         DisplayString,
+        cactiApplDeviceStatus           INTEGER,
+        cactiApplDeviceEventCount       Unsigned32,
+        cactiApplDeviceFailDate         DisplayString,
+        cactiApplDeviceRecoveryDate     DisplayString,
+        cactiApplDeviceLastError        DisplayString
+    }
+
+cactiApplDeviceIndex OBJECT-TYPE
+    SYNTAX          Unsigned32
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "A unique device identifier. This ID will be created by Cacti itself."
+    ::= { cactiApplDeviceEntry 1 }
+
+cactiApplDeviceDescription OBJECT-TYPE
+    SYNTAX          DisplayString (SIZE(1..150))
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "A meaning description of a device."
+    ::= { cactiApplDeviceEntry 2 }
+
+cactiApplDeviceHostname OBJECT-TYPE
+    SYNTAX          DisplayString (SIZE(1..250))
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "Fully qualified devicename or IP address."
+    ::= { cactiApplDeviceEntry 3 }
+
+cactiApplDeviceStatus OBJECT-TYPE
+    SYNTAX          INTEGER {
+                        unknown(0),
+                        down(1),
+                        recovering(2),
+                        up(3),
+                        disabled(4)
+                    }
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "The status a device can have within Cacti:
+         unknown(0)     - device has not been polled yet
+         down(1)        - device became unresponsive
+         recovering(2)  - device was down and became reachable again
+         up(3)          - device is reachable
+         disabled(4)    - device will not be monitored "
+    ::= { cactiApplDeviceEntry 4 }
+
+cactiApplDeviceEventCount OBJECT-TYPE
+    SYNTAX          Unsigned32
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "Total number of events registered for that device since last reset."
+    ::= { cactiApplDeviceEntry 5 }
+
+cactiApplDeviceFailDate OBJECT-TYPE
+    SYNTAX          DisplayString (SIZE(19))
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "Date of last fail"
+    ::= { cactiApplDeviceEntry 6 }
+
+cactiApplDeviceRecoveryDate OBJECT-TYPE
+    SYNTAX          DisplayString (SIZE(19))
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "Date of lats recovery"
+    ::= { cactiApplDeviceEntry 7 }
+
+cactiApplDeviceLastError OBJECT-TYPE
+    SYNTAX          DisplayString (SIZE(0..255))
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "Description of last error being detected."
+    ::= { cactiApplDeviceEntry 8 }
+
+--
+-- Registered Remote Pollers
+--
+cactiApplPollerTable OBJECT-TYPE
+    SYNTAX          SEQUENCE OF CactiApplPollerEntry
+    MAX-ACCESS      not-accessible
+    STATUS          current
+    DESCRIPTION
+        "A table of pollers registered on a Cacti system.
+         The maximum number of entries is implementation dependent."
+    ::= { cactiAppl 15 }
+
+cactiApplPollerEntry OBJECT-TYPE
+    SYNTAX          CactiApplPollerEntry
+    MAX-ACCESS      not-accessible
+    STATUS          current
+    DESCRIPTION
+        "An entry in the table of registered pollers to a Cacti system. A row
+         in this table cannot be created or deleted by SNMP operations on
+         columns of the table."
+    INDEX           { cactiApplPollerIndex }
+    ::= { cactiApplPollerTable 1 }
+
+CactiApplPollerEntry ::=
+    SEQUENCE {
+        cactiApplPollerIndex            Unsigned32,
+        cactiApplPollerHostname         DisplayString,
+        cactiApplPollerIpAddress        DisplayString,
+        cactiApplPollerLastUpdate       DisplayString
+    }
+
+cactiApplPollerIndex OBJECT-TYPE
+    SYNTAX          Unsigned32
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "A unique poller identifier. This ID will be created by Cacti itself."
+    ::= { cactiApplPollerEntry 1 }
+
+cactiApplPollerHostname OBJECT-TYPE
+    SYNTAX          DisplayString (SIZE(1..250))
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "Name of the device where the poller is running on."
+    ::= { cactiApplPollerEntry 2 }
+
+cactiApplPollerIpAddress OBJECT-TYPE
+    SYNTAX          DisplayString (SIZE(1..250))
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "IP address of the poller's host."
+    ::= { cactiApplPollerEntry 3 }
+
+cactiApplPollerLastUpdate OBJECT-TYPE
+    SYNTAX          DisplayString (SIZE(19))
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "Timestamp of last update."
+    ::= { cactiApplPollerEntry 4 }
+
+--
+-- Installed Cacti Plugins
+--
+cactiApplPluginTable OBJECT-TYPE
+    SYNTAX          SEQUENCE OF CactiApplPluginEntry
+    MAX-ACCESS      not-accessible
+    STATUS          current
+    DESCRIPTION
+        "A table of registered plugins on a Cacti system.
+         The maximum number of entries is implementation dependent."
+    ::= { cactiAppl 16 }
+
+cactiApplPluginEntry OBJECT-TYPE
+    SYNTAX          CactiApplPluginEntry
+    MAX-ACCESS      not-accessible
+    STATUS          current
+    DESCRIPTION
+        "An entry in the table of all installed Cacti plugins. A row
+         in this table cannot be created or deleted by SNMP operations on
+         columns of the table."
+    INDEX           { cactiApplPluginIndex }
+    ::= { cactiApplPluginTable 1 }
+
+CactiApplPluginEntry ::=
+    SEQUENCE {
+        cactiApplPluginIndex            Unsigned32,
+        cactiApplPluginType             INTEGER,
+        cactiApplPluginName             DisplayString,
+        cactiApplPluginStatus           INTEGER,
+        cactiApplPluginVersion          DisplayString
+    }
+
+cactiApplPluginIndex OBJECT-TYPE
+    SYNTAX          Unsigned32
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "A unique plugin identifier. This ID will be administrated by Cacti itself."
+    ::= { cactiApplPluginEntry 1 }
+
+cactiApplPluginType OBJECT-TYPE
+    SYNTAX          INTEGER {
+                        system(1),
+                        default(2)
+                    }
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "Describes whether or not the plugin has been registered as a system plugin.
+         System plugins offer a lot of functions normal Cacti plugins rely on."
+    ::= { cactiApplPluginEntry 2 }
+
+cactiApplPluginName OBJECT-TYPE
+    SYNTAX          DisplayString (SIZE(1..64))
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "The official name of a plugin given by its author."
+    ::= { cactiApplPluginEntry 3 }
+
+
+cactiApplPluginStatus OBJECT-TYPE
+    SYNTAX          INTEGER {
+                        disabledold(-2),
+                        activeold(-1),
+                        notinstalled(0),
+                        active(1),
+                        awaitingconfiguration(2),
+                        awaitingupgrade(3),
+                        installed(4)
+                    }
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "The status a plugin can have within Cacti:
+         disabledold(-2)   - plugin (old PIA) is available, but has not been installed
+         activeold(-1)     - plugin (old PIA) is installed and active
+         notinstalled(0)   - plugin (new PIA) is available, but has not been installed
+         active(1)         - plugin (new PIA) is installed and active
+         setupmode(2)      - plugin (new PIA) is installed, but configuration is needed
+         disabled(4)       - plugin (new PIA) is installed, but without function "
+    ::= { cactiApplPluginEntry 4 }
+
+cactiApplPluginVersion OBJECT-TYPE
+    SYNTAX          DisplayString (SIZE(1..8))
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "Version string of the Cacti plugin being installed."
+    ::= { cactiApplPluginEntry 5 }
+
+--
+-- CACTI STATISTICS
+--
+cactiStats OBJECT-IDENTITY
+    STATUS          current
+    DESCRIPTION
+        "reserved for cacti statistics"
+    ::= { cacti 2 }
+
+--
+-- Global Cacti Stats Variables
+--
+cactiStatsLastUpdate OBJECT-TYPE
+    SYNTAX          Unsigned32
+    UNITS           "seconds"
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "Unix timestamp when this data has been updated for the last time."
+    ::= { cactiStats 1 }
+
+cactiStatsRecacheTime OBJECT-TYPE
+    SYNTAX          Unsigned32
+    UNITS           "seconds"
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "Returns the recache Time in seconds."
+    ::= { cactiStats 2 }
+
+cactiStatsRecachedHosts OBJECT-TYPE
+    SYNTAX          Unsigned32
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "The current number of recaching events being discovered."
+    ::= { cactiStats 3 }
+
+cactiStatsLocalPollerRuntime OBJECT-TYPE
+    SYNTAX          DisplayString (SIZE(1..16))
+    UNITS           "seconds"
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "Returns the runtime of the local poller in seconds."
+    ::= { cactiStats 4 }
+
+cactiStatsTotalsDevices OBJECT-TYPE
+    SYNTAX          Unsigned32
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "Returns the total number of registered devices."
+    ::= { cactiStats 5  }
+
+cactiStatsTotalsDataSources OBJECT-TYPE
+    SYNTAX          Unsigned32
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "Returns the total number of data sources."
+    ::= { cactiStats 6 }
+
+cactiStatsTotalsGraphs OBJECT-TYPE
+    SYNTAX          Unsigned32
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "Returns the total number of graphs."
+    ::= { cactiStats 7 }
+
+--
+-- Device Total Status
+--
+cactiStatsTotalsDeviceStatusTable OBJECT-TYPE
+    SYNTAX          SEQUENCE OF CactiStatsTotalsDeviceStatusEntry
+    MAX-ACCESS      not-accessible
+    STATUS          deprecated
+    DESCRIPTION
+        "A table of statistics for all devices registered on a Cacti system
+         in relation to their device status.
+         The maximum number of entries is limited to maximum number of
+         device stati. "
+    ::= { cactiStats 8 }
+
+cactiStatsTotalsDeviceStatusEntry OBJECT-TYPE
+    SYNTAX          CactiStatsTotalsDeviceStatusEntry
+    MAX-ACCESS      not-accessible
+    STATUS          deprecated
+    DESCRIPTION
+        "A table of statistics for all devices registered on a Cacti system
+         in relation to their device status.
+         A row in this table cannot be created or deleted by SNMP operations on
+         columns of the table."
+    INDEX           { cactiStatsTotalsDeviceStatusIndex }
+    ::= { cactiStatsTotalsDeviceStatusTable 1 }
+
+CactiStatsTotalsDeviceStatusEntry ::=
+    SEQUENCE {
+        cactiStatsTotalsDeviceStatusIndex        INTEGER,
+        cactiStatsTotalsDeviceStatusCounter      Unsigned32
+    }
+
+cactiStatsTotalsDeviceStatusIndex OBJECT-TYPE
+    SYNTAX          INTEGER {
+                        unknown(0),
+                        down(1),
+                        recovering(2),
+                        up(3),
+                        disabled(4)
+                    }
+    MAX-ACCESS      read-only
+    STATUS          deprecated
+    DESCRIPTION
+        "unknown(0)     - Total number of devices that have not been polled yet
+         down(1)        - Total number of devices being unreachable
+         recovering(2)  - Total number of devices recovering
+         up(3)          - Total number of devices being reachable
+         disabled(4)    - Total number of devices that will not be monitored "
+    ::= { cactiStatsTotalsDeviceStatusEntry 1 }
+
+cactiStatsTotalsDeviceStatusCounter OBJECT-TYPE
+    SYNTAX          Unsigned32
+    MAX-ACCESS      read-only
+    STATUS          deprecated
+    DESCRIPTION
+        "Returns the total number of registered devices in relation to
+         cactiStatsTotalsDeviceStatusIndex. "
+    ::= { cactiStatsTotalsDeviceStatusEntry 2  }
+
+--
+-- Device Statistics
+--
+cactiStatsDeviceTable OBJECT-TYPE
+    SYNTAX          SEQUENCE OF CactiStatsDeviceEntry
+    MAX-ACCESS      not-accessible
+    STATUS          current
+    DESCRIPTION
+        "A table of statistics for all devices registered on a Cacti system.
+         The maximum number of entries is implementation dependent.
+         This table has a 1:1 relationship to cactiApplDeviceTable. "
+    ::= { cactiStats 9 }
+
+cactiStatsDeviceEntry OBJECT-TYPE
+    SYNTAX          CactiStatsDeviceEntry
+    MAX-ACCESS      not-accessible
+    STATUS          current
+    DESCRIPTION
+        "An entry in the table of statistics for registered devices of a Cacti system.
+         A row in this table cannot be created or deleted by SNMP operations on
+         columns of the table."
+    INDEX           { cactiApplDeviceIndex }
+    ::= { cactiStatsDeviceTable 1 }
+
+CactiStatsDeviceEntry ::=
+    SEQUENCE {
+        cactiStatsDeviceIndex           Unsigned32,
+        cactiStatsDeviceHostname        DisplayString,
+        cactiStatsDeviceMinTime         DisplayString,
+        cactiStatsDeviceMaxTime         DisplayString,
+        cactiStatsDeviceCurTime         DisplayString,
+        cactiStatsDeviceAvgTime         DisplayString,
+        cactiStatsDeviceTotalPolls      Unsigned32,
+        cactiStatsDeviceFailedPolls     Unsigned32,
+        cactiStatsDeviceAvailability    DisplayString
+    }
+
+cactiStatsDeviceIndex OBJECT-TYPE
+    SYNTAX          Unsigned32
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "A unique device identifier. This ID will be created by Cacti itself."
+    ::= { cactiStatsDeviceEntry 1 }
+
+cactiStatsDeviceHostname OBJECT-TYPE
+    SYNTAX          DisplayString (SIZE(1..250))
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "Fully qualified devicename or IP address."
+    ::= { cactiStatsDeviceEntry 2 }
+
+cactiStatsDeviceMinTime OBJECT-TYPE
+    SYNTAX          DisplayString (SIZE(1..16))
+    UNITS           "milliseconds"
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "Minimum response time in seconds."
+    ::= { cactiStatsDeviceEntry 3 }
+
+cactiStatsDeviceMaxTime OBJECT-TYPE
+    SYNTAX          DisplayString (SIZE(1..16))
+    UNITS           "milliseconds"
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "Maximum response time in seconds."
+    ::= { cactiStatsDeviceEntry 4 }
+
+cactiStatsDeviceCurTime OBJECT-TYPE
+    SYNTAX          DisplayString (SIZE(1..16))
+    UNITS           "milliseconds"
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "Last response time in seconds."
+    ::= { cactiStatsDeviceEntry 5 }
+
+cactiStatsDeviceAvgTime OBJECT-TYPE
+    SYNTAX          DisplayString (SIZE(1..16))
+    UNITS           "milliseconds"
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "Average response time in seconds."
+    ::= { cactiStatsDeviceEntry 6 }
+
+cactiStatsDeviceTotalPolls OBJECT-TYPE
+    SYNTAX          Unsigned32
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "Number of total polls against a monitored device."
+    ::= { cactiStatsDeviceEntry 7 }
+
+cactiStatsDeviceFailedPolls OBJECT-TYPE
+    SYNTAX          Unsigned32
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "Number of failed polls."
+    ::= { cactiStatsDeviceEntry 8 }
+
+cactiStatsDeviceAvailability OBJECT-TYPE
+    SYNTAX          DisplayString (SIZE(1..14))
+    UNITS           "percent"
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "Calculated availablity in percent."
+    ::= { cactiStatsDeviceEntry 9 }
+
+--
+-- Poller Statistics
+--
+cactiStatsPollerTable OBJECT-TYPE
+    SYNTAX          SEQUENCE OF CactiStatsPollerEntry
+    MAX-ACCESS      not-accessible
+    STATUS          current
+    DESCRIPTION
+        "A table of statistics for all pollers registered on a Cacti system.
+         The maximum number of entries is implementation dependent.
+         This table has a 1:1 relationship to cactiApplPollerTable. "
+    ::= { cactiStats 10 }
+
+cactiStatsPollerEntry OBJECT-TYPE
+    SYNTAX          CactiStatsPollerEntry
+    MAX-ACCESS      not-accessible
+    STATUS          current
+    DESCRIPTION
+        "An entry in the table of statistics for registered pollers of a Cacti system.
+         A row in this table cannot be created or deleted by SNMP operations on
+         columns of the table."
+    INDEX           { cactiApplPollerIndex }
+    ::= { cactiStatsPollerTable 1 }
+
+CactiStatsPollerEntry ::=
+    SEQUENCE {
+        cactiStatsPollerIndex                   Unsigned32,
+        cactiStatsPollerHostname                DisplayString,
+        cactiStatsPollerRunTime                 DisplayString,
+        cactiStatsPollerMethod                  TcCactiApplPollerType,
+        cactiStatsPollerConcurrentProcesses     Unsigned32,
+        cactiStatsPollerThreads                 Unsigned32,
+        cactiStatsPollerHosts                   Unsigned32,
+        cactiStatsPollerHostsPerProcess         Unsigned32,
+        cactiStatsPollerItems                   Unsigned32,
+        cactiStatsPollerRrrdsProcessed          Unsigned32,
+        cactiStatsPollerUtilization             DisplayString
+    }
+
+cactiStatsPollerIndex OBJECT-TYPE
+    SYNTAX          Unsigned32
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "A unique poller identifier. This ID will be created by Cacti itself."
+    ::= { cactiStatsPollerEntry 1 }
+
+cactiStatsPollerHostname OBJECT-TYPE
+    SYNTAX          DisplayString (SIZE(1..250))
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "Name of the device where the poller is running on."
+    ::= { cactiStatsPollerEntry 2 }
+
+cactiStatsPollerRunTime OBJECT-TYPE
+    SYNTAX          DisplayString (SIZE(1..16))
+    UNITS           "seconds"
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "Last poller runtime in seconds."
+    ::= { cactiStatsPollerEntry 3 }
+
+cactiStatsPollerMethod OBJECT-TYPE
+    SYNTAX          TcCactiApplPollerType
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+       "Describes the polling engine used by Cacti:
+        cmd         - php based poller
+        spine       - high performance C-based polling engine"
+    DEFVAL { cmd }
+    ::= { cactiStatsPollerEntry 4 }
+
+cactiStatsPollerConcurrentProcesses OBJECT-TYPE
+    SYNTAX          Unsigned32
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "Number of concurrent processes."
+    ::= { cactiStatsPollerEntry 5 }
+
+cactiStatsPollerThreads OBJECT-TYPE
+    SYNTAX          Unsigned32
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "Number of threads. This object will always return zero if
+         polling method is CMD."
+    ::= { cactiStatsPollerEntry 6 }
+
+cactiStatsPollerHosts OBJECT-TYPE
+    SYNTAX          Unsigned32
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "Number of polled devices."
+    ::= { cactiStatsPollerEntry 7 }
+
+cactiStatsPollerHostsPerProcess OBJECT-TYPE
+    SYNTAX          Unsigned32
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "Maximum number of hosts per process."
+    ::= { cactiStatsPollerEntry 8 }
+
+cactiStatsPollerItems OBJECT-TYPE
+    SYNTAX          Unsigned32
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "Number of items being polled."
+    ::= { cactiStatsPollerEntry 9 }
+
+cactiStatsPollerRrrdsProcessed OBJECT-TYPE
+    SYNTAX          Unsigned32
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "Number of RRDs being processed. This object will always return zero
+         if RRD updates will be handled by BOOST."
+    ::= { cactiStatsPollerEntry 10 }
+
+cactiStatsPollerUtilization OBJECT-TYPE
+    SYNTAX          DisplayString (SIZE(1..16))
+    UNITS           "percent"
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "The proportion of the poller interval in percent the poller requires
+         to poll all data sources."
+    ::= { cactiStatsPollerEntry 11 }
+
+cactiStatsTotalsDeviceStatusUnknown OBJECT-TYPE
+    SYNTAX          Unsigned32
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "Total number of devices that have not been polled yet."
+    ::= { cactiStats 11 }
+
+cactiStatsTotalsDeviceStatusDown OBJECT-TYPE
+    SYNTAX          Unsigned32
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "Total number of devices being unreachable."
+    ::= { cactiStats 12 }
+
+cactiStatsTotalsDeviceStatusRecovering OBJECT-TYPE
+    SYNTAX          Unsigned32
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "Total number of devices recovering."
+    ::= { cactiStats 13 }
+
+cactiStatsTotalsDeviceStatusUp OBJECT-TYPE
+    SYNTAX          Unsigned32
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "Total number of devices being reachable."
+    ::= { cactiStats 14 }
+
+cactiStatsTotalsDeviceStatusDisabled OBJECT-TYPE
+    SYNTAX          Unsigned32
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "Total number of devices being reachable."
+    ::= { cactiStats 15 }
+
+--
+-- Cacti Events
+--
+cactiEvents OBJECT-IDENTITY
+    STATUS          current
+    DESCRIPTION
+        "reserved for cacti events"
+    ::= { cacti 3 }
+
+cactiEventAttributes OBJECT-IDENTITY
+    STATUS          current
+    DESCRIPTION
+        "resevered for event attributes, used as varbind for the SMNP notifications"
+    ::= { cactiEvents 1 }
+
+cactiEventDescription OBJECT-TYPE
+    SYNTAX          DisplayString (SIZE(1..1000))
+    MAX-ACCESS      accessible-for-notify
+    STATUS          current
+    DESCRIPTION
+        "Contains a customized event description."
+    DEFVAL { "This is a notification generated by the CACTI." }
+    ::= { cactiEventAttributes 1 }
+
+cactiEventNotifications OBJECT-IDENTITY
+    STATUS          current
+    DESCRIPTION
+        "resevered for event notifications"
+    ::= { cactiEvents 2 }
+
+cactiNotify NOTIFICATION-TYPE
+    OBJECTS {
+        cactiEventDescription
+    }
+    STATUS  current
+    DESCRIPTION
+        "This SNMP notification will only include varbind cactiEventDescription
+        and can be used as a simple and generic notification by plugins for example."
+    ::= { cactiEventNotifications 1 }
+
+cactiNotifyDeviceDown NOTIFICATION-TYPE
+    OBJECTS {
+        cactiApplDeviceIndex,
+        cactiApplDeviceDescription,
+        cactiApplDeviceHostname,
+        cactiApplDeviceLastError
+    }
+    STATUS  current
+    DESCRIPTION
+        "This SNMP notification will be send to notification receivers if Cacti has detected
+         that a monitored device went down."
+    ::= { cactiEventNotifications 2 }
+
+cactiNotifyDeviceRecovering NOTIFICATION-TYPE
+    OBJECTS {
+        cactiApplDeviceIndex,
+        cactiApplDeviceDescription,
+        cactiApplDeviceHostname,
+        cactiApplDeviceLastError
+    }
+    STATUS  current
+    DESCRIPTION
+        "This SNMP notification will be send to notification receivers if Cacti has detected
+         that a monitored device became reachable again."
+    ::= { cactiEventNotifications 3 }
+
+cactiNotifyPollerRuntimeExceeding NOTIFICATION-TYPE
+    OBJECTS {
+        cactiApplPollerIndex,
+        cactiApplPollerHostname,
+        cactiApplPollerIpAddress
+    }
+    STATUS  current
+    DESCRIPTION
+        "This SNMP notification will be send to notification receivers if a Cacti poller
+         has breached its maximum runtime."
+    ::= { cactiEventNotifications 4 }
+
+cactiNotifyDeviceFailedPoll NOTIFICATION-TYPE
+    OBJECTS {
+        cactiApplDeviceIndex,
+        cactiApplDeviceDescription,
+        cactiApplDeviceHostname,
+        cactiApplDeviceLastError
+    }
+    STATUS  current
+    DESCRIPTION
+        "This SNMP notification will be send to notification receivers if Cacti
+         was unable to poll a device."
+    ::= { cactiEventNotifications 5 }
+
+--
+-- Cacti Plugins
+--
+cactiPlugins OBJECT-IDENTITY
+    STATUS          current
+    DESCRIPTION
+        "cactiPlugins provides a root object identifier
+        from which mibs produced by plugin developers may be
+        placed. mibs written by other developers will typically
+        be implemented with the object identifiers as defined
+        in the mib.
+        Plugin developers have to take notice of the following
+        requirements:
+
+        |MIB name: CACTI-<plugin_name>-MIB
+        |Module name: <plugin_name>
+        |Architecture:
+            Plugin mibs have to reserve the first three
+            sub-trees for:
+            +
+            |-<plugin_name>Appl(1)
+            |-<plugin_name>Stats(2)
+            |-<plugin_name>Events(3)
+            |-<plugin_name>MibGroups(4)
+
+        The plugin name has to be written in lower cases only.
+
+        As reference plugin developers should take a look at
+        the CACTI-THOLD-MIB."
+    ::= { cacti 4 }
+
+--
+-- Cacti MIB Groups
+--
+cactiMibGroups OBJECT-IDENTITY
+    STATUS          current
+    DESCRIPTION
+        "reserved for group definitions"
+    ::= { cacti 5 }
+
+cactiApplPollerGroup OBJECT-GROUP
+    OBJECTS {
+        cactiApplPollerEnabled,
+        cactiApplPollerType,
+        cactiApplPollerInterval,
+        cactiApplPollerMaxProcesses,
+        cactiApplPollerLoadBalance
+    }
+    STATUS          current
+    DESCRIPTION
+        "A collection of poller settings."
+    ::= { cactiMibGroups 1 }
+
+cactiApplSpineGroup OBJECT-GROUP
+    OBJECTS {
+        cactiApplSpineMaxThreads,
+        cactiApplSpineScriptServers,
+        cactiApplSpineScriptTimeout,
+        cactiApplSpineMaxOids
+    }
+    STATUS          current
+    DESCRIPTION
+        "A collection of Spine specific parameters."
+    ::= { cactiMibGroups 2 }
+
+cactiStatsTotalsDeviceGroup OBJECT-GROUP
+    OBJECTS {
+        cactiStatsTotalsDevices,
+        cactiStatsTotalsDeviceStatusUnknown,
+        cactiStatsTotalsDeviceStatusDown,
+        cactiStatsTotalsDeviceStatusRecovering,
+        cactiStatsTotalsDeviceStatusUp,
+        cactiStatsTotalsDeviceStatusDisabled
+    }
+    STATUS          current
+    DESCRIPTION
+        "A collection of Spine specific parameters."
+    ::= { cactiMibGroups 3 }
+
+cactiNotifyGroup NOTIFICATION-GROUP
+    NOTIFICATIONS {
+        cactiNotify,
+        cactiNotifyDeviceDown,
+        cactiNotifyDeviceRecovering,
+        cactiNotifyPollerRuntimeExceeding,
+        cactiNotifyDeviceFailedPoll
+    }
+    STATUS          current
+    DESCRIPTION
+        "The group of notifications Cacti supports."
+    ::= { cactiMibGroups 4 }
+END

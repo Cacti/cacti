@@ -82,6 +82,12 @@ $settings = array(
 			'method' => 'filepath',
 			'max_length' => '255'
 			),
+		'path_snmptrap' => array(
+			'friendly_name' => 'snmptrap Binary Path',
+			'description' => 'The path to your snmptrap binary.',
+			'method' => 'filepath',
+			'max_length' => '255'
+			),
 		'path_rrdtool' => array(
 			'friendly_name' => 'RRDTool Binary Path',
 			'description' => 'The path to the rrdtool binary.',

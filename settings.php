@@ -63,6 +63,9 @@ case 'save':
 			db_execute_prepared('REPLACE INTO settings (name, value) VALUES (?, ?)', array($field_name, get_request_var_post($field_name)));
 		}
 	}
+	/* update snmpcache */
+	snmpagent_global_settings_update();
+	
 	api_plugin_hook_function('global_settings_update');
 	raise_message(1);
 

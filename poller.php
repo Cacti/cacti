@@ -390,6 +390,10 @@ while ($poller_runs_completed < $poller_runs) {
 				/* end the process if the runtime exceeds MAX_POLLER_RUNTIME */
 				if (($poller_start + MAX_POLLER_RUNTIME) < time()) {
 					cacti_log('Maximum runtime of ' . MAX_POLLER_RUNTIME . ' seconds exceeded. Exiting.', true, 'POLLER');
+
+					/* generate a snmp notification */
+					snmpagent_poller_exiting();
+					
 					api_plugin_hook_function('poller_exiting');
 					log_cacti_stats($loop_start, $method, $concurrent_processes, $max_threads,
 						sizeof($polling_hosts), $hosts_per_process, $num_polling_items, $rrds_processed);
@@ -478,15 +482,7 @@ function log_cacti_stats($loop_start, $method, $concurrent_processes, $max_threa
 	list($micro,$seconds) = explode(' ', microtime());
 	$loop_end = $seconds + $micro;
 
-	$cacti_stats = sprintf(
-		'Time:%01.4f ' .
-		'Method:%s ' .
-		'Processes:%s ' .
-		'Threads:%s ' .
-		'Devicess:%s ' .
-		'DevicesPerProcess:%s ' .
-		'DataSources:%s ' .
-		'RRDsProcessed:%s',
+	$perf_data = array( 
 		round($loop_end-$loop_start,4),
 		$method,
 		$concurrent_processes,
@@ -494,14 +490,19 @@ function log_cacti_stats($loop_start, $method, $concurrent_processes, $max_threa
 		$num_hosts,
 		$hosts_per_process,
 		$num_polling_items,
-		$rrds_processed);
+		$rrds_processed
+	);
 
+	$cacti_stats = vsprintf('Time:%01.4f Method:%s Processes:%s Threads:%s Hosts:%s HostsPerProcess:%s DataSources:%s RRDsProcessed:%s', $perf_data);
 	cacti_log('STATS: ' . $cacti_stats , true, 'SYSTEM');
 
 	/* insert poller stats into the settings table */
 	db_execute("REPLACE INTO settings (name, value) VALUES ('stats_poller','$cacti_stats')");
 
-	api_plugin_hook_function('cacti_stats_update', array( round($loop_end-$loop_start,4), $method, $concurrent_processes, $max_threads, $num_hosts, $hosts_per_process, $num_polling_items, $rrds_processed));
+	/* update snmpcache */
+	snmpagent_cacti_stats_update($perf_data);
+
+	api_plugin_hook_function('cacti_stats_update', $perf_data);
 }
 
 function display_help() {

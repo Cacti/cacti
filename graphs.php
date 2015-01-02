@@ -372,6 +372,10 @@ function form_actions() {
 		} else {
 			api_plugin_hook_function('graphs_action_execute', $_POST['drp_action']);
 		}
+		
+		/* update snmpcache */
+		snmpagent_graphs_action_bottom(array($_POST['drp_action'], $selected_items));
+		
 		api_plugin_hook_function('graphs_action_bottom', array($_POST['drp_action'], $selected_items));
 
 		header('Location: graphs.php');

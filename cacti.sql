@@ -505,7 +505,7 @@ CREATE TABLE IF NOT EXISTS `data_source_purge_action` (
 		`action` tinyint(2) NOT NULL default 0,
 		PRIMARY KEY (`id`),
 		UNIQUE KEY name (`name`))
-		ENGINE=MyISAM 
+		ENGINE=MyISAM
 		COMMENT='RRD Cleaner File Actions';
 
 --
@@ -522,11 +522,11 @@ CREATE TABLE `data_source_purge_temp` (
 		`in_cacti` tinyint NOT NULL default '0',
 		`data_template_id` mediumint(8) unsigned NOT NULL default '0',
 		PRIMARY KEY (`id`),
-		UNIQUE KEY name (`name`), 
-		KEY local_data_id (`local_data_id`), 
-		KEY in_cacti (`in_cacti`), 
-		KEY data_template_id (`data_template_id`)) 
-		ENGINE=MyISAM 
+		UNIQUE KEY name (`name`),
+		KEY local_data_id (`local_data_id`),
+		KEY in_cacti (`in_cacti`),
+		KEY data_template_id (`data_template_id`))
+		ENGINE=MyISAM
 		COMMENT='RRD Cleaner File Repository';
 
 --
@@ -2845,6 +2845,144 @@ CREATE TABLE `user_domains_ldap` (
 
 --
 -- Dumping data for table `user_domains_ldap`
+--
+
+--
+-- Table structure for table `snmpagent_cache`
+--
+
+CREATE TABLE `snmpagent_cache` (
+  `oid` varchar(255) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `mib` varchar(255) NOT NULL,
+  `type` varchar(255) NOT NULL DEFAULT '',
+  `otype` varchar(255) NOT NULL DEFAULT '',
+  `kind` varchar(255) NOT NULL DEFAULT '',
+  `max-access` varchar(255) NOT NULL DEFAULT 'not-accessible',
+  `value` varchar(255) NOT NULL DEFAULT '',
+  `description` varchar(5000) NOT NULL DEFAULT '',
+  PRIMARY KEY (`oid`),
+  KEY `name` (`name`),
+  KEY `mib` (`mib`)
+) ENGINE=MyISAM COMMENT='SNMP MIB CACHE'
+
+--
+-- Dumping data for table `snmpagent_cache`
+--
+
+--
+-- Table structure for table `snmpagent_mibs`
+--
+CREATE TABLE `snmpagent_mibs` (
+  `id` int(8) NOT NULL AUTO_INCREMENT,
+  `name` varchar(32) NOT NULL DEFAULT '',
+  `file` varchar(255) NOT NULL DEFAULT '',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM COMMENT='Registered MIB files'
+
+--
+-- Dumping data for table `snmpagent_mibs`
+--
+
+--
+-- Table structure for table `snmpagent_cache_notifications`
+--
+
+CREATE TABLE `snmpagent_cache_notifications` (
+  `name` varchar(255) NOT NULL,
+  `mib` varchar(255) NOT NULL,
+  `attribute` varchar(255) NOT NULL,
+  `sequence_id` smallint(6) NOT NULL,
+  KEY `name` (`name`)
+) ENGINE=MyISAM COMMENT='Notifcations and related attributes'
+
+--
+-- Dumping data for table `snmpagent_cache_notifications`
+--
+
+--
+-- Table structure for table `snmpagent_cache_textual_conventions`
+--
+
+CREATE TABLE `snmpagent_cache_textual_conventions` (
+  `name` varchar(255) NOT NULL,
+  `mib` varchar(255) NOT NULL,
+  `type` varchar(255) NOT NULL DEFAULT '',
+  `description` varchar(5000) NOT NULL DEFAULT '',
+  KEY `name` (`name`),
+  KEY `mib` (`mib`)
+) ENGINE=MyISAM COMMENT='Textual conventions'
+
+--
+-- Dumping data for table `snmpagent_cache_textual_conventions`
+--
+
+--
+-- Table structure for table `snmpagent_managers`
+--
+
+CREATE TABLE `snmpagent_managers` (
+  `id` int(8) NOT NULL AUTO_INCREMENT,
+  `hostname` varchar(255) NOT NULL,
+  `description` varchar(255) NOT NULL,
+  `disabled` char(2) DEFAULT NULL,
+  `max_log_size` tinyint(1) NOT NULL,
+  `snmp_version` varchar(255) NOT NULL,
+  `snmp_community` varchar(255) NOT NULL,
+  `snmp_username` varchar(255) NOT NULL,
+  `snmp_auth_password` varchar(255) NOT NULL,
+  `snmp_auth_protocol` varchar(255) NOT NULL,
+  `snmp_priv_password` varchar(255) NOT NULL,
+  `snmp_priv_protocol` varchar(255) NOT NULL,
+  `snmp_port` varchar(255) NOT NULL,
+  `snmp_message_type` tinyint(1) NOT NULL,
+  `notes` text,
+  PRIMARY KEY (`id`),
+  KEY `hostname` (`hostname`)
+) ENGINE=MyISAM COMMENT='snmp notification receivers'
+
+--
+-- Dumping data for table `snmpagent_managers`
+--
+
+--
+-- Table structure for table `snmpagent_managers_notifications`
+--
+
+CREATE TABLE `snmpagent_managers_notifications` (
+  `manager_id` int(8) NOT NULL,
+  `notification` varchar(255) NOT NULL,
+  `mib` varchar(255) NOT NULL,
+  KEY `mib` (`mib`),
+  KEY `manager_id` (`manager_id`),
+  KEY `manager_id2` (`manager_id`,`notification`)
+) ENGINE=MyISAM COMMENT='snmp notifications to receivers'
+
+--
+-- Dumping data for table `snmpagent_managers_notifications`
+--
+
+--
+-- Table structure for table `snmpagent_notifications_log`
+--
+
+CREATE TABLE `snmpagent_notifications_log` (
+  `id` int(12) NOT NULL AUTO_INCREMENT,
+  `time` int(24) NOT NULL,
+  `severity` tinyint(1) NOT NULL,
+  `manager_id` int(8) NOT NULL,
+  `notification` varchar(255) NOT NULL,
+  `mib` varchar(255) NOT NULL,
+  `varbinds` varchar(5000) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `time` (`time`),
+  KEY `severity` (`severity`),
+  KEY `manager_id` (`manager_id`),
+  KEY `manager_id2` (`manager_id`,`notification`)
+) ENGINE=MyISAM COMMENT='logs snmp notifications to receivers'
+
+--
+-- Dumping data for table `snmpagent_notifications_log`
 --
 
 --

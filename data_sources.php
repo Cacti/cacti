@@ -414,6 +414,9 @@ function form_actions() {
 			api_plugin_hook_function('data_source_action_execute', $_POST['drp_action']);
 		}
 
+		/* update snmpcache */
+		snmpagent_data_source_action_bottom(array($_POST['drp_action'], $selected_items));
+
 		api_plugin_hook_function('data_source_action_bottom', array($_POST['drp_action'], $selected_items));
 
 		header('Location: data_sources.php');

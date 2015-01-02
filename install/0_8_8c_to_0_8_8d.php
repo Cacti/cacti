@@ -194,7 +194,124 @@ function upgrade_to_0_8_8d() {
 		PRIMARY KEY  (`domain_id`))
 		ENGINE=MyISAM
 		COMMENT='Table to Hold Login Domains for LDAP';");
-		
+
+	if (db_table_exists('plugin_snmpagent_cache')) {
+		db_install_execute('0.8.8d', 'RENAME TABLE plugin_snmpagent_cache TO snmpagent_cache');
+	}
+
+	db_install_execute('0.8.8d', "CREATE TABLE IF NOT EXISTS `snmpagent_cache` (
+		`oid` varchar(255) NOT NULL,
+		`name` varchar(255) NOT NULL,
+		`mib` varchar(255) NOT NULL,
+		`type` varchar(255) NOT NULL DEFAULT '',
+		`otype` varchar(255) NOT NULL DEFAULT '',
+		`kind` varchar(255) NOT NULL DEFAULT '',
+		`max-access` varchar(255) NOT NULL DEFAULT 'not-accessible',
+		`value` varchar(255) NOT NULL DEFAULT '',
+		`description` varchar(5000) NOT NULL DEFAULT '',
+		PRIMARY KEY (`oid`),
+		KEY `name` (`name`),
+		KEY `mib` (`mib`))
+		ENGINE=MyISAM
+		COMMENT='SNMP MIB CACHE';");
+
+	if (db_table_exists('plugin_snmpagent_mibs')) {
+		db_install_execute('0.8.8d', 'RENAME TABLE plugin_snmpagent_mibs TO snmpagent_mibs');
+	}
+
+	db_install_execute('0.8.8d', "CREATE TABLE IF NOT EXISTS `snmpagent_mibs` (
+		`id` int(8) NOT NULL AUTO_INCREMENT,
+		`name` varchar(32) NOT NULL DEFAULT '',
+		`file` varchar(255) NOT NULL DEFAULT '',
+		PRIMARY KEY (`id`))
+		ENGINE=MyISAM
+		COMMENT='Registered MIB files';");
+
+	if (db_table_exists('plugin_snmpagent_cache_notifications')) {
+		db_install_execute('0.8.8d', 'RENAME TABLE plugin_snmpagent_cache_notifications TO snmpagent_cache_notifications');
+	}
+	db_install_execute('0.8.8d', "CREATE TABLE IF NOT EXISTS `snmpagent_cache_notifications` (
+		`name` varchar(255) NOT NULL,
+		`mib` varchar(255) NOT NULL,
+		`attribute` varchar(255) NOT NULL,
+		`sequence_id` smallint(6) NOT NULL,
+		KEY `name` (`name`))
+		ENGINE=MyISAM
+		COMMENT='Notifcations and related attributes';");
+
+	if (db_table_exists('plugin_snmpagent_cache_textual_conventions')) {
+		db_install_execute('0.8.8d', 'RENAME TABLE plugin_snmpagent_cache_textual_conventions TO snmpagent_cache_textual_conventions');
+	}
+
+	db_install_execute('0.8.8d', "CREATE TABLE IF NOT EXISTS `snmpagent_cache_textual_conventions` (
+		`name` varchar(255) NOT NULL,
+		`mib` varchar(255) NOT NULL,
+		`type` varchar(255) NOT NULL DEFAULT '',
+		`description` varchar(5000) NOT NULL DEFAULT '',
+		KEY `name` (`name`),
+		KEY `mib` (`mib`))
+		ENGINE=MyISAM
+		COMMENT='Textual conventions';");
+
+	if (db_table_exists('plugin_snmpagent_managers')) {
+		db_install_execute('0.8.8d', 'RENAME TABLE plugin_snmpagent_managers TO snmpagent_managers');
+	}
+
+	db_install_execute('0.8.8d', "CREATE TABLE IF NOT EXISTS `snmpagent_managers` (
+		`id` int(8) NOT NULL AUTO_INCREMENT,
+		`hostname` varchar(255) NOT NULL,
+		`description` varchar(255) NOT NULL,
+		`disabled` char(2) DEFAULT NULL,
+		`max_log_size` tinyint(1) NOT NULL,
+		`snmp_version` varchar(255) NOT NULL,
+		`snmp_community` varchar(255) NOT NULL,
+		`snmp_username` varchar(255) NOT NULL,
+		`snmp_auth_password` varchar(255) NOT NULL,
+		`snmp_auth_protocol` varchar(255) NOT NULL,
+		`snmp_priv_password` varchar(255) NOT NULL,
+		`snmp_priv_protocol` varchar(255) NOT NULL,
+		`snmp_port` varchar(255) NOT NULL,
+		`snmp_message_type` tinyint(1) NOT NULL,
+		`notes` text,
+		PRIMARY KEY (`id`),
+		KEY `hostname` (`hostname`))
+		ENGINE=MyISAM
+		COMMENT='snmp notification receivers';");
+
+	if (db_table_exists('plugin_snmpagent_managers_notifications')) {
+		db_install_execute('0.8.8d', 'RENAME TABLE plugin_snmpagent_managers_notifications TO snmpagent_managers_notifications');
+	}
+
+	db_install_execute('0.8.8d', "CREATE TABLE IF NOT EXISTS `snmpagent_managers_notifications` (
+		`manager_id` int(8) NOT NULL,
+		`notification` varchar(255) NOT NULL,
+		`mib` varchar(255) NOT NULL,
+		KEY `mib` (`mib`),
+		KEY `manager_id` (`manager_id`),
+		KEY `manager_id2` (`manager_id`,`notification`))
+		ENGINE=MyISAM
+		COMMENT='snmp notifications to receivers';");
+
+	if (db_table_exists('plugin_snmpagent_notifications_log')) {
+		db_install_execute('0.8.8d', 'RENAME TABLE plugin_snmpagent_notifications_log TO snmpagent_notifications_log');
+	}
+
+	db_install_execute('0.8.8d', "CREATE TABLE IF NOT EXISTS `snmpagent_notifications_log` (
+		`id` int(12) NOT NULL AUTO_INCREMENT,
+		`time` int(24) NOT NULL,
+		`severity` tinyint(1) NOT NULL,
+		`manager_id` int(8) NOT NULL,
+		`notification` varchar(255) NOT NULL,
+		`mib` varchar(255) NOT NULL,
+		`varbinds` varchar(5000) NOT NULL,
+		PRIMARY KEY (`id`),
+		KEY `time` (`time`),
+		KEY `severity` (`severity`),
+		KEY `manager_id` (`manager_id`),
+		KEY `manager_id2` (`manager_id`,`notification`))
+		ENGINE=MyISAM
+		COMMENT='logs snmp notifications to receivers';");
+
 	db_install_execute('0.8.8d', "CREATE TABLE IF NOT EXISTS `data_source_purge_temp` (
 		`id` integer UNSIGNED auto_increment,
 		`name_cache` varchar(255) NOT NULL default '',
@@ -205,11 +322,11 @@ function upgrade_to_0_8_8d() {
 		`in_cacti` tinyint NOT NULL default '0',
 		`data_template_id` mediumint(8) unsigned NOT NULL default '0',
 		PRIMARY KEY (`id`),
-		UNIQUE KEY name (`name`), 
-		KEY local_data_id (`local_data_id`), 
-		KEY in_cacti (`in_cacti`), 
-		KEY data_template_id (`data_template_id`)) 
-		ENGINE=MyISAM 
+		UNIQUE KEY name (`name`),
+		KEY local_data_id (`local_data_id`),
+		KEY in_cacti (`in_cacti`),
+		KEY data_template_id (`data_template_id`))
+		ENGINE=MyISAM
 		COMMENT='RRD Cleaner File Repository';");
 
 	db_install_execute('0.8.8d', "CREATE TABLE IF NOT EXISTS `data_source_purge_action` (
@@ -219,15 +336,15 @@ function upgrade_to_0_8_8d() {
 		`action` tinyint(2) NOT NULL default 0,
 		PRIMARY KEY (`id`),
 		UNIQUE KEY name (`name`))
-		ENGINE=MyISAM 
+		ENGINE=MyISAM
 		COMMENT='RRD Cleaner File Actions';");
 
-	db_install_execute('0.8.8d', "ALTER TABLE graph_tree 
+	db_install_execute('0.8.8d', "ALTER TABLE graph_tree
 		ADD COLUMN enabled char(2) DEFAULT 'on' AFTER id,
-		ADD COLUMN locked TINYINT default '0' AFTER enabled, 
-		ADD COLUMN locked_date TIMESTAMP default '0000-00-00' AFTER locked, 
-		ADD COLUMN last_modified TIMESTAMP default '0000-00-00' AFTER name, 
-		ADD COLUMN user_id INT UNSIGNED default '1' AFTER name, 
+		ADD COLUMN locked TINYINT default '0' AFTER enabled,
+		ADD COLUMN locked_date TIMESTAMP default '0000-00-00' AFTER locked,
+		ADD COLUMN last_modified TIMESTAMP default '0000-00-00' AFTER name,
+		ADD COLUMN user_id INT UNSIGNED default '1' AFTER name,
 		ADD COLUMN modified_by INT UNSIGNED default '1'");
 
 	db_install_execute('0.8.8d', "ALTER TABLE graph_tree_items 
@@ -325,4 +442,5 @@ function upgrade_to_0_8_8d() {
 
 		db_install_execute('0.8.8d', "ALTER TABLE graph_tree_items DROP COLUMN order_key");
 	}
+	snmpagent_cache_install();
 }

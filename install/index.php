@@ -298,6 +298,31 @@ if ($config["cacti_server_os"] == "unix") {
 	}
 }
 
+/* snmptrap Binary Path */
+$input["path_snmptrap"] = $settings["path"]["path_snmptrap"];
+
+if ($config["cacti_server_os"] == "unix") {
+	$which_snmptrap = find_best_path("snmptrap");
+
+	if (config_value_exists("path_snmptrap")) {
+		$input["path_snmptrap"]["default"] = read_config_option("path_snmptrap");
+	}else if (!empty($which_snmptrap)) {
+		$input["path_snmptrap"]["default"] = $which_snmptrap;
+	}else{
+		$input["path_snmptrap"]["default"] = "/usr/local/bin/snmptrap";
+	}
+}elseif ($config["cacti_server_os"] == "win32") {
+	$which_snmptrap = find_best_path("snmptrap.exe");
+
+	if (config_value_exists("path_snmptrap")) {
+		$input["path_snmptrap"]["default"] = read_config_option("path_snmptrap");
+	}else if (!empty($which_snmptrap)) {
+		$input["path_snmptrap"]["default"] = $which_snmptrap;
+	}else{
+		$input["path_snmptrap"]["default"] = "c:/net-snmp/bin/snmptrap.exe";
+	}
+}
+
 /* log file path */
 $input["path_cactilog"] = $settings["path"]["path_cactilog"];
 $input["path_cactilog"]["description"] = "The path to your Cacti log file.";
@@ -397,6 +422,9 @@ if ($step == "4") {
 
 		/* it's always a good idea to re-populate the poller cache to make sure everything is refreshed and up-to-date */ 	 
 		repopulate_poller_cache(); 	 
+
+		/* fill up the snmpcache */
+		snmpagent_cache_rebuilt();
 	}
 	
 	db_execute("delete from version");
