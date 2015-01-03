@@ -97,7 +97,24 @@ $messages = array(
 	30 => array(
 		'message' => 'Graph Template Not Found during Export.  Please run Database Repair Script to Identify.',
 		'type' => 'error'),
+	'clog_purged' => array(
+		'message' => 'Cacti Log Purged Sucessfully', 
+		'type' => 'info'),
+	'clog_permissions' => array(
+		'message' => 'Error: Unable to clear log, no write permissions', 
+		'type' => 'error'),
+	'clog_missing' => array(
+		'message' => 'Error: Unable to clear log, file does not exist', 
+		'type' => 'error')
 	);
+
+if (isset($_SESSION['clog_message']) && $_SESSION['clog_message'] != '') {
+	$messages['clog_message'] = array('message' => $_SESSION['clog_message'], 'type' => 'info');
+}
+
+if (isset($_SESSION['clog_error']) && $_SESSION['clog_error'] != '') {
+	$messages['clog_error'] = array('message' => $_SESSION['clog_error'], 'type' => 'error');
+}
 
 $cdef_operators = array(1 =>
 	'+',
@@ -466,11 +483,15 @@ $user_auth_realms = array(
 	14 => 'Update CDEFs',
 	15 => 'Global Settings',
 	16 => 'Export Data',
-	17 => 'Import Data');
+	17 => 'Import Data',
+	18 => 'View Log (Admin)',
+	19 => 'View Log (User)');
 
 $user_auth_realm_filenames = array(
 	'about.php' => 8,
 	'cdef.php' => 14,
+	'clog.php' => 18,
+	'clog_user.php' => 19,
 	'color.php' => 5,
 	'data_input.php' => 2,
 	'data_sources.php' => 3,

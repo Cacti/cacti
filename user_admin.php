@@ -1469,10 +1469,16 @@ function user_realms_edit($header_label) {
 	print "<tr class='odd'><td colspan='4' width='100%'><table width='100%'><tr><td valign='top' style='white-space:nowrap;' width='20%'>\n";
 	$i = 1;
 	$j = 1;
-	$base = array(7,8,15,1,2,3,4,5,6,9,10,11,12,13,14,16,17,101);
+	$base = array(7,8,15,1,2,3,4,5,6,9,10,11,12,13,14,16,17,18,19,101);
 	foreach($base as $realm) {
 		if (isset($user_auth_realms[$realm])) {
-			if (sizeof(db_fetch_assoc_prepared('SELECT realm_id FROM user_auth_realm WHERE user_id = ? AND realm_id = ?', array(get_request_var_request('id', 0), $realm))) > 0) {
+			$set = db_fetch_cell_prepared('SELECT realm_id 
+				FROM user_auth_realm 
+				WHERE user_id = ? 
+				AND realm_id = ?', 
+				array(get_request_var_request('id', 0), $realm));
+
+			if (!empty($set)) {
 				$old_value = 'on';
 			}else{
 				$old_value = '';
@@ -1530,7 +1536,13 @@ function user_realms_edit($header_label) {
 
 			$realm = $r['realm_id'] + 100;
 
-			if (sizeof(db_fetch_assoc_prepared('SELECT realm_id FROM user_auth_realm WHERE user_id =? AND realm_id = ?', array(get_request_var_request('id', 0), $realm))) > 0) {
+			$set = db_fetch_cell_prepared('SELECT realm_id 
+				FROM user_auth_realm 
+				WHERE user_id = ? 
+				AND realm_id = ?', 
+				array(get_request_var_request('id', 0), $realm));
+
+			if (!empty($set)) {
 				$old_value = 'on';
 			}else{
 				$old_value = '';

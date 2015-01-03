@@ -417,7 +417,7 @@ function graphs() {
 	<script type='text/javascript'>
 	<!--
 
-	function applyGraphsNewFilterChange() {
+	function applyFilter() {
 		strURL = '?graph_type=' + $('#graph_type').val();
 		strURL = strURL + '&host_id=' + $('#host_id').val();
 		strURL = strURL + '&filter=' + $('#filter').val();;
@@ -430,27 +430,12 @@ function graphs() {
 	<form name='form_graphs_new' action='graphs_new.php'>
 	<table width='100%' cellpadding='2' cellspacing='0' border='0' align='left'>
 		<tr>
-			<td width='50'>
-				Device
-			</td>
-			<td width='1'>
-				<select id='host_id' name='host_id' onChange='applyGraphsNewFilterChange()'>
-				<?php
-				$hosts = db_fetch_assoc("SELECT id,CONCAT_WS('', description, ' (', hostname, ')') AS name FROM host ORDER BY description, hostname");
-
-				if (sizeof($hosts) > 0) {
-					foreach ($hosts as $item) {
-						print "<option value='" . $item['id'] . "'"; if ($_REQUEST['host_id'] == $item['id']) { print ' selected'; } print '>' . htmlspecialchars($item['name']) . "</option>\n";
-					}
-				}
-				?>
-				</select>
-			</td>
+			<?php print html_host_filter($_REQUEST['host_id']);?>
 			<td style='white-space:nowrap;' width='1'>
 				Graph Types
 			</td>
 			<td width='1'>
-				<select id='graph_type' name='graph_type' onChange='applyGraphsNewFilterChange()'>
+				<select id='graph_type' name='graph_type' onChange='applyFilter()'>
 					<option value='-2'<?php if ($_REQUEST['graph_type'] == '-2') {?> selected<?php }?>>All</option>
 					<option value='-1'<?php if ($_REQUEST['graph_type'] == '-1') {?> selected<?php }?>>Graph Template Based</option>
 					<?php
@@ -476,7 +461,7 @@ function graphs() {
 				Rows
 			</td>
 			<td>
-				<select id='rows' name='rows' onChange='applyGraphsNewFilterChange()'>
+				<select id='rows' name='rows' onChange='applyFilter()'>
 					<?php
 					if (sizeof($item_rows) > 0) {
 						foreach ($item_rows as $key => $value) {
@@ -492,12 +477,11 @@ function graphs() {
 				<?php api_plugin_hook('graphs_new_top_links'); ?>
 			</td>
 		</tr>
-	<?php if ($_REQUEST['graph_type'] > 0) {?>
-		<tr>
+		<tr style='<?php if ($_REQUEST['graph_type'] <= 0) {?>display:none;<?php }?>'>
 			<td width='50'>
 				Search
 			</td>
-			<td>
+			<td style='white-space:nowrap;'>
 				<input id='filter' type='text' name='filter' size='25' value='<?php print htmlspecialchars(get_request_var_request('filter'));?>'>
 			</td>
 			<td style='white-space:nowrap;'>
@@ -505,9 +489,6 @@ function graphs() {
 				<input type='submit' name='clear_x' value='Clear' title='Clear Filters'>
 			</td>
 		</tr>
-	<?php }else{
-		form_hidden_box('filter', $_REQUEST['filter'], '');
-	}?>
 	</table>
 	</form>
 	</td>

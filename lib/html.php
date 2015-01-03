@@ -366,13 +366,13 @@ function html_nav_bar($base_url, $max_pages, $current_page, $rows_per_page, $tot
 			<td colspan='$colspan'>
 				<table width='100%' cellspacing='0' cellpadding='0' border='0'>
 					<tr>
-						<td style='width:5%;' align='left' class='textHeaderDark'><div style='display:block;'>
+						<td style='width:10%;' align='left' class='textHeaderDark'><div style='display:block;'>
 							" . (($current_page > 1) ? "<div class='navBarNavigation navBarNavigationPrevious' onClick='gotoPage(" . ($current_page-1) . ")'><i class='fa fa-angle-double-left previous'></i>Previous</div>":"") . "
 						</div></td>
-						<td style='width:90%;' align='center' class='textHeaderDark'>
+						<td style='width:80%;' align='center' class='textHeaderDark'>
 							Showing $object " . (($rows_per_page*($current_page-1))+1) . " to " . (($total_rows < $rows_per_page) || ($total_rows < ($rows_per_page*$current_page)) ? $total_rows : $rows_per_page*$current_page) . " of $total_rows [$url_page_select]
 						</td>
-						<td align='right' class='textHeaderDark'><div style='display:block;'>
+						<td style='width:10%;' align='right' class='textHeaderDark'><div style='display:block;'>
 							" . (($current_page*$rows_per_page) < $total_rows ? "<div class='navBarNavigation navBarNavigationNext' onClick='gotoPage(" . ($current_page+1) . ")'>Next<i class='fa fa-angle-double-right next'></i></div>":"") . "
 						</div></td>
 					</tr>
@@ -474,11 +474,11 @@ function html_header_sort($header_items, $sort_column, $sort_direction, $last_it
 		}
 
 		if (strtolower($icon) == 'asc') {
-			$icon = 'ui-icon ui-icon-carat-1-n';
+			$icon = 'fa fa-sort-asc';
 		}elseif (strtolower($icon) == 'desc') {
-			$icon = 'ui-icon ui-icon-carat-1-s';
+			$icon = 'fa fa-sort-desc';
 		}else{
-			$icon = 'ui-icon ui-icon-carat-2-n-s';
+			$icon = 'fa fa-unsorted';
 		}
 
 		if (($db_column == "") || (substr_count($db_column, "nosort"))) {
@@ -566,11 +566,11 @@ function html_header_sort_checkbox($header_items, $sort_column, $sort_direction,
 		}
 
 		if (strtolower($icon) == 'asc') {
-			$icon = 'ui-icon ui-icon-carat-1-n';
+			$icon = 'fa fa-sort-asc';
 		}elseif (strtolower($icon) == 'desc') {
-			$icon = 'ui-icon ui-icon-carat-1-s';
+			$icon = 'fa fa-sort-desc';
 		}else{
-			$icon = 'ui-icon ui-icon-carat-2-n-s';
+			$icon = 'fa fa-unsorted';
 		}
 
 		if (($db_column == "") || (substr_count($db_column, "nosort"))) {
@@ -581,7 +581,7 @@ function html_header_sort_checkbox($header_items, $sort_column, $sort_direction,
 		}
 	}
 
-	print "<th width='1%' class='tableSubHeaderCheckbox' align='right' style='" . get_checkbox_style() . "'><input type='checkbox' style='margin: 0px;' name='all' title='Select All' onClick='SelectAll(\"chk_\",this.checked)'></th>" . ($include_form ? "<th style='display:none;'><form name='chk' method='post' action='$form_action'></th>\n":"");
+	print "<th width='1%' class='tableSubHeaderCheckbox' align='right' style='" . get_checkbox_style() . "'><input type='checkbox' style='margin: 0px;' name='all' title='Select All Rows' onClick='SelectAll(\"chk_\",this.checked)'></th>" . ($include_form ? "<th style='display:none;'><form name='chk' method='post' action='$form_action'></th>\n":"");
 	print "</tr>\n";
 
 	$page++;
@@ -624,7 +624,7 @@ function html_header_checkbox($header_items, $include_form = true, $form_action 
 		}
 	}
 
-	print "<th width='1%' class='tableSubHeaderCheckbox' align='right' style='" . get_checkbox_style() . "'><input type='checkbox' style='margin: 0px;' name='all' title='Select All' onClick='SelectAll(\"chk_\",this.checked)'></th>\n" . ($include_form ? "<th style='display:none;'><form name='chk' method='post' action='$form_action'></th>\n":"");
+	print "<th width='1%' class='tableSubHeaderCheckbox' align='right' style='" . get_checkbox_style() . "'><input type='checkbox' style='margin: 0px;' name='all' title='Select All Rows' onClick='SelectAll(\"chk_\",this.checked)'></th>\n" . ($include_form ? "<th style='display:none;'><form name='chk' method='post' action='$form_action'></th>\n":"");
 	print "</tr>\n";
 }
 
@@ -943,11 +943,13 @@ function draw_actions_dropdown($actions_array) {
 	?>
 	<table align='center' width='100%'>
 		<tr>
-			<td width='1' valign='top'>
+			<td width='100%' valign='top'>
 				<img src='<?php echo $config['url_path']; ?>images/arrow.gif' alt='' align='middle'>&nbsp;
 			</td>
-			<td align='right'>
+			<td align='right' style='white-space:nowrap;'>
 				Choose an action:
+			</td>
+			<td align='right'>
 				<?php form_dropdown("drp_action",$actions_array,"","","1","","");?>
 			</td>
 			<td width='1' align='right'>
@@ -1041,6 +1043,13 @@ function html_show_tabs_left($show_console_tab) {
 				'title' => 'Graphs',
 				'image' => '',
 				'url'   => $config['url_path'] . 'graph_view.php',
+			);
+
+		$tabs_left[] =
+			array(
+				'title' => 'Cacti Log',
+				'image' => '',
+				'url'   => $config['url_path'] . (clog_admin() ? 'clog.php':'clog_user.php'),
 			);
 
 		// Get Plugin Text Out of Band
@@ -1247,6 +1256,54 @@ function html_graph_tabs_right($current_user) {
 			}
 		}
 		print "</ul></nav></div>\n";
+	}
+}
+
+function html_host_filter($host_id) {
+	$theme = read_config_option('selected_theme');
+
+	if ($theme == 'classic') {
+		?>
+		<td width='50'>
+			Device
+		</td>
+		<td width='1'>
+			<select id='host_id' name='host_id' onChange='applyFilter()'>
+				<option value='-1'<?php if (get_request_var_request('host_id') == '-1') {?> selected<?php }?>>Any</option>
+				<option value='0'<?php if (get_request_var_request('host_id') == '0') {?> selected<?php }?>>None</option>
+				<?php
+				$hosts = db_fetch_assoc("SELECT id, CONCAT_WS('',description,' (',hostname,')') AS name FROM host ORDER BY description, hostname");
+
+				if (sizeof($hosts) > 0) {
+					foreach ($hosts as $host) {
+						print "<option value='" . $host['id'] . "'"; if (get_request_var_request('host_id') == $host['id']) { print ' selected'; } print '>' . title_trim(htmlspecialchars($host['name']), 40) . "</option>\n";
+					}
+				}
+				?>
+			</select>
+		</td>
+		<?php
+	}else{
+		if ($host_id > 0) {
+			$hostname = db_fetch_cell_prepared("SELECT description FROM host WHERE id = ?", array($host_id));
+		}elseif ($host_id == 0) {
+			$hostname = 'None';
+		}else{
+			$hostname = 'Any';
+		}
+
+		?>
+		<td width='50'>
+			Device
+		</td>
+		<td width='1'>
+			<span id='host_wrapper' style='width:200px;' class='ui-selectmenu-button ui-widget ui-state-default ui-corner-all'>
+				<span id='host_click' class='ui-icon ui-icon-triangle-1-s'></span>
+				<input size='28' id='host' value='<?php print $hostname;?>'>
+			</span>
+			<input type='hidden' id='host_id' name='host_id' value='<?php print $host_id;?>'>
+		</td>
+	<?php
 	}
 }
 

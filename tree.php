@@ -24,7 +24,6 @@
 
 include('./include/auth.php');
 include_once('./lib/api_tree.php');
-include_once('./lib/tree.php');
 include_once('./lib/html_tree.php');
 include_once('./lib/data_query.php');
 
@@ -40,6 +39,11 @@ input_validate_input_number(get_request_var_request('tree_id'));
 input_validate_input_number(get_request_var_request('leaf_id'));
 input_validate_input_number(get_request_var_post('graph_tree_id'));
 input_validate_input_number(get_request_var_post('parent_item_id'));
+
+/* clean up id string */
+if (isset($_REQUEST['id']) && $_REQUEST['id'] != '#') {
+	$_REQUEST['id'] = sanitize_search_string(get_request_var_request('id'));
+}
 
 /* set default action */
 if (!isset($_REQUEST['action'])) { $_REQUEST['action'] = ''; }
@@ -63,28 +67,28 @@ switch ($_REQUEST['action']) {
 		display_graphs();
 		break;
 	case 'lock':
-		lock_tree();
+		api_tree_lock($_REQUEST['id'], $_SESSION['sess_user_id']);
 		break;
 	case 'unlock':
-		unlock_tree();
+		api_tree_unlock($_REQUEST['id'], $_SESSION['sess_user_id']);
 		break;
 	case 'copy_node':
-		api_tree_copy_node();
+		api_tree_copy_node($_REQUEST['tree_id'], $_REQUEST['id'], $_REQUEST['parent'], $_REQUEST['position']);
 		break;
 	case 'create_node':
-		api_tree_create_node();
+		api_tree_create_node($_REQUEST['tree_id'], $_REQUEST['id'], $_REQUEST['position'], $_REQUEST['text']);
 		break;
 	case 'delete_node':
-		api_tree_delete_node();
+		api_tree_delete_node($_REQUEST['tree_id'], $_REQUEST['id']);
 		break;
 	case 'move_node':
-		api_tree_move_node();
+		api_tree_move_node($_REQUEST['tree_id'], $_REQUEST['id'], $_REQUEST['parent'], $_REQUEST['position']);
 		break;
 	case 'rename_node':
-		api_tree_rename_node();
+		api_tree_rename_node($_REQUEST['tree_id'], $_REQUEST['id'], $_REQUEST['text']);
 		break;
 	case 'get_node':
-		api_tree_get_node();
+		api_tree_get_node($_REQUEST['tree_id'], $_REQUEST['id']);
 		break;
 	case 'get_host_sort':
 		get_host_sort_type();
@@ -281,7 +285,7 @@ function form_save() {
 				raise_message(1);
 
 				/* sort the tree using the algorithm chosen by the user */
-				sort_tree(SORT_TYPE_TREE, $tree_id, $_POST['sort_type']);
+				api_tree_sort_tree(SORT_TYPE_TREE, $tree_id, $_POST['sort_type']);
 			}else{
 				raise_message(2);
 			}
@@ -300,35 +304,6 @@ function form_save() {
 /* -----------------------
     Tree Item Functions
    ----------------------- */
-function lock_tree() {
-	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_request('id'));
-	/* ==================================================== */
-
-	db_execute_prepared('UPDATE graph_tree 
-		SET locked = 1, 
-		locked_date = NOW(), 
-		last_modified = NOW(), 
-		modified_by = ? 
-		WHERE id = ?', array($_SESSION['sess_user_id'], $_REQUEST['id']));
-
-	header('Location: tree.php?action=edit&header=false&id=' . $_REQUEST['id']);
-}
-
-function unlock_tree() {
-	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_request('id'));
-	/* ==================================================== */
-
-	db_execute_prepared('UPDATE graph_tree 
-		SET locked = 0, 
-		last_modified = NOW(), 
-		modified_by = ?
-		WHERE id = ?', array($_SESSION['sess_user_id'], $_REQUEST['id']));
-
-	header('Location: tree.php?action=edit&header=false&id=' . $_REQUEST['id']);
-}
-
 function form_actions() {
 	global $tree_actions;
 
@@ -507,6 +482,8 @@ function tree_edit() {
 		));
 
 	html_end_box();
+
+	$lockdiv = '';
 
 	if (isset($tree['locked']) && $tree['locked'] == 0) {
 		$lockdiv = "<div style='padding:3px;'><table><tr><td><input id='lock' type='button' value='Lock Tree'></td><td style='font-weight:bold;'>To edit this tree, you must first lock it.</td></tr></table></div>\n";

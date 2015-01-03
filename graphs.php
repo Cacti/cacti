@@ -78,6 +78,14 @@ switch ($_REQUEST['action']) {
 
 		header('Location: graphs.php');
 		break;
+	case 'ajax_hosts':
+		ajax_hosts();
+
+		break;
+	case 'ajax_hosts_noany':
+		ajax_hosts(false);
+
+		break;
 	case 'graph_edit':
 		top_header();
 
@@ -97,6 +105,30 @@ switch ($_REQUEST['action']) {
 /* --------------------------
     Global Form Functions
    -------------------------- */
+
+function ajax_hosts($include_any = true, $include_none = true) {
+	$return    = array();
+	$term      = $_REQUEST['term'];
+	$sql_where = "hostname LIKE '%$term%' OR description LIKE '%$term%' OR notes LIKE '%$term%'";
+	$hosts     = get_allowed_devices($sql_where, 'description', 30);
+
+	if ($_REQUEST['term'] == '') {
+		if ($include_any) {
+			$return[] = array('label' => 'Any', 'value' => 'Any', 'id' => '-1');
+		}
+		if ($include_none) {
+			$return[] = array('label' => 'None', 'value' => 'None', 'id' => '0');
+		}
+	}
+
+	if (sizeof($hosts)) {
+	foreach($hosts as $host) {
+		$return[] = array('label' => $host['description'], 'value' => $host['description'], 'id' => $host['id']);
+	}
+	}
+
+	print json_encode($return);
+}
 
 function add_tree_names_to_actions_array() {
 	global $graph_actions;
@@ -372,10 +404,8 @@ function form_actions() {
 		} else {
 			api_plugin_hook_function('graphs_action_execute', $_POST['drp_action']);
 		}
-		
 		/* update snmpcache */
 		snmpagent_graphs_action_bottom(array($_POST['drp_action'], $selected_items));
-		
 		api_plugin_hook_function('graphs_action_bottom', array($_POST['drp_action'], $selected_items));
 
 		header('Location: graphs.php');
@@ -897,18 +927,19 @@ function graph_edit() {
 		'graph_template_id' => array(
 			'method' => 'drop_sql',
 			'friendly_name' => 'Selected Graph Template',
-			'description' => 'Choose a graph template to apply to this graph. Please note that graph data may be lost if you change the graph template after one is already applied.',
+			'description' => 'Choose a Graph Template to apply to this Graph. Please note that Graph Data may be lost if you change the Graph Template after one is already applied.',
 			'value' => (isset($graphs) ? $graphs['graph_template_id'] : '0'),
 			'none_value' => 'None',
 			'sql' => 'SELECT graph_templates.id,graph_templates.name FROM graph_templates ORDER BY name'
 			),
 		'host_id' => array(
-			'method' => 'drop_sql',
+			'method' => 'drop_callback',
 			'friendly_name' => 'Device',
-			'description' => 'Choose the host that this graph belongs to.',
-			'value' => (isset($_GET['host_id']) ? $_GET['host_id'] : $host_id),
-			'none_value' => 'None',
-			'sql' => "SELECT id,CONCAT_WS('',description,' (',hostname,')') as name FROM host ORDER BY description,hostname"
+			'description' => 'Choose the Device that this Graph belongs to.',
+			'sql' => "SELECT id,CONCAT_WS('',description,' (',hostname,')') as name FROM host ORDER BY description,hostname",
+			'action' => 'ajax_hosts_noany',
+			'id' => (isset($_GET['host_id']) ? $_GET['host_id'] : $host_id),
+			'value' => db_fetch_cell_prepared('SELECT description AS name FROM host WHERE id = ?', (isset($_GET['host_id']) ? array($_GET['host_id']) : array($host_id))),
 			),
 		'graph_template_graph_id' => array(
 			'method' => 'hidden',
@@ -1133,7 +1164,6 @@ function graph() {
 		});
 	}
 
-
 	$(function() {
 		$('#refresh').click(function() {
 			applyFilter();
@@ -1141,6 +1171,10 @@ function graph() {
 
 		$('#clear').click(function() {
 			clearFilter();
+		});
+
+		$('#filter').change(function() {
+			applyFilter();
 		});
 
 		$('#form_graphs').submit(function(event) {
@@ -1164,33 +1198,17 @@ function graph() {
 	?>
 	<tr class='even noprint'>
 		<td>
-			<form id='form_graphs' name="form_graphs" action="graphs.php">
-			<table cellpadding="2" cellspacing="0" border="0">
+			<form id='form_graphs' name='form_graphs' action='graphs.php'>
+			<table cellpadding='2' cellspacing='0' border='0'>
 				<tr>
-					<td width="50">
-						Device
-					</td>
-					<td>
-						<select id='host_id' name='host_id' onChange="applyFilter()">
-							<option value="-1"<?php if (get_request_var_request('host_id') == '-1') {?> selected<?php }?>>Any</option>
-							<option value="0"<?php if (get_request_var_request('host_id') == '0') {?> selected<?php }?>>None</option>
-							<?php
-							$hosts = get_allowed_devices();
-							if (sizeof($hosts) > 0) {
-								foreach ($hosts as $host) {
-									print "<option value='" . $host['id'] . "'"; if (get_request_var_request('host_id') == $host['id']) { print ' selected'; } print '>' . title_trim(htmlspecialchars($host['description']), 40) . "</option>\n";
-								}
-							}
-							?>
-						</select>
-					</td>
+					<?php print html_host_filter($_REQUEST['host_id']);?>
 					<td>
 						Template
 					</td>
 					<td>
 						<select id='template_id' name='template_id' onChange='applyFilter()'>
-							<option value="-1"<?php if (get_request_var_request('template_id') == '-1') {?> selected<?php }?>>Any</option>
-							<option value="0"<?php if (get_request_var_request('template_id') == '0') {?> selected<?php }?>>None</option>
+							<option value='-1'<?php if (get_request_var_request('template_id') == '-1') {?> selected<?php }?>>Any</option>
+							<option value='0'<?php if (get_request_var_request('template_id') == '0') {?> selected<?php }?>>None</option>
 							<?php
 							$templates = get_allowed_graph_templates();
 							if (sizeof($templates) > 0) {
@@ -1202,20 +1220,20 @@ function graph() {
 						</select>
 					</td>
 					<td>
-						<input type="button" id='refresh' value="Go" title="Set/Refresh Filters">
+						<input type='button' id='refresh' value='Go' title='Set/Refresh Filters'>
 					</td>
 					<td>
-						<input type="button" id='clear' name="clear_x" value="Clear" title="Clear Filters">
+						<input type='button' id='clear' name='clear_x' value='Clear' title='Clear Filters'>
 					</td>
 				</tr>
 			</table>
-			<table cellpadding="2" cellspacing="0" border="0">
+			<table cellpadding='2' cellspacing='0' border='0'>
 				<tr>
-					<td width="50">
+					<td width='50'>
 						Search
 					</td>
 					<td>
-						<input id='filter' type="text" name="filter" size="25" value="<?php print htmlspecialchars(get_request_var_request('filter'));?>">
+						<input id='filter' type='text' name='filter' size='25' value='<?php print htmlspecialchars(get_request_var_request('filter'));?>'>
 					</td>
 					<td>
 						Graphs

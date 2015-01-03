@@ -404,7 +404,7 @@ function cdef_edit() {
 		if (sizeof($cdef_items) > 0) {
 			foreach ($cdef_items as $cdef_item) {
 				form_alternate_row();$i++;?>
-					<td>
+					<td style='white-space:nowrap;'>
 						<a class='linkEditMain' href='<?php print htmlspecialchars('cdef.php?action=item_edit&id=' . $cdef_item['id'] . '&cdef_id=' . $cdef['id']);?>'>Item #<?php print htmlspecialchars($i);?></a>
 					</td>
 					<td align='left' width='50'>

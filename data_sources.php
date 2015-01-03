@@ -1138,25 +1138,7 @@ function ds() {
 		<form id='form_data_sources' name="form_data_sources" action="data_sources.php">
 			<table cellpadding="2" cellspacing="0" border="0">
 				<tr>
-					<td width="50">
-						Device
-					</td>
-					<td>
-						<select id='host_id' name="host_id" onChange="applyFilter()">
-							<option value="-1"<?php if (get_request_var_request('host_id') == '-1') {?> selected<?php }?>>Any</option>
-							<option value="0"<?php if (get_request_var_request('host_id') == '0') {?> selected<?php }?>>None</option>
-							<?php
-							$hosts = db_fetch_assoc("SELECT id, CONCAT_WS('',description,' (',hostname,')') AS name FROM host ORDER BY description, hostname");
-
-							if (sizeof($hosts) > 0) {
-								foreach ($hosts as $host) {
-									print "<option value='" . $host['id'] . "'"; if (get_request_var_request('host_id') == $host['id']) { print ' selected'; } print '>' . title_trim(htmlspecialchars($host['name']), 40) . "</option>\n";
-								}
-							}
-							?>
-
-						</select>
-					</td>
+					<?php print html_host_filter($_REQUEST['host_id']);?>
 					<td width="50">
 						Template
 					</td>

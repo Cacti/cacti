@@ -32,7 +32,6 @@ $no_http_headers = true;
 
 include(dirname(__FILE__)."/../include/global.php");
 include_once($config["base_path"]."/lib/api_automation_tools.php");
-include_once($config["base_path"].'/lib/tree.php');
 include_once($config["base_path"].'/lib/api_tree.php');
 
 /* process calling arguments */
@@ -210,7 +209,7 @@ if (sizeof($parms)) {
 			exit(1);
 		}
 
-		$existsAlready = db_fetch_cell("SELECT id FROM graph_tree WHERE name = '$name'");
+		$existsAlready = db_fetch_cell("select id from graph_tree where name = '$name'");
 		if ($existsAlready) {
 			echo "ERROR: Not adding tree - it already exists - tree-id: ($existsAlready)\n";
 			exit(1);
@@ -218,7 +217,7 @@ if (sizeof($parms)) {
 
 		$treeId = sql_save($treeOpts, "graph_tree");
 
-		sort_tree(SORT_TYPE_TREE, $treeId, $treeOpts["sort_type"]);
+		api_tree_sort_tree(SORT_TYPE_TREE, $treeId, $treeOpts["sort_type"]);
 
 		echo "Tree Created - tree-id: ($treeId)\n";
 

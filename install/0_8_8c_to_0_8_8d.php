@@ -194,7 +194,6 @@ function upgrade_to_0_8_8d() {
 		PRIMARY KEY  (`domain_id`))
 		ENGINE=MyISAM
 		COMMENT='Table to Hold Login Domains for LDAP';");
-
 	if (db_table_exists('plugin_snmpagent_cache')) {
 		db_install_execute('0.8.8d', 'RENAME TABLE plugin_snmpagent_cache TO snmpagent_cache');
 	}
@@ -311,7 +310,7 @@ function upgrade_to_0_8_8d() {
 		KEY `manager_id2` (`manager_id`,`notification`))
 		ENGINE=MyISAM
 		COMMENT='logs snmp notifications to receivers';");
-
+		
 	db_install_execute('0.8.8d', "CREATE TABLE IF NOT EXISTS `data_source_purge_temp` (
 		`id` integer UNSIGNED auto_increment,
 		`name_cache` varchar(255) NOT NULL default '',
@@ -322,11 +321,11 @@ function upgrade_to_0_8_8d() {
 		`in_cacti` tinyint NOT NULL default '0',
 		`data_template_id` mediumint(8) unsigned NOT NULL default '0',
 		PRIMARY KEY (`id`),
-		UNIQUE KEY name (`name`),
-		KEY local_data_id (`local_data_id`),
-		KEY in_cacti (`in_cacti`),
-		KEY data_template_id (`data_template_id`))
-		ENGINE=MyISAM
+		UNIQUE KEY name (`name`), 
+		KEY local_data_id (`local_data_id`), 
+		KEY in_cacti (`in_cacti`), 
+		KEY data_template_id (`data_template_id`)) 
+		ENGINE=MyISAM 
 		COMMENT='RRD Cleaner File Repository';");
 
 	db_install_execute('0.8.8d', "CREATE TABLE IF NOT EXISTS `data_source_purge_action` (
@@ -336,15 +335,15 @@ function upgrade_to_0_8_8d() {
 		`action` tinyint(2) NOT NULL default 0,
 		PRIMARY KEY (`id`),
 		UNIQUE KEY name (`name`))
-		ENGINE=MyISAM
+		ENGINE=MyISAM 
 		COMMENT='RRD Cleaner File Actions';");
 
-	db_install_execute('0.8.8d', "ALTER TABLE graph_tree
+	db_install_execute('0.8.8d', "ALTER TABLE graph_tree 
 		ADD COLUMN enabled char(2) DEFAULT 'on' AFTER id,
-		ADD COLUMN locked TINYINT default '0' AFTER enabled,
-		ADD COLUMN locked_date TIMESTAMP default '0000-00-00' AFTER locked,
-		ADD COLUMN last_modified TIMESTAMP default '0000-00-00' AFTER name,
-		ADD COLUMN user_id INT UNSIGNED default '1' AFTER name,
+		ADD COLUMN locked TINYINT default '0' AFTER enabled, 
+		ADD COLUMN locked_date TIMESTAMP default '0000-00-00' AFTER locked, 
+		ADD COLUMN last_modified TIMESTAMP default '0000-00-00' AFTER name, 
+		ADD COLUMN user_id INT UNSIGNED default '1' AFTER name, 
 		ADD COLUMN modified_by INT UNSIGNED default '1'");
 
 	db_install_execute('0.8.8d', "ALTER TABLE graph_tree_items 
@@ -442,5 +441,23 @@ function upgrade_to_0_8_8d() {
 
 		db_install_execute('0.8.8d', "ALTER TABLE graph_tree_items DROP COLUMN order_key");
 	}
+
+	/* merge of clog */
+	/* clog user = 19 */
+	/* dlog admin = 18 */
+	$realms = db_fetch_assoc("SELECT * FROM plugin_realms WHERE plugins='clog'");
+	if (sizeof($realms)) {
+	foreach($realms as $r) {
+		if ($r['file'] == 'clog.php') {
+			db_execute("UPDATE user_auth_realm SET realm_id=18 WHERE realm_id=" . ($r['id']+100));
+		}elseif ($r['file'] == 'clog_user.php') {
+			db_execute("UPDATE user_auth_realm SET realm_id=19 WHERE realm_id=" . ($r['id']+100));
+		}
+	}
+	}
+	db_execute("DELETE FROM plugin_realms WHERE file LIKE 'clog%'");
+	db_execute("DELETE FROM plugin_config WHERE directory='clog'");
+	db_execute("DELETE FROM plugin_hooks WHERE name='clog'");
+
 	snmpagent_cache_install();
 }

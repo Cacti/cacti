@@ -364,6 +364,10 @@ function applySkin() {
 
 	setupCollapsible();
 
+	if ($.isFunction(themeReady)) {
+		themeReady();
+	}
+
 	$('#message_container').delay(2000).slideUp('fast');
 }
 
@@ -422,6 +426,8 @@ function setupUserMenu() {
 
 function setupSpecialKeys() {
 	$('#filter').unbind('keypress').attr('title', 'Press Ctrl+C to Clear Filter');
+	$('#filter').tooltip({ closed: true }).on('focus', function() { $('#filter').tooltip('close') }).on('click', function() { $(this).tooltip('close'); });
+
 	$('#filter').bind('keypress', 'ctrl+c', function() {
 		clearFilter();
 	});
@@ -561,7 +567,6 @@ function pulsate(element) {
 $(function() {
 	$('body').css('height', $(window).height());
 	$('#navigation').css('height', ($(window).height())+'px').css('overflow-y', 'initial').css('overflow-x', 'initial');
-	$('#navigation_right').show();
 
 	$(window).resize(function(event) {
 		$('body').css('height', $(window).height());
@@ -577,4 +582,6 @@ $(function() {
 	setupUserMenu();
 
 	applySkin();
+
+	$('#navigation_right').show();
 });

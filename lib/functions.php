@@ -1685,11 +1685,15 @@ function draw_navigation_text($type = 'url') {
 		'gprint_presets.php:' => array('title' => 'GPRINT Presets', 'mapping' => 'index.php:', 'url' => 'gprint_presets.php', 'level' => '1'),
 		'gprint_presets.php:edit' => array('title' => '(Edit)', 'mapping' => 'index.php:,gprint_presets.php:', 'url' => '', 'level' => '2'),
 		'gprint_presets.php:remove' => array('title' => '(Remove)', 'mapping' => 'index.php:,gprint_presets.php:', 'url' => '', 'level' => '2'),
-		'cdef.php:' => array('title' => "CDEF's", 'mapping' => 'index.php:', 'url' => 'cdef.php', 'level' => '1'),
+		'cdef.php:' => array('title' => 'CDEFs', 'mapping' => 'index.php:', 'url' => 'cdef.php', 'level' => '1'),
 		'cdef.php:edit' => array('title' => '(Edit)', 'mapping' => 'index.php:,cdef.php:', 'url' => '', 'level' => '2'),
 		'cdef.php:remove' => array('title' => '(Remove)', 'mapping' => 'index.php:,cdef.php:', 'url' => '', 'level' => '2'),
 		'cdef.php:item_edit' => array('title' => 'CDEF Items', 'mapping' => 'index.php:,cdef.php:,cdef.php:edit', 'url' => '', 'level' => '3'),
 		'cdef.php:actions' => array('title' => 'Actions', 'mapping' => 'index.php:,cdef.php:', 'url' => '', 'level' => '2'),
+		'clog.php:' => array('title' => 'View Cacti Log', 'mapping' => '', 'url' => 'clog.php', 'level' => '0'),
+		'clog.php:preview' => array('title' => 'View Cacti Log', 'mapping' => '', 'url' => 'clog.php', 'level' => '0'),
+		'clog_user.php:' => array('title' => 'View Cacti Log', 'mapping' => '', 'url' => 'clog_user.php', 'level' => '0'),
+		'clog_user.php:preview' => array('title' => 'View Cacti Log', 'mapping' => '', 'url' => 'clog_user.php', 'level' => '0'),
 		'tree.php:' => array('title' => 'Graph Trees', 'mapping' => 'index.php:', 'url' => 'tree.php', 'level' => '1'),
 		'tree.php:edit' => array('title' => '(Edit)', 'mapping' => 'index.php:,tree.php:', 'url' => '', 'level' => '2'),
 		'color.php:' => array('title' => 'Colors', 'mapping' => 'index.php:', 'url' => 'color.php', 'level' => '1'),
@@ -2659,5 +2663,43 @@ function poller_maintenance () {
 	$extra_args = ' -q ' . $config['base_path'] . '/poller_maintenance.php';
 
 	exec_background($command_string, $extra_args);
+}
+
+function clog_admin() {
+	if (!isset($_SESSION['sess_clog_level'])) {
+		clog_authorized();
+	}
+
+	if ($_SESSION["sess_clog_level"] == CLOG_PERM_ADMIN) {
+		return true;
+	}else{
+		return false;
+	}
+}
+
+function clog_authorized() {
+	if (!isset($_SESSION["sess_clog_level"])) {
+		if (isset($_SESSION['sess_user_id'])) {
+			$authorized = db_fetch_cell("SELECT realm_id FROM user_auth_realm WHERE realm_id=18 AND user_id=" . $_SESSION['sess_user_id']);
+			if ($authorized) {
+				$_SESSION['sess_clog_level'] = CLOG_PERM_ADMIN;
+			}else{
+				$authorized = db_fetch_cell("SELECT realm_id FROM user_auth_realm WHERE realm_id=19 AND user_id=" . $_SESSION['sess_user_id']);
+				if ($authorized) {
+					$_SESSION['sess_clog_level'] = CLOG_PERM_USER;
+				}
+			}
+		}else{
+			$_SESSION['sess_clog_level'] = CLOG_PERM_NONE;
+		}
+	}
+
+	if ($_SESSION["sess_clog_level"] == CLOG_PERM_USER) {
+		return true;
+	}elseif ($_SESSION["sess_clog_level"] == CLOG_PERM_ADMIN) {
+		return true;
+	}else{
+		return false;
+	}
 }
 

@@ -42,12 +42,23 @@ function api_user_realm_auth ($filename = '') {
  * @return mixed $data
  */
 function api_plugin_hook ($name) {
-	global $config, $plugin_hooks, $plugins_integrated;
+	global $config, $plugin_hooks, $plugins_system, $plugins_integrated;
 	$data = func_get_args();
 	$ret = '';
 	$p = array();
 
-	$ps_where = '';
+	$ps_where  = '';
+	$ps_where1 = '';
+	$ps_where2 = '';
+
+	if (sizeof($plugins_system)) {
+		foreach($plugins_system as $plugin) {
+			$ps_where .= (strlen($ps_where) ? "', '":"('") . $plugin;
+		}
+
+		$ps_where1 = " AND ph.name IN $ps_where')";
+		$ps_where2 = " AND ph.name NOT IN $ps_where')";
+	}
 
 	/* order the plugin functions by system first, then followed by order */
 	$result = db_fetch_assoc_prepared("SELECT 1 AS id, ph.name, ph.file, ph.function
@@ -55,14 +66,14 @@ function api_plugin_hook ($name) {
 		LEFT JOIN plugin_config AS pc
 		ON pc.directory = ph.name
 		WHERE ph.status = 1 AND hook = ?
-		AND ph.name IN $ps_where
+		$ps_where1
 		UNION
 		SELECT pc.id, ph.name, ph.file, ph.function
 		FROM plugin_hooks AS ph
 		LEFT JOIN plugin_config AS pc
 		ON pc.directory = ph.name
 		WHERE ph.status = 1 AND hook = ?
-		AND ph.name NOT IN $ps_where
+		$ps_where2
 		ORDER BY id ASC", array($name, $name), true);
 
 	if (!empty($result)) {
@@ -94,10 +105,22 @@ function api_plugin_hook ($name) {
 }
 
 function api_plugin_hook_function ($name, $parm=NULL) {
-	global $config, $plugin_hooks, $plugins_integrated;
+	global $config, $plugin_hooks, $plugins_system, $plugins_integrated;
 	$ret = $parm;
 	$p = array();
-	$ps_where = '';
+
+	$ps_where  = '';
+	$ps_where1 = '';
+	$ps_where2 = '';
+
+	if (sizeof($plugins_system)) {
+		foreach($plugins_system as $plugin) {
+			$ps_where .= (strlen($ps_where) ? "', '":"('") . $plugin;
+		}
+
+		$ps_where1 = " AND ph.name IN $ps_where')";
+		$ps_where2 = " AND ph.name NOT IN $ps_where')";
+	}
 
 	/* order the plugin functions by system first, then followed by order */
 	$result = db_fetch_assoc_prepared("SELECT 1 AS id, ph.name, ph.file, ph.function
@@ -105,14 +128,14 @@ function api_plugin_hook_function ($name, $parm=NULL) {
 		LEFT JOIN plugin_config AS pc
 		ON pc.directory = ph.name
 		WHERE ph.status = 1 AND hook = ?
-		AND ph.name IN $ps_where
+		$ps_where1
 		UNION
 		SELECT pc.id, ph.name, ph.file, ph.function
 		FROM plugin_hooks AS ph
 		LEFT JOIN plugin_config AS pc
 		ON pc.directory = ph.name
 		WHERE ph.status = 1 AND hook = ?
-		AND ph.name NOT IN $ps_where
+		$ps_where2
 		ORDER BY id ASC", array($name, $name), true);
 
 	if (!empty($result)) {
@@ -339,7 +362,17 @@ function api_plugin_disable ($plugin) {
 }
 
 function api_plugin_moveup($plugin) {
+	global $plugins_system;
+
 	$sql_where = '';
+	if (sizeof($plugins_system)) {
+		foreach($plugins_system as $s) {
+			$sql_where .= (strlen($sql_where) ? ' AND ':'(') . " directory!='$s'";
+		}
+
+		$sql_where .= ')';
+	}
+
 	$id = db_fetch_cell("SELECT id FROM plugin_config WHERE directory = '$plugin'" . (strlen($sql_where) ? ' AND ' . $sql_where: ''));
 	$temp_id = db_fetch_cell('SELECT MAX(id) FROM plugin_config')+1;
 	$prior_id = db_fetch_cell("SELECT MAX(id) FROM plugin_config WHERE id < $id" . (strlen($sql_where) ? ' AND ' . $sql_where: ''));
@@ -351,7 +384,17 @@ function api_plugin_moveup($plugin) {
 }
 
 function api_plugin_movedown($plugin) {
+	global $plugins_system;
+
 	$sql_where = '';
+	if (sizeof($plugins_system)) {
+		foreach($plugins_system as $s) {
+			$sql_where .= (strlen($sql_where) ? ' AND ': '(') . " directory!='$s'";
+		}
+
+		$sql_where .= ')';
+	}
+
 	$id = db_fetch_cell("SELECT id FROM plugin_config WHERE directory = '$plugin'" . (strlen($sql_where) ? ' AND ' . $sql_where: ''));
 	$temp_id = db_fetch_cell('SELECT MAX(id) FROM plugin_config')+1;
 	$next_id = db_fetch_cell("SELECT MIN(id) FROM plugin_config WHERE id > $id" . (strlen($sql_where) ? ' AND ' . $sql_where: ''));

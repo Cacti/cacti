@@ -55,7 +55,7 @@ $using_guest_account = false;
 	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/jscalendar/lang/calendar-en.js'></script>
 	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/jscalendar/calendar-setup.js'></script>
 	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/layout.js'></script>
-	<script type='text/javascript'>var theme='<?php print read_config_option('selected_theme');?>';</script>
+	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/themes/<?php print read_config_option('selected_theme');?>/main.js'></script>
 	<?php include($config['base_path'] . '/include/global_session.php'); api_plugin_hook('page_head'); ?>
 </head>
 
@@ -107,8 +107,8 @@ $using_guest_account = false;
 				</tr>
 			</table>
 		</td>
-		<td class='cactiConsoleContentArea' width='100%' valign='top'><div style='display:none;' id='message_container'><?php display_output_messages();?></div><div style='position:relative;' id='main'>
+		<td id='navigation_right' style='display:none;' class='cactiConsoleContentArea' width='100%' valign='top'><div style='display:none;' id='message_container'><?php display_output_messages();?></div><div style='position:relative;' id='main'>
 <?php }else{ ?>
 	<tr>
-		<td class='cactiConsoleContentArea' width='100%' valign='top'><div style='display:none;' id='message_container'><?php display_output_messages();?></div><div style='position:relative;' id='main'>
+		<td id='navigation_right' style='display:none' class='cactiConsoleContentArea' width='100%' valign='top'><div style='display:none;' id='message_container'><?php display_output_messages();?></div><div style='position:relative;' id='main'>
 <?php } ?>

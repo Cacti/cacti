@@ -213,3 +213,12 @@ define('SNMPAGENT_EVENT_SEVERITY_MEDIUM', 2);
 define('SNMPAGENT_EVENT_SEVERITY_HIGH', 3);
 define('SNMPAGENT_EVENT_SEVERITY_CRITICAL', 4);
 
+define("CLOG_PERM_ADMIN", 0);
+define("CLOG_PERM_USER",  1);
+define("CLOG_PERM_NONE",  2);
+
+define("CHARS_PER_TIER", 3);
+define("MAX_TREE_DEPTH", 30);
+define("SORT_TYPE_TREE", 1);
+define("SORT_TYPE_TREE_ITEM", 2);
+

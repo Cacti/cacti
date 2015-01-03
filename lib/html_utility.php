@@ -362,7 +362,11 @@ function get_page_list($current_page, $pages_per_screen, $rows_per_page, $total_
 		$url . '?';
 	}
 
-	$total_pages = ceil($total_rows / $rows_per_page);
+	if ($rows_per_page <= 0) {
+		$total_pages = 0;
+	}else{
+		$total_pages = ceil($total_rows / $rows_per_page);
+	}
 
 	$start_page = max(1, ($current_page - floor(($pages_per_screen - 1) / 2)));
 	$end_page = min($total_pages, ($current_page + floor(($pages_per_screen - 1) / 2)));

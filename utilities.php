@@ -119,22 +119,6 @@ switch ($_REQUEST['action']) {
 		boost_display_run_status();
 		bottom_footer();
 		break;
-	case 'view_snmpagent_cache':
-		top_header();
-		snmpagent_utilities_run_cache();
-		bottom_footer();
-		break;
-	case 'rebuild_snmpagent_cache';
-		top_header();
-		snmpagent_utilities_run_cache(true);
-		bottom_footer();
-		break;
-	case 'view_snmpagent_events':
-		top_header();
-		snmpagent_utilities_run_eventlog();
-		bottom_footer();
-		break;
-
 	default:
 		if (!api_plugin_hook_function('utilities_action', $_REQUEST['action'])) {
 			top_header();

@@ -573,6 +573,7 @@ $settings = array(
 			),
 		'table_header' => array(
 			'friendly_name' => 'Table Settings',
+			'collapsible' => 'true',
 			'method' => 'spacer',
 			),
 		'num_rows_table' => array(
@@ -584,6 +585,7 @@ $settings = array(
 			),
 		'object_creation_header' => array(
 			'friendly_name' => 'Graph/Data Source/Data Query Settings',
+			'collapsible' => 'true',
 			'method' => 'spacer',
 			),
 		'max_title_length' => array(
@@ -604,6 +606,7 @@ $settings = array(
 			),
 		'graphs_new_header' => array(
 			'friendly_name' => 'Graph Creation',
+			'collapsible' => 'true',
 			'method' => 'spacer',
 			),
 		'default_graphs_new_dropdown' => array(
@@ -615,6 +618,7 @@ $settings = array(
 			),
 		'logmgmt_header' => array(
 			'friendly_name' => 'Log Management',
+			'collapsible' => 'true',
 			'method' => 'spacer',
 			),
 		'num_rows_log' => array(
@@ -633,6 +637,7 @@ $settings = array(
 			),
 		'wathermark_header' => array(
 			'friendly_name' => 'RRDtool Graph Watermark',
+			'collapsible' => 'true',
 			'method' => 'spacer'
 			),
 		'graph_wathermark' => array(
@@ -642,6 +647,21 @@ $settings = array(
 			'default' => 'Copyright (c) The Cacti Group, Inc.',
 			'max_length' => '80',
 			'size' => '60'
+			),
+		'clog_header' => array(
+			'friendly_name' => 'Log Viewer Settings',
+			'collapsible' => 'true',
+			'method' => 'spacer',
+			),
+		'clog_exclude' => array(
+			'friendly_name' => 'Exclusion Regex',
+			'description' => 'Any strings that match this regex will be excluded from the user display.
+				<strong>For example, if you want to exclude all log lines that include the words "Admin" or "Login"
+				you would type "(Admin || Login)"</strong>',
+			'method' => 'textarea',
+			'textarea_rows' => '5',
+			'textarea_cols' => '45',
+			'max_length' => 512
 			),
 		'fonts_header' => array(
 			'friendly_name' => 'RRDtool Graph Font Control',

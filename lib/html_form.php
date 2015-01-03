@@ -203,6 +203,21 @@ function draw_edit_control($field_name, &$field_array) {
 		);
 
 		break;
+	case 'drop_callback':
+		form_callback(
+			$field_name,
+			$field_array['sql'],
+			'name', 
+			'id', 
+			$field_array['action'],
+			$field_array['id'],
+			$field_array['value'],
+			((isset($field_array['default'])) ? $field_array['default'] : ''),
+			((isset($field_array['class'])) ? $field_array['class'] : ''),
+			((isset($field_array['on_change'])) ? $field_array['on_change'] : '')
+		);
+
+		break;
 	case 'drop_multi':
 		form_multi_dropdown(
 			$field_name, 
@@ -549,6 +564,111 @@ function form_dropdown($form_name, $form_data, $column_display, $column_id, $for
 	html_create_list($form_data, $column_display, $column_id, htmlspecialchars($form_previous_value, ENT_QUOTES));
 
 	print "</select>\n";
+}
+
+function form_callback($form_name, $classic_sql, $column_display, $column_id, $callback, $previous_id, $previous_value, $none_entry, $default_value, $class = "", $on_change = "") {
+	if ($previous_value == "") {
+		$previous_value = $default_value;
+	}
+
+	if (isset($_SESSION["sess_error_fields"])) {
+		if (!empty($_SESSION["sess_error_fields"][$form_name])) {
+			$class .= (strlen($class) ? " ":"") . "txtErrorTextBox";
+			unset($_SESSION["sess_error_fields"][$form_name]);
+		}
+	}
+
+	if (isset($_SESSION["sess_field_values"])) {
+		if (!empty($_SESSION["sess_field_values"][$form_name])) {
+			$previous_value = $_SESSION["sess_field_values"][$form_name];
+		}
+	}
+
+	if (strlen($class)) {
+		$class = " class='$class' ";
+	}
+
+	if (strlen($on_change)) {
+		$on_change = " onChange='$on_change' ";
+	}
+
+	$theme = read_config_option('selected_theme');
+	if ($theme == 'classic') {
+		print "<select id='" . htmlspecialchars($form_name) . "' name='" . htmlspecialchars($form_name) . "'" . $class . $on_change . ">";
+
+		if (!empty($none_entry)) {
+			print "<option value='0'" . (empty($previous_value) ? " selected" : "") . ">$none_entry</option>\n";
+		}
+
+		$form_data = db_fetch_assoc($classic_sql);
+
+		html_create_list($form_data, $column_display, $column_id, htmlspecialchars($previous_value, ENT_QUOTES));
+
+		print "</select>\n";
+	}else{
+		$form_prefix = htmlspecialchars($form_name);
+
+		print "<span id='$form_prefix" . "_wrap' style='width:200px;' class='ui-selectmenu-button ui-widget ui-state-default ui-corner-all'>\n";
+		print "<span id='$form_prefix" . "_click' style='z-index:4' class='ui-icon ui-icon-triangle-1-s'></span>\n";
+		print "<input id='$form_prefix" . "_input' class='ui-selectmenu-text ui-state-default' value='" . htmlspecialchars($previous_value) . "'>\n";
+		print "</span>\n";
+		print "<input type='hidden' id='" . $form_prefix . "' name='" . $form_prefix . "' value='" . $previous_id . "'>\n";
+		?>
+		<script type='text/javascript'>
+		var prefix = '<?php print $form_name;?>';
+		var <?php print $form_name;?>Timer;
+		var <?php print $form_name;?>ClickTimer;
+		var <?php print $form_name;?>Open = false;
+
+		$(function() {
+		    $('#'+prefix+'_input').autocomplete({
+		        source: '<?php print $_SERVER['PHP_SELF'];?>?action=<?php print $callback;?>',
+				autoFocus: true,
+				minLength: 0,
+				select: function(event,ui) {
+					$('#'+prefix).val(ui.item.id);
+					<?php print $on_change;?>;
+				}
+			}).css('border', 'none').css('background-color', 'transparent');
+
+			$('#'+prefix+'_wrap').dblclick(function() {
+				<?php print $form_name;?>Open = false;
+				clearTimeout(<?php print $form_name;?>Timer);
+				clearTimeout(<?php print $form_name;?>ClickTimer);
+				$('#'+prefix+'_input').autocomplete('close');
+			}).click(function() {
+				if (<?php print $form_name;?>Open) {
+					$('#'+prefix+'_input').autocomplete('close');
+					clearTimeout(<?php print $form_name;?>Timer);
+					<?php print $form_name;?>Open = false;
+				}else{
+					<?php print $form_name;?>ClickTimer = setTimeout(function() {
+						$('#'+prefix+'_input').autocomplete('search', $('#'+prefix+'_input').val());
+						clearTimeout(<?php print $form_name;?>Timer);
+						<?php print $form_name;?>Open = true;
+					}, 200);
+				}
+			}).on('mouseleave', function() {
+				<?php print $form_name;?>Timer = setTimeout(function() { $('#'+prefix+'_input').autocomplete('close'); }, 800);
+			});
+
+			$('ul[id^="ui-id"]').on('mouseenter', function() {
+				clearTimeout(<?php print $form_name;?>Timer);
+			}).on('mouseleave', function() {
+				<?php print $form_name;?>Timer = setTimeout(function() { $('#'+prefix).autocomplete('close'); }, 800);
+			});
+
+			$('#'+prefix+'_wrap').on('mouseenter', function() {
+				$(this).addClass('ui-state-hover');
+				$('input#'+prefix+'_input').addClass('ui-state-hover');
+			}).on('mouseleave', function() {
+				$(this).removeClass('ui-state-hover');
+				$('input#'+prefix+'_input').removeClass('ui-state-hover');
+			});
+		});
+		</script>
+		<?php
+	}
 }
 
 /** form_checkbox - draws a standard html checkbox

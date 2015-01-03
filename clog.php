@@ -22,32 +22,20 @@
  +-------------------------------------------------------------------------+
 */
 
-$oper_mode = api_plugin_hook_function('bottom_footer', OPER_MODE_NATIVE);
-if (($oper_mode == OPER_MODE_NATIVE) || ($oper_mode == OPER_MODE_IFRAME_NONAV)) {
+$guest_account=true;
 
-?>
-			</div>
-		</td>
-	</tr>
-</table>
-<?php api_plugin_hook('page_bottom');?>
-<script type='text/javascript'>
-$(function() { 
-	$('#navigation').show(); 
-});
-</script>
-</body>
-</html>
+include('./include/auth.php');
+include_once('./lib/utility.php');
+include_once('./lib/clog_webapi.php');
 
-<?php
-
+/* check edit/alter permissions */
+if (!clog_admin()) {
+	echo 'FATAL: YOU DO NO HAVE ACCESS TO THIS AREA OF CACTI';
+	exit;
 }
 
-/* we use this session var to store field values for when a save fails,
-this way we can restore the field's previous values. we reset it here, because
-they only need to be stored for a single page */
-kill_session_var("sess_field_values");
+load_current_session_value('page_referrer', 'page_referrer', '');
 
-/* make sure the debug log doesn't get too big */
-debug_log_clear();
+clog_view_logfile();
 
+?>

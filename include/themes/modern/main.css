@@ -26,15 +26,15 @@ a:hover {
 	color: #333333;
 }
 
-th .ui-icon {
-    margin-top: -8px;
+th .fa {
+    margin-top: -5px;
     position: absolute;
     right: 3px;
     top: 50%;
 }
 
 input, select {
-	padding: 3px;
+	padding: 0.4em 2.1em 0.4em 1em;
 }
 
 .usermenudown {
@@ -58,9 +58,22 @@ input, select {
 	font-size: 13px !important;
 }
 
-input#filter {
+/* input#host {
+	background-color: #e6e6e6;
+	border: none;
 	padding-right: 24px;
-}
+	line-height:1.4;
+	overflow-hidden;
+	padding: 0.4em 2.1em 0.4em 1em;
+	color: #555555;
+}*/
+
+/* input#filter {
+	padding-right: 24px;
+	line-height:1.4;
+	overflow-hidden;
+	padding: 0.4em 2.1em 0.4em 1em;
+}*/
 
 .menuoptions {
 	background: none repeat scroll 0 0 #eee;
@@ -97,15 +110,26 @@ input#filter {
 }
 
 .odd {
-	background-color:#F5F5F5;
+	background: none repeat scroll 0 0 #F5F5F5;
+    border-style: solid;
+    border-width: 1px;
+    box-shadow: 0 0 1px rgba(0, 0, 0, 0.1);
 }
 
 .even {
-	background-color:#E5E5E5;
+	background: none repeat scroll 0 0 #E5E5E5;
+#    border-color: #f5f5f5 #e5e5e5 #ccc;
+    border-style: solid;
+    border-width: 1px;
+    box-shadow: 0 0 1px rgba(0, 0, 0, 0.1);
 }
 
 .even-alternate {
+	background: none repeat scroll 0 0 #E7E9F2;
 	background-color:#E7E9F2;
+    border-style: solid;
+    border-width: 1px;
+    box-shadow: 0 0 1px rgba(0, 0, 0, 0.1);
 }
 
 .saveRow {
@@ -534,11 +558,6 @@ legend {
 	background: -ms-linear-gradient(top, rgba(98,125,77,1) 0%, rgba(31,59,8,1) 100%);
 	background: linear-gradient(to bottom, rgba(98,125,77,1) 0%, rgba(31,59,8,1) 100%);
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#627d4d', endColorstr='#1f3b08', GradientType=0 );
-}
-
-.cactiTable td {
-	overflow: hidden;
-	text-overflow: ellipsis;
 }
 
 .break {

@@ -1365,31 +1365,31 @@ function host() {
 }
 
 function get_timeinstate($host) {
-        $interval = read_config_option('poller_interval');
-        if ($host['status_event_count'] > 0) {
-                $time = $host['status_event_count'] * $interval;
-        }elseif (strtotime($host['status_rec_date']) > 943916400) {
-                $time = time() - strtotime($host['status_rec_date']);
-        }else{
-                return '-';
-        }
+	$interval = read_config_option('poller_interval');
+	if ($host['status_event_count'] > 0) {
+		$time = $host['status_event_count'] * $interval;
+	}elseif (strtotime($host['status_rec_date']) > 943916400) {
+		$time = time() - strtotime($host['status_rec_date']);
+	}else{
+		return '-';
+	}
 
-        if ($time > 86400) {
-                $days  = floor($time/86400);
-                $time %= 86400;
-        }else{
-                $days  = 0;
-        }
+	if ($time > 86400) {
+		$days  = floor($time/86400);
+		$time %= 86400;
+	}else{
+		$days  = 0;
+	}
 
-        if ($time > 3600) {
-                $hours = floor($time/3600);
-                $time  %= 3600;
-        }else{
-                $hours = 0;
-        }
+	if ($time > 3600) {
+		$hours = floor($time/3600);
+		$time  %= 3600;
+	}else{
+		$hours = 0;
+	}
 
-        $minutes = floor($time/60);
+	$minutes = floor($time/60);
 
-        return $days . 'd ' . $hours . 'h ' . $minutes . 'm';
+	return $days . 'd ' . $hours . 'h ' . $minutes . 'm';
 }
 

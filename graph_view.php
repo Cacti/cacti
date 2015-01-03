@@ -31,6 +31,9 @@ include_once('./lib/timespan_settings.php');
 define('MAX_DISPLAY_PAGES', 21);
 
 /* ================= input validation ================= */
+if (isset($_REQUEST['id']) && $_REQUEST['id'] == '#') {
+	$_REQUEST['id'] = '0';
+}
 input_validate_input_number(get_request_var_request('branch_id'));
 input_validate_input_number(get_request_var_request('hide'));
 input_validate_input_number(get_request_var_request('leaf_id'));
@@ -48,7 +51,9 @@ if (isset($_REQUEST['action'])) {
 
 /* setup tree selection defaults if the user has not been here before */
 if (!isset($_REQUEST['action'])) {
-	if (!isset($_SESSION['sess_graph_view_action'])) {
+	if (isset($_REQUEST['header'])) {
+		$_REQUEST['action'] = 'tree_content';
+	}elseif (!isset($_SESSION['sess_graph_view_action'])) {
 		if (read_graph_config_option('default_view_mode') == '1') {
 			$_REQUEST['action'] = 'tree';
 		}elseif (read_graph_config_option('default_view_mode') == '2') {
@@ -87,16 +92,14 @@ case 'tree':
 
 	break;
 case 'get_node':
-	$parent = -1;
+	$parent  = -1;
+	$tree_id = 0;
 	if (isset($_REQUEST['tree_id'])) {
 		if ($_REQUEST['tree_id'] == 'default' || $_REQUEST['tree_id'] == 'undefined') {
 			$tree_id = read_graph_config_option('default_tree_id');
-		}elseif ($_REQUEST['tree_id'] == 0 && strpos($_REQUEST['id'], 'tree_anchor') >= 0) {
+		}elseif ($_REQUEST['tree_id'] == 0 && substr_count($_REQUEST['id'], 'tree_anchor') > 0) {
 			$ndata = explode('-', $_REQUEST['id']);
 			$tree_id = $ndata[1];
-			input_validate_input_number($tree_id);
-		}else{
-			$tree_id = $_REQUEST['tree_id'];
 			input_validate_input_number($tree_id);
 		}
 	}else{
@@ -115,6 +118,7 @@ case 'get_node':
 				if ($pnode[0] == 'tbranch') {
 					$parent = $pnode[1];
 					input_validate_input_number($parent);
+					$tree_id = db_fetch_cell("SELECT graph_tree_id FROM graph_tree_items WHERE id=$parent");
 					break;
 				}
 			}

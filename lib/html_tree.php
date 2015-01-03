@@ -323,7 +323,9 @@ function draw_dhtml_tree_level_graphing($tree_id, $parent = 0) {
 	
 					$dhtml_tree[] = "\t\t\t\t</li>\n";
 				}else{ //It's not a host
-					$dhtml_tree[] = "\t\t\t\t<li id='tbranch-" . $leaf['id'] . "' class='jstree-closed'><a href=\"" . htmlspecialchars('graph_view.php?action=tree&tree_id=' . $tree['id'] . '&leaf_id=' . $leaf['id'] . '&host_group_data=') . '">' . htmlspecialchars($leaf['title']) . "</a></li>\n";
+					$children = db_fetch_cell("SELECT COUNT(*) FROM graph_tree_items WHERE parent=" . $leaf['id'] . " AND local_graph_id=0");
+
+					$dhtml_tree[] = "\t\t\t\t<li id='tbranch-" . $leaf['id'] . "' " . ($children > 0 ? "class='jstree-closed'":"") . "><a href=\"" . htmlspecialchars('graph_view.php?action=tree&tree_id=' . $tree['id'] . '&leaf_id=' . $leaf['id'] . '&host_group_data=') . '">' . htmlspecialchars($leaf['title']) . "</a></li>\n";
 				}
 			}
 	
@@ -438,7 +440,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 		FROM graph_tree_items
 		WHERE id=$leaf_id");
 
-	$leaf_type = get_tree_item_type($leaf_id);
+	$leaf_type = api_tree_get_item_type($leaf_id);
 
 	/* get information for the headers */
 	if (!empty($tree_id)) { $tree_name = db_fetch_cell("SELECT name FROM graph_tree WHERE id=$tree_id"); }

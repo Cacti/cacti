@@ -1163,7 +1163,7 @@ function explore_tree($path, $tree_id, $parent_tree_item_id) {
 	foreach($links as $link) {
 		/* this test gives us the parent of the curent graph_tree_item */
 		if (get_parent_id($link["id"], "graph_tree_items", "graph_tree_id = " . $tree_id) == $parent_tree_item_id) {
-			if (get_tree_item_type($link["id"]) == "host") {
+			if (api_tree_get_item_type($link["id"]) == "host") {
 				if (read_config_option("export_tree_isolation") == "off") {
 					$total_graphs_created += export_build_tree_single(clean_up_export_name($path), clean_up_export_name(get_host_description($link["host_id"]) . "_" . $link["id"] . ".html"), $tree_id, $link["id"]);
 				}else{
@@ -1879,7 +1879,7 @@ function get_tree_name($tree_id) {
 }
 
 function get_tree_item_title($tree_item_id) {
-	if (get_tree_item_type($tree_item_id) == "host")  {
+	if (api_tree_get_item_type($tree_item_id) == "host")  {
 		$tree_item=db_fetch_row("SELECT host_id FROM graph_tree_items WHERE id='".$tree_item_id."'");
 		return get_host_description($tree_item["host_id"]);
 	}else{
