@@ -866,10 +866,9 @@ body .ui-tooltip {
 .ui-state-default,
 .ui-widget-content .ui-state-default,
 .ui-widget-header .ui-state-default {
-	border: 1px solid #327E04;
-	background: #459e00 url("images/ui-bg_highlight-hard_15_459e00_1x100.png") 50% 50% repeat-x;
+	border: 1px solid #433f38;
+	background: #ffffff;
 	font-weight: bold;
-	color: #ffffff;
 }
 .ui-state-default a,
 .ui-state-default a:link,
@@ -884,9 +883,9 @@ body .ui-tooltip {
 .ui-widget-content .ui-state-focus,
 .ui-widget-header .ui-state-focus {
 	border: 1px solid #327E04;
-	background: #67b021 url("images/ui-bg_highlight-soft_25_67b021_1x100.png") 50% 50% repeat-x;
+	background: #E7E9F2;
 	font-weight: bold;
-	color: #ffffff;
+	color: #000000;
 }
 .ui-state-hover a,
 .ui-state-hover a:hover,
