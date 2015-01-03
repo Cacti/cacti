@@ -2864,7 +2864,7 @@ CREATE TABLE `snmpagent_cache` (
   PRIMARY KEY (`oid`),
   KEY `name` (`name`),
   KEY `mib` (`mib`)
-) ENGINE=MyISAM COMMENT='SNMP MIB CACHE'
+) ENGINE=MyISAM COMMENT='SNMP MIB CACHE';
 
 --
 -- Dumping data for table `snmpagent_cache`
@@ -2878,7 +2878,7 @@ CREATE TABLE `snmpagent_mibs` (
   `name` varchar(32) NOT NULL DEFAULT '',
   `file` varchar(255) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM COMMENT='Registered MIB files'
+) ENGINE=MyISAM COMMENT='Registered MIB files';
 
 --
 -- Dumping data for table `snmpagent_mibs`
@@ -2894,7 +2894,7 @@ CREATE TABLE `snmpagent_cache_notifications` (
   `attribute` varchar(255) NOT NULL,
   `sequence_id` smallint(6) NOT NULL,
   KEY `name` (`name`)
-) ENGINE=MyISAM COMMENT='Notifcations and related attributes'
+) ENGINE=MyISAM COMMENT='Notifcations and related attributes';
 
 --
 -- Dumping data for table `snmpagent_cache_notifications`
@@ -2911,7 +2911,7 @@ CREATE TABLE `snmpagent_cache_textual_conventions` (
   `description` varchar(5000) NOT NULL DEFAULT '',
   KEY `name` (`name`),
   KEY `mib` (`mib`)
-) ENGINE=MyISAM COMMENT='Textual conventions'
+) ENGINE=MyISAM COMMENT='Textual conventions';
 
 --
 -- Dumping data for table `snmpagent_cache_textual_conventions`
@@ -2939,7 +2939,7 @@ CREATE TABLE `snmpagent_managers` (
   `notes` text,
   PRIMARY KEY (`id`),
   KEY `hostname` (`hostname`)
-) ENGINE=MyISAM COMMENT='snmp notification receivers'
+) ENGINE=MyISAM COMMENT='snmp notification receivers';
 
 --
 -- Dumping data for table `snmpagent_managers`
@@ -2956,7 +2956,7 @@ CREATE TABLE `snmpagent_managers_notifications` (
   KEY `mib` (`mib`),
   KEY `manager_id` (`manager_id`),
   KEY `manager_id2` (`manager_id`,`notification`)
-) ENGINE=MyISAM COMMENT='snmp notifications to receivers'
+) ENGINE=MyISAM COMMENT='snmp notifications to receivers';
 
 --
 -- Dumping data for table `snmpagent_managers_notifications`
@@ -2979,7 +2979,7 @@ CREATE TABLE `snmpagent_notifications_log` (
   KEY `severity` (`severity`),
   KEY `manager_id` (`manager_id`),
   KEY `manager_id2` (`manager_id`,`notification`)
-) ENGINE=MyISAM COMMENT='logs snmp notifications to receivers'
+) ENGINE=MyISAM COMMENT='logs snmp notifications to receivers';
 
 --
 -- Dumping data for table `snmpagent_notifications_log`
