@@ -627,7 +627,7 @@ function update_host_status($status, $host_id, &$hosts, &$ping, $ping_availabili
 	if ($hosts[$host_id]['status_fail_date'] == ''){
 		$hosts[$host_id]['status_fail_date'] = '0000-00-00 00:00:00';
 	}
-	
+
 	if ($hosts[$host_id]['status_rec_date'] == ''){
 		$hosts[$host_id]['status_rec_date'] = '0000-00-00 00:00:00';
 	}
@@ -1359,7 +1359,7 @@ function generate_data_input_field_sequences($string, $data_input_id) {
 		$j = 0;
 		for ($i=0; ($i < count($matches[1])); $i++) {
 			if (in_array($matches[1][$i], $registered_cacti_names) == false) {
-				$j++; 
+				$j++;
 				db_execute_prepared("UPDATE data_input_fields set sequence = ? WHERE data_input_id = ? AND input_output = 'in' and data_name = ?", array($j, $data_input_id, $matches[1][$i]));
 			}
 		}
@@ -1865,7 +1865,7 @@ function draw_navigation_text($type = 'url') {
 		$current_nav .= '</ul>';
 		$tree_title = '';
 	}
-	
+
 	$title       .= htmlspecialchars(resolve_navigation_variables($current_array['title']) . ' ' . $tree_title);
 
 	/* keep a cache for each level we encounter */
@@ -2218,7 +2218,7 @@ function cacti_escapeshellarg($string, $quote=true) {
 		/* escapeshellarg takes care of different quotation for both linux and windows,
 		 * but unfortunately, it blanks out percent signs
 		 * we want to keep them, e.g. for GPRINT format strings
-		 * so we need to create our own escapeshellarg 
+		 * so we need to create our own escapeshellarg
 		 * on windows, command injection requires to close any open quotation first
 		 * so we have to escape any quotation here */
 		if (substr_count($string, CACTI_ESCAPE_CHARACTER)) {
@@ -2687,6 +2687,8 @@ function clog_authorized() {
 				$authorized = db_fetch_cell("SELECT realm_id FROM user_auth_realm WHERE realm_id=19 AND user_id=" . $_SESSION['sess_user_id']);
 				if ($authorized) {
 					$_SESSION['sess_clog_level'] = CLOG_PERM_USER;
+				}else {
+					$_SESSION['sess_clog_level'] = CLOG_PERM_NONE;
 				}
 			}
 		}else{
@@ -2694,7 +2696,7 @@ function clog_authorized() {
 		}
 	}
 
-	if ($_SESSION["sess_clog_level"] == CLOG_PERM_USER) {
+	if ($_SESSION['sess_clog_level'] == CLOG_PERM_USER) {
 		return true;
 	}elseif ($_SESSION["sess_clog_level"] == CLOG_PERM_ADMIN) {
 		return true;
