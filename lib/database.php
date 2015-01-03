@@ -205,7 +205,7 @@ function db_fetch_cell_prepared($sql, $parms = array(), $col_name = '', $log = T
 			if ($col_name != '') {
 				return $q[0][$col_name];
 			} else {
-				return $q[0][0];
+				return reset($q[0]);
 			}
 		}
 		return FALSE;
@@ -692,7 +692,7 @@ function db_qstr($s, $db_conn = '') {
 	if ($replaceQuote == '\\') {
 		$s = str_replace(array('\\', "\0"), array('\\\\', "\\\0"), $s);
 	}
-	return  "'" . str_replace("'",$replaceQuote, $s) . "'"; 
+	return  "'" . str_replace("'",$replaceQuote, $s) . "'";
 }
 
 
