@@ -119,6 +119,21 @@ switch ($_REQUEST['action']) {
 		boost_display_run_status();
 		bottom_footer();
 		break;
+	case 'view_snmpagent_cache':
+		top_header();
+		snmpagent_utilities_run_cache();
+		bottom_footer();
+		break;
+	case 'rebuild_snmpagent_cache';
+		top_header();
+		snmpagent_utilities_run_cache(true);
+		bottom_footer();
+		break;
+	case 'view_snmpagent_events':
+		top_header();
+		snmpagent_utilities_run_eventlog();
+		bottom_footer();
+		break;
 	default:
 		if (!api_plugin_hook_function('utilities_action', $_REQUEST['action'])) {
 			top_header();
@@ -1810,7 +1825,7 @@ function utilities() {
 			<a href='<?php print htmlspecialchars('utilities.php?action=view_boost_status');?>'>View Boost Status</a>
 		</td>
 		<td class='textArea'>
-			This menu pick allows you to view various boost settings and statistics associated with the current running Boost configuration.	
+			This menu pick allows you to view various boost settings and statistics associated with the current running Boost configuration.
 		</td>
 	</tr>
 	<?php html_header(array('RRD Utilities'), 2); form_alternate_row(); ?>
@@ -1845,7 +1860,7 @@ function utilities() {
 			This menu pick allows you to view the latest events SNMPAgent has handled in relation to the registered notification receivers.
 		</td>
 	</tr>
-	<?php form_alternate_row(); ?>	
+	<?php form_alternate_row(); ?>
 		<td class='textArea'>
 			<a href='<?php print htmlspecialchars('managers.php');?>'>SNMP Notification Receivers</a>
 		</td>
@@ -2185,7 +2200,7 @@ function boost_display_run_status() {
 }
 
 /**
- *  
+ *
  *
  * snmpagent_utilities_run_cache()
  *
@@ -2194,7 +2209,7 @@ function boost_display_run_status() {
  */
 function snmpagent_utilities_run_cache($rebuild=false) {
 	global $item_rows;
-	
+
 	define("MAX_DISPLAY_PAGES", 21);
 
 	$mibs = db_fetch_assoc("SELECT DISTINCT mib FROM snmpagent_cache");
@@ -2247,7 +2262,7 @@ function snmpagent_utilities_run_cache($rebuild=false) {
 
 	$_REQUEST['page_referrer'] = 'view_snmpagent_cache';
 	load_current_session_value('page_referrer', 'page_referrer', 'view_snmpagent_cache');
-	
+
 	?>
 	<script type="text/javascript">
 	<!--
@@ -2353,7 +2368,7 @@ function snmpagent_utilities_run_cache($rebuild=false) {
 		</td>
 	</tr>
 	<?php
-	
+
 	html_end_box();
 
 	$sql_where = "";
@@ -2377,7 +2392,7 @@ function snmpagent_utilities_run_cache($rebuild=false) {
 
 	$total_rows = db_fetch_cell("SELECT COUNT(*) FROM snmpagent_cache WHERE 1 $sql_where");
 
-	
+
 	$snmp_cache_sql = "SELECT * FROM snmpagent_cache WHERE 1 $sql_where LIMIT " . (get_request_var_request("rows")*(get_request_var_request("page")-1)) . "," . get_request_var_request("rows");
 	$snmp_cache = db_fetch_assoc($snmp_cache_sql);
 
@@ -2386,8 +2401,8 @@ function snmpagent_utilities_run_cache($rebuild=false) {
 
 	print $nav;
 
-	
-	
+
+
 	html_header( array( "OID", "Name", "MIB", "Kind", "Max-Access", "Value") );
 
 	if (sizeof($snmp_cache) > 0) {
@@ -2520,10 +2535,10 @@ function snmpagent_utilities_run_eventlog(){
 	if ($_REQUEST["rows"] == -1) {
 		$_REQUEST["rows"] = read_config_option("num_rows_table");
 	}
-	
+
 	$_REQUEST['page_referrer'] = 'view_snmpagent_events';
 	load_current_session_value('page_referrer', 'page_referrer', 'view_snmpagent_events');
-	
+
 	?>
 	<script type="text/javascript">
 	<!--
@@ -2567,7 +2582,7 @@ function snmpagent_utilities_run_eventlog(){
 
 	-->
 	</script>
-	
+
 	<?php
 	html_start_box("<strong>SNMPAgent Notification Log</strong>", "100%", "", "3", "center", "");
 
@@ -2680,7 +2695,7 @@ function snmpagent_utilities_run_eventlog(){
 	if (sizeof($logs) > 0) {
 		foreach ($logs as $item) {
 			$varbinds = (strlen(get_request_var_request("filter")) ? (preg_replace("/(" . preg_quote(get_request_var_request("filter"), "/") . ")/i", "<span style='background-color: #F8D93D;'>\\1</span>", $item["varbinds"])): $item["varbinds"]);
-			form_alternate_row('line' . $item["id"], false);		
+			form_alternate_row('line' . $item["id"], false);
 			print "<td title='Severity Level: " . $severity_levels[ $item["severity"] ] . "' style='width:10px;background-color: " . $severity_colors[ $item["severity"] ] . ";border-top:1px solid white;border-bottom:1px solid white;'></td>";
 			print "<td style='white-space: nowrap;'>" . date( "Y/m/d H:i:s", $item["time"]) . "</td>";
 			print "<td>" . $item["hostname"] . "</td>";
