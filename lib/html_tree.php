@@ -27,8 +27,6 @@ function grow_dropdown_tree($tree_id, $parent = 0, $form_name = '', $selected_tr
 
 	static $tier = 1;
 
-	include_once($config['library_path'] . '/tree.php');
-
 	$branches = db_fetch_assoc("SELECT gti.id, gti.title
 		FROM graph_tree_items AS gti
 		WHERE gti.graph_tree_id=$tree_id
@@ -68,7 +66,6 @@ function grow_dropdown_tree($tree_id, $parent = 0, $form_name = '', $selected_tr
 function grow_dhtml_trees() {
 	global $config;
 
-	include_once($config['library_path'] . '/tree.php');
 	include_once($config['library_path'] . '/data_query.php');
 
 	$default_tree_id = read_graph_config_option('default_tree_id');
@@ -425,7 +422,6 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 
 	include($config['include_path'] . '/global_arrays.php');
 	include_once($config['library_path'] . '/data_query.php');
-	include_once($config['library_path'] . '/tree.php');
 	include_once($config['library_path'] . '/html_utility.php');
 
 	if (empty($tree_id)) { return; }

@@ -194,122 +194,6 @@ function upgrade_to_0_8_8d() {
 		PRIMARY KEY  (`domain_id`))
 		ENGINE=MyISAM
 		COMMENT='Table to Hold Login Domains for LDAP';");
-	if (db_table_exists('plugin_snmpagent_cache')) {
-		db_install_execute('0.8.8d', 'RENAME TABLE plugin_snmpagent_cache TO snmpagent_cache');
-	}
-
-	db_install_execute('0.8.8d', "CREATE TABLE IF NOT EXISTS `snmpagent_cache` (
-		`oid` varchar(255) NOT NULL,
-		`name` varchar(255) NOT NULL,
-		`mib` varchar(255) NOT NULL,
-		`type` varchar(255) NOT NULL DEFAULT '',
-		`otype` varchar(255) NOT NULL DEFAULT '',
-		`kind` varchar(255) NOT NULL DEFAULT '',
-		`max-access` varchar(255) NOT NULL DEFAULT 'not-accessible',
-		`value` varchar(255) NOT NULL DEFAULT '',
-		`description` varchar(5000) NOT NULL DEFAULT '',
-		PRIMARY KEY (`oid`),
-		KEY `name` (`name`),
-		KEY `mib` (`mib`))
-		ENGINE=MyISAM
-		COMMENT='SNMP MIB CACHE';");
-
-	if (db_table_exists('plugin_snmpagent_mibs')) {
-		db_install_execute('0.8.8d', 'RENAME TABLE plugin_snmpagent_mibs TO snmpagent_mibs');
-	}
-
-	db_install_execute('0.8.8d', "CREATE TABLE IF NOT EXISTS `snmpagent_mibs` (
-		`id` int(8) NOT NULL AUTO_INCREMENT,
-		`name` varchar(32) NOT NULL DEFAULT '',
-		`file` varchar(255) NOT NULL DEFAULT '',
-		PRIMARY KEY (`id`))
-		ENGINE=MyISAM
-		COMMENT='Registered MIB files';");
-
-	if (db_table_exists('plugin_snmpagent_cache_notifications')) {
-		db_install_execute('0.8.8d', 'RENAME TABLE plugin_snmpagent_cache_notifications TO snmpagent_cache_notifications');
-	}
-	db_install_execute('0.8.8d', "CREATE TABLE IF NOT EXISTS `snmpagent_cache_notifications` (
-		`name` varchar(255) NOT NULL,
-		`mib` varchar(255) NOT NULL,
-		`attribute` varchar(255) NOT NULL,
-		`sequence_id` smallint(6) NOT NULL,
-		KEY `name` (`name`))
-		ENGINE=MyISAM
-		COMMENT='Notifcations and related attributes';");
-
-	if (db_table_exists('plugin_snmpagent_cache_textual_conventions')) {
-		db_install_execute('0.8.8d', 'RENAME TABLE plugin_snmpagent_cache_textual_conventions TO snmpagent_cache_textual_conventions');
-	}
-
-	db_install_execute('0.8.8d', "CREATE TABLE IF NOT EXISTS `snmpagent_cache_textual_conventions` (
-		`name` varchar(255) NOT NULL,
-		`mib` varchar(255) NOT NULL,
-		`type` varchar(255) NOT NULL DEFAULT '',
-		`description` varchar(5000) NOT NULL DEFAULT '',
-		KEY `name` (`name`),
-		KEY `mib` (`mib`))
-		ENGINE=MyISAM
-		COMMENT='Textual conventions';");
-
-	if (db_table_exists('plugin_snmpagent_managers')) {
-		db_install_execute('0.8.8d', 'RENAME TABLE plugin_snmpagent_managers TO snmpagent_managers');
-	}
-
-	db_install_execute('0.8.8d', "CREATE TABLE IF NOT EXISTS `snmpagent_managers` (
-		`id` int(8) NOT NULL AUTO_INCREMENT,
-		`hostname` varchar(255) NOT NULL,
-		`description` varchar(255) NOT NULL,
-		`disabled` char(2) DEFAULT NULL,
-		`max_log_size` tinyint(1) NOT NULL,
-		`snmp_version` varchar(255) NOT NULL,
-		`snmp_community` varchar(255) NOT NULL,
-		`snmp_username` varchar(255) NOT NULL,
-		`snmp_auth_password` varchar(255) NOT NULL,
-		`snmp_auth_protocol` varchar(255) NOT NULL,
-		`snmp_priv_password` varchar(255) NOT NULL,
-		`snmp_priv_protocol` varchar(255) NOT NULL,
-		`snmp_port` varchar(255) NOT NULL,
-		`snmp_message_type` tinyint(1) NOT NULL,
-		`notes` text,
-		PRIMARY KEY (`id`),
-		KEY `hostname` (`hostname`))
-		ENGINE=MyISAM
-		COMMENT='snmp notification receivers';");
-
-	if (db_table_exists('plugin_snmpagent_managers_notifications')) {
-		db_install_execute('0.8.8d', 'RENAME TABLE plugin_snmpagent_managers_notifications TO snmpagent_managers_notifications');
-	}
-
-	db_install_execute('0.8.8d', "CREATE TABLE IF NOT EXISTS `snmpagent_managers_notifications` (
-		`manager_id` int(8) NOT NULL,
-		`notification` varchar(255) NOT NULL,
-		`mib` varchar(255) NOT NULL,
-		KEY `mib` (`mib`),
-		KEY `manager_id` (`manager_id`),
-		KEY `manager_id2` (`manager_id`,`notification`))
-		ENGINE=MyISAM
-		COMMENT='snmp notifications to receivers';");
-
-	if (db_table_exists('plugin_snmpagent_notifications_log')) {
-		db_install_execute('0.8.8d', 'RENAME TABLE plugin_snmpagent_notifications_log TO snmpagent_notifications_log');
-	}
-
-	db_install_execute('0.8.8d', "CREATE TABLE IF NOT EXISTS `snmpagent_notifications_log` (
-		`id` int(12) NOT NULL AUTO_INCREMENT,
-		`time` int(24) NOT NULL,
-		`severity` tinyint(1) NOT NULL,
-		`manager_id` int(8) NOT NULL,
-		`notification` varchar(255) NOT NULL,
-		`mib` varchar(255) NOT NULL,
-		`varbinds` varchar(5000) NOT NULL,
-		PRIMARY KEY (`id`),
-		KEY `time` (`time`),
-		KEY `severity` (`severity`),
-		KEY `manager_id` (`manager_id`),
-		KEY `manager_id2` (`manager_id`,`notification`))
-		ENGINE=MyISAM
-		COMMENT='logs snmp notifications to receivers';");
 		
 	db_install_execute('0.8.8d', "CREATE TABLE IF NOT EXISTS `data_source_purge_temp` (
 		`id` integer UNSIGNED auto_increment,
@@ -368,96 +252,73 @@ function upgrade_to_0_8_8d() {
 	db_add_column ('0.8.8d', 'user_auth', array('name' => 'failed_attempts', 'type' => 'int(5)', 'NULL' => false, 'default' => '0'));
 	db_add_column ('0.8.8d', 'user_auth', array('name' => 'lastfail', 'type' => 'int(12)', 'NULL' => false, 'default' => '0'));
 
-	// Convert all trees to new format, but never run more than once
-	$columns = array_rekey(db_fetch_assoc("SHOW COLUMNS FROM graph_tree_items"), "Field", array("Type", "Null", "Key", "Default", "Extra"));
 
-	if (isset($columns['order_key'])) {
-		define('CHARS_PER_TIER', 3);
 
-		$trees = db_fetch_assoc("SELECT id FROM graph_tree ORDER BY id");
+	// Convert all trees to new format
+	$trees      = db_fetch_assoc("SELECT id FROM graph_tree ORDER BY id");
 
-		if (sizeof($trees)) {
-		foreach($trees as $t) {
-			$tree_items = db_fetch_assoc("SELECT * 
-				FROM graph_tree_items 
-				WHERE graph_tree_id=" . $t['id'] . " 
-				AND order_key NOT LIKE '___000%' 
-				ORDER BY order_key");
+	if (sizeof($trees)) {
+	foreach($trees as $t) {
+		$tree_items = db_fetch_assoc("SELECT * 
+			FROM graph_tree_items 
+			WHERE graph_tree_id=" . $t['id'] . " 
+			AND order_key NOT LIKE '___000%' 
+			ORDER BY order_key");
 
-			/* reset the position variable in case we run more than once */
-			db_execute("UPDATE graph_tree_items SET position=0 WHERE graph_tree_id=" . $t['id']);
+		/* reset the position variable in case we run more than once */
+		db_execute("UPDATE graph_tree_items SET position=0 WHERE graph_tree_id=" . $t['id']);
 
-			$prev_parent = 0;
-			$prev_id     = 0;
-			$position    = 0;
+		$prev_parent = 0;
+		$prev_id     = 0;
+		$position    = 0;
 
-			if (sizeof($tree_items)) {
-				foreach($tree_items AS $item) {
-					$translated_key = rtrim($item["order_key"], "0\r\n");
-					$missing_len    = strlen($translated_key) % CHARS_PER_TIER;
-					if ($missing_len > 0) {
-						$translated_key .= substr("000", 0, $missing_len);
-					}
-					$parent_key_len = strlen($translated_key) - CHARS_PER_TIER;
-					$parent_key     = substr($translated_key, 0, $parent_key_len);
-					$parent_id      = db_fetch_cell("SELECT id FROM graph_tree_items WHERE graph_tree_id=" . $item["graph_tree_id"] . " AND order_key LIKE '" . $parent_key . "000%'");
-	
-					if (!empty($parent_id)) {
-						/* get order */
-						if ($parent_id != $prev_parent) {
-							$position = 0;
-						}
+		if (sizeof($tree_items)) {
+			foreach($tree_items AS $item) {
+				$translated_key = rtrim($item["order_key"], "0\r\n");
+				$missing_len    = strlen($translated_key) % CHARS_PER_TIER;
+				if ($missing_len > 0) {
+					$translated_key .= substr("000", 0, $missing_len);
+				}
+				$parent_key_len = strlen($translated_key) - CHARS_PER_TIER;
+				$parent_key     = substr($translated_key, 0, $parent_key_len);
+				$parent_id      = db_fetch_cell("SELECT id FROM graph_tree_items WHERE graph_tree_id=" . $item["graph_tree_id"] . " AND order_key LIKE '" . $parent_key . "000%'");
 
-						$position = db_fetch_cell("SELECT MAX(position) 
-							FROM graph_tree_items 
-							WHERE graph_tree_id=" . $item['graph_tree_id'] . " 
-							AND parent=" . $parent_id) + 1;
-
-						db_execute("UPDATE graph_tree_items SET parent=$parent_id, position=$position WHERE id=" . $item["id"]);
-					}else{
-						db_execute("UPDATE graph_tree_items SET parent=0, position=$position WHERE id=" . $item["id"]);
+				if (!empty($parent_id)) {
+					/* get order */
+					if ($parent_id != $prev_parent) {
+						$position = 0;
 					}
 
-					$prev_parent = $parent_id;
-				}
-			}
+					$position = db_fetch_cell("SELECT MAX(position) 
+						FROM graph_tree_items 
+						WHERE graph_tree_id=" . $item['graph_tree_id'] . " 
+						AND parent=" . $parent_id) + 1;
 
-			/* get base tree items and set position */
-			$tree_items = db_fetch_assoc("SELECT * 
-				FROM graph_tree_items
-				WHERE graph_tree_id=" . $t['id'] . " 
-				AND order_key LIKE '___000%' 
-				ORDER BY order_key");
-
-			$position = 0;
-			if (sizeof($tree_items)) {
-				foreach($tree_items as $item) {
-					db_execute("UPDATE graph_tree_items SET parent=0, position=$position WHERE id=" . $item['id']);
-					$position++;
+					db_execute("UPDATE graph_tree_items SET parent=$parent_id, position=$position WHERE id=" . $item["id"]);
+				}else{
+					db_execute("UPDATE graph_tree_items SET parent=0, position=$position WHERE id=" . $item["id"]);
 				}
+
+				$prev_parent = $parent_id;
 			}
 		}
+
+		/* get base tree items and set position */
+		$tree_items = db_fetch_assoc("SELECT * 
+			FROM graph_tree_items
+			WHERE graph_tree_id=" . $t['id'] . " 
+			AND order_key LIKE '___000%' 
+			ORDER BY order_key");
+
+		$position = 0;
+		if (sizeof($tree_items)) {
+			foreach($tree_items as $item) {
+				db_execute("UPDATE graph_tree_items SET parent=0, position=$position WHERE id=" . $item['id']);
+				$position++;
+			}
 		}
-
-		db_install_execute('0.8.8d', "ALTER TABLE graph_tree_items DROP COLUMN order_key");
-	}
-
-	/* merge of clog */
-	/* clog user = 19 */
-	/* dlog admin = 18 */
-	$realms = db_fetch_assoc("SELECT * FROM plugin_realms WHERE plugins='clog'");
-	if (sizeof($realms)) {
-	foreach($realms as $r) {
-		if ($r['file'] == 'clog.php') {
-			db_execute("UPDATE user_auth_realm SET realm_id=18 WHERE realm_id=" . ($r['id']+100));
-		}elseif ($r['file'] == 'clog_user.php') {
-			db_execute("UPDATE user_auth_realm SET realm_id=19 WHERE realm_id=" . ($r['id']+100));
-		}
 	}
 	}
-	db_execute("DELETE FROM plugin_realms WHERE file LIKE 'clog%'");
-	db_execute("DELETE FROM plugin_config WHERE directory='clog'");
-	db_execute("DELETE FROM plugin_hooks WHERE name='clog'");
 
-	snmpagent_cache_install();
+	db_install_execute('0.8.8d', "ALTER TABLE graph_tree_items DROP COLUMN order_key");
 }

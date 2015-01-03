@@ -1213,7 +1213,6 @@ function export_is_tree_allowed($tree_id) {
 
 function export_tree_graphs_and_graph_html($path, $tree_id) {
 	global $colors, $config;
-	include_once($config["library_path"] . "/tree.php");
 	include_once($config["library_path"] . "/data_query.php");
 
 	/* start the count of graphs */
@@ -1424,7 +1423,6 @@ function draw_html_left_tree($fp, $tree_id, $node)  {
 
 function grow_dhtml_trees_export($fp, $tree_id, $node) {
 	global $config, $dhtml_trees;
-	include_once($config["library_path"] . "/tree.php");
 	include_once($config["library_path"] . "/data_query.php");
 	fwrite($fp, "\t<div id=\"jstree\">\n");
 

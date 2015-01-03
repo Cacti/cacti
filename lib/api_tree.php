@@ -544,8 +544,6 @@ function api_tree_item_save($id, $tree_id, $type, $parent_tree_item_id, $title, 
 	input_validate_input_number($tree_id);
 	input_validate_input_number($parent_tree_item_id);
 
-	include_once($config["library_path"] . "/tree.php");
-
 	api_tree_get_lock('tree-lock', 10);
 
 	$position = db_fetch_cell("SELECT MAX(position)+1 FROM graph_tree_items WHERE parent=$parent_tree_item_id AND graph_tree_id=$tree_id");
