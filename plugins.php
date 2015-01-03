@@ -106,7 +106,6 @@ if (isset($_GET['mode']) && in_array($_GET['mode'], $modes)  && isset($_GET['id'
 		case 'moveup':
 			if (!in_array($id, $pluginslist)) break;
 			if (in_array($id, $plugins_integrated)) break;
-			if (is_system_plugin($id)) break;
 			api_plugin_moveup($id);
 			header('Location: plugins.php');
 			exit;
@@ -114,7 +113,6 @@ if (isset($_GET['mode']) && in_array($_GET['mode'], $modes)  && isset($_GET['id'
 		case 'movedown':
 			if (!in_array($id, $pluginslist)) break;
 			if (in_array($id, $plugins_integrated)) break;
-			if (is_system_plugin($id)) break;
 			api_plugin_movedown($id);
 			header('Location: plugins.php');
 			exit;
@@ -493,16 +491,6 @@ function update_show_current () {
 
 	$i = 0;
 	if (sizeof($plugins)) {
-		if (get_request_var_request('sort_column') == 'id') {
-			$inst_system_plugins = get_system_plugins($plugins);
-			if (sizeof($inst_system_plugins)) {
-				foreach($inst_system_plugins as $plugin) {
-					form_alternate_row('', true);
-					print format_plugin_row($plugin, false, false, true);
-				}
-			}
-		}
-
 		$j = 0;
 		foreach ($plugins as $plugin) {
 			if ((isset($plugins[$j+1]) && $plugins[$j+1]['status'] < 0) || (!isset($plugins[$j+1]))) {
@@ -510,23 +498,15 @@ function update_show_current () {
 			}else{
 				$last_plugin = false;
 			}
-			if ($plugin['status'] <= 0 || is_system_plugin($plugin) || (get_request_var_request('sort_column') != 'id')) {
+			if ($plugin['status'] <= 0 || (get_request_var_request('sort_column') != 'id')) {
 				$load_ordering = false;
 			}else{
 				$load_ordering = true;
 			}
 
-			if (get_request_var_request('sort_column') == 'id') {
-				if (!is_system_plugin($plugin)) {
-					form_alternate_row('', true);
-					print format_plugin_row($plugin, $last_plugin, $load_ordering, false);
-					$i++;
-				}
-			}else{
-				form_alternate_row('', true);
-				print format_plugin_row($plugin, $last_plugin, $load_ordering, is_system_plugin($plugin));
-				$i++;
-			}
+			form_alternate_row('', true);
+			print format_plugin_row($plugin, $last_plugin, $load_ordering);
+			$i++;
 
 			$j++;
 		}
@@ -539,13 +519,13 @@ function update_show_current () {
 	html_end_box(false);
 
 	html_start_box('', '100%', '', '3', 'center', '');
-	echo "<tr class='tableRow'><td colspan=10><strong>NOTE:</strong> Please sort by 'Load Order' to change plugin load ordering.<br><strong>NOTE:</strong> SYSTEM plugins can not be ordered.</td></tr>";
+	echo "<tr class='tableRow'><td colspan=10><strong>NOTE:</strong> Please sort by 'Load Order' to change plugin load ordering.</td></tr>";
 	html_end_box();
 
 	print "</form>\n";
 }
 
-function format_plugin_row($plugin, $last_plugin, $include_ordering, $system_plugin) {
+function format_plugin_row($plugin, $last_plugin, $include_ordering) {
 	global $status_names;
 	static $first_plugin = true;
 
@@ -570,7 +550,7 @@ function format_plugin_row($plugin, $last_plugin, $include_ordering, $system_plu
 	}
 
 	$row .= "<td style='white-space:nowrap;'>" . (strlen(get_request_var_request('filter')) ? eregi_replace('(' . preg_quote(get_request_var_request('filter')) . ')', "<span class='filteredValue'>\\1</span>", $plugin['name']) : $plugin['name']) . "</td>\n";
-	$row .= "<td style='white-space:nowrap;'>" . ($system_plugin ? 'System': ($plugin['status'] < 0 ? 'Old PIA':'General')) . "</td>\n";
+	$row .= "<td style='white-space:nowrap;'>" . ($plugin['status'] < 0 ? 'Old PIA':'General') . "</td>\n";
 	$row .= "<td style='white-space:nowrap;'>" . $status_names[$plugin['status']] . "</td>\n";
 	$row .= "<td style='white-space:nowrap;'>" . $plugin['author'] . "</td>\n";
 	$row .= "</tr>\n";
@@ -625,32 +605,5 @@ function plugin_actions($plugin) {
 	return $link;
 }
 
-function is_system_plugin($plugin) {
-	global $plugins_system;
-
-	if (is_array($plugin)) {
-		$plugin = $plugin['directory'];
-	}
-
-	if (!in_array($plugin, $plugins_system)) {
-		return false;
-	}else{
-		return true;
-	}
-}
-
-function get_system_plugins($plugins) {
-	$inst_system_plugins = array();
-
-	if (sizeof($plugins)) {
-		foreach($plugins as $plugin) {
-			if (is_system_plugin($plugin)) {
-				$inst_system_plugins[] = $plugin;
-			}
-		}
-	}
-
-	return $inst_system_plugins;
-}
 
 

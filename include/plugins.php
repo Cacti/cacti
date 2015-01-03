@@ -22,9 +22,8 @@
  +-------------------------------------------------------------------------+
 */
 
-global $plugin_hooks, $plugins_system, $plugins_integrated, $plugins;
+global $plugin_hooks, $plugins_integrated, $plugins;
 $plugin_hooks       = array();
-$plugins_system     = array();
 $plugins_integrated = array('snmpagent', 'clog', 'settings', 'boost', 'dsstats', 'watermark', 'ssl', 'ugroup', 'domains', 'jqueryskin', 'secpass', 'logrotate');
 
 function use_plugin ($name) {

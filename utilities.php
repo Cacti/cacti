@@ -2730,4 +2730,3 @@ function snmpagent_utilities_run_eventlog(){
 	</script>
 	<?php
 }
-?>

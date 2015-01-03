@@ -210,7 +210,7 @@ function snmpagent_poller_exiting($poller_index = 1){
 }
 
 function snmpagent_poller_bottom() {
-	global $config, $plugins_system;
+	global $config;
 
 	if (api_plugin_is_enabled('maint')) {
 		include_once($config["base_path"] . '/plugins/maint/functions.php');
@@ -320,7 +320,7 @@ function snmpagent_poller_bottom() {
 		foreach($pluginslist as $plugin) {
 			$values = array(
 				"cactiApplPluginIndex" => $i,
-				"cactiApplPluginType" => (in_array($plugin["directory"], $plugins_system) ? 1 : 2),
+				"cactiApplPluginType" => 2,
 				"cactiApplPluginName" => $plugin["directory"],
 				"cactiApplPluginStatus" => $plugin["status"],
 				"cactiApplPluginVersion" => $plugin["version"]
@@ -351,7 +351,7 @@ function snmpagent_poller_bottom() {
 }
 
 function snmpagent_get_pluginslist(){
-	global $config, $plugins, $plugins_system;
+	global $config, $plugins;
 	/* update the list of known plugins only once per polling cycle. In all other cases we would
 	   have to create too many new hooks to update that MIB table just in time.
 	   We have to do the same like function plugins_load_temp_table(), which will not be available
@@ -740,4 +740,4 @@ function snmpagent_notification( $notification, $mib, $varbinds, $severity = SNM
 		return false;
 	}
 }
-?>
+
