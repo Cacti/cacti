@@ -425,10 +425,10 @@ function setupUserMenu() {
 }
 
 function setupSpecialKeys() {
-	$('#filter').unbind('keypress').attr('title', 'Press Ctrl+C to Clear Filter');
+	$('#filter').unbind('keypress').attr('title', 'Press Ctrl+Shift+X to Clear Filter');
 	$('#filter').tooltip({ closed: true }).on('focus', function() { $('#filter').tooltip('close') }).on('click', function() { $(this).tooltip('close'); });
 
-	$('#filter').bind('keypress', 'ctrl+c', function() {
+	$('#filter').bind('keypress', 'ctrl+shift+x', function() {
 		clearFilter();
 	});
 
@@ -452,9 +452,6 @@ function setupSortable() {
 			});
 		}
 	});
-
-	// Add nice search filter to filters
-	$('input[id="filter"]').after("<i class='fa fa-search filter'/>").attr('autocomplete', 'off').attr('placeholder', 'Enter a search term');
 
 	// Setup tool tips for all titles to match the jQueryUI theme
 	$('th').tooltip();

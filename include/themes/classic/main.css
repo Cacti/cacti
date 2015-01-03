@@ -23,8 +23,8 @@ a:hover {
 	color: #333333;
 }
 
-th .ui-icon {
-    margin-top: -8px;
+th .fa {
+    margin-top: -5px;
     position: absolute;
     right: 3px;
     top: 50%;
