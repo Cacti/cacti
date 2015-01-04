@@ -90,6 +90,20 @@ $.fn.delayKeyup = function(callback, ms){
 	return $(this);
 };
 
+/** bindFirst - Function insures that the event is found to the top
+ * of the event stack. */
+$.fn.bindFirst = function(which, handler) {
+	var $el = $(this);
+	$el.unbind(which, handler);
+	$el.bind(which, handler);
+  
+	var events = $._data($el[0]).events;
+	var registered = events[which];
+	registered.unshift(registered.pop());
+   
+	events[which] = registered;
+} 
+
 /** textWidth - This function will return the natural width of a string
  *  without any wrapping. */
 $.fn.textWidth = function(text){
@@ -125,6 +139,17 @@ $.fn.classes = function(callback) {
 	}
 	return classes;
 };
+
+/** Mini jquery plugin to create a bind to show/hide events */
+(function ($) {
+	$.each(['show', 'hide'], function (i, ev) {
+		var el = $.fn[ev];
+		$.fn[ev] = function () {
+			this.trigger(ev);
+			return el.apply(this, arguments);
+		};
+	});
+})(jQuery);
 
 /** applySelectorVisibility - This function set's the initial visibility
  *  of graphs for creation. Is will scan the against preset variables
@@ -291,7 +316,7 @@ function applyTimespanFilterChange(objForm) {
  *  @args href - the previous page */
 function cactiReturnTo(href) {
 	if (href != '') {
-		href = href+ (href.indexOf('?') > 0 ? '&':'?') + 'header=false';
+		href = href + (href.indexOf('?') > 0 ? '&':'?') + 'header=false';
 		$.get(href, function(data) {
 			$('#main').html(data);
 			window.scrollTo(0,0);
@@ -389,6 +414,9 @@ function setupCollapsible() {
 			$.cookie(id, 'hide', { expires: 31, path: '/cacti/' } );
 		}else{
 			$(this).nextUntil('tr.spacer').slideDown('fast');
+			$(this).nextUntil('tr.spacer').each(function(data) {
+				$(this).find('input, select').change();
+			});
 			$(this).find('i').removeClass('fa-angle-double-down').addClass('fa-angle-double-up');
 			$.cookie(id, 'show', { expires: 31, path: '/cacti/' } );
 		}

@@ -1650,7 +1650,7 @@ function draw_login_status($using_guest_account = false) {
 		api_plugin_hook('nav_login_before');
 		print "Logged in as <span id='user' class='user usermenuup'>" . db_fetch_cell_prepared('SELECT username FROM user_auth WHERE id = ?', array($_SESSION['sess_user_id'])) . 
 			"</span></div><div><ul class='menuoptions' style='display:none;'>" . 
-				(is_realm_allowed(20) ? "<li><a href='" . $config['url_path'] . "auth_profile.php'>Edit Profile</a></li>":"") . 
+				(is_realm_allowed(20) ? "<li><a href='" . $config['url_path'] . "auth_profile.php?action=edit'>Edit Profile</a></li>":"") . 
 				($auth_method == 1 ? "<li><a href='" . $config['url_path'] . "auth_changepassword.php'>Change Password</a></li>":'') . 
 				($auth_method > 0 ? "<li><a href='" . $config['url_path'] . "logout.php'>Logout</a></li>":"") . 
 			"</ul>\n";
@@ -1669,6 +1669,7 @@ function draw_navigation_text($type = 'url') {
 	$nav_level_cache = (isset($_SESSION['sess_nav_level_cache']) ? $_SESSION['sess_nav_level_cache'] : array());
 
 	$nav = array(
+		'auth_profile.php:' => array('title' => 'User Profile (Edit)', 'mapping' => '', 'url' => '', 'level' => '0'),
 		'graph_view.php:' => array('title' => 'Graphs', 'mapping' => '', 'url' => 'graph_view.php', 'level' => '0'),
 		'graph_view.php:tree' => array('title' => 'Tree Mode', 'mapping' => 'graph_view.php:', 'url' => 'graph_view.php?action=tree', 'level' => '1'),
 		'graph_view.php:tree_content' => array('title' => 'Tree Mode', 'mapping' => 'graph_view.php:', 'url' => 'graph_view.php?action=tree', 'level' => '1'),

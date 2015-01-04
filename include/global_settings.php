@@ -149,6 +149,7 @@ $settings = array(
 		'rrdclean_header' => array(
 			'friendly_name' => 'RRD Cleaner',
 			'method' => 'spacer',
+			'collapsible' => 'true'
 			),
 		'rrd_autoclean' => array(
 			'friendly_name' => 'RRDfile Auto Clean',
@@ -258,6 +259,7 @@ $settings = array(
 		'snmp_header' => array(
 			'friendly_name' => 'SNMP Defaults',
 			'method' => 'spacer',
+			'collapsible' => 'true'
 			),
 		'snmp_ver' => array(
 			'friendly_name' => 'SNMP Version',
@@ -403,6 +405,7 @@ $settings = array(
 		'export_tree_options' => array(
 			'friendly_name' => 'Tree Settings',
 			'method' => 'spacer',
+			'collapsible' => 'true'
 			),
 		'export_tree_isolation' => array(
 			'friendly_name' => 'Tree Isolation',
@@ -517,6 +520,7 @@ $settings = array(
 		'export_hdr_ftp' => array(
 			'friendly_name' => 'FTP Options',
 			'method' => 'spacer',
+			'collapsible' => 'true'
 			),
 		'export_ftp_sanitize' => array(
 			'friendly_name' => 'Sanitize remote directory',
@@ -563,6 +567,7 @@ $settings = array(
 		'themes_header' => array(
 			'friendly_name' => 'Theme Settings',
 			'method' => 'spacer',
+			'collapsible' => 'true'
 			),
 		'selected_theme' => array(
 			'friendly_name' => 'Theme',
@@ -666,6 +671,7 @@ $settings = array(
 		'fonts_header' => array(
 			'friendly_name' => 'RRDtool Graph Font Control',
 			'method' => 'spacer',
+			'collapsible' => 'true'
 			),
 		'font_method' => array(
 			'friendly_name' => 'Font Selection Method',
@@ -749,8 +755,8 @@ $settings = array(
 			'method' => 'spacer',
 			),
 		'poller_enabled' => array(
-			'friendly_name' => 'Enabled',
-			'description' => 'If you wish to stop the polling process, uncheck this box.',
+			'friendly_name' => 'Data Collection Enabled',
+			'description' => 'If you wish to stop the polling process completely, uncheck this box.',
 			'method' => 'checkbox',
 			'default' => 'on',
 			'tab' => 'poller'
@@ -837,6 +843,7 @@ $settings = array(
 		'availability_header' => array(
 			'friendly_name' => 'Device Availability Settings',
 			'method' => 'spacer',
+			'collapsible' => 'true'
 			),
 		'availability_method' => array(
 			'friendly_name' => 'Downed Device Detection',
@@ -1328,6 +1335,7 @@ $settings = array(
 		'boost_hq_header' => array(
 			'friendly_name' => 'On Demand RRD Update Settings',
 			'method' => 'spacer',
+			'collapsible' => 'true'
 			),
 		'boost_rrd_update_enable' => array(
 			'friendly_name' => 'Enable On Demand RRD Updating',
@@ -1401,6 +1409,7 @@ $settings = array(
 		'boost_srv_header' => array(
 			'friendly_name' => 'Boost Server Settings',
 			'method' => 'spacer',
+			'collapsible' => 'true'
 			),
 		'boost_server_enable' => array(
 			'friendly_name' => 'Enable Boost Server',
@@ -1460,6 +1469,7 @@ $settings = array(
 		'boost_png_header' => array(
 			'friendly_name' => 'Image Caching',
 			'method' => 'spacer',
+			'collapsible' => 'true'
 			),
 		'boost_png_cache_enable' => array(
 			'friendly_name' => 'Enable Image Caching',

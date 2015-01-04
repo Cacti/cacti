@@ -36,7 +36,7 @@ switch ($_REQUEST['action']) {
 	default:
 		// We must exempt ourselves from the page refresh, or else the settings page could update while the user is making changes
 		$_SESSION['custom'] = 1;
-		top_graph_header();
+		general_header();
 
 		unset($_SESSION['custom']);
 
@@ -53,41 +53,49 @@ switch ($_REQUEST['action']) {
 function form_save() {
 	global $settings_graphs;
 
-	while (list($tab_short_name, $tab_fields) = each($settings_graphs)) {
-		while (list($field_name, $field_array) = each($tab_fields)) {
-			/* Check every field with a numeric default value and reset it to default if the inputted value is not numeric  */
-			if (isset($field_array['default']) && is_numeric($field_array['default']) && !is_numeric(get_request_var_post($field_name))) {
-				$_POST[$field_name] = $field_array['default'];
-			}
-			if ($field_array['method'] == 'checkbox') {
-				if (isset($_POST[$field_name])) {
-					db_execute_prepared("REPLACE INTO settings_graphs (user_id,name,value) VALUES (?, ?, 'on')", array($_SESSION['sess_user_id'], $field_name));
-				}else{
-					db_execute_prepared("REPLACE INTO settings_graphs (user_id,name,value) VALUES (?, ?, '')", array($_SESSION['sess_user_id'], $field_name));
+	// Save the users profile information
+	if (isset($_POST['full_name']) && isset($_POST['email_address']) && isset($_SESSION['sess_user_id'])) {
+		db_execute_prepared("UPDATE user_auth SET full_name = ?, email_address = ? WHERE id = ?", array($_POST['full_name'], $_POST['email_address'], $_SESSION['sess_user_id']));
+	}
+
+	// Save the users graph settings if they have permission
+	if (is_view_allowed('graph_settings') == true) {
+		while (list($tab_short_name, $tab_fields) = each($settings_graphs)) {
+			while (list($field_name, $field_array) = each($tab_fields)) {
+				/* Check every field with a numeric default value and reset it to default if the inputted value is not numeric  */
+				if (isset($field_array['default']) && is_numeric($field_array['default']) && !is_numeric(get_request_var_post($field_name))) {
+					$_POST[$field_name] = $field_array['default'];
 				}
-			}elseif ($field_array['method'] == 'checkbox_group') {
-				while (list($sub_field_name, $sub_field_array) = each($field_array['items'])) {
-					if (isset($_POST[$sub_field_name])) {
-						db_execute_prepared("REPLACE INTO settings_graphs (user_id,name,value) VALUES (?, ?, 'on')", array($_SESSION['sess_user_id'], $sub_field_name));
+				if ($field_array['method'] == 'checkbox') {
+					if (isset($_POST[$field_name])) {
+						db_execute_prepared("REPLACE INTO settings_graphs (user_id,name,value) VALUES (?, ?, 'on')", array($_SESSION['sess_user_id'], $field_name));
 					}else{
-						db_execute_prepared("REPLACE INTO settings_graphs (user_id,name,value) VALUES (?, ?, '')", array($_SESSION['sess_user_id'], $sub_field_name));
+						db_execute_prepared("REPLACE INTO settings_graphs (user_id,name,value) VALUES (?, ?, '')", array($_SESSION['sess_user_id'], $field_name));
 					}
-				}
-			}elseif ($field_array['method'] == 'textbox_password') {
-				if ($_POST[$field_name] != $_POST[$field_name.'_confirm']) {
-					raise_message(4);
-					break;
-				}elseif (isset($_POST[$field_name])) {
-					db_execute_prepared('REPLACE INTO settings_graphs (user_id, name, value) VALUES (?, ?, ?)', array($_SESSION['sess_user_id'], $field_name, get_request_var_post($field_name)));
-				}
-			}elseif ((isset($field_array['items'])) && (is_array($field_array['items']))) {
-				while (list($sub_field_name, $sub_field_array) = each($field_array['items'])) {
-					if (isset($_POST[$sub_field_name])) {
-						db_execute_prepared('REPLACE INTO settings_graphs (user_id, name, value) values (?, ?, ?)', array($_SESSION['sess_user_id'], $sub_field_name, get_request_var_post($sub_field_name)));
+				}elseif ($field_array['method'] == 'checkbox_group') {
+					while (list($sub_field_name, $sub_field_array) = each($field_array['items'])) {
+						if (isset($_POST[$sub_field_name])) {
+							db_execute_prepared("REPLACE INTO settings_graphs (user_id,name,value) VALUES (?, ?, 'on')", array($_SESSION['sess_user_id'], $sub_field_name));
+						}else{
+							db_execute_prepared("REPLACE INTO settings_graphs (user_id,name,value) VALUES (?, ?, '')", array($_SESSION['sess_user_id'], $sub_field_name));
+						}
 					}
+				}elseif ($field_array['method'] == 'textbox_password') {
+					if ($_POST[$field_name] != $_POST[$field_name.'_confirm']) {
+						raise_message(4);
+						break;
+					}elseif (isset($_POST[$field_name])) {
+						db_execute_prepared('REPLACE INTO settings_graphs (user_id, name, value) VALUES (?, ?, ?)', array($_SESSION['sess_user_id'], $field_name, get_request_var_post($field_name)));
+					}
+				}elseif ((isset($field_array['items'])) && (is_array($field_array['items']))) {
+					while (list($sub_field_name, $sub_field_array) = each($field_array['items'])) {
+						if (isset($_POST[$sub_field_name])) {
+							db_execute_prepared('REPLACE INTO settings_graphs (user_id, name, value) values (?, ?, ?)', array($_SESSION['sess_user_id'], $sub_field_name, get_request_var_post($sub_field_name)));
+						}
+					}
+				}else if (isset($_POST[$field_name])) {
+					db_execute_prepared('REPLACE INTO settings_graphs (user_id, name, value) values (?, ?, ?)', array($_SESSION['sess_user_id'], $field_name, get_request_var_post($field_name)));
 				}
-			}else if (isset($_POST[$field_name])) {
-				db_execute_prepared('REPLACE INTO settings_graphs (user_id, name, value) values (?, ?, ?)', array($_SESSION['sess_user_id'], $field_name, get_request_var_post($field_name)));
 			}
 		}
 	}
@@ -110,6 +118,17 @@ function settings() {
 		raise_message(6);
 		display_output_messages();
 		return;
+	}
+
+	if ($_REQUEST['action'] == 'edit') {
+		if (isset($_SERVER['HTTP_REFERER'])) {
+			$timespan_sel_pos = strpos($_SERVER['HTTP_REFERER'],'&predefined_timespan');
+			if ($timespan_sel_pos) {
+				$_SERVER['HTTP_REFERER'] = substr($_SERVER['HTTP_REFERER'],0,$timespan_sel_pos);
+			}
+		}
+
+		$_SESSION['profile_referer'] = (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER']:'graph_view.php'); 
 	}
 
 	print "<form method='post' action='auth_profile.php'>\n";
@@ -277,20 +296,24 @@ function settings() {
 		$('#navigation').show();
 		$('#navigation_right').show();
 
-		$('input[value="Save"]').click(function(event) {
+		$('input[value="Save"]').unbind().click(function(event) {
 			event.preventDefault();
 			href='<?php  print $_SERVER['HTTP_REFERER'];?>';
 			href=href+(href.indexOf('?') > 0 ? '&':'?')+'header=false';
 			$.post('auth_profile.php?header=false', $('input, select, textarea').serialize()).done(function(data) {
-				document.location='<?php  print $_SERVER['HTTP_REFERER'];?>';
+				$.get('auth_profile.php?action=noreturn&header=false', function(data) {
+					$('#main').html(data);
+					applySkin();
+				});
 			});
 		});
 
-		$('#timespan_sel').change(function() {
-			graphSettings();
+		$('input[value="Return"]').unbind().click(function(event) {
+			console.log('The refer is:<?php print $_SESSION['profile_referer'];?>');
+			document.location = '<?php print $_SESSION['profile_referer'];?>';
 		});
 
-		$('.collapsible').click(function() {
+		$('#timespan_sel').change(function() {
 			graphSettings();
 		});
 	});
@@ -299,17 +322,7 @@ function settings() {
 	</script>
 	<?php
 
-	print '<br>';
-
-	if (isset($_SERVER['HTTP_REFERER'])) {
-		$timespan_sel_pos = strpos($_SERVER['HTTP_REFERER'],'&predefined_timespan');
-		if ($timespan_sel_pos) {
-			$_SERVER['HTTP_REFERER'] = substr($_SERVER['HTTP_REFERER'],0,$timespan_sel_pos);
-		}
-	}
-
-	$_SESSION['profile_referer'] = (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER']:'graph_view.php'); 
 	form_hidden_box('save_component_graph_config','1','');
-	form_save_button('auth_profile.php', 'save');
+	form_save_buttons(array(array('id' => 'return', 'value' => 'Return'), array('id' => 'save', 'value' => 'Save')));
 }
 

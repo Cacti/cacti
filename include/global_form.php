@@ -693,7 +693,8 @@ $fields_host_edit = array(
 		),
 	'host_snmp_head' => array(
 		'method' => 'spacer',
-		'friendly_name' => 'SNMP Options'
+		'friendly_name' => 'SNMP Options',
+		'collapsible' => 'true'
 		),
 	'snmp_version' => array(
 		'method' => 'drop_array',
@@ -795,7 +796,8 @@ $fields_host_edit = array(
 		),
 	'host_avail_head' => array(
 		'method' => 'spacer',
-		'friendly_name' => 'Availability/Reachability Options'
+		'friendly_name' => 'Availability/Reachability Options',
+		'collapsible' => 'true',
 		),
 	'availability_method' => array(
 		'friendly_name' => 'Downed Device Detection',
@@ -1271,7 +1273,8 @@ $fields_template_import = array(
 	$fields_manager_edit = array(
 		'host_header' => array(
 			'method' => 'spacer',
-			'friendly_name' => 'General SNMP Entity Options'
+			'friendly_name' => 'General SNMP Entity Options',
+			'collapsible' => 'true'
 			),
 		'description' => array(
 			'method' => 'textbox',
@@ -1305,7 +1308,8 @@ $fields_template_import = array(
 			),
 		'snmp_options_header' => array(
 			'method' => 'spacer',
-			'friendly_name' => 'SNMP Options'
+			'friendly_name' => 'SNMP Options',
+			'collapsible' => 'true'
 			),
 		'snmp_version' => array(
 			'method' => 'drop_array',
@@ -1406,7 +1410,8 @@ $fields_template_import = array(
 			),
 		'addition_header' => array(
 			'method' => 'spacer',
-			'friendly_name' => 'Additional Options'
+			'friendly_name' => 'Additional Options',
+			'collapsible' => 'true'
 			),
 		'notes' => array(
 			'method' => 'textarea',

@@ -242,15 +242,19 @@ default:
 		initFTPExport();
 		initPresentation();
 		initTiming();
+
 		$('#export_type').change(function() {
 			initFTPExport();
 		});
+
 		$('#export_presentation').change(function() {
 			initPresentation();
 		});
+
 		$('#export_timing').change(function() {
 			initTiming();
 		});
+
 		$('#export_type').change(function() {
 			initFTPExport();
 		});
@@ -260,12 +264,15 @@ default:
 		initAuth();
 		initSearch();
 		initGroupMember();
+
 		$('#auth_method').change(function() {
 			initAuth();
 		});
+
 		$('#ldap_mode').change(function() {
 			initSearch();
 		});
+
 		$('#ldap_group_require').change(function() {
 			initGroupMember();
 		});
@@ -483,7 +490,7 @@ default:
 
 	function initAuth() {
 		switch($('#auth_method').val()) {
-		case "0":
+		case "0": // None
 			$('#row_special_users_header').hide();
 			$('#row_auth_cache_enabled').hide();
 			$('#row_guest_user').hide();
@@ -522,7 +529,7 @@ default:
 			$('#row_secpass_lockfailed').hide();
 			$('#row_secpass_unlocktime').hide();
 			break;
-		case "1":
+		case "1": // Builtin
 			$('#row_special_users_header').show();
 			$('#row_auth_cache_enabled').show();
 			$('#row_guest_user').show();
@@ -561,9 +568,9 @@ default:
 			$('#row_secpass_lockfailed').show();
 			$('#row_secpass_unlocktime').show();
 			break;
-		case "2":
+		case "2": // Web Basic
 			$('#row_special_users_header').show();
-			$('#row_auth_cache_enabled').show();
+			$('#row_auth_cache_enabled').hide();
 			$('#row_guest_user').show();
 			$('#row_user_template').show();
 			$('#row_ldap_general_header').hide();
@@ -600,11 +607,11 @@ default:
 			$('#row_secpass_lockfailed').hide();
 			$('#row_secpass_unlocktime').hide();
 			break;
-		case "4":
+		case "4": // Multiple Domains
 			$('#row_special_users_header').show();
 			$('#row_auth_cache_enabled').show();
 			$('#row_guest_user').show();
-			$('#row_user_template').show();
+			$('#row_user_template').hide();
 			$('#row_ldap_general_header').hide();
 			$('#row_ldap_server').hide();
 			$('#row_ldap_port').hide();
@@ -639,9 +646,9 @@ default:
 			$('#row_secpass_lockfailed').show();
 			$('#row_secpass_unlocktime').show();
 			break;
-		case "3":
+		case "3": // Single Domain
 			$('#row_special_users_header').show();
-			$('#row_auth_cache_enabled').hide();
+			$('#row_auth_cache_enabled').show();
 			$('#row_guest_user').show();
 			$('#row_user_template').show();
 			$('#row_ldap_general_header').show();

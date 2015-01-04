@@ -251,17 +251,11 @@ function settings() {
 		$('#timespan_sel').change(function() {
 			graphSettings();
 		});
-
-		$('.collapsible').click(function() {
-			graphSettings();
-		});
 	});
 
 	-->
 	</script>
 	<?php
-
-	print '<br>';
 
 	if (isset($_SERVER['HTTP_REFERER'])) {
 		$timespan_sel_pos = strpos($_SERVER['HTTP_REFERER'],'&predefined_timespan');
