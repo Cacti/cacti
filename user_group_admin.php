@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2010 The Cacti Group                                 |
+ | Copyright (C) 2004-2015 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -76,7 +76,7 @@ $fields_user_group_edit = array(
 	'name' => array(
 		'method' => 'textbox',
 		'friendly_name' => 'Group Name',
-		'description' => 'The name for this Group.',
+		'description' => 'The name of this Group.',
 		'value' => '|arg1:name|',
 		'max_length' => '255'
 		),

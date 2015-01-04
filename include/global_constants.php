@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2014 The Cacti Group                                 |
+ | Copyright (C) 2004-2015 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -23,7 +23,8 @@
 */
 
 define('CACTI_ESCAPE_CHARACTER', '"');
-define('COPYRIGHT_YEARS', 'Copyright (c) 2004-2014 - The Cacti Group, Inc.');
+define('COPYRIGHT_YEARS', 'Copyright (c) 2004-2015 - The Cacti Group, Inc.');
+define('COPYRIGHT_YEARS_SHORT', '(c) 2004-2015 - The Cacti Group');
 
 define('HOST_GROUPING_GRAPH_TEMPLATE', 1);
 define('HOST_GROUPING_DATA_QUERY_INDEX', 2);

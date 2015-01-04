@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2014 The Cacti Group                                 |
+ | Copyright (C) 2004-2015 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -472,8 +472,8 @@ function graphs() {
 				</select>
 			</td>
 			<td rowspan='3' class='textInfo' align='right' valign='top'>
-				<span class='linkMarker'>*</span><a href='<?php print htmlspecialchars('host.php?action=edit&id=' . $_REQUEST['host_id']);?>'>Edit this Device</a><br>
-				<span class='linkMarker'>*</span><a href='<?php print htmlspecialchars('host.php?action=edit');?>'>Create New Device</a><br>
+				<span class='linkMarker'>*</span><a class='hyperLink' href='<?php print htmlspecialchars('host.php?action=edit&id=' . $_REQUEST['host_id']);?>'>Edit this Device</a><br>
+				<span class='linkMarker'>*</span><a class='hyperLink' href='<?php print htmlspecialchars('host.php?action=edit');?>'>Create New Device</a><br>
 				<?php api_plugin_hook('graphs_new_top_links'); ?>
 			</td>
 		</tr>

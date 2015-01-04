@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2014 The Cacti Group                                 |
+ | Copyright (C) 2004-2015 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -402,8 +402,8 @@ function rra() {
     print $nav;
 
 	$display_text = array(
-		'name' => array('Name', 'ASC'),
-		"nosort" => array('display' => 'Deletable', 'align' => 'right', 'sort' => '', 'tip' => 'RRAs in use can not be Deleted'),
+		'name' => array('display' => 'Round Robin Archive Name', 'align' => 'left', 'sort' => 'ASC', 'tip' => 'The name of this Round Robin Archive definition.'),
+		"nosort" => array('display' => 'Deletable', 'align' => 'right', 'sort' => '', 'tip' => 'RRAs in use can not be Deleted.  In use is defined as being referenced either by a Data Source or a Data Template.'),
 		'steps' => array('display' => 'Steps', 'align' => 'right', 'sort' => 'DESC', 'tip' => 'The number of Rows inserted into the RRDfile over the polling interval before aggregation occurs.  A value of 1 means that this will be the first RRA that will be inserted into.'),
 		'rows' => array('display' => 'Rows', 'align' => 'right', 'sort' => 'DESC', 'tip' => 'The number of Rows in the RRDfile.  The more rows in the RRDfile, the longer data will be retained for.'),
 		'timespan' => array('display' => 'Timespan', 'align' => 'right', 'sort' => 'DESC', 'tip' => 'An arbitrary number as a way for Cacti to determine which RRA to use for Graphing operations.  However, RRDtool can override this value.'),

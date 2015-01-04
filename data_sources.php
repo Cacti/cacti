@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2014 The Cacti Group                                 |
+ | Copyright (C) 2004-2015 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -1320,12 +1320,12 @@ function ds() {
 	print $nav;
 
 	$display_text = array(
-		'name_cache' => array('Name', 'ASC'),
-		'local_data_id' => array('display' => 'ID','align' => 'right', 'sort' => 'ASC'),
-		'data_input_name' => array('Data Input Method', 'ASC'),
-		'nosort' => array('Poller Interval', 'ASC'),
-		'active' => array('Active', 'ASC'),
-		'data_template_name' => array('Template Name', 'ASC'));
+		'name_cache' => array('display' => 'Data Source Name', 'align' => 'left', 'sort' => 'ASC', 'tip' => 'The name of this Data Source.  Generally programtically generated from the Data Template definition.'),
+		'local_data_id' => array('display' => 'ID','align' => 'right', 'sort' => 'ASC', 'tip' => 'The internal database ID for this Data Source.  Useful when performing automation or debugging.'),
+		'data_input_name' => array('display' => 'Data Input Method', 'align' => 'left', 'sort' => 'ASC', 'tip' => 'The method by which data is gathered for this Data Source.'),
+		'nosort' => array('display' => 'Poller Interval', 'align' => 'left', 'sort' => 'ASC', 'tip' => 'The frequency that data is collected for this Data Source.'),
+		'active' => array('display' => 'Active', 'align' => 'left', 'sort' => 'ASC', 'tip' => 'Whether or not data will be collected for this Data Source.  Controlled at the Data Template level.'),
+		'data_template_name' => array('display' => 'Template Name', 'align' => 'left', 'sort' => 'ASC', 'tip' => 'The Data Template that this Data Source was based upon.'));
 
 	html_header_sort_checkbox($display_text, get_request_var_request('sort_column'), get_request_var_request('sort_direction'), false);
 

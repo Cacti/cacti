@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2014 The Cacti Group                                 |
+ | Copyright (C) 2004-2015 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -86,6 +86,10 @@ switch ($_REQUEST['action']) {
 		ajax_hosts(false);
 
 		break;
+	case 'lock':
+	case 'unlock':
+		$_SESSION['sess_graph_lock_id'] = $_GET['id'];
+		$_SESSION['sess_graph_locked']  = ($_GET['action'] == 'lock' ? true:false);;
 	case 'graph_edit':
 		top_header();
 
@@ -869,10 +873,26 @@ function graph_edit() {
 	input_validate_input_number(get_request_var('id'));
 	/* ==================================================== */
 
+	$locked = 'false';
 	$use_graph_template = true;
 
 	if (!empty($_GET['id'])) {
+		$_SESSION['sess_graph_lock_id'] = $_GET['id'];
+
 		$local_graph_template_graph_id = db_fetch_cell_prepared('SELECT local_graph_template_graph_id FROM graph_templates_graph WHERE local_graph_id = ?', array($_GET['id']));
+
+		if ($_GET['id'] != $_SESSION['sess_graph_lock_id'] && !empty($local_graph_template_graph_id)) {
+			$locked = 'true';
+			$_SESSION['sess_graph_locked'] = $locked;
+		}elseif (empty($local_graph_template_graph_id)) {
+			$locked = 'false';
+			$_SESSION['sess_graph_locked'] = $locked;
+		}elseif (isset($_SESSION['sess_graph_locked'])) {
+			$locked = $_SESSION['sess_graph_locked'];
+		}else{
+			$locked = 'true';
+			$_SESSION['sess_graph_locked'] = $locked;
+		}
 
 		$graphs = db_fetch_row_prepared('SELECT * FROM graph_templates_graph WHERE local_graph_id = ?', array($_GET['id']));
 		$graphs_template = db_fetch_row_prepared('SELECT * FROM graph_templates_graph WHERE id = ?', array($local_graph_template_graph_id));
@@ -881,7 +901,7 @@ function graph_edit() {
 		$header_label = '[edit: ' . htmlspecialchars(get_graph_title($_GET['id'])) . ']';
 
 		if ($graphs['graph_template_id'] == '0') {
-			$use_graph_template = false;
+			$use_graph_template = 'false';
 		}
 	}else{
 		$header_label = '[new]';
@@ -905,19 +925,23 @@ function graph_edit() {
 					<?php print htmlspecialchars(get_graph_title($_GET['id']));?>
 				</td>
 				<td class="textInfo" align="right" valign="top">
-					<span class="linkMarker">*<a href='<?php print htmlspecialchars('graphs.php?action=graph_edit&id=' . (isset($_GET['id']) ? $_GET['id'] : '0') . '&debug=' . (isset($_SESSION['graph_debug_mode']) ? '0' : '1'));?>'>Turn <strong><?php print (isset($_SESSION['graph_debug_mode']) ? 'Off' : 'On');?></strong> Graph Debug Mode.</a></span><br>
+					<span class="linkMarker">*<a class='hyperLink' href='<?php print htmlspecialchars('graphs.php?action=graph_edit&id=' . (isset($_GET['id']) ? $_GET['id'] : '0') . '&debug=' . (isset($_SESSION['graph_debug_mode']) ? '0' : '1'));?>'>Turn <strong><?php print (isset($_SESSION['graph_debug_mode']) ? 'Off' : 'On');?></strong> Graph Debug Mode.</a></span><br>
 					<?php
 						if (!empty($graphs['graph_template_id'])) {
-							?><span class="linkMarker">*<a href='<?php print htmlspecialchars('graph_templates.php?action=template_edit&id=' . (isset($graphs['graph_template_id']) ? $graphs['graph_template_id'] : '0'));?>'>Edit Graph Template.</a></span><br><?php
+							?><span class="linkMarker">*<a class='hyperLink' href='<?php print htmlspecialchars('graph_templates.php?action=template_edit&id=' . (isset($graphs['graph_template_id']) ? $graphs['graph_template_id'] : '0'));?>'>Edit Graph Template.</a></span><br><?php
 						}
 						if (!empty($_GET['host_id']) || !empty($host_id)) {
-							?><span class="linkMarker">*<a href='<?php print htmlspecialchars('host.php?action=edit&id=' . (isset($_GET['host_id']) ? $_GET['host_id'] : $host_id));?>'>Edit Device.</a></span><br><?php
+							?><span class="linkMarker">*<a class='hyperLink' href='<?php print htmlspecialchars('host.php?action=edit&id=' . (isset($_GET['host_id']) ? $_GET['host_id'] : $host_id));?>'>Edit Device.</a></span><br><?php
+						}
+						if ($locked == 'true') {
+							?><span class="linkMarker">* <span class='hyperLink' id='unlockid'>Unlock Graph</span></span><?php
+						}else{
+							?><span class="linkMarker">* <span class='hyperLink' id='lockid'>Lock Graph</span></span><?php
 						}
 					?>
 				</td>
 			</tr>
 		</table>
-		<br>
 		<?php
 	}
 
@@ -977,7 +1001,7 @@ function graph_edit() {
 		html_start_box('<strong>Supplemental Graph Template Data</strong>', '100%', '', '3', 'center', '');
 
 		draw_nontemplated_fields_graph($graphs['graph_template_id'], $graphs, '|field|', '<strong>Graph Fields</strong>', true, true, 0);
-		draw_nontemplated_fields_graph_item($graphs['graph_template_id'], $_GET['id'], '|field|_|id|', '<strong>Graph Item Fields</strong>', true);
+		draw_nontemplated_fields_graph_item($graphs['graph_template_id'], $_GET['id'], '|field|_|id|', '<strong>Graph Item Fields</strong>', true, $locked);
 
 		html_end_box();
 	}
@@ -1076,6 +1100,33 @@ function graph_edit() {
 				$('#scale_log_units').prop('disabled', false);
 			}
 		}
+	}
+
+	$(function() {
+		$('#unlockid').click(function(event) {
+			event.preventDefault;
+
+			$('body').append("<div id='modal' class='ui-widget-overlay ui-front' style='z-index: 100;'><i style='position:absolute;top:50%;left:50%;' class='fa fa-spin fa-circle-o-notch'/></div>");
+
+			$.get('graphs.php?action=unlock&header=false&id='+$('#local_graph_id').val(), function(data) {
+				$('#modal').remove();
+				$('#main').html(data);
+				applySkin();
+			});
+		});
+
+		$('#lockid').click(function(event) {
+			event.preventDefault;
+
+			$.get('graphs.php?action=lock&header=false&id='+$('#local_graph_id').val(), function(data) {
+				$('#main').html(data);
+				applySkin();
+			});
+		});
+	});
+
+	if (<?php print ($locked == '' ? 'true':$locked);?> == true) {
+		$('input, select').not('input[value="Cancel"]').prop('disabled', true);
 	}
 	</script>
 	<?php
@@ -1318,10 +1369,10 @@ function graph() {
 	print $nav;
 
 	$display_text = array(
-		'title_cache' => array('Graph Title', 'ASC'),
-		'local_graph_id' => array('display' => 'ID', 'align' => 'right', 'sort' => 'ASC'),
-		'name' => array('Template Name', 'ASC'),
-		'height' => array('Size', 'ASC'));
+		'title_cache' => array('display' => 'Graph Name', 'align' => 'left', 'sort' => 'ASC', 'tip' => 'The Title of this Graph.  Generally programatically generated from the Graph Template defition or Suggested Naming rules.  The max length of the Title is controlled under Settings->Visual.'),
+		'local_graph_id' => array('display' => 'ID', 'align' => 'right', 'sort' => 'ASC', 'tip' => 'The internal database ID fro this Graph.  Useful when performing automation or debugging.'),
+		'name' => array('display' => 'Template Name', 'align' => 'left', 'sort' => 'ASC', 'tip' => 'The Graph Template that this Graph was based upon.'),
+		'height' => array('display' => 'Size', 'align' => 'left', 'sort' => 'ASC', 'tip' => 'The size of this Graph when not in Preview mode.'));
 
 	html_header_sort_checkbox($display_text, get_request_var_request('sort_column'), get_request_var_request('sort_direction'), false);
 

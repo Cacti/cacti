@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2014 The Cacti Group                                 |
+ | Copyright (C) 2004-2015 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -923,11 +923,11 @@ function data_query() {
 	print $nav;
 
 	$display_text = array(
-		'name' => array('Name', 'ASC'),
-		'nosort' => array('display' => 'Deletable', 'align' => 'right', 'tip' => 'Data Queries that are in use can not be Deleted'), 
-		'graphs' => array('display' => 'Graphs Using', 'align' => 'right', 'sort' => 'DESC', 'tip' => 'The number of Graphs using this Data Query'),
-		'templates' => array('display' => 'Templates Using', 'align' => 'right', 'sort' => 'DESC', 'tip' => 'The number of Graphs Templates using this Data Query'),
-		'data_input_method' => array('Data Input Method', 'ASC'));
+		'name' => array('display' => 'Data Query Name', 'align' => 'left', 'sort' => 'ASC', 'tip' => 'The name of this Data Query.'),
+		'nosort' => array('display' => 'Deletable', 'align' => 'right', 'tip' => 'Data Queries that are in use can not be Deleted.  In use is defined as being referenced by either a Graph or a Graph Template.'), 
+		'graphs' => array('display' => 'Graphs Using', 'align' => 'right', 'sort' => 'DESC', 'tip' => 'The number of Graphs using this Data Query.'),
+		'templates' => array('display' => 'Templates Using', 'align' => 'right', 'sort' => 'DESC', 'tip' => 'The number of Graphs Templates using this Data Query.'),
+		'data_input_method' => array('display' => 'Data Input Method', 'align' => 'left', 'sort' => 'ASC', 'tip' => 'The Data Input Method used to collect data for Data Sources associated with this Data Query.'));
 
 	html_header_sort_checkbox($display_text, get_request_var_request('sort_column'), get_request_var_request('sort_direction'), false);
 

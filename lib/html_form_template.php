@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2014 The Cacti Group                                 |
+ | Copyright (C) 2004-2015 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -103,7 +103,7 @@ function draw_nontemplated_fields_graph($graph_template_id, &$values_array, $fie
        |id| - the current graph input id
    @arg $header_title - the title to use on the header for this form
    @arg $alternate_colors (bool) - whether to alternate colors for each row on the form or not */
-function draw_nontemplated_fields_graph_item($graph_template_id, $local_graph_id, $field_name_format = "|field|_|id|", $header_title = "", $alternate_colors = true) {
+function draw_nontemplated_fields_graph_item($graph_template_id, $local_graph_id, $field_name_format = "|field|_|id|", $header_title = "", $alternate_colors = true, $locked = 'false') {
 	global $struct_graph_item;
 
 	$form_array = array();
@@ -162,6 +162,24 @@ function draw_nontemplated_fields_graph_item($graph_template_id, $local_graph_id
 			/* modifications to the default form array */
 			$form_array[$form_field_name]["friendly_name"] = $item["name"];
 			$form_array[$form_field_name]["value"] = $current_def_value{$item["column_name"]};
+
+			if ($locked == 'true') {
+				if (substr_count($form_field_name, 'task_item_id') > 0) {
+					$form_array[$form_field_name]['method'] = 'value';
+
+					$value = db_fetch_cell_prepared("SELECT
+                        CONCAT_WS('',CASE WHEN host.description IS NULL THEN 'No Device - ' ELSE '' END,data_template_data.name_cache,' (',data_template_rrd.data_source_name,')') AS name
+                        FROM (data_template_data,data_template_rrd,data_local)
+                        LEFT JOIN host ON (data_local.host_id=host.id)
+                        WHERE data_template_rrd.local_data_id=data_local.id
+                        AND data_template_data.local_data_id=data_local.id
+                        AND data_template_rrd.id = ?", array($current_def_value{$item["column_name"]}));
+
+					cacti_log("The Value is '$value'");
+
+					$form_array[$form_field_name]['value'] = $value;
+				}
+			}
 
 			/* if we are drawing the graph input list in the pre-graph stage we should omit the data
 			source fields because they are basically meaningless at this point */

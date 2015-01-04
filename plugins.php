@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2014 The Cacti Group                                 |
+ | Copyright (C) 2004-2015 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -478,14 +478,13 @@ function update_show_current () {
 	print $nav;
 
 	$display_text = array(
-		'nosort' => array('Actions', ''),
-		'directory' => array('Name', 'ASC'),
-		'version' => array('Version', 'ASC'),
-		'id' => array('Load Order', 'ASC'),
-		'name' => array('Description', 'ASC'),
-		'nosort1' => array('Type', 'ASC'),
-		'status' => array('Status', 'ASC'),
-		'author' => array('Author', 'ASC'));
+		'nosort' => array('display' => 'Actions', 'align' => 'left', 'sort' => '', 'tip' => 'Actions available include "Install", "Activate", "Disable", "Enable", "Uninstall".'),
+		'directory' => array('display' => 'Plugin Name', 'align' => 'left', 'sort' => 'ASC', 'tip' => 'The name for this Plugin.  The name is controlled by the direcotry it resides in.'),
+		'id' => array('display' => 'Load Order', 'align' => 'left', 'sort' => 'ASC', 'tip' => 'The load order of the Plugin.  You can change the load order by first sorting by it, then moving a Plugin either up or down.'),
+		'name' => array('display' => 'Plugin Description', 'align' => 'left', 'sort' => 'ASC', 'tip' => 'A description that the Plugins author has given to the Plugin.'),
+		'version' => array('display' => 'Version', 'align' => 'left', 'sort' => 'ASC', 'tip' => 'The version of this Plugin.'),
+		'status' => array('display' => 'Status', 'align' => 'left', 'sort' => 'ASC', 'tip' => 'The status of this Plugin.'),
+		'author' => array('display' => 'Author', 'align' => 'left', 'sort' => 'ASC', 'tip' => 'The author of this Plugin.'));
 
 	html_header_sort($display_text, get_request_var_request('sort_column'), get_request_var_request('sort_direction'), 1);
 
@@ -518,10 +517,6 @@ function update_show_current () {
 
 	html_end_box(false);
 
-	html_start_box('', '100%', '', '3', 'center', '');
-	echo "<tr class='tableRow'><td colspan=10><strong>NOTE:</strong> Please sort by 'Load Order' to change plugin load ordering.</td></tr>";
-	html_end_box();
-
 	print "</form>\n";
 }
 
@@ -531,7 +526,6 @@ function format_plugin_row($plugin, $last_plugin, $include_ordering) {
 
 	$row = plugin_actions($plugin);
 	$row .= "<td><a href='" . htmlspecialchars($plugin['webpage']) . "' target='_blank'><strong>" . (strlen(get_request_var_request('filter')) ? eregi_replace('(' . preg_quote(get_request_var_request('filter')) . ')', "<span class='filteredValue'>\\1</span>", ucfirst($plugin['directory'])) : ucfirst($plugin['directory'])) . '</strong></a></td>';
-	$row .= '<td>' . $plugin['version'] . "</td>\n";
 	if ($include_ordering) {
 		$row .= "<td style='white-space:nowrap;'>";
 		if (!$first_plugin) {
@@ -550,7 +544,7 @@ function format_plugin_row($plugin, $last_plugin, $include_ordering) {
 	}
 
 	$row .= "<td style='white-space:nowrap;'>" . (strlen(get_request_var_request('filter')) ? eregi_replace('(' . preg_quote(get_request_var_request('filter')) . ')', "<span class='filteredValue'>\\1</span>", $plugin['name']) : $plugin['name']) . "</td>\n";
-	$row .= "<td style='white-space:nowrap;'>" . ($plugin['status'] < 0 ? 'Old PIA':'General') . "</td>\n";
+	$row .= '<td>' . $plugin['version'] . "</td>\n";
 	$row .= "<td style='white-space:nowrap;'>" . $status_names[$plugin['status']] . "</td>\n";
 	$row .= "<td style='white-space:nowrap;'>" . $plugin['author'] . "</td>\n";
 	$row .= "</tr>\n";

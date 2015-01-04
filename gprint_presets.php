@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2014 The Cacti Group                                 |
+ | Copyright (C) 2004-2015 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -380,10 +380,10 @@ function gprint_presets() {
 	print $nav;
 
 	$display_text = array(
-		'name' => array('GPRINT Preset Title', 'ASC'),
-		'nosort' => array('display' => 'Deletable', 'align' => 'right', 'tip' => 'GPRINTs that are in use can not be Deleted'), 
-		'graphs' => array('display' => 'Graphs Using', 'align' => 'right', 'sort' => 'DESC', 'tip' => 'The number of Graphs using this GPRINT'),
-		'templates' => array('display' => 'Templates Using', 'align' => 'right', 'sort' => 'DESC', 'tip' => 'The number of Graphs Templates using this GPRINT')
+		'name' => array('display' => 'GPRINT Preset Name', 'align' => 'left', 'sort' => 'ASC', 'tip' => 'The name of this GPRINT Preset.'),
+		'nosort' => array('display' => 'Deletable', 'align' => 'right', 'tip' => 'GPRINTs that are in use can not be Deleted.  In use is defined as being referenced by either a Graph or a Graph Template.'), 
+		'graphs' => array('display' => 'Graphs Using', 'align' => 'right', 'sort' => 'DESC', 'tip' => 'The number of Graphs using this GPRINT.'),
+		'templates' => array('display' => 'Templates Using', 'align' => 'right', 'sort' => 'DESC', 'tip' => 'The number of Graphs Templates using this GPRINT.')
 	);
 
 	html_header_sort_checkbox($display_text, get_request_var_request('sort_column'), get_request_var_request('sort_direction'), false);

@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2014 The Cacti Group                                 |
+ | Copyright (C) 2004-2015 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -619,10 +619,10 @@ function cdef() {
 	print $nav;
 
 	$display_text = array(
-		'name' => array('CDEF Title', 'ASC'),
-		'nosort' => array('display' => 'Deletable', 'align' => 'right', 'tip' => 'CDEFs that are in use can not be Deleted'), 
-		'graphs' => array('display' => 'Graphs Using', 'align' => 'right', 'sort' => 'DESC'),
-		'templates' => array('display' => 'Templates Using', 'align' => 'right', 'sort' => 'DESC'));
+		'name' => array('display' => 'CDEF Name', 'align' => 'left', 'sort' => 'ASC', 'tip' => 'The name of this CDEF.'),
+		'nosort' => array('display' => 'Deletable', 'align' => 'right', 'tip' => 'CDEFs that are in use can not be Deleted.  In use is defined as being referenced by a Graph or a Graph Template.'), 
+		'graphs' => array('display' => 'Graphs Using', 'align' => 'right', 'sort' => 'DESC', 'tip' => 'The number of Graphs using this CDEF.'),
+		'templates' => array('display' => 'Templates Using', 'align' => 'right', 'sort' => 'DESC', 'tip' => 'The number of Graphs Templates using this CDEF.'));
 
 	html_header_sort_checkbox($display_text, get_request_var_request('sort_column'), get_request_var_request('sort_direction'), false);
 

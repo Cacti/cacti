@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2014 The Cacti Group                                 |
+ | Copyright (C) 2004-2015 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -626,11 +626,11 @@ function data() {
 	print $nav;
 
 	$display_text = array(
-		'name' => array('Name', 'ASC'),
-		'nosort' => array('display' => 'Deletable', 'align' => 'right', 'tip' => 'Data Inputs that are in use can not be Deleted'), 
-		'data_sources' => array('display' => 'Data Sources Using', 'align' => 'right', 'sort' => 'DESC', 'tip' => 'The number of Data Sources that use this Data Input Method'),
-		'templates' => array('display' => 'Templates Using', 'align' => 'right', 'sort' => 'DESC', 'tip' => 'The number of Data Templates that use this Data Input Method'),
-		'type_id' => array('Data Input Method', 'ASC'));
+		'name' => array('display' => 'Data Input Name', 'align' => 'left', 'sort' => 'ASC', 'tip' => 'The name of this Data Input Method.'),
+		'nosort' => array('display' => 'Deletable', 'align' => 'right', 'tip' => 'Data Inputs that are in use can not be Deleted.  In use is defined as being referenced either by a Data Source or a Data Template.'), 
+		'data_sources' => array('display' => 'Data Sources Using', 'align' => 'right', 'sort' => 'DESC', 'tip' => 'The number of Data Sources that use this Data Input Method.'),
+		'templates' => array('display' => 'Templates Using', 'align' => 'right', 'sort' => 'DESC', 'tip' => 'The number of Data Templates that use this Data Input Method.'),
+		'type_id' => array('display' => 'Data Input Method', 'align' => 'left', 'sort' => 'ASC', 'tip' => 'The method used to gather information for this Data Input Method.'));
 
 	html_header_sort_checkbox($display_text, get_request_var_request('sort_column'), get_request_var_request('sort_direction'), false);
 

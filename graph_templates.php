@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2014 The Cacti Group                                 |
+ | Copyright (C) 2004-2015 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -629,13 +629,13 @@ function template() {
 	print $nav;
 
 	$display_text = array(
-		"name" => array("Template Name", "ASC"),
-		'nosort' => array('display' => 'Deletable', 'align' => 'right', 'tip' => 'Graph Templates that are in use can not be Deleted'), 
-		"graphs" => array('display' => 'Graphs Using', 'align' => 'right', 'sort' => "DESC", 'tip' => 'The number of Graphs using this Graph Template'),
-		"graph_templates.id" => array('display' => "ID", 'align' => 'right', 'sort' => "ASC")
+		'name' => array('display' => 'Graph Template Name', 'align' => 'left', 'sort' => 'ASC', 'tip' => 'The name of this Graph Template.'),
+		'nosort' => array('display' => 'Deletable', 'align' => 'right', 'tip' => 'Graph Templates that are in use can not be Deleted.  In use is defined as being referenced by a Graph.'), 
+		'graphs' => array('display' => 'Graphs Using', 'align' => 'right', 'sort' => 'DESC', 'tip' => 'The number of Graphs using this Graph Template.'),
+		'graph_templates.id' => array('display' => 'ID', 'align' => 'right', 'sort' => 'ASC', 'tip' => 'The internal ID for this Graph Template.  Useful when performing automation or debugging.')
 	);
 
-	html_header_sort_checkbox($display_text, get_request_var_request("sort_column"), get_request_var_request("sort_direction"), false);
+	html_header_sort_checkbox($display_text, get_request_var_request('sort_column'), get_request_var_request('sort_direction'), false);
 
 	$i = 0;
 	if (sizeof($template_list) > 0) {
@@ -645,12 +645,12 @@ function template() {
 			}else{
 				$disabled = false;
 			}
-			form_alternate_row('line' . $template["id"], true, $disabled);
-			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars("graph_templates.php?action=template_edit&id=" . $template["id"]) . "'>" . (strlen(get_request_var_request("filter")) ? preg_replace("/(" . preg_quote(get_request_var_request("filter"), "/") . ")/i", "<span class='filteredValue'>\\1</span>", htmlspecialchars($template["name"])) : htmlspecialchars($template["name"])) . "</a>", $template["id"]);
-			form_selectable_cell($disabled ? 'No':'Yes', $template["id"], '', 'text-align:right');
-			form_selectable_cell(number_format($template["graphs"]), $template["id"], '', 'text-align:right');
-			form_selectable_cell($template["id"], $template["id"], '', 'text-align:right');
-			form_checkbox_cell($template["name"], $template["id"], $disabled);
+			form_alternate_row('line' . $template['id'], true, $disabled);
+			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars('graph_templates.php?action=template_edit&id=' . $template['id']) . "'>" . (strlen(get_request_var_request('filter')) ? preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($template['name'])) : htmlspecialchars($template['name'])) . '</a>', $template['id']);
+			form_selectable_cell($disabled ? 'No':'Yes', $template['id'], '', 'text-align:right');
+			form_selectable_cell(number_format($template['graphs']), $template['id'], '', 'text-align:right');
+			form_selectable_cell($template['id'], $template['id'], '', 'text-align:right');
+			form_checkbox_cell($template['name'], $template['id'], $disabled);
 			form_end_row();
 		}
 		print $nav;

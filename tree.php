@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2014 The Cacti Group                                 |
+ | Copyright (C) 2004-2015 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -1407,16 +1407,16 @@ function tree() {
 	print $nav;
 
 	$display_text = array(
-		'name' => array('Tree Name', 'ASC'),
-		'id' => array('display' => 'ID', 'align' => 'right', 'sort' => 'ASC'),
-		'enabled' => array('Published', 'ASC'),
-		'locked' => array('Locked', 'ASC'),
-		'user_id' => array('Owner', 'ASC'),
-		'last_modified' => array('display' => 'Last Edited', 'align' => 'right', 'sort' => 'ASC'),
-		'modified_by' => array('display' => 'Edited By', 'align' => 'right', 'sort' => 'ASC'),
-		'branches' => array('display' => 'Branches', 'align' => 'right', 'sort' => 'DESC'),
-		'hosts' => array('display' => 'Devices', 'align' => 'right', 'sort' => 'DESC'),
-		'graphs' => array('display' => 'Graphs', 'align' => 'right', 'sort' => 'DESC'));
+		'name' => array('display' => 'Tree Name', 'align' => 'left', 'sort' => 'ASC', 'tip' => 'The name by which this Tree will be referred to as.'),
+		'id' => array('display' => 'ID', 'align' => 'right', 'sort' => 'ASC', 'tip' => 'The internal database ID for this Tree.  Usefull when performing automation or debugging.'),
+		'enabled' => array('display' => 'Published', 'align' => 'left', 'sort' => 'ASC', 'tip' => 'Unpublished Trees can not be viewed from the Graph tab'),
+		'locked' => array('display' => 'Locked', 'align' => 'left', 'sort' => 'ASC', 'tip' => 'A Tree must be locked in order to be edited.'),
+		'user_id' => array('display' => 'Owner', 'align' => 'left', 'sort' => 'ASC', 'tip' => 'The original author of this Tree.'),
+		'last_modified' => array('display' => 'Last Edited', 'align' => 'right', 'sort' => 'ASC', 'tip' => 'The date that this Tree was last edited.'),
+		'modified_by' => array('display' => 'Edited By', 'align' => 'right', 'sort' => 'ASC', 'tip' => 'The last user to have modified this Tree.'),
+		'branches' => array('display' => 'Branches', 'align' => 'right', 'sort' => 'DESC', 'tip' => 'The total number of Branches in this Tree.'),
+		'hosts' => array('display' => 'Devices', 'align' => 'right', 'sort' => 'DESC', 'tip' => 'The total number of individual Devices in this Tree.'),
+		'graphs' => array('display' => 'Graphs', 'align' => 'right', 'sort' => 'DESC', 'tip' => 'The total number of individual Graphs in this Tree.'));
 
 	html_header_sort_checkbox($display_text, get_request_var_request('sort_column'), get_request_var_request('sort_direction'), false);
 

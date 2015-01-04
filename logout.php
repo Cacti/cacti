@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2014 The Cacti Group                                 |
+ | Copyright (C) 2004-2015 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -51,6 +51,7 @@ if (isset($_REQUEST['action']) && $_REQUEST['action'] == 'timeout') {
 	print "\t<script type='text/javascript' src='" . $config['url_path'] . "include/js/jquery.cookie.js' language='javascript'></script>\n";
 	print "\t<script type='text/javascript' src='" . $config['url_path'] . "include/js/jquery.hotkeys.js'></script>\n";
 	print "\t<script type='text/javascript' src='" . $config['url_path'] . "include/layout.js'></script>\n";
+	print "\t<script type='text/javascript' src='" . $config['url_path'] . "include/themes/" . read_config_option('selected_theme') . "/main.js'></script>\n";
 	print "<script type='text/javascript'>var theme='" . read_config_option('selected_theme') . "';</script>\n";
 	print "</head>\n";
 	print "<body class='logoutBody'>
@@ -66,7 +67,7 @@ if (isset($_REQUEST['action']) && $_REQUEST['action'] == 'timeout') {
 			</div>
 			<div class='logoutErrors'></div>
 		</div>
-		<div class='versionInfo'>Version " . $version . " | Copyright 2014, The Cacti Group, Inc.</div>
+		<div class='versionInfo'>Version " . $version . " | " . COPYRIGHT_YEARS_SHORT . "</div>
 	</div>
 	<div class='logoutRight'></div>
 	<script type='text/javascript'>
@@ -97,6 +98,7 @@ if (isset($_REQUEST['action']) && $_REQUEST['action'] == 'timeout') {
 	print "\t<script type='text/javascript' src='" . $config['url_path'] . "include/js/jquery.cookie.js' language='javascript'></script>\n";
 	print "\t<script type='text/javascript' src='" . $config['url_path'] . "include/js/jquery.hotkeys.js'></script>\n";
 	print "\t<script type='text/javascript' src='" . $config['url_path'] . "include/layout.js'></script>\n";
+	print "\t<script type='text/javascript' src='" . $config['url_path'] . "include/themes/" . read_config_option('selected_theme') . "/main.js'></script>\n";
 	print "<script type='text/javascript'>var theme='" . read_config_option('selected_theme') . "';</script>\n";
 	print "</head>\n";
 	print "<body class='logoutBody'>
@@ -112,7 +114,7 @@ if (isset($_REQUEST['action']) && $_REQUEST['action'] == 'timeout') {
 			</div>
 			<div class='logoutErrors'></div>
 		</div>
-		<div class='versionInfo'>Version " . $version . " | Copyright 2014, The Cacti Group, Inc.</div>
+		<div class='versionInfo'>Version " . $version . " | " . COPYRIGHT_YEARS_SHORT . "</div>
 	</div>
 	<div class='logoutRight'></div>
 	<script type='text/javascript'>

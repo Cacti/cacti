@@ -2,7 +2,7 @@
 /*
  ex: set tabstop=4 shiftwidth=4 autoindent:
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2014 The Cacti Group                                 |
+ | Copyright (C) 2004-2015 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -82,7 +82,7 @@ foreach($engines as $engine) {
 	}
 }
 
-$file_per_table = db_fetch_row("SHOW GLOBAL VARIABLES LIKE 'innodb_file_per_table'");
+$file_per_table = db_fetch_row("show global variables like 'innodb_file_per_table'");
 
 if (strtolower($file_per_table["Value"]) != "on") {
 	echo "innodb_file_per_table not enabled";

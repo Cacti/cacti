@@ -3,6 +3,9 @@ var clickTimeout;
 var hostOpen = false;
 
 function themeReady() {
+	// Add nice search filter to filters
+	$('input[id="filter"]').after("<i class='fa fa-search filter'/>").attr('autocomplete', 'off').attr('placeholder', 'Enter a search term').parent('td').css('white-space', 'nowrap');
+
 	$('#host').autocomplete({
 		source: 'graphs.php?action=ajax_hosts',
 		autoFocus: true,
@@ -21,10 +24,15 @@ function themeReady() {
 	$('select').selectmenu({
 		change: function(event, ui) {
 			$(this).val(ui.item.value).change();
+		},
+		position: {
+			my: "left top",
+			at: "left bottom",
+			collision: "flip"
 		}
 	}).each(function() {
 		id = $(this).attr('id');
-		$('#'+id+'-button').css('min-width', '100px').css('max-width', '400px').css('width','');
+		$('#'+id+'-button').css('min-width', '50px').css('max-width', '400px').css('width','');
 	});
 
 	$('#host_wrapper').dblclick(function() {

@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2014 The Cacti Group                                 |
+ | Copyright (C) 2004-2015 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -564,10 +564,10 @@ function template() {
 	print $nav;
 
 	$display_text = array(
-		'name' => array('Template Title', 'ASC'),
-		"nosort" => array('display' => 'Deletable', 'align' => 'right', 'sort' => '', 'tip' => 'Device Templates in use can not be Deleted'),
-		'hosts' => array('display' => 'Devices Using', 'align' => 'right', 'sort' => 'DESC', 'tip' => 'The number of Devices using this Device Template'),
-		'host_template.id' => array('display' => 'ID', 'align' => 'right', 'sort' => 'ASC')
+		'name' => array('display' => 'Device Template Name', 'align' => 'left', 'sort' => 'ASC', 'tip' => 'The name of this Device Template.'),
+		"nosort" => array('display' => 'Deletable', 'align' => 'right', 'sort' => '', 'tip' => 'Device Templates in use can not be Deleted.  In use is defined as being referenced by a Device.'),
+		'hosts' => array('display' => 'Devices Using', 'align' => 'right', 'sort' => 'DESC', 'tip' => 'The number of Devices using this Device Template.'),
+		'host_template.id' => array('display' => 'ID', 'align' => 'right', 'sort' => 'ASC', 'tip' => 'The internal database ID for this Device Template.  Useful when performing automation or debugging.')
 	);
 
 	html_header_sort_checkbox($display_text, get_request_var_request('sort_column'), get_request_var_request('sort_direction'), false);

@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2014 The Cacti Group                                 |
+ | Copyright (C) 2004-2015 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -632,7 +632,7 @@ function ping_host() {
 				print "<strong>Contact:</strong> $snmp_contact<br>\n";
 			}
 		}
-		print "</span><br>\n";
+		print "</span>\n";
 	}
 
 	if ($am == AVAIL_PING || $am == AVAIL_SNMP_AND_PING || $am == AVAIL_SNMP_OR_PING) {
@@ -688,9 +688,9 @@ function host_edit() {
 					<?php print htmlspecialchars($host['description']);?> (<?php print htmlspecialchars($host['hostname']);?>)
 				</td>
 				<td rowspan='2' class='textInfo' valign='top' align='right'>
-					<span class='linkMarker'>*</span><a href='<?php print htmlspecialchars('graphs_new.php?host_id=' . $host['id']);?>'>Create Graphs for this Device</a><br>
-					<span class='linkMarker'>*</span><a href='<?php print htmlspecialchars('data_sources.php?host_id=' . $host['id'] . '&ds_rows=30&filter=&template_id=-1&method_id=-1&page=1');?>'>Data Source List</a><br>
-					<span class='linkMarker'>*</span><a href='<?php print htmlspecialchars('graphs.php?host_id=' . $host['id'] . '&graph_rows=30&filter=&template_id=-1&page=1');?>'>Graph List</a>
+					<span class='linkMarker'>*</span><a class='hyperLink' href='<?php print htmlspecialchars('graphs_new.php?host_id=' . $host['id']);?>'>Create Graphs for this Device</a><br>
+					<span class='linkMarker'>*</span><a class='hyperLink' href='<?php print htmlspecialchars('data_sources.php?host_id=' . $host['id'] . '&ds_rows=30&filter=&template_id=-1&method_id=-1&page=1');?>'>Data Source List</a><br>
+					<span class='linkMarker'>*</span><a class='hyperLink' href='<?php print htmlspecialchars('graphs.php?host_id=' . $host['id'] . '&graph_rows=30&filter=&template_id=-1&page=1');?>'>Graph List</a>
 					<?php api_plugin_hook('device_edit_top_links'); ?>
 				</td>
 			</tr>
@@ -1316,16 +1316,16 @@ function host() {
 	print $nav;
 
 	$display_text = array(
-		'description' => array('display' => 'Description', 'align' => 'left', 'sort' => 'ASC'),
-		'hostname' => array('Hostname', 'ASC'),
-		'id' => array('display' => 'ID', 'align' => 'right', 'sort' => 'ASC'),
-		'graphs' => array('display' => 'Graphs', 'align' => 'right', 'sort' => 'ASC'),
-		'data_sources' => array('display' => 'Data Sources', 'align' => 'right', 'sort' => 'ASC'),
-		'status' => array('display' => 'Status', 'align' => 'center', 'sort' => 'ASC'),
-		'status_rec_date' => array('display' => 'In State', 'align' => 'right', 'sort' => 'ASC'),
-		'cur_time' => array('display' => 'Current (ms)', 'align' => 'right', 'sort' => 'DESC'),
-		'avg_time' => array('display' => 'Average (ms)', 'align' => 'right', 'sort' => 'DESC'),
-		'availability' => array('display' => 'Availability', 'align' => 'right', 'sort' => 'ASC'));
+		'description' => array('display' => 'Device Description', 'align' => 'left', 'sort' => 'ASC', 'tip' => 'The name by which this Device will be referred to.'),
+		'hostname' => array('display' => 'Hostname', 'align' => 'left', 'sort' => 'ASC', 'tip' => 'Either an IP address, or hostname.  If a hostname, it must be resolvable by either DNS, or from your hosts file.'),
+		'id' => array('display' => 'ID', 'align' => 'right', 'sort' => 'ASC', 'tip' => 'The internal database ID for this Device.  Useful when performing automation or debugging.'),
+		'graphs' => array('display' => 'Graphs', 'align' => 'right', 'sort' => 'ASC', 'tip' => 'The total number of Graphs generated from this Device.'),
+		'data_sources' => array('display' => 'Data Sources', 'align' => 'right', 'sort' => 'ASC', 'tip' => 'The total number of Data Sources generated from this Device.'),
+		'status' => array('display' => 'Status', 'align' => 'center', 'sort' => 'ASC', 'tip' => 'The monitoring status of the Device based upon ping results.  If this Device is a special type Device, by using the hostname "localhost", or due to the setting to not perform an Availability Check, it will always remain Up.  When using cmd.php data collector, a Device with no Graphs, is not pinged by the data collector and will remain in an "Unknown" state.'),
+		'status_rec_date' => array('display' => 'In State', 'align' => 'right', 'sort' => 'ASC', 'tip' => 'The amount of time that this Device has been in its current state.'),
+		'cur_time' => array('display' => 'Current (ms)', 'align' => 'right', 'sort' => 'DESC', 'tip' => 'The current ping time in milliseconds to reach the Device.'),
+		'avg_time' => array('display' => 'Average (ms)', 'align' => 'right', 'sort' => 'DESC', 'tip' => 'The average ping time in milliseconds to reach the Device since the counters were cleared for this Device.'),
+		'availability' => array('display' => 'Availability', 'align' => 'right', 'sort' => 'ASC', 'tip' => 'The availability percentage based upon ping results insce the counters were cleared for this Device.'));
 
 	html_header_sort_checkbox($display_text, get_request_var_request('sort_column'), get_request_var_request('sort_direction'), false);
 

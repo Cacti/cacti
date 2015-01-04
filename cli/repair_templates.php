@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2014 The Cacti Group                                 |
+ | Copyright (C) 2004-2015 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -130,7 +130,6 @@ if (sizeof($damaged_template_ids)) {
 function display_help () {
 	$version = db_fetch_cell('SELECT cacti FROM version');
 	echo "Database Template Repair Utility, Version $version, " . COPYRIGHT_YEARS . "\n\n";
-	echo "Cacti Database Template Repair Tool v1.0, Copyright 2004-2014 - The Cacti Group\n\n";
 	echo "usage: repair_templates.php --execute [--help]\n\n";
 	echo "--execute        - Perform the repair\n";
 	echo "--help           - display this help message\n";

@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2014 The Cacti Group                                 |
+ | Copyright (C) 2004-2015 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -80,7 +80,7 @@ graph_export($force);
 /*	display_help - displays the usage of the function */
 function display_help () {
 	$version = db_fetch_cell('SELECT cacti FROM version LIMIT 1');
-	print "Cacti Graph Export Tool Version $version, Copyright 2004-2014 - The Cacti Group\n\n";
+	print "Cacti Graph Export Tool Version $version, " . COPYRIGHT_YEARS . "\n\n";
 	print "usage: poller_export.php [-f|--force] [-d|--debug] [-h|--help|-v|-V|--version]\n\n";
 	print "-f | --force     - Force export to run now running now\n";
 	print "-d | --debug     - Display verbose output during execution\n";

@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2014 The Cacti Group                                 |
+ | Copyright (C) 2004-2015 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -427,6 +427,7 @@ if (api_plugin_hook_function('custom_login', OPER_MODE_NATIVE) == OPER_MODE_RESK
 	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery.cookie.js' language='javascript'></script>
 	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery.hotkeys.js'></script>
 	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/layout.js'></script>
+	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/themes/<?php print read_config_option('selected_theme');?>/main.js'></script>
 	<script type='text/javascript'>var theme='<?php print read_config_option('selected_theme');?>';</script>
 	<script type='text/javascript'>
 	$(function() {
@@ -553,7 +554,7 @@ if (api_plugin_hook_function('custom_login', OPER_MODE_NATIVE) == OPER_MODE_RESK
 				<?php } } ?>
 			</div>
 		</div>
-		<div class='versionInfo'>Version <?php print $version;?> | Copyright 2014, The Cacti Group, Inc.</div>
+		<div class='versionInfo'>Version <?php print $version;?> | <?php print COPYRIGHT_YEARS_SHORT;?></div>
 	</div>
 	<div class='loginRight'></div>
 	<script type='text/javascript'>

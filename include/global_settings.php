@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2014 The Cacti Group                                 |
+ | Copyright (C) 2004-2015 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -644,7 +644,7 @@ $settings = array(
 			'friendly_name' => 'Watermark Text',
 			'description' => 'Test to place at the bottom center of every Graph.',
 			'method' => 'textbox',
-			'default' => 'Copyright (c) The Cacti Group, Inc.',
+			'default' => COPYRIGHT_YEARS,
 			'max_length' => '80',
 			'size' => '60'
 			),

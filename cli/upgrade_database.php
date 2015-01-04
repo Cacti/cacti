@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2014 The Cacti Group                                 |
+ | Copyright (C) 2004-2015 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -73,7 +73,7 @@ $includes = array(
 	'0.8.8c' => '0_8_8b_to_0_8_8c.php',
 );
 
-$old_cacti_version = db_fetch_cell('SELECT cacti FROM version');
+$old_cacti_version = db_fetch_cell('select cacti from version');
 
 /* try to find current (old) version in the array */
 $old_version_index = (isset($includes[$old_cacti_version]) ? $old_cacti_version : '');

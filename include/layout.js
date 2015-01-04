@@ -1,6 +1,6 @@
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2014 The Cacti Group                                 |
+ | Copyright (C) 2004-2015 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -364,7 +364,7 @@ function applySkin() {
 
 	setupCollapsible();
 
-	if ($.isFunction(themeReady)) {
+	if (typeof themeReady == 'function') {
 		themeReady();
 	}
 
