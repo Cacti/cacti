@@ -172,7 +172,7 @@ $settings = array(
 			),
 		),
 	'general' => array(
-		'logging_header' => array(
+		'event_logging_header' => array(
 			'friendly_name' => 'Event Logging',
 			'collapsible' => 'true',
 			'method' => 'spacer',
@@ -204,7 +204,7 @@ $settings = array(
 					)
 				),
 			),
-		'poller_header' => array(
+		'poller_specific_header' => array(
 			'friendly_name' => 'Poller Specific Logging',
 			'collapsible' => 'true',
 			'method' => 'spacer',
@@ -899,7 +899,7 @@ $settings = array(
 			)
 		),
 	'authentication' => array(
-		'general_header' => array(
+		'auth_header' => array(
 			'friendly_name' => 'General',
 			'method' => 'spacer',
 			),
@@ -919,6 +919,7 @@ $settings = array(
 		'special_users_header' => array(
 			'friendly_name' => 'Special Users',
 			'method' => 'spacer',
+			'collapsible' => 'true'
 			),
 		'guest_user' => array(
 			'friendly_name' => 'Guest User',
@@ -939,6 +940,7 @@ $settings = array(
 		'secpass_header' => array(
 			'friendly_name' => 'Local Account Complexity Requirements',
 			'method' => 'spacer',
+			'collapsible' => 'true'
 			),
 		'secpass_minlen' => array(
 			'friendly_name' => 'Minimum Length',
@@ -996,10 +998,10 @@ $settings = array(
 			'max_length' => 2,
 			'size' => 4
 			),
-
 		'secpass_lock_header' => array(
 			'friendly_name' => 'Account Locking',
 			'method' => 'spacer',
+			'collapsible' => 'true'
 			),
 		'secpass_lockfailed' => array(
 			'friendly_name' => 'Lock Accounts',
@@ -1304,8 +1306,8 @@ $settings = array(
 			),
 		'dsstats_debug_header' => array(
 			'friendly_name' => 'Debugging',
-			'collapsible' => 'true',
 			'method' => 'spacer',
+			'collapsible' => 'true',
 			),
 		'dsstats_rrdtool_pipe' => array(
 			'friendly_name' => 'Enable Single RRDtool Pipe',

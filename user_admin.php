@@ -1469,7 +1469,7 @@ function user_realms_edit($header_label) {
 	print "<tr class='odd'><td colspan='4' width='100%'><table width='100%'><tr><td valign='top' style='white-space:nowrap;' width='20%'>\n";
 	$i = 1;
 	$j = 1;
-	$base = array(7,8,15,1,2,3,4,5,6,9,10,11,12,13,14,16,17,18,19,101);
+	$base = array(7,8,15,1,2,3,4,5,6,9,10,11,12,13,14,16,17,18,19,20,101);
 	foreach($base as $realm) {
 		if (isset($user_auth_realms[$realm])) {
 			$set = db_fetch_cell_prepared('SELECT realm_id 

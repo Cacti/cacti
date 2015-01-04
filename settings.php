@@ -301,6 +301,52 @@ default:
 		});
 	}
 
+	if ($('#settings_test_email')) {
+		initMail();
+
+		$('#settings_how').change(function() {
+			initMail();
+		});
+	}
+
+	function initMail() {
+		switch($('#settings_how').val()) {
+		case '0':
+			$('#row_settings_sendmail_header').hide();
+			$('#row_settings_sendmail_path').hide();
+			$('#row_settings_smtp_header').hide();
+			$('#row_settings_smtp_host').hide();
+			$('#row_settings_smtp_port').hide();
+			$('#row_settings_smtp_username').hide();
+			$('#row_settings_smtp_password').hide();
+			$('#row_settings_smtp_secure').hide();
+			$('#row_settings_smtp_timeout').hide();
+			break;
+		case '1':
+			$('#row_settings_sendmail_header').show();
+			$('#row_settings_sendmail_path').show();
+			$('#row_settings_smtp_header').hide();
+			$('#row_settings_smtp_host').hide();
+			$('#row_settings_smtp_port').hide();
+			$('#row_settings_smtp_username').hide();
+			$('#row_settings_smtp_password').hide();
+			$('#row_settings_smtp_secure').hide();
+			$('#row_settings_smtp_timeout').hide();
+			break;
+		case '2':
+			$('#row_settings_sendmail_header').hide();
+			$('#row_settings_sendmail_path').hide();
+			$('#row_settings_smtp_header').show();
+			$('#row_settings_smtp_host').show();
+			$('#row_settings_smtp_port').show();
+			$('#row_settings_smtp_username').show();
+			$('#row_settings_smtp_password').show();
+			$('#row_settings_smtp_secure').show();
+			$('#row_settings_smtp_timeout').show();
+			break;
+		}
+	}
+
 	function initBoostCache() {
 		if ($('#boost_png_cache_enable').is(':checked')){
 			$('#row_boost_png_cache_directory').show();

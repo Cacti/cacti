@@ -19,7 +19,7 @@ function themeReady() {
 	$('#host_click').css('z-index', '4');
 	$('input#filter').addClass('ui-state-default ui-corner-all');
 
-	$('input').addClass('ui-state-default ui-corner-all');
+	$('input[type="text"], input[type="password"], input[type="checkbox"], textarea').not('image').addClass('ui-state-default ui-corner-all');
 
 	$('select').selectmenu({
 		change: function(event, ui) {
@@ -32,7 +32,7 @@ function themeReady() {
 		}
 	}).each(function() {
 		id = $(this).attr('id');
-		$('#'+id+'-button').css('min-width', '50px').css('max-width', '400px').css('width','');
+		$('#'+id+'-button').css('min-width', '0px').css('max-width', '400px').css('width','');
 	});
 
 	$('#host_wrapper').dblclick(function() {

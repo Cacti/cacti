@@ -105,8 +105,6 @@ function form_save() {
 function settings() {
 	global $tabs_graphs, $settings_graphs, $current_user, $graph_views, $current_user;
 
-	$current_user = db_fetch_row_prepared('SELECT * FROM user_auth WHERE id = ?', array($_SESSION['sess_user_id']));
-
 	/* you cannot have per-user graph settings if cacti's user management is not turned on */
 	if (read_config_option('auth_method') == 0) {
 		raise_message(6);
@@ -114,59 +112,99 @@ function settings() {
 		return;
 	}
 
-	/* Find out whether this user has right here */
-	if (!is_view_allowed('graph_settings')) {
-		print "<strong><font class='txtErrorTextBox'>YOU DO NOT HAVE RIGHTS TO CHANGE GRAPH SETTINGS</font></strong>";
-		bottom_footer();
-		exit;
+	print "<form method='post' action='auth_profile.php'>\n";
+
+	html_start_box('<strong>User Settings</strong>', '100%', '', '3', 'center', '');
+
+	$current_user = db_fetch_row_prepared('SELECT * FROM user_auth WHERE id = ?', array($_SESSION['sess_user_id']));
+
+	if (!sizeof($current_user)) {
+		return;
 	}
 
-	if (read_config_option('auth_method') != 0) {
-		$settings_graphs['tree']['default_tree_id']['sql'] = get_graph_tree_array(true);
-	}
-
-	print "<form method='post' action='graph_settings.php'>\n";
-
-	html_start_box('<strong>Graph Settings</strong>', '100%', '', '3', 'center', '');
-
-	while (list($tab_short_name, $tab_fields) = each($settings_graphs)) {
-		$collapsible = true;
-
-		print "<tr class='spacer tableHeader" . ($collapsible ? ' collapsible':'') . "' id='row_$tab_short_name'><td colspan='2' style='cursor:pointer;' class='tableSubHeaderColumn'>" . $tabs_graphs[$tab_short_name] . ($collapsible ? "<div style='float:right;padding-right:4px;'><i class='fa fa-angle-double-up'></i></div>":"") . "</td></tr>\n";
-
-		$form_array = array();
-
-		while (list($field_name, $field_array) = each($tab_fields)) {
-			$form_array += array($field_name => $tab_fields[$field_name]);
-
-			if ((isset($field_array['items'])) && (is_array($field_array['items']))) {
-				while (list($sub_field_name, $sub_field_array) = each($field_array['items'])) {
-					if (graph_config_value_exists($sub_field_name, $_SESSION['sess_user_id'])) {
-						$form_array[$field_name]['items'][$sub_field_name]['form_id'] = 1;
-					}
-
-					$form_array[$field_name]['items'][$sub_field_name]['value'] =  db_fetch_cell_prepared('SELECT value FROM settings_graphs WHERE name = ? AND user_id = ?', array($sub_field_name, $_SESSION['sess_user_id']));
-				}
-			}else{
-				if (graph_config_value_exists($field_name, $_SESSION['sess_user_id'])) {
-					$form_array[$field_name]['form_id'] = 1;
-				}
-
-				$form_array[$field_name]['value'] = db_fetch_cell_prepared('SELECT value FROM settings_graphs WHERE name = ? AND user_id = ?', array($field_name, $_SESSION['sess_user_id']));
-			}
-		}
-
-		draw_edit_form(
-			array(
-				'config' => array(
-					'no_form_tag' => true
-					),
-				'fields' => $form_array
-				)
-			);
-	}
+	/* file: user_admin.php, action: user_edit (host) */
+	$fields_user = array(
+		'username' => array(
+			'method' => 'value',
+			'friendly_name' => 'User Name',
+			'description' => 'The login name for this user.',
+			'value' => '|arg1:username|',
+			'max_length' => '40',
+			'size' => '40'
+		),
+		'full_name' => array(
+			'method' => 'textbox',
+			'friendly_name' => 'Full Name',
+			'description' => 'A more descriptive name for this user, that can include spaces or special characters.',
+			'value' => '|arg1:full_name|',
+			'max_length' => '120',
+			'size' => '60'
+		),
+		'email_address' => array(
+			'method' => 'textbox',
+			'friendly_name' => 'E-Mail Address',
+			'description' => 'An E-Mail Address you be reached at.',
+			'value' => '|arg1:email_address|',
+			'max_length' => '60',
+			'size' => '60'
+		)
+	);
+	
+	draw_edit_form(
+		array(
+			'config' => array('no_form_tag' => true),
+			'fields' => inject_form_variables($fields_user, (isset($current_user) ? $current_user : array()))
+		)
+	);
 
 	html_end_box();
+
+	if (is_view_allowed('graph_settings') == true) {
+		if (read_config_option('auth_method') != 0) {
+			$settings_graphs['tree']['default_tree_id']['sql'] = get_graph_tree_array(true);
+		}
+
+		html_start_box('<strong>Graph Settings</strong>', '100%', '', '3', 'center', '');
+
+		while (list($tab_short_name, $tab_fields) = each($settings_graphs)) {
+			$collapsible = true;
+
+			print "<tr class='spacer tableHeader" . ($collapsible ? ' collapsible':'') . "' id='row_$tab_short_name'><td colspan='2' style='cursor:pointer;' class='tableSubHeaderColumn'>" . $tabs_graphs[$tab_short_name] . ($collapsible ? "<div style='float:right;padding-right:4px;'><i class='fa fa-angle-double-up'></i></div>":"") . "</td></tr>\n";
+
+			$form_array = array();
+
+			while (list($field_name, $field_array) = each($tab_fields)) {
+				$form_array += array($field_name => $tab_fields[$field_name]);
+
+				if ((isset($field_array['items'])) && (is_array($field_array['items']))) {
+					while (list($sub_field_name, $sub_field_array) = each($field_array['items'])) {
+						if (graph_config_value_exists($sub_field_name, $_SESSION['sess_user_id'])) {
+							$form_array[$field_name]['items'][$sub_field_name]['form_id'] = 1;
+						}
+
+						$form_array[$field_name]['items'][$sub_field_name]['value'] =  db_fetch_cell_prepared('SELECT value FROM settings_graphs WHERE name = ? AND user_id = ?', array($sub_field_name, $_SESSION['sess_user_id']));
+					}
+				}else{
+					if (graph_config_value_exists($field_name, $_SESSION['sess_user_id'])) {
+						$form_array[$field_name]['form_id'] = 1;
+					}
+
+					$form_array[$field_name]['value'] = db_fetch_cell_prepared('SELECT value FROM settings_graphs WHERE name = ? AND user_id = ?', array($field_name, $_SESSION['sess_user_id']));
+				}
+			}
+
+			draw_edit_form(
+				array(
+					'config' => array(
+						'no_form_tag' => true
+						),
+					'fields' => $form_array
+					)
+				);
+		}
+
+		html_end_box();
+	}
 
 	?>
 	<script type="text/javascript">
@@ -243,7 +281,7 @@ function settings() {
 			event.preventDefault();
 			href='<?php  print $_SERVER['HTTP_REFERER'];?>';
 			href=href+(href.indexOf('?') > 0 ? '&':'?')+'header=false';
-			$.post('graph_settings.php?header=false', $('input, select, textarea').serialize()).done(function(data) {
+			$.post('auth_profile.php?header=false', $('input, select, textarea').serialize()).done(function(data) {
 				document.location='<?php  print $_SERVER['HTTP_REFERER'];?>';
 			});
 		});
@@ -270,8 +308,8 @@ function settings() {
 		}
 	}
 
-	$_SESSION['graph_settings_referer'] = (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER']:'graph_view.php'); 
+	$_SESSION['profile_referer'] = (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER']:'graph_view.php'); 
 	form_hidden_box('save_component_graph_config','1','');
-	form_save_button('graph_settings.php', 'save');
+	form_save_button('auth_profile.php', 'save');
 }
 

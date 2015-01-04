@@ -1648,7 +1648,13 @@ function draw_login_status($using_guest_account = false) {
 		print "</div>\n";
 	}elseif (isset($_SESSION['sess_user_id']) && $using_guest_account == false) {
 		api_plugin_hook('nav_login_before');
-		print "Logged in as <span id='user' class='user usermenuup'>" . db_fetch_cell_prepared('SELECT username FROM user_auth WHERE id = ?', array($_SESSION['sess_user_id'])) . "</span></div><div><ul class='menuoptions' style='display:none;'><li><a href='" . $config['url_path'] . "logout.php'>Logout</a></li>" . ($auth_method == 1 ? "<li><a href='" . $config['url_path'] . "auth_changepassword.php'>Change Password</a></li>":'') . "</ul>\n";
+		print "Logged in as <span id='user' class='user usermenuup'>" . db_fetch_cell_prepared('SELECT username FROM user_auth WHERE id = ?', array($_SESSION['sess_user_id'])) . 
+			"</span></div><div><ul class='menuoptions' style='display:none;'>" . 
+				(is_realm_allowed(20) ? "<li><a href='" . $config['url_path'] . "auth_profile.php'>Edit Profile</a></li>":"") . 
+				($auth_method == 1 ? "<li><a href='" . $config['url_path'] . "auth_changepassword.php'>Change Password</a></li>":'') . 
+				($auth_method > 0 ? "<li><a href='" . $config['url_path'] . "logout.php'>Logout</a></li>":"") . 
+			"</ul>\n";
+
 		api_plugin_hook('nav_login_after');
 		print "</div>\n";
 	}

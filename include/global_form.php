@@ -1067,7 +1067,16 @@ $fields_user_user_edit_host = array(
 		'friendly_name' => 'Full Name',
 		'description' => 'A more descriptive name for this user, that can include spaces or special characters.',
 		'value' => '|arg1:full_name|',
-		'max_length' => '255'
+		'max_length' => '128',
+		'size' => 60
+		),
+	'email_address' => array(
+		'method' => 'textbox',
+		'friendly_name' => 'E-Mail Address',
+		'description' => 'An E-Mail Address where the User can be reached.',
+		'value' => '|arg1:email_address|',
+		'max_length' => '128',
+		'size' => 60
 		),
 	'password' => array(
 		'method' => 'textbox_password',
@@ -1293,8 +1302,8 @@ $fields_template_import = array(
 			'value' => '|arg1:max_log_size|',
 			'default' => 31,
 			'array' => array_combine( range(1,31), range(1,31) )
-		),
-		'spacer1' => array(
+			),
+		'snmp_options_header' => array(
 			'method' => 'spacer',
 			'friendly_name' => 'SNMP Options'
 			),
@@ -1394,8 +1403,8 @@ $fields_template_import = array(
 			'value' => '|arg1:snmp_message_type|',
 			'default' => '1',
 			'array' => array(1 => 'NOTICATIONS', 2 => 'INFORMS')
-		),
-		'header4' => array(
+			),
+		'addition_header' => array(
 			'method' => 'spacer',
 			'friendly_name' => 'Additional Options'
 			),

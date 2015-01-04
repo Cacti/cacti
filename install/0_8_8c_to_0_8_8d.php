@@ -455,9 +455,13 @@ function upgrade_to_0_8_8d() {
 		}
 	}
 	}
-	db_execute("DELETE FROM plugin_realms WHERE file LIKE 'clog%'");
-	db_execute("DELETE FROM plugin_config WHERE directory='clog'");
-	db_execute("DELETE FROM plugin_hooks WHERE name='clog'");
+
+	db_install_execute('0.8.8d', "DELETE FROM plugin_realms WHERE file LIKE 'clog%'");
+	db_install_execute('0.8.8d', "DELETE FROM plugin_config WHERE directory='clog'");
+	db_install_execute('0.8.8d', "DELETE FROM plugin_hooks WHERE name='clog'");
 
 	snmpagent_cache_install();
+
+	// Adding email column for future user
+	db_add_column ('0.8.8d', 'user_auth', array('name' => 'email_address', 'type' => 'varchar(128)', 'NULL' => true, 'after' => 'full_name'));
 }

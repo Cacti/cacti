@@ -485,7 +485,8 @@ $user_auth_realms = array(
 	16 => 'Export Data',
 	17 => 'Import Data',
 	18 => 'View Log (Admin)',
-	19 => 'View Log (User)');
+	19 => 'View Log (User)',
+	20 => 'Update Profile');
 
 $user_auth_realm_filenames = array(
 	'about.php' => 8,
@@ -528,6 +529,7 @@ $user_auth_realm_filenames = array(
 	'event_queue.php' => 8,
 	'smtp_queue.php' => 8,
 	'logout.php' => -1,
+	'auth_profile.php' => 20,
 	'auth_changepassword.php' => -1,
 	'permission_denied.php' => -1);
 
