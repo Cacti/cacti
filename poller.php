@@ -321,7 +321,7 @@ while ($poller_runs_completed < $poller_runs) {
 				if (($items_launched >= $items_per_process) ||
 					(sizeof($items_perhost) == $concurrent_processes)) {
 					$last_host      = $item['id'];
-					/* if this is the dummy entry for externally updated data sources 
+					/* if this is the dummy entry for externally updated data sources
 					 * that are not related to any host (host id = 0), do NOT change_proc */
 					$change_proc    = ($item['id'] == 0 ? false : true);
 					$items_launched = 0;
@@ -393,7 +393,7 @@ while ($poller_runs_completed < $poller_runs) {
 
 					/* generate a snmp notification */
 					snmpagent_poller_exiting();
-					
+
 					api_plugin_hook_function('poller_exiting');
 					log_cacti_stats($loop_start, $method, $concurrent_processes, $max_threads,
 						sizeof($polling_hosts), $hosts_per_process, $num_polling_items, $rrds_processed);
@@ -460,6 +460,7 @@ while ($poller_runs_completed < $poller_runs) {
 		if ($poller_runs_completed < $poller_runs) {
 			list($micro, $seconds) = split(' ', microtime());
 			$plugin_start = $seconds + $micro;
+			snmpagent_poller_bottom();
 			dsstats_poller_bottom();
 			boost_poller_bottom();
 			api_plugin_hook('poller_bottom');
@@ -482,7 +483,7 @@ function log_cacti_stats($loop_start, $method, $concurrent_processes, $max_threa
 	list($micro,$seconds) = explode(' ', microtime());
 	$loop_end = $seconds + $micro;
 
-	$perf_data = array( 
+	$perf_data = array(
 		round($loop_end-$loop_start,4),
 		$method,
 		$concurrent_processes,
@@ -516,6 +517,7 @@ function display_help() {
 }
 
 /* start post data processing */
+snmpagent_poller_bottom();
 boost_poller_bottom();
 dsstats_poller_bottom();
 poller_maintenance();
