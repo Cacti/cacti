@@ -478,7 +478,7 @@ $struct_graph = array(
 		'max_length' => '50',
 		'default' => '',
 		'description' => 'Sets the xponent value on the Y-axis for numbers. Note: This option is
-			depricated and replaced by the --y-grid option.  In this option, Y-axis grid lines appear 
+			depricated and replaced by the --y-grid option.  In this option, Y-axis grid lines appear
 			at each grid step interval.  Labels are placed every label factor lines.'
 		),
 	'unit_exponent_value' => array(
@@ -1315,7 +1315,7 @@ $fields_template_import = array(
 			'method' => 'drop_array',
 			'friendly_name' => 'SNMP Version',
 			'description' => 'Choose the SNMP version for this device.',
-			'on_change' => 'changeHostForm()',
+			'on_change' => 'setSNMP()',
 			'value' => '|arg1:snmp_version|',
 			'default' => '1',
 			'array' => array('1'=>'Version 1', '2'=>'Version 2', '3' => 'Version 3'),
