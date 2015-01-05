@@ -41,7 +41,8 @@ $tabs = array(
 	'authentication' => 'Authentication',
 	'dsstats' => 'Data Source Statistics',
 	'boost' => 'Performance',
-	'mail' => 'Mail / DNS');
+	'mail' => 'Mail / DNS',
+	'realtime' => 'Realtime');
 
 $tabs_graphs = array(
 	'general' => 'General Settings',
@@ -1497,8 +1498,48 @@ $settings = array(
 			'default' => '',
 			'max_length' => '255'
 			)
+		),
+	'realtime' => array(
+		'realtime_header' => array(
+			'friendly_name' => 'Realtime Graphs',
+			'method' => 'spacer',
+			'collapsible' => 'true',
+			),
+		'realtime_enabled' => array(
+			'friendly_name' => 'Enable Realtime Graphing',
+			'description' => 'When an option is checked, users will be able to put Cacti into Realtime mode.',
+			'method' => 'checkbox',
+			'default' => 'on'
+			),
+		'realtime_gwindow' => array(
+			'friendly_name' => 'Graph Timespan',
+			'description' => 'This timespan you wish to see on the default graph.',
+			'method' => 'drop_array',
+			'default' => 60,
+			'array' => $realtime_window,
+			),
+		'realtime_sync' => array(
+			'friendly_name' => 'Syncronize Graphs',
+			'description' => 'When an option is changed, update all graphs with those settings.',
+			'method' => 'checkbox',
+			'default' => 'on'
+			),
+		'realtime_interval' => array(
+			'friendly_name' => 'Refresh Interval',
+			'description' => 'This is the time between graph updates.',
+			'method' => 'drop_array',
+			'default' => 15,
+			'array' => $realtime_refresh,
+			),
+		'realtime_cache_path' => array(
+			'friendly_name' => 'Cache Directory',
+			'description' => 'This is the location, on the web server where the RRDfiles and PNG files will be cached.
+			This cache will be managed by the poller.',
+			'method' => 'dirpath',
+			'max_length' => 255,
+			'size' => 40,
+			)
 		)
-
 	);
 
 $settings_graphs = array(

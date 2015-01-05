@@ -1514,6 +1514,10 @@ function rrd_function_theme_font_options(&$graph_data_array) {
 	return $graph_opts;
 }
 
+function rrdtool_set_font($type, $no_legend = '', $themefonts = array()) {
+	return rrd_function_set_font($type, $no_legend, $themefonts);
+}
+
 function rrd_function_set_font($type, $no_legend, $themefonts) {
 	global $config;
 

@@ -103,7 +103,7 @@ function clog_view_logfile() {
 	load_current_session_value('page_referrer', 'page_referrer', 'view_logfile');
 
 	$refresh['seconds'] = $_REQUEST['refresh'];
-	$refresh['page']    = $config['url_path'] . 'plugins/clog/clog.php';
+	$refresh['page']    = $config['url_path'] . 'clog.php';
 	if ((isset($_REQUEST['purge_continue'])) && (clog_admin())) clog_purge_logfile();
 
 	general_header();

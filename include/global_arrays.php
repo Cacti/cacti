@@ -506,6 +506,7 @@ $user_auth_realm_filenames = array(
 	'graph_templates_inputs.php' => 10,
 	'graph_templates_items.php' => 10,
 	'graph_view.php' => 7,
+	'graph_realtime.php' => 7,
 	'graphs.php' => 5,
 	'graphs_items.php' => 5,
 	'graphs_new.php' => 5,
@@ -777,6 +778,27 @@ $boost_max_memory = array(
 	'1536' => '1.5 GBytes',
 	'2048' => '2 GBytes',
 	'3072' => '3 GBytes');
+
+$realtime_window = array(
+	30   => "30 Seconds",
+	45   => "45 Seconds",
+	60   => "1 Minute",
+	90   => "1.5 Minutes",
+	120  => "2 Minutes",
+	300  => "5 Minutes",
+	600  => "10 Minutes",
+	1200 => "20 Minutes",
+	1800 => "30 Minutes",
+	3600 => "1 Hour");
+
+$realtime_refresh = array(
+	5   => "5 Seconds",
+	10  => "10 Seconds",
+	15  => "15 Seconds",
+	20  => "20 Seconds",
+	30  => "30 Seconds",
+	60  => "1 Minute",
+	120 => "2 Minutes");
 
 api_plugin_hook('config_arrays');
 

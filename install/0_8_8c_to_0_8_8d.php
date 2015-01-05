@@ -464,4 +464,19 @@ function upgrade_to_0_8_8d() {
 
 	// Adding email column for future user
 	db_add_column ('0.8.8d', 'user_auth', array('name' => 'email_address', 'type' => 'varchar(128)', 'NULL' => true, 'after' => 'full_name'));
+
+	db_install_execute('0.8.8d', "CREATE TABLE IF NOT EXISTS poller_output_realtime (
+		local_data_id mediumint(8) unsigned NOT NULL default '0',
+		rrd_name varchar(19) NOT NULL default '',
+		`time` datetime NOT NULL default '0000-00-00 00:00:00',
+		output text NOT NULL,
+		poller_id int(11) NOT NULL,
+		PRIMARY KEY  (local_data_id,rrd_name,`time`)) 
+		ENGINE=MyISAM");
+
+	db_install_execute('0.8.8d', 'DROP TABLE IF EXISTS poller_output_rt');
+
+	db_install_execute('0.8.8d', "DELETE FROM plugin_realms WHERE file LIKE '%graph_image_rt%'");
+	db_install_execute('0.8.8d', "DELETE FROM plugin_config WHERE directory='realtime'");
+	db_install_execute('0.8.8d', "DELETE FROM plugin_hooks WHERE name='realtime'");
 }
