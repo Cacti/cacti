@@ -195,6 +195,7 @@ function api_device_save($id, $host_template_id, $description, $hostname, $snmp_
 
 	# now that we have the id of the new host, we may plugin postprocessing code
 	$save['id'] = $host_id;
+	snmpagent_api_device_new($save);
 	api_plugin_hook_function('api_device_new', $save);
 
 	return $host_id;
