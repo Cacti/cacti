@@ -36,7 +36,7 @@ error_reporting(E_ALL);
 
 /* allow the script to hang around waiting for connections. */
 set_time_limit(0);
-
+chdir(dirname(__FILE__));
 include_once("./include/global.php");
 
 /* translate well-known textual conventions and SNMP base types to net-snmp */
