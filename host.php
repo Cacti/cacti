@@ -568,6 +568,10 @@ function host_remove() {
 function ping_host() {
 	input_validate_input_number($_REQUEST['id']);
 
+	if (empty($_REQUEST['id'])) {
+		return "";
+	}
+
 	$host = db_fetch_row_prepared('SELECT * FROM host WHERE id = ?', array($_REQUEST['id']));
 	$am   = $host['availability_method'];
 	$anym = false;
@@ -747,21 +751,17 @@ function host_edit() {
 		availability_method = $('#availability_method').val();
 		ping_method         = $('#ping_method').val();
 
-		/* debugging, uncomment as required */
-		//alert("The availability method is '" + availability_method + "'");
-		//alert("The ping method is '" + ping_method + "'");
-
 		switch(availability_method) {
-		case "0": // none
+		case '0': // none
 			$('#row_ping_method').css('display', 'none');
 			$('#row_ping_port').css('display', 'none');
 			$('#row_ping_timeout').css('display', 'none');
 			$('#row_ping_retries').css('display', 'none');
 
 			break;
-		case "2": // snmp
-		case "5": // snmp sysDesc
-		case "6": // snmp getNext
+		case '2': // snmp
+		case '5': // snmp sysDesc
+		case '6': // snmp getNext
 			$('#row_ping_method').css('display', 'none');
 			$('#row_ping_port').css('display', 'none');
 			$('#row_ping_timeout').css('display', '');
@@ -770,15 +770,15 @@ function host_edit() {
 			break;
 		default: // ping ok
 			switch(ping_method) {
-			case "1": // ping icmp
+			case '1': // ping icmp
 				$('#row_ping_method').css('display', '');
 				$('#row_ping_port').css('display', 'none');
 				$('#row_ping_timeout').css('display', '');
 				$('#row_ping_retries').css('display', '');
 
 				break;
-			case "2": // ping udp
-			case "3": // ping tcp
+			case '2': // ping udp
+			case '3': // ping tcp
 				$('#row_ping_method').css('display', '');
 				$('#row_ping_port').css('display', '');
 				$('#row_ping_timeout').css('display', '');
@@ -792,29 +792,33 @@ function host_edit() {
 	}
 
 	function setAvailability() {
-		if ($('#snmp_version').val() == 0) {
-			/* remove snmp options */
-			$('#availability_method option[value="0"]').show();
-			$('#availability_method option[value="1"]').hide();
-			$('#availability_method option[value="4"]').hide();
-			$('#availability_method option[value="2"]').hide();
-			$('#availability_method option[value="5"]').hide();
-			$('#availability_method option[value="6"]').hide();
+		if ($('#snmp_version').val() == '0') {
+			methods = [ 
+				{ value: '0', text: 'None' }, 
+				{ value: '3', text: 'Ping' }
+			];
 
-			if ($('#availability_method').val() != "3" && $('#availability_method').val() != "0") {
+			if ($('#availability_method').val() != '3' && $('#availability_method').val() != '0') {
 				$('#availability_method').val('3');
 			}
+
+			$('#availability_method').replaceOptions(methods, $('#availability_method').val());
 		}else{
-			$('#availability_method option[value="0"]').show();
-			$('#availability_method option[value="1"]').show();
-			$('#availability_method option[value="4"]').show();
-			$('#availability_method option[value="2"]').show();
-			$('#availability_method option[value="5"]').show();
-			$('#availability_method option[value="6"]').show();
+			methods = [
+				{ value: '0', text: 'None' }, 
+				{ value: '1', text: 'Ping and SNMP Uptime' }, 
+				{ value: '2', text: 'SNMP Uptime' }, 
+				{ value: '3', text: 'Ping' }, 
+				{ value: '4', text: 'Ping or SNMP Uptime' }, 
+				{ value: '5', text: 'SNMP Desc' }, 
+				{ value: '6', text: 'SNMP GetNext' }
+			];
+
+			$('#availability_method').replaceOptions(methods, $('#availability_method').val());
 		}
 
 		switch($('#availibility_method').val()) {
-			case "0": // availability none
+			case '0': // availability none
 				$('#row_ping_method').hide();
 				$('#ping_method').val(0);
 				$('#row_ping_timeout').hide();
@@ -823,9 +827,9 @@ function host_edit() {
 				$('#row_ping_retrie').hide();
 
 				break;
-			case "1": // ping and snmp sysUptime
-			case "3": // ping
-			case "4": // ping or snmp sysUptime
+			case '1': // ping and snmp sysUptime
+			case '3': // ping
+			case '4': // ping or snmp sysUptime
 				if (($('#row_ping_method').css('display', 'none')) ||
 					($('#row_ping_method').css('display') == undefined)) {
 					$('#ping_method').val(ping_method);
@@ -833,13 +837,17 @@ function host_edit() {
 				}
 
 				break;
-			case "2": // snmp sysUptime
-			case "5": // snmp sysDesc
-			case "6": // snmp getNext
+			case '2': // snmp sysUptime
+			case '5': // snmp sysDesc
+			case '6': // snmp getNext
 				$('#row_ping_method').css('display', 'none');
 				$('#ping_method').val(0);
 
 				break;
+		}
+
+		if ($('#availability_method-button').length) {
+			$('#availability_method').selectmenu('refresh');
 		}
 	}
 
@@ -852,7 +860,7 @@ function host_edit() {
 	function setSNMP() {
 		snmp_version = $('#snmp_version').val();
 		switch(snmp_version) {
-		case "0": // No SNMP
+		case '0': // No SNMP
 			$('#row_snmp_username').hide();
 			$('#row_snmp_password').hide();
 			$('#row_snmp_community').hide();
@@ -864,8 +872,8 @@ function host_edit() {
 			$('#row_snmp_timeout').hide();
 			$('#row_max_oids').hide();
 			break;
-		case "1": // SNMP v1
-		case "2": // SNMP v2c
+		case '1': // SNMP v1
+		case '2': // SNMP v2c
 			$('#row_snmp_username').hide();
 			$('#row_snmp_password').hide();
 			$('#row_snmp_community').show();
@@ -877,7 +885,7 @@ function host_edit() {
 			$('#row_snmp_timeout').show();
 			$('#row_max_oids').show();
 			break;
-		case "3": // SNMP v3
+		case '3': // SNMP v3
 			$('#row_snmp_username').show();
 			$('#row_snmp_password').show();
 			$('#row_snmp_community').hide();

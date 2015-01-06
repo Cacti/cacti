@@ -486,10 +486,10 @@ function tree_edit() {
 	$lockdiv = '';
 
 	if (isset($tree['locked']) && $tree['locked'] == 0) {
-		$lockdiv = "<div style='padding:3px;'><table><tr><td><input id='lock' type='button' value='Lock Tree'></td><td style='font-weight:bold;'>To edit this tree, you must first lock it.</td></tr></table></div>\n";
+		$lockdiv = "<div style='padding:3px;'><table><tr><td><input id='lock' type='button' value='Edit Tree'></td><td style='font-weight:bold;'>To Edit this tree, you must first lock it by pressing the Edit Tree button.</td></tr></table></div>\n";
 		$editable = false;
 	}elseif (isset($tree['locked']) && $tree['locked'] == 1) {
-		$lockdiv = "<div style='padding:3px;'><table><tr><td><input id='unlock' type='button' value='Unlock Tree'></td><td><input id='addbranch' type='button' value='Add Root Branch' onClick='createNode()'></td><td style='font-weight:bold;'>The tree was locked on '" . $tree['locked_date'] . "' by '" . get_username($tree['modified_by']) . "'";
+		$lockdiv = "<div style='padding:3px;'><table><tr><td><input id='unlock' type='button' value='Finish Editing Tree'></td><td><input id='addbranch' type='button' value='Add Root Branch' onClick='createNode()'></td><td style='font-weight:bold;'>The tree was locked for Editing on '" . $tree['locked_date'] . "' by '" . get_username($tree['modified_by']) . "'";
 		if ($tree['modified_by'] == $_SESSION['sess_user_id']) {
 			$editable = true;
 			$lockdiv .= '</td></tr></table></div>';

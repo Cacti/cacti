@@ -190,12 +190,7 @@ function html_graph_area(&$graph_array, $no_graphs_message = "", $extra_url_args
 							<?php print (read_graph_config_option("show_graph_title") == "on" ? "<span align='center'><strong>" . htmlspecialchars($graph["title_cache"]) . "</strong></span>" : "");?>
 						</td>
 						<td valign='top' style='align: left; padding: 3px;' class='noprint'>
-							<a href='<?php print htmlspecialchars($config['url_path'] . "graph.php?action=zoom&local_graph_id=" . $graph["local_graph_id"] . "&rra_id=0&". $extra_url_args);?>'><img src='<?php print $config['url_path'];?>images/graph_zoom.gif' border='0' alt='Zoom Graph' title='Zoom Graph' style='padding: 3px;'></a><br>
-							<a href='<?php print htmlspecialchars($config['url_path'] . "graph_xport.php?local_graph_id=" . $graph["local_graph_id"] . "&rra_id=0&" . $extra_url_args);?>'><img src='<?php print $config['url_path'];?>images/graph_query.png' border='0' alt='CSV Export' title='CSV Export' style='padding: 3px;'></a><br>
-							<a href='<?php print htmlspecialchars($config['url_path'] . "graph.php?action=properties&local_graph_id=" . $graph["local_graph_id"] . "&rra_id=0&" . $extra_url_args);?>'><img src='<?php print $config['url_path'];?>images/graph_properties.gif' border='0' alt='Graph Source/Properties' title='Graph Source/Properties' style='padding: 3px;'></a><br>
-							<?php if (read_config_option('realtime_enabled') == 'on') print "<a href='#' onclick=\"window.open('".$config['url_path']."graph_realtime.php?local_graph_id=" . $graph['local_graph_id'] . "', 'popup_" . $graph['local_graph_id'] . "', 'toolbar=no,menubar=no,location=no,resizable=yes,scrollbars=no,status=no,titlebar=no,width=650,height=300')\"><img src='".$config['url_path']."images/realtime.gif' border='0' alt='Realtime' title='Realtime' style='padding: 3px;'></a><br/>\n";?>
-							<?php api_plugin_hook('graph_buttons', array('hook' => 'graphs_thumbnails', 'local_graph_id' => $graph['local_graph_id'], 'rra' =>  0, 'view_type' => 'view')); ?>
-							<a href='#page_top'><img src='<?php print $config['url_path']; ?>images/graph_page_top.gif' border='0' alt='Page Top' title='Page Top' style='padding: 3px;'></a><br>
+							<?php graph_drilldown_icons($graph['local_graph_id']);?>
 						</td>
 					</tr>
 				</table>
@@ -305,13 +300,8 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = "", $extr
 							<div style="min-height: <?php echo (1.6 * read_graph_config_option("default_height")) . "px"?>;"><a href='<?php print htmlspecialchars($config['url_path'] . "graph.php?action=view&rra_id=all&local_graph_id=" . $graph["local_graph_id"]);?>'><img class='graphimage' id='graph_<?php print $graph["local_graph_id"] ?>' src='<?php print htmlspecialchars($config['url_path'] . "graph_image.php?local_graph_id=" . $graph["local_graph_id"] . "&rra_id=0&graph_height=" . read_graph_config_option("default_height") . "&graph_width=" . read_graph_config_option("default_width") . "&graph_nolegend=true&title_font_size=" . ((read_graph_config_option("custom_fonts") == "on") ? read_graph_config_option("title_size") : read_config_option("title_size")) . (($extra_url_args == "") ? "" : "&$extra_url_args"));?>' border='0' alt='<?php print htmlspecialchars($graph["title_cache"]);?>'></a></div>
 							<?php print (read_graph_config_option("show_graph_title") == "on" ? "<span align='center'><strong>" . htmlspecialchars($graph["title_cache"]) . "</strong></span>" : "");?>
 						</td>
-						<td valign='top' style='align: left; padding: 3px;'>
-							<a href='<?php print htmlspecialchars($config['url_path'] . "graph.php?action=zoom&local_graph_id=" . $graph["local_graph_id"] . "&rra_id=0&" . $extra_url_args);?>'><img src='<?php print $config['url_path'];?>images/graph_zoom.gif' border='0' alt='Zoom Graph' title='Zoom Graph' style='padding: 3px;'></a><br>
-							<a href='<?php print htmlspecialchars($config['url_path'] . "graph_xport.php?local_graph_id=" . $graph["local_graph_id"] . "&rra_id=0&" . $extra_url_args);?>'><img src='<?php print $config['url_path'];?>images/graph_query.png' border='0' alt='CSV Export' title='CSV Export' style='padding: 3px;'></a><br>
-							<a href='<?php print htmlspecialchars($config['url_path'] . "graph.php?action=properties&local_graph_id=" . $graph["local_graph_id"] . "&rra_id=0&" . $extra_url_args);?>'><img src='<?php print $config['url_path'];?>images/graph_properties.gif' border='0' alt='Graph Source/Properties' title='Graph Source/Properties' style='padding: 3px;'></a><br>
-							<?php if (read_config_option('realtime_enabled') == 'on') print "<a href='#' onclick=\"window.open('".$config['url_path']."graph_realtime.php?local_graph_id=" . $graph['local_graph_id'] . "', 'popup_" . $graph['local_graph_id'] . "', 'toolbar=no,menubar=no,location=no,resizable=yes,scrollbars=no,status=no,titlebar=no,width=650,height=300')\"><img src='".$config['url_path']."images/realtime.gif' border='0' alt='Realtime' title='Realtime' style='padding: 3px;'></a><br/>\n";?>
-							<?php api_plugin_hook('graph_buttons_thumbnails', array('hook' => 'graphs_thumbnails', 'local_graph_id' => $graph['local_graph_id'], 'rra' =>  0, 'view_type' => '')); ?>
-							<a href='#page_top'><img src='<?php print $config['url_path'] . "images/graph_page_top.gif";?>' border='0' alt='Page Top' title='Page Top' style='padding: 3px;'></a><br>
+						<td valign='top' align='center' style='align: center'>
+							<?php print graph_drilldown_icons($graph['local_graph_id'], 'graph_buttons_thumbnails');?>
 						</td>
 					</tr>
 				</table>
@@ -342,6 +332,17 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = "", $extr
 			print "<td><em>$no_graphs_message</em></td>";
 		}
 	}
+}
+
+function graph_drilldown_icons($local_graph_id, $type = 'graph_buttons') {
+	global $config;
+
+	print "<span class='hyperLink zooming' id='graph_" . $local_graph_id . "_util'><img class='drillDown' src='" . $config['url_path'] . "images/cog.png' border='0' alt='' title='Graph Zoom and Debugging Utilities'></span><br>\n";
+	print "<span class='hyperLink csvexport' id='graph_" . $local_graph_id . "_csv'><img class='drillDown' src='" . $config['url_path'] . "images/table_go.png' border='0' alt='' title='CSV Export of Graph Data'></span><br>\n";
+	if (read_config_option('realtime_enabled') == 'on') {
+		print "<span class='hyperLink realtime' id='graph_" . $local_graph_id . "_realtime'><img class='drillDown' src='" . $config['url_path'] . "images/chart_curve_go.png' border='0' alt='' title='Click to view just this Graph in Realtime'></span><br/>\n";
+	}
+	api_plugin_hook($type, array('hook' => 'graphs_thumbnails', 'local_graph_id' => $local_graph_id, 'rra' =>  0, 'view_type' => ''));
 }
 
 /* html_nav_bar - draws a navigation bar which includes previous/next links as well as current

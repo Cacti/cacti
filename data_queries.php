@@ -721,9 +721,10 @@ function data_query_edit() {
 			html_start_box('<strong>Associated Graph Templates</strong>', '100%', '', '3', 'center', 'data_queries.php?action=item_edit&snmp_query_id=' . $snmp_query['id']);
 
 			print "<tr class='tableHeader'>
-					<td class='textSubHeaderDark'>Name</td>
-					<td class='textSubHeaderDark'>Graph Template Name</td>
-					<td></td>
+					<th class='textSubHeaderDark'>Name</th>
+					<th class='textSubHeaderDark'>Graph Template Name</th>
+					<th class='textSubHeaderDark' style='text-align:right;'>Mapping ID</th>
+					<th width='40' style='text-align:right;'>Action</td>
 				</tr>";
 
 			$snmp_query_graphs = db_fetch_assoc_prepared('SELECT
@@ -745,6 +746,9 @@ function data_query_edit() {
 						</td>
 						<td>
 							<?php print htmlspecialchars($snmp_query_graph['graph_template_name']);?>
+						</td>
+						<td style='text-align:right;'>
+							<?php print $snmp_query_graph['id'];?>
 						</td>
 						<td align="right">
 							<a href="<?php print htmlspecialchars('data_queries.php?action=item_remove&id=' . $snmp_query_graph['id'] . '&snmp_query_id=' . $snmp_query['id']);?>"><img src="images/delete_icon.gif" style="height:10px;width:10px;" border="0" alt="Delete"></a>
@@ -919,7 +923,7 @@ function data_query() {
 		ORDER BY " . get_request_var_request('sort_column') . ' ' . get_request_var_request('sort_direction') . '
 		LIMIT ' . (get_request_var_request('rows')*(get_request_var_request('page')-1)) . ',' . get_request_var_request('rows'));
 
-	$nav = html_nav_bar('data_queries.php?filter=' . get_request_var_request('filter'), MAX_DISPLAY_PAGES, get_request_var_request('page'), get_request_var_request('rows'), $total_rows, 6, 'Data Queries', 'page', 'main');
+	$nav = html_nav_bar('data_queries.php?filter=' . get_request_var_request('filter'), MAX_DISPLAY_PAGES, get_request_var_request('page'), get_request_var_request('rows'), $total_rows, 7, 'Data Queries', 'page', 'main');
 	print $nav;
 
 	$display_text = array(
@@ -927,7 +931,8 @@ function data_query() {
 		'nosort' => array('display' => 'Deletable', 'align' => 'right', 'tip' => 'Data Queries that are in use can not be Deleted.  In use is defined as being referenced by either a Graph or a Graph Template.'), 
 		'graphs' => array('display' => 'Graphs Using', 'align' => 'right', 'sort' => 'DESC', 'tip' => 'The number of Graphs using this Data Query.'),
 		'templates' => array('display' => 'Templates Using', 'align' => 'right', 'sort' => 'DESC', 'tip' => 'The number of Graphs Templates using this Data Query.'),
-		'data_input_method' => array('display' => 'Data Input Method', 'align' => 'left', 'sort' => 'ASC', 'tip' => 'The Data Input Method used to collect data for Data Sources associated with this Data Query.'));
+		'data_input_method' => array('display' => 'Data Input Method', 'align' => 'left', 'sort' => 'ASC', 'tip' => 'The Data Input Method used to collect data for Data Sources associated with this Data Query.'),
+		'id' => array('display' => 'ID', 'align' => 'right', 'sort' => 'ASC', 'tip' => 'The internal ID for this Graph Template.  Useful when performing automation or debugging.'));
 
 	html_header_sort_checkbox($display_text, get_request_var_request('sort_column'), get_request_var_request('sort_direction'), false);
 
@@ -946,6 +951,7 @@ function data_query() {
 			form_selectable_cell(number_format($snmp_query['graphs']), $snmp_query['id'], '', 'text-align:right');
 			form_selectable_cell(number_format($snmp_query['templates']), $snmp_query['id'], '', 'text-align:right');
 			form_selectable_cell((strlen(get_request_var_request('filter')) ? preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", $snmp_query['data_input_method']) : $snmp_query['data_input_method']), $snmp_query['id']);
+			form_selectable_cell($snmp_query['id'], $snmp_query['id'], '', 'text-align:right;');
 			form_checkbox_cell($snmp_query['name'], $snmp_query['id'], $disabled);
 			form_end_row();
 		}

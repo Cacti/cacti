@@ -21,6 +21,24 @@ function themeReady() {
 
 	$('input[type="text"], input[type="password"], input[type="checkbox"], textarea').not('image').addClass('ui-state-default ui-corner-all');
 
+	$.ui.selectmenu.prototype._renderItem = function(ui, item) {
+		if (item.element.closest('select').hasClass('colordropdown')) {
+			if (item.label != 'None') {
+				var li = $("<li>").css( "background-color", '#'+item.label );
+			}else{
+				var li = $("<li>").css( "background-color", '' );
+			}
+		}else{
+			var li = $("<li>");
+		}
+
+		if (item.disabled) {
+			li.addClass("ui-state-disabled");
+		}
+		this._setText(li, item.label);
+		return li.appendTo(ui);
+	}
+
 	$('select').selectmenu({
 		change: function(event, ui) {
 			$(this).val(ui.item.value).change();
@@ -29,10 +47,11 @@ function themeReady() {
 			my: "left top",
 			at: "left bottom",
 			collision: "flip"
-		}
+		},
 	}).each(function() {
 		id = $(this).attr('id');
 		$('#'+id+'-button').css('min-width', '0px').css('max-width', '400px').css('width','');
+		$('#'+id+'-menu').css('max-height', '250px');
 	});
 
 	$('#host_wrapper').dblclick(function() {
