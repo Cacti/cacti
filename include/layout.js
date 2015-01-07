@@ -67,6 +67,18 @@ function basename(path, suffix) {
 	return b;
 }
 
+/** getTimestampFromDate - Simple function to convert a MySQL Date 
+ * to a timestamp */
+function getTimestampFromDate(dateStamp) {
+	var dateParts = dateStamp.split(' ');
+	var timeParts = dateParts[1].split(':');
+
+	dateParts = dateParts[0].split('-');
+	var date = new Date(dateParts[0], parseInt(dateParts[1], 10) - 1, dateParts[2], timeParts[0], timeParts[1]);
+
+	return date.getTime();
+}
+
 /** getQueryString - this function will return the value
  *  of the get request variable defined as input.
  *  @args name - the variable name to return */

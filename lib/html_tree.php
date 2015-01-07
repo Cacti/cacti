@@ -125,7 +125,6 @@ function grow_dhtml_trees() {
 			$(this)
 			.on('set_state.jstree', function(e, data) {
 				if (node!='') {
-					//console.log('The node is :'+node);
 					$(this).jstree('deselect_all');
 					$(this).jstree('select_node', node);
 
@@ -138,7 +137,6 @@ function grow_dhtml_trees() {
 						href=$('#'+node).find('a:first').attr('href')+"&nodeid="+node.replace('tbranch-','');
 					}
 					if (href.search('undefined') < 0) {
-						console.log("Anchor found");
 						href=href.replace('action=tree', 'action=tree_content');
 						$.get(href, function(data) {
 							$('#main').html(data);
@@ -151,13 +149,11 @@ function grow_dhtml_trees() {
 			})
 			.on('activate_node.jstree', function(e, data) {
 				if (data.node.id) {
-					//console.log("The node is '"+data.node.id+"'");
 					if (data.node.id.search('tree_anchor') >= 0) {
 						href=$('#'+data.node.id).find('a:first').attr('href')+"&nodeid=0";
 					}else{
 						href=$('#'+data.node.id).find('a:first').attr('href')+"&nodeid="+data.node.id.replace('tbranch-','');
 					}
-					//console.log("The href is '"+href+"'");
 					href=href.replace('action=tree', 'action=tree_content');
 					$.get(href, function(data) {
 						$('#main').html(data);
@@ -252,12 +248,12 @@ function draw_dhtml_tree_level_graphing($tree_id, $parent = 0) {
 
 	$dhtml_tree = array();
 
-	if (sizeof($heirarchy) > 0) {
+	if (sizeof($heirarchy)) {
 		if ($tree_id > 0) {
 			$dhtml_tree[] = "\t\t\t<ul>\n";
 			foreach ($heirarchy as $leaf) {
 				if ($leaf['host_id'] > 0) {  //It's a host
-					$dhtml_tree[] = "\t\t\t\t<li id='tbranch-" . $leaf['id'] . "' data-jstree='{ \"icon\" : \"" . $config['url_path'] . "images/server.png\" }'><a href=\"" . htmlspecialchars('graph_view.php?action=tree&tree_id=' . $tree['id'] . '&leaf_id=' . $leaf['id'] . '&host_group_data=') . '">Device: ' . htmlspecialchars($leaf['hostname']) . "</a>\n";
+					$dhtml_tree[] = "\t\t\t\t<li id='tbranch-" . $leaf['id'] . "' data-jstree='{ \"icon\" : \"" . $config['url_path'] . "images/server.png\" }'><a href=\"" . htmlspecialchars('graph_view.php?action=tree&tree_id=' . $tree_id . '&leaf_id=' . $leaf['id'] . '&host_group_data=') . '">Device: ' . htmlspecialchars($leaf['hostname']) . "</a>\n";
 
 					if (read_graph_config_option('expand_hosts') == 'on') {
 						$dhtml_tree[] = "\t\t\t\t\t<ul>\n";

@@ -263,7 +263,11 @@ function change_data_template($local_data_id, $data_template_id) {
 	db_execute("UPDATE data_local SET data_template_id=$data_template_id WHERE id=$local_data_id");
 
 	/* get data about the template and the data source */
-	$data = db_fetch_row("SELECT * FROM data_template_data WHERE local_data_id=$local_data_id");
+	$data = db_fetch_row_prepared("SELECT * 
+		FROM data_template_data 
+		WHERE local_data_id = ?" , 
+		array($local_data_id));
+
 	$template_data = (($data_template_id == "0") ? $data : db_fetch_row("SELECT * FROM data_template_data WHERE local_data_id=0 AND data_template_id=$data_template_id"));
 
 	/* determine if we are here for the first time, or coming back */
@@ -293,7 +297,7 @@ function change_data_template($local_data_id, $data_template_id) {
 	}
 
 	/* these fields should never be overwritten by the template */
-	$save["data_source_path"] = $data["data_source_path"];
+	$save["data_source_path"] = (isset($data['data_source_path']) ? $data['data_source_path']:'');;
 
 	$data_template_data_id = sql_save($save, "data_template_data");
 	$data_rrds_list = db_fetch_assoc("SELECT * FROM data_template_rrd WHERE local_data_id=$local_data_id");

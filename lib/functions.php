@@ -306,7 +306,14 @@ function raise_message($message_id) {
 function display_output_messages() {
 	global $config, $messages;
 
-	if (isset($_SESSION['sess_messages'])) {
+	$debug_message = debug_log_return('new_graphs');
+
+	if ($debug_message != '') {
+		print "<div id='message' class='textInfo messageBox'>";
+		print $debug_message;
+		print '</div>';
+		debug_log_clear('new_graphs');
+	}elseif (isset($_SESSION['sess_messages'])) {
 		$error_message = is_error_message();
 
 		if (is_array($_SESSION['sess_messages'])) {
@@ -1671,10 +1678,10 @@ function draw_navigation_text($type = 'url') {
 	$nav = array(
 		'auth_profile.php:' => array('title' => 'User Profile (Edit)', 'mapping' => '', 'url' => '', 'level' => '0'),
 		'graph_view.php:' => array('title' => 'Graphs', 'mapping' => '', 'url' => 'graph_view.php', 'level' => '0'),
-		'graph_view.php:tree' => array('title' => 'Tree Mode', 'mapping' => 'graph_view.php:', 'url' => 'graph_view.php?action=tree', 'level' => '1'),
-		'graph_view.php:tree_content' => array('title' => 'Tree Mode', 'mapping' => 'graph_view.php:', 'url' => 'graph_view.php?action=tree', 'level' => '1'),
-		'graph_view.php:list' => array('title' => 'List Mode', 'mapping' => 'graph_view.php:', 'url' => 'graph_view.php?action=list', 'level' => '1'),
-		'graph_view.php:preview' => array('title' => 'Preview Mode', 'mapping' => 'graph_view.php:', 'url' => 'graph_view.php?action=preview', 'level' => '1'),
+		'graph_view.php:tree' => array('title' => 'Tree Mode', 'mapping' => 'graph_view.php:', 'url' => 'graph_view.php?action=tree', 'level' => '0'),
+		'graph_view.php:tree_content' => array('title' => 'Tree Mode', 'mapping' => 'graph_view.php:', 'url' => 'graph_view.php?action=tree', 'level' => '0'),
+		'graph_view.php:list' => array('title' => 'List Mode', 'mapping' => '', 'url' => 'graph_view.php?action=list', 'level' => '0'),
+		'graph_view.php:preview' => array('title' => 'Preview Mode', 'mapping' => '', 'url' => 'graph_view.php?action=preview', 'level' => '0'),
 		'graph.php:' => array('title' => '|current_graph_title|', 'mapping' => 'graph_view.php:,?', 'level' => '2'),
 		'graph.php:view' => array('title' => '|current_graph_title|', 'mapping' => 'graph_view.php:,?', 'level' => '2'),
 		'graph.php:zoom' => array('title' => 'Zoom', 'mapping' => 'graph_view.php:,?,graph.php:view', 'level' => '3'),
@@ -1784,6 +1791,7 @@ function draw_navigation_text($type = 'url') {
 	$current_mappings = explode(',', $current_array['mapping']);
 	$current_nav = "<ul id='breadcrumbs'>";
 	$title       = '';
+	$nav_count   = 0;
 
 	/* resolve all mappings to build the navigation string */
 	for ($i=0; ($i<count($current_mappings)); $i++) {
@@ -1816,9 +1824,17 @@ function draw_navigation_text($type = 'url') {
 			$current_nav .= (empty($url) ? '' : "<li><a id='nav_$i' href='" . htmlspecialchars($url) . "'>") . htmlspecialchars(resolve_navigation_variables($nav{$current_mappings[$i]}['title'])) . (empty($url) ? '' : '</a>' . (read_config_option('selected_theme') == 'classic' ? ' -> ':'') . '</li>');
 			$title       .= htmlspecialchars(resolve_navigation_variables($nav{$current_mappings[$i]}['title'])) . ' -> ';
 		}
+
+		$nav_count++;
 	}
 
-	$current_nav .= "<li><a id='nav_$i' href=#>" . htmlspecialchars(resolve_navigation_variables($current_array['title'])) . '</a></li>';
+	if ($nav_count) {
+		$current_nav .= "<li><a id='nav_$i' href=#>" . htmlspecialchars(resolve_navigation_variables($current_array['title'])) . '</a></li>';
+	}else{
+		$current_array = $nav[$current_page . ':' . $current_action];
+		$url = (isset($current_array['url']) ? $current_array['url']:'');
+		$current_nav .= "<li><a id='nav_$i' href='$url'>" . htmlspecialchars(resolve_navigation_variables($current_array['title'])) . '</a></li>';
+	}
 
 	if (isset($_REQUEST['tree_id']) || isset($_REQUEST['leaf_id'])) {
 		$leaf_sub  = '';
@@ -2121,7 +2137,7 @@ function debug_log_return($type) {
 	if ($type == 'new_graphs') {
 		if (isset($_SESSION['debug_log'][$type])) {
 			for ($i=0; $i<count($_SESSION['debug_log'][$type]); $i++) {
-				$log_text .= '<li>' . $_SESSION['debug_log'][$type][$i] . '</li>';
+				$log_text .= '+ ' . $_SESSION['debug_log'][$type][$i] . '<br>';
 			}
 		}
 	}else{

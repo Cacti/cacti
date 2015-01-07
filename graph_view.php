@@ -137,8 +137,27 @@ case 'tree_content':
 
 	?>
 	<script type="text/javascript" >
-	$(document).ready(function() {
+	$(function() {
 		$(".graphimage").zoom({inputfieldStartTime : 'date1', inputfieldEndTime : 'date2', serverTimeOffset : <?php print date('Z');?>});
+
+		$('span[id$="_mrtg"]').click(function() {
+			graph_id=$(this).attr('id').replace('graph_','').replace('_mrtg','');
+			$.get('graph.php?local_graph_id='+graph_id+'&header=false', function(data) {
+				$('#breadcrumbs').find('li:last-child a').click(function(event, data) {
+					id=$(this).attr('id');
+					$('#jstree').jstree('activate_node', node, event);
+					$('#'+id).unbind();
+				});
+				$('#breadcrumbs').append('<li><a id="nav_mrgt" href="#">MRTG View</a></li>');
+				$('#main').html(data);
+				applySkin();
+			});
+		});
+
+		$('span[id$="_csv"]').click(function() {
+			graph_id=$(this).attr('id').replace('graph_','').replace('_csv','');
+			document.location = 'graph_xport.php?local_graph_id='+graph_id+'&rra_id=0&view_type=tree&graph_start='+getTimestampFromDate($('#date1').val())+'&graph_end='+getTimestampFromDate($('#date2').val());
+		});
 	});
 	</script>
 	<?php
@@ -396,6 +415,20 @@ case 'preview':
 		$('#form_graph_view').on('submit', function(event) {
 			event.preventDefault();
 			applyFilter();
+		});
+
+		$('span[id$="_mrtg"]').click(function() {
+			graph_id=$(this).attr('id').replace('graph_','').replace('_mrtg','');
+			$.get('graph.php?local_graph_id='+graph_id+'&header=false', function(data) {
+				$('#breadcrumbs').append('<li><a id="nav_mrgt" href="#">MRTG View</a></li>');
+				$('#main').html(data);
+				applySkin();
+			});
+		});
+
+		$('span[id$="_csv"]').click(function() {
+			graph_id=$(this).attr('id').replace('graph_','').replace('_csv','');
+			document.location = 'graph_xport.php?local_graph_id='+graph_id+'&rra_id=0&view_type=tree&graph_start='+getTimestampFromDate($('#date1').val())+'&graph_end='+getTimestampFromDate($('#date2').val());
 		});
 	});
 

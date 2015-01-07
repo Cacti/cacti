@@ -400,7 +400,6 @@ function graphs() {
 
 	$host      = db_fetch_row_prepared('SELECT id, description, hostname, host_template_id FROM host WHERE id = ?', array($_REQUEST['host_id']));
 	$row_limit = get_request_var_request('rows');
-	$debug_log = debug_log_return('new_graphs');
 
 	$header =  ' [ ' . htmlspecialchars($host['description']) . ' (' . htmlspecialchars($host['hostname']) . ') ' . 
 			(!empty($host['host_template_id']) ? htmlspecialchars(db_fetch_cell_prepared('SELECT name FROM host_template WHERE id = ?', array($host['host_template_id']))):'') . ' ]';
@@ -410,9 +409,6 @@ function graphs() {
 	form_alternate_row();
 	print '<td class="even">';
 
-	if (!empty($debug_log)) {
-		debug_log_clear('new_graphs');
-	}
 	?>
 	<script type='text/javascript'>
 	<!--
