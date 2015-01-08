@@ -76,7 +76,7 @@ class MibCache{
 
 			foreach($mp->oids as $object_name => $object_params) {
 				if($object_params["otype"] != "TEXTUAL-CONVENTION") {
-					db_execute("INSERT INTO `snmpagent_cache` (`oid`, `name`, `mib`, `type`, `otype`, `kind`, `max-access`, `description`) VALUES ('"
+					db_execute_prepared("INSERT INTO `snmpagent_cache` (`oid`, `name`, `mib`, `type`, `otype`, `kind`, `max-access`, `description`) VALUES ('"
 								. $object_params["oid"] . "','"
 								. $object_name . "','"
 								. $object_params["mib"] . "','"
@@ -84,7 +84,7 @@ class MibCache{
 								. $object_params["otype"] . "','"
 								. $object_params["kind"] . "','"
 								. $object_params["max-access"] . "','"
-								. $object_params["description"] . "')"
+								. nl2br($object_params["description"]) . "')"
 					);
 					if($object_params["otype"] == "NOTIFICATION-TYPE") {
 						foreach($object_params["objects"] as $notication_object_index => $notication_object) {
@@ -101,7 +101,7 @@ class MibCache{
 								. $object_name . "','"
 								. $object_params["mib"] . "','"
 								. $object_params["syntax"] . "','"
-								. $object_params["description"] . "')"
+								. nl2br($object_params["description"]) . "')"
 					);
 				}
 			}

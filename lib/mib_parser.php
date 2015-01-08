@@ -88,6 +88,12 @@ class MibParser extends MibCache {
 					$in_quote = false;
 					if($token != '')
 					{
+						/* strip whitespaces from the end of the beginning of every object description row */
+						$lines = preg_split( '/\r\n|\r|\n/', $token);
+						$token = '';
+						foreach($lines as $line) {
+							$token .= trim($line) . "\r\n";
+						}
 						$tokens[] = $token;
 						$token = '';
 					}

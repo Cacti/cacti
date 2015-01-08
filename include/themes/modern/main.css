@@ -1255,3 +1255,21 @@ div.calendar {
 @media print {
 	.noprint { display:none }
 }
+
+.ui-tooltip {
+	max-width: none !important;
+}
+
+.ui-tooltip-content div.header {
+	color: #006400;
+}
+
+.ui-tooltip-content div.content {
+	font-size: 10px;
+	color: #333333;
+}
+
+div.preformatted {
+	font-family: monospace;
+	white-space: pre;
+}

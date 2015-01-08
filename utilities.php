@@ -125,9 +125,8 @@ switch ($_REQUEST['action']) {
 		bottom_footer();
 		break;
 	case 'rebuild_snmpagent_cache';
-		top_header();
-		snmpagent_utilities_run_cache(true);
-		bottom_footer();
+		snmpagent_cache_rebuilt();
+		header('Location: utilities.php?action=view_snmpagent_cache');exit;
 		break;
 	case 'view_snmpagent_events':
 		top_header();
@@ -2207,7 +2206,7 @@ function boost_display_run_status() {
  * @param mixed
  * @return
  */
-function snmpagent_utilities_run_cache($rebuild=false) {
+function snmpagent_utilities_run_cache() {
 	global $item_rows;
 
 	define("MAX_DISPLAY_PAGES", 21);
@@ -2306,10 +2305,6 @@ function snmpagent_utilities_run_cache($rebuild=false) {
 	-->
 	</script>
 	<?php
-
-	if($rebuild) {
-		snmpagent_cache_rebuilt();
-	}
 
 	html_start_box("<strong>SNMPAgent Cache</strong>", "100%", "", "3", "center", "");
 
@@ -2417,12 +2412,7 @@ function snmpagent_utilities_run_cache($rebuild=false) {
 			form_alternate_row('line' . $item["oid"], false);
 			form_selectable_cell( $oid, $item["oid"]);
 			if($item["description"]) {
-				$description = '';
-				$lines = preg_split( '/\r\n|\r|\n/', $item['description']);
-				foreach($lines as $line) {
-					$description .= addslashes(trim($line)) . '<br>';
-				}
-				print '<td><a href="#" onMouseOut="hideTooltip(snmpagentTooltip)" onMouseMove="showTooltip(event, snmpagentTooltip, \'' . $item["name"] . '\', \'' . $description . '\')">' . $name . '</a></td>';
+				print '<td><a href="#" title="<div class=\'header\'>' . $name . '</div><div class=\'content preformatted\'>' . $item["description"]. '</div>" class="tooltip">' . $name . '</a></td>';
 			}else {
 				print "<td>$name</td>";
 			}
@@ -2438,25 +2428,13 @@ function snmpagent_utilities_run_cache($rebuild=false) {
 
 	html_end_box();
 
-	/* as long as we are not running 0.8.9 don't make any use of jQuery */
 	?>
-	<div style="display:none" id="snmpagentTooltip"></div>
 	<script language="javascript" type="text/javascript" >
-		function showTooltip(e, div, title, desc) {
-			div.style.display = 'inline';
-			div.style.position = 'fixed';
-			div.style.backgroundColor = '#EFFCF0';
-			div.style.border = 'solid 1px grey';
-			div.style.padding = '10px';
-			div.innerHTML = '<b>' + title + '</b><div style="padding-left:10; padding-right:5"><pre>' + desc + '</pre></div>';
-			div.style.left = e.clientX + 15 + 'px';
-			div.style.top = e.clientY + 15 + 'px';
-		}
-
-		function hideTooltip(div) {
-			div.style.display = 'none';
-		}
-
+		$('.tooltip').tooltip({	
+			track: true, 
+			position: { collision: "flipfit" },
+			content: function() { return $(this).attr('title'); }			
+		});
 	</script>
 
 	<?php
@@ -2700,12 +2678,7 @@ function snmpagent_utilities_run_eventlog(){
 			print "<td style='white-space: nowrap;'>" . date( "Y/m/d H:i:s", $item["time"]) . "</td>";
 			print "<td>" . $item["hostname"] . "</td>";
 			if($item["description"]) {
-				$description = '';
-				$lines = preg_split( '/\r\n|\r|\n/', $item['description']);
-				foreach($lines as $line) {
-					$description .= addslashes(trim($line)) . '<br>';
-				}
-				print '<td><a href="#" onMouseOut="hideTooltip(snmpagentTooltip)" onMouseMove="showTooltip(event, snmpagentTooltip, \'' . $item["notification"] . '\', \'' . $description . '\')">' . $item["notification"] . '</a></td>';
+				print '<td><a href="#" title="<div class=\'header\'>' . $item["notification"] . '</div><div class=\'content preformatted\'>' . $item["description"]. '</div>" class="tooltip">' . $item["notification"] . '</a></td>';
 			}else {
 				print "<td>{$item["notification"]}</td>";
 			}
@@ -2719,29 +2692,13 @@ function snmpagent_utilities_run_eventlog(){
 
 	html_end_box();
 	?>
-	<div style="display:none" id="snmpagentTooltip"></div>
+	
 	<script language="javascript" type="text/javascript" >
-	function showTooltip(e, div, title, desc) {
-		div.style.display = 'inline';
-		div.style.position = 'fixed';
-		div.style.backgroundColor = '#EFFCF0';
-		div.style.border = 'solid 1px grey';
-		div.style.padding = '10px';
-		div.innerHTML = '<b>' + title + '</b><div style="padding-left:10; padding-right:5"><pre>' + desc + '</pre></div>';
-		div.style.left = e.clientX + 15 + 'px';
-		div.style.top = e.clientY + 15 + 'px';
-		}
-
-		function hideTooltip(div) {
-			div.style.display = 'none';
-		}
-		function highlightStatus(selectID){
-			if (document.getElementById('status_' + selectID).value == 'ON') {
-			document.getElementById('status_' + selectID).style.backgroundColor = 'LawnGreen';
-		}else {
-			document.getElementById('status_' + selectID).style.backgroundColor = 'OrangeRed';
-		}
-	}
+		$('.tooltip').tooltip({	
+			track: true, 
+			position: { collision: "flipfit" },
+			content: function() { return $(this).attr('title'); }			
+		});
 	</script>
 	<?php
 }

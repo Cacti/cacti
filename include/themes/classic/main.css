@@ -953,3 +953,21 @@ div.calendar { position: relative; }
 @media print {
 	.noprint { display:none }
 }
+
+.ui-tooltip {
+	max-width: none !important;
+}
+
+.ui-tooltip-content div.header {
+	color: blue;
+}
+
+.ui-tooltip-content div.content {
+	font-size: 10px;
+	color: #333333;
+}
+
+div.preformatted {
+	font-family: monospace;
+	white-space: pre;
+}
