@@ -116,6 +116,22 @@ if (isset($_SESSION['clog_error']) && $_SESSION['clog_error'] != '') {
 	$messages['clog_error'] = array('message' => $_SESSION['clog_error'], 'type' => 'error');
 }
 
+$messages["mg_mailtime_invalid"]["message"] = "Invalid Timestamp. Select timestamp in the future.";
+$messages["mg_mailtime_invalid"]["type"]    = "error";
+
+if (isset($_SESSION['reports_message']) && $_SESSION['reports_message'] != '') {
+	$messages['reports_message'] = array('message' => "<i>" . $_SESSION['reports_message'] . "</i>", 'type' => 'info');
+}
+
+if (isset($_SESSION['reports_error']) && $_SESSION['reports_error'] != '') {
+	$messages['reports_error'] = array('message' => "<span style='color:red;'><i>" . $_SESSION['reports_error'] . "</i></span>", 'type' => 'info');
+}
+
+$messages['reports_save']        = array('message' => '<i>Report Saved</i>', 'type' => 'info');
+$messages['reports_save_failed'] = array('message' => '<font style="color:red;"><i>Report Save Failed</i></font>', 'type' => 'info');
+$messages['reports_item_save']        = array('message' => '<i>Report Item Saved</i>', 'type' => 'info');
+$messages['reports_item_save_failed'] = array('message' => '<font style="color:red;"><i>Report Item Save Failed</i></font>', 'type' => 'info');
+
 $cdef_operators = array(1 =>
 	'+',
 	'-',
@@ -486,7 +502,9 @@ $user_auth_realms = array(
 	17 => 'Import Data',
 	18 => 'View Log (Admin)',
 	19 => 'View Log (User)',
-	20 => 'Update Profile');
+	20 => 'Update Profile',
+	21 => 'Reports (Admin)',
+	22 => 'Reports (User)');
 
 $user_auth_realm_filenames = array(
 	'about.php' => 8,
@@ -532,6 +550,8 @@ $user_auth_realm_filenames = array(
 	'logout.php' => -1,
 	'auth_profile.php' => 20,
 	'auth_changepassword.php' => -1,
+	'reports_user.php' => 21,
+	'reports_admin.php' => 22,
 	'permission_denied.php' => -1);
 
 $hash_type_codes = array(
@@ -799,6 +819,77 @@ $realtime_refresh = array(
 	30  => "30 Seconds",
 	60  => "1 Minute",
 	120 => "2 Minutes");
+
+$attachment_sizes = array(
+	1048576 => "1 Megabyte",
+	2097152 => "2 Megabytes",
+	4194304 => "4 Megabytes",
+	10485760 => "10 Megabytes",
+	20971520 => "20 Megabytes",
+	52428800 => "50 Megabytes",
+	104857600 => "100 Megabytes"
+);
+
+$reports_actions = array(
+	REPORTS_SEND_NOW  => "Send Now",
+	REPORTS_DUPLICATE => "Duplicate",
+	REPORTS_ENABLE    => "Enable",
+	REPORTS_DISABLE   => "Disable",
+	REPORTS_DELETE    => "Delete",
+);
+
+if (is_realm_allowed(22)) {
+	$reports_actions[REPORTS_OWN] = "Take Ownership";
+}
+
+$attach_types = array(
+	REPORTS_TYPE_INLINE_PNG => 'Inline PNG Image',
+	#REPORTS_TYPE_INLINE_JPG => 'Inline JPEG Image',
+	#REPORTS_TYPE_ATTACH_PDF => 'PDF Attachment',
+);
+
+if (extension_loaded(REPORTS_EXTENSION_GD)) {
+	$attach_types[REPORTS_TYPE_INLINE_JPG] = 'Inline JPEG Image';
+	$attach_types[REPORTS_TYPE_INLINE_GIF] = 'Inline GIF Image';
+}
+
+$attach_types[REPORTS_TYPE_ATTACH_PNG] = 'Attached PNG Image';
+
+if (extension_loaded(REPORTS_EXTENSION_GD)) {
+	$attach_types[REPORTS_TYPE_ATTACH_JPG] = 'Attached JPEG Image';
+	$attach_types[REPORTS_TYPE_ATTACH_GIF] = 'Attached GIF Image';
+}
+
+if (read_config_option("reports_allow_ln") != '') {
+	$attach_types[REPORTS_TYPE_INLINE_PNG_LN] = 'Inline PNG Image, LN Style';
+	if (extension_loaded(REPORTS_EXTENSION_GD)) {
+		$attach_types[REPORTS_TYPE_INLINE_JPG_LN] = 'Inline JPEG Image, LN Style';
+		$attach_types[REPORTS_TYPE_INLINE_GIF_LN] = 'Inline GIF Image, LN Style';
+	}
+}
+
+$item_types = array(
+	REPORTS_ITEM_TEXT  => 'Text',
+	REPORTS_ITEM_TREE => 'Tree',
+	REPORTS_ITEM_GRAPH => 'Graph',
+	REPORTS_ITEM_HR => 'Horizontal Rule'
+);
+
+$alignment = array(
+	REPORTS_ALIGN_LEFT   => 'left',
+	REPORTS_ALIGN_CENTER => 'center',
+	REPORTS_ALIGN_RIGHT  => 'right'
+);
+
+$reports_interval = array(
+	REPORTS_SCHED_INTVL_MINUTE        => 'Minute(s)',
+	REPORTS_SCHED_INTVL_HOUR          => 'Hour(s)',
+	REPORTS_SCHED_INTVL_DAY           => 'Day(s)',
+	REPORTS_SCHED_INTVL_WEEK          => 'Week(s)',
+	REPORTS_SCHED_INTVL_MONTH_DAY     => 'Month(s), Day of Month',
+	REPORTS_SCHED_INTVL_MONTH_WEEKDAY => 'Month(s), Day of Week',
+	REPORTS_SCHED_INTVL_YEAR          => 'Year(s)',
+);
 
 api_plugin_hook('config_arrays');
 

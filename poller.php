@@ -67,6 +67,7 @@ include_once($config['base_path'] . '/lib/graph_export.php');
 include_once($config['base_path'] . '/lib/rrd.php');
 include_once($config['base_path'] . '/lib/dsstats.php');
 include_once($config['base_path'] . '/lib/boost.php');
+include_once($config['base_path'] . '/lib/reports.php');
 
 /* initialize some variables */
 $force = FALSE;
@@ -460,10 +461,14 @@ while ($poller_runs_completed < $poller_runs) {
 		if ($poller_runs_completed < $poller_runs) {
 			list($micro, $seconds) = split(' ', microtime());
 			$plugin_start = $seconds + $micro;
+
+			/* all plugins moved to core */
 			snmpagent_poller_bottom();
 			dsstats_poller_bottom();
 			boost_poller_bottom();
+
 			api_plugin_hook('poller_bottom');
+
 			list($micro, $seconds) = split(' ', microtime());
 			$plugin_end = $seconds + $micro;
 			if (($sleep_time - ($plugin_end - $plugin_start)) > 0) {
@@ -520,6 +525,7 @@ function display_help() {
 snmpagent_poller_bottom();
 boost_poller_bottom();
 dsstats_poller_bottom();
+reports_poller_bottom();
 poller_maintenance();
 
 api_plugin_hook('poller_bottom');

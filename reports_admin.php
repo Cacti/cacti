@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2015 The Cacti Group                                 |
+ | Copyright (C) 2004-2014 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -22,39 +22,59 @@
  +-------------------------------------------------------------------------+
 */
 
-global $plugin_hooks, $plugins_integrated, $plugins;
-$plugin_hooks       = array();
-$plugins_integrated = array('snmpagent', 'clog', 'settings', 'boost', 'dsstats', 'watermark', 'ssl', 'ugroup', 'domains', 'jqueryskin', 'secpass', 'logrotate', 'realtime', 'rrdclean', 'nectar');
+$guest_account = true;
+include("./include/auth.php");
+include($config["base_path"] . "/lib/reports.php");
+include($config["base_path"] . "/lib/html_reports.php");
+define("MAX_DISPLAY_PAGES", 21);
 
-function use_plugin ($name) {
-	global $config;
-	if (file_exists($config['base_path'] . "/plugins/$name/setup.php")) {
-		include_once($config['base_path'] . "/plugins/$name/setup.php");
-		$function = "plugin_init_$name";
-		if (function_exists($function)) {
-			$function();
-		}
-	}
-}
+input_validate_input_number(get_request_var_request('id'));
 
-/**
- * This function executes a hook.
- * @param string $name Name of hook to fire
- * @return mixed $data
- */
-if (!is_array($plugins)) {
-	$plugins = array();
-}
+/* set default action */
+if (!isset($_REQUEST["action"])) { $_REQUEST["action"] = ""; }
 
-$oldplugins = read_config_option('oldplugins');
-if (strlen(trim($oldplugins))) {
-	$oldplugins = explode(',', $oldplugins);
-	$plugins    = array_merge($plugins, $oldplugins);
-}
+switch ($_REQUEST["action"]) {
+	case 'save':
+		reports_form_save();
 
-/* On startup, register all plugins configured for use. */
-if (isset($plugins) && is_array($plugins)) {
-	foreach ($plugins as $name) {
-		use_plugin($name);
-	}
+		break;
+	case 'send':
+		reports_send($_REQUEST["id"]);
+
+		header("Location: reports_admin.php?action=edit&tab=" . $_REQUEST["tab"] . "&id=" . $_REQUEST["id"]);
+		break;
+	case 'actions':
+		reports_form_actions();
+
+		break;
+	case 'item_movedown':
+		reports_item_movedown();
+
+		header("Location: reports_admin.php?action=edit&tab=items&id=" . $_REQUEST["id"]);
+		break;
+	case 'item_moveup':
+		reports_item_moveup();
+
+		header("Location: reports_admin.php?action=edit&tab=items&id=" . $_REQUEST["id"]);
+		break;
+	case 'item_remove':
+		reports_item_remove();
+
+		header("Location: reports_admin.php?action=edit&tab=items&id=" . $_REQUEST["id"]);
+		break;
+	case 'item_edit':
+		general_header();
+		reports_item_edit();
+		bottom_footer();
+		break;
+	case 'edit':
+		general_header();
+		reports_edit();
+		bottom_footer();
+		break;
+	default:
+		general_header();
+		reports();
+		bottom_footer();
+		break;
 }

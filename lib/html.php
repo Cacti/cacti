@@ -1020,17 +1020,35 @@ function html_show_tabs_left($show_console_tab) {
 	global $config, $tabs_left;
 
 	if (read_config_option("selected_theme") == 'classic') {
-		?>&nbsp;<?php
 		if ($show_console_tab == true) {
 			?><a href="<?php echo $config['url_path']; ?>index.php"><img src="<?php echo $config['url_path']; ?>images/tab_console<?php print (is_console_page(basename($_SERVER['PHP_SELF'])) ? '_down':'');?>.gif" alt="Console" align="absmiddle" border="0"></a><?php
 		}
 
-		?><a href="<?php echo $config['url_path']; ?>graph_view.php"><img src="<?php echo $config['url_path']; ?>images/tab_graphs<?php
+		if (is_realm_allowed(7)) {
+			?><a href="<?php echo $config['url_path']; ?>graph_view.php"><img src="<?php echo $config['url_path']; ?>images/tab_graphs<?php
+			$file = basename($_SERVER['PHP_SELF']);
+			if ($file == "graph_view.php" || $file == "graph_settings.php" || $file == "graph.php") {
+				print "_down";
+			} 
+			print ".gif";?>" alt="Graphs" align="absmiddle" border="0"></a><?php
+		}
 
-		$file = basename($_SERVER['PHP_SELF']);
-		if ($file == "graph_view.php" || $file == "graph_settings.php" || $file == "graph.php") {
-			print "_down";
-		} print ".gif";?>" alt="Graphs" align="absmiddle" border="0"></a><?php
+		if (is_realm_allowed(21) || is_realm_allowed(22)) {
+			if (substr_count($_SERVER["REQUEST_URI"], "reports_")) {
+				print '<a href="' . $config['url_path'] . (is_realm_allowed(22) ? 'reports_admin.php':'reports_user.php') . '"><img src="' . $config['url_path'] . 'images/tab_nectar_down.gif" alt="Reporting" align="absmiddle" border="0"></a>';
+			}else{
+				print '<a href="' . $config['url_path'] . (is_realm_allowed(22) ? 'reports_admin.php':'reports_user.php') . '"><img src="' . $config['url_path'] . 'images/tab_nectar.gif" alt="Reporting" align="absmiddle" border="0"></a>';
+			}
+		}
+
+		if (is_realm_allowed(18) || is_realm_allowed(19)) {
+			if (substr_count($_SERVER["REQUEST_URI"], "clog")) {
+				print '<a href="' . $config['url_path'] . (is_realm_allowed(18) ? 'clog.php':'clog_user.php') . '"><img src="' . $config['url_path'] . 'images/tab_clog_down.png" alt="Cacti Log" align="absmiddle" border="0"></a>';
+			}else{
+				print '<a href="' . $config['url_path'] . (is_realm_allowed(18) ? 'clog.php':'clog_user.php') . '"><img src="' . $config['url_path'] . 'images/tab_clog.png" alt="Cacti Log" align="absmiddle" border="0"></a>';
+			}
+		}
+
 		api_plugin_hook('top_graph_header_tabs');
 	}else{
 		if ($show_console_tab) {
@@ -1051,9 +1069,16 @@ function html_show_tabs_left($show_console_tab) {
 
 		$tabs_left[] =
 			array(
+				'title' => 'Reporting',
+				'image' => '',
+				'url'   => $config['url_path'] . (is_realm_allowed(22) ? 'reports_admin.php':'reports_user.php'),
+			);
+
+		$tabs_left[] =
+			array(
 				'title' => 'Cacti Log',
 				'image' => '',
-				'url'   => $config['url_path'] . (clog_admin() ? 'clog.php':'clog_user.php'),
+				'url'   => $config['url_path'] . (is_realm_allowed(18) ? 'clog.php':'clog_user.php'),
 			);
 
 		// Get Plugin Text Out of Band

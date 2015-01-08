@@ -41,7 +41,7 @@ $tabs = array(
 	'authentication' => 'Authentication',
 	'dsstats' => 'Data Source Statistics',
 	'boost' => 'Performance',
-	'mail' => 'Mail / DNS',
+	'mail' => 'Mail/Reporting/DNS',
 	'realtime' => 'Realtime');
 
 $tabs_graphs = array(
@@ -1241,6 +1241,38 @@ $settings = array(
 			'default' => '5',
 			'max_length' => '10',
 			'size' => '5'
+			),
+		'reports_header' => array(
+			'friendly_name' => 'Reporting Presets',
+			'method' => 'spacer',
+			'collapsible' => 'true'
+			),
+		'reports_default_image_format' => array(
+			'friendly_name' => 'Default Graph Image Format',
+			'description' => 'When creating a new report, what image type should be used for the inline graphs.',
+			'method' => 'drop_array',
+			'default' => REPORTS_TYPE_INLINE_PNG,
+			'array' => $attach_types
+			),
+		'reports_max_attach' => array(
+			'friendly_name' => 'Maximum E-Mail Size',
+			'description' => 'The maximum size of the E-Mail message including all attachements.',
+			'method' => 'drop_array',
+			'default' => REPORTS_DEFAULT_MAX_SIZE,
+			'array' => $attachment_sizes
+			),
+		'reports_log_verbosity' => array(
+			'friendly_name' => 'Poller Logging Level for Cacti Reporting',
+			'description' => 'What level of detail do you want sent to the log file. WARNING: Leaving in any other status than NONE or LOW can exaust your disk space rapidly.',
+			'method' => 'drop_array',
+			'default' => POLLER_VERBOSITY_LOW,
+			'array' => $logfile_verbosity,
+			),
+		'reports_allow_ln' => array(
+			'friendly_name' => 'Enable Lotus Notus (R) tweak',
+			'description' => 'Enable code tweak for specific handling of Lotus Notes Mail Clients.',
+			'method' => 'checkbox',
+			'default' => '',
 			),
 		'settings_dns_header' => array(
 			'friendly_name' => 'DNS Options',

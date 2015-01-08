@@ -214,12 +214,64 @@ define('SNMPAGENT_EVENT_SEVERITY_MEDIUM', 2);
 define('SNMPAGENT_EVENT_SEVERITY_HIGH', 3);
 define('SNMPAGENT_EVENT_SEVERITY_CRITICAL', 4);
 
-define("CLOG_PERM_ADMIN", 0);
-define("CLOG_PERM_USER",  1);
-define("CLOG_PERM_NONE",  2);
+define('CLOG_PERM_ADMIN', 0);
+define('CLOG_PERM_USER',  1);
+define('CLOG_PERM_NONE',  2);
 
-define("CHARS_PER_TIER", 3);
-define("MAX_TREE_DEPTH", 30);
-define("SORT_TYPE_TREE", 1);
-define("SORT_TYPE_TREE_ITEM", 2);
+define('CHARS_PER_TIER', 3);
+define('MAX_TREE_DEPTH', 30);
+define('SORT_TYPE_TREE', 1);
+define('SORT_TYPE_TREE_ITEM', 2);
 
+define('REPORTS_SEND_NOW', 1);
+define('REPORTS_DUPLICATE', 2);
+define('REPORTS_ENABLE', 3);
+define('REPORTS_DISABLE', 4);
+define('REPORTS_DELETE', 99);
+define('REPORTS_OWN', 100);
+
+define('REPORTS_TYPE_INLINE_PNG', 1);
+define('REPORTS_TYPE_INLINE_JPG', 2);
+define('REPORTS_TYPE_INLINE_GIF', 3);
+define('REPORTS_TYPE_ATTACH_PNG', 11);
+define('REPORTS_TYPE_ATTACH_JPG', 12);
+define('REPORTS_TYPE_ATTACH_GIF', 13);
+define('REPORTS_TYPE_ATTACH_PDF', 14);
+define('REPORTS_TYPE_INLINE_PNG_LN', 91);
+define('REPORTS_TYPE_INLINE_JPG_LN', 92);
+define('REPORTS_TYPE_INLINE_GIF_LN', 93);
+
+define('REPORTS_ITEM_GRAPH', 1);
+define('REPORTS_ITEM_TEXT', 2);
+define('REPORTS_ITEM_TREE', 3);
+define('REPORTS_ITEM_HR', 4);
+
+define('REPORTS_ALIGN_LEFT', 1);
+define('REPORTS_ALIGN_CENTER', 2);
+define('REPORTS_ALIGN_RIGHT', 3);
+define('REPORTS_SCHED_INTVL_MINUTE', 10);
+define('REPORTS_SCHED_INTVL_HOUR', 11);
+
+define('REPORTS_SCHED_INTVL_DAY', 1);
+define('REPORTS_SCHED_INTVL_WEEK', 2);
+define('REPORTS_SCHED_INTVL_MONTH_DAY', 3);
+define('REPORTS_SCHED_INTVL_MONTH_WEEKDAY', 4);
+define('REPORTS_SCHED_INTVL_YEAR', 5);
+
+define('REPORTS_SCHED_COUNT', 1);
+define('REPORTS_SCHED_OFFSET', 0);
+
+define('REPORTS_GRAPH_LINK', 0);
+
+define('REPORTS_FONT_SIZE', 10);
+define('REPORTS_HOST_NONE', 0);
+define('REPORTS_TREE_NONE', 0);
+define('REPORTS_TIMESPAN_DEFAULT', GT_LAST_DAY);
+
+define('REPORTS_EXTENSION_GD', 'gd');
+define('REPORTS_DEBUG', read_config_option('reports_log_verbosity'), true);
+
+define('REPORTS_OUTPUT_STDOUT', 1);
+define('REPORTS_OUTPUT_EMAIL',  2);
+
+define('REPORTS_DEFAULT_MAX_SIZE', 10485760);

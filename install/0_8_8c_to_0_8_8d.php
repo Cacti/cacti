@@ -479,4 +479,147 @@ function upgrade_to_0_8_8d() {
 	db_install_execute('0.8.8d', "DELETE FROM plugin_realms WHERE file LIKE '%graph_image_rt%'");
 	db_install_execute('0.8.8d', "DELETE FROM plugin_config WHERE directory='realtime'");
 	db_install_execute('0.8.8d', "DELETE FROM plugin_hooks WHERE name='realtime'");
+
+	// If we have never install Nectar before, we can simply install
+	if (!sizeof(db_fetch_row("SHOW TABLES LIKE '%plugin_nectar%'"))) {
+		db_install_execute('0.8.8d', "CREATE TABLE `reports` (
+			`id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+			`user_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
+			`name` varchar(100) NOT NULL DEFAULT '',
+			`cformat` char(2) NOT NULL DEFAULT '',
+			`format_file` varchar(255) NOT NULL DEFAULT '',
+			`font_size` smallint(2) unsigned NOT NULL DEFAULT '0',
+			`alignment` smallint(2) unsigned NOT NULL DEFAULT '0',
+			`graph_linked` char(2) NOT NULL DEFAULT '',
+			`intrvl` smallint(2) unsigned NOT NULL DEFAULT '0',
+			`count` smallint(2) unsigned NOT NULL DEFAULT '0',
+			`offset` int(12) unsigned NOT NULL DEFAULT '0',
+			`mailtime` bigint(20) unsigned NOT NULL DEFAULT '0',
+			`subject` varchar(64) NOT NULL DEFAULT '',
+			`from_name` varchar(40) NOT NULL,
+			`from_email` text NOT NULL,
+			`email` text NOT NULL,
+			`bcc` text NOT NULL,
+			`attachment_type` smallint(2) unsigned NOT NULL DEFAULT '1',
+			`graph_height` smallint(2) unsigned NOT NULL DEFAULT '0',
+			`graph_width` smallint(2) unsigned NOT NULL DEFAULT '0',
+			`graph_columns` smallint(2) unsigned NOT NULL DEFAULT '0',
+			`thumbnails` char(2) NOT NULL DEFAULT '',
+			`lastsent` bigint(20) unsigned NOT NULL DEFAULT '0',
+			`enabled` char(2) DEFAULT '',
+			PRIMARY KEY (`id`),
+			KEY `mailtime` (`mailtime`)) 
+			ENGINE=MyISAM 
+			COMMENT='Cacri Reporting Reports'");
+	
+		db_install_execute('0.8.8d', "CREATE TABLE `reports_items` (
+			`id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+			`report_id` int(10) unsigned NOT NULL DEFAULT '0',
+			`item_type` tinyint(1) unsigned NOT NULL DEFAULT '1',
+			`tree_id` int(10) unsigned NOT NULL DEFAULT '0',
+			`branch_id` int(10) unsigned NOT NULL DEFAULT '0',
+			`tree_cascade` char(2) NOT NULL DEFAULT '',
+			`graph_name_regexp` varchar(128) NOT NULL DEFAULT '',
+			`host_template_id` int(10) unsigned NOT NULL DEFAULT '0',
+			`host_id` int(10) unsigned NOT NULL DEFAULT '0',
+			`graph_template_id` int(10) unsigned NOT NULL DEFAULT '0',
+			`local_graph_id` int(10) unsigned NOT NULL DEFAULT '0',
+			`timespan` int(10) unsigned NOT NULL DEFAULT '0',
+			`align` tinyint(1) unsigned NOT NULL DEFAULT '1',
+			`item_text` text NOT NULL,
+			`font_size` smallint(2) unsigned NOT NULL DEFAULT '10',
+			`sequence` smallint(5) unsigned NOT NULL DEFAULT '0',
+			PRIMARY KEY (`id`),
+			KEY `report_id` (`report_id`)) 
+			ENGINE=MyISAM 
+			COMMENT='Cacti Reporting Items'");
+	}else{
+		db_install_execute('0.8.8d', 'RENAME TABLE plugin_nectar TO reports');
+		db_install_execute('0.8.8d', 'RENAME TABLE plugin_nectar_items TO reports_items');
+		db_install_execute('0.8.8d', "UPDATE settings SET name=REPLACE(name, 'nectar','reports') WHERE name LIKE '%nectar%'");
+
+		$reports_columns = array_rekey(db_fetch_assoc("SHOW COLUMNS FROM reports"), "Field", "Field");
+		if (!in_array("bcc", $reports_columns)) {
+			db_execute("ALTER TABLE reports ADD COLUMN bcc TEXT AFTER email");
+		}
+		if (!in_array("from_name", $reports_columns)) {
+			db_execute("ALTER TABLE reports ADD COLUMN from_name VARCHAR(40) NOT NULL DEFAULT '' AFTER mailtime");
+		}
+		if (!in_array("user_id", $reports_columns)) {
+			db_execute("ALTER TABLE reports ADD COLUMN user_id mediumint(8) unsigned NOT NULL DEFAULT '0' AFTER id");
+		}
+		if (!in_array("graph_width", $reports_columns)) {
+			db_execute("ALTER TABLE reports ADD COLUMN graph_width smallint(2) unsigned NOT NULL DEFAULT '0' AFTER attachment_type");
+		}
+		if (!in_array("graph_height", $reports_columns)) {
+			db_execute("ALTER TABLE reports ADD COLUMN graph_height smallint(2) unsigned NOT NULL DEFAULT '0' AFTER graph_width");
+		}
+		if (!in_array("graph_columns", $reports_columns)) {
+			db_execute("ALTER TABLE reports ADD COLUMN graph_columns smallint(2) unsigned NOT NULL DEFAULT '0' AFTER graph_height");
+		}
+		if (!in_array("thumbnails", $reports_columns)) {
+			db_execute("ALTER TABLE reports ADD COLUMN thumbnails char(2) NOT NULL DEFAULT '' AFTER graph_columns");
+		}
+		if (!in_array("font_size", $reports_columns)) {
+			db_execute("ALTER TABLE reports ADD COLUMN font_size smallint(2) NOT NULL DEFAULT 16 AFTER name");
+		}
+		if (!in_array("alignment", $reports_columns)) {
+			db_execute("ALTER TABLE reports ADD COLUMN alignment smallint(2) NOT NULL DEFAULT 0 AFTER font_size");
+		}
+		if (!in_array("cformat", $reports_columns)) {
+			db_execute("ALTER TABLE reports ADD COLUMN cformat char(2) NOT NULL DEFAULT '' AFTER name");
+		}
+		if (!in_array("format_file", $reports_columns)) {
+			db_execute("ALTER TABLE reports ADD COLUMN format_file varchar(255) NOT NULL DEFAULT '' AFTER cformat");
+		}
+		if (!in_array("graph_linked", $reports_columns)) {
+			db_execute("ALTER TABLE reports ADD COLUMN graph_linked char(2) NOT NULL DEFAULT '' AFTER alignment");
+		}
+		if (!in_array("subject", $reports_columns)) {
+			db_execute("ALTER TABLE reports ADD COLUMN subject varchar(64) NOT NULL DEFAULT '' AFTER mailtime");
+		}
+
+		/* plugin_reports_items upgrade */
+		$reports_columns = array_rekey(db_fetch_assoc("SHOW COLUMNS FROM reports_items"), "Field", "Field");
+		if (!in_array("host_template_id", $reports_columns)) {
+			db_execute("ALTER TABLE reports_items ADD COLUMN host_template_id int(10) unsigned NOT NULL DEFAULT '0' AFTER item_type");
+		}
+		if (!in_array("graph_template_id", $reports_columns)) {
+			db_execute("ALTER TABLE reports_items ADD COLUMN graph_template_id int(10) unsigned NOT NULL DEFAULT '0' AFTER host_id");
+		}
+		if (!in_array("tree_id", $reports_columns)) {
+			db_execute("ALTER TABLE reports_items ADD COLUMN tree_id int(10) unsigned NOT NULL DEFAULT '0' AFTER item_type");
+		}
+		if (!in_array("branch_id", $reports_columns)) {
+			db_execute("ALTER TABLE reports_items ADD COLUMN branch_id int(10) unsigned NOT NULL DEFAULT '0' AFTER tree_id");
+		}
+		if (!in_array("tree_cascade", $reports_columns)) {
+			db_execute("ALTER TABLE reports_items ADD COLUMN tree_cascade char(2) NOT NULL DEFAULT '' AFTER branch_id");
+		}
+		if (!in_array("graph_name_regexp", $reports_columns)) {
+			db_execute("ALTER TABLE reports_items ADD COLUMN graph_name_regexp varchar(128) NOT NULL DEFAULT '' AFTER tree_cascade");
+		}
+
+		/* fix host templates and graph template ids */
+		$items = db_fetch_assoc("SELECT * FROM reports_items WHERE item_type=1");
+		if (sizeof($items)) {
+		foreach ($items as $row) {
+			$host = db_fetch_row("SELECT host.* 
+				FROM graph_local 
+				LEFT JOIN host 
+				ON (graph_local.host_id=host.id) 
+				WHERE graph_local.id=" . $row["local_graph_id"]);
+
+			$graph_template = db_fetch_cell("SELECT graph_template_id 
+				FROM graph_local 
+				WHERE id=" . $row["local_graph_id"]);
+
+			db_execute("UPDATE reports_items SET " .
+					" host_id='" . $host["id"] . "', " .
+					" host_template_id='" . $host["host_template_id"] . "', " .
+					" graph_template_id='" . $graph_template . "' " .
+					" WHERE id=" . $row["id"]);
+		}
+		}
+	}
 }

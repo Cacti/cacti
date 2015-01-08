@@ -2259,6 +2259,66 @@ CREATE TABLE poller_time (
 ) ENGINE=MyISAM;
 
 --
+-- Table structure for table `reports`
+--
+
+CREATE TABLE `reports` (
+  `id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `name` varchar(100) NOT NULL DEFAULT '',
+  `cformat` char(2) NOT NULL DEFAULT '',
+  `format_file` varchar(255) NOT NULL DEFAULT '',
+  `font_size` smallint(2) unsigned NOT NULL DEFAULT '0',
+  `alignment` smallint(2) unsigned NOT NULL DEFAULT '0',
+  `graph_linked` char(2) NOT NULL DEFAULT '',
+  `intrvl` smallint(2) unsigned NOT NULL DEFAULT '0',
+  `count` smallint(2) unsigned NOT NULL DEFAULT '0',
+  `offset` int(12) unsigned NOT NULL DEFAULT '0',
+  `mailtime` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `subject` varchar(64) NOT NULL DEFAULT '',
+  `from_name` varchar(40) NOT NULL,
+  `from_email` text NOT NULL,
+  `email` text NOT NULL,
+  `bcc` text NOT NULL,
+  `attachment_type` smallint(2) unsigned NOT NULL DEFAULT '1',
+  `graph_height` smallint(2) unsigned NOT NULL DEFAULT '0',
+  `graph_width` smallint(2) unsigned NOT NULL DEFAULT '0',
+  `graph_columns` smallint(2) unsigned NOT NULL DEFAULT '0',
+  `thumbnails` char(2) NOT NULL DEFAULT '',
+  `lastsent` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `enabled` char(2) DEFAULT '',
+  PRIMARY KEY (`id`),
+  KEY `mailtime` (`mailtime`)) 
+  ENGINE=MyISAM 
+  COMMENT='Cacri Reporting Reports';
+
+--
+-- Table structure for table `reports_items`
+--
+
+CREATE TABLE `reports_items` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `report_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `item_type` tinyint(1) unsigned NOT NULL DEFAULT '1',
+  `tree_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `branch_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `tree_cascade` char(2) NOT NULL DEFAULT '',
+  `graph_name_regexp` varchar(128) NOT NULL DEFAULT '',
+  `host_template_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `host_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `graph_template_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `local_graph_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `timespan` int(10) unsigned NOT NULL DEFAULT '0',
+  `align` tinyint(1) unsigned NOT NULL DEFAULT '1',
+  `item_text` text NOT NULL,
+  `font_size` smallint(2) unsigned NOT NULL DEFAULT '10',
+  `sequence` smallint(5) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `report_id` (`report_id`)) 
+  ENGINE=MyISAM 
+  COMMENT='Cacti Reporting Items';
+
+--
 -- Table structure for table `rra`
 --
 

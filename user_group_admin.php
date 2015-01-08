@@ -1264,7 +1264,7 @@ function user_group_realms_edit($header_label) {
 	print "<tr class='odd'><td><table width='100%'><tr><td valign='top' style='white-space:nowrap;' width='20%'>\n";
 	$i = 1;
 	$j = 1;
-	$base = array(7,8,15,1,2,3,4,5,6,9,10,11,12,13,14,16,17,18,19,20,101);
+	$base = array(7,8,15,1,2,3,4,5,6,9,10,11,12,13,14,16,17,18,19,20,21,22,101);
 	foreach($base as $realm) {
 		if (isset($user_auth_realms[$realm])) {
 			if (sizeof(db_fetch_assoc_prepared('SELECT realm_id FROM user_auth_group_realm WHERE group_id = ? AND realm_id = ?', array(get_request_var_request('id', 0), $realm))) > 0) {

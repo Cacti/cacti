@@ -1,0 +1,98 @@
+# Description: Cacti Group Format
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+</head>
+<body>
+<style type='text/css'>
+
+.report_table {
+	background-color:#F9F9F9;
+	align: center;
+	border:0;
+	width:100%;
+    border: 3px outset #CCCCCC; 
+    padding: 4px;
+}
+
+.title_row {
+	background-color:#EAEAEA;
+    border: 2px double #CCCCCC; 
+    padding: 3px;
+}
+
+.title {
+	background-color:#EAEAEA;
+	font-size:16pt;
+	text-align:left;
+	align:center;
+    border: 2px double #CCCCCC; 
+    padding: 3px;
+}
+
+.image_table {
+}
+
+.image_row {
+}
+
+.image_column {	align:center;
+}
+
+.image {
+}
+
+.text_row {
+	background-color:#EAEAEA;
+}
+
+.text {
+	background-color:#EAEAEA;
+	font-size: 16pt;
+	text-align: left;
+    border: 1px solid #CCCCCC; 
+    padding: 0px;
+
+}
+
+.header_table {
+	background-color:#00438C;
+	align: center;
+	width:100%;
+    border: 3px ridge #00438C; 
+    padding: 4px;
+
+}
+
+.header_row {
+	background-color:#00438C;
+   }
+
+.header {
+	background-color:#00438C;
+	font-size:16pt;
+	text-align:left;
+	align:center;
+	color:#FFF;
+}
+
+.footer {
+	background-color:#00438C;
+	font-size:10pt;
+	text-align:left;
+	align:center;
+	color:#FFF;
+}
+</style>
+<!-- header -->
+<table class="header_table">
+<tr class="header_row" ><td class="header">Nectar Report</td></tr>
+<!-- main report -->
+<tr><td>
+<REPORT>
+</td></tr>
+<!-- footer -->
+<tr class="header_row"><td class="footer">Copyright &copy; 2015 - The Cacti Group</td></tr>
+</table>
+</body>
+</html>

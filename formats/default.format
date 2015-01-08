@@ -1,0 +1,45 @@
+# Description: Standard Formating
+<style type='text/css'>
+
+.report_table {
+	background-color:#F9F9F9;
+	align: center;
+	border:0;
+	width:100%;
+}
+
+.title_row {
+	background-color:#EAEAEA;
+}
+
+.title {
+	background-color:#EAEAEA;
+	font-size:16pt;
+	text-align:center;
+	align:center;
+}
+
+.image_table {
+}
+
+.image_row {
+}
+
+.image_column {
+	align:center;
+}
+
+.image {
+}
+
+.text_row {
+	background-color:#EAEAEA;
+}
+
+.text {
+	background-color:#EAEAEA;
+	font-size: 16pt;
+	text-align: center;
+}
+
+</style>
