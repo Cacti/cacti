@@ -631,6 +631,6 @@ function upgrade_to_0_8_8d() {
 		ADD COLUMN snmp_sysUpTimeInstance int unsigned default '0' AFTER snmp_sysObjectID, 
 		ADD COLUMN snmp_sysContact varchar(300) NOT NULL default '' AFTER snmp_sysUpTimeInstance, 
 		ADD COLUMN snmp_sysName varchar(300) NOT NULL default '' AFTER snmp_sysContact, 
-		ADD COLUMN snmp_sysLocation varchar(300) NOT NULL default '' AFTER snmp_sysName
+		ADD COLUMN snmp_sysLocation varchar(300) NOT NULL default '' AFTER snmp_sysName,
 		ADD COLUMN polling_time DOUBLE default '0' AFTER avg_time");
 }
