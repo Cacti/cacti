@@ -2430,10 +2430,12 @@ function snmpagent_utilities_run_cache() {
 
 	?>
 	<script language="javascript" type="text/javascript" >
-		$('.tooltip').tooltip({	
-			track: true, 
+		$('.tooltip').tooltip({
+			track: true,
+			show: 250,
+			hide: 250,
 			position: { collision: "flipfit" },
-			content: function() { return $(this).attr('title'); }			
+			content: function() { return $(this).attr('title'); }
 		});
 	</script>
 
@@ -2692,12 +2694,12 @@ function snmpagent_utilities_run_eventlog(){
 
 	html_end_box();
 	?>
-	
+
 	<script language="javascript" type="text/javascript" >
-		$('.tooltip').tooltip({	
-			track: true, 
+		$('.tooltip').tooltip({
+			track: true,
 			position: { collision: "flipfit" },
-			content: function() { return $(this).attr('title'); }			
+			content: function() { return $(this).attr('title'); }
 		});
 	</script>
 	<?php

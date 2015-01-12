@@ -361,6 +361,16 @@ function manager_edit() {
 			</script>
 			<?php
 	}
+	
+	?>
+	<script language="javascript" type="text/javascript" >
+		$('.tooltip').tooltip({	
+			track: true, 
+			position: { collision: "flipfit" },
+			content: function() { return $(this).attr('title'); }			
+		});
+	</script>
+	<?php
 }
 
 function manager_notifications($id){
@@ -414,9 +424,12 @@ function manager_notifications($id){
 <!--
 
 	function applyFilter() {
-		strURL = 'managers.php?filter=' + $('#filter').val();
+		strURL = 'managers.php?action=edit&tab=notifications&id=<?php echo $id; ?>&filter=' + $('#filter').val();
+		strURL = strURL + '&mib=' + $('#mib').val();
+		strURL = strURL + '&filter=' + $('#filter').val();
 		strURL = strURL + '&page=' + $('#page').val();
 		strURL = strURL + '&header=false';
+		
 		$.get(strURL, function(data) {
 			$('#main').html(data);
 			applySkin();
@@ -424,7 +437,7 @@ function manager_notifications($id){
 }
 
 	function clearFilter() {
-		strURL = 'managers.php?clear_x=1&header=false';
+		strURL = 'managers.php?action=edit&tab=notifications&id=<?php echo $id; ?>&clear_x=1&header=false';
 		$.get(strURL, function(data) {
 			$('#main').html(data);
 			applySkin();
@@ -440,7 +453,7 @@ function manager_notifications($id){
 			clearFilter();
 		});
 
-		$('#form_snmpagent_manager_notifications').submit(function(event) {
+		$('#form_snmpagent_managers').submit(function(event) {
 			event.preventDefault();
 			applyFilter();
 		});
@@ -488,10 +501,8 @@ function manager_notifications($id){
 						</td>
 					</tr>
 				</table>
-				<input type='hidden' name='page' value='1'>
-				<input type='hidden' name='action' value='edit'>
-				<input type='hidden' name='tab' value='notifications'>
-				<input type='hidden' name='id' value='<?php print $_REQUEST["id"]; ?>'>
+				<input type='hidden' id='page' name='page' value='1'>
+				
 			</form>
 			</td>
 		</tr>
@@ -542,21 +553,14 @@ function manager_notifications($id){
 
 	if (sizeof($snmp_cache) > 0) {
 		foreach ($snmp_cache as $item) {
-			$row_id = 'line_' . $item["mib"] . '__' . $item["name"];
+			$row_id = $item["mib"] . '__' . $item["name"];
 			$oid = (strlen(get_request_var_request("filter")) ? (preg_replace("/(" . preg_quote(get_request_var_request("filter"), "/") . ")/i", "<span style='background-color: #F8D93D;'>\\1</span>", $item["oid"])) : $item["oid"]);
 			$name = (strlen(get_request_var_request("filter")) ? (preg_replace("/(" . preg_quote(get_request_var_request("filter"), "/") . ")/i", "<span style='background-color: #F8D93D;'>\\1</span>", $item["name"])): $item["name"]);
 			$mib = (strlen(get_request_var_request("filter")) ? (preg_replace("/(" . preg_quote(get_request_var_request("filter"), "/") . ")/i", "<span style='background-color: #F8D93D;'>\\1</span>", $item["mib"])): $item["mib"]);
 
-			form_alternate_row($row_id, false);
+			form_alternate_row('line' . $row_id, false);
 			if($item["description"]) {
-				$description = '';
-				$lines = preg_split( '/\r\n|\r|\n/', $item['description']);
-
-				foreach($lines as $line) {
-					$description .= addslashes(trim($line)) . '<br>';
-				}
-
-				print '<td onclick=\'select_line("' . $row_id. '")\'><a href="#" onMouseOut="hideTooltip(snmpagentTooltip)" onMouseMove="showTooltip(event, snmpagentTooltip, \'' . $item["name"] . '\', \'' . $description . '\')">' . $name . '</a></td>';
+				print '<td><a href="#" title="<div class=\'header\'>' . $name . '</div><div class=\'content preformatted\'>' . $item["description"]. '</div>" class="tooltip">' . $name . '</a></td>';
 			}else {
 				form_selectable_cell($name, $row_id);
 			}
@@ -578,31 +582,6 @@ function manager_notifications($id){
 	<input type='hidden' name='action' value='edit'>
 	<input type='hidden' name='tab' value='notifications'>
 	<input type='hidden' name='id' value='<?php print $_REQUEST["id"]; ?>'>
-	<div style="display:none" id="snmpagentTooltip"></div>
-	<script language="javascript" type="text/javascript" >
-		function showTooltip(e, div, title, desc) {
-			div.style.display = 'inline';
-			div.style.position = 'fixed';
-			div.style.backgroundColor = '#EFFCF0';
-			div.style.border = 'solid 1px grey';
-			div.style.padding = '10px';
-			div.innerHTML = '<b>' + title + '</b><div style="padding-left:10; padding-right:5"><pre>' + desc + '</pre></div>';
-			div.style.left = e.clientX + 15 + 'px';
-			div.style.top = e.clientY + 15 + 'px';
-		}
-
-		function hideTooltip(div) {
-			div.style.display = 'none';
-		}
-		function highlightStatus(selectID){
-			if (document.getElementById('status_' + selectID).value == 'ON') {
-				document.getElementById('status_' + selectID).style.backgroundColor = 'LawnGreen';
-			}else {
-				document.getElementById('status_' + selectID).style.backgroundColor = 'OrangeRed';
-			}
-		}
-	</script>
-
 	<?php
 }
 
@@ -894,18 +873,14 @@ function form_actions(){
 			$selected_items = unserialize(stripslashes($_POST["selected_items"]));
 			if ($_POST["drp_action"] == "0") { /* disable */
 				foreach($selected_items as $mib => $notifications) {
-					$mib = mysql_real_escape_string($mib);
 					foreach($notifications as $notification => $state) {
-						$notification = mysql_real_escape_string($notification);
-						db_execute("DELETE FROM snmpagent_managers_notifications WHERE `manager_id` = {$_POST["id"]} AND `mib` = '$mib' AND `notification` = '$notification' LIMIT 1");
+						db_execute_prepared("DELETE FROM snmpagent_managers_notifications WHERE `manager_id` = {$_POST["id"]} AND `mib` = '$mib' AND `notification` = '$notification' LIMIT 1");
 					}
 				}
 			}elseif ($_POST["drp_action"] == "1") { /* enable */
 				foreach($selected_items as $mib => $notifications) {
-					$mib = mysql_real_escape_string($mib);
 					foreach($notifications as $notification => $state) {
-						$notification = mysql_real_escape_string($notification);
-						db_execute("INSERT IGNORE INTO snmpagent_managers_notifications (`manager_id`, `notification`, `mib`) VALUES ('{$_POST["id"]}', '$notification', '$mib')");
+						db_execute_prepared("INSERT IGNORE INTO snmpagent_managers_notifications (`manager_id`, `notification`, `mib`) VALUES ('{$_POST["id"]}', '$notification', '$mib')");
 					}
 				}
 			}
@@ -977,7 +952,7 @@ function form_actions(){
 			}
 
 			include_once("./include/top_header.php");
-			html_start_box("<strong>" . $manager_notification_actions[ $_POST["drp_action"] ] . "</strong>", "60%", $colors["header_panel"], "3", "center", "");
+			html_start_box("<strong>" . $manager_notification_actions[ $_POST["drp_action"] ] . "</strong>", "60%", "", "3", "center", "");
 			print "<form action='managers.php' method='post'>\n";
 
 			if (sizeof($selected_items)) {
@@ -986,14 +961,14 @@ function form_actions(){
 					 : "When you click \"Continue\", events for following notification objects won't be forwarded to this noticification receiver any longer.";
 
 				print "	<tr>
-							<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
+							<td class='textArea'>
 								<p>$msg</p>
 								<ul>$list</ul>
 							</td>
 						</tr>\n";
 				$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Disable Notification Objects'>";
 			} else {
-				print "<tr><td bgcolor='#" . $colors["form_alternate1"]. "'><span class='textError'>You must select at least one notification object.</span></td></tr>\n";
+				print "<tr><td><span class='textError'>You must select at least one notification object.</span></td></tr>\n";
 				$save_html = "<input type='button' value='Return' onClick='window.history.back()'>";
 			}
 
