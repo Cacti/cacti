@@ -84,6 +84,13 @@ if (isset($_REQUEST['hide'])) {
 	}
 }
 
+if (!isset($_SESSION['sess_realtime_dsstep'])) {
+	$_SESSION['sess_realtime_dsstep'] = read_config_option('realtime_interval');
+}
+if (!isset($_SESSION['sess_realtime_window'])) {
+	$_SESSION['sess_realtime_window'] = read_config_option('realtime_gwindow');
+}
+
 switch ($_REQUEST['action']) {
 case 'tree':
 	top_graph_header();
@@ -237,11 +244,6 @@ case 'preview':
 	load_current_session_value('graph_list', 'sess_graph_view_graph_list', '');
 	load_current_session_value('graph_add', 'sess_graph_view_graph_add', '');
 	load_current_session_value('graph_remove', 'sess_graph_view_graph_remove', '');
-
-	if (!isset($_SESSION['sess_realtime_dsstep'])) {
-		$_SESSION['sess_realtime_dsstep'] = read_config_option('realtime_interval');
-		$_SESSION['sess_realtime_window'] = read_config_option('realtime_gwindow');
-	}
 
 	/* include graph view filter selector */
 	html_start_box('<strong>Graph Filters</strong>' . (isset($_REQUEST['style']) && strlen($_REQUEST['style']) ? ' [ Custom Graph List Applied - Filtering FROM List ]':''), '100%', '', '3', 'center', '');
