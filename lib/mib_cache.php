@@ -184,7 +184,7 @@ class MibCache{
 					if(isset($values[$column_params["name"]])) {
 						$column_params["value"] = $values[$column_params["name"]];
 					}
-					db_execute("INSERT INTO `snmpagent_cache` (`oid`, `name`, `mib`, `type`, `otype`, `kind`, `max-access`, `value`) VALUES ('"
+					db_execute("INSERT IGNORE INTO `snmpagent_cache` (`oid`, `name`, `mib`, `type`, `otype`, `kind`, `max-access`, `value`) VALUES ('"
 						. $column_params["oid"] . "','"
 						. $column_params["name"] . "','"
 						. $column_params["mib"] . "','"
