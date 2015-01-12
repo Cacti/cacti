@@ -25,7 +25,9 @@
 $dir = dir($config['base_path'] . '/include/themes/');
 while (false !== ($entry = $dir->read())) {
 	if ($entry != '.' && $entry != '..') {
-		$themes[$entry] = ucwords($entry);
+		if (is_dir($config['base_path'] . '/include/themes/' . $entry)) {
+			$themes[$entry] = ucwords($entry);
+		}
 	}
 }
 asort($themes);
