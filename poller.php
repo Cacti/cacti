@@ -29,14 +29,14 @@ function sig_handler($signo) {
 	switch ($signo) {
 		case SIGTERM:
 		case SIGINT:
-			cacti_log('WARNING: Cacti Master Poller process terminated by user', TRUE);
+			cacti_log('WARNING: Cacti Master Poller process terminated by user', true);
 
 			$running_processes = db_fetch_assoc('SELECT * FROM poller_time WHERE end_time=\'0000-00-00 00:00:00\'');
 
 			if (sizeof($running_processes)) {
 			foreach($running_processes as $process) {
 				if (function_exists('posix_kill')) {
-					cacti_log("WARNING: Termination poller process with pid '" . $process['pid'] . "'", TRUE, 'POLLER');
+					cacti_log("WARNING: Termination poller process with pid '" . $process['pid'] . "'", true, 'POLLER');
 					posix_kill($process['pid'], SIGTERM);
 				}
 			}
@@ -70,8 +70,9 @@ include_once($config['base_path'] . '/lib/boost.php');
 include_once($config['base_path'] . '/lib/reports.php');
 
 /* initialize some variables */
-$force = FALSE;
-$debug = FALSE;
+$force = false;
+$debug = false;
+$mibs  = false;
 
 /* process calling arguments */
 $parms = $_SERVER['argv'];
@@ -84,11 +85,11 @@ foreach($parms as $parameter) {
 	switch ($arg) {
 	case '-d':
 	case '--debug':
-		$debug = TRUE;
+		$debug = true;
 
 		break;
 	case '--force':
-		$force = TRUE;
+		$force = true;
 
 		break;
 	case '--version':
@@ -105,7 +106,7 @@ foreach($parms as $parameter) {
 }
 }
 
-/* install signal handlers for UNIX only */
+// install signal handlers for UNIX only
 if (function_exists('pcntl_signal')) {
 	pcntl_signal(SIGTERM, 'sig_handler');
 	pcntl_signal(SIGINT, 'sig_handler');
@@ -113,31 +114,36 @@ if (function_exists('pcntl_signal')) {
 
 api_plugin_hook('poller_top');
 
-/* record the start time */
+// record the start time
 list($micro,$seconds) = explode(' ', microtime());
 $poller_start         = $seconds + $micro;
 $overhead_time = 0;
 
-/* get number of polling items from the database */
+// get number of polling items from the database
 $poller_interval = read_config_option('poller_interval');
 
-/* retreive the last time the poller ran */
+// retreive the last time the poller ran
 $poller_lastrun = read_config_option('poller_lastrun');
 
-/* get the current cron interval from the database */
+// collect the system mibs every 4 hours
+if ($poller_lastrun % 14440 < time() % 14440) {
+	$mibs = true;
+}
+
+// get the current cron interval from the database
 $cron_interval = read_config_option('cron_interval');
 
 if ($cron_interval != 60) {
 	$cron_interval = 300;
 }
 
-/* see if the user wishes to use process leveling */
+// see if the user wishes to use process leveling
 $process_leveling = read_config_option('process_leveling');
 
-/* retreive the number of concurrent process settings */
+// retreive the number of concurrent process settings
 $concurrent_processes = read_config_option('concurrent_processes');
 
-/* assume a scheduled task of either 60 or 300 seconds */
+// assume a scheduled task of either 60 or 300 seconds
 if (isset($poller_interval)) {
 	$poller_runs       = intval($cron_interval / $poller_interval);
 	$sql_where = '  WHERE rrd_next_step<=0 ';
@@ -152,10 +158,10 @@ if (isset($poller_interval)) {
 $num_polling_items = db_fetch_cell("SELECT COUNT(*) FROM poller_item $sql_where");
 if (isset($concurrent_processes) && $concurrent_processes > 1) {
 	$items_perhost     = array_rekey(db_fetch_assoc("SELECT host_id, COUNT(*) AS data_sources
-							FROM poller_item
-							$sql_where
-							GROUP BY host_id
-							ORDER BY host_id"), 'host_id', 'data_sources');
+		FROM poller_item
+		$sql_where
+		GROUP BY host_id
+		ORDER BY host_id"), 'host_id', 'data_sources');
 }
 
 if (isset($items_perhost) && sizeof($items_perhost)) {
@@ -181,7 +187,7 @@ if (read_config_option('log_verbosity') >= POLLER_VERBOSITY_MEDIUM || $debug) {
 		$poller_seconds_sincerun = $seconds - $poller_lastrun;
 	}
 
-	cacti_log("NOTE: Poller Int: '$poller_interval', $task_type Int: '$cron_interval', Time Since Last: '$poller_seconds_sincerun', Max Runtime '" . MAX_POLLER_RUNTIME. "', Poller Runs: '$poller_runs'", TRUE, 'POLLER');
+	cacti_log("NOTE: Poller Int: '$poller_interval', $task_type Int: '$cron_interval', Time Since Last: '$poller_seconds_sincerun', Max Runtime '" . MAX_POLLER_RUNTIME. "', Poller Runs: '$poller_runs'", true, 'POLLER');
 }
 
 /* our cron can run at either 1 or 5 minute intervals */
@@ -248,7 +254,7 @@ while ($poller_runs_completed < $poller_runs) {
 	/* initialize poller_time and poller_output tables, check poller_output for issues */
 	$running_processes = db_fetch_cell('SELECT count(*) FROM poller_time WHERE end_time=\'0000-00-00 00:00:00\'');
 	if ($running_processes) {
-		cacti_log("WARNING: There are '$running_processes' detected as overrunning a polling process, please investigate", TRUE, 'POLLER');
+		cacti_log("WARNING: There are '$running_processes' detected as overrunning a polling process, please investigate", true, 'POLLER');
 	}
 	db_execute('TRUNCATE TABLE poller_time');
 
@@ -265,7 +271,7 @@ while ($poller_runs_completed < $poller_runs) {
 			$issue_list .= ", Additional Issues Remain.  Only showing first $issues_limit";
 		}
 
-		cacti_log("WARNING: Poller Output Table not Empty.  Issues Found: $count, Data Sources: $issue_list", TRUE, 'POLLER');
+		cacti_log("WARNING: Poller Output Table not Empty.  Issues Found: $count, Data Sources: $issue_list", true, 'POLLER');
 		db_execute('TRUNCATE TABLE poller_output');
 	}
 
@@ -332,7 +338,7 @@ while ($poller_runs_completed < $poller_runs) {
 			$host_count ++;
 
 			if ($change_proc) {
-				exec_background($command_string, "$extra_args $first_host $last_host");
+				exec_background($command_string, "$extra_args --first=$first_host --last=$last_host" . ($mibs ? ' --mibs':''));
 				usleep(100000);
 
 				$host_count   = 1;
@@ -348,7 +354,7 @@ while ($poller_runs_completed < $poller_runs) {
 		if ($host_count > 1) {
 			$last_host = $item['id'];
 
-			exec_background($command_string, "$extra_args $first_host $last_host");
+			exec_background($command_string, "$extra_args --first=$first_host --last=$last_host");
 			usleep(100000);
 
 			$started_processes++;
@@ -365,17 +371,17 @@ while ($poller_runs_completed < $poller_runs) {
 		$rrdtool_pipe = rrd_init();
 
 		$rrds_processed = 0;
-		$poller_finishing_dispatched = FALSE;
+		$poller_finishing_dispatched = false;
 		while (1) {
 			$finished_processes = db_fetch_cell('SELECT count(*) FROM poller_time WHERE poller_id = 0 AND end_time  >\'0000-00-00 00:00:00\'');
 
 			if ($finished_processes >= $started_processes) {
 				/* all scheduled pollers are finished */
-				if ($poller_finishing_dispatched === FALSE) {
+				if ($poller_finishing_dispatched === false) {
 					api_plugin_hook('poller_finishing');
-					$poller_finishing_dispatched = TRUE;
+					$poller_finishing_dispatched = true;
 				}
-				$rrds_processed = $rrds_processed + process_poller_output($rrdtool_pipe, TRUE);
+				$rrds_processed = $rrds_processed + process_poller_output($rrdtool_pipe, true);
 
 				log_cacti_stats($loop_start, $method, $concurrent_processes, $max_threads,
 					sizeof($polling_hosts), $hosts_per_process, $num_polling_items, $rrds_processed);
@@ -432,7 +438,7 @@ while ($poller_runs_completed < $poller_runs) {
 			chdir(read_config_option('path_webroot'));
 		}
 	}else if (read_config_option('log_verbosity') >= POLLER_VERBOSITY_MEDIUM || $debug) {
-		cacti_log('NOTE: There are no items in your poller for this polling cycle!', TRUE, 'POLLER');
+		cacti_log('NOTE: There are no items in your poller for this polling cycle!', true, 'POLLER');
 	}
 
 	$poller_runs_completed++;
@@ -477,7 +483,7 @@ while ($poller_runs_completed < $poller_runs) {
 			api_plugin_hook('poller_top');
 		}
 	}else if (read_config_option('log_verbosity') >= POLLER_VERBOSITY_MEDIUM || $debug) {
-		cacti_log('WARNING: Cacti Polling Cycle Exceeded Poller Interval by ' . $loop_end-$loop_start-$poller_interval . ' seconds', TRUE, 'POLLER');
+		cacti_log('WARNING: Cacti Polling Cycle Exceeded Poller Interval by ' . $loop_end-$loop_start-$poller_interval . ' seconds', true, 'POLLER');
 	}
 }
 

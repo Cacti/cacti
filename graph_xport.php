@@ -87,6 +87,9 @@ $graph_info = db_fetch_row_prepared('SELECT * FROM graph_templates_graph WHERE l
 /* for bandwidth, NThPercentile */
 $xport_meta = array();
 
+/* tell function we are csv */
+$graph_data_array['export_csv'] = true;
+
 /* Get graph export */
 $xport_array = @rrdtool_function_xport($_GET['local_graph_id'], get_request_var('rra_id'), $graph_data_array, $xport_meta);
 

@@ -47,17 +47,11 @@ if (count($_SERVER['argv']) < 4) {
 	exit(-1);
 }
 
-$poller_id = (int)$_SERVER['argv'][1];
+$poller_id = $_SERVER['argv'][1];
 $graph_id  = (int)$_SERVER['argv'][2];
 $interval  = (int)$_SERVER['argv'][3];
 
-if ($poller_id <= 0) {
-	echo "Invalid poller_id specified.\n\n";
-	exit(-1);
-}
-
-if ($graph_id <= 0)
-{
+if ($graph_id <= 0) {
 	echo "Invalid graph_id specified.\n\n";
 	exit(-1);
 }
@@ -203,8 +197,11 @@ if ((sizeof($polling_items) > 0)) {
 		}
 
 		if (isset($output)) {
-			/* insert a U in place of the actual value if the snmp agent restarts */
-			db_execute("insert into poller_output_realtime (local_data_id, rrd_name, time, poller_id, output) values (" . $item["local_data_id"] . ", '" . $item["rrd_name"] . "', '$host_update_time', '".$poller_id."', '" . addslashes($output) . "')");
+			db_execute_prepared("INSERT INTO poller_output_realtime 
+				(local_data_id, rrd_name, time, poller_id, output) 
+				VALUES 
+				(?, ?, ?, ?, ?)", 
+				array($item["local_data_id"], $item["rrd_name"], $host_update_time, $poller_id, $output));
 		}
 	}
 

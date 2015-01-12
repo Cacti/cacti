@@ -2225,8 +2225,9 @@ CREATE TABLE IF NOT EXISTS poller_output_realtime (
   rrd_name varchar(19) NOT NULL default '',
   `time` datetime NOT NULL default '0000-00-00 00:00:00',
   output text NOT NULL,
-  poller_id int(11) NOT NULL,
-  PRIMARY KEY  (local_data_id,rrd_name,`time`)
+  poller_id varchar(30) NOT NULL default '',
+  PRIMARY KEY  (local_data_id,rrd_name,`time`),
+  KEY poller_id(poller_id)
 ) ENGINE=MyISAM;
 
 --

@@ -212,21 +212,21 @@ function generate_report($report, $force = false) {
 
 	reports_log(__FUNCTION__ . ", report_id: " . $report["id"], false, "REPORTS TRACE", POLLER_VERBOSITY_MEDIUM);
 
-	$message     = reports_generate_html($report["id"], REPORTS_OUTPUT_EMAIL);
+	$body = reports_generate_html($report["id"], REPORTS_OUTPUT_EMAIL);
 
 	$time = time();
 	# get config option for first-day-of-the-week
 	$first_weekdayid = read_graph_config_option("first_weekdayid");
 
-	$offset          = 0;
-	$graphids        = array();
-	$mail_data_array = array();
+	$offset      = 0;
+	$graphids    = array();
+	$attachments = array();
 	while ( true ) {
-		$pos = strpos($message, "<GRAPH:", $offset);
+		$pos = strpos($body, "<GRAPH:", $offset);
 
 		if ($pos) {
 			$offset   = $pos+7;
-			$graph    = substr($message, $pos+7, 10);
+			$graph    = substr($body, $pos+7, 10);
 			$arr      = explode(":", $graph);
 			$arr1     = explode(">", $arr[1]);
 			$graphid  = $arr[0];
@@ -262,7 +262,7 @@ function generate_report($report, $force = false) {
 
 		switch($report["attachment_type"]) {
 			case REPORTS_TYPE_INLINE_PNG:
-				$mail_data_array[] = array(
+				$attachments[] = array(
 					'attachment' => @rrdtool_function_graph($graphid, "", $graph_data_array),
 					'filename'   => 'graph_' . $graphid . ".png",
 					'mime_type'  => 'image/png',
@@ -272,7 +272,7 @@ function generate_report($report, $force = false) {
 				);
 				break;
 			case REPORTS_TYPE_INLINE_JPG:
-				$mail_data_array[] = array(
+				$attachments[] = array(
 					'attachment' => png2jpeg(@rrdtool_function_graph($graphid, "", $graph_data_array)),
 					'filename'   => 'graph_' . $graphid . ".jpg",
 					'mime_type'  => 'image/jpg',
@@ -282,7 +282,7 @@ function generate_report($report, $force = false) {
 				);
 				break;
 			case REPORTS_TYPE_INLINE_GIF:
-				$mail_data_array[] = array(
+				$attachments[] = array(
 					'attachment' => png2gif(@rrdtool_function_graph($graphid, "", $graph_data_array)),
 					'filename'   => 'graph_' . $graphid . ".gif",
 					'mime_type'  => 'image/gif',
@@ -292,7 +292,7 @@ function generate_report($report, $force = false) {
 				);
 				break;
 			case REPORTS_TYPE_ATTACH_PNG:
-				$mail_data_array[] = array(
+				$attachments[] = array(
 					'attachment' => @rrdtool_function_graph($graphid, "", $graph_data_array),
 					'filename'   => 'graph_' . $graphid . ".png",
 					'mime_type'  => 'image/png',
@@ -302,7 +302,7 @@ function generate_report($report, $force = false) {
 				);
 				break;
 			case REPORTS_TYPE_ATTACH_JPG:
-				$mail_data_array[] = array(
+				$attachments[] = array(
 					'attachment' => png2jpeg(@rrdtool_function_graph($graphid, "", $graph_data_array)),
 					'filename'   => 'graph_' . $graphid . ".jpg",
 					'mime_type'  => 'image/jpg',
@@ -312,7 +312,7 @@ function generate_report($report, $force = false) {
 				);
 				break;
 			case REPORTS_TYPE_ATTACH_GIF:
-				$mail_data_array[] = array(
+				$attachments[] = array(
 					'attachment' => png2gif(@rrdtool_function_graph($graphid, "", $graph_data_array)),
 					'filename'   => 'graph_' . $graphid . ".gif",
 					'mime_type'  => 'image/gif',
@@ -322,7 +322,7 @@ function generate_report($report, $force = false) {
 				);
 				break;
 			case REPORTS_TYPE_INLINE_PNG_LN:
-				$mail_data_array[] = array(
+				$attachments[] = array(
 					'attachment' => @rrdtool_function_graph($graphid, "", $graph_data_array),
 					'filename'   => '',	# LN does not accept filenames for inline attachments
 					'mime_type'  => 'image/png',
@@ -332,7 +332,7 @@ function generate_report($report, $force = false) {
 				);
 				break;
 			case REPORTS_TYPE_INLINE_JPG_LN:
-				$mail_data_array[] = array(
+				$attachments[] = array(
 					'attachment' => png2jpeg(@rrdtool_function_graph($graphid, "", $graph_data_array)),
 					'filename'   => '',	# LN does not accept filenames for inline attachments
 					'mime_type'  => 'image/jpg',
@@ -342,7 +342,7 @@ function generate_report($report, $force = false) {
 				);
 				break;
 			case REPORTS_TYPE_INLINE_GIF_LN:
-				$mail_data_array[] = array(
+				$attachments[] = array(
 					'attachment' => png2gif(@rrdtool_function_graph($graphid, "", $graph_data_array)),
 					'filename'   => '',	# LN does not accept filenames for inline attachments
 					'mime_type'  => 'image/gif',
@@ -352,7 +352,7 @@ function generate_report($report, $force = false) {
 				);
 				break;
 			case REPORTS_TYPE_ATTACH_PDF:
-#				$mail_data_array[] = array(
+#				$attachments[] = array(
 #					'attachment' => png2gif(@rrdtool_function_graph($graphid, "", $graph_data_array)),
 #					'filename'   => 'graph_' . $graphid . ".gif",
 #					'mime_type'  => 'image/gif',
@@ -375,8 +375,22 @@ function generate_report($report, $force = false) {
 		$report['bcc'] = '';
 	}
 
-	$header = '';
-	$error = mg_send_mail($report['email'], $report['from_email'], $report['from_name'], $subject, $message, $mail_data_array, $header, $report['bcc']);
+	$v = db_fetch_cell("SELECT cacti FROM version");
+	$headers['User-Agent'] = 'Cacti-Reports-v' . $v;
+
+	$error = mailer(
+		array($report['from_email'], $report['from_name']),
+		$report['email'], 
+		'', 
+		$report['bcc'], 
+		'', 
+		$subject, 
+		$body, 
+		'Cacti Reporting Requires and HTML Email Client', 
+		$attachments, 
+		$headers
+	);
+
 	session_start();
 	if (strlen($error)) {
 		if (isset($_REQUEST["id"])) {
@@ -588,6 +602,7 @@ function reports_generate_html ($reports_id, $output = REPORTS_OUTPUT_STDOUT) {
 		$column = 0;
 		foreach($reports_items as $item) {
 			reports_log(__FUNCTION__ . ", item_id: " . $item["id"] . " local_graph_id: " . $item["local_graph_id"], false, "REPORTS TRACE", POLLER_VERBOSITY_MEDIUM);
+
 			if ($item['item_type'] == REPORTS_ITEM_GRAPH) {
 				$timespan = array();
 				# get start/end time-since-epoch for actual time (now()) and given current-session-timespan
@@ -1039,172 +1054,6 @@ function reports_graph_area($graphs, $report, $item, $timespan, $output, $format
 
 	return $outstr;
 }
-
-/** This function is stolen from SETTINGS
- * and modified in a way, that rrdtool graph is kept outside this send_mail function
- * Using this function with current MAIL servers using extended authentication throws errors.
- * 
- * @param string $to
- * @param string $from
- * @param string $fromname
- * @param string $subject
- * @param string $message
- * @param array $data_array
- * @param array $headers
- */
-function mg_send_mail($to, $from, $fromname, $subject, $message, $data_array = '', $headers = '', $bcc = '') {
-	global $config;
-	include_once($config["base_path"] . "/lib/mailer.php");
-
-	reports_log("Sending Report to Email to: '" . $to . "', with Subject: '" . $subject . "'", false, "SYSTEM", POLLER_VERBOSITY_LOW);
-
-	$message = str_replace('<SUBJECT>', $subject, $message);
-	$message = str_replace('<TO>', $to, $message);
-	$message = str_replace('<FROM>', $from, $message);
-
-	$how = read_config_option("settings_how");
-	if ($how < 0 || $how > 2) $how = 0;
-
-	/* setup the mail connection settings */
-	if ($how == 0) {
-		$Mailer = new Mailer(array('Type' => 'PHP'));
-	} else if ($how == 1) {
-		$sendmail = read_config_option('settings_sendmail_path');
-		$Mailer   = new Mailer(array('Type' => 'DirectInject', 'DirectInject_Path' => $sendmail));
-	} else if ($how == 2) {
-		$smtp_host     = read_config_option("settings_smtp_host");
-		$smtp_port     = read_config_option("settings_smtp_port");
-		$smtp_username = read_config_option("settings_smtp_username");
-		$smtp_password = read_config_option("settings_smtp_password");
-
-		$Mailer = new Mailer(array(
-			'Type' => 'SMTP',
-			'SMTP_Host' => $smtp_host,
-			'SMTP_Port' => $smtp_port,
-			'SMTP_Username' => $smtp_username,
-			'SMTP_Password' => $smtp_password));
-	}
-
-	/* setup the max size of the e-mail message */
-	$Mailer->Config["AttachMaxSize"] = read_config_option("reports_max_attach");
-	$Mailer->Config["MaxSize"]       = read_config_option("reports_max_attach");
-
-	/* setup the from information */
-	if ($from == '') {
-		$from     = read_config_option('settings_from_email');
-		$fromname = read_config_option('settings_from_name');
-		if ($from == "") {
-			if (isset($_SERVER['HOSTNAME'])) {
-				$from = 'Cacti@' . $_SERVER['HOSTNAME'];
-			} else {
-				$from = 'Cacti@cactiusers.org';
-			}
-		}
-		if ($fromname == '') $fromname = 'Cacti';
-
-		$from = $Mailer->email_format($fromname, $from);
-		if ($Mailer->header_set('From', $from) === false) {
-			print "ERROR: " . $Mailer->error() . "\n";
-			return $Mailer->error();
-		}
-	} else {
-		if ($fromname == '') read_config_option('settings_from_name');
-		if ($fromname == '') $fromname = 'Cacti';
-
-		$from = $Mailer->email_format($fromname, $from);
-		if ($Mailer->header_set('From', $from) === false) {
-			print "ERROR: " . $Mailer->error() . "\n";
-			return $Mailer->error();
-		}
-	}
-
-	/* validate the to information */
-	if ($to == '') {
-		return "Mailer Error: No <b>TO</b> address set!!<br>If using the <i>Test Mail</i> link, please set the <b>Alert e-mail</b> setting.";
-	}
-	$to = explode(',', $to);
-
-	/* initialize the e-mail 'to' addresses */
-	foreach($to as $t) {
-		if (trim($t) != '' && !$Mailer->header_set("To", $t)) {
-			print "ERROR: " . $Mailer->error() . "\n";
-			return $Mailer->error();
-		}
-	}
-	/* append bcc if any */
-	if ($bcc != '') {
-		$carbons = explode(',', $bcc);
-		foreach($carbons as $carbon) {
-			if (trim($carbon) != '' && !$Mailer->header_set("Bcc", $carbon)) {
-				print "ERROR: " . $Mailer->error() . "\n";
-				return $Mailer->error();
-			}
-		}
-	}
-
-	/* initialize the e-mail 'wordwrap' */
-	$wordwrap = read_config_option("settings_wordwrap");
-	if ($wordwrap == '')  $wordwrap = 76;
-	if ($wordwrap > 9999) $wordwrap = 9999;
-	if ($wordwrap < 0)    $wordwrap = 76;
-	$Mailer->Config["Mail"]["WordWrap"] = $wordwrap;
-
-	/* initialize the e-mail 'subject' */
-	if (!$Mailer->header_set("Subject", $subject)) {
-		print "ERROR: " . $Mailer->error() . "\n";
-		return $Mailer->error();
-	}
-
-	/* initialize the e-mail 'graph' content */
-	if (is_array($data_array) && !empty($data_array) && strstr($message, '<GRAPH:')) {
-		foreach($data_array as $data_item) {
-			if ($data_item["attachment"] != "") {
-				/* get content id and create attachment */
-				$cid = $Mailer->content_id();
-				if ($Mailer->attach($data_item["attachment"], $data_item['filename'], $data_item["mime_type"], $data_item["inline"], $cid) == false) {
-					print "ERROR: " . $Mailer->error() . "\n";
-					return $Mailer->error();
-				}
-				/* handle the message text */
-				switch ($data_item["inline"]) {
-					case "inline":
-				$message = str_replace('<GRAPH:' . $data_item["graphid"] . ':' . $data_item["timespan"] . '>', "<img border='0' src='cid:$cid' >", $message);
-						break;
-					case "attachment":
-						$message = str_replace('<GRAPH:' . $data_item["graphid"] . ':' . $data_item["timespan"] . '>', "", $message);
-						break;
-				}
-			} else {
-				$message = str_replace('<GRAPH:' . $data_item["graphid"] . ':' . $data_item["timespan"] . '>', "<img border='0' src='" . $data_item['filename'] . "' ><br>Could not open!<br>" . $data_item['filename'], $message);
-			}
-		}
-	}
-
-	/* get rid of html content if this is test only */
-	$text = array('text' => '', 'html' => '');
-	if ($data_array == '') {
-		$message = str_replace('<br>',  "\n", $message);
-		$message = str_replace('<BR>',  "\n", $message);
-		$message = str_replace('</BR>', "\n", $message);
-		$text['text'] = strip_tags($message);
-	} else {
-		$text['html'] = $message;
-		$message_text = "An HTML capable email reader is required to view Reports emails";
-		$text['text'] = $message_text;
-	}
-
-	/* send the e-mail */
-	$v = db_fetch_cell("SELECT cacti FROM version");
-	$Mailer->header_set('X-Mailer', 'Cacti-Reports-v' . $v);
-	$Mailer->header_set('User-Agent', 'Cacti-Reports-v' . $v);
-    if ($Mailer->send($text) == false) {
-		print "ERROR: " . $Mailer->error() . "\n";
-		return $Mailer->error();
-	}
-
-	return '';
-}
-
 
 /**
  * convert png images stream to jpeg using php-gd

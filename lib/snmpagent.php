@@ -342,7 +342,7 @@ function snmpagent_poller_bottom() {
 	$mc->object('cactiStatsLastUpdate')->set( time() );
 
 	/* clean up the notification log */
-	$snmp_notification_managers = db_fetch_assoc("SELECT id, max_log_size FROM plugin_snmpagent_managers");
+	$snmp_notification_managers = db_fetch_assoc("SELECT id, max_log_size FROM snmpagent_managers");
 	if($snmp_notification_managers && sizeof($snmp_notification_managers)>0) {
 		foreach($snmp_notification_managers as $snmp_notification_manager) {
 			db_execute("DELETE FROM plugin_snmpagent_notifications_log WHERE manager_id = " . $snmp_notification_manager["id"] . " AND `time` <= " . (time()-86400*$snmp_notification_manager["max_log_size"]) );

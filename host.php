@@ -1319,7 +1319,7 @@ function host() {
 
 	$hosts = db_fetch_assoc($sql_query);
 
-	$nav = html_nav_bar('host.php?filter=' . get_request_var_request('filter') . '&host_template_id=' . get_request_var_request('host_template_id') . '&host_status=' . get_request_var_request('host_status'), MAX_DISPLAY_PAGES, get_request_var_request('page'), get_request_var_request('rows'), $total_rows, 11, 'Devices', 'page', 'main');
+	$nav = html_nav_bar('host.php?filter=' . get_request_var_request('filter') . '&host_template_id=' . get_request_var_request('host_template_id') . '&host_status=' . get_request_var_request('host_status'), MAX_DISPLAY_PAGES, get_request_var_request('page'), get_request_var_request('rows'), $total_rows, 13, 'Devices', 'page', 'main');
 
 	print $nav;
 
@@ -1331,6 +1331,8 @@ function host() {
 		'data_sources' => array('display' => 'Data Sources', 'align' => 'right', 'sort' => 'ASC', 'tip' => 'The total number of Data Sources generated from this Device.'),
 		'status' => array('display' => 'Status', 'align' => 'center', 'sort' => 'ASC', 'tip' => 'The monitoring status of the Device based upon ping results.  If this Device is a special type Device, by using the hostname "localhost", or due to the setting to not perform an Availability Check, it will always remain Up.  When using cmd.php data collector, a Device with no Graphs, is not pinged by the data collector and will remain in an "Unknown" state.'),
 		'status_rec_date' => array('display' => 'In State', 'align' => 'right', 'sort' => 'ASC', 'tip' => 'The amount of time that this Device has been in its current state.'),
+		'snmp_sysUpTimeInstance' => array('display' => 'Uptime', 'align' => 'right', 'sort' => 'ASC', 'tip' => 'The current amount of time that the host has been up.'),
+		'polling_time' => array('display' => 'Poll Time', 'align' => 'right', 'sort' => 'ASC', 'tip' => 'The the amount of time it takes to collect data from this Device.'),
 		'cur_time' => array('display' => 'Current (ms)', 'align' => 'right', 'sort' => 'DESC', 'tip' => 'The current ping time in milliseconds to reach the Device.'),
 		'avg_time' => array('display' => 'Average (ms)', 'align' => 'right', 'sort' => 'DESC', 'tip' => 'The average ping time in milliseconds to reach the Device since the counters were cleared for this Device.'),
 		'availability' => array('display' => 'Availability', 'align' => 'right', 'sort' => 'ASC', 'tip' => 'The availability percentage based upon ping results insce the counters were cleared for this Device.'));
@@ -1340,6 +1342,20 @@ function host() {
 	$i = 0;
 	if (sizeof($hosts) > 0) {
 		foreach ($hosts as $host) {
+			if ($host['disabled'] == '' && 
+				($host['status'] == HOST_RECOVERING || $host['status'] == HOST_UP) &&
+				($host['availability_method'] != AVAIL_NONE && $host['availability_method'] != AVAIL_PING)) { 
+				$snmp_uptime = $host['snmp_sysUpTimeInstance'];
+				$days      = intval($snmp_uptime / (60*60*24*100));
+				$remainder = $snmp_uptime % (60*60*24*100);
+				$hours     = intval($remainder / (60*60*100));
+				$remainder = $remainder % (60*60*100);
+				$minutes   = intval($remainder / (60*100));
+				$uptime    = "$days d $hours h $minutes m";
+			}else{
+				$uptime    = "N/A";
+			}
+
 			form_alternate_row('line' . $host['id'], true);
 			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars('host.php?action=edit&id=' . $host['id']) . "'>" .
 				(strlen(get_request_var_request('filter')) ? preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($host['description'])) : htmlspecialchars($host['description'])) . '</a>', $host['id']);
@@ -1349,6 +1365,8 @@ function host() {
 			form_selectable_cell(number_format($host['data_sources']), $host['id'], '', 'text-align:right');
 			form_selectable_cell(get_colored_device_status(($host['disabled'] == 'on' ? true : false), $host['status']), $host['id'], '', 'text-align:center');
 			form_selectable_cell(get_timeinstate($host), $host['id'], '', 'text-align:right');
+			form_selectable_cell($uptime, $host['id'], '', 'text-align:right');
+			form_selectable_cell(round($host['polling_time'],2), $host['id'], '', 'text-align:right');
 			form_selectable_cell(round(($host['cur_time']), 2), $host['id'], '', 'text-align:right');
 			form_selectable_cell(round(($host['avg_time']), 2), $host['id'], '', 'text-align:right');
 			form_selectable_cell(round($host['availability'], 2) . ' %', $host['id'], '', 'text-align:right');

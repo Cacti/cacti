@@ -174,6 +174,36 @@ $.fn.classes = function(callback) {
 	return classes;
 };
 
+/** These three functions will set the cursor into
+ *  a textbox or textara and optionally select characters */
+$.fn.setCursorPosition = function(position) {
+	if (this.length == 0) return this;
+	return this.setSelection(position, position);
+};
+
+$.fn.selectRange = function(start, end) {
+	if(!end) end = start; 
+	return this.each(function() {
+		if (this.setSelectionRange) {
+			this.focus();
+			this.setSelectionRange(start, end);
+		} else if (this.createTextRange) {
+			var range = this.createTextRange();
+			range.collapse(true);
+			range.moveEnd('character', end);
+			range.moveStart('character', start);
+			range.select();
+		}
+	});
+
+	return this;
+};
+
+$.fn.focusEnd = function() {
+	this.setCursorPosition($(this).val().length);
+	return this;
+};
+
 /** Mini jquery plugin to create a bind to show/hide events */
 (function ($) {
 	$.each(['show', 'hide'], function (i, ev) {

@@ -468,7 +468,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 			<td class='noprint'>
 			<form name='form_timespan_selector' method='post' action='graph_view.php'>
 				<table cellpadding='2' cellspacing='0'>
-					<tr>
+					<tr id='timespan'>
 						<td width='50'>
 							Presets
 						</td>
@@ -540,6 +540,38 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 							<input type='button' name='button_clear_x' value='Clear' title='Return to the default time span' onClick='clearTimespanFilter()'>
 						</td>
 					</tr>
+					<tr id='realtime' style='display:none;'>
+						<td width='50'> 
+							Window
+						</td>
+						<td>
+							<select name='graph_start' id='graph_start' onChange='self.imageOptionsChanged("timespan")'>
+								<?php
+								foreach ($realtime_window as $interval => $text) {
+									printf('<option value="%d"%s>%s</option>', $interval, $interval == $_SESSION['sess_realtime_window'] ? ' selected="selected"' : '', $text);
+								}
+								?>
+							</select>
+						</td>
+						<td>
+							Refresh
+						</td>
+						<td>
+							<select name='ds_step' id='ds_step' onChange="self.imageOptionsChanged('interval')">
+								<?php
+								foreach ($realtime_refresh as $interval => $text) {
+									printf('<option value="%d"%s>%s</option>', $interval, $interval == $_SESSION['sess_realtime_dsstep'] ? ' selected="selected"' : '', $text);
+								}
+								?>
+							</select>
+						</td>
+						<td>
+							<input type='button' id='realtimeoff' value='Stop'>
+						</td>
+						<td align='center' colspan='6'>
+							<span id='countdown'></span>
+						</td>
+					</tr>
 				</table>
 			</form>
 			</td>
@@ -547,7 +579,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 		<?php
 	}
 	?>
-	<tr class='even noprint'>
+	<tr class='even noprint' id='search'>
 		<td class='noprint'>
 		<form name='form_graph_view' method='post' onSubmit='changeFilter();return false'>
 			<table cellpadding='2' cellspacing='0'>

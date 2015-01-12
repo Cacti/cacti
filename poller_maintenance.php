@@ -119,6 +119,9 @@ if (read_config_option('auth_cache_enabled') == 'on') {
 	db_execute('TRUNCATE TABLE user_auth_cache');
 }
 
+// Check the realtime cache and poller
+realtime_purge_cache();
+
 // Check expired accounts
 secpass_check_expired ();
 
@@ -129,12 +132,27 @@ if (read_config_option('logrotate_enabled') == 'on') {
 	}
 }
 
+/** realtime_purge_cache() - Thsi function will purge files in the realtime directory
+ *  that are older than 2 hours without changes */
+function realtime_purge_cache() {
+	/* remove all Realtime files over than 2 hours */
+	if (read_config_option('realtime_cache_path') != '') {
+		$cache_path = read_config_option('realtime_cache_path');
 
+		if (is_dir($cache_path) && is_writeable($cache_path)) {
+			foreach (new DirectoryIterator($cache_path) as $fileInfo) {
+				if ($fileInfo->isDot()) {
+					continue;
+				}
+				if (time() - $fileInfo->getCTime() >= 2*60*60) {
+					unlink($fileInfo->getRealPath());
+				}
+			}
+		}
+	}
 
-
-
-
-
+	db_execute("DELETE FROM poller_output_realtime WHERE time<FROM_UNIXTIME(UNIX_TIMESTAMP()-300)");
+}
 
 /*
  * logrotate_rotatenow

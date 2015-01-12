@@ -86,7 +86,7 @@
 </style>
 <!-- header -->
 <table class="header_table">
-<tr class="header_row" ><td class="header">Nectar Report</td></tr>
+<tr class="header_row" ><td class="header">Cacti Reporting Report</td></tr>
 <!-- main report -->
 <tr><td>
 <REPORT>

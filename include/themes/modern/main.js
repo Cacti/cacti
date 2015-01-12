@@ -50,7 +50,7 @@ function themeReady() {
 		},
 	}).each(function() {
 		id = $(this).attr('id');
-		$('#'+id+'-button').css('min-width', '0px').css('max-width', '400px').css('width','');
+		$('#'+id+'-button').css('min-width', '100px').css('max-width', '400px').css('width','');
 		$('#'+id+'-menu').css('max-height', '250px');
 	});
 

@@ -465,13 +465,15 @@ function upgrade_to_0_8_8d() {
 	// Adding email column for future user
 	db_add_column ('0.8.8d', 'user_auth', array('name' => 'email_address', 'type' => 'varchar(128)', 'NULL' => true, 'after' => 'full_name'));
 
-	db_install_execute('0.8.8d', "CREATE TABLE IF NOT EXISTS poller_output_realtime (
+	db_install_execute('0.8.8d', 'DROP TABLE IF EXISTS poller_output_realtime');
+	db_install_execute('0.8.8d', "CREATE TABLE poller_output_realtime (
 		local_data_id mediumint(8) unsigned NOT NULL default '0',
 		rrd_name varchar(19) NOT NULL default '',
-		`time` datetime NOT NULL default '0000-00-00 00:00:00',
+		time timestamp NOT NULL default '0000-00-00 00:00:00',
 		output text NOT NULL,
-		poller_id int(11) NOT NULL,
-		PRIMARY KEY  (local_data_id,rrd_name,`time`)) 
+		poller_id varchar(30) NOT NULL default '',
+		PRIMARY KEY  (local_data_id,rrd_name,`time`),
+		KEY poller_id(poller_id)) 
 		ENGINE=MyISAM");
 
 	db_install_execute('0.8.8d', 'DROP TABLE IF EXISTS poller_output_rt');
@@ -622,4 +624,13 @@ function upgrade_to_0_8_8d() {
 		}
 		}
 	}
+
+	db_install_execute('0.8.8d', "ALTER TABLE host 
+		ADD COLUMN snmp_sysDescr varchar(300) NOT NULL default '' AFTER snmp_timeout, 
+		ADD COLUMN snmp_sysObjectID varchar(64) NOT NULL default '' AFTER snmp_sysDescr, 
+		ADD COLUMN snmp_sysUpTimeInstance int unsigned default '0' AFTER snmp_sysObjectID, 
+		ADD COLUMN snmp_sysContact varchar(300) NOT NULL default '' AFTER snmp_sysUpTimeInstance, 
+		ADD COLUMN snmp_sysName varchar(300) NOT NULL default '' AFTER snmp_sysContact, 
+		ADD COLUMN snmp_sysLocation varchar(300) NOT NULL default '' AFTER snmp_sysName
+		ADD COLUMN polling_time DOUBLE default '0' AFTER avg_time");
 }

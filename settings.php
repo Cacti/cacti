@@ -214,6 +214,7 @@ default:
 		currentTheme = $('#selected_theme').val();
 
 		initFonts();
+		initRealtime();
 
 		$('#font_method').change(function() {
 			initFonts();
@@ -221,6 +222,10 @@ default:
 
 		$('#selected_theme').change(function() {
 			themeChanger();
+		});
+
+		$('#realtime_enabled').change(function() {
+			initRealtime();
 		});
 	}
 
@@ -431,6 +436,18 @@ default:
 			$('#row_legend_font').show();
 			$('#row_axis_font').show();
 			$('#row_unit_font').show();
+		}
+	}
+
+	function initRealtime() {
+		if ($('#realtime_enabled').is(':checked')) {
+			$('#row_realtime_gwindow').show();
+			$('#row_realtime_interval').show();
+			$('#row_realtime_cache_path').show();
+		}else{
+			$('#row_realtime_gwindow').hide();
+			$('#row_realtime_interval').hide();
+			$('#row_realtime_cache_path').hide();
 		}
 	}
 

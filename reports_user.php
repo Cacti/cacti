@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2015 The Cacti Group                                 |
+ | Copyright (C) 2004-2014 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -22,35 +22,58 @@
  +-------------------------------------------------------------------------+
 */
 
-$oper_mode = api_plugin_hook_function('bottom_footer', OPER_MODE_NATIVE);
-if (($oper_mode == OPER_MODE_NATIVE) || ($oper_mode == OPER_MODE_IFRAME_NONAV)) {
+$guest_account = true;
+include("./include/auth.php");
+include($config["base_path"] . "/reports.php");
+include($config["base_path"] . "/html_reports.php");
+define("MAX_DISPLAY_PAGES", 21);
 
-?>
-			</div>
-		</td>
-	</tr>
-</table>
-<?php api_plugin_hook('page_bottom');?>
-<script type='text/javascript'>
-$(function() { 
-	$('#navigation').show(); 
-});
-</script>
-</body>
-</html>
+input_validate_input_number(get_request_var_request('id'));
 
-<?php
+/* set default action */
+if (!isset($_REQUEST["action"])) { $_REQUEST["action"] = ""; }
 
+switch ($_REQUEST["action"]) {
+	case 'save':
+		reports_form_save();
+
+		break;
+	case 'send':
+		reports_send($_REQUEST["id"]);
+
+		header("Location: reports_user.php?action=edit&tab=" . $_REQUEST["tab"] . "&id=" . $_REQUEST["id"]);
+		break;
+	case 'actions':
+		reports_form_actions();
+		break;
+	case 'item_movedown':
+		reports_item_movedown();
+
+		header("Location: reports_user.php?action=edit&tab=items&id=" . $_REQUEST["id"]);
+		break;
+	case 'item_moveup':
+		reports_item_moveup();
+
+		header("Location: reports_user.php?action=edit&tab=items&id=" . $_REQUEST["id"]);
+		break;
+	case 'item_remove':
+		reports_item_remove();
+
+		header("Location: reports_user.php?action=edit&tab=items&id=" . $_REQUEST["id"]);
+		break;
+	case 'item_edit':
+		general_header();
+		reports_item_edit();
+		bottom_footer();
+		break;
+	case 'edit':
+		general_header();
+		reports_edit();
+		bottom_footer();
+		break;
+	default:
+		general_header();
+		reports();
+		bottom_footer();
+		break;
 }
-
-/* we use this session var to store field values for when a save fails,
-this way we can restore the field's previous values. we reset it here, because
-they only need to be stored for a single page */
-kill_session_var("sess_field_values");
-
-/* make sure the debug log doesn't get too big */
-debug_log_clear();
-
-/* close the database connection */
-db_close();
-

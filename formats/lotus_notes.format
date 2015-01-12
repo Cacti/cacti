@@ -81,7 +81,7 @@
 </style>
 <!-- header -->
 <table class="header_table">
-<tr class="header_row" ><td class="header">Nectar Report for Lotus Notes</td></tr>
+<tr class="header_row" ><td class="header">Cacti Reporting Report for Lotus Notes</td></tr>
 <!-- main report -->
 <tr><td>
 <REPORT>

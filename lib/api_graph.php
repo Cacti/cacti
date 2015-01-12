@@ -30,6 +30,7 @@ function api_graph_remove($local_graph_id) {
 	db_execute_prepared('DELETE FROM graph_templates_graph WHERE local_graph_id = ?', array($local_graph_id));
 	db_execute_prepared('DELETE FROM graph_templates_item WHERE local_graph_id = ?', array($local_graph_id));
 	db_execute_prepared('DELETE FROM graph_tree_items WHERE local_graph_id = ?', array($local_graph_id));
+	db_execute_prepared('DELETE FROM reports_items WHERE local_graph_id = ?', array($local_graph_id));
 	db_execute_prepared('DELETE FROM graph_local WHERE id = ?', array($local_graph_id));
 }
 
@@ -53,6 +54,7 @@ function api_graph_remove_multi($local_graph_ids) {
 				db_execute("DELETE FROM graph_templates_graph WHERE local_graph_id IN ($ids_to_delete)");
 				db_execute("DELETE FROM graph_templates_item WHERE local_graph_id IN ($ids_to_delete)");
 				db_execute("DELETE FROM graph_tree_items WHERE local_graph_id IN ($ids_to_delete)");
+				db_execute("DELETE FROM reports_items WHERE local_graph_id IN ($ids_to_delete)");
 				db_execute("DELETE FROM graph_local WHERE id IN ($ids_to_delete)");
 
 				$i = 0;
@@ -64,6 +66,7 @@ function api_graph_remove_multi($local_graph_ids) {
 			db_execute("DELETE FROM graph_templates_graph WHERE local_graph_id IN ($ids_to_delete)");
 			db_execute("DELETE FROM graph_templates_item WHERE local_graph_id IN ($ids_to_delete)");
 			db_execute("DELETE FROM graph_tree_items WHERE local_graph_id IN ($ids_to_delete)");
+			db_execute("DELETE FROM reports_items WHERE local_graph_id IN ($ids_to_delete)");
 			db_execute("DELETE FROM graph_local WHERE id IN ($ids_to_delete)");
 		}
 	}

@@ -24,7 +24,9 @@ Cacti CHANGELOG
 -feature: Merge Watermark Plugin
 -feature: Merge UGroup Plugin
 -feature: Merge DSStats Plugin
--feature: Merge Settings Pluign
+-feature: Merge Settings Plugin
+-feature: Merge Realtime Plugin
+-feature: Merge Reporting (Nectar) Plugin
 -feature: Make all page refresh Ajax based
 -feature: Make Suggest Naming more consistent
 -feature: Add State Filter for Pugins Page

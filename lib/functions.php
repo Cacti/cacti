@@ -840,7 +840,7 @@ function update_host_status($status, $host_id, &$hosts, &$ping, $ping_availabili
 		avg_time = ?,
 		total_polls = ?,
 		failed_polls = ?,
-		availability = ?,
+		availability = ?
 		WHERE hostname = ?',
 		array(
 			$hosts[$host_id]['status'],
@@ -2803,6 +2803,17 @@ function bottom_footer() {
 		}
 		</script>
 		<?php
+
+		/* we use this session var to store field values for when a save fails,
+		this way we can restore the field's previous values. we reset it here, because
+		they only need to be stored for a single page */
+		kill_session_var("sess_field_values");
+
+		/* make sure the debug log doesn't get too big */
+		debug_log_clear();
+
+		/* close the database connection */
+		db_close();
 	}
 }
 
@@ -2829,14 +2840,58 @@ function general_header() {
 	}
 }
 
-function send_mail($to, $from, $subject, $message, $filename = '', $headers = '', $html = false) {
+function send_mail($to, $from, $subject, $body, $attachments = '', $headers = '', $html = false) {
+	$full_name = db_fetch_cell("SELECT full_name FROM user_auth WHERE email_address='$from'");
+	if (empty($full_name)) {
+		$fromname = $from;
+	}else{
+		$fromname = $full_name;
+	}
+
+	$from = array($from, $fromname);
+
+	mailer($from, $to, '', '', '', $subject, $body, '', $attachments, $headers, $html);
+}
+
+/** mailer - function to send mails to users 
+ *  @arg $from - a string email address, or an array in array(email_address, name format)
+ *  @arg $to - either a string of comma delimited email addresses, or an array of addresses in email_address => name format
+ *  @arg $cc - either a string of comma delimited email addresses, or an array of addresses in email_address => name format
+ *  @arg $bcc - either a string of comma delimited email addresses, or an array of addresses in email_address => name format
+ *  @arg $replyto - a string email address, or an array in array(email_address, name format)
+ *  @arg $subject - the email subject
+ *  @arg $body - the email body, in HTML format.  If content_text is not set, the function will attempt to extract
+ *       from the HTML format.
+ *  @arg $body_text - the email body in TEXT format.  If set, it will override the stripping tags method
+ *  @arg $attachments - the emails attachments as an array
+ *  @arg $headers - an array of name value pairs representing custom headers.
+ *  @arg $html - if set to true, html is the default, otherwise text format will be used
+ */
+function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '', $attachments, $headers, $html = true) {
 	global $config;
 
 	include_once($config['base_path'] . '/lib/PHPMailer/PHPMailerAutoload.php');
 
-	$message = str_replace('<SUBJECT>', $subject, $message);
-	$message = str_replace('<TO>', $to, $message);
-	$message = str_replace('<FROM>', $from, $message);
+	// Set the to informaiotn
+	if ($to == '') {
+		return 'Mailer Error: No <b>TO</b> address set!!<br>If using the <i>Test Mail</i> link, please set the <b>Alert e-mail</b> setting.';
+	}
+
+	if (is_array($to)) {
+		$toText = $to[1] . ' <' . $to[0] . '>';
+	}else{
+		$toText = $to;
+	}
+
+	if (is_array($from)) {
+		$fromText = $from[1] . ' <' . $from[0] . '>';
+	}else{
+		$fromText = $from;
+	}
+
+	$body = str_replace('<SUBJECT>', $subject, $body);
+	$body = str_replace('<TO>',      $toText, $body);
+	$body = str_replace('<FROM>',    $fromText, $body);
 
 	// Create the PHPMailer instance
 	$mail = new PHPMailer;
@@ -2890,35 +2945,76 @@ function send_mail($to, $from, $subject, $message, $filename = '', $headers = ''
 	}
 
 	// Set the from information
-	$fromname = '';
-	if ($from == '') {
-		$from     = read_config_option('settings_from_email');
-		$fromname = read_config_option('settings_from_name');
-		if (isset($_SERVER['HOSTNAME'])) {
-			$from = 'Cacti@' . $_SERVER['HOSTNAME'];
-		} else {
-			$from = 'Cacti@cacti.net';
+	if (!is_array($from)) {
+		$fromname = '';
+		if ($from == '') {
+			$from     = read_config_option('settings_from_email');
+			$fromname = read_config_option('settings_from_name');
+			if (isset($_SERVER['HOSTNAME'])) {
+				$from = 'Cacti@' . $_SERVER['HOSTNAME'];
+			} else {
+				$from = 'Cacti@cacti.net';
+			}
+
+			if ($fromname == '') {
+				$fromname = 'Cacti';
+			}
 		}
 
-		if ($fromname == '') {
-			$fromname = 'Cacti';
+		$mail->setFrom($from, $fromname);
+	}else{
+		$mail->setFrom($from[0], $from[1]);
+	}
+
+	if (!is_array($to)) {
+		$to = explode(',', $to);
+
+		foreach($to as $t) {
+			$t = trim($t);
+			if ($t != '') {
+				$mail->addAddress($t);
+			}
+		}
+	}else{
+		foreach($to as $email => $name) {
+			$mail->addAddress($email, $name);
 		}
 	}
 
-	$mail->setFrom($from, $fromname);
-
-	// Set the to informaiotn
-	if ($to == '') {
-		return 'Mailer Error: No <b>TO</b> address set!!<br>If using the <i>Test Mail</i> link, please set the <b>Alert e-mail</b> setting.';
+	if (!is_array($cc)) {
+		if ($cc != '') {
+			$cc = explode(',', $cc);
+			foreach($cc as $c) {
+				$c = trim($c);
+				$mail->addCC($c);
+			}
+		}
+	}else{
+		foreach($cc as $email => $name) {
+			$mail->addCC($email, $name);
+		}
 	}
 
-	$to = explode(',', $to);
-
-	foreach($to as $t) {
-		$t = trim($t);
-		if ($t != '') {
-			$mail->addAddress($t);
+	if (!is_array($bcc)) {
+		if ($bcc != '') {
+			$bcc = explode(',', $bcc);
+			foreach($bcc as $bc) {
+				$bc = trim($bc);
+				$mail->addBCC($bc);
+			}
 		}
+	}else{
+		foreach($bcc as $email => $name) {
+			$mail->addBCC($email, $name);
+		}
+	}
+
+	if (!is_array($replyto)) {
+		if ($replyto != '') {
+			$mail->replyTo($replyto);
+		}
+	}else{
+		$mail->replyTo($replyto[0], $replyto[1]);
 	}
 
 	// Set the wordwrap limits
@@ -2936,36 +3032,89 @@ function send_mail($to, $from, $subject, $message, $filename = '', $headers = ''
 	$i = 0;
 
 	// Handle Graph Attachments
-	if (is_array($filename) && sizeof($filename) && strstr($message, '<GRAPH>') !==0) {
-		foreach($filename as $val) {
+	if (is_array($attachments) && sizeof($attachments) && substr_count($body, '<GRAPH>') > 0) {
+		foreach($attachments as $val) {
 			$graph_data_array = array('output_flag'=> RRDTOOL_OUTPUT_STDOUT);
   			$data = rrdtool_function_graph($val['local_graph_id'], $val['rra_id'], $graph_data_array);
 			if ($data != '') {
+				/* get content id and create attachment */
 				$cid = getmypid() . '_' . $i . '@' . 'localhost';
-				$mail->addStringEmbededImage($data, $cid, $val['filename'].'.png', '8bit', 'image/png');
-				$message = str_replace('<GRAPH>', "<br><br><img src='cid:$cid'>", $message);
+
+				/* attempt to attach */
+				if ($mail->addStringEmbededImage($data, $cid, $val['filename'].'.png', 'base64', 'image/png', 'inline') === false) {
+					cacti_log('ERROR: ' . $mail->ErrorInfo, false);
+
+					return $mail->ErrorInfo;
+				}
+
+				$body = str_replace('<GRAPH>', "<br><br><img src='cid:$cid'>", $body);
 			} else {
-				$message = str_replace('<GRAPH>', "<br><img src='" . $val['file'] . "'><br>Could not open!<br>" . $val['file'], $message);
+				$body = str_replace('<GRAPH>', "<br><img src='" . $val['file'] . "'><br>Could not open!<br>" . $val['file'], $body);
+			}
+
+			$i++;
+		}
+	}elseif (is_array($attachments) && sizeof($attachments) && substr_count($body, '<GRAPH:') > 0) {
+		foreach($attachments as $attachment) {
+			if ($attachment['attachment'] != '') {
+				/* get content id and create attachment */
+				$cid = getmypid() . '_' . $i . '@' . 'localhost';
+
+				/* attempt to attach */
+				if ($mail->addStringEmbeddedImage($attachment['attachment'], $cid, $attachment['filename'], 'base64', $attachment['mime_type'], $attachment['inline']) === false) {
+					cacti_log('ERROR: ' . $mail->ErrorInfo, false);
+
+					return $mail->ErrorInfo;
+				}
+
+				/* handle the body text */
+				switch ($attachment['inline']) {
+					case 'inline':
+						$body = str_replace('<GRAPH:' . $attachment['graphid'] . ':' . $attachment['timespan'] . '>', "<img border='0' src='cid:$cid' >", $body);
+						break;
+					case 'attachment':
+						$body = str_replace('<GRAPH:' . $attachment['graphid'] . ':' . $attachment['timespan'] . '>', '', $body);
+						break;
+				}
+			} else {
+				$body = str_replace('<GRAPH:' . $attachment['graphid'] . ':' . $attachment['timespan'] . '>', "<img border='0' src='" . $attachment['filename'] . "' ><br>Could not open!<br>" . $attachment['filename'], $body);
 			}
 
 			$i++;
 		}
 	}
 
+	/* process custom headers */
+	if (is_array($headers) && sizeof($headers)) {
+	foreach($headers as $name => $value) {
+		$mail->addCustomHeader($name, $value);
+	}
+	}
+
 	// Set both html and non-html bodies
 	$text = array('text' => '', 'html' => '');
-	if ($filename == '' && $html == false) {
-		$message = str_replace('<br>',  "\n", $message);
-		$message = str_replace('<BR>',  "\n", $message);
-		$message = str_replace('</BR>', "\n", $message);
+	if ($body_text != '' && $html == true) {
+		$text['html']  = $body . '<br>';
+		$text['text']  = $body_text;
+		$mail->isHTML(true);
+		$mail->Body    = $text['html'];
+		$mail->AltBody = $text['text'];
+	}elseif ($attachments == '' && $html == false) {
+		if ($body_text != '') {
+			$body = $body_text;
+		}else{
+			$body = str_replace('<br>',  "\n", $body);
+			$body = str_replace('<BR>',  "\n", $body);
+			$body = str_replace('</BR>', "\n", $body);
+		}
 
-		$text['text']  = strip_tags($message);
+		$text['text']  = strip_tags($body);
 		$mail->isHTML(false);
 		$mail->Body    = $text['text'];
 		$mail->AltBody = $text['text'];
 	} else {
-		$text['html']  = $message . '<br>';
-		$text['text']  = strip_tags(str_replace('<br>', "\n", $message));
+		$text['html']  = $body . '<br>';
+		$text['text']  = strip_tags(str_replace('<br>', "\n", $body));
 		$mail->isHTML(true);
 		$mail->Body    = $text['html'];
 		$mail->AltBody = $text['text'];
@@ -3253,6 +3402,33 @@ function clog_authorized() {
 		return true;
 	}else{
 		return false;
+	}
+}
+
+function update_system_mibs($host_id) {
+	$system_mibs = array(
+		'snmp_sysDescr' => '.1.3.6.1.2.1.1.1.0',
+		'snmp_sysObjectID' => '.1.3.6.1.2.1.1.2.0',
+		'snmp_sysUpTimeInstance' => '.1.3.6.1.2.1.1.3.0',
+		'snmp_sysContact' => '.1.3.6.1.2.1.1.4.0',
+		'snmp_sysName' => '.1.3.6.1.2.1.1.5.0',
+		'snmp_sysLocation' => '.1.3.6.1.2.1.1.6.0'
+	);
+
+	$h = db_fetch_row_prepared("SELECT * FROM host WHERE id=?", array($host_id));
+
+	if (sizeof($h)) {
+		foreach($system_mibs as $name => $oid) {
+			$value = cacti_snmp_get($h['hostname'], $h['snmp_community'], $oid,
+				$h['snmp_version'], $h['snmp_username'], $h['snmp_password'],
+				$h['snmp_auth_protocol'], $h['snmp_priv_passphrase'], $h['snmp_priv_protocol'],
+				$h['snmp_context'], $h['snmp_port'], $h['snmp_timeout'], read_config_option('snmp_retries'), SNMP_CMDPHP);
+
+			if (!empty($value)) {
+				db_execute_prepared("UPDATE host SET ? = ? WHERE id = ?",
+					array($name, $value, $host_id));
+			}
+		}
 	}
 }
 

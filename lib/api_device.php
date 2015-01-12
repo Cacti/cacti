@@ -32,6 +32,7 @@ function api_device_remove($device_id) {
 	db_execute_prepared('DELETE FROM poller_item      WHERE host_id = ?', array($device_id));
 	db_execute_prepared('DELETE FROM poller_reindex   WHERE host_id = ?', array($device_id));
 	db_execute_prepared('DELETE FROM graph_tree_items WHERE host_id = ?', array($device_id));
+	db_execute_prepared('DELETE FROM reports_items    WHERE host_id = ?', array($device_id . ':%'));
 	db_execute_prepared('DELETE FROM poller_command   WHERE command LIKE ?', array($device_id . ':%'));
 
 	db_execute_prepared('UPDATE data_local  SET host_id = 0 WHERE host_id = ?', array($device_id));
@@ -67,10 +68,11 @@ function api_device_remove_multi($device_ids) {
 
 		db_execute("DELETE FROM graph_tree_items WHERE host_id IN ($devices_to_delete)");
 
+		db_execute("DELETE FROM reports_items    WHERE host_id IN ($devices_to_delete)");
+
 		/* for people who choose to leave data sources around */
 		db_execute("UPDATE data_local  SET host_id=0 WHERE host_id IN ($devices_to_delete)");
 		db_execute("UPDATE graph_local SET host_id=0 WHERE host_id IN ($devices_to_delete)");
-
 	}
 }
 

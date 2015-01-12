@@ -136,30 +136,8 @@ case 'tree_content':
 	}
 
 	?>
-	<script type="text/javascript" >
-	$(function() {
-		$(".graphimage").zoom({inputfieldStartTime : 'date1', inputfieldEndTime : 'date2', serverTimeOffset : <?php print date('Z');?>});
-
-		$('span[id$="_mrtg"]').click(function() {
-			graph_id=$(this).attr('id').replace('graph_','').replace('_mrtg','');
-			$.get('graph.php?local_graph_id='+graph_id+'&header=false', function(data) {
-				$('#breadcrumbs').find('li:last-child a').click(function(event, data) {
-					id=$(this).attr('id');
-					$('#jstree').jstree('activate_node', node, event);
-					$('#'+id).unbind();
-				});
-				$('#breadcrumbs').append('<li><a id="nav_mrgt" href="#">MRTG View</a></li>');
-				$('#main').html(data);
-				applySkin();
-			});
-		});
-
-		$('span[id$="_csv"]').click(function() {
-			graph_id=$(this).attr('id').replace('graph_','').replace('_csv','');
-			document.location = 'graph_xport.php?local_graph_id='+graph_id+'&rra_id=0&view_type=tree&graph_start='+getTimestampFromDate($('#date1').val())+'&graph_end='+getTimestampFromDate($('#date2').val());
-		});
-	});
-	</script>
+	<script type='text/javascript' src='<?php print $config['url_path'] . 'include/realtime.js';?>'></script>
+	<script type='text/javascript'>timeOffset=<?php print date('Z');?>;</script>
 	<?php
 
 	$access_denied = false;
@@ -260,19 +238,24 @@ case 'preview':
 	load_current_session_value('graph_add', 'sess_graph_view_graph_add', '');
 	load_current_session_value('graph_remove', 'sess_graph_view_graph_remove', '');
 
+	if (!isset($_SESSION['sess_realtime_dsstep'])) {
+		$_SESSION['sess_realtime_dsstep'] = read_config_option('realtime_interval');
+		$_SESSION['sess_realtime_window'] = read_config_option('realtime_gwindow');
+	}
+
 	/* include graph view filter selector */
 	html_start_box('<strong>Graph Filters</strong>' . (isset($_REQUEST['style']) && strlen($_REQUEST['style']) ? ' [ Custom Graph List Applied - Filtering FROM List ]':''), '100%', '', '3', 'center', '');
 
 	?>
+	<script type='text/javascript' src='<?php print $config['url_path'] . 'include/realtime.js';?>'></script>
+	<script type='text/javascript'>timeOffset=<?php print date('Z');?>;</script>
 	<script type="text/javascript" >
-	$(document).ready(function() {
-		$(".graphimage").zoom({inputfieldStartTime : 'date1', inputfieldEndTime : 'date2', serverTimeOffset : <?php print date('Z');?>});
-	});
+	$(function() { $(".graphimage").zoom({inputfieldStartTime : 'date1', inputfieldEndTime : 'date2', serverTimeOffset : <?php print date('Z');?>}); });
 	</script>
 	<tr class='even noprint'>
 		<td class='noprint'>
 		<form id='form_graph_view' style='margin:0px;padding:0px;' name='form_graph_view' method='post' action='graph_view.php?action=preview'>
-			<table cellpadding='2' cellspacing='0'>
+			<table id='device' cellpadding='2' cellspacing='0'>
 				<tr class='noprint'>
 					<td width='50'>
 						Device
@@ -442,7 +425,7 @@ case 'preview':
 			<td class='noprint'>
 			<form style='margin:0px;padding:0px;' name='form_timespan_selector' action='graph_view.php?action=preview' method='post' action='graph_view.php'>
 				<table cellpadding='2' cellspacing='0'>
-					<tr>
+					<tr id='timespan'>
 						<td width='50'>
 							Presets
 						</td>
@@ -514,6 +497,38 @@ case 'preview':
 							<input type='button' value='Clear' title='Return to the default time span' onClick='clearTimespanFilter()'>
 						</td>
 					</tr>
+					<tr id='realtime' style='display:none;'>
+						<td width='50'> 
+							Window
+						</td>
+						<td>
+							<select name='graph_start' id='graph_start' onChange='self.imageOptionsChanged("timespan")'>
+							<?php
+							foreach ($realtime_window as $interval => $text) {
+								printf('<option value="%d"%s>%s</option>', $interval, $interval == $_SESSION['sess_realtime_window'] ? 'selected="selected"' : '', $text);
+							}
+							?>
+							</select>
+						</td>
+						<td>
+							Interval
+						</td>
+						<td>
+							<select name='ds_step' id='ds_step' onChange="self.imageOptionsChanged('interval')">
+								<?php
+								foreach ($realtime_refresh as $interval => $text) {
+									printf('<option value="%d"%s>%s</option>', $interval, $interval == $_SESSION['sess_realtime_dsstep'] ? ' selected="selected"' : '', $text);
+								}
+								?>
+							</select>
+						</td>
+						<td>
+							<input type='button' id='realtimeoff' value='Stop'>
+						</td>
+						<td align='center' colspan='6'>
+							<span id='countdown'></span>
+						</td>
+					</tr>
 				</table>
 			</form>
 			</td>
@@ -538,20 +553,20 @@ case 'preview':
 		if (get_request_var_request('style') == 'selective') {
 
 			/* process selected graphs */
-			if (! empty($_REQUEST['graph_list'])) {
+			if (!empty($_REQUEST['graph_list'])) {
 				foreach (explode(',',$_REQUEST['graph_list']) as $item) {
 					$graph_list[$item] = 1;
 				}
 			}else{
 				$graph_list = array();
 			}
-			if (! empty($_REQUEST['graph_add'])) {
+			if (!empty($_REQUEST['graph_add'])) {
 				foreach (explode(',',$_REQUEST['graph_add']) as $item) {
 					$graph_list[$item] = 1;
 				}
 			}
 			/* remove items */
-			if (! empty($_REQUEST['graph_remove'])) {
+			if (!empty($_REQUEST['graph_remove'])) {
 				foreach (explode(',',$_REQUEST['graph_remove']) as $item) {
 					unset($graph_list[$item]);
 				}
@@ -683,13 +698,13 @@ case 'list':
 	}else{
 		$graph_list = array();
 	}
-	if (! empty($_REQUEST['graph_add'])) {
+	if (!empty($_REQUEST['graph_add'])) {
 		foreach (explode(',',$_REQUEST['graph_add']) as $item) {
 			$graph_list[$item] = 1;
 		}
 	}
 	/* remove items */
-	if (! empty($_REQUEST['graph_remove'])) {
+	if (!empty($_REQUEST['graph_remove'])) {
 		foreach (explode(',',$_REQUEST['graph_remove']) as $item) {
 			unset($graph_list[$item]);
 		}

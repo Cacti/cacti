@@ -38,10 +38,11 @@ include_once($config["base_path"] . "/lib/graph_export.php");
 include_once($config["base_path"] . "/lib/rrd.php");
 
 /* initialize some variables */
-$force    = FALSE;
-$debug    = FALSE;
-$graph_id = FALSE;
-$interval = FALSE;
+$force     = FALSE;
+$debug     = FALSE;
+$graph_id  = FALSE;
+$interval  = FALSE;
+$poller_id = '';
 
 /* process calling arguments */
 $parms = $_SERVER["argv"];
@@ -65,6 +66,9 @@ foreach($parms as $parameter) {
 		break;
 	case "--interval":
 		$interval = (int)$value;
+		break;
+	case "--poller_id":
+		$poller_id = $value;
 		break;
 	case "--version":
 	case "-V":
@@ -121,12 +125,9 @@ $change_files = false;
 /* obtain some defaults from the database */
 $max_threads = read_config_option("max_threads");
 
-/* create a poller_id */
-$poller_id = rand(20, 65535);
-
 /* Determine Command Name */
 $command_string = read_config_option("path_php_binary");
-$extra_args     = "-q " . $config["base_path"] . "/plugins/realtime/cmd_rt.php $poller_id $graph_id $interval";
+$extra_args     = "-q " . $config["base_path"] . "/cmd_realtime.php $poller_id $graph_id $interval";
 $method         = "cmd_rt.php";
 
 /* Determine if Realtime will work or not */
@@ -185,12 +186,12 @@ function process_poller_output_rt($rrdtool_pipe, $poller_id, $interval) {
 		FROM (poller_output_realtime AS port,poller_item)
 		WHERE (port.local_data_id=poller_item.local_data_id
 		AND port.rrd_name=poller_item.rrd_name)
-		AND port.poller_id = $poller_id");
+		AND port.poller_id='$poller_id'");
 
 	if (sizeof($results) > 0) {
 		/* create an array keyed off of each .rrd file */
 		foreach ($results as $item) {
-			$rt_graph_path    = read_config_option("realtime_cache_path") . "/realtime_" . $item["local_data_id"] . "_5.rrd";
+			$rt_graph_path    = read_config_option("realtime_cache_path") . "/user_" . $poller_id . "_" . $item["local_data_id"] . ".rrd";
 			$data_source_path = get_data_source_path($item['local_data_id'], true);
 
 			/* create rt rrd */
@@ -268,7 +269,7 @@ function process_poller_output_rt($rrdtool_pipe, $poller_id, $interval) {
 				WHERE local_data_id='" . $item["local_data_id"] . "'
 				AND rrd_name='" . $item["rrd_name"] . "'
 				AND time='" . $item["time"] . "'
-				AND poller_id='" . $poller_id . "'");
+				AND poller_id='$poller_id'");
 		}
 
 		$rrds_processed = rrdtool_function_update($rrd_update_array, $rrdtool_pipe);

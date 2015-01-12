@@ -656,10 +656,10 @@ function rrd_function_process_graph_options($graph_start, $graph_end, &$graph, &
 	}
 
 	/* add a date to the graph legend */
-	$graph_opts .= rrd_function_format_graph_date($graph_data_array);
+	$graph_opts .= rrdtool_function_format_graph_date($graph_data_array);
 
 	/* process theme and font styling options */
-	$graph_opts .= rrd_function_theme_font_options($graph_data_array);
+	$graph_opts .= rrdtool_function_theme_font_options($graph_data_array);
 
 	/* basic graph options */
 	$graph_opts .=
@@ -690,7 +690,7 @@ function rrd_function_process_graph_options($graph_start, $graph_end, &$graph, &
 	return $graph_opts;
 }
 
-function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rrdtool_pipe = "", $isexport = false, &$xport_meta = array()) {
+function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rrdtool_pipe = "", &$xport_meta = array()) {
 	global $config, $consolidation_functions;
 
 	include_once($config["library_path"] . "/cdef.php");
@@ -711,7 +711,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 	/* rrdtool fetches the default font from it's execution environment
 	 * you won't find that default font on the rrdtool statement itself!
 	 * set the rrdtool default font via environment variable */
-	if (!$isexport) {
+	if (!isset($graph_data_array['export_csv'])) {
 		if (read_config_option("path_rrdtool_default_font")) {
 			putenv("RRD_DEFAULT_FONT=" . read_config_option("path_rrdtool_default_font"));
 		}
@@ -724,7 +724,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 	}
 
 	/* check the boost image cache and if we find a live file there return it instead */
-	if (!$isexport) {
+	if (!isset($graph_data_array['export_csv']) && !isset($graph_data_array['export_realtime'])) {
 		$graph_data = boost_graph_cache_check($local_graph_id, $rra_id, $rrdtool_pipe, $graph_data_array, false);
 		if ($graph_data != false) {
 			return $graph_data;
@@ -778,7 +778,11 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 		$rra = db_fetch_row("SELECT timespan,rows,steps FROM rra WHERE id=$rra_id");
 	}
 
-	$seconds_between_graph_updates = ($ds_step * $rra["steps"]);
+	if (!isset($graph_data_array['export_realtime'])) {
+		$seconds_between_graph_updates = ($ds_step * $rra["steps"]);
+	}else{
+		$seconds_between_graph_updates = 5;
+	}
 
 	$graph = db_fetch_row("SELECT gl.id AS local_graph_id, gl.host_id,
 		gl.snmp_query_id, gl.snmp_index, gtg.title_cache, gtg.vertical_label,
@@ -830,7 +834,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 
 	/* +++++++++++++++++++++++ GRAPH OPTIONS +++++++++++++++++++++++ */
 
-	if (!$isexport) {
+	if (!isset($graph_data_array['export_csv'])) {
 		$graph_opts = rrd_function_process_graph_options($graph_start, $graph_end, $graph, $graph_data_array);
 	}else{
 	/* basic export options */
@@ -885,7 +889,11 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 
 			if ((!empty($graph_item["local_data_id"])) && (!isset($cf_ds_cache{$graph_item["data_template_rrd_id"]}[$graph_cf]))) {
 				/* use a user-specified ds path if one is entered */
-				$data_source_path = get_data_source_path($graph_item["local_data_id"], true);
+				if (isset($graph_data_array['export_realtime'])) {
+					$data_source_path = read_config_option("realtime_cache_path") . "/user_" . session_id() . "_" . $graph_item["local_data_id"] . ".rrd";
+				}else{
+					$data_source_path = get_data_source_path($graph_item["local_data_id"], true);
+				}
 
 				/* FOR WIN32: Escape all colon for drive letters (ex. D\:/path/to/rra) */
 				$data_source_path = str_replace(":", "\:", $data_source_path);
@@ -1283,7 +1291,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 
 		$need_rrd_nl = TRUE;
 
-		if (!$isexport) {
+		if (!isset($graph_data_array['export_csv'])) {
 			if ($graph_item_types{$graph_item["graph_type_id"]} == "COMMENT") {
 				# perform variable substitution first (in case this will yield an empty results or brings command injection problems)
 				$comment_arg = rrd_substitute_host_query_data($graph_variables["text_format"][$graph_item_id], $graph, $graph_item);
@@ -1369,7 +1377,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 	}
 	}
 
-	if (!$isexport) {
+	if (!isset($graph_data_array['output_flag']) || $graph_data_array['output_flag'] == RRDTOOL_OUTPUT_GRAPH_DATA || $graph_data_array['output_flag'] == RRDTOOL_OUTPUT_STDOUT) {
 		$graph_array = api_plugin_hook_function('rrd_graph_graph_options', array('graph_opts' => $graph_opts, 'graph_defs' => $graph_defs, 'txt_graph_items' => $txt_graph_items, 'graph_id' => $local_graph_id, 'start' => $graph_start, 'end' => $graph_end));
 		if (!empty($graph_array)) {
 			$graph_defs = $graph_array['graph_defs'];
@@ -1384,13 +1392,25 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 			if (isset($graph_data_array["export"])) {
 				rrdtool_execute("graph $graph_opts$graph_defs$txt_graph_items", false, RRDTOOL_OUTPUT_NULL, $rrdtool_pipe);
 				return 0;
+			}elseif (isset($graph_data_array['export_realtime'])) {
+				$output_flag = RRDTOOL_OUTPUT_GRAPH_DATA;
+				$output = rrdtool_execute("graph $graph_opts$graph_defs$txt_graph_items", false, $output_flag, $rrdtool_pipe);
+				//cacti_log(str_replace(RRD_NL, ' ', "rrdtool graph $graph_opts$graph_defs$txt_graph_items"));
+
+				if ($fp = fopen($graph_data_array['export_realtime'], 'w')) {
+					fwrite($fp, $output, strlen($output));
+					fclose($fp);
+					chmod($graph_data_array['export_realtime'], 0644);
+				}
+
+				return $output;
 			}else{
 				$graph_data_array = boost_prep_graph_array($graph_data_array);
 
-				if (isset($graph_data_array["output_flag"])) {
-					$output_flag = $graph_data_array["output_flag"];
-				}else{
+				if (!isset($graph_data_array["output_flag"])) {
 					$output_flag = RRDTOOL_OUTPUT_GRAPH_DATA;
+				}else{
+					$output_flag = $graph_data_array["output_flag"];
 				}
 
 				$output = rrdtool_execute("graph $graph_opts$graph_defs$txt_graph_items", false, $output_flag, $rrdtool_pipe);
@@ -1403,7 +1423,6 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 	}else{
 		$output_flag = RRDTOOL_OUTPUT_STDOUT;
 
-		cacti_log(str_replace("\n", " ", "xport $graph_opts$graph_defs$txt_graph_items"),false);
 		$xport_array = rrdxport2array(rrdtool_execute("xport $graph_opts$graph_defs$txt_graph_items", false, $output_flag));
 
 		/* add host and graph information */
@@ -1420,10 +1439,10 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 function rrdtool_function_xport($local_graph_id, $rra_id, $xport_data_array, &$xport_meta) {
 	global $config, $consolidation_functions;
 
-	return rrdtool_function_graph($local_graph_id, $rra_id, $xport_data_array, "", true, $xport_meta);
+	return rrdtool_function_graph($local_graph_id, $rra_id, $xport_data_array, "", $xport_meta);
 }
 
-function rrd_function_format_graph_date(&$graph_data_array) {
+function rrdtool_function_format_graph_date(&$graph_data_array) {
 	$graph_legend = '';
 	/* setup date format */
 	$date_fmt = read_graph_config_option("default_date_format");
@@ -1468,7 +1487,7 @@ function rrd_function_format_graph_date(&$graph_data_array) {
 	return $graph_legend;
 }
 
-function rrd_function_theme_font_options(&$graph_data_array) {
+function rrdtool_function_theme_font_options(&$graph_data_array) {
 	global $config;
 
 	/* implement theme colors */
@@ -1495,30 +1514,30 @@ function rrd_function_theme_font_options(&$graph_data_array) {
 	}
 
 	/* title fonts */
-	$graph_opts .= rrd_function_set_font("title", ((!empty($graph_data_array["graph_nolegend"])) ? $graph_data_array["graph_nolegend"] : ""), $themefonts);
+	$graph_opts .= rrdtool_function_set_font("title", ((!empty($graph_data_array["graph_nolegend"])) ? $graph_data_array["graph_nolegend"] : ""), $themefonts);
 
 	/* axis fonts */
-	$graph_opts .= rrd_function_set_font("axis", "", $themefonts);
+	$graph_opts .= rrdtool_function_set_font("axis", "", $themefonts);
 
 	/* legend fonts */
-	$graph_opts .= rrd_function_set_font("legend", "", $themefonts);
+	$graph_opts .= rrdtool_function_set_font("legend", "", $themefonts);
 
 	/* unit fonts */
-	$graph_opts .= rrd_function_set_font("unit", "", $themefonts);
+	$graph_opts .= rrdtool_function_set_font("unit", "", $themefonts);
 
 	/* watermark fonts */
 	if (isset($rrdversion) && $rrdversion > 1.3) {
-		$graph_opts .= rrd_function_set_font("watermark", "", $themefonts);
+		$graph_opts .= rrdtool_function_set_font("watermark", "", $themefonts);
 	}
 
 	return $graph_opts;
 }
 
 function rrdtool_set_font($type, $no_legend = '', $themefonts = array()) {
-	return rrd_function_set_font($type, $no_legend, $themefonts);
+	return rrdtool_function_set_font($type, $no_legend, $themefonts);
 }
 
-function rrd_function_set_font($type, $no_legend, $themefonts) {
+function rrdtool_function_set_font($type, $no_legend, $themefonts) {
 	global $config;
 
 	if (read_config_option('font_method') == 0) {
