@@ -718,32 +718,32 @@ function utilities_view_user_log() {
 
 	/* filter by username */
 	if (get_request_var_request('username') == '-2') {
-		$sql_where = 'WHERE user_log.username NOT IN (SELECT DISTINCT username FROM user_auth)';
+		$sql_where = 'WHERE ul.username NOT IN (SELECT DISTINCT username FROM user_auth)';
 	}elseif (get_request_var_request('username') != '-1') {
-		$sql_where = "WHERE user_log.username='" . get_request_var_request('username') . "'";
+		$sql_where = "WHERE ul.username='" . get_request_var_request('username') . "'";
 	}
 
 	/* filter by result */
 	if (get_request_var_request('result') != '-1') {
 		if (strlen($sql_where)) {
-			$sql_where .= ' AND user_log.result=' . get_request_var_request('result');
+			$sql_where .= ' AND ul.result=' . get_request_var_request('result');
 		}else{
-			$sql_where = 'WHERE user_log.result=' . get_request_var_request('result');
+			$sql_where = 'WHERE ul.result=' . get_request_var_request('result');
 		}
 	}
 
 	/* filter by search string */
-	if (get_request_var_request('filter') <> '') {
+	if (get_request_var_request('filter') != '') {
 		if (strlen($sql_where)) {
-			$sql_where .= " AND (user_log.username LIKE '%%" . get_request_var_request('filter') . "%%'
-				OR user_log.time LIKE '%%" . get_request_var_request('filter') . "%%'
-				OR user_auth.full_name LIKE '%%" . get_request_var_request('filter') . "%%'
-				OR user_log.ip LIKE '%%" . get_request_var_request('filter') . "%%')";
+			$sql_where .= " AND (ul.username LIKE '%%" . get_request_var_request('filter') . "%%'
+				OR ul.time LIKE '%%" . get_request_var_request('filter') . "%%'
+				OR ua.full_name LIKE '%%" . get_request_var_request('filter') . "%%'
+				OR ul.ip LIKE '%%" . get_request_var_request('filter') . "%%')";
 		}else{
-			$sql_where = "WHERE (user_log.username LIKE '%%" . get_request_var_request('filter') . "%%'
-				OR user_log.time LIKE '%%" . get_request_var_request('filter') . "%%'
-				OR user_auth.full_name LIKE '%%" . get_request_var_request('filter') . "%%'
-				OR user_log.ip LIKE '%%" . get_request_var_request('filter') . "%%')";
+			$sql_where = "WHERE (ul.username LIKE '%%" . get_request_var_request('filter') . "%%'
+				OR ul.time LIKE '%%" . get_request_var_request('filter') . "%%'
+				OR ua.full_name LIKE '%%" . get_request_var_request('filter') . "%%'
+				OR ul.ip LIKE '%%" . get_request_var_request('filter') . "%%')";
 		}
 	}
 
@@ -751,21 +751,16 @@ function utilities_view_user_log() {
 
 	$total_rows = db_fetch_cell("SELECT
 		COUNT(*)
-		FROM user_auth
-		RIGHT JOIN user_log
-		ON user_auth.username = user_log.username
+		FROM user_auth AS ua
+		RIGHT JOIN user_log AS ul
+		ON ua.username=ul.username
 		$sql_where");
 
-	$user_log_sql = "SELECT
-		user_log.username,
-		user_auth.full_name,
-		user_auth.realm,
-		user_log.time,
-		user_log.result,
-		user_log.ip
-		FROM user_auth
-		RIGHT JOIN user_log
-		ON user_auth.username = user_log.username
+	$user_log_sql = "SELECT ul.username, ua.full_name, ua.realm,
+		ul.time, ul.result, ul.ip
+		FROM user_auth AS ua
+		RIGHT JOIN user_log AS ul
+		ON ua.username=ul.username
 		$sql_where
 		ORDER BY " . get_request_var_request('sort_column') . ' ' . get_request_var_request('sort_direction') . '
 		LIMIT ' . (get_request_var_request('rows')*(get_request_var_request('page')-1)) . ',' . get_request_var_request('rows');
@@ -813,7 +808,7 @@ function utilities_view_user_log() {
 				<?php print (strlen(get_request_var_request('filter')) ? (preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span style='filteredValue'>\\1</span>", $item['time'])) : $item['time']);?>
 			</td>
 			<td style='white-space:nowrap;'>
-				<?php print $item['result'] == 0 ? 'Failed' : $item['result'] == 1 ? 'Success - Pswd':'Success - Token';?>
+				<?php print ($item['result'] == 0 ? 'Failed':($item['result'] == 1 ? 'Success - Pswd':'Success - Token'));?>
 			</td>
 			<td style='white-space:nowrap;'>
 				<?php print (strlen(get_request_var_request('filter')) ? (preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", $item['ip'])) : $item['ip']);?>
