@@ -3380,7 +3380,7 @@ function clog_admin() {
 }
 
 function clog_authorized() {
-	if (!isset($_SESSION["sess_clog_level"])) {
+	if (!isset($_SESSION['sess_clog_level'])) {
 		if (isset($_SESSION['sess_user_id'])) {
 			if (is_realm_allowed(18)) {
 				$_SESSION['sess_clog_level'] = CLOG_PERM_ADMIN;
@@ -3398,7 +3398,7 @@ function clog_authorized() {
 
 	if ($_SESSION['sess_clog_level'] == CLOG_PERM_USER) {
 		return true;
-	}elseif ($_SESSION["sess_clog_level"] == CLOG_PERM_ADMIN) {
+	}elseif ($_SESSION['sess_clog_level'] == CLOG_PERM_ADMIN) {
 		return true;
 	}else{
 		return false;
@@ -3415,7 +3415,7 @@ function update_system_mibs($host_id) {
 		'snmp_sysLocation' => '.1.3.6.1.2.1.1.6.0'
 	);
 
-	$h = db_fetch_row_prepared("SELECT * FROM host WHERE id=?", array($host_id));
+	$h = db_fetch_row_prepared('SELECT * FROM host WHERE id = ?', array($host_id));
 
 	if (sizeof($h)) {
 		foreach($system_mibs as $name => $oid) {
@@ -3425,8 +3425,8 @@ function update_system_mibs($host_id) {
 				$h['snmp_context'], $h['snmp_port'], $h['snmp_timeout'], read_config_option('snmp_retries'), SNMP_CMDPHP);
 
 			if (!empty($value)) {
-				db_execute_prepared("UPDATE host SET ? = ? WHERE id = ?",
-					array($name, $value, $host_id));
+				db_execute_prepared("UPDATE host SET $name = ? WHERE id = ?",
+					array($value, $host_id));
 			}
 		}
 	}
