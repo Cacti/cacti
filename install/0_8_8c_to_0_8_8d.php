@@ -540,67 +540,28 @@ function upgrade_to_0_8_8d() {
 		db_install_execute('0.8.8d', 'RENAME TABLE plugin_nectar_items TO reports_items');
 		db_install_execute('0.8.8d', "UPDATE settings SET name=REPLACE(name, 'nectar','reports') WHERE name LIKE '%nectar%'");
 
-		$reports_columns = array_rekey(db_fetch_assoc("SHOW COLUMNS FROM reports"), "Field", "Field");
-		if (!in_array("bcc", $reports_columns)) {
-			db_execute("ALTER TABLE reports ADD COLUMN bcc TEXT AFTER email");
-		}
-		if (!in_array("from_name", $reports_columns)) {
-			db_execute("ALTER TABLE reports ADD COLUMN from_name VARCHAR(40) NOT NULL DEFAULT '' AFTER mailtime");
-		}
-		if (!in_array("user_id", $reports_columns)) {
-			db_execute("ALTER TABLE reports ADD COLUMN user_id mediumint(8) unsigned NOT NULL DEFAULT '0' AFTER id");
-		}
-		if (!in_array("graph_width", $reports_columns)) {
-			db_execute("ALTER TABLE reports ADD COLUMN graph_width smallint(2) unsigned NOT NULL DEFAULT '0' AFTER attachment_type");
-		}
-		if (!in_array("graph_height", $reports_columns)) {
-			db_execute("ALTER TABLE reports ADD COLUMN graph_height smallint(2) unsigned NOT NULL DEFAULT '0' AFTER graph_width");
-		}
-		if (!in_array("graph_columns", $reports_columns)) {
-			db_execute("ALTER TABLE reports ADD COLUMN graph_columns smallint(2) unsigned NOT NULL DEFAULT '0' AFTER graph_height");
-		}
-		if (!in_array("thumbnails", $reports_columns)) {
-			db_execute("ALTER TABLE reports ADD COLUMN thumbnails char(2) NOT NULL DEFAULT '' AFTER graph_columns");
-		}
-		if (!in_array("font_size", $reports_columns)) {
-			db_execute("ALTER TABLE reports ADD COLUMN font_size smallint(2) NOT NULL DEFAULT 16 AFTER name");
-		}
-		if (!in_array("alignment", $reports_columns)) {
-			db_execute("ALTER TABLE reports ADD COLUMN alignment smallint(2) NOT NULL DEFAULT 0 AFTER font_size");
-		}
-		if (!in_array("cformat", $reports_columns)) {
-			db_execute("ALTER TABLE reports ADD COLUMN cformat char(2) NOT NULL DEFAULT '' AFTER name");
-		}
-		if (!in_array("format_file", $reports_columns)) {
-			db_execute("ALTER TABLE reports ADD COLUMN format_file varchar(255) NOT NULL DEFAULT '' AFTER cformat");
-		}
-		if (!in_array("graph_linked", $reports_columns)) {
-			db_execute("ALTER TABLE reports ADD COLUMN graph_linked char(2) NOT NULL DEFAULT '' AFTER alignment");
-		}
-		if (!in_array("subject", $reports_columns)) {
-			db_execute("ALTER TABLE reports ADD COLUMN subject varchar(64) NOT NULL DEFAULT '' AFTER mailtime");
-		}
+		db_add_column ('0.8.8d', 'reports', array('name' => 'bcc',           'type' => 'TEXT', 'after' => 'email'));
+		db_add_column ('0.8.8d', 'reports', array('name' => 'from_name',     'type' => 'VARCHAR(40)',  'NULL' => false, 'default' => '', 'after' => 'mailtime'));
+		db_add_column ('0.8.8d', 'reports', array('name' => 'user_id',       'type' => 'mediumint(8)', 'unsigned' => true, 'NULL' => false, 'default' => '0', 'after' => 'id'));
+		db_add_column ('0.8.8d', 'reports', array('name' => 'graph_width',   'type' => 'smallint(2)',  'unsigned' => true, 'NULL' => false, 'default' => '0', 'after' => 'attachment_type'));
+		db_add_column ('0.8.8d', 'reports', array('name' => 'graph_height',  'type' => 'smallint(2)',  'unsigned' => true, 'NULL' => false, 'default' => '0', 'after' => 'graph_width'));
+		db_add_column ('0.8.8d', 'reports', array('name' => 'graph_columns', 'type' => 'smallint(2)',  'unsigned' => true, 'NULL' => false, 'default' => '0', 'after' => 'graph_height'));
+		db_add_column ('0.8.8d', 'reports', array('name' => 'thumbnails',    'type' => 'char(2)',      'NULL' => false, 'default' => '', 'after' => 'graph_columns'));
+		db_add_column ('0.8.8d', 'reports', array('name' => 'font_size',     'type' => 'smallint(2)',  'NULL' => false, 'default' => '16', 'after' => 'name'));
+		db_add_column ('0.8.8d', 'reports', array('name' => 'alignment',     'type' => 'smallint(2)',  'NULL' => false, 'default' => '0', 'after' => 'font_size'));
+		db_add_column ('0.8.8d', 'reports', array('name' => 'cformat',       'type' => 'char(2)',      'NULL' => false, 'default' => '', 'after' => 'name'));
+		db_add_column ('0.8.8d', 'reports', array('name' => 'format_file',   'type' => 'varchar(255)', 'NULL' => false, 'default' => '', 'after' => 'cformat'));
+		db_add_column ('0.8.8d', 'reports', array('name' => 'graph_linked',  'type' => 'char(2)',      'NULL' => false, 'default' => '', 'after' => 'alignment'));
+		db_add_column ('0.8.8d', 'reports', array('name' => 'subject',       'type' => 'varchar(64)',  'NULL' => false, 'default' => '', 'after' => 'mailtime'));
 
 		/* plugin_reports_items upgrade */
-		$reports_columns = array_rekey(db_fetch_assoc("SHOW COLUMNS FROM reports_items"), "Field", "Field");
-		if (!in_array("host_template_id", $reports_columns)) {
-			db_execute("ALTER TABLE reports_items ADD COLUMN host_template_id int(10) unsigned NOT NULL DEFAULT '0' AFTER item_type");
-		}
-		if (!in_array("graph_template_id", $reports_columns)) {
-			db_execute("ALTER TABLE reports_items ADD COLUMN graph_template_id int(10) unsigned NOT NULL DEFAULT '0' AFTER host_id");
-		}
-		if (!in_array("tree_id", $reports_columns)) {
-			db_execute("ALTER TABLE reports_items ADD COLUMN tree_id int(10) unsigned NOT NULL DEFAULT '0' AFTER item_type");
-		}
-		if (!in_array("branch_id", $reports_columns)) {
-			db_execute("ALTER TABLE reports_items ADD COLUMN branch_id int(10) unsigned NOT NULL DEFAULT '0' AFTER tree_id");
-		}
-		if (!in_array("tree_cascade", $reports_columns)) {
-			db_execute("ALTER TABLE reports_items ADD COLUMN tree_cascade char(2) NOT NULL DEFAULT '' AFTER branch_id");
-		}
-		if (!in_array("graph_name_regexp", $reports_columns)) {
-			db_execute("ALTER TABLE reports_items ADD COLUMN graph_name_regexp varchar(128) NOT NULL DEFAULT '' AFTER tree_cascade");
-		}
+		db_add_column ('0.8.8d', 'reports_items', array('name' => 'host_template_id',  'type' => 'int(10)', 'unsigned' => true, 'NULL' => false, 'default' => '0', 'after' => 'item_type'));
+		db_add_column ('0.8.8d', 'reports_items', array('name' => 'graph_template_id', 'type' => 'int(10)', 'unsigned' => true, 'NULL' => false, 'default' => '0', 'after' => 'host_id'));
+		db_add_column ('0.8.8d', 'reports_items', array('name' => 'tree_id',           'type' => 'int(10)', 'unsigned' => true, 'NULL' => false, 'default' => '0', 'after' => 'item_type'));
+		db_add_column ('0.8.8d', 'reports_items', array('name' => 'branch_id',         'type' => 'int(10)', 'unsigned' => true, 'NULL' => false, 'default' => '0', 'after' => 'tree_id'));
+		db_add_column ('0.8.8d', 'reports_items', array('name' => 'tree_cascade',      'type' => 'char(2)', 'NULL' => false, 'default' => '', 'after' => 'branch_id'));
+		db_add_column ('0.8.8d', 'reports_items', array('name' => 'graph_name_regexp', 'type' => 'varchar(128)', 'NULL' => false, 'default' => '', 'after' => 'tree_cascade'));
+
 
 		/* fix host templates and graph template ids */
 		$items = db_fetch_assoc("SELECT * FROM reports_items WHERE item_type=1");
@@ -625,12 +586,12 @@ function upgrade_to_0_8_8d() {
 		}
 	}
 
-	db_install_execute('0.8.8d', "ALTER TABLE host 
-		ADD COLUMN snmp_sysDescr varchar(300) NOT NULL default '' AFTER snmp_timeout, 
-		ADD COLUMN snmp_sysObjectID varchar(64) NOT NULL default '' AFTER snmp_sysDescr, 
-		ADD COLUMN snmp_sysUpTimeInstance int unsigned default '0' AFTER snmp_sysObjectID, 
-		ADD COLUMN snmp_sysContact varchar(300) NOT NULL default '' AFTER snmp_sysUpTimeInstance, 
-		ADD COLUMN snmp_sysName varchar(300) NOT NULL default '' AFTER snmp_sysContact, 
-		ADD COLUMN snmp_sysLocation varchar(300) NOT NULL default '' AFTER snmp_sysName,
-		ADD COLUMN polling_time DOUBLE default '0' AFTER avg_time");
+	db_add_column ('0.8.8d', 'host', array('name' => 'snmp_sysDescr',          'type' => 'varchar(300)', 'NULL' => false, 'default' => '',  'after' => 'snmp_timeout'));
+	db_add_column ('0.8.8d', 'host', array('name' => 'snmp_sysObjectID',       'type' => 'varchar(64)',  'NULL' => false, 'default' => '',  'after' => 'snmp_sysDescr'));
+	db_add_column ('0.8.8d', 'host', array('name' => 'snmp_sysUpTimeInstance', 'type' => 'int',          'NULL' => false, 'default' => '0', 'after' => 'snmp_sysObjectID', 'unsigned' => true));
+	db_add_column ('0.8.8d', 'host', array('name' => 'snmp_sysContact',        'type' => 'varchar(300)', 'NULL' => false, 'default' => '',  'after' => 'snmp_sysUpTimeInstance'));
+	db_add_column ('0.8.8d', 'host', array('name' => 'snmp_sysName',           'type' => 'varchar(300)', 'NULL' => false, 'default' => '',  'after' => 'snmp_sysContact'));
+	db_add_column ('0.8.8d', 'host', array('name' => 'snmp_sysLocation',       'type' => 'varchar(300)', 'NULL' => false, 'default' => '',  'after' => 'snmp_sysName'));
+	db_add_column ('0.8.8d', 'host', array('name' => 'polling_time',           'type' => 'DOUBLE',                        'default' => '0', 'after' => 'avg_time'));
+
 }
