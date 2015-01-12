@@ -61,7 +61,7 @@ function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $p
 	while ($i <= $retries) {
 		try {
 			$cnn_id = new PDO("$db_type:host=$device;port=$port;dbname=$db_name;charset=utf8", $user, $pass, $flags);
-			$cnn_id->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING);
+			$cnn_id->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_SILENT);
 			$database_sessions[$db_name] = $cnn_id;
 			return $cnn_id;
 		} catch (PDOException $e) {
