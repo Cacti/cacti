@@ -1,0 +1,537 @@
+-- *****************************************************************
+-- CACTI-BOOST-MIB
+--
+-- Jan 2015, Andreas Braun (aka browniebraun)
+--
+-- Copyright (c) 2004-2015 by The Cacti Group
+-- All rights reserved.
+--
+-- *****************************************************************
+
+CACTI-BOOST-MIB DEFINITIONS ::= BEGIN
+
+IMPORTS
+    OBJECT-TYPE,
+    MODULE-IDENTITY,
+    OBJECT-IDENTITY,
+    Unsigned32,
+    Integer32,
+    Counter64
+        FROM SNMPv2-SMI
+
+    OBJECT-GROUP,
+    NOTIFICATION-GROUP
+        FROM SNMPv2-CONF
+
+    TEXTUAL-CONVENTION,
+    DisplayString,
+    TruthValue
+        FROM SNMPv2-TC
+
+    cactiPlugins
+        FROM CACTI-MIB
+;
+
+boost MODULE-IDENTITY
+    LAST-UPDATED    "201501120000Z"
+    ORGANIZATION    "The Cacti Group"
+    CONTACT-INFO
+            "The Cacti Group
+
+            E-mail: developers@cacti.net"
+    DESCRIPTION
+        "This modules defines a MIB for Boost, the Large Site Performance
+        Booster plugin for Cacti.
+        The Structure of Management Information for Boost
+            +- boostAppl
+            |  |
+            |  +- boostApplLastUpdate
+            |  +- boostApplVersion
+            |  |
+            |  +- boostApplRrdUpdateEnabled
+            |  +- boostApplRrdUpdateInterval
+            |  +- boostApplRrdUpdateMaxRecords
+            |  +- boostApplRrdUpdateMaxRecordsPerSelect
+            |  +- boostApplRrdUpdateMaxStringLength
+            |  +- boostApplRrdUpdatePollerMemLimit
+            |  +- boostApplRrdUpdateMaxRunTime
+            |  +- boostApplRrdUpdateRedirect
+            |  |
+            |  +- boostApplServerEnabled
+            |  +- boostApplServerMultiprocess
+            |  +- boostApplServerHostname
+            |  +- boostApplServerListenPort
+            |  +- boostApplServerTimeOut
+            |  |
+            |  +- boostApplImageCacheEnabled
+            |  +- boostApplLoggingEnabled
+            |  +- boostApplStorageDatabaseEngine
+            |  +- boostApplStorageMaxTableSize
+            |  +- boostApplStorageMaxRecords
+            |
+            +- boostStats
+            |  |
+            |  +- boostStatsLastUpdate
+            |  +- boostStatsRrdUpdateProcessStatus
+            |  +- boostStatsRrdUpdateLastRun
+            |  +- boostStatsRrdUpdateDuration
+            |  +- boostStatsRrdUpdateUtilization
+            |  +- boostStatsRrdUpdatePollerPeakMemory
+            |  +- boostStatsRrdUpdateNextRun
+            |  |
+            |  +- boostStatsRecordsStatusTable
+            |  |  |
+            |  |  +- boostStatsRecordsStatusEntry
+            |  |     |
+            |  |     +- boostStatsRecordsStatusIndex
+            |  |     +- boostStatsRecordsStatusCounter
+            |  |
+            |  +- boostStatsStorageTableSize
+            |  +- boostStatsStorageAverageRecordSize
+            |  +- boostStatsStorageMaxRecordLength
+            |  +- boostStatsStorageMaxRecords
+            |  |
+            |  +- boostStatsRuntimeTimersTable
+            |  |  |
+            |  |  +- boostStatsRuntimeTimersEntry
+            |  |     |
+            |  |     +- boostStatsRuntimeTimersIndex
+            |  |     +- boostStatsRuntimeTimersValue
+            |  |
+            |  +- boostStatsImageCacheFiles
+            |  +- boostStatsImageCacheFileSize
+            |  +- boostStatsTotalsImagesCacheReads
+            |  +- boostStatsTotalsImagesCacheWrites
+            |
+            +- boostEvents
+            +- boostMibGroups
+               |
+               +- boostApplRrdUpdate
+               +- boostApplServer
+               +- boostStatsRrdUpdate
+               +- boostStatsStorage
+               +- boostStatsImageCache
+    "
+    REVISION        "201303230000Z"
+    DESCRIPTION
+        "Initial version of this MIB module."
+    ::= { cactiPlugins 2 }    -- assigned by the Cacti Group
+
+--
+-- BOOST APPLICATION DATA
+--
+boostAppl OBJECT-IDENTITY
+    STATUS          current
+    DESCRIPTION
+        "reserved for Boost application data"
+    ::= { boost 1 }
+
+--
+-- Global Boost Monitoring Variables
+--
+boostApplLastUpdate OBJECT-TYPE
+    SYNTAX          Unsigned32
+    UNITS           "seconds"
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "Unix timestamp when this data has been updated for the last time."
+    ::= { boostAppl 1 }
+
+boostApplVersion OBJECT-TYPE
+    SYNTAX          DisplayString (SIZE(1..48))
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "Returns the version string of Boost"
+    ::= { boostAppl 2 }
+
+boostApplRrdUpdateEnabled OBJECT-TYPE
+    SYNTAX          TruthValue
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "If Boost on demand RRD updating has been enabled this object is set
+         to true(1)."
+    DEFVAL          { true }
+    ::= { boostAppl 3 }
+
+boostApplRrdUpdateInterval OBJECT-TYPE
+    SYNTAX          Unsigned32 (30|60|120|240|360)
+    UNITS           "minutes"
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "If Boost has been enabled this interval determines when
+         RRDfiles will be updated automatically."
+    ::= { boostAppl 4 }
+
+boostApplRrdUpdateMaxRecords OBJECT-TYPE
+    SYNTAX          Unsigned32 (1..4294967295)
+    UNITS           "records"
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "Represents the maximum size in records of the Boost output table.
+         If the boost output table exceeds this size, in records, an update
+         will take place."
+    ::= { boostAppl 5 }
+
+boostApplRrdUpdateMaxRecordsPerSelect OBJECT-TYPE
+    SYNTAX          Unsigned32 (2000|5000|10000|15000|25000|50000|100000|200000|400000)
+    UNITS           "records per select"
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "Defines the maximum number of data source items that should be
+         retrieved in one single pass."
+    DEFVAL          { 50000 }
+    ::= { boostAppl 6 }
+
+boostApplRrdUpdateMaxStringLength OBJECT-TYPE
+    SYNTAX          Unsigned32 (1..4294967295)
+    UNITS           "characters"
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "Defines the maximum argument length Boost must not exceed for update
+         commands to RRDtool. This limit varies by operating system and kernel
+         level."
+    ::= { boostAppl 7 }
+
+boostApplRrdUpdatePollerMemLimit OBJECT-TYPE
+    SYNTAX          Unsigned32 (32|64|128|256|512|1024|1536|2048|3072)
+    UNITS           "MBytes"
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "Returns the maximum amount of memory for the Cacti Poller and
+         Boost's Poller."
+    ::= { boostAppl 8 }
+
+boostApplRrdUpdateMaxRunTime OBJECT-TYPE
+    SYNTAX          Unsigned32 (1200|2400|3600|4800)
+    UNITS           "seconds"
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "Represents the maximum boot poller run time in seconds being allowed."
+    ::= { boostAppl 9 }
+
+boostApplRrdUpdateRedirect OBJECT-TYPE
+    SYNTAX          TruthValue
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "If direct population of poller_output_boost table by spine has been
+         enabled this object is set to true(1). This enables direct insert of
+         records into poller output boost."
+    DEFVAL          { false }
+    ::= { boostAppl 10 }
+
+boostApplServerEnabled OBJECT-TYPE
+    SYNTAX          TruthValue
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "If Boost Server will be used for RRDUpdates this object is set
+         to true (1)."
+    DEFVAL          { false }
+    ::= { boostAppl 11 }
+
+boostApplServerMultiprocess OBJECT-TYPE
+    SYNTAX          TruthValue
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "This object returns true (1) if Boost Server should  fork a separate
+         update process for each boost request"
+    DEFVAL          { false }
+    ::= { boostAppl 12 }
+
+boostApplServerHostname OBJECT-TYPE
+    SYNTAX          DisplayString (SIZE(1..100))
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "Returns the Hostname/IP of the boost server."
+    ::= { boostAppl 13 }
+
+boostApplServerListenPort OBJECT-TYPE
+    SYNTAX          DisplayString (SIZE(1..10))
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "Returns the TCP port the boost server will listen on."
+    ::= { boostAppl 14 }
+
+boostApplServerTimeOuts OBJECT-TYPE
+    SYNTAX          Unsigned32 (1..4294967295)
+    UNITS           "seconds"
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "Defines the maximum number of seconds a client should wait on the
+         Boost server before giving up."
+    ::= { boostAppl 15 }
+
+boostApplImageCacheEnabled OBJECT-TYPE
+    SYNTAX          TruthValue
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "If image caching has been enabled this object is set to true (1)."
+    DEFVAL          { false }
+    ::= { boostAppl 16 }
+
+boostApplLoggingEnabled OBJECT-TYPE
+    SYNTAX          TruthValue
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "If Boost debug logging is enabled this object will return true (1)."
+    DEFVAL          { false }
+    ::= { boostAppl 17 }
+
+boostApplStorageDatabaseEngine OBJECT-TYPE
+    SYNTAX          INTEGER {
+                        memory(1),
+                        myisam(2)
+                    }
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "Returns the database engine being used for the boost storage."
+    ::= { boostAppl 18 }
+
+boostApplStorageMaxTableSize OBJECT-TYPE
+    SYNTAX          Integer32
+    UNITS           "kbytes"
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "This object contains the maximum size in kbytes a boost memory (1) table
+         is allowed to have. If boostApplStorageDatabaseEngine is set to
+         myisam (2) the table size is unlimited and this object returns -1."
+    DEFVAL { -1 }
+    ::= { boostAppl 19 }
+
+boostApplStorageMaxRecords OBJECT-TYPE
+    SYNTAX          Unsigned32
+    UNITS           "records"
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "This object contains the estimated number of records a boost memory (1)
+         table can store. If boostApplStorageDatabaseEngine is set to
+         myisam (2) the number of maximum records is unlimited and
+         this object returns 0."
+    DEFVAL { 0 }
+    ::= { boostAppl 20 }
+
+--
+-- BOOST STATISTICS
+--
+boostStats OBJECT-IDENTITY
+    STATUS          current
+    DESCRIPTION
+        "reserved for boost statistics"
+    ::= { boost 2 }
+
+--
+-- Global Boost Stats Variables
+--
+boostStatsLastUpdate OBJECT-TYPE
+    SYNTAX          Unsigned32
+    UNITS           "seconds"
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "Unix timestamp when this data has been updated for the last time."
+    ::= { boostStats 1 }
+
+boostStatsRrdUpdateProcessStatus OBJECT-TYPE
+    SYNTAX          INTEGER {
+                        disabled(0),
+                        neverrun(1),
+                        complete(2),
+                        running(3),
+                        overrun(4),
+                        timeout(5),
+                        other(6)
+                    }
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "The status the update process of Boost can have:
+         disabled(0)    - RRD update process has been disabled.
+         neverrun(1)    - RRD update process is enabled but did not run so far
+         complete(2)    - Last RRD update process has been completed
+         running(3)     - RRD update process is still running
+         overrun(4)     - Overrun detected ?     *review*
+         timeout(5)     - Time out detected ?    *review*
+         other(6)       - Undefined state        *review*"
+    ::= { boostStats 2 }
+
+boostStatsRrdUpdateLastRun OBJECT-TYPE
+    SYNTAX          DisplayString (SIZE(19))
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "Date of last run"
+    ::= { boostStats 3 }
+
+boostStatsRrdUpdateDuration OBJECT-TYPE
+    SYNTAX          Unsigned32 (1..4294967295)
+    UNITS           "seconds"
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "Represents the duration of the last update process in seconds."
+    ::= { boostStats 4 }
+
+boostStatsRrdUpdateUtiliation OBJECT-TYPE
+    SYNTAX          DisplayString (SIZE(1..16))
+    UNITS           "percent"
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "The proportion of the maximum upate frequency in percent Boost requires
+         to update all rrds."
+    ::= { boostStats 5 }
+
+boostStatsRrdUpdatePollerPeakMemory OBJECT-TYPE
+    SYNTAX          Unsigned32 (1..4294967295)
+    UNITS           "Bytes"
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "Returns the peak of memory in bytes that has been allocated by Boost
+        during the last rrd update process."
+    ::= { boostStats 6 }
+
+boostStatsRrdUpdateNextRun OBJECT-TYPE
+    SYNTAX          DisplayString (SIZE(19))
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "Date of next run"
+    ::= { boostStats 7 }
+
+boostStatsTotalsDataSources OBJECT-TYPE
+    SYNTAX          Unsigned32
+    UNITS           "seconds"
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "Represents the total number of poller items Boost has to take care of."
+    DEFVAL { 0 }
+    ::= { boostStats 8 }
+
+boostStatsTotalsRecords OBJECT-TYPE
+    SYNTAX          Unsigned32
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "Returns the total number of records being handled by Boost."
+    DEFVAL { 0 }
+    ::= { boostStats 9 }
+
+boostStatsTotalsRecordsPending OBJECT-TYPE
+    SYNTAX          Unsigned32
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "Total number of records."
+    DEFVAL { 0 }
+    ::= { boostStats 10 }
+
+boostStatsTotalsRecordsArchived OBJECT-TYPE
+    SYNTAX          Unsigned32
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "Total number of records."
+    DEFVAL { 0 }
+    ::= { boostStats 11 }
+
+boostStatsStorageTableSize OBJECT-TYPE
+    SYNTAX          Unsigned32
+    UNITS           "kbytes"
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "This object contains the current size of the boost memory table
+         in kBytes."
+    DEFVAL { 0 }
+    ::= { boostStats 12 }
+
+boostStatsStorageAverageRecordSize OBJECT-TYPE
+    SYNTAX          Unsigned32
+    UNITS           "bytes"
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "Returns the average record size of the boost memory table in bytes."
+    DEFVAL { 0 }
+    ::= { boostStats 13 }
+
+boostStatsStorageMaxRecordLength OBJECT-TYPE
+    SYNTAX          Unsigned32
+    UNITS           "bytes"
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "Returns size of longest record within the boost memory table
+         in bytes."
+    DEFVAL { 0 }
+    ::= { boostStats 14 }
+
+boostStatsTotalsImagesCacheSize OBJECT-TYPE
+    SYNTAX          Unsigned32
+    UNITS           "images"
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "Represents the total number of RRD image files being
+         currently cached by Boost."
+    DEFVAL { 0 }
+    ::= { boostStats 15 }
+
+boostStatsTotalsImagesCacheReads OBJECT-TYPE
+    SYNTAX          Counter64
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "Number of succesful read operations."
+    ::= { boostStats 16 }
+
+boostStatsTotalsImagesCacheWrites OBJECT-TYPE
+    SYNTAX          Counter64
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "Indicates the number of uncached read operations."
+    ::= { boostStats 17 }
+
+-- boostStatsRrdUpdateNextRun
+
+--
+-- BOOST EVENTS
+--
+boostEvents OBJECT-IDENTITY
+    STATUS          current
+    DESCRIPTION
+        "reserved for boost events"
+    ::= { boost 3 }
+
+--
+-- BOOST MIB GROUPS
+--
+boostMibGroups OBJECT-IDENTITY
+    STATUS          current
+    DESCRIPTION
+        "reserved for group definitions"
+    ::= { boost 4 }
+
+END
