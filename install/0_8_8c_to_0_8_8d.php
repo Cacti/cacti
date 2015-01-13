@@ -443,7 +443,7 @@ function upgrade_to_0_8_8d() {
 	/* merge of clog */
 	/* clog user = 19 */
 	/* dlog admin = 18 */
-	$realms = db_fetch_assoc("SELECT * FROM plugin_realms WHERE plugins='clog'");
+	$realms = db_fetch_assoc("SELECT * FROM plugin_realms WHERE plugin = 'clog'");
 	if (sizeof($realms)) {
 	foreach($realms as $r) {
 		if ($r['file'] == 'clog.php') {
