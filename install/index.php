@@ -96,8 +96,8 @@ function db_table_exists($table) {
 	return (db_fetch_cell("SHOW TABLES LIKE '$table'") ? true : false);
 }
 
-function db_add_column ($cacti_version, $table, $column) {
-	// Example: db_add_column ('plugin_config', array('name' => 'test' . rand(1, 200), 'type' => 'varchar (255)', 'NULL' => false));
+function db_install_add_column ($cacti_version, $table, $column) {
+	// Example: db_install_add_column ('plugin_config', array('name' => 'test' . rand(1, 200), 'type' => 'varchar (255)', 'NULL' => false));
 	global $config, $database_default;
 
 	$result = db_fetch_assoc('show columns from `' . $table . '`');
@@ -107,24 +107,27 @@ function db_add_column ($cacti_version, $table, $column) {
 			$columns[] = $t;
 		}
 	}
+	$sql = 'ALTER TABLE `' . $table . '` ADD `' . $column['name'] . '`';
+	if (isset($column['type']))
+		$sql .= ' ' . $column['type'];
+	if (isset($column['unsigned']))
+		$sql .= ' unsigned';
+	if (isset($column['NULL']) && $column['NULL'] == false)
+		$sql .= ' NOT NULL';
+	if (isset($column['NULL']) && $column['NULL'] == true && !isset($column['default']))
+		$sql .= ' default NULL';
+	if (isset($column['default']))
+		$sql .= ' default ' . (is_numeric($column['default']) ? $column['default'] : "'" . $column['default'] . "'");
+	if (isset($column['auto_increment']))
+		$sql .= ' auto_increment';
+	if (isset($column['after']))
+		$sql .= ' AFTER ' . $column['after'];
 	if (isset($column['name']) && !in_array($column['name'], $columns)) {
-		$sql = 'ALTER TABLE `' . $table . '` ADD `' . $column['name'] . '`';
-		if (isset($column['type']))
-			$sql .= ' ' . $column['type'];
-		if (isset($column['unsigned']))
-			$sql .= ' unsigned';
-		if (isset($column['NULL']) && $column['NULL'] == false)
-			$sql .= ' NOT NULL';
-		if (isset($column['NULL']) && $column['NULL'] == true && !isset($column['default']))
-			$sql .= ' default NULL';
-		if (isset($column['default']))
-			$sql .= ' default ' . (is_numeric($column['default']) ? $column['default'] : "'" . $column['default'] . "'");
-		if (isset($column['auto_increment']))
-			$sql .= ' auto_increment';
-		if (isset($column['after']))
-			$sql .= ' AFTER ' . $column['after'];
-
 		db_install_execute($cacti_version, $sql);
+	} else {
+		$sql_install_cache = (isset($_SESSION["sess_sql_install_cache"]) ? $_SESSION["sess_sql_install_cache"] : array());
+		$sql_install_cache{sizeof($sql_install_cache)}[$cacti_version][2] = $sql;
+		$_SESSION["sess_sql_install_cache"] = $sql_install_cache;
 	}
 }
 
@@ -697,8 +700,10 @@ if ($step == "4") {
 						$upgrade_results = "";
 						$failed_sql_query = false;
 
-						$fail_text = "<span style='color: red; font-weight: bold; font-size: 12px;'>[Fail]</span>&nbsp;";
-						$success_text = "<span style='color: green; font-weight: bold; font-size: 12px;'>[Success]</span>&nbsp;";
+						$sqltext = array();
+						$sqltext[0] = "<span style='color: red; font-weight: bold; font-size: 12px;'>[Fail]</span>&nbsp;";
+						$sqltext[1] = "<span style='color: green; font-weight: bold; font-size: 12px;'>[Success]</span>&nbsp;";
+						$sqltext[2] = "<span style='color: grey; font-weight: bold; font-size: 12px;'>[Not Ran]</span>&nbsp;";
 
 						if (isset($_SESSION["sess_sql_install_cache"])) {
 							while (list($index, $arr1) = each($_SESSION["sess_sql_install_cache"])) {
@@ -709,7 +714,7 @@ if ($step == "4") {
 											$upgrade_results .= "<p><strong>" . $cacti_versions{$version_index-1}  . " -> " . $cacti_versions{$version_index} . "</strong></p>\n";
 										}
 
-										$upgrade_results .= "<p class='code'>" . (($status == 0) ? $fail_text : $success_text) . nl2br($sql) . "</p>\n";
+										$upgrade_results .= "<p class='code'>" . $sqltext[$status] . nl2br($sql) . "</p>\n";
 
 										/* if there are one or more failures, make a note because we are going to print
 										out a warning to the user later on */

@@ -380,6 +380,40 @@ function db_affected_rows($db_conn = FALSE) {
 	return $db_conn->affected_rows;
 }
 
+/* db_add_column - add a column to table
+   @param $table - the name of the table
+   @param $column - array of column data ex: array('name' => 'test' . rand(1, 200), 'type' => 'varchar (255)', 'NULL' => false)
+   @param $log - whether to log error messages, defaults to true
+   @returns - '1' for success, '0' for error */
+function db_add_column ($table, $column, $log = TRUE, $db_conn = FALSE) {
+	$result = db_fetch_assoc('show columns from `' . $table . '`');
+	$columns = array();
+	foreach($result as $index => $arr) {
+		foreach ($arr as $t) {
+			$columns[] = $t;
+		}
+	}
+	if (isset($column['name']) && !in_array($column['name'], $columns)) {
+		$sql = 'ALTER TABLE `' . $table . '` ADD `' . $column['name'] . '`';
+		if (isset($column['type']))
+			$sql .= ' ' . $column['type'];
+		if (isset($column['unsigned']))
+			$sql .= ' unsigned';
+		if (isset($column['NULL']) && $column['NULL'] == false)
+			$sql .= ' NOT NULL';
+		if (isset($column['NULL']) && $column['NULL'] == true && !isset($column['default']))
+			$sql .= ' default NULL';
+		if (isset($column['default']))
+			$sql .= ' default ' . (is_numeric($column['default']) ? $column['default'] : "'" . $column['default'] . "'");
+		if (isset($column['auto_increment']))
+			$sql .= ' auto_increment';
+		if (isset($column['after']))
+			$sql .= ' AFTER ' . $column['after'];
+		return db_install_execute($sql, $log, $db_conn);
+	}
+	return true;
+}
+
 
 /* array_to_sql_or - loops through a single dimentional array and converts each
      item to a string that can be used in the OR portion of an sql query in the
