@@ -46,6 +46,9 @@ function api_plugin_hook ($name) {
 	$data = func_get_args();
 	$ret = '';
 	$p = array();
+	if (defined('IN_CACTI_INSTALL')) {
+		return $data;
+	}
 
 	/* order the plugins by order */
 	$result = db_fetch_assoc_prepared('SELECT pc.id, ph.name, ph.file, ph.function
@@ -87,6 +90,9 @@ function api_plugin_hook_function ($name, $parm=NULL) {
 	global $config, $plugin_hooks, $plugins_integrated;
 	$ret = $parm;
 	$p = array();
+	if (defined('IN_CACTI_INSTALL')) {
+		return $ret;
+	}
 
 	/* order the plugins by order */
 	$result = db_fetch_assoc_prepared('SELECT pc.id, ph.name, ph.file, ph.function

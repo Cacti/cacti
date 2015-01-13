@@ -22,6 +22,8 @@
  +-------------------------------------------------------------------------+
 */
 
+define('IN_CACTI_INSTALL', 1);
+
 include("../include/global.php");
 
 /* allow the upgrade script to run for as long as it needs to */

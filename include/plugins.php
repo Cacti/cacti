@@ -53,7 +53,7 @@ if (strlen(trim($oldplugins))) {
 }
 
 /* On startup, register all plugins configured for use. */
-if (isset($plugins) && is_array($plugins)) {
+if (isset($plugins) && is_array($plugins) && !defined('IN_CACTI_INSTALL')) {
 	foreach ($plugins as $name) {
 		use_plugin($name);
 	}
