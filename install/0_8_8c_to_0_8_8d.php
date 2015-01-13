@@ -372,8 +372,6 @@ function upgrade_to_0_8_8d() {
 	$columns = array_rekey(db_fetch_assoc("SHOW COLUMNS FROM graph_tree_items"), "Field", array("Type", "Null", "Key", "Default", "Extra"));
 
 	if (isset($columns['order_key'])) {
-		define('CHARS_PER_TIER', 3);
-
 		$trees = db_fetch_assoc("SELECT id FROM graph_tree ORDER BY id");
 
 		if (sizeof($trees)) {
