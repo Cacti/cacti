@@ -362,42 +362,10 @@ function snmpagent_get_pluginslist(){
 	foreach ($registered_plugins as $t) {
 		$pluginslist[$t['directory']] = $t;
 	}
-
-	$path = $config['base_path'] . '/plugins/';
-	$dh = opendir($path);
-	if ($dh !== false) {
-		while (($file = readdir($dh)) !== false) {
-			if ((is_dir("$path/$file")) && (file_exists("$path/$file/setup.php")) && (!array_key_exists($file, $pluginslist))) {
-				include_once("$path/$file/setup.php");
-				if (!function_exists('plugin_' . $file . '_install') && function_exists($file . '_version')) {
-					$function = $file . '_version';
-					$cinfo = $function();
-					if (!isset($cinfo['author']))   $cinfo['author']   = 'Unknown';
-					if (!isset($cinfo['homepage'])) $cinfo['homepage'] = 'Not Stated';
-					if (isset($cinfo['webpage']))   $cinfo['homepage'] = $cinfo['webpage'];
-					if (!isset($cinfo['longname'])) $cinfo['longname'] = ucfirst($file);
-					$cinfo['status'] = -2; /* old PIA -- disabled */
-					if (in_array($file, $plugins)) {
-						$cinfo['status'] = -1; /* old PIA -- enabled */
-					}
-					$cinfo['directory'] = $file;
-					$pluginslist[$file] = $cinfo;
-
-				} elseif (function_exists('plugin_' . $file . '_install') && function_exists('plugin_' . $file . '_version')) {
-					$function = $file . '_version';
-					$cinfo = $function();
-					$cinfo['status'] = 0;
-					if (!isset($cinfo['author']))   $cinfo['author']   = 'Unknown';
-					if (!isset($cinfo['homepage'])) $cinfo['homepage'] = 'Not Stated';
-					if (isset($cinfo['webpage']))   $cinfo['homepage'] = $cinfo['webpage'];
-					if (!isset($cinfo['longname'])) $cinfo['homepage'] = ucfirst($file);
-					$cinfo['directory'] = $file;
-					$pluginslist[$file] = $cinfo;
-				}
-			}
-		}
-		closedir($dh);
+	foreach ($plugins as $t) {
+		$pluginslist[$t] = $t;
 	}
+
 	return $pluginslist;
 }
 
