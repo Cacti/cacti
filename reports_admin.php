@@ -23,25 +23,25 @@
 */
 
 $guest_account = true;
-include("./include/auth.php");
-include($config["base_path"] . "/lib/reports.php");
-include($config["base_path"] . "/lib/html_reports.php");
-define("MAX_DISPLAY_PAGES", 21);
+include('./include/auth.php');
+include($config['library_path'] . '/reports.php');
+include($config['library_path'] . '/html_reports.php');
+define('MAX_DISPLAY_PAGES', 21);
 
 input_validate_input_number(get_request_var_request('id'));
 
 /* set default action */
-if (!isset($_REQUEST["action"])) { $_REQUEST["action"] = ""; }
+if (!isset($_REQUEST['action'])) { $_REQUEST['action'] = ''; }
 
-switch ($_REQUEST["action"]) {
+switch ($_REQUEST['action']) {
 	case 'save':
 		reports_form_save();
 
 		break;
 	case 'send':
-		reports_send($_REQUEST["id"]);
+		reports_send($_REQUEST['id']);
 
-		header("Location: reports_admin.php?action=edit&tab=" . $_REQUEST["tab"] . "&id=" . $_REQUEST["id"]);
+		header('Location: reports_admin.php?action=edit&tab=' . $_REQUEST['tab'] . '&id=' . $_REQUEST['id']);
 		break;
 	case 'actions':
 		reports_form_actions();
@@ -50,17 +50,17 @@ switch ($_REQUEST["action"]) {
 	case 'item_movedown':
 		reports_item_movedown();
 
-		header("Location: reports_admin.php?action=edit&tab=items&id=" . $_REQUEST["id"]);
+		header('Location: reports_admin.php?action=edit&tab=items&id=' . $_REQUEST['id']);
 		break;
 	case 'item_moveup':
 		reports_item_moveup();
 
-		header("Location: reports_admin.php?action=edit&tab=items&id=" . $_REQUEST["id"]);
+		header('Location: reports_admin.php?action=edit&tab=items&id=' . $_REQUEST['id']);
 		break;
 	case 'item_remove':
 		reports_item_remove();
 
-		header("Location: reports_admin.php?action=edit&tab=items&id=" . $_REQUEST["id"]);
+		header('Location: reports_admin.php?action=edit&tab=items&id=' . $_REQUEST['id']);
 		break;
 	case 'item_edit':
 		general_header();
