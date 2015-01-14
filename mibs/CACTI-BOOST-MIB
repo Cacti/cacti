@@ -138,14 +138,6 @@ boostApplLastUpdate OBJECT-TYPE
         "Unix timestamp when this data has been updated for the last time."
     ::= { boostAppl 1 }
 
-boostApplVersion OBJECT-TYPE
-    SYNTAX          DisplayString (SIZE(1..48))
-    MAX-ACCESS      read-only
-    STATUS          current
-    DESCRIPTION
-        "Returns the version string of Boost"
-    ::= { boostAppl 2 }
-
 boostApplRrdUpdateEnabled OBJECT-TYPE
     SYNTAX          TruthValue
     MAX-ACCESS      read-only
@@ -154,7 +146,7 @@ boostApplRrdUpdateEnabled OBJECT-TYPE
         "If Boost on demand RRD updating has been enabled this object is set
          to true(1)."
     DEFVAL          { true }
-    ::= { boostAppl 3 }
+    ::= { boostAppl 2 }
 
 boostApplRrdUpdateInterval OBJECT-TYPE
     SYNTAX          Unsigned32 (30|60|120|240|360)
@@ -164,7 +156,7 @@ boostApplRrdUpdateInterval OBJECT-TYPE
     DESCRIPTION
         "If Boost has been enabled this interval determines when
          RRDfiles will be updated automatically."
-    ::= { boostAppl 4 }
+    ::= { boostAppl 3 }
 
 boostApplRrdUpdateMaxRecords OBJECT-TYPE
     SYNTAX          Unsigned32 (1..4294967295)
@@ -175,7 +167,7 @@ boostApplRrdUpdateMaxRecords OBJECT-TYPE
         "Represents the maximum size in records of the Boost output table.
          If the boost output table exceeds this size, in records, an update
          will take place."
-    ::= { boostAppl 5 }
+    ::= { boostAppl 4 }
 
 boostApplRrdUpdateMaxRecordsPerSelect OBJECT-TYPE
     SYNTAX          Unsigned32 (2000|5000|10000|15000|25000|50000|100000|200000|400000)
@@ -186,7 +178,7 @@ boostApplRrdUpdateMaxRecordsPerSelect OBJECT-TYPE
         "Defines the maximum number of data source items that should be
          retrieved in one single pass."
     DEFVAL          { 50000 }
-    ::= { boostAppl 6 }
+    ::= { boostAppl 5 }
 
 boostApplRrdUpdateMaxStringLength OBJECT-TYPE
     SYNTAX          Unsigned32 (1..4294967295)
@@ -197,7 +189,7 @@ boostApplRrdUpdateMaxStringLength OBJECT-TYPE
         "Defines the maximum argument length Boost must not exceed for update
          commands to RRDtool. This limit varies by operating system and kernel
          level."
-    ::= { boostAppl 7 }
+    ::= { boostAppl 6 }
 
 boostApplRrdUpdatePollerMemLimit OBJECT-TYPE
     SYNTAX          Unsigned32 (32|64|128|256|512|1024|1536|2048|3072)
@@ -207,7 +199,7 @@ boostApplRrdUpdatePollerMemLimit OBJECT-TYPE
     DESCRIPTION
         "Returns the maximum amount of memory for the Cacti Poller and
          Boost's Poller."
-    ::= { boostAppl 8 }
+    ::= { boostAppl 7 }
 
 boostApplRrdUpdateMaxRunTime OBJECT-TYPE
     SYNTAX          Unsigned32 (1200|2400|3600|4800)
@@ -216,7 +208,7 @@ boostApplRrdUpdateMaxRunTime OBJECT-TYPE
     STATUS          current
     DESCRIPTION
         "Represents the maximum boot poller run time in seconds being allowed."
-    ::= { boostAppl 9 }
+    ::= { boostAppl 8 }
 
 boostApplRrdUpdateRedirect OBJECT-TYPE
     SYNTAX          TruthValue
@@ -227,7 +219,7 @@ boostApplRrdUpdateRedirect OBJECT-TYPE
          enabled this object is set to true(1). This enables direct insert of
          records into poller output boost."
     DEFVAL          { false }
-    ::= { boostAppl 10 }
+    ::= { boostAppl 9 }
 
 boostApplServerEnabled OBJECT-TYPE
     SYNTAX          TruthValue
@@ -237,7 +229,7 @@ boostApplServerEnabled OBJECT-TYPE
         "If Boost Server will be used for RRDUpdates this object is set
          to true (1)."
     DEFVAL          { false }
-    ::= { boostAppl 11 }
+    ::= { boostAppl 10 }
 
 boostApplServerMultiprocess OBJECT-TYPE
     SYNTAX          TruthValue
@@ -247,7 +239,7 @@ boostApplServerMultiprocess OBJECT-TYPE
         "This object returns true (1) if Boost Server should  fork a separate
          update process for each boost request"
     DEFVAL          { false }
-    ::= { boostAppl 12 }
+    ::= { boostAppl 11 }
 
 boostApplServerHostname OBJECT-TYPE
     SYNTAX          DisplayString (SIZE(1..100))
@@ -255,7 +247,7 @@ boostApplServerHostname OBJECT-TYPE
     STATUS          current
     DESCRIPTION
         "Returns the Hostname/IP of the boost server."
-    ::= { boostAppl 13 }
+    ::= { boostAppl 12 }
 
 boostApplServerListenPort OBJECT-TYPE
     SYNTAX          DisplayString (SIZE(1..10))
@@ -263,7 +255,7 @@ boostApplServerListenPort OBJECT-TYPE
     STATUS          current
     DESCRIPTION
         "Returns the TCP port the boost server will listen on."
-    ::= { boostAppl 14 }
+    ::= { boostAppl 13 }
 
 boostApplServerTimeOuts OBJECT-TYPE
     SYNTAX          Unsigned32 (1..4294967295)
@@ -273,7 +265,7 @@ boostApplServerTimeOuts OBJECT-TYPE
     DESCRIPTION
         "Defines the maximum number of seconds a client should wait on the
          Boost server before giving up."
-    ::= { boostAppl 15 }
+    ::= { boostAppl 14 }
 
 boostApplImageCacheEnabled OBJECT-TYPE
     SYNTAX          TruthValue
@@ -282,7 +274,7 @@ boostApplImageCacheEnabled OBJECT-TYPE
     DESCRIPTION
         "If image caching has been enabled this object is set to true (1)."
     DEFVAL          { false }
-    ::= { boostAppl 16 }
+    ::= { boostAppl 15 }
 
 boostApplLoggingEnabled OBJECT-TYPE
     SYNTAX          TruthValue
@@ -291,7 +283,7 @@ boostApplLoggingEnabled OBJECT-TYPE
     DESCRIPTION
         "If Boost debug logging is enabled this object will return true (1)."
     DEFVAL          { false }
-    ::= { boostAppl 17 }
+    ::= { boostAppl 16 }
 
 boostApplStorageDatabaseEngine OBJECT-TYPE
     SYNTAX          INTEGER {
@@ -302,7 +294,7 @@ boostApplStorageDatabaseEngine OBJECT-TYPE
     STATUS          current
     DESCRIPTION
         "Returns the database engine being used for the boost storage."
-    ::= { boostAppl 18 }
+    ::= { boostAppl 17 }
 
 boostApplStorageMaxTableSize OBJECT-TYPE
     SYNTAX          Integer32
@@ -314,7 +306,7 @@ boostApplStorageMaxTableSize OBJECT-TYPE
          is allowed to have. If boostApplStorageDatabaseEngine is set to
          myisam (2) the table size is unlimited and this object returns -1."
     DEFVAL { -1 }
-    ::= { boostAppl 19 }
+    ::= { boostAppl 18 }
 
 boostApplStorageMaxRecords OBJECT-TYPE
     SYNTAX          Unsigned32
@@ -327,7 +319,7 @@ boostApplStorageMaxRecords OBJECT-TYPE
          myisam (2) the number of maximum records is unlimited and
          this object returns 0."
     DEFVAL { 0 }
-    ::= { boostAppl 20 }
+    ::= { boostAppl 19 }
 
 --
 -- BOOST STATISTICS
@@ -381,16 +373,24 @@ boostStatsRrdUpdateLastRun OBJECT-TYPE
         "Date of last run"
     ::= { boostStats 3 }
 
+boostStatsRrdUpdates OBJECT-TYPE
+    SYNTAX          Unsigned32
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "Number of RRDs being updated."
+    ::= { boostStats 4 }
+
 boostStatsRrdUpdateDuration OBJECT-TYPE
-    SYNTAX          Unsigned32 (1..4294967295)
+    SYNTAX          DisplayString (SIZE(1..16))
     UNITS           "seconds"
     MAX-ACCESS      read-only
     STATUS          current
     DESCRIPTION
         "Represents the duration of the last update process in seconds."
-    ::= { boostStats 4 }
+    ::= { boostStats 5 }
 
-boostStatsRrdUpdateUtiliation OBJECT-TYPE
+boostStatsRrdUpdateUtilization OBJECT-TYPE
     SYNTAX          DisplayString (SIZE(1..16))
     UNITS           "percent"
     MAX-ACCESS      read-only
@@ -398,7 +398,7 @@ boostStatsRrdUpdateUtiliation OBJECT-TYPE
     DESCRIPTION
         "The proportion of the maximum upate frequency in percent Boost requires
          to update all rrds."
-    ::= { boostStats 5 }
+    ::= { boostStats 6 }
 
 boostStatsRrdUpdatePollerPeakMemory OBJECT-TYPE
     SYNTAX          Unsigned32 (1..4294967295)
@@ -408,7 +408,7 @@ boostStatsRrdUpdatePollerPeakMemory OBJECT-TYPE
     DESCRIPTION
         "Returns the peak of memory in bytes that has been allocated by Boost
         during the last rrd update process."
-    ::= { boostStats 6 }
+    ::= { boostStats 7 }
 
 boostStatsRrdUpdateNextRun OBJECT-TYPE
     SYNTAX          DisplayString (SIZE(19))
@@ -416,7 +416,7 @@ boostStatsRrdUpdateNextRun OBJECT-TYPE
     STATUS          current
     DESCRIPTION
         "Date of next run"
-    ::= { boostStats 7 }
+    ::= { boostStats 8 }
 
 boostStatsTotalsDataSources OBJECT-TYPE
     SYNTAX          Unsigned32
@@ -426,7 +426,7 @@ boostStatsTotalsDataSources OBJECT-TYPE
     DESCRIPTION
         "Represents the total number of poller items Boost has to take care of."
     DEFVAL { 0 }
-    ::= { boostStats 8 }
+	::= { boostStats 9 }
 
 boostStatsTotalsRecords OBJECT-TYPE
     SYNTAX          Unsigned32
@@ -435,25 +435,25 @@ boostStatsTotalsRecords OBJECT-TYPE
     DESCRIPTION
         "Returns the total number of records being handled by Boost."
     DEFVAL { 0 }
-    ::= { boostStats 9 }
+	::= { boostStats 10 }
 
 boostStatsTotalsRecordsPending OBJECT-TYPE
     SYNTAX          Unsigned32
     MAX-ACCESS      read-only
     STATUS          current
     DESCRIPTION
-        "Total number of records."
+        "Total number of records marked as pending."
     DEFVAL { 0 }
-    ::= { boostStats 10 }
+	::= { boostStats 11 }
 
 boostStatsTotalsRecordsArchived OBJECT-TYPE
     SYNTAX          Unsigned32
     MAX-ACCESS      read-only
     STATUS          current
     DESCRIPTION
-        "Total number of records."
+        "Total number of records marked as archived."
     DEFVAL { 0 }
-    ::= { boostStats 11 }
+	::= { boostStats 12 }
 
 boostStatsStorageTableSize OBJECT-TYPE
     SYNTAX          Unsigned32
@@ -464,7 +464,7 @@ boostStatsStorageTableSize OBJECT-TYPE
         "This object contains the current size of the boost memory table
          in kBytes."
     DEFVAL { 0 }
-    ::= { boostStats 12 }
+    ::= { boostStats 13 }
 
 boostStatsStorageAverageRecordSize OBJECT-TYPE
     SYNTAX          Unsigned32
@@ -474,7 +474,7 @@ boostStatsStorageAverageRecordSize OBJECT-TYPE
     DESCRIPTION
         "Returns the average record size of the boost memory table in bytes."
     DEFVAL { 0 }
-    ::= { boostStats 13 }
+    ::= { boostStats 14 }
 
 boostStatsStorageMaxRecordLength OBJECT-TYPE
     SYNTAX          Unsigned32
@@ -485,7 +485,7 @@ boostStatsStorageMaxRecordLength OBJECT-TYPE
         "Returns size of longest record within the boost memory table
          in bytes."
     DEFVAL { 0 }
-    ::= { boostStats 14 }
+    ::= { boostStats 15 }
 
 boostStatsTotalsImagesCacheSize OBJECT-TYPE
     SYNTAX          Unsigned32
@@ -496,7 +496,7 @@ boostStatsTotalsImagesCacheSize OBJECT-TYPE
         "Represents the total number of RRD image files being
          currently cached by Boost."
     DEFVAL { 0 }
-    ::= { boostStats 15 }
+    ::= { boostStats 16 }
 
 boostStatsTotalsImagesCacheReads OBJECT-TYPE
     SYNTAX          Counter64
@@ -504,7 +504,7 @@ boostStatsTotalsImagesCacheReads OBJECT-TYPE
     STATUS          current
     DESCRIPTION
         "Number of succesful read operations."
-    ::= { boostStats 16 }
+    ::= { boostStats 17 }
 
 boostStatsTotalsImagesCacheWrites OBJECT-TYPE
     SYNTAX          Counter64
@@ -512,7 +512,7 @@ boostStatsTotalsImagesCacheWrites OBJECT-TYPE
     STATUS          current
     DESCRIPTION
         "Indicates the number of uncached read operations."
-    ::= { boostStats 17 }
+    ::= { boostStats 18 }
 
 -- boostStatsRrdUpdateNextRun
 
