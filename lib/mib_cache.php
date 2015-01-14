@@ -173,6 +173,15 @@ class MibCache{
 		return db_fetch_row("SELECT * FROM snmpagent_cache WHERE name='" . $this->active_object . "' AND mib='" . $this->active_mib . "' LIMIT 1");
 	}
 
+	public function count() {
+		return db_execute( "UPDATE LOW_PRIORITY snmpagent_cache
+						SET `value` = CASE
+							WHEN `type`='Counter32' AND `value`= 4294967295 THEN 0
+							WHEN `type`='Counter64' AND `value`= 18446744073709551615 THEN 0
+							ELSE `value`+1 END
+						WHERE `mib` = '" . $this->active_mib . "' AND `name` = '" . $this->active_object . "' LIMIT 1;");
+	}
+
 	public function insert($values) {
 		$oid_entry = $this->exists();
 		if($oid_entry == false) {
