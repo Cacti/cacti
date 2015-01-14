@@ -125,7 +125,7 @@ function boost_poller_on_demand(&$results) {
 
 		/* install the boost error handler */
 		set_error_handler('boost_error_handler');
-	
+
 		$outbuf      = '';
 		$sql_prefix  = 'INSERT INTO poller_output_boost (local_data_id, rrd_name, time, output) VALUES ';
 		$sql_suffix  = ' ON DUPLICATE KEY UPDATE output=VALUES(output)';
@@ -342,6 +342,11 @@ function boost_graph_cache_check($local_graph_id, $rra_id, $rrdtool_pipe, $graph
 								/* restore original error handler */
 								restore_error_handler();
 
+								/* get access to the SNMP Cache of BOOST*/
+								$mc = new MibCache('CACTI-BOOST-MIB');
+								$mc->object('boostStatsTotalsImagesCacheReads')->count();
+								$mc->object('boostStatsLastUpdate')->set( time() );
+
 								return $output;
 							}else{
 								if (read_config_option('log_verbosity') >= POLLER_VERBOSITY_DEBUG) {
@@ -399,6 +404,9 @@ function boost_prep_graph_array($graph_data_array) {
 function boost_graph_set_file(&$output, $local_graph_id, $rra_id) {
 	global $config, $boost_sock, $graph_data_array;
 
+	/* get access to the SNMP Cache of BOOST*/
+	$mc = new MibCache('CACTI-BOOST-MIB');
+
 	/* suppress warnings */
 	if (defined('E_DEPRECATED')) {
 		error_reporting(E_ALL ^ E_DEPRECATED);
@@ -449,6 +457,10 @@ function boost_graph_set_file(&$output, $local_graph_id, $rra_id) {
 							fwrite($fileptr, $output, strlen($output));
 							fclose($fileptr);
 							chmod($cache_file, 0666);
+
+							/* count the number of images that had to be cached */
+							$mc->object('boostStatsTotalsImagesCacheWrites')->count();
+							$mc->object('boostStatsLastUpdate')->set( time() );
 						}
 					}
 				}else{
