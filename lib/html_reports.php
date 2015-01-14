@@ -672,7 +672,7 @@ function reports_form_actions() {
 	-->
 	</script><?php
 
-	print "<form name='report' action='report" . get_reports_page() . " method='post'>";
+	print "<form name='report' action='" . get_reports_page() . "' method='post'>";
 
 	html_start_box('<strong>' . $reports_actions{$_POST['drp_action']} . '</strong>', '60%', '', '3', 'center', '');
 
@@ -737,7 +737,7 @@ function reports_form_actions() {
 	}
 
 	print "	<tr>
-		<td align='right' class='saveRow>
+		<td align='right' class='saveRow'>
 			<input type='hidden' name='action' value='actions'>
 			<input type='hidden' name='selected_items' value='" . (isset($reports_array) ? serialize($reports_array) : '') . "'>
 			<input type='hidden' name='drp_action' value='" . $_POST['drp_action'] . "'>
@@ -1287,7 +1287,7 @@ function display_reports_items($report_id) {
 }
 
 function get_reports_page() {
-	return (is_realm_allowed(22) ? 'reports_admin.php':'reports_user.php');
+	return (is_realm_allowed(22) ? 'reports_admin.php' : 'reports_user.php');
 }
 
 function is_reports_admin() {
