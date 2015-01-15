@@ -2509,7 +2509,7 @@ function get_hash_data_template($data_template_id, $sub_type = 'data_template') 
 	if ($sub_type == 'data_template') {
 		$hash = db_fetch_cell_prepared('SELECT hash FROM data_template WHERE id = ?', array($data_template_id));
 	}elseif ($sub_type == 'data_template_item') {
-		$hash = db_fetch_cell_prepared('SELECT hash FROM data_template_rrd WHERE = ?', array($data_template_id));
+		$hash = db_fetch_cell_prepared('SELECT hash FROM data_template_rrd WHERE id = ?', array($data_template_id));
 	}
 
 	if (preg_match('/[a-fA-F0-9]{32}/', $hash)) {
