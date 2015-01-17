@@ -521,11 +521,13 @@ function update_show_current () {
 }
 
 function format_plugin_row($plugin, $last_plugin, $include_ordering) {
-	global $status_names;
+	global $status_names, $config;
 	static $first_plugin = true;
 
 	$row = plugin_actions($plugin);
-	$row .= "<td><a href='" . htmlspecialchars($plugin['webpage']) . "' target='_blank'><strong>" . (strlen(get_request_var_request('filter')) ? eregi_replace('(' . preg_quote(get_request_var_request('filter')) . ')', "<span class='filteredValue'>\\1</span>", ucfirst($plugin['directory'])) : ucfirst($plugin['directory'])) . '</strong></a></td>';
+
+	$row .= "<td><a href='" . htmlspecialchars($plugin['webpage']) . "' target='_blank'><strong>" . (strlen(get_request_var_request('filter')) ? eregi_replace('(' . preg_quote(get_request_var_request('filter')) . ')', "<span class='filteredValue'>\\1</span>", ucfirst($plugin['directory'])) : ucfirst($plugin['directory'])) . '</strong></a>' . (is_dir($config['base_path'] . '/plugins/' . $plugin['directory']) ? '':' (<span class="txtErrorText">ERROR: Directory Missing</span>)') . '</td>';
+
 	if ($include_ordering) {
 		$row .= "<td style='white-space:nowrap;'>";
 		if (!$first_plugin) {
