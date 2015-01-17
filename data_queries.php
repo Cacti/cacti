@@ -547,7 +547,7 @@ function data_query_item_edit() {
 				AND data_template_id = ?
 				ORDER BY field_name, sequence', array($_REQUEST['id'], $data_template['id']));
 
-			html_header(array('Name', '', 'Equation'),2);
+			html_header(array('Name', '', 'Equation'), 2);
 
 			if (sizeof($suggested_values)) {
 				$prev_name = '';

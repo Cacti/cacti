@@ -730,7 +730,8 @@ function manager_logs($id) {
 
 	print $nav;
 
-	html_header( array(" ", "Time", "Notification", "Varbinds" ), true );
+	html_header(array(" ", "Time", "Notification", "Varbinds" ));
+
 	$i = 0;
 	if (sizeof($logs) > 0) {
 		foreach ($logs as $item) {

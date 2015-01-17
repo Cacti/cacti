@@ -2393,7 +2393,7 @@ function snmpagent_utilities_run_cache() {
 
 
 
-	html_header( array( "OID", "Name", "MIB", "Kind", "Max-Access", "Value") );
+	html_header(array( "OID", "Name", "MIB", "Kind", "Max-Access", "Value"));
 
 	if (sizeof($snmp_cache) > 0) {
 		foreach ($snmp_cache as $item) {
@@ -2665,7 +2665,7 @@ function snmpagent_utilities_run_eventlog(){
 
 	print $nav;
 
-	html_header( array(" ", "Time", "Receiver", "Notification", "Varbinds" ), true );
+	html_header(array(" ", "Time", "Receiver", "Notification", "Varbinds" ));
 
 	if (sizeof($logs) > 0) {
 		foreach ($logs as $item) {

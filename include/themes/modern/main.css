@@ -609,10 +609,13 @@ legend {
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#8ab369', endColorstr='#3f750f', GradientType=0 );
 }
 
+th.sortable {
+	cursor:pointer;
+}
+
 .tableHeader th {
 	color: snow;
 	font-weight:bold;
-	cursor:pointer;
 	vertical-align:bottom;
 	text-align:left;
 	font-size: 11px;

@@ -615,13 +615,13 @@ function saveTableWidths(initial) {
 		var i = 0;
 		if (key !== undefined) {
 			if (initial && items.length) {
-				$(this).find('th').each(function(data) {
+				$(this).find('th.ui-resizable').each(function(data) {
 					$(this).css('width', items[i]);
 					i++;
 				});
 			}else{
 				var sizes = new Array();
-				$(this).find('th').each(function(data) {
+				$(this).find('th.ui-resizable').each(function(data) {
 					sizes[i] = parseInt($(this).css('width'));
 					$(this).css('width', sizes[i]);
 					i++;
@@ -641,7 +641,7 @@ function saveTableWidths(initial) {
 function applyTableSizing() {
 	saveTableWidths(true);
 
-	$('.tableHeader th').resizable({
+	$('.tableHeader').not('.tableFixed').find('th').resizable({
 		handles: 'e',
 
 		start: function(event, ui) {

@@ -596,7 +596,7 @@ function html_header_sort_checkbox($header_items, $sort_column, $sort_direction,
 		alternatively and array of header names and alignment array('display' = 'blah', 'align' = 'blah')
    @arg $last_item_colspan - the TD 'colspan' to apply to the last cell in the row */
 function html_header($header_items, $last_item_colspan = 1) {
-	print "<tr class='tableHeader'>\n";
+	print "<tr class='tableHeader " . (!$last_item_colspan > 1 ? 'tableFixed':'') . "'>\n";
 
 	for ($i=0; $i<count($header_items); $i++) {
 		if (is_array($header_items[$i])) {
@@ -614,11 +614,11 @@ function html_header($header_items, $last_item_colspan = 1) {
    @arg $header_items - an array containing a list of items to be included in the header
 		alternatively and array of header names and alignment array('display' = 'blah', 'align' = 'blah')
    @arg $form_action - the url to post the 'select all' form to */
-function html_header_checkbox($header_items, $include_form = true, $form_action = "") {
+function html_header_checkbox($header_items, $include_form = true, $form_action = "", $resizable = true) {
 	/* default to the 'current' file */
 	if ($form_action == "") { $form_action = basename($_SERVER["PHP_SELF"]); }
 
-	print "<tr class='tableHeader'>\n";
+	print "<tr class='tableHeader " . (!$resizable ? 'tableFixed':'') . "'>\n";
 
 	for ($i=0; $i<count($header_items); $i++) {
 		if (is_array($header_items[$i])) {
