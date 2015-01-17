@@ -80,7 +80,7 @@ function form_save() {
 		$save['type']        = $_POST['type'];
 		$save['user_id']     = $_POST['user_id'];
 		$save['domain_name'] = form_input_validate($_POST['domain_name'], 'domain_name', '', false, 3);
-		$save['enabled']     = form_input_validate($_POST['enabled'],     'enabled',     '', true,  3);
+		$save['enabled']     = (isset($_POST['enabled']) ? form_input_validate($_POST['enabled'],     'enabled',     '', true,  3):'');
 
 		if (!is_error_message()) {
 			$domain_id = sql_save($save, 'user_domains', 'domain_id');
@@ -144,7 +144,7 @@ function form_save() {
 		$save['domain_name'] = form_input_validate($_POST['domain_name'], 'domain_name', '', false, 3);
 		$save['type']        = $_POST['type'];
 		$save['user_id']     = $_POST['user_id'];
-		$save['enabled']     = form_input_validate($_POST['enabled'],     'enabled',     '', true,  3);
+		$save['enabled']     = (isset($_POST['enabled']) ? form_input_validate($_POST['enabled'],     'enabled',     '', true,  3):'');
 
 		if (!is_error_message()) {
 			$domain_id = sql_save($save, 'user_domains', 'domain_id');
