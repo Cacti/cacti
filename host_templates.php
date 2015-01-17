@@ -47,12 +47,12 @@ switch ($_REQUEST['action']) {
 	case 'item_remove_gt':
 		template_item_remove_gt();
 
-		header('Location: host_templates.php?action=edit&id=' . $_GET['host_template_id']);
+		header('Location: host_templates.php?action=edit&id=' . $_REQUEST['host_template_id']);
 		break;
 	case 'item_remove_dq':
 		template_item_remove_dq();
 
-		header('Location: host_templates.php?action=edit&id=' . $_GET['host_template_id']);
+		header('Location: host_templates.php?action=edit&id=' . $_REQUEST['host_template_id']);
 		break;
 	case 'edit':
 		top_header();
@@ -218,35 +218,35 @@ function form_actions() {
 
 function template_item_remove_gt() {
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var('id'));
-	input_validate_input_number(get_request_var('host_template_id'));
+	input_validate_input_number(get_request_var_request('id'));
+	input_validate_input_number(get_request_var_request('host_template_id'));
 	/* ==================================================== */
 
-	db_execute_prepared('DELETE FROM host_template_graph WHERE graph_template_id = ? AND host_template_id = ?', array(get_request_var('id'), get_request_var('host_template_id')));
+	db_execute_prepared('DELETE FROM host_template_graph WHERE graph_template_id = ? AND host_template_id = ?', array(get_request_var_request('id'), get_request_var_request('host_template_id')));
 }
 
 function template_item_remove_dq() {
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var('id'));
-	input_validate_input_number(get_request_var('host_template_id'));
+	input_validate_input_number(get_request_var_request('id'));
+	input_validate_input_number(get_request_var_request('host_template_id'));
 	/* ==================================================== */
 
-	db_execute_prepared('DELETE FROM host_template_snmp_query WHERE snmp_query_id = ? AND host_template_id = ?', array(get_request_var('id'), get_request_var('host_template_id')));
+	db_execute_prepared('DELETE FROM host_template_snmp_query WHERE snmp_query_id = ? AND host_template_id = ?', array(get_request_var_request('id'), get_request_var_request('host_template_id')));
 }
 
 function template_edit() {
 	global $fields_host_template_edit;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var('id'));
+	input_validate_input_number(get_request_var_request('id'));
 	/* ==================================================== */
 
-	if (!empty($_GET['id'])) {
-		$host_template = db_fetch_row_prepared('SELECT * FROM host_template WHERE id = ?', array(get_request_var('id')));
+	if (!empty($_REQUEST['id'])) {
+		$host_template = db_fetch_row_prepared('SELECT * FROM host_template WHERE id = ?', array(get_request_var_request('id')));
 		$header_label = '[edit: ' . $host_template['name'] . ']';
 	}else{
 		$header_label = '[new]';
-		$_GET['id'] = 0;
+		$_REQUEST['id'] = 0;
 	}
 
 	html_start_box('<strong>Device Templates</strong> ' . htmlspecialchars($header_label), '100%', '', '3', 'center', '');
@@ -262,7 +262,7 @@ function template_edit() {
 
 	html_end_box();
 
-	if (!empty($_GET['id'])) {
+	if (!empty($_REQUEST['id'])) {
 		html_start_box('<strong>Associated Graph Templates</strong>', '100%', '', '3', 'center', '');
 
 		$selected_graph_templates = db_fetch_assoc_prepared('SELECT
@@ -271,7 +271,7 @@ function template_edit() {
 			FROM (graph_templates,host_template_graph)
 			WHERE graph_templates.id = host_template_graph.graph_template_id
 			AND host_template_graph.host_template_id = ?
-			ORDER BY graph_templates.name', array(get_request_var('id')));
+			ORDER BY graph_templates.name', array(get_request_var_request('id')));
 
 		$i = 0;
 		if (sizeof($selected_graph_templates) > 0) {
@@ -282,7 +282,7 @@ function template_edit() {
 						<strong><?php print $i;?>)</strong> <?php print htmlspecialchars($item['name']);?>
 					</td>
 					<td align="right">
-						<a href='<?php print htmlspecialchars('host_templates.php?action=item_remove_gt&id=' . $item['id'] . '&host_template_id=' . $_GET['id']);?>'><img src='images/delete_icon.gif' style="height:10px;width:10px;" border='0' alt='Delete'></a>
+						<a href='<?php print htmlspecialchars('host_templates.php?action=item_remove_gt&id=' . $item['id'] . '&host_template_id=' . $_REQUEST['id']);?>'><img src='images/delete_icon.gif' style="height:10px;width:10px;" border='0' alt='Delete'></a>
 					</td>
 				<?php
 				form_end_row();
@@ -304,7 +304,7 @@ function template_edit() {
 							FROM graph_templates LEFT JOIN host_template_graph
 							ON (graph_templates.id = host_template_graph.graph_template_id AND host_template_graph.host_template_id = ?)
 							WHERE host_template_graph.host_template_id is null
-							ORDER BY graph_templates.name', array(get_request_var('id'))),'name','id','','','');?>
+							ORDER BY graph_templates.name', array(get_request_var_request('id'))),'name','id','','','');?>
 					</td>
 					<td align="right">
 						&nbsp;<input type="submit" value="Add" name="add_gt_x" title="Add Graph Template to Device Template">
@@ -324,7 +324,7 @@ function template_edit() {
 			FROM (snmp_query, host_template_snmp_query)
 			WHERE snmp_query.id = host_template_snmp_query.snmp_query_id
 			AND host_template_snmp_query.host_template_id = ?
-			ORDER BY snmp_query.name', array(get_request_var('id')));
+			ORDER BY snmp_query.name', array(get_request_var_request('id')));
 
 		$i = 0;
 		if (sizeof($selected_data_queries) > 0) {
@@ -335,7 +335,7 @@ function template_edit() {
 						<strong><?php print $i;?>)</strong> <?php print htmlspecialchars($item['name']);?>
 					</td>
 					<td align='right'>
-						<a href='<?php print htmlspecialchars('host_templates.php?action=item_remove_dq&id=' . $item['id'] . '&host_template_id=' . $_GET['id']);?>'><img src='images/delete_icon.gif' style="height:10px;width:10px;" border='0' alt='Delete'></a>
+						<a href='<?php print htmlspecialchars('host_templates.php?action=item_remove_dq&id=' . $item['id'] . '&host_template_id=' . $_REQUEST['id']);?>'><img src='images/delete_icon.gif' style="height:10px;width:10px;" border='0' alt='Delete'></a>
 					</td>
 				<?php
 				form_end_row();
@@ -357,7 +357,7 @@ function template_edit() {
 							FROM snmp_query LEFT JOIN host_template_snmp_query
 							ON (snmp_query.id = host_template_snmp_query.snmp_query_id AND host_template_snmp_query.host_template_id = ?)
 							WHERE host_template_snmp_query.host_template_id is null
-							ORDER BY snmp_query.name', array(get_request_var('id'))),'name','id','','','');?>
+							ORDER BY snmp_query.name', array(get_request_var_request('id'))),'name','id','','','');?>
 					</td>
 					<td align="right">
 						&nbsp;<input type="submit" value="Add" name="add_dq_x" title="Add Data Query to Device Template">
@@ -383,22 +383,22 @@ function template() {
 
 	/* clean up has_hosts string */
 	if (isset($_REQUEST['has_hosts'])) {
-		$_REQUEST['has_hosts'] = sanitize_search_string(get_request_var('has_hosts'));
+		$_REQUEST['has_hosts'] = sanitize_search_string(get_request_var_request('has_hosts'));
 	}
 
 	/* clean up search string */
 	if (isset($_REQUEST['filter'])) {
-		$_REQUEST['filter'] = sanitize_search_string(get_request_var('filter'));
+		$_REQUEST['filter'] = sanitize_search_string(get_request_var_request('filter'));
 	}
 
 	/* clean up sort_column */
 	if (isset($_REQUEST['sort_column'])) {
-		$_REQUEST['sort_column'] = sanitize_search_string(get_request_var('sort_column'));
+		$_REQUEST['sort_column'] = sanitize_search_string(get_request_var_request('sort_column'));
 	}
 
 	/* clean up sort_direction string */
 	if (isset($_REQUEST['sort_direction'])) {
-		$_REQUEST['sort_direction'] = sanitize_search_string(get_request_var('sort_direction'));
+		$_REQUEST['sort_direction'] = sanitize_search_string(get_request_var_request('sort_direction'));
 	}
 
 	/* if the user pushed the 'clear' button */

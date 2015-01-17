@@ -49,11 +49,11 @@ $pluginslist = retrieve_plugin_list();
 /* Check to see if we are installing, etc... */
 $modes = array('installold', 'uninstallold', 'install', 'uninstall', 'disable', 'enable', 'check', 'moveup', 'movedown');
 
-if (isset($_GET['mode']) && in_array($_GET['mode'], $modes)  && isset($_GET['id'])) {
-	input_validate_input_regex(get_request_var('id'), '^([a-zA-Z0-9]+)$');
+if (isset($_REQUEST['mode']) && in_array($_REQUEST['mode'], $modes)  && isset($_REQUEST['id'])) {
+	input_validate_input_regex(get_request_var_request('id'), '^([a-zA-Z0-9]+)$');
 
-	$mode = $_GET['mode'];
-	$id   = sanitize_search_string($_GET['id']);
+	$mode = $_REQUEST['mode'];
+	$id   = sanitize_search_string($_REQUEST['id']);
 
 	switch ($mode) {
 		case 'installold':
@@ -289,17 +289,17 @@ function update_show_current () {
 
 	/* clean up search string */
 	if (isset($_REQUEST['filter'])) {
-		$_REQUEST['filter'] = sanitize_search_string(get_request_var('filter'));
+		$_REQUEST['filter'] = sanitize_search_string(get_request_var_request('filter'));
 	}
 
 	/* clean up sort_column */
 	if (isset($_REQUEST['sort_column'])) {
-		$_REQUEST['sort_column'] = sanitize_search_string(get_request_var('sort_column'));
+		$_REQUEST['sort_column'] = sanitize_search_string(get_request_var_request('sort_column'));
 	}
 
 	/* clean up search string */
 	if (isset($_REQUEST['sort_direction'])) {
-		$_REQUEST['sort_direction'] = sanitize_search_string(get_request_var('sort_direction'));
+		$_REQUEST['sort_direction'] = sanitize_search_string(get_request_var_request('sort_direction'));
 	}
 
 	/* if the user pushed the 'clear' button */

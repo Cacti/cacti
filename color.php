@@ -86,21 +86,21 @@ function form_save() {
 
 function color_remove() {
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var('id'));
+	input_validate_input_number(get_request_var_request('id'));
 	/* ==================================================== */
 
-	db_execute_prepared('DELETE FROM colors WHERE id = ?', array(get_request_var('id')));
+	db_execute_prepared('DELETE FROM colors WHERE id = ?', array(get_request_var_request('id')));
 }
 
 function color_edit() {
 	global $fields_color_edit;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var('id'));
+	input_validate_input_number(get_request_var_request('id'));
 	/* ==================================================== */
 
-	if (!empty($_GET['id'])) {
-		$color = db_fetch_row_prepared('SELECT * FROM colors WHERE id = ?', array(get_request_var('id')));
+	if (!empty($_REQUEST['id'])) {
+		$color = db_fetch_row_prepared('SELECT * FROM colors WHERE id = ?', array(get_request_var_request('id')));
 		$header_label = '[edit: ' . $color['hex'] . ']';
 	}else{
 		$header_label = '[new]';

@@ -41,7 +41,7 @@ switch ($_REQUEST['action']) {
 	case 'query_reload':
 		host_reload_query();
 
-		header('Location: graphs_new.php?host_id=' . $_GET['host_id']);
+		header('Location: graphs_new.php?host_id=' . $_REQUEST['host_id']);
 		break;
 	default:
 		top_header();
@@ -112,11 +112,11 @@ function draw_edit_form_row($field_array, $field_name, $previous_value) {
 
 function host_reload_query() {
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var('id'));
-	input_validate_input_number(get_request_var('host_id'));
+	input_validate_input_number(get_request_var_request('id'));
+	input_validate_input_number(get_request_var_request('host_id'));
 	/* ==================================================== */
 
-	run_data_query($_GET['host_id'], $_GET['id']);
+	run_data_query($_REQUEST['host_id'], $_REQUEST['id']);
 }
 
 /* -------------------
@@ -374,7 +374,7 @@ function graphs() {
 
 	/* clean up search string */
 	if (isset($_REQUEST['filter'])) {
-		$_REQUEST['filter'] = sanitize_search_string(get_request_var('filter'));
+		$_REQUEST['filter'] = sanitize_search_string(get_request_var_request('filter'));
 	}
 
 	/* if the user pushed the 'clear' button */

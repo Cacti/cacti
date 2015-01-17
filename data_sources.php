@@ -594,16 +594,16 @@ function form_actions() {
 
 function data_edit() {
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var('id'));
+	input_validate_input_number(get_request_var_request('id'));
 	/* ==================================================== */
 
 	global $config;
 
-	if (!empty($_GET['id'])) {
-		$data = db_fetch_row_prepared('SELECT id, data_input_id, data_template_id, name, local_data_id FROM data_template_data WHERE local_data_id = ?', array($_GET['id']));
+	if (!empty($_REQUEST['id'])) {
+		$data = db_fetch_row_prepared('SELECT id, data_input_id, data_template_id, name, local_data_id FROM data_template_data WHERE local_data_id = ?', array($_REQUEST['id']));
 		$template_data = db_fetch_row_prepared('SELECT id, data_input_id FROM data_template_data WHERE data_template_id = ? AND local_data_id = 0', array($data['data_template_id']));
 
-		$host = db_fetch_row_prepared('SELECT host.id, host.hostname FROM (data_local, host) WHERE data_local.host_id = host.id and data_local.id = ?', array($_GET['id']));
+		$host = db_fetch_row_prepared('SELECT host.id, host.hostname FROM (data_local, host) WHERE data_local.host_id = host.id and data_local.id = ?', array($_REQUEST['id']));
 
 		$header_label = '[edit: ' . htmlspecialchars($data['name']) . ']';
 	}else{
@@ -676,32 +676,32 @@ function data_edit() {
 
 function ds_rrd_remove() {
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var('id'));
+	input_validate_input_number(get_request_var_request('id'));
 	/* ==================================================== */
 
-	db_execute_prepared('DELETE FROM data_template_rrd WHERE id = ?', array($_GET['id']));
-	db_execute_prepared('UPDATE graph_templates_item SET task_item_id = 0 WHERE task_item_id = ?', array($_GET['id']));
+	db_execute_prepared('DELETE FROM data_template_rrd WHERE id = ?', array($_REQUEST['id']));
+	db_execute_prepared('UPDATE graph_templates_item SET task_item_id = 0 WHERE task_item_id = ?', array($_REQUEST['id']));
 
-	header('Location: data_sources.php?action=ds_edit&id=' . $_GET['local_data_id']);
+	header('Location: data_sources.php?action=ds_edit&id=' . $_REQUEST['local_data_id']);
 }
 
 function ds_rrd_add() {
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var('id'));
+	input_validate_input_number(get_request_var_request('id'));
 	/* ==================================================== */
 
-	db_execute_prepared("INSERT INTO data_template_rrd (local_data_id, rrd_maximum, rrd_minimum, rrd_heartbeat, data_source_type_id, data_source_name) VALUES (?, 100, 0, 600, 1, 'ds')", array($_GET['id']));
+	db_execute_prepared("INSERT INTO data_template_rrd (local_data_id, rrd_maximum, rrd_minimum, rrd_heartbeat, data_source_type_id, data_source_name) VALUES (?, 100, 0, 600, 1, 'ds')", array($_REQUEST['id']));
 	$data_template_rrd_id = db_fetch_insert_id();
 
-	header('Location: data_sources.php?action=ds_edit&id=' . $_GET['id'] . "&view_rrd=$data_template_rrd_id");
+	header('Location: data_sources.php?action=ds_edit&id=' . $_REQUEST['id'] . "&view_rrd=$data_template_rrd_id");
 }
 
 function ds_edit() {
 	global $struct_data_source, $struct_data_source_item, $data_source_types;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var('id'));
-	input_validate_input_number(get_request_var('host_id'));
+	input_validate_input_number(get_request_var_request('id'));
+	input_validate_input_number(get_request_var_request('host_id'));
 	/* ==================================================== */
 
 	api_plugin_hook('data_source_edit_top');
@@ -709,20 +709,20 @@ function ds_edit() {
 	$use_data_template = true;
 	$host_id = 0;
 
-	if (!empty($_GET['id'])) {
-		$data_local = db_fetch_row_prepared('SELECT host_id, data_template_id FROM data_local WHERE id = ?', array($_GET['id']));
-		$data       = db_fetch_row_prepared('SELECT * FROM data_template_data WHERE local_data_id = ?', array($_GET['id']));
+	if (!empty($_REQUEST['id'])) {
+		$data_local = db_fetch_row_prepared('SELECT host_id, data_template_id FROM data_local WHERE id = ?', array($_REQUEST['id']));
+		$data       = db_fetch_row_prepared('SELECT * FROM data_template_data WHERE local_data_id = ?', array($_REQUEST['id']));
 
 		if (isset($data_local['data_template_id']) && $data_local['data_template_id'] >= 0) {
 			$data_template      = db_fetch_row_prepared('SELECT id, name FROM data_template WHERE id = ?', array($data_local['data_template_id']));
 			$data_template_data = db_fetch_row_prepared('SELECT * FROM data_template_data WHERE data_template_id = ? AND local_data_id = 0', array($data_local['data_template_id']));
 		} else {
-			$_SESSION['sess_messages'] = 'Data Source "' . $_GET['id'] . '" does not exist.';
+			$_SESSION['sess_messages'] = 'Data Source "' . $_REQUEST['id'] . '" does not exist.';
 			header ('Location: data_sources.php');
 			exit;
 		}
 
-		$header_label = '[edit: ' . htmlspecialchars(get_data_source_title($_GET['id'])) . ']';
+		$header_label = '[edit: ' . htmlspecialchars(get_data_source_title($_REQUEST['id'])) . ']';
 
 		if (empty($data_local['data_template_id'])) {
 			$use_data_template = false;
@@ -734,31 +734,31 @@ function ds_edit() {
 	}
 
 	/* handle debug mode */
-	if (isset($_GET['debug'])) {
-		if ($_GET['debug'] == '0') {
+	if (isset($_REQUEST['debug'])) {
+		if ($_REQUEST['debug'] == '0') {
 			kill_session_var('ds_debug_mode');
-		}elseif ($_GET['debug'] == '1') {
+		}elseif ($_REQUEST['debug'] == '1') {
 			$_SESSION['ds_debug_mode'] = true;
 		}
 	}
 
 	top_header();
 
-	if (!empty($_GET['id'])) {
+	if (!empty($_REQUEST['id'])) {
 		?>
-		<table width="100%" align="center">
+		<table width='100%' align='center'>
 			<tr>
-				<td class="textInfo" colspan="2" valign="top">
-					<?php print htmlspecialchars(get_data_source_title($_GET['id']));?>
+				<td class='textInfo' colspan='2' valign='top'>
+					<?php print htmlspecialchars(get_data_source_title($_REQUEST['id']));?>
 				</td>
-				<td class="textInfo" align="right" valign="top">
-					<span style="color: #c16921;">*<a href='<?php print htmlspecialchars('data_sources.php?action=ds_edit&id=' . (isset($_GET['id']) ? $_GET['id'] : '0'));?>&debug=<?php print (isset($_SESSION['ds_debug_mode']) ? '0' : '1');?>'>Turn <strong><?php print (isset($_SESSION['ds_debug_mode']) ? 'Off' : 'On');?></strong> Data Source Debug Mode.</a><br>
+				<td class='textInfo' align='right' valign='top'>
+					<span class='linkMarker'>*<a href='<?php print htmlspecialchars('data_sources.php?action=ds_edit&id=' . (isset($_REQUEST['id']) ? $_REQUEST['id'] : '0'));?>&debug=<?php print (isset($_SESSION['ds_debug_mode']) ? '0' : '1');?>'>Turn <strong><?php print (isset($_SESSION['ds_debug_mode']) ? 'Off' : 'On');?></strong> Data Source Debug Mode.</a><br>
 					<?php
 						if (!empty($data_template['id'])) {
-							?><span style="color: #c16921;">*<a href='<?php print htmlspecialchars('data_templates.php?action=template_edit&id=' . (isset($data_template['id']) ? $data_template['id'] : '0'));?>'>Edit Data Template.</a><br><?php
+							?><span class='linkMarker'>*<a href='<?php print htmlspecialchars('data_templates.php?action=template_edit&id=' . (isset($data_template['id']) ? $data_template['id'] : '0'));?>'>Edit Data Template.</a><br><?php
 						}
-						if (!empty($_GET['host_id']) || !empty($data_local['host_id'])) {
-							?><span style="color: #c16921;">*<a href='<?php print htmlspecialchars('host.php?action=edit&id=' . (isset($_GET['host_id']) ? $_GET['host_id'] : $data_local['host_id']));?>'>Edit Device.</a><br><?php
+						if (!empty($_REQUEST['host_id']) || !empty($data_local['host_id'])) {
+							?><span class='linkMarker'>*<a href='<?php print htmlspecialchars('host.php?action=edit&id=' . (isset($_REQUEST['host_id']) ? $_REQUEST['host_id'] : $data_local['host_id']));?>'>Edit Device.</a><br><?php
 						}
 					?>
 				</td>
@@ -783,7 +783,7 @@ function ds_edit() {
 			'method' => 'drop_sql',
 			'friendly_name' => 'Device',
 			'description' => 'Choose the host that this graph belongs to.',
-			'value' => (isset($_GET['host_id']) ? $_GET['host_id'] : $data_local['host_id']),
+			'value' => (isset($_REQUEST['host_id']) ? $_REQUEST['host_id'] : $data_local['host_id']),
 			'none_value' => 'None',
 			'sql' => "SELECT id,CONCAT_WS('',description,' (',hostname,')') as name FROM host order by description,hostname"
 			),
@@ -793,7 +793,7 @@ function ds_edit() {
 			),
 		'_host_id' => array(
 			'method' => 'hidden',
-			'value' => (empty($data_local['host_id']) ? (isset($_GET['host_id']) ? $_GET['host_id'] : '0') : $data_local['host_id'])
+			'value' => (empty($data_local['host_id']) ? (isset($_REQUEST['host_id']) ? $_REQUEST['host_id'] : '0') : $data_local['host_id'])
 			),
 		'_data_input_id' => array(
 			'method' => 'hidden',
@@ -824,7 +824,7 @@ function ds_edit() {
 
 	/* only display the "inputs" area if we are using a data template for this data source */
 	if (!empty($data['data_template_id'])) {
-		$template_data_rrds = db_fetch_assoc_prepared('SELECT * FROM data_template_rrd WHERE local_data_id = ? ORDER BY data_source_name', array($_GET['id']));
+		$template_data_rrds = db_fetch_assoc_prepared('SELECT * FROM data_template_rrd WHERE local_data_id = ? ORDER BY data_source_name', array($_REQUEST['id']));
 
 		html_start_box('<strong>Supplemental Data Template Data</strong>', '100%', '', '3', 'center', '');
 
@@ -837,7 +837,7 @@ function ds_edit() {
 		html_end_box();
 	}
 
-	if (((isset($_GET['id'])) || (isset($_GET['new']))) && (empty($data['data_template_id']))) {
+	if (((isset($_REQUEST['id'])) || (isset($_REQUEST['new']))) && (empty($data['data_template_id']))) {
 		html_start_box('<strong>Data Source</strong>', '100%', '', '3', 'center', '');
 
 		$form_array = array();
@@ -869,20 +869,20 @@ function ds_edit() {
 		html_end_box();
 
 		/* fetch ALL rrd's for this data source */
-		if (!empty($_GET['id'])) {
-			$template_data_rrds = db_fetch_assoc_prepared('SELECT id, data_source_name FROM data_template_rrd WHERE local_data_id = ? ORDER BY data_source_name', array($_GET['id']));
+		if (!empty($_REQUEST['id'])) {
+			$template_data_rrds = db_fetch_assoc_prepared('SELECT id, data_source_name FROM data_template_rrd WHERE local_data_id = ? ORDER BY data_source_name', array($_REQUEST['id']));
 		}
 
 		/* select the first "rrd" of this data source by default */
-		if (empty($_GET['view_rrd'])) {
-			$_GET['view_rrd'] = (isset($template_data_rrds[0]['id']) ? $template_data_rrds[0]['id'] : '0');
+		if (empty($_REQUEST['view_rrd'])) {
+			$_REQUEST['view_rrd'] = (isset($template_data_rrds[0]['id']) ? $template_data_rrds[0]['id'] : '0');
 		}
 
 		/* get more information about the rrd we chose */
-		if (!empty($_GET['view_rrd'])) {
-			$local_data_template_rrd_id = db_fetch_cell_prepared('SELECT local_data_template_rrd_id FROM data_template_rrd WHERE id = ?', array($_GET['view_rrd']));
+		if (!empty($_REQUEST['view_rrd'])) {
+			$local_data_template_rrd_id = db_fetch_cell_prepared('SELECT local_data_template_rrd_id FROM data_template_rrd WHERE id = ?', array($_REQUEST['view_rrd']));
 
-			$rrd = db_fetch_row_prepared('SELECT * FROM data_template_rrd WHERE id = ?', array($_GET['view_rrd']));
+			$rrd = db_fetch_row_prepared('SELECT * FROM data_template_rrd WHERE id = ?', array($_REQUEST['view_rrd']));
 			$rrd_template = db_fetch_row_prepared('SELECT * FROM data_template_rrd WHERE id = ?', array($local_data_template_rrd_id));
 
 			$header_label = '[edit: ' . $rrd['data_source_name'] . ']';
@@ -900,8 +900,8 @@ function ds_edit() {
 
 					foreach ($template_data_rrds as $template_data_rrd) {
 						$i++;
-						print "	<td " . (($template_data_rrd['id'] == $_GET['view_rrd']) ? "class='even'" : "class='odd'") . " width='" . ((strlen($template_data_rrd['data_source_name']) * 9) + 50) . "' align='center' class='tab'>
-								<span class='textHeader'><a href='" . htmlspecialchars('data_sources.php?action=ds_edit&id=' . $_GET['id'] . '&view_rrd=' . $template_data_rrd['id']) . "'>$i: " . htmlspecialchars($template_data_rrd['data_source_name']) . '</a>' . (($use_data_template == false) ? " <a href='" . htmlspecialchars('data_sources.php?action=rrd_remove&id=' . $template_data_rrd['id'] . '&local_data_id=' . $_GET['id']) . "'><img src='images/delete_icon.gif' border='0' alt='Delete'></a>" : '') . "</span>
+						print "	<td " . (($template_data_rrd['id'] == $_REQUEST['view_rrd']) ? "class='even'" : "class='odd'") . " width='" . ((strlen($template_data_rrd['data_source_name']) * 9) + 50) . "' align='center' class='tab'>
+								<span class='textHeader'><a href='" . htmlspecialchars('data_sources.php?action=ds_edit&id=' . $_REQUEST['id'] . '&view_rrd=' . $template_data_rrd['id']) . "'>$i: " . htmlspecialchars($template_data_rrd['data_source_name']) . '</a>' . (($use_data_template == false) ? " <a href='" . htmlspecialchars('data_sources.php?action=rrd_remove&id=' . $template_data_rrd['id'] . '&local_data_id=' . $_REQUEST['id']) . "'><img src='images/delete_icon.gif' border='0' alt='Delete'></a>" : '') . "</span>
 							</td>\n
 							<td width='1'></td>\n";
 					}
@@ -912,7 +912,7 @@ function ds_edit() {
 				</table>\n";
 
 			}elseif (sizeof($template_data_rrds) == 1) {
-				$_GET['view_rrd'] = $template_data_rrds[0]['id'];
+				$_REQUEST['view_rrd'] = $template_data_rrds[0]['id'];
 			}
 		}
 
@@ -923,7 +923,7 @@ function ds_edit() {
 					<strong>Data Source Item</strong> $header_label
 				</td>
 				<td class='textHeaderDark' align='right'>
-					" . ((!empty($_GET['id']) && (empty($data_template['id']))) ? "<strong><a class='linkOverDark' href='" . htmlspecialchars('data_sources.php?action=rrd_add&id=' . $_GET['id']) . "'>New</a>&nbsp;</strong>" : '') . "
+					" . ((!empty($_REQUEST['id']) && (empty($data_template['id']))) ? "<strong><a class='linkOverDark' href='" . htmlspecialchars('data_sources.php?action=rrd_add&id=' . $_REQUEST['id']) . "'>New</a>&nbsp;</strong>" : '') . "
 				</td>
 			</tr>\n";
 
@@ -973,24 +973,24 @@ function ds_edit() {
 		/* data source data goes here */
 		data_edit();
 
-		form_hidden_box('current_rrd', $_GET['view_rrd'], '0');
+		form_hidden_box('current_rrd', $_REQUEST['view_rrd'], '0');
 	}
 
 	/* display the debug mode box if the user wants it */
-	if ((isset($_SESSION['ds_debug_mode'])) && (isset($_GET['id']))) {
+	if ((isset($_SESSION['ds_debug_mode'])) && (isset($_REQUEST['id']))) {
 		?>
-		<table width="100%" align="center">
+		<table width='100%' align='center'>
 			<tr>
 				<td>
-					<span class="textInfo">Data Source Debug</span><br>
-					<pre><?php print @rrdtool_function_create($_GET['id'], true);?></pre>
+					<span class='textInfo'>Data Source Debug</span><br>
+					<pre><?php print @rrdtool_function_create($_REQUEST['id'], true);?></pre>
 				</td>
 			</tr>
 		</table>
 		<?php
 	}
 
-	if ((isset($_GET['id'])) || (isset($_GET['new']))) {
+	if ((isset($_REQUEST['id'])) || (isset($_REQUEST['new']))) {
 		form_hidden_box('save_component_data_source','1','');
 	}else{
 		form_hidden_box('save_component_data_source_new','1','');
@@ -1028,17 +1028,17 @@ function ds() {
 
 	/* clean up search string */
 	if (isset($_REQUEST['filter'])) {
-		$_REQUEST['filter'] = sanitize_search_string(get_request_var('filter'));
+		$_REQUEST['filter'] = sanitize_search_string(get_request_var_request('filter'));
 	}
 
 	/* clean up sort_column string */
 	if (isset($_REQUEST['sort_column'])) {
-		$_REQUEST['sort_column'] = sanitize_search_string(get_request_var('sort_column'));
+		$_REQUEST['sort_column'] = sanitize_search_string(get_request_var_request('sort_column'));
 	}
 
 	/* clean up sort_direction string */
 	if (isset($_REQUEST['sort_direction'])) {
-		$_REQUEST['sort_direction'] = sanitize_search_string(get_request_var('sort_direction'));
+		$_REQUEST['sort_direction'] = sanitize_search_string(get_request_var_request('sort_direction'));
 	}
 
 	/* if the user pushed the 'clear' button */
@@ -1080,7 +1080,7 @@ function ds() {
 	}
 
 	?>
-	<script type="text/javascript">
+	<script type='text/javascript'>
 	<!--
 
 	function applyFilter() {
@@ -1135,17 +1135,17 @@ function ds() {
 	?>
 	<tr class='even noprint'>
 		<td>
-		<form id='form_data_sources' name="form_data_sources" action="data_sources.php">
-			<table cellpadding="2" cellspacing="0" border="0">
+		<form id='form_data_sources' name='form_data_sources' action='data_sources.php'>
+			<table cellpadding='2' cellspacing='0' border='0'>
 				<tr>
 					<?php print html_host_filter($_REQUEST['host_id']);?>
-					<td width="50">
+					<td width='50'>
 						Template
 					</td>
 					<td>
-						<select id='template_id' name="template_id" onChange="applyFilter()">
-							<option value="-1"<?php if (get_request_var_request('template_id') == '-1') {?> selected<?php }?>>Any</option>
-							<option value="0"<?php if (get_request_var_request('template_id') == '0') {?> selected<?php }?>>None</option>
+						<select id='template_id' name='template_id' onChange='applyFilter()'>
+							<option value='-1'<?php if (get_request_var_request('template_id') == '-1') {?> selected<?php }?>>Any</option>
+							<option value='0'<?php if (get_request_var_request('template_id') == '0') {?> selected<?php }?>>None</option>
 							<?php
 
 							$templates = db_fetch_assoc('SELECT DISTINCT data_template.id, data_template.name
@@ -1165,20 +1165,20 @@ function ds() {
 						</select>
 					</td>
 					<td>
-						<input type="button" id='refresh' value="Go" title="Set/Refresh Filters">
+						<input type='button' id='refresh' value='Go' title='Set/Refresh Filters'>
 					</td>
 					<td>
-						<input type="button" id='clear' name="clear_x" value="Clear" title="Clear Filters">
+						<input type='button' id='clear' name='clear_x' value='Clear' title='Clear Filters'>
 					</td>
 				</tr>
 				<tr>
-					<td width="50">
+					<td width='50'>
 						Method
 					</td>
 					<td>
-						<select id='method_id' name="method_id" onChange="applyFilter()">
-							<option value="-1"<?php if (get_request_var_request('method_id') == '-1') {?> selected<?php }?>>Any</option>
-							<option value="0"<?php if (get_request_var_request('method_id') == '0') {?> selected<?php }?>>None</option>
+						<select id='method_id' name='method_id' onChange='applyFilter()'>
+							<option value='-1'<?php if (get_request_var_request('method_id') == '-1') {?> selected<?php }?>>Any</option>
+							<option value='0'<?php if (get_request_var_request('method_id') == '0') {?> selected<?php }?>>None</option>
 							<?php
 
 							$methods = db_fetch_assoc('SELECT DISTINCT data_input.id, data_input.name
@@ -1200,7 +1200,7 @@ function ds() {
 						Data Sources
 					</td>
 					<td>
-						<select id='rows' name="rows" onChange="applyFilter()">
+						<select id='rows' name='rows' onChange='applyFilter()'>
 							<?php
 							if (sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
@@ -1212,13 +1212,13 @@ function ds() {
 					</td>
 				</tr>
 			</table>
-			<table cellpadding="2" cellspacing="0" border="0">
+			<table cellpadding='2' cellspacing='0' border='0'>
 				<tr>
-					<td width="50">
+					<td width='50'>
 						Search
 					</td>
 					<td>
-						<input id='filter' type="text" name="filter" size="25" value="<?php print htmlspecialchars(get_request_var_request('filter'));?>">
+						<input id='filter' type='text' size='25' value='<?php print htmlspecialchars(get_request_var_request('filter'));?>' onChange='applyFilter()'>
 					</td>
 				</tr>
 			</table>
@@ -1232,13 +1232,13 @@ function ds() {
 
 	/* form the 'where' clause for our main sql query */
 	if (strlen(get_request_var_request('filter'))) {
-		$sql_where1 = "AND (data_template_data.name_cache like '%%" . get_request_var_request('filter') . "%%'" .
-			" OR data_template_data.local_data_id like '%%" . get_request_var_request('filter') . "%%'" .
-			" OR data_template.name like '%%" . get_request_var_request('filter') . "%%'" .
-			" OR data_input.name like '%%" . get_request_var_request('filter') . "%%')";
+		$sql_where1 = "AND (data_template_data.name_cache like '%" . get_request_var_request('filter') . "%'" .
+			" OR data_template_data.local_data_id like '%" . get_request_var_request('filter') . "%'" .
+			" OR data_template.name like '%" . get_request_var_request('filter') . "%'" .
+			" OR data_input.name like '%" . get_request_var_request('filter') . "%')";
 
-		$sql_where2 = "AND (data_template_data.name_cache like '%%" . get_request_var_request('filter') . "%%'" .
-			" OR data_template.name like '%%" . get_request_var_request('filter') . "%%')";
+		$sql_where2 = "AND (data_template_data.name_cache like '%" . get_request_var_request('filter') . "%'" .
+			" OR data_template.name like '%" . get_request_var_request('filter') . "%')";
 	}else{
 		$sql_where1 = '';
 		$sql_where2 = '';

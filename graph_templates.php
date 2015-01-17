@@ -55,7 +55,7 @@ switch ($_REQUEST["action"]) {
 	case 'input_remove':
 		input_remove();
 
-		header("Location: graph_templates.php?action=template_edit&id=" . $_GET["graph_template_id"]);
+		header("Location: graph_templates.php?action=template_edit&id=" . $_REQUEST["graph_template_id"]);
 		break;
 	case 'input_edit':
 		top_header();
@@ -276,10 +276,10 @@ function item() {
 	global $consolidation_functions, $graph_item_types;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var("id"));
+	input_validate_input_number(get_request_var_request("id"));
 	/* ==================================================== */
 
-	if (empty($_GET["id"])) {
+	if (empty($_REQUEST["id"])) {
 		$template_item_list = array();
 
 		$header_label = "[new]";
@@ -300,24 +300,24 @@ function item() {
 			LEFT JOIN data_template_data ON (data_local.id=data_template_data.local_data_id)
 			LEFT JOIN cdef ON (cdef_id=cdef.id)
 			LEFT JOIN colors ON (color_id=colors.id)
-			WHERE graph_templates_item.graph_template_id=" . $_GET["id"] . "
+			WHERE graph_templates_item.graph_template_id=" . $_REQUEST["id"] . "
 			AND graph_templates_item.local_graph_id=0
 			ORDER BY graph_templates_item.sequence");
 
-		$header_label = "[edit: " . db_fetch_cell("SELECT name FROM graph_templates WHERE id=" . $_GET["id"]) . "]";
+		$header_label = "[edit: " . db_fetch_cell("SELECT name FROM graph_templates WHERE id=" . $_REQUEST["id"]) . "]";
 	}
 
-	html_start_box("<strong>Graph Template Items</strong> " . htmlspecialchars($header_label), "100%", "", "3", "center", "graph_templates_items.php?action=item_edit&graph_template_id=" . htmlspecialchars(get_request_var("id")));
-	draw_graph_items_list($template_item_list, "graph_templates_items.php", "graph_template_id=" . $_GET["id"], false);
+	html_start_box("<strong>Graph Template Items</strong> " . htmlspecialchars($header_label), "100%", "", "3", "center", "graph_templates_items.php?action=item_edit&graph_template_id=" . htmlspecialchars(get_request_var_request("id")));
+	draw_graph_items_list($template_item_list, "graph_templates_items.php", "graph_template_id=" . $_REQUEST["id"], false);
 	html_end_box();
 
-	html_start_box("<strong>Graph Item Inputs</strong>", "100%", "", "3", "center", "graph_templates_inputs.php?action=input_edit&graph_template_id=" . htmlspecialchars(get_request_var("id")));
+	html_start_box("<strong>Graph Item Inputs</strong>", "100%", "", "3", "center", "graph_templates_inputs.php?action=input_edit&graph_template_id=" . htmlspecialchars(get_request_var_request("id")));
 
 	print "<tr class='tableHeader'>";
 		DrawMatrixHeaderItem("Name","",2);
 	print "</tr>";
 
-	$template_item_list = db_fetch_assoc("SELECT id,name FROM graph_template_input WHERE graph_template_id=" . $_GET["id"] . " ORDER BY name");
+	$template_item_list = db_fetch_assoc("SELECT id,name FROM graph_template_input WHERE graph_template_id=" . $_REQUEST["id"] . " ORDER BY name");
 
 	$i = 0;
 	if (sizeof($template_item_list) > 0) {
@@ -325,10 +325,10 @@ function item() {
 			form_alternate_row('', true);
 			?>
 			<td>
-				<a class="linkEditMain" href="<?php print htmlspecialchars("graph_templates_inputs.php?action=input_edit&id=" . $item["id"] . "&graph_template_id=" . $_GET["id"]);?>"><?php print htmlspecialchars($item["name"]);?></a>
+				<a class="linkEditMain" href="<?php print htmlspecialchars("graph_templates_inputs.php?action=input_edit&id=" . $item["id"] . "&graph_template_id=" . $_REQUEST["id"]);?>"><?php print htmlspecialchars($item["name"]);?></a>
 			</td>
 			<td align="right">
-				<a href="<?php print htmlspecialchars("graph_templates_inputs.php?action=input_remove&id=" . $item["id"] . "&graph_template_id=" . $_GET["id"]);?>"><img src="images/delete_icon.gif" style="height:10px;width:10px;" border="0" alt="Delete"></a>
+				<a href="<?php print htmlspecialchars("graph_templates_inputs.php?action=input_remove&id=" . $item["id"] . "&graph_template_id=" . $_REQUEST["id"]);?>"><img src="images/delete_icon.gif" style="height:10px;width:10px;" border="0" alt="Delete"></a>
 			</td>
 		</tr>
 		<?php
@@ -348,17 +348,17 @@ function template_edit() {
 	global $struct_graph, $image_types, $fields_graph_template_template_edit;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var("id"));
+	input_validate_input_number(get_request_var_request("id"));
 	/* ==================================================== */
 
 	/* graph item list goes here */
-	if (!empty($_GET["id"])) {
+	if (!empty($_REQUEST["id"])) {
 		item();
 	}
 
-	if (!empty($_GET["id"])) {
-		$template = db_fetch_row("SELECT * FROM graph_templates WHERE id=" . $_GET["id"]);
-		$template_graph = db_fetch_row("SELECT * FROM graph_templates_graph WHERE graph_template_id=" . $_GET["id"] . " AND local_graph_id=0");
+	if (!empty($_REQUEST["id"])) {
+		$template = db_fetch_row("SELECT * FROM graph_templates WHERE id=" . $_REQUEST["id"]);
+		$template_graph = db_fetch_row("SELECT * FROM graph_templates_graph WHERE graph_template_id=" . $_REQUEST["id"] . " AND local_graph_id=0");
 
 		$header_label = "[edit: " . $template["name"] . "]";
 	}else{
@@ -445,22 +445,22 @@ function template() {
 
 	/* clean up search string */
 	if (isset($_REQUEST["filter"])) {
-		$_REQUEST["filter"] = sanitize_search_string(get_request_var("filter"));
+		$_REQUEST["filter"] = sanitize_search_string(get_request_var_request("filter"));
 	}
 
 	/* clean up has_graphs string */
 	if (isset($_REQUEST["has_graphs"])) {
-		$_REQUEST["has_graphs"] = sanitize_search_string(get_request_var("has_graphs"));
+		$_REQUEST["has_graphs"] = sanitize_search_string(get_request_var_request("has_graphs"));
 	}
 
 	/* clean up sort_column string */
 	if (isset($_REQUEST["sort_column"])) {
-		$_REQUEST["sort_column"] = sanitize_search_string(get_request_var("sort_column"));
+		$_REQUEST["sort_column"] = sanitize_search_string(get_request_var_request("sort_column"));
 	}
 
 	/* clean up sort_direction string */
 	if (isset($_REQUEST["sort_direction"])) {
-		$_REQUEST["sort_direction"] = sanitize_search_string(get_request_var("sort_direction"));
+		$_REQUEST["sort_direction"] = sanitize_search_string(get_request_var_request("sort_direction"));
 	}
 
 	/* if the user pushed the 'clear' button */

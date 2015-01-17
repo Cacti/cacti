@@ -61,22 +61,22 @@ switch ($_REQUEST['action']) {
 	case 'gt_remove':
 		host_remove_gt();
 
-		header('Location: host.php?action=edit&id=' . $_GET['host_id']);
+		header('Location: host.php?action=edit&id=' . $_REQUEST['host_id']);
 		break;
 	case 'query_remove':
 		host_remove_query();
 
-		header('Location: host.php?action=edit&id=' . $_GET['host_id']);
+		header('Location: host.php?action=edit&id=' . $_REQUEST['host_id']);
 		break;
 	case 'query_reload':
 		host_reload_query();
 
-		header('Location: host.php?action=edit&id=' . $_GET['host_id'] . '#dqtop');
+		header('Location: host.php?action=edit&id=' . $_REQUEST['host_id'] . '#dqtop');
 		break;
 	case 'query_verbose':
 		host_reload_query();
 
-		header('Location: host.php?action=edit&id=' . $_GET['host_id'] . '&display_dq_details=true#dqdbg');
+		header('Location: host.php?action=edit&id=' . $_REQUEST['host_id'] . '&display_dq_details=true#dqdbg');
 		break;
 	case 'edit':
 		top_header();
@@ -515,29 +515,29 @@ function form_actions() {
 
 function host_reload_query() {
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var('id'));
-	input_validate_input_number(get_request_var('host_id'));
+	input_validate_input_number(get_request_var_request('id'));
+	input_validate_input_number(get_request_var_request('host_id'));
 	/* ==================================================== */
 
-	run_data_query($_GET['host_id'], $_GET['id']);
+	run_data_query($_REQUEST['host_id'], $_REQUEST['id']);
 }
 
 function host_remove_query() {
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var('id'));
-	input_validate_input_number(get_request_var('host_id'));
+	input_validate_input_number(get_request_var_request('id'));
+	input_validate_input_number(get_request_var_request('host_id'));
 	/* ==================================================== */
 
-	api_device_dq_remove($_GET['host_id'], $_GET['id']);
+	api_device_dq_remove($_REQUEST['host_id'], $_REQUEST['id']);
 }
 
 function host_remove_gt() {
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var('id'));
-	input_validate_input_number(get_request_var('host_id'));
+	input_validate_input_number(get_request_var_request('id'));
+	input_validate_input_number(get_request_var_request('host_id'));
 	/* ==================================================== */
 
-	api_device_gt_remove($_GET['host_id'], $_GET['id']);
+	api_device_gt_remove($_REQUEST['host_id'], $_REQUEST['id']);
 }
 
 /* ---------------------
@@ -548,20 +548,20 @@ function host_remove() {
 	global $config;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var('id'));
+	input_validate_input_number(get_request_var_request('id'));
 	/* ==================================================== */
 
-	if ((read_config_option('deletion_verification') == 'on') && (!isset($_GET['confirm']))) {
+	if ((read_config_option('deletion_verification') == 'on') && (!isset($_REQUEST['confirm']))) {
 		top_header();
 
-		form_confirm('Are You Sure?', "Are you sure you want to delete the host <strong>'" . htmlspecialchars(db_fetch_cell_prepared('SELECT description FROM host WHERE id = ?', array($_GET['id']))) . "'</strong>?", htmlspecialchars('host.php'), htmlspecialchars('host.php?action=remove&id=' . $_GET['id']));
+		form_confirm('Are You Sure?', "Are you sure you want to delete the host <strong>'" . htmlspecialchars(db_fetch_cell_prepared('SELECT description FROM host WHERE id = ?', array($_REQUEST['id']))) . "'</strong>?", htmlspecialchars('host.php'), htmlspecialchars('host.php?action=remove&id=' . $_REQUEST['id']));
 
 		bottom_footer();
 		exit;
 	}
 
-	if ((read_config_option('deletion_verification') == '') || (isset($_GET['confirm']))) {
-		api_device_remove($_GET['id']);
+	if ((read_config_option('deletion_verification') == '') || (isset($_REQUEST['confirm']))) {
+		api_device_remove($_REQUEST['id']);
 	}
 }
 
@@ -672,13 +672,13 @@ function host_edit() {
 	global $fields_host_edit, $reindex_types;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var('id'));
+	input_validate_input_number(get_request_var_request('id'));
 	/* ==================================================== */
 
 	api_plugin_hook('host_edit_top');
 
-	if (!empty($_GET['id'])) {
-		$host = db_fetch_row_prepared('SELECT * FROM host WHERE id = ?', array($_GET['id']));
+	if (!empty($_REQUEST['id'])) {
+		$host = db_fetch_row_prepared('SELECT * FROM host WHERE id = ?', array($_REQUEST['id']));
 		$header_label = '[edit: ' . htmlspecialchars($host['description']) . ']';
 	}else{
 		$header_label = '[new]';
@@ -710,8 +710,8 @@ function host_edit() {
 	html_start_box("<strong>Device</strong> $header_label", '100%', '', '3', 'center', '');
 
 	/* preserve the host template id if passed in via a GET variable */
-	if (!empty($_GET['host_template_id'])) {
-		$fields_host_edit['host_template_id']['value'] = $_GET['host_template_id'];
+	if (!empty($_REQUEST['host_template_id'])) {
+		$fields_host_edit['host_template_id']['value'] = $_REQUEST['host_template_id'];
 	}
 
 	draw_edit_form(array(
@@ -915,7 +915,7 @@ function host_edit() {
 	</script>
 	<?php
 
-	if ((isset($_GET['display_dq_details'])) && (isset($_SESSION['debug_log']['data_query']))) {
+	if ((isset($_REQUEST['display_dq_details'])) && (isset($_SESSION['debug_log']['data_query']))) {
 		print "<table id='dqdebug' width='100%' class='cactiDebugTable' cellpadding='0' cellspacing='0' border='0' align='center'><tr><td>\n";
 		print "<table width='100%' class='cactiTableTitle' cellspacing='0' cellpadding='3' border='0'>\n";
 		print "<tr><td class='textHeaderDark'><a name='dqdbg'></a><strong>Data Query Debug Information</strong></td><td class='textHeaderDark' align='right'><a style='cursor:pointer;' id='dbghide' class='linkOverDark'>Hide</a></td></tr>\n";
@@ -937,7 +937,7 @@ function host_edit() {
 			FROM (graph_templates, host_graph)
 			WHERE graph_templates.id = host_graph.graph_template_id
 			AND host_graph.host_id = ?
-			ORDER BY graph_templates.name', array($_GET['id']));
+			ORDER BY graph_templates.name', array($_REQUEST['id']));
 
 		$available_graph_templates = db_fetch_assoc('SELECT
 			graph_templates.id, graph_templates.name
@@ -951,17 +951,17 @@ function host_edit() {
 				form_alternate_row('', true);
 
 				/* get status information for this graph template */
-				$is_being_graphed = (sizeof(db_fetch_assoc_prepared('SELECT id FROM graph_local WHERE graph_template_id = ? AND host_id = ?', array($item['id'], $_GET['id']))) > 0) ? true : false;
+				$is_being_graphed = (sizeof(db_fetch_assoc_prepared('SELECT id FROM graph_local WHERE graph_template_id = ? AND host_id = ?', array($item['id'], $_REQUEST['id']))) > 0) ? true : false;
 
 				?>
 					<td style="padding: 4px;">
 						<strong><?php print $i;?>)</strong> <?php print htmlspecialchars($item['name']);?>
 					</td>
 					<td>
-						<?php print (($is_being_graphed == true) ? "<span style='color: green;'>Is Being Graphed</span> (<a href='" . htmlspecialchars('graphs.php?action=graph_edit&id=' . db_fetch_cell_prepared('SELECT id FROM graph_local WHERE graph_template_id = ? AND host_id = ? LIMIT 0,1', array($item['id'], $_GET['id']))) . "'>Edit</a>)" : "<span style='color: #484848;'>Not Being Graphed</span>");?>
+						<?php print (($is_being_graphed == true) ? "<span style='color: green;'>Is Being Graphed</span> (<a href='" . htmlspecialchars('graphs.php?action=graph_edit&id=' . db_fetch_cell_prepared('SELECT id FROM graph_local WHERE graph_template_id = ? AND host_id = ? LIMIT 0,1', array($item['id'], $_REQUEST['id']))) . "'>Edit</a>)" : "<span style='color: #484848;'>Not Being Graphed</span>");?>
 					</td>
 					<td align='right' nowrap>
-						<a href='<?php print htmlspecialchars('host.php?action=gt_remove&id=' . $item['id'] . '&host_id=' . $_GET['id']);?>'><img src='images/delete_icon_large.gif' title='Delete Graph Template Association' alt='Delete Graph Template Association' border='0' align='middle'></a>
+						<a href='<?php print htmlspecialchars('host.php?action=gt_remove&id=' . $item['id'] . '&host_id=' . $_REQUEST['id']);?>'><img src='images/delete_icon_large.gif' title='Delete Graph Template Association' alt='Delete Graph Template Association' border='0' align='middle'></a>
 					</td>
 				<?php
 				form_end_row();
@@ -998,7 +998,7 @@ function host_edit() {
 			FROM (snmp_query, host_snmp_query)
 			WHERE snmp_query.id = host_snmp_query.snmp_query_id
 			AND host_snmp_query.host_id = ?
-			ORDER BY snmp_query.name', array($_GET['id']));
+			ORDER BY snmp_query.name', array($_REQUEST['id']));
 
 		$available_data_queries = db_fetch_assoc('SELECT
 			snmp_query.id,
@@ -1008,7 +1008,7 @@ function host_edit() {
 
 		$keeper = array();
 		foreach ($available_data_queries as $item) {
-			if (sizeof(db_fetch_assoc_prepared('SELECT snmp_query_id FROM host_snmp_query WHERE host_id = ? AND snmp_query_id = ?', array($_GET['id'], $item['id']))) > 0) {
+			if (sizeof(db_fetch_assoc_prepared('SELECT snmp_query_id FROM host_snmp_query WHERE host_id = ? AND snmp_query_id = ?', array($_REQUEST['id'], $item['id']))) > 0) {
 				/* do nothing */
 			} else {
 				array_push($keeper, $item);
@@ -1023,8 +1023,8 @@ function host_edit() {
 				form_alternate_row('', true);
 
 				/* get status information for this data query */
-				$num_dq_items = sizeof(db_fetch_assoc_prepared('SELECT snmp_index FROM host_snmp_cache WHERE host_id = ? AND snmp_query_id = ?', array($_GET['id'], $item['id'])));
-				$num_dq_rows  = sizeof(db_fetch_assoc_prepared('SELECT snmp_index FROM host_snmp_cache WHERE host_id = ? AND snmp_query_id = ? GROUP BY snmp_index', array($_GET['id'], $item['id'])));
+				$num_dq_items = sizeof(db_fetch_assoc_prepared('SELECT snmp_index FROM host_snmp_cache WHERE host_id = ? AND snmp_query_id = ?', array($_REQUEST['id'], $item['id'])));
+				$num_dq_rows  = sizeof(db_fetch_assoc_prepared('SELECT snmp_index FROM host_snmp_cache WHERE host_id = ? AND snmp_query_id = ? GROUP BY snmp_index', array($_REQUEST['id'], $item['id'])));
 
 				$status = 'success';
 
@@ -1033,7 +1033,7 @@ function host_edit() {
 						<strong><?php print $i;?>)</strong> <?php print htmlspecialchars($item['name']);?>
 					</td>
 					<td>
-						(<a href="<?php print htmlspecialchars('host.php?action=query_verbose&id=' . $item['id'] . '&host_id=' . $_GET['id']);?>">Verbose Query</a>)
+						(<a href="<?php print htmlspecialchars('host.php?action=query_verbose&id=' . $item['id'] . '&host_id=' . $_REQUEST['id']);?>">Verbose Query</a>)
 					</td>
 					<td>
 					<?php print $reindex_types{$item['reindex_method']};?>
@@ -1042,8 +1042,8 @@ function host_edit() {
 						<?php print (($status == 'success') ? "<span style='color: green;'>Success</span>" : "<span style='color: green;'>Fail</span>");?> [<?php print $num_dq_items;?> Item<?php print ($num_dq_items == 1 ? '' : 's');?>, <?php print $num_dq_rows;?> Row<?php print ($num_dq_rows == 1 ? '' : 's');?>]
 					</td>
 					<td align='right' nowrap>
-						<a href='<?php print htmlspecialchars('host.php?action=query_reload&id=' . $item['id'] . '&host_id=' . $_GET['id']);?>'><img src='images/reload_icon_small.gif' title='Reload Data Query' alt='Reload Data Query' border='0' align='middle'></a>&nbsp;
-						<a href='<?php print htmlspecialchars('host.php?action=query_remove&id=' . $item['id'] . '&host_id=' . $_GET['id']);?>'><img src='images/delete_icon_large.gif' title='Delete Data Query Association' alt='Delete Data Query Association' border='0' align='middle'></a>
+						<a href='<?php print htmlspecialchars('host.php?action=query_reload&id=' . $item['id'] . '&host_id=' . $_REQUEST['id']);?>'><img src='images/reload_icon_small.gif' title='Reload Data Query' alt='Reload Data Query' border='0' align='middle'></a>&nbsp;
+						<a href='<?php print htmlspecialchars('host.php?action=query_remove&id=' . $item['id'] . '&host_id=' . $_REQUEST['id']);?>'><img src='images/delete_icon_large.gif' title='Delete Data Query Association' alt='Delete Data Query Association' border='0' align='middle'></a>
 					</td>
 				<?php
 				form_end_row();
@@ -1091,17 +1091,17 @@ function host() {
 
 	/* clean up search string */
 	if (isset($_REQUEST['filter'])) {
-		$_REQUEST['filter'] = sanitize_search_string(get_request_var('filter'));
+		$_REQUEST['filter'] = sanitize_search_string(get_request_var_request('filter'));
 	}
 
 	/* clean up sort_column */
 	if (isset($_REQUEST['sort_column'])) {
-		$_REQUEST['sort_column'] = sanitize_search_string(get_request_var('sort_column'));
+		$_REQUEST['sort_column'] = sanitize_search_string(get_request_var_request('sort_column'));
 	}
 
 	/* clean up search string */
 	if (isset($_REQUEST['sort_direction'])) {
-		$_REQUEST['sort_direction'] = sanitize_search_string(get_request_var('sort_direction'));
+		$_REQUEST['sort_direction'] = sanitize_search_string(get_request_var_request('sort_direction'));
 	}
 
 	/* if the user pushed the 'clear' button */

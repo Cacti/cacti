@@ -74,17 +74,17 @@ function manager(){
 
 	/* clean up search string */
 	if (isset($_REQUEST["filter"])) {
-		$_REQUEST["filter"] = sanitize_search_string(get_request_var("filter"));
+		$_REQUEST["filter"] = sanitize_search_string(get_request_var_request("filter"));
 	}
 
 	/* clean up sort_column */
 	if (isset($_REQUEST["sort_column"])) {
-		$_REQUEST["sort_column"] = sanitize_search_string(get_request_var("sort_column"));
+		$_REQUEST["sort_column"] = sanitize_search_string(get_request_var_request("sort_column"));
 	}
 
 	/* clean up sort_direction string */
 	if (isset($_REQUEST["sort_direction"])) {
-		$_REQUEST["sort_direction"] = sanitize_search_string(get_request_var("sort_direction"));
+		$_REQUEST["sort_direction"] = sanitize_search_string(get_request_var_request("sort_direction"));
 	}
 
 	/* if the user pushed the 'clear' button */
@@ -253,14 +253,14 @@ function manager_edit() {
 		$tabs_manager_edit, $fields_manager_edit, $manager_notification_actions;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var("id"));
+	input_validate_input_number(get_request_var_request("id"));
 	/* ==================================================== */
 
 	if (!isset($_REQUEST["tab"])) $_REQUEST["tab"] = "general";
 	$id	= (isset($_REQUEST['id']) ? $_REQUEST['id'] : '0');
 
 	if($id) {
-		$manager = db_fetch_row("select * from snmpagent_managers where id=" . $_GET["id"]);
+		$manager = db_fetch_row("select * from snmpagent_managers where id=" . $_REQUEST["id"]);
 		$header_label = "[edit: " . htmlspecialchars($manager["description"]) . "]";
 	}else{
 		$header_label = "[new]";
@@ -395,7 +395,7 @@ function manager_notifications($id){
 
 	/* clean up search filter */
 	if (isset($_REQUEST["filter"])) {
-		$_REQUEST["filter"] = sanitize_search_string(get_request_var("filter"));
+		$_REQUEST["filter"] = sanitize_search_string(get_request_var_request("filter"));
 	}
 
 	/* if the user pushed the 'clear' button */
@@ -600,7 +600,7 @@ function manager_logs($id) {
 
 	/* clean up search filter */
 	if (isset($_REQUEST["filter"])) {
-		$_REQUEST["filter"] = sanitize_search_string(get_request_var("filter"));
+		$_REQUEST["filter"] = sanitize_search_string(get_request_var_request("filter"));
 	}
 	if (isset($_REQUEST["purge_snmpagent__manager_logs_x"])) {
 		db_execute("DELETE FROM snmpagent_notifications_log WHERE manager_id = $id;");

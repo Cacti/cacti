@@ -86,7 +86,7 @@ default:
 	top_header();
 
 	/* set the default settings category */
-	if (!isset($_GET['tab'])) {
+	if (!isset($_REQUEST['tab'])) {
 		/* there is no selected tab; select the first one */
 		if (isset($_SESSION['sess_settings_tab'])) {
 			$current_tab = $_SESSION['sess_settings_tab'];
@@ -95,7 +95,7 @@ default:
 			$current_tab = $current_tab[0];
 		}
 	}else{
-		$current_tab = $_GET['tab'];
+		$current_tab = $_REQUEST['tab'];
 	}
 	$_SESSION['sess_settings_tab'] = $current_tab;
 

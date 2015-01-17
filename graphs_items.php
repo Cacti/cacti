@@ -36,7 +36,7 @@ switch ($_REQUEST['action']) {
 	case 'item_remove':
 		item_remove();
 
-		header('Location: graphs.php?action=graph_edit&id=' . $_GET['local_graph_id']);
+		header('Location: graphs.php?action=graph_edit&id=' . $_REQUEST['local_graph_id']);
 		break;
 	case 'item_edit':
 		top_header();
@@ -48,12 +48,12 @@ switch ($_REQUEST['action']) {
 	case 'item_movedown':
 		item_movedown();
 
-		header('Location: graphs.php?action=graph_edit&id=' . $_GET['local_graph_id']);
+		header('Location: graphs.php?action=graph_edit&id=' . $_REQUEST['local_graph_id']);
 		break;
 	case 'item_moveup':
 		item_moveup();
 
-		header('Location: graphs.php?action=graph_edit&id=' . $_GET['local_graph_id']);
+		header('Location: graphs.php?action=graph_edit&id=' . $_REQUEST['local_graph_id']);
 		break;
 }
 
@@ -148,17 +148,17 @@ function item_movedown() {
 	global $graph_item_types;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var('id'));
-	input_validate_input_number(get_request_var('local_graph_id'));
+	input_validate_input_number(get_request_var_request('id'));
+	input_validate_input_number(get_request_var_request('local_graph_id'));
 	/* ==================================================== */
 
-	$arr = get_graph_group($_GET['id']);
-	$next_id = get_graph_parent($_GET['id'], 'next');
+	$arr = get_graph_group($_REQUEST['id']);
+	$next_id = get_graph_parent($_REQUEST['id'], 'next');
 
-	if ((!empty($next_id)) && (isset($arr{$_GET['id']}))) {
-		move_graph_group($_GET['id'], $arr, $next_id, 'next');
-	}elseif (preg_match('/(GPRINT|VRULE|HRULE|COMMENT)/', $graph_item_types{db_fetch_cell_prepared('SELECT graph_type_id FROM graph_templates_item WHERE id = ?', array(get_request_var('id')))})) {
-		move_item_down('graph_templates_item', $_GET['id'], 'local_graph_id=' . $_GET['local_graph_id']);
+	if ((!empty($next_id)) && (isset($arr{$_REQUEST['id']}))) {
+		move_graph_group($_REQUEST['id'], $arr, $next_id, 'next');
+	}elseif (preg_match('/(GPRINT|VRULE|HRULE|COMMENT)/', $graph_item_types{db_fetch_cell_prepared('SELECT graph_type_id FROM graph_templates_item WHERE id = ?', array(get_request_var_request('id')))})) {
+		move_item_down('graph_templates_item', $_REQUEST['id'], 'local_graph_id=' . $_REQUEST['local_graph_id']);
 	}
 }
 
@@ -166,26 +166,26 @@ function item_moveup() {
 	global $graph_item_types;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var('id'));
-	input_validate_input_number(get_request_var('local_graph_id'));
+	input_validate_input_number(get_request_var_request('id'));
+	input_validate_input_number(get_request_var_request('local_graph_id'));
 	/* ==================================================== */
 
-	$arr = get_graph_group($_GET['id']);
-	$previous_id = get_graph_parent($_GET['id'], 'previous');
+	$arr = get_graph_group($_REQUEST['id']);
+	$previous_id = get_graph_parent($_REQUEST['id'], 'previous');
 
-	if ((!empty($previous_id)) && (isset($arr{$_GET['id']}))) {
-		move_graph_group($_GET['id'], $arr, $previous_id, 'previous');
-	}elseif (preg_match('/(GPRINT|VRULE|HRULE|COMMENT)/', $graph_item_types{db_fetch_cell_prepared('SELECT graph_type_id FROM graph_templates_item WHERE id = ?', array(get_request_var('id')))})) {
-		move_item_up('graph_templates_item', $_GET['id'], 'local_graph_id=' . $_GET['local_graph_id']);
+	if ((!empty($previous_id)) && (isset($arr{$_REQUEST['id']}))) {
+		move_graph_group($_REQUEST['id'], $arr, $previous_id, 'previous');
+	}elseif (preg_match('/(GPRINT|VRULE|HRULE|COMMENT)/', $graph_item_types{db_fetch_cell_prepared('SELECT graph_type_id FROM graph_templates_item WHERE id = ?', array(get_request_var_request('id')))})) {
+		move_item_up('graph_templates_item', $_REQUEST['id'], 'local_graph_id=' . $_REQUEST['local_graph_id']);
 	}
 }
 
 function item_remove() {
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var('id'));
+	input_validate_input_number(get_request_var_request('id'));
 	/* ==================================================== */
 
-	db_execute_prepared('DELETE FROM graph_templates_item WHERE id = ?', array(get_request_var('id')));
+	db_execute_prepared('DELETE FROM graph_templates_item WHERE id = ?', array(get_request_var_request('id')));
 }
 
 function item_edit() {

@@ -88,8 +88,8 @@ switch ($_REQUEST['action']) {
 		break;
 	case 'lock':
 	case 'unlock':
-		$_SESSION['sess_graph_lock_id'] = $_GET['id'];
-		$_SESSION['sess_graph_locked']  = ($_GET['action'] == 'lock' ? true:false);;
+		$_SESSION['sess_graph_lock_id'] = $_REQUEST['id'];
+		$_SESSION['sess_graph_locked']  = ($_REQUEST['action'] == 'lock' ? true:false);;
 	case 'graph_edit':
 		top_header();
 
@@ -597,10 +597,10 @@ function item() {
 	global $consolidation_functions, $graph_item_types, $struct_graph_item;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var('id'));
+	input_validate_input_number(get_request_var_request('id'));
 	/* ==================================================== */
 
-	if (empty($_GET['id'])) {
+	if (empty($_REQUEST['id'])) {
 		$template_item_list = array();
 
 		$header_label = '[new]';
@@ -622,22 +622,22 @@ function item() {
 			LEFT JOIN cdef ON (cdef_id = cdef.id)
 			LEFT JOIN colors ON (color_id = colors.id)
 			WHERE graph_templates_item.local_graph_id = ?
-			ORDER BY graph_templates_item.sequence', array($_GET['id']));
+			ORDER BY graph_templates_item.sequence', array($_REQUEST['id']));
 
-		$host_id = db_fetch_cell_prepared('SELECT host_id FROM graph_local WHERE id = ?', array($_GET['id']));
-		$header_label = '[edit: ' . htmlspecialchars(get_graph_title($_GET['id'])) . ']';
+		$host_id = db_fetch_cell_prepared('SELECT host_id FROM graph_local WHERE id = ?', array($_REQUEST['id']));
+		$header_label = '[edit: ' . htmlspecialchars(get_graph_title($_REQUEST['id'])) . ']';
 	}
 
-	$graph_template_id = db_fetch_cell_prepared('SELECT graph_template_id FROM graph_local WHERE id = ?', array($_GET['id']));
+	$graph_template_id = db_fetch_cell_prepared('SELECT graph_template_id FROM graph_local WHERE id = ?', array($_REQUEST['id']));
 
 	if (empty($graph_template_id)) {
-		$add_text = 'graphs_items.php?action=item_edit&local_graph_id=' . $_GET['id'] . "&host_id=$host_id";
+		$add_text = 'graphs_items.php?action=item_edit&local_graph_id=' . $_REQUEST['id'] . "&host_id=$host_id";
 	}else{
 		$add_text = '';
 	}
 
 	html_start_box("<strong>Graph Items</strong> $header_label", '100%', '', '3', 'center', $add_text);
-	draw_graph_items_list($template_item_list, 'graphs_items.php', 'local_graph_id=' . $_GET['id'], (empty($graph_template_id) ? false : true));
+	draw_graph_items_list($template_item_list, 'graphs_items.php', 'local_graph_id=' . $_REQUEST['id'], (empty($graph_template_id) ? false : true));
 	html_end_box();
 }
 
@@ -649,8 +649,8 @@ function graph_diff() {
 	global  $struct_graph_item, $graph_item_types, $consolidation_functions;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var('id'));
-	input_validate_input_number(get_request_var('graph_template_id'));
+	input_validate_input_number(get_request_var_request('id'));
+	input_validate_input_number(get_request_var_request('graph_template_id'));
 	/* ==================================================== */
 
 	$template_query = "SELECT
@@ -676,20 +676,20 @@ function graph_diff() {
 		$template_query
 		WHERE graph_templates_item.graph_template_id = ?
 		AND graph_templates_item.local_graph_id = 0
-		ORDER BY graph_templates_item.sequence", array($_GET['graph_template_id']));
+		ORDER BY graph_templates_item.sequence", array($_REQUEST['graph_template_id']));
 
 	/* next, get information about the current graph so we can make the appropriate comparisons */
 	$graph_items = db_fetch_assoc_prepared("
 		$template_query
 		WHERE graph_templates_item.local_graph_id = ?
-		ORDER BY graph_templates_item.sequence", array($_GET['id']));
+		ORDER BY graph_templates_item.sequence", array($_REQUEST['id']));
 
 	$graph_template_inputs = db_fetch_assoc_prepared('SELECT
 		graph_template_input.column_name,
 		graph_template_input_defs.graph_template_item_id
 		FROM (graph_template_input, graph_template_input_defs)
 		WHERE graph_template_input.id = graph_template_input_defs.graph_template_input_id
-		AND graph_template_input.graph_template_id = ?', array($_GET['graph_template_id']));
+		AND graph_template_input.graph_template_id = ?', array($_REQUEST['graph_template_id']));
 
 	/* ok, we want to loop through the array with the GREATEST number of items so we don't have to worry
 	about tacking items on the end */
@@ -859,29 +859,29 @@ function graph_diff() {
 	<br>
 	<input type="hidden" name="action" value="save">
 	<input type="hidden" name="save_component_graph_diff" value="1">
-	<input type="hidden" name="local_graph_id" value="<?php print $_GET['id'];?>">
-	<input type="hidden" name="graph_template_id" value="<?php print $_GET['graph_template_id'];?>">
+	<input type="hidden" name="local_graph_id" value="<?php print $_REQUEST['id'];?>">
+	<input type="hidden" name="graph_template_id" value="<?php print $_REQUEST['graph_template_id'];?>">
 	<?php
 
-	form_save_button('graphs.php?action=graph_edit&id=' . $_GET['id']);
+	form_save_button('graphs.php?action=graph_edit&id=' . $_REQUEST['id']);
 }
 
 function graph_edit() {
 	global $struct_graph, $image_types, $consolidation_functions, $graph_item_types, $struct_graph_item;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var('id'));
+	input_validate_input_number(get_request_var_request('id'));
 	/* ==================================================== */
 
 	$locked = 'false';
 	$use_graph_template = true;
 
-	if (!empty($_GET['id'])) {
-		$_SESSION['sess_graph_lock_id'] = $_GET['id'];
+	if (!empty($_REQUEST['id'])) {
+		$_SESSION['sess_graph_lock_id'] = $_REQUEST['id'];
 
-		$local_graph_template_graph_id = db_fetch_cell_prepared('SELECT local_graph_template_graph_id FROM graph_templates_graph WHERE local_graph_id = ?', array($_GET['id']));
+		$local_graph_template_graph_id = db_fetch_cell_prepared('SELECT local_graph_template_graph_id FROM graph_templates_graph WHERE local_graph_id = ?', array($_REQUEST['id']));
 
-		if ($_GET['id'] != $_SESSION['sess_graph_lock_id'] && !empty($local_graph_template_graph_id)) {
+		if ($_REQUEST['id'] != $_SESSION['sess_graph_lock_id'] && !empty($local_graph_template_graph_id)) {
 			$locked = 'true';
 			$_SESSION['sess_graph_locked'] = $locked;
 		}elseif (empty($local_graph_template_graph_id)) {
@@ -894,11 +894,11 @@ function graph_edit() {
 			$_SESSION['sess_graph_locked'] = $locked;
 		}
 
-		$graphs = db_fetch_row_prepared('SELECT * FROM graph_templates_graph WHERE local_graph_id = ?', array($_GET['id']));
+		$graphs = db_fetch_row_prepared('SELECT * FROM graph_templates_graph WHERE local_graph_id = ?', array($_REQUEST['id']));
 		$graphs_template = db_fetch_row_prepared('SELECT * FROM graph_templates_graph WHERE id = ?', array($local_graph_template_graph_id));
 
-		$host_id = db_fetch_cell_prepared('SELECT host_id FROM graph_local WHERE id = ?', array($_GET['id']));
-		$header_label = '[edit: ' . htmlspecialchars(get_graph_title($_GET['id'])) . ']';
+		$host_id = db_fetch_cell_prepared('SELECT host_id FROM graph_local WHERE id = ?', array($_REQUEST['id']));
+		$header_label = '[edit: ' . htmlspecialchars(get_graph_title($_REQUEST['id'])) . ']';
 
 		if ($graphs['graph_template_id'] == '0') {
 			$use_graph_template = 'false';
@@ -909,29 +909,29 @@ function graph_edit() {
 	}
 
 	/* handle debug mode */
-	if (isset($_GET['debug'])) {
-		if ($_GET['debug'] == '0') {
+	if (isset($_REQUEST['debug'])) {
+		if ($_REQUEST['debug'] == '0') {
 			kill_session_var('graph_debug_mode');
-		}elseif ($_GET['debug'] == '1') {
+		}elseif ($_REQUEST['debug'] == '1') {
 			$_SESSION['graph_debug_mode'] = true;
 		}
 	}
 
-	if (!empty($_GET['id'])) {
+	if (!empty($_REQUEST['id'])) {
 		?>
 		<table width="100%" align="center">
 			<tr>
 				<td class="textInfo" colspan="2" valign="top">
-					<?php print htmlspecialchars(get_graph_title($_GET['id']));?>
+					<?php print htmlspecialchars(get_graph_title($_REQUEST['id']));?>
 				</td>
 				<td class="textInfo" align="right" valign="top">
-					<span class="linkMarker">*<a class='hyperLink' href='<?php print htmlspecialchars('graphs.php?action=graph_edit&id=' . (isset($_GET['id']) ? $_GET['id'] : '0') . '&debug=' . (isset($_SESSION['graph_debug_mode']) ? '0' : '1'));?>'>Turn <strong><?php print (isset($_SESSION['graph_debug_mode']) ? 'Off' : 'On');?></strong> Graph Debug Mode.</a></span><br>
+					<span class="linkMarker">*<a class='hyperLink' href='<?php print htmlspecialchars('graphs.php?action=graph_edit&id=' . (isset($_REQUEST['id']) ? $_REQUEST['id'] : '0') . '&debug=' . (isset($_SESSION['graph_debug_mode']) ? '0' : '1'));?>'>Turn <strong><?php print (isset($_SESSION['graph_debug_mode']) ? 'Off' : 'On');?></strong> Graph Debug Mode.</a></span><br>
 					<?php
 						if (!empty($graphs['graph_template_id'])) {
 							?><span class="linkMarker">*<a class='hyperLink' href='<?php print htmlspecialchars('graph_templates.php?action=template_edit&id=' . (isset($graphs['graph_template_id']) ? $graphs['graph_template_id'] : '0'));?>'>Edit Graph Template.</a></span><br><?php
 						}
-						if (!empty($_GET['host_id']) || !empty($host_id)) {
-							?><span class="linkMarker">*<a class='hyperLink' href='<?php print htmlspecialchars('host.php?action=edit&id=' . (isset($_GET['host_id']) ? $_GET['host_id'] : $host_id));?>'>Edit Device.</a></span><br><?php
+						if (!empty($_REQUEST['host_id']) || !empty($host_id)) {
+							?><span class="linkMarker">*<a class='hyperLink' href='<?php print htmlspecialchars('host.php?action=edit&id=' . (isset($_REQUEST['host_id']) ? $_REQUEST['host_id'] : $host_id));?>'>Edit Device.</a></span><br><?php
 						}
 						if ($locked == 'true') {
 							?><span class="linkMarker">* <span class='hyperLink' id='unlockid'>Unlock Graph</span></span><?php
@@ -962,8 +962,8 @@ function graph_edit() {
 			'description' => 'Choose the Device that this Graph belongs to.',
 			'sql' => "SELECT id,CONCAT_WS('',description,' (',hostname,')') as name FROM host ORDER BY description,hostname",
 			'action' => 'ajax_hosts_noany',
-			'id' => (isset($_GET['host_id']) ? $_GET['host_id'] : $host_id),
-			'value' => db_fetch_cell_prepared('SELECT description AS name FROM host WHERE id = ?', (isset($_GET['host_id']) ? array($_GET['host_id']) : array($host_id))),
+			'id' => (isset($_REQUEST['host_id']) ? $_REQUEST['host_id'] : $host_id),
+			'value' => db_fetch_cell_prepared('SELECT description AS name FROM host WHERE id = ?', (isset($_REQUEST['host_id']) ? array($_REQUEST['host_id']) : array($host_id))),
 			),
 		'graph_template_graph_id' => array(
 			'method' => 'hidden',
@@ -1001,34 +1001,34 @@ function graph_edit() {
 		html_start_box('<strong>Supplemental Graph Template Data</strong>', '100%', '', '3', 'center', '');
 
 		draw_nontemplated_fields_graph($graphs['graph_template_id'], $graphs, '|field|', '<strong>Graph Fields</strong>', true, true, 0);
-		draw_nontemplated_fields_graph_item($graphs['graph_template_id'], $_GET['id'], '|field|_|id|', '<strong>Graph Item Fields</strong>', true, $locked);
+		draw_nontemplated_fields_graph_item($graphs['graph_template_id'], $_REQUEST['id'], '|field|_|id|', '<strong>Graph Item Fields</strong>', true, $locked);
 
 		html_end_box();
 	}
 
 	/* graph item list goes here */
-	if ((!empty($_GET['id'])) && (empty($graphs['graph_template_id']))) {
+	if ((!empty($_REQUEST['id'])) && (empty($graphs['graph_template_id']))) {
 		item();
 	}
 
-	if (!empty($_GET['id'])) {
+	if (!empty($_REQUEST['id'])) {
 		?>
 		<table width="100%" align="center">
 			<tr>
 				<td align="center" class="textInfo" colspan="2">
-					<img src="<?php print htmlspecialchars('graph_image.php?action=edit&local_graph_id=' . $_GET['id'] . '&rra_id=' . read_graph_config_option('default_rra_id'));?>" alt="">
+					<img src="<?php print htmlspecialchars('graph_image.php?action=edit&local_graph_id=' . $_REQUEST['id'] . '&rra_id=' . read_graph_config_option('default_rra_id'));?>" alt="">
 				</td>
 				<?php
-				if ((isset($_SESSION['graph_debug_mode'])) && (isset($_GET['id']))) {
+				if ((isset($_SESSION['graph_debug_mode'])) && (isset($_REQUEST['id']))) {
 					$graph_data_array['output_flag'] = RRDTOOL_OUTPUT_STDERR;
 					$graph_data_array['print_source'] = 1;
 					?>
 					<td>
 						<span class="textInfo">RRDTool Command:</span><br>
-						<pre><?php print @rrdtool_function_graph($_GET['id'], 1, $graph_data_array);?></pre>
+						<pre><?php print @rrdtool_function_graph($_REQUEST['id'], 1, $graph_data_array);?></pre>
 						<span class="textInfo">RRDTool Says:</span><br>
 						<?php unset($graph_data_array['print_source']);?>
-						<pre><?php print @rrdtool_function_graph($_GET['id'], 1, $graph_data_array);?></pre>
+						<pre><?php print @rrdtool_function_graph($_REQUEST['id'], 1, $graph_data_array);?></pre>
 					</td>
 					<?php
 				}
@@ -1039,7 +1039,7 @@ function graph_edit() {
 		<?php
 	}
 
-	if (((isset($_GET['id'])) || (isset($_GET['new']))) && (empty($graphs['graph_template_id']))) {
+	if (((isset($_REQUEST['id'])) || (isset($_REQUEST['new']))) && (empty($graphs['graph_template_id']))) {
 		html_start_box('<strong>Graph Configuration</strong>', '100%', '', '3', 'center', '');
 
 		$form_array = array();
@@ -1068,7 +1068,7 @@ function graph_edit() {
 		html_end_box();
 	}
 
-	if ((isset($_GET['id'])) || (isset($_GET['new']))) {
+	if ((isset($_REQUEST['id'])) || (isset($_REQUEST['new']))) {
 		form_hidden_box('save_component_graph','1','');
 		form_hidden_box('save_component_input','1','');
 	}else{
@@ -1144,17 +1144,17 @@ function graph() {
 
 	/* clean up search string */
 	if (isset($_REQUEST['filter'])) {
-		$_REQUEST['filter'] = sanitize_search_string(get_request_var('filter'));
+		$_REQUEST['filter'] = sanitize_search_string(get_request_var_request('filter'));
 	}
 
 	/* clean up sort_column string */
 	if (isset($_REQUEST['sort_column'])) {
-		$_REQUEST['sort_column'] = sanitize_search_string(get_request_var('sort_column'));
+		$_REQUEST['sort_column'] = sanitize_search_string(get_request_var_request('sort_column'));
 	}
 
 	/* clean up sort_direction string */
 	if (isset($_REQUEST['sort_direction'])) {
-		$_REQUEST['sort_direction'] = sanitize_search_string(get_request_var('sort_direction'));
+		$_REQUEST['sort_direction'] = sanitize_search_string(get_request_var_request('sort_direction'));
 	}
 
 	/* if the user pushed the 'clear' button */

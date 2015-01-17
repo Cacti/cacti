@@ -185,11 +185,11 @@ function rra_edit() {
 	global $fields_rra_edit;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var('id'));
+	input_validate_input_number(get_request_var_request('id'));
 	/* ==================================================== */
 
-	if (!empty($_GET['id'])) {
-		$rra = db_fetch_row_prepared('SELECT * FROM rra WHERE id = ?', array(get_request_var('id')));
+	if (!empty($_REQUEST['id'])) {
+		$rra = db_fetch_row_prepared('SELECT * FROM rra WHERE id = ?', array(get_request_var_request('id')));
 		$header_label = '[edit: ' . htmlspecialchars($rra['name']) . ']';
 	}else{
 		$header_label = '[new]';

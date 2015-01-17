@@ -318,11 +318,11 @@ function domain_edit() {
 	global $ldap_versions, $ldap_encryption, $ldap_modes, $domain_types;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var('domain_id'));
+	input_validate_input_number(get_request_var_request('domain_id'));
 	/* ==================================================== */
 
-	if (!empty($_GET['domain_id'])) {
-		$domain = db_fetch_row_prepared('SELECT * FROM user_domains WHERE domain_id = ?', array($_GET['domain_id']));
+	if (!empty($_REQUEST['domain_id'])) {
+		$domain = db_fetch_row_prepared('SELECT * FROM user_domains WHERE domain_id = ?', array($_REQUEST['domain_id']));
 		$header_label = '[edit: ' . $domain['domain_name'] . ']';
 	}else{
 		$header_label = '[new]';
@@ -512,8 +512,8 @@ function domain_edit() {
 
 	html_end_box();
 
-	if (!empty($_GET['domain_id'])) {
-		$domain = db_fetch_row_prepared('SELECT * FROM user_domains_ldap WHERE domain_id = ?', array($_GET['domain_id']));
+	if (!empty($_REQUEST['domain_id'])) {
+		$domain = db_fetch_row_prepared('SELECT * FROM user_domains_ldap WHERE domain_id = ?', array($_REQUEST['domain_id']));
 
 		html_start_box('<strong>Domain Properties</strong>', '100%', '', '3', 'center', '');
 
@@ -595,17 +595,17 @@ function domains() {
 
 	/* clean up search string */
 	if (isset($_REQUEST['filter'])) {
-		$_REQUEST['filter'] = sanitize_search_string(get_request_var('filter'));
+		$_REQUEST['filter'] = sanitize_search_string(get_request_var_request('filter'));
 	}
 
 	/* clean up sort_column */
 	if (isset($_REQUEST['sort_column'])) {
-		$_REQUEST['sort_column'] = sanitize_search_string(get_request_var('sort_column'));
+		$_REQUEST['sort_column'] = sanitize_search_string(get_request_var_request('sort_column'));
 	}
 
 	/* clean up search string */
 	if (isset($_REQUEST['sort_direction'])) {
-		$_REQUEST['sort_direction'] = sanitize_search_string(get_request_var('sort_direction'));
+		$_REQUEST['sort_direction'] = sanitize_search_string(get_request_var_request('sort_direction'));
 	}
 
 	/* if the user pushed the 'clear' button */

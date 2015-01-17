@@ -367,11 +367,11 @@ function form_actions() {
 
 function template_rrd_remove() {
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var('id'));
-	input_validate_input_number(get_request_var('data_template_id'));
+	input_validate_input_number(get_request_var_request('id'));
+	input_validate_input_number(get_request_var_request('data_template_id'));
 	/* ==================================================== */
 
-	$children = db_fetch_assoc_prepared('SELECT id FROM data_template_rrd WHERE local_data_template_rrd_id = ? OR id = ?', array($_GET['id'], $_GET['id']));
+	$children = db_fetch_assoc_prepared('SELECT id FROM data_template_rrd WHERE local_data_template_rrd_id = ? OR id = ?', array($_REQUEST['id'], $_REQUEST['id']));
 
 	if (sizeof($children) > 0) {
 	foreach ($children as $item) {
@@ -381,45 +381,45 @@ function template_rrd_remove() {
 	}
 	}
 
-	header('Location: data_templates.php?action=template_edit&id=' . $_GET['data_template_id']);
+	header('Location: data_templates.php?action=template_edit&id=' . $_REQUEST['data_template_id']);
 }
 
 function template_rrd_add() {
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var('id'));
-	input_validate_input_number(get_request_var('local_data_id'));
+	input_validate_input_number(get_request_var_request('id'));
+	input_validate_input_number(get_request_var_request('local_data_id'));
 	/* ==================================================== */
 
 	$hash = get_hash_data_template(0, 'data_template_item');
 
 	db_execute_prepared("INSERT INTO data_template_rrd (hash, data_template_id, rrd_maximum, rrd_minimum, rrd_heartbeat, data_source_type_id, data_source_name) 
-		    VALUES (?, ?, 0, 0, 600, 1, 'ds')", array($hash, $_GET['id']));
+		    VALUES (?, ?, 0, 0, 600, 1, 'ds')", array($hash, $_REQUEST['id']));
 	$data_template_rrd_id = db_fetch_insert_id();
 
 	/* add this data template item to each data source using this data template */
-	$children = db_fetch_assoc_prepared('SELECT local_data_id FROM data_template_data WHERE data_template_id = ? AND local_data_id > 0', array($_GET['id']));
+	$children = db_fetch_assoc_prepared('SELECT local_data_id FROM data_template_data WHERE data_template_id = ? AND local_data_id > 0', array($_REQUEST['id']));
 
 	if (sizeof($children) > 0) {
 	foreach ($children as $item) {
 		db_execute_prepared("INSERT INTO data_template_rrd (local_data_template_rrd_id, local_data_id, data_template_id, rrd_maximum, rrd_minimum, rrd_heartbeat, data_source_type_id, data_source_name) 
-				     VALUES (?, ?, ?, 0, 0, 600, 1, 'ds')", array($data_template_rrd_id, $item['local_data_id'], $_GET['id']));
+				     VALUES (?, ?, ?, 0, 0, 600, 1, 'ds')", array($data_template_rrd_id, $item['local_data_id'], $_REQUEST['id']));
 	}
 	}
 
-	header('Location: data_templates.php?action=template_edit&id=' . $_GET['id'] . "&view_rrd=$data_template_rrd_id");
+	header('Location: data_templates.php?action=template_edit&id=' . $_REQUEST['id'] . "&view_rrd=$data_template_rrd_id");
 }
 
 function template_edit() {
 	global $struct_data_source, $struct_data_source_item, $data_source_types, $fields_data_template_template_edit;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var('id'));
-	input_validate_input_number(get_request_var('view_rrd'));
+	input_validate_input_number(get_request_var_request('id'));
+	input_validate_input_number(get_request_var_request('view_rrd'));
 	/* ==================================================== */
 
-	if (!empty($_GET['id'])) {
-		$template_data = db_fetch_row_prepared('SELECT * FROM data_template_data WHERE data_template_id = ? AND local_data_id = 0', array($_GET['id']));
-		$template = db_fetch_row_prepared('SELECT * FROM data_template WHERE id = ?', array($_GET['id']));
+	if (!empty($_REQUEST['id'])) {
+		$template_data = db_fetch_row_prepared('SELECT * FROM data_template_data WHERE data_template_id = ? AND local_data_id = 0', array($_REQUEST['id']));
+		$template = db_fetch_row_prepared('SELECT * FROM data_template WHERE id = ?', array($_REQUEST['id']));
 
 		$header_label = '[edit: ' . $template['name'] . ']';
 	}else{
@@ -430,7 +430,7 @@ function template_edit() {
 
 	draw_edit_form(array(
 		'config' => array(),
-		'fields' => inject_form_variables($fields_data_template_template_edit, (isset($template) ? $template : array()), (isset($template_data) ? $template_data : array()), $_GET)
+		'fields' => inject_form_variables($fields_data_template_template_edit, (isset($template) ? $template : array()), (isset($template_data) ? $template_data : array()), $_REQUEST)
 		));
 
 	html_end_box();
@@ -472,18 +472,18 @@ function template_edit() {
 	html_end_box();
 
 	/* fetch ALL rrd's for this data source */
-	if (!empty($_GET['id'])) {
-		$template_data_rrds = db_fetch_assoc_prepared('SELECT id, data_source_name FROM data_template_rrd WHERE data_template_id = ? AND local_data_id = 0 ORDER BY data_source_name', array($_GET['id']));
+	if (!empty($_REQUEST['id'])) {
+		$template_data_rrds = db_fetch_assoc_prepared('SELECT id, data_source_name FROM data_template_rrd WHERE data_template_id = ? AND local_data_id = 0 ORDER BY data_source_name', array($_REQUEST['id']));
 	}
 
 	/* select the first "rrd" of this data source by default */
-	if (empty($_GET['view_rrd'])) {
-		$_GET['view_rrd'] = (isset($template_data_rrds[0]['id']) ? $template_data_rrds[0]['id'] : '0');
+	if (empty($_REQUEST['view_rrd'])) {
+		$_REQUEST['view_rrd'] = (isset($template_data_rrds[0]['id']) ? $template_data_rrds[0]['id'] : '0');
 	}
 
 	/* get more information about the rrd we chose */
-	if (!empty($_GET['view_rrd'])) {
-		$template_rrd = db_fetch_row_prepared('SELECT * FROM data_template_rrd WHERE id = ?', array($_GET['view_rrd']));
+	if (!empty($_REQUEST['view_rrd'])) {
+		$template_rrd = db_fetch_row_prepared('SELECT * FROM data_template_rrd WHERE id = ?', array($_REQUEST['view_rrd']));
 	}
 
 	$i = 0;
@@ -496,8 +496,8 @@ function template_edit() {
 		foreach ($template_data_rrds as $template_data_rrd) {
 			$i++;
 			print "	<li>
-				<a " . (($template_data_rrd['id'] == $_GET['view_rrd']) ? "class='selected'" : "class=''") . " href='" . htmlspecialchars('data_templates.php?action=template_edit&id=' . $_GET['id'] . '&view_rrd=' . $template_data_rrd['id']) . "'>$i: " . htmlspecialchars($template_data_rrd['data_source_name']) . "</a>
-				<span><a class='deleteMarker' href='" . htmlspecialchars('data_templates.php?action=rrd_remove&id=' . $template_data_rrd['id'] . '&data_template_id=' . $_GET['id']) . "'><img src='images/delete_icon.gif' border='0' alt='Delete'></a></span></li>\n";
+				<a " . (($template_data_rrd['id'] == $_REQUEST['view_rrd']) ? "class='selected'" : "class=''") . " href='" . htmlspecialchars('data_templates.php?action=template_edit&id=' . $_REQUEST['id'] . '&view_rrd=' . $template_data_rrd['id']) . "'>$i: " . htmlspecialchars($template_data_rrd['data_source_name']) . "</a>
+				<span><a class='deleteMarker' href='" . htmlspecialchars('data_templates.php?action=rrd_remove&id=' . $template_data_rrd['id'] . '&data_template_id=' . $_REQUEST['id']) . "'><img src='images/delete_icon.gif' border='0' alt='Delete'></a></span></li>\n";
 		}
 
 		print "
@@ -505,11 +505,11 @@ function template_edit() {
 		</div>\n";
 
 		}elseif (sizeof($template_data_rrds) == 1) {
-			$_GET['view_rrd'] = $template_data_rrds[0]['id'];
+			$_REQUEST['view_rrd'] = $template_data_rrds[0]['id'];
 		}
 	}
 
-	html_start_box('<strong>Data Source Item</strong> [' . (isset($template_rrd) ? htmlspecialchars($template_rrd['data_source_name']) : '') . ']', '100%', '', '3', 'center', (!empty($_GET['id']) ? htmlspecialchars('data_templates.php?action=rrd_add&id=' . $_GET['id']):''), '<strong>New</scrong>');
+	html_start_box('<strong>Data Source Item</strong> [' . (isset($template_rrd) ? htmlspecialchars($template_rrd['data_source_name']) : '') . ']', '100%', '', '3', 'center', (!empty($_REQUEST['id']) ? htmlspecialchars('data_templates.php?action=rrd_add&id=' . $_REQUEST['id']):''), '<strong>New</scrong>');
 
 	/* data input fields list */
 	if ((empty($template_data['data_input_id'])) ||
@@ -551,7 +551,7 @@ function template_edit() {
 	html_end_box();
 
 	$i = 0;
-	if (!empty($_GET['id'])) {
+	if (!empty($_REQUEST['id'])) {
 		/* get each INPUT field for this data input source */
 		$fields = db_fetch_assoc('SELECT * FROM data_input_fields WHERE data_input_id=' . $template_data['data_input_id'] . " AND input_output='in' ORDER BY name");
 
@@ -571,7 +571,7 @@ function template_edit() {
 			form_alternate_row();?>
 				<td width="50%">
 					<strong><?php print $field['name'];?></strong><br>
-					<?php form_checkbox('t_value_' . $field['data_name'], $data_input_data['t_value'], 'Use Per-Data Source Value (Ignore this Value)', '', '', $_GET['id']);?>
+					<?php form_checkbox('t_value_' . $field['data_name'], $data_input_data['t_value'], 'Use Per-Data Source Value (Ignore this Value)', '', '', $_REQUEST['id']);?>
 				</td>
 				<td>
 					<?php form_text_box('value_' . $field['data_name'],$old_value,'','');?>
@@ -602,22 +602,22 @@ function template() {
 
 	/* clean up search string */
 	if (isset($_REQUEST['filter'])) {
-		$_REQUEST['filter'] = sanitize_search_string(get_request_var('filter'));
+		$_REQUEST['filter'] = sanitize_search_string(get_request_var_request('filter'));
 	}
 
 	/* clean up has_data string */
 	if (isset($_REQUEST['has_data'])) {
-		$_REQUEST['has_data'] = sanitize_search_string(get_request_var('has_data'));
+		$_REQUEST['has_data'] = sanitize_search_string(get_request_var_request('has_data'));
 	}
 
 	/* clean up sort_column string */
 	if (isset($_REQUEST['sort_column'])) {
-		$_REQUEST['sort_column'] = sanitize_search_string(get_request_var('sort_column'));
+		$_REQUEST['sort_column'] = sanitize_search_string(get_request_var_request('sort_column'));
 	}
 
 	/* clean up sort_direction string */
 	if (isset($_REQUEST['sort_direction'])) {
-		$_REQUEST['sort_direction'] = sanitize_search_string(get_request_var('sort_direction'));
+		$_REQUEST['sort_direction'] = sanitize_search_string(get_request_var_request('sort_direction'));
 	}
 
 	/* if the user pushed the 'clear' button */
