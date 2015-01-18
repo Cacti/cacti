@@ -39,19 +39,25 @@ function themeReady() {
 		return li.appendTo(ui);
 	}
 
-	$('select').selectmenu({
-		change: function(event, ui) {
-			$(this).val(ui.item.value).change();
-		},
-		position: {
-			my: "left top",
-			at: "left bottom",
-			collision: "flip"
-		},
-	}).each(function() {
-		id = $(this).attr('id');
-		$('#'+id+'-button').css('min-width', '100px').css('max-width', '400px').css('width','');
-		$('#'+id+'-menu').css('max-height', '250px');
+	$('select').each(function() {
+		if ($(this).prop('multiple') != true) {
+			$(this).selectmenu({
+				change: function(event, ui) {
+					$(this).val(ui.item.value).change();
+				},
+				position: {
+					my: "left top",
+					at: "left bottom",
+					collision: "flip"
+				},
+			}).each(function() {
+				id = $(this).attr('id');
+				$('#'+id+'-button').css('min-width', '100px').css('max-width', '400px').css('width','');
+				$('#'+id+'-menu').css('max-height', '250px');
+			});
+		}else{
+			$(this).addClass('ui-state-default ui-corner-all');
+		}
 	});
 
 	$('#host_wrapper').dblclick(function() {
