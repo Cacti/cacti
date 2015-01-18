@@ -195,8 +195,8 @@ function clog_view_logfile() {
 		}else{
 			while ($host_start) {
 				$host_end    = strpos($item, ']', $host_start);
-				$host_id     = substr($item, $host_start+5, $host_end-($host_start+5));
-				$new_item   .= substr($item, 0, $host_start + 5) . "<a href='" . $config['url_path'] . 'host.php?action=edit&id=' . $host_id . "'>" . substr($item, $host_start + 5, $host_end-($host_start + 5)) . '</a>';
+				$host_id     = substr($item, $host_start+7, $host_end-($host_start+7));
+				$new_item   .= substr($item, 0, $host_start + 7) . "<a href='" . $config['url_path'] . 'host.php?action=edit&id=' . $host_id . "'>" . substr($item, $host_start + 5, $host_end-($host_start + 7)) . '</a>';
 				$host_description = db_fetch_cell("SELECT description FROM host WHERE id=$host_id");
 				$new_item   .= '] Description[' . $host_description . '';
 				$item        = substr($item, $host_end);
