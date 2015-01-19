@@ -398,11 +398,16 @@ function graphs() {
 	load_current_session_value('filter',     'sess_graphs_new_filter',     '');
 	load_current_session_value('rows',       'sess_default_rows',          read_config_option('num_rows_table'));
 
-	$host      = db_fetch_row_prepared('SELECT id, description, hostname, host_template_id FROM host WHERE id = ?', array($_REQUEST['host_id']));
-	$row_limit = get_request_var_request('rows');
-
-	$header =  ' [ ' . htmlspecialchars($host['description']) . ' (' . htmlspecialchars($host['hostname']) . ') ' . 
+	if (!empty($_REQUEST['host_id'])) {
+		$host   = db_fetch_row_prepared('SELECT id, description, hostname, host_template_id FROM host WHERE id = ?', array($_REQUEST['host_id']));
+		$header =  ' [ ' . htmlspecialchars($host['description']) . ' (' . htmlspecialchars($host['hostname']) . ') ' . 
 			(!empty($host['host_template_id']) ? htmlspecialchars(db_fetch_cell_prepared('SELECT name FROM host_template WHERE id = ?', array($host['host_template_id']))):'') . ' ]';
+	}else{
+		$host   = array();
+		$header = 'None Host Type';
+	}
+
+	$row_limit = get_request_var_request('rows');
 
 	html_start_box("<strong>New Graphs for</strong> $header" , '100%', '', '3', 'center', '');
 
@@ -480,7 +485,7 @@ function graphs() {
 			<td style='white-space:nowrap;'>
 				<input id='filter' type='text' name='filter' size='25' value='<?php print htmlspecialchars(get_request_var_request('filter'));?>'>
 			</td>
-			<td style='white-space:nowrap;'>
+			<td colspan='3' style='white-space:nowrap;'>
 				<input type='submit' value='Go' title='Set/Refresh Filters'>
 				<input type='submit' name='clear_x' value='Clear' title='Clear Filters'>
 			</td>
@@ -532,25 +537,27 @@ function graphs() {
 			AND host_graph.host_id = ?
 			ORDER BY graph_templates.name', array($_REQUEST['host_id']));
 
-		$template_graphs = db_fetch_assoc_prepared('SELECT
-			graph_local.graph_template_id
-			FROM (graph_local, host_graph)
-			WHERE graph_local.graph_template_id = host_graph.graph_template_id
-			AND graph_local.host_id = host_graph.host_id
-			AND graph_local.host_id = ?
-			GROUP BY graph_local.graph_template_id', array($host['id']));
+		if (!empty($_REQUEST['host_id'])) {
+			$template_graphs = db_fetch_assoc_prepared('SELECT
+				graph_local.graph_template_id
+				FROM (graph_local, host_graph)
+				WHERE graph_local.graph_template_id = host_graph.graph_template_id
+				AND graph_local.host_id = host_graph.host_id
+				AND graph_local.host_id = ?
+				GROUP BY graph_local.graph_template_id', array($host['id']));
 
-		if (sizeof($template_graphs) > 0) {
-			$script .= 'var gt_created_graphs = new Array(';
+			if (sizeof($template_graphs) > 0) {
+				$script .= 'var gt_created_graphs = new Array(';
 
-			$cg_ctr = 0;
-			foreach ($template_graphs as $template_graph) {
-				$script .= (($cg_ctr > 0) ? ',' : '') . "'" . $template_graph['graph_template_id'] . "'";
+				$cg_ctr = 0;
+				foreach ($template_graphs as $template_graph) {
+					$script .= (($cg_ctr > 0) ? ',' : '') . "'" . $template_graph['graph_template_id'] . "'";
 
-				$cg_ctr++;
+					$cg_ctr++;
+				}
+
+				$script .= ")\n";
 			}
-
-			$script .= ")\n";
 		}
 
 		/* create a row for each graph template associated with the host template */
@@ -559,8 +566,8 @@ function graphs() {
 			$query_row = $graph_template['graph_template_id'];
 
 			print "<tr id='gt_line$query_row' class='selectable " . (($i % 2 == 0) ? 'odd' : 'even') . "'>"; $i++;
-			print "		<td>
-						<span id='gt_text$query_row" . "_0'><strong>Create:</strong> " . htmlspecialchars($graph_template['graph_template_name']) . "</span>
+			print "<td>
+						<span id='gt_text$query_row" . "_0'>" . htmlspecialchars($graph_template['graph_template_name']) . "</span>
 					</td>
 					<td align='right' class='checkbox'>
 						<input type='checkbox' name='cg_$query_row' id='cg_$query_row'>
@@ -569,6 +576,10 @@ function graphs() {
 		}
 		}
 
+		html_end_box();
+
+		html_start_box('', '100%', '', '3', 'center', '');
+
 		$available_graph_templates = db_fetch_assoc('SELECT
 			graph_templates.id, graph_templates.name
 			FROM snmp_query_graph RIGHT JOIN graph_templates
@@ -576,17 +587,17 @@ function graphs() {
 			WHERE (((snmp_query_graph.name) Is Null)) ORDER BY graph_templates.name');
 
 		/* create a row at the bottom that lets the user create any graph they choose */
-		print "	<tr class='selectable " . (($i % 2 == 0) ? 'odd' : 'even') . "'>
-				<td colspan='2' width='60' nowrap>
-					<strong>Create:</strong>&nbsp;";
-					form_dropdown('cg_g', $available_graph_templates, 'name', 'id', '', '(Select a graph type to create)', '', 'textArea');
-		print '		</td>
+		print "	<tr class='even'>
+				<td width='1'><i>Create</i></td>
+				<td align='left'>";
+				form_dropdown('cg_g', $available_graph_templates, 'name', 'id', '', '(Select a graph type to create)', '', 'textArea');
+		print '</td>
 			</tr>';
 
 		html_end_box();
 	}
 
-	if ($_REQUEST['graph_type'] != -1) {
+	if ($_REQUEST['graph_type'] != -1 && !empty($_REQUEST['host_id'])) {
 		$snmp_queries = db_fetch_assoc('SELECT
 			snmp_query.id,
 			snmp_query.name,
@@ -780,9 +791,8 @@ function graphs() {
 					}
 
 					if (!sizeof($snmp_query_indexes)) {
-						print "<tr class='odd'><td>This data query returned 0 rows, perhaps there was a problem executing this
-							data query. You can <a href='" . htmlspecialchars('host.php?action=query_verbose&id=' . $snmp_query['id'] . '&host_id=' . $host['id']) . "'>run this data
-							query in debug mode</a> to get more information.</td></tr>\n";
+						print "<tr class='odd'><td>This Data Query returned 0 rows, perhaps there was a problem executing this
+							Data Query. You can <a href='" . htmlspecialchars('host.php?action=query_verbose&id=' . $snmp_query['id'] . '&host_id=' . $host['id']) . "'>run this Data Query in debug mode</a> to get more information.</td></tr>\n";
 					}else{
 						print "<tr class='tableHeader'>
 								$html_dq_header
@@ -844,11 +854,13 @@ function graphs() {
 			}elseif (sizeof($data_query_graphs) > 1) {
 				print "	<table align='center' width='100%'>
 						<tr>
-							<td width='1' valign='top'>
-								<img src='images/arrow.gif' alt=''>&nbsp;
+							<td width='100%' valign='middle'>
+								<img src='images/arrow.gif' align='absmiddle' alt=''>
+							</td>
+							<td style='white-space:nowrap;font-style: italic;'' align='right'>
+								Select a Graph Type to Create
 							</td>
 							<td align='right'>
-								<span style='font-size: 12px; font-style: italic;'>Select a graph type:</span>&nbsp;
 								<select name='sgg_" . $snmp_query['id'] . "' id='sgg_" . $snmp_query['id'] . "' onChange='dqUpdateDeps(" . $snmp_query['id'] . ',' . (isset($column_counter) ? $column_counter:'') . ");'>
 									"; html_create_list($data_query_graphs,'name','id','0'); print "
 								</select>
@@ -870,12 +882,16 @@ function graphs() {
 	}
 
 	form_hidden_box('save_component_graph', '1', '');
-	form_hidden_box('host_id', $host['id'], '0');
-	form_hidden_box('host_template_id', $host['host_template_id'], '0');
+
+	if (!empty($_REQUEST['host_id'])) {
+		form_hidden_box('host_id', $host['id'], '0');
+		form_hidden_box('host_template_id', $host['host_template_id'], '0');
+	}
 
 	if (isset($_SERVER['HTTP_REFERER']) && !substr_count($_SERVER['HTTP_REFERER'], 'graphs_new')) {
 		$_REQUEST['returnto'] = basename($_SERVER['HTTP_REFERER']);
 	}
+
 	load_current_session_value('returnto', 'sess_graphs_new_returnto', '');
 
 	form_save_button($_REQUEST['returnto']);
