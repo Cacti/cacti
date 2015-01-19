@@ -76,7 +76,7 @@ function getTimestampFromDate(dateStamp) {
 	dateParts = dateParts[0].split('-');
 	var date = new Date(dateParts[0], parseInt(dateParts[1], 10) - 1, dateParts[2], timeParts[0], timeParts[1]);
 
-	return date.getTime();
+	return date.getTime() / 1000;
 }
 
 /** getQueryString - this function will return the value
