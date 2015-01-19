@@ -837,7 +837,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 	if (!isset($graph_data_array['export_csv'])) {
 		$graph_opts = rrd_function_process_graph_options($graph_start, $graph_end, $graph, $graph_data_array);
 	}else{
-	/* basic export options */
+		/* basic export options */
 		$graph_opts =
 			"--start=" . cacti_escapeshellarg($graph_start) . RRD_NL .
 			"--end=" . cacti_escapeshellarg($graph_end) . RRD_NL .
@@ -1377,7 +1377,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 	}
 	}
 
-	if (!isset($graph_data_array['output_flag']) || $graph_data_array['output_flag'] == RRDTOOL_OUTPUT_GRAPH_DATA || $graph_data_array['output_flag'] == RRDTOOL_OUTPUT_STDOUT || $graph_data_array['output_flag'] == RRDTOOL_OUTPUT_STDERR) {
+	if (!isset($graph_data_array['export_csv']) || $graph_data_array['export_csv'] != true) {
 		$graph_array = api_plugin_hook_function('rrd_graph_graph_options', array('graph_opts' => $graph_opts, 'graph_defs' => $graph_defs, 'txt_graph_items' => $txt_graph_items, 'graph_id' => $local_graph_id, 'start' => $graph_start, 'end' => $graph_end));
 		if (!empty($graph_array)) {
 			$graph_defs = $graph_array['graph_defs'];

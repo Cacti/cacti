@@ -53,7 +53,7 @@ input_validate_input_number(get_request_var_request('rra_id'));
 /* ==================================================== */
 
 /* override: graph start time (unix time) */
-if (!empty($_REQUEST['graph_start']) && is_numeric($_REQUEST['graph_start'] && $_REQUEST['graph_start'] < 1600000000)) {
+if (!empty($_REQUEST['graph_start']) && is_numeric($_REQUEST['graph_start']) && $_REQUEST['graph_start'] < 1600000000) {
 	$graph_data_array['graph_start'] = get_request_var_request('graph_start');
 }
 
@@ -91,7 +91,7 @@ $xport_meta = array();
 $graph_data_array['export_csv'] = true;
 
 /* Get graph export */
-$xport_array = @rrdtool_function_xport($_REQUEST['local_graph_id'], get_request_var_request('rra_id'), $graph_data_array, $xport_meta);
+$xport_array = rrdtool_function_xport($_REQUEST['local_graph_id'], get_request_var_request('rra_id'), $graph_data_array, $xport_meta);
 
 /* Make graph title the suggested file name */
 if (is_array($xport_array['meta'])) {
