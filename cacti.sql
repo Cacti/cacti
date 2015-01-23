@@ -529,6 +529,92 @@ CREATE TABLE `data_source_purge_temp` (
 		ENGINE=MyISAM
 		COMMENT='RRD Cleaner File Repository';
 
+	
+--
+-- Table structure for table `data_source_stats_daily`
+--
+	
+CREATE TABLE IF NOT EXISTS `data_source_stats_daily` (
+		`local_data_id` mediumint(8) unsigned NOT NULL,
+		`rrd_name` varchar(19) NOT NULL,
+		`average` DOUBLE DEFAULT NULL,
+		`peak` DOUBLE DEFAULT NULL,
+		PRIMARY KEY  (`local_data_id`,`rrd_name`)
+		) ENGINE=MyISAM;
+
+--
+-- Table structure for table `data_source_stats_hourly`
+--
+
+CREATE TABLE IF NOT EXISTS `data_source_stats_hourly` (
+		`local_data_id` mediumint(8) unsigned NOT NULL,
+		`rrd_name` varchar(19) NOT NULL,
+		`average` DOUBLE DEFAULT NULL,
+		`peak` DOUBLE DEFAULT NULL,
+		PRIMARY KEY  (`local_data_id`,`rrd_name`)
+		) ENGINE=MyISAM;
+
+--
+-- Table structure for table `data_source_stats_hourly_cache`
+--
+
+CREATE TABLE IF NOT EXISTS `data_source_stats_hourly_cache` (
+		`local_data_id` mediumint(8) unsigned NOT NULL,
+		`rrd_name` varchar(19) NOT NULL,
+		`time` timestamp NOT NULL default '0000-00-00 00:00:00',
+		`value` DOUBLE DEFAULT NULL,
+		PRIMARY KEY  (`local_data_id`,`time`,`rrd_name`),
+		KEY `time` USING BTREE (`time`)
+		) ENGINE=MEMORY;
+
+--
+-- Table structure for table `data_source_stats_hourly_last`
+--
+
+CREATE TABLE IF NOT EXISTS `data_source_stats_hourly_last` (
+		`local_data_id` mediumint(8) unsigned NOT NULL,
+		`rrd_name` varchar(19) NOT NULL,
+		`value` DOUBLE DEFAULT NULL,
+		`calculated` DOUBLE DEFAULT NULL,
+		PRIMARY KEY  (`local_data_id`,`rrd_name`)
+		) ENGINE=MEMORY;
+
+--
+-- Table structure for table `data_source_stats_monthly`
+--
+
+CREATE TABLE IF NOT EXISTS `data_source_stats_monthly` (
+		`local_data_id` mediumint(8) unsigned NOT NULL,
+		`rrd_name` varchar(19) NOT NULL,
+		`average` DOUBLE DEFAULT NULL,
+		`peak` DOUBLE DEFAULT NULL,
+		PRIMARY KEY  (`local_data_id`,`rrd_name`)
+		) ENGINE=MyISAM;
+
+--
+-- Table structure for table `data_source_stats_weekly`
+--
+
+CREATE TABLE IF NOT EXISTS `data_source_stats_weekly` (
+		`local_data_id` mediumint(8) unsigned NOT NULL,
+		`rrd_name` varchar(19) NOT NULL,
+		`average` DOUBLE DEFAULT NULL,
+		`peak` DOUBLE DEFAULT NULL,
+		PRIMARY KEY  (`local_data_id`,`rrd_name`)
+		) ENGINE=MyISAM;
+
+--
+-- Table structure for table `data_source_stats_yearly`
+--
+
+CREATE TABLE IF NOT EXISTS `data_source_stats_yearly` (
+		`local_data_id` mediumint(8) unsigned NOT NULL,
+		`rrd_name` varchar(19) NOT NULL,
+		`average` DOUBLE DEFAULT NULL,
+		`peak` DOUBLE DEFAULT NULL,
+		PRIMARY KEY  (`local_data_id`,`rrd_name`)
+		) ENGINE=MyISAM;
+
 --
 -- Table structure for table `data_template`
 --
