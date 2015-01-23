@@ -322,7 +322,7 @@ function update_show_current () {
 	/* remember these search fields in session vars so we don't have to keep passing them around */
 	load_current_session_value('filter', 'sess_plugins_filter', '');
 	load_current_session_value('rows', 'sess_default_rows', read_config_option('num_rows_table'));
-	load_current_session_value('state', 'sess_plugins_state', '5');
+	load_current_session_value('state', 'sess_plugins_state', '-3');
 	load_current_session_value('sort_column', 'sess_plugins_sort_column', 'name');
 	load_current_session_value('sort_direction', 'sess_plugins_sort_direction', 'ASC');
 	load_current_session_value('page', 'sess_plugins_current_page', '1');
