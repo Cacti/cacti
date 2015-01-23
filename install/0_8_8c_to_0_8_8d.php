@@ -592,4 +592,10 @@ function upgrade_to_0_8_8d() {
 	db_install_add_column ('0.8.8d', 'host', array('name' => 'snmp_sysLocation',       'type' => 'varchar(300)', 'NULL' => false, 'default' => '',  'after' => 'snmp_sysName'));
 	db_install_add_column ('0.8.8d', 'host', array('name' => 'polling_time',           'type' => 'DOUBLE',                        'default' => '0', 'after' => 'avg_time'));
 
+	// Add realms to the admin user if it exists
+	if (sizeof(db_fetch_row('SELECT * FROM user_auth WHERE id=1'))) {
+		db_install_execute('0.8.8d', 'INSERT IGNORE INTO user_auth_realm VALUES (18,1)');
+		db_install_execute('0.8.8d', 'INSERT IGNORE INTO user_auth_realm VALUES (20,1)');
+		db_install_execute('0.8.8d', 'INSERT IGNORE INTO user_auth_realm VALUES (21,1)');
+	}
 }

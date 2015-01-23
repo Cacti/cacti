@@ -2860,6 +2860,9 @@ INSERT INTO user_auth_realm VALUES (14,1);
 INSERT INTO user_auth_realm VALUES (15,1);
 INSERT INTO user_auth_realm VALUES (16,1);
 INSERT INTO user_auth_realm VALUES (17,1);
+INSERT INTO user_auth_realm VALUES (18,1);
+INSERT INTO user_auth_realm VALUES (20,1);
+INSERT INTO user_auth_realm VALUES (21,1);
 INSERT INTO user_auth_realm VALUES (101,1);
 
 --
