@@ -2710,6 +2710,12 @@ CREATE TABLE user_auth (
   policy_hosts tinyint(1) unsigned NOT NULL default '1',
   policy_graph_templates tinyint(1) unsigned NOT NULL default '1',
   enabled char(2) NOT NULL DEFAULT 'on',
+  lastchange int(12) NOT NULL DEFAULT '-1',
+  lastlogin int(12) NOT NULL DEFAULT '-1',
+  password_history int(12) NOT NULL DEFAULT '',
+  locked  text NOT NULL DEFAULT '',
+  failed_attempts int(5) NOT NULL DEFAULT '0',
+  lastfail int(12) NOT NULL DEFAULT '0',
   PRIMARY KEY  (id),
   KEY username (username),
   KEY realm (realm),
@@ -2720,8 +2726,8 @@ CREATE TABLE user_auth (
 -- Dumping data for table `user_auth`
 --
 
-INSERT INTO user_auth VALUES (1,'admin','21232f297a57a5a743894a0e4a801fc3',0,'Administrator','on','on','on','on','on',1,1,1,1,1,'on');
-INSERT INTO user_auth VALUES (3,'guest','43e9a4ab75570f5b',0,'Guest Account','on','on','on','on','on',3,1,1,1,1,'');
+INSERT INTO user_auth VALUES (1,'admin','21232f297a57a5a743894a0e4a801fc3',0,'Administrator','on','on','on','on','on',1,1,1,1,1,'on',-1,-1,'','',0,0);
+INSERT INTO user_auth VALUES (3,'guest','43e9a4ab75570f5b',0,'Guest Account','on','on','on','on','on',3,1,1,1,1,''-1,-1,'','',0,0);
 
 --
 -- Table structure for table `user_auth_cache`
