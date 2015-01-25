@@ -331,9 +331,9 @@ function get_graph_permissions_sql($policy_graphs, $policy_hosts, $policy_graph_
 /* is_graph_allowed - determines whether the current user is allowed to view a certain graph
    @arg $local_graph_id - (int) the ID of the graph to check permissions for
    @returns - (bool) whether the current user is allowed the view the specified graph or not */
-function is_graph_allowed($local_graph_id) {
+function is_graph_allowed($local_graph_id, $user = 0) {
 	$rows  = 0;
-	$graph = get_allowed_graphs('', '', '', $rows, 0, $local_graph_id);
+	$graph = get_allowed_graphs('', '', '', $rows, $user, $local_graph_id);
 
 	if ($rows > 0) {
 		return true;
@@ -361,9 +361,12 @@ function auth_check_perms(&$objects, $policy) {
 /* is_tree_allowed - determines whether the current user is allowed to view a certain graph tree
    @arg $tree_id - (int) the ID of the graph tree to check permissions for
    @returns - (bool) whether the current user is allowed the view the specified graph tree or not */
-function is_tree_allowed($tree_id) {
+function is_tree_allowed($tree_id, $user = 0) {
 	if (read_config_option('auth_method') != 0 && (isset($_SESSION['sess_user_id']))) {
-		$user   = $_SESSION['sess_user_id'];
+		if ($user == 0) {
+			$user   = $_SESSION['sess_user_id'];
+		}
+
 		$policy = db_fetch_cell_prepared('SELECT policy_trees FROM user_auth WHERE id = ?', array($user));
 		$trees  = db_fetch_assoc_prepared('SELECT user_id FROM user_auth_perms WHERE user_id = ? AND type = 2 AND item_id = ?', array($user, $tree_id));
 
@@ -402,9 +405,9 @@ function is_tree_allowed($tree_id) {
 /* is_device_allowed - determines whether the current user is allowed to view a certain device
    @arg $host_id - (int) the ID of the device to check permissions for
    @returns - (bool) whether the current user is allowed the view the specified device or not */
-function is_device_allowed($host_id) {
+function is_device_allowed($host_id, $user = 0) {
 	$total_rows = 0;
-	$host = get_allowed_devices('', '', '', $total_rows, $user = 0, $host_id);
+	$host = get_allowed_devices('', '', '', $total_rows, $user, $host_id);
 
 	if ($total_rows > 0) {
 		return true;
@@ -491,7 +494,7 @@ function is_realm_allowed($realm) {
 	}
 }
 
-function get_allowed_tree_level($tree_id, $parent_id) {
+function get_allowed_tree_level($tree_id, $parent_id, $user = 0) {
 	$items = db_fetch_assoc_prepared('SELECT gti.id, gti.title, gti.host_id, 
 		gti.local_graph_id, gti.host_grouping_type, h.description AS hostname
 		FROM graph_tree_items AS gti
@@ -507,11 +510,11 @@ function get_allowed_tree_level($tree_id, $parent_id) {
 	if (sizeof($items)) {
 	foreach($items as $item) {
 		if ($item['host_id'] > 0) {
-			if (!is_device_allowed($item['host_id'])) {
+			if (!is_device_allowed($item['host_id'], $user)) {
 				unset($items[$i]);
 			}
 		}elseif($item['local_graph_id'] > 0) {
-			if (!is_graph_allowed($item['local_graph_id'])) {
+			if (!is_graph_allowed($item['local_graph_id'], $user)) {
 				unset($items[$i]);
 			}
 		}
