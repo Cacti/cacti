@@ -52,7 +52,16 @@ function themeReady() {
 				},
 			}).each(function() {
 				id = $(this).attr('id');
-				$('#'+id+'-button').css('min-width', '100px').css('max-width', '400px').css('width','');
+				minWidth = 0;
+				$('#'+id+' > option').each(function() {
+					width=$(this).textWidth();
+					if (width > minWidth) {
+						minWidth = width;
+					}
+				});
+
+				minWidth+=60;
+				$('#'+id+'-button').css('min-width', minWidth+'px').css('max-width', '400px').css('width','');
 				$('#'+id+'-menu').css('max-height', '250px');
 			});
 		}else{
