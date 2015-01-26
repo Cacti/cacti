@@ -269,6 +269,12 @@ function form_save() {
 	}
 
 	if (isset($_POST['save_component_tree'])) {
+		if (empty($_POST['id'])) {
+			$header = true;
+		}else{
+			$header = false;
+		}
+
 		$save['id']            = $_POST['id'];
 		$save['name']          = form_input_validate($_POST['name'], 'name', '', false, 3);
 		$save['sort_type']     = form_input_validate($_POST['sort_type'], 'sort_type', '', true, 3);
@@ -291,7 +297,7 @@ function form_save() {
 			}
 		}
 
-		header("Location: tree.php?action=edit&header=false&id=$tree_id");
+		header("Location: tree.php?action=edit" . (!$header ? "&header=false":"") . "&id=$tree_id");
 	}elseif (isset($_POST['save_component_tree_item'])) {
 		$tree_item_id = api_tree_item_save($_POST['id'], $_POST['graph_tree_id'], $_POST['type'], $_POST['parent_item_id'],
 			(isset($_POST['title']) ? $_POST['title'] : ''), (isset($_POST['local_graph_id']) ? $_POST['local_graph_id'] : '0'),
@@ -461,18 +467,21 @@ function tree_edit() {
 
 	if (!empty($_REQUEST['id'])) {
 		$tree = db_fetch_row_prepared('SELECT * FROM graph_tree WHERE id = ?', array($_REQUEST['id']));
+
 		$header_label = '[edit: ' . htmlspecialchars($tree['name']) . ']';
+
+		// Reset the cookie state if tree id has changed
+		if (isset($_SESSION['sess_tree_id']) && $_SESSION['sess_tree_id'] != $_REQUEST['id']) {
+			$select_first = true;
+		}else{
+			$select_first = false;
+		}
+		$_SESSION['sess_tree_id'] = $_REQUEST['id'];
 	}else{
+		$tree = array();
+
 		$header_label = '[new]';
 	}
-
-	// Reset the cookie state if tree id has changed
-	if (isset($_SESSION['sess_tree_id']) && $_SESSION['sess_tree_id'] != $_REQUEST['id']) {
-		$select_first = true;
-	}else{
-		$select_first = false;
-	}
-	$_SESSION['sess_tree_id'] = $_REQUEST['id'];
 
 	html_start_box('<strong>Graph Trees</strong> ' . $header_label, '100%', '', '3', 'center', '');
 
@@ -506,11 +515,11 @@ function tree_edit() {
 		form_save_button('tree.php', 'return');
 	}
 		
-	print $lockdiv;
-
-	print "<table class='treeTable' cellpadding='0' cellspacing='0' width='100%' border='0' valign='top'><tr valign='top'><td class='treeArea'>\n";
-
 	if (!empty($_REQUEST['id'])) {
+		print $lockdiv;
+
+		print "<table class='treeTable' cellpadding='0' cellspacing='0' width='100%' border='0' valign='top'><tr valign='top'><td class='treeArea'>\n";
+
 		html_start_box('<strong>Tree Items</strong>', '100%', '', '3', 'center', '');
 
 		echo "<tr><td style='padding:7px;'><div id='jstree'></div></td></tr>\n";
