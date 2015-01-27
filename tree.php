@@ -158,7 +158,7 @@ function set_host_sort_type() {
 						$type = HOST_GROUPING_DATA_QUERY_INDEX;
 					}
 
-					db_execute_prepared('UPDATE graph_tree_items SET host_grouping_type=$type WHERE id = ?', array($branch));
+					db_execute_prepared("UPDATE graph_tree_items SET host_grouping_type=$type WHERE id = ?", array($branch));
 					break;
 				}
 			}

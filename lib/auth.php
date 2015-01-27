@@ -760,10 +760,13 @@ function get_allowed_graphs($sql_where = '', $order_by = 'gtg.title_cache', $lim
 		}
 
 		/* get policies for all groups and user */
-		$policies   = db_fetch_assoc_prepared("SELECT uag.id, 'group' AS type, policy_graphs, policy_hosts, policy_graph_templates FROM user_auth_group AS uag
+		$policies   = db_fetch_assoc_prepared("SELECT uag.id, 
+			'group' AS type, policy_graphs, policy_hosts, policy_graph_templates 
+			FROM user_auth_group AS uag
 			INNER JOIN user_auth_group_members AS uagm
 			ON uag.id = uagm.group_id
 			WHERE uag.enabled = 'on' AND uagm.user_id = ?", array($user));
+
 		$policies[] = db_fetch_row_prepared("SELECT id, 'user' AS type, policy_graphs, policy_hosts, policy_graph_templates FROM user_auth WHERE id = ?", array($user));
 		
 		foreach($policies as $policy) {
