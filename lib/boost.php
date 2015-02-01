@@ -308,9 +308,9 @@ function boost_graph_cache_check($local_graph_id, $rra_id, $rrdtool_pipe, $graph
 			if (is_dir($cache_directory)) {
 				if (is_writable($cache_directory)) {
 					if ($rra_id > 0) {
-						$cache_file = $cache_directory . '/lgi_' . $data['local_graph_id'] . '_rrai_' . $data['rra_id'];
+						$cache_file = $cache_directory . '/lgi_' . $local_graph_id . '_rrai_' . $rra_id;
 					}else{
-						$cache_file = $cache_directory . '/lgi_' . $data['local_graph_id'] . '_rrai_' . $data['rra_id'] . '_tsi_' . $timespan;
+						$cache_file = $cache_directory . '/lgi_' . $local_graph_id . '_rrai_' . $rra_id . '_tsi_' . $timespan;
 					}
 
 					if (isset($graph_data_array['graph_height'])) {
@@ -1349,6 +1349,9 @@ function boost_poller_bottom () {
 	chdir($config['base_path']);
 
 	if (read_config_option('boost_rrd_update_enable') == 'on') {
+	
+		boost_update_snmp_statistics();
+	
 		$command_string = read_config_option('path_php_binary');
 		if (read_config_option('path_boost_log') != '') {
 			if ($config['cacti_server_os'] == 'unix') {
@@ -1361,5 +1364,64 @@ function boost_poller_bottom () {
 		}
 
 		exec_background($command_string, $extra_args);
+
 	}
+}
+
+function boost_update_snmp_statistics () {
+	global $config;
+	$mc = new MibCache('CACTI-BOOST-MIB');
+	
+	/* get the boost table status */
+	$boost_table_status = db_fetch_assoc("SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE table_schema=SCHEMA()
+											AND (table_name LIKE 'poller_output_boost_arch_%' OR table_name LIKE 'poller_output_boost')");
+
+	$total_data_sources = db_fetch_cell('SELECT COUNT(*) FROM poller_item');
+	
+	$pending_records = 0;
+	$arch_records = 0;
+	$data_length = 0;
+	$engine = '';
+	$max_data_length = 0;
+	
+	foreach($boost_table_status as $table) {
+		if ($table['TABLE_NAME'] == 'poller_output_boost') {
+			$pending_records += $table['TABLE_ROWS'];
+		} else {
+			$arch_records += $table['TABLE_ROWS'];
+		}
+		$data_length += $table['DATA_LENGTH'];
+		$data_length -= $table['DATA_FREE'];
+		$engine = $table['ENGINE'];
+		$max_data_length = $table['MAX_DATA_LENGTH'];
+	}
+	$total_records = $pending_records + $arch_records;
+	$avg_row_length = ($total_records ? intval($data_length / $total_records) : 0);
+
+
+	if (strcmp($engine, 'MEMORY') == 0) {
+		$max_length = db_fetch_cell('SELECT MAX(LENGTH(output)) FROM poller_output_boost');
+		$max_table_allowed = $max_data_length;
+		$max_table_records = ($avg_row_length ? round($max_data_length/$avg_row_length, 0) : 0);
+	}else{
+		$max_length = '0';
+		$max_table_allowed = '-1';
+		$max_table_records = '0';
+	}
+	
+	$mc->object('boostApplStorageDatabaseEngine')->set( $engine );
+	$mc->object('boostApplStorageMaxTableSize')->set( $max_table_allowed );
+	$mc->object('boostApplStorageMaxRecords')->set( $max_table_records );
+	$mc->object('boostApplLastUpdate')->set( time() );
+	
+	$mc->object('boostStatsTotalsRecords')->set( $total_records );
+	$mc->object('boostStatsTotalsRecordsPending')->set( $pending_records );
+	$mc->object('boostStatsTotalsRecordsArchived')->set( $arch_records );
+	$mc->object('boostStatsStorageTableSize')->set( $data_length );
+	$mc->object('boostStatsStorageAverageRecordSize')->set( $avg_row_length );
+	$mc->object('boostStatsStorageMaxRecordLength')->set( $max_length );
+	$mc->object('boostStatsTotalsDataSources')->set( $total_data_sources );
+	
+	$mc->object('boostStatsLastUpdate')->set( time() );
+	
 }
