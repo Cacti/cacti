@@ -361,13 +361,13 @@ function manager_edit() {
 			</script>
 			<?php
 	}
-	
+
 	?>
 	<script language="javascript" type="text/javascript" >
-		$('.tooltip').tooltip({	
-			track: true, 
+		$('.tooltip').tooltip({
+			track: true,
 			position: { collision: "flipfit" },
-			content: function() { return $(this).attr('title'); }			
+			content: function() { return $(this).attr('title'); }
 		});
 	</script>
 	<?php
@@ -429,7 +429,7 @@ function manager_notifications($id){
 		strURL = strURL + '&filter=' + $('#filter').val();
 		strURL = strURL + '&page=' + $('#page').val();
 		strURL = strURL + '&header=false';
-		
+
 		$.get(strURL, function(data) {
 			$('#main').html(data);
 			applySkin();
@@ -502,7 +502,7 @@ function manager_notifications($id){
 					</tr>
 				</table>
 				<input type='hidden' id='page' name='page' value='1'>
-				
+
 			</form>
 			</td>
 		</tr>
@@ -586,7 +586,21 @@ function manager_notifications($id){
 }
 
 function manager_logs($id) {
-	global $colors, $severity_levels, $severity_colors;
+	global $colors;
+
+	$severity_levels = array(
+		SNMPAGENT_EVENT_SEVERITY_LOW => 'LOW',
+		SNMPAGENT_EVENT_SEVERITY_MEDIUM => 'MEDIUM',
+		SNMPAGENT_EVENT_SEVERITY_HIGH => 'HIGH',
+		SNMPAGENT_EVENT_SEVERITY_CRITICAL => 'CRITICAL'
+);
+
+	$severity_colors = array(
+		SNMPAGENT_EVENT_SEVERITY_LOW => '#00FF00',
+		SNMPAGENT_EVENT_SEVERITY_MEDIUM => '#FFFF00',
+		SNMPAGENT_EVENT_SEVERITY_HIGH => '#FF0000',
+		SNMPAGENT_EVENT_SEVERITY_CRITICAL => '#FF00FF'
+	);
 
 	/* ================= input validation ================= */
 	if(!$id | !is_numeric($id)) {
