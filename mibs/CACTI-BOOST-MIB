@@ -286,10 +286,7 @@ boostApplLoggingEnabled OBJECT-TYPE
     ::= { boostAppl 16 }
 
 boostApplStorageDatabaseEngine OBJECT-TYPE
-    SYNTAX          INTEGER {
-                        memory(1),
-                        myisam(2)
-                    }
+    SYNTAX          DisplayString (SIZE(1..20))
     MAX-ACCESS      read-only
     STATUS          current
     DESCRIPTION
