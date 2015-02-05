@@ -237,7 +237,7 @@ function gprint_presets() {
     /* remember these search fields in session vars so we don't have to keep passing them around */
     load_current_session_value('page', 'sess_gprint_current_page', '1');
     load_current_session_value('filter', 'sess_gprint_filter', '');
-    load_current_session_value('has_graphs', 'sess_gprint_has_graphs', 'true');
+    load_current_session_value('has_graphs', 'sess_gprint_has_graphs', 'false');
     load_current_session_value('sort_column', 'sess_gprint_sort_column', 'name');
     load_current_session_value('sort_direction', 'sess_gprint_sort_direction', 'ASC');
     load_current_session_value('rows', 'sess_default_rows', read_config_option('num_rows_table'));
