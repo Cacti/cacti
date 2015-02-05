@@ -1389,6 +1389,12 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 		if (isset($graph_data_array["print_source"])) {
 			print "<PRE>" . htmlspecialchars(read_config_option("path_rrdtool") . " graph " . $graph_opts . $graph_defs . $txt_graph_items) . "</PRE>";
 		}else{
+			if (isset($graph_data_array['graphv'])) {
+				$graph = 'graphv';
+			}else{
+				$graph = 'graph';
+			}
+
 			if (isset($graph_data_array["export"])) {
 				rrdtool_execute("graph $graph_opts$graph_defs$txt_graph_items", false, RRDTOOL_OUTPUT_NULL, $rrdtool_pipe);
 				return 0;
@@ -1413,7 +1419,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 					$output_flag = $graph_data_array["output_flag"];
 				}
 
-				$output = rrdtool_execute("graph $graph_opts$graph_defs$txt_graph_items", false, $output_flag, $rrdtool_pipe);
+				$output = rrdtool_execute("$graph $graph_opts$graph_defs$txt_graph_items", false, $output_flag, $rrdtool_pipe);
 
 				boost_graph_set_file($output, $local_graph_id, $rra_id);
 

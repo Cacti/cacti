@@ -33,8 +33,12 @@ th .fa {
     top: 50%;
 }
 
+#main {
+	display:none;
+}
+
 input, select {
-	padding: 0.4em 2.1em 0.4em 1em;
+	padding: 0.4em 0.4em 0.4em 0.4em;
 }
 
 .usermenudown {

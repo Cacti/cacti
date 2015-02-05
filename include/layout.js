@@ -403,7 +403,7 @@ function applySkin() {
 	if (!theme || theme == 'classic') {
 		theme = 'classic';
 	}else{
-		$('input[type=submit], input[type=button]').button();
+		$('input[type=submit], input[type=button], input[type=checkbox]').button();
 	}
 
 	// For deletable objects, don't alway disable, only on 'Delete'
@@ -500,6 +500,7 @@ function applySkin() {
 
 	// Don't show the message container until all GUI interaction is done
 	$('#message_container').delay(2000).slideUp('fast');
+	$('#main').show();
 }
 
 function setupCollapsible() {

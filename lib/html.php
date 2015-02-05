@@ -108,6 +108,13 @@ function html_graph_area(&$graph_array, $no_graphs_message = "", $extra_url_args
 		$columns = read_graph_config_option('num_columns');
 	}
 
+	?>
+	<script type='text/javascript'>
+	var graph_start=<?php print get_current_graph_start();?>;
+	var graph_end=<?php print get_current_graph_end();?>;
+	</script>
+	<?php
+
 	if ($num_graphs > 0) {
 		if ($header != "") {
 			print $header;
@@ -186,7 +193,7 @@ function html_graph_area(&$graph_array, $no_graphs_message = "", $extra_url_args
 				<table align='center' cellpadding='0'>
 					<tr>
 						<td align='center'>
-							<div id='wrapper_<?php print $graph['local_graph_id']?>' style="min-height: <?php echo (1.6 * $graph["height"]) . "px"?>;"><img class='graphimage' id='graph_<?php print $graph["local_graph_id"] ?>' src='<?php print htmlspecialchars($config['url_path'] . "graph_image.php?local_graph_id=" . $graph["local_graph_id"] . "&rra_id=0&graph_height=" . $graph["height"] . "&graph_width=" . $graph["width"] . "&title_font_size=" . ((read_graph_config_option("custom_fonts") == "on") ? read_graph_config_option("title_size") : read_config_option("title_size")) . (($extra_url_args == "") ? "" : "&$extra_url_args"));?>' border='0' alt='<?php print htmlspecialchars($graph["title_cache"]);?>'></div>
+							<div id='wrapper_<?php print $graph['local_graph_id']?>' graph_width='<?php print $graph['width'];?>' graph_height='<?php print $graph['height'];?>' title_font_size='<?php print ((read_graph_config_option("custom_fonts") == "on") ? read_graph_config_option("title_size") : read_config_option("title_size"));?>' style="min-height: <?php echo (1.2 * $graph["height"]) . "px"?>;"></div>
 							<?php print (read_graph_config_option("show_graph_title") == "on" ? "<span align='center'><strong>" . htmlspecialchars($graph["title_cache"]) . "</strong></span>" : "");?>
 						</td>
 						<td valign='top' style='align: left; padding: 3px;' class='noprint'>
@@ -241,6 +248,13 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = "", $extr
 	if ($columns == 0) {
 		$columns = read_graph_config_option('num_columns');
 	}
+
+	?>
+	<script type='text/javascript'>
+	var graph_start=<?php print get_current_graph_start();?>;
+	var graph_end=<?php print get_current_graph_end();?>;
+	</script>
+	<?php
 
 	if ($num_graphs > 0) {
 		if ($header != "") {
@@ -297,7 +311,7 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = "", $extr
 				<table align='center' cellpadding='0'>
 					<tr>
 						<td align='center'>
-							<div id='wrapper_<?php print $graph['local_graph_id']?>' style="min-height: <?php echo (1.6 * read_graph_config_option("default_height")) . "px"?>;"><img class='graphimage' id='graph_<?php print $graph["local_graph_id"] ?>' src='<?php print htmlspecialchars($config['url_path'] . "graph_image.php?local_graph_id=" . $graph["local_graph_id"] . "&rra_id=0&graph_height=" . read_graph_config_option("default_height") . "&graph_width=" . read_graph_config_option("default_width") . "&graph_nolegend=true&title_font_size=" . ((read_graph_config_option("custom_fonts") == "on") ? read_graph_config_option("title_size") : read_config_option("title_size")) . (($extra_url_args == "") ? "" : "&$extra_url_args"));?>' border='0' alt='<?php print htmlspecialchars($graph["title_cache"]);?>'></div>
+							<div id='wrapper_<?php print $graph['local_graph_id']?>' graph_width='<?php print read_graph_config_option("default_width");?>' graph_height='<?php print read_graph_config_option("default_height");?>' style="min-height: <?php echo (1.2 * read_graph_config_option("default_height")) . "px"?>;"></div>
 							<?php print (read_graph_config_option("show_graph_title") == "on" ? "<span align='center'><strong>" . htmlspecialchars($graph["title_cache"]) . "</strong></span>" : "");?>
 						</td>
 						<td valign='top' align='center' style='align: center'>

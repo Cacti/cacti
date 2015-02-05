@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2015 The Cacti Group                                 |
+ | Copyright (C) 2004-2014 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -318,7 +318,7 @@ $fields_reports_item_edit = array(
 		'friendly_name' => 'Graph Tree',
 		'method' => 'drop_sql',
 		'default' => REPORTS_TREE_NONE,
-		'none_value' => "None",
+		'none_value' => 'None',
 		'description' => 'Select a Tree to use.',
 		'value' => '|arg1:tree_id|',
 		'on_change' => 'applyChange(document.reports_item_edit)',
@@ -327,7 +327,7 @@ $fields_reports_item_edit = array(
 		'friendly_name' => 'Graph Tree Branch',
 		'method' => 'drop_sql',
 		'default' => REPORTS_TREE_NONE,
-		'none_value' => "All",
+		'none_value' => 'All',
 		'description' => 'Select a Tree Branch to use.',
 		'value' => '|arg1:branch_id|',
 		'sql' => "(SELECT id, CONCAT_WS('', title, ' (Branch)') AS name

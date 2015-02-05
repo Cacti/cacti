@@ -143,7 +143,6 @@ case 'tree_content':
 	}
 
 	?>
-	<script type='text/javascript' src='<?php print $config['url_path'] . 'include/realtime.js';?>'></script>
 	<script type='text/javascript'>timeOffset=<?php print date('Z');?>;</script>
 	<?php
 
@@ -249,11 +248,6 @@ case 'preview':
 	html_start_box('<strong>Graph Filters</strong>' . (isset($_REQUEST['style']) && strlen($_REQUEST['style']) ? ' [ Custom Graph List Applied - Filtering FROM List ]':''), '100%', '', '3', 'center', '');
 
 	?>
-	<script type='text/javascript' src='<?php print $config['url_path'] . 'include/realtime.js';?>'></script>
-	<script type='text/javascript'>timeOffset=<?php print date('Z');?>;</script>
-	<script type="text/javascript" >
-	$(function() { $(".graphimage").zoom({inputfieldStartTime : 'date1', inputfieldEndTime : 'date2', serverTimeOffset : <?php print date('Z');?>}); });
-	</script>
 	<tr class='even noprint'>
 		<td class='noprint'>
 		<form id='form_graph_view' style='margin:0px;padding:0px;' name='form_graph_view' method='post' action='graph_view.php?action=preview'>
@@ -320,7 +314,7 @@ case 'preview':
 						</select>
 					</td>
 					<td>
-						<label for='thumbnails'>Thumbnails:</label>
+						<label for='thumbnails'>Thumbnails</label>
 					</td>
 					<td>
 						<input id='thumbnails' type='checkbox' name='thumbnails' onClick='applyFilter()' <?php print (($_REQUEST['thumbnails'] == 'true') ? 'checked':'');?>>
@@ -343,10 +337,16 @@ case 'preview':
 		</td>
 	</tr>
 	<script type='text/javascript'>
+
+	var graph_start=<?php print get_current_graph_start();?>;
+	var graph_end=<?php print get_current_graph_end();?>;
+	var timeOffset=<?php print date('Z');?>;
+
 	function clearFilter() {
 		$.get('graph_view.php?action=preview&header=false&clear_x=1', function(data) {
 			$('#main').html(data);
 			applySkin();
+			initializeGraphs();
 		});
 	}
 
@@ -357,6 +357,7 @@ case 'preview':
 			'&thumbnails='+$('#thumbnails').is(':checked'), function(data) {
 			$('#main').html(data);
 			applySkin();
+			initializeGraphs();
 		});
 	}
 
@@ -366,6 +367,7 @@ case 'preview':
 		$.post(url, json).done(function(data) {
 			$('#main').html(data);
 			applySkin();
+			initializeGraphs();
 		});
 	}
 
@@ -375,6 +377,7 @@ case 'preview':
 		$.post(url, json).done(function(data) {
 			$('#main').html(data);
 			applySkin();
+			initializeGraphs();
 		});
 	}
 
@@ -384,24 +387,29 @@ case 'preview':
 		$.post(url, json).done(function(data) {
 			$('#main').html(data);
 			applySkin();
+			initializeGraphs();
 		});
 	}
 
 	function clearTimespanFilter() {
-		var json = { button_clear_x: 1, date1: $('#date1').val(), date2: $('#date2').val(), predefined_timespan: $('#predefined_timespan').val(), predefined_timeshift: $('#predefined_timeshift').val() };
+		var json = { 
+			button_clear_x: 1, 
+			date1: $('#date1').val(), 
+			date2: $('#date2').val(), 
+			predefined_timespan: $('#predefined_timespan').val(), 
+			predefined_timeshift: $('#predefined_timeshift').val()
+		};
+
 		var url  = 'graph_view.php?action=preview&header=false';
+
 		$.post(url, json).done(function(data) {
 			$('#main').html(data);
 			applySkin();
+			initializeGraphs();
 		});
 	}
 
-	$(function() {
-		$('#form_graph_view').on('submit', function(event) {
-			event.preventDefault();
-			applyFilter();
-		});
-
+	function initializeGraphs() {
 		$('span[id$="_mrtg"]').click(function() {
 			graph_id=$(this).attr('id').replace('graph_','').replace('_mrtg','');
 			$.get('graph.php?local_graph_id='+graph_id+'&header=false', function(data) {
@@ -415,6 +423,69 @@ case 'preview':
 			graph_id=$(this).attr('id').replace('graph_','').replace('_csv','');
 			document.location = 'graph_xport.php?local_graph_id='+graph_id+'&rra_id=0&view_type=tree&graph_start='+getTimestampFromDate($('#date1').val())+'&graph_end='+getTimestampFromDate($('#date2').val());
 		});
+
+		$('#form_graph_view').on('submit', function(event) {
+			event.preventDefault();
+			applyFilter();
+		});
+
+		$('div[id^="wrapper_"]').each(function() {
+			graph_id=$(this).attr('id').replace('wrapper_','');
+			graph_height=$(this).attr('graph_height');
+			graph_width=$(this).attr('graph_width');
+
+			$.getJSON('graph_json.php?rra_id=0'+
+				'&local_graph_id='+graph_id+
+				'&graph_start='+graph_start+
+				'&graph_end='+graph_end+
+				'&graph_height='+graph_height+
+				'&graph_width='+graph_width+
+				<?php print (isset($_REQUEST['thumbnails']) && $_REQUEST['thumbnails'] == 'true' ? "'&graph_nolegend=true'":"''");?>, 
+				function(data) {
+				$('#wrapper_'+data.local_graph_id).html("<img class='graphimage' id='graph_"+data.local_graph_id+"' src='data:image/png;base64,"+data.image+"' border='0' graph_left='"+data.graph_left+"' graph_top='"+data.graph_top+"' graph_width='"+data.graph_width+"' graph_height='"+data.graph_height+"' image_width='"+data.image_width+"' image_height='"+data.image_height+"' value_min='"+data.value_min+"' value_max='"+data.value_max+"'>");
+			});
+		});
+
+		$('.graphimage').zoom({
+			inputfieldStartTime : 'date1', 
+			inputfieldEndTime : 'date2', 
+			serverTimeOffset : <?php print date('Z');?>
+		});
+
+		$('.graphimage').each(function() {
+			graph_id = $(this).attr('id').replace('graph_','');
+			realtimeArray[graph_id] = false;
+		});
+
+		$('#realtimeoff').click(function() {
+			stopRealtime();
+		});
+
+		$('#ds_step').change(function() {
+			realtimeGrapher();
+		});
+
+		$('span[id$="_realtime"]').click(function() {
+			graph_id=$(this).attr('id').replace('graph_','').replace('_realtime','');
+
+			if (realtimeArray[graph_id]) {
+				$('#wrapper_'+graph_id).html(keepRealtime[graph_id]).change();
+				$(this).html("<img class='drillDown' border='0' title='Click to view just this Graph in Realtime' alt='' src='/cacti/images/chart_curve_go.png'>");
+				$(this).find('img').tooltip().zoom({ inputfieldStartTime : 'date1', inputfieldEndTime : 'date2', serverTimeOffset : timeOffset });
+				realtimeArray[graph_id] = false;
+				setFilters();
+			}else{
+				keepRealtime[graph_id]  = $('#wrapper_'+graph_id).html();
+				$(this).html("<i style='font-size:16px;' title='Click again to take this Graph our of Realtime' class='fa fa-circle-o-notch fa-spin'/>");
+				$(this).find('i').tooltip();
+				realtimeArray[graph_id] = true;
+				setFilters();
+			}
+		});
+	}
+
+	$(function() {
+		initializeGraphs();
 	});
 
 	</script>

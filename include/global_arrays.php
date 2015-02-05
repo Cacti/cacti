@@ -518,6 +518,7 @@ $user_auth_realm_filenames = array(
 	'gprint_presets.php' => 5,
 	'graph.php' => 7,
 	'graph_image.php' => 7,
+	'graph_json.php' => 7,
 	'graph_xport.php' => 7,
 	'graph_settings.php' => 7,
 	'graph_templates.php' => 10,

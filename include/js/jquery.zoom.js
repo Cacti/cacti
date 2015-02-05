@@ -36,6 +36,7 @@
 		var clientTime = new Date();
 		var clientTimeOffset = clientTime.getTimezoneOffset()*60*(-1);			//requires -1, because PHP return the opposite
 		var timeOffset = 0;
+		var activeElement = '';
 
 		// default values of the different options being offered
 		var defaults = {
@@ -54,7 +55,7 @@
 			image: { top:0, left:0, width:0, height:0 },
 			// "graph" stands for the rrdgraph itself excluding legend, graph title etc.
 			graph: { timespan:0, secondsPerPixel:0 },
-			// "box" describes the area in front of the graph whithin jQueryZoom will allow interaction
+			// "box" describes the area in front of the graph within jQueryZoom will allow interaction
 			box: { top:0, left:0, right:0, width:0, height:0 },
 			// "markers" are selectors useable within the advanced mode
 			marker: { 1 : { placed:false }, 2 : { placed:false} },
@@ -170,102 +171,50 @@
 
 		/* init zoom */
 		function zoom_init(image) {
+			var $this = image;
+			$this.mouseenter(
+				function(){
+					if($("#zoom-box").length != 0) {
+						if($("#zoom-box").offset().top == parseInt($this.offset().top) + parseInt($this.attr('graph_top')) && $("#zoom-box").offset().left == parseInt($this.offset().left) + parseInt($this.attr('graph_left'))) {
+							return;
+						}
+					}
+					zoomFunction_init($this);
+				}
+			);
+		}
+
+		function zoomFunction_init(image) {
+			var $this = image;
+
 			if(zoom.options.serverTimeOffset > clientTimeOffset ) {
 				timeOffset = (zoom.options.serverTimeOffset - clientTimeOffset)*1000;
 			}else {
 				timeOffset = (clientTimeOffset - zoom.options.serverTimeOffset)*1000*(-1);
 			}
 
-			var $this = image;
-			$this.mouseenter(
-				function(){
-					if(zoom.attr.activeElement == '') {
-						zoom.attr.activeElement = $(this).attr('id');
-						zoomFunction_init($this);
-					// focusing another image will trigger a reset of Zoom
-					}else if(zoom.attr.activeElement != $(this).attr('id')) {
-						zoom.attr.activeElement = $(this).attr('id');
-						zoomFunction_init($this);
-					}
-				}
-			);
-		}
-
-		function zoomFunction_sleep(milliseconds) {
-			var start = new Date().getTime();
-			for (var i = 0; i < 1e7; i++) {
-				if ((new Date().getTime() - start) > milliseconds){
-					break;
-				}
-			}
-		}
-
-		function zoomFunction_init(image) {
-			var $this = image;
-			var image_loaded = isReady($this);
-
-			// exit if image has not been already loaded or if image is not available
-			if (image_loaded == false) {
-				var i = 0;
-				var sleep = 100;
-
-				while (i < 100) {
-					zoomFunction_sleep(sleep);
-
-					image_loaded = isReady($this);
-
-					if (image_loaded) {
-						break;
-					}
-					i++;
-				}
-			}
-
-			if (image_loaded) {
-				// update zoom.image object with the attributes of this image
-				zoom.image.width	= parseInt($this.width());
-				zoom.image.height	= parseInt($this.height());
-				zoom.image.top	= parseInt($this.offset().top);
-				zoom.image.left	= parseInt($this.offset().left);
-			} else {
-				return;
-			}
-
-			// get all graph parameters and merge results with zoom.graph object
-			$.extend(zoom.graph, getUrlVars( $this.attr("src") ));
+			//collect all attributes that image provides
+			zoom.image.top				= parseInt($this.offset().top);
+			zoom.image.left				= parseInt($this.offset().left);
+			zoom.image.width			= parseInt($this.attr('image_width'));
+			zoom.image.height			= parseInt($this.attr('image_height'));
+			zoom.graph.top				= parseInt($this.attr('graph_top'));
+			zoom.graph.left				= parseInt($this.attr('graph_left'));
+			zoom.graph.width			= parseInt($this.attr('graph_width'));
+			zoom.graph.height			= parseInt($this.attr('graph_height'));
+			zoom.graph.start			= parseInt($this.attr('graph_start'));
+			zoom.graph.end				= parseInt($this.attr('graph_end'));
 			zoom.graph.timespan			= zoom.graph.end - zoom.graph.start;
 			zoom.graph.secondsPerPixel 	= zoom.graph.timespan/zoom.graph.width;
+			zoom.box.width				= zoom.graph.width;
+			zoom.box.height				= zoom.graph.height;
+			zoom.box.top 				= zoom.image.top + zoom.graph.top;
+			zoom.box.bottom 			= zoom.box.top + zoom.box.height;
+			zoom.box.left				= zoom.image.left + zoom.graph.left;
+			zoom.box.right				= zoom.box.left + zoom.box.width;
 
-			if((zoom.graph.title_font_size <= 0) || (zoom.graph.title_font_size == "")) {
-				zoom.graph.title_font_size = 10;
-			}
-
-			if(zoom.graph.nolegend != undefined) {
-				zoom.graph.title_font_size	*= .70;
-			}
-
-			// update all zoom box attributes. Unfortunately we have to use that best fit way
-			// to support RRDtool 1.2 and below. With RRDtool 1.3 or higher there would be a
-			// much more elegant solution available. (see RRDdtool graph option "graphv")
-			zoom.box.width		= zoom.graph.width;
-			zoom.box.height		= zoom.graph.height;
-
-			if(zoom.graph.title_font_size == null) {
-				zoom.box.top = 32 - 1;
-			}else {
-				//default multiplier
-				var multiplier = 2.4;
-				// array of "best fit" multipliers
-				multipliers = new Array("-5", "-2", "0", "1.7", "1.6", "1.7", "1.8", "1.9", "2", "2", "2.1", "2.1", "2.2", "2.2", "2.3", "2.3", "2.3", "2.3", "2.3");
-				if(multipliers[Math.round(zoom.graph.title_font_size)] != null) {
-					multiplier = multipliers[Math.round(zoom.graph.title_font_size)];
-				}
-				zoom.box.top = zoom.image.top + parseInt(Math.abs(zoom.graph.title_font_size) * multiplier) + 15;
-			}
-
-			zoom.box.bottom = zoom.box.top + zoom.box.height;
-			zoom.box.right	= zoom.image.left + zoom.image.width - 30;
-			zoom.box.left	= zoom.box.right - zoom.graph.width;
+			// get all graph parameters and merge results with zoom.graph object
+			// $.extend(zoom.graph, getUrlVars( $this.attr("src") ));
 
 			// add all additional HTML elements to the DOM if necessary and register
 			// the individual events needed. Once added we will only reset
@@ -477,7 +426,7 @@
 							zoom.marker[marker].left = e.pageX;
 
 							/* place the marker's tooltip, update its value and make it visible if necessary (Setting: "Always On") */
-							zoom.marker[marker].unixtime = parseInt(parseInt(zoom.graph.start) + (e.pageX + 1 - zoom.box.left)*zoom.graph.secondsPerPixel);
+							zoom.marker[marker].unixtime = parseInt(parseInt(zoom.graph.start) + (e.pageX - zoom.box.left)*zoom.graph.secondsPerPixel);
 							$("#zoom-marker-tooltip-value-" + marker).html(
 								unixTime2Date(zoom.marker[marker].unixtime).replace(" ", "<br>")
 							);
@@ -533,7 +482,7 @@
 
 							/* make the marker draggable */
 							$this.draggable({
-								containment:[ zoom.box.left-1, 0 , zoom.box.left+parseInt(zoom.box.width), 0 ],
+								containment:[ zoom.box.left -1, 0 , zoom.box.left+parseInt(zoom.box.width)+1, 0 ],
 								axis: "x",
 								start:
 									function(event, ui) {
@@ -549,11 +498,11 @@
 										}else if(ui.position["left"] > zoom.box.right) {
 											zoom.marker[marker].left = zoom.box.right;
 										}else {
-										zoom.marker[marker].left = ui.position["left"];
+											zoom.marker[marker].left = ui.position["left"]+1;
 										}
 
 										/* update the timestamp shown in tooltip */
-										zoom.marker[marker].unixtime = parseInt(parseInt(zoom.graph.start) + (zoom.marker[marker].left + 1 - zoom.box.left)*zoom.graph.secondsPerPixel);
+										zoom.marker[marker].unixtime = parseInt(parseInt(zoom.graph.start) + (zoom.marker[marker].left - zoom.box.left)*zoom.graph.secondsPerPixel);
 										$("#zoom-marker-tooltip-value-" + marker).html(
 											unixTime2Date(zoom.marker[marker].unixtime).replace(" ", "<br>")
 										);
