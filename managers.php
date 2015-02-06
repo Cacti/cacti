@@ -220,7 +220,7 @@ function manager(){
 		'count_log' => array('Logs', 'ASC')
 	);
 
-
+	print "<form name='chk' method='post' action='managers.php'>\n";
 	html_header_sort_checkbox($display_text, get_request_var_request('sort_column'), get_request_var_request('sort_direction'), false);
 	$i = 0;
 	if (sizeof($managers) > 0) {
@@ -864,7 +864,7 @@ function form_save() {
 }
 
 function form_actions(){
-	global $manager_actions, $manager_notification_actions;
+	global $manager_actions, $manager_notification_actions, $colors;
 
 	if (isset($_POST['selected_items'])) {
 		if(isset($_POST['action_receivers'])) {
