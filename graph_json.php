@@ -116,7 +116,7 @@ while (true) {
 		$parts = explode('=', substr($output,$lpos,$pos-$lpos));
 		$name  = trim($parts[0]);
 		$value = trim($parts[1]);
-		if ($name == "image") {
+		if ($name == 'image') {
 			$oarray[$name] = base64_encode(substr($output,$pos+1));
 			break;
 		}else{
