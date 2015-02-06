@@ -816,7 +816,6 @@ function form_save() {
 
 	switch($_REQUEST['tab']){
 		case 'notifications':
-			;
 			header('Location: managers.php?action=edit&tab=notifications&id=' . (empty($manager_id) ? $_POST['id'] : $manager_id) );
 			break;
 		default:
@@ -891,13 +890,13 @@ function form_actions(){
 			if ($_POST['drp_action'] == '0') { /* disable */
 				foreach($selected_items as $mib => $notifications) {
 					foreach($notifications as $notification => $state) {
-						db_execute_prepared("DELETE FROM snmpagent_managers_notifications WHERE `manager_id` = {$_POST['id']} AND `mib` = '$mib' AND `notification` = '$notification' LIMIT 1");
+						db_execute_prepared('DELETE FROM snmpagent_managers_notifications WHERE `manager_id` = ? AND `mib` = ? AND `notification` = ? LIMIT 1', array($_POST['id'], $mib, $notification));
 					}
 				}
 			}elseif ($_POST['drp_action'] == '1') { /* enable */
 				foreach($selected_items as $mib => $notifications) {
 					foreach($notifications as $notification => $state) {
-						db_execute_prepared("INSERT IGNORE INTO snmpagent_managers_notifications (`manager_id`, `notification`, `mib`) VALUES ('{$_POST['id']}', '$notification', '$mib')");
+						db_execute_prepared('INSERT IGNORE INTO snmpagent_managers_notifications (`manager_id`, `notification`, `mib`) VALUES (?, ?, ?)', array($_POST['id'], $notification), $mib);
 					}
 				}
 			}
