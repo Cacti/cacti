@@ -403,7 +403,7 @@ function applySkin() {
 	if (!theme || theme == 'classic') {
 		theme = 'classic';
 	}else{
-		$('input[type=submit], input[type=button], input[type=checkbox]').button();
+		$('input[type=submit], input[type=button]').button();
 	}
 
 	// For deletable objects, don't alway disable, only on 'Delete'
