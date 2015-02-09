@@ -67,42 +67,14 @@
 			attr: { activeElement:'', start:'none', end:'none', action:'left2right', location: window.location.href.split("?") }
 		};
 
-
-		/* ++++++++++++++++++++++++ Initialization ++++++++++++++++++++++++++ */
-
-		// use a cookie to support local settings
-		zoom.custom =  $.cookie(zoom.options.cookieName) ? unserialize( $.cookie(zoom.options.cookieName) ) : {};
-		if(zoom.custom.zoomMode == undefined) zoom.custom.zoomMode = 'quick';
-		if(zoom.custom.zoomOutPositioning == undefined) zoom.custom.zoomOutPositioning = 'center';
-		if(zoom.custom.zoomOutFactor == undefined) zoom.custom.zoomOutFactor = '2';
-		if(zoom.custom.zoomMarkers == undefined) zoom.custom.zoomMarkers = true;
-		if(zoom.custom.zoomTimestamps == undefined) zoom.custom.zoomTimestamps = 'auto';
-		if(zoom.custom.zoom3rdMouseButton == undefined) zoom.custom.zoom3rdMouseButton = false;
-
-		// create or update a session cookie
-		$.cookie( zoom.options.cookieName, serialize(zoom.custom), {expires: 30} );
-
-		// support jQuery's concatination
+		// support jQuery's concatenation
 		return this.each(function() { zoom_init( $(this) ); });
 
 
 		/* ++++++++++++++++++++ Universal Functions +++++++++++++++++++++++++ */
 
 		/**
-		 * checks if an image has been already loaded or if the link is broken
-		 **/
-		function isReady(image){
-			var $this = image;
-
-			if ($this.width() > 0) {
-				return true;
-			}
-
-			return false;
-		}
-
-		/**
-		 * splits off the parameters of a given url
+		 * splits off the parameters of a given URL
 		 **/
 		function getUrlVars(url) {
 			var parameters = [], name, value;
@@ -171,12 +143,18 @@
 
 		/* init zoom */
 		function zoom_init(image) {
+			/* destroy every other active zoom sessions */
+			zoomElements_remove();
+			
 			var $this = image;
-			$this.mouseenter(
+			$this.parent().disableSelection();
+			$this.off().mouseenter(
 				function(){
 					if($("#zoom-box").length != 0) {
 						if($("#zoom-box").offset().top == parseInt($this.offset().top) + parseInt($this.attr('graph_top')) && $("#zoom-box").offset().left == parseInt($this.offset().left) + parseInt($this.attr('graph_left'))) {
 							return;
+						}else {
+							zoomElements_remove();
 						}
 					}
 					zoomFunction_init($this);
@@ -187,13 +165,27 @@
 		function zoomFunction_init(image) {
 			var $this = image;
 
+			/* as long as Zoom is active reposition all elements once the window has been resized by the user */
+			$(window).off('resize').on('resize', function() { zoomElements_reposition( $this ); } );
+			
+			/* load global settings cached in a cookie if available */
+			zoom.custom =  $.cookie(zoom.options.cookieName) ? unserialize( $.cookie(zoom.options.cookieName) ) : {};
+			if(zoom.custom.zoomMode == undefined) zoom.custom.zoomMode = 'quick';
+			if(zoom.custom.zoomOutPositioning == undefined) zoom.custom.zoomOutPositioning = 'center';
+			if(zoom.custom.zoomOutFactor == undefined) zoom.custom.zoomOutFactor = '2';
+			if(zoom.custom.zoomMarkers == undefined) zoom.custom.zoomMarkers = true;
+			if(zoom.custom.zoomTimestamps == undefined) zoom.custom.zoomTimestamps = 'auto';
+			if(zoom.custom.zoom3rdMouseButton == undefined) zoom.custom.zoom3rdMouseButton = false;
+			$.cookie( zoom.options.cookieName, serialize(zoom.custom), {expires: 30} );
+			
+			/* take care of different time zones server and client can make use of */
 			if(zoom.options.serverTimeOffset > clientTimeOffset ) {
 				timeOffset = (zoom.options.serverTimeOffset - clientTimeOffset)*1000;
 			}else {
 				timeOffset = (clientTimeOffset - zoom.options.serverTimeOffset)*1000*(-1);
 			}
 
-			//collect all attributes that image provides
+			/* fetch all attributes that rrdgraph provides */
 			zoom.image.top				= parseInt($this.offset().top);
 			zoom.image.left				= parseInt($this.offset().left);
 			zoom.image.width			= parseInt($this.attr('image_width'));
@@ -208,9 +200,9 @@
 			zoom.graph.secondsPerPixel 	= zoom.graph.timespan/zoom.graph.width;
 			zoom.box.width				= zoom.graph.width;
 			zoom.box.height				= zoom.graph.height;
-			zoom.box.top 				= zoom.image.top + zoom.graph.top;
-			zoom.box.bottom 			= zoom.box.top + zoom.box.height;
-			zoom.box.left				= zoom.image.left + zoom.graph.left;
+			zoom.box.top 				= zoom.graph.top-1;
+			zoom.box.bottom 			= zoom.graph.top + zoom.box.height;
+			zoom.box.left				= zoom.graph.left-1;
 			zoom.box.right				= zoom.box.left + zoom.box.width;
 
 			// get all graph parameters and merge results with zoom.graph object
@@ -220,28 +212,36 @@
 			// the individual events needed. Once added we will only reset
 			// and reposition these elements.
 
+			// add the container for all elements Zoom requires
+			if($("#zoom-container").length == 0) {
+				// Please note: IE does not fire hover or click behaviors on completely transparent elements.
+				// Use a background color and set opacity to 1% as a workaround.(see CSS file)
+				$("<div id='zoom-container'></div>").appendTo("body");
+				$("#zoom-container").css({ top:zoom.image.top+'px', left:zoom.image.left+'px', width:(zoom.image.width-1)+'px', height:(zoom.image.height-1)+'px' });
+			}
+
 			// add the "zoomBox"
 			if($("#zoom-box").length == 0) {
 				// Please note: IE does not fire hover or click behaviors on completely transparent elements.
 				// Use a background color and set opacity to 1% as a workaround.(see CSS file)
-				$("<div id='zoom-box'></div>").appendTo("body");
+				$("<div id='zoom-box'></div>").appendTo("#zoom-container");
 			}
 
 			// add the "zoomSelectedArea"
 			if($("#zoom-area").length == 0) {
-				$("<div id='zoom-area'></div>").appendTo("body");
+				$("<div id='zoom-area'></div>").appendTo("#zoom-container");
 			}
 
 			// add two markers for the advanced mode
 			if($("#zoom-marker-1").length == 0) {
-				$('<div id="zoom-excluded-area-1" class="zoom-area-excluded"></div>').appendTo("body");
-				$('<div class="zoom-marker" id="zoom-marker-1"><div class="zoom-marker-arrow-down"></div><div class="zoom-marker-arrow-up"></div></div>').appendTo("body");
-				$('<div id="zoom-marker-tooltip-1" class="zoom-marker-tooltip"><div id="zoom-marker-tooltip-1-arrow-left" class="zoom-marker-tooltip-arrow-left"><div id="zoom-marker-tooltip-1-arrow-left-inner" class="zoom-marker-tooltip-arrow-left-inner"></div></div><span id="zoom-marker-tooltip-value-1" class="zoom-marker-tooltip-value">-</span><div id="zoom-marker-tooltip-1-arrow-right" class="zoom-marker-tooltip-arrow-right"><div id="zoom-marker-tooltip-1-arrow-right-inner" class="zoom-marker-tooltip-arrow-right-inner"></div></div></div>').appendTo('body');
+				$('<div id="zoom-excluded-area-1" class="zoom-area-excluded"></div>').appendTo("#zoom-container");
+				$('<div class="zoom-marker" id="zoom-marker-1"><div class="zoom-marker-arrow-down"></div><div class="zoom-marker-arrow-up"></div></div>').appendTo("#zoom-container");
+				$('<div id="zoom-marker-tooltip-1" class="zoom-marker-tooltip"><div id="zoom-marker-tooltip-1-arrow-left" class="zoom-marker-tooltip-arrow-left"><div id="zoom-marker-tooltip-1-arrow-left-inner" class="zoom-marker-tooltip-arrow-left-inner"></div></div><span id="zoom-marker-tooltip-value-1" class="zoom-marker-tooltip-value">-</span><div id="zoom-marker-tooltip-1-arrow-right" class="zoom-marker-tooltip-arrow-right"><div id="zoom-marker-tooltip-1-arrow-right-inner" class="zoom-marker-tooltip-arrow-right-inner"></div></div></div>').appendTo("#zoom-container");
 			}
 			if($("#zoom-marker-2").length == 0) {
-				$('<div id="zoom-excluded-area-2" class="zoom-area-excluded"></div>').appendTo("body");
-				$('<div class="zoom-marker" id="zoom-marker-2"><div class="zoom-marker-arrow-down"></div><div class="zoom-marker-arrow-up"></div></div>').appendTo("body");
-				$('<div id="zoom-marker-tooltip-2" class="zoom-marker-tooltip"><div id="zoom-marker-tooltip-2-arrow-left" class="zoom-marker-tooltip-arrow-left"><div id="zoom-marker-tooltip-1-arrow-left-inner" class="zoom-marker-tooltip-arrow-left-inner"></div></div><span id="zoom-marker-tooltip-value-2" class="zoom-marker-tooltip-value">-</span><div id="zoom-marker-tooltip-2-arrow-right" class="zoom-marker-tooltip-arrow-right"><div id="zoom-marker-tooltip-2-arrow-right-inner" class="zoom-marker-tooltip-arrow-right-inner"></div></div></div>').appendTo('body');
+				$('<div id="zoom-excluded-area-2" class="zoom-area-excluded"></div>').appendTo("#zoom-container");
+				$('<div class="zoom-marker" id="zoom-marker-2"><div class="zoom-marker-arrow-down"></div><div class="zoom-marker-arrow-up"></div></div>').appendTo("#zoom-container");
+				$('<div id="zoom-marker-tooltip-2" class="zoom-marker-tooltip"><div id="zoom-marker-tooltip-2-arrow-left" class="zoom-marker-tooltip-arrow-left"><div id="zoom-marker-tooltip-1-arrow-left-inner" class="zoom-marker-tooltip-arrow-left-inner"></div></div><span id="zoom-marker-tooltip-value-2" class="zoom-marker-tooltip-value">-</span><div id="zoom-marker-tooltip-2-arrow-right" class="zoom-marker-tooltip-arrow-right"><div id="zoom-marker-tooltip-2-arrow-right-inner" class="zoom-marker-tooltip-arrow-right-inner"></div></div></div>').appendTo("#zoom-container");
 			}
 			zoom.marker[1].placed = false;
 			zoom.marker[2].placed = false;
@@ -317,21 +317,44 @@
 					+ '<div class="sep_li"></div>'
 					+ '<div class="first_li">'
 					+ 		'<div class="ui-icon ui-icon-close zoomContextMenuAction__close"></div><span class="zoomContextMenuAction__close">Close</span>'
-					+ '</div>').appendTo('body');
+					+ '</div>').appendTo("#zoom-container");
 			}
-			zoomElemtents_reset()
+			zoomElements_reset()
 			zoomContextMenu_init();
 			zoomAction_init(image);
 		}
 
 		/**
+		 * reposition all elements of Zoom
+		 **/	
+		function zoomElements_reposition( image ) {
+			var $this = image;
+			zoom.image.top	= parseInt($this.offset().top);
+			zoom.image.left	= parseInt($this.offset().left);
+			$("#zoom-container").css({ top:zoom.image.top+'px', left:zoom.image.left+'px' });
+			
+		}
+
+		/**
+		 * resets and destroys all elements of Zoom
+		 **/		
+		function zoomElements_remove() {
+			zoomElements_reset();
+			$("#zoom-container").find('*').off();
+			$("#zoom-container").remove();
+		}
+		
+		/**
 		 * resets all elements of Zoom
 		 **/
-		function zoomElemtents_reset() {
+		function zoomElements_reset() {
+			zoom.attr.start = 'none';
 			zoom.marker = { 1 : { placed:false }, 2 : { placed:false} };
-			$('div[id^="zoom-"]').not('#zoom-menu').each( function () {
+			$('#zoom-container > div[id^="zoom-"]').not('#zoom-menu').each( function () {
 				$(this).removeAttr('style');
 			});
+			$("#zoom-container").off();
+			$("#zoom-container").bind('contextmenu', function(e) { zoomContextMenu_show(e); return false;} );
 			$("#zoom-box").off();
 			$("#zoom-box").css({ cursor:'crosshair', width:zoom.box.width + 'px', height:zoom.box.height + 'px', top:zoom.box.top+'px', left:zoom.box.left+'px' });
 			$("#zoom-box").bind('contextmenu', function(e) { zoomContextMenu_show(e); return false;} );
@@ -349,6 +372,7 @@
 		function zoomAction_init(image) {
 
 			if(zoom.custom.zoomMode == 'quick') {
+				$("#zoom-area").resizable({ containment: "#zoom-box", handles: "e, w" });
 				$("#zoom-box").off("mousedown").on("mousedown", function(e) {
 					switch(e.which) {
 						/* clicking the left mouse button will initiates a zoom-in */
@@ -356,12 +380,8 @@
 							zoomContextMenu_hide();
 							// reset the zoom area
 							zoom.attr.start = e.pageX;
-							if(zoom.custom.zoomMode != 'quick') {
-								$("#zoom-marker-1").css({ height:zoom.box.height+'px', top:zoom.box.top+'px', left:zoom.attr.start+'px', display:'block' });
-								$("#zoom-marker-tooltip-1").css({ top:zoom.box.top+'px', left:zoom.attr.start+'px'});
-							}
 							$("#zoom-box").css({ cursor:'e-resize' });
-							$("#zoom-area").css({ width:'0px', left:zoom.attr.start+'px' });
+							$("#zoom-area").css({ width:'0px', left: zoom.attr.start-zoom.image.left+'px', display:'block'  });
 						break;
 					}
 				});
@@ -385,20 +405,27 @@
 						case 1:
 							if(zoom.attr.start != 'none') {
 								zoomAction_zoom_in();
+			
 							}
 						break;
 					}
 				});
 
 				/* stretch the zoom area in that direction the user moved the mouse pointer */
-				$("#zoom-box").mousemove( function(e) { zoomAction_draw(e) } );
+				$("#zoom-box").mousemove( function(e) { 
+					zoomAction_draw(e);
+				} );
 
 				/* stretch the zoom area in that direction the user moved the mouse pointer.
 				   That is required to get it working faultlessly with Opera, IE and Chrome	*/
-				$("#zoom-area").mousemove( function(e) { zoomAction_draw(e); } );
+				$("#zoom-area").mousemove( function(e) { 
+					zoomAction_draw(e);
+				} );
 
 				/* moving the mouse pointer quickly will avoid that the mousemove event has enough time to actualize the zoom area */
-				$("#zoom-box").mouseout( function(e) { zoomAction_draw(e) } );
+				$("#zoom-box").mouseout( function(e) { 
+					zoomAction_draw(e);
+				} );
 
 			}else{
 				/* welcome to the advanced mode ;) */
@@ -421,20 +448,25 @@
 							var $this = $("#zoom-marker-" + marker);
 
 							/* place the marker and make it visible */
-							$this.css({ height:zoom.box.height+'px', top:zoom.box.top+'px', left:e.pageX+'px', display:'block' });
+							var pos_relative_left = e.pageX-zoom.image.left;
+							var pos_relative_top =  e.pageY-zoom.image.top;
+
+							$this.css({ height:zoom.box.height+'px', top:zoom.box.top+'px', left:pos_relative_left+'px', display:'block' });
 							zoom.marker[marker].placed = true;
-							zoom.marker[marker].left = e.pageX;
+							zoom.marker[marker].left = pos_relative_left;
 
 							/* place the marker's tooltip, update its value and make it visible if necessary (Setting: "Always On") */
-							zoom.marker[marker].unixtime = parseInt(parseInt(zoom.graph.start) + (e.pageX - zoom.box.left)*zoom.graph.secondsPerPixel);
+							zoom.marker[marker].unixtime = parseInt(parseInt(zoom.graph.start) + (pos_relative_left - zoom.box.left)*zoom.graph.secondsPerPixel);
 							$("#zoom-marker-tooltip-value-" + marker).html(
 								unixTime2Date(zoom.marker[marker].unixtime).replace(" ", "<br>")
 							);
 							zoom.marker[marker].width = $("#zoom-marker-tooltip-" + marker).width();
+							zoom.marker[marker].height = $("#zoom-marker-tooltip-" + marker).height();
 
 							$("#zoom-marker-tooltip-" + marker).css({
-								top: ( (marker == 1) ? zoom.box.top+3 : zoom.box.bottom-30 )+'px',
-								left:( (marker == 1) ? e.pageX - zoom.marker[marker].width : e.pageX )+'px'}
+								width: zoom.marker[marker].width +'px',
+								top: ( (marker == 1) ? zoom.box.top+3 : zoom.box.bottom-zoom.marker[marker].height-3 )+'px',
+								left:( (marker == 1) ? pos_relative_left - zoom.marker[marker].width : pos_relative_left )+'px'}
 							);
 
 							if(zoom.custom.zoomTimestamps === true) {
@@ -452,6 +484,7 @@
 								zoom.marker.distance	= zoom.marker[1].left - zoom.marker[2].left;
 
 								$("#zoom-excluded-area-1").css({
+									position:'absolute',
 									height:zoom.box.height+'px',
 									top:zoom.box.top+'px',
 									left: (zoom.marker.distance > 0) ? zoom.marker[1].left : zoom.box.left,
@@ -460,6 +493,7 @@
 								});
 
 								$("#zoom-excluded-area-2").css({
+									position:'absolute',
 									height:zoom.box.height+'px',
 									top:zoom.box.top+'px',
 									left: (zoom.marker.distance < 0) ? zoom.marker[2].left : zoom.box.left,
@@ -482,8 +516,9 @@
 
 							/* make the marker draggable */
 							$this.draggable({
-								containment:[ zoom.box.left -1, 0 , zoom.box.left+parseInt(zoom.box.width)+1, 0 ],
+								containment: "#zoom-box",
 								axis: "x",
+								scroll: false, 
 								start:
 									function(event, ui) {
 										if(zoom.custom.zoomTimestamps == "auto") {
@@ -498,7 +533,7 @@
 										}else if(ui.position["left"] > zoom.box.right) {
 											zoom.marker[marker].left = zoom.box.right;
 										}else {
-											zoom.marker[marker].left = ui.position["left"]+1;
+											zoom.marker[marker].left = ui.position["left"];
 										}
 
 										/* update the timestamp shown in tooltip */
@@ -577,8 +612,8 @@
 			zoomContextMenu_hide();
 
 			if(zoom.custom.zoomMode == 'quick') {
-				var newGraphStartTime 	= (zoom.attr.action == 'left2right') 	? parseInt(parseInt(zoom.graph.start) + (zoom.attr.start - zoom.box.left)*zoom.graph.secondsPerPixel)
-																				: parseInt(parseInt(zoom.graph.start) + (zoom.attr.end - zoom.box.left)*zoom.graph.secondsPerPixel);
+				var newGraphStartTime 	= (zoom.attr.action == 'left2right') 	? parseInt(parseInt(zoom.graph.start) + (zoom.attr.start -zoom.image.left -zoom.box.left)*zoom.graph.secondsPerPixel)
+																				: parseInt(parseInt(zoom.graph.start) + (zoom.attr.end -zoom.image.left -zoom.box.left)*zoom.graph.secondsPerPixel);
 				var newGraphEndTime 	= (zoom.attr.action == 'left2right')	? parseInt(newGraphStartTime + (zoom.attr.end-zoom.attr.start)*zoom.graph.secondsPerPixel)
 																				: parseInt(newGraphStartTime + (zoom.attr.start-zoom.attr.end)*zoom.graph.secondsPerPixel);
 
@@ -606,11 +641,9 @@
 				/* execute zoom within "tree view" or the "preview view" */
 				$('#' + zoom.options.inputfieldStartTime).val(unixTime2Date(newGraphStartTime));
 				$('#' + zoom.options.inputfieldEndTime).val(unixTime2Date(newGraphEndTime));
-				/* destroy all zoom elements */
-				$("[id^='zoom-']").remove();
-				/* submit form data and restart */
+				
+				zoomElements_remove();
 				$("input[name='" + zoom.options.submitButton + "']").trigger('click');
-				zoom_init($('#' + zoom.attr.activeElement));
 				return false;
 			}else {
 				/* graph view is already in zoom status */
@@ -663,11 +696,10 @@
 			if(zoom.options.inputfieldStartTime != '' & zoom.options.inputfieldEndTime != ''){
 				$('#' + zoom.options.inputfieldStartTime).val(unixTime2Date(newGraphStartTime));
 				$('#' + zoom.options.inputfieldEndTime).val(unixTime2Date(newGraphEndTime));
-				/* destroy all zoom elements */
-				$("[id^='zoom-']").remove();
+
+				zoomElements_remove();
 				/* submit form data and restart */
 				$("input[name='" + zoom.options.submitButton + "']").trigger('click');
-				zoom_init($('#' + zoom.attr.activeElement));
 				return false;
 			}else {
 				open(zoom.attr.location[0] + "?action=" + zoom.graph.action + "&local_graph_id=" + zoom.graph.local_graph_id + "&rra_id=" + zoom.graph.rra_id + "&view_type=" + zoom.graph.view_type + "&graph_start=" + newGraphStartTime + "&graph_end=" + newGraphEndTime + "&graph_height=" + zoom.graph.height + "&graph_width=" + zoom.graph.width + "&title_font_size=" + zoom.graph.title_font_size, "_self");
@@ -685,18 +717,13 @@
 			/* mouse has been moved from right to left */
 			if((event.pageX-zoom.attr.start)<0) {
 				zoom.attr.action = 'right2left';
-				zoom.attr.end = (event.pageX < zoom.box.left) ? zoom.box.left : event.pageX;
-				$("#zoom-area").css({ left:(zoom.attr.end+1)+'px', width:Math.abs(zoom.attr.start-zoom.attr.end-1)+'px' });
+				zoom.attr.end = (event.pageX < zoom.image.left+zoom.box.left) ? zoom.image.left+zoom.box.left : event.pageX;
+				$("#zoom-area").css({ left:zoom.attr.end-zoom.image.left+'px', width:Math.abs(zoom.attr.start-zoom.attr.end-1)+'px' });
 			/* mouse has been moved from left to right*/
 			}else {
 				zoom.attr.action = 'left2right';
-				zoom.attr.end = (event.pageX > zoom.box.right) ? zoom.box.right : event.pageX;
-				$("#zoom-area").css({ left:zoom.attr.start+'px', width:Math.abs(zoom.attr.end-zoom.attr.start-1)+'px' });
-			}
-			/* move second marker if necessary */
-			if(zoom.custom.zoomMode != 'quick') {
-				$("#zoom-marker-2").css({ left:(zoom.attr.end+1)+'px' });
-				$("#zoom-marker-tooltip-2").css({ top:zoom.box.top+'px', left:(zoom.attr.end-5)+'px' });
+				zoom.attr.end = (event.pageX > zoom.image.left+zoom.box.right) ? zoom.image.left+zoom.box.right : event.pageX;
+				$("#zoom-area").css({ left:zoom.attr.start-zoom.image.left+'px', width:Math.abs(zoom.attr.end-zoom.attr.start-1)+'px' });
 			}
 		}
 
@@ -796,7 +823,7 @@
 							zoom.custom.zoomMode			= 'advanced';
 							$.cookie( zoom.options.cookieName, serialize(zoom.custom));
 						}
-						zoomElemtents_reset();
+						zoomElements_reset();
 						zoomAction_init(zoom.initiator);
 
 					}
@@ -903,7 +930,7 @@
 				menu_y_offset += (-1*menu_height);
 			}
 
-			$("#zoom-menu").css({ left: menu_x_pos+menu_x_offset, top: menu_y_pos+menu_y_offset, zIndex: '101' }).show();
+			$("#zoom-menu").css({ left: menu_x_pos+menu_x_offset-zoom.image.left, top: menu_y_pos+menu_y_offset-zoom.image.top, zIndex: '101' }).show();
 		};
 
 		function zoomContextMenu_hide(){
