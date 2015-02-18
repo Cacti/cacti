@@ -237,6 +237,8 @@ function generate_report($report, $force = false) {
 			break;
 		}
 	}
+	$user = $report['user_id'];
+	$xport_meta = array();
 
 	if (sizeof($graphids)) {
 	foreach($graphids as $key => $graphid) {
@@ -263,7 +265,7 @@ function generate_report($report, $force = false) {
 		switch($report["attachment_type"]) {
 			case REPORTS_TYPE_INLINE_PNG:
 				$attachments[] = array(
-					'attachment' => @rrdtool_function_graph($graphid, "", $graph_data_array),
+					'attachment' => @rrdtool_function_graph($graphid, '', $graph_data_array, '', $xport_meta, $user),
 					'filename'   => 'graph_' . $graphid . ".png",
 					'mime_type'  => 'image/png',
 					'graphid'    => $graphid,
@@ -273,7 +275,7 @@ function generate_report($report, $force = false) {
 				break;
 			case REPORTS_TYPE_INLINE_JPG:
 				$attachments[] = array(
-					'attachment' => png2jpeg(@rrdtool_function_graph($graphid, "", $graph_data_array)),
+					'attachment' => png2jpeg(@rrdtool_function_graph($graphid, '', $graph_data_array, '', $xport_meta, $user)),
 					'filename'   => 'graph_' . $graphid . ".jpg",
 					'mime_type'  => 'image/jpg',
 					'graphid'    => $graphid,
@@ -283,7 +285,7 @@ function generate_report($report, $force = false) {
 				break;
 			case REPORTS_TYPE_INLINE_GIF:
 				$attachments[] = array(
-					'attachment' => png2gif(@rrdtool_function_graph($graphid, "", $graph_data_array)),
+					'attachment' => png2gif(@rrdtool_function_graph($graphid, '', $graph_data_array, '', $xport_meta, $user)),
 					'filename'   => 'graph_' . $graphid . ".gif",
 					'mime_type'  => 'image/gif',
 					'graphid'    => $graphid,
@@ -293,7 +295,7 @@ function generate_report($report, $force = false) {
 				break;
 			case REPORTS_TYPE_ATTACH_PNG:
 				$attachments[] = array(
-					'attachment' => @rrdtool_function_graph($graphid, "", $graph_data_array),
+					'attachment' => @rrdtool_function_graph($graphid, '', $graph_data_array, '', $xport_meta, $user),
 					'filename'   => 'graph_' . $graphid . ".png",
 					'mime_type'  => 'image/png',
 					'graphid'    => $graphid,
@@ -303,7 +305,7 @@ function generate_report($report, $force = false) {
 				break;
 			case REPORTS_TYPE_ATTACH_JPG:
 				$attachments[] = array(
-					'attachment' => png2jpeg(@rrdtool_function_graph($graphid, "", $graph_data_array)),
+					'attachment' => png2jpeg(@rrdtool_function_graph($graphid, '', $graph_data_array, '', $xport_meta, $user)),
 					'filename'   => 'graph_' . $graphid . ".jpg",
 					'mime_type'  => 'image/jpg',
 					'graphid'    => $graphid,
@@ -313,7 +315,7 @@ function generate_report($report, $force = false) {
 				break;
 			case REPORTS_TYPE_ATTACH_GIF:
 				$attachments[] = array(
-					'attachment' => png2gif(@rrdtool_function_graph($graphid, "", $graph_data_array)),
+					'attachment' => png2gif(@rrdtool_function_graph($graphid, '', $graph_data_array, '', $xport_meta, $user)),
 					'filename'   => 'graph_' . $graphid . ".gif",
 					'mime_type'  => 'image/gif',
 					'graphid'    => $graphid,
@@ -323,7 +325,7 @@ function generate_report($report, $force = false) {
 				break;
 			case REPORTS_TYPE_INLINE_PNG_LN:
 				$attachments[] = array(
-					'attachment' => @rrdtool_function_graph($graphid, "", $graph_data_array),
+					'attachment' => @rrdtool_function_graph($graphid, '', $graph_data_array, '', $xport_meta, $user),
 					'filename'   => '',	# LN does not accept filenames for inline attachments
 					'mime_type'  => 'image/png',
 					'graphid'    => $graphid,
@@ -333,7 +335,7 @@ function generate_report($report, $force = false) {
 				break;
 			case REPORTS_TYPE_INLINE_JPG_LN:
 				$attachments[] = array(
-					'attachment' => png2jpeg(@rrdtool_function_graph($graphid, "", $graph_data_array)),
+					'attachment' => png2jpeg(@rrdtool_function_graph($graphid, '', $graph_data_array, '', $xport_meta, $user)),
 					'filename'   => '',	# LN does not accept filenames for inline attachments
 					'mime_type'  => 'image/jpg',
 					'graphid'    => $graphid,
@@ -343,7 +345,7 @@ function generate_report($report, $force = false) {
 				break;
 			case REPORTS_TYPE_INLINE_GIF_LN:
 				$attachments[] = array(
-					'attachment' => png2gif(@rrdtool_function_graph($graphid, "", $graph_data_array)),
+					'attachment' => png2gif(@rrdtool_function_graph($graphid, '', $graph_data_array, '', $xport_meta, $user)),
 					'filename'   => '',	# LN does not accept filenames for inline attachments
 					'mime_type'  => 'image/gif',
 					'graphid'    => $graphid,
@@ -353,7 +355,7 @@ function generate_report($report, $force = false) {
 				break;
 			case REPORTS_TYPE_ATTACH_PDF:
 #				$attachments[] = array(
-#					'attachment' => png2gif(@rrdtool_function_graph($graphid, "", $graph_data_array)),
+#					'attachment' => png2gif(@rrdtool_function_graph($graphid, '', $graph_data_array, '', $xport_meta, $user)),
 #					'filename'   => 'graph_' . $graphid . ".gif",
 #					'mime_type'  => 'image/gif',
 #					'graphid'    => $graphid,

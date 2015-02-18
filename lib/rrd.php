@@ -690,7 +690,7 @@ function rrd_function_process_graph_options($graph_start, $graph_end, &$graph, &
 	return $graph_opts;
 }
 
-function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rrdtool_pipe = "", &$xport_meta = array()) {
+function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rrdtool_pipe = "", &$xport_meta = array(), $user = 0) {
 	global $config, $consolidation_functions;
 
 	include_once($config["library_path"] . "/cdef.php");
@@ -719,7 +719,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 
 	/* before we do anything; make sure the user has permission to view this graph,
 	if not then get out */
-	if (!is_graph_allowed($local_graph_id)) {
+	if (!is_graph_allowed($local_graph_id, $user)) {
 		return "GRAPH ACCESS DENIED";
 	}
 
