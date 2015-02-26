@@ -1292,7 +1292,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 		$need_rrd_nl = TRUE;
 
 		if (!isset($graph_data_array['export_csv'])) {
-			if ($graph_item_types{$graph_item["graph_type_id"]} == "COMMENT") {
+			if (($graph_item_types{$graph_item["graph_type_id"]} == "COMMENT")  && (!isset($graph_data_array["graph_nolegend"]))) {
 				# perform variable substitution first (in case this will yield an empty results or brings command injection problems)
 				$comment_arg = rrd_substitute_host_query_data($graph_variables["text_format"][$graph_item_id], $graph, $graph_item);
 				# next, compute the argument of the COMMENT statement and perform injection counter measures
