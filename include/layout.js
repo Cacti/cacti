@@ -141,11 +141,11 @@ $.fn.replaceOptions = function(options, selected) {
 /** textWidth - This function will return the natural width of a string
  *  without any wrapping. */
 $.fn.textWidth = function(text){
-	var org = $(this)
-	var html = $('<span style="display:none;position:absolute;width:auto;left:-9999px">' + (text || org.html()) + '</span>');
+	var org = $(this);
+	var html = $('<span style="display:none;white-space:nowrap;position:absolute;width:auto;left:-9999px">' + (text || org.html()) + '</span>');
 	if (!text) {
 		html.css("font-family", org.css("font-family"));
-		html.css("font-size", org.css("font-size"));
+		html.css("font-weight", org.css("font-weight"));
 	}
 	$('body').append(html);
 	var width = html.width();
