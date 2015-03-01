@@ -236,7 +236,7 @@ if (read_config_option('realtime_enabled') == '') {
 		<table align='center'>
 			<tr>
 				<td> 
-					<strong>Timespan:</strong>
+					<strong>Timespan</strong>
 				</td>
 				<td>
 					<select name='graph_start' id='graph_start' onChange='self.imageOptionsChanged("timespan")'>
@@ -250,7 +250,7 @@ if (read_config_option('realtime_enabled') == '') {
 					</select>
 				</td>
 				<td>
-					<strong>Interval:</strong>
+					<strong>Interval</strong>
 				</td>
 				<td>
 					<select name='ds_step' id='ds_step' onChange="self.imageOptionsChanged('interval')">
@@ -300,8 +300,6 @@ if (read_config_option('realtime_enabled') == '') {
 		/* set the window size */
 		height = $(".graphimage").height();
 		width  = $(".graphimage").width();
-
-		//console.log("Height '" + height + "', Width '" + width + "'");
 
 		if (height > 40) {
 			if (browser == "IE") {

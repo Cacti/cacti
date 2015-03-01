@@ -380,7 +380,6 @@ function item_edit() {
 	$(function() {
 		setRowVisibility();
 		$('#graph_type_id').change(function(data) {
-		console.log('Change Triggered');
 			setRowVisibility();
 		});
 	});

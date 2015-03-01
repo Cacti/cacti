@@ -143,7 +143,11 @@ case 'tree_content':
 	}
 
 	?>
-	<script type='text/javascript'>timeOffset=<?php print date('Z');?>;</script>
+	<script type='text/javascript'>
+	var graph_start=<?php print get_current_graph_start();?>;
+	var graph_end=<?php print get_current_graph_end();?>;
+	var timeOffset=<?php print date('Z');?>
+	</script>
 	<?php
 
 	$access_denied = false;
@@ -245,7 +249,7 @@ case 'preview':
 	load_current_session_value('graph_remove', 'sess_graph_view_graph_remove', '');
 
 	/* include graph view filter selector */
-	html_start_box('<strong>Graph Filters</strong>' . (isset($_REQUEST['style']) && strlen($_REQUEST['style']) ? ' [ Custom Graph List Applied - Filtering FROM List ]':''), '100%', '', '3', 'center', '');
+	html_start_box('<strong>Graph Preview Filters</strong>' . (isset($_REQUEST['style']) && strlen($_REQUEST['style']) ? ' [ Custom Graph List Applied - Filtering FROM List ]':''), '100%', '', '3', 'center', '');
 
 	?>
 	<tr class='even noprint'>
@@ -257,7 +261,7 @@ case 'preview':
 						Device
 					</td>
 					<td>
-						<select id='host_id' name='host_id' onChange='applyFilter()'>
+						<select id='host_id' onChange='applyFilter()'>
 							<option value='0'<?php if (get_request_var_request('host_id') == '0') {?> selected<?php }?>>Any</option>
 							<?php
 							$hosts = get_allowed_devices();
@@ -273,7 +277,7 @@ case 'preview':
 						Template
 					</td>
 					<td>
-						<select id='graph_template_id' name='graph_template_id' onChange='applyFilter()'>
+						<select id='graph_template_id' onChange='applyFilter()'>
 							<option value='0'<?php if (get_request_var_request('graph_template_id') == '0') {?> selected<?php }?>>Any</option>
 							<?php
 
@@ -291,7 +295,7 @@ case 'preview':
 						Graphs
 					</td>
 					<td>
-						<select id='rows' name='rows' onChange='applyFilter()'>
+						<select id='rows' onChange='applyFilter()'>
 							<?php
 							if (sizeof($graphs_per_page) > 0) {
 							foreach ($graphs_per_page as $key => $value) {
@@ -305,7 +309,7 @@ case 'preview':
 						Columns
 					</td>
 					<td>
-						<select id='columns' name='columns' onChange='applyFilter()'>
+						<select id='columns' onChange='applyFilter()'>
 							<option value='1'<?php if (get_request_var_request('columns') == '1') {?> selected<?php }?>>1 Column</option>
 							<option value='2'<?php if (get_request_var_request('columns') == '2') {?> selected<?php }?>>2 Columns</option>
 							<option value='3'<?php if (get_request_var_request('columns') == '3') {?> selected<?php }?>>3 Columns</option>
@@ -317,19 +321,19 @@ case 'preview':
 						<label for='thumbnails'>Thumbnails</label>
 					</td>
 					<td>
-						<input id='thumbnails' type='checkbox' name='thumbnails' onClick='applyFilter()' <?php print (($_REQUEST['thumbnails'] == 'true') ? 'checked':'');?>>
+						<input id='thumbnails' type='checkbox' onClick='applyFilter()' <?php print (($_REQUEST['thumbnails'] == 'true') ? 'checked':'');?>>
 					</td>
 					<td>
 						Search
 					</td>
 					<td>
-						<input type='text' id='filter' name='filter' size='25' value='<?php print htmlspecialchars(get_request_var_request('filter'));?>'>
+						<input type='text' id='filter' size='25' value='<?php print htmlspecialchars(get_request_var_request('filter'));?>' onChange='applyFilter()'>
 					</td>
 					<td>
 						<input type='button' value='Go' title='Set/Refresh Filters' onClick='applyFilter()'>
 					</td>
 					<td>
-						<input type='button' name='clear_x' value='Clear' title='Clear Filters' onClick='clearFilter()'>
+						<input type='button' value='Clear' title='Clear Filters' onClick='clearFilter()'>
 					</td>
 				</tr>
 			</table>
@@ -337,7 +341,6 @@ case 'preview':
 		</td>
 	</tr>
 	<script type='text/javascript'>
-
 	var graph_start=<?php print get_current_graph_start();?>;
 	var graph_end=<?php print get_current_graph_end();?>;
 	var timeOffset=<?php print date('Z');?>;
@@ -361,8 +364,26 @@ case 'preview':
 		});
 	}
 
+	function applyTimespan() {
+		$.get('graph_view.php?action=preview&header=false'+
+			'&predefined_timespan='+$('#predefined_timespan').val()+
+			'&predefined_timeshift='+$('#predefined_timeshift').val(), function(data) {
+			$('#main').html(data);
+			applySkin();
+			initializeGraphs();
+		});
+	}
+
 	function refreshTimespanFilter() {
-		var json = { custom: 1, button_refresh_x: 1, date1: $('#date1').val(), date2: $('#date2').val(), predefined_timespan: $('#predefined_timespan').val(), predefined_timeshift: $('#predefined_timeshift').val() };
+		var json = { 
+			custom: 1, 
+			button_refresh_x: 1, 
+			date1: $('#date1').val(), 
+			date2: $('#date2').val(), 
+			predefined_timespan: $('#predefined_timespan').val(), 
+			predefined_timeshift: $('#predefined_timeshift').val()
+		};
+
 		var url  = 'graph_view.php?action=preview&header=false';
 		$.post(url, json).done(function(data) {
 			$('#main').html(data);
@@ -372,7 +393,15 @@ case 'preview':
 	}
 
 	function timeshiftFilterLeft() {
-		var json = { move_left_x: 1, move_left_y: 1, date1: $('#date1').val(), date2: $('#date2').val(), predefined_timespan: $('#predefined_timespan').val(), predefined_timeshift: $('#predefined_timeshift').val() };
+		var json = { 
+			move_left_x: 1, 
+			move_left_y: 1, 
+			date1: $('#date1').val(), 
+			date2: $('#date2').val(), 
+			predefined_timespan: $('#predefined_timespan').val(), 
+			predefined_timeshift: $('#predefined_timeshift').val() 
+		};
+
 		var url  = 'graph_view.php?action=preview&header=false';
 		$.post(url, json).done(function(data) {
 			$('#main').html(data);
@@ -382,7 +411,15 @@ case 'preview':
 	}
 
 	function timeshiftFilterRight() {
-		var json = { move_right_x: 1, move_right_y: 1, date1: $('#date1').val(), date2: $('#date2').val(), predefined_timespan: $('#predefined_timespan').val(), predefined_timeshift: $('#predefined_timeshift').val() };
+		var json = { 
+			move_right_x: 1, 
+			move_right_y: 1, 
+			date1: $('#date1').val(), 
+			date2: $('#date2').val(), 
+			predefined_timespan: $('#predefined_timespan').val(), 
+			predefined_timeshift: $('#predefined_timeshift').val() 
+		};
+
 		var url  = 'graph_view.php?action=preview&header=false';
 		$.post(url, json).done(function(data) {
 			$('#main').html(data);
@@ -410,7 +447,7 @@ case 'preview':
 	}
 
 	function initializeGraphs() {
-		$('span[id$="_mrtg"]').click(function() {
+		$('span[id$="_mrtg"]').unbind('click').click(function() {
 			graph_id=$(this).attr('id').replace('graph_','').replace('_mrtg','');
 			$.get('graph.php?local_graph_id='+graph_id+'&header=false', function(data) {
 				$('#breadcrumbs').append('<li><a id="nav_mrgt" href="#">MRTG View</a></li>');
@@ -419,12 +456,12 @@ case 'preview':
 			});
 		});
 
-		$('span[id$="_csv"]').click(function() {
+		$('span[id$="_csv"]').unbind('click').click(function() {
 			graph_id=$(this).attr('id').replace('graph_','').replace('_csv','');
 			document.location = 'graph_xport.php?local_graph_id='+graph_id+'&rra_id=0&view_type=tree&graph_start='+getTimestampFromDate($('#date1').val())+'&graph_end='+getTimestampFromDate($('#date2').val());
 		});
 
-		$('#form_graph_view').on('submit', function(event) {
+		$('#form_graph_view').unbind('submit').on('submit', function(event) {
 			event.preventDefault();
 			applyFilter();
 		});
@@ -442,35 +479,30 @@ case 'preview':
 				'&graph_width='+graph_width+
 				<?php print (isset($_REQUEST['thumbnails']) && $_REQUEST['thumbnails'] == 'true' ? "'&graph_nolegend=true'":"''");?>, 
 				function(data) {
-				$('#wrapper_'+data.local_graph_id).html("<img class='graphimage' id='graph_"+data.local_graph_id+"' src='data:image/png;base64,"+data.image+"' border='0' graph_left='"+data.graph_left+"' graph_top='"+data.graph_top+"' graph_width='"+data.graph_width+"' graph_height='"+data.graph_height+"' image_width='"+data.image_width+"' image_height='"+data.image_height+"' value_min='"+data.value_min+"' value_max='"+data.value_max+"'>");
-			});
+					$('#wrapper_'+data.local_graph_id).html("<img class='graphimage' id='graph_"+data.local_graph_id+"' src='data:image/png;base64,"+data.image+"' border='0' graph_start='"+data.graph_start+"' graph_end='"+data.graph_end+"' graph_left='"+data.graph_left+"' graph_top='"+data.graph_top+"' graph_width='"+data.graph_width+"' graph_height='"+data.graph_height+"' image_width='"+data.image_width+"' image_height='"+data.image_height+"' value_min='"+data.value_min+"' value_max='"+data.value_max+"'>");
+					$("#graph_"+data.local_graph_id).zoom({
+						inputfieldStartTime : 'date1', 
+						inputfieldEndTime : 'date2', 
+						serverTimeOffset : <?php print date('Z') . "\n";?>
+					});
+					realtimeArray[data.local_graph_id] = false;
+				});
 		});
 
-		$('.graphimage').zoom({
-			inputfieldStartTime : 'date1', 
-			inputfieldEndTime : 'date2', 
-			serverTimeOffset : <?php print date('Z');?>
-		});
-
-		$('.graphimage').each(function() {
-			graph_id = $(this).attr('id').replace('graph_','');
-			realtimeArray[graph_id] = false;
-		});
-
-		$('#realtimeoff').click(function() {
+		$('#realtimeoff').unbind('click').click(function() {
 			stopRealtime();
 		});
 
-		$('#ds_step').change(function() {
+		$('#ds_step').unbind('change').change(function() {
 			realtimeGrapher();
 		});
 
-		$('span[id$="_realtime"]').click(function() {
+		$('span[id$="_realtime"]').unbind('click').click(function() {
 			graph_id=$(this).attr('id').replace('graph_','').replace('_realtime','');
 
 			if (realtimeArray[graph_id]) {
 				$('#wrapper_'+graph_id).html(keepRealtime[graph_id]).change();
-				$(this).html("<img class='drillDown' border='0' title='Click to view just this Graph in Realtime' alt='' src='/cacti/images/chart_curve_go.png'>");
+				$(this).html("<img class='drillDown' border='0' title='Click to view just this Graph in Realtime' alt='' src='<?php print $config['url_path'];?>/images/chart_curve_go.png'>");
 				$(this).find('img').tooltip().zoom({ inputfieldStartTime : 'date1', inputfieldEndTime : 'date2', serverTimeOffset : timeOffset });
 				realtimeArray[graph_id] = false;
 				setFilters();
@@ -503,7 +535,7 @@ case 'preview':
 							Presets
 						</td>
 						<td>
-							<select id='predefined_timespan' name='predefined_timespan' onChange='applyTimespanFilterChange(document.form_timespan_selector)'>
+							<select id='predefined_timespan' onChange='applyTimespan()'>
 								<?php
 								if ($_SESSION['custom']) {
 									$graph_timespans[GT_CUSTOM] = 'Custom';
@@ -530,7 +562,7 @@ case 'preview':
 							From
 						</td>
 						<td>
-							<input type='text' name='date1' id='date1' title='Graph Begin Timestamp' size='15' value='<?php print (isset($_SESSION['sess_current_date1']) ? $_SESSION['sess_current_date1'] : '');?>'>
+							<input type='text' id='date1' title='Graph Begin Timestamp' size='18' value='<?php print (isset($_SESSION['sess_current_date1']) ? $_SESSION['sess_current_date1'] : '');?>'>
 						</td>
 						<td>
 							<input type='image' src='images/calendar.gif' align='middle' alt='Start date selector' title='Start date selector' onclick="return showCalendar('date1');">
@@ -539,7 +571,7 @@ case 'preview':
 							To
 						</td>
 						<td>
-							<input type='text' name='date2' id='date2' title='Graph End Timestamp' size='15' value='<?php print (isset($_SESSION['sess_current_date2']) ? $_SESSION['sess_current_date2'] : '');?>'>
+							<input type='text' id='date2' title='Graph End Timestamp' size='18' value='<?php print (isset($_SESSION['sess_current_date2']) ? $_SESSION['sess_current_date2'] : '');?>'>
 						</td>
 						<td>
 							<input type='image' src='images/calendar.gif' align='middle' alt='End date selector' title='End date selector' onclick="return showCalendar('date2');">
@@ -788,7 +820,7 @@ case 'list':
 	load_current_session_value('graph_list', 'sess_graph_view_list_graph_list', '');
 
 	/* display graph view filter selector */
-	html_start_box('<strong>Graph Filters</strong>' . (isset($_REQUEST['style']) && strlen($_REQUEST['style']) ? ' [ Custom Graph List Applied - Filter FROM List ]':''), '100%', '', '3', 'center', '');
+	html_start_box('<strong>Graph List View Filters</strong>' . (isset($_REQUEST['style']) && strlen($_REQUEST['style']) ? ' [ Custom Graph List Applied - Filter FROM List ]':''), '100%', '', '3', 'center', '');
 
 	?>
 	<tr class='even noprint'>

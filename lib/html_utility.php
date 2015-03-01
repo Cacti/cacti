@@ -38,7 +38,7 @@
    @returns - $form_array with all available variables substituted with their
      proper values */
 function inject_form_variables(&$form_array, $arg1 = array(), $arg2 = array(), $arg3 = array(), $arg4 = array()) {
-	$check_fields = array("value", "array", "friendly_name", "description", "sql", "sql_print", "form_id", "items", "tree_id");
+	$check_fields = array('value', 'array', 'friendly_name', 'description', 'sql', 'sql_print', 'form_id', 'items', 'tree_id');
 
 	/* loop through each available field */
 	if (sizeof($form_array)) {
@@ -48,11 +48,11 @@ function inject_form_variables(&$form_array, $arg1 = array(), $arg2 = array(), $
 			if (isset($field_array[$field_to_check]) && (is_array($form_array[$field_name][$field_to_check]))) {
 				/* if the field/sub-field combination is an array, resolve it recursively */
 				$form_array[$field_name][$field_to_check] = inject_form_variables($form_array[$field_name][$field_to_check], $arg1);
-			}elseif (isset($field_array[$field_to_check]) && (!is_array($field_array[$field_to_check])) && (preg_match("/\|(arg[123]):([a-zA-Z0-9_]*)\|/", $field_array[$field_to_check], $matches))) {
+			}elseif (isset($field_array[$field_to_check]) && (!is_array($field_array[$field_to_check])) && (preg_match('/\|(arg[123]):([a-zA-Z0-9_]*)\|/', $field_array[$field_to_check], $matches))) {
 				$string = $field_array[$field_to_check];
 				while ( 1 ) {
 					/* an empty field name in the variable means don't treat this as an array */
-					if ($matches[2] == "") {
+					if ($matches[2] == '') {
 						if (is_array(${$matches[1]})) {
 							/* the existing value is already an array, leave it alone */
 							$form_array[$field_name][$field_to_check] = ${$matches[1]};
@@ -64,10 +64,10 @@ function inject_form_variables(&$form_array, $arg1 = array(), $arg2 = array(), $
 						}
 					}else{
 						/* copy the value down from the array/key specified in the variable */
-						$string = str_replace($matches[0], ((isset(${$matches[1]}{$matches[2]})) ? ${$matches[1]}{$matches[2]} : ""), $string);
+						$string = str_replace($matches[0], ((isset(${$matches[1]}{$matches[2]})) ? ${$matches[1]}{$matches[2]} : ''), $string);
 
 						$matches = array();
-						preg_match("/\|(arg[123]):([a-zA-Z0-9_]*)\|/", $string, $matches);
+						preg_match('/\|(arg[123]):([a-zA-Z0-9_]*)\|/', $string, $matches);
 						if (!sizeof($matches)) {
 							$form_array[$field_name][$field_to_check] = $string;
 							break;
@@ -89,12 +89,12 @@ function inject_form_variables(&$form_array, $arg1 = array(), $arg2 = array(), $
      to display for this particular row. must be an integer
    @arg $row_id - used to allow js and ajax actions on this object
    @returns - the background color used for this particular row */
-function form_alternate_row_color($row_color1, $row_color2, $row_value, $row_id = "") {
+function form_alternate_row_color($row_color1, $row_color2, $row_value, $row_id = '') {
 	if (($row_value % 2) == 1) {
 			$class='odd';
 			$current_color = $row_color1;
 	}else{
-		if ($row_color2 == '' || $row_color2 == "E5E5E5") {
+		if ($row_color2 == '' || $row_color2 == 'E5E5E5') {
 			$class = 'even';
 		}else{
 			$class = 'even-alternate';
@@ -115,7 +115,7 @@ function form_alternate_row_color($row_color1, $row_color2, $row_value, $row_id 
    @arg $light - Alternate odd style
    @arg $row_id - The id of the row
    @arg $reset - Reset to top of table */
-function form_alternate_row($row_id = "", $light = false, $disabled = false) {
+function form_alternate_row($row_id = '', $light = false, $disabled = false) {
 	static $i = 1;
 
 	if (($i % 2) == 1) {
@@ -144,8 +144,8 @@ function form_alternate_row($row_id = "", $light = false, $disabled = false) {
    @arg $id - the id of the object that will be highlighted
    @arg $width - the width of the table element
    @arg $style - the style to apply to the table element */
-function form_selectable_cell($contents, $id, $width="", $style="") {
-	print "\t<td" . (strlen($width) ? " width='$width'" : "") . (strlen($style) ? " style='$style;'" : "") . ">" . $contents . "</td>\n";
+function form_selectable_cell($contents, $id, $width='', $style='') {
+	print "\t<td" . (strlen($width) ? " width='$width'" : '') . (strlen($style) ? " style='$style;'" : '') . '>' . $contents . "</td>\n";
 }
 
 /* form_checkbox_cell - format's a tables checkbox form element so that the cacti js actions work on it
@@ -326,10 +326,10 @@ function get_colored_device_status($disabled, $status) {
      the timespan selector
    @returns - the number of seconds relative to now where the graph should begin */
 function get_current_graph_start() {
-	if (isset($_SESSION["sess_current_timespan_begin_now"])) {
-		return $_SESSION["sess_current_timespan_begin_now"];
+	if (isset($_SESSION['sess_current_timespan_begin_now'])) {
+		return $_SESSION['sess_current_timespan_begin_now'];
 	}else{
-		return "-" . DEFAULT_TIMESPAN;
+		return '-' . DEFAULT_TIMESPAN;
 	}
 }
 
@@ -337,10 +337,10 @@ function get_current_graph_start() {
      the timespan selector
    @returns - the number of seconds relative to now where the graph should end */
 function get_current_graph_end() {
-	if (isset($_SESSION["sess_current_timespan_end_now"])) {
-		return $_SESSION["sess_current_timespan_end_now"];
+	if (isset($_SESSION['sess_current_timespan_end_now'])) {
+		return $_SESSION['sess_current_timespan_end_now'];
 	}else{
-		return "0";
+		return '0';
 	}
 }
 
@@ -353,8 +353,8 @@ function get_current_graph_end() {
    @arg $total_rows - the total number of available rows
    @arg $url - the url string to prepend to each page click
    @returns - a string containing html that represents the a page list */
-function get_page_list($current_page, $pages_per_screen, $rows_per_page, $total_rows, $url, $page_var = "page", $return_to = '') {
-	$url_page_select = "";
+function get_page_list($current_page, $pages_per_screen, $rows_per_page, $total_rows, $url, $page_var = 'page', $return_to = '') {
+	$url_page_select = '';
 
 	if (strpos($url, '?') !== false) {
 		$url . '&';
@@ -375,7 +375,7 @@ function get_page_list($current_page, $pages_per_screen, $rows_per_page, $total_
 	if ($current_page <= ceil(($pages_per_screen) / 2)) {
 		$end_page += ($pages_per_screen - $end_page);
 	}else{
-		$url_page_select .= "...";
+		$url_page_select .= '...';
 	}
 
 	/* adjust if we are close to the end of the page list */
@@ -398,12 +398,12 @@ function get_page_list($current_page, $pages_per_screen, $rows_per_page, $total_
 		}
 
 		if (($page_number+$start_page) < $end_page) {
-			$url_page_select .= ",";
+			$url_page_select .= ',';
 		}
 	}
 
 	if (($total_pages - $current_page) >= ceil(($pages_per_screen) / 2)) {
-		$url_page_select .= "...";
+		$url_page_select .= '...';
 	}
 
 	if ($return_to != '') {

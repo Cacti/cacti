@@ -500,7 +500,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 							From
 						</td>
 						<td>
-							<input type='text' name='date1' id='date1' title='Graph Begin Timestamp' size='15' value='<?php print (isset($_SESSION['sess_current_date1']) ? $_SESSION['sess_current_date1'] : '');?>'>
+							<input type='text' id='date1' title='Graph Begin Timestamp' size='18' value='<?php print (isset($_SESSION['sess_current_date1']) ? $_SESSION['sess_current_date1'] : '');?>'>
 						</td>
 						<td>
 							<input type='image' src='images/calendar.gif' align='middle' alt='Start date selector' title='Start date selector' onclick="return showCalendar('date1');">
@@ -509,7 +509,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 							To
 						</td>
 						<td>
-							<input type='text' name='date2' id='date2' title='Graph End Timestamp' size='15' value='<?php print (isset($_SESSION['sess_current_date2']) ? $_SESSION['sess_current_date2'] : '');?>'>
+							<input type='text' id='date2' title='Graph End Timestamp' size='18' value='<?php print (isset($_SESSION['sess_current_date2']) ? $_SESSION['sess_current_date2'] : '');?>'>
 						</td>
 						<td>
 							<input type='image' src='images/calendar.gif' align='middle' alt='End date selector' title='End date selector' onclick="return showCalendar('date2');">
@@ -677,8 +677,16 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 	}
 
 	function clearTimespanFilter() {
-		var json = { button_clear_x: 1, date1: $('#date1').val(), date2: $('#date2').val(), predefined_timespan: $('#predefined_timespan').val(), predefined_timeshift: $('#predefined_timeshift').val() };
+		var json = { 
+			button_clear_x: 1, 
+			date1: $('#date1').val(), 
+			date2: $('#date2').val(), 
+			predefined_timespan: $('#predefined_timespan').val(), 
+			predefined_timeshift: $('#predefined_timeshift').val()
+		};
+
 		var url  = 'graph_view.php?action=tree_content&tree_id=<?php print $_SESSION['sess_graph_tree_tree_id'];?>&leaf_id=<?php print $_SESSION['sess_graph_tree_leaf_id'];?>&host_group_data=<?php print $_SESSION['sess_graph_tree_host_group_data'];?>&nodeid=<?php print $_SESSION['sess_graph_tree_nodeid'];?>';
+
 		$.post(url, json).done(function(data) {
 			$('#main').html(data);
 			applySkin();
@@ -687,8 +695,16 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 	}
 
 	function refreshTimespanFilter() {
-		var json = { button_refresh_x: 1, date1: $('#date1').val(), date2: $('#date2').val(), predefined_timespan: $('#predefined_timespan').val(), predefined_timeshift: $('#predefined_timeshift').val() };
+		var json = { 
+			button_refresh_x: 1, 
+			date1: $('#date1').val(), 
+			date2: $('#date2').val(), 
+			predefined_timespan: $('#predefined_timespan').val(), 
+			predefined_timeshift: $('#predefined_timeshift').val()
+		};
+
 		var url  = 'graph_view.php?action=tree_content&tree_id=<?php print $_SESSION['sess_graph_tree_tree_id'];?>&leaf_id=<?php print $_SESSION['sess_graph_tree_leaf_id'];?>&host_group_data=<?php print $_SESSION['sess_graph_tree_host_group_data'];?>&nodeid=<?php print $_SESSION['sess_graph_tree_nodeid'];?>';
+
 		$.post(url, json).done(function(data) {
 			$('#main').html(data);
 			applySkin();
@@ -697,8 +713,17 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 	}
 
 	function timeshiftFilterLeft() {
-		var json = { move_left_x: 1, move_left_y: 1, date1: $('#date1').val(), date2: $('#date2').val(), predefined_timespan: $('#predefined_timespan').val(), predefined_timeshift: $('#predefined_timeshift').val() };
+		var json = { 
+			move_left_x: 1,
+			move_left_y: 1, 
+			date1: $('#date1').val(), 
+			date2: $('#date2').val(), 
+			predefined_timespan: $('#predefined_timespan').val(), 
+			predefined_timeshift: $('#predefined_timeshift').val()
+		};
+
 		var url  = 'graph_view.php?action=tree_content&tree_id=<?php print $_SESSION['sess_graph_tree_tree_id'];?>&leaf_id=<?php print $_SESSION['sess_graph_tree_leaf_id'];?>&host_group_data=<?php print $_SESSION['sess_graph_tree_host_group_data'];?>&nodeid=<?php print $_SESSION['sess_graph_tree_nodeid'];?>';
+
 		$.post(url, json).done(function(data) {
 			$('#main').html(data);
 			applySkin();
@@ -707,8 +732,17 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 	}
 
 	function timeshiftFilterRight() {
-		var json = { move_right_x: 1, move_right_y: 1, date1: $('#date1').val(), date2: $('#date2').val(), predefined_timespan: $('#predefined_timespan').val(), predefined_timeshift: $('#predefined_timeshift').val() };
+		var json = { 
+			move_right_x: 1, 
+			move_right_y: 1, 
+			date1: $('#date1').val(), 
+			date2: $('#date2').val(), 
+			predefined_timespan: $('#predefined_timespan').val(), 
+			predefined_timeshift: $('#predefined_timeshift').val()
+		};
+
 		var url  = 'graph_view.php?action=tree_content&tree_id=<?php print $_SESSION['sess_graph_tree_tree_id'];?>&leaf_id=<?php print $_SESSION['sess_graph_tree_leaf_id'];?>&host_group_data=<?php print $_SESSION['sess_graph_tree_host_group_data'];?>&nodeid=<?php print $_SESSION['sess_graph_tree_nodeid'];?>';
+
 		$.post(url, json).done(function(data) {
 			$('#main').html(data);
 			applySkin();
@@ -721,7 +755,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 	}
 
 	function initializeGraphs() {
-		$('span[id$="_mrtg"]').click(function() {
+		$('span[id$="_mrtg"]').unbind('click').click(function() {
 			graph_id=$(this).attr('id').replace('graph_','').replace('_mrtg','');
 			$.get('graph.php?local_graph_id='+graph_id+'&header=false', function(data) {
 				$('#breadcrumbs').append('<li><a id="nav_mrgt" href="#">MRTG View</a></li>');
@@ -730,12 +764,12 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 			});
 		});
 
-		$('span[id$="_csv"]').click(function() {
+		$('span[id$="_csv"]').unbind('click').click(function() {
 			graph_id=$(this).attr('id').replace('graph_','').replace('_csv','');
 			document.location = 'graph_xport.php?local_graph_id='+graph_id+'&rra_id=0&view_type=tree&graph_start='+getTimestampFromDate($('#date1').val())+'&graph_end='+getTimestampFromDate($('#date2').val());
 		});
 
-		$('#form_graph_view').on('submit', function(event) {
+		$('#form_graph_view').unbind('submit').on('submit', function(event) {
 			event.preventDefault();
 			applyFilter();
 		});
@@ -755,30 +789,23 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 				function(data) {
 					$('#wrapper_'+data.local_graph_id).html("<img class='graphimage' id='graph_"+data.local_graph_id+"' src='data:image/png;base64,"+data.image+"' border='0' graph_start='"+data.graph_start+"' graph_end='"+data.graph_end+"' graph_left='"+data.graph_left+"' graph_top='"+data.graph_top+"' graph_width='"+data.graph_width+"' graph_height='"+data.graph_height+"' image_width='"+data.image_width+"' image_height='"+data.image_height+"' value_min='"+data.value_min+"' value_max='"+data.value_max+"'>");
 					$("#graph_"+data.local_graph_id).zoom({
-			inputfieldStartTime : 'date1', 
-			inputfieldEndTime : 'date2', 
-			serverTimeOffset : <?php print date('Z');?>
-		});
+						inputfieldStartTime : 'date1', 
+						inputfieldEndTime : 'date2', 
+						serverTimeOffset : <?php print date('Z') . "\n";?>
+					});
+					realtimeArray[data.local_graph_id] = false;
 				});
 		});
 
-
-
-
-		$('.graphimage').each(function() {
-			graph_id = $(this).attr('id').replace('graph_','');
-			realtimeArray[graph_id] = false;
-		});
-
-		$('#realtimeoff').click(function() {
+		$('#realtimeoff').unbind('click').click(function() {
 			stopRealtime();
 		});
 
-		$('#ds_step').change(function() {
+		$('#ds_step').unbind('change').change(function() {
 			realtimeGrapher();
 		});
 
-		$('span[id$="_realtime"]').click(function() {
+		$('span[id$="_realtime"]').unbind('click').click(function() {
 			graph_id=$(this).attr('id').replace('graph_','').replace('_realtime','');
 
 			if (realtimeArray[graph_id]) {

@@ -87,15 +87,12 @@ function themeReady() {
 			}, 200);
 		}
 	}).on('mouseleave', function() {
-		console.log('Leaving');
 		hostTimer = setTimeout(function() { $('#host').autocomplete('close'); }, 800);
 	});
 
 	$('ul[id="ui-id-1"]').on('mouseover', function() {
-		console.log('Entering Hidden');
 		clearTimeout(hostTimer);
 	}).on('mouseout', function() {
-		console.log('Leaving Hidden');
 		hostTimer = setTimeout(function() { $('#host').autocomplete('close'); }, 800);
 	});
 

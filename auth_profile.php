@@ -309,7 +309,6 @@ function settings() {
 		});
 
 		$('input[value="Return"]').unbind().click(function(event) {
-			console.log('The refer is:<?php print $_SESSION['profile_referer'];?>');
 			document.location = '<?php print $_SESSION['profile_referer'];?>';
 		});
 
