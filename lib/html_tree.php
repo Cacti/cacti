@@ -787,7 +787,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 				'&graph_width='+graph_width+
 				<?php print (isset($_REQUEST['thumbnails']) && $_REQUEST['thumbnails'] == 'true' ? "'&graph_nolegend=true'":"''");?>, 
 				function(data) {
-					$('#wrapper_'+data.local_graph_id).html("<img class='graphimage' id='graph_"+data.local_graph_id+"' src='data:image/png;base64,"+data.image+"' border='0' graph_start='"+data.graph_start+"' graph_end='"+data.graph_end+"' graph_left='"+data.graph_left+"' graph_top='"+data.graph_top+"' graph_width='"+data.graph_width+"' graph_height='"+data.graph_height+"' image_width='"+data.image_width+"' image_height='"+data.image_height+"' value_min='"+data.value_min+"' value_max='"+data.value_max+"'>");
+					$('#wrapper_'+data.local_graph_id).html("<img class='graphimage' id='graph_"+data.local_graph_id+"' src='data:image/"+data.type+";base64,"+data.image+"' border='0' graph_start='"+data.graph_start+"' graph_end='"+data.graph_end+"' graph_left='"+data.graph_left+"' graph_top='"+data.graph_top+"' graph_width='"+data.graph_width+"' graph_height='"+data.graph_height+"' width='"+data.image_width+"' height='"+data.image_height+"' image_width='"+data.image_width+"' image_height='"+data.image_height+"' value_min='"+data.value_min+"' value_max='"+data.value_max+"'>");
 					$("#graph_"+data.local_graph_id).zoom({
 						inputfieldStartTime : 'date1', 
 						inputfieldEndTime : 'date2', 
@@ -805,12 +805,21 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 			realtimeGrapher();
 		});
 
+		$('span[id$="_util"]').unbind('click').click(function() {
+			graph_id=$(this).attr('id').replace('graph_','').replace('_util','');
+			$.get('graph.php?action=zoom&header=false&local_graph_id='+graph_id+'&rra_id=0&graph_start='+getTimestampFromDate($('#date1').val())+'&graph_end='+getTimestampFromDate($('#date2').val()), function(data) {
+				$('#main').html(data);
+				$('#breadcrumbs').append('<li><a id="nav_util" href="#">Utility View</a></li>');
+				applySkin();
+			});
+		});
+
 		$('span[id$="_realtime"]').unbind('click').click(function() {
 			graph_id=$(this).attr('id').replace('graph_','').replace('_realtime','');
 
 			if (realtimeArray[graph_id]) {
 				$('#wrapper_'+graph_id).html(keepRealtime[graph_id]).change();
-				$(this).html("<img class='drillDown' border='0' title='Click to view just this Graph in Realtime' alt='' src='/cacti/images/chart_curve_go.png'>");
+				$(this).html("<img class='drillDown' border='0' title='Click to view just this Graph in Realtime' alt='' src='"+urlPath+"images/chart_curve_go.png'>");
 				$(this).find('img').tooltip().zoom({ inputfieldStartTime : 'date1', inputfieldEndTime : 'date2', serverTimeOffset : timeOffset });
 				realtimeArray[graph_id] = false;
 				setFilters();

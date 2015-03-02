@@ -51,8 +51,6 @@ if ($debug == false) {
 	if (!is_numeric(get_request_var_request('local_graph_id'))) {
 		die_html_input_error();
 	}
-
-	header('Content-type: image/png');
 }else{
 	$_REQUEST['graph_width'] = 700;
 	$_REQUEST['graph_height'] = 200;
@@ -101,11 +99,28 @@ if (!empty($_REQUEST['show_source'])) {
 	$graph_data_array['print_source'] = $_REQUEST['show_source'];
 }
 
+/* disable cache check */
+if (isset($_REQUEST['disable_cache'])) {
+	$graph_data_array['disable_cache'] = true;
+}
+
 $graph_data_array['graphv'] = true;
 
 $output = @rrdtool_function_graph($_REQUEST['local_graph_id'], (array_key_exists('rra_id', $_REQUEST) ? $_REQUEST['rra_id'] : null), $graph_data_array);
 
-$oarray = array('local_graph_id' => $_REQUEST['local_graph_id']);
+$oarray = array('local_graph_id' => $_REQUEST['local_graph_id'], 'rra_id' => $_REQUEST['rra_id']);
+
+// Determine the graph type of the output
+$type   = db_fetch_cell('SELECT image_format_id FROM graph_templates_graph WHERE local_graph_id=' . $_REQUEST['local_graph_id']);
+switch($type) {
+case '1':
+	$oarray['type'] = 'png';
+	break;
+case '3':
+	$oarray['type'] = 'svg+xml';
+	break;
+}
+
 $lpos   = 0;
 
 while (true) {

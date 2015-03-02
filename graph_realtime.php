@@ -153,7 +153,6 @@ case 'view':
 	$graph_rrd = read_config_option('realtime_cache_path') . '/user_' . session_id() . '_lgi_' . $_REQUEST['local_graph_id'] . '.png';
 
 	if (file_exists($graph_rrd)) {
-		header('Content-type: image/png');
 		print file_get_contents($graph_rrd);
 	}
 	exit;
@@ -355,7 +354,7 @@ if (read_config_option('realtime_enabled') == '') {
 		local_graph_id = $("#local_graph_id").val();
 		ds_step        = $("#ds_step").val();
 
-		url="?action="+action+"&graph_start=-"+graph_start+"&local_graph_id="+local_graph_id+"&ds_step="+ds_step+"&count="+count;
+		url="?top=0&left=0&action="+action+"&graph_start=-"+graph_start+"&local_graph_id="+local_graph_id+"&ds_step="+ds_step+"&count="+count;
 
 		$.get(url, function(data) {
 			results = $.parseJSON(data);

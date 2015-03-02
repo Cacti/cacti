@@ -55,7 +55,7 @@ if (read_config_option('auth_method') != 0) {
 
 /* need to correct $_SESSION["sess_nav_level_cache"] in zoom view */
 if (isset($_REQUEST['action']) && $_REQUEST['action'] == 'zoom') {
-	$_SESSION['sess_nav_level_cache'][2]['url'] = 'graph.php?local_graph_id=' . $_REQUEST['local_graph_id'] . '&rra_id=all';
+	$_SESSION['sess_nav_level_cache'][2]['url'] = 'graph.php?local_graph_id=' . $_REQUEST['local_graph_id'] . '&rra_id=0';
 }
 
 $page_title = api_plugin_hook_function('page_title', draw_navigation_text('title'));
@@ -132,27 +132,7 @@ $page_title = api_plugin_hook_function('page_title', draw_navigation_text('title
 			</table>
 		</td>
 	</tr>
-	<?php if ((basename($_SERVER['PHP_SELF']) == 'graph.php') && ($_REQUEST['action'] == 'properties')) {?>
-	<tr>
-		<td valign='top' class='cactiTreeNavigationArea' colspan='3'>
-			<?php
-			$graph_data_array['print_source'] = true;
-
-			/* override: graph start time (unix time) */
-			if (!empty($_GET['graph_start'])) {
-				$graph_data_array['graph_start'] = get_request_var_request('graph_start');
-			}
-
-			/* override: graph end time (unix time) */
-			if (!empty($_GET['graph_end'])) {
-				$graph_data_array['graph_end'] = get_request_var_request('graph_end');
-			}
-
-			print trim(@rrdtool_function_graph(get_request_var_request('local_graph_id'), get_request_var_request('rra_id'), $graph_data_array));
-			?>
-		</td>
-	</tr>
-	<?php }
+	<?php
 
 	global $graph_views;
 	load_current_session_value('action', 'sess_cacti_graph_action', $graph_views['2']);

@@ -351,7 +351,7 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = "", $extr
 function graph_drilldown_icons($local_graph_id, $type = 'graph_buttons') {
 	global $config;
 
-	print "<span class='hyperLink zooming' id='graph_" . $local_graph_id . "_util'><img class='drillDown' src='" . $config['url_path'] . "images/cog.png' border='0' alt='' title='Graph Details, Zooming and Debugging Utilities'></span><br>\n";
+	print "<span class='hyperLink utils' id='graph_" . $local_graph_id . "_util'><img class='drillDown' src='" . $config['url_path'] . "images/cog.png' border='0' alt='' title='Graph Details, Zooming and Debugging Utilities'></span><br>\n";
 	print "<span class='hyperLink csvexport' id='graph_" . $local_graph_id . "_csv'><img class='drillDown' src='" . $config['url_path'] . "images/table_go.png' border='0' alt='' title='CSV Export of Graph Data'></span><br>\n";
 	print "<span class='hyperLink mrgt' id='graph_" . $local_graph_id . "_mrtg'><img class='drillDown' src='" . $config['url_path'] . "images/mrtg.png' border='0' alt='' title='MRTG Graph View'></span><br>\n";
 	if (read_config_option('realtime_enabled') == 'on') {
@@ -933,13 +933,13 @@ function draw_menu($user_menu = "") {
 		$('#nav li:has(ul) a.active').click(function() {
 			if ($(this).next().is(':visible')){
 				$(this).next().slideUp( { duration: 200, easing: 'swing' } );
-				$.cookie($(this).text(), 'collapsed', { expires: 31, path: '/cacti/' } );
+				$.cookie($(this).text(), 'collapsed', { expires: 31, path: urlPath } );
 			} else {
 				$(this).next().slideToggle( { duration: 200, easing: 'swing' } );
 				if ($(this).next().is(':visible')) {
-					$.cookie($(this).text(), 'active', { expires: 31, path: '/cacti/' } );
+					$.cookie($(this).text(), 'active', { expires: 31, path: urlPath } );
 				}else{
-			        $.cookie($(this).text(), 'collapsed', { expires: 31, path: '/cacti/'} );
+			        $.cookie($(this).text(), 'collapsed', { expires: 31, path: urlPath } );
 				}
 			}
 		});

@@ -66,5 +66,6 @@ if (!empty($refresh)) {
 	var refreshIsLogout=<?php print $refreshIsLogout;?>;
 	var refreshPage='<?php print $myrefresh['page'];?>';
 	var refreshMSeconds=<?php print $myrefresh['seconds']*1000;?>;
+    var urlPath=<?php print $config['url_path'];?>;
 	var previousPage='';
 </script>

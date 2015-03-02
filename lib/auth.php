@@ -26,6 +26,8 @@
 /* clear_auth_cookie - clears a users security token
  * @return - NULL */
 function clear_auth_cookie() {
+	global $config;
+
 	if (isset($_COOKIE['cacti_remembers']) && read_config_option('auth_cache_enabled') == 'on') {
 		$parts = explode(',', $_COOKIE['cacti_remembers']);
 		$user  = $parts[0];
@@ -37,7 +39,7 @@ function clear_auth_cookie() {
 				if (isset($parts[1])) {
 					$nssecret  = $parts[1];
 					$secret = hash('sha512', $nssecret, false);
-					setcookie('cacti_remembers', '', time() - 3600, '/cacti/');
+					setcookie('cacti_remembers', '', time() - 3600, $config['url_path']);
 					db_execute_prepared('DELETE FROM user_auth_cache WHERE user_id = ? AND token = ?', array($user_id, $secret));
 				}
 			}
@@ -49,6 +51,8 @@ function clear_auth_cookie() {
  * @arg - (string) $user - The user_auth row for the user
  * @return - (boolean) True if token set worked, otherwise false */
 function set_auth_cookie($user) {
+	global $config;
+
 	clear_auth_cookie();
 
 	$nssecret = md5($_SERVER['REQUEST_TIME'] .  mt_rand(10000,10000000)) . md5($_SERVER['REMOTE_ADDR']);
@@ -60,7 +64,7 @@ function set_auth_cookie($user) {
 		VALUES 
 		(?, ?, NOW(), ?);', array($user['id'], $_SERVER['HTTP_HOST'], $secret));
 
-	setcookie('cacti_remembers', $user['username'] . ',' . $nssecret, time()+(86400*30), '/cacti/');
+	setcookie('cacti_remembers', $user['username'] . ',' . $nssecret, time()+(86400*30), $config['url_path']);
 }
 
 /* check_auth_cookie - clears a users security token

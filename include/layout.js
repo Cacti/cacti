@@ -518,14 +518,14 @@ function setupCollapsible() {
 		if ($(this).find('i').hasClass('fa-angle-double-up')) {
 			$(this).nextUntil('tr.spacer').slideUp('fast');
 			$(this).find('i').removeClass('fa-angle-double-up').addClass('fa-angle-double-down');
-			$.cookie(id, 'hide', { expires: 31, path: '/cacti/' } );
+			$.cookie(id, 'hide', { expires: 31, path: urlPath } );
 		}else{
 			$(this).nextUntil('tr.spacer').slideDown('fast');
 			$(this).nextUntil('tr.spacer').each(function(data) {
 				$(this).find('input, select').change();
 			});
 			$(this).find('i').removeClass('fa-angle-double-down').addClass('fa-angle-double-up');
-			$.cookie(id, 'show', { expires: 31, path: '/cacti/' } );
+			$.cookie(id, 'show', { expires: 31, path: urlPath } );
 		}
 	});
 }
@@ -551,10 +551,13 @@ function setupUserMenu() {
 
 	$('.user').mouseenter(function(data) {
 		clearTimeout(userMenuTimer);
-		openUserMenu();
+		userMenuOpenTimer = setTimeout('openUserMenu()', 400);
+		//openUserMenu();
 	}).mouseleave(function(data) {
 		if ($('.menuoptions').is(':visible')) {
 			userMenuTimer = setTimeout('closeUserMenu()', 1000);
+		}else{
+			clearTimeout(userMenuOpenTimer);
 		}
 	});
 }
@@ -629,7 +632,7 @@ function saveTableWidths(initial) {
 				});
 
 				if (i > 1) {
-					$.cookie(key, sizes, { expires: 31, path: '/cacti/' } );
+					$.cookie(key, sizes, { expires: 31, path: urlPath } );
 				}
 			}
 		}

@@ -1722,16 +1722,6 @@ function draw_navigation_text($type = 'url') {
 			'mapping' => 'graph_view.php:,?', 
 			'level' => '2'
 			),
-		'graph.php:zoom' => array(
-			'title' => 'Zoom', 
-			'mapping' => 'graph_view.php:,?,graph.php:view', 
-			'level' => '3'
-			),
-		'graph.php:properties' => array(
-			'title' => 'Properties', 
-			'mapping' => 'graph_view.php:,?,graph.php:view', 
-			'level' => '3'
-			),
 		'graph_settings.php:' => array(
 			'title' => 'Settings', 
 			'mapping' => 'graph_view.php:', 

@@ -661,6 +661,11 @@ function rrd_function_process_graph_options($graph_start, $graph_end, &$graph, &
 	/* process theme and font styling options */
 	$graph_opts .= rrdtool_function_theme_font_options($graph_data_array);
 
+	/* if realtime, the image format id is always png */
+	if (isset($graph_data_array['export_realtime'])) {
+		$graph['image_format_id'] = 1;
+	}
+
 	/* basic graph options */
 	$graph_opts .=
 		"--imgformat=" . $image_types{$graph["image_format_id"]} . RRD_NL .
@@ -724,7 +729,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 	}
 
 	/* check the boost image cache and if we find a live file there return it instead */
-	if (!isset($graph_data_array['export_csv']) && !isset($graph_data_array['export_realtime'])) {
+	if (!isset($graph_data_array['export_csv']) && !isset($graph_data_array['export_realtime']) && !isset($graph_data_array['disable_cache'])) {
 		$graph_data = boost_graph_cache_check($local_graph_id, $rra_id, $rrdtool_pipe, $graph_data_array, false);
 		if ($graph_data != false) {
 			return $graph_data;

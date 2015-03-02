@@ -49,7 +49,18 @@ if (!is_numeric(get_request_var_request('local_graph_id'))) {
 	die_html_input_error();
 }
 
-header('Content-type: image/png');
+// Determine the graph type of the output
+$type   = db_fetch_cell('SELECT image_format_id FROM graph_templates_graph WHERE local_graph_id=' . $_REQUEST['local_graph_id']);
+switch($type) {
+case '1':
+	$gtype = 'png';
+	break;
+case '3':
+	$gtype = 'svg+xml';
+	break;
+}
+
+header('Content-type: image/'. $gtype);
 
 /* flush the headers now */
 ob_end_clean();
@@ -87,6 +98,11 @@ if (!empty($_REQUEST['graph_nolegend'])) {
 /* print RRDTool graph source? */
 if (!empty($_REQUEST['show_source'])) {
 	$graph_data_array['print_source'] = $_REQUEST['show_source'];
+}
+
+/* disable cache check */
+if (isset($_REQUEST['disable_cache'])) {
+	$graph_data_array['disable_cache'] = true;
 }
 
 print @rrdtool_function_graph($_REQUEST['local_graph_id'], (array_key_exists('rra_id', $_REQUEST) ? $_REQUEST['rra_id'] : null), $graph_data_array);

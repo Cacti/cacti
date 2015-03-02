@@ -110,43 +110,111 @@ if (!isset($_REQUEST['stdout'])) {
 	header('Content-Disposition: attachment; filename="' . $filename . '"');
 }
 
+if (isset($_REQUEST['format']) && $_REQUEST['format'] == 'table') {
+	$html = true;
+}else{
+	$html = false;
+}
+
 if (is_array($xport_array['meta'])) {
-	print '"Title:","'          . $xport_array['meta']['title_cache']                . '"' . "\n";
-	print '"Vertical Label:","' . $xport_array['meta']['vertical_label']             . '"' . "\n";
-	print '"Start Date:","'     . date('Y-m-d H:i:s', $xport_array['meta']['start']) . '"' . "\n";
-	print '"End Date:","'       . date('Y-m-d H:i:s', $xport_array['meta']['end'])   . '"' . "\n";
-	print '"Step:","'           . $xport_array['meta']['step']                       . '"' . "\n";
-	print '"Total Rows:","'     . $xport_array['meta']['rows']                       . '"' . "\n";
-	print '"Graph ID:","'       . $xport_array['meta']['local_graph_id']             . '"' . "\n";
-	print '"Host ID:","'        . $xport_array['meta']['host_id']                    . '"' . "\n";
+	if (!$html) {
+		print '"Title:","'          . $xport_array['meta']['title_cache']                . '"' . "\n";
+		print '"Vertical Label:","' . $xport_array['meta']['vertical_label']             . '"' . "\n";
+		print '"Start Date:","'     . date('Y-m-d H:i:s', $xport_array['meta']['start']) . '"' . "\n";
+		print '"End Date:","'       . date('Y-m-d H:i:s', $xport_array['meta']['end'])   . '"' . "\n";
+		print '"Step:","'           . $xport_array['meta']['step']                       . '"' . "\n";
+		print '"Total Rows:","'     . $xport_array['meta']['rows']                       . '"' . "\n";
+		print '"Graph ID:","'       . $xport_array['meta']['local_graph_id']             . '"' . "\n";
+		print '"Host ID:","'        . $xport_array['meta']['host_id']                    . '"' . "\n";
 
-	if (isset($xport_meta['NthPercentile'])) {
-		foreach($xport_meta['NthPercentile'] as $item) {
-			print '"Nth Percentile:","' . $item['value'] . '","' . $item['format'] . '"' . "\n";
+		if (isset($xport_meta['NthPercentile'])) {
+			foreach($xport_meta['NthPercentile'] as $item) {
+				print '"Nth Percentile:","' . $item['value'] . '","' . $item['format'] . '"' . "\n";
+			}
 		}
-	}
-	if (isset($xport_meta['Summation'])) {
-		foreach($xport_meta['Summation'] as $item) {
-			print '"Summation:","' . $item['value'] . '","' . $item['format'] . '"' . "\n";
+		if (isset($xport_meta['Summation'])) {
+			foreach($xport_meta['Summation'] as $item) {
+				print '"Summation:","' . $item['value'] . '","' . $item['format'] . '"' . "\n";
+			}
 		}
-	}
 
-	print '""' . "\n";
+		print '""' . "\n";
 
-	$header = '"Date"';
-	for ($i = 1; $i <= $xport_array['meta']['columns']; $i++) {
-		$header .= ',"' . $xport_array['meta']['legend']['col' . $i] . '"';
+		$header = '"Date"';
+		for ($i = 1; $i <= $xport_array['meta']['columns']; $i++) {
+			$header .= ',"' . $xport_array['meta']['legend']['col' . $i] . '"';
+		}
+		print $header . "\n";
+	}else{
+		$second = "align='right' colspan='2'";
+		print "<table align='center' width='60%' style='background-color: #f5f5f5; border: 1px solid #bbbbbb;' cellpadding='0' callspacing='0' border='0'><tr><td>\n";
+		print "<table class='cactiTable' align='center' width='100%' cellpadding='2' cellspacing='0' border='0'>\n";
+		print "<tr class='tableHeader'><td colspan='3' class='linkOverDark' style='font-weight:bold;'>Summary Details</td></tr>\n";
+		print "<tr class='even'><td align='left'>Title</td><td $second>"          . trim($xport_array['meta']['title_cache'],"'")      . "</td></tr>\n";
+		print "<tr class='odd'><td align='left'>Vertical Label</td><td $second>" . trim($xport_array['meta']['vertical_label'],"'")    . "</td></tr>\n";
+		print "<tr class='even'><td align='left'>Start Date</td><td $second>"     . date('Y-m-d H:i:s', $xport_array['meta']['start']) . "</td></tr>\n";
+		print "<tr class='odd'><td align='left'>End Date</td><td $second>"       . date('Y-m-d H:i:s', $xport_array['meta']['end'])    . "</td></tr>\n";
+		print "<tr class='even'><td align='left'>Step</td><td $second>"           . $xport_array['meta']['step']                       . "</td></tr>\n";
+		print "<tr class='odd'><td align='left'>Total Rows</td><td $second>"     . $xport_array['meta']['rows']                        . "</td></tr>\n";
+		print "<tr class='even'><td align='left'>Graph ID</td><td $second>"       . $xport_array['meta']['local_graph_id']             . "</td></tr>\n";
+		print "<tr class='odd'><td align='left'>Host ID</td><td $second>"        . $xport_array['meta']['host_id']                     . "</td></tr>\n";
+
+		$class = 'even';
+		if (isset($xport_meta['NthPercentile'])) {
+			foreach($xport_meta['NthPercentile'] as $item) {
+				if ($class == 'even') {
+					$class = 'odd';
+				}else{
+					$class = 'even';
+				}
+				print "<tr class='$class'><td>Nth Percentile</td><td align='left'>" . $item['value'] . "</td><td align='right'>" . $item['format'] . "</td></tr>\n";
+			}
+		}
+		if (isset($xport_meta['Summation'])) {
+			foreach($xport_meta['Summation'] as $item) {
+				if ($class == 'even') {
+					$class = 'odd';
+				}else{
+					$class = 'even';
+				}
+				print "<tr class='$class'><td>Summation</td><td align='left'>" . $item['value'] . "</td><td align='right'>" . $item['format'] . "</td></tr>\n";
+			}
+		}
+
+		print "</table><br>\n";
+		print "<table class='cactiTable' align='center' width='100%' cellpadding='2' cellspacing='0' border='0'>\n";
+
+		print "<tr class='tableHeader'><th class='tableSubHeaderColumn' style='text-align:left;'>Date</th>";
+		for ($i = 1; $i <= $xport_array['meta']['columns']; $i++) {
+			print "<th class='tableSubHeaderColumn' style='text-align:right;'>" . $xport_array['meta']['legend']['col' . $i] . "</th>";
+		}
+		print "</tr>";
 	}
-	print $header . "\n";
 }
 
 if (is_array($xport_array['data'])) {
-	foreach($xport_array['data'] as $row) {
-		$data = '"' . date('Y-m-d H:i:s', $row['timestamp']) . '"';
-		for ($i = 1; $i <= $xport_array['meta']['columns']; $i++) {
-			$data .= ',"' . $row['col' . $i] . '"';
+	if (!$html) {
+		foreach($xport_array['data'] as $row) {
+			$data = '"' . date('Y-m-d H:i:s', $row['timestamp']) . '"';
+			for ($i = 1; $i <= $xport_array['meta']['columns']; $i++) {
+				$data .= ',"' . $row['col' . $i] . '"';
+			}
+			print $data . "\n";
 		}
-		print $data . "\n";
+	}else{
+		foreach($xport_array['data'] as $row) {
+			print "<tr><td align='left'>" . date('Y-m-d H:i:s', $row['timestamp']) . "</td>";
+			for ($i = 1; $i <= $xport_array['meta']['columns']; $i++) {
+				if ($row['col' . $i] > 1) {
+					print "<td align='right'>" . trim(number_format(round($row['col' . $i],3)),'0') . "</td>";
+				}elseif($row['col' . $i] == 0) {
+					print "<td align='right'>-</td>";
+				}else{
+					print "<td align='right'>" . round($row['col' . $i],4) . "</td>";
+				}
+			}
+			print "</tr>\n";
+		}
 	}
 }
 
