@@ -852,7 +852,7 @@ function boost_process_poller_output($use_server = false, $local_data_id = '') {
 
 			if (count($tables)) {
 				foreach($tables as $table) {
-					db_execute_prepared('DELETE FROM ' . $table['name'] . ' WHERE local_data_id = ? AND time < FROM_UNIXTIME(?)', array($local_data_id, $timestamp));
+					db_execute_prepared('DELETE FROM ' . $table['name'] . ' WHERE local_data_id = ? AND time < FROM_UNIXTIME(?)', array($orig_local_data_id , $timestamp));
 				}
 			}
 		} else {
