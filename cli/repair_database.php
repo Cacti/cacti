@@ -137,10 +137,10 @@ if ($rows > 0) {
 }
 
 /* remove invalid Data Input Data Rows from the Database in two passes */
-$rows = db_fetch_cell("SELECT count(*) FROM data_input_data LEFT JOIN data_template_data ON data_template_data.data_input_id=data_input_data.data_template_data_id WHERE data_template_data.data_input_id IS NULL AND data_template_data.data_input_id>0");
+$rows = db_fetch_cell("SELECT count(*) FROM data_input_data LEFT JOIN data_template_data ON data_input_data.data_template_data_id=data_template_data.id WHERE data_template_data.id IS NULL");
 $total_rows += $rows;
 if ($rows > 0) {
-	if ($force) db_execute("DELETE FROM data_input_data WHERE data_input_data.data_template_data_id NOT IN (SELECT data_input_id FROM data_template_data)");
+	if ($force) db_execute("DELETE FROM data_input_data WHERE data_input_data.data_template_data_id NOT IN (SELECT id FROM data_template_data)");
 	echo "NOTE: $rows Invalid Data Input Data Rows " . ($force ? "Removed from":"Found in") . " Data Templates\n";
 }
 $rows = db_fetch_cell("SELECT count(*) FROM data_input_data LEFT JOIN data_input_fields ON data_input_fields.id=data_input_data.data_input_field_id WHERE data_input_fields.id IS NULL");
@@ -151,7 +151,7 @@ if ($rows > 0) {
 }
 
 if ($total_rows > 0 && !$force) {
-	echo "\nWARNING: Serious Cacti Template Problems found in your Database.  Using the '--force' option will remove\n";
+	echo "\nWARNING: Cacti Template Problems found in your Database.  Using the '--force' option will remove\n";
 	echo "the invalid records.  However, these changes can be catastrophic to existing data sources.  Therefore, you \n";
 	echo "should contact your support organization prior to proceeding with that repair.\n\n";
 }elseif ($total_rows == 0) {
