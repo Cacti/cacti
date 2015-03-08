@@ -1137,10 +1137,8 @@ function clean_up_path($path) {
 	if ($config['cacti_server_os'] == 'unix' or read_config_option('using_cygwin') == 'on') {
 		$path = str_replace("\\", '/', $path);
 	}elseif ($config['cacti_server_os'] == 'win32') {
-		$path = str_replace('/', "\\", $path);
-
+		$path = str_replace('/', "\\\\", $path);
 	}
-
 	return $path;
 }
 
