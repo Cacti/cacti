@@ -871,14 +871,29 @@ function strip_quotes($result) {
 
 	/* clean off ugly non-numeric data */
 	if ((!is_numeric($result)) && (!is_hexadecimal($result)) && ($result != 'U')) {
+		/* strip trailing chars first */
 		$len = strlen($result);
 		for($a=$len-1; $a>=0; $a--){
 			$p = ord($result[$a]);
-			if ((($p > 47) && ($p < 58)) || ($p==85)) {
-				$result = substr($result,0,$a+1);
+			if ($p > 47 && $p < 58) {
 				break;
+			}else{
+				$result[$a] = ' ';
 			}
 		}
+
+		/* strip leading chars second */
+		$len = strlen($result);
+		for($a=0; $a<$len; $a++){
+			$p = ord($result[$a]);
+			if ($p > 47 && $p < 58 && $p != 42 && $p != 45) {
+				break;
+			}else{
+				$result[$a] = ' ';
+			}
+		}
+
+		$result = trim($result);
 	}
 
 	return($result);
@@ -1012,7 +1027,7 @@ function get_full_script_path($local_data_id) {
 
 	if (sizeof($data) > 0) {
 	foreach ($data as $item) {
-		$full_path = str_replace('<' . $item['data_name'] . '>', $item['value'], $full_path);
+		$full_path = str_replace('<' . $item['data_name'] . '>', escapeshellarg($item['value']), $full_path);
 	}
 	}
 
@@ -1137,8 +1152,10 @@ function clean_up_path($path) {
 	if ($config['cacti_server_os'] == 'unix' or read_config_option('using_cygwin') == 'on') {
 		$path = str_replace("\\", '/', $path);
 	}elseif ($config['cacti_server_os'] == 'win32') {
-		$path = str_replace('/', "\\\\", $path);
+		$path = str_replace('/', "\\", $path);
+
 	}
+
 	return $path;
 }
 

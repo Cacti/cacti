@@ -2651,7 +2651,7 @@ function snmpagent_utilities_run_eventlog(){
 	$sql_query = "SELECT snmpagent_notifications_log.*, snmpagent_managers.hostname, snmpagent_cache.description FROM snmpagent_notifications_log
 					 INNER JOIN snmpagent_managers ON snmpagent_managers.id = snmpagent_notifications_log.manager_id
 					 LEFT JOIN snmpagent_cache ON snmpagent_cache.name = snmpagent_notifications_log.notification
-					 WHERE $sql_where LIMIT " . (read_config_option('num_rows_data_source')*(get_request_var_request('page')-1)) . ',' . read_config_option('num_rows_data_source');
+					 WHERE $sql_where LIMIT " . (read_config_option('num_rows_table')*(get_request_var_request('page')-1)) . ',' . read_config_option('num_rows_table');
 
 	/* print checkbox form for validation */
 	print "<form name='chk' method='post' action='managers.php'>\n";

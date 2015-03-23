@@ -175,8 +175,6 @@ function draw_nontemplated_fields_graph_item($graph_template_id, $local_graph_id
                         AND data_template_data.local_data_id=data_local.id
                         AND data_template_rrd.id = ?", array($current_def_value{$item["column_name"]}));
 
-					cacti_log("The Value is '$value'");
-
 					$form_array[$form_field_name]['value'] = $value;
 				}
 			}

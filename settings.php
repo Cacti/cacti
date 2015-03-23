@@ -112,6 +112,8 @@ default:
 	print "</ul></nav></div>\n";
 	print "</tr></table><table width='100%' cellpadding='0' cellspacing='0' border='0'><tr><td>\n";
 
+	/* print form for validation */
+	print "<form method='post' autocomplete='off' action='settings.php'>\n";
 	html_start_box('<strong>Cacti Settings (' . $tabs[$current_tab] . ')</strong>', '100%', '', '3', 'center', '');
 
 	$form_array = array();
@@ -138,7 +140,7 @@ default:
 
 	draw_edit_form(
 		array(
-			'config' => array(),
+			'config' => array('no_form_tag' => true),
 			'fields' => $form_array)
 			);
 
@@ -148,7 +150,7 @@ default:
 
 	form_save_button('', 'save');
 
-	print "</td></tr></table>\n";
+	print "</form></td></tr></table>\n";
 
 	?>
 	<script type='text/javascript'>

@@ -620,14 +620,24 @@ function saveTableWidths(initial) {
 		if (key !== undefined) {
 			if (initial && items.length) {
 				$(this).find('th.ui-resizable').each(function(data) {
-					$(this).css('width', items[i]);
+					if (parseInt(items[i]) == 0) {
+						items[i] = parseInt($(this).css('width'));
+					}
+
+					if (items[i] != 0) {
+						$(this).css('width', items[i]);
+						$(this).attr('resizeWidth', items[i]);
+					}
 					i++;
 				});
 			}else{
 				var sizes = new Array();
 				$(this).find('th.ui-resizable').each(function(data) {
 					sizes[i] = parseInt($(this).css('width'));
-					$(this).css('width', sizes[i]);
+
+					if (sizes[i] != 0) {
+						$(this).attr('resizeWidth', sizes[i]);
+					}
 					i++;
 				});
 
@@ -643,20 +653,30 @@ function saveTableWidths(initial) {
  *  the jQueryUI function resizable.  It also calls the saveTableWidths function
  *  to store the cookie value every time a column is resized. */
 function applyTableSizing() {
-	saveTableWidths(true);
-
 	$('.tableHeader').not('.tableFixed').find('th').resizable({
 		handles: 'e',
 
 		start: function(event, ui) {
 			colWidth     = parseInt($(this).width());
 			originalSize = parseInt(ui.size.width);
-			originalSize = parseInt($(this).width());
+
+			if (originalSize == 0) {
+				originalSize = parseInt($(this).width());
+			}
+
+			$(ui.originalElement).siblings().each(function(data) {
+				$(this).attr('resizeWidth', parseInt($(this).width()));
+			});
 		 },
  
 		resize: function(event, ui) {
 			var resizeDelta = parseInt(ui.size.width - originalSize);
 			var newColWidth = parseInt(colWidth + resizeDelta);
+			nextWidth = $(ui.element).next().attr('resizeWidth');
+			$(ui.element).next().css('width', nextWidth-resizeDelta);
+			$(ui.element).prevUntil('tr').each(function(data) {
+				$(this).css('width', $(this).attr('resizeWidth'));
+			});
 			$(this).css('height', 'auto');
 		},
 
@@ -664,6 +684,8 @@ function applyTableSizing() {
 			saveTableWidths(false);
 		}
 	});
+
+	saveTableWidths(true);
 }
 
 /** setupPageTimeout - This function will setup the page timeout based upon
@@ -709,7 +731,7 @@ $(function() {
 		if (!$(event.target).hasClass('ui-resizable')) {
 			$('#navigation').css('height', ($(window).height()-20)+'px');
 		}
-		saveTableWidths(false);
+		//saveTableWidths(false);
 	});
 
 	$('#message_container').show().delay(2000).slideUp('fast');

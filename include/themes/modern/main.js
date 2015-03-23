@@ -28,6 +28,19 @@ function themeReady() {
 			}else{
 				var li = $("<li>").css( "background-color", '' );
 			}
+		}else if (item.element.closest('select').hasClass('iconselect')) {
+			var li = $('<li>', { text: item.label });
+
+			if ( item.disabled ) {
+				li.addClass('ui-state-disabled');
+			}
+
+			$('<span>', {
+				style: item.element.attr('data-style'),
+				'class': 'ui-icon ' + item.element.attr('data-class')
+			}).appendTo(li);
+
+			return li.appendTo(ui);
 		}else{
 			var li = $("<li>");
 		}
@@ -35,7 +48,9 @@ function themeReady() {
 		if (item.disabled) {
 			li.addClass("ui-state-disabled");
 		}
+
 		this._setText(li, item.label);
+
 		return li.appendTo(ui);
 	}
 

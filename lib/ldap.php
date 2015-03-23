@@ -200,8 +200,8 @@ class Ldap {
 		$this->dn = str_replace("<username>", $this->username, $this->dn);
 
 		/* Fix encoding of username and password */
-		$this->username = utf8_encode($this->username);
-		$this->password = utf8_encode($this->password);
+		$this->username = html_entity_decode ($this->username);
+		$this->password = html_entity_decode ($this->password);
 
 		/* Determine connection method and create LDAP Object */
 		if ($this->encryption == "1") {
@@ -343,7 +343,7 @@ class Ldap {
 		}
 
 		/* Encode username */
-		$this->username = utf8_encode($this->username);
+		$this->username = html_entity_decode($this->username);
 
 		/* strip bad chars from username - prevent altering filter from username */
 		$this->username = str_replace("&", "", $this->username);
@@ -374,15 +374,15 @@ class Ldap {
 			}
 		}elseif ($this->mode == "1"){
 			/* assume anonymous */
-			$specific_dn       = "";
-			$specific_password = "";
+			$this->specific_dn       = "";
+			$this->specific_password = "";
 		}
 
 		$this->search_filter = str_replace("<username>", $this->username, $this->search_filter);
 
 		/* Fix encoding on ldap specific search DN and password */
-		$this->specific_password = utf8_encode($this->specific_password);
-		$this->specific_dn       = utf8_encode($this->specific_dn);
+		$this->specific_password = html_entity_decode ($this->specific_password);
+		$this->specific_dn       = html_entity_decode ($this->specific_dn);
 
 		/* Searching mode */
 		if ($this->encryption == "1") {

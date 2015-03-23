@@ -163,9 +163,7 @@ function query_script_host($host_id, $snmp_query_id) {
 		}
 	}
 
-	if (sizeof($output_array)) {
-		data_query_update_host_cache_from_buffer($host_id, $snmp_query_id, $output_array);
-	}
+	data_query_update_host_cache_from_buffer($host_id, $snmp_query_id, $output_array);
 
 	return true;
 }
@@ -273,9 +271,25 @@ function query_snmp_host($host_id, $snmp_query_id) {
 			debug_log_insert("data_query", "Located input field '$field_name' [get]");
 
 			if ($field_array["source"] == "value") {
+				$oid_rewrite_pattern = null;
+				$oid_rewrite_replacement = null;
+
+				if (isset($field_array["oid_rewrite_pattern"]) && isset($field_array["oid_rewrite_replacement"])) {
+					$oid_rewrite_pattern = '/' . str_replace("OID/REGEXP:", "", $field_array["oid_rewrite_pattern"]) . '/';
+					$oid_rewrite_replacement = $field_array["oid_rewrite_replacement"];
+					debug_log_insert("data_query", "Found OID rewrite rule: 's/$oid_rewrite_pattern/$oid_rewrite_replacement/'");
+				} 
+
 				for ($i=0; $i<sizeof($snmp_indexes); $i++) {
 					$oid = $field_array["oid"] .  "." . $snmp_indexes[$i]["value"];
 					$oid .= isset($field_array["oid_suffix"]) ? ("." . $field_array["oid_suffix"]) : "";
+
+					/* rewrite the oid if required */
+					if (isset($oid_rewrite_pattern)) {
+						$orig_oid = $oid;
+						$oid = preg_replace($oid_rewrite_pattern, $oid_rewrite_replacement, $oid);
+						debug_log_insert("data_query", "oid_rewrite at OID: '" . $orig_oid . "' new OID: '" . $oid ."'");
+					}
 
 					$value = cacti_snmp_get($host["hostname"], $host["snmp_community"], $oid,
 						$host["snmp_version"], $host["snmp_username"], $host["snmp_password"],
@@ -286,7 +300,23 @@ function query_snmp_host($host_id, $snmp_query_id) {
 
 					$output_array[] = data_query_format_record($host_id, $snmp_query_id, $field_name, $value, $snmp_indexes[$i]["value"],$oid);
 				}
-			}
+			} else if (substr($field_array["source"], 0, 13) == "VALUE/REGEXP:") {
+				for ($i=0; $i<sizeof($snmp_indexes); $i++) {
+					$oid = $field_array["oid"] .  "." . $snmp_indexes[$i]["value"];
+					$oid .= isset($field_array["oid_suffix"]) ? ("." . $field_array["oid_suffix"]) : "";
+
+					$value = cacti_snmp_get($host["hostname"], $host["snmp_community"], $oid,
+						$host["snmp_version"], $host["snmp_username"], $host["snmp_password"],
+						$host["snmp_auth_protocol"], $host["snmp_priv_passphrase"], $host["snmp_priv_protocol"],
+						$host["snmp_context"], $host["snmp_port"], $host["snmp_timeout"], SNMP_WEBUI);
+
+					$value = preg_replace('/' . str_replace("VALUE/REGEXP:", "", $field_array["source"]) . '/', "\\1", $value);
+
+					debug_log_insert("data_query", "Executing SNMP get for data @ '$oid' [value='$value']");
+
+					$output_array[] = data_query_format_record($host_id, $snmp_query_id, $field_name, $value, $snmp_indexes[$i]["value"],$oid);
+				}
+			} 
 		}else if (($field_array["method"] == "walk") && ($field_array["direction"] == "input")) {
 			debug_log_insert("data_query", "Located input field '$field_name' [walk]");
 
@@ -341,6 +371,29 @@ function query_snmp_host($host_id, $snmp_query_id) {
 
 					$oid = $field_array["oid"] .  "." . $value;
 
+					/* rewrite octet strings */
+					if (preg_match("/^\d{1,3}(\.\d{1,3}){2,}$/", $value)) {
+						$octets = explode(".", $value);
+						$size = array_shift($octets);
+
+						if (count($octets) == $size) {
+							$decoded = "";
+							$isascii = true;
+
+							for ($j=0;($j<count($octets));$j++) {
+								if (($octets[$j] <= 31) || ($octets[$j] >= 127)) {
+									$isascii = false;
+								} else {
+									$decoded .= chr($octets[$j]);
+								}
+							}
+							if ($isascii) {
+								debug_log_insert("data_query", "Found OCTET STRING '$value' decoded value: '$decoded'");
+								$value = $decoded;
+							}
+						}
+					}
+
 					debug_log_insert("data_query", "Found item [$field_name='$value'] index: $snmp_index [from regexp oid parse]");
 
 					$output_array[] = data_query_format_record($host_id, $snmp_query_id, $field_name, $value, $snmp_index, $oid);
@@ -359,9 +412,7 @@ function query_snmp_host($host_id, $snmp_query_id) {
 		}
 	}
 
-	if (sizeof($output_array)) {
-		data_query_update_host_cache_from_buffer($host_id, $snmp_query_id, $output_array);
-	}
+	data_query_update_host_cache_from_buffer($host_id, $snmp_query_id, $output_array);
 
 	return true;
 }
@@ -387,6 +438,7 @@ function data_query_update_host_cache_from_buffer($host_id, $snmp_query_id, &$ou
 	$buf_count    = 0;
 	$buffer       = "";
 
+	if (sizeof($output_array)) {
 	foreach($output_array as $record) {
 		if ($buf_count == 0) {
 			$delim = " ";
@@ -407,6 +459,7 @@ function data_query_update_host_cache_from_buffer($host_id, $snmp_query_id, &$ou
 		} else {
 			$buf_count++;
 		}
+	}
 	}
 
 	if ($buf_count > 0) {

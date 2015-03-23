@@ -56,20 +56,20 @@
 }
 
 .header_table {
-	background-color:#00438C;
+	background-color:#3F750F;
 	align: center;
 	width:100%;
-    border: 3px ridge #00438C; 
+    border: 3px ridge #3F750F; 
     padding: 4px;
 
 }
 
 .header_row {
-	background-color:#00438C;
+	background-color:#3F750F;
    }
 
 .header {
-	background-color:#00438C;
+	background-color:#3F750F;
 	font-size:16pt;
 	text-align:left;
 	align:center;
@@ -77,7 +77,7 @@
 }
 
 .footer {
-	background-color:#00438C;
+	background-color:#3F750F;
 	font-size:10pt;
 	text-align:left;
 	align:center;

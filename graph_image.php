@@ -105,5 +105,7 @@ if (isset($_REQUEST['disable_cache'])) {
 	$graph_data_array['disable_cache'] = true;
 }
 
+$graph_data_array['image_format'] = 'png';
+
 print @rrdtool_function_graph($_REQUEST['local_graph_id'], (array_key_exists('rra_id', $_REQUEST) ? $_REQUEST['rra_id'] : null), $graph_data_array);
 

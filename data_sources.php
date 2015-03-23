@@ -433,7 +433,7 @@ function form_actions() {
 			input_validate_input_number($matches[1]);
 			/* ==================================================== */
 
-			$ds_list .= '<li>' . htmlspecialchars(get_data_source_title($matches[1])) . '<br>';
+			$ds_list .= '<li>' . htmlspecialchars(get_data_source_title($matches[1])) . '</li>';
 			$ds_array[$i] = $matches[1];
 
 			$i++;

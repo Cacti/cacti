@@ -234,7 +234,7 @@ function form_actions() {
 			input_validate_input_number($matches[1]);
 			/* ==================================================== */
 
-			$dq_list .= '<li>' . htmlspecialchars(db_fetch_cell_prepared('SELECT snmp_query.name FROM snmp_query WHERE id = ?', array($matches[1]))) . '<br>';
+			$dq_list .= '<li>' . htmlspecialchars(db_fetch_cell_prepared('SELECT snmp_query.name FROM snmp_query WHERE id = ?', array($matches[1]))) . '</li>';
 			$dq_array[$i] = $matches[1];
 
 			$i++;

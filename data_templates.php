@@ -305,7 +305,7 @@ function form_actions() {
 			input_validate_input_number($matches[1]);
 			/* ==================================================== */
 
-			$ds_list .= '<li>' . htmlspecialchars(db_fetch_cell_prepared('SELECT name FROM data_template WHERE id = ?', array($matches[1]))) . '<br>';
+			$ds_list .= '<li>' . htmlspecialchars(db_fetch_cell_prepared('SELECT name FROM data_template WHERE id = ?', array($matches[1]))) . '</li>';
 			$ds_array[$i] = $matches[1];
 
 			$i++;

@@ -89,7 +89,7 @@ switch ($_REQUEST['action']) {
 	case 'lock':
 	case 'unlock':
 		$_SESSION['sess_graph_lock_id'] = $_REQUEST['id'];
-		$_SESSION['sess_graph_locked']  = ($_REQUEST['action'] == 'lock' ? true:false);;
+		$_SESSION['sess_graph_locked']  = ($_REQUEST['action'] == 'lock' ? true:false);
 	case 'graph_edit':
 		top_header();
 
@@ -1125,8 +1125,9 @@ function graph_edit() {
 		});
 	});
 
-	if (<?php print ($locked == '' ? 'true':$locked);?> == true) {
+	if (<?php print ($locked == true ? 'true':'false');?> == true) {
 		$('input, select').not('input[value="Cancel"]').prop('disabled', true);
+		$('#host_id_wrap').addClass('ui-selectmenu-disabled ui-state-disabled');
 	}
 	</script>
 	<?php

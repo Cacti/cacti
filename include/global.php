@@ -61,6 +61,9 @@ if (defined('E_DEPRECATED')) {
 	error_reporting(E_ALL);
 }
 
+/* set the local for international users */
+setlocale(LC_CTYPE, 'en_US.UTF-8');
+
 /* Files that do not need http header information - Command line scripts */
 $no_http_header_files = array(
 	'cmd.php',

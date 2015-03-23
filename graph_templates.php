@@ -216,7 +216,7 @@ function form_actions() {
 			input_validate_input_number($matches[1]);
 			/* ==================================================== */
 
-			$graph_list .= "<li>" . htmlspecialchars(db_fetch_cell("SELECT name FROM graph_templates WHERE id=" . $matches[1])) . "<br>";
+			$graph_list .= "<li>" . htmlspecialchars(db_fetch_cell("SELECT name FROM graph_templates WHERE id=" . $matches[1])) . "</li>";
 			$graph_array[$i] = $matches[1];
 
 			$i++;

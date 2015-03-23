@@ -353,7 +353,7 @@ function form_actions() {
 			input_validate_input_number($matches[1]);
 			/* ==================================================== */
 
-			$host_list .= '<li>' . htmlspecialchars(db_fetch_cell_prepared('SELECT description FROM host WHERE id = ?', array($matches[1]))) . '<br>';
+			$host_list .= '<li>' . htmlspecialchars(db_fetch_cell_prepared('SELECT description FROM host WHERE id = ?', array($matches[1]))) . '</li>';
 			$host_array[$i] = $matches[1];
 
 			$i++;
@@ -1351,7 +1351,7 @@ function host() {
 				$hours     = intval($remainder / (60*60*100));
 				$remainder = $remainder % (60*60*100);
 				$minutes   = intval($remainder / (60*100));
-				$uptime    = "$days d $hours h $minutes m";
+				$uptime    = "$days:$hours:$minutes";
 			}else{
 				$uptime    = "N/A";
 			}
@@ -1416,6 +1416,6 @@ function get_timeinstate($host) {
 
 	$minutes = floor($time/60);
 
-	return $days . 'd ' . $hours . 'h ' . $minutes . 'm';
+	return $days . ':' . $hours . ':' . $minutes;
 }
 

@@ -583,6 +583,7 @@ function format_snmp_string($string, $snmp_oid_included) {
 }
 
 function snmp_get_method($version = 1) {
+	return SNMP_METHOD_BINARY;
 	if ((function_exists("snmpget")) && ($version == 1)) {
 		return SNMP_METHOD_PHP;
 	}else if ((function_exists("snmp2_get")) && ($version == 2)) {

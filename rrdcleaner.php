@@ -375,7 +375,7 @@ function list_rrd() {
 			form_selectable_cell($file['data_template_id'] > 0 ? $file['data_template_id']:'<i>Deleted</i>', $file['id']);
 			form_selectable_cell($file['data_template_id'] > 0 ? ($_REQUEST['filter'] != '' ? eregi_replace('(' . preg_quote($_REQUEST['filter']) . ')', "<span class='filteredValue'>\\1</span>", $file['data_template_name']) . '</a>': $file['data_template_name']):'<i>Deleted</i>', $file['id']);
 			form_selectable_cell($file['last_mod'], $file['id']);
-			form_selectable_cell($file['size'], $file['id']);
+			form_selectable_cell(round($file['size']/1024,2), $file['id']);
 			form_checkbox_cell($file['id'], $file['id']);
 			form_end_row();
 			$i++;
@@ -402,7 +402,7 @@ function list_rrd() {
 function rrdcleaner_legend($total_size) {
 	html_start_box('', '100%', '', '3', 'center', '');
 	print '<tr>';
-	print '<td><b>Total Size [mb]:</b> ' . round($total_size,2) . '</td>';
+	print '<td><b>Total Size [MB]:</b> ' . round($total_size/1024/1024,2) . '</td>';
 	print '</tr><tr>';
 	print '<td><b>Last Scan:</b> ' . rrdcleaner_lastupdate() . '</td>';
 	print '</tr>';
