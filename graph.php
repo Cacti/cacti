@@ -325,6 +325,12 @@ case 'zoom':
 	function graphXport() {
 		$.get('graph_xport.php?local_graph_id='+graph_id+'&rra_id=0&format=table&graph_start='+$('#graph_start').val()+'&graph_end='+$('#graph_end').val(), function(data) {
 			$('#data').html(data);
+
+			$('.download').click(function() {
+console.log('Click');
+				graph_id=$(this).attr('id').replace('graph_','');
+				document.location = 'graph_xport.php?local_graph_id='+graph_id+'&rra_id=0&view_type=tree&graph_start='+$('#graph_start').val()+'&graph_end='+$('#graph_end').val();
+			});
 		});
 		props_on = false;
 		graph_data_on = true;

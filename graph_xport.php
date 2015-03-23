@@ -149,7 +149,7 @@ if (is_array($xport_array['meta'])) {
 		$second = "align='right' colspan='2'";
 		print "<table align='center' width='60%' style='background-color: #f5f5f5; border: 1px solid #bbbbbb;' cellpadding='0' callspacing='0' border='0'><tr><td>\n";
 		print "<table class='cactiTable' align='center' width='100%' cellpadding='2' cellspacing='0' border='0'>\n";
-		print "<tr class='tableHeader'><td colspan='3' class='linkOverDark' style='font-weight:bold;'>Summary Details</td></tr>\n";
+		print "<tr class='tableHeader'><td colspan='2' class='linkOverDark' style='font-weight:bold;'>Summary Details</td><td align='right'><span style='cursor:pointer;' class='download linkOverDark' id='graph_" . $xport_array['meta']['local_graph_id'] . "'>Download</span></td></tr>\n";
 		print "<tr class='even'><td align='left'>Title</td><td $second>"          . trim($xport_array['meta']['title_cache'],"'")      . "</td></tr>\n";
 		print "<tr class='odd'><td align='left'>Vertical Label</td><td $second>" . trim($xport_array['meta']['vertical_label'],"'")    . "</td></tr>\n";
 		print "<tr class='even'><td align='left'>Start Date</td><td $second>"     . date('Y-m-d H:i:s', $xport_array['meta']['start']) . "</td></tr>\n";
