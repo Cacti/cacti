@@ -132,8 +132,8 @@ function api_data_source_remove_multi($local_data_ids) {
 				/* dsstats */
 				db_execute("DELETE FROM data_source_stats_daily WHERE local_data_id IN($ids_to_delete)");
 				db_execute("DELETE FROM data_source_stats_hourly WHERE local_data_id IN($ids_to_delete)");
-				db_execute("DELETE FROM data_source_stats_cache WHERE local_data_id IN($ids_to_delete)");
-				db_execute("DELETE FROM data_source_stats_last WHERE local_data_id IN($ids_to_delete)");
+				db_execute("DELETE FROM data_source_stats_hourly_cache WHERE local_data_id IN($ids_to_delete)");
+				db_execute("DELETE FROM data_source_stats_hourly_last WHERE local_data_id IN($ids_to_delete)");
 				db_execute("DELETE FROM data_source_stats_monthly WHERE local_data_id IN($ids_to_delete)");
 				db_execute("DELETE FROM data_source_stats_weekly WHERE local_data_id IN($ids_to_delete)");
 				db_execute("DELETE FROM data_source_stats_yearly WHERE local_data_id IN($ids_to_delete)");
@@ -195,8 +195,8 @@ function api_data_source_remove_multi($local_data_ids) {
 		/* dsstats */
 		db_execute("DELETE FROM data_source_stats_daily WHERE local_data_id IN($ids_to_delete)");
 		db_execute("DELETE FROM data_source_stats_hourly WHERE local_data_id IN($ids_to_delete)");
-		db_execute("DELETE FROM data_source_stats_cache WHERE local_data_id IN($ids_to_delete)");
-		db_execute("DELETE FROM data_source_stats_last WHERE local_data_id IN($ids_to_delete)");
+		db_execute("DELETE FROM data_source_stats_hourly_cache WHERE local_data_id IN($ids_to_delete)");
+		db_execute("DELETE FROM data_source_stats_hourly_last WHERE local_data_id IN($ids_to_delete)");
 		db_execute("DELETE FROM data_source_stats_monthly WHERE local_data_id IN($ids_to_delete)");
 		db_execute("DELETE FROM data_source_stats_weekly WHERE local_data_id IN($ids_to_delete)");
 		db_execute("DELETE FROM data_source_stats_yearly WHERE local_data_id IN($ids_to_delete)");
