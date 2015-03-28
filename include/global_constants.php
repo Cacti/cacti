@@ -275,3 +275,24 @@ define('REPORTS_OUTPUT_STDOUT', 1);
 define('REPORTS_OUTPUT_EMAIL',  2);
 
 define('REPORTS_DEFAULT_MAX_SIZE', 10485760);
+
+# unless a hook for 'global_constants' is available, all DEFINEs go here
+define('AGGREGATE_GRAPH_TYPE_KEEP', 0);
+define('AGGREGATE_GRAPH_TYPE_KEEP_STACKED', 50);
+
+define('AGGREGATE_TOTAL_NONE', 1);
+define('AGGREGATE_TOTAL_ALL', 2);
+define('AGGREGATE_TOTAL_ONLY', 3);
+
+define('AGGREGATE_TOTAL_TYPE_SIMILAR', 1);
+define('AGGREGATE_TOTAL_TYPE_ALL', 2);
+
+define('AGGREGATE_ORDER_NONE', 1);
+define('AGGREGATE_ORDER_DS_GRAPH', 2);
+define('AGGREGATE_ORDER_GRAPH_DS', 3);
+
+define('AGGREGATE_DEBUG', read_config_option('aggregate_log_verbosity'), true);
+define('AGGREGATE_LOG_NONE', 1);
+define('AGGREGATE_LOG_FUNCTIONS', 2);
+define('AGGREGATE_LOG_DEBUG', 3);
+

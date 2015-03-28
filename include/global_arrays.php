@@ -388,7 +388,8 @@ $menu = array(
 		'graphs.php' => 'Graphs',
 		'tree.php' => 'Trees',
 		'data_sources.php' => 'Data Sources',
-		'host.php' => 'Devices'
+		'host.php' => 'Devices',
+		'aggregate_graphs.php' => 'Aggregates',
 		),
 	'Collection Methods' => array(
 		'data_queries.php' => 'Data Queries',
@@ -397,7 +398,9 @@ $menu = array(
 	'Templates' => array(
 		'graph_templates.php' => 'Graph',
 		'host_templates.php' => 'Device',
-		'data_templates.php' => 'Data Source'
+		'data_templates.php' => 'Data Source',
+		'aggregate_templates.php' => 'Aggregate',
+		'color_templates.php' => 'Color'
 		),
 	'Presets' => array(
 		'cdef.php' => 'CDEFs',
@@ -418,7 +421,8 @@ $menu = array(
 		'user_group_admin.php' => 'User Groups',
 		'user_domains.php' => 'User Domains',
 		'logout.php' => 'Logout User'
-	));
+		)
+	);
 
 $log_tail_lines = array(
 	-1 => 'All Lines',
@@ -553,6 +557,11 @@ $user_auth_realm_filenames = array(
 	'auth_changepassword.php' => -1,
 	'reports_user.php' => 21,
 	'reports_admin.php' => 22,
+	'color_templates.php' => 5,
+	'color_templates_items.php' => 5,
+	'aggregate_templates.php' => 5,
+	'aggregate_graphs.php' => 5,
+	'aggregate_items.php' => 5,
 	'permission_denied.php' => -1);
 
 $hash_type_codes = array(
@@ -891,6 +900,40 @@ $reports_interval = array(
 	REPORTS_SCHED_INTVL_MONTH_WEEKDAY => 'Month(s), Day of Week',
 	REPORTS_SCHED_INTVL_YEAR          => 'Year(s)',
 );
+
+$agg_graph_types = array(
+	AGGREGATE_GRAPH_TYPE_KEEP         => 'Keep Graph Types',
+	AGGREGATE_GRAPH_TYPE_KEEP_STACKED => 'Keep Type and STACK',
+	GRAPH_ITEM_TYPE_STACK             => 'Convert to AREA/STACK Graph',
+	GRAPH_ITEM_TYPE_LINE1             => 'Convert to LINE1 Graph',
+	GRAPH_ITEM_TYPE_LINE2             => 'Convert to LINE2 Graph',
+	GRAPH_ITEM_TYPE_LINE3             => 'Convert to LINE3 Graph',
+);
+
+$agg_totals = array(
+	AGGREGATE_TOTAL_NONE => 'No Totals',
+	AGGREGATE_TOTAL_ALL  => 'Print all Legend Items',
+	AGGREGATE_TOTAL_ONLY => 'Print totaling Legend Items Only',
+);
+
+$agg_totals_type = array(
+	AGGREGATE_TOTAL_TYPE_SIMILAR => 'Total Similar Data Sources',
+	AGGREGATE_TOTAL_TYPE_ALL     => 'Total All Data Sources',
+);
+
+$agg_order_types = array(
+	AGGREGATE_ORDER_NONE      => 'No Reordering',
+	AGGREGATE_ORDER_DS_GRAPH  => 'Data Source, Graph',
+	#AGGREGATE_ORDER_GRAPH_DS => 'Graph, Data Source',
+);
+
+$agg_log_verbosity = array(
+	AGGREGATE_LOG_NONE          => "No AGGREGATE logging",
+	AGGREGATE_LOG_FUNCTIONS     => "Log function calls",
+	AGGREGATE_LOG_DEBUG         => "Log everything",
+);
+
+$help_file = $config['url_path'] . '/plugins/aggregate/aggregate_manual.pdf';
 
 api_plugin_hook('config_arrays');
 

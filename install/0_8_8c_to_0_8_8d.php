@@ -23,6 +23,8 @@
 */
 
 function upgrade_to_0_8_8d() {
+	global $database_default;
+
 	db_install_execute('0.8.8d', "CREATE TABLE IF NOT EXISTS `user_auth_group` (
 		`id` int(10) unsigned NOT NULL auto_increment,
 		`name` varchar(20) NOT NULL,
@@ -595,7 +597,255 @@ function upgrade_to_0_8_8d() {
 	// Add realms to the admin user if it exists
 	if (sizeof(db_fetch_row('SELECT * FROM user_auth WHERE id=1'))) {
 		db_install_execute('0.8.8d', 'INSERT IGNORE INTO user_auth_realm VALUES (18,1)');
-		db_install_execute('0.8.8d', 'INSERT IGNORE INTO user_auth_realm VALUES (20,1)');
-		db_install_execute('0.8.8d', 'INSERT IGNORE INTO user_auth_realm VALUES (21,1)');
+        db_install_execute('0.8.8d', 'INSERT IGNORE INTO user_auth_realm VALUES (20,1)');
+        db_install_execute('0.8.8d', 'INSERT IGNORE INTO user_auth_realm VALUES (21,1)');
+	}
+
+	/* Aggregate Merge Changes */
+	/* list all tables */
+	$result = db_fetch_assoc("SHOW TABLES FROM `" . $database_default . "`");
+	$tables = array();
+	foreach($result as $index => $arr) {
+		foreach ($arr as $t) {
+			$tables[] = $t;
+		}
+	}
+
+	/* V064 -> V065 tables were renamed */
+	if (in_array('plugin_color_templates', $tables)) {
+		db_execute("RENAME TABLE $database_default.`plugin_color_templates`  TO $database_default.`plugin_aggregate_color_templates`");
+	}
+
+	if (in_array('plugin_color_templates_item', $tables)) {
+		db_execute("RENAME TABLE $database_default.`plugin_color_templates_item`  TO $database_default.`plugin_aggregate_color_template_items`");
+	}
+
+	$data = array();
+	$data['columns'][] = array('name' => 'color_template_id', 'type' => 'mediumint(8)', 'unsigned' => 'unsigned', 'NULL' => false, 'auto_increment' => true);
+	$data['columns'][] = array('name' => 'name', 'type' => 'varchar(255)', 'NULL' => false, 'default' => '');
+	$data['primary']   = 'color_template_id';
+	$data['keys'][]    = ''; # lib/plugins.php _requires_ keys!
+	$data['type']      = 'MyISAM';
+	$data['comment']   = 'Color Templates';
+	api_plugin_db_table_create ('aggregate', 'plugin_aggregate_color_templates', $data);
+
+	$sql[] = "INSERT IGNORE INTO `plugin_aggregate_color_templates` " .
+			"(`color_template_id`, `name`) " .
+			"VALUES " .
+			"(1, 'Yellow: light -> dark, 4 colors'), " .
+			"(2, 'Red: light yellow > dark red, 8 colors'), " .
+			"(3, 'Red: light -> dark, 16 colors'), " .
+			"(4, 'Green: dark -> light, 16 colors');";
+
+	$data = array();
+	$data['columns'][] = array('name' => 'color_template_item_id', 'type' => 'int(12)', 'unsigned' => 'unsigned', 'NULL' => false, 'auto_increment' => true);
+	$data['columns'][] = array('name' => 'color_template_id', 'type' => 'mediumint(8)', 'unsigned' => 'unsigned', 'NULL' => false, 'default' => 0);
+	$data['columns'][] = array('name' => 'color_id', 'type' => 'mediumint(8)', 'unsigned' => 'unsigned', 'NULL' => false, 'default' => 0);
+	$data['columns'][] = array('name' => 'sequence', 'type' => 'mediumint(8)', 'unsigned' => 'unsigned', 'NULL' => false, 'default' => 0);
+	$data['primary']   = 'color_template_item_id';
+	$data['keys'][]    = ''; # lib/plugins.php _requires_ keys!
+	$data['type']      = 'MyISAM';
+	$data['comment']   = 'Color Items for Color Templates';
+	api_plugin_db_table_create ('aggregate', 'plugin_aggregate_color_template_items', $data);
+
+	$sql[] = 'INSERT IGNORE INTO `plugin_aggregate_color_template_items` ' .
+			'(`color_template_item_id`, `color_template_id`, `color_id`, `sequence`) VALUES ' .
+			'(1, 1, 4, 1), (2, 1, 24, 2), (3, 1, 98, 3), (4, 1, 25, 4), ' .
+			'(5, 2, 25, 1), (6, 2, 29, 2), (7, 2, 30, 3), (8, 2, 31, 4), (9, 2, 33, 5), (10, 2, 35, 6), (11, 2, 41, 7), (12, 2, 9, 8), ' .
+			'(13, 3, 15, 1), (14, 3, 31, 2), (15, 3, 28, 3), (16, 3, 8, 4), (17, 3, 34, 5), (18, 3, 33, 6), (19, 3, 35, 7), (20, 3, 41, 8), ' .
+			'(21, 3, 36, 9), (22, 3, 42, 10), (23, 3, 44, 11), (24, 3, 48, 12), (25, 3, 9, 13), (26, 3, 49, 14), (27, 3, 51, 15), (28, 3, 52, 16), ' .
+			'(29, 4, 76, 1), (30, 4, 84, 2), (31, 4, 89, 3), (32, 4, 17, 4), (33, 4, 86, 5), (34, 4, 88, 6), (35, 4, 90, 7), (36, 4, 94, 8), ' .
+			'(37, 4, 96, 9), (38, 4, 93, 10), (39, 4, 91, 11), (40, 4, 22, 12), (41, 4, 12, 13), (42, 4, 95, 14), (43, 4, 6, 15), (44, 4, 92, 16);';
+
+	# now run all SQL commands
+	if (!empty($sql)) {
+		for ($a = 0; $a < count($sql); $a++) {
+			$result = db_execute($sql[$a]);
+		}
+	}
+
+	$result = db_fetch_assoc('SHOW TABLES FROM `' . $database_default . '`');
+	$tables = array();
+	foreach($result as $index => $arr) {
+		foreach ($arr as $t) {
+			$tables[] = $t;
+		}
+	}
+
+	$data = array();
+	$data['columns'][] = array('name' => 'id', 'type' => 'int(10)', 'unsigned' => 'unsigned', 'NULL' => false, 'auto_increment' => true);
+	$data['columns'][] = array('name' => 'name', 'type' => 'VARCHAR(64)', 'NULL' => false);
+	$data['columns'][] = array('name' => 'graph_template_id', 'type' => 'int(10)', 'unsigned' => 'unsigned', 'NULL' => false);
+	$data['columns'][] = array('name' => 'gprint_prefix', 'type' => 'VARCHAR(64)', 'NULL' => false);
+	$data['columns'][] = array('name' => 'graph_type', 'type' => 'INTEGER', 'unsigned' => 'unsigned', 'NULL' => false);
+	$data['columns'][] = array('name' => 'total', 'type' => 'INTEGER', 'unsigned' => 'unsigned', 'NULL' => false);
+	$data['columns'][] = array('name' => 'total_type', 'type' => 'INTEGER', 'unsigned' => 'unsigned', 'NULL' => false);
+	$data['columns'][] = array('name' => 'total_prefix', 'type' => 'VARCHAR(64)', 'NULL' => false);
+	$data['columns'][] = array('name' => 'order_type', 'type' => 'INTEGER', 'unsigned' => 'unsigned', 'NULL' => false);
+	$data['columns'][] = array('name' => 'created', 'type' => 'TIMESTAMP', 'NULL' => false);
+	$data['columns'][] = array('name' => 'user_id', 'type' => 'INTEGER', 'unsigned' => 'unsigned', 'NULL' => false);
+	$data['primary']   = 'id';
+	$data['keys'][]    = array('name' => 'graph_template_id' , 'columns' => 'graph_template_id');
+	$data['keys'][]    = array('name' => 'user_id' , 'columns' => 'user_id');
+	$data['type']      = 'MyISAM';
+	$data['comment']   = 'Template Definitions for Aggregate Graphs';
+	api_plugin_db_table_create ('aggregate', 'plugin_aggregate_graph_templates', $data);
+
+	$data = array();
+	$data['columns'][] = array('name' => 'aggregate_template_id', 'type' => 'int(10)', 'unsigned' => 'unsigned', 'NULL' => false);
+	$data['columns'][] = array('name' => 'graph_templates_item_id', 'type' => 'int(10)', 'unsigned' => 'unsigned', 'NULL' => false);
+	$data['columns'][] = array('name' => 'sequence', 'type' => 'mediumint(8)', 'unsigned' => 'unsigned', 'NULL' => false, 'default' => 0);
+	$data['columns'][] = array('name' => 'color_template', 'type' => 'int(11)', 'unsigned' => 'unsigned', 'NULL' => false);
+	$data['columns'][] = array('name' => 'item_skip', 'type' => 'CHAR(2)', 'NULL' => false);
+	$data['columns'][] = array('name' => 'item_total', 'type' => 'CHAR(2)', 'NULL' => false);
+	$data['primary']   = 'aggregate_template_id`,`graph_templates_item_id';
+	$data['keys'][]    = '';
+	$data['type']      = 'MyISAM';
+	$data['comment']   = 'Aggregate Template Graph Items';
+	api_plugin_db_table_create ('aggregate', 'plugin_aggregate_graph_templates_item', $data);
+
+	$data = array();
+	$data['columns'][] = array('name' => 'id', 'type' => 'int(10)', 'unsigned' => 'unsigned', 'NULL' => false, 'auto_increment' => true);
+	$data['columns'][] = array('name' => 'aggregate_template_id', 'type' => 'int(10)', 'unsigned' => 'unsigned', 'NULL' => false);
+	$data['columns'][] = array('name' => 'template_propogation', 'type' => 'CHAR(2)', 'NULL' => false, 'default' => '');
+	$data['columns'][] = array('name' => 'local_graph_id', 'type' => 'int(10)', 'unsigned' => 'unsigned', 'NULL' => false);
+	$data['columns'][] = array('name' => 'title_format', 'type' => 'VARCHAR(128)', 'NULL' => false);
+	$data['columns'][] = array('name' => 'graph_template_id', 'type' => 'int(10)', 'unsigned' => 'unsigned', 'NULL' => false);
+	$data['columns'][] = array('name' => 'gprint_prefix', 'type' => 'VARCHAR(64)', 'NULL' => false);
+	$data['columns'][] = array('name' => 'graph_type', 'type' => 'INTEGER', 'unsigned' => 'unsigned', 'NULL' => false);
+	$data['columns'][] = array('name' => 'total', 'type' => 'INTEGER', 'unsigned' => 'unsigned', 'NULL' => false);
+	$data['columns'][] = array('name' => 'total_type', 'type' => 'INTEGER', 'unsigned' => 'unsigned', 'NULL' => false);
+	$data['columns'][] = array('name' => 'total_prefix', 'type' => 'VARCHAR(64)', 'NULL' => false);
+	$data['columns'][] = array('name' => 'order_type', 'type' => 'INTEGER', 'unsigned' => 'unsigned', 'NULL' => false);
+	$data['columns'][] = array('name' => 'created', 'type' => 'TIMESTAMP', 'NULL' => false);
+	$data['columns'][] = array('name' => 'user_id', 'type' => 'INTEGER', 'unsigned' => 'unsigned', 'NULL' => false);
+	$data['primary']   = 'id';
+	$data['keys'][]    = array('name' => 'aggregate_template_id', 'columns' => 'aggregate_template_id');
+	$data['keys'][]    = array('name' => 'local_graph_id', 'columns' => 'local_graph_id');
+	$data['keys'][]    = array('name' => 'title_format', 'columns' => 'title_format');
+	$data['keys'][]    = array('name' => 'user_id', 'columns' => 'user_id');
+	$data['type']      = 'MyISAM';
+	$data['comment']   = 'Aggregate Graph Definitions';
+	api_plugin_db_table_create ('aggregate', 'plugin_aggregate_graphs', $data);
+
+	$data = array();
+	$data['columns'][] = array('name' => 'aggregate_graph_id', 'type' => 'int(10)', 'unsigned' => 'unsigned', 'NULL' => false);
+	$data['columns'][] = array('name' => 'local_graph_id', 'type' => 'int(10)', 'unsigned' => 'unsigned', 'NULL' => false);
+	$data['columns'][] = array('name' => 'sequence', 'type' => 'mediumint(8)', 'unsigned' => 'unsigned', 'NULL' => false, 'default' => 0);
+	$data['primary']   = 'aggregate_graph_id`,`local_graph_id';
+	$data['keys'][]    = '';
+	$data['type']      = 'MyISAM';
+	$data['comment']   = 'Aggregate Graph Items';
+	api_plugin_db_table_create ('aggregate', 'plugin_aggregate_graphs_items', $data);
+
+	$data = array();
+	$data['columns'][] = array('name' => 'aggregate_graph_id', 'type' => 'int(10)', 'unsigned' => 'unsigned', 'NULL' => false);
+	$data['columns'][] = array('name' => 'graph_templates_item_id', 'type' => 'int(10)', 'unsigned' => 'unsigned', 'NULL' => false);
+	$data['columns'][] = array('name' => 'sequence', 'type' => 'mediumint(8)', 'unsigned' => 'unsigned', 'NULL' => false, 'default' => 0);
+	$data['columns'][] = array('name' => 'color_template', 'type' => 'int(11)', 'unsigned' => 'unsigned', 'NULL' => false);
+	$data['columns'][] = array('name' => 'item_skip', 'type' => 'CHAR(2)', 'NULL' => false);
+	$data['columns'][] = array('name' => 'item_total', 'type' => 'CHAR(2)', 'NULL' => false);
+	$data['primary']   = 'aggregate_graph_id`,`graph_templates_item_id';
+	$data['keys'][]    = '';
+	$data['type']      = 'MyISAM';
+	$data['comment']   = 'Aggregate Graph Graph Items';
+	api_plugin_db_table_create ('aggregate', 'plugin_aggregate_graphs_graph_item', $data);
+
+	/* TODO should this go in a seperate upgrade function? */
+	/* Create table holding aggregate template graph params */
+	$data = array();
+	$data['columns'][] = array('name' => 'aggregate_template_id', 'type' => 'int(10)', 'unsigned' => 'unsigned', 'NULL' => false);
+	$data['columns'][] = array('name' => 't_image_format_id', 'type' => 'char(2)', 'default' => '');
+	$data['columns'][] = array('name' => 'image_format_id', 'type' => 'tinyint(1)', 'NULL' => false, 'default' => 0);
+	$data['columns'][] = array('name' => 't_height', 'type' => 'char(2)', 'default' => '');
+	$data['columns'][] = array('name' => 'height', 'type' => 'mediumint(8)', 'NULL' => false, 'default' => 0);
+	$data['columns'][] = array('name' => 't_width', 'type' => 'char(2)', 'default' => '');
+	$data['columns'][] = array('name' => 'width', 'type' => 'mediumint(8)', 'NULL' => false, 'default' => 0);
+	$data['columns'][] = array('name' => 't_upper_limit', 'type' => 'char(2)', 'default' => '');
+	$data['columns'][] = array('name' => 'upper_limit', 'type' => 'varchar(20)', 'NULL' => false, 'default' => 0);
+	$data['columns'][] = array('name' => 't_lower_limit', 'type' => 'char(2)', 'default' => '');
+	$data['columns'][] = array('name' => 'lower_limit', 'type' => 'varchar(20)', 'NULL' => false,	'default' => 0);
+	$data['columns'][] = array('name' => 't_vertical_label', 'type' => 'char(2)', 'default' => '');
+	$data['columns'][] = array('name' => 'vertical_label', 'type' => 'varchar(200)', 'default' => '');
+	$data['columns'][] = array('name' => 't_slope_mode', 'type' => 'char(2)', 'default' => '');
+	$data['columns'][] = array('name' => 'slope_mode', 'type' => 'char(2)', 'default' => 'on');
+	$data['columns'][] = array('name' => 't_auto_scale', 'type' => 'char(2)', 'default' => '');
+	$data['columns'][] = array('name' => 'auto_scale', 'type' => 'char(2)', 'default' => '');
+	$data['columns'][] = array('name' => 't_auto_scale_opts', 'type' => 'char(2)', 'default' => '');
+	$data['columns'][] = array('name' => 'auto_scale_opts', 'type' => 'tinyint(1)', 'NULL' => false,	'default' => 0);
+	$data['columns'][] = array('name' => 't_auto_scale_log', 'type' => 'char(2)', 'default' => '');
+	$data['columns'][] = array('name' => 'auto_scale_log', 'type' => 'char(2)', 'default' => '');
+	$data['columns'][] = array('name' => 't_scale_log_units', 'type' => 'char(2)', 'default' => '');
+	$data['columns'][] = array('name' => 'scale_log_units', 'type' => 'char(2)', 'default' => '');
+	$data['columns'][] = array('name' => 't_auto_scale_rigid', 'type' => 'char(2)', 'default' => '');
+	$data['columns'][] = array('name' => 'auto_scale_rigid', 'type' => 'char(2)', 'default' => '');
+	$data['columns'][] = array('name' => 't_auto_padding', 'type' => 'char(2)', 'default' => '');
+	$data['columns'][] = array('name' => 'auto_padding', 'type' => 'char(2)', 'default' => '');
+	$data['columns'][] = array('name' => 't_base_value', 'type' => 'char(2)', 'default' => '');
+	$data['columns'][] = array('name' => 'base_value', 'type' => 'mediumint(8)', 'NULL' => false, 'default' => 0);
+	$data['columns'][] = array('name' => 't_grouping', 'type' => 'char(2)', 'default' => '');
+	$data['columns'][] = array('name' => 'grouping', 'type' => 'char(2)', 'NULL' => false, 'default' => '');
+	$data['columns'][] = array('name' => 't_export', 'type' => 'char(2)', 'default' => '');
+	$data['columns'][] = array('name' => 'export', 'type' => 'char(2)', 'default' => '');
+	$data['columns'][] = array('name' => 't_unit_value', 'type' => 'char(2)', 'default' => '');
+	$data['columns'][] = array('name' => 'unit_value', 'type' => 'varchar(20)', 'default' => '');
+	$data['columns'][] = array('name' => 't_unit_exponent_value', 'type' => 'char(2)', 'default' => '');
+	$data['columns'][] = array('name' => 'unit_exponent_value', 'type' => 'varchar(5)', 'NULL' => false, 'default' => '');
+	$data['primary']   = 'aggregate_template_id';
+	$data['keys'][]    = '';
+	$data['type']      = 'MyISAM';
+	$data['comment']   = 'Aggregate Template Graph Data';
+	api_plugin_db_table_create ('aggregate', 'plugin_aggregate_graph_templates_graph', $data);
+
+	/* TODO should this go in a seperate upgrade function? */
+	/* Add cfed and graph_type override columns to aggregate tables */
+	$columns = array();
+	$columns[] = array('name' => 't_graph_type_id', 'type' => 'char(2)', 'default' => '', 'after' => 'color_template');
+	$columns[] = array('name' => 'graph_type_id', 'type' => 'tinyint(3)', 'NULL' => false, 'default' => 0, 'after' => 't_graph_type_id');
+	$columns[] = array('name' => 't_cdef_id', 'type' => 'char(2)', 'default' => '', 'after' => 'graph_type_id');
+	$columns[] = array('name' => 'cdef_id', 'type' => 'mediumint(8)',  'unsigned' => true, 'NULL' => true, 'after' => 't_cdef_id');
+	foreach(array('plugin_aggregate_graphs_graph_item', 'plugin_aggregate_graph_templates_item') as $table) {
+		foreach($columns as $column) {
+			api_plugin_db_add_column('aggregate', $table, $column);
+		}
+	}
+
+	// Merging aggregate into mainline
+	if (in_array('plugin_aggregate_color_template_items', $tables)) {
+		db_install_execute('0.8.8d', 'RENAME TABLE plugin_aggregate_color_template_items TO color_template_items');
+	}
+
+	if (in_array('plugin_aggregate_color_templates', $tables)) {
+		db_install_execute('0.8.8d', 'RENAME TABLE plugin_aggregate_color_templates TO color_templates');
+	}
+
+	if (in_array('plugin_aggregate_graph_templates', $tables)) {
+		db_install_execute('0.8.8d', 'RENAME TABLE plugin_aggregate_graph_templates TO aggregate_graph_templates');
+	}
+
+	if (in_array('plugin_aggregate_graph_templates_graph', $tables)) {
+		db_install_execute('0.8.8d', 'RENAME TABLE plugin_aggregate_graph_templates_graph TO aggregate_graph_templates_graph');
+	}
+
+	if (in_array('plugin_aggregate_graph_templates_item', $tables)) {
+		db_install_execute('0.8.8d', 'RENAME TABLE plugin_aggregate_graph_templates_item TO aggregate_graph_templates_item');
+	}
+
+	if (in_array('plugin_aggregate_graphs', $tables)) {
+		db_install_execute('0.8.8d', 'RENAME TABLE plugin_aggregate_graphs TO aggregate_graphs');
+	}
+
+	if (in_array('plugin_aggregate_graphs_graph_item', $tables)) {
+		db_install_execute('0.8.8d', 'RENAME TABLE plugin_aggregate_graphs_graph_item TO aggregate_graphs_graph_item');
+	}
+
+	if (in_array('plugin_aggregate_graphs_items', $tables)) {
+		db_install_execute('0.8.8d', 'RENAME TABLE plugin_aggregate_graphs_items TO aggregate_graphs_items');
+	}
+
+	$id = db_fetch_cell("SELECT * FROM plugin_realms WHERE plugin='aggregate'");
+	if (!empty($id)) {
+		db_execute('UPDATE IGNORE user_auth_realm SET realm_id=5 WHERE realm_id=' . (100 + $id));
+		db_execute('DELETE FROM user_auth_realm WHERE realm_id=' . (100 + $id));
 	}
 }

@@ -1,4 +1,142 @@
 --
+-- Table structure for table `aggregate_graph_templates`
+--
+
+CREATE TABLE `aggregate_graph_templates` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(64) NOT NULL,
+  `graph_template_id` int(10) unsigned NOT NULL,
+  `gprint_prefix` varchar(64) NOT NULL,
+  `graph_type` int(10) unsigned NOT NULL,
+  `total` int(10) unsigned NOT NULL,
+  `total_type` int(10) unsigned NOT NULL,
+  `total_prefix` varchar(64) NOT NULL,
+  `order_type` int(10) unsigned NOT NULL,
+  `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `user_id` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `graph_template_id` (`graph_template_id`),
+  KEY `user_id` (`user_id`)
+) ENGINE=MyISAM COMMENT='Template Definitions for Aggregate Graphs';
+
+--
+-- Table structure for table `aggregate_graph_templates_graph`
+--
+CREATE TABLE `aggregate_graph_templates_graph` (
+  `aggregate_template_id` int(10) unsigned NOT NULL,
+  `t_image_format_id` char(2) DEFAULT '',
+  `image_format_id` tinyint(1) NOT NULL DEFAULT '0',
+  `t_height` char(2) DEFAULT '',
+  `height` mediumint(8) NOT NULL DEFAULT '0',
+  `t_width` char(2) DEFAULT '',
+  `width` mediumint(8) NOT NULL DEFAULT '0',
+  `t_upper_limit` char(2) DEFAULT '',
+  `upper_limit` varchar(20) NOT NULL DEFAULT '0',
+  `t_lower_limit` char(2) DEFAULT '',
+  `lower_limit` varchar(20) NOT NULL DEFAULT '0',
+  `t_vertical_label` char(2) DEFAULT '',
+  `vertical_label` varchar(200) DEFAULT '',
+  `t_slope_mode` char(2) DEFAULT '',
+  `slope_mode` char(2) DEFAULT 'on',
+  `t_auto_scale` char(2) DEFAULT '',
+  `auto_scale` char(2) DEFAULT '',
+  `t_auto_scale_opts` char(2) DEFAULT '',
+  `auto_scale_opts` tinyint(1) NOT NULL DEFAULT '0',
+  `t_auto_scale_log` char(2) DEFAULT '',
+  `auto_scale_log` char(2) DEFAULT '',
+  `t_scale_log_units` char(2) DEFAULT '',
+  `scale_log_units` char(2) DEFAULT '',
+  `t_auto_scale_rigid` char(2) DEFAULT '',
+  `auto_scale_rigid` char(2) DEFAULT '',
+  `t_auto_padding` char(2) DEFAULT '',
+  `auto_padding` char(2) DEFAULT '',
+  `t_base_value` char(2) DEFAULT '',
+  `base_value` mediumint(8) NOT NULL DEFAULT '0',
+  `t_grouping` char(2) DEFAULT '',
+  `grouping` char(2) NOT NULL DEFAULT '',
+  `t_export` char(2) DEFAULT '',
+  `export` char(2) DEFAULT '',
+  `t_unit_value` char(2) DEFAULT '',
+  `unit_value` varchar(20) DEFAULT '',
+  `t_unit_exponent_value` char(2) DEFAULT '',
+  `unit_exponent_value` varchar(5) NOT NULL DEFAULT '',
+  PRIMARY KEY (`aggregate_template_id`)
+) ENGINE=MyISAM COMMENT='Aggregate Template Graph Data';
+
+--
+-- Table structure for table `aggregate_graph_templates_item`
+--
+
+CREATE TABLE `aggregate_graph_templates_item` (
+  `aggregate_template_id` int(10) unsigned NOT NULL,
+  `graph_templates_item_id` int(10) unsigned NOT NULL,
+  `sequence` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `color_template` int(11) unsigned NOT NULL,
+  `t_graph_type_id` char(2) DEFAULT '',
+  `graph_type_id` tinyint(3) NOT NULL DEFAULT '0',
+  `t_cdef_id` char(2) DEFAULT '',
+  `cdef_id` mediumint(8) unsigned DEFAULT NULL,
+  `item_skip` char(2) NOT NULL,
+  `item_total` char(2) NOT NULL,
+  PRIMARY KEY (`aggregate_template_id`,`graph_templates_item_id`)
+) ENGINE=MyISAM COMMENT='Aggregate Template Graph Items';
+
+--
+-- Table structure for table `aggregate_graphs`
+--
+
+CREATE TABLE `aggregate_graphs` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `aggregate_template_id` int(10) unsigned NOT NULL,
+  `template_propogation` char(2) NOT NULL DEFAULT '',
+  `local_graph_id` int(10) unsigned NOT NULL,
+  `title_format` varchar(128) NOT NULL,
+  `graph_template_id` int(10) unsigned NOT NULL,
+  `gprint_prefix` varchar(64) NOT NULL,
+  `graph_type` int(10) unsigned NOT NULL,
+  `total` int(10) unsigned NOT NULL,
+  `total_type` int(10) unsigned NOT NULL,
+  `total_prefix` varchar(64) NOT NULL,
+  `order_type` int(10) unsigned NOT NULL,
+  `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `user_id` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `aggregate_template_id` (`aggregate_template_id`),
+  KEY `local_graph_id` (`local_graph_id`),
+  KEY `title_format` (`title_format`),
+  KEY `user_id` (`user_id`)
+) ENGINE=MyISAM COMMENT='Aggregate Graph Definitions';
+
+--
+-- Table structure for table `aggregate_graphs_graph_item`
+--
+
+CREATE TABLE `aggregate_graphs_graph_item` (
+  `aggregate_graph_id` int(10) unsigned NOT NULL,
+  `graph_templates_item_id` int(10) unsigned NOT NULL,
+  `sequence` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `color_template` int(11) unsigned NOT NULL,
+  `t_graph_type_id` char(2) DEFAULT '',
+  `graph_type_id` tinyint(3) NOT NULL DEFAULT '0',
+  `t_cdef_id` char(2) DEFAULT '',
+  `cdef_id` mediumint(8) unsigned DEFAULT NULL,
+  `item_skip` char(2) NOT NULL,
+  `item_total` char(2) NOT NULL,
+  PRIMARY KEY (`aggregate_graph_id`,`graph_templates_item_id`)
+) ENGINE=MyISAM COMMENT='Aggregate Graph Graph Items';
+
+--
+-- Table structure for table `aggregate_graphs_items`
+--
+
+CREATE TABLE `aggregate_graphs_items` (
+  `aggregate_graph_id` int(10) unsigned NOT NULL,
+  `local_graph_id` int(10) unsigned NOT NULL,
+  `sequence` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`aggregate_graph_id`,`local_graph_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Aggregate Graph Items';
+
+--
 -- Table structure for table `cdef`
 --
 
@@ -55,6 +193,83 @@ INSERT INTO cdef_items VALUES (20,'5d7a7941ec0440b257e5598a27dd1688',14,3,2,'3')
 INSERT INTO cdef_items VALUES (21,'44fd595c60539ff0f5817731d9f43a85',15,1,4,'ALL_DATA_SOURCES_NODUPS');
 INSERT INTO cdef_items VALUES (22,'aa38be265e5ac31783e57ce6f9314e9a',15,2,6,'1024');
 INSERT INTO cdef_items VALUES (23,'204423d4b2598f1f7252eea19458345c',15,3,2,'3');
+
+
+CREATE TABLE `color_templates` (
+  `color_template_id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL DEFAULT '',
+  PRIMARY KEY (`color_template_id`)
+) ENGINE=MyISAM COMMENT='Color Templates';
+
+--
+-- Dumping data for table `color_templates`
+--
+
+INSERT INTO `color_templates` VALUES (1,'Yellow: light -> dark, 4 colors');
+INSERT INTO `color_templates` VALUES (2,'Red: light yellow > dark red, 8 colors');
+INSERT INTO `color_templates` VALUES (3,'Red: light -> dark, 16 colors');
+INSERT INTO `color_templates` VALUES (4,'Green: dark -> light, 16 colors');
+
+--
+-- Table structure for table `color_template_items`
+--
+
+CREATE TABLE `color_template_items` (
+  `color_template_item_id` int(12) unsigned NOT NULL AUTO_INCREMENT,
+  `color_template_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `color_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `sequence` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`color_template_item_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Color Items for Color Templates';
+
+--
+-- Dumping data for table `color_template_items`
+--
+
+INSERT INTO `color_template_items` VALUES (1,1,4,1);
+INSERT INTO `color_template_items` VALUES (2,1,24,2);
+INSERT INTO `color_template_items` VALUES (3,1,98,3);
+INSERT INTO `color_template_items` VALUES (4,1,25,4);
+INSERT INTO `color_template_items` VALUES (5,2,25,1);
+INSERT INTO `color_template_items` VALUES (6,2,29,2);
+INSERT INTO `color_template_items` VALUES (7,2,30,3);
+INSERT INTO `color_template_items` VALUES (8,2,31,4);
+INSERT INTO `color_template_items` VALUES (9,2,33,5);
+INSERT INTO `color_template_items` VALUES (10,2,35,6);
+INSERT INTO `color_template_items` VALUES (11,2,41,7);
+INSERT INTO `color_template_items` VALUES (12,2,9,8);
+INSERT INTO `color_template_items` VALUES (13,3,15,1);
+INSERT INTO `color_template_items` VALUES (14,3,31,2);
+INSERT INTO `color_template_items` VALUES (15,3,28,3);
+INSERT INTO `color_template_items` VALUES (16,3,8,4);
+INSERT INTO `color_template_items` VALUES (17,3,34,5);
+INSERT INTO `color_template_items` VALUES (18,3,33,6);
+INSERT INTO `color_template_items` VALUES (19,3,35,7);
+INSERT INTO `color_template_items` VALUES (20,3,41,8);
+INSERT INTO `color_template_items` VALUES (21,3,36,9);
+INSERT INTO `color_template_items` VALUES (22,3,42,10);
+INSERT INTO `color_template_items` VALUES (23,3,44,11);
+INSERT INTO `color_template_items` VALUES (24,3,48,12);
+INSERT INTO `color_template_items` VALUES (25,3,9,13);
+INSERT INTO `color_template_items` VALUES (26,3,49,14);
+INSERT INTO `color_template_items` VALUES (27,3,51,15);
+INSERT INTO `color_template_items` VALUES (28,3,52,16);
+INSERT INTO `color_template_items` VALUES (29,4,76,1);
+INSERT INTO `color_template_items` VALUES (30,4,84,2);
+INSERT INTO `color_template_items` VALUES (31,4,89,3);
+INSERT INTO `color_template_items` VALUES (32,4,17,4);
+INSERT INTO `color_template_items` VALUES (33,4,86,5);
+INSERT INTO `color_template_items` VALUES (34,4,88,6);
+INSERT INTO `color_template_items` VALUES (35,4,90,7);
+INSERT INTO `color_template_items` VALUES (36,4,94,8);
+INSERT INTO `color_template_items` VALUES (37,4,96,9);
+INSERT INTO `color_template_items` VALUES (38,4,93,10);
+INSERT INTO `color_template_items` VALUES (39,4,91,11);
+INSERT INTO `color_template_items` VALUES (40,4,22,12);
+INSERT INTO `color_template_items` VALUES (41,4,12,13);
+INSERT INTO `color_template_items` VALUES (42,4,95,14);
+INSERT INTO `color_template_items` VALUES (43,4,6,15);
+INSERT INTO `color_template_items` VALUES (44,4,92,16);
 
 --
 -- Table structure for table `colors`

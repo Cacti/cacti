@@ -351,12 +351,19 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = "", $extr
 function graph_drilldown_icons($local_graph_id, $type = 'graph_buttons') {
 	global $config;
 
+	$aggregate_url = aggregate_build_children_url($local_graph_id);
+
 	print "<span class='hyperLink utils' id='graph_" . $local_graph_id . "_util'><img class='drillDown' src='" . $config['url_path'] . "images/cog.png' border='0' alt='' title='Graph Details, Zooming and Debugging Utilities'></span><br>\n";
 	print "<span class='hyperLink csvexport' id='graph_" . $local_graph_id . "_csv'><img class='drillDown' src='" . $config['url_path'] . "images/table_go.png' border='0' alt='' title='CSV Export of Graph Data'></span><br>\n";
 	print "<span class='hyperLink mrgt' id='graph_" . $local_graph_id . "_mrtg'><img class='drillDown' src='" . $config['url_path'] . "images/mrtg.png' border='0' alt='' title='MRTG Graph View'></span><br>\n";
 	if (read_config_option('realtime_enabled') == 'on') {
 		print "<span class='hyperLink realtime' id='graph_" . $local_graph_id . "_realtime'><img class='drillDown' src='" . $config['url_path'] . "images/chart_curve_go.png' border='0' alt='' title='Click to view just this Graph in Realtime'></span><br/>\n";
 	}
+
+	if ($aggregate_url != '') {
+		print $aggregate_url;
+	}
+
 	api_plugin_hook($type, array('hook' => 'graphs_thumbnails', 'local_graph_id' => $local_graph_id, 'rra' =>  0, 'view_type' => ''));
 }
 

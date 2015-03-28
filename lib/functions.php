@@ -2305,7 +2305,86 @@ function draw_navigation_text($type = 'url') {
 			'title' => 'Report Edit Item', 
 			'mapping' => 'reports_user.php:,reports_user.php:edit', 
 			'url' => '', 
-			'level' => '2')
+			'level' => '2'
+			),
+		'color_templates.php:' => array(
+			'title' => 'Color Templates', 
+			'mapping' => 'index.php:', 
+			'url' => 'color_templates.php', 
+			'level' => '1'
+			),
+		'color_templates.php:template_edit' => array(
+			'title' => '(Edit)', 
+			'mapping' => 'index.php:,color_templates.php:', 
+			'url' => '', 
+			'level' => '2'
+			),
+		'color_templates.php:actions' => array(
+			'title' => 'Actions', 
+			'mapping' => 'index.php:,color_templates.php:', 
+			'url' => '', 
+			'level' => '2'
+			),
+		'color_templates_items.php:item_edit' => array(
+			'title' => 'Color Template Items', 
+			'mapping' => 'index.php:,color_templates.php:,color_templates.php:template_edit', 
+			'url' => '', 
+			'level' => '3'
+			),
+		'aggregate_templates.php:' => array(
+			'title' => 'Aggregate Templates', 
+			'mapping' => 'index.php:', 
+			'url' => 'aggregate_templates.php', 
+			'level' => '1'
+			),
+		'aggregate_templates.php:edit' => array(
+			'title' => '(Edit)', 
+			'mapping' => 'index.php:,aggregate_templates.php:', 
+			'url' => '', 
+			'level' => '2'
+			),
+		'aggregate_templates.php:actions'=> array(
+			'title' => 'Actions', 
+			'mapping' => 'index.php:,aggregate_templates.php:', 
+			'url' => '', 
+			'level' => '2'
+			),
+		'aggregate_graphs.php:' => array(
+			'title' => 'Aggregate Graphs', 
+			'mapping' => 'index.php:', 
+			'url' => 'aggregate_graphs.php', 
+			'level' => '1'
+			),
+		'aggregate_graphs.php:edit' => array(
+			'title' => '(Edit)', 
+			'mapping' => 'index.php:,aggregate_graphs.php:', 
+			'url' => '', 
+			'level' => '2'
+			),
+		'aggregate_graphs.php:actions' => array(
+			'title' => 'Actions', 
+			'mapping' => 'index.php:,aggregate_graphs.php:', 
+			'url' => '', 
+			'level' => '2'
+			),
+		'aggregate_items.php:' => array(
+			'title' => 'Aggregate Items', 
+			'mapping' => 'index.php:', 
+			'url' => 'aggregate_items.php', 
+			'level' => '1'
+			),
+		'aggregate_items.php:item_edit' => array(
+			'title' => '(Edit)', 
+			'mapping' => 'index.php:,aggregate_graphs.php:,aggregate_items.php:', 
+			'url' => '', 
+			'level' => '2'
+			),
+		'aggregate_items.php:actions' => array(
+			'title' => 'Actions', 
+			'mapping' => 'index.php:,aggregate_items.php:', 
+			'url' => '', 
+			'level' => '2'
+			)
 	);
 
 	$nav =  api_plugin_hook_function('draw_navigation_text', $nav);

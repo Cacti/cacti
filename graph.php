@@ -106,6 +106,7 @@ case 'view':
 		$graph_end   = time();
 		foreach ($rras as $rra) {
 			$graph_start = $graph_end - db_fetch_cell_prepared('SELECT timespan FROM rra WHERE id = ?', array($rra['id']));
+			$aggregate_url = aggregate_build_children_url($_REQUEST['local_graph_id'], $graph_start, $graph_end, $rra['id']);
 			?>
 			<tr>
 				<td align='center'>
@@ -118,6 +119,7 @@ case 'view':
 								<span class='hyperLink utils' graph_start='<?php print $graph_start;?>' graph_end='<?php print $graph_end;?>' rra_id='<?php print $rra['id'];?>' id='graph_<?php print $_REQUEST['local_graph_id'];?>_util'><img class='drillDown' src='<?php print $config['url_path'];?>images/cog.png' border='0' alt='' title='Graph Details, Zooming and Debugging Utilities'></span><br>
 								<a href='<?php print htmlspecialchars('graph_xport.php?local_graph_id=' . $_REQUEST['local_graph_id'] . '&rra_id=' . $rra['id'] . '&view_type=' . $_REQUEST['view_type'] .  '&graph_start=' . $graph_start . '&graph_end=' . $graph_end);?>'><img src='images/table_go.png' border='0' alt='CSV Export' title='CSV Export'></a><br>
 								<?php if (read_config_option('realtime_enabled') == 'on') print "<a href='#' onclick=\"window.open('".$config['url_path']."graph_realtime.php?top=0&left=0&local_graph_id=" . $_REQUEST['local_graph_id'] . "', 'popup_" . $_REQUEST['local_graph_id'] . "', 'toolbar=no,menubar=no,resizable=yes,location=no,scrollbars=no,status=no,titlebar=no,width=650,height=300')\"><img src='" . $config['url_path'] . "images/chart_curve_go.png' border='0' alt='Realtime' title='Realtime'></a><br/>\n";?>
+								<?php print ($aggregate_url != '' ? $aggregate_url:'')?>
 								<?php api_plugin_hook('graph_buttons', array('hook' => 'view', 'local_graph_id' => $_REQUEST['local_graph_id'], 'rra' => $rra['id'], 'view_type' => $_REQUEST['view_type'])); ?>
 							</td>
 						</tr>
@@ -400,7 +402,7 @@ case 'properties':
 		$graph_data_array['graph_end'] = get_request_var_request('graph_end');
 	}
 
-	print "<table align='center' width='60%' style='background-color: #f5f5f5; border: 1px solid #bbbbbb;' cellpadding='0' callspacing='0' border='0'><tr><td>\n";
+	print "<table align='center' width='100%' style='background-color: #f5f5f5; border: 1px solid #bbbbbb;' cellpadding='0' callspacing='0' border='0'><tr><td>\n";
 	print "<table class='cactiTable' align='center' width='100%' cellpadding='3' cellspacing='0' border='0'>\n";
 	print "<tr class='tableHeader'><td colspan='3' class='linkOverDark' style='font-weight:bold;'>RRDtool Graph Syntax</td></tr>\n";
 	print "<tr><td><pre>\n";

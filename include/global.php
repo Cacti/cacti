@@ -226,6 +226,7 @@ include_once($config['library_path'] . '/html_validate.php');
 include_once($config['library_path'] . '/variables.php');
 include_once($config['library_path'] . '/mib_cache.php');
 include_once($config['library_path'] . '/snmpagent.php');
+include_once($config['library_path'] . '/aggregate.php');
 
 /* cross site request forgery library */
 include_once($config['include_path'] . '/csrf/csrf-magic.php');

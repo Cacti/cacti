@@ -1428,5 +1428,291 @@ $fields_template_import = array(
 			)
 	);
 
+# ------------------------------------------------------------
+# Main Aggregate Parameters
+# ------------------------------------------------------------
+/* file: aggregate.php */
+$struct_aggregate = array(
+	'title_format' => array(
+		'friendly_name' => 'Title',
+		'description' => 'The new Title of the aggregated Graph.',
+		'method' => 'textbox',
+		'max_length' => '255',
+		'value' => '|arg1:title_format|',
+	),
+	'gprint_prefix' => array(
+		'friendly_name' => 'Prefix',
+		'description' => 'A Prefix for all GPRINT lines to distinguish e.g. different hosts.',
+		'method' => 'textbox',
+		'max_length' => '255',
+		'value' => '|arg1:gprint_prefix|',
+	),
+	'aggregate_graph_type' => array(
+		'friendly_name' => 'Graph Type',
+		'description' => 'Use this Option to create e.g. STACKed graphs.' . '<br>' .
+			'AREA/STACK: 1st graph keeps AREA/STACK items, others convert to STACK' . '<br>' .
+			'LINE1: all items convert to LINE1 items' . '<br>' .
+			'LINE2: all items convert to LINE2 items' . '<br>' .
+			'LINE3: all items convert to LINE3 items',
+		'method' => 'drop_array',
+		'value' => '|arg1:aggregate_graph_type|',
+		'array' => $agg_graph_types,
+		'default' => GRAPH_ITEM_TYPE_STACK,
+	),
+	'aggregate_total' => array(
+		'friendly_name' => 'Totaling',
+		'description' => 'Please check those Items that shall be totaled in the "Total" column, when selecting any totaling option here.',
+		'method' => 'drop_array',
+		'value' => '|arg1:aggregate_total|',
+		'array' => $agg_totals,
+		'default' => AGGREGATE_TOTAL_NONE
+	),
+	'aggregate_total_type' => array(
+		'friendly_name' => 'Total Type',
+		'description' => 'Which type of totaling shall be performed.',
+		'method' => 'drop_array',
+		'value' => '|arg1:aggregate_total_type|',
+		'array' => $agg_totals_type,
+		'default' => AGGREGATE_TOTAL_TYPE_SIMILAR
+	),
+	'aggregate_total_prefix' => array(
+		'friendly_name' => 'Prefix for GPRINT Totals',
+		'description' => 'A Prefix for all <strong>totaling</strong> GPRINT lines.',
+		'method' => 'textbox',
+		'max_length' => '255',
+		'value' => '|arg1:aggregate_total_prefix|',
+	),
+	'aggregate_order_type' => array(
+		'friendly_name' => 'Reorder Type',
+		'description' => 'Reordering of Graphs.',
+		'method' => 'drop_array',
+		'value' => '|arg1:aggregate_order_type|',
+		'array' => $agg_order_types,
+		'default' => AGGREGATE_ORDER_NONE,
+	),
+	'graph_template_id' => array(
+		'method' => 'hidden',
+		'value' => '|arg1:graph_template_id|',
+		'default' => 0
+	)
+);
+
+$struct_aggregate_graph = array(
+	'spacer0' => array(
+		'friendly_name' => 'General Settings',
+		'method' => 'spacer'
+	),
+	'title_format' => array(
+		'friendly_name' => 'Graph Name',
+		'description' => 'Please name this Aggregate Graph.',
+		'method' => 'textbox',
+		'max_length' => '255',
+		'value' => '|arg1:title_format|',
+	),
+	'template_propogation' => array(
+		'friendly_name' => 'Propogation Enabled',
+		'description' => 'Is this to carry the template?',
+		'method' => 'checkbox',
+		'default' => '',
+		'value' => '|arg1:template_propogation|'
+	),
+	'spacer1' => array(
+		'friendly_name' => 'Aggregate Graph Settings',
+		'method' => 'spacer'
+	),
+	'gprint_prefix' => array(
+		'friendly_name' => 'Prefix',
+		'description' => 'A Prefix for all GPRINT lines to distinguish e.g. different hosts.  You may use both Host as well as Data Query replacement variables in this prefix.',
+		'method' => 'textbox',
+		'max_length' => '255',
+		'value' => '|arg1:gprint_prefix|',
+	),
+	'graph_type' => array(
+		'friendly_name' => 'Graph Type',
+		'description' => 'Use this Option to create e.g. STACKed graphs.' . '<br>' .
+			'AREA/STACK: 1st graph keeps AREA/STACK items, others convert to STACK' . '<br>' .
+			'LINE1: all items convert to LINE1 items' . '<br>' .
+			'LINE2: all items convert to LINE2 items' . '<br>' .
+			'LINE3: all items convert to LINE3 items',
+		'method' => 'drop_array',
+		'value' => '|arg1:graph_type|',
+		'array' => $agg_graph_types,
+		'default' => GRAPH_ITEM_TYPE_STACK,
+	),
+	'total' => array(
+		'friendly_name' => 'Totaling',
+		'description' => 'Please check those Items that shall be totaled in the "Total" column, when selecting any totaling option here.',
+		'method' => 'drop_array',
+		'value' => '|arg1:total|',
+		'array' => $agg_totals,
+		'default' => AGGREGATE_TOTAL_NONE,
+		'on_change' => 'changeTotals()',
+	),
+	'total_type' => array(
+		'friendly_name' => 'Total Type',
+		'description' => 'Which type of totaling shall be performed.',
+		'method' => 'drop_array',
+		'value' => '|arg1:total_type|',
+		'array' => $agg_totals_type,
+		'default' => AGGREGATE_TOTAL_TYPE_SIMILAR,
+		'on_change' => 'changeTotalsType()',
+	),
+	'total_prefix' => array(
+		'friendly_name' => 'Prefix for GPRINT Totals',
+		'description' => 'A Prefix for all <strong>totaling</strong> GPRINT lines.',
+		'method' => 'textbox',
+		'max_length' => '255',
+		'value' => '|arg1:total_prefix|',
+	),
+	'order_type' => array(
+		'friendly_name' => 'Reorder Type',
+		'description' => 'Reordering of Graphs.',
+		'method' => 'drop_array',
+		'value' => '|arg1:order_type|',
+		'array' => $agg_order_types,
+		'default' => AGGREGATE_ORDER_NONE,
+	),
+	'id' => array(
+		'method' => 'hidden',
+		'value' => '|arg1:id|',
+		'default' => 0
+	),
+	'local_graph_id' => array(
+		'method' => 'hidden',
+		'value' => '|arg1:local_graph_id|',
+		'default' => 0
+	),
+	'aggregate_template_id' => array(
+		'method' => 'hidden',
+		'value' => '|arg1:aggregate_template_id|',
+		'default' => 0
+	),
+	'graph_template_id' => array(
+		'method' => 'hidden',
+		'value' => '|arg1:graph_template_id|',
+		'default' => 0
+	)
+);
+
+$struct_aggregate_template = array(
+	'spacer0' => array(
+		'friendly_name' => 'General Settings',
+		'method' => 'spacer'
+	),
+	'name' => array(
+		'friendly_name' => 'Aggregate Template Name',
+		'description' => 'Please name this Aggregate Template.',
+		'method' => 'textbox',
+		'max_length' => '255',
+		'value' => '|arg1:name|',
+	),
+	'graph_template_id' => array(
+		'friendly_name' => 'Source Graph Template',
+		'description' => 'The Graph Template that this Aggregate Template is based upon.',
+		'method' => 'drop_sql',
+		'value' => '|arg1:graph_template_id|',
+		'sql' => 'SELECT id, name FROM graph_templates ORDER BY name',
+		'default' => 0,
+		'none_value' => 'None'
+	),
+	'spacer1' => array(
+		'friendly_name' => 'Aggregate Template Settings',
+		'method' => 'spacer'
+	),
+	'gprint_prefix' => array(
+		'friendly_name' => 'Prefix',
+		'description' => 'A Prefix for all GPRINT lines to distinguish e.g. different hosts.  You may use both Host as well as Data Query replacement variables in this prefix.',
+		'method' => 'textbox',
+		'max_length' => '255',
+		'value' => '|arg1:gprint_prefix|',
+	),
+	'graph_type' => array(
+		'friendly_name' => 'Graph Type',
+		'description' => 'Use this Option to create e.g. STACKed graphs.' . '<br>' .
+			'AREA/STACK: 1st graph keeps AREA/STACK items, others convert to STACK' . '<br>' .
+			'LINE1: all items convert to LINE1 items' . '<br>' .
+			'LINE2: all items convert to LINE2 items' . '<br>' .
+			'LINE3: all items convert to LINE3 items',
+		'method' => 'drop_array',
+		'value' => '|arg1:graph_type|',
+		'array' => $agg_graph_types,
+		'default' => GRAPH_ITEM_TYPE_STACK,
+	),
+	'total' => array(
+		'friendly_name' => 'Totaling',
+		'description' => 'Please check those Items that shall be totaled in the "Total" column, when selecting any totaling option here.',
+		'method' => 'drop_array',
+		'value' => '|arg1:total|',
+		'array' => $agg_totals,
+		'default' => AGGREGATE_TOTAL_NONE,
+		'on_change' => 'changeTotals()',
+	),
+	'total_type' => array(
+		'friendly_name' => 'Total Type',
+		'description' => 'Which type of totaling shall be performed.',
+		'method' => 'drop_array',
+		'value' => '|arg1:total_type|',
+		'array' => $agg_totals_type,
+		'default' => AGGREGATE_TOTAL_TYPE_SIMILAR,
+		'on_change' => 'changeTotalsType()',
+	),
+	'total_prefix' => array(
+		'friendly_name' => 'Prefix for GPRINT Totals',
+		'description' => 'A Prefix for all <strong>totaling</strong> GPRINT lines.',
+		'method' => 'textbox',
+		'max_length' => '255',
+		'value' => '|arg1:total_prefix|',
+	),
+	'order_type' => array(
+		'friendly_name' => 'Reorder Type',
+		'description' => 'Reordering of Graphs.',
+		'method' => 'drop_array',
+		'value' => '|arg1:order_type|',
+		'array' => $agg_order_types,
+		'default' => AGGREGATE_ORDER_NONE,
+	),
+	'_graph_template_id' => array(
+		'method' => 'hidden',
+		'value' => '|arg1:graph_template_id|',
+		'default' => 0
+	)
+);
+
+# ------------------------------------------------------------
+# Color Templates
+# ------------------------------------------------------------
+/* file: color_templates.php, action: template_edit */
+$struct_color_template = array(
+	'title' => array(
+		'friendly_name' => 'Title',
+		'method' => 'textbox',
+		'max_length' => '255',
+		'default' => '',
+		'description' => 'The name of this Color Template.'
+	)
+);
+
+/* file: color_templates.php, action: item_edit */
+$struct_color_template_item = array(
+	'color_id' => array(
+		'friendly_name' => 'Color',
+		'method' => 'drop_color',
+		'default' => '0',
+		'description' => 'A nice Color',
+		'value' => '|arg1:color_id|',
+	)
+);
+
+/* file: color_templates.php, action: template_edit */
+$fields_color_template_template_edit = array(
+	'name' => array(
+		'method' => 'textbox',
+		'friendly_name' => 'Name',
+		'description' => 'A useful name for this Template.',
+		'value' => '|arg1:name|',
+		'max_length' => '255',
+	)
+);
+
 api_plugin_hook('config_form');
 
