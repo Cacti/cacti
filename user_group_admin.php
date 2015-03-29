@@ -1386,13 +1386,9 @@ function user_group_graph_settings_edit($header_label) {
 	html_start_box("<strong>Graph Settings</strong> $header_label", '100%', '', '3', 'center', '');
 
 	while (list($tab_short_name, $tab_fields) = each($settings_graphs)) {
-		?>
-		<tr id='row_<?php print $tab_short_name;?>' class='tableHeader'>
-			<th colspan='2' style='padding: 3px;'>
-				<?php print $tabs_graphs[$tab_short_name];?>
-			</th>
-		</tr>
-		<?php
+		$collapsible = true;
+
+		print "<tr class='spacer tableHeader" . ($collapsible ? ' collapsible':'') . "' id='row_$tab_short_name'><td colspan='2' style='cursor:pointer;' class='tableSubHeaderColumn'>" . $tabs_graphs[$tab_short_name] . ($collapsible ? "<div style='float:right;padding-right:4px;'><i class='fa fa-angle-double-up'></i></div>":"") . "</td></tr>\n";
 
 		$form_array = array();
 
@@ -1478,10 +1474,32 @@ function user_group_graph_settings_edit($header_label) {
 				break;
 			}
 		}
+
+		if ($('#timespan_sel').is(':checked')) {
+			$('#row_default_rra_id').hide();
+			$('#row_default_timespan').show();
+			$('#row_default_timeshift').show();
+			$('#row_allow_graph_dates_in_future').show();
+			$('#row_first_weekdayid').show();
+			$('#row_day_shift_start').show();
+			$('#row_day_shift_end').show();
+		} else {
+			$('#row_default_rra_id').show();
+			$('#row_default_timespan').hide();
+			$('#row_default_timeshift').hide();
+			$('#row_allow_graph_dates_in_future').hide();
+			$('#row_first_weekdayid').hide();
+			$('#row_day_shift_start').hide();
+			$('#row_day_shift_end').hide();
+		}
 	}
 
 	$(function() {
 		graphSettings();
+
+		$('#timespan_sel').change(function() {
+			graphSettings();
+		});
 	});
 
 	-->
