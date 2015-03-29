@@ -863,20 +863,47 @@ function aggregate_items() {
 	}
 
 	?>
-	<script type='text/javascript'>
-	<!--
-	function applyFilterChange(objForm) {
-		strURL = '?action=edit&tab=items&id=<?php print $_REQUEST['id'];?>&rows=' + objForm.rows.value;
-		strURL = strURL + '&filter=' + objForm.filter.value;
-		strURL = strURL + '&matching=' + objForm.matching.checked;
-		document.location = strURL;
+	<script type="text/javascript">
+
+	function applyFilter() {
+		strURL = 'aggregate_graphs.php?action=edit&tab=items&id='+$('#id').val();
+		strURL = strURL + '&rows=' + $('#rows').val();
+		strURL = strURL + '&page=' + $('#page').val();
+		strURL = strURL + '&filter=' + $('#filter').val();
+		strURL = strURL + '&matching=' + $('#matching').is(':checked');
+		strURL = strURL + '&header=false';
+		$.get(strURL, function(data) {
+			$('#main').html(data);
+			applySkin();
+		});
 	}
 
-	function clearFilter(objForm) {
-		strURL = '?action=edit&tab=items&id=<?php print $_REQUEST['id'];?>&rows=-1&filter=&matching=true'
-		document.location = strURL;
+	function clearFilter() {
+		strURL = 'aggregate_graphs.php?action=edit&tab=items&id='+$('#id').val()+'&clear=1&header=false';
+		$.get(strURL, function(data) {
+			$('#main').html(data);
+			applySkin();
+		});
 	}
-	-->
+
+	$(function() {
+		$('#refresh').click(function() {
+			applyFilter();
+		});
+
+		$('#clear').click(function() {
+			clearFilter();
+		});
+
+		$('#filter').change(function() {
+			applyFilter();
+		});
+
+		$('#form_graphs').submit(function(event) {
+			event.preventDefault();
+			applyFilter();
+		});
+	});
 	</script>
 	<?php
 
@@ -885,20 +912,20 @@ function aggregate_items() {
 	?>
 	<tr class='even'>
 		<td>
-			<form name='form_graph_id' action='aggregate_graphs.php'>
+			<form id='form_graphs' action='aggregate_graphs.php'>
 			<table cellpadding='2' cellspacing='0'>
 				<tr>
 					<td width='55'>
 						Search
 					</td>
 					<td>
-						<input type='text' id='filter' name='filter' size='25' onChange='applyFilterChange(document.form_graph_id)' value='<?php print htmlspecialchars(get_request_var_request('filter'));?>'>
+						<input type='text' id='filter' size='25' onChange='applyFilter()' value='<?php print htmlspecialchars(get_request_var_request('filter'));?>'>
 					</td>
 					<td>
 						Rows
 					</td>
 					<td>
-						<select id='rows' name='rows' onChange='applyFilterChange(document.form_graph_id)'>
+						<select id='rows' onChange='applyFilter()'>
 							<option value='-1'<?php if (get_request_var_request('rows') == '-1') {?> selected<?php }?>>Default</option>
 							<?php
 							if (sizeof($item_rows) > 0) {
@@ -910,23 +937,23 @@ function aggregate_items() {
 						</select>
 					</td>
 					<td>
-						<input type='checkbox' name='matching' id='matching' onChange='applyFilterChange(document.form_graph_id)' <?php print ($_REQUEST['matching'] == 'on' || $_REQUEST['matching'] == 'true' ? ' checked':'');?>>
+						<input type='checkbox' id='matching' onChange='applyFilter()' <?php print ($_REQUEST['matching'] == 'on' || $_REQUEST['matching'] == 'true' ? ' checked':'');?>>
 					</td>
 					<td>
 						<label style='white-space:nowrap;' for='matching'>Part of Aggregate</label>
 					</td>
 					<td>
-						<input type='submit' value='Go' onClick='applyFilterChange(document.form_graph_id)' title='Set/Refresh Filters'>
+						<input id='refresh' type='button' value='Go' title='Set/Refresh Filters'>
 					</td>
 					<td>
-						<input type='button' onClick='clearFilter(document.form_graph_id)' name='clear' value='Clear' title='Clear Filters'>
+						<input id='clear' type='button' onClick='clearFilter()' value='Clear' title='Clear Filters'>
 					</td>
 				</tr>
 			</table>
-			<input type='hidden' name='page' value='1'>
+			<input type='hidden' id='page' value='<?php print $_REQUEST['page'];?>'>
 			<input type='hidden' name='action' value='edit'>
 			<input type='hidden' name='tab' value='items'>
-			<input type='hidden' name='id' value='<?php print $_REQUEST['id'];?>'>
+			<input type='hidden' id='id' value='<?php print $_REQUEST['id'];?>'>
 			</form>
 		</td>
 	</tr>
@@ -1099,7 +1126,7 @@ function aggregate_format_text($text, $filter) {
 
 	if (sizeof($tags)) {
 	foreach($tags as $k => $t) {
-		$text = str_replace("<<$k>>", "<span style='background-color: #F8D93D;'>" . $t . "</span>", $text);
+		$text = str_replace("<<$k>>", "<span class='filteredValue'>" . $t . "</span>", $text);
 	}
 	}
 
@@ -1162,14 +1189,47 @@ function graph() {
 
 	?>
 	<script type='text/javascript'>
-	<!--
-	function applyGraphsFilterChange(objForm) {
-		strURL = '?rows=' + objForm.rows.value;
-		strURL = strURL + '&filter=' + objForm.filter.value;
-		strURL = strURL + '&template_id=' + objForm.template_id.value;
-		document.location = strURL;
+
+	function applyFilter() {
+		strURL = 'aggregate_graphs.php';
+		strURL = strURL + '?rows=' + $('#rows').val();
+		strURL = strURL + '&page=' + $('#page').val();
+		strURL = strURL + '&filter=' + $('#filter').val();
+		strURL = strURL + '&template_id=' + $('#template_id').val();
+		strURL = strURL + '&header=false';
+		$.get(strURL, function(data) {
+			$('#main').html(data);
+			applySkin();
+		});
 	}
-	-->
+
+	function clearFilter() {
+		strURL = 'aggregate_graphs.php?clear=1&header=false';
+		$.get(strURL, function(data) {
+			$('#main').html(data);
+			applySkin();
+		});
+	}
+
+	$(function() {
+		$('#refresh').click(function() {
+			applyFilter();
+		});
+
+		$('#clear').click(function() {
+			clearFilter();
+		});
+
+		$('#filter').change(function() {
+			applyFilter();
+		});
+
+		$('#form_graphs').submit(function(event) {
+			event.preventDefault();
+			applyFilter();
+		});
+	});
+
 	</script>
 	<?php
 
@@ -1178,20 +1238,20 @@ function graph() {
 	?>
 	<tr class='even'>
 		<td>
-			<form name='form_graph_id' action='aggregate_graphs.php'>
+			<form id='form_graphs' action='aggregate_graphs.php'>
 			<table cellpadding='2' cellspacing='0'>
 				<tr>
 					<td width='55'>
 						Search
 					</td>
 					<td>
-						<input type='text' id='filter' name='filter' size='25' value='<?php print htmlspecialchars(get_request_var_request('filter'));?>'>
+						<input type='text' id='filter' size='25' value='<?php print htmlspecialchars(get_request_var_request('filter'));?>'>
 					</td>
 					<td width='55'>
 						Template
 					</td>
 					<td>
-						<select id='template_id' name='template_id' onChange='applyGraphsFilterChange(document.form_graph_id)'>
+						<select id='template_id' name='template_id' onChange='applyFilter()'>
 							<option value='-1'<?php if (get_request_var_request('template_id') == '-1') {?> selected<?php }?>>Any</option>
 							<option value='0'<?php if (get_request_var_request('template_id') == '0') {?> selected<?php }?>>None</option>
 							<?php
@@ -1213,7 +1273,7 @@ function graph() {
 						Graphs
 					</td>
 					<td>
-						<select id='rows' name='rows' onChange='applyGraphsFilterChange(document.form_graph_id)'>
+						<select id='rows' onChange='applyFilter()'>
 							<option value='-1'<?php if (get_request_var_request('rows') == '-1') {?> selected<?php }?>>Default</option>
 							<?php
 							if (sizeof($item_rows) > 0) {
@@ -1225,14 +1285,14 @@ function graph() {
 						</select>
 					</td>
 					<td>
-						<input type='submit' value='Go' title='Set/Refresh Filters'>
+						<input type='button' id='refresh' value='Go' title='Set/Refresh Filters'>
 					</td>
 					<td>
-						<input type='submit' name='clear' value='Clear' title='Clear Filters'>
+						<input type='button' id='clear' value='Clear' title='Clear Filters'>
 					</td>
 				</tr>
 			</table>
-			<input type='hidden' id='page' name='page' value='1'>
+			<input type='hidden' id='page' name='page' value='<?php print $_REQUEST['page'];?>'>
 			</form>
 		</td>
 	</tr>
@@ -1309,9 +1369,9 @@ function graph() {
 			/* we're escaping strings here, so no need to escape them on form_selectable_cell */
 			$template_name = ((empty($graph['name'])) ? '<em>None</em>' : htmlspecialchars($graph['name']));
 			form_alternate_row('line' . $graph['local_graph_id'], true);
-			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars('aggregate_graphs.php?action=edit&tab=details&reset=1&id=' . $graph['local_graph_id']) . "' title='" . htmlspecialchars($graph['title_cache']) . "'>" . (get_request_var_request('filter') != '' ? aggregate_format_text(htmlspecialchars($graph['title_cache']),get_request_var_request('filter')) : htmlspecialchars($graph['title_cache'])) . '</a>', $graph['local_graph_id']);
+			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars('aggregate_graphs.php?action=edit&id=' . $graph['local_graph_id']) . "'>" . ((get_request_var_request('filter') != '') ? preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", title_trim(htmlspecialchars($graph['title_cache']), read_config_option('max_title_length'))) : title_trim(htmlspecialchars($graph['title_cache']), read_config_option('max_title_length'))) . '</a>', $graph['local_graph_id']);
 			form_selectable_cell($graph['local_graph_id'], $graph['local_graph_id'], '', 'text-align:right;');
-			form_selectable_cell(((get_request_var_request('filter') != '') ? eregi_replace('(' . preg_quote(get_request_var_request('filter')) . ')', "<span class='filteredValue'>\\1</span>", $template_name) : $template_name), $graph['local_graph_id']);
+			form_selectable_cell(((get_request_var_request('filter') != '') ? preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", $template_name) : $template_name), $graph['local_graph_id']);
 			form_selectable_cell($graph['height'] . 'x' . $graph['width'], $graph['local_graph_id']);
 			form_checkbox_cell($graph['title_cache'], $graph['local_graph_id']);
 			form_end_row();
