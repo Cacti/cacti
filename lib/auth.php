@@ -540,9 +540,9 @@ function get_allowed_tree_content($tree_id, $parent = 0, $sql_where = '', $order
 	}
 
 	if ($sql_where != '') {
-		$sql_where = "WHERE gti.local_graph_id = 0 AND gti.parent = $parent AND gti.graph_tree_id = $tree_id AND (" . $sql_where . ')';
+		$sql_where = "WHERE gti.local_graph_id=0 AND gti.parent=$parent AND gti.graph_tree_id=$tree_id AND (" . $sql_where . ')';
 	}else{
-		$sql_where = "WHERE gti.local_graph_id = 0 AND gti.parent = $parent AND gti.graph_tree_id = $tree_id";
+		$sql_where = "WHERE gti.local_graph_id=0 AND gti.parent=$parent AND gti.graph_tree_id=$tree_id";
 	}
 
 	if ($tree_id > 0) {
@@ -559,6 +559,7 @@ function get_allowed_tree_content($tree_id, $parent = 0, $sql_where = '', $order
 		$heirarchy = db_fetch_assoc("SELECT gt.id AS tree_id, '0' AS id, gt.name AS title, '0' AS host_id, 
 			'0' AS local_graph_id, '1' AS host_grouping_type, '' AS hostname
 			FROM graph_tree AS gt
+			WHERE enabled='on'
 			ORDER BY gt.name");
 	}
 
@@ -933,7 +934,9 @@ function get_allowed_trees($edit = false, $return_sql = false, $sql_where = '', 
 		}
 	}else{
 		if (strlen($sql_where)) {
-			$sql_where = "WHERE $sql_where";
+			$sql_where = "WHERE enabled='on' AND $sql_where";
+		}else{
+			$sql_where = "WHERE enabled='on'";
 		}
 
 		if ($return_sql) {

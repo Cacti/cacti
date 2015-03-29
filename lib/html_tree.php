@@ -81,6 +81,7 @@ function grow_dhtml_trees() {
 					FROM user_auth_perms 
 					WHERE type=2 AND user_id=" . $_SESSION['sess_user_id'] . "
 				)
+				AND enabled='on'
 				ORDER BY id LIMIT 1");
 		}else{
 			$default_tree_id = db_fetch_cell("SELECT id 
@@ -91,6 +92,7 @@ function grow_dhtml_trees() {
 					WHERE type=2 
 					AND user_id=" . $_SESSION['sess_user_id'] . "
 				)
+				AND enabled='on'
 				ORDER BY id LIMIT 1");
 		}
 	}

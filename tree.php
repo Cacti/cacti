@@ -262,7 +262,6 @@ function set_branch_sort_type() {
     The Save Function
    -------------------------- */
 function form_save() {
-
 	/* clear graph tree cache on save - affects current user only, other users should see changes in <5 minutes */
 	if (isset($_SESSION['dhtml_tree'])) {
 		unset($_SESSION['dhtml_tree']);
@@ -279,6 +278,7 @@ function form_save() {
 		$save['name']          = form_input_validate($_POST['name'], 'name', '', false, 3);
 		$save['sort_type']     = form_input_validate($_POST['sort_type'], 'sort_type', '', true, 3);
 		$save['last_modified'] = date('Y-m-d H:i:s', time());
+		$save['enabled']       = $_POST['enabled'] == 'true' ? 'on':'-';
 		$save['modified_by']   = $_SESSION['sess_user_id'];
 		if (empty($save['id'])) {
 			$save['user_id'] = $_SESSION['sess_user_id'];
@@ -298,12 +298,6 @@ function form_save() {
 		}
 
 		header("Location: tree.php?action=edit" . (!$header ? "&header=false":"") . "&id=$tree_id");
-	}elseif (isset($_POST['save_component_tree_item'])) {
-		$tree_item_id = api_tree_item_save($_POST['id'], $_POST['graph_tree_id'], $_POST['type'], $_POST['parent_item_id'],
-			(isset($_POST['title']) ? $_POST['title'] : ''), (isset($_POST['local_graph_id']) ? $_POST['local_graph_id'] : '0'),
-			(isset($_POST['rra_id']) ? $_POST['rra_id'] : '0'), (isset($_POST['host_id']) ? $_POST['host_id'] : '0'),
-			(isset($_POST['host_grouping_type']) ? $_POST['host_grouping_type'] : '1'), (isset($_POST['sort_children_type']) ? $_POST['sort_children_type'] : '1'),
-			(isset($_POST['propagate_changes']) ? true : false));
 	}
 }
 
