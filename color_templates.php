@@ -340,8 +340,8 @@ function aggregate_color_template() {
 	}
 
 	/* clean up search string */
-	if (isset($_REQUEST['has_templates'])) {
-		$_REQUEST['has_templates'] = sanitize_search_string(get_request_var('has_templates'));
+	if (isset($_REQUEST['has_graphs'])) {
+		$_REQUEST['has_graphs'] = sanitize_search_string(get_request_var('has_graphs'));
 	}
 
 	/* clean up sort_column string */
@@ -362,14 +362,14 @@ function aggregate_color_template() {
 	if (isset($_REQUEST['clear'])) {
 		kill_session_var('sess_color_template_current_page');
 		kill_session_var('sess_color_template_filter');
-		kill_session_var('sess_color_template_has_templates');
+		kill_session_var('sess_color_template_has_graphs');
 		kill_session_var('sess_color_template_sort_column');
 		kill_session_var('sess_color_template_sort_direction');
 		kill_session_var('sess_color_template_rows');
 
 		unset($_REQUEST['page']);
 		unset($_REQUEST['filter']);
-		unset($_REQUEST['has_templates']);
+		unset($_REQUEST['has_graphs']);
 		unset($_REQUEST['sort_column']);
 		unset($_REQUEST['sort_direction']);
 		unset($_REQUEST['sess_color_template_rows']);
@@ -378,7 +378,7 @@ function aggregate_color_template() {
 	/* remember these search fields in session vars so we don't have to keep passing them around */
 	load_current_session_value('page', 'sess_color_template_current_page', '1');
 	load_current_session_value('filter', 'sess_color_template_filter', '');
-	load_current_session_value('has_templates', 'sess_color_template_has_templates', '');
+	load_current_session_value('has_graphs', 'sess_color_template_has_graphs', '');
 	load_current_session_value('sort_column', 'sess_color_template_sort_column', 'name');
 	load_current_session_value('sort_direction', 'sess_color_template_sort_direction', 'ASC');
 	load_current_session_value('rows', 'sess_color_template_rows', read_config_option('num_rows_table'));
@@ -424,10 +424,10 @@ function aggregate_color_template() {
 	$filter_html .= '					</select>
 							</td>
 							<td>
-								<input type="checkbox" id="has_templates" ' . ($_REQUEST['has_templates'] == 'true' ? 'checked':'') . ' onChange="applyFilter()">
+								<input type="checkbox" id="has_graphs" ' . ($_REQUEST['has_graphs'] == 'true' ? 'checked':'') . ' onChange="applyFilter()">
 							</td>
 							<td>
-								<label for="has_templates" style="white-space:nowrap;">Has Templates</label>
+								<label for="has_graphs" style="white-space:nowrap;">Has Graphs</label>
 							</td>
 							<td>
 								<input type="button" id="refresh" value="Go">
@@ -453,8 +453,8 @@ function aggregate_color_template() {
 		$sql_where = "WHERE (ct.name LIKE '%%" . $_REQUEST['filter'] . "%%')";
 	}
 
-	if ($_REQUEST['has_templates'] == 'true') {
-		$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') . ' templates>0';
+	if ($_REQUEST['has_graphs'] == 'true') {
+		$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') . ' (templates>0 OR graphs>0)';
 	}
 
 	/* print checkbox form for validation */
@@ -469,11 +469,17 @@ function aggregate_color_template() {
 			FROM aggregate_graph_templates_item 
 			GROUP BY color_template
 		) AS templates
+		LEFT JOIN (
+			SELECT color_template, COUNT(*) AS graphs
+			FROM aggregate_graphs_graph_item
+			GROUP BY color_template
+		) AS graphs
+		ON ct.color_template_id=graphs.color_template
 		ON ct.color_template_id=templates.color_template
 		$sql_where");
 
 	$template_list = db_fetch_assoc("SELECT
-		ct.color_template_id, ct.name, templates.templates
+		ct.color_template_id, ct.name, templates.templates, graphs.graphs
 		FROM color_templates AS ct
 		LEFT JOIN (
 			SELECT color_template, COUNT(*) AS templates 
@@ -481,17 +487,24 @@ function aggregate_color_template() {
 			GROUP BY color_template
 		) AS templates
 		ON ct.color_template_id=templates.color_template
+		LEFT JOIN (
+			SELECT color_template, COUNT(*) AS graphs
+			FROM aggregate_graphs_graph_item
+			GROUP BY color_template
+		) AS graphs
+		ON ct.color_template_id=graphs.color_template
 		$sql_where
 		ORDER BY " . $_REQUEST['sort_column'] . ' ' . $_REQUEST['sort_direction'] .
 		' LIMIT ' . (get_request_var_request('rows')*(get_request_var_request('page')-1)) . ',' . get_request_var_request('rows'));
 
-	$nav = html_nav_bar('color_templates.php', MAX_DISPLAY_PAGES, get_request_var_request('page'), get_request_var_request('rows'), $total_rows, 4, 'Color Templates', 'page', 'main');
+	$nav = html_nav_bar('color_templates.php', MAX_DISPLAY_PAGES, get_request_var_request('page'), get_request_var_request('rows'), $total_rows, 5, 'Color Templates', 'page', 'main');
 
 	print $nav;
 
 	$display_text = array(
 		'name' => array('Template Title', 'ASC'),
 		'nosort' => array('display' => 'Deletable', 'align' => 'right', 'tip' => 'Color Templates that are in use can not be Deleted.  In use is defined as being referenced by an Aggregate Template.'),
+		'graphs' => array('display' => 'Graphs', 'align' => 'right', 'sort' => 'DESC'),
 		'templates' => array('display' => 'Templates', 'align' => 'right', 'sort' => 'DESC')
 	);
 
@@ -509,6 +522,7 @@ function aggregate_color_template() {
 
 			form_selectable_cell("<a style='white-space:nowrap;' class='linkEditMain' href='" . htmlspecialchars('color_templates.php?action=template_edit&color_template_id=' . $template['color_template_id'] . '&page=1') . "'>" . (get_request_var_request('filter') != '' ? preg_replace('/(' . preg_quote(get_request_var_request('filter')) . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($template['name'])) : htmlspecialchars($template['name'])) . '</a>', $template['color_template_id']);
 			form_selectable_cell($disabled ? 'No':'Yes', $template['color_template_id'], '', 'text-align:right');
+            form_selectable_cell(number_format($template['graphs']), $template['color_template_id'], '', 'text-align:right;');
             form_selectable_cell(number_format($template['templates']), $template['color_template_id'], '', 'text-align:right;');
 			form_checkbox_cell($template['name'], $template['color_template_id'], $disabled);
 			form_end_row();
@@ -533,7 +547,7 @@ function aggregate_color_template() {
 		strURL = strURL + '?rows=' + $('#rows').val();
 		strURL = strURL + '&page=' + $('#page').val();
 		strURL = strURL + '&filter=' + $('#filter').val();
-		strURL = strURL + '&has_templates=' + $('#has_templates').is(':checked');
+		strURL = strURL + '&has_graphs=' + $('#has_graphs').is(':checked');
 		strURL = strURL + '&header=false';
 		$.get(strURL, function(data) {
 			$('#main').html(data);
