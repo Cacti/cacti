@@ -376,7 +376,7 @@ function item_edit() {
 
 	html_end_box();
 
-	aggregate_save_button($config['url_path'] . "$page_name?action=edit&id=" . get_request_var_request("local_graph_id"));
+	form_save_button($config['url_path'] . "$page_name?action=edit&id=" . get_request_var_request("local_graph_id"));
 
 //Now we need some javascript to make it dynamic
 ?>

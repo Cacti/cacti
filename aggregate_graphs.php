@@ -755,7 +755,7 @@ function graph_edit() {
 		form_hidden_box('save_component_graph','1','');
 		form_hidden_box('save_component_input','1','');
 		form_hidden_box('rrdtool_version', read_config_option('rrdtool_version'), '');
-		aggregate_save_button($referer, 'return', 'id');
+		form_save_button($referer, 'return', 'id');
 
 		echo '</div>';
 
@@ -1051,7 +1051,8 @@ function aggregate_items() {
 
 	/* draw the dropdown containing a list of available actions for this form */
 	form_hidden_box('local_graph_id', $_REQUEST['id'], '');
-	aggregate_actions_dropdown($agg_item_actions);
+
+	draw_actions_dropdown($agg_item_actions);
 
 	print "</form>\n";
 }
@@ -1389,7 +1390,7 @@ function graph() {
 	add_tree_names_to_actions_array();
 
 	/* draw the dropdown containing a list of available actions for this form */
-	aggregate_actions_dropdown($graph_actions);
+	draw_actions_dropdown($graph_actions);
 
 	/* remove old graphs */
 	purge_old_graphs();

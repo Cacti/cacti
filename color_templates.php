@@ -22,20 +22,19 @@
  +-------------------------------------------------------------------------+
 */
 
-chdir('../../');
-include_once("./include/auth.php");
+include_once('./include/auth.php');
 
-define("MAX_DISPLAY_PAGES", 21);
+define('MAX_DISPLAY_PAGES', 21);
 
 $aggregate_actions = array(
-	1 => "Delete",
-	2 => "Duplicate"
+	1 => 'Delete',
+	2 => 'Duplicate'
 	);
 
 /* set default action */
-if (!isset($_REQUEST["action"])) { $_REQUEST["action"] = ""; }
+if (!isset($_REQUEST['action'])) { $_REQUEST['action'] = ''; }
 
-switch ($_REQUEST["action"]) {
+switch ($_REQUEST['action']) {
 	case 'save':
 		aggregate_color_form_save();
 
@@ -71,45 +70,43 @@ function draw_color_template_items_list($item_list, $filename, $url_data, $disab
 	global $config;
 	global $struct_color_template_item;
 
-	#print "<pre>";print_r($item_list);print "</pre>";
-
 	print "<tr class='tableHeader'>\n";
-		DrawMatrixHeaderItem("Color Item", '' , 1);
-		DrawMatrixHeaderItem("Seq", '', 1);
-		DrawMatrixHeaderItem("Item Color", '', 2);
-		DrawMatrixHeaderItem("Actions", '', 2);
-	print "</tr>";
+		DrawMatrixHeaderItem('Color Item', '' , 1);
+		DrawMatrixHeaderItem('Seq', '', 1);
+		DrawMatrixHeaderItem('Item Color', '', 2);
+		DrawMatrixHeaderItem('Actions', '', 2);
+	print '</tr>';
 
-	$group_counter = 0; $_graph_type_name = ""; $i = 0;
+	$group_counter = 0; $_graph_type_name = ''; $i = 0;
 
 	if (sizeof($item_list) > 0) {
 	foreach ($item_list as $item) {
 		/* color grouping display logic */
-		$this_row_style = ""; $use_custom_row_color = false; $hard_return = "";
+		$this_row_style = ''; $use_custom_row_color = false; $hard_return = '';
 
 		/* alternating row color */
 		form_alternate_row();
 
 		# print item no.
-		print "<td>";
-		if ($disable_controls == false) { print "<a href='" . htmlspecialchars($filename . "?action=item_edit&color_template_item_id=" . $item["color_template_item_id"] . "&$url_data") . "'>"; }
-		print "<strong>Item # " . ($i+1) . "</strong>";
-		if ($disable_controls == false) { print "</a>"; }
+		print '<td>';
+		if ($disable_controls == false) { print "<a href='" . htmlspecialchars($filename . '?action=item_edit&color_template_item_id=' . $item['color_template_item_id'] . "&$url_data") . "'>"; }
+		print '<strong>Item # ' . ($i+1) . '</strong>';
+		if ($disable_controls == false) { print '</a>'; }
 		print "</td>\n";
 
 		# print function
 
-		print "<td style='$this_row_style'>" . $item["sequence"] . "</td>\n";
-		print "<td" . ((isset($item["hex"])) ? " bgcolor='#" . $item["hex"] . "'" : "") . " width='5%'>&nbsp;</td>\n";
-		print "<td style='$this_row_style'>" . $item["hex"] . "</td>\n";
+		print "<td style='$this_row_style'>" . $item['sequence'] . "</td>\n";
+		print '<td' . ((isset($item['hex'])) ? " bgcolor='#" . $item['hex'] . "'" : '') . " width='5%'>&nbsp;</td>\n";
+		print "<td style='$this_row_style'>" . $item['hex'] . "</td>\n";
 
 		if ($disable_controls == false) {
-			print "<td><a href='" . htmlspecialchars($filename . "?action=item_movedown&color_template_item_id=" . $item["color_template_item_id"] . "&$url_data") . "'><img src='../../images/move_down.gif' border='0' alt='Move Down'></a>
-					<a href='" . htmlspecialchars($filename . "?action=item_moveup&color_template_item_id=" . $item["color_template_item_id"] . "&$url_data") . "'><img src='../../images/move_up.gif' border='0' alt='Move Up'></a></td>\n";
-			print "<td align='right'><a href='" . htmlspecialchars($filename . "?action=item_remove&color_template_item_id=" . $item["color_template_item_id"] . "&$url_data") . "'><img src='../../images/delete_icon.gif' width='10' height='10' border='0' alt='Delete'></a></td>\n";
+			print "<td><a href='" . htmlspecialchars($filename . "?action=item_movedown&color_template_item_id=" . $item['color_template_item_id'] . "&$url_data") . "'><img src='images/move_down.gif' border='0' alt='Move Down'></a>
+					<a href='" . htmlspecialchars($filename . "?action=item_moveup&color_template_item_id=" . $item['color_template_item_id'] . "&$url_data") . "'><img src='images/move_up.gif' border='0' alt='Move Up'></a></td>\n";
+			print "<td align='right'><a href='" . htmlspecialchars($filename . "?action=item_remove&color_template_item_id=" . $item['color_template_item_id'] . "&$url_data") . "'><img src='images/delete_icon.gif' width='10' height='10' border='0' alt='Delete'></a></td>\n";
 		}
 
-		print "</tr>";
+		print '</tr>';
 
 		$i++;
 	}
@@ -125,21 +122,21 @@ function draw_color_template_items_list($item_list, $filename, $url_data, $disab
  * aggregate_color_form_save	the save function
  */
 function aggregate_color_form_save() {
-	if (isset($_POST["save_component_color"])) {
-		if (isset($_POST["color_template_id"])) {
-			$save1["color_template_id"] = $_POST["color_template_id"];
+	if (isset($_POST['save_component_color'])) {
+		if (isset($_POST['color_template_id'])) {
+			$save1['color_template_id'] = $_POST['color_template_id'];
 		} else {
-			$save1["color_template_id"] = 0;
+			$save1['color_template_id'] = 0;
 		}
-		$save1["name"] = form_input_validate(htmlspecialchars($_POST["name"]), "name", "", false, 3);
-		if (read_config_option("log_verbosity", TRUE) == POLLER_VERBOSITY_DEBUG) {
-			aggregate_log("AGGREGATE   Saved ID: " . $save1["color_template_id"] . " Name: " . $save1["name"], FALSE);
+		$save1['name'] = form_input_validate(htmlspecialchars($_POST['name']), 'name', '', false, 3);
+		if (read_config_option('log_verbosity', TRUE) == POLLER_VERBOSITY_DEBUG) {
+			aggregate_log('AGGREGATE   Saved ID: ' . $save1['color_template_id'] . ' Name: ' . $save1['name'], FALSE);
 		}
 
 		if (!is_error_message()) {
-			$color_template_id = sql_save($save1, "color_templates", "color_template_id");
-			if (read_config_option("log_verbosity", TRUE) == POLLER_VERBOSITY_DEBUG) {
-				aggregate_log("AGGREGATE   Saved ID: " . $color_template_id, FALSE);
+			$color_template_id = sql_save($save1, 'color_templates', 'color_template_id');
+			if (read_config_option('log_verbosity', TRUE) == POLLER_VERBOSITY_DEBUG) {
+				aggregate_log('AGGREGATE   Saved ID: ' . $color_template_id, FALSE);
 			}
 
 			if ($color_template_id) {
@@ -150,87 +147,84 @@ function aggregate_color_form_save() {
 		}
 	}
 
-	if ((is_error_message()) || (empty($_POST["color_template_id"]))) {
-		header("Location: color_templates.php?action=template_edit&color_template_id=" . (empty($color_template_id) ? $_POST["color_template_id"] : $color_template_id));
+	if ((is_error_message()) || (empty($_POST['color_template_id']))) {
+		header('Location: color_templates.php?action=template_edit&color_template_id=' . (empty($color_template_id) ? $_POST['color_template_id'] : $color_template_id));
 	}else{
-		header("Location: color_templates.php");
+		header('Location: color_templates.php');
 	}
 }
 
 /* ------------------------
-    The "actions" function
+    The 'actions' function
    ------------------------ */
 /**
  * aggregate_color_form_actions		the action function
  */
 function aggregate_color_form_actions() {
 	global $aggregate_actions, $config;
-	include_once($config['base_path'] . "/lib/api_aggregate.php");
+	include_once($config['base_path'] . '/lib/api_aggregate.php');
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var_post('drp_action'));
 	/* ==================================================== */
 
 	/* if we are to save this form, instead of display it */
-	if (isset($_POST["selected_items"])) {
-		$selected_items = unserialize(stripslashes($_POST["selected_items"]));
+	if (isset($_POST['selected_items'])) {
+		$selected_items = unserialize(stripslashes($_POST['selected_items']));
 
-		if ($_POST["drp_action"] == "1") { /* delete */
-			db_execute("delete from color_templates where " . array_to_sql_or($selected_items, "color_template_id"));
-			db_execute("delete from color_template_items where " . array_to_sql_or($selected_items, "color_template_id"));
-		}elseif ($_POST["drp_action"] == "2") { /* duplicate */
+		if ($_POST['drp_action'] == '1') { /* delete */
+			db_execute('DELETE FROM color_templates WHERE ' . array_to_sql_or($selected_items, 'color_template_id'));
+			db_execute('DELETE FROM color_template_items WHERE ' . array_to_sql_or($selected_items, 'color_template_id'));
+		}elseif ($_POST['drp_action'] == '2') { /* duplicate */
 			for ($i=0;($i<count($selected_items));$i++) {
 				/* ================= input validation ================= */
 				input_validate_input_number($selected_items[$i]);
 				/* ==================================================== */
-				duplicate_color_template($selected_items[$i], $_POST["title_format"]);
+				duplicate_color_template($selected_items[$i], $_POST['title_format']);
 			}
 		}
 
-		header("Location: color_templates.php");
+		header('Location: color_templates.php');
 		exit;
 	}
 
 	/* setup some variables */
-	$color_list = ""; $i = 0;
+	$color_list = ''; $i = 0;
 
 	/* loop through each of the color templates selected on the previous page and get more info about them */
 	while (list($var,$val) = each($_POST)) {
-		if (preg_match("/^chk_([0-9]+)$/", $var, $matches)) {
+		if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
 			/* ================= input validation ================= */
 			input_validate_input_number($matches[1]);
 			/* ==================================================== */
-			$color_list .= "<li>" . db_fetch_cell("select name from color_templates where color_template_id=" . $matches[1]) . "</li>";
+			$color_list .= '<li>' . db_fetch_cell('SELECT name FROM color_templates WHERE color_template_id=' . $matches[1]) . '</li>';
 			$color_array[] = $matches[1];
 		}
 	}
-	//print "<pre>";print_r($_POST);print "</pre>";
 
 	top_header();
 
 	print "<form action='color_templates.php' method='post'>\n";
-	html_start_box("<strong>" . $aggregate_actions{$_POST["drp_action"]} . "</strong>", "60%", '', "3", "center", "");
+	html_start_box('<strong>' . $aggregate_actions{$_POST['drp_action']} . '</strong>', '60%', '', '3', 'center', '');
 
 	if (isset($color_array) && sizeof($color_array)) {
-	if ($_POST["drp_action"] == "1") { /* delete */
+	if ($_POST['drp_action'] == '1') { /* delete */
 		print "	<tr>
 				<td class='textArea'>
 					<p>Are you sure you want to delete the following color templates?</p>
 					<p><ul>$color_list</ul></p>
 				</td>
-			</tr>\n
-			";
+			</tr>\n";
 			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Delete Color Template(s)'>";
-	}elseif ($_POST["drp_action"] == "2") { /* duplicate */
+	}elseif ($_POST['drp_action'] == '2') { /* duplicate */
 		print "	<tr>
 				<td class='textArea'>
 					<p>When you click save, the following color templates will be duplicated. You can
 					optionally change the title format for the new color templates.</p>
 					<p><ul>$color_list</ul></p>
-					<p><strong>Title Format:</strong><br>"; form_text_box("title_format", "<template_title> (1)", "", "255", "30", "text"); print "</p>
+					<p><strong>Title Format:</strong><br>"; form_text_box('title_format', '<template_title> (1)', '', '255', '30', 'text'); print "</p>
 				</td>
-			</tr>\n
-			";
+			</tr>\n";
 			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Duplicate Color Template(s)'>";
 		}
 	}else{
@@ -239,14 +233,13 @@ function aggregate_color_form_actions() {
 	}
 
 	print "	<tr>
-			<td align='right' bgcolor='#eaeaea'>
+			<td align='right' class='saveRow'>
 				<input type='hidden' name='action' value='actions'>
 				<input type='hidden' name='selected_items' value='" . (isset($color_array) ? serialize($color_array) : '') . "'>
-				<input type='hidden' name='drp_action' value='" . $_POST["drp_action"] . "'>
+				<input type='hidden' name='drp_action' value='" . $_POST['drp_action'] . "'>
 				$save_html
 			</td>
-		</tr>
-		";
+		</tr>\n";
 
 	html_end_box();
 
@@ -262,30 +255,28 @@ function aggregate_color_item() {
 	global $config;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var("color_template_id"));
+	input_validate_input_number(get_request_var('color_template_id'));
 	/* ==================================================== */
 
-	if (empty($_GET["color_template_id"])) {
+	if (empty($_GET['color_template_id'])) {
 		$template_item_list = array();
 
-		$header_label = "[new]";
+		$header_label = '[new]';
 	}else{
-		$template_item_list = db_fetch_assoc("select
-			color_template_items.color_template_item_id,
-			color_template_items.sequence,
-			colors.hex
-			from color_template_items
-			left join colors on (color_id=colors.id)
-			where color_template_items.color_template_id=" . $_GET["color_template_id"] . "
-			order by color_template_items.sequence ASC");
+		$template_item_list = db_fetch_assoc('SELECT
+			cti.color_template_item_id, cti.sequence, colors.hex
+			FROM color_template_items AS cti
+			LEFT JOIN colors 
+			ON cti.color_id=colors.id
+			WHERE cti.color_template_id=' . $_GET['color_template_id'] . '
+			ORDER BY cti.sequence ASC');
 
-		$header_label = "[edit: " . db_fetch_cell("select name from color_templates where color_template_id=" . $_GET["color_template_id"]) . "]";
+		$header_label = '[edit: ' . db_fetch_cell('SELECT name FROM color_templates WHERE color_template_id=' . $_GET['color_template_id']) . ']';
 	}
 
-	html_start_box("<strong>Color Template Items</strong> $header_label", "100%", '', "3", "center", "color_templates_items.php?action=item_edit&color_template_id=" . htmlspecialchars($_GET["color_template_id"]));
-	# draw the list
-	draw_color_template_items_list($template_item_list, "color_templates_items.php", "color_template_id=" . htmlspecialchars($_GET["color_template_id"]), false);
-	//print "<pre>";print_r($template_item_list);print "</pre>";
+	html_start_box("<strong>Color Template Items</strong> $header_label", '100%', '', '3', 'center', 'color_templates_items.php?action=item_edit&color_template_id=' . htmlspecialchars($_GET['color_template_id']));
+
+	draw_color_template_items_list($template_item_list, 'color_templates_items.php', 'color_template_id=' . htmlspecialchars($_GET['color_template_id']), false);
 
 	html_end_box();
 }
@@ -298,36 +289,36 @@ function aggregate_color_item() {
  */
 function aggregate_color_template_edit() {
 	global $config, $image_types, $fields_color_template_template_edit, $struct_aggregate;
-	include_once($config['base_path'] . "/lib/api_aggregate.php");
+	include_once($config['base_path'] . '/lib/api_aggregate.php');
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var("color_template_id"));
+	input_validate_input_number(get_request_var('color_template_id'));
 	/* ==================================================== */
-	if (!empty($_GET["color_template_id"])) {
-		$template = db_fetch_row("select * from color_templates where color_template_id=" . $_GET["color_template_id"]);
-		$header_label = "[edit: " . $template["name"] . "]";
+	if (!empty($_GET['color_template_id'])) {
+		$template = db_fetch_row('SELECT * FROM color_templates WHERE color_template_id=' . $_GET['color_template_id']);
+		$header_label = '[edit: ' . $template['name'] . ']';
 	}else{
-		$header_label = "[new]";
+		$header_label = '[new]';
 	}
 
 	print ('<form name="color_template_edit" action="color_templates.php" method="POST">');
-	html_start_box("<strong>Color Template</strong> $header_label", "100%", '', "3", "center", "");
+	html_start_box("<strong>Color Template</strong> $header_label", '100%', '', '3', 'center', '');
 
 	draw_edit_form(array(
-		"config" => array("no_form_tag" => true),
-		"fields" => inject_form_variables($fields_color_template_template_edit, (isset($template) ? $template : array()))
+		'config' => array('no_form_tag' => true),
+		'fields' => inject_form_variables($fields_color_template_template_edit, (isset($template) ? $template : array()))
 		));
 
 	html_end_box();
-	form_hidden_box("color_template_id", (isset($template["color_template_id"]) ? $template["color_template_id"] : "0"), "");
-	form_hidden_box("save_component_color", "1", "");
+	form_hidden_box('color_template_id', (isset($template['color_template_id']) ? $template['color_template_id'] : '0'), '');
+	form_hidden_box('save_component_color', '1', '');
 
 	/* color item list goes here */
-	if (!empty($_GET["color_template_id"])) {
+	if (!empty($_GET['color_template_id'])) {
 		aggregate_color_item();
 	}
 
-	aggregate_save_button("color_templates.php", "return", "color_template_id");
+	form_save_button('color_templates.php', 'return', 'color_template_id');
 }
 
 
@@ -336,62 +327,62 @@ function aggregate_color_template_edit() {
  */
 function aggregate_color_template() {
 	global $aggregate_actions, $item_rows, $config;
-	include_once($config['base_path'] . "/lib/api_aggregate.php");
+	include_once($config['base_path'] . '/lib/api_aggregate.php');
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_request("page"));
-	input_validate_input_number(get_request_var_request("rows"));
+	input_validate_input_number(get_request_var_request('page'));
+	input_validate_input_number(get_request_var_request('rows'));
 	/* ==================================================== */
 
 	/* clean up search string */
-	if (isset($_REQUEST["filter"])) {
-		$_REQUEST["filter"] = sanitize_search_string(get_request_var("filter"));
+	if (isset($_REQUEST['filter'])) {
+		$_REQUEST['filter'] = sanitize_search_string(get_request_var('filter'));
 	}
 
 	/* clean up sort_column string */
-	if (isset($_REQUEST["sort_column"])) {
-		$_REQUEST["sort_column"] = sanitize_search_string(get_request_var("sort_column"));
+	if (isset($_REQUEST['sort_column'])) {
+		$_REQUEST['sort_column'] = sanitize_search_string(get_request_var('sort_column'));
 	} else {
-		$_REQUEST["sort_column"] = "name";
+		$_REQUEST['sort_column'] = 'name';
 	}
 
 	/* clean up sort_direction string */
-	if (isset($_REQUEST["sort_direction"])) {
-		$_REQUEST["sort_direction"] = sanitize_search_string(get_request_var("sort_direction"));
+	if (isset($_REQUEST['sort_direction'])) {
+		$_REQUEST['sort_direction'] = sanitize_search_string(get_request_var('sort_direction'));
 	} else {
-		$_REQUEST["sort_direction"] = "ASC";
+		$_REQUEST['sort_direction'] = 'ASC';
 	}
 
 	/* if the user pushed the 'clear' button */
-	if (isset($_REQUEST["clear_x"])) {
-		kill_session_var("sess_color_template_current_page");
-		kill_session_var("sess_color_template_filter");
-		kill_session_var("sess_color_template_sort_column");
-		kill_session_var("sess_color_template_sort_direction");
-		kill_session_var("sess_color_template_rows");
+	if (isset($_REQUEST['clear'])) {
+		kill_session_var('sess_color_template_current_page');
+		kill_session_var('sess_color_template_filter');
+		kill_session_var('sess_color_template_sort_column');
+		kill_session_var('sess_color_template_sort_direction');
+		kill_session_var('sess_color_template_rows');
 
-		unset($_REQUEST["page"]);
-		unset($_REQUEST["filter"]);
-		unset($_REQUEST["sort_column"]);
-		unset($_REQUEST["sort_direction"]);
-		unset($_REQUEST["sess_color_template_rows"]);
+		unset($_REQUEST['page']);
+		unset($_REQUEST['filter']);
+		unset($_REQUEST['sort_column']);
+		unset($_REQUEST['sort_direction']);
+		unset($_REQUEST['sess_color_template_rows']);
 	}
 
 	/* remember these search fields in session vars so we don't have to keep passing them around */
-	load_current_session_value("page", "sess_color_template_current_page", "1");
-	load_current_session_value("filter", "sess_color_template_filter", "");
-	load_current_session_value("sort_column", "sess_color_template_sort_column", "name");
-	load_current_session_value("sort_direction", "sess_color_template_sort_direction", "ASC");
-	load_current_session_value("rows", "sess_color_template_rows", read_config_option("num_rows_table"));
+	load_current_session_value('page', 'sess_color_template_current_page', '1');
+	load_current_session_value('filter', 'sess_color_template_filter', '');
+	load_current_session_value('sort_column', 'sess_color_template_sort_column', 'name');
+	load_current_session_value('sort_direction', 'sess_color_template_sort_direction', 'ASC');
+	load_current_session_value('rows', 'sess_color_template_rows', read_config_option('num_rows_table'));
 
 	/* if the number of rows is -1, set it to the default */
-	if ($_REQUEST["rows"] == -1) {
-		$_REQUEST["rows"] = read_config_option("num_rows_table");
+	if ($_REQUEST['rows'] == -1) {
+		$_REQUEST['rows'] = read_config_option('num_rows_table');
 	}
 
-	print ('<form name="color_template" action="color_templates.php" method="get">');
+	print ('<form id="form_template" action="color_templates.php" method="get">');
 
-	html_start_box("<strong>Color Templates</strong>", "100%", '', "3", "center", "color_templates.php?action=template_edit");
+	html_start_box('<strong>Color Templates</strong>', '100%', '', '3', 'center', 'color_templates.php?action=template_edit');
 
 	$filter_html = '<tr class="even">
 					<td>
@@ -401,39 +392,39 @@ function aggregate_color_template() {
 								Search
 							</td>
 							<td>
-								<input type="text" id="filter" name="filter" size="25" value="' . get_request_var_request("filter") . '">
+								<input type="text" id="filter" size="25" value="' . get_request_var_request('filter') . '">
 							</td>
 							<td>
 								Color Templates
 							</td>
 							<td width="1">
-								<select id="rows" name="rows" onChange="applyViewAggregateColorFilterChange(document.color_template)">
+								<select id="rows" onChange="applyFilter()">
 								<option value="-1"';
-	if (get_request_var_request("rows") == "-1") {
+	if (get_request_var_request('rows') == '-1') {
 		$filter_html .= 'selected';
 	}
 	$filter_html .= '>Default</option>';
 	if (sizeof($item_rows) > 0) {
 		foreach ($item_rows as $key => $value) {
 			$filter_html .= "<option value='" . $key . "'";
-			if (get_request_var_request("rows") == $key) {
-				$filter_html .= " selected";
+			if (get_request_var_request('rows') == $key) {
+				$filter_html .= ' selected';
 			}
-			$filter_html .= ">" . $value . "</option>\n";
+			$filter_html .= '>' . $value . "</option>\n";
 		}
 	}
 	$filter_html .= '					</select>
 							</td>
 							<td>
-								<input type="submit" value="Go" name="go">
+								<input type="button" id="refresh" value="Go">
 							</td>
 							<td>
-								<input type="submit" value="Clear" name="clear_x">
+								<input type="button" id="clear" value="Clear">
 							</td>
 						</tr>
 					</table>
 					</td>
-					<td><input type="hidden" name="page" value="1"></td>
+					<td><input type="hidden" id="page" value="' . $_REQUEST['page'] . '"></td>
 				</tr>';
 
 	print $filter_html;
@@ -443,11 +434,11 @@ function aggregate_color_template() {
 	print "</form>\n";
 
 	/* form the 'where' clause for our main sql query */
-	$sql_where = "WHERE (color_templates.name LIKE '%%" . $_REQUEST["filter"] . "%%')";
+	$sql_where = "WHERE (color_templates.name LIKE '%%" . $_REQUEST['filter'] . "%%')";
 
 	/* print checkbox form for validation */
 	print "<form name='chk' method='post' action='color_templates.php'>\n";
-	html_start_box("", "100%", '', "3", "center", "");
+	html_start_box('', '100%', '', '3', 'center', '');
 
 	$total_rows = db_fetch_cell("SELECT
 		COUNT(color_templates.color_template_id)
@@ -459,24 +450,24 @@ function aggregate_color_template() {
 		color_templates.name
 		FROM color_templates
 		$sql_where
-		ORDER BY " . $_REQUEST['sort_column'] . " " . $_REQUEST['sort_direction'] .
-		" LIMIT " . (get_request_var_request("rows")*(get_request_var_request("page")-1)) . "," . get_request_var_request("rows"));
+		ORDER BY " . $_REQUEST['sort_column'] . ' ' . $_REQUEST['sort_direction'] .
+		' LIMIT ' . (get_request_var_request('rows')*(get_request_var_request('page')-1)) . ',' . get_request_var_request('rows'));
 
 	$nav = html_nav_bar('color_templates.php', MAX_DISPLAY_PAGES, get_request_var_request('page'), get_request_var_request('rows'), $total_rows, 2, 'Color Templates', 'page', 'main');
 
 	print $nav;
 
 	$display_text = array(
-		"name" => array("Template Title", "ASC"));
+		'name' => array('Template Title', 'ASC'));
 
-	html_header_sort_checkbox($display_text, $_REQUEST["sort_column"], $_REQUEST["sort_direction"], false);
+	html_header_sort_checkbox($display_text, $_REQUEST['sort_column'], $_REQUEST['sort_direction'], false);
 
 	if (sizeof($template_list) > 0) {
 		foreach ($template_list as $template) {
-			form_alternate_row('line' . $template["color_template_id"], true);
+			form_alternate_row('line' . $template['color_template_id'], true);
 
-			form_selectable_cell("<a style='white-space:nowrap;' class='linkEditMain' href='" . htmlspecialchars("color_templates.php?action=template_edit&color_template_id=" . $template["color_template_id"] . "&page=1 ' title='" . $template["name"]) . "'>" . (get_request_var_request("filter") != "" ? preg_replace("/(" . preg_quote(get_request_var_request("filter")) . ")/i", "<span class='filteredValue'>\\1</span>", htmlspecialchars($template["name"])) : htmlspecialchars($template["name"])) . "</a>", $template["color_template_id"]);
-			form_checkbox_cell($template["name"], $template["color_template_id"]);
+			form_selectable_cell("<a style='white-space:nowrap;' class='linkEditMain' href='" . htmlspecialchars('color_templates.php?action=template_edit&color_template_id=' . $template['color_template_id'] . '&page=1') . "'>" . (get_request_var_request('filter') != '' ? preg_replace('/(' . preg_quote(get_request_var_request('filter')) . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($template['name'])) : htmlspecialchars($template['name'])) . '</a>', $template['color_template_id']);
+			form_checkbox_cell($template['name'], $template['color_template_id']);
 			form_end_row();
 		}
 		/* put the nav bar on the bottom as well */
@@ -487,19 +478,52 @@ function aggregate_color_template() {
 	html_end_box(false);
 
 	/* draw the dropdown containing a list of available actions for this form */
-	aggregate_actions_dropdown($aggregate_actions);
+	draw_actions_dropdown($aggregate_actions);
 
 	print "</form>\n";
 
 	?>
-	<script type="text/javascript">
-	<!--
-	function applyViewAggregateColorFilterChange(objForm) {
-		strURL = 'color_templates.php?rows=' + objForm.rows.value;
-		strURL = strURL + '&filter=' + objForm.filter.value;
-		document.location = strURL;
+	<script type='text/javascript'>
+
+	function applyFilter() {
+		strURL = 'color_templates.php';
+		strURL = strURL + '?rows=' + $('#rows').val();
+		strURL = strURL + '&page=' + $('#page').val();
+		strURL = strURL + '&filter=' + $('#filter').val();
+		strURL = strURL + '&header=false';
+		$.get(strURL, function(data) {
+			$('#main').html(data);
+			applySkin();
+		});
 	}
-	-->
+
+	function clearFilter() {
+		strURL = 'color_templates.php?clear=1&header=false';
+		$.get(strURL, function(data) {
+			$('#main').html(data);
+			applySkin();
+		});
+	}
+
+	$(function() {
+		$('#refresh').click(function() {
+			applyFilter();
+		});
+
+		$('#clear').click(function() {
+			clearFilter();
+		});
+
+		$('#filter').change(function() {
+			applyFilter();
+		});
+
+		$('#form_template').submit(function(event) {
+			event.preventDefault();
+			applyFilter();
+		});
+	});
+	</script>
 	</script>
 	<?php
 }

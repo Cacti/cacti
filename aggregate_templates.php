@@ -360,7 +360,7 @@ function aggregate_template_edit() {
 
 	form_hidden_box('id', (isset($template['id']) ? $template['id'] : '0'), '0');
 	form_hidden_box('save_component_template', '1', '');
-	aggregate_save_button('aggregate_templates.php', 'return', 'id');
+	form_save_button('aggregate_templates.php', 'return', 'id');
 
 	?>
 	<script type='text/javascript'>
@@ -659,7 +659,7 @@ function aggregate_template() {
 	html_end_box(false);
 
 	/* draw the dropdown containing a list of available actions for this form */
-	aggregate_actions_dropdown($aggregate_actions);
+	draw_actions_dropdown($aggregate_actions);
 
 	print "</form>\n";
 
