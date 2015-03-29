@@ -905,7 +905,7 @@ $fields_rra_edit = array(
 		'friendly_name' => 'Consolidation Functions',
 		'description' => 'How data is to be entered in RRAs.',
 		'array' => $consolidation_functions,
-		'sql' => 'SELECT consolidation_function_id AS id,rra_id FROM rra_cf WHERE rra_id=|arg1:id|',
+		'sql' => 'SELECT consolidation_function_id AS id,rra_id FROM rra_cf WHERE rra_id="|arg1:id|"',
 		),
 	'x_files_factor' => array(
 		'method' => 'textbox',
