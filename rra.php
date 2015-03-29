@@ -236,7 +236,7 @@ function rra() {
 	}
 
 	/* if the user pushed the 'clear' button */
-	if (isset($_REQUEST['clear_x'])) {
+	if (isset($_REQUEST['clear'])) {
 		kill_session_var('sess_rra_current_page');
 		kill_session_var('sess_rra_filter');
 		kill_session_var('sess_rra_has_data');
@@ -298,11 +298,11 @@ function rra() {
 						<input type='button' id='refresh' value='Go' title='Set/Refresh Filters'>
 					</td>
 					<td>
-						<input type='button' id='clear' name='clear_x' value='Clear' title='Clear Filters'>
+						<input type='button' id='clear' value='Clear' title='Clear Filters'>
 					</td>
 				</tr>
 			</table>
-			<input type='hidden' id='page' name='page' value='<?php print $_REQUEST['page'];?>'>
+			<input type='hidden' id='page' value='<?php print $_REQUEST['page'];?>'>
 			</form>
 			<script type='text/javascript'>
 			function applyFilter() {
@@ -314,7 +314,7 @@ function rra() {
 			}
 
 			function clearFilter() {
-				strURL = 'rra.php?clear_x=1&header=false';
+				strURL = 'rra.php?clear=1&header=false';
 				$.get(strURL, function(data) {
 					$('#main').html(data);
 					applySkin();

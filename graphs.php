@@ -1518,7 +1518,6 @@ function graph() {
 
 	?>
 	<script type="text/javascript">
-	<!--
 
 	function applyFilter() {
 		strURL = 'graphs.php?host_id=' + $('#host_id').val();
@@ -1560,7 +1559,6 @@ function graph() {
 		});
 	});
 
-	-->
 	</script>
 	<?php
 
@@ -1637,34 +1635,33 @@ function graph() {
 	html_end_box();
 
 	/* form the 'where' clause for our main sql query */
+	$sql_where = '';
 	if (strlen(get_request_var_request('filter'))) {
-		$sql_where = " AND (graph_templates_graph.title_cache like '%%" . get_request_var_request('filter') . "%%'" .
-			" OR graph_templates.name like '%%" . get_request_var_request('filter') . "%%')";
-	}else{
-		$sql_where = '';
+		$sql_where = " WHERE (gtg.title_cache LIKE '%" . get_request_var_request('filter') . "%'" .
+			" OR gt.name LIKE '%" . get_request_var_request('filter') . "%')";
 	}
 
 	if (get_request_var_request('host_id') == '-1') {
 		/* Show all items */
 	}elseif (get_request_var_request('host_id') == '0') {
-		$sql_where .= ' AND graph_local.host_id=0';
+		$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') . ' gl.host_id=0';
 	}elseif (!empty($_REQUEST['host_id'])) {
-		$sql_where .= ' AND graph_local.host_id=' . get_request_var_request('host_id');
+		$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') . ' gl.host_id=' . get_request_var_request('host_id');
 	}
 
 	if (get_request_var_request('template_id') == '-1') {
 		/* Show all items */
 	}elseif (get_request_var_request('template_id') == '0') {
-		$sql_where .= ' AND graph_templates_graph.graph_template_id=0';
+		$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') . ' gtg.graph_template_id=0';
 	}elseif (!empty($_REQUEST['template_id'])) {
-		$sql_where .= ' AND graph_templates_graph.graph_template_id=' . get_request_var_request('template_id');
+		$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') . ' gtg.graph_template_id=' . get_request_var_request('template_id');
 	}
 
 	/* don't allow aggregates to be view here */
-	$sql_where .= ' AND (graph_local.host_id!=0 AND graph_local.graph_template_id!=0)';
+	$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') . ' ag.local_graph_id IS NULL';
 
 	/* allow plugins to modify sql_where */
-	$sql_where .= api_plugin_hook_function('graphs_sql_where', $sql_where);
+	$sql_where = api_plugin_hook_function('graphs_sql_where', $sql_where);
 
 	/* print checkbox form for validation */
 	print "<form name='chk' method='post' action='graphs.php'>\n";
@@ -1672,23 +1669,25 @@ function graph() {
 	html_start_box('', '100%', '', '3', 'center', '');
 
 	$total_rows = db_fetch_cell("SELECT
-		COUNT(graph_templates_graph.id)
-		FROM (graph_local, graph_templates_graph)
-		LEFT JOIN graph_templates ON (graph_local.graph_template_id = graph_templates.id)
-		WHERE graph_local.id = graph_templates_graph.local_graph_id
+		COUNT(gtg.id)
+		FROM graph_local AS gl
+		INNER JOIN graph_templates_graph AS gtg
+		ON gl.id=gtg.local_graph_id
+		LEFT JOIN graph_templates AS gt
+		ON gl.graph_template_id=gt.id
+		LEFT JOIN aggregate_graphs AS ag
+		ON ag.local_graph_id=gl.id
 		$sql_where");
 
-	$graph_list = db_fetch_assoc("SELECT
-		graph_templates_graph.id,
-		graph_templates_graph.local_graph_id,
-		graph_templates_graph.height,
-		graph_templates_graph.width,
-		graph_templates_graph.title_cache,
-		graph_templates.name,
-		graph_local.host_id
-		FROM (graph_local, graph_templates_graph)
-		LEFT JOIN graph_templates ON (graph_local.graph_template_id = graph_templates.id)
-		WHERE graph_local.id = graph_templates_graph.local_graph_id
+	$graph_list = db_fetch_assoc("SELECT gtg.id, gtg.local_graph_id, gtg.height, gtg.width,
+		gtg.title_cache, gt.name, gl.host_id
+		FROM graph_local AS gl
+		INNER JOIN graph_templates_graph AS gtg
+		ON gl.id=gtg.local_graph_id
+		LEFT JOIN graph_templates AS gt
+		ON gl.graph_template_id=gt.id
+		LEFT JOIN aggregate_graphs AS ag
+		ON ag.local_graph_id=gl.id
 		$sql_where
 		ORDER BY " . $_REQUEST['sort_column'] . ' ' . get_request_var_request('sort_direction') .
 		' LIMIT ' . (get_request_var_request('rows')*(get_request_var_request('page')-1)) . ',' . get_request_var_request('rows'));

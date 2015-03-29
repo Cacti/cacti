@@ -71,6 +71,14 @@ function form_save() {
 			}
 		}
 
+		if (!isset($_POST['host_id'])) {
+			$_POST['host_id'] = 0;
+		}
+
+		if (!isset($_POST['host_template_id'])) {
+			$_POST['host_template_id'] = 0;
+		}
+
 		if (isset($selected_graphs)) {
 			host_new_graphs($_POST['host_id'], $_POST['host_template_id'], $selected_graphs);
 			exit;
