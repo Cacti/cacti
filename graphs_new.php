@@ -893,7 +893,10 @@ function graphs() {
 	}
 
 	load_current_session_value('returnto', 'sess_graphs_new_returnto', '');
+	if (substr_count($_REQUEST['returnto'], 'host.php') == 0) {
+		$_REQUEST['returnto'] = '';
+	}
 
-	form_save_button($_REQUEST['returnto']);
+	form_save_button($_REQUEST['returnto'], 'create');
 }
 

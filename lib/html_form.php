@@ -998,7 +998,6 @@ function form_save_button($cancel_url, $force_type = "", $key_field = "id") {
 				$calt   = "Cancel";
 			}
 		}
-
 	}elseif ($force_type == "save") {
 		$alt = "Save";
 	}elseif ($force_type == "create") {
@@ -1009,7 +1008,7 @@ function form_save_button($cancel_url, $force_type = "", $key_field = "id") {
 		$alt = "Export";
 	}
 
-	if ($force_type != "import" && $force_type != "export" && $force_type != "save") {
+	if ($force_type != "import" && $force_type != "export" && $force_type != "save" && $cancel_url != '') {
 		$cancel_action = "<input type='button' onClick='cactiReturnTo(\"" . $cancel_url . "\")' value='" . $calt . "'>";
 	}else{
 		$cancel_action = "";
