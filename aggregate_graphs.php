@@ -238,10 +238,10 @@ function form_save() {
    ------------------------ */
 
 function form_actions() {
-	global $colors, $graph_actions, $agg_item_actions;
+	global $graph_actions, $agg_item_actions;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_post('drp_action'));
+	input_validate_input_regex(get_request_var_post('drp_action'), '^([a-zA-Z0-9_]+)$');
 	/* ==================================================== */
 
 	/* we are performing two set's of actions here */
@@ -292,7 +292,7 @@ function form_actions() {
 			}
 
 			api_aggregate_disassociate($selected_items);
-		}elseif (ereg('^tr_([0-9]+)$', $_POST['drp_action'], $matches)) { /* place on tree */
+		}elseif (preg_match('/^tr_([0-9]+)$/', $_POST['drp_action'], $matches)) { /* place on tree */
 			input_validate_input_number(get_request_var_post('tree_id'));
 			input_validate_input_number(get_request_var_post('tree_item_id'));
 			for ($i=0;($i<count($selected_items));$i++) {
@@ -313,7 +313,7 @@ function form_actions() {
 
 	/* loop through each of the graphs selected on the previous page and get more info about them */
 	while (list($var,$val) = each($_POST)) {
-		if (ereg('^chk_([0-9]+)$', $var, $matches)) {
+		if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
 			/* ================= input validation ================= */
 			input_validate_input_number($matches[1]);
 			/* ==================================================== */
@@ -330,14 +330,14 @@ function form_actions() {
 	/* add a list of tree names to the actions dropdown */
 	add_tree_names_to_actions_array();
 
-	html_start_box('<strong>' . $graph_actions{$_POST['drp_action']} . '</strong>', '60%', $colors['header_panel'], '3', 'center', '');
+	html_start_box('<strong>' . $graph_actions{$_POST['drp_action']} . '</strong>', '60%', '', '3', 'center', '');
 
 	print "<form action='aggregate_graphs.php' method='post'>\n";
 
 	if (isset($graph_array) && sizeof($graph_array)) {
 		if ($_POST['drp_action'] == '1') { /* delete */
 			print "	<tr>
-					<td class='textArea' bgcolor='#" . $colors['form_alternate1']. "'>
+					<td class='textArea'>
 						<p>When you click \"Continue\", the following Aggregate Graph(s) will be deleted.</p>
 						<p><ul>$graph_list</ul></p>
 					</td>
@@ -471,7 +471,7 @@ function form_actions() {
    ----------------------- */
 
 function item() {
-	global $colors, $consolidation_functions, $graph_item_types, $struct_graph_item;
+	global $consolidation_functions, $graph_item_types, $struct_graph_item;
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var('id'));
@@ -506,7 +506,7 @@ function item() {
 		$add_text = '';
 	}
 
-	html_start_box("<strong>Graph Items</strong> $header_label", '100%', $colors['header'], '3', 'center', $add_text);
+	html_start_box("<strong>Graph Items</strong> $header_label", '100%', '', '3', 'center', $add_text);
 	draw_graph_items_list($template_item_list, 'aggregate_items.php', 'local_graph_id=' . $_REQUEST['id'], (empty($graph_template_id) ? false : true));
 	html_end_box(false);
 }
@@ -516,7 +516,7 @@ function item() {
    ------------------------------------ */
 
 function graph_edit() {
-	global $config, $colors, $struct_graph, $struct_aggregate_graph, $image_types, $consolidation_functions, $graph_item_types, $struct_graph_item;
+	global $config, $struct_graph, $struct_aggregate_graph, $image_types, $consolidation_functions, $graph_item_types, $struct_graph_item;
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var('id'));
@@ -592,7 +592,7 @@ function graph_edit() {
 	}
 
 	if (!empty($_REQUEST['id']) && $current_tab == 'preview') {
-		html_start_box("<strong>Aggregate Preview</strong> $header_label", '100%', $colors['header'], '3', 'center', '');
+		html_start_box("<strong>Aggregate Preview</strong> $header_label", '100%', '', '3', 'center', '');
 		?>
 		<tr class='even'>
 			<td align='center' class='textInfo' colspan='2'>
@@ -632,7 +632,7 @@ function graph_edit() {
 		if (sizeof($template)) {
 			print "<div id='templated'>";
 
-			html_start_box("<strong>Aggregate Graph</strong> $header_label", '100%', $colors['header'], '3', 'center', '');
+			html_start_box("<strong>Aggregate Graph</strong> $header_label", '100%', '', '3', 'center', '');
 
 			/* add template propogation to the structure */
 			draw_edit_form(array(
@@ -724,7 +724,7 @@ function graph_edit() {
 		}
 
 		if (empty($graphs['graph_template_id'])) {
-			html_start_box('<strong>Graph Configuration</strong>', '100%', $colors['header'], '3', 'center', '');
+			html_start_box('<strong>Graph Configuration</strong>', '100%', '', '3', 'center', '');
 
 			$form_array = array();
 
@@ -804,7 +804,7 @@ function graph_edit() {
 }
 
 function aggregate_items() {
-	global $colors, $agg_item_actions, $item_rows;
+	global $agg_item_actions, $item_rows;
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var_request('rows'));
@@ -880,7 +880,7 @@ function aggregate_items() {
 	</script>
 	<?php
 
-	html_start_box('<strong>Matching Graphs</strong>', '100%', $colors['header'], '3', 'center', '');
+	html_start_box('<strong>Matching Graphs</strong>', '100%', '', '3', 'center', '');
 
 	?>
 	<tr class='even'>
@@ -962,7 +962,7 @@ function aggregate_items() {
 	/* print checkbox form for validation */
 	print "<form name='chk' method='post' action='aggregate_graphs.php'>\n";
 
-	html_start_box('', '100%', $colors['header'], '3', 'center', '');
+	html_start_box('', '100%', '', '3', 'center', '');
 
 	$total_rows = db_fetch_cell("SELECT COUNT(gtg.id) AS total
 		FROM graph_templates_graph AS gtg
@@ -1107,7 +1107,7 @@ function aggregate_format_text($text, $filter) {
 }
 
 function graph() {
-	global $colors, $graph_actions, $item_rows;
+	global $graph_actions, $item_rows;
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var_request('rows'));
@@ -1173,7 +1173,7 @@ function graph() {
 	</script>
 	<?php
 
-	html_start_box('<strong>Aggregate Graphs</strong>', '100%', $colors['header'], '3', 'center', '');
+	html_start_box('<strong>Aggregate Graphs</strong>', '100%', '', '3', 'center', '');
 
 	?>
 	<tr class='even'>
@@ -1265,7 +1265,7 @@ function graph() {
 	/* print checkbox form for validation */
 	print "<form name='chk' method='post' action='aggregate_graphs.php'>\n";
 
-	html_start_box('', '100%', $colors['header'], '3', 'center', '');
+	html_start_box('', '100%', '', '3', 'center', '');
 
 	$total_rows = db_fetch_cell("SELECT COUNT(gtg.id) AS total
 		FROM graph_templates_graph AS gtg
@@ -1304,12 +1304,11 @@ function graph() {
 
 	html_header_sort_checkbox($display_text, get_request_var_request('sort_column'), get_request_var_request('sort_direction'), 'filter=' . get_request_var_request('filter'), false);
 
-	$i = 0;
 	if (sizeof($graph_list) > 0) {
 		foreach ($graph_list as $graph) {
 			/* we're escaping strings here, so no need to escape them on form_selectable_cell */
 			$template_name = ((empty($graph['name'])) ? '<em>None</em>' : htmlspecialchars($graph['name']));
-			form_alternate_row_color($colors['alternate'], $colors['light'], $i, 'line' . $graph['local_graph_id']); $i++;
+			form_alternate_row('line' . $graph['local_graph_id'], true);
 			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars('aggregate_graphs.php?action=edit&tab=details&reset=1&id=' . $graph['local_graph_id']) . "' title='" . htmlspecialchars($graph['title_cache']) . "'>" . (get_request_var_request('filter') != '' ? aggregate_format_text(htmlspecialchars($graph['title_cache']),get_request_var_request('filter')) : htmlspecialchars($graph['title_cache'])) . '</a>', $graph['local_graph_id']);
 			form_selectable_cell($graph['local_graph_id'], $graph['local_graph_id'], '', 'text-align:right;');
 			form_selectable_cell(((get_request_var_request('filter') != '') ? eregi_replace('(' . preg_quote(get_request_var_request('filter')) . ')', "<span class='filteredValue'>\\1</span>", $template_name) : $template_name), $graph['local_graph_id']);

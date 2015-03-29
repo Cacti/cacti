@@ -267,7 +267,7 @@ function item_remove() {
 }
 
 function item_edit() {
-	global $config, $colors, $struct_graph_item, $graph_item_types, $consolidation_functions;
+	global $config, $struct_graph_item, $graph_item_types, $consolidation_functions;
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var_request("id"));
@@ -332,7 +332,7 @@ function item_edit() {
 			$template_item[$field_name] = $item_overrides[$field_name];
 	}
 
-	html_start_box("<strong>Override Values for Graph Item</strong>", "100%", $colors["header"], "3", "center", "");
+	html_start_box("<strong>Override Values for Graph Item</strong>", "100%", '', "3", "center", "");
 
 	$form_array = array();
 

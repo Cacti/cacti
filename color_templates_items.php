@@ -192,7 +192,7 @@ function aggregate_color_item_remove() {
  * aggregate_color_item_edit		edit item
  */
 function aggregate_color_item_edit() {
-	global $colors, $struct_color_template_item;
+	global $struct_color_template_item;
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var("color_template_item_id"));
@@ -210,7 +210,7 @@ function aggregate_color_item_edit() {
 
 	print "<form method='post' action='" .  basename($_SERVER["PHP_SELF"]) . "' name='aggregate_color_item_edit'>\n";
 
-	html_start_box("<strong>Color Template Items</strong> $header_label", "100%", $colors["header"], "3", "center", "");
+	html_start_box("<strong>Color Template Items</strong> $header_label", "100%", '', "3", "center", "");
 
 	draw_edit_form(array(
 		"config" => array("no_form_tag" => true),

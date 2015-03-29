@@ -164,7 +164,7 @@ function aggregate_color_form_save() {
  * aggregate_color_form_actions		the action function
  */
 function aggregate_color_form_actions() {
-	global $colors, $aggregate_actions, $config;
+	global $aggregate_actions, $config;
 	include_once($config['base_path'] . "/lib/api_aggregate.php");
 
 	/* ================= input validation ================= */
@@ -209,12 +209,12 @@ function aggregate_color_form_actions() {
 	top_header();
 
 	print "<form action='color_templates.php' method='post'>\n";
-	html_start_box("<strong>" . $aggregate_actions{$_POST["drp_action"]} . "</strong>", "60%", $colors["header_panel"], "3", "center", "");
+	html_start_box("<strong>" . $aggregate_actions{$_POST["drp_action"]} . "</strong>", "60%", '', "3", "center", "");
 
 	if (isset($color_array) && sizeof($color_array)) {
 	if ($_POST["drp_action"] == "1") { /* delete */
 		print "	<tr>
-				<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
+				<td class='textArea'>
 					<p>Are you sure you want to delete the following color templates?</p>
 					<p><ul>$color_list</ul></p>
 				</td>
@@ -223,7 +223,7 @@ function aggregate_color_form_actions() {
 			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Delete Color Template(s)'>";
 	}elseif ($_POST["drp_action"] == "2") { /* duplicate */
 		print "	<tr>
-				<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
+				<td class='textArea'>
 					<p>When you click save, the following color templates will be duplicated. You can
 					optionally change the title format for the new color templates.</p>
 					<p><ul>$color_list</ul></p>
@@ -234,7 +234,7 @@ function aggregate_color_form_actions() {
 			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Duplicate Color Template(s)'>";
 		}
 	}else{
-		print "<tr><td bgcolor='#" . $colors["form_alternate1"]. "'><span class='textError'>You must select at least one Color Template.</span></td></tr>\n";
+		print "<tr><td class='even'><span class='textError'>You must select at least one Color Template.</span></td></tr>\n";
 		$save_html = "<input type='button' value='Return' onClick='window.history.back()'>";
 	}
 
@@ -259,7 +259,7 @@ function aggregate_color_form_actions() {
  * aggregate_color_item		show all color template items
  */
 function aggregate_color_item() {
-	global $colors, $config;
+	global $config;
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var("color_template_id"));
@@ -282,7 +282,7 @@ function aggregate_color_item() {
 		$header_label = "[edit: " . db_fetch_cell("select name from color_templates where color_template_id=" . $_GET["color_template_id"]) . "]";
 	}
 
-	html_start_box("<strong>Color Template Items</strong> $header_label", "100%", $colors["header"], "3", "center", "color_templates_items.php?action=item_edit&color_template_id=" . htmlspecialchars($_GET["color_template_id"]));
+	html_start_box("<strong>Color Template Items</strong> $header_label", "100%", '', "3", "center", "color_templates_items.php?action=item_edit&color_template_id=" . htmlspecialchars($_GET["color_template_id"]));
 	# draw the list
 	draw_color_template_items_list($template_item_list, "color_templates_items.php", "color_template_id=" . htmlspecialchars($_GET["color_template_id"]), false);
 	//print "<pre>";print_r($template_item_list);print "</pre>";
@@ -297,7 +297,7 @@ function aggregate_color_item() {
  * aggregate_color_template_edit	edit the color template
  */
 function aggregate_color_template_edit() {
-	global $config,$colors, $image_types, $fields_color_template_template_edit, $struct_aggregate;
+	global $config, $image_types, $fields_color_template_template_edit, $struct_aggregate;
 	include_once($config['base_path'] . "/lib/api_aggregate.php");
 
 	/* ================= input validation ================= */
@@ -311,7 +311,7 @@ function aggregate_color_template_edit() {
 	}
 
 	print ('<form name="color_template_edit" action="color_templates.php" method="POST">');
-	html_start_box("<strong>Color Template</strong> $header_label", "100%", $colors["header"], "3", "center", "");
+	html_start_box("<strong>Color Template</strong> $header_label", "100%", '', "3", "center", "");
 
 	draw_edit_form(array(
 		"config" => array("no_form_tag" => true),
@@ -335,7 +335,7 @@ function aggregate_color_template_edit() {
  * aggregate_color_template		maintain color templates
  */
 function aggregate_color_template() {
-	global $colors, $aggregate_actions, $item_rows, $config;
+	global $aggregate_actions, $item_rows, $config;
 	include_once($config['base_path'] . "/lib/api_aggregate.php");
 
 	/* ================= input validation ================= */
@@ -391,7 +391,7 @@ function aggregate_color_template() {
 
 	print ('<form name="color_template" action="color_templates.php" method="get">');
 
-	html_start_box("<strong>Color Templates</strong>", "100%", $colors["header"], "3", "center", "color_templates.php?action=template_edit");
+	html_start_box("<strong>Color Templates</strong>", "100%", '', "3", "center", "color_templates.php?action=template_edit");
 
 	$filter_html = '<tr class="even">
 					<td>
@@ -447,7 +447,7 @@ function aggregate_color_template() {
 
 	/* print checkbox form for validation */
 	print "<form name='chk' method='post' action='color_templates.php'>\n";
-	html_start_box("", "100%", $colors["header"], "3", "center", "");
+	html_start_box("", "100%", '', "3", "center", "");
 
 	$total_rows = db_fetch_cell("SELECT
 		COUNT(color_templates.color_template_id)
@@ -471,10 +471,9 @@ function aggregate_color_template() {
 
 	html_header_sort_checkbox($display_text, $_REQUEST["sort_column"], $_REQUEST["sort_direction"], false);
 
-	$i = 0;
 	if (sizeof($template_list) > 0) {
 		foreach ($template_list as $template) {
-			form_alternate_row_color($colors["alternate"], $colors["light"], $i, 'line' . $template["color_template_id"]); $i++;
+			form_alternate_row('line' . $template["color_template_id"], true);
 
 			form_selectable_cell("<a style='white-space:nowrap;' class='linkEditMain' href='" . htmlspecialchars("color_templates.php?action=template_edit&color_template_id=" . $template["color_template_id"] . "&page=1 ' title='" . $template["name"]) . "'>" . (get_request_var_request("filter") != "" ? preg_replace("/(" . preg_quote(get_request_var_request("filter")) . ")/i", "<span class='filteredValue'>\\1</span>", htmlspecialchars($template["name"])) : htmlspecialchars($template["name"])) . "</a>", $template["color_template_id"]);
 			form_checkbox_cell($template["name"], $template["color_template_id"]);

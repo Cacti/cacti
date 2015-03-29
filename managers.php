@@ -66,7 +66,7 @@ switch ($_REQUEST['action']) {
 }
 
 function manager(){
-	global $colors, $manager_actions;
+	global $manager_actions;
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var_request('page'));
@@ -184,7 +184,7 @@ function manager(){
 	$sql_where = "WHERE (snmpagent_managers.hostname LIKE '%%" . get_request_var_request('filter') . "%%'
 						OR snmpagent_managers.description LIKE '%%" . get_request_var_request('filter') . "%%')";
 
-	html_start_box('', '100%', $colors['header'], '3', 'center', '');
+	html_start_box('', '100%', '', '3', 'center', '');
 
 	$total_rows = db_fetch_cell("SELECT
 		COUNT(snmpagent_managers.id)
@@ -225,8 +225,8 @@ function manager(){
 	$i = 0;
 	if (sizeof($managers) > 0) {
 		foreach ($managers as $item) {
-			$description = (strlen(get_request_var_request('filter')) ? (preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span style='background-color: #F8D93D;'>\\1</span>", $item['description'])) : $item['description']);
-			$hostname = (strlen(get_request_var_request('filter')) ? (preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span style='background-color: #F8D93D;'>\\1</span>", $item['hostname'])): $item['hostname']);
+			$description = (strlen(get_request_var_request('filter')) ? (preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", $item['description'])) : $item['description']);
+			$hostname = (strlen(get_request_var_request('filter')) ? (preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", $item['hostname'])): $item['hostname']);
 			form_alternate_row('line' . $item['id'], false);
 			form_selectable_cell( '<a class="linkEditMain" href="managers.php?action=edit&id=' . $item['id'] . '">' . $description . '</a>', $item['id']);
 			form_selectable_cell( $item['id'], $item['id']);
@@ -375,8 +375,6 @@ function manager_edit() {
 }
 
 function manager_notifications($id){
-	global $colors;
-
 	$mibs = db_fetch_assoc('SELECT DISTINCT mib FROM snmpagent_cache');
 	$registered_mibs = array();
 	if($mibs && $mibs >0) {
@@ -530,7 +528,7 @@ function manager_notifications($id){
 	/* print checkbox form for validation */
 
 	print "<form name='chk' method='post' action='managers.php'>\n";
-	html_start_box('', '100%', $colors['header'], '3', 'center', '');
+	html_start_box('', '100%', '', '3', 'center', '');
 	$rows = read_config_option('num_rows_table');
 
 	/* FIXME: Change SQL Queries to not use WHERE 1 */
@@ -556,9 +554,9 @@ function manager_notifications($id){
 	if (sizeof($snmp_cache) > 0) {
 		foreach ($snmp_cache as $item) {
 			$row_id = $item['mib'] . '__' . $item['name'];
-			$oid = (strlen(get_request_var_request('filter')) ? (preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span style='background-color: #F8D93D;'>\\1</span>", $item['oid'])) : $item['oid']);
-			$name = (strlen(get_request_var_request('filter')) ? (preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span style='background-color: #F8D93D;'>\\1</span>", $item['name'])): $item['name']);
-			$mib = (strlen(get_request_var_request('filter')) ? (preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span style='background-color: #F8D93D;'>\\1</span>", $item['mib'])): $item['mib']);
+			$oid = (strlen(get_request_var_request('filter')) ? (preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", $item['oid'])) : $item['oid']);
+			$name = (strlen(get_request_var_request('filter')) ? (preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", $item['name'])): $item['name']);
+			$mib = (strlen(get_request_var_request('filter')) ? (preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", $item['mib'])): $item['mib']);
 
 			form_alternate_row('line' . $row_id, false);
 			if($item['description']) {
@@ -588,8 +586,6 @@ function manager_notifications($id){
 }
 
 function manager_logs($id) {
-	global $colors;
-
 	$severity_levels = array(
 		SNMPAGENT_EVENT_SEVERITY_LOW => 'LOW',
 		SNMPAGENT_EVENT_SEVERITY_MEDIUM => 'MEDIUM',
@@ -656,7 +652,7 @@ function manager_logs($id) {
 		}
 		-->
 	</script>
-	<tr bgcolor="#<?php print $colors['panel'];?>">
+	<tr class='even'>
 		<td>
 			<form name="form_snmpagent_manager_logs" action="managers.php">
 				<table cellpadding="0" cellspacing="0">
@@ -718,7 +714,7 @@ function manager_logs($id) {
 
 	/* print checkbox form for validation */
 	print "<form name='chk' method='post' action='managers.php'>\n";
-	html_start_box('', '100%', $colors['header'], '3', 'center', '');
+	html_start_box('', '100%', '', '3', 'center', '');
 
 	$total_rows = db_fetch_cell("SELECT COUNT(*) FROM snmpagent_notifications_log WHERE $sql_where");
 
@@ -726,7 +722,7 @@ function manager_logs($id) {
 	/* generate page list */
 	$url_page_select = get_page_list(get_request_var_request('page'), MAX_DISPLAY_PAGES, read_config_option('num_rows_data_source'), $total_rows, 'managers.php?action=edit&id=' . $id . '&tab=logs&mib=' . get_request_var_request('mib') . '&filter=' . get_request_var_request('filter'));
 
-	$nav = "<tr bgcolor='#" . $colors['header'] . "'>
+	$nav = "<tr class='even'>
 		<td colspan='7'>
 			<table width='100%' cellspacing='0' cellpadding='0' border='0'>
 				<tr>
@@ -748,11 +744,10 @@ function manager_logs($id) {
 
 	html_header(array(' ', 'Time', 'Notification', 'Varbinds' ));
 
-	$i = 0;
-	if (sizeof($logs) > 0) {
+	if (sizeof($logs)) {
 		foreach ($logs as $item) {
-			$varbinds = (strlen(get_request_var_request('filter')) ? (preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span style='background-color: #F8D93D;'>\\1</span>", $item['varbinds'])): $item['varbinds']);
-			form_alternate_row_color($colors['alternate'], $colors['light'], $i, 'line' . $item['id']); $i++;
+			$varbinds = (strlen(get_request_var_request('filter')) ? (preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", $item['varbinds'])): $item['varbinds']);
+			form_alternate_row('line' . $item['id'], true);
 			print "<td title='Severity Level: " . $severity_levels[ $item['severity'] ] . "' style='width:10px;background-color: " . $severity_colors[ $item['severity'] ] . ";border-top:1px solid white;border-bottom:1px solid white;'></td>";
 			print "<td style='white-space: nowrap;'>" . date( 'Y/m/d H:i:s', $item['time']) . '</td>';
 
@@ -863,7 +858,7 @@ function form_save() {
 }
 
 function form_actions(){
-	global $manager_actions, $manager_notification_actions, $colors;
+	global $manager_actions, $manager_notification_actions;
 
 	if (isset($_POST['selected_items'])) {
 		if(isset($_POST['action_receivers'])) {
@@ -919,25 +914,25 @@ function form_actions(){
 				}
 			}
 
-			include_once('./include/top_header.php');
-			html_start_box('<strong>' . $manager_actions{$_POST['drp_action']} . '</strong>', '60%', $colors['header_panel'], '3', 'center', '');
+			top_header();
+			html_start_box('<strong>' . $manager_actions{$_POST['drp_action']} . '</strong>', '60%', '', '3', 'center', '');
 			print "<form action='managers.php' method='post'>\n";
 
 			if (sizeof($selected_items)) {
 				print "	<tr>
-						<td class='textArea' bgcolor='#" . $colors['form_alternate1']. "'>
+						<td class='textArea'>
 							<p>When you click \"Continue\", the following notification receiver(s) will be " . strtolower($manager_actions[$_POST['drp_action']]) . "d.</p>
 							<ul>$list</ul>
 						</td>
 					</tr>\n";
 				$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='" . $manager_actions[$_POST['drp_action']] . " Notification Receiver(s)'>";
 			} else {
-				print "<tr><td bgcolor='#" . $colors['form_alternate1']. "'><span class='textError'>You must select at least one notification receiver.</span></td></tr>\n";
+				print "<tr><td class='even'><span class='textError'>You must select at least one notification receiver.</span></td></tr>\n";
 				$save_html = "<input type='button' value='Return' onClick='window.history.back()'>";
 			}
 
 			print "	<tr>
-						<td align='right' bgcolor='#eaeaea'>
+						<td align='right' class='saveRow'>
 						<input type='hidden' name='action' value='actions'>
 						<input type='hidden' name='action_receivers' value='1'>
 						<input type='hidden' name='selected_items' value='" . (isset($selected_items) ? serialize($selected_items) : '') . "'>
@@ -945,9 +940,10 @@ function form_actions(){
 							$save_html
 						</td>
 					</tr>\n";
-			html_end_box();
-			include_once('./include/bottom_footer.php');
 
+			html_end_box();
+
+			bottom_footer();
 		}else {
 
 			$selected_items = array();
@@ -967,7 +963,7 @@ function form_actions(){
 				}
 			}
 
-			include_once('./include/top_header.php');
+			top_header();
 			html_start_box('<strong>' . $manager_notification_actions[ $_POST['drp_action'] ] . '</strong>', '60%', '', '3', 'center', '');
 			print "<form action='managers.php' method='post'>\n";
 
@@ -1001,7 +997,7 @@ function form_actions(){
 
 			html_end_box();
 
-			include_once('./include/bottom_footer.php');
+			bottom_footer();
 		}
 	}
 }

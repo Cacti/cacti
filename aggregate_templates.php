@@ -241,7 +241,7 @@ function aggregate_get_graph_items($table, $id) {
  * aggregate_form_actions		the action function
  */
 function aggregate_form_actions() {
-	global $colors, $aggregate_actions, $config;
+	global $aggregate_actions, $config;
 	include_once($config['base_path'] . "/api_aggregate.php");
 
 	/* ================= input validation ================= */
@@ -280,12 +280,12 @@ function aggregate_form_actions() {
 	top_header();
 
 	print "<form action='aggregate_templates.php' method='post'>\n";
-	html_start_box("<strong>" . $aggregate_actions{$_POST["drp_action"]} . "</strong>", "60%", $colors["header_panel"], "3", "center", "");
+	html_start_box("<strong>" . $aggregate_actions{$_POST["drp_action"]} . "</strong>", "60%", '', "3", "center", "");
 
 	if (isset($aggregate_array) && sizeof($aggregate_array)) {
 		if ($_POST["drp_action"] == "1") { /* delete */
 			print "	<tr>
-					<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
+					<td class='textArea'>
 						<p>Are you sure you want to Delete the following Aggregate Graph Template(s)?</p>
 						<p><ul>$aggregate_list</ul></p>
 					</td>
@@ -294,7 +294,7 @@ function aggregate_form_actions() {
 			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Delete Color Template(s)'>";
 		}
 	}else{
-		print "<tr><td bgcolor='#" . $colors["form_alternate1"]. "'><span class='textError'>You must select at least one Aggregate Graph Template.</span></td></tr>\n";
+		print "<tr><td class='even'><span class='textError'>You must select at least one Aggregate Graph Template.</span></td></tr>\n";
 		$save_html = "<input type='button' value='Return' onClick='window.history.back()'>";
 	}
 
@@ -319,7 +319,7 @@ function aggregate_form_actions() {
  * aggregate_template_edit	edit the color template
  */
 function aggregate_template_edit() {
-	global $colors, $image_types, $struct_aggregate_template;
+	global $image_types, $struct_aggregate_template;
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var("id"));
@@ -342,7 +342,7 @@ function aggregate_template_edit() {
 	}
 
 	print ('<form name="template_edit" action="aggregate_templates.php" method="post">');
-	html_start_box("<strong>Aggregate Template</strong> $header_label", "100%", $colors["header"], "3", "center", "");
+	html_start_box("<strong>Aggregate Template</strong> $header_label", "100%", '', "3", "center", "");
 
 	draw_edit_form(array(
 		"config" => array("no_form_tag" => true),
@@ -457,7 +457,7 @@ function aggregate_template_edit() {
  * aggregate_template
  */
 function aggregate_template() {
-	global $colors, $aggregate_actions, $item_rows, $config;
+	global $aggregate_actions, $item_rows, $config;
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var_request("page"));
@@ -512,7 +512,7 @@ function aggregate_template() {
 
 	print ('<form name="template" action="aggregate_templates.php" method="get">');
 
-	html_start_box("<strong>Aggregate Templates</strong>", "100%", $colors["header"], "3", "center", "aggregate_templates.php?action=edit");
+	html_start_box("<strong>Aggregate Templates</strong>", "100%", '', "3", "center", "aggregate_templates.php?action=edit");
 
 	$filter_html = '<tr class="even">
 					<td>
@@ -571,7 +571,7 @@ function aggregate_template() {
 
 	/* print checkbox form for validation */
 	print "<form name='chk' method='post' action='aggregate_templates.php'>\n";
-	html_start_box("", "100%", $colors["header"], "3", "center", "");
+	html_start_box("", "100%", '', "3", "center", "");
 
 	$total_rows = db_fetch_cell("SELECT
 		COUNT(pgt.id)
