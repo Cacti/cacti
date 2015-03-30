@@ -34,6 +34,20 @@ tr.selected {
 	background-color: khaki;
 }
 
+.badpassword {
+	padding:4px;
+	color:red;
+	font-size:1.5em !important;
+	text-align:bottom;
+}
+
+.goodpassword {
+	padding:4px;
+	color:green;
+	font-size:1.5em !important;
+	text-align:bottom;
+}
+
 .usermenudown {
 	background: transparent url('./../../../images/bullet_arrow_down.png') no-repeat center right;
 }

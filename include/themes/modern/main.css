@@ -62,6 +62,20 @@ input, select {
 	font-size: 13px !important;
 }
 
+.badpassword {
+	padding:4px;
+	color:red;
+	font-size:1.5em !important;
+	text-align:bottom;
+}
+
+.goodpassword {
+	padding:4px;
+	color:green;
+	font-size:1.5em !important;
+	text-align:bottom;
+}
+
 /* input#host {
 	background-color: #e6e6e6;
 	border: none;
