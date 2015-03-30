@@ -206,7 +206,7 @@ case 'preview':
 	}
 
 	/* if the user pushed the 'clear' button */
-	if (isset($_REQUEST['clear_x']) || isset($_REQUEST['style'])) {
+	if (isset($_REQUEST['clear']) || isset($_REQUEST['style'])) {
 		kill_session_var('sess_graph_view_current_page');
 		kill_session_var('sess_graph_view_filter');
 		kill_session_var('sess_graph_view_graph_template');
@@ -219,7 +219,7 @@ case 'preview':
 		unset($_REQUEST['host_id']);
 		unset($_REQUEST['graph_template_id']);
 
-		if (isset($_REQUEST['clear_x'])) {
+		if (isset($_REQUEST['clear'])) {
 			unset($_REQUEST['filter']);
 			unset($_REQUEST['graph_list']);
 			unset($_REQUEST['graph_add']);
@@ -338,10 +338,10 @@ case 'preview':
 						<input type='text' id='filter' size='25' value='<?php print htmlspecialchars(get_request_var_request('filter'));?>' onChange='applyFilter()'>
 					</td>
 					<td>
-						<input type='button' value='Go' title='Set/Refresh Filters' onClick='applyFilter()'>
+						<input type='button' id='refresh' value='Go' title='Set/Refresh Filters' onClick='applyFilter()'>
 					</td>
 					<td>
-						<input type='button' value='Clear' title='Clear Filters' onClick='clearFilter()'>
+						<input type='button' id='clear' value='Clear' title='Clear Filters' onClick='clearFilter()'>
 					</td>
 				</tr>
 			</table>
@@ -354,7 +354,7 @@ case 'preview':
 	var timeOffset=<?php print date('Z');?>;
 
 	function clearFilter() {
-		$.get('graph_view.php?action=preview&header=false&clear_x=1', function(data) {
+		$.get('graph_view.php?action=preview&header=false&clear=1', function(data) {
 			$('#main').html(data);
 			applySkin();
 			initializeGraphs();
@@ -438,7 +438,7 @@ case 'preview':
 
 	function clearTimespanFilter() {
 		var json = { 
-			button_clear_x: 1, 
+			button_clear: 1, 
 			date1: $('#date1').val(), 
 			date2: $('#date2').val(), 
 			predefined_timespan: $('#predefined_timespan').val(), 
@@ -779,7 +779,7 @@ case 'list':
 	}
 
 	/* if the user pushed the 'clear' button */
-	if (isset($_REQUEST['clear_x'])) {
+	if (isset($_REQUEST['clear'])) {
 		kill_session_var('sess_graph_view_list_current_page');
 		kill_session_var('sess_graph_view_list_filter');
 		kill_session_var('sess_graph_view_list_host');
@@ -900,10 +900,10 @@ case 'list':
 						<input id='filter' type='text' name='filter' size='25' value='<?php print htmlspecialchars(get_request_var_request('filter'));?>'>
 					</td>
 					<td>
-						<input type='button' value='Go' title='Set/Refresh Filters' onClick='applyFilter()'>
+						<input type='button' id='refresh' value='Go' title='Set/Refresh Filters' onClick='applyFilter()'>
 					</td>
 					<td>
-						<input type='button' name='clear_x' value='Clear' title='Clear Filters' onClick='clearFilter()'>
+						<input type='button' id='clear' value='Clear' title='Clear Filters' onClick='clearFilter()'>
 					</td>
 					<td>
 						<input type='button' value='View' title='View Graphs' onClick='viewGraphs()'>
@@ -988,7 +988,7 @@ case 'list':
 	});
 
 	function clearFilter() {
-		$.get('graph_view.php?action=list&header=false&clear_x=1', function(data) {
+		$.get('graph_view.php?action=list&header=false&clear=1', function(data) {
 			$('#main').html(data);
 			applySkin();
 		});

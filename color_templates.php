@@ -365,14 +365,14 @@ function aggregate_color_template() {
 		kill_session_var('sess_color_template_has_graphs');
 		kill_session_var('sess_color_template_sort_column');
 		kill_session_var('sess_color_template_sort_direction');
-		kill_session_var('sess_color_template_rows');
+		kill_session_var('sess_default_rows');
 
 		unset($_REQUEST['page']);
 		unset($_REQUEST['filter']);
 		unset($_REQUEST['has_graphs']);
 		unset($_REQUEST['sort_column']);
 		unset($_REQUEST['sort_direction']);
-		unset($_REQUEST['sess_color_template_rows']);
+		unset($_REQUEST['sess_default_rows']);
 	}
 
 	/* remember these search fields in session vars so we don't have to keep passing them around */
@@ -381,7 +381,7 @@ function aggregate_color_template() {
 	load_current_session_value('has_graphs', 'sess_color_template_has_graphs', '');
 	load_current_session_value('sort_column', 'sess_color_template_sort_column', 'name');
 	load_current_session_value('sort_direction', 'sess_color_template_sort_direction', 'ASC');
-	load_current_session_value('rows', 'sess_color_template_rows', read_config_option('num_rows_table'));
+	load_current_session_value('rows', 'sess_default_rows', read_config_option('num_rows_table'));
 
 	/* if the number of rows is -1, set it to the default */
 	if ($_REQUEST['rows'] == -1) {
@@ -469,13 +469,13 @@ function aggregate_color_template() {
 			FROM aggregate_graph_templates_item 
 			GROUP BY color_template
 		) AS templates
+		ON ct.color_template_id=templates.color_template
 		LEFT JOIN (
 			SELECT color_template, COUNT(*) AS graphs
 			FROM aggregate_graphs_graph_item
 			GROUP BY color_template
 		) AS graphs
 		ON ct.color_template_id=graphs.color_template
-		ON ct.color_template_id=templates.color_template
 		$sql_where");
 
 	$template_list = db_fetch_assoc("SELECT

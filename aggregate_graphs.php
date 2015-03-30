@@ -838,7 +838,7 @@ function aggregate_items() {
 		kill_session_var('sess_agraph_items_filter');
 		kill_session_var('sess_agraph_items_sort_column');
 		kill_session_var('sess_agraph_items_sort_direction');
-		kill_session_var('sess_agraph_items_rows');
+		kill_session_var('sess_default_rows');
 		kill_session_var('sess_agraph_items_matching');
 
 		unset($_REQUEST['page']);
@@ -854,7 +854,7 @@ function aggregate_items() {
 	load_current_session_value('filter',         'sess_agraph_items_filter', '');
 	load_current_session_value('sort_column',    'sess_agraph_items_sort_column', 'title_cache');
 	load_current_session_value('sort_direction', 'sess_agraph_items_sort_direction', 'ASC');
-	load_current_session_value('rows',           'sess_agraph_items_rows', read_config_option('num_rows_table'));
+	load_current_session_value('rows',           'sess_default_rows', read_config_option('num_rows_table'));
 	load_current_session_value('matching',       'sess_agraph_items_matching', 'on');
 
 	/* if the number of rows is -1, set it to the default */
@@ -1164,7 +1164,7 @@ function graph() {
 		kill_session_var('sess_agraph_filter');
 		kill_session_var('sess_agraph_sort_column');
 		kill_session_var('sess_agraph_sort_direction');
-		kill_session_var('sess_agraph_rows');
+		kill_session_var('sess_default_rows');
 		kill_session_var('sess_agraph_template_id');
 
 		unset($_REQUEST['page']);
@@ -1180,7 +1180,7 @@ function graph() {
 	load_current_session_value('filter',         'sess_agraph_filter', '');
 	load_current_session_value('sort_column',    'sess_agraph_sort_column', 'title_cache');
 	load_current_session_value('sort_direction', 'sess_graph_sort_direction', 'ASC');
-	load_current_session_value('rows',           'sess_agraph_rows', read_config_option('num_rows_table'));
+	load_current_session_value('rows',           'sess_default_rows', read_config_option('num_rows_table'));
 	load_current_session_value('template_id',    'sess_agraph_template_id', '-1');
 
 	/* if the number of rows is -1, set it to the default */

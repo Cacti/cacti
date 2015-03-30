@@ -294,7 +294,7 @@ function list_rrd() {
 	/* remember these search fields in session vars so we don't have to keep passing them around */
 	load_current_session_value('page', 'sess_rrdclean_current_page', '1');
 	load_current_session_value('age', 'sess_rrdclean_current_age', '1');
-	load_current_session_value('rows', 'sess_rrdclean_rows', read_config_option('num_rows_table'));
+	load_current_session_value('rows', 'sess_default_rows', read_config_option('num_rows_table'));
 	load_current_session_value('filter', 'sess_rrdclean_filter', '');
 	load_current_session_value('sort_column', 'sess_rrdclean_sort_column', 'name');
 	load_current_session_value('sort_direction', 'sess_rrdclean_sort_direction', 'ASC');
