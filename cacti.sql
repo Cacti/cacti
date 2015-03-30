@@ -2732,6 +2732,17 @@ CREATE TABLE settings_graphs (
 
 
 --
+-- Table structure for table `settings_graphs_group`
+--
+
+CREATE TABLE settings_graphs_group (
+  group_id smallint(8) unsigned NOT NULL DEFAULT '0',
+  name varchar(50) NOT NULL DEFAULT '',
+  value varchar(255) NOT NULL DEFAULT '',
+  PRIMARY KEY (group_id,name)
+) ENGINE=MyISAM COMMENT='Stores the Default User Group Graph Settings';
+
+--
 -- Table structure for table `settings_tree`
 --
 

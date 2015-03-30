@@ -40,28 +40,39 @@ if (isset($_POST['update_policy'])) {
 	switch (get_request_var_request('action')) {
 	case 'actions':
 		form_actions();
-		break;
 
+		break;
 	case 'save':
 		form_save();
-		break;
 
+		break;
 	case 'perm_remove':
 		perm_remove();
-		break;
 
+		break;
 	case 'user_edit':
 		top_header();
 		user_edit();
 		bottom_footer();
-		break;
 
+		break;
+	case 'checkpass':
+		$error = secpass_check_pass($_POST['password']);
+
+		if ($error == '') {
+			print $error;
+		}else{
+			print 'ok';
+		}
+
+		break;
 	default:
 		if (!api_plugin_hook_function('user_admin_action', get_request_var_request('action'))) {
 			top_header();
 			user();
 			bottom_footer();
 		}
+
 		break;
 	}
 }
@@ -1651,7 +1662,7 @@ function graph_settings_edit($header_label) {
 
 	?>
 	<script type="text/javascript">
-	<!--
+
 	var themeFonts=<?php print read_config_option('font_method');?>;
 
 	function graphSettings() {
@@ -1722,7 +1733,6 @@ function graph_settings_edit($header_label) {
 		});
 	});
 
-	-->
 	</script>
 	<?php
 }
@@ -1807,6 +1817,54 @@ function user_edit() {
 		html_end_box();
 
 		form_save_button('user_admin.php', 'return');
+
+		?>
+		<script type='text/javascript'>
+		var minChars=<?php print read_config_option('secpass_minlen');?>;
+
+		function checkPassword() {
+			if ($('#password').val().length < minChars) {
+				$('#pass').remove();
+				$('#password').after('<span id="pass"><i class="badpassword fa fa-times"></i><span style="padding-left:4px;">Password Too Short</span></span>');
+			}else{
+				$.post('user_admin.php?action=checkpass', { password: $('#password').val(), password_confim: $('#password_confirm').val() } ).done(function(data) {
+					if (data == 'ok') {
+						$('#pass').remove();
+						$('#password').after('<span id="pass"><i class="goodpassword fa fa-check"></i><span style="padding-left:4px;">Password Passes</span></span>');
+						checkPasswordConfirm();
+					}else{
+						$('#pass').remove();
+						$('#password').after('<span id="pass"><i class="badpassword fa fa-times"></i><span style="padding-left:4px;">'+data+'</span></span>');
+					}
+				});
+			}
+		}
+
+		function checkPasswordConfirm() {
+			if ($('#password_confirm').val().length > 0) {
+				if ($('#password').val() != $('#password_confirm').val()) {
+					$('#passconfirm').remove();
+					$('#password_confirm').after('<span id="passconfirm"><i class="badpassword fa fa-times"></i><span style="padding-left:4px;">Passwords do Not Match</span></span>');
+				}else{
+					$('#passconfirm').remove();
+					$('#password_confirm').after('<span id="passconfirm"><i class="goodpassword fa fa-check"></i><span style="padding-left:4px;">Passwords Match</span></span>');
+				}
+			}
+		}
+
+		$(function() {
+			$('#password').keypress(function() {
+				checkPassword();
+			});
+
+			$('#password_confirm').keypress(function() {
+				checkPasswordConfirm();
+			});
+		});
+
+		</script>
+
+		<?php
 
 		break;
 	case 'settings':
@@ -1899,7 +1957,7 @@ function user() {
 		});
 	}
 
-	$(function(data) {
+	$(function() {
 		$('#refresh').click(function() {
 			applyFilter();
 		});
