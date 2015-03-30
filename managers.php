@@ -66,10 +66,11 @@ switch ($_REQUEST['action']) {
 }
 
 function manager(){
-	global $manager_actions;
+	global $manager_actions, $item_rows;
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var_request('page'));
+	input_validate_input_number(get_request_var_request('rows'));
 	/* ==================================================== */
 
 	/* clean up search string */
@@ -88,23 +89,26 @@ function manager(){
 	}
 
 	/* if the user pushed the 'clear' button */
-	if (isset($_REQUEST['clear_x'])) {
-		kill_session_var('sess_snmpagent_manager_current_page');
-		kill_session_var('sess_snmpagent_manager_filter');
-		kill_session_var('sess_snmpagent_manager_sort_column');
-		kill_session_var('sess_snmpagent_manager_sort_direction');
+	if (isset($_REQUEST['clear'])) {
+		kill_session_var('sess_snmp_mgr_current_page');
+		kill_session_var('sess_snmp_mgr_filter');
+		kill_session_var('sess_snmp_mgr_rows');
+		kill_session_var('sess_snmp_mgr_sort_column');
+		kill_session_var('sess_snmp_mgr_sort_direction');
 
 		unset($_REQUEST['page']);
 		unset($_REQUEST['filter']);
+		unset($_REQUEST['rows']);
 		unset($_REQUEST['sort_column']);
 		unset($_REQUEST['sort_direction']);
 	}
 
 	/* remember these search fields in session vars so we don't have to keep passing them around */
-	load_current_session_value('page', 'sess_snmpagent_manager_current_page', '1');
-	load_current_session_value('filter', 'sess_snmpagent_manager_filter', '');
-	load_current_session_value('sort_column', 'sess_snmpagent_manager_sort_column', 'hostname');
-	load_current_session_value('sort_direction', 'sess_snmpagent_manager_sort_direction', 'ASC');
+	load_current_session_value('page', 'sess_snmp_mgr_current_page', '1');
+	load_current_session_value('filter', 'sess_snmp_mgr_filter', '');
+	load_current_session_value('rows', 'sess_default_rows', read_config_option('num_rows_table'));
+	load_current_session_value('sort_column', 'sess_snmp_mgr_sort_column', 'hostname');
+	load_current_session_value('sort_direction', 'sess_snmp_mgr_sort_direction', 'ASC');
 
 	display_output_messages();
 
@@ -114,6 +118,7 @@ function manager(){
 
 	function applyFilter() {
 		strURL = 'managers.php?filter=' + $('#filter').val();
+		strURL = strURL + '&rows=' + $('#rows').val();
 		strURL = strURL + '&page=' + $('#page').val();
 		strURL = strURL + '&header=false';
 		$.get(strURL, function(data) {
@@ -123,7 +128,7 @@ function manager(){
 	}
 
 	function clearFilter() {
-		strURL = 'managers.php?clear_x=1&header=false';
+		strURL = 'managers.php?clear=1&header=false';
 		$.get(strURL, function(data) {
 			$('#main').html(data);
 			applySkin();
@@ -151,30 +156,42 @@ function manager(){
 
 	html_start_box('<strong>SNMP Notification Receivers</strong>', '100%', '', '3', 'center', 'managers.php?action=edit');
 
-	$rows = read_config_option('num_rows_table');
-
 	?>
 	<tr class='even noprint'>
 		<td>
 			<form id='form_snmpagent_managers' name="form_snmpagent_managers" action="managers.php">
 				<table cellpadding="2" cellspacing="0">
-				<tr>
+					<tr>
 						<td>
-							Search:
-					</td>
+							Search
+						</td>
 						<td>
 							<input id='filter' type="text" name="filter" size="25" value="<?php print htmlspecialchars(get_request_var_request('filter'));?>" onChange='applyFilter()'>
-					</td>
+						</td>
+						<td>
+							Receivers
+						</td>
+						<td>
+							<select id='rows' name='rows' onChange='applyFilter()'>
+								<?php
+								if (sizeof($item_rows) > 0) {
+								foreach ($item_rows as $key => $value) {
+									print "<option value='" . $key . "'"; if (get_request_var_request('rows') == $key) { print ' selected'; } print '>' . htmlspecialchars($value) . "</option>\n";
+								}
+								}
+								?>
+							</select>
+						</td>
 						<td>
 							<input type="button" id='refresh' value="Go" title="Set/Refresh Filters">
 						</td>
 						<td>
-							<input type="button" id='clear' name="clear_x" value="Clear" title="Clear Filters">
-					</td>
-				</tr>
-			</table>
-				<input type='hidden' id='page' name='page' value='<?php print $_REQUEST['page'];?>'>
-		</form>
+							<input type="button" id='clear' value="Clear" title="Clear Filters">
+						</td>
+					</tr>
+				</table>
+				<input type='hidden' id='page' value='<?php print $_REQUEST['page'];?>'>
+			</form>
 		</td>
 	</tr>
 	<?php
@@ -199,16 +216,24 @@ function manager(){
 		snmpagent_managers_notifications.count_notify,
 		snmpagent_notifications_log.count_log
 		FROM snmpagent_managers
-			LEFT JOIN ( SELECT COUNT(*) as count_notify, manager_id FROM snmpagent_managers_notifications GROUP BY manager_id) AS snmpagent_managers_notifications
-			ON snmpagent_managers_notifications.manager_id = snmpagent_managers.id
-			LEFT JOIN ( SELECT COUNT(*) as count_log, manager_id FROM snmpagent_notifications_log GROUP BY manager_id) AS snmpagent_notifications_log
-			ON snmpagent_notifications_log.manager_id = snmpagent_managers.id
+		LEFT JOIN (
+			SELECT COUNT(*) as count_notify, manager_id 
+			FROM snmpagent_managers_notifications 
+			GROUP BY manager_id
+		) AS snmpagent_managers_notifications
+		ON snmpagent_managers_notifications.manager_id = snmpagent_managers.id
+		LEFT JOIN (
+			SELECT COUNT(*) as count_log, manager_id 
+			FROM snmpagent_notifications_log 
+			GROUP BY manager_id
+		) AS snmpagent_notifications_log
+		ON snmpagent_notifications_log.manager_id = snmpagent_managers.id
 		$sql_where
-		ORDER BY " . get_request_var_request('sort_column') . ' ' . get_request_var_request('sort_direction') .
-	' LIMIT ' . ($rows*(get_request_var_request('page')-1)) . ',' . $rows);
+		ORDER BY " . get_request_var_request('sort_column') . ' ' . get_request_var_request('sort_direction') .  ' 
+		LIMIT ' . (get_request_var_request('rows')*(get_request_var_request('page')-1)) . ',' . get_request_var_request('rows'));
 
 	/* generate page list */
-	$nav = html_nav_bar('managers.php?filter=' . get_request_var_request('filter'), MAX_DISPLAY_PAGES, get_request_var_request('page'), $rows, $total_rows, 11, '', 'page', 'main');
+	$nav = html_nav_bar('managers.php?filter=' . get_request_var_request('filter'), MAX_DISPLAY_PAGES, get_request_var_request('page'), get_request_var_request('rows'), $total_rows, 11, 'Receivers', 'page', 'main');
 	print $nav;
 
 	$display_text = array(
@@ -375,6 +400,8 @@ function manager_edit() {
 }
 
 function manager_notifications($id){
+	global $items_rows;
+
 	$mibs = db_fetch_assoc('SELECT DISTINCT mib FROM snmpagent_cache');
 	$registered_mibs = array();
 	if($mibs && $mibs >0) {
@@ -398,33 +425,34 @@ function manager_notifications($id){
 	}
 
 	/* if the user pushed the 'clear' button */
-	if (isset($_REQUEST['clear_x'])) {
-		kill_session_var('sess_snmpagent__manager_notifications_cache_mib');
-		kill_session_var('sess_snmpagent__manager_notifications_cache_current_page');
-		kill_session_var('sess_snmpagent__manager_notifications_cache_filter');
+	if (isset($_REQUEST['clear'])) {
+		kill_session_var('sess_snmp_cache_mib');
+		kill_session_var('sess_snmp_cache_current_page');
+		kill_session_var('sess_snmp_cache_filter');
 		unset($_REQUEST['mib']);
 		unset($_REQUEST['page']);
 		unset($_REQUEST['filter']);
 	}
 
 	/* reset the current page if the user changed the mib filter*/
-	if(isset($_SESSION['sess_snmpagent__manager_notifications_cache_mib']) && get_request_var_request('mib') != $_SESSION['sess_snmpagent__manager_notifications_cache_mib']) {
-		kill_session_var('sess_snmpagent__manager_notifications_cache_current_page');
+	if(isset($_SESSION['sess_snmp_cache_mib']) && get_request_var_request('mib') != $_SESSION['sess_snmp_cache_mib']) {
+		kill_session_var('sess_snmp_cache_current_page');
 		unset($_REQUEST['page']);
 	}
 
 	/* remember these search fields in session vars so we don't have to keep passing them around */
-	load_current_session_value('page', 'sess_snmpagent__manager_notifications_cache_current_page', '1');
-	load_current_session_value('mib', 'sess_snmpagent__manager_notifications_cache_mib', '-1');
-	load_current_session_value('filter', 'sess_snmpagent__manager_notifications_cache_filter', '');
+	load_current_session_value('page', 'sess_snmp_cache_current_page', '1');
+	load_current_session_value('rows', 'sess_default_rows', read_config_option('num_rows_table'));
+	load_current_session_value('mib', 'sess_snmp_cache_mib', '-1');
+	load_current_session_value('filter', 'sess_snmp_cache_filter', '');
 
 	?>
-		<script type="text/javascript">
-<!--
+	<script type="text/javascript">
 
 	function applyFilter() {
 		strURL = 'managers.php?action=edit&tab=notifications&id=<?php echo $id; ?>&filter=' + $('#filter').val();
 		strURL = strURL + '&mib=' + $('#mib').val();
+		strURL = strURL + '&rows=' + $('#rows').val();
 		strURL = strURL + '&filter=' + $('#filter').val();
 		strURL = strURL + '&page=' + $('#page').val();
 		strURL = strURL + '&header=false';
@@ -436,7 +464,7 @@ function manager_notifications($id){
 }
 
 	function clearFilter() {
-		strURL = 'managers.php?action=edit&tab=notifications&id=<?php echo $id; ?>&clear_x=1&header=false';
+		strURL = 'managers.php?action=edit&tab=notifications&id=<?php echo $id; ?>&clear=1&header=false';
 		$.get(strURL, function(data) {
 			$('#main').html(data);
 			applySkin();
@@ -458,58 +486,64 @@ function manager_notifications($id){
 		});
 	});
 
--->
-</script>
-		<?php
-
-	$rows = read_config_option('num_rows_table');
-
-	?>
+	</script>
 	<tr class='even noprint'>
-			<td>
+		<td>
 			<form id='form_snmpagent_managers' name="form_snmpagent_managers" action="managers.php">
 				<table cellpadding="2" cellspacing="0">
 					<tr>
 						<td>
-							MIB:
+							MIB
 						</td>
 						<td>
 							<select id="mib" name="mib" onChange="applyFilter()">
 								<option value="-1"<?php if (get_request_var_request('mib') == '-1') {?> selected<?php }?>>Any</option>
 								<?php
-
-	if (sizeof($mibs) > 0) {
-		foreach ($mibs as $mib) {
-			print "<option value='" . $mib['mib'] . "'"; if (get_request_var_request('mib') == $mib['mib']) { print ' selected'; } print '>' . $mib['mib'] . "</option>\n";
-		}
-	}
-	?>
+								if (sizeof($mibs) > 0) {
+								foreach ($mibs as $mib) {
+									print "<option value='" . $mib['mib'] . "'"; if (get_request_var_request('mib') == $mib['mib']) { print ' selected'; } print '>' . $mib['mib'] . "</option>\n";
+								}
+								}
+								?>
 							</select>
 						</td>
 						<td>
-							Search:
+							Search
 						</td>
 						<td>
-							<input id='filter' type="text" name="filter" size="25" value="<?php print htmlspecialchars(get_request_var_request('filter'));?>" onChange='applyFilter()'>
+							<input id='filter' type="text" size="25" value="<?php print htmlspecialchars(get_request_var_request('filter'));?>" onChange='applyFilter()'>
+						</td>
+						<td>
+							Receivers
+						</td>
+						<td>
+							<select id='rows' name='rows' onChange='applyFilter()'>
+								<?php
+								if (sizeof($item_rows) > 0) {
+								foreach ($item_rows as $key => $value) {
+									print "<option value='" . $key . "'"; if (get_request_var_request('rows') == $key) { print ' selected'; } print '>' . htmlspecialchars($value) . "</option>\n";
+								}
+								}
+								?>
+							</select>
 						</td>
 						<td>
 							<input type="button" id='refresh' value="Go" title="Set/Refresh Filters">
 						</td>
 						<td>
-							<input type="button" id='clear' name="clear_x" value="Clear" title="Clear Filters">
+							<input type="button" id='clear' value="Clear" title="Clear Filters">
 						</td>
 					</tr>
 				</table>
-				<input type='hidden' id='page' name='page' value='1'>
-
+				<input type='hidden' id='page' value='<?php print $_REQUEST['page'];?>'>
 			</form>
-			</td>
-		</tr>
-		<?php
+		</td>
+	</tr>
+	<?php
 
 	html_end_box();
 
-	$sql_where = " AND `kind` = 'Notification'";
+	$sql_where = " AND `kind`='Notification'";
 
 	/* filter by host */
 	if (get_request_var_request('mib') == '-1') {
@@ -529,6 +563,7 @@ function manager_notifications($id){
 
 	print "<form name='chk' method='post' action='managers.php'>\n";
 	html_start_box('', '100%', '', '3', 'center', '');
+
 	$rows = read_config_option('num_rows_table');
 
 	/* FIXME: Change SQL Queries to not use WHERE 1 */
@@ -622,46 +657,53 @@ function manager_logs($id) {
 
 	/* if the user pushed the 'clear' button */
 	if (isset($_REQUEST['clear_snmpagent__manager_logs_x'])) {
-		kill_session_var('sess_snmpagent__manager_logs_severity');
-		kill_session_var('sess_snmpagent__manager_logs_current_page');
-		kill_session_var('sess_snmpagent__manager_logs_filter');
+		kill_session_var('sess_snmp_logs_severity');
+		kill_session_var('sess_snmp_logs_current_page');
+		kill_session_var('sess_snmp_logs_filter');
 		unset($_REQUEST['severity']);
 		unset($_REQUEST['page']);
 		unset($_REQUEST['filter']);
 	}
 
 	/* reset the current page if the user changed the mib filter*/
-	if(isset($_SESSION['sess_snmpagent__manager_logs_severity']) && get_request_var_request('severity') != $_SESSION['sess_snmpagent__manager_logs_severity']) {
-		kill_session_var('sess_snmpagent__manager_notifications_cache_current_page');
+	if(isset($_SESSION['sess_snmp_logs_severity']) && get_request_var_request('severity') != $_SESSION['sess_snmp_logs_severity']) {
+		kill_session_var('sess_snmp_cache_current_page');
 		unset($_REQUEST['page']);
 	}
 
 	/* remember these search fields in session vars so we don't have to keep passing them around */
-	load_current_session_value('page', 'sess_snmpagent__manager_logs_current_page', '1');
-	load_current_session_value('severity', 'sess_snmpagent__manager_logs_severity', '-1');
-	load_current_session_value('filter', 'sess_snmpagent__manager_logs_filter', '');
+	load_current_session_value('page', 'sess_snmp_logs_current_page', '1');
+	load_current_session_value('rows', 'sess_default_rows', read_config_option('num_rows_table'));
+	load_current_session_value('severity', 'sess_snmp_logs_severity', '-1');
+	load_current_session_value('filter', 'sess_snmp_logs_filter', '');
 
 	?>
 	<script type="text/javascript">
-		<!--
-		function applyViewSNMPAgentCacheFilterChange(objForm) {
-			strURL = '?severity=' + objForm.severity.value;
-			strURL = strURL + '&filter=' + objForm.filter.value;
-			strURL = strURL + '&action=edit&tab=logs&id=<?php print $_REQUEST['id']; ?>';
-			document.location = strURL;
-		}
-		-->
+
+	function applyFilter(objForm) {
+		strURL = '?severity=' + objForm.severity.value;
+		strURL = strURL + '&filter=' + objForm.filter.value;
+		strURL = strURL + '&action=edit&tab=logs&id=<?php print $_REQUEST['id']; ?>';
+		document.location = strURL;
+	}
+
 	</script>
 	<tr class='even'>
 		<td>
 			<form name="form_snmpagent_manager_logs" action="managers.php">
-				<table cellpadding="0" cellspacing="0">
+				<table cellpadding="2" cellspacing="0">
 					<tr>
-						<td nowrap style='white-space: nowrap;' width="50">
-							Severity:&nbsp;
+						<td width='50'>
+							Search
+						</td>
+						<td>
+							<input type="text" id="filter" size="25" value="<?php print htmlspecialchars(get_request_var_request('filter'));?>">
+						</td>
+						<td>
+							Severity
 						</td>
 						<td width="1">
-							<select name="severity" onChange="applyViewSNMPAgentCacheFilterChange(document.form_snmpagent_manager_logs)">
+							<select id="severity" onChange="applyFilter()">
 								<option value="-1"<?php if (get_request_var_request('severity') == '-1') {?> selected<?php }?>>Any</option>
 								<?php
 								foreach ($severity_levels as $level => $name) {
@@ -670,23 +712,21 @@ function manager_logs($id) {
 								?>
 							</select>
 						</td>
-						<td nowrap style='white-space: nowrap;' width="50">
-							&nbsp;Search:&nbsp;
+						<td>
+							<input type="button" id="refresh" value="Go" title="Set/Refresh Filters">
 						</td>
-						<td width="1">
-							<input type="text" name="filter" size="20" value="<?php print htmlspecialchars(get_request_var_request('filter'));?>">
+						<td>
+							<input type="button" id="clear" value="Clear" title="Clear Filters">
 						</td>
-						<td nowrap style='white-space: nowrap;'>
-							&nbsp;<input type="submit" name="go" value="Go" title="Set/Refresh Filters">
-							<input type="submit" name="clear_snmpagent__manager_logs_x" value="Clear" title="Clear Filters">
-							<input type="submit" name="purge_snmpagent__manager_logs_x" value="Purge" title="Purge Notification Log">
+						<td>
+							<input type="button" id="purge" value="Purge" title="Purge Notification Log">
 						</td>
 					</tr>
 				</table>
-				<input type='hidden' name='page' value='1'>
+				<input type='hidden' id='page' value='<?php print $_REQUEST['page'];?>'>
 				<input type='hidden' name='action' value='edit'>
 				<input type='hidden' name='tab' value='logs'>
-				<input type='hidden' name='id' value='<?php print $_REQUEST['id']; ?>'>
+				<input type='hidden' id='id' value='<?php print $_REQUEST['id']; ?>'>
 			</form>
 		</td>
 	</tr>
@@ -708,9 +748,12 @@ function manager_logs($id) {
 		$sql_where .= " AND (`varbinds` LIKE '%%" . get_request_var_request('filter') . "%%')";
 	}
 	$sql_where .= ' ORDER by `id` DESC';
-	$sql_query = "SELECT snmpagent_notifications_log.*, snmpagent_cache.description FROM snmpagent_notifications_log
-					 LEFT JOIN snmpagent_cache ON snmpagent_cache.name = snmpagent_notifications_log.notification
-					 WHERE $sql_where LIMIT " . (read_config_option('num_rows_data_source')*(get_request_var_request('page')-1)) . ',' . read_config_option('num_rows_data_source');
+	$sql_query = "SELECT snmpagent_notifications_log.*, snmpagent_cache.description 
+		FROM snmpagent_notifications_log
+		LEFT JOIN snmpagent_cache 
+		ON snmpagent_cache.name = snmpagent_notifications_log.notification
+		WHERE $sql_where 
+		LIMIT " . (read_config_option('num_rows_table')*(get_request_var_request('page')-1)) . ',' . read_config_option('num_rows_table');
 
 	/* print checkbox form for validation */
 	print "<form name='chk' method='post' action='managers.php'>\n";
@@ -719,26 +762,8 @@ function manager_logs($id) {
 	$total_rows = db_fetch_cell("SELECT COUNT(*) FROM snmpagent_notifications_log WHERE $sql_where");
 
 	$logs = db_fetch_assoc($sql_query);
-	/* generate page list */
-	$url_page_select = get_page_list(get_request_var_request('page'), MAX_DISPLAY_PAGES, read_config_option('num_rows_data_source'), $total_rows, 'managers.php?action=edit&id=' . $id . '&tab=logs&mib=' . get_request_var_request('mib') . '&filter=' . get_request_var_request('filter'));
 
-	$nav = "<tr class='even'>
-		<td colspan='7'>
-			<table width='100%' cellspacing='0' cellpadding='0' border='0'>
-				<tr>
-					<td align='left' class='textHeaderDark'>
-						<strong>&lt;&lt; "; if (get_request_var_request('page') > 1) { $nav .= "<a class='linkOverDark' href='" . htmlspecialchars('managers.php?action=edit&id=' . $id . '&tab=logs&mib=' . get_request_var_request('mib') . '&filter=' . get_request_var_request('filter') . '&page=' . (get_request_var_request('page')-1)) . "'>"; } $nav .= 'Previous'; if (get_request_var_request('page') > 1) { $nav .= '</a>'; } $nav .= "</strong>
-					</td>\n
-					<td align='center' class='textHeaderDark'>
-						Showing Rows " . ((read_config_option('num_rows_data_source')*(get_request_var_request('page')-1))+1) . ' to ' . ((($total_rows < read_config_option('num_rows_data_source')) || ($total_rows < (read_config_option('num_rows_data_source')*get_request_var_request('page')))) ? $total_rows : (read_config_option('num_rows_data_source')*get_request_var_request('page'))) . " of $total_rows [$url_page_select]
-					</td>\n
-					<td align='right' class='textHeaderDark'>
-						<strong>"; if ((get_request_var_request('page') * read_config_option('num_rows_data_source')) < $total_rows) { $nav .= "<a class='linkOverDark' href='" . htmlspecialchars('managers.php?action=edit&id=' . $id . '&tab=logs&mib=' . get_request_var_request('mib') . '&filter=' . get_request_var_request('filter') . '&page=' . (get_request_var_request('page')+1)) . "'>"; } $nav .= 'Next'; if ((get_request_var_request('page') * read_config_option('num_rows_data_source')) < $total_rows) { $nav .= '</a>'; } $nav .= " &gt;&gt;</strong>
-					</td>\n
-				</tr>
-			</table>
-		</td>
-	</tr>\n";
+	$nav = html_nav_bar('managers.php?action=exit&id=' . $id . '&tab=logs&mib=' . get_request_var_request('mib') . '&filter=' . get_request_var_request('filter'), MAX_DISPLAY_PAGES, get_request_var_request('page'), get_request_var_request('rows'), $total_rows, 7, 'Receivers', 'page', 'main');
 
 	print $nav;
 

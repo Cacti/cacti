@@ -206,7 +206,7 @@ function get_files() {
 		SELECT local_data_id, data_template_id, name_cache, replace(data_source_path, '<path_rra>/', '') AS file, '1' AS in_cacti
 		FROM data_template_data
 		WHERE local_data_id>0
-		ON DUPLICATE KEY UPDATE local_data_id = VALUES(local_data_id)");
+		ON DUPLICATE KEY UPDATE local_data_id=VALUES(local_data_id)");
 
 	$dir_iterator = new RecursiveDirectoryIterator($rra_path);
 	$iterator = new RecursiveIteratorIterator($dir_iterator, RecursiveIteratorIterator::SELF_FIRST);
@@ -218,11 +218,11 @@ function get_files() {
 			$sql[] = "('" . str_replace($rra_path, '', $file->getPathname()) . "', " . $file->getSize() . ", '" . date('Y-m-d H:i:s', $file->getMTime()) . "',0)";
 			$size++;
 
-			if ($size == 1000) {
+			if ($size == 400) {
 				db_execute('INSERT INTO data_source_purge_temp 
 					(name, size, last_mod, in_cacti) 
 					VALUES ' . implode(',', $sql) . ' 
-					ON DUPLICATE KEY UPDATE siz e =VALUES(size), last_mod = VALUES(last_mod)');
+					ON DUPLICATE KEY UPDATE size=VALUES(size), last_mod=VALUES(last_mod)');
 	
 				$size = 0;
 				$sql  = array();
@@ -234,7 +234,7 @@ function get_files() {
 		db_execute('INSERT INTO data_source_purge_temp
 			(name, size, last_mod, in_cacti) 
 			VALUES ' . implode(',', $sql) . ' 
-			ON DUPLICATE KEY UPDATE size = VALUES(size), last_mod = VALUES(last_mod)');
+			ON DUPLICATE KEY UPDATE size=VALUES(size), last_mod=VALUES(last_mod)');
 	}
 
 	/* restore original error handler */

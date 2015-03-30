@@ -1253,7 +1253,13 @@ function utilities_view_snmp_cache() {
 		<form id="form_snmpcache" action="utilities.php">
 			<table cellpadding="2" cellspacing="0">
 				<tr>
-					<td width="50">
+					<td width='50'>
+						Search
+					</td>
+					<td>
+						<input id='filter' type="text" name="filter" size="25" value="<?php print htmlspecialchars(get_request_var_request('filter'));?>">
+					</td>
+					<td>
 						Device
 					</td>
 					<td>
@@ -1341,16 +1347,6 @@ function utilities_view_snmp_cache() {
 					</td>
 					<td>
 						<input type="button" id='clear' name="clear_x" value="Clear" title="Clear Fitlers">
-					</td>
-				</tr>
-			</table>
-			<table cellpadding='2' cellspacing='0' border='0'>
-				<tr>
-					<td width='50'>
-						Search
-					</td>
-					<td>
-						<input id='filter' type="text" name="filter" size="25" value="<?php print htmlspecialchars(get_request_var_request('filter'));?>">
 					</td>
 				</tr>
 			</table>
@@ -1570,7 +1566,13 @@ function utilities_view_poller_cache() {
 		<form id="form_pollercache" action="utilities.php">
 			<table cellpadding="2" cellspacing="0">
 				<tr>
-					<td width="50">
+					<td width='50'>
+						Search
+					</td>
+					<td>
+						<input id='filter' type="text" name="filter" size="25" value="<?php print htmlspecialchars(get_request_var_request('filter'));?>">
+					</td>
+					<td>
 						Device
 					</td>
 					<td>
@@ -1600,7 +1602,7 @@ function utilities_view_poller_cache() {
 						</select>
 					</td>
 					<td>
-						Rows
+						Entries
 					</td>
 					<td>
 						<select id='rows' name="rows" onChange="applyFilter()">
@@ -1618,16 +1620,6 @@ function utilities_view_poller_cache() {
 					</td>
 					<td>
 						<input type="button" id='clear' name="clear_x" value="Clear" title="Clear Filters">
-					</td>
-				</tr>
-			</table>
-			<table cellpadding='2' cellspacing='2' border='0'>
-				<tr>
-					<td width='50'>
-						Search
-					</td>
-					<td>
-						<input id='filter' type="text" name="filter" size="25" value="<?php print htmlspecialchars(get_request_var_request('filter'));?>">
 					</td>
 				</tr>
 			</table>
@@ -2310,7 +2302,13 @@ function snmpagent_utilities_run_cache() {
 				<table cellpadding="2" cellspacing="0">
 					<tr>
 						<td width="50">
-							MIB:
+							Search
+						</td>
+						<td>
+							<input id='filter' type="text" name="filter" size="25" value="<?php print htmlspecialchars(get_request_var_request('filter'));?>" onChange='applyFilter()'>
+						</td>
+						<td>
+							MIB
 						</td>
 						<td>
 							<select id="mib" name="mib" onChange="applyFilter()">
@@ -2325,13 +2323,7 @@ function snmpagent_utilities_run_cache() {
 							</select>
 						</td>
 						<td>
-							Search:
-						</td>
-						<td>
-							<input id='filter' type="text" name="filter" size="25" value="<?php print htmlspecialchars(get_request_var_request('filter'));?>" onChange='applyFilter()'>
-						</td>
-						<td>
-							Rows:
+							OIDs
 						</td>
 						<td>
 							<select id='rows' name="rows" onChange="applyFilter()">
@@ -2568,7 +2560,13 @@ function snmpagent_utilities_run_eventlog(){
 				<table cellpadding="2" cellspacing="0">
 					<tr>
 						<td>
-							Severity:
+							Search
+						</td>
+						<td>
+							<input id='filter' type="text" name="filter" size="25" value="<?php print htmlspecialchars(get_request_var_request('filter'));?>" onChange='applyFilter()'>
+						</td>
+						<td>
+							Severity
 						</td>
 						<td>
 							<select id="severity" name="severity" onChange="applyFilter()">
@@ -2581,7 +2579,7 @@ function snmpagent_utilities_run_eventlog(){
 							</select>
 						</td>
 						<td>
-							Receiver:
+							Receiver
 						</td>
 						<td width="1">
 							<select id="receiver" name="receiver" onChange="applyFilter()">
@@ -2594,13 +2592,7 @@ function snmpagent_utilities_run_eventlog(){
 							</select>
 						</td>
 						<td>
-							Search:
-						</td>
-						<td>
-							<input id='filter' type="text" name="filter" size="25" value="<?php print htmlspecialchars(get_request_var_request('filter'));?>" onChange='applyFilter()'>
-						</td>
-						<td>
-							Rows:
+							Entries
 						</td>
 						<td>
 							<select id='rows' name="rows" onChange="applyFilter()">
@@ -2615,8 +2607,8 @@ function snmpagent_utilities_run_eventlog(){
 							</select>
 						</td>
 						<td>
-							<input type="submit" id="refresh" name="go" value="Go" title="Set/Refresh Filters">
-							<input type="submit" id="clear" name="clear_x" value="Clear" title="Clear Filters">
+							<input type="button" id="refresh" name="go" value="Go" title="Set/Refresh Filters">
+							<input type="button" id="clear" name="clear_x" value="Clear" title="Clear Filters">
 							<input type="submit" id="purge" name="purge_x" value="Purge" title="Purge Notification Log">
 						</td>
 					</tr>

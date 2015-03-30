@@ -261,13 +261,10 @@ function get_request_var_post($name, $default = "") {
    @arg $default - the value to return if the specified name does not exist in the
      $_REQUEST array
    @returns - the value of the request variable */
-function get_request_var_request($name, $default = "")
-{
-	if (isset($_REQUEST[$name]))
-	{
+function get_request_var_request($name, $default = "") {
+	if (isset($_REQUEST[$name])) {
 		return $_REQUEST[$name];
-	} else
-	{
+	} else {
 		return $default;
 	}
 }

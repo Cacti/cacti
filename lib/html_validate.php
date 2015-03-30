@@ -53,7 +53,7 @@ function die_html_input_error() {
 	</table>
 	<?php
 
-	include_once('./include/bottom_footer.php');
+	bottom_footer();
 	exit;
 }
 

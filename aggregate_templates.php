@@ -529,11 +529,11 @@ function aggregate_template() {
 					<td>
 					<table cellpadding="2" cellspacing="0">
 						<tr>
-							<td width="55">
+							<td width="50">
 								Search
 							</td>
 							<td>
-								<input type="text" id="filter" size="30" value="' . get_request_var_request("filter") . '">
+								<input type="text" id="filter" size="25" value="' . get_request_var_request("filter") . '">
 							</td>
 							<td>
 								Templates
