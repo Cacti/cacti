@@ -106,14 +106,24 @@ function grow_dhtml_trees() {
 	?>
 	<script type='text/javascript'>
 	<?php
-	if ((!isset($_SESSION['sess_node_id']) && !isset($_REQUEST['tree_id'])) || isset($_REQUEST['select_first'])) {
+	if ((!isset($_SESSION['sess_node_id']) && !isset($_REQUEST['tree_id']))) {
 		print "var node='tree_anchor-" . $default_tree_id . "';\n";
 		print "var reset=true;\n";
+	}elseif (isset($_SESSION['sess_node_id'])) {
+		if ($_SESSION['sess_node_id'] == 'tbranch-0') {
+			if (isset($_SESSION['sess_tree_id'])) {
+				print "var node='tree_anchor-" . $_SESSION['sess_tree_id'] . "';\n";
+				print "var reset=false;\n";
+			}else{
+				print "var node='tree_anchor-" . $default_tree_id . "';\n";
+				print "var reset=true;\n";
+			}
+		}else{
+			print "var node='" . $_SESSION['sess_node_id'] . "';\n";
+			print "var reset=false;\n";
+		}
 	}elseif (isset($_REQUEST['tree_id'])) {
 		print "var node='tree_anchor-" . $_REQUEST['tree_id'] . "';\n";
-		print "var reset=false;\n";
-	}elseif (isset($_SESSION['sess_node_id'])) {
-		print "var node='" . $_SESSION['sess_node_id'] . "';\n";
 		print "var reset=false;\n";
 	}else{
 		print "var node='';\n";
@@ -128,7 +138,6 @@ function grow_dhtml_trees() {
 			.on('set_state.jstree', function(e, data) {
 				if (node!='') {
 					$(this).jstree('deselect_all');
-					$(this).jstree('select_node', node);
 
 					if (node.search('tree_anchor') >= 0) {
 						href=$('#'+node).find('a:first').attr('href')+"&nodeid=0";
@@ -138,6 +147,9 @@ function grow_dhtml_trees() {
 					}else{
 						href=$('#'+node).find('a:first').attr('href')+"&nodeid="+node.replace('tbranch-','');
 					}
+
+					$(this).jstree('select_node', node);
+
 					if (href.search('undefined') < 0) {
 						href=href.replace('action=tree', 'action=tree_content');
 						$.get(href, function(data) {

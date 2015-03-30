@@ -34,7 +34,9 @@ define('MAX_DISPLAY_PAGES', 21);
 if (isset($_REQUEST['id']) && $_REQUEST['id'] == '#') {
 	$_REQUEST['id'] = '0';
 }
+
 input_validate_input_number(get_request_var_request('branch_id'));
+input_validate_input_number(get_request_var_request('tree_id'));
 input_validate_input_number(get_request_var_request('hide'));
 input_validate_input_number(get_request_var_request('leaf_id'));
 input_validate_input_number(get_request_var_request('rra_id'));
@@ -93,6 +95,10 @@ if (!isset($_SESSION['sess_realtime_window'])) {
 
 switch ($_REQUEST['action']) {
 case 'tree':
+	if (isset($_REQUEST['tree_id'])) {
+		$_SESSION['sess_tree_id'] = $_REQUEST['tree_id'];
+	}
+
 	top_graph_header();
 
 	bottom_footer();
@@ -162,6 +168,8 @@ case 'tree_content':
 			header('Location: permission_denied.php');
 			exit;
 		}
+
+        $_SESSION['sess_tree_id'] = $_REQUEST['tree_id'];
 
 		grow_right_pane_tree((isset($_REQUEST['tree_id']) ? $_REQUEST['tree_id'] : 0), (isset($_REQUEST['leaf_id']) ? $_REQUEST['leaf_id'] : 0), (isset($_REQUEST['host_group_data']) ? urldecode($_REQUEST['host_group_data']) : 0));
 	}
