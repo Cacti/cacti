@@ -215,10 +215,10 @@ function user_group_enable($id) {
 }
 
 function user_group_remove($id) {
-	db_execute_prepared("DELETE FROM user_auth_group WHERE id = ?", array($id));
-	db_execute_prepared("DELETE FROM user_auth_group_members WHERE group_id = ?", array($id));
-	db_execute_prepared("DELETE FROM user_auth_group_realm WHERE group_id = ?", array($id));
-	db_execute_prepared("DELETE FROM user_auth_group_perms WHERE group_id = ?", array($id));
+	db_execute_prepared('DELETE FROM user_auth_group WHERE id = ?', array($id));
+	db_execute_prepared('DELETE FROM user_auth_group_members WHERE group_id = ?', array($id));
+	db_execute_prepared('DELETE FROM user_auth_group_realm WHERE group_id = ?', array($id));
+	db_execute_prepared('DELETE FROM user_auth_group_perms WHERE group_id = ?', array($id));
 }
 
 function update_policies() {
@@ -682,15 +682,15 @@ function user_group_graph_perms_edit($tab, $header_label) {
 
 		?>
 		<tr class='odd'>
-			<td><table cellpadding="2" cellspacing="0"><tr>
-			<td style="white-space:nowrap;" width="120">Default Graph policy for this User Group</td>
-			<td width="10"> 
+			<td><table cellpadding='2' cellspacing='0'><tr>
+			<td style='white-space:nowrap;' width='120'>Default Graph policy for this User Group</td>
+			<td width='10'> 
 				<?php form_dropdown('policy_graphs',$policy_array,'','',$policy['policy_graphs'],'',''); ?>
 			</td>
 			<td>
-				<input type="submit" name="update_policy" value="Update">
-				<input type="hidden" name="tab" value="<?php print $tab;?>">
-				<input type="hidden" name="id" value="<?php print get_request_var_request('id');?>">
+				<input type='submit' name='update_policy' value='Update'>
+				<input type='hidden' name='tab' value='<?php print $tab;?>'>
+				<input type='hidden' name='id' value='<?php print get_request_var_request('id');?>'>
 			</td>
 			</tr></table></td>
 		</tr>
@@ -823,15 +823,15 @@ function user_group_graph_perms_edit($tab, $header_label) {
 
 		?>
 		<tr class='even'>
-			<td><table cellspacing="0" cellpadding="2"><tr>
-			<td style="white-space:nowrap;" width="120">Default Graph policy for this User Group</td>
-			<td width="10"> 
+			<td><table cellspacing='0' cellpadding='2'><tr>
+			<td style='white-space:nowrap;' width='120'>Default Graph policy for this User Group</td>
+			<td width='10'> 
 				<?php form_dropdown('policy_hosts',$policy_array,'','',$policy['policy_hosts'],'',''); ?>
 			</td>
 			<td>
-				<input type="submit" name="update_policy" value="Update">
-				<input type="hidden" name="tab" value="<?php print $tab;?>">
-				<input type="hidden" name="id" value="<?php print get_request_var_request('id');?>">
+				<input type='submit' name='update_policy' value='Update'>
+				<input type='hidden' name='tab' value='<?php print $tab;?>'>
+				<input type='hidden' name='id' value='<?php print get_request_var_request('id');?>'>
 			</td>
 			</tr></table></td>
 		</tr>
@@ -972,15 +972,15 @@ function user_group_graph_perms_edit($tab, $header_label) {
 
 		?>
 		<tr class='even'>
-			<td><table cellspacing="0" cellpadding="2"><tr>
-			<td style="white-space:nowrap;" width="120">Default Graph Template Template policy for this User Group</td>
-			<td width="10"> 
+			<td><table cellspacing='0' cellpadding='2'><tr>
+			<td style='white-space:nowrap;' width='120'>Default Graph Template Template policy for this User Group</td>
+			<td width='10'> 
 				<?php form_dropdown('policy_graph_templates',$policy_array,'','',$policy['policy_graph_templates'],'',''); ?>
 			</td>
 			<td>
-				<input type="submit" name="update_policy" value="Update">
-				<input type="hidden" name="tab" value="<?php print $tab;?>">
-				<input type="hidden" name="id" value="<?php print get_request_var_request('id');?>">
+				<input type='submit' name='update_policy' value='Update'>
+				<input type='hidden' name='tab' value='<?php print $tab;?>'>
+				<input type='hidden' name='id' value='<?php print get_request_var_request('id');?>'>
 			</td>
 			</tr></table></td>
 		</tr>
@@ -1113,15 +1113,15 @@ function user_group_graph_perms_edit($tab, $header_label) {
 
 		?>
 		<tr class='even'>
-			<td><table cellspacing="0" cellpadding="2"><tr>
-			<td style="white-space:nowrap;" width="120">Default Tree policy for this User Group</td>
-			<td width="10"> 
+			<td><table cellspacing='0' cellpadding='2'><tr>
+			<td style='white-space:nowrap;' width='120'>Default Tree policy for this User Group</td>
+			<td width='10'> 
 				<?php form_dropdown('policy_trees',$policy_array,'','',$policy['policy_trees'],'',''); ?>
 			</td>
 			<td>
-				<input type="submit" name="update_policy" value="Update">
-				<input type="hidden" name="tab" value="<?php print $tab;?>">
-				<input type="hidden" name="id" value="<?php print get_request_var_request('id');?>">
+				<input type='submit' name='update_policy' value='Update'>
+				<input type='hidden' name='tab' value='<?php print $tab;?>'>
+				<input type='hidden' name='id' value='<?php print get_request_var_request('id');?>'>
 			</td>
 			</tr></table></td>
 		</tr>
@@ -1430,7 +1430,7 @@ function user_group_graph_settings_edit($header_label) {
 	form_save_button('user_group_admin.php', 'return');
 
 	?>
-	<script type="text/javascript">
+	<script type='text/javascript'>
 	<!--
 	var themeFonts=<?php print read_config_option('font_method');?>;
 
@@ -1657,7 +1657,7 @@ function user_group() {
 	load_current_session_value('sort_direction', 'sess_user_group_admin_sort_direction', 'ASC');
 
 	?>
-	<script type="text/javascript">
+	<script type='text/javascript'>
 	function applyFilter(objForm) {
 		strURL = '?rows=' + objForm.rows.value;
 		strURL = strURL + '&filter=' + objForm.filter.value;
@@ -1704,14 +1704,14 @@ function user_group() {
 	?>
 	<tr class='even'>
 		<td>
-		<form id="form_group" action='user_group_admin.php'>
-			<table cellpadding="2" cellspacing="0">
+		<form id='form_group' action='user_group_admin.php'>
+			<table cellpadding='2' cellspacing='0'>
 				<tr>
 					<td width='50'>
 						Search
 					</td>
 					<td>
-						<input type='text' id='filter' size="25" value="<?php print htmlspecialchars(get_request_var_request('filter'));?>">
+						<input type='text' id='filter' size='25' value='<?php print htmlspecialchars(get_request_var_request('filter'));?>'>
 					</td>
 					<td>
 						Groups
@@ -1731,7 +1731,7 @@ function user_group() {
 						<input type='button' value='Go' title='Set/Refresh Filters' onClick='applyFilter()'>
 					</td>
 					<td>
-						<input type='button' name="clear_x" value='Clear' title='Clear Filters' onClick='clearFilter()'>
+						<input type='button' name='clear_x' value='Clear' title='Clear Filters' onClick='clearFilter()'>
 					</td>
 				</tr>
 			</table>
@@ -2149,7 +2149,7 @@ function graph_filter($header_label) {
 	global $config, $item_rows;
 
 	?>
-	<script type="text/javascript">
+	<script type='text/javascript'>
 	function applyFilter() {
 		strURL = 'user_group_admin.php?action=edit&tab=permsg&id=<?php print get_request_var_request('id');?>'
 		strURL = strURL + '&rows=' + $('#rows').val();
@@ -2188,15 +2188,21 @@ function graph_filter($header_label) {
 	<tr class='even'>
 		<td>
 		<form id='forms' method='post' action='user_group_admin.php'>
-			<table cellpadding="2" cellspacing="0" border="0">
+			<table cellpadding='2' cellspacing='0' border='0'>
 				<tr>
+					<td width='50'>
+						Search
+					</td>
+					<td>
+						<input type='text' id='filter' size='25' value='<?php print htmlspecialchars(get_request_var_request('filter'));?>' onChange='applyFilter()'>
+					</td>
 					<td>
 						Template
 					</td>
 					<td>
-						<select id="graph_template_id" onChange='applyFilter()'>
-							<option value="-1"<?php if (get_request_var_request('graph_template_id') == '-1') {?> selected<?php }?>>Any</option>
-							<option value="0"<?php if (get_request_var_request('graph_template_id') == '0') {?> selected<?php }?>>None</option>
+						<select id='graph_template_id' onChange='applyFilter()'>
+							<option value='-1'<?php if (get_request_var_request('graph_template_id') == '-1') {?> selected<?php }?>>Any</option>
+							<option value='0'<?php if (get_request_var_request('graph_template_id') == '0') {?> selected<?php }?>>None</option>
 							<?php
 							$graph_templates = db_fetch_assoc('SELECT DISTINCT gt.id, gt.name 
 								FROM graph_templates AS gt
@@ -2211,12 +2217,6 @@ function graph_filter($header_label) {
 							}
 							?>
 						</select>
-					</td>
-					<td>
-						Search
-					</td>
-					<td>
-						<input type='text' id='filter' size='25' value="<?php print htmlspecialchars(get_request_var_request('filter'));?>" onChange='applyFilter()'>
 					</td>
 					<td>
 						Graphs
@@ -2242,7 +2242,7 @@ function graph_filter($header_label) {
 						<input type='button' value='Go' onClick='applyFilter()' title='Set/Refresh Filters'>
 					</td>
 					<td>
-						<input type='button' name="clearf" value='Clear' onClick='clearFilter()' title='Clear Filters'>
+						<input type='button' name='clearf' value='Clear' onClick='clearFilter()' title='Clear Filters'>
 					</td>
 				</tr>
 			</table>
@@ -2262,7 +2262,7 @@ function device_filter($header_label) {
 	global $config, $item_rows;
 
 	?>
-	<script type="text/javascript">
+	<script type='text/javascript'>
 	function applyFilter() {
 		strURL = 'user_group_admin.php?action=edit&tab=permsd&id=<?php print get_request_var_request('id');?>'
 		strURL = strURL + '&rows=' + $('#rows').val();
@@ -2301,15 +2301,21 @@ function device_filter($header_label) {
 	<tr class='even'>
 		<td>
 		<form id='forms' method='post' action='user_group_admin.php'>
-			<table cellpadding="2" cellspacing="0">
+			<table cellpadding='2' cellspacing='0'>
 				<tr>
+					<td width='50'>
+						Search
+					</td>
+					<td>
+						<input type='text' id='filter' size='25' value='<?php print htmlspecialchars(get_request_var_request('filter'));?>' onChange='applyFilter()'>
+					</td>
 					<td>
 						Template
 					</td>
 					<td>
-						<select id="host_template_id" onChange='applyFilter()'>
-							<option value="-1"<?php if (get_request_var_request('host_template_id') == '-1') {?> selected<?php }?>>Any</option>
-							<option value="0"<?php if (get_request_var_request('host_template_id') == '0') {?> selected<?php }?>>None</option>
+						<select id='host_template_id' onChange='applyFilter()'>
+							<option value='-1'<?php if (get_request_var_request('host_template_id') == '-1') {?> selected<?php }?>>Any</option>
+							<option value='0'<?php if (get_request_var_request('host_template_id') == '0') {?> selected<?php }?>>None</option>
 							<?php
 							$host_templates = db_fetch_assoc('SELECT id, name FROM host_template ORDER BY name');
 
@@ -2320,12 +2326,6 @@ function device_filter($header_label) {
 							}
 							?>
 						</select>
-					</td>
-					<td>
-						Search
-					</td>
-					<td>
-						<input type='text' id='filter' size='25' value="<?php print htmlspecialchars(get_request_var_request('filter'));?>" onChange='applyFilter()'>
 					</td>
 					<td>
 						Devices
@@ -2351,7 +2351,7 @@ function device_filter($header_label) {
 						<input type='button' value='Go' onClick='applyFilter()' title='Set/Refresh Filters'>
 					</td>
 					<td>
-						<input type='button' name="clearf" value='Clear' onClick='clearFilter()' title='Clear Filters'>
+						<input type='button' name='clearf' value='Clear' onClick='clearFilter()' title='Clear Filters'>
 					</td>
 				</tr>
 			</table>
@@ -2371,7 +2371,7 @@ function template_filter($header_label) {
 	global $config, $item_rows;
 
 	?>
-	<script type="text/javascript">
+	<script type='text/javascript'>
 	function applyFilter() {
 		strURL = 'user_group_admin.php?action=edit&tab=permste&id=<?php print get_request_var_request('id');?>'
 		strURL = strURL + '&rows=' + $('#rows').val();
@@ -2409,13 +2409,13 @@ function template_filter($header_label) {
 	<tr class='even'>
 		<td>
 		<form id='forms' method='post' action='user_group_admin.php'>
-			<table cellpadding="2" cellspacing="0">
+			<table cellpadding='2' cellspacing='0'>
 				<tr>
-					<td  width='50'>
+					<td width='50'>
 						Search
 					</td>
 					<td>
-						<input type='text' id='filter' size='25' value="<?php print htmlspecialchars(get_request_var_request('filter'));?>" onChange='applyFilter()'>
+						<input type='text' id='filter' size='25' value='<?php print htmlspecialchars(get_request_var_request('filter'));?>' onChange='applyFilter()'>
 					</td>
 					<td>
 						Templates
@@ -2441,7 +2441,7 @@ function template_filter($header_label) {
 						<input type='button' value='Go' onClick='applyFilter()' title='Set/Refresh Filters'>
 					</td>
 					<td>
-						<input type='button' name="clearf" value='Clear' onClick='clearFilter()' title='Clear Filters'>
+						<input type='button' name='clearf' value='Clear' onClick='clearFilter()' title='Clear Filters'>
 					</td>
 				</tr>
 			</table>
@@ -2461,7 +2461,7 @@ function tree_filter($header_label) {
 	global $config, $item_rows;
 
 	?>
-	<script type="text/javascript">
+	<script type='text/javascript'>
 	function applyFilter() {
 		strURL = 'user_group_admin.php?action=edit&tab=permstr&id=<?php print get_request_var_request('id');?>'
 		strURL = strURL + '&rows=' + $('#rows').val();
@@ -2499,13 +2499,13 @@ function tree_filter($header_label) {
 	<tr class='even'>
 		<td>
 		<form id='forms' method='post' action='user_group_admin.php'>
-			<table cellpadding="2" cellspacing="0">
+			<table cellpadding='2' cellspacing='0'>
 				<tr>
 					<td width='50'>
 						Search
 					</td>
 					<td>
-						<input type='text' name='filter' id='filter' size='25' value="<?php print htmlspecialchars(get_request_var_request('filter'));?>" onChange='applyFilter()'>
+						<input type='text' name='filter' id='filter' size='25' value='<?php print htmlspecialchars(get_request_var_request('filter'));?>' onChange='applyFilter()'>
 					</td>
 					<td>
 						Trees
@@ -2531,7 +2531,7 @@ function tree_filter($header_label) {
 						<input type='button' value='Go' onClick='applyFilter()' title='Set/Refresh Filters'>
 					</td>
 					<td>
-						<input type='button' name="clearf" value='Clear' onClick='clearFilter()' title='Clear Filters'>
+						<input type='button' name='clearf' value='Clear' onClick='clearFilter()' title='Clear Filters'>
 					</td>
 				</tr>
 			</table>
@@ -2551,7 +2551,7 @@ function member_filter($header_label) {
 	global $config, $item_rows;
 
 	?>
-	<script type="text/javascript">
+	<script type='text/javascript'>
 	function applyFilter() {
 		strURL = 'user_group_admin.php?action=edit&tab=members&id=<?php print get_request_var_request('id');?>'
 		strURL = strURL + '&rows=' + $('#rows').val();
@@ -2589,13 +2589,13 @@ function member_filter($header_label) {
 	<tr class='even'>
 		<td>
 		<form id='forms' method='post' action='user_group_admin.php'>
-			<table cellpadding="2" cellspacing="0">
+			<table cellpadding='2' cellspacing='0'>
 				<tr>
 					<td width='50'>
 						Search
 					</td>
 					<td>
-						<input type='text' id='filter' name='filter' size='25' value="<?php print htmlspecialchars(get_request_var_request('filter'));?>" onChange='applyFilter()'>
+						<input type='text' id='filter' name='filter' size='25' value='<?php print htmlspecialchars(get_request_var_request('filter'));?>' onChange='applyFilter()'>
 					</td>
 					<td>
 						Users
@@ -2621,7 +2621,7 @@ function member_filter($header_label) {
 						<input type='button' value='Go' onClick='applyFilter()' title='Set/Refresh Filters'>
 					</td>
 					<td>
-						<input type='button' name="clearf" value='Clear' onClick='clearFilter()' title='Clear Filters'>
+						<input type='button' name='clearf' value='Clear' onClick='clearFilter()' title='Clear Filters'>
 					</td>
 				</tr>
 			</table>

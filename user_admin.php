@@ -1985,20 +1985,20 @@ function user() {
 	?>
 	<tr class='even'>
 		<td>
-		<form id="form_user_admin" action="user_admin.php">
-			<table cellpadding="2" cellspacing="0">
+		<form id='form_user_admin' action='user_admin.php'>
+			<table cellpadding='2' cellspacing='0'>
 				<tr>
-					<td width="50">
+					<td width='50'>
 						Search
 					</td>
 					<td>
-						<input id='filter' type="text" name="filter" size="25" value="<?php print htmlspecialchars(get_request_var_request('filter'));?>">
+						<input id='filter' type='text' name='filter' size='25' value='<?php print htmlspecialchars(get_request_var_request('filter'));?>'>
 					</td>
 					<td>
 						Users
 					</td>
 					<td>
-						<select id='rows' name="rows" onChange="applyFilter()">
+						<select id='rows' name='rows' onChange='applyFilter()'>
 							<?php
 							if (sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
@@ -2009,10 +2009,10 @@ function user() {
 						</select>
 					</td>
 					<td>
-						<input type="button" id='refresh' value="Go" title="Set/Refresh Filters">
+						<input type='button' id='refresh' value='Go' title='Set/Refresh Filters'>
 					</td>
 					<td>
-						<input type="button" id='clear' name="clear_x" value="Clear" title="Clear Filters">
+						<input type='button' id='clear' name='clear_x' value='Clear' title='Clear Filters'>
 					</td>
 				</tr>
 			</table>
@@ -2462,16 +2462,22 @@ function graph_filter($header_label) {
 	?>
 	<tr class='even'>
 		<td>
-		<form id="forms" method="post" action="user_admin.php">
-			<table cellpadding="2" cellspacing="0">
+		<form id='forms' method='post' action='user_admin.php'>
+			<table cellpadding='2' cellspacing='0'>
 				<tr>
+					<td width='50'>
+						Search
+					</td>
+					<td>
+						<input id='filter' type='text' name='filter' size='25' value='<?php print htmlspecialchars(get_request_var_request('filter'));?>' onChange='applyFilter()'>
+					</td>
 					<td>
 						Template
 					</td>
 					<td>
-						<select id='graph_template_id' name="graph_template_id" onChange="applyFilter()">
-							<option value="-1"<?php if (get_request_var_request('graph_template_id') == '-1') {?> selected<?php }?>>Any</option>
-							<option value="0"<?php if (get_request_var_request('graph_template_id') == '0') {?> selected<?php }?>>None</option>
+						<select id='graph_template_id' name='graph_template_id' onChange='applyFilter()'>
+							<option value='-1'<?php if (get_request_var_request('graph_template_id') == '-1') {?> selected<?php }?>>Any</option>
+							<option value='0'<?php if (get_request_var_request('graph_template_id') == '0') {?> selected<?php }?>>None</option>
 							<?php
 							$graph_templates = db_fetch_assoc('SELECT DISTINCT gt.id, gt.name 
 								FROM graph_templates AS gt
@@ -2488,16 +2494,10 @@ function graph_filter($header_label) {
 						</select>
 					</td>
 					<td>
-						Search
-					</td>
-					<td>
-						<input id='filter' type="text" name="filter" size="25" value="<?php print htmlspecialchars(get_request_var_request('filter'));?>" onChange="applyFilter()">
-					</td>
-					<td>
 						Graphs
 					</td>
 					<td>
-						<select id='rows' name="rows" onChange="applyFilter()">
+						<select id='rows' name='rows' onChange='applyFilter()'>
 							<?php
 							if (sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
@@ -2514,10 +2514,10 @@ function graph_filter($header_label) {
 						<label style='white-space:nowrap;' for='associated'>Show All</label>
 					</td>
 					<td nowrap>
-						<input type="button" value="Go" onClick='applyFilter()' title="Set/Refresh Filters">
+						<input type='button' value='Go' onClick='applyFilter()' title='Set/Refresh Filters'>
 					</td>
 					<td nowrap>
-						<input type="button" name="clearf" value="Clear" onClick='clearFilter()' title="Clear Filters">
+						<input type='button' name='clearf' value='Clear' onClick='clearFilter()' title='Clear Filters'>
 					</td>
 				</tr>
 			</table>
@@ -2537,7 +2537,7 @@ function group_filter($header_label) {
 	global $config, $item_rows;
 
 	?>
-	<script type="text/javascript">
+	<script type='text/javascript'>
 	function applyFilter() {
 		strURL = 'user_admin.php?action=user_edit&tab=permsgr&id=<?php print get_request_var_request('id');?>'
 		strURL = strURL + '&rows=' + $('#rows').val();
@@ -2574,20 +2574,20 @@ function group_filter($header_label) {
 	?>
 	<tr class='even'>
 		<td>
-		<form id="forms" method="post" action="user_admin.php">
-			<table cellpadding="2" cellspacing="0" border="0">
+		<form id='forms' method='post' action='user_admin.php'>
+			<table cellpadding='2' cellspacing='0' border='0'>
 				<tr>
-					<td>
+					<td width='50'>
 						Search
 					</td>
 					<td>
-						<input id='filter' type="text" name="filter" size="25" value="<?php print htmlspecialchars(get_request_var_request('filter'));?>" onChange="applyFilter()">
+						<input id='filter' type='text' name='filter' size='25' value='<?php print htmlspecialchars(get_request_var_request('filter'));?>' onChange='applyFilter()'>
 					</td>
 					<td>
 						Groups
 					</td>
 					<td>
-						<select id='rows' name="rows" onChange="applyFilter()">
+						<select id='rows' name='rows' onChange='applyFilter()'>
 							<?php
 							if (sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
@@ -2604,10 +2604,10 @@ function group_filter($header_label) {
 						<label style='white-space:nowrap;' for='associated'>Show All</label>
 					</td>
 					<td>
-						<input type="button" value="Go" onClick='applyFilter()' title="Set/Refresh Filters">
+						<input type='button' value='Go' onClick='applyFilter()' title='Set/Refresh Filters'>
 					</td>
 					<td>
-						<input type="button" name="clearf" value="Clear" onClick='clearFilter()' title="Clear Filters">
+						<input type='button' name='clearf' value='Clear' onClick='clearFilter()' title='Clear Filters'>
 					</td>
 				</tr>
 			</table>
@@ -2627,7 +2627,7 @@ function device_filter($header_label) {
 	global $config, $item_rows;
 
 	?>
-	<script type="text/javascript">
+	<script type='text/javascript'>
 	function applyFilter() {
 		strURL = 'user_admin.php?action=user_edit&tab=permsd&id=<?php print get_request_var_request('id');?>'
 		strURL = strURL + '&rows=' + $('#rows').val();
@@ -2665,16 +2665,22 @@ function device_filter($header_label) {
 	?>
 	<tr class='even'>
 		<td>
-		<form id="forms" method="post" action="user_admin.php">
-			<table cellpadding="2" cellspacing="0" border="0">
+		<form id='forms' method='post' action='user_admin.php'>
+			<table cellpadding='2' cellspacing='0' border='0'>
 				<tr>
+					<td width='50'>
+						Search
+					</td>
+					<td>
+						<input id='filter' type='text' name='filter' size='25' value='<?php print htmlspecialchars(get_request_var_request('filter'));?>' onChange='applyFilter()'>
+					</td>
 					<td>
 						Template
 					</td>
 					<td>
-						<select id='host_template_id' name="host_template_id" onChange="applyFilter()">
-							<option value="-1"<?php if (get_request_var_request('host_template_id') == '-1') {?> selected<?php }?>>Any</option>
-							<option value="0"<?php if (get_request_var_request('host_template_id') == '0') {?> selected<?php }?>>None</option>
+						<select id='host_template_id' name='host_template_id' onChange='applyFilter()'>
+							<option value='-1'<?php if (get_request_var_request('host_template_id') == '-1') {?> selected<?php }?>>Any</option>
+							<option value='0'<?php if (get_request_var_request('host_template_id') == '0') {?> selected<?php }?>>None</option>
 							<?php
 							$host_templates = db_fetch_assoc('SELECT id, name FROM host_template ORDER BY name');
 
@@ -2687,16 +2693,10 @@ function device_filter($header_label) {
 						</select>
 					</td>
 					<td>
-						Search
-					</td>
-					<td>
-						<input id='filter' type="text" name="filter" size="25" value="<?php print htmlspecialchars(get_request_var_request('filter'));?>" onChange="applyFilter()">
-					</td>
-					<td>
 						Devices
 					</td>
 					<td>
-						<select id='rows' name="rows" onChange="applyFilter()">
+						<select id='rows' name='rows' onChange='applyFilter()'>
 							<?php
 							if (sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
@@ -2713,10 +2713,10 @@ function device_filter($header_label) {
 						<label style='white-space:nowrap;' for='associated'>Show Exceptions</label>
 					</td>
 					<td>
-						<input type="button" value="Go" onClick='applyFilter()' title="Set/Refresh Filters">
+						<input type='button' value='Go' onClick='applyFilter()' title='Set/Refresh Filters'>
 					</td>
 					<td>
-						<input type="button" name="clearf" value="Clear" onClick='clearFilter()' title="Clear Filters">
+						<input type='button' name='clearf' value='Clear' onClick='clearFilter()' title='Clear Filters'>
 					</td>
 				</tr>
 			</table>
@@ -2736,7 +2736,7 @@ function template_filter($header_label) {
 	global $config, $item_rows;
 
 	?>
-	<script type="text/javascript">
+	<script type='text/javascript'>
 	function applyFilter() {
 		strURL = 'user_admin.php?action=user_edit&tab=permste&id=<?php print get_request_var_request('id');?>'
 		strURL = strURL + '&rows=' + $('#rows').val();
@@ -2773,20 +2773,20 @@ function template_filter($header_label) {
 	?>
 	<tr class='even'>
 		<td>
-		<form id="forms" method="post" action="user_admin.php">
-			<table cellpadding="2" cellspacing="0">
+		<form id='forms' method='post' action='user_admin.php'>
+			<table cellpadding='2' cellspacing='0'>
 				<tr>
 					<td width='50'>
 						Search
 					</td>
 					<td>
-						<input id='filter' type="text" name="filter" size="25" value="<?php print htmlspecialchars(get_request_var_request('filter'));?>" onChange="applyFilter()">
+						<input id='filter' type='text' name='filter' size='25' value='<?php print htmlspecialchars(get_request_var_request('filter'));?>' onChange='applyFilter()'>
 					</td>
 					<td>
 						Templates
 					</td>
 					<td>
-						<select id='rows' name="rows" onChange="applyFilter()">
+						<select id='rows' name='rows' onChange='applyFilter()'>
 							<?php
 							if (sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
@@ -2803,10 +2803,10 @@ function template_filter($header_label) {
 						<label style='white-space:nowrap;' for='associated'>Show Exceptions</label>
 					</td>
 					<td>
-						<input type="button" value="Go" onClick='applyFilter()' title="Set/Refresh Filters">
+						<input type='button' value='Go' onClick='applyFilter()' title='Set/Refresh Filters'>
 					</td>
 					<td>
-						<input type="button" name="clearf" value="Clear" onClick='clearFilter()' title="Clear Filters">
+						<input type='button' name='clearf' value='Clear' onClick='clearFilter()' title='Clear Filters'>
 					</td>
 				</tr>
 			</table>
@@ -2826,7 +2826,7 @@ function tree_filter($header_label) {
 	global $config, $item_rows;
 
 	?>
-	<script type="text/javascript">
+	<script type='text/javascript'>
 	function applyFilter() {
 		strURL = 'user_admin.php?action=user_edit&tab=permstr&id=<?php print get_request_var_request('id');?>'
 		strURL = strURL + '&rows=' + $('#rows').val();
@@ -2863,20 +2863,20 @@ function tree_filter($header_label) {
 	?>
 	<tr class='even'>
 		<td>
-		<form id="forms" method="post" action="user_admin.php">
-			<table cellpadding="2" cellspacing="0">
+		<form id='forms' method='post' action='user_admin.php'>
+			<table cellpadding='2' cellspacing='0'>
 				<tr>
 					<td width='50'>
 						Search
 					</td>
 					<td>
-						<input id='filter' type="text" name="filter" size="25" value="<?php print htmlspecialchars(get_request_var_request('filter'));?>" onChange="applyFilter()">
+						<input id='filter' type='text' name='filter' size='25' value='<?php print htmlspecialchars(get_request_var_request('filter'));?>' onChange='applyFilter()'>
 					</td>
 					<td>
 						Trees
 					</td>
 					<td>
-						<select id='rows' name="rows" onChange="applyFilter()">
+						<select id='rows' name='rows' onChange='applyFilter()'>
 							<?php
 							if (sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
@@ -2893,10 +2893,10 @@ function tree_filter($header_label) {
 						<label style='white-space:nowrap;' for='associated'>Show Exceptions</label>
 					</td>
 					<td>
-						<input type="button" id='refresh' value="Go" onClick='applyFilter()' title="Set/Refresh Filters">
+						<input type='button' id='refresh' value='Go' onClick='applyFilter()' title='Set/Refresh Filters'>
 					</td>
 					<td>
-						<input type="button" id='clear' name="clearf" value="Clear" onClick='clearFilter()' title="Clear Filters">
+						<input type='button' id='clear' name='clearf' value='Clear' onClick='clearFilter()' title='Clear Filters'>
 					</td>
 				</tr>
 			</table>
@@ -2916,7 +2916,7 @@ function member_filter($header_label) {
 	global $config, $item_rows;
 
 	?>
-	<script type="text/javascript">
+	<script type='text/javascript'>
 	function applyFilter(objForm) {
 		strURL = 'user_admin.php?action=user_edit&tab=members&id=<?php print get_request_var_request('id');?>'
 		strURL = strURL + '&rows=' + $('#rows').val();
@@ -2953,20 +2953,20 @@ function member_filter($header_label) {
 	?>
 	<tr class='even'>
 		<td>
-		<form id="forms" method="post" action="user_admin.php">
-			<table cellpadding="2" cellspacing="0" border="0">
+		<form id='forms' method='post' action='user_admin.php'>
+			<table cellpadding='2' cellspacing='0' border='0'>
 				<tr>
 					<td width='50'>
 						Search
 					</td>
 					<td>
-						<input id='filter' type="text" name="filter" size="25" value="<?php print htmlspecialchars(get_request_var_request('filter'));?>" onChange="applyFilter()">
+						<input id='filter' type='text' name='filter' size='25' value='<?php print htmlspecialchars(get_request_var_request('filter'));?>' onChange='applyFilter()'>
 					</td>
 					<td>
 						Trees
 					</td>
 					<td>
-						<select id='rows' name="rows" onChange="applyFilter()">
+						<select id='rows' name='rows' onChange='applyFilter()'>
 							<?php
 							if (sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
@@ -2983,10 +2983,10 @@ function member_filter($header_label) {
 						<label style='white-space:nowrap;' for='associated'>Show Exceptions</label>
 					</td>
 					<td>
-						<input type="button" id='refresh' value="Go" onClick='applyFilter()' title="Set/Refresh Filters">
+						<input type='button' id='refresh' value='Go' onClick='applyFilter()' title='Set/Refresh Filters'>
 					</td>
 					<td>
-						<input type="button" id='clear' name="clearf" value="Clear" onClick='clearFilter()' title="Clear Filters">
+						<input type='button' id='clear' name='clearf' value='Clear' onClick='clearFilter()' title='Clear Filters'>
 					</td>
 				</tr>
 			</table>
