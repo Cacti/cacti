@@ -933,7 +933,5 @@ $agg_log_verbosity = array(
 	AGGREGATE_LOG_DEBUG         => "Log everything",
 );
 
-$help_file = $config['url_path'] . '/plugins/aggregate/aggregate_manual.pdf';
-
 api_plugin_hook('config_arrays');
 

@@ -22,23 +22,24 @@
  +-------------------------------------------------------------------------+
 */
 
-include("./include/auth.php");
-include_once("./lib/utility.php");
-include_once("./lib/template.php");
-include_once("./lib/api_tree.php");
-include_once("./lib/html_tree.php");
+include('./include/auth.php');
+include_once('./lib/utility.php');
+include_once('./lib/template.php');
+include_once('./lib/api_tree.php');
+include_once('./lib/html_tree.php');
 
-define("MAX_DISPLAY_PAGES", 21);
+define('MAX_DISPLAY_PAGES', 21);
 
 $graph_actions = array(
-	1 => "Delete",
-	2 => "Duplicate"
-	);
+	1 => 'Delete',
+	2 => 'Duplicate',
+	'aggregate' => 'Create Aggregate Template'
+);
 
 /* set default action */
-if (!isset($_REQUEST["action"])) { $_REQUEST["action"] = ""; }
+if (!isset($_REQUEST['action'])) { $_REQUEST['action'] = ''; }
 
-switch ($_REQUEST["action"]) {
+switch ($_REQUEST['action']) {
 	case 'save':
 		form_save();
 
@@ -50,12 +51,12 @@ switch ($_REQUEST["action"]) {
 	case 'template_remove':
 		template_remove();
 
-		header("Location: graph_templates.php");
+		header('Location: graph_templates.php');
 		break;
 	case 'input_remove':
 		input_remove();
 
-		header("Location: graph_templates.php?action=template_edit&id=" . $_REQUEST["graph_template_id"]);
+		header('Location: graph_templates.php?action=template_edit&id=' . $_REQUEST['graph_template_id']);
 		break;
 	case 'input_edit':
 		top_header();
@@ -85,53 +86,53 @@ switch ($_REQUEST["action"]) {
    -------------------------- */
 
 function form_save() {
-	if (isset($_POST["save_component_template"])) {
-		$save1["id"] = $_POST["graph_template_id"];
-		$save1["hash"] = get_hash_graph_template($_POST["graph_template_id"]);
-		$save1["name"] = form_input_validate($_POST["name"], "name", "", false, 3);
+	if (isset($_POST['save_component_template'])) {
+		$save1['id'] = $_POST['graph_template_id'];
+		$save1['hash'] = get_hash_graph_template($_POST['graph_template_id']);
+		$save1['name'] = form_input_validate($_POST['name'], 'name', '', false, 3);
 
-		$save2["id"] = $_POST["graph_template_graph_id"];
-		$save2["local_graph_template_graph_id"] = 0;
-		$save2["local_graph_id"] = 0;
-		$save2["t_image_format_id"] = (isset($_POST["t_image_format_id"]) ? $_POST["t_image_format_id"] : "");
-		$save2["image_format_id"] = form_input_validate($_POST["image_format_id"], "image_format_id", "", true, 3);
-		$save2["t_title"] = form_input_validate((isset($_POST["t_title"]) ? $_POST["t_title"] : ""), "t_title", "", true, 3);
-		$save2["title"] = form_input_validate($_POST["title"], "title", "", (isset($_POST["t_title"]) ? true : false), 3);
-		$save2["t_height"] = form_input_validate((isset($_POST["t_height"]) ? $_POST["t_height"] : ""), "t_height", "", true, 3);
-		$save2["height"] = form_input_validate($_POST["height"], "height", "^[0-9]+$", (isset($_POST["t_height"]) ? true : false), 3);
-		$save2["t_width"] = form_input_validate((isset($_POST["t_width"]) ? $_POST["t_width"] : ""), "t_width", "", true, 3);
-		$save2["width"] = form_input_validate($_POST["width"], "width", "^[0-9]+$", (isset($_POST["t_width"]) ? true : false), 3);
-		$save2["t_upper_limit"] = form_input_validate((isset($_POST["t_upper_limit"]) ? $_POST["t_upper_limit"] : ""), "t_upper_limit", "", true, 3);
-		$save2["upper_limit"] = form_input_validate($_POST["upper_limit"], "upper_limit", "^(-?([0-9]+(\.[0-9]*)?|[0-9]*\.[0-9]+)([eE][+\-]?[0-9]+)?)|U$", ((isset($_POST["t_upper_limit"]) || (strlen($_POST["upper_limit"]) === 0)) ? true : false), 3);
-		$save2["t_lower_limit"] = form_input_validate((isset($_POST["t_lower_limit"]) ? $_POST["t_lower_limit"] : ""), "t_lower_limit", "", true, 3);
-		$save2["lower_limit"] = form_input_validate($_POST["lower_limit"], "lower_limit", "^(-?([0-9]+(\.[0-9]*)?|[0-9]*\.[0-9]+)([eE][+\-]?[0-9]+)?)|U$", ((isset($_POST["t_lower_limit"]) || (strlen($_POST["lower_limit"]) === 0)) ? true : false), 3);
-		$save2["t_vertical_label"] = form_input_validate((isset($_POST["t_vertical_label"]) ? $_POST["t_vertical_label"] : ""), "t_vertical_label", "", true, 3);
-		$save2["vertical_label"] = form_input_validate($_POST["vertical_label"], "vertical_label", "", true, 3);
-		$save2["t_slope_mode"] = form_input_validate((isset($_POST["t_slope_mode"]) ? $_POST["t_slope_mode"] : ""), "t_slope_mode", "", true, 3);
-		$save2["slope_mode"] = form_input_validate((isset($_POST["slope_mode"]) ? $_POST["slope_mode"] : ""), "slope_mode", "", true, 3);
-		$save2["t_auto_scale"] = form_input_validate((isset($_POST["t_auto_scale"]) ? $_POST["t_auto_scale"] : ""), "t_auto_scale", "", true, 3);
-		$save2["auto_scale"] = form_input_validate((isset($_POST["auto_scale"]) ? $_POST["auto_scale"] : ""), "auto_scale", "", true, 3);
-		$save2["t_auto_scale_opts"] = form_input_validate((isset($_POST["t_auto_scale_opts"]) ? $_POST["t_auto_scale_opts"] : ""), "t_auto_scale_opts", "", true, 3);
-		$save2["auto_scale_opts"] = form_input_validate($_POST["auto_scale_opts"], "auto_scale_opts", "", true, 3);
-		$save2["t_auto_scale_log"] = form_input_validate((isset($_POST["t_auto_scale_log"]) ? $_POST["t_auto_scale_log"] : ""), "t_auto_scale_log", "", true, 3);
-		$save2["auto_scale_log"] = form_input_validate((isset($_POST["auto_scale_log"]) ? $_POST["auto_scale_log"] : ""), "auto_scale_log", "", true, 3);
-		$save2["t_scale_log_units"] = form_input_validate((isset($_POST["t_scale_log_units"]) ? $_POST["t_scale_log_units"] : ""), "t_scale_log_units", "", true, 3);
-		$save2["scale_log_units"] = form_input_validate((isset($_POST["scale_log_units"]) ? $_POST["scale_log_units"] : ""), "scale_log_units", "", true, 3);
-		$save2["t_auto_scale_rigid"] = form_input_validate((isset($_POST["t_auto_scale_rigid"]) ? $_POST["t_auto_scale_rigid"] : ""), "t_auto_scale_rigid", "", true, 3);
-		$save2["auto_scale_rigid"] = form_input_validate((isset($_POST["auto_scale_rigid"]) ? $_POST["auto_scale_rigid"] : ""), "auto_scale_rigid", "", true, 3);
-		$save2["t_auto_padding"] = form_input_validate((isset($_POST["t_auto_padding"]) ? $_POST["t_auto_padding"] : ""), "t_auto_padding", "", true, 3);
-		$save2["auto_padding"] = form_input_validate((isset($_POST["auto_padding"]) ? $_POST["auto_padding"] : ""), "auto_padding", "", true, 3);
-		$save2["t_base_value"] = form_input_validate((isset($_POST["t_base_value"]) ? $_POST["t_base_value"] : ""), "t_base_value", "", true, 3);
-		$save2["base_value"] = form_input_validate($_POST["base_value"], "base_value", "^[0-9]+$", (isset($_POST["t_base_value"]) ? true : false), 3);
-		$save2["t_export"] = form_input_validate((isset($_POST["t_export"]) ? $_POST["t_export"] : ""), "t_export", "", true, 3);
-		$save2["export"] = form_input_validate((isset($_POST["export"]) ? $_POST["export"] : ""), "export", "", true, 3);
-		$save2["t_unit_value"] = form_input_validate((isset($_POST["t_unit_value"]) ? $_POST["t_unit_value"] : ""), "t_unit_value", "", true, 3);
-		$save2["unit_value"] = form_input_validate($_POST["unit_value"], "unit_value", "", true, 3);
-		$save2["t_unit_exponent_value"] = form_input_validate((isset($_POST["t_unit_exponent_value"]) ? $_POST["t_unit_exponent_value"] : ""), "t_unit_exponent_value", "", true, 3);
-		$save2["unit_exponent_value"] = form_input_validate($_POST["unit_exponent_value"], "unit_exponent_value", "^-?[0-9]+$", true, 3);
+		$save2['id'] = $_POST['graph_template_graph_id'];
+		$save2['local_graph_template_graph_id'] = 0;
+		$save2['local_graph_id'] = 0;
+		$save2['t_image_format_id'] = (isset($_POST['t_image_format_id']) ? $_POST['t_image_format_id'] : '');
+		$save2['image_format_id'] = form_input_validate($_POST['image_format_id'], 'image_format_id', '', true, 3);
+		$save2['t_title'] = form_input_validate((isset($_POST['t_title']) ? $_POST['t_title'] : ''), 't_title', '', true, 3);
+		$save2['title'] = form_input_validate($_POST['title'], 'title', '', (isset($_POST['t_title']) ? true : false), 3);
+		$save2['t_height'] = form_input_validate((isset($_POST['t_height']) ? $_POST['t_height'] : ''), 't_height', '', true, 3);
+		$save2['height'] = form_input_validate($_POST['height'], 'height', '^[0-9]+$', (isset($_POST['t_height']) ? true : false), 3);
+		$save2['t_width'] = form_input_validate((isset($_POST['t_width']) ? $_POST['t_width'] : ''), 't_width', '', true, 3);
+		$save2['width'] = form_input_validate($_POST['width'], 'width', '^[0-9]+$', (isset($_POST['t_width']) ? true : false), 3);
+		$save2['t_upper_limit'] = form_input_validate((isset($_POST['t_upper_limit']) ? $_POST['t_upper_limit'] : ''), 't_upper_limit', '', true, 3);
+		$save2['upper_limit'] = form_input_validate($_POST['upper_limit'], 'upper_limit', '^(-?([0-9]+(\.[0-9]*)?|[0-9]*\.[0-9]+)([eE][+\-]?[0-9]+)?)|U$', ((isset($_POST['t_upper_limit']) || (strlen($_POST['upper_limit']) === 0)) ? true : false), 3);
+		$save2['t_lower_limit'] = form_input_validate((isset($_POST['t_lower_limit']) ? $_POST['t_lower_limit'] : ''), 't_lower_limit', '', true, 3);
+		$save2['lower_limit'] = form_input_validate($_POST['lower_limit'], 'lower_limit', '^(-?([0-9]+(\.[0-9]*)?|[0-9]*\.[0-9]+)([eE][+\-]?[0-9]+)?)|U$', ((isset($_POST['t_lower_limit']) || (strlen($_POST['lower_limit']) === 0)) ? true : false), 3);
+		$save2['t_vertical_label'] = form_input_validate((isset($_POST['t_vertical_label']) ? $_POST['t_vertical_label'] : ''), 't_vertical_label', '', true, 3);
+		$save2['vertical_label'] = form_input_validate($_POST['vertical_label'], 'vertical_label', '', true, 3);
+		$save2['t_slope_mode'] = form_input_validate((isset($_POST['t_slope_mode']) ? $_POST['t_slope_mode'] : ''), 't_slope_mode', '', true, 3);
+		$save2['slope_mode'] = form_input_validate((isset($_POST['slope_mode']) ? $_POST['slope_mode'] : ''), 'slope_mode', '', true, 3);
+		$save2['t_auto_scale'] = form_input_validate((isset($_POST['t_auto_scale']) ? $_POST['t_auto_scale'] : ''), 't_auto_scale', '', true, 3);
+		$save2['auto_scale'] = form_input_validate((isset($_POST['auto_scale']) ? $_POST['auto_scale'] : ''), 'auto_scale', '', true, 3);
+		$save2['t_auto_scale_opts'] = form_input_validate((isset($_POST['t_auto_scale_opts']) ? $_POST['t_auto_scale_opts'] : ''), 't_auto_scale_opts', '', true, 3);
+		$save2['auto_scale_opts'] = form_input_validate($_POST['auto_scale_opts'], 'auto_scale_opts', '', true, 3);
+		$save2['t_auto_scale_log'] = form_input_validate((isset($_POST['t_auto_scale_log']) ? $_POST['t_auto_scale_log'] : ''), 't_auto_scale_log', '', true, 3);
+		$save2['auto_scale_log'] = form_input_validate((isset($_POST['auto_scale_log']) ? $_POST['auto_scale_log'] : ''), 'auto_scale_log', '', true, 3);
+		$save2['t_scale_log_units'] = form_input_validate((isset($_POST['t_scale_log_units']) ? $_POST['t_scale_log_units'] : ''), 't_scale_log_units', '', true, 3);
+		$save2['scale_log_units'] = form_input_validate((isset($_POST['scale_log_units']) ? $_POST['scale_log_units'] : ''), 'scale_log_units', '', true, 3);
+		$save2['t_auto_scale_rigid'] = form_input_validate((isset($_POST['t_auto_scale_rigid']) ? $_POST['t_auto_scale_rigid'] : ''), 't_auto_scale_rigid', '', true, 3);
+		$save2['auto_scale_rigid'] = form_input_validate((isset($_POST['auto_scale_rigid']) ? $_POST['auto_scale_rigid'] : ''), 'auto_scale_rigid', '', true, 3);
+		$save2['t_auto_padding'] = form_input_validate((isset($_POST['t_auto_padding']) ? $_POST['t_auto_padding'] : ''), 't_auto_padding', '', true, 3);
+		$save2['auto_padding'] = form_input_validate((isset($_POST['auto_padding']) ? $_POST['auto_padding'] : ''), 'auto_padding', '', true, 3);
+		$save2['t_base_value'] = form_input_validate((isset($_POST['t_base_value']) ? $_POST['t_base_value'] : ''), 't_base_value', '', true, 3);
+		$save2['base_value'] = form_input_validate($_POST['base_value'], 'base_value', '^[0-9]+$', (isset($_POST['t_base_value']) ? true : false), 3);
+		$save2['t_export'] = form_input_validate((isset($_POST['t_export']) ? $_POST['t_export'] : ''), 't_export', '', true, 3);
+		$save2['export'] = form_input_validate((isset($_POST['export']) ? $_POST['export'] : ''), 'export', '', true, 3);
+		$save2['t_unit_value'] = form_input_validate((isset($_POST['t_unit_value']) ? $_POST['t_unit_value'] : ''), 't_unit_value', '', true, 3);
+		$save2['unit_value'] = form_input_validate($_POST['unit_value'], 'unit_value', '', true, 3);
+		$save2['t_unit_exponent_value'] = form_input_validate((isset($_POST['t_unit_exponent_value']) ? $_POST['t_unit_exponent_value'] : ''), 't_unit_exponent_value', '', true, 3);
+		$save2['unit_exponent_value'] = form_input_validate($_POST['unit_exponent_value'], 'unit_exponent_value', '^-?[0-9]+$', true, 3);
 
 		if (!is_error_message()) {
-			$graph_template_id = sql_save($save1, "graph_templates");
+			$graph_template_id = sql_save($save1, 'graph_templates');
 
 			if ($graph_template_id) {
 				raise_message(1);
@@ -141,8 +142,8 @@ function form_save() {
 		}
 
 		if (!is_error_message()) {
-			$save2["graph_template_id"] = $graph_template_id;
-			$graph_template_graph_id = sql_save($save2, "graph_templates_graph");
+			$save2['graph_template_id'] = $graph_template_id;
+			$graph_template_graph_id = sql_save($save2, 'graph_templates_graph');
 
 			if ($graph_template_graph_id) {
 				raise_message(1);
@@ -154,69 +155,69 @@ function form_save() {
 		}
 	}
 
-	header("Location: graph_templates.php?action=template_edit&id=" . (empty($graph_template_id) ? $_POST["graph_template_id"] : $graph_template_id));
+	header('Location: graph_templates.php?action=template_edit&id=' . (empty($graph_template_id) ? $_POST['graph_template_id'] : $graph_template_id));
 }
 
 /* ------------------------
-    The "actions" function
+    The 'actions' function
    ------------------------ */
 
 function form_actions() {
 	global $graph_actions;
 
 	/* ================= input validation ================= */
-	input_validate_input_regex(get_request_var_post('drp_action'), "^([a-zA-Z0-9_]+)$");
+	input_validate_input_regex(get_request_var_post('drp_action'), '^([a-zA-Z0-9_]+)$');
 	/* ==================================================== */
 
 	/* if we are to save this form, instead of display it */
-	if (isset($_POST["selected_items"])) {
-		$selected_items = unserialize(stripslashes($_POST["selected_items"]));
+	if (isset($_POST['selected_items'])) {
+		$selected_items = unserialize(stripslashes($_POST['selected_items']));
 
-		if ($_POST["drp_action"] == "1") { /* delete */
-			db_execute("DELETE FROM graph_templates WHERE " . array_to_sql_or($selected_items, "id"));
+		if ($_POST['drp_action'] == '1') { /* delete */
+			db_execute('DELETE FROM graph_templates WHERE ' . array_to_sql_or($selected_items, 'id'));
 
-			$graph_template_input = db_fetch_assoc("SELECT id FROM graph_template_input WHERE " . array_to_sql_or($selected_items, "graph_template_id"));
+			$graph_template_input = db_fetch_assoc('SELECT id FROM graph_template_input WHERE ' . array_to_sql_or($selected_items, 'graph_template_id'));
 
 			if (sizeof($graph_template_input) > 0) {
 			foreach ($graph_template_input as $item) {
-				db_execute("DELETE FROM graph_template_input_defs WHERE graph_template_input_id=" . $item["id"]);
+				db_execute('DELETE FROM graph_template_input_defs WHERE graph_template_input_id=' . $item['id']);
 			}
 			}
 
-			db_execute("DELETE FROM graph_template_input WHERE " . array_to_sql_or($selected_items, "graph_template_id"));
-			db_execute("DELETE FROM graph_templates_graph WHERE " . array_to_sql_or($selected_items, "graph_template_id") . " AND local_graph_id=0");
-			db_execute("DELETE FROM graph_templates_item WHERE " . array_to_sql_or($selected_items, "graph_template_id") . " AND local_graph_id=0");
-			db_execute("DELETE FROM host_template_graph WHERE " . array_to_sql_or($selected_items, "graph_template_id"));
+			db_execute('DELETE FROM graph_template_input WHERE ' . array_to_sql_or($selected_items, 'graph_template_id'));
+			db_execute('DELETE FROM graph_templates_graph WHERE ' . array_to_sql_or($selected_items, 'graph_template_id') . ' AND local_graph_id=0');
+			db_execute('DELETE FROM graph_templates_item WHERE ' . array_to_sql_or($selected_items, 'graph_template_id') . ' AND local_graph_id=0');
+			db_execute('DELETE FROM host_template_graph WHERE ' . array_to_sql_or($selected_items, 'graph_template_id'));
 
-			/* "undo" any graph that is currently using this template */
-			db_execute("UPDATE graph_templates_graph SET local_graph_template_graph_id=0,graph_template_id=0 WHERE " . array_to_sql_or($selected_items, "graph_template_id"));
-			db_execute("UPDATE graph_templates_item SET local_graph_template_item_id=0,graph_template_id=0 WHERE " . array_to_sql_or($selected_items, "graph_template_id"));
-			db_execute("UPDATE graph_local SET graph_template_id=0 WHERE " . array_to_sql_or($selected_items, "graph_template_id"));
-		}elseif ($_POST["drp_action"] == "2") { /* duplicate */
+			/* 'undo' any graph that is currently using this template */
+			db_execute('UPDATE graph_templates_graph SET local_graph_template_graph_id=0,graph_template_id=0 WHERE ' . array_to_sql_or($selected_items, 'graph_template_id'));
+			db_execute('UPDATE graph_templates_item SET local_graph_template_item_id=0,graph_template_id=0 WHERE ' . array_to_sql_or($selected_items, 'graph_template_id'));
+			db_execute('UPDATE graph_local SET graph_template_id=0 WHERE ' . array_to_sql_or($selected_items, 'graph_template_id'));
+		}elseif ($_POST['drp_action'] == '2') { /* duplicate */
 			for ($i=0;($i<count($selected_items));$i++) {
 				/* ================= input validation ================= */
 				input_validate_input_number($selected_items[$i]);
 				/* ==================================================== */
 
-				duplicate_graph(0, $selected_items[$i], $_POST["title_format"]);
+				duplicate_graph(0, $selected_items[$i], $_POST['title_format']);
 			}
 		}
 
-		header("Location: graph_templates.php");
+		header('Location: graph_templates.php');
 		exit;
 	}
 
 	/* setup some variables */
-	$graph_list = ""; $i = 0;
+	$graph_list = ''; $i = 0;
 
 	/* loop through each of the graphs selected on the previous page and get more info about them */
 	while (list($var,$val) = each($_POST)) {
-		if (preg_match("/^chk_([0-9]+)$/", $var, $matches)) {
+		if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
 			/* ================= input validation ================= */
 			input_validate_input_number($matches[1]);
 			/* ==================================================== */
 
-			$graph_list .= "<li>" . htmlspecialchars(db_fetch_cell("SELECT name FROM graph_templates WHERE id=" . $matches[1])) . "</li>";
+			$graph_list .= '<li>' . htmlspecialchars(db_fetch_cell('SELECT name FROM graph_templates WHERE id=' . $matches[1])) . '</li>';
 			$graph_array[$i] = $matches[1];
 
 			$i++;
@@ -225,31 +226,29 @@ function form_actions() {
 
 	top_header();
 
-	html_start_box("<strong>" . $graph_actions{$_POST["drp_action"]} . "</strong>", "60%", "", "3", "center", "");
+	html_start_box('<strong>' . $graph_actions{$_POST['drp_action']} . '</strong>', '60%', '', '3', 'center', '');
 
 	print "<form action='graph_templates.php' method='post'>\n";
 
 	if (isset($graph_array) && sizeof($graph_array)) {
-		if ($_POST["drp_action"] == "1") { /* delete */
+		if ($_POST['drp_action'] == '1') { /* delete */
 			print "	<tr>
 					<td class='textArea'>
 						<p>When you click \"Continue\", the following Graph Template(s) will be deleted.  Any Graph(s) associated with
 						the Template(s) will become individual Graph(s).</p>
 						<p><ul>$graph_list</ul></p>
 					</td>
-				</tr>\n
-				";
+				</tr>\n";
 			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Delete Graph Template(s)'>";
-		}elseif ($_POST["drp_action"] == "2") { /* duplicate */
+		}elseif ($_POST['drp_action'] == '2') { /* duplicate */
 			print "	<tr>
 					<td class='textArea'>
 						<p>When you click \"Continue\", the following Graph Template(s) will be duplicated. You can
 						optionally change the title format for the new Graph Template(s).</p>
 						<p><ul>$graph_list</ul></p>
-						<p><strong>Title Format:</strong><br>"; form_text_box("title_format", "<template_title> (1)", "", "255", "30", "text"); print "</p>
+						<p><strong>Title Format:</strong><br>"; form_text_box('title_format', '<template_title> (1)', '', '255', '30', 'text'); print "</p>
 					</td>
-				</tr>\n
-				";
+				</tr>\n";
 			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Duplicate Graph Template(s)'>";
 		}
 	}else{
@@ -264,8 +263,7 @@ function form_actions() {
 				<input type='hidden' name='drp_action' value='" . $_POST["drp_action"] . "'>
 				$save_html
 			</td>
-		</tr>
-		";
+		</tr>\n";
 
 	html_end_box();
 
@@ -276,13 +274,13 @@ function item() {
 	global $consolidation_functions, $graph_item_types;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_request("id"));
+	input_validate_input_number(get_request_var_request('id'));
 	/* ==================================================== */
 
-	if (empty($_REQUEST["id"])) {
+	if (empty($_REQUEST['id'])) {
 		$template_item_list = array();
 
-		$header_label = "[new]";
+		$header_label = '[new]';
 	}else{
 		$template_item_list = db_fetch_assoc("SELECT
 			graph_templates_item.id,
@@ -300,24 +298,24 @@ function item() {
 			LEFT JOIN data_template_data ON (data_local.id=data_template_data.local_data_id)
 			LEFT JOIN cdef ON (cdef_id=cdef.id)
 			LEFT JOIN colors ON (color_id=colors.id)
-			WHERE graph_templates_item.graph_template_id=" . $_REQUEST["id"] . "
+			WHERE graph_templates_item.graph_template_id=" . $_REQUEST['id'] . "
 			AND graph_templates_item.local_graph_id=0
 			ORDER BY graph_templates_item.sequence");
 
-		$header_label = "[edit: " . db_fetch_cell("SELECT name FROM graph_templates WHERE id=" . $_REQUEST["id"]) . "]";
+		$header_label = '[edit: ' . db_fetch_cell('SELECT name FROM graph_templates WHERE id=' . $_REQUEST['id']) . ']';
 	}
 
-	html_start_box("<strong>Graph Template Items</strong> " . htmlspecialchars($header_label), "100%", "", "3", "center", "graph_templates_items.php?action=item_edit&graph_template_id=" . htmlspecialchars(get_request_var_request("id")));
-	draw_graph_items_list($template_item_list, "graph_templates_items.php", "graph_template_id=" . $_REQUEST["id"], false);
+	html_start_box('<strong>Graph Template Items</strong> ' . htmlspecialchars($header_label), '100%', '', '3', 'center', 'graph_templates_items.php?action=item_edit&graph_template_id=' . htmlspecialchars(get_request_var_request('id')));
+	draw_graph_items_list($template_item_list, 'graph_templates_items.php', 'graph_template_id=' . $_REQUEST['id'], false);
 	html_end_box();
 
-	html_start_box("<strong>Graph Item Inputs</strong>", "100%", "", "3", "center", "graph_templates_inputs.php?action=input_edit&graph_template_id=" . htmlspecialchars(get_request_var_request("id")));
+	html_start_box('<strong>Graph Item Inputs</strong>', '100%', '', '3', 'center', 'graph_templates_inputs.php?action=input_edit&graph_template_id=' . htmlspecialchars(get_request_var_request('id')));
 
 	print "<tr class='tableHeader'>";
-		DrawMatrixHeaderItem("Name","",2);
-	print "</tr>";
+		DrawMatrixHeaderItem('Name','',2);
+	print '</tr>';
 
-	$template_item_list = db_fetch_assoc("SELECT id,name FROM graph_template_input WHERE graph_template_id=" . $_REQUEST["id"] . " ORDER BY name");
+	$template_item_list = db_fetch_assoc('SELECT id,name FROM graph_template_input WHERE graph_template_id=' . $_REQUEST['id'] . ' ORDER BY name');
 
 	$i = 0;
 	if (sizeof($template_item_list) > 0) {
@@ -325,10 +323,10 @@ function item() {
 			form_alternate_row('', true);
 			?>
 			<td>
-				<a class="linkEditMain" href="<?php print htmlspecialchars("graph_templates_inputs.php?action=input_edit&id=" . $item["id"] . "&graph_template_id=" . $_REQUEST["id"]);?>"><?php print htmlspecialchars($item["name"]);?></a>
+				<a class='linkEditMain' href='<?php print htmlspecialchars('graph_templates_inputs.php?action=input_edit&id=' . $item['id'] . '&graph_template_id=' . $_REQUEST['id']);?>'><?php print htmlspecialchars($item['name']);?></a>
 			</td>
-			<td align="right">
-				<a href="<?php print htmlspecialchars("graph_templates_inputs.php?action=input_remove&id=" . $item["id"] . "&graph_template_id=" . $_REQUEST["id"]);?>"><img src="images/delete_icon.gif" style="height:10px;width:10px;" border="0" alt="Delete"></a>
+			<td align='right'>
+				<a href='<?php print htmlspecialchars('graph_templates_inputs.php?action=input_remove&id=' . $item['id'] . '&graph_template_id=' . $_REQUEST['id']);?>'><img src='images/delete_icon.gif' style='height:10px;width:10px;' border='0' alt='Delete'></a>
 			</td>
 		</tr>
 		<?php
@@ -348,66 +346,66 @@ function template_edit() {
 	global $struct_graph, $image_types, $fields_graph_template_template_edit;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_request("id"));
+	input_validate_input_number(get_request_var_request('id'));
 	/* ==================================================== */
 
 	/* graph item list goes here */
-	if (!empty($_REQUEST["id"])) {
+	if (!empty($_REQUEST['id'])) {
 		item();
 	}
 
-	if (!empty($_REQUEST["id"])) {
-		$template = db_fetch_row("SELECT * FROM graph_templates WHERE id=" . $_REQUEST["id"]);
-		$template_graph = db_fetch_row("SELECT * FROM graph_templates_graph WHERE graph_template_id=" . $_REQUEST["id"] . " AND local_graph_id=0");
+	if (!empty($_REQUEST['id'])) {
+		$template = db_fetch_row('SELECT * FROM graph_templates WHERE id=' . $_REQUEST['id']);
+		$template_graph = db_fetch_row('SELECT * FROM graph_templates_graph WHERE graph_template_id=' . $_REQUEST['id'] . ' AND local_graph_id=0');
 
-		$header_label = "[edit: " . $template["name"] . "]";
+		$header_label = '[edit: ' . $template['name'] . ']';
 	}else{
-		$header_label = "[new]";
+		$header_label = '[new]';
 	}
 
-	html_start_box("<strong>Template</strong> " . htmlspecialchars($header_label), "100%", "", "3", "center", "");
+	html_start_box('<strong>Template</strong> ' . htmlspecialchars($header_label), '100%', '', '3', 'center', '');
 
 	draw_edit_form(array(
-		"config" => array(),
-		"fields" => inject_form_variables($fields_graph_template_template_edit, (isset($template) ? $template : array()), (isset($template_graph) ? $template_graph : array()))
+		'config' => array(),
+		'fields' => inject_form_variables($fields_graph_template_template_edit, (isset($template) ? $template : array()), (isset($template_graph) ? $template_graph : array()))
 		));
 
 	html_end_box();
 
-	html_start_box("<strong>Graph Template</strong>", "100%", "", "3", "center", "");
+	html_start_box('<strong>Graph Template</strong>', '100%', '', '3', 'center', '');
 
 	$form_array = array();
 
 	while (list($field_name, $field_array) = each($struct_graph)) {
 		$form_array += array($field_name => $struct_graph[$field_name]);
 
-		$form_array[$field_name]["value"] = (isset($template_graph) ? $template_graph[$field_name] : "");
-		$form_array[$field_name]["form_id"] = (isset($template_graph) ? $template_graph["id"] : "0");
-		$form_array[$field_name]["description"] = "";
-		$form_array[$field_name]["sub_checkbox"] = array(
-			"name" => "t_" . $field_name,
-			"friendly_name" => "Use Per-Graph Value (Ignore this Value)",
-			"value" => (isset($template_graph) ? $template_graph{"t_" . $field_name} : "")
+		$form_array[$field_name]['value'] = (isset($template_graph) ? $template_graph[$field_name] : '');
+		$form_array[$field_name]['form_id'] = (isset($template_graph) ? $template_graph['id'] : '0');
+		$form_array[$field_name]['description'] = '';
+		$form_array[$field_name]['sub_checkbox'] = array(
+			'name' => 't_' . $field_name,
+			'friendly_name' => 'Use Per-Graph Value (Ignore this Value)',
+			'value' => (isset($template_graph) ? $template_graph{'t_' . $field_name} : '')
 			);
 	}
 
 	draw_edit_form(
 		array(
-			"config" => array(
-				"no_form_tag" => true
+			'config' => array(
+				'no_form_tag' => true
 				),
-			"fields" => $form_array
+			'fields' => $form_array
 			)
 		);
 
-	form_hidden_box("rrdtool_version", read_config_option("rrdtool_version"), "");
+	form_hidden_box('rrdtool_version', read_config_option('rrdtool_version'), '');
 	html_end_box();
 
-	form_save_button("graph_templates.php", "return");
+	form_save_button('graph_templates.php', 'return');
 
 //Now we need some javascript to make it dynamic
 ?>
-<script language="JavaScript">
+<script type='text/javascript'>
 
 $(function() {
 	dynamic();
@@ -439,45 +437,45 @@ function template() {
 	global $graph_actions, $item_rows;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_request("page"));
-	input_validate_input_number(get_request_var_request("rows"));
+	input_validate_input_number(get_request_var_request('page'));
+	input_validate_input_number(get_request_var_request('rows'));
 	/* ==================================================== */
 
 	/* clean up search string */
-	if (isset($_REQUEST["filter"])) {
-		$_REQUEST["filter"] = sanitize_search_string(get_request_var_request("filter"));
+	if (isset($_REQUEST['filter'])) {
+		$_REQUEST['filter'] = sanitize_search_string(get_request_var_request('filter'));
 	}
 
 	/* clean up has_graphs string */
-	if (isset($_REQUEST["has_graphs"])) {
-		$_REQUEST["has_graphs"] = sanitize_search_string(get_request_var_request("has_graphs"));
+	if (isset($_REQUEST['has_graphs'])) {
+		$_REQUEST['has_graphs'] = sanitize_search_string(get_request_var_request('has_graphs'));
 	}
 
 	/* clean up sort_column string */
-	if (isset($_REQUEST["sort_column"])) {
-		$_REQUEST["sort_column"] = sanitize_search_string(get_request_var_request("sort_column"));
+	if (isset($_REQUEST['sort_column'])) {
+		$_REQUEST['sort_column'] = sanitize_search_string(get_request_var_request('sort_column'));
 	}
 
 	/* clean up sort_direction string */
-	if (isset($_REQUEST["sort_direction"])) {
-		$_REQUEST["sort_direction"] = sanitize_search_string(get_request_var_request("sort_direction"));
+	if (isset($_REQUEST['sort_direction'])) {
+		$_REQUEST['sort_direction'] = sanitize_search_string(get_request_var_request('sort_direction'));
 	}
 
 	/* if the user pushed the 'clear' button */
-	if (isset($_REQUEST["clear_x"])) {
-		kill_session_var("sess_graph_template_current_page");
-		kill_session_var("sess_graph_template_filter");
-		kill_session_var("sess_graph_template_graphs");
-		kill_session_var("sess_default_rows");
-		kill_session_var("sess_graph_template_sort_column");
-		kill_session_var("sess_graph_template_sort_direction");
+	if (isset($_REQUEST['clear_x'])) {
+		kill_session_var('sess_graph_template_current_page');
+		kill_session_var('sess_graph_template_filter');
+		kill_session_var('sess_graph_template_graphs');
+		kill_session_var('sess_default_rows');
+		kill_session_var('sess_graph_template_sort_column');
+		kill_session_var('sess_graph_template_sort_direction');
 
-		unset($_REQUEST["page"]);
-		unset($_REQUEST["rows"]);
-		unset($_REQUEST["filter"]);
-		unset($_REQUEST["has_graphs"]);
-		unset($_REQUEST["sort_column"]);
-		unset($_REQUEST["sort_direction"]);
+		unset($_REQUEST['page']);
+		unset($_REQUEST['rows']);
+		unset($_REQUEST['filter']);
+		unset($_REQUEST['has_graphs']);
+		unset($_REQUEST['sort_column']);
+		unset($_REQUEST['sort_direction']);
 	}else{
 		$changed = 0;
 		$changed += check_changed('has_graphs', 'sess_graph_template_has_hosts');
@@ -490,52 +488,52 @@ function template() {
 	}
 
 	/* remember these search fields in session vars so we don't have to keep passing them around */
-	load_current_session_value("page", "sess_graph_template_current_page", "1");
-	load_current_session_value("filter", "sess_graph_template_filter", "");
-	load_current_session_value("has_graphs", "sess_graph_template_graphs", "true");
-	load_current_session_value("sort_column", "sess_graph_template_sort_column", "name");
-	load_current_session_value("sort_direction", "sess_graph_template_sort_direction", "ASC");
+	load_current_session_value('page', 'sess_graph_template_current_page', '1');
+	load_current_session_value('filter', 'sess_graph_template_filter', '');
+	load_current_session_value('has_graphs', 'sess_graph_template_graphs', 'true');
+	load_current_session_value('sort_column', 'sess_graph_template_sort_column', 'name');
+	load_current_session_value('sort_direction', 'sess_graph_template_sort_direction', 'ASC');
 	load_current_session_value('rows', 'sess_default_rows', read_config_option('num_rows_table'));
 
-	html_start_box("<strong>Graph Templates</strong>", "100%", "", "3", "center", "graph_templates.php?action=template_edit");
+	html_start_box('<strong>Graph Templates</strong>', '100%', '', '3', 'center', 'graph_templates.php?action=template_edit');
 
 	?>
 	<tr class='even noprint'>
 		<td>
-		<form id="form_graph_template" action="graph_templates.php">
-			<table cellpadding="2" cellspacing="0" border="0">
+		<form id='form_graph_template' action='graph_templates.php'>
+			<table cellpadding='2' cellspacing='0' border='0'>
 				<tr>
-					<td width="50">
+					<td width='50'>
 						Search
 					</td>
 					<td>
-						<input id='filter' type="text" name="filter" size="25" value="<?php print htmlspecialchars(get_request_var_request("filter"));?>">
+						<input id='filter' type='text' name='filter' size='25' value='<?php print htmlspecialchars(get_request_var_request('filter'));?>'>
 					</td>
 					<td style='white-space:nowrap;'>
 						Graph Templates
 					</td>
 					<td>
-						<select id='rows' name="rows" onChange="applyFilter()">
+						<select id='rows' name='rows' onChange='applyFilter()'>
 							<?php
 							if (sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var_request("rows") == $key) { print " selected"; } print ">" . htmlspecialchars($value) . "</option>\n";
+									print "<option value='" . $key . "'"; if (get_request_var_request('rows') == $key) { print ' selected'; } print '>' . htmlspecialchars($value) . "</option>\n";
 								}
 							}
 							?>
 						</select>
 					</td>
 					<td>
-						<input type="checkbox" id='has_graphs' <?php print ($_REQUEST['has_graphs'] == 'true' ? 'checked':'');?>>
+						<input type='checkbox' id='has_graphs' <?php print ($_REQUEST['has_graphs'] == 'true' ? 'checked':'');?>>
 					</td>
 					<td>
 						<label for='has_graphs' style='white-space:nowrap;'>Has Graphs</label>
 					</td>
 					<td>
-						<input type="button" id='refresh' value="Go" title="Set/Refresh Filters">
+						<input type='button' id='refresh' value='Go' title='Set/Refresh Filters'>
 					</td>
 					<td>
-						<input type="button" id='clear' name="clear_x" value="Clear" title="Clear Filters">
+						<input type='button' id='clear' name='clear_x' value='Clear' title='Clear Filters'>
 					</td>
 				</tr>
 			</table>
@@ -585,9 +583,9 @@ function template() {
 
 	/* form the 'where' clause for our main sql query */
 	if (strlen($_REQUEST['filter'])) {
-		$sql_where = "WHERE (graph_templates.name LIKE '%%" . get_request_var_request("filter") . "%%')";
+		$sql_where = "WHERE (graph_templates.name LIKE '%%" . get_request_var_request('filter') . "%%')";
 	}else{
-		$sql_where = "";
+		$sql_where = '';
 	}
 
 	if ($_REQUEST['has_graphs'] == 'true') {
@@ -599,7 +597,7 @@ function template() {
 	/* print checkbox form for validation */
 	print "<form name='chk' method='post' action='graph_templates.php'>\n";
 
-	html_start_box("", "100%", "", "3", "center", "");
+	html_start_box('', '100%', '', '3', 'center', '');
 
 	$total_rows = db_fetch_cell("SELECT COUNT(rows)
 		FROM (SELECT
@@ -621,10 +619,10 @@ function template() {
 		$sql_where
 		GROUP BY graph_templates.id
 		$sql_having
-		ORDER BY " . get_request_var_request("sort_column") . " " . get_request_var_request("sort_direction") .
-		" LIMIT " . (get_request_var_request("rows")*(get_request_var_request("page")-1)) . "," . get_request_var_request("rows"));
+		ORDER BY " . get_request_var_request('sort_column') . ' ' . get_request_var_request('sort_direction') .
+		' LIMIT ' . (get_request_var_request('rows')*(get_request_var_request('page')-1)) . ',' . get_request_var_request('rows'));
 
-	$nav = html_nav_bar("graph_templates.php?filter=" . get_request_var_request("filter"), MAX_DISPLAY_PAGES, get_request_var_request("page"), get_request_var_request("rows"), $total_rows, 5, 'Graph Templates', 'page', 'main');
+	$nav = html_nav_bar('graph_templates.php?filter=' . get_request_var_request('filter'), MAX_DISPLAY_PAGES, get_request_var_request('page'), get_request_var_request('rows'), $total_rows, 5, 'Graph Templates', 'page', 'main');
 
 	print $nav;
 

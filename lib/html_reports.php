@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2014 The Cacti Group                                 |
+ | Copyright (C) 2004-2015 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -1062,7 +1062,7 @@ function reports_edit() {
 	/* remember these search fields in session vars so we don't have to keep passing them around */
 	load_current_session_value('page', 'sess_reports_edit_current_page', '1');
 	load_current_session_value('tab', 'sess_reports_edit_tab', 'detail');
-	load_current_session_value('rows', 'sess_reports_edit_rows', read_config_option('num_rows_table'));
+	load_current_session_value('rows', 'sess_default_rows', read_config_option('num_rows_table'));
 
 	/* display the report */
 	$report = array();
@@ -1328,7 +1328,7 @@ function reports() {
 		kill_session_var('sess_reports_sort_column');
 		kill_session_var('sess_reports_sort_direction');
 		kill_session_var('sess_status');
-		kill_session_var('sess_rows');
+		kill_session_var('sess_default_rows');
 
 		unset($_REQUEST['page']);
 		unset($_REQUEST['filter']);
@@ -1350,7 +1350,7 @@ function reports() {
 	load_current_session_value('sort_column', 'sess_reports_sort_column', 'name');
 	load_current_session_value('sort_direction', 'sess_reports_sort_direction', 'ASC');
 	load_current_session_value('status', 'sess_reports_status', '-1');
-	load_current_session_value('rows', 'sess_rows', read_config_option('num_rows_table'));
+	load_current_session_value('rows', 'sess_default_rows', read_config_option('num_rows_table'));
 
 	/* if the number of rows is -1, set it to the default */
 	if ($_REQUEST['rows'] == -1) {
