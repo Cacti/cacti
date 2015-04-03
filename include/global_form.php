@@ -1714,5 +1714,257 @@ $fields_color_template_template_edit = array(
 	)
 );
 
+# ------------------------------------------------------------
+# Automation Rules
+# ------------------------------------------------------------
+/* file: automation_graph_rules.php, automation_tree_rules.php, action: edit */
+$fields_automation_match_rule_item_edit = array(
+	'operation' => array(
+		'method' => 'drop_array',
+		'friendly_name' => 'Operation',
+		'description' => 'Logical operation to combine rules.',
+		'array' => $automation_oper,
+		'value' => '|arg1:operation|',
+		'on_change' => 'toggle_operation()',
+	),
+	'field' => array(
+		'method' => 'drop_array',
+		'friendly_name' => 'Field Name',
+		'description' => 'The Field Name that shall be used for this Rule Item.',
+		'array' => array(),			# to be filled dynamically
+		'value' => '|arg1:field|',
+		'none_value' => 'None',
+	),
+	'operator' => array(
+		'method' => 'drop_array',
+		'friendly_name' => 'Operator',
+		'description' => 'Operator.',
+		'array' => $automation_op_array['display'],
+		'value' => '|arg1:operator|',
+		'on_change' => 'toggle_operator()',
+	),
+	'pattern' => array(
+		'method' => 'textbox',
+		'friendly_name' => 'Matching Pattern',
+		'description' => 'The Pattern to be matched against.',
+		'value' => '|arg1:pattern|',
+		'size' => '50',
+		'max_length' => '255',
+	),
+	'sequence' => array(
+		'method' => 'view',
+		'friendly_name' => 'Sequence',
+		'description' => 'Sequence.',
+		'value' => '|arg1:sequence|',
+	)
+);
+
+/* file: automation_graph_rules.php, action: edit */
+$fields_automation_graph_rule_item_edit = array(
+	'operation' => array(
+		'method' => 'drop_array',
+		'friendly_name' => 'Operation',
+		'description' => 'Logical operation to combine rules.',
+		'array' => $automation_oper,
+		'value' => '|arg1:operation|',
+		'on_change' => 'toggle_operation()',
+	),
+	'field' => array(
+		'method' => 'drop_array',
+		'friendly_name' => 'Field Name',
+		'description' => 'The Field Name that shall be used for this Rule Item.',
+		'array' => array(),			# later to be filled dynamically
+		'value' => '|arg1:field|',
+		'none_value' => 'None',
+	),
+	'operator' => array(
+		'method' => 'drop_array',
+		'friendly_name' => 'Operator',
+		'description' => 'Operator.',
+		'array' => $automation_op_array['display'],
+		'value' => '|arg1:operator|',
+		'on_change' => 'toggle_operator()',
+	),
+	'pattern' => array(
+		'method' => 'textbox',
+		'friendly_name' => 'Matching Pattern',
+		'description' => 'The Pattern to be matched against.',
+		'value' => '|arg1:pattern|',
+		'size' => '50',
+		'max_length' => '255',
+	),
+	'sequence' => array(
+		'method' => 'view',
+		'friendly_name' => 'Sequence',
+		'description' => 'Sequence.',
+		'value' => '|arg1:sequence|',
+	)
+);
+
+$fields_automation_graph_rules_edit1 = array(
+	'name' => array(
+		'method' => 'textbox',
+		'friendly_name' => 'Name',
+		'description' => 'A useful name for this Rule.',
+		'value' => '|arg1:name|',
+		'max_length' => '255',
+		'size' => '60'
+	),
+	'snmp_query_id' => array(
+		'method' => 'drop_sql',
+		'friendly_name' => 'Data Query',
+		'description' => 'Choose a Data Query to apply to this rule.',
+		'value' => '|arg1:snmp_query_id|',
+		'on_change' => 'applySNMPQueryIdChange(document.form_automation_rule_edit)',
+		'sql' => 'SELECT id, name FROM snmp_query ORDER BY name'
+	)
+);
+
+$fields_automation_graph_rules_edit2 = array(
+	'graph_type_id' => array(
+		'method' => 'drop_sql',
+		'friendly_name' => 'Graph Type',
+		'description' => 'Choose any of the available Graph Types to apply to this rule.',
+		'value' => '|arg1:graph_type_id|',
+		'on_change' => 'applySNMPQueryTypeChange(document.form_automation_rule_edit)',
+		'sql' => 'SELECT ' .
+			'snmp_query_graph.id, ' .
+			'snmp_query_graph.name ' .
+			'FROM snmp_query_graph ' .
+			'LEFT JOIN graph_templates ' .
+			'ON (snmp_query_graph.graph_template_id=graph_templates.id) ' .
+			'WHERE snmp_query_graph.snmp_query_id=|arg1:snmp_query_id| ' .
+			'ORDER BY snmp_query_graph.name'
+	)
+);
+
+$fields_automation_graph_rules_edit3 = array(
+	'enabled' => array(
+		'method' => 'checkbox',
+		'friendly_name' => 'Enable Rule',
+		'description' => 'Check this box to enable this rule.',
+		'value' => '|arg1:enabled|',
+		'default' => '',
+		'form_id' => false
+	)
+);
+
+/* file: automation_tree_rules.php, action: edit */
+$fields_automation_tree_rules_edit1 = array(
+	'name' => array(
+		'method' => 'textbox',
+		'friendly_name' => 'Name',
+		'description' => 'A useful name for this Rule.',
+		'value' => '|arg1:name|',
+		'max_length' => '255',
+		'size' => '60'
+	),
+	'tree_id' => array(
+		'method' => 'drop_sql',
+		'friendly_name' => 'Tree',
+		'description' => 'Choose a Tree for the new Tree Items.',
+		'value' => '|arg1:tree_id|',
+		'on_change' => 'applyTreeChange(document.form_automation_tree_rule_edit)',
+		'sql' => 'SELECT id, name FROM graph_tree ORDER BY name'
+	),
+	'leaf_type' => array(
+		'method' => 'drop_array',
+		'friendly_name' => 'Leaf Item Type',
+		'description' => 'The Item Type that shall be dynamically added to the tree.',
+		'value' => '|arg1:leaf_type|',
+		'on_change' => 'applyItemTypeChange(document.form_automation_tree_rule_edit)',
+		'array' => $automation_tree_item_types
+	),
+	'host_grouping_type' => array(
+		'method' => 'drop_array',
+		'friendly_name' => 'Graph Grouping Style',
+		'description' => 'Choose how graphs are grouped when drawn for this particular host on the tree.',
+		'array' => $host_group_types,
+		'value' => '|arg1:host_grouping_type|',
+		'default' => HOST_GROUPING_GRAPH_TEMPLATE,
+	),
+	'rra_id' => array(
+		'method' => 'drop_sql',
+		'friendly_name' => 'Round Robin Archive',
+		'description' => 'Choose a round robin archive to control how this graph is displayed.',
+		'value' => '|arg1:rra_id|',
+		'sql' => 'SELECT id,name FROM rra ORDER BY timespan',
+	)
+);
+
+$fields_automation_tree_rules_edit2 = array(
+	'tree_item_id' => array(
+		'method' => 'drop_tree',
+		'friendly_name' => 'Optional: Sub-Tree Item',
+		'description' => 'Choose a Sub-Tree Item to hook in.' . '<br>' .
+			'Make sure, that it is still there when this rule is executed!',
+		'tree_id' => '|arg1:tree_id|',
+		'value' => '|arg1:tree_item_id|',
+	)
+);
+
+$fields_automation_tree_rules_edit3 = array(
+	'enabled' => array(
+		'method' => 'checkbox',
+		'friendly_name' => 'Enable Rule',
+		'description' => 'Check this box to enable this rule.',
+		'value' => '|arg1:enabled|',
+		'default' => '',
+		'form_id' => false
+	)
+);
+
+$fields_automation_tree_rule_item_edit = array(
+	'field' => array(
+		'method' => 'drop_array',
+		'friendly_name' => 'Header Type',
+		'description' => 'Choose an Object to build a new Subheader.',
+		'array' => array(),			# later to be filled dynamically
+		'value' => '|arg1:field|',
+		'none_value' => $automation_tree_header_types[AUTOMATION_TREE_ITEM_TYPE_STRING],
+		'on_change' => 'applyHeaderChange()',
+	),
+	'sort_type' => array(
+		'method' => 'drop_array',
+		'friendly_name' => 'Sorting Type',
+		'description' => 'Choose how items in this tree will be sorted.',
+		'value' => '|arg1:sort_type|',
+		'default' => TREE_ORDERING_NONE,
+		'array' => $tree_sort_types,
+		),
+	'propagate_changes' => array(
+		'method' => 'checkbox',
+		'friendly_name' => 'Propagate Changes',
+		'description' => "Propagate all options on this form (except for 'Title') to all child 'Header' items.",
+		'value' => '|arg1:propagate_changes|',
+		'default' => '',
+		'form_id' => false
+		),
+	'search_pattern' => array(
+		'method' => 'textbox',
+		'friendly_name' => 'Matching Pattern',
+		'description' => 'The String Pattern (Regular Expression) to match against.<br>' .
+			"Enclosing '/' must <strong>NOT</strong> be provided!",
+		'value' => '|arg1:search_pattern|',
+		'size' => '50',
+		'max_length' => '255',
+		),
+	'replace_pattern' => array(
+		'method' => 'textbox',
+		'friendly_name' => 'Replacement Pattern',
+		'description' => 'The Replacement String Pattern for use as a Tree Header.' . '<br>' .
+			"Refer to a Match by e.g. <strong>\${1}</strong> for the first match!",
+		'value' => '|arg1:replace_pattern|',
+		'size' => '50',
+		'max_length' => '255',
+		),
+	'sequence' => array(
+		'method' => 'view',
+		'friendly_name' => 'Sequence',
+		'description' => 'Sequence.',
+		'value' => '|arg1:sequence|',
+	)
+);
+
 api_plugin_hook('config_form');
 

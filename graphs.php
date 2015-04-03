@@ -45,7 +45,8 @@ $graph_actions = array(
 	3 => 'Duplicate',
 	4 => 'Convert to Graph Template',
     'aggregate' => 'Create Aggregate Graph',
-    'aggregate_template' => 'Create Aggregate from Template'
+    'aggregate_template' => 'Create Aggregate from Template',
+	8 => 'Apply Automation Rules to Graph(s)'
 );
 
 $graph_actions = api_plugin_hook_function('graphs_action_array', $graph_actions);
@@ -541,6 +542,23 @@ function form_actions() {
 
 			header("Location: aggregate_graphs.php?action=edit&tab=details&id=$local_graph_id");
 			exit;
+		}elseif ($action == 8) { /* automation */
+			cacti_log('automation_graph_action_execute called: ' . $action, true, 'AUTOMATION TRACE', POLLER_VERBOSITY_MEDIUM);
+
+			/* find out which (if any) hosts have been checked, so we can tell the user */
+			if (isset($_POST['selected_items'])) {
+				$selected_items = unserialize(stripslashes($_POST['selected_items']));
+
+				/* work on all selected graphs */
+				for ($i=0;($i<count($selected_items));$i++) {
+					/* ================= input validation ================= */
+					input_validate_input_number($selected_items[$i]);
+					/* ==================================================== */
+
+					/* now handle tree rules for that graph */
+					execute_graph_create_tree($selected_items[$i]);
+				}
+			}
 		} else {
 			api_plugin_hook_function('graphs_action_execute', $_POST['drp_action']);
 		}
@@ -701,13 +719,7 @@ function form_actions() {
 			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Resize Selected Graph(s)'>";
 		} elseif ($_POST['drp_action'] == 'aggregate') {
 			include_once('./lib/api_aggregate.php');
-			aggregate_log(__FUNCTION__ . "  called. Parameters: " . serialize($_POST), true, "AGGREGATE", AGGREGATE_LOG_FUNCTIONS);
-
-			/* suppress warnings */
-			error_reporting(E_ALL);
-
-			/* install own error handler */
-			set_error_handler("aggregate_error_handler");
+			aggregate_log(__FUNCTION__ . '  called. Parameters: ' . serialize($_POST), true, 'AGGREGATE', AGGREGATE_LOG_FUNCTIONS);
 
 			/* initialize return code and graphs array */
 			$return_code    = false;
@@ -716,30 +728,28 @@ function form_actions() {
 			$graph_template = '';
 
 			if (aggregate_get_data_sources($_POST, $data_sources, $graph_template)) {
-				# close the html_start_box, because it is too small
-				print "<td align='right' class='textHeaderDark' bgcolor='#6d88ad'><a class='linkOverDark' href='$help_file' target='_blank'><strong>[Click here for Help]</strong></a></td>";
-
 				html_end_box();
 
 				# provide a new prefix for GPRINT lines
-				$gprint_prefix = "|host_hostname|";
+				$gprint_prefix = '|host_hostname|';
 
 				# open a new html_start_box ...
-				html_start_box("", "100%", '', "3", "center", "");
+				html_start_box('', '100%', '', '3', 'center', '');
 
 				/* list affected graphs */
-				print "<tr>";
+				print '<tr>';
 				print "<td class='textArea'>
 					<p>Are you sure you want to aggregate the following graphs?</p>
-					<ul>" . $_POST["graph_list"] . "</ul>
+					<ul>" . $_POST['graph_list'] . "</ul>
 				</td>\n";
 
 				/* list affected data sources */
 				if (sizeof($data_sources) > 0) {
 					print "<td class='textArea'>" .
-					"<p>The following data sources are in use by these graphs:</p><ul>";
+					'<p>The following data sources are in use by these graphs:</p>
+						<ul>';
 					foreach ($data_sources as $data_source) {
-						print "<li>" . $data_source["name_cache"] . "</li>\n";
+						print '<li>' . $data_source['name_cache'] . "</li>\n";
 					}
 					print "</ul></td>\n";
 				}
@@ -747,14 +757,14 @@ function form_actions() {
 
 				/* aggregate form */
 				$_aggregate_defaults = array(
-					"title_format" 	=> auto_title($_POST["graph_array"][0]),
-					"graph_template_id" => $graph_template, 
-					"gprint_prefix"	=> $gprint_prefix
+					'title_format' 	=> auto_title($_POST['graph_array'][0]),
+					'graph_template_id' => $graph_template, 
+					'gprint_prefix'	=> $gprint_prefix
 				);
 
 				draw_edit_form(array(
-					"config" => array("no_form_tag" => true),
-					"fields" => inject_form_variables($struct_aggregate, $_aggregate_defaults)
+					'config' => array('no_form_tag' => true),
+					'fields' => inject_form_variables($struct_aggregate, $_aggregate_defaults)
 				));
 
 				html_end_box();
@@ -763,10 +773,10 @@ function form_actions() {
 				draw_aggregate_graph_items_list(0, $graph_template);
 
 				# again, a new html_start_box. Using the one from above would yield ugly formatted NO and YES buttons
-				html_start_box("<strong>Please confirm</strong>", "100%", '', "3", "center", "");
+				html_start_box('<strong>Please confirm</strong>', '100%', '', '3', 'center', '');
 
 				?>
-				<script type="text/javascript">
+				<script type='text/javascript'>
 				<!--
 				function changeTotals() {
 					switch ($('#aggregate_total').val()) {
@@ -813,18 +823,9 @@ function form_actions() {
 				</script>
 				<?php
 			}
-
-			/* restore original error handler */
-			restore_error_handler();
 		}elseif ($_POST['drp_action'] == 'aggregate_template') { /* aggregate template */
 			include_once('./lib/api_aggregate.php');
 			aggregate_log(__FUNCTION__ . '  called. Parameters: ' . serialize($_POST), true, 'AGGREGATE', AGGREGATE_LOG_FUNCTIONS);
-
-			/* suppress warnings */
-			error_reporting(E_ALL);
-
-			/* install own error handler */
-			set_error_handler('aggregate_error_handler');
 
 			/* initialize return code and graphs array */
 			$graphs         = array();
@@ -852,7 +853,7 @@ function form_actions() {
 							<td><strong>Aggregate Template:</strong></td>
 							<td>
 								<select name='aggregate_template_id'>\n";
-									html_create_list($aggregate_templates, "name", "id", $aggregate_templates[0]['id']);
+									html_create_list($aggregate_templates, 'name', 'id', $aggregate_templates[0]['id']);
 						print "</select>
 							</td>
 						</tr></table></td></tr>\n";
@@ -873,7 +874,7 @@ function form_actions() {
 					html_end_box();
 
 					# again, a new html_start_box. Using the one from above would yield ugly formatted NO and YES buttons
-					html_start_box("<strong>Press 'Return' to return</strong>", "60%", '', "3", "center", "");
+					html_start_box("<strong>Press 'Return' to return</strong>", '60%', '', '3', 'center', '');
 
 					?>
 					<script type='text/javascript'>
@@ -885,18 +886,29 @@ function form_actions() {
 					<?php
 				}
 			}
+		}elseif ($save['drp_action'] == 8) { /* automation */
+			cacti_log('automation_graph_action_prepare called: ' . $save['drp_action'], true, 'AUTOMATION TRACE', POLLER_VERBOSITY_MEDIUM);
 
-			/* restore original error handler */
-			restore_error_handler();
+			/* find out which (if any) hosts have been checked, so we can tell the user */
+			if (isset($save['graph_array'])) {
+				print '<tr>';
+				print "<td class='textArea'>
+					<p>Are you sure you want to apply <strong>Automation Rules</strong> to the following graphs?</p>
+					<ul>" . $save['graph_list'] . '</ul></td>';
+				print '</tr>';
+			}
 		} else {
 			$save['drp_action'] = $_POST['drp_action'];
 			$save['graph_list'] = $graph_list;
 			$save['graph_array'] = (isset($graph_array) ? $graph_array : array());
+
 			api_plugin_hook_function('graphs_action_prepare', $save);
+
 			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue'>";
 		}
 	}else{
 		print "<tr><td class='even'><span class='textError'>You must select at least one graph.</span></td></tr>\n";
+
 		$save_html = "<input type='button' value='Return' onClick='window.history.back()'>";
 	}
 
@@ -1026,9 +1038,9 @@ function graph_diff() {
 	}
 
 	?>
-	<table class="tableConfirmation" width="100%" align="center">
+	<table class='tableConfirmation' width='100%' align='center'>
 		<tr>
-			<td class="textArea">
+			<td class='textArea'>
 				The template you have selected requires some changes to be made to the structure of
 				your graph. Below is a preview of your graph along with changes that need to be completed
 				as shown in the left-hand column.

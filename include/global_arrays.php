@@ -402,6 +402,12 @@ $menu = array(
 		'aggregate_templates.php' => 'Aggregate',
 		'color_templates.php' => 'Color'
 		),
+	'Automation Rules' => array(
+		'automation_graph_rules.php' => 'Graph',
+		'automation_tree_rules.php' => 'Tree',
+		'automation_host_templates.php' => 'Discovery',
+		'automation_subnets.php' => 'Subnets',
+		),
 	'Presets' => array(
 		'cdef.php' => 'CDEFs',
 		'color.php' => 'Colors',
@@ -488,27 +494,36 @@ $page_refresh_interval = array(
 	9999999 => 'Never');
 
 $user_auth_realms = array(
-	1 => 'User Administration',
-	2 => 'Data Input',
-	3 => 'Update Data Sources',
-	4 => 'Update Graph Trees',
-	5 => 'Update Graphs',
-	7 => 'View Graphs',
-	8 => 'Console Access',
-	9 => 'Update Round Robin Archives',
-	10 => 'Update Graph Templates',
-	11 => 'Update Data Templates',
-	12 => 'Update Device Templates',
-	13 => 'Data Queries',
-	14 => 'Update CDEFs',
+	8  => 'Console Access',
+	7  => 'View Graphs',
+	20 => 'Update Profile',
+
+	1  => 'User Administration',
 	15 => 'Global Settings',
+	23 => 'Automation Settings',
+
+	2  => 'Data Input Methods',
+	13 => 'Data Queries',
+
+	3  => 'Devices/Data Sources',
+	5  => 'Graphs/Colors/GPrints',
+	4  => 'Graph Trees',
+
+	9  => 'RRAs Presets',
+	14 => 'CDEFs',
+
+	10 => 'Graph Templates',
+	11 => 'Data Templates',
+	12 => 'Device Templates',
+
 	16 => 'Export Data',
 	17 => 'Import Data',
-	18 => 'View Log (Admin)',
-	19 => 'View Log (User)',
-	20 => 'Update Profile',
-	21 => 'Reports (Admin)',
-	22 => 'Reports (User)');
+
+	18 => 'View Cacti Log (Admin)',
+	19 => 'View Cacti Log (User)',
+
+	21 => 'Create Reports (Admin)',
+	22 => 'Create Reports (User)');
 
 $user_auth_realm_filenames = array(
 	'about.php' => 8,
@@ -557,6 +572,10 @@ $user_auth_realm_filenames = array(
 	'auth_changepassword.php' => -1,
 	'reports_user.php' => 21,
 	'reports_admin.php' => 22,
+	'automation_graph_rules.php' => 23,
+	'automation_tree_rules.php' => 23,
+	'automation_discovery.php' => 23,
+	'automation_subnets.php' => 23,
 	'color_templates.php' => 5,
 	'color_templates_items.php' => 5,
 	'aggregate_templates.php' => 5,
@@ -931,6 +950,132 @@ $agg_log_verbosity = array(
 	AGGREGATE_LOG_NONE          => "No AGGREGATE logging",
 	AGGREGATE_LOG_FUNCTIONS     => "Log function calls",
 	AGGREGATE_LOG_DEBUG         => "Log everything",
+);
+
+# operators for use with SQL/pattern matching
+$automation_op_array = array(
+	'display' => array(
+		AUTOMATION_OP_NONE         => 'None',
+		AUTOMATION_OP_CONTAINS     => 'contains',
+		AUTOMATION_OP_CONTAINS_NOT => 'does not contain',
+		AUTOMATION_OP_BEGINS       => 'begins with',
+		AUTOMATION_OP_BEGINS_NOT   => 'does not begin with',
+		AUTOMATION_OP_ENDS         => 'ends with',
+		AUTOMATION_OP_ENDS_NOT     => 'does not end with',
+		AUTOMATION_OP_MATCHES      => 'matches',
+		AUTOMATION_OP_MATCHES_NOT  => 'does not match with',
+		AUTOMATION_OP_LT           => 'is less than',
+		AUTOMATION_OP_LE           => 'is less than or equal',
+		AUTOMATION_OP_GT           => 'is greater than',
+		AUTOMATION_OP_GE           => 'is greater than or equal',
+		AUTOMATION_OP_UNKNOWN      => 'is unknown',
+		AUTOMATION_OP_NOT_UNKNOWN  => 'is not unknown',
+		AUTOMATION_OP_EMPTY        => 'is empty',
+		AUTOMATION_OP_NOT_EMPTY    => 'is not empty',
+		AUTOMATION_OP_REGEXP       => 'matches regular expression',
+		AUTOMATION_OP_NOT_REGEXP   => 'does not match regular expression',
+	),
+	'op' => array(
+		AUTOMATION_OP_NONE          => '',
+		AUTOMATION_OP_CONTAINS      => 'LIKE',
+		AUTOMATION_OP_CONTAINS_NOT  => 'NOT LIKE',
+		AUTOMATION_OP_BEGINS        => 'LIKE',
+		AUTOMATION_OP_BEGINS_NOT    => 'NOT LIKE',
+		AUTOMATION_OP_ENDS          => 'LIKE',
+		AUTOMATION_OP_ENDS_NOT      => 'NOT LIKE',
+		AUTOMATION_OP_MATCHES       => '<=>',
+		AUTOMATION_OP_MATCHES_NOT   => '<>',
+		AUTOMATION_OP_LT            => '<',
+		AUTOMATION_OP_LE            => '<=',
+		AUTOMATION_OP_GT            => '>',
+		AUTOMATION_OP_GE            => '>=',
+		AUTOMATION_OP_UNKNOWN       => 'IS NULL',
+		AUTOMATION_OP_NOT_UNKNOWN   => 'IS NOT NULL',
+		AUTOMATION_OP_EMPTY         => "LIKE ''",
+		AUTOMATION_OP_NOT_EMPTY     => "NOT LIKE ''",
+		AUTOMATION_OP_REGEXP        => 'REGEXP',
+		AUTOMATION_OP_NOT_REGEXP    => 'NOT REGEXP',
+	),
+	'binary' => array(
+		AUTOMATION_OP_NONE          => false,
+		AUTOMATION_OP_CONTAINS      => true,
+		AUTOMATION_OP_CONTAINS_NOT  => true,
+		AUTOMATION_OP_BEGINS        => true,
+		AUTOMATION_OP_BEGINS_NOT    => true,
+		AUTOMATION_OP_ENDS          => true,
+		AUTOMATION_OP_ENDS_NOT      => true,
+		AUTOMATION_OP_MATCHES       => true,
+		AUTOMATION_OP_MATCHES_NOT   => true,
+		AUTOMATION_OP_LT            => true,
+		AUTOMATION_OP_LE            => true,
+		AUTOMATION_OP_GT            => true,
+		AUTOMATION_OP_GE            => true,
+		AUTOMATION_OP_UNKNOWN       => false,
+		AUTOMATION_OP_NOT_UNKNOWN   => false,
+		AUTOMATION_OP_EMPTY         => false,
+		AUTOMATION_OP_NOT_EMPTY     => false,
+		AUTOMATION_OP_REGEXP        => true,
+		AUTOMATION_OP_NOT_REGEXP    => true,
+	),
+	'pre' => array(
+		AUTOMATION_OP_NONE          => '',
+		AUTOMATION_OP_CONTAINS      => '%',
+		AUTOMATION_OP_CONTAINS_NOT  => '%',
+		AUTOMATION_OP_BEGINS        => '',
+		AUTOMATION_OP_BEGINS_NOT    => '',
+		AUTOMATION_OP_ENDS          => '%',
+		AUTOMATION_OP_ENDS_NOT      => '%',
+		AUTOMATION_OP_MATCHES       => '',
+		AUTOMATION_OP_MATCHES_NOT   => '',
+		AUTOMATION_OP_LT            => '',
+		AUTOMATION_OP_LE            => '',
+		AUTOMATION_OP_GT            => '',
+		AUTOMATION_OP_GE            => '',
+		AUTOMATION_OP_UNKNOWN       => '',
+		AUTOMATION_OP_NOT_UNKNOWN   => '',
+		AUTOMATION_OP_EMPTY         => '',
+		AUTOMATION_OP_NOT_EMPTY     => '',
+		AUTOMATION_OP_REGEXP        => '',
+		AUTOMATION_OP_NOT_REGEXP    => '',
+	),
+	'post' => array(
+		AUTOMATION_OP_NONE          => '',
+		AUTOMATION_OP_CONTAINS      => '%',
+		AUTOMATION_OP_CONTAINS_NOT  => '%',
+		AUTOMATION_OP_BEGINS        => '%',
+		AUTOMATION_OP_BEGINS_NOT    => '%',
+		AUTOMATION_OP_ENDS          => '',
+		AUTOMATION_OP_ENDS_NOT      => '',
+		AUTOMATION_OP_MATCHES       => '',
+		AUTOMATION_OP_MATCHES_NOT   => '',
+		AUTOMATION_OP_LT            => '',
+		AUTOMATION_OP_LE            => '',
+		AUTOMATION_OP_GT            => '',
+		AUTOMATION_OP_GE            => '',
+		AUTOMATION_OP_UNKNOWN       => '',
+		AUTOMATION_OP_NOT_UNKNOWN   => '',
+		AUTOMATION_OP_EMPTY         => '',
+		AUTOMATION_OP_NOT_EMPTY     => '',
+		AUTOMATION_OP_REGEXP        => '',
+		AUTOMATION_OP_NOT_REGEXP    => '',
+	)
+);
+
+$automation_oper = array(
+	AUTOMATION_OPER_NULL            => '',
+	AUTOMATION_OPER_AND             => 'AND',
+	AUTOMATION_OPER_OR              => 'OR',
+	AUTOMATION_OPER_LEFT_BRACKET    => '(',
+	AUTOMATION_OPER_RIGHT_BRACKET   => ')',
+);
+
+$automation_tree_item_types  = array(
+	TREE_ITEM_TYPE_GRAPH => 'Graph',
+	TREE_ITEM_TYPE_HOST  => 'Host'
+);
+
+$automation_tree_header_types  = array(
+	AUTOMATION_TREE_ITEM_TYPE_STRING => 'Fixed String',
 );
 
 api_plugin_hook('config_arrays');

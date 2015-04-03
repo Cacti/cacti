@@ -896,6 +896,10 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 		$save["snmp_query_id"] = 0;
 		$save["snmp_index"] = 0;
 	}
+
+	/* provide automation services */
+	automation_hook_graph_create_tree($save);
+
 	api_plugin_hook_function('create_complete_graph_from_template', $save);
 
 	return $cache_array;

@@ -189,6 +189,8 @@ function api_device_save($id, $host_template_id, $description, $hostname, $snmp_
 			if (sizeof($graph_templates) > 0) {
 				foreach ($graph_templates as $graph_template) {
 					db_execute_prepared('REPLACE INTO host_graph (host_id, graph_template_id) VALUES (?, ?)', array($host_id, $graph_template['graph_template_id']));
+					automation_hook_graph_template($host_id, $graph_template['graph_template_id']);
+
 					api_plugin_hook_function('add_graph_template_to_host', array('host_id' => $host_id, 'graph_template_id' => $graph_template['graph_template_id']));
 				}
 			}
@@ -198,6 +200,9 @@ function api_device_save($id, $host_template_id, $description, $hostname, $snmp_
 	# now that we have the id of the new host, we may plugin postprocessing code
 	$save['id'] = $host_id;
 	snmpagent_api_device_new($save);
+
+	automation_hook_device_create_tree($save);
+
 	api_plugin_hook_function('api_device_new', $save);
 
 	return $host_id;

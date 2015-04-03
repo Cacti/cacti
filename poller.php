@@ -29,14 +29,14 @@ function sig_handler($signo) {
 	switch ($signo) {
 		case SIGTERM:
 		case SIGINT:
-			cacti_log('WARNING: Cacti Master Poller process terminated by user', true);
+			cacti_log('WARNING: Cacti Master Poller process terminated by user', true, 'POLLER', POLLER_VERBOSITY_LOW);
 
 			$running_processes = db_fetch_assoc('SELECT * FROM poller_time WHERE end_time=\'0000-00-00 00:00:00\'');
 
 			if (sizeof($running_processes)) {
 			foreach($running_processes as $process) {
 				if (function_exists('posix_kill')) {
-					cacti_log("WARNING: Termination poller process with pid '" . $process['pid'] . "'", true, 'POLLER');
+					cacti_log("WARNING: Termination poller process with pid '" . $process['pid'] . "'", true, 'POLLER', POLLER_VERBOSITY_LOW);
 					posix_kill($process['pid'], SIGTERM);
 				}
 			}
@@ -181,14 +181,18 @@ if ($config['cacti_server_os'] == 'unix') {
 	$task_type = 'Scheduled Task';
 }
 
-if (read_config_option('log_verbosity') >= POLLER_VERBOSITY_MEDIUM || $debug) {
-	$poller_seconds_sincerun = 'never';
-	if (isset($poller_lastrun)) {
-		$poller_seconds_sincerun = $seconds - $poller_lastrun;
-	}
-
-	cacti_log("NOTE: Poller Int: '$poller_interval', $task_type Int: '$cron_interval', Time Since Last: '$poller_seconds_sincerun', Max Runtime '" . MAX_POLLER_RUNTIME. "', Poller Runs: '$poller_runs'", true, 'POLLER');
+if ($debug) {
+	$level = POLLER_VERBOSITY_NONE;
+}else{
+	$level = POLLER_VERBOSITY_MEDIUM;
 }
+
+$poller_seconds_sincerun = 'never';
+if (isset($poller_lastrun)) {
+	$poller_seconds_sincerun = $seconds - $poller_lastrun;
+}
+
+cacti_log("NOTE: Poller Int: '$poller_interval', $task_type Int: '$cron_interval', Time Since Last: '$poller_seconds_sincerun', Max Runtime '" . MAX_POLLER_RUNTIME. "', Poller Runs: '$poller_runs'", true, 'POLLER', $level);
 
 /* our cron can run at either 1 or 5 minute intervals */
 if ($poller_interval <= 60) {
@@ -201,9 +205,7 @@ if ($poller_interval <= 60) {
 if ((isset($poller_lastrun) && isset($poller_interval) && $poller_lastrun > 0) && (!$force)) {
 	/* give the user some flexibility to run a little moe often */
 	if ((($seconds - $poller_lastrun)*1.3) < MAX_POLLER_RUNTIME) {
-		if (read_config_option('log_verbosity') >= POLLER_VERBOSITY_MEDIUM || $debug) {
-			cacti_log("NOTE: $task_type is configured to run too often!  The Poller Interval is '$poller_interval' seconds, with a minimum $task_type period of '$min_period' seconds, but only " . ($seconds - $poller_lastrun) . ' seconds have passed since the poller last ran.', true, 'POLLER');
-		}
+		cacti_log("NOTE: $task_type is configured to run too often!  The Poller Interval is '$poller_interval' seconds, with a minimum $task_type period of '$min_period' seconds, but only " . ($seconds - $poller_lastrun) . ' seconds have passed since the poller last ran.', true, 'POLLER', $level);
 		exit;
 	}
 }
@@ -272,6 +274,7 @@ while ($poller_runs_completed < $poller_runs) {
 		}
 
 		cacti_log("WARNING: Poller Output Table not Empty.  Issues Found: $count, Data Sources: $issue_list", true, 'POLLER');
+
 		db_execute('TRUNCATE TABLE poller_output');
 	}
 
@@ -437,8 +440,8 @@ while ($poller_runs_completed < $poller_runs) {
 		if ($method == 'spine') {
 			chdir(read_config_option('path_webroot'));
 		}
-	}else if (read_config_option('log_verbosity') >= POLLER_VERBOSITY_MEDIUM || $debug) {
-		cacti_log('NOTE: There are no items in your poller for this polling cycle!', true, 'POLLER');
+	}else{
+		cacti_log('NOTE: There are no items in your poller for this polling cycle!', true, 'POLLER', $level);
 	}
 
 	$poller_runs_completed++;
@@ -457,7 +460,7 @@ while ($poller_runs_completed < $poller_runs) {
 		}
 
 		/* log some nice debug information */
-		if (read_config_option('log_verbosity') >= POLLER_VERBOSITY_DEBUG || $debug) {
+		if ($debug) {
 			echo 'Loop  Time is: ' . round($loop_time, 2) . "\n";
 			echo 'Sleep Time is: ' . round($sleep_time, 2) . "\n";
 			echo 'Total Time is: ' . round($loop_end - $poller_start, 2) . "\n";
@@ -482,8 +485,8 @@ while ($poller_runs_completed < $poller_runs) {
 			}
 			api_plugin_hook('poller_top');
 		}
-	}else if (read_config_option('log_verbosity') >= POLLER_VERBOSITY_MEDIUM || $debug) {
-		cacti_log('WARNING: Cacti Polling Cycle Exceeded Poller Interval by ' . $loop_end-$loop_start-$poller_interval . ' seconds', true, 'POLLER');
+	}else{
+		cacti_log('WARNING: Cacti Polling Cycle Exceeded Poller Interval by ' . $loop_end-$loop_start-$poller_interval . ' seconds', true, 'POLLER', $level);
 	}
 }
 

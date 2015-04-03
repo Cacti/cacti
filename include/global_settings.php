@@ -380,7 +380,27 @@ $settings = array(
 			'description' => 'When checked, any attempts to access Cacti will be redirected to HTTPS to insure high security.',
 			'default' => '',
 			'method' => 'checkbox',
-			)
+			),
+		'automation_header' => array(
+			'friendly_name' => 'Automation',
+			'method' => 'spacer',
+			),
+		'automation_graphs_enabled' => array(
+			'method' => 'checkbox',
+			'friendly_name' => 'Enable Automtic Graph Creation',
+			'description' => 'When disabled, Cacti Automation will not actively create any Graph.' . '<br>' .
+				'This will be useful when fiddeling around with Hosts to avoid creating new Graphs each time you save an object' . '<br>' .
+				'Invoking Rules manually will still be possible.',
+			'default' => '',
+			),
+		'automation_tree_enabled' => array(
+			'method' => 'checkbox',
+			'friendly_name' => 'Enable Automatic Tree Item Creation',
+			'description' => 'When disabled, Cacti Automation will not actively create any Tree Item.' . '<br>' .
+				'This will be useful when fiddeling around with Hosts and Graphs to avoid creating new Tree Entries each time you save an object' . '<br>' .
+				'Invoking Rules manually will still be possible.',
+			'default' => '',
+			),
 		),
 	'export' => array(
 		'export_hdr_general' => array(

@@ -41,8 +41,9 @@ $device_actions = array(
 	3 => 'Disable',
 	4 => 'Change SNMP Options',
 	5 => 'Clear Statistics',
-	6 => 'Change Availability Options'
-	);
+	6 => 'Change Availability Options',
+	7 => 'Apply Automation Rules to Device(s)'
+);
 
 $device_actions = api_plugin_hook_function('device_action_array', $device_actions);
 
@@ -107,7 +108,7 @@ function add_tree_names_to_actions_array() {
 	/* add a list of tree names to the actions dropdown */
 	$trees = db_fetch_assoc('SELECT id, name FROM graph_tree ORDER BY name');
 
-	if (sizeof($trees) > 0) {
+	if (sizeof($trees)) {
 		foreach ($trees as $tree) {
 			$device_actions{'tr_' . $tree['id']} = 'Place on a Tree (' . $tree['name'] . ')';
 		}
@@ -142,6 +143,9 @@ function form_save() {
 		/* ==================================================== */
 
 		db_execute_prepared('REPLACE INTO host_graph (host_id, graph_template_id) VALUES (?, ?)', array($_POST['id'], $_POST['graph_template_id']));
+
+		automation_hook_graph_template($_POST['id'], $_POST['graph_template_id']);
+
 		api_plugin_hook_function('add_graph_template_to_host', array('host_id' => $_POST['id'], 'graph_template_id' => $_POST['graph_template_id']));
 
 		header('Location: host.php?action=edit&id=' . $_POST['id']);
@@ -198,7 +202,7 @@ function form_actions() {
 				$data_sources = db_fetch_assoc_prepared('SELECT id FROM data_local WHERE host_id = ?', array($selected_items[$i]));
 				$poller_items = $local_data_ids = array();
 
-				if (sizeof($data_sources) > 0) {
+				if (sizeof($data_sources)) {
 					foreach ($data_sources as $data_source) {
 						$local_data_ids[] = $data_source['id'];
 						$poller_items     = array_merge($poller_items, update_poller_cache($data_source['id']));
@@ -278,10 +282,10 @@ function form_actions() {
 					FROM data_local
 					WHERE ' . array_to_sql_or($selected_items, 'data_local.host_id'));
 
-				if (sizeof($data_sources) > 0) {
-				foreach ($data_sources as $data_source) {
-					$data_sources_to_act_on[] = $data_source['local_data_id'];
-				}
+				if (sizeof($data_sources)) {
+					foreach ($data_sources as $data_source) {
+						$data_sources_to_act_on[] = $data_source['local_data_id'];
+					}
 				}
 
 				if ($_POST['delete_type'] == 2) {
@@ -290,10 +294,10 @@ function form_actions() {
 						FROM graph_local
 						WHERE ' . array_to_sql_or($selected_items, 'graph_local.host_id'));
 
-					if (sizeof($graphs) > 0) {
-					foreach ($graphs as $graph) {
-						$graphs_to_act_on[] = $graph['local_graph_id'];
-					}
+					if (sizeof($graphs)) {
+						foreach ($graphs as $graph) {
+							$graphs_to_act_on[] = $graph['local_graph_id'];
+						}
 					}
 				}
 
@@ -329,6 +333,74 @@ function form_actions() {
 				/* ==================================================== */
 
 				api_tree_item_save(0, $_POST['tree_id'], TREE_ITEM_TYPE_HOST, $_POST['tree_item_id'], '', 0, read_graph_config_option('default_rra_id'), $selected_items[$i], 1, 1, false);
+			}
+		}elseif ($action == 7) { /* automation */
+			cacti_log(__FUNCTION__ . ' called, action: ' . $action, true, 'AUTOMATION TRACE', POLLER_VERBOSITY_MEDIUM);
+
+			/* find out which (if any) hosts have been checked, so we can tell the user */
+			if (isset($_POST['selected_items'])) {
+				$selected_items = unserialize(stripslashes($_POST['selected_items']));
+
+				cacti_log(__FUNCTION__ . ', items: ' . $_POST['selected_items'], true, 'AUTOMATION TRACE', POLLER_VERBOSITY_MEDIUM);
+
+				/* work on all selected hosts */
+				for ($i=0;($i<count($selected_items));$i++) {
+					/* ================= input validation ================= */
+					input_validate_input_number($selected_items[$i]);
+					/* ==================================================== */
+
+					$host_id = $selected_items[$i];
+
+					cacti_log(__FUNCTION__ . ' Host[' . $host_id . ']', true, 'AUTOMATION TRACE', POLLER_VERBOSITY_MEDIUM);
+
+					/* select all graph templates associated with this host, but exclude those where
+					*  a graph already exists (table graph_local has a known entry for this host/template) */
+					$sql = 'SELECT gt.*
+						FROM graph_templates AS gt
+						INNER JOIN host_graph AS hg
+						ON gt.id=hg.graph_template_id
+						WHERE hg.host_id=' . $host_id . ' 
+						AND gt.id NOT IN (
+							SELECT gl.graph_template_id 
+							FROM graph_local AS gl
+							WHERE host_id=' . $host_id . '
+						)';
+
+					$graph_templates = db_fetch_assoc($sql);
+
+					cacti_log(__FUNCTION__ . ' Host[' . $host_id . '], sql: ' . $sql, true, 'AUTOMATION TRACE', POLLER_VERBOSITY_MEDIUM);
+
+					/* create all graph template graphs */
+					if (sizeof($graph_templates)) {
+						foreach ($graph_templates as $graph_template) {
+							cacti_log(__FUNCTION__ . ' Host[' . $host_id . '], graph: ' . $graph_template['id'], true, 'AUTOMATION TRACE', POLLER_VERBOSITY_MEDIUM);
+
+							execute_graph_template($host_id, $graph_template['id']);
+						}
+					}
+
+					/* all associated data queries */
+					$data_queries = db_fetch_assoc('SELECT sq.*
+						host_snmp_query.reindex_method 
+						FROM snmp_query AS sq
+						INNER JOIN host_snmp_query AS hsq
+						ON sq.id=hsq.snmp_query_id
+						WHERE hsq.host_id=' . $host_id);
+
+					/* create all data query graphs */
+					if (sizeof($data_queries)) {
+						foreach ($data_queries as $data_query) {
+							cacti_log(__FUNCTION__ . ' Host[' . $data['host_id'] . '], dq: ' . $data['snmp_query_id'], true, 'AUTOMATION TRACE', POLLER_VERBOSITY_MEDIUM);
+
+							execute_data_query($host_id, $data_query['snmp_query_id']);
+						}
+					}
+
+					/* now handle tree rules for that host */
+					cacti_log(__FUNCTION__ . ' Host[' . $host_id . '], create_tree for host: ' . $host_id, true, 'AUTOMATION TRACE', POLLER_VERBOSITY_MEDIUM);
+
+					execute_device_create_tree($host_id);
+				}
 			}
 		} else {
 			api_plugin_hook_function('device_action_execute', $_POST['drp_action']);
@@ -482,6 +554,16 @@ function form_actions() {
 				<input type='hidden' name='tree_id' value='" . $matches[1] . "'>\n
 				";
 			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Place Device(s) on Tree'>";
+		}elseif ($save['drp_action'] == 7) { /* automation */
+			/* find out which (if any) hosts have been checked, so we can tell the user */
+			if (isset($save['host_array'])) {
+				/* list affected hosts */
+				print '<tr>';
+				print "<td class='textArea'>
+					<p>Are you sure you want to apply <strong>Automation Rules</strong> to the following hosts?</p>
+					<ul>" .  $save['host_list'] . '</ul></td>';
+				print '</tr>';
+			}
 		} else {
 			$save['drp_action'] = $_POST['drp_action'];
 			$save['host_list'] = $host_list;
@@ -946,7 +1028,7 @@ function host_edit() {
 			WHERE (((snmp_query_graph.name) Is Null)) ORDER BY graph_templates.name');
 
 		$i = 0;
-		if (sizeof($selected_graph_templates) > 0) {
+		if (sizeof($selected_graph_templates)) {
 			foreach ($selected_graph_templates as $item) {
 				form_alternate_row('', true);
 
@@ -1007,18 +1089,20 @@ function host_edit() {
 			ORDER BY snmp_query.name');
 
 		$keeper = array();
-		foreach ($available_data_queries as $item) {
-			if (sizeof(db_fetch_assoc_prepared('SELECT snmp_query_id FROM host_snmp_query WHERE host_id = ? AND snmp_query_id = ?', array($_REQUEST['id'], $item['id']))) > 0) {
-				/* do nothing */
-			} else {
-				array_push($keeper, $item);
+		if (sizeof($available_data_queries)) {
+			foreach ($available_data_queries as $item) {
+				if (sizeof(db_fetch_assoc_prepared('SELECT snmp_query_id FROM host_snmp_query WHERE host_id = ? AND snmp_query_id = ?', array($_REQUEST['id'], $item['id']))) > 0) {
+					/* do nothing */
+				} else {
+					array_push($keeper, $item);
+				}
 			}
 		}
 
 		$available_data_queries = $keeper;
 
 		$i = 0;
-		if (sizeof($selected_data_queries) > 0) {
+		if (sizeof($selected_data_queries)) {
 			foreach ($selected_data_queries as $item) {
 				form_alternate_row('', true);
 
@@ -1211,7 +1295,7 @@ function host() {
 							<?php
 							$host_templates = db_fetch_assoc('SELECT id, name FROM host_template ORDER BY name');
 
-							if (sizeof($host_templates) > 0) {
+							if (sizeof($host_templates)) {
 								foreach ($host_templates as $host_template) {
 									print "<option value='" . $host_template['id'] . "'"; if (get_request_var_request('host_template_id') == $host_template['id']) { print ' selected'; } print '>' . htmlspecialchars($host_template['name']) . "</option>\n";
 								}
@@ -1240,7 +1324,7 @@ function host() {
 					<td>
 						<select id='rows' name="rows" onChange="applyFilter()">
 							<?php
-							if (sizeof($item_rows) > 0) {
+							if (sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
 									print "<option value='" . $key . "'"; if (get_request_var_request('rows') == $key) { print ' selected'; } print '>' . htmlspecialchars($value) . "</option>\n";
 								}
@@ -1340,7 +1424,7 @@ function host() {
 	html_header_sort_checkbox($display_text, get_request_var_request('sort_column'), get_request_var_request('sort_direction'), false);
 
 	$i = 0;
-	if (sizeof($hosts) > 0) {
+	if (sizeof($hosts)) {
 		foreach ($hosts as $host) {
 			if ($host['disabled'] == '' && 
 				($host['status'] == HOST_RECOVERING || $host['status'] == HOST_UP) &&

@@ -137,6 +137,145 @@ CREATE TABLE `aggregate_graphs_items` (
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Aggregate Graph Items';
 
 --
+-- Table structure for table `automation_graph_rule_items`
+--
+
+CREATE TABLE `automation_graph_rule_items` (
+  `id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `rule_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `sequence` smallint(3) unsigned NOT NULL DEFAULT '0',
+  `operation` smallint(3) unsigned NOT NULL DEFAULT '0',
+  `field` varchar(255) NOT NULL DEFAULT '',
+  `operator` smallint(3) unsigned NOT NULL DEFAULT '0',
+  `pattern` varchar(255) NOT NULL DEFAULT '',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM COMMENT='Automation Graph Rule Items';
+
+--
+-- Dumping data for table `automation_graph_rule_items`
+--
+
+INSERT INTO `automation_graph_rule_items`
+  (`id`, `rule_id`, `sequence`, `operation`, `field`, `operator`, `pattern`)
+  VALUES
+  (1, 1, 1, 0, 'ifOperStatus', 7, 'Up'),
+  (2, 1, 2, 1, 'ifIP', 16, ''),
+  (3, 1, 3, 1, 'ifHwAddr', 16, ''),
+  (4, 2, 1, 0, 'ifOperStatus', 7, 'Up'),
+  (5, 2, 2, 1, 'ifIP', 16, ''),
+  (6, 2, 3, 1, 'ifHwAddr', 16, '');
+
+--
+-- Table structure for table `automation_graph_rules`
+--
+
+CREATE TABLE `automation_graph_rules` (
+  `id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL DEFAULT '',
+  `snmp_query_id` smallint(3) unsigned NOT NULL DEFAULT '0',
+  `graph_type_id` smallint(3) unsigned NOT NULL DEFAULT '0',
+  `enabled` char(2) DEFAULT '',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM COMMENT='Automation Graph Rules';
+
+--
+-- Dumping data for table `automation_graph_rules`
+--
+
+INSERT INTO `automation_graph_rules`
+  (`id`, `name`, `snmp_query_id`, `graph_type_id`, `enabled`)
+  VALUES
+  (1, 'Traffic 64 bit Server', 1, 14, ''),
+  (2, 'Traffic 64 bit Server Linux', 1, 14, ''),
+  (3, 'Disk Space', 8, 18, '');
+
+--
+-- Table structure for table `automation_match_rule_items`
+--
+
+CREATE TABLE `automation_match_rule_items` (
+  `id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `rule_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `rule_type` smallint(3) unsigned NOT NULL DEFAULT '0',
+  `sequence` smallint(3) unsigned NOT NULL DEFAULT '0',
+  `operation` smallint(3) unsigned NOT NULL DEFAULT '0',
+  `field` varchar(255) NOT NULL DEFAULT '',
+  `operator` smallint(3) unsigned NOT NULL DEFAULT '0',
+  `pattern` varchar(255) NOT NULL DEFAULT '',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM COMMENT='Automation Match Rule Items';
+
+--
+-- Dumping data for table `automation_match_rule_items`
+--
+
+INSERT INTO `automation_match_rule_items`
+  (`id`, `rule_id`, `rule_type`, `sequence`, `operation`, `field`, `operator`, `pattern`)
+  VALUES
+  (1, 1, 1, 1, 0, 'h.description', 14, ''),
+  (2, 1, 1, 2, 1, 'h.snmp_version', 12, '2'),
+  (3, 1, 3, 1, 0, 'ht.name', 1, 'Linux'),
+  (4, 2, 1, 1, 0, 'ht.name', 1, 'Linux'),
+  (5, 2, 1, 2, 1, 'h.snmp_version', 12, '2'),
+  (6, 2, 3, 1, 0, 'ht.name', 1, 'SNMP'),
+  (7, 2, 3, 2, 1, 'gt.name', 1, 'Traffic');
+
+--
+-- Table structure for table `automation_tree_rule_items`
+--
+
+CREATE TABLE `automation_tree_rule_items` (
+  `id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `rule_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `sequence` smallint(3) unsigned NOT NULL DEFAULT '0',
+  `field` varchar(255) NOT NULL DEFAULT '',
+  `rra_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `sort_type` smallint(3) unsigned NOT NULL DEFAULT '0',
+  `propagate_changes` char(2) DEFAULT '',
+  `search_pattern` varchar(255) NOT NULL DEFAULT '',
+  `replace_pattern` varchar(255) NOT NULL DEFAULT '',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM COMMENT='Automation Tree Rule Items';
+
+--
+-- Dumping data for table `automation_tree_rule_items`
+--
+
+INSERT INTO `automation_tree_rule_items`
+  (`id`, `rule_id`, `sequence`, `field`, `rra_id`, `sort_type`, `propagate_changes`, `search_pattern`, `replace_pattern`)
+  VALUES
+  (1, 1, 1, 'ht.name', 0, 1, '', '^(.*)\\\\s*Linux\\\\s*(.*)$', '$\{1\}\\\\n$\{2\}'),
+  (2, 1, 2, 'h.hostname', 0, 1, '', '^(\\\\w*)\\\\s*(\\\\w*)\\\\s*(\\\\w*).*$', '$\{1\}\\\\n$\{2\}\\\\n$\{3\}'),
+  (3, 2, 1, '0', 0, 2, 'on', 'Traffic', ''),
+  (4, 2, 2, 'gtg.title_cache', 0, 1, '', '^(.*)\\\\s*-\\\\s*Traffic -\\\\s*(.*)$', '$\{1\}\\\\n$\{2\}');
+
+--
+-- Table structure for table `automation_tree_rules`
+--
+
+CREATE TABLE `automation_tree_rules` (
+  `id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL DEFAULT '',
+  `tree_id` smallint(3) unsigned NOT NULL DEFAULT '0',
+  `tree_item_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `leaf_type` smallint(3) unsigned NOT NULL DEFAULT '0',
+  `host_grouping_type` smallint(3) unsigned NOT NULL DEFAULT '0',
+  `rra_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `enabled` char(2) DEFAULT '',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM COMMENT='Automation Tree Rules';
+
+--
+-- Dumping data for table `automation_tree_rules`
+--
+
+INSERT INTO `automation_tree_rules`
+  (`id`, `name`, `tree_id`, `tree_item_id`, `leaf_type`, `host_grouping_type`, `rra_id`, `enabled`)
+  VALUES
+  (1, 'New Device', 1, 0, 3, 1, 0, ''),
+  (2, 'New Graph',  1, 0, 2, 0, 1, '');
+
+--
 -- Table structure for table `cdef`
 --
 

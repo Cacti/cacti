@@ -433,9 +433,15 @@ function strip_newlines($string) {
 /* cacti_log - logs a string to Cacti's log file or optionally to the browser
    @arg $string - the string to append to the log file
    @arg $output - (bool) whether to output the log line to the browser using print() or not
-   @arg $environ - (string) tell's from where the script was called from */
-function cacti_log($string, $output = false, $environ = 'CMDPHP') {
+   @arg $environ - (string) tell's from where the script was called from
+   @arg $level - (int) only log if above the specified log level */
+function cacti_log($string, $output = false, $environ = 'CMDPHP', $level = '') {
 	global $config;
+
+	/* only log if the specificied level is reached */
+	if ($level != '' && $level < read_config_option('log_verbosity')) {
+		return;
+	}
 
 	/* fill in the current date for printing in the log */
 	$date = date('m/d/Y h:i:s A');
@@ -445,7 +451,7 @@ function cacti_log($string, $output = false, $environ = 'CMDPHP') {
 	$logfile        = read_config_option('path_cactilog');
 
 	/* format the message */
-	if (($environ != 'SYSTEM') && ($environ != 'EXPORT') && ($environ != 'RECACHE') && ($environ != 'AUTH')) {
+	if ($environ == 'POLLER') {
 		$message = "$date - " . $environ . ': Poller[0] ' . $string . "\n";
 	}else {
 		$message = "$date - " . $environ . ' ' . $string . "\n";
@@ -2383,6 +2389,54 @@ function draw_navigation_text($type = 'url') {
 			'mapping' => 'index.php:,aggregate_items.php:', 
 			'url' => '', 
 			'level' => '2'
+			),
+		'automation_graph_rules.php:' => array(
+			'title' => 'Graph Rules', 
+			'mapping' => 'index.php:', 
+			'url' => 'automation_graph_rules.php', 
+			'level' => '1'
+			),
+		'automation_graph_rules.php:edit' => array(
+			'title' => '(Edit)', 
+			'mapping' => 'index.php:,automation_graph_rules.php:', 
+			'url' => '', 
+			'level' => '2'
+			),
+		'automation_graph_rules.php:actions' => array(
+			'title' => 'Actions', 
+			'mapping' => 'index.php:,automation_graph_rules.php:', 
+			'url' => '', 
+			'level' => '2'
+			),
+		'automation_graph_rules.php:item_edit' => array(
+			'title' => 'Graph Rule Items', 
+			'mapping' => 'index.php:,automation_graph_rules.php:,automation_graph_rules.php:edit', 
+			'url' => '', 
+			'level' => '3'
+			),
+		'automation_tree_rules.php:' => array(
+			'title' => 'Tree Rules', 
+			'mapping' => 'index.php:', 
+			'url' => 'automation_tree_rules.php', 
+			'level' => '1'
+			),
+		'automation_tree_rules.php:edit' => array(
+			'title' => '(Edit)', 
+			'mapping' => 'index.php:,automation_tree_rules.php:', 
+			'url' => '', 
+			'level' => '2'
+			),
+		'automation_tree_rules.php:actions' => array(
+			'title' => 'Actions', 
+			'mapping' => 'index.php:,automation_tree_rules.php:', 
+			'url' => '', 
+			'level' => '2'
+			),
+		'automation_tree_rules.php:item_edit' => array(
+			'title' => 'Tree Rule Items', 
+			'mapping' => 'index.php:,automation_tree_rules.php:,automation_tree_rules.php:edit', 
+			'url' => '', 
+			'level' => '3'
 			)
 	);
 

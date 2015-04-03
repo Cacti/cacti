@@ -848,4 +848,178 @@ function upgrade_to_0_8_8d() {
 		db_execute('UPDATE IGNORE user_auth_realm SET realm_id=5 WHERE realm_id=' . (100 + $id));
 		db_execute('DELETE FROM user_auth_realm WHERE realm_id=' . (100 + $id));
 	}
+
+	db_install_execute('0.8.8d', "DELETE FROM plugin_config WHERE directory='aggregate'");
+	db_install_execute('0.8.8d', "DELETE FROM plugin_realms WHERE plugin='aggregate'");
+	db_install_execute('0.8.8d', "DELETE FROM plugin_db_changes WHERE plugin='aggregate'");
+	db_install_execute('0.8.8d', "DELETE FROM plugin_hooks WHERE plugin='aggregate'");
+
+	if (!in_array('plugin_autom8_match_rule_items', $tables)) {
+		$data = array();
+		$data['columns'][] = array('name' => 'id', 'type' => 'mediumint(8)', 'unsigned' => 'unsigned', 'NULL' => false, 'auto_increment' => true);
+		$data['columns'][] = array('name' => 'rule_id', 'type' => 'mediumint(8)', 'unsigned' => 'unsigned', 'NULL' => false, 'default' => 0);
+		$data['columns'][] = array('name' => 'rule_type', 'type' => 'smallint(3)',  'unsigned' => 'unsigned', 'NULL' => false, 'default' => 0);
+		$data['columns'][] = array('name' => 'sequence', 'type' => 'smallint(3)',  'unsigned' => 'unsigned', 'NULL' => false, 'default' => 0);
+		$data['columns'][] = array('name' => 'operation', 'type' => 'smallint(3)', 'unsigned' => 'unsigned', 'NULL' => false, 'default' => 0);
+		$data['columns'][] = array('name' => 'field', 'type' => 'varchar(255)', 'NULL' => false, 'default' => '');
+		$data['columns'][] = array('name' => 'operator', 'type' => 'smallint(3)',  'unsigned' => 'unsigned', 'NULL' => false, 'default' => 0);
+		$data['columns'][] = array('name' => 'pattern', 'type' => 'varchar(255)', 'NULL' => false, 'default' => '');
+		$data['primary'] = 'id';
+		$data['keys'][] = '';
+		$data['type'] = 'MyISAM';
+		$data['comment'] = 'Automation Match Rule Items';
+		api_plugin_db_table_create ('autom8', 'plugin_autom8_match_rule_items', $data);
+
+		$sql[] = "INSERT IGNORE INTO `plugin_autom8_match_rule_items` 
+			(`id`, `rule_id`, `rule_type`, `sequence`, `operation`, `field`, `operator`, `pattern`) 
+			VALUES 
+			(1, 1, 1, 1, 0, 'h.description', 14, ''), 
+			(2, 1, 1, 2, 1, 'h.snmp_version', 12, '2'),
+			(3, 1, 3, 1, 0, 'ht.name', 1, 'Linux'),
+			(4, 2, 1, 1, 0, 'ht.name', 1, 'Linux'),
+			(5, 2, 1, 2, 1, 'h.snmp_version', 12, '2'),
+			(6, 2, 3, 1, 0, 'ht.name', 1, 'SNMP'),
+			(7, 2, 3, 2, 1, 'gt.name', 1, 'Traffic')";
+	}else{
+		$sql[] = "UPDATE plugin_autom8_match_rules SET field=REPLACE(field, 'host_template.', 'ht.')";
+		$sql[] = "UPDATE plugin_autom8_match_rules SET field=REPLACE(field, 'host.', 'h.')";
+		$sql[] = "UPDATE plugin_autom8_match_rules SET field=REPLACE(field, 'graph_templates.', 'gt.')";
+		$sql[] = "UPDATE plugin_autom8_match_rules SET field=REPLACE(field, 'graph_templates_graph.', 'gtg.')";
+	}
+
+	if (!in_array('plugin_autom8_graph_rules', $tables)) {
+		$data = array();
+		$data['columns'][] = array('name' => 'id', 'type' => 'mediumint(8)', 'unsigned' => 'unsigned', 'NULL' => false, 'auto_increment' => true);
+		$data['columns'][] = array('name' => 'name', 'type' => 'varchar(255)', 'NULL' => false, 'default' => '');
+		$data['columns'][] = array('name' => 'snmp_query_id', 'type' => 'smallint(3)', 'unsigned' => 'unsigned', 'NULL' => false, 'default' => 0);
+		$data['columns'][] = array('name' => 'graph_type_id', 'type' => 'smallint(3)', 'unsigned' => 'unsigned', 'NULL' => false, 'default' => 0);
+		$data['columns'][] = array('name' => 'enabled', 'type' => 'char(2)', 'NULL' => true,  'default' => '');
+		$data['primary'] = 'id';
+		$data['keys'][] = '';
+		$data['type'] = 'MyISAM';
+		$data['comment'] = 'Automation Graph Rules';
+		api_plugin_db_table_create ('autom8', 'plugin_autom8_graph_rules', $data);
+
+		$sql[] = "INSERT IGNORE INTO `plugin_autom8_graph_rules`
+			(`id`, `name`, `snmp_query_id`, `graph_type_id`, `enabled`)
+			VALUES 
+			(1, 'Traffic 64 bit Server', 1, 14, ''),
+			(2, 'Traffic 64 bit Server Linux', 1, 14, ''),
+			(3, 'Disk Space', 8, 18, '')";
+	}
+
+	if (!in_array('plugin_autom8_graph_rule_items', $tables)) {
+		$data = array();
+		$data['columns'][] = array('name' => 'id', 'type' => 'mediumint(8)', 'unsigned' => 'unsigned', 'NULL' => false, 'auto_increment' => true);
+		$data['columns'][] = array('name' => 'rule_id', 'type' => 'mediumint(8)', 'unsigned' => 'unsigned', 'NULL' => false, 'default' => 0);
+		$data['columns'][] = array('name' => 'sequence', 'type' => 'smallint(3)', 'unsigned' => 'unsigned', 'NULL' => false, 'default' => 0);
+		$data['columns'][] = array('name' => 'operation', 'type' => 'smallint(3)', 'unsigned' => 'unsigned', 'NULL' => false, 'default' => 0);
+		$data['columns'][] = array('name' => 'field', 'type' => 'varchar(255)', 'NULL' => false, 'default' => '');
+		$data['columns'][] = array('name' => 'operator', 'type' => 'smallint(3)', 'unsigned' => 'unsigned', 'NULL' => false, 'default' => 0);
+		$data['columns'][] = array('name' => 'pattern', 'type' => 'varchar(255)', 'NULL' => false, 'default' => '');
+		$data['primary'] = 'id';
+		$data['keys'][] = '';
+		$data['type'] = 'MyISAM';
+		$data['comment'] = 'Automation Graph Rule Items';
+		api_plugin_db_table_create ('autom8', 'plugin_autom8_graph_rule_items', $data);
+
+		$sql[] = "INSERT IGNORE INTO `plugin_autom8_graph_rule_items`
+			(`id`, `rule_id`, `sequence`, `operation`, `field`, `operator`, `pattern`)
+			VALUES
+			(1, 1, 1, 0, 'ifOperStatus', 7, 'Up'),
+			(2, 1, 2, 1, 'ifIP', 16, ''),
+			(3, 1, 3, 1, 'ifHwAddr', 16, ''),
+			(4, 2, 1, 0, 'ifOperStatus', 7, 'Up'),
+			(5, 2, 2, 1, 'ifIP', 16, ''),
+			(6, 2, 3, 1, 'ifHwAddr', 16, '')";
+	}
+
+	if (!in_array('plugin_autom8_tree_rules', $tables)) {
+		$data = array();
+		$data['columns'][] = array('name' => 'id', 'type' => 'mediumint(8)', 'unsigned' => 'unsigned', 'NULL' => false, 'auto_increment' => true);
+		$data['columns'][] = array('name' => 'name', 'type' => 'varchar(255)', 'NULL' => false, 'default' => '');
+		$data['columns'][] = array('name' => 'tree_id', 'type' => 'smallint(3)', 'unsigned' => 'unsigned', 'NULL' => false, 'default' => 0);
+		$data['columns'][] = array('name' => 'tree_item_id', 'type' => 'mediumint(8)', 'unsigned' => 'unsigned', 'NULL' => false, 'default' => 0);
+		$data['columns'][] = array('name' => 'leaf_type', 'type' => 'smallint(3)', 'unsigned' => 'unsigned', 'NULL' => false, 'default' => 0);
+		$data['columns'][] = array('name' => 'host_grouping_type', 'type' => 'smallint(3)', 'unsigned' => 'unsigned', 'NULL' => false, 'default' => 0);
+		$data['columns'][] = array('name' => 'rra_id', 'type' => 'mediumint(8)', 'unsigned' => 'unsigned', 'NULL' => false, 'default' => 0);
+		$data['columns'][] = array('name' => 'enabled', 'type' => 'char(2)', 'NULL' => true,  'default' => '');
+		$data['primary'] = 'id';
+		$data['keys'][] = '';
+		$data['type'] = 'MyISAM';
+		$data['comment'] = 'Automation Tree Rules';
+		api_plugin_db_table_create ('autom8', 'plugin_autom8_tree_rules', $data);
+
+		$sql[] = "INSERT IGNORE INTO `plugin_autom8_tree_rules`
+			(`id`, `name`, `tree_id`, `tree_item_id`, `leaf_type`, `host_grouping_type`, `rra_id`, `enabled`)
+			VALUES
+			(1, 'New Device', 1, 0, 3, 1, 0, ''),
+			(2, 'New Graph',  1, 0, 2, 0, 1, '')";
+	}
+
+	if (!in_array('plugin_autom8_tree_rule_items', $tables)) {
+		$data = array();
+		$data['columns'][] = array('name' => 'id', 'type' => 'mediumint(8)', 'unsigned' => 'unsigned', 'NULL' => false, 'auto_increment' => true);
+		$data['columns'][] = array('name' => 'rule_id', 'type' => 'mediumint(8)', 'unsigned' => 'unsigned', 'NULL' => false, 'default' => 0);
+		$data['columns'][] = array('name' => 'sequence', 'type' => 'smallint(3)', 'unsigned' => 'unsigned', 'NULL' => false, 'default' => 0);
+		$data['columns'][] = array('name' => 'field', 'type' => 'varchar(255)', 'NULL' => false, 'default' => '');
+		$data['columns'][] = array('name' => 'rra_id', 'type' => 'mediumint(8)', 'unsigned' => 'unsigned', 'NULL' => false, 'default' => 0);
+		$data['columns'][] = array('name' => 'sort_type', 'type' => 'smallint(3)', 'unsigned' => 'unsigned', 'NULL' => false, 'default' => 0);
+		$data['columns'][] = array('name' => 'propagate_changes', 'type' => 'char(2)', 'NULL' => true, 'default' => '');
+		$data['columns'][] = array('name' => 'search_pattern', 'type' => 'varchar(255)', 'NULL' => false, 'default' => '');
+		$data['columns'][] = array('name' => 'replace_pattern',	'type' => 'varchar(255)',                       	    'NULL' => false, 	'default' => '');
+		$data['primary'] = 'id';
+		$data['keys'][] = '';
+		$data['type'] = 'MyISAM';
+		$data['comment'] = 'Automation Tree Rule Items';
+		api_plugin_db_table_create ('autom8', 'plugin_autom8_tree_rule_items', $data);
+
+	$sql[] = "INSERT INTO `plugin_autom8_tree_rule_items`
+		(`id`, `rule_id`, `sequence`, `field`, `rra_id`, `sort_type`, `propagate_changes`, `search_pattern`, `replace_pattern`)
+		VALUES
+		(1, 1, 1, 'ht.name', 0, 1, '', '^(.*)\\\\s*Linux\\\\s*(.*)$', '$\{1\}\\\\n$\{2\}'),
+		(2, 1, 2, 'h.hostname', 0, 1, '', '^(\\\\w*)\\\\s*(\\\\w*)\\\\s*(\\\\w*).*$', '$\{1\}\\\\n$\{2\}\\\\n$\{3\}'),
+		(3, 2, 1, '0', 0, 2, 'on', 'Traffic', ''),
+		(4, 2, 2, 'gtg.title_cache', 0, 1, '', '^(.*)\\\\s*-\\\\s*Traffic -\\\\s*(.*)$', '$\{1\}\\\\n$\{2\}');";
+	}else{
+		$sql[] = "UPDATE plugin_autom8_tree_rule_items SET field=REPLACE(field, 'host_template.', 'ht.')";
+		$sql[] = "UPDATE plugin_autom8_tree_rule_items SET field=REPLACE(field, 'host.', 'h.')";
+		$sql[] = "UPDATE plugin_autom8_tree_rule_items SET field=REPLACE(field, 'graph_templates.', 'gt.')";
+		$sql[] = "UPDATE plugin_autom8_tree_rule_items SET field=REPLACE(field, 'graph_templates_graph.', 'gtg.')";
+	}
+
+	# now run all SQL commands
+	if (!empty($sql)) {
+		for ($a = 0; $a < count($sql); $a++) {
+			$result = db_execute($sql[$a]);
+		}
+	}
+
+	/* autom8 table renames */
+	$autom8_tables = array(
+		'plugin_autom8_graph_rule_items', 
+		'plugin_autom8_graph_rule_items', 
+		'plugin_autom8_graph_rule_items', 
+		'plugin_autom8_graph_rule_items', 
+		'plugin_autom8_graph_rule_items'
+	);
+
+	foreach($autom8_tables as $table) {
+		if (in_array('plugin_autom8_graph_rule_items')) {
+			db_install_execute('0.8.8d', "RENAME TABLE $table TO " . str_replace('plugin_autom8', 'automation', $table));
+		}
+	}
+
+	$id = db_fetch_cell("SELECT * FROM plugin_realms WHERE plugin='autom8'");
+	if (!empty($id)) {
+		db_execute('UPDATE IGNORE user_auth_realm SET realm_id=23 WHERE realm_id=' . (100 + $id));
+		db_execute('DELETE FROM user_auth_realm WHERE realm_id=' . (100 + $id));
+	}
+
+	db_install_execute('0.8.8d', "DELETE FROM plugin_config WHERE directory='autom8'");
+	db_install_execute('0.8.8d', "DELETE FROM plugin_realms WHERE plugin='autom8'");
+	db_install_execute('0.8.8d', "DELETE FROM plugin_db_changes WHERE plugin='autom8'");
+	db_install_execute('0.8.8d', "DELETE FROM plugin_hooks WHERE plugin='autom8'");
+
+	db_install_execute('0.8.8d', "UPDATE settings SET name=REPLACE(name, 'autom8', 'automation') WHERE name LIKE 'autom8%'");
 }
