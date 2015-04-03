@@ -439,7 +439,7 @@ function cacti_log($string, $output = false, $environ = 'CMDPHP', $level = '') {
 	global $config;
 
 	/* only log if the specificied level is reached */
-	if ($level != '' && $level < read_config_option('log_verbosity')) {
+	if ($level != '' && $level > read_config_option('log_verbosity')) {
 		return;
 	}
 
