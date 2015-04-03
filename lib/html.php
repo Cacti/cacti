@@ -445,7 +445,7 @@ function html_nav_bar($base_url, $max_pages, $current_page, $rows_per_page, $tot
    @arg $sort_direction - the value the current sort direction.  The actual sort direction
         will be opposite this direction if the user selects the same named column.
    @arg $last_item_colspan - the TD 'colspan' to apply to the last cell in the row */
-function html_header_sort($header_items, $sort_column, $sort_direction, $last_item_colspan = 1) {
+function html_header_sort($header_items, $sort_column, $sort_direction, $last_item_colspan = 1, $url = '') {
 	/* reverse the sort direction */
 	if ($sort_direction == "ASC") {
 		$new_sort_direction = "DESC";
@@ -510,7 +510,7 @@ function html_header_sort($header_items, $sort_column, $sort_direction, $last_it
 			print "<th " . ($tip != '' ? "title='" . htmlspecialchars($tip) . "'":"") . " style='text-align:$align;' " . ((($i+1) == count($header_items)) ? "colspan='$last_item_colspan' " : "") . ">" . $display_text . "</th>\n";
 		}else{
 			print "<th " . ($tip != '' ? "title='" . htmlspecialchars($tip) . "'":"") . " class='sortable' style='text-align:$align;'>";
-			print "<div class='sortinfo' sort-page='" . htmlspecialchars($_SERVER['PHP_SELF']) . "' sort-column='$db_column' sort-direction='$direction'><div class='textSubHeaderDark'>" . $display_text . "<i class='$icon'></i></div></div></th>\n";
+			print "<div class='sortinfo' sort-page='" . ($url == '' ? htmlspecialchars($_SERVER['PHP_SELF']):$url) . "' sort-column='$db_column' sort-direction='$direction'><div class='textSubHeaderDark'>" . $display_text . "<i class='$icon'></i></div></div></th>\n";
 		}
 
 		$i++;
@@ -602,7 +602,7 @@ function html_header_sort_checkbox($header_items, $sort_column, $sort_direction,
 			print "<th " . ($tip != '' ? "title='" . htmlspecialchars($tip) . "'":"") . " style='text-align:$align;'>" . $display_text . "</th>\n";
 		}else{
 			print "<th " . ($tip != '' ? "title='" . htmlspecialchars($tip) . "'":"") . " class='sortable' style='text-align:$align;'>";
-			print "<div class='sortinfo' sort-page='" . htmlspecialchars($_SERVER['PHP_SELF']) . "' sort-column='$db_column' sort-direction='$direction'><div class='textSubHeaderDark'>" . $display_text . "<i class='$icon'></i></div></div></th>\n";
+			print "<div class='sortinfo' sort-page='" . htmlspecialchars($form_action) . "' sort-column='$db_column' sort-direction='$direction'><div class='textSubHeaderDark'>" . $display_text . "<i class='$icon'></i></div></div></th>\n";
 		}
 	}
 

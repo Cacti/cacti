@@ -584,7 +584,7 @@ function setupSortable() {
 			var page=$(this).find('.sortinfo').attr('sort-page');
 			var column=$(this).find('.sortinfo').attr('sort-column');
 			var direction=$(this).find('.sortinfo').attr('sort-direction');
-			$.get(page+'?sort_column='+column+'&sort_direction='+direction+'&header=false', function(data) {
+			$.get(page+(page.indexOf('?') > 0 ? '&':'?')+'sort_column='+column+'&sort_direction='+direction+'&header=false', function(data) {
 				$('#main').html(data);
 				applySkin();
 			});
