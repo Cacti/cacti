@@ -369,11 +369,11 @@ function list_rrd() {
 		foreach($file_list as $file) {
 			$data_template_name = ((empty($file['data_template_name'])) ? '<em>None</em>' : $file['data_template_name']);
 			form_alternate_row('line' . $file['id'], true);
-			form_selectable_cell((($_REQUEST['filter'] != '') ? eregi_replace('(' . preg_quote($_REQUEST['filter']) . ')', "<span class='filteredValue'>\\1</span>", $file['name']) : $file['name']) . '</a>', $file['id']);
-			form_selectable_cell(($file['local_data_id'] != 0) ? "<a class='linkEditMain' href='../../data_sources.php?action=ds_edit&id=" . $file['local_data_id'] . "'>" . (($_REQUEST['filter'] != '') ? eregi_replace('(' . preg_quote($_REQUEST['filter']) . ')', "<span class='filteredValue'>\\1</span>", title_trim(htmlentities($file['name_cache']), read_config_option('max_title_length'))) : title_trim(htmlentities($file['name_cache']), read_config_option('max_title_length'))) . '</a>' : '<i>Deleted</i>', $file['id']);
+			form_selectable_cell((($_REQUEST['filter'] != '') ? preg_replace('/(' . preg_quote($_REQUEST['filter']) . ')/i', "<span class='filteredValue'>\\1</span>", $file['name']) : $file['name']) . '</a>', $file['id']);
+			form_selectable_cell(($file['local_data_id'] != 0) ? "<a class='linkEditMain' href='../../data_sources.php?action=ds_edit&id=" . $file['local_data_id'] . "'>" . (($_REQUEST['filter'] != '') ? preg_replace('/(' . preg_quote($_REQUEST['filter']) . ')/i', "<span class='filteredValue'>\\1</span>", title_trim(htmlentities($file['name_cache']), read_config_option('max_title_length'))) : title_trim(htmlentities($file['name_cache']), read_config_option('max_title_length'))) . '</a>' : '<i>Deleted</i>', $file['id']);
 			form_selectable_cell($file['local_data_id'] > 0 ? $file['local_data_id']:'<i>Deleted</i>', $file['id']);
 			form_selectable_cell($file['data_template_id'] > 0 ? $file['data_template_id']:'<i>Deleted</i>', $file['id']);
-			form_selectable_cell($file['data_template_id'] > 0 ? ($_REQUEST['filter'] != '' ? eregi_replace('(' . preg_quote($_REQUEST['filter']) . ')', "<span class='filteredValue'>\\1</span>", $file['data_template_name']) . '</a>': $file['data_template_name']):'<i>Deleted</i>', $file['id']);
+			form_selectable_cell($file['data_template_id'] > 0 ? ($_REQUEST['filter'] != '' ? preg_replace('/(' . preg_quote($_REQUEST['filter']) . ')/i', "<span class='filteredValue'>\\1</span>", $file['data_template_name']) . '</a>': $file['data_template_name']):'<i>Deleted</i>', $file['id']);
 			form_selectable_cell($file['last_mod'], $file['id']);
 			form_selectable_cell(round($file['size']/1024,2), $file['id']);
 			form_checkbox_cell($file['id'], $file['id']);
@@ -444,7 +444,7 @@ function do_rrd() {
 	set_error_handler('rrdclean_error_handler');
 
 	while (list ($var, $val) = each($_POST)) {
-		if (ereg('^chk_(.*)$', $var, $matches)) {
+		if (preg_match('/^chk_(.*)$/', $var, $matches)) {
 			/* recreate the file name */
 			$unused_file = db_fetch_row_prepared('SELECT id, name, local_data_id 
 				FROM data_source_purge_temp

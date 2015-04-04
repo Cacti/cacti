@@ -851,10 +851,10 @@ function automation_graph_rules() {
 
 			form_alternate_row_color($colors['alternate'], $colors['light'], $i, 'line' . $automation_graph_rules['id']); $i++;
 
-			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars('automation_graph_rules.php?action=edit&id=' . $automation_graph_rules['id'] . "&page=1') title='" . $automation_graph_rules['name']) . "'>" . ((get_request_var_request('filter') != '') ? eregi_replace('(' . preg_quote(get_request_var_request('filter')) . ')', "<span class='filteredValue'>\\1</span>", $automation_graph_rules['name']) : $automation_graph_rules['name']) . '</a>', $automation_graph_rules['id']);
+			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars('automation_graph_rules.php?action=edit&id=' . $automation_graph_rules['id'] . "&page=1") . "'>" . ((get_request_var_request('filter') != '') ? preg_replace('/(' . preg_quote(get_request_var_request('filter')) . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($automation_graph_rules['name'])) : htmlspecialchars($automation_graph_rules['name'])) . '</a>', $automation_graph_rules['id']);
 			form_selectable_cell($automation_graph_rules['id'], $automation_graph_rules['id'], '', 'text-align:right');
-			form_selectable_cell(((get_request_var_request('filter') != '') ? eregi_replace('(' . preg_quote(get_request_var_request('filter')) . ')', "<span class='filteredValue'>\\1</span>", $snmp_query_name) : $snmp_query_name), $automation_graph_rules['id']);
-			form_selectable_cell(((get_request_var_request('filter') != '') ? eregi_replace('(' . preg_quote(get_request_var_request('filter')) . ')', "<span class='filteredValue'>\\1</span>", $graph_type_name) : $graph_type_name), $automation_graph_rules['id']);
+			form_selectable_cell(((get_request_var_request('filter') != '') ? preg_replace('/(' . preg_quote(get_request_var_request('filter')) . ')/i', "<span class='filteredValue'>\\1</span>", $snmp_query_name) : $snmp_query_name), $automation_graph_rules['id']);
+			form_selectable_cell(((get_request_var_request('filter') != '') ? preg_replace('/(' . preg_quote(get_request_var_request('filter')) . ')/i', "<span class='filteredValue'>\\1</span>", $graph_type_name) : $graph_type_name), $automation_graph_rules['id']);
 			form_selectable_cell($automation_graph_rules['enabled'] ? 'Enabled' : 'Disabled', $automation_graph_rules['id'], '', 'text-align:right');
 			form_checkbox_cell($automation_graph_rules['name'], $automation_graph_rules['id']);
 

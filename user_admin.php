@@ -103,7 +103,7 @@ function form_actions() {
 	/* if we are to save this form, instead of display it */
 	if (isset($_POST['associate_host'])) {
 		while (list($var,$val) = each($_POST)) {
-			if (ereg('^chk_([0-9]+)$', $var, $matches)) {
+			if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
 				/* ================= input validation ================= */
 				input_validate_input_number($matches[1]);
 				/* ==================================================== */
@@ -120,7 +120,7 @@ function form_actions() {
 		exit;
 	}elseif (isset($_POST['associate_graph'])) {
 		while (list($var,$val) = each($_POST)) {
-			if (ereg('^chk_([0-9]+)$', $var, $matches)) {
+			if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
 				/* ================= input validation ================= */
 				input_validate_input_number($matches[1]);
 				/* ==================================================== */
@@ -137,7 +137,7 @@ function form_actions() {
 		exit;
 	}elseif (isset($_POST['associate_template'])) {
 		while (list($var,$val) = each($_POST)) {
-			if (ereg('^chk_([0-9]+)$', $var, $matches)) {
+			if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
 				/* ================= input validation ================= */
 				input_validate_input_number($matches[1]);
 				/* ==================================================== */
@@ -154,7 +154,7 @@ function form_actions() {
 		exit;
 	}elseif (isset($_POST['associate_groups'])) {
 		while (list($var,$val) = each($_POST)) {
-			if (ereg('^chk_([0-9]+)$', $var, $matches)) {
+			if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
 				/* ================= input validation ================= */
 				input_validate_input_number($matches[1]);
 				/* ==================================================== */
@@ -171,7 +171,7 @@ function form_actions() {
 		exit;
 	}elseif (isset($_POST['associate_tree'])) {
 		while (list($var,$val) = each($_POST)) {
-			if (ereg('^chk_([0-9]+)$', $var, $matches)) {
+			if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
 				/* ================= input validation ================= */
 				input_validate_input_number($matches[1]);
 				/* ==================================================== */

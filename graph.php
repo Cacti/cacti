@@ -68,11 +68,7 @@ if (!is_graph_allowed($_REQUEST['local_graph_id'])) {
 $graph_title = get_graph_title($_REQUEST['local_graph_id']);
 
 if ($_REQUEST['action'] != 'properties') {
-	if ($_REQUEST['view_type'] == 'tree') {
-		print "<table width='100%' style='background-color: #ffffff; border: 1px solid #ffffff;' align='center' cellspacing='0' cellpadding='3'>";
-	}else{
-		print "<table width='100%' style='background-color: #f5f5f5; border: 1px solid #bbbbbb;' align='center' cellspacing='0' cellpadding='3'>";
-	}
+	print "<table width='100%' class='cactiTable' align='center' cellspacing='0' cellpadding='3'>";
 }
 
 $rras = get_associated_rras($_REQUEST['local_graph_id']);
@@ -272,6 +268,7 @@ case 'zoom':
 						<span id='graph_<?php print $graph['local_graph_id'];?>_csv' class='hyperLink properties'> 
 							<img class='drillDown' src='images/table_go.png' border='0' alt='' title='Graph Data'>
 						</span>
+						<br>
 						<?php api_plugin_hook('graph_buttons', array('hook' => 'zoom', 'local_graph_id' => $_REQUEST['local_graph_id'], 'rra' =>  $_REQUEST['rra_id'], 'view_type' => $_REQUEST['view_type'])); ?>
 					</td>
 				</tr>
@@ -397,7 +394,7 @@ case 'properties':
 		$graph_data_array['graph_end'] = get_request_var_request('graph_end');
 	}
 
-	print "<table align='center' width='100%' style='background-color: #f5f5f5; border: 1px solid #bbbbbb;' cellpadding='0' callspacing='0' border='0'><tr><td>\n";
+	print "<table align='center' width='100%' class='cactiTable' cellpadding='0' callspacing='0' border='0'><tr><td>\n";
 	print "<table class='cactiTable' align='center' width='100%' cellpadding='3' cellspacing='0' border='0'>\n";
 	print "<tr class='tableHeader'><td colspan='3' class='linkOverDark' style='font-weight:bold;'>RRDtool Graph Syntax</td></tr>\n";
 	print "<tr><td><pre>\n";

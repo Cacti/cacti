@@ -526,7 +526,7 @@ function format_plugin_row($plugin, $last_plugin, $include_ordering) {
 
 	$row = plugin_actions($plugin);
 
-	$row .= "<td><a href='" . htmlspecialchars($plugin['webpage']) . "' target='_blank'><strong>" . (strlen(get_request_var_request('filter')) ? eregi_replace('(' . preg_quote(get_request_var_request('filter')) . ')', "<span class='filteredValue'>\\1</span>", ucfirst($plugin['directory'])) : ucfirst($plugin['directory'])) . '</strong></a>' . (is_dir($config['base_path'] . '/plugins/' . $plugin['directory']) ? '':' (<span class="txtErrorText">ERROR: Directory Missing</span>)') . '</td>';
+	$row .= "<td><a href='" . htmlspecialchars($plugin['webpage']) . "' target='_blank'><strong>" . (strlen(get_request_var_request('filter')) ? preg_replace('/(' . preg_quote(get_request_var_request('filter')) . ')/i', "<span class='filteredValue'>\\1</span>", ucfirst($plugin['directory'])) : ucfirst($plugin['directory'])) . '</strong></a>' . (is_dir($config['base_path'] . '/plugins/' . $plugin['directory']) ? '':' (<span class="txtErrorText">ERROR: Directory Missing</span>)') . '</td>';
 
 	if ($include_ordering) {
 		$row .= "<td style='white-space:nowrap;'>";
@@ -545,7 +545,7 @@ function format_plugin_row($plugin, $last_plugin, $include_ordering) {
 		$row .= "<td></td>\n";
 	}
 
-	$row .= "<td style='white-space:nowrap;'>" . (strlen(get_request_var_request('filter')) ? eregi_replace('(' . preg_quote(get_request_var_request('filter')) . ')', "<span class='filteredValue'>\\1</span>", $plugin['name']) : $plugin['name']) . "</td>\n";
+	$row .= "<td style='white-space:nowrap;'>" . (strlen(get_request_var_request('filter')) ? preg_replace('/(' . preg_quote(get_request_var_request('filter')) . ')/i', "<span class='filteredValue'>\\1</span>", $plugin['name']) : $plugin['name']) . "</td>\n";
 	$row .= '<td>' . $plugin['version'] . "</td>\n";
 	$row .= "<td style='white-space:nowrap;'>" . $status_names[$plugin['status']] . "</td>\n";
 	$row .= "<td style='white-space:nowrap;'>" . $plugin['author'] . "</td>\n";

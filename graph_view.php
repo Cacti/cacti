@@ -722,7 +722,7 @@ case 'preview':
 	$graphs     = get_allowed_graphs($sql_where, $order, $limit, $total_rows);	
 
 	/* do some fancy navigation url construction so we don't have to try and rebuild the url string */
-	if (ereg('page=[0-9]+',basename($_SERVER['QUERY_STRING']))) {
+	if (preg_match('/page=[0-9]+/',basename($_SERVER['QUERY_STRING']))) {
 		$nav_url = str_replace('&page=' . get_request_var_request('page'), '', get_browser_query_string());
 	}else{
 		$nav_url = get_browser_query_string() . '&host_id=' . get_request_var_request('host_id');

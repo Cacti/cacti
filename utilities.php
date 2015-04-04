@@ -2390,11 +2390,11 @@ function snmpagent_utilities_run_cache() {
 	if (sizeof($snmp_cache) > 0) {
 		foreach ($snmp_cache as $item) {
 
-			$oid = (strlen(get_request_var_request('filter')) ? (preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span style='background-color: #F8D93D;'>\\1</span>", $item['oid'])) : $item['oid']);
-			$name = (strlen(get_request_var_request('filter')) ? (preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span style='background-color: #F8D93D;'>\\1</span>", $item['name'])): $item['name']);
-			$mib = (strlen(get_request_var_request('filter')) ? (preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span style='background-color: #F8D93D;'>\\1</span>", $item['mib'])): $item['mib']);
+			$oid = (strlen(get_request_var_request('filter')) ? (preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", $item['oid'])) : $item['oid']);
+			$name = (strlen(get_request_var_request('filter')) ? (preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", $item['name'])): $item['name']);
+			$mib = (strlen(get_request_var_request('filter')) ? (preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", $item['mib'])): $item['mib']);
 
-			$max_access = (strlen(get_request_var_request('filter')) ? (preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span style='background-color: #F8D93D;'>\\1</span>", $item['max-access'])) : $item['max-access']);
+			$max_access = (strlen(get_request_var_request('filter')) ? (preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", $item['max-access'])) : $item['max-access']);
 
 			form_alternate_row('line' . $item['oid'], false);
 			form_selectable_cell( $oid, $item['oid']);
@@ -2661,7 +2661,7 @@ function snmpagent_utilities_run_eventlog(){
 
 	if (sizeof($logs) > 0) {
 		foreach ($logs as $item) {
-			$varbinds = (strlen(get_request_var_request('filter')) ? (preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span style='background-color: #F8D93D;'>\\1</span>", $item['varbinds'])): $item['varbinds']);
+			$varbinds = (strlen(get_request_var_request('filter')) ? (preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", $item['varbinds'])): $item['varbinds']);
 			form_alternate_row('line' . $item['id'], false);
 			print "<td title='Severity Level: " . $severity_levels[ $item['severity'] ] . "' style='width:10px;background-color: " . $severity_colors[ $item['severity'] ] . ";border-top:1px solid white;border-bottom:1px solid white;'></td>";
 			print "<td style='white-space: nowrap;'>" . date( 'Y/m/d H:i:s', $item['time']) . '</td>';

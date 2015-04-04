@@ -347,7 +347,7 @@ function form_actions() {
 			/* determine the common graph template if any */
 			reset($_POST);
 			while (list($var,$val) = each($_POST)) {
-				if (ereg('^chk_([0-9]+)$', $var, $matches)) {
+				if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
 					$local_graph_ids[] = $matches[1];
 				}
 			}
@@ -435,7 +435,7 @@ function form_actions() {
 					</td>
 				</tr>\n";
 			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Dis-Associate Graph(s)'>";
-		}elseif (ereg("^tr_([0-9]+)$", $_POST["drp_action"], $matches)) { /* place on tree */
+		}elseif (preg_match("/^tr_([0-9]+)$/", $_POST["drp_action"], $matches)) { /* place on tree */
 			print "	<tr>
 					<td class='textArea'>
 						<p>When you click \"Continue\", the following Aggregate Graph(s) will be placed under the Tree Branch selected below.</p>

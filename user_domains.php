@@ -215,7 +215,7 @@ function form_actions() {
 
 	/* loop through each of the data queries and process them */
 	while (list($var,$val) = each($_POST)) {
-		if (ereg('^chk_([0-9]+)$', $var, $matches)) {
+		if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
 			/* ================= input validation ================= */
 			input_validate_input_number($matches[1]);
 			/* ==================================================== */
@@ -751,7 +751,7 @@ function domains() {
 		foreach ($domains as $domain) {
 			/* hide system types */
 			form_alternate_row('line' . $domain['domain_id'], true);
-			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars('user_domains.php?action=edit&domain_id=' . $domain['domain_id']) . "'>" . (strlen(get_request_var_request('filter')) ? eregi_replace('(' . preg_quote(get_request_var_request('filter')) . ')', "<span class='filteredValue>\\1</span>", $domain['domain_name']) : $domain['domain_name']) . '</a>', $domain['domain_id']);
+			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars('user_domains.php?action=edit&domain_id=' . $domain['domain_id']) . "'>" . (strlen(get_request_var_request('filter')) ? preg_replace('/(' . preg_quote(get_request_var_request('filter')) . ')/i', "<span class='filteredValue>\\1</span>", htmlspecialchars($domain['domain_name'])) : htmlspecialchars($domain['domain_name'])) . '</a>', $domain['domain_id']);
 			form_selectable_cell($domain_types{$domain['type']}, $domain['domain_id']);
 			form_selectable_cell(($domain['defdomain'] == '0' ? '--':'Yes'), $domain['domain_id']);
 			form_selectable_cell(($domain['user_id'] == '0' ? 'None Selected': db_fetch_cell_prepared('SELECT username FROM user_auth WHERE id = ?', array($domain['user_id']))), $domain['domain_id']);

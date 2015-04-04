@@ -243,7 +243,7 @@ function form_actions() {
 	/* if we are to save this form, instead of display it */
 	if (isset($_POST['associate_host'])) {
 		while (list($var,$val) = each($_POST)) {
-			if (ereg('^chk_([0-9]+)$', $var, $matches)) {
+			if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
 				/* ================= input validation ================= */
 				input_validate_input_number($matches[1]);
 				/* ==================================================== */
@@ -260,7 +260,7 @@ function form_actions() {
 		exit;
 	}elseif (isset($_POST['associate_graph'])) {
 		while (list($var,$val) = each($_POST)) {
-			if (ereg('^chk_([0-9]+)$', $var, $matches)) {
+			if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
 				/* ================= input validation ================= */
 				input_validate_input_number($matches[1]);
 				/* ==================================================== */
@@ -277,7 +277,7 @@ function form_actions() {
 		exit;
 	}elseif (isset($_POST['associate_template'])) {
 		while (list($var,$val) = each($_POST)) {
-			if (ereg('^chk_([0-9]+)$', $var, $matches)) {
+			if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
 				/* ================= input validation ================= */
 				input_validate_input_number($matches[1]);
 				/* ==================================================== */
@@ -294,7 +294,7 @@ function form_actions() {
 		exit;
 	}elseif (isset($_POST['associate_tree'])) {
 		while (list($var,$val) = each($_POST)) {
-			if (ereg('^chk_([0-9]+)$', $var, $matches)) {
+			if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
 				/* ================= input validation ================= */
 				input_validate_input_number($matches[1]);
 				/* ==================================================== */
@@ -311,7 +311,7 @@ function form_actions() {
 		exit;
 	}elseif (isset($_POST['associate_member'])) {
 		while (list($var,$val) = each($_POST)) {
-			if (ereg('^chk_([0-9]+)$', $var, $matches)) {
+			if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
 				/* ================= input validation ================= */
 				input_validate_input_number($matches[1]);
 				/* ==================================================== */
@@ -370,7 +370,7 @@ function form_actions() {
 	$group_array = array();
 	$i = 0;
 	while (list($var,$val) = each($_POST)) {
-		if (ereg('^chk_([0-9]+)$', $var, $matches)) {
+		if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
 			/* ================= input validation ================= */
 			input_validate_input_number($matches[1]);
 			/* ==================================================== */
@@ -494,7 +494,7 @@ function form_save() {
 		db_execute_prepared('DELETE FROM user_auth_group_realm WHERE group_id = ?', array(get_request_var_post('id')));
 
 		while (list($var, $val) = each($_POST)) {
-			if (eregi('^[section]', $var)) {
+			if (preg_match('/^[section]/i', $var)) {
 				if (substr($var, 0, 7) == 'section') {
 				    db_execute_prepared('REPLACE INTO user_auth_group_realm (group_id, realm_id) VALUES (?, ?)', array(get_request_var_post('id'), substr($var, 7)));
 				}
@@ -1803,9 +1803,9 @@ function user_group() {
 
 			form_alternate_row('line' . $group['id'], true);
 			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars('user_group_admin.php?action=edit&tab=general&id=' . $group['id']) . "'>" .
-			(strlen(get_request_var_request('filter')) ? eregi_replace('(' . preg_quote(get_request_var_request('filter')) . ')', "<span class='filteredValue'>\\1</span>",  htmlspecialchars($group['name'])) : htmlspecialchars($group['name'])) . '</a>', $group['id']);
+			(strlen(get_request_var_request('filter')) ? preg_replace('/(' . preg_quote(get_request_var_request('filter')) . ')/i', "<span class='filteredValue'>\\1</span>",  htmlspecialchars($group['name'])) : htmlspecialchars($group['name'])) . '</a>', $group['id']);
 			form_selectable_cell(($group['members'] > 0 ? number_format($group['members']):'None'), $group['id']);
-			form_selectable_cell((strlen(get_request_var_request('filter')) ? eregi_replace('(' . preg_quote(get_request_var_request('filter')) . ')', "<span class='filteredValue'>\\1</span>", htmlspecialchars($group['description'])) : htmlspecialchars($group['description'])), $group['id']);
+			form_selectable_cell((strlen(get_request_var_request('filter')) ? preg_replace('/(' . preg_quote(get_request_var_request('filter')) . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($group['description'])) : htmlspecialchars($group['description'])), $group['id']);
 			form_selectable_cell(($group['policy_graphs'] == 1 ? 'ALLOW':'DENY'), $group['id']);
 			form_selectable_cell(($group['policy_hosts'] == 1 ? 'ALLOW':'DENY'), $group['id']);
 			form_selectable_cell(($group['policy_graph_templates'] == 1 ? 'ALLOW':'DENY'), $group['id']);
