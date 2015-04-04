@@ -1327,7 +1327,7 @@ function reports_graphs_action_prepare($save) {
 
 	if ($save["drp_action"] == "reports") { /* report */
 		print "	<tr>
-				<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
+				<td class='textArea'>
 					<p>Choose the Report to associate these graphs with.  The defaults for alignment will be used
 					for each graph in the list below.</p>
 					<p>" . $save['graph_list'] . "</p>

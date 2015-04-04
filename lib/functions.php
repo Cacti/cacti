@@ -3368,8 +3368,8 @@ function email_test() {
 	$errors = '';
 	if ($ping_results == 1) {
 		print 'Creating Message Text...<br><br>';
-		print "<center><table width='95%' cellpadding=1 cellspacing=0 bgcolor=black><tr><td>";
-		print "<table width='100%' bgcolor=white><tr><td>$message</td><tr></table></table></center><br>";
+		print "<center><table width='100%' cellpadding=1 cellspacing=0><tr><td>";
+		print "<table width='100%'><tr><td>$message</td><tr></table></table></center><br>";
 		print 'Sending Message...<br><br>';
 
 		$global_alert_address = read_config_option('settings_test_email');
@@ -3382,8 +3382,8 @@ function email_test() {
 		print 'Message Not Sent due to ping failure.<br><br>';
 	}
 
-	print "<center><table width='95%' cellpadding=1 cellspacing=0 bgcolor=black><tr><td>";
-	print "<table width='100%' bgcolor=white><tr><td>$errors</td><tr></table></table></center>";
+	print "<center><table width='100%' cellpadding=1 cellspacing=0><tr><td>";
+	print "<table width='100%'><tr><td>$errors</td><tr></table></table></center>";
 }
 
 /*	gethostbyaddr_wtimeout - This function provides a good method of performing

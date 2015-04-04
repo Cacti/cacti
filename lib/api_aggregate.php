@@ -1002,8 +1002,8 @@ function aggregate_get_data_sources($graph_array, &$data_sources, &$graph_templa
 
 		if (sizeof($used_graph_templates) > 1) {
 			# this is invalid! STOP
-			print "<tr><td colspan='2' class='textArea' bgcolor='#" . $colors["form_alternate1"] . "'>" .
-			"<p>The Graphs chosen for the Aggregate Graph below represent Graphs from multiple Graph Templates. 
+			print "<tr><td colspan='2' class='textArea'>
+			<p>The Graphs chosen for the Aggregate Graph below represent Graphs from multiple Graph Templates. 
 			Aggregate does not support creating Aggregate Graphs from multiple Graph Templates.</p>";
 			print "<ul>";
 			foreach ($used_graph_templates as $graph_template) {
@@ -1026,8 +1026,8 @@ function aggregate_get_data_sources($graph_array, &$data_sources, &$graph_templa
 			<?php
 		} elseif (sizeof($used_graph_templates) < 1) {
 			/* selected graphs do not use templates */
-			print "<tr><td colspan='2' class='textArea' bgcolor='#" . $colors["form_alternate1"] . "'>" .
-			"<p>The Graphs chosen for the Aggregate Graph do not use Graph Templates. 
+			print "<tr><td colspan='2' class='textArea'>
+			<p>The Graphs chosen for the Aggregate Graph do not use Graph Templates. 
 			Aggregate does not support creating Aggregate Graphs from non-templated graphs.</p>";
 			print "</td></tr>";
 
@@ -1241,7 +1241,7 @@ function draw_aggregate_graph_items_list($_graph_id = 0, $_graph_template_id = 0
 			$i++;
 		}
 	}else{
-		print "<tr bgcolor='#" . $colors["form_alternate2"] . "'><td colspan='7'><em>No Items</em></td></tr>";
+		print "<tr><td colspan='7'><em>No Items</em></td></tr>";
 	}
 
 	html_end_box();

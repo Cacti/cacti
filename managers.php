@@ -1010,7 +1010,7 @@ function form_actions(){
 			}
 
 			print "	<tr>
-					<td align='right' bgcolor='#eaeaea'>
+					<td align='right' class='saveRow'>
 					<input type='hidden' name='action' value='actions'>
 					<input type='hidden' name='action_receiver_notifications' value='1'>
 					<input type='hidden' name='selected_items' value='" . (isset($selected_items) ? serialize($selected_items) : '') . "'>
