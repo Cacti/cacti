@@ -846,8 +846,8 @@ function automation_graph_rules() {
 	$i = 0;
 	if (sizeof($automation_graph_rules_list) > 0) {
 		foreach ($automation_graph_rules_list as $automation_graph_rules) {
-			$snmp_query_name 		= ((empty($automation_graph_rules['snmp_query_name'])) 	 ? '<em>None</em>' : $automation_graph_rules['snmp_query_name']);
-			$graph_type_name 		= ((empty($automation_graph_rules['graph_type_name'])) 	 ? '<em>None</em>' : $automation_graph_rules['graph_type_name']);
+			$snmp_query_name 		= ((empty($automation_graph_rules['snmp_query_name'])) 	 ? '<em>None</em>' : htmlspecialchars($automation_graph_rules['snmp_query_name']));
+			$graph_type_name 		= ((empty($automation_graph_rules['graph_type_name'])) 	 ? '<em>None</em>' : htmlspecialchars($automation_graph_rules['graph_type_name']));
 
 			form_alternate_row_color($colors['alternate'], $colors['light'], $i, 'line' . $automation_graph_rules['id']); $i++;
 

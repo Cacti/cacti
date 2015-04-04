@@ -786,7 +786,7 @@ function utilities_view_user_log() {
 			form_alternate_row('', true);
 			?>
 			<td style='white-space:nowrap;'>
-				<?php print (strlen(get_request_var_request('filter')) ? (preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", $item['username'])) : $item['username']);?>
+				<?php print (strlen(get_request_var_request('filter')) ? (preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($item['username']))) : htmlspecialchars($item['username']));?>
 			</td>
 			<td style='white-space:nowrap;'>
 				<?php if (isset($item['full_name'])) {
@@ -805,13 +805,13 @@ function utilities_view_user_log() {
 				?>
 			</td>
 			<td style='white-space:nowrap;'>
-				<?php print (strlen(get_request_var_request('filter')) ? (preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span style='filteredValue'>\\1</span>", $item['time'])) : $item['time']);?>
+				<?php print (strlen(get_request_var_request('filter')) ? (preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span style='filteredValue'>\\1</span>", htmlspecialchars($item['time']))) : htmlspecialchars($item['time']));?>
 			</td>
 			<td style='white-space:nowrap;'>
 				<?php print ($item['result'] == 0 ? 'Failed':($item['result'] == 1 ? 'Success - Pswd':'Success - Token'));?>
 			</td>
 			<td style='white-space:nowrap;'>
-				<?php print (strlen(get_request_var_request('filter')) ? (preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", $item['ip'])) : $item['ip']);?>
+				<?php print (strlen(get_request_var_request('filter')) ? (preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($item['ip']))) : htmlspecialchars($item['ip']));?>
 			</td>
 			</tr>
 			<?php
@@ -1425,8 +1425,8 @@ function utilities_view_snmp_cache() {
 			print "<tr class='$class'>\n";
 			?>
 			<td>
-				Device: <?php print (strlen(get_request_var_request('filter')) ? (preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", $item['description'])) : $item['description']);?>
-				, SNMP Query: <?php print (strlen(get_request_var_request('filter')) ? (preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", $item['name'])) : $item['name']);?>
+				Device: <?php print (strlen(get_request_var_request('filter')) ? (preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($item['description']))) : htmlspecialchars($item['description']));?>
+				, SNMP Query: <?php print (strlen(get_request_var_request('filter')) ? (preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($item['name']))) : htmlspecialchars($item['name']));?>
 			</td>
 			</tr>
 			<?php
@@ -1434,15 +1434,15 @@ function utilities_view_snmp_cache() {
 			?>
 			<td>
 				Index: <?php print $item['snmp_index'];?>
-				, Field Name: <?php print (strlen(get_request_var_request('filter')) ? (preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", $item['field_name'])) : $item['field_name']);?>
-				, Field Value: <?php print (strlen(get_request_var_request('filter')) ? (preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", $item['field_value'])) : $item['field_value']);?>
+				, Field Name: <?php print (strlen(get_request_var_request('filter')) ? (preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($item['field_name']))) : htmlspecialchars($item['field_name']));?>
+				, Field Value: <?php print (strlen(get_request_var_request('filter')) ? (preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($item['field_value']))) : htmlspecialchars($item['field_value']));?>
 			</td>
 			</tr>
 			<?php
 			print "<tr class='$class'>\n";
 			?>
 			<td>
-				OID: <?php print (strlen(get_request_var_request('filter')) ? (preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", $item['oid'])) : $item['oid']);?>
+				OID: <?php print (strlen(get_request_var_request('filter')) ? (preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($item['oid']))) : htmlspecialchars($item['oid']));?>
 			</td>
 			</tr>
 			<?php
@@ -1702,7 +1702,7 @@ function utilities_view_poller_cache() {
 		print "<tr class='$class'>\n";
 			?>
 			<td width="375">
-				<a class="linkEditMain" href="<?php print htmlspecialchars('data_sources.php?action=ds_edit&id=' . $item['local_data_id']);?>"><?php print (strlen(get_request_var_request('filter')) ? preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", $item['name_cache']):$item['name_cache']);?></a>
+				<a class="linkEditMain" href="<?php print htmlspecialchars('data_sources.php?action=ds_edit&id=' . $item['local_data_id']);?>"><?php print (strlen(get_request_var_request('filter')) ? preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($item['name_cache'])):htmlspecialchars($item['name_cache']));?></a>
 			</td>
 
 			<td>
@@ -1712,16 +1712,16 @@ function utilities_view_poller_cache() {
 					$details =
 						'SNMP Version: ' . $item['snmp_version'] . ', ' .
 						'Community: ' . $item['snmp_community'] . ', ' .
-						'OID: ' . (strlen(get_request_var_request('filter')) ? (preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", $item['arg1'])) : $item['arg1']);
+						'OID: ' . (strlen(get_request_var_request('filter')) ? (preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($item['arg1']))) : htmlspecialchars($item['arg1']));
 				}else{
 					$details =
 						'SNMP Version: ' . $item['snmp_version'] . ', ' .
 						'User: ' . $item['snmp_username'] . ', OID: ' . $item['arg1'];
 				}
 			}elseif ($item['action'] == 1) {
-					$details = 'Script: ' . (strlen(get_request_var_request('filter')) ? (preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", $item['arg1'])) : $item['arg1']);
+					$details = 'Script: ' . (strlen(get_request_var_request('filter')) ? (preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($item['arg1']))) : htmlspecialchars($item['arg1']));
 			}else{
-					$details = 'Script Server: ' . (strlen(get_request_var_request('filter')) ? (preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", $item['arg1'])) : $item['arg1']);
+					$details = 'Script Server: ' . (strlen(get_request_var_request('filter')) ? (preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($item['arg1']))) : htmlspecialchars($item['arg1']));
 			}
 
 			print $details;
@@ -2390,11 +2390,11 @@ function snmpagent_utilities_run_cache() {
 	if (sizeof($snmp_cache) > 0) {
 		foreach ($snmp_cache as $item) {
 
-			$oid = (strlen(get_request_var_request('filter')) ? (preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", $item['oid'])) : $item['oid']);
-			$name = (strlen(get_request_var_request('filter')) ? (preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", $item['name'])): $item['name']);
-			$mib = (strlen(get_request_var_request('filter')) ? (preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", $item['mib'])): $item['mib']);
+			$oid = (strlen(get_request_var_request('filter')) ? (preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($item['oid']))) : htmlspecialchars($item['oid']));
+			$name = (strlen(get_request_var_request('filter')) ? (preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($item['name']))): htmlspecialchars($item['name']));
+			$mib = (strlen(get_request_var_request('filter')) ? (preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($item['mib']))): htmlspecialchars($item['mib']));
 
-			$max_access = (strlen(get_request_var_request('filter')) ? (preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", $item['max-access'])) : $item['max-access']);
+			$max_access = (strlen(get_request_var_request('filter')) ? (preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($item['max-access']))) : htmlspecialchars($item['max-access']));
 
 			form_alternate_row('line' . $item['oid'], false);
 			form_selectable_cell( $oid, $item['oid']);
@@ -2661,15 +2661,15 @@ function snmpagent_utilities_run_eventlog(){
 
 	if (sizeof($logs) > 0) {
 		foreach ($logs as $item) {
-			$varbinds = (strlen(get_request_var_request('filter')) ? (preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", $item['varbinds'])): $item['varbinds']);
+			$varbinds = (strlen(get_request_var_request('filter')) ? (preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($item['varbinds']))): htmlspecialchars($item['varbinds']));
 			form_alternate_row('line' . $item['id'], false);
 			print "<td title='Severity Level: " . $severity_levels[ $item['severity'] ] . "' style='width:10px;background-color: " . $severity_colors[ $item['severity'] ] . ";border-top:1px solid white;border-bottom:1px solid white;'></td>";
 			print "<td style='white-space: nowrap;'>" . date( 'Y/m/d H:i:s', $item['time']) . '</td>';
 			print '<td>' . $item['hostname'] . '</td>';
 			if($item['description']) {
-				print '<td><a href="#" title="<div class=\'header\'>' . $item['notification'] . '</div><div class=\'content preformatted\'>' . $item['description']. '</div>" class="tooltip">' . $item['notification'] . '</a></td>';
+				print '<td><a href="#" title="<div class=\'header\'>' . htmlspecialchars($item['notification'], ENT_QUOTES) . '</div><div class=\'content preformatted\'>' . htmlspecialchars($item['description'], ENT_QUOTES) . '</div>" class="tooltip">' . htmlspecialchars($item['notification']) . '</a></td>';
 			}else {
-				print "<td>{$item['notification']}</td>";
+				print "<td>" . htmlspecialchars($item['notification']) . "</td>";
 			}
 			print "<td>$varbinds</td>";
 			form_end_row();

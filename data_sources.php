@@ -1370,7 +1370,7 @@ function ds() {
 			$poller_interval    = ((isset($poller_intervals[$data_source['local_data_id']])) ? $poller_intervals[$data_source['local_data_id']] : 0);
 
 			form_alternate_row('line' . $data_source['local_data_id'], true);
-			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars('data_sources.php?action=ds_edit&id=' . $data_source['local_data_id']) . "' title='" . htmlspecialchars($data_source['name_cache'], ENT_QUOTES) . "'>" . ((get_request_var_request('filter') != '') ? preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", title_trim(htmlspecialchars($data_source['name_cache']), read_config_option('max_title_length'))) : title_trim(htmlspecialchars($data_source['name_cache']), read_config_option('max_title_length'))) . '</a>', $data_source['local_data_id']);
+			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars('data_sources.php?action=ds_edit&id=' . $data_source['local_data_id']) . "'>" . ((get_request_var_request('filter') != '') ? preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", title_trim(htmlspecialchars($data_source['name_cache']), read_config_option('max_title_length'))) : title_trim(htmlspecialchars($data_source['name_cache']), read_config_option('max_title_length'))) . '</a>', $data_source['local_data_id']);
 			form_selectable_cell($data_source['local_data_id'], $data_source['local_data_id'], '', 'text-align:right');
 			form_selectable_cell($data_input_name, $data_source['local_data_id']);
 			form_selectable_cell(get_poller_interval($poller_interval), $data_source['local_data_id']);

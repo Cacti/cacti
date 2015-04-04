@@ -950,7 +950,7 @@ function data_query() {
 			form_selectable_cell($disabled ? 'No':'Yes', $snmp_query['id'], '', 'text-align:right');
 			form_selectable_cell(number_format($snmp_query['graphs']), $snmp_query['id'], '', 'text-align:right');
 			form_selectable_cell(number_format($snmp_query['templates']), $snmp_query['id'], '', 'text-align:right');
-			form_selectable_cell((strlen(get_request_var_request('filter')) ? preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", $snmp_query['data_input_method']) : $snmp_query['data_input_method']), $snmp_query['id']);
+			form_selectable_cell((strlen(get_request_var_request('filter')) ? preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($snmp_query['data_input_method'])) : htmlspecialchars($snmp_query['data_input_method'])), $snmp_query['id']);
 			form_selectable_cell($snmp_query['id'], $snmp_query['id'], '', 'text-align:right;');
 			form_checkbox_cell($snmp_query['name'], $snmp_query['id'], $disabled);
 			form_end_row();

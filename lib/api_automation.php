@@ -266,10 +266,10 @@ function display_matching_hosts($rule, $rule_type, $url) {
 		foreach ($hosts as $host) {
 			form_alternate_row('line' . $host['host_id'], true);
 			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars('host.php?action=edit&id=' . $host['host_id']) . "'>" .
-				(strlen(get_request_var_request('filter')) ? preg_replace('/(' . preg_quote(get_request_var_request('filter')) . ')/i', "<span class='filteredValue'>\\1</span>", $host['description']) : $host['description']) . '</a>', $host['host_id']);
-			form_selectable_cell((strlen(get_request_var_request('filter')) ? preg_replace('/(' . preg_quote(get_request_var_request('filter')) . ')/i', "<span class='filteredValue'>\\1</span>", $host['hostname']) : $host['hostname']), $host['host_id']);
+				(strlen(get_request_var_request('filter')) ? preg_replace('/(' . preg_quote(get_request_var_request('filter')) . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($host['description'])) : htmlspecialchars($host['description'])) . '</a>', $host['host_id']);
+			form_selectable_cell((strlen(get_request_var_request('filter')) ? preg_replace('/(' . preg_quote(get_request_var_request('filter')) . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($host['hostname'])) : htmlspecialchars($host['hostname'])), $host['host_id']);
 			form_selectable_cell(get_colored_device_status(($host['disabled'] == 'on' ? true : false), $host['status']), $host['host_id']);
-			form_selectable_cell((strlen(get_request_var_request('filter')) ? preg_replace('/(' . preg_quote(get_request_var_request('filter')) . ')/i', "<span class='filteredValue'>\\1</span>", $host['host_template_name']) : $host['host_template_name']), $host['host_id']);
+			form_selectable_cell((strlen(get_request_var_request('filter')) ? preg_replace('/(' . preg_quote(get_request_var_request('filter')) . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($host['host_template_name'])) : htmlspecialchars($host['host_template_name'])), $host['host_id']);
 			form_selectable_cell(round(($host['host_id']), 2), $host['host_id']);
 			form_selectable_cell((isset($host_graphs[$host['host_id']]) ? $host_graphs[$host['host_id']] : 0), $host['host_id']);
 			form_selectable_cell((isset($host_data_sources[$host['host_id']]) ? $host_data_sources[$host['host_id']] : 0), $host['host_id']);
@@ -527,16 +527,16 @@ function display_matching_graphs($rule, $rule_type, $url) {
 
 	if (sizeof($graph_list)) {
 		foreach ($graph_list as $graph) {
-			$template_name = ((empty($graph['name'])) ? '<em>None</em>' : $graph['name']);
+			$template_name = ((empty($graph['name'])) ? '<em>None</em>' : htmlspecialchars($graph['name']));
 			form_alternate_row_color('line' . $graph['local_graph_id'], true);
 
 			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars("host.php?action=edit&id=" . $graph['host_id']) . "'>" .
-				(strlen(get_request_var_request('filter')) ? reg_replace('/(' . preg_quote(get_request_var_request('filter')) . ')/i', "<span class='filteredValue'>\\1</span>", $graph['description']) : $graph['description']) . '</a>', $graph['host_id']);
-			form_selectable_cell((strlen(get_request_var_request('filter')) ? preg_replace('/(' . preg_quote(get_request_var_request('filter')) . ')/i', "<span class='filteredValue'>\\1</span>", $graph['hostname']) : $graph['hostname']), $graph['host_id']);
-			form_selectable_cell((strlen(get_request_var_request('filter')) ? preg_replace('/(' . preg_quote(get_request_var_request('filter')) . ')/i', "<span class='filteredValue;'>\\1</span>", $graph['host_template_name']) : $graph['host_template_name']), $graph['host_id']);
+				(strlen(get_request_var_request('filter')) ? reg_replace('/(' . preg_quote(get_request_var_request('filter')) . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($graph['description'])) : htmlspecialchars($graph['description'])) . '</a>', $graph['host_id']);
+			form_selectable_cell((strlen(get_request_var_request('filter')) ? preg_replace('/(' . preg_quote(get_request_var_request('filter')) . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($graph['hostname'])) : htmlspecialchars($graph['hostname'])), $graph['host_id']);
+			form_selectable_cell((strlen(get_request_var_request('filter')) ? preg_replace('/(' . preg_quote(get_request_var_request('filter')) . ')/i', "<span class='filteredValue;'>\\1</span>", htmlspecialchars($graph['host_template_name'])) : htmlspecialchars($graph['host_template_name'])), $graph['host_id']);
 			form_selectable_cell(get_colored_device_status(($graph['disabled'] == 'on' ? true : false), $graph['status']), $graph['host_id']);
 
-			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars('graphs.php?action=graph_edit&id=' . $graph['local_graph_id']) . "' title='" . htmlspecialchars($graph['title_cache']) . "'>" . ((get_request_var_request('filter') != '') ? preg_replace('/(' . preg_quote(get_request_var_request('filter')) . ')/i', "<span class='filteredValue'>\\1</span>", title_trim($graph['title_cache'], read_config_option('max_title_graph'))) : title_trim($graph['title_cache'], read_config_option('max_title_graph'))) . '</a>', $graph['local_graph_id']);
+			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars('graphs.php?action=graph_edit&id=' . $graph['local_graph_id']) . "'>" . ((get_request_var_request('filter') != '') ? preg_replace('/(' . preg_quote(get_request_var_request('filter')) . ')/i', "<span class='filteredValue'>\\1</span>", title_trim(htmlspecialchars($graph['title_cache']), read_config_option('max_title_graph'))) : title_trim(htmlspecialchars($graph['title_cache']), read_config_option('max_title_graph'))) . '</a>', $graph['local_graph_id']);
 			form_selectable_cell($graph['local_graph_id'], $graph['local_graph_id']);
 			form_selectable_cell(((get_request_var_request('filter') != '') ? preg_replace('(' . preg_quote(get_request_var_request('filter')) . ')/i', "<span class='filteredValue;'>\\1</span>", $template_name) : $template_name) . '</a>', $graph['local_graph_id']);
 			form_end_row();
@@ -1017,9 +1017,9 @@ function display_matching_trees ($rule_id, $rule_type, $item, $url) {
 			
 			form_alternate_row('line' . $template['host_id'], true);
 			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars("host.php?action=edit&id=" . $template['host_id']) . "'>" .
-				(strlen(get_request_var_request('filter')) ? preg_replace('/(' . preg_quote(get_request_var_request('filter')) . ')/i', "<span class='filteredValue'>\\1</span>", $template['description']) : $template['description']) . '</a>', $template['host_id']);
-			form_selectable_cell((strlen(get_request_var_request('filter')) ? preg_replace('/(' . preg_quote(get_request_var_request('filter')) . ')/i', "<span class='filteredValue'>\\1</span>", $template['hostname']) : $template['hostname']), $template['host_id']);
-			form_selectable_cell((strlen(get_request_var_request('filter')) ? preg_replace('/(' . preg_quote(get_request_var_request('filter')) . ')/i', "<span class='filteredValue'>\\1</span>", $template['host_template_name']) : $template['host_template_name']), $template['host_id']);
+				(strlen(get_request_var_request('filter')) ? preg_replace('/(' . preg_quote(get_request_var_request('filter')) . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($template['description'])) : htmlspecialchars($template['description'])) . '</a>', $template['host_id']);
+			form_selectable_cell((strlen(get_request_var_request('filter')) ? preg_replace('/(' . preg_quote(get_request_var_request('filter')) . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($template['hostname'])) : htmlspecialchars($template['hostname'])), $template['host_id']);
+			form_selectable_cell((strlen(get_request_var_request('filter')) ? preg_replace('/(' . preg_quote(get_request_var_request('filter')) . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($template['host_template_name'])) : htmlspecialchars($template['host_template_name'])), $template['host_id']);
 			form_selectable_cell(get_colored_device_status(($template['disabled'] == 'on' ? true : false), $template['status']), $template['host_id']);
 			form_selectable_cell($template['source'], $template['host_id']);
 			form_selectable_cell($repl, $template['host_id']);
