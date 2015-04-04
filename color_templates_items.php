@@ -122,7 +122,7 @@ function aggregate_color_item_movedown() {
 		FROM color_template_items
 		WHERE color_template_item_id=' . $_GET['color_template_item_id'], true);
 
-	aggregate_log('AGGREGATE   movedown Id: ' . $current_sequence['color_template_item_id'] . ' Seq:' . $current_sequence['sequence'], FALSE);
+	cacti_log('movedown Id: ' . $current_sequence['color_template_item_id'] . ' Seq:' . $current_sequence['sequence'], FALSE, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
 
 	$next_sequence = db_fetch_row('SELET color_template_item_id, sequence
 		FROM color_template_items
@@ -130,7 +130,7 @@ function aggregate_color_item_movedown() {
 		AND color_template_id=' . $_GET['color_template_id'] . '
 		ORDER BY sequence ASC limit 1', true);
 
-	aggregate_log('AGGREGATE   movedown Id: ' . $next_sequence['color_template_item_id'] . ' Seq:' . $next_sequence['sequence'], FALSE);
+	cacti_log('movedown Id: ' . $next_sequence['color_template_item_id'] . ' Seq:' . $next_sequence['sequence'], FALSE, POLLER_VERBOSITY_DEBUG);
 
 	db_execute('UPDATE color_template_items
 		SET sequence=' . $next_sequence['sequence'] . '
@@ -157,7 +157,7 @@ function aggregate_color_item_moveup() {
 		FROM color_template_items
 		WHERE color_template_item_id=' . $_GET['color_template_item_id'], true);
 
-	aggregate_log('AGGREGATE   moveup Id: ' . $current_sequence['color_template_item_id'] . ' Seq:' . $current_sequence['sequence'], FALSE);
+	cacti_log('moveup Id: ' . $current_sequence['color_template_item_id'] . ' Seq:' . $current_sequence['sequence'], FALSE, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
 
 	$previous_sequence = db_fetch_row('SELECT color_template_item_id, sequence
 		FROM color_template_items
@@ -165,7 +165,7 @@ function aggregate_color_item_moveup() {
 		AND color_template_id=' . $_GET['color_template_id'] . '
 		ORDER BY sequence DESC limit 1', true);
 
-	aggregate_log('AGGREGATE   moveup Id: ' . $previous_sequence['color_template_item_id'] . ' Seq:' . $previous_sequence['sequence'], FALSE);
+	cacti_log('moveup Id: ' . $previous_sequence['color_template_item_id'] . ' Seq:' . $previous_sequence['sequence'], FALSE, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
 
 	db_execute('UPDATE color_template_items
 		SET sequence=' . $previous_sequence['sequence'] . '

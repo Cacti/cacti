@@ -145,12 +145,6 @@ if (sizeof($parms)) {
 	}
 }
 
-if ($debug) {
-	$level = POLLER_VERBOSITY_NONE;
-}else{
-	$level = POLLER_VERBOSITY_DEBUG;
-}
-
 if ($first == NULL || $last == NULL ) {
 	cacti_log('FATAL: You must either a host range, or no range at all using --first=N --last=N syntax!', true, 'POLLER');
 	exit(-1);

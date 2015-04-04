@@ -104,9 +104,7 @@ function aggregate_form_save() {
 		return null;
 	}
 
-	if (read_config_option('log_verbosity', TRUE) == POLLER_VERBOSITY_DEBUG) {
-		aggregate_log('AGGREGATE GRAPH TEMPLATE Saved ID: ' . $save1['id'] . ' Name: ' . $save1['name'], FALSE);
-	}
+	cacti_log('AGGREGATE GRAPH TEMPLATE Saved ID: ' . $save1['id'] . ' Name: ' . $save1['name'], FALSE, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
 
 	/* do a quick comparison to see if anything changed */
 	if ($is_new == false) {
@@ -135,9 +133,7 @@ function aggregate_form_save() {
 			WHERE aggregate_template_id=$id
 			AND template_propogation='on'");
 
-		if (read_config_option('log_verbosity', TRUE) == POLLER_VERBOSITY_DEBUG) {
-			aggregate_log('AGGREGATE GRAPH TEMPLATE Saved ID: ' . $id, FALSE);
-		}
+		cacti_log('AGGREGATE GRAPH TEMPLATE Saved ID: ' . $id, FALSE, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
 	}else{
 		$id = $save1['id'];
 	}

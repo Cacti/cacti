@@ -128,16 +128,15 @@ function aggregate_color_form_save() {
 		} else {
 			$save1['color_template_id'] = 0;
 		}
+
 		$save1['name'] = form_input_validate(htmlspecialchars($_POST['name']), 'name', '', false, 3);
-		if (read_config_option('log_verbosity', TRUE) == POLLER_VERBOSITY_DEBUG) {
-			aggregate_log('AGGREGATE   Saved ID: ' . $save1['color_template_id'] . ' Name: ' . $save1['name'], FALSE);
-		}
+
+		cacti_log('Saved ID: ' . $save1['color_template_id'] . ' Name: ' . $save1['name'], FALSE, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
 
 		if (!is_error_message()) {
 			$color_template_id = sql_save($save1, 'color_templates', 'color_template_id');
-			if (read_config_option('log_verbosity', TRUE) == POLLER_VERBOSITY_DEBUG) {
-				aggregate_log('AGGREGATE   Saved ID: ' . $color_template_id, FALSE);
-			}
+
+			cacti_log('Saved ID: ' . $color_template_id, FALSE, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
 
 			if ($color_template_id) {
 				raise_message(1);

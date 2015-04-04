@@ -219,13 +219,6 @@ $settings = array(
 			'default' => POLLER_VERBOSITY_LOW,
 			'array' => $logfile_verbosity,
 			),
-        'aggregate_log_verbosity' => array(
-            'friendly_name' => 'Poller Logging Level for AGGREGATE',
-            'description' => 'What level of detail do you want sent to the log file. WARNING: Leaving in any other status than NONE or LOW can exaust your disk space rapidly.',
-            'method' => 'drop_array',
-            'default' => AGGREGATE_LOG_NONE,
-            'array' => $agg_log_verbosity,
-	        ),
 		'poller_log' => array(
 			'friendly_name' => 'Poller Syslog/Eventlog Selection',
 			'description' => 'If you are using the Syslog/Eventlog, What Cacti poller messages should be placed in the Syslog/Eventlog.',

@@ -291,11 +291,6 @@ define('AGGREGATE_ORDER_NONE', 1);
 define('AGGREGATE_ORDER_DS_GRAPH', 2);
 define('AGGREGATE_ORDER_GRAPH_DS', 3);
 
-define('AGGREGATE_DEBUG', read_config_option('aggregate_log_verbosity'), true);
-define('AGGREGATE_LOG_NONE', 1);
-define('AGGREGATE_LOG_FUNCTIONS', 2);
-define('AGGREGATE_LOG_DEBUG', 3);
-
 define('AUTOMATION_OP_NONE', 0);
 define('AUTOMATION_OP_CONTAINS', 1);
 define('AUTOMATION_OP_CONTAINS_NOT', 2);

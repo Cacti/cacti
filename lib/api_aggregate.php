@@ -41,7 +41,7 @@ function aggregate_graph_save($_local_graph_id, $_graph_template_id, $_graph_tit
 	/* install own error handler */
 	set_error_handler("aggregate_error_handler");
 
-	aggregate_log(__FUNCTION__ . " local_graph: " . $_local_graph_id . " template: " . $_graph_template_id . " graph title: " . $_graph_title . " aggregate template: " . $_aggregate_template_id, true, "AGGREGATE", AGGREGATE_LOG_FUNCTIONS);
+	cacti_log(__FUNCTION__ . " local_graph: " . $_local_graph_id . " template: " . $_graph_template_id . " graph title: " . $_graph_title . " aggregate template: " . $_aggregate_template_id, true, "AGGREGATE", POLLER_VERBOSITY_DEVDBG);
 
 	/* store basic graph info */
 	$local_graph_id = aggregate_graph_local_save($_local_graph_id);
@@ -65,7 +65,7 @@ function aggregate_graph_save($_local_graph_id, $_graph_template_id, $_graph_tit
  * @return int ID of graph.
  */
 function aggregate_graph_local_save($id = 0) {
-	aggregate_log(__FUNCTION__ . " local_graph: " . $id, true, "AGGREGATE", AGGREGATE_LOG_FUNCTIONS);
+	cacti_log(__FUNCTION__ . " local_graph: " . $id, true, "AGGREGATE", POLLER_VERBOSITY_DEVDBG);
 
 	/* create or update entry: graph_local */
 	$local_graph["id"]                = (isset($id) ? $id : 0);
@@ -91,7 +91,7 @@ function aggregate_graph_local_save($id = 0) {
  * @return int ID of record in graph_templates_graph
  */
 function aggregate_graph_templates_graph_save($local_graph_id, $graph_template_id, $graph_title = "", $aggregate_template_id = 0, $new_data = array()) {
-	aggregate_log(__FUNCTION__ . " local_graph: " . $local_graph_id . " template: " . $graph_template_id . " title: " . $graph_title . " aggregate template: ". $aggregate_template_id, true, "AGGREGATE", AGGREGATE_LOG_FUNCTIONS);
+	cacti_log(__FUNCTION__ . " local_graph: " . $local_graph_id . " template: " . $graph_template_id . " title: " . $graph_title . " aggregate template: ". $aggregate_template_id, true, "AGGREGATE", POLLER_VERBOSITY_DEVDBG);
 
 	/* base graph must exist */
 	if ($local_graph_id < 1) {
@@ -191,10 +191,11 @@ function aggregate_graphs_insert_graph_items($_new_graph_id, $_old_graph_id, $_g
 	/* install own error handler */
 	set_error_handler("aggregate_error_handler");
 
-	aggregate_log(__FUNCTION__ . " called. Insert example graph:$_old_graph_id Graph Template:$_graph_template_id into Graph:$_new_graph_id"
+	cacti_log(__FUNCTION__ . " called. Insert example graph:$_old_graph_id Graph Template:$_graph_template_id into Graph:$_new_graph_id"
 	. " at Sequence:$_graph_item_sequence Graph_No:$_selected_graph_index"
-	. " Type Action: " . $_graph_type, true, "AGGREGATE", AGGREGATE_LOG_FUNCTIONS);
-	aggregate_log(__FUNCTION__ . " skipping: " . serialize($_skip), true, "AGGREGATE", AGGREGATE_LOG_DEBUG);
+	. " Type Action: " . $_graph_type, true, "AGGREGATE", POLLER_VERBOSITY_DEVDBG);
+
+	cacti_log(__FUNCTION__ . " skipping: " . serialize($_skip), true, "AGGREGATE", POLLER_VERBOSITY_DEBUG);
 
 	# take graph item data from old one
 	if (!empty($_old_graph_id)) {
@@ -322,12 +323,12 @@ function aggregate_graphs_insert_graph_items($_new_graph_id, $_old_graph_id, $_g
 				$prepend = false;
 			} elseif ($prepend && (strlen($save["text_format"]) > 0) && (strlen($_gprint_prefix) > 0)) {
 				$save["text_format"] = substitute_host_data($_gprint_prefix . " " . $save["text_format"], "|", "|", (isset($graph_local["host_id"]) ? $graph_local["host_id"]:0));
-				aggregate_log(__FUNCTION__ . " substituted:" . $save["text_format"], true, "AGGREGATE", AGGREGATE_LOG_DEBUG);
+				cacti_log(__FUNCTION__ . " substituted:" . $save["text_format"], true, "AGGREGATE", POLLER_VERBOSITY_DEBUG);
 
 				/* if this is a data query graph type, try to substitute */
 				if (isset($graph_local["snmp_query_id"]) && $graph_local["snmp_query_id"] > 0 && strlen($graph_local["snmp_index"]) > 0) {
 					$save["text_format"] = substitute_snmp_query_data($save["text_format"], $graph_local["host_id"], $graph_local["snmp_query_id"], $graph_local["snmp_index"], read_config_option("max_data_query_field_length"));
-					aggregate_log(__FUNCTION__ . " substituted:" . $save["text_format"] . " for " . $graph_local["host_id"] . "," . $graph_local["snmp_query_id"] . "," . $graph_local["snmp_index"], true, "AGGREGATE", AGGREGATE_LOG_DEBUG);
+					cacti_log(__FUNCTION__ . " substituted:" . $save["text_format"] . " for " . $graph_local["host_id"] . "," . $graph_local["snmp_query_id"] . "," . $graph_local["snmp_index"], true, "AGGREGATE", POLLER_VERBOSITY_DEVDBG);
 				}
 
 				# no more prepending until next line break is encountered
@@ -345,7 +346,7 @@ function aggregate_graphs_insert_graph_items($_new_graph_id, $_old_graph_id, $_g
 
 			# provide new sequence number
 			$save["sequence"] = $_graph_item_sequence;
-			aggregate_log(__FUNCTION__ . "  hard return: " . $save["hard_return"] . " sequence: " . $_graph_item_sequence, true, "AGGREGATE", AGGREGATE_LOG_DEBUG);
+			cacti_log(__FUNCTION__ . "  hard return: " . $save["hard_return"] . " sequence: " . $_graph_item_sequence, true, "AGGREGATE", POLLER_VERBOSITY_DEBUG);
 
 			$save["id"] 							= 0;
 			$save["local_graph_template_item_id"]	= 0;	# disconnect this graph item from the graph template item
@@ -424,7 +425,7 @@ function aggregate_graph_items_save($items, $table) {
 	$sql .= "(".implode(", ", array_keys($defaults)).") VALUES ";
 	$sql .= implode(", ", $items_sql);
 
-	aggregate_log(__FUNCTION__ . " called. SQL: $sql", true, "AGGREGATE", AGGREGATE_LOG_DEBUG);
+	cacti_log(__FUNCTION__ . " called. SQL: $sql", true, "AGGREGATE", POLLER_VERBOSITY_DEBUG);
 
 	/* remove all old items */
 	db_execute("DELETE FROM $table WHERE ".$id_field."=".$items[0][$id_field]);
@@ -533,8 +534,10 @@ function aggregate_validate_graph_items($posted, &$graph_items) {
  */
 function aggregate_graphs_cleanup($base, $aggregate, $reorder) {
 	global $config;
+
 	include_once($config['base_path'] . "/lib/api_aggregate.php");
-	aggregate_log(__FUNCTION__ . " called. Base " . $base . " Aggregate " . $aggregate . " Reorder: " . $reorder, true, "AGGREGATE", AGGREGATE_LOG_FUNCTIONS);
+
+	cacti_log(__FUNCTION__ . " called. Base " . $base . " Aggregate " . $aggregate . " Reorder: " . $reorder, true, "AGGREGATE", POLLER_VERBOSITY_DEVDBG);
 
 	/* suppress warnings */
 	error_reporting(E_ALL);
@@ -555,8 +558,10 @@ function aggregate_graphs_cleanup($base, $aggregate, $reorder) {
  */
 function aggregate_reorder_ds_graph($base, $graph_template_id, $aggregate, $reorder) {
 	global $config;
+
 	include_once($config['base_path'] . "/lib/api_aggregate.php");
-	aggregate_log(__FUNCTION__ . " called. Base Graph " . $base . " Graph Template " . $graph_template_id . " Aggregate Graph " . $aggregate . " Reorder: " . $reorder, true, "AGGREGATE", AGGREGATE_LOG_FUNCTIONS);
+
+	cacti_log(__FUNCTION__ . " called. Base Graph " . $base . " Graph Template " . $graph_template_id . " Aggregate Graph " . $aggregate . " Reorder: " . $reorder, true, "AGGREGATE", POLLER_VERBOSITY_DEVDBG);
 
 	/* suppress warnings */
 	error_reporting(E_ALL);
@@ -580,7 +585,7 @@ function aggregate_reorder_ds_graph($base, $graph_template_id, $aggregate, $reor
 		$ds_ids = db_fetch_assoc($sql);
 
 		foreach($ds_ids as $ds_id) {
-			aggregate_log( "local_data_template_rrd_id: " . $ds_id["local_data_template_rrd_id"], false, "AGGREGATE", AGGREGATE_LOG_DEBUG);
+			cacti_log("local_data_template_rrd_id: " . $ds_id["local_data_template_rrd_id"], false, "AGGREGATE", POLLER_VERBOSITY_DEBUG);
 			/* get all different task_item_id's
 			 * respecting the order that the aggregated graph has
 			 */
@@ -592,7 +597,7 @@ function aggregate_reorder_ds_graph($base, $graph_template_id, $aggregate, $reor
 				AND dtr.local_data_template_rrd_id=" . $ds_id["local_data_template_rrd_id"] . "
 				ORDER BY sequence";
 
-			aggregate_log(__FUNCTION__ .  " sql: " . $sql, false, "AGGREGATE", AGGREGATE_LOG_DEBUG);
+			cacti_log(__FUNCTION__ .  " sql: " . $sql, false, "AGGREGATE", POLLER_VERBOSITY_DEBUG);
 
 			$items = db_fetch_assoc($sql);
 
@@ -610,7 +615,7 @@ function aggregate_reorder_ds_graph($base, $graph_template_id, $aggregate, $reor
 			AND gti.task_item_id=0
 			ORDER BY sequence";
 
-		aggregate_log($sql, false, "AGGREGATE", AGGREGATE_LOG_DEBUG);
+		cacti_log($sql, false, "AGGREGATE", POLLER_VERBOSITY_DEBUG);
 
 		$empty_task_items = db_fetch_assoc($sql);
 
@@ -623,7 +628,7 @@ function aggregate_reorder_ds_graph($base, $graph_template_id, $aggregate, $reor
 		# now run all updates
 		if (sizeof($updates)) {
 			foreach($updates as $update) {
-				aggregate_log(__FUNCTION__ .  " update: " . $update, false, "AGGREGATE", AGGREGATE_LOG_DEBUG);
+				cacti_log(__FUNCTION__ .  " update: " . $update, false, "AGGREGATE", POLLER_VERBOSITY_DEVDBG);
 				db_execute($update);
 			}
 		}
@@ -762,7 +767,7 @@ function aggregate_create_update(&$local_graph_id, $member_graphs, $attribs) {
 	global $config;
 
 	include_once($config['base_path'] . "/lib/api_aggregate.php");
-	aggregate_log(__FUNCTION__ . " called. Grapg id: $local_graph_id", true, "AGGREGATE", AGGREGATE_LOG_FUNCTIONS);
+	cacti_log(__FUNCTION__ . " called. Grapg id: $local_graph_id", true, "AGGREGATE", POLLER_VERBOSITY_DEVDBG);
 
 	/* suppress warnings */
 	error_reporting(E_ALL);
@@ -863,7 +868,7 @@ function aggregate_create_update(&$local_graph_id, $member_graphs, $attribs) {
 			$j++; $i++;
 		}
 
-		aggregate_log(__FUNCTION__ . "  all items inserted, next item seq: " . $next_item_sequence . " selGraph: " . $i, true, "AGGREGATE", AGGREGATE_LOG_DEBUG);
+		cacti_log(__FUNCTION__ . "  all items inserted, next item seq: " . $next_item_sequence . " selGraph: " . $i, true, "AGGREGATE", POLLER_VERBOSITY_DEBUG);
 
 		/* post processing for pure LINEx graphs
 		 * if we convert to AREA/STACK, the function aggregate_graphs_insert_graph_items
@@ -912,12 +917,12 @@ function aggregate_create_update(&$local_graph_id, $member_graphs, $attribs) {
 					# - explicitely marked as skipped (based on $skipped_items)
 					# - OR NOT marked as "totalling" items
 				for ($k=1; $k<=$item_no; $k++) {
-					aggregate_log(__FUNCTION__ . " old skip: " . (isset($skipped_items[$k]) ? $skipped_items[$k]:''), true, "AGGREGATE", AGGREGATE_LOG_DEBUG);
+					cacti_log(__FUNCTION__ . " old skip: " . (isset($skipped_items[$k]) ? $skipped_items[$k]:''), true, "AGGREGATE", POLLER_VERBOSITY_DEBUG);
 
 					# skip all items, that shall not be totalled
 					if (!isset($total_items[$k])) $skipped_items[$k] = $k;
 
-					aggregate_log(__FUNCTION__ . " new skip: " . (isset($skipped_items[$k]) ? $skipped_items[$k]:''), true, "AGGREGATE", AGGREGATE_LOG_DEBUG);
+					cacti_log(__FUNCTION__ . " new skip: " . (isset($skipped_items[$k]) ? $skipped_items[$k]:''), true, "AGGREGATE", POLLER_VERBOSITY_DEBUG);
 				}
 
 				# add the "templating" graph to the new graph, honoring skipped, hr and color
@@ -1057,9 +1062,10 @@ function aggregate_get_data_sources($graph_array, &$data_sources, &$graph_templa
  */
 function draw_aggregate_graph_items_list($_graph_id = 0, $_graph_template_id = 0, $_object = array()) {
 	global $colors, $config;
-	aggregate_log(__FUNCTION__ . '  called. graph: ' . $_graph_id . ' template: ' . $_graph_template_id, true, 'AGGREGATE', AGGREGATE_LOG_FUNCTIONS);
 
 	include($config['include_path'] . '/global_arrays.php');
+
+	cacti_log(__FUNCTION__ . '  called. graph: ' . $_graph_id . ' template: ' . $_graph_template_id, true, 'AGGREGATE', POLLER_VERBOSITY_DEVDBG);
 
 	if ($_graph_id == 0 && $_graph_template_id == 0) {
 		return null;
@@ -1116,7 +1122,7 @@ function draw_aggregate_graph_items_list($_graph_id = 0, $_graph_template_id = 0
 	}
 	
 	# draw list of graph items
-	html_start_box('<strong>Graph '.($is_templated ? 'Template ' : '').'Items</strong>', '100%', $colors['header'], '3', 'center', '');
+	html_start_box('<strong>Graph '.($is_templated ? 'Template ' : '').'Items</strong>', '100%', '', '3', 'center', '');
 
 	# print column header
 	print "<tr class='tableHeader'>\n";

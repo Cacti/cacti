@@ -943,13 +943,7 @@ $agg_totals_type = array(
 $agg_order_types = array(
 	AGGREGATE_ORDER_NONE      => 'No Reordering',
 	AGGREGATE_ORDER_DS_GRAPH  => 'Data Source, Graph',
-	#AGGREGATE_ORDER_GRAPH_DS => 'Graph, Data Source',
-);
-
-$agg_log_verbosity = array(
-	AGGREGATE_LOG_NONE          => "No AGGREGATE logging",
-	AGGREGATE_LOG_FUNCTIONS     => "Log function calls",
-	AGGREGATE_LOG_DEBUG         => "Log everything",
+	AGGREGATE_ORDER_GRAPH_DS => 'Graph, Data Source',
 );
 
 # operators for use with SQL/pattern matching

@@ -224,7 +224,7 @@ function aggregate_error_handler($errno, $errmsg, $filename, $linenum, $vars) {
 		if (substr_count($errmsg, "Only variables")) return;
 
 		/* log the error to the Cacti log */
-		aggregate_log("PROGERR: " . $err, false, "AGGREGATE", AGGREGATE_LOG_DEBUG);
+		cacti_log("PROGERR: " . $err, false, "AGGREGATE", POLLER_VERBOSITY_DEBUG);
 		print("PROGERR: " . $err . "<br><pre>");# print_r($vars); print("</pre>");
 
 		# backtrace, if available
@@ -259,7 +259,7 @@ function aggregate_error_handler($errno, $errmsg, $filename, $linenum, $vars) {
  + @returns int					- the next available sequence id
  */
 function get_next_sequence($id, $field, $table_name, $group_query, $key_field="id") {
-	aggregate_log(__FUNCTION__ . "  called. Id: " . $id . " field: " . $field . " table: " . $table_name, true, "AGGREGATE", AGGREGATE_LOG_FUNCTIONS);
+	cacti_log(__FUNCTION__ . "  called. Id: " . $id . " field: " . $field . " table: " . $table_name, true, "AGGREGATE", POLLER_VERBOSITY_DEVDBG);
 	if (empty($id)) {
 		$data = db_fetch_row("select max($field)+1 as seq from $table_name where $group_query");
 
@@ -280,7 +280,7 @@ function get_next_sequence($id, $field, $table_name, $group_query, $key_field="i
  * @return bool					- true, if pure STACKed graph
  */
 function aggregate_is_pure_stacked_graph($_local_graph_id) {
-	aggregate_log(__FUNCTION__ . " local_graph: " . $_local_graph_id, true, "AGGREGATE", AGGREGATE_LOG_FUNCTIONS);
+	cacti_log(__FUNCTION__ . " local_graph: " . $_local_graph_id, true, "AGGREGATE", POLLER_VERBOSITY_DEVDBG);
 
 	$_pure_stacked_graph = false;
 
@@ -295,14 +295,15 @@ function aggregate_is_pure_stacked_graph($_local_graph_id) {
 					"," . GRAPH_ITEM_TYPE_LINE2 .
 					"," . GRAPH_ITEM_TYPE_LINE3 .
 					")");
-		aggregate_log(__FUNCTION__ . " #AREA/LINEx items: " . $_count, true, "AGGREGATE", AGGREGATE_LOG_FUNCTIONS);
+
+		cacti_log(__FUNCTION__ . " #AREA/LINEx items: " . $_count, true, "AGGREGATE", POLLER_VERBOSITY_DEVDBG);
+
 		/* if there's at least one AREA item, this is NOT a pure LINEx graph
 		 * if there's NO AREA item, this IS a pure LINEx graph
 		 * in case we find STACKs, there must be at least one AREA as well, or the graph itself is malformed
 		 * this would fail on a PURE GPRINT/HRULE/VRULE graph as well, but that is malformed, too
 		 */
 		$_pure_stacked_graph = ($_count == 0);
-
 	}
 
 	return $_pure_stacked_graph;
@@ -314,7 +315,7 @@ function aggregate_is_pure_stacked_graph($_local_graph_id) {
  * @return bool					- true, if pure STACKed graph
  */
 function aggregate_is_stacked_graph($_local_graph_id) {
-	aggregate_log(__FUNCTION__ . " local_graph: " . $_local_graph_id, true, "AGGREGATE", AGGREGATE_LOG_FUNCTIONS);
+	cacti_log(__FUNCTION__ . " local_graph: " . $_local_graph_id, true, "AGGREGATE", POLLER_VERBOSITY_DEVDBG);
 
 	$_pure_stacked_graph = false;
 
@@ -324,7 +325,9 @@ function aggregate_is_stacked_graph($_local_graph_id) {
 					"FROM graph_templates_item " .
 					"WHERE graph_templates_item.local_graph_id=$_local_graph_id " .
 					"AND graph_templates_item.graph_type_id =" . GRAPH_ITEM_TYPE_STACK);
-		aggregate_log(__FUNCTION__ . " #AREA/LINEx items: " . $_count, true, "AGGREGATE", AGGREGATE_LOG_FUNCTIONS);
+
+		cacti_log(__FUNCTION__ . " #AREA/LINEx items: " . $_count, true, "AGGREGATE", POLLER_VERBOSITY_DEVDBG);
+
 		/* if there's at least one AREA item, this is NOT a pure LINEx graph
 		 * if there's NO AREA item, this IS a pure LINEx graph
 		 * in case we find STACKs, there must be at least one AREA as well, or the graph itself is malformed
@@ -345,9 +348,9 @@ function aggregate_is_stacked_graph($_local_graph_id) {
  * @param int $_graph_item_sequence	- no of next item
  */
 function aggregate_convert_to_stack($_graph_item_type, $_old_graph_id, $_graph_no, $_graph_item_sequence) {
-	# globals used
 	global $graph_item_types;
-	aggregate_log(__FUNCTION__ . "  called: Item type:" . $graph_item_types{$_graph_item_type} . " graph: " . $_graph_no . " item: " . $_graph_item_sequence, true, "AGGREGATE", AGGREGATE_LOG_FUNCTIONS);
+
+	cacti_log(__FUNCTION__ . "  called: Item type:" . $graph_item_types{$_graph_item_type} . " graph: " . $_graph_no . " item: " . $_graph_item_sequence, true, "AGGREGATE", POLLER_VERBOSITY_DEVDBG);
 
 	if ($_graph_no === 0) {
 		/* this one converts the first graph only
@@ -374,7 +377,7 @@ function aggregate_convert_to_stack($_graph_item_type, $_old_graph_id, $_graph_n
 	}
 
 
-	aggregate_log(__FUNCTION__ . "  return: Item type:" . $graph_item_types{$_graph_item_type} . " graph: " . $_graph_no, true, "AGGREGATE", AGGREGATE_LOG_FUNCTIONS);
+	cacti_log(__FUNCTION__ . "  return: Item type:" . $graph_item_types{$_graph_item_type} . " graph: " . $_graph_no, true, "AGGREGATE", POLLER_VERBOSITY_DEVDBG);
 
 	return $_graph_item_type;
 }
@@ -387,24 +390,24 @@ function aggregate_convert_to_stack($_graph_item_type, $_old_graph_id, $_graph_n
  * @return int					- new graph_item_type
  */
 function aggregate_convert_graph_type($_graph_item_type, $_graph_type) {
-	# globals used
 	global $graph_item_types;
-	aggregate_log(__FUNCTION__ . "  called: Item Type: " . $graph_item_types{$_graph_item_type} . " new item type: " . $_graph_type, true, "AGGREGATE", AGGREGATE_LOG_FUNCTIONS);
+
+	cacti_log(__FUNCTION__ . "  called: Item Type: " . $graph_item_types{$_graph_item_type} . " new item type: " . $_graph_type, true, "AGGREGATE", POLLER_VERBOSITY_DEVDBG);
 
 	if (preg_match("/(AREA|STACK)/", $graph_item_types{$_graph_item_type})) {
 		/* change AREA|STACK statements only */
-		aggregate_log(__FUNCTION__ . "  return: Item type:" . $graph_item_types{$_graph_type}, true, "AGGREGATE", AGGREGATE_LOG_FUNCTIONS);
+		cacti_log(__FUNCTION__ . "  return: Item type:" . $graph_item_types{$_graph_type}, true, "AGGREGATE", POLLER_VERBOSITY_DEVDBG);
+
 		return $_graph_type;
 	} else {
-		aggregate_log(__FUNCTION__ . "  return: Item type:" . $graph_item_types{$_graph_item_type}, true, "AGGREGATE", AGGREGATE_LOG_FUNCTIONS);
+		cacti_log(__FUNCTION__ . "  return: Item type:" . $graph_item_types{$_graph_item_type}, true, "AGGREGATE", POLLER_VERBOSITY_DEVDBG);
+
 		return $_graph_item_type;
 	}
 }
 
-
-
 function aggregate_conditional_convert_graph_type($_graph_id, $_old_type, $_new_type) {
-	aggregate_log(__FUNCTION__ . "  called: graph: " . $_graph_id . " old item type: " . $_old_type . " new item type: " . $_new_type, true, "AGGREGATE", AGGREGATE_LOG_FUNCTIONS);
+	cacti_log(__FUNCTION__ . "  called: graph: " . $_graph_id . " old item type: " . $_old_type . " new item type: " . $_new_type, true, "AGGREGATE", POLLER_VERBOSITY_DEVDBG);
 
 	if (!empty($_graph_id) && !empty($_old_type)) {
 		/* fetch the first item of requested graph_type */
@@ -419,7 +422,7 @@ function aggregate_conditional_convert_graph_type($_graph_id, $_old_type, $_new_
 }
 
 function aggregate_change_graph_type($graph_index, $old_graph_type, $new_graph_type) {
-	aggregate_log(__FUNCTION__ . " called. Index " . $graph_index . " old type " . $old_graph_type . " Graph Type: " . $new_graph_type, true, "AGGREGATE", AGGREGATE_LOG_FUNCTIONS);
+	cacti_log(__FUNCTION__ . " called. Index " . $graph_index . " old type " . $old_graph_type . " Graph Type: " . $new_graph_type, true, "AGGREGATE", POLLER_VERBOSITY_DEVDBG);
 
 	/* LEGEND entries and xRULEs stay unchanged
 	 * xRULEs honestly do not make much sense on an aggregated graph, though */
@@ -498,7 +501,7 @@ function aggregate_change_graph_type($graph_index, $old_graph_type, $new_graph_t
  * @param string $color_template_title	- title of the duplicated color template
  */
 function duplicate_color_template($_color_template_id, $color_template_title) {
-	aggregate_log(__FUNCTION__ . "  called. Color Template Id: " . $_color_template_id . " Title: " . $color_template_title, true, "AGGREGATE", AGGREGATE_LOG_FUNCTIONS);
+	cacti_log(__FUNCTION__ . "  called. Color Template Id: " . $_color_template_id . " Title: " . $color_template_title, true, "AGGREGATE", POLLER_VERBOSITY_DEVDBG);
 
 	/* fetch data from table color_templates */
 	$color_template = db_fetch_row("select *
@@ -515,7 +518,7 @@ function duplicate_color_template($_color_template_id, $color_template_title) {
 	/* substitute the title variable */
 	$save["name"] = str_replace("<template_title>", $color_template["name"], $color_template_title);
 
-	aggregate_log("function: duplicate_color_template called. Id:" . $_color_template_id . " Title: " . $color_template_title . " Replaced: " . $save["name"], true, "AGGREGATE", AGGREGATE_LOG_DEBUG);
+	cacti_log("function: duplicate_color_template called. Id:" . $_color_template_id . " Title: " . $color_template_title . " Replaced: " . $save["name"], true, "AGGREGATE", POLLER_VERBOSITY_DEVDBG);
 
 	$new_color_template_id = sql_save($save, "color_templates", "color_template_id");
 
@@ -528,7 +531,9 @@ function duplicate_color_template($_color_template_id, $color_template_title) {
 			$save["color_template_id"] = $new_color_template_id;
 			$save["color_id"] = $color_template_item["color_id"];
 			$save["sequence"] = $color_template_item["sequence"];
-			aggregate_log("function: duplicate_color_template called. Id:" . $new_color_template_id . " Color: " . $save["color_id"] . " sequence: " . $save["sequence"], true, "AGGREGATE", AGGREGATE_LOG_DEBUG);
+
+			cacti_log("function: duplicate_color_template called. Id:" . $new_color_template_id . " Color: " . $save["color_id"] . " sequence: " . $save["sequence"], true, "AGGREGATE", POLLER_VERBOSITY_DEBUG);
+
 			$new_color_template_item_id = sql_save($save, "color_template_items", "color_template_item_id");
 			unset($save);
 		}
@@ -542,7 +547,7 @@ function aggregate_cdef_make0() {
 	global $config;
 	include_once($config['base_path'] . "/lib/cdef.php");
 
-	aggregate_log(__FUNCTION__ . " called", true, "AGGREGATE", AGGREGATE_LOG_FUNCTIONS);
+	cacti_log(__FUNCTION__ . " called", true, "AGGREGATE", POLLER_VERBOSITY_DEVDBG);
 
 	# magic name of new cdef
 	$magic   = "_MAKE 0";
@@ -561,7 +566,7 @@ function aggregate_cdef_make0() {
 	# save the cdef itself
 	$new_cdef_id  = sql_save($save, "cdef");
 
-	aggregate_log(__FUNCTION__ . " created new cdef: " . $new_cdef_id . " name: " . $magic, true, "AGGREGATE", AGGREGATE_LOG_DEBUG);
+	cacti_log(__FUNCTION__ . " created new cdef: " . $new_cdef_id . " name: " . $magic, true, "AGGREGATE", POLLER_VERBOSITY_DEEBUG);
 
 	# create a new cdef item entry
 	unset($save);
@@ -575,7 +580,7 @@ function aggregate_cdef_make0() {
 	# save the cdef item, there's only one!
 	$cdef_item_id = sql_save($save, "cdef_items");
 
-	aggregate_log(__FUNCTION__ . " created new cdef item: " . $cdef_item_id, true, "AGGREGATE", AGGREGATE_LOG_DEBUG);
+	cacti_log(__FUNCTION__ . " created new cdef item: " . $cdef_item_id, true, "AGGREGATE", POLLER_VERBOSITY_DEBUG);
 
 	return $new_cdef_id;
 }
@@ -590,7 +595,7 @@ function aggregate_cdef_totalling($_new_graph_id, $_graph_item_sequence, $_total
 	global $config;
 	include_once($config['base_path'] . "/lib/cdef.php");
 
-	aggregate_log(__FUNCTION__ . " called. Working on Graph: " . $_new_graph_id . " sequence: " .  $_graph_item_sequence  . " totalling: " . $_total_type, true, "AGGREGATE", AGGREGATE_LOG_FUNCTIONS);
+	cacti_log(__FUNCTION__ . " called. Working on Graph: " . $_new_graph_id . " sequence: " .  $_graph_item_sequence  . " totalling: " . $_total_type, true, "AGGREGATE", POLLER_VERBOSITY_DEVDBG);
 
 	# take graph item data for the totalling items
 	if (!empty($_new_graph_id)) {
@@ -600,7 +605,7 @@ function aggregate_cdef_totalling($_new_graph_id, $_graph_item_sequence, $_total
 			AND sequence>=$_graph_item_sequence
 			ORDER BY sequence";
 
-		aggregate_log("sql: " . $sql, true, "AGGREGATE", AGGREGATE_LOG_DEBUG);
+		cacti_log("sql: " . $sql, true, "AGGREGATE", POLLER_VERBOSITY_DEBUG);
 
 		$graph_template_items = db_fetch_assoc($sql);
 	}
@@ -608,7 +613,7 @@ function aggregate_cdef_totalling($_new_graph_id, $_graph_item_sequence, $_total
 	# now get the list of cdefs
 	$sql = "SELECT id, name FROM cdef ORDER BY id";
 
-	aggregate_log(__FUNCTION__ . " sql: " . $sql, true, "AGGREGATE", AGGREGATE_LOG_DEBUG);
+	cacti_log(__FUNCTION__ . " sql: " . $sql, true, "AGGREGATE", POLLER_VERBOSITY_DEBUG);
 
 	$_cdefs = db_fetch_assoc($sql); # index the cdefs by their id's
 	$cdefs  = array();
@@ -636,7 +641,7 @@ function aggregate_cdef_totalling($_new_graph_id, $_graph_item_sequence, $_total
 			$cdef_name = $cdefs[$cdef_id]["name"];
 			$cdef_text = $cdefs[$cdef_id]["cdef_text"];
 
-			aggregate_log(__FUNCTION__ . " cdef id: " . $cdef_id . " name: " . $cdef_name . " value: " . $cdef_text, true, "AGGREGATE", AGGREGATE_LOG_DEBUG);
+			cacti_log(__FUNCTION__ . " cdef id: " . $cdef_id . " name: " . $cdef_name . " value: " . $cdef_text, true, "AGGREGATE", POLLER_VERBOSITY_DEBUG);
 
 			# new cdef
 			$new_cdef_text = "INVALID";	# in case sth goes wrong
@@ -653,11 +658,11 @@ function aggregate_cdef_totalling($_new_graph_id, $_graph_item_sequence, $_total
 			$new_cdef_id = "";
 			reset($cdefs);
 			foreach ($cdefs as $cdef) {
-				aggregate_log(__FUNCTION__ . " verify matching cdef: " . $cdef["id"] . " on: " . $cdef["cdef_text"], true, "AGGREGATE", AGGREGATE_LOG_DEBUG);
+				cacti_log(__FUNCTION__ . " verify matching cdef: " . $cdef["id"] . " on: " . $cdef["cdef_text"], true, "AGGREGATE", POLLER_VERBOSITY_DEBUG);
 
 				if ($cdef["cdef_text"] == $new_cdef_text) {
 					$new_cdef_id = $cdef["id"];
-					aggregate_log(__FUNCTION__ . " matching cdef: " . $new_cdef_id, true, "AGGREGATE", AGGREGATE_LOG_DEBUG);
+					cacti_log(__FUNCTION__ . " matching cdef: " . $new_cdef_id, true, "AGGREGATE", POLLER_VERBOSITY_DEBUG);
 					# leave on first match
 					break;
 				}
@@ -682,7 +687,7 @@ function aggregate_cdef_totalling($_new_graph_id, $_graph_item_sequence, $_total
 				# save the cdef itself
 				$new_cdef_id  = sql_save($save, "cdef");
 
-				aggregate_log(__FUNCTION__ . " created new cdef: " . $new_cdef_id . " name: " . $new_cdef_name . " value: " . $new_cdef_text, true, "AGGREGATE", AGGREGATE_LOG_DEBUG);
+				cacti_log(__FUNCTION__ . " created new cdef: " . $new_cdef_id . " name: " . $new_cdef_name . " value: " . $new_cdef_text, true, "AGGREGATE", POLLER_VERBOSITY_DEBUG);
 				unset($save);
 
 				# create a new cdef item entry
@@ -696,7 +701,7 @@ function aggregate_cdef_totalling($_new_graph_id, $_graph_item_sequence, $_total
 				# save the cdef item, there's only one!
 				$cdef_item_id     = sql_save($save, "cdef_items");
 
-				aggregate_log(__FUNCTION__ . " created new cdef item: " . $cdef_item_id, true, "AGGREGATE", AGGREGATE_LOG_DEBUG);
+				cacti_log(__FUNCTION__ . " created new cdef item: " . $cdef_item_id, true, "AGGREGATE", POLLER_VERBOSITY_DEBUG);
 
 				# now extend the cdef array to learn the newly entered cdef for the next loop
 				$cdefs[$new_cdef_id]["id"]        = $new_cdef_id;
@@ -706,10 +711,12 @@ function aggregate_cdef_totalling($_new_graph_id, $_graph_item_sequence, $_total
 
 			# now that we have a new cdef id, update record accordingly
 			$sql = "UPDATE graph_templates_item SET cdef_id=$new_cdef_id WHERE id=" . $graph_template_item["id"];
-			aggregate_log(__FUNCTION__ . " sql: " . $sql, true, "AGGREGATE", AGGREGATE_LOG_DEBUG);
+
+			cacti_log(__FUNCTION__ . " sql: " . $sql, true, "AGGREGATE", POLLER_VERBOSITY_DEBUG);
+
 			$ok = db_execute($sql);
 
-			aggregate_log(__FUNCTION__ . " updated new cdef id: " . $new_cdef_id . " for item: " . $graph_template_item["id"], true, "AGGREGATE", AGGREGATE_LOG_DEBUG);
+			cacti_log(__FUNCTION__ . " updated new cdef id: " . $new_cdef_id . " for item: " . $graph_template_item["id"], true, "AGGREGATE", POLLER_VERBOSITY_DEBUG);
 		}
 	}
 }
@@ -720,7 +727,7 @@ function aggregate_cdef_totalling($_new_graph_id, $_graph_item_sequence, $_total
  * returns array	- array with new HR markers
  */
 function auto_hr($s, $h) {
-	aggregate_log(__FUNCTION__ . "  called", true, "AGGREGATE", AGGREGATE_LOG_FUNCTIONS);
+	cacti_log(__FUNCTION__ . "  called", true, "AGGREGATE", POLLER_VERBOSITY_DEVDBG);
 
 	# start at end of array, both arrays are from 1 .. count(array)
 	$i = count($h);
@@ -744,38 +751,27 @@ function auto_hr($s, $h) {
  * returns string				- the title
  */
 function auto_title($_local_graph_id) {
-	aggregate_log(__FUNCTION__ . "  called. Local Graph Id: " . $_local_graph_id, true, "AGGREGATE", AGGREGATE_LOG_FUNCTIONS);
+	cacti_log(__FUNCTION__ . "  called. Local Graph Id: " . $_local_graph_id, true, "AGGREGATE", POLLER_VERBOSITY_DEVDBG);
 
 	# apply given graph title, but drop host and query variables
 	$graph_title = "Aggregate ";
 	$graph_title .= db_fetch_cell("select title from graph_templates_graph where local_graph_id=$_local_graph_id");
 
-	aggregate_log("title:" . $graph_title, true, "AGGREGATE", AGGREGATE_LOG_DEBUG);
+	cacti_log("title:" . $graph_title, true, "AGGREGATE", POLLER_VERBOSITY_DEBUG);
 
 	# remove all "- |query_*|" occurences
 	$pattern = "/-?\s+\|query_\w+\|/";
 	$graph_title = preg_replace($pattern, "", $graph_title);
 
-	aggregate_log("title:" . $graph_title, true, "AGGREGATE", AGGREGATE_LOG_DEBUG);
+	cacti_log("title:" . $graph_title, true, "AGGREGATE", POLLER_VERBOSITY_DEBUG);
 
 	# remove all "- |host_*|" occurences
 	$pattern = "/-?\s+\|host_\w+\|/";
 	$graph_title = preg_replace($pattern, "", $graph_title);
 
-	aggregate_log("title:" . $graph_title, true, "AGGREGATE", AGGREGATE_LOG_DEBUG);
+	cacti_log("title:" . $graph_title, true, "AGGREGATE", POLLER_VERBOSITY_DEBUG);
 
 	return $graph_title;
-}
-
-/* aggregate_log - logs a string to Cacti's log file or optionally to the browser
- @arg $string - the string to append to the log file
- @arg $output - (bool) whether to output the log line to the browser using pring() or not
- @arg $environ - (string) tell's from where the script was called from */
-function aggregate_log($string, $output = false, $environ="AGGREGATE", $level=POLLER_VERBOSITY_NONE) {
-	# if current verbosity >= level of current message, print it
-	if (AGGREGATE_DEBUG >= $level) {
-		cacti_log(str_replace("\t"," ", str_replace("\n", "", $string)), $output, $environ);
-	}
 }
 
 function api_aggregate_remove_multi($graphs) {

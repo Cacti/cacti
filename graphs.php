@@ -719,7 +719,8 @@ function form_actions() {
 			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Resize Selected Graph(s)'>";
 		} elseif ($_POST['drp_action'] == 'aggregate') {
 			include_once('./lib/api_aggregate.php');
-			aggregate_log(__FUNCTION__ . '  called. Parameters: ' . serialize($_POST), true, 'AGGREGATE', AGGREGATE_LOG_FUNCTIONS);
+
+			cacti_log(__FUNCTION__ . '  called. Parameters: ' . serialize($_POST), true, 'AGGREGATE', POLLER_VERBOSITY_DEVDBG);
 
 			/* initialize return code and graphs array */
 			$return_code    = false;
@@ -825,7 +826,8 @@ function form_actions() {
 			}
 		}elseif ($_POST['drp_action'] == 'aggregate_template') { /* aggregate template */
 			include_once('./lib/api_aggregate.php');
-			aggregate_log(__FUNCTION__ . '  called. Parameters: ' . serialize($_POST), true, 'AGGREGATE', AGGREGATE_LOG_FUNCTIONS);
+
+			cacti_log(__FUNCTION__ . '  called. Parameters: ' . serialize($_POST), true, 'AGGREGATE', POLLER_VERBOSITY_DEVDBG);
 
 			/* initialize return code and graphs array */
 			$graphs         = array();
