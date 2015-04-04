@@ -255,7 +255,7 @@ $settings = array(
 			'friendly_name' => 'RRDTool Utility Version',
 			'description' => 'The version of RRDTool that you have installed.',
 			'method' => 'drop_array',
-			'default' => 'rrd-1.2.x',
+			'default' => 'rrd-1.4.x',
 			'array' => $rrdtool_versions,
 			),
 		'snmp_header' => array(
