@@ -782,20 +782,20 @@ function form_actions() {
 				function changeTotals() {
 					switch ($('#aggregate_total').val()) {
 						case '<?php print AGGREGATE_TOTAL_NONE;?>':
-							$('#aggregate_total_type').attr('disabled', 'disabled');
-							$('#aggregate_total_prefix').attr('disabled', 'disabled');
-							$('#aggregate_order_type').removeAttr('disabled');
+							$('#aggregate_total_type').prop('disabled', true);
+							$('#aggregate_total_prefix').prop('disabled', true);
+							$('#aggregate_order_type').prop('disabled', false);
 							break;
 						case '<?php print AGGREGATE_TOTAL_ALL;?>':
-							$('#aggregate_total_type').removeAttr('disabled');
-							$('#aggregate_total_prefix').removeAttr('disabled');
-							$('#aggregate_order_type').removeAttr('disabled');
+							$('#aggregate_total_type').prop('disabled', false);
+							$('#aggregate_total_prefix').prop('disabled', false);
+							$('#aggregate_order_type').prop('disabled', false);
 							changeTotalsType();
 							break;
 						case '<?php print AGGREGATE_TOTAL_ONLY;?>':
-							$('#aggregate_total_type').removeAttr('disabled');
-							$('#aggregate_total_prefix').removeAttr('disabled');
-							$('#aggregate_order_type').attr('disabled', 'disabled');
+							$('#aggregate_total_type').prop('disabled', false);
+							$('#aggregate_total_prefix').prop('disabled', false);
+							$('#aggregate_order_type').prop('disabled', true);
 							changeTotalsType();
 							break;
 					}

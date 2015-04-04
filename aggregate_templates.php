@@ -361,6 +361,10 @@ function aggregate_template_edit() {
 	?>
 	<script type='text/javascript'>
 	$().ready(function() {
+		if ($('#id').val() == 0) {
+			$('[id^="agg_total_"]').prop('checked', true);
+		}
+
 		if ($('#graph_template_id').val() == 0) {
 			$('#row_name').hide();
 			$('#row_spacer1').hide();
@@ -377,7 +381,7 @@ function aggregate_template_edit() {
 
 			$('#save_component_template').parent().next('table').css('display', 'none');
 		}else{
-			$('#graph_template_id').attr('disabled', 'disabled');
+			$('#graph_template_id').prop('disabled', true);
 		}
 
 		$('#total').change(function() {
@@ -413,20 +417,20 @@ function aggregate_template_edit() {
 	function changeTotals() {
 		switch ($('#total').val()) {
 			case '<?php print AGGREGATE_TOTAL_NONE;?>':
-				$('#total_type').attr('disabled', 'disabled');
-				$('#total_prefix').attr('disabled', 'disabled');
-				$('#order_type').removeAttr('disabled');
+				$('#total_type').prop('disabled', true);
+				$('#total_prefix').prop('disabled', true);
+				$('#order_type').prop('disabled', false);
 				break;
 			case '<?php print AGGREGATE_TOTAL_ALL;?>':
-				$('#total_type').removeAttr('disabled');
-				$('#total_prefix').removeAttr('disabled');
-				$('#order_type').removeAttr('disabled');
+				$('#total_type').prop('disabled', false);
+				$('#total_prefix').prop('disabled', false);
+				$('#order_type').prop('disabled', false);
 				changeTotalsType();
 				break;
 			case '<?php print AGGREGATE_TOTAL_ONLY;?>':
-				$('#total_type').removeAttr('disabled');
-				$('#total_prefix').removeAttr('disabled');
-				//$('#order_type').attr('disabled', 'disabled');
+				$('#total_type').prop('disabled', false);
+				$('#total_prefix').prop('disabled', false);
+				//$('#order_type').prop('disabled', true);
 				changeTotalsType();
 				break;
 		}

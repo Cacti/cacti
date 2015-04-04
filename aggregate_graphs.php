@@ -781,20 +781,20 @@ function graph_edit() {
 
 		function dynamic() {
 			if ($('#scale_log_units')) {
-				$('#scale_log_units').attr('disabled', 'disabled');
+				$('#scale_log_units').prop('disabled', true);
 				if (($('#rrdtool_version').val() != 'rrd-1.0.x') &&
 					($('#auto_scale_log').is(':checked'))) {
-					$('#scale_log_units').attr('disabled', 'disabled');
+					$('#scale_log_units').prop('disabled', true);
 				}
 			}
 		}
 
 		function changeScaleLog() {
 			if ($('#scale_log_units')) {
-				$('#scale_log_units').attr('disabled', 'disabled');
+				$('#scale_log_units').prop('disabled', true);
 				if (($('#rrdtool_version').val() != 'rrd-1.0.x') &&
 					($('#auto_scale_log').is(':checked'))) {
-					$('#scale_log_units').removeAttr('disabled');
+					$('#scale_log_units').prop('disabled', false);
 				}
 			}
 		}

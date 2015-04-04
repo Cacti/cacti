@@ -388,17 +388,17 @@ $().ready(function() {
 });
 
 function dynamic() {
-	$('#alpha').attr('disabled', 'disabled');
+	$('#alpha').prop('disabled', true);
 	if (($('#rrdtool_version').val() != 'rrd-1.0.x') &&
 		($('#color_id').val() != 0)) {
-		$('#alpha').attr('disabled', 'disabled');
+		$('#alpha').prop('disabled', true);
 	}
 }
 
 function changeColorId() {
 	if (($('#rrdtool_version').val() != 'rrd-1.0.x') &&
 		($('#color_id').attr('selectedIndex') != 0)) {
-		$('#alpha').attr('disabled', 'disabled');
+		$('#alpha').prop('disabled', true);
 	}
 }
 
@@ -408,7 +408,7 @@ function setFieldsDisabled() {
 		fieldName = this.id.substr(4);
 		cbName = 't_'+fieldName;
 		if ($('#'+cbName).size() > 0) {
-			$('#'+fieldName).prop('disabled', !$('#'+cbName).attr('checked'));
+			$('#'+fieldName).prop('disabled', !$('#'+cbName).is(':checked'));
 		} else {
 			$('#'+fieldName).prop('disabled', true);
 		}

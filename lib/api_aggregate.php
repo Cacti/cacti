@@ -1309,7 +1309,7 @@ function setFieldsDisabled() {
 		cbName = 't_'+fieldName;
 		if ($('#'+cbName).size() > 0) {
 			console.log($('#'+cbName));
-			$('#'+fieldName).attr('disabled', !$('#'+cbName).attr('checked'));
+			$('#'+fieldName).prop('disabled', !$('#'+cbName).is(':checked'));
 		}
 	});
 }
@@ -1319,7 +1319,7 @@ function toggleFieldEnabled(cb) {
 	prefix = 't_';
 	if (cb.name.substr(0,prefix.length) == prefix) {
 		fieldName = cb.name.substr(prefix.length);
-		$('#'+fieldName).attr('disabled', !cb.checked);
+		$('#'+fieldName).prop('disabled', !cb.checked);
 	}
 }
 
