@@ -113,9 +113,9 @@ function exec_poll_php($command, $using_proc_function, $pipes, $proc_fd) {
    @arg $filename - the full pathname to the script to execute
    @arg $args - any additional arguments that must be passed onto the executable */
 function exec_background($filename, $args = '') {
-	global $config, $level;
+	global $config, $debug;
 
-	cacti_log("DEBUG: About to Spawn a Remote Process [CMD: $filename, ARGS: $args]", true, 'POLLER', $level);
+	cacti_log("DEBUG: About to Spawn a Remote Process [CMD: $filename, ARGS: $args]", true, 'POLLER', ($debug ? POLLER_VERBOSITY_NONE:POLLER_VERBOSITY_DEBUG));
 
 	if (file_exists($filename)) {
 		if ($config['cacti_server_os'] == 'win32') {
@@ -318,7 +318,7 @@ function poller_update_poller_reindex_from_buffer($host_id, $data_query_id, &$re
   @arg $rrdtool_pipe - the array of pipes containing the file descriptor for rrdtool
   @arg $remainder - don't use LIMIT if TRUE */
 function process_poller_output(&$rrdtool_pipe, $remainder = FALSE) {
-	global $config, $level;
+	global $config, $debug;
 
 	include_once($config['library_path'] . '/rrd.php');
 
@@ -390,7 +390,7 @@ function process_poller_output(&$rrdtool_pipe, $remainder = FALSE) {
 
 					if (sizeof($matches) == 2) {
 						if (isset($rrd_field_names{$matches[0]})) {
-							cacti_log("Parsed MULTI output field '" . $matches[0] . ':' . $matches[1] . "' [map " . $matches[0] . '->' . $rrd_field_names{$matches[0]} . ']' , true, 'POLLER', $level);
+							cacti_log("Parsed MULTI output field '" . $matches[0] . ':' . $matches[1] . "' [map " . $matches[0] . '->' . $rrd_field_names{$matches[0]} . ']' , true, 'POLLER', ($debug ? POLLER_VERBOSITY_NONE:POLLER_VERBOSITY_MEDIUM));
 
 							$rrd_update_array{$item['rrd_path']}['times'][$unix_time]{$rrd_field_names{$matches[0]}} = $matches[1];
 						}
