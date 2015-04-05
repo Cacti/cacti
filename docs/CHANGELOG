@@ -4,12 +4,23 @@ Cacti CHANGELOG
 -bug: Fixed issue where thumbnails may not render do to comment graph item definitions
 -feature#0002225: Make -Cc SNMP option system wide configurable (disable increasing OID check)
 -bug#0002257: status_fail_date and status_rec_date are initialised when a host recovers
--bug#0002352: Database setting $port ignored 
--bug#0002402: Subtree must not have the same header as the parent header 
--bug#0002468: Changing Graph Format From PNG Causes No Output 
--bug#0002473: Adding new Header Item will destroy part of Graph Tree 
--bug#0002478: Upgrade to MySQLi API and MySQLND library 
+-bug#0002352: Database setting $port ignored
+-bug#0002355: scripts/loadavg_multi.pl does not work with locales that use a comma as seperator
+-bug#0002356: Support for "VALUE/REGEXP:" for get input fields
+-bug#0002387: Changed Graphing Behavior for empty COMMENT
+-bug#0002399: Refactored array_to_sql_or and to do's
+-bug#0002402: Subtree must not have the same header as the parent header
+-bug#0002417: update_poller_cache should quote user-entered arguments
+-bug#0002419: SNMP enum results not parsed correctly by cmd.php poller
+-bug#0002430: the upper value of the ucd/net memory usage is low
+-bug#0002468: Changing Graph Format From PNG Causes No Output
+-bug#0002473: Adding new Header Item will destroy part of Graph Tree
+-bug#0002478: Upgrade to MySQLi API and MySQLND library
 -bug#0002482: Correct count of hosts using a Host Template
+-bug#0002467: patch to add oid_rewrite_pattern and OID textual translate to data queries
+-bug#0002486: API hook into the html_tree.php for JQuery/Javascript support in Plugins
+-bug#0002537: graph viewing not working correctly in IE and Chrome
+-bug#0002545: graphing a --vertical-label="|query_foo|" does not rrd_substitute_host_query_data()
 -bug: Make Cacti's permissions consistent for RBAC
 -feature: Add Themes to WebGUI (deprecation of $colors array)
 -feature: Add Theme settings for RRDtool Graph Rendering (fonts, colors, border)
@@ -17,7 +28,7 @@ Cacti CHANGELOG
 -feature: Remove Single Pane Tree View feature
 -feature: Add 'Classic' and 'Modern' Themes
 -feature: Use jQuery for Settings and Graph Settings pages to remove clutter
--feature: Add Role Based Access Control (RBAC) 
+-feature: Add Role Based Access Control (RBAC)
 -feature: Redesign User Management pages
 -feature: Allow Graphs and Data Source columns to be sorted on Devices page
 -feature: When running Verbose Query, and Re-query from Device page return to a meaninful location
@@ -40,41 +51,26 @@ Cacti CHANGELOG
 -feature: Refactor Graph Details page to incldue CSV output, zoom, debug, and download links
 
 0.8.8d
--bug#0002261: php5.4.0 added new error_reporting variable, causing cacti to show errors 
--bug#0002355: scripts/loadavg_multi.pl does not work with locales that use a comma as seperator
--bug#0002356: Support for "VALUE/REGEXP:" for get input fields 
--bug#0002359: Umlaute and special characters not displayed in title of graph 
--bug#0002377: Upgrade interface must require authentication 
--bug#0002387: Changed Graphing Behavior for empty COMMENT 
--bug#0002391: Odd Behaviour on ReIndex of Data Query Data 
--bug#0002393: 0.8.8b (not as above) missing images when viewing graphs 
--bug#0002395: duplication port name under each graph of the same port 
--bug#0002399: Refactored array_to_sql_or and to do's 
--bug#0002417: update_poller_cache should quote user-entered arguments 
--bug#0002419: SNMP enum results not parsed correctly by cmd.php poller 
--bug#0002428: api_data_source_remove_multi() does not delete all data 
--bug#0002430: the upper value of the ucd/net memory usage is low 
--bug#0002439: Password with special character don't work with LDAP authentication 
--bug#0002449: The "save" button does not work: Invalid html on page “Console -> Cacti Settings”: empty form tag 
--bug#0002461: invalid bn with ldap and anonymous bind 
--bug#0002462: Don't delete all rows from tables: data_input_data_rra and data_input_data 
--bug#0002465: Graph Export return empty CSV file 
--bug#0002467: patch to add oid_rewrite_pattern and OID textual translate to data queries 
--bug#0002474: CLI add_device.php dows not set availability_method correctly 
--bug#0002484: Incorrect SQL request in cli script repair_database.php 
--bug#0002485: Graph Page Error 
--bug#0002486: API hook into the html_tree.php for JQuery/Javascript support in Plugins 
--bug#0002489: SNMP - Get Mounted Partitions using Re-index method of Index Count Changed causes recache event every time 
--bug#0002490: Can't select page for multiple datasources per device (function get_page_list) 
--bug#0002494: CSV export always shows last day 
--bug#0002495: Graph Filter Date Range 
--bug#0002504: Data template search not functional 
--bug#0002533: Cacti drop non Unicode symbols in graph title 
--bug#0002537: graph.view.php not working correctly in IE and Chrome
--bug#0002541/0002542: [FG-VD-15-017] Cacti Cross-Site Scripting Vulnerability Notification 
--bug#0002543: Unable to switch pages within graphs_new.php due to invalid URL generation 
--bug#0002544: Duplicate entry in $nav_url during list view 
--bug#0002545: graphing a --vertical-label="|query_foo|" does not rrd_substitute_host_query_data() 
+-feature: Remove un-needed fonts and javascript files
+-bug#0002261: PHP 5.4.0 added new error_reporting variable, causing cacti to show errors
+-bug#0002391: Odd Behaviour on ReIndex of Data Query Data
+-bug#0002393: Broken thumbnail images for graph templates
+-bug#0002402: Subtree must not have the same header as the parent header
+-bug#0002474: CLI add_device.php dows not set availability_method correctly
+-bug#0002449: The Save button does not work: Invalid html on page Console -> Cacti Settings: empty form tag
+-bug#0002428: Fail to delete all data input items when removing more than 1000 data sources
+-bug#0002439: Password with special character don't work with LDAP authentication
+-bug#0002461: invalid bn with ldap and anonymous bind
+-bug#0002465: Graph Export return empty CSV file
+-bug#0002484: Incorrect SQL request in cli script repair_database.php
+-bug#0002485: Broken pagenation on graph viewing
+-bug#0002489: SNMP - Get Mounted Partitions using Re-index method of Index Count Changed causes recache event every time
+-bug#0002490: Can not select page for multiple datasources per device
+-bug#0002494: CSV export always shows last day
+-bug#0002504: Data template search not functional
+-bug#0002542: [FG-VD-15-017] Cacti Cross-Site Scripting Vulnerability Notification
+-bug#0002543: Unable to switch pages within graphs_new.php due to invalid URL generation
+-bug#0002544: Duplicate entry in $nav_url during list view
 
 0.8.8c
 -bug#0002228: GPL incompatible files included in Cacti project in include/treeview
@@ -92,6 +88,7 @@ Cacti CHANGELOG
 -bug#0002453: CVE-2014-4002 Cross-Site Scripting Vulnerability - Special Thanks to G. Geshev (munmap)
 -bug#0002455: Incomplete and incorrect input parsing leads to remote code execution and SQL injection attack scenarios
 -bug#0002456: CVE-2014-5025 / CVE-2014-5026 - Cross-Site Scripting Vulnerability - Special Thanks to Adan Alvarez and Paul Gevers
+-bug#0002495: Graph Filter Date Range
 -bug: Fix COMMENT handling, even in case COMMENT is empty, with or without HR and with variable substitution
 -bug: Fix issues when SNMP data holds a "="; "explode" must be treated accordingly
 -bug: Fix filter highlighting on data sources for the data template field
