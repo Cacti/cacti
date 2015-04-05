@@ -346,16 +346,7 @@ class Ldap {
 		$this->username = html_entity_decode($this->username);
 
 		/* strip bad chars from username - prevent altering filter from username */
-		$this->username = str_replace("&", "", $this->username);
-		$this->username = str_replace("|", "", $this->username);
-		$this->username = str_replace("(", "", $this->username);
-		$this->username = str_replace(")", "", $this->username);
-		$this->username = str_replace("*", "", $this->username);
-		$this->username = str_replace(">", "", $this->username);
-		$this->username = str_replace("<", "", $this->username);
-		$this->username = str_replace("!", "", $this->username);
-		$this->username = str_replace("=", "", $this->username);
-
+		$this->username = str_replace(array("&", "|", "(", ")", "*", ">", "<", "!", "="), "", $this->username);
 		$this->dn = str_replace("<username>", $this->username, $this->dn);
 
 		if ($this->mode == "0") {
