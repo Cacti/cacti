@@ -190,7 +190,6 @@ function automation_tree_rules_form_save() {
 function automation_tree_rules_form_actions() {
 	global $automation_tree_rules_actions;
 	global $config;
-	include_once($config['base_path'].'/plugins/automation/automation_utilities.php');
 
 	/* if we are to save this form, instead of display it */
 	if (isset($_POST['selected_items'])) {
@@ -363,7 +362,6 @@ function automation_tree_rules_item_remove() {
 
 function automation_tree_rules_item_edit() {
 	global $config;
-	include_once($config['base_path'].'/plugins/automation/automation_utilities.php');
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var('id'));
@@ -495,7 +493,7 @@ function automation_tree_rules_remove() {
 function automation_tree_rules_edit() {
 	global $config;
 	global $fields_automation_tree_rules_edit1, $fields_automation_tree_rules_edit2, $fields_automation_tree_rules_edit3;
-	include_once($config['base_path'].'/plugins/automation/automation_utilities.php');
+
 	include_once($config['base_path'].'/lib/html_tree.php');
 
 	/* ================= input validation ================= */

@@ -402,11 +402,13 @@ $menu = array(
 		'aggregate_templates.php' => 'Aggregate',
 		'color_templates.php' => 'Color'
 		),
-	'Automation Rules' => array(
-		'automation_graph_rules.php' => 'Graph',
-		'automation_tree_rules.php' => 'Tree',
-		'automation_host_templates.php' => 'Discovery',
-		'automation_subnets.php' => 'Subnets',
+	'Automation' => array(
+		'automation_devices.php' => 'Devices',
+		'automation_templates.php' => 'Template Rules',
+		'automation_graph_rules.php' => 'Graph Rules',
+		'automation_tree_rules.php' => 'Tree Rules',
+		'automation_networks.php' => 'Networks',
+		'automation_snmp.php' => 'SNMP Options',
 		),
 	'Presets' => array(
 		'cdef.php' => 'CDEFs',
@@ -574,8 +576,10 @@ $user_auth_realm_filenames = array(
 	'reports_admin.php' => 22,
 	'automation_graph_rules.php' => 23,
 	'automation_tree_rules.php' => 23,
-	'automation_discovery.php' => 23,
-	'automation_subnets.php' => 23,
+	'automation_templates.php' => 23,
+	'automation_networks.php' => 23,
+	'automation_devices.php' => 23,
+	'automation_snmp.php' => 23,
 	'color_templates.php' => 5,
 	'color_templates_items.php' => 5,
 	'aggregate_templates.php' => 5,
@@ -1071,6 +1075,21 @@ $automation_tree_item_types  = array(
 $automation_tree_header_types  = array(
 	AUTOMATION_TREE_ITEM_TYPE_STRING => 'Fixed String',
 );
+
+$automation_frequencies = array(
+	'disabled' => 'Disabled',
+	'60' => 'Every 1 Hour',
+	'120' => 'Every 2 Hours',
+	'240' => 'Every 4 Hours',
+	'360' => 'Every 6 Hours',
+	'480' => 'Every 8 Hours',
+	'720' => 'Every 12 Hours',
+	'1440' => 'Every Day',
+	'10080' => 'Every Week',
+	'20160' => 'Every 2 Weeks',
+	'40320' => 'Every 4 Weeks'
+);
+
 
 api_plugin_hook('config_arrays');
 

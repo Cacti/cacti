@@ -1561,7 +1561,7 @@ function get_item($tblname, $field, $startid, $lmt_query, $direction) {
 	}
 
 	$current_sequence = db_fetch_cell_prepared("SELECT $field FROM $tblname WHERE id = ?", array($startid));
-	$new_item_id = db_fetch_cell("SELECT id FROM $tblname WHERE $field $sql_operator $current_sequence AND $lmt_query ORDER BY $field $sql_order LIMIT 1");
+	$new_item_id = db_fetch_cell("SELECT id FROM $tblname WHERE $field $sql_operator $current_sequence " . ($lmt_query != '' ? " AND $lmt_query":"") . " ORDER BY $field $sql_order LIMIT 1");
 
 	if (empty($new_item_id)) {
 		return $startid;
@@ -1595,7 +1595,7 @@ function get_sequence($id, $field, $table_name, $group_query) {
    @arg $table_name - the table name that contains the target id
    @arg $current_id - (int) the current id
    @arg $group_query - an SQL "where" clause to limit the query */
-function move_item_down($table_name, $current_id, $group_query) {
+function move_item_down($table_name, $current_id, $group_query = '') {
 	$next_item = get_item($table_name, 'sequence', $current_id, $group_query, 'next');
 
 	$sequence = db_fetch_cell_prepared("SELECT sequence FROM $table_name WHERE id = ?", array($current_id));
@@ -1608,7 +1608,7 @@ function move_item_down($table_name, $current_id, $group_query) {
    @arg $table_name - the table name that contains the target id
    @arg $current_id - (int) the current id
    @arg $group_query - an SQL "where" clause to limit the query */
-function move_item_up($table_name, $current_id, $group_query) {
+function move_item_up($table_name, $current_id, $group_query = '') {
 	$last_item = get_item($table_name, 'sequence', $current_id, $group_query, 'previous');
 
 	$sequence = db_fetch_cell_prepared("SELECT sequence FROM $table_name WHERE id = ?", array($current_id));

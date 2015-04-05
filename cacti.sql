@@ -137,6 +137,37 @@ CREATE TABLE `aggregate_graphs_items` (
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Aggregate Graph Items';
 
 --
+-- Table structure for table `automation_devices`
+--
+
+CREATE TABLE `automation_devices` (
+  `network_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `hostname` varchar(100) NOT NULL DEFAULT '',
+  `ip` varchar(17) NOT NULL DEFAULT '',
+  `hash` varchar(12) NOT NULL DEFAULT '',
+  `community` varchar(100) NOT NULL DEFAULT '',
+  `snmp_version` tinyint(1) unsigned NOT NULL DEFAULT '1',
+  `snmp_username` varchar(50) DEFAULT NULL,
+  `snmp_password` varchar(50) DEFAULT NULL,
+  `snmp_auth_protocol` char(5) DEFAULT '',
+  `snmp_priv_passphrase` varchar(200) DEFAULT '',
+  `snmp_priv_protocol` char(6) DEFAULT '',
+  `snmp_context` varchar(64) DEFAULT '',
+  `sysName` varchar(100) NOT NULL DEFAULT '',
+  `sysLocation` varchar(255) NOT NULL DEFAULT '',
+  `sysContact` varchar(255) NOT NULL DEFAULT '',
+  `sysDescr` varchar(255) NOT NULL DEFAULT '',
+  `sysUptime` int(32) NOT NULL DEFAULT '0',
+  `os` varchar(64) NOT NULL DEFAULT '',
+  `snmp` tinyint(4) NOT NULL DEFAULT '0',
+  `known` tinyint(4) NOT NULL DEFAULT '0',
+  `up` tinyint(4) NOT NULL DEFAULT '0',
+  `time` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`ip`),
+  KEY `hostname` (`hostname`)
+) ENGINE=MyISAM COMMENT='Table of Discovered Devices';
+
+--
 -- Table structure for table `automation_graph_rule_items`
 --
 
@@ -219,6 +250,97 @@ INSERT INTO `automation_match_rule_items`
   (5, 2, 1, 2, 1, 'h.snmp_version', 12, '2'),
   (6, 2, 3, 1, 0, 'ht.name', 1, 'SNMP'),
   (7, 2, 3, 2, 1, 'gt.name', 1, 'Traffic');
+
+--
+-- Table structure for table `automation_networks`
+--
+
+CREATE TABLE `automation_networks` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(128) NOT NULL DEFAULT '' COMMENT 'The name for this network',
+  `subnet_range` varchar(255) NOT NULL DEFAULT '' COMMENT 'Defined subnet ranges for discovery',
+  `dns_servers` varchar(128) NOT NULL DEFAULT '' COMMENT 'DNS Servers to use for name resolution',
+  `enabled` char(2) DEFAULT '',
+  `snmp_id` int(10) unsigned DEFAULT NULL,
+  `up_hosts` int(10) unsigned NOT NULL DEFAULT '0',
+  `snmp_hosts` int(10) unsigned NOT NULL DEFAULT '0',
+  `ping_method` int(10) unsigned NOT NULL DEFAULT '0' COMMENT 'The ping method (ICMP:TCP:UDP)',
+  `ping_port` int(10) unsigned NOT NULL DEFAULT '0' COMMENT 'For TCP:UDP the port to ping',
+  `ping_timeout` int(10) unsigned NOT NULL DEFAULT '0' COMMENT 'The ping timeout in seconds',
+  `sched_type` int(10) unsigned NOT NULL DEFAULT '0' COMMENT 'Schedule type: manual or automatic',
+  `day_of_week` varchar(45) DEFAULT NULL COMMENT 'The days of week to run in crontab format',
+  `month` varchar(45) DEFAULT NULL COMMENT 'The months to run in crontab format',
+  `day_of_month` varchar(45) DEFAULT NULL COMMENT 'The days of month to run in crontab format',
+  `hour` varchar(45) DEFAULT NULL COMMENT 'The hours to run in crontab format',
+  `min` varchar(45) DEFAULT NULL COMMENT 'The minutes to run in crontab format',
+  `run_limit` int(10) unsigned NOT NULL DEFAULT '0' COMMENT 'The maximum runtime for the discovery',
+  `last_runtime` double NOT NULL DEFAULT '0' COMMENT 'The last runtime for discovery',
+  `last_started` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT 'The time the discovery last started',
+  `last_status` varchar(128) NOT NULL DEFAULT '' COMMENT 'The last exit message if any',
+  `rerun_data_queries` char(2) DEFAULT NULL COMMENT 'Rerun data queries or not for existing hosts',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM COMMENT='Stores scanning subnet definitions';
+
+--
+-- Table structure for table `automation_processes`
+--
+
+CREATE TABLE `automation_processes` (
+  `pid` int(8) unsigned NOT NULL,
+  `taskname` varchar(20) NOT NULL DEFAULT '',
+  `taskid` int(10) unsigned NOT NULL DEFAULT '0',
+  `heartbeat` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (`pid`)
+) ENGINE=MEMORY COMMENT='Table required for parallelization of data collection';
+
+--
+-- Table structure for table `automation_snmp`
+--
+
+CREATE TABLE `automation_snmp` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) NOT NULL DEFAULT '',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM COMMENT='Group of SNMP Option Sets';
+
+--
+-- Table structure for table `automation_snmp_items`
+--
+
+CREATE TABLE `automation_snmp_items` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `snmp_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `sequence` int(10) unsigned NOT NULL DEFAULT '0',
+  `snmp_version` varchar(100) NOT NULL DEFAULT '',
+  `snmp_readstring` varchar(100) NOT NULL,
+  `snmp_port` int(10) NOT NULL DEFAULT '161',
+  `snmp_timeout` int(10) unsigned NOT NULL DEFAULT '500',
+  `snmp_retries` tinyint(11) unsigned NOT NULL DEFAULT '3',
+  `max_oids` int(12) unsigned DEFAULT '10',
+  `snmp_username` varchar(50) DEFAULT NULL,
+  `snmp_password` varchar(50) DEFAULT NULL,
+  `snmp_auth_protocol` char(5) DEFAULT '',
+  `snmp_priv_passphrase` varchar(200) DEFAULT '',
+  `snmp_priv_protocol` char(6) DEFAULT '',
+  `snmp_context` varchar(64) DEFAULT '',
+  PRIMARY KEY (`id`,`snmp_id`)
+) ENGINE=MyISAM COMMENT='Set of SNMP Options';
+
+--
+-- Table structure for table `automation_templates`
+--
+
+CREATE TABLE `automation_templates` (
+  `id` int(8) NOT NULL AUTO_INCREMENT,
+  `host_template` int(8) NOT NULL DEFAULT '0',
+  `tree` int(12) NOT NULL DEFAULT '0',
+  `snmp_version` tinyint(3) NOT NULL DEFAULT '0',
+  `sysdescr` varchar(255) NOT NULL DEFAULT '',
+  `sysname` varchar(255) NOT NULL DEFAULT '',
+  `sysoid` varchar(60) NOT NULL DEFAULT '',
+  `sequence` int(10) unsigned DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM COMMENT='Templates of SysDescr SysName and SysOID matches to use to automation';
 
 --
 -- Table structure for table `automation_tree_rule_items`

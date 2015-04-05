@@ -186,9 +186,7 @@ function automation_graph_rules_form_save() {
  ------------------------ */
 
 function automation_graph_rules_form_actions() {
-	global $colors, $automation_graph_rules_actions;
-	global $config;
-	include_once($config['base_path'].'/plugins/automation/automation_utilities.php');
+	global $config, $colors, $automation_graph_rules_actions;
 
 	/* if we are to save this form, instead of display it */
 	if (isset($_POST['selected_items'])) {
@@ -362,8 +360,6 @@ function automation_graph_rules_item_remove() {
 function automation_graph_rules_item_edit() {
 	global $config;
 
-	include_once($config['base_path'].'/plugins/automation/automation_utilities.php');
-
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var('id'));
 	input_validate_input_number(get_request_var('item_id'));
@@ -439,7 +435,6 @@ function automation_graph_rules_remove() {
 function automation_graph_rules_edit() {
 	global $colors, $config;
 	global $fields_automation_graph_rules_edit1, $fields_automation_graph_rules_edit2, $fields_automation_graph_rules_edit3;
-	include_once($config['base_path'].'/plugins/automation/automation_utilities.php');
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var_request('id'));
@@ -447,7 +442,6 @@ function automation_graph_rules_edit() {
 	input_validate_input_number(get_request_var_request('graph_type_id'));
 	input_validate_input_number(get_request_var_request('page'));
 	/* ==================================================== */
-	#print '<pre>'; print_r($_POST); print_r($_GET); print_r($_REQUEST); print '</pre>';
 
 	/* clean up rule name */
 	if (isset($_REQUEST['name'])) {
@@ -522,7 +516,6 @@ function automation_graph_rules_edit() {
 
 	print "<form method='post' action='automation_graph_rules.php' name='form_automation_graph_rule_edit'>";
 	html_start_box("<strong>Rule Selection</strong> $header_label", '100%', $colors['header'], '3', 'center', '');
-	#print '<pre>'; print_r($_POST); print_r($_GET); print_r($_REQUEST); print '</pre>';
 
 	if (!empty($_GET['id'])) {
 		/* display whole rule */
@@ -611,7 +604,6 @@ function automation_graph_rules_edit() {
 
 function automation_graph_rules() {
 	global $colors, $automation_graph_rules_actions, $config, $item_rows;
-	#print '<pre>'; print_r($_POST); print_r($_GET); print_r($_REQUEST); print '</pre>';
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var_request('page'));
@@ -809,6 +801,7 @@ function automation_graph_rules() {
 	}
 
 	print "<form name='chk' method='post' action='automation_graph_rules.php'>\n";
+
 	html_start_box('', '100%', $colors['header'], '3', 'center', '');
 
 	$total_rows = db_fetch_cell("SELECT

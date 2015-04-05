@@ -1022,4 +1022,129 @@ function upgrade_to_0_8_8d() {
 	db_install_execute('0.8.8d', "DELETE FROM plugin_hooks WHERE plugin='autom8'");
 
 	db_install_execute('0.8.8d', "UPDATE settings SET name=REPLACE(name, 'autom8', 'automation') WHERE name LIKE 'autom8%'");
+
+	// migrate discovery to Core if exists
+	if (in_array('plugin_discover_hosts', $tables)) {
+		db_install_execute('0.8.8d', 'RENAME TABLE plugin_discover_hosts TO automation_devices');
+		db_install_execute('0.8.8d', "ALTER TABLE automation_devices 
+			ADD COLUMN network_id INT unsigned NOT NULL default '0' FIRST, 
+			ADD INDEX network_id(network_id)");
+
+		if (in_array('plugin_discover_processes', $tables)) {
+			db_install_execute('0.8.8d', 'RENAME TABLE plugin_discover_processes TO automation_processes');
+		}
+
+		if (in_array('plugin_discover_template', $tables)) {
+			db_install_execute('0.8.8d', 'RENAME TABLE plugin_discover_template TO automation_templates');
+			db_install_execute('0.8.8d', "ALTER TABLE automation_templates 
+				ADD COLUMN sysname VARCHAR(255) NOT NULL default '' AFTER sysdescr, 
+				ADD COLUMN sysoid VARCHAR(60) NOT NULL default '' AFTER sysname, 
+				ADD COLUMN sequence INT UNSIGNED default '0' AFTER sysoid");
+			db_install_execute('0.8.8d', "UPDATE automation_templates SET sequence=id");
+		}
+	}
+
+	db_install_execute('0.8.8d', "CREATE TABLE IF NOT EXISTS `automation_devices` (
+		`network_id` int(10) unsigned NOT NULL DEFAULT '0',
+		`hostname` varchar(100) NOT NULL DEFAULT '',
+		`ip` varchar(17) NOT NULL DEFAULT '',
+		`hash` varchar(12) NOT NULL DEFAULT '',
+		`community` varchar(100) NOT NULL DEFAULT '',
+		`snmp_version` tinyint(1) unsigned NOT NULL DEFAULT '1',
+		`snmp_username` varchar(50) DEFAULT NULL,
+		`snmp_password` varchar(50) DEFAULT NULL,
+		`snmp_auth_protocol` char(5) DEFAULT '',
+		`snmp_priv_passphrase` varchar(200) DEFAULT '',
+		`snmp_priv_protocol` char(6) DEFAULT '',
+		`snmp_context` varchar(64) DEFAULT '',
+		`sysName` varchar(100) NOT NULL DEFAULT '',
+		`sysLocation` varchar(255) NOT NULL DEFAULT '',
+		`sysContact` varchar(255) NOT NULL DEFAULT '',
+		`sysDescr` varchar(255) NOT NULL DEFAULT '',
+		`sysUptime` int(32) NOT NULL DEFAULT '0',
+		`os` varchar(64) NOT NULL DEFAULT '',
+		`snmp` tinyint(4) NOT NULL DEFAULT '0',
+		`known` tinyint(4) NOT NULL DEFAULT '0',
+		`up` tinyint(4) NOT NULL DEFAULT '0',
+		`time` int(11) NOT NULL DEFAULT '0',
+		PRIMARY KEY (`ip`),
+		KEY `hostname` (`hostname`)) 
+		ENGINE=MyISAM 
+		COMMENT='Table of Discovered Devices'");
+
+	db_install_execute('0.8.8d', "CREATE TABLE IF NOT EXISTS `automation_networks` (
+		`id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+		`name` varchar(128) NOT NULL DEFAULT '' COMMENT 'The name for this network',
+		`subnet_range` varchar(255) NOT NULL DEFAULT '' COMMENT 'Defined subnet ranges for discovery',
+		`dns_servers` varchar(128) NOT NULL DEFAULT '' COMMENT 'DNS Servers to use for name resolution',
+		`enabled` char(2) DEFAULT '',
+		`snmp_id` int(10) unsigned DEFAULT NULL,
+		`up_hosts` int(10) unsigned NOT NULL DEFAULT '0',
+		`snmp_hosts` int(10) unsigned NOT NULL DEFAULT '0',
+		`ping_method` int(10) unsigned NOT NULL DEFAULT '0' COMMENT 'The ping method (ICMP:TCP:UDP)',
+		`ping_port` int(10) unsigned NOT NULL DEFAULT '0' COMMENT 'For TCP:UDP the port to ping',
+		`ping_timeout` int(10) unsigned NOT NULL DEFAULT '0' COMMENT 'The ping timeout in seconds',
+		`sched_type` int(10) unsigned NOT NULL DEFAULT '0' COMMENT 'Schedule type: manual or automatic',
+		`day_of_week` varchar(45) DEFAULT NULL COMMENT 'The days of week to run in crontab format',
+		`month` varchar(45) DEFAULT NULL COMMENT 'The months to run in crontab format',
+		`day_of_month` varchar(45) DEFAULT NULL COMMENT 'The days of month to run in crontab format',
+		`hour` varchar(45) DEFAULT NULL COMMENT 'The hours to run in crontab format',
+		`min` varchar(45) DEFAULT NULL COMMENT 'The minutes to run in crontab format',
+		`run_limit` int(10) unsigned NOT NULL DEFAULT '0' COMMENT 'The maximum runtime for the discovery',
+		`last_runtime` double NOT NULL DEFAULT '0' COMMENT 'The last runtime for discovery',
+		`last_started` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT 'The time the discovery last started',
+		`last_status` varchar(128) NOT NULL DEFAULT '' COMMENT 'The last exit message if any',
+		`rerun_data_queries` char(2) DEFAULT NULL COMMENT 'Rerun data queries or not for existing hosts',
+		PRIMARY KEY (`id`)) 
+		ENGINE=MyISAM 
+		COMMENT='Stores scanning subnet definitions'");
+
+	db_install_execute('0.8.8d', "CREATE TABLE IF NOT EXISTS `automation_processes` (
+		`pid` int(8) unsigned NOT NULL,
+		`taskname` varchar(20) NOT NULL DEFAULT '',
+		`taskid` int(10) unsigned NOT NULL DEFAULT '0',
+		`heartbeat` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+		PRIMARY KEY (`pid`)) 
+		ENGINE=MEMORY 
+		COMMENT='Table required for parallelization of data collection'");
+
+	db_install_execute('0.8.8d', "CREATE TABLE IF NOT EXISTS `automation_snmp` (
+		`id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+		`name` varchar(100) NOT NULL DEFAULT '',
+		PRIMARY KEY (`id`)) 
+		ENGINE=MyISAM 
+		COMMENT='Group of SNMP Option Sets'");
+
+	db_install_execute('0.8.8d', "CREATE TABLE IF NOT EXISTS `automation_snmp_items` (
+		`id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+		`snmp_id` int(10) unsigned NOT NULL DEFAULT '0',
+		`sequence` int(10) unsigned NOT NULL DEFAULT '0',
+		`snmp_version` varchar(100) NOT NULL DEFAULT '',
+		`snmp_readstring` varchar(100) NOT NULL,
+		`snmp_port` int(10) NOT NULL DEFAULT '161',
+		`snmp_timeout` int(10) unsigned NOT NULL DEFAULT '500',
+		`snmp_retries` tinyint(11) unsigned NOT NULL DEFAULT '3',
+		`max_oids` int(12) unsigned DEFAULT '10',
+		`snmp_username` varchar(50) DEFAULT NULL,
+		`snmp_password` varchar(50) DEFAULT NULL,
+		`snmp_auth_protocol` char(5) DEFAULT '',
+		`snmp_priv_passphrase` varchar(200) DEFAULT '',
+		`snmp_priv_protocol` char(6) DEFAULT '',
+		`snmp_context` varchar(64) DEFAULT '',
+		PRIMARY KEY (`id`,`snmp_id`)) 
+		ENGINE=MyISAM 
+		COMMENT='Set of SNMP Options'");
+
+	db_install_execute('0.8.8d', "CREATE TABLE IF NOT EXISTS `automation_templates` (
+		`id` int(8) NOT NULL AUTO_INCREMENT,
+		`host_template` int(8) NOT NULL DEFAULT '0',
+		`tree` int(12) NOT NULL DEFAULT '0',
+		`snmp_version` tinyint(3) NOT NULL DEFAULT '0',
+		`sysdescr` varchar(255) NOT NULL DEFAULT '',
+		`sysname` varchar(255) NOT NULL DEFAULT '',
+		`sysoid` varchar(60) NOT NULL DEFAULT '',
+		`sequence` int(10) unsigned DEFAULT '0',
+		PRIMARY KEY (`id`)) 
+		ENGINE=MyISAM 
+		COMMENT='Templates of SysDescr SysName and SysOID matches to use to automation'");
 }
