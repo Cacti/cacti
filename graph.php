@@ -84,7 +84,7 @@ case 'view':
 	?>
 	<tr class='tableHeader'>
 		<td colspan='3' class='textHeaderDark'>
-			<strong>Viewing Graph</strong> '<?php print htmlspecialchars($graph_title);?>'
+			<strong>Viewing Graph</strong> '<?php print htmlspecialchars($graph_title, ENT_QUOTES);?>'
 		<script type="text/javascript" >
 		$(function() { 
 			$('#navigation').show();
@@ -121,7 +121,7 @@ case 'view':
 						</tr>
 						<tr>
 							<td colspan='2' align='center'>
-								<strong><?php print htmlspecialchars($rra['name']);?></strong>
+								<strong><?php print htmlspecialchars($rra['name'], ENT_QUOTES);?></strong>
 							</td>
 						</tr>
 					</table>

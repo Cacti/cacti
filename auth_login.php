@@ -461,7 +461,7 @@ if (api_plugin_hook_function('custom_login', OPER_MODE_NATIVE) == OPER_MODE_RESK
 								<label for='login_username'>Username</label>
 							</td>
 							<td>
-								<input type='text' id='login_username' name='login_username' size='20' value='<?php print htmlspecialchars($username); ?>' placeholder='Username'>
+								<input type='text' id='login_username' name='login_username' size='20' value='<?php print htmlspecialchars($username, ENT_QUOTES); ?>' placeholder='Username'>
 							</td>
 						</tr>
 						<tr>

@@ -668,7 +668,7 @@ function html_header_checkbox($header_items, $include_form = true, $form_action 
 function html_create_list($form_data, $column_display, $column_id, $form_previous_value) {
 	if (empty($column_display)) {
 		foreach (array_keys($form_data) as $id) {
-			print '<option value="' . htmlspecialchars($id) . '"';
+			print '<option value="' . htmlspecialchars($id, ENT_QUOTES) . '"';
 
 			if ($form_previous_value == $id) {
 			print " selected";
@@ -679,7 +679,7 @@ function html_create_list($form_data, $column_display, $column_id, $form_previou
 	}else{
 		if (sizeof($form_data) > 0) {
 			foreach ($form_data as $row) {
-				print "<option value='" . htmlspecialchars($row[$column_id]) . "'";
+				print "<option value='" . htmlspecialchars($row[$column_id], ENT_QUOTES) . "'";
 
 				if ($form_previous_value == $row[$column_id]) {
 					print " selected";
