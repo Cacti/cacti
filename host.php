@@ -782,7 +782,7 @@ function host_edit() {
 			</tr>
 			<tr>
 				<td valign='top' class='textHeader'>
-					<div id='ping_results'>Pinging Device&nbsp;<i style='font-size:12px;' class='fa fa-spin fa-spinner'></i><br><br></div>
+					<div id='ping_results'>Contacting Device&nbsp;<i style='font-size:12px;' class='fa fa-spin fa-spinner'></i><br><br></div>
 				</td>
 			</tr>
 		</table>
