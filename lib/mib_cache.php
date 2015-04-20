@@ -84,7 +84,7 @@ class MibCache{
 								. $object_params["otype"] . "','"
 								. $object_params["kind"] . "','"
 								. $object_params["max-access"] . "','"
-								. nl2br($object_params["description"]) . "')"
+								. nl2br(addslashes($object_params["description"])) . "')"
 					);
 					if($object_params["otype"] == "NOTIFICATION-TYPE") {
 						foreach($object_params["objects"] as $notication_object_index => $notication_object) {
@@ -101,7 +101,7 @@ class MibCache{
 								. $object_name . "','"
 								. $object_params["mib"] . "','"
 								. $object_params["syntax"] . "','"
-								. nl2br($object_params["description"]) . "')"
+								. nl2br(addslashes($object_params["description"])) . "')"
 					);
 				}
 			}
