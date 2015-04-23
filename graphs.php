@@ -1302,7 +1302,7 @@ function graph_edit() {
 			'sql' => "SELECT id,CONCAT_WS('',description,' (',hostname,')') as name FROM host ORDER BY description,hostname",
 			'action' => 'ajax_hosts_noany',
 			'id' => (isset($_REQUEST['host_id']) ? $_REQUEST['host_id'] : $host_id),
-			'value' => db_fetch_cell_prepared('SELECT description AS name FROM host WHERE id = ?', (isset($_REQUEST['host_id']) ? array($_REQUEST['host_id']) : array($host_id))),
+			'value' => db_fetch_cell_prepared('SELECT id FROM host WHERE id = ?', (isset($_REQUEST['host_id']) ? array($_REQUEST['host_id']) : array($host_id))),
 			),
 		'graph_template_graph_id' => array(
 			'method' => 'hidden',
