@@ -429,9 +429,18 @@ function item_edit() {
 			$('#row_gprint_id').show();
 			$('#row_text_format').show();
 			$('#row_hard_return').show();
-
 			break;
 		case "9":
+			$('#row_task_item_id').show();
+			$('#row_color_id').hide();
+			$('#row_alpha').hide();
+			$('#row_consolidation_function_id').show();
+			$('#row_cdef_id').show();
+			$('#row_value').hide();
+			$('#row_gprint_id').show();
+			$('#row_text_format').show();
+			$('#row_hard_return').show();
+			break;
 		case "10":
 			$('#row_task_item_id').show();
 			$('#row_color_id').hide();
@@ -441,12 +450,7 @@ function item_edit() {
 			$('#row_value').hide();
 			$('#row_gprint_id').show();
 			$('#row_text_format').hide();
-			if ($('#graph_type_id').val() == 9) {
-				$('#row_hard_return').show();
-			}else{
-				$('#row_hard_return').hide();
-			}
-
+			$('#row_hard_return').hide();
 			break;
 		}
 
