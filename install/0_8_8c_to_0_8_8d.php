@@ -997,15 +997,15 @@ function upgrade_to_0_8_8d() {
 
 	/* autom8 table renames */
 	$autom8_tables = array(
+		'plugin_autom8_graph_rules', 
 		'plugin_autom8_graph_rule_items', 
-		'plugin_autom8_graph_rule_items', 
-		'plugin_autom8_graph_rule_items', 
-		'plugin_autom8_graph_rule_items', 
-		'plugin_autom8_graph_rule_items'
+		'plugin_autom8_match_rule_items', 
+		'plugin_autom8_tree_rules', 
+		'plugin_autom8_tree_rule_items'
 	);
 
 	foreach($autom8_tables as $table) {
-		if (in_array('plugin_autom8_graph_rule_items')) {
+		if (in_array($table, $tables)) {
 			db_install_execute('0.8.8d', "RENAME TABLE $table TO " . str_replace('plugin_autom8', 'automation', $table));
 		}
 	}
