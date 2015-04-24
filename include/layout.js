@@ -504,9 +504,11 @@ function applySkin() {
 }
 
 function setupCollapsible() {
+	storage=$.sessionStorage;
+
 	$('.collapsible').each(function(data) {
 		id=$(this).attr('id')+'_cs';
-		state = $.cookie(id);
+		state = storage.get(id);
 		if (state == 'hide') {
 			$(this).nextUntil('tr.spacer').hide();
 			$(this).find('i').removeClass('fa-angle-double-up').addClass('fa-angle-double-down');
@@ -518,14 +520,14 @@ function setupCollapsible() {
 		if ($(this).find('i').hasClass('fa-angle-double-up')) {
 			$(this).nextUntil('tr.spacer').slideUp('fast');
 			$(this).find('i').removeClass('fa-angle-double-up').addClass('fa-angle-double-down');
-			$.cookie(id, 'hide', { expires: 31, path: urlPath } );
+			storage.set(id, 'hide');
 		}else{
 			$(this).nextUntil('tr.spacer').slideDown('fast');
 			$(this).nextUntil('tr.spacer').each(function(data) {
 				$(this).find('input, select').change();
 			});
 			$(this).find('i').removeClass('fa-angle-double-down').addClass('fa-angle-double-up');
-			$.cookie(id, 'show', { expires: 31, path: urlPath } );
+			storage.set(id, 'show');
 		}
 	});
 }
@@ -610,11 +612,14 @@ function setupBreadcrumbs() {
 /** saveTableWidths - This function will initialize table widths on page
  *  load.  It includes the 'initial' boolean to initialize the page */
 function saveTableWidths(initial) {
+	// We will save columns widths persistently
+	storage=$.localStorage;
+
 	// Initialize table width on the page
 	$('.cactiTable').each(function(data) {
 		var key    = $(this).attr('id');
-		var sizes  = $.cookie(key);
-		var items  = sizes ? sizes.split(/,/) : new Array();
+		var sizes  = storage.get(key);
+		var items  = sizes ? sizes: new Array();
 
 		var i = 0;
 		if (key !== undefined) {
@@ -642,7 +647,7 @@ function saveTableWidths(initial) {
 				});
 
 				if (i > 1) {
-					$.cookie(key, sizes, { expires: 31, path: urlPath } );
+					storage.set(key, sizes);
 				}
 			}
 		}
@@ -651,7 +656,7 @@ function saveTableWidths(initial) {
 
 /** applyTableSizing - This function sets all table headers to be resizable using
  *  the jQueryUI function resizable.  It also calls the saveTableWidths function
- *  to store the cookie value every time a column is resized. */
+ *  to store the widths in localStorage every time a column is resized. */
 function applyTableSizing() {
 	$('.tableHeader').not('.tableFixed').find('th').resizable({
 		handles: 'e',
