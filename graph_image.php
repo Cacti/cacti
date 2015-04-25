@@ -49,26 +49,41 @@ if (!is_numeric(get_request_var_request('local_graph_id'))) {
 	die_html_input_error();
 }
 
+$graph_data_array = array();
+
 // Determine the graph type of the output
-$type   = db_fetch_cell('SELECT image_format_id FROM graph_templates_graph WHERE local_graph_id=' . $_REQUEST['local_graph_id']);
-switch($type) {
-case '1':
-	$gtype = 'png';
-	break;
-case '3':
-	$gtype = 'svg+xml';
-	break;
+if (!isset($_REQUEST['image_format'])) {
+	$type   = db_fetch_cell('SELECT image_format_id FROM graph_templates_graph WHERE local_graph_id=' . $_REQUEST['local_graph_id']);
+	switch($type) {
+	case '1':
+		$gtype = 'png';
+		break;
+	case '3':
+		$gtype = 'svg+xml';
+		break;
+	}
+}else{
+	switch(strtolower(get_request_var_request('image_format'))) {
+	case 'png':
+		$gtype = 'png';
+		break;
+	case 'svg':
+		$gtype = 'svg+xml';
+		break;
+	default:
+		$gtype = 'png';
+		break;
+	}
 }
+
+$graph_data_array['image_format'] = $gtype;
 
 header('Content-type: image/'. $gtype);
 
 /* flush the headers now */
 ob_end_clean();
 
-
 session_write_close();
-
-$graph_data_array = array();
 
 /* override: graph start time (unix time) */
 if (!empty($_REQUEST['graph_start']) && $_REQUEST['graph_start'] < 1600000000) {
@@ -104,8 +119,6 @@ if (!empty($_REQUEST['show_source'])) {
 if (isset($_REQUEST['disable_cache'])) {
 	$graph_data_array['disable_cache'] = true;
 }
-
-$graph_data_array['image_format'] = 'png';
 
 print @rrdtool_function_graph($_REQUEST['local_graph_id'], (array_key_exists('rra_id', $_REQUEST) ? $_REQUEST['rra_id'] : null), $graph_data_array);
 

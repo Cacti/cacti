@@ -106,20 +106,39 @@ if (isset($_REQUEST['disable_cache'])) {
 
 $graph_data_array['graphv'] = true;
 
+// Determine the graph type of the output
+if (!isset($_REQUEST['image_format'])) {
+	$type   = db_fetch_cell('SELECT image_format_id FROM graph_templates_graph WHERE local_graph_id=' . $_REQUEST['local_graph_id']);
+	switch($type) {
+	case '1':
+		$gtype = 'png';
+		break;
+	case '3':
+		$gtype = 'svg+xml';
+		break;
+	default:
+		$gtype = 'png';
+		break;
+	}
+}else{
+	switch(strtolower($_REQUEST['image_format'])) {
+	case 'png':
+		$graph_data_array['image_format'] = 'png';
+		break;
+	case 'svg':
+		$gtype = 'svg+xml';
+		break;
+	default:
+		$gtype = 'png';
+		break;
+	}
+}
+
+$graph_data_array['image_format'] = $gtype;
+
 $output = @rrdtool_function_graph($_REQUEST['local_graph_id'], (array_key_exists('rra_id', $_REQUEST) ? $_REQUEST['rra_id'] : null), $graph_data_array);
 
-$oarray = array('local_graph_id' => $_REQUEST['local_graph_id'], 'rra_id' => $_REQUEST['rra_id']);
-
-// Determine the graph type of the output
-$type   = db_fetch_cell('SELECT image_format_id FROM graph_templates_graph WHERE local_graph_id=' . $_REQUEST['local_graph_id']);
-switch($type) {
-case '1':
-	$oarray['type'] = 'png';
-	break;
-case '3':
-	$oarray['type'] = 'svg+xml';
-	break;
-}
+$oarray = array('type' => $gtype, 'local_graph_id' => $_REQUEST['local_graph_id'], 'rra_id' => $_REQUEST['rra_id']);
 
 $lpos   = 0;
 

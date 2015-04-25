@@ -1019,6 +1019,7 @@ function reports_item_edit() {
 			document.getElementById('graphdiv').style.display='';
 			document.getElementById('graph').innerHTML="<img align='center' src='<?php print $config['url_path'];?>graph_image.php"+
 					"?local_graph_id="+graphId+
+					"&image_format=png"+
 					"<?php print (($report["graph_width"] > 0) ? "&graph_width=" . $report["graph_width"]:"");?>"+
 					"<?php print (($report["graph_height"] > 0) ? "&graph_height=" . $report["graph_height"]:"");?>"+
 					"<?php print (($report["thumbnails"] == "on") ? "&graph_nolegend=true":"");?>"+

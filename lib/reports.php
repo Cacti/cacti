@@ -255,6 +255,7 @@ function generate_report($report, $force = false) {
 			'graph_end'      => $timespan["end_now"],
 			'graph_width'    => $report["graph_width"],
 			'graph_height'   => $report["graph_height"],
+			'image_format'   => 'png',
 			'output_flag'    => RRDTOOL_OUTPUT_STDOUT
 		);
 
@@ -711,6 +712,7 @@ function expand_branch(&$report, &$item, $branch_id, $output, $format_ok) {
 				"&local_graph_id=" . $item['local_graph_id'] .
 				"&graph_start=" . $timespan["begin_now"] .
 				"&graph_end=" . $timespan["end_now"] .
+				"&image_format=png" . 
 				"&rra_id=0") . ">";
 	}else{
 		$out = "<GRAPH:" . $item['local_graph_id'] . ":" . $item["timespan"] . ">";
