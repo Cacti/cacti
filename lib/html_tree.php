@@ -390,7 +390,7 @@ function validate_tree_vars() {
 	}
 
 	/* if the user pushed the 'clear' button */
-	if (isset($_REQUEST['clear_x'])) {
+	if (isset($_REQUEST['clear'])) {
 		kill_session_var('sess_graph_tree_graphs');
 		kill_session_var('sess_graph_tree_columns');
 		kill_session_var('sess_graph_tree_filter');
@@ -675,7 +675,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 	}
 
 	function clearFilter() {
-		$.get('graph_view.php?action=tree_content&tree_id=<?php print $_SESSION['sess_graph_tree_tree_id'];?>&leaf_id=<?php print $_SESSION['sess_graph_tree_leaf_id'];?>&host_group_data=<?php print $_SESSION['sess_graph_tree_host_group_data'];?>&clear_x=1&nodeid='+'<?php print $_SESSION['sess_graph_tree_nodeid'];?>', function(data) {
+		$.get('graph_view.php?action=tree_content&tree_id=<?php print $_SESSION['sess_graph_tree_tree_id'];?>&leaf_id=<?php print $_SESSION['sess_graph_tree_leaf_id'];?>&host_group_data=<?php print $_SESSION['sess_graph_tree_host_group_data'];?>&clear=1&nodeid='+'<?php print $_SESSION['sess_graph_tree_nodeid'];?>', function(data) {
 			$('#main').html(data);
 			applySkin();
 			initializeGraphs();
