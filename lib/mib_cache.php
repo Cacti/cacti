@@ -76,15 +76,15 @@ class MibCache{
 
 			foreach($mp->oids as $object_name => $object_params) {
 				if($object_params["otype"] != "TEXTUAL-CONVENTION") {
-					db_execute_prepared("INSERT INTO `snmpagent_cache` (`oid`, `name`, `mib`, `type`, `otype`, `kind`, `max-access`, `description`) VALUES ('"
-								. $object_params["oid"] . "','"
-								. $object_name . "','"
-								. $object_params["mib"] . "','"
-								. $object_params["syntax"] . "','"
-								. $object_params["otype"] . "','"
-								. $object_params["kind"] . "','"
-								. $object_params["max-access"] . "','"
-								. nl2br(addslashes($object_params["description"])) . "')"
+					db_execute("INSERT IGNORE INTO `snmpagent_cache` (`oid`, `name`, `mib`, `type`, `otype`, `kind`, `max-access`, `description`) VALUES ('"
+						. $object_params["oid"] . "','"
+						. $object_name . "','"
+						. $object_params["mib"] . "','"
+						. $object_params["syntax"] . "','"
+						. $object_params["otype"] . "','"
+						. $object_params["kind"] . "','"
+						. $object_params["max-access"] . "',"
+						. db_qstr(trim($object_params["description"])) . ")"
 					);
 					if($object_params["otype"] == "NOTIFICATION-TYPE") {
 						foreach($object_params["objects"] as $notication_object_index => $notication_object) {
@@ -200,8 +200,8 @@ class MibCache{
 						. $column_params["type"] . "','"
 						. $column_params["otype"] . "','"
 						. "Column Data" . "','"
-						. $column_params["max-access"] . "','"
-						. $column_params["value"] . "')");
+						. $column_params["max-access"] . "',"
+						. db_qstr(trim($column_params["value"])) . ")");
 				}
 				return true;
 			}
