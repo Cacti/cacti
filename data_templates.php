@@ -621,7 +621,7 @@ function template() {
 	}
 
 	/* if the user pushed the 'clear' button */
-	if (isset($_REQUEST['clear_x'])) {
+	if (isset($_REQUEST['clear'])) {
 		kill_session_var('sess_data_template_current_page');
 		kill_session_var('sess_data_template_has_data');
 		kill_session_var('sess_data_template_filter');
@@ -692,7 +692,7 @@ function template() {
 						<input type="button" id='refresh' value="Go" title="Set/Refresh Filters">
 					</td>
 					<td>
-						<input type="button" id='clear' name="clear_x" value="Clear" title="Clear Filters">
+						<input type="button" id='clear' value="Clear" title="Clear Filters">
 					</td>
 				</tr>
 			</table>
@@ -709,7 +709,7 @@ function template() {
 		}
 
 		function clearFilter() {
-			strURL = 'data_templates.php?clear_x=1&header=false';
+			strURL = 'data_templates.php?clear=1&header=false';
 			$.get(strURL, function(data) {
 				$('#main').html(data);
 				applySkin();

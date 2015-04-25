@@ -609,7 +609,7 @@ function domains() {
 	}
 
 	/* if the user pushed the 'clear' button */
-	if (isset($_REQUEST['clear_x'])) {
+	if (isset($_REQUEST['clear'])) {
 		kill_session_var('sess_domains_filter');
 		kill_session_var('sess_domains_rows');
 		kill_session_var('sess_domains_sort_column');
@@ -662,7 +662,7 @@ function domains() {
 						<input id='refresh' type='button' value='Go' title='Set/Refresh Filters'>
 					</td>
 					<td>
-						<input id='clear' type='button' name='clear_x' value='Clear' title='Clear Filters'>
+						<input id='clear' type='button' value='Clear' title='Clear Filters'>
 					</td>
 				</tr>
 			</table>
@@ -681,7 +681,7 @@ function domains() {
 		}
 
 		function clearFilter() {
-			strURL = 'user_domains.php?clear_x=1&header=false';
+			strURL = 'user_domains.php?clear=1&header=false';
 			$.get(strURL, function(data) {
 				$('#main').html(data);
 				applySkin();

@@ -372,6 +372,15 @@ function aggregate_color_template() {
 		unset($_REQUEST['sort_column']);
 		unset($_REQUEST['sort_direction']);
 		unset($_REQUEST['sess_default_rows']);
+	}else{
+		$changed = 0;
+		$changed += check_changed('has_graphs', 'sess_color_template_has_graphs');
+		$changed += check_changed('rows',       'sess_default_rows');
+		$changed += check_changed('filter',     'sess_color_template_filter');
+
+		if ($changed) {
+			$_REQUEST['page'] = 1;
+		}
 	}
 
 	/* remember these search fields in session vars so we don't have to keep passing them around */

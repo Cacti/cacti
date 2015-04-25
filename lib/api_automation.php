@@ -48,7 +48,7 @@ function display_matching_hosts($rule, $rule_type, $url) {
 	}
 
 	/* if the user pushed the 'clear' button */
-	if (isset($_REQUEST['clear_x'])) {
+	if (isset($_REQUEST['clear'])) {
 		kill_session_var('sess_automation_device_current_page');
 		kill_session_var('sess_automation_device_filter');
 		kill_session_var('sess_automation_device_host_template_id');
@@ -314,7 +314,7 @@ function display_matching_graphs($rule, $rule_type, $url) {
 	}
 
 	/* if the user pushed the 'clear' button */
-	if (isset($_REQUEST['clear_x'])) {
+	if (isset($_REQUEST['clear'])) {
 		kill_session_var('sess_automation_graph_current_page');
 		kill_session_var('sess_automation_graph_filter');
 		kill_session_var('sess_automation_graph_sort_column');
@@ -562,7 +562,7 @@ function display_new_graphs($rule) {
 	/* ==================================================== */
 
 	/* if the user pushed the 'clear' button */
-	if (isset($_REQUEST['clear_x'])) {
+	if (isset($_REQUEST['clear'])) {
 		kill_session_var('sess_automation_graph_current_page');
 
 		unset($_REQUEST['page']);
@@ -767,7 +767,7 @@ function display_matching_trees ($rule_id, $rule_type, $item, $url) {
 	}
 
 	/* if the user pushed the 'clear' button */
-	if (isset($_REQUEST['clear_x'])) {
+	if (isset($_REQUEST['clear'])) {
 		kill_session_var('sess_automation_tree_current_page');
 		kill_session_var('sess_automation_tree_filter');
 		kill_session_var('sess_automation_tree_host_template_id');

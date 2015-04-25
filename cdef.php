@@ -456,7 +456,7 @@ function cdef() {
 	}
 
 	/* if the user pushed the 'clear' button */
-	if (isset($_REQUEST['clear_x'])) {
+	if (isset($_REQUEST['clear'])) {
 		kill_session_var('sess_cdef_current_page');
 		kill_session_var('sess_cdef_filter');
 		kill_session_var('sess_cdef_has_graphs');
@@ -470,7 +470,15 @@ function cdef() {
 		unset($_REQUEST['rows']);
 		unset($_REQUEST['sort_column']);
 		unset($_REQUEST['sort_direction']);
+	}else{
+		$changed = 0;
+		$changed += check_changed('rows',       'sess_default_rows');
+		$changed += check_changed('has_graphs', 'sess_cdef_has_graphs');
+		$changed += check_changed('filter',     'sess_cdef_filter');
 
+		if ($changed) {
+			$_REQUEST['page'] = 1;
+		}
 	}
 
 	/* remember these search fields in session vars so we don't have to keep passing them around */
@@ -519,7 +527,7 @@ function cdef() {
 						<input type='button' id='refresh' value='Go' title='Set/Refresh Filters'>
 					</td>
 					<td>
-						<input type='button' id='clear' name='clear_x' value='Clear' title='Clear Filters'>
+						<input type='button' id='clear' value='Clear' title='Clear Filters'>
 					</td>
 				</tr>
 			</table>
@@ -535,7 +543,7 @@ function cdef() {
 			}
 
 			function clearFilter() {
-				strURL = 'cdef.php?clear_x=1&header=false';
+				strURL = 'cdef.php?clear=1&header=false';
 				$.get(strURL, function(data) {
 					$('#main').html(data);
 					applySkin();

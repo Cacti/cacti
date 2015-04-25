@@ -386,7 +386,7 @@ function graphs() {
 	}
 
 	/* if the user pushed the 'clear' button */
-	if (isset($_REQUEST['clear_x'])) {
+	if (isset($_REQUEST['clear'])) {
 		kill_session_var('sess_graphs_new_filter');
 		kill_session_var('sess_default_rows');
 		unset($_REQUEST['filter']);
@@ -495,7 +495,7 @@ function graphs() {
 			</td>
 			<td colspan='3' style='white-space:nowrap;'>
 				<input type='submit' value='Go' title='Set/Refresh Filters'>
-				<input type='submit' name='clear_x' value='Clear' title='Clear Filters'>
+				<input type='submit' name='clear' value='Clear' title='Clear Filters'>
 			</td>
 		</tr>
 	</table>

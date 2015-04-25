@@ -1634,7 +1634,7 @@ function user_group() {
 	}
 
 	/* if the user pushed the 'clear' button */
-	if (isset($_REQUEST['clear_x'])) {
+	if (isset($_REQUEST['clear'])) {
 		kill_session_var('sess_user_group_admin_page');
 		kill_session_var('sess_user_group_admin_rows');
 		kill_session_var('sess_user_group_admin_filter');
@@ -1676,7 +1676,7 @@ function user_group() {
 	}
 
 	function clearFilter() {
-		strURL = 'user_group_admin.php?clear_x=1';
+		strURL = 'user_group_admin.php?clear=1';
 		strURL = strURL + '&header=false';
 		$.get(strURL, function(data) {
 			$('#main').html(data);
@@ -1731,7 +1731,7 @@ function user_group() {
 						<input type='button' value='Go' title='Set/Refresh Filters' onClick='applyFilter()'>
 					</td>
 					<td>
-						<input type='button' name='clear_x' value='Clear' title='Clear Filters' onClick='clearFilter()'>
+						<input type='button' name='clear' value='Clear' title='Clear Filters' onClick='clearFilter()'>
 					</td>
 				</tr>
 			</table>

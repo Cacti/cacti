@@ -499,9 +499,9 @@ function aggregate_template() {
 		unset($_REQUEST['rows']);
 	}else{
 		$changed = 0;
-		$changed += check_changed('has_graphs', 'sess_agg_tmp_has_hosts');
+		$changed += check_changed('has_graphs', 'sess_agg_tmp_has_graphs');
 		$changed += check_changed('rows',       'sess_default_rows');
-		$changed += check_changed('filter',     'sess_agg_tmp__filter');
+		$changed += check_changed('filter',     'sess_agg_tmp_filter');
 
 		if ($changed) {
 			$_REQUEST['page'] = 1;

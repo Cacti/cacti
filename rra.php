@@ -250,6 +250,15 @@ function rra() {
 		unset($_REQUEST['rows']);
 		unset($_REQUEST['sort_column']);
 		unset($_REQUEST['sort_direction']);
+	}else{
+		$changed = 0;
+		$changed += check_changed('rows',       'sess_default_rows');
+		$changed += check_changed('has_graphs', 'sess_rra_has_data');
+		$changed += check_changed('filter',     'sess_rra_filter');
+
+		if ($changed) {
+			$_REQUEST['page'] = 1;
+		}
 	}
 
     /* remember these search fields in session vars so we don't have to keep passing them around */

@@ -518,7 +518,7 @@ function automation_snmp_edit() {
 	}
 
 	/* remember these search fields in session vars so we don't have to keep passing them around */
-	load_current_session_value('page', 'sess_automation_edit_current_page', '1');
+	load_current_session_value('page', 'sess_autom_snmp_edit_current_page', '1');
 	load_current_session_value('rows', 'sess_default_rows', read_config_option('num_rows_table'));
 
 	/* display the mactrack snmp option set */
@@ -676,11 +676,11 @@ function automation_snmp() {
 	}
 
 	/* if the user pushed the 'clear' button */
-	if (isset($_REQUEST['clear_x'])) {
-		kill_session_var('sess_automation_current_page');
-		kill_session_var('sess_automation_filter');
-		kill_session_var('sess_automation_sort_column');
-		kill_session_var('sess_automation_sort_direction');
+	if (isset($_REQUEST['clear'])) {
+		kill_session_var('sess_autom_snmp_current_page');
+		kill_session_var('sess_autom_snmp_filter');
+		kill_session_var('sess_autom_snmp_sort_column');
+		kill_session_var('sess_autom_snmp_sort_direction');
 		kill_session_var('sess_default_rows');
 
 		unset($_REQUEST['page']);
@@ -688,14 +688,21 @@ function automation_snmp() {
 		unset($_REQUEST['sort_column']);
 		unset($_REQUEST['sort_direction']);
 		unset($_REQUEST['rows']);
+	}else{
+		$changed = 0;
+		$changed += check_changed('rows',   'sess_default_rows');
+		$changed += check_changed('filter', 'sess_autom_snmp_filter');
 
+		if ($changed) {
+			$_REQUEST['page'] = 1;
+		}
 	}
 
 	/* remember these search fields in session vars so we don't have to keep passing them around */
-	load_current_session_value('page', 'sess_automation_current_page', '1');
-	load_current_session_value('filter', 'sess_automation_filter', '');
-	load_current_session_value('sort_column', 'sess_automation_sort_column', 'name');
-	load_current_session_value('sort_direction', 'sess_automation_sort_direction', 'ASC');
+	load_current_session_value('page', 'sess_autom_snmp_current_page', '1');
+	load_current_session_value('filter', 'sess_autom_snmp_filter', '');
+	load_current_session_value('sort_column', 'sess_autom_snmp_sort_column', 'name');
+	load_current_session_value('sort_direction', 'sess_autom_snmp_sort_direction', 'ASC');
 	load_current_session_value('rows', 'sess_default_rows', read_config_option('num_rows_table'));
 
 	/* if the number of rows is -1, set it to the default */

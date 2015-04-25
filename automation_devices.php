@@ -87,7 +87,7 @@ if (isset($_REQUEST['clear'])) {
 	kill_session_var('sess_autom_snmp');
 	kill_session_var('sess_autom_os');
 	kill_session_var('sess_autom_filter');
-	kill_session_var('sess_autom_rows');
+	kill_session_var('sess_default_rows');
 	kill_session_var('sess_autom_sort_column');
 	kill_session_var('sess_autom_sort_direction');
 
@@ -99,6 +99,17 @@ if (isset($_REQUEST['clear'])) {
 	unset($_REQUEST['rows']);
 	unset($_REQUEST['sort_column']);
 	unset($_REQUEST['sort_direction']);
+}else{
+	$changed = 0;
+	$changed += check_changed('snmp',   'sess_autom_snmp');
+	$changed += check_changed('status', 'sess_autom_status');
+	$changed += check_changed('os',     'sess_autom_os');
+	$changed += check_changed('rows',   'sess_default_rows');
+	$changed += check_changed('filter', 'sess_autom_filter');
+
+	if ($changed) {
+		$_REQUEST['page'] = 1;
+	}
 }
 
 /* remember these search fields in session vars so we don't have to keep passing them around */

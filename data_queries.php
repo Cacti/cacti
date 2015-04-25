@@ -791,7 +791,7 @@ function data_query() {
 	}
 
 	/* if the user pushed the 'clear' button */
-	if (isset($_REQUEST['clear_x'])) {
+	if (isset($_REQUEST['clear'])) {
 		kill_session_var('sess_data_queries_filter');
 		kill_session_var('sess_default_rows');
 		kill_session_var('sess_data_queries_sort_column');
@@ -802,7 +802,14 @@ function data_query() {
 		unset($_REQUEST['rows']);
 		unset($_REQUEST['sort_column']);
 		unset($_REQUEST['sort_direction']);
-		$_REQUEST['page'] = 1;
+	}else{
+		$changed = 0;
+		$changed += check_changed('filter', 'sess_data_queries_filter');
+		$changed += check_changed('rows',   'sess_default_rows');
+
+		if ($changed) {
+			$_REQUEST['page'] = 1;
+		}
 	}
 
 	/* remember these search fields in session vars so we don't have to keep passing them around */
@@ -844,7 +851,7 @@ function data_query() {
 						<input type="button" id='refresh' value="Go" title="Set/Refresh Filters">
 					</td>
 					<td>
-						<input type="button" id='clear' name="clear_x" value="Clear" title="Clear Filters">
+						<input type="button" id='clear' name="clear" value="Clear" title="Clear Filters">
 					</td>
 				</tr>
 			</table>
@@ -860,7 +867,7 @@ function data_query() {
 		}
 
 		function clearFilter() {
-			strURL = 'data_queries.php?clear_x=1&header=false';
+			strURL = 'data_queries.php?clear=1&header=false';
 			$.get(strURL, function(data) {
 				$('#main').html(data);
 				applySkin();

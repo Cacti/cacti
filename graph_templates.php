@@ -462,7 +462,7 @@ function template() {
 	}
 
 	/* if the user pushed the 'clear' button */
-	if (isset($_REQUEST['clear_x'])) {
+	if (isset($_REQUEST['clear'])) {
 		kill_session_var('sess_graph_template_current_page');
 		kill_session_var('sess_graph_template_filter');
 		kill_session_var('sess_graph_template_graphs');
@@ -478,7 +478,7 @@ function template() {
 		unset($_REQUEST['sort_direction']);
 	}else{
 		$changed = 0;
-		$changed += check_changed('has_graphs', 'sess_graph_template_has_hosts');
+		$changed += check_changed('has_graphs', 'sess_graph_template_graphs');
 		$changed += check_changed('rows', 'sess_default_rows');
 		$changed += check_changed('filter', 'sess_graph_template_filter');
 
@@ -533,7 +533,7 @@ function template() {
 						<input type='button' id='refresh' value='Go' title='Set/Refresh Filters'>
 					</td>
 					<td>
-						<input type='button' id='clear' name='clear_x' value='Clear' title='Clear Filters'>
+						<input type='button' id='clear' value='Clear' title='Clear Filters'>
 					</td>
 				</tr>
 			</table>
@@ -549,7 +549,7 @@ function template() {
 		}
 
 		function clearFilter() {
-			strURL = 'graph_templates.php?clear_x=1&header=false';
+			strURL = 'graph_templates.php?clear=1&header=false';
 			$.get(strURL, function(data) {
 				$('#main').html(data);
 				applySkin();

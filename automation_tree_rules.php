@@ -671,13 +671,13 @@ function automation_tree_rules() {
 	}
 
 	/* if the user pushed the 'clear' button */
-	if (isset($_REQUEST['clear_x'])) {
-		kill_session_var('sess_automation_tree_rules_current_page');
-		kill_session_var('sess_automation_tree_rules_filter');
-		kill_session_var('sess_automation_tree_rules_sort_column');
-		kill_session_var('sess_automation_tree_rules_sort_direction');
-		kill_session_var('sess_automation_tree_rules_status');
-		kill_session_var('sess_automation_tree_rules_rows');
+	if (isset($_REQUEST['clear'])) {
+		kill_session_var('sess_autom_tr_current_page');
+		kill_session_var('sess_autom_tr_filter');
+		kill_session_var('sess_autom_tr_sort_column');
+		kill_session_var('sess_autom_tr_sort_direction');
+		kill_session_var('sess_autom_tr_status');
+		kill_session_var('sess_autom_tr_rows');
 
 		unset($_REQUEST['page']);
 		unset($_REQUEST['filter']);
@@ -685,22 +685,30 @@ function automation_tree_rules() {
 		unset($_REQUEST['sort_direction']);
 		unset($_REQUEST['status']);
 		unset($_REQUEST['rows']);
+	}else{
+		$changed = 0;
+		$changed += check_changed('status', 'sess_autom_tr_status');
+		$changed += check_changed('rows',   'sess_default_rows');
+		$changed += check_changed('filter', 'sess_autom_tr_filter');
 
+		if ($changed) {
+			$_REQUEST['page'] = 1;
+		}
 	}
 
-	if ((!empty($_SESSION['sess_automation_tree_rules_status'])) && (!empty($_REQUEST['status']))) {
-		if ($_SESSION['sess_automation_tree_rules_status'] != $_REQUEST['status']) {
+	if ((!empty($_SESSION['sess_autom_tr_status'])) && (!empty($_REQUEST['status']))) {
+		if ($_SESSION['sess_autom_tr_status'] != $_REQUEST['status']) {
 			$_REQUEST['page'] = 1;
 		}
 	}
 
 	/* remember these search fields in session vars so we don't have to keep passing them around */
-	load_current_session_value('page', 'sess_automation_tree_rules_current_page', '1');
-	load_current_session_value('filter', 'sess_automation_tree_rules_filter', '');
-	load_current_session_value('sort_column', 'sess_automation_tree_rules_sort_column', 'name');
-	load_current_session_value('sort_direction', 'sess_automation_tree_rules_sort_direction', 'ASC');
-	load_current_session_value('status', 'sess_automation_tree_rules_status', '-1');
-	load_current_session_value('rows', 'sess_automation_tree_rules_rows', read_config_option('num_rows_table'));
+	load_current_session_value('page', 'sess_autom_tr_current_page', '1');
+	load_current_session_value('filter', 'sess_autom_tr_filter', '');
+	load_current_session_value('sort_column', 'sess_autom_tr_sort_column', 'name');
+	load_current_session_value('sort_direction', 'sess_autom_tr_sort_direction', 'ASC');
+	load_current_session_value('status', 'sess_autom_tr_status', '-1');
+	load_current_session_value('rows', 'sess_default_rows', read_config_option('num_rows_table'));
 
 	/* if the number of rows is -1, set it to the default */
 	if ($_REQUEST['rows'] == -1) {
@@ -774,7 +782,7 @@ function automation_tree_rules() {
 			}
 
 			function clearFilter() {
-				strURL = 'automation_tree_rules.php?clear_x=1&header=false';
+				strURL = 'automation_tree_rules.php?clear=1&header=false';
 				$.get(strURL, function(data) {
 					$('#main').html(data);
 					applySkin();

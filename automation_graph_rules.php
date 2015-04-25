@@ -628,14 +628,14 @@ function automation_graph_rules() {
 	}
 
 	/* if the user pushed the 'clear' button */
-	if (isset($_REQUEST['clear_x'])) {
-		kill_session_var('sess_automation_graph_rules_current_page');
-		kill_session_var('sess_automation_graph_rules_filter');
-		kill_session_var('sess_automation_graph_rules_sort_column');
-		kill_session_var('sess_automation_graph_rules_sort_direction');
-		kill_session_var('sess_automation_graph_rules_status');
-		kill_session_var('sess_automation_graph_rules_rows');
-		kill_session_var('sess_automation_graph_rules_snmp_query_id');
+	if (isset($_REQUEST['clear'])) {
+		kill_session_var('sess_autom_gr_current_page');
+		kill_session_var('sess_autom_gr_filter');
+		kill_session_var('sess_autom_gr_sort_column');
+		kill_session_var('sess_autom_gr_sort_direction');
+		kill_session_var('sess_autom_gr_status');
+		kill_session_var('sess_autom_gr_rows');
+		kill_session_var('sess_autom_gr_snmp_query_id');
 
 		unset($_REQUEST['page']);
 		unset($_REQUEST['filter']);
@@ -644,23 +644,32 @@ function automation_graph_rules() {
 		unset($_REQUEST['status']);
 		unset($_REQUEST['rows']);
 		unset($_REQUEST['snmp_query_id']);
+	}else{
+		$changed = 0;
+		$changed += check_changed('status',   'sess_autom_gr_status');
+		$changed += check_changed('snmp_query_id', 'sess_autom_gr_snmp_query_id');
+		$changed += check_changed('rows',   'sess_default_rows');
+		$changed += check_changed('filter', 'sess_autom_gr_filter');
 
+		if ($changed) {
+			$_REQUEST['page'] = 1;
+		}
 	}
 
-	if ((!empty($_SESSION['sess_automation_graph_rules_status'])) && (!empty($_REQUEST['status']))) {
-		if ($_SESSION['sess_automation_graph_rules_status'] != $_REQUEST['status']) {
+	if ((!empty($_SESSION['sess_autom_gr_status'])) && (!empty($_REQUEST['status']))) {
+		if ($_SESSION['sess_autom_gr_status'] != $_REQUEST['status']) {
 			$_REQUEST['page'] = 1;
 		}
 	}
 
 	/* remember these search fields in session vars so we don't have to keep passing them around */
-	load_current_session_value('page', 'sess_automation_graph_rules_current_page', '1');
-	load_current_session_value('filter', 'sess_automation_graph_rules_filter', '');
-	load_current_session_value('sort_column', 'sess_automation_graph_rules_sort_column', 'name');
-	load_current_session_value('sort_direction', 'sess_automation_graph_rules_sort_direction', 'ASC');
-	load_current_session_value('status', 'sess_automation_graph_rules_status', '-1');
-	load_current_session_value('rows', 'sess_automation_graph_rules_rows', read_config_option('num_rows_table'));
-	load_current_session_value('snmp_query_id', 'sess_automation_graph_rules_snmp_query_id', '');
+	load_current_session_value('page', 'sess_autom_gr_current_page', '1');
+	load_current_session_value('filter', 'sess_autom_gr_filter', '');
+	load_current_session_value('sort_column', 'sess_autom_gr_sort_column', 'name');
+	load_current_session_value('sort_direction', 'sess_autom_gr_sort_direction', 'ASC');
+	load_current_session_value('status', 'sess_autom_gr_status', '-1');
+	load_current_session_value('rows', 'sess_default_rows', read_config_option('num_rows_table'));
+	load_current_session_value('snmp_query_id', 'sess_autom_gr_snmp_query_id', '');
 
 	/* if the number of rows is -1, set it to the default */
 	if ($_REQUEST['rows'] == -1) {
@@ -733,7 +742,7 @@ function automation_graph_rules() {
 							<input type='submit' id='refresh' name'go' value='Go'>
 						</td>
 						<td>
-							<input type='button' id='clear' name='clear_x' value='Clear'></td>
+							<input type='button' id='clear' value='Clear'></td>
 					</tr>
 				</table>
 			<input type='hidden' id='page' value='<?php print $_REQUEST['page'];?>'>
@@ -748,7 +757,7 @@ function automation_graph_rules() {
 		}
 
 		function clearFilter() {
-			strURL = 'automation_graph_rules.php?clear_x=1&header=false';
+			strURL = 'automation_graph_rules.php?clear=1&header=false';
 			$.get(strURL, function(data) {
 				$('#main').html(data);
 				applySkin();

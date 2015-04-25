@@ -1914,7 +1914,7 @@ function user() {
 	}
 
 	/* if the user pushed the 'clear' button */
-	if (isset($_REQUEST['clear_x'])) {
+	if (isset($_REQUEST['clear'])) {
 		kill_session_var('sess_user_admin_current_page');
 		kill_session_var('sess_default_rows');
 		kill_session_var('sess_user_admin_filter');
@@ -1950,7 +1950,7 @@ function user() {
 	}
 
 	function clearFilter() {
-		strURL = 'user_admin.php?clear_x=1&header=false';
+		strURL = 'user_admin.php?clear=1&header=false';
 		$.get(strURL, function(data) {
 			$('#main').html(data);
 			applySkin();
@@ -2012,7 +2012,7 @@ function user() {
 						<input type='button' id='refresh' value='Go' title='Set/Refresh Filters'>
 					</td>
 					<td>
-						<input type='button' id='clear' name='clear_x' value='Clear' title='Clear Filters'>
+						<input type='button' id='clear' value='Clear' title='Clear Filters'>
 					</td>
 				</tr>
 			</table>

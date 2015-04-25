@@ -275,7 +275,7 @@ function list_rrd() {
 	}
 
 	/* if the user pushed the 'clear' button */
-	if (isset ($_REQUEST['clear_x'])) {
+	if (isset ($_REQUEST['clear'])) {
 		kill_session_var('sess_rrdclean_current_page');
 		kill_session_var('sess_rrdclean_age');
 		kill_session_var('sess_default_rows');
@@ -512,7 +512,7 @@ function filter() {
 						<input id='go' type='submit' value='Go'>
 					</td>
 					<td>
-						<input id='clear' type='button' value='Clear' name='clear_x'>
+						<input id='clear' type='button' value='Clear'>
 					</td>
 					<td>
 						<input id='rescan' type='button' value='Rescan' name='rescan'>
@@ -545,7 +545,7 @@ function filter() {
 				});
 
 				$('#clear').click(function() {
-					$.get('rrdcleaner.php?header=false&clear_x=1', function(data) {
+					$.get('rrdcleaner.php?header=false&clear=1', function(data) {
 						$('#main').html(data);
 						applySkin();
 					});
@@ -554,7 +554,7 @@ function filter() {
 				$('#rescan').click(function() {
 					$('#text').text('Rebuilding RRDfile Listing');
 					pulsate('#text');
-					$.get('rrdcleaner.php?header=false&rescan=1&clear_x=1', function(data) {
+					$.get('rrdcleaner.php?header=false&rescan=1&clear=1', function(data) {
 						$('#main').html(data);
 						$('#text').text('Finished').fadeOut(2000);
 						applySkin();
@@ -564,7 +564,7 @@ function filter() {
 				$('#arcall').click(function() {
 					$('#text').text('Scheduling Archiving of All Unknowns');
 					pulsate('#text');
-					$.get('rrdcleaner.php?header=false&action=arcall&raction=3&clear_x=1', function(data) {
+					$.get('rrdcleaner.php?header=false&action=arcall&raction=3&clear=1', function(data) {
 						$('#main').html(data);
 						$('#text').text('Finished').fadeOut(2000);
 						applySkin();
@@ -574,7 +574,7 @@ function filter() {
 				$('#remall').click(function() {
 					$('#text').text('Scheduling Purging of All Unknowns');
 					pulsate('#text');
-					$.get('rrdcleaner.php?header=false&action=remall&raction=1&clear_x=1', function(data) {
+					$.get('rrdcleaner.php?header=false&action=remall&raction=1&clear=1', function(data) {
 						$('#main').html(data);
 						$('#text').text('Finished').fadeOut(2000);
 						applySkin();

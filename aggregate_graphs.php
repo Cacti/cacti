@@ -847,6 +847,15 @@ function aggregate_items() {
 		unset($_REQUEST['sort_direction']);
 		unset($_REQUEST['rows']);
 		unset($_REQUEST['matching']);
+	}else{
+		$changed = 0;
+		$changed += check_changed('filter',      'sess_agraph_items_filter');
+		$changed += check_changed('rows',        'sess_default_rows');
+		$changed += check_changed('matching',    'sess_agraph_items_matching');
+
+		if ($changed) {
+			$_REQUEST['page'] = 1;
+		}
 	}
 
 	/* remember these search fields in session vars so we don't have to keep passing them around */
@@ -1173,6 +1182,15 @@ function graph() {
 		unset($_REQUEST['sort_direction']);
 		unset($_REQUEST['rows']);
 		unset($_REQUEST['template_id']);
+	}else{
+		$changed = 0;
+		$changed += check_changed('filter',      'sess_agraph_filter');
+		$changed += check_changed('rows',        'sess_default_rows');
+		$changed += check_changed('template_id', 'sess_agraph_template_id');
+
+		if ($changed) {
+			$_REQUEST['page'] = 1;
+		}
 	}
 
 	/* remember these search fields in session vars so we don't have to keep passing them around */

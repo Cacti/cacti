@@ -1189,7 +1189,7 @@ function host() {
 	}
 
 	/* if the user pushed the 'clear' button */
-	if (isset($_REQUEST['clear_x'])) {
+	if (isset($_REQUEST['clear'])) {
 		kill_session_var('sess_device_current_page');
 		kill_session_var('sess_device_filter');
 		kill_session_var('sess_device_host_template_id');
@@ -1205,6 +1205,16 @@ function host() {
 		unset($_REQUEST['rows']);
 		unset($_REQUEST['sort_column']);
 		unset($_REQUEST['sort_direction']);
+	}else{
+		$changed = 0;
+		$changed += check_changed('host_template_id', 'sess_device_host_template_id');
+		$changed += check_changed('filter',           'sess_device_filter');
+		$changed += check_changed('host_status',      'sess_device_filter');
+		$changed += check_changed('rows',             'sess_default_rows');
+
+		if ($changed) {
+			$_REQUEST['page'] = 1;
+		}
 	}
 
 	if ((!empty($_SESSION['sess_host_status'])) && (!empty($_REQUEST['host_status']))) {
@@ -1245,7 +1255,7 @@ function host() {
 	}
 
 	function clearFilter() {
-		strURL = 'host.php?clear_x=1&header=false';
+		strURL = 'host.php?clear=1&header=false';
 		$.get(strURL, function(data) {
 			$('#main').html(data);
 			applySkin();
@@ -1336,7 +1346,7 @@ function host() {
 						<input type="button" id='refresh' value="Go" title="Set/Refresh Filters">
 					</td>
 					<td>
-						<input type="button" id='clear' name="clear_x" value="Clear" title="Clear Filters">
+						<input type="button" id='clear' value="Clear" title="Clear Filters">
 					</td>
 				</tr>
 			</table>

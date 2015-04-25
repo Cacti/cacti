@@ -1322,7 +1322,7 @@ function reports() {
 	}
 
 	/* if the user pushed the 'clear' button */
-	if (isset($_REQUEST['clear_x'])) {
+	if (isset($_REQUEST['clear'])) {
 		kill_session_var('sess_reports_current_page');
 		kill_session_var('sess_reports_filter');
 		kill_session_var('sess_reports_sort_column');
@@ -1401,7 +1401,7 @@ function reports() {
 						<input id='refresh' type='button' value='Go' name='go'>
 					</td>
 					<td>
-						<input id='clear' type='button' value='Clear' name='clear_x'>
+						<input id='clear' type='button' value='Clear' name='clear'>
 					</td>
 				</tr>
 			</table>
@@ -1536,7 +1536,7 @@ function reports() {
 	}
 
 	function clearFilter() {
-		$.get('<?php print get_reports_page();?>?header=false&clear_x=1', function(data) {
+		$.get('<?php print get_reports_page();?>?header=false&clear=1', function(data) {
 			$('#main').html(data);
 			applySkin();
 		});

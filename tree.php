@@ -1265,7 +1265,7 @@ function tree() {
 	}
 
 	/* if the user pushed the 'clear' button */
-	if (isset($_REQUEST['clear_x'])) {
+	if (isset($_REQUEST['clear'])) {
 		kill_session_var('sess_tree_current_page');
 		kill_session_var('sess_tree_filter');
 		kill_session_var('sess_default_rows');
@@ -1277,6 +1277,14 @@ function tree() {
 		unset($_REQUEST['rows']);
 		unset($_REQUEST['sort_column']);
 		unset($_REQUEST['sort_direction']);
+	}else{
+		$changed = 0;
+		$changed += check_changed('filter',      'sess_tree_filter');
+		$changed += check_changed('rows',        'sess_default_rows');
+
+		if ($changed) {
+			$_REQUEST['page'] = 1;
+		}
 	}
 
 	/* remember these search fields in session vars so we don't have to keep passing them around */
@@ -1305,7 +1313,7 @@ function tree() {
 	}
 
 	function clearFilter() {
-		strURL = 'tree.php?clear_x=1&header=false';
+		strURL = 'tree.php?clear=1&header=false';
 		$.get(strURL, function(data) {
 			$('#main').html(data);
 			applySkin();
@@ -1362,7 +1370,7 @@ function tree() {
 						<input type='button' id='refresh' value='Go' title='Set/Refresh Filters'>
 					</td>
 					<td>
-						<input type='button' id='clear' name='clear_x' value='Clear' title='Clear Filters'>
+						<input type='button' id='clear' value='Clear' title='Clear Filters'>
 					</td>
 				</tr>
 			</table>

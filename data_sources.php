@@ -1042,7 +1042,7 @@ function ds() {
 	}
 
 	/* if the user pushed the 'clear' button */
-	if (isset($_REQUEST['clear_x'])) {
+	if (isset($_REQUEST['clear'])) {
 		kill_session_var('sess_ds_current_page');
 		kill_session_var('sess_ds_filter');
 		kill_session_var('sess_ds_sort_column');
@@ -1060,6 +1060,17 @@ function ds() {
 		unset($_REQUEST['host_id']);
 		unset($_REQUEST['template_id']);
 		unset($_REQUEST['method_id']);
+	}else{
+		$changed = 0;
+		$changed += check_changed('filter',      'sess_ds_filter');
+		$changed += check_changed('host_id',     'sess_ds_host_id');
+		$changed += check_changed('template_id', 'sess_ds_template_id');
+		$changed += check_changed('method_id',   'sess_ds_method_id');
+		$changed += check_changed('rows',        'sess_default_rows');
+
+		if ($changed) {
+			$_REQUEST['page'] = 1;
+		}
 	}
 
 	/* remember these search fields in session vars so we don't have to keep passing them around */
@@ -1098,7 +1109,7 @@ function ds() {
 	}
 
 	function clearFilter() {
-		strURL = 'data_sources.php?clear_x=1&header=false';
+		strURL = 'data_sources.php?clear=1&header=false';
 		$.get(strURL, function(data) {
 			$('#main').html(data);
 			applySkin();
@@ -1168,7 +1179,7 @@ function ds() {
 						<input type='button' id='refresh' value='Go' title='Set/Refresh Filters'>
 					</td>
 					<td>
-						<input type='button' id='clear' name='clear_x' value='Clear' title='Clear Filters'>
+						<input type='button' id='clear' value='Clear' title='Clear Filters'>
 					</td>
 				</tr>
 				<tr>
