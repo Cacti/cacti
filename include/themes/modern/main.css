@@ -11,6 +11,15 @@ body {
 	background-repeat: repeat-y;
 }
 
+/* prevent things from being selected */
+.zoom-container, .cactiNavBarTop, .textHeaderDark {
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: -moz-none;
+	-o-user-select: none;
+	user-select: none;
+}
+
 /* links */
 
 a, a:active, a:visited {
