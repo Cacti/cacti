@@ -347,13 +347,36 @@ function draw_edit_control($field_name, &$field_array) {
 			((isset($field_array["size"])) ? $field_array["size"] : "40"));
 
 		break;
-	default:
-		print "<em>" . htmlspecialchars($field_array["value"],ENT_QUOTES) . "</em>";
+	case 'button':
+		form_button(
+			$field_name, 
+			((isset($field_array['value'])) ? $field_array['value'] : ''),
+			((isset($field_array['title'])) ? $field_array['title'] : ''),
+			((isset($field_array['on_click'])) ? $field_array['on_click'] : '')
+		);
 
-		form_hidden_box($field_name, $field_array["value"], "");
+		break;
+	default:
+		print '<em>' . htmlspecialchars($field_array['value'],ENT_QUOTES) . '</em>';
+
+		form_hidden_box($field_name, $field_array['value'], '');
 
 		break;
 	}
+}
+
+/* form_button - draws a standard button form element
+   @arg $form_name - the name of this form element
+   @arg $value - the display value for the button
+   @arg $title - the hover title for the button
+   @arg $action - the onClick action for the button */
+function form_button($form_name, $value, $title = '', $action = '') {
+	print "<input type='button' " . 
+		"id='$form_name' " . 
+		"name='$form_name' " . 
+		"value='$value' " . 
+		($action!='' ? "onClick='$action'":"") . 
+		($title!='' ? "title='$title'":"") . ">";
 }
 
 /* form_file - draws a standard html file input element

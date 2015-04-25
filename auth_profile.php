@@ -166,6 +166,13 @@ function settings() {
 			'value' => '|arg1:email_address|',
 			'max_length' => '60',
 			'size' => '60'
+		),
+		'private_data' => array(
+			'method' => 'button',
+			'friendly_name' => 'Clear Private Data',
+			'description' => 'Clear Private Data including Column sizing.',
+			'value' => 'Clear Private Data',
+			'on_click' => 'clearPrivateData()'
 		)
 	);
 	
@@ -227,8 +234,30 @@ function settings() {
 
 	?>
 	<script type="text/javascript">
-	<!--
+
 	var themeFonts=<?php print read_config_option('font_method');?>;
+
+	function clearPrivateData() {
+		$.localStorage.removeAll();
+		$.sessionStorage.removeAll();
+
+		$('body').append('<div style="display:none;" id="cleared" title="Private Data Cleared"><p>Your Private Data has been cleared.</p></div>');
+
+		$('#cleared').dialog({
+			modal: true,
+			resizable: false,
+			draggable: false,
+			height:140,
+			buttons: {
+				Ok: function() {
+					$(this).dialog('close');
+					$('#cleared').remove();
+				}
+			}
+		});
+
+		$('#cleared').dialog('open');
+	}
 
 	function graphSettings() {
 		if (themeFonts == 1) {
@@ -317,7 +346,6 @@ function settings() {
 		});
 	});
 
-	-->
 	</script>
 	<?php
 
