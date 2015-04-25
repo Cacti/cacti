@@ -144,6 +144,9 @@ if (sizeof($parms)) {
 		exit(1);
 	}else{
 		db_execute("replace into host_graph (host_id,graph_template_id) values (" . $host_id . "," . $graph_template_id . ")");
+
+		automation_hook_graph_template($host_id, $graph_template_id);
+
 		api_plugin_hook_function('add_graph_template_to_host', array("host_id" => $host_id, "graph_template_id" => $graph_template_id));
 	}
 

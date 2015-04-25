@@ -132,6 +132,9 @@ if (db_fetch_cell("SELECT id FROM host_template WHERE id=$template") > 0) {
 
 			foreach ($graph_templates as $graph_template) {
 				db_execute("REPLACE INTO host_graph (host_id, graph_template_id) VALUES (" . $host["id"] . ", " . $graph_template["graph_template_id"] . ")");
+
+				automation_hook_graph_template($host['id'], $graph_template['graph_template_id']);
+
 				api_plugin_hook_function('add_graph_template_to_host', array("host_id" => $host["id"], "graph_template_id" => $graph_template["graph_template_id"]));
 			}
 		}
