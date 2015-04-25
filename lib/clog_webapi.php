@@ -103,7 +103,7 @@ function clog_view_logfile() {
 	load_current_session_value('page_referrer', 'page_referrer', 'view_logfile');
 
 	$refresh['seconds'] = $_REQUEST['refresh'];
-	$refresh['page']    = $config['url_path'] . 'clog.php';
+	$refresh['page']    = $config['url_path'] . 'clog' . (!clog_admin() ? '_user':'') . '.php?header=false';
 	if ((isset($_REQUEST['purge_continue'])) && (clog_admin())) clog_purge_logfile();
 
 	general_header();
@@ -293,7 +293,7 @@ function clog_view_logfile() {
 }
 
 function filter() {
-	global $page_refresh_interval, $log_tail_lines;
+	global $refresh, $page_refresh_interval, $log_tail_lines;
 	?>
 	<tr class='even'>
 		<form name='form_logfile'>
@@ -370,6 +370,10 @@ function filter() {
 				</tr>
 			</table>
 			<script type='text/javascript'>
+		    var refreshIsLogout=false;
+		    var refreshPage='<?php print $refresh['page'];?>';
+		    var refreshMSeconds=<?php print $refresh['seconds']*1000;?>;
+
 			$('#filter').change(function() {
 				refreshFilter();
 			});
