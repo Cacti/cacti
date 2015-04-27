@@ -510,11 +510,11 @@ function reports_tree_has_graphs($tree_id, $branch_id, $effective_user, $search_
 
 	/* verify permissions */
 	if (sizeof($graphs)) {
-	foreach($graphs as $key => $id) {
-		if (!is_graph_allowed($id, $effective_user)) {
-			unset($graphs[$key]);
+		foreach($graphs as $key => $id) {
+			if (!is_graph_allowed($id, $effective_user)) {
+				unset($graphs[$key]);
+			}
 		}
-	}
 	}
 
 	return sizeof($graphs);
@@ -643,9 +643,9 @@ function reports_generate_html ($reports_id, $output = REPORTS_OUTPUT_STDOUT) {
 				$column = 0;
 			} elseif ($item['item_type'] == REPORTS_ITEM_TREE) {
 				if ($item['tree_cascade'] == 'on') {
-					$outstr .= expand_branch($report, $item, 0, $output, $format_ok);
-				}elseif (reports_tree_has_graphs($item["tree_id"], 0, $report["user_id"], $item["graph_name_regexp"])) {
-					$outstr .= reports_expand_tree($report, $item, 0, $output, $format_ok);
+					$outstr .= expand_branch($report, $item, $item['branch_id'], $output, $format_ok);
+				}elseif (reports_tree_has_graphs($item["tree_id"], $item['branch_id'], $report["user_id"], $item["graph_name_regexp"])) {
+					$outstr .= reports_expand_tree($report, $item, $item['branch_id'], $output, $format_ok);
 				}
 			} else {
 				$outstr .= "<tr><td><br><hr><br></td></tr>";
@@ -675,20 +675,17 @@ function expand_branch(&$report, &$item, $branch_id, $output, $format_ok) {
 		$outstr .= reports_expand_tree($report, $item, $branch_id, $output, $format_ok, true);
 	}
 
-	$tree_branches = db_fetch_assoc("SELECT id
+	$tree_branches = db_fetch_assoc_prepared('SELECT id
 		FROM graph_tree_items 
-		WHERE parent=$branch_id 
-		AND host_id=0 AND local_graph_id=0
-		AND graph_tree_id=" . $item['tree_id'] . "
-		ORDER BY position");
-
+		WHERE parent = ? 
+		AND host_id = 0 AND local_graph_id = 0
+		AND graph_tree_id = ?
+		ORDER BY position', array($branch_id, $item['tree_id']));
 	if (sizeof($tree_branches)) {
-	foreach ($tree_branches as $branch) {
-		$branch_id = $branch["id"];
-		$outstr .= expand_branch($report, $item, $branch_id, $output, $format_ok);
+		foreach ($tree_branches as $branch) {
+			$outstr .= expand_branch($report, $item, $branch['id'], $output, $format_ok);
+		}
 	}
-	}
-
 	return $outstr;
 }
 
@@ -745,7 +742,9 @@ function reports_expand_tree($report, $item, $parent, $output, $format_ok, $nest
 
 	$tree_id = $item["tree_id"];
 	$leaf_id = $item["branch_id"];
-
+	if ($leaf_id == 0) {
+		$leaf_id = $parent;
+	}
 	$time = time();
 	# get config option for first-day-of-the-week
 	$first_weekdayid = read_graph_config_option("first_weekdayid");
@@ -773,8 +772,7 @@ function reports_expand_tree($report, $item, $parent, $output, $format_ok, $nest
 	$outstr          = '';
 
 	if (!empty($leaf_id)) {
-		$leaf      = db_fetch_row("SELECT * FROM graph_tree_items WHERE id=$leaf_id");
-
+		$leaf = db_fetch_row_prepared('SELECT * FROM graph_tree_items WHERE parent = ?', array($parent));
 		if ($leaf['local_graph_id'] == 0 && $leaf['host_id'] == 0) {
 			$leaf_type = 'header';
 		}elseif ($leaf['host_id'] > 0) {
@@ -788,19 +786,19 @@ function reports_expand_tree($report, $item, $parent, $output, $format_ok, $nest
 
 	/* get information for the headers */
 	if (!empty($tree_id)) { 
-		$tree_name = db_fetch_cell("SELECT name FROM graph_tree WHERE id=$tree_id"); 
+		$tree_name = db_fetch_cell_prepared('SELECT name FROM graph_tree WHERE id = ?', array($tree_id));
 	}
 
 	if (!empty($parent)) { 
-		$leaf_name = db_fetch_cell("SELECT title FROM graph_tree_items WHERE id=$parent");
+		$leaf_name = db_fetch_cell_prepared('SELECT title FROM graph_tree_items WHERE id = ?', array($parent));
 	}
 
 	if (!empty($leaf_id)) { 
-		$host_name = db_fetch_cell("SELECT h.description 
+		$host_name = db_fetch_cell_prepared('SELECT h.description 
 			FROM graph_tree_items AS gti
 			INNER JOIN host AS h
-			ON h.id=gti.host_id 
-			WHERE gti.id=$leaf_id"); 
+			ON h.id = gti.host_id 
+			WHERE gti.id = ?', array($leaf_id));
 	}
 
 	//if (!empty($tree_name) && empty($leaf_name) && empty($host_name) && !$nested) {
