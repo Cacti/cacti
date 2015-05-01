@@ -273,6 +273,7 @@ function draw_edit_control($field_name, &$field_array) {
 
 		break;
 	case 'checkbox_group':
+		print "<div id='${field_name}_group' class='checkboxgroup'>\n";
 		while (list($check_name, $check_array) = each($field_array["items"])) {
 			form_checkbox(
 				$check_name, 
@@ -286,6 +287,7 @@ function draw_edit_control($field_name, &$field_array) {
 
 			print "<br>";
 		}
+		print "</div>\n";
 
 		break;
 	case 'radio':
