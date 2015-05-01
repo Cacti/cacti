@@ -923,10 +923,11 @@ function draw_menu($user_menu = "") {
 	<script type='text/javascript'>
 	$(function () {
 	<?php if (read_config_option('selected_theme') != 'classic') {?>
+		storage=$.localStorage;
 
 		// Initialize the navigation settings
 		$('#nav > li > a').each(function() {
-			active = $.cookie($(this).text());
+			active = storage.get($(this).text());
 			if (active != null) {
 				if (active == 'active') {
 					$(this).next().show();
@@ -940,13 +941,13 @@ function draw_menu($user_menu = "") {
 		$('#nav li:has(ul) a.active').click(function() {
 			if ($(this).next().is(':visible')){
 				$(this).next().slideUp( { duration: 200, easing: 'swing' } );
-				$.cookie($(this).text(), 'collapsed', { expires: 31, path: urlPath } );
+				storage.set($(this).text(), 'collapsed');
 			} else {
 				$(this).next().slideToggle( { duration: 200, easing: 'swing' } );
 				if ($(this).next().is(':visible')) {
-					$.cookie($(this).text(), 'active', { expires: 31, path: urlPath } );
+					storage.set($(this).text(), 'active');
 				}else{
-			        $.cookie($(this).text(), 'collapsed', { expires: 31, path: urlPath } );
+			        storage.set($(this).text(), 'collapsed');
 				}
 			}
 		});
