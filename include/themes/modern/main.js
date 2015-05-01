@@ -6,6 +6,10 @@ function themeReady() {
 	$('a.pic').unbind().click(function(event) {
 		event.preventDefault();	
 
+		/* update menu selection */
+		$('.pic').removeClass('selected');
+		$(this).addClass('selected');
+
 		/* execute an ajax request to load the data */
 		href = $(this).attr('href');
 
