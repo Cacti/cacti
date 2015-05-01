@@ -3,6 +3,35 @@ var clickTimeout;
 var hostOpen = false;
 
 function themeReady() {
+	$('a.pic').unbind().click(function(event) {
+		event.preventDefault();	
+
+		/* execute an ajax request to load the data */
+		href = $(this).attr('href');
+
+		$.get(href, function(html) {
+			var htmlObject  = $(html);
+			var matches     = html.match(/<title>(.*?)<\/title>/);
+			var htmlTitle   = matches[1];
+			var breadCrumbs = htmlObject.find('#breadcrumbs').html();
+			var content     = htmlObject.find('#main').html();
+
+			$('title').text(htmlTitle);
+			$('#breadcrumbs').html(breadCrumbs);
+			$('#main').html(content);
+
+			applySkin();
+
+			if (typeof window.history.replaceState !== 'undefined') {
+				window.history.replaceState(html, htmlTitle, href);
+			}
+
+			return false;
+		});
+
+		return false;
+	});
+
 	// Add nice search filter to filters
 	$('input[id="filter"]').after("<i class='fa fa-search filter'/>").attr('autocomplete', 'off').attr('placeholder', 'Enter a search term').parent('td').css('white-space', 'nowrap');
 
@@ -53,6 +82,9 @@ function themeReady() {
 
 		return li.appendTo(ui);
 	}
+
+	$('.checkboxgroup').children('br').remove();
+	$('.checkboxgroup').buttonset();
 
 	$('select').each(function() {
 		if ($(this).prop('multiple') != true) {
