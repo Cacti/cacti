@@ -7,8 +7,10 @@ function themeReady() {
 		event.preventDefault();
 
 		/* update menu selection */
-		$('.pic').removeClass('selected');
-		$(this).addClass('selected');
+		if( $(this).hasClass('pic') ) {
+			$('.pic').removeClass('selected');
+			$(this).addClass('selected');
+		}
 
 		/* execute an ajax request to load the data */
 		href = $(this).attr('href');
