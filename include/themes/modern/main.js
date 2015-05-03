@@ -3,8 +3,8 @@ var clickTimeout;
 var hostOpen = false;
 
 function themeReady() {
-	$('a.pic').unbind().click(function(event) {
-		event.preventDefault();	
+	$('a.pic, a.linkOverDark, a.linkEditMain, a.hyperLink').unbind().click(function(event) {
+		event.preventDefault();
 
 		/* update menu selection */
 		$('.pic').removeClass('selected');
@@ -147,11 +147,11 @@ function themeReady() {
 		hostTimer = setTimeout(function() { $('#host').autocomplete('close'); }, 800);
 	});
 
-	$('#host_wrapper').on('mouseenter', function() { 
-		$(this).addClass('ui-state-hover'); 
+	$('#host_wrapper').on('mouseenter', function() {
+		$(this).addClass('ui-state-hover');
 		$('input#host').addClass('ui-state-hover');
-	}).on('mouseleave', function() { 
-		$(this).removeClass('ui-state-hover'); 
+	}).on('mouseleave', function() {
+		$(this).removeClass('ui-state-hover');
 		$('input#host').removeClass('ui-state-hover');
 	});
 }
