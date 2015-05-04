@@ -120,7 +120,7 @@
 }
 .ui-resizable-e {
 	cursor: e-resize;
-	width: 7px;
+	width: 1px;
 	right: -5px;
 	top: 0;
 	height: 100%;
