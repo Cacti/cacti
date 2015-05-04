@@ -196,7 +196,7 @@ function reports_log($string, $output = false, $environ='REPORTS', $level=POLLER
 	# if current verbosity >= level of current message, print it
 	if (strstr($string, 'STATS')) {
 		cacti_log($string, $output, 'SYSTEM');
-	}elseif (REPORTS_DEBUG >= $level) {
+	} elseif (REPORTS_DEBUG >= $level) {
 		cacti_log($string, $output, $environ);
 	}
 }
@@ -233,7 +233,7 @@ function generate_report($report, $force = false) {
 			$timespan = $arr1[0];
 
 			$graphids[$graphid . ':' . $timespan] = $graphid;
-		}else{
+		} else {
 			break;
 		}
 	}
@@ -370,7 +370,7 @@ function generate_report($report, $force = false) {
 
 	if ($report['subject'] != '') {
 		$subject = $report['subject'];
-	}else{
+	} else {
 		$subject = $report['name'];
 	}
 
@@ -402,10 +402,10 @@ function generate_report($report, $force = false) {
 			if (!isset($_POST['selected_items'])) {
 				raise_message('reports_error');
 			}
-		}else{
+		} else {
 			reports_log(__FUNCTION__ . ", Problems sending Report '" . $report['name'] . "'.  Problem with e-mail Subsystem Error is '$error'", false, 'REPORTS', POLLER_VERBOSITY_LOW);
 		}
-	}elseif (isset($_REQUEST)) {
+	} elseif (isset($_REQUEST)) {
 		$_SESSION['reports_message'] = "Report '" . $report['name'] . "' Sent Successfully";
 
 		if (!isset($_POST['selected_items'])) {
@@ -450,7 +450,7 @@ function reports_load_format_file($format_file, &$output, &$report_tag_included)
 				$output .= $line . "\n";
 			}
 		}
-	}else{
+	} else {
 		return false;
 	}
 
@@ -481,7 +481,7 @@ function reports_tree_has_graphs($tree_id, $branch_id, $effective_user, $search_
 
 	if ($branch_id>0) {
 		$sql_where .= ' AND gti.parent=' . $branch_id;
-	}else{
+	} else {
 		$sql_where .= ' AND parent=0';
 	}
 
@@ -556,7 +556,7 @@ function reports_generate_html ($reports_id, $output = REPORTS_OUTPUT_STDOUT) {
 
 	if ($format_ok && $report_tag) {
 		$include_body = false;
-	}else{
+	} else {
 		$include_body = true;
 	}
 
@@ -568,14 +568,14 @@ function reports_generate_html ($reports_id, $output = REPORTS_OUTPUT_STDOUT) {
 		}
 		if ($format_ok) {
 			$outstr .= "\t<table class='report_table'>\n";
-		}else{
+		} else {
 			$outstr .= "\t<table class='report_table' " . ($output == REPORTS_OUTPUT_STDOUT ? "style='background-color:#F9F9F9;'":'') . " cellspacing='0' cellpadding='0' border='0' align='center' width='100%'>\n";
 		}
 
 		$outstr .= "\t\t<tr class='title_row'>\n";
 		if ($format_ok) {
 			$outstr .= "\t\t\t<td class='title' align='" . $alignment[$report['alignment']] . "'>\n";
-		}else{
+		} else {
 			$outstr .= "\t\t\t<td class='title' align='" . $alignment[$report['alignment']] . "' style='text-align:center; font-size:" . $report['font_size'] . "pt;'>\n";
 		}
 		$outstr .= "\t\t\t\t" . $report['name'] . "\n";
@@ -605,14 +605,14 @@ function reports_generate_html ($reports_id, $output = REPORTS_OUTPUT_STDOUT) {
 					$outstr .= "\t\t\t<td>\n";
 					if ($format_ok) {
 						$outstr .= "\t\t\t\t<table width='100%' class='image_table'>\n";
-					}else{
+					} else {
 						$outstr .= "\t\t\t\t<table cellpadding='0' cellspacing='0' border='0' width='100%'>\n";
 					}
 					$outstr .= "\t\t\t\t\t<tr>\n";
 				}
 				if ($format_ok) {
 					$outstr .= "\t\t\t\t\t\t<td class='image_column' align='" . $alignment[$item['align']] . "'>\n";
-				}else{
+				} else {
 					$outstr .= "\t\t\t\t\t\t<td style='padding:5px;' align='" . $alignment[$item['align']] . "'>\n";
 				}
 				$outstr .= "\t\t\t\t\t\t\t" . reports_graph_image($report, $item, $timespan, $output) . "\n";
@@ -632,7 +632,7 @@ function reports_generate_html ($reports_id, $output = REPORTS_OUTPUT_STDOUT) {
 				$outstr .= "\t\t<tr class='text_row'>\n";
 				if ($format_ok) {
 					$outstr .= "\t\t\t<td align='" . $alignment[$item['align']] . "' class='text'>\n";
-				}else{
+				} else {
 					$outstr .= "\t\t\t<td align='" . $alignment[$item['align']] . "' class='text' style='font-size: " . $item['font_size'] . "pt;'>\n";
 				}
 				$outstr .= "\t\t\t\t" . $item['item_text'] . "\n";
@@ -644,7 +644,7 @@ function reports_generate_html ($reports_id, $output = REPORTS_OUTPUT_STDOUT) {
 			} elseif ($item['item_type'] == REPORTS_ITEM_TREE) {
 				if ($item['tree_cascade'] == 'on') {
 					$outstr .= expand_branch($report, $item, $item['branch_id'], $output, $format_ok);
-				}elseif (reports_tree_has_graphs($item['tree_id'], $item['branch_id'], $report['user_id'], $item['graph_name_regexp'])) {
+				} elseif (reports_tree_has_graphs($item['tree_id'], $item['branch_id'], $report['user_id'], $item['graph_name_regexp'])) {
 					$outstr .= reports_expand_tree($report, $item, $item['branch_id'], $output, $format_ok);
 				}
 			} else {
@@ -660,10 +660,10 @@ function reports_generate_html ($reports_id, $output = REPORTS_OUTPUT_STDOUT) {
 	if ($format_ok) {
 		if ($report_tag) {
 			return str_replace('<REPORT>', $outstr, $format_data);
-		}else{
+		} else {
 			return $format_data . "\n" . $outstr;
 		}
-	}else{
+	} else {
 		return $outstr;
 	}
 }
@@ -711,7 +711,7 @@ function expand_branch(&$report, &$item, $branch_id, $output, $format_ok) {
 				'&graph_end=' . $timespan['end_now'] .
 				'&image_format=png' . 
 				'&rra_id=0') . '>';
-	}else{
+	} else {
 		$out = '<GRAPH:' . $item['local_graph_id'] . ':' . $item['timespan'] . '>';
 	}
 
@@ -742,9 +742,7 @@ function reports_expand_tree($report, $item, $parent, $output, $format_ok, $nest
 
 	$tree_id = $item['tree_id'];
 	$leaf_id = $item['branch_id'];
-	if ($leaf_id == 0) {
-		$leaf_id = $parent;
-	}
+
 	$time = time();
 	# get config option for first-day-of-the-week
 	$first_weekdayid = read_graph_config_option('first_weekdayid');
@@ -752,7 +750,7 @@ function reports_expand_tree($report, $item, $parent, $output, $format_ok, $nest
 	/* check if we have enough data */
 	if (isset($_SESSION['sess_current_user'])) {
 		$user = db_fetch_cell_prepared('SELECT id FROM user_auth WHERE id = ?', array($_SESSION['sess_user_id']));
-	}else{
+	} else {
 		$user = db_fetch_cell_prepared('SELECT id FROM user_auth WHERE id = ?', array($report['user_id']));
 	}
 
@@ -765,273 +763,303 @@ function reports_expand_tree($report, $item, $parent, $output, $format_ok, $nest
 		return; 
 	}
 
-	$sql_where       = '';
-	$title           = '';
-	$title_delimeter = '';
-	$search_key      = '';
+
 	$outstr          = '';
+	$leafs = db_fetch_assoc_prepared('SELECT * FROM graph_tree_items WHERE parent = ?', array($parent));
 
-	if (!empty($leaf_id)) {
-		$leaf = db_fetch_row_prepared('SELECT * FROM graph_tree_items WHERE parent = ?', array($parent));
-		if ($leaf['local_graph_id'] == 0 && $leaf['host_id'] == 0) {
-			$leaf_type = 'header';
-		}elseif ($leaf['host_id'] > 0) {
-			$leaf_type = 'host';
-		}else{
-			$leaf_type = 'graph';
-		}
-	}else{
-		$leaf_type = 'header';
-	}
+	foreach ($leafs as $leaf) {
 
-	/* get information for the headers */
-	if (!empty($tree_id)) { 
-		$tree_name = db_fetch_cell_prepared('SELECT name FROM graph_tree WHERE id = ?', array($tree_id));
-	}
+		$sql_where       = '';
+		$title           = '';
+		$title_delimeter = '';
+		$search_key      = '';
+		$host_name       = '';
+		$graph_name      = '';
+		$leaf_id = $leaf['id'];
 
-	if (!empty($parent)) { 
-		$leaf_name = db_fetch_cell_prepared('SELECT title FROM graph_tree_items WHERE id = ?', array($parent));
-	}
-
-	if (!empty($leaf_id)) { 
-		$host_name = db_fetch_cell_prepared('SELECT h.description 
-			FROM graph_tree_items AS gti
-			INNER JOIN host AS h
-			ON h.id = gti.host_id 
-			WHERE gti.id = ?', array($leaf_id));
-	}
-
-	//if (!empty($tree_name) && empty($leaf_name) && empty($host_name) && !$nested) {
-	if (!empty($tree_name) && empty($leaf_name) && empty($host_name)) {
-		$title = $title_delimeter . "<strong>Tree:</strong> $tree_name"; 
-		$title_delimeter = '-> ';
-	}
-
-	if (!empty($leaf_name)) {
-		$title .= $title_delimeter . "<strong>Leaf:</strong> $leaf_name"; 
-		$title_delimeter = '-> ';
-	}
-
-	if (!empty($host_name)) {
-		$title .= $title_delimeter . "<strong>Host:</strong> $host_name"; 
-		$title_delimeter = '-> ';
-	}
-
-	if (strlen($item['graph_name_regexp'])) {
-		$sql_where .= " AND title_cache REGEXP '" . $item['graph_name_regexp'] . "'";
-	}
-
-	if (($leaf_type == 'header') || (empty($leaf_id))) {
-		$mygraphs = array();
-
-		$graphs = db_fetch_assoc("SELECT DISTINCT
-			gti.local_graph_id, gtg.title_cache
-			FROM graph_tree_items AS gti
-			INNER JOIN graph_local AS gl
-			ON gl.id=gti.local_graph_id
-			INNER JOIN graph_templates_graph AS gtg
-			ON gtg.local_graph_id=gl.id
-			WHERE gti.graph_tree_id=$tree_id
-			AND gti.parent=$parent
-			AND gti.local_graph_id>0
-			$sql_where
-			ORDER BY gti.position");
-
-		foreach($graphs as $key => $graph) {
-			if (is_graph_allowed($graph['local_graph_id'], $user)) {
-				$mygraphs[$graph['local_graph_id']] = $graph;
+		if (!empty($leaf_id)) {
+			if ($leaf['local_graph_id'] == 0 && $leaf['host_id'] == 0) {
+				$leaf_type = 'header';
+			} elseif ($leaf['host_id'] > 0) {
+				$leaf_type = 'host';
+			} else {
+				$leaf_type = 'graph';
 			}
+		} else {
+			$leaf_type = 'header';
 		}
 
+		/* get information for the headers */
+		if (!empty($tree_id)) { 
+			$tree_name = db_fetch_cell_prepared('SELECT name FROM graph_tree WHERE id = ?', array($tree_id));
+		}
 
-		if (sizeof($mygraphs)) {
+		if (!empty($parent)) { 
+			$leaf_name = db_fetch_cell_prepared('SELECT title FROM graph_tree_items WHERE id = ?', array($parent));
+		}
+
+		if (!empty($leaf_id)) { 
+			$host_name = db_fetch_cell_prepared('SELECT h.description 
+				FROM graph_tree_items AS gti
+				INNER JOIN host AS h
+				ON h.id = gti.host_id 
+				WHERE gti.id = ?', array($leaf_id));
+		}
+
+		if ($leaf_type == 'graph') {
+			$graph_name = db_fetch_cell_prepared("SELECT 
+			gtg.title_cache AS title
+			FROM graph_templates_graph AS gtg
+			WHERE gtg.local_graph_id = ?", array($leaf['local_graph_id']));
+		}
+
+		//if (!empty($tree_name) && empty($leaf_name) && empty($host_name) && !$nested) {
+		if (!empty($tree_name) && empty($leaf_name) && empty($host_name)) {
+			$title = $title_delimeter . "<strong>Tree:</strong> $tree_name"; 
+			$title_delimeter = '-> ';
+		}
+
+		if (!empty($leaf_name)) {
+			$title .= $title_delimeter . "<strong>Leaf:</strong> $leaf_name"; 
+			$title_delimeter = '-> ';
+		}
+
+		if (!empty($host_name)) {
+			$title .= $title_delimeter . "<strong>Host:</strong> $host_name"; 
+			$title_delimeter = '-> ';
+		}
+
+		if (!empty($graph_name)) {
+			$title .= $title_delimeter . "<strong>Graph:</strong> $graph_name"; 
+			$title_delimeter = '-> ';
+		}
+
+		if (strlen($item['graph_name_regexp'])) {
+			$sql_where .= " AND title_cache REGEXP '" . $item['graph_name_regexp'] . "'";
+		}
+
+		if (($leaf_type == 'header') || (empty($leaf_id))) {
+			$mygraphs = array();
+
+			$graphs = db_fetch_assoc("SELECT DISTINCT
+				gti.local_graph_id, gtg.title_cache
+				FROM graph_tree_items AS gti
+				INNER JOIN graph_local AS gl
+				ON gl.id=gti.local_graph_id
+				INNER JOIN graph_templates_graph AS gtg
+				ON gtg.local_graph_id=gl.id
+				WHERE gti.graph_tree_id=$tree_id
+				AND gti.parent=$parent
+				AND gti.local_graph_id>0
+				$sql_where
+				ORDER BY gti.position");
+
+			foreach($graphs as $key => $graph) {
+				if (is_graph_allowed($graph['local_graph_id'], $user)) {
+					$mygraphs[$graph['local_graph_id']] = $graph;
+				}
+			}
+
+			if (sizeof($mygraphs)) {
+				/* start graph display */
+				if (strlen($title)) {
+					$outstr .= "\t\t<tr class='text_row'>\n";
+					if ($format_ok) {
+						$outstr .= "\t\t\t<td class='text' align='" . $alignment[$item['align']] . "'>\n";
+					} else {
+						$outstr .= "\t\t\t<td class='text' align='" . $alignment[$item['align']] . "' style='font-size: " . $item['font_size'] . "pt;'>\n";
+					}
+					$outstr .= "\t\t\t\t$title\n";
+					$outstr .= "\t\t\t</td>\n";
+					$outstr .= "\t\t</tr>\n";
+				}
+
+				$outstr .= reports_graph_area($mygraphs, $report, $item, $timespan, $output, $format_ok);
+			}
+		} elseif ($leaf_type == 'graph') {
 			/* start graph display */
 			if (strlen($title)) {
 				$outstr .= "\t\t<tr class='text_row'>\n";
 				if ($format_ok) {
 					$outstr .= "\t\t\t<td class='text' align='" . $alignment[$item['align']] . "'>\n";
-				}else{
+				} else {
 					$outstr .= "\t\t\t<td class='text' align='" . $alignment[$item['align']] . "' style='font-size: " . $item['font_size'] . "pt;'>\n";
 				}
 				$outstr .= "\t\t\t\t$title\n";
 				$outstr .= "\t\t\t</td>\n";
 				$outstr .= "\t\t</tr>\n";
 			}
+			$graph_list = array(array('local_graph_id' => $leaf['local_graph_id'], 'title_cache' => $graph_name));
+			$outstr .= reports_graph_area($graph_list, $report, $item, $timespan, $output, $format_ok);
 
-			$outstr .= reports_graph_area($mygraphs, $report, $item, $timespan, $output, $format_ok);
-		}
-	}elseif ($leaf_type == 'host') {
-		/* graph template grouping */
-		if ($leaf['host_grouping_type'] == HOST_GROUPING_GRAPH_TEMPLATE) {
-			$graph_templates = array_rekey(db_fetch_assoc('SELECT DISTINCT
-				gt.id, gt.name
-				FROM graph_local AS gl
-				INNER JOIN graph_templates AS gt
-				ON gt.id=gl.graph_template_id
-				INNER JOIN graph_templates_graph AS gtg
-				ON gtg.local_graph_id=gl.id
-				WHERE gl.host_id=' . $leaf['host_id'] . '
-				ORDER BY gt.name'), 'id', 'name');
-
-			if (sizeof($graph_templates)) {
-			foreach($graph_templates AS $id => $name) {
-				if (!is_graph_template_allowed($id)) {
-					unset($graph_templates[$id]);
-				}
-			}
-			}
-
-			/* for graphs without a template */
-			array_push($graph_templates, array(
-				'id' => '0',
-				'name' => '(No Graph Template)'
-				));
-
-			$outgraphs = array();
-			if (sizeof($graph_templates) > 0) {
-				foreach ($graph_templates as $id => $name) {
-					$graphs = db_fetch_assoc('SELECT
-						gtg.local_graph_id, gtg.title_cache
-						FROM graph_local AS gl
-						INNER JOIN graph_templates_graph AS gtg
-						ON gtg.local_graph_id=gl.id
-						WHERE gl.graph_template_id=' . $id . '
-						AND gl.host_id=' . $leaf['host_id'] . "
-						$sql_where
-						ORDER BY gtg.title_cache");
-
-					if (sizeof($graphs)) {
-					foreach($graphs as $key => $graph) {
-						if (!is_graph_allowed($graph['local_graph_id'], $user)) {
-							unset($graphs[$key]);
-						}
-					}
-					}
-
-					$outgraphs = array_merge($outgraphs, $graphs);
-				}
-
-				if (sizeof($outgraphs) > 0) {
-					/* let's sort the graphs naturally */
-					usort($outgraphs, 'necturally_sort_graphs');
-
-					/* start graph display */
-					if (strlen($title)) {
-						$outstr .= "\t\t<tr class='text_row'>\n";
-						if ($format_ok) {
-							$outstr .= "\t\t\t<td class='text' align='" . $alignment[$item['align']] . "'>\n";
-						}else{
-							$outstr .= "\t\t\t<td class='text' align='" . $alignment[$item['align']] . "' style='font-size: " . $item['font_size'] . "pt;'>\n";
-						}
-						$outstr .= "\t\t\t\t$title\n";
-						$outstr .= "\t\t\t</td>\n";
-						$outstr .= "\t\t</tr>\n";
-					}
-
-					$outstr .= reports_graph_area($outgraphs, $report, $item, $timespan, $output, $format_ok);
-				}
-			}
-		/* data query index grouping */
-		}elseif ($leaf['host_grouping_type'] == HOST_GROUPING_DATA_QUERY_INDEX) {
-			$data_queries = db_fetch_assoc('SELECT DISTINCT
-				sq.id, sq.name
-				FROM graph_local AS gl
-				INNER JOIN snmp_query AS sq
-				ON gl.snmp_query_id=sq.id
-				WHERE gl.host_id=' . $leaf['host_id'] . '
-				ORDER BY sq.name');
-
-			/* for graphs without a data query */
-			if (empty($data_query_id)) {
-				array_push($data_queries, array(
-					'id' => '0',
-					'name' => 'Non Query Based'
-					));
-			}
-
-			$i = 0;
-			if (sizeof($data_queries)) {
-			foreach ($data_queries as $data_query) {
-				/* fetch a list of field names that are sorted by the preferred sort field */
-				$sort_field_data = get_formatted_data_query_indexes($leaf['host_id'], $data_query['id']);
-
-				/* grab a list of all graphs for this host/data query combination */
-				$graphs = db_fetch_assoc('SELECT 
-					gtg.title_cache, gtg.local_graph_id, gl.snmp_index
+		} elseif ($leaf_type == 'host') {
+			/* graph template grouping */
+			if ($leaf['host_grouping_type'] == HOST_GROUPING_GRAPH_TEMPLATE) {
+				$graph_templates = array_rekey(db_fetch_assoc('SELECT DISTINCT
+					gt.id, gt.name
 					FROM graph_local AS gl
+					INNER JOIN graph_templates AS gt
+					ON gt.id=gl.graph_template_id
 					INNER JOIN graph_templates_graph AS gtg
-					ON gl.id=gtg.local_graph_id
-					WHERE gl.snmp_query_id=' . $data_query['id'] . '
-					AND gl.host_id=' . $leaf['host_id'] . "
-					$sql_where
-					ORDER BY gtg.title_cache");
+					ON gtg.local_graph_id=gl.id
+					WHERE gl.host_id=' . $leaf['host_id'] . '
+					ORDER BY gt.name'), 'id', 'name');
 
-				if (sizeof($graphs)) {
-				foreach($graphs as $key => $graph) {
-					if (!is_graph_allowed($graph['local_graph_id'], $user)) {
-						unset($graphs[$key]);
+				if (sizeof($graph_templates)) {
+					foreach($graph_templates AS $id => $name) {
+						if (!is_graph_template_allowed($id)) {
+							unset($graph_templates[$id]);
+						}
 					}
 				}
-				}
 
-				/* re-key the results on data query index */
-				if (sizeof($graphs)) {
-					if ($i == 0) {
+				/* for graphs without a template */
+				array_push($graph_templates, array(
+					'id' => '0',
+					'name' => '(No Graph Template)'
+					));
+
+				$outgraphs = array();
+				if (sizeof($graph_templates) > 0) {
+					foreach ($graph_templates as $id => $name) {
+						$graphs = db_fetch_assoc('SELECT
+							gtg.local_graph_id, gtg.title_cache
+							FROM graph_local AS gl
+							INNER JOIN graph_templates_graph AS gtg
+							ON gtg.local_graph_id=gl.id
+							WHERE gl.graph_template_id=' . $id . '
+							AND gl.host_id=' . $leaf['host_id'] . "
+							$sql_where
+							ORDER BY gtg.title_cache");
+
+						if (sizeof($graphs)) {
+							foreach($graphs as $key => $graph) {
+								if (!is_graph_allowed($graph['local_graph_id'], $user)) {
+									unset($graphs[$key]);
+								}
+							}
+						}
+						$outgraphs = array_merge($outgraphs, $graphs);
+					}
+
+					if (sizeof($outgraphs) > 0) {
+						/* let's sort the graphs naturally */
+						usort($outgraphs, 'necturally_sort_graphs');
+
 						/* start graph display */
 						if (strlen($title)) {
 							$outstr .= "\t\t<tr class='text_row'>\n";
 							if ($format_ok) {
 								$outstr .= "\t\t\t<td class='text' align='" . $alignment[$item['align']] . "'>\n";
-							}else{
+							} else {
 								$outstr .= "\t\t\t<td class='text' align='" . $alignment[$item['align']] . "' style='font-size: " . $item['font_size'] . "pt;'>\n";
 							}
 							$outstr .= "\t\t\t\t$title\n";
 							$outstr .= "\t\t\t</td>\n";
 							$outstr .= "\t\t</tr>\n";
 						}
-					}
-					$i++;
-
-					$outstr .= "\t\t<tr class='text_row'>\n";
-					if ($format_ok) {
-						$outstr .= "\t\t\t<td class='text' align='" . $alignment[$item['align']] . "'><strong>Data Query:</strong> " . $data_query['name'] . "\n";
-						$outstr .= "\t\t\t</td>\n";
-						$outstr .= "\t\t</tr>\n";
-					}else{
-						$outstr .= "\t\t\t<td class='text' align='" . $alignment[$item['align']] . "' style='font-size: " . $item['font_size'] . "pt;'><strong>Data Query:</strong> " . $data_query['name'] . "\n";
-						$outstr .= "\t\t\t</td>\n";
-						$outstr .= "\t\t</tr>\n";
-					}
-
-					/* let's sort the graphs naturally */
-					usort($graphs, 'necturally_sort_graphs');
-
-					foreach ($graphs as $graph) {
-						$snmp_index_to_graph{$graph['snmp_index']}{$graph['local_graph_id']} = $graph['title_cache'];
+						$outstr .= reports_graph_area($outgraphs, $report, $item, $timespan, $output, $format_ok);
 					}
 				}
+			/* data query index grouping */
+			} elseif ($leaf['host_grouping_type'] == HOST_GROUPING_DATA_QUERY_INDEX) {
+				$data_queries = db_fetch_assoc('SELECT DISTINCT
+					sq.id, sq.name
+					FROM graph_local AS gl
+					INNER JOIN snmp_query AS sq
+					ON gl.snmp_query_id=sq.id
+					WHERE gl.host_id=' . $leaf['host_id'] . '
+					ORDER BY sq.name');
 
-				/* using the sorted data as they key; grab each snmp index from the master list */
-				$graph_list = array();
-				while (list($snmp_index, $sort_field_value) = each($sort_field_data)) {
-					/* render each graph for the current data query index */
-					if (isset($snmp_index_to_graph[$snmp_index])) {
+				/* for graphs without a data query */
+				if (empty($data_query_id)) {
+					array_push($data_queries, array(
+						'id' => '0',
+						'name' => 'Non Query Based'
+						));
+				}
 
-						while (list($local_graph_id, $graph_title) = each($snmp_index_to_graph[$snmp_index])) {
-							/* reformat the array so it's compatable with the html_graph* area functions */
-							array_push($graph_list, array('local_graph_id' => $local_graph_id, 'title_cache' => $graph_title));
+				$i = 0;
+				if (sizeof($data_queries)) {
+					foreach ($data_queries as $data_query) {
+						/* fetch a list of field names that are sorted by the preferred sort field */
+						$sort_field_data = get_formatted_data_query_indexes($leaf['host_id'], $data_query['id']);
+
+						/* grab a list of all graphs for this host/data query combination */
+						$graphs = db_fetch_assoc('SELECT 
+							gtg.title_cache, gtg.local_graph_id, gl.snmp_index
+							FROM graph_local AS gl
+							INNER JOIN graph_templates_graph AS gtg
+							ON gl.id=gtg.local_graph_id
+							WHERE gl.snmp_query_id=' . $data_query['id'] . '
+							AND gl.host_id=' . $leaf['host_id'] . "
+							$sql_where
+							ORDER BY gtg.title_cache");
+
+						if (sizeof($graphs)) {
+							foreach($graphs as $key => $graph) {
+								if (!is_graph_allowed($graph['local_graph_id'], $user)) {
+									unset($graphs[$key]);
+								}
+							}
+						}
+
+						/* re-key the results on data query index */
+						if (sizeof($graphs)) {
+							if ($i == 0) {
+								/* start graph display */
+								if (strlen($title)) {
+									$outstr .= "\t\t<tr class='text_row'>\n";
+									if ($format_ok) {
+										$outstr .= "\t\t\t<td class='text' align='" . $alignment[$item['align']] . "'>\n";
+									} else {
+										$outstr .= "\t\t\t<td class='text' align='" . $alignment[$item['align']] . "' style='font-size: " . $item['font_size'] . "pt;'>\n";
+									}
+									$outstr .= "\t\t\t\t$title\n";
+									$outstr .= "\t\t\t</td>\n";
+									$outstr .= "\t\t</tr>\n";
+								}
+							}
+							$i++;
+
+							$outstr .= "\t\t<tr class='text_row'>\n";
+							if ($format_ok) {
+								$outstr .= "\t\t\t<td class='text' align='" . $alignment[$item['align']] . "'><strong>Data Query:</strong> " . $data_query['name'] . "\n";
+								$outstr .= "\t\t\t</td>\n";
+								$outstr .= "\t\t</tr>\n";
+							} else {
+								$outstr .= "\t\t\t<td class='text' align='" . $alignment[$item['align']] . "' style='font-size: " . $item['font_size'] . "pt;'><strong>Data Query:</strong> " . $data_query['name'] . "\n";
+								$outstr .= "\t\t\t</td>\n";
+								$outstr .= "\t\t</tr>\n";
+							}
+
+							/* let's sort the graphs naturally */
+							usort($graphs, 'necturally_sort_graphs');
+
+							foreach ($graphs as $graph) {
+								$snmp_index_to_graph{$graph['snmp_index']}{$graph['local_graph_id']} = $graph['title_cache'];
+							}
+						}
+
+						/* using the sorted data as they key; grab each snmp index from the master list */
+						$graph_list = array();
+						while (list($snmp_index, $sort_field_value) = each($sort_field_data)) {
+							/* render each graph for the current data query index */
+							if (isset($snmp_index_to_graph[$snmp_index])) {
+								while (list($local_graph_id, $graph_title) = each($snmp_index_to_graph[$snmp_index])) {
+									/* reformat the array so it's compatable with the html_graph* area functions */
+									array_push($graph_list, array('local_graph_id' => $local_graph_id, 'title_cache' => $graph_title));
+								}
+							}
+						}
+						if (sizeof($graph_list)) {
+							$outstr .= reports_graph_area($graph_list, $report, $item, $timespan, $output, $format_ok);
 						}
 					}
 				}
-
-				if (sizeof($graph_list)) {
-					$outstr .= reports_graph_area($graph_list, $report, $item, $timespan, $output, $format_ok);
-				}
-			}
 			}
 		}
 	}
-
 	return $outstr;
 }
 
@@ -1073,7 +1101,7 @@ function reports_graph_area($graphs, $report, $item, $timespan, $output, $format
 		}
 		if ($format_ok) {
 			$outstr .= "\t\t\t\t\t\t<td class='image_column' align='" . $alignment{$item['align']} . "'>\n";
-		}else{
+		} else {
 			$outstr .= "\t\t\t\t\t\t<td style='padding:5px;' align='" . $alignment{$item['align']} . "'>\n";
 		}
 		$outstr .= "\t\t\t\t\t\t\t" . reports_graph_image($report, $item, $timespan, $output) . "\n";
@@ -1195,7 +1223,7 @@ function reports_get_format_files() {
 	if (is_dir($dir)) {
 		if (function_exists('scandir')) {
 			$files = scandir($dir);
-		}elseif ($dh = opendir($dir)) {
+		} elseif ($dh = opendir($dir)) {
 			while (($file = readdir($dh)) !== false) {
 				$files[] = $file;
 			}
@@ -1344,7 +1372,7 @@ function reports_graphs_action_prepare($save) {
 				</td>
 			</tr>\n
 			";
-	}else{
+	} else {
 		return $save;
 	}
 }
@@ -1399,7 +1427,7 @@ function reports_graphs_action_execute($action) {
 						$host_template = db_fetch_cell_prepared('SELECT host_template_id
 							FROM host
 							WHERE id = ?', array($graph_data['host_id']));
-					}else{
+					} else {
 						$host_template = 0;
 					}
 
@@ -1423,10 +1451,10 @@ function reports_graphs_action_execute($action) {
 					$id = sql_save($save, 'reports_items');
 					if ($id) {
 						$message .= "Created Report Graph Item '<i>" . get_graph_title($local_graph_id) . "</i>'<br>";
-					}else{
+					} else {
 						$message .= "Failed Adding Report Graph Item '<i>" . get_graph_title($local_graph_id) . "</i>' Already Exists<br>";
 					}
-				}else{
+				} else {
 					$message .= "Skipped Report Graph Item '<i>" . get_graph_title($local_graph_id) . "</i>' Already Exists<br>";
 				}
 			}
@@ -1437,7 +1465,7 @@ function reports_graphs_action_execute($action) {
 			$_SESSION['reports_message'] = $message;
 		}
 		raise_message('reports_message');
-	}else{
+	} else {
 		return $action;
 	}
 }
