@@ -645,7 +645,7 @@ function reports_generate_html ($reports_id, $output = REPORTS_OUTPUT_STDOUT) {
 				if ($item['tree_cascade'] == 'on') {
 					$outstr .= expand_branch($report, $item, $item['branch_id'], $output, $format_ok);
 				} elseif (reports_tree_has_graphs($item['tree_id'], $item['branch_id'], $report['user_id'], $item['graph_name_regexp'])) {
-					$outstr .= reports_expand_tree($report, $item, $item['branch_id'], $output, $format_ok);
+					$outstr .= reports_expand_tree($report, $item, $item['branch_id'], $output, $format_ok, false);
 				}
 			} else {
 				$outstr .= '<tr><td><br><hr><br></td></tr>';
@@ -681,11 +681,13 @@ function expand_branch(&$report, &$item, $branch_id, $output, $format_ok) {
 		AND host_id = 0 AND local_graph_id = 0
 		AND graph_tree_id = ?
 		ORDER BY position', array($branch_id, $item['tree_id']));
+
 	if (sizeof($tree_branches)) {
 		foreach ($tree_branches as $branch) {
 			$outstr .= expand_branch($report, $item, $branch['id'], $output, $format_ok);
 		}
 	}
+
 	return $outstr;
 }
 
@@ -732,7 +734,7 @@ function expand_branch(&$report, &$item, $branch_id, $output, $format_ok) {
  * @param bool $nested		- nested tree?
  * @return string			- html
  */
-function reports_expand_tree($report, $item, $parent, $output, $format_ok, $nested=false) {
+function reports_expand_tree($report, $item, $parent, $output, $format_ok, $nested = false) {
 	global $colors, $config, $alignment;
 
 	include($config['include_path'] . '/global_arrays.php');
@@ -763,19 +765,18 @@ function reports_expand_tree($report, $item, $parent, $output, $format_ok, $nest
 		return; 
 	}
 
-
 	$outstr          = '';
-	$leafs = db_fetch_assoc_prepared('SELECT * FROM graph_tree_items WHERE parent = ?', array($parent));
+	$leaves = db_fetch_assoc_prepared("SELECT * FROM graph_tree_items WHERE parent = ?", array($parent));
 
-	foreach ($leafs as $leaf) {
-
+	if (sizeof($leaves)) {
+	foreach ($leaves as $leaf) {
 		$sql_where       = '';
 		$title           = '';
 		$title_delimeter = '';
 		$search_key      = '';
 		$host_name       = '';
 		$graph_name      = '';
-		$leaf_id = $leaf['id'];
+		$leaf_id         = $leaf['id'];
 
 		if (!empty($leaf_id)) {
 			if ($leaf['local_graph_id'] == 0 && $leaf['host_id'] == 0) {
@@ -838,7 +839,7 @@ function reports_expand_tree($report, $item, $parent, $output, $format_ok, $nest
 			$sql_where .= " AND title_cache REGEXP '" . $item['graph_name_regexp'] . "'";
 		}
 
-		if (($leaf_type == 'header') || (empty($leaf_id))) {
+		if (($leaf_type == 'header') && $nested) {
 			$mygraphs = array();
 
 			$graphs = db_fetch_assoc("SELECT DISTINCT
@@ -877,22 +878,33 @@ function reports_expand_tree($report, $item, $parent, $output, $format_ok, $nest
 				$outstr .= reports_graph_area($mygraphs, $report, $item, $timespan, $output, $format_ok);
 			}
 		} elseif ($leaf_type == 'graph') {
-			/* start graph display */
-			if (strlen($title)) {
-				$outstr .= "\t\t<tr class='text_row'>\n";
-				if ($format_ok) {
-					$outstr .= "\t\t\t<td class='text' align='" . $alignment[$item['align']] . "'>\n";
-				} else {
-					$outstr .= "\t\t\t<td class='text' align='" . $alignment[$item['align']] . "' style='font-size: " . $item['font_size'] . "pt;'>\n";
-				}
-				$outstr .= "\t\t\t\t$title\n";
-				$outstr .= "\t\t\t</td>\n";
-				$outstr .= "\t\t</tr>\n";
+			$gr_where = '';
+			if (strlen($item['graph_name_regexp'])) {
+				$gr_where .= " AND title_cache REGEXP '" . $item['graph_name_regexp'] . "'";
 			}
-			$graph_list = array(array('local_graph_id' => $leaf['local_graph_id'], 'title_cache' => $graph_name));
-			$outstr .= reports_graph_area($graph_list, $report, $item, $timespan, $output, $format_ok);
 
-		} elseif ($leaf_type == 'host') {
+			$graph = db_fetch_cell("SELECT count(*) 
+				FROM graph_templates_graph 
+				WHERE local_graph_id=" . $leaf['local_graph_id'] . $gr_where);
+
+			/* start graph display */
+			if ($graph > 0) {
+				if (strlen($title)) {
+					$outstr .= "\t\t<tr class='text_row'>\n";
+					if ($format_ok) {
+						$outstr .= "\t\t\t<td class='text' align='" . $alignment[$item['align']] . "'>\n";
+					} else {
+						$outstr .= "\t\t\t<td class='text' align='" . $alignment[$item['align']] . "' style='font-size: " . $item['font_size'] . "pt;'>\n";
+					}
+					$outstr .= "\t\t\t\t$title\n";
+					$outstr .= "\t\t\t</td>\n";
+					$outstr .= "\t\t</tr>\n";
+				}
+
+				$graph_list = array(array('local_graph_id' => $leaf['local_graph_id'], 'title_cache' => $graph_name));
+				$outstr .= reports_graph_area($graph_list, $report, $item, $timespan, $output, $format_ok);
+			}
+		} elseif ($leaf_type == 'host' && $nested) {
 			/* graph template grouping */
 			if ($leaf['host_grouping_type'] == HOST_GROUPING_GRAPH_TEMPLATE) {
 				$graph_templates = array_rekey(db_fetch_assoc('SELECT DISTINCT
@@ -1060,6 +1072,8 @@ function reports_expand_tree($report, $item, $parent, $output, $format_ok, $nest
 			}
 		}
 	}
+	}
+
 	return $outstr;
 }
 
