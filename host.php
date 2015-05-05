@@ -1043,7 +1043,7 @@ function host_edit() {
 						<?php print (($is_being_graphed == true) ? "<span style='color: green;'>Is Being Graphed</span> (<a href='" . htmlspecialchars('graphs.php?action=graph_edit&id=' . db_fetch_cell_prepared('SELECT id FROM graph_local WHERE graph_template_id = ? AND host_id = ? LIMIT 0,1', array($item['id'], $_REQUEST['id']))) . "'>Edit</a>)" : "<span style='color: #484848;'>Not Being Graphed</span>");?>
 					</td>
 					<td align='right' nowrap>
-						<a href='<?php print htmlspecialchars('host.php?action=gt_remove&id=' . $item['id'] . '&host_id=' . $_REQUEST['id']);?>'><img src='images/delete_icon_large.gif' title='Delete Graph Template Association' alt='Delete Graph Template Association' border='0' align='middle'></a>
+						<a href='<?php print htmlspecialchars('host.php?action=gt_remove&id=' . $item['id'] . '&host_id=' . $_REQUEST['id']);?>'><img src='images/delete_icon_large.gif' title='Delete Graph Template Association' alt='Delete Graph Template Association' border='0' align='absmiddle'></a>
 					</td>
 				<?php
 				form_end_row();
@@ -1054,13 +1054,16 @@ function host_edit() {
 
 		?>
 		<tr class='odd'>
-			<td class='saveRow' colspan="4">
-				<table cellspacing="0" cellpadding="1" width="100%">
-					<td nowrap>Add Graph Template:&nbsp;
+			<td class='saveRow' colspan='4'>
+				<table cellspacing='0' cellpadding='1' width='100%'>
+					<td style='white-space:nowrap;min-width:10%;'>
+						Add Graph Template:
+					</td>
+					<td>
 						<?php form_dropdown('graph_template_id',$available_graph_templates,'name','id','','','');?>
 					</td>
-					<td align="right">
-						&nbsp;<input type="submit" value="Add" name="add_gt_x" title="Add Graph Template to Device">
+					<td style='text-align:right;width:90%;'>
+						&nbsp;<input type='submit' value='Add' name='add_gt_x' title='Add Graph Template to Device'>
 					</td>
 				</table>
 			</td>
@@ -1113,11 +1116,11 @@ function host_edit() {
 				$status = 'success';
 
 				?>
-					<td style="padding: 4px;">
+					<td style='padding: 4px;'>
 						<strong><?php print $i;?>)</strong> <?php print htmlspecialchars($item['name']);?>
 					</td>
 					<td>
-						(<a href="<?php print htmlspecialchars('host.php?action=query_verbose&id=' . $item['id'] . '&host_id=' . $_REQUEST['id']);?>">Verbose Query</a>)
+						(<a href='<?php print htmlspecialchars('host.php?action=query_verbose&id=' . $item['id'] . '&host_id=' . $_REQUEST['id']);?>'>Verbose Query</a>)
 					</td>
 					<td>
 					<?php print $reindex_types{$item['reindex_method']};?>
@@ -1126,8 +1129,8 @@ function host_edit() {
 						<?php print (($status == 'success') ? "<span style='color: green;'>Success</span>" : "<span style='color: green;'>Fail</span>");?> [<?php print $num_dq_items;?> Item<?php print ($num_dq_items == 1 ? '' : 's');?>, <?php print $num_dq_rows;?> Row<?php print ($num_dq_rows == 1 ? '' : 's');?>]
 					</td>
 					<td align='right' nowrap>
-						<a href='<?php print htmlspecialchars('host.php?action=query_reload&id=' . $item['id'] . '&host_id=' . $_REQUEST['id']);?>'><img src='images/reload_icon_small.gif' title='Reload Data Query' alt='Reload Data Query' border='0' align='middle'></a>&nbsp;
-						<a href='<?php print htmlspecialchars('host.php?action=query_remove&id=' . $item['id'] . '&host_id=' . $_REQUEST['id']);?>'><img src='images/delete_icon_large.gif' title='Delete Data Query Association' alt='Delete Data Query Association' border='0' align='middle'></a>
+						<a href='<?php print htmlspecialchars('host.php?action=query_reload&id=' . $item['id'] . '&host_id=' . $_REQUEST['id']);?>'><img src='images/reload_icon_small.gif' title='Reload Data Query' alt='Reload Data Query' border='0' align='absmiddle'></a>&nbsp;
+						<a href='<?php print htmlspecialchars('host.php?action=query_remove&id=' . $item['id'] . '&host_id=' . $_REQUEST['id']);?>'><img src='images/delete_icon_large.gif' title='Delete Data Query Association' alt='Delete Data Query Association' border='0' align='absmiddle'></a>
 					</td>
 				<?php
 				form_end_row();
@@ -1138,16 +1141,22 @@ function host_edit() {
 
 		?>
 		<tr class='odd'>
-			<td class='saveRow' colspan="5">
-				<table cellspacing="0" cellpadding="1" width="100%">
-					<td nowrap>Add Data Query:&nbsp;
+			<td class='saveRow' colspan='5'>
+				<table cellspacing='0' cellpadding='2' width='100%'>
+					<td style='white-space:nowrap;min-width:10%;'>
+						Add Data Query:
+					</td>
+					<td>
 						<?php form_dropdown('snmp_query_id',$available_data_queries,'name','id','','','');?>
 					</td>
-					<td nowrap>Re-Index Method:&nbsp;
+					<td style='white-space:nowrap;min-width:10%;'>
+						Re-Index Method:
+					</td>
+					<td>
 						<?php form_dropdown('reindex_method',$reindex_types,'','',read_config_option('reindex_method'),'','');?>
 					</td>
-					<td align="right">
-						&nbsp;<input type="submit" value="Add" name="add_dq_x" title="Add Data Query to Device">
+					<td align='right' style='text-align:right;width:80%'>
+						<input type='submit' value='Add' name='add_dq_x' title='Add Data Query to Device'>
 					</td>
 				</table>
 				<a name='dqtop'></a>
@@ -1238,7 +1247,7 @@ function host() {
 	}
 
 	?>
-	<script type="text/javascript">
+	<script type='text/javascript'>
 	<!--
 
 	function applyFilter() {
@@ -1286,22 +1295,22 @@ function host() {
 	?>
 	<tr class='even noprint'>
 		<td>
-		<form id='form_devices' name="form_devices" action="host.php">
-			<table cellpadding="2" cellspacing="0">
+		<form id='form_devices' name='form_devices' action='host.php'>
+			<table cellpadding='2' cellspacing='0'>
 				<tr>
 					<td width='50'>
 						Search
 					</td>
 					<td>
-						<input id='filter' type="text" name="filter" size="25" value="<?php print htmlspecialchars(get_request_var_request('filter'));?>" onChange='applyFilter()'>
+						<input id='filter' type='text' name='filter' size='25' value='<?php print htmlspecialchars(get_request_var_request('filter'));?>' onChange='applyFilter()'>
 					</td>
 					<td>
 						Template
 					</td>
 					<td>
-						<select id='host_template_id' name="host_template_id" onChange="applyFilter()">
-							<option value="-1"<?php if (get_request_var_request('host_template_id') == '-1') {?> selected<?php }?>>Any</option>
-							<option value="0"<?php if (get_request_var_request('host_template_id') == '0') {?> selected<?php }?>>None</option>
+						<select id='host_template_id' name='host_template_id' onChange='applyFilter()'>
+							<option value='-1'<?php if (get_request_var_request('host_template_id') == '-1') {?> selected<?php }?>>Any</option>
+							<option value='0'<?php if (get_request_var_request('host_template_id') == '0') {?> selected<?php }?>>None</option>
 							<?php
 							$host_templates = db_fetch_assoc('SELECT id, name FROM host_template ORDER BY name');
 
@@ -1317,22 +1326,22 @@ function host() {
 						Status
 					</td>
 					<td>
-						<select id='host_status' name="host_status" onChange="applyFilter()">
-							<option value="-1"<?php if (get_request_var_request('host_status') == '-1') {?> selected<?php }?>>Any</option>
-							<option value="-3"<?php if (get_request_var_request('host_status') == '-3') {?> selected<?php }?>>Enabled</option>
-							<option value="-2"<?php if (get_request_var_request('host_status') == '-2') {?> selected<?php }?>>Disabled</option>
-							<option value="-4"<?php if (get_request_var_request('host_status') == '-4') {?> selected<?php }?>>Not Up</option>
-							<option value="3"<?php if (get_request_var_request('host_status') == '3') {?> selected<?php }?>>Up</option>
-							<option value="1"<?php if (get_request_var_request('host_status') == '1') {?> selected<?php }?>>Down</option>
-							<option value="2"<?php if (get_request_var_request('host_status') == '2') {?> selected<?php }?>>Recovering</option>
-							<option value="0"<?php if (get_request_var_request('host_status') == '0') {?> selected<?php }?>>Unknown</option>
+						<select id='host_status' name='host_status' onChange='applyFilter()'>
+							<option value='-1'<?php if (get_request_var_request('host_status') == '-1') {?> selected<?php }?>>Any</option>
+							<option value='-3'<?php if (get_request_var_request('host_status') == '-3') {?> selected<?php }?>>Enabled</option>
+							<option value='-2'<?php if (get_request_var_request('host_status') == '-2') {?> selected<?php }?>>Disabled</option>
+							<option value='-4'<?php if (get_request_var_request('host_status') == '-4') {?> selected<?php }?>>Not Up</option>
+							<option value='3'<?php if (get_request_var_request('host_status') == '3') {?> selected<?php }?>>Up</option>
+							<option value='1'<?php if (get_request_var_request('host_status') == '1') {?> selected<?php }?>>Down</option>
+							<option value='2'<?php if (get_request_var_request('host_status') == '2') {?> selected<?php }?>>Recovering</option>
+							<option value='0'<?php if (get_request_var_request('host_status') == '0') {?> selected<?php }?>>Unknown</option>
 						</select>
 					</td>
 					<td>
 						Devices
 					</td>
 					<td>
-						<select id='rows' name="rows" onChange="applyFilter()">
+						<select id='rows' name='rows' onChange='applyFilter()'>
 							<?php
 							if (sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
@@ -1343,10 +1352,10 @@ function host() {
 						</select>
 					</td>
 					<td>
-						<input type="button" id='refresh' value="Go" title="Set/Refresh Filters">
+						<input type='button' id='refresh' value='Go' title='Set/Refresh Filters'>
 					</td>
 					<td>
-						<input type="button" id='clear' value="Clear" title="Clear Filters">
+						<input type='button' id='clear' value='Clear' title='Clear Filters'>
 					</td>
 				</tr>
 			</table>
