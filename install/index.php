@@ -94,10 +94,6 @@ function db_install_execute($cacti_version, $sql) {
 	$_SESSION["sess_sql_install_cache"] = $sql_install_cache;
 }
 
-function db_table_exists($table) {
-	return (db_fetch_cell("SHOW TABLES LIKE '$table'") ? true : false);
-}
-
 function db_install_add_column ($cacti_version, $table, $column) {
 	// Example: db_install_add_column ('plugin_config', array('name' => 'test' . rand(1, 200), 'type' => 'varchar (255)', 'NULL' => false));
 	global $config, $database_default;

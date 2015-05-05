@@ -414,6 +414,13 @@ function db_add_column ($table, $column, $log = TRUE, $db_conn = FALSE) {
 	return true;
 }
 
+/* db_table_exists - checks whether a table exists
+   @param $table - the name of the table
+   @param $log - whether to log error messages, defaults to true
+   @returns - (bool) the output of the sql query as a single variable */
+function db_table_exists($table, $log = TRUE, $db_conn = FALSE) {
+	return (db_fetch_cell("SHOW TABLES LIKE '$table'", '', $log, $db_conn) ? true : false);
+}
 
 /* array_to_sql_or - loops through a single dimentional array and converts each
      item to a string that can be used in the OR portion of an sql query in the
