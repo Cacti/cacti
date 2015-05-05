@@ -36,8 +36,8 @@ function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $p
 
 	$i = 0;
 	$error = '';
-	if (isset($database_sessions[$db_name])) {
-		return $database_sessions[$db_name];
+	if (isset($database_sessions["$device:$port:$db_name"])) {
+		return $database_sessions["$device:$port:$db_name"];
 	}
 
 	$flags = array();
@@ -62,7 +62,7 @@ function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $p
 		try {
 			$cnn_id = new PDO("$db_type:host=$device;port=$port;dbname=$db_name;charset=utf8", $user, $pass, $flags);
 			$cnn_id->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_SILENT);
-			$database_sessions[$db_name] = $cnn_id;
+			$database_sessions["$device:$port:$db_name"] = $cnn_id;
 			return $cnn_id;
 		} catch (PDOException $e) {
 			// Must catch this exception or else PDO will display an error with our username/password
@@ -78,17 +78,17 @@ function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $p
 /* db_close - closes the open connection
    @returns - the result of the close command */
 function db_close($db_conn = FALSE) {
-	global $database_sessions, $database_default;
+	global $database_sessions, $database_default, $database_hostname, $database_port;
 
 	/* check for a connection being passed, if not use legacy behavior */
 	if (!$db_conn) {
-		$db_conn = $database_sessions[$database_default];
+		$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
 	}
 
 	if (!$db_conn) return FALSE;
 
 	$db_conn = null;
-	$database_sessions[$database_default] = null;
+	$database_sessions["$database_hostname:$database_port:$database_default"] = null;
 
 	return TRUE;
 }
@@ -106,11 +106,11 @@ function db_execute($sql, $log = TRUE, $db_conn = FALSE) {
    @param $log - whether to log error messages, defaults to true
    @returns - '1' for success, '0' for error */
 function db_execute_prepared($sql, $parms = array(), $log = TRUE, $db_conn = FALSE) {
-	global $database_sessions, $database_default, $config;
+	global $database_sessions, $database_default, $config, $database_hostname, $database_port;
 
 	/* check for a connection being passed, if not use legacy behavior */
 	if (!$db_conn) {
-		$db_conn = $database_sessions[$database_default];
+		$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
 	}
 	if (!$db_conn) return FALSE;
 
@@ -189,11 +189,11 @@ function db_fetch_cell($sql, $col_name = '', $log = TRUE, $db_conn = FALSE) {
    @param $log - whether to log error messages, defaults to true
    @returns - (bool) the output of the sql query as a single variable */
 function db_fetch_cell_prepared($sql, $parms = array(), $col_name = '', $log = TRUE, $db_conn = FALSE) {
-	global $database_sessions, $database_default, $config;
+	global $database_sessions, $database_default, $config, $database_hostname, $database_port;
 
 	/* check for a connection being passed, if not use legacy behavior */
 	if (!$db_conn) {
-		$db_conn = $database_sessions[$database_default];
+		$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
 	}
 	if (!$db_conn) return FALSE;
 	$sql = str_replace("\n", '', str_replace("\r", '', str_replace("\t", ' ', $sql)));
@@ -249,11 +249,11 @@ function db_fetch_row($sql, $log = TRUE, $db_conn = FALSE) {
    @param $log - whether to log error messages, defaults to true
    @returns - the first row of the result as a hash */
 function db_fetch_row_prepared($sql, $parms = array(), $log = TRUE, $db_conn = FALSE) {
-	global $database_sessions, $database_default, $config;
+	global $database_sessions, $database_default, $config, $database_hostname, $database_port;
 
 	/* check for a connection being passed, if not use legacy behavior */
 	if (!$db_conn) {
-		$db_conn = $database_sessions[$database_default];
+		$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
 	}
 	if (!$db_conn) return FALSE;
 
@@ -308,11 +308,11 @@ function db_fetch_assoc($sql, $log = TRUE, $db_conn = FALSE) {
    @param $log - whether to log error messages, defaults to true
    @returns - the entire result set as a multi-dimensional hash */
 function db_fetch_assoc_prepared($sql, $parms = array(), $log = TRUE, $db_conn = FALSE) {
-	global $database_sessions, $database_default, $config;
+	global $database_sessions, $database_default, $config, $database_hostname, $database_port;
 
 	/* check for a connection being passed, if not use legacy behavior */
 	if (!$db_conn) {
-		$db_conn = $database_sessions[$database_default];
+		$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
 	}
 	if (!$db_conn) return FALSE;
 
@@ -355,11 +355,11 @@ function db_fetch_assoc_prepared($sql, $parms = array(), $log = TRUE, $db_conn =
 /* db_fetch_insert_id - get the last insert_id or auto incriment
    @returns - the id of the last auto incriment row that was created */
 function db_fetch_insert_id($db_conn = FALSE) {
-	global $database_sessions, $database_default;
+	global $database_sessions, $database_default, $database_hostname, $database_port;
 
 	/* check for a connection being passed, if not use legacy behavior */
 	if (!$db_conn) {
-		$db_conn = $database_sessions[$database_default];
+		$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
 	}
 	if ($db_conn) {
 		return $db_conn->lastInsertId();
@@ -370,11 +370,11 @@ function db_fetch_insert_id($db_conn = FALSE) {
 /* db_affected_rows - return the number of rows affected by the last transaction
  * @returns - the number of rows affected by the last transaction */
 function db_affected_rows($db_conn = FALSE) {
-	global $database_sessions, $database_default;
+	global $database_sessions, $database_default, $database_hostname, $database_port;
 
 	/* check for a connection being passed, if not use legacy behavior */
 	if (!$db_conn) {
-		$db_conn = $database_sessions[$database_default];
+		$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
 	}
 	if (!$db_conn) return FALSE;
 	return $db_conn->affected_rows;
@@ -386,7 +386,7 @@ function db_affected_rows($db_conn = FALSE) {
    @param $log - whether to log error messages, defaults to true
    @returns - '1' for success, '0' for error */
 function db_add_column ($table, $column, $log = TRUE, $db_conn = FALSE) {
-	$result = db_fetch_assoc('show columns from `' . $table . '`');
+	$result = db_fetch_assoc('show columns from `' . $table . '`', $log, $db_conn);
 	$columns = array();
 	foreach($result as $index => $arr) {
 		foreach ($arr as $t) {
@@ -442,11 +442,11 @@ function array_to_sql_or($array, $sql_column) {
    @param $autoQuote - whether to use intelligent quoting or not
    @returns - the auto incriment id column (if applicable) */
 function db_replace($table_name, $array_items, $keyCols, $db_conn = FALSE) {
-	global $database_sessions, $database_default;
+	global $database_sessions, $database_default, $database_hostname, $database_port;
 
 	/* check for a connection being passed, if not use legacy behavior */
 	if (!$db_conn) {
-		$db_conn = $database_sessions[$database_default];
+		$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
 	}
 
 	if (read_config_option('log_verbosity') == POLLER_VERBOSITY_DEVDBG) {
@@ -504,11 +504,11 @@ function _db_replace($db_conn, $table, $fieldArray, $keyCols, $has_autoinc) {
    @param $key_cols - the primary key(s)
    @returns - the auto incriment id column (if applicable) */
 function sql_save($array_items, $table_name, $key_cols = 'id', $autoinc = TRUE, $db_conn = FALSE) {
-	global $database_sessions, $database_default;
+	global $database_sessions, $database_default, $database_hostname, $database_port;
 
 	/* check for a connection being passed, if not use legacy behavior */
 	if (!$db_conn) {
-		$db_conn = $database_sessions[$database_default];
+		$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
 	}
 
 	if (read_config_option('log_verbosity') == POLLER_VERBOSITY_DEVDBG) {
@@ -554,11 +554,11 @@ function sql_sanitize($value) {
    @param $column_name - column name
    @return true or false; */
 function sql_column_exists($table_name, $column_name, $db_conn = '') {
-	global $database_sessions, $database_default;
+	global $database_sessions, $database_default, $database_hostname, $database_port;
 
 	/* check for a connection being passed, if not use legacy behavior */
 	if (!$db_conn) {
-		$db_conn = $database_sessions[$database_default];
+		$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
 	}
 
 	$columns = db_fetch_assoc("SHOW COLUMNS FROM `$table_name`", false);
@@ -575,11 +575,11 @@ function sql_column_exists($table_name, $column_name, $db_conn = '') {
 /* sql_function_timestamp - abstracts timestamp function across databases
    @return - fixed value */
 function sql_function_timestamp($db_conn = '') {
-	global $database_sessions, $database_default;
+	global $database_sessions, $database_default, $database_hostname, $database_port;
 
 	/* check for a connection being passed, if not use legacy behavior */
 	if (!$db_conn) {
-		$db_conn = $database_sessions[$database_default];
+		$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
 	}
 
 	return 'NOW()';
@@ -594,11 +594,11 @@ function sql_function_timestamp($db_conn = '') {
 /* sql_function_substr - abstracts substring function across databases
    @return - fixed value */
 function sql_function_substr($db_conn = '') {
-	global $database_sessions, $database_default;
+	global $database_sessions, $database_default, $database_hostname, $database_port;
 
 	/* check for a connection being passed, if not use legacy behavior */
 	if (!$db_conn) {
-		$db_conn = $database_sessions[$database_default];
+		$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
 	}
 
 	return 'substring';
@@ -631,11 +631,11 @@ function sql_function_substr($db_conn = '') {
 /* sql_function_concat - abstracts concatenation function across databases
    @return - fixed value */
 function sql_function_concat($db_conn = '') {
-	global $database_sessions, $database_default;
+	global $database_sessions, $database_default, $database_hostname, $database_port;
 
 	/* check for a connection being passed, if not use legacy behavior */
 	if (!$db_conn) {
-		$db_conn = $database_sessions[$database_default];
+		$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
 	}
 
 	//if (method_exists($db_conn, 'Concat')) {
@@ -649,11 +649,11 @@ function sql_function_concat($db_conn = '') {
 /* sql_function_replace - abstracts replace function across databases
    @return - fixed value */
 function sql_function_replace($db_conn = '') {
-	global $database_sessions, $database_default;
+	global $database_sessions, $database_default, $database_hostname, $database_port;
 
 	/* check for a connection being passed, if not use legacy behavior */
 	if (!$db_conn) {
-		$db_conn = $database_sessions[$database_default];
+		$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
 	}
 
 	return 'replace';
@@ -690,11 +690,11 @@ function sql_function_replace($db_conn = '') {
 /* sql_function_dateformat - abstracts dateformat function across databases
    @return - fixed value */
 function sql_function_dateformat($fmt, $col = false, $db_conn = '') {
-	global $database_sessions, $database_default;
+	global $database_sessions, $database_default, $database_hostname, $database_port;
 
 	/* check for a connection being passed, if not use legacy behavior */
 	if (!$db_conn) {
-		$db_conn = $database_sessions[$database_default];
+		$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
 	}
 
 	return 'date_format';
@@ -710,11 +710,11 @@ function sql_function_dateformat($fmt, $col = false, $db_conn = '') {
 }
 
 function db_qstr($s, $db_conn = '') {
-	global $database_sessions, $database_default;
+	global $database_sessions, $database_default, $database_hostname, $database_port;
 
 	/* check for a connection being passed, if not use legacy behavior */
 	if (!$db_conn) {
-		$db_conn = $database_sessions[$database_default];
+		$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
 	}
 
 	$replaceQuote = "\\'";
