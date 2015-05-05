@@ -409,7 +409,7 @@ function db_add_column ($table, $column, $log = TRUE, $db_conn = FALSE) {
 			$sql .= ' auto_increment';
 		if (isset($column['after']))
 			$sql .= ' AFTER ' . $column['after'];
-		return db_install_execute($sql, $log, $db_conn);
+		return db_execute($sql, $log, $db_conn);
 	}
 	return true;
 }
