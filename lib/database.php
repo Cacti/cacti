@@ -386,18 +386,18 @@ function db_affected_rows($db_conn = FALSE) {
    @param $log - whether to log error messages, defaults to true
    @returns - '1' for success, '0' for error */
 function db_add_column ($table, $column, $log = TRUE, $db_conn = FALSE) {
+	global $database_sessions, $database_default, $database_hostname, $database_port;
+
 	/* check for a connection being passed, if not use legacy behavior */
 	if (!$db_conn) {
 		$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
 	}
 	if (!$db_conn) return FALSE;
 
-	$result = db_fetch_assoc('show columns from `' . $table . '`', $log, $db_conn);
+	$result = db_fetch_assoc('SHOW columns FROM `' . $table . '`', $log, $db_conn);
 	$columns = array();
-	foreach($result as $index => $arr) {
-		foreach ($arr as $t) {
-			$columns[] = $t;
-		}
+	foreach($result as $arr) {
+		$columns[] = $t['Field'];
 	}
 	if (isset($column['name']) && !in_array($column['name'], $columns)) {
 		$sql = 'ALTER TABLE `' . $table . '` ADD `' . $column['name'] . '`';
@@ -420,6 +420,32 @@ function db_add_column ($table, $column, $log = TRUE, $db_conn = FALSE) {
 	return true;
 }
 
+/* db_remove_column - remove a column to table
+   @param $table - the name of the table
+   @param $column - column name
+   @param $log - whether to log error messages, defaults to true
+   @returns - '1' for success, '0' for error */
+function db_remove_column ($table, $column, $log = TRUE, $db_conn = FALSE) {
+	global $database_sessions, $database_default, $database_hostname, $database_port;
+
+	/* check for a connection being passed, if not use legacy behavior */
+	if (!$db_conn) {
+		$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
+	}
+	if (!$db_conn) return FALSE;
+
+	$result = db_fetch_assoc('SHOW columns FROM `' . $table . '`', $log, $db_conn);
+	$columns = array();
+	foreach($result as $arr) {
+		$columns[] = $arr['Field'];
+	}
+	if (isset($column) && in_array($column, $columns)) {
+		$sql = 'ALTER TABLE `' . $table . '` DROP `' . $column . '`';
+		return db_execute($sql, $log, $db_conn);
+	}
+	return true;
+}
+
 /* db_table_exists - checks whether a table exists
    @param $table - the name of the table
    @param $log - whether to log error messages, defaults to true
@@ -428,6 +454,119 @@ function db_table_exists($table, $log = TRUE, $db_conn = FALSE) {
 	return (db_fetch_cell("SHOW TABLES LIKE '$table'", '', $log, $db_conn) ? true : false);
 }
 
+/* db_column_exists - checks whether a column exists
+   @param $table - the name of the table
+   @param $log - whether to log error messages, defaults to true
+   @returns - (bool) the output of the sql query as a single variable */
+function db_column_exists($table, $column, $log = TRUE, $db_conn = FALSE) {
+	return (db_fetch_cell("SHOW columns FROM `$table` LIKE '$column'", '', $log, $db_conn) ? true : false);
+}
+
+
+
+function db_update_table ($table, $data, $removecolumns = FALSE, $log = TRUE, $db_conn = FALSE) {
+	global $database_sessions, $database_default, $database_hostname, $database_port;
+
+	/* check for a connection being passed, if not use legacy behavior */
+	if (!$db_conn) {
+		$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
+	}
+	if (!$db_conn) return FALSE;
+
+	if (!db_table_exists($table, $log, $db_conn)) {
+		return db_table_create ($table, $data, $log, $db_conn);
+	}
+
+	$allcolumns = array();
+	foreach ($data['columns'] as $column) {
+		$allcolumns[] = $column['name'];
+		if (!db_column_exists($table, $column['name'], $log, $db_conn)) {
+			db_add_column ($table, $column, $log, $db_conn);
+		} else {
+			// Check that column is correct and fix it
+			// FIXME: Need to still check default value
+			$arr = db_fetch_row("SHOW columns FROM `$table` LIKE '" . $column['name'] . "'", $log, $db_conn);
+			if ($column['type'] != $arr['Type'] || (isset($column['NULL']) && ($column['NULL'] ? 'YES' : 'NO') != $arr['Null']) 
+							    || (isset($column['auto_increment']) && ($column['auto_increment'] ? 'auto_increment' : '') != $arr['Extra'])) {
+				$sql = 'ALTER TABLE `' . $table . '` CHANGE `' . $column['name'] . '` `' . $column['name'] . '`';
+				if (isset($column['type']))
+					$sql .= ' ' . $column['type'];
+				if (isset($column['unsigned']))
+					$sql .= ' unsigned';
+				if (isset($column['NULL']) && $column['NULL'] == false)
+					$sql .= ' NOT NULL';
+				if (isset($column['NULL']) && $column['NULL'] == true && !isset($column['default']))
+					$sql .= ' default NULL';
+				if (isset($column['default']))
+					$sql .= ' default ' . (is_numeric($column['default']) ? $column['default'] : "'" . $column['default'] . "'");
+				if (isset($column['auto_increment']))
+					$sql .= ' auto_increment';
+				db_execute($sql, $log, $db_conn);
+			}
+		}
+	}
+
+	if ($removecolumns) {
+		$result = db_fetch_assoc('SHOW columns FROM `' . $table . '`', $log, $db_conn);
+		foreach($result as $arr) {
+			if (!in_array($arr['Field'], $allcolumns)) {
+				db_remove_column ($table, $arr['Field'], $log, $db_conn);
+			}
+		}
+	}
+
+	$info = db_fetch_row("SELECT ENGINE, TABLE_COMMENT FROM information_schema.TABLES WHERE TABLE_NAME = '$table'");
+	if (isset($info['TABLE_COMMENT']) && str_replace("'", '', $info['TABLE_COMMENT']) != str_replace("'", '', $data['comment'])) {
+		db_execute("ALTER TABLE `$table` COMMENT '" . str_replace("'", '', $data['comment']) . "'");
+	}
+
+	if (isset($info['ENGINE']) && strtolower($info['ENGINE']) != strtolower($data['type'])) {
+		db_execute("ALTER TABLE `$table` ENGINE = " . $data['type']);
+	}
+
+	// Fix any indexes
+	$indexes = db_fetch_assoc("SHOW INDEX FROM `$table`");
+	$allindexes = array();
+	$keys = array();
+	foreach ($indexes as $index) {
+		$allindexes[] = $index['Key_name'];
+		if (isset($data['keys'])) {
+			foreach ($data['keys'] as $k) {
+				if ($k['name'] == $index['Key_name'] && $k['columns'] != $index['Column_name'] && $index['Key_name'] != 'PRIMARY') {
+					db_execute("ALTER TABLE `$table` DROP INDEX " . $index['Key_name'], $log, $db_conn);
+					db_execute("ALTER TABLE `$table` ADD INDEX " . $index['Key_name'] . '(' . $index['Key_name'] . ')', $log, $db_conn);
+				}
+			}
+		}
+	}
+
+	// Add any indexes
+	if (isset($data['keys'])) {
+		foreach ($data['keys'] as $k) {
+			$keys[] = $k['name'];
+			if (!in_array($k['name'], $allindexes)) {
+				db_execute("ALTER TABLE `$table` ADD INDEX " . $k['name'] . '(' . $k['columns'] . ')', $log, $db_conn);
+			}
+		}
+	}
+
+	// Remove any indexes / Add primary
+	foreach ($indexes as $index) {
+		if (!in_array($index['Key_name'], $keys) && $index['Key_name'] != 'PRIMARY') {
+			db_execute("ALTER TABLE `$table` DROP INDEX " . $index['Key_name'], $log, $db_conn);
+		}
+		if ($index['Key_name'] == 'PRIMARY') {
+			if (!isset($data['primary']) || (isset($data['primary']) && $index['Column_name'] != $data['primary'])) {
+				db_execute("ALTER TABLE `$table` DROP PRIMARY KEY", $log, $db_conn);
+			}
+			if ((isset($data['primary']) && $index['Column_name'] != $data['primary'])) {
+				db_execute("ALTER TABLE `$table` ADD PRIMARY KEY(" . $data['primary'] . ")", $log, $db_conn);
+			}
+		}
+	}
+
+	return TRUE;
+}
 
 
 /* db_table_create - checks whether a table exists
@@ -436,20 +575,15 @@ function db_table_exists($table, $log = TRUE, $db_conn = FALSE) {
    @param $log - whether to log error messages, defaults to true
    @returns - (bool) the output of the sql query as a single variable */
 function db_table_create ($table, $data, $log = TRUE, $db_conn = FALSE) {
+	global $database_sessions, $database_default, $database_hostname, $database_port;
+
 	/* check for a connection being passed, if not use legacy behavior */
 	if (!$db_conn) {
 		$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
 	}
 	if (!$db_conn) return FALSE;
 
-	$result = db_fetch_assoc('SHOW TABLES', $log, $db_conn);
-	$tables = array();
-	foreach($result as $index => $arr) {
-		foreach ($arr as $t) {
-			$tables[] = $t;
-		}
-	}
-	if (!in_array($table, $tables)) {
+	if (!db_table_exists($table, $log, $db_conn)) {
 		$c = 0;
 		$sql = 'CREATE TABLE `' . $table . "` (\n";
 		foreach ($data['columns'] as $column) {
