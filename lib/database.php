@@ -386,6 +386,12 @@ function db_affected_rows($db_conn = FALSE) {
    @param $log - whether to log error messages, defaults to true
    @returns - '1' for success, '0' for error */
 function db_add_column ($table, $column, $log = TRUE, $db_conn = FALSE) {
+	/* check for a connection being passed, if not use legacy behavior */
+	if (!$db_conn) {
+		$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
+	}
+	if (!$db_conn) return FALSE;
+
 	$result = db_fetch_assoc('show columns from `' . $table . '`', $log, $db_conn);
 	$columns = array();
 	foreach($result as $index => $arr) {
@@ -421,6 +427,75 @@ function db_add_column ($table, $column, $log = TRUE, $db_conn = FALSE) {
 function db_table_exists($table, $log = TRUE, $db_conn = FALSE) {
 	return (db_fetch_cell("SHOW TABLES LIKE '$table'", '', $log, $db_conn) ? true : false);
 }
+
+
+
+/* db_table_create - checks whether a table exists
+   @param $table - the name of the table
+   @param $data - data array
+   @param $log - whether to log error messages, defaults to true
+   @returns - (bool) the output of the sql query as a single variable */
+function db_table_create ($table, $data, $log = TRUE, $db_conn = FALSE) {
+	/* check for a connection being passed, if not use legacy behavior */
+	if (!$db_conn) {
+		$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
+	}
+	if (!$db_conn) return FALSE;
+
+	$result = db_fetch_assoc('SHOW TABLES', $log, $db_conn);
+	$tables = array();
+	foreach($result as $index => $arr) {
+		foreach ($arr as $t) {
+			$tables[] = $t;
+		}
+	}
+	if (!in_array($table, $tables)) {
+		$c = 0;
+		$sql = 'CREATE TABLE `' . $table . "` (\n";
+		foreach ($data['columns'] as $column) {
+			if (isset($column['name'])) {
+				if ($c > 0)
+					$sql .= ",\n";
+				$sql .= '`' . $column['name'] . '`';
+				if (isset($column['type']))
+					$sql .= ' ' . $column['type'];
+				if (isset($column['unsigned']))
+					$sql .= ' unsigned';
+				if (isset($column['NULL']) && $column['NULL'] == false)
+					$sql .= ' NOT NULL';
+				if (isset($column['NULL']) && $column['NULL'] == true && !isset($column['default']))
+					$sql .= ' default NULL';
+				if (isset($column['default']))
+					$sql .= ' default ' . (is_numeric($column['default']) ? $column['default'] : "'" . $column['default'] . "'");
+				if (isset($column['auto_increment']))
+					$sql .= ' auto_increment';
+				$c++;
+			}
+		}
+
+		if (isset($data['primary'])) {
+			$sql .= ",\n PRIMARY KEY (`" . $data['primary'] . '`)';
+		}
+
+		if (isset($data['keys']) && sizeof($data['keys'])) {
+		foreach ($data['keys'] as $key) {
+			if (isset($key['name'])) {
+				$sql .= ",\n KEY `" . $key['name'] . '` (`' . $key['columns'] . '`)';
+			}
+		}
+		}
+		$sql .= ') ENGINE = ' . $data['type'];
+
+		if (isset($data['comment'])) {
+			$sql .= " COMMENT = '" . $data['comment'] . "'";
+		}
+		if (db_execute($sql, $log, $db_conn)) {
+			return true;
+		}
+		return false;
+	}
+}
+
 
 /* array_to_sql_or - loops through a single dimentional array and converts each
      item to a string that can be used in the OR portion of an sql query in the
