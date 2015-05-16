@@ -384,7 +384,6 @@ ul#breadcrumbs {
 	padding-top:20px;
 	background: #efefef url('./../../../images/cacti_logo.gif') no-repeat center;
 	display:block;
-	width:90px;
 	cursor:pointer;
 	height:140px;
 }

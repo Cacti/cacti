@@ -216,7 +216,7 @@ tr.selected {
 .cactiPageHead {
 	background-color: #a9a9a9;
 	min-height:25px;
-	border-bottom:2px solid #00438c;
+	border-bottom:1px solid #00438c;
 }
 
 .cactiGraphPageHeadBackdrop {
@@ -280,9 +280,8 @@ ul#breadcrumbs {
 
 .cactiLogo {
 	padding-top:20px;
-	background: #efefef url('./../../../images/cacti_logo.gif') no-repeat center;
+	background: #f5f5f5 url('./../../../images/cacti_logo.gif') no-repeat center;
 	display:block;
-	width:90px;
 	cursor:pointer;
 	height:140px;
 }
