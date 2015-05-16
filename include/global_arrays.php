@@ -105,32 +105,58 @@ $messages = array(
 		'type' => 'error'),
 	'clog_missing' => array(
 		'message' => 'Error: Unable to clear log, file does not exist', 
-		'type' => 'error')
+		'type' => 'error'),
+	'mg_mailtime_invalid' => array(
+		'message' => 'Invalid Timestamp. Select timestamp in the future.',
+		'type'    => 'error'),
+	'reports_save' => array(
+		'message' => '<i>Report Saved</i>', 
+		'type' => 'info'),
+	'reports_save_failed' => array(
+		'message' => '<font style="color:red;"><i>Report Save Failed</i></font>', 
+		'type' => 'info'),
+	'reports_item_save' => array(
+		'message' => '<i>Report Item Saved</i>', 
+		'type' => 'info'),
+	'reports_item_save_failed' => array(
+		'message' => '<font style="color:red;"><i>Report Item Save Failed</i></font>', 
+		'type' => 'info')
+);
+
+if (isset($_SESSION['automation_message']) && $_SESSION['automation_message'] != '') {
+	$messages['automation_message'] = array(
+		'message' => $_SESSION['automation_message'], 
+		'type' => 'info'
 	);
+}
 
 if (isset($_SESSION['clog_message']) && $_SESSION['clog_message'] != '') {
-	$messages['clog_message'] = array('message' => $_SESSION['clog_message'], 'type' => 'info');
+	$messages['clog_message'] = array(
+		'message' => $_SESSION['clog_message'], 
+		'type' => 'info'
+	);
 }
 
 if (isset($_SESSION['clog_error']) && $_SESSION['clog_error'] != '') {
-	$messages['clog_error'] = array('message' => $_SESSION['clog_error'], 'type' => 'error');
+	$messages['clog_error'] = array(
+		'message' => $_SESSION['clog_error'], 
+		'type' => 'error'
+	);
 }
 
-$messages["mg_mailtime_invalid"]["message"] = "Invalid Timestamp. Select timestamp in the future.";
-$messages["mg_mailtime_invalid"]["type"]    = "error";
-
 if (isset($_SESSION['reports_message']) && $_SESSION['reports_message'] != '') {
-	$messages['reports_message'] = array('message' => "<i>" . $_SESSION['reports_message'] . "</i>", 'type' => 'info');
+	$messages['reports_message'] = array(
+		'message' => '<i>' . $_SESSION['reports_message'] . '</i>', 
+		'type' => 'info'
+	);
 }
 
 if (isset($_SESSION['reports_error']) && $_SESSION['reports_error'] != '') {
-	$messages['reports_error'] = array('message' => "<span style='color:red;'><i>" . $_SESSION['reports_error'] . "</i></span>", 'type' => 'info');
+	$messages['reports_error'] = array(
+		'message' => "<span style='color:red;'><i>" . $_SESSION['reports_error'] . "</i></span>", 
+		'type' => 'info'
+	);
 }
-
-$messages['reports_save']        = array('message' => '<i>Report Saved</i>', 'type' => 'info');
-$messages['reports_save_failed'] = array('message' => '<font style="color:red;"><i>Report Save Failed</i></font>', 'type' => 'info');
-$messages['reports_item_save']        = array('message' => '<i>Report Item Saved</i>', 'type' => 'info');
-$messages['reports_item_save_failed'] = array('message' => '<font style="color:red;"><i>Report Item Save Failed</i></font>', 'type' => 'info');
 
 $cdef_operators = array(1 =>
 	'+',
@@ -403,7 +429,7 @@ $menu = array(
 		'color_templates.php' => 'Color'
 		),
 	'Automation' => array(
-		'automation_devices.php' => 'Devices',
+		'automation_devices.php' => 'Discovered Devices',
 		'automation_templates.php' => 'Template Rules',
 		'automation_graph_rules.php' => 'Graph Rules',
 		'automation_tree_rules.php' => 'Tree Rules',
