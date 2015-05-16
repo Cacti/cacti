@@ -36,7 +36,7 @@ $fields_cdef_edit = array(
 		'description' => 'A useful name for this CDEF.',
 		'value' => '|arg1:name|',
 		'max_length' => '255',
-		'size' => '60'
+		'size' => '80'
 		),
 	'id' => array(
 		'method' => 'hidden_zero',
@@ -56,6 +56,7 @@ $fields_color_edit = array(
 		'description' => 'The hex value for this color; valid range: 000000-FFFFFF.',
 		'value' => '|arg1:hex|',
 		'max_length' => '6',
+		'size' => '5'
 		),
 	'id' => array(
 		'method' => 'hidden_zero',
@@ -75,6 +76,7 @@ $fields_data_input_edit = array(
 		'description' => 'Enter a meaningful name for this data input method.',
 		'value' => '|arg1:name|',
 		'max_length' => '255',
+		'size' => '80'
 		),
 	'type_id' => array(
 		'method' => 'drop_array',
@@ -122,6 +124,7 @@ $fields_data_input_field_edit_2 = array(
 		'description' => 'Enter a name for this |arg1:| field.',
 		'value' => '|arg2:data_name|',
 		'max_length' => '50',
+		'size' => '40'
 		)
 	);
 
@@ -133,6 +136,7 @@ $fields_data_input_field_edit = array(
 		'description' => 'Enter a meaningful name for this data input method.',
 		'value' => '|arg1:name|',
 		'max_length' => '200',
+		'size' => '80'
 		),
 	'update_rra' => array(
 		'method' => 'checkbox',
@@ -148,7 +152,7 @@ $fields_data_input_field_edit = array(
 		'description' => 'If you want to require a certain regular expression to be matched againt input data, enter it here (ereg format).',
 		'value' => '|arg1:regexp_match|',
 		'max_length' => '200',
-		'size' => '70'
+		'size' => '80'
 		),
 	'allow_nulls' => array(
 		'method' => 'checkbox',
@@ -163,7 +167,8 @@ $fields_data_input_field_edit = array(
 		'friendly_name' => 'Special Type Code',
 		'description' => 'If this field should be treated specially by host templates, indicate so here. Valid keywords for this field are ' . (str_replace(")", "'", str_replace("(", "'", str_replace("|", "", "", $valid_host_fields)))),
 		'value' => '|arg1:type_code|',
-		'max_length' => '40'
+		'max_length' => '40',
+		'size' => '20'
 		),
 	'id' => array(
 		'method' => 'hidden_zero',
@@ -195,6 +200,7 @@ $fields_data_template_template_edit = array(
 		'description' => 'The name given to this data template.',
 		'value' => '|arg1:name|',
 		'max_length' => '150',
+		'size' => '80'
 		),
 	'data_template_id' => array(
 		'method' => 'hidden_zero',
@@ -220,6 +226,7 @@ $struct_data_source = array(
 		'friendly_name' => 'Name',
 		'method' => 'textbox',
 		'max_length' => '250',
+		'size' => '80',
 		'default' => '',
 		'description' => 'Choose a name for this data source.',
 		'flags' => ''
@@ -228,6 +235,7 @@ $struct_data_source = array(
 		'friendly_name' => 'Data Source Path',
 		'method' => 'textbox',
 		'max_length' => '255',
+		'size' => '80',
 		'default' => '',
 		'description' => 'The full path to the RRD file.',
 		'flags' => 'NOTEMPLATE'
@@ -255,7 +263,7 @@ $struct_data_source = array(
 		'friendly_name' => 'Step',
 		'method' => 'textbox',
 		'max_length' => '10',
-		'size' => '20',
+		'size' => '10',
 		'default' => '300',
 		'description' => 'The amount of time in seconds between expected updates.',
 		'flags' => ''
@@ -275,6 +283,7 @@ $struct_data_source_item = array(
 		'friendly_name' => 'Internal Data Source Name',
 		'method' => 'textbox',
 		'max_length' => '19',
+		'size' => '30',
 		'default' => '',
 		'description' => 'Choose unique name to represent this piece of data inside of the rrd file.'
 		),
@@ -282,7 +291,7 @@ $struct_data_source_item = array(
 		'friendly_name' => 'Minimum Value ("U" for No Minimum)',
 		'method' => 'textbox',
 		'max_length' => '20',
-		'size' => '30',
+		'size' => '10',
 		'default' => '0',
 		'description' => 'The minimum value of data that is allowed to be collected.'
 		),
@@ -290,7 +299,7 @@ $struct_data_source_item = array(
 		'friendly_name' => 'Maximum Value ("U" for No Maximum)',
 		'method' => 'textbox',
 		'max_length' => '20',
-		'size' => '30',
+		'size' => '10',
 		'default' => '0',
 		'description' => 'The maximum value of data that is allowed to be collected.'
 		),
@@ -305,7 +314,7 @@ $struct_data_source_item = array(
 		'friendly_name' => 'Heartbeat',
 		'method' => 'textbox',
 		'max_length' => '20',
-		'size' => '30',
+		'size' => '10',
 		'default' => '600',
 		'description' => 'The maximum amount of time that can pass before data is entered as \'unknown\'.
 			(Usually 2x300=600)'
@@ -326,6 +335,7 @@ $fields_grprint_presets_edit = array(
 		'description' => 'Enter a name for this GPRINT preset, make sure it is something you recognize.',
 		'value' => '|arg1:name|',
 		'max_length' => '50',
+		'size' => '40',
 		),
 	'gprint_text' => array(
 		'method' => 'textbox',
@@ -333,6 +343,7 @@ $fields_grprint_presets_edit = array(
 		'description' => 'Enter the custom GPRINT string here.',
 		'value' => '|arg1:gprint_text|',
 		'max_length' => '50',
+		'size' => '40',
 		),
 	'id' => array(
 		'method' => 'hidden_zero',
@@ -351,7 +362,8 @@ $struct_graph = array(
 		'method' => 'textbox',
 		'max_length' => '255',
 		'default' => '',
-		'description' => 'The name that is printed on the graph.'
+		'description' => 'The name that is printed on the graph.',
+		'size' => '80'
 		),
 	'image_format_id' => array(
 		'friendly_name' => 'Image Format (--imgformat)',
@@ -365,14 +377,16 @@ $struct_graph = array(
 		'method' => 'textbox',
 		'max_length' => '50',
 		'default' => '120',
-		'description' => 'The height (in pixels) that the graph is.'
+		'description' => 'The height (in pixels) that the graph is.',
+		'size' => '7'
 		),
 	'width' => array(
 		'friendly_name' => 'Width (--width)',
 		'method' => 'textbox',
 		'max_length' => '50',
 		'default' => '500',
-		'description' => 'The width (in pixels) that the graph is.'
+		'description' => 'The width (in pixels) that the graph is.',
+		'size' => '7'
 		),
 	'slope_mode' => array(
 		'friendly_name' => 'Slope Mode (--slope-mode)',
@@ -386,7 +400,8 @@ $struct_graph = array(
 		'method' => 'checkbox',
 		'default' => 'on',
 		'description' => 'Auto scale the y-axis instead of defining an upper and lower limit. Note: if this is check both the
-			Upper and Lower limit will be ignored.'
+			Upper and Lower limit will be ignored.',
+		'size' => '7'
 		),
 	'auto_scale_opts' => array(
 		'friendly_name' => 'Auto Scale Options',
@@ -456,21 +471,24 @@ $struct_graph = array(
 		'method' => 'textbox',
 		'max_length' => '50',
 		'default' => '100',
-		'description' => 'The maximum vertical value for the rrd graph.'
+		'description' => 'The maximum vertical value for the rrd graph.',
+		'size' => '12'
 		),
 	'lower_limit' => array(
 		'friendly_name' => 'Lower Limit (--lower-limit)',
 		'method' => 'textbox',
 		'max_length' => '255',
 		'default' => '0',
-		'description' => 'The minimum vertical value for the rrd graph.'
+		'description' => 'The minimum vertical value for the rrd graph.',
+		'size' => '12'
 		),
 	'base_value' => array(
 		'friendly_name' => 'Base Value (--base)',
 		'method' => 'textbox',
 		'max_length' => '50',
 		'default' => '1000',
-		'description' => 'Should be set to 1024 for memory and 1000 for traffic measurements.'
+		'description' => 'Should be set to 1024 for memory and 1000 for traffic measurements.',
+		'size' => '12'
 		),
 	'unit_value' => array(
 		'friendly_name' => 'Unit Grid Value (--unit/--y-grid)',
@@ -479,7 +497,8 @@ $struct_graph = array(
 		'default' => '',
 		'description' => 'Sets the xponent value on the Y-axis for numbers. Note: This option is
 			depricated and replaced by the --y-grid option.  In this option, Y-axis grid lines appear
-			at each grid step interval.  Labels are placed every label factor lines.'
+			at each grid step interval.  Labels are placed every label factor lines.',
+		'size' => '12'
 		),
 	'unit_exponent_value' => array(
 		'friendly_name' => 'Unit Exponent Value (--units-exponent)',
@@ -487,14 +506,16 @@ $struct_graph = array(
 		'max_length' => '50',
 		'default' => '',
 		'description' => 'What unit cacti should use on the Y-axis. Use 3 to display everything in "k" or -6
-			to display everything in "u" (micro).'
+			to display everything in "u" (micro).',
+		'size' => '12'
 		),
 	'vertical_label' => array(
 		'friendly_name' => 'Vertical Label (--vertical-label)',
 		'method' => 'textbox',
 		'max_length' => '255',
 		'default' => '',
-		'description' => 'The label vertically printed to the left of the graph.'
+		'description' => 'The label vertically printed to the left of the graph.',
+		'size' => '30'
 		)
 	);
 
@@ -555,6 +576,7 @@ $struct_graph_item = array(
 		'friendly_name' => 'Value',
 		'method' => 'textbox',
 		'max_length' => '50',
+		'size' => '40',
 		'default' => '',
 		'description' => 'The value of an HRULE or VRULE graph item.'
 		),
@@ -570,6 +592,7 @@ $struct_graph_item = array(
 		'friendly_name' => 'Text Format',
 		'method' => 'textbox',
 		'max_length' => '255',
+		'size' => '80',
 		'default' => '',
 		'description' => 'Text that will be displayed on the legend for this graph item.'
 		),
@@ -593,6 +616,7 @@ $fields_graph_template_template_edit = array(
 		'description' => 'The name given to this graph template.',
 		'value' => '|arg1:name|',
 		'max_length' => '150',
+		'size' => '80'
 		),
 	'graph_template_id' => array(
 		'method' => 'hidden_zero',
@@ -615,7 +639,8 @@ $fields_graph_template_input_edit = array(
 		'friendly_name' => 'Name',
 		'description' => 'Enter a name for this graph item input, make sure it is something you recognize.',
 		'value' => '|arg1:name|',
-		'max_length' => '50'
+		'max_length' => '50',
+		'size' => '40',
 		),
 	'description' => array(
 		'method' => 'textarea',
@@ -666,6 +691,7 @@ $fields_host_edit = array(
 		'description' => 'Fully qualified hostname or IP address for this device.',
 		'value' => '|arg1:hostname|',
 		'max_length' => '250',
+		'size' => '60',
 		),
 	'host_template_id' => array(
 		'method' => 'drop_sql',
@@ -713,7 +739,7 @@ $fields_host_edit = array(
 		'form_id' => '|arg1:id|',
 		'default' => read_config_option('snmp_community'),
 		'max_length' => '100',
-		'size' => '15'
+		'size' => '20'
 		),
 	'snmp_username' => array(
 		'method' => 'textbox',
@@ -722,7 +748,7 @@ $fields_host_edit = array(
 		'value' => '|arg1:snmp_username|',
 		'default' => read_config_option('snmp_username'),
 		'max_length' => '50',
-		'size' => '15'
+		'size' => '20'
 		),
 	'snmp_password' => array(
 		'method' => 'textbox_password',
@@ -731,7 +757,7 @@ $fields_host_edit = array(
 		'value' => '|arg1:snmp_password|',
 		'default' => read_config_option('snmp_password'),
 		'max_length' => '50',
-		'size' => '15'
+		'size' => '20'
 		),
 	'snmp_auth_protocol' => array(
 		'method' => 'drop_array',
@@ -765,7 +791,7 @@ $fields_host_edit = array(
 		'value' => '|arg1:snmp_context|',
 		'default' => '',
 		'max_length' => '64',
-		'size' => '25'
+		'size' => '40'
 		),
 	'snmp_port' => array(
 		'method' => 'textbox',
@@ -774,7 +800,7 @@ $fields_host_edit = array(
 		'value' => '|arg1:snmp_port|',
 		'max_length' => '5',
 		'default' => read_config_option('snmp_port'),
-		'size' => '15'
+		'size' => '12'
 		),
 	'snmp_timeout' => array(
 		'method' => 'textbox',
@@ -783,7 +809,7 @@ $fields_host_edit = array(
 		'value' => '|arg1:snmp_timeout|',
 		'max_length' => '8',
 		'default' => read_config_option('snmp_timeout'),
-		'size' => '15'
+		'size' => '12'
 		),
 	'max_oids' => array(
 		'method' => 'textbox',
@@ -792,7 +818,7 @@ $fields_host_edit = array(
 		'value' => '|arg1:max_oids|',
 		'max_length' => '8',
 		'default' => read_config_option('max_get_size'),
-		'size' => '15'
+		'size' => '12'
 		),
 	'host_avail_head' => array(
 		'method' => 'spacer',
@@ -824,7 +850,7 @@ $fields_host_edit = array(
 		'description' => 'TCP or UDP port to attempt connection.',
 		'default' => read_config_option('ping_port'),
 		'max_length' => '50',
-		'size' => '15'
+		'size' => '7'
 		),
 	'ping_timeout' => array(
 		'friendly_name' => 'Ping Timeout Value',
@@ -833,7 +859,7 @@ $fields_host_edit = array(
 		'value' => '|arg1:ping_timeout|',
 		'default' => read_config_option('ping_timeout'),
 		'max_length' => '10',
-		'size' => '15'
+		'size' => '7'
 		),
 	'ping_retries' => array(
 		'friendly_name' => 'Ping Retry Count',
@@ -842,7 +868,7 @@ $fields_host_edit = array(
 		'value' => '|arg1:ping_retries|',
 		'default' => read_config_option('ping_retries'),
 		'max_length' => '10',
-		'size' => '15'
+		'size' => '7'
 		),
 	'host_add_head' => array(
 		'method' => 'spacer',
@@ -880,6 +906,7 @@ $fields_host_template_edit = array(
 		'description' => 'A useful name for this host template.',
 		'value' => '|arg1:name|',
 		'max_length' => '255',
+		'size' => '80'
 		),
 	'id' => array(
 		'method' => 'hidden_zero',
@@ -899,6 +926,7 @@ $fields_rra_edit = array(
 		'description' => 'How data is to be entered in RRAs.',
 		'value' => '|arg1:name|',
 		'max_length' => '100',
+		'size' => '60'
 		),
 	'consolidation_function_id' => array(
 		'method' => 'drop_multi',
@@ -913,6 +941,7 @@ $fields_rra_edit = array(
 		'description' => 'The amount of unknown data that can still be regarded as known.',
 		'value' => '|arg1:x_files_factor|',
 		'max_length' => '10',
+		'size' => '7'
 		),
 	'steps' => array(
 		'method' => 'textbox',
@@ -920,6 +949,7 @@ $fields_rra_edit = array(
 		'description' => 'How many data points are needed to put data into the RRA.',
 		'value' => '|arg1:steps|',
 		'max_length' => '8',
+		'size' => '7'
 		),
 	'rows' => array(
 		'method' => 'textbox',
@@ -927,6 +957,7 @@ $fields_rra_edit = array(
 		'description' => 'How many generations data is kept in the RRA.',
 		'value' => '|arg1:rows|',
 		'max_length' => '12',
+		'size' => '10'
 		),
 	'timespan' => array(
 		'method' => 'textbox',
@@ -934,6 +965,7 @@ $fields_rra_edit = array(
 		'description' => 'How many seconds to display in graph for this RRA.',
 		'value' => '|arg1:timespan|',
 		'max_length' => '12',
+		'size' => '10'
 		),
 	'id' => array(
 		'method' => 'hidden_zero',
@@ -953,14 +985,15 @@ $fields_data_query_edit = array(
 		'description' => 'A name for this data query.',
 		'value' => '|arg1:name|',
 		'max_length' => '100',
+		'size' => '60'
 		),
 	'description' => array(
 		'method' => 'textbox',
 		'friendly_name' => 'Description',
 		'description' => 'A description for this data query.',
 		'value' => '|arg1:description|',
-		'size' => '80',
 		'max_length' => '255',
+		'size' => '80',
 		),
 	'xml_path' => array(
 		'method' => 'textbox',
@@ -968,8 +1001,8 @@ $fields_data_query_edit = array(
 		'description' => 'The full path to the XML file containing definitions for this data query.',
 		'value' => '|arg1:xml_path|',
 		'default' => '<path_cacti>/resource/',
-		'size' => '80',
 		'max_length' => '255',
+		'size' => '80',
 		),
 	'data_input_id' => array(
 		'method' => 'drop_sql',
@@ -1003,6 +1036,7 @@ $fields_data_query_item_edit = array(
 		'description' => 'A name for this associated graph.',
 		'value' => '|arg1:name|',
 		'max_length' => '100',
+		'size' => '60',
 		),
 	'id' => array(
 		'method' => 'hidden_zero',
@@ -1030,6 +1064,7 @@ $fields_tree_edit = array(
 		'description' => 'A useful name for this graph tree.',
 		'value' => '|arg1:name|',
 		'max_length' => '255',
+		'size' => '80',
 		),
 	'sort_type' => array(
 		'method' => 'drop_array',
@@ -1062,7 +1097,8 @@ $fields_user_user_edit_host = array(
 		'friendly_name' => 'User Name',
 		'description' => 'The login name for this user.',
 		'value' => '|arg1:username|',
-		'max_length' => '255'
+		'max_length' => '255',
+		'size' => '40',
 		),
 	'full_name' => array(
 		'method' => 'textbox',
@@ -1085,7 +1121,8 @@ $fields_user_user_edit_host = array(
 		'friendly_name' => 'Password',
 		'description' => 'Enter the password for this user twice. Remember that passwords are case sensitive!',
 		'value' => '',
-		'max_length' => '255'
+		'max_length' => '255',
+		'size' => 60
 		),
 	'enabled' => array(
 		'method' => 'checkbox',
@@ -1282,6 +1319,7 @@ $fields_template_import = array(
 			'description' => 'Give this SNMP entity a meaningful description.',
 			'value' => '|arg1:description|',
 			'max_length' => '250',
+			'size' => 80
 			),
 		'hostname' => array(
 			'method' => 'textbox',
@@ -1289,6 +1327,7 @@ $fields_template_import = array(
 			'description' => 'Fully qualified hostname or IP address for this device.',
 			'value' => '|arg1:hostname|',
 			'max_length' => '250',
+			'size' => 80
 			),
 		'disabled' => array(
 			'method' => 'checkbox',
@@ -1328,7 +1367,7 @@ $fields_template_import = array(
 			'form_id' => '|arg1:id|',
 			'default' => read_config_option('snmp_community'),
 			'max_length' => '100',
-			'size' => '15'
+			'size' => '20'
 			),
 		'snmp_username' => array(
 			'method' => 'textbox',
@@ -1337,7 +1376,7 @@ $fields_template_import = array(
 			'value' => '|arg1:snmp_username|',
 			'default' => read_config_option('snmp_username'),
 			'max_length' => '50',
-			'size' => '15'
+			'size' => '20'
 			),
 		'snmp_auth_password' => array(
 			'method' => 'textbox_password',
@@ -1346,7 +1385,7 @@ $fields_template_import = array(
 			'value' => '|arg1:snmp_auth_password|',
 			'default' => read_config_option('snmp_password'),
 			'max_length' => '50',
-			'size' => '15'
+			'size' => '20'
 			),
 		'snmp_auth_protocol' => array(
 			'method' => 'drop_array',
@@ -1389,7 +1428,7 @@ $fields_template_import = array(
 			'value' => '|arg1:snmp_port|',
 			'max_length' => '5',
 			'default' => '162',
-			'size' => '15'
+			'size' => '7'
 			),
 		'snmp_timeout' => array(
 			'method' => 'textbox',
@@ -1398,7 +1437,7 @@ $fields_template_import = array(
 			'value' => '|arg1:snmp_timeout|',
 			'max_length' => '8',
 			'default' => read_config_option('snmp_timeout'),
-			'size' => '15'
+			'size' => '7'
 			),
 		'snmp_message_type' => array(
 			'friendly_name' => 'SNMP Message Type',
@@ -1439,6 +1478,7 @@ $struct_aggregate = array(
 		'method' => 'textbox',
 		'max_length' => '255',
 		'value' => '|arg1:title_format|',
+		'size' => '80'
 	),
 	'gprint_prefix' => array(
 		'friendly_name' => 'Prefix',
@@ -1446,6 +1486,7 @@ $struct_aggregate = array(
 		'method' => 'textbox',
 		'max_length' => '255',
 		'value' => '|arg1:gprint_prefix|',
+		'size' => '40'
 	),
 	'aggregate_graph_type' => array(
 		'friendly_name' => 'Graph Type',
@@ -1481,6 +1522,7 @@ $struct_aggregate = array(
 		'method' => 'textbox',
 		'max_length' => '255',
 		'value' => '|arg1:aggregate_total_prefix|',
+		'size' => '40'
 	),
 	'aggregate_order_type' => array(
 		'friendly_name' => 'Reorder Type',
@@ -1508,6 +1550,7 @@ $struct_aggregate_graph = array(
 		'method' => 'textbox',
 		'max_length' => '255',
 		'value' => '|arg1:title_format|',
+		'size' => '80'
 	),
 	'template_propogation' => array(
 		'friendly_name' => 'Propogation Enabled',
@@ -1526,6 +1569,7 @@ $struct_aggregate_graph = array(
 		'method' => 'textbox',
 		'max_length' => '255',
 		'value' => '|arg1:gprint_prefix|',
+		'size' => '40'
 	),
 	'graph_type' => array(
 		'friendly_name' => 'Graph Type',
@@ -1563,6 +1607,7 @@ $struct_aggregate_graph = array(
 		'method' => 'textbox',
 		'max_length' => '255',
 		'value' => '|arg1:total_prefix|',
+		'size' => '40'
 	),
 	'order_type' => array(
 		'friendly_name' => 'Reorder Type',
@@ -1605,6 +1650,7 @@ $struct_aggregate_template = array(
 		'method' => 'textbox',
 		'max_length' => '255',
 		'value' => '|arg1:name|',
+		'size' => '80'
 	),
 	'graph_template_id' => array(
 		'friendly_name' => 'Source Graph Template',
@@ -1625,6 +1671,7 @@ $struct_aggregate_template = array(
 		'method' => 'textbox',
 		'max_length' => '255',
 		'value' => '|arg1:gprint_prefix|',
+		'size' => '40'
 	),
 	'graph_type' => array(
 		'friendly_name' => 'Graph Type',
@@ -1662,6 +1709,7 @@ $struct_aggregate_template = array(
 		'method' => 'textbox',
 		'max_length' => '255',
 		'value' => '|arg1:total_prefix|',
+		'size' => '40'
 	),
 	'order_type' => array(
 		'friendly_name' => 'Reorder Type',
@@ -1688,7 +1736,8 @@ $struct_color_template = array(
 		'method' => 'textbox',
 		'max_length' => '255',
 		'default' => '',
-		'description' => 'The name of this Color Template.'
+		'description' => 'The name of this Color Template.',
+		'size' => '80'
 	)
 );
 
@@ -1711,6 +1760,7 @@ $fields_color_template_template_edit = array(
 		'description' => 'A useful name for this Template.',
 		'value' => '|arg1:name|',
 		'max_length' => '255',
+		'size' => '80'
 	)
 );
 
@@ -1748,8 +1798,8 @@ $fields_automation_match_rule_item_edit = array(
 		'friendly_name' => 'Matching Pattern',
 		'description' => 'The Pattern to be matched against.',
 		'value' => '|arg1:pattern|',
-		'size' => '50',
 		'max_length' => '255',
+		'size' => '50',
 	),
 	'sequence' => array(
 		'method' => 'view',
@@ -1790,8 +1840,8 @@ $fields_automation_graph_rule_item_edit = array(
 		'friendly_name' => 'Matching Pattern',
 		'description' => 'The Pattern to be matched against.',
 		'value' => '|arg1:pattern|',
-		'size' => '50',
 		'max_length' => '255',
+		'size' => '50',
 	),
 	'sequence' => array(
 		'method' => 'view',
@@ -1808,7 +1858,7 @@ $fields_automation_graph_rules_edit1 = array(
 		'description' => 'A useful name for this Rule.',
 		'value' => '|arg1:name|',
 		'max_length' => '255',
-		'size' => '60'
+		'size' => '80'
 	),
 	'snmp_query_id' => array(
 		'method' => 'drop_sql',
@@ -1857,7 +1907,7 @@ $fields_automation_tree_rules_edit1 = array(
 		'description' => 'A useful name for this Rule.',
 		'value' => '|arg1:name|',
 		'max_length' => '255',
-		'size' => '60'
+		'size' => '80'
 	),
 	'tree_id' => array(
 		'method' => 'drop_sql',
@@ -1946,8 +1996,8 @@ $fields_automation_tree_rule_item_edit = array(
 		'description' => 'The String Pattern (Regular Expression) to match against.<br>' .
 			"Enclosing '/' must <strong>NOT</strong> be provided!",
 		'value' => '|arg1:search_pattern|',
-		'size' => '50',
 		'max_length' => '255',
+		'size' => '50',
 		),
 	'replace_pattern' => array(
 		'method' => 'textbox',
@@ -1955,8 +2005,8 @@ $fields_automation_tree_rule_item_edit = array(
 		'description' => 'The Replacement String Pattern for use as a Tree Header.' . '<br>' .
 			"Refer to a Match by e.g. <strong>\${1}</strong> for the first match!",
 		'value' => '|arg1:replace_pattern|',
-		'size' => '50',
 		'max_length' => '255',
+		'size' => '50',
 		),
 	'sequence' => array(
 		'method' => 'view',
