@@ -698,7 +698,7 @@ legend {
     padding:3px 4px;
     text-decoration:none;
     font-size: 11px;
-	border-color: #999 #666 -moz-use-text-color #999;
+	border-color: #999 #666 !important;
     border-style: solid solid none;
     border-width: 1px 1px medium;
 	font-weight: bold;
