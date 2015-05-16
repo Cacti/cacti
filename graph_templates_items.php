@@ -426,7 +426,7 @@ function item_edit() {
 			$('#row_consolidation_function_id').show();
 			$('#row_cdef_id').show();
 			$('#row_value').hide();
-			$('#row_gprint_id').show();
+			$('#row_gprint_id').hide();
 			$('#row_text_format').show();
 			$('#row_hard_return').show();
 			break;
