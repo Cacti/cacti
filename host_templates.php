@@ -249,10 +249,12 @@ function template_edit() {
 		$_REQUEST['id'] = 0;
 	}
 
+	print "<form id='form_network' action='host_templates.php' method='post'>\n";
+
 	html_start_box('<strong>Device Templates</strong> ' . htmlspecialchars($header_label), '100%', '', '3', 'center', '');
 
 	draw_edit_form(array(
-		'config' => array('form_name' => 'chk'),
+		'config' => array('no_form_tag' => 'true'),
 		'fields' => inject_form_variables($fields_host_template_edit, (isset($host_template) ? $host_template : array()))
 	));
 
@@ -276,13 +278,13 @@ function template_edit() {
 		$i = 0;
 		if (sizeof($selected_graph_templates) > 0) {
 			foreach ($selected_graph_templates as $item) {
-				form_alternate_row('', true);
+				form_alternate_row("gt$i", true);
 				?>
 					<td style="padding: 4px;">
 						<strong><?php print $i;?>)</strong> <?php print htmlspecialchars($item['name']);?>
 					</td>
-					<td align="right">
-						<a href='<?php print htmlspecialchars('host_templates.php?action=item_remove_gt&id=' . $item['id'] . '&host_template_id=' . $_REQUEST['id']);?>'><img src='images/delete_icon.gif' style="height:10px;width:10px;" border='0' alt='Delete'></a>
+					<td style='text-align:right;'>
+						<a href='<?php print htmlspecialchars('host_templates.php?action=item_remove_gt&id=' . $item['id'] . '&host_template_id=' . $_REQUEST['id']);?>'><img src='images/delete_icon.gif' style="height:10px;width:10px;border:none;" alt='' title='Delete'></a>
 					</td>
 				<?php
 				form_end_row();
@@ -296,19 +298,24 @@ function template_edit() {
 		?>
 		<tr class='odd'>
 			<td colspan="2">
-				<table cellspacing="0" cellpadding="1" width="100%">
-					<td nowrap>Add Graph Template:&nbsp;
-						<?php form_dropdown('graph_template_id',db_fetch_assoc_prepared('SELECT
-							graph_templates.id,
-							graph_templates.name
-							FROM graph_templates LEFT JOIN host_template_graph
-							ON (graph_templates.id = host_template_graph.graph_template_id AND host_template_graph.host_template_id = ?)
-							WHERE host_template_graph.host_template_id is null
-							ORDER BY graph_templates.name', array(get_request_var_request('id'))),'name','id','','','');?>
-					</td>
-					<td align="right">
-						&nbsp;<input type="submit" value="Add" name="add_gt_x" title="Add Graph Template to Device Template">
-					</td>
+				<table>
+					<tr style='line-height:10px;'>
+						<td style="padding-right: 15px;">
+							Add Graph Template
+						</td>
+						<td>
+							<?php form_dropdown('graph_template_id',db_fetch_assoc_prepared('SELECT
+								graph_templates.id,
+								graph_templates.name
+								FROM graph_templates LEFT JOIN host_template_graph
+								ON (graph_templates.id = host_template_graph.graph_template_id AND host_template_graph.host_template_id = ?)
+								WHERE host_template_graph.host_template_id is null
+								ORDER BY graph_templates.name', array(get_request_var_request('id'))),'name','id','','','');?>
+						</td>
+						<td>
+							<input type="submit" value="Add" name="add_gt_x" title="Add Graph Template to Device Template">
+						</td>
+					</tr>
 				</table>
 			</td>
 		</tr>
@@ -329,13 +336,13 @@ function template_edit() {
 		$i = 0;
 		if (sizeof($selected_data_queries) > 0) {
 			foreach ($selected_data_queries as $item) {
-				form_alternate_row('', true);
+				form_alternate_row("dq$i", true);
 				?>
 					<td style="padding: 4px;">
 						<strong><?php print $i;?>)</strong> <?php print htmlspecialchars($item['name']);?>
 					</td>
-					<td align='right'>
-						<a href='<?php print htmlspecialchars('host_templates.php?action=item_remove_dq&id=' . $item['id'] . '&host_template_id=' . $_REQUEST['id']);?>'><img src='images/delete_icon.gif' style="height:10px;width:10px;" border='0' alt='Delete'></a>
+					<td style='text-align:right;'>
+						<a href='<?php print htmlspecialchars('host_templates.php?action=item_remove_dq&id=' . $item['id'] . '&host_template_id=' . $_REQUEST['id']);?>'><img src='images/delete_icon.gif' style="height:10px;width:10px;border:none;" alt='' title='Delete'></a>
 					</td>
 				<?php
 				form_end_row();
@@ -349,19 +356,24 @@ function template_edit() {
 		?>
 		<tr class='odd'>
 			<td colspan="2">
-				<table cellspacing="0" cellpadding="1" width="100%">
-					<td nowrap>Add Data Query:&nbsp;
-						<?php form_dropdown('snmp_query_id',db_fetch_assoc_prepared('SELECT
-							snmp_query.id,
-							snmp_query.name
-							FROM snmp_query LEFT JOIN host_template_snmp_query
-							ON (snmp_query.id = host_template_snmp_query.snmp_query_id AND host_template_snmp_query.host_template_id = ?)
-							WHERE host_template_snmp_query.host_template_id is null
-							ORDER BY snmp_query.name', array(get_request_var_request('id'))),'name','id','','','');?>
-					</td>
-					<td align="right">
-						&nbsp;<input type="submit" value="Add" name="add_dq_x" title="Add Data Query to Device Template">
-					</td>
+				<table>
+					<tr style='line-height:10px;'>
+						<td style="padding-right: 15px;">
+							Add Data Query
+						</td>
+						<td>
+							<?php form_dropdown('snmp_query_id',db_fetch_assoc_prepared('SELECT
+								snmp_query.id,
+								snmp_query.name
+								FROM snmp_query LEFT JOIN host_template_snmp_query
+								ON (snmp_query.id = host_template_snmp_query.snmp_query_id AND host_template_snmp_query.host_template_id = ?)
+								WHERE host_template_snmp_query.host_template_id is null
+								ORDER BY snmp_query.name', array(get_request_var_request('id'))),'name','id','','','');?>
+						</td>
+						<td>
+							<input type="submit" value="Add" name="add_dq_x" title="Add Data Query to Device Template">
+						</td>
+					</tr>
 				</table>
 			</td>
 		</tr>
@@ -443,9 +455,9 @@ function template() {
 	<tr class='even noprint'>
 		<td>
 		<form id="form_host_template" action="host_templates.php">
-			<table cellpadding="2" cellspacing="0" border="0">
+			<table class='filterTable'>
 				<tr>
-					<td width="50">
+					<td>
 						Search
 					</td>
 					<td>

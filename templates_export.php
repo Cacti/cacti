@@ -96,7 +96,7 @@ function export() {
 	<tr class='tableRow'>
 		<td>
 			<form name="form_graph_id" action="templates_export.php">
-			<table align='left' cellpadding='3' cellspacing='0'>
+			<table>
 				<tr>
 					<td style='font-size:1.2em;'>What would you like to export?</td>
 					<td>

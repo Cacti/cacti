@@ -912,7 +912,7 @@ function reports_item_edit() {
 	form_hidden_box('report_id', (isset($reports_item['report_id']) ? $reports_item['report_id'] : '0'), '');
 	form_hidden_box('save_component_report_item', '1', '');
 
-	echo "<table id='graphdiv' style='display:none;' align='center' width='100%'><tr><td align='center' id='graph'></td></tr></table>";
+	echo "<table id='graphdiv' style='text-align:center;width:100%;display:none;'><tr><td align='center' id='graph'></td></tr></table>";
 
 	form_save_button(htmlspecialchars(get_reports_page() . '?action=edit&tab=items&id=' . get_request_var_request('id')), 'return');
 
@@ -1089,7 +1089,7 @@ function reports_edit() {
 	if (!isset($_REQUEST['tab'])) $_REQUEST['tab'] = 'details';
 	$current_tab = $_REQUEST['tab'];
 
-	print "<table width='100%' cellpadding='0' cellspacing='0' border='0'><tr><td><div class='tabs'><nav><ul>\n";
+	print "<table><tr><td><div class='tabs'><nav><ul>\n";
 	if (sizeof($tabs)) {
 		foreach (array_keys($tabs) as $tab_short_name) {
 			if (($tab_short_name != 'details' && !empty($_REQUEST['id'])) || $tab_short_name == 'details') {
@@ -1277,9 +1277,9 @@ function display_reports_items($report_id) {
 			$form_data .= '<td>' . $align . '</td>';
 			$form_data .= '<td>' . $size . '</td>';
 
-			$form_data .= '<td align="right" style="text-align:right;min-width:5%;white-space:nowrap;"><a href="' . htmlspecialchars(get_reports_page() . '?action=item_movedown&item_id=' . $item['id'] . '&id=' . $report_id) . '"><img src="images/move_down.gif" border="0" alt="Move Down"></a>' . '<a	href="' . htmlspecialchars(get_reports_page() . '?action=item_moveup&item_id=' . $item['id'] .	'&id=' . $report_id) . '"><img src="images/move_up.gif" border="0" alt="Move Up"></a>' . '</td>';
+			$form_data .= '<td align="right" style="text-align:right;min-width:5%;white-space:nowrap;"><a href="' . htmlspecialchars(get_reports_page() . '?action=item_movedown&item_id=' . $item['id'] . '&id=' . $report_id) . '"><img style="border:none;" src="images/move_down.gif" alt="" title="Move Down"></a>' . '<a	href="' . htmlspecialchars(get_reports_page() . '?action=item_moveup&item_id=' . $item['id'] .	'&id=' . $report_id) . '"><img style="border:none;" src="images/move_up.gif" alt="" title="Move Up"></a>' . '</td>';
 
-			$form_data .= '<td align="right"><a href="' . htmlspecialchars(get_reports_page() . '?action=item_remove&item_id=' . $item['id'] . '&id=' . $report_id) . '"><img src="images/delete_icon.gif" border="0" width="10" height="10" alt="Delete"></a>' . '</td></tr>';
+			$form_data .= '<td align="right"><a href="' . htmlspecialchars(get_reports_page() . '?action=item_remove&item_id=' . $item['id'] . '&id=' . $report_id) . '"><img style="width:10px;height:10px;border:none;" src="images/delete_icon.gif" alt="" title="Delete"></a>' . '</td></tr>';
 			print $form_data;
 		}
 	} else {
@@ -1366,9 +1366,9 @@ function reports() {
 
 	print "<tr class='even'>
 		<td>
-			<table cellpadding='2' cellspacing='0'>
+			<table class='filterTable'>
 				<tr>
-					<td width='50'>
+					<td>
 						Search
 					</td>
 					<td>

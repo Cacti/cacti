@@ -305,7 +305,7 @@ function item_edit() {
 	}
 
 	form_alternate_row();?>
-		<td width='50%'>
+		<td style='width:50%;'>
 			<font class='textEditTitle'>CDEF Item Type</font><br>
 			Choose what type of CDEF item this is.
 		</td>
@@ -320,7 +320,7 @@ function item_edit() {
 		</td>
 	</tr>
 	form_alternate_row();?>
-		<td width='50%'>
+		<td style='width:50%;'>
 			<font class='textEditTitle'>CDEF Item Value</font><br>
 			Enter a value for this CDEF item.
 		</td>
@@ -376,12 +376,15 @@ function cdef_edit() {
 		$header_label = '[new]';
 	}
 
+	print "<form id='cdef' action='cdef.php' method='post'>\n";
+
 	html_start_box("<strong>CDEF's</strong> $header_label", '100%', '', '3', 'center', '');
 
 	draw_edit_form(array(
-		'config' => array(),
+		'config' => array('no_form_tag' => true),
 		'fields' => inject_form_variables($fields_cdef_edit, (isset($cdef) ? $cdef : array()))
-		));
+		)
+	);
 
 	html_end_box();
 
@@ -407,7 +410,7 @@ function cdef_edit() {
 					<td style='white-space:nowrap;'>
 						<a class='linkEditMain' href='<?php print htmlspecialchars('cdef.php?action=item_edit&id=' . $cdef_item['id'] . '&cdef_id=' . $cdef['id']);?>'>Item #<?php print htmlspecialchars($i);?></a>
 					</td>
-					<td align='left' width='50'>
+					<td style='text-align:left;width:50;'>
 						<a href='<?php print htmlspecialchars('cdef.php?action=item_movedown&id=' . $cdef_item['id'] . '&cdef_id=' . $cdef['id']);?>'><img src='images/move_down.gif' border='0' alt='Move Down'></a>
 						<a href='<?php print htmlspecialchars('cdef.php?action=item_moveup&id=' . $cdef_item['id'] . '&cdef_id=' . $cdef['id']);?>'><img src='images/move_up.gif' border='0' alt='Move Up'></a>
 					</td>
@@ -495,9 +498,9 @@ function cdef() {
 	<tr class='even'>
 		<td>
 			<form id='form_cdef' action='cdef.php'>
-			<table cellpadding='2' cellspacing='0' border='0'>
+			<table class='filterTable'>
 				<tr>
-					<td width='50'>
+					<td>
 						Search
 					</td>
 					<td>

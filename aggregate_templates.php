@@ -527,9 +527,9 @@ function aggregate_template() {
 
 	$filter_html = '<tr class="even">
 					<td>
-					<table cellpadding="2" cellspacing="0">
+					<table class="filterTable">
 						<tr>
-							<td width="50">
+							<td>
 								Search
 							</td>
 							<td>

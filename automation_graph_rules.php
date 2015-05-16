@@ -492,7 +492,7 @@ function automation_graph_rules_edit() {
 	 */
 	if (!empty($_GET['id'])) {
 		?>
-<table width='100%' align='center'>
+<table style='width:100%;text-align:center;'>
 	<tr>
 		<td class='textInfo' align='right' valign='top'><span class='linkMarker'>*<a href='<?php print htmlspecialchars('automation_graph_rules.php?action=edit&id=' . (isset($_GET['id']) ? $_GET['id'] : 0) . '&show_hosts=') . (isset($_SESSION['automation_graph_rules_show_hosts']) ? '0' : '1');?>'><strong><?php print (isset($_SESSION['automation_graph_rules_show_hosts']) ? 'Dont Show' : 'Show');?></strong> Matching Devices.</a></span><br>
 		</td>
@@ -683,9 +683,9 @@ function automation_graph_rules() {
 	<tr class='even'>
 		<td>
 			<form id='form_automation' action='automation_graph_rules.php'>
-				<table cellpadding='2' cellspacing='0'>
+				<table class='filterTable'>
 					<tr>
-						<td width='50'>
+						<td>
 							Search
 						</td>
 						<td>

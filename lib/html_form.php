@@ -51,9 +51,9 @@ function draw_edit_form($array) {
 			}
 
 			if ($field_array["method"] == "hidden") {
-				form_hidden_box($field_name, $field_array["value"], ((isset($field_array["default"])) ? $field_array["default"] : ""));
+				form_hidden_box($field_name, $field_array["value"], ((isset($field_array["default"])) ? $field_array["default"] : ""), true);
 			}elseif ($field_array["method"] == "hidden_zero") {
-				form_hidden_box($field_name, $field_array["value"], "0");
+				form_hidden_box($field_name, $field_array["value"], "0", true);
 			}elseif ($field_array["method"] == "spacer") {
 				if (isset($field_array['collapsible']) && $field_array['collapsible'] == 'true') {
 					$collapsible = true;
@@ -69,7 +69,7 @@ function draw_edit_form($array) {
 					form_alternate_row('row_' . $field_name);
 				}
 
-				print "<td width='" . ((isset($config_array["left_column_width"])) ? $config_array["left_column_width"] : "50%") . "'>\n<font class='textEditTitle'>" . $field_array["friendly_name"] . "</font><br>\n";
+				print "<td style='width:" . ((isset($config_array["left_column_width"])) ? $config_array["left_column_width"] . "px;":"50%;") . "'>\n<span class='textEditTitle'>" . $field_array["friendly_name"] . "</span><br>\n";
 
 				if (isset($field_array["sub_checkbox"])) {
 					form_checkbox($field_array["sub_checkbox"]["name"],
@@ -171,7 +171,8 @@ function draw_edit_control($field_name, &$field_array) {
 			$field_array["textarea_cols"],
 			((isset($field_array["default"])) ? $field_array["default"] : ""),
 			((isset($field_array["class"])) ? $field_array["class"] : ""),
-			((isset($field_array["on_change"])) ? $field_array["on_change"] : "")
+			((isset($field_array["on_change"])) ? $field_array["on_change"] : ""),
+			((isset($field_array["placeholder"])) ? $field_array["placeholder"] : '')
 		);
 
 		break;
@@ -222,7 +223,7 @@ function draw_edit_control($field_name, &$field_array) {
 		form_multi_dropdown(
 			$field_name, 
 			$field_array["array"], 
-			db_fetch_assoc($field_array["sql"]), 
+			(isset($field_array['sql']) ? db_fetch_assoc($field_array["sql"]):$field_array['value']), 
 			"id",
 			((isset($field_array["class"])) ? $field_array["class"] : ""),
 			((isset($field_array["on_change"])) ? $field_array["on_change"] : "")
@@ -313,13 +314,13 @@ function draw_edit_control($field_name, &$field_array) {
 	case 'template_checkbox':
 		print "<em>" . html_boolean_friendly($field_array["value"]) . "</em>";
 
-		form_hidden_box($field_name, $field_array["value"], "");
+		form_hidden_box($field_name, $field_array["value"], "", true);
 
 		break;
 	case 'template_drop_array':
 		print "<em>" . $field_array["array"]{$field_array["value"]} . "</em>";
 
-		form_hidden_box($field_name, $field_array["value"], "");
+		form_hidden_box($field_name, $field_array["value"], "", true);
 
 		break;
 	case 'template_drop_multi_rra':
@@ -361,7 +362,7 @@ function draw_edit_control($field_name, &$field_array) {
 	default:
 		print '<em>' . htmlspecialchars($field_array['value'],ENT_QUOTES) . '</em>';
 
-		form_hidden_box($field_name, $field_array['value'], '');
+		form_hidden_box($field_name, $field_array['value'], '', true);
 
 		break;
 	}
@@ -528,12 +529,14 @@ function form_text_box($form_name, $form_previous_value, $form_default_value, $f
    @arg $form_previous_value - the current value of this form element
    @arg $form_default_value - the value of this form element to use if there is
      no current value available */
-function form_hidden_box($form_name, $form_previous_value, $form_default_value) {
+function form_hidden_box($form_name, $form_previous_value, $form_default_value, $in_form = false) {
 	if ($form_previous_value == "") {
 		$form_previous_value = $form_default_value;
 	}
 
+	print ($in_form) ? "<tr style='display:none;'><td colspan='2'>\n":'';
 	print "<input style='height:0px;' type='hidden' id='$form_name' name='$form_name' value='" . htmlspecialchars($form_previous_value, ENT_QUOTES) . "'>\n";
+	print ($in_form) ? "</td></tr>\n":'';
 }
 
 /* form_dropdown - draws a standard html dropdown box
@@ -779,7 +782,7 @@ function form_radio_button($form_name, $form_previous_value, $form_current_value
    @arg $form_columns - the number of columns in the text area box
    @arg $form_default_value - the value of this form element to use if there is
      no current value available */
-function form_text_area($form_name, $form_previous_value, $form_rows, $form_columns, $form_default_value, $class = "", $on_change = "") {
+function form_text_area($form_name, $form_previous_value, $form_rows, $form_columns, $form_default_value, $class = "", $on_change = "", $placeholder = "") {
 	if ($form_previous_value == "") {
 		$form_previous_value = $form_default_value;
 	}
@@ -805,7 +808,11 @@ function form_text_area($form_name, $form_previous_value, $form_rows, $form_colu
 		$on_change = " onChange='$on_change' ";
 	}
 
-	print "<textarea cols='$form_columns' rows='$form_rows' id='$form_name' name='$form_name'" . $class . $on_change . ">" . htmlspecialchars($form_previous_value, ENT_QUOTES) . "</textarea>\n";
+	if (strlen($placeholder)) {
+		$placeholder = " placeholder='$placeholder'";
+	}
+
+	print "<textarea cols='$form_columns' rows='$form_rows' id='$form_name' name='$form_name'" . $class . $on_change . $placeholder . ">" . htmlspecialchars($form_previous_value, ENT_QUOTES) . "</textarea>\n";
 }
 
 /* form_multi_dropdown - draws a standard html multiple select dropdown
@@ -819,6 +826,13 @@ function form_text_area($form_name, $form_previous_value, $form_rows, $form_colu
    @arg $column_id - the name of the key used to reference the keys above */
 function form_multi_dropdown($form_name, $array_display, $sql_previous_values, $column_id, $class = "", $on_change = "") {
 
+	if (!is_array($sql_previous_values)) {
+		$values = explode(',', $sql_previous_values);
+		foreach($values as $value) {
+			$sql_previous_values[][$column_id] = $value;
+		}
+	}
+
 	if (isset($_SESSION["sess_error_fields"])) {
 		if (!empty($_SESSION["sess_error_fields"][$form_name])) {
 			$class .= (strlen($class) ? " ":"") . "txtErrorTextBox";
@@ -826,15 +840,16 @@ function form_multi_dropdown($form_name, $array_display, $sql_previous_values, $
 		}
 	}
 
+	$class = "multiselect";
 	if (strlen($class)) {
-		$class = " class='$class' ";
+		$class .= " $class";
 	}
 
 	if (strlen($on_change)) {
 		$on_change = " onChange='$on_change' ";
 	}
 
-	print "<select id='$form_name' name='$form_name" . "[]'" . $class . " multiple>\n";
+	print "<select class='$class' id='$form_name' name='$form_name" . "[]' multiple>\n";
 
 	foreach (array_keys($array_display) as $id) {
 		print "<option value='" . $id . "'";
@@ -971,10 +986,10 @@ function form_font_box($form_name, $form_previous_value, $form_default_value, $f
    @arg $action_url - the url to go to when the user clicks 'delete' */
 function form_confirm($title_text, $body_text, $cancel_url, $action_url) { ?>
 	<br>
-	<table align="center" cellpadding="1" cellspacing="0" border="0" width="60%">
+	<table style="width:60%;">
 		<tr>
 			<td class='even' colspan="10">
-				<table width="100%" cellpadding="3" cellspacing="0">
+				<table>
 					<tr class='cactiTableTitle'>
 						<td class="textHeaderDark"><strong><?php print $title_text;?></strong></td>
 					</tr>
@@ -1040,7 +1055,7 @@ function form_save_button($cancel_url, $force_type = "", $key_field = "id") {
 	}
 
 	?>
-	<table align='center' width='100%'>
+	<table style='width:100%;text-align:center;'>
 		<tr>
 			<td class="saveRow" align="right">
 				<input type='hidden' name='action' value='save'>
@@ -1055,7 +1070,7 @@ function form_save_button($cancel_url, $force_type = "", $key_field = "id") {
 
 function form_save_buttons($buttons) {
 	?>
-	<table align='center' width='100%'>
+	<table style='width:100%;text-align:center;'>
 		<tr>
 			<td class="saveRow" align="right">
 				<input type='hidden' name='action' value='save'>

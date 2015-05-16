@@ -428,12 +428,12 @@ function utilities_view_tech($php_info = '') {
 	print "<tr class='odd'>\n";
 	print "		<td class='textArea' colspan='2' align='center'>";
 	if (sizeof($table_status) > 0) {
-		print "<table border='1' cellpadding='2' cellspacing='0'>\n";
+		print "<table>\n";
 		print "<tr>\n";
-		print "  <th>Name</th>\n";
-		print "  <th>Rows</th>\n";
-		print "  <th>Engine</th>\n";
-		print "  <th>Collation</th>\n";
+		print "  <th class='tableSubHeaderColumn'>Name</th>\n";
+		print "  <th class='tableSubHeaderColumn'>Rows</th>\n";
+		print "  <th class='tableSubHeaderColumn'>Engine</th>\n";
+		print "  <th class='tableSubHeaderColumn'>Collation</th>\n";
 		print "</tr>\n";
 		foreach ($table_status as $item) {
 			print "<tr>\n";
@@ -606,9 +606,9 @@ function utilities_view_user_log() {
 	<tr class='even noprint'>
 		<td>
 		<form id='form_userlog' action='utilities.php'>
-			<table cellpadding='2' cellspacing='0' border='0'>
+			<table class='filterTable'>
 				<tr>
-					<td width='50'>
+					<td>
 						User
 					</td>
 					<td>
@@ -662,9 +662,9 @@ function utilities_view_user_log() {
 					</td>
 				</tr>
 			</table>
-			<table cellpadding='2' cellspacing='0' border='0'>
+			<table class='filterTable'>
 				<tr>
-					<td width='50'>
+					<td>
 						Search
 					</td>
 					<td>
@@ -919,9 +919,9 @@ function utilities_view_logfile() {
 	<tr class='even noprint'>
 		<td>
 		<form id='form_logfile' action='utilities.php'>
-			<table cellpadding='2' cellspacing='0' border='0'>
+			<table class='filterTable'>
 				<tr>
-					<td style='white-space: nowrap;' width='80'>
+					<td style='width:80px;white-space: nowrap;'>
 						Tail Lines
 					</td>
 					<td>
@@ -980,9 +980,9 @@ function utilities_view_logfile() {
 					</td>
 				</tr>
 			</table>
-			<table cellpadding='2' cellspacing='0' border='0'>
+			<table class='filterTable'>
 				<tr>
-					<td width='80'>
+					<td>
 						Search
 					</td>
 					<td>
@@ -1222,9 +1222,9 @@ function utilities_view_snmp_cache() {
 	<tr class='even noprint'>
 		<td>
 		<form id='form_snmpcache' action='utilities.php'>
-			<table cellpadding='2' cellspacing='0'>
+			<table class='filterTable'>
 				<tr>
-					<td width='50'>
+					<td>
 						Search
 					</td>
 					<td>
@@ -1534,9 +1534,9 @@ function utilities_view_poller_cache() {
 	<tr class='even noprint'>
 		<td>
 		<form id='form_pollercache' action='utilities.php'>
-			<table cellpadding='2' cellspacing='0'>
+			<table class='filterTable'>
 				<tr>
-					<td width='50'>
+					<td>
 						Search
 					</td>
 					<td>
@@ -1671,7 +1671,7 @@ function utilities_view_poller_cache() {
 		}
 		print "<tr class='$class'>\n";
 			?>
-			<td width="375">
+			<td style='width:375px;'>
 				<a class="linkEditMain" href="<?php print htmlspecialchars('data_sources.php?action=ds_edit&id=' . $item['local_data_id']);?>"><?php print (strlen(get_request_var_request('filter')) ? preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($item['name_cache'])):htmlspecialchars($item['name_cache']));?></a>
 			</td>
 
@@ -1722,8 +1722,8 @@ function utilities() {
 
 	?>
 	<colgroup span='3'>
-		<col valign='top' width='20%'></col>
-		<col valign='top' width='80%'></col>
+		<col style='vertical-align:top;width:20%;'></col>
+		<col style='vertical-align:top;width:20%;'></col>
 	</colgroup>
 
 	<?php html_header(array('Technical Support'), 2); form_alternate_row(); ?>
@@ -1874,7 +1874,7 @@ function boost_display_run_status() {
 	<tr class='even'>
 		<form id='form_boost_utilities_stats' method='post'>
 		<td>
-			<table cellpadding='2' cellspacing='0' border='0'>
+			<table>
 				<tr>
 					<td style='white-space:nowrap;'>
 						Refresh Interval
@@ -2081,40 +2081,40 @@ function boost_display_run_status() {
 	html_header(array('Runtime Statistics'), 2);
 
 	form_alternate_row();
-	print '<td width=200><strong>Last Start Time:</strong></td><td>' . $last_run_time . '</td>';
+	print '<td style="width:200px;"><strong>Last Start Time:</strong></td><td>' . $last_run_time . '</td>';
 
 	form_alternate_row();
-	print '<td width=200><strong>Last Run Duration:</strong></td><td>';
+	print '<td style="width:200ps;"><strong>Last Run Duration:</strong></td><td>';
 	print (($boost_last_run_duration > 60) ? (int)($boost_last_run_duration/60) . ' minutes ' : '' ) . $boost_last_run_duration%60 . ' seconds';
 	if ($rrd_updates != ''){ print ' (' . round(100*$boost_last_run_duration/$update_interval/60) . '% of update frequency)';}
 	print '</td>';
 
 	form_alternate_row();
-	print '<td width=200><strong>RRD Updates:</strong></td><td>' . $boost_rrds_updated . '</td>';
+	print '<td style="width:200px;"><strong>RRD Updates:</strong></td><td>' . $boost_rrds_updated . '</td>';
 
 	form_alternate_row();
-	print '<td width=200><strong>Peak Poller Memory:</strong></td><td>' . ((read_config_option('boost_peak_memory') != '') ? (round(read_config_option('boost_peak_memory')/1024/1024,2)) . ' MBytes' : 'N/A') . '</td>';
+	print '<td style="width:200px;"><strong>Peak Poller Memory:</strong></td><td>' . ((read_config_option('boost_peak_memory') != '') ? (round(read_config_option('boost_peak_memory')/1024/1024,2)) . ' MBytes' : 'N/A') . '</td>';
 
 	form_alternate_row();
-	print '<td width=200><strong>Detailed Runtime Timers:</strong></td><td>' . (($detail_stats != '') ? $detail_stats:'N/A') . '</td>';
+	print '<td style="width:200px;"><strong>Detailed Runtime Timers:</strong></td><td>' . (($detail_stats != '') ? $detail_stats:'N/A') . '</td>';
 
 	form_alternate_row();
-	print '<td width=200><strong>Max Poller Memory Allowed:</strong></td><td>' . ((read_config_option('boost_poller_mem_limit') != '') ? (read_config_option('boost_poller_mem_limit')) . ' MBytes' : 'N/A') . '</td>';
+	print '<td style="width:200px;"><strong>Max Poller Memory Allowed:</strong></td><td>' . ((read_config_option('boost_poller_mem_limit') != '') ? (read_config_option('boost_poller_mem_limit')) . ' MBytes' : 'N/A') . '</td>';
 
 	/* boost runtime display */
 	html_header(array('Run Time Configuration'), 2);
 
 	form_alternate_row();
-	print '<td width=200><strong>Update Frequency:</strong></td><td><strong>' . ($rrd_updates == '' ? 'N/A' : $boost_refresh_interval[$update_interval]) . '</strong></td>';
+	print '<td style="width:200px;"><strong>Update Frequency:</strong></td><td><strong>' . ($rrd_updates == '' ? 'N/A' : $boost_refresh_interval[$update_interval]) . '</strong></td>';
 
 	form_alternate_row();
-	print '<td width=200><strong>Next Start Time:</strong></td><td>' . $next_run_time . '</td>';
+	print '<td style="width:200px;"><strong>Next Start Time:</strong></td><td>' . $next_run_time . '</td>';
 
 	form_alternate_row();
-	print '<td width=200><strong>Maximum Records:</strong></td><td>' . $max_records . ' Records</td>';
+	print '<td style="width:200px;"><strong>Maximum Records:</strong></td><td>' . $max_records . ' Records</td>';
 
 	form_alternate_row();
-	print '<td width=200><strong>Maximum Allowed Runtime:</strong></td><td>' . $boost_max_runtime[$max_runtime] . '</td>';
+	print '<td style="width:200px;"><strong>Maximum Allowed Runtime:</strong></td><td>' . $boost_max_runtime[$max_runtime] . '</td>';
 
 	/* boost runtime display */
 	html_header(array('Boost Server Details'), 2);
@@ -2271,9 +2271,9 @@ function snmpagent_utilities_run_cache() {
 	<tr class='even noprint'>
 		<td>
 			<form id='form_snmpagent_cache' action='utilities.php'>
-				<table cellpadding='2' cellspacing='0'>
+				<table class='filterTable'>
 					<tr>
-						<td width='50'>
+						<td>
 							Search
 						</td>
 						<td>
@@ -2543,7 +2543,7 @@ function snmpagent_utilities_run_eventlog(){
 	<tr class='even noprint'>
 		<td>
 			<form id='form_snmpagent_notifications' action='utilities.php'>
-				<table cellpadding='2' cellspacing='0'>
+				<table class='filterTable'>
 					<tr>
 						<td>
 							Search
@@ -2567,7 +2567,7 @@ function snmpagent_utilities_run_eventlog(){
 						<td>
 							Receiver
 						</td>
-						<td width='1'>
+						<td>
 							<select id='receiver' onChange='applyFilter()'>
 								<option value='-1'<?php if (get_request_var_request('receiver') == '-1') {?> selected<?php }?>>Any</option>
 								<?php

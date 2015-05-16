@@ -612,17 +612,17 @@ function automation_snmp_edit() {
 
 				$form_data .= '<td style="white-space:nowrap;text-align:right;">';
 				if ($i < $total_items && $total_items > 1) {
-					$form_data .= '<img style="cursor:pointer;padding:2px;" class="action" href="' . htmlspecialchars('automation_snmp.php?action=item_movedown&item_id=' . $item['id'] . '&id=' . $item['snmp_id']) . '" src="images/move_down.gif" border="0" alt="Move Down">';
+					$form_data .= '<img style="cursor:pointer;padding:2px;border:none;" class="action" href="' . htmlspecialchars('automation_snmp.php?action=item_movedown&item_id=' . $item['id'] . '&id=' . $item['snmp_id']) . '" src="images/move_down.gif" alt="0" title="Move Down">';
 				}else{
-					$form_data .= '<img height="14" width="14" src="images/view_none.gif" border="0" alt="">';
+					$form_data .= '<img style="width:14px;height:14px;" src="images/view_none.gif" alt="">';
 				}
 
 				if ($i > 1 && $i <= $total_items) {
-					$form_data .= '<img style="cursor:pointer;padding:2px;" class="action" href="' . htmlspecialchars('automation_snmp.php?action=item_moveup&item_id=' . $item['id'] .	'&id=' . $item['snmp_id']) . '" src="images/move_up.gif" border="0" alt="Move Up">';
+					$form_data .= '<img style="cursor:pointer;padding:2px;border:none;" class="action" href="' . htmlspecialchars('automation_snmp.php?action=item_moveup&item_id=' . $item['id'] .	'&id=' . $item['snmp_id']) . '" src="images/move_up.gif" alt="Move Up">';
 				}else{
-					$form_data .= '<img height="14" width="14" src="images/view_none.gif" border="0" alt="">';
+					$form_data .= '<img style="width:14px;height:14px;" src="images/view_none.gif" alt="">';
 				}
-				$form_data .= '<img style="cursor:pointer;padding:2px;" class="action" href="' . htmlspecialchars('automation_snmp.php?action=item_remove&item_id=' . $item['id'] .	'&id=' . $item['snmp_id']) . '" src="images/delete_icon.gif" border="0" width="10" height="10" alt="Delete">';
+				$form_data .= '<img style="width:10px;height:10px;cursor:pointer;padding:2px;border:none;" class="action" href="' . htmlspecialchars('automation_snmp.php?action=item_remove&item_id=' . $item['id'] .	'&id=' . $item['snmp_id']) . '" src="images/delete_icon.gif" title="Delete" alt="">';
 				$form_data .= '</td></tr>';
 				print $form_data;
 
@@ -717,9 +717,9 @@ function automation_snmp() {
 	?>
 	<tr class='even'>
 		<td>
-			<table cellpadding='2' cellspacing='0'>
+			<table class='filterTable'>
 				<tr>
-					<td width='55'>
+					<td>
 						Search
 					</td>
 					<td>

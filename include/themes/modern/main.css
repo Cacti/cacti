@@ -1,6 +1,6 @@
 /* main styles */
 
-body, table, tr, td {
+body, table, tr, td, textarea {
 	font-family: Verdana, Arial, Helvetica, sans-serif;
 	font-size: 12px;
 }
@@ -11,13 +11,14 @@ body {
 	background-repeat: repeat-y;
 }
 
-/* prevent things from being selected */
-.zoom-container, .cactiNavBarTop, .textHeaderDark {
-	-webkit-user-select: none;
-	-khtml-user-select: none;
-	-moz-user-select: -moz-none;
-	-o-user-select: none;
-	user-select: none;
+table {
+	border-collapse: collapse; border-spacing: 0; 
+	border: none;
+	text-align:left;
+}
+
+td, th {
+	padding: 2px;
 }
 
 /* links */
@@ -27,7 +28,7 @@ a, a:active, a:visited {
 	text-decoration: none;
 	font-size: 12px;
 	padding: 3px;
-  	text-shadow: 0 1px 0 rgba(255,255,255,.5);
+  	text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
 }
 
 a:hover {
@@ -75,32 +76,15 @@ input, select {
 	padding:4px;
 	color:red;
 	font-size:1.5em !important;
-	text-align:bottom;
+	vertical-align:bottom;
 }
 
 .goodpassword {
 	padding:4px;
 	color:green;
 	font-size:1.5em !important;
-	text-align:bottom;
+	vertical-align:bottom;
 }
-
-/* input#host {
-	background-color: #e6e6e6;
-	border: none;
-	padding-right: 24px;
-	line-height:1.4;
-	overflow-hidden;
-	padding: 0.4em 2.1em 0.4em 1em;
-	color: #555555;
-}*/
-
-/* input#filter {
-	padding-right: 24px;
-	line-height:1.4;
-	overflow-hidden;
-	padding: 0.4em 2.1em 0.4em 1em;
-}*/
 
 .menuoptions {
 	background: none repeat scroll 0 0 #eee;
@@ -136,26 +120,40 @@ input, select {
 	display:block;
 }
 
+.reloadquery {
+	cursor:pointer;
+	padding:2px;
+	vertical-align:middle;
+	color:lime;
+	font-weight:bold;
+	font-size:14px;
+}
+
+.deletequery {
+	cursor:pointer;
+	padding:2px;
+	vertical-align:middle;
+	color:red;
+	font-weight:bold;
+	font-size:14px
+}
+
 .odd {
 	background: none repeat scroll 0 0 #F5F5F5;
-    border-style: solid;
-    border-width: 1px;
+    border: none;
     box-shadow: 0 0 1px rgba(0, 0, 0, 0.1);
 }
 
 .even {
 	background: none repeat scroll 0 0 #E5E5E5;
-#    border-color: #f5f5f5 #e5e5e5 #ccc;
-    border-style: solid;
-    border-width: 1px;
+    border: none;
     box-shadow: 0 0 1px rgba(0, 0, 0, 0.1);
 }
 
 .even-alternate {
 	background: none repeat scroll 0 0 #E7E9F2;
 	background-color:#E7E9F2;
-    border-style: solid;
-    border-width: 1px;
+    border: none;
     box-shadow: 0 0 1px rgba(0, 0, 0, 0.1);
 }
 
@@ -229,12 +227,13 @@ input, select {
 
 .cactiPageHead {
 	background-color: #a9a9a9;
-	height:35px;
-	border-bottom:2px solid #00438c;
+	height:25px;
 }
 
 .cactiGraphPageHeadBackdrop {
 	background: transparent url('./../../../images/cacti_backdrop2.gif') no-repeat center right;
+	vertical-align: bottom;
+	padding: 0px;
 }
 
 .loginLogo {
@@ -244,10 +243,10 @@ input, select {
 
 .cactiConsolePageHeadBackdrop {
 	background: transparent url('./../../../images/cacti_backdrop.gif') no-repeat center right;
+	padding-bottom:0px;
 }
 
 .navigation {
-//	width:400px;
 }
 
 .breadCrumbBar {
@@ -260,7 +259,6 @@ input, select {
 	background: -ms-linear-gradient(top, rgba(167,217,134,1) 0%, rgba(148,179,107,1) 100%);
 	background: linear-gradient(to bottom, rgba(167,217,134,1) 0%, rgba(148,179,107,1) 100%);
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#a7d986', endColorstr='#94b36b', GradientType=0 );
-	/*background-color: #e9e9e9;*/
 }
 
 ul#breadcrumbs {
@@ -313,7 +311,7 @@ ul#breadcrumbs {
 	color: #444;
 	position: relative;
 	font-size:10px;
-	text-shadow: 0 1px 0 rgba(255,255,255,.5);
+	text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
 	background-color: #ddd;
 	background-image: linear-gradient(to right, #f5f5f5, #ddd);
 }
@@ -379,6 +377,7 @@ ul#breadcrumbs {
 	padding-left:0px;
 	padding-right:0px;
 	padding-top:5px;
+	vertical-align:top;
 }
 
 .cactiLogo {
@@ -414,13 +413,12 @@ ul#breadcrumbs {
 	background: -ms-linear-gradient(top, rgba(255,255,255,1) 0%, rgba(246,246,246,1) 47%, rgba(237,237,237,1) 100%);
 	background: linear-gradient(to bottom, rgba(255,255,255,1) 0%, rgba(246,246,246,1) 47%, rgba(237,237,237,1) 100%);
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#ededed', GradientType=0 );
-	/*text-shadow: 1px 1px 2px rgba(9, 61, 16, 1);*/
-	text-shadow: 1px 1px 1px rgba(9, 61, 16, .66);
+	text-shadow: 1px 1px 1px rgba(9, 61, 16, 0.66);
 }
 
 .cactiLoginLogo, .cactiLogoutLogo {
 	position:relative;
-	float:right:
+	float:right;
 	top:30%;
 	background: transparent url('./../../../images/cacti_logo_new.gif') no-repeat center;
 	width:90px;
@@ -476,6 +474,12 @@ legend {
 	color:snow;
 }
 
+.actionsDropdown {
+	vertical-align:middle;
+	width:100%;
+	line-height:10px;
+}
+
 .loginPanel {
 	padding:4px 0px;
 }
@@ -496,6 +500,7 @@ legend {
 	padding-top:10px;
 	padding-right: 5px;
 	padding-left: 5px;
+	vertical-align:top;
 }
 
 .hyperLink {
@@ -513,7 +518,8 @@ legend {
 	font-size: 12px;
 	font-weight: bold;
 	padding: 3px;
-  	text-shadow: 0 1px 0 rgba(255,255,255,.5);
+  	text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+	cursor:pointer;
 }
 
 .linkEditMain:hover {
@@ -579,13 +585,22 @@ legend {
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#4c4c4c', endColorstr='#131313', GradientType=0 );
 }
 
+.templateHeader td {
+	padding:3px;
+}
+
 .textSubHeaderDark, .textSubHeaderDark:visited {
 	font-size: 11px;
 	color: snow;
 	font-weight: bold;
 }
 
+.cactiTable {
+	width: 100%;
+}
+
 .cactiTableTitle {
+	width: 100%;
 	background: rgba(98,125,77,1);
 	background: -moz-linear-gradient(top, rgba(98,125,77,1) 0%, rgba(31,59,8,1) 100%);
 	background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(98,125,77,1)), color-stop(100%, rgba(31,59,8,1)));
@@ -594,6 +609,22 @@ legend {
 	background: -ms-linear-gradient(top, rgba(98,125,77,1) 0%, rgba(31,59,8,1) 100%);
 	background: linear-gradient(to bottom, rgba(98,125,77,1) 0%, rgba(31,59,8,1) 100%);
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#627d4d', endColorstr='#1f3b08', GradientType=0 );
+}
+
+.cactiTableTitle td {
+	line-height: 16px;
+}
+
+.cactiDebugTable {
+	width: 100%;
+}
+
+.filterTable {
+	white-space:nowrap;
+}
+
+.filterTable td:first-child {
+	width:55px;
 }
 
 .break {
@@ -638,12 +669,14 @@ legend {
 
 th.sortable {
 	cursor:pointer;
+	line-height:10px;
 }
 
 .tableHeader th {
 	color: snow;
 	font-weight:bold;
-	vertical-align:bottom;
+	cursor: pointer;
+	vertical-align:middle;
 	text-align:left;
 	font-size: 11px;
 }
@@ -651,24 +684,26 @@ th.sortable {
 .tableHeader th div {
 	display:block;
 	padding-right:8px;
-	font-size: 11px;
+	font-size:11px;
 }
 
 .tableSubHeaderColumn {
 	color: snow;
 	font-weight:bold;
-	vertical-align:bottom;
+	vertical-align:middle;
 	text-align:left;
 }
 
 .graphSubHeaderColumn {
 	color: #snow;
 	font-size:12px;
-	vertical-align:bottom;
+	vertical-align:middle;
 	text-align:left;
+	padding:3px;
 }
 
 .tableSubHeaderCheckbox {
+	width:1%;
 	background: rgba(138,179,105,1);
 	background: -moz-linear-gradient(top, rgba(138,179,105,1) 0%, rgba(63,117,15,1) 100%);
 	background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(138,179,105,1)), color-stop(100%, rgba(63,117,15,1)));
@@ -679,7 +714,13 @@ th.sortable {
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#8ab369', endColorstr='#3f750f', GradientType=0 );
 }
 
+.image_table {
+	width:100%;
+}
+
 .tableConfirmation {
+	width:100%;
+	text-align:center;
 	background-color: #f5f5f5;
 	border: 1px solid #aaaaaa;
 }
@@ -819,6 +860,19 @@ td.tab {
 	-moz-border-radius-topleft: 4px;
 }
 
+td#tabs {
+	padding-bottom:0px;
+}
+
+td#gtabs {
+	padding-bottom:0px;
+	text-align:right;
+}
+
+.tabs {
+	width:100%;
+}
+
 .tabs a, .maintabs a {
 	-moz-border-radius:5px 5px 0 0;
 	border-radius:5px 5px 0 0;
@@ -894,7 +948,7 @@ td.tab {
 /* Navigation Area */
 #nav {
 	float: left;
-	width: 150;
+	width: 150px;
 	border-top: 0px solid #999;
 	border-right: 0px solid #999;
 	border-left: 0px solid #999;
@@ -1006,12 +1060,10 @@ div.calendar {
 	font-size: 11px;
 	color: #000;
 	cursor: default;
-	font-family: tahoma,verdana,sans-serif;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
 }
 
-/* Header part -- contains navigation buttons and day names. */
-
-.calendar .button { /* "<<", "<", ">", ">>" buttons have this class */
+.calendar .button {
 	background: rgba(98,125,77,1);
 	background: -moz-linear-gradient(top, rgba(98,125,77,1) 0%, rgba(31,59,8,1) 100%);
 	background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(98,125,77,1)), color-stop(100%, rgba(31,59,8,1)));
@@ -1020,9 +1072,9 @@ div.calendar {
 	background: -ms-linear-gradient(top, rgba(98,125,77,1) 0%, rgba(31,59,8,1) 100%);
 	background: linear-gradient(to bottom, rgba(98,125,77,1) 0%, rgba(31,59,8,1) 100%);
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#627d4d', endColorstr='#1f3b08', GradientType=0 );
-	text-align: center;    /* They are the navigation buttons */
+	text-align: center;
 	color:snow;
-	padding: 2px;          /* Make the buttons seem like they're pressing */
+	padding: 2px;
 }
 
 .calendar .nav {
@@ -1037,10 +1089,11 @@ div.calendar {
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#8ab369', endColorstr='#3f750f', GradientType=0 );
 }
 
-.calendar thead .title { /* This holds the current "month, year" */
-	font-weight: bold;      /* Pressing it will take you to the current date */
+.calendar thead .title {
+	font-weight: bold;
 	text-align: center;
 	padding: 2px;
+	color: snow;
 	background: rgba(98,125,77,1);
 	background: -moz-linear-gradient(top, rgba(98,125,77,1) 0%, rgba(31,59,8,1) 100%);
 	background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(98,125,77,1)), color-stop(100%, rgba(31,59,8,1)));
@@ -1049,10 +1102,9 @@ div.calendar {
 	background: -ms-linear-gradient(top, rgba(98,125,77,1) 0%, rgba(31,59,8,1) 100%);
 	background: linear-gradient(to bottom, rgba(98,125,77,1) 0%, rgba(31,59,8,1) 100%);
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#627d4d', endColorstr='#1f3b08', GradientType=0 );
-	color:snow;
 }
 
-.calendar thead .headrow { /* Row <TR> containing navigation buttons */
+.calendar thead .headrow {
 	color: snow;
 	background: rgba(138,179,105,1);
 	background: -moz-linear-gradient(top, rgba(138,179,105,1) 0%, rgba(63,117,15,1) 100%);
@@ -1064,7 +1116,7 @@ div.calendar {
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#8ab369', endColorstr='#3f750f', GradientType=0 );
 }
 
-.calendar thead .daynames { /* Row <TR> containing the day names */
+.calendar thead .daynames {
 	background: rgba(167,217,134,1);
 	background: -moz-linear-gradient(top, rgba(167,217,134,1) 0%, rgba(148,179,107,1) 100%);
 	background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(167,217,134,1)), color-stop(100%, rgba(148,179,107,1)));
@@ -1075,18 +1127,18 @@ div.calendar {
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#a7d986', endColorstr='#94b36b', GradientType=0 );
 }
 
-.calendar thead .name { /* Cells <TD> containing the day names */
+.calendar thead .name {
 	border-bottom: 1px solid #556;
 	padding: 2px;
 	text-align: center;
 	color: #333;
 }
 
-.calendar thead .weekend { /* How a weekend day name shows in header */
+.calendar thead .weekend {
 	color: #a66;
 }
 
-.calendar thead .hilite { /* How do the buttons in header appear when hover */
+.calendar thead .hilite {
 	color: snow;
 	background: rgba(138,179,105,1);
 	background: -moz-linear-gradient(top, rgba(138,179,105,1) 0%, rgba(63,117,15,1) 100%);
@@ -1100,14 +1152,12 @@ div.calendar {
 	padding: 1px;
 }
 
-.calendar thead .active { /* Active (pressed) buttons in header */
+.calendar thead .active {
 	background-color: #77c;
 	padding: 2px 0px 0px 2px;
 }
 
-/* The body part -- contains all the days in month. */
-
-.calendar tbody .day { /* Cells <TD> containing month days dates */
+.calendar tbody .day {
 	width: 2em;
 	color: #456;
 	text-align: right;
@@ -1135,18 +1185,18 @@ div.calendar {
 	background: #eef;
 }
 
-.calendar tbody td.hilite { /* Hovered cells <TD> */
+.calendar tbody td.hilite {
 	background: #def;
 	padding: 1px 3px 1px 1px;
 	border: 1px solid #bbb;
 }
 
-.calendar tbody td.active { /* Active (pressed) cells <TD> */
+.calendar tbody td.active {
 	background: #cde;
 	padding: 2px 2px 0px 2px;
 }
 
-.calendar tbody td.selected { /* Cell showing today date */
+.calendar tbody td.selected {
 	font-weight: bold;
 	border: 1px solid #000;
 	padding: 1px 3px 1px 1px;
@@ -1154,34 +1204,32 @@ div.calendar {
 	color: #000;
 }
 
-.calendar tbody td.weekend { /* Cells showing weekend days */
+.calendar tbody td.weekend {
 	color: #a66;
 }
 
-.calendar tbody td.today { /* Cell showing selected date */
+.calendar tbody td.today {
 	font-weight: bold;
 	color: #00f;
 }
 
 .calendar tbody .disabled { color: #999; }
 
-.calendar tbody .emptycell { /* Empty cells (the best is to hide them) */
+.calendar tbody .emptycell {
 	visibility: hidden;
 }
 
-.calendar tbody .emptyrow { /* Empty row (some months need less than 6 rows) */
+.calendar tbody .emptyrow {
 	display: none;
 }
 
-/* The footer part -- status bar and "Close" button */
-
-.calendar tfoot .footrow { /* The <TR> in footer (only one right now) */
+.calendar tfoot .footrow {
 	text-align: center;
 	background: #556;
 	color: #fff;
 }
 
-.calendar tfoot .ttip { /* Tooltip (status bar) cell <TD> */
+.calendar tfoot .ttip {
 	background: rgba(214,255,207,1);
 	background: -moz-linear-gradient(top, rgba(214,255,207,1) 0%, rgba(213,230,198,1) 100%);
 	background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(214,255,207,1)), color-stop(100%, rgba(213,230,198,1)));
@@ -1195,19 +1243,17 @@ div.calendar {
 	padding: 1px;
 }
 
-.calendar tfoot .hilite { /* Hover style for buttons in footer */
+.calendar tfoot .hilite {
 	background: #aaf;
 	border: 1px solid #04f;
 	color: #000;
 	padding: 1px;
 }
 
-.calendar tfoot .active { /* Active (pressed) style for buttons in footer */
+.calendar tfoot .active {
 	background: #77c;
 	padding: 2px 0px 0px 2px;
 }
-
-/* Combo boxes (menus that display months/years for direct selection) */
 
 .calendar .combo {
 	position: absolute;

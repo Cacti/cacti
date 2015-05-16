@@ -62,22 +62,22 @@ switch ($_REQUEST['action']) {
 	case 'gt_remove':
 		host_remove_gt();
 
-		header('Location: host.php?action=edit&id=' . $_REQUEST['host_id']);
+		header('Location: host.php?header=false&action=edit&id=' . $_REQUEST['host_id']);
 		break;
 	case 'query_remove':
 		host_remove_query();
 
-		header('Location: host.php?action=edit&id=' . $_REQUEST['host_id']);
+		header('Location: host.php?header=false&action=edit&id=' . $_REQUEST['host_id']);
 		break;
 	case 'query_reload':
 		host_reload_query();
 
-		header('Location: host.php?action=edit&id=' . $_REQUEST['host_id'] . '#dqtop');
+		header('Location: host.php?header=false&action=edit&id=' . $_REQUEST['host_id']);
 		break;
 	case 'query_verbose':
 		host_reload_query();
 
-		header('Location: host.php?action=edit&id=' . $_REQUEST['host_id'] . '&display_dq_details=true#dqdbg');
+		header('Location: host.php?header=false&action=edit&id=' . $_REQUEST['host_id'] . '&display_dq_details=true#dqdbg');
 		break;
 	case 'edit':
 		top_header();
@@ -768,12 +768,12 @@ function host_edit() {
 
 	if (!empty($host['id'])) {
 		?>
-		<table width='100%' align='center'>
+		<table style='width:100%;text-align:left;'>
 			<tr>
-				<td class='textInfo' colspan='2'>
+				<td class='textInfo'>
 					<?php print htmlspecialchars($host['description']);?> (<?php print htmlspecialchars($host['hostname']);?>)
 				</td>
-				<td rowspan='2' class='textInfo' valign='top' align='right'>
+				<td rowspan='2' class='textInfo' style='vertical-align:top;text-align:right;'>
 					<span class='linkMarker'>*</span><a class='hyperLink' href='<?php print htmlspecialchars('graphs_new.php?host_id=' . $host['id']);?>'>Create Graphs for this Device</a><br>
 					<span class='linkMarker'>*</span><a class='hyperLink' href='<?php print htmlspecialchars('data_sources.php?host_id=' . $host['id'] . '&ds_rows=30&filter=&template_id=-1&method_id=-1&page=1');?>'>Data Source List</a><br>
 					<span class='linkMarker'>*</span><a class='hyperLink' href='<?php print htmlspecialchars('graphs.php?host_id=' . $host['id'] . '&graph_rows=30&filter=&template_id=-1&page=1');?>'>Graph List</a>
@@ -781,13 +781,15 @@ function host_edit() {
 				</td>
 			</tr>
 			<tr>
-				<td valign='top' class='textHeader'>
+				<td style='vertical-align:top;' class='textHeader'>
 					<div id='ping_results'>Contacting Device&nbsp;<i style='font-size:12px;' class='fa fa-spin fa-spinner'></i><br><br></div>
 				</td>
 			</tr>
 		</table>
 		<?php
 	}
+
+	print "<form id='host' action='host.php' method='post'>\n";
 
 	html_start_box("<strong>Device</strong> $header_label", '100%', '', '3', 'center', '');
 
@@ -797,13 +799,13 @@ function host_edit() {
 	}
 
 	draw_edit_form(array(
-		'config' => array('form_name' => 'chk'),
+		'config' => array('no_form_tag' => true),
 		'fields' => inject_form_variables($fields_host_edit, (isset($host) ? $host : array()))
 		));
 
 	/* we have to hide this button to make a form change in the main form trigger the correct
 	 * submit action */
-	echo "<div style='display:none;'><input type='submit' value='Default Submit Button'></div>";
+	echo "<tr style='display:none;'><td colspan='2'><input type='submit' value='Default Submit Button'></td></tr>\n";
 
 	html_end_box();
 
@@ -998,11 +1000,11 @@ function host_edit() {
 	<?php
 
 	if ((isset($_REQUEST['display_dq_details'])) && (isset($_SESSION['debug_log']['data_query']))) {
-		print "<table id='dqdebug' width='100%' class='cactiDebugTable' cellpadding='0' cellspacing='0' border='0' align='center'><tr><td>\n";
-		print "<table width='100%' class='cactiTableTitle' cellspacing='0' cellpadding='3' border='0'>\n";
+		print "<table id='dqdebug' class='cactiDebugTable'><tr><td>\n";
+		print "<table class='cactiTableTitle'>\n";
 		print "<tr><td class='textHeaderDark'><a name='dqdbg'></a><strong>Data Query Debug Information</strong></td><td class='textHeaderDark' align='right'><a style='cursor:pointer;' id='dbghide' class='linkOverDark'>Hide</a></td></tr>\n";
 		print "</table>\n";
-		print "<table width='100%' class='cactiTable' cellspacing='0' cellpadding='3' border='0'>\n";
+		print "<table class='cactiTable'>\n";
 		print "<tr><td class='odd'><span style='font-family: monospace;'>" . debug_log_return('data_query') . "</span></td></tr>";
 		print "</table>\n";
 		print "</table>\n";
@@ -1030,7 +1032,7 @@ function host_edit() {
 		$i = 0;
 		if (sizeof($selected_graph_templates)) {
 			foreach ($selected_graph_templates as $item) {
-				form_alternate_row('', true);
+				form_alternate_row("gt$i", true);
 
 				/* get status information for this graph template */
 				$is_being_graphed = (sizeof(db_fetch_assoc_prepared('SELECT id FROM graph_local WHERE graph_template_id = ? AND host_id = ?', array($item['id'], $_REQUEST['id']))) > 0) ? true : false;
@@ -1040,31 +1042,33 @@ function host_edit() {
 						<strong><?php print $i;?>)</strong> <?php print htmlspecialchars($item['name']);?>
 					</td>
 					<td>
-						<?php print (($is_being_graphed == true) ? "<span style='color: green;'>Is Being Graphed</span> (<a href='" . htmlspecialchars('graphs.php?action=graph_edit&id=' . db_fetch_cell_prepared('SELECT id FROM graph_local WHERE graph_template_id = ? AND host_id = ? LIMIT 0,1', array($item['id'], $_REQUEST['id']))) . "'>Edit</a>)" : "<span style='color: #484848;'>Not Being Graphed</span>");?>
+						<?php print (($is_being_graphed == true) ? "<span style='color: green;'>Is Being Graphed</span> (<a class='linkEditMain' href='" . htmlspecialchars('graphs.php?action=graph_edit&id=' . db_fetch_cell_prepared('SELECT id FROM graph_local WHERE graph_template_id = ? AND host_id = ? LIMIT 0,1', array($item['id'], $_REQUEST['id']))) . "'>Edit</a>)" : "<span style='color: #484848;'>Not Being Graphed</span>");?>
 					</td>
-					<td align='right' nowrap>
-						<a href='<?php print htmlspecialchars('host.php?action=gt_remove&id=' . $item['id'] . '&host_id=' . $_REQUEST['id']);?>'><img src='images/delete_icon_large.gif' title='Delete Graph Template Association' alt='Delete Graph Template Association' border='0' align='absmiddle'></a>
+					<td style='text-align:right;white-space:nowrap;'>
+						<span title='Delete Graph Template Association' class='deletequery fa fa-remove' id='gtremove<?php print $item['id'];?>' data-id='<?php print $item['id'];?>'></span>
 					</td>
 				<?php
 				form_end_row();
 
 				$i++;
 			}
-		}else{ print "<tr class='tableRow'><td colspan='2'><em>No associated graph templates.</em></td></tr>"; }
+		}else{ print "<tr class='tableRow'><td colspan='3'><em>No associated graph templates.</em></td></tr>"; }
 
 		?>
 		<tr class='odd'>
-			<td class='saveRow' colspan='4'>
-				<table cellspacing='0' cellpadding='1' width='100%'>
-					<td style='white-space:nowrap;min-width:10%;'>
-						Add Graph Template:
-					</td>
-					<td>
-						<?php form_dropdown('graph_template_id',$available_graph_templates,'name','id','','','');?>
-					</td>
-					<td style='text-align:right;width:90%;'>
-						&nbsp;<input type='submit' value='Add' name='add_gt_x' title='Add Graph Template to Device'>
-					</td>
+			<td class='saveRow' colspan='2'>
+				<table style='width:100%;'>
+					<tr style='line-height:10px;'>
+						<td style='padding-right:15px;'>
+							Add Graph Template
+						</td>
+						<td>
+							<?php form_dropdown('graph_template_id',$available_graph_templates,'name','id','','','');?>
+						</td>
+						<td style='text-align:right;'>
+							<input type='submit' value='Add' name='add_gt_x' title='Add Graph Template to Device'>
+						</td>
+					</tr>
 				</table>
 			</td>
 		</tr>
@@ -1107,7 +1111,7 @@ function host_edit() {
 		$i = 0;
 		if (sizeof($selected_data_queries)) {
 			foreach ($selected_data_queries as $item) {
-				form_alternate_row('', true);
+				form_alternate_row("dg$i", true);
 
 				/* get status information for this data query */
 				$num_dq_items = sizeof(db_fetch_assoc_prepared('SELECT snmp_index FROM host_snmp_cache WHERE host_id = ? AND snmp_query_id = ?', array($_REQUEST['id'], $item['id'])));
@@ -1120,7 +1124,7 @@ function host_edit() {
 						<strong><?php print $i;?>)</strong> <?php print htmlspecialchars($item['name']);?>
 					</td>
 					<td>
-						(<a href='<?php print htmlspecialchars('host.php?action=query_verbose&id=' . $item['id'] . '&host_id=' . $_REQUEST['id']);?>'>Verbose Query</a>)
+						(<span id='verbose<?php print $item['id'];?>' class='linkEditMain' data-id='<?php print $item['id'];?>'>Verbose Query</span>)
 					</td>
 					<td>
 					<?php print $reindex_types{$item['reindex_method']};?>
@@ -1128,9 +1132,9 @@ function host_edit() {
 					<td>
 						<?php print (($status == 'success') ? "<span style='color: green;'>Success</span>" : "<span style='color: green;'>Fail</span>");?> [<?php print $num_dq_items;?> Item<?php print ($num_dq_items == 1 ? '' : 's');?>, <?php print $num_dq_rows;?> Row<?php print ($num_dq_rows == 1 ? '' : 's');?>]
 					</td>
-					<td align='right' nowrap>
-						<a href='<?php print htmlspecialchars('host.php?action=query_reload&id=' . $item['id'] . '&host_id=' . $_REQUEST['id']);?>'><img src='images/reload_icon_small.gif' title='Reload Data Query' alt='Reload Data Query' border='0' align='absmiddle'></a>&nbsp;
-						<a href='<?php print htmlspecialchars('host.php?action=query_remove&id=' . $item['id'] . '&host_id=' . $_REQUEST['id']);?>'><img src='images/delete_icon_large.gif' title='Delete Data Query Association' alt='Delete Data Query Association' border='0' align='absmiddle'></a>
+					<td style='text-align:right;white-space:nowrap;vertical-align:middle;'>
+						<span class='reloadquery fa fa-circle-o' id='reload<?php print $item['id'];?>' data-id='<?php print $item['id'];?>'></span>
+						<span class='deletequery fa fa-remove' id='remove<?php print $item['id'];?>' data-id='<?php print $item['id'];?>'></span>
 					</td>
 				<?php
 				form_end_row();
@@ -1142,22 +1146,56 @@ function host_edit() {
 		?>
 		<tr class='odd'>
 			<td class='saveRow' colspan='5'>
-				<table cellspacing='0' cellpadding='2' width='100%'>
-					<td style='white-space:nowrap;min-width:10%;'>
-						Add Data Query:
-					</td>
-					<td>
-						<?php form_dropdown('snmp_query_id',$available_data_queries,'name','id','','','');?>
-					</td>
-					<td style='white-space:nowrap;min-width:10%;'>
-						Re-Index Method:
-					</td>
-					<td>
-						<?php form_dropdown('reindex_method',$reindex_types,'','',read_config_option('reindex_method'),'','');?>
-					</td>
-					<td align='right' style='text-align:right;width:80%'>
-						<input type='submit' value='Add' name='add_dq_x' title='Add Data Query to Device'>
-					</td>
+				<script type='text/javascript'>
+				$(function() {
+					$('[id^="reload"]').click(function(data) {
+						$(this).removeClass('fa-circle-o').addClass('fa-circle-o-notch fa-spin');
+						$.get('host.php?action=query_reload&id='+$(this).attr('data-id')+'&host_id='+$('#id').val(), function(data) {
+							$('#main').html(data);
+							applySkin();
+						});
+					});
+
+					$('[id^="verbose"]').click(function(data) {
+						$.get('host.php?action=query_verbose&id='+$(this).attr('data-id')+'&host_id='+$('#id').val(), function(data) {
+							$('#main').html(data);
+							applySkin();
+						});
+					});
+
+					$('[id^="remove"]').click(function(data) {
+						$.get('host.php?action=query_remove&id='+$(this).attr('data-id')+'&host_id='+$('#id').val(), function(data) {
+							$('#main').html(data);
+							applySkin();
+						});
+					});
+
+					$('[id^="gtremove"]').click(function(data) {
+						$.get('host.php?action=gt_remove&id='+$(this).attr('data-id')+'&host_id='+$('#id').val(), function(data) {
+							$('#main').html(data);
+							applySkin();
+						});
+					});
+				});
+				</script>
+				<table style='width:100%;'>
+					<tr style='line-height:10px;'>
+						<td style='padding-right:15px;'>
+							Add Data Query
+						</td>
+						<td>
+							<?php form_dropdown('snmp_query_id',$available_data_queries,'name','id','','','');?>
+						</td>
+						<td style='padding-right:15px;'>
+							Re-Index Method
+						</td>
+						<td>
+							<?php form_dropdown('reindex_method',$reindex_types,'','',read_config_option('reindex_method'),'','');?>
+						</td>
+						<td>
+							<input type='submit' value='Add' name='add_dq_x' title='Add Data Query to Device'>
+						</td>
+					</tr>
 				</table>
 				<a name='dqtop'></a>
 			</td>
@@ -1296,9 +1334,9 @@ function host() {
 	<tr class='even noprint'>
 		<td>
 		<form id='form_devices' name='form_devices' action='host.php'>
-			<table cellpadding='2' cellspacing='0'>
+			<table class='filterTable'>
 				<tr>
-					<td width='50'>
+					<td>
 						Search
 					</td>
 					<td>

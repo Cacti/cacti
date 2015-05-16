@@ -481,9 +481,9 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 		<tr class='even noprint'>
 			<td class='noprint'>
 			<form name='form_timespan_selector' method='post' action='graph_view.php'>
-				<table cellpadding='2' cellspacing='0'>
+				<table class='filterTable'>
 					<tr id='timespan'>
-						<td width='50'>
+						<td>
 							Presets
 						</td>
 						<td>
@@ -555,7 +555,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 						</td>
 					</tr>
 					<tr id='realtime' style='display:none;'>
-						<td width='50'> 
+						<td>
 							Window
 						</td>
 						<td>
@@ -596,9 +596,9 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 	<tr class='even noprint' id='search'>
 		<td class='noprint'>
 		<form name='form_graph_view' method='post' onSubmit='changeFilter();return false'>
-			<table cellpadding='2' cellspacing='0'>
+			<table class='filterTable'>
 				<tr>
-					<td width='50'>
+					<td>
 						Search
 					</td>
 					<td>
@@ -983,7 +983,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 	print $nav;
 
 	/* start graph display */
-	print "<tr class='tableHeader'><td width='390' colspan='11' class='graphSubHeaderColumn textHeaderDark'>$title</td></tr>";
+	print "<tr class='tableHeader'><td style='width:390px;' colspan='11' class='graphSubHeaderColumn textHeaderDark'>$title</td></tr>";
 
 	$i = get_request_var_request('graphs') * (get_request_var_request('page') - 1);
 	$last_graph = $i + get_request_var_request('graphs');

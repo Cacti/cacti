@@ -561,7 +561,7 @@ function graph_edit() {
 	$current_tab = $_REQUEST['tab'];
 
 	/* draw the categories tabs on the top of the page */
-	print "<table class='tabs' width='100%' cellspacing='0' cellpadding='0' border='0' align='center'>\n";
+	print "<table class='tabs' width='100%' border='0' align='center'>\n";
 	print "<tr><td width='100%' id='tabs' valign='bottom'><div class='aggtabs'><nav><ul>\n";
 
 	if (sizeof($aggregate_tabs) > 0) {
@@ -922,9 +922,9 @@ function aggregate_items() {
 	<tr class='even'>
 		<td>
 			<form id='form_graphs' action='aggregate_graphs.php'>
-			<table cellpadding='2' cellspacing='0'>
+			<table class='filterTable'>
 				<tr>
-					<td width='55'>
+					<td>
 						Search
 					</td>
 					<td>
@@ -1258,15 +1258,15 @@ function graph() {
 	<tr class='even'>
 		<td>
 			<form id='form_graphs' action='aggregate_graphs.php'>
-			<table cellpadding='2' cellspacing='0'>
+			<table class='filterTable'>
 				<tr>
-					<td width='55'>
+					<td>
 						Search
 					</td>
 					<td>
 						<input type='text' id='filter' size='25' value='<?php print htmlspecialchars(get_request_var_request('filter'));?>'>
 					</td>
-					<td width='55'>
+					<td>
 						Template
 					</td>
 					<td>

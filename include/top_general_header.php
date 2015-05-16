@@ -31,11 +31,12 @@ if ($oper_mode == OPER_MODE_RESKIN) {
 
 $page_title = api_plugin_hook_function('page_title', draw_navigation_text('title'));
 
+//<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 ?>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE html>
 <html>
 <head>
-	<meta http-equiv='X-UA-Compatible' content='edge'>
+	<meta http-equiv='X-UA-Compatible' content='IE=edge'>
 	<meta content='width=720, initial-scale=1.2, maximum-scale=1.2, minimum-scale=1.2' name='viewport'>
 	<title><?php echo $page_title; ?></title>
 	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
@@ -43,6 +44,8 @@ $page_title = api_plugin_hook_function('page_title', draw_navigation_text('title
 	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print read_config_option('selected_theme');?>/jquery.zoom.css' type='text/css' rel='stylesheet'>
 	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print read_config_option('selected_theme');?>/jquery-ui.css' type='text/css' rel='stylesheet'>
 	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print read_config_option('selected_theme');?>/default/style.css' type='text/css' rel='stylesheet'>
+	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print read_config_option('selected_theme');?>/jquery.multiselect.css' type='text/css' rel='stylesheet'>
+	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print read_config_option('selected_theme');?>/jquery.timepicker.css' type='text/css' rel='stylesheet'>
 	<link href='<?php echo $config['url_path']; ?>include/fa/css/font-awesome.css' type='text/css' rel='stylesheet'>
 	<link href='<?php echo $config['url_path']; ?>images/favicon.ico' rel='shortcut icon'>
 	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery.js'></script>
@@ -51,6 +54,8 @@ $page_title = api_plugin_hook_function('page_title', draw_navigation_text('title
 	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery.storageapi.js'></script>
 	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jstree.js'></script>
 	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery.hotkeys.js'></script>
+	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery.multiselect.js'></script>
+	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery.timepicker.js'></script>
 	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/jscalendar/calendar.js'></script>
 	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/jscalendar/lang/calendar-en.js'></script>
 	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/jscalendar/calendar-setup.js'></script>
@@ -65,11 +70,11 @@ $page_title = api_plugin_hook_function('page_title', draw_navigation_text('title
 <body class='cactiConsoleBody' <?php print api_plugin_hook_function('body_style', '');?>>
 <?php }?>
 
-<table style='width:100%' cellspacing='0' cellpadding='0'>
+<table style='width:100%;'>
 <?php if ($oper_mode == OPER_MODE_NATIVE) { ;?>
 	<tr class='cactiPageHead noprint'>
 		<td class='cactiConsolePageHeadBackdrop' valign='bottom' colspan='3'>
-			<table width='100%' cellspacing='0' cellpadding='0'>
+			<table>
 				<tr>
 					<td id='tabs' valign='bottom'>
 						<?php html_show_tabs_left(true);?>
@@ -78,9 +83,11 @@ $page_title = api_plugin_hook_function('page_title', draw_navigation_text('title
 			</table>
 		</td>
 	</tr>
+</table>
+<table style='width:100%;'>
 	<tr class='breadCrumbBar noprint'>
-		<td colspan='3'>
-			<table width='100%'>
+		<td>
+			<table style='width:100%;'>
 				<tr>
 					<td>
 						<div id='navBar' class='navBar'>
@@ -95,6 +102,8 @@ $page_title = api_plugin_hook_function('page_title', draw_navigation_text('title
 			</table>
 		</td>
 	</tr>
+</table>
+<table style='width:100%;'>
 	<tr><?php if (isset($user_menu) && is_array($user_menu)) {?>
 		<td id='navigation' class='cactiConsoleNavigationArea' valign='top'>
 			<table>

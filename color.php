@@ -106,12 +106,15 @@ function color_edit() {
 		$header_label = '[new]';
 	}
 
+	print "<form id='color' action='color.php' method='post'>\n";
+
 	html_start_box("<strong>Colors</strong> $header_label", '100%', '', '3', 'center', '');
 
 	draw_edit_form(array(
-		'config' => array(),
+		'config' => array('no_form_tag' => true),
 		'fields' => inject_form_variables($fields_color_edit, (isset($color) ? $color : array()))
-		));
+		)
+	);
 
 	html_end_box();
 

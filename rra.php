@@ -195,16 +195,35 @@ function rra_edit() {
 		$header_label = '[new]';
 	}
 
+	print "<form id='rra' action='rra.php' method='post'>\n";
+
 	html_start_box("<strong>Round Robin Archives</strong> $header_label", '100%', '', '3', 'center', '');
 
 	draw_edit_form(array(
-		'config' => array(),
+		'config' => array('no_form_tag' => true),
 		'fields' => inject_form_variables($fields_rra_edit, (isset($rra) ? $rra : array()))
-		));
+		)
+	);
 
 	html_end_box();
 
 	form_save_button('rra.php');
+
+	?>
+	<script type='text/javascript'>
+	$(function() {
+		$('#consolidation_function_id').multiselect({
+			selectedList: 1,
+			noneSelectedText: 'Select Consolidation Function(s)',
+			header: false,
+			multipleRow: true,
+			multipleRowWidth: 90,
+			height: 28,
+			minWidth: 400
+		});
+	});
+	</script>
+	<?php
 }
 
 function rra() {
@@ -275,9 +294,9 @@ function rra() {
 	<tr class='even'>
 		<td>
 			<form id='form_rra' action='rra.php'>
-			<table cellpadding='2' cellspacing='0' border='0'>
+			<table class='filterTable'>
 				<tr>
-					<td width='50'>
+					<td>
 						Search
 					</td>
 					<td>

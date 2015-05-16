@@ -636,9 +636,9 @@ function domains() {
 	<tr class='even' class='noprint'>
 		<td class='noprint'>
 		<form id='form_domains' method='get' action='user_domains.php'>
-			<table cellpadding='2' cellspacing='0' border='0'>
+			<table class='filterTable'>
 				<tr class='noprint'>
-					<td width='50'>
+					<td>
 						Search
 					</td>
 					<td>

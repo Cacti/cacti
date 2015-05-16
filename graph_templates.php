@@ -363,12 +363,15 @@ function template_edit() {
 		$header_label = '[new]';
 	}
 
+	print "<form id='graph_templates' action='graph_templates.php' method='post'>\n";
+
 	html_start_box('<strong>Template</strong> ' . htmlspecialchars($header_label), '100%', '', '3', 'center', '');
 
 	draw_edit_form(array(
-		'config' => array(),
+		'config' => array('no_form_tag' => true),
 		'fields' => inject_form_variables($fields_graph_template_template_edit, (isset($template) ? $template : array()), (isset($template_graph) ? $template_graph : array()))
-		));
+		)
+	);
 
 	html_end_box();
 
@@ -389,48 +392,44 @@ function template_edit() {
 			);
 	}
 
-	draw_edit_form(
-		array(
-			'config' => array(
-				'no_form_tag' => true
-				),
-			'fields' => $form_array
-			)
-		);
+	draw_edit_form(array(
+		'config' => array('no_form_tag' => true),
+		'fields' => $form_array
+		)
+	);
 
 	form_hidden_box('rrdtool_version', read_config_option('rrdtool_version'), '');
 	html_end_box();
 
 	form_save_button('graph_templates.php', 'return');
 
-//Now we need some javascript to make it dynamic
-?>
-<script type='text/javascript'>
+	//Now we need some javascript to make it dynamic
+	?>
+	<script type='text/javascript'>
 
-$(function() {
-	dynamic();
-});
+	$(function() {
+		dynamic();
+	});
 
-function dynamic() {
-	$('#t_scale_log_units').prop('disabled'), true);
-	$('#scale_log_units').prop('disabled', true);
-	if ($('#auto_scale_log').is(':checked')) {
-		$('#t_scale_log_units').prop('disabled', false);
-		$('#scale_log_units').prop('disabled', false);
+	function dynamic() {
+		$('#t_scale_log_units').prop('disabled', true);
+		$('#scale_log_units').prop('disabled', true);
+		if ($('#auto_scale_log').is(':checked')) {
+			$('#t_scale_log_units').prop('disabled', false);
+			$('#scale_log_units').prop('disabled', false);
+		}
 	}
-}
 
-function changeScaleLog() {
-	$('#t_scale_log_units').prop('disabled', true);
-	$('#scale_log_units').prop('disabled', true);
-	if ($('#auto_scale_log').is(':checked')) {
-		$('#t_scale_log_units').prop('disabled', false);
-		$('#scale_log_units').prop('disabled', false);
+	function changeScaleLog() {
+		$('#t_scale_log_units').prop('disabled', true);
+		$('#scale_log_units').prop('disabled', true);
+		if ($('#auto_scale_log').is(':checked')) {
+			$('#t_scale_log_units').prop('disabled', false);
+			$('#scale_log_units').prop('disabled', false);
+		}
 	}
-}
-</script>
-<?php
-
+	</script>
+	<?php
 }
 
 function template() {
@@ -501,9 +500,9 @@ function template() {
 	<tr class='even noprint'>
 		<td>
 		<form id='form_graph_template' action='graph_templates.php'>
-			<table cellpadding='2' cellspacing='0' border='0'>
+			<table class='filterTable'>
 				<tr>
-					<td width='50'>
+					<td>
 						Search
 					</td>
 					<td>

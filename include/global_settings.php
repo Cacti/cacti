@@ -194,15 +194,15 @@ $settings = array(
 			'tab' => 'general',
 			'items' => array(
 				'log_snmp' => array(
-					'friendly_name' => 'Web SNMP Messages',
+					'friendly_name' => 'SNMP Messages',
 					'default' => ''
 					),
 				'log_graph' => array(
-					'friendly_name' => 'Web RRD Graph Syntax',
+					'friendly_name' => 'Graph Syntax',
 					'default' => ''
 					),
 				'log_export' => array(
-					'friendly_name' => 'Graph Export Messages',
+					'friendly_name' => 'Graph Export',
 					'default' => ''
 					)
 				),
@@ -226,15 +226,15 @@ $settings = array(
 			'tab' => 'poller',
 			'items' => array(
 				'log_pstats' => array(
-					'friendly_name' => 'Poller Statistics',
+					'friendly_name' => 'Statistics',
 					'default' => ''
 					),
 				'log_pwarn' => array(
-					'friendly_name' => 'Poller Warnings',
+					'friendly_name' => 'Warnings',
 					'default' => ''
 					),
 				'log_perror' => array(
-					'friendly_name' => 'Poller Errors',
+					'friendly_name' => 'Errors',
 					'default' => 'on'
 					)
 				),
@@ -1241,7 +1241,7 @@ $settings = array(
 		),
 	'mail' => array(
 		'settings_email_header' => array(
-			'friendly_name' => '<table width="99%" cellspacing="0" cellpadding="0" align="left"><tr><td class="textSubHeaderDark">Emailing Options</td><td align="right" class="textSubHeaderDark"><span id="emailtest" class="emailtest">Send a Test Email</font></span></td></tr></table>',
+			'friendly_name' => '<table><tr><td class="textSubHeaderDark">Emailing Options</td><td align="right" class="textSubHeaderDark"><span id="emailtest" class="emailtest">Send a Test Email</font></span></td></tr></table>',
 			'method' => 'spacer',
 			),
 		'settings_test_email' => array(

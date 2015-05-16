@@ -1,6 +1,6 @@
 /* main styles */
 
-body, table, tr, td {
+body, table, tr, td, textarea {
 	font-family: Verdana, Arial, Helvetica, sans-serif;
 	font-size: 12px;
 }
@@ -11,13 +11,14 @@ body {
 	background-repeat: repeat-y;
 }
 
-/* prevent things from being selected */
-.zoom-container, .cactiNavBarTop, .textHeaderDark {
-	-webkit-user-select: none;
-	-khtml-user-select: none;
-	-moz-user-select: -moz-none;
-	-o-user-select: none;
-	user-select: none;
+table {
+	border-collapse: collapse; border-spacing: 0;
+	border: none;
+	text-align:left;
+}
+
+td, th, select {
+	padding: 2px;
 }
 
 /* links */
@@ -25,6 +26,7 @@ body {
 a, a:active, a:visited {
 	color: blue;
 	text-decoration: none;
+	font-size: 12px;
 }
 
 a:hover {
@@ -39,24 +41,13 @@ th .fa {
     top: 50%;
 }
 
+#main {
+	display:none;
+}
+
 tr.selected {
 	background-color: khaki;
 }
-
-.badpassword {
-	padding:4px;
-	color:red;
-	font-size:1.5em !important;
-	text-align:bottom;
-}
-
-.goodpassword {
-	padding:4px;
-	color:green;
-	font-size:1.5em !important;
-	text-align:bottom;
-}
-
 .usermenudown {
 	background: transparent url('./../../../images/bullet_arrow_down.png') no-repeat center right;
 }
@@ -69,6 +60,20 @@ tr.selected {
 	padding-right:16px;
 	font-weight:bold;
 	cursor:pointer;
+}
+
+.badpassword {
+	padding:4px;
+	color:red;
+	font-size:1.5em !important;
+	vertical-align:bottom;
+}
+
+.goodpassword {
+	padding:4px;
+	color:green;
+	font-size:1.5em !important;
+	vertical-align:bottom;
 }
 
 .menuoptions {
@@ -106,16 +111,38 @@ tr.selected {
 	display:block;
 }
 
+.reloadquery {
+	cursor:pointer;
+	padding:2px;
+	vertical-align:middle;
+	color:lime;
+	font-weight:bold;
+	font-size:14px;
+}
+
+.deletequery {
+	cursor:pointer;
+	padding:2px;
+	vertical-align:middle;
+	color:red;
+	font-weight:bold;
+	font-size:14px
+}
+
 .odd {
-	background-color:#F5F5F5;
+	background: none repeat scroll 0 0 #F5F5F5;
+    border: none;
 }
 
 .even {
-	background-color:#E5E5E5;
+	background: none repeat scroll 0 0 #E5E5E5;
+    border: none;
 }
 
 .even-alternate {
+	background: none repeat scroll 0 0 #E7E9F2;
 	background-color:#E7E9F2;
+    border: none;
 }
 
 .saveRow {
@@ -195,11 +222,14 @@ tr.selected {
 .cactiGraphPageHeadBackdrop {
 	background: transparent url('./../../../images/cacti_backdrop2.gif') no-repeat center right;
 	background-color: #a9a9a9;
+	vertical-align: bottom;
+	padding: 0px;
 }
 
 .cactiConsolePageHeadBackdrop {
 	background: transparent url('./../../../images/cacti_backdrop.gif') no-repeat center right;
 	background-color: #a9a9a9;
+	padding:0px;
 }
 
 .breadCrumbBar {
@@ -218,18 +248,17 @@ ul#breadcrumbs {
 }
 
 #breadcrumbs li {
-  float: left;
-  padding:3px 0px 0px 0px;
-  font-size:10px;
+	float: left;
+	font-size:10px;
 }
 
 #breadcrumbs a {
-  padding-left:5px;
-  padding-right:5px;
-  float: left;
-  text-decoration: none;
-  color: blue;
-  position: relative;
+	padding-left:5px;
+	padding-right:5px;
+	float: left;
+	text-decoration: none;
+	color: blue;
+	position: relative;
 }
 
 .cactiTreeNavigationArea {
@@ -246,6 +275,7 @@ ul#breadcrumbs {
 	padding-left:5px;
 	padding-right:5px;
 	padding-top:8px;
+	vertical-align:top;
 }
 
 .cactiLogo {
@@ -324,6 +354,10 @@ legend {
 	padding:4px 0px;
 }
 
+.cactiConsoleNavigationArea table {
+	width:160px;
+}
+
 .cactiGraphContentArea {
 	background: #ffffff url('./../../../images/shadow.gif') repeat-x center top;
 	padding-top:10px;
@@ -336,6 +370,7 @@ legend {
 	padding-top:10px;
 	padding-right: 5px;
 	padding-left: 5px;
+	vertical-align:top;
 }
 
 .hyperLink {
@@ -351,6 +386,8 @@ legend {
 	color: blue;
 	text-decoration: none;
 	font-weight: bold;
+	padding: 3px;
+	cursor:pointer;
 }
 
 .linkEditMain:hover {
@@ -410,6 +447,9 @@ legend {
 	background-color: #888888;
 }
 
+.templateHeader td {
+	padding:3px;
+}
 .textSubHeaderDark, .textSubHeaderDark:visited {
 	font-size: 10px;
 	color: #ffffff;
@@ -421,10 +461,32 @@ legend {
 }
 
 .cactiTable {
+	width: 100%;
 	background-color: #f5f5f5;
 	border-width: 0px;
 	border-color: #00438c;
 	border-style: solid;
+}
+
+.cactiTableTitle {
+	width: 100%;
+}
+
+.cactiTableTitle td {
+	line-height: 16px;
+	background-color: #00438c;
+}
+
+.cactiDebugTable {
+	width: 100%;
+}
+
+.filterTable {
+	white-space:nowrap;
+}
+
+.filterTable td:first-child {
+	width:55px;
 }
 
 .break {
@@ -439,10 +501,6 @@ legend {
 .previous {
 	padding-right:6px;
 	padding-left:6px;
-}
-
-.cactiTableTitle {
-	background-color: #00438c;
 }
 
 .cactiNavBarTop {
@@ -481,7 +539,7 @@ legend {
 	color: #ffffff;
 	font-weight:bold;
 	cursor: pointer;
-	vertical-align:bottom;
+	vertical-align:middle;
 	text-align:left;
 	border-right: 1px groove #efefef;
 	font-size:11px;
@@ -489,26 +547,31 @@ legend {
 
 .tableHeader th div {
 	display:block;
-	padding-right: 8px;
+	padding-right:8px;
 	font-size:11px;
 }
 
 .tableSubHeaderColumn {
 	color: #ffffff;
 	font-weight:bold;
-	vertical-align:bottom;
+	vertical-align:middle;
 	text-align:left;
 }
 
 .graphSubHeaderColumn {
 	color: #ffffff;
 	font-size:12px;
-	vertical-align:bottom;
+	vertical-align:middle;
 	text-align:left;
+	padding:3px;
 }
 
 .tableSubHeaderCheckbox {
 	background-color: #819bc0;
+}
+
+.image_table {
+	width:100%;
 }
 
 .tableConfirmation {
@@ -597,6 +660,8 @@ legend {
 }
 .txtErrorText {
 	color: #FF0000;
+	font-size: 12px;
+	font-weight: bold;
 }
 
 /* tabs */
@@ -640,6 +705,19 @@ legend {
 	font-weight: bold;
 }
 
+td#tabs {
+	padding:0px;
+	vertical-align:bottom;
+}
+
+td#gtabs {
+	padding:0px;
+	text-align:right;
+}
+
+.tabs {
+	width:100%;
+}
 
 .tabs a:hover {
 	background-color: silver;
@@ -650,39 +728,40 @@ legend {
 }
 
 .tabs li {
-    bottom:-1px;
-    float:left;
-    margin:0 3px 0 0;
-    position:relative;
+	bottom:-1px;
+	float:left;
+	margin:0 3px 0 0;
+	position:relative;
 }
 
 .tabs li.current a {
-    background:#fff;
-    border-bottom:1px solid #fff;
+	background:#fff;
+	border-bottom:1px solid #fff;
 }
+
 .tabs li.current a:hover {
-    background:#fff;
-    border-bottom:1px solid #fff;
+	background:#fff;
+	border-bottom:1px solid #fff;
 }
 .tabs nav {
-    border-bottom:1px solid #ccc;
-    padding:0px 4px 0px 0px;
+	border-bottom:1px solid #ccc;
+	padding:0px 4px 0px 0px;
     background-repeat:repeat-x;
-    zoom:1;
+	zoom:1;
 }
 
 .tabs nav:after {
-    clear:both;
-    content:".";
-    display:block;
-    height:0;
-    visibility:hidden;
+	clear:both;
+	content:".";
+	display:block;
+	height:0;
+	visibility:hidden;
 }
 
 .tabs ul {
-    list-style:none;
-    margin:0;
-    padding:0;
+	list-style:none;
+	margin:0;
+	padding:0;
 }
 
 /* Navigation Area */
@@ -743,7 +822,9 @@ ul#nav {
 
 /* The main calendar widget.  DIV containing a table. */
 
-div.calendar { position: relative; }
+div.calendar {
+	position: relative; 
+}
 
 .calendar, .calendar table {
 	border: 1px solid #556;
@@ -754,223 +835,215 @@ div.calendar { position: relative; }
 	font-family: tahoma,verdana,sans-serif;
 }
 
-/* Header part -- contains navigation buttons and day names. */
-
-.calendar .button { /* "<<", "<", ">", ">>" buttons have this class */
-	text-align: center;    /* They are the navigation buttons */
-	padding: 2px;          /* Make the buttons seem like they're pressing */
+.calendar .button {
+	text-align: center;
+	padding: 2px;
 }
 
 .calendar .nav {
-  background: #778 url(../../../images/menuarrow.gif) no-repeat 100% 100%;
+	background: #778 url(../../../images/menuarrow.gif) no-repeat 100% 100%;
 }
 
-.calendar thead .title { /* This holds the current "month, year" */
-  font-weight: bold;      /* Pressing it will take you to the current date */
-  text-align: center;
-  background: #fff;
-  color: #000;
-  padding: 2px;
+.calendar thead .title {
+	font-weight: bold;
+	text-align: center;
+	background: #fff;
+	color: #000;
+	padding: 2px;
 }
 
-.calendar thead .headrow { /* Row <TR> containing navigation buttons */
-  background: #778;
-  color: #fff;
+.calendar thead .headrow {
+	background: #778;
+	color: #fff;
 }
 
-.calendar thead .daynames { /* Row <TR> containing the day names */
-  background: #bdf;
+.calendar thead .daynames {
+	background: #bdf;
 }
 
-.calendar thead .name { /* Cells <TD> containing the day names */
-  border-bottom: 1px solid #556;
-  padding: 2px;
-  text-align: center;
-  color: #000;
+.calendar thead .name {
+	border-bottom: 1px solid #556;
+	padding: 2px;
+	text-align: center;
+	color: #000;
 }
 
-.calendar thead .weekend { /* How a weekend day name shows in header */
-  color: #a66;
+.calendar thead .weekend {
+	color: #a66;
 }
 
-.calendar thead .hilite { /* How do the buttons in header appear when hover */
-  background-color: #aaf;
-  color: #000;
-  border: 1px solid #04f;
-  padding: 1px;
+.calendar thead .hilite {
+	background-color: #aaf;
+	color: #000;
+	border: 1px solid #04f;
+	padding: 1px;
 }
 
-.calendar thead .active { /* Active (pressed) buttons in header */
-  background-color: #77c;
-  padding: 2px 0px 0px 2px;
+.calendar thead .active {
+	background-color: #77c;
+	padding: 2px 0px 0px 2px;
 }
 
-/* The body part -- contains all the days in month. */
-
-.calendar tbody .day { /* Cells <TD> containing month days dates */
-  width: 2em;
-  color: #456;
-  text-align: right;
-  padding: 2px 4px 2px 2px;
+.calendar tbody .day {
+	width: 2em;
+	color: #456;
+	text-align: right;
+	padding: 2px 4px 2px 2px;
 }
 .calendar tbody .day.othermonth {
-  font-size: 80%;
-  color: #bbb;
+	font-size: 80%;
+	color: #bbb;
 }
 .calendar tbody .day.othermonth.oweekend {
-  color: #fbb;
+	color: #fbb;
 }
 
 .calendar table .wn {
-  padding: 2px 3px 2px 2px;
-  border-right: 1px solid #000;
-  background: #bdf;
+	padding: 2px 3px 2px 2px;
+	border-right: 1px solid #000;
+	background: #bdf;
 }
 
 .calendar tbody .rowhilite td {
-  background: #def;
+	background: #def;
 }
 
 .calendar tbody .rowhilite td.wn {
-  background: #eef;
+	background: #eef;
 }
 
-.calendar tbody td.hilite { /* Hovered cells <TD> */
-  background: #def;
-  padding: 1px 3px 1px 1px;
-  border: 1px solid #bbb;
+.calendar tbody td.hilite {
+	background: #def;
+	padding: 1px 3px 1px 1px;
+	border: 1px solid #bbb;
 }
 
-.calendar tbody td.active { /* Active (pressed) cells <TD> */
-  background: #cde;
-  padding: 2px 2px 0px 2px;
+.calendar tbody td.active {
+	background: #cde;
+	padding: 2px 2px 0px 2px;
 }
 
-.calendar tbody td.selected { /* Cell showing today date */
-  font-weight: bold;
-  border: 1px solid #000;
-  padding: 1px 3px 1px 1px;
-  background: #fff;
-  color: #000;
+.calendar tbody td.selected {
+	font-weight: bold;
+	border: 1px solid #000;
+	padding: 1px 3px 1px 1px;
+	background: #fff;
+	color: #000;
 }
 
-.calendar tbody td.weekend { /* Cells showing weekend days */
-  color: #a66;
+.calendar tbody td.weekend {
+	color: #a66;
 }
 
-.calendar tbody td.today { /* Cell showing selected date */
-  font-weight: bold;
-  color: #00f;
+.calendar tbody td.today {
+	font-weight: bold;
+	color: #00f;
 }
 
 .calendar tbody .disabled { color: #999; }
 
-.calendar tbody .emptycell { /* Empty cells (the best is to hide them) */
-  visibility: hidden;
+.calendar tbody .emptycell {
+	visibility: hidden;
 }
 
-.calendar tbody .emptyrow { /* Empty row (some months need less than 6 rows) */
-  display: none;
+.calendar tbody .emptyrow {
+	display: none;
 }
 
-/* The footer part -- status bar and "Close" button */
-
-.calendar tfoot .footrow { /* The <TR> in footer (only one right now) */
-  text-align: center;
-  background: #556;
-  color: #fff;
+.calendar tfoot .footrow {
+	text-align: center;
+	background: #556;
+	color: #fff;
 }
 
-.calendar tfoot .ttip { /* Tooltip (status bar) cell <TD> */
-  background: #fff;
-  color: #445;
-  border-top: 1px solid #556;
-  padding: 1px;
+.calendar tfoot .ttip {
+	background: #fff;
+	color: #445;
+	border-top: 1px solid #556;
+	padding: 1px;
 }
 
-.calendar tfoot .hilite { /* Hover style for buttons in footer */
-  background: #aaf;
-  border: 1px solid #04f;
-  color: #000;
-  padding: 1px;
+.calendar tfoot .hilite {
+	background: #aaf;
+	border: 1px solid #04f;
+	color: #000;
+	padding: 1px;
 }
 
-.calendar tfoot .active { /* Active (pressed) style for buttons in footer */
-  background: #77c;
-  padding: 2px 0px 0px 2px;
+.calendar tfoot .active {
+	background: #77c;
+	padding: 2px 0px 0px 2px;
 }
-
-/* Combo boxes (menus that display months/years for direct selection) */
 
 .calendar .combo {
-  position: absolute;
-  display: none;
-  top: 0px;
-  left: 0px;
-  width: 4em;
-  cursor: default;
-  border: 1px solid #655;
-  background: #def;
-  color: #000;
-  font-size: 90%;
+	position: absolute;
+	display: none;
+	top: 0px;
+	left: 0px;
+	width: 4em;
+	cursor: default;
+	border: 1px solid #655;
+	background: #def;
+	color: #000;
+	font-size: 90%;
 }
 
 .calendar .combo .label,
 .calendar .combo .label-IEfix {
-  text-align: center;
-  padding: 1px;
+	text-align: center;
+	padding: 1px;
 }
 
 .calendar .combo .label-IEfix {
-  width: 4em;
+	width: 4em;
 }
 
 .calendar .combo .hilite {
-  background: #acf;
+	background: #acf;
 }
 
 .calendar .combo .active {
-  border-top: 1px solid #46a;
-  border-bottom: 1px solid #46a;
-  background: #eef;
-  font-weight: bold;
+	border-top: 1px solid #46a;
+	border-bottom: 1px solid #46a;
+	background: #eef;
+	font-weight: bold;
 }
 
 .calendar td.time {
-  border-top: 1px solid #000;
-  padding: 1px 0px;
-  text-align: center;
-  background-color: #f4f0e8;
+	border-top: 1px solid #000;
+	padding: 1px 0px;
+	text-align: center;
+	background-color: #f4f0e8;
 }
 
 .calendar td.time .hour,
 .calendar td.time .minute,
 .calendar td.time .ampm {
-  padding: 0px 3px 0px 4px;
-  border: 1px solid #889;
-  font-weight: bold;
-  background-color: #fff;
+	padding: 0px 3px 0px 4px;
+	border: 1px solid #889;
+	font-weight: bold;
+	background-color: #fff;
 }
 
 .calendar td.time .ampm {
-  text-align: center;
+	text-align: center;
 }
 
 .calendar td.time .colon {
-  padding: 0px 2px 0px 3px;
-  font-weight: bold;
+	padding: 0px 2px 0px 3px;
+	font-weight: bold;
 }
 
 .calendar td.time span.hilite {
-  border-color: #000;
-  background-color: #667;
-  color: #fff;
+	border-color: #000;
+	background-color: #667;
+	color: #fff;
 }
 
 .calendar td.time span.active {
-  border-color: #f00;
-  background-color: #000;
-  color: #0f0;
+	border-color: #f00;
+	background-color: #000;
+	color: #0f0;
 }
 
 @media print {

@@ -68,7 +68,7 @@ if (!is_graph_allowed($_REQUEST['local_graph_id'])) {
 $graph_title = get_graph_title($_REQUEST['local_graph_id']);
 
 if ($_REQUEST['action'] != 'properties') {
-	print "<table width='100%' class='cactiTable' align='center' cellspacing='0' cellpadding='3'>";
+	print "<table width='100%' class='cactiTable'>";
 }
 
 $rras = get_associated_rras($_REQUEST['local_graph_id']);
@@ -106,7 +106,7 @@ case 'view':
 			?>
 			<tr>
 				<td align='center'>
-					<table cellpadding='0'>
+					<table>
 						<tr>
 							<td>
 								<div id='wrapper_<?php print $graph['local_graph_id'] . '_' . $rra['id'];?>' graph_id='<?php print $graph['local_graph_id'];?>' rra_id='<?php print $rra['id'];?>' graph_width='<?php print $graph['width'];?>' graph_height='<?php print $graph['height'];?>' title_font_size='<?php print ((read_graph_config_option("custom_fonts") == "on") ? read_graph_config_option("title_size") : read_config_option("title_size"));?>' style="min-height: <?php echo (1.2 * $graph["height"]) . "px"?>;"></div>
@@ -254,7 +254,7 @@ case 'zoom':
 	</tr>
 	<tr class='even'>
 		<td align='center'>
-			<table cellpadding='0'>
+			<table>
 				<tr>
 					<td align='center'>
 						<div id='wrapper_<?php print $graph['local_graph_id']?>' graph_width='<?php print $graph['width'];?>' graph_height='<?php print $graph['height'];?>' title_font_size='<?php print ((read_graph_config_option("custom_fonts") == "on") ? read_graph_config_option("title_size") : read_config_option("title_size"));?>' style="min-height: <?php echo (1.2 * $graph["height"]) . "px"?>;"></div>
@@ -394,8 +394,8 @@ case 'properties':
 		$graph_data_array['graph_end'] = get_request_var_request('graph_end');
 	}
 
-	print "<table align='center' width='100%' class='cactiTable' cellpadding='0' callspacing='0' border='0'><tr><td>\n";
-	print "<table class='cactiTable' align='center' width='100%' cellpadding='3' cellspacing='0' border='0'>\n";
+	print "<table align='center' width='100%' class='cactiTable'<tr><td>\n";
+	print "<table class='cactiTable' width='100%'>\n";
 	print "<tr class='tableHeader'><td colspan='3' class='linkOverDark' style='font-weight:bold;'>RRDtool Graph Syntax</td></tr>\n";
 	print "<tr><td><pre>\n";
 	print trim(@rrdtool_function_graph(get_request_var_request('local_graph_id'), get_request_var_request('rra_id'), $graph_data_array));

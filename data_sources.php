@@ -640,13 +640,13 @@ function data_edit() {
 			form_alternate_row();
 
 			if ((!empty($host['id'])) && (preg_match('/^' . VALID_HOST_FIELDS . '$/i', $field['type_code']))) {
-				print "<td width='50%'><strong>" . $field['name'] . '</strong> (From Device: ' . $host['hostname'] . ")</td>\n";
+				print "<td style='width:50%;'><strong>" . $field['name'] . '</strong> (From Device: ' . $host['hostname'] . ")</td>\n";
 				print "<td><em>$old_value</em></td>\n";
 			}elseif (empty($can_template)) {
-				print "<td width='50%'><strong>" . $field['name'] . "</strong> (From Data Template)</td>\n";
+				print "<td style='width:50%;'><strong>" . $field['name'] . "</strong> (From Data Template)</td>\n";
 				print '<td><em>' . (empty($old_value) ? 'Nothing Entered' : $old_value) . "</em></td>\n";
 			}else{
-				print "<td width='50%'><strong>" . $field['name'] . "</strong></td>\n";
+				print "<td style='width:50%;'><strong>" . $field['name'] . "</strong></td>\n";
 				print '<td>';
 
 				draw_custom_data_row('value_' . $field['id'], $field['id'], $data['id'], $old_value);
@@ -746,7 +746,7 @@ function ds_edit() {
 
 	if (!empty($_REQUEST['id'])) {
 		?>
-		<table width='100%' align='center'>
+		<table style='width:100%;text-align:left;'>
 			<tr>
 				<td class='textInfo' colspan='2' valign='top'>
 					<?php print htmlspecialchars(get_data_source_title($_REQUEST['id']));?>
@@ -767,6 +767,8 @@ function ds_edit() {
 		<br>
 		<?php
 	}
+
+	print "<form id='data_source' action='data_sources.php' method='post'>\n";
 
 	html_start_box("<strong>Data Template Selection</strong> $header_label", '100%', '', '3', 'center', '');
 
@@ -813,12 +815,11 @@ function ds_edit() {
 			),
 		);
 
-	draw_edit_form(
-		array(
-			'config' => array(),
-			'fields' => $form_array
-			)
-		);
+	draw_edit_form(array(
+		'config' => array('no_form_tag' => true),
+		'fields' => $form_array
+		)
+	);
 
 	html_end_box();
 
@@ -857,14 +858,11 @@ function ds_edit() {
 			}
 		}
 
-		draw_edit_form(
-			array(
-				'config' => array(
-					'no_form_tag' => true
-					),
-				'fields' => inject_form_variables($form_array, (isset($data) ? $data : array()))
-				)
-			);
+		draw_edit_form(array(
+			'config' => array('no_form_tag' => true),
+			'fields' => inject_form_variables($form_array, (isset($data) ? $data : array()))
+			)
+		);
 
 		html_end_box();
 
@@ -895,15 +893,15 @@ function ds_edit() {
 			if (sizeof($template_data_rrds) > 1) {
 
 			/* draw the data source tabs on the top of the page */
-			print "	<table class='tabs' width='100%' cellspacing='0' cellpadding='3' align='center'>
+			print "	<table class='tabs'>
 					<tr>\n";
 
 					foreach ($template_data_rrds as $template_data_rrd) {
 						$i++;
-						print "	<td " . (($template_data_rrd['id'] == $_REQUEST['view_rrd']) ? "class='even'" : "class='odd'") . " width='" . ((strlen($template_data_rrd['data_source_name']) * 9) + 50) . "' align='center' class='tab'>
+						print "	<td " . (($template_data_rrd['id'] == $_REQUEST['view_rrd']) ? "class='even'" : "class='odd'") . " style='width:" . ((strlen($template_data_rrd['data_source_name']) * 9) + 50) . ";text-align:center;' class='tab'>
 								<span class='textHeader'><a href='" . htmlspecialchars('data_sources.php?action=ds_edit&id=' . $_REQUEST['id'] . '&view_rrd=' . $template_data_rrd['id']) . "'>$i: " . htmlspecialchars($template_data_rrd['data_source_name']) . '</a>' . (($use_data_template == false) ? " <a href='" . htmlspecialchars('data_sources.php?action=rrd_remove&id=' . $template_data_rrd['id'] . '&local_data_id=' . $_REQUEST['id']) . "'><img src='images/delete_icon.gif' border='0' alt='Delete'></a>" : '') . "</span>
 							</td>\n
-							<td width='1'></td>\n";
+							<td style='width:1px;'></td>\n";
 					}
 
 					print "
@@ -950,23 +948,20 @@ function ds_edit() {
 			}
 		}
 
-		draw_edit_form(
-			array(
-				'config' => array(
-					'no_form_tag' => true
-					),
-				'fields' => array(
-					'data_template_rrd_id' => array(
-						'method' => 'hidden',
-						'value' => (isset($rrd) ? $rrd['id'] : '0')
-					),
-					'local_data_template_rrd_id' => array(
-						'method' => 'hidden',
-						'value' => (isset($rrd) ? $rrd['local_data_template_rrd_id'] : '0')
-					)
-				) + $form_array
+		draw_edit_form(array(
+			'config' => array('no_form_tag' => true),
+			'fields' => array(
+				'data_template_rrd_id' => array(
+					'method' => 'hidden',
+					'value' => (isset($rrd) ? $rrd['id'] : '0')
+				),
+				'local_data_template_rrd_id' => array(
+					'method' => 'hidden',
+					'value' => (isset($rrd) ? $rrd['local_data_template_rrd_id'] : '0')
+				)
+			) + $form_array
 			)
-			);
+		);
 
 		html_end_box();
 
@@ -979,7 +974,7 @@ function ds_edit() {
 	/* display the debug mode box if the user wants it */
 	if ((isset($_SESSION['ds_debug_mode'])) && (isset($_REQUEST['id']))) {
 		?>
-		<table width='100%' align='center'>
+		<table style='width:100%;text-align:center;'>
 			<tr>
 				<td>
 					<span class='textInfo'>Data Source Debug</span><br>
@@ -1147,10 +1142,10 @@ function ds() {
 	<tr class='even noprint'>
 		<td>
 		<form id='form_data_sources' name='form_data_sources' action='data_sources.php'>
-			<table cellpadding='2' cellspacing='0' border='0'>
+			<table class='filterTable'>
 				<tr>
 					<?php print html_host_filter($_REQUEST['host_id']);?>
-					<td width='50'>
+					<td>
 						Template
 					</td>
 					<td>
@@ -1183,7 +1178,7 @@ function ds() {
 					</td>
 				</tr>
 				<tr>
-					<td width='50'>
+					<td>
 						Method
 					</td>
 					<td>
@@ -1223,9 +1218,9 @@ function ds() {
 					</td>
 				</tr>
 			</table>
-			<table cellpadding='2' cellspacing='0' border='0'>
+			<table class='filterTable'>
 				<tr>
-					<td width='50'>
+					<td>
 						Search
 					</td>
 					<td>

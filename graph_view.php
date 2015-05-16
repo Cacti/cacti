@@ -263,9 +263,9 @@ case 'preview':
 	<tr class='even noprint'>
 		<td class='noprint'>
 		<form id='form_graph_view' style='margin:0px;padding:0px;' name='form_graph_view' method='post' action='graph_view.php?action=preview'>
-			<table id='device' cellpadding='2' cellspacing='0'>
+			<table id='device' class='filterTable'>
 				<tr class='noprint'>
-					<td width='50'>
+					<td>
 						Device
 					</td>
 					<td>
@@ -546,9 +546,9 @@ case 'preview':
 		<tr class='even noprint'>
 			<td class='noprint'>
 			<form style='margin:0px;padding:0px;' name='form_timespan_selector' action='graph_view.php?action=preview' method='post' action='graph_view.php'>
-				<table cellpadding='2' cellspacing='0'>
+				<table class='filterTable'>
 					<tr id='timespan'>
-						<td width='50'>
+						<td>
 							Presets
 						</td>
 						<td>
@@ -620,7 +620,7 @@ case 'preview':
 						</td>
 					</tr>
 					<tr id='realtime' style='display:none;'>
-						<td width='50'> 
+						<td>
 							Window
 						</td>
 						<td>
@@ -843,9 +843,9 @@ case 'list':
 	<tr class='even noprint'>
 		<td class='noprint'>
 		<form id='form_graph_list' name='form_graph_list' method='post' action='graph_view.php?action=list'>
-			<table cellpadding='2' cellspacing='0' border='0'>
+			<table class='filterTable'>
 				<tr class='noprint'>
-					<td width='50'>
+					<td>
 						Device
 					</td>
 					<td>

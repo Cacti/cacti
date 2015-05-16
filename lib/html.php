@@ -44,11 +44,11 @@ function html_start_box($title, $width, $background_color, $cell_padding, $align
 	$table_id = $table_prefix . $table_suffix;
 
 	?>
-	<table id='<?php print $table_id;?>' align="<?php print $align;?>" width="<?php print $width;?>" cellpadding=0 cellspacing=0 border=0 class="cactiTable">
-		<tr>
-			<td>
+	<table id='<?php print $table_id;?>' style='width:<?php print $width;?>;text-align:<?php print $align;?>;' class='cactiTable'>
+		<tr style='padding:0px;'>
+			<td style='padding:0px;'>
 				<?php if ($title != "") {?>
-				<table width='100%' class='cactiTableTitle' cellpadding='<?php print $cell_padding;?>' cellspacing='0' border='0'>
+				<table class='cactiTableTitle'>
 					<tr>
 						<td class='textHeaderDark'><?php print $title;?></td>
 						<?php if ($add_text!= "") {?>
@@ -56,7 +56,7 @@ function html_start_box($title, $width, $background_color, $cell_padding, $align
 					</tr>
 				</table>
 				<?php }?>
-				<table class='cactiTable' cellpadding='<?php print $cell_padding;?>' cellspacing='0' border='0' width="100%">
+				<table class='cactiTable' style='padding:<?php print $cell_padding;?>;'>
 	<?php
 
 	$table_suffix++;
@@ -81,7 +81,7 @@ function html_graph_start_box($cellpadding = 3, $leading_br = true) {
 		print "<br>\n";
 	}
 
-	print "<table width='100%' style='cactiTable' align='center' cellpadding='$cellpadding'>\n";
+	print "<table class='cactiTable' align='center' style='padding:$cellpadding;'>\n";
 }
 
 /* html_graph_end_box - draws the end of an HTML graph view box */
@@ -158,7 +158,7 @@ function html_graph_area(&$graph_array, $no_graphs_message = "", $extra_url_args
 				if ($print) {
 					if (!$start) {
 						while(($i % $columns) != 0) {
-							print "<td align='center' width='" . ceil(100 / $columns) . "%'></td>";
+							print "<td style='text-align:center;width:" . ceil(100 / $columns) . "%;'></td>";
 							$i++;
 						}
 
@@ -189,14 +189,14 @@ function html_graph_area(&$graph_array, $no_graphs_message = "", $extra_url_args
 			}
 
 			?>
-			<td align='center' width='<?php print ceil(100 / $columns);?>%'>
-				<table align='center' cellpadding='0'>
+			<td style='width:<?php print ceil(100 / $columns);?>%;'>
+				<table align='center'>
 					<tr>
-						<td align='center'>
-							<div id='wrapper_<?php print $graph['local_graph_id']?>' graph_width='<?php print $graph['width'];?>' graph_height='<?php print $graph['height'];?>' title_font_size='<?php print ((read_graph_config_option("custom_fonts") == "on") ? read_graph_config_option("title_size") : read_config_option("title_size"));?>' style="min-height: <?php echo (1.2 * $graph["height"]) . "px"?>;"></div>
+						<td>
+							<div style='width:100%;' id='wrapper_<?php print $graph['local_graph_id']?>' graph_width='<?php print $graph['width'];?>' graph_height='<?php print $graph['height'];?>' title_font_size='<?php print ((read_graph_config_option("custom_fonts") == "on") ? read_graph_config_option("title_size") : read_config_option("title_size"));?>' style="min-height: <?php echo (1.2 * $graph["height"]) . "px"?>;"></div>
 							<?php print (read_graph_config_option("show_graph_title") == "on" ? "<span align='center'><strong>" . htmlspecialchars($graph["title_cache"]) . "</strong></span>" : "");?>
 						</td>
-						<td valign='top' style='align: left; padding: 3px;' class='noprint'>
+						<td style='vertical-align:top;align-self:left;padding:3px;' class='noprint'>
 							<?php graph_drilldown_icons($graph['local_graph_id']);?>
 						</td>
 					</tr>
@@ -217,7 +217,7 @@ function html_graph_area(&$graph_array, $no_graphs_message = "", $extra_url_args
 
 		if (!$start) {
 			while(($i % $columns) != 0) {
-				print "<td align='center' width='" . ceil(100 / $columns) . "%'></td>";
+				print "<td style='text-align:center;width:" . ceil(100 / $columns) . "%;'></td>";
 				$i++;
 			}
 
@@ -287,7 +287,7 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = "", $extr
 				if ($print) {
 					if (!$start) {
 						while(($i % $columns) != 0) {
-							print "<td align='center' width='" . ceil(100 / $columns) . "%'></td>";
+							print "<td style='text-align:center;width:" . ceil(100 / $columns) . "%;'></td>";
 							$i++;
 						}
 
@@ -307,14 +307,14 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = "", $extr
 			}
 
 			?>
-			<td align='center' width='<?php print ceil(100 / $columns);?>%'>
-				<table align='center' cellpadding='0'>
+			<td style='text-align:center;width:<?php print ceil(100 / $columns);?>%;'>
+				<table align='center'>
 					<tr>
 						<td align='center'>
 							<div id='wrapper_<?php print $graph['local_graph_id']?>' graph_width='<?php print read_graph_config_option("default_width");?>' graph_height='<?php print read_graph_config_option("default_height");?>' style="min-height: <?php echo (1.2 * read_graph_config_option("default_height")) . "px"?>;"></div>
 							<?php print (read_graph_config_option("show_graph_title") == "on" ? "<span align='center'><strong>" . htmlspecialchars($graph["title_cache"]) . "</strong></span>" : "");?>
 						</td>
-						<td valign='top' align='center' style='align: center'>
+						<td align='center' style='vertical-align:top;align: center'>
 							<?php print graph_drilldown_icons($graph['local_graph_id'], 'graph_buttons_thumbnails');?>
 						</td>
 					</tr>
@@ -335,7 +335,7 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = "", $extr
 
 		if (!$start) {
 			while(($i % $columns) != 0) {
-				print "<td align='center' width='" . ceil(100 / $columns) . "%'></td>";
+				print "<td style='text-align:center;width:" . ceil(100 / $columns) . "%;'></td>";
 				$i++;
 			}
 
@@ -389,15 +389,15 @@ function html_nav_bar($base_url, $max_pages, $current_page, $rows_per_page, $tot
 
 		$nav = "<tr class='cactiNavBarTop'>
 			<td colspan='$colspan'>
-				<table width='100%' cellspacing='0' cellpadding='0' border='0'>
+				<table style='width:100%;'>
 					<tr>
-						<td style='width:10%;' align='left' class='textHeaderDark'><div style='display:block;'>
+						<td style='width:10%;text-align:left;' class='textHeaderDark'><div style='display:block;'>
 							" . (($current_page > 1) ? "<div class='navBarNavigation navBarNavigationPrevious' onClick='goto$page_var(" . ($current_page-1) . ")'><i class='fa fa-angle-double-left previous'></i>Previous</div>":"") . "
 						</div></td>
-						<td style='width:80%;' align='center' class='textHeaderDark'>
+						<td style='width:80%;text-align:center;' class='textHeaderDark'>
 							Showing $object " . (($rows_per_page*($current_page-1))+1) . " to " . (($total_rows < $rows_per_page) || ($total_rows < ($rows_per_page*$current_page)) ? $total_rows : $rows_per_page*$current_page) . " of $total_rows [$url_page_select]
 						</td>
-						<td style='width:10%;' align='right' class='textHeaderDark'><div style='display:block;'>
+						<td style='width:10%;text-align:right;' class='textHeaderDark'><div style='display:block;'>
 							" . (($current_page*$rows_per_page) < $total_rows ? "<div class='navBarNavigation navBarNavigationNext' onClick='goto$page_var(" . ($current_page+1) . ")'>Next<i class='fa fa-angle-double-right next'></i></div>":"") . "
 						</div></td>
 					</tr>
@@ -407,9 +407,9 @@ function html_nav_bar($base_url, $max_pages, $current_page, $rows_per_page, $tot
 	}elseif ($total_rows > 0) {
 		$nav = "<tr class='cactiNavBarTop'>
 			<td colspan='$colspan'>
-				<table width='100%' cellspacing='0' cellpadding='0' border='0'>
+				<table style='width:100%;text-align:center;'>
 					<tr>
-						<td align='center' class='textHeaderDark'>
+						<td class='textHeaderDark'>
 							Showing All $object
 						</td>
 					</tr>
@@ -420,9 +420,9 @@ function html_nav_bar($base_url, $max_pages, $current_page, $rows_per_page, $tot
 	}else{
 		$nav = "<tr class='cactiNavBarTop'>
 			<td colspan='$colspan'>
-				<table width='100%' cellspacing='0' cellpadding='0' border='0'>
+				<table style='width:100%;text-align:center;'>
 					<tr>
-						<td align='center' class='textHeaderDark'>
+						<td class='textHeaderDark'>
 							No $object Found
 						</td>
 					</tr>
@@ -507,9 +507,9 @@ function html_header_sort($header_items, $sort_column, $sort_direction, $last_it
 		}
 
 		if (($db_column == "") || (substr_count($db_column, "nosort"))) {
-			print "<th " . ($tip != '' ? "title='" . htmlspecialchars($tip) . "'":"") . " style='text-align:$align;' " . ((($i+1) == count($header_items)) ? "colspan='$last_item_colspan' " : "") . ">" . $display_text . "</th>\n";
+			print "<th " . ($tip != '' ? "title='" . htmlspecialchars($tip) . "'":"") . " style='padding:4px;text-align:$align;' " . ((($i+1) == count($header_items)) ? "colspan='$last_item_colspan' " : "") . ">" . $display_text . "</th>\n";
 		}else{
-			print "<th " . ($tip != '' ? "title='" . htmlspecialchars($tip) . "'":"") . " class='sortable' style='text-align:$align;'>";
+			print "<th " . ($tip != '' ? "title='" . htmlspecialchars($tip) . "'":"") . " class='sortable' style='padding:4px;text-align:$align;'>";
 			print "<div class='sortinfo' sort-page='" . ($url == '' ? htmlspecialchars($_SERVER['PHP_SELF']):$url) . "' sort-column='$db_column' sort-direction='$direction'><div class='textSubHeaderDark'>" . $display_text . "<i class='$icon'></i></div></div></th>\n";
 		}
 
@@ -606,7 +606,7 @@ function html_header_sort_checkbox($header_items, $sort_column, $sort_direction,
 		}
 	}
 
-	print "<th width='1%' class='tableSubHeaderCheckbox' align='right' style='" . get_checkbox_style() . "'><input type='checkbox' style='margin: 0px;' name='all' title='Select All Rows' onClick='SelectAll(\"chk_\",this.checked)'></th>" . ($include_form ? "<th style='display:none;'><form name='chk' method='post' action='$form_action'></th>\n":"");
+	print "<th class='tableSubHeaderCheckbox' style='" . get_checkbox_style() . "'><input style='margin:0px;' type='checkbox' name='all' title='Select All Rows' onClick='SelectAll(\"chk_\",this.checked)'></th>" . ($include_form ? "<th style='display:none;'><form name='chk' method='post' action='$form_action'></th>\n":"");
 	print "</tr>\n";
 
 	$page++;
@@ -621,9 +621,9 @@ function html_header($header_items, $last_item_colspan = 1) {
 
 	for ($i=0; $i<count($header_items); $i++) {
 		if (is_array($header_items[$i])) {
-			print "<th style='text-align:" . $header_items[$i]['align'] . ";'" . ((($i+1) == count($header_items)) ? "colspan='$last_item_colspan' " : "") . ">" . $header_items[$i]['display'] . "</th>\n";
+			print "<th style='padding:4px;text-align:" . $header_items[$i]['align'] . ";'" . ((($i+1) == count($header_items)) ? "colspan='$last_item_colspan' " : "") . ">" . $header_items[$i]['display'] . "</th>\n";
 		}else{
-			print "<th style='text-align:left;'" . ((($i+1) == count($header_items)) ? "colspan='$last_item_colspan' " : "") . ">" . $header_items[$i] . "</th>\n";
+			print "<th style='padding:4px;text-align:left;' " . ((($i+1) == count($header_items)) ? "colspan='$last_item_colspan' " : "") . ">" . $header_items[$i] . "</th>\n";
 		}
 	}
 
@@ -643,13 +643,13 @@ function html_header_checkbox($header_items, $include_form = true, $form_action 
 
 	for ($i=0; $i<count($header_items); $i++) {
 		if (is_array($header_items[$i])) {
-			print "<th style='text-align:" . $header_items[$i]['align'] . ";'>" . $header_items[$i]['display'] . "</td>";
+			print "<th style='padding:4px;text-align:" . $header_items[$i]['align'] . ";'>" . $header_items[$i]['display'] . "</td>";
 		}else{
-			print "<th style='text-align:left;'>" . $header_items[$i] . "</th>\n";
+			print "<th style='padding:4px;text-align:left;'>" . $header_items[$i] . "</th>\n";
 		}
 	}
 
-	print "<th width='1%' class='tableSubHeaderCheckbox' align='right' style='" . get_checkbox_style() . "'><input type='checkbox' style='margin: 0px;' name='all' title='Select All Rows' onClick='SelectAll(\"chk_\",this.checked)'></th>\n" . ($include_form ? "<th style='display:none;'><form name='chk' method='post' action='$form_action'></th>\n":"");
+	print "<th class='tableSubHeaderCheckbox' style='padding:4px;" . get_checkbox_style() . "'><input type='checkbox' name='all' title='Select All Rows' onClick='SelectAll(\"chk_\",this.checked)'></th>\n" . ($include_form ? "<th style='display:none;'><form name='chk' method='post' action='$form_action'></th>\n":"");
 	print "</tr>\n";
 }
 
@@ -813,7 +813,7 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 		print "<td style='$this_row_style'>" . htmlspecialchars($matrix_title) . $hard_return . "</td>\n";
 		print "<td style='$this_row_style'>" . $graph_item_types{$item["graph_type_id"]} . "</td>\n";
 		print "<td style='$this_row_style'>" . $consolidation_functions{$item["consolidation_function_id"]} . "</td>\n";
-		print "<td" . ((!empty($item["hex"])) ? " bgcolor='#" . $item["hex"] . "'" : "") . " width='1%'>&nbsp;</td>\n";
+		print "<td style='width:1%;" . ((!empty($item["hex"])) ? "background-color:#" . $item["hex"] . ";'" : "'") . ">&nbsp;</td>\n";
 		print "<td style='$this_row_style'>" . $item["hex"] . "</td>\n";
 
 		if ($disable_controls == false) {
@@ -843,7 +843,7 @@ function draw_menu($user_menu = "") {
 
 	<tr>
 	<td>
-	<table width='100%' cellpadding='0' cellspacing='0' border='0'>
+	<table>
 	<tr><td>
 	<div id='menu'>
 	<ul id='nav'>
@@ -967,18 +967,18 @@ function draw_menu($user_menu = "") {
 function draw_actions_dropdown($actions_array) {
 	global $config;
 	?>
-	<table align='center' width='100%'>
+	<table class='actionsDropdown'>
 		<tr>
-			<td width='100%' valign='top'>
-				<img src='<?php echo $config['url_path']; ?>images/arrow.gif' alt='' align='middle'>&nbsp;
+			<td style='width:100%;'>
+				<img style='text-align:center;' src='<?php echo $config['url_path']; ?>images/arrow.gif' alt=''>&nbsp;
 			</td>
-			<td align='right' style='white-space:nowrap;'>
+			<td style='white-space:nowrap;'>
 				Choose an action:
 			</td>
-			<td align='right'>
+			<td>
 				<?php form_dropdown("drp_action",$actions_array,"","","1","","");?>
 			</td>
-			<td width='1' align='right'>
+			<td>
 				<input type='submit' value='Go' title='Execute Action'>
 			</td>
 		</tr>
@@ -1263,7 +1263,7 @@ function html_graph_tabs_right($current_user) {
 			case 'settings':
 				if (is_view_allowed('graph_settings') == true) {
 					if (isset($tab['image']) && $tab['image'] != '') {
-						print "<li><a title='" . $tab['title'] . "' class='" . (isset($tab['selected']) ? 'selected':'') . "' href='" . $tab['url'] . "'><img src='" . $config['url_path'] . $tab['image'] . "' border='0' align='bottom'></a></li>\n";
+						print "<li><a title='" . $tab['title'] . "' class='" . (isset($tab['selected']) ? 'selected':'') . "' href='" . $tab['url'] . "'><img src='" . $config['url_path'] . $tab['image'] . "' alt='' style='vertical-align:bottom;'></a></li>\n";
 					}else{
 						print "<li><a title='" . $tab['title'] . "' class='" . (isset($tab['selected']) ? 'selected':'') . "' href='" . $tab['url'] . "'>" . $tab['title'] . "</a></li>\n";
 					}
@@ -1274,7 +1274,7 @@ function html_graph_tabs_right($current_user) {
 			case 'tree':
 				if (is_view_allowed('show_tree')) {
 					if (isset($tab['image']) && $tab['image'] != '') {
-						print "<li><a title='" . $tab['title'] . "' class='" . (isset($tab['selected']) ? 'selected':'') . "' href='" . $tab['url'] . "'><img src='" . $config['url_path'] . $tab['image'] . "' border='0' align='bottom'></a></li>\n";
+						print "<li><a title='" . $tab['title'] . "' class='" . (isset($tab['selected']) ? 'selected':'') . "' href='" . $tab['url'] . "'><img src='" . $config['url_path'] . $tab['image'] . "' alt='' style='vertical-align:bottom;'></a></li>\n";
 					}else{
 						print "<li><a title='" . $tab['title'] . "' class='" . (isset($tab['selected']) ? 'selected':'') . "' href='" . $tab['url'] . "'>" . $tab['title'] . "</a></li>\n";
 					}
@@ -1285,7 +1285,7 @@ function html_graph_tabs_right($current_user) {
 			case 'list':
 				if (is_view_allowed('show_list')) {
 					if (isset($tab['image']) && $tab['image'] != '') {
-						print "<li><a title='" . $tab['title'] . "' class='" . (isset($tab['selected']) ? 'selected':'') . "' href='" . $tab['url'] . "'><img src='" . $config['url_path'] . $tab['image'] . "' border='0' align='bottom'></a></li>\n";
+						print "<li><a title='" . $tab['title'] . "' class='" . (isset($tab['selected']) ? 'selected':'') . "' href='" . $tab['url'] . "'><img src='" . $config['url_path'] . $tab['image'] . "' alt='' style='vertical-align:bottom;'></a></li>\n";
 					}else{
 						print "<li><a title='" . $tab['title'] . "' class='" . (isset($tab['selected']) ? 'selected':'') . "' href='" . $tab['url'] . "'>" . $tab['title'] . "</a></li>\n";
 					}
@@ -1296,7 +1296,7 @@ function html_graph_tabs_right($current_user) {
 			case 'preview':
 				if (is_view_allowed('show_preview')) {
 					if (isset($tab['image']) && $tab['image'] != '') {
-						print "<li><a title='" . $tab['title'] . "' class='" . (isset($tab['selected']) ? 'selected':'') . "' href='" . $tab['url'] . "'><img src='" . $config['url_path'] . $tab['image'] . "' border='0' align='bottom'></a></li>\n";
+						print "<li><a title='" . $tab['title'] . "' class='" . (isset($tab['selected']) ? 'selected':'') . "' href='" . $tab['url'] . "'><img src='" . $config['url_path'] . $tab['image'] . "' alt='' style='vertical-align:bottom;'></a></li>\n";
 					}else{
 						print "<li><a title='" . $tab['title'] . "' class='" . (isset($tab['selected']) ? 'selected':'') . "' href='" . $tab['url'] . "'>" . $tab['title'] . "</a></li>\n";
 					}
@@ -1315,10 +1315,10 @@ function html_host_filter($host_id) {
 
 	if ($theme == 'classic') {
 		?>
-		<td width='50'>
+		<td>
 			Device
 		</td>
-		<td width='1'>
+		<td>
 			<select id='host_id' name='host_id' onChange='applyFilter()'>
 				<option value='-1'<?php if (get_request_var_request('host_id') == '-1') {?> selected<?php }?>>Any</option>
 				<option value='0'<?php if (get_request_var_request('host_id') == '0') {?> selected<?php }?>>None</option>
@@ -1344,10 +1344,10 @@ function html_host_filter($host_id) {
 		}
 
 		?>
-		<td width='50'>
+		<td>
 			Device
 		</td>
-		<td width='1'>
+		<td>
 			<span id='host_wrapper' style='width:200px;' class='ui-selectmenu-button ui-widget ui-state-default ui-corner-all'>
 				<span id='host_click' class='ui-icon ui-icon-triangle-1-s'></span>
 				<input size='28' id='host' value='<?php print $hostname;?>'>

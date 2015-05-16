@@ -1672,7 +1672,6 @@ function draw_login_status($using_guest_account = false) {
 		api_plugin_hook('nav_login_before');
 		print "Logged in as <span id='user' class='user usermenuup'>guest</span></div><div><ul class='menuoptions' style='display:none;'><li><a href='" . $config['url_path'] . "index.php'>Login as Regular User</a></li></ul>\n";
 		api_plugin_hook('nav_login_after');
-		print "</div>\n";
 	}elseif (isset($_SESSION['sess_user_id']) && $using_guest_account == false) {
 		api_plugin_hook('nav_login_before');
 		print "Logged in as <span id='user' class='user usermenuup'>" . db_fetch_cell_prepared('SELECT username FROM user_auth WHERE id = ?', array($_SESSION['sess_user_id'])) . 
@@ -1683,7 +1682,6 @@ function draw_login_status($using_guest_account = false) {
 			"</ul>\n";
 
 		api_plugin_hook('nav_login_after');
-		print "</div>\n";
 	}
 }
 
@@ -3368,8 +3366,8 @@ function email_test() {
 	$errors = '';
 	if ($ping_results == 1) {
 		print 'Creating Message Text...<br><br>';
-		print "<center><table width='100%' cellpadding=1 cellspacing=0><tr><td>";
-		print "<table width='100%'><tr><td>$message</td><tr></table></table></center><br>";
+		print "<center><table><tr><td>";
+		print "<table style='width:100%;'><tr><td>$message</td><tr></table></table></center><br>";
 		print 'Sending Message...<br><br>';
 
 		$global_alert_address = read_config_option('settings_test_email');
@@ -3382,8 +3380,8 @@ function email_test() {
 		print 'Message Not Sent due to ping failure.<br><br>';
 	}
 
-	print "<center><table width='100%' cellpadding=1 cellspacing=0><tr><td>";
-	print "<table width='100%'><tr><td>$errors</td><tr></table></table></center>";
+	print "<center><table><tr><td>";
+	print "<table><tr><td>$errors</td><tr></table></table></center>";
 }
 
 /*	gethostbyaddr_wtimeout - This function provides a good method of performing

@@ -668,7 +668,7 @@ function classical_export($cacti_root_path, $cacti_export_path) {
 			fclose($fp_graph_index);
 
 			/* main graph page html */
-			fwrite($fp_index, "<td align='center' width='" . round(100 / $classic_columns,0) . "%'><a href='graph_" . $graph["local_graph_id"] . ".html'><img src='graphs/thumb_" . $graph["local_graph_id"] . ".png' border='0' alt='" . $graph["title_cache"] . "'></a></td>\n");
+			fwrite($fp_index, "<td style='text-align:center;width:" . round(100 / $classic_columns,0) . "%;'><a href='graph_" . $graph["local_graph_id"] . ".html'><img style='border:none;' src='graphs/thumb_" . $graph["local_graph_id"] . ".png' alt='' title='" . $graph["title_cache"] . "'></a></td>\n");
 
 			$i++;
 			$k++;
@@ -1954,10 +1954,10 @@ define("HTML_HEADER_TREE",
 	<script type='text/javascript' src='./js/jquery.cookie.js'></script>
 </head>
 <body>
-<table style='width:100%;height:100%;' cellspacing='0' cellpadding='0'>
+<table style='width:100%;height:100%;'>
 	<tr style='height:37px;' bgcolor='#a9a9a9'>
 		<td colspan='2' valign='bottom' nowrap>
-			<table width='100%' cellspacing='0' cellpadding='0'>
+			<table>
 				<tr>
 					<td nowrap>
 						&nbsp;<a href='http://www.cacti.net/'><img src='tab_cacti.gif' alt='Cacti - http://www.cacti.net/' align='middle' border='0'></a>
@@ -1994,13 +1994,13 @@ define("HTML_HEADER_TREE",
 	</tr>
 	<tr>
 		<td valign='top' style='padding: 5px; border-right: #aaaaaa 1px solid;' bgcolor='#efefef' width='200'>
-			<table width='100%' border=0 cellpadding=0 cellspacing=0>
+			<table>
 				<tr>
 					<td id='navigation' valign='top' style='padding: 5px; border-right: #aaaaaa 1px solid;background-repeat:repeat-y;background-color:#efefef;' bgcolor='#efefef' width='200' class='noprint'>\n"
 );
 
 define("HTML_GRAPH_HEADER_ONE_TREE", "
-	<table width='100%' style='background-color: #f5f5f5; border: 1px solid #bbbbbb;' align='center' cellpadding='3'>
+	<table style='background-color: #f5f5f5; border: 1px solid #bbbbbb;'>
 		<tr bgcolor='#6d88ad'>
 			<td width='390' colspan='3' class='textHeaderDark'>");
 
@@ -2040,10 +2040,10 @@ define("HTML_HEADER_CLASSIC", "
 		<meta http-equiv=cache-control content=no-cache>
 	</head>
 	<body>
-	<table width='100%' cellspacing='0' cellpadding='0'>
+	<table>
 		<tr style='height:37px;' bgcolor='#a9a9a9'>
 			<td valign='bottom' colspan='3' nowrap>
-				<table width='100%' cellspacing='0' cellpadding='0'>
+				<table>
 					<tr>
 						<td valign='bottom'>
 							&nbsp;<a href='http://www.cacti.net/'><img src='tab_cacti.gif' alt='Cacti - http://www.cacti.net/' align='middle' border='0'></a>
@@ -2086,7 +2086,7 @@ define("HTML_GRAPH_HEADER_ONE_CLASSIC", "
 	<table width='100%' style='background-color: #f5f5f5; border: 1px solid #bbbbbb;' align='center'>
 		<tr>
 			<td class='textSubHeaderDark' colspan='" . read_config_option("export_num_columns") . "'>
-				<table width='100%' cellspacing='0' cellpadding='3' border='0'>
+				<table>
 					<tr>
 						<td align='center' class='textHeaderDark'>"
 );

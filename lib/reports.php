@@ -569,7 +569,7 @@ function reports_generate_html ($reports_id, $output = REPORTS_OUTPUT_STDOUT) {
 		if ($format_ok) {
 			$outstr .= "\t<table class='report_table'>\n";
 		} else {
-			$outstr .= "\t<table class='report_table' " . ($output == REPORTS_OUTPUT_STDOUT ? "style='background-color:#F9F9F9;'":'') . " cellspacing='0' cellpadding='0' border='0' align='center' width='100%'>\n";
+			$outstr .= "\t<table class='report_table' " . ($output == REPORTS_OUTPUT_STDOUT ? "style='background-color:#F9F9F9;'":'') . ">\n";
 		}
 
 		$outstr .= "\t\t<tr class='title_row'>\n";
@@ -604,9 +604,9 @@ function reports_generate_html ($reports_id, $output = REPORTS_OUTPUT_STDOUT) {
 					$outstr .= "\t\t<tr class='image_row'>\n";
 					$outstr .= "\t\t\t<td>\n";
 					if ($format_ok) {
-						$outstr .= "\t\t\t\t<table width='100%' class='image_table'>\n";
+						$outstr .= "\t\t\t\t<table class='image_table'>\n";
 					} else {
-						$outstr .= "\t\t\t\t<table cellpadding='0' cellspacing='0' border='0' width='100%'>\n";
+						$outstr .= "\t\t\t\t<table>\n";
 					}
 					$outstr .= "\t\t\t\t\t<tr>\n";
 				}
@@ -704,7 +704,7 @@ function expand_branch(&$report, &$item, $branch_id, $output, $format_ok) {
 
 	$out = ''; 	
 	if ($output == REPORTS_OUTPUT_STDOUT) {
-		$out = "<img cellpadding='0' cellspacing='0' border='0' class='image' src=" . htmlspecialchars($config['url_path'] . 'graph_image.php' .
+		$out = "<img class='image' src=" . htmlspecialchars($config['url_path'] . 'graph_image.php' .
 				'?graph_width=' . $report['graph_width'] .
 				'&graph_height=' . $report['graph_height'] .
 				'&graph_nolegend=' . ($report['thumbnails'] == 'on' ? 'true':'') .
@@ -1110,7 +1110,7 @@ function reports_graph_area($graphs, $report, $item, $timespan, $output, $format
 		if ($column == 0) {
 			$outstr .= "\t\t<tr class='image_row'>\n";
 			$outstr .= "\t\t\t<td>\n";
-			$outstr .= "\t\t\t\t<table cellpadding='0' cellspacing='0' border='0' width='100%'>\n";
+			$outstr .= "\t\t\t\t<table>\n";
 			$outstr .= "\t\t\t\t\t<tr>\n";
 		}
 		if ($format_ok) {

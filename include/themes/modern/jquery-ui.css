@@ -831,7 +831,7 @@ body .ui-tooltip {
 ----------------------------------*/
 .ui-widget {
 	font-family: Verdana,Arial,sans-serif;
-	font-size: 1.0em;
+	font-size: 12px;
 }
 .ui-widget .ui-widget {
 	font-size: 1em;

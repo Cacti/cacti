@@ -214,7 +214,7 @@ function item_edit() {
 	<tr class='even noprint'>
 		<form name="form_graph_items" action="graphs_items.php">
 		<td>
-			<table cellpadding="2" cellspacing="0">
+			<table>
 				<tr>
 					<td width="50">
 						Device

@@ -470,9 +470,9 @@ function filter() {
 	<tr class='even'>
 		<td>
 			<form id='form_rrdclean' name='form_rrdclean' method='get' action='rrdcleaner.php'>
-			<table cellpadding='2' cellspacing='0'>
+			<table class='filterTable'>
 				<tr>
-					<td width='50'>
+					<td>
 						Search
 					</td>
 					<td>

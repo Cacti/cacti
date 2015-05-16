@@ -160,7 +160,7 @@ function manager(){
 	<tr class='even noprint'>
 		<td>
 			<form id='form_snmpagent_managers' name="form_snmpagent_managers" action="managers.php">
-				<table cellpadding="2" cellspacing="0">
+				<table class='filterTable'>
 					<tr>
 						<td>
 							Search
@@ -490,7 +490,7 @@ function manager_notifications($id){
 	<tr class='even noprint'>
 		<td>
 			<form id='form_snmpagent_managers' name="form_snmpagent_managers" action="managers.php">
-				<table cellpadding="2" cellspacing="0">
+				<table class='filterTable'>
 					<tr>
 						<td>
 							MIB
@@ -691,9 +691,9 @@ function manager_logs($id) {
 	<tr class='even'>
 		<td>
 			<form name="form_snmpagent_manager_logs" action="managers.php">
-				<table cellpadding="2" cellspacing="0">
+				<table class='filterTable'>
 					<tr>
-						<td width='50'>
+						<td>
 							Search
 						</td>
 						<td>
@@ -702,7 +702,7 @@ function manager_logs($id) {
 						<td>
 							Severity
 						</td>
-						<td width="1">
+						<td>
 							<select id="severity" onChange="applyFilter()">
 								<option value="-1"<?php if (get_request_var_request('severity') == '-1') {?> selected<?php }?>>Any</option>
 								<?php

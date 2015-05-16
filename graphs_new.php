@@ -41,7 +41,7 @@ switch ($_REQUEST['action']) {
 	case 'query_reload':
 		host_reload_query();
 
-		header('Location: graphs_new.php?host_id=' . $_REQUEST['host_id']);
+		header('Location: graphs_new.php?header=false&host_id=' . $_REQUEST['host_id']);
 		break;
 	default:
 		top_header();
@@ -424,26 +424,39 @@ function graphs() {
 
 	?>
 	<script type='text/javascript'>
-	<!--
 
 	function applyFilter() {
 		strURL = '?graph_type=' + $('#graph_type').val();
 		strURL = strURL + '&host_id=' + $('#host_id').val();
-		strURL = strURL + '&filter=' + $('#filter').val();;
-		strURL = strURL + '&rows=' + $('#rows').val();;
-		document.location = strURL;
+		strURL = strURL + '&filter=' + $('#filter').val();
+		strURL = strURL + '&rows=' + $('#rows').val();
+		strURL = strURL + '&header=false';
+		$.get(strURL, function(data) {
+			$('#main').html(data);
+			applySkin();
+		});
 	}
 
-	-->
+	$(function() {
+		$('[id^="reload"]').click(function(data) {
+			//$(this).removeClass('fa-circle-o').addClass('fa-spinner fa-spin');
+			$(this).removeClass('fa-circle-o').addClass('fa-circle-o-notch fa-spin');
+			$.get('graphs_new.php?action=query_reload&id='+$(this).attr('data-id')+'&host_id='+$('#host_id').val(), function(data) {
+				$('#main').html(data);
+				applySkin();
+			});
+		});
+	});
+
 	</script>
 	<form name='form_graphs_new' action='graphs_new.php'>
-	<table width='100%' cellpadding='2' cellspacing='0' border='0' align='left'>
+	<table class='filterTable'>
 		<tr>
 			<?php print html_host_filter($_REQUEST['host_id']);?>
-			<td style='white-space:nowrap;' width='1'>
+			<td>
 				Graph Types
 			</td>
-			<td width='1'>
+			<td>
 				<select id='graph_type' name='graph_type' onChange='applyFilter()'>
 					<option value='-2'<?php if ($_REQUEST['graph_type'] == '-2') {?> selected<?php }?>>All</option>
 					<option value='-1'<?php if ($_REQUEST['graph_type'] == '-1') {?> selected<?php }?>>Graph Template Based</option>
@@ -466,7 +479,7 @@ function graphs() {
 					?>
 				</select>
 			</td>
-			<td width='50'>
+			<td>
 				Rows
 			</td>
 			<td>
@@ -480,17 +493,17 @@ function graphs() {
 					?>
 				</select>
 			</td>
-			<td rowspan='3' class='textInfo' align='right' valign='top'>
+			<td rowspan='3' class='textInfo' style='text-align:right;vertical-align:top;width:100%;'>
 				<span class='linkMarker'>*</span><a class='hyperLink' href='<?php print htmlspecialchars('host.php?action=edit&id=' . $_REQUEST['host_id']);?>'>Edit this Device</a><br>
 				<span class='linkMarker'>*</span><a class='hyperLink' href='<?php print htmlspecialchars('host.php?action=edit');?>'>Create New Device</a><br>
 				<?php api_plugin_hook('graphs_new_top_links'); ?>
 			</td>
 		</tr>
 		<tr style='<?php if ($_REQUEST['graph_type'] <= 0) {?>display:none;<?php }?>'>
-			<td width='50'>
+			<td>
 				Search
 			</td>
-			<td style='white-space:nowrap;'>
+			<td>
 				<input id='filter' type='text' name='filter' size='25' value='<?php print htmlspecialchars(get_request_var_request('filter'));?>'>
 			</td>
 			<td colspan='3' style='white-space:nowrap;'>
@@ -533,8 +546,8 @@ function graphs() {
 		html_start_box('<strong>Graph Templates</strong>', '100%', '', '3', 'center', '');
 
 		print "<tr class='tableHeader'>
-				<td class='tableSubHeaderColumn'>Graph Template Name</td>
-				<td width='1%' align='center' class='tableSubHeaderCheckbox' style='" . get_checkbox_style() . "'><input type='checkbox' style='margin: 0px;' name='all_cg' title='Select All' onClick='SelectAll(\"sg\",this.checked);'></td>\n
+				<th class='tableSubHeaderColumn'>Graph Template Name</th>
+				<th class='tableSubHeaderCheckbox' style='" . get_checkbox_style() . "'><input type='checkbox' name='all_cg' style='width:16px; margin:0px;' title='Select All' onClick='SelectAll(\"sg\",this.checked)'></th>\n
 			</tr>\n";
 
 		$graph_templates = db_fetch_assoc_prepared('SELECT
@@ -577,7 +590,7 @@ function graphs() {
 			print "<td>
 						<span id='gt_text$query_row" . "_0'>" . htmlspecialchars($graph_template['graph_template_name']) . "</span>
 					</td>
-					<td align='right' class='checkbox'>
+					<td style='text-align:right;' class='checkbox'>
 						<input type='checkbox' name='cg_$query_row' id='cg_$query_row'>
 					</td>
 				</tr>";
@@ -597,7 +610,7 @@ function graphs() {
 		/* create a row at the bottom that lets the user create any graph they choose */
 		print "	<tr class='even'>
 				<td width='1'><i>Create</i></td>
-				<td align='left'>";
+				<td style='text-align:left;'>";
 				form_dropdown('cg_g', $available_graph_templates, 'name', 'id', '', '(Select a graph type to create)', '', 'textArea');
 		print '</td>
 			</tr>';
@@ -678,16 +691,16 @@ function graphs() {
 				}
 			}
 
-			print "	<table width='100%' class='cactiTable' align='center' cellpadding='3' cellspacing='0'>\n
+			print "	<table class='cactiTable'>
 					<tr class='cactiTableTitle'>
 						<td colspan='" . ($num_input_fields+1) . "'>
-							<table  cellspacing='0' cellpadding='0' width='100%' >
+							<table style='width:100%;'>
 								<tr>
 									<td class='textHeaderDark'>
 										<strong>Data Query</strong> [" . $snmp_query['name'] . "]
 									</td>
-									<td align='right' nowrap>
-										<a href='" . htmlspecialchars('graphs_new.php?action=query_reload&id=' . $snmp_query['id'] . '&host_id=' . $host['id']) . "'><img src='images/reload_icon_small.gif' title='Reload Associated Query' alt='' border='0' align='absmiddle'></a>
+									<td style='text-align:right;'>
+										<span class='reloadquery fa fa-circle-o' id='reload" . $snmp_query['id'] . "' data-id='" . $snmp_query['id'] . "'></span>
 									</td>
 								</tr>
 							</table>
@@ -791,7 +804,7 @@ function graphs() {
 						if ($field_array['direction'] == 'input' && sizeof($field_names)) {
 							foreach($field_names as $row) {
 								if ($row['field_name'] == $field_name) {
-									$html_dq_header .= "<td class='tableSubHeaderColumn'>" . $field_array['name'] . "</td>\n";
+									$html_dq_header .= "<th class='tableSubHeaderColumn'>" . $field_array['name'] . "</th>\n";
 									break;
 								}
 							}
@@ -804,7 +817,7 @@ function graphs() {
 					}else{
 						print "<tr class='tableHeader'>
 								$html_dq_header
-								<td width='1%' align='center' class='tableSubHeaderCheckbox' style='" . get_checkbox_style() . "'><input type='checkbox' style='margin: 0px;' name='all_" . $snmp_query['id'] . "' title='Select All' onClick='SelectAll(\"sg_" . $snmp_query['id'] . "\",this.checked)'></td>\n
+								<th class='tableSubHeaderCheckbox' style='" . get_checkbox_style() . "'><input type='checkbox' style='width:16px; margin: 0px;' name='all_" . $snmp_query['id'] . "' title='Select All' onClick='SelectAll(\"sg_" . $snmp_query['id'] . "\",this.checked)'></th>\n
 							</tr>\n";
 					}
 

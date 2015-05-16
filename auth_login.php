@@ -455,7 +455,7 @@ if (api_plugin_hook_function('custom_login', OPER_MODE_NATIVE) == OPER_MODE_RESK
 					<p>Enter your Username and Password below</p>
 				</div>
 				<div class='cactiLogin'>
-					<table cellpadding='0' cellspacing='0' border='0' class='cactiLoginTable'>
+					<table class='cactiLoginTable'>
 						<tr>
 							<td>
 								<label for='login_username'>Username</label>

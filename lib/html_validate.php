@@ -44,7 +44,7 @@ function die_html_input_error() {
 	global $config;
 
 	?>
-	<table width="100%" align="center">
+	<table style="width:100%;text-align:center;">
 		<tr>
 			<td>
 				Validation error.

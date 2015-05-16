@@ -298,9 +298,9 @@ function filter() {
 	<tr class='even'>
 		<form name='form_logfile'>
 		<td>
-			<table cellpadding='2' cellspacing='0'>
+			<table class='filterTable'>
 				<tr>
-					<td width='85' style='white-space: nowrap;'>
+					<td>
 						Tail Lines
 					</td>
 					<td>
@@ -315,7 +315,7 @@ function filter() {
 					<td style='white-space: nowrap;'>
 						Message Type
 					</td>
-					<td width='1'>
+					<td>
 						<select id='message_type' name='message_type'>
 							<option value='-1'<?php if ($_REQUEST['message_type'] == '-1') {?> selected<?php }?>>All</option>
 							<option value='1'<?php if ($_REQUEST['message_type'] == '1') {?> selected<?php }?>>Stats</option>
@@ -336,7 +336,7 @@ function filter() {
 					</td>
 				</tr>
 				<tr>
-					<td width='85'>
+					<td>
 						Refresh
 					</td>
 					<td>
@@ -359,9 +359,9 @@ function filter() {
 					</td>
 				</tr>
 			</table>
-			<table cellpadding='2' cellspacing='0'>
+			<table>
 				<tr>
-					<td width='85'>
+					<td>
 						SearchRegex
 					</td>
 					<td>

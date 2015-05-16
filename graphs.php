@@ -1040,7 +1040,7 @@ function graph_diff() {
 	}
 
 	?>
-	<table class='tableConfirmation' width='100%' align='center'>
+	<table class='tableConfirmation'>
 		<tr>
 			<td class='textArea'>
 				The template you have selected requires some changes to be made to the structure of
@@ -1187,7 +1187,7 @@ function graph_diff() {
 
 	?>
 	<form action="graphs.php" method="post">
-	<table class='tableConfirmation' width="100%" align="center">
+	<table class='tableConfirmation'>
 		<tr>
 			<td class="textArea">
 				<input type='radio' name='type' value='1' checked>&nbsp;<?php print $user_message;?><br>
@@ -1258,7 +1258,7 @@ function graph_edit() {
 
 	if (!empty($_REQUEST['id'])) {
 		?>
-		<table width="100%" align="center">
+		<table style='width:100%;text-align:center;'>
 			<tr>
 				<td class="textInfo" colspan="2" valign="top">
 					<?php print htmlspecialchars(get_graph_title($_REQUEST['id']));?>
@@ -1352,7 +1352,7 @@ function graph_edit() {
 
 	if (!empty($_REQUEST['id'])) {
 		?>
-		<table width="100%" align="center">
+		<table style='width:100%;text-align:center;'>
 			<tr>
 				<td align="center" class="textInfo" colspan="2">
 					<img src="<?php print htmlspecialchars('graph_image.php?action=edit&local_graph_id=' . $_REQUEST['id'] . '&rra_id=' . read_graph_config_option('default_rra_id'));?>" alt="">
@@ -1598,7 +1598,7 @@ function graph() {
 	<tr class='even noprint'>
 		<td>
 			<form id='form_graphs' name='form_graphs' action='graphs.php'>
-			<table cellpadding='2' cellspacing='0' border='0'>
+			<table class='filterTable'>
 				<tr>
 					<?php print html_host_filter($_REQUEST['host_id']);?>
 					<td>
@@ -1626,9 +1626,9 @@ function graph() {
 					</td>
 				</tr>
 			</table>
-			<table cellpadding='2' cellspacing='0' border='0'>
+			<table class='filterTable'>
 				<tr>
-					<td width='50'>
+					<td>
 						Search
 					</td>
 					<td>

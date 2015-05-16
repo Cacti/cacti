@@ -97,13 +97,13 @@ function draw_color_template_items_list($item_list, $filename, $url_data, $disab
 		# print function
 
 		print "<td style='$this_row_style'>" . $item['sequence'] . "</td>\n";
-		print '<td' . ((isset($item['hex'])) ? " bgcolor='#" . $item['hex'] . "'" : '') . " width='5%'>&nbsp;</td>\n";
+		print '<td style="width:5%;' . ((isset($item['hex'])) ? "background-color:#" . $item['hex'] . ";'" : '') . ">&nbsp;</td>\n";
 		print "<td style='$this_row_style'>" . $item['hex'] . "</td>\n";
 
 		if ($disable_controls == false) {
 			print "<td><a href='" . htmlspecialchars($filename . "?action=item_movedown&color_template_item_id=" . $item['color_template_item_id'] . "&$url_data") . "'><img src='images/move_down.gif' border='0' alt='Move Down'></a>
 					<a href='" . htmlspecialchars($filename . "?action=item_moveup&color_template_item_id=" . $item['color_template_item_id'] . "&$url_data") . "'><img src='images/move_up.gif' border='0' alt='Move Up'></a></td>\n";
-			print "<td align='right'><a href='" . htmlspecialchars($filename . "?action=item_remove&color_template_item_id=" . $item['color_template_item_id'] . "&$url_data") . "'><img src='images/delete_icon.gif' width='10' height='10' border='0' alt='Delete'></a></td>\n";
+			print "<td align='right'><a href='" . htmlspecialchars($filename . "?action=item_remove&color_template_item_id=" . $item['color_template_item_id'] . "&$url_data") . "'><img style='width:10px;height:10px;border:none;' src='images/delete_icon.gif' alt='' title='Delete'></a></td>\n";
 		}
 
 		print '</tr>';
@@ -402,9 +402,9 @@ function aggregate_color_template() {
 
 	$filter_html = '<tr class="even">
 					<td>
-					<table cellpadding="2" cellspacing="0">
+					<table class="filterTable">
 						<tr>
-							<td width="55">
+							<td>
 								Search
 							</td>
 							<td>
@@ -413,7 +413,7 @@ function aggregate_color_template() {
 							<td>
 								Color Templates
 							</td>
-							<td width="1">
+							<td>
 								<select id="rows" onChange="applyFilter()">
 								<option value="-1"';
 	if (get_request_var_request('rows') == '-1') {

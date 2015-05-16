@@ -104,9 +104,9 @@ function display_matching_hosts($rule, $rule_type, $url) {
 	<tr class='even'>
 		<td>
 			<form method='post' name='form_automation_host' action='<?php print htmlspecialchars($url);?>'>
-				<table cellpadding='2' cellspacing='0'>
+				<table class='filterTable'>
 					<tr>
-						<td width='50'>
+						<td>
 							Type
 						</td>
 						<td>
@@ -286,8 +286,6 @@ function display_matching_hosts($rule, $rule_type, $url) {
 	print "</form>\n";
 }
 
-
-
 function display_matching_graphs($rule, $rule_type, $url) {
 	global $graph_actions, $item_rows;
 
@@ -348,7 +346,6 @@ function display_matching_graphs($rule, $rule_type, $url) {
 
 	?>
 	<script type='text/javascript'>
-	<!--
 
 	function applyGraphsFilterChange(objForm) {
 		strURL = <?php print $url;?>'&host_id=' + objForm.host_id.value;
@@ -358,7 +355,6 @@ function display_matching_graphs($rule, $rule_type, $url) {
 		document.location = strURL;
 	}
 
-	-->
 	</script>
 	<?php
 
@@ -368,9 +364,9 @@ function display_matching_graphs($rule, $rule_type, $url) {
 	<tr class='even'>
 		<td>
 			<form method='post' name='form_automation_graph' action='<?php print htmlspecialchars($url);?>'>
-				<table cellpadding='2' cellspacing='0'>
+				<table class='filterTable'>
 					<tr>
-						<td width='50'>
+						<td>
 							Device
 						</td>
 						<td>
@@ -552,7 +548,6 @@ function display_matching_graphs($rule, $rule_type, $url) {
 
 	print "</form>\n";
 }
-
 
 function display_new_graphs($rule) {
 	global $config;
@@ -737,7 +732,6 @@ function display_new_graphs($rule) {
 
 }
 
-
 function display_matching_trees ($rule_id, $rule_type, $item, $url) {
 	global $automation_tree_header_types;
 	global $device_actions, $item_rows;
@@ -807,7 +801,6 @@ function display_matching_trees ($rule_id, $rule_type, $item, $url) {
 
 	?>
 	<script type='text/javascript'>
-	<!--
 
 	function applyViewDeviceFilterChange(objForm) {
 		strURL = '<?php print $url;?>' + '&host_status=' + objForm.host_status.value;
@@ -817,7 +810,6 @@ function display_matching_trees ($rule_id, $rule_type, $item, $url) {
 		document.location = strURL;
 	}
 
-	-->
 	</script>
 	<?php
 
@@ -827,9 +819,9 @@ function display_matching_trees ($rule_id, $rule_type, $item, $url) {
 	?>
 	<tr class='even'>
 		<td>
-			<table cellpadding='2' cellspacing='0'>
+			<table class='filterTable'>
 				<tr>
-					<td width='50'>
+					<td>
 						Type
 					</td>
 					<td>
@@ -1063,15 +1055,15 @@ function display_match_rule_items($title, $rule_id, $rule_type, $module) {
 			$form_data .= '<td>' . 	$item['pattern'] . '</td>';
 			$form_data .= '<td style="white-space:nowrap;">
 				<a href="' . htmlspecialchars($module . '?action=item_movedown&item_id=' . $item['id'] . '&id=' . $rule_id . '&rule_type=' . $rule_type) . '">
-					<img src="images/move_down.gif" border="0" alt="Move Down">
+					<img style="border:none;" src="images/move_down.gif" alt="" title="Move Down">
 				</a>
 				<a href="' . htmlspecialchars($module . '?action=item_moveup&item_id=' . $item['id'] .	'&id=' . $rule_id .	'&rule_type=' . $rule_type) . '">
-					<img src="images/move_up.gif" border="0" alt="Move Up">
+					<img style="border:none;" src="images/move_up.gif" alt="" title="Move Up">
 				</a></td>';
 
 			$form_data .= '<td align="right" style="white-space:nowrap;">
 				<a href="' . htmlspecialchars($module . '?action=item_remove&item_id=' . $item['id'] .	'&id=' . $rule_id .	'&rule_type=' . $rule_type) . '">
-					<img src="images/delete_icon.gif" border="0" width="10" height="10" alt="Delete">
+					<img style="width:10px;height:10px;border:none;" src="images/delete_icon.gif" alt="" title="Delete">
 				</a></td>
 			</tr>';
 
@@ -1083,7 +1075,6 @@ function display_match_rule_items($title, $rule_id, $rule_type, $module) {
 
 	html_end_box(true);
 }
-
 
 function display_graph_rule_items($title, $rule_id, $rule_type, $module) {
 	global $automation_op_array, $automation_oper, $automation_tree_header_types;
@@ -1109,15 +1100,15 @@ function display_graph_rule_items($title, $rule_id, $rule_type, $module) {
 			$form_data .= '<td>' . 	$item['pattern'] . '</td>';
 			$form_data .= '<td style="white-space:nowrap;">
 				<a href="' . htmlspecialchars($module . '?action=item_movedown&item_id=' . $item['id'] . '&id=' . $rule_id .	'&rule_type=' . $rule_type) . '">
-					<img src="images/move_down.gif" border="0" alt="Move Down">
+					<img style="border:none;" src="images/move_down.gif" alt="" title="Move Down">
 				</a>
 				<a href="' . htmlspecialchars($module . '?action=item_moveup&item_id=' . $item['id'] .	'&id=' . $rule_id .	'&rule_type=' . $rule_type) . '">
-					<img src="images/move_up.gif" border="0" alt="Move Up">
+					<img style="border:none;" src="images/move_up.gif" alt="" title="Move Up">
 				</a></td>';
 
 			$form_data .= '<td align="right" style="white-space:nowrap;">
 				<a href="' . htmlspecialchars($module . '?action=item_remove&item_id=' . $item['id'] .	'&id=' . $rule_id .	'&rule_type=' . $rule_type) . '">
-					<img src="images/delete_icon.gif" border="0" width="10" height="10" alt="Delete">
+					<img style="width:10px;height:10px;border:none;" src="images/delete_icon.gif" alt="" title="Delete">
 				</a></td>
 			</tr>';
 
@@ -1130,7 +1121,6 @@ function display_graph_rule_items($title, $rule_id, $rule_type, $module) {
 	html_end_box(true);
 
 }
-
 
 function display_tree_rule_items($title, $rule_id, $item_type, $rule_type, $module) {
 	global $automation_tree_header_types, $tree_sort_types, $host_group_types;
@@ -1157,15 +1147,15 @@ function display_tree_rule_items($title, $rule_id, $item_type, $rule_type, $modu
 			$form_data .= '<td>' . 	$item['replace_pattern'] . '</td>';
 			$form_data .= '<td style="white-space:nowrap;">
 				<a href="' . htmlspecialchars($module . '?action=item_movedown&item_id=' . $item['id'] . '&id=' . $rule_id .	'&rule_type=' . $rule_type) . '">
-					<img src="images/move_down.gif" border="0" alt="Move Down">
+					<img style="border:none;" src="images/move_down.gif" alt="" title="Move Down">
 				</a>
 				<a href="' . htmlspecialchars($module . '?action=item_moveup&item_id=' . $item['id'] .	'&id=' . $rule_id .	'&rule_type=' . $rule_type) . '">
-					<img src="images/move_up.gif" border="0" alt="Move Up">
+					<img style="border:none;" src="images/move_up.gif" alt="" title="Move Up">
 				</a></td>';
 
 			$form_data .= '<td align="right" style="white-space:nowrap;">
 				<a href="' . htmlspecialchars($module . '?action=item_remove&item_id=' . $item['id'] .	'&id=' . $rule_id .	'&rule_type=' . $rule_type) . '">
-					<img src="images/delete_icon.gif" border="0" width="10" height="10" alt="Delete">
+					<img style="width:10px;height:10px;border:none;" src="images/delete_icon.gif" alt="" title="Delete">
 				</a></td></tr>';
 
 			print $form_data;
@@ -1176,7 +1166,6 @@ function display_tree_rule_items($title, $rule_id, $item_type, $rule_type, $modu
 
 	html_end_box(true);
 }
-
 
 function duplicate_automation_graph_rules($_id, $_title) {
 	global $fields_automation_graph_rules_edit1, $fields_automation_graph_rules_edit2, $fields_automation_graph_rules_edit3;
@@ -1221,7 +1210,6 @@ function duplicate_automation_graph_rules($_id, $_title) {
 		}
 	}
 }
-
 
 function duplicate_automation_tree_rules($_id, $_title) {
 	global $fields_automation_tree_rules_edit1, $fields_automation_tree_rules_edit2, $fields_automation_tree_rules_edit3;
@@ -1269,7 +1257,6 @@ function duplicate_automation_tree_rules($_id, $_title) {
 		}
 	}
 }
-
 
 function build_data_query_sql($rule) {
 	cacti_log(__FUNCTION__ . ' called: ' . serialize($rule), false, 'AUTOMATION TRACE', POLLER_VERBOSITY_MEDIUM);
@@ -1436,7 +1423,6 @@ function get_matching_hosts($rule, $rule_type, $sql_where='') {
 	return db_fetch_assoc($sql_query . $sql_filter);
 }
 
-
 /**
  * get an array of graphs matching a graph_match rule
  * @param array $rule		- rule
@@ -1517,7 +1503,6 @@ function get_created_graphs($rule) {
 
 }
 
-
 function get_query_fields($table, $excluded_fields) {
 	cacti_log(__FUNCTION__ . ' called', false, 'AUTOMATION TRACE', POLLER_VERBOSITY_MEDIUM);
 	
@@ -1551,7 +1536,6 @@ function get_query_fields($table, $excluded_fields) {
 
 	return $new_fields;
 }
-
 
 /*
  * get_field_names
@@ -1605,12 +1589,10 @@ function array_minus($big_array, $small_array) {
 	return $big_array;
 }
 
-
 function automation_string_replace($search, $replace, $target) {
 	$repl = preg_replace('/' . $search . '/i', $replace, $target);
 	return preg_split('/\\\\n/', $repl, -1, PREG_SPLIT_NO_EMPTY);
 }
-
 
 function global_item_edit($rule_id, $rule_item_id, $rule_type) {
 	global $config, $fields_automation_match_rule_item_edit, $fields_automation_graph_rule_item_edit;
@@ -1774,7 +1756,6 @@ function automation_hook_device_create_tree($data) {
 	return($data);
 }
 
-
 /**
  * hook executed for a new graph on a tree
  * @param $data - data passed from hook
@@ -1849,7 +1830,6 @@ function execute_data_query($host_id, $snmp_query_id) {
 		}
 	}
 }
-
 
 /**
  * run rules for a graph template
@@ -1972,7 +1952,6 @@ function execute_device_create_tree($host_id) {
 		}
 	}
 }
-
 
 /**
  * run rules for a new graph on a tree
@@ -2187,7 +2166,6 @@ function create_dq_graphs($host_id, $snmp_query_id, $rule) {
 	}
 }
 
-
 /* create_all_header_nodes - walk across all tree rule items
  * 					- get all related rule items
  * 					- take header type into account
@@ -2307,7 +2285,6 @@ function create_multi_header_node($object, $rule, $tree_item, $parent_tree_item_
 	return $parent_tree_item_id;
 }
 
-
 /**
  * create a single tree header node
  * @param string $title				- graph title
@@ -2340,7 +2317,6 @@ function create_header_node($title, $rule, $item, $parent_tree_item_id) {
 	return $new_item;
 }
 
-
 /**
  * add a device to the tree
  * @param int $host_id	- host id
@@ -2372,7 +2348,6 @@ function create_device_node($host_id, $parent, $rule) {
 	return $new_item;
 }
 
-
 /**
  * add a device to the tree
  * @param int $graph_id	- graph id
@@ -2402,4 +2377,945 @@ function create_graph_node($graph_id, $parent, $rule) {
 	}
 
 	return $new_item;
+}
+
+function automation_poller_bottom () {
+	global $config;
+
+	if (read_config_option('automation_collection_timing') == 'disabled')
+		return;
+
+	$t = read_config_option('automation_last_poll');
+
+	/* Check for the polling interval, only valid with the Multipoller patch */
+	$poller_interval = read_config_option('poller_interval');
+	if (!isset($poller_interval)) {
+		$poller_interval = 300;
+	}
+
+	if ($t != '' && (time() - $t < $poller_interval)) {
+		return;
+	}
+
+	$command_string = trim(read_config_option('path_php_binary'));
+
+	// If its not set, just assume its in the path
+	if (trim($command_string) == '') {
+		$command_string = 'php';
+	}
+
+	$extra_args = ' -q ' . $config['base_path'] . '/poller_automation.php';
+
+	exec_background($command_string, $extra_args);
+
+	db_execute("REPLACE INTO settings VALUES ('automation_last_poll','" . time() . "')");
+}
+
+function automation_add_device ($device) {
+	global $plugins, $config;
+
+	$template_id          = $device['host_template'];
+	$snmp_sysName         = preg_split('/[\s.]+/', $device['snmp_sysName'], -1, PREG_SPLIT_NO_EMPTY);
+	$description          = ($snmp_sysName[0] != '' ? $snmp_sysName[0] : $device['hostname']);
+	$ip                   = $device['hostname'];
+	$community            = $device['community'];
+	$snmp_ver             = $device['snmp_version'];
+	$snmp_username	      = $device['snmp_username'];
+	$snmp_password	      = $device['snmp_password'];
+	$snmp_port            = $device['snmp_port'];
+	$snmp_timeout         = read_config_option('snmp_timeout');
+	$disable              = false;
+	$tree                 = $device['tree'];
+	$availability_method  = read_config_option("availability_method");
+	$ping_method          = read_config_option("ping_method");
+	$ping_port            = read_config_option("ping_port");
+	$ping_timeout         = read_config_option("ping_timeout");
+	$ping_retries         = read_config_option("ping_retries");
+	$notes                = 'Added by Discovery Plugin';
+	$snmp_auth_protocol   = $device['snmp_auth_protocol'];
+	$snmp_priv_passphrase = $device['snmp_priv_passphrase'];
+	$snmp_priv_protocol   = $device['snmp_priv_protocol'];
+	$snmp_context	      = $device['snmp_context'];
+	$device_threads       = 1;
+	$max_oids             = 10;
+
+	$host_id = api_device_save(0, $template_id, $description, $ip,
+		$community, $snmp_ver, $snmp_username, $snmp_password,
+		$snmp_port, $snmp_timeout, $disable, $availability_method,
+		$ping_method, $ping_port, $ping_timeout, $ping_retries,
+		$notes, $snmp_auth_protocol, $snmp_priv_passphrase,
+		$snmp_priv_protocol, $snmp_context, $max_oids, $device_threads);
+
+	if ($host_id) {
+		/* Use the thold plugin if it exists */
+		if (api_plugin_is_enabled('thold')) {
+			automation_debug("     Creating Thresholds\n");
+			if (file_exists($config["base_path"] . "/plugins/thold/thold-functions.php")) {
+				include_once($config["base_path"] . "/plugins/thold/thold-functions.php");
+				autocreate($host_id);
+			} else if (file_exists($config["base_path"] . "/plugins/thold/thold_functions.php")) {
+				include_once($config["base_path"] . "/plugins/thold/thold_functions.php");
+				autocreate($host_id);
+			}
+		}
+
+		db_execute("DELETE FROM automation_devices WHERE ip='$ip' LIMIT 1");
+	}
+
+	return $host_id;
+}
+
+function automation_add_tree ($host_id, $tree) {
+	automation_debug("     Adding to tree\n");
+	if ($tree > 1000000) {
+		$tree_id = $tree - 1000000;
+		$parent = 0;
+	} else {
+		$tree_item = db_fetch_row('select * from graph_tree_items where id = ' . $tree);
+
+		if (!isset($tree_item['graph_tree_id']))
+			return;
+		$tree_id = $tree_item['graph_tree_id'];
+		$parent = $tree;
+	}
+
+	$nodeId = api_tree_item_save(0, $tree_id, 3, $parent, '', 0, 0, $host_id, 1, 1, false);
+}
+
+function automation_remove_graphs ($host_id) {
+	$snmp_queries = db_fetch_assoc("SELECT snmp_query_id AS id 
+		FROM host_snmp_query 
+		WHERE host_id=" . $host_id);
+
+	if (sizeof($snmp_queries)) {
+	foreach ($snmp_queries as $snmp_query) {
+		$data_query_graphs = db_fetch_assoc("SELECT graph_template_id 
+			FROM snmp_query_graph 
+			WHERE snmp_query_id=" . $snmp_query["id"] . " 
+			GROUP BY graph_template_id 
+			ORDER BY name");
+
+		$data_query_sources = db_fetch_assoc("SELECT data_template_id 
+			FROM snmp_query_graph_rrd 
+			INNER JOIN snmp_query_graph 
+			ON snmp_query_graph_id=id 
+			WHERE snmp_query_id=" . $snmp_query["id"] . " 
+			AND graph_template_id=" . $data_query_graphs[0]['graph_template_id'] . " 
+			GROUP BY data_template_id");
+
+		$cont_graphs = db_fetch_assoc("SELECT count(*) AS num, snmp_index 
+			FROM graph_local 
+			WHERE host_id=" . $host_id . " 
+			AND snmp_query_id=" . $snmp_query["id"] . " 
+			AND graph_template_id=" . $data_query_graphs[0]['graph_template_id'] . " 
+			GROUP BY snmp_index");
+
+		$cont_sources = db_fetch_assoc("SELECT count(*) AS num, snmp_index 
+			FROM data_local 
+			WHERE host_id=" . $host_id . " 
+			AND snmp_query_id=" . $snmp_query["id"] . " 
+			AND data_template_id=" . $data_query_sources[0]['data_template_id'] . " 
+			GROUP BY snmp_index");
+
+		if (sizeof($cont_graphs)) {
+		foreach ($cont_graphs as $cont_graph) {
+			if ($cont_graph["num"] > 1 ) {
+				$rm_graphs = db_fetch_assoc("SELECT id 
+					FROM graph_local 
+					WHERE host_id=" . $host_id . " 
+					AND snmp_query_id=" . $snmp_query["id"] . " 
+					AND graph_template_id=" . $data_query_graphs[0]['graph_template_id'] . " 
+					AND snmp_index=" . $cont_graph["snmp_index"] . " 
+					ORDER BY id 
+					LIMIT 1,30");
+
+				if (sizeof($rm_graphs)) {
+				foreach ($rm_graphs as $rm_graph) {
+					api_graph_remove($rm_graph["id"]);
+				}
+				}
+			}
+		}
+		}
+
+		if (sizeof($cont_sources)) {
+		foreach ($cont_sources as $cont_source) {
+			if ($cont_source["num"] > 1 ) {
+				$rm_sources = db_fetch_assoc("SELECT id 
+					FROM data_local 
+					WHERE host_id=" . $host_id . " 
+					AND snmp_query_id=" . $snmp_query["id"] . " 
+					AND data_template_id=" . $data_query_sources[0]['data_template_id'] . " 
+					AND snmp_index=" . $cont_source["snmp_index"] . " 
+					ORDER BY id 
+					LIMIT 1,30");
+
+				if (sizeof($rm_sources)) {
+				foreach ($rm_sources as $rm_source) {
+					api_data_source_remove($rm_source["id"]);
+				}
+				}
+			}
+		}
+		}
+
+		if ($snmp_query["id"] == 1) {
+			$rm_graphs = db_fetch_assoc("select id 
+				from graph_local 
+				where host_id=" . $host_id . " 
+				and snmp_query_id=1 
+				and graph_template_id=" . $data_query_graphs[0]['graph_template_id'] . " 
+				and snmp_index in (
+					select snmp_index 
+					from host_snmp_cache 
+					where host_id=" . $host_id . " 
+					and field_name='ifOperStatus' 
+					and field_value='Down' 
+					and snmp_query_id=1
+				)");
+
+			$rm_sources = db_fetch_assoc("select id 
+				from data_local 
+				where host_id=" . $host_id . " 
+				and snmp_query_id=1 
+				and data_template_id=" . $data_query_sources[0]['data_template_id'] . " 
+				and snmp_index in (
+					select snmp_index 
+					from host_snmp_cache 
+					where host_id=" . $host_id . " 
+					and field_name='ifOperStatus' 
+					and field_value='Down' 
+					and snmp_query_id=1
+				)");
+
+			if (sizeof($rm_graphs)) {
+			foreach ($rm_graphs as $rm_graph) {
+				api_graph_remove($rm_graph["id"]);
+			}
+			}
+
+			if (sizeof($rm_sources)) {
+			foreach ($rm_sources as $rm_source) {
+				api_data_source_remove($rm_source["id"]);
+			}
+			}
+		}
+	}
+	}
+}
+
+function automation_remove_sources ($host_id) {
+	$snmp_queries = db_fetch_assoc("select snmp_query_id as id from host_snmp_query where host_id=" . $host_id);
+	foreach ($snmp_queries as $snmp_query) {
+		$data_query_graphs = db_fetch_assoc("select graph_template_id from snmp_query_graph where snmp_query_id=" . $snmp_query["id"] . " GROUP BY graph_template_id order by name");
+		$cont_graphs = db_fetch_assoc("select count(*) as num ,snmp_index from graph_local where graph_local.host_id=" . $host_id . " and snmp_query_id=" . $snmp_query["id"] . " and graph_local.graph_template_id=" . $data_query_graphs[0]['graph_template_id'] . " GROUP BY snmp_index");
+		foreach ($cont_graphs as $cont_graph) {
+			if ($cont_graph["num"] > 1 ) {
+				$rm_graphs = db_fetch_assoc("select id from graph_local where host_id=" . $host_id . " and snmp_query_id=" . $snmp_query["id"] . " and graph_template_id=" . $data_query_graphs[0]['graph_template_id'] . " and snmp_index=" . $cont_graph["snmp_index"] . " order by graph_local.id LIMIT 1,30");
+				foreach ($rm_graphs as $rm_graph) {
+					api_graph_remove($rm_graph["id"]);
+				}
+			}
+		}
+		if ($snmp_query["id"] == 1) {
+			$rm_graphs = db_fetch_assoc("select id from graph_local where host_id=" . $host_id . " and snmp_query_id=1 and graph_template_id=" . $data_query_graphs[0]['graph_template_id'] . " and snmp_index in (select snmp_index from host_snmp_cache where host_id=" . $host_id . " and field_name='ifOperStatus' and field_value='Down' and snmp_query_id=1)");
+			foreach ($rm_graphs as $rm_graph) {
+				api_graph_remove($rm_graph["id"]);
+			}
+		}
+	}
+}
+
+function automation_create_graphs ($host_id) {
+	global $graph_interface_only_up;
+	$sgraphs = array();
+	automation_debug("    Creating Graphs\n");
+	$graph_templates = db_fetch_assoc("select
+		graph_templates.id as graph_template_id,
+		graph_templates.name as graph_template_name
+		from (host_graph,graph_templates)
+		where host_graph.graph_template_id=graph_templates.id
+		and graph_templates.id not in
+		(select graph_local.graph_template_id from graph_local where snmp_query_id = 0 and graph_local.host_id=" . $host_id . ")
+		and host_graph.host_id=" . $host_id . "
+		order by graph_templates.name");
+
+	$template_graphs = db_fetch_assoc("select
+		graph_local.graph_template_id
+		from (graph_local,host_graph)
+		where graph_local.graph_template_id=host_graph.graph_template_id
+		and graph_local.host_id=host_graph.host_id
+		and graph_local.host_id=" . $host_id . "
+		group by graph_local.graph_template_id");
+
+	foreach ($graph_templates as $graph_template) {
+		 $query_row = $graph_template["graph_template_id"];
+		 $sgraphs['cg_' . $query_row] = 1;
+	}
+
+	$snmp_queries = db_fetch_assoc("select
+		snmp_query.id,
+		snmp_query.name,
+		snmp_query.xml_path
+		from (snmp_query,host_snmp_query)
+		where host_snmp_query.snmp_query_id=snmp_query.id
+		and host_snmp_query.host_id=" . $host_id . "
+		order by snmp_query.name");
+
+	if (sizeof($snmp_queries) > 0) {
+		foreach ($snmp_queries as $snmp_query) {
+			$xml_array = get_data_query_array($snmp_query["id"]);
+			$num_input_fields = 0;
+			$num_visible_fields = 0;
+			$data_query_graphs = db_fetch_assoc("select snmp_query_graph.id,snmp_query_graph.name,snmp_query_graph.graph_template_id from snmp_query_graph where snmp_query_graph.snmp_query_id=" . $snmp_query["id"] . " order by snmp_query_graph.name");
+			if ($xml_array != false) {
+				$html_dq_header = "";
+				$snmp_query_indexes = array();
+
+				reset($xml_array["fields"]);
+				while (list($field_name, $field_array) = each($xml_array["fields"])) {
+					if ($field_array["direction"] == "input") {
+						$raw_data = '';
+						if ($snmp_query["id"] == 1 && $graph_interface_only_up) {
+							$raw_data = db_fetch_assoc("select field_value,snmp_index from host_snmp_cache where snmp_index in
+									(select snmp_index from host_snmp_cache where snmp_index not in
+									(select snmp_index from graph_local WHERE host_id =" . $host_id . " and graph_template_id = " . $data_query_graphs[0]['graph_template_id'] . ")
+									and host_id=" . $host_id . " and field_name='ifOperStatus' and field_value='Up' and snmp_query_id=" . $snmp_query["id"] .")
+									and host_id=" . $host_id . " and field_name='$field_name' and snmp_query_id=" . $snmp_query["id"]);
+						} elseif ($snmp_query["id"] != 8 ){
+							$raw_data = db_fetch_assoc("select field_value,snmp_index from host_snmp_cache where snmp_index not in
+									(select snmp_index from graph_local WHERE host_id =" . $host_id . " and snmp_query_id =" . $snmp_query["id"] ." and graph_template_id = " . $data_query_graphs[0]['graph_template_id'] . ")
+									and host_id=" . $host_id . " and field_name='$field_name' and snmp_query_id=" . $snmp_query["id"]);
+						}
+
+						/* don't even both to display the column if it has no data */
+						if (sizeof($raw_data) > 0 && $raw_data != '') {
+							/* draw each header item <TD> */
+
+							foreach ($raw_data as $data) {
+								$snmp_query_data[$field_name]{$data["snmp_index"]} = $data["field_value"];
+
+								if (!in_array($data["snmp_index"], $snmp_query_indexes,TRUE)) {
+									array_push($snmp_query_indexes, $data["snmp_index"]);
+								}
+							}
+							$num_visible_fields++;
+						}
+					}
+				}
+
+				if (isset($xml_array["index_order_type"])) {
+					if ($xml_array["index_order_type"] == "numeric") {
+						usort($snmp_query_indexes, "usort_numeric");
+					}else if ($xml_array["index_order_type"] == "alphabetic") {
+						usort($snmp_query_indexes, "usort_alphabetic");
+					}else if ($xml_array["index_order_type"] == "natural") {
+						usort($snmp_query_indexes, "usort_natural");
+					}
+				}
+
+				if (sizeof($snmp_query_indexes) > 0) {
+					while (list($id, $snmp_index) = each($snmp_query_indexes)) {
+						$query_row = $snmp_query["id"] . "_" . encode_data_query_index($snmp_index);
+						$sgraphs['sg_' . $query_row] = 1;
+					}
+				}
+			}
+
+			$sgraphs['sgg_' . $snmp_query["id"]] = $data_query_graphs[0]['id'];
+
+		}
+	}
+
+	$selected_graphs = array();
+	while (list($var, $val) = each($sgraphs)) {
+		if (preg_match('/^cg_(\d+)$/', $var, $matches)) {
+			$selected_graphs["cg"]{$matches[1]}{$matches[1]} = true;
+		}elseif (preg_match('/^cg_g$/', $var)) {
+			if ($_POST["cg_g"] > 0) {
+				$selected_graphs["cg"]{$sgraphs["cg_g"]}{$sgraphs["cg_g"]} = true;
+			}
+		}elseif (preg_match('/^sg_(\d+)_([a-f0-9]{32})$/', $var, $matches)) {
+			$selected_graphs["sg"]{$matches[1]}{$sgraphs{"sgg_" . $matches[1]}}{$matches[2]} = true;
+		}
+	}
+
+	if (!empty($selected_graphs)) {
+		automation_host_new_graphs_save($selected_graphs, $host_id);
+	}
+}
+
+function automation_host_new_graphs_save($selected_graphs, $host_id) {
+	global $count_graph;
+	$selected_graphs_array = $selected_graphs;
+	/* form an array that contains all of the data on the previous form */
+	while (list($var, $val) = each($_POST)) {
+		if (preg_match("/^g_(\d+)_(\d+)_(\w+)/", $var, $matches)) { /* 1: snmp_query_id, 2: graph_template_id, 3: field_name */
+			if (empty($matches[1])) { /* this is a new graph from template field */
+				$values["cg"]{$matches[2]}["graph_template"]{$matches[3]} = $val;
+			}else{ /* this is a data query field */
+				$values["sg"]{$matches[1]}{$matches[2]}["graph_template"]{$matches[3]} = $val;
+			}
+		}elseif (preg_match("/^gi_(\d+)_(\d+)_(\d+)_(\w+)/", $var, $matches)) { /* 1: snmp_query_id, 2: graph_template_id, 3: graph_template_input_id, 4:field_name */
+			/* ================= input validation ================= */
+			input_validate_input_number($matches[3]);
+			/* ==================================================== */
+
+			/* we need to find out which graph items will be affected by saving this particular item */
+			$item_list = db_fetch_assoc("select
+				graph_template_item_id
+				from graph_template_input_defs
+				where graph_template_input_id=" . $matches[3]);
+
+			/* loop through each item affected and update column data */
+			if (sizeof($item_list) > 0) {
+			foreach ($item_list as $item) {
+
+				if (empty($matches[1])) { /* this is a new graph from template field */
+					$values["cg"]{$matches[2]}["graph_template_item"]{$item["graph_template_item_id"]}{$matches[4]} = $val;
+				}else{ /* this is a data query field */
+					$values["sg"]{$matches[1]}{$matches[2]}["graph_template_item"]{$item["graph_template_item_id"]}{$matches[4]} = $val;
+				}
+			}
+			}
+		}elseif (preg_match("/^d_(\d+)_(\d+)_(\d+)_(\w+)/", $var, $matches)) { /* 1: snmp_query_id, 2: graph_template_id, 3: data_template_id, 4:field_name */
+			if (empty($matches[1])) { /* this is a new graph from template field */
+				$values["cg"]{$matches[2]}["data_template"]{$matches[3]}{$matches[4]} = $val;
+			}else{ /* this is a data query field */
+				$values["sg"]{$matches[1]}{$matches[2]}["data_template"]{$matches[3]}{$matches[4]} = $val;
+			}
+		}elseif (preg_match("/^c_(\d+)_(\d+)_(\d+)_(\d+)/", $var, $matches)) { /* 1: snmp_query_id, 2: graph_template_id, 3: data_template_id, 4:data_input_field_id */
+			if (empty($matches[1])) { /* this is a new graph from template field */
+				$values["cg"]{$matches[2]}["custom_data"]{$matches[3]}{$matches[4]} = $val;
+			}else{ /* this is a data query field */
+				$values["sg"]{$matches[1]}{$matches[2]}["custom_data"]{$matches[3]}{$matches[4]} = $val;
+			}
+		}elseif (preg_match("/^di_(\d+)_(\d+)_(\d+)_(\d+)_(\w+)/", $var, $matches)) { /* 1: snmp_query_id, 2: graph_template_id, 3: data_template_id, 4:local_data_template_rrd_id, 5:field_name */
+			if (empty($matches[1])) { /* this is a new graph from template field */
+				$values["cg"]{$matches[2]}["data_template_item"]{$matches[4]}{$matches[5]} = $val;
+			}else{ /* this is a data query field */
+				$values["sg"]{$matches[1]}{$matches[2]}["data_template_item"]{$matches[4]}{$matches[5]} = $val;
+			}
+		}
+	}
+
+	while (list($form_type, $form_array) = each($selected_graphs_array)) {
+		$current_form_type = $form_type;
+		while (list($form_id1, $form_array2) = each($form_array)) {
+			/* enumerate information from the arrays stored in post variables */
+			if ($form_type == "cg") {
+				$graph_template_id = $form_id1;
+			}elseif ($form_type == "sg") {
+				while (list($form_id2, $form_array3) = each($form_array2)) {
+					$snmp_index_array = $form_array3;
+
+					$snmp_query_array["snmp_query_id"] = $form_id1;
+					$snmp_query_array["snmp_index_on"] = get_best_data_query_index_type($host_id, $form_id1);
+					$snmp_query_array["snmp_query_graph_id"] = $form_id2;
+				}
+
+				$graph_template_id = db_fetch_cell("select graph_template_id from snmp_query_graph where id=" . $snmp_query_array["snmp_query_graph_id"]);
+			}
+
+			if ($current_form_type == "cg") {
+				$values = array();
+				$return_array = create_complete_graph_from_template($graph_template_id, $host_id, "", $values["cg"]);
+				debug_log_insert("new_graphs", "Created graph: " . get_graph_title($return_array["local_graph_id"]));
+				automation_debug("        Created graph: " . get_graph_title($return_array["local_graph_id"]) . "\n");
+				$count_graph++;
+			}elseif ($current_form_type == "sg") {
+				while (list($snmp_index, $true) = each($snmp_index_array)) {
+					$snmp_query_array["snmp_index"] = decode_data_query_index($snmp_index, $snmp_query_array["snmp_query_id"], $host_id);
+					$return_array = create_complete_graph_from_template($graph_template_id, $host_id, $snmp_query_array, $values["sg"]{$snmp_query_array["snmp_query_id"]});
+					debug_log_insert("new_graphs", "Created graph: " . get_graph_title($return_array["local_graph_id"]));
+					automation_debug("        Created graph: " . get_graph_title($return_array["local_graph_id"]) . "\n");
+					$count_graph++;
+				}
+			}
+		}
+	}
+
+	/* lastly push host-specific information to our data sources */
+	push_out_host($host_id,0);
+}
+
+function automation_recreate_tables () {
+	automation_debug("Request received to recreate the Discover Plugin's tables\n");
+	automation_debug("Clearing the discovered devices table\n");
+	db_execute("TRUNCATE TABLE automation_devices");
+}
+
+function automation_ip_hash($ip) {
+	$ips = explode('.',$ip);
+	$hash = ($ips[0] * 16777216) + ($ips[1] * 65536) + ($ips[2] * 256) + $ips[3];
+	return $hash;
+}
+
+function automation_find_os($text) {
+	global $os;
+	for ($a = 0; $a < count($os); $a++) {
+		if (stristr($text, $os[$a]['sysdescr'])) {
+			return $os[$a];
+		}
+	}
+
+	return false;
+}
+
+function automation_debug($text) {
+	global $debug;
+
+	if ($debug)	print $text;
+}
+
+function automation_calculate_start($hosts, $arg) {
+	if (!isset($hosts[$arg])) return false;
+	$h = trim($hosts[$arg]);
+
+	// 10.1.0.1
+	if (preg_match("/^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$/", $h)) {
+		return $h;
+	}
+
+	// 10.1.0.*
+	if (preg_match("/^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.\*$/", $h)) {
+		return substr($h,0,-1) . "1";
+	}
+	// 10.1.*.1
+	if (preg_match("/^([0-9]{1,3}\.[0-9]{1,3}\.)\*(\.[0-9]{1,3})$/", $h, $matches)) {
+		return $matches[1] . "1" . $matches[2];
+	}
+
+	// 10.1.0.0/24
+	if (preg_match("/^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.0\/[0-9]{1,2}$/", $h)) {
+		preg_match_all("/^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\./", $h, $matches);
+		return $matches[0][0] . "1";
+	}
+
+	// 10.1.0./24
+	if (preg_match("/^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.\/[0-9]{1,2}$/", $h)) {
+		preg_match_all("/^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\./", $h, $matches);
+		return $matches[0][0] . "1";
+	}
+
+	// 10.1.0/24
+	if (preg_match("/^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\/[0-9]{1,2}$/", $h)) {
+		preg_match_all("/^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}/", $h, $matches);
+		return $matches[0][0] . ".1";
+	}
+
+	// 10.1.0.172/24
+	if (preg_match("/^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\/[0-9]{1,2}$/", $h)) {
+		preg_match_all("/^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}/", $h, $matches);
+		return $matches[0][0];
+	}
+
+	// 10.1.0.0/255.255.255.0
+	if (preg_match("/^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.0\/255\.255\.[0-9]{1,3}\.0$/", $h)) {
+		preg_match_all("/^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\./", $h, $matches);
+		return $matches[0][0] . "1";
+	}
+
+	// 10.1.0.19/255.255.255.240
+	if (preg_match("/^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\/255\.255\.255\.[0-9]{1,3}\$/", $h)) {
+		preg_match_all("/^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}/", $h, $matches);
+		return $matches[0][0];
+	}
+
+	// 10.1.0.19-10.1.0.27
+	if (preg_match("/^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}-[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\$/", $h)) {
+		preg_match_all("/^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}-/", $h, $matches);
+		return substr($matches[0][0], 0, -1);
+	}
+	automation_debug("  Could not calculate starting address!\n");
+	return false;
+}
+
+function automation_calculate_total_ips($hosts, $arg) {
+	if (!isset($hosts[$arg])) return false;
+	$h = trim($hosts[$arg]);
+
+	// 10.1.0.1
+	if (preg_match("/^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$/", $h)) {
+		return 1;
+	}
+
+	// 10.1.0.*
+	if (preg_match("/^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.\*$/", $h)) {
+		return "254";
+	}
+
+	// 10.1.*.1
+	if (preg_match("/^[0-9]{1,3}\.[0-9]{1,3}\.\*\.[0-9]{1,3}$/", $h)) {
+		return "254";
+	}
+
+	// 10.1.0.0/24
+	if (preg_match("/^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.0\/[0-9]{1,2}$/", $h)) {
+		preg_match_all("/\/[0-9]{1,2}$/", $h, $matches);
+		$subnet = substr($matches[0][0], 1);
+		$total = 1;
+		for ($x = 0; $x < (32-$subnet); $x++) {
+			$total = $total * 2;
+		}
+		return $total-2;
+	}
+
+	// 10.1.0./24
+	if (preg_match("/^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.\/[0-9]{1,2}$/", $h)) {
+		preg_match_all("/\/[0-9]{1,2}$/", $h, $matches);
+		$subnet = substr($matches[0][0], 1);
+		$total = 1;
+		for ($x = 0; $x < (32-$subnet); $x++) {
+			$total = $total * 2;
+		}
+		return $total-2;
+	}
+
+	// 10.1.0/24
+	if (preg_match("/^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\/[0-9]{1,2}$/", $h)) {
+		preg_match_all("/\/[0-9]{1,2}$/", $h, $matches);
+		$subnet = substr($matches[0][0], 1);
+		$total = 1;
+		for ($x = 0; $x < (32-$subnet); $x++) {
+			$total = $total * 2;
+		}
+		return $total-2;
+	}
+
+	// 10.1.0.172/24
+	if (preg_match("/^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\/[0-9]{1,2}$/", $h)) {
+		preg_match_all("/\/[0-9]{1,2}$/", $h, $matches);
+		$subnet = substr($matches[0][0], 1);
+		$total = 1;
+		for ($x = 0; $x < (32-$subnet); $x++) {
+			$total = $total * 2;
+		}
+		return $total-2;
+	}
+
+	// 10.1.0.0/255.255.255.0
+	if (preg_match("/^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.0\/255\.255\.[0-9]{1,3}\.0$/", $h)) {
+		preg_match_all("/[0-9]{1,3}.0$/", $h, $matches);
+		$subnet = substr($matches[0][0], 0, -2);
+		return ((256 - $subnet)*256) - 2;
+	}
+
+	// 10.1.0.19/255.255.255.240
+	if (preg_match("/^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\/255\.255\.255\.[0-9]{1,3}\$/", $h)) {
+		preg_match_all("/\.[0-9]{1,3}$/", $h, $matches);
+		$subnet = substr($matches[0][0], 1);
+		return (256 - $subnet)-1;
+	}
+
+	// 10.1.0.19-10.1.0.27
+	if (preg_match("/^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}-[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\$/", $h)) {
+		preg_match_all("/^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}-/", $h, $matches);
+		preg_match_all("/-[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$/", $h, $matches2);
+		$start = substr($matches[0][0], 0, -1);
+		$end = substr($matches2[0][0], 1);
+		$starta = explode('.', $start);
+		$enda = explode('.', $end);
+		$start = ($starta[0] * 16777216) + ($starta[1] * 65536) + ($starta[2] * 256) + $starta[3];
+		$end = ($enda[0] * 16777216) + ($enda[1] * 65536) + ($enda[2] * 256) + $enda[3];
+		return $end - $start + 1;
+	}
+
+	automation_debug("  Could not calculate total IPs!\n");
+
+	return false;
+}
+
+function automation_get_next_host ($start, $total, $count, $hosts, $arg) {
+	if (!isset($hosts[$arg])) return false;
+	$h = trim($hosts[$arg]);
+
+	if ($count == $total || $total < 1)
+		return false;
+
+	if (preg_match("/^([0-9]{1,3}\.[0-9]{1,3}\.)\*(\.[0-9]{1,3})$/", $h, $matches)) {
+		// 10.1.*.1
+		return $matches[1] . ++$count . $matches[2];
+	} else {
+		// other cases
+		$ip = explode('.', $start);
+		$y = 16777216;
+		for ($x = 0; $x < 4; $x++) {
+			$ip[$x] += intval($count/$y);
+			$count -= ((intval($count/$y))*256);
+			$y = $y / 256;
+			if ($ip[$x] == 256 && $x > 0) {
+				$ip[$x] = 0;
+				$ip[$x-1] += 1;
+			}
+		}
+		return implode('.',$ip);
+	}
+}
+
+function automation_valid_snmp_device (&$device) {
+	/* initialize variable */
+	$host_up = FALSE;
+	$device["snmp_status"] = HOST_DOWN;
+	$device["ping_status"] = 0;
+
+	/* force php to return numeric oid's */
+	if (function_exists("snmp_set_oid_numeric_print")) {
+		snmp_set_oid_numeric_print(TRUE);
+	}
+
+	$snmp_username = read_config_option('snmp_username');
+	$snmp_password = read_config_option('snmp_password');
+	$snmp_auth_protocol = read_config_option('snmp_auth_protocol');
+	$snmp_priv_passphrase = read_config_option('snmp_priv_passphrase');
+	$snmp_priv_protocol = read_config_option('snmp_priv_protocol');
+	$snmp_context = '';
+
+	$device['snmp_auth_username'] = '';
+	$device['snmp_password'] = '';
+	$device['snmp_auth_protocol'] = '';
+	$device['snmp_priv_passphrase'] = '';
+	$device['snmp_priv_protocol'] = '';
+	$device['snmp_context'] = '';
+
+	$version = array(2 => '1', 1 => '2');
+	if ($snmp_username != '' && $snmp_password != '') {
+		$version[0] = '3';
+	}
+	$version = array_reverse($version);
+
+	if ($device['snmp_readstrings'] != '') {
+		/* loop through the default and then other common for the correct answer */
+		$read_strings = explode(':', $device['snmp_readstrings']);
+
+		$device['snmp_status'] = HOST_DOWN;
+		$host_up = FALSE;
+
+		foreach ($version as $v) {
+			automation_debug(" - checking SNMP V$v");
+			if ($v == 3) {
+				$device['snmp_username'] = $snmp_username;
+				$device['snmp_password'] = $snmp_password;
+				$device['snmp_auth_protocol'] = $snmp_auth_protocol;
+				$device['snmp_priv_passphrase'] = $snmp_priv_passphrase;
+				$device['snmp_priv_protocol'] = $snmp_priv_protocol;
+				$device['snmp_context'] = $snmp_context;
+
+				/* Community string is not used for v3 */
+				$snmp_sysObjectID = @cacti_snmp_get($device['hostname'], '', 	'.1.3.6.1.2.1.1.2.0', $v,
+						$device['snmp_username'], $device['snmp_password'], $device['snmp_auth_protocol'], $device['snmp_priv_passphrase'], $device['snmp_priv_protocol'], $device['snmp_context'],
+						$device['snmp_port'], $device['snmp_timeout']);
+				$snmp_sysObjectID = str_replace('enterprises', '.1.3.6.1.4.1', $snmp_sysObjectID);
+				$snmp_sysObjectID = str_replace('OID: ', '', $snmp_sysObjectID);
+				$snmp_sysObjectID = str_replace('.iso', '.1', $snmp_sysObjectID);
+
+				if ((strlen($snmp_sysObjectID) > 0) &&
+					(!substr_count($snmp_sysObjectID, 'No Such Object')) && 
+					(!substr_count($snmp_sysObjectID, 'Error In'))) {
+					$snmp_sysObjectID = trim(str_replace('"', '', $snmp_sysObjectID));
+					$device['snmp_readstring'] = '';
+					$device['snmp_status'] = HOST_UP;
+					$device['snmp_version'] = $v;
+					$host_up = TRUE;
+					break;
+				}
+			} else {
+				$device['snmp_username'] = '';
+				$device['snmp_password'] = '';
+				$device['snmp_auth_protocol'] = '';
+				$device['snmp_priv_passphrase'] = '';
+				$device['snmp_priv_protocol'] = '';
+				$device['snmp_context'] = '';
+
+				foreach ($read_strings as $snmp_readstring) {
+					automation_debug(" - checking community $snmp_readstring");
+					$snmp_sysObjectID = @cacti_snmp_get($device['hostname'], $snmp_readstring, 	'.1.3.6.1.2.1.1.2.0', $v,
+							$device['snmp_username'], $device['snmp_password'], $device['snmp_auth_protocol'], $device['snmp_priv_passphrase'], $device['snmp_priv_protocol'], $device['snmp_context'],
+							$device['snmp_port'], $device['snmp_timeout']);
+					$snmp_sysObjectID = str_replace('enterprises', '.1.3.6.1.4.1', $snmp_sysObjectID);
+					$snmp_sysObjectID = str_replace('OID: ', '', $snmp_sysObjectID);
+					$snmp_sysObjectID = str_replace('.iso', '.1', $snmp_sysObjectID);
+					if ((strlen($snmp_sysObjectID) > 0) && 
+						(!substr_count($snmp_sysObjectID, 'No Such Object')) && 
+						(!substr_count($snmp_sysObjectID, 'Error In'))) {
+						$snmp_sysObjectID = trim(str_replace('"', '', $snmp_sysObjectID));
+						$device['snmp_readstring'] = $snmp_readstring;
+						$device['snmp_status'] = HOST_UP;
+						$device['snmp_version'] = $v;
+						$host_up = TRUE;
+						break;
+					}
+				}
+			}
+
+			if ($host_up == TRUE) {
+				break;
+			}
+
+		}
+	}
+
+	if ($host_up) {
+		$device["snmp_sysObjectID"] = $snmp_sysObjectID;
+		$device["community"] = $device["snmp_readstring"];
+		/* get system name */
+		$snmp_sysName = @cacti_snmp_get($device['hostname'], $device['snmp_readstring'],
+					'.1.3.6.1.2.1.1.5.0', $device['snmp_version'],
+					$device['snmp_username'], $device['snmp_password'], $device['snmp_auth_protocol'], $device['snmp_priv_passphrase'], $device['snmp_priv_protocol'], $device['snmp_context'],
+					$device['snmp_port'], $device['snmp_timeout']);
+
+		if (strlen($snmp_sysName) > 0) {
+			$snmp_sysName = trim(strtr($snmp_sysName,"\""," "));
+			$device["snmp_sysName"] = $snmp_sysName;
+		}
+
+		/* get system location */
+		$snmp_sysLocation = @cacti_snmp_get($device['hostname'], $device['snmp_readstring'],
+					'.1.3.6.1.2.1.1.6.0', $device['snmp_version'],
+					$device['snmp_username'], $device['snmp_password'], $device['snmp_auth_protocol'], $device['snmp_priv_passphrase'], $device['snmp_priv_protocol'], $device['snmp_context'],
+					$device['snmp_port'], $device['snmp_timeout']);
+
+		if (strlen($snmp_sysLocation) > 0) {
+			$snmp_sysLocation = trim(strtr($snmp_sysLocation,"\""," "));
+			$device["snmp_sysLocation"] = $snmp_sysLocation;
+		}
+
+		/* get system contact */
+		$snmp_sysContact = @cacti_snmp_get($device['hostname'], $device['snmp_readstring'],
+					'.1.3.6.1.2.1.1.4.0', $device['snmp_version'],
+					$device['snmp_username'], $device['snmp_password'], $device['snmp_auth_protocol'], $device['snmp_priv_passphrase'], $device['snmp_priv_protocol'], $device['snmp_context'],
+					$device['snmp_port'], $device['snmp_timeout']);
+
+		if (strlen($snmp_sysContact) > 0) {
+			$snmp_sysContact = trim(strtr($snmp_sysContact,"\""," "));
+			$device["snmp_sysContact"] = $snmp_sysContact;
+		}
+
+		/* get system description */
+		$snmp_sysDescr = @cacti_snmp_get($device['hostname'], $device['snmp_readstring'],
+					'.1.3.6.1.2.1.1.1.0', $device['snmp_version'],
+					$device['snmp_username'], $device['snmp_password'], $device['snmp_auth_protocol'], $device['snmp_priv_passphrase'], $device['snmp_priv_protocol'], $device['snmp_context'],
+					$device['snmp_port'], $device['snmp_timeout']);
+
+		if (strlen($snmp_sysDescr) > 0) {
+			$snmp_sysDescr = trim(strtr($snmp_sysDescr,"\""," "));
+			$device["snmp_sysDescr"] = $snmp_sysDescr;
+		}
+
+		/* get system uptime */
+		$snmp_sysUptime = @cacti_snmp_get($device['hostname'], $device['snmp_readstring'],
+					'.1.3.6.1.2.1.1.3.0', $device['snmp_version'],
+					$device['snmp_username'], $device['snmp_password'], $device['snmp_auth_protocol'], $device['snmp_priv_passphrase'], $device['snmp_priv_protocol'], $device['snmp_context'],
+					$device['snmp_port'], $device['snmp_timeout']);
+
+		if (strlen($snmp_sysUptime) > 0) {
+			$snmp_sysUptime = trim(strtr($snmp_sysUptime,"\""," "));
+			$device["snmp_sysUptime"] = $snmp_sysUptime;
+		}
+	}
+
+	return $host_up;
+}
+
+/*	gethostbyaddr_wtimeout - This function provides a good method of performing
+  a rapid lookup of a DNS entry for a host so long as you don't have to look far.
+*/
+function automation_get_dns_from_ip($ip, $dns, $timeout = 1000) {
+	/* random transaction number (for routers etc to get the reply back) */
+	$data = rand(10, 99);
+
+	/* trim it to 2 bytes */
+	$data = substr($data, 0, 2);
+
+	/* create request header */
+	$data .= "\1\0\0\1\0\0\0\0\0\0";
+
+	/* split IP into octets */
+	$octets = explode(".", $ip);
+
+	/* perform a quick error check */
+	if (count($octets) != 4) return "ERROR";
+
+	/* needs a byte to indicate the length of each segment of the request */
+	for ($x=3; $x>=0; $x--) {
+		switch (strlen($octets[$x])) {
+		case 1: // 1 byte long segment
+			$data .= "\1"; break;
+		case 2: // 2 byte long segment
+			$data .= "\2"; break;
+		case 3: // 3 byte long segment
+			$data .= "\3"; break;
+		default: // segment is too big, invalid IP
+			return "ERROR";
+		}
+
+		/* and the segment itself */
+		$data .= $octets[$x];
+	}
+
+	/* and the final bit of the request */
+	$data .= "\7in-addr\4arpa\0\0\x0C\0\1";
+
+	/* create UDP socket */
+	$handle = @fsockopen("udp://$dns", 53);
+
+	@stream_set_timeout($handle, floor($timeout/1000), ($timeout*1000)%1000000);
+	@stream_set_blocking($handle, 1);
+
+	/* send our request (and store request size so we can cheat later) */
+	$requestsize = @fwrite($handle, $data);
+
+	/* get the response */
+	$response = @fread($handle, 1000);
+
+	/* check to see if it timed out */
+	$info = @stream_get_meta_data($handle);
+
+	/* close the socket */
+	@fclose($handle);
+
+	if ($info["timed_out"]) {
+		return "timed_out";
+	}
+
+	/* more error handling */
+	if ($response == "") { return $ip; }
+
+	/* parse the response and find the response type */
+	$type = @unpack("s", substr($response, $requestsize+2));
+
+	if (isset($type[1]) && $type[1] == 0x0C00) {
+		/* set up our variables */
+		$host = "";
+		$len = 0;
+
+		/* set our pointer at the beginning of the hostname uses the request
+		   size from earlier rather than work it out.
+		*/
+		$position = $requestsize + 12;
+
+		/* reconstruct the hostname */
+		do {
+			/* get segment size */
+			$len = unpack("c", substr($response, $position));
+
+			/* null terminated string, so length 0 = finished */
+			if ($len[1] == 0) {
+				/* return the hostname, without the trailing '.' */
+				return strtoupper(substr($host, 0, strlen($host) -1));
+			}
+
+			/* add the next segment to our host */
+			$host .= substr($response, $position+1, $len[1]) . ".";
+
+			/* move pointer on to the next segment */
+			$position += $len[1] + 1;
+		} while ($len != 0);
+
+		/* error - return the hostname we constructed (without the . on the end) */
+		return strtoupper($ip);
+	}
+
+	/* error - return the hostname */
+	return strtoupper($ip);
 }

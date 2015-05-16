@@ -213,7 +213,7 @@ html_start_box('<strong>Discovery Filters</strong>', '100%', $colors['header'], 
 <tr class='even'>
 	<td class='noprint'>
 	<form id='form_devices' method='get' action='automation_devices.php'>
-		<table cellpadding='2' cellspacing='0'>
+		<table class='filterTable'>
 			<tr class='noprint'>
 				<td>
 					Search
@@ -224,7 +224,7 @@ html_start_box('<strong>Discovery Filters</strong>', '100%', $colors['header'], 
 				<td>
 					Status
 				</td>
-				<td width='1'>
+				<td>
 					<select id='status' onChange='applyFilter()'>
 						<option value='<?php if (get_request_var_request('status') == '') {?>' selected<?php }?>>Any</option>
 						<?php
@@ -269,7 +269,7 @@ html_start_box('<strong>Discovery Filters</strong>', '100%', $colors['header'], 
 				<td>
 					Devices
 				</td>
-				<td width='1'>
+				<td>
 					<select id='rows' onChange='applyFilter()'>
 						<option value='-1'<?php if (get_request_var_request('rows') == '-1') {?> selected<?php }?>>Default</option>
 						<?php

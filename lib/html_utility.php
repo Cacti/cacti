@@ -145,13 +145,13 @@ function form_alternate_row($row_id = '', $light = false, $disabled = false) {
    @arg $width - the width of the table element
    @arg $style - the style to apply to the table element */
 function form_selectable_cell($contents, $id, $width='', $style='') {
-	print "\t<td" . (strlen($width) ? " width='$width'" : '') . (strlen($style) ? " style='$style;'" : '') . '>' . $contents . "</td>\n";
+	print "\t<td style='width:$width;$style;'>" . $contents . "</td>\n";
 }
 
 /* form_checkbox_cell - format's a tables checkbox form element so that the cacti js actions work on it
    @arg $title - the text that will be displayed if your hover over the checkbox */
 function form_checkbox_cell($title, $id, $disabled = false) {
-	print "\t<td class='checkbox' style='" . get_checkbox_style() . "' width='1%' align='right'>\n";
+	print "\t<td class='checkbox' style='width:1%;text-align:right;" . get_checkbox_style() . "'>\n";
 	print "\t\t<input type='checkbox' " . ($disabled ? "disabled='disabled' class='disabled'":'') . " style='margin: 0px;' id='chk_" . $id . "' name='chk_" . $id . "'>\n";
 	print "\t</td>\n";
 }

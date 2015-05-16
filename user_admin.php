@@ -748,9 +748,9 @@ function graph_perms_edit($tab, $header_label) {
 
 		?>
 		<tr class='even'>
-			<td><table cellspacing="0" cellpadding="2"><tr>
-			<td style="white-space:nowrap;" width="120">Default Graph Policy for this User</td>
-			<td width="10"> 
+			<td><table><tr>
+			<td style="width:120px;white-space:nowrap;" >Default Graph Policy for this User</td>
+			<td style="width:10;"> 
 				<?php form_dropdown('policy_graphs',$policy_array,'','',$policy['policy_graphs'],'',''); ?>
 			</td>
 			<td>
@@ -1045,9 +1045,9 @@ function graph_perms_edit($tab, $header_label) {
 
 		?>
 		<tr class='even'>
-			<td><table cellspacing="0" cellpadding="2"><tr>
-			<td style="white-space:nowrap;" width="120">Default Device Policy for this User</td>
-			<td width="10"> 
+			<td><table><tr>
+			<td style="width:120px;white-space:nowrap;">Default Device Policy for this User</td>
+			<td style="width:10;"> 
 				<?php form_dropdown('policy_hosts',$policy_array,'','',$policy['policy_hosts'],'',''); ?>
 			</td>
 			<td>
@@ -1194,9 +1194,9 @@ function graph_perms_edit($tab, $header_label) {
 
 		?>
 		<tr class='even'>
-			<td><table cellspacing="0" cellpadding="2"><tr>
-			<td style="white-space:nowrap;" width="120">Default Graph Template Policy for this User</td>
-			<td width="10"> 
+			<td><table><tr>
+			<td style="width:120px;white-space:nowrap;">Default Graph Template Policy for this User</td>
+			<td style="width:10;"> 
 				<?php form_dropdown('policy_graph_templates',$policy_array,'','',$policy['policy_graph_templates'],'',''); ?>
 			</td>
 			<td>
@@ -1334,9 +1334,9 @@ function graph_perms_edit($tab, $header_label) {
 
 		?>
 		<tr class='even'>
-			<td><table cellspacing="0" cellpadding="2"><tr>
-			<td style="white-space:nowrap;" width="120">Default Tree Policy for this User</td>
-			<td width="10"> 
+			<td><table><tr>
+			<td style="width:120px;white-space:nowrap;">Default Tree Policy for this User</td>
+			<td style="width:10px;"> 
 				<?php form_dropdown('policy_trees',$policy_array,'','',$policy['policy_trees'],'',''); ?>
 			</td>
 			<td>
@@ -1472,12 +1472,12 @@ function user_realms_edit($header_label) {
 
 	print "	<tr class='cactiTableTitle'>
 			<td class='textHeaderDark'><strong>Realm Permissions</strong> $header_label</td>
-			<td class='tableHeader' width='1%' align='center' style='" . get_checkbox_style() . "'><input type='checkbox' style='margin: 0px;' name='all' title='Select All' onClick='selectAllRealms(this.checked)'></td>\n
+			<td class='tableHeader' style='width:1%;text-align:center;" . get_checkbox_style() . "'><input type='checkbox' style='margin: 0px;' name='all' title='Select All' onClick='selectAllRealms(this.checked)'></td>\n
 		</tr>\n";
 
 	/* do cacti realms first */
 	print "<tr class='tableHeader'><th colspan='2'>Base Permissions</th></tr>\n";
-	print "<tr class='odd'><td colspan='4' width='100%'><table width='100%'><tr><td valign='top' style='white-space:nowrap;' width='20%'>\n";
+	print "<tr class='odd'><td colspan='4' style='width:100%;'><table style='width:100%;'><tr><td style='width:20%;veritcal-align:top;white-space:nowrap;'>\n";
 	$i = 1;
 	$j = 1;
 	$base = array(7,8,15,1,2,3,4,5,6,9,10,11,12,13,14,16,17,18,19,20,21,22,23,101);
@@ -1498,7 +1498,7 @@ function user_realms_edit($header_label) {
 			unset($all_realms[$realm]);
 
 			if ($j == 5) {
-				print "</td><td valign='top' width='20%' style='white-space:nowrap;'>\n";
+				print "</td><td style='width:20%;vertical-align:top;white-space:nowrap;'>\n";
 				$j = 1;
 			}
 
@@ -1517,7 +1517,7 @@ function user_realms_edit($header_label) {
 		ORDER BY pc.name, pr.display');
 
 	print "<tr class='tableHeader'><th colspan='2'>Plugin Permissions</th></tr>\n";
-	print "<tr class='odd'><td colspan='4' width='100%'><table width='100%' cellpadding='0' cellspacing='0'><tr><td valign='top' width='20%' style='white-space:nowrap;'>\n";
+	print "<tr class='odd'><td colspan='4' style='width:100%;'><table><tr><td style='width:20%;vertical-align:top;white-space:nowrap;'>\n";
 	if (sizeof($realms)) {
 		$last_plugin = 'none';
 		$i = 1;
@@ -1528,14 +1528,14 @@ function user_realms_edit($header_label) {
 		foreach($realms as $r) {
 			if ($last_plugin != $r['name']) {
 				if ($break) {
-					print "</td><td valign='top' width='20%' style='white-space:nowrap;'>\n";
+					print "</td><td style='width:20%;vertical-align:top;white-space:nowrap;'>\n";
 					$break = false;
 					$j = 1;
 				}
 				print '<strong>' . $r['name'] . "</strong><br>\n";
 				$last_plugin = $r['name'];
 			}elseif ($break) {
-				print "</td><td valign='top' width='20%' style='white-space:nowrap;'>\n";
+				print "</td><td style='width:20%;vertical-align:top;white-space:nowrap;'>\n";
 				$break = false;
 				$j = 1;
 				print '<strong>' . $r['name'] . " (cont)</strong><br>\n";
@@ -1572,7 +1572,7 @@ function user_realms_edit($header_label) {
 	/* get the old PIA 1.x realms */
 	if (sizeof($all_realms)) {
 		if ($break) {
-			print "</td><td valign='top' width='20%' style='white-space:nowrap;'>\n";
+			print "</td><td style='width:20%;vertical-align:top;white-space:nowrap;'>\n";
 		}
 		print "<strong>Legacy 1.x Plugins</strong><br>\n";
 		foreach($all_realms as $realm => $name) {
@@ -1986,9 +1986,9 @@ function user() {
 	<tr class='even'>
 		<td>
 		<form id='form_user_admin' action='user_admin.php'>
-			<table cellpadding='2' cellspacing='0'>
+			<table class='filterTable'>
 				<tr>
-					<td width='50'>
+					<td>
 						Search
 					</td>
 					<td>
@@ -2463,9 +2463,9 @@ function graph_filter($header_label) {
 	<tr class='even'>
 		<td>
 		<form id='forms' method='post' action='user_admin.php'>
-			<table cellpadding='2' cellspacing='0'>
+			<table class='filterTable'>
 				<tr>
-					<td width='50'>
+					<td>
 						Search
 					</td>
 					<td>
@@ -2575,9 +2575,9 @@ function group_filter($header_label) {
 	<tr class='even'>
 		<td>
 		<form id='forms' method='post' action='user_admin.php'>
-			<table cellpadding='2' cellspacing='0' border='0'>
+			<table class='filterTable'>
 				<tr>
-					<td width='50'>
+					<td>
 						Search
 					</td>
 					<td>
@@ -2666,9 +2666,9 @@ function device_filter($header_label) {
 	<tr class='even'>
 		<td>
 		<form id='forms' method='post' action='user_admin.php'>
-			<table cellpadding='2' cellspacing='0' border='0'>
+			<table class='filterTable'>
 				<tr>
-					<td width='50'>
+					<td>
 						Search
 					</td>
 					<td>
@@ -2774,9 +2774,9 @@ function template_filter($header_label) {
 	<tr class='even'>
 		<td>
 		<form id='forms' method='post' action='user_admin.php'>
-			<table cellpadding='2' cellspacing='0'>
+			<table class='filterTable'>
 				<tr>
-					<td width='50'>
+					<td>
 						Search
 					</td>
 					<td>
@@ -2864,9 +2864,9 @@ function tree_filter($header_label) {
 	<tr class='even'>
 		<td>
 		<form id='forms' method='post' action='user_admin.php'>
-			<table cellpadding='2' cellspacing='0'>
+			<table class='filterTable'>
 				<tr>
-					<td width='50'>
+					<td>
 						Search
 					</td>
 					<td>
@@ -2954,9 +2954,9 @@ function member_filter($header_label) {
 	<tr class='even'>
 		<td>
 		<form id='forms' method='post' action='user_admin.php'>
-			<table cellpadding='2' cellspacing='0' border='0'>
+			<table class='filterTable'>
 				<tr>
-					<td width='50'>
+					<td>
 						Search
 					</td>
 					<td>

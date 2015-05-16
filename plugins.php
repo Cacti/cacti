@@ -370,9 +370,9 @@ function update_show_current () {
 	<tr class='even noprint'>
 		<td class="noprint">
 		<form id="form_plugins" method="get" action="plugins.php">
-			<table cellpadding="2" cellspacing="0">
+			<table class='filterTable'>
 				<tr class="noprint">
-					<td width="50">
+					<td>
 						Search
 					</td>
 					<td>

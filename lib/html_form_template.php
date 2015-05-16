@@ -470,7 +470,7 @@ function draw_nontemplated_fields_custom_data($data_template_data_id, $field_nam
 					print "<tr class='odd'>\n";
 				}
 
-				print "<td width='50%'><strong>" . $field["name"] . "</strong></td>\n";
+				print "<td style='width:50%;'><strong>" . $field["name"] . "</strong></td>\n";
 				print "<td>";
 
 				draw_custom_data_row($form_field_name, $field["id"], $data["id"], $old_value);

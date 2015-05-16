@@ -177,12 +177,15 @@ function gprint_presets_edit() {
 		$header_label = '[new]';
 	}
 
+	print "<form id='gprint_presets' action='gprint_presets.php' method='post'>\n";
+
 	html_start_box("<strong>GPRINT Presets</strong> $header_label", '100%', '', '3', 'center', '');
 
 	draw_edit_form(array(
-		'config' => array(),
+		'config' => array('no_form_tag' => true),
 		'fields' => inject_form_variables($fields_grprint_presets_edit, (isset($gprint_preset) ? $gprint_preset : array()))
-		));
+		)
+	);
 
 	html_end_box();
 
@@ -257,9 +260,9 @@ function gprint_presets() {
 	<tr class='even'>
 		<td>
 			<form id='form_gprint' action='gprint_presets.php'>
-			<table cellpadding='2' cellspacing='0' border='0'>
+			<table class='filterTable'>
 				<tr>
-					<td width='50'>
+					<td>
 						Search
 					</td>
 					<td>

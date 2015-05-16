@@ -314,6 +314,8 @@ function field_edit() {
 		return;
 	}
 
+	print "<form id='data_input' action='data_input.php' method='post'>\n";
+
 	html_start_box("<strong>$header_name Fields</strong> [edit: " . htmlspecialchars($data_input['name']) . ']', '100%', '', '3', 'center', '');
 
 	$form_array = array();
@@ -341,7 +343,7 @@ function field_edit() {
 	}
 
 	draw_edit_form(array(
-		'config' => array(),
+		'config' => array('no_form_tag' => true),
 		'fields' => $form_array + inject_form_variables($fields_data_input_field_edit, (isset($field) ? $field : array()), $current_field_type, $_REQUEST)
 		));
 
@@ -381,10 +383,12 @@ function data_edit() {
 		$header_label = '[new]';
 	}
 
+	print "<form id='data_input' action='data_input.php' method='post'>\n";
+
 	html_start_box("<strong>Data Input Methods</strong> $header_label", '100%', '', '3', 'center', '');
 
 	draw_edit_form(array(
-		'config' => array(),
+		'config' => array('no_form_tag' => true),
 		'fields' => inject_form_variables($fields_data_input_edit, (isset($data_input) ? $data_input : array()))
 		));
 
@@ -525,9 +529,9 @@ function data() {
 	<tr class='even noprint'>
 		<td class="noprint">
 		<form id="form_data_input" method="get" action="data_input.php">
-			<table cellpadding="2" cellspacing="0">
+			<table class='filterTable'>
 				<tr class="noprint">
-					<td width="50">
+					<td>
 						Search
 					</td>
 					<td>

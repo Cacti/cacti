@@ -426,12 +426,15 @@ function template_edit() {
 		$header_label = '[new]';
 	}
 
+	print "<form id='data_templates' action='data_templates.php' method='post'>\n";
+
 	html_start_box('<strong>Data Templates</strong> ' . htmlspecialchars($header_label), '100%', '', '3', 'center', '');
 
 	draw_edit_form(array(
-		'config' => array(),
+		'config' => array('no_form_tag' => 'true'),
 		'fields' => inject_form_variables($fields_data_template_template_edit, (isset($template) ? $template : array()), (isset($template_data) ? $template_data : array()), $_REQUEST)
-		));
+		)
+	);
 
 	html_end_box();
 
@@ -462,12 +465,10 @@ function template_edit() {
 
 	draw_edit_form(
 		array(
-			'config' => array(
-				'no_form_tag' => true
-				),
+			'config' => array('no_form_tag' => true),
 			'fields' => inject_form_variables($form_array, (isset($template_data) ? $template_data : array()))
-			)
-		);
+		)
+	);
 
 	html_end_box();
 
@@ -491,12 +492,12 @@ function template_edit() {
 		if (sizeof($template_data_rrds) > 1) {
 
 		/* draw the data source tabs on the top of the page */
-		print "	<div class='tabs' style='float:left;'><nav><ul>\n";
+		print "<div class='tabs' style='float:left;'><nav><ul>\n";
 
 		foreach ($template_data_rrds as $template_data_rrd) {
 			$i++;
-			print "	<li>
-				<a " . (($template_data_rrd['id'] == $_REQUEST['view_rrd']) ? "class='selected'" : "class=''") . " href='" . htmlspecialchars('data_templates.php?action=template_edit&id=' . $_REQUEST['id'] . '&view_rrd=' . $template_data_rrd['id']) . "'>$i: " . htmlspecialchars($template_data_rrd['data_source_name']) . "</a>
+			print "<li>
+				<a style='line-height:18px;' " . (($template_data_rrd['id'] == $_REQUEST['view_rrd']) ? "class='selected'" : "class=''") . " href='" . htmlspecialchars('data_templates.php?action=template_edit&id=' . $_REQUEST['id'] . '&view_rrd=' . $template_data_rrd['id']) . "'>$i: " . htmlspecialchars($template_data_rrd['data_source_name']) . "</a>
 				<span><a class='deleteMarker' href='" . htmlspecialchars('data_templates.php?action=rrd_remove&id=' . $template_data_rrd['id'] . '&data_template_id=' . $_REQUEST['id']) . "'><img src='images/delete_icon.gif' border='0' alt='Delete'></a></span></li>\n";
 		}
 
@@ -509,7 +510,7 @@ function template_edit() {
 		}
 	}
 
-	html_start_box('<strong>Data Source Item</strong> [' . (isset($template_rrd) ? htmlspecialchars($template_rrd['data_source_name']) : '') . ']', '100%', '', '3', 'center', (!empty($_REQUEST['id']) ? htmlspecialchars('data_templates.php?action=rrd_add&id=' . $_REQUEST['id']):''), '<strong>New</scrong>');
+	html_start_box('<strong>Data Source Item</strong> [' . (isset($template_rrd) ? htmlspecialchars($template_rrd['data_source_name']) : '') . ']', '100%', '', '0', 'center', (!empty($_REQUEST['id']) ? htmlspecialchars('data_templates.php?action=rrd_add&id=' . $_REQUEST['id']):''), '<strong>New</scrong>');
 
 	/* data input fields list */
 	if ((empty($template_data['data_input_id'])) ||
@@ -536,17 +537,15 @@ function template_edit() {
 
 	draw_edit_form(
 		array(
-			'config' => array(
-				'no_form_tag' => true
-				),
+			'config' => array('no_form_tag' => true),
 			'fields' => $form_array + array(
 				'data_template_rrd_id' => array(
 					'method' => 'hidden',
 					'value' => (isset($template_rrd) ? $template_rrd['id'] : '0')
 				)
 			)
-			)
-		);
+		)
+	);
 
 	html_end_box();
 
@@ -569,7 +568,7 @@ function template_edit() {
 			}
 
 			form_alternate_row();?>
-				<td width="50%">
+				<td style='width:50%;'>
 					<strong><?php print $field['name'];?></strong><br>
 					<?php form_checkbox('t_value_' . $field['data_name'], $data_input_data['t_value'], 'Use Per-Data Source Value (Ignore this Value)', '', '', $_REQUEST['id']);?>
 				</td>
@@ -590,6 +589,20 @@ function template_edit() {
 	}
 
 	form_save_button('data_templates.php', 'return');
+
+	?>
+	<script type='text/javascript'>
+	$(function() {
+		$('#rra_id').multiselect({
+			selectedList: 1,
+			noneSelectedText: 'Select Round Robin Archive(s)',
+			header: false,
+			height: 140,
+			minWidth: 300
+		});
+	});
+	</script>
+	<?php
 }
 
 function template() {
@@ -660,9 +673,9 @@ function template() {
 	<tr class='even noprint'>
 		<td>
 		<form id="form_data_template" action="data_templates.php">
-			<table cellpadding="2" cellspacing="0">
+			<table class='filterTable'>
 				<tr>
-					<td width="50">
+					<td>
 						Search
 					</td>
 					<td>

@@ -178,7 +178,7 @@ print "<body class='loginBody'>
 					<p>Please enter your current password and your new<br>Cacti password.</p>
 				</div>
 				<div class='cactiLogin'>
-					<table class='cactiLoginTable' cellpadding='0' cellspacing='0' border='0'>
+					<table class='cactiLoginTable'>
 						<tr>
 							<td>Current password</td>
 							<td><input type='password' id='current' name='current_password' autocomplete='off' size='20' placeholder='********'></td>

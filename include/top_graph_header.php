@@ -60,11 +60,12 @@ if (isset($_REQUEST['action']) && $_REQUEST['action'] == 'zoom') {
 
 $page_title = api_plugin_hook_function('page_title', draw_navigation_text('title'));
 
+//<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 ?>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE html>
 <html>
 <head>
-	<meta http-equiv='X-UA-Compatible' content='edge'>
+	<meta http-equiv='X-UA-Compatible' content='IE=edge'>
 	<meta content='width=720, initial-scale=1.2, maximum-scale=1.2, minimum-scale=1.2' name='viewport'>
 	<title><?php echo $page_title; ?></title>
 	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
@@ -72,6 +73,8 @@ $page_title = api_plugin_hook_function('page_title', draw_navigation_text('title
 	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print read_config_option('selected_theme');?>/jquery.zoom.css' type='text/css' rel='stylesheet'>
 	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print read_config_option('selected_theme');?>/jquery-ui.css' type='text/css' rel='stylesheet'>
 	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print read_config_option('selected_theme');?>/default/style.css' type='text/css' rel='stylesheet'>
+	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print read_config_option('selected_theme');?>/jquery.multiselect.css' type='text/css' rel='stylesheet'>
+	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print read_config_option('selected_theme');?>/jquery.timepicker.css' type='text/css' rel='stylesheet'>
 	<link href='<?php echo $config['url_path']; ?>include/fa/css/font-awesome.css' type='text/css' rel='stylesheet'>
 	<link href='<?php echo $config['url_path']; ?>images/favicon.ico' rel='shortcut icon'>
 	<?php api_plugin_hook('page_head'); ?>
@@ -82,6 +85,8 @@ $page_title = api_plugin_hook_function('page_title', draw_navigation_text('title
 	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jstree.js'></script>
 	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery.hotkeys.js'></script>
 	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery.zoom.js'></script>
+	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery.multiselect.js'></script>
+	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery.timepicker.js'></script>
 	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/jscalendar/calendar.js'></script>
 	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/jscalendar/lang/calendar-en.js'></script>
 	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/jscalendar/calendar-setup.js'></script>
@@ -93,32 +98,32 @@ $page_title = api_plugin_hook_function('page_title', draw_navigation_text('title
 
 <?php if ($oper_mode == OPER_MODE_NATIVE) {?>
 <body <?php print api_plugin_hook_function('body_style', '');?>>
-<a style='height:0px;padding:0px;' name='page_top'></a>
 <?php }else{?>
 <body <?php print api_plugin_hook_function('body_style', '');?>>
-<a style='height:0px;padding:0px;' name='page_top'></a>
 <?php }?>
 
-<table style='width:100%' cellspacing='0' cellpadding='0'>
+<table style='width:100%;'>
 <?php if ($oper_mode == OPER_MODE_NATIVE) { ;?>
 	<tr class='cactiPageHead noprint'>
-		<td class='cactiGraphPageHeadBackdrop' colspan='2' valign='bottom' nowrap>
-			<table width='100%' cellspacing='0' cellpadding='0'>
+		<td class='cactiGraphPageHeadBackdrop'>
+			<table style='width:100%;vertical-align:bottom;'>
 				<tr>
-					<td id='tabs' valign='bottom'>
+					<td id='tabs'>
 						<?php print html_show_tabs_left($show_console_tab); ?>
 					</td>
-					<td id='gtabs' align='right' nowrap>
+					<td id='gtabs'>
 						<?php print html_graph_tabs_right($current_user);?>
 					</td>
 				</tr>
 			</table>
 		</td>
 	</tr>
+</table>
+<table style='width:100%;'>
 <?php } elseif ($oper_mode == OPER_MODE_NOTABS) { api_plugin_hook_function('print_top_header'); } ?>
 	<tr class='breadCrumbBar noprint'>
-		<td colspan='3'>
-			<table width='100%'>
+		<td>
+			<table style='width:100%;'>
 				<tr>
 					<td>
 						<div id='navBar' class='navBar'>
@@ -133,6 +138,8 @@ $page_title = api_plugin_hook_function('page_title', draw_navigation_text('title
 			</table>
 		</td>
 	</tr>
+</table>
+<table style='width:100%;'>
 	<?php
 
 	global $graph_views;
@@ -140,8 +147,8 @@ $page_title = api_plugin_hook_function('page_title', draw_navigation_text('title
 	?>
 	<tr>
 		<?php if (basename($_SERVER['PHP_SELF']) == 'graph_view.php' && ($_REQUEST['action'] == 'tree' || (isset($_REQUEST['view_type']) && $_REQUEST['view_type'] == 'tree'))) { ?>
-		<td id='navigation' class='cactiTreeNavigationArea noprint' style='display:none;' valign='top' width='200'>
+		<td id='navigation' class='cactiTreeNavigationArea noprint' style='display:none;vertical-align:top;width:200px;'>
 			<?php grow_dhtml_trees();?>
 		</td>
 		<?php } ?>
-		<td id='navigation_right' class='cactiGraphContentArea' valign='top' style='display:none;'><div id='message_container'><?php print display_output_messages();?></div><div style='position:static;' id='main'>
+		<td id='navigation_right' class='cactiGraphContentArea' style='display:none;vertical-align:top;'><div id='message_container'><?php print display_output_messages();?></div><div style='position:static;' id='main'>

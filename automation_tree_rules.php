@@ -384,9 +384,9 @@ function automation_tree_rules_item_edit() {
 		$item = db_fetch_row('SELECT * FROM automation_tree_rule_items WHERE id=' . $_GET['item_id']);
 			if ($item['field'] != AUTOMATION_TREE_ITEM_TYPE_STRING) {
 				?>
-<table width='100%' align='center'>
+<table style='width:100%;text-align:center;'>
 	<tr>
-		<td class='textInfo' align='right' valign='top'><span class='linkMarker'>*<a href='<?php print htmlspecialchars('automation_tree_rules.php?action=item_edit&id=' . (isset($_GET['id']) ? $_GET['id'] : 0) . '&item_id=' . (isset($_GET['item_id']) ? $_GET['item_id'] : 0) . '&rule_type=' . (isset($_GET['rule_type']) ? $_GET['rule_type'] : 0) .'&show_trees=') . (isset($_SESSION['automation_tree_rules_show_trees']) ? '0' : '1');?>'><strong><?php print (isset($_SESSION['automation_tree_rules_show_trees']) ? 'Dont Show' : 'Show');?></strong> Created Trees.</a></span><br>
+		<td class='textInfo' style='text-align:right;vertical-align:top;'><span class='linkMarker'>*<a href='<?php print htmlspecialchars('automation_tree_rules.php?action=item_edit&id=' . (isset($_GET['id']) ? $_GET['id'] : 0) . '&item_id=' . (isset($_GET['item_id']) ? $_GET['item_id'] : 0) . '&rule_type=' . (isset($_GET['rule_type']) ? $_GET['rule_type'] : 0) .'&show_trees=') . (isset($_SESSION['automation_tree_rules_show_trees']) ? '0' : '1');?>'><strong><?php print (isset($_SESSION['automation_tree_rules_show_trees']) ? 'Dont Show' : 'Show');?></strong> Created Trees.</a></span><br>
 		</td>
 	</tr>
 </table>
@@ -525,7 +525,7 @@ function automation_tree_rules_edit() {
 
 	if (!empty($_GET['id'])) {
 		?>
-<table width='100%' align='center'>
+<table style='width:100%;text-align:center;'>
 	<tr>
 		<td class='textInfo' align='right' valign='top'><span class='linkMarker'>*<a href='<?php print htmlspecialchars('automation_tree_rules.php?action=edit&id=' . (isset($_GET['id']) ? $_GET['id'] : 0) . '&show_hosts=') . (isset($_SESSION['automation_tree_rules_show_objects']) ? '0' : '1');?>'><strong><?php print (isset($_SESSION['automation_tree_rules_show_objects']) ? 'Dont Show' : 'Show');?></strong> Eligible Objects.</a></span><br>
 		</td>
@@ -723,9 +723,9 @@ function automation_tree_rules() {
 	<tr class='even'>
 		<td>
 			<form id='form_automation' action='automation_tree_rules.php'>
-				<table cellpadding='2' cellspacing='0'>
+				<table class='filterTable'>
 					<tr>
-						<td width='50'>
+						<td>
 							Search
 						</td>
 						<td>

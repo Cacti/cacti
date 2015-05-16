@@ -512,7 +512,7 @@ function tree_edit() {
 	if (!empty($_REQUEST['id'])) {
 		print $lockdiv;
 
-		print "<table class='treeTable' cellpadding='0' cellspacing='0' width='100%' border='0' valign='top'><tr valign='top'><td class='treeArea'>\n";
+		print "<table class='treeTable' valign='top'><tr valign='top'><td class='treeArea'>\n";
 
 		html_start_box('<strong>Tree Items</strong>', '100%', '', '3', 'center', '');
 
@@ -527,9 +527,9 @@ function tree_edit() {
 		<tr id='treeFilter' class='even noprint'>
 			<td>
 			<form id='form_tree' action='tree.php'>
-				<table cellpadding='2' cellspacing='0'>
+				<table class='filterTable'>
 					<tr>
-						<td width='50'>
+						<td>
 							Search
 						</td>
 						<td>
@@ -562,7 +562,7 @@ function tree_edit() {
 		<tr id='treeFilter' class='even noprint'>
 			<td>
 			<form id='form_tree' action='tree.php'>
-				<table cellpadding='2' cellspacing='0'>
+				<table class='filterTable'>
 					<tr>
 						<td>
 							Search
@@ -1344,9 +1344,9 @@ function tree() {
 	<tr class='even noprint'>
 		<td>
 		<form id='form_tree' action='tree.php'>
-			<table cellpadding='2' cellspacing='0' border='0'>
+			<table class='filterTable'>
 				<tr>
-					<td width='50'>
+					<td>
 						Search
 					</td>
 					<td>

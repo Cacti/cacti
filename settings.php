@@ -100,7 +100,7 @@ default:
 	$_SESSION['sess_settings_tab'] = $current_tab;
 
 	/* draw the categories tabs on the top of the page */
-	print "<table cellpadding='0' cellspacing='0' border='0'><tr><td>\n";
+	print "<table><tr><td style='padding-bottom:0px;'>\n";
 	print "<div class='tabs' style='float:left;'><nav><ul>\n";
 
 	if (sizeof($tabs) > 0) {
@@ -110,7 +110,7 @@ default:
 	}
 
 	print "</ul></nav></div>\n";
-	print "</tr></table><table width='100%' cellpadding='0' cellspacing='0' border='0'><tr><td>\n";
+	print "</tr></table><table style='width:100%;'><tr><td style='padding:0px;'>\n";
 
 	/* print form for validation */
 	print "<form method='post' autocomplete='off' action='settings.php'>\n";
