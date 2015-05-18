@@ -649,7 +649,7 @@ function form_callback($form_name, $classic_sql, $column_display, $column_id, $c
 		var <?php print $form_name;?>Open = false;
 
 		$(function() {
-		    $('#'+prefix+'_input').autocomplete({
+		    $('#'+prefix+'_input').unbind().autocomplete({
 		        source: '<?php print $_SERVER['PHP_SELF'];?>?action=<?php print $callback;?>',
 				autoFocus: true,
 				minLength: 0,
@@ -659,7 +659,7 @@ function form_callback($form_name, $classic_sql, $column_display, $column_id, $c
 				}
 			}).css('border', 'none').css('background-color', 'transparent');
 
-			$('#'+prefix+'_wrap').dblclick(function() {
+			$('#'+prefix+'_wrap').unbind().dblclick(function() {
 				<?php print $form_name;?>Open = false;
 				clearTimeout(<?php print $form_name;?>Timer);
 				clearTimeout(<?php print $form_name;?>ClickTimer);
@@ -680,13 +680,13 @@ function form_callback($form_name, $classic_sql, $column_display, $column_id, $c
 				<?php print $form_name;?>Timer = setTimeout(function() { $('#'+prefix+'_input').autocomplete('close'); }, 800);
 			});
 
-			$('ul[id^="ui-id"]').on('mouseenter', function() {
+			$('ul[id^="ui-id"]').unbind().on('mouseenter', function() {
 				clearTimeout(<?php print $form_name;?>Timer);
 			}).on('mouseleave', function() {
 				<?php print $form_name;?>Timer = setTimeout(function() { $('#'+prefix).autocomplete('close'); }, 800);
 			});
 
-			$('#'+prefix+'_wrap').on('mouseenter', function() {
+			$('#'+prefix+'_wrap').unbind().on('mouseenter', function() {
 				$(this).addClass('ui-state-hover');
 				$('input#'+prefix+'_input').addClass('ui-state-hover');
 			}).on('mouseleave', function() {
@@ -825,11 +825,13 @@ function form_text_area($form_name, $form_previous_value, $form_rows, $form_colu
      $array[0][$column_id] = key
    @arg $column_id - the name of the key used to reference the keys above */
 function form_multi_dropdown($form_name, $array_display, $sql_previous_values, $column_id, $class = "", $on_change = "") {
-
 	if (!is_array($sql_previous_values)) {
 		$values = explode(',', $sql_previous_values);
+		$sql_previous_values = array();
+		$i = 0;
 		foreach($values as $value) {
-			$sql_previous_values[][$column_id] = $value;
+			$sql_previous_values[$i][$column_id] = $value;
+			$i++;
 		}
 	}
 
