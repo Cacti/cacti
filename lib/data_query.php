@@ -55,7 +55,7 @@ function run_data_query($host_id, $snmp_query_id) {
 	update_poller_cache_from_query($host_id, $snmp_query_id);
 
 	/* perform any automation on reindex */
-	execute_data_query(array("host_id" => $host_id, "snmp_query_id" => $snmp_query_id));
+	automation_execute_data_query($host_id, $snmp_query_id);
 
 	api_plugin_hook_function('run_data_query', array("host_id" => $host_id, "snmp_query_id" => $snmp_query_id));
 

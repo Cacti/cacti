@@ -450,7 +450,7 @@ function automation_graph_rules_edit() {
 
 	/* remember these search fields in session vars so we don't have to keep passing them around */
 	load_current_session_value('page', 'sess_automation_graph_rule_current_page', '1');
-	load_current_session_value('graph_rows', 'sess_automation_graph_rows', read_config_option('num_rows_table'));
+	load_current_session_value('rows', 'sess_default_rows', read_config_option('num_rows_table'));
 
 	/* handle show_graphs mode */
 	if (isset($_GET['show_graphs'])) {
@@ -494,7 +494,7 @@ function automation_graph_rules_edit() {
 		?>
 <table style='width:100%;text-align:center;'>
 	<tr>
-		<td class='textInfo' align='right' valign='top'><span class='linkMarker'>*<a href='<?php print htmlspecialchars('automation_graph_rules.php?action=edit&id=' . (isset($_GET['id']) ? $_GET['id'] : 0) . '&show_hosts=') . (isset($_SESSION['automation_graph_rules_show_hosts']) ? '0' : '1');?>'><strong><?php print (isset($_SESSION['automation_graph_rules_show_hosts']) ? 'Dont Show' : 'Show');?></strong> Matching Devices.</a></span><br>
+		<td class='textInfo' align='right' valign='top'><span class='linkMarker'>*<a class='linkEditMain' href='<?php print htmlspecialchars('automation_graph_rules.php?action=edit&id=' . (isset($_GET['id']) ? $_GET['id'] : 0) . '&show_hosts=') . (isset($_SESSION['automation_graph_rules_show_hosts']) ? '0' : '1');?>'><strong><?php print (isset($_SESSION['automation_graph_rules_show_hosts']) ? 'Dont Show' : 'Show');?></strong> Matching Devices.</a></span><br>
 		</td>
 	</tr>
 		<?php
@@ -507,7 +507,7 @@ function automation_graph_rules_edit() {
 		?>
 	<tr>
 		<td class='textInfo' align='right' valign='top'>
-			<span class='linkMarker'>*<a href='<?php print htmlspecialchars('automation_graph_rules.php?action=edit&id=' . (isset($_GET['id']) ? $_GET['id'] : 0) . '&show_graphs=') . (isset($_SESSION['automation_graph_rules_show_graphs']) ? '0' : '1');?>'><strong><?php print (isset($_SESSION['automation_graph_rules_show_graphs']) ? 'Dont Show' : 'Show');?></strong> Matching Graphs.</a></span><br>
+			<span class='linkMarker'>*<a class='linkEditMain' href='<?php print htmlspecialchars('automation_graph_rules.php?action=edit&id=' . (isset($_GET['id']) ? $_GET['id'] : 0) . '&show_graphs=') . (isset($_SESSION['automation_graph_rules_show_graphs']) ? '0' : '1');?>'><strong><?php print (isset($_SESSION['automation_graph_rules_show_graphs']) ? 'Dont Show' : 'Show');?></strong> Matching Graphs.</a></span><br>
 		</td>
 	</tr>
 </table>
@@ -572,33 +572,30 @@ function automation_graph_rules_edit() {
 	}
 
 	?>
-<script type='text/javascript'>
-	<!--
-	function applySNMPQueryIdChange(objForm) {
-		strURL = '?action=edit&id=' + objForm.id.value;
-		strURL = strURL + '&snmp_query_id=' + objForm.snmp_query_id.value;
-		if (typeof(name) != 'undefined') {
-			strURL = strURL + '&name=' + objForm.name.value;
-		}
-		//strURL = strURL + '&graph_rows=' + objForm.graph_rows.value;
-		//alert('Url: ' + strURL);
-		document.location = strURL;
+	<script type='text/javascript'>
+	function applySNMPQueryIdChange() {
+		strURL = '?action=edit&id=' + $('#id').val();
+		strURL = strURL + '&snmp_query_id=' + $('#snmp_query_id').val();
+		strURL = strURL + '&name=' + $('#name').val();
+		strURL = strURL + '&header=false';
+		$.get(strURL, function(data) {
+			$('#main').html(data);
+			applyFilter();
+		});
 	}
-	function applySNMPQueryTypeChange(objForm) {
-		strURL = '?action=edit&id=' + objForm.id.value;
-		strURL = strURL + '&snmp_query_id=' + objForm.snmp_query_id.value;
-		if (typeof(name) != 'undefined') {
-			strURL = strURL + '&name=' + objForm.name.value;
-		}
-		if (typeof(snmp_query_type) != 'undefined') {
-			strURL = strURL + '&snmp_query_type' + objForm.name.value;
-		}
-		//strURL = strURL + '&graph_rows=' + objForm.graph_rows.value;
-		//alert('Url: ' + strURL);
-		document.location = strURL;
+
+	function applySNMPQueryTypeChange() {
+		strURL = '?action=edit&id=' + $('#id').val();
+		strURL = strURL + '&snmp_query_id=' + $('#snmp_query_id').val();
+		strURL = strURL + '&name=' + $('#name').val();
+		strURL = strURL + '&snmp_query_type' + $('#name').val();
+		strURL = strURL + '&header=false';
+		$.get(strURL, function(data) {
+			$('#main').html(data);
+			applyFilter();
+		});
 	}
-	-->
-</script>
+	</script>
 	<?php
 }
 

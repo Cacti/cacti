@@ -91,15 +91,14 @@ function form_save() {
 
 		$save['id'] = $_POST['id'];
 		$save['host_template'] = form_input_validate($_POST['host_template'], 'host_template', '', false, 3);
-		$save['snmp_version']  = form_input_validate($_POST['snmp_version'], 'snmp_version', '', false, 3);
-		$save['tree']          = form_input_validate($_POST['tree'], 'tree', '', false, 3);
-		$save['sysdescr']      = db_qstr($_POST['sysdescr']);
-		$save['sysname']       = db_qstr($_POST['sysname']);
-		$save['sysoid']        = db_qstr($_POST['sysoid']);
+		$save['availability_method']  = form_input_validate($_POST['availability_method'], 'availability_method', '', false, 3);
+		$save['sysDescr']      = $_POST['sysDescr'];
+		$save['sysName']       = $_POST['sysName'];
+		$save['sysOid']        = $_POST['sysOid'];
 		if (function_exists('filter_var')) {
-			$save['sysdescr'] = filter_var($save['sysdescr'], FILTER_SANITIZE_STRING);
+			$save['sysDescr'] = filter_var($save['sysDescr'], FILTER_SANITIZE_STRING);
 		} else {
-			$save['sysdescr'] = strip_tags($save['sysdescr']);
+			$save['sysDescr'] = strip_tags($save['sysDescr']);
 		}
 
 		if (!is_error_message()) {
@@ -120,41 +119,41 @@ function form_save() {
 	}
 }
 
+function automation_get_child_branches($tree_id, $id, $spaces, $headers) {
+	$items = db_fetch_assoc('SELECT id, title
+		FROM graph_tree_items 
+		WHERE graph_tree_id=' . $tree_id  . '
+		AND host_id=0
+		AND local_graph_id=0 
+		AND parent=' . $id . '
+		ORDER BY position');
+
+	$spaces .= '--';
+
+	if (sizeof($items)) {
+	foreach($items as $i) {
+		$headers['tr_' . $tree_id . '_bi_' . $i['id']] = $spaces . ' ' . $i['title'];
+		$headers = automation_get_child_branches($tree_id, $i['id'], $spaces, $headers);
+	}
+	}
+	
+	return $headers;
+}
+
 function automation_get_tree_headers() {
 	$headers = array();
-	$trees = db_fetch_assoc('SELECT id, name FROM graph_tree ORDER BY name');
+	$trees   = db_fetch_assoc('SELECT id, name FROM graph_tree ORDER BY name');
 	foreach ($trees as $tree) {
-		$headers[($tree['id'] + 1000000)] = $tree['name'];
-		$items = db_fetch_assoc('SELECT id, title 
-			FROM graph_tree_items 
-			WHERE graph_tree_id=' . $tree['id'] . ' 
-			AND host_id=0 
-			AND local_graph_id=0 
-			AND parent=0 
-			ORDER BY position');
-
-		foreach ($items as $item) {
-			$order_key = $item['order_key'];
-			$len = strlen($order_key);
-			$spaces = '';
-			for ($a = 0; $a < $len; $a=$a+3) {
-				$n = substr($order_key, $a, 3);
-				if ($n != '000') {
-					$spaces .= '--';
-				} else {
-					$a = $len;
-				}
-			}
-
-			$headers[$item['id']] = $spaces . $item['title'];
-		}
+		$headers['tr_' . $tree['id'] . '_br_0'] = $tree['name'];
+		$spaces = '';
+		$headers = automation_get_child_branches($tree['id'], 0, $spaces, $headers);
 	}
 
 	return $headers;
 }
 
 function template_edit() {
-	global $colors, $snmp_versions;
+	global $availability_options;
 
 	$host_template_names = db_fetch_assoc('SELECT id, name FROM host_template');
 	$template_names = array();
@@ -173,40 +172,33 @@ function template_edit() {
 			'value' => '|arg1:host_template|',
 			'array' => $template_names,
 			),
-		'tree' => array(
+		'availability_method' => array(
 			'method' => 'drop_array',
-			'friendly_name' => 'Tree Location',
-			'description' => 'Select a location in the tree to place the host under.',
-			'value' => '|arg1:tree|',
-			'array' => automation_get_tree_headers(),
+			'friendly_name' => 'Availability Method',
+			'description' => 'Choose the Availability Method to use for Discovered Devices.',
+			'value' => '|arg1:availability_method|',
+			'default' => read_config_option('availability_method'),
+			'array' => $availability_options,
 			),
-		'snmp_version' => array(
-			'method' => 'drop_array',
-			'friendly_name' => 'SNMP Version',
-			'description' => 'Choose the SNMP version for this host.',
-			'value' => '|arg1:snmp_version|',
-			'default' => read_config_option('snmp_ver'),
-			'array' => $snmp_versions,
-			),
-		'sysdescr' => array(
+		'sysDescr' => array(
 			'method' => 'textbox',
 			'friendly_name' => 'System Description Match',
-			'description' => 'This is a unique string that will be matched to a devices sysDescr string to pair it to this Discovery Template.  Any perl regular expression can be used.',
-			'value' => '|arg1:sysdescr|',
+			'description' => 'This is a unique string that will be matched to a devices sysDescr string to pair it to this Discovery Template.  Any perl regular expression can be used in addition to any wildcardable SQL Where expression.',
+			'value' => '|arg1:sysDescr|',
 			'max_length' => '255',
 			),
-		'sysname' => array(
+		'sysName' => array(
 			'method' => 'textbox',
 			'friendly_name' => 'System Name Match',
-			'description' => 'This is a unique string that will be matched to a devices sysName string to pair it to this Automation Template.  Any perl regular expression can be used.',
-			'value' => '|arg1:sysname|',
+			'description' => 'This is a unique string that will be matched to a devices sysName string to pair it to this Automation Template.  Any perl regular expression can be used in addition to any wildcardable SQL Where expression.',
+			'value' => '|arg1:sysName|',
 			'max_length' => '128',
 			),
-		'sysoid' => array(
+		'sysOid' => array(
 			'method' => 'textbox',
 			'friendly_name' => 'System OID Match',
-			'description' => 'This is a unique string that will be matched to a devices sysOid string to pair it to this Automation Template.  Any perl regular expression can be used.',
-			'value' => '|arg1:sysoid|',
+			'description' => 'This is a unique string that will be matched to a devices sysOid string to pair it to this Automation Template.  Any perl regular expression can be used in addition to any wildcardable SQL Where expression.',
+			'value' => '|arg1:sysOid|',
 			'max_length' => '128',
 			),
 		'id' => array(
@@ -233,10 +225,12 @@ function template_edit() {
 		$_GET['id'] = 0;
 	}
 
-	html_start_box("<strong>Automation Templates</strong> $header_label", '100%', $colors['header'], '3', 'center', '');
+	print "<form id='form_network' action='automation_templates.php' method='post'>\n";
+
+	html_start_box("<strong>Automation Templates</strong> $header_label", '100%', '', '3', 'center', '');
 
 	draw_edit_form(array(
-		'config' => array(),
+		'config' => array('no_form_tag' => 'true'),
 		'fields' => inject_form_variables($fields_automation_template_edit, (isset($host_template) ? $host_template : array()))
 		));
 
@@ -246,7 +240,7 @@ function template_edit() {
 }
 
 function template() {
-	global $colors, $host_actions;
+	global $host_actions, $availability_options;
 
 	/* clean up sort_column */
 	if (isset($_REQUEST['sort_column'])) {
@@ -264,10 +258,11 @@ function template() {
 
 	display_output_messages();
 
-	html_start_box('<strong>Automation Device Templates</strong>', '100%', $colors['header'], '3', 'center', 'automation_templates.php?action=edit');
+	html_start_box('<strong>Automation Device Templates</strong>', '100%', '', '3', 'center', 'automation_templates.php?action=edit');
 
 	$display_text = array(
 		array('display' => 'Template Name', 'align' => 'left'),
+		array('display' => 'Availability Method', 'align' => 'left'),
 		array('display' => 'System Description Match', 'align' => 'left'),
 		array('display' => 'System Name Match', 'align' => 'left'),
 		array('display' => 'System ObjectId Match', 'align' => 'left'),
@@ -275,7 +270,7 @@ function template() {
 
 	html_header($display_text);
 
-	$dts = db_fetch_assoc("SELECT at.*, '' AS sysname, ht.name
+	$dts = db_fetch_assoc("SELECT at.*, '' AS sysName, ht.name
 		FROM automation_templates AS at
 		LEFT JOIN host_template AS ht
 		ON ht.id=at.host_template
@@ -286,11 +281,12 @@ function template() {
 		$total_items = sizeof($dts);
 
 		foreach ($dts as $dt) {
-			form_alternate_row();
+			form_alternate_row("at$i", true);
 			echo "<td><a class='linkEditMain' href='automation_templates.php?action=edit&id=" . $dt['id'] . "'>" . htmlspecialchars($dt['name']) . "</a></td>\n";
-			echo "<td>" . htmlspecialchars($dt['sysdescr']) . "</td>\n";
-			echo "<td>" . htmlspecialchars($dt['sysname'])  . "</td>\n";
-			echo "<td>" . htmlspecialchars($dt['sysoid'])   . "</td>\n";
+			echo "<td>" . $availability_options[$dt['availability_method']] . "</td>\n";
+			echo "<td>" . htmlspecialchars($dt['sysDescr']) . "</td>\n";
+			echo "<td>" . htmlspecialchars($dt['sysName'])  . "</td>\n";
+			echo "<td>" . htmlspecialchars($dt['sysOid'])   . "</td>\n";
 
 			if ($i < $total_items && $total_items > 1) {
 				$form_data = '<img style="padding:2px;cursor:pointer;" class="action" href="' . htmlspecialchars('automation_templates.php?action=movedown&id=' . $dt['id']) . '" src="images/move_down.gif" border="0" alt="Move Down">';

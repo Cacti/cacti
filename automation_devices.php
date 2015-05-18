@@ -28,62 +28,70 @@ $device_actions = array(
 	1 => 'Add Device'
 );
 
-if (isset($_REQUEST['action']) && $_REQUEST['action'] == 'discover') {
-	print "<div id='findhosts'>";
-	html_start_box('<strong>Discovery Results</strong>', '100%', $colors['header'], '3', 'center', '');
-	echo '<pre>';
-	print "Executiong FindHosts\n";
-
-	//print shell_exec("php -q " . $config['base_path'] . '/plugins/discovery/findhosts.php --force --debug');
-	echo "</pre>";
-	html_end_box();
-	print "</div>\n";
+if (isset($_REQUEST['action']) && $_REQUEST['action'] == 'purge') {
+	input_validate_input_number(get_request_var_request('network'));
+	
+	db_execute('TRUNCATE TABLE automation_devices' . ($_REQUEST['network'] > 0 ? 'WHERE network_id=' . $_REQUEST['network']:''));
+	header('Location: automation_devices.php?header=false');
+	exit;
 }
 
 define('MAX_DISPLAY_PAGES', 21);
 
-$os_arr     = array_rekey(db_fetch_assoc('SELECT DISTINCT os FROM automation_devices'), 'os', 'os');
+$os_arr     = array_rekey(db_fetch_assoc('SELECT DISTINCT os FROM automation_devices WHERE os IS NOT NULL AND os!=""'), 'os', 'os');
 $status_arr = array('Down', 'Up');
+$networks   = array_rekey(db_fetch_assoc('SELECT an.id, an.name 
+	FROM automation_networks AS an
+	INNER JOIN automation_devices AS ad
+	ON an.id=ad.network_id 
+	ORDER BY name'), 'id', 'name');
 
 /* ================= input validation ================= */
-input_validate_input_number(get_request_var('page'));
-input_validate_input_number(get_request_var('rows'));
+input_validate_input_number(get_request_var_request('page'));
+input_validate_input_number(get_request_var_request('rows'));
 /* ==================================================== */
 
 /* clean up status string */
 if (isset($_REQUEST['status'])) {
-	$_REQUEST['status'] = sanitize_search_string(get_request_var('status'));
+	$_REQUEST['status'] = sanitize_search_string(get_request_var_request('status'));
+}
+
+/* clean up network string */
+if (isset($_REQUEST['network'])) {
+	$_REQUEST['network'] = sanitize_search_string(get_request_var_request('network'));
 }
 
 /* clean up snmp string */
+/* clean up snmp string */
 if (isset($_REQUEST['snmp'])) {
-	$_REQUEST['snmp'] = sanitize_search_string(get_request_var('snmp'));
+	$_REQUEST['snmp'] = sanitize_search_string(get_request_var_request('snmp'));
 }
 
 /* clean up os string */
 if (isset($_REQUEST['os'])) {
-	$_REQUEST['os'] = sanitize_search_string(get_request_var('os'));
+	$_REQUEST['os'] = sanitize_search_string(get_request_var_request('os'));
 }
 
 /* clean up filter string */
 if (isset($_REQUEST['filter'])) {
-	$_REQUEST['filter'] = sanitize_search_string(get_request_var('filter'));
+	$_REQUEST['filter'] = sanitize_search_string(get_request_var_request('filter'));
 }
 
 /* clean up sort_column */
 if (isset($_REQUEST['sort_column'])) {
-	$_REQUEST['sort_column'] = sanitize_search_string(get_request_var('sort_column'));
+	$_REQUEST['sort_column'] = sanitize_search_string(get_request_var_request('sort_column'));
 }
 
 /* clean up search string */
 if (isset($_REQUEST['sort_direction'])) {
-	$_REQUEST['sort_direction'] = sanitize_search_string(get_request_var('sort_direction'));
+	$_REQUEST['sort_direction'] = sanitize_search_string(get_request_var_request('sort_direction'));
 }
 
 /* if the user pushed the 'clear' button */
 if (isset($_REQUEST['clear'])) {
 	kill_session_var('sess_autom_current_page');
 	kill_session_var('sess_autom_status');
+	kill_session_var('sess_autom_network');
 	kill_session_var('sess_autom_snmp');
 	kill_session_var('sess_autom_os');
 	kill_session_var('sess_autom_filter');
@@ -93,6 +101,7 @@ if (isset($_REQUEST['clear'])) {
 
 	unset($_REQUEST['page']);
 	unset($_REQUEST['status']);
+	unset($_REQUEST['network']);
 	unset($_REQUEST['snmp']);
 	unset($_REQUEST['os']);
 	unset($_REQUEST['filter']);
@@ -103,6 +112,7 @@ if (isset($_REQUEST['clear'])) {
 	$changed = 0;
 	$changed += check_changed('snmp',   'sess_autom_snmp');
 	$changed += check_changed('status', 'sess_autom_status');
+	$changed += check_changed('network', 'sess_autom_network');
 	$changed += check_changed('os',     'sess_autom_os');
 	$changed += check_changed('rows',   'sess_default_rows');
 	$changed += check_changed('filter', 'sess_autom_filter');
@@ -115,6 +125,7 @@ if (isset($_REQUEST['clear'])) {
 /* remember these search fields in session vars so we don't have to keep passing them around */
 load_current_session_value('page', 'sess_autom_current_page', '1');
 load_current_session_value('status', 'sess_autom_status', '');
+load_current_session_value('network', 'sess_autom_network', '');
 load_current_session_value('snmp', 'sess_autom_snmp', '');
 load_current_session_value('os', 'sess_autom_os', '');
 load_current_session_value('filter', 'sess_autom_filter', '');
@@ -124,6 +135,7 @@ load_current_session_value('sort_direction', 'sess_autom_sort_direction', 'ASC')
 
 $sql_where  = '';
 $status     = get_request_var_request('status');
+$network    = get_request_var_request('network');
 $snmp       = get_request_var_request('snmp');
 $os         = get_request_var_request('os');
 $filter     = get_request_var_request('filter');
@@ -134,13 +146,17 @@ if ($status == 'Down') {
 	$sql_where .= 'WHERE up=1';
 }
 
+if ($network > 0) {
+	$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') . 'network_id=' . $network;
+}
+
 if ($snmp == 'Down') {
 	$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') . 'snmp=0';
 }else if ($snmp == 'Up') {
 	$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') . 'snmp=1';
 }
 
-if ($os != '' && in_array($os, $os_arr)) {
+if ($os != '-1' && in_array($os, $os_arr)) {
 	$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') . "os='$os'";
 }
 
@@ -149,7 +165,7 @@ if ($filter != '') {
 }
 
 if (isset($_REQUEST['export'])) {
-	$result = db_fetch_assoc("SELECT * FROM automation_devices $sql_where order by hash");
+	$result = db_fetch_assoc("SELECT * FROM automation_devices $sql_where order by INET_ATON(ip)");
 
 	header('Content-type: application/csv');
 	header('Content-Disposition: attachment; filename=discovery_results.csv');
@@ -199,7 +215,7 @@ if ($sortby=='ip') {
 	$sortby = 'INET_ATON(ip)';
 }
 
-$sql_query = "SELECT *
+$sql_query = "SELECT *, FROM_UNIXTIME(time) AS mytime
 	FROM automation_devices
 	$sql_where
 	ORDER BY " . $sortby . ' ' . get_request_var_request('sort_direction') . '
@@ -222,11 +238,25 @@ html_start_box('<strong>Discovery Filters</strong>', '100%', $colors['header'], 
 					<input type='text' id='filter' size='25' value='<?php print get_request_var_request('filter');?>'>
 				</td>
 				<td>
+					Network
+				</td>
+				<td>
+					<select id='network' onChange='applyFilter()'>
+						<option value='-1' <?php if (get_request_var_request('network') == -1) {?> selected<?php }?>>Any</option>
+						<?php
+						if (sizeof($networks)) {
+						foreach ($networks as $key => $name) {
+							print "<option value='" . $key . "'"; if (get_request_var_request('network') == $key) { print ' selected'; } print '>' . $name . "</option>\n";
+						}
+						}
+						?>
+					</select>
+				<td>
 					Status
 				</td>
 				<td>
 					<select id='status' onChange='applyFilter()'>
-						<option value='<?php if (get_request_var_request('status') == '') {?>' selected<?php }?>>Any</option>
+						<option value='-1' <?php if (get_request_var_request('status') == '') {?> selected<?php }?>>Any</option>
 						<?php
 						if (sizeof($status_arr)) {
 						foreach ($status_arr as $st) {
@@ -241,7 +271,7 @@ html_start_box('<strong>Discovery Filters</strong>', '100%', $colors['header'], 
 				</td>
 				<td>
 					<select id='os' onChange='applyFilter()'>
-						<option value='<?php if (get_request_var_request('os') == '') {?>' selected<?php }?>>Any</option>
+						<option value='-1' <?php if (get_request_var_request('os') == '') {?> selected<?php }?>>Any</option>
 						<?php
 						if (sizeof($os_arr)) {
 						foreach ($os_arr as $st) {
@@ -256,7 +286,7 @@ html_start_box('<strong>Discovery Filters</strong>', '100%', $colors['header'], 
 				</td>
 				<td>
 					<select id='snmp' onChange='applyFilter()'>
-						<option value='<?php if (get_request_var_request('snmp') == '') {?>' selected<?php }?>>Any</option>
+						<option value='-1' <?php if (get_request_var_request('snmp') == '') {?> selected<?php }?>>Any</option>
 						<?php
 						if (sizeof($status_arr)) {
 						foreach ($status_arr as $st) {
@@ -271,7 +301,7 @@ html_start_box('<strong>Discovery Filters</strong>', '100%', $colors['header'], 
 				</td>
 				<td>
 					<select id='rows' onChange='applyFilter()'>
-						<option value='-1'<?php if (get_request_var_request('rows') == '-1') {?> selected<?php }?>>Default</option>
+						<option value='-1' <?php if (get_request_var_request('rows') == '-1') {?> selected<?php }?>>Default</option>
 						<?php
 						if (sizeof($item_rows) > 0) {
 						foreach ($item_rows as $key => $value) {
@@ -291,10 +321,9 @@ html_start_box('<strong>Discovery Filters</strong>', '100%', $colors['header'], 
 					<input type='button' id='export' value='Export' title='Export to a file'>
 				</td>
 				<td>
-					<input type='button' id='discover' value='Discover' title='Force a Discovery Run'>
+					<input type='button' id='purge' value='Purge' title='Purge Discovered Devices'>
 				</td>
-				<td id='message'></td>
-				<td id='page' value='<?php print $_REQUEST['page'];?>'>
+				<input type='hidden' id='page' value='<?php print $_REQUEST['page'];?>'>
 			</tr>
 		</table>
 	</form>
@@ -314,18 +343,15 @@ html_start_box('<strong>Discovery Filters</strong>', '100%', $colors['header'], 
 			applyFilter();
 		});
 
-		$('#export').click(function() {
-			document.location = 'automation_devices.php?export=1';
-		});
-
-		$('#discover').click(function(data) {
-			$('#message').text('Running Discovery');
-			pulsate('#message');
-			$.get('automation_devices.php?action=discover&header=false', function(data) {
-				$('#message').text('Finished');
+		$('#purge').click(function() {
+			$.get('automation_devices.php?header=false&action=purge&network_id='+$('#network').val(), function(data) {
 				$('#main').html(data);
 				applySkin();
 			});
+		});
+
+		$('#export').click(function() {
+			document.location = 'automation_devices.php?export=1';
 		});
 	});
 	
@@ -339,6 +365,7 @@ html_start_box('<strong>Discovery Filters</strong>', '100%', $colors['header'], 
 	function applyFilter() {
 		strURL = 'automation_devices.php?header=false';
 		strURL = strURL + '&status=' + $('#status').val();
+		strURL = strURL + '&network=' + $('#network').val();
 		strURL = strURL + '&snmp=' + $('#snmp').val();
 		strURL = strURL + '&os=' + $('#os').val();
 		strURL = strURL + '&filter=' + $('#filter').val();
@@ -356,10 +383,12 @@ html_start_box('<strong>Discovery Filters</strong>', '100%', $colors['header'], 
 <?php
 html_end_box();
 
+print "<form id='automation_devices' action='automation_devices.php'>\n";
+
 html_start_box('', '100%', $colors['header'], '3', 'center', '');
 
 /* generate page list */
-$nav = html_nav_bar('automation_devices.php', MAX_DISPLAY_PAGES, get_request_var_request('page'), $per_row, $total_rows, 11, 'Devices', 'page', 'main');
+$nav = html_nav_bar('automation_devices.php', MAX_DISPLAY_PAGES, get_request_var_request('page'), $per_row, $total_rows, 12, 'Devices', 'page', 'main');
 
 print $nav;
 
@@ -373,7 +402,8 @@ $display_text = array(
 	'os' => array('display' => 'OS', 'align' => 'left', 'sort' => 'ASC'),
 	'time' => array('display' => 'Uptime', 'align' => 'right', 'sort' => 'DESC'),
 	'snmp' => array('display' => 'SNMP', 'align' => 'right', 'sort' => 'DESC'),
-	'up' => array('display' => 'Status', 'align' => 'right', 'sort' => 'ASC'));
+	'up' => array('display' => 'Status', 'align' => 'right', 'sort' => 'ASC'),
+	'mytime' => array('display' => 'Last Check', 'align' => 'right', 'sort' => 'DESC'));
 
 html_header_sort_checkbox($display_text, get_request_var_request('sort_column'), get_request_var_request('sort_direction'), false);
 
@@ -390,7 +420,7 @@ $i=0;
 $status = array('<font color=red>Down</font>','<font color=green>Up</font>');
 if (sizeof($result)) {
 	foreach($result as $host) {
-		form_alternate_row('line' . $host['hash'], true);
+		form_alternate_row('line' . $host['ip'], true);
 
 		if ($host['sysUptime'] != 0) {
 			$days = intval($host['sysUptime']/8640000);
@@ -404,17 +434,18 @@ if (sizeof($result)) {
 			$host['hostname'] = 'Not Detected';
 		}
 
-		form_selectable_cell((strlen(get_request_var_request('filter')) ? preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($host['hostname'])) : htmlspecialchars($host['hostname'])), $host['hash']);
-		form_selectable_cell((strlen(get_request_var_request('filter')) ? preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($host['ip'])) : htmlspecialchars($host['ip'])), $host['hash']);
-		form_selectable_cell(snmp_data($host['sysName']), $host['hash'], '', 'text-align:left');
-		form_selectable_cell(snmp_data($host['sysLocation']), $host['hash'], '', 'text-align:left');
-		form_selectable_cell(snmp_data($host['sysContact']), $host['hash'], '', 'text-align:left');
-		form_selectable_cell(snmp_data($host['sysDescr']), $host['hash'], '', 'text-align:left');
-		form_selectable_cell(snmp_data($host['os']), $host['hash'], '', 'text-align:left');
-		form_selectable_cell(snmp_data($uptime), $host['hash'], '', 'text-align:right');
-		form_selectable_cell($status[$host['snmp']], $host['hash'], '', 'text-align:right');
-		form_selectable_cell($status[$host['up']], $host['hash'], '', 'text-align:right');
-		form_checkbox_cell($host['ip'], $host['hash']);
+		form_selectable_cell((strlen(get_request_var_request('filter')) ? preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($host['hostname'])) : htmlspecialchars($host['hostname'])), $host['ip']);
+		form_selectable_cell((strlen(get_request_var_request('filter')) ? preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($host['ip'])) : htmlspecialchars($host['ip'])), $host['ip']);
+		form_selectable_cell(snmp_data($host['sysName']), $host['ip'], '', 'text-align:left');
+		form_selectable_cell(snmp_data($host['sysLocation']), $host['ip'], '', 'text-align:left');
+		form_selectable_cell(snmp_data($host['sysContact']), $host['ip'], '', 'text-align:left');
+		form_selectable_cell(snmp_data($host['sysDescr']), $host['ip'], '', 'text-align:left');
+		form_selectable_cell(snmp_data($host['os']), $host['ip'], '', 'text-align:left');
+		form_selectable_cell(snmp_data($uptime), $host['ip'], '', 'text-align:right');
+		form_selectable_cell($status[$host['snmp']], $host['ip'], '', 'text-align:right');
+		form_selectable_cell($status[$host['up']], $host['ip'], '', 'text-align:right');
+		form_selectable_cell(substr($host['mytime'],0,16), $host['ip'], '', 'text-align:right');
+		form_checkbox_cell($host['ip'], $host['ip']);
 		form_end_row();
 	}
 }else{

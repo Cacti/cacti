@@ -1865,7 +1865,7 @@ $fields_automation_graph_rules_edit1 = array(
 		'friendly_name' => 'Data Query',
 		'description' => 'Choose a Data Query to apply to this rule.',
 		'value' => '|arg1:snmp_query_id|',
-		'on_change' => 'applySNMPQueryIdChange(document.form_automation_rule_edit)',
+		'on_change' => 'applySNMPQueryIdChange()',
 		'sql' => 'SELECT id, name FROM snmp_query ORDER BY name'
 	)
 );
@@ -1876,7 +1876,7 @@ $fields_automation_graph_rules_edit2 = array(
 		'friendly_name' => 'Graph Type',
 		'description' => 'Choose any of the available Graph Types to apply to this rule.',
 		'value' => '|arg1:graph_type_id|',
-		'on_change' => 'applySNMPQueryTypeChange(document.form_automation_rule_edit)',
+		'on_change' => 'applySNMPQueryTypeChange()',
 		'sql' => 'SELECT ' .
 			'snmp_query_graph.id, ' .
 			'snmp_query_graph.name ' .
@@ -1914,7 +1914,7 @@ $fields_automation_tree_rules_edit1 = array(
 		'friendly_name' => 'Tree',
 		'description' => 'Choose a Tree for the new Tree Items.',
 		'value' => '|arg1:tree_id|',
-		'on_change' => 'applyTreeChange(document.form_automation_tree_rule_edit)',
+		'on_change' => 'applyTreeChange()',
 		'sql' => 'SELECT id, name FROM graph_tree ORDER BY name'
 	),
 	'leaf_type' => array(
@@ -1922,7 +1922,7 @@ $fields_automation_tree_rules_edit1 = array(
 		'friendly_name' => 'Leaf Item Type',
 		'description' => 'The Item Type that shall be dynamically added to the tree.',
 		'value' => '|arg1:leaf_type|',
-		'on_change' => 'applyItemTypeChange(document.form_automation_tree_rule_edit)',
+		'on_change' => 'applyItemTypeChange()',
 		'array' => $automation_tree_item_types
 	),
 	'host_grouping_type' => array(

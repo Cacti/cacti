@@ -375,7 +375,7 @@ function form_actions() {
 						foreach ($graph_templates as $graph_template) {
 							cacti_log(__FUNCTION__ . ' Host[' . $host_id . '], graph: ' . $graph_template['id'], true, 'AUTOMATION TRACE', POLLER_VERBOSITY_MEDIUM);
 
-							execute_graph_template($host_id, $graph_template['id']);
+							automation_execute_graph_template($host_id, $graph_template['id']);
 						}
 					}
 
@@ -392,14 +392,14 @@ function form_actions() {
 						foreach ($data_queries as $data_query) {
 							cacti_log(__FUNCTION__ . ' Host[' . $data['host_id'] . '], dq: ' . $data['snmp_query_id'], true, 'AUTOMATION TRACE', POLLER_VERBOSITY_MEDIUM);
 
-							execute_data_query($host_id, $data_query['snmp_query_id']);
+							automation_execute_data_query($host_id, $data_query['snmp_query_id']);
 						}
 					}
 
 					/* now handle tree rules for that host */
 					cacti_log(__FUNCTION__ . ' Host[' . $host_id . '], create_tree for host: ' . $host_id, true, 'AUTOMATION TRACE', POLLER_VERBOSITY_MEDIUM);
 
-					execute_device_create_tree($host_id);
+					automation_execute_device_create_tree($host_id);
 				}
 			}
 		} else {

@@ -386,7 +386,7 @@ function automation_tree_rules_item_edit() {
 				?>
 <table style='width:100%;text-align:center;'>
 	<tr>
-		<td class='textInfo' style='text-align:right;vertical-align:top;'><span class='linkMarker'>*<a href='<?php print htmlspecialchars('automation_tree_rules.php?action=item_edit&id=' . (isset($_GET['id']) ? $_GET['id'] : 0) . '&item_id=' . (isset($_GET['item_id']) ? $_GET['item_id'] : 0) . '&rule_type=' . (isset($_GET['rule_type']) ? $_GET['rule_type'] : 0) .'&show_trees=') . (isset($_SESSION['automation_tree_rules_show_trees']) ? '0' : '1');?>'><strong><?php print (isset($_SESSION['automation_tree_rules_show_trees']) ? 'Dont Show' : 'Show');?></strong> Created Trees.</a></span><br>
+		<td class='textInfo' style='text-align:right;vertical-align:top;'><span class='linkMarker'>*<a class='linkEditMain' href='<?php print htmlspecialchars('automation_tree_rules.php?action=item_edit&id=' . (isset($_GET['id']) ? $_GET['id'] : 0) . '&item_id=' . (isset($_GET['item_id']) ? $_GET['item_id'] : 0) . '&rule_type=' . (isset($_GET['rule_type']) ? $_GET['rule_type'] : 0) .'&show_trees=') . (isset($_SESSION['automation_tree_rules_show_trees']) ? '0' : '1');?>'><strong><?php print (isset($_SESSION['automation_tree_rules_show_trees']) ? 'Dont Show' : 'Show');?></strong> Created Trees.</a></span><br>
 		</td>
 	</tr>
 </table>
@@ -429,36 +429,36 @@ toggle_operation();
 toggle_operator();
 
 function applyHeaderChange() {
-	if (document.getElementById('rule_type').value == '<?php print AUTOMATION_RULE_TYPE_TREE_ACTION;?>') {
-		if (document.getElementById('field').value == '<?php print AUTOMATION_TREE_ITEM_TYPE_STRING;?>') {
-			document.getElementById('replace_pattern').value = '';
-			document.getElementById('replace_pattern').disabled='disabled';
+	if ($('#rule_type').val() == '<?php print AUTOMATION_RULE_TYPE_TREE_ACTION;?>') {
+		if ($('#field').val() == '<?php print AUTOMATION_TREE_ITEM_TYPE_STRING;?>') {
+			$('#replace_pattern').val('');
+			$('#replace_pattern').prop('disabled', true);
 		} else {
-			document.getElementById('replace_pattern').disabled='';
+			$('#replace_pattern').prop('disabled', false);
 		}
 	}
 }
 
 function toggle_operation() {
 	// right bracket ')' does not come with a field
-	if (document.getElementById('operation').value == '<?php print AUTOMATION_OPER_RIGHT_BRACKET;?>') {
+	if ($('operation').value == '<?php print AUTOMATION_OPER_RIGHT_BRACKET;?>') {
 		//alert('Sequence is '' + document.getElementById('sequence').value + ''');
-		document.getElementById('field').value = '';
-		document.getElementById('field').disabled='disabled';
-		document.getElementById('operator').value = 0;
-		document.getElementById('operator').disabled='disabled';
-		document.getElementById('pattern').value = '';
-		document.getElementById('pattern').disabled='disabled';
+		$('#field').val('');
+		$('#field').prop('disabled', true);
+		$('#operator').val(0);
+		$('#operator').prop('disabled', true);
+		$('#pattern').val('');
+		$('#pattern').prop('disabled', true);
 	} else {
-		document.getElementById('field').disabled='';
-		document.getElementById('operator').disabled='';
-		document.getElementById('pattern').disabled='';
+		$('#field').prop('disabled', false);
+		$('#operator').prop('disabled', false);
+		$('#pattern').prop('disabled', false)
 	}
 }
 
 function toggle_operator() {
 	// if operator is not 'binary', disable the 'field' for matching strings
-	if (document.getElementById('operator').value == '<?php print AUTOMATION_OPER_RIGHT_BRACKET;?>') {
+	if ($('#operator').val() == '<?php print AUTOMATION_OPER_RIGHT_BRACKET;?>') {
 		//alert('Sequence is '' + document.getElementById('sequence').value + ''');
 	} else {
 	}
@@ -498,6 +498,7 @@ function automation_tree_rules_edit() {
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var_request('id'));
+	input_validate_input_number(get_request_var_request('rows'));
 	input_validate_input_number(get_request_var_request('tree_id'));
 	input_validate_input_number(get_request_var_request('leaf_type'));
 	input_validate_input_number(get_request_var_request('host_grouping_type'));
@@ -511,8 +512,7 @@ function automation_tree_rules_edit() {
 	}
 
 	/* remember these search fields in session vars so we don't have to keep passing them around */
-	load_current_session_value('tree_rows', 'sess_automation_tree_rows', read_config_option('num_rows_table'));
-
+	load_current_session_value('rows', 'sess_default_rows', read_config_option('num_rows_table'));
 
 	/* handle show_hosts mode */
 	if (isset($_GET['show_hosts'])) {
@@ -527,7 +527,7 @@ function automation_tree_rules_edit() {
 		?>
 <table style='width:100%;text-align:center;'>
 	<tr>
-		<td class='textInfo' align='right' valign='top'><span class='linkMarker'>*<a href='<?php print htmlspecialchars('automation_tree_rules.php?action=edit&id=' . (isset($_GET['id']) ? $_GET['id'] : 0) . '&show_hosts=') . (isset($_SESSION['automation_tree_rules_show_objects']) ? '0' : '1');?>'><strong><?php print (isset($_SESSION['automation_tree_rules_show_objects']) ? 'Dont Show' : 'Show');?></strong> Eligible Objects.</a></span><br>
+		<td class='textInfo' align='right' valign='top'><span class='linkMarker'>*<a class='linkEditMain' href='<?php print htmlspecialchars('automation_tree_rules.php?action=edit&id=' . (isset($_GET['id']) ? $_GET['id'] : 0) . '&show_hosts=') . (isset($_SESSION['automation_tree_rules_show_objects']) ? '0' : '1');?>'><strong><?php print (isset($_SESSION['automation_tree_rules_show_objects']) ? 'Dont Show' : 'Show');?></strong> Eligible Objects.</a></span><br>
 		</td>
 	</tr>
 </table>
@@ -609,39 +609,41 @@ function automation_tree_rules_edit() {
 	}
 
 	?>
-<script type='text/javascript'>
-	<!--
-	applyItemTypeChange(document.form_automation_tree_rule_edit);
+	<script type='text/javascript'>
+	$(function() {
+		applyItemTypeChange();
+	});
 
-	function applyTreeChange(objForm) {
-		strURL = '?action=edit&id=' + objForm.id.value;
-		if (typeof(objForm.name) 				!= 'undefined') {strURL = strURL + '&name=' + objForm.name.value;}
-		if (typeof(objForm.tree_id) 			!= 'undefined') {strURL = strURL + '&tree_id=' + objForm.tree_id.value;}
-		if (typeof(objForm.tree_item_id) 		!= 'undefined') {strURL = strURL + '&tree_item_id=' + objForm.tree_item_id.value;}
-		if (typeof(objForm.leaf_type) 			!= 'undefined') {strURL = strURL + '&leaf_type=' + objForm.leaf_type.value;}
-		if (typeof(objForm.host_grouping_type) 	!= 'undefined') {strURL = strURL + '&host_grouping_type=' + objForm.host_grouping_type.value;}
-		if (typeof(objForm.rra_id) 				!= 'undefined') {strURL = strURL + '&rra_id=' + objForm.rra_id.value;}
-		//strURL = strURL + '&graph_rows=' + objForm.graph_rows.value;
-		//alert('Url: ' + strURL);
-		document.location = strURL;
+	function applyTreeChange() {
+		strURL = '?action=edit&id=' + $('#id').val();
+		strURL = strURL + '&name=' + $('#name').val();
+		strURL = strURL + '&tree_id=' + $('tree_id').val();
+		strURL = strURL + '&tree_item_id=' + $('#tree_item_id').val();
+		strURL = strURL + '&leaf_type=' + $('#leaf_type').val();
+		strURL = strURL + '&host_grouping_type=' + $('#host_grouping_type').val();
+		strURL = strURL + '&rra_id=' + $('#rra_id').val();
+		strURL = strURL + '&rows=' + $('#graph_rows').val();
+
+		$.get(strURL, function(data) {
+			$('#main').html(data);
+			applySkin();
+		});
 	}
 
-	function applyItemTypeChange(objForm) {
-		if (document.getElementById('leaf_type').value == '<?php print TREE_ITEM_TYPE_HOST;?>') {
-			document.getElementById('host_grouping_type').value = '';
-			document.getElementById('host_grouping_type').disabled='';
-			document.getElementById('rra_id').value = '';
-			document.getElementById('rra_id').disabled='disabled';
-		} else if (document.getElementById('leaf_type').value == '<?php print TREE_ITEM_TYPE_GRAPH;?>') {
-			document.getElementById('host_grouping_type').value = '';
-			document.getElementById('host_grouping_type').disabled='disabled';
-			document.getElementById('rra_id').value = '';
-			document.getElementById('rra_id').disabled='';
+	function applyItemTypeChange() {
+		if ($('#leaf_type').val() == '<?php print TREE_ITEM_TYPE_HOST;?>') {
+			$('#host_grouping_type').val('');
+			$('#host_grouping_type').prop('disabled', false);
+			$('#rra_id').val('');
+			$('#rra_id').prop('disabled', true);
+		} else if ($('#leaf_type').val() == '<?php print TREE_ITEM_TYPE_GRAPH;?>') {
+			$('#host_grouping_type').val('');
+			$('#host_grouping_type').prop('disabled', true);
+			$('#rra_id').val('');
+			$('#rra_id').prop('disabled', false);
 		}
-
 	}
-	-->
-</script>
+	</script>
 	<?php
 }
 
