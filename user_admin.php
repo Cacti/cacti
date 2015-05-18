@@ -1472,7 +1472,7 @@ function user_realms_edit($header_label) {
 
 	print "	<tr class='cactiTableTitle'>
 			<td class='textHeaderDark'><strong>Realm Permissions</strong> $header_label</td>
-			<td class='tableHeader' style='width:1%;text-align:center;" . get_checkbox_style() . "'><input type='checkbox' style='margin: 0px;' name='all' title='Select All' onClick='selectAllRealms(this.checked)'></td>\n
+			<td class='tableHeader' style='width:1%;text-align:center;'><input class='checkbox' type='checkbox' name='all' title='Select All' onClick='selectAllRealms(this.checked)'></td>\n
 		</tr>\n";
 
 	/* do cacti realms first */

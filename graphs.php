@@ -83,11 +83,11 @@ switch ($_REQUEST['action']) {
 		header('Location: graphs.php');
 		break;
 	case 'ajax_hosts':
-		ajax_hosts();
+		get_allowed_ajax_hosts();
 
 		break;
 	case 'ajax_hosts_noany':
-		ajax_hosts(false);
+		get_allowed_ajax_hosts(false);
 
 		break;
 	case 'lock':
@@ -113,30 +113,6 @@ switch ($_REQUEST['action']) {
 /* --------------------------
     Global Form Functions
    -------------------------- */
-
-function ajax_hosts($include_any = true, $include_none = true) {
-	$return    = array();
-	$term      = $_REQUEST['term'];
-	$sql_where = "hostname LIKE '%$term%' OR description LIKE '%$term%' OR notes LIKE '%$term%'";
-	$hosts     = get_allowed_devices($sql_where, 'description', 30);
-
-	if ($_REQUEST['term'] == '') {
-		if ($include_any) {
-			$return[] = array('label' => 'Any', 'value' => 'Any', 'id' => '-1');
-		}
-		if ($include_none) {
-			$return[] = array('label' => 'None', 'value' => 'None', 'id' => '0');
-		}
-	}
-
-	if (sizeof($hosts)) {
-	foreach($hosts as $host) {
-		$return[] = array('label' => $host['description'], 'value' => $host['description'], 'id' => $host['id']);
-	}
-	}
-
-	print json_encode($return);
-}
 
 function add_tree_names_to_actions_array() {
 	global $graph_actions;

@@ -82,6 +82,14 @@ switch ($_REQUEST['action']) {
 		ds_edit();
 
 		break;
+	case 'ajax_hosts':
+		get_allowed_ajax_hosts();
+
+		break;
+	case 'ajax_hosts_noany':
+		get_allowed_ajax_hosts(false);
+
+		break;
 	default:
 		top_header();
 

@@ -43,6 +43,14 @@ switch ($_REQUEST['action']) {
 
 		header('Location: graphs_new.php?header=false&host_id=' . $_REQUEST['host_id']);
 		break;
+	case 'ajax_hosts':
+		get_allowed_ajax_hosts();
+
+		break;
+	case 'ajax_hosts_noany':
+		get_allowed_ajax_hosts(false);
+
+		break;
 	default:
 		top_header();
 
@@ -547,7 +555,7 @@ function graphs() {
 
 		print "<tr class='tableHeader'>
 				<th class='tableSubHeaderColumn'>Graph Template Name</th>
-				<th class='tableSubHeaderCheckbox' style='" . get_checkbox_style() . "'><input type='checkbox' name='all_cg' style='width:16px; margin:0px;' title='Select All' onClick='SelectAll(\"sg\",this.checked)'></th>\n
+				<th class='tableSubHeaderCheckbox'><input class='checkbox' type='checkbox' name='all_cg' title='Select All' onClick='SelectAll(\"sg\",this.checked)'></th>\n
 			</tr>\n";
 
 		$graph_templates = db_fetch_assoc_prepared('SELECT
@@ -590,8 +598,8 @@ function graphs() {
 			print "<td>
 						<span id='gt_text$query_row" . "_0'>" . htmlspecialchars($graph_template['graph_template_name']) . "</span>
 					</td>
-					<td style='text-align:right;' class='checkbox'>
-						<input type='checkbox' name='cg_$query_row' id='cg_$query_row'>
+					<td style='width:1%;'>
+						<input class='checkbox' type='checkbox' name='cg_$query_row' id='cg_$query_row'>
 					</td>
 				</tr>";
 		}
@@ -817,7 +825,7 @@ function graphs() {
 					}else{
 						print "<tr class='tableHeader'>
 								$html_dq_header
-								<th class='tableSubHeaderCheckbox' style='" . get_checkbox_style() . "'><input type='checkbox' style='width:16px; margin: 0px;' name='all_" . $snmp_query['id'] . "' title='Select All' onClick='SelectAll(\"sg_" . $snmp_query['id'] . "\",this.checked)'></th>\n
+								<th class='tableSubHeaderCheckbox'><input class='checkbox' type='checkbox' name='all_" . $snmp_query['id'] . "' title='Select All' onClick='SelectAll(\"sg_" . $snmp_query['id'] . "\",this.checked)'></th>\n
 							</tr>\n";
 					}
 
@@ -846,8 +854,8 @@ function graphs() {
 							}
 						}
 
-						print "<td class='checkbox' align='right'>";
-						print "<input type='checkbox' name='sg_$query_row' id='sg_$query_row'>";
+						print "<td style='width:1%;'>";
+						print "<input class='checkbox' type='checkbox' name='sg_$query_row' id='sg_$query_row'>";
 						print '</td>';
 						print "</tr>\n";
 

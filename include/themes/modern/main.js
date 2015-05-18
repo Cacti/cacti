@@ -1,8 +1,11 @@
-var hostTimer;
-var clickTimeout;
-var hostOpen = false;
+// Host Autocomplete Magic
+var pageName = basename($(location).attr('pathname'));
 
 function themeReady() {
+	var hostTimer = false;
+	var clickTimeout = false;
+	var hostOpen = false;
+
 	$('a.pic, a.linkOverDark, a.linkEditMain, a.hyperLink').unbind().click(function(event) {
 		event.preventDefault();
 
@@ -14,6 +17,7 @@ function themeReady() {
 
 		/* execute an ajax request to load the data */
 		href = $(this).attr('href');
+		pageName = basename(href);
 
 		$.get(href, function(html) {
 			var htmlObject  = $(html);
@@ -41,17 +45,6 @@ function themeReady() {
 	// Add nice search filter to filters
 	$('input[id="filter"]').after("<i class='fa fa-search filter'/>").attr('autocomplete', 'off').attr('placeholder', 'Enter a search term').parent('td').css('white-space', 'nowrap');
 
-	$('#host').autocomplete({
-		source: 'graphs.php?action=ajax_hosts',
-		autoFocus: true,
-		minLength: 0,
-		select: function(event,ui) {
-			$('#host_id').val(ui.item.id);
-			applyFilter();
-		}
-	}).addClass('ui-selectmenu-text').css('border', 'none').css('background-color', 'transparent');
-
-	$('#host_click').css('z-index', '4');
 	$('input#filter').addClass('ui-state-default ui-corner-all');
 
 	$('input[type="text"], input[type="password"], input[type="checkbox"], textarea').not('image').addClass('ui-state-default ui-corner-all');
@@ -122,7 +115,18 @@ function themeReady() {
 		}
 	});
 
-	$('#host_wrapper').dblclick(function() {
+	$('#host').unbind().autocomplete({
+		source: pageName+'?action=ajax_hosts',
+		autoFocus: true,
+		minLength: 0,
+		select: function(event,ui) {
+			$('#host_id').val(ui.item.id);
+			applyFilter();
+		}
+	}).addClass('ui-selectmenu-text').css('border', 'none').css('background-color', 'transparent');
+
+	$('#host_click').css('z-index', '4');
+	$('#host_wrapper').unbind().dblclick(function() {
 		hostOpen = false;
 		clearTimeout(hostTimer);
 		clearTimeout(clickTimeout);
@@ -139,21 +143,25 @@ function themeReady() {
 				hostOpen = true;
 			}, 200);
 		}
-	}).on('mouseleave', function() {
-		hostTimer = setTimeout(function() { $('#host').autocomplete('close'); }, 800);
-	});
-
-	$('ul[id="ui-id-1"]').on('mouseover', function() {
-		clearTimeout(hostTimer);
-	}).on('mouseout', function() {
-		hostTimer = setTimeout(function() { $('#host').autocomplete('close'); }, 800);
-	});
-
-	$('#host_wrapper').on('mouseenter', function() {
+	}).on('mouseenter', function() {
 		$(this).addClass('ui-state-hover');
 		$('input#host').addClass('ui-state-hover');
 	}).on('mouseleave', function() {
-		$(this).removeClass('ui-state-hover');
-		$('input#host').removeClass('ui-state-hover');
+		hostTimer = setTimeout(function() { $('#host').autocomplete('close'); }, 800);
 	});
+
+	var hostPrefix = '';
+	$('#host').autocomplete('widget').each(function() {
+		hostPrefix=$(this).attr('id');
+	});
+
+	if (hostPrefix != '') {
+		$('ul[id="'+hostPrefix+'"]').on('mouseover', function() {
+			clearTimeout(hostTimer);
+		}).on('mouseout', function() {
+			hostTimer = setTimeout(function() { $('#host').autocomplete('close'); }, 800);
+			$(this).removeClass('ui-state-hover');
+			$('input#host').removeClass('ui-state-hover');
+		});
+	}
 }

@@ -1227,13 +1227,13 @@ function draw_aggregate_graph_items_list($_graph_id = 0, $_graph_template_id = 0
 			print "</td>";
 
 			/* column "Skip" */
-			print "<td style='width:1%;text-align:center;" . get_checkbox_style() ."'>";
-			print "<input id='agg_skip_" . $item['id'] . "' type='checkbox' style='margin: 0px;' name='agg_skip_" . $item['id'] . "' title='" . $item["text_format"] . "' " . ($is_edit && $current_vals[$item['id']]['item_skip'] == 'on' ? 'checked':'') . ">";
+			print "<td style='width:1%;text-align:center;'>";
+			print "<input class='checkbox' id='agg_skip_" . $item['id'] . "' type='checkbox' name='agg_skip_" . $item['id'] . "' title='" . $item["text_format"] . "' " . ($is_edit && $current_vals[$item['id']]['item_skip'] == 'on' ? 'checked':'') . ">";
 			print "</td>";
 
 			/* column "Total" */
-			print "<td style='width:1%;text-align:center;" . get_checkbox_style() ."'>";
-			print "<input id='agg_total_" . ($item['id']) . "' type='checkbox' style='margin: 0px;' name='agg_total_" . ($item['id']) . "' title='" . $item["text_format"] . "' " . ($is_edit && $current_vals[$item['id']]['item_total'] == 'on' ? 'checked':'') . ">";
+			print "<td style='width:1%;text-align:center;'>";
+			print "<input class='checkbox' id='agg_total_" . ($item['id']) . "' type='checkbox' name='agg_total_" . ($item['id']) . "' title='" . $item["text_format"] . "' " . ($is_edit && $current_vals[$item['id']]['item_total'] == 'on' ? 'checked':'') . ">";
 			print "</td>";
 
 			print "</tr>";

@@ -151,8 +151,8 @@ function form_selectable_cell($contents, $id, $width='', $style='') {
 /* form_checkbox_cell - format's a tables checkbox form element so that the cacti js actions work on it
    @arg $title - the text that will be displayed if your hover over the checkbox */
 function form_checkbox_cell($title, $id, $disabled = false) {
-	print "\t<td class='checkbox' style='width:1%;text-align:right;" . get_checkbox_style() . "'>\n";
-	print "\t\t<input type='checkbox' " . ($disabled ? "disabled='disabled' class='disabled'":'') . " style='margin: 0px;' id='chk_" . $id . "' name='chk_" . $id . "'>\n";
+	print "\t<td style='width:1%;'>\n";
+	print "\t\t<input class='checkbox' type='checkbox' " . ($disabled ? "disabled='disabled' class='disabled'":'') . " id='chk_" . $id . "' name='chk_" . $id . "'>\n";
 	print "\t</td>\n";
 }
 
@@ -205,13 +205,7 @@ function html_boolean_friendly($html_boolean) {
    @returns - a CSS style string which should be used with an HTML checkbox
      control */
 function get_checkbox_style() {
-	if (get_web_browser() == "moz") {
-		return "padding: 4px; margin: 4px;";
-	}elseif (get_web_browser() == "ie") {
-		return "padding: 0px; margin: 0px;";
-	}elseif (get_web_browser() == "other") {
-		return "padding: 4px; margin: 4px;";
-	}
+	return "";
 }
 
 /* get_request_var - returns the current value of a PHP $_GET variable, optionally

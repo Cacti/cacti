@@ -56,7 +56,7 @@ function html_start_box($title, $width, $background_color, $cell_padding, $align
 					</tr>
 				</table>
 				<?php }?>
-				<table class='cactiTable' style='padding:<?php print $cell_padding;?>;'>
+				<table class='cactiTable' style='padding:<?php print $cell_padding;?>px;'>
 	<?php
 
 	$table_suffix++;
@@ -606,7 +606,7 @@ function html_header_sort_checkbox($header_items, $sort_column, $sort_direction,
 		}
 	}
 
-	print "<th class='tableSubHeaderCheckbox' style='" . get_checkbox_style() . "'><input style='margin:0px;' type='checkbox' name='all' title='Select All Rows' onClick='SelectAll(\"chk_\",this.checked)'></th>" . ($include_form ? "<th style='display:none;'><form name='chk' method='post' action='$form_action'></th>\n":"");
+	print "<th class='tableSubHeaderCheckbox'><input class='checkbox' type='checkbox' name='all' title='Select All Rows' onClick='SelectAll(\"chk_\",this.checked)'></th>" . ($include_form ? "<th style='display:none;'><form name='chk' method='post' action='$form_action'></th>\n":"");
 	print "</tr>\n";
 
 	$page++;
@@ -649,7 +649,7 @@ function html_header_checkbox($header_items, $include_form = true, $form_action 
 		}
 	}
 
-	print "<th class='tableSubHeaderCheckbox' style='padding:4px;" . get_checkbox_style() . "'><input type='checkbox' name='all' title='Select All Rows' onClick='SelectAll(\"chk_\",this.checked)'></th>\n" . ($include_form ? "<th style='display:none;'><form name='chk' method='post' action='$form_action'></th>\n":"");
+	print "<th class='tableSubHeaderCheckbox'><input class='checkbox' type='checkbox' name='all' title='Select All Rows' onClick='SelectAll(\"chk_\",this.checked)'></th>\n" . ($include_form ? "<th style='display:none;'><form name='chk' method='post' action='$form_action'></th>\n":"");
 	print "</tr>\n";
 }
 

@@ -1206,6 +1206,30 @@ function get_host_array() {
 	return $return_devices;
 }
 
+function get_allowed_ajax_hosts($include_any = true, $include_none = true) {
+	$return    = array();
+	$term      = $_REQUEST['term'];
+	$sql_where = "hostname LIKE '%$term%' OR description LIKE '%$term%' OR notes LIKE '%$term%'";
+	$hosts     = get_allowed_devices($sql_where, 'description', 30);
+
+	if ($_REQUEST['term'] == '') {
+		if ($include_any) {
+			$return[] = array('label' => 'Any', 'value' => 'Any', 'id' => '-1');
+		}
+		if ($include_none) {
+			$return[] = array('label' => 'None', 'value' => 'None', 'id' => '0');
+		}
+	}
+
+	if (sizeof($hosts)) {
+	foreach($hosts as $host) {
+		$return[] = array('label' => $host['description'], 'value' => $host['description'], 'id' => $host['id']);
+	}
+	}
+
+	print json_encode($return);
+}
+
 function secpass_login_process () {
 	$users = db_fetch_assoc('SELECT username FROM user_auth WHERE realm = 0');
 	$username = sanitize_search_string(get_request_var_post('login_username'));
