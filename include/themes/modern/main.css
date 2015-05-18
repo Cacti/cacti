@@ -596,6 +596,8 @@ legend {
 
 .cactiTable {
 	width: 100%;
+	margin-left:auto; 
+	margin-right:auto;
 }
 
 .cactiTableTitle {
@@ -868,10 +870,6 @@ td#gtabs {
 	text-align:right;
 }
 
-.tabs {
-	width:100%;
-}
-
 .tabs a, .maintabs a {
 	-moz-border-radius:5px 5px 0 0;
 	border-radius:5px 5px 0 0;
@@ -979,6 +977,10 @@ td#gtabs {
 
 th {
 	border-right: 1px groove #eee;
+}
+
+th:last-child {
+	border-right: none !important;
 }
 
 tr.selected {
