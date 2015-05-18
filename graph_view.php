@@ -362,12 +362,18 @@ case 'preview':
 	}
 
 	function applyFilter() {
-		$.get('graph_view.php?action=preview&header=false'+
-			'&filter='+$('#filter').val()+'&host_id='+$('#host_id').val()+'&columns='+$('#columns').val()+
-			'&rows='+$('#rows').val()+'&graph_template_id='+$('#graph_template_id').val()+
-			'&thumbnails='+$('#thumbnails').is(':checked'), function(data) {
+		href='graph_view.php?action=preview'+
+            '&filter='+$('#filter').val()+'&host_id='+$('#host_id').val()+'&columns='+$('#columns').val()+
+            '&rows='+$('#rows').val()+'&graph_template_id='+$('#graph_template_id').val()+
+            '&thumbnails='+$('#thumbnails').is(':checked');
+
+		$.get(href+'&header=false', function(data) {
 			$('#main').html(data);
 			applySkin();
+			if (typeof window.history.replaceState !== 'undefined') {
+				window.history.replaceState({}, 'Preview Mode', href);
+			}
+
 			initializeGraphs();
 		});
 	}

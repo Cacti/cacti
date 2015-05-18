@@ -125,6 +125,11 @@ function grow_dhtml_trees() {
 	}elseif (isset($_REQUEST['tree_id'])) {
 		print "var node='tree_anchor-" . $_REQUEST['tree_id'] . "';\n";
 		print "var reset=false;\n";
+		if (isset($_REQUEST['leaf_id'])){
+			print "var leaf='".$_REQUEST['leaf_id']."';\n";
+		}else{
+			print "var leaf='';\n";
+		}
 	}else{
 		print "var node='';\n";
 		print "var reset=true;\n";
@@ -151,10 +156,16 @@ function grow_dhtml_trees() {
 					$(this).jstree('select_node', node);
 
 					if (href.search('undefined') < 0) {
+						origHref = href;
 						href=href.replace('action=tree', 'action=tree_content');
 						$.get(href, function(data) {
 							$('#main').html(data);
 							applySkin();
+							var mytitle = 'Tree Mode - '+$('#nav_title').text();
+							document.getElementsByTagName('title')[0].innerHTML = mytitle;
+							if (typeof window.history.replaceState !== 'undefined') {
+								window.history.replaceState({}, mytitle, origHref);
+							}
 						});
 					}
 				}
@@ -168,10 +179,17 @@ function grow_dhtml_trees() {
 					}else{
 						href=$('#'+data.node.id).find('a:first').attr('href')+"&nodeid="+data.node.id.replace('tbranch-','');
 					}
+					origHref = href;
 					href=href.replace('action=tree', 'action=tree_content');
 					$.get(href, function(data) {
 						$('#main').html(data);
 						applySkin();
+						var mytitle = 'Tree Mode - '+$('#nav_title').text();
+						console.log(mytitle);
+						document.getElementsByTagName('title')[0].innerHTML = mytitle;
+						if (typeof window.history.replaceState !== 'undefined') {
+							window.history.replaceState({}, mytitle, origHref);
+						}
 					});
 					node = data.node.id;
 				}
