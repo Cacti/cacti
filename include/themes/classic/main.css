@@ -465,6 +465,8 @@ legend {
 	border-width: 0px;
 	border-color: #00438c;
 	border-style: solid;
+	margin-left:auto;
+	margin-right:auto;
 }
 
 .cactiTableTitle {
@@ -542,6 +544,10 @@ legend {
 	text-align:left;
 	border-right: 1px groove #efefef;
 	font-size:11px;
+}
+
+.tableHeader th:last-child {
+    border-right: none !important;
 }
 
 .tableHeader th div {
