@@ -726,10 +726,10 @@ function data_query_edit() {
 			html_start_box('<strong>Associated Graph Templates</strong>', '100%', '', '3', 'center', 'data_queries.php?action=item_edit&snmp_query_id=' . $snmp_query['id']);
 
 			print "<tr class='tableHeader'>
-					<th class='textSubHeaderDark'>Name</th>
-					<th class='textSubHeaderDark'>Graph Template Name</th>
-					<th class='textSubHeaderDark' style='text-align:right;'>Mapping ID</th>
-					<th style='width:40px;text-align:right;'>Action</td>
+					<th class='tableSubHeaderColumn'>Name</th>
+					<th class='tableSubHeaderColumn'>Graph Template Name</th>
+					<th class='tableSubHeaderColumn' style='text-align:right;'>Mapping ID</th>
+					<th class='tableSubHeaderColumn' style='width:60px;text-align:right;'>Action</td>
 				</tr>";
 
 			$snmp_query_graphs = db_fetch_assoc_prepared('SELECT
@@ -747,7 +747,7 @@ function data_query_edit() {
 					form_alternate_row();
 					?>
 						<td>
-							<strong><a href="<?php print htmlspecialchars('data_queries.php?action=item_edit&id=' . $snmp_query_graph['id'] . '&snmp_query_id=' . $snmp_query['id']);?>"><?php print htmlspecialchars($snmp_query_graph['name']);?></a></strong>
+							<strong><a class='linkEditMain' href="<?php print htmlspecialchars('data_queries.php?action=item_edit&id=' . $snmp_query_graph['id'] . '&snmp_query_id=' . $snmp_query['id']);?>"><?php print htmlspecialchars($snmp_query_graph['name']);?></a></strong>
 						</td>
 						<td>
 							<?php print htmlspecialchars($snmp_query_graph['graph_template_name']);?>
