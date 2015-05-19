@@ -498,6 +498,15 @@ function applySkin() {
 	// Add tooltips to graph drilldowns
 	$('.drillDown').tooltip();
 
+	// Debug message actions
+	$('table.debug').click(function() { 
+		if ($(this).find('table').is(':visible')) { 
+			$(this).find('table').slideUp('fast'); 
+		} else { 
+			$(this).find('table').slideDown('fast'); 
+		}
+	});
+
 	// Don't show the message container until all GUI interaction is done
 	$('#message_container').delay(2000).slideUp('fast');
 	$('#main').show();

@@ -249,6 +249,11 @@ input, select {
 .navigation {
 }
 
+.debug td {
+	padding:3px;
+	margin:0px;
+}
+
 .breadCrumbBar {
 	height:5px;
 	background: rgba(167,217,134,1);

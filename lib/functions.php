@@ -311,6 +311,7 @@ function display_output_messages() {
 		print "<div id='message' class='textInfo messageBox'>";
 		print $debug_message;
 		print '</div>';
+
 		debug_log_clear('new_graphs');
 	}elseif (isset($_SESSION['sess_messages'])) {
 		$error_message = is_error_message();
@@ -2769,6 +2770,19 @@ function generate_hash() {
 	return md5(session_id() . microtime() . rand(0,1000));
 }
 
+/* debug_log_insert_section_start - creates a header item for breaking down the debug log
+   @arg $type - the 'category' or type of debug message
+   @arg $text - section header */
+function debug_log_insert_section_start($type, $text) {
+	debug_log_insert($type, "<table class='cactiTable debug'><tr class='tableHeader'><td class='textHeaderDark'>$text</td></tr><tr><td style='padding:0px;'><table style='display:none;'><tr><td><div style='font-family: monospace;'>");
+}
+
+/* debug_log_insert_section_end - finalizes the header started with the start function
+   @arg $type - the 'category' or type of debug message */
+function debug_log_insert_section_end($type) {
+	debug_log_insert($type, "</div></td></tr></table></td></tr></td></table>");
+}
+
 /* debug_log_insert - inserts a line of text into the debug log
    @arg $type - the 'category' or type of debug message
    @arg $text - the actual debug message */
@@ -2801,15 +2815,19 @@ function debug_log_return($type) {
 
 	if ($type == 'new_graphs') {
 		if (isset($_SESSION['debug_log'][$type])) {
+			$log_text .= '<table style="width:100%;">';
 			for ($i=0; $i<count($_SESSION['debug_log'][$type]); $i++) {
-				$log_text .= '+ ' . $_SESSION['debug_log'][$type][$i] . '<br>';
+				$log_text .= '<tr><td>' . $_SESSION['debug_log'][$type][$i] . '</td></tr>';
 			}
+			$log_text .= '</table>';
 		}
 	}else{
 		if (isset($_SESSION['debug_log'][$type])) {
+			$log_text .= '<table style="width:100%;">';
 			for ($i=0; $i<count($_SESSION['debug_log'][$type]); $i++) {
-				$log_text .= '+ ' . $_SESSION['debug_log'][$type][$i] . '<br>';
+				$log_text .= '<tr><td>' . $_SESSION['debug_log'][$type][$i] . '</td></tr>';
 			}
+			$log_text .= '</table>';
 		}
 	}
 
