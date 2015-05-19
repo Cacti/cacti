@@ -577,7 +577,7 @@ function form_actions() {
 	}
 
 	print "	<tr>
-			<td colspan='2' align='right' class='saveRow'>
+			<td colspan='2' class='saveRow'>
 				<input type='hidden' name='action' value='actions'>
 				<input type='hidden' name='selected_items' value='" . (isset($host_array) ? serialize($host_array) : '') . "'>
 				<input type='hidden' name='drp_action' value='" . $_POST['drp_action'] . "'>
@@ -789,7 +789,7 @@ function host_edit() {
 		<?php
 	}
 
-	print "<form id='host' action='host.php' method='post'>\n";
+	print "<form id='host_form' action='host.php' method='post'>\n";
 
 	html_start_box("<strong>Device</strong> $header_label", '100%', '', '3', 'center', '');
 
@@ -805,13 +805,12 @@ function host_edit() {
 
 	/* we have to hide this button to make a form change in the main form trigger the correct
 	 * submit action */
-	echo "<tr style='display:none;'><td colspan='2'><input type='submit' value='Default Submit Button'></td></tr>\n";
+	echo "<tr style='display:none;'><td colspan='2'><input style='display:none;' type='submit' value='Default Submit Button'></td></tr>\n";
 
 	html_end_box();
 
 	?>
 	<script type="text/javascript">
-	<!--
 
 	// default snmp information
 	var snmp_community       = $('#snmp_community').val();
@@ -985,8 +984,37 @@ function host_edit() {
 	}
 
 	$(function() {
+		$('[id^="reload"]').click(function(data) {
+			$(this).removeClass('fa-circle-o').addClass('fa-circle-o-notch fa-spin');
+			$.get('host.php?action=query_reload&id='+$(this).attr('data-id')+'&host_id='+$('#id').val(), function(data) {
+				$('#main').html(data);
+				applySkin();
+			});
+		});
+
+		$('[id^="verbose"]').click(function(data) {
+			$.get('host.php?action=query_verbose&id='+$(this).attr('data-id')+'&host_id='+$('#id').val(), function(data) {
+				$('#main').html(data);
+				applySkin();
+			});
+		});
+
+		$('[id^="remove"]').click(function(data) {
+			$.get('host.php?action=query_remove&id='+$(this).attr('data-id')+'&host_id='+$('#id').val(), function(data) {
+				$('#main').html(data);
+				applySkin();
+			});
+		});
+
+		$('[id^="gtremove"]').click(function(data) {
+			$.get('host.php?action=gt_remove&id='+$(this).attr('data-id')+'&host_id='+$('#id').val(), function(data) {
+				$('#main').html(data);
+				applySkin();
+			});
+		});
+
 		changeHostForm();
-		$('#dbghide').click(function(data) {
+		$('#dbghide').unbind().click(function(data) {
 			$('#dqdebug').fadeOut('fast');
 		});
 
@@ -995,17 +1023,16 @@ function host_edit() {
 		});
 	});
 
-	-->
 	</script>
 	<?php
 
 	if ((isset($_REQUEST['display_dq_details'])) && (isset($_SESSION['debug_log']['data_query']))) {
 		print "<table id='dqdebug' class='cactiDebugTable'><tr><td>\n";
 		print "<table class='cactiTableTitle'>\n";
-		print "<tr><td class='textHeaderDark'><a name='dqdbg'></a><strong>Data Query Debug Information</strong></td><td class='textHeaderDark' align='right'><a style='cursor:pointer;' id='dbghide' class='linkOverDark'>Hide</a></td></tr>\n";
+		print "<tr><td class='textHeaderDark'><a style='display:none;' name='dqdbg'></a><strong>Data Query Debug Information</strong></td><td class='textHeaderDark' align='right'><span style='cursor:pointer;' id='dbghide' class='linkOverDark'>Hide</span></td></tr>\n";
 		print "</table>\n";
 		print "<table class='cactiTable'>\n";
-		print "<tr><td class='odd'><span style='font-family: monospace;'>" . debug_log_return('data_query') . "</span></td></tr>";
+		print "<tr><td class='debug'><span>" . debug_log_return('data_query') . "</span></td></tr>";
 		print "</table>\n";
 		print "</table>\n";
 	}
@@ -1056,16 +1083,16 @@ function host_edit() {
 
 		?>
 		<tr class='odd'>
-			<td class='saveRow' colspan='2'>
-				<table style='width:100%;'>
+			<td class='saveRow' colspan='3'>
+				<table>
 					<tr style='line-height:10px;'>
-						<td style='padding-right:15px;'>
+						<td style='white-space:nowrap;padding-right:15px;width:1%;'>
 							Add Graph Template
 						</td>
-						<td>
+						<td style='width:1%;'>
 							<?php form_dropdown('graph_template_id',$available_graph_templates,'name','id','','','');?>
 						</td>
-						<td style='text-align:right;'>
+						<td>
 							<input type='submit' value='Add' name='add_gt_x' title='Add Graph Template to Device'>
 						</td>
 					</tr>
@@ -1146,50 +1173,18 @@ function host_edit() {
 		?>
 		<tr class='odd'>
 			<td class='saveRow' colspan='5'>
-				<script type='text/javascript'>
-				$(function() {
-					$('[id^="reload"]').click(function(data) {
-						$(this).removeClass('fa-circle-o').addClass('fa-circle-o-notch fa-spin');
-						$.get('host.php?action=query_reload&id='+$(this).attr('data-id')+'&host_id='+$('#id').val(), function(data) {
-							$('#main').html(data);
-							applySkin();
-						});
-					});
-
-					$('[id^="verbose"]').click(function(data) {
-						$.get('host.php?action=query_verbose&id='+$(this).attr('data-id')+'&host_id='+$('#id').val(), function(data) {
-							$('#main').html(data);
-							applySkin();
-						});
-					});
-
-					$('[id^="remove"]').click(function(data) {
-						$.get('host.php?action=query_remove&id='+$(this).attr('data-id')+'&host_id='+$('#id').val(), function(data) {
-							$('#main').html(data);
-							applySkin();
-						});
-					});
-
-					$('[id^="gtremove"]').click(function(data) {
-						$.get('host.php?action=gt_remove&id='+$(this).attr('data-id')+'&host_id='+$('#id').val(), function(data) {
-							$('#main').html(data);
-							applySkin();
-						});
-					});
-				});
-				</script>
-				<table style='width:100%;'>
+				<table>
 					<tr style='line-height:10px;'>
-						<td style='padding-right:15px;'>
+						<td style='padding-right:15px;white-space:nowrap;width:1%;'>
 							Add Data Query
 						</td>
-						<td>
+						<td style='width:1%;'>
 							<?php form_dropdown('snmp_query_id',$available_data_queries,'name','id','','','');?>
 						</td>
-						<td style='padding-right:15px;'>
+						<td style='white-space:nowrap;width:1%;padding-right:15px;'>
 							Re-Index Method
 						</td>
-						<td>
+						<td style='width:1%;'>
 							<?php form_dropdown('reindex_method',$reindex_types,'','',read_config_option('reindex_method'),'','');?>
 						</td>
 						<td>
@@ -1197,7 +1192,7 @@ function host_edit() {
 						</td>
 					</tr>
 				</table>
-				<a name='dqtop'></a>
+				<a style='display:none;' name='dqtop'></a>
 			</td>
 		</tr>
 
