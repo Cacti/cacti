@@ -17,7 +17,10 @@ function themeReady() {
 
 		/* execute an ajax request to load the data */
 		href = $(this).attr('href');
-		pageName = basename(href);
+
+		if (href != null) {
+			pageName = basename(href);
+		}
 
 		$.get(href, function(html) {
 			var htmlObject  = $(html);
