@@ -1171,6 +1171,9 @@ function utilities_view_snmp_cache() {
 	load_current_session_value('filter', 'sess_snmp_filter', '');
 	load_current_session_value('rows', 'sess_default_rows', read_config_option('num_rows_table'));
 
+	$refresh['seconds'] = '300';
+	$refresh['page'] = 'utilities.php?action=view_snmp_cache&header=false';
+
 	?>
 	<script type="text/javascript">
     var refreshIsLogout=false;
@@ -1378,46 +1381,37 @@ function utilities_view_snmp_cache() {
 
 	$snmp_cache = db_fetch_assoc($snmp_cache_sql);
 
-	$nav = html_nav_bar('utilities.php?action=view_snmp_cache&host_id=' . get_request_var_request('host_id') . '&filter=' . get_request_var_request('filter'), MAX_DISPLAY_PAGES, get_request_var_request('page'), get_request_var_request('rows'), $total_rows, 3, 'Entries', 'page', 'main');
+	$nav = html_nav_bar('utilities.php?action=view_snmp_cache&host_id=' . get_request_var_request('host_id') . '&filter=' . get_request_var_request('filter'), MAX_DISPLAY_PAGES, get_request_var_request('page'), get_request_var_request('rows'), $total_rows, 6, 'Entries', 'page', 'main');
 
 	print $nav;
 
-	html_header(array('Details'));
+	html_header(array('Device', 'SNMP Query', 'Index', 'Field Name', 'Field Value', 'OID'));
 
 	$i = 0;
-	if (sizeof($snmp_cache) > 0) {
-		foreach ($snmp_cache as $item) {
-			if ($i % 2 == 0) {
-				$class = 'even';
-			}else{
-				$class = 'odd';
-			}
-
-			print "<tr class='$class'>\n";
-			?>
-			<td>
-				Device: <?php print (strlen(get_request_var_request('filter')) ? (preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($item['description']))) : htmlspecialchars($item['description']));?>
-				, SNMP Query: <?php print (strlen(get_request_var_request('filter')) ? (preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($item['name']))) : htmlspecialchars($item['name']));?>
-			</td>
-			</tr>
-			<?php
-			print "<tr class='$class'>\n";
-			?>
-			<td>
-				Index: <?php print $item['snmp_index'];?>
-				, Field Name: <?php print (strlen(get_request_var_request('filter')) ? (preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($item['field_name']))) : htmlspecialchars($item['field_name']));?>
-				, Field Value: <?php print (strlen(get_request_var_request('filter')) ? (preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($item['field_value']))) : htmlspecialchars($item['field_value']));?>
-			</td>
-			</tr>
-			<?php
-			print "<tr class='$class'>\n";
-			?>
-			<td>
-				OID: <?php print (strlen(get_request_var_request('filter')) ? (preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($item['oid']))) : htmlspecialchars($item['oid']));?>
-			</td>
-			</tr>
-			<?php
-			$i++;
+	if (sizeof($snmp_cache)) {
+	foreach ($snmp_cache as $item) {
+		form_alternate_row();
+		?>
+		<td>
+			<?php print (strlen(get_request_var_request('filter')) ? (preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($item['description']))) : htmlspecialchars($item['description']));?>
+		</td>
+		<td>
+			<?php print (strlen(get_request_var_request('filter')) ? (preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($item['name']))) : htmlspecialchars($item['name']));?>
+		</td>
+		<td>
+			<?php print $item['snmp_index'];?>
+		</td>
+		<td>
+			<?php print (strlen(get_request_var_request('filter')) ? (preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($item['field_name']))) : htmlspecialchars($item['field_name']));?>
+		</td>
+		<td>
+			<?php print (strlen(get_request_var_request('filter')) ? (preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($item['field_value']))) : htmlspecialchars($item['field_value']));?>
+		</td>
+		<td>
+			<?php print (strlen(get_request_var_request('filter')) ? (preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($item['oid']))) : htmlspecialchars($item['oid']));?>
+		</td>
+		</tr>
+		<?php
 		}
 
 		print $nav;
@@ -1487,8 +1481,15 @@ function utilities_view_poller_cache() {
 	load_current_session_value('sort_direction', 'sess_poller_sort_direction', 'ASC');
 	load_current_session_value('rows', 'sess_default_rows', read_config_option('num_rows_table'));
 
+	$refresh['seconds'] = '300';
+	$refresh['page'] = 'utilities.php?action=view_poller_cache&header=false';
+
 	?>
 	<script type="text/javascript">
+    var refreshIsLogout=false;
+    var refreshPage='<?php print $refresh['page'];?>';
+    var refreshMSeconds=<?php print $refresh['seconds']*1000;?>;
+
 	function applyFilter() {
 		strURL = '?poller_action=' + $('#poller_action').val();
 		strURL = strURL + '&action=view_poller_cache';
@@ -1722,13 +1723,13 @@ function utilities() {
 
 	?>
 	<colgroup span='3'>
-		<col style='vertical-align:top;width:20%;'></col>
-		<col style='vertical-align:top;width:20%;'></col>
+		<col style='white-space:nowrap;vertical-align:top;width:20%;'></col>
+		<col style='vertical-align:top;width:80%;'></col>
 	</colgroup>
 
 	<?php html_header(array('Technical Support'), 2); form_alternate_row(); ?>
 		<td class='textArea'>
-			<a href='<?php print htmlspecialchars('utilities.php?action=view_tech');?>'>Technical Support</a>
+			<a class='hyperLink' href='<?php print htmlspecialchars('utilities.php?action=view_tech');?>'>Technical Support</a>
 		</td>
 		<td class='textArea'>
 			Cacti technical support page.  Used by developers and technical support persons to assist with issues in Cacti.  Includes checks for common configuration issues.
@@ -1737,7 +1738,7 @@ function utilities() {
 
 	<?php html_header(array('Log Administration'), 2); form_alternate_row(); ?>
 		<td class='textArea'>
-			<a href='<?php print htmlspecialchars('utilities.php?action=view_logfile');?>'>View Cacti Log File</a>
+			<a class='hyperLink' href='<?php print htmlspecialchars('utilities.php?action=view_logfile');?>'>View Cacti Log File</a>
 		</td>
 		<td class='textArea'>
 			The Cacti Log File stores statistic, error and other message depending on system settings.  This information can be used to identify problems with the poller and application.
@@ -1745,7 +1746,7 @@ function utilities() {
 	</tr>
 	<?php form_alternate_row(); ?>
 		<td class='textArea'>
-			<a href='<?php print htmlspecialchars('utilities.php?action=view_user_log');?>'>View User Log</a>
+			<a class='hyperLink' href='<?php print htmlspecialchars('utilities.php?action=view_user_log');?>'>View User Log</a>
 		</td>
 		<td class='textArea'>
 			Allows Administrators to browse the user log.  Administrators can filter and export the log as well.
@@ -1754,7 +1755,7 @@ function utilities() {
 
 	<?php html_header(array('Poller Cache Administration'), 2); form_alternate_row(); ?>
 		<td class='textArea'>
-			<a href='<?php print htmlspecialchars('utilities.php?action=view_poller_cache');?>'>View Poller Cache</a>
+			<a class='hyperLink' href='<?php print htmlspecialchars('utilities.php?action=view_poller_cache');?>'>View Poller Cache</a>
 		</td>
 		<td class='textArea'>
 			This is the data that is being passed to the poller each time it runs. This data is then in turn executed/interpreted and the results are fed into the rrd files for graphing or the database for display.
@@ -1762,7 +1763,7 @@ function utilities() {
 	</tr>
 	<?php form_alternate_row(); ?>
 		<td class='textArea'>
-			<a href='<?php print htmlspecialchars('utilities.php?action=view_snmp_cache');?>'>View SNMP Cache</a>
+			<a class='hyperLink' href='<?php print htmlspecialchars('utilities.php?action=view_snmp_cache');?>'>View SNMP Cache</a>
 		</td>
 		<td class='textArea'>
 			The SNMP cache stores information gathered from SNMP queries. It is used by cacti to determine the OID to use when gathering information from an SNMP-enabled host.
@@ -1770,7 +1771,7 @@ function utilities() {
 	</tr>
 	<?php form_alternate_row(); ?>
 		<td class='textArea'>
-			<a href='<?php print htmlspecialchars('utilities.php?action=clear_poller_cache');?>'>Rebuild Poller Cache</a>
+			<a class='hyperLink' href='<?php print htmlspecialchars('utilities.php?action=clear_poller_cache');?>'>Rebuild Poller Cache</a>
 		</td>
 		<td class='textArea'>
 			The poller cache will be cleared and re-generated if you select this option. Sometimes host/data source data can get out of sync with the cache in which case it makes sense to clear the cache and start over.
@@ -1778,7 +1779,7 @@ function utilities() {
 	</tr>
 	<?php html_header(array('Boost Utilities'), 2); form_alternate_row(); ?>
 		<td class='textArea'>
-			<a href='<?php print htmlspecialchars('utilities.php?action=view_boost_status');?>'>View Boost Status</a>
+			<a class='hyperLink' href='<?php print htmlspecialchars('utilities.php?action=view_boost_status');?>'>View Boost Status</a>
 		</td>
 		<td class='textArea'>
 			This menu pick allows you to view various boost settings and statistics associated with the current running Boost configuration.
@@ -1786,7 +1787,7 @@ function utilities() {
 	</tr>
 	<?php html_header(array('RRD Utilities'), 2); form_alternate_row(); ?>
 		<td class='textArea'>
-			<a href='<?php print htmlspecialchars('rrdcleaner.php');?>'>RRDfile Cleaner</a>
+			<a class='hyperLink' href='<?php print htmlspecialchars('rrdcleaner.php');?>'>RRDfile Cleaner</a>
 		</td>
 		<td class='textArea'>
 			When you delete Data Sources from Cacti, the corresponding RRDfiles are not removed automatically.  Use this utility to facilitate the removal of these old files.
@@ -1794,7 +1795,7 @@ function utilities() {
 	</tr>
 	<?php html_header(array('SNMPAgent Utilities'), 2); form_alternate_row(); ?>
 		<td class='textArea'>
-			<a href='<?php print htmlspecialchars('utilities.php?action=view_snmpagent_cache');?>'>View SNMPAgent Cache</a>
+			<a class='hyperLink' href='<?php print htmlspecialchars('utilities.php?action=view_snmpagent_cache');?>'>View SNMPAgent Cache</a>
 		</td>
 		<td class='textArea'>
 			This shows all objects being handled by the SNMPAgent.
@@ -1802,7 +1803,7 @@ function utilities() {
 	</tr>
 	<?php form_alternate_row(); ?>
 		<td class='textArea'>
-			<a href='<?php print htmlspecialchars('utilities.php?action=rebuild_snmpagent_cache');?>'>Rebuild SNMPAgent Cache</a>
+			<a class='hyperLink' href='<?php print htmlspecialchars('utilities.php?action=rebuild_snmpagent_cache');?>'>Rebuild SNMPAgent Cache</a>
 		</td>
 		<td class='textArea'>
 			The snmp cache will be cleared and re-generated if you select this option. Note that it takes another poller run to restore the SNMP cache completely.
@@ -1810,7 +1811,7 @@ function utilities() {
 	</tr>
 	<?php form_alternate_row(); ?>
 		<td class='textArea'>
-			<a href='<?php print htmlspecialchars('utilities.php?action=view_snmpagent_events');?>'>View SNMPAgent Notification Log</a>
+			<a class='hyperLink' href='<?php print htmlspecialchars('utilities.php?action=view_snmpagent_events');?>'>View SNMPAgent Notification Log</a>
 		</td>
 		<td class='textArea'>
 			This menu pick allows you to view the latest events SNMPAgent has handled in relation to the registered notification receivers.
@@ -1818,7 +1819,7 @@ function utilities() {
 	</tr>
 	<?php form_alternate_row(); ?>
 		<td class='textArea'>
-			<a href='<?php print htmlspecialchars('managers.php');?>'>SNMP Notification Receivers</a>
+			<a class='hyperLink' href='<?php print htmlspecialchars('managers.php');?>'>SNMP Notification Receivers</a>
 		</td>
 		<td class='textArea'>
 			Allows Administrators to maintain SNMP notification receivers.
@@ -1840,9 +1841,6 @@ function boost_display_run_status() {
 
 	load_current_session_value('refresh', 'sess_boost_utilities_refresh', '30');
 
-	$refresh['page'] = 'utilities.php?action=view_boost_status&header=false';
-	$refresh['seconds'] = $_REQUEST['refresh'];
-
 	$last_run_time   = read_config_option('boost_last_run_time', TRUE);
 	$next_run_time   = read_config_option('boost_next_run_time', TRUE);
 
@@ -1856,7 +1854,11 @@ function boost_display_run_status() {
 	$peak_memory     = read_config_option('boost_peak_memory', TRUE);
 	$detail_stats    = read_config_option('stats_detail_boost', TRUE);
 
+	$refresh['page'] = 'utilities.php?action=view_boost_status&header=false';
+	$refresh['seconds'] = $_REQUEST['refresh'];
+
 	html_start_box('<strong>Boost Status</strong>', '100%', '', '3', 'center', '');
+
 	?>
 	<script type="text/javascript">
     var refreshIsLogout=false;
