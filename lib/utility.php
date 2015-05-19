@@ -23,36 +23,52 @@
 */
 
 function repopulate_poller_cache() {
-	$poller_data = db_fetch_assoc("SELECT id FROM data_local");
+	$poller_data    = db_fetch_assoc("SELECT id FROM data_local");
 	$poller_items   = array();
 	$local_data_ids = array();
+	$i = 0;
 
-	if (sizeof($poller_data) > 0) {
+	if (sizeof($poller_data)) {
 		foreach ($poller_data as $data) {
-				$poller_items = array_merge($poller_items, update_poller_cache($data["id"]));
+			$poller_items     = array_merge($poller_items, update_poller_cache($data["id"]));
+			$local_data_ids[] = $data['id'];
+			$i++;
+
+			if ($i > 500) {
+				$i = 0;
+				poller_update_poller_cache_from_buffer($local_data_ids, $poller_items);
+				$local_data_ids = array();
+				$poller_items   = array();
+			}
 		}
 
-		/* delete all existing entries ... */
-		db_execute("DELETE FROM poller_item");
-		/* .. prior to recreating everything FROM scratch */
-		poller_update_poller_cache_from_buffer($local_data_ids, $poller_items);
-
+		if ($i > 0) {
+			poller_update_poller_cache_from_buffer($local_data_ids, $poller_items);
+		}
 	}
 }
 
 function update_poller_cache_from_query($host_id, $data_query_id) {
 	$poller_data = db_fetch_assoc("SELECT id FROM data_local WHERE host_id = '$host_id' AND snmp_query_id = '$data_query_id'");
 
+	$i = 0;
 	$poller_items = $local_data_ids = array();
 
-	if (sizeof($poller_data) > 0) {
+	if (sizeof($poller_data)) {
 		foreach ($poller_data as $data) {
+			$poller_items     = array_merge($poller_items, update_poller_cache($data["id"]));
 			$local_data_ids[] = $data["id"];
+			$i++;
 
-			$poller_items = array_merge($poller_items, update_poller_cache($data["id"]));
+			if ($i > 500) {
+				$i = 0;
+				poller_update_poller_cache_from_buffer($local_data_ids, $poller_items);
+				$local_data_ids = array();
+				$poller_items   = array();
+			}
 		}
 
-		if (sizeof($local_data_ids)) {
+		if ($i > 0) {
 			poller_update_poller_cache_from_buffer($local_data_ids, $poller_items);
 		}
 	}
@@ -341,10 +357,10 @@ function poller_update_poller_cache_from_buffer($local_data_ids, &$poller_items)
 
 	/* setup the database call */
 	$sql_prefix   = "INSERT INTO poller_item (local_data_id, poller_id, host_id, action, hostname, " .
-			"snmp_community, snmp_version, snmp_timeout, snmp_username, snmp_password, " .
-			"snmp_auth_protocol, snmp_priv_passphrase, snmp_priv_protocol, snmp_context, " .
-			"snmp_port, rrd_name, rrd_path, rrd_num, rrd_step, rrd_next_step, arg1, arg2, arg3, present) " .
-			"VALUES";
+		"snmp_community, snmp_version, snmp_timeout, snmp_username, snmp_password, " .
+		"snmp_auth_protocol, snmp_priv_passphrase, snmp_priv_protocol, snmp_context, " .
+		"snmp_port, rrd_name, rrd_path, rrd_num, rrd_step, rrd_next_step, arg1, arg2, arg3, present) " .
+		"VALUES";
 
 	$sql_suffix   = " ON DUPLICATE KEY UPDATE poller_id=VALUES(poller_id), host_id=VALUES(host_id), action=VALUES(action), hostname=VALUES(hostname), " .
 		"snmp_community=VALUES(snmp_community), snmp_version=VALUES(snmp_version), snmp_timeout=VALUES(snmp_timeout), " .
