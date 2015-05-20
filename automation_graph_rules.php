@@ -393,8 +393,8 @@ function toggle_operation() {
 		$('#pattern').val() = '';
 		$('#pattern').prop('disabled', true);
 	} else {
-		$('#field').prop('disabled, false);
-		$('#operator').prop('disabled, false);
+		$('#field').prop('disabled', false);
+		$('#operator').prop('disabled', false);
 		$('#pattern').prop('disabled', false);
 	}
 }
