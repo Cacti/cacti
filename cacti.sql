@@ -134,7 +134,7 @@ CREATE TABLE `aggregate_graphs_items` (
   `local_graph_id` int(10) unsigned NOT NULL,
   `sequence` mediumint(8) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`aggregate_graph_id`,`local_graph_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Aggregate Graph Items';
+) ENGINE=MyISAM COMMENT='Aggregate Graph Items';
 
 --
 -- Table structure for table `automation_devices`
@@ -144,7 +144,6 @@ CREATE TABLE `automation_devices` (
   `network_id` int(10) unsigned NOT NULL DEFAULT '0',
   `hostname` varchar(100) NOT NULL DEFAULT '',
   `ip` varchar(17) NOT NULL DEFAULT '',
-  `hash` varchar(12) NOT NULL DEFAULT '',
   `community` varchar(100) NOT NULL DEFAULT '',
   `snmp_version` tinyint(1) unsigned NOT NULL DEFAULT '1',
   `snmp_username` varchar(50) DEFAULT NULL,
@@ -165,7 +164,7 @@ CREATE TABLE `automation_devices` (
   `time` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`ip`),
   KEY `hostname` (`hostname`)
-) ENGINE=MyISAM COMMENT='Table of Discovered Devices';
+) ENGINE=MyISAM COMMENT='Plugin Discovery - Table of discovered hosts';
 
 --
 -- Table structure for table `automation_graph_rule_items`
@@ -180,21 +179,13 @@ CREATE TABLE `automation_graph_rule_items` (
   `operator` smallint(3) unsigned NOT NULL DEFAULT '0',
   `pattern` varchar(255) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM COMMENT='Automation Graph Rule Items';
+) ENGINE=MyISAM AUTO_INCREMENT=7 COMMENT='Automation Graph Rule Items';
 
 --
 -- Dumping data for table `automation_graph_rule_items`
 --
 
-INSERT INTO `automation_graph_rule_items`
-  (`id`, `rule_id`, `sequence`, `operation`, `field`, `operator`, `pattern`)
-  VALUES
-  (1, 1, 1, 0, 'ifOperStatus', 7, 'Up'),
-  (2, 1, 2, 1, 'ifIP', 16, ''),
-  (3, 1, 3, 1, 'ifHwAddr', 16, ''),
-  (4, 2, 1, 0, 'ifOperStatus', 7, 'Up'),
-  (5, 2, 2, 1, 'ifIP', 16, ''),
-  (6, 2, 3, 1, 'ifHwAddr', 16, '');
+INSERT INTO `automation_graph_rule_items` VALUES (1,1,1,0,'ifOperStatus',7,'Up'),(2,1,2,1,'ifIP',16,''),(3,1,3,1,'ifHwAddr',16,''),(4,2,1,0,'ifOperStatus',7,'Up'),(5,2,2,1,'ifIP',16,''),(6,2,3,1,'ifHwAddr',16,'');
 
 --
 -- Table structure for table `automation_graph_rules`
@@ -207,18 +198,28 @@ CREATE TABLE `automation_graph_rules` (
   `graph_type_id` smallint(3) unsigned NOT NULL DEFAULT '0',
   `enabled` char(2) DEFAULT '',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM COMMENT='Automation Graph Rules';
+) ENGINE=MyISAM AUTO_INCREMENT=5 COMMENT='Automation Graph Rules';
 
 --
 -- Dumping data for table `automation_graph_rules`
 --
 
-INSERT INTO `automation_graph_rules`
-  (`id`, `name`, `snmp_query_id`, `graph_type_id`, `enabled`)
-  VALUES
-  (1, 'Traffic 64 bit Server', 1, 14, ''),
-  (2, 'Traffic 64 bit Server Linux', 1, 14, ''),
-  (3, 'Disk Space', 8, 18, '');
+INSERT INTO `automation_graph_rules` VALUES (1,'Traffic 64 bit Server',1,14,''),(2,'Traffic 64 bit Server Linux',1,14,''),(3,'Disk Space',8,18,'');
+
+--
+-- Table structure for table `automation_ips`
+--
+
+CREATE TABLE `automation_ips` (
+  `ip_address` varchar(20) NOT NULL DEFAULT '',
+  `hostname` varchar(250) DEFAULT NULL,
+  `network_id` int(10) unsigned DEFAULT NULL,
+  `pid` int(10) unsigned DEFAULT NULL,
+  `status` int(10) unsigned DEFAULT NULL,
+  `thread` int(10) unsigned DEFAULT NULL,
+  PRIMARY KEY (`ip_address`),
+  KEY `pid` (`pid`)
+) ENGINE=MEMORY COMMENT='List of discoverable ip addresses used for scanning';
 
 --
 -- Table structure for table `automation_match_rule_items`
@@ -234,22 +235,13 @@ CREATE TABLE `automation_match_rule_items` (
   `operator` smallint(3) unsigned NOT NULL DEFAULT '0',
   `pattern` varchar(255) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM COMMENT='Automation Match Rule Items';
+) ENGINE=MyISAM AUTO_INCREMENT=10 COMMENT='Automation Match Rule Items';
 
 --
 -- Dumping data for table `automation_match_rule_items`
 --
 
-INSERT INTO `automation_match_rule_items`
-  (`id`, `rule_id`, `rule_type`, `sequence`, `operation`, `field`, `operator`, `pattern`)
-  VALUES
-  (1, 1, 1, 1, 0, 'h.description', 14, ''),
-  (2, 1, 1, 2, 1, 'h.snmp_version', 12, '2'),
-  (3, 1, 3, 1, 0, 'ht.name', 1, 'Linux'),
-  (4, 2, 1, 1, 0, 'ht.name', 1, 'Linux'),
-  (5, 2, 1, 2, 1, 'h.snmp_version', 12, '2'),
-  (6, 2, 3, 1, 0, 'ht.name', 1, 'SNMP'),
-  (7, 2, 3, 2, 1, 'gt.name', 1, 'Traffic');
+INSERT INTO `automation_match_rule_items` VALUES (1,1,1,1,0,'h.description',14,''),(2,1,1,2,1,'h.snmp_version',12,'2'),(3,1,3,1,0,'ht.name',1,'Linux'),(4,2,1,1,0,'ht.name',1,'Linux'),(5,2,1,2,1,'h.snmp_version',12,'2'),(6,2,3,1,0,'ht.name',1,'SNMP'),(7,2,3,2,1,'gt.name',1,'Traffic');
 
 --
 -- Table structure for table `automation_networks`
@@ -257,29 +249,43 @@ INSERT INTO `automation_match_rule_items`
 
 CREATE TABLE `automation_networks` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `poller_id` int(10) unsigned DEFAULT '0',
   `name` varchar(128) NOT NULL DEFAULT '' COMMENT 'The name for this network',
   `subnet_range` varchar(255) NOT NULL DEFAULT '' COMMENT 'Defined subnet ranges for discovery',
   `dns_servers` varchar(128) NOT NULL DEFAULT '' COMMENT 'DNS Servers to use for name resolution',
   `enabled` char(2) DEFAULT '',
   `snmp_id` int(10) unsigned DEFAULT NULL,
+  `total_ips` int(10) unsigned DEFAULT '0',
   `up_hosts` int(10) unsigned NOT NULL DEFAULT '0',
   `snmp_hosts` int(10) unsigned NOT NULL DEFAULT '0',
   `ping_method` int(10) unsigned NOT NULL DEFAULT '0' COMMENT 'The ping method (ICMP:TCP:UDP)',
   `ping_port` int(10) unsigned NOT NULL DEFAULT '0' COMMENT 'For TCP:UDP the port to ping',
   `ping_timeout` int(10) unsigned NOT NULL DEFAULT '0' COMMENT 'The ping timeout in seconds',
+  `ping_retries` int(10) unsigned DEFAULT '0',
   `sched_type` int(10) unsigned NOT NULL DEFAULT '0' COMMENT 'Schedule type: manual or automatic',
+  `threads` int(10) unsigned DEFAULT '1',
+  `run_limit` int(10) unsigned DEFAULT '0',
+  `start_at` varchar(20) DEFAULT NULL,
+  `next_start` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `recur_every` int(10) unsigned DEFAULT '1',
   `day_of_week` varchar(45) DEFAULT NULL COMMENT 'The days of week to run in crontab format',
   `month` varchar(45) DEFAULT NULL COMMENT 'The months to run in crontab format',
   `day_of_month` varchar(45) DEFAULT NULL COMMENT 'The days of month to run in crontab format',
-  `hour` varchar(45) DEFAULT NULL COMMENT 'The hours to run in crontab format',
-  `min` varchar(45) DEFAULT NULL COMMENT 'The minutes to run in crontab format',
-  `run_limit` int(10) unsigned NOT NULL DEFAULT '0' COMMENT 'The maximum runtime for the discovery',
+  `monthly_week` varchar(45) DEFAULT NULL,
+  `monthly_day` varchar(45) DEFAULT NULL,
   `last_runtime` double NOT NULL DEFAULT '0' COMMENT 'The last runtime for discovery',
   `last_started` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT 'The time the discovery last started',
   `last_status` varchar(128) NOT NULL DEFAULT '' COMMENT 'The last exit message if any',
   `rerun_data_queries` char(2) DEFAULT NULL COMMENT 'Rerun data queries or not for existing hosts',
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM COMMENT='Stores scanning subnet definitions';
+  PRIMARY KEY (`id`),
+  KEY `poller_id` (`poller_id`)
+) ENGINE=MyISAM AUTO_INCREMENT=2 COMMENT='Stores scanning subnet definitions';
+
+--
+-- Dumping data for table `automation_networks`
+--
+
+INSERT INTO `automation_networks` VALUES (1,0,'Test Network','192.168.1.0/24','','on',1,254,14,8,2,22,400,1,2,10,1200,'2015-05-17 16:15','0000-00-00 00:00:00',2,'4','1,2,6','1,2,3,4,6,7,11,12,14,15,17,19,26,32','','',40.178689002991,'2015-05-19 02:23:22','','on');
 
 --
 -- Table structure for table `automation_processes`
@@ -287,11 +293,15 @@ CREATE TABLE `automation_networks` (
 
 CREATE TABLE `automation_processes` (
   `pid` int(8) unsigned NOT NULL,
-  `taskname` varchar(20) NOT NULL DEFAULT '',
-  `taskid` int(10) unsigned NOT NULL DEFAULT '0',
+  `poller_id` int(10) unsigned DEFAULT '0',
+  `network_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `task` varchar(20) DEFAULT '',
+  `status` varchar(20) DEFAULT NULL,
+  `up_hosts` int(10) unsigned DEFAULT '0',
+  `snmp_hosts` int(10) unsigned DEFAULT '0',
   `heartbeat` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
-  PRIMARY KEY (`pid`)
-) ENGINE=MEMORY COMMENT='Table required for parallelization of data collection';
+  PRIMARY KEY (`pid`,`network_id`)
+) ENGINE=MEMORY COMMENT='Table tracking active poller processes';
 
 --
 -- Table structure for table `automation_snmp`
@@ -301,7 +311,13 @@ CREATE TABLE `automation_snmp` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(100) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM COMMENT='Group of SNMP Option Sets';
+) ENGINE=MyISAM AUTO_INCREMENT=3 COMMENT='Group of SNMP Option Sets';
+
+--
+-- Dumping data for table `automation_snmp`
+--
+
+INSERT INTO `automation_snmp` VALUES (1,'Default Option Set');
 
 --
 -- Table structure for table `automation_snmp_items`
@@ -324,7 +340,13 @@ CREATE TABLE `automation_snmp_items` (
   `snmp_priv_protocol` char(6) DEFAULT '',
   `snmp_context` varchar(64) DEFAULT '',
   PRIMARY KEY (`id`,`snmp_id`)
-) ENGINE=MyISAM COMMENT='Set of SNMP Options';
+) ENGINE=MyISAM AUTO_INCREMENT=3 COMMENT='Set of SNMP Options';
+
+--
+-- Dumping data for table `automation_snmp_items`
+--
+
+INSERT INTO `automation_snmp_items` VALUES (1,1,1,'2','public',161,1000,3,10,'admin','baseball','MD5','','DES',''),(2,1,2,'2','private',161,1000,3,10,'admin','baseball','MD5','','DES','');
 
 --
 -- Table structure for table `automation_templates`
@@ -333,14 +355,19 @@ CREATE TABLE `automation_snmp_items` (
 CREATE TABLE `automation_templates` (
   `id` int(8) NOT NULL AUTO_INCREMENT,
   `host_template` int(8) NOT NULL DEFAULT '0',
-  `tree` int(12) NOT NULL DEFAULT '0',
-  `snmp_version` tinyint(3) NOT NULL DEFAULT '0',
-  `sysdescr` varchar(255) NOT NULL DEFAULT '',
-  `sysname` varchar(255) NOT NULL DEFAULT '',
-  `sysoid` varchar(60) NOT NULL DEFAULT '',
+  `availability_method` int(10) unsigned DEFAULT '2',
+  `sysDescr` varchar(255) DEFAULT '',
+  `sysName` varchar(255) DEFAULT '',
+  `sysOid` varchar(60) DEFAULT '',
   `sequence` int(10) unsigned DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM COMMENT='Templates of SysDescr SysName and SysOID matches to use to automation';
+) ENGINE=MyISAM AUTO_INCREMENT=3 COMMENT='Plugin Discovery - Templates of SysDesc matches to use to au';
+
+--
+-- Dumping data for table `automation_templates`
+--
+
+INSERT INTO `automation_templates` VALUES (1,3,2,'Linux','','',2),(2,1,2,'HP ETHERNET','','',1);
 
 --
 -- Table structure for table `automation_tree_rule_items`
@@ -357,19 +384,13 @@ CREATE TABLE `automation_tree_rule_items` (
   `search_pattern` varchar(255) NOT NULL DEFAULT '',
   `replace_pattern` varchar(255) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM COMMENT='Automation Tree Rule Items';
+) ENGINE=MyISAM AUTO_INCREMENT=5 COMMENT='Automation Tree Rule Items';
 
 --
 -- Dumping data for table `automation_tree_rule_items`
 --
 
-INSERT INTO `automation_tree_rule_items`
-  (`id`, `rule_id`, `sequence`, `field`, `rra_id`, `sort_type`, `propagate_changes`, `search_pattern`, `replace_pattern`)
-  VALUES
-  (1, 1, 1, 'ht.name', 0, 1, '', '^(.*)\\\\s*Linux\\\\s*(.*)$', '$\{1\}\\\\n$\{2\}'),
-  (2, 1, 2, 'h.hostname', 0, 1, '', '^(\\\\w*)\\\\s*(\\\\w*)\\\\s*(\\\\w*).*$', '$\{1\}\\\\n$\{2\}\\\\n$\{3\}'),
-  (3, 2, 1, '0', 0, 2, 'on', 'Traffic', ''),
-  (4, 2, 2, 'gtg.title_cache', 0, 1, '', '^(.*)\\\\s*-\\\\s*Traffic -\\\\s*(.*)$', '$\{1\}\\\\n$\{2\}');
+INSERT INTO `automation_tree_rule_items` VALUES (1,1,1,'ht.name',0,1,'','^(.*)\\s*Linux\\s*(.*)$','${1}\\n${2}'),(2,1,2,'h.hostname',0,1,'','^(\\w*)\\s*(\\w*)\\s*(\\w*).*$',''),(3,2,1,'0',0,2,'on','Traffic',''),(4,2,2,'gtg.title_cache',0,1,'','^(.*)\\s*-\\s*Traffic -\\s*(.*)$','${1}\\n${2}');
 
 --
 -- Table structure for table `automation_tree_rules`
@@ -385,17 +406,13 @@ CREATE TABLE `automation_tree_rules` (
   `rra_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `enabled` char(2) DEFAULT '',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM COMMENT='Automation Tree Rules';
+) ENGINE=MyISAM AUTO_INCREMENT=4 COMMENT='Automation Tree Rules';
 
 --
 -- Dumping data for table `automation_tree_rules`
 --
 
-INSERT INTO `automation_tree_rules`
-  (`id`, `name`, `tree_id`, `tree_item_id`, `leaf_type`, `host_grouping_type`, `rra_id`, `enabled`)
-  VALUES
-  (1, 'New Device', 1, 0, 3, 1, 0, ''),
-  (2, 'New Graph',  1, 0, 2, 0, 1, '');
+INSERT INTO `automation_tree_rules` VALUES (1,'New Device',1,0,3,0,0,''),(2,'New Graph',1,0,2,0,1,'');
 
 --
 -- Table structure for table `cdef`
@@ -481,7 +498,7 @@ CREATE TABLE `color_template_items` (
   `color_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `sequence` mediumint(8) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`color_template_item_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Color Items for Color Templates';
+) ENGINE=MyISAM COMMENT='Color Items for Color Templates';
 
 --
 -- Dumping data for table `color_template_items`

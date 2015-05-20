@@ -450,6 +450,7 @@ function discoverDevices($network_id, $thread) {
 								automation_debug("\n     Host Template: " . $fos['name']);
 								$device['os']                   = $fos['name'];
 								$device['host_template']        = $fos['host_template'];
+								$device['availability_method']  = $fox['availability_method'];
 								$device['snmp_readstring']      = db_qstr($device['snmp_readstring']);
 								$device['snmp_version']         = db_qstr($device['snmp_version']);
 								$device['snmp_username']        = db_qstr($device['snmp_username']);
@@ -554,7 +555,7 @@ function discoverDevices($network_id, $thread) {
 function display_help () {
     $version = db_fetch_cell('SELECT cacti FROM version');
     print "Network Discovery, Version $version, " . COPYRIGHT_YEARS . "\n\n";
-	print "Network Discovery Scanner based upon Cacti's Automation settings\n\n";
+	print "Cacti Network Discovery Scanner based on original works of Autom8 and Discovery\n\n";
 	print "usage: poller_automation.php -M [--poller=N ] | --network=network_id [-T=thread_id]\n";
 	print "    [-d | --debug] [-f | --force] [-h | --help | -v | --version]\n\n";
 	print "Master Process:\n";
