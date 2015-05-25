@@ -832,8 +832,9 @@ function networks() {
 	if (sizeof($networks)) {
 		foreach ($networks as $network) {
 			if ($network['enabled'] == '') {
-				$mystat = "<span style='color:grey;'>Disabled</span>";
+				$mystat   = "<span style='color:grey;'>Disabled</span>";
 				$progress = "0/0/0";
+				$status   = array();
 			}else{
 				$status = db_fetch_row_prepared('SELECT 
 					COUNT(*) AS total,
@@ -850,6 +851,15 @@ function networks() {
 					$mystat   = "<span style='color:green;'>Idle</span>";
 					$progress = "0/0/0";
 				}
+
+				$updown = db_fetch_row_prepared("SELECT SUM(up_hosts) AS up, SUM(snmp_hosts) AS snmp
+					FROM automation_processes
+					WHERE network_id = ?", array($network['id']));
+
+				if (empty($updown['up'])) {
+					$updown['up']   = $network['up_hosts'];
+					$updown['snmp'] = $network['snmp_hosts'];
+				}
 			}
 
 			form_alternate_row('line' . $network['id'], true);
@@ -858,7 +868,7 @@ function networks() {
 			form_selectable_cell(number_format($network['total_ips']), $network['id'], '', 'text-align:right;');
 			form_selectable_cell($mystat, $network['id'], '', 'text-align:right;');
 			form_selectable_cell($progress, $network['id'], '', 'text-align:right;');
-			form_selectable_cell(number_format($network['up_hosts']) . '/' . number_format($network['snmp_hosts']), $network['id'], '', 'text-align:right;');
+			form_selectable_cell(number_format($updown['up']) . '/' . number_format($updown['snmp']), $network['id'], '', 'text-align:right;');
 			form_selectable_cell(number_format($network['threads']), $network['id'], '', 'text-align:right;');
 			form_selectable_cell(round($network['last_runtime'],2), $network['id'], '', 'text-align:right;');
 			form_selectable_cell($network['next_start'] == '0000-00-00 00:00:00' ? substr($network['start_at'],0,16):substr($network['next_start'],0,16), $network['id'], '', 'text-align:right;');
