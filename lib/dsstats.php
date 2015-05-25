@@ -58,9 +58,10 @@ function dsstats_get_and_store_ds_avgpeak_values($interval) {
 
 	if (sizeof($rrdfiles)) {
 	foreach ($rrdfiles as $file) {
-		$rrdfile = str_replace("<path_rra>", $config["rra_path"], $file["data_source_path"]);
 
-		$stats[$file["local_data_id"]] = dsstats_obtain_data_source_avgpeak_values($rrdfile, $interval, $pipes);
+		}else{
+			$data_source_name = db_fetch_cell('SELECT name_cache FROM data_template_data WHERE local_data_id = ?', array($file['local_data_id']));
+		}
 	}
 	}
 
