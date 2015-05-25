@@ -79,9 +79,9 @@ ini_set("max_execution_time", "0");
 
 /* get the data_local Id's for the poller cache */
 if ($host_id > 0) {
-	$poller_data  = db_fetch_assoc("SELECT id FROM data_local WHERE host_id=$host_id");
+	$poller_data  = db_fetch_assoc("SELECT * FROM data_local WHERE host_id=$host_id");
 } else {
-	$poller_data  = db_fetch_assoc("SELECT id FROM data_local");
+	$poller_data  = db_fetch_assoc("SELECT * FROM data_local");
 }
 
 /* initialize some variables */
@@ -97,11 +97,11 @@ print "WARNING: Do not interrupt this script.  Rebuilding the Poller Cache can t
 debug("There are '" . sizeof($poller_data) . "' data source elements to update.");
 
 /* start rebuilding the poller cache */
-if (sizeof($poller_data) > 0) {
+if (sizeof($poller_data)) {
 	foreach ($poller_data as $data) {
 		if (!$debug) print ".";
 		$local_data_ids[] = $data["id"];
-		$poller_items = array_merge($poller_items, update_poller_cache($data["id"]));
+		$poller_items = array_merge($poller_items, update_poller_cache($data));
 
 		debug("Data Source Item '$current_ds' of '$total_ds' updated");
 		$current_ds++;
@@ -133,6 +133,5 @@ function debug($message) {
 		print("DEBUG: " . $message . "\n");
 	}
 }
-
 
 ?>

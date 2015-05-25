@@ -27,12 +27,18 @@ function run_data_query($host_id, $snmp_query_id) {
 
 	query_debug_timer_start();
 
-	include_once($config["library_path"] . "/poller.php");
-	include_once($config["library_path"] . "/utility.php");
+	include_once($config['library_path'] . '/poller.php');
+	include_once($config['library_path'] . '/utility.php');
 
-	query_debug_timer_offset("data_query", "Running data query [$snmp_query_id].");
-	$type_id = db_fetch_cell("SELECT data_input.type_id FROM (snmp_query,data_input) WHERE snmp_query.data_input_id=data_input.id AND snmp_query.id=$snmp_query_id");
-	if (isset($input_types[$type_id])) query_debug_timer_offset("data_query", "Found type = '" . $type_id . "' [" . $input_types[$type_id] . "].");
+	query_debug_timer_offset('data_query', "Running data query [$snmp_query_id].");
+
+	$type_id = db_fetch_cell_prepared('SELECT data_input.type_id 
+		FROM snmp_query
+		INNER JOIN data_input 
+		ON snmp_query.data_input_id=data_input.id 
+		WHERE snmp_query.id = ?', array($snmp_query_id));
+
+	if (isset($input_types[$type_id])) query_debug_timer_offset('data_query', "Found type = '" . $type_id . "' [" . $input_types[$type_id] . "].");
 
 	if ($type_id == DATA_INPUT_TYPE_SNMP_QUERY) {
 		$result = query_snmp_host($host_id, $snmp_query_id);
@@ -41,30 +47,31 @@ function run_data_query($host_id, $snmp_query_id) {
 	}elseif ($type_id == DATA_INPUT_TYPE_QUERY_SCRIPT_SERVER) {
 		$result = query_script_host($host_id, $snmp_query_id);
 	}else{
-		query_debug_timer_offset("data_query", "Unknown type = '$type_id'");
+		query_debug_timer_offset('data_query', "Unknown type = '$type_id'");
 	}
 
 	/* update the sort cache */
 	update_data_query_sort_cache($host_id, $snmp_query_id);
-	query_debug_timer_offset("data_query", "Update data query sort cache complete");
+	query_debug_timer_offset('data_query', 'Update data query sort cache complete');
 
 	/* update the auto reindex cache */
 	update_reindex_cache($host_id, $snmp_query_id);
-	query_debug_timer_offset("data_query", "Update re-index cache complete");
+	query_debug_timer_offset('data_query', 'Update re-index cache complete');
 
-	/* update the the "local" data query cache */
+	/* update the the 'local' data query cache */
 	update_data_query_cache($host_id, $snmp_query_id);
+	query_debug_timer_offset('data_query', 'Update data query cache complete');
 
 	/* update the poller cache */
-	update_poller_cache_from_query($host_id, $snmp_query_id);
-	query_debug_timer_offset("data_query", "Update poller cache from query complete");
+//	update_poller_cache_from_query($host_id, $snmp_query_id);
+//	query_debug_timer_offset('data_query', 'Update poller cache from query complete');
 
 	/* perform any automation on reindex */
 	automation_execute_data_query($host_id, $snmp_query_id);
-	query_debug_timer_offset("data_query", "Automation execute data query complete");
+	query_debug_timer_offset('data_query', 'Automation execute data query complete');
 
-	api_plugin_hook_function('run_data_query', array("host_id" => $host_id, "snmp_query_id" => $snmp_query_id));
-	query_debug_timer_offset("data_query", "Plugin hooks complete");
+	api_plugin_hook_function('run_data_query', array('host_id' => $host_id, 'snmp_query_id' => $snmp_query_id));
+	query_debug_timer_offset('data_query', 'Plugin hooks complete');
 
 	return (isset($result) ? $result : true);
 }
@@ -569,16 +576,16 @@ function data_query_field_list($data_template_data_id) {
 		return 0;
 	}
 
-	$field = db_fetch_assoc("SELECT
-		data_input_fields.type_code,
-		data_input_data.value
-		FROM (data_input_fields,data_input_data)
-		WHERE data_input_fields.id=data_input_data.data_input_field_id
-		AND data_input_data.data_template_data_id=$data_template_data_id
-		AND (data_input_fields.type_code='index_type' OR data_input_fields.type_code='index_value' OR data_input_fields.type_code='output_type')");
-	$field = array_rekey($field, "type_code", "value");
+	$field = db_fetch_assoc_prepared("SELECT dif.type_code, did.value
+		FROM data_input_fields AS dif
+		INNER JOIN data_input_data AS did
+		ON dif.id=did.data_input_field_id
+		WHERE did.data_template_data_id = ?
+		AND dif.type_code IN ('index_type','index_value','output_type')", array($data_template_data_id));
 
-	if ((!isset($field["index_type"])) || (!isset($field["index_value"])) || (!isset($field["output_type"]))) {
+	$field = array_rekey($field, 'type_code', 'value');
+
+	if ((!isset($field['index_type'])) || (!isset($field['index_value'])) || (!isset($field['output_type']))) {
 		return 0;
 	}else{
 		return $field;
@@ -618,47 +625,56 @@ function decode_data_query_index($encoded_index, $data_query_id, $host_id) {
    @arg $host_id - the id of the host to refresh
    @arg $data_query_id - the id of the data query to refresh */
 function update_data_query_cache($host_id, $data_query_id) {
-	$graphs = db_fetch_assoc("SELECT id FROM graph_local WHERE host_id = '$host_id' AND snmp_query_id = '$data_query_id'");
+	$graphs = db_fetch_assoc_prepared('SELECT * FROM graph_local 
+		WHERE host_id = ?  AND snmp_query_id = ?', array($host_id, $data_query_id));
 
 	if (sizeof($graphs) > 0) {
 		foreach ($graphs as $graph) {
-			update_graph_data_query_cache($graph["id"]);
+			update_graph_data_query_cache($graph['id'], $host_id, $data_query_id, $graph['snmp_index']);
 		}
 	}
-	query_debug_timer_offset("data_query", "Update graph date query cache complete");
+	query_debug_timer_offset('data_query', 'Update graph data query cache complete');
 
-	$data_sources = db_fetch_assoc("SELECT id FROM data_local WHERE host_id = '$host_id' AND snmp_query_id = '$data_query_id'");
+	$data_sources = db_fetch_assoc_prepared('SELECT * FROM data_local 
+		WHERE host_id = ? AND snmp_query_id = ?', array($host_id, $data_query_id));
 
 	if (sizeof($data_sources) > 0) {
 		foreach ($data_sources as $data_source) {
-			update_data_source_data_query_cache($data_source["id"]);
+			$changed = update_data_source_data_query_cache($data_source['id'], $host_id, $data_query_id, $data_source['snmp_index']);
+			if ($changed) {
+				update_poller_cache($data_source, true);
+			}
 		}
 	}
-	query_debug_timer_offset("data_query", "Update data source date query cache complete");
+	query_debug_timer_offset('data_query', 'Update data source data query cache complete');
 }
 
 /* update_graph_data_query_cache - updates the local data query cache for a particular
 	graph
    @arg $local_graph_id - the id of the graph to update the data query cache for */
-function update_graph_data_query_cache($local_graph_id) {
-	$host_id = db_fetch_cell("SELECT host_id FROM graph_local WHERE id=$local_graph_id");
+function update_graph_data_query_cache($local_graph_id, $host_id = '', $data_query_id = '', $data_query_index = '') {
+	if (empty($host_id)) {
+		$host_id = db_fetch_cell_prepared('SELECT host_id FROM graph_local WHERE id = ?', array($local_graph_id));
+	}
 
-	$field = data_query_field_list(db_fetch_cell("select
+	$field = data_query_field_list(db_fetch_cell_prepared('SELECT
 		data_template_data.id
-		from (graph_templates_item,data_template_rrd,data_template_data)
-		where graph_templates_item.task_item_id=data_template_rrd.id
-		and data_template_rrd.local_data_id=data_template_data.local_data_id
-		and graph_templates_item.local_graph_id=$local_graph_id
-		limit 0,1"));
+		FROM (graph_templates_item,data_template_rrd,data_template_data)
+		WHERE graph_templates_item.task_item_id=data_template_rrd.id
+		AND data_template_rrd.local_data_id=data_template_data.local_data_id
+		AND graph_templates_item.local_graph_id = ?
+		LIMIT 1', array($local_graph_id)));
 
 	if (empty($field)) { return; }
 
-	$data_query_id = db_fetch_cell("SELECT snmp_query_id FROM snmp_query_graph WHERE id='" . $field["output_type"] . "'");
+	if (empty($data_query_id)) {
+		$data_query_id = db_fetch_cell_prepared('SELECT snmp_query_id FROM snmp_query_graph WHERE id = ?', array($field["output_type"]));
+	}
 
-	$index = data_query_index($field["index_type"], $field["index_value"], $host_id, $data_query_id);
+	$index = data_query_index($field['index_type'], $field['index_value'], $host_id, $data_query_id);
 
-	if (($data_query_id != "0") && ($index != "")) {
-		db_execute("UPDATE graph_local SET snmp_query_id='$data_query_id',snmp_index='$index' WHERE id=$local_graph_id");
+	if ($data_query_id != 0 && $index != '' && $index != $data_query_index) {
+		db_execute_prepared('UPDATE graph_local SET snmp_query_id = ?, snmp_index = ? WHERE id = ?', array($data_query_id, $index, $local_graph_id));
 
 		/* update graph title cache */
 		update_graph_title_cache($local_graph_id);
@@ -668,26 +684,34 @@ function update_graph_data_query_cache($local_graph_id) {
 /* update_data_source_data_query_cache - updates the local data query cache for a particular
 	data source
    @arg $local_data_id - the id of the data source to update the data query cache for */
-function update_data_source_data_query_cache($local_data_id) {
-	$host_id = db_fetch_cell("SELECT host_id FROM data_local WHERE id=$local_data_id");
+function update_data_source_data_query_cache($local_data_id, $host_id = '', $data_query_id = '', $data_query_index = '') {
+	if (empty($host_id)) {
+		$host_id = db_fetch_cell_prepared('SELECT host_id FROM data_local WHERE id = ?', array($local_data_id));
+	}
 
-	$field = data_query_field_list(db_fetch_cell("select
+	$field = data_query_field_list(db_fetch_cell_prepared('SELECT
 		data_template_data.id
-		from data_template_data
-		where data_template_data.local_data_id=$local_data_id"));
+		FROM data_template_data
+		WHERE data_template_data.local_data_id = ?', array($local_data_id)));
 
 	if (empty($field)) { return; }
 
-	$data_query_id = db_fetch_cell("SELECT snmp_query_id FROM snmp_query_graph WHERE id='" . $field["output_type"] . "'");
+	if (empty($data_query_id)) {
+		$data_query_id = db_fetch_cell_prepared('SELECT snmp_query_id FROM snmp_query_graph WHERE id = ?', array($field['output_type']));
+	}
 
 	$index = data_query_index($field["index_type"], $field["index_value"], $host_id, $data_query_id);
 
-	if (($data_query_id != "0") && ($index != "")) {
-		db_execute("UPDATE data_local SET snmp_query_id='$data_query_id',snmp_index='$index' WHERE id='$local_data_id'");
+	if ($data_query_id != 0 && $index != "" && $index != $data_query_index) {
+		db_execute_prepared('UPDATE data_local SET snmp_query_id = ?, snmp_index = ? WHERE id = ?', array($data_query_id, $index, $local_data_id));
 
 		/* update data source title cache */
 		update_data_source_title_cache($local_data_id);
+
+		return true;
 	}
+
+	return false;
 }
 
 /* get_formatted_data_query_indexes - obtains a list of indexes for a host/data query that
