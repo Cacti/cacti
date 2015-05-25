@@ -370,8 +370,8 @@ case 'preview':
 		$.get(href+'&header=false', function(data) {
 			$('#main').html(data);
 			applySkin();
-			if (typeof window.history.replaceState !== 'undefined') {
-				window.history.replaceState({}, 'Preview Mode', href);
+			if (typeof window.history.pushState !== 'undefined') {
+				window.history.pushState({ page: href }, 'Preview Mode', href);
 			}
 
 			initializeGraphs();

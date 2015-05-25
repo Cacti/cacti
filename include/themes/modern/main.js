@@ -6,45 +6,6 @@ function themeReady() {
 	var clickTimeout = false;
 	var hostOpen = false;
 
-	$('a.pic, a.linkOverDark, a.linkEditMain, a.hyperLink').unbind().click(function(event) {
-		event.preventDefault();
-
-		/* update menu selection */
-		if( $(this).hasClass('pic') ) {
-			$('.pic').removeClass('selected');
-			$(this).addClass('selected');
-		}
-
-		/* execute an ajax request to load the data */
-		href = $(this).attr('href');
-
-		if (href != null) {
-			pageName = basename(href);
-		}
-
-		$.get(href, function(html) {
-			var htmlObject  = $(html);
-			var matches     = html.match(/<title>(.*?)<\/title>/);
-			var htmlTitle   = matches[1];
-			var breadCrumbs = htmlObject.find('#breadcrumbs').html();
-			var content     = htmlObject.find('#main').html();
-
-			$('title').text(htmlTitle);
-			$('#breadcrumbs').html(breadCrumbs);
-			$('#main').html(content);
-
-			applySkin();
-
-			if (typeof window.history.replaceState !== 'undefined') {
-				window.history.replaceState(html, htmlTitle, href);
-			}
-
-			return false;
-		});
-
-		return false;
-	});
-
 	// Add nice search filter to filters
 	$('input[id="filter"]').after("<i class='fa fa-search filter'/>").attr('autocomplete', 'off').attr('placeholder', 'Enter a search term').parent('td').css('white-space', 'nowrap');
 

@@ -135,6 +135,7 @@ function grow_dhtml_trees() {
 		print "var reset=true;\n";
 	}
 	?>
+
 	$(function () {
 		$('#jstree').each(function(data) {
 			var id=$(this).attr('id');
@@ -163,8 +164,8 @@ function grow_dhtml_trees() {
 							applySkin();
 							var mytitle = 'Tree Mode - '+$('#nav_title').text();
 							document.getElementsByTagName('title')[0].innerHTML = mytitle;
-							if (typeof window.history.replaceState !== 'undefined') {
-								window.history.replaceState({}, mytitle, origHref);
+							if (typeof window.history.pushState !== 'undefined') {
+								window.history.pushState({ page: origHref }, mytitle, origHref);
 							}
 						});
 					}
@@ -187,8 +188,8 @@ function grow_dhtml_trees() {
 						var mytitle = 'Tree Mode - '+$('#nav_title').text();
 						console.log(mytitle);
 						document.getElementsByTagName('title')[0].innerHTML = mytitle;
-						if (typeof window.history.replaceState !== 'undefined') {
-							window.history.replaceState({}, mytitle, origHref);
+						if (typeof window.history.pushState !== 'undefined') {
+							window.history.pushState({ page: origHref }, mytitle, origHref);
 						}
 					});
 					node = data.node.id;

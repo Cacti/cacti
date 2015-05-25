@@ -491,6 +491,8 @@ function applySkin() {
 
 	setupCollapsible();
 
+	ajaxAnchors();
+
 	if (typeof themeReady == 'function') {
 		themeReady();
 	}
@@ -510,6 +512,57 @@ function applySkin() {
 	// Don't show the message container until all GUI interaction is done
 	$('#message_container').delay(2000).slideUp('fast');
 	$('#main').show();
+}
+
+function loadPage(href) {
+	$.get(href, function(html) {
+		var htmlObject  = $(html);
+		var matches     = html.match(/<title>(.*?)<\/title>/);
+		var htmlTitle   = matches[1];
+		var breadCrumbs = htmlObject.find('#breadcrumbs').html();
+		var content     = htmlObject.find('#main').html();
+
+		$('title').text(htmlTitle);
+		$('#breadcrumbs').html(breadCrumbs);
+		$('#main').html(content);
+
+		applySkin();
+
+		if (typeof window.history.pushState !== 'undefined') {
+			window.history.pushState({page:href}, htmlTitle, href);
+		}
+
+		return false;
+	});
+
+	return false;
+}
+
+function ajaxAnchors() {
+	$('a.pic, a.linkOverDark, a.linkEditMain, a.hyperLink').not('[href^=http], [href^=https], [href^=#]').unbind().click(function(event) {
+		event.preventDefault();
+
+		/* update menu selection */
+		if ($(this).hasClass('pic')) {
+			$('.pic').removeClass('selected');
+			$(this).addClass('selected');
+		}
+
+		/* execute an ajax request to load the data */
+		href = $(this).attr('href');
+
+		if (href != null) {
+			pageName = basename(href);
+		}
+
+		loadPage(href);
+
+		return false;
+	});
+
+	$(window).unbind('popstate').on('popstate', function(event) {
+		document.location = document.location.href;
+	});
 }
 
 function setupCollapsible() {
