@@ -60,7 +60,7 @@ finalize_timespan($timespan);
 /* initialize the timespan selector for first use */
 function initialize_timespan(&$timespan) {
 	/* initialize the default timespan if not set */
-	if ((!isset($_SESSION['sess_current_timespan'])) || (isset($_POST['button_clear_x']))) {
+	if ((!isset($_SESSION['sess_current_timespan'])) || (isset($_POST['button_clear']))) {
 		$_SESSION['sess_current_timespan'] = read_graph_config_option('default_timespan');
 		$_REQUEST['predefined_timespan'] = read_graph_config_option('default_timespan');
 		$_SESSION['custom'] = 0;
@@ -134,7 +134,7 @@ function process_user_input(&$timespan, $timeshift) {
 			$_POST['predefined_timespan'] = GT_CUSTOM;
 		}else {
 			/* the default button wasn't pushed */
-			if (!isset($_POST['button_clear_x'])) {
+			if (!isset($_POST['button_clear'])) {
 				$timespan['current_value_date1'] = sanitize_search_string($_POST['date1']);
 				$timespan['current_value_date2'] = sanitize_search_string($_POST['date2']);
 				$timespan['begin_now'] = $_SESSION['sess_current_timespan_begin_now'];
@@ -243,7 +243,7 @@ function set_timeshift() {
 	# no current timeshift: get default timeshift
 	if ((!isset($_SESSION['sess_current_timeshift'])) ||
 		(read_graph_config_option('timespan_sel') == '') ||
-		(isset($_POST['button_clear_x']))
+		(isset($_POST['button_clear']))
 		) {
 		$_SESSION['sess_current_timeshift'] = read_graph_config_option('default_timeshift');
 		$_REQUEST['predefined_timeshift'] = read_graph_config_option('default_timeshift');

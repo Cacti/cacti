@@ -570,7 +570,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 							<input type='button' name='button_refresh_x' value='Refresh' title='Refresh selected time span' onClick='refreshTimespanFilter()'>
 						</td>
 						<td>
-							<input type='button' name='button_clear_x' value='Clear' title='Return to the default time span' onClick='clearTimespanFilter()'>
+							<input type='button' name='button_clear' value='Clear' title='Return to the default time span' onClick='clearTimespanFilter()'>
 						</td>
 					</tr>
 					<tr id='realtime' style='display:none;'>
@@ -711,7 +711,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 
 	function clearTimespanFilter() {
 		var json = { 
-			button_clear_x: 1, 
+			button_clear: 1, 
 			date1: $('#date1').val(), 
 			date2: $('#date2').val(), 
 			predefined_timespan: $('#predefined_timespan').val(), 
