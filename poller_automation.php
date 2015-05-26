@@ -336,9 +336,16 @@ function discoverDevices($network_id, $thread) {
 					$device['dnsname']       = $dnsname;
 					$device['dnsname_short'] = preg_split('/[\.]+/', strtolower($dnsname), -1, PREG_SPLIT_NO_EMPTY);
 				}else{
-					$device['hostname']      = $device['ip_address'];
-					$device['dnsname']       = '';
-					$device['dnsname_short'] = '';
+					$device['hostname'] = ping_netbios_name($device['ip_address']);
+					if ($device['hostname'] === false) {
+						$device['hostname']      = $device['ip_address'];
+						$device['dnsname']       = '';
+						$device['dnsname_short'] = '';
+					}else{
+						db_execute_prepared('UPDATE automation_ips SET hostname = ? WHERE ip_address = ?', array($device['hostname'], $device['ip_address']));
+						$device['dnsname']       = $device['hostname'];
+						$device['dnsname_short'] = $device['hostname'];
+					}
 				}
 			}else{
 				$dnsname = gethostbyaddr($device['ip_address']);
@@ -349,8 +356,16 @@ function discoverDevices($network_id, $thread) {
 					$device['dnsname']       = $dnsname;
 					$device['dnsname_short'] = preg_split('/[\.]+/', strtolower($dnsname), -1, PREG_SPLIT_NO_EMPTY);
 				}else{
-					$device['dnsname']       = '';
-					$device['dnsname_short'] = '';
+					$device['hostname'] = ping_netbios_name($device['ip_address']);
+					if ($device['hostname'] === false) {
+						$device['hostname']      = $device['ip_address'];
+						$device['dnsname']       = '';
+						$device['dnsname_short'] = '';
+					}else{
+						db_execute_prepared('UPDATE automation_ips SET hostname = ? WHERE ip_address = ?', array($device['hostname'], $device['ip_address']));
+						$device['dnsname']       = $device['hostname'];
+						$device['dnsname_short'] = $device['hostname'];
+					}
 				}
 			}
 

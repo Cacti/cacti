@@ -3779,3 +3779,45 @@ function api_automation_is_time_to_start($network_id) {
 		break;
 	}
 }
+
+function ping_netbios_name($ip, $timeout_ms = 1000) {
+	$handle = fsockopen("udp://$ip", 137);
+
+	stream_set_timeout($handle, floor($timeout_ms/1000), ($timeout_ms*1000)%1000000);
+	stream_set_blocking($handle, 1);
+
+	$packet = "\x99\x99\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x20\x43\x4b" . str_repeat("\x41", 30) . "\x00\x00\x21\x00\x01";
+
+	/* send our request (and store request size so we can cheat later) */
+	$requestsize = @fwrite($handle, $packet);
+
+	/* get the response */
+	$response = fread($handle, 2048);
+
+	/* check to see if it timed out */
+	$info = stream_get_meta_data($handle);
+
+	/* close the socket */
+	fclose($handle);
+
+	if ($info["timed_out"]) {
+		return false;
+	}
+
+	/* parse the response and find the response type */
+	$names = hexdec(ord($response[56]));
+
+	if ($names > 0) {
+		$host = '';
+
+		for($i=57;$i<strlen($response);$i += 1) {
+			if (hexdec(ord($response[$i])) == 0) break;
+			$host .= $response[$i];
+		}
+
+		return trim(strtolower($host));
+	}else{
+		return false;
+	}
+}
+
