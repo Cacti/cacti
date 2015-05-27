@@ -3804,6 +3804,10 @@ function ping_netbios_name($ip, $timeout_ms = 1000) {
 		return false;
 	}
 
+	if (!isset($response[56])) {
+		return false;
+	}
+
 	/* parse the response and find the response type */
 	$names = hexdec(ord($response[56]));
 
