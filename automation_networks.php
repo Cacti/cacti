@@ -355,7 +355,7 @@ function network_edit() {
 		'method' => 'other',
 		'friendly_name' => 'Total IP Addresses',
 		'description' => 'Total addressible IP Addresses in this Network Range.',
-		'value' => number_format($network['total_ips'])
+		'value' => (isset($network['total_ips']) ? number_format($network['total_ips']) : 0)
 		),
 	'dns_servers' => array(
 		'method' => 'textbox',
