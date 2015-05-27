@@ -318,6 +318,7 @@ function discoverDevices($network_id, $thread) {
 	$stats['snmp']    = 0;
 	$stats['added']   = 0;
 	$count_graph      = 0;
+	$count            = 0;
 
 	while(true) {
 		// set and ip to be scanned
@@ -401,6 +402,8 @@ function discoverDevices($network_id, $thread) {
 					$device['snmp_sysLocation']     = '';
 					$device['snmp_sysContact']      = '';
 					$device['os']                   = '';
+					$device['snmp_priv_passphrase'] = '';
+					$device['snmp_priv_protocol']   = '';
 
 					/* create new ping socket for host pinging */
 					$ping = new Net_Ping;
