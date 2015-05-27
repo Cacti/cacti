@@ -370,7 +370,7 @@ function discoverDevices($network_id, $thread) {
 				}
 			}
 
-			$exists = db_fetch_row_prepared('SELECT snmp_version, status FROM host WHERE hostname IN(?,?)', array($device['ip_address'], $device['hostname']));
+			$exists = db_fetch_row_prepared('SELECT snmp_version, status FROM host WHERE hostname IN (?,?)', array($device['ip_address'], $device['hostname']));
 
 			if (!sizeof($exists)) {
 				if (substr($device['ip_address'], -3) < 255) {
@@ -430,7 +430,7 @@ function discoverDevices($network_id, $thread) {
 						}
 						$snmp_sysName_short = preg_split('/[\.]+/', strtolower($snmp_sysName[0]), -1, PREG_SPLIT_NO_EMPTY);
 	
-						$exists = db_fetch_row_prepared('SELECT status, snmp_version FROM host WHERE hostname IN(?,?)', array($snmp_sysName_short, $snmp_sysname[0]));
+						$exists = db_fetch_row_prepared('SELECT status, snmp_version FROM host WHERE hostname IN (?,?)', array($snmp_sysName_short[0], $snmp_sysName[0]));
 
 						if (sizeof($exists)) {
 							if ($exists['status'] == 3 || $exists['status'] == 2) {
@@ -619,7 +619,7 @@ function addSNMPDevice($network_id, $pid) {
 }
 
 function clearTask($network_id, $pid) {
-	db_execute_prepared('DELETE FROM automation_processes WHERE pid = ?  AND network_id = ?', array($pid, $network_id));
+	db_execute_prepared('DELETE FROM automation_processes WHERE pid = ? AND network_id = ?', array($pid, $network_id));
 }
 
 function clearAllTasks($network_id) {
