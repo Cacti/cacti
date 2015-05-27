@@ -524,18 +524,31 @@ function db_update_table ($table, $data, $removecolumns = FALSE, $log = TRUE, $d
 		db_execute("ALTER TABLE `$table` ENGINE = " . $data['type']);
 	}
 
-	// Fix any indexes
+	// Correct any indexes
 	$indexes = db_fetch_assoc("SHOW INDEX FROM `$table`");
 	$allindexes = array();
-	$keys = array();
+
 	foreach ($indexes as $index) {
-		$allindexes[] = $index['Key_name'];
-		if (isset($data['keys'])) {
+		$allindexes[$index['Key_name']][$index['Seq_in_index']-1] = $index['Column_name'];
+	}
+
+	foreach ($allindexes as $n => $index) {
+		if ($n != 'PRIMARY' && isset($data['keys'])) {
+			$removeindex = TRUE;
 			foreach ($data['keys'] as $k) {
-				if ($k['name'] == $index['Key_name'] && $k['columns'] != $index['Column_name'] && $index['Key_name'] != 'PRIMARY') {
-					db_execute("ALTER TABLE `$table` DROP INDEX " . $index['Key_name'], $log, $db_conn);
-					db_execute("ALTER TABLE `$table` ADD INDEX " . $index['Key_name'] . '(' . $index['Key_name'] . ')', $log, $db_conn);
+				if ($k['name'] == $n) {
+					$removeindex = FALSE;
+					$add = array_diff($k['columns'], $index);
+					$del = array_diff($index, $k['columns']);
+					if (!empty($add) || !empty($del)) {
+						db_execute("ALTER TABLE `$table` DROP INDEX `$n`", $log, $db_conn);
+						db_execute("ALTER TABLE `$table` ADD INDEX `$n` (`" . (is_array($k['columns']) ? implode('`,`', $k['columns']) : $k['columns']) . '`)', $log, $db_conn);
+					}
+					break;
 				}
+			}
+			if ($removeindex) {
+				db_execute("ALTER TABLE `$table` DROP INDEX `$n`", $log, $db_conn);
 			}
 		}
 	}
@@ -543,24 +556,30 @@ function db_update_table ($table, $data, $removecolumns = FALSE, $log = TRUE, $d
 	// Add any indexes
 	if (isset($data['keys'])) {
 		foreach ($data['keys'] as $k) {
-			$keys[] = $k['name'];
-			if (!in_array($k['name'], $allindexes)) {
-				db_execute("ALTER TABLE `$table` ADD INDEX " . $k['name'] . '(' . $k['columns'] . ')', $log, $db_conn);
+			if (!isset($allindexes[$k['name']])) {
+				db_execute("ALTER TABLE `$table` ADD INDEX `" . $k['name'] . '` (`' . (is_array($k['columns']) ? implode('`,`', $k['columns']) : $k['columns']) . '`)', $log, $db_conn);
 			}
 		}
 	}
 
-	// Remove any indexes / Add primary
-	foreach ($indexes as $index) {
-		if (!in_array($index['Key_name'], $keys) && $index['Key_name'] != 'PRIMARY') {
-			db_execute("ALTER TABLE `$table` DROP INDEX " . $index['Key_name'], $log, $db_conn);
-		}
-		if ($index['Key_name'] == 'PRIMARY') {
-			if (!isset($data['primary']) || (isset($data['primary']) && $index['Column_name'] != $data['primary'])) {
+	// FIXME: It won't allow us to drop a primary key that is set to auto_increment
+
+	// Check Primary Key
+	if (!isset($data['primary']) && isset($allindexes['PRIMARY'])) {
+		db_execute("ALTER TABLE `$table` DROP PRIMARY KEY", $log, $db_conn);
+		unset($allindexes['PRIMARY']);
+	}
+
+	if (isset($data['primary'])) {
+		if (!isset($allindexes['PRIMARY'])) {
+			// No current primary key, so add it
+			db_execute("ALTER TABLE `$table` ADD PRIMARY KEY(" . $data['primary'] . ")", $log, $db_conn);
+		} else {
+			$add = array_diff($data['primary'], $allindexes['PRIMARY']);
+			$del = array_diff($allindexes['PRIMARY'], $data['primary']);
+			if (!empty($add) || !empty($del)) {
 				db_execute("ALTER TABLE `$table` DROP PRIMARY KEY", $log, $db_conn);
-			}
-			if ((isset($data['primary']) && $index['Column_name'] != $data['primary'])) {
-				db_execute("ALTER TABLE `$table` ADD PRIMARY KEY(" . $data['primary'] . ")", $log, $db_conn);
+				db_execute("ALTER TABLE `$table` ADD PRIMARY KEY(`" . (is_array($data['primary']) ? implode('`,`', $data['primary']) : $data['primary']) . "`)", $log, $db_conn);
 			}
 		}
 	}
@@ -608,13 +627,21 @@ function db_table_create ($table, $data, $log = TRUE, $db_conn = FALSE) {
 		}
 
 		if (isset($data['primary'])) {
-			$sql .= ",\n PRIMARY KEY (`" . $data['primary'] . '`)';
+			if (is_array($data['primary'])) {
+				$sql .= ",\n PRIMARY KEY (`" . implode('`,`'. $data['primary']) . '`)';
+			} else {
+				$sql .= ",\n PRIMARY KEY (`" . $data['primary'] . '`)';
+			}
 		}
 
 		if (isset($data['keys']) && sizeof($data['keys'])) {
 		foreach ($data['keys'] as $key) {
 			if (isset($key['name'])) {
-				$sql .= ",\n KEY `" . $key['name'] . '` (`' . $key['columns'] . '`)';
+				if (is_array($key['columns'])) {
+					$sql .= ",\n KEY `" . $key['name'] . '` (`' . implode('`,`', $key['columns']) . '`)';
+				} else {
+					$sql .= ",\n KEY `" . $key['name'] . '` (`' . $key['columns'] . '`)';
+				}
 			}
 		}
 		}
