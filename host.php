@@ -1251,7 +1251,7 @@ function host() {
 		$changed = 0;
 		$changed += check_changed('host_template_id', 'sess_device_host_template_id');
 		$changed += check_changed('filter',           'sess_device_filter');
-		$changed += check_changed('host_status',      'sess_device_filter');
+		$changed += check_changed('host_status',      'sess_host_status');
 		$changed += check_changed('rows',             'sess_default_rows');
 
 		if ($changed) {
