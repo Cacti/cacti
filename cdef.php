@@ -319,7 +319,7 @@ function item_edit() {
 			</select>
 		</td>
 	</tr>
-	form_alternate_row();?>
+	<?php form_alternate_row();?>
 		<td style='width:50%;'>
 			<font class='textEditTitle'>CDEF Item Value</font><br>
 			Enter a value for this CDEF item.
