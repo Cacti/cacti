@@ -3158,7 +3158,7 @@ function automation_primeIPAddressTable($network_id) {
 		}
 	}
 
-	automation_debug("A Total of $total IP Addressed Primed");
+	automation_debug("A Total of $total IP Addresses Primed\n");
 }
 
 function automation_valid_snmp_device (&$device) {
@@ -3172,6 +3172,7 @@ function automation_valid_snmp_device (&$device) {
 		snmp_set_oid_numeric_print(TRUE);
 	}
 
+	$snmp_items = db_fetch_assoc_prepared('SELECT * FROM automation_snmp_items WHERE snmp_id = ? ORDER BY sequence ASC', array($device['snmp_id']));
 
 	if (sizeof($snmp_items)) {
 		foreach($snmp_items as $item) {

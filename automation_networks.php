@@ -388,7 +388,9 @@ function network_edit() {
 			'7' => '7 Threads', 
 			'8' => '8 Threads', 
 			'9' => '9 Threads', 
-			'10' => '10 Threads'
+			'10' => '10 Threads',
+			'20' => '20 Threads',
+			'50' => '50 Threads'
 			),
 		'default' => 1
 		),

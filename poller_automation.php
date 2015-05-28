@@ -46,9 +46,9 @@ function sig_handler($signo) {
 					AND task!='tmaster'", array($network_id)), 'pid', 'pid');
 
 				if (sizeof($pids)) {
-				foreach($pids as $pid) {
-					posix_kill($pid, SIGTERM);
-				}
+					foreach($pids as $pid) {
+						posix_kill($pid, SIGTERM);
+					}
 				}
 
 				clearTask($network_id, getmypid());
@@ -59,9 +59,9 @@ function sig_handler($signo) {
 					AND task='tmaster'", array($poller_id)), 'pid', 'pid');
 
 				if (sizeof($pids)) {
-				foreach($pids as $pid) {
-					posix_kill($pid);
-				}
+					foreach($pids as $pid) {
+						posix_kill($pid, SIGTERM);
+					}
 				}
 
 				clearTask($network_id, getmypid());
@@ -188,15 +188,15 @@ if ($master) {
 	$networks = db_fetch_assoc_prepared('SELECT * FROM automation_networks WHERE poller_id = ?', array($poller_id));
 	$launched = 0;
 	if (sizeof($networks)) {
-	foreach($networks as $network) {
-		if (api_automation_is_time_to_start($network['id'])) {
-			automation_debug("Launching Network Master for '" . $network['name'] . "'\n");
-			exec_background(read_config_option('path_php_binary'), '-q ' . read_config_option('path_webroot') . "/poller_automation.php --poller=" . $poller_id . " --network=" . $network['id'] . ($force ? ' --force':'') . ($debug ? ' --debug':''));
-			$launched++;
-		}else{
-			automation_debug("Not time to Run Discovery for '" . $network['name'] . "'\n");
+		foreach($networks as $network) {
+			if (api_automation_is_time_to_start($network['id'])) {
+				automation_debug("Launching Network Master for '" . $network['name'] . "'\n");
+				exec_background(read_config_option('path_php_binary'), '-q ' . read_config_option('path_webroot') . "/poller_automation.php --poller=" . $poller_id . " --network=" . $network['id'] . ($force ? ' --force':'') . ($debug ? ' --debug':''));
+				$launched++;
+			}else{
+				automation_debug("Not time to Run Discovery for '" . $network['name'] . "'\n");
+			}
 		}
-	}
 	}
 
 	exit;
@@ -326,7 +326,7 @@ function discoverDevices($network_id, $thread) {
 
 		$device = db_fetch_row_prepared('SELECT * FROM automation_ips WHERE pid = ? AND thread = ? AND status=0', array(getmypid(), $thread));
 
-		if (sizeof($device)) {
+		if (sizeof($device) && isset($device['ip_address'])) {
 			$count++;
 			if ($dns != '') {
 				$dnsname = automation_get_dns_from_ip($device['ip_address'], $dns, 300);
@@ -429,7 +429,9 @@ function discoverDevices($network_id, $thread) {
 							$snmp_sysName[0] = '';
 						}
 						$snmp_sysName_short = preg_split('/[\.]+/', strtolower($snmp_sysName[0]), -1, PREG_SPLIT_NO_EMPTY);
-	
+						if(!isset($snmp_sysName_short[0])) {
+							$snmp_sysName_short[0] = '';
+						}
 						$exists = db_fetch_row_prepared('SELECT status, snmp_version FROM host WHERE hostname IN (?,?)', array($snmp_sysName_short[0], $snmp_sysName[0]));
 
 						if (sizeof($exists)) {
@@ -594,7 +596,7 @@ function isProcessRunning($pid) {
 }
 
 function killProcess($pid) {
-	return posix_kill($pid);
+	return posix_kill($pid, SIGINT);
 }
 
 function registerTask($network_id, $pid, $poller_id, $task = 'collector') {
