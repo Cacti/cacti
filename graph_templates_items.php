@@ -167,7 +167,7 @@ function form_save() {
 						if (!isset($orig_data_source_to_input{$save['task_item_id']})) {
 							$ds_name = db_fetch_cell_prepared('SELECT data_source_name FROM data_template_rrd WHERE id = ?', array($_POST['task_item_id']));
 
-							db_execute_prepared("REPLACE INTO graph_template_input (hash, graph_template_id, name, column_name) VALUES (?, ?, ?, 'task_item_id')", array(get_hash_graph_template(0, 'graph_template_input'), $save['graph_template_id'], 'Data Source [$ds_name]'));
+							db_execute_prepared("REPLACE INTO graph_template_input (hash, graph_template_id, name, column_name) VALUES (?, ?, ?, 'task_item_id')", array(get_hash_graph_template(0, 'graph_template_input'), $save['graph_template_id'], "Data Source [$ds_name]"));
 
 							$graph_template_input_id = db_fetch_insert_id();
 
@@ -294,11 +294,11 @@ function item_edit() {
 	input_validate_input_number(get_request_var_request('graph_template_id'));
 	/* ==================================================== */
 
+	print "<form id='graph_items' name='graph_items' method='post' action='graph_templates_items.php'>\n";
+
 	$header_label = '[edit graph: ' . db_fetch_cell_prepared('SELECT name FROM graph_templates WHERE id = ?', array($_REQUEST['graph_template_id'])) . ']';
 
 	html_start_box('<strong>Graph Template Items</strong> ' . htmlspecialchars($header_label), '100%', '', '3', 'center', '');
-
-	print "<form id='graph_items' name='graph_items' method='post' action='graph_templates_items.php'>\n";
 
 	if (!empty($_REQUEST['id'])) {
 		$template_item = db_fetch_row_prepared('SELECT * FROM graph_templates_item WHERE id = ?', array($_REQUEST['id']));
@@ -348,9 +348,9 @@ function item_edit() {
 			GROUP BY graph_template_input.column_name', array($_REQUEST['graph_template_id'], $_REQUEST['id']));
 
 		if (sizeof($graph_item_input_fields) > 0) {
-		foreach ($graph_item_input_fields as $field) {
-			$form_array{$field['column_name']}['friendly_name'] .= " [<a href='" . htmlspecialchars('graph_templates_inputs.php?action=input_edit&id=' . $field['id'] . '&graph_template_id=' . $_REQUEST['graph_template_id']) . "'>Field Not Templated</a>]";
-		}
+			foreach ($graph_item_input_fields as $field) {
+				$form_array{$field['column_name']}['friendly_name'] .= " [<a href='" . htmlspecialchars('graph_templates_inputs.php?action=input_edit&id=' . $field['id'] . '&graph_template_id=' . $_REQUEST['graph_template_id']) . "'>Field Not Templated</a>]";
+			}
 		}
 	}
 
@@ -389,6 +389,13 @@ function item_edit() {
 
 	graph_type_ids - 1 - Comment 2 - HRule 3 - Vrule 4 - Line1 5 - Line2 6 - Line3 7 - Area 8 - Stack 9 - Gprint 10 - Legend
 	*/
+
+	function changeColorId() {
+		$('#alpha').prop('disabled', true);
+		if ($('#color_id').val() != 0) {
+			$('#alpha').prop('disabled', false);
+		}
+	}
 
 	function setRowVisibility() {
 		switch($('#graph_type_id').val()) {
@@ -454,10 +461,7 @@ function item_edit() {
 			break;
 		}
 
-		$('#alpha').prop('disabled', true);
-		if ($('#color_id').val() != 0) {
-			$('#alpha').prop('disabled', false);
-		}
+		changeColorId();
 	}
 
 	</script>
