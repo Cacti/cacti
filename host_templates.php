@@ -593,12 +593,12 @@ function template() {
 				$disabled = false;
 			}
 
-			form_alternate_row('line' . $template['id'], true, $disabled);
+			form_alternate_row('line' . $template['id'], true);
 			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars('host_templates.php?action=edit&id=' . $template['id']) . "'>" . (strlen(get_request_var_request('filter')) ? preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($template['name'])) : htmlspecialchars($template['name'])) . '</a>', $template['id']);
 			form_selectable_cell($disabled ? 'No':'Yes', $template['id'], '', 'text-align:right');
 			form_selectable_cell(number_format($template['hosts']), $template['id'], '', 'text-align:right');
 			form_selectable_cell($template['id'], $template['id'], '', 'text-align:right');
-			form_checkbox_cell($template['name'], $template['id'], $disabled);
+			form_checkbox_cell($template['name'], $template['id']);
 			form_end_row();
 		}
 		/* put the nav bar on the bottom as well */
