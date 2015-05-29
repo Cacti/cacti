@@ -52,6 +52,8 @@ function sig_handler($signo) {
 				}
 
 				clearTask($network_id, getmypid());
+
+				db_execute_prepared('DELETE FROM automation_ips WHERE network_id = ?', array($network_id));
 			}else{
 				$pids = array_rekey(db_fetch_assoc_prepared("SELECT pid 
 					FROM automation_processes 
@@ -189,7 +191,7 @@ if ($master) {
 	$launched = 0;
 	if (sizeof($networks)) {
 		foreach($networks as $network) {
-			if (api_automation_is_time_to_start($network['id'])) {
+			if (api_automation_is_time_to_start($network['id']) || $force) {
 				automation_debug("Launching Network Master for '" . $network['name'] . "'\n");
 				exec_background(read_config_option('path_php_binary'), '-q ' . read_config_option('path_webroot') . "/poller_automation.php --poller=" . $poller_id . " --network=" . $network['id'] . ($force ? ' --force':'') . ($debug ? ' --debug':''));
 				$launched++;
@@ -250,6 +252,11 @@ if (!$master && $thread == 0) {
 	automation_debug("Checking for Running Threads\n");
 
 	while (true) {
+		$command = db_fetch_cell("SELECT command FROM automation_processes WHERE network_id=$network_id AND task='tmaster'");
+		if ($command == 'cancel') {
+			killProcess(getmypid());
+		}
+
 		$running = db_fetch_cell("SELECT count(*) FROM automation_processes WHERE network_id=$network_id AND task!='tmaster' AND status='running'");
 		automation_debug("Found $running Threads\n");
 
@@ -336,7 +343,7 @@ function discoverDevices($network_id, $thread) {
 					$device['hostname']      = $dnsname;
 					$device['dnsname']       = $dnsname;
 					$device['dnsname_short'] = preg_split('/[\.]+/', strtolower($dnsname), -1, PREG_SPLIT_NO_EMPTY);
-				}else{
+				}elseif ($network['enable_netbios'] == 'on') {
 					$device['hostname'] = ping_netbios_name($device['ip_address']);
 					if ($device['hostname'] === false) {
 						$device['hostname']      = $device['ip_address'];
@@ -347,6 +354,10 @@ function discoverDevices($network_id, $thread) {
 						$device['dnsname']       = $device['hostname'];
 						$device['dnsname_short'] = $device['hostname'];
 					}
+				}else{
+					$device['hostname']      = $device['ip_address'];
+					$device['dnsname']       = '';
+					$device['dnsname_short'] = '';
 				}
 			}else{
 				$dnsname = gethostbyaddr($device['ip_address']);
@@ -356,7 +367,7 @@ function discoverDevices($network_id, $thread) {
 
 					$device['dnsname']       = $dnsname;
 					$device['dnsname_short'] = preg_split('/[\.]+/', strtolower($dnsname), -1, PREG_SPLIT_NO_EMPTY);
-				}else{
+				}elseif ($network['enable_netbios'] == 'on') {
 					$device['hostname'] = ping_netbios_name($device['ip_address']);
 					if ($device['hostname'] === false) {
 						$device['hostname']      = $device['ip_address'];
@@ -367,6 +378,10 @@ function discoverDevices($network_id, $thread) {
 						$device['dnsname']       = $device['hostname'];
 						$device['dnsname_short'] = $device['hostname'];
 					}
+				}else{
+					$device['hostname']      = $device['ip_address'];
+					$device['dnsname']       = '';
+					$device['dnsname_short'] = '';
 				}
 			}
 
@@ -596,7 +611,7 @@ function isProcessRunning($pid) {
 }
 
 function killProcess($pid) {
-	return posix_kill($pid, SIGINT);
+	return posix_kill($pid, SIGTERM);
 }
 
 function registerTask($network_id, $pid, $poller_id, $task = 'collector') {
@@ -622,6 +637,7 @@ function addSNMPDevice($network_id, $pid) {
 
 function clearTask($network_id, $pid) {
 	db_execute_prepared('DELETE FROM automation_processes WHERE pid = ? AND network_id = ?', array($pid, $network_id));
+	db_execute_prepared('DELETE FROM automation_ips WHERE network_id = ?', array($pid, $network_id));
 }
 
 function clearAllTasks($network_id) {
@@ -639,7 +655,7 @@ function markIPDone($ip_address, $network_id) {
 function updateDownDevice($network_id, $ip) {
 	$exists = db_fetch_cell_prepared('SELECT COUNT(*) FROM automation_devices WHERE ip = ? AND network_id = ?', array($ip, $network_id));
 	if ($exists) {
-		db_execute_prepared('UPDATE automation_devices SET status="Down" time = ? WHERE ip = ? AND network_id = ?', array(time(), $ip, $network_id));
+		db_execute_prepared("UPDATE automation_devices SET up='0', time = ? WHERE ip = ? AND network_id = ?", array(time(), $ip, $network_id));
 	}
 }
 

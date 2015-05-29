@@ -33,7 +33,8 @@ $network_actions = array(
 	1 => 'Delete',
 	2 => 'Disable',
 	3 => 'Enable',
-	4 => 'Discover Now'
+	4 => 'Discover Now',
+	5 => 'Cancel Discovery'
 );
 
 /* set default action */
@@ -79,6 +80,18 @@ function api_networks_remove($network_id){
 	db_execute('DELETE FROM automation_devices WHERE network_id=' . $network_id);
 }
 
+function api_networks_enable($network_id){
+	db_execute('UPDATE automation_networks SET enabled="on" WHERE id=' . $network_id);
+}
+
+function api_networks_disable($network_id){
+	db_execute('UPDATE automation_networks SET enabled="" WHERE id=' . $network_id);
+}
+
+function api_networks_cancel($network_id){
+	db_execute('UPDATE IGNORE automation_processes SET command="cancel" WHERE task="tmaster" AND network_id=' . $network_id);
+}
+
 function api_networks_discover($network_id) {
 	$enabled = db_fetch_cell_prepared('SELECT enabled FROM automation_networks WHERE id = ?', array($network_id));
 	$running = db_fetch_cell_prepared('SELECT count(*) FROM automation_processes WHERE network_id = ?', array($network_id));
@@ -110,6 +123,7 @@ function api_networks_save($post) {
 		$save['run_limit']     = form_input_validate($post['run_limit'], 'run_limit', '^[0-9]+$', false, 3);
 
 		$save['enabled']            = (isset($post['enabled']) ? 'on':'');
+		$save['enable_netbios']     = (isset($post['enable_netbios']) ? 'on':'');
 		$save['rerun_data_queries'] = (isset($post['rerun_data_queries']) ? 'on':'');
 
 		/* discovery connectivity settings */
@@ -203,7 +217,7 @@ function form_actions() {
 
 				api_networks_remove($item);
 			}
-		}elseif ($_POST['drp_action'] == '2') { /* enable */
+		}elseif ($_POST['drp_action'] == '3') { /* enable */
 			foreach($selected_items as $item) {
 				/* ================= input validation ================= */
 				input_validate_input_number($item);
@@ -211,7 +225,7 @@ function form_actions() {
 
 				api_networks_enable($item);
 			}
-		}elseif ($_POST['drp_action'] == '3') { /* disable */
+		}elseif ($_POST['drp_action'] == '2') { /* disable */
 			foreach($selected_items as $item) {
 				/* ================= input validation ================= */
 				input_validate_input_number($item);
@@ -226,6 +240,14 @@ function form_actions() {
 				/* ==================================================== */
 
 				api_networks_discover($item);
+			}
+		}elseif ($_POST['drp_action'] == '5') { /* cancel */
+			foreach($selected_items as $item) {
+				/* ================= input validation ================= */
+				input_validate_input_number($item);
+				/* ==================================================== */
+
+				api_networks_cancel($item);
 			}
 		}
 
@@ -264,14 +286,14 @@ function form_actions() {
 					<p><ul>$networks_list</ul></p>
 				</td>
 			</tr>\n";
-	}elseif ($_POST['drp_action'] == '2') { /* enable */
+	}elseif ($_POST['drp_action'] == '3') { /* enable */
 		print "	<tr>
 				<td class='textArea'>
 					<p>When you click save, the following Network(s) will be enabled.
 					<p><ul>$networks_list</ul></p>
 				</td>
 			</tr>\n";
-	}elseif ($_POST['drp_action'] == '3') { /* disable */
+	}elseif ($_POST['drp_action'] == '2') { /* disable */
 		print "	<tr>
 				<td class='textArea'>
 					<p>When you click save, the following Network(s) will be disabled.
@@ -282,6 +304,13 @@ function form_actions() {
 		print "	<tr>
 				<td class='textArea'>
 					<p>When you click save, the following Network(s) will be discovered.
+					<p><ul>$networks_list</ul></p>
+				</td>
+			</tr>\n";
+	}elseif ($_POST['drp_action'] == '5') { /* cancel discovery now */
+		print "	<tr>
+				<td class='textArea'>
+					<p>When you click save, the following ongoing Discovery(s) will be canceled.
 					<p><ul>$networks_list</ul></p>
 				</td>
 			</tr>\n";
@@ -417,6 +446,13 @@ function network_edit() {
 		'friendly_name' => 'Enabled',
 		'description' => 'Enable this Network Range Enabled.',
 		'value' => '|arg1:enabled|'
+		),
+	'enable_netbios' => array(
+		'method' => 'checkbox',
+		'friendly_name' => 'Enable NetBIOS',
+		'description' => 'Use NetBIOS to attempt to result the hostname of up hosts.',
+		'value' => '|arg1:enable_netbios|',
+		'default' => ''
 		),
 	'rerun_data_queries' => array(
 		'method' => 'checkbox',
@@ -837,30 +873,41 @@ function networks() {
 				$mystat   = "<span style='color:grey;'>Disabled</span>";
 				$progress = "0/0/0";
 				$status   = array();
+				$updown['up'] = $updown['snmp'] = '0';
 			}else{
-				$status = db_fetch_row_prepared('SELECT 
-					COUNT(*) AS total,
-					SUM(CASE WHEN status=0 THEN 1 ELSE 0 END) AS pending,
-					SUM(CASE WHEN status=1 THEN 1 ELSE 0 END) AS running,
-					SUM(CASE WHEN status=2 THEN 1 ELSE 0 END) AS done
-					FROM automation_ips
-					WHERE network_id = ?', array($network['id']));
+				$running = db_fetch_cell_prepared('SELECT COUNT(*) FROM automation_processes WHERE network_id = ?', array($network['id']));
 
-				if ($status['total'] > 0) {
+				if ($running > 0) {
+					$status = db_fetch_row_prepared('SELECT 
+						COUNT(*) AS total,
+						SUM(CASE WHEN status=0 THEN 1 ELSE 0 END) AS pending,
+						SUM(CASE WHEN status=1 THEN 1 ELSE 0 END) AS running,
+						SUM(CASE WHEN status=2 THEN 1 ELSE 0 END) AS done
+						FROM automation_ips
+						WHERE network_id = ?', array($network['id']));
+
 					$mystat   = "<span style='color:red;'>Running</span>";
-					$progress = $status['pending'] . '/' . $status['running'] . '/' . $status['done'];
+
+					if (empty($status['total'])) {
+						$progress = "0/0/0";
+					}else{
+						$progress = $status['pending'] . '/' . $status['running'] . '/' . $status['done'];
+					}
+
+					$updown = db_fetch_row_prepared("SELECT SUM(up_hosts) AS up, SUM(snmp_hosts) AS snmp
+						FROM automation_processes
+						WHERE network_id = ?", array($network['id']));
+
+					if (empty($updown['up'])) {
+						$updown['up']   = 0;
+						$updown['snmp'] = 0;
+					}
 				}else{
-					$mystat   = "<span style='color:green;'>Idle</span>";
-					$progress = "0/0/0";
-				}
-
-				$updown = db_fetch_row_prepared("SELECT SUM(up_hosts) AS up, SUM(snmp_hosts) AS snmp
-					FROM automation_processes
-					WHERE network_id = ?", array($network['id']));
-
-				if (empty($updown['up'])) {
 					$updown['up']   = $network['up_hosts'];
 					$updown['snmp'] = $network['snmp_hosts'];
+
+					$mystat   = "<span style='color:green;'>Idle</span>";
+					$progress = "0/0/0";
 				}
 			}
 
@@ -898,7 +945,7 @@ function networks_filter() {
 	?>
 	<tr class='even'>
 		<td>
-			<form id='form_networks' action='automation_networks.php'>
+			<form id='networks' action='automation_networks.php'>
 			<table class='filterTable'>
 				<tr>
 					</td>
@@ -912,7 +959,7 @@ function networks_filter() {
 						Networks
 					</td>
 					<td>
-						<select name='rows' onChange='applyFilterChange(document.form_networks)'>
+						<select id='rows' onChange='applyFilter(document.form_networks)'>
 							<option value='-1'<?php if (get_request_var_request('rows') == '-1') {?> selected<?php }?>>Default</option>
 							<?php
 							if (sizeof($item_rows) > 0) {
@@ -931,14 +978,44 @@ function networks_filter() {
 					</td>
 				</tr>
 			</table>
-			<input type='hidden' name='page' value='<?php print $_REQUEST['page'];?>'>
+			<input type='hidden' id='page' value='<?php print $_REQUEST['page'];?>'>
 			</form>
 			<script type='text/javascript'>
-			function applyFilterChange(objForm) {
-				strURL = '?rows=' + objForm.rows.value;
-				strURL = strURL + '&filter=' + objForm.filter.value;
-				document.location = strURL;
+			function applyFilter() {
+				strURL  = '?rows=' + $('#rows').val();
+				strURL += '&filter=' + $('#filter').val();
+				strURL += '&page=' + $('#page').val();
+				strURL += '&header=false';
+
+				$.get(strURL, function(data) {
+					$('#main').html(data);
+					applySkin();
+				});
 			}
+
+			function clearFilter() {
+				strURL = '?clear=true&header=false';
+
+				$.get(strURL, function(data) {
+					$('#main').html(data);
+					applySkin();
+				});
+			}
+
+			$(function() {
+				$('#go').click(function() {
+					applyFilter();
+				});
+
+				$('#clear').click(function() {
+					clearFilter();
+				});
+
+				$('#networks').submit(function(event) {
+					event.preventDefault();
+					applyFilter();
+				});
+			});
 			</script>
 		</td>
 	</tr>

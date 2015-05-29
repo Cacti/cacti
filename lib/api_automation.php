@@ -3162,8 +3162,11 @@ function automation_primeIPAddressTable($network_id) {
 }
 
 function automation_valid_snmp_device (&$device) {
+	global $snmp_logging;
+
 	/* initialize variable */
 	$host_up = FALSE;
+	$snmp_logging = false;
 	$device["snmp_status"] = HOST_DOWN;
 	$device["ping_status"] = 0;
 

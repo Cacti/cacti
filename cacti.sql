@@ -164,7 +164,7 @@ CREATE TABLE `automation_devices` (
   `time` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`ip`),
   KEY `hostname` (`hostname`)
-) ENGINE=MyISAM COMMENT='Plugin Discovery - Table of discovered hosts';
+) ENGINE=MyISAM COMMENT='Table of Discovered Devices';
 
 --
 -- Table structure for table `automation_graph_rule_items`
@@ -255,6 +255,7 @@ CREATE TABLE `automation_networks` (
   `dns_servers` varchar(128) NOT NULL DEFAULT '' COMMENT 'DNS Servers to use for name resolution',
   `enabled` char(2) DEFAULT '',
   `snmp_id` int(10) unsigned DEFAULT NULL,
+  `enable_netbios` char(2) DEFAULT '',
   `total_ips` int(10) unsigned DEFAULT '0',
   `up_hosts` int(10) unsigned NOT NULL DEFAULT '0',
   `snmp_hosts` int(10) unsigned NOT NULL DEFAULT '0',
@@ -297,6 +298,7 @@ CREATE TABLE `automation_processes` (
   `network_id` int(10) unsigned NOT NULL DEFAULT '0',
   `task` varchar(20) DEFAULT '',
   `status` varchar(20) DEFAULT NULL,
+  `command` varchar(20) DEFAULT NULL,
   `up_hosts` int(10) unsigned DEFAULT '0',
   `snmp_hosts` int(10) unsigned DEFAULT '0',
   `heartbeat` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',

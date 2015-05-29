@@ -28,7 +28,7 @@ define("SNMP_METHOD_PHP", 1);
 define("SNMP_METHOD_BINARY", 2);
 
 function cacti_snmp_get($hostname, $community, $oid, $version, $username, $password, $auth_proto, $priv_pass, $priv_proto, $context, $port = 161, $timeout = 500, $retries = 0, $environ = SNMP_POLLER) {
-	global $config;
+	global $config, $snmp_logging;
 
 	/* determine default retries */
 	if (($retries == 0) || (!is_numeric($retries))) {
@@ -69,7 +69,7 @@ function cacti_snmp_get($hostname, $community, $oid, $version, $username, $passw
 			$snmp_value = @snmp3_get("$hostname:$port", "$username", $proto, $auth_proto, "$password", $priv_proto, "$priv_pass", "$oid", ($timeout * 1000), $retries);
 		}
 
-		if ($snmp_value === false) {
+		if ($snmp_value === false && (!isset($snmp_logging) || $snmp_logging == true)) {
 			cacti_log("WARNING: PHP-SNMP Get Timeout for Device:'$hostname', and OID:'$oid'", false);
 		}
 	}else {
@@ -135,7 +135,7 @@ function cacti_snmp_get($hostname, $community, $oid, $version, $username, $passw
 		}
 	}
 
-	if (substr_count($snmp_value, "Timeout:")) {
+	if (substr_count($snmp_value, "Timeout:") && (!isset($snmp_logging) || $snmp_logging == true)) {
 		cacti_log("WARNING: NET-SNMP Get Timeout for Device:'$hostname', and OID:'$oid'", false);
 	}
 
@@ -146,7 +146,7 @@ function cacti_snmp_get($hostname, $community, $oid, $version, $username, $passw
 }
 
 function cacti_snmp_getnext($hostname, $community, $oid, $version, $username, $password, $auth_proto, $priv_pass, $priv_proto, $context, $port = 161, $timeout = 500, $retries = 0, $environ = SNMP_POLLER) {
-	global $config;
+	global $config, $snmp_logging;
 
 	/* determine default retries */
 	if (($retries == 0) || (!is_numeric($retries))) {
@@ -185,7 +185,7 @@ function cacti_snmp_getnext($hostname, $community, $oid, $version, $username, $p
 			$snmp_value = @snmp3_getnext("$hostname:$port", "$username", $proto, $auth_proto, "$password", $priv_proto, "$priv_pass", "$oid", ($timeout * 1000), $retries);
 		}
 
-		if ($snmp_value === false) {
+		if ($snmp_value === false && (!isset($snmp_logging) || $snmp_logging == true)) {
 			cacti_log("WARNING: SNMP GetNext Timeout for Device:'$hostname', and OID:'$oid'", false);
 		}
 	}else {
@@ -252,7 +252,7 @@ function cacti_snmp_getnext($hostname, $community, $oid, $version, $username, $p
 		}
 	}
 
-	if (substr_count($snmp_value, "Timeout:")) {
+	if (substr_count($snmp_value, "Timeout:") && (!isset($snmp_logging) || $snmp_logging == true)) {
 		cacti_log("WARNING: SNMP GetNext Timeout for Device:'$hostname', and OID:'$oid'", false);
 	}
 
@@ -263,7 +263,7 @@ function cacti_snmp_getnext($hostname, $community, $oid, $version, $username, $p
 }
 
 function cacti_snmp_walk($hostname, $community, $oid, $version, $username, $password, $auth_proto, $priv_pass, $priv_proto, $context, $port = 161, $timeout = 500, $retries = 0, $max_oids = 10, $environ = SNMP_POLLER) {
-	global $config, $banned_snmp_strings;
+	global $config, $banned_snmp_strings, $snmp_logging;;
 
 	$snmp_oid_included = true;
 	$snmp_auth	       = '';
@@ -330,7 +330,7 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $username, $pass
 			$temp_array = @snmp3_real_walk("$hostname:$port", "$username", $proto, $auth_proto, "$password", $priv_proto, "$priv_pass", "$oid", ($timeout * 1000), $retries);
 		}
 
-		if ($temp_array === false) {
+		if ($temp_array === false && (!isset($snmp_logging) || $snmp_logging == true)) {
 			cacti_log("WARNING: SNMP Walk Timeout for Device:'$hostname', and OID:'$oid'", false);
 		}
 
@@ -412,7 +412,7 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $username, $pass
 			}
 		}
 
-		if (substr_count(implode(" ", $temp_array), "Timeout:")) {
+		if (substr_count(implode(" ", $temp_array), "Timeout:") && (!isset($snmp_logging) || $snmp_logging == true)) {
 			cacti_log("WARNING: SNMP Walk Timeout for Device:'$hostname', and OID:'$oid'", false);
 		}
 
