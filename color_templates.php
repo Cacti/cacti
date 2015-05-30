@@ -207,23 +207,25 @@ function aggregate_color_form_actions() {
 	html_start_box('<strong>' . $aggregate_actions{$_POST['drp_action']} . '</strong>', '60%', '', '3', 'center', '');
 
 	if (isset($color_array) && sizeof($color_array)) {
-	if ($_POST['drp_action'] == '1') { /* delete */
-		print "	<tr>
+		if ($_POST['drp_action'] == '1') { /* delete */
+			print "<tr>
 				<td class='textArea'>
-					<p>Are you sure you want to delete the following color templates?</p>
+					<p>Click 'Continue' to delete the following Color Template(s)?</p>
 					<p><ul>$color_list</ul></p>
 				</td>
 			</tr>\n";
+	
 			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Delete Color Template(s)'>";
-	}elseif ($_POST['drp_action'] == '2') { /* duplicate */
-		print "	<tr>
+		}elseif ($_POST['drp_action'] == '2') { /* duplicate */
+			print "<tr>
 				<td class='textArea'>
-					<p>When you click save, the following color templates will be duplicated. You can
+					<p>Click 'Continue' to duplicate the following Color Template(s). You can
 					optionally change the title format for the new color templates.</p>
 					<p><ul>$color_list</ul></p>
 					<p><strong>Title Format:</strong><br>"; form_text_box('title_format', '<template_title> (1)', '', '255', '30', 'text'); print "</p>
 				</td>
 			</tr>\n";
+	
 			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Duplicate Color Template(s)'>";
 		}
 	}else{
@@ -231,14 +233,14 @@ function aggregate_color_form_actions() {
 		$save_html = "<input type='button' value='Return' onClick='window.history.back()'>";
 	}
 
-	print "	<tr>
-			<td align='right' class='saveRow'>
-				<input type='hidden' name='action' value='actions'>
-				<input type='hidden' name='selected_items' value='" . (isset($color_array) ? serialize($color_array) : '') . "'>
-				<input type='hidden' name='drp_action' value='" . $_POST['drp_action'] . "'>
-				$save_html
-			</td>
-		</tr>\n";
+	print "<tr>
+		<td class='saveRow'>
+			<input type='hidden' name='action' value='actions'>
+			<input type='hidden' name='selected_items' value='" . (isset($color_array) ? serialize($color_array) : '') . "'>
+			<input type='hidden' name='drp_action' value='" . $_POST['drp_action'] . "'>
+			$save_html
+		</td>
+	</tr>\n";
 
 	html_end_box();
 
@@ -551,24 +553,18 @@ function aggregate_color_template() {
 	<script type='text/javascript'>
 
 	function applyFilter() {
-		strURL = 'color_templates.php';
-		strURL = strURL + '?rows=' + $('#rows').val();
-		strURL = strURL + '&page=' + $('#page').val();
-		strURL = strURL + '&filter=' + $('#filter').val();
-		strURL = strURL + '&has_graphs=' + $('#has_graphs').is(':checked');
-		strURL = strURL + '&header=false';
-		$.get(strURL, function(data) {
-			$('#main').html(data);
-			applySkin();
-		});
+		strURL  = 'color_templates.php';
+		strURL += '?rows=' + $('#rows').val();
+		strURL += '&page=' + $('#page').val();
+		strURL += '&filter=' + $('#filter').val();
+		strURL += '&has_graphs=' + $('#has_graphs').is(':checked');
+		strURL += '&header=false';
+		loadPageNoHeader(strURL);
 	}
 
 	function clearFilter() {
 		strURL = 'color_templates.php?clear=1&header=false';
-		$.get(strURL, function(data) {
-			$('#main').html(data);
-			applySkin();
-		});
+		loadPageNoHeader(strURL);
 	}
 
 	$(function() {

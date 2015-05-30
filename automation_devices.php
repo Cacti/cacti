@@ -344,10 +344,7 @@ html_start_box('<strong>Discovery Filters</strong>', '100%', $colors['header'], 
 		});
 
 		$('#purge').click(function() {
-			$.get('automation_devices.php?header=false&action=purge&network_id='+$('#network').val(), function(data) {
-				$('#main').html(data);
-				applySkin();
-			});
+			loadPageNoHeader('automation_devices.php?header=false&action=purge&network_id='+$('#network').val());
 		});
 
 		$('#export').click(function() {
@@ -356,25 +353,19 @@ html_start_box('<strong>Discovery Filters</strong>', '100%', $colors['header'], 
 	});
 	
 	function clearFilter() {
-		$.get('automation_devices.php?header=false&clear=1', function(data) {
-			$('#main').html(data);
-			applySkin();
-		});
+		loadPageNoHeader('automation_devices.php?header=false&clear=1');
 	}
 
 	function applyFilter() {
-		strURL = 'automation_devices.php?header=false';
-		strURL = strURL + '&status=' + $('#status').val();
-		strURL = strURL + '&network=' + $('#network').val();
-		strURL = strURL + '&snmp=' + $('#snmp').val();
-		strURL = strURL + '&os=' + $('#os').val();
-		strURL = strURL + '&filter=' + $('#filter').val();
-		strURL = strURL + '&rows=' + $('#rows').val();
+		strURL  = 'automation_devices.php?header=false';
+		strURL += '&status=' + $('#status').val();
+		strURL += '&network=' + $('#network').val();
+		strURL += '&snmp=' + $('#snmp').val();
+		strURL += '&os=' + $('#os').val();
+		strURL += '&filter=' + $('#filter').val();
+		strURL += '&rows=' + $('#rows').val();
 
-		$.get(strURL, function(data) {
-			$('#main').html(data);
-			applySkin();
-		});
+		loadPageNoHeader(strURL);
 	}
 
 	</script>

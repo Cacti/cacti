@@ -186,7 +186,6 @@ function grow_dhtml_trees() {
 						$('#main').html(data);
 						applySkin();
 						var mytitle = 'Tree Mode - '+$('#nav_title').text();
-						console.log(mytitle);
 						document.getElementsByTagName('title')[0].innerHTML = mytitle;
 						if (typeof window.history.pushState !== 'undefined') {
 							window.history.pushState({ page: origHref }, mytitle, origHref);

@@ -367,30 +367,30 @@ function form_actions() {
 
 	if (isset($tree_array) && sizeof($tree_array)) {
 		if ($_POST['drp_action'] == '1') { /* delete */
-			print "	<tr>
-					<td class='textArea' class='odd'>
-						<p>When you click \"Continue\", the folling Tree(s) will be deleted.</p>
-						<ul>$tree_list</ul>
-					</td>
-				</tr>\n";
+			print "<tr>
+				<td class='textArea' class='odd'>
+					<p>Click 'Continue' to delete the folling Tree(s).</p>
+					<p><ul>$tree_list</ul></p>
+				</td>
+			</tr>\n";
 
 			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Delete Tree(s)'>";
 		}elseif ($_POST['drp_action'] == '2') { /* publish */
-			print "	<tr>
-					<td class='textArea' class='odd'>
-						<p>When you click \"Continue\", the following Tree(s) will be Published.</p>
-						<ul>$tree_list</ul>
-					</td>
-				</tr>\n";
+			print "<tr>
+				<td class='textArea' class='odd'>
+					<p>Click 'Continue' to publish the following Tree(s).</p>
+					<p><ul>$tree_list</ul></p>
+				</td>
+			</tr>\n";
 
 			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Publish Tree(s)'>";
 		}elseif ($_POST['drp_action'] == '3') { /* un-publish */
-			print "	<tr>
-					<td class='textArea' class='odd'>
-						<p>When you click \"Continue\", the following Tree(s) will be Un-Published.</p>
-						<ul>$tree_list</ul>
-					</td>
-				</tr>\n";
+			print "<tr>
+				<td class='textArea' class='odd'>
+					<p>Click 'Continue' to un-publish the following Tree(s).</p>
+					<p><ul>$tree_list</ul></p>
+				</td>
+			</tr>\n";
 
 			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Un-Publish Tree(s)'>";
 		}
@@ -399,14 +399,14 @@ function form_actions() {
 		$save_html = "<input type='button' value='Return' onClick='window.history.back()'>";
 	}
 
-	print "	<tr>
-			<td align='right' class='saveRow'>
-				<input type='hidden' name='action' value='actions'>
-				<input type='hidden' name='selected_items' value='" . (isset($tree_array) ? serialize($tree_array) : '') . "'>
-				<input type='hidden' name='drp_action' value='" . $_POST['drp_action'] . "'>
-				$save_html
-			</td>
-		</tr>\n";
+	print "<tr>
+		<td class='saveRow'>
+			<input type='hidden' name='action' value='actions'>
+			<input type='hidden' name='selected_items' value='" . (isset($tree_array) ? serialize($tree_array) : '') . "'>
+			<input type='hidden' name='drp_action' value='" . $_POST['drp_action'] . "'>
+			$save_html
+		</td>
+	</tr>\n";
 
 	html_end_box();
 
@@ -694,17 +694,13 @@ function tree_edit() {
 			});
 
 			$('#lock').click(function() {
-				$.get('tree.php?action=lock&id=<?php print $tree['id'];?>&header=false', function(data) {
-					$('#main').html(data);
-					applySkin();
-				});
+				strURL = 'tree.php?action=lock&id=<?php print $tree['id'];?>&header=false';
+				loadPageNoHeader(strURL);
 			});
 
 			$('#unlock').click(function() {
-				$.get('tree.php?action=unlock&id=<?php print $tree['id'];?>&header=false', function(data) {
-					$('#main').html(data);
-					applySkin();
-				});
+				strURL = 'tree.php?action=unlock&id=<?php print $tree['id'];?>&header=false';
+				loadPageNoHeader(strURL);
 			});
 
 			var height      = parseInt($(window).height()-$('#jstree').offset().top-10)+'px';
@@ -1302,22 +1298,16 @@ function tree() {
 	?>
 	<script type='text/javascript'>
 	function applyFilter() {
-		strURL = 'tree.php?rows=' + $('#rows').val();
-		strURL = strURL + '&filter=' + $('#filter').val();
-		strURL = strURL + '&page=' + $('#page').val();
-		strURL = strURL + '&header=false';
-		$.get(strURL, function(data) {
-			$('#main').html(data);
-			applySkin();
-		});
+		strURL  = 'tree.php?rows=' + $('#rows').val();
+		strURL += '&filter=' + $('#filter').val();
+		strURL += '&page=' + $('#page').val();
+		strURL += '&header=false';
+		loadPageNoHeader(strURL);
 	}
 
 	function clearFilter() {
 		strURL = 'tree.php?clear=1&header=false';
-		$.get(strURL, function(data) {
-			$('#main').html(data);
-			applySkin();
-		});
+		loadPageNoHeader(strURL);
 	}
 
 	$(function(data) {

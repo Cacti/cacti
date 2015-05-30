@@ -295,13 +295,13 @@ function aggregate_form_actions() {
 	}
 
 	print "<tr>
-			<td align='right' class='saveRow'>
-				<input type='hidden' name='action' value='actions'>
-				<input type='hidden' name='selected_items' value='" . (isset($aggregate_array) ? serialize($aggregate_array) : '') . "'>
-				<input type='hidden' name='drp_action' value='" . $_POST['drp_action'] . "'>
-				$save_html
-			</td>
-		</tr>\n";
+		<td class='saveRow'>
+			<input type='hidden' name='action' value='actions'>
+			<input type='hidden' name='selected_items' value='" . (isset($aggregate_array) ? serialize($aggregate_array) : '') . "'>
+			<input type='hidden' name='drp_action' value='" . $_POST['drp_action'] . "'>
+			$save_html
+		</td>
+	</tr>\n";
 
 	html_end_box();
 
@@ -667,24 +667,18 @@ function aggregate_template() {
 	<script type='text/javascript'>
 
 	function applyFilter() {
-		strURL = 'aggregate_templates.php';
-		strURL = strURL + '?rows=' + $('#rows').val();
-		strURL = strURL + '&page=' + $('#page').val();
-		strURL = strURL + '&has_graphs=' + $('#has_graphs').is(':checked');
-		strURL = strURL + '&filter=' + $('#filter').val();
-		strURL = strURL + '&header=false';
-		$.get(strURL, function(data) {
-			$('#main').html(data);
-			applySkin();
-		});
+		strURL  = 'aggregate_templates.php';
+		strURL += '?rows=' + $('#rows').val();
+		strURL += '&page=' + $('#page').val();
+		strURL += '&has_graphs=' + $('#has_graphs').is(':checked');
+		strURL += '&filter=' + $('#filter').val();
+		strURL += '&header=false';
+		loadPageNoHeader(strURL);
 	}
 
 	function clearFilter() {
 		strURL = 'aggregate_templates.php?clear=1&header=false';
-		$.get(strURL, function(data) {
-			$('#main').html(data);
-			applySkin();
-		});
+		loadPageNoHeader(strURL);
 	}
 
 	$(function() {

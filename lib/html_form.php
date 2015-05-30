@@ -1059,7 +1059,7 @@ function form_save_button($cancel_url, $force_type = "", $key_field = "id") {
 	?>
 	<table style='width:100%;text-align:center;'>
 		<tr>
-			<td class="saveRow" align="right">
+			<td class='saveRow'>
 				<input type='hidden' name='action' value='save'>
 				<?php print $cancel_action;?>
 				<input type='submit' value='<?php print $alt;?>'>
@@ -1074,7 +1074,7 @@ function form_save_buttons($buttons) {
 	?>
 	<table style='width:100%;text-align:center;'>
 		<tr>
-			<td class="saveRow" align="right">
+			<td class='saveRow'>
 				<input type='hidden' name='action' value='save'>
 				<?php foreach($buttons as $b) {
 					print "<input type='button' id='" . $b['id'] . "' value='" . $b['value'] . "'>\n";

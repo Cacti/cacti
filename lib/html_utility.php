@@ -165,7 +165,7 @@ function form_end_row() {
    @arg $message - the value of the HTML checkbox */
 function form_confim_buttons($post_variable, $item_array, $save_message, $return = false) {
 	print "<tr>
-		<td align='right' class='saveRow'>
+		<td class='saveRow'>
 			<input type='hidden' name='action' value='actions'>
 			<input type='hidden' name='selected_items' value='" . (isset($item_array) ? serialize($item_array) : '') . "'>
 			<input type='hidden' name='drp_action' value='" . $post_variable . "'>" . ($return ? "

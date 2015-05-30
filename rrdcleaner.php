@@ -528,10 +528,11 @@ function filter() {
 			</form>
 			<script type="text/javascript">
 			function refreshForm() {
-				$.get('rrdcleaner.php?header=false&filter='+$('#filter').val()+'&age='+$('#age').val()+'&rows='+$('#rows').val(), function(data) {
-					$('#main').html(data);
-					applySkin();
-				});
+				strURL = 'rrdcleaner.php?header=false'+
+					'&filter='+$('#filter').val()+
+					'&age='+$('#age').val()+
+					'&rows='+$('#rows').val();
+				loadPageNoHeader(strURL);
 			}
 
 			$(function() {
@@ -545,10 +546,8 @@ function filter() {
 				});
 
 				$('#clear').click(function() {
-					$.get('rrdcleaner.php?header=false&clear=1', function(data) {
-						$('#main').html(data);
-						applySkin();
-					});
+					strURL = 'rrdcleaner.php?header=false&clear=1';
+					loadPageNoHeader(strURL);
 				});
 
 				$('#rescan').click(function() {

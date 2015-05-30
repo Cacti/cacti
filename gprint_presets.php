@@ -135,12 +135,12 @@ function form_actions() {
 
 	if (isset($gprint_array) && sizeof($gprint_array)) {
 		if ($_POST['drp_action'] == '1') { /* delete */
-			print "	<tr>
-					<td class='textArea' class='odd'>
-						<p>When you click \"Continue\", the folling GPRINT Preset(s) will be deleted.</p>
-						<ul>$gprint_list</ul>
-					</td>
-				</tr>\n";
+			print "<tr>
+				<td class='textArea' class='odd'>
+					<p>Click 'Continue' to delete the folling GPRINT Preset(s).</p>
+					<p><ul>$gprint_list</ul></p>
+				</td>
+			</tr>\n";
 
 			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Delete GPRINT Preset(s)'>";
 		}
@@ -149,14 +149,14 @@ function form_actions() {
 		$save_html = "<input type='button' value='Return' onClick='window.history.back()'>";
 	}
 
-	print "	<tr>
-			<td align='right' class='saveRow'>
-				<input type='hidden' name='action' value='actions'>
-				<input type='hidden' name='selected_items' value='" . (isset($gprint_array) ? serialize($gprint_array) : '') . "'>
-				<input type='hidden' name='drp_action' value='" . $_POST['drp_action'] . "'>
-				$save_html
-			</td>
-		</tr>\n";
+	print "<tr>
+		<td class='saveRow'>
+			<input type='hidden' name='action' value='actions'>
+			<input type='hidden' name='selected_items' value='" . (isset($gprint_array) ? serialize($gprint_array) : '') . "'>
+			<input type='hidden' name='drp_action' value='" . $_POST['drp_action'] . "'>
+			$save_html
+		</td>
+	</tr>\n";
 
 	html_end_box();
 
@@ -301,18 +301,12 @@ function gprint_presets() {
 			<script type='text/javascript'>
 			function applyFilter() {
 				strURL = 'gprint_presets.php?filter='+$('#filter').val()+'&rows='+$('#rows').val()+'&page='+$('#page').val()+'&has_graphs='+$('#has_graphs').is(':checked')+'&header=false';
-				$.get(strURL, function(data) {
-					$('#main').html(data);
-					applySkin();
-				});
+				loadPageNoHeader(strURL);
 			}
 
 			function clearFilter() {
 				strURL = 'gprint_presets.php?clear=1&header=false';
-				$.get(strURL, function(data) {
-					$('#main').html(data);
-					applySkin();
-				});
+				loadPageNoHeader(strURL);
 			}
 
 			$(function() {

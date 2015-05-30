@@ -166,12 +166,9 @@ default:
 	$(function() {
 		$('.subTab').find('a').click(function(event) {
 			event.preventDefault();
-			href = $(this).attr('href');
-			href = href+ (href.indexOf('?') > 0 ? '&':'?') + 'header=false';
-			$.get(href, function(data) {
-				$('#main').html(data);
-				applySkin();
-			});
+			strURL = $(this).attr('href');
+			strURL += (strURL.indexOf('?') > 0 ? '&':'?') + 'header=false';
+			loadPageNoHeader(strURL);
 		});
 		
 		$('input[value="Save"]').click(function(event) {

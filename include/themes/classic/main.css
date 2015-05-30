@@ -147,6 +147,7 @@ tr.selected {
 
 .saveRow {
 	background-color:#EAEAEA;
+	text-align:right;
 	padding:4px;
 }
 

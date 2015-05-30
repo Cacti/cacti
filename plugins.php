@@ -333,18 +333,12 @@ function update_show_current () {
 	<script type="text/javascript">
 	function applyFilter() {
 		strURL = 'plugins.php?filter='+$('#filter').val()+'&rows='+$('#rows').val()+'&page='+$('#page').val()+'&state='+$('#state').val()+'&header=false';
-		$.get(strURL, function(data) {
-			$('#main').html(data);
-			applySkin();
-		});
+		loadPageNoHeader(strURL);
 	}
 
 	function clearFilter() {
 		strURL = 'plugins.php?clear=1&header=false';
-		$.get(strURL, function(data) {
-			$('#main').html(data);
-			applySkin();
-		});
+		loadPageNoHeader(strURL);
 	}
 
 	$(function() {

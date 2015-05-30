@@ -665,11 +665,9 @@ function reports_form_actions() {
 
 	?>
 	<script type='text/javascript'>
-	<!--
 	function goTo(location) {
 		document.location = location;
 	}
-	-->
 	</script><?php
 
 	print "<form name='report' action='" . get_reports_page() . "' method='post'>";
@@ -680,71 +678,69 @@ function reports_form_actions() {
 		print "<tr><td class='even'><span class='textError'>You must select at least one Report.</span></td></tr>\n";
 		$save_html = '';
 	}else{
-		$save_html = "<input type='submit' value='Yes' name='save'>";
+		$save_html = "<input type='submit' value='Continue' name='save'>";
 
 		if ($_POST['drp_action'] == REPORTS_DELETE) { /* delete */
-			print "	<tr>
+			print "<tr>
 				<td class='textArea'>
-					<p>Are you sure you want to delete the following Reports?</p>
-					<ul>$reports_list</ul>
+					<p>Click 'Continue' to delete the following Report(s).</p>
+					<p><ul>$reports_list</ul></p>
 				</td>
-			</tr>\n
-			";
+			</tr>\n";
 		}elseif (is_reports_admin() && $_POST['drp_action'] == REPORTS_OWN) { /* take ownership */
-			print "	<tr>
+			print "<tr>
 				<td class='textArea'>
-					<p>Are you sure you wish to take ownership of the following reports?</p>
-					<ul>$reports_list</ul>
+					<p>Click 'Continue' to take ownership of the following Report(s).</p>
+					<p><ul>$reports_list</ul></p>
 				</td>
-			</tr>\n
-			";
+			</tr>\n";
 		}elseif ($_POST['drp_action'] == REPORTS_DUPLICATE) { /* duplicate */
-			print "	<tr>
+			print "<tr>
 				<td class='textArea'>
-					<p>When you click save, the following Reports will be duplicated. You can
-					optionally change the title format for the new Reports.</p>
-					<ul>$reports_list</ul>
-					<p><strong>Name Format:</strong><br>"; form_text_box('name_format', '<name> (1)', '', '255', '30', 'text'); print "</p>
+					<p>Click 'Continue' to duplicate the following Report(s). 
+					You may optionally change the title for the new Reports.</p>
+					<p><ul>$reports_list</ul></p>
+					<p><strong>Name Format:</strong><br>\n"; 
+
+			form_text_box('name_format', '<name> (1)', '', '255', '30', 'text'); 
+
+			print "</p>
 				</td>
-			</tr>\n
-			";
+			</tr>\n";
 		}elseif ($_POST['drp_action'] == REPORTS_ENABLE) { /* enable */
-			print "	<tr>
+			print "<tr>
 				<td class='textArea'>
-					<p>Are you sure you wish to enable the following reports?</p>
-					<ul>$reports_list</ul>
-					<p><strong>Make sure, that those Reports have successfully been tested!</strong></p>
+					<p>Click 'Continue' to enable the following Report(s).</p>
+					<p><ul>$reports_list</ul></p>
+					<p>Please be certain that those Report(s) have successfully been tested first!</p>
 				</td>
-			</tr>\n
-			";
+			</tr>\n";
 		}elseif ($_POST['drp_action'] == REPORTS_DISABLE) { /* disable */
-			print "	<tr>
+			print "<tr>
 				<td class='textArea'>
-					<p>Are you sure you wish to disable the following reports?</p>
-					<ul>$reports_list</ul>
+					<p>Click 'Continue' to disable the following Reports.</p>
+					<p><ul>$reports_list</ul></p>
 				</td>
-			</tr>\n
-			";
+			</tr>\n";
 		}elseif ($_POST['drp_action'] == REPORTS_SEND_NOW) { /* send now */
-			print "	<tr>
+			print "<tr>
 				<td class='textArea'>
-					<p>Are you sure you want to send the following reports now?</p>
-					<ul>$reports_list</ul>
+					<p>Click 'Continue' to send the following Report(s) now.</p>
+					<p><ul>$reports_list</ul></p>
 				</td>
-			</tr>\n
-			";
+			</tr>\n";
 		}
 	}
 
-	print "	<tr>
-		<td align='right' class='saveRow'>
+	print "<tr>
+		<td class='saveRow'>
 			<input type='hidden' name='action' value='actions'>
 			<input type='hidden' name='selected_items' value='" . (isset($reports_array) ? serialize($reports_array) : '') . "'>
 			<input type='hidden' name='drp_action' value='" . $_POST['drp_action'] . "'>
-			<input type='button' onClick='goTo(\"" . get_reports_page() . "\")' value='" . ($save_html == '' ? 'Return':'No') . "' name='cancel'>
+			<input type='button' onClick='windows.history.back()' value='" . ($save_html == '' ? 'Return':'Cancel') . "' name='cancel'>
 			$save_html
 		</td>
-	</tr>";
+	</tr>\n";
 
 	html_end_box();
 
@@ -1089,22 +1085,25 @@ function reports_edit() {
 	if (!isset($_REQUEST['tab'])) $_REQUEST['tab'] = 'details';
 	$current_tab = $_REQUEST['tab'];
 
-	print "<table><tr><td><div class='tabs'><nav><ul>\n";
-	if (sizeof($tabs)) {
+	if (sizeof($tabs) && isset($_REQUEST['id'])) {
+		/* draw the tabs */
+		print "<div class='tabs'><nav><ul>\n";
+
 		foreach (array_keys($tabs) as $tab_short_name) {
-			if (($tab_short_name != 'details' && !empty($_REQUEST['id'])) || $tab_short_name == 'details') {
-				print "<li class='subTab'><a " . (($tab_short_name == $current_tab) ? "class='selected'" : "") .  " href='" . $config['url_path'] . get_reports_page() . "?" .
-					"action=edit&tab=" . $tab_short_name .
-					(isset($report["id"]) ? "&id=" . $_REQUEST["id"]:"") .
-					"'>$tabs[$tab_short_name]</a></li>\n";
-			}
+			print "<li class='subTab'><a class='tab" . (($tab_short_name == $current_tab) ? " selected'" : "'") . 
+				" href='" . htmlspecialchars($config['url_path'] .
+				get_reports_page() . '?action=edit&id=' . get_request_var_request('id') .
+				'&tab=' . $tab_short_name) .
+				"'>$tabs[$tab_short_name]</a></li>\n";
 		}
+
+
+		if (!empty($_REQUEST['id'])) {
+			print "<li style='float:right;position:relative;'><a class='tab' href='" . htmlspecialchars(get_reports_page() . '?action=send&id=' . $_REQUEST['id'] . '&tab=' . $_REQUEST['tab']) . "'>Send Report</a></li>\n";
+		}
+
+		print "</ul></nav></div>\n";
 	}
-	print "</ul></nav></div></td>\n";
-	if (!empty($_REQUEST['id'])) {
-		print "<td align='right'><a class='textHeader' href='" . htmlspecialchars(get_reports_page() . '?action=send&id=' . $_REQUEST['id'] . '&tab=' . $_REQUEST['tab']) . "'>Send Report</a></td>\n";
-	}
-	print "</tr></table>\n";
 
 	switch($_REQUEST['tab']) {
 	case 'details':
@@ -1189,9 +1188,9 @@ function reports_edit() {
 		break;
 	case 'preview':
 		html_start_box("<strong>Report Preview</strong> $header_label", '100%', '', '3', 'center', '');
-		print "\t\t\t\t\t<tr><td>\n";
+		print "\t\t\t\t\t<tr><td><iframe style='border-width:0px;width:100%;height:100%;'>\n";
 		print reports_generate_html($report['id'], REPORTS_OUTPUT_STDOUT);
-		print "\t\t\t\t\t</td></tr>\n";
+		print "\t\t\t\t\t</iframe></td></tr>\n";
 		html_end_box(false);
 
 		break;
@@ -1525,22 +1524,16 @@ function reports() {
 	print "</form>\n";
 	?>
 	<script type='text/javascript'>
-	<!--
 	function applyFilter() {
-		strURL = '<?php print get_reports_page();?>?header=false&status=' + $('#status').val();
-		strURL = strURL + '&rows=' + $('#rows').val();
-		strURL = strURL + '&filter=' + $('#filter').val();
-		$.get(strURL, function(data) {
-			$('#main').html(data);
-			applySkin();
-		});
+		strURL  = '<?php print get_reports_page();?>?header=false&status=' + $('#status').val();
+		strURL += '&rows=' + $('#rows').val();
+		strURL += '&filter=' + $('#filter').val();
+		loadPageNoHeader(strURL);
 	}
 
 	function clearFilter() {
-		$.get('<?php print get_reports_page();?>?header=false&clear=1', function(data) {
-			$('#main').html(data);
-			applySkin();
-		});
+		strURL = '<?php print get_reports_page();?>?header=false&clear=1';
+		loadPageNoHeader(strURL);
 	}
 
 	$(function(data) {
@@ -1557,8 +1550,6 @@ function reports() {
 			applyFilter();
 		});
     });
-
-	-->
 	</script>
 	<?php
 }

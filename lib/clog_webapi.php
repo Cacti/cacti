@@ -111,11 +111,10 @@ function clog_view_logfile() {
 	if ((isset($_REQUEST['purge'])) && (clog_admin())) {
 		html_start_box('<strong>Purge</strong>', '50%', '', '3', 'center', '');
 
-		print "	
-			<form action='clog.php' autocomplete='off' method='post'>
+		print "<form action='clog.php' autocomplete='off' method='post'>
 			<tr>
 				<td class='textArea'>
-					<p>Click \"Continue\" to purge the cacti log file.<br><br><br>Note: If logging is set to Cacti and Syslog, the log information will remain in Syslog.</p>
+					<p>Click 'Continue' to purge the Cacti log file.<br><br><br>Note: If logging is set to Cacti and Syslog, the log information will remain in Syslog.</p>
 				</td>
 			</tr>
 			<tr>
@@ -124,19 +123,13 @@ function clog_view_logfile() {
 					<input id='pc' type='button' name='purge_continue' value='Continue' title='Purge cacti.log'>
 					<script type='text/javascript'>
 					$('#pc').click(function() {
-						url='?purge_continue=1&header=false';
-						$.get(location.pathname+url, function(data) {
-							$('#main').html(data);
-							applySkin();
-						});
+						strURL = location.pathname+'?purge_continue=1&header=false';
+						loadPageNoHeader(strURL);
 					});
 
 					$('#cancel').click(function() {
-						url='?header=false';
-						$.get(location.pathname+url, function(data) {
-							$('#main').html(data);
-							applySkin();
-						});
+						strURL = location.pathname+'?header=false';
+						loadPageNoHeader(strURL);
 					});
 
 					$(function() {
@@ -144,9 +137,10 @@ function clog_view_logfile() {
 					});
 					</script>
 				</td>
-			</tr>
-			";
+			</tr>\n";
+
 		html_end_box();
+
 		return;	
 	}
 
@@ -403,35 +397,26 @@ function filter() {
 			});
 
 			$('#purge').click(function() {
-				var url='?purge=1&header=false';
-				$.get(basename(location.pathname)+url, function(data) {
-					$('#main').html(data);
-					applySkin();
-				});
+				strURL = basename(location.pathname) + '?purge=1&header=false';
+				loadPageNoHeader(strURL);
 			});
 
 			function clearFilter() {
-				var url='?clear=1&header=false';
-				$.get(basename(location.pathname)+url, function(data) {
-					$('#main').html(data);
-					applySkin();
-				});
+				strURL = basename(location.pathname) + '?clear=1&header=false';
+				loadPageNoHeader(strURL);
 			}
 
 			function refreshFilter() {
 				refreshMSeconds=$('#refresh').val()*1000;
 
-				var url='?filter='+ $('#filter').val()+
+				strURL = basename(location.pathname) + '?filter='+ $('#filter').val()+
 					'&reverse='+$('#reverse').val()+
 					'&refresh='+$('#refresh').val()+
 					'&message_type='+$('#message_type').val()+
 					'&tail_lines='+$('#tail_lines').val()+
 					'&header=false';
 
-				$.get(basename(location.pathname)+url, function(data) {
-					$('#main').html(data);
-					applySkin();
-				});
+				loadPageNoHeader(strURL);
 			}
 			</script>
 		</form>

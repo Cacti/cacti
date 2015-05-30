@@ -233,43 +233,39 @@ function form_actions() {
 
 	if (isset($d_array) && sizeof($d_array)) {
 		if ($_POST['drp_action'] == '1') { /* delete */
-			print "
-				<tr>
-					<td class='textArea'>
-						<p>When you click \"Continue\", the following User Domain(s) will be deleted.</p>
-						<p><ul>$d_list</ul></p>
-					</td>
-				</tr>\n";
+			print "<tr>
+				<td class='textArea'>
+					<p>Click 'Continue' to delete the following User Domain(s).</p>
+					<p><ul>$d_list</ul></p>
+				</td>
+			</tr>\n";
 
 			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Delete User Domain(s)'>";
 		}else if ($_POST['drp_action'] == '2') { /* disable */
-			print "
-				<tr>
-					<td class='textArea'>
-						<p>When you click \"Continue\", the following User Domain(s) will be disabled.</p>
-						<p><ul>$d_list</ul></p>
-					</td>
-				</tr>\n";
+			print "<tr>
+				<td class='textArea'>
+					<p>Click 'Continue' to disable the following User Domain(s).</p>
+					<p><ul>$d_list</ul></p>
+				</td>
+			</tr>\n";
 
 			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Disable User Domain(s)'>";
 		}else if ($_POST['drp_action'] == '3') { /* enable */
-			print "
-				<tr>
-					<td class='textArea'>
-						<p>When you click \"Continue\", the following User Domain(s) will be enabled.</p>
-						<p><ul>$d_list</ul></p>
-					</td>
-				</tr>\n";
+			print "<tr>
+				<td class='textArea'>
+					<p>Click  'Continue' to enable the following User Domain(s).</p>
+					<p><ul>$d_list</ul></p>
+				</td>
+			</tr>\n";
 
 			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Enabled User Domain(s)'>";
 		}else if ($_POST['drp_action'] == '4') { /* default */
-			print "
-				<tr>
-					<td class='textArea'>
-						<p>When you click \"Continue\", the following User Domain will become the default.</p>
-						<p><ul>$d_list</ul></p>
-					</td>
-				</tr>\n";
+			print "<tr>
+				<td class='textArea'>
+					<p>Click 'Continue' to make the following the following User Domain the default one.</p>
+					<p><ul>$d_list</ul></p>
+				</td>
+			</tr>\n";
 
 			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Make Selected Domain Default'>";
 		}
@@ -278,14 +274,14 @@ function form_actions() {
 		$save_html = "<input type='button' value='Return' onClick='window.history.back()'>";
 	}
 
-	print "	<tr>
-			<td align='right' class='saveRow'>
-				<input type='hidden' name='action' value='actions'>
-				<input type='hidden' name='selected_items' value='" . (isset($d_array) ? serialize($d_array) : '') . "'>
-				<input type='hidden' name='drp_action' value='" . $_POST['drp_action'] . "'>
-				$save_html
-			</td>
-		</tr>";
+	print "<tr>
+		<td class='saveRow'>
+			<input type='hidden' name='action' value='actions'>
+			<input type='hidden' name='selected_items' value='" . (isset($d_array) ? serialize($d_array) : '') . "'>
+			<input type='hidden' name='drp_action' value='" . $_POST['drp_action'] . "'>
+			$save_html
+		</td>
+	</tr>\n";
 
 	html_end_box();
 
@@ -670,22 +666,16 @@ function domains() {
 		</form>
 		<script type='text/javascript'>
 		function applyFilter() {
-			strURL = 'user_domains.php?rows=' + $('#rows').val();
-			strURL = strURL + '&filter=' + $('#filter').val();
-			strURL = strURL + '&page=' + $('#page').val();
-			strURL = strURL + '&header=false';
-			$.get(strURL, function(data) {
-				$('#main').html(data);
-				applySkin();
-			});
+			strURL  = 'user_domains.php?rows=' + $('#rows').val();
+			strURL += '&filter=' + $('#filter').val();
+			strURL += '&page=' + $('#page').val();
+			strURL += '&header=false';
+			loadPageNoHeader(strURL);
 		}
 
 		function clearFilter() {
 			strURL = 'user_domains.php?clear=1&header=false';
-			$.get(strURL, function(data) {
-				$('#main').html(data);
-				applySkin();
-			});
+			loadPageNoHeader(strURL);
 		}
 
 		$(function(data) {

@@ -472,102 +472,101 @@ function form_actions() {
 					ORDER BY graph_templates_graph.title_cache');
 			}
 
-			print "	<tr>
-					<td class='textArea'>
-						<p>When you click \"Continue\", the following Data Source(s) will be deleted.</p>
-						<p><ul>$ds_list</ul></p>";
+			print "<tr>
+				<td class='textArea'>
+					<p>Click 'Continue' to delete the following Data Source(s).</p>
+					<p><ul>$ds_list</ul></p>";
 
-						if (sizeof($graphs) > 0) {
-							print "<tr><td class='textArea'><p class='textArea'>The following graphs are using these data sources:</p>\n";
+			if (sizeof($graphs)) {
+				print "<tr><td class='textArea'><p class='textArea'>The following graphs are using these data sources:</p>\n";
 
-							print '<ul>';
-							foreach ($graphs as $graph) {
-								print '<li><strong>' . $graph['title_cache'] . "</strong></li>\n";
-							}
-							print '</ul>';
+				print '<p><ul>';
+				foreach ($graphs as $graph) {
+					print '<li><strong>' . $graph['title_cache'] . "</strong></li>\n";
+				}
+				print '</ul></p>';
+				print '<br>';
 
-							print '<br>';
-							form_radio_button('delete_type', '3', '1', 'Leave the Graph(s) untouched.', '1'); print '<br>';
-							form_radio_button('delete_type', '3', '2', 'Delete all <strong>Graph Item(s)</strong> that reference these Data Source(s).', '1'); print '<br>';
-							form_radio_button('delete_type', '3', '3', 'Delete all <strong>Graph(s)</strong> that reference these Data Source(s).', '1'); print '<br>';
-							print '</td></tr>';
-						}
-					print "
-					</td>
-				</tr>\n
-				";
+				form_radio_button('delete_type', '3', '1', 'Leave the Graph(s) untouched.', '1'); print '<br>';
+				form_radio_button('delete_type', '3', '2', 'Delete all <strong>Graph Item(s)</strong> that reference these Data Source(s).', '1'); print '<br>';
+				form_radio_button('delete_type', '3', '3', 'Delete all <strong>Graph(s)</strong> that reference these Data Source(s).', '1'); print '<br>';
+				print '</td></tr>';
+			}
+
+			print "</td>
+				</tr>\n";
+
 			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Delete Data Source(s)'>";
 		}elseif ($_POST['drp_action'] == '2') { /* change graph template */
-			print "	<tr>
-					<td class='textArea'>
-						<p>Choose a Data Template and click \"Continue\" to change the Data Template for
-						the following Data Source(s). Be aware that all warnings will be suppressed during the
-						conversion, so graph data loss is possible.</p>
-						<p><ul>$ds_list</ul></p>
-						<p><strong>New Data Template:</strong><br>"; form_dropdown('data_template_id',db_fetch_assoc('SELECT data_template.id,data_template.name FROM data_template ORDER BY data_template.name'),'name','id','','','0'); print "</p>
-					</td>
-				</tr>\n
-				";
+			print "<tr>
+				<td class='textArea'>
+					<p>Choose a Data Template and click \"Continue\" to change the Data Template for
+					the following Data Source(s). Be aware that all warnings will be suppressed during the
+					conversion, so graph data loss is possible.</p>
+					<p><ul>$ds_list</ul></p>
+					<p><strong>New Data Template:</strong><br>"; form_dropdown('data_template_id',db_fetch_assoc('SELECT data_template.id,data_template.name FROM data_template ORDER BY data_template.name'),'name','id','','','0'); print "</p>
+				</td>
+			</tr>\n";
+
 			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Change Graph Template for Data Source(s)'>";
 		}elseif ($_POST['drp_action'] == '3') { /* change host */
-			print "	<tr>
-					<td class='textArea'>
-						<p>Choose a new Device for these Data Source(s) and click \"Continue\"</p>
-						<p><ul>$ds_list</ul></p>
-						<p><strong>New Device:</strong><br>"; form_dropdown('host_id',db_fetch_assoc("SELECT id, CONCAT_WS('',description,' (',hostname,')') AS name FROM host ORDER BY description, hostname"),'name','id','','','0'); print "</p>
-					</td>
-				</tr>\n
-				";
+			print "<tr>
+				<td class='textArea'>
+					<p>Choose a new Device for these Data Source(s) and click 'Continue'.</p>
+					<p><ul>$ds_list</ul></p>
+					<p><strong>New Device:</strong><br>"; form_dropdown('host_id',db_fetch_assoc("SELECT id, CONCAT_WS('',description,' (',hostname,')') AS name FROM host ORDER BY description, hostname"),'name','id','','','0'); print "</p>
+				</td>
+			</tr>\n";
+
 			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Change Device'>";
 		}elseif ($_POST['drp_action'] == '4') { /* duplicate */
-			print "	<tr>
-					<td class='textArea'>
-						<p>When you click \"Continue\", the following Data Source(s) will be duplicated. You can
-						optionally change the title format for the new Data Source(s).</p>
-						<p><ul>$ds_list</ul></p>
-						<p><strong>Title Format:</strong><br>"; form_text_box('title_format', '<ds_title> (1)', '', '255', '30', 'text'); print "</p>
-					</td>
-				</tr>\n
-				";
+			print "<tr>
+				<td class='textArea'>
+					<p>Click 'Continue' to duplicate the following Data Source(s). You can
+					optionally change the title format for the new Data Source(s).</p>
+					<p><ul>$ds_list</ul></p>
+					<p><strong>Title Format:</strong><br>"; form_text_box('title_format', '<ds_title> (1)', '', '255', '30', 'text'); print "</p>
+				</td>
+			</tr>\n";
+
 			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Duplicate Data Source(s)'>";
 		}elseif ($_POST['drp_action'] == '5') { /* data source -> data template */
-			print "	<tr>
-					<td class='textArea'>
-						<p>When you click \"Continue\", the following Data Source(s) will be converted into Data Template(s).
-						You can optionally change the title format for the new Data Template(s).</p>
-						<p><ul>$ds_list</ul></p>
-						<p><strong>Title Format:</strong><br>"; form_text_box('title_format', '<ds_title> Template', '', '255', '30', 'text'); print "</p>
-					</td>
-				</tr>\n
-				";
+			print "<tr>
+				<td class='textArea'>
+					<p>Click 'Continue' to convert the following Data Source(s) into Data Template(s).
+					You can optionally change the title format for the new Data Template(s).</p>
+					<p><ul>$ds_list</ul></p>
+					<p><strong>Title Format:</strong><br>"; form_text_box('title_format', '<ds_title> Template', '', '255', '30', 'text'); print "</p>
+				</td>
+			</tr>\n";
+
 			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Convert Data Source(s) to Data Template(s)'>";
 		}elseif ($_POST['drp_action'] == '6') { /* data source enable */
-			print "	<tr>
-					<td class='textArea'>
-						<p>When you click \"Continue\", the following Data Source(s) will be enabled.</p>
-						<p><ul>$ds_list</ul></p>
-					</td>
-				</tr>\n
-				";
+			print "<tr>
+				<td class='textArea'>
+					<p>Click 'Continue' to enable the following Data Source(s).</p>
+					<p><ul>$ds_list</ul></p>
+				</td>
+			</tr>\n";
+
 			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Enable Data Source(s)'>";
 		}elseif ($_POST['drp_action'] == '7') { /* data source disable */
-			print "	<tr>
-					<td class='textArea'>
-						<p>When you click \"Continue\", the following Data Source(s) will be disabled.</p>
-						<p><ul>$ds_list</ul></p>
-					</td>
-				</tr>\n
-				";
+			print "<tr>
+				<td class='textArea'>
+					<p>Click 'Continue' to disable the following Data Source(s).</p>
+					<p><ul>$ds_list</ul></p>
+				</td>
+			</tr>\n";
+
 			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Disable Data Source(s)'>";
 		}elseif ($_POST['drp_action'] == '8') { /* reapply suggested data source naming */
-			print "	<tr>
-					<td class='textArea'>
-						<p>When you click \"Continue\", the following Data Source(s) will will have there suggested naming convention
-						recalculated.</p>
-						<p><ul>$ds_list</ul></p>
-					</td>
-				</tr>\n
-				";
+			print "<tr>
+				<td class='textArea'>
+					<p>Click 'Continue' to re-apply the suggested names to the following Data Source(s).</p>
+					<p><ul>$ds_list</ul></p>
+				</td>
+			</tr>\n";
+
 			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Reapply Suggested Naming to Data Source(s)'>";
 		}else{
 			$save['drp_action'] = $_POST['drp_action'];
@@ -581,15 +580,14 @@ function form_actions() {
 		$save_html = "<input type='button' value='Return' onClick='window.history.back()'>";
 	}
 
-	print "	<tr>
-			<td align='right' class='saveRow'>
-				<input type='hidden' name='action' value='actions'>
-				<input type='hidden' name='selected_items' value='" . (isset($ds_array) ? serialize($ds_array) : '') . "'>
-				<input type='hidden' name='drp_action' value='" . $_POST['drp_action'] . "'>
-				$save_html
-			</td>
-		</tr>
-		";
+	print "<tr>
+		<td class='saveRow'>
+			<input type='hidden' name='action' value='actions'>
+			<input type='hidden' name='selected_items' value='" . (isset($ds_array) ? serialize($ds_array) : '') . "'>
+			<input type='hidden' name='drp_action' value='" . $_POST['drp_action'] . "'>
+			$save_html
+		</td>
+	</tr>\n";
 
 	html_end_box();
 
@@ -1095,28 +1093,20 @@ function ds() {
 
 	?>
 	<script type='text/javascript'>
-	<!--
-
 	function applyFilter() {
-		strURL = 'data_sources.php?host_id=' + $('#host_id').val();
-		strURL = strURL + '&filter=' + $('#filter').val();
-		strURL = strURL + '&rows=' + $('#rows').val();
-		strURL = strURL + '&template_id=' + $('#template_id').val();
-		strURL = strURL + '&method_id=' + $('#method_id').val();
-		strURL = strURL + '&page=' + $('#page').val();
-		strURL = strURL + '&header=false';
-		$.get(strURL, function(data) {
-			$('#main').html(data);
-			applySkin();
-		});
+		strURL  = 'data_sources.php?host_id=' + $('#host_id').val();
+		strURL += '&filter=' + $('#filter').val();
+		strURL += '&rows=' + $('#rows').val();
+		strURL += '&template_id=' + $('#template_id').val();
+		strURL += '&method_id=' + $('#method_id').val();
+		strURL += '&page=' + $('#page').val();
+		strURL += '&header=false';
+		loadPageNoHeader(strURL);
 	}
 
 	function clearFilter() {
 		strURL = 'data_sources.php?clear=1&header=false';
-		$.get(strURL, function(data) {
-			$('#main').html(data);
-			applySkin();
-		});
+		loadPageNoHeader(strURL);
 	}
 
 	$(function() {

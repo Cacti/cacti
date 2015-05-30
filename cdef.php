@@ -204,23 +204,23 @@ function form_actions() {
 
 	if (isset($cdef_array) && sizeof($cdef_array)) {
 		if ($_POST['drp_action'] == '1') { /* delete */
-			print "	<tr>
-					<td class='textArea' class='odd'>
-						<p>When you click \"Continue\", the folling CDEF(s) will be deleted.</p>
-						<p><ul>$cdef_list</ul></p>
-					</td>
-				</tr>\n";
+			print "<tr>
+				<td class='textArea' class='odd'>
+					<p>Click 'Continue' to delete the folling CDEF(s).</p>
+					<p><ul>$cdef_list</ul></p>
+				</td>
+			</tr>\n";
 
 			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Delete CDEF(s)'>";
 		}elseif ($_POST['drp_action'] == '2') { /* duplicate */
-			print "	<tr>
-					<td class='textArea' class='odd'>
-						<p>When you click \"Continue\", the following CDEFs will be duplicated. You can
-						optionally change the title format for the new CDEFs.</p>
-						<p><ul>$cdef_list</ul></p>
-						<p><strong>Title Format:</strong><br>"; form_text_box('title_format', '<cdef_title> (1)', '', '255', '30', 'text'); print "</p>
-					</td>
-				</tr>\n";
+			print "<tr>
+				<td class='textArea' class='odd'>
+					<p>Click 'Continue' to duplicate the following CDEF(s). You can
+					optionally change the title format for the new CDEF(s).</p>
+					<p><ul>$cdef_list</ul></p>
+					<p><strong>Title Format:</strong><br>"; form_text_box('title_format', '<cdef_title> (1)', '', '255', '30', 'text'); print "</p>
+				</td>
+			</tr>\n";
 
 			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Duplicate CDEF(s)'>";
 		}
@@ -229,14 +229,14 @@ function form_actions() {
 		$save_html = "<input type='button' value='Return' onClick='window.history.back()'>";
 	}
 
-	print "	<tr>
-			<td align='right' class='saveRow'>
-				<input type='hidden' name='action' value='actions'>
-				<input type='hidden' name='selected_items' value='" . (isset($cdef_array) ? serialize($cdef_array) : '') . "'>
-				<input type='hidden' name='drp_action' value='" . $_POST['drp_action'] . "'>
-				$save_html
-			</td>
-		</tr>\n";
+	print "<tr>
+		<td class='saveRow'>
+			<input type='hidden' name='action' value='actions'>
+			<input type='hidden' name='selected_items' value='" . (isset($cdef_array) ? serialize($cdef_array) : '') . "'>
+			<input type='hidden' name='drp_action' value='" . $_POST['drp_action'] . "'>
+			$save_html
+		</td>
+	</tr>\n";
 
 	html_end_box();
 
@@ -539,18 +539,12 @@ function cdef() {
 			<script type='text/javascript'>
 			function applyFilter() {
 				strURL = 'cdef.php?filter='+$('#filter').val()+'&rows='+$('#rows').val()+'&page='+$('#page').val()+'&has_graphs='+$('#has_graphs').is(':checked')+'&header=false';
-				$.get(strURL, function(data) {
-					$('#main').html(data);
-					applySkin();
-				});
+				loadPageNoHeader(strURL);
 			}
 
 			function clearFilter() {
 				strURL = 'cdef.php?clear=1&header=false';
-				$.get(strURL, function(data) {
-					$('#main').html(data);
-					applySkin();
-				});
+				loadPageNoHeader(strURL);
 			}
 
 			$(function() {

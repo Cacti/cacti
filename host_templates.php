@@ -171,25 +171,28 @@ function form_actions() {
 
 	if (isset($host_array) && sizeof($host_array)) {
 		if ($_POST['drp_action'] == '1') { /* delete */
-			print "	<tr>
-					<td class='textArea'>
-						<p>Are you sure you want to delete the following Device Template(s)? All Devices currently associated
-						with these Device Template(s) will lose that assocation.</p>
-						<p><ul>$host_list</ul></p>
-					</td>
-				</tr>\n
-				";
+			print "<tr>
+				<td class='textArea'>
+					<p>Click 'Continue' to delete the following Device Template(s).</p>
+					<p><ul>$host_list</ul></p>
+				</td>
+			</tr>\n";
+
 			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Delete Device Template(s)'>";
 		}elseif ($_POST['drp_action'] == '2') { /* duplicate */
-			print "	<tr>
-					<td class='textArea'>
-						<p>When you click \"Continue\", the following Device Template(s) will be duplicated. You can
-						optionally change the title format for the new Device Template(s).</p>
-						<p><ul>$host_list</ul></p>
-						<p><strong>Title Format:</strong><br>"; form_text_box('title_format', '<template_title> (1)', '', '255', '30', 'text'); print "</p>
-					</td>
-				</tr>\n
-				";
+			print "<tr>
+				<td class='textArea'>
+					<p>Click 'Continue' to duplicate the following Device Template(s).
+					Optionally change the title for the new Device Template(s).</p>
+					<p><ul>$host_list</ul></p>
+					<p><strong>Title Format:</strong><br>\n"; 
+
+			form_text_box('title_format', '<template_title> (1)', '', '255', '30', 'text'); 
+
+			print "</p>
+				</td>
+			</tr>\n";
+
 			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Duplicate Device Template(s)'>";
 		}
 	}else{
@@ -197,15 +200,14 @@ function form_actions() {
 		$save_html = "<input type='button' value='Return' onClick='window.history.back()'>";
 	}
 
-	print "	<tr>
-			<td align='right' class='saveRow'>
-				<input type='hidden' name='action' value='actions'>
-				<input type='hidden' name='selected_items' value='" . (isset($host_array) ? serialize($host_array) : '') . "'>
-				<input type='hidden' name='drp_action' value='" . $_POST['drp_action'] . "'>
-				$save_html
-			</td>
-		</tr>
-		";
+	print "<tr>
+		<td class='saveRow'>
+			<input type='hidden' name='action' value='actions'>
+			<input type='hidden' name='selected_items' value='" . (isset($host_array) ? serialize($host_array) : '') . "'>
+			<input type='hidden' name='drp_action' value='" . $_POST['drp_action'] . "'>
+			$save_html
+		</td>
+	</tr>\n";
 
 	html_end_box();
 
@@ -497,18 +499,12 @@ function template() {
 		<script type='text/javascript'>
 		function applyFilter() {
 			strURL = 'host_templates.php?filter='+$('#filter').val()+'&rows='+$('#rows').val()+'&page='+$('#page').val()+'&has_hosts='+$('#has_hosts').is(':checked')+'&header=false';
-			$.get(strURL, function(data) {
-				$('#main').html(data);
-				applySkin();
-			});
+			loadPageNoHeader(strURL);
 		}
 
 		function clearFilter() {
 			strURL = 'host_templates.php?clear=1&header=false';
-			$.get(strURL, function(data) {
-				$('#main').html(data);
-				applySkin();
-			});
+			loadPageNoHeader(strURL);
 		}
 
 		$(function() {

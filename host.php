@@ -443,127 +443,136 @@ function form_actions() {
 
 	if (isset($host_array) && sizeof($host_array)) {
 		if ($_POST['drp_action'] == '2') { /* Enable Devices */
-			print "	<tr>
-					<td colspan='2' class='textArea'>
-						<p>To enable the following Device(s), click \"Continue\".</p>
-						<p><ul>" . $host_list . "</ul></p>
-					</td>
-					</tr>";
+			print "<tr>
+				<td colspan='2' class='textArea'>
+					<p>Click 'Continue' to enable the following Device(s).</p>
+					<p><ul>$host_list</ul></p>
+				</td>
+			</tr>\n";
 
 			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Enable Device(s)'>";
 		}elseif ($_POST['drp_action'] == '3') { /* Disable Devices */
 			print "	<tr>
-					<td colspan='2' class='textArea'>
-						<p>To disable the following Device(s), click \"Continue\".</p>
-						<p><ul>" . $host_list . '</ul></p>
-					</td>
-					</tr>';
+				<td colspan='2' class='textArea'>
+					<p>Click 'Continue' to disable the following Device(s).</p>
+					<p><ul>$host_list</ul></p>
+				</td>
+				</tr>\n";
+
 			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Disable Device(s)'>";
 		}elseif ($_POST['drp_action'] == '4') { /* change snmp options */
-			print "	<tr>
-					<td colspan='2' class='textArea'>
-						<p>To change SNMP parameters for the following Device(s), check the box next to the fields
-						you want to update, fill in the new value, and click \"Continue\".</p>
-						<p><ul>" . $host_list . '</ul></p>
-					</td>
-					</tr>';
-					$form_array = array();
-					while (list($field_name, $field_array) = each($fields_host_edit)) {
-						if ((preg_match('/^snmp_/', $field_name)) ||
-							($field_name == 'max_oids')) {
-							$form_array += array($field_name => $fields_host_edit[$field_name]);
+			print "<tr>
+				<td colspan='2' class='textArea'>
+					<p>Click 'Continue' to change SNMP parameters for the following Device(s).  
+					Please check the box next to the fields you want to update, and then fill in the new value.</p>
+					<p><ul>$host_list</ul></p>
+				</td>
+			</tr>\n";
 
-							$form_array[$field_name]['value'] = '';
-							$form_array[$field_name]['description'] = '';
-							$form_array[$field_name]['form_id'] = 0;
-							$form_array[$field_name]['sub_checkbox'] = array(
-								'name' => 't_' . $field_name,
-								'friendly_name' => 'Update this Field',
-								'value' => ''
-								);
-						}
-					}
+			$form_array = array();
 
-					draw_edit_form(
-						array(
-							'config' => array('no_form_tag' => true),
-							'fields' => $form_array
-							)
+			while (list($field_name, $field_array) = each($fields_host_edit)) {
+				if ((preg_match('/^snmp_/', $field_name)) ||
+					($field_name == 'max_oids')) {
+					$form_array += array($field_name => $fields_host_edit[$field_name]);
+
+					$form_array[$field_name]['value'] = '';
+					$form_array[$field_name]['description'] = '';
+					$form_array[$field_name]['form_id'] = 0;
+					$form_array[$field_name]['sub_checkbox'] = array(
+						'name' => 't_' . $field_name,
+						'friendly_name' => 'Update this Field',
+						'value' => ''
 						);
+				}
+			}
+
+			draw_edit_form(
+				array(
+					'config' => array('no_form_tag' => true),
+					'fields' => $form_array
+				)
+			);
+
 			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Change Device(s) SNMP Options'>";
 		}elseif ($_POST['drp_action'] == '6') { /* change availability options */
-			print "	<tr>
-					<td colspan='2' class='textArea'>
-						<p>To change Availability parameters for the following Device(s), check the box next to the fields
-						you want to update, fill in the new value, and click \"Continue\".</p>
-						<p><ul>" . $host_list . '</ul></p>
-					</td>
-					</tr>';
-					$form_array = array();
-					while (list($field_name, $field_array) = each($fields_host_edit)) {
-						if (preg_match('/(availability_method|ping_method|ping_port)/', $field_name)) {
-							$form_array += array($field_name => $fields_host_edit[$field_name]);
+			print "<tr>
+				<td colspan='2' class='textArea'>
+					<p>Click 'Continue' to change Availability parameters for the following Device(s). 
+					Please check the box next to the fields you want to update, then fill in the new value.</p>
+					<p><ul>$host_list</ul></p>
+				</td>
+			</tr>\n";
 
-							$form_array[$field_name]['value'] = '';
-							$form_array[$field_name]['description'] = '';
-							$form_array[$field_name]['form_id'] = 0;
-							$form_array[$field_name]['sub_checkbox'] = array(
-								'name' => 't_' . $field_name,
-								'friendly_name' => 'Update this Field',
-								'value' => ''
-								);
-						}
-					}
+			$form_array = array();
 
-					draw_edit_form(
-						array(
-							'config' => array('no_form_tag' => true),
-							'fields' => $form_array
-							)
+			while (list($field_name, $field_array) = each($fields_host_edit)) {
+				if (preg_match('/(availability_method|ping_method|ping_port)/', $field_name)) {
+					$form_array += array($field_name => $fields_host_edit[$field_name]);
+
+					$form_array[$field_name]['value'] = '';
+					$form_array[$field_name]['description'] = '';
+					$form_array[$field_name]['form_id'] = 0;
+					$form_array[$field_name]['sub_checkbox'] = array(
+						'name' => 't_' . $field_name,
+						'friendly_name' => 'Update this Field',
+						'value' => ''
 						);
+				}
+			}
+
+			draw_edit_form(
+				array(
+					'config' => array('no_form_tag' => true),
+					'fields' => $form_array
+				)
+			);
+
 			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Change Device(s) Availability Options'>";
 		}elseif ($_POST['drp_action'] == '5') { /* Clear Statisitics for Selected Devices */
-			print "	<tr>
-					<td colspan='2' class='textArea'>
-						<p>To clear the counters for the following Device(s), press the \"Continue\" button below.</p>
-						<p><ul>" . $host_list . '</ul></p>
-					</td>
-					</tr>';
+			print "<tr>
+				<td colspan='2' class='textArea'>
+					<p>Click 'Continue' to clear the counters for the following Device(s).</p>
+					<p><ul>$host_list</ul></p>
+				</td>
+			</tr>\n";
+
 			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Clear Statistics on Device(s)'>";
 		}elseif ($_POST['drp_action'] == '1') { /* delete */
-			print "	<tr>
-					<td class='textArea'>
-						<p>When you click \"Continue\" the following Device(s) will be deleted.</p>
-						<p><ul>" . $host_list . '</ul></p>';
-						form_radio_button('delete_type', '2', '1', 'Leave all Graph(s) and Data Source(s) untouched.  Data Source(s) will be disabled however.', '1'); print '<br>';
-						form_radio_button('delete_type', '2', '2', 'Delete all associated <strong>Graph(s)</strong> and <strong>Data Source(s)</strong>.', '1'); print '<br>';
-						print "</td></tr>
-					</td>
-				</tr>\n
-				";
+			print "<tr>
+				<td class='textArea'>
+					<p>Click 'Continue' to delete the following Device(s).</p>
+					<p><ul>$host_list</ul></p>\n";
+
+					form_radio_button('delete_type', '2', '1', 'Leave all Graph(s) and Data Source(s) untouched.  Data Source(s) will be disabled however.', '1'); print '<br>';
+					form_radio_button('delete_type', '2', '2', 'Delete all associated <strong>Graph(s)</strong> and <strong>Data Source(s)</strong>.', '1'); print '<br>';
+
+			print "</td></tr>
+				</td>
+			</tr>\n";
+
 			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Delete Device(s)'>";
 		}elseif (preg_match('/^tr_([0-9]+)$/', $_POST['drp_action'], $matches)) { /* place on tree */
-			print "	<tr>
-					<td class='textArea'>
-						<p>When you click \"Continue\", the following Device(s) will be placed under the branch selected
-						below.</p>
-						<p><ul>" . $host_list . '</ul></p>
-						<p><strong>Destination Branch:</strong><br>'; grow_dropdown_tree($matches[1], '0', 'tree_item_id', '0'); print "</p>
-					</td>
-				</tr>\n
-				<input type='hidden' name='tree_id' value='" . $matches[1] . "'>\n
-				";
+			print "<tr>
+				<td class='textArea'>
+					<p>Click 'Continue' to place the following Device(s) under the branch selected below.</p>
+					<p><ul>$host_list</ul></p>
+					<p><strong>Destination Branch:</strong><br>\n";
+					grow_dropdown_tree($matches[1], '0', 'tree_item_id', '0'); 
+
+			print "</p>
+				</td>
+			</tr>
+			<input type='hidden' name='tree_id' value='" . $matches[1] . "'>\n";
+
 			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Place Device(s) on Tree'>";
 		}elseif ($save['drp_action'] == 7) { /* automation */
-			/* find out which (if any) hosts have been checked, so we can tell the user */
-			if (isset($save['host_array'])) {
-				/* list affected hosts */
-				print '<tr>';
-				print "<td class='textArea'>
-					<p>Are you sure you want to apply <strong>Automation Rules</strong> to the following hosts?</p>
-					<ul>" .  $save['host_list'] . '</ul></td>';
-				print '</tr>';
-			}
+			print "<tr>
+				<td class='textArea'>
+					<p>Click 'Continue' to apply Automation Rules to the following Devices(s)</p>
+					<p><ul>$host_list</ul></p>
+				</td>
+			</tr>\n";
 		} else {
 			$save['drp_action'] = $_POST['drp_action'];
 			$save['host_list'] = $host_list;
@@ -576,15 +585,14 @@ function form_actions() {
 		$save_html = "<input type='button' value='Return' onClick='window.history.back()'>";
 	}
 
-	print "	<tr>
-			<td colspan='2' class='saveRow'>
-				<input type='hidden' name='action' value='actions'>
-				<input type='hidden' name='selected_items' value='" . (isset($host_array) ? serialize($host_array) : '') . "'>
-				<input type='hidden' name='drp_action' value='" . $_POST['drp_action'] . "'>
-				$save_html
-			</td>
-		</tr>
-		";
+	print "<tr>
+		<td colspan='2' class='saveRow'>
+			<input type='hidden' name='action' value='actions'>
+			<input type='hidden' name='selected_items' value='" . (isset($host_array) ? serialize($host_array) : '') . "'>
+			<input type='hidden' name='drp_action' value='" . $_POST['drp_action'] . "'>
+			$save_html
+		</td>
+	</tr>\n";
 
 	html_end_box();
 
@@ -986,31 +994,23 @@ function host_edit() {
 	$(function() {
 		$('[id^="reload"]').click(function(data) {
 			$(this).removeClass('fa-circle-o').addClass('fa-circle-o-notch fa-spin');
-			$.get('host.php?action=query_reload&id='+$(this).attr('data-id')+'&host_id='+$('#id').val(), function(data) {
-				$('#main').html(data);
-				applySkin();
-			});
+			strURL = 'host.php?action=query_reload&id='+$(this).attr('data-id')+'&host_id='+$('#id').val();
+			loadPageNoHeader(strURL);
 		});
 
 		$('[id^="verbose"]').click(function(data) {
-			$.get('host.php?action=query_verbose&id='+$(this).attr('data-id')+'&host_id='+$('#id').val(), function(data) {
-				$('#main').html(data);
-				applySkin();
-			});
+			strURL = 'host.php?action=query_verbose&id='+$(this).attr('data-id')+'&host_id='+$('#id').val();
+			loadPageNoHeader(strURL);
 		});
 
 		$('[id^="remove"]').click(function(data) {
-			$.get('host.php?action=query_remove&id='+$(this).attr('data-id')+'&host_id='+$('#id').val(), function(data) {
-				$('#main').html(data);
-				applySkin();
-			});
+			strURL = 'host.php?action=query_remove&id='+$(this).attr('data-id')+'&host_id='+$('#id').val();
+			loadPageNoHeader(strURL);
 		});
 
 		$('[id^="gtremove"]').click(function(data) {
-			$.get('host.php?action=gt_remove&id='+$(this).attr('data-id')+'&host_id='+$('#id').val(), function(data) {
-				$('#main').html(data);
-				applySkin();
-			});
+			strURL = 'host.php?action=gt_remove&id='+$(this).attr('data-id')+'&host_id='+$('#id').val();
+			loadPageNoHeader(strURL);
 		});
 
 		changeHostForm();
@@ -1284,24 +1284,18 @@ function host() {
 	<!--
 
 	function applyFilter() {
-		strURL = 'host.php?host_status=' + $('#host_status').val();
-		strURL = strURL + '&host_template_id=' + $('#host_template_id').val();
-		strURL = strURL + '&rows=' + $('#rows').val();
-		strURL = strURL + '&filter=' + $('#filter').val();
-		strURL = strURL + '&page=' + $('#page').val();
-		strURL = strURL + '&header=false';
-		$.get(strURL, function(data) {
-			$('#main').html(data);
-			applySkin();
-		});
+		strURL  = 'host.php?host_status=' + $('#host_status').val();
+		strURL += '&host_template_id=' + $('#host_template_id').val();
+		strURL += '&rows=' + $('#rows').val();
+		strURL += '&filter=' + $('#filter').val();
+		strURL += '&page=' + $('#page').val();
+		strURL += '&header=false';
+		loadPageNoHeader(strURL);
 	}
 
 	function clearFilter() {
 		strURL = 'host.php?clear=1&header=false';
-		$.get(strURL, function(data) {
-			$('#main').html(data);
-			applySkin();
-		});
+		loadPageNoHeader(strURL);
 	}
 
 	$(function(data) {

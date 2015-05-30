@@ -336,12 +336,13 @@ function form_actions() {
 
 	if (isset($graph_array) && sizeof($graph_array)) {
 		if ($_POST['drp_action'] == '1') { /* delete */
-			print "	<tr>
-					<td class='textArea'>
-						<p>When you click \"Continue\", the following Aggregate Graph(s) will be deleted.</p>
-						<p><ul>$graph_list</ul></p>
-					</td>
-				</tr>\n";
+			print "<tr>
+				<td class='textArea'>
+					<p>Click 'Continue' to delete the following Aggregate Graph(s).</p>
+					<p><ul>$graph_list</ul></p>
+				</td>
+			</tr>\n";
+
 			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Delete Graph(s)'>";
 		}elseif ($_POST['drp_action'] == '2') { /* migrate to aggregate */
 			/* determine the common graph template if any */
@@ -362,88 +363,96 @@ function form_actions() {
 				WHERE task_item_id IN ($task_items) AND  graph_template_id>0");
 
 			if (sizeof($graph_templates) > 1) {
-				print "	<tr>
-						<td class='textArea'>
-							<p>The selected Aggregate Graphs represent elements from more than one Graph Template.</p>
-							<p>In order to migrate the Aggregate Graphs below to a Template based Aggregate, they
-							must only be using one Graph Template.  Please press 'Return' and then select only Aggregate
-							Graph that utilize the same Graph Template.</p>
-							<p><ul>$graph_list</ul></p>
-						</td>
-					</tr>\n";
+				print "<tr>
+					<td class='textArea'>
+						<p>The selected Aggregate Graphs represent elements from more than one Graph Template.</p>
+						<p>In order to migrate the Aggregate Graphs below to a Template based Aggregate, they
+						must only be using one Graph Template.  Please press 'Return' and then select only Aggregate
+						Graph that utilize the same Graph Template.</p>
+						<p><ul>$graph_list</ul></p>
+					</td>
+				</tr>\n";
+
 				$save_html = "<input type='button' value='Return' onClick='window.history.back()'>";
 			}else{
 				$graph_template      = $graph_templates[0]['graph_template_id'];
 				$aggregate_templates = db_fetch_assoc("SELECT id, name FROM aggregate_graph_templates WHERE graph_template_id=$graph_template ORDER BY name");
 
 				if (sizeof($aggregate_templates)) {
-
-					print "	<tr>
+					print "<tr>
 						<td class='textArea' colspan='2'>
-							<p>When you click \"Continue\", the following Aggregate Graph(s) will be migrated to use the
+							<p>Click 'Continue' and the following Aggregate Graph(s) will be migrated to use the
 							Aggregate Template that you choose below.</p>
 							<p><ul>$graph_list</ul></p>
 						</td>
 					</tr>\n";
+
 					print "<tr>
 						<td class='textArea' width='170'><strong>Aggregate Template:</strong></td>
 						<td>
 							<select name='aggregate_template_id'>\n";
-								html_create_list($aggregate_templates, 'name', 'id', $aggregate_templates[0]['id']);
+
+					html_create_list($aggregate_templates, 'name', 'id', $aggregate_templates[0]['id']);
+
 					print "</select>
 						</td>
 					</tr>\n";
 
 					$save_html = "<tr><td colspan='2' align='right'><input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Delete Graph(s)'></td></tr>";
 				}else{
-					print "	<tr>
-							<td class='textArea'>
-								<p>There are currently no Aggregate Templates defined for the selected Legacy Aggregates.</p>
-								<p>In order to migrate the Aggregate Graphs below to a Template based Aggregate, first
-								create an Aggregate Template for the Graph Template '" . db_fetch_cell("SELECT name FROM graph_templates WHERE id=$graph_template") . "'.</p>
-								<p>Please press 'Return' to continue.</p>
-								<p><ul>$graph_list</ul></p>
-							</td>
-						</tr>\n";
+					print "<tr>
+						<td class='textArea'>
+							<p>There are currently no Aggregate Templates defined for the selected Legacy Aggregates.</p>
+							<p>In order to migrate the Aggregate Graphs below to a Template based Aggregate, first
+							create an Aggregate Template for the Graph Template '" . db_fetch_cell("SELECT name FROM graph_templates WHERE id=$graph_template") . "'.</p>
+							<p>Please press 'Return' to continue.</p>
+							<p><ul>$graph_list</ul></p>
+						</td>
+					</tr>\n";
+
 					$save_html = "<input type='button' value='Return' onClick='window.history.back()'>";
 				}
 			}
 		}elseif ($_POST["drp_action"] == "3") { /* create aggregate from aggregates */
-			print "	<tr>
-					<td colspan='2' class='textArea'>
-						<p>When you click \"Continue\", the following Aggregate Graph(s) will be combined into a single Aggregate Graph.</p>
-						<p><ul>$graph_list</ul></p>
-					</td>
-				</tr>\n";
+			print "<tr>
+				<td colspan='2' class='textArea'>
+					<p>Click 'Continue' to combined the following Aggregate Graph(s) into a single Aggregate Graph.</p>
+					<p><ul>$graph_list</ul></p>
+				</td>
+			</tr>\n";
+
 			print "	<tr><td class='textArea' width='170'><strong>Aggregate Name:</strong></td></tr>\n";
 			print "	<tr><td class='textArea'><input name='aggregate_name' size='40' value='New Aggregate'></td></tr>\n";
 
 			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Delete Graph(s)'>";
 		}elseif ($_POST["drp_action"] == "10") { /* associate with aggregate */
-			print "	<tr>
-					<td class='textArea'>
-						<p>When you click \"Continue\", the following Graph(s) will be Associated with the Aggregate Graph.</p>
-						<p><ul>$graph_list</ul></p>
-					</td>
-				</tr>\n";
+			print "<tr>
+				<td class='textArea'>
+					<p>Click 'Continue' to associate the following Graph(s) with the Aggregate Graph.</p>
+					<p><ul>$graph_list</ul></p>
+				</td>
+			</tr>\n";
+
 			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Associate Graph(s)'>";
 		}elseif ($_POST["drp_action"] == "11") { /* dis-associate with aggregate */
-			print "	<tr>
-					<td class='textArea'>
-						<p>When you click \"Continue\", the following Graph(s) will be Removed from the Aggregate.</p>
-						<p><ul>$graph_list</ul></p>
-					</td>
-				</tr>\n";
+			print "<tr>
+				<td class='textArea'>
+					<p>Click 'Continue' to disassociate the following Graph(s) from the Aggregate.</p>
+					<p><ul>$graph_list</ul></p>
+				</td>
+			</tr>\n";
+
 			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Dis-Associate Graph(s)'>";
 		}elseif (preg_match("/^tr_([0-9]+)$/", $_POST["drp_action"], $matches)) { /* place on tree */
-			print "	<tr>
-					<td class='textArea'>
-						<p>When you click \"Continue\", the following Aggregate Graph(s) will be placed under the Tree Branch selected below.</p>
-						<p><ul>$graph_list</ul></p>
-						<p><strong>Destination Branch:</strong><br>"; grow_dropdown_tree($matches[1], "tree_item_id", "0"); print "</p>
-					</td>
-				</tr>\n
-				<input type='hidden' name='tree_id' value='" . $matches[1] . "'>\n";
+			print "<tr>
+				<td class='textArea'>
+					<p>Click 'Continue' to place the following Aggregate Graph(s) under the Tree Branch.</p>
+					<p><ul>$graph_list</ul></p>
+					<p><strong>Destination Branch:</strong><br>"; grow_dropdown_tree($matches[1], "tree_item_id", "0"); print "</p>
+				</td>
+			</tr>\n
+			<input type='hidden' name='tree_id' value='" . $matches[1] . "'>\n";
+
 			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Place Graph(s) on Tree'>";
 		}
 	}else{
@@ -452,14 +461,14 @@ function form_actions() {
 	}
 
 	print "	<tr>
-			<td align='right' class='saveRow'>
-				<input type='hidden' name='action' value='actions'>
-				<input type='hidden' name='local_graph_id' value='" . (isset($_POST['local_graph_id']) ? $_POST['local_graph_id']:0) . "'>
-				<input type='hidden' name='selected_items' value='" . (isset($graph_array) ? serialize($graph_array) : '') . "'>
-				<input type='hidden' name='drp_action' value='" . $_POST['drp_action'] . "'>
-				$save_html
-			</td>
-		</tr>\n";
+		<td class='saveRow'>
+			<input type='hidden' name='action' value='actions'>
+			<input type='hidden' name='local_graph_id' value='" . (isset($_POST['local_graph_id']) ? $_POST['local_graph_id']:0) . "'>
+			<input type='hidden' name='selected_items' value='" . (isset($graph_array) ? serialize($graph_array) : '') . "'>
+			<input type='hidden' name='drp_action' value='" . $_POST['drp_action'] . "'>
+			$save_html
+		</td>
+	</tr>\n";
 
 	html_end_box(false);
 
@@ -876,23 +885,17 @@ function aggregate_items() {
 
 	function applyFilter() {
 		strURL = 'aggregate_graphs.php?action=edit&tab=items&id='+$('#id').val();
-		strURL = strURL + '&rows=' + $('#rows').val();
-		strURL = strURL + '&page=' + $('#page').val();
-		strURL = strURL + '&filter=' + $('#filter').val();
-		strURL = strURL + '&matching=' + $('#matching').is(':checked');
-		strURL = strURL + '&header=false';
-		$.get(strURL, function(data) {
-			$('#main').html(data);
-			applySkin();
-		});
+		strURL += '&rows=' + $('#rows').val();
+		strURL += '&page=' + $('#page').val();
+		strURL += '&filter=' + $('#filter').val();
+		strURL += '&matching=' + $('#matching').is(':checked');
+		strURL += '&header=false';
+		loadPageNoHeader(strURL);
 	}
 
 	function clearFilter() {
 		strURL = 'aggregate_graphs.php?action=edit&tab=items&id='+$('#id').val()+'&clear=1&header=false';
-		$.get(strURL, function(data) {
-			$('#main').html(data);
-			applySkin();
-		});
+		loadPageNoHeader(strURL);
 	}
 
 	$(function() {
@@ -1210,24 +1213,18 @@ function graph() {
 	<script type='text/javascript'>
 
 	function applyFilter() {
-		strURL = 'aggregate_graphs.php';
-		strURL = strURL + '?rows=' + $('#rows').val();
-		strURL = strURL + '&page=' + $('#page').val();
-		strURL = strURL + '&filter=' + $('#filter').val();
-		strURL = strURL + '&template_id=' + $('#template_id').val();
-		strURL = strURL + '&header=false';
-		$.get(strURL, function(data) {
-			$('#main').html(data);
-			applySkin();
-		});
+		strURL  = 'aggregate_graphs.php';
+		strURL += '?rows=' + $('#rows').val();
+		strURL += '&page=' + $('#page').val();
+		strURL += '&filter=' + $('#filter').val();
+		strURL += '&template_id=' + $('#template_id').val();
+		strURL += '&header=false';
+		loadPageNoHeader(strURL);
 	}
 
 	function clearFilter() {
 		strURL = 'aggregate_graphs.php?clear=1&header=false';
-		$.get(strURL, function(data) {
-			$('#main').html(data);
-			applySkin();
-		});
+		loadPageNoHeader(strURL);
 	}
 
 	$(function() {

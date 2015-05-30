@@ -89,23 +89,17 @@ function display_matching_hosts($rule, $rule_type, $url) {
 	?>
 	<script type='text/javascript'>
 	function applyFilter() {
-		strURL = '<?php print $url;?>' + '&host_status=' + $('#host_status').val();
-		strURL = strURL + '&host_template_id=' + $('#host_template_id').val();
-		strURL = strURL + '&rows=' + $('#rows').val();
-		strURL = strURL + '&filter=' + $('#filter').val();
-		strURL = strURL + '&header=false';
-		$.get(strURL, function(data) {
-			$('#main').html(data);
-			applySkin();
-		});
+		strURL  = '<?php print $url;?>' + '&host_status=' + $('#host_status').val();
+		strURL += '&host_template_id=' + $('#host_template_id').val();
+		strURL += '&rows=' + $('#rows').val();
+		strURL += '&filter=' + $('#filter').val();
+		strURL += '&header=false';
+		loadPageNoHeader(strURL);
 	}
 
 	function clearFilter() {
 		strURL = '<?php print $url;?>' + '&clear=1&header=false';
-		$.get(strURL, function(data) {
-			$('#main').html(data);
-			applySkin();
-		});
+		loadPageNoHeader(strURL);
 	}
 
 	$(function() {
@@ -375,23 +369,17 @@ function display_matching_graphs($rule, $rule_type, $url) {
 	<script type='text/javascript'>
 
 	function applyFilter() {
-		strURL = '<?php print $url;?>' + '&host_id=' + $('#host_id').val();
-		strURL = strURL + '&rows=' + $('#rows').val();
-		strURL = strURL + '&filter=' + $('#filter').val();
-		strURL = strURL + '&template_id=' + $('#template_id').val();
-		strURL = strURL + '&header=false';
-		$.get(strURL, function(data) {
-			$('#main').html(data);
-			applySkin();
-		});
+		strURL  = '<?php print $url;?>' + '&host_id=' + $('#host_id').val();
+		strURL += '&rows=' + $('#rows').val();
+		strURL += '&filter=' + $('#filter').val();
+		strURL += '&template_id=' + $('#template_id').val();
+		strURL += '&header=false';
+		loadPageNoHeader(strURL);
 	}
 
 	function clearFilter() {
 		strURL = '<?php print $url;?>' + '&clear=1&header=false';
-		$.get(strURL, function(data) {
-			$('#main').html(data);
-			applySkin();
-		});
+		loadPageNoHeader(strURL);
 	}
 
 	$(function() {
@@ -863,23 +851,17 @@ function display_matching_trees ($rule_id, $rule_type, $item, $url) {
 	<script type='text/javascript'>
 
 	function applyFilter() {
-		strURL = '<?php print $url;?>' + '&host_status=' + $('#host_status').val();
-		strURL = strURL + '&host_template_id=' + $('#host_template_id').val();
-		strURL = strURL + '&rows=' + $('#rows').val();
-		strURL = strURL + '&filter=' + $('#filter').val();
-		strURL = strURL + '&header=false';
-		$.get(strURL, function(data) {
-			$('#main').html(data);
-			applySkin();
-		});
+		strURL  = '<?php print $url;?>' + '&host_status=' + $('#host_status').val();
+		strURL += '&host_template_id=' + $('#host_template_id').val();
+		strURL += '&rows=' + $('#rows').val();
+		strURL += '&filter=' + $('#filter').val();
+		strURL += '&header=false';
+		loadPageNoHeader(strURL);
 	}
 
 	function clearFilter() {
 		strURL = '<?php print $url;?>' + '&clear=1&header=false';
-		$.get(strURL, function(data) {
-			$('#main').html(data);
-			applySkin();
-		});
+		loadPageNoHeader(strURL);
 	}
 
 	$(function() {

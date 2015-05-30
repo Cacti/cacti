@@ -381,19 +381,11 @@ function applyTimespanFilterChange(objForm) {
 function cactiReturnTo(href) {
 	if (href != '') {
 		href = href + (href.indexOf('?') > 0 ? '&':'?') + 'header=false';
-		$.get(href, function(data) {
-			$('#main').html(data);
-			window.scrollTo(0,0);
-			applySkin();
-		});
+		loadPageNoHeader(href);
 	}else{
 		href = document.location;
 		href = href+ (href.indexOf('?') > 0 ? '&':'?') + 'header=false';
-		$.get(href, function(data) {
-			$('#main').html(data);
-			window.scrollTo(0,0);
-			applySkin();
-		});
+		loadPageNoHeader(href);
 	}
 }
 
@@ -532,14 +524,24 @@ function loadPage(href) {
 			window.history.pushState({page:href}, htmlTitle, href);
 		}
 
+		window.scrollTo(0, 0);
+
 		return false;
 	});
 
 	return false;
 }
 
+function loadPageNoHeader(href) {
+	$.get(href, function(data) {
+		$('#main').html(data);
+		applySkin();
+		window.scrollTo(0, 0);
+	});
+}
+
 function ajaxAnchors() {
-	$('a.pic, a.linkOverDark, a.linkEditMain, a.hyperLink').not('[href^=http], [href^=https], [href^=#]').unbind().click(function(event) {
+	$('a.pic, a.linkOverDark, a.linkEditMain, a.hyperLink, a.tab').not('[href^=http], [href^=https], [href^=#]').unbind().click(function(event) {
 		event.preventDefault();
 
 		/* update menu selection */

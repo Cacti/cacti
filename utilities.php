@@ -551,18 +551,12 @@ function utilities_view_user_log() {
 	<script type="text/javascript">
 	function clearFilter() {
 		strURL = '?clear=1&header=false';
-		$.get(strURL, function(data) {
-			$('#main').html(data);
-			applySkin();
-		});
+		loadPageNoHeader(strURL);
 	}
 
 	function purgeLog() {
 		strURL = '?action=clear_user_log&header=false';
-		$.get(strURL, function(data) {
-			$('#main').html(data);
-			applySkin();
-		});
+		loadPageNoHeader(strURL);
 	}
 
 	$(function() {
@@ -585,17 +579,14 @@ function utilities_view_user_log() {
 	});
 
 	function applyFilter() {
-		strURL = '?username=' + $('#username').val();
-		strURL = strURL + '&result=' + $('#result').val();
-		strURL = strURL + '&rows=' + $('#rows').val();
-		strURL = strURL + '&filter=' + $('#filter').val();
-		strURL = strURL + '&page=' + $('#page').val();
-		strURL = strURL + '&action=view_user_log';
-		strURL = strURL + '&header=false';
-		$.get(strURL, function(data) {
-			$('#main').html(data);
-			applySkin();
-		});
+		strURL  = '?username=' + $('#username').val();
+		strURL += '&result=' + $('#result').val();
+		strURL += '&rows=' + $('#rows').val();
+		strURL += '&filter=' + $('#filter').val();
+		strURL += '&page=' + $('#page').val();
+		strURL += '&action=view_user_log';
+		strURL += '&header=false';
+		loadPageNoHeader(strURL);
 	}
 	</script>
 	<?php
@@ -861,10 +852,7 @@ function utilities_view_logfile() {
 
 	function purgeLog() {
 		strURL = '?action=view_logfile&purge=1&header=false';
-		$.get(strURL, function(data) {
-			$('#main').html(data);
-			applySkin();
-		});
+		loadPageNoHeader(strURL);
 	}
 
 	$(function() {
@@ -887,28 +875,22 @@ function utilities_view_logfile() {
 	});
 
 	function applyFilter() {
-		strURL = '?tail_lines=' + $('#tail_lines').val();
-		strURL = strURL + '&message_type=' + $('#message_type').val();
-		strURL = strURL + '&refresh=' + $('#refresh').val();
-		strURL = strURL + '&reverse=' + $('#reverse').val();
-		strURL = strURL + '&filter=' + $('#filter').val();
-		strURL = strURL + '&action=view_logfile';
-		strURL = strURL + '&header=false';
+		strURL  = '?tail_lines=' + $('#tail_lines').val();
+		strURL += '&message_type=' + $('#message_type').val();
+		strURL += '&refresh=' + $('#refresh').val();
+		strURL += '&reverse=' + $('#reverse').val();
+		strURL += '&filter=' + $('#filter').val();
+		strURL += '&action=view_logfile';
+		strURL += '&header=false';
 		refreshMSeconds=$('#refresh').val()*1000;
-		$.get(strURL, function(data) {
-			$('#main').html(data);
-			applySkin();
-		});
+		loadPageNoHeader(strURL);
 	}
 
 	function clearFilter() {
-		strURL = '?clear=1';
-		strURL = strURL + '&action=view_logfile';
-		strURL = strURL + '&header=false';
-		$.get(strURL, function(data) {
-			$('#main').html(data);
-			applySkin();
-		});
+		strURL  = '?clear=1';
+		strURL += '&action=view_logfile';
+		strURL += '&header=false';
+		loadPageNoHeader(strURL);
 	}
 	</script>
 	<?php
@@ -1181,25 +1163,19 @@ function utilities_view_snmp_cache() {
     var refreshMSeconds=<?php print $refresh['seconds']*1000;?>;
 
 	function applyFilter() {
-		strURL = '?host_id=' + $('#host_id').val();
-		strURL = strURL + '&snmp_query_id=' + $('#snmp_query_id').val();
-		strURL = strURL + '&filter=' + $('#filter').val();
-		strURL = strURL + '&rows=' + $('#rows').val();
-		strURL = strURL + '&page=' + $('#page').val();
-		strURL = strURL + '&action=view_snmp_cache';
-		strURL = strURL + '&header=false';
-		$.get(strURL, function(data) {
-			$('#main').html(data);
-			applySkin();
-		});
+		strURL  = '?host_id=' + $('#host_id').val();
+		strURL += '&snmp_query_id=' + $('#snmp_query_id').val();
+		strURL += '&filter=' + $('#filter').val();
+		strURL += '&rows=' + $('#rows').val();
+		strURL += '&page=' + $('#page').val();
+		strURL += '&action=view_snmp_cache';
+		strURL += '&header=false';
+		loadPageNoHeader(strURL);
 	}
 
 	function clearFilter() {
 		strURL = '?action=view_snmp_cache&clear=1&header=false';
-		$.get(strURL, function(data) {
-			$('#main').html(data);
-			applySkin();
-		});
+		loadPageNoHeader(strURL);
 	}
 
 	$(function() {
@@ -1491,25 +1467,19 @@ function utilities_view_poller_cache() {
     var refreshMSeconds=<?php print $refresh['seconds']*1000;?>;
 
 	function applyFilter() {
-		strURL = '?poller_action=' + $('#poller_action').val();
-		strURL = strURL + '&action=view_poller_cache';
-		strURL = strURL + '&host_id=' + $('#host_id').val();
-		strURL = strURL + '&filter=' + $('#filter').val();
-		strURL = strURL + '&rows=' + $('#rows').val();
-		strURL = strURL + '&page=' + $('#page').val();
-		strURL = strURL + '&header=false';
-		$.get(strURL, function(data) {
-			$('#main').html(data);
-			applySkin();
-		});
+		strURL  = '?poller_action=' + $('#poller_action').val();
+		strURL += '&action=view_poller_cache';
+		strURL += '&host_id=' + $('#host_id').val();
+		strURL += '&filter=' + $('#filter').val();
+		strURL += '&rows=' + $('#rows').val();
+		strURL += '&page=' + $('#page').val();
+		strURL += '&header=false';
+		loadPageNoHeader(strURL);
 	}
 
 	function clearFilter() {
 		strURL = '?action=view_poller_cache&clear=1&header=false';
-		$.get(strURL, function(data) {
-			$('#main').html(data);
-			applySkin();
-		});
+		loadPageNoHeader(strURL);
 	}
 
 	$(function() {
@@ -1867,10 +1837,7 @@ function boost_display_run_status() {
 
 	function applyFilter() {
 		strURL = '?action=view_boost_status&header=false&refresh=' + $('#refresh').val();
-		$.get(strURL, function(data) {
-			$('#main').html(data);
-			applySkin();
-		});
+		loadPageNoHeader(strURL);
 	}
 	</script>
 	<tr class='even'>
@@ -2230,24 +2197,18 @@ function snmpagent_utilities_run_cache() {
 	?>
 	<script type='text/javascript'>
 	function applyFilter() {
-		strURL = 'utilities.php?action=view_snmpagent_cache';
-		strURL = strURL + '&mib=' + $('#mib').val();
-		strURL = strURL + '&rows=' + $('#rows').val();
-		strURL = strURL + '&filter=' + $('#filter').val();
-		strURL = strURL + '&page=' + $('#page').val();
-		strURL = strURL + '&header=false';
-		$.get(strURL, function(data) {
-			$('#main').html(data);
-			applySkin();
-		});
+		strURL  = 'utilities.php?action=view_snmpagent_cache';
+		strURL += '&mib=' + $('#mib').val();
+		strURL += '&rows=' + $('#rows').val();
+		strURL += '&filter=' + $('#filter').val();
+		strURL += '&page=' + $('#page').val();
+		strURL += '&header=false';
+		loadPageNoHeader(strURL);
 	}
 
 	function clearFilter() {
 		strURL = 'utilities.php?action=view_snmpagent_cache&clear=1&header=false';
-		$.get(strURL, function(data) {
-			$('#main').html(data);
-			applySkin();
-		});
+		loadPageNoHeader(strURL);
 	}
 
 	$(function() {
@@ -2490,33 +2451,24 @@ function snmpagent_utilities_run_eventlog(){
 	?>
 	<script type='text/javascript'>
 	function applyFilter() {
-		strURL = 'utilities.php?action=view_snmpagent_events';
-		strURL = strURL + '&severity=' + $('#severity').val();
-		strURL = strURL + '&receiver=' + $('#receiver').val();
-		strURL = strURL + '&rows=' + $('#rows').val();
-		strURL = strURL + '&filter=' + $('#filter').val();
-		strURL = strURL + '&page=' + $('#page').val();
-		strURL = strURL + '&header=false';
-		$.get(strURL, function(data) {
-			$('#main').html(data);
-			applySkin();
-		});
+		strURL  = 'utilities.php?action=view_snmpagent_events';
+		strURL += '&severity=' + $('#severity').val();
+		strURL += '&receiver=' + $('#receiver').val();
+		strURL += '&rows=' + $('#rows').val();
+		strURL += '&filter=' + $('#filter').val();
+		strURL += '&page=' + $('#page').val();
+		strURL += '&header=false';
+		loadPageNoHeader(strURL);
 	}
 
 	function clearFilter() {
 		strURL = 'utilities.php?action=view_snmpagent_events&clear=1&header=false';
-		$.get(strURL, function(data) {
-			$('#main').html(data);
-			applySkin();
-		});
+		loadPageNoHeader(strURL);
 	}
 
 	function purgeFilter() {
 		strURL = 'utilities.php?action=view_snmpagent_events&purge=1&header=false';
-		$.get(strURL, function(data) {
-			$('#main').html(data);
-			applySkin();
-		});
+		loadPageNoHeader(strURL);
 	}
 	$(function(data) {
 		$('#refresh').click(function() {

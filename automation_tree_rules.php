@@ -259,36 +259,36 @@ function automation_tree_rules_form_actions() {
 	html_start_box('<strong>' . $automation_tree_rules_actions{$_POST['drp_action']} . '</strong>', '100%', '', '3', 'center', '');
 
 	if ($_POST['drp_action'] == AUTOMATION_ACTION_TREE_DELETE) { /* DELETE */
-		print "	<tr>
+		print "<tr>
 			<td class='textArea'>
-				<p>Are you sure you want to DELETE the following Rules? If so, press 'Continue' to proceed.</p>
+				<p>Click 'Continue' to delete the following Rule(s).</p>
 				<p><ul>$automation_tree_rules_list</ul></p>
 			</td>
-		</tr>";
+		</tr>\n";
 	}elseif ($_POST['drp_action'] == AUTOMATION_ACTION_TREE_DUPLICATE) { /* duplicate */
-		print "	<tr>
+		print "<tr>
 			<td class='textArea'>
-				<p>When you click 'Continue', the following Rules will be duplicated. You can
+				<p>Click 'Continue' to duplicate the following Rule(s). You can
 				optionally change the title format for the new Rules.</p>
 				<p><ul>$automation_tree_rules_list</ul></p>
 				<p><strong>Title Format:</strong><br>"; form_text_box('name_format', '<rule_name> (1)', '', '255', '30', 'text'); print "</p>
 			</td>
-		</tr>";
+		</tr>\n";
 	}elseif ($_POST['drp_action'] == AUTOMATION_ACTION_TREE_ENABLE) { /* enable */
-		print "	<tr>
+		print "<tr>
 			<td class='textArea'>
-				<p>When you click 'Continue', the following Rules will be enabled.</p>
+				<p>Click 'Continue' to enable the following Rule(s).</p>
 				<p><ul>$automation_tree_rules_list</ul></p>
 				<p><strong>Make sure, that those rules have successfully been tested!</strong></p>
 			</td>
-		</tr>";
+		</tr>\n";
 	}elseif ($_POST['drp_action'] == AUTOMATION_ACTION_TREE_DISABLE) { /* disable */
-		print "	<tr>
+		print "<tr>
 			<td class='textArea'>
-				<p>When you click 'Continue', the following Rules will be disabled.</p>
+				<p>Click 'Continue' to disable the following Rule(s).</p>
 				<p><ul>$automation_tree_rules_list</ul></p>
 			</td>
-		</tr>";
+		</tr>\n";
 	}
 
 	if (!isset($automation_tree_rules_array)) {
@@ -298,14 +298,14 @@ function automation_tree_rules_form_actions() {
 		$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Apply requested action'>";
 	}
 
-	print "	<tr>
-		<td align='right' class='saveRow'>
+	print "<tr>
+		<td class='saveRow'>
 			<input type='hidden' name='action' value='actions'>
 			<input type='hidden' name='selected_items' value='" . (isset($automation_tree_rules_array) ? serialize($automation_tree_rules_array) : '') . "'>
 			<input type='hidden' name='drp_action' value='" . $_POST['drp_action'] . "'>
 			$save_html
 		</td>
-	</tr>";
+	</tr>\n";
 
 	html_end_box();
 
@@ -615,19 +615,16 @@ function automation_tree_rules_edit() {
 	});
 
 	function applyTreeChange() {
-		strURL = '?action=edit&id=' + $('#id').val();
-		strURL = strURL + '&name=' + $('#name').val();
-		strURL = strURL + '&tree_id=' + $('tree_id').val();
-		strURL = strURL + '&tree_item_id=' + $('#tree_item_id').val();
-		strURL = strURL + '&leaf_type=' + $('#leaf_type').val();
-		strURL = strURL + '&host_grouping_type=' + $('#host_grouping_type').val();
-		strURL = strURL + '&rra_id=' + $('#rra_id').val();
-		strURL = strURL + '&rows=' + $('#graph_rows').val();
+		strURL  = '?action=edit&id=' + $('#id').val();
+		strURL += '&name=' + $('#name').val();
+		strURL += '&tree_id=' + $('tree_id').val();
+		strURL += '&tree_item_id=' + $('#tree_item_id').val();
+		strURL += '&leaf_type=' + $('#leaf_type').val();
+		strURL += '&host_grouping_type=' + $('#host_grouping_type').val();
+		strURL += '&rra_id=' + $('#rra_id').val();
+		strURL += '&rows=' + $('#graph_rows').val();
 
-		$.get(strURL, function(data) {
-			$('#main').html(data);
-			applySkin();
-		});
+		loadPageNoHeader(strURL);
 	}
 
 	function applyItemTypeChange() {
@@ -777,18 +774,12 @@ function automation_tree_rules() {
 					'&page='+$('#page').val() +
 					'&header=false';
 
-				$.get(strURL, function(data) {
-					$('#main').html(data);
-					applySkin();
-				});
+				loadPageNoHeader(strURL);
 			}
 
 			function clearFilter() {
 				strURL = 'automation_tree_rules.php?clear=1&header=false';
-				$.get(strURL, function(data) {
-					$('#main').html(data);
-					applySkin();
-				});
+				loadPageNoHeader(strURL);
 			}
 
 			$(function() {

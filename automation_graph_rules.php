@@ -260,29 +260,29 @@ function automation_graph_rules_form_actions() {
 			</td>
 		</tr>";
 	}elseif ($_POST['drp_action'] == AUTOMATION_ACTION_GRAPH_DUPLICATE) { /* duplicate */
-		print "	<tr>
+		print "<tr>
 			<td class='textArea'>
-				<p>When you click 'Continue', the following Rules will be duplicated. You can
+				<p>Click 'Continue' to duplicate the following Rule(s). You can
 				optionally change the title format for the new Rules.</p>
 				<ul>$automation_graph_rules_list</ul>
 				<p><strong>Title Format:</strong><br>"; form_text_box('name_format', '<rule_name> (1)', '', '255', '30', 'text'); print "</p>
 			</td>
-		</tr>";
+		</tr>\n";
 	}elseif ($_POST['drp_action'] == AUTOMATION_ACTION_GRAPH_ENABLE) { /* enable */
-		print "	<tr>
+		print "<tr>
 			<td class='textArea'>
-				<p>When you click 'Continue', the following Rules will be enabled.</p>
+				<p>Click 'Continue' to enable the following Rule(s).</p>
 				<ul>$automation_graph_rules_list</ul>
 				<p><strong>Make sure, that those rules have successfully been tested!</strong></p>
 			</td>
-		</tr>";
+		</tr>\n";
 	}elseif ($_POST['drp_action'] == AUTOMATION_ACTION_GRAPH_DISABLE) { /* disable */
-		print "	<tr>
+		print "<tr>
 			<td class='textArea'>
-				<p>When you click 'Continue', the following Rules will be disabled.</p>
+				<p>Click 'Continue' to disable the following Rule(s).</p>
 				<ul>$automation_graph_rules_list</ul>
 			</td>
-		</tr>";
+		</tr>\n";
 	}
 
 	if (!isset($automation_graph_rules_array)) {
@@ -293,13 +293,13 @@ function automation_graph_rules_form_actions() {
 	}
 
 	print "	<tr>
-		<td align='right' class='saveRow'>
+		<td class='saveRow'>
 			<input type='hidden' name='action' value='actions'>
 			<input type='hidden' name='selected_items' value='" . (isset($automation_graph_rules_array) ? serialize($automation_graph_rules_array) : '') . "'>
 			<input type='hidden' name='drp_action' value='" . $_POST['drp_action'] . "'>
 			$save_html
 		</td>
-	</tr>";
+	</tr>\n";
 
 	html_end_box();
 
@@ -747,18 +747,12 @@ function automation_graph_rules() {
 		<script type='text/javascript'>
 		function applyFilter() {
 			strURL = 'automation_graph_rules.php?status='+$('#status').val()+'&filter='+$('#filter').val()+'&rows='+$('#rows').val()+'&page='+$('#page').val()+'&snmp_query_id='+$('#snmp_query_id').val()+'&header=false';
-			$.get(strURL, function(data) {
-				$('#main').html(data);
-				applySkin();
-			});
+			loadPageNoHeader(strURL);
 		}
 
 		function clearFilter() {
 			strURL = 'automation_graph_rules.php?clear=1&header=false';
-			$.get(strURL, function(data) {
-				$('#main').html(data);
-				applySkin();
-			});
+			loadPageNoHeader(strURL);
 		}
 
 		$(function() {

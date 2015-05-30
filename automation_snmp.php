@@ -214,21 +214,21 @@ function form_automation_snmp_actions() {
 		print "<tr><td class='even'><span class='textError'>You must select at least one SNMP Option.</span></td></tr>\n";
 		$save_html = '';
 	}else{
-		$save_html = "<input type='submit' value='Yes' name='save'>";
+		$save_html = "<input type='submit' value='Continue' name='save'>";
 
 		if ($_POST['drp_action'] == '1') { /* delete */
-			print "	<tr>
+			print "<tr>
 				<td class='textArea'>
-					<p>Are you sure you want to delete the following SNMP Options?</p>
-					<ul>$snmp_groups</ul>
+					<p>Click 'Continue' to delete the following SNMP Option(s).</p>
+					<p><ul>$snmp_groups</ul></p>
 				</td>
 			</tr>\n";
 		}elseif ($_POST['drp_action'] == '2') { /* duplicate */
-			print "	<tr>
+			print "<tr>
 				<td class='textArea'>
-					<p>When you click save, the following SNMP Options will be duplicated. You can
+					<p>Click 'Continue' to duplicate the following SNMP Options. You can
 					optionally change the title format for the new SNMP Options.</p>
-					<ul>$snmp_groups</ul>
+					<p><ul>$snmp_groups</ul></p>
 					<p><strong>Name Format:</strong><br>"; form_text_box('name_format', '<name> (1)', '', '255', '30', 'text'); print "</p>
 				</td>
 			</tr>\n";
@@ -236,14 +236,14 @@ function form_automation_snmp_actions() {
 	}
 
 	print "	<tr>
-		<td align='right' class='saveRow'>
+		<td class='saveRow'>
 			<input type='hidden' name='action' value='actions'>
 			<input type='hidden' name='selected_items' value='" . (isset($automation_array) ? serialize($automation_array) : '') . "'>
 			<input type='hidden' name='drp_action' value='" . $_POST['drp_action'] . "'>
-			<input type='button' onClick='goTo(\"" . "automation_snmp.php" . "\")' value='" . ($save_html == '' ? 'Return':'No') . "' name='cancel'>
+			<input type='button' onClick='goTo(\"" . "automation_snmp.php" . "\")' value='" . ($save_html == '' ? 'Return':'Cancel') . "' name='cancel'>
 			$save_html
 		</td>
-	</tr>";
+	</tr>\n";
 
 	html_end_box();
 
@@ -641,11 +641,8 @@ function automation_snmp_edit() {
     <script type='text/javascript'>
     $(function() {
         $('img.action').click(function() {
-            action = $(this).attr('href');
-            $.get(action, function(data) {
-                $('#main').html(data);
-                applySkin();
-            });
+            strURL = $(this).attr('href');
+			loadPageNoHeader(strURL);
         });
     });
     </script>

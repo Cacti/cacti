@@ -320,11 +320,8 @@ function template() {
 	<script type='text/javascript'>
 	$(function() {
 		$('img.action').click(function() {
-			action = $(this).attr('href');
-			$.get(action, function(data) {
-				$('#main').html(data);
-				applySkin();
-			});
+			strURL = $(this).attr('href');
+			loadPageNoHeader(strURL);
 		});
 	});
 	</script>

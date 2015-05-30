@@ -280,58 +280,58 @@ function form_actions() {
 	print "<form action='automation_networks.php' method='post'>\n";
 
 	if ($_POST['drp_action'] == '1') { /* delete */
-		print "	<tr>
-				<td class='textArea'>
-					<p>Are you sure you want to delete the following Network(s)?</p>
-					<p><ul>$networks_list</ul></p>
-				</td>
-			</tr>\n";
+		print "<tr>
+			<td class='textArea'>
+				<p>Click 'Continue' to delete the following Network(s).</p>
+				<p><ul>$networks_list</ul></p>
+			</td>
+		</tr>\n";
 	}elseif ($_POST['drp_action'] == '3') { /* enable */
-		print "	<tr>
-				<td class='textArea'>
-					<p>When you click save, the following Network(s) will be enabled.
-					<p><ul>$networks_list</ul></p>
-				</td>
-			</tr>\n";
+		print "<tr>
+			<td class='textArea'>
+				<p>Click 'Continue' to enable the following Network(s).</p>
+				<p><ul>$networks_list</ul></p>
+			</td>
+		</tr>\n";
 	}elseif ($_POST['drp_action'] == '2') { /* disable */
-		print "	<tr>
-				<td class='textArea'>
-					<p>When you click save, the following Network(s) will be disabled.
-					<p><ul>$networks_list</ul></p>
-				</td>
-			</tr>\n";
+		print "<tr>
+			<td class='textArea'>
+				<p>Click 'Continue' to disable the following Network(s).</p>
+				<p><ul>$networks_list</ul></p>
+			</td>
+		</tr>\n";
 	}elseif ($_POST['drp_action'] == '4') { /* discover now */
-		print "	<tr>
-				<td class='textArea'>
-					<p>When you click save, the following Network(s) will be discovered.
-					<p><ul>$networks_list</ul></p>
-				</td>
-			</tr>\n";
+		print "<tr>
+			<td class='textArea'>
+				<p>Click 'Continue' to discover the following Network(s).</p>
+				<p><ul>$networks_list</ul></p>
+			</td>
+		</tr>\n";
 	}elseif ($_POST['drp_action'] == '5') { /* cancel discovery now */
-		print "	<tr>
-				<td class='textArea'>
-					<p>When you click save, the following ongoing Discovery(s) will be canceled.
-					<p><ul>$networks_list</ul></p>
-				</td>
-			</tr>\n";
+		print "<tr>
+			<td class='textArea'>
+				<p>Click 'Continue' to cancel on going Network Discovery(s).</p>
+				<p><ul>$networks_list</ul></p>
+			</td>
+		</tr>\n";
 	}
 
 	if (!isset($networks_array)) {
 		print "<tr><td class='even'><span class='textError'>You must select at least one Network.</span></td></tr>\n";
 		$save_html = '';
 	}else{
-		$save_html = "<input type='submit' value='Yes' name='save'>";
+		$save_html = "<input type='submit' value='Continue' name='save'>";
 	}
 
-	print "	<tr>
-			<td colspan='2' align='right' class='saveRow'>
-				<input type='hidden' name='action' value='actions'>
-				<input type='hidden' name='selected_items' value='" . (isset($networks_array) ? serialize($networks_array) : '') . "'>
-				<input type='hidden' name='drp_action' value='" . $_POST['drp_action'] . "'>" . (strlen($save_html) ? "
-				<input type='submit' name='cancel' value='No'>
-				$save_html" : "<input type='submit' name='cancel' value='Return'>") . "
-			</td>
-		</tr>\n";
+	print "<tr>
+		<td colspan='2' class='saveRow'>
+			<input type='hidden' name='action' value='actions'>
+			<input type='hidden' name='selected_items' value='" . (isset($networks_array) ? serialize($networks_array) : '') . "'>
+			<input type='hidden' name='drp_action' value='" . $_POST['drp_action'] . "'>" . (strlen($save_html) ? "
+			<input type='submit' name='cancel' value='Cancel'>
+			$save_html" : "<input type='submit' name='cancel' value='Return'>") . "
+		</td>
+	</tr>\n";
 
 	html_end_box();
 
@@ -987,19 +987,13 @@ function networks_filter() {
 				strURL += '&page=' + $('#page').val();
 				strURL += '&header=false';
 
-				$.get(strURL, function(data) {
-					$('#main').html(data);
-					applySkin();
-				});
+				loadPageNoHeader(strURL);
 			}
 
 			function clearFilter() {
 				strURL = '?clear=true&header=false';
 
-				$.get(strURL, function(data) {
-					$('#main').html(data);
-					applySkin();
-				});
+				loadPageNoHeader(strURL);
 			}
 
 			$(function() {

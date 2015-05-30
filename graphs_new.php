@@ -434,25 +434,19 @@ function graphs() {
 	<script type='text/javascript'>
 
 	function applyFilter() {
-		strURL = '?graph_type=' + $('#graph_type').val();
-		strURL = strURL + '&host_id=' + $('#host_id').val();
-		strURL = strURL + '&filter=' + $('#filter').val();
-		strURL = strURL + '&rows=' + $('#rows').val();
-		strURL = strURL + '&header=false';
-		$.get(strURL, function(data) {
-			$('#main').html(data);
-			applySkin();
-		});
+		strURL  = '?graph_type=' + $('#graph_type').val();
+		strURL += '&host_id=' + $('#host_id').val();
+		strURL += '&filter=' + $('#filter').val();
+		strURL += '&rows=' + $('#rows').val();
+		strURL += '&header=false';
+		loadPageNoHeader(strURL);
 	}
 
 	$(function() {
 		$('[id^="reload"]').click(function(data) {
 			//$(this).removeClass('fa-circle-o').addClass('fa-spinner fa-spin');
 			$(this).removeClass('fa-circle-o').addClass('fa-circle-o-notch fa-spin');
-			$.get('graphs_new.php?action=query_reload&id='+$(this).attr('data-id')+'&host_id='+$('#host_id').val(), function(data) {
-				$('#main').html(data);
-				applySkin();
-			});
+			loadPageNoHeader('graphs_new.php?action=query_reload&id='+$(this).attr('data-id')+'&host_id='+$('#host_id').val());
 		});
 	});
 

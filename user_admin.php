@@ -314,14 +314,14 @@ function form_actions() {
 
 	if (isset($user_array) && sizeof($user_array)) {
 		if ((get_request_var_post('drp_action') == '1') && (sizeof($user_array))) { /* delete */
-			print "
-				<tr>
-					<td class='textArea'>
-						<p>When you click \"Continue\", the selected User(s) will be deleted.</p>
-						<p><ul>$user_list</ul></p>
-					</td>
-				</tr>\n";
-			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Delete User(s)'>";
+			print "<tr>
+				<td class='textArea'>
+					<p>Click 'Continue' to delete the selected User(s).</p>
+					<p><ul>$user_list</ul></p>
+				</td>
+			</tr>\n";
+
+			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'><input type='submit' value='Continue' title='Delete User(s)'>";
 		}
 		$user_id = '';
 
@@ -329,60 +329,59 @@ function form_actions() {
 			$user_id = $user_array[0];
 			$user_realm = db_fetch_cell_prepared('SELECT realm FROM user_auth WHERE id = ?', array($user_id));
 
-			print "
-				<tr>
-					<td class='textArea'>
-						When you click \"Continue\" the selected User will be copied to the new User below<br><br>
-					</td>
-				</tr>
-				<tr>
-					<td class='textArea'>
-						Template Username: <i>" . db_fetch_cell_prepared('SELECT username FROM user_auth WHERE id = ?', array($user_id)) . "</i>
-					</td>
-				</tr>
-				<tr>
-					<td class='textArea'>
-					Username: ";
+			print "<tr>
+				<td class='textArea'>
+					Click 'Continue' to copy the selected User to a new User below.
+				</td>
+			</tr>
+			<tr>
+				<td class='textArea'>
+					Template Username: <i>" . db_fetch_cell_prepared('SELECT username FROM user_auth WHERE id = ?', array($user_id)) . "</i>
+				</td>
+			</tr>
+			<tr>
+				<td class='textArea'>
+				Username: ";
 			print form_text_box('new_username', '', '', 25);
-			print "				</td>
+
+			print "</td>
 				</tr>
 				<tr>
 					<td class='textArea'>
 						Full Name: ";
 			print form_text_box('new_fullname', '', '', 35);
-			print "				</td>
+
+			print "</td>
 				</tr>
 				<tr>
 					<td class='textArea'>
-						Realm: \n";
+						Realm: ";
 			print form_dropdown('new_realm', $auth_realms, '', '', $user_realm, '', 0);
-			print "				</td>
 
+			print "</td>
 				</tr>\n";
 
 			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Copy User'>";
 		}
 
 		if ((get_request_var_post('drp_action') == '3') && (sizeof($user_array))) { /* enable */
-			print "
-				<tr>
-					<td class='textArea'>
-						<p>When you click \"Continue\" the selected User(s) will be enabled.</p>
-						<ul>$user_list</ul>
-					</td>
-				</tr>\n";
+			print "<tr>
+				<td class='textArea'>
+					<p>Click 'Continue' to enable the selected User(s).</p>
+					<p><ul>$user_list</ul></p>
+				</td>
+			</tr>\n";
 
 			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Enable User(s)'>";
 		}
 
 		if ((get_request_var_post('drp_action') == '4') && (sizeof($user_array))) { /* disable */
-			print "
-				<tr>
-					<td class='textArea'>
-						<p>When you click \"Continue\" the selected User(s) will be disabled.</p>
-						<ul>$user_list</ul>
-					</td>
-				</tr>\n";
+			print "<tr>
+				<td class='textArea'>
+					<p>Click 'Continue' to disable the selected User(s).</p>
+					<p><ul>$user_list</ul></p>
+				</td>
+			</tr>\n";
 
 			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Disable User(s)'>";
 		}
@@ -390,18 +389,19 @@ function form_actions() {
 		if ((get_request_var_post('drp_action') == '5') && (sizeof($user_array))) { /* batch copy */
 			$usernames = db_fetch_assoc('SELECT id, username FROM user_auth WHERE realm = 0 ORDER BY username');
 
-			print "
-				<tr>
-					<td class='textArea'>When you click \"Continue\" you will overwrite selected the User(s) settings with the selected template User settings and permissions?  Original user Full Name, Password, Realm and Enable status will be retained, all other fields will be overwritten from Template User.<br><br></td>
+			print "<tr>
+				<td class='textArea'>
+					<p>Click 'Continue' to overwrite the User(s) settings with the selected template User settings and permissions.  The original users Full Name, Password, Realm and Enable status will be retained, all other fields will be overwritten from Template User.<br><br></td>
 				</tr><tr>
 					<td class='textArea'>
-						Template User: \n";
+						Template User: ";
 			print form_dropdown('template_user', $usernames, 'username', 'id', '', '', 0);
-			print "		</td>
+
+			print "</td>
 				</tr><tr>
 					<td class='textArea'>
-						<p>User(s) to update:
-						<ul>$user_list</ul></p>
+						<p>User(s) to update:</p>
+						<p><ul>$user_list</ul></p>
 					</td>
 				</tr>\n";
 
@@ -413,20 +413,20 @@ function form_actions() {
 		$save_html = "<input type='button' value='Return' onClick='window.history.back()'>";
 	}
 
-	print " <tr>
-			<td align='right' class='saveRow'>
-				<input type='hidden' name='action' value='actions'>";
+	print "<tr>
+		<td class='saveRow'>
+			<input type='hidden' name='action' value='actions'>";
+
 	if (get_request_var_post('drp_action') == '2') { /* copy */
-		print "				<input type='hidden' name='selected_items' value='" . $user_id . "'>\n";
+		print "<input type='hidden' name='selected_items' value='" . $user_id . "'>\n";
 	}else{
-		print "				<input type='hidden' name='selected_items' value='" . (isset($user_array) ? serialize($user_array) : '') . "'>\n";
+		print "<input type='hidden' name='selected_items' value='" . (isset($user_array) ? serialize($user_array) : '') . "'>\n";
 	}
 
-	print "				<input type='hidden' name='drp_action' value='" . get_request_var_post('drp_action') . "'>
-				$save_html
-			</td>
-		</tr>
-		";
+	print "<input type='hidden' name='drp_action' value='" . get_request_var_post('drp_action') . "'>
+		$save_html
+		</td>
+	</tr>\n";
 
 	html_end_box();
 
@@ -1776,7 +1776,7 @@ function user_edit() {
 		print "<div class='tabs'><nav><ul>\n";
 
 		foreach (array_keys($tabs) as $tab_short_name) {
-			print "<li class='subTab'><a " . (($tab_short_name == $current_tab) ? "class='selected'" : '') . 
+			print "<li class='subTab'><a class='tab" . (($tab_short_name == $current_tab) ? " selected'" : "'") . 
 				" href='" . htmlspecialchars($config['url_path'] .
 				'user_admin.php?action=user_edit&id=' . get_request_var_request('id') .
 				'&tab=' . $tab_short_name) .
@@ -1786,21 +1786,6 @@ function user_edit() {
 		api_plugin_hook('user_admin_tab');
 
 		print "</ul></nav></div>\n";
-
-		if (read_config_option('legacy_menu_nav') != 'on') { ?>
-		<script type='text/javascript'>
-
-		$('.subTab').find('a').click(function(event) {
-			event.preventDefault();
-			href = $(this).attr('href');
-			href = href+ (href.indexOf('?') > 0 ? '&':'?') + 'header=false';
-			$.get(href, function(data) {
-				$('#main').html(data);
-				applySkin();
-			});
-		});
-		</script>
-		<?php }
 	}
 
 	switch($current_tab) {
@@ -1939,22 +1924,16 @@ function user() {
 	?>
 	<script type="text/javascript">
 	function applyFilter() {
-		strURL = 'user_admin.php?rows=' + $('#rows').val();
-		strURL = strURL + '&filter=' + $('#filter').val();
-		strURL = strURL + '&page=' + $('#page').val();
-		strURL = strURL + '&header=false';
-		$.get(strURL, function(data) {
-			$('#main').html(data);
-			applySkin();
-		});
+		strURL  = 'user_admin.php?rows=' + $('#rows').val();
+		strURL += '&filter=' + $('#filter').val();
+		strURL += '&page=' + $('#page').val();
+		strURL += '&header=false';
+		loadPageNoHeader(strURL);
 	}
 
 	function clearFilter() {
 		strURL = 'user_admin.php?clear=1&header=false';
-		$.get(strURL, function(data) {
-			$('#main').html(data);
-			applySkin();
-		});
+		loadPageNoHeader(strURL);
 	}
 
 	$(function() {
@@ -2425,26 +2404,20 @@ function graph_filter($header_label) {
 	<!--
 
 	function applyFilter() {
-		strURL = 'user_admin.php?action=user_edit&tab=permsg&id=<?php print get_request_var_request('id');?>'
-		strURL = strURL + '&rows=' + $('#rows').val();
-		strURL = strURL + '&page=' + $('#page').val();
-		strURL = strURL + '&graph_template_id=' + $('#graph_template_id').val();
-		strURL = strURL + '&associated=' + $('#associated').is(':checked');
-		strURL = strURL + '&filter=' + $('#filter').val();
-		strURL = strURL + '&header=false';
-		$.get(strURL, function(data) {
-			$('#main').html(data);
-			applySkin();
-		});
+		strURL  = 'user_admin.php?action=user_edit&tab=permsg&id=<?php print get_request_var_request('id');?>'
+		strURL += '&rows=' + $('#rows').val();
+		strURL += '&page=' + $('#page').val();
+		strURL += '&graph_template_id=' + $('#graph_template_id').val();
+		strURL += '&associated=' + $('#associated').is(':checked');
+		strURL += '&filter=' + $('#filter').val();
+		strURL += '&header=false';
+		loadPageNoHeader(strURL);
 	}
 
 	function clearFilter(objForm) {
 		strURL = 'user_admin.php?action=user_edit&tab=permsg&id=<?php print get_request_var_request('id');?>&clearf=true'
 		strURL = strURL + '&header=false';
-		$.get(strURL, function(data) {
-			$('#main').html(data);
-			applySkin();
-		});
+		loadPageNoHeader(strURL);
 	}
 
 	$(function(data) {
@@ -2539,25 +2512,19 @@ function group_filter($header_label) {
 	?>
 	<script type='text/javascript'>
 	function applyFilter() {
-		strURL = 'user_admin.php?action=user_edit&tab=permsgr&id=<?php print get_request_var_request('id');?>'
-		strURL = strURL + '&rows=' + $('#rows').val();
-		strURL = strURL + '&page=' + $('#page').val();
-		strURL = strURL + '&associated=' + $('#associated').is(':checked');
-		strURL = strURL + '&filter=' + $('#filter').val();
-		strURL = strURL + '&header=false';
-		$.get(strURL, function(data) {
-			$('#main').html(data);
-			applySkin();
-		});
+		strURL  = 'user_admin.php?action=user_edit&tab=permsgr&id=<?php print get_request_var_request('id');?>'
+		strURL += '&rows=' + $('#rows').val();
+		strURL += '&page=' + $('#page').val();
+		strURL += '&associated=' + $('#associated').is(':checked');
+		strURL += '&filter=' + $('#filter').val();
+		strURL += '&header=false';
+		loadPageNoHeader(strURL);
 	}
 
 	function clearFilter() {
 		strURL = 'user_admin.php?action=user_edit&tab=permsgr&id=<?php print get_request_var_request('id');?>&clearf=true'
 		strURL = strURL + '&header=false';
-		$.get(strURL, function(data) {
-			$('#main').html(data);
-			applySkin();
-		});
+		loadPageNoHeader(strURL);
 	}
 
 	$(function(data) {
@@ -2629,26 +2596,20 @@ function device_filter($header_label) {
 	?>
 	<script type='text/javascript'>
 	function applyFilter() {
-		strURL = 'user_admin.php?action=user_edit&tab=permsd&id=<?php print get_request_var_request('id');?>'
-		strURL = strURL + '&rows=' + $('#rows').val();
-		strURL = strURL + '&page=' + $('#page').val();
-		strURL = strURL + '&host_template_id=' + $('#host_template_id').val();
-		strURL = strURL + '&associated=' + $('#associated').is(':checked');
-		strURL = strURL + '&filter=' + $('#filter').val();
-		strURL = strURL + '&header=false';
-		$.get(strURL, function(data) {
-			$('#main').html(data);
-			applySkin();
-		});
+		strURL  = 'user_admin.php?action=user_edit&tab=permsd&id=<?php print get_request_var_request('id');?>'
+		strURL += '&rows=' + $('#rows').val();
+		strURL += '&page=' + $('#page').val();
+		strURL += '&host_template_id=' + $('#host_template_id').val();
+		strURL += '&associated=' + $('#associated').is(':checked');
+		strURL += '&filter=' + $('#filter').val();
+		strURL += '&header=false';
+		loadPageNoHeader(strURL);
 	}
 
 	function clearFilter(objForm) {
 		strURL = 'user_admin.php?action=user_edit&tab=permsd&id=<?php print get_request_var_request('id');?>&clearf=true'
 		strURL = strURL + '&header=false';
-		$.get(strURL, function(data) {
-			$('#main').html(data);
-			applySkin();
-		});
+		loadPageNoHeader(strURL);
 	}
 
 	$(function(data) {
@@ -2738,25 +2699,19 @@ function template_filter($header_label) {
 	?>
 	<script type='text/javascript'>
 	function applyFilter() {
-		strURL = 'user_admin.php?action=user_edit&tab=permste&id=<?php print get_request_var_request('id');?>'
-		strURL = strURL + '&rows=' + $('#rows').val();
-		strURL = strURL + '&page=' + $('#page').val();
-		strURL = strURL + '&associated=' + $('#associated').is(':checked');
-		strURL = strURL + '&filter=' + $('#filter').val();
-		strURL = strURL + '&header=false';
-		$.get(strURL, function(data) {
-			$('#main').html(data);
-			applySkin();
-		});
+		strURL  = 'user_admin.php?action=user_edit&tab=permste&id=<?php print get_request_var_request('id');?>'
+		strURL += '&rows=' + $('#rows').val();
+		strURL += '&page=' + $('#page').val();
+		strURL += '&associated=' + $('#associated').is(':checked');
+		strURL += '&filter=' + $('#filter').val();
+		strURL += '&header=false';
+		loadPageNoHeader(strURL);
 	}
 
 	function clearFilter() {
 		strURL = 'user_admin.php?action=user_edit&tab=permste&id=<?php print get_request_var_request('id');?>&clearf=true'
 		strURL = strURL + '&header=false';
-		$.get(strURL, function(data) {
-			$('#main').html(data);
-			applySkin();
-		});
+		loadPageNoHeader(strURL);
 	}
 
 	$(function(data) {
@@ -2828,25 +2783,19 @@ function tree_filter($header_label) {
 	?>
 	<script type='text/javascript'>
 	function applyFilter() {
-		strURL = 'user_admin.php?action=user_edit&tab=permstr&id=<?php print get_request_var_request('id');?>'
-		strURL = strURL + '&rows=' + $('#rows').val();
-		strURL = strURL + '&page=' + $('#page').val();
-		strURL = strURL + '&associated=' + $('#associated').is(':checked');
-		strURL = strURL + '&filter=' + $('#filter').val();
-		strURL = strURL + '&header=false';
-		$.get(strURL, function(data) {
-			$('#main').html(data);
-			applySkin();
-		});
+		strURL  = 'user_admin.php?action=user_edit&tab=permstr&id=<?php print get_request_var_request('id');?>'
+		strURL += '&rows=' + $('#rows').val();
+		strURL += '&page=' + $('#page').val();
+		strURL += '&associated=' + $('#associated').is(':checked');
+		strURL += '&filter=' + $('#filter').val();
+		strURL += '&header=false';
+		loadPageNoHeader(strURL);
 	}
 
 	function clearFilter() {
 		strURL = 'user_admin.php?action=user_edit&tab=permstr&id=<?php print get_request_var_request('id');?>&clearf=true'
 		strURL = strURL + '&header=false';
-		$.get(strURL, function(data) {
-			$('#main').html(data);
-			applySkin();
-		});
+		loadPageNoHeader(strURL);
 	}
 
 	$(function(data) {
@@ -2918,25 +2867,19 @@ function member_filter($header_label) {
 	?>
 	<script type='text/javascript'>
 	function applyFilter(objForm) {
-		strURL = 'user_admin.php?action=user_edit&tab=members&id=<?php print get_request_var_request('id');?>'
-		strURL = strURL + '&rows=' + $('#rows').val();
-		strURL = strURL + '&page=' + $('#page').val();
-		strURL = strURL + '&associated=' + $('#associated').is(':checked');
-		strURL = strURL + '&filter=' + $('#filter').val();
-		strURL = strURL + '&header=false';
-		$.get(strURL, function(data) {
-			$('#main').html(data);
-			applySkin();
-		});
+		strURL  = 'user_admin.php?action=user_edit&tab=members&id=<?php print get_request_var_request('id');?>'
+		strURL += '&rows=' + $('#rows').val();
+		strURL += '&page=' + $('#page').val();
+		strURL += '&associated=' + $('#associated').is(':checked');
+		strURL += '&filter=' + $('#filter').val();
+		strURL += '&header=false';
+		loadPageNoHeader(strURL);
 	}
 
 	function clearFilter(objForm) {
 		strURL = 'user_admin.php?action=user_edit&tab=members&id=<?php print get_request_var_request('id');?>&clearf=true'
 		strURL = strURL + '&header=false';
-		$.get(strURL, function(data) {
-			$('#main').html(data);
-			applySkin();
-		});
+		loadPageNoHeader(strURL);
 	}
 
 	$(function(data) {

@@ -592,111 +592,106 @@ function form_actions() {
 			}
 
 			print "	<tr>
-					<td class='textArea'>
-						<p>When you click \"Continue\", the following Graph(s) will be deleted.  Please note, Data Source(s) should be deleted only if they are only used by these Graph(s)
-						and not others.</p>
-						<p><ul>$graph_list</ul></p>";
+				<td class='textArea'>
+					<p>Click 'Continue' to delete the following Graph(s).</p>
+					<p><ul>$graph_list</ul></p>";
 
-						if (isset($data_sources) && sizeof($data_sources)) {
-							print "<tr><td class='textArea'><p>The following Data Source(s) are in use by these Graph(s):</p>\n";
+			if (isset($data_sources) && sizeof($data_sources)) {
+				print "<tr><td class='textArea'><p>The following Data Source(s) are in use by these Graph(s):</p>\n";
 
-							print '<ul>';
-							foreach ($data_sources as $data_source) {
-								print '<li><strong>' . $data_source['name_cache'] . "</strong></li>\n";
-							}
-							print '</ul>';
+				print '<p><ul>';
+				foreach ($data_sources as $data_source) {
+					print '<li><strong>' . $data_source['name_cache'] . "</strong></li>\n";
+				}
+				print '</ul></p>';
 
-							print '<br>';
-							form_radio_button('delete_type', '1', '2', "Leave the Data Source(s) untouched.  Not applicable for Graphs created under 'New Graphs' or WHERE the Graphs were created automatically.", '2'); print '<br>';
-							form_radio_button('delete_type', '2', '2', 'Delete all <strong>Data Source(s)</strong> referenced by these Graph(s).', '2'); print '<br>';
-							print '</td></tr>';
-						}
-					print "
-					</td>
-				</tr>\n
-				";
+				print '<br>';
+				form_radio_button('delete_type', '1', '2', "Leave the Data Source(s) untouched.  Not applicable for Graphs created under 'New Graphs' or WHERE the Graphs were created automatically.", '2'); print '<br>';
+				form_radio_button('delete_type', '2', '2', 'Delete all <strong>Data Source(s)</strong> referenced by these Graph(s).', '2'); print '<br>';
+				print '</td></tr>';
+			}
+
+			print "</td>
+				</tr>\n";
+
 			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Delete Graph(s)'>";
 		}elseif ($_POST['drp_action'] == '2') { /* change graph template */
-			print "	<tr>
-					<td class='textArea'>
-						<p>Choose a Graph Template and click \"Continue\" to change the Graph Template for
-						the following Graph(s). Be aware that all warnings will be suppressed during the
-						conversion, so Graph data loss is possible.</p>
-						<p><ul>$graph_list</ul></p>
-						<p><strong>New Graph Template:</strong><br>"; form_dropdown('graph_template_id',db_fetch_assoc('SELECT graph_templates.id,graph_templates.name FROM graph_templates ORDER BY name'),'name','id','','','0'); print "</p>
-					</td>
-				</tr>\n
-				";
+			print "<tr>
+				<td class='textArea'>
+					<p>Choose a Graph Template and click \"Continue\" to change the Graph Template for
+					the following Graph(s). Be aware that all warnings will be suppressed during the
+					conversion, so Graph data loss is possible.</p>
+					<p><ul>$graph_list</ul></p>
+					<p><strong>New Graph Template:</strong><br>"; form_dropdown('graph_template_id',db_fetch_assoc('SELECT graph_templates.id,graph_templates.name FROM graph_templates ORDER BY name'),'name','id','','','0'); print "</p>
+				</td>
+			</tr>\n";
+
 			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Change Graph Template'>";
 		}elseif ($_POST['drp_action'] == '3') { /* duplicate */
-			print "	<tr>
-					<td class='textArea'>
-						<p>When you click \"Continue\", the following Graph(s) will be duplicated. You can
-						optionally change the title format for the new Graph(s).</p>
-						<p><ul>$graph_list</ul></p>
-						<p><strong>Title Format:</strong><br>"; form_text_box('title_format', '<graph_title> (1)', '', '255', '30', 'text'); print "</p>
-					</td>
-				</tr>\n
-				";
+			print "<tr>
+				<td class='textArea'>
+					<p>Click 'Continue' to duplicate the following Graph(s). You can
+					optionally change the title format for the new Graph(s).</p>
+					<p><ul>$graph_list</ul></p>
+					<p><strong>Title Format:</strong><br>"; form_text_box('title_format', '<graph_title> (1)', '', '255', '30', 'text'); print "</p>
+				</td>
+			</tr>\n";
+
 			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Duplicate Graph(s)'>";
 		}elseif ($_POST['drp_action'] == '4') { /* graph -> graph template */
-			print "	<tr>
-					<td class='textArea'>
-						<p>When you click \"Continue\", the following Graph(s) will be converted into Graph Template(s).
-						You can optionally change the title format for the new Graph Template(s).</p>
-						<p><ul>$graph_list</ul></p>
-						<p><strong>Title Format:</strong><br>"; form_text_box('title_format', '<graph_title> Template', '', '255', '30', 'text'); print "</p>
-					</td>
-				</tr>\n
-				";
+			print "<tr>
+				<td class='textArea'>
+					<p>Click 'Continue' to convert the following Graph(s) into Graph Template(s).
+					You can optionally change the title format for the new Graph Template(s).</p>
+					<p><ul>$graph_list</ul></p>
+					<p><strong>Title Format:</strong><br>"; form_text_box('title_format', '<graph_title> Template', '', '255', '30', 'text'); print "</p>
+				</td>
+			</tr>\n";
+
 			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Convert to Graph Template'>";
 		}elseif (preg_match('/^tr_([0-9]+)$/', $_POST['drp_action'], $matches)) { /* place on tree */
-			print "	<tr>
-					<td class='textArea'>
-						<p>When you click \"Continue\", the following Graph(s) will be placed under the Tree Branch selected below.</p>
-						<p><ul>$graph_list</ul></p>
-						<p><strong>Destination Branch:</strong><br>"; grow_dropdown_tree($matches[1], '0', 'tree_item_id', '0'); print "</p>
-					</td>
-				</tr>\n
-				<input type='hidden' name='tree_id' value='" . $matches[1] . "'>\n
-				";
+			print "<tr>
+				<td class='textArea'>
+					<p>Click 'Continue' to place the following Graph(s) under the Tree Branch selected below.</p>
+					<p><ul>$graph_list</ul></p>
+					<p><strong>Destination Branch:</strong><br>"; grow_dropdown_tree($matches[1], '0', 'tree_item_id', '0'); print "</p>
+				</td>
+				</tr>
+				<input type='hidden' name='tree_id' value='" . $matches[1] . "'>\n";
+
 			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Place Graph(s) on Tree'>";
 		}elseif ($_POST['drp_action'] == '5') { /* change host */
-			print "	<tr>
-					<td class='textArea'>
-						<p>Choose a new Device for these Graph(s) and click \"Continue\"</p>
-						<p><ul>$graph_list</ul></p>
-						<p><strong>New Device:</strong><br>"; form_dropdown('host_id',db_fetch_assoc("SELECT id,CONCAT_WS('',description,' (',hostname,')') as name FROM host ORDER BY description,hostname"),'name','id','','','0'); print "</p>
-					</td>
-				</tr>\n
-				";
+			print "<tr>
+				<td class='textArea'>
+					<p>Choose a new Device for these Graph(s) and click \"Continue\"</p>
+					<p><ul>$graph_list</ul></p>
+					<p><strong>New Device:</strong><br>"; form_dropdown('host_id',db_fetch_assoc("SELECT id,CONCAT_WS('',description,' (',hostname,')') as name FROM host ORDER BY description,hostname"),'name','id','','','0'); print "</p>
+				</td>
+			</tr>\n";
+
 			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Change Graph(s) Associated Device'>";
 		}elseif ($_POST['drp_action'] == '6') { /* reapply suggested naming to host */
-			print "	<tr>
-					<td class='textArea'>
-						<p>When you click \"Continue\", the following Graph(s) will have thier suggested naming convensions
-						recalculated and applied to the Graph(s).</p>
-						<p><ul>$graph_list</ul></p>
-					</td>
-				</tr>\n
-				";
+			print "<tr>
+				<td class='textArea'>
+					<p>Click 'Continue' to re-apply suggested naming to the following Graph(s).</p>
+					<p><ul>$graph_list</ul></p>
+				</td>
+			</tr>\n";
+
 			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Reapply Suggested Naming to Graph(s)'>";
 		}elseif ($_POST['drp_action'] == '7') { /* resize graphs */
-			print "	<tr>
-					<td class='textArea'>
-						<p>When you click \"Continue\", the following Graph(s) will be resized per your specifications.</p>
-						<p><ul>$graph_list</ul></p>
-						<p><strong>Graph Height:</strong><br>"; form_text_box('graph_height', '', '', '255', '30', 'text'); print '</p>
-						<p><strong>Graph Width:</strong><br>'; form_text_box('graph_width', '', '', '255', '30', 'text'); print "</p>
-					</td>
-				</tr>\n
-				";
+			print "<tr>
+				<td class='textArea'>
+					<p>Click 'Continue' to resize the following Graph(s).</p>
+					<p><ul>$graph_list</ul></p>
+					<p><strong>Graph Height:</strong><br>"; form_text_box('graph_height', '', '', '255', '30', 'text'); print '</p>
+					<p><strong>Graph Width:</strong><br>'; form_text_box('graph_width', '', '', '255', '30', 'text'); print "</p>
+				</td>
+			</tr>\n";
 
 			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Resize Selected Graph(s)'>";
 		} elseif ($_POST['drp_action'] == 'aggregate') {
 			include_once('./lib/api_aggregate.php');
-
-			cacti_log(__FUNCTION__ . '  called. Parameters: ' . serialize($_POST), true, 'AGGREGATE', POLLER_VERBOSITY_DEVDBG);
 
 			/* initialize return code and graphs array */
 			$return_code    = false;
@@ -705,19 +700,14 @@ function form_actions() {
 			$graph_template = '';
 
 			if (aggregate_get_data_sources($_POST, $data_sources, $graph_template)) {
-				html_end_box();
-
 				# provide a new prefix for GPRINT lines
 				$gprint_prefix = '|host_hostname|';
-
-				# open a new html_start_box ...
-				html_start_box('', '100%', '', '3', 'center', '');
 
 				/* list affected graphs */
 				print '<tr>';
 				print "<td class='textArea'>
-					<p>Are you sure you want to aggregate the following graphs?</p>
-					<ul>" . $_POST['graph_list'] . "</ul>
+					<p>Click 'Continue' to create an Aggreate Graph from the selected Graph(s)</p>
+					<p><ul>" . $_POST['graph_list'] . "</ul></p>
 				</td>\n";
 
 				/* list affected data sources */
@@ -744,8 +734,6 @@ function form_actions() {
 					'fields' => inject_form_variables($struct_aggregate, $_aggregate_defaults)
 				));
 
-				html_end_box();
-
 				# draw all graph items of first graph, including a html_start_box
 				draw_aggregate_graph_items_list(0, $graph_template);
 
@@ -754,7 +742,6 @@ function form_actions() {
 
 				?>
 				<script type='text/javascript'>
-				<!--
 				function changeTotals() {
 					switch ($('#aggregate_total').val()) {
 						case '<?php print AGGREGATE_TOTAL_NONE;?>':
@@ -796,14 +783,13 @@ function form_actions() {
 
 					changeTotals();
 				});
-				-->
 				</script>
 				<?php
+
+				$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Resize Selected Graph(s)'>";
 			}
 		}elseif ($_POST['drp_action'] == 'aggregate_template') { /* aggregate template */
 			include_once('./lib/api_aggregate.php');
-
-			cacti_log(__FUNCTION__ . '  called. Parameters: ' . serialize($_POST), true, 'AGGREGATE', POLLER_VERBOSITY_DEVDBG);
 
 			/* initialize return code and graphs array */
 			$graphs         = array();
@@ -819,7 +805,7 @@ function form_actions() {
 					print "<tr>
 						<td class='textArea'>
 							<p>Select the Aggregate Template to use and press 'Continue' to create your Aggregate Graph.  Otherwise press 'Cancel' to return.</p>
-							<ul>" . $graph_list . "</ul>
+							<p><ul>" . $graph_list . "</ul></p>
 						</td>
 					</tr>\n";
 
@@ -831,50 +817,35 @@ function form_actions() {
 							<td><strong>Aggregate Template:</strong></td>
 							<td>
 								<select name='aggregate_template_id'>\n";
-									html_create_list($aggregate_templates, 'name', 'id', $aggregate_templates[0]['id']);
-						print "</select>
-							</td>
-						</tr></table></td></tr>\n";
+
+					html_create_list($aggregate_templates, 'name', 'id', $aggregate_templates[0]['id']);
+
+					print "</select>
+						</td>
+					</tr></table></td></tr>\n";
 
 					$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Create Aggregate'>";
-
-					# now everything is fine
 				}else{
-					/* present an error message as there are no templates */
 					print "<tr>
-						<td colspan='2' class='textArea'>
+						<td class='textArea'>
 							<p>There are presently no Aggregate Templates defined for this Graph Template.  Please either first
 							create an Aggregate Template for the selected Graph's Graph Template and try again, or 
 							simply crease an un-templated Aggregate Graph.</p>
 						</td>
 					</tr>\n";
 
-					html_end_box();
-
-					# again, a new html_start_box. Using the one from above would yield ugly formatted NO and YES buttons
-					html_start_box("<strong>Press 'Return' to return</strong>", '60%', '', '3', 'center', '');
-
-					?>
-					<script type='text/javascript'>
-					$().ready(function() {
-						$('#continue').hide();
-						$('#cancel').attr('value', 'Return');
-					});
-					</script>
-					<?php
+					$save_html = "<input type='button' value='Return' onClick='window.history.back()'>";
 				}
 			}
-		}elseif ($save['drp_action'] == 8) { /* automation */
-			cacti_log('automation_graph_action_prepare called: ' . $save['drp_action'], true, 'AUTOMATION TRACE', POLLER_VERBOSITY_MEDIUM);
+		}elseif ($_POST['drp_action'] == 8) { /* automation */
+			print "<tr>
+				<td class='textArea'>
+					<p>Click 'Continue' to apply Automation Rules to the following Graphs.</p>
+					<p><ul>$graph_list</ul></p>
+				</td>
+			</tr>\n";
 
-			/* find out which (if any) hosts have been checked, so we can tell the user */
-			if (isset($save['graph_array'])) {
-				print '<tr>';
-				print "<td class='textArea'>
-					<p>Are you sure you want to apply <strong>Automation Rules</strong> to the following graphs?</p>
-					<ul>" . $save['graph_list'] . '</ul></td>';
-				print '</tr>';
-			}
+			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Apply Automation Rules'>";
 		} else {
 			$save['drp_action'] = $_POST['drp_action'];
 			$save['graph_list'] = $graph_list;
@@ -885,20 +856,19 @@ function form_actions() {
 			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue'>";
 		}
 	}else{
-		print "<tr><td class='even'><span class='textError'>You must select at least one graph.</span></td></tr>\n";
+		print "<tr><td class='even'><span class='textError'>You must select at least one Graph.</span></td></tr>\n";
 
 		$save_html = "<input type='button' value='Return' onClick='window.history.back()'>";
 	}
 
-	print "	<tr>
-			<td align='right' class='saveRow'>
-				<input type='hidden' name='action' value='actions'>
-				<input type='hidden' name='selected_items' value='" . (isset($graph_array) ? serialize($graph_array) : '') . "'>
-				<input type='hidden' name='drp_action' value='" . $_POST['drp_action'] . "'>
-				$save_html
-			</td>
-		</tr>
-		";
+	print "<tr>
+		<td class='saveRow'>
+			<input type='hidden' name='action' value='actions'>
+			<input type='hidden' name='selected_items' value='" . (isset($graph_array) ? serialize($graph_array) : '') . "'>
+			<input type='hidden' name='drp_action' value='" . $_POST['drp_action'] . "'>
+			$save_html
+		</td>
+	</tr>\n";
 
 	html_end_box();
 
@@ -1043,10 +1013,10 @@ function graph_diff() {
 
 		if ((sizeof($graph_template_items) > sizeof($graph_items)) && ($i >= sizeof($graph_items))) {
 			$mode = 'add';
-			$user_message = "When you click save, the items marked with a '<strong>+</strong>' will be added <strong>(Recommended)</strong>.";
+			$user_message = "Click save, the items marked with a '<strong>+</strong>' will be added <strong>(Recommended)</strong>.";
 		}elseif ((sizeof($graph_template_items) < sizeof($graph_items)) && ($i >= sizeof($graph_template_items))) {
 			$mode = 'delete';
-			$user_message = "When you click save, the items marked with a '<strong>-</strong>' will be removed <strong>(Recommended)</strong>.";
+			$user_message = "Click save, the items marked with a '<strong>-</strong>' will be removed <strong>(Recommended)</strong>.";
 		}
 
 		/* here is the fun meshing part. first we check the graph template to see if there is an input
@@ -1167,7 +1137,7 @@ function graph_diff() {
 		<tr>
 			<td class="textArea">
 				<input type='radio' name='type' value='1' checked>&nbsp;<?php print $user_message;?><br>
-				<input type='radio' name='type' value='2'>&nbsp;When you click save, the graph items will remain untouched (could cause inconsistencies).
+				<input type='radio' name='type' value='2'>&nbsp;Click save, the graph items will remain untouched (could cause inconsistencies).
 			</td>
 		</tr>
 	</table>
@@ -1433,10 +1403,7 @@ function graph_edit() {
 		$('#lockid').click(function(event) {
 			event.preventDefault;
 
-			$.get('graphs.php?action=lock&header=false&id='+$('#local_graph_id').val(), function(data) {
-				$('#main').html(data);
-				applySkin();
-			});
+			loadPageNoHeader('graphs.php?action=lock&header=false&id='+$('#local_graph_id').val());
 		});
 	});
 
@@ -1520,24 +1487,18 @@ function graph() {
 	<script type="text/javascript">
 
 	function applyFilter() {
-		strURL = 'graphs.php?host_id=' + $('#host_id').val();
-		strURL = strURL + '&rows=' + $('#rows').val();
-		strURL = strURL + '&page=' + $('#page').val();
-		strURL = strURL + '&filter=' + $('#filter').val();
-		strURL = strURL + '&template_id=' + $('#template_id').val();
-		strURL = strURL + '&header=false';
-		$.get(strURL, function(data) {
-			$('#main').html(data);
-			applySkin();
-		});
+		strURL  = 'graphs.php?host_id=' + $('#host_id').val();
+		strURL += '&rows=' + $('#rows').val();
+		strURL += '&page=' + $('#page').val();
+		strURL += '&filter=' + $('#filter').val();
+		strURL += '&template_id=' + $('#template_id').val();
+		strURL += '&header=false';
+		loadPageNoHeader(strURL);
 	}
 
 	function clearFilter() {
 		strURL = 'graphs.php?clear=1&header=false';
-		$.get(strURL, function(data) {
-			$('#main').html(data);
-			applySkin();
-		});
+		loadPageNoHeader(strURL);
 	}
 
 	$(function() {

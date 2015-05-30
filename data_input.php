@@ -200,13 +200,12 @@ function form_actions() {
 		if ($_POST['drp_action'] == '1') { /* delete */
 			$graphs = array();
 
-			print "
-				<tr>
-					<td class='textArea' class='odd'>
-						<p>When you click \"Continue\", the following Data Input Method(s) will be deleted.</p>
-						<p><ul>$di_list</ul></p>
-					</td>
-				</tr>\n";
+			print "<tr>
+				<td class='textArea' class='odd'>
+					<p>Click 'Continue' to delete the following Data Input Method(s).</p>
+					<p><ul>$di_list</ul></p>
+				</td>
+			</tr>\n";
 		}
 
 		$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Delete Data Input Method(s)'>";
@@ -215,15 +214,14 @@ function form_actions() {
 		$save_html = "<input type='button' value='Return' onClick='window.history.back()'>";
 	}
 
-	print "	<tr>
-			<td align='right' class='saveRow'>
-				<input type='hidden' name='action' value='actions'>
-				<input type='hidden' name='selected_items' value='" . (isset($di_array) ? serialize($di_array) : '') . "'>
-				<input type='hidden' name='drp_action' value='" . $_POST['drp_action'] . "'>
-				$save_html
-			</td>
-		</tr>
-		";
+	print "<tr>
+		<td class='saveRow'>
+			<input type='hidden' name='action' value='actions'>
+			<input type='hidden' name='selected_items' value='" . (isset($di_array) ? serialize($di_array) : '') . "'>
+			<input type='hidden' name='drp_action' value='" . $_POST['drp_action'] . "'>
+			$save_html
+		</td>
+	</tr>\n";
 
 	html_end_box();
 
@@ -564,18 +562,12 @@ function data() {
 		<script type='text/javascript'>
 		function applyFilter() {
 			strURL = 'data_input.php?filter='+$('#filter').val()+'&rows='+$('#rows').val()+'&page='+$('#page').val()+'&header=false';
-			$.get(strURL, function(data) {
-				$('#main').html(data);
-				applySkin();
-			});
+			loadPageNoHeader(strURL);
 		}
 
 		function clearFilter() {
 			strURL = 'data_input.php?clear=1&header=false';
-			$.get(strURL, function(data) {
-				$('#main').html(data);
-				applySkin();
-			});
+			loadPageNoHeader(strURL);
 		}
 
 		$(function() {

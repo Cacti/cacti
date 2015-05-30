@@ -994,10 +994,8 @@ case 'list':
 	});
 
 	function clearFilter() {
-		$.get('graph_view.php?action=list&header=false&clear=1', function(data) {
-			$('#main').html(data);
-			applySkin();
-		});
+		strURL = 'graph_view.php?action=list&header=false&clear=1';
+		loadPageNoHeader(strURL);
 	}
 
 	function applyFilter() {
@@ -1008,10 +1006,7 @@ case 'list':
 		strURL += '&filter=' + $('#filter').val();
 		strURL += '&page=' + $('#page').val();
 		strURL += url_graph('');
-		$.get(strURL, function(data) {
-			$('#main').html(data);
-			applySkin();
-		});
+		loadPageNoHeader(strURL);
 	}
 
 	function initializeChecks() {

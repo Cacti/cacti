@@ -330,10 +330,7 @@ function settings() {
 			href='<?php  print $_SERVER['HTTP_REFERER'];?>';
 			href=href+(href.indexOf('?') > 0 ? '&':'?')+'header=false';
 			$.post('auth_profile.php?header=false', $('input, select, textarea').serialize()).done(function(data) {
-				$.get('auth_profile.php?action=noreturn&header=false', function(data) {
-					$('#main').html(data);
-					applySkin();
-				});
+				loadPageNoHeader('auth_profile.php?action=noreturn&header=false');
 			});
 		});
 

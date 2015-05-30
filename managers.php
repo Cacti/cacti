@@ -114,25 +114,17 @@ function manager(){
 
 	?>
 	<script type="text/javascript">
-	<!--
-
 	function applyFilter() {
-		strURL = 'managers.php?filter=' + $('#filter').val();
-		strURL = strURL + '&rows=' + $('#rows').val();
-		strURL = strURL + '&page=' + $('#page').val();
-		strURL = strURL + '&header=false';
-		$.get(strURL, function(data) {
-			$('#main').html(data);
-			applySkin();
-		});
+		strURL  = 'managers.php?filter=' + $('#filter').val();
+		strURL += '&rows=' + $('#rows').val();
+		strURL += '&page=' + $('#page').val();
+		strURL += '&header=false';
+		loadPageNoHeader(strURL);
 	}
 
 	function clearFilter() {
 		strURL = 'managers.php?clear=1&header=false';
-		$.get(strURL, function(data) {
-			$('#main').html(data);
-			applySkin();
-		});
+		loadPageNoHeader(strURL);
 	}
 
 	$(function(data) {
@@ -149,8 +141,6 @@ function manager(){
 			applyFilter();
 		});
 	});
-
-	-->
 	</script>
 	<?php
 
@@ -315,12 +305,10 @@ function manager_edit() {
 
 		$('.subTab').find('a').click(function(event) {
 			event.preventDefault();
-			href = $(this).attr('href');
-			href = href+ (href.indexOf('?') > 0 ? '&':'?') + 'header=false';
-			$.get(href, function(data) {
-				$('#main').html(data);
-				applySkin();
-			});
+
+			strURL  = $(this).attr('href');
+			strURL += (strURL.indexOf('?') > 0 ? '&':'?') + 'header=false';
+			loadPageNoHeader(strURL);
 		});
 		</script>
 		<?php }
@@ -450,25 +438,19 @@ function manager_notifications($id){
 	<script type="text/javascript">
 
 	function applyFilter() {
-		strURL = 'managers.php?action=edit&tab=notifications&id=<?php echo $id; ?>&filter=' + $('#filter').val();
-		strURL = strURL + '&mib=' + $('#mib').val();
-		strURL = strURL + '&rows=' + $('#rows').val();
-		strURL = strURL + '&filter=' + $('#filter').val();
-		strURL = strURL + '&page=' + $('#page').val();
-		strURL = strURL + '&header=false';
+		strURL  = 'managers.php?action=edit&tab=notifications&id=<?php echo $id; ?>&filter=' + $('#filter').val();
+		strURL += '&mib=' + $('#mib').val();
+		strURL += '&rows=' + $('#rows').val();
+		strURL += '&filter=' + $('#filter').val();
+		strURL += '&page=' + $('#page').val();
+		strURL += '&header=false';
 
-		$.get(strURL, function(data) {
-			$('#main').html(data);
-			applySkin();
-		});
-}
+		loadPageNoHeader(strURL);
+	}
 
 	function clearFilter() {
 		strURL = 'managers.php?action=edit&tab=notifications&id=<?php echo $id; ?>&clear=1&header=false';
-		$.get(strURL, function(data) {
-			$('#main').html(data);
-			applySkin();
-		});
+		loadPageNoHeader(strURL);
 	}
 
 	$(function(data) {
@@ -944,27 +926,28 @@ function form_actions(){
 			print "<form action='managers.php' method='post'>\n";
 
 			if (sizeof($selected_items)) {
-				print "	<tr>
-						<td class='textArea'>
-							<p>When you click \"Continue\", the following notification receiver(s) will be " . strtolower($manager_actions[$_POST['drp_action']]) . "d.</p>
-							<ul>$list</ul>
-						</td>
-					</tr>\n";
-				$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='" . $manager_actions[$_POST['drp_action']] . " Notification Receiver(s)'>";
+				print "<tr>
+					<td class='textArea'>
+						<p>Click 'Continue' to " . strtolower($manager_actions[$_POST['drp_action']]) . " the following Notification Receiver(s).</p>
+						<p><ul>$list</ul></p>
+					</td>
+				</tr>\n";
+
+				$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'><input type='submit' value='Continue' title='" . $manager_actions[$_POST['drp_action']] . " Notification Receiver(s)'>";
 			} else {
-				print "<tr><td class='even'><span class='textError'>You must select at least one notification receiver.</span></td></tr>\n";
+				print "<tr><td class='even'><span class='textError'>You must select at least one Notification Receiver.</span></td></tr>\n";
 				$save_html = "<input type='button' value='Return' onClick='window.history.back()'>";
 			}
 
-			print "	<tr>
-						<td align='right' class='saveRow'>
-						<input type='hidden' name='action' value='actions'>
-						<input type='hidden' name='action_receivers' value='1'>
-						<input type='hidden' name='selected_items' value='" . (isset($selected_items) ? serialize($selected_items) : '') . "'>
-						<input type='hidden' name='drp_action' value='" . $_POST['drp_action'] . "'>
-							$save_html
-						</td>
-					</tr>\n";
+			print "<tr>
+				<td class='saveRow'>
+				<input type='hidden' name='action' value='actions'>
+				<input type='hidden' name='action_receivers' value='1'>
+				<input type='hidden' name='selected_items' value='" . (isset($selected_items) ? serialize($selected_items) : '') . "'>
+				<input type='hidden' name='drp_action' value='" . $_POST['drp_action'] . "'>
+				$save_html
+				</td>
+			</tr>\n";
 
 			html_end_box();
 
@@ -994,29 +977,30 @@ function form_actions(){
 
 			if (sizeof($selected_items)) {
 				$msg = ($_POST['drp_action'] == 1)
-					 ? 'When you click "Continue", events for following notification objects will be forwarded to this noticification receiver.'
-					 : "When you click \"Continue\", events for following notification objects won't be forwarded to this noticification receiver any longer.";
+					 ? "Click 'Continue' to forward the following Notification Objects to this Noticification Receiver."
+					 : "Click 'Continue' to disable forwarding the following Notification Objects to this Noticification Receiver.";
 
-				print "	<tr>
-							<td class='textArea'>
-								<p>$msg</p>
-								<ul>$list</ul>
-							</td>
-						</tr>\n";
+				print "<tr>
+					<td class='textArea'>
+						<p>$msg</p>
+						<p><ul>$list</ul></p>
+					</td>
+				</tr>\n";
+
 				$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Disable Notification Objects'>";
 			} else {
 				print "<tr><td><span class='textError'>You must select at least one notification object.</span></td></tr>\n";
 				$save_html = "<input type='button' value='Return' onClick='window.history.back()'>";
 			}
 
-			print "	<tr>
-					<td align='right' class='saveRow'>
-					<input type='hidden' name='action' value='actions'>
-					<input type='hidden' name='action_receiver_notifications' value='1'>
-					<input type='hidden' name='selected_items' value='" . (isset($selected_items) ? serialize($selected_items) : '') . "'>
-					<input type='hidden' name='id' value='" . $_POST['id'] . "'>
-					<input type='hidden' name='drp_action' value='" . $_POST['drp_action'] . "'>
-					$save_html
+			print "<tr>
+				<td class='saveRow'>
+				<input type='hidden' name='action' value='actions'>
+				<input type='hidden' name='action_receiver_notifications' value='1'>
+				<input type='hidden' name='selected_items' value='" . (isset($selected_items) ? serialize($selected_items) : '') . "'>
+				<input type='hidden' name='id' value='" . $_POST['id'] . "'>
+				<input type='hidden' name='drp_action' value='" . $_POST['drp_action'] . "'>
+				$save_html
 				</td>
 			</tr>\n";
 
