@@ -73,10 +73,10 @@ $page_title = api_plugin_hook_function('page_title', draw_navigation_text('title
 <table style='width:100%;'>
 <?php if ($oper_mode == OPER_MODE_NATIVE) { ;?>
 	<tr class='cactiPageHead noprint'>
-		<td class='cactiConsolePageHeadBackdrop' valign='bottom' colspan='3'>
-			<table>
+		<td class='cactiConsolePageHeadBackdrop'>
+			<table style='width:100%;vertical-align:bottom;'>
 				<tr>
-					<td id='tabs' valign='bottom'>
+					<td id='tabs'>
 						<?php html_show_tabs_left(true);?>
 					</td>
 				</tr>
@@ -105,7 +105,7 @@ $page_title = api_plugin_hook_function('page_title', draw_navigation_text('title
 </table>
 <table style='width:100%;'>
 	<tr><?php if (isset($user_menu) && is_array($user_menu)) {?>
-		<td id='navigation' class='cactiConsoleNavigationArea' valign='top'>
+		<td id='navigation' class='cactiConsoleNavigationArea' style='display:none;veritcal-align:top;width:200px;'>
 			<table>
 				<?php draw_menu($user_menu);?>
 				<tr>
@@ -115,8 +115,8 @@ $page_title = api_plugin_hook_function('page_title', draw_navigation_text('title
 				</tr>
 			</table>
 		</td><?php }?>
-		<td id='navigation_right' style='display:none;' class='cactiConsoleContentArea' width='100%' valign='top'><div style='display:none;' id='message_container'><?php display_output_messages();?></div><div style='position:relative;' id='main'>
+		<td id='navigation_right' style='display:none;vertical-align:top;' class='cactiConsoleContentArea'><div style='display:none;' id='message_container'><?php display_output_messages();?></div><div style='position:relative;' id='main'>
 <?php }else{ ?>
 	<tr>
-		<td id='navigation_right' style='display:none;' class='cactiConsoleContentArea' width='100%' valign='top'><div style='display:none;' id='message_container'><?php display_output_messages();?></div><div style='position:relative;' id='main'>
+		<td id='navigation_right' style='display:none;vertical-align:top;' class='cactiConsoleContentArea'><div style='display:none;' id='message_container'><?php display_output_messages();?></div><div style='position:relative;' id='main'>
 <?php } ?>
