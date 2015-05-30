@@ -287,9 +287,9 @@ function automation_graph_rules_form_actions() {
 
 	if (!isset($automation_graph_rules_array)) {
 		print "<tr class='even'><td><span class='textError'>You must select at least one Rule.</span></td></tr>\n";
-		$save_html = "<input type='button' value='Return' onClick='window.history.back()'>";
+		$save_html = "<input type='button' value='Return' onClick='cactiReturnTo()'>";
 	}else {
-		$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Apply requested action'>";
+		$save_html = "<input type='button' value='Cancel' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='Continue' title='Apply requested action'>";
 	}
 
 	print "	<tr>

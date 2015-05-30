@@ -450,7 +450,7 @@ function form_actions() {
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Enable Device(s)'>";
+			$save_html = "<input type='button' value='Cancel' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='Continue' title='Enable Device(s)'>";
 		}elseif ($_POST['drp_action'] == '3') { /* Disable Devices */
 			print "	<tr>
 				<td colspan='2' class='textArea'>
@@ -459,7 +459,7 @@ function form_actions() {
 				</td>
 				</tr>\n";
 
-			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Disable Device(s)'>";
+			$save_html = "<input type='button' value='Cancel' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='Continue' title='Disable Device(s)'>";
 		}elseif ($_POST['drp_action'] == '4') { /* change snmp options */
 			print "<tr>
 				<td colspan='2' class='textArea'>
@@ -494,7 +494,7 @@ function form_actions() {
 				)
 			);
 
-			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Change Device(s) SNMP Options'>";
+			$save_html = "<input type='button' value='Cancel' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='Continue' title='Change Device(s) SNMP Options'>";
 		}elseif ($_POST['drp_action'] == '6') { /* change availability options */
 			print "<tr>
 				<td colspan='2' class='textArea'>
@@ -528,7 +528,7 @@ function form_actions() {
 				)
 			);
 
-			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Change Device(s) Availability Options'>";
+			$save_html = "<input type='button' value='Cancel' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='Continue' title='Change Device(s) Availability Options'>";
 		}elseif ($_POST['drp_action'] == '5') { /* Clear Statisitics for Selected Devices */
 			print "<tr>
 				<td colspan='2' class='textArea'>
@@ -537,7 +537,7 @@ function form_actions() {
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Clear Statistics on Device(s)'>";
+			$save_html = "<input type='button' value='Cancel' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='Continue' title='Clear Statistics on Device(s)'>";
 		}elseif ($_POST['drp_action'] == '1') { /* delete */
 			print "<tr>
 				<td class='textArea'>
@@ -551,7 +551,7 @@ function form_actions() {
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Delete Device(s)'>";
+			$save_html = "<input type='button' value='Cancel' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='Continue' title='Delete Device(s)'>";
 		}elseif (preg_match('/^tr_([0-9]+)$/', $_POST['drp_action'], $matches)) { /* place on tree */
 			print "<tr>
 				<td class='textArea'>
@@ -565,7 +565,7 @@ function form_actions() {
 			</tr>
 			<input type='hidden' name='tree_id' value='" . $matches[1] . "'>\n";
 
-			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Place Device(s) on Tree'>";
+			$save_html = "<input type='button' value='Cancel' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='Continue' title='Place Device(s) on Tree'>";
 		}elseif ($save['drp_action'] == 7) { /* automation */
 			print "<tr>
 				<td class='textArea'>
@@ -578,11 +578,11 @@ function form_actions() {
 			$save['host_list'] = $host_list;
 			$save['host_array'] = (isset($host_array)? $host_array : array());
 			api_plugin_hook_function('device_action_prepare', $save);
-			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue'>";
+			$save_html = "<input type='button' value='Cancel' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='Continue'>";
 		}
 	}else{
 		print "<tr><td class='even'><span class='textError'>You must select at least one device.</span></td></tr>\n";
-		$save_html = "<input type='button' value='Return' onClick='window.history.back()'>";
+		$save_html = "<input type='button' value='Return' onClick='cactiReturnTo()'>";
 	}
 
 	print "<tr>

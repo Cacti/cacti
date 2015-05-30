@@ -493,6 +493,10 @@ legend {
 	width:160px;
 }
 
+.treeTable {
+	width:100%;
+}
+
 .cactiGraphContentArea {
 	background: snow url('./../../../images/shadow.gif') repeat-x center top;
 	padding-top:10px;

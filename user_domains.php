@@ -240,7 +240,7 @@ function form_actions() {
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Delete User Domain(s)'>";
+			$save_html = "<input type='button' value='Cancel' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='Continue' title='Delete User Domain(s)'>";
 		}else if ($_POST['drp_action'] == '2') { /* disable */
 			print "<tr>
 				<td class='textArea'>
@@ -249,7 +249,7 @@ function form_actions() {
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Disable User Domain(s)'>";
+			$save_html = "<input type='button' value='Cancel' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='Continue' title='Disable User Domain(s)'>";
 		}else if ($_POST['drp_action'] == '3') { /* enable */
 			print "<tr>
 				<td class='textArea'>
@@ -258,7 +258,7 @@ function form_actions() {
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Enabled User Domain(s)'>";
+			$save_html = "<input type='button' value='Cancel' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='Continue' title='Enabled User Domain(s)'>";
 		}else if ($_POST['drp_action'] == '4') { /* default */
 			print "<tr>
 				<td class='textArea'>
@@ -267,11 +267,11 @@ function form_actions() {
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Make Selected Domain Default'>";
+			$save_html = "<input type='button' value='Cancel' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='Continue' title='Make Selected Domain Default'>";
 		}
 	}else{
 		print "<tr><td class='even'><span class='textError'>You must select at least one data input method.</span></td></tr>\n";
-		$save_html = "<input type='button' value='Return' onClick='window.history.back()'>";
+		$save_html = "<input type='button' value='Return' onClick='cactiReturnTo()'>";
 	}
 
 	print "<tr>

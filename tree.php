@@ -374,7 +374,7 @@ function form_actions() {
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Delete Tree(s)'>";
+			$save_html = "<input type='button' value='Cancel' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='Continue' title='Delete Tree(s)'>";
 		}elseif ($_POST['drp_action'] == '2') { /* publish */
 			print "<tr>
 				<td class='textArea' class='odd'>
@@ -383,7 +383,7 @@ function form_actions() {
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Publish Tree(s)'>";
+			$save_html = "<input type='button' value='Cancel' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='Continue' title='Publish Tree(s)'>";
 		}elseif ($_POST['drp_action'] == '3') { /* un-publish */
 			print "<tr>
 				<td class='textArea' class='odd'>
@@ -392,11 +392,11 @@ function form_actions() {
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Un-Publish Tree(s)'>";
+			$save_html = "<input type='button' value='Cancel' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='Continue' title='Un-Publish Tree(s)'>";
 		}
 	}else{
 		print "<tr><td class='odd'><span class='textError'>You must select at least one Tree.</span></td></tr>\n";
-		$save_html = "<input type='button' value='Return' onClick='window.history.back()'>";
+		$save_html = "<input type='button' value='Return' onClick='cactiReturnTo()'>";
 	}
 
 	print "<tr>

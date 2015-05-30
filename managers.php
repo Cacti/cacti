@@ -933,10 +933,10 @@ function form_actions(){
 					</td>
 				</tr>\n";
 
-				$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'><input type='submit' value='Continue' title='" . $manager_actions[$_POST['drp_action']] . " Notification Receiver(s)'>";
+				$save_html = "<input type='button' value='Cancel' onClick='cactiReturnTo()'><input type='submit' value='Continue' title='" . $manager_actions[$_POST['drp_action']] . " Notification Receiver(s)'>";
 			} else {
 				print "<tr><td class='even'><span class='textError'>You must select at least one Notification Receiver.</span></td></tr>\n";
-				$save_html = "<input type='button' value='Return' onClick='window.history.back()'>";
+				$save_html = "<input type='button' value='Return' onClick='cactiReturnTo()'>";
 			}
 
 			print "<tr>
@@ -987,10 +987,10 @@ function form_actions(){
 					</td>
 				</tr>\n";
 
-				$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Disable Notification Objects'>";
+				$save_html = "<input type='button' value='Cancel' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='Continue' title='Disable Notification Objects'>";
 			} else {
 				print "<tr><td><span class='textError'>You must select at least one notification object.</span></td></tr>\n";
-				$save_html = "<input type='button' value='Return' onClick='window.history.back()'>";
+				$save_html = "<input type='button' value='Return' onClick='cactiReturnTo()'>";
 			}
 
 			print "<tr>

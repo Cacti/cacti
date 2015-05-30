@@ -606,7 +606,7 @@ function html_header_sort_checkbox($header_items, $sort_column, $sort_direction,
 		}
 	}
 
-	print "<th class='tableSubHeaderCheckbox'><input class='checkbox' type='checkbox' name='all' title='Select All Rows' onClick='SelectAll(\"chk_\",this.checked)'></th>" . ($include_form ? "<th style='display:none;'><form name='chk' method='post' action='$form_action'></th>\n":"");
+	print "<th class='tableSubHeaderCheckbox'><input class='checkbox' type='checkbox' name='all' title='Select All Rows' onClick='SelectAll(\"chk_\",this.checked)'></th>" . ($include_form ? "<th style='display:none;'><form id='chk' name='chk' method='post' action='$form_action'></th>\n":"");
 	print "</tr>\n";
 
 	$page++;
@@ -649,7 +649,7 @@ function html_header_checkbox($header_items, $include_form = true, $form_action 
 		}
 	}
 
-	print "<th class='tableSubHeaderCheckbox'><input class='checkbox' type='checkbox' name='all' title='Select All Rows' onClick='SelectAll(\"chk_\",this.checked)'></th>\n" . ($include_form ? "<th style='display:none;'><form name='chk' method='post' action='$form_action'></th>\n":"");
+	print "<th class='tableSubHeaderCheckbox'><input class='checkbox' type='checkbox' name='all' title='Select All Rows' onClick='SelectAll(\"chk_\",this.checked)'></th>\n" . ($include_form ? "<th style='display:none;'><form id='chk' name='chk' method='post' action='$form_action'></th>\n":"");
 	print "</tr>\n";
 }
 
@@ -979,12 +979,24 @@ function draw_actions_dropdown($actions_array) {
 				<?php form_dropdown("drp_action",$actions_array,"","","1","","");?>
 			</td>
 			<td>
-				<input type='submit' value='Go' title='Execute Action'>
+				<input type='button' value='Go' title='Execute Action' onClick='loadActionsPage()'>
 			</td>
 		</tr>
 	</table>
-
-	<input type='hidden' name='action' value='actions'>
+	<input type='hidden' id='action' name='action' value='actions'>
+	<script type='text/javascript'>
+	function loadActionsPage() {
+		form = $('#action').closest('form');
+		variables = form.serializeObject();
+		strURL = form.attr('action');
+		strURL += (strURL.indexOf('?') >= 0 ? '&':'?') + 'header=false';
+		$.post(strURL, variables).done(function(data) {
+			$('#main').html(data);
+			applySkin();
+		});
+		return false;
+	}
+	</script>
 	<?php
 }
 

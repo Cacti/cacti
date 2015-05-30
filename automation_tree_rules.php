@@ -256,7 +256,7 @@ function automation_tree_rules_form_actions() {
 
 	print "<form name='automation_tree_rules_action' action='automation_tree_rules.php' method='post'>";
 
-	html_start_box('<strong>' . $automation_tree_rules_actions{$_POST['drp_action']} . '</strong>', '100%', '', '3', 'center', '');
+	html_start_box('<strong>' . $automation_tree_rules_actions{$_POST['drp_action']} . '</strong>', '60%', '', '3', 'center', '');
 
 	if ($_POST['drp_action'] == AUTOMATION_ACTION_TREE_DELETE) { /* DELETE */
 		print "<tr>
@@ -293,9 +293,9 @@ function automation_tree_rules_form_actions() {
 
 	if (!isset($automation_tree_rules_array)) {
 		print "<tr><td class='even'><span class='textError'>You must select at least one Rule.</span></td></tr>";
-		$save_html = "<input type='button' value='Return' onClick='window.history.back()'>";
+		$save_html = "<input type='button' value='Return' onClick='cactiReturnTo()'>";
 	}else {
-		$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Apply requested action'>";
+		$save_html = "<input type='button' value='Cancel' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='Continue' title='Apply requested action'>";
 	}
 
 	print "<tr>

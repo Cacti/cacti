@@ -737,7 +737,7 @@ function reports_form_actions() {
 			<input type='hidden' name='action' value='actions'>
 			<input type='hidden' name='selected_items' value='" . (isset($reports_array) ? serialize($reports_array) : '') . "'>
 			<input type='hidden' name='drp_action' value='" . $_POST['drp_action'] . "'>
-			<input type='button' onClick='windows.history.back()' value='" . ($save_html == '' ? 'Return':'Cancel') . "' name='cancel'>
+			<input type='button' onClick='cactiReturnTo()' value='" . ($save_html == '' ? 'Return':'Cancel') . "' name='cancel'>
 			$save_html
 		</td>
 	</tr>\n";
@@ -928,92 +928,90 @@ function reports_item_edit() {
 
 	useCss=<?php print ($report['cformat'] == 'on' ? 'true':'false');?>;
 
-	toggle_item_type();
-	graphImage(document.getElementById('local_graph_id').value);
-
 	function toggle_item_type() {
+		console.log($('#item_type').val());
 		// right bracket ')' does not come with a field
-		if (document.getElementById('item_type').value == '<?php print REPORTS_ITEM_GRAPH;?>') {
-			document.getElementById('row_align').style.display='';
-			document.getElementById('row_tree_id').style.display='none';
-			document.getElementById('row_branch_id').style.display='none';
-			document.getElementById('row_tree_cascade').style.display='none';
-			document.getElementById('row_graph_name_regexp').style.display='none';
-			document.getElementById('row_host_template_id').style.display='';
-			document.getElementById('row_host_id').style.display='';
-			document.getElementById('row_graph_template_id').style.display='';
-			document.getElementById('row_local_graph_id').style.display='';
-			document.getElementById('row_timespan').style.display='';
-			document.getElementById('item_text').value = '';
-			document.getElementById('row_item_text').style.display='none';
-			document.getElementById('row_font_size').style.display='none';
-		} else if (document.getElementById('item_type').value == '<?php print REPORTS_ITEM_TEXT;?>') {
-			document.getElementById('row_align').style.display='';
-			document.getElementById('row_tree_id').style.display='none';
-			document.getElementById('row_branch_id').style.display='none';
-			document.getElementById('row_tree_cascade').style.display='none';
-			document.getElementById('row_graph_name_regexp').style.display='none';
-			document.getElementById('row_host_template_id').style.display='none';
-			document.getElementById('row_host_id').style.display='none';
-			document.getElementById('row_graph_template_id').style.display='none';
-			document.getElementById('row_local_graph_id').style.display='none';
-			document.getElementById('row_timespan').style.display='none';
-			document.getElementById('row_item_text').style.display='';
+		if ($('#item_type').val() == '<?php print REPORTS_ITEM_GRAPH;?>') {
+			$('#row_align').show();
+			$('#row_tree_id').hide();
+			$('#row_branch_id').hide();
+			$('#row_tree_cascade').hide();
+			$('#row_graph_name_regexp').hide();
+			$('#row_host_template_id').show();
+			$('#row_host_id').show();
+			$('#row_graph_template_id').show();
+			$('#row_local_graph_id').show();
+			$('#row_timespan').show();
+			$('#item_text').val('');
+			$('#row_item_text').hide();
+			$('#row_font_size').hide();
+		} else if ($('#item_type').val() == '<?php print REPORTS_ITEM_TEXT;?>') {
+			$('#row_align').show();
+			$('#row_tree_id').hide();
+			$('#row_branch_id').hide();
+			$('#row_tree_cascade').hide();
+			$('#row_graph_name_regexp').hide();
+			$('#row_host_template_id').hide();
+			$('#row_host_id').hide();
+			$('#row_graph_template_id').hide();
+			$('#row_local_graph_id').hide();
+			$('#row_timespan').hide();
+			$('#row_item_text').show();
 			if (useCss) {
-				document.getElementById('row_font_size').style.display='none';
+				$('#row_font_size').hide();
 			}else{
-				document.getElementById('row_font_size').style.display='';
+				$('#row_font_size').show();
 			}
-		} else if (document.getElementById('item_type').value == '<?php print REPORTS_ITEM_TREE;?>') {
-			document.getElementById('row_align').style.display='';
-			document.getElementById('row_tree_id').style.display='';
-			document.getElementById('row_branch_id').style.display='';
-			document.getElementById('row_tree_cascade').style.display='';
-			document.getElementById('row_graph_name_regexp').style.display='';
-			document.getElementById('row_host_template_id').style.display='none';
-			document.getElementById('row_host_id').style.display='none';
-			document.getElementById('row_graph_template_id').style.display='none';
-			document.getElementById('row_local_graph_id').style.display='none';
-			document.getElementById('row_timespan').style.display='';
-			document.getElementById('row_item_text').style.display='none';
+		} else if ($('#item_type').val() == '<?php print REPORTS_ITEM_TREE;?>') {
+			$('#row_align').show();
+			$('#row_tree_id').show();
+			$('#row_branch_id').show();
+			$('#row_tree_cascade').show();
+			$('#row_graph_name_regexp').show();
+			$('#row_host_template_id').hide();
+			$('#row_host_id').hide();
+			$('#row_graph_template_id').hide();
+			$('#row_local_graph_id').hide();
+			$('#row_timespan').show();
+			$('#row_item_text').hide();
 			if (useCss) {
-				document.getElementById('row_font_size').style.display='none';
+				$('#row_font_size').hide();
 			}else{
-				document.getElementById('row_font_size').style.display='';
+				$('#row_font_size').show();
 			}
 		} else {
-			document.getElementById('row_tree_id').style.display='none';
-			document.getElementById('row_branch_id').style.display='none';
-			document.getElementById('row_tree_cascade').style.display='none';
-			document.getElementById('row_graph_name_regexp').style.display='none';
-			document.getElementById('row_host_template_id').style.display='none';
-			document.getElementById('row_host_id').style.display='none';
-			document.getElementById('row_graph_template_id').style.display='none';
-			document.getElementById('row_local_graph_id').style.display='none';
-			document.getElementById('row_timespan').style.display='none';
-			document.getElementById('row_item_text').style.display='none';
-			document.getElementById('row_font_size').style.display='none';
-			document.getElementById('row_align').style.display='none';
+			$('#row_tree_id').hide();
+			$('#row_branch_id').hide();
+			$('#row_tree_cascade').hide();
+			$('#row_graph_name_regexp').hide();
+			$('#row_host_template_id').hide();
+			$('#row_host_id').hide();
+			$('#row_graph_template_id').hide();
+			$('#row_local_graph_id').hide();
+			$('#row_timespan').hide();
+			$('#row_item_text').hide();
+			$('#row_font_size').hide();
+			$('#row_align').hide();
 		}
 	}
 
-	function applyChange(objForm) {
-		strURL = '?action=item_edit'
-		strURL = strURL + '&id=' + objForm.report_id.value
-		strURL = strURL + '&item_id=' + objForm.id.value
-		strURL = strURL + '&item_type=' + objForm.item_type.value;
-		strURL = strURL + '&tree_id=' + objForm.tree_id.value;
-		strURL = strURL + '&branch_id=' + objForm.branch_id.value;
-		strURL = strURL + '&host_template_id=' + objForm.host_template_id.value;
-		strURL = strURL + '&host_id=' + objForm.host_id.value;
-		strURL = strURL + '&graph_template_id=' + objForm.graph_template_id.value;
-		document.location = strURL;
+	function applyChange() {
+		strURL  = '?action=item_edit&header=false'
+		strURL += '&id=' + $('#report_id').val();
+		strURL += '&item_id=' + $('#id').val();
+		strURL += '&item_type=' + $('#item_type').val();
+		strURL += '&tree_id=' + $('#tree_id').val();
+		strURL += '&branch_id=' + $('#branch_id').val();
+		strURL += '&host_template_id=' + $('#host_template_id').val();
+		strURL += '&host_id=' + $('#host_id').val();
+		strURL += '&graph_template_id=' + $('#graph_template_id').val();
+		loadPageNoHeader(strURL);
 	}
 
 	function graphImage(graphId) {
 		if (graphId > 0) {
-			document.getElementById('graphdiv').style.display='';
-			document.getElementById('graph').innerHTML="<img align='center' src='<?php print $config['url_path'];?>graph_image.php"+
+			$('#graphdiv').show();
+			$('#graph').html("<img align='center' src='<?php print $config['url_path'];?>graph_image.php"+
 					"?local_graph_id="+graphId+
 					"&image_format=png"+
 					"<?php print (($report["graph_width"] > 0) ? "&graph_width=" . $report["graph_width"]:"");?>"+
@@ -1021,12 +1019,25 @@ function reports_item_edit() {
 					"<?php print (($report["thumbnails"] == "on") ? "&graph_nolegend=true":"");?>"+
 					"<?php print ((isset($timespan["begin_now"])) ? "&graph_start=" . $timespan["begin_now"]:"");?>"+
 					"<?php print ((isset($timespan["end_now"])) ? "&graph_end=" . $timespan["end_now"]:"");?>"+
-					"&rra_id=0'>";
+					"&rra_id=0'>");
 		}else{
-			document.getElementById('graphdiv').style.display='none';
-			document.getElementById('graph').innerHTML='';
+			$('#graphdiv').hide();
+			$('#graph').html('');
 		}
 	}
+
+	$(function() {
+		$('#item_type').change(function() {
+			toggle_item_type();
+			applyChange();
+		});
+
+		toggle_item_type();
+
+		if ($('#item_type').val() == 1) {
+			graphImage($('#local_graph_id').val());
+		}
+	});
 	</script>
 	<?php
 }
@@ -1187,10 +1198,10 @@ function reports_edit() {
 
 		break;
 	case 'preview':
-		html_start_box("<strong>Report Preview</strong> $header_label", '100%', '', '3', 'center', '');
-		print "\t\t\t\t\t<tr><td><iframe style='border-width:0px;width:100%;height:100%;'>\n";
+		html_start_box("<strong>Report Preview</strong> $header_label", '100%', '', '0', 'center', '');
+		print "\t\t\t\t\t<tr><td>\n";
 		print reports_generate_html($report['id'], REPORTS_OUTPUT_STDOUT);
-		print "\t\t\t\t\t</iframe></td></tr>\n";
+		print "\t\t\t\t\t</td></tr>\n";
 		html_end_box(false);
 
 		break;

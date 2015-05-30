@@ -204,6 +204,34 @@ $.fn.focusEnd = function() {
 	return this;
 };
 
+$.fn.serializeObject = function() {
+	var arrayData, objectData;
+	arrayData = this.serializeArray();
+	objectData = {};
+
+	$.each(arrayData, function() {
+		var value;
+
+		if (this.value != null) {
+			value = this.value;
+		} else {
+			value = '';
+		}
+
+		if (objectData[this.name] != null) {
+			if (!objectData[this.name].push) {
+				objectData[this.name] = [objectData[this.name]];
+			}
+
+			objectData[this.name].push(value);
+		} else {
+			objectData[this.name] = value;
+		}
+	});
+
+	return objectData;
+};
+
 /** Mini jquery plugin to create a bind to show/hide events */
 (function ($) {
 	$.each(['show', 'hide'], function (i, ev) {
@@ -379,12 +407,12 @@ function applyTimespanFilterChange(objForm) {
 /** cactiReturnTo - This function simply returns to the previous page
  *  @args href - the previous page */
 function cactiReturnTo(href) {
-	if (href != '') {
+	if (typeof href == 'string') {
 		href = href + (href.indexOf('?') > 0 ? '&':'?') + 'header=false';
 		loadPageNoHeader(href);
 	}else{
-		href = document.location;
-		href = href+ (href.indexOf('?') > 0 ? '&':'?') + 'header=false';
+		href = document.location.href;
+		href = href + (href.indexOf('?') > 0 ? '&':'?') + 'header=false';
 		loadPageNoHeader(href);
 	}
 }
@@ -563,7 +591,10 @@ function ajaxAnchors() {
 	});
 
 	$(window).unbind('popstate').on('popstate', function(event) {
-		document.location = document.location.href;
+		href = document.location.href;
+		if (href !== null) {
+			document.location = document.location.href;
+		}
 	});
 }
 
@@ -663,7 +694,7 @@ function setupSortable() {
 
 function setupBreadcrumbs() {
 	$('#breadcrumbs > li > a').click(function(event) {
-		event.preventDefault;
+		event.preventDefault();
 		href =  $(this).attr('href');
 		if (href != '#') {
 			href = href.replace('tree_content', 'tree');

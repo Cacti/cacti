@@ -343,7 +343,7 @@ function form_actions() {
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Delete Graph(s)'>";
+			$save_html = "<input type='button' value='Cancel' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='Continue' title='Delete Graph(s)'>";
 		}elseif ($_POST['drp_action'] == '2') { /* migrate to aggregate */
 			/* determine the common graph template if any */
 			reset($_POST);
@@ -373,7 +373,7 @@ function form_actions() {
 					</td>
 				</tr>\n";
 
-				$save_html = "<input type='button' value='Return' onClick='window.history.back()'>";
+				$save_html = "<input type='button' value='Return' onClick='cactiReturnTo()'>";
 			}else{
 				$graph_template      = $graph_templates[0]['graph_template_id'];
 				$aggregate_templates = db_fetch_assoc("SELECT id, name FROM aggregate_graph_templates WHERE graph_template_id=$graph_template ORDER BY name");
@@ -398,7 +398,7 @@ function form_actions() {
 						</td>
 					</tr>\n";
 
-					$save_html = "<tr><td colspan='2' align='right'><input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Delete Graph(s)'></td></tr>";
+					$save_html = "<tr><td colspan='2' align='right'><input type='button' value='Cancel' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='Continue' title='Delete Graph(s)'></td></tr>";
 				}else{
 					print "<tr>
 						<td class='textArea'>
@@ -410,7 +410,7 @@ function form_actions() {
 						</td>
 					</tr>\n";
 
-					$save_html = "<input type='button' value='Return' onClick='window.history.back()'>";
+					$save_html = "<input type='button' value='Return' onClick='cactiReturnTo()'>";
 				}
 			}
 		}elseif ($_POST["drp_action"] == "3") { /* create aggregate from aggregates */
@@ -424,7 +424,7 @@ function form_actions() {
 			print "	<tr><td class='textArea' width='170'><strong>Aggregate Name:</strong></td></tr>\n";
 			print "	<tr><td class='textArea'><input name='aggregate_name' size='40' value='New Aggregate'></td></tr>\n";
 
-			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Delete Graph(s)'>";
+			$save_html = "<input type='button' value='Cancel' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='Continue' title='Delete Graph(s)'>";
 		}elseif ($_POST["drp_action"] == "10") { /* associate with aggregate */
 			print "<tr>
 				<td class='textArea'>
@@ -433,7 +433,7 @@ function form_actions() {
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Associate Graph(s)'>";
+			$save_html = "<input type='button' value='Cancel' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='Continue' title='Associate Graph(s)'>";
 		}elseif ($_POST["drp_action"] == "11") { /* dis-associate with aggregate */
 			print "<tr>
 				<td class='textArea'>
@@ -442,7 +442,7 @@ function form_actions() {
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Dis-Associate Graph(s)'>";
+			$save_html = "<input type='button' value='Cancel' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='Continue' title='Dis-Associate Graph(s)'>";
 		}elseif (preg_match("/^tr_([0-9]+)$/", $_POST["drp_action"], $matches)) { /* place on tree */
 			print "<tr>
 				<td class='textArea'>
@@ -453,11 +453,11 @@ function form_actions() {
 			</tr>\n
 			<input type='hidden' name='tree_id' value='" . $matches[1] . "'>\n";
 
-			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Place Graph(s) on Tree'>";
+			$save_html = "<input type='button' value='Cancel' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='Continue' title='Place Graph(s) on Tree'>";
 		}
 	}else{
 		print "<tr><td class='even'><span class='textError'>You must select at least one graph.</span></td></tr>\n";
-		$save_html = "<input type='button' value='Return' onClick='window.history.back()'>";
+		$save_html = "<input type='button' value='Return' onClick='cactiReturnTo()'>";
 	}
 
 	print "	<tr>

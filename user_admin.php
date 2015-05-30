@@ -321,7 +321,7 @@ function form_actions() {
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'><input type='submit' value='Continue' title='Delete User(s)'>";
+			$save_html = "<input type='button' value='Cancel' onClick='cactiReturnTo()'><input type='submit' value='Continue' title='Delete User(s)'>";
 		}
 		$user_id = '';
 
@@ -361,7 +361,7 @@ function form_actions() {
 			print "</td>
 				</tr>\n";
 
-			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Copy User'>";
+			$save_html = "<input type='button' value='Cancel' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='Continue' title='Copy User'>";
 		}
 
 		if ((get_request_var_post('drp_action') == '3') && (sizeof($user_array))) { /* enable */
@@ -372,7 +372,7 @@ function form_actions() {
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Enable User(s)'>";
+			$save_html = "<input type='button' value='Cancel' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='Continue' title='Enable User(s)'>";
 		}
 
 		if ((get_request_var_post('drp_action') == '4') && (sizeof($user_array))) { /* disable */
@@ -383,7 +383,7 @@ function form_actions() {
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Disable User(s)'>";
+			$save_html = "<input type='button' value='Cancel' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='Continue' title='Disable User(s)'>";
 		}
 
 		if ((get_request_var_post('drp_action') == '5') && (sizeof($user_array))) { /* batch copy */
@@ -405,12 +405,12 @@ function form_actions() {
 					</td>
 				</tr>\n";
 
-			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Reset User(s) Settings'>";
+			$save_html = "<input type='button' value='Cancel' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='Continue' title='Reset User(s) Settings'>";
 		}
 	}else{
 		print "<tr><td class='even'><span class='textError'>You must select at least one user.</span></td></tr>\n";
 
-		$save_html = "<input type='button' value='Return' onClick='window.history.back()'>";
+		$save_html = "<input type='button' value='Return' onClick='cactiReturnTo()'>";
 	}
 
 	print "<tr>

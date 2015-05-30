@@ -279,6 +279,10 @@ ul#breadcrumbs {
 	vertical-align:top;
 }
 
+.treeTable {
+	width:100%;
+}
+
 .cactiLogo {
 	padding-top:20px;
 	background: #f5f5f5 url('./../../../images/cacti_logo.gif') no-repeat center;
