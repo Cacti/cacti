@@ -922,8 +922,10 @@ function form_actions(){
 			}
 
 			top_header();
-			html_start_box('<strong>' . $manager_actions{$_POST['drp_action']} . '</strong>', '60%', '', '3', 'center', '');
+
 			print "<form action='managers.php' method='post'>\n";
+
+			html_start_box('<strong>' . $manager_actions{$_POST['drp_action']} . '</strong>', '60%', '', '3', 'center', '');
 
 			if (sizeof($selected_items)) {
 				print "<tr>
@@ -951,9 +953,10 @@ function form_actions(){
 
 			html_end_box();
 
+			print "</form>\n";
+
 			bottom_footer();
 		}else {
-
 			$selected_items = array();
 			$list = '';
 
@@ -972,8 +975,10 @@ function form_actions(){
 			}
 
 			top_header();
-			html_start_box('<strong>' . $manager_notification_actions[ $_POST['drp_action'] ] . '</strong>', '60%', '', '3', 'center', '');
+
 			print "<form action='managers.php' method='post'>\n";
+
+			html_start_box('<strong>' . $manager_notification_actions[ $_POST['drp_action'] ] . '</strong>', '60%', '', '3', 'center', '');
 
 			if (sizeof($selected_items)) {
 				$msg = ($_POST['drp_action'] == 1)
@@ -1005,6 +1010,8 @@ function form_actions(){
 			</tr>\n";
 
 			html_end_box();
+
+			print "</form>\n";
 
 			bottom_footer();
 		}

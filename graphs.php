@@ -569,9 +569,9 @@ function form_actions() {
 	/* add a list of tree names to the actions dropdown */
 	add_tree_names_to_actions_array();
 
-	html_start_box('<strong>' . $graph_actions{$_POST['drp_action']} . '</strong>', '60%', '', '3', 'center', '');
-
 	print "<form action='graphs.php' method='post'>\n";
+
+	html_start_box('<strong>' . $graph_actions{$_POST['drp_action']} . '</strong>', '60%', '', '3', 'center', '');
 
 	if (isset($graph_array) && sizeof($graph_array)) {
 		if ($_POST['drp_action'] == '1') { /* delete */
@@ -871,6 +871,8 @@ function form_actions() {
 	</tr>\n";
 
 	html_end_box();
+
+	print "</form>\n";
 
 	bottom_footer();
 }

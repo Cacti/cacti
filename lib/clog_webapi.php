@@ -109,37 +109,40 @@ function clog_view_logfile() {
 	general_header();
 
 	if ((isset($_REQUEST['purge'])) && (clog_admin())) {
+		print "<form action='clog.php' autocomplete='off' method='post'>\n";
+
 		html_start_box('<strong>Purge</strong>', '50%', '', '3', 'center', '');
 
-		print "<form action='clog.php' autocomplete='off' method='post'>
-			<tr>
-				<td class='textArea'>
-					<p>Click 'Continue' to purge the Cacti log file.<br><br><br>Note: If logging is set to Cacti and Syslog, the log information will remain in Syslog.</p>
-				</td>
-			</tr>
-			<tr>
-				<td colspan='2' align='right' bgcolor='#eaeaea'>
-					<input id='cancel' type='button' value='Cancel'>&nbsp
-					<input id='pc' type='button' name='purge_continue' value='Continue' title='Purge cacti.log'>
-					<script type='text/javascript'>
-					$('#pc').click(function() {
-						strURL = location.pathname+'?purge_continue=1&header=false';
-						loadPageNoHeader(strURL);
-					});
+		print "<tr>
+			<td class='textArea'>
+				<p>Click 'Continue' to purge the Cacti log file.<br><br><br>Note: If logging is set to Cacti and Syslog, the log information will remain in Syslog.</p>
+			</td>
+		</tr>
+		<tr>
+			<td colspan='2' align='right' bgcolor='#eaeaea'>
+				<input id='cancel' type='button' value='Cancel'>&nbsp
+				<input id='pc' type='button' name='purge_continue' value='Continue' title='Purge cacti.log'>
+				<script type='text/javascript'>
+				$('#pc').click(function() {
+					strURL = location.pathname+'?purge_continue=1&header=false';
+					loadPageNoHeader(strURL);
+				});
 
-					$('#cancel').click(function() {
-						strURL = location.pathname+'?header=false';
-						loadPageNoHeader(strURL);
-					});
+				$('#cancel').click(function() {
+					strURL = location.pathname+'?header=false';
+					loadPageNoHeader(strURL);
+				});
 
-					$(function() {
-						applySkin();
-					});
-					</script>
-				</td>
-			</tr>\n";
+				$(function() {
+					applySkin();
+				});
+				</script>
+			</td>
+		</tr>\n";
 
 		html_end_box();
+
+		print "</form>\n";
 
 		return;	
 	}

@@ -309,6 +309,8 @@ function automation_tree_rules_form_actions() {
 
 	html_end_box();
 
+	print "</form>\n";
+
 	bottom_footer();
 }
 
@@ -553,8 +555,8 @@ function automation_tree_rules_edit() {
 	if (isset($_REQUEST['tree_item_id'])) {$rule['tree_item_id'] = $_REQUEST['tree_item_id'];}
 
 	print "<form method='post' action='automation_tree_rules.php' name='form_automation_tree_rule_edit'>";
+
 	html_start_box("<strong>Tree Rule Selection</strong> $header_label", '100%', '', '3', 'center', '');
-	#print '<pre>'; print_r($_POST); print_r($_GET); print_r($_REQUEST); print '</pre>';
 
 	if (!empty($_GET['id'])) {
 		/* display whole rule */

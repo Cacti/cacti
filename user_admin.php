@@ -308,9 +308,9 @@ function form_actions() {
 
 	top_header();
 
-	html_start_box('<strong>' . $user_actions[get_request_var_post('drp_action')] . '</strong>', '40%', '', '3', 'center', '');
-
 	print "<form action='user_admin.php' method='post'>\n";
+
+	html_start_box('<strong>' . $user_actions[get_request_var_post('drp_action')] . '</strong>', '40%', '', '3', 'center', '');
 
 	if (isset($user_array) && sizeof($user_array)) {
 		if ((get_request_var_post('drp_action') == '1') && (sizeof($user_array))) { /* delete */
@@ -429,6 +429,8 @@ function form_actions() {
 	</tr>\n";
 
 	html_end_box();
+
+	print "</form>\n";
 
 	bottom_footer();
 }

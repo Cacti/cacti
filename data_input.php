@@ -192,9 +192,9 @@ function form_actions() {
 
 	top_header();
 
-	html_start_box('<strong>' . $di_actions{$_POST['drp_action']} . '</strong>', '60%', '', '3', 'center', '');
-
 	print "<form action='data_input.php' method='post'>\n";
+
+	html_start_box('<strong>' . $di_actions{$_POST['drp_action']} . '</strong>', '60%', '', '3', 'center', '');
 
 	if (isset($di_array) && sizeof($di_array)) {
 		if ($_POST['drp_action'] == '1') { /* delete */
@@ -224,6 +224,8 @@ function form_actions() {
 	</tr>\n";
 
 	html_end_box();
+
+	print "</form>\n";
 
 	bottom_footer();
 }

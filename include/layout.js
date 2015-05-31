@@ -563,9 +563,15 @@ function loadPage(href) {
 function loadPageNoHeader(href) {
 	$.get(href, function(data) {
 		$('#main').html(data);
+
 		applySkin();
+
 		window.scrollTo(0, 0);
+
+		return false;
 	});
+
+	return false;
 }
 
 function ajaxAnchors() {

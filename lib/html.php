@@ -993,6 +993,7 @@ function draw_actions_dropdown($actions_array) {
 		$.post(strURL, variables).done(function(data) {
 			$('#main').html(data);
 			applySkin();
+			window.scrollTo(0, 0);
 		});
 		return false;
 	}

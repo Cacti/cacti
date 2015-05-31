@@ -160,6 +160,8 @@ function form_actions() {
 
 	html_end_box();
 
+	print "</form>\n";
+
 	bottom_footer();
 }
 

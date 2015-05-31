@@ -437,9 +437,9 @@ function form_actions() {
 	/* add a list of tree names to the actions dropdown */
 	add_tree_names_to_actions_array();
 
-	html_start_box('<strong>' . $device_actions[get_request_var_post('drp_action')] . '</strong>', '60%', '', '3', 'center', '');
-
 	print "<form action='host.php' autocomplete='off' method='post'>\n";
+
+	html_start_box('<strong>' . $device_actions[get_request_var_post('drp_action')] . '</strong>', '60%', '', '3', 'center', '');
 
 	if (isset($host_array) && sizeof($host_array)) {
 		if ($_POST['drp_action'] == '2') { /* Enable Devices */
@@ -595,6 +595,8 @@ function form_actions() {
 	</tr>\n";
 
 	html_end_box();
+
+	print "</form>\n";
 
 	bottom_footer();
 }

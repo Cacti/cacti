@@ -204,6 +204,7 @@ function aggregate_color_form_actions() {
 	top_header();
 
 	print "<form action='color_templates.php' method='post'>\n";
+
 	html_start_box('<strong>' . $aggregate_actions{$_POST['drp_action']} . '</strong>', '60%', '', '3', 'center', '');
 
 	if (isset($color_array) && sizeof($color_array)) {

@@ -275,9 +275,9 @@ function form_actions() {
 
 	top_header();
 
-	html_start_box('<strong>' . $network_actions{$_POST['drp_action']} . '</strong>', '60%', $colors['header_panel'], '3', 'center', '');
-
 	print "<form action='automation_networks.php' method='post'>\n";
+
+	html_start_box('<strong>' . $network_actions{$_POST['drp_action']} . '</strong>', '60%', $colors['header_panel'], '3', 'center', '');
 
 	if ($_POST['drp_action'] == '1') { /* delete */
 		print "<tr>
@@ -334,6 +334,8 @@ function form_actions() {
 	</tr>\n";
 
 	html_end_box();
+
+	print "</form>\n";
 
 	bottom_footer();
 }

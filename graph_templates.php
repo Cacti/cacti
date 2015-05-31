@@ -226,9 +226,9 @@ function form_actions() {
 
 	top_header();
 
-	html_start_box('<strong>' . $graph_actions{$_POST['drp_action']} . '</strong>', '60%', '', '3', 'center', '');
-
 	print "<form action='graph_templates.php' method='post'>\n";
+
+	html_start_box('<strong>' . $graph_actions{$_POST['drp_action']} . '</strong>', '60%', '', '3', 'center', '');
 
 	if (isset($graph_array) && sizeof($graph_array)) {
 		if ($_POST['drp_action'] == '1') { /* delete */
@@ -268,6 +268,8 @@ function form_actions() {
 	</tr>\n";
 
 	html_end_box();
+
+	print "</form>\n";
 
 	bottom_footer();
 }

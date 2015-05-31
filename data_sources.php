@@ -450,9 +450,9 @@ function form_actions() {
 
 	top_header();
 
-	html_start_box('<strong>' . $ds_actions{$_POST['drp_action']} . '</strong>', '60%', '', '3', 'center', '');
-
 	print "<form action='data_sources.php' method='post'>\n";
+
+	html_start_box('<strong>' . $ds_actions{$_POST['drp_action']} . '</strong>', '60%', '', '3', 'center', '');
 
 	if (isset($ds_array) && sizeof($ds_array)) {
 		if ($_POST['drp_action'] == '1') { /* delete */
@@ -590,6 +590,8 @@ function form_actions() {
 	</tr>\n";
 
 	html_end_box();
+
+	print "</form>\n";
 
 	bottom_footer();
 }
