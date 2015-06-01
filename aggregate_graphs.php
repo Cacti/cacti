@@ -75,7 +75,7 @@ function add_tree_names_to_actions_array() {
 	global $graph_actions;
 
 	/* add a list of tree names to the actions dropdown */
-	$trees = db_fetch_assoc('select id,name from graph_tree order by name');
+	$trees = db_fetch_assoc('SELECT id,name FROM graph_tree ORDER BY name');
 
 	if (sizeof($trees) > 0) {
 	foreach ($trees as $tree) {

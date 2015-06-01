@@ -135,7 +135,7 @@ function display_matching_hosts($rule, $rule_type, $url) {
 								<option value='-1'<?php if (get_request_var_request('host_template_id') == '-1') {?> selected<?php }?>>Any</option>
 								<option value='0'<?php if (get_request_var_request('host_template_id') == '0') {?> selected<?php }?>>None</option>
 								<?php
-								$host_templates = db_fetch_assoc('select id,name from host_template order by name');
+								$host_templates = db_fetch_assoc('SELECT id,name FROM host_template ORDER BY name');
 	
 								if (sizeof($host_templates) > 0) {
 								foreach ($host_templates as $host_template) {
@@ -2529,7 +2529,7 @@ function automation_add_tree ($host_id, $tree) {
 		$tree_id = $tree - 1000000;
 		$parent = 0;
 	} else {
-		$tree_item = db_fetch_row('select * from graph_tree_items where id = ' . $tree);
+		$tree_item = db_fetch_row('SELECT * FROM graph_tree_items WHERE id = ' . $tree);
 
 		if (!isset($tree_item['graph_tree_id']))
 			return;
@@ -2618,32 +2618,32 @@ function automation_remove_graphs ($host_id) {
 		}
 
 		if ($snmp_query["id"] == 1) {
-			$rm_graphs = db_fetch_assoc("select id 
-				from graph_local 
-				where host_id=" . $host_id . " 
-				and snmp_query_id=1 
-				and graph_template_id=" . $data_query_graphs[0]['graph_template_id'] . " 
-				and snmp_index in (
-					select snmp_index 
-					from host_snmp_cache 
-					where host_id=" . $host_id . " 
-					and field_name='ifOperStatus' 
-					and field_value='Down' 
-					and snmp_query_id=1
+			$rm_graphs = db_fetch_assoc("SELECT id 
+				FROM graph_local 
+				WHERE host_id=" . $host_id . " 
+				AND snmp_query_id=1 
+				AND graph_template_id=" . $data_query_graphs[0]['graph_template_id'] . " 
+				AND snmp_index in (
+					SELECT snmp_index 
+					FROM host_snmp_cache 
+					WHERE host_id=" . $host_id . " 
+					AND field_name='ifOperStatus' 
+					AND field_value='Down' 
+					AND snmp_query_id=1
 				)");
 
-			$rm_sources = db_fetch_assoc("select id 
-				from data_local 
-				where host_id=" . $host_id . " 
-				and snmp_query_id=1 
-				and data_template_id=" . $data_query_sources[0]['data_template_id'] . " 
-				and snmp_index in (
-					select snmp_index 
-					from host_snmp_cache 
-					where host_id=" . $host_id . " 
-					and field_name='ifOperStatus' 
-					and field_value='Down' 
-					and snmp_query_id=1
+			$rm_sources = db_fetch_assoc("SELECT id 
+				FROM data_local 
+				WHERE host_id=" . $host_id . " 
+				AND snmp_query_id=1 
+				AND data_template_id=" . $data_query_sources[0]['data_template_id'] . " 
+				AND snmp_index in (
+					SELECT snmp_index 
+					FROM host_snmp_cache 
+					WHERE host_id=" . $host_id . " 
+					AND field_name='ifOperStatus' 
+					AND field_value='Down' 
+					AND snmp_query_id=1
 				)");
 
 			if (sizeof($rm_graphs)) {
@@ -2663,20 +2663,20 @@ function automation_remove_graphs ($host_id) {
 }
 
 function automation_remove_sources ($host_id) {
-	$snmp_queries = db_fetch_assoc("select snmp_query_id as id from host_snmp_query where host_id=" . $host_id);
+	$snmp_queries = db_fetch_assoc("SELECT snmp_query_id AS id FROM host_snmp_query WHERE host_id=" . $host_id);
 	foreach ($snmp_queries as $snmp_query) {
-		$data_query_graphs = db_fetch_assoc("select graph_template_id from snmp_query_graph where snmp_query_id=" . $snmp_query["id"] . " GROUP BY graph_template_id order by name");
-		$cont_graphs = db_fetch_assoc("select count(*) as num ,snmp_index from graph_local where graph_local.host_id=" . $host_id . " and snmp_query_id=" . $snmp_query["id"] . " and graph_local.graph_template_id=" . $data_query_graphs[0]['graph_template_id'] . " GROUP BY snmp_index");
+		$data_query_graphs = db_fetch_assoc("SELECT graph_template_id FROM snmp_query_graph WHERE snmp_query_id=" . $snmp_query["id"] . " GROUP BY graph_template_id ORDER BY name");
+		$cont_graphs = db_fetch_assoc("SELECT count(*) AS num ,snmp_index FROM graph_local WHERE graph_local.host_id=" . $host_id . " AND snmp_query_id=" . $snmp_query["id"] . " AND graph_local.graph_template_id=" . $data_query_graphs[0]['graph_template_id'] . " GROUP BY snmp_index");
 		foreach ($cont_graphs as $cont_graph) {
 			if ($cont_graph["num"] > 1 ) {
-				$rm_graphs = db_fetch_assoc("select id from graph_local where host_id=" . $host_id . " and snmp_query_id=" . $snmp_query["id"] . " and graph_template_id=" . $data_query_graphs[0]['graph_template_id'] . " and snmp_index=" . $cont_graph["snmp_index"] . " order by graph_local.id LIMIT 1,30");
+				$rm_graphs = db_fetch_assoc("SELECT id FROM graph_local WHERE host_id=" . $host_id . " AND snmp_query_id=" . $snmp_query["id"] . " AND graph_template_id=" . $data_query_graphs[0]['graph_template_id'] . " AND snmp_index=" . $cont_graph["snmp_index"] . " ORDER BY graph_local.id LIMIT 1,30");
 				foreach ($rm_graphs as $rm_graph) {
 					api_graph_remove($rm_graph["id"]);
 				}
 			}
 		}
 		if ($snmp_query["id"] == 1) {
-			$rm_graphs = db_fetch_assoc("select id from graph_local where host_id=" . $host_id . " and snmp_query_id=1 and graph_template_id=" . $data_query_graphs[0]['graph_template_id'] . " and snmp_index in (select snmp_index from host_snmp_cache where host_id=" . $host_id . " and field_name='ifOperStatus' and field_value='Down' and snmp_query_id=1)");
+			$rm_graphs = db_fetch_assoc("SELECT id FROM graph_local WHERE host_id=" . $host_id . " AND snmp_query_id=1 AND graph_template_id=" . $data_query_graphs[0]['graph_template_id'] . " AND snmp_index IN (SELECT snmp_index FROM host_snmp_cache WHERE host_id=" . $host_id . " AND field_name='ifOperStatus' AND field_value='Down' AND snmp_query_id=1)");
 			foreach ($rm_graphs as $rm_graph) {
 				api_graph_remove($rm_graph["id"]);
 			}
@@ -2691,44 +2691,44 @@ function automation_create_graphs ($host_id) {
 
 	automation_debug("    Creating Graphs\n");
 
-	$graph_templates = db_fetch_assoc("select
-		graph_templates.id as graph_template_id,
-		graph_templates.name as graph_template_name
-		from (host_graph,graph_templates)
-		where host_graph.graph_template_id=graph_templates.id
-		and graph_templates.id not in
-		(select graph_local.graph_template_id from graph_local where snmp_query_id = 0 and graph_local.host_id=" . $host_id . ")
-		and host_graph.host_id=" . $host_id . "
-		order by graph_templates.name");
+	$graph_templates = db_fetch_assoc('SELECT
+		graph_templates.id AS graph_template_id,
+		graph_templates.name AS graph_template_name
+		FROM (host_graph,graph_templates)
+		WHERE host_graph.graph_template_id=graph_templates.id
+		AND graph_templates.id NOT IN
+		(SELECT graph_local.graph_template_id FROM graph_local WHERE snmp_query_id = 0 AND graph_local.host_id=' . $host_id . ')
+		AND host_graph.host_id=' . $host_id . '
+		ORDER BY graph_templates.name');
 
-	$template_graphs = db_fetch_assoc("select
+	$template_graphs = db_fetch_assoc('SELECT
 		graph_local.graph_template_id
-		from (graph_local,host_graph)
-		where graph_local.graph_template_id=host_graph.graph_template_id
-		and graph_local.host_id=host_graph.host_id
-		and graph_local.host_id=" . $host_id . "
-		group by graph_local.graph_template_id");
+		FROM (graph_local,host_graph)
+		WHERE graph_local.graph_template_id=host_graph.graph_template_id
+		AND graph_local.host_id=host_graph.host_id
+		AND graph_local.host_id=' . $host_id . '
+		group by graph_local.graph_template_id');
 
 	foreach ($graph_templates as $graph_template) {
 		 $query_row = $graph_template["graph_template_id"];
 		 $sgraphs['cg_' . $query_row] = 1;
 	}
 
-	$snmp_queries = db_fetch_assoc("select
+	$snmp_queries = db_fetch_assoc('SELECT
 		snmp_query.id,
 		snmp_query.name,
 		snmp_query.xml_path
-		from (snmp_query,host_snmp_query)
-		where host_snmp_query.snmp_query_id=snmp_query.id
-		and host_snmp_query.host_id=" . $host_id . "
-		order by snmp_query.name");
+		FROM (snmp_query,host_snmp_query)
+		WHERE host_snmp_query.snmp_query_id=snmp_query.id
+		AND host_snmp_query.host_id=' . $host_id . '
+		ORDER BY snmp_query.name');
 
 	if (sizeof($snmp_queries) > 0) {
 		foreach ($snmp_queries as $snmp_query) {
 			$xml_array = get_data_query_array($snmp_query["id"]);
 			$num_input_fields = 0;
 			$num_visible_fields = 0;
-			$data_query_graphs = db_fetch_assoc("select snmp_query_graph.id,snmp_query_graph.name,snmp_query_graph.graph_template_id from snmp_query_graph where snmp_query_graph.snmp_query_id=" . $snmp_query["id"] . " order by snmp_query_graph.name");
+			$data_query_graphs = db_fetch_assoc("SELECT snmp_query_graph.id,snmp_query_graph.name,snmp_query_graph.graph_template_id FROM snmp_query_graph WHERE snmp_query_graph.snmp_query_id=" . $snmp_query["id"] . " ORDER BY snmp_query_graph.name");
 			if ($xml_array != false) {
 				$html_dq_header = "";
 				$snmp_query_indexes = array();
@@ -2738,15 +2738,15 @@ function automation_create_graphs ($host_id) {
 					if ($field_array["direction"] == "input") {
 						$raw_data = '';
 						if ($snmp_query["id"] == 1 && $graph_interface_only_up) {
-							$raw_data = db_fetch_assoc("select field_value,snmp_index from host_snmp_cache where snmp_index in
-									(select snmp_index from host_snmp_cache where snmp_index not in
-									(select snmp_index from graph_local WHERE host_id =" . $host_id . " and graph_template_id = " . $data_query_graphs[0]['graph_template_id'] . ")
-									and host_id=" . $host_id . " and field_name='ifOperStatus' and field_value='Up' and snmp_query_id=" . $snmp_query["id"] .")
-									and host_id=" . $host_id . " and field_name='$field_name' and snmp_query_id=" . $snmp_query["id"]);
+							$raw_data = db_fetch_assoc("SELECT field_value,snmp_index FROM host_snmp_cache WHERE snmp_index in
+									(SELECT snmp_index FROM host_snmp_cache WHERE snmp_index NOT IN
+									(SELECT snmp_index FROM graph_local WHERE host_id =" . $host_id . " AND graph_template_id = " . $data_query_graphs[0]['graph_template_id'] . ")
+									AND host_id=" . $host_id . " AND field_name='ifOperStatus' AND field_value='Up' AND snmp_query_id=" . $snmp_query["id"] .")
+									AND host_id=" . $host_id . " AND field_name='$field_name' AND snmp_query_id=" . $snmp_query["id"]);
 						} elseif ($snmp_query["id"] != 8 ){
-							$raw_data = db_fetch_assoc("select field_value,snmp_index from host_snmp_cache where snmp_index not in
-									(select snmp_index from graph_local WHERE host_id =" . $host_id . " and snmp_query_id =" . $snmp_query["id"] ." and graph_template_id = " . $data_query_graphs[0]['graph_template_id'] . ")
-									and host_id=" . $host_id . " and field_name='$field_name' and snmp_query_id=" . $snmp_query["id"]);
+							$raw_data = db_fetch_assoc("SELECT field_value,snmp_index FROM host_snmp_cache WHERE snmp_index NOT IN
+									(SELECT snmp_index FROM graph_local WHERE host_id =" . $host_id . " AND snmp_query_id =" . $snmp_query["id"] ." AND graph_template_id = " . $data_query_graphs[0]['graph_template_id'] . ")
+									AND host_id=" . $host_id . " AND field_name='$field_name' AND snmp_query_id=" . $snmp_query["id"]);
 						}
 
 						/* don't even both to display the column if it has no data */
@@ -2875,7 +2875,7 @@ function automation_host_new_graphs_save($selected_graphs, $host_id) {
 					$snmp_query_array["snmp_query_graph_id"] = $form_id2;
 				}
 
-				$graph_template_id = db_fetch_cell("select graph_template_id from snmp_query_graph where id=" . $snmp_query_array["snmp_query_graph_id"]);
+				$graph_template_id = db_fetch_cell("SELECT graph_template_id FROM snmp_query_graph WHERE id=" . $snmp_query_array["snmp_query_graph_id"]);
 			}
 
 			if ($current_form_type == "cg") {

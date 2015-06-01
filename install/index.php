@@ -37,7 +37,7 @@ $cacti_versions = array('0.8', '0.8.1', '0.8.2', '0.8.2a', '0.8.3', '0.8.3a', '0
 	'0.8.7', '0.8.7a', '0.8.7b', '0.8.7c', '0.8.7d', '0.8.7e', '0.8.7f', '0.8.7g', '0.8.7h', '0.8.7i',
 	'0.8.8', '0.8.8a', '0.8.8b', '0.8.8c', '0.8.8d', '1.0.0');
 
-$old_cacti_version = db_fetch_cell('select cacti from version');
+$old_cacti_version = db_fetch_cell('SELECT cacti FROM version');
 
 /* try to find current (old) version in the array */
 $old_version_index = array_search($old_cacti_version, $cacti_versions);
@@ -415,7 +415,7 @@ if ($step == '4') {
 	/* pre-fill poller cache with initial data on a new install only */
 	if ($old_cacti_version == 'new_install') {
 		/* just in case we have hard drive graphs to deal with */
-		$host_id = db_fetch_cell("select id from host where hostname='127.0.0.1'");
+		$host_id = db_fetch_cell("SELECT id FROM host WHERE hostname='127.0.0.1'");
 
 		if (!empty($host_id)) {
 			run_data_query($host_id, 6);
@@ -428,8 +428,8 @@ if ($step == '4') {
 		snmpagent_cache_rebuilt();
 	}
 	
-	db_execute('delete from version');
-	db_execute("insert into version (cacti) values ('" . $config["cacti_version"] . "')");
+	db_execute('DELETE FROM version');
+	db_execute("INSERT INTO version (cacti) VALUES ('" . $config["cacti_version"] . "')");
 
 	header ('Location: ../index.php');
 	exit;

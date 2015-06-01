@@ -241,7 +241,7 @@ function automation_graph_rules_form_actions() {
 			input_validate_input_number($matches[1]);
 			/* ==================================================== */
 
-			$automation_graph_rules_list .= '<li>' . db_fetch_cell('select name from automation_graph_rules where id=' . $matches[1]) . '</li>';
+			$automation_graph_rules_list .= '<li>' . db_fetch_cell('SELECT name FROM automation_graph_rules WHERE id=' . $matches[1]) . '</li>';
 			$automation_graph_rules_array[] = $matches[1];
 		}
 	}
@@ -421,7 +421,7 @@ function automation_graph_rules_remove() {
 
 	if ((read_config_option('deletion_verification') == 'on') && (!isset($_GET['confirm']))) {
 		top_header();
-		form_confirm('Are You Sure?', "Are you sure you want to delete the Rule <strong>'" . db_fetch_cell('select name from automation_graph_rules where id=' . $_GET['id']) . "'</strong>?", 'automation_graph_rules.php', 'automation_graph_rules.php?action=remove&id=' . $_GET['id']);
+		form_confirm('Are You Sure?', "Are you sure you want to delete the Rule <strong>'" . db_fetch_cell('SELECT name FROM automation_graph_rules WHERE id=' . $_GET['id']) . "'</strong>?", 'automation_graph_rules.php', 'automation_graph_rules.php?action=remove&id=' . $_GET['id']);
 		bottom_footer();
 		exit;
 	}

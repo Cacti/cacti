@@ -261,7 +261,7 @@ function aggregate_error_handler($errno, $errmsg, $filename, $linenum, $vars) {
 function get_next_sequence($id, $field, $table_name, $group_query, $key_field="id") {
 	cacti_log(__FUNCTION__ . "  called. Id: " . $id . " field: " . $field . " table: " . $table_name, true, "AGGREGATE", POLLER_VERBOSITY_DEVDBG);
 	if (empty($id)) {
-		$data = db_fetch_row("select max($field)+1 as seq from $table_name where $group_query");
+		$data = db_fetch_row("SELECT max($field)+1 AS seq FROM $table_name WHERE $group_query");
 
 		if ($data["seq"] == "") {
 			return 1;
@@ -269,7 +269,7 @@ function get_next_sequence($id, $field, $table_name, $group_query, $key_field="i
 			return $data["seq"];
 		}
 	}else{
-		$data = db_fetch_row("select $field from $table_name where $key_field = id");
+		$data = db_fetch_row("SELECT $field FROM $table_name WHERE $key_field = id");
 		return $data[$field];
 	}
 }
@@ -504,13 +504,13 @@ function duplicate_color_template($_color_template_id, $color_template_title) {
 	cacti_log(__FUNCTION__ . "  called. Color Template Id: " . $_color_template_id . " Title: " . $color_template_title, true, "AGGREGATE", POLLER_VERBOSITY_DEVDBG);
 
 	/* fetch data from table color_templates */
-	$color_template = db_fetch_row("select *
-									from color_templates
-									where color_template_id=$_color_template_id");
+	$color_template = db_fetch_row("SELECT *
+									FROM color_templates
+									WHERE color_template_id=$_color_template_id");
 	/* fetch data from table color_template_items */
-	$color_template_items = db_fetch_assoc("select *
-									from color_template_items
-									where color_template_id=$_color_template_id");
+	$color_template_items = db_fetch_assoc("SELECT *
+									FROM color_template_items
+									WHERE color_template_id=$_color_template_id");
 
 	/* create new entry: color_templates */
 	$save["color_template_id"] = 0;
@@ -755,7 +755,7 @@ function auto_title($_local_graph_id) {
 
 	# apply given graph title, but drop host and query variables
 	$graph_title = "Aggregate ";
-	$graph_title .= db_fetch_cell("select title from graph_templates_graph where local_graph_id=$_local_graph_id");
+	$graph_title .= db_fetch_cell("SELECT title FROM graph_templates_graph WHERE local_graph_id=$_local_graph_id");
 
 	cacti_log("title:" . $graph_title, true, "AGGREGATE", POLLER_VERBOSITY_DEBUG);
 
