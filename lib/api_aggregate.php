@@ -1190,13 +1190,13 @@ function draw_aggregate_graph_items_list($_graph_id = 0, $_graph_template_id = 0
 			/* column "Data Source" */
 			$_graph_type_name = $graph_item_types{$item["graph_type_id"]};
 			switch (true) {
-				case ereg("(AREA|STACK|GPRINT|LINE[123])", $_graph_type_name):
+				case preg_match('/(AREA|STACK|GPRINT|LINE[123])/', $_graph_type_name):
 					$matrix_title = $item["text_format"];
 					break;
-				case ereg("(HRULE|VRULE)", $_graph_type_name):
+				case preg_match('/"(HRULE|VRULE)/', $_graph_type_name):
 					$matrix_title = "HRULE: " . $item["value"];
 					break;
-				case ereg("(COMMENT)", $_graph_type_name):
+				case preg_match('/(COMMENT)/', $_graph_type_name):
 					$matrix_title = "COMMENT: " . $item["text_format"];
 					break;
 			}

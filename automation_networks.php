@@ -260,7 +260,7 @@ function form_actions() {
 
 	/* loop through each of the device types selected on the previous page and get more info about them */
 	while (list($var,$val) = each($_POST)) {
-		if (ereg('^chk_([0-9]+)$', $var, $matches)) {
+		if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
 			/* ================= input validation ================= */
 			input_validate_input_number($matches[1]);
 			/* ==================================================== */
