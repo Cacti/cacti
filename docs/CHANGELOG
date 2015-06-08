@@ -52,6 +52,7 @@ Cacti CHANGELOG
 
 0.8.8d
 -feature: Remove un-needed fonts and javascript files
+-bug: Fixed SQL injection VN: JVN#78187936 / TN:JPCERT#98968540
 -bug#0002261: PHP 5.4.0 added new error_reporting variable, causing cacti to show errors
 -bug#0002391: Odd Behaviour on ReIndex of Data Query Data
 -bug#0002393: Broken thumbnail images for graph templates
@@ -71,6 +72,7 @@ Cacti CHANGELOG
 -bug#0002542: [FG-VD-15-017] Cacti Cross-Site Scripting Vulnerability Notification
 -bug#0002543: Unable to switch pages within graphs_new.php due to invalid URL generation
 -bug#0002544: Duplicate entry in $nav_url during list view
+-bug#0002571: SQL Injection and Location header injection from cdef id CVE-2015-4342 
 
 0.8.8c
 -bug#0002228: GPL incompatible files included in Cacti project in include/treeview

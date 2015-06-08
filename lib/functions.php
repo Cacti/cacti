@@ -2678,6 +2678,9 @@ function get_hash_data_input($data_input_id, $sub_type = 'data_input_method') {
    @arg $sub_type (optional) return the hash for a particlar sub-type of this type
    @returns - a 128-bit, hexadecimal hash */
 function get_hash_cdef($cdef_id, $sub_type = 'cdef') {
+	if (! is_numeric($cdef_id)) {
+		$cdef_id = -1;
+	}
 	if ($sub_type == 'cdef') {
 		$hash = db_fetch_cell_prepared('SELECT hash FROM cdef WHERE id = ?', array($cdef_id));
 	}elseif ($sub_type == 'cdef_item') {
