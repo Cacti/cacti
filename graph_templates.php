@@ -86,6 +86,12 @@ switch ($_REQUEST['action']) {
    -------------------------- */
 
 function form_save() {
+
+	// sanitize ids
+	if (isset($_POST["graph_template_id"]) && ! is_numeric($_POST["graph_template_id"])) {
+		$_POST["graph_template_id"] = 0;
+	}
+
 	if (isset($_POST['save_component_template'])) {
 		$save1['id'] = $_POST['graph_template_id'];
 		$save1['hash'] = get_hash_graph_template($_POST['graph_template_id']);
