@@ -232,7 +232,7 @@ function form_actions() {
 
 	top_header();
 
-	print "<form action='graph_templates.php' method='post'>\n";
+	form_start('graph_templates.php');
 
 	html_start_box('<strong>' . $graph_actions{$_POST['drp_action']} . '</strong>', '60%', '', '3', 'center', '');
 
@@ -275,7 +275,7 @@ function form_actions() {
 
 	html_end_box();
 
-	print "</form>\n";
+	form_end();
 
 	bottom_footer();
 }
@@ -373,7 +373,7 @@ function template_edit() {
 		$header_label = '[new]';
 	}
 
-	print "<form id='graph_templates' action='graph_templates.php' method='post'>\n";
+	form_start('graph_templates.php', 'graph_templates');
 
 	html_start_box('<strong>Template</strong> ' . htmlspecialchars($header_label), '100%', '', '3', 'center', '');
 
@@ -597,8 +597,7 @@ function template() {
 		$sql_having = '';
 	}
 
-	/* print checkbox form for validation */
-	print "<form name='chk' method='post' action='graph_templates.php'>\n";
+	form_start('graph_templates.php', 'chk');
 
 	html_start_box('', '100%', '', '3', 'center', '');
 
@@ -663,7 +662,7 @@ function template() {
 	/* draw the dropdown containing a list of available actions for this form */
 	draw_actions_dropdown($graph_actions);
 
-	print "</form>\n";
+	form_end();
 }
 
 ?>

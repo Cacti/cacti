@@ -125,7 +125,7 @@ function settings() {
 		$settings_graphs['tree']['default_tree_id']['sql'] = get_graph_tree_array(true);
 	}
 
-	print "<form method='post' action='graph_settings.php'>\n";
+	form_start('graph_settings.php');
 
 	html_start_box('<strong>Graph Settings</strong>', '100%', '', '3', 'center', '');
 
@@ -162,15 +162,16 @@ function settings() {
 					'no_form_tag' => true
 					),
 				'fields' => $form_array
-				)
-			);
+			)
+		);
 	}
 
 	html_end_box();
 
+	form_end();
+
 	?>
-	<script type="text/javascript">
-	<!--
+	<script type='text/javascript'>
 	var themeFonts=<?php print read_config_option('font_method');?>;
 
 	function graphSettings() {
@@ -253,7 +254,6 @@ function settings() {
 		});
 	});
 
-	-->
 	</script>
 	<?php
 

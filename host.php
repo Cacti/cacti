@@ -132,7 +132,7 @@ function form_save() {
 		/* recache snmp data */
 		run_data_query($_POST['id'], $_POST['snmp_query_id']);
 
-		header('Location: host.php?action=edit&id=' . $_POST['id']);
+		header('Location: host.php?header=false&action=edit&id=' . $_POST['id']);
 		exit;
 	}
 
@@ -148,7 +148,7 @@ function form_save() {
 
 		api_plugin_hook_function('add_graph_template_to_host', array('host_id' => $_POST['id'], 'graph_template_id' => $_POST['graph_template_id']));
 
-		header('Location: host.php?action=edit&id=' . $_POST['id']);
+		header('Location: host.php?header=false&action=edit&id=' . $_POST['id']);
 		exit;
 	}
 
@@ -171,7 +171,7 @@ function form_save() {
 				$_POST['snmp_priv_protocol'], $_POST['snmp_context'], $_POST['max_oids'], $_POST['device_threads']);
 		}
 
-		header('Location: host.php?action=edit&id=' . (empty($host_id) ? $_POST['id'] : $host_id));
+		header('Location: host.php?header=false&action=edit&id=' . (empty($host_id) ? $_POST['id'] : $host_id));
 	}
 }
 
@@ -411,7 +411,7 @@ function form_actions() {
 		
 		api_plugin_hook_function('device_action_bottom', array($_POST['drp_action'], $selected_items));
 
-		header('Location: host.php');
+		header('Location: host.php?header=false');
 		exit;
 	}
 
@@ -437,7 +437,7 @@ function form_actions() {
 	/* add a list of tree names to the actions dropdown */
 	add_tree_names_to_actions_array();
 
-	print "<form action='host.php' autocomplete='off' method='post'>\n";
+	form_start('host.php');
 
 	html_start_box('<strong>' . $device_actions[get_request_var_post('drp_action')] . '</strong>', '60%', '', '3', 'center', '');
 
@@ -596,7 +596,7 @@ function form_actions() {
 
 	html_end_box();
 
-	print "</form>\n";
+	form_end();
 
 	bottom_footer();
 }
@@ -799,7 +799,7 @@ function host_edit() {
 		<?php
 	}
 
-	print "<form id='host_form' action='host.php' method='post'>\n";
+	form_start('host.php', 'host_form');
 
 	html_start_box("<strong>Device</strong> $header_label", '100%', '', '3', 'center', '');
 
@@ -1423,8 +1423,7 @@ function host() {
 		$sql_where .= (strlen($sql_where) ? ' AND host.host_template_id=' . get_request_var_request('host_template_id') : ' WHERE host.host_template_id=' . get_request_var_request('host_template_id'));
 	}
 
-	/* print checkbox form for validation */
-	print "<form name='chk' method='post' action='host.php'>\n";
+	form_start('host.php', 'chk');
 
 	html_start_box('', '100%', '', '3', 'center', '');
 
@@ -1519,7 +1518,7 @@ function host() {
 	/* draw the dropdown containing a list of available actions for this form */
 	draw_actions_dropdown($device_actions);
 
-	print "</form>\n";
+	form_end();
 }
 
 function get_timeinstate($host) {

@@ -784,7 +784,7 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 		}
 
 		print "<td>";
-		if ($disable_controls == false) { print "<a href='" . htmlspecialchars("$filename?action=item_edit&id=" . $item["id"] . "&$url_data") . "'>"; }
+		if ($disable_controls == false) { print "<a class='linkEditMain' href='" . htmlspecialchars("$filename?action=item_edit&id=" . $item["id"] . "&$url_data") . "'>"; }
 		print "<strong>Item # " . ($i+1) . "</strong>";
 		if ($disable_controls == false) { print "</a>"; }
 		print "</td>\n";
@@ -979,25 +979,11 @@ function draw_actions_dropdown($actions_array) {
 				<?php form_dropdown("drp_action",$actions_array,"","","1","","");?>
 			</td>
 			<td>
-				<input type='button' value='Go' title='Execute Action' onClick='loadActionsPage()'>
+				<input type='submit' value='Go' title='Execute Action'>
 			</td>
 		</tr>
 	</table>
 	<input type='hidden' id='action' name='action' value='actions'>
-	<script type='text/javascript'>
-	function loadActionsPage() {
-		form = $('#action').closest('form');
-		variables = form.serializeObject();
-		strURL = form.attr('action');
-		strURL += (strURL.indexOf('?') >= 0 ? '&':'?') + 'header=false';
-		$.post(strURL, variables).done(function(data) {
-			$('#main').html(data);
-			applySkin();
-			window.scrollTo(0, 0);
-		});
-		return false;
-	}
-	</script>
 	<?php
 }
 

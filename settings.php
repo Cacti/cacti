@@ -117,8 +117,8 @@ default:
 	print "</ul></nav></div>\n";
 	print "</tr></table><table style='width:100%;'><tr><td style='padding:0px;'>\n";
 
-	/* print form for validation */
-	print "<form method='post' autocomplete='off' action='settings.php'>\n";
+	form_start('settings.php');
+
 	html_start_box('<strong>Cacti Settings (' . $tabs[$current_tab] . ')</strong>', '100%', '', '3', 'center', '');
 
 	$form_array = array();
@@ -155,7 +155,9 @@ default:
 
 	form_save_button('', 'save');
 
-	print "</form></td></tr></table>\n";
+	form_end();
+
+	print "</td></tr></table>\n";
 
 	?>
 	<script type='text/javascript'>

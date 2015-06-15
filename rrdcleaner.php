@@ -324,7 +324,7 @@ function list_rrd() {
 		$sql_where .= " AND last_mod<='" . date("Y-m-d H:i:s", (time() - $secsback)) . "'";
 	}
 
-	print "<form action='rrdcleaner.php' method='post'>\n";
+	form_start('rrdcleaner.php');
 
 	html_start_box('', $width, '', '3', 'center', '');
 
@@ -393,7 +393,7 @@ function list_rrd() {
 
 	draw_actions_dropdown($ds_actions);
 
-	print "</form>\n";
+	form_end();
 
 	/* restore original error handler */
 	restore_error_handler();

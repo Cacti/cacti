@@ -569,7 +569,7 @@ function form_actions() {
 	/* add a list of tree names to the actions dropdown */
 	add_tree_names_to_actions_array();
 
-	print "<form action='graphs.php' method='post'>\n";
+	form_start('graphs.php');
 
 	html_start_box('<strong>' . $graph_actions{$_POST['drp_action']} . '</strong>', '60%', '', '3', 'center', '');
 
@@ -872,7 +872,7 @@ function form_actions() {
 
 	html_end_box();
 
-	print "</form>\n";
+	form_end();
 
 	bottom_footer();
 }
@@ -1133,8 +1133,9 @@ function graph_diff() {
 	}
 	html_end_box();
 
+	form_start('graphs.php');
+
 	?>
-	<form action="graphs.php" method="post">
 	<table class='tableConfirmation'>
 		<tr>
 			<td class="textArea">
@@ -1626,8 +1627,7 @@ function graph() {
 	/* allow plugins to modify sql_where */
 	$sql_where = api_plugin_hook_function('graphs_sql_where', $sql_where);
 
-	/* print checkbox form for validation */
-	print "<form name='chk' method='post' action='graphs.php'>\n";
+	form_start('graphs.php', 'chk');
 
 	html_start_box('', '100%', '', '3', 'center', '');
 
@@ -1695,6 +1695,6 @@ function graph() {
 	/* draw the dropdown containing a list of available actions for this form */
 	draw_actions_dropdown($graph_actions);
 
-	print "</form>\n";
+	form_end();
 }
 

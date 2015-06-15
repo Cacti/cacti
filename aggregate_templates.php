@@ -66,7 +66,7 @@ switch ($_REQUEST['action']) {
 function aggregate_form_save() {
 	/* make sure we are saving aggregate template */
 	if (!isset($_POST['save_component_template'])) {
-		header('Location: aggregate_templates.php?action=edit&id=' . $_POST['id']);
+		header('Location: aggregate_templates.php?header=false&action=edit&id=' . $_POST['id']);
 		return null;
 	}
 
@@ -100,7 +100,7 @@ function aggregate_form_save() {
 
 	/* form validation failed */
 	if (is_error_message()) {
-		header('Location: aggregate_templates.php?action=edit&id=' . $_POST['id']);
+		header('Location: aggregate_templates.php?header=false&action=edit&id=' . $_POST['id']);
 		return null;
 	}
 
@@ -140,7 +140,7 @@ function aggregate_form_save() {
 
 	if (!$id) {
 		raise_message(2);
-		header('Location: aggregate_templates.php?action=edit&id=' . $_POST['id']);
+		header('Location: aggregate_templates.php?header=false&action=edit&id=' . $_POST['id']);
 		return null;
 	}
 
@@ -221,7 +221,8 @@ function aggregate_form_save() {
 	}
 
 	raise_message(1);
-	header('Location: aggregate_templates.php?action=edit&id=' . (empty($id) ? $_POST['id'] : $id));
+
+	header('Location: aggregate_templates.php?header=false&action=edit&id=' . (empty($id) ? $_POST['id'] : $id));
 }
 
 
@@ -255,7 +256,7 @@ function aggregate_form_actions() {
 			db_execute("UPDATE aggregate_graphs SET aggregate_template_id=0, template_propogation='' WHERE " . array_to_sql_or($selected_items, 'aggregate_template_id'));
 		}
 
-		header('Location: aggregate_templates.php');
+		header('Location: aggregate_templates.php?header=false');
 		exit;
 	}
 
@@ -275,7 +276,8 @@ function aggregate_form_actions() {
 
 	top_header();
 
-	print "<form action='aggregate_templates.php' method='post'>\n";
+	form_start('aggregate_templates.php');
+
 	html_start_box('<strong>' . $aggregate_actions{$_POST['drp_action']} . '</strong>', '60%', '', '3', 'center', '');
 
 	if (isset($aggregate_array) && sizeof($aggregate_array)) {
@@ -305,7 +307,7 @@ function aggregate_form_actions() {
 
 	html_end_box();
 
-	print "</form>\n";
+	form_end();
 
 	bottom_footer();
 }
@@ -336,7 +338,8 @@ function aggregate_template_edit() {
 		$template['id']                = 0;
 	}
 
-	print ('<form name="template_edit" action="aggregate_templates.php" method="post">');
+	form_start('aggregate_templates.php', 'template_edit');
+
 	html_start_box("<strong>Aggregate Template</strong> $header_label", '100%', '', '3', 'center', '');
 
 	draw_edit_form(array(
@@ -521,7 +524,7 @@ function aggregate_template() {
 		$_REQUEST['rows'] = read_config_option('num_rows_table');
 	}
 
-	print ('<form id="template" action="aggregate_templates.php" method="get">');
+	form_start('aggregate_templates.php', 'template');
 
 	html_start_box('<strong>Aggregate Templates</strong>', '100%', '', '3', 'center', 'aggregate_templates.php?action=edit');
 
@@ -578,7 +581,7 @@ function aggregate_template() {
 
 	html_end_box();
 
-	print "</form>\n";
+	form_end();
 
 	/* form the 'where' clause for our main sql query */
 	$sql_where = '';
@@ -590,8 +593,8 @@ function aggregate_template() {
 		$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') . 'graphs.graphs>0';
 	}
 
-	/* print checkbox form for validation */
-	print "<form name='chk' method='post' action='aggregate_templates.php'>\n";
+	form_start('aggregate_templates.php', 'chk');
+
 	html_start_box('', '100%', '', '3', 'center', '');
 
 	$total_rows = db_fetch_cell("SELECT
@@ -661,7 +664,7 @@ function aggregate_template() {
 	/* draw the dropdown containing a list of available actions for this form */
 	draw_actions_dropdown($aggregate_actions);
 
-	print "</form>\n";
+	form_end();
 
 	?>
 	<script type='text/javascript'>

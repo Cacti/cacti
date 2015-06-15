@@ -1066,10 +1066,14 @@ function form_save_button($cancel_url, $force_type = "", $key_field = "id") {
 			</td>
 		</tr>
 	</table>
-	</form>
 	<?php
+
+	form_end();
 }
 
+/* form_save_buttons - draws a set of buttons at the end of a form
+     an html edit form
+   @arg $buttons - an array of 'id', 'name' buttons */
 function form_save_buttons($buttons) {
 	?>
 	<table style='width:100%;text-align:center;'>
@@ -1082,7 +1086,48 @@ function form_save_buttons($buttons) {
 			</td>
 		</tr>
 	</table>
-	</form>
 	<?php
 }
 
+/* form_start - draws post form start. To be combined with form_end()
+   @arg $action - a mandatory php file URI
+   @arg $id     - an optional id, if empty, one will be generated */
+function form_start($action, $id = '') {
+	global $form_id, $form_action;
+	static $counter = 1;
+
+	if ($id == '') {
+		$form_id = 'form' . $counter;
+		$counter++;
+	}else{
+		$form_id = $id;
+	}
+
+	$form_action = $action;
+
+	print "<form id='$form_id' name='$form_id' action='$form_action' autocomplete='off' method='post'>\n";
+}
+
+/* form_end - draws post form end. To be combined with form_start() */
+function form_end() {
+	global $form_id, $form_action;
+
+	?>
+	</form>
+	<script type='text/javascript'>
+	$(function() {
+		$('#<?php print $form_id;?>').submit(function(event) {
+			event.preventDefault();
+			strURL = '<?php print $form_action;?>';
+			strURL += (strURL.indexOf('?') >- 0 ? '&':'?') + 'header=false';
+			json =  $('#<?php print $form_id;?>').serializeObject();
+			$.post(strURL, json).done(function(data) {
+				$('#main').html(data);
+				applySkin();
+				window.scrollTo(0, 0);
+			});
+		});
+	});
+	</script>
+	<?php
+}

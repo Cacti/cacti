@@ -1562,7 +1562,7 @@ function reports() {
 			event.preventDefault();
 			applyFilter();
 		});
-    });
+	});
 	</script>
 	<?php
 }

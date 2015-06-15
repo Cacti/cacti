@@ -255,7 +255,7 @@ function host_new_graphs($host_id, $host_template_id, $selected_graphs_array) {
 
 	top_header();
 
-	print "<form method='post' action='graphs_new.php'>\n";
+	form_start('graphs_new.php');
 
 	$snmp_query_id = 0;
 	$num_output_fields = array();
@@ -518,10 +518,12 @@ function graphs() {
 	</td>
 	</tr>
 
-	<?php html_end_box(); ?>
+	<?php 
 
-	<form name='chk' method='post' action='graphs_new.php'>
-	<?php
+	html_end_box();
+
+	form_start('graphs_new.php',' chk');
+
 	$total_rows = sizeof(db_fetch_assoc_prepared('SELECT graph_template_id FROM host_graph WHERE host_id = ?', array($_REQUEST['host_id'])));
 
 	$i = 0;

@@ -112,9 +112,9 @@ function form_save() {
 		}
 
 		if (is_error_message() || empty($_POST['id'])) {
-			header('Location: automation_templates.php?id=' . (empty($template_id) ? $_POST['id'] : $template_id));
+			header('Location: automation_templates.php?header=false&id=' . (empty($template_id) ? $_POST['id'] : $template_id));
 		}else{
-			header('Location: automation_templates.php');
+			header('Location: automation_templates.php?header=false');
 		}
 	}
 }
@@ -225,7 +225,7 @@ function template_edit() {
 		$_GET['id'] = 0;
 	}
 
-	print "<form id='form_network' action='automation_templates.php' method='post'>\n";
+	form_start('automation_templates.php', 'form_network');
 
 	html_start_box("<strong>Automation Templates</strong> $header_label", '100%', '', '3', 'center', '');
 

@@ -300,6 +300,27 @@ case 'preview':
 						</select>
 					</td>
 					<td>
+						<input type='button' id='refresh' value='Go' title='Set/Refresh Filters' onClick='applyFilter()'>
+					</td>
+					<td>
+						<input type='button' id='clear' value='Clear' title='Clear Filters' onClick='clearFilter()'>
+					</td>
+					<?php if (is_view_allowed('graph_settings')) {?>
+					<td>
+						<input type='button' value='Save' title='Save current settings to your profile' onClick='clearSaveSettings()'>
+					</td>
+					<?php }?>
+				</tr>
+			</table>
+			<table>
+				<tr>
+					<td style='width:55px;'>
+						Search
+					</td>
+					<td>
+						<input type='text' id='filter' size='25' value='<?php print htmlspecialchars(get_request_var_request('filter'));?>' onChange='applyFilter()'>
+					</td>
+					<td>
 						Graphs
 					</td>
 					<td>
@@ -330,18 +351,6 @@ case 'preview':
 					</td>
 					<td>
 						<input id='thumbnails' type='checkbox' onClick='applyFilter()' <?php print (($_REQUEST['thumbnails'] == 'true') ? 'checked':'');?>>
-					</td>
-					<td>
-						Search
-					</td>
-					<td>
-						<input type='text' id='filter' size='25' value='<?php print htmlspecialchars(get_request_var_request('filter'));?>' onChange='applyFilter()'>
-					</td>
-					<td>
-						<input type='button' id='refresh' value='Go' title='Set/Refresh Filters' onClick='applyFilter()'>
-					</td>
-					<td>
-						<input type='button' id='clear' value='Clear' title='Clear Filters' onClick='clearFilter()'>
 					</td>
 				</tr>
 			</table>
@@ -942,11 +951,7 @@ case 'list':
 
 	$graphs = get_allowed_graphs($sql_where, 'gtg.title_cache', $limit, $total_rows);
 
-	?>
-
-	<form name='chk' id='chk' action='graph_view.php' method='get'>
-
-	<?php
+	form_start('graph_view.php', 'chk');
 
 	html_start_box('', '100%', '', '3', 'center', '');
 

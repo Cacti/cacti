@@ -362,35 +362,35 @@ function update_show_current () {
 
 	?>
 	<tr class='even noprint'>
-		<td class="noprint">
-		<form id="form_plugins" method="get" action="plugins.php">
+		<td class='noprint'>
+		<form id='form_plugins' method='get' action='plugins.php'>
 			<table class='filterTable'>
-				<tr class="noprint">
+				<tr class='noprint'>
 					<td>
 						Search
 					</td>
 					<td>
-						<input id='filter' type="text" name="filter" size="25" value="<?php print get_request_var_request('filter');?>">
+						<input id='filter' type='text' name='filter' size='25' value='<?php print get_request_var_request('filter');?>'>
 					</td>
 					<td>
 						Status
 					</td>
 					<td>
-						<select id='state' name="state" onChange="applyFilter()">
-							<option value="-3"<?php if (get_request_var_request('state') == '-3') {?> selected<?php }?>>All</option>
-							<option value="1"<?php if (get_request_var_request('state') == '1') {?> selected<?php }?>>Active</option>
-							<option value="4"<?php if (get_request_var_request('state') == '4') {?> selected<?php }?>>Installed</option>
-							<option value="5"<?php if (get_request_var_request('state') == '5') {?> selected<?php }?>>Active/Installed</option>
-							<option value="0"<?php if (get_request_var_request('state') == '0') {?> selected<?php }?>>Not Installed</option>
-							<option value="-1"<?php if (get_request_var_request('state') == '-1') {?> selected<?php }?>>Legacy Installed</option>
-							<option value="-2"<?php if (get_request_var_request('state') == '-2') {?> selected<?php }?>>Legacy Not Intalled</option>
+						<select id='state' name='state' onChange='applyFilter()'>
+							<option value='-3'<?php if (get_request_var_request('state') == '-3') {?> selected<?php }?>>All</option>
+							<option value='1'<?php if (get_request_var_request('state') == '1') {?> selected<?php }?>>Active</option>
+							<option value='4'<?php if (get_request_var_request('state') == '4') {?> selected<?php }?>>Installed</option>
+							<option value='5'<?php if (get_request_var_request('state') == '5') {?> selected<?php }?>>Active/Installed</option>
+							<option value='0'<?php if (get_request_var_request('state') == '0') {?> selected<?php }?>>Not Installed</option>
+							<option value='-1'<?php if (get_request_var_request('state') == '-1') {?> selected<?php }?>>Legacy Installed</option>
+							<option value='-2'<?php if (get_request_var_request('state') == '-2') {?> selected<?php }?>>Legacy Not Intalled</option>
 						</select>
 					</td>
 					<td>
 						Plugins
 					</td>
 					<td>
-						<select id='rows' name="rows" onChange="applyFilter()">
+						<select id='rows' name='rows' onChange='applyFilter()'>
 							<?php
 							if (sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
@@ -401,10 +401,10 @@ function update_show_current () {
 						</select>
 					</td>
 					<td>
-						<input type="button" id='refresh' value="Go" title="Set/Refresh Filters">
+						<input type='button' id='refresh' value='Go' title='Set/Refresh Filters'>
 					</td>
 					<td>
-						<input type="button" id='clear' value="Clear" title="Clear Filters">
+						<input type='button' id='clear' value='Clear' title='Clear Filters'>
 					</td>
 				</tr>
 			</table>
@@ -416,8 +416,7 @@ function update_show_current () {
 
 	html_end_box();
 
-	/* print checkbox form for validation */
-	print "<form name='chk' method='post' action='plugins.php'>\n";
+	form_start('plugins.php', 'chk');
 
 	html_start_box('', '100%', '', '3', 'center', '');
 
@@ -511,7 +510,7 @@ function update_show_current () {
 
 	html_end_box(false);
 
-	print "</form>\n";
+	form_end();
 }
 
 function format_plugin_row($plugin, $last_plugin, $include_ordering) {

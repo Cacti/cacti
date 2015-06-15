@@ -36,7 +36,7 @@ switch ($_REQUEST['action']) {
 	case 'item_remove':
 		item_remove();
 
-		header('Location: graphs.php?action=graph_edit&id=' . $_REQUEST['local_graph_id']);
+		header('Location: graphs.php?header=false&action=graph_edit&id=' . $_REQUEST['local_graph_id']);
 		break;
 	case 'item_edit':
 		top_header();
@@ -48,12 +48,12 @@ switch ($_REQUEST['action']) {
 	case 'item_movedown':
 		item_movedown();
 
-		header('Location: graphs.php?action=graph_edit&id=' . $_REQUEST['local_graph_id']);
+		header('Location: graphs.php?header=false&action=graph_edit&id=' . $_REQUEST['local_graph_id']);
 		break;
 	case 'item_moveup':
 		item_moveup();
 
-		header('Location: graphs.php?action=graph_edit&id=' . $_REQUEST['local_graph_id']);
+		header('Location: graphs.php?header=false&action=graph_edit&id=' . $_REQUEST['local_graph_id']);
 		break;
 }
 
@@ -131,10 +131,10 @@ function form_save() {
 		}
 
 		if (is_error_message()) {
-			header('Location: graphs.php?action=item_edit&graph_template_item_id=' . (empty($graph_template_item_id) ? $_POST['graph_template_item_id'] : $graph_template_item_id) . '&id=' . $_POST['local_graph_id']);
+			header('Location: graphs.php?header=false&action=item_edit&graph_template_item_id=' . (empty($graph_template_item_id) ? $_POST['graph_template_item_id'] : $graph_template_item_id) . '&id=' . $_POST['local_graph_id']);
 			exit;
 		}else{
-			header('Location: graphs.php?action=graph_edit&id=' . $_POST['local_graph_id']);
+			header('Location: graphs.php?header=false&action=graph_edit&id=' . $_POST['local_graph_id']);
 			exit;
 		}
 	}
@@ -212,17 +212,17 @@ function item_edit() {
 
 	?>
 	<tr class='even noprint'>
-		<form name="form_graph_items" action="graphs_items.php">
+		<form name='form_graph_items' action='graphs_items.php'>
 		<td>
 			<table>
 				<tr>
-					<td width="50">
+					<td width='50'>
 						Device
 					</td>
 					<td>
-						<select name="cbo_host_id" onChange="window.location=document.form_graph_items.cbo_host_id.options[document.form_graph_items.cbo_host_id.selectedIndex].value">
-							<option value="graphs_items.php?action=item_edit<?php print $id; ?>&local_graph_id=<?php print get_request_var_request('local_graph_id');?>&host_id=-1&data_template_id=<?php print get_request_var_request('data_template_id');?>"<?php if (get_request_var_request('host_id') == '-1') {?> selected<?php }?>>Any</option>
-							<option value="graphs_items.php?action=item_edit<?php print $id; ?>&local_graph_id=<?php print get_request_var_request('local_graph_id');?>&host_id=0&data_template_id=<?php print get_request_var_request('data_template_id');?>"<?php if (get_request_var_request('host_id') == '0') {?> selected<?php }?>>None</option>
+						<select name='cbo_host_id' onChange='window.location=document.form_graph_items.cbo_host_id.options[document.form_graph_items.cbo_host_id.selectedIndex].value'>
+							<option value='graphs_items.php?action=item_edit<?php print $id; ?>&local_graph_id=<?php print get_request_var_request('local_graph_id');?>&host_id=-1&data_template_id=<?php print get_request_var_request('data_template_id');?>'<?php if (get_request_var_request('host_id') == '-1') {?> selected<?php }?>>Any</option>
+							<option value='graphs_items.php?action=item_edit<?php print $id; ?>&local_graph_id=<?php print get_request_var_request('local_graph_id');?>&host_id=0&data_template_id=<?php print get_request_var_request('data_template_id');?>'<?php if (get_request_var_request('host_id') == '0') {?> selected<?php }?>>None</option>
 							<?php
 							$hosts = db_fetch_assoc("SELECT id, CONCAT_WS('',description,' (',hostname,')') AS name FROM host ORDER BY description, hostname");
 
@@ -241,9 +241,9 @@ function item_edit() {
 						Data Template
 					</td>
 					<td>
-						<select name="cbo_data_template_id" onChange="window.location=document.form_graph_items.cbo_data_template_id.options[document.form_graph_items.cbo_data_template_id.selectedIndex].value">
-							<option value="graphs_items.php?action=item_edit<?php print $id; ?>&local_graph_id=<?php print get_request_var_request('local_graph_id');?>&data_template_id=-1&host_id=<?php print get_request_var_request('host_id');?>"<?php if (get_request_var_request('data_template_id') == '-1') {?> selected<?php }?>>Any</option>
-							<option value="graphs_items.php?action=item_edit<?php print $id; ?>&local_graph_id=<?php print get_request_var_request('local_graph_id');?>&data_template_id=0&host_id=<?php print get_request_var_request('host_id');?>"<?php if (get_request_var_request('data_template_id') == '0') {?> selected<?php }?>>None</option>
+						<select name='cbo_data_template_id' onChange='window.location=document.form_graph_items.cbo_data_template_id.options[document.form_graph_items.cbo_data_template_id.selectedIndex].value'>
+							<option value='graphs_items.php?action=item_edit<?php print $id; ?>&local_graph_id=<?php print get_request_var_request('local_graph_id');?>&data_template_id=-1&host_id=<?php print get_request_var_request('host_id');?>'<?php if (get_request_var_request('data_template_id') == '-1') {?> selected<?php }?>>Any</option>
+							<option value='graphs_items.php?action=item_edit<?php print $id; ?>&local_graph_id=<?php print get_request_var_request('local_graph_id');?>&data_template_id=0&host_id=<?php print get_request_var_request('host_id');?>'<?php if (get_request_var_request('data_template_id') == '0') {?> selected<?php }?>>None</option>
 							<?php
 							$data_templates = db_fetch_assoc('SELECT id, name FROM data_template ORDER BY name');
 
@@ -368,7 +368,7 @@ function item_edit() {
 
 	function setRowVisibility() {
 		switch($('#graph_type_id').val()) {
-		case "1":
+		case '1':
 			$('#row_task_item_id').hide();
 			$('#row_color_id').hide();
 			$('#row_alpha').hide();
@@ -379,8 +379,8 @@ function item_edit() {
 			$('#row_text_format').show();
 			$('#row_hard_return').show();
 			break;
-		case "2":
-		case "3":
+		case '2':
+		case '3':
 			$('#row_task_item_id').hide();
 			$('#row_color_id').hide();
 			$('#row_alpha').hide();
@@ -391,11 +391,11 @@ function item_edit() {
 			$('#row_text_format').hide();
 			$('#row_hard_return').show();
 			break;
-		case "4":
-		case "5":
-		case "6":
-		case "7":
-		case "8":
+		case '4':
+		case '5':
+		case '6':
+		case '7':
+		case '8':
 			$('#row_task_item_id').show();
 			$('#row_color_id').show();
 			$('#row_alpha').show();
@@ -407,8 +407,8 @@ function item_edit() {
 			$('#row_hard_return').show();
 
 			break;
-		case "9":
-		case "10":
+		case '9':
+		case '10':
 			$('#row_task_item_id').show();
 			$('#row_color_id').hide();
 			$('#row_alpha').hide();

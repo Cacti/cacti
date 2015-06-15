@@ -89,7 +89,7 @@ function draw_color_template_items_list($item_list, $filename, $url_data, $disab
 
 		# print item no.
 		print '<td>';
-		if ($disable_controls == false) { print "<a href='" . htmlspecialchars($filename . '?action=item_edit&color_template_item_id=' . $item['color_template_item_id'] . "&$url_data") . "'>"; }
+		if ($disable_controls == false) { print "<a class='linkEditMain' href='" . htmlspecialchars($filename . '?action=item_edit&color_template_item_id=' . $item['color_template_item_id'] . "&$url_data") . "'>"; }
 		print '<strong>Item # ' . ($i+1) . '</strong>';
 		if ($disable_controls == false) { print '</a>'; }
 		print "</td>\n";
@@ -147,9 +147,9 @@ function aggregate_color_form_save() {
 	}
 
 	if ((is_error_message()) || (empty($_POST['color_template_id']))) {
-		header('Location: color_templates.php?action=template_edit&color_template_id=' . (empty($color_template_id) ? $_POST['color_template_id'] : $color_template_id));
+		header('Location: color_templates.php?header=false&action=template_edit&color_template_id=' . (empty($color_template_id) ? $_POST['color_template_id'] : $color_template_id));
 	}else{
-		header('Location: color_templates.php');
+		header('Location: color_templates.php?header=false');
 	}
 }
 
@@ -203,7 +203,7 @@ function aggregate_color_form_actions() {
 
 	top_header();
 
-	print "<form action='color_templates.php' method='post'>\n";
+	form_start('color_templates.php');
 
 	html_start_box('<strong>' . $aggregate_actions{$_POST['drp_action']} . '</strong>', '60%', '', '3', 'center', '');
 
@@ -245,7 +245,7 @@ function aggregate_color_form_actions() {
 
 	html_end_box();
 
-	print "</form>\n";
+	form_end();
 
 	bottom_footer();
 }
@@ -303,7 +303,8 @@ function aggregate_color_template_edit() {
 		$header_label = '[new]';
 	}
 
-	print ('<form name="color_template_edit" action="color_templates.php" method="POST">');
+	form_start('color_templates.php', 'color_template_edit');
+
 	html_start_box("<strong>Color Template</strong> $header_label", '100%', '', '3', 'center', '');
 
 	draw_edit_form(array(
@@ -468,8 +469,8 @@ function aggregate_color_template() {
 		$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') . ' (templates>0 OR graphs>0)';
 	}
 
-	/* print checkbox form for validation */
-	print "<form name='chk' method='post' action='color_templates.php'>\n";
+	form_start('color_templates.php', 'chk');
+
 	html_start_box('', '100%', '', '3', 'center', '');
 
 	$total_rows = db_fetch_cell("SELECT
@@ -548,7 +549,7 @@ function aggregate_color_template() {
 	/* draw the dropdown containing a list of available actions for this form */
 	draw_actions_dropdown($aggregate_actions);
 
-	print "</form>\n";
+	form_end();
 
 	?>
 	<script type='text/javascript'>

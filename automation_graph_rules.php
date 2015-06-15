@@ -49,17 +49,17 @@ switch ($_REQUEST['action']) {
 	case 'item_movedown':
 		automation_graph_rules_item_movedown();
 
-		header('Location: automation_graph_rules.php?action=edit&id=' . $_GET['id']);
+		header('Location: automation_graph_rules.php?header=false&action=edit&id=' . $_GET['id']);
 		break;
 	case 'item_moveup':
 		automation_graph_rules_item_moveup();
 
-		header('Location: automation_graph_rules.php?action=edit&id=' . $_GET['id']);
+		header('Location: automation_graph_rules.php?header=false&action=edit&id=' . $_GET['id']);
 		break;
 	case 'item_remove':
 		automation_graph_rules_item_remove();
 
-		header('Location: automation_graph_rules.php?action=edit&id=' . $_GET['id']);
+		header('Location: automation_graph_rules.php?header=false&action=edit&id=' . $_GET['id']);
 		break;
 	case 'item_edit':
 		top_header();
@@ -111,9 +111,9 @@ function automation_graph_rules_form_save() {
 		}
 
 		if ((is_error_message()) || (empty($_POST["id"]))) {
-			header('Location: automation_graph_rules.php?action=edit&id=' . (empty($rule_id) ? $_POST['id'] : $rule_id));
+			header('Location: automation_graph_rules.php?header=false&action=edit&id=' . (empty($rule_id) ? $_POST['id'] : $rule_id));
 		}else{
-			header("Location: automation_graph_rules.php");
+			header('Location: automation_graph_rules.php?header=false');
 		}
 	}elseif (isset($_POST['save_component_automation_graph_rule_item'])) {
 		/* ================= input validation ================= */
@@ -140,9 +140,9 @@ function automation_graph_rules_form_save() {
 		}
 
 		if (is_error_message()) {
-			header('Location: automation_graph_rules.php?action=item_edit&id=' . $_POST['id'] . '&item_id=' . (empty($item_id) ? $_POST['item_id'] : $item_id) . '&rule_type=' . AUTOMATION_RULE_TYPE_GRAPH_ACTION);
+			header('Location: automation_graph_rules.php?header=false&action=item_edit&id=' . $_POST['id'] . '&item_id=' . (empty($item_id) ? $_POST['item_id'] : $item_id) . '&rule_type=' . AUTOMATION_RULE_TYPE_GRAPH_ACTION);
 		}else{
-			header('Location: automation_graph_rules.php?action=edit&id=' . $_POST['id'] . '&rule_type=' . AUTOMATION_RULE_TYPE_GRAPH_ACTION);
+			header('Location: automation_graph_rules.php?header=false&action=edit&id=' . $_POST['id'] . '&rule_type=' . AUTOMATION_RULE_TYPE_GRAPH_ACTION);
 		}
 	}elseif (isset($_POST['save_component_automation_match_item'])) {
 
@@ -171,13 +171,13 @@ function automation_graph_rules_form_save() {
 		}
 
 		if (is_error_message()) {
-			header('Location: automation_graph_rules.php?action=item_edit&id=' . $_POST['id'] . '&item_id=' . (empty($item_id) ? $_POST['item_id'] : $item_id) . '&rule_type=' . AUTOMATION_RULE_TYPE_GRAPH_MATCH);
+			header('Location: automation_graph_rules.php?header=false&action=item_edit&id=' . $_POST['id'] . '&item_id=' . (empty($item_id) ? $_POST['item_id'] : $item_id) . '&rule_type=' . AUTOMATION_RULE_TYPE_GRAPH_MATCH);
 		}else{
-			header('Location: automation_graph_rules.php?action=edit&id=' . $_POST['id'] . '&rule_type=' . AUTOMATION_RULE_TYPE_GRAPH_MATCH);
+			header('Location: automation_graph_rules.php?header=false&action=edit&id=' . $_POST['id'] . '&rule_type=' . AUTOMATION_RULE_TYPE_GRAPH_MATCH);
 		}
 	} else {
 		raise_message(2);
-		header('Location: automation_graph_rules.php');
+		header('Location: automation_graph_rules.php?header=false');
 	}
 }
 
@@ -228,7 +228,8 @@ function automation_graph_rules_form_actions() {
 			}
 		}
 
-		header('Location: automation_graph_rules.php');
+		header('Location: automation_graph_rules.php?header=false');
+
 		exit;
 	}
 
@@ -248,7 +249,7 @@ function automation_graph_rules_form_actions() {
 
 	top_header();
 
-	print "<form name='automation_graph_rules' action='automation_graph_rules.php' method='post'>";
+	form_start('automation_graph_rules.php', 'automation_graph_rules');
 
 	html_start_box('<strong>' . $automation_graph_rules_actions{$_POST['drp_action']} . '</strong>', '60%', $colors['header_panel'], '3', 'center', '');
 
@@ -303,7 +304,7 @@ function automation_graph_rules_form_actions() {
 
 	html_end_box();
 
-	print "</form>\n";
+	form_end();
 
 	bottom_footer();
 }
@@ -516,7 +517,8 @@ function automation_graph_rules_edit() {
 		<?php
 	}
 
-	print "<form method='post' action='automation_graph_rules.php' name='form_automation_graph_rule_edit'>";
+	form_start('form_automation_graph_rule_edit.php', 'automation_graph_rules');
+
 	html_start_box("<strong>Rule Selection</strong> $header_label", '100%', $colors['header'], '3', 'center', '');
 
 	if (!empty($_GET['id'])) {
@@ -778,7 +780,7 @@ function automation_graph_rules() {
 
 	html_end_box();
 
-	print "</form>\n";
+	form_end();
 
 	/* form the 'where' clause for our main sql query */
 	if (strlen(get_request_var_request('filter'))) {
@@ -802,7 +804,7 @@ function automation_graph_rules() {
 		$sql_where .= 'agr.snmp_query_id=' . get_request_var_request('snmp_query_id');
 	}
 
-	print "<form name='chk' method='post' action='automation_graph_rules.php'>\n";
+	form_start('automation_graph_rules.php', 'chk');
 
 	html_start_box('', '100%', $colors['header'], '3', 'center', '');
 
@@ -866,7 +868,7 @@ function automation_graph_rules() {
 	/* draw the dropdown containing a list of available actions for this form */
 	draw_actions_dropdown($automation_graph_rules_actions);
 
-	print "</form>\n";
+	form_end();
 }
 
 ?>

@@ -58,7 +58,7 @@ switch ($_REQUEST['action']) {
 	case 'template_remove':
 		template_remove();
 
-		header('Location: data_templates.php');
+		header('Location: data_templates.php?header=false');
 		break;
 	case 'template_edit':
 		top_header();
@@ -243,7 +243,7 @@ function form_save() {
 			}
 		}
 
-		header('Location: data_templates.php?action=template_edit&id=' . (empty($data_template_id) ? $_POST['data_template_id'] : $data_template_id) . (empty($_POST['current_rrd']) ? '' : '&view_rrd=' . ($_POST['current_rrd'] ? $_POST['current_rrd'] : $data_template_rrd_id)));
+		header('Location: data_templates.php?header=false&action=template_edit&id=' . (empty($data_template_id) ? $_POST['data_template_id'] : $data_template_id) . (empty($_POST['current_rrd']) ? '' : '&view_rrd=' . ($_POST['current_rrd'] ? $_POST['current_rrd'] : $data_template_rrd_id)));
 	}
 }
 
@@ -291,7 +291,7 @@ function form_actions() {
 			}
 		}
 
-		header('Location: data_templates.php');
+		header('Location: data_templates.php?header=false');
 		exit;
 	}
 
@@ -314,7 +314,7 @@ function form_actions() {
 
 	top_header();
 
-	print "<form action='data_templates.php' method='post'>\n";
+	form_satrt('data_templates.php');
 
 	html_start_box('<strong>' . $ds_actions{$_POST['drp_action']} . '</strong>', '60%', '', '3', 'center', '');
 
@@ -357,7 +357,7 @@ function form_actions() {
 
 	html_end_box();
 
-	print "</form>\n";
+	form_end();
 
 	bottom_footer();
 }
@@ -382,7 +382,7 @@ function template_rrd_remove() {
 	}
 	}
 
-	header('Location: data_templates.php?action=template_edit&id=' . $_REQUEST['data_template_id']);
+	header('Location: data_templates.php?header=fasle&action=template_edit&id=' . $_REQUEST['data_template_id']);
 }
 
 function template_rrd_add() {
@@ -407,7 +407,7 @@ function template_rrd_add() {
 	}
 	}
 
-	header('Location: data_templates.php?action=template_edit&id=' . $_REQUEST['id'] . "&view_rrd=$data_template_rrd_id");
+	header('Location: data_templates.php?header=false&action=template_edit&id=' . $_REQUEST['id'] . "&view_rrd=$data_template_rrd_id");
 }
 
 function template_edit() {
@@ -427,7 +427,7 @@ function template_edit() {
 		$header_label = '[new]';
 	}
 
-	print "<form id='data_templates' action='data_templates.php' method='post'>\n";
+	form_start('data_templates.php', 'data_templates');
 
 	html_start_box('<strong>Data Templates</strong> ' . htmlspecialchars($header_label), '100%', '', '3', 'center', '');
 
@@ -673,20 +673,20 @@ function template() {
 	?>
 	<tr class='even noprint'>
 		<td>
-		<form id="form_data_template" action="data_templates.php">
+		<form id='form_data_template' action='data_templates.php'>
 			<table class='filterTable'>
 				<tr>
 					<td>
 						Search
 					</td>
 					<td>
-						<input id='filter' type="text" name="filter" size="25" value="<?php print htmlspecialchars(get_request_var_request('filter'));?>">
+						<input id='filter' type='text' name='filter' size='25' value='<?php print htmlspecialchars(get_request_var_request('filter'));?>'>
 					</td>
 					<td style='white-space: nowrap;'>
 						Data Templates
 					</td>
 					<td>
-						<select id='rows' name="rows" onChange="applyFilter()">
+						<select id='rows' name='rows' onChange='applyFilter()'>
 							<?php
 							if (sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
@@ -697,16 +697,16 @@ function template() {
 						</select>
 					</td>
 					<td>
-						<input type="checkbox" id='has_data' <?php print ($_REQUEST['has_data'] == 'true' ? 'checked':'');?>>
+						<input type='checkbox' id='has_data' <?php print ($_REQUEST['has_data'] == 'true' ? 'checked':'');?>>
 					</td>
 					<td>
 						<label for='has_data' style='white-space:nowrap;'>Has Data Sources</label>
 					</td>
 					<td>
-						<input type="button" id='refresh' value="Go" title="Set/Refresh Filters">
+						<input type='button' id='refresh' value='Go' title='Set/Refresh Filters'>
 					</td>
 					<td>
-						<input type="button" id='clear' value="Clear" title="Clear Filters">
+						<input type='button' id='clear' value='Clear' title='Clear Filters'>
 					</td>
 				</tr>
 			</table>
@@ -762,8 +762,7 @@ function template() {
 		$sql_having = '';
 	}
 
-	/* print checkbox form for validation */
-	print "<form name='chk' method='post' action='data_templates.php'>\n";
+	form_start('data_templates.php', 'chk');
 
 	html_start_box('', '100%', '', '3', 'center', '');
 
@@ -838,6 +837,6 @@ function template() {
 	/* draw the dropdown containing a list of available actions for this form */
 	draw_actions_dropdown($ds_actions);
 
-	print "</form>\n";
+	form_end();
 }
 

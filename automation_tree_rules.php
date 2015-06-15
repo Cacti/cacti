@@ -49,17 +49,17 @@ switch ($_REQUEST['action']) {
 	case 'item_movedown':
 		automation_tree_rules_item_movedown();
 
-		header('Location: automation_tree_rules.php?action=edit&id=' . $_GET['id']);
+		header('Location: automation_tree_rules.php?header=false&action=edit&id=' . $_GET['id']);
 		break;
 	case 'item_moveup':
 		automation_tree_rules_item_moveup();
 
-		header('Location: automation_tree_rules.php?action=edit&id=' . $_GET['id']);
+		header('Location: automation_tree_rules.php?header=false&action=edit&id=' . $_GET['id']);
 		break;
 	case 'item_remove':
 		automation_tree_rules_item_remove();
 
-		header('Location: automation_tree_rules.php?action=edit&id=' . $_GET['id']);
+		header('Location: automation_tree_rules.php?header=false&action=edit&id=' . $_GET['id']);
 		break;
 	case 'item_edit':
 		top_header();
@@ -113,7 +113,7 @@ function automation_tree_rules_form_save() {
 			}
 		}
 
-		header('Location: automation_tree_rules.php?action=edit&id=' . (empty($rule_id) ? $_POST['id'] : $rule_id));
+		header('Location: automation_tree_rules.php?header=false&action=edit&id=' . (empty($rule_id) ? $_POST['id'] : $rule_id));
 
 	}elseif (isset($_POST['save_component_automation_match_item'])) {
 		/* ================= input validation ================= */
@@ -141,9 +141,9 @@ function automation_tree_rules_form_save() {
 		}
 
 		if (is_error_message()) {
-			header('Location: automation_tree_rules.php?action=item_edit&id=' . $_POST['id'] . '&item_id=' . (empty($item_id) ? $_POST['item_id'] : $item_id) . '&rule_type=' . AUTOMATION_RULE_TYPE_TREE_MATCH);
+			header('Location: automation_tree_rules.php?header=false&action=item_edit&id=' . $_POST['id'] . '&item_id=' . (empty($item_id) ? $_POST['item_id'] : $item_id) . '&rule_type=' . AUTOMATION_RULE_TYPE_TREE_MATCH);
 		}else{
-			header('Location: automation_tree_rules.php?action=edit&id=' . $_POST['id'] . '&rule_type=' . AUTOMATION_RULE_TYPE_TREE_MATCH);
+			header('Location: automation_tree_rules.php?header=false&action=edit&id=' . $_POST['id'] . '&rule_type=' . AUTOMATION_RULE_TYPE_TREE_MATCH);
 		}
 	}elseif (isset($_POST['save_component_automation_tree_rule_item'])) {
 
@@ -173,13 +173,13 @@ function automation_tree_rules_form_save() {
 		}
 
 		if (is_error_message()) {
-			header('Location: automation_tree_rules.php?action=item_edit&id=' . $_POST['id'] . '&item_id=' . (empty($automation_graph_rule_item_id) ? $_POST['item_id'] : $automation_graph_rule_item_id) . '&rule_type=' . AUTOMATION_RULE_TYPE_TREE_ACTION);
+			header('Location: automation_tree_rules.php?header=false&action=item_edit&id=' . $_POST['id'] . '&item_id=' . (empty($automation_graph_rule_item_id) ? $_POST['item_id'] : $automation_graph_rule_item_id) . '&rule_type=' . AUTOMATION_RULE_TYPE_TREE_ACTION);
 		}else{
-			header('Location: automation_tree_rules.php?action=edit&id=' . $_POST['id'] . '&rule_type=' . AUTOMATION_RULE_TYPE_TREE_ACTION);
+			header('Location: automation_tree_rules.php?header=false&action=edit&id=' . $_POST['id'] . '&rule_type=' . AUTOMATION_RULE_TYPE_TREE_ACTION);
 		}
 	} else {
 		raise_message(2);
-		header('Location: automation_tree_rules.php');
+		header('Location: automation_tree_rules.php?header=false');
 	}
 }
 
@@ -233,7 +233,8 @@ function automation_tree_rules_form_actions() {
 			}
 		}
 
-		header('Location: automation_tree_rules.php');
+		header('Location: automation_tree_rules.php?header=false');
+
 		exit;
 	}
 
@@ -254,7 +255,7 @@ function automation_tree_rules_form_actions() {
 
 	top_header();
 
-	print "<form name='automation_tree_rules_action' action='automation_tree_rules.php' method='post'>";
+	form_start('automation_tree_rules.php', 'automation_tree_rules_action');
 
 	html_start_box('<strong>' . $automation_tree_rules_actions{$_POST['drp_action']} . '</strong>', '60%', '', '3', 'center', '');
 
@@ -309,7 +310,7 @@ function automation_tree_rules_form_actions() {
 
 	html_end_box();
 
-	print "</form>\n";
+	form_end();
 
 	bottom_footer();
 }
@@ -554,7 +555,7 @@ function automation_tree_rules_edit() {
 	if (isset($_REQUEST['rra_id'])) {$rule['rra_id'] = $_REQUEST['rra_id'];}
 	if (isset($_REQUEST['tree_item_id'])) {$rule['tree_item_id'] = $_REQUEST['tree_item_id'];}
 
-	print "<form method='post' action='automation_tree_rules.php' name='form_automation_tree_rule_edit'>";
+	form_start('automation_tree_rules.php', 'form_automation_tree_rule_edit');
 
 	html_start_box("<strong>Tree Rule Selection</strong> $header_label", '100%', '', '3', 'center', '');
 
@@ -805,7 +806,7 @@ function automation_tree_rules() {
 
 	html_end_box();
 
-	print "</form>\n";
+	form_end();
 
 	/* form the 'WHERE' clause for our main sql query */
 	if (strlen(get_request_var_request('filter'))) {
@@ -822,7 +823,7 @@ function automation_tree_rules() {
 		$sql_where .= (strlen($sql_where) ? " AND atr.enabled=''" : "WHERE atr.enabled=''");
 	}
 
-	print "<form name='chk' method='post' action='automation_tree_rules.php'>\n";
+	form_start('automation_tree_rules.php', 'chk');
 
 	html_start_box('', '100%', '', '3', 'center', '');
 
@@ -891,6 +892,6 @@ function automation_tree_rules() {
 	/* draw the dropdown containing a list of available actions for this form */
 	draw_actions_dropdown($automation_tree_rules_actions);
 
-	print "</form>\n";
+	form_end();
 }
 ?>

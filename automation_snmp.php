@@ -50,17 +50,17 @@ switch ($_REQUEST['action']) {
 	case 'item_movedown':
 		automation_snmp_item_movedown();
 
-		header('Location: automation_snmp.php?action=edit&header=false&id=' . $_REQUEST['id']);
+		header('Location: automation_snmp.php?header=false&action=edit&header=false&id=' . $_REQUEST['id']);
 		break;
 	case 'item_moveup':
 		automation_snmp_item_moveup();
 
-		header('Location: automation_snmp.php?action=edit&header=false&id=' . $_REQUEST['id']);
+		header('Location: automation_snmp.php?header=false&action=edit&header=false&id=' . $_REQUEST['id']);
 		break;
 	case 'item_remove':
 		automation_snmp_item_remove();
 
-		header('Location: automation_snmp.php?action=edit&header=false&id=' . $_REQUEST['id']);
+		header('Location: automation_snmp.php?header=false&action=edit&header=false&id=' . $_REQUEST['id']);
 		break;
 	case 'item_edit':
 		top_header();
@@ -104,7 +104,7 @@ function form_automation_snmp_save() {
 			}
 		}
 
-		header('Location: automation_snmp.php?action=edit&id=' . (empty($id) ? $_POST['id'] : $id));
+		header('Location: automation_snmp.php?header=false&action=edit&id=' . (empty($id) ? $_POST['id'] : $id));
 	}elseif (isset($_POST['save_component_automation_snmp_item'])) {
 		/* ================= input validation ================= */
 		input_validate_input_number(get_request_var_post('item_id'));
@@ -139,13 +139,13 @@ function form_automation_snmp_save() {
 		}
 
 		if (is_error_message()) {
-			header('Location: automation_snmp.php?action=item_edit&id=' . $_POST['id'] . '&item_id=' . (empty($item_id) ? $_POST['id'] : $item_id));
+			header('Location: automation_snmp.php?header=false&action=item_edit&id=' . $_POST['id'] . '&item_id=' . (empty($item_id) ? $_POST['id'] : $item_id));
 		}else{
-			header('Location: automation_snmp.php?action=edit&id=' . $_POST['id']);
+			header('Location: automation_snmp.php?header=false&action=edit&id=' . $_POST['id']);
 		}
 	} else {
 		raise_message(2);
-		header('Location: automation_snmp.php');
+		header('Location: automation_snmp.php?header=false');
 	}
 }
 
@@ -176,7 +176,7 @@ function form_automation_snmp_actions() {
 			}
 		}
 
-		header('Location: automation_snmp.php');
+		header('Location: automation_snmp.php?header=false');
 		exit;
 	}
 
@@ -206,7 +206,7 @@ function form_automation_snmp_actions() {
 	</script>
 	<?php
 
-	print "<form id='automation_filter' action='automation_snmp.php' method='post'>";
+	form_start('automation_snmp.php', 'automation_filter');
 
 	html_start_box('<strong>' . $automation_snmp_actions{$_POST['drp_action']} . '</strong>', '60%', '', '3', 'center', '');
 
@@ -247,7 +247,7 @@ function form_automation_snmp_actions() {
 
 	html_end_box();
 
-	print "</form>\n";
+	form_end();
 
 	bottom_footer();
 }
@@ -307,8 +307,7 @@ function automation_snmp_item_edit() {
 		$automation_snmp_item['sequence'] = get_sequence('', 'sequence', 'automation_snmp_items', 'snmp_id=' . get_request_var_request('id'));
 	}
 
-	print "<form method='post' action='" .  basename($_SERVER['PHP_SELF']) . "' name='automation_item_edit'>\n";
-	# ready for displaying the fields
+	form_start('automation_snmp.php', 'automation_item_edit');
 
 	html_start_box("<strong>SNMP Options</strong> $header_label", '100%', '', '3', 'center', '');
 
@@ -533,7 +532,7 @@ function automation_snmp_edit() {
 		$header_label = '[new]';
 	}
 
-	print "<form name='automation_snmp_group' action='automation_snmp.php' method='post'>";
+	form_start('automation_snmp.php', 'automation_snmp_group');
 
 	html_start_box("<strong>SNMP Option Set</strong> $header_label", '100%', '', '3', 'center', '');
 
@@ -709,7 +708,7 @@ function automation_snmp() {
 		$_REQUEST['rows'] = read_config_option('num_rows_table');
 	}
 
-	print "<form name='automation_snmp' action='automation_snmp.php' method='get'>\n";
+	form_start('automation_snmp.php', 'automation_snmp');
 
 	html_start_box('<strong>Automation SNMP Options</strong>', '100%', '', '3', 'center', 'automation_snmp.php?action=edit');
 
@@ -757,7 +756,7 @@ function automation_snmp() {
 
 	html_end_box();
 
-	print "</form>\n";
+	form_end();
 
 	/* form the 'where' clause for our main sql query */
 	if (strlen(get_request_var_request('filter'))) {
@@ -832,7 +831,7 @@ function automation_snmp() {
 	/* draw the dropdown containing a list of available actions for this form */
 	draw_actions_dropdown($automation_snmp_actions);
 
-	print "</form>\n";
+	form_end();
 
 	?>
 	<script type='text/javascript'>

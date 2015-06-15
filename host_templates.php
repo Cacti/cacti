@@ -165,7 +165,7 @@ function form_actions() {
 
 	top_header();
 
-	print "<form action='host_templates.php' autocomplete='off' method='post'>\n";
+	form_start('host_templates.php');
 
 	html_start_box('<strong>' . $host_actions{$_POST['drp_action']} . '</strong>', '60%', '', '3', 'center', '');
 
@@ -211,7 +211,7 @@ function form_actions() {
 
 	html_end_box();
 
-	print "</form>\n";
+	form_end();
 
 	bottom_footer();
 }
@@ -253,7 +253,7 @@ function template_edit() {
 		$_REQUEST['id'] = 0;
 	}
 
-	print "<form id='form_network' action='host_templates.php' method='post'>\n";
+	form_start('host_templates.php', 'form_network');
 
 	html_start_box('<strong>Device Templates</strong> ' . htmlspecialchars($header_label), '100%', '', '3', 'center', '');
 
@@ -458,20 +458,20 @@ function template() {
 	?>
 	<tr class='even noprint'>
 		<td>
-		<form id="form_host_template" action="host_templates.php">
+		<form id='form_host_template' action='host_templates.php'>
 			<table class='filterTable'>
 				<tr>
 					<td>
 						Search
 					</td>
 					<td>
-						<input id='filter' type="text" name="filter" size="25" value="<?php print htmlspecialchars(get_request_var_request('filter'));?>">
+						<input id='filter' type='text' name='filter' size='25' value='<?php print htmlspecialchars(get_request_var_request('filter'));?>'>
 					</td>
 					<td style='white-space:nowrap;'>
 						Device Templates
 					</td>
 					<td>
-						<select id='rows' name="rows" onChange="applyFilter()">
+						<select id='rows' name='rows' onChange='applyFilter()'>
 							<?php
 							if (sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
@@ -482,16 +482,16 @@ function template() {
 						</select>
 					</td>
 					<td>
-						<input type="checkbox" id='has_hosts' <?php print ($_REQUEST['has_hosts'] == 'true' ? 'checked':'');?>>
+						<input type='checkbox' id='has_hosts' <?php print ($_REQUEST['has_hosts'] == 'true' ? 'checked':'');?>>
 					</td>
 					<td>
 						<label for='has_hosts' style='white-space:nowrap;'>Has Devices</label>
 					</td>
 					<td>
-						<input type="button" id='refresh' value="Go" title="Set/Refresh Filters">
+						<input type='button' id='refresh' value='Go' title='Set/Refresh Filters'>
 					</td>
 					<td>
-						<input type="button" id='clear' value="Clear" title="Clear Filters">
+						<input type='button' id='clear' value='Clear' title='Clear Filters'>
 					</td>
 				</tr>
 			</table>
@@ -537,8 +537,7 @@ function template() {
 		$sql_where = '';
 	}
 
-	/* print checkbox form for validation */
-	print "<form name='chk' method='post' action='host_templates.php'>\n";
+	form_start('host_templates.php', 'chk');
 
 	html_start_box('', '100%', '', '3', 'center', '');
 
@@ -609,7 +608,7 @@ function template() {
 	/* draw the dropdown containing a list of available actions for this form */
 	draw_actions_dropdown($host_actions);
 
-	print "</form>\n";
+	form_end();
 }
 
 

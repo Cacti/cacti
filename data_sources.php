@@ -300,11 +300,11 @@ function form_save() {
 	}
 
 	if ((isset($_POST['save_component_data_source_new'])) && (empty($_POST['data_template_id']))) {
-		header('Location: data_sources.php?action=ds_edit&host_id=' . $_POST['host_id'] . '&new=1');
+		header('Location: data_sources.php?header=false&action=ds_edit&host_id=' . $_POST['host_id'] . '&new=1');
 	}elseif ((is_error_message()) || ($_POST['data_template_id'] != $_POST['_data_template_id']) || ($_POST['data_input_id'] != $_POST['_data_input_id']) || ($_POST['host_id'] != $_POST['_host_id'])) {
-		header('Location: data_sources.php?action=ds_edit&id=' . (empty($local_data_id) ? $_POST['local_data_id'] : $local_data_id) . '&host_id=' . $_POST['host_id'] . '&view_rrd=' . (isset($_POST['current_rrd']) ? $_POST['current_rrd'] : '0'));
+		header('Location: data_sources.php?header=false&action=ds_edit&id=' . (empty($local_data_id) ? $_POST['local_data_id'] : $local_data_id) . '&host_id=' . $_POST['host_id'] . '&view_rrd=' . (isset($_POST['current_rrd']) ? $_POST['current_rrd'] : '0'));
 	}else{
-		header('Location: data_sources.php');
+		header('Location: data_sources.php?header=false');
 	}
 }
 
@@ -427,7 +427,7 @@ function form_actions() {
 
 		api_plugin_hook_function('data_source_action_bottom', array($_POST['drp_action'], $selected_items));
 
-		header('Location: data_sources.php');
+		header('Location: data_sources.php?header=false');
 		exit;
 	}
 
@@ -450,7 +450,7 @@ function form_actions() {
 
 	top_header();
 
-	print "<form action='data_sources.php' method='post'>\n";
+	form_start('data_sources.php');
 
 	html_start_box('<strong>' . $ds_actions{$_POST['drp_action']} . '</strong>', '60%', '', '3', 'center', '');
 
@@ -591,7 +591,7 @@ function form_actions() {
 
 	html_end_box();
 
-	print "</form>\n";
+	form_end();
 
 	bottom_footer();
 }
@@ -618,7 +618,7 @@ function data_edit() {
 		$header_label = '[new]';
 	}
 
-	print "<form method='post' action='data_sources.php'>\n";
+	form_start('data_sources.php');
 
 	$i = 0;
 	if (!empty($data['data_input_id'])) {
@@ -690,7 +690,7 @@ function ds_rrd_remove() {
 	db_execute_prepared('DELETE FROM data_template_rrd WHERE id = ?', array($_REQUEST['id']));
 	db_execute_prepared('UPDATE graph_templates_item SET task_item_id = 0 WHERE task_item_id = ?', array($_REQUEST['id']));
 
-	header('Location: data_sources.php?action=ds_edit&id=' . $_REQUEST['local_data_id']);
+	header('Location: data_sources.php?header=false&action=ds_edit&id=' . $_REQUEST['local_data_id']);
 }
 
 function ds_rrd_add() {
@@ -701,7 +701,7 @@ function ds_rrd_add() {
 	db_execute_prepared("INSERT INTO data_template_rrd (local_data_id, rrd_maximum, rrd_minimum, rrd_heartbeat, data_source_type_id, data_source_name) VALUES (?, 100, 0, 600, 1, 'ds')", array($_REQUEST['id']));
 	$data_template_rrd_id = db_fetch_insert_id();
 
-	header('Location: data_sources.php?action=ds_edit&id=' . $_REQUEST['id'] . "&view_rrd=$data_template_rrd_id");
+	header('Location: data_sources.php?header=false&action=ds_edit&id=' . $_REQUEST['id'] . "&view_rrd=$data_template_rrd_id");
 }
 
 function ds_edit() {
@@ -776,7 +776,7 @@ function ds_edit() {
 		<?php
 	}
 
-	print "<form id='data_source' action='data_sources.php' method='post'>\n";
+	form_start('data_sources.php',' data_source');
 
 	html_start_box("<strong>Data Template Selection</strong> $header_label", '100%', '', '3', 'center', '');
 
@@ -1317,7 +1317,7 @@ function ds() {
 		ORDER BY ". get_request_var_request('sort_column') . ' ' . get_request_var_request('sort_direction') .
 		' LIMIT ' . (get_request_var_request('rows')*(get_request_var_request('page')-1)) . ',' . get_request_var_request('rows'));
 
-	print "<form name='chk' method='post' action='data_sources.php'>\n";
+	form_start('data_sources.php', 'chk');
 
 	html_start_box('', '100%', '', '3', 'center', '');
 
@@ -1397,6 +1397,6 @@ function ds() {
 	/* draw the dropdown containing a list of available actions for this form */
 	draw_actions_dropdown($ds_actions);
 
-	print "</form>\n";
+	form_end();
 }
 

@@ -386,7 +386,7 @@ function form_actions() {
 
 	top_header();
 
-	print "<form action='user_group_admin.php' method='post'>\n";
+	form_start('user_group_admin.php');
 
 	html_start_box('<strong>' . $group_actions[get_request_var_post('drp_action')] . '</strong>', '60%', '', '3', 'center', '');
 
@@ -445,7 +445,7 @@ function form_actions() {
 
 	html_end_box();
 
-	print "</form>\n";
+	form_end();
 
 	bottom_footer();
 }
@@ -602,8 +602,7 @@ function user_group_members_edit($header_label) {
 
 	$members = db_fetch_assoc($sql_query);
 
-	/* print checkbox form for validation */
-	print "<form name='chk' method='post' action='" . htmlspecialchars('user_group_admin.php?action=edit&tab=members&id=' . get_request_var_request('id')) . "'>\n";
+	form_start(htmlspecialchars('user_group_admin.php?action=edit&tab=members&id=' . get_request_var_request('id')), 'chk');
 
 	html_start_box('', '100%', '', '3', 'center', '');
 
@@ -652,7 +651,7 @@ function user_group_members_edit($header_label) {
 	/* draw the dropdown containing a list of available actions for this form */
 	draw_actions_dropdown($assoc_actions);
 
-	print '</form>';
+	form_end();
 }
 
 function user_group_graph_perms_edit($tab, $header_label) {
@@ -676,8 +675,7 @@ function user_group_graph_perms_edit($tab, $header_label) {
 
 		graph_filter($header_label);
 
-		/* print checkbox form for validation */
-		print "<form name='policy' method='post' action='user_group_admin.php'>\n";
+		form_start('user_group_admin.php', 'policy');
 
 		/* box: device permissions */
 		html_start_box('<strong>Default Graph Policy</strong>', '100%', '', '3', 'center', '');
@@ -700,7 +698,7 @@ function user_group_graph_perms_edit($tab, $header_label) {
 
 		html_end_box();
 
-		print "</form>\n";
+		form_end();
 
 		/* if the number of rows is -1, set it to the default */
 		if ($_REQUEST['rows'] == -1) {
@@ -730,8 +728,7 @@ function user_group_graph_perms_edit($tab, $header_label) {
 			$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') . ' (user_auth_group_perms.type=1 AND user_auth_group_perms.group_id=' . get_request_var_request('id', 0) . ')';
 		}
 
-		/* print checkbox form for validation */
-		print "<form name='chk' method='post' action='" . htmlspecialchars('user_group_admin.php?action=edit&tab=permsg&id=' . get_request_var_request('id')) . "'>\n";
+		form_start(htmlspecialchars('user_group_admin.php?action=edit&tab=permsg&id=' . get_request_var_request('id')), 'chk');
 
 		html_start_box('', '100%', '', '3', 'center', '');
 
@@ -809,7 +806,7 @@ function user_group_graph_perms_edit($tab, $header_label) {
 		/* draw the dropdown containing a list of available actions for this form */
 		draw_actions_dropdown($assoc_actions);
 
-		print '</form>';
+		form_end();
 
 		break;
 	case 'permsd':
@@ -817,8 +814,7 @@ function user_group_graph_perms_edit($tab, $header_label) {
 
 		device_filter($header_label);
 
-		/* print checkbox form for validation */
-		print "<form name='policy' method='post' action='user_group_admin.php'>\n";
+		form_start('user_group_admin.php', 'policy');
 
 		/* box: device permissions */
 		html_start_box('<strong>Default Device Policy</strong>', '100%', '', '3', 'center', '');
@@ -841,7 +837,7 @@ function user_group_graph_perms_edit($tab, $header_label) {
 
 		html_end_box();
 
-		print "</form>\n";
+		form_end();
 
 		/* if the number of rows is -1, set it to the default */
 		if ($_REQUEST['rows'] == -1) {
@@ -872,8 +868,7 @@ function user_group_graph_perms_edit($tab, $header_label) {
 			$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') . ' user_auth_group_perms.group_id=' . get_request_var_request('id', 0);
 		}
 
-		/* print checkbox form for validation */
-		print "<form name='chk' method='post' action='" . htmlspecialchars('user_group_admin.php?action=edit&tab=permsd&id=' . get_request_var_request('id')) . "'>\n";
+		form_start(htmlspecialchars('user_group_admin.php?action=edit&tab=permsd&id=' . get_request_var_request('id')), 'chk');
 
 		html_start_box('', '100%', '', '3', 'center', '');
 
@@ -958,7 +953,7 @@ function user_group_graph_perms_edit($tab, $header_label) {
 		/* draw the dropdown containing a list of available actions for this form */
 		draw_actions_dropdown($assoc_actions);
 
-		print "</form>\n";
+		form_end();
 
 		break;
 	case 'permste':
@@ -966,8 +961,7 @@ function user_group_graph_perms_edit($tab, $header_label) {
 
 		template_filter($header_label);
 
-		/* print checkbox form for validation */
-		print "<form name='policy' method='post' action='user_group_admin.php'>\n";
+		form_start('user_group_admin.php', 'policy');
 
 		/* box: device permissions */
 		html_start_box('<strong>Default Graph Template Policy</strong>', '100%', '', '3', 'center', '');
@@ -990,7 +984,7 @@ function user_group_graph_perms_edit($tab, $header_label) {
 
 		html_end_box();
 
-		print "</form>\n";
+		form_end();
 
 		/* if the number of rows is -1, set it to the default */
 		if ($_REQUEST['rows'] == -1) {
@@ -1013,8 +1007,7 @@ function user_group_graph_perms_edit($tab, $header_label) {
 			$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') . ' (user_auth_group_perms.type=4 AND user_auth_group_perms.group_id=' . get_request_var_request('id', 0) . ')';
 		}
 
-		/* print checkbox form for validation */
-		print "<form name='chk' method='post' action='" . htmlspecialchars('user_group_admin.php?action=edit&tab=permste&id=' . get_request_var_request('id')) . "'>\n";
+		form_start(htmlspecialchars('user_group_admin.php?action=edit&tab=permste&id=' . get_request_var_request('id')), 'chk');
 
 		html_start_box('', '100%', '', '3', 'center', '');
 
@@ -1099,7 +1092,7 @@ function user_group_graph_perms_edit($tab, $header_label) {
 		/* draw the dropdown containing a list of available actions for this form */
 		draw_actions_dropdown($assoc_actions);
 
-		print '</form>';
+		form_end();
 
 		break;
 	case 'permstr':
@@ -1107,8 +1100,7 @@ function user_group_graph_perms_edit($tab, $header_label) {
 
 		tree_filter($header_label);
 
-		/* print checkbox form for validation */
-		print "<form name='policy' method='post' action='user_group_admin.php'>\n";
+		form_start('user_group_admin.php', 'policy');
 
 		/* box: device permissions */
 		html_start_box('<strong>Default Tree Policy</strong>', '100%', '', '3', 'center', '');
@@ -1131,7 +1123,7 @@ function user_group_graph_perms_edit($tab, $header_label) {
 
 		html_end_box();
 
-		print "</form>\n";
+		form_end();
 
 		/* if the number of rows is -1, set it to the default */
 		if ($_REQUEST['rows'] == -1) {
@@ -1153,8 +1145,7 @@ function user_group_graph_perms_edit($tab, $header_label) {
 			$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') . ' (user_auth_group_perms.type=2 AND user_auth_group_perms.group_id=' . get_request_var_request('id', 0) . ')';
 		}
 
-		/* print checkbox form for validation */
-		print "<form name='chk' method='post' action='" . htmlspecialchars('user_group_admin.php?action=edit&tab=permstr&id=' . get_request_var_request('id')) . "'>\n";
+		form_start(htmlspecialchars('user_group_admin.php?action=edit&tab=permstr&id=' . get_request_var_request('id')), 'chk');
 
 		html_start_box('', '100%', '', '3', 'center', '');
 
@@ -1232,7 +1223,7 @@ function user_group_graph_perms_edit($tab, $header_label) {
 		/* draw the dropdown containing a list of available actions for this form */
 		draw_actions_dropdown($assoc_actions);
 
-		print '</form>';
+		form_end();
 
 		break;
 	}
@@ -1249,8 +1240,7 @@ function user_group_realms_edit($header_label) {
 	input_validate_input_number(get_request_var_request('id'));
 	/* ==================================================== */
 
-	/* print checkbox form for validation */
-	print "<form name='chk' method='post' action='user_group_admin.php'>\n";
+	form_start('user_group_admin.php', 'chk');
 
 	$all_realms = $user_auth_realms;
 
@@ -1382,8 +1372,7 @@ function user_group_graph_settings_edit($header_label) {
 	input_validate_input_number(get_request_var_request('id'));
 	/* ==================================================== */
 
-	/* print checkbox form for validation */
-	print "<form name='chk' method='post' action='user_group_admin.php'>\n";
+	form_start('user_group_admin.php', 'chk');
 
 	html_start_box("<strong>Graph Settings</strong> $header_label", '100%', '', '3', 'center', '');
 
@@ -1732,8 +1721,7 @@ function user_group() {
 		$sql_where = '';
 	}
 
-	/* print checkbox form for validation */
-	print "<form name='chk' method='post' action='user_group_admin.php'>\n";
+	form_start('user_group_admin.php', 'chk');
 
 	html_start_box('', '100%', '', '3', 'center', '');
 

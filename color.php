@@ -73,9 +73,9 @@ function form_save() {
 		}
 
 		if (is_error_message()) {
-			header('Location: color.php?action=edit&id=' . (empty($color_id) ? $_POST['id'] : $color_id));
+			header('Location: color.php?header=false&action=edit&id=' . (empty($color_id) ? $_POST['id'] : $color_id));
 		}else{
-			header('Location: color.php');
+			header('Location: color.php?header=false');
 		}
 	}
 }
@@ -106,7 +106,7 @@ function color_edit() {
 		$header_label = '[new]';
 	}
 
-	print "<form id='color' action='color.php' method='post'>\n";
+	form_start('color.php', 'color');
 
 	html_start_box("<strong>Colors</strong> $header_label", '100%', '', '3', 'center', '');
 

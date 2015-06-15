@@ -78,10 +78,11 @@ function form_save() {
 		}
 
 		if (is_error_message()) {
-			header('Location: gprint_presets.php?action=edit&id=' . (empty($gprint_preset_id) ? $_POST['id'] : $gprint_preset_id));
+			header('Location: gprint_presets.php?header=false&action=edit&id=' . (empty($gprint_preset_id) ? $_POST['id'] : $gprint_preset_id));
 			exit;
 		}else{
-			header('Location: gprint_presets.php');
+			header('Location: gprint_presets.php?header=false');
+
 			exit;
 		}
 	}
@@ -106,7 +107,8 @@ function form_actions() {
 			db_execute('DELETE FROM graph_templates_gprint WHERE ' . array_to_sql_or($selected_items, 'id'));
 		}
 
-		header('Location: gprint_presets.php');
+		header('Location: gprint_presets.php?header=false');
+
 		exit;
 	}
 
@@ -129,7 +131,7 @@ function form_actions() {
 
 	top_header();
 
-	print "<form action='gprint_presets.php' method='post'>\n";
+	form_start('gprint_presets.php');
 
 	html_start_box('<strong>' . $gprint_actions{$_POST['drp_action']} . '</strong>', '60%', '', '3', 'center', '');
 
@@ -160,7 +162,7 @@ function form_actions() {
 
 	html_end_box();
 
-	print "</form>\n";
+	form_end();
 
 	bottom_footer();
 }
@@ -179,7 +181,7 @@ function gprint_presets_edit() {
 		$header_label = '[new]';
 	}
 
-	print "<form id='gprint_presets' action='gprint_presets.php' method='post'>\n";
+	form_start('gprint_presets.php', 'gprint_presets');
 
 	html_start_box("<strong>GPRINT Presets</strong> $header_label", '100%', '', '3', 'center', '');
 
@@ -349,8 +351,7 @@ function gprint_presets() {
 		$sql_having = '';
 	}
 
-	/* print checkbox form for validation */
-	print "<form name='chk' method='post' action='gprint_presets.php'>\n";
+	form_start('gprint_presets.php', 'chk');
 
 	html_start_box('', '100%', '', '3', 'center', '');
 
@@ -423,5 +424,5 @@ function gprint_presets() {
 	/* draw the dropdown containing a list of available actions for this form */
 	draw_actions_dropdown($gprint_actions);
 
-	print "</form>\n";
+	form_end();
 }

@@ -361,7 +361,7 @@ function form_actions() {
 
 	top_header();
 
-	print "<form action='tree.php' method='post'>\n";
+	form_start('tree.php');
 
 	html_start_box('<strong>' . $tree_actions{$_POST['drp_action']} . '</strong>', '60%', '', '3', 'center', '');
 
@@ -410,7 +410,7 @@ function form_actions() {
 
 	html_end_box();
 
-	print "</form>\n";
+	form_end();
 
 	bottom_footer();
 }
@@ -1374,8 +1374,7 @@ function tree() {
 
 	html_end_box();
 
-	/* print checkbox form for validation */
-	print "<form name='chk' method='post' action='tree.php'>\n";
+	form_start('tree.php', 'chk');
 
 	html_start_box('', '100%', '', '3', 'center', '');
 
@@ -1451,6 +1450,6 @@ function tree() {
 	/* draw the dropdown containing a list of available actions for this form */
 	draw_actions_dropdown($tree_actions);
 
-	print "</form>\n";
+	form_end();
 }
 

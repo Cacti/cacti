@@ -71,7 +71,7 @@ function form_save() {
 	if (isset($_POST['save_component_network'])) {
 		$network_id = api_networks_save($_POST);
 
-		header('Location: automation_networks.php?action=edit&id=' . (empty($network_id) ? $_POST['id'] : $network_id));
+		header('Location: automation_networks.php?header=false&action=edit&id=' . (empty($network_id) ? $_POST['id'] : $network_id));
 	}
 }
 
@@ -251,7 +251,8 @@ function form_actions() {
 			}
 		}
 
-		header('Location: automation_networks.php');
+		header('Location: automation_networks.php?header=false');
+
 		exit;
 	}
 
@@ -275,7 +276,7 @@ function form_actions() {
 
 	top_header();
 
-	print "<form action='automation_networks.php' method='post'>\n";
+	form_start('automation_networks.php');
 
 	html_start_box('<strong>' . $network_actions{$_POST['drp_action']} . '</strong>', '60%', $colors['header_panel'], '3', 'center', '');
 
@@ -335,7 +336,7 @@ function form_actions() {
 
 	html_end_box();
 
-	print "</form>\n";
+	form_end();
 
 	bottom_footer();
 }
@@ -580,7 +581,7 @@ function network_edit() {
 		)
 	);
 
-	print "<form id='form_network' action='automation_networks.php' method='post'>\n";
+	form_start('automation_networks.php', 'form_network');
 
 	html_start_box("<strong>Network Discovery Range</strong> $header_label", '100%', '', '3', 'center', '');
 
@@ -841,7 +842,7 @@ function networks() {
 	$networks = get_networks($sql_where, $row_limit);
 
 	/* print checkbox form for validation */
-    print "<form name='chk' method='post' action='automation_networks.php'>\n";
+	form_start('automation_networks.php', 'chk');
 
 	html_start_box('', '100%', $colors['header'], '3', 'center', '');
 
@@ -938,7 +939,7 @@ function networks() {
 	/* draw the dropdown containing a list of available actions for this form */
 	draw_actions_dropdown($network_actions);
 
-	print "</form>\n";
+	form_end();
 }
 
 function networks_filter() {

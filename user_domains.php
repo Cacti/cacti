@@ -227,7 +227,7 @@ function form_actions() {
 
 	top_header();
 
-	print "<form action='user_domains.php' method='post'>\n";
+	form_start('user_domains.php');
 
 	html_start_box('<strong>' . $actions{$_POST['drp_action']} . '</strong>', '60%', '', '3', 'center', '');
 
@@ -285,7 +285,7 @@ function form_actions() {
 
 	html_end_box();
 
-	print "</form>\n";
+	form_end();
 
 	bottom_footer();
 }
@@ -701,8 +701,7 @@ function domains() {
 
 	html_end_box();
 
-	/* print checkbox form for validation */
-	print "<form name='chk' method='post' action='user_domains.php'>\n";
+	form_start('user_domains.php', 'chk');
 
 	html_start_box('', '100%', '', '3', 'center', '');
 
@@ -762,8 +761,7 @@ function domains() {
 	/* draw the dropdown containing a list of available actions for this form */
 	draw_actions_dropdown($actions);
 
-	print "</form>\n";
-
+	form_end();
 }
 
 

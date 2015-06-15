@@ -95,12 +95,12 @@ function export() {
 	?>
 	<tr class='tableRow'>
 		<td>
-			<form name="form_graph_id" action="templates_export.php">
+			<form name='form_graph_id' action='templates_export.php'>
 			<table>
 				<tr>
 					<td style='font-size:1.2em;'>What would you like to export?</td>
 					<td>
-						<select name="cbo_graph_id" onChange="window.location=document.form_graph_id.cbo_graph_id.options[document.form_graph_id.cbo_graph_id.selectedIndex].value">
+						<select name='cbo_graph_id' onChange='window.location=document.form_graph_id.cbo_graph_id.options[document.form_graph_id.cbo_graph_id.selectedIndex].value'>
 							<?php
 							while (list($key, $array) = each($export_types)) {
 								print "<option value='templates_export.php?export_type=" . htmlspecialchars($key, ENT_QUOTES) . "'"; if ($_REQUEST['export_type'] == $key) { print ' selected'; } print '>' . $array['name'] . "</option>\n";
@@ -122,8 +122,8 @@ function export() {
 	html_start_box('<strong>Available Templates</strong> [' . $export_types{$_REQUEST['export_type']}['name'] . ']', '100%', '', '3', 'center', '');
 
 	form_alternate_row();?>
-		<td width="50%">
-			<font class="textEditTitle"><?php print $export_types{$_REQUEST['export_type']}['name'];?> to Export</font><br>
+		<td width='50%'>
+			<font class='textEditTitle'><?php print $export_types{$_REQUEST['export_type']}['name'];?> to Export</font><br>
 			Choose the exact item to export to XML.
 		</td>
 		<td>
@@ -132,8 +132,8 @@ function export() {
 	</tr>
 
 	<?php form_alternate_row(); ?>
-		<td width="50%">
-			<font class="textEditTitle">Include Dependencies</font><br>
+		<td width='50%'>
+			<font class='textEditTitle'>Include Dependencies</font><br>
 			Some templates rely on other items in Cacti to function properly. It is highly recommended that you select
 			this box or the resulting import may fail.
 		</td>
@@ -143,8 +143,8 @@ function export() {
 	</tr>
 
 	<?php form_alternate_row(); ?>
-		<td width="50%">
-			<font class="textEditTitle">Output Format</font><br>
+		<td width='50%'>
+			<font class='textEditTitle'>Output Format</font><br>
 			Choose the format to output the resulting XML file in.
 		</td>
 		<td>

@@ -294,7 +294,7 @@ function item_edit() {
 	input_validate_input_number(get_request_var_request('graph_template_id'));
 	/* ==================================================== */
 
-	print "<form id='graph_items' name='graph_items' method='post' action='graph_templates_items.php'>\n";
+	form_start('graph_templates_items.php', 'graph_items');
 
 	$header_label = '[edit graph: ' . db_fetch_cell_prepared('SELECT name FROM graph_templates WHERE id = ?', array($_REQUEST['graph_template_id'])) . ']';
 

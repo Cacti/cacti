@@ -147,7 +147,7 @@ function form_actions() {
 
 	top_header();
 
-	print "<form action='rra.php' method='post'>\n";
+	form_start('rra.php');
 
 	html_start_box('<strong>' . $rra_actions{$_POST['drp_action']} . '</strong>', '60%', '', '3', 'center', '');
 
@@ -178,7 +178,7 @@ function form_actions() {
 
 	html_end_box();
 
-	print "</form>\n";
+	form_end();
 
 	bottom_footer();
 }
@@ -197,7 +197,7 @@ function rra_edit() {
 		$header_label = '[new]';
 	}
 
-	print "<form id='rra' action='rra.php' method='post'>\n";
+	form_start('rra.php', 'rra');
 
 	html_start_box("<strong>Round Robin Archives</strong> $header_label", '100%', '', '3', 'center', '');
 
@@ -383,8 +383,7 @@ function rra() {
 		$sql_having = '';
 	}
 
-	/* print checkbox form for validation */
-	print "<form name='chk' method='post' action='rra.php'>\n";
+	form_start('rra.php', 'chk');
 
 	html_start_box('', '100%', '', '3', 'center', '');
 
@@ -467,5 +466,5 @@ function rra() {
 	/* draw the dropdown containing a list of available actions for this form */
 	draw_actions_dropdown($rra_actions);
 
-	print "</form>\n";
+	form_end();
 }

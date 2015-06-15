@@ -149,14 +149,14 @@ function manager(){
 	?>
 	<tr class='even noprint'>
 		<td>
-			<form id='form_snmpagent_managers' name="form_snmpagent_managers" action="managers.php">
+			<form id='form_snmpagent_managers' name='form_snmpagent_managers' action='managers.php'>
 				<table class='filterTable'>
 					<tr>
 						<td>
 							Search
 						</td>
 						<td>
-							<input id='filter' type="text" name="filter" size="25" value="<?php print htmlspecialchars(get_request_var_request('filter'));?>" onChange='applyFilter()'>
+							<input id='filter' type='text' name='filter' size='25' value='<?php print htmlspecialchars(get_request_var_request('filter'));?>' onChange='applyFilter()'>
 						</td>
 						<td>
 							Receivers
@@ -173,10 +173,10 @@ function manager(){
 							</select>
 						</td>
 						<td>
-							<input type="button" id='refresh' value="Go" title="Set/Refresh Filters">
+							<input type='button' id='refresh' value='Go' title='Set/Refresh Filters'>
 						</td>
 						<td>
-							<input type="button" id='clear' value="Clear" title="Clear Filters">
+							<input type='button' id='clear' value='Clear' title='Clear Filters'>
 						</td>
 					</tr>
 				</table>
@@ -235,8 +235,10 @@ function manager(){
 		'count_log' => array('Logs', 'ASC')
 	);
 
-	print "<form name='chk' method='post' action='managers.php'>\n";
+	form_start('managers.php', 'chk');
+
 	html_header_sort_checkbox($display_text, get_request_var_request('sort_column'), get_request_var_request('sort_direction'), false);
+
 	$i = 0;
 	if (sizeof($managers) > 0) {
 		foreach ($managers as $item) {
@@ -471,15 +473,15 @@ function manager_notifications($id){
 	</script>
 	<tr class='even noprint'>
 		<td>
-			<form id='form_snmpagent_managers' name="form_snmpagent_managers" action="managers.php">
+			<form id='form_snmpagent_managers' name='form_snmpagent_managers' action='managers.php'>
 				<table class='filterTable'>
 					<tr>
 						<td>
 							MIB
 						</td>
 						<td>
-							<select id="mib" name="mib" onChange="applyFilter()">
-								<option value="-1"<?php if (get_request_var_request('mib') == '-1') {?> selected<?php }?>>Any</option>
+							<select id='mib' name='mib' onChange='applyFilter()'>
+								<option value='-1'<?php if (get_request_var_request('mib') == '-1') {?> selected<?php }?>>Any</option>
 								<?php
 								if (sizeof($mibs) > 0) {
 								foreach ($mibs as $mib) {
@@ -493,7 +495,7 @@ function manager_notifications($id){
 							Search
 						</td>
 						<td>
-							<input id='filter' type="text" size="25" value="<?php print htmlspecialchars(get_request_var_request('filter'));?>" onChange='applyFilter()'>
+							<input id='filter' type='text' size='25' value='<?php print htmlspecialchars(get_request_var_request('filter'));?>' onChange='applyFilter()'>
 						</td>
 						<td>
 							Receivers
@@ -510,10 +512,10 @@ function manager_notifications($id){
 							</select>
 						</td>
 						<td>
-							<input type="button" id='refresh' value="Go" title="Set/Refresh Filters">
+							<input type='button' id='refresh' value='Go' title='Set/Refresh Filters'>
 						</td>
 						<td>
-							<input type="button" id='clear' value="Clear" title="Clear Filters">
+							<input type='button' id='clear' value='Clear' title='Clear Filters'>
 						</td>
 					</tr>
 				</table>
@@ -541,9 +543,8 @@ function manager_notifications($id){
 	}
 	$sql_where .= ' ORDER by `oid`';
 
-	/* print checkbox form for validation */
+	form_start('managers.php', 'chk');
 
-	print "<form name='chk' method='post' action='managers.php'>\n";
 	html_start_box('', '100%', '', '3', 'center', '');
 
 	$rows = read_config_option('num_rows_table');
@@ -660,7 +661,7 @@ function manager_logs($id) {
 	load_current_session_value('filter', 'sess_snmp_logs_filter', '');
 
 	?>
-	<script type="text/javascript">
+	<script type='text/javascript'>
 
 	function applyFilter(objForm) {
 		strURL = '?severity=' + objForm.severity.value;
@@ -672,21 +673,21 @@ function manager_logs($id) {
 	</script>
 	<tr class='even'>
 		<td>
-			<form name="form_snmpagent_manager_logs" action="managers.php">
+			<form name='form_snmpagent_manager_logs' action='managers.php'>
 				<table class='filterTable'>
 					<tr>
 						<td>
 							Search
 						</td>
 						<td>
-							<input type="text" id="filter" size="25" value="<?php print htmlspecialchars(get_request_var_request('filter'));?>">
+							<input type='text' id='filter' size='25' value='<?php print htmlspecialchars(get_request_var_request('filter'));?>'>
 						</td>
 						<td>
 							Severity
 						</td>
 						<td>
-							<select id="severity" onChange="applyFilter()">
-								<option value="-1"<?php if (get_request_var_request('severity') == '-1') {?> selected<?php }?>>Any</option>
+							<select id='severity' onChange='applyFilter()'>
+								<option value='-1'<?php if (get_request_var_request('severity') == '-1') {?> selected<?php }?>>Any</option>
 								<?php
 								foreach ($severity_levels as $level => $name) {
 									print "<option value='" . $level . "'"; if (get_request_var_request('severity') == $level) { print ' selected'; } print '>' . $name . "</option>\n";
@@ -695,13 +696,13 @@ function manager_logs($id) {
 							</select>
 						</td>
 						<td>
-							<input type="button" id="refresh" value="Go" title="Set/Refresh Filters">
+							<input type='button' id='refresh' value='Go' title='Set/Refresh Filters'>
 						</td>
 						<td>
-							<input type="button" id="clear" value="Clear" title="Clear Filters">
+							<input type='button' id='clear' value='Clear' title='Clear Filters'>
 						</td>
 						<td>
-							<input type="button" id="purge" value="Purge" title="Purge Notification Log">
+							<input type='button' id='purge' value='Purge' title='Purge Notification Log'>
 						</td>
 					</tr>
 				</table>
@@ -737,8 +738,8 @@ function manager_logs($id) {
 		WHERE $sql_where 
 		LIMIT " . (read_config_option('num_rows_table')*(get_request_var_request('page')-1)) . ',' . read_config_option('num_rows_table');
 
-	/* print checkbox form for validation */
-	print "<form name='chk' method='post' action='managers.php'>\n";
+	form_start('managers.php', 'chk');
+
 	html_start_box('', '100%', '', '3', 'center', '');
 
 	$total_rows = db_fetch_cell("SELECT COUNT(*) FROM snmpagent_notifications_log WHERE $sql_where");
@@ -778,8 +779,8 @@ function manager_logs($id) {
 
 	?>
 	<input type='hidden' name='id' value='<?php print $_REQUEST['id']; ?>'>
-	<div style="display:none" id="snmpagentTooltip"></div>
-	<script language="javascript" type="text/javascript" >
+	<div style='display:none' id='snmpagentTooltip'></div>
+	<script language='javascript' type='text/javascript'>
 		function showTooltip(e, div, title, desc) {
 			div.style.display = 'inline';
 			div.style.position = 'fixed';
@@ -923,7 +924,7 @@ function form_actions(){
 
 			top_header();
 
-			print "<form action='managers.php' method='post'>\n";
+			form_start('managers.php');
 
 			html_start_box('<strong>' . $manager_actions{$_POST['drp_action']} . '</strong>', '60%', '', '3', 'center', '');
 
@@ -953,7 +954,7 @@ function form_actions(){
 
 			html_end_box();
 
-			print "</form>\n";
+			form_end();
 
 			bottom_footer();
 		}else {
@@ -976,7 +977,7 @@ function form_actions(){
 
 			top_header();
 
-			print "<form action='managers.php' method='post'>\n";
+			form_start('managers.php');
 
 			html_start_box('<strong>' . $manager_notification_actions[ $_POST['drp_action'] ] . '</strong>', '60%', '', '3', 'center', '');
 
@@ -1011,7 +1012,7 @@ function form_actions(){
 
 			html_end_box();
 
-			print "</form>\n";
+			form_end();
 
 			bottom_footer();
 		}

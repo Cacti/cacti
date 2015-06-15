@@ -109,7 +109,7 @@ function clog_view_logfile() {
 	general_header();
 
 	if ((isset($_REQUEST['purge'])) && (clog_admin())) {
-		print "<form action='clog.php' autocomplete='off' method='post'>\n";
+		form_start('clog.php');
 
 		html_start_box('<strong>Purge</strong>', '50%', '', '3', 'center', '');
 
@@ -142,7 +142,7 @@ function clog_view_logfile() {
 
 		html_end_box();
 
-		print "</form>\n";
+		form_end();
 
 		return;	
 	}

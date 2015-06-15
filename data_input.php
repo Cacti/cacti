@@ -192,7 +192,7 @@ function form_actions() {
 
 	top_header();
 
-	print "<form action='data_input.php' method='post'>\n";
+	form_start('data_input.php');
 
 	html_start_box('<strong>' . $di_actions{$_POST['drp_action']} . '</strong>', '60%', '', '3', 'center', '');
 
@@ -225,7 +225,7 @@ function form_actions() {
 
 	html_end_box();
 
-	print "</form>\n";
+	form_end();
 
 	bottom_footer();
 }
@@ -314,7 +314,7 @@ function field_edit() {
 		return;
 	}
 
-	print "<form id='data_input' action='data_input.php' method='post'>\n";
+	form_start('data_input.php', 'data_input');
 
 	html_start_box("<strong>$header_name Fields</strong> [edit: " . htmlspecialchars($data_input['name']) . ']', '100%', '', '3', 'center', '');
 
@@ -383,7 +383,7 @@ function data_edit() {
 		$header_label = '[new]';
 	}
 
-	print "<form id='data_input' action='data_input.php' method='post'>\n";
+	form_start('data_input.php', 'data_input');
 
 	html_start_box("<strong>Data Input Methods</strong> $header_label", '100%', '', '3', 'center', '');
 
@@ -527,21 +527,21 @@ function data() {
 
 	?>
 	<tr class='even noprint'>
-		<td class="noprint">
-		<form id="form_data_input" method="get" action="data_input.php">
+		<td class='noprint'>
+		<form id='form_data_input' method='get' action='data_input.php'>
 			<table class='filterTable'>
-				<tr class="noprint">
+				<tr class='noprint'>
 					<td>
 						Search
 					</td>
 					<td>
-						<input id='filter' type="text" name="filter" size="25" value="<?php print htmlspecialchars(get_request_var_request('filter'));?>">
+						<input id='filter' type='text' name='filter' size='25' value='<?php print htmlspecialchars(get_request_var_request('filter'));?>'>
 					</td>
 					<td style='white-space:nowrap;'>
 						Input Methods
 					</td>
 					<td>
-						<select id='rows' name="rows" onChange="applyFilter()">
+						<select id='rows' name='rows' onChange='applyFilter()'>
 							<?php
 							if (sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
@@ -668,7 +668,6 @@ function data() {
 	/* draw the dropdown containing a list of available actions for this form */
 	draw_actions_dropdown($di_actions);
 
-	print "</form>\n";
-
+	form_end();
 }
 

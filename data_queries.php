@@ -243,7 +243,7 @@ function form_actions() {
 
 	top_header();
 
-	print "<form action='data_queries.php' method='post'>\n";
+	form_start('data_queries.php');
 
 	html_start_box('<strong>' . $dq_actions{$_POST['drp_action']} . '</strong>', '60%', '', '3', 'center', '');
 
@@ -276,7 +276,7 @@ function form_actions() {
 
 	html_end_box();
 
-	print "</form>\n";
+	form_end();
 
 	bottom_footer();
 }
@@ -377,7 +377,7 @@ function data_query_item_edit() {
 	$snmp_query = db_fetch_row_prepared('SELECT name, xml_path FROM snmp_query WHERE id = ?', array($_REQUEST['snmp_query_id']));
 	$header_label = '[edit: ' . htmlspecialchars($snmp_query['name']) . ']';
 
-	print "<form id='data_queries' action='data_queries.php' method='post'>\n";
+	form_start('data_queries.php', 'data_queries');
 
 	html_start_box("<strong>Associated Graph/Data Templates</strong> $header_label", '100%', '', '3', 'center', '');
 
@@ -696,7 +696,7 @@ function data_query_edit() {
 		$header_label = '[new]';
 	}
 
-	print "<form id='data_queries' action='data_queries.php' method='post'>\n";
+	form_start('data_queries.php', 'data_queries');
 
 	html_start_box("<strong>Data Queries</strong> $header_label", '100%', '', '3', 'center', '');
 
@@ -828,21 +828,21 @@ function data_query() {
 
 	?>
 	<tr class='even noprint'>
-		<td class="noprint">
-		<form id="form_data_queries" method="get" action="data_queries.php">
+		<td class='noprint'>
+		<form id='form_data_queries' method='get' action='data_queries.php'>
 			<table class='filterTable'>
-				<tr class="noprint">
+				<tr class='noprint'>
 					<td>
 						Search
 					</td>
 					<td>
-						<input id='filter' type="text" name="filter" size="25" value="<?php print htmlspecialchars(get_request_var_request('filter'));?>">
+						<input id='filter' type='text' name='filter' size='25' value='<?php print htmlspecialchars(get_request_var_request('filter'));?>'>
 					</td>
 					<td style='white-space:nowrap;'>
 						Data Queries
 					</td>
 					<td>
-						<select id='rows' name="rows" onChange="applyFilter()">
+						<select id='rows' name='rows' onChange='applyFilter()'>
 							<?php
 							if (sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
@@ -853,10 +853,10 @@ function data_query() {
 						</select>
 					</td>
 					<td>
-						<input type="button" id='refresh' value="Go" title="Set/Refresh Filters">
+						<input type='button' id='refresh' value='Go' title='Set/Refresh Filters'>
 					</td>
 					<td>
-						<input type="button" id='clear' name="clear" value="Clear" title="Clear Filters">
+						<input type='button' id='clear' name='clear' value='Clear' title='Clear Filters'>
 					</td>
 				</tr>
 			</table>
@@ -895,7 +895,7 @@ function data_query() {
 	html_end_box();
 
 	/* print checkbox form for validation */
-	print "<form name='chk' method='post' action='data_queries.php'>\n";
+	form_start('data_queries.php', 'chk');
 
 	html_start_box('', '100%', '', '3', 'center', '');
 

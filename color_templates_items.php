@@ -35,17 +35,17 @@ switch ($_REQUEST['action']) {
 	case 'item_remove':
 		aggregate_color_item_remove();
 
-		header('Location: color_templates.php?action=template_edit&color_template_id=' . $_GET['color_template_id']);
+		header('Location: color_templates.php?header=false&action=template_edit&color_template_id=' . $_GET['color_template_id']);
 		break;
 	case 'item_movedown':
 		aggregate_color_item_movedown();
 
-		header('Location: color_templates.php?action=template_edit&color_template_id=' . $_GET['color_template_id']);
+		header('Location: color_templates.php?header=false&action=template_edit&color_template_id=' . $_GET['color_template_id']);
 		break;
 	case 'item_moveup':
 		aggregate_color_item_moveup();
 
-		header('Location: color_templates.php?action=template_edit&color_template_id=' . $_GET['color_template_id']);
+		header('Location: color_templates.php?header=false&action=template_edit&color_template_id=' . $_GET['color_template_id']);
 		break;
 	case 'item_edit':
 		top_header();
@@ -97,10 +97,10 @@ function aggregate_color_item_form_save() {
 		}
 
 		if (is_error_message()) {
-			header('Location: color_templates_items.php?action=item_edit&color_template_item_id=' . (empty($color_template_item_id) ? $_POST['color_template_item_id'] : $color_template_item_id) . '&color_template_id=' . $_POST['color_template_id']);
+			header('Location: color_templates_items.php?header=false&action=item_edit&color_template_item_id=' . (empty($color_template_item_id) ? $_POST['color_template_item_id'] : $color_template_item_id) . '&color_template_id=' . $_POST['color_template_id']);
 			exit;
 		}else{
-			header('Location: color_templates.php?action=template_edit&color_template_id=' . $_POST['color_template_id']);
+			header('Location: color_templates.php?header=false&action=template_edit&color_template_id=' . $_POST['color_template_id']);
 			exit;
 		}
 	}
@@ -212,7 +212,7 @@ function aggregate_color_item_edit() {
 		$header_label = '[new Report Item: ' . $template['name'] . ']';
 	}
 
-	print "<form method='post' action='" .  basename($_SERVER['PHP_SELF']) . "' name='aggregate_color_item_edit'>\n";
+	form_start('color_templates_items.php', 'aggregate_color_item_edit');
 
 	html_start_box("<strong>Color Template Items</strong> $header_label", '100%', '', '3', 'center', '');
 
@@ -228,6 +228,6 @@ function aggregate_color_item_edit() {
 	form_hidden_box('sequence', (array_key_exists('sequence', $template_item) ? $template_item['sequence'] : '0'), '');
 	form_hidden_box('save_component_item', '1', '');
 
-	form_save_button(htmlspecialchars('color_templates.php?action=template_edit&color_template_id=' . $_GET['color_template_id']), '', 'color_template_item_id');
+	form_save_button(htmlspecialchars('color_templates.php?header=false&action=template_edit&color_template_id=' . $_GET['color_template_id']), '', 'color_template_item_id');
 }
 

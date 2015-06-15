@@ -48,17 +48,17 @@ switch ($_REQUEST['action']) {
 	case 'item_movedown':
 		item_movedown();
 
-		header('Location: cdef.php?action=edit&id=' . $_REQUEST['cdef_id']);
+		header('Location: cdef.php?header=false&action=edit&id=' . $_REQUEST['cdef_id']);
 		break;
 	case 'item_moveup':
 		item_moveup();
 
-		header('Location: cdef.php?action=edit&id=' . $_REQUEST['cdef_id']);
+		header('Location: cdef.php?header=false&action=edit&id=' . $_REQUEST['cdef_id']);
 		break;
 	case 'item_remove':
 		item_remove();
 
-		header('Location: cdef.php?action=edit&id=' . $_REQUEST['cdef_id']);
+		header('Location: cdef.php?header=false&action=edit&id=' . $_REQUEST['cdef_id']);
 		break;
 	case 'item_edit':
 		top_header();
@@ -126,7 +126,7 @@ function form_save() {
 			}
 		}
 
-		header('Location: cdef.php?action=edit&id=' . (empty($cdef_id) ? $_POST['id'] : $cdef_id));
+		header('Location: cdef.php?header=false&action=edit&id=' . (empty($cdef_id) ? $_POST['id'] : $cdef_id));
 	}elseif (isset($_POST['save_component_item'])) {
 		$sequence = get_sequence($_POST['id'], 'sequence', 'cdef_items', 'cdef_id=' . $_POST['cdef_id']);
 
@@ -148,9 +148,9 @@ function form_save() {
 		}
 
 		if (is_error_message()) {
-			header('Location: cdef.php?action=item_edit&cdef_id=' . $_POST['cdef_id'] . '&id=' . (empty($cdef_item_id) ? $_POST['id'] : $cdef_item_id));
+			header('Location: cdef.php?header=false&action=item_edit&cdef_id=' . $_POST['cdef_id'] . '&id=' . (empty($cdef_item_id) ? $_POST['id'] : $cdef_item_id));
 		}else{
-			header('Location: cdef.php?action=edit&id=' . $_POST['cdef_id']);
+			header('Location: cdef.php?header=false&action=edit&id=' . $_POST['cdef_id']);
 		}
 	}
 }
@@ -184,7 +184,7 @@ function form_actions() {
 			}
 		}
 
-		header('Location: cdef.php');
+		header('Location: cdef.php?header=false');
 		exit;
 	}
 
@@ -207,7 +207,7 @@ function form_actions() {
 
 	top_header();
 
-	print "<form action='cdef.php' method='post'>\n";
+	form_start('cdef.php');
 
 	html_start_box('<strong>' . $cdef_actions{$_POST['drp_action']} . '</strong>', '60%', '', '3', 'center', '');
 
@@ -249,7 +249,7 @@ function form_actions() {
 
 	html_end_box();
 
-	print "</form>\n";
+	form_end();
 
 	bottom_footer();
 }
@@ -303,7 +303,7 @@ function item_edit() {
 	draw_cdef_preview($_REQUEST['cdef_id']);
 	html_end_box();
 
-	print "<form method='post' action='cdef.php' name='form_cdef'>\n";
+	form_start('cdef.php', 'form_cdef');
 
 	html_start_box('<strong>CDEF Items</strong> [edit: ' . htmlspecialchars(db_fetch_cell_prepared('SELECT name FROM cdef WHERE id = ?', array(get_request_var_request('cdef_id')))) . ']', '100%', '', '3', 'center', '');
 
@@ -387,7 +387,7 @@ function cdef_edit() {
 		$header_label = '[new]';
 	}
 
-	print "<form id='cdef' action='cdef.php' method='post'>\n";
+	form_start('cdef.php', 'cdef');
 
 	html_start_box("<strong>CDEF's</strong> $header_label", '100%', '', '3', 'center', '');
 
@@ -668,6 +668,6 @@ function cdef() {
 	/* draw the dropdown containing a list of available actions for this form */
 	draw_actions_dropdown($cdef_actions);
 
-	print "</form>\n";
+	form_end();
 }
 

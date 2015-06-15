@@ -32,7 +32,9 @@ if (isset($_REQUEST['action']) && $_REQUEST['action'] == 'purge') {
 	input_validate_input_number(get_request_var_request('network'));
 	
 	db_execute('TRUNCATE TABLE automation_devices' . ($_REQUEST['network'] > 0 ? 'WHERE network_id=' . $_REQUEST['network']:''));
+
 	header('Location: automation_devices.php?header=false');
+
 	exit;
 }
 
@@ -374,7 +376,7 @@ html_start_box('<strong>Discovery Filters</strong>', '100%', $colors['header'], 
 <?php
 html_end_box();
 
-print "<form id='automation_devices' action='automation_devices.php'>\n";
+form_start('automation_devices.php', 'automation_devices');
 
 html_start_box('', '100%', $colors['header'], '3', 'center', '');
 
@@ -450,7 +452,7 @@ html_end_box(false);
 /* draw the dropdown containing a list of available actions for this form */
 draw_actions_dropdown($device_actions);
 
-print "</form>\n";
+form_end();
 
 bottom_footer();
 

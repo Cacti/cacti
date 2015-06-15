@@ -87,7 +87,7 @@ function add_tree_names_to_actions_array() {
 function form_save() {
 	/* make sure we are saving aggregate graph */
 	if (!isset($_POST['save_component_graph'])) {
-		header('Location: aggregate_graphs.php?action=edit&id='.$_POST['id']);
+		header('Location: aggregate_graphs.php?header=false&action=edit&id='.$_POST['id']);
 		return null;
 	}
 
@@ -98,7 +98,7 @@ function form_save() {
 	$graph_title           = form_input_validate($_POST['title_format'], 'title_format', '', false, 3);
 	if (is_error_message()) {
 		raise_message(2);
-		header('Location: aggregate_graphs.php?action=edit&id=$local_graph_id');
+		header('Location: aggregate_graphs.php?header=false&action=edit&id=$local_graph_id');
 		return null;
 	}
 
@@ -114,7 +114,7 @@ function form_save() {
 	}
 	if (is_error_message()) {
 		raise_message(2);
-		header('Location: aggregate_graphs.php?action=edit&id=$local_graph_id');
+		header('Location: aggregate_graphs.php?header=false&action=edit&id=' . $local_graph_id);
 		return null;
 	}
 
@@ -230,7 +230,8 @@ function form_save() {
 	}
 
 	raise_message(1);
-	header("Location: aggregate_graphs.php?action=edit&id=$local_graph_id");
+
+	header('Location: aggregate_graphs.php?header=false&action=edit&id=' . $local_graph_id);
 }
 
 /* ------------------------
@@ -304,7 +305,8 @@ function form_actions() {
 			}
 		}
 
-		header('Location: aggregate_graphs.php');
+		header('Location: aggregate_graphs.php?header=false');
+
 		exit;
 	}
 
@@ -330,7 +332,7 @@ function form_actions() {
 	/* add a list of tree names to the actions dropdown */
 	add_tree_names_to_actions_array();
 
-	print "<form action='aggregate_graphs.php' method='post'>\n";
+	form_start('aggregate_graphs.php');
 
 	html_start_box('<strong>' . $graph_actions{$_POST['drp_action']} . '</strong>', '60%', '', '3', 'center', '');
 
@@ -472,7 +474,7 @@ function form_actions() {
 
 	html_end_box(false);
 
-	print "</form>\n";
+	form_end();
 
 	bottom_footer();
 }
@@ -575,10 +577,10 @@ function graph_edit() {
 	print "<table class='tabs' width='100%' border='0' align='center'>\n";
 	print "<tr><td width='100%' id='tabs' valign='bottom'><div class='aggtabs'><nav><ul>\n";
 
-	if (sizeof($aggregate_tabs) > 0) {
+	if (sizeof($aggregate_tabs)) {
 	foreach (array_keys($aggregate_tabs) as $tab_short_name) {
 		if ($tab_short_name == 'details' || (!empty($_REQUEST['id']))) {
-			print "<li><a " . ($tab_short_name == $current_tab ? "class='selected'" : "") . 
+			print "<li><a class='tab " . ($tab_short_name == $current_tab ? "selected'" : "'") . 
 				" href='" . htmlspecialchars($config['url_path'] . 'aggregate_graphs.php?action=edit&id=' . (isset($_REQUEST['id']) ? $_REQUEST['id']:'') . "&tab=$tab_short_name") . "'>" . $aggregate_tabs[$tab_short_name] . "</a></li>\n";
 		}
 	}
@@ -636,7 +638,7 @@ function graph_edit() {
 		exit;
 	}
 
-	print ('<form name="template_edit" action="aggregate_graphs.php" method="post">');
+	form_start('aggregate_graphs.php', 'template_edit');
 
 	/* we will show the templated representation only when when there is a template and propogation is enabled */
 	if (!empty($_REQUEST['id']) && $current_tab == 'details') {
@@ -812,6 +814,8 @@ function graph_edit() {
 		</script>
 		<?php
 	}
+
+	form_end();
 }
 
 function aggregate_items() {
@@ -1001,7 +1005,7 @@ function aggregate_items() {
 	}
 
 	/* print checkbox form for validation */
-	print "<form name='chk' method='post' action='aggregate_graphs.php'>\n";
+	form_start('aggregate_graphs.php', 'chk');
 
 	html_start_box('', '100%', '', '3', 'center', '');
 
@@ -1068,7 +1072,7 @@ function aggregate_items() {
 
 	draw_actions_dropdown($agg_item_actions);
 
-	print "</form>\n";
+	form_end();
 }
 
 function aggregate_make_sql_where($sql_where, $items, $field) {
@@ -1340,8 +1344,7 @@ function graph() {
 		$sql_where .= ' AND ag.aggregate_template_id=' . get_request_var_request('template_id');
 	}
 
-	/* print checkbox form for validation */
-	print "<form name='chk' method='post' action='aggregate_graphs.php'>\n";
+	form_start('aggregate_graphs.php', 'chk');
 
 	html_start_box('', '100%', '', '3', 'center', '');
 
@@ -1412,7 +1415,7 @@ function graph() {
 	/* remove old graphs */
 	purge_old_graphs();
 
-	print "</form>\n";
+	form_end();
 }
 
 function purge_old_graphs() {

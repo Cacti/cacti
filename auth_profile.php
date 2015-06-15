@@ -131,7 +131,7 @@ function settings() {
 		$_SESSION['profile_referer'] = (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER']:'graph_view.php'); 
 	}
 
-	print "<form method='post' action='auth_profile.php'>\n";
+	form_start('auth_profile.php');
 
 	html_start_box('<strong>User Settings</strong>', '100%', '', '3', 'center', '');
 
@@ -347,6 +347,9 @@ function settings() {
 	<?php
 
 	form_hidden_box('save_component_graph_config','1','');
+
 	form_save_buttons(array(array('id' => 'return', 'value' => 'Return'), array('id' => 'save', 'value' => 'Save')));
+
+	form_end();
 }
 

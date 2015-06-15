@@ -2585,8 +2585,8 @@ function snmpagent_utilities_run_eventlog(){
 					 LEFT JOIN snmpagent_cache ON snmpagent_cache.name = snmpagent_notifications_log.notification
 					 WHERE $sql_where LIMIT " . (read_config_option('num_rows_table')*(get_request_var_request('page')-1)) . ',' . read_config_option('num_rows_table');
 
-	/* print checkbox form for validation */
-	print "<form name='chk' method='post' action='managers.php'>\n";
+	form_start('managers.php', 'chk');
+
 	html_start_box('', '100%', '', '3', 'center', '');
 
 	$total_rows = db_fetch_cell("SELECT COUNT(*) FROM snmpagent_notifications_log WHERE $sql_where");
