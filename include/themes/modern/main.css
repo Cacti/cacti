@@ -233,8 +233,7 @@ input, select {
 
 .cactiGraphPageHeadBackdrop {
 	background: transparent url('./../../../images/cacti_backdrop2.gif') no-repeat center right;
-	vertical-align: bottom;
-	padding: 0px;
+	padding-bottom: 0px;
 }
 
 .loginLogo {
