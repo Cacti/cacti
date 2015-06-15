@@ -493,6 +493,73 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 	validate_tree_vars($tree_id, $leaf_id, $host_group_data);
 
 	html_start_box('<strong>Graph Filters</strong>' . (strlen(get_request_var_request('filter')) ? " [ Filter '" . htmlspecialchars(get_request_var_request('filter')) . "' Applied ]" : ''), '100%', "", '3', 'center', '');
+
+	?>
+	<tr class='even noprint' id='search'>
+		<td class='noprint'>
+		<form name='form_graph_view' method='post' onSubmit='changeFilter();return false'>
+			<table class='filterTable'>
+				<tr>
+					<td>
+						Search
+					</td>
+					<td>
+						<input id='filter' size='30' name='filter' value='<?php print htmlspecialchars(get_request_var_request('filter'));?>'>
+					</td>
+					<td>
+						Graphs
+					</td>
+					<td>
+						<select name='graphs' id='graphs' onChange='changeFilter()'>
+							<?php
+							if (sizeof($graphs_per_page) > 0) {
+							foreach ($graphs_per_page as $key => $value) {
+								print "<option value='" . $key . "'"; if (get_request_var_request('graphs') == $key) { print ' selected'; } print '>' . $value . "</option>\n";
+							}
+							}
+							?>
+						</select>
+					</td>
+					<td>
+						Columns
+					</td>
+					<td>
+						<select name='columns' id='columns' onChange='changeFilter()' <?php print get_request_var_request('thumbnails') == 'false' ? 'disabled':'';?>>
+							<?php if ( get_request_var_request('thumbnails') == 'false') {?>
+							<option value='<?php print get_request_var_request('columns');?>' selected>N/A</option>
+							<?php }else{?>
+							<option value='1' <?php print (get_request_var_request('columns') == '1' ? ' selected':'');?>>1 Column</option>
+							<option value='2' <?php print (get_request_var_request('columns') == '2' ? ' selected':'');?>>2 Columns</option>
+							<option value='3' <?php print (get_request_var_request('columns') == '3' ? ' selected':'');?>>3 Columns</option>
+							<option value='4' <?php print (get_request_var_request('columns') == '4' ? ' selected':'');?>>4 Columns</option>
+							<option value='5' <?php print (get_request_var_request('columns') == '5' ? ' selected':'');?>>5 Columns</option>
+							<?php }?>
+						</select>
+					</td>
+					<td>
+						<label for='thumbnails'>Thumbnails</label>
+					</td>
+					<td>
+						<input id='thumbnails' type='checkbox' name='thumbnails' onClick='changeFilter()' <?php print (($_REQUEST['thumbnails'] == 'true') ? 'checked':'');?>>
+					</td>
+					<td>
+						<input type='button' value='Go' title='Set/Refresh Filter' onClick='changeFilter()'>
+					</td>
+					<td>
+						<input type='button' value='Clear' title='Clear Filters' onClick='clearFilter()'>
+					</td>
+					<?php if (is_view_allowed('graph_settings')) {?>
+					<td>
+						<input type='button' value='Save' title='Save current settings to your profile' onClick='clearSaveSettings()'>
+					</td>
+					<?php }?>
+				</tr>
+			</table>
+		</form>
+		</td>
+	</tr>
+	<?php
+
 	/* include time span selector */
 	if (read_graph_config_option('timespan_sel') == 'on') {
 		?>
@@ -611,64 +678,6 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 		<?php
 	}
 	?>
-	<tr class='even noprint' id='search'>
-		<td class='noprint'>
-		<form name='form_graph_view' method='post' onSubmit='changeFilter();return false'>
-			<table class='filterTable'>
-				<tr>
-					<td>
-						Search
-					</td>
-					<td>
-						<input id='filter' size='30' name='filter' value='<?php print htmlspecialchars(get_request_var_request('filter'));?>'>
-					</td>
-					<td>
-						Graphs
-					</td>
-					<td>
-						<select name='graphs' id='graphs' onChange='changeFilter()'>
-							<?php
-							if (sizeof($graphs_per_page) > 0) {
-							foreach ($graphs_per_page as $key => $value) {
-								print "<option value='" . $key . "'"; if (get_request_var_request('graphs') == $key) { print ' selected'; } print '>' . $value . "</option>\n";
-							}
-							}
-							?>
-						</select>
-					</td>
-					<td>
-						Columns
-					</td>
-					<td>
-						<select name='columns' id='columns' onChange='changeFilter()' <?php print get_request_var_request('thumbnails') == 'false' ? 'disabled':'';?>>
-							<?php if ( get_request_var_request('thumbnails') == 'false') {?>
-							<option value='<?php print get_request_var_request('columns');?>' selected>N/A</option>
-							<?php }else{?>
-							<option value='1' <?php print (get_request_var_request('columns') == '1' ? ' selected':'');?>>1 Column</option>
-							<option value='2' <?php print (get_request_var_request('columns') == '2' ? ' selected':'');?>>2 Columns</option>
-							<option value='3' <?php print (get_request_var_request('columns') == '3' ? ' selected':'');?>>3 Columns</option>
-							<option value='4' <?php print (get_request_var_request('columns') == '4' ? ' selected':'');?>>4 Columns</option>
-							<option value='5' <?php print (get_request_var_request('columns') == '5' ? ' selected':'');?>>5 Columns</option>
-							<?php }?>
-						</select>
-					</td>
-					<td>
-						<label for='thumbnails'>Thumbnails</label>
-					</td>
-					<td>
-						<input id='thumbnails' type='checkbox' name='thumbnails' onClick='changeFilter()' <?php print (($_REQUEST['thumbnails'] == 'true') ? 'checked':'');?>>
-					</td>
-					<td>
-						<input type='button' value='Go' title='Set/Refresh Filter' onClick='changeFilter()'>
-					</td>
-					<td>
-						<input type='button' value='Clear' title='Clear Filters' onClick='clearFilter()'>
-					</td>
-				</tr>
-			</table>
-		</form>
-		</td>
-	</tr>
 	<script type='text/javascript'>
 
 	var graph_start=<?php print get_current_graph_start();?>;
