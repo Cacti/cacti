@@ -1100,7 +1100,7 @@ function form_start($action, $id = '') {
 		$form_id = 'form' . $counter;
 		$counter++;
 	}else{
-		$form_id = $id;
+		$form_id = trim($id);
 	}
 
 	$form_action = $action;

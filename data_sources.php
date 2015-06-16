@@ -42,7 +42,7 @@ $ds_actions = array(
 	5 => 'Convert to Data Template',
 	6 => 'Enable',
 	7 => 'Disable'
-	);
+);
 
 $ds_actions = api_plugin_hook_function('data_source_action_array', $ds_actions);
 
@@ -776,7 +776,7 @@ function ds_edit() {
 		<?php
 	}
 
-	form_start('data_sources.php',' data_source');
+	form_start('data_sources.php', 'data_source');
 
 	html_start_box("<strong>Data Template Selection</strong> $header_label", '100%', '', '3', 'center', '');
 
@@ -1125,8 +1125,6 @@ function ds() {
 			applyFilter();
 		});
 	});
-
-	-->
 	</script>
 	<?php
 
