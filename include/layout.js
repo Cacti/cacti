@@ -24,6 +24,7 @@
 var theme;
 var myRefresh;
 var userMenuTimer;
+var pulsating=true;
 
 var isMobile = {
 	Android: function() {
@@ -823,8 +824,19 @@ function setupPageTimeout() {
 	}
 }
 
+function pulsateStart(element) {
+	pulsating=true;
+	pulsate(element);
+}
+
 function pulsate(element) {
-	$(element || this).delay(100).fadeOut(800).delay(100).fadeIn(800, pulsate);
+	if (pulsating) {
+		$(element || this).delay(100).fadeOut(800).delay(100).fadeIn(800, pulsate);
+	}
+}
+
+function pulsateStop(element) {
+	pulsating=false;
 }
 
 $(function() {

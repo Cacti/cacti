@@ -37,6 +37,18 @@ function title_trim($text, $max_length) {
 	}
 }
 
+/* set_graph_config_option - sets/updates a user graph config option with the given value.
+   @arg $config_name - the name of the configuration setting as specified $settings array
+   @arg $value       - the values to be saved
+   @arg $user        - the user id, otherwise the session user
+   @returns          - void */
+function set_graph_config_option($config_name, $value, $user = -1) {
+	if ($user == -1) {
+		$user = $_SESSION['sess_user_id'];
+	}
+	db_execute_prepared('REPLACE INTO settings_graphs SET user_id = ?, name = ?, value = ?', array($user, $config_name, $value));
+}
+
 /* read_default_graph_config_option - finds the default value of a graph configuration setting
    @arg $config_name - the name of the configuration setting as specified $settings array
      in 'include/global_settings.php'

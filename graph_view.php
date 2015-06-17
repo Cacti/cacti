@@ -37,9 +37,14 @@ if (isset($_REQUEST['id']) && $_REQUEST['id'] == '#') {
 
 input_validate_input_number(get_request_var_request('branch_id'));
 input_validate_input_number(get_request_var_request('tree_id'));
+input_validate_input_number(get_request_var_request('graphs'));
+input_validate_input_number(get_request_var_request('rows'));
 input_validate_input_number(get_request_var_request('hide'));
 input_validate_input_number(get_request_var_request('leaf_id'));
 input_validate_input_number(get_request_var_request('rra_id'));
+input_validate_input_number(get_request_var_request('columns'));
+input_validate_input_number(get_request_var_request('predefined_timespan'));
+input_validate_input_number(get_request_var_request('predefined_timeshift'));
 input_validate_input_regex(get_request_var_request('graph_list'), '^([\,0-9]+)$');
 input_validate_input_regex(get_request_var_request('graph_add'), '^([\,0-9]+)$');
 input_validate_input_regex(get_request_var_request('graph_remove'), '^([\,0-9]+)$');
@@ -49,6 +54,40 @@ input_validate_input_regex(get_request_var_request('nodeid'), '^([_a-z0-9]+)$');
 /* clean up action string */
 if (isset($_REQUEST['action'])) {
 	$_REQUEST['action'] = sanitize_search_string(get_request_var_request('action'));
+}
+
+if (isset($_REQUEST['action']) && $_REQUEST['action'] == 'save') {
+	if (is_view_allowed('graph_settings')) {
+		if (isset($_REQUEST['predefined_timespan'])) {
+			set_graph_config_option('default_timespan', $_REQUEST['predefined_timespan']);
+		}
+		if (isset($_REQUEST['predefined_timeshift'])) {
+			set_graph_config_option('default_timeshift', $_REQUEST['predefined_timeshift']);
+		}
+		if (isset($_REQUEST['section']) && $_REQUEST['section'] == 'preview') {
+			if (isset($_REQUEST['columns'])) {
+				set_graph_config_option('num_columns', get_request_var_request('columns'));
+			}
+			if (isset($_REQUEST['graphs'])) {
+				set_graph_config_option('preview_graphs_per_page', get_request_var_request('graphs'));
+			}
+			if (isset($_REQUEST['thumbnails'])) {
+				set_graph_config_option('thumbnail_section_preview', $_REQUEST['thumbnails'] == 'true' ? 'on':'');
+			}
+		}else{
+			if (isset($_REQUEST['columns'])) {
+				set_graph_config_option('num_columns_tree', get_request_var_request('columns'));
+			}
+			if (isset($_REQUEST['graphs'])) {
+				set_graph_config_option('treeview_graphs_per_page', get_request_var_request('graphs'));
+			}
+			if (isset($_REQUEST['thumbnails'])) {
+				set_graph_config_option('thumbnail_section_tree_2', $_REQUEST['thumbnails'] == 'true' ? 'on':'');
+			}
+		}
+	}
+
+	exit;
 }
 
 /* setup tree selection defaults if the user has not been here before */
@@ -186,7 +225,7 @@ case 'preview':
 	input_validate_input_number(get_request_var_request('host_id'));
 	input_validate_input_number(get_request_var_request('graph_template_id'));
 	input_validate_input_number(get_request_var_request('page'));
-	input_validate_input_number(get_request_var_request('rows'));
+	input_validate_input_number(get_request_var_request('graphs'));
 	input_validate_input_number(get_request_var_request('columns'));
 	/* ==================================================== */
 
@@ -211,11 +250,11 @@ case 'preview':
 		kill_session_var('sess_graph_view_filter');
 		kill_session_var('sess_graph_view_graph_template');
 		kill_session_var('sess_graph_view_host');
-		kill_session_var('sess_graph_view_rows');
+		kill_session_var('sess_graph_view_graphs');
 		kill_session_var('sess_graph_view_columns');
 
 		unset($_REQUEST['page']);
-		unset($_REQUEST['rows']);
+		unset($_REQUEST['graphs']);
 		unset($_REQUEST['host_id']);
 		unset($_REQUEST['graph_template_id']);
 
@@ -237,7 +276,7 @@ case 'preview':
 		/* if any of the settings changed, reset the page number */
 		$changed = false;
 		$changed += check_changed('host_id', 'sess_graph_view_host');
-		$changed += check_changed('rows', 'sess_graph_view_rows');
+		$changed += check_changed('graphs', 'sess_graph_view_graphs');
 		$changed += check_changed('graph_template_id', 'sess_graph_view_graph_template');
 		$changed += check_changed('filter', 'sess_graph_view_filter');
 		$changed += check_changed('columns', 'sess_graph_view_columns');
@@ -249,8 +288,8 @@ case 'preview':
 	load_current_session_value('filter', 'sess_graph_view_filter', '');
 	load_current_session_value('style', 'sess_graph_view_style', '');
 	load_current_session_value('page', 'sess_graph_view_current_page', '1');
-	load_current_session_value('rows', 'sess_graph_view_rows', '-1');
-	load_current_session_value('columns', 'sess_graph_view_columns', '-1');
+	load_current_session_value('graphs', 'sess_graph_view_graphs', read_graph_config_option('preview_graphs_per_page'));
+	load_current_session_value('columns', 'sess_graph_view_columns', read_graph_config_option('num_columns'));
 	load_current_session_value('thumbnails', 'sess_graph_view_thumbnails', read_graph_config_option('thumbnail_section_preview') == 'on' ? 'true':'false');
 	load_current_session_value('graph_list', 'sess_graph_view_graph_list', '');
 	load_current_session_value('graph_add', 'sess_graph_view_graph_add', '');
@@ -307,8 +346,9 @@ case 'preview':
 					</td>
 					<?php if (is_view_allowed('graph_settings')) {?>
 					<td>
-						<input type='button' value='Save' title='Save current settings to your profile' onClick='clearSaveSettings()'>
+						<input type='button' id='save' value='Save' title='Save the current Graphs, Columns, Thumbnail, Preset, and Timeshift preferences to your profile' onClick='saveFilter("preview")'>
 					</td>
+					<td id='text'></td>
 					<?php }?>
 				</tr>
 			</table>
@@ -324,11 +364,11 @@ case 'preview':
 						Graphs
 					</td>
 					<td>
-						<select id='rows' onChange='applyFilter()'>
+						<select id='graphs' onChange='applyFilter()'>
 							<?php
 							if (sizeof($graphs_per_page) > 0) {
 							foreach ($graphs_per_page as $key => $value) {
-								print "<option value='" . $key . "'"; if (get_request_var_request('rows') == $key) { print ' selected'; } print '>' . $value . "</option>\n";
+								print "<option value='" . $key . "'"; if (get_request_var_request('graphs') == $key) { print ' selected'; } print '>' . $value . "</option>\n";
 							}
 							}
 							?>
@@ -370,10 +410,23 @@ case 'preview':
 		});
 	}
 
+	function saveFilter(section) {
+		href='graph_view.php?action=save'+
+            '&columns='+$('#columns').val()+
+            '&graphs='+$('#graphs').val()+
+            '&predefined_timespan='+$('#predefined_timespan').val()+
+            '&predefined_timeshift='+$('#predefined_timeshift').val()+
+            '&thumbnails='+$('#thumbnails').is(':checked');
+
+		$.get(href+'&header=false&section='+section, function(data) {
+			$('#text').show().text('Filter Settings Saved').fadeOut(2000);
+		});
+	}
+
 	function applyFilter() {
 		href='graph_view.php?action=preview'+
             '&filter='+$('#filter').val()+'&host_id='+$('#host_id').val()+'&columns='+$('#columns').val()+
-            '&rows='+$('#rows').val()+'&graph_template_id='+$('#graph_template_id').val()+
+            '&graphs='+$('#graphs').val()+'&graph_template_id='+$('#graph_template_id').val()+
             '&thumbnails='+$('#thumbnails').is(':checked');
 
 		$.get(href+'&header=false', function(data) {
@@ -674,16 +727,6 @@ case 'preview':
 	}
 	html_end_box();
 
-	/* if the number of rows is -1, set it to the default */
-	if ($_REQUEST['rows'] == -1) {
-		$_REQUEST['rows'] = read_graph_config_option('preview_graphs_per_page');
-	}
-
-	/* if the number of rows is -1, set it to the default */
-	if ($_REQUEST['columns'] == -1) {
-		$_REQUEST['columns'] = read_graph_config_option('num_columns');
-	}
-
 	/* the user select a bunch of graphs of the 'list' view and wants them displayed here */
 	$sql_or = '';
 	if (isset($_REQUEST['style'])) {
@@ -724,17 +767,17 @@ case 'preview':
 		}
 	}
 
-	$total_rows = 0;
+	$total_graphs = 0;
 
 	$sql_where  = (strlen($_REQUEST['filter']) ? "gtg.title_cache LIKE '%%" . get_request_var_request('filter') . "%%'":'');
 	$sql_where .= (strlen($sql_or) && strlen($sql_where) ? ' AND ':'') . $sql_or;
 	$sql_where .= ($_REQUEST['host_id'] > 0 ? (strlen($sql_where) ? ' AND':'') . ' gl.host_id=' . $_REQUEST['host_id']:'');
 	$sql_where .= ($_REQUEST['graph_template_id'] > 0 ? (strlen($sql_where) ? ' AND':'') . ' gl.graph_template_id=' . $_REQUEST['graph_template_id']:'');
 
-	$limit      = ($_REQUEST['rows']*($_REQUEST['page']-1)) . ',' . $_REQUEST['rows'];
+	$limit      = ($_REQUEST['graphs']*($_REQUEST['page']-1)) . ',' . $_REQUEST['graphs'];
 	$order      = 'gtg.title_cache';
 
-	$graphs     = get_allowed_graphs($sql_where, $order, $limit, $total_rows);	
+	$graphs     = get_allowed_graphs($sql_where, $order, $limit, $total_graphs);	
 
 	/* do some fancy navigation url construction so we don't have to try and rebuild the url string */
 	if (preg_match('/page=[0-9]+/',basename($_SERVER['QUERY_STRING']))) {
@@ -747,7 +790,7 @@ case 'preview':
 
 	html_start_box('', '100%', '', '3', 'center', '');
 
-	$nav = html_nav_bar($nav_url, MAX_DISPLAY_PAGES, get_request_var_request('page'), get_request_var_request('rows'), $total_rows, get_request_var_request('columns'), 'Graphs', 'page', 'main');
+	$nav = html_nav_bar($nav_url, MAX_DISPLAY_PAGES, get_request_var_request('page'), get_request_var_request('graphs'), $total_graphs, get_request_var_request('columns'), 'Graphs', 'page', 'main');
 
 	print $nav;
 
@@ -757,7 +800,7 @@ case 'preview':
 		html_graph_area($graphs, '', 'graph_start=' . get_current_graph_start() . '&graph_end=' . get_current_graph_end(), '', get_request_var_request('columns'));
 	}
 
-	if ($total_rows > 0) {
+	if ($total_graphs > 0) {
 		print $nav;
 	}
 

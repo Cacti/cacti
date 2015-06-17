@@ -435,8 +435,8 @@ function validate_tree_vars() {
 	}
 
 	load_current_session_value('page',   'sess_graph_tree_page',   '1');
-	load_current_session_value('graphs', 'sess_graph_tree_graphs', '-1');
-	load_current_session_value('columns', 'sess_graph_tree_columns', read_graph_config_option('num_columns'));
+	load_current_session_value('graphs', 'sess_graph_tree_graphs', read_graph_config_option('treeview_graphs_per_page'));
+	load_current_session_value('columns', 'sess_graph_tree_columns', read_graph_config_option('num_columns_tree'));
 	load_current_session_value('filter', 'sess_graph_tree_filter', '');
 	load_current_session_value('thumbnails', 'sess_graph_tree_thumbnails', read_graph_config_option('thumbnail_section_tree_2') == 'on' ? 'true':'false');
 	load_current_session_value('leaf_id', 'sess_graph_tree_leaf_id', '');
@@ -550,8 +550,9 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 					</td>
 					<?php if (is_view_allowed('graph_settings')) {?>
 					<td>
-						<input type='button' value='Save' title='Save current settings to your profile' onClick='clearSaveSettings()'>
+						<input type='button' id='save' value='Save' title='Save the current Graphs, Columns, Thumbnail, Preset, and Timeshift preferences to your profile' onClick='saveFilter("tree")'>
 					</td>
+					<td id='text'></td>
 					<?php }?>
 				</tr>
 			</table>
@@ -706,6 +707,19 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 			$('#main').html(data);
 			applySkin();
 			initializeGraphs();
+		});
+	}
+
+	function saveFilter(section) {
+		href='graph_view.php?action=save'+
+            '&columns='+$('#columns').val()+
+            '&graphs='+$('#graphs').val()+
+            '&predefined_timespan='+$('#predefined_timespan').val()+
+            '&predefined_timeshift='+$('#predefined_timeshift').val()+
+            '&thumbnails='+$('#thumbnails').is(':checked');
+
+		$.get(href+'&header=false&section='+section, function(data) {
+			$('#text').show().text('Filter Settings Saved').fadeOut(2000);
 		});
 	}
 
@@ -892,11 +906,6 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 	html_start_box('', '100%', "", '3', 'center', '');
 
 	$graph_list = array();
-
-	/* if the number of rows is -1, set it to the default */
-	if ($_REQUEST['graphs'] == -1) {
-		$_REQUEST['graphs'] = read_graph_config_option('treeview_graphs_per_page');
-	}
 
 	if (($leaf_type == 'header') || (empty($leaf_id))) {
 		$sql_where = '';
