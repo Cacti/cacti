@@ -410,7 +410,7 @@ function html_nav_bar($base_url, $max_pages, $current_page, $rows_per_page, $tot
 				<table style='width:100%;text-align:center;'>
 					<tr>
 						<td class='textHeaderDark'>
-							Showing All $object
+							Showing All $total_rows $object
 						</td>
 					</tr>
 				</table>
