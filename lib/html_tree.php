@@ -615,7 +615,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 							<input type='image' src='images/calendar.gif' align='middle' alt='End date selector' title='End date selector' onclick="return showCalendar('date2');">
 						</td>
 						<td>
-							<img style='padding-bottom:0px;cursor:pointer;' border='0' src='images/move_left.gif' align='middle' alt='' title='Shift Left' onClick='timeshiftFilterLeft()'/>
+							<img style='vertical-align:middle;border:0px;cursor:pointer;' src='images/move_left.gif' alt='' title='Shift Left' onClick='timeshiftFilterLeft()'/>
 						</td>
 						<td>
 							<select id='predefined_timeshift' name='predefined_timeshift' title='Define Shifting Interval'>
@@ -631,7 +631,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 							</select>
 						</td>
 						<td>
-							<img style='padding-bottom:0px;cursor:pointer;' name='move_right' src='images/move_right.gif' align='middle' alt='' title='Shift Right' onClick='timeshiftFilterRight()'/>
+							<img style='vertical-align:middle;border:0px;cursor:pointer;' name='move_right' src='images/move_right.gif' alt='' title='Shift Right' onClick='timeshiftFilterRight()'/>
 						</td>
 						<td>
 							<input type='button' name='button_refresh_x' value='Refresh' title='Refresh selected time span' onClick='refreshTimespanFilter()'>
