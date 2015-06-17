@@ -870,26 +870,29 @@ function form_actions(){
 
 	if (isset($_POST['selected_items'])) {
 		if(isset($_POST['action_receivers'])) {
-			$selected_items = unserialize(stripslashes($_POST['selected_items']));
-			/* ================= input validation ================= */
-			if(!array_filter($selected_items, 'is_numeric')) die('Validation error.');
-			/* ==================================================== */
-			if ($_POST['drp_action'] == '1') { /* delete */
-				db_execute('DELETE FROM snmpagent_managers WHERE id IN (' . implode(',' ,$selected_items) . ')');
-				db_execute('DELETE FROM snmpagent_managers_notifications WHERE manager_id IN (' . implode(',' ,$selected_items) . ')');
-				db_execute('DELETE FROM snmpagent_notifications_log WHERE manager_id IN (' . implode(',' ,$selected_items) . ')');
-			}elseif ($_POST['drp_action'] == '2') { /* enable */
-				db_execute("UPDATE snmpagent_managers SET disabled = '' WHERE id IN (" . implode(',' ,$selected_items) . ')');
-			}elseif ($_POST['drp_action'] == '3') { /* disable */
-				db_execute("UPDATE snmpagent_managers SET disabled = 'on' WHERE id IN (" . implode(',' ,$selected_items) . ')');
+			$selected_items = sanitize_unserialize_selected_items($_POST['selected_items']);
+
+			if ($selected_items != false) {
+				if ($_POST['drp_action'] == '1') { /* delete */
+					db_execute('DELETE FROM snmpagent_managers WHERE id IN (' . implode(',' ,$selected_items) . ')');
+					db_execute('DELETE FROM snmpagent_managers_notifications WHERE manager_id IN (' . implode(',' ,$selected_items) . ')');
+					db_execute('DELETE FROM snmpagent_notifications_log WHERE manager_id IN (' . implode(',' ,$selected_items) . ')');
+				}elseif ($_POST['drp_action'] == '2') { /* enable */
+					db_execute("UPDATE snmpagent_managers SET disabled = '' WHERE id IN (" . implode(',' ,$selected_items) . ')');
+				}elseif ($_POST['drp_action'] == '3') { /* disable */
+					db_execute("UPDATE snmpagent_managers SET disabled = 'on' WHERE id IN (" . implode(',' ,$selected_items) . ')');
+				}
+
+				header('Location: managers.php');
+				exit;
 			}
-			header('Location: managers.php');
-			exit;
 		}elseif(isset($_POST['action_receiver_notifications'])) {
 			/* ================= input validation ================= */
 			input_validate_input_number(get_request_var_post('id'));
 			/* ==================================================== */
+
 			$selected_items = unserialize(stripslashes($_POST['selected_items']));
+
 			if ($_POST['drp_action'] == '0') { /* disable */
 				foreach($selected_items as $mib => $notifications) {
 					foreach($notifications as $notification => $state) {
@@ -903,6 +906,7 @@ function form_actions(){
 					}
 				}
 			}
+
 			header('Location: managers.php?action=edit&id=' . $_POST['id'] . '&tab=notifications');
 			exit;
 		}

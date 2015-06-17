@@ -313,29 +313,25 @@ function form_actions() {
 
 	/* if we are to save this form, instead of display it */
 	if (isset($_POST['selected_items'])) {
-		$selected_items = unserialize(stripslashes($_POST['selected_items']));
-		for ($i=0;($i<count($selected_items));$i++) {
-			/* ================= input validation ================= */
-			input_validate_input_number($selected_items[$i]);
-			/* ==================================================== */
-		}
+		$selected_items = sanitize_unserialize_selected_items($_POST['selected_items']);
 
-		if ($_POST['drp_action'] == '1') { /* delete */
-			db_execute('DELETE FROM graph_tree WHERE ' . array_to_sql_or($selected_items, 'id'));
-			db_execute('DELETE FROM graph_tree_items WHERE ' . array_to_sql_or($selected_items, 'graph_tree_id'));
-
-		}elseif ($_POST['drp_action'] == '2') { /* publish */
-			db_execute("UPDATE graph_tree 
-				SET enabled='on',
-				last_modified=NOW(),
-				modified_by=" . $_SESSION['sess_user_id'] . '
-				WHERE ' . array_to_sql_or($selected_items, 'id'));
-		}elseif ($_POST['drp_action'] == '3') { /* un-publish */
-			db_execute("UPDATE graph_tree 
-				SET enabled='',
-				last_modified=NOW(),
-				modified_by=" . $_SESSION['sess_user_id'] . '
-				WHERE ' . array_to_sql_or($selected_items, 'id'));
+		if ($selected_items != false) {
+			if ($_POST['drp_action'] == '1') { /* delete */
+				db_execute('DELETE FROM graph_tree WHERE ' . array_to_sql_or($selected_items, 'id'));
+				db_execute('DELETE FROM graph_tree_items WHERE ' . array_to_sql_or($selected_items, 'graph_tree_id'));
+			}elseif ($_POST['drp_action'] == '2') { /* publish */
+				db_execute("UPDATE graph_tree 
+					SET enabled='on',
+					last_modified=NOW(),
+					modified_by=" . $_SESSION['sess_user_id'] . '
+					WHERE ' . array_to_sql_or($selected_items, 'id'));
+			}elseif ($_POST['drp_action'] == '3') { /* un-publish */
+				db_execute("UPDATE graph_tree 
+					SET enabled='',
+					last_modified=NOW(),
+					modified_by=" . $_SESSION['sess_user_id'] . '
+					WHERE ' . array_to_sql_or($selected_items, 'id'));
+			}
 		}
 
 		header('Location: tree.php');

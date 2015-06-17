@@ -327,37 +327,21 @@ function form_actions() {
 		header('Location: user_group_admin.php?action=edit&tab=members&id=' . get_request_var_post('id'));
 		exit;
 	}elseif (isset($_POST['selected_items'])) {
-		if (get_request_var_post('drp_action') != '2') {
-			$selected_items = unserialize(stripslashes(get_request_var_post('selected_items')));
-		}
+		$selected_items = sanitize_unserialize_selected_items($_POST['selected_items']);
 
-		if (get_request_var_post('drp_action') == '1') { /* delete */
-			for ($i=0;($i<count($selected_items));$i++) {
-				/* ================= input validation ================= */
-				input_validate_input_number($selected_items[$i]);
-				/* ==================================================== */
-
-				user_group_remove($selected_items[$i]);
-			}
-		}
-
-		if (get_request_var_post('drp_action') == '3') { /* enable */
-			for ($i=0;($i<count($selected_items));$i++) {
-				/* ================= input validation ================= */
-				input_validate_input_number($selected_items[$i]);
-				/* ==================================================== */
-
-				user_group_enable($selected_items[$i]);
-			}
-		}
-
-		if (get_request_var_post('drp_action') == '4') { /* disable */
-			for ($i=0;($i<count($selected_items));$i++) {
-				/* ================= input validation ================= */
-				input_validate_input_number($selected_items[$i]);
-				/* ==================================================== */
-
-				user_group_disable($selected_items[$i]);
+		if ($selected_items != false) {
+			if (get_request_var_post('drp_action') == '1') { /* delete */
+				for ($i=0;($i<count($selected_items));$i++) {
+					user_group_remove($selected_items[$i]);
+				}
+			}elseif (get_request_var_post('drp_action') == '3') { /* enable */
+				for ($i=0;($i<count($selected_items));$i++) {
+					user_group_enable($selected_items[$i]);
+				}
+			}elseif (get_request_var_post('drp_action') == '4') { /* disable */
+				for ($i=0;($i<count($selected_items));$i++) {
+					user_group_disable($selected_items[$i]);
+				}
 			}
 		}
 

@@ -177,35 +177,33 @@ function form_actions() {
 
 	/* if we are to save this form, instead of display it */
 	if (isset($_POST['selected_items'])) {
-		$selected_items = unserialize(stripslashes($_POST['selected_items']));
+		$selected_items = sanitize_unserialize_selected_items($_POST['selected_items']);
 
-		if ($_POST['drp_action'] == '1') { /* delete */
-			db_execute('DELETE FROM graph_templates WHERE ' . array_to_sql_or($selected_items, 'id'));
+		if ($selected_items != false) {
+			if ($_POST['drp_action'] == '1') { /* delete */
+				db_execute('DELETE FROM graph_templates WHERE ' . array_to_sql_or($selected_items, 'id'));
 
-			$graph_template_input = db_fetch_assoc('SELECT id FROM graph_template_input WHERE ' . array_to_sql_or($selected_items, 'graph_template_id'));
+				$graph_template_input = db_fetch_assoc('SELECT id FROM graph_template_input WHERE ' . array_to_sql_or($selected_items, 'graph_template_id'));
 
-			if (sizeof($graph_template_input) > 0) {
-			foreach ($graph_template_input as $item) {
-				db_execute('DELETE FROM graph_template_input_defs WHERE graph_template_input_id=' . $item['id']);
-			}
-			}
+				if (sizeof($graph_template_input) > 0) {
+				foreach ($graph_template_input as $item) {
+					db_execute('DELETE FROM graph_template_input_defs WHERE graph_template_input_id=' . $item['id']);
+				}
+				}
 
-			db_execute('DELETE FROM graph_template_input WHERE ' . array_to_sql_or($selected_items, 'graph_template_id'));
-			db_execute('DELETE FROM graph_templates_graph WHERE ' . array_to_sql_or($selected_items, 'graph_template_id') . ' AND local_graph_id=0');
-			db_execute('DELETE FROM graph_templates_item WHERE ' . array_to_sql_or($selected_items, 'graph_template_id') . ' AND local_graph_id=0');
-			db_execute('DELETE FROM host_template_graph WHERE ' . array_to_sql_or($selected_items, 'graph_template_id'));
+				db_execute('DELETE FROM graph_template_input WHERE ' . array_to_sql_or($selected_items, 'graph_template_id'));
+				db_execute('DELETE FROM graph_templates_graph WHERE ' . array_to_sql_or($selected_items, 'graph_template_id') . ' AND local_graph_id=0');
+				db_execute('DELETE FROM graph_templates_item WHERE ' . array_to_sql_or($selected_items, 'graph_template_id') . ' AND local_graph_id=0');
+				db_execute('DELETE FROM host_template_graph WHERE ' . array_to_sql_or($selected_items, 'graph_template_id'));
 
-			/* 'undo' any graph that is currently using this template */
-			db_execute('UPDATE graph_templates_graph SET local_graph_template_graph_id=0,graph_template_id=0 WHERE ' . array_to_sql_or($selected_items, 'graph_template_id'));
-			db_execute('UPDATE graph_templates_item SET local_graph_template_item_id=0,graph_template_id=0 WHERE ' . array_to_sql_or($selected_items, 'graph_template_id'));
-			db_execute('UPDATE graph_local SET graph_template_id=0 WHERE ' . array_to_sql_or($selected_items, 'graph_template_id'));
-		}elseif ($_POST['drp_action'] == '2') { /* duplicate */
-			for ($i=0;($i<count($selected_items));$i++) {
-				/* ================= input validation ================= */
-				input_validate_input_number($selected_items[$i]);
-				/* ==================================================== */
-
-				duplicate_graph(0, $selected_items[$i], $_POST['title_format']);
+				/* 'undo' any graph that is currently using this template */
+				db_execute('UPDATE graph_templates_graph SET local_graph_template_graph_id=0,graph_template_id=0 WHERE ' . array_to_sql_or($selected_items, 'graph_template_id'));
+				db_execute('UPDATE graph_templates_item SET local_graph_template_item_id=0,graph_template_id=0 WHERE ' . array_to_sql_or($selected_items, 'graph_template_id'));
+				db_execute('UPDATE graph_local SET graph_template_id=0 WHERE ' . array_to_sql_or($selected_items, 'graph_template_id'));
+			}elseif ($_POST['drp_action'] == '2') { /* duplicate */
+				for ($i=0;($i<count($selected_items));$i++) {
+					duplicate_graph(0, $selected_items[$i], $_POST['title_format']);
+				}
 			}
 		}
 

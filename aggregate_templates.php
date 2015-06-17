@@ -247,13 +247,16 @@ function aggregate_form_actions() {
 
 	/* if we are to save this form, instead of display it */
 	if (isset($_POST['selected_items'])) {
-		$selected_items = unserialize(stripslashes($_POST['selected_items']));
+		$selected_items = sanitize_unserialize_selected_items($_POST['selected_items']);
 
-		if ($_POST['drp_action'] == '1') { /* delete */
-			db_execute('DELETE FROM aggregate_graph_templates WHERE ' . array_to_sql_or($selected_items, 'id'));
-			db_execute('DELETE FROM aggregate_graph_templates_item WHERE ' . array_to_sql_or($selected_items, 'aggregate_template_id'));
-			db_execute('DELETE FROM aggregate_graph_templates_graph WHERE ' . array_to_sql_or($selected_items, 'aggregate_template_id'));
-			db_execute("UPDATE aggregate_graphs SET aggregate_template_id=0, template_propogation='' WHERE " . array_to_sql_or($selected_items, 'aggregate_template_id'));
+		if ($selected_items != false) {
+			if ($_POST['drp_action'] == '1') { /* delete */
+				db_execute('DELETE FROM aggregate_graph_templates WHERE ' . array_to_sql_or($selected_items, 'id'));
+				db_execute('DELETE FROM aggregate_graph_templates_item WHERE ' . array_to_sql_or($selected_items, 'aggregate_template_id'));
+				db_execute('DELETE FROM aggregate_graph_templates_graph WHERE ' . array_to_sql_or($selected_items, 'aggregate_template_id'));
+				db_execute("UPDATE aggregate_graphs SET aggregate_template_id=0, template_propogation='' WHERE " . array_to_sql_or($selected_items, 'aggregate_template_id'));
+			}
+		}else{
 		}
 
 		header('Location: aggregate_templates.php?header=false');

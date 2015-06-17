@@ -187,22 +187,6 @@ function form_actions() {
 		header('Location: user_admin.php?action=user_edit&tab=permstr&id=' . get_request_var_post('id'));
 		exit;
 	}elseif (isset($_POST['selected_items'])) {
-		if (get_request_var_post('drp_action') != '2') {
-			$selected_items = unserialize(stripslashes(get_request_var_post('selected_items')));
-		}
-
-		if (get_request_var_post('drp_action') == '1') { /* delete */
-			for ($i=0;($i<count($selected_items));$i++) {
-				/* ================= input validation ================= */
-				input_validate_input_number($selected_items[$i]);
-				/* ==================================================== */
-
-				user_remove($selected_items[$i]);
-
-				api_plugin_hook_function('user_remove', $selected_items[$i]);
-			}
-		}
-
 		if (get_request_var_post('drp_action') == '2') { /* copy */
 			/* ================= input validation ================= */
 			input_validate_input_number(get_request_var_post('selected_items'));
@@ -225,51 +209,46 @@ function form_actions() {
 					}
 				}
 			}
-		}
+		}else{
+			$selected_items = sanitize_unserialize_selected_items($_POST['selected_items']);
 
-		if (get_request_var_post('drp_action') == '3') { /* enable */
-			for ($i=0;($i<count($selected_items));$i++) {
-				/* ================= input validation ================= */
-				input_validate_input_number($selected_items[$i]);
-				/* ==================================================== */
+			if ($selected_items != false) {
+				if (get_request_var_post('drp_action') == '1') { /* delete */
+					for ($i=0;($i<count($selected_items));$i++) {
+						user_remove($selected_items[$i]);
 
-				user_enable($selected_items[$i]);
-			}
-		}
+						api_plugin_hook_function('user_remove', $selected_items[$i]);
+					}
+				}elseif (get_request_var_post('drp_action') == '3') { /* enable */
+					for ($i=0;($i<count($selected_items));$i++) {
+						user_enable($selected_items[$i]);
+					}
+				}elseif (get_request_var_post('drp_action') == '4') { /* disable */
+					for ($i=0;($i<count($selected_items));$i++) {
+						user_disable($selected_items[$i]);
+					}
+				}elseif (get_request_var_post('drp_action') == '5') { /* batch copy */
+					/* ================= input validation ================= */
+					input_validate_input_number(get_request_var_post('template_user'));
+					/* ==================================================== */
 
-		if (get_request_var_post('drp_action') == '4') { /* disable */
-			for ($i=0;($i<count($selected_items));$i++) {
-				/* ================= input validation ================= */
-				input_validate_input_number($selected_items[$i]);
-				/* ==================================================== */
+					$copy_error = false;
+					$template = db_fetch_row_prepared('SELECT username, realm FROM user_auth WHERE id = ?', array(get_request_var_post('template_user')));
+					for ($i=0;($i<count($selected_items));$i++) {
+						$user = db_fetch_row_prepared('SELECT username, realm FROM user_auth WHERE id = ?', array($selected_items[$i]));
+						if ((isset($user)) && (isset($template))) {
+							if (user_copy($template['username'], $user['username'], $template['realm'], $user['realm'], true) === false) {
+								$copy_error = true;
+							}
+						}
+					}
 
-				user_disable($selected_items[$i]);
-			}
-		}
-
-		if (get_request_var_post('drp_action') == '5') { /* batch copy */
-			/* ================= input validation ================= */
-			input_validate_input_number(get_request_var_post('template_user'));
-			/* ==================================================== */
-
-			$copy_error = false;
-			$template = db_fetch_row_prepared('SELECT username, realm FROM user_auth WHERE id = ?', array(get_request_var_post('template_user')));
-			for ($i=0;($i<count($selected_items));$i++) {
-				/* ================= input validation ================= */
-				input_validate_input_number($selected_items[$i]);
-				/* ==================================================== */
-
-				$user = db_fetch_row_prepared('SELECT username, realm FROM user_auth WHERE id = ?', array($selected_items[$i]));
-				if ((isset($user)) && (isset($template))) {
-					if (user_copy($template['username'], $user['username'], $template['realm'], $user['realm'], true) === false) {
-						$copy_error = true;
+					if ($copy_error) {
+						raise_message(2);
+					} else {
+						raise_message(1);
 					}
 				}
-			}
-			if ($copy_error) {
-				raise_message(2);
-			} else {
-				raise_message(1);
 			}
 		}
 
@@ -1228,7 +1207,7 @@ function graph_perms_edit($tab, $header_label) {
 			$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') . ' (user_auth_perms.type=4 AND user_auth_perms.user_id=' . get_request_var_request('id', 0) . ')';
 		}
 
-		form_start(htmlspecialchars('user_admin.php?action=user_edit&tab=permste&id=' . get_request_var_request('id'), 'policy');
+		form_start(htmlspecialchars('user_admin.php?action=user_edit&tab=permste&id=' . get_request_var_request('id'), 'policy'));
 
 		html_start_box('', '100%', '', '3', 'center', '');
 

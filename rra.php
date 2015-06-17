@@ -117,11 +117,13 @@ function form_actions() {
 	
 	/* if we are to save this form, instead of display it */
 	if (isset($_POST['selected_items'])) {
-		$selected_items = unserialize(stripslashes($_POST['selected_items']));
+		$selected_items = sanitize_unserialize_selected_items($_POST['selected_items']);
 
-		if ($_POST['drp_action'] == '1') { /* delete */
-			db_execute('DELETE FROM rra WHERE ' . array_to_sql_or($selected_items, 'id'));
-			db_execute('DELETE FROM rra_cf WHERE ' . array_to_sql_or($selected_items, 'rra_id'));
+		if ($selected_items != false) {
+			if ($_POST['drp_action'] == '1') { /* delete */
+				db_execute('DELETE FROM rra WHERE ' . array_to_sql_or($selected_items, 'id'));
+				db_execute('DELETE FROM rra_cf WHERE ' . array_to_sql_or($selected_items, 'rra_id'));
+			}
 		}
 
 		header('Location: rra.php');

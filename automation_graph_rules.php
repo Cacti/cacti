@@ -190,41 +190,30 @@ function automation_graph_rules_form_actions() {
 
 	/* if we are to save this form, instead of display it */
 	if (isset($_POST['selected_items'])) {
-		$selected_items = unserialize(stripslashes($_POST['selected_items']));
+		$selected_items = sanitize_unserialize_selected_items($_POST['selected_items']);
 
-		if ($_POST['drp_action'] == AUTOMATION_ACTION_GRAPH_DELETE) { /* delete */
-			db_execute('DELETE FROM automation_graph_rules WHERE ' . array_to_sql_or($selected_items, 'id'));
-			db_execute('DELETE FROM automation_graph_rule_items WHERE ' . array_to_sql_or($selected_items, 'rule_id'));
-			db_execute('DELETE FROM automation_match_rule_items WHERE ' . array_to_sql_or($selected_items, 'rule_id'));
+		if ($selected_items != false) {
+			if ($_POST['drp_action'] == AUTOMATION_ACTION_GRAPH_DELETE) { /* delete */
+				db_execute('DELETE FROM automation_graph_rules WHERE ' . array_to_sql_or($selected_items, 'id'));
+				db_execute('DELETE FROM automation_graph_rule_items WHERE ' . array_to_sql_or($selected_items, 'rule_id'));
+				db_execute('DELETE FROM automation_match_rule_items WHERE ' . array_to_sql_or($selected_items, 'rule_id'));
+			}elseif ($_POST['drp_action'] == AUTOMATION_ACTION_GRAPH_DUPLICATE) { /* duplicate */
+				for ($i=0;($i<count($selected_items));$i++) {
+					cacti_log('form_actions duplicate: ' . $selected_items[$i] . ' name: ' . $_POST['name_format'], true, 'AUTOMATION TRACE', POLLER_VERBOSITY_MEDIUM);
+					duplicate_automation_graph_rules($selected_items[$i], $_POST['name_format']);
+				}
+			}elseif ($_POST['drp_action'] == AUTOMATION_ACTION_GRAPH_ENABLE) { /* enable */
+				for ($i=0;($i<count($selected_items));$i++) {
+					cacti_log('form_actions enable: ' . $selected_items[$i], true, 'AUTOMATION TRACE', POLLER_VERBOSITY_MEDIUM);
 
-		}elseif ($_POST['drp_action'] == AUTOMATION_ACTION_GRAPH_DUPLICATE) { /* duplicate */
-			for ($i=0;($i<count($selected_items));$i++) {
-				/* ================= input validation ================= */
-				input_validate_input_number($selected_items[$i]);
-				/* ==================================================== */
+					db_execute("UPDATE automation_graph_rules SET enabled='on' WHERE id=" . $selected_items[$i]);
+				}
+			}elseif ($_POST['drp_action'] == AUTOMATION_ACTION_GRAPH_DISABLE) { /* disable */
+				for ($i=0;($i<count($selected_items));$i++) {
+					cacti_log('form_actions disable: ' . $selected_items[$i], true, 'AUTOMATION TRACE', POLLER_VERBOSITY_MEDIUM);
 
-				cacti_log('form_actions duplicate: ' . $selected_items[$i] . ' name: ' . $_POST['name_format'], true, 'AUTOMATION TRACE', POLLER_VERBOSITY_MEDIUM);
-				duplicate_automation_graph_rules($selected_items[$i], $_POST['name_format']);
-			}
-		}elseif ($_POST['drp_action'] == AUTOMATION_ACTION_GRAPH_ENABLE) { /* enable */
-			for ($i=0;($i<count($selected_items));$i++) {
-				/* ================= input validation ================= */
-				input_validate_input_number($selected_items[$i]);
-				/* ==================================================== */
-
-				cacti_log('form_actions enable: ' . $selected_items[$i], true, 'AUTOMATION TRACE', POLLER_VERBOSITY_MEDIUM);
-
-				db_execute("UPDATE automation_graph_rules SET enabled='on' WHERE id=" . $selected_items[$i]);
-			}
-		}elseif ($_POST['drp_action'] == AUTOMATION_ACTION_GRAPH_DISABLE) { /* disable */
-			for ($i=0;($i<count($selected_items));$i++) {
-				/* ================= input validation ================= */
-				input_validate_input_number($selected_items[$i]);
-				/* ==================================================== */
-
-				cacti_log('form_actions disable: ' . $selected_items[$i], true, 'AUTOMATION TRACE', POLLER_VERBOSITY_MEDIUM);
-
-				db_execute("UPDATE automation_graph_rules SET enabled='' WHERE id=" . $selected_items[$i]);
+					db_execute("UPDATE automation_graph_rules SET enabled='' WHERE id=" . $selected_items[$i]);
+				}
 			}
 		}
 

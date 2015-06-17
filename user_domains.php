@@ -165,45 +165,30 @@ function form_actions() {
 
 	/* if we are to save this form, instead of display it */
 	if (isset($_POST['selected_items'])) {
-		$selected_items = unserialize(stripslashes($_POST['selected_items']));
+		$selected_items = sanitize_unserialize_selected_items($_POST['selected_items']);
 
-		if ($_POST['drp_action'] == '1') { /* delete */
-			for ($i=0;($i<count($selected_items));$i++) {
-				/* ================= input validation ================= */
-				input_validate_input_number($selected_items[$i]);
-				/* ==================================================== */
-
-				domain_remove($selected_items[$i]);
-			}
-		}elseif ($_POST['drp_action'] == '2') { /* disable */
-			for ($i=0;($i<count($selected_items));$i++) {
-				/* ================= input validation ================= */
-				input_validate_input_number($selected_items[$i]);
-				/* ==================================================== */
-
-				domain_disable($selected_items[$i]);
-			}
-		}elseif ($_POST['drp_action'] == '3') { /* enable */
-			for ($i=0;($i<count($selected_items));$i++) {
-				/* ================= input validation ================= */
-				input_validate_input_number($selected_items[$i]);
-				/* ==================================================== */
-
-				domain_enable($selected_items[$i]);
-			}
-		}elseif ($_POST['drp_action'] == '4') { /* default */
-			if (sizeof($selected_items) > 1) {
-				/* error message */
-			}else{
+		if ($selected_items != false) {
+			if ($_POST['drp_action'] == '1') { /* delete */
 				for ($i=0;($i<count($selected_items));$i++) {
-					/* ================= input validation ================= */
-					input_validate_input_number($selected_items[$i]);
-					/* ==================================================== */
-
-					domain_default($selected_items[$i]);
+					domain_remove($selected_items[$i]);
+				}
+			}elseif ($_POST['drp_action'] == '2') { /* disable */
+				for ($i=0;($i<count($selected_items));$i++) {
+					domain_disable($selected_items[$i]);
+				}
+			}elseif ($_POST['drp_action'] == '3') { /* enable */
+				for ($i=0;($i<count($selected_items));$i++) {
+					domain_enable($selected_items[$i]);
+				}
+			}elseif ($_POST['drp_action'] == '4') { /* default */
+				if (sizeof($selected_items) > 1) {
+					/* error message */
+				}else{
+					for ($i=0;($i<count($selected_items));$i++) {
+						domain_default($selected_items[$i]);
+					}
 				}
 			}
-
 		}
 
 		header('Location: user_domains.php');

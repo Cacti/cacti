@@ -260,34 +260,32 @@ function form_actions() {
 
 	/* if we are to save this form, instead of display it */
 	if (isset($_POST['selected_items'])) {
-		$selected_items = unserialize(stripslashes($_POST['selected_items']));
+		$selected_items = sanitize_unserialize_selected_items($_POST['selected_items']);
 
-		if ($_POST['drp_action'] == '1') { /* delete */
-			$data_template_datas = db_fetch_assoc('SELECT id FROM data_template_data WHERE ' . array_to_sql_or($selected_items, 'data_template_id') . ' AND local_data_id=0');
+		if ($selected_items != false) {
+			if ($_POST['drp_action'] == '1') { /* delete */
+				$data_template_datas = db_fetch_assoc('SELECT id FROM data_template_data WHERE ' . array_to_sql_or($selected_items, 'data_template_id') . ' AND local_data_id=0');
 
-			if (sizeof($data_template_datas) > 0) {
-			foreach ($data_template_datas as $data_template_data) {
-				db_execute_prepared('DELETE FROM data_template_data_rra WHERE data_template_data_id = ?', array($data_template_data['id']));
-			}
-			}
+				if (sizeof($data_template_datas) > 0) {
+				foreach ($data_template_datas as $data_template_data) {
+					db_execute_prepared('DELETE FROM data_template_data_rra WHERE data_template_data_id = ?', array($data_template_data['id']));
+				}
+				}
 
-			db_execute('DELETE FROM data_template_data WHERE ' . array_to_sql_or($selected_items, 'data_template_id') . ' AND local_data_id=0');
-			db_execute('DELETE FROM data_template_rrd WHERE ' . array_to_sql_or($selected_items, 'data_template_id') . ' AND local_data_id=0');
-			db_execute('DELETE FROM snmp_query_graph_rrd WHERE ' . array_to_sql_or($selected_items, 'data_template_id'));
-			db_execute('DELETE FROM snmp_query_graph_rrd_sv WHERE ' . array_to_sql_or($selected_items, 'data_template_id'));
-			db_execute('DELETE FROM data_template WHERE ' . array_to_sql_or($selected_items, 'id'));
+				db_execute('DELETE FROM data_template_data WHERE ' . array_to_sql_or($selected_items, 'data_template_id') . ' AND local_data_id=0');
+				db_execute('DELETE FROM data_template_rrd WHERE ' . array_to_sql_or($selected_items, 'data_template_id') . ' AND local_data_id=0');
+				db_execute('DELETE FROM snmp_query_graph_rrd WHERE ' . array_to_sql_or($selected_items, 'data_template_id'));
+				db_execute('DELETE FROM snmp_query_graph_rrd_sv WHERE ' . array_to_sql_or($selected_items, 'data_template_id'));
+				db_execute('DELETE FROM data_template WHERE ' . array_to_sql_or($selected_items, 'id'));
 
-			/* "undo" any graph that is currently using this template */
-			db_execute('UPDATE data_template_data set local_data_template_data_id=0,data_template_id=0 WHERE ' . array_to_sql_or($selected_items, 'data_template_id'));
-			db_execute('UPDATE data_template_rrd set local_data_template_rrd_id=0,data_template_id=0 WHERE ' . array_to_sql_or($selected_items, 'data_template_id'));
-			db_execute('UPDATE data_local set data_template_id=0 WHERE ' . array_to_sql_or($selected_items, 'data_template_id'));
-		}elseif ($_POST['drp_action'] == '2') { /* duplicate */
-			for ($i=0;($i<count($selected_items));$i++) {
-				/* ================= input validation ================= */
-				input_validate_input_number($selected_items[$i]);
-				/* ==================================================== */
-
-				duplicate_data_source(0, $selected_items[$i], $_POST['title_format']);
+				/* "undo" any graph that is currently using this template */
+				db_execute('UPDATE data_template_data set local_data_template_data_id=0,data_template_id=0 WHERE ' . array_to_sql_or($selected_items, 'data_template_id'));
+				db_execute('UPDATE data_template_rrd set local_data_template_rrd_id=0,data_template_id=0 WHERE ' . array_to_sql_or($selected_items, 'data_template_id'));
+				db_execute('UPDATE data_local set data_template_id=0 WHERE ' . array_to_sql_or($selected_items, 'data_template_id'));
+			}elseif ($_POST['drp_action'] == '2') { /* duplicate */
+				for ($i=0;($i<count($selected_items));$i++) {
+					duplicate_data_source(0, $selected_items[$i], $_POST['title_format']);
+				}
 			}
 		}
 

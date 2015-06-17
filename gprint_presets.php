@@ -101,10 +101,12 @@ function form_actions() {
 	
 	/* if we are to save this form, instead of display it */
 	if (isset($_POST['selected_items'])) {
-		$selected_items = unserialize(stripslashes($_POST['selected_items']));
+		$selected_items = sanitize_unserialize_selected_items($_POST['selected_items']);
 
-		if ($_POST['drp_action'] == '1') { /* delete */
-			db_execute('DELETE FROM graph_templates_gprint WHERE ' . array_to_sql_or($selected_items, 'id'));
+		if ($selected_items != false) {
+			if ($_POST['drp_action'] == '1') { /* delete */
+				db_execute('DELETE FROM graph_templates_gprint WHERE ' . array_to_sql_or($selected_items, 'id'));
+			}
 		}
 
 		header('Location: gprint_presets.php?header=false');

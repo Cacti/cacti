@@ -152,19 +152,17 @@ function snmpagent_graphs_action_bottom($data){
 function snmpagent_device_action_bottom($data){
 	$mc = new MibCache();
 	$action = $data[0];
-	$selected_items = $data[1];
-	/* selected items are give by the user - do not forget to validate them! */
-	if(sizeof($selected_items)>0) {
+	$selected_items = sanitize_unserialize_selected_items($data[1]);
+
+	if ($selected_items != false) {
 		switch($action){
 			case "1":
 				/* delete devices */
 				foreach($selected_items as $device_id) {
-					if(is_numeric($device_id)) {
-						/* remove all device entries */
-						$mc->table('cactiApplDeviceTable')->row($device_id)->delete();
-						$mc->table('cactiStatsDeviceTable')->row($device_id)->delete();
-					}
+					$mc->table('cactiApplDeviceTable')->row($device_id)->delete();
+					$mc->table('cactiStatsDeviceTable')->row($device_id)->delete();
 				}
+
 				/* update total statistics */
 				$mc->object('cactiStatsTotalsDevices')->set( snmpagent_read('cactiStatsTotalsDevices') );
 				$mc->object('cactiStatsTotalsDataSources')->set( snmpagent_read('cactiStatsTotalsDataSources') );
@@ -174,20 +172,16 @@ function snmpagent_device_action_bottom($data){
 			case "2":
 				/* enable devices */
 				foreach($selected_items as $device_id) {
-					if(is_numeric($device_id)) {
-						$device_status = db_fetch_cell("SELECT status FROM host WHERE id = " . $device_id);
-						$mc->table('cactiApplDeviceTable')->row($device_id)->update(array('cactiApplDeviceStatus' => $device_status));
-					}
+					$device_status = db_fetch_cell("SELECT status FROM host WHERE id = " . $device_id);
+					$mc->table('cactiApplDeviceTable')->row($device_id)->update(array('cactiApplDeviceStatus' => $device_status));
 				}
 				$mc->object('cactiApplLastUpdate')->set( time() );
 				break;
 			case "3":
 				/* disable devices */
 				foreach($selected_items as $device_id) {
-					if(is_numeric($device_id)) {
-						$device_status = db_fetch_cell("SELECT status FROM host WHERE id = " . $device_id);
-						$mc->table('cactiApplDeviceTable')->row($device_id)->update(array('cactiApplDeviceStatus' => 4));
-					}
+					$device_status = db_fetch_cell("SELECT status FROM host WHERE id = " . $device_id);
+					$mc->table('cactiApplDeviceTable')->row($device_id)->update(array('cactiApplDeviceStatus' => 4));
 				}
 				$mc->object('cactiApplLastUpdate')->set( time() );
 				break;
@@ -203,9 +197,7 @@ function snmpagent_device_action_bottom($data){
 					'cactiStatsDeviceAvailability' => '100'
 				);
 				foreach($selected_items as $device_id) {
-					if(is_numeric($device_id)) {
-						$mc->table('cactiStatsDeviceTable')->row($device_id)->update($values);
-					}
+					$mc->table('cactiStatsDeviceTable')->row($device_id)->update($values);
 				}
 				$mc->object('cactiStatsLastUpdate')->set( time() );
 				break;

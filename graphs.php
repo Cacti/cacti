@@ -290,253 +290,207 @@ function form_actions() {
 
 	/* if we are to save this form, instead of display it */
 	if (isset($_POST['selected_items'])) {
-		$selected_items = unserialize(stripslashes($_POST['selected_items']));
+		$selected_items = sanitize_unserialize_selected_items($_POST['selected_items']);
 
-		if ($_POST['drp_action'] == '1') { /* delete */
-			if (!isset($_POST['delete_type'])) { $_POST['delete_type'] = 1; }
+		if ($selected_items != false) {
+			if ($_POST['drp_action'] == '1') { /* delete */
+				if (!isset($_POST['delete_type'])) { $_POST['delete_type'] = 1; }
 
-			for ($i=0;($i<count($selected_items));$i++) {
-				/* ================= input validation ================= */
-				input_validate_input_number($selected_items[$i]);
-				/* ==================================================== */
-			}
+				switch ($_POST['delete_type']) {
+					case '2': /* delete all data sources referenced by this graph */
+						$data_sources = array_rekey(db_fetch_assoc('SELECT data_template_data.local_data_id
+							FROM (data_template_rrd, data_template_data, graph_templates_item)
+							WHERE graph_templates_item.task_item_id=data_template_rrd.id
+							AND data_template_rrd.local_data_id=data_template_data.local_data_id
+							AND ' . array_to_sql_or($selected_items, 'graph_templates_item.local_graph_id') . '
+							AND data_template_data.local_data_id > 0'), 'local_data_id', 'local_data_id');
 
-			switch ($_POST['delete_type']) {
-				case '2': /* delete all data sources referenced by this graph */
-					$data_sources = array_rekey(db_fetch_assoc('SELECT data_template_data.local_data_id
-						FROM (data_template_rrd, data_template_data, graph_templates_item)
-						WHERE graph_templates_item.task_item_id=data_template_rrd.id
-						AND data_template_rrd.local_data_id=data_template_data.local_data_id
-						AND ' . array_to_sql_or($selected_items, 'graph_templates_item.local_graph_id') . '
-						AND data_template_data.local_data_id > 0'), 'local_data_id', 'local_data_id');
+						if (sizeof($data_sources)) {
+							api_data_source_remove_multi($data_sources);
+							api_plugin_hook_function('data_source_remove', $data_sources);
+						}
 
-					if (sizeof($data_sources)) {
-						api_data_source_remove_multi($data_sources);
-						api_plugin_hook_function('data_source_remove', $data_sources);
-					}
-
-					break;
-			}
-
-			api_graph_remove_multi($selected_items);
-
-			api_plugin_hook_function('graphs_remove', $selected_items);
-		}elseif ($_POST['drp_action'] == '2') { /* change graph template */
-			input_validate_input_number(get_request_var_post('graph_template_id'));
-			for ($i=0;($i<count($selected_items));$i++) {
-				/* ================= input validation ================= */
-				input_validate_input_number($selected_items[$i]);
-				/* ==================================================== */
-
-				change_graph_template($selected_items[$i], $_POST['graph_template_id'], true);
-			}
-		}elseif ($_POST['drp_action'] == '3') { /* duplicate */
-			for ($i=0;($i<count($selected_items));$i++) {
-				/* ================= input validation ================= */
-				input_validate_input_number($selected_items[$i]);
-				/* ==================================================== */
-
-				duplicate_graph($selected_items[$i], 0, $_POST['title_format']);
-			}
-		}elseif ($_POST['drp_action'] == '4') { /* graph -> graph template */
-			for ($i=0;($i<count($selected_items));$i++) {
-				/* ================= input validation ================= */
-				input_validate_input_number($selected_items[$i]);
-				/* ==================================================== */
-
-				graph_to_graph_template($selected_items[$i], $_POST['title_format']);
-			}
-		}elseif (preg_match('/^tr_([0-9]+)$/', $_POST['drp_action'], $matches)) { /* place on tree */
-			input_validate_input_number(get_request_var_post('tree_id'));
-			input_validate_input_number(get_request_var_post('tree_item_id'));
-			for ($i=0;($i<count($selected_items));$i++) {
-				/* ================= input validation ================= */
-				input_validate_input_number($selected_items[$i]);
-				/* ==================================================== */
-
-				api_tree_item_save(0, $_POST['tree_id'], TREE_ITEM_TYPE_GRAPH, $_POST['tree_item_id'], '', $selected_items[$i], read_graph_config_option('default_rra_id'), 0, 0, 0, false);
-			}
-		}elseif ($_POST['drp_action'] == '5') { /* change host */
-			input_validate_input_number(get_request_var_post('host_id'));
-			for ($i=0;($i<count($selected_items));$i++) {
-				/* ================= input validation ================= */
-				input_validate_input_number($selected_items[$i]);
-				/* ==================================================== */
-
-				db_execute_prepared('UPDATE graph_local SET host_id = ? WHERE id = ?', array($_POST['host_id'], $selected_items[$i]));
-				update_graph_title_cache($selected_items[$i]);
-			}
-		}elseif ($_POST['drp_action'] == '6') { /* reapply suggested naming */
-			for ($i=0;($i<count($selected_items));$i++) {
-				/* ================= input validation ================= */
-				input_validate_input_number($selected_items[$i]);
-				/* ==================================================== */
-
-				api_reapply_suggested_graph_title($selected_items[$i]);
-				update_graph_title_cache($selected_items[$i]);
-			}
-		}elseif ($_POST['drp_action'] == '7') { /* resize graphs */
-			input_validate_input_number(get_request_var_post('graph_width'));
-			input_validate_input_number(get_request_var_post('graph_height'));
-			for ($i=0;($i<count($selected_items));$i++) {
-				/* ================= input validation ================= */
-				input_validate_input_number($selected_items[$i]);
-				/* ==================================================== */
-
-				api_resize_graphs($selected_items[$i], $_POST['graph_width'], $_POST['graph_height']);
-			}
-		}elseif ($_POST['drp_action'] == 'aggregate' || $_POST['drp_action'] == 'aggregate_template') {
-			if (!isset($_POST['selected_items']) || sizeof($_POST['selected_items']) < 1) {
-				return null;
-			}
-
-			/* get common info - not dependant on template/no template*/
-			$local_graph_id = 0; // this will be a new graph
-			$member_graphs  = unserialize(stripslashes($_POST['selected_items']));
-			$graph_title    = sql_sanitize(form_input_validate(htmlspecialchars($_POST['title_format']), 'title_format', '', true, 3));
-
-			/* future aggregate_graphs entry */
-			$ag_data = array();
-			$ag_data['id'] = 0;
-			$ag_data['title_format'] = $graph_title;
-			$ag_data['user_id']      = $_SESSION['sess_user_id'];
-
-			if ($_POST['drp_action'] == 'aggregate') {
-				if (!isset($_POST['aggregate_total_type']))   $_POST['aggregate_total_type']   = 0;
-				if (!isset($_POST['aggregate_total']))        $_POST['aggregate_total']        = 0;
-				if (!isset($_POST['aggregate_total_prefix'])) $_POST['aggregate_total_prefix'] = '';
-				if (!isset($_POST['aggregate_order_type']))   $_POST['aggregate_order_type']   = 0;
-	
-				$item_no = form_input_validate(htmlspecialchars($_POST['item_no']), 'item_no', '^[0-9]+$', true, 3);
-
-				$ag_data['aggregate_template_id'] = 0;
-				$ag_data['template_propogation']  = '';
-				$ag_data['graph_template_id']     = form_input_validate(htmlspecialchars($_POST['graph_template_id']), 'graph_template_id', '^[0-9]+$', true, 3);
-				$ag_data['gprint_prefix']         = sql_sanitize(form_input_validate(htmlspecialchars($_POST['gprint_prefix']), 'gprint_prefix', '', true, 3));
-				$ag_data['graph_type']            = form_input_validate(htmlspecialchars($_POST['aggregate_graph_type']), 'aggregate_graph_type', '^[0-9]+$', true, 3);
-				$ag_data['total']                 = form_input_validate(htmlspecialchars($_POST['aggregate_total']), 'aggregate_total', '^[0-9]+$', true, 3);
-				$ag_data['total_type']            = form_input_validate(htmlspecialchars($_POST['aggregate_total_type']), 'aggregate_total_type', '^[0-9]+$', true, 3);
-				$ag_data['total_prefix']          = form_input_validate(htmlspecialchars($_POST['aggregate_total_prefix']), 'aggregate_total_prefix', '', true, 3);
-				$ag_data['order_type']            = form_input_validate(htmlspecialchars($_POST['aggregate_order_type']), 'aggregate_order_type', '^[0-9]+$', true, 3);
-			} else {
-				$template_data = db_fetch_row('SELECT * FROM aggregate_graph_templates WHERE id=' . $_POST['aggregate_template_id']);
-
-				$item_no = db_fetch_cell('SELECT COUNT(*) FROM aggregate_graph_templates_item WHERE aggregate_template_id=' . $_POST['aggregate_template_id']);
-
-				$ag_data['aggregate_template_id'] = $_POST['aggregate_template_id'];
-				$ag_data['template_propogation']  = 'on';
-				$ag_data['graph_template_id']     = $template_data['graph_template_id'];
-				$ag_data['gprint_prefix']         = $template_data['gprint_prefix'];
-				$ag_data['graph_type']            = $template_data['graph_type'];
-				$ag_data['total']                 = $template_data['total'];
-				$ag_data['total_type']            = $template_data['total_type'];
-				$ag_data['total_prefix']          = $template_data['total_prefix'];
-				$ag_data['order_type']            = $template_data['order_type'];
-			}
-
-			/* create graph in cacti tables */
-			$local_graph_id = aggregate_graph_save(
-				$local_graph_id,
-				$ag_data['graph_template_id'],
-				$graph_title,
-				$ag_data['aggregate_template_id']
-			);
-
-			$ag_data['local_graph_id'] = $local_graph_id;
-			$aggregate_graph_id = sql_save($ag_data, 'aggregate_graphs');
-			$ag_data['aggregate_graph_id'] = $aggregate_graph_id;
-
-			// 	/* save member graph info */
-			// 	$i = 1;
-			// 	foreach($member_graphs as $graph_id) {
-			// 		db_execute("INSERT INTO aggregate_graphs_items 
-			// 			(aggregate_graph_id, local_graph_id, sequence) 
-			// 			VALUES
-			// 			($aggregate_graph_id, $graph_id, $i)"
-			// 		);
-			// 		$i++;
-			// 	}
-
-			/* save aggregate graph graph items */
-			if ($_POST['drp_action'] == 'aggregate') {
-				/* get existing item ids and sequences from graph template */
-				$graph_templates_items = array_rekey(
-					db_fetch_assoc('SELECT id, sequence FROM graph_templates_item WHERE local_graph_id=0 AND graph_template_id=' . $ag_data['graph_template_id']),
-					'id', array('sequence')
-				);
-
-				/* update graph template item values with posted values */
-				aggregate_validate_graph_items($_POST, $graph_templates_items);
-
-				$aggregate_graph_items = array();
-				foreach ($graph_templates_items as $item_id => $data) {
-					$item_new = array();
-					$item_new['aggregate_graph_id'] = $aggregate_graph_id;
-					$item_new['graph_templates_item_id'] = $item_id;
-
-					$item_new['color_template'] = isset($data['color_template']) ? $data['color_template']:-1;
-					$item_new['item_skip']      = isset($data['item_skip']) ? 'on':'';
-					$item_new['item_total']     = isset($data['item_total']) ? 'on':'';
-					$item_new['sequence']       = isset($data['sequence']) ? $data['sequence']:-1;
-
-					$aggregate_graph_items[] = $item_new;
+						break;
 				}
 
-				aggregate_graph_items_save($aggregate_graph_items, 'aggregate_graphs_graph_item');
-			} else {
-				$aggregate_graph_items = db_fetch_assoc('SELECT * FROM aggregate_graph_templates_item WHERE aggregate_template_id=' . $ag_data['aggregate_template_id']);
-			}
+				api_graph_remove_multi($selected_items);
 
-			$attribs = $ag_data;
-			$attribs['graph_title'] = $ag_data['title_format'];
-			$attribs['reorder'] = $ag_data['order_type'];
-			$attribs['item_no'] = $item_no;
-			$attribs['color_templates'] = array();
-			$attribs['skipped_items']   = array();
-			$attribs['total_items']     = array();
-			$attribs['graph_item_types']= array();
-			$attribs['cdefs']           = array();
-			foreach ($aggregate_graph_items as $item) {
-				if (isset($item['color_template']) && $item['color_template'] > 0)
-					$attribs['color_templates'][ $item['sequence'] ] = $item['color_template'];
+				api_plugin_hook_function('graphs_remove', $selected_items);
+			}elseif ($_POST['drp_action'] == '2') { /* change graph template */
+				input_validate_input_number(get_request_var_post('graph_template_id'));
+				for ($i=0;($i<count($selected_items));$i++) {
+					change_graph_template($selected_items[$i], $_POST['graph_template_id'], true);
+				}
+			}elseif ($_POST['drp_action'] == '3') { /* duplicate */
+				for ($i=0;($i<count($selected_items));$i++) {
+					duplicate_graph($selected_items[$i], 0, $_POST['title_format']);
+				}
+			}elseif ($_POST['drp_action'] == '4') { /* graph -> graph template */
+				for ($i=0;($i<count($selected_items));$i++) {
+					graph_to_graph_template($selected_items[$i], $_POST['title_format']);
+				}
+			}elseif (preg_match('/^tr_([0-9]+)$/', $_POST['drp_action'], $matches)) { /* place on tree */
+				input_validate_input_number(get_request_var_post('tree_id'));
+				input_validate_input_number(get_request_var_post('tree_item_id'));
+				for ($i=0;($i<count($selected_items));$i++) {
+					api_tree_item_save(0, $_POST['tree_id'], TREE_ITEM_TYPE_GRAPH, $_POST['tree_item_id'], '', $selected_items[$i], read_graph_config_option('default_rra_id'), 0, 0, 0, false);
+				}
+			}elseif ($_POST['drp_action'] == '5') { /* change host */
+				input_validate_input_number(get_request_var_post('host_id'));
+				for ($i=0;($i<count($selected_items));$i++) {
+					db_execute_prepared('UPDATE graph_local SET host_id = ? WHERE id = ?', array($_POST['host_id'], $selected_items[$i]));
+					update_graph_title_cache($selected_items[$i]);
+				}
+			}elseif ($_POST['drp_action'] == '6') { /* reapply suggested naming */
+				for ($i=0;($i<count($selected_items));$i++) {
+					api_reapply_suggested_graph_title($selected_items[$i]);
+					update_graph_title_cache($selected_items[$i]);
+				}
+			}elseif ($_POST['drp_action'] == '7') { /* resize graphs */
+				input_validate_input_number(get_request_var_post('graph_width'));
+				input_validate_input_number(get_request_var_post('graph_height'));
+				for ($i=0;($i<count($selected_items));$i++) {
+					api_resize_graphs($selected_items[$i], $_POST['graph_width'], $_POST['graph_height']);
+				}
+			}elseif ($_POST['drp_action'] == 'aggregate' || $_POST['drp_action'] == 'aggregate_template') {
+				/* get common info - not dependant on template/no template*/
+				$local_graph_id = 0; // this will be a new graph
+				$member_graphs  = $selected_items;
+				$graph_title    = sql_sanitize(form_input_validate(htmlspecialchars($_POST['title_format']), 'title_format', '', true, 3));
 
-				if (isset($item['item_skip']) && $item['item_skip'] == 'on')
-					$attribs['skipped_items'][ $item['sequence'] ] = $item['sequence'];
+				/* future aggregate_graphs entry */
+				$ag_data = array();
+				$ag_data['id'] = 0;
+				$ag_data['title_format'] = $graph_title;
+				$ag_data['user_id']      = $_SESSION['sess_user_id'];
 
-				if (isset($item['item_total']) && $item['item_total'] == 'on')
-					$attribs['total_items'][ $item['sequence'] ] = $item['sequence'];
+				if ($_POST['drp_action'] == 'aggregate') {
+					if (!isset($_POST['aggregate_total_type']))   $_POST['aggregate_total_type']   = 0;
+					if (!isset($_POST['aggregate_total']))        $_POST['aggregate_total']        = 0;
+					if (!isset($_POST['aggregate_total_prefix'])) $_POST['aggregate_total_prefix'] = '';
+					if (!isset($_POST['aggregate_order_type']))   $_POST['aggregate_order_type']   = 0;
+	
+					$item_no = form_input_validate(htmlspecialchars($_POST['item_no']), 'item_no', '^[0-9]+$', true, 3);
 
-				if (isset($item['cdef_id']) && isset($item['t_cdef_id']) && $item['t_cdef_id'] == 'on')
-					$attribs['cdefs'][ $item['sequence'] ] = $item['cdef_id'];
+					$ag_data['aggregate_template_id'] = 0;
+					$ag_data['template_propogation']  = '';
+					$ag_data['graph_template_id']     = form_input_validate(htmlspecialchars($_POST['graph_template_id']), 'graph_template_id', '^[0-9]+$', true, 3);
+					$ag_data['gprint_prefix']         = sql_sanitize(form_input_validate(htmlspecialchars($_POST['gprint_prefix']), 'gprint_prefix', '', true, 3));
+					$ag_data['graph_type']            = form_input_validate(htmlspecialchars($_POST['aggregate_graph_type']), 'aggregate_graph_type', '^[0-9]+$', true, 3);
+					$ag_data['total']                 = form_input_validate(htmlspecialchars($_POST['aggregate_total']), 'aggregate_total', '^[0-9]+$', true, 3);
+					$ag_data['total_type']            = form_input_validate(htmlspecialchars($_POST['aggregate_total_type']), 'aggregate_total_type', '^[0-9]+$', true, 3);
+					$ag_data['total_prefix']          = form_input_validate(htmlspecialchars($_POST['aggregate_total_prefix']), 'aggregate_total_prefix', '', true, 3);
+					$ag_data['order_type']            = form_input_validate(htmlspecialchars($_POST['aggregate_order_type']), 'aggregate_order_type', '^[0-9]+$', true, 3);
+				} else {
+					$template_data = db_fetch_row('SELECT * FROM aggregate_graph_templates WHERE id=' . $_POST['aggregate_template_id']);
 
-				if (isset($item['graph_type_id']) && isset($item['t_graph_type_id']) && $item['t_graph_type_id'] == 'on')
-					$attribs['graph_item_types'][ $item['sequence'] ] = $item['graph_type_id'];
-			}
+					$item_no = db_fetch_cell('SELECT COUNT(*) FROM aggregate_graph_templates_item WHERE aggregate_template_id=' . $_POST['aggregate_template_id']);
 
-			/* create actual graph items */
-			aggregate_create_update($local_graph_id, $member_graphs, $attribs);
+					$ag_data['aggregate_template_id'] = $_POST['aggregate_template_id'];
+					$ag_data['template_propogation']  = 'on';
+					$ag_data['graph_template_id']     = $template_data['graph_template_id'];
+					$ag_data['gprint_prefix']         = $template_data['gprint_prefix'];
+					$ag_data['graph_type']            = $template_data['graph_type'];
+					$ag_data['total']                 = $template_data['total'];
+					$ag_data['total_type']            = $template_data['total_type'];
+					$ag_data['total_prefix']          = $template_data['total_prefix'];
+					$ag_data['order_type']            = $template_data['order_type'];
+				}
 
-			header("Location: aggregate_graphs.php?action=edit&tab=details&id=$local_graph_id");
-			exit;
-		}elseif ($action == 8) { /* automation */
-			cacti_log('automation_graph_action_execute called: ' . $action, true, 'AUTOMATION TRACE', POLLER_VERBOSITY_MEDIUM);
+				/* create graph in cacti tables */
+				$local_graph_id = aggregate_graph_save(
+					$local_graph_id,
+					$ag_data['graph_template_id'],
+					$graph_title,
+					$ag_data['aggregate_template_id']
+				);
 
-			/* find out which (if any) hosts have been checked, so we can tell the user */
-			if (isset($_POST['selected_items'])) {
-				$selected_items = unserialize(stripslashes($_POST['selected_items']));
+				$ag_data['local_graph_id'] = $local_graph_id;
+				$aggregate_graph_id = sql_save($ag_data, 'aggregate_graphs');
+				$ag_data['aggregate_graph_id'] = $aggregate_graph_id;
+
+				// 	/* save member graph info */
+				// 	$i = 1;
+				// 	foreach($member_graphs as $graph_id) {
+				// 		db_execute("INSERT INTO aggregate_graphs_items 
+				// 			(aggregate_graph_id, local_graph_id, sequence) 
+				// 			VALUES
+				// 			($aggregate_graph_id, $graph_id, $i)"
+				// 		);
+				// 		$i++;
+				// 	}
+
+				/* save aggregate graph graph items */
+				if ($_POST['drp_action'] == 'aggregate') {
+					/* get existing item ids and sequences from graph template */
+					$graph_templates_items = array_rekey(
+						db_fetch_assoc('SELECT id, sequence FROM graph_templates_item WHERE local_graph_id=0 AND graph_template_id=' . $ag_data['graph_template_id']),
+						'id', array('sequence')
+					);
+
+					/* update graph template item values with posted values */
+					aggregate_validate_graph_items($_POST, $graph_templates_items);
+
+					$aggregate_graph_items = array();
+					foreach ($graph_templates_items as $item_id => $data) {
+						$item_new = array();
+						$item_new['aggregate_graph_id'] = $aggregate_graph_id;
+						$item_new['graph_templates_item_id'] = $item_id;
+
+						$item_new['color_template'] = isset($data['color_template']) ? $data['color_template']:-1;
+						$item_new['item_skip']      = isset($data['item_skip']) ? 'on':'';
+						$item_new['item_total']     = isset($data['item_total']) ? 'on':'';
+						$item_new['sequence']       = isset($data['sequence']) ? $data['sequence']:-1;
+
+						$aggregate_graph_items[] = $item_new;
+					}
+
+					aggregate_graph_items_save($aggregate_graph_items, 'aggregate_graphs_graph_item');
+				} else {
+					$aggregate_graph_items = db_fetch_assoc('SELECT * FROM aggregate_graph_templates_item WHERE aggregate_template_id=' . $ag_data['aggregate_template_id']);
+				}
+
+				$attribs = $ag_data;
+				$attribs['graph_title'] = $ag_data['title_format'];
+				$attribs['reorder'] = $ag_data['order_type'];
+				$attribs['item_no'] = $item_no;
+				$attribs['color_templates'] = array();
+				$attribs['skipped_items']   = array();
+				$attribs['total_items']     = array();
+				$attribs['graph_item_types']= array();
+				$attribs['cdefs']           = array();
+				foreach ($aggregate_graph_items as $item) {
+					if (isset($item['color_template']) && $item['color_template'] > 0)
+						$attribs['color_templates'][ $item['sequence'] ] = $item['color_template'];
+
+					if (isset($item['item_skip']) && $item['item_skip'] == 'on')
+						$attribs['skipped_items'][ $item['sequence'] ] = $item['sequence'];
+
+					if (isset($item['item_total']) && $item['item_total'] == 'on')
+						$attribs['total_items'][ $item['sequence'] ] = $item['sequence'];
+
+					if (isset($item['cdef_id']) && isset($item['t_cdef_id']) && $item['t_cdef_id'] == 'on')
+						$attribs['cdefs'][ $item['sequence'] ] = $item['cdef_id'];
+
+					if (isset($item['graph_type_id']) && isset($item['t_graph_type_id']) && $item['t_graph_type_id'] == 'on')
+						$attribs['graph_item_types'][ $item['sequence'] ] = $item['graph_type_id'];
+				}
+
+				/* create actual graph items */
+				aggregate_create_update($local_graph_id, $member_graphs, $attribs);
+
+				header("Location: aggregate_graphs.php?action=edit&tab=details&id=$local_graph_id");
+				exit;
+			}elseif ($action == 8) { /* automation */
+				cacti_log('automation_graph_action_execute called: ' . $action, true, 'AUTOMATION TRACE', POLLER_VERBOSITY_MEDIUM);
 
 				/* work on all selected graphs */
 				for ($i=0;($i<count($selected_items));$i++) {
-					/* ================= input validation ================= */
-					input_validate_input_number($selected_items[$i]);
-					/* ==================================================== */
-
-					/* now handle tree rules for that graph */
 					execute_graph_create_tree($selected_items[$i]);
 				}
+			} else {
+				api_plugin_hook_function('graphs_action_execute', $_POST['drp_action']);
 			}
-		} else {
-			api_plugin_hook_function('graphs_action_execute', $_POST['drp_action']);
 		}
 
 		/* update snmpcache */

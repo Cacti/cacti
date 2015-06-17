@@ -250,58 +250,26 @@ function form_actions() {
 
 	/* if we are to save this form, instead of display it */
 	if (isset($_POST['selected_items'])) {
-		$selected_items = unserialize(stripslashes($_POST['selected_items']));
+		$selected_items = sanitize_unserialize_selected_items($_POST['selected_items']);
 
-		if ($_POST['drp_action'] == '1') { /* delete */
-			for ($i=0;($i<count($selected_items));$i++) {
-				/* ================= input validation ================= */
-				input_validate_input_number($selected_items[$i]);
-				/* ==================================================== */
-			}
-
-			api_aggregate_remove_multi($selected_items);
-		}elseif ($_POST['drp_action'] == '2') { /* migrate to template */
-			for ($i=0;($i<count($selected_items));$i++) {
-				/* ================= input validation ================= */
-				input_validate_input_number($selected_items[$i]);
-				/* ==================================================== */
-			}
-
-			api_aggregate_convert_template($selected_items);
-		}elseif ($_POST['drp_action'] == '3') { /* create aggregate from aggregate */
-			for ($i=0;($i<count($selected_items));$i++) {
-				/* ================= input validation ================= */
-				input_validate_input_number($selected_items[$i]);
-				/* ==================================================== */
-			}
-			$aggregate_name = $_REQUEST['aggregate_name'];
-
-			api_aggregate_create($aggregate_name, $selected_items);
-		}elseif ($_POST['drp_action'] == '10') { /* associate with aggregate */
-			for ($i=0;($i<count($selected_items));$i++) {
-				/* ================= input validation ================= */
-				input_validate_input_number($selected_items[$i]);
-				/* ==================================================== */
-			}
-
-			api_aggregate_associate($selected_items);
-		}elseif ($_POST['drp_action'] == '11') { /* dis-associate with aggregate */
-			for ($i=0;($i<count($selected_items));$i++) {
-				/* ================= input validation ================= */
-				input_validate_input_number($selected_items[$i]);
-				/* ==================================================== */
-			}
-
-			api_aggregate_disassociate($selected_items);
-		}elseif (preg_match('/^tr_([0-9]+)$/', $_POST['drp_action'], $matches)) { /* place on tree */
-			input_validate_input_number(get_request_var_post('tree_id'));
-			input_validate_input_number(get_request_var_post('tree_item_id'));
-			for ($i=0;($i<count($selected_items));$i++) {
-				/* ================= input validation ================= */
-				input_validate_input_number($selected_items[$i]);
-				/* ==================================================== */
-
-				api_tree_item_save(0, $_POST['tree_id'], TREE_ITEM_TYPE_GRAPH, $_POST['tree_item_id'], '', $selected_items[$i], read_graph_config_option('default_rra_id'), 0, 0, 0, false);
+		if ($selected_items != false) {
+			if ($_POST['drp_action'] == '1') { /* delete */
+				api_aggregate_remove_multi($selected_items);
+			}elseif ($_POST['drp_action'] == '2') { /* migrate to template */
+				api_aggregate_convert_template($selected_items);
+			}elseif ($_POST['drp_action'] == '3') { /* create aggregate from aggregate */
+				$aggregate_name = $_REQUEST['aggregate_name'];
+				api_aggregate_create($aggregate_name, $selected_items);
+			}elseif ($_POST['drp_action'] == '10') { /* associate with aggregate */
+				api_aggregate_associate($selected_items);
+			}elseif ($_POST['drp_action'] == '11') { /* dis-associate with aggregate */
+				api_aggregate_disassociate($selected_items);
+			}elseif (preg_match('/^tr_([0-9]+)$/', $_POST['drp_action'], $matches)) { /* place on tree */
+				input_validate_input_number(get_request_var_post('tree_id'));
+				input_validate_input_number(get_request_var_post('tree_item_id'));
+				for ($i=0;($i<count($selected_items));$i++) {
+					api_tree_item_save(0, $_POST['tree_id'], TREE_ITEM_TYPE_GRAPH, $_POST['tree_item_id'], '', $selected_items[$i], read_graph_config_option('default_rra_id'), 0, 0, 0, false);
+				}
 			}
 		}
 

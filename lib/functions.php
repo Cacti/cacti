@@ -2903,6 +2903,28 @@ function sanitize_cdef($cdef) {
 	return str_replace($drop_char_match, $drop_char_replace, $cdef);
 }
 
+/** verifies all selected items are numeric to guard against injection
+ * @arg array $items   - an array of serialized items from a post
+ * @returns array      - the sanitized selected items array
+ */
+function sanitize_unserialize_selected_items($items) {
+	$items = unserialize(stripslashes($items));
+
+	if (is_array($items)) {
+		for ($i=0;($i<count($items));$i++) {
+			if (is_array($items[$i])) {
+				return false;
+			}elseif (!is_numeric($items[$i]) && ($items[$i] != '')) {
+				return false;
+			}
+		}
+	}else{
+		return false;
+	}
+
+	return $items;
+}
+
 function cacti_escapeshellcmd($string) {
 	global $config;
 

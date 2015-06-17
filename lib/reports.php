@@ -1409,73 +1409,70 @@ function reports_graphs_action_execute($action) {
 
 		/* loop through each of the graph_items selected on the previous page for skipped items */
 		if (isset($_POST['selected_items'])) {
-			$selected_items = unserialize(stripslashes($_POST['selected_items']));
-			$reports_id      = $_POST['reports_id'];
+			$selected_items = sanitize_unserialize_selected_items($_POST['selected_items']);
 
-			input_validate_input_number($reports_id);
-			input_validate_input_number($_POST['timespan']);
-			input_validate_input_number($_POST['alignment']);
+			if ($selected_items != false) {
+				$reports_id      = $_POST['reports_id'];
 
-			$report = db_fetch_row_prepared('SELECT * FROM reports WHERE id = ?',  array($reports_id));
+				input_validate_input_number($reports_id);
+				input_validate_input_number($_POST['timespan']);
+				input_validate_input_number($_POST['alignment']);
 
-			if (sizeof($selected_items)) {
-			foreach($selected_items as $local_graph_id) {
-				/* ================= input validation ================= */
-				input_validate_input_number($local_graph_id);
-				/* ==================================================== */
+				$report = db_fetch_row_prepared('SELECT * FROM reports WHERE id = ?',  array($reports_id));
 
-				/* see if the graph is already added */
-				$existing = db_fetch_cell_prepared('SELECT id
-					FROM reports_items
-					WHERE local_graph_id = ?
-					AND report_id = ?
-					AND timespan = ?', array($local_graph_id, $reports_id, $_POST['timespan']));
-
-				if (!$existing) {
-					$sequence = db_fetch_cell_prepared('SELECT max(sequence)
+				foreach($selected_items as $local_graph_id) {
+					/* see if the graph is already added */
+					$existing = db_fetch_cell_prepared('SELECT id
 						FROM reports_items
-						WHERE report_id = ?', array($reports_id));
-					$sequence++;
+						WHERE local_graph_id = ?
+						AND report_id = ?
+						AND timespan = ?', array($local_graph_id, $reports_id, $_POST['timespan']));
 
-					$graph_data = db_fetch_row_prepared('SELECT *
-						FROM graph_local
-						WHERE id = ?', array($local_graph_id));
+					if (!$existing) {
+						$sequence = db_fetch_cell_prepared('SELECT max(sequence)
+							FROM reports_items
+							WHERE report_id = ?', array($reports_id));
+						$sequence++;
 
-					if ($graph_data['host_id']) {
-						$host_template = db_fetch_cell_prepared('SELECT host_template_id
-							FROM host
-							WHERE id = ?', array($graph_data['host_id']));
+						$graph_data = db_fetch_row_prepared('SELECT *
+							FROM graph_local
+							WHERE id = ?', array($local_graph_id));
+
+						if ($graph_data['host_id']) {
+							$host_template = db_fetch_cell_prepared('SELECT host_template_id
+								FROM host
+								WHERE id = ?', array($graph_data['host_id']));
+						} else {
+							$host_template = 0;
+						}
+
+						$save['id']                = 0;
+						$save['report_id']         = $reports_id;
+						$save['item_type']         = REPORTS_ITEM_GRAPH;
+						$save['tree_id']           = 0;
+						$save['branch_id']         = 0;
+						$save['tree_cascade']      = '';
+						$save['graph_name_regexp'] = '';
+						$save['host_template_id']  = $host_template;
+						$save['host_id']           = $graph_data['host_id'];
+						$save['graph_template_id'] = $graph_data['graph_template_id'];
+						$save['local_graph_id']    = $local_graph_id;
+						$save['timespan']          = $_POST['timespan'];
+						$save['align']             = $_POST['alignment'];
+						$save['item_text']         = '';
+						$save['font_size']         = $report['font_size'];
+						$save['sequence']          = $sequence;
+
+						$id = sql_save($save, 'reports_items');
+						if ($id) {
+							$message .= "Created Report Graph Item '<i>" . get_graph_title($local_graph_id) . "</i>'<br>";
+						} else {
+							$message .= "Failed Adding Report Graph Item '<i>" . get_graph_title($local_graph_id) . "</i>' Already Exists<br>";
+						}
 					} else {
-						$host_template = 0;
+						$message .= "Skipped Report Graph Item '<i>" . get_graph_title($local_graph_id) . "</i>' Already Exists<br>";
 					}
-
-					$save['id']                = 0;
-					$save['report_id']         = $reports_id;
-					$save['item_type']         = REPORTS_ITEM_GRAPH;
-					$save['tree_id']           = 0;
-					$save['branch_id']         = 0;
-					$save['tree_cascade']      = '';
-					$save['graph_name_regexp'] = '';
-					$save['host_template_id']  = $host_template;
-					$save['host_id']           = $graph_data['host_id'];
-					$save['graph_template_id'] = $graph_data['graph_template_id'];
-					$save['local_graph_id']    = $local_graph_id;
-					$save['timespan']          = $_POST['timespan'];
-					$save['align']             = $_POST['alignment'];
-					$save['item_text']         = '';
-					$save['font_size']         = $report['font_size'];
-					$save['sequence']          = $sequence;
-
-					$id = sql_save($save, 'reports_items');
-					if ($id) {
-						$message .= "Created Report Graph Item '<i>" . get_graph_title($local_graph_id) . "</i>'<br>";
-					} else {
-						$message .= "Failed Adding Report Graph Item '<i>" . get_graph_title($local_graph_id) . "</i>' Already Exists<br>";
-					}
-				} else {
-					$message .= "Skipped Report Graph Item '<i>" . get_graph_title($local_graph_id) . "</i>' Already Exists<br>";
 				}
-			}
 			}
 		}
 

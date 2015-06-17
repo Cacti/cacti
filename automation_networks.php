@@ -207,47 +207,29 @@ function form_actions() {
 
 	/* if we are to save this form, instead of display it */
 	if (isset($_POST['selected_items'])) {
-		$selected_items = unserialize(stripslashes($_POST['selected_items']));
+		$selected_items = sanitize_unserialize_selected_items($_POST['selected_items']);
 
-		if ($_POST['drp_action'] == '1') { /* delete */
-			foreach($selected_items as $item) {
-				/* ================= input validation ================= */
-				input_validate_input_number($item);
-				/* ==================================================== */
-
-				api_networks_remove($item);
-			}
-		}elseif ($_POST['drp_action'] == '3') { /* enable */
-			foreach($selected_items as $item) {
-				/* ================= input validation ================= */
-				input_validate_input_number($item);
-				/* ==================================================== */
-
-				api_networks_enable($item);
-			}
-		}elseif ($_POST['drp_action'] == '2') { /* disable */
-			foreach($selected_items as $item) {
-				/* ================= input validation ================= */
-				input_validate_input_number($item);
-				/* ==================================================== */
-
-				api_networks_disable($item);
-			}
-		}elseif ($_POST['drp_action'] == '4') { /* run now */
-			foreach($selected_items as $item) {
-				/* ================= input validation ================= */
-				input_validate_input_number($item);
-				/* ==================================================== */
-
-				api_networks_discover($item);
-			}
-		}elseif ($_POST['drp_action'] == '5') { /* cancel */
-			foreach($selected_items as $item) {
-				/* ================= input validation ================= */
-				input_validate_input_number($item);
-				/* ==================================================== */
-
-				api_networks_cancel($item);
+		if ($selected_items != false) {
+			if ($_POST['drp_action'] == '1') { /* delete */
+				foreach($selected_items as $item) {
+					api_networks_remove($item);
+				}
+			}elseif ($_POST['drp_action'] == '3') { /* enable */
+				foreach($selected_items as $item) {
+					api_networks_enable($item);
+				}
+			}elseif ($_POST['drp_action'] == '2') { /* disable */
+				foreach($selected_items as $item) {
+					api_networks_disable($item);
+				}
+			}elseif ($_POST['drp_action'] == '4') { /* run now */
+				foreach($selected_items as $item) {
+					api_networks_discover($item);
+				}
+			}elseif ($_POST['drp_action'] == '5') { /* cancel */
+				foreach($selected_items as $item) {
+					api_networks_cancel($item);
+				}
 			}
 		}
 

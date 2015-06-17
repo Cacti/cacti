@@ -578,68 +578,54 @@ function reports_form_actions() {
 
 	/* if we are to save this form, instead of display it */
 	if (isset($_POST['selected_items'])) {
-		$selected_items = unserialize(stripslashes($_POST['selected_items']));
+		$selected_items = sanitize_unserialize_selected_items($_POST['selected_items']);
 
-		if ($_POST['drp_action'] == REPORTS_DELETE) { /* delete */
-			db_execute('DELETE FROM reports WHERE ' . array_to_sql_or($selected_items, 'id'));
-			db_execute('DELETE FROM reports_items WHERE ' . str_replace('id', 'report_id', array_to_sql_or($selected_items, 'id')));
-		}elseif ($_POST['drp_action'] == REPORTS_OWN) { /* take ownership */
-			for ($i=0;($i<count($selected_items));$i++) {
-				/* ================= input validation ================= */
-				input_validate_input_number($selected_items[$i]);
-				/* ==================================================== */
-				reports_log(__FUNCTION__ . ', takeown: ' . $selected_items[$i] . ' user: ' . $_SESSION['sess_user_id'], false, 'REPORTS TRACE', POLLER_VERBOSITY_MEDIUM);
-				db_execute('UPDATE reports SET user_id=' . $_SESSION['sess_user_id'] . ' WHERE id=' . $selected_items[$i]);
-			}
-		}elseif ($_POST['drp_action'] == REPORTS_DUPLICATE) { /* duplicate */
-			for ($i=0;($i<count($selected_items));$i++) {
-				/* ================= input validation ================= */
-				input_validate_input_number($selected_items[$i]);
-				/* ==================================================== */
-				reports_log(__FUNCTION__ . ', duplicate: ' . $selected_items[$i] . ' name: ' . $_POST['name_format'], false, 'REPORTS TRACE', POLLER_VERBOSITY_MEDIUM);
-				duplicate_report($selected_items[$i], $_POST['name_format']);
-			}
-		}elseif ($_POST['drp_action'] == REPORTS_ENABLE) { /* enable */
-			for ($i=0;($i<count($selected_items));$i++) {
-				/* ================= input validation ================= */
-				input_validate_input_number($selected_items[$i]);
-				/* ==================================================== */
-				reports_log(__FUNCTION__ . ', enable: ' . $selected_items[$i], false, 'REPORTS TRACE', POLLER_VERBOSITY_MEDIUM);
-				db_execute("UPDATE reports SET enabled='on' WHERE id=" . $selected_items[$i]);
-			}
-		}elseif ($_POST['drp_action'] == REPORTS_DISABLE) { /* disable */
-			for ($i=0;($i<count($selected_items));$i++) {
-				/* ================= input validation ================= */
-				input_validate_input_number($selected_items[$i]);
-				/* ==================================================== */
-				reports_log(__FUNCTION__ . ', disable: ' . $selected_items[$i], false, 'REPORTS TRACE', POLLER_VERBOSITY_MEDIUM);
-				db_execute("UPDATE reports SET enabled='' WHERE id=" . $selected_items[$i]);
-			}
-		}elseif ($_POST['drp_action'] == REPORTS_SEND_NOW) { /* send now */
-			include_once($config['base_path'] . '/lib/reports.php');
-			$message = '';
-
-			for ($i=0;($i<count($selected_items));$i++) {
-				/* ================= input validation ================= */
-				input_validate_input_number($selected_items[$i]);
-				/* ==================================================== */
-
-				$_SESSION['reports_message'] = '';
-				$_SESSION['reports_error']   = '';
-
-				reports_send($selected_items[$i]);
-
-				if (isset($_SESSION['reports_message']) && strlen($_SESSION['reports_message'])) {
-					$message .= (strlen($message) ? '<br>':'') . $_SESSION['reports_message'];
+		if ($selected_items != false) {
+			if ($_POST['drp_action'] == REPORTS_DELETE) { /* delete */
+				db_execute('DELETE FROM reports WHERE ' . array_to_sql_or($selected_items, 'id'));
+				db_execute('DELETE FROM reports_items WHERE ' . str_replace('id', 'report_id', array_to_sql_or($selected_items, 'id')));
+			}elseif ($_POST['drp_action'] == REPORTS_OWN) { /* take ownership */
+				for ($i=0;($i<count($selected_items));$i++) {
+					reports_log(__FUNCTION__ . ', takeown: ' . $selected_items[$i] . ' user: ' . $_SESSION['sess_user_id'], false, 'REPORTS TRACE', POLLER_VERBOSITY_MEDIUM);
+					db_execute('UPDATE reports SET user_id=' . $_SESSION['sess_user_id'] . ' WHERE id=' . $selected_items[$i]);
 				}
-				if (isset($_SESSION['reports_error']) && strlen($_SESSION['reports_error'])) {
-					$message .= (strlen($message) ? '<br>':'') . "<span style='color:red;'>" . $_SESSION['reports_error'] . '</span>';
+			}elseif ($_POST['drp_action'] == REPORTS_DUPLICATE) { /* duplicate */
+				for ($i=0;($i<count($selected_items));$i++) {
+					reports_log(__FUNCTION__ . ', duplicate: ' . $selected_items[$i] . ' name: ' . $_POST['name_format'], false, 'REPORTS TRACE', POLLER_VERBOSITY_MEDIUM);
+					duplicate_report($selected_items[$i], $_POST['name_format']);
 				}
-			}
+			}elseif ($_POST['drp_action'] == REPORTS_ENABLE) { /* enable */
+				for ($i=0;($i<count($selected_items));$i++) {
+					reports_log(__FUNCTION__ . ', enable: ' . $selected_items[$i], false, 'REPORTS TRACE', POLLER_VERBOSITY_MEDIUM);
+					db_execute("UPDATE reports SET enabled='on' WHERE id=" . $selected_items[$i]);
+				}
+			}elseif ($_POST['drp_action'] == REPORTS_DISABLE) { /* disable */
+				for ($i=0;($i<count($selected_items));$i++) {
+					reports_log(__FUNCTION__ . ', disable: ' . $selected_items[$i], false, 'REPORTS TRACE', POLLER_VERBOSITY_MEDIUM);
+					db_execute("UPDATE reports SET enabled='' WHERE id=" . $selected_items[$i]);
+				}
+			}elseif ($_POST['drp_action'] == REPORTS_SEND_NOW) { /* send now */
+				include_once($config['base_path'] . '/lib/reports.php');
+				$message = '';
 
-			if (strlen($message)) {
-				$_SESSION['reports_message'] = $message;
-				raise_message('reports_message');
+				for ($i=0;($i<count($selected_items));$i++) {
+					$_SESSION['reports_message'] = '';
+					$_SESSION['reports_error']   = '';
+
+					reports_send($selected_items[$i]);
+
+					if (isset($_SESSION['reports_message']) && strlen($_SESSION['reports_message'])) {
+						$message .= (strlen($message) ? '<br>':'') . $_SESSION['reports_message'];
+					}
+					if (isset($_SESSION['reports_error']) && strlen($_SESSION['reports_error'])) {
+						$message .= (strlen($message) ? '<br>':'') . "<span style='color:red;'>" . $_SESSION['reports_error'] . '</span>';
+					}
+				}
+
+				if (strlen($message)) {
+					$_SESSION['reports_message'] = $message;
+					raise_message('reports_message');
+				}
 			}
 		}
 
