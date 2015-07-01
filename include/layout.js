@@ -598,9 +598,11 @@ function ajaxAnchors() {
 	});
 
 	$(window).unbind('popstate').on('popstate', function(event) {
-		href = document.location.href;
-		if (href !== null) {
-			document.location = document.location.href;
+		if (window.history.state !== null) {
+			href = document.location.href;
+			if (href !== null) {
+				document.location = href;
+			}
 		}
 	});
 }
