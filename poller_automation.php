@@ -655,7 +655,7 @@ function markIPDone($ip_address, $network_id) {
 function updateDownDevice($network_id, $ip) {
 	$exists = db_fetch_cell_prepared('SELECT COUNT(*) FROM automation_devices WHERE ip = ? AND network_id = ?', array($ip, $network_id));
 	if ($exists) {
-		db_execute_prepared("UPDATE automation_devices SET up='0', time = ? WHERE ip = ? AND network_id = ?", array(time(), $ip, $network_id));
+		db_execute_prepared("UPDATE automation_devices SET up='0', WHERE ip = ? AND network_id = ?", array($ip, $network_id));
 	}
 }
 

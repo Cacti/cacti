@@ -429,11 +429,11 @@ $menu = array(
 		'color_templates.php' => 'Color'
 		),
 	'Automation' => array(
+		'automation_networks.php' => 'Networks',
 		'automation_devices.php' => 'Discovered Devices',
-		'automation_templates.php' => 'Template Rules',
+		'automation_templates.php' => 'Device Rules',
 		'automation_graph_rules.php' => 'Graph Rules',
 		'automation_tree_rules.php' => 'Tree Rules',
-		'automation_networks.php' => 'Networks',
 		'automation_snmp.php' => 'SNMP Options',
 		),
 	'Presets' => array(
