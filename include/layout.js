@@ -598,13 +598,13 @@ function ajaxAnchors() {
 	});
 
 	$(window).unbind('popstate').on('popstate', function(event) {
-		if (window.history.state !== null) {
+		if (event.state) {
 			href = document.location.href;
 			if (href !== null) {
 				document.location = href;
 			}
 		}
-	});
+	}, false);
 }
 
 function setupCollapsible() {
