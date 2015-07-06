@@ -2903,8 +2903,8 @@ function automation_host_new_graphs_save($selected_graphs, $host_id) {
 function automation_find_os($sysDescr, $sysObject, $sysName) {
 	$sql_where  = '';
 	$sql_where .= $sysDescr  != '' ? 'WHERE (sysDescr RLIKE "' . $sysDescr . '" OR sysDescr LIKE "%' . $sysDescr . '%")':'';
-	$sql_where .= $sysObject != '' ? ($sql_where != '' ? ' AND':'WHERE') . ' sysOid RLIKE "' . $sysObject . '" OR sysOid LIKE "%' . $sysObject . '%")':'';
-	$sql_where .= $sysName   != '' ? ($sql_where != '' ? ' AND':'WHERE') . ' sysName RLIKE "' . $sysName . '" OR sysName LIKE "%' . $sysName . '%")':'';
+	$sql_where .= $sysObject != '' ? ($sql_where != '' ? ' AND':'WHERE') . ' (sysOid RLIKE "' . $sysObject . '" OR sysOid LIKE "%' . $sysObject . '%")':'';
+	$sql_where .= $sysName   != '' ? ($sql_where != '' ? ' AND':'WHERE') . ' (sysName RLIKE "' . $sysName . '" OR sysName LIKE "%' . $sysName . '%")':'';
 
 	return db_fetch_row("SELECT * FROM automation_templates $sql_where ORDER BY sequence LIMIT 1");
 }
