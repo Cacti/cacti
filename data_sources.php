@@ -107,6 +107,7 @@ function form_save() {
 	if ((isset($_POST['save_component_data_source_new'])) && (!empty($_POST['data_template_id']))) {
 		/* ================= input validation ================= */
 		input_validate_input_number(get_request_var_post('host_id'));
+		input_validate_input_number(get_request_var_post('local_data_id'));
 		input_validate_input_number(get_request_var_post('data_template_id'));
 		/* ==================================================== */
 
@@ -180,9 +181,12 @@ function form_save() {
 	if ((isset($_POST['save_component_data_source'])) && (!is_error_message())) {
 		/* ================= input validation ================= */
 		input_validate_input_number(get_request_var_post('local_data_id'));
-		input_validate_input_number(get_request_var_post('current_rrd'));
 		input_validate_input_number(get_request_var_post('data_template_id'));
 		input_validate_input_number(get_request_var_post('host_id'));
+		input_validate_input_number(get_request_var_post('data_template_data_id'));
+		input_validate_input_number(get_request_var_post('local_data_template_data_id'));
+		input_validate_input_number(get_request_var_post('current_rrd'));
+
 		/* ==================================================== */
 
 		$save1['id'] = $_POST['local_data_id'];
@@ -192,7 +196,7 @@ function form_save() {
 		$save2['id'] = $_POST['data_template_data_id'];
 		$save2['local_data_template_data_id'] = $_POST['local_data_template_data_id'];
 		$save2['data_template_id'] = $_POST['data_template_id'];
-		$save2['data_input_id'] = form_input_validate($_POST['data_input_id'], 'data_input_id', '', true, 3);
+		$save2['data_input_id'] = form_input_validate($_POST['data_input_id'], 'data_input_id', '^[0-9]+$', true, 3);
 		$save2['name'] = form_input_validate($_POST['name'], 'name', '', false, 3);
 		$save2['data_source_path'] = form_input_validate($_POST['data_source_path'], 'data_source_path', '', true, 3);
 		$save2['active'] = form_input_validate((isset($_POST['active']) ? $_POST['active'] : ''), 'active', '', true, 3);
@@ -238,7 +242,7 @@ function form_save() {
 					$save3['rrd_maximum'] = form_input_validate($_POST["rrd_maximum$name_modifier"], "rrd_maximum$name_modifier", "^(-?([0-9]+(\.[0-9]*)?|[0-9]*\.[0-9]+)([eE][+\-]?[0-9]+)?)|U$", false, 3);
 					$save3['rrd_minimum'] = form_input_validate($_POST["rrd_minimum$name_modifier"], "rrd_minimum$name_modifier", "^(-?([0-9]+(\.[0-9]*)?|[0-9]*\.[0-9]+)([eE][+\-]?[0-9]+)?)|U$", false, 3);
 					$save3['rrd_heartbeat'] = form_input_validate($_POST["rrd_heartbeat$name_modifier"], "rrd_heartbeat$name_modifier", '^[0-9]+$', false, 3);
-					$save3['data_source_type_id'] = $_POST["data_source_type_id$name_modifier"];
+					$save3['data_source_type_id'] = form_input_validate($_POST["data_source_type_id$name_modifier"], "data_source_type_id$name_modifier", '^[0-9]+$', false, 3);
 					$save3['data_source_name'] = form_input_validate($_POST["data_source_name$name_modifier"], "data_source_name$name_modifier", '^[a-zA-Z0-9_-]{1,19}$', false, 3);
 					$save3['data_input_field_id'] = form_input_validate((isset($_POST["data_input_field_id$name_modifier"]) ? $_POST["data_input_field_id$name_modifier"] : '0'), "data_input_field_id$name_modifier", '', true, 3);
 

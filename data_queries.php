@@ -112,6 +112,9 @@ switch ($_REQUEST['action']) {
 
 function form_save() {
 	if (isset($_POST['save_component_snmp_query'])) {
+		input_validate_input_number(get_request_var_post('id'));
+		input_validate_input_number(get_request_var_post('data_input_id'));
+
 		$save['id'] = $_POST['id'];
 		$save['hash'] = get_hash_data_query($_POST['id']);
 		$save['name'] = form_input_validate($_POST['name'], 'name', '', false, 3);
@@ -133,6 +136,8 @@ function form_save() {
 	}elseif (isset($_POST['save_component_snmp_query_item'])) {
 		/* ================= input validation ================= */
 		input_validate_input_number(get_request_var_post('id'));
+		input_validate_input_number(get_request_var_post('snmp_query_id'));
+		input_validate_input_number(get_request_var_post('graph_template_id'));
 		/* ==================================================== */
 
 		$redirect_back = false;
@@ -163,10 +168,19 @@ function form_save() {
 					if (preg_match('/^dsdt_([0-9]+)_([0-9]+)_check/i', $var)) {
 						$data_template_id = preg_replace('/^dsdt_([0-9]+)_([0-9]+).+/', "\\1", $var);
 						$data_template_rrd_id = preg_replace('/^dsdt_([0-9]+)_([0-9]+).+/', "\\2", $var);
+						/* ================= input validation ================= */
+						input_validate_input_number($data_template_id);
+						input_validate_input_number($data_template_rrd_id);
+						/* ==================================================== */
 
 						db_execute_prepared('REPLACE INTO snmp_query_graph_rrd (snmp_query_graph_id, data_template_id, data_template_rrd_id, snmp_field_name) VALUES (?, ?, ?, ?)', array($snmp_query_graph_id, $data_template_id, $data_template_rrd_id, $_POST{'dsdt_' . $data_template_id . '_' . $data_template_rrd_id . '_snmp_field_output'}));
 					}elseif ((preg_match('/^svds_([0-9]+)_x/i', $var, $matches)) && (!empty($_POST{'svds_' . $matches[1] . '_text'})) && (!empty($_POST{'svds_' . $matches[1] . '_field'}))) {
 						/* suggested values -- data templates */
+
+						/* ================= input validation ================= */
+						input_validate_input_number($matches[1]);
+						/* ==================================================== */
+
 						$sequence = get_sequence(0, 'sequence', 'snmp_query_graph_rrd_sv', 'snmp_query_graph_id=' . $_POST['id']  . ' AND data_template_id=' . $matches[1] . " AND field_name='" . $_POST{'svds_' . $matches[1] . '_field'} . "'");
 						$hash = get_hash_data_query(0, 'data_query_sv_data_source');
 						db_execute_prepared('INSERT INTO snmp_query_graph_rrd_sv (hash, snmp_query_graph_id, data_template_id, sequence, field_name, text) VALUES (?, ?, ?, ?, ?, ?)', array($hash, $_POST['id'], $matches[1], $sequence, $_POST{'svds_' . $matches[1] . '_field'}, $_POST{'svds_' . $matches[1] . '_text'}));

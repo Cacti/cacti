@@ -76,6 +76,7 @@ switch ($_REQUEST['action']) {
 
 function form_save() {
 	/* ================= input validation ================= */
+	input_validate_input_number(get_request_var_post('id'));
 	input_validate_input_number(get_request_var_post('host_template_id'));
 	input_validate_input_number(get_request_var_post('snmp_query_id'));
 	input_validate_input_number(get_request_var_post('graph_template_id'));

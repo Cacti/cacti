@@ -88,11 +88,16 @@ switch ($_REQUEST['action']) {
 function form_save() {
 
 	// sanitize ids
-	if (isset($_POST["graph_template_id"]) && ! is_numeric($_POST["graph_template_id"])) {
-		$_POST["graph_template_id"] = 0;
+	if (isset($_POST['graph_template_id']) && ! is_numeric($_POST['graph_template_id'])) {
+		$_POST['graph_template_id'] = 0;
 	}
 
 	if (isset($_POST['save_component_template'])) {
+		/* ================= input validation ================= */
+		input_validate_input_number(get_request_var_post('graph_template_id'));
+		input_validate_input_number(get_request_var_post('graph_template_graph_id'));
+		/* ==================================================== */
+
 		$save1['id'] = $_POST['graph_template_id'];
 		$save1['hash'] = get_hash_graph_template($_POST['graph_template_id']);
 		$save1['name'] = form_input_validate($_POST['name'], 'name', '', false, 3);
@@ -101,7 +106,7 @@ function form_save() {
 		$save2['local_graph_template_graph_id'] = 0;
 		$save2['local_graph_id'] = 0;
 		$save2['t_image_format_id'] = (isset($_POST['t_image_format_id']) ? $_POST['t_image_format_id'] : '');
-		$save2['image_format_id'] = form_input_validate($_POST['image_format_id'], 'image_format_id', '', true, 3);
+		$save2['image_format_id'] = form_input_validate($_POST['image_format_id'], 'image_format_id', '^[0-9]+$', true, 3);
 		$save2['t_title'] = form_input_validate((isset($_POST['t_title']) ? $_POST['t_title'] : ''), 't_title', '', true, 3);
 		$save2['title'] = form_input_validate($_POST['title'], 'title', '', (isset($_POST['t_title']) ? true : false), 3);
 		$save2['t_height'] = form_input_validate((isset($_POST['t_height']) ? $_POST['t_height'] : ''), 't_height', '', true, 3);

@@ -267,7 +267,7 @@ function form_actions() {
 			/* ==================================================== */
 
 			if (get_request_var_post('drp_action') != '2') {
-				$user_list .= '<li>' . db_fetch_cell_prepared('SELECT username FROM user_auth WHERE id = ?', array($matches[1])) . '</li>';
+				$user_list .= '<li>' . htmlspecialchars(db_fetch_cell_prepared('SELECT username FROM user_auth WHERE id = ?', array($matches[1]))) . '</li>';
 			}
 			$user_array[$i] = $matches[1];
 
@@ -462,6 +462,10 @@ function form_save() {
 		/* ================= input validation ================= */
 		input_validate_input_number(get_request_var_post('id'));
 		input_validate_input_number(get_request_var_post('realm'));
+		input_validate_input_number(get_request_var_post('policy_hosts'));
+		input_validate_input_number(get_request_var_post('policy_graphs'));
+		input_validate_input_number(get_request_var_post('policy_trees'));
+		input_validate_input_number(get_request_var_post('policy_graph_templates'));
 		/* ==================================================== */
 
 		if ((get_request_var_post('password') == '') && (get_request_var_post('password_confirm') == '')) {

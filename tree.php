@@ -268,6 +268,10 @@ function form_save() {
 	}
 
 	if (isset($_POST['save_component_tree'])) {
+		/* ================= input validation ================= */
+		input_validate_input_number(get_request_var_post('id'));
+		/* ==================================================== */
+
 		if (empty($_POST['id'])) {
 			$header = true;
 		}else{

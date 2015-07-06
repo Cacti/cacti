@@ -85,6 +85,8 @@ function form_save() {
 		/* ================= input validation ================= */
 		input_validate_input_number(get_request_var_post('data_input_id'));
 		input_validate_input_number(get_request_var_post('data_template_id'));
+		input_validate_input_number(get_request_var_post('data_template_data_id'));
+		input_validate_input_number(get_request_var_post('data_template_rrd_id'));
 		/* ==================================================== */
 
 		/* save: data_template */
@@ -97,7 +99,7 @@ function form_save() {
 		$save2['local_data_template_data_id'] = 0;
 		$save2['local_data_id'] = 0;
 
-		$save2['data_input_id'] = form_input_validate($_POST['data_input_id'], 'data_input_id', '', true, 3);
+		$save2['data_input_id'] = form_input_validate($_POST['data_input_id'], 'data_input_id', '^[0-9]+$', true, 3);
 		$save2['t_name'] = form_input_validate((isset($_POST['t_name']) ? $_POST['t_name'] : ''), 't_name', '', true, 3);
 		$save2['name'] = form_input_validate($_POST['name'], 'name', '', (isset($_POST['t_name']) ? true : false), 3);
 		$save2['t_active'] = form_input_validate((isset($_POST['t_active']) ? $_POST['t_active'] : ''), 't_active', '', true, 3);
@@ -119,7 +121,7 @@ function form_save() {
 		$save3['t_rrd_heartbeat'] = form_input_validate((isset($_POST['t_rrd_heartbeat']) ? $_POST['t_rrd_heartbeat'] : ''), 't_rrd_heartbeat', '', true, 3);
 		$save3['rrd_heartbeat'] = form_input_validate($_POST['rrd_heartbeat'], 'rrd_heartbeat', '^[0-9]+$', (isset($_POST['t_rrd_heartbeat']) ? true : false), 3);
 		$save3['t_data_source_type_id'] = form_input_validate((isset($_POST['t_data_source_type_id']) ? $_POST['t_data_source_type_id'] : ''), 't_data_source_type_id', '', true, 3);
-		$save3['data_source_type_id'] = form_input_validate($_POST['data_source_type_id'], 'data_source_type_id', '', true, 3);
+		$save3['data_source_type_id'] = form_input_validate($_POST['data_source_type_id'], 'data_source_type_id', '^[0-9]+$', true, 3);
 		$save3['t_data_source_name'] = form_input_validate((isset($_POST['t_data_source_name']) ? $_POST['t_data_source_name'] : ''), 't_data_source_name', '', true, 3);
 		$save3['data_source_name'] = form_input_validate($_POST['data_source_name'], 'data_source_name', '^[a-zA-Z0-9_]{1,19}$', (isset($_POST['t_data_source_name']) ? true : false), 3);
 		$save3['t_data_input_field_id'] = form_input_validate((isset($_POST['t_data_input_field_id']) ? $_POST['t_data_input_field_id'] : ''), 't_data_input_field_id', '', true, 3);

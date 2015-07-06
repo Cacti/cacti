@@ -59,6 +59,10 @@ switch ($_REQUEST['action']) {
 
 function form_save() {
 	if (isset($_POST['save_component_color'])) {
+		/* ================= input validation ================= */
+		input_validate_input_number(get_request_var_post('id'));
+		/* ==================================================== */
+
 		$save['id'] = $_POST['id'];
 		$save['hex'] = form_input_validate($_POST['hex'], 'hex', '^[a-fA-F0-9]+$', false, 3);
 

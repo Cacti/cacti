@@ -132,9 +132,19 @@ function add_tree_names_to_actions_array() {
    -------------------------- */
 
 function form_save() {
+	/* ================= input validation ================= */
+	input_validate_input_number(get_request_var_post('graph_template_id'));
+	input_validate_input_number(get_request_var_post('_graph_template_id'));
+	input_validate_input_number(get_request_var_post('local_graph_id'));
+	input_validate_input_number(get_request_var_post('host_id'));
+	input_validate_input_number(get_request_var_post('graph_template_graph_id'));
+	/* ==================================================== */
+
 	if ((isset($_POST['save_component_graph_new'])) && (!empty($_POST['graph_template_id']))) {
 		/* ================= input validation ================= */
 		input_validate_input_number(get_request_var_post('graph_template_id'));
+		input_validate_input_number(get_request_var_post('local_graph_id'));
+		input_validate_input_number(get_request_var_post('host_id'));
 		/* ==================================================== */
 
 		$save['id'] = $_POST['local_graph_id'];
@@ -153,6 +163,10 @@ function form_save() {
 		/* ================= input validation ================= */
 		input_validate_input_number(get_request_var_post('graph_template_id'));
 		input_validate_input_number(get_request_var_post('_graph_template_id'));
+		input_validate_input_number(get_request_var_post('local_graph_id'));
+		input_validate_input_number(get_request_var_post('host_id'));
+		input_validate_input_number(get_request_var_post('graph_template_graph_id'));
+		input_validate_input_number(get_request_var_post('local_graph_template_graph_id'));
 		/* ==================================================== */
 
 		$save1['id'] = $_POST['local_graph_id'];
@@ -162,7 +176,7 @@ function form_save() {
 		$save2['id'] = $_POST['graph_template_graph_id'];
 		$save2['local_graph_template_graph_id'] = $_POST['local_graph_template_graph_id'];
 		$save2['graph_template_id'] = $_POST['graph_template_id'];
-		$save2['image_format_id'] = form_input_validate($_POST['image_format_id'], 'image_format_id', '', true, 3);
+		$save2['image_format_id'] = form_input_validate($_POST['image_format_id'], 'image_format_id', '^[0-9]+$', true, 3);
 		$save2['title'] = form_input_validate($_POST['title'], 'title', '', false, 3);
 		$save2['height'] = form_input_validate($_POST['height'], 'height', '^[0-9]+$', false, 3);
 		$save2['width'] = form_input_validate($_POST['width'], 'width', '^[0-9]+$', false, 3);
@@ -491,11 +505,11 @@ function form_actions() {
 			} else {
 				api_plugin_hook_function('graphs_action_execute', $_POST['drp_action']);
 			}
-		}
 
-		/* update snmpcache */
-		snmpagent_graphs_action_bottom(array($_POST['drp_action'], $selected_items));
-		api_plugin_hook_function('graphs_action_bottom', array($_POST['drp_action'], $selected_items));
+			/* update snmpcache */
+			snmpagent_graphs_action_bottom(array($_POST['drp_action'], $selected_items));
+			api_plugin_hook_function('graphs_action_bottom', array($_POST['drp_action'], $selected_items));
+		}
 
 		header('Location: graphs.php');
 		exit;

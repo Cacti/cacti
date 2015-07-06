@@ -128,6 +128,12 @@ function form_save() {
 
 		header('Location: cdef.php?header=false&action=edit&id=' . (empty($cdef_id) ? $_POST['id'] : $cdef_id));
 	}elseif (isset($_POST['save_component_item'])) {
+		/* ================= input validation ================= */
+		input_validate_input_number(get_request_var_post('id'));
+		input_validate_input_number(get_request_var_post('cdef_id'));
+		input_validate_input_number(get_request_var_post('type'));
+		/* ==================================================== */
+
 		$sequence = get_sequence($_POST['id'], 'sequence', 'cdef_items', 'cdef_id=' . $_POST['cdef_id']);
 
 		$save['id']       = form_input_validate($_POST['id'], 'id', '^[0-9]+$', false, 3);

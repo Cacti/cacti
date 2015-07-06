@@ -62,6 +62,10 @@ switch ($_REQUEST['action']) {
 
 function form_save() {
 	if (isset($_POST['save_component_rra'])) {
+		/* ================= input validation ================= */
+		input_validate_input_number(get_request_var_post('id'));
+		/* ==================================================== */
+
 		$save['id'] = $_POST['id'];
 		$save['hash'] = get_hash_round_robin_archive($_POST['id']);
 		$save['name'] = form_input_validate($_POST['name'], 'name', '', false, 3);

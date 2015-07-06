@@ -85,7 +85,7 @@ function form_save() {
 		$save['hash'] = get_hash_data_input($_POST['id']);
 		$save['name'] = form_input_validate($_POST['name'], 'name', '', false, 3);
 		$save['input_string'] = form_input_validate($_POST['input_string'], 'input_string', '', true, 3);
-		$save['type_id'] = form_input_validate($_POST['type_id'], 'type_id', '', true, 3);
+		$save['type_id'] = form_input_validate($_POST['type_id'], 'type_id', '^[0-9]+$', true, 3);
 
 		if (!is_error_message()) {
 			$data_input_id = sql_save($save, 'data_input');
@@ -111,6 +111,7 @@ function form_save() {
 		/* ================= input validation ================= */
 		input_validate_input_number(get_request_var_post('id'));
 		input_validate_input_number(get_request_var_post('data_input_id'));
+		input_validate_input_number(get_request_var_post('sequence'));
 		input_validate_input_regex(get_request_var_post('input_output'), '^(in|out)$');
 		/* ==================================================== */
 
