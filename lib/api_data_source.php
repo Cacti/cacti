@@ -80,7 +80,7 @@ function api_data_source_remove_multi($local_data_ids) {
 	foreach ($local_data_ids_chunks as $ids_to_delete) {
 		$data_template_data_ids = db_fetch_assoc("SELECT id
 				FROM data_template_data
-				WHERE local_data_id IN ($ids_to_delete)");
+				WHERE local_data_id IN (" . implode(",", $ids_to_delete) . ")");
 
 		if (sizeof($data_template_data_ids)) {
 			$dtd_ids_to_delete = array();
