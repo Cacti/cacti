@@ -1027,6 +1027,8 @@ function host_edit() {
 		$i = 0;
 		if (sizeof($selected_graph_templates)) {
 			foreach ($selected_graph_templates as $item) {
+				$i++;
+
 				form_alternate_row("gt$i", true);
 
 				/* get status information for this graph template */
@@ -1044,10 +1046,10 @@ function host_edit() {
 					</td>
 				<?php
 				form_end_row();
-
-				$i++;
 			}
-		}else{ print "<tr class='tableRow'><td colspan='3'><em>No associated graph templates.</em></td></tr>"; }
+		}else{ 
+			print "<tr class='tableRow'><td colspan='3'><em>No associated graph templates.</em></td></tr>"; 
+		}
 
 		?>
 		<tr class='odd'>
@@ -1106,6 +1108,8 @@ function host_edit() {
 		$i = 0;
 		if (sizeof($selected_data_queries)) {
 			foreach ($selected_data_queries as $item) {
+				$i++;
+
 				form_alternate_row("dg$i", true);
 
 				/* get status information for this data query */
@@ -1133,10 +1137,10 @@ function host_edit() {
 					</td>
 				<?php
 				form_end_row();
-
-				$i++;
 			}
-		}else{ print "<tr class='tableRow'><td colspan='4'><em>No associated data queries.</em></td></tr>"; }
+		}else{ 
+			print "<tr class='tableRow'><td colspan='4'><em>No associated data queries.</em></td></tr>"; 
+		}
 
 		?>
 		<tr class='odd'>
