@@ -109,6 +109,9 @@ function grow_dhtml_trees() {
 	if ((!isset($_SESSION['sess_node_id']) && !isset($_REQUEST['tree_id']))) {
 		print "var node='tree_anchor-" . $default_tree_id . "';\n";
 		print "var reset=true;\n";
+	}elseif (isset($_REQUEST['nodeid']) && $_REQUEST['nodeid'] != '') {
+		print "var node='" . $_REQUEST['nodeid'] . "';\n";
+		print "var reset=false;\n";
 	}elseif (isset($_SESSION['sess_node_id'])) {
 		if ($_SESSION['sess_node_id'] == 'tbranch-0') {
 			if (isset($_SESSION['sess_tree_id'])) {
@@ -125,14 +128,14 @@ function grow_dhtml_trees() {
 	}elseif (isset($_REQUEST['tree_id'])) {
 		print "var node='tree_anchor-" . $_REQUEST['tree_id'] . "';\n";
 		print "var reset=false;\n";
-		if (isset($_REQUEST['leaf_id'])){
-			print "var leaf='".$_REQUEST['leaf_id']."';\n";
-		}else{
-			print "var leaf='';\n";
-		}
 	}else{
 		print "var node='';\n";
 		print "var reset=true;\n";
+	}
+	if (isset($_REQUEST['leaf_id'])) {
+		print "var leaf='" . $_REQUEST['leaf_id'] . "';\n";
+	}else{
+		print "var leaf='';\n";
 	}
 	?>
 
@@ -166,7 +169,7 @@ function grow_dhtml_trees() {
 
 					if (href.search('undefined') < 0) {
 						origHref = href;
-						href=href.replace('action=tree', 'action=tree_content');
+						href=href.replace('action=tree', 'action=tree_content').replace('leaf_id=&', 'leaf_id='+leaf+'&');
 						$.get(href, function(data) {
 							$('#main').html(data);
 							applySkin();
@@ -340,15 +343,15 @@ function draw_dhtml_tree_level_graphing($tree_id, $parent = 0) {
 								if ((($data_query['id'] == 0) && (sizeof($non_template_graphs))) ||
 									(($data_query['id'] > 0) && (sizeof($sort_field_data) > 0))) {
 									if ($data_query['name'] != 'Non Query Based') {
-										$dhtml_tree[] = "\t\t\t\t\t\t<li data-jstree='{ \"icon\" : \"" . $config['url_path'] . "images/server_dataquery.png\" }'><a href=\"" . htmlspecialchars('graph_view.php?action=tree&tree_id=' . $tree['id'] . '&leaf_id=' . $leaf['id'] . '&host_group_data=data_query:' . $data_query['id']) . '">' . htmlspecialchars($data_query['name']) . "</a>\n";
+										$dhtml_tree[] = "\t\t\t\t\t\t<li id='node" . $tree['id'] . '_' . $leaf['id'] . '_hgd_dq_' . $data_query['id'] . "' data-jstree='{ \"icon\" : \"" . $config['url_path'] . "images/server_dataquery.png\" }'><a class='treepick' href=\"" . htmlspecialchars('graph_view.php?action=tree&tree_id=' . $tree['id'] . '&leaf_id=' . $leaf['id'] . '&nodeid=node' . $tree['id'] . '_' . $leaf['id'] . '_hgd_dq_' . $data_query['id'] . '&host_group_data=data_query:' . $data_query['id']) . '">' . htmlspecialchars($data_query['name']) . "</a>\n";
 									}else{
-										$dhtml_tree[] = "\t\t\t\t\t\t<li data-jstree='{ \"icon\" : \"" . $config['url_path'] . "images/server_chart.png\" }'><a href=\"" . htmlspecialchars('graph_view.php?action=tree&tree_id=' . $tree['id'] . '&leaf_id=' . $leaf['id'] . '&host_group_data=data_query:' . $data_query['id']) . '">' . htmlspecialchars($data_query['name']) . "</a>\n";
+										$dhtml_tree[] = "\t\t\t\t\t\t<li id='node" . $tree['id'] . '_' . $leaf['id'] . '_hgd_dq_' . $data_query['id'] . "' data-jstree='{ \"icon\" : \"" . $config['url_path'] . "images/server_chart.png\" }'><a class='treepick' href=\"" . htmlspecialchars('graph_view.php?action=tree&tree_id=' . $tree['id'] . '&leaf_id=' . $leaf['id'] . '&nodeid=node'. $tree['id'] . '_' . $leaf['id'] . '_hgd_dq_' . $data_query['id'] . '&host_group_data=data_query:' . $data_query['id']) . '">' . htmlspecialchars($data_query['name']) . "</a>\n";
 									}
 	
 									if ($data_query['id'] > 0) {
 										$dhtml_tree[] = "\t\t\t\t\t\t\t<ul>\n";
 										while (list($snmp_index, $sort_field_value) = each($sort_field_data)) {
-											$dhtml_tree[] = "\t\t\t\t\t\t\t\t<li data-jstree='{ \"icon\" : \"" . $config['url_path'] . "images/server_chart_curve.png\" }'><a href=\"" . htmlspecialchars('graph_view.php?action=tree&tree_id=' . $tree['id'] . '&leaf_id=' . $leaf['id'] . '&host_group_data=data_query_index:' . $data_query['id'] . ':' . urlencode($snmp_index)) . '">' . htmlspecialchars($sort_field_value) . "</a></li>\n";
+											$dhtml_tree[] = "\t\t\t\t\t\t\t\t<li id='node" . $tree['id'] . '_' . $leaf['id'] . '_hgd_dq_' . $data_query['id'] . urlencode($snmp_index) . "' data-jstree='{ \"icon\" : \"" . $config['url_path'] . "images/server_chart_curve.png\" }'><a class='treepick' href=\"" . htmlspecialchars('graph_view.php?action=tree&tree_id=' . $tree['id'] . '&leaf_id=' . $leaf['id'] . '&nodeid=node' . $tree['id'] . '_' . $leaf['id'] . '_hgd_dq_' . $data_query['id'] . urlencode($snmp_index) . '&host_group_data=data_query_index:' . $data_query['id'] . ':' . urlencode($snmp_index)) . '">' . htmlspecialchars($sort_field_value) . "</a></li>\n";
 										}
 	
 										$dhtml_tree[] = "\t\t\t\t\t\t\t</ul>\n";
