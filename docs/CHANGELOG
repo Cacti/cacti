@@ -56,7 +56,7 @@ Cacti CHANGELOG
 
 0.8.8d
 -feature: Remove un-needed fonts and javascript files
--bug: Fixed SQL injection VN: JVN#78187936 / TN:JPCERT#98968540
+-bug: Fixed XSS VN: JVN#78187936 / TN:JPCERT#98968540
 -bug#0002261: PHP 5.4.0 added new error_reporting variable, causing cacti to show errors
 -bug#0002391: Odd Behaviour on ReIndex of Data Query Data
 -bug#0002393: Broken thumbnail images for graph templates
