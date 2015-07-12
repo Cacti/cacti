@@ -207,6 +207,8 @@ function grow_dhtml_trees() {
 						if (typeof window.history.pushState !== 'undefined') {
 							window.history.pushState({ page: origHref }, mytitle, origHref);
 						}
+
+				        window.scrollTo(0, 0);
 					});
 					node = data.node.id;
 				}
