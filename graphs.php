@@ -1175,7 +1175,7 @@ function graph_edit() {
 
 	if (!empty($_REQUEST['id'])) {
 		?>
-		<table style='width:100%;text-align:center;'>
+		<table style='width:100%;text-align:left;'>
 			<tr>
 				<td class="textInfo" colspan="2" valign="top">
 					<?php print htmlspecialchars(get_graph_title($_REQUEST['id']));?>
@@ -1216,10 +1216,10 @@ function graph_edit() {
 			'method' => 'drop_callback',
 			'friendly_name' => 'Device',
 			'description' => 'Choose the Device that this Graph belongs to.',
-			'sql' => "SELECT id,CONCAT_WS('',description,' (',hostname,')') as name FROM host ORDER BY description,hostname",
+			'sql' => "SELECT id, CONCAT_WS('',description,' (',hostname,')') as name FROM host ORDER BY name",
 			'action' => 'ajax_hosts_noany',
 			'id' => (isset($_REQUEST['host_id']) ? $_REQUEST['host_id'] : $host_id),
-			'value' => db_fetch_cell_prepared('SELECT id FROM host WHERE id = ?', (isset($_REQUEST['host_id']) ? array($_REQUEST['host_id']) : array($host_id))),
+			'value' => db_fetch_cell_prepared('SELECT CONCAT_WS("",description," (",hostname,")") FROM host WHERE id = ?', (isset($_REQUEST['host_id']) ? array($_REQUEST['host_id']) : array($host_id))),
 			),
 		'graph_template_graph_id' => array(
 			'method' => 'hidden',
