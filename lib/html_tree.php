@@ -136,6 +136,14 @@ function grow_dhtml_trees() {
 	}
 	?>
 
+	function resizeGraphContent() {
+		if ($('#navigation').hasScrollBar()) {
+			$('.cactiGraphContentArea').css('margin-left', parseInt($('.jstree').width()+28)+'px');
+		}else{
+			$('.cactiGraphContentArea').css('margin-left', parseInt($('.jstree').width()+10)+'px');
+		}
+	}
+
 	$(function () {
 		$('#jstree').each(function(data) {
 			var id=$(this).attr('id');
@@ -172,6 +180,15 @@ function grow_dhtml_trees() {
 				}
 				$('#navigation').show();
 				$('#navigation_right').show();
+			})
+			.on('changed.jstree', function(e, data) {
+				resizeGraphContent();
+			})
+			.on('open_node.jstree', function(e, data) {
+				resizeGraphContent();
+			})
+			.on('close_node.jstree', function(e, data) {
+				resizeGraphContent();
 			})
 			.on('activate_node.jstree', function(e, data) {
 				if (data.node.id) {
@@ -226,11 +243,9 @@ function grow_dhtml_trees() {
 			});
 		});
 
-		$('.jstree').css('overflow-y','initial').css('overflow-x', 'initial');
-		$('#navigation').resizable();
 		$(window).resize(function() {
-			height      = parseInt($(window).height()-$('.jstree').offset().top-10)+'px';
-			$('.jstree').css('overflow-y','initial').css('overflow-x', 'initial');
+			height = parseInt($(window).height()-$('.jstree').offset().top-10)+'px';
+			$('#navigation').height(height+'px');
 		});
 	});
 	</script>

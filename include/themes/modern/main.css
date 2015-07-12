@@ -19,6 +19,7 @@ table {
 
 td, th {
 	padding: 2px;
+	margin: 0px;
 }
 
 /* links */
@@ -96,7 +97,7 @@ input, select {
 	float:right;
 	position:absolute;
 	right:26px;
-	top:55px;
+	top:22px;
   	list-style: none;
 	text-align:right;
 	margin:0px;
@@ -228,12 +229,24 @@ input, select {
 
 .cactiPageHead {
 	background-color: #a9a9a9;
-	height:25px;
+	height:30px;
+	width:100%;
+	position:fixed;
+	padding-top:5px;
+	top:0px;
+	left:0px;
+	z-index:2;
 }
 
 .cactiGraphPageHeadBackdrop {
 	background: transparent url('./../../../images/cacti_backdrop2.gif') no-repeat center right;
 	padding-bottom: 0px;
+	float:right;
+	width:400px;
+	height:35px;
+	top:0px;
+	position:fixed;
+	right:0px;
 }
 
 .loginLogo {
@@ -244,6 +257,12 @@ input, select {
 .cactiConsolePageHeadBackdrop {
 	background: transparent url('./../../../images/cacti_backdrop.gif') no-repeat center right;
 	padding-bottom:0px;
+	float:right;
+	width:400px;
+	height:35px;
+	top:0px;
+	position:fixed;
+	right:0px;
 }
 
 .navigation {
@@ -255,7 +274,13 @@ input, select {
 }
 
 .breadCrumbBar {
-	height:5px;
+	height:18px;
+	width:100%;
+	position:fixed;
+	padding:4px;
+	top:30px;
+	left:0px;
+	z-index:2;
 	background: rgba(167,217,134,1);
 	background: -moz-linear-gradient(top, rgba(167,217,134,1) 0%, rgba(148,179,107,1) 100%);
 	background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(167,217,134,1)), color-stop(100%, rgba(148,179,107,1)));
@@ -286,6 +311,7 @@ ul#breadcrumbs {
 	display: block;
 	min-width: 15%;
 	max-width: 40%;
+	margin-right:10px;
 	float: right;
 	text-align: right;
 }
@@ -368,12 +394,31 @@ ul#breadcrumbs {
 	content: normal;
 }
 
+.cactiContent {
+	width: 100%;
+	vertical-align: top;
+	padding-top: 56px;
+}
+
 .cactiTreeNavigationArea {
 	background: #efefef url('./../../../images/shadow_gray.gif') repeat-x center top;
 	border-right: #aaaaaa 1px solid;
-	padding-left:5px;
-	padding-right:5px;
-	padding-top:10px;
+	padding-left: 5px;
+	padding-right: 5px;
+	padding-top: 10px;
+	display: none;
+	vertical-align: top;
+	position: fixed; 
+	left: 0px; 
+	top: 56px; 
+	z-index: 2; 
+	overflow: auto;
+}
+
+.jstree {
+	position:relative;
+	overflow:auto;
+	display:block;
 }
 
 .cactiConsoleNavigationArea {
@@ -383,6 +428,11 @@ ul#breadcrumbs {
 	padding-right:0px;
 	padding-top:5px;
 	vertical-align:top;
+	position: fixed; 
+	left: 0px; 
+	top: 56px; 
+	z-index: 2; 
+	overflow: initial;
 }
 
 .cactiLogo {
@@ -498,17 +548,31 @@ legend {
 
 .cactiGraphContentArea {
 	background: snow url('./../../../images/shadow.gif') repeat-x center top;
-	padding-top:10px;
+	padding-top: 10px;
 	padding-right: 5px;
 	padding-left: 5px;
+	display: none;
+	vertical-align: top;
 }
+
+.cactiGraphContentAreaPreview {
+	background: snow url('./../../../images/shadow.gif') repeat-x center top;
+	padding-top: 10px;
+	padding-right: 5px;
+	padding-left: 5px;
+	display: none;
+	vertical-align: top;
+}
+
 
 .cactiConsoleContentArea {
 	background: snow url('./../../../images/shadow.gif') repeat-x center top;
-	padding-top:10px;
+	padding-top: 10px;
 	padding-right: 5px;
 	padding-left: 5px;
-	vertical-align:top;
+	vertical-align: top;
+	display: none;
+	margin-left: 164px;
 }
 
 .hyperLink {
@@ -870,13 +934,32 @@ td.tab {
 	-moz-border-radius-topleft: 4px;
 }
 
-td#tabs {
-	padding-bottom:0px;
+div#tabs {
+	padding-bottom: 0px;
+	vertical-align: bottom;
+	position: fixed;
+	left: 5px;
+	top: 5px;
+	height: 30px;
 }
 
-td#gtabs {
-	padding-bottom:0px;
-	text-align:right;
+.cactiGraphHeaderBackground {
+	background: transparent url("./../../../images/cacti_backdrop2.gif") no-repeat scroll right center;
+	height: 35px;
+	width:500px;
+	float:right;
+	position:fixed;
+	top: 0px;
+	right: 0px;
+}
+
+div#gtabs {
+	padding-bottom: 0px;
+	vertical-align: bottom;
+	position:fixed;
+	right: 5px;
+	top: 5px;
+	height: 30px;
 }
 
 .tabs a, .maintabs a {
@@ -895,6 +978,7 @@ td#gtabs {
 	padding:5px 8px;
 	text-decoration:none;
 	font-size: 11px;
+	vertical-align:bottom;
 }
 
 .tabs a:hover, .maintabs a:hover {

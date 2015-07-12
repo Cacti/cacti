@@ -30,6 +30,7 @@ if ($oper_mode == OPER_MODE_RESKIN) {
 }
 
 $page_title = api_plugin_hook_function('page_title', draw_navigation_text('title'));
+$using_guest_account = false;
 
 //<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 ?>
@@ -63,60 +64,39 @@ $page_title = api_plugin_hook_function('page_title', draw_navigation_text('title
 	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/themes/<?php print read_config_option('selected_theme');?>/main.js'></script>
 	<?php include($config['base_path'] . '/include/global_session.php'); api_plugin_hook('page_head'); ?>
 </head>
-
-<?php if ($oper_mode == OPER_MODE_NATIVE) {?>
-<body class='cactiConsoleBody' <?php print api_plugin_hook_function('body_style', '');?>>
-<?php }else{?>
-<body class='cactiConsoleBody' <?php print api_plugin_hook_function('body_style', '');?>>
-<?php }?>
-
-<table style='width:100%;'>
-<?php if ($oper_mode == OPER_MODE_NATIVE) { ;?>
-	<tr class='cactiPageHead noprint'>
-		<td class='cactiConsolePageHeadBackdrop'>
-			<table style='width:100%;vertical-align:bottom;'>
-				<tr>
-					<td id='tabs'>
-						<?php html_show_tabs_left(true);?>
-					</td>
-				</tr>
-			</table>
-		</td>
-	</tr>
-</table>
-<table style='width:100%;'>
-	<tr class='breadCrumbBar noprint'>
-		<td>
-			<table style='width:100%;'>
-				<tr>
-					<td>
-						<div id='navBar' class='navBar'>
-							<?php echo draw_navigation_text();?>
-						</div>
-						<div class='scrollBar'></div>
-						<div class='infoBar'>
-							<?php echo draw_login_status();?>
-						</div>
-					</td>
-				</tr>
-			</table>
-		</td>
-	</tr>
-</table>
-<table style='width:100%;'>
-	<tr><?php if (isset($user_menu) && is_array($user_menu)) {?>
-		<td id='navigation' class='cactiConsoleNavigationArea' style='display:none;veritcal-align:top;width:200px;'>
-			<table>
-				<?php draw_menu($user_menu);?>
-				<tr>
-					<td class='cactiLogo' align='center'>
-						<a href='<?php echo $config['url_path']; ?>about.php'><img src='<?php echo $config['url_path']; ?>images/cacti_logo.gif' border='0'></a>
-					</td>
-				</tr>
-			</table>
-		</td><?php }?>
-		<td id='navigation_right' style='display:none;vertical-align:top;' class='cactiConsoleContentArea'><div style='display:none;' id='message_container'><?php display_output_messages();?></div><div style='position:relative;' id='main'>
-<?php }else{ ?>
-	<tr>
-		<td id='navigation_right' style='display:none;vertical-align:top;' class='cactiConsoleContentArea'><div style='display:none;' id='message_container'><?php display_output_messages();?></div><div style='position:relative;' id='main'>
+<body>
+<div id='cactiPageHead' class='cactiPageHead'>
+	<?php if ($oper_mode == OPER_MODE_NATIVE) { ;?>
+	<div id='tabs'><?php html_show_tabs_left(true);?></div>
+	<div class='cactiConsolePageHeadBackdrop'></div>
+</div>
+<div id='breadCrumbBar' class='breadCrumbBar'>
+	<div id='navBar' class='navBar'><?php echo draw_navigation_text();?></div>
+	<div class='scrollBar'></div>
+	<div class='infoBar'><?php echo draw_login_status($using_guest_account);?></div>
+</div>
+<div id='cactiContent' class='cactiContent'>
+	<?php if (isset($user_menu) && is_array($user_menu)) {?>
+	<div id='navigation' class='cactiConsoleNavigationArea'>
+		<table style='width:100%;'>
+			<?php draw_menu($user_menu);?>
+			<tr>
+				<td style='text-align:center;'>
+					<div class='cactiLogo' onClick='document.location="about.php";'></div>
+				</td>
+			</tr>
+		</table>
+	</div>
+	<div id='navigation_right' class='cactiConsoleContentArea'>
+		<div style='display:none;' id='message_container'><?php display_output_messages();?></div>
+		<div style='position:relative;' id='main'>
+	<?php } else { ?>
+	<div id='navigation_right' class='cactiConsoleContentArea' style='margin-left:0px;'>
+		<div style='display:none;' id='message_container'><?php display_output_messages();?></div>
+		<div style='position:relative;' id='main'>
+	<?php } ?>
+<?php } else { ?>
+	<div id='navigation_right' class='cactiConsoleContentArea'>
+		<div style='display:none;' id='message_container'><?php display_output_messages();?></div>
+		<div style='position:relative;' id='main'>
 <?php } ?>

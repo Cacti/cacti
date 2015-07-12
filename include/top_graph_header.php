@@ -60,6 +60,9 @@ if (isset($_REQUEST['action']) && $_REQUEST['action'] == 'zoom') {
 
 $page_title = api_plugin_hook_function('page_title', draw_navigation_text('title'));
 
+global $graph_views;
+load_current_session_value('action', 'sess_cacti_graph_action', $graph_views['2']);
+
 //<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 ?>
 <!DOCTYPE html>
@@ -95,60 +98,24 @@ $page_title = api_plugin_hook_function('page_title', draw_navigation_text('title
 	<script type='text/javascript' src='<?php echo $config['url_path'] . 'include/realtime.js';?>'></script>
 	<?php include($config['base_path'] . '/include/global_session.php'); api_plugin_hook('page_head'); ?>
 </head>
-
-<?php if ($oper_mode == OPER_MODE_NATIVE) {?>
-<body <?php print api_plugin_hook_function('body_style', '');?>>
-<?php }else{?>
-<body <?php print api_plugin_hook_function('body_style', '');?>>
-<?php }?>
-
-<table style='width:100%;'>
-<?php if ($oper_mode == OPER_MODE_NATIVE) { ;?>
-	<tr class='cactiPageHead noprint'>
-		<td class='cactiGraphPageHeadBackdrop'>
-			<table style='width:100%;vertical-align:bottom;'>
-				<tr>
-					<td id='tabs'>
-						<?php print html_show_tabs_left($show_console_tab); ?>
-					</td>
-					<td id='gtabs'>
-						<?php print html_graph_tabs_right($current_user);?>
-					</td>
-				</tr>
-			</table>
-		</td>
-	</tr>
-</table>
-<table style='width:100%;'>
-<?php } elseif ($oper_mode == OPER_MODE_NOTABS) { api_plugin_hook_function('print_top_header'); } ?>
-	<tr class='breadCrumbBar noprint'>
-		<td>
-			<table style='width:100%;'>
-				<tr>
-					<td>
-						<div id='navBar' class='navBar'>
-							<?php echo draw_navigation_text();?>
-						</div>
-						<div class='scrollBar'></div>
-						<div class='infoBar'>
-							<?php echo draw_login_status();?>
-						</div>
-					</td>
-				</tr>
-			</table>
-		</td>
-	</tr>
-</table>
-<table style='width:100%;'>
-	<?php
-
-	global $graph_views;
-	load_current_session_value('action', 'sess_cacti_graph_action', $graph_views['2']);
-	?>
-	<tr>
-		<?php if (basename($_SERVER['PHP_SELF']) == 'graph_view.php' && ($_REQUEST['action'] == 'tree' || (isset($_REQUEST['view_type']) && $_REQUEST['view_type'] == 'tree'))) { ?>
-		<td id='navigation' class='cactiTreeNavigationArea noprint' style='display:none;vertical-align:top;width:200px;'>
-			<?php grow_dhtml_trees();?>
-		</td>
-		<?php } ?>
-		<td id='navigation_right' class='cactiGraphContentArea' style='display:none;vertical-align:top;'><div id='message_container'><?php print display_output_messages();?></div><div style='position:static;' id='main'>
+<body>
+<div id='cactiPageHead' class='cactiPageHead'>
+	<?php if ($oper_mode == OPER_MODE_NATIVE) { ;?>
+	<div id='tabs'><?php html_show_tabs_left(true);?></div>
+	<div class='cactiGraphHeaderBackground'><div id='gtabs'><?php print html_graph_tabs_right($current_user);?></div></div>
+</div>
+<div id='breadCrumbBar' class='breadCrumbBar'>
+	<div id='navBar' class='navBar'><?php echo draw_navigation_text();?></div>
+	<div class='scrollBar'></div>
+	<div class='infoBar'><?php echo draw_login_status($using_guest_account);?></div>
+</div>
+<div id='cactiContent' class='cactiContent'>
+	<?php if (basename($_SERVER['PHP_SELF']) == 'graph_view.php' && ($_REQUEST['action'] == 'tree' || (isset($_REQUEST['view_type']) && $_REQUEST['view_type'] == 'tree'))) { ?>
+	<div id='navigation' class='cactiTreeNavigationArea'><?php grow_dhtml_trees();?></div>
+	<div id='navigation_right' class='cactiGraphContentArea'>
+	<?php }else{ ?>
+	<div id='navigation_right' class='cactiGraphContentAreaPreview'>
+	<?php } ?>
+		<div id='message_container'><?php print display_output_messages();?></div>
+		<div style='position:static;' id='main'>
+	<?php } ?>

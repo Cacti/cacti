@@ -1166,7 +1166,7 @@ function html_show_tabs_left($show_console_tab) {
 
 		print "<div class='maintabs'><nav><ul>\n";
 		foreach($tabs_left as $tab) {
-			print "<li><a class='" . (isset($tab['selected']) ? 'selected':'') . "' href='" . $tab['url'] . "'>" . $tab['title'] . "</a></li>\n";
+			print "<li><a class='lefttab " . (isset($tab['selected']) ? 'selected':'') . "' href='" . $tab['url'] . "'>" . $tab['title'] . "</a></li>\n";
 		}
 		print "</ul></nav></div>\n";
 	}
@@ -1177,7 +1177,7 @@ function html_graph_tabs_right($current_user) {
 
 	if (read_config_option("selected_theme") == 'classic') {
 		if (is_view_allowed('graph_settings')) {
-			print '<a href="' . $config['url_path'] . 'graph_settings.php"><img src="' . $config['url_path'] . 'images/tab_settings';
+			print '<a class="righttab" href="' . $config['url_path'] . 'graph_settings.php"><img src="' . $config['url_path'] . 'images/tab_settings';
 			if (basename($_SERVER["PHP_SELF"]) == "graph_settings.php") {
 				print "_down";
 			}
@@ -1185,21 +1185,21 @@ function html_graph_tabs_right($current_user) {
 		}?>&nbsp;&nbsp;<?php
 
 		if (is_view_allowed('show_tree')) {
-			?><a href="<?php print htmlspecialchars($config['url_path'] . "graph_view.php?action=tree");?>"><img src="<?php echo $config['url_path']; ?>images/tab_mode_tree<?php
+			?><a class='righttab' href="<?php print htmlspecialchars($config['url_path'] . "graph_view.php?action=tree");?>"><img src="<?php echo $config['url_path']; ?>images/tab_mode_tree<?php
 			if (isset($_REQUEST["action"]) && $_REQUEST["action"] == "tree") {
 				print "_down";
 			}?>.gif" border="0" title="Tree View" alt="Tree View" align="absmiddle"></a><?php
 		}?><?php
 
 		if (is_view_allowed('show_list')) {
-			?><a href="<?php print htmlspecialchars($config['url_path'] . "graph_view.php?action=list");?>"><img src="<?php echo $config['url_path']; ?>images/tab_mode_list<?php
+			?><a class='righttab' href="<?php print htmlspecialchars($config['url_path'] . "graph_view.php?action=list");?>"><img src="<?php echo $config['url_path']; ?>images/tab_mode_list<?php
 			if (isset($_REQUEST["action"]) && $_REQUEST["action"] == "list") {
 				print "_down";
 			}?>.gif" border="0" title="List View" alt="List View" align="absmiddle"></a><?php
 		}?><?php
 
 		if (is_view_allowed('show_preview')) {
-			?><a href="<?php print htmlspecialchars($config['url_path'] . "graph_view.php?action=preview");?>"><img src="<?php echo $config['url_path']; ?>images/tab_mode_preview<?php
+			?><a class='righttab' href="<?php print htmlspecialchars($config['url_path'] . "graph_view.php?action=preview");?>"><img src="<?php echo $config['url_path']; ?>images/tab_mode_preview<?php
 			if (isset($_REQUEST["action"]) && $_REQUEST["action"] == "preview") {
 				print "_down";
 			}?>.gif" border="0" title="Preview View" alt="Preview View" align="absmiddle"></a><?php
@@ -1262,9 +1262,9 @@ function html_graph_tabs_right($current_user) {
 			case 'settings':
 				if (is_view_allowed('graph_settings') == true) {
 					if (isset($tab['image']) && $tab['image'] != '') {
-						print "<li><a title='" . $tab['title'] . "' class='" . (isset($tab['selected']) ? 'selected':'') . "' href='" . $tab['url'] . "'><img src='" . $config['url_path'] . $tab['image'] . "' alt='' style='vertical-align:bottom;'></a></li>\n";
+						print "<li><a title='" . $tab['title'] . "' class='righttab " . (isset($tab['selected']) ? 'selected':'') . "' href='" . $tab['url'] . "'><img src='" . $config['url_path'] . $tab['image'] . "' alt='' style='vertical-align:bottom;'></a></li>\n";
 					}else{
-						print "<li><a title='" . $tab['title'] . "' class='" . (isset($tab['selected']) ? 'selected':'') . "' href='" . $tab['url'] . "'>" . $tab['title'] . "</a></li>\n";
+						print "<li><a title='" . $tab['title'] . "' class='righttab " . (isset($tab['selected']) ? 'selected':'') . "' href='" . $tab['url'] . "'>" . $tab['title'] . "</a></li>\n";
 					}
 					break;
 				}
@@ -1273,9 +1273,9 @@ function html_graph_tabs_right($current_user) {
 			case 'tree':
 				if (is_view_allowed('show_tree')) {
 					if (isset($tab['image']) && $tab['image'] != '') {
-						print "<li><a title='" . $tab['title'] . "' class='" . (isset($tab['selected']) ? 'selected':'') . "' href='" . $tab['url'] . "'><img src='" . $config['url_path'] . $tab['image'] . "' alt='' style='vertical-align:bottom;'></a></li>\n";
+						print "<li><a title='" . $tab['title'] . "' class='righttab " . (isset($tab['selected']) ? 'selected':'') . "' href='" . $tab['url'] . "'><img src='" . $config['url_path'] . $tab['image'] . "' alt='' style='vertical-align:bottom;'></a></li>\n";
 					}else{
-						print "<li><a title='" . $tab['title'] . "' class='" . (isset($tab['selected']) ? 'selected':'') . "' href='" . $tab['url'] . "'>" . $tab['title'] . "</a></li>\n";
+						print "<li><a title='" . $tab['title'] . "' class='righttab " . (isset($tab['selected']) ? 'selected':'') . "' href='" . $tab['url'] . "'>" . $tab['title'] . "</a></li>\n";
 					}
 					break;
 				}
@@ -1284,9 +1284,9 @@ function html_graph_tabs_right($current_user) {
 			case 'list':
 				if (is_view_allowed('show_list')) {
 					if (isset($tab['image']) && $tab['image'] != '') {
-						print "<li><a title='" . $tab['title'] . "' class='" . (isset($tab['selected']) ? 'selected':'') . "' href='" . $tab['url'] . "'><img src='" . $config['url_path'] . $tab['image'] . "' alt='' style='vertical-align:bottom;'></a></li>\n";
+						print "<li><a title='" . $tab['title'] . "' class='righttab " . (isset($tab['selected']) ? 'selected':'') . "' href='" . $tab['url'] . "'><img src='" . $config['url_path'] . $tab['image'] . "' alt='' style='vertical-align:bottom;'></a></li>\n";
 					}else{
-						print "<li><a title='" . $tab['title'] . "' class='" . (isset($tab['selected']) ? 'selected':'') . "' href='" . $tab['url'] . "'>" . $tab['title'] . "</a></li>\n";
+						print "<li><a title='" . $tab['title'] . "' class='righttab " . (isset($tab['selected']) ? 'selected':'') . "' href='" . $tab['url'] . "'>" . $tab['title'] . "</a></li>\n";
 					}
 					break;
 				}
@@ -1295,9 +1295,9 @@ function html_graph_tabs_right($current_user) {
 			case 'preview':
 				if (is_view_allowed('show_preview')) {
 					if (isset($tab['image']) && $tab['image'] != '') {
-						print "<li><a title='" . $tab['title'] . "' class='" . (isset($tab['selected']) ? 'selected':'') . "' href='" . $tab['url'] . "'><img src='" . $config['url_path'] . $tab['image'] . "' alt='' style='vertical-align:bottom;'></a></li>\n";
+						print "<li><a title='" . $tab['title'] . "' class='righttab " . (isset($tab['selected']) ? 'selected':'') . "' href='" . $tab['url'] . "'><img src='" . $config['url_path'] . $tab['image'] . "' alt='' style='vertical-align:bottom;'></a></li>\n";
 					}else{
-						print "<li><a title='" . $tab['title'] . "' class='" . (isset($tab['selected']) ? 'selected':'') . "' href='" . $tab['url'] . "'>" . $tab['title'] . "</a></li>\n";
+						print "<li><a title='" . $tab['title'] . "' class='righttab " . (isset($tab['selected']) ? 'selected':'') . "' href='" . $tab['url'] . "'>" . $tab['title'] . "</a></li>\n";
 					}
 					break;
 				}

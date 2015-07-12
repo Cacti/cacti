@@ -233,6 +233,13 @@ $.fn.serializeObject = function() {
 	return objectData;
 };
 
+/** Mini jquery plugin to determine if an element has a scrollbar present */
+(function($) {
+    $.fn.hasScrollBar = function() {
+        return this.get(0).scrollHeight > this.outerHeight();
+    }
+})(jQuery);
+
 /** Mini jquery plugin to create a bind to show/hide events */
 (function ($) {
 	$.each(['show', 'hide'], function (i, ev) {
@@ -585,6 +592,18 @@ function ajaxAnchors() {
 			$(this).addClass('selected');
 		}
 
+		/* update menu selection */
+		if ($(this).hasClass('lefttab')) {
+			$('.lefttab').removeClass('selected');
+			$(this).addClass('selected');
+		}
+
+		/* update menu selection */
+		if ($(this).hasClass('righttab')) {
+			$('.righttab').removeClass('selected');
+			$(this).addClass('selected');
+		}
+
 		/* execute an ajax request to load the data */
 		href = $(this).attr('href');
 
@@ -843,7 +862,7 @@ function pulsateStop(element) {
 
 $(function() {
 	$('body').css('height', $(window).height());
-	$('#navigation').css('height', ($(window).height())+'px').css('overflow-y', 'initial').css('overflow-x', 'initial');
+	$('#navigation').css('height', ($(window).height())+'px');
 
 	$(window).resize(function(event) {
 		$('body').css('height', $(window).height());
