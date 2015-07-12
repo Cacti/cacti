@@ -33,6 +33,10 @@ switch ($_REQUEST['action']) {
 		form_save();
 
 		break;
+	case 'logout_everywhere':
+		api_auth_logout_everywhere();
+
+		break;
 	default:
 		// We must exempt ourselves from the page refresh, or else the settings page could update while the user is making changes
 		$_SESSION['custom'] = 1;
@@ -49,6 +53,14 @@ switch ($_REQUEST['action']) {
 /* --------------------------
     The Save Function
    -------------------------- */
+
+function api_auth_logout_everywhere() {
+	$user = $_SESSION['sess_user_id'];
+
+	if (!empty($user)) {
+		db_execute_prepared('DELETE FROM user_auth_cache WHERE user_id=?', array($user));
+	}
+}
 
 function form_save() {
 	global $settings_graphs;
@@ -175,6 +187,18 @@ function settings() {
 			'on_click' => 'clearPrivateData()'
 		)
 	);
+
+	if (read_config_option('auth_cache_enabled') == 'on') {
+		$fields_user += array(
+			'logout_everywhere' => array(
+				'method' => 'button',
+				'friendly_name' => 'Logout Everywhere',
+				'description' => 'Clear all your Login Session Tokens.',
+				'value' => 'Logout Everywhere',
+				'on_click' => 'logoutEverywhere()'
+	        )
+		);
+	}
 	
 	draw_edit_form(
 		array(
@@ -257,6 +281,27 @@ function settings() {
 		});
 
 		$('#cleared').dialog('open');
+	}
+
+	function logoutEverywhere() {
+		$.get('auth_profile.php?action=logout_everywhere', function(data) {
+			$('body').append('<div style="display:none;" id="cleared" title="User Sessions Cleared"><p>All your login sessions have been cleared.</p></div>');
+
+			$('#cleared').dialog({
+				modal: true,
+				resizable: false,
+				draggable: false,
+				height:140,
+				buttons: {
+					Ok: function() {
+						$(this).dialog('close');
+						$('#cleared').remove();
+					}
+				}
+			});
+
+			$('#cleared').dialog('open');
+		});
 	}
 
 	function graphSettings() {
