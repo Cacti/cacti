@@ -412,12 +412,11 @@ ul#breadcrumbs {
 	left: 0px; 
 	top: 56px; 
 	z-index: 2; 
-	overflow: auto;
+	overflow-y: auto;
 }
 
 .jstree {
 	position:relative;
-	overflow:auto;
 	display:block;
 }
 

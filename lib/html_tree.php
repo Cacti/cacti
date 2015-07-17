@@ -140,11 +140,7 @@ function grow_dhtml_trees() {
 	?>
 
 	function resizeGraphContent() {
-		if ($('#navigation').hasScrollBar()) {
-			$('.cactiGraphContentArea').css('margin-left', parseInt($('.jstree').width()+28)+'px');
-		}else{
-			$('.cactiGraphContentArea').css('margin-left', parseInt($('.jstree').width()+10)+'px');
-		}
+		$('.cactiGraphContentArea').css('margin-left', parseInt($('#navigation').width()+10)+'px');
 	}
 
 	$(function () {
@@ -212,6 +208,7 @@ function grow_dhtml_trees() {
 						}
 
 				        window.scrollTo(0, 0);
+						resizeGraphContent();
 					});
 					node = data.node.id;
 				}
