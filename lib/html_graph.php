@@ -47,7 +47,18 @@ function html_graph_validate_preview_request_vars() {
 	}
 
 	/* if the user pushed the 'clear' button */
-	if (isset($_REQUEST['clear']) || isset($_REQUEST['style'])) {
+	if (isset($_REQUEST['reset'])) {
+		kill_session_var('sess_graph_view_current_page');
+		kill_session_var('sess_graph_view_filter');
+		kill_session_var('sess_graph_view_graph_template');
+		kill_session_var('sess_graph_view_host');
+		kill_session_var('sess_graph_view_graphs');
+		kill_session_var('sess_graph_view_columns');
+		kill_session_var('sess_graph_view_thumbnails');
+		kill_session_var('sess_graph_view_graph_list');
+		kill_session_var('sess_graph_view_graph_add');
+		kill_session_var('sess_graph_view_graph_remove');
+	}elseif (isset($_REQUEST['clear']) || isset($_REQUEST['style'])) {
 		kill_session_var('sess_graph_view_current_page');
 		kill_session_var('sess_graph_view_filter');
 		kill_session_var('sess_graph_view_graph_template');
