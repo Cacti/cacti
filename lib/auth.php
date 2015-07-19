@@ -959,12 +959,12 @@ function get_allowed_devices($sql_where = '', $order_by = 'description', $limit 
 		$order_by = "ORDER BY $order_by";
 	}
 
-	if ($host_id > 0) {
-		$sql_where .= (strlen($sql_where) ? ' AND ':' ') . " gl.host_id=$host_id";
-	}
-
 	if (strlen($sql_where)) {
 		$sql_where = "WHERE $sql_where";
+	}
+
+	if ($host_id > 0) {
+		$sql_where .= (strlen($sql_where) ? ' AND ':' ') . " gl.host_id=$host_id";
 	}
 
 	$i          = 0;
@@ -1033,6 +1033,8 @@ function get_allowed_devices($sql_where = '', $order_by = 'description', $limit 
 					ON gt.id=gl.graph_template_id 
 					LEFT JOIN host AS h 
 					ON h.id=gl.host_id 
+					LEFT JOIN host_template AS ht
+					ON h.host_template_id=ht.id
 					$sql_join
 					$sql_where
 					$sql_having
@@ -1052,17 +1054,18 @@ function get_allowed_devices($sql_where = '', $order_by = 'description', $limit 
 				ON gt.id=gl.graph_template_id 
 				LEFT JOIN host AS h 
 				ON h.id=gl.host_id 
+				LEFT JOIN host_template AS ht
+				ON h.host_template_id=ht.id
 				$sql_join
 				$sql_where
 				$sql_having
 			) AS rower");
 	}else{
-		if (strlen($sql_where)) {
-			$sql_where = "WHERE $sql_where";
-		}
-
 		$host_list  = db_fetch_assoc("SELECT * 
 			FROM host AS h
+			LEFT JOIN host_template AS ht
+			ON h.host_template_id=ht.id
+			$sql_where
 			$order_by
 			$limit");
 
@@ -1081,12 +1084,12 @@ function get_allowed_graph_templates($sql_where = '', $order_by = 'name', $limit
 		$order_by = "ORDER BY $order_by";
 	}
 
-	if ($graph_template_id > 0) {
-		$sql_where .= (strlen($sql_where) ? ' AND ':' ') . " gl.graph_template_id=$graph_template_id";
-	}
-
 	if (strlen($sql_where)) {
 		$sql_where = "WHERE $sql_where";
+	}
+
+	if ($graph_template_id > 0) {
+		$sql_where .= (strlen($sql_where) ? ' AND ':' ') . " gl.graph_template_id=$graph_template_id";
 	}
 
 	$i          = 0;
@@ -1179,12 +1182,9 @@ function get_allowed_graph_templates($sql_where = '', $order_by = 'name', $limit
 				$sql_having
 			) AS rower");
 	}else{
-		if (strlen($sql_where)) {
-			$sql_where = "WHERE $sql_where";
-		}
-
 		$host_list  = db_fetch_assoc("SELECT * 
 			FROM graph_templates AS gt 
+			$sql_where
 			$order_by
 			$limit");
 
