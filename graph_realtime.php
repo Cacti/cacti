@@ -359,7 +359,7 @@ if (read_config_option('realtime_enabled') == '') {
 		$.get(url, function(data) {
 			results = $.parseJSON(data);
 
-			$('#image').empty().html("<img id='graph_"+local_graph_id+"' class='graphimage' alt='' src='graph_realtime.php?action=view&local_graph_id="+local_graph_id+"&count="+count+"'/>").change();
+			$('#image').empty().html("<img id='graph_"+local_graph_id+"' class='graphimage' alt='' src='"+urlPath+"graph_realtime.php?action=view&local_graph_id="+local_graph_id+"&count="+count+"'/>").change();
 		});
 	}
 	</script>

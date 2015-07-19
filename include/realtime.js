@@ -78,9 +78,9 @@ function realtimeGrapher() {
 			inRealtime = true;
 			local_graph_id=key
 			position=$('#wrapper_'+local_graph_id).find('img').attr('id', 'dispose_'+local_graph_id).position();
-			$.get('graph_realtime.php?action=countdown&top='+parseInt(position.top)+'&left='+parseInt(position.left)+(thumbnails ? '&graph_nolegend='+thumbnails:'')+'&graph_end=0&graph_start=-'+graph_start+'&local_graph_id='+local_graph_id+'&ds_step='+ds_step+'#count='+count, function(data) {
+			$.get(urlPath+'graph_realtime.php?action=countdown&top='+parseInt(position.top)+'&left='+parseInt(position.left)+(thumbnails ? '&graph_nolegend='+thumbnails:'')+'&graph_end=0&graph_start=-'+graph_start+'&local_graph_id='+local_graph_id+'&ds_step='+ds_step+'#count='+count, function(data) {
 				results = $.parseJSON(data);
-				$('#wrapper_'+results.local_graph_id).append("<img style='position:absolute;left:"+results.left+"px;top:"+results.top+"px;z-index:"+count+";' id='graph_"+results.local_graph_id+"' class='graphimage' alt='' src='graph_realtime.php?action=view&local_graph_id="+results.local_graph_id+"&count="+count+"'/>").change();
+				$('#wrapper_'+results.local_graph_id).append("<img style='position:absolute;left:"+results.left+"px;top:"+results.top+"px;z-index:"+count+";' id='graph_"+results.local_graph_id+"' class='graphimage' alt='' src='"+urlPath+"graph_realtime.php?action=view&local_graph_id="+results.local_graph_id+"&count="+count+"'/>").change();
 				setTimeout('graphDispose('+results.local_graph_id+')', 1000);
 			});
 		}

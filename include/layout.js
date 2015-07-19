@@ -1071,7 +1071,7 @@ function initializeGraphs() {
 
 		if (realtimeArray[graph_id]) {
 			$('#wrapper_'+graph_id).html(keepRealtime[graph_id]).change();
-			$(this).html("<img class='drillDown' border='0' title='Click to view just this Graph in Realtime' alt='' src='./images/chart_curve_go.png'>");
+			$(this).html("<img class='drillDown' border='0' title='Click to view just this Graph in Realtime' alt='' src='"+urlPath+"images/chart_curve_go.png'>");
 			$(this).find('img').tooltip().zoom({ inputfieldStartTime : 'date1', inputfieldEndTime : 'date2', serverTimeOffset : timeOffset });
 			realtimeArray[graph_id] = false;
 			setFilters();
