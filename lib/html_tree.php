@@ -514,7 +514,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 	?>
 	<tr class='even noprint' id='search'>
 		<td class='noprint'>
-		<form name='form_graph_view' method='post' onSubmit='changeFilter();return false'>
+		<form name='form_graph_view' method='post' onSubmit='applyGraphFilter();return false'>
 			<table class='filterTable'>
 				<tr>
 					<td>
@@ -527,7 +527,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 						Graphs
 					</td>
 					<td>
-						<select name='graphs' id='graphs' onChange='changeFilter()'>
+						<select name='graphs' id='graphs' onChange='applyGraphFilter()'>
 							<?php
 							if (sizeof($graphs_per_page) > 0) {
 							foreach ($graphs_per_page as $key => $value) {
@@ -541,7 +541,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 						Columns
 					</td>
 					<td>
-						<select name='columns' id='columns' onChange='changeFilter()' <?php print get_request_var_request('thumbnails') == 'false' ? 'disabled':'';?>>
+						<select name='columns' id='columns' onChange='applyGraphFilter()' <?php print get_request_var_request('thumbnails') == 'false' ? 'disabled':'';?>>
 							<?php if ( get_request_var_request('thumbnails') == 'false') {?>
 							<option value='<?php print get_request_var_request('columns');?>' selected>N/A</option>
 							<?php }else{?>
@@ -557,17 +557,17 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 						<label for='thumbnails'>Thumbnails</label>
 					</td>
 					<td>
-						<input id='thumbnails' type='checkbox' name='thumbnails' onClick='changeFilter()' <?php print (($_REQUEST['thumbnails'] == 'true') ? 'checked':'');?>>
+						<input id='thumbnails' type='checkbox' name='thumbnails' onClick='applyGraphFilter()' <?php print (($_REQUEST['thumbnails'] == 'true') ? 'checked':'');?>>
 					</td>
 					<td>
-						<input type='button' value='Go' title='Set/Refresh Filter' onClick='changeFilter()'>
+						<input type='button' value='Go' title='Set/Refresh Filter' onClick='applyGraphFilter()'>
 					</td>
 					<td>
-						<input type='button' value='Clear' title='Clear Filters' onClick='clearFilter()'>
+						<input type='button' value='Clear' title='Clear Filters' onClick='applyGraphFilter()'>
 					</td>
 					<?php if (is_view_allowed('graph_settings')) {?>
 					<td>
-						<input type='button' id='save' value='Save' title='Save the current Graphs, Columns, Thumbnail, Preset, and Timeshift preferences to your profile' onClick='saveFilter("tree")'>
+						<input type='button' id='save' value='Save' title='Save the current Graphs, Columns, Thumbnail, Preset, and Timeshift preferences to your profile' onClick='saveGraphFilter("tree")'>
 					</td>
 					<td id='text'></td>
 					<?php }?>
@@ -590,7 +590,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 							Presets
 						</td>
 						<td>
-							<select id='predefined_timespan' name='predefined_timespan' onChange='spanTime()'>
+							<select id='predefined_timespan' name='predefined_timespan' onChange='applyGraphTimespan()'>
 								<?php
 								if (isset($_SESSION['custom'])) {
 									$graph_timespans[GT_CUSTOM] = 'Custom';
@@ -632,7 +632,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 							<input type='image' src='images/calendar.gif' align='middle' alt='End date selector' title='End date selector' onclick="return showCalendar('date2');">
 						</td>
 						<td>
-							<img style='vertical-align:middle;border:0px;cursor:pointer;' src='images/move_left.gif' alt='' title='Shift Left' onClick='timeshiftFilterLeft()'/>
+							<img style='vertical-align:middle;border:0px;cursor:pointer;' src='images/move_left.gif' alt='' title='Shift Left' onClick='timeshiftGraphFilterLeft()'/>
 						</td>
 						<td>
 							<select id='predefined_timeshift' name='predefined_timeshift' title='Define Shifting Interval'>
@@ -648,13 +648,13 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 							</select>
 						</td>
 						<td>
-							<img style='vertical-align:middle;border:0px;cursor:pointer;' name='move_right' src='images/move_right.gif' alt='' title='Shift Right' onClick='timeshiftFilterRight()'/>
+							<img style='vertical-align:middle;border:0px;cursor:pointer;' name='move_right' src='images/move_right.gif' alt='' title='Shift Right' onClick='timeshiftGraphFilterRight()'/>
 						</td>
 						<td>
-							<input type='button' name='button_refresh_x' value='Refresh' title='Refresh selected time span' onClick='refreshTimespanFilter()'>
+							<input type='button' name='button_refresh_x' value='Refresh' title='Refresh selected time span' onClick='refreshGraphTimespanFilter()'>
 						</td>
 						<td>
-							<input type='button' name='button_clear' value='Clear' title='Return to the default time span' onClick='clearTimespanFilter()'>
+							<input type='button' name='button_clear' value='Clear' title='Return to the default time span' onClick='clearGraphTimespanFilter()'>
 						</td>
 					</tr>
 					<tr id='realtime' style='display:none;'>
@@ -697,10 +697,11 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 	}
 	?>
 	<script type='text/javascript'>
-
 	var graph_start=<?php print get_current_graph_start();?>;
 	var graph_end=<?php print get_current_graph_end();?>;
 	var timeOffset=<?php print date('Z');?>;
+	var pageAction ='tree_content';
+	var graphPage  = 'graph_view.php';
 
 	$(function() {
 		var navBar = "<div id='navBar' class='navBar'><?php print draw_navigation_text();?></div>";
@@ -710,201 +711,6 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 		setupBreadcrumbs();
 		initializeGraphs();
 	});
-
-	function changeFilter() {
-		$.get('graph_view.php?action=tree_content&tree_id=<?php print $_SESSION['sess_graph_tree_tree_id'];?>&leaf_id=<?php print $_SESSION['sess_graph_tree_leaf_id'];?>&host_group_data=<?php print $_SESSION['sess_graph_tree_host_group_data'];?>&graphs='+$('#graphs').val()+'&filter='+$('#filter').val()+'&thumbnails='+$('#thumbnails').is(':checked')+'&columns='+$('#columns').val()+'&nodeid='+'<?php print $_SESSION['sess_graph_tree_nodeid'];?>', function(data) {
-			$('#main').html(data);
-			applySkin();
-			initializeGraphs();
-		});
-	}
-
-	function clearFilter() {
-		$.get('graph_view.php?action=tree_content&tree_id=<?php print $_SESSION['sess_graph_tree_tree_id'];?>&leaf_id=<?php print $_SESSION['sess_graph_tree_leaf_id'];?>&host_group_data=<?php print $_SESSION['sess_graph_tree_host_group_data'];?>&clear=1&nodeid='+'<?php print $_SESSION['sess_graph_tree_nodeid'];?>', function(data) {
-			$('#main').html(data);
-			applySkin();
-			initializeGraphs();
-		});
-	}
-
-	function saveFilter(section) {
-		href='graph_view.php?action=save'+
-            '&columns='+$('#columns').val()+
-            '&graphs='+$('#graphs').val()+
-            '&predefined_timespan='+$('#predefined_timespan').val()+
-            '&predefined_timeshift='+$('#predefined_timeshift').val()+
-            '&thumbnails='+$('#thumbnails').is(':checked');
-
-		$.get(href+'&header=false&section='+section, function(data) {
-			$('#text').show().text('Filter Settings Saved').fadeOut(2000);
-		});
-	}
-
-	function spanTime() {
-		$.get('graph_view.php?action=tree_content&tree_id=<?php print $_SESSION['sess_graph_tree_tree_id'];?>&leaf_id=<?php print $_SESSION['sess_graph_tree_leaf_id'];?>&host_group_data=<?php print $_SESSION['sess_graph_tree_host_group_data'];?>&nodeid='+'<?php print $_SESSION['sess_graph_tree_nodeid'];?>&predefined_timespan='+$('#predefined_timespan').val()+'&predefined_timeshift='+$('#predefined_timeshift').val(), function(data) {
-			$('#main').html(data);
-			applySkin();
-			initializeGraphs();
-		});
-	}
-
-	function clearTimespanFilter() {
-		var json = { 
-			button_clear: 1, 
-			date1: $('#date1').val(), 
-			date2: $('#date2').val(), 
-			predefined_timespan: $('#predefined_timespan').val(), 
-			predefined_timeshift: $('#predefined_timeshift').val()
-		};
-
-		var url  = 'graph_view.php?action=tree_content&tree_id=<?php print $_SESSION['sess_graph_tree_tree_id'];?>&leaf_id=<?php print $_SESSION['sess_graph_tree_leaf_id'];?>&host_group_data=<?php print $_SESSION['sess_graph_tree_host_group_data'];?>&nodeid=<?php print $_SESSION['sess_graph_tree_nodeid'];?>';
-
-		$.post(url, json).done(function(data) {
-			$('#main').html(data);
-			applySkin();
-			initializeGraphs();
-		});
-	}
-
-	function refreshTimespanFilter() {
-		var json = { 
-			button_refresh_x: 1, 
-			date1: $('#date1').val(), 
-			date2: $('#date2').val(), 
-			predefined_timespan: $('#predefined_timespan').val(), 
-			predefined_timeshift: $('#predefined_timeshift').val()
-		};
-
-		var url  = 'graph_view.php?action=tree_content&tree_id=<?php print $_SESSION['sess_graph_tree_tree_id'];?>&leaf_id=<?php print $_SESSION['sess_graph_tree_leaf_id'];?>&host_group_data=<?php print $_SESSION['sess_graph_tree_host_group_data'];?>&nodeid=<?php print $_SESSION['sess_graph_tree_nodeid'];?>';
-
-		$.post(url, json).done(function(data) {
-			$('#main').html(data);
-			applySkin();
-			initializeGraphs();
-		});
-	}
-
-	function timeshiftFilterLeft() {
-		var json = { 
-			move_left_x: 1,
-			move_left_y: 1, 
-			date1: $('#date1').val(), 
-			date2: $('#date2').val(), 
-			predefined_timespan: $('#predefined_timespan').val(), 
-			predefined_timeshift: $('#predefined_timeshift').val()
-		};
-
-		var url  = 'graph_view.php?action=tree_content&tree_id=<?php print $_SESSION['sess_graph_tree_tree_id'];?>&leaf_id=<?php print $_SESSION['sess_graph_tree_leaf_id'];?>&host_group_data=<?php print $_SESSION['sess_graph_tree_host_group_data'];?>&nodeid=<?php print $_SESSION['sess_graph_tree_nodeid'];?>';
-
-		$.post(url, json).done(function(data) {
-			$('#main').html(data);
-			applySkin();
-			initializeGraphs();
-		});
-	}
-
-	function timeshiftFilterRight() {
-		var json = { 
-			move_right_x: 1, 
-			move_right_y: 1, 
-			date1: $('#date1').val(), 
-			date2: $('#date2').val(), 
-			predefined_timespan: $('#predefined_timespan').val(), 
-			predefined_timeshift: $('#predefined_timeshift').val()
-		};
-
-		var url  = 'graph_view.php?action=tree_content&tree_id=<?php print $_SESSION['sess_graph_tree_tree_id'];?>&leaf_id=<?php print $_SESSION['sess_graph_tree_leaf_id'];?>&host_group_data=<?php print $_SESSION['sess_graph_tree_host_group_data'];?>&nodeid=<?php print $_SESSION['sess_graph_tree_nodeid'];?>';
-
-		$.post(url, json).done(function(data) {
-			$('#main').html(data);
-			applySkin();
-			initializeGraphs();
-		});
-	}
-
-	function url_graph(strNavURL) {
-		return '';
-	}
-
-	function initializeGraphs() {
-		$('span[id$="_mrtg"]').unbind('click').click(function() {
-			graph_id=$(this).attr('id').replace('graph_','').replace('_mrtg','');
-			$.get('graph.php?local_graph_id='+graph_id+'&header=false', function(data) {
-				$('#breadcrumbs').append('<li><a id="nav_mrgt" href="#">MRTG View</a></li>');
-				$('#main').html(data);
-				applySkin();
-			});
-		});
-
-		$('span[id$="_csv"]').unbind('click').click(function() {
-			graph_id=$(this).attr('id').replace('graph_','').replace('_csv','');
-			document.location = 'graph_xport.php?local_graph_id='+graph_id+'&rra_id=0&view_type=tree&graph_start='+getTimestampFromDate($('#date1').val())+'&graph_end='+getTimestampFromDate($('#date2').val());
-		});
-
-		$('#form_graph_view').unbind('submit').on('submit', function(event) {
-			event.preventDefault();
-			applyFilter();
-		});
-
-		$('div[id^="wrapper_"]').each(function() {
-			graph_id=$(this).attr('id').replace('wrapper_','');
-			graph_height=$(this).attr('graph_height');
-			graph_width=$(this).attr('graph_width');
-
-			$.getJSON('graph_json.php?rra_id=0'+
-				'&local_graph_id='+graph_id+
-				'&graph_start='+graph_start+
-				'&graph_end='+graph_end+
-				'&graph_height='+graph_height+
-				'&graph_width='+graph_width+
-				<?php print (isset($_REQUEST['thumbnails']) && $_REQUEST['thumbnails'] == 'true' ? "'&graph_nolegend=true'":"''");?>, 
-				function(data) {
-					$('#wrapper_'+data.local_graph_id).html("<img class='graphimage' id='graph_"+data.local_graph_id+"' src='data:image/"+data.type+";base64,"+data.image+"' border='0' graph_start='"+data.graph_start+"' graph_end='"+data.graph_end+"' graph_left='"+data.graph_left+"' graph_top='"+data.graph_top+"' graph_width='"+data.graph_width+"' graph_height='"+data.graph_height+"' width='"+data.image_width+"' height='"+data.image_height+"' image_width='"+data.image_width+"' image_height='"+data.image_height+"' value_min='"+data.value_min+"' value_max='"+data.value_max+"'>");
-					$("#graph_"+data.local_graph_id).zoom({
-						inputfieldStartTime : 'date1', 
-						inputfieldEndTime : 'date2', 
-						serverTimeOffset : <?php print date('Z') . "\n";?>
-					});
-					realtimeArray[data.local_graph_id] = false;
-				});
-		});
-
-		$('#realtimeoff').unbind('click').click(function() {
-			stopRealtime();
-		});
-
-		$('#ds_step').unbind('change').change(function() {
-			realtimeGrapher();
-		});
-
-		$('span[id$="_util"]').unbind('click').click(function() {
-			graph_id=$(this).attr('id').replace('graph_','').replace('_util','');
-			$.get('graph.php?action=zoom&header=false&local_graph_id='+graph_id+'&rra_id=0&graph_start='+getTimestampFromDate($('#date1').val())+'&graph_end='+getTimestampFromDate($('#date2').val()), function(data) {
-				$('#main').html(data);
-				$('#breadcrumbs').append('<li><a id="nav_util" href="#">Utility View</a></li>');
-				applySkin();
-			});
-		});
-
-		$('span[id$="_realtime"]').unbind('click').click(function() {
-			graph_id=$(this).attr('id').replace('graph_','').replace('_realtime','');
-
-			if (realtimeArray[graph_id]) {
-				$('#wrapper_'+graph_id).html(keepRealtime[graph_id]).change();
-				$(this).html("<img class='drillDown' border='0' title='Click to view just this Graph in Realtime' alt='' src='"+urlPath+"images/chart_curve_go.png'>");
-				$(this).find('img').tooltip().zoom({ inputfieldStartTime : 'date1', inputfieldEndTime : 'date2', serverTimeOffset : timeOffset });
-				realtimeArray[graph_id] = false;
-				setFilters();
-			}else{
-				keepRealtime[graph_id]  = $('#wrapper_'+graph_id).html();
-				$(this).html("<i style='font-size:16px;' title='Click again to take this Graph out of Realtime' class='fa fa-circle-o-notch fa-spin'/>");
-				$(this).find('i').tooltip();
-				realtimeArray[graph_id] = true;
-				setFilters();
-			}
-		});
-	}
-
 	</script>
 	<?php
 	html_end_box();
