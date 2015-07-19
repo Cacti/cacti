@@ -99,7 +99,7 @@ function html_graph_validate_preview_request_vars() {
 }
 
 function html_graph_preview_filter($page, $action, $devices_where = '', $templates_where = '') {
-	global $graphs_per_page, $realtime_window, $realtime_refresh;
+	global $graphs_per_page, $realtime_window, $realtime_refresh, $graph_timeshifts, $graph_timespans, $config;
 
 	?>
 	<tr class='even noprint'>
