@@ -964,7 +964,7 @@ function get_allowed_devices($sql_where = '', $order_by = 'description', $limit 
 	}
 
 	if ($host_id > 0) {
-		$sql_where .= (strlen($sql_where) ? ' AND ':' ') . " gl.host_id=$host_id";
+		$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') . " gl.host_id=$host_id";
 	}
 
 	$i          = 0;
@@ -1089,7 +1089,7 @@ function get_allowed_graph_templates($sql_where = '', $order_by = 'name', $limit
 	}
 
 	if ($graph_template_id > 0) {
-		$sql_where .= (strlen($sql_where) ? ' AND ':' ') . " gl.graph_template_id=$graph_template_id";
+		$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') . " gl.graph_template_id=$graph_template_id";
 	}
 
 	$i          = 0;
