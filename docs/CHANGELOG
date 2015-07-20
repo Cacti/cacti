@@ -50,9 +50,25 @@ Cacti CHANGELOG
 -feature: All Filters Handled in Ajax
 -feature: Refactor Graph Details page to incldue CSV output, zoom, debug, and download links
 
-0.8.8e
+0.8.8f
+-bug:0002600: cli/upgrade_database.php is missing releases
 
-- d is for disaster
+0.8.8e
+-bug: Fixed issue with graph zooming failing to work
+-bug: Fixed various SQL Injection vectors
+-bug#0002569: Impossible to have a URL pointing directly to a graph
+-bug#0002574: SQL Injection Vulnerabilities in graph items and graph template items
+-bug#0002577: CVE-2015-4634 - SQL injection in graphs.php
+-bug#0002579: SQL Injection Vulnerabilities in data sources
+-bug#0002580: SQL Injection in cdef.php
+-bug#0002582: SQL Injection in data_templates.php
+-bug#0002583: SQL Injection in graph_templates.php
+-bug#0002584: SQL Injection in host_templates.php
+-bug#0002586: Cannot delete data sources from the GUI
+-bug#0002592: graph_view.php - viewing host in new tab - Undefined index: nodeid
+-bug#0002594: status_fail_date and status_rec_date are set incorrectly after host is marked down
+-bug#0002597: Incorrect value in Hosts column on Host Templates page
+-bug#0002598: Incorrect row number in Devices -> (Edit) page
 
 0.8.8d
 -feature: Remove un-needed fonts and javascript files
