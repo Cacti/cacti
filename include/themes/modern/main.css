@@ -50,6 +50,7 @@ th .fa {
 
 input, select {
 	padding: 0.4em 0.4em 0.4em 0.4em;
+	font-size: 1em;
 }
 
 .usermenudown {
