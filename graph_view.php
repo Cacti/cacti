@@ -225,7 +225,7 @@ case 'preview':
 	html_graph_validate_preview_request_vars();
 
 	/* include graph view filter selector */
-	html_start_box('<strong>Graph Preview Filters</strong>' . (isset($_REQUEST['style']) && strlen($_REQUEST['style']) ? ' [ Custom Graph List Applied - Filtering FROM List ]':''), '100%', '', '3', 'center', '');
+	html_start_box('<strong>Graph Preview Filters</strong>' . (isset($_REQUEST['style']) && strlen($_REQUEST['style']) ? ' [ Custom Graph List Applied - Filtering from List ]':''), '100%', '', '3', 'center', '');
 
 	html_graph_preview_filter('graph_view.php', 'preview');
 
