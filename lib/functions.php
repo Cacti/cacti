@@ -892,22 +892,10 @@ function strip_quotes($result) {
 
 	/* clean off ugly non-numeric data */
 	if ((!is_numeric($result)) && (!is_hexadecimal($result)) && ($result != 'U')) {
-		/* strip trailing chars first */
 		$len = strlen($result);
 		for($a=$len-1; $a>=0; $a--){
 			$p = ord($result[$a]);
-			if ($p > 47 && $p < 58) {
-				break;
-			}else{
-				$result[$a] = ' ';
-			}
-		}
-
-		/* strip leading chars second */
-		$len = strlen($result);
-		for($a=0; $a<$len; $a++){
-			$p = ord($result[$a]);
-			if ($p > 47 && $p < 58 || ($p == 43 || $p == 45)) {
+			if (($p > 47 && $p < 58) || ($p == 43 || $p == 45)) {
 				break;
 			}else{
 				$result[$a] = ' ';
