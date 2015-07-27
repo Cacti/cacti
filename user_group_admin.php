@@ -233,7 +233,7 @@ function update_policies() {
 		db_execute_prepared("UPDATE user_auth_group SET $set WHERE id = ?", array(get_request_var_post('id')));
 	}
 
-	header('Location: user_group_admin.php?action=edit&tab=' .  get_request_var_post('tab') . '&id=' . get_request_var_post('id'));
+	header('Location: user_group_admin.php?action=edit&header=false&tab=' .  get_request_var_post('tab') . '&id=' . get_request_var_post('id'));
 	exit;
 }
 
@@ -256,7 +256,7 @@ function form_actions() {
 			}
 		}
 
-		header('Location: user_group_admin.php?action=edit&tab=permsd&id=' . get_request_var_post('id'));
+		header('Location: user_group_admin.php?action=edit&header=false&tab=permsd&id=' . get_request_var_post('id'));
 		exit;
 	}elseif (isset($_POST['associate_graph'])) {
 		while (list($var,$val) = each($_POST)) {
@@ -273,7 +273,7 @@ function form_actions() {
 			}
 		}
 
-		header('Location: user_group_admin.php?action=edit&tab=permsg&id=' . get_request_var_post('id'));
+		header('Location: user_group_admin.php?action=edit&header=false&tab=permsg&id=' . get_request_var_post('id'));
 		exit;
 	}elseif (isset($_POST['associate_template'])) {
 		while (list($var,$val) = each($_POST)) {
@@ -290,7 +290,7 @@ function form_actions() {
 			}
 		}
 
-		header('Location: user_group_admin.php?action=edit&tab=permste&id=' . get_request_var_post('id'));
+		header('Location: user_group_admin.php?action=edit&header=false&tab=permste&id=' . get_request_var_post('id'));
 		exit;
 	}elseif (isset($_POST['associate_tree'])) {
 		while (list($var,$val) = each($_POST)) {
@@ -307,7 +307,7 @@ function form_actions() {
 			}
 		}
 
-		header('Location: user_group_admin.php?action=edit&tab=permstr&id=' . get_request_var_post('id'));
+		header('Location: user_group_admin.php?action=edit&header=false&tab=permstr&id=' . get_request_var_post('id'));
 		exit;
 	}elseif (isset($_POST['associate_member'])) {
 		while (list($var,$val) = each($_POST)) {
@@ -324,7 +324,7 @@ function form_actions() {
 			}
 		}
 
-		header('Location: user_group_admin.php?action=edit&tab=members&id=' . get_request_var_post('id'));
+		header('Location: user_group_admin.php?action=edit&header=false&tab=members&id=' . get_request_var_post('id'));
 		exit;
 	}elseif (isset($_POST['selected_items'])) {
 		$selected_items = sanitize_unserialize_selected_items($_POST['selected_items']);
@@ -345,7 +345,7 @@ function form_actions() {
 			}
 		}
 
-		header('Location: user_group_admin.php');
+		header('Location: user_group_admin.php?header=false');
 		exit;
 	}
 
@@ -474,7 +474,7 @@ function form_save() {
 
 		}
 
-		header('Location: user_group_admin.php?action=edit&tab=general&id=' . (isset($group_id) && $group_id > 0 ? $group_id : get_request_var_post('id')));
+		header('Location: user_group_admin.php?action=edit&header=false&tab=general&id=' . (isset($group_id) && $group_id > 0 ? $group_id : get_request_var_post('id')));
 		exit;
 	}elseif (isset($_POST['save_component_realm_perms'])) {
 		db_execute_prepared('DELETE FROM user_auth_group_realm WHERE group_id = ?', array(get_request_var_post('id')));
@@ -489,7 +489,7 @@ function form_save() {
 
 		raise_message(1);
 
-		header('Location: user_group_admin.php?action=edit&tab=realms&id=' . get_request_var_post('id'));
+		header('Location: user_group_admin.php?action=edit&header=false&tab=realms&id=' . get_request_var_post('id'));
 		exit;
 	}elseif (isset($_POST['save_component_graph_settings'])) {
 		while (list($tab_short_name, $tab_fields) = each($settings_graphs)) {
@@ -509,14 +509,14 @@ function form_save() {
 
 		raise_message(1);
 
-		header('Location: user_group_admin.php?action=edit&tab=settings&id=' . get_request_var_post('id'));
+		header('Location: user_group_admin.php?action=edit&header=false&tab=settings&id=' . get_request_var_post('id'));
 		exit;
 	} else {
 		api_plugin_hook('user_group_admin_save');
 	}
 
 	/* redirect to the appropriate page */
-	header('Location: user_group_admin.php?action=edit&tab=general&id=' .  get_request_var_post('id'));
+	header('Location: user_group_admin.php?action=edit&header=false&tab=general&id=' .  get_request_var_post('id'));
 }
 
 /* --------------------------
@@ -539,7 +539,7 @@ function perm_remove() {
 		db_execute_prepared('DELETE FROM user_auth_group_perms WHERE type=4 AND group_id = ? AND item_id = ?', array(get_request_var_request('group_id'), get_request_var_request('id')));
 	}
 
-	header('Location: user_group_admin.php?action=edit&tab=gperms&id=' . get_request_var_request('group_id'));
+	header('Location: user_group_admin.php?action=edit&header=false&tab=gperms&id=' . get_request_var_request('group_id'));
 }
 
 function user_group_members_edit($header_label) {
@@ -1346,6 +1346,7 @@ function user_group_realms_edit($header_label) {
 	form_hidden_box('save_component_realm_perms','1','');
 	form_hidden_box('tab','realms','');
 	form_hidden_box('id',get_request_var_request('id'),'');
+
 	form_save_button('user_group_admin.php', 'return');
 }
 
@@ -1389,12 +1390,10 @@ function user_group_graph_settings_edit($header_label) {
 
 		draw_edit_form(
 			array(
-				'config' => array(
-					'no_form_tag' => true
-					),
+				'config' => array('no_form_tag' => true),
 				'fields' => $form_array
-				)
-			);
+			)
+		);
 	}
 
 	html_end_box();
@@ -1402,11 +1401,11 @@ function user_group_graph_settings_edit($header_label) {
 	form_hidden_box('save_component_graph_settings','1','');
 	form_hidden_box('tab','settings','');
 	form_hidden_box('id',get_request_var_request('id'),'');
+
 	form_save_button('user_group_admin.php', 'return');
 
 	?>
 	<script type='text/javascript'>
-	<!--
 	var themeFonts=<?php print read_config_option('font_method');?>;
 
 	function graphSettings() {
@@ -1477,7 +1476,6 @@ function user_group_graph_settings_edit($header_label) {
 		});
 	});
 
-	-->
 	</script>
 	<?php
 }
@@ -1536,10 +1534,12 @@ function group_edit() {
 	case 'general':
 		api_plugin_hook_function('user_group_admin_edit', (isset($user) ? get_request_var_request('id') : 0));
 
+		form_start('user_group_admin.php');
+
 		html_start_box("<strong>User Group Management</strong> $header_label", '100%', '', '3', 'center', '');
 
 		draw_edit_form(array(
-			'config' => array('form_name' => 'chk'),
+			'config' => array('no_form_tag' => true),
 			'fields' => inject_form_variables($fields_user_group_edit, (isset($group) ? $group : array()))
 		));
 
