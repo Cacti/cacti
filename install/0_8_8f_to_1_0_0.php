@@ -852,7 +852,7 @@ function upgrade_to_1_0_0() {
 	db_install_execute('0.8.8d', "DELETE FROM plugin_config WHERE directory='aggregate'");
 	db_install_execute('0.8.8d', "DELETE FROM plugin_realms WHERE plugin='aggregate'");
 	db_install_execute('0.8.8d', "DELETE FROM plugin_db_changes WHERE plugin='aggregate'");
-	db_install_execute('0.8.8d', "DELETE FROM plugin_hooks WHERE plugin='aggregate'");
+	db_install_execute('0.8.8d', "DELETE FROM plugin_hooks WHERE name='aggregate'");
 
 	if (!in_array('plugin_autom8_match_rule_items', $tables)) {
 		$data = array();
@@ -1019,7 +1019,7 @@ function upgrade_to_1_0_0() {
 	db_install_execute('0.8.8d', "DELETE FROM plugin_config WHERE directory='autom8'");
 	db_install_execute('0.8.8d', "DELETE FROM plugin_realms WHERE plugin='autom8'");
 	db_install_execute('0.8.8d', "DELETE FROM plugin_db_changes WHERE plugin='autom8'");
-	db_install_execute('0.8.8d', "DELETE FROM plugin_hooks WHERE plugin='autom8'");
+	db_install_execute('0.8.8d', "DELETE FROM plugin_hooks WHERE name='autom8'");
 
 	db_install_execute('0.8.8d', "UPDATE settings SET name=REPLACE(name, 'autom8', 'automation') WHERE name LIKE 'autom8%'");
 
@@ -1183,5 +1183,5 @@ function upgrade_to_1_0_0() {
 	db_install_execute('0.8.8d', "DELETE FROM plugin_config WHERE directory='discovery'");
 	db_install_execute('0.8.8d', "DELETE FROM plugin_realms WHERE plugin='discovery'");
 	db_install_execute('0.8.8d', "DELETE FROM plugin_db_changes WHERE plugin='discovery'");
-	db_install_execute('0.8.8d', "DELETE FROM plugin_hooks WHERE plugin='discovery'");
+	db_install_execute('0.8.8d', "DELETE FROM plugin_hooks WHERE name='discovery'");
 }
