@@ -986,7 +986,7 @@ function host_edit() {
 			$('#dqdebug').fadeOut('fast');
 		});
 
-		$.get('host.php?action=ping_host&id='+$('#id').val(), function(data) {
+		$.get(urlPath+'host.php?action=ping_host&id='+$('#id').val(), function(data) {
 			$('#ping_results').html(data);
 		});
 	});
