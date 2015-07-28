@@ -2477,6 +2477,8 @@ function draw_navigation_text($type = 'url') {
 		}elseif (!empty($current_array['url'])) {
 			/* found a default url in the above array */
 			$url = $current_array['url'];
+		}elseif (isset($_SERVER['HTTP_REFERER'])) {
+			$url = $_SERVER['HTTP_REFERER'];
 		}else{
 			/* default to no url */
 			$url = '';
