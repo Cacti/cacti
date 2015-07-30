@@ -442,6 +442,7 @@ ul#breadcrumbs {
 	cursor:pointer;
 	padding-bottom:140px;
 	margin-bottom:60px;
+	width:160px;
 }
 
 .loginLeft, .logoutLeft {
@@ -640,6 +641,7 @@ legend {
 	border:1px solid #BBBBBB;
 	max-width:100%;
 	position:relative;
+	z-index: 6;
 }
 
 .textHeaderDark {
