@@ -188,14 +188,14 @@ function clog_view_logfile() {
 		$new_item = '';
 
 		if ((!$host_start) && (!$ds_start)) {
-			$new_item = $item;
+			$new_item = htmlspecialchars($item);
 		}else{
 			while ($host_start) {
 				$host_end    = strpos($item, ']', $host_start);
 				$host_id     = substr($item, $host_start+7, $host_end-($host_start+7));
-				$new_item   .= substr($item, 0, $host_start + 7) . "<a href='" . $config['url_path'] . 'host.php?action=edit&id=' . $host_id . "'>" . substr($item, $host_start + 5, $host_end-($host_start + 7)) . '</a>';
+				$new_item   .= htmlspecialchars(substr($item, 0, $host_start + 7)) . "<a href='" . htmlspecialchars($config['url_path'] . 'host.php?action=edit&id=' . $host_id) . "'>" . htmlspecialchars(substr($item, $host_start + 5, $host_end-($host_start + 7))) . '</a>';
 				$host_description = db_fetch_cell("SELECT description FROM host WHERE id=$host_id");
-				$new_item   .= '] Description[' . $host_description . '';
+				$new_item   .= '] Description[' . htmlspecialchars($host_description) . '';
 				$item        = substr($item, $host_end);
 				$host_start  = strpos($item, 'Device[');
 			}
@@ -209,29 +209,30 @@ function clog_view_logfile() {
 
 				if (sizeof($graph_ids)) {
 					$new_item  .= substr($item, 0, $ds_start + 3) .
-						"<a href='" . $config['url_path'] . 'data_sources.php?action=ds_edit&id=' . $ds_id . "'>" . substr($item, $ds_start + 3, $ds_end-($ds_start + 3)) . '</a>' .
-						"] Graphs[<a href='" . $config['url_path'] . 'graph_view.php?page=1&style=selective&action=preview';
+						"<a href='" . htmlspecialchars($config['url_path'] . 'data_sources.php?action=ds_edit&id=' . $ds_id) . "'>" . htmlspecialchars(substr($item, $ds_start + 3, $ds_end-($ds_start + 3))) . '</a>' .
+						"] Graphs[<a href='";
 
 					$i = 0;
 					$titles = '';
+					$graph_add = $config['url_path'] . 'graph_view.php?page=1&style=selective&action=preview&graph_add=';
 					foreach($graph_ids as $key => $title) {
-						$new_item .= '&graph_' . $key . '=' . $key;
-						$graph_add .= ($i > 0 ? htmlspecialchars('%2C') : '') . $key;
+						$graph_add .= '&graph_' . $key . '=' . $key;
+						$graph_add .= ($i > 0 ? '%2C' : '') . $key;
 						$i++;
 						if (strlen($titles)) {
-							$titles .= ",'" . $title . "'";
+							$titles .= ",'" . htmlspecialchars($title) . "'";
 						}else{
-							$titles .= "'"  . $title . "'";
+							$titles .= "'"  . htmlspecialchars($title) . "'";
 						}
 					}
-					$new_item  .= $graph_add . "' title='View Graphs'>" . $titles . '</a>';
+					$new_item  .= htmlspecialchars($graph_add) . "' title='View Graphs'>" . $titles . '</a>';
 				}
 
 				$item      = substr($item, $ds_end);
 				$ds_start  = strpos($item, 'DS[');
 			}
 
-			$new_item = $new_item . $item;
+			$new_item .= htmlspecialchars($item);
 		}
 
 		/* get the background color */
