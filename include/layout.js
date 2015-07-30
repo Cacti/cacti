@@ -743,8 +743,20 @@ function saveTableWidths(initial) {
 		var key    = $(this).attr('id');
 		var sizes  = storage.get(key);
 		var items  = sizes ? sizes: new Array();
+		var width  = parseInt($(this).width());
 
-		var i = 0;
+		// if the table width changes, reset the columns
+		if (key !== undefined && initial) {
+			if (items[0] != width) {
+				items = new Array();
+				sizes = new Array();
+				storage.remove(key);
+				items[0] = width;
+				sizes[0] = width;
+			}
+		}
+
+		var i = 1;
 		if (key !== undefined) {
 			if (initial && items.length) {
 				$(this).find('th.ui-resizable').each(function(data) {
@@ -759,7 +771,8 @@ function saveTableWidths(initial) {
 					i++;
 				});
 			}else{
-				var sizes = new Array();
+				sizes    = new Array();
+				sizes[0] = $(this).width();
 				$(this).find('th.ui-resizable').each(function(data) {
 					sizes[i] = parseInt($(this).css('width'));
 
