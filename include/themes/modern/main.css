@@ -46,6 +46,7 @@ th .fa {
 
 #main {
 	display:none;
+	z-index: 3;
 }
 
 input, select {
@@ -92,7 +93,7 @@ input, select {
     border-color: #f5f5f5 #e5e5e5 #ccc;
     border-style: solid;
     border-width: 0px 1px 1px 1px;
-	z-index:2;
+	z-index:4;
 	display:block;
 	float:right;
 	position:absolute;
@@ -235,7 +236,7 @@ input, select {
 	padding-top:5px;
 	top:0px;
 	left:0px;
-	z-index:2;
+	z-index:4;
 }
 
 .cactiGraphPageHeadBackdrop {
@@ -280,7 +281,7 @@ input, select {
 	padding:4px;
 	top:30px;
 	left:0px;
-	z-index:2;
+	z-index:4;
 	background: rgba(167,217,134,1);
 	background: -moz-linear-gradient(top, rgba(167,217,134,1) 0%, rgba(148,179,107,1) 100%);
 	background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(167,217,134,1)), color-stop(100%, rgba(148,179,107,1)));
@@ -369,14 +370,14 @@ ul#breadcrumbs {
 }
 
 #breadcrumbs a::after {
-	z-index: 2;
+	z-index: 4;
 	border-left-color: #ddd;
 }
 
 #breadcrumbs a::before {
 	border-left-color: #ccc;
 	right: -1.1em;
-	z-index: 1;
+	z-index: 3;
 }
 
 #breadcrumbs a:hover::after {
@@ -430,13 +431,14 @@ ul#breadcrumbs {
 	position: fixed; 
 	left: 0px; 
 	top: 56px; 
+	right: -15px;
 	z-index: 2; 
 	overflow-y: auto;
 }
 
 .cactiLogo {
 	padding-top:20px;
-	background: #efefef url('./../../../images/cacti_logo.gif') no-repeat center;
+	background: #efefef url('./../../../images/cacti_logo.gif') no-repeat 40px;
 	display:block;
 	cursor:pointer;
 	height:140px;
@@ -571,7 +573,7 @@ legend {
 	padding-left: 5px;
 	vertical-align: top;
 	display: none;
-	margin-left: 164px;
+	margin-left: 162px;
 }
 
 .hyperLink {
@@ -832,7 +834,7 @@ th.sortable {
 }
 
 .popupBox {
-	z-index: 2;
+	z-index: 4;
 	position: absolute;
 	padding: 0px;
 	display: none;
