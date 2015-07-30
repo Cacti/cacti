@@ -437,11 +437,11 @@ ul#breadcrumbs {
 }
 
 .cactiLogo {
-	padding-top:20px;
 	background: #efefef url('./../../../images/cacti_logo.gif') no-repeat 40px;
 	display:block;
 	cursor:pointer;
-	height:140px;
+	padding-bottom:140px;
+	margin-bottom:60px;
 }
 
 .loginLeft, .logoutLeft {
