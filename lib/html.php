@@ -606,7 +606,7 @@ function html_header_sort_checkbox($header_items, $sort_column, $sort_direction,
 		}
 	}
 
-	print "<th class='tableSubHeaderCheckbox'><input class='checkbox' type='checkbox' name='all' title='Select All Rows' onClick='SelectAll(\"chk_\",this.checked)'></th>" . ($include_form ? "<th style='display:none;'><form id='chk' name='chk' method='post' action='$form_action'></th>\n":"");
+	print "<th class='tableSubHeaderCheckbox'><input id='selectall' class='checkbox' type='checkbox' title='Select All Rows' onClick='SelectAll(\"chk_\",this.checked)'></th>" . ($include_form ? "<th style='display:none;'><form id='chk' name='chk' method='post' action='$form_action'></th>\n":"");
 	print "</tr>\n";
 
 	$page++;
@@ -649,7 +649,7 @@ function html_header_checkbox($header_items, $include_form = true, $form_action 
 		}
 	}
 
-	print "<th class='tableSubHeaderCheckbox'><input class='checkbox' type='checkbox' name='all' title='Select All Rows' onClick='SelectAll(\"chk_\",this.checked)'></th>\n" . ($include_form ? "<th style='display:none;'><form id='chk' name='chk' method='post' action='$form_action'></th>\n":"");
+	print "<th class='tableSubHeaderCheckbox'><input id='selectall' class='checkbox' type='checkbox' title='Select All Rows' onClick='SelectAll(\"chk_\",this.checked)'></th>\n" . ($include_form ? "<th style='display:none;'><form id='chk' name='chk' method='post' action='$form_action'></th>\n":"");
 	print "</tr>\n";
 }
 
@@ -963,8 +963,10 @@ function draw_menu($user_menu = "") {
 /* draw_actions_dropdown - draws a table the allows the user to select an action to perform
      on one or more data elements
    @arg $actions_array - an array that contains a list of possible actions. this array should
-     be compatible with the form_dropdown() function */
-function draw_actions_dropdown($actions_array) {
+     be compatible with the form_dropdown() function 
+   @arg $delete_action - if there is a delete action that should surpress removal of rows
+     specify it here.  If you don't want any delete actions, set to 0.*/
+function draw_actions_dropdown($actions_array, $delete_action = 1) {
 	global $config;
 	?>
 	<table class='actionsDropdown'>
@@ -984,6 +986,32 @@ function draw_actions_dropdown($actions_array) {
 		</tr>
 	</table>
 	<input type='hidden' id='action' name='action' value='actions'>
+	<script type='javascript'>
+	function setDisabled() {
+		if ($('#drp_action').val() == <?php print $delete_action;?>) {
+			$('#selectall').prop('checked', false);
+
+			$('#chk').each('checkbox', function() {
+				if ($(this).hasClass('disabled')) {
+					$(this).prop('disabled', true);
+					$(this).prop('checked', false);
+				}
+			});
+		}else if (<?php print $delete_action;?> != 0) {
+			$('#chk').each('checkbox', function() {
+				if ($(this).hasClass('disabled')) {
+					$(this).prop('disabled', false);
+				}
+			});
+		}
+	}
+
+	$(function() {
+		$('#drp_action').unbind().change(function() {
+			setDisabled();
+		});
+	});
+	</script>
 	<?php
 }
 
