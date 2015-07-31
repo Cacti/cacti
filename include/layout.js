@@ -306,7 +306,9 @@ function dqUpdateDeps(snmp_query_id) {
 
 		if ($.inArray(hash, created_graphs[snmp_query_graph_id]) >= 0) {
 			$(this).addClass('disabled');
-			$(this).find(':checkbox').prop('disabled', true);
+			$(this).removeClass('selected');
+			$(this).removeClass('selectable');
+			$(this).find(':checkbox').prop('disabled', true).prop('checked', false);
 		}
 	});
 }
@@ -317,7 +319,7 @@ function dqUpdateDeps(snmp_query_id) {
 function dqResetDeps(snmp_query_id) {
 	var prefix = 'sg_' + snmp_query_id + '_'
 
-	$('tr[id^=line'+snmp_query_id+'_]').removeClass('disabled').removeClass('selected').find(':checkbox').prop('disabled', false);
+	$('tr[id^=line'+snmp_query_id+'_]').addClass('selectable').removeClass('disabled').find(':checkbox').prop('disabled', false);
 }
 
 /** SelectAll - This function will select all non-disabled rows
@@ -344,14 +346,14 @@ function SelectAll(attrib, checked) {
 		var dq   = attribSplit[1];
 
 		if (checked == true) {
-			$('tr[id^=line'+dq+'_]').each(function(data) {
+			$('tr[id^=line'+dq+'\_]').each(function(data) {
 				if (!$(this).hasClass('disabled')) {
 					$(this).addClass('selected');
 					$(this).find(':checkbox').prop('checked', true);
 				}
 			});
 		}else{
-			$('tr[id^=line'+dq+'_]').each(function(data) {
+			$('tr[id^=line'+dq+'\_]').each(function(data) {
 				if (!$(this).hasClass('disabled')) {
 					$(this).removeClass('selected');
 					$(this).find(':checkbox').prop('checked', false);
@@ -434,59 +436,13 @@ function applySkin() {
 		$('input[type=submit], input[type=button]').button();
 	}
 
-	// For deletable objects, don't alway disable, only on 'Delete'
-	$('#drp_action').change(function() {
-		// Delete we will disable
-		if ($(this).find('option:selected').text() == 'Delete') {
-			$(':checkbox.disabled').each(function(data) {
-				$(this).prop('disabled', true).change().closest('tr').removeClass('selectable');
-				if ($(this).is(':checked')) {
-					$(this).prop('checked', false);
-				}
-			});
-			$(':checkbox.disabled').parentsUntil('tr').unbind().closest('tr').removeClass('selected').change();
-		}else{
-			$(':checkbox.disabled').prop('disabled', false).change().closest('tr').addClass('selectable').change();
-		}
-		//
-		// Allows selection of a non disabled row
-		$('tr.selectable').find('td').not('.checkbox').each(function(data) {
-			$(this).unbind();
-			$(this).click(function(data) {
-				$(this).parent().toggleClass('selected');
-				var $checkbox = $(this).parent().find(':checkbox');
-				$checkbox.prop('checked', !$checkbox.is(':checked'));
-			});
-		});
-
-		// Generic Checkbox Function
-		$('tr.selectable').find('.checkbox').each(function(data) {
-			$(this).unbind();
-			$(this).click(function(data) {
-				if (!$(this).is(':disabled')) {
-					$(this).parent().toggleClass('selected');
-					var checked = $(this).is(':checkbox');
-					$(this).prop('checked', !checked);
-				}
-			});
-		});
-	});
-
 	// Select All Action for everyone but graphs_new, else do ugly shit
-	if (basename(document.location.pathname, '.php') != 'graphs_new') {
-		$('.tableSubHeaderCheckbox').find(':checkbox').click(function(data) {
-			if ($(this).is(':checked')) {
-				$('input[id^=chk_]').not(':disabled').prop('checked',true);
-				$('tr.selectable').addClass('selected');
-			}else{
-				$('input[id^=chk_]').not(':disabled').prop('checked',false);
-				$('tr.selectable').removeClass('selected');
-			}
-		});
+	if (basename(document.location.pathname, '.php') == 'graphs_new') {
+		applySelectorVisibilityAndActions();
 
 		// Allows selection of a non disabled row
 		$('tr.selectable').find('td').not('.checkbox').each(function(data) {
-			$(this).click(function(data) {
+			$(this).unbind().click(function(data) {
 				$(this).parent().toggleClass('selected');
 				var $checkbox = $(this).parent().find(':checkbox');
 				$checkbox.prop('checked', !$checkbox.is(':checked'));
@@ -501,8 +457,6 @@ function applySkin() {
 				$(this).prop('checked', !checked);
 			}
 		});
-	}else{
-		applySelectorVisibilityAndActions();
 	}
 
 	setupSortable();

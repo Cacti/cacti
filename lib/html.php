@@ -986,29 +986,60 @@ function draw_actions_dropdown($actions_array, $delete_action = 1) {
 		</tr>
 	</table>
 	<input type='hidden' id='action' name='action' value='actions'>
-	<script type='javascript'>
+	<script type='text/javascript'>
 	function setDisabled() {
 		if ($('#drp_action').val() == <?php print $delete_action;?>) {
-			$('#selectall').prop('checked', false);
+			$('tr.selectable').find('td').not('.checkbox').each(function(data) {
+				$(this).unbind();
+			});
 
-			$('#chk').each('checkbox', function() {
-				if ($(this).hasClass('disabled')) {
-					$(this).prop('disabled', true);
+			$(':checkbox.disabled').each(function(data) {
+				if ($(this).is(':checked')) {
 					$(this).prop('checked', false);
+					$(this).parent().toggleClass('selected');
 				}
+				$(this).unbind();
+				$(this).prop('disabled', true).change().closest('tr').removeClass('selectable').removeClass('selected');
 			});
 		}else if (<?php print $delete_action;?> != 0) {
-			$('#chk').each('checkbox', function() {
-				if ($(this).hasClass('disabled')) {
-					$(this).prop('disabled', false);
+			$(':checkbox.disabled').prop('disabled', false).change().closest('tr').addClass('selectable').change();
+		}
+
+		$('tr.selectable').find('td').not('.checkbox').each(function(data) {
+			$(this).unbind();
+			$(this).click(function(data) {
+				$(this).parent().toggleClass('selected');
+				var $checkbox = $(this).parent().find(':checkbox');
+				$checkbox.prop('checked', !$checkbox.is(':checked'));
+			});
+		});
+
+		$('tr.selectable').find('.checkbox').each(function(data) {
+			$(this).unbind();
+			$(this).click(function(data) {
+				if (!$(this).is(':disabled')) {
+					$(this).parent().toggleClass('selected');
+					var checked = $(this).is(':checkbox');
+					$(this).prop('checked', !checked);
 				}
 			});
-		}
+		});
 	}
 
 	$(function() {
+		setDisabled();
 		$('#drp_action').unbind().change(function() {
 			setDisabled();
+		});
+
+		$('.tableSubHeaderCheckbox').find(':checkbox').click(function(data) {
+			if ($(this).is(':checked')) {
+				$('input[id^=chk_]').not(':disabled').prop('checked',true);
+				$('tr.selectable').addClass('selected');
+			}else{
+				$('input[id^=chk_]').not(':disabled').prop('checked',false);
+				$('tr.selectable').removeClass('selected');
+			}
 		});
 	});
 	</script>
