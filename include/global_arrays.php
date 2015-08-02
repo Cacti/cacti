@@ -453,8 +453,7 @@ $menu = array(
 		'utilities.php' => 'System Utilities',
 		'user_admin.php' => 'Users',
 		'user_group_admin.php' => 'User Groups',
-		'user_domains.php' => 'User Domains',
-		'logout.php' => 'Logout User'
+		'user_domains.php' => 'User Domains'
 		)
 	);
 
