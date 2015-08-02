@@ -1125,15 +1125,15 @@ function display_match_rule_items($title, $rule_id, $rule_type, $module) {
 			$form_data .= '<td>' . 	$item['pattern'] . '</td>';
 			$form_data .= '<td class="nowrap">
 				<a href="' . htmlspecialchars($module . '?action=item_movedown&item_id=' . $item['id'] . '&id=' . $rule_id . '&rule_type=' . $rule_type) . '">
-					<img style="border:none;" src="images/move_down.gif" alt="" title="Move Down">
+					<img src="images/move_down.gif" alt="" title="Move Down">
 				</a>
 				<a href="' . htmlspecialchars($module . '?action=item_moveup&item_id=' . $item['id'] .	'&id=' . $rule_id .	'&rule_type=' . $rule_type) . '">
-					<img style="border:none;" src="images/move_up.gif" alt="" title="Move Up">
+					<img src="images/move_up.gif" alt="" title="Move Up">
 				</a></td>';
 
 			$form_data .= '<td class="nowrap" style="text-align:right;">
 				<a href="' . htmlspecialchars($module . '?action=item_remove&item_id=' . $item['id'] .	'&id=' . $rule_id .	'&rule_type=' . $rule_type) . '">
-					<img style="width:10px;height:10px;border:none;" src="images/delete_icon.gif" alt="" title="Delete">
+					<img class="deleteIcon" src="images/delete_icon.gif" alt="" title="Delete">
 				</a></td>
 			</tr>';
 
@@ -1170,15 +1170,15 @@ function display_graph_rule_items($title, $rule_id, $rule_type, $module) {
 			$form_data .= '<td>' . 	$item['pattern'] . '</td>';
 			$form_data .= '<td class="nowrap">
 				<a href="' . htmlspecialchars($module . '?action=item_movedown&item_id=' . $item['id'] . '&id=' . $rule_id .	'&rule_type=' . $rule_type) . '">
-					<img style="border:none;" src="images/move_down.gif" alt="" title="Move Down">
+					<img src="images/move_down.gif" alt="" title="Move Down">
 				</a>
 				<a href="' . htmlspecialchars($module . '?action=item_moveup&item_id=' . $item['id'] .	'&id=' . $rule_id .	'&rule_type=' . $rule_type) . '">
-					<img style="border:none;" src="images/move_up.gif" alt="" title="Move Up">
+					<img src="images/move_up.gif" alt="" title="Move Up">
 				</a></td>';
 
 			$form_data .= '<td class="nowrap" style="text-align:right;">
 				<a href="' . htmlspecialchars($module . '?action=item_remove&item_id=' . $item['id'] .	'&id=' . $rule_id .	'&rule_type=' . $rule_type) . '">
-					<img style="width:10px;height:10px;border:none;" src="images/delete_icon.gif" alt="" title="Delete">
+					<img class="deleteIcon" src="images/delete_icon.gif" alt="" title="Delete">
 				</a></td>
 			</tr>';
 
@@ -1217,16 +1217,17 @@ function display_tree_rule_items($title, $rule_id, $item_type, $rule_type, $modu
 			$form_data .= '<td>' . 	$item['replace_pattern'] . '</td>';
 			$form_data .= '<td class="nowrap">
 				<a href="' . htmlspecialchars($module . '?action=item_movedown&item_id=' . $item['id'] . '&id=' . $rule_id .	'&rule_type=' . $rule_type) . '">
-					<img style="border:none;" src="images/move_down.gif" alt="" title="Move Down">
+					<img src="images/move_down.gif" alt="" title="Move Down">
 				</a>
 				<a href="' . htmlspecialchars($module . '?action=item_moveup&item_id=' . $item['id'] .	'&id=' . $rule_id .	'&rule_type=' . $rule_type) . '">
-					<img style="border:none;" src="images/move_up.gif" alt="" title="Move Up">
+					<img src="images/move_up.gif" alt="" title="Move Up">
 				</a></td>';
 
 			$form_data .= '<td class="nowrap" style="text-align:right;">
 				<a href="' . htmlspecialchars($module . '?action=item_remove&item_id=' . $item['id'] .	'&id=' . $rule_id .	'&rule_type=' . $rule_type) . '">
-					<img style="width:10px;height:10px;border:none;" src="images/delete_icon.gif" alt="" title="Delete">
-				</a></td></tr>';
+					<img class="deleteIcon" src="images/delete_icon.gif" alt="" title="Delete">
+				</a></td>
+			</tr>';
 
 			print $form_data;
 		}

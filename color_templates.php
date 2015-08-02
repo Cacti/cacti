@@ -103,7 +103,7 @@ function draw_color_template_items_list($item_list, $filename, $url_data, $disab
 		if ($disable_controls == false) {
 			print "<td><a href='" . htmlspecialchars($filename . "?action=item_movedown&color_template_item_id=" . $item['color_template_item_id'] . "&$url_data") . "'><img src='images/move_down.gif' alt='' title='Move Down'></a>
 					<a href='" . htmlspecialchars($filename . "?action=item_moveup&color_template_item_id=" . $item['color_template_item_id'] . "&$url_data") . "'><img src='images/move_up.gif' alt='' title='Move Up'></a></td>\n";
-			print "<td align='right'><a href='" . htmlspecialchars($filename . "?action=item_remove&color_template_item_id=" . $item['color_template_item_id'] . "&$url_data") . "'><img style='width:10px;height:10px;border:none;' src='images/delete_icon.gif' alt='' title='Delete'></a></td>\n";
+			print "<td align='right'><a href='" . htmlspecialchars($filename . "?action=item_remove&color_template_item_id=" . $item['color_template_item_id'] . "&$url_data") . "'><img class='deleteIcon' src='images/delete_icon.gif' alt='' title='Delete'></a></td>\n";
 		}
 
 		print '</tr>';

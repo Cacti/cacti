@@ -339,7 +339,7 @@ function item() {
 				<a class='linkEditMain' href='<?php print htmlspecialchars('graph_templates_inputs.php?action=input_edit&id=' . $item['id'] . '&graph_template_id=' . $_REQUEST['id']);?>'><?php print htmlspecialchars($item['name']);?></a>
 			</td>
 			<td align='right'>
-				<a href='<?php print htmlspecialchars('graph_templates_inputs.php?action=input_remove&id=' . $item['id'] . '&graph_template_id=' . $_REQUEST['id']);?>'><img src='images/delete_icon.gif' style='height:10px;width:10px;' alt='' title='Delete'></a>
+				<a href='<?php print htmlspecialchars('graph_templates_inputs.php?action=input_remove&id=' . $item['id'] . '&graph_template_id=' . $_REQUEST['id']);?>'><img class='deleteIcon' src='images/delete_icon.gif' alt='' title='Delete'></a>
 			</td>
 		</tr>
 		<?php

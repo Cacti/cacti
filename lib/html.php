@@ -819,7 +819,7 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 		if ($disable_controls == false) {
 			print "<td><a href='" . htmlspecialchars("$filename?action=item_movedown&id=" . $item["id"] . "&$url_data") . "'><img src='" . $config['url_path'] . "images/move_down.gif' border='0' alt='Move Down'></a>
 					<a href='" . htmlspecialchars("$filename?action=item_moveup&id=" . $item["id"] . "&$url_data") . "'><img src='" . $config['url_path'] . "images/move_up.gif' border='0' alt='Move Up'></a></td>\n";
-			print "<td align='right'><a href='" . htmlspecialchars("$filename?action=item_remove&id=" . $item["id"] . "&$url_data") . "'><img src='" . $config['url_path'] . "images/delete_icon.gif' style='height:10px;width:10px;' border='0' alt='Delete'></a></td>\n";
+			print "<td align='right'><a href='" . htmlspecialchars("$filename?action=item_remove&id=" . $item["id"] . "&$url_data") . "'><img class='deleteIcon' src='" . $config['url_path'] . "images/delete_icon.gif' alt='' title='Delete'></a></td>\n";
 		}
 
 		print "</tr>";

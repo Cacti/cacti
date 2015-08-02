@@ -287,7 +287,7 @@ function template_edit() {
 						<strong><?php print $i;?>)</strong> <?php print htmlspecialchars($item['name']);?>
 					</td>
 					<td style='text-align:right;'>
-						<a href='<?php print htmlspecialchars('host_templates.php?action=item_remove_gt&id=' . $item['id'] . '&host_template_id=' . $_REQUEST['id']);?>'><img src='images/delete_icon.gif' style="height:10px;width:10px;border:none;" alt='' title='Delete'></a>
+						<a href='<?php print htmlspecialchars('host_templates.php?action=item_remove_gt&id=' . $item['id'] . '&host_template_id=' . $_REQUEST['id']);?>'><img class='deleteIcon' src='images/delete_icon.gif' alt='' title='Delete'></a>
 					</td>
 				<?php
 				form_end_row();
@@ -345,7 +345,7 @@ function template_edit() {
 						<strong><?php print $i;?>)</strong> <?php print htmlspecialchars($item['name']);?>
 					</td>
 					<td style='text-align:right;'>
-						<a href='<?php print htmlspecialchars('host_templates.php?action=item_remove_dq&id=' . $item['id'] . '&host_template_id=' . $_REQUEST['id']);?>'><img src='images/delete_icon.gif' style="height:10px;width:10px;border:none;" alt='' title='Delete'></a>
+						<a href='<?php print htmlspecialchars('host_templates.php?action=item_remove_dq&id=' . $item['id'] . '&host_template_id=' . $_REQUEST['id']);?>'><img class='deleteIcon' src='images/delete_icon.gif' alt='' title='Delete'></a>
 					</td>
 				<?php
 				form_end_row();

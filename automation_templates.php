@@ -299,9 +299,9 @@ function template() {
 			}else{
 				$form_data .= '<img height="14" width="14" src="images/view_none.gif" alt="">';
 			}
-			$form_data .= '<img style="padding:2px;cursor:pointer;" class="action" href="' . htmlspecialchars('automation_templates.php?action=remove&id=' . $dt['id']) . '" src="images/delete_icon.gif" width="10" height="10" alt="" title="Delete">';
+			$form_data .= '<img class="deleteIcon action" href="' . htmlspecialchars('automation_templates.php?action=remove&id=' . $dt['id']) . '" src="images/delete_icon.gif" width="10" height="10" alt="" title="Delete">';
 
-			echo "<td style='white-space:nowrap;'><div style='text-align:right;'>" . $form_data . "</div></td>\n";
+			echo "<td class='nowrap'><div style='text-align:right;'>" . $form_data . "</div></td>\n";
 			form_end_row();
 
 			$i++;

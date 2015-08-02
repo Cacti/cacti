@@ -22,6 +22,10 @@ td, th {
 	margin: 0px;
 }
 
+img {
+	border:none;
+}
+
 /* links */
 
 a, a:active, a:visited {
@@ -112,6 +116,14 @@ label {
 
 .accessRestrictedItem {
 	color:red;
+}
+
+.deleteIcon {
+	width:10px;
+	height:10px;
+	cursor:pointer;
+	padding:2px;
+	border:none;
 }
 
 .menuoptions {

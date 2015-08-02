@@ -668,7 +668,7 @@ function classical_export($cacti_root_path, $cacti_export_path) {
 			fclose($fp_graph_index);
 
 			/* main graph page html */
-			fwrite($fp_index, "<td style='text-align:center;width:" . round(100 / $classic_columns,0) . "%;'><a href='graph_" . $graph["local_graph_id"] . ".html'><img style='border:none;' src='graphs/thumb_" . $graph["local_graph_id"] . ".png' alt='' title='" . $graph["title_cache"] . "'></a></td>\n");
+			fwrite($fp_index, "<td style='text-align:center;width:" . round(100 / $classic_columns,0) . "%;'><a href='graph_" . $graph["local_graph_id"] . ".html'><img src='graphs/thumb_" . $graph["local_graph_id"] . ".png' alt='' title='" . $graph["title_cache"] . "'></a></td>\n");
 
 			$i++;
 			$k++;

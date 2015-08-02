@@ -515,7 +515,7 @@ function data_query_item_edit() {
 						<?php print htmlspecialchars($suggested_value['text']);?>
 					</td>
 					<td align='right'>
-						<span class='remover' href='<?php print htmlspecialchars('data_queries.php?action=item_remove_gsv&snmp_query_graph_id=' . $_REQUEST['id'] . '&id=' . $suggested_value['id'] . '&snmp_query_id=' . $_REQUEST['snmp_query_id']);?>'><img src='images/delete_icon.gif' style='height:10px;width:10px;' alt='' title='Delete'></span>
+						<span class='remover' href='<?php print htmlspecialchars('data_queries.php?action=item_remove_gsv&snmp_query_graph_id=' . $_REQUEST['id'] . '&id=' . $suggested_value['id'] . '&snmp_query_id=' . $_REQUEST['snmp_query_id']);?>'><img class='deleteIcon' src='images/delete_icon.gif' alt='' title='Delete'></span>
 					</td>
 				</tr>
 				<?php
@@ -580,7 +580,7 @@ function data_query_item_edit() {
 							<?php print htmlspecialchars($suggested_value['text']);?>
 						</td>
 						<td align='right'>
-							<span class='remover' href='<?php print htmlspecialchars('data_queries.php?action=item_remove_dssv&snmp_query_graph_id=' . $_REQUEST['id'] . '&id=' . $suggested_value['id'] . '&snmp_query_id=' . $_REQUEST['snmp_query_id'] . '&data_template_id=' . $data_template['id']);?>'><img style='width:10px;height:10px;border:none;' src='images/delete_icon.gif' alt='' title='Delete'></span>
+							<span class='remover' href='<?php print htmlspecialchars('data_queries.php?action=item_remove_dssv&snmp_query_graph_id=' . $_REQUEST['id'] . '&id=' . $suggested_value['id'] . '&snmp_query_id=' . $_REQUEST['snmp_query_id'] . '&data_template_id=' . $data_template['id']);?>'><img class='deleteIcon' src='images/delete_icon.gif' alt='' title='Delete'></span>
 						</td>
 					</tr>
 					<?php
@@ -768,7 +768,7 @@ function data_query_edit() {
 							<?php print $snmp_query_graph['id'];?>
 						</td>
 						<td align="right">
-							<a href="<?php print htmlspecialchars('data_queries.php?action=item_remove&id=' . $snmp_query_graph['id'] . '&snmp_query_id=' . $snmp_query['id']);?>"><img src="images/delete_icon.gif" style="height:10px;width:10px;" alt="" title="Delete"></a>
+							<a href="<?php print htmlspecialchars('data_queries.php?action=item_remove&id=' . $snmp_query_graph['id'] . '&snmp_query_id=' . $snmp_query['id']);?>"><img class='deleteIcon' src="images/delete_icon.gif" alt="" title="Delete"></a>
 						</td>
 					</tr>
 					<?php
