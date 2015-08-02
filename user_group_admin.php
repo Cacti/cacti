@@ -605,9 +605,9 @@ function user_group_members_edit($header_label) {
 			form_selectable_cell((strlen(get_request_var_request('filter')) ? preg_replace('/(' . preg_quote(get_request_var_request('filter')) . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($g['full_name'])) : htmlspecialchars($g['full_name'])), $g['id']);
 			form_selectable_cell($g['id'], $g['id']);
 			if (user_group_is_member($g['id'], get_request_var_request('id'))) {
-				form_selectable_cell('<span style="color:green;font-weight:bold;">Group Member</span>', $g['id']);
+				form_selectable_cell('<span class="accessGranted">Group Member</span>', $g['id']);
 			}else{
-				form_selectable_cell('<span style="color:red;font-weight:bold;">Non Member</span>', $g['id']);
+				form_selectable_cell('<span class="accessRestricted">Non Member</span>', $g['id']);
 			}
 			form_selectable_cell(($g['enabled'] == 'on' ? 'Enabled':'Disabled'), $g['id']);
 			form_selectable_cell((isset($auth_realms[$g['realm']]) ? $auth_realms[$g['realm']]:'Unknown'), $g['id']);
@@ -748,15 +748,15 @@ function user_group_graph_perms_edit($tab, $header_label) {
 				form_selectable_cell($g['local_graph_id'], $g['local_graph_id']);
 				if (empty($g['group_id']) || $g['group_id'] == NULL) {
 					if ($policy['policy_graphs'] == 1) {
-						form_selectable_cell('<span style="color:green;font-weight:bold;">Access Granted</span>', $g['local_graph_id']);
+						form_selectable_cell('<span class="accessGranted">Access Granted</span>', $g['local_graph_id']);
 					}else{
-						form_selectable_cell('<span style="color:red;font-weight:bold;">Access Restricted</span>', $g['local_graph_id']);
+						form_selectable_cell('<span class="accessRestricted">Access Restricted</span>', $g['local_graph_id']);
 					}
 				} else {
 					if ($policy['policy_graphs'] == 1) {
-						form_selectable_cell('<span style="color:red;font-weight:bold;">Access Restricted</span>', $g['local_graph_id']);
+						form_selectable_cell('<span class="accessRestricted">Access Restricted</span>', $g['local_graph_id']);
 					}else{
-						form_selectable_cell('<span style="color:green;font-weight:bold;">Access Granted</span>', $g['local_graph_id']);
+						form_selectable_cell('<span class="accessGranted">Access Granted</span>', $g['local_graph_id']);
 					}
 				}
 				form_checkbox_cell($g['title_cache'], $g['local_graph_id']);
@@ -891,15 +891,15 @@ function user_group_graph_perms_edit($tab, $header_label) {
 				form_selectable_cell(round(($host['id']), 2), $host['id']);
 				if (empty($host['group_id']) || $host['group_id'] == NULL) {
 					if ($policy['policy_hosts'] == 1) {
-						form_selectable_cell('<span style="color:green;font-weight:bold;">Access Granted</span>', $host['id']);
+						form_selectable_cell('<span class="accessGranted">Access Granted</span>', $host['id']);
 					}else{
-						form_selectable_cell('<span style="color:red;font-weight:bold;">Access Restricted</span>', $host['id']);
+						form_selectable_cell('<span class="accessRestricted">Access Restricted</span>', $host['id']);
 					}
 				} else {
 					if ($policy['policy_hosts'] == 1) {
-						form_selectable_cell('<span style="color:red;font-weight:bold;">Access Restricted</span>', $host['id']);
+						form_selectable_cell('<span class="accessRestricted">Access Restricted</span>', $host['id']);
 					}else{
-						form_selectable_cell('<span style="color:green;font-weight:bold;">Access Granted</span>', $host['id']);
+						form_selectable_cell('<span class="accessGranted">Access Granted</span>', $host['id']);
 					}
 				}
 				form_selectable_cell((isset($host_graphs[$host['id']]) ? $host_graphs[$host['id']] : 0), $host['id']);
@@ -1033,15 +1033,15 @@ function user_group_graph_perms_edit($tab, $header_label) {
 				form_selectable_cell($g['id'], $g['id']);
 				if (empty($g['group_id']) || $g['group_id'] == NULL) {
 					if ($policy['policy_graph_templates'] == 1) {
-						form_selectable_cell('<span style="color:green;font-weight:bold;">Access Granted</span>', $g['id']);
+						form_selectable_cell('<span class="accessGranted">Access Granted</span>', $g['id']);
 					}else{
-						form_selectable_cell('<span style="color:red;font-weight:bold;">Access Restricted</span>', $g['id']);
+						form_selectable_cell('<span class="accessRestricted">Access Restricted</span>', $g['id']);
 					}
 				} else {
 					if ($policy['policy_graph_templates'] == 1) {
-						form_selectable_cell('<span style="color:red;font-weight:bold;">Access Restricted</span>', $g['id']);
+						form_selectable_cell('<span class="accessRestricted">Access Restricted</span>', $g['id']);
 					}else{
-						form_selectable_cell('<span style="color:green;font-weight:bold;">Access Granted</span>', $g['id']);
+						form_selectable_cell('<span class="accessGranted">Access Granted</span>', $g['id']);
 					}
 				}
 				form_selectable_cell($g['totals'], $g['id']);
@@ -1165,15 +1165,15 @@ function user_group_graph_perms_edit($tab, $header_label) {
 				form_selectable_cell($t['id'], $t['id']);
 				if (empty($t['group_id']) || $t['group_id'] == NULL) {
 					if ($policy['policy_trees'] == 1) {
-						form_selectable_cell('<span style="color:green;font-weight:bold;">Access Granted</span>', $t['id']);
+						form_selectable_cell('<span class="accessGranted">Access Granted</span>', $t['id']);
 					}else{
-						form_selectable_cell('<span style="color:red;font-weight:bold;">Access Restricted</span>', $t['id']);
+						form_selectable_cell('<span class="accessRestricted">Access Restricted</span>', $t['id']);
 					}
 				} else {
 					if ($policy['policy_trees'] == 1) {
-						form_selectable_cell('<span style="color:red;font-weight:bold;">Access Restricted</span>', $t['id']);
+						form_selectable_cell('<span class="accessRestricted">Access Restricted</span>', $t['id']);
 					}else{
-						form_selectable_cell('<span style="color:green;font-weight:bold;">Access Granted</span>', $t['id']);
+						form_selectable_cell('<span class="accessGranted">Access Granted</span>', $t['id']);
 					}
 				}
 				form_checkbox_cell($t['name'], $t['id']);

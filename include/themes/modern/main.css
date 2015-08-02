@@ -96,6 +96,24 @@ label {
 	vertical-align:bottom;
 }
 
+.accessGranted {
+	color:green;
+	font-weight:bold;
+}
+
+.accessGrantedItem {
+	color:green;
+}
+
+.accessRestricted {
+	color:red;
+	font-weight:bold;
+}
+
+.accessRestrictedItem {
+	color:red;
+}
+
 .menuoptions {
 	background: none repeat scroll 0 0 #eee;
     border-color: #f5f5f5 #e5e5e5 #ccc;
