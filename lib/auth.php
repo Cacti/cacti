@@ -463,7 +463,7 @@ function is_view_allowed($view = 'show_tree') {
 }
 
 function is_realm_allowed($realm) {
-	global $user_auth_realms;
+	global $user_auth_realms, $config;
 
 	/* list all realms that this user has access to */
 	if (isset($_SESSION['sess_user_id'])) {
