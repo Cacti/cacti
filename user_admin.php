@@ -739,6 +739,7 @@ function graph_perms_edit($tab, $header_label) {
 				<input type="submit" name="update_policy" value="Update">
 				<input type="hidden" name="tab" value="<?php print $tab;?>">
 				<input type="hidden" name="id" value="<?php print get_request_var_request('id');?>">
+				<input type="hidden" name="update_policy" value="1">
 			</td>
 			</tr></table></td>
 		</tr>
@@ -755,7 +756,7 @@ function graph_perms_edit($tab, $header_label) {
 			$rows = $_REQUEST['rows'];
 		}
 
-		form_start(htmlspecialchars('user_admin.php?action=user_edit&tab=permsg&id=' . get_request_var_request('id')), 'chk');
+		form_start(htmlspecialchars('user_admin.php?tab=permsg&id=' . get_request_var_request('id')), 'chk');
 
 		html_start_box('', '100%', '', '3', 'center', '');
 
@@ -898,7 +899,6 @@ function graph_perms_edit($tab, $header_label) {
 		}
 		html_end_box(false);
 
-		form_hidden_box('action', 'user_edit', '');
 		form_hidden_box('tab',$tab,'');
 		form_hidden_box('id', get_request_var_request('id'), '');
 		form_hidden_box('associate_graph', '1', '');
@@ -947,7 +947,7 @@ function graph_perms_edit($tab, $header_label) {
 			$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') . ' uagm.user_id=' . get_request_var_request('id', 0);
 		}
 
-		form_start(htmlspecialchars('user_admin.php?action=user_edit&tab=permsd&id=' . get_request_var_request('id')), 'chk');
+		form_start(htmlspecialchars('user_admin.php?tab=permsd&id=' . get_request_var_request('id')), 'chk');
 
 		html_start_box('', '100%', '', '3', 'center', '');
 
@@ -996,7 +996,6 @@ function graph_perms_edit($tab, $header_label) {
 		}
 		html_end_box(false);
 
-		form_hidden_box('action', 'user_edit', '');
 		form_hidden_box('tab',$tab,'');
 		form_hidden_box('id', get_request_var_request('id'), '');
 		form_hidden_box('associate_groups', '1', '');
@@ -1033,6 +1032,7 @@ function graph_perms_edit($tab, $header_label) {
 				<input type="submit" name="update_policy" value="Update">
 				<input type="hidden" name="tab" value="<?php print $tab;?>">
 				<input type="hidden" name="id" value="<?php print get_request_var_request('id');?>">
+				<input type="hidden" name="update_policy" value="1">
 			</td>
 			</tr></table></td>
 		</tr>
@@ -1071,7 +1071,7 @@ function graph_perms_edit($tab, $header_label) {
 			$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') . ' user_auth_perms.user_id=' . get_request_var_request('id', 0);
 		}
 
-		form_start(htmlspecialchars('user_admin.php?action=user_edit&tab=permsd&id=' . get_request_var_request('id')), 'chk');
+		form_start(htmlspecialchars('user_admin.php?tab=permsd&id=' . get_request_var_request('id')), 'chk');
 
 		html_start_box('', '100%', '', '3', 'center', '');
 
@@ -1136,7 +1136,6 @@ function graph_perms_edit($tab, $header_label) {
 		}
 		html_end_box(false);
 
-		form_hidden_box('action', 'user_edit', '');
 		form_hidden_box('tab',$tab,'');
 		form_hidden_box('id', get_request_var_request('id'), '');
 		form_hidden_box('associate_host', '1', '');
@@ -1180,6 +1179,7 @@ function graph_perms_edit($tab, $header_label) {
 				<input type="submit" name="update_policy" value="Update">
 				<input type="hidden" name="tab" value="<?php print $tab;?>">
 				<input type="hidden" name="id" value="<?php print get_request_var_request('id');?>">
+				<input type="hidden" name="update_policy" value="1">
 			</td>
 			</tr></table></td>
 		</tr>
@@ -1209,7 +1209,7 @@ function graph_perms_edit($tab, $header_label) {
 			$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') . ' (user_auth_perms.type=4 AND user_auth_perms.user_id=' . get_request_var_request('id', 0) . ')';
 		}
 
-		form_start(htmlspecialchars('user_admin.php?action=user_edit&tab=permste&id=' . get_request_var_request('id'), 'policy'));
+		form_start(htmlspecialchars('user_admin.php?tab=permste&id=' . get_request_var_request('id')), 'policy');
 
 		html_start_box('', '100%', '', '3', 'center', '');
 
@@ -1274,7 +1274,6 @@ function graph_perms_edit($tab, $header_label) {
 		}
 		html_end_box(false);
 
-		form_hidden_box('action', 'user_edit', '');
 		form_hidden_box('tab',$tab,'');
 		form_hidden_box('id', get_request_var_request('id'), '');
 		form_hidden_box('associate_template', '1', '');
@@ -1318,6 +1317,7 @@ function graph_perms_edit($tab, $header_label) {
 				<input type="submit" name="update_policy" value="Update">
 				<input type="hidden" name="tab" value="<?php print $tab;?>">
 				<input type="hidden" name="id" value="<?php print get_request_var_request('id');?>">
+				<input type="hidden" name="update_policy" value="1">
 			</td>
 			</tr></table></td>
 		</tr>
@@ -1347,7 +1347,7 @@ function graph_perms_edit($tab, $header_label) {
 			$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') . ' (user_auth_perms.type=2 AND user_auth_perms.user_id=' . get_request_var_request('id', 0) . ')';
 		}
 
-		form_start(htmlspecialchars('user_admin.php?action=user_edit&tab=permstr&id=' . get_request_var_request('id')), 'policy');
+		form_start(htmlspecialchars('user_admin.php?tab=permstr&id=' . get_request_var_request('id')), 'policy');
 
 		html_start_box('', '100%', '', '3', 'center', '');
 
@@ -1405,7 +1405,6 @@ function graph_perms_edit($tab, $header_label) {
 		}
 		html_end_box(false);
 
-		form_hidden_box('action', 'user_edit', '');
 		form_hidden_box('tab',$tab,'');
 		form_hidden_box('id', get_request_var_request('id'), '');
 		form_hidden_box('associate_tree', '1', '');
