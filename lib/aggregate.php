@@ -228,20 +228,8 @@ function aggregate_error_handler($errno, $errmsg, $filename, $linenum, $vars) {
 		print("PROGERR: " . $err . "<br><pre>");# print_r($vars); print("</pre>");
 
 		# backtrace, if available
-		if (function_exists('debug_backtrace')) {
-			//print "backtrace:\n";
-			$backtrace = debug_backtrace();
-			array_shift($backtrace);
+		cacti_debug_backtrace('AGGREGATE', true);
 
-			foreach($backtrace as $i=>$l) {
-				print "[$i] in function <b>{$l['function']}</b>";
-				if(isset($l['class'])) print " in class <b>{$l['class']}</b>";
-				if(isset($l['type'])) print " of type <b>{$l['type']}</b>";
-				if($l['file']) print " in <b>{$l['file']}</b>";
-				if($l['line']) print " on line <b>{$l['line']}</b>";
-				print "\n";
-			}
-		}
 		if (isset($GLOBALS['error_fatal'])) {
 			if($GLOBALS['error_fatal'] & $errno) die('fatal');
 		}

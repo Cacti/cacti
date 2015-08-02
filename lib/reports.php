@@ -1331,17 +1331,8 @@ function reports_error_handler($errno, $errmsg, $filename, $linenum, $vars) {
 		print('PROGERR: ' . $err . '<br><pre>');
 
 		# backtrace, if available
-		if (function_exists('debug_backtrace')) {
-			//print "backtrace:\n";
-			$backtrace = debug_backtrace();
-			array_shift($backtrace);
-			foreach($backtrace as $i=>$l) {
-				print "[$i] in function <b>{$l['class']}{$l['type']}{$l['function']}</b>";
-				if($l['file']) print " in <b>{$l['file']}</b>";
-				if($l['line']) print " on line <b>{$l['line']}</b>";
-				print "\n";
-			}
-		}
+		cacti_debug_backtrace('REPORTS', true);
+
 		if (isset($GLOBALS['error_fatal'])) {
 			if($GLOBALS['error_fatal'] & $errno) die('fatal');
 		}

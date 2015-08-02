@@ -3613,7 +3613,7 @@ function update_system_mibs($host_id) {
 	}
 }
 
-function cacti_debug_backtrace($entry = '') {
+function cacti_debug_backtrace($entry = '', $html = false) {
 	$callers = debug_backtrace();
 	$s = '';
 	foreach ($callers as $c) {
@@ -3621,6 +3621,10 @@ function cacti_debug_backtrace($entry = '') {
 		$line = $c['line'];
 		$func = $c['function'];
 		$s = "($file:$line $func)" . $s;
+	}
+
+	if ($html) {
+		echo "<table style='width:100%;text-align:center;'><tr><td>$s</td></tr></table>\n";
 	}
 	cacti_log(trim("$entry Backtrace: $s"), false);
 }

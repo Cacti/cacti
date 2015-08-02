@@ -43,16 +43,17 @@ function input_validate_input_regex($value, $regex) {
 function die_html_input_error() {
 	global $config;
 
-	cacti_debug_backtrace('VALIDATION');
 	?>
 	<table style="width:100%;text-align:center;">
 		<tr>
 			<td>
-				Validation error. Check your Cacti Log for Details.
+				Validation error.  See backtrace below for more details.
 			</td>
 		</tr>
 	</table>
 	<?php
+
+	cacti_debug_backtrace('Validation', true);
 
 	bottom_footer();
 	exit;
