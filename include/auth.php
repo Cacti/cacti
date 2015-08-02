@@ -24,8 +24,14 @@
 
 include('./include/global.php');
 
-/* check to see if this is a new installation */
-$version = db_fetch_cell('SELECT cacti FROM version');
+
+if (!isset($config['cacti_db_version'])) {
+	$version = db_fetch_cell('SELECT cacti FROM version');
+	$config['cacti_db_version'] = $version;
+}else{
+	$version = $config['cacti_db_version'];
+}
+
 if ($version != $config['cacti_version']) {
 	header ('Location: ' . $config['url_path'] . 'install/');
 	exit;
