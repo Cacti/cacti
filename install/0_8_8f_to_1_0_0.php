@@ -1163,4 +1163,8 @@ function upgrade_to_1_0_0() {
 	db_install_execute('0.8.8f', "DELETE FROM plugin_realms WHERE plugin='discovery'");
 	db_install_execute('0.8.8f', "DELETE FROM plugin_db_changes WHERE plugin='discovery'");
 	db_install_execute('0.8.8f', "DELETE FROM plugin_hooks WHERE name='discovery'");
+
+	if (db_fetch_cell("SELECT id FROM user_auth WHERE id=1") == 1) {
+		db_install_execute('0.8.8f', 'INSERT IGNORE INTO user_auth_realm (user_id, realm_id) VALUES (1, 23)');
+	}
 }

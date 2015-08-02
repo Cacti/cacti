@@ -576,6 +576,10 @@ if ($step == '4') {
 			color: white;
 			font-weight: bold;
 		}
+
+		.installArea {
+			font-size: 12px;
+		}
 	-->
 	</style>
 </head>
@@ -584,16 +588,16 @@ if ($step == '4') {
 
 <form method='post' action='index.php'>
 
-<table style='width:700;'>
+<table style='margin-left:auto;margin-right:auto;width:60%;text-align:center;'>
 	<tr><td height='40'></td></tr>
 	<tr>
-		<td width='100%' valign='middle'>
+		<td style='width:100%;vertical-align:middle;'>
 			<table class='cactiTable'>
 				<tr class='cactiTableTitle'>
 					<td class='textHeaderDark'><strong>Cacti Installation Guide</strong></td>
 				</tr>
 				<tr class='installArea'>
-					<td width='100%' style='font-size: 12px;'>
+					<td>
 						<?php if ($step == '1') { ?>
 
 						<p>Thanks for taking the time to download and install cacti, the complete graphing
