@@ -381,6 +381,7 @@ function update_show_current () {
 							<option value='1'<?php if (get_request_var_request('state') == '1') {?> selected<?php }?>>Active</option>
 							<option value='4'<?php if (get_request_var_request('state') == '4') {?> selected<?php }?>>Installed</option>
 							<option value='5'<?php if (get_request_var_request('state') == '5') {?> selected<?php }?>>Active/Installed</option>
+							<option value='2'<?php if (get_request_var_request('state') == '2') {?> selected<?php }?>>Configuration Issues</option>
 							<option value='0'<?php if (get_request_var_request('state') == '0') {?> selected<?php }?>>Not Installed</option>
 							<option value='-1'<?php if (get_request_var_request('state') == '-1') {?> selected<?php }?>>Legacy Installed</option>
 							<option value='-2'<?php if (get_request_var_request('state') == '-2') {?> selected<?php }?>>Legacy Not Intalled</option>
@@ -524,14 +525,14 @@ function format_plugin_row($plugin, $last_plugin, $include_ordering) {
 	if ($include_ordering) {
 		$row .= "<td style='white-space:nowrap;'>";
 		if (!$first_plugin) {
-			$row .= "<a href='" . htmlspecialchars('plugins.php?mode=moveup&id=' . $plugin['directory']) . "' title='Order Before Prevous Plugin' class='linkEditMain'><img style='padding:1px;' border='0' align='absmiddle' src='images/move_up.gif'></a>";
+			$row .= "<a href='" . htmlspecialchars('plugins.php?mode=moveup&id=' . $plugin['directory']) . "' title='Order Before Prevous Plugin' class='linkEditMain'><img style='padding:1px;' align='absmiddle' src='images/move_up.gif'></a>";
 		}else{
-			$row .= "<a href='#' title='Can NOT Reduce Load Order' class='linkEditMain'><img style='padding:1px;' border='0' align='absmiddle' src='images/view_none.gif'></a>";
+			$row .= "<a href='#' title='Can NOT Reduce Load Order' class='linkEditMain'><img style='padding:1px;' align='absmiddle' src='images/view_none.gif'></a>";
 		}
 		if (!$last_plugin) {
-			$row .= "<a href='" . htmlspecialchars('plugins.php?mode=movedown&id=' . $plugin['directory']) . "' title='Order After Next Plugin' class='linkEditMain'><img style='padding:1px;' border='0' align='absmiddle' src='images/move_down.gif'></a>";
+			$row .= "<a href='" . htmlspecialchars('plugins.php?mode=movedown&id=' . $plugin['directory']) . "' title='Order After Next Plugin' class='linkEditMain'><img style='padding:1px;' align='absmiddle' src='images/move_down.gif'></a>";
 		}else{
-			$row .= "<a href='#' title='Can Increase Load Order' class='linkEditMain'><img style='padding:1px;' border='0' align='absmiddle' src='images/view_none.gif'></a>";
+			$row .= "<a href='#' title='Can Increase Load Order' class='linkEditMain'><img style='padding:1px;' align='absmiddle' src='images/view_none.gif'></a>";
 		}
 		$row .= "</td>\n";
 	}else{
@@ -555,8 +556,8 @@ function plugin_actions($plugin) {
 	$link = '<td>';
 	switch ($plugin['status']) {
 		case '-2': // Old PA Not Installed
-			$link .= "<a href='" . htmlspecialchars('plugins.php?mode=installold&id=' . $plugin['directory']) . "' title='Install Old Plugin' class='linkEditMain'><img style='padding:1px;' border='0' align='absmiddle' src='images/install_icon.png'></a>";
-			$link .= "<img style='padding:1px;' border='0' align='absmiddle' src='images/view_none.gif'>";
+			$link .= "<a href='" . htmlspecialchars('plugins.php?mode=installold&id=' . $plugin['directory']) . "' title='Install Old Plugin' class='linkEditMain'><img style='padding:1px;' align='absmiddle' src='images/install_icon.png'></a>";
+			$link .= "<img style='padding:1px;' align='absmiddle' src='images/view_none.gif'>";
 			break;
 		case '-1':	// Old PA Currently Active
 			$oldplugins = read_config_option('oldplugins');
@@ -566,33 +567,34 @@ function plugin_actions($plugin) {
 				$oldplugins = array();
 			}
 			if (in_array($plugin['directory'], $oldplugins)) {
-				$link .= "<a href='" . htmlspecialchars('plugins.php?mode=uninstallold&id=' . $plugin['directory']) . "' title='Uninstall Old Plugin' class='linkEditMain'><img style='padding:1px;' border='0' align='absmiddle' src='images/uninstall_icon.gif'></a>";
+				$link .= "<a href='" . htmlspecialchars('plugins.php?mode=uninstallold&id=' . $plugin['directory']) . "' title='Uninstall Old Plugin' class='linkEditMain'><img style='padding:1px;' align='absmiddle' src='images/uninstall_icon.gif'></a>";
 			} else {
-				$link .= "<a href='#' title='Please Uninstall from config.php' class='linkEditMain'><img style='padding:1px;' align='absmiddle' border='0' src='images/install_icon_disabled.png'></a>";
+				$link .= "<a href='#' title='Please Uninstall from config.php' class='linkEditMain'><img style='padding:1px;' align='absmiddle' src='images/install_icon_disabled.png'></a>";
 			}
-			$link .= "<img style='padding:1px;' border='0' align='absmiddle' src='images/view_none.gif'>";
+			$link .= "<img style='padding:1px;' align='absmiddle' src='images/view_none.gif'>";
 			break;
 		case '0': // Not Installed
-			$link .= "<a href='" . htmlspecialchars('plugins.php?mode=install&id=' . $plugin['directory']) . "' title='Install Plugin' class='linkEditMain'><img style='padding:1px;' border='0' align='absmiddle' src='images/install_icon.png'></a>";
-			$link .= "<img style='padding:1px;' border='0' align='absmiddle' src='images/view_none.gif'>";
+			$link .= "<a href='" . htmlspecialchars('plugins.php?mode=install&id=' . $plugin['directory']) . "' title='Install Plugin' class='linkEditMain'><img style='padding:1px;' align='absmiddle' src='images/install_icon.png'></a>";
+			$link .= "<img style='padding:1px;' align='absmiddle' src='images/view_none.gif'>";
 			break;
 		case '1':	// Currently Active
-			$link .= "<a href='" . htmlspecialchars('plugins.php?mode=uninstall&id=' . $plugin['directory']) . "' title='Uninstall Plugin' class='linkEditMain'><img style='padding:1px;' border='0' align='absmiddle' src='images/uninstall_icon.gif'></a>";
-			$link .= "<a href='" . htmlspecialchars('plugins.php?mode=disable&id=' . $plugin['directory']) . "' title='Disable Plugin' class='linkEditMain'><img style='padding:1px;' border='0' align='absmiddle' src='images/disable_icon.png'></a>";
+			$link .= "<a href='" . htmlspecialchars('plugins.php?mode=uninstall&id=' . $plugin['directory']) . "' title='Uninstall Plugin' class='linkEditMain'><img style='padding:1px;' align='absmiddle' src='images/uninstall_icon.gif'></a>";
+			$link .= "<a href='" . htmlspecialchars('plugins.php?mode=disable&id=' . $plugin['directory']) . "' title='Disable Plugin' class='linkEditMain'><img style='padding:1px;' align='absmiddle' src='images/disable_icon.png'></a>";
+			break;
+		case '2': // Cinfiguration issues
+			$link .= "<a href='" . htmlspecialchars('plugins.php?mode=uninstall&id=' . $plugin['directory']) . "' title='Uninstall Plugin' class='linkEditMain'><img style='padding:1px;' align='absmiddle' src='images/uninstall_icon.gif'></a>";
 			break;
 		case '4':	// Installed but not active
-			$link .= "<a href='" . htmlspecialchars('plugins.php?mode=uninstall&id=' . $plugin['directory']) . "' title='Uninstall Plugin' class='linkEditMain'><img style='padding:1px;' border='0' align='absmiddle' src='images/uninstall_icon.gif'></a>";
-			$link .= "<a href='" . htmlspecialchars('plugins.php?mode=enable&id=' . $plugin['directory']) . "' title='Enable Plugin' class='linkEditMain'><img style='padding:1px;' border='0' align='absmiddle' src='images/enable_icon.png'></a>";
+			$link .= "<a href='" . htmlspecialchars('plugins.php?mode=uninstall&id=' . $plugin['directory']) . "' title='Uninstall Plugin' class='linkEditMain'><img style='padding:1px;' align='absmiddle' src='images/uninstall_icon.gif'></a>";
+			$link .= "<a href='" . htmlspecialchars('plugins.php?mode=enable&id=' . $plugin['directory']) . "' title='Enable Plugin' class='linkEditMain'><img style='padding:1px;' align='absmiddle' src='images/enable_icon.png'></a>";
 			break;
 		default: // Old PIA
-			$link .= "<a href='#' title='Please Install/Uninstall from config.php' class='linkEditMain'><img style='padding:1px;' align='absmiddle' border='0' src='images/install_icon_disabled.png'></a>";
-			$link .= "<a href='#' title='Enabling from the UI is not supported' class='linkEditMain'><img style='padding:1px;' align='absmiddle' border='0' src='images/enable_icon_disabled.png'></a>";
+			$link .= "<a href='#' title='Please Install/Uninstall from config.php' class='linkEditMain'><img style='padding:1px;' align='absmiddle' src='images/install_icon_disabled.png'></a>";
+			$link .= "<a href='#' title='Enabling from the UI is not supported' class='linkEditMain'><img style='padding:1px;' align='absmiddle' src='images/enable_icon_disabled.png'></a>";
 			break;
 	}
 	$link .= '</td>';
 
 	return $link;
 }
-
-
 

@@ -1270,8 +1270,8 @@ function display_reports_items($report_id) {
 			$form_data = '<td><a class="linkEditMain" href="' . htmlspecialchars(get_reports_page() . '?action=item_edit&id=' . $report_id. '&item_id=' . $item['id']) . '">Item#' . $i . '</a></td>';$i++;
 			$form_data .= '<td>' . $item['sequence'] . '</td>';
 			$form_data .= '<td>' . $item_types{$item['item_type']} . '</td>';
-			$form_data .= '<td style="white-space:nowrap;">' . $item_details . '</td>';
-			$form_data .= '<td style="white-space:nowrap;">' . $timespan . '</td>';
+			$form_data .= '<td class="nowrap">' . $item_details . '</td>';
+			$form_data .= '<td class="nowrap">' . $timespan . '</td>';
 			$form_data .= '<td>' . $align . '</td>';
 			$form_data .= '<td>' . $size . '</td>';
 
@@ -1496,7 +1496,7 @@ function reports() {
 		foreach ($reports_list as $report) {
 			form_alternate_row('line' . $report['id'], true);
 
-			form_selectable_cell("<a style='white-space:nowrap;' class='linkEditMain' href='" . htmlspecialchars(get_reports_page() . '?action=edit&tab=details&id=' . $report['id'] . "&page=1") . "'>" . (get_request_var_request('filter') != '' ? preg_replace('/(' . preg_quote(get_request_var_request('filter')) . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($report['name'])) : htmlspecialchars($report['name'])) . '</a>', $report['id']);
+			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars(get_reports_page() . '?action=edit&tab=details&id=' . $report['id'] . "&page=1") . "'>" . (get_request_var_request('filter') != '' ? preg_replace('/(' . preg_quote(get_request_var_request('filter')) . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($report['name'])) : htmlspecialchars($report['name'])) . '</a>', $report['id']);
 			if (is_reports_admin()) form_selectable_cell($report['full_name'], $report['id']);
 			$interval = 'Every ' . $report['count'] . ' ' . $reports_interval[$report['intrvl']];
 

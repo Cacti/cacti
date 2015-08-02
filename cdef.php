@@ -421,18 +421,18 @@ function cdef_edit() {
 		if (sizeof($cdef_items) > 0) {
 			foreach ($cdef_items as $cdef_item) {
 				form_alternate_row();$i++;?>
-					<td style='white-space:nowrap;'>
+					<td>
 						<a class='linkEditMain' href='<?php print htmlspecialchars('cdef.php?action=item_edit&id=' . $cdef_item['id'] . '&cdef_id=' . $cdef['id']);?>'>Item #<?php print htmlspecialchars($i);?></a>
 					</td>
 					<td style='text-align:left;width:50;'>
-						<a href='<?php print htmlspecialchars('cdef.php?action=item_movedown&id=' . $cdef_item['id'] . '&cdef_id=' . $cdef['id']);?>'><img src='images/move_down.gif' border='0' alt='Move Down'></a>
-						<a href='<?php print htmlspecialchars('cdef.php?action=item_moveup&id=' . $cdef_item['id'] . '&cdef_id=' . $cdef['id']);?>'><img src='images/move_up.gif' border='0' alt='Move Up'></a>
+						<a href='<?php print htmlspecialchars('cdef.php?action=item_movedown&id=' . $cdef_item['id'] . '&cdef_id=' . $cdef['id']);?>'><img src='images/move_down.gif' alt='' title='Move Down'></a>
+						<a href='<?php print htmlspecialchars('cdef.php?action=item_moveup&id=' . $cdef_item['id'] . '&cdef_id=' . $cdef['id']);?>'><img src='images/move_up.gif' alt='' title='Move Up'></a>
 					</td>
 					<td>
 						<em><?php $cdef_item_type = $cdef_item['type']; print $cdef_item_types[$cdef_item_type];?></em>: <strong><?php print htmlspecialchars(get_cdef_item_name($cdef_item['id']));?></strong>
 					</td>
 					<td align='right'>
-						<a href='<?php print htmlspecialchars('cdef.php?action=item_remove&id=' . $cdef_item['id'] . '&cdef_id=' . $cdef['id']);?>'><img src='images/delete_icon.gif' style='height:10px;width:10px;' border='0' alt='Delete'></a>
+						<a href='<?php print htmlspecialchars('cdef.php?action=item_remove&id=' . $cdef_item['id'] . '&cdef_id=' . $cdef['id']);?>'><img src='images/delete_icon.gif' style='height:10px;width:10px;' alt='' title='Delete'></a>
 					</td>
 				</tr>
 			<?php
@@ -538,7 +538,7 @@ function cdef() {
 						<input type="checkbox" id='has_graphs' <?php print ($_REQUEST['has_graphs'] == 'true' ? 'checked':'');?>>
 					</td>
 					<td>
-						<label for='has_graphs' style='white-space:nowrap;'>Has Graphs</label>
+						<label for='has_graphs'>Has Graphs</label>
 					</td>
 					<td>
 						<input type='button' id='refresh' value='Go' title='Set/Refresh Filters'>

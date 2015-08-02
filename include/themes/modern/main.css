@@ -53,6 +53,14 @@ input, select {
 	padding: 0.4em 0.4em 0.4em 0.4em;
 }
 
+label {
+	white-space:nowrap;
+}
+
+.nowrap {
+	white-space:nowrap;
+}
+
 .usermenudown {
 	background: transparent url('./../../../images/bullet_arrow_down.png') no-repeat center right;
 }
@@ -593,11 +601,13 @@ legend {
 	font-weight: bold;
 	padding: 3px;
   	text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+	white-space: nowrap;
 	cursor:pointer;
 }
 
 .linkEditMain:hover {
 	color: rgba(31,59,8,1);
+	white-space: nowrap;
 	text-decoration: none;
 }
 
@@ -632,6 +642,10 @@ legend {
 
 .bold {
 	font-weight: bold;
+}
+
+.remover {
+	pointer:cursor;
 }
 
 .messageBox {

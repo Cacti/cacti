@@ -542,7 +542,7 @@ function graph_edit() {
 	$current_tab = $_REQUEST['tab'];
 
 	/* draw the categories tabs on the top of the page */
-	print "<table class='tabs' width='100%' border='0' align='center'>\n";
+	print "<table class='tabs' width='100%' align='center'>\n";
 	print "<tr><td width='100%' id='tabs' valign='bottom'><div class='aggtabs'><nav><ul>\n";
 
 	if (sizeof($aggregate_tabs)) {
@@ -926,7 +926,7 @@ function aggregate_items() {
 						<input type='checkbox' id='matching' onChange='applyFilter()' <?php print ($_REQUEST['matching'] == 'on' || $_REQUEST['matching'] == 'true' ? ' checked':'');?>>
 					</td>
 					<td>
-						<label style='white-space:nowrap;' for='matching'>Part of Aggregate</label>
+						<label for='matching'>Part of Aggregate</label>
 					</td>
 					<td>
 						<input id='refresh' type='button' value='Go' title='Set/Refresh Filters'>

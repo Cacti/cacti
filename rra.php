@@ -328,7 +328,7 @@ function rra() {
 						<input type="checkbox" id='has_data' <?php print ($_REQUEST['has_data'] == 'true' ? 'checked':'');?>>
 					</td>
 					<td>
-						<label for='has_data' style='white-space:nowrap;'>Has Data Sources</label>
+						<label for='has_data'>Has Data Sources</label>
 					</td>
 					<td>
 						<input type='button' id='refresh' value='Go' title='Set/Refresh Filters'>

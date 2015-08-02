@@ -466,7 +466,7 @@ function template() {
 					<td>
 						<input id='filter' type='text' name='filter' size='25' value='<?php print htmlspecialchars(get_request_var_request('filter'));?>'>
 					</td>
-					<td style='white-space:nowrap;'>
+					<td class='nowrap'>
 						Device Templates
 					</td>
 					<td>
@@ -484,7 +484,7 @@ function template() {
 						<input type='checkbox' id='has_hosts' <?php print ($_REQUEST['has_hosts'] == 'true' ? 'checked':'');?>>
 					</td>
 					<td>
-						<label for='has_hosts' style='white-space:nowrap;'>Has Devices</label>
+						<label for='has_hosts'>Has Devices</label>
 					</td>
 					<td>
 						<input type='button' id='refresh' value='Go' title='Set/Refresh Filters'>
@@ -525,7 +525,6 @@ function template() {
 		</script>
 	</tr>
 	<?php
-
 
 	html_end_box();
 

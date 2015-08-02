@@ -508,7 +508,7 @@ function graphs() {
 			<td>
 				<input id='filter' type='text' name='filter' size='25' value='<?php print htmlspecialchars(get_request_var_request('filter'));?>'>
 			</td>
-			<td colspan='3' style='white-space:nowrap;'>
+			<td colspan='3' class='nowrap'>
 				<input type='submit' value='Go' title='Set/Refresh Filters'>
 				<input type='submit' name='clear' value='Clear' title='Clear Filters'>
 			</td>
@@ -882,7 +882,7 @@ function graphs() {
 							<td width='100%' valign='middle'>
 								<img src='images/arrow.gif' align='absmiddle' alt=''>
 							</td>
-							<td style='white-space:nowrap;font-style: italic;'' align='right'>
+							<td class='nowrap' style='font-style:italic;text-align:right;''>
 								Select a Graph Type to Create
 							</td>
 							<td align='right'>

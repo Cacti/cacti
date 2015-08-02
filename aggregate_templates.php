@@ -566,7 +566,7 @@ function aggregate_template() {
 								<input type="checkbox" id="has_graphs" ' . ($_REQUEST['has_graphs'] == 'true' ? 'checked':'') . ' onChange="applyFilter()">
 							</td>
 							<td>
-								<label for="has_graphs" style="white-space:nowrap;">Has Graphs</label>
+								<label for="has_graphs">Has Graphs</label>
 							</td>
 							<td>
 								<input type="button" value="Go" id="refresh">
@@ -648,7 +648,7 @@ function aggregate_template() {
 			}
 
 			form_alternate_row('line' . $template['id'], true, $disabled);
-			form_selectable_cell("<a style='white-space:nowrap;' class='linkEditMain' href='" . htmlspecialchars('aggregate_templates.php?action=edit&id=' . $template['id'] . '&page=1'). "'>" . ((get_request_var_request('filter') != '') ? preg_replace('/(' . preg_quote(get_request_var_request('filter')) . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($template['name'])) : htmlspecialchars($template['name'])) . '</a>', $template['id']);
+			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars('aggregate_templates.php?action=edit&id=' . $template['id'] . '&page=1'). "'>" . ((get_request_var_request('filter') != '') ? preg_replace('/(' . preg_quote(get_request_var_request('filter')) . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($template['name'])) : htmlspecialchars($template['name'])) . '</a>', $template['id']);
 			form_selectable_cell($disabled ? 'No':'Yes', $template['id'], '', 'text-align:right');
 			form_selectable_cell(number_format($template['graphs']), $template['id'], '', 'text-align:right;');
 			form_selectable_cell(((get_request_var_request('filter') != '') ? preg_replace('/(' . preg_quote(get_request_var_request('filter')) . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($template['graph_template_name'])) : htmlspecialchars($template['graph_template_name'])), $template['id']);

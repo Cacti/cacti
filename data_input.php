@@ -418,7 +418,7 @@ function data_edit() {
 					<?php print htmlspecialchars($field['name']);?>
 				</td>
 				<td align="right">
-					<a href="<?php print htmlspecialchars('data_input.php?action=field_remove&id=' . $field['id'] . '&data_input_id=' . $_REQUEST['id']);?>"><img src="images/delete_icon.gif" style="height:10px;width:10px;" border="0" alt="Delete"></a>
+					<a href="<?php print htmlspecialchars('data_input.php?action=field_remove&id=' . $field['id'] . '&data_input_id=' . $_REQUEST['id']);?>"><img src="images/delete_icon.gif" style="height:10px;width:10px;" alt="" title="Delete"></a>
 				</td>
 			</tr>
 		<?php
@@ -456,7 +456,7 @@ function data_edit() {
 					<?php print html_boolean_friendly($field['update_rra']);?>
 				</td>
 				<td align="right">
-					<a href="<?php print htmlspecialchars('data_input.php?action=field_remove&id=' . $field['id'] . '&data_input_id=' . $_REQUEST['id']);?>"><img src="images/delete_icon.gif" style="height:10px;width:10px;" border="0" alt="Delete"></a>
+					<a href="<?php print htmlspecialchars('data_input.php?action=field_remove&id=' . $field['id'] . '&data_input_id=' . $_REQUEST['id']);?>"><img src="images/delete_icon.gif" style="height:10px;width:10px;" alt="" title="Delete"></a>
 				</td>
 			</tr>
 		<?php
@@ -536,7 +536,7 @@ function data() {
 					<td>
 						<input id='filter' type='text' name='filter' size='25' value='<?php print htmlspecialchars(get_request_var_request('filter'));?>'>
 					</td>
-					<td style='white-space:nowrap;'>
+					<td class='nowrap'>
 						Input Methods
 					</td>
 					<td>

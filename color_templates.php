@@ -101,8 +101,8 @@ function draw_color_template_items_list($item_list, $filename, $url_data, $disab
 		print "<td style='$this_row_style'>" . $item['hex'] . "</td>\n";
 
 		if ($disable_controls == false) {
-			print "<td><a href='" . htmlspecialchars($filename . "?action=item_movedown&color_template_item_id=" . $item['color_template_item_id'] . "&$url_data") . "'><img src='images/move_down.gif' border='0' alt='Move Down'></a>
-					<a href='" . htmlspecialchars($filename . "?action=item_moveup&color_template_item_id=" . $item['color_template_item_id'] . "&$url_data") . "'><img src='images/move_up.gif' border='0' alt='Move Up'></a></td>\n";
+			print "<td><a href='" . htmlspecialchars($filename . "?action=item_movedown&color_template_item_id=" . $item['color_template_item_id'] . "&$url_data") . "'><img src='images/move_down.gif' alt='' title='Move Down'></a>
+					<a href='" . htmlspecialchars($filename . "?action=item_moveup&color_template_item_id=" . $item['color_template_item_id'] . "&$url_data") . "'><img src='images/move_up.gif' alt='' title='Move Up'></a></td>\n";
 			print "<td align='right'><a href='" . htmlspecialchars($filename . "?action=item_remove&color_template_item_id=" . $item['color_template_item_id'] . "&$url_data") . "'><img style='width:10px;height:10px;border:none;' src='images/delete_icon.gif' alt='' title='Delete'></a></td>\n";
 		}
 
@@ -438,7 +438,7 @@ function aggregate_color_template() {
 								<input type="checkbox" id="has_graphs" ' . ($_REQUEST['has_graphs'] == 'true' ? 'checked':'') . ' onChange="applyFilter()">
 							</td>
 							<td>
-								<label for="has_graphs" style="white-space:nowrap;">Has Graphs</label>
+								<label for="has_graphs">Has Graphs</label>
 							</td>
 							<td>
 								<input type="button" id="refresh" value="Go">
@@ -531,7 +531,7 @@ function aggregate_color_template() {
 
 			form_alternate_row('line' . $template['color_template_id'], true);
 
-			form_selectable_cell("<a style='white-space:nowrap;' class='linkEditMain' href='" . htmlspecialchars('color_templates.php?action=template_edit&color_template_id=' . $template['color_template_id'] . '&page=1') . "'>" . (get_request_var_request('filter') != '' ? preg_replace('/(' . preg_quote(get_request_var_request('filter')) . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($template['name'])) : htmlspecialchars($template['name'])) . '</a>', $template['color_template_id']);
+			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars('color_templates.php?action=template_edit&color_template_id=' . $template['color_template_id'] . '&page=1') . "'>" . (get_request_var_request('filter') != '' ? preg_replace('/(' . preg_quote(get_request_var_request('filter')) . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($template['name'])) : htmlspecialchars($template['name'])) . '</a>', $template['color_template_id']);
 			form_selectable_cell($disabled ? 'No':'Yes', $template['color_template_id'], '', 'text-align:right');
             form_selectable_cell(number_format($template['graphs']), $template['color_template_id'], '', 'text-align:right;');
             form_selectable_cell(number_format($template['templates']), $template['color_template_id'], '', 'text-align:right;');

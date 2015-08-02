@@ -890,7 +890,7 @@ function ds_edit() {
 					foreach ($template_data_rrds as $template_data_rrd) {
 						$i++;
 						print "	<td " . (($template_data_rrd['id'] == $_REQUEST['view_rrd']) ? "class='even'" : "class='odd'") . " style='width:" . ((strlen($template_data_rrd['data_source_name']) * 9) + 50) . ";text-align:center;' class='tab'>
-								<span class='textHeader'><a href='" . htmlspecialchars('data_sources.php?action=ds_edit&id=' . $_REQUEST['id'] . '&view_rrd=' . $template_data_rrd['id']) . "'>$i: " . htmlspecialchars($template_data_rrd['data_source_name']) . '</a>' . (($use_data_template == false) ? " <a href='" . htmlspecialchars('data_sources.php?action=rrd_remove&id=' . $template_data_rrd['id'] . '&local_data_id=' . $_REQUEST['id']) . "'><img src='images/delete_icon.gif' border='0' alt='Delete'></a>" : '') . "</span>
+								<span class='textHeader'><a href='" . htmlspecialchars('data_sources.php?action=ds_edit&id=' . $_REQUEST['id'] . '&view_rrd=' . $template_data_rrd['id']) . "'>$i: " . htmlspecialchars($template_data_rrd['data_source_name']) . '</a>' . (($use_data_template == false) ? " <a href='" . htmlspecialchars('data_sources.php?action=rrd_remove&id=' . $template_data_rrd['id'] . '&local_data_id=' . $_REQUEST['id']) . "'><img src='images/delete_icon.gif' alt='' title='Delete'></a>" : '') . "</span>
 							</td>\n
 							<td style='width:1px;'></td>\n";
 					}
@@ -1183,7 +1183,7 @@ function ds() {
 							?>
 						</select>
 					</td>
-					<td style='white-space:nowrap;'>
+					<td class='nowrap'>
 						Data Sources
 					</td>
 					<td>

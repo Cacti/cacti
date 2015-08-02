@@ -49,6 +49,15 @@ th .fa {
 tr.selected {
 	background-color: khaki;
 }
+
+label {
+	white-space:nowrap;
+}
+
+.nowrap {
+	white-space:nowrap;
+}
+
 .usermenudown {
 	background: transparent url('./../../../images/bullet_arrow_down.png') no-repeat center right;
 }
@@ -457,6 +466,7 @@ legend {
 	text-decoration: none;
 	font-weight: bold;
 	padding: 3px;
+	white-space: nowrap;
 	cursor:pointer;
 }
 
@@ -497,6 +507,10 @@ legend {
 
 .bold {
 	font-weight: bold;
+}
+
+.remover {
+	pointer:cursor;
 }
 
 .messageBox {

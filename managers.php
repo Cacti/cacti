@@ -757,7 +757,7 @@ function manager_logs($id) {
 			$varbinds = (strlen(get_request_var_request('filter')) ? (preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($item['varbinds']))): htmlspecialchars($item['varbinds']));
 			form_alternate_row('line' . $item['id'], true);
 			print "<td title='Severity Level: " . $severity_levels[ $item['severity'] ] . "' style='width:10px;background-color: " . $severity_colors[ $item['severity'] ] . ";border-top:1px solid white;border-bottom:1px solid white;'></td>";
-			print "<td style='white-space: nowrap;'>" . date( 'Y/m/d H:i:s', $item['time']) . '</td>';
+			print "<td class='nowrap'>" . date( 'Y/m/d H:i:s', $item['time']) . '</td>';
 
 			if($item['description']) {
 				$description = '';

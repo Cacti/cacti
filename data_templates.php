@@ -499,7 +499,7 @@ function template_edit() {
 			$i++;
 			print "<li>
 				<a style='line-height:18px;' " . (($template_data_rrd['id'] == $_REQUEST['view_rrd']) ? "class='selected'" : "class=''") . " href='" . htmlspecialchars('data_templates.php?action=template_edit&id=' . $_REQUEST['id'] . '&view_rrd=' . $template_data_rrd['id']) . "'>$i: " . htmlspecialchars($template_data_rrd['data_source_name']) . "</a>
-				<span><a class='deleteMarker' href='" . htmlspecialchars('data_templates.php?action=rrd_remove&id=' . $template_data_rrd['id'] . '&data_template_id=' . $_REQUEST['id']) . "'><img src='images/delete_icon.gif' border='0' alt='Delete'></a></span></li>\n";
+				<span><a class='deleteMarker' href='" . htmlspecialchars('data_templates.php?action=rrd_remove&id=' . $template_data_rrd['id'] . '&data_template_id=' . $_REQUEST['id']) . "'><img src='images/delete_icon.gif' alt='' title='Delete'></a></span></li>\n";
 		}
 
 		print "
@@ -682,7 +682,7 @@ function template() {
 					<td>
 						<input id='filter' type='text' name='filter' size='25' value='<?php print htmlspecialchars(get_request_var_request('filter'));?>'>
 					</td>
-					<td style='white-space: nowrap;'>
+					<td class='nowrap'>
 						Data Templates
 					</td>
 					<td>
@@ -700,7 +700,7 @@ function template() {
 						<input type='checkbox' id='has_data' <?php print ($_REQUEST['has_data'] == 'true' ? 'checked':'');?>>
 					</td>
 					<td>
-						<label for='has_data' style='white-space:nowrap;'>Has Data Sources</label>
+						<label for='has_data'>Has Data Sources</label>
 					</td>
 					<td>
 						<input type='button' id='refresh' value='Go' title='Set/Refresh Filters'>

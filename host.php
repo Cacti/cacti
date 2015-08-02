@@ -986,7 +986,7 @@ function host_edit() {
 			$('#dqdebug').fadeOut('fast');
 		});
 
-		$.get(urlPath+'host.php?action=ping_host&id='+$('#id').val(), function(data) {
+		$.get('host.php?action=ping_host&id='+$('#id').val(), function(data) {
 			$('#ping_results').html(data);
 		});
 	});
@@ -1041,7 +1041,7 @@ function host_edit() {
 					<td>
 						<?php print (($is_being_graphed == true) ? "<span style='color: green;'>Is Being Graphed</span> (<a class='linkEditMain' href='" . htmlspecialchars('graphs.php?action=graph_edit&id=' . db_fetch_cell_prepared('SELECT id FROM graph_local WHERE graph_template_id = ? AND host_id = ? LIMIT 0,1', array($item['id'], $_REQUEST['id']))) . "'>Edit</a>)" : "<span style='color: #484848;'>Not Being Graphed</span>");?>
 					</td>
-					<td style='text-align:right;white-space:nowrap;'>
+					<td class='nowrap' style='text-align:right;'>
 						<span title='Delete Graph Template Association' class='deletequery fa fa-remove' id='gtremove<?php print $item['id'];?>' data-id='<?php print $item['id'];?>'></span>
 					</td>
 				<?php
@@ -1056,7 +1056,7 @@ function host_edit() {
 			<td class='saveRow' colspan='3'>
 				<table>
 					<tr style='line-height:10px;'>
-						<td style='white-space:nowrap;padding-right:15px;width:1%;'>
+						<td class='nowrap' style='padding-right:15px;width:1%;'>
 							Add Graph Template
 						</td>
 						<td style='width:1%;'>
@@ -1131,7 +1131,7 @@ function host_edit() {
 					<td>
 						<?php print (($status == 'success') ? "<span style='color: green;'>Success</span>" : "<span style='color: green;'>Fail</span>");?> [<?php print $num_dq_items;?> Item<?php print ($num_dq_items == 1 ? '' : 's');?>, <?php print $num_dq_rows;?> Row<?php print ($num_dq_rows == 1 ? '' : 's');?>]
 					</td>
-					<td style='text-align:right;white-space:nowrap;vertical-align:middle;'>
+					<td class='nowrap' style='text-align:right;vertical-align:middle;'>
 						<span class='reloadquery fa fa-circle-o' id='reload<?php print $item['id'];?>' data-id='<?php print $item['id'];?>'></span>
 						<span class='deletequery fa fa-remove' id='remove<?php print $item['id'];?>' data-id='<?php print $item['id'];?>'></span>
 					</td>
@@ -1147,13 +1147,13 @@ function host_edit() {
 			<td class='saveRow' colspan='5'>
 				<table>
 					<tr style='line-height:10px;'>
-						<td style='padding-right:15px;white-space:nowrap;width:1%;'>
+						<td class='nowrap' style='padding-right:15px;width:1%;'>
 							Add Data Query
 						</td>
 						<td style='width:1%;'>
 							<?php form_dropdown('snmp_query_id',$available_data_queries,'name','id','','','');?>
 						</td>
-						<td style='white-space:nowrap;width:1%;padding-right:15px;'>
+						<td class='nowrap' style='width:1%;padding-right:15px;'>
 							Re-Index Method
 						</td>
 						<td style='width:1%;'>
@@ -1253,8 +1253,6 @@ function host() {
 
 	?>
 	<script type='text/javascript'>
-	<!--
-
 	function applyFilter() {
 		strURL  = 'host.php?host_status=' + $('#host_status').val();
 		strURL += '&host_template_id=' + $('#host_template_id').val();
@@ -1285,7 +1283,6 @@ function host() {
 		});
 	});
 
-	-->
 	</script>
 	<?php
 

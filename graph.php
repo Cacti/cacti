@@ -112,9 +112,9 @@ case 'view':
 								<div id='wrapper_<?php print $graph['local_graph_id'] . '_' . $rra['id'];?>' graph_id='<?php print $graph['local_graph_id'];?>' rra_id='<?php print $rra['id'];?>' graph_width='<?php print $graph['width'];?>' graph_height='<?php print $graph['height'];?>' title_font_size='<?php print ((read_graph_config_option("custom_fonts") == "on") ? read_graph_config_option("title_size") : read_config_option("title_size"));?>' style="min-height: <?php echo (1.2 * $graph["height"]) . "px"?>;"></div>
 							</td>
 							<td valign='top' style='padding: 3px;' class='noprint'>
-								<span class='hyperLink utils' graph_start='<?php print $graph_start;?>' graph_end='<?php print $graph_end;?>' rra_id='<?php print $rra['id'];?>' id='graph_<?php print $_REQUEST['local_graph_id'];?>_util'><img class='drillDown' src='<?php print $config['url_path'];?>images/cog.png' border='0' alt='' title='Graph Details, Zooming and Debugging Utilities'></span><br>
-								<a href='<?php print htmlspecialchars('graph_xport.php?local_graph_id=' . $_REQUEST['local_graph_id'] . '&rra_id=' . $rra['id'] . '&view_type=' . $_REQUEST['view_type'] .  '&graph_start=' . $graph_start . '&graph_end=' . $graph_end);?>'><img src='images/table_go.png' border='0' alt='CSV Export' title='CSV Export'></a><br>
-								<?php if (read_config_option('realtime_enabled') == 'on') print "<a href='#' onclick=\"window.open('".$config['url_path']."graph_realtime.php?top=0&left=0&local_graph_id=" . $_REQUEST['local_graph_id'] . "', 'popup_" . $_REQUEST['local_graph_id'] . "', 'toolbar=no,menubar=no,resizable=yes,location=no,scrollbars=no,status=no,titlebar=no,width=650,height=300')\"><img src='" . $config['url_path'] . "images/chart_curve_go.png' border='0' alt='Realtime' title='Realtime'></a><br/>\n";?>
+								<span class='hyperLink utils' graph_start='<?php print $graph_start;?>' graph_end='<?php print $graph_end;?>' rra_id='<?php print $rra['id'];?>' id='graph_<?php print $_REQUEST['local_graph_id'];?>_util'><img class='drillDown' src='<?php print $config['url_path'];?>images/cog.png' alt='' title='Graph Details, Zooming and Debugging Utilities'></span><br>
+								<a href='<?php print htmlspecialchars('graph_xport.php?local_graph_id=' . $_REQUEST['local_graph_id'] . '&rra_id=' . $rra['id'] . '&view_type=' . $_REQUEST['view_type'] .  '&graph_start=' . $graph_start . '&graph_end=' . $graph_end);?>'><img src='images/table_go.png' alt='CSV Export' title='CSV Export'></a><br>
+								<?php if (read_config_option('realtime_enabled') == 'on') print "<a href='#' onclick=\"window.open('".$config['url_path']."graph_realtime.php?top=0&left=0&local_graph_id=" . $_REQUEST['local_graph_id'] . "', 'popup_" . $_REQUEST['local_graph_id'] . "', 'toolbar=no,menubar=no,resizable=yes,location=no,scrollbars=no,status=no,titlebar=no,width=650,height=300')\"><img src='" . $config['url_path'] . "images/chart_curve_go.png' alt='Realtime' title='Realtime'></a><br/>\n";?>
 								<?php print ($aggregate_url != '' ? $aggregate_url:'')?>
 								<?php api_plugin_hook('graph_buttons', array('hook' => 'view', 'local_graph_id' => $_REQUEST['local_graph_id'], 'rra' => $rra['id'], 'view_type' => $_REQUEST['view_type'])); ?>
 							</td>
@@ -152,7 +152,7 @@ case 'view':
 				'&disable_cache=true'+
 				<?php print (isset($_REQUEST['thumbnails']) && $_REQUEST['thumbnails'] == 'true' ? "'&graph_nolegend=true'":"''");?>,
 				function(data) {
-					$('#wrapper_'+data.local_graph_id+'_'+data.rra_id).html("<img class='graphimage' id='graph_"+data.local_graph_id+"' src='data:image/"+data.type+";base64,"+data.image+"' border='0' graph_start='"+data.graph_start+"' graph_end='"+data.graph_end+"' graph_left='"+data.graph_left+"' graph_top='"+data.graph_top+"' graph_width='"+data.graph_width+"' graph_height='"+data.graph_height+"' width='"+data.image_width+"' height='"+data.image_height+"' image_width='"+data.image_width+"' image_height='"+data.image_height+"' value_min='"+data.value_min+"' value_max='"+data.value_max+"'>");
+					$('#wrapper_'+data.local_graph_id+'_'+data.rra_id).html("<img class='graphimage' id='graph_"+data.local_graph_id+"' src='data:image/"+data.type+";base64,"+data.image+"' graph_start='"+data.graph_start+"' graph_end='"+data.graph_end+"' graph_left='"+data.graph_left+"' graph_top='"+data.graph_top+"' graph_width='"+data.graph_width+"' graph_height='"+data.graph_height+"' width='"+data.image_width+"' height='"+data.image_height+"' image_width='"+data.image_width+"' image_height='"+data.image_height+"' value_min='"+data.value_min+"' value_max='"+data.value_max+"'>");
 				});
 		});
 
@@ -262,11 +262,11 @@ case 'zoom':
 					</td>
 					<td valign='top' style='align:left;padding-top: 3px;' class='noprint'>
 						<span id='graph_<?php print $graph['local_graph_id'];?>_properties' class='hyperLink properties'> 
-							<img class='drillDown' src='images/graph_properties.gif' border='0' alt='' title='Graph Source/Properties'>
+							<img class='drillDown' src='images/graph_properties.gif' alt='' title='Graph Source/Properties'>
 						</span>
 						<br>
 						<span id='graph_<?php print $graph['local_graph_id'];?>_csv' class='hyperLink properties'> 
-							<img class='drillDown' src='images/table_go.png' border='0' alt='' title='Graph Data'>
+							<img class='drillDown' src='images/table_go.png' alt='' title='Graph Data'>
 						</span>
 						<br>
 						<?php api_plugin_hook('graph_buttons', array('hook' => 'zoom', 'local_graph_id' => $_REQUEST['local_graph_id'], 'rra' =>  $_REQUEST['rra_id'], 'view_type' => $_REQUEST['view_type'])); ?>
@@ -344,7 +344,7 @@ case 'zoom':
 				'&disable_cache=true'+
 				<?php print (isset($_REQUEST['thumbnails']) && $_REQUEST['thumbnails'] == 'true' ? "'&graph_nolegend=true'":"''");?>,
 				function(data) {
-					$('#wrapper_'+data.local_graph_id).html("<img class='graphimage' id='graph_"+data.local_graph_id+"' src='data:image/"+data.type+";base64,"+data.image+"' border='0' graph_start='"+data.graph_start+"' graph_end='"+data.graph_end+"' graph_left='"+data.graph_left+"' graph_top='"+data.graph_top+"' graph_width='"+data.graph_width+"' graph_height='"+data.graph_height+"' width='"+data.image_width+"' height='"+data.image_height+"' image_width='"+data.image_width+"' image_height='"+data.image_height+"' value_min='"+data.value_min+"' value_max='"+data.value_max+"'>");
+					$('#wrapper_'+data.local_graph_id).html("<img class='graphimage' id='graph_"+data.local_graph_id+"' src='data:image/"+data.type+";base64,"+data.image+"' graph_start='"+data.graph_start+"' graph_end='"+data.graph_end+"' graph_left='"+data.graph_left+"' graph_top='"+data.graph_top+"' graph_width='"+data.graph_width+"' graph_height='"+data.graph_height+"' width='"+data.image_width+"' height='"+data.image_height+"' image_width='"+data.image_width+"' image_height='"+data.image_height+"' value_min='"+data.value_min+"' value_max='"+data.value_max+"'>");
 
 					$('#graph_start').val(data.graph_start);
 					$('#graph_end').val(data.graph_end);

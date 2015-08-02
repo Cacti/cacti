@@ -246,7 +246,7 @@ function item_edit() {
 					</td>
 				</tr>
 				<tr>
-					<td style='white-space: nowrap;'>
+					<td class='nowrap'>
 						Data Template
 					</td>
 					<td>

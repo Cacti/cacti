@@ -743,10 +743,10 @@ function utilities_view_user_log() {
 		foreach ($user_log as $item) {
 			form_alternate_row('', true);
 			?>
-			<td style='white-space:nowrap;'>
+			<td class='nowrap'>
 				<?php print (strlen(get_request_var_request('filter')) ? (preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($item['username']))) : htmlspecialchars($item['username']));?>
 			</td>
-			<td style='white-space:nowrap;'>
+			<td class='nowrap'>
 				<?php if (isset($item['full_name'])) {
 						print (strlen(get_request_var_request('filter')) ? (preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span style='filteredValue'>\\1</span>", htmlspecialchars($item['full_name']))) : htmlspecialchars($item['full_name']));
 					}else{
@@ -754,7 +754,7 @@ function utilities_view_user_log() {
 					}
 				?>
 			</td>
-			<td style='white-space:nowrap;'>
+			<td class='nowrap'>
 				<?php if (isset($auth_realms[$item['realm']])) {
 						print (strlen(get_request_var_request('filter')) ? (preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span style='filteredValue'>\\1</span>", $auth_realms[$item['realm']])) : $auth_realms[$item['realm']]);
 					}else{
@@ -762,13 +762,13 @@ function utilities_view_user_log() {
 					}
 				?>
 			</td>
-			<td style='white-space:nowrap;'>
+			<td class='nowrap'>
 				<?php print (strlen(get_request_var_request('filter')) ? (preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span style='filteredValue'>\\1</span>", htmlspecialchars($item['time']))) : htmlspecialchars($item['time']));?>
 			</td>
-			<td style='white-space:nowrap;'>
+			<td class='nowrap'>
 				<?php print ($item['result'] == 0 ? 'Failed':($item['result'] == 1 ? 'Success - Pswd':'Success - Token'));?>
 			</td>
-			<td style='white-space:nowrap;'>
+			<td class='nowrap'>
 				<?php print (strlen(get_request_var_request('filter')) ? (preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($item['ip']))) : htmlspecialchars($item['ip']));?>
 			</td>
 			</tr>
@@ -903,7 +903,7 @@ function utilities_view_logfile() {
 		<form id='form_logfile' action='utilities.php'>
 			<table class='filterTable'>
 				<tr>
-					<td style='width:80px;white-space: nowrap;'>
+					<td class='nowrap'>
 						Tail Lines
 					</td>
 					<td>
@@ -915,7 +915,7 @@ function utilities_view_logfile() {
 							?>
 						</select>
 					</td>
-					<td style='white-space: nowrap;'>
+					<td class='nowrap'>
 						Message Type
 					</td>
 					<td>
@@ -951,7 +951,7 @@ function utilities_view_logfile() {
 							?>
 						</select>
 					</td>
-					<td style='white-space: nowrap;'>
+					<td class='nowrap'>
 						Display Order
 					</td>
 					<td>
@@ -1693,7 +1693,7 @@ function utilities() {
 
 	?>
 	<colgroup span='3'>
-		<col style='white-space:nowrap;vertical-align:top;width:20%;'></col>
+		<col class='nowrap' style='vertical-align:top;width:20%;'></col>
 		<col style='vertical-align:top;width:80%;'></col>
 	</colgroup>
 
@@ -1845,7 +1845,7 @@ function boost_display_run_status() {
 		<td>
 			<table>
 				<tr>
-					<td style='white-space:nowrap;'>
+					<td class='nowrap'>
 						Refresh Interval
 					</td>
 					<td>
@@ -2604,7 +2604,7 @@ function snmpagent_utilities_run_eventlog(){
 			$varbinds = (strlen(get_request_var_request('filter')) ? (preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($item['varbinds']))): htmlspecialchars($item['varbinds']));
 			form_alternate_row('line' . $item['id'], false);
 			print "<td title='Severity Level: " . $severity_levels[ $item['severity'] ] . "' style='width:10px;background-color: " . $severity_colors[ $item['severity'] ] . ";border-top:1px solid white;border-bottom:1px solid white;'></td>";
-			print "<td style='white-space: nowrap;'>" . date( 'Y/m/d H:i:s', $item['time']) . '</td>';
+			print "<td class='nowrap'>" . date( 'Y/m/d H:i:s', $item['time']) . '</td>';
 			print '<td>' . $item['hostname'] . '</td>';
 			if($item['description']) {
 				print '<td><a href="#" title="<div class=\'header\'>' . htmlspecialchars($item['notification'], ENT_QUOTES) . '</div><div class=\'content preformatted\'>' . htmlspecialchars($item['description'], ENT_QUOTES) . '</div>" class="tooltip">' . htmlspecialchars($item['notification']) . '</a></td>';

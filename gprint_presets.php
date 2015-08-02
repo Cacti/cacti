@@ -296,7 +296,7 @@ function gprint_presets() {
 						<input type="checkbox" id='has_graphs' <?php print ($_REQUEST['has_graphs'] == 'true' ? 'checked':'');?>>
 					</td>
 					<td>
-						<label for='has_graphs' style='white-space:nowrap;'>Has Graphs</label>
+						<label for='has_graphs'>Has Graphs</label>
 					</td>
 					<td>
 						<input type='button' id='refresh' value='Go' title='Set/Refresh Filters'>

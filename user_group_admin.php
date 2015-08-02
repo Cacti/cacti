@@ -667,7 +667,7 @@ function user_group_graph_perms_edit($tab, $header_label) {
 		?>
 		<tr class='odd'>
 			<td><table><tr>
-			<td style='width:120px;white-space:nowrap;'>Default Graph policy for this User Group</td>
+			<td class='nowrap' style='width:120px;'>Default Graph policy for this User Group</td>
 			<td style='width:10px;'> 
 				<?php form_dropdown('policy_graphs',$policy_array,'','',$policy['policy_graphs'],'',''); ?>
 			</td>
@@ -806,7 +806,7 @@ function user_group_graph_perms_edit($tab, $header_label) {
 		?>
 		<tr class='even'>
 			<td><table><tr>
-			<td style='width:120px;white-space:nowrap;'>Default Graph policy for this User Group</td>
+			<td class='nowrap' style='width:120px;'>Default Graph policy for this User Group</td>
 			<td style='width:10px;'> 
 				<?php form_dropdown('policy_hosts',$policy_array,'','',$policy['policy_hosts'],'',''); ?>
 			</td>
@@ -953,7 +953,7 @@ function user_group_graph_perms_edit($tab, $header_label) {
 		?>
 		<tr class='even'>
 			<td><table><tr>
-			<td style='width:120px;white-space:nowrap;'>Default Graph Template Template policy for this User Group</td>
+			<td class='nowrap' style='width:120px;'>Default Graph Template Template policy for this User Group</td>
 			<td style='width:10px;'> 
 				<?php form_dropdown('policy_graph_templates',$policy_array,'','',$policy['policy_graph_templates'],'',''); ?>
 			</td>
@@ -1092,7 +1092,7 @@ function user_group_graph_perms_edit($tab, $header_label) {
 		?>
 		<tr class='even'>
 			<td><table><tr>
-			<td style='width:120px;white-space:nowrap;'>Default Tree policy for this User Group</td>
+			<td class='nowrap' style='width:120px;'>Default Tree policy for this User Group</td>
 			<td style='width:10px;'> 
 				<?php form_dropdown('policy_trees',$policy_array,'','',$policy['policy_trees'],'',''); ?>
 			</td>
@@ -2177,7 +2177,7 @@ function graph_filter($header_label) {
 						<input type='checkbox' name='associated' id='associated' onChange='applyFilter()' <?php print ($_REQUEST['associated'] == 'true' || $_REQUEST['associated'] == 'on' ? 'checked':'');?>>
 					</td>
 					<td>
-						<label style='white-space:nowrap;' for='associated'>Show Exceptions</label>
+						<label for='associated'>Show Exceptions</label>
 					</td>
 					<td>
 						<input type='button' value='Go' onClick='applyFilter()' title='Set/Refresh Filters'>
@@ -2280,7 +2280,7 @@ function device_filter($header_label) {
 						<input type='checkbox' name='associated' id='associated' onChange='applyFilter()' <?php print ($_REQUEST['associated'] == 'true' || $_REQUEST['associated'] == 'on' ? 'checked':'');?>>
 					</td>
 					<td>
-						<label style='white-space:nowrap;' for='associated'>Show Exceptions</label>
+						<label for='associated'>Show Exceptions</label>
 					</td>
 					<td>
 						<input type='button' value='Go' onClick='applyFilter()' title='Set/Refresh Filters'>
@@ -2364,7 +2364,7 @@ function template_filter($header_label) {
 						<input type='checkbox' name='associated' id='associated' onChange='applyFilter()' <?php print ($_REQUEST['associated'] == 'true' || $_REQUEST['associated'] == 'on' ? 'checked':'');?>>
 					</td>
 					<td>
-						<label style='white-space:nowrap;' for='associated'>Show Exceptions</label>
+						<label for='associated'>Show Exceptions</label>
 					</td>
 					<td>
 						<input type='button' value='Go' onClick='applyFilter()' title='Set/Refresh Filters'>
@@ -2448,7 +2448,7 @@ function tree_filter($header_label) {
 						<input type='checkbox' name='associated' id='associated' onChange='applyFilter()' <?php print ($_REQUEST['associated'] == 'true' || $_REQUEST['associated'] == 'on' ? 'checked':'');?>>
 					</td>
 					<td>
-						<label style='white-space:nowrap;' for='associated'>Show Exceptions</label>
+						<label for='associated'>Show Exceptions</label>
 					</td>
 					<td>
 						<input type='button' value='Go' onClick='applyFilter()' title='Set/Refresh Filters'>
@@ -2532,7 +2532,7 @@ function member_filter($header_label) {
 						<input type='checkbox' name='associated' id='associated' onChange='applyFilter()' <?php print ($_REQUEST['associated'] == 'true' || $_REQUEST['associated'] == 'on' ? 'checked':'');?>>
 					</td>
 					<td>
-						<label style='white-space:nowrap;' for='associated'>Show Members</label>
+						<label for='associated'>Show Members</label>
 					</td>
 					<td>
 						<input type='button' value='Go' onClick='applyFilter()' title='Set/Refresh Filters'>

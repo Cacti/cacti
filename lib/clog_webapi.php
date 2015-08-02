@@ -310,7 +310,7 @@ function filter() {
 							?>
 						</select>
 					</td>
-					<td style='white-space: nowrap;'>
+					<td class='nowrap'>
 						Message Type
 					</td>
 					<td>
@@ -346,7 +346,7 @@ function filter() {
 							?>
 						</select>
 					</td>
-					<td style='white-space: nowrap;'>
+					<td class='nowrap'>
 						Display Order
 					</td>
 					<td>

@@ -339,7 +339,7 @@ function item() {
 				<a class='linkEditMain' href='<?php print htmlspecialchars('graph_templates_inputs.php?action=input_edit&id=' . $item['id'] . '&graph_template_id=' . $_REQUEST['id']);?>'><?php print htmlspecialchars($item['name']);?></a>
 			</td>
 			<td align='right'>
-				<a href='<?php print htmlspecialchars('graph_templates_inputs.php?action=input_remove&id=' . $item['id'] . '&graph_template_id=' . $_REQUEST['id']);?>'><img src='images/delete_icon.gif' style='height:10px;width:10px;' border='0' alt='Delete'></a>
+				<a href='<?php print htmlspecialchars('graph_templates_inputs.php?action=input_remove&id=' . $item['id'] . '&graph_template_id=' . $_REQUEST['id']);?>'><img src='images/delete_icon.gif' style='height:10px;width:10px;' alt='' title='Delete'></a>
 			</td>
 		</tr>
 		<?php
@@ -521,7 +521,7 @@ function template() {
 					<td>
 						<input id='filter' type='text' name='filter' size='25' value='<?php print htmlspecialchars(get_request_var_request('filter'));?>'>
 					</td>
-					<td style='white-space:nowrap;'>
+					<td class='nowrap'>
 						Graph Templates
 					</td>
 					<td>
@@ -539,7 +539,7 @@ function template() {
 						<input type='checkbox' id='has_graphs' <?php print ($_REQUEST['has_graphs'] == 'true' ? 'checked':'');?>>
 					</td>
 					<td>
-						<label for='has_graphs' style='white-space:nowrap;'>Has Graphs</label>
+						<label for='has_graphs'>Has Graphs</label>
 					</td>
 					<td>
 						<input type='button' id='refresh' value='Go' title='Set/Refresh Filters'>
@@ -552,6 +552,8 @@ function template() {
 			<input type='hidden' id='page' name='page' value='<?php print $_REQUEST['page'];?>'>
 		</form>
 		<script type='text/javascript'>
+		var disabled = true;
+
 		function applyFilter() {
 			strURL = 'graph_templates.php?filter='+$('#filter').val()+'&rows='+$('#rows').val()+'&page='+$('#page').val()+'&has_graphs='+$('#has_graphs').is(':checked')+'&header=false';
 			loadPageNoHeader(strURL);

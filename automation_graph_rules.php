@@ -681,7 +681,7 @@ function automation_graph_rules() {
 						<td>
 							<input type='text' id='filter' size='25' value='<?php print get_request_var_request('filter');?>'>
 						</td>
-						<td nowrap style='white-space:nowrap;'>
+						<td class='nowrap'>
 							Data Query
 						</td>
 						<td>
