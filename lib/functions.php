@@ -2477,8 +2477,6 @@ function draw_navigation_text($type = 'url') {
 		}elseif (!empty($current_array['url'])) {
 			/* found a default url in the above array */
 			$url = $current_array['url'];
-		}elseif (isset($_SERVER['HTTP_REFERER'])) {
-			$url = $_SERVER['HTTP_REFERER'];
 		}else{
 			/* default to no url */
 			$url = '';
@@ -3613,5 +3611,17 @@ function update_system_mibs($host_id) {
 			}
 		}
 	}
+}
+
+function cacti_debug_backtrace($entry = '') {
+	$callers = debug_backtrace();
+	$s = '';
+	foreach ($callers as $c) {
+		$file = str_replace($config['base_path'], '', $c['file']);
+		$line = $c['line'];
+		$func = $c['function'];
+		$s = "($file:$line $func)" . $s;
+	}
+	cacti_log(trim("$entry Backtrace: $s"), false);
 }
 

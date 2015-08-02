@@ -658,10 +658,11 @@ function upgrade_to_1_0_0() {
 			'(37, 4, 96, 9), (38, 4, 93, 10), (39, 4, 91, 11), (40, 4, 22, 12), (41, 4, 12, 13), (42, 4, 95, 14), (43, 4, 6, 15), (44, 4, 92, 16);';
 
 	# now run all SQL commands
-	if (!empty($sql)) {
-		for ($a = 0; $a < count($sql); $a++) {
-			$result = db_execute($sql[$a]);
+	if (sizeof($sql)) {
+		foreach ($sql as $query) {
+			$result = db_execute($query);
 		}
+		$sql = array();
 	}
 
 	$result = db_fetch_assoc('SHOW TABLES FROM `' . $database_default . '`');
@@ -966,10 +967,11 @@ function upgrade_to_1_0_0() {
 	}
 
 	# now run all SQL commands
-	if (!empty($sql)) {
-		for ($a = 0; $a < count($sql); $a++) {
-			$result = db_execute($sql[$a]);
+	if (sizeof($sql)) {
+		foreach($sql as $query) {
+			$result = db_execute($query);
 		}
+		$sql = array();
 	}
 
 	/* autom8 table renames */

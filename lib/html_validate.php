@@ -35,7 +35,7 @@ function input_validate_input_number($value) {
 }
 
 function input_validate_input_regex($value, $regex) {
-	if ($value != null && (!preg_match('/' . $regex . '/', $value)) && ($value != '')) {
+	if ($value != null && $value != '' && (!preg_match('/' . $regex . '/', $value))) {
 		die_html_input_error();
 	}
 }
@@ -43,11 +43,12 @@ function input_validate_input_regex($value, $regex) {
 function die_html_input_error() {
 	global $config;
 
+	cacti_debug_backtrace('VALIDATION');
 	?>
 	<table style="width:100%;text-align:center;">
 		<tr>
 			<td>
-				Validation error.
+				Validation error. Check your Cacti Log for Details.
 			</td>
 		</tr>
 	</table>

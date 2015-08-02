@@ -154,15 +154,7 @@ function db_execute_prepared($sql, $parms = array(), $log = TRUE, $db_conn = FAL
 			} else {
 				cacti_log("ERROR: A DB Exec Failed!, Error:$en, SQL:\"" . str_replace("\n", '', str_replace("\r", '', str_replace("\t", ' ', $sql))) . "'", FALSE);
 				cacti_log('ERROR: A DB Exec Failed!, Error: ' . $errorinfo[2]);
- 				$callers = debug_backtrace();
-				$s = '';
-				foreach ($callers as $c) {
-					$file = str_replace($config['base_path'], '', $c['file']);
-					$line = $c['line'];
-					$func = $c['function'];
-					$s = "($file:$line $func)" . $s;
-				}
-				cacti_log("SQL Backtrace: $s", false);
+				cacti_debug_backtrace('SQL');
 				return FALSE;
 			}
 		}
@@ -222,15 +214,7 @@ function db_fetch_cell_prepared($sql, $parms = array(), $col_name = '', $log = T
 	}else if (($log) || (read_config_option('log_verbosity') >= POLLER_VERBOSITY_DEBUG)) {
 		cacti_log("ERROR: SQL Cell Failed!, Error:$en, SQL:\"" . str_replace("\n", '', str_replace("\r", '', str_replace("\t", ' ', $sql))) . '"', FALSE);
 		cacti_log('ERROR: SQL Cell Failed!, Error: ' . $errorinfo[2]);
-		$callers = debug_backtrace();
-		$s = '';
-		foreach ($callers as $c) {
-			$file = str_replace($config['base_path'], '', $c['file']);
-			$line = $c['line'];
-			$func = $c['function'];
-			$s = "($file:$line $func)" . $s;
-		}
-		cacti_log("SQL Backtrace: $s", false);
+		cacti_debug_backtrace('SQL');
 	}
 	if (isset($query)) unset($query);
 	return FALSE;
@@ -280,16 +264,7 @@ function db_fetch_row_prepared($sql, $parms = array(), $log = TRUE, $db_conn = F
 	}else if (($log) || (read_config_option('log_verbosity') >= POLLER_VERBOSITY_DEBUG)) {
 		cacti_log("ERROR: SQL Row Failed!, Error:$en, SQL:\"" . str_replace("\n", '', str_replace("\r", '', str_replace("\t", ' ', $sql))) . '"', FALSE);
 		cacti_log('ERROR: SQL Row Failed!, Error: ' . $errorinfo[2]);
-		$callers = debug_backtrace();
-		$s = '';
-		foreach ($callers as $c) {
-			$file = str_replace($config['base_path'], '', $c['file']);
-			$line = $c['line'];
-			$func = $c['function'];
-			$s = "($file:$line $func)" . $s;
-		}
-		cacti_log("SQL Backtrace: $s", false);
-
+		cacti_debug_backtrace('SQL');
 	}
 	if (isset($query)) unset($query);
 	return array();
@@ -338,15 +313,7 @@ function db_fetch_assoc_prepared($sql, $parms = array(), $log = TRUE, $db_conn =
 	}else if (($log) || (read_config_option('log_verbosity') >= POLLER_VERBOSITY_DEBUG)) {
 		cacti_log("ERROR: SQL Assoc Failed!, Error:$en, SQL:\"" . str_replace("\n", '', str_replace("\r", '', str_replace("\t", ' ', $sql))) . '"');
 		cacti_log('ERROR: SQL Assoc Failed!, Error: ' . $errorinfo[2]);
-		$callers = debug_backtrace();
-		$s = '';
-		foreach ($callers as $c) {
-			$file = str_replace($config['base_path'], '', $c['file']);
-			$line = $c['line'];
-			$func = $c['function'];
-			$s = "($file:$line $func)" . $s;
-		}
-		cacti_log("SQL Backtrace: $s", false);
+		cacti_debug_backtrace('SQL');
 	}
 	if (isset($query)) unset($query);
 	return array();
