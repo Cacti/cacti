@@ -470,19 +470,26 @@ function is_realm_allowed($realm) {
 		if (isset($_SESSION['sess_user_realms'][$realm])) {
 			return true;
 		}elseif (read_config_option('auth_method') != 0) {
-			$user_realm = db_fetch_cell_prepared('SELECT realm_id 
-				FROM user_auth_realm 
-				WHERE user_id = ?
-				AND realm_id = ?
-				UNION
-				SELECT realm_id
-				FROM user_auth_group_realm AS uagr
-				INNER JOIN user_auth_group AS uag
-				ON uag.id = uagr.group_id
-				INNER JOIN user_auth_group_members AS uagm
-				ON uag.id = uagm.group_id
-				WHERE uag.enabled = \'on\' AND uagr.realm_id = ?
-				AND uagm.user_id = ?', array($_SESSION['sess_user_id'], $realm, $realm, $_SESSION['sess_user_id']));
+			if ($config['cacti_db_version'] >= 1.0) {
+				$user_realm = db_fetch_cell_prepared('SELECT realm_id 
+					FROM user_auth_realm 
+					WHERE user_id = ?
+					AND realm_id = ?
+					UNION
+					SELECT realm_id
+					FROM user_auth_group_realm AS uagr
+					INNER JOIN user_auth_group AS uag
+					ON uag.id = uagr.group_id
+					INNER JOIN user_auth_group_members AS uagm
+					ON uag.id = uagm.group_id
+					WHERE uag.enabled = \'on\' AND uagr.realm_id = ?
+					AND uagm.user_id = ?', array($_SESSION['sess_user_id'], $realm, $realm, $_SESSION['sess_user_id']));
+			}else{
+				$user_realm = db_fetch_cell_prepared('SELECT realm_id 
+					FROM user_auth_realm 
+					WHERE user_id = ?
+					AND realm_id = ?', array($_SESSION['sess_user_id'], $realm));
+			}
 
 			if (!empty($user_realm)) {
 				$_SESSION['sess_user_realms'][$realm] = $realm;

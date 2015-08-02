@@ -247,4 +247,5 @@ api_plugin_hook('config_insert');
 
 /* current cacti version */
 $config['cacti_version'] = '1.0.0';
+$config['cacti_db_version'] = db_fetch_cell("SELECT cacti FROM version LIMIT 1");
 
