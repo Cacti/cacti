@@ -6,6 +6,9 @@ function themeReady() {
 	var clickTimeout = false;
 	var hostOpen = false;
 
+	// Setup the navigation menu
+	setMenuVisibility();
+
 	// Add nice search filter to filters
 	$('input[id="filter"]').after("<i class='fa fa-search filter'/>").attr('autocomplete', 'off').attr('placeholder', 'Enter a search term').parent('td').css('white-space', 'nowrap');
 
@@ -128,4 +131,35 @@ function themeReady() {
 			$('input#host').removeClass('ui-state-hover');
 		});
 	}
+}
+
+function setMenuVisibility() {
+	storage=$.localStorage;
+
+	// Initialize the navigation settings
+	$('.menu_parent').each(function() {
+		active = storage.get($(this).text());
+		if (active != null) {
+			if (active == 'active') {
+				$(this).next().show();
+			}else{
+				$(this).next().hide();
+			}
+		}
+	});
+
+	// Functon to give life to the Navigation pane
+	$('#nav li:has(ul) a.active').click(function() {
+		if ($(this).next().is(':visible')){
+			$(this).next().slideUp( { duration: 200, easing: 'swing' } );
+			storage.set($(this).text(), 'collapsed');
+		} else {
+			$(this).next().slideToggle( { duration: 200, easing: 'swing' } );
+			if ($(this).next().is(':visible')) {
+				storage.set($(this).text(), 'active');
+			}else{
+				storage.set($(this).text(), 'collapsed');
+			}
+		}
+	});
 }

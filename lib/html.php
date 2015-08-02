@@ -839,18 +839,14 @@ function draw_menu($user_menu = "") {
 		$user_menu = $menu;
 	}
 
-	?>
+	//print "<pre>";print_r($_SERVER);print "</pre>";
+	//print "<pre>";print_r($user_menu);print "</pre>";exit;
 
-	<tr>
-	<td>
-	<table>
-	<tr><td>
-	<div id='menu'>
-	<ul id='nav'>
-
-	<?php
+	print "<tr><td><table><tr><td><div id='menu'><ul id='nav'>\n";
 
 	/* loop through each header */
+	$i = 0;
+	$headers = array();
 	foreach ($user_menu as $header_name => $header_array) {
 		/* pass 1: see if we are allowed to view any children */
 		$show_header_items = false;
@@ -859,12 +855,22 @@ function draw_menu($user_menu = "") {
 
 			if (is_realm_allowed($current_realm_id)) {
 				$show_header_items = true;
+			}elseif (api_user_realm_auth(strtok($item_url, '?'))) {
+				$show_header_items = true;
 			}
 		}
 
 		if ($show_header_items == true) {
-			print "<li><a class='active' href='#'>$header_name</a>\n";
-			print "<ul style='display:block;'>\n";
+			// Let's give our menu li's a unique id
+			$id = 'menu_' . strtolower($header_name);
+			if (isset($headers[$id])) {
+				$id .= '_' . $i;
+				$i++;
+			}
+			$headers[$id] = true;
+
+			print "<li id='$id'><a class='menu_parent active' href='#'>$header_name</a>\n";
+			print "<ul id='${id}_div' style='display:block;'>\n";
 
 			/* pass 2: loop through each top level item and render it */
 			foreach ($header_array as $item_url => $item_title) {
@@ -890,9 +896,9 @@ function draw_menu($user_menu = "") {
 							that is contained in the sub-items array */
 							if (($i == 0) || ($draw_sub_items)) {
 								if (basename($_SERVER["PHP_SELF"]) == basename($item_sub_url)) {
-									print "<li><a class='pick selected' href='" . htmlspecialchars($item_sub_url) . "'>$item_sub_title</a></li>\n";
+									print "<li><a class='pic selected' href='" . htmlspecialchars($item_sub_url) . "'>$item_sub_title</a></li>\n";
 								}else{
-									print "<li><a class='pick' href='" . htmlspecialchars($item_sub_url) . "'>$item_sub_title</a></li>\n";
+									print "<li><a class='pic' href='" . htmlspecialchars($item_sub_url) . "'>$item_sub_title</a></li>\n";
 								}
 							}
 
@@ -916,48 +922,7 @@ function draw_menu($user_menu = "") {
 		}
 	}
 
-	?>
-
-	</ul>
-	</div>
-	<script type='text/javascript'>
-	$(function () {
-	<?php if (read_config_option('selected_theme') != 'classic') {?>
-		storage=$.localStorage;
-
-		// Initialize the navigation settings
-		$('#nav > li > a').each(function() {
-			active = storage.get($(this).text());
-			if (active != null) {
-				if (active == 'active') {
-					$(this).next().show();
-				}else{
-					$(this).next().hide();
-				}
-			}
-		});
-
-		// Functon to give life to the Navigation pane
-		$('#nav li:has(ul) a.active').click(function() {
-			if ($(this).next().is(':visible')){
-				$(this).next().slideUp( { duration: 200, easing: 'swing' } );
-				storage.set($(this).text(), 'collapsed');
-			} else {
-				$(this).next().slideToggle( { duration: 200, easing: 'swing' } );
-				if ($(this).next().is(':visible')) {
-					storage.set($(this).text(), 'active');
-				}else{
-			        storage.set($(this).text(), 'collapsed');
-				}
-			}
-		});
-	<?php }?>
-	});
-	</script>
-	</td>
-	</tr>
-	</table></td></tr>
-	<?php
+	print "</ul></div></td></tr></table></td></tr>\n";
 }
 
 /* draw_actions_dropdown - draws a table the allows the user to select an action to perform
@@ -974,7 +939,7 @@ function draw_actions_dropdown($actions_array, $delete_action = 1) {
 			<td style='width:100%;'>
 				<img style='text-align:center;' src='<?php echo $config['url_path']; ?>images/arrow.gif' alt=''>&nbsp;
 			</td>
-			<td style='white-space:nowrap;'>
+			<td class='nowrap'>
 				Choose an action:
 			</td>
 			<td>
