@@ -397,7 +397,7 @@ function db_add_column ($table, $column, $log = TRUE, $db_conn = FALSE) {
 	$result = db_fetch_assoc('SHOW columns FROM `' . $table . '`', $log, $db_conn);
 	$columns = array();
 	foreach($result as $arr) {
-		$columns[] = $t['Field'];
+		$columns[] = $arr['Field'];
 	}
 	if (isset($column['name']) && !in_array($column['name'], $columns)) {
 		$sql = 'ALTER TABLE `' . $table . '` ADD `' . $column['name'] . '`';

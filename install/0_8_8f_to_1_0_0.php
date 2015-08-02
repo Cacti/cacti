@@ -365,7 +365,7 @@ function upgrade_to_1_0_0() {
 	// Add secpass fields
 	db_install_add_column ('0.8.8f', 'user_auth', array('name' => 'lastchange', 'type' => 'int(12)', 'NULL' => false, 'default' => '-1'));
 	db_install_add_column ('0.8.8f', 'user_auth', array('name' => 'lastlogin', 'type' => 'int(12)', 'NULL' => false, 'default' => '-1'));
-	db_install_add_column ('0.8.8f', 'user_auth', array('name' => 'password_history', 'type' => 'text', 'NULL' => false, 'default' => ''));
+	db_install_add_column ('0.8.8f', 'user_auth', array('name' => 'password_history', 'type' => 'varchar(4096)', 'NULL' => false, 'default' => ''));
 	db_install_add_column ('0.8.8f', 'user_auth', array('name' => 'locked', 'type' => 'varchar(3)', 'NULL' => false, 'default' => ''));
 	db_install_add_column ('0.8.8f', 'user_auth', array('name' => 'failed_attempts', 'type' => 'int(5)', 'NULL' => false, 'default' => '0'));
 	db_install_add_column ('0.8.8f', 'user_auth', array('name' => 'lastfail', 'type' => 'int(12)', 'NULL' => false, 'default' => '0'));
@@ -627,7 +627,7 @@ function upgrade_to_1_0_0() {
 	$data['keys'][]    = ''; # lib/plugins.php _requires_ keys!
 	$data['type']      = 'MyISAM';
 	$data['comment']   = 'Color Templates';
-	db_table_create ('plugin_aggregate_color_templates', $data);
+	db_table_create('plugin_aggregate_color_templates', $data);
 
 	$sql[] = "INSERT IGNORE INTO `plugin_aggregate_color_templates` " .
 			"(`color_template_id`, `name`) " .
@@ -829,7 +829,7 @@ function upgrade_to_1_0_0() {
 	db_install_execute('0.8.8f', "DELETE FROM plugin_config WHERE directory='aggregate'");
 	db_install_execute('0.8.8f', "DELETE FROM plugin_realms WHERE plugin='aggregate'");
 	db_install_execute('0.8.8f', "DELETE FROM plugin_db_changes WHERE plugin='aggregate'");
-	db_install_execute('0.8.8f', "DELETE FROM plugin_hooks WHERE plugin='aggregate'");
+	db_install_execute('0.8.8f', "DELETE FROM plugin_hooks WHERE name='aggregate'");
 
 	if (!in_array('plugin_autom8_match_rule_items', $tables)) {
 		$data = array();
@@ -996,7 +996,7 @@ function upgrade_to_1_0_0() {
 	db_install_execute('0.8.8f', "DELETE FROM plugin_config WHERE directory='autom8'");
 	db_install_execute('0.8.8f', "DELETE FROM plugin_realms WHERE plugin='autom8'");
 	db_install_execute('0.8.8f', "DELETE FROM plugin_db_changes WHERE plugin='autom8'");
-	db_install_execute('0.8.8f', "DELETE FROM plugin_hooks WHERE plugin='autom8'");
+	db_install_execute('0.8.8f', "DELETE FROM plugin_hooks WHERE name='autom8'");
 
 	db_install_execute('0.8.8f', "UPDATE settings SET name=REPLACE(name, 'autom8', 'automation') WHERE name LIKE 'autom8%'");
 
@@ -1160,5 +1160,5 @@ function upgrade_to_1_0_0() {
 	db_install_execute('0.8.8f', "DELETE FROM plugin_config WHERE directory='discovery'");
 	db_install_execute('0.8.8f', "DELETE FROM plugin_realms WHERE plugin='discovery'");
 	db_install_execute('0.8.8f', "DELETE FROM plugin_db_changes WHERE plugin='discovery'");
-	db_install_execute('0.8.8f', "DELETE FROM plugin_hooks WHERE plugin='discovery'");
+	db_install_execute('0.8.8f', "DELETE FROM plugin_hooks WHERE name='discovery'");
 }
