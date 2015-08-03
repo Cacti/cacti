@@ -3614,6 +3614,8 @@ function update_system_mibs($host_id) {
 }
 
 function cacti_debug_backtrace($entry = '', $html = false) {
+	global $config;
+
 	$callers = debug_backtrace();
 	$s = '';
 	foreach ($callers as $c) {
