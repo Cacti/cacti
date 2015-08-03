@@ -62,6 +62,18 @@ label {
 	white-space:nowrap;
 }
 
+.right {
+	text-align:right;
+}
+
+.left {
+	text-align:left;
+}
+
+.center {
+	text-align:center;
+}
+
 .usermenudown {
 	background: transparent url('./../../../images/bullet_arrow_down.png') no-repeat center right;
 }
@@ -368,6 +380,7 @@ ul#breadcrumbs {
 	position:relative;
 	display:block;
 }
+
 .cactiConsoleNavigationArea {
 	background: #f5f5f5 url('./../../../images/shadow_gray.gif') repeat-x center top;
 	border-right: #aaaaaa 1px solid;

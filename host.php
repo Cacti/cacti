@@ -744,12 +744,12 @@ function host_edit() {
 
 	if (!empty($host['id'])) {
 		?>
-		<table style='width:100%;text-align:left;'>
+		<table style='width:100%'>
 			<tr>
-				<td class='textInfo'>
+				<td class='textInfo left'>
 					<?php print htmlspecialchars($host['description']);?> (<?php print htmlspecialchars($host['hostname']);?>)
 				</td>
-				<td rowspan='2' class='textInfo' style='vertical-align:top;text-align:right;'>
+				<td rowspan='2' class='textInfo right' style='vertical-align:top'>
 					<span class='linkMarker'>*</span><a class='hyperLink' href='<?php print htmlspecialchars('graphs_new.php?host_id=' . $host['id']);?>'>Create Graphs for this Device</a><br>
 					<span class='linkMarker'>*</span><a class='hyperLink' href='<?php print htmlspecialchars('data_sources.php?host_id=' . $host['id'] . '&ds_rows=30&filter=&template_id=-1&method_id=-1&page=1');?>'>Data Source List</a><br>
 					<span class='linkMarker'>*</span><a class='hyperLink' href='<?php print htmlspecialchars('graphs.php?host_id=' . $host['id'] . '&graph_rows=30&filter=&template_id=-1&page=1');?>'>Graph List</a>
@@ -1131,7 +1131,7 @@ function host_edit() {
 					<td>
 						<?php print (($status == 'success') ? "<span style='color: green;'>Success</span>" : "<span style='color: green;'>Fail</span>");?> [<?php print $num_dq_items;?> Item<?php print ($num_dq_items == 1 ? '' : 's');?>, <?php print $num_dq_rows;?> Row<?php print ($num_dq_rows == 1 ? '' : 's');?>]
 					</td>
-					<td class='nowrap' style='text-align:right;vertical-align:middle;'>
+					<td class='nowrap right' style='vertical-align:middle;'>
 						<span class='reloadquery fa fa-circle-o' id='reload<?php print $item['id'];?>' data-id='<?php print $item['id'];?>'></span>
 						<span class='deletequery fa fa-remove' id='remove<?php print $item['id'];?>' data-id='<?php print $item['id'];?>'></span>
 					</td>

@@ -543,8 +543,6 @@ function form_actions() {
 
 	if (isset($graph_array) && sizeof($graph_array)) {
 		if ($_POST['drp_action'] == '1') { /* delete */
-			$graphs = array();
-
 			/* find out which (if any) data sources are being used by this graph, so we can tell the user */
 			if (isset($graph_array) && sizeof($graph_array)) {
 				$data_sources = db_fetch_assoc('select
@@ -663,7 +661,6 @@ function form_actions() {
 
 			/* initialize return code and graphs array */
 			$return_code    = false;
-			$graphs         = array();
 			$data_sources   = array();
 			$graph_template = '';
 
@@ -760,7 +757,6 @@ function form_actions() {
 			include_once('./lib/api_aggregate.php');
 
 			/* initialize return code and graphs array */
-			$graphs         = array();
 			$data_sources   = array();
 			$graph_template = '';
 
@@ -1150,13 +1146,13 @@ function graph_edit() {
 			$_SESSION['sess_graph_locked'] = $locked;
 		}
 
-		$graphs = db_fetch_row_prepared('SELECT * FROM graph_templates_graph WHERE local_graph_id = ?', array($_REQUEST['id']));
-		$graphs_template = db_fetch_row_prepared('SELECT * FROM graph_templates_graph WHERE id = ?', array($local_graph_template_graph_id));
+		$graph = db_fetch_row_prepared('SELECT * FROM graph_templates_graph WHERE local_graph_id = ?', array($_REQUEST['id']));
+		$graph_template = db_fetch_row_prepared('SELECT * FROM graph_templates_graph WHERE id = ?', array($local_graph_template_graph_id));
 
 		$host_id = db_fetch_cell_prepared('SELECT host_id FROM graph_local WHERE id = ?', array($_REQUEST['id']));
 		$header_label = '[edit: ' . htmlspecialchars(get_graph_title($_REQUEST['id'])) . ']';
 
-		if ($graphs['graph_template_id'] == '0') {
+		if ($graph['graph_template_id'] == '0') {
 			$use_graph_template = 'false';
 		}
 	}else{
@@ -1175,24 +1171,24 @@ function graph_edit() {
 
 	if (!empty($_REQUEST['id'])) {
 		?>
-		<table style='width:100%;text-align:left;'>
+		<table style='width:100%;'>
 			<tr>
-				<td class="textInfo" colspan="2" valign="top">
+				<td class='textInfo left' colspan='2' valign='top'>
 					<?php print htmlspecialchars(get_graph_title($_REQUEST['id']));?>
 				</td>
-				<td class="textInfo" align="right" valign="top">
-					<span class="linkMarker">*<a class='hyperLink' href='<?php print htmlspecialchars('graphs.php?action=graph_edit&id=' . (isset($_REQUEST['id']) ? $_REQUEST['id'] : '0') . '&debug=' . (isset($_SESSION['graph_debug_mode']) ? '0' : '1'));?>'>Turn <strong><?php print (isset($_SESSION['graph_debug_mode']) ? 'Off' : 'On');?></strong> Graph Debug Mode.</a></span><br>
+				<td class='textInfo right' align='right' valign='top'>
+					<span class='linkMarker'>*<a class='hyperLink' href='<?php print htmlspecialchars('graphs.php?action=graph_edit&id=' . (isset($_REQUEST['id']) ? $_REQUEST['id'] : '0') . '&debug=' . (isset($_SESSION['graph_debug_mode']) ? '0' : '1'));?>'>Turn <strong><?php print (isset($_SESSION['graph_debug_mode']) ? 'Off' : 'On');?></strong> Graph Debug Mode.</a></span><br>
 					<?php
-						if (!empty($graphs['graph_template_id'])) {
-							?><span class="linkMarker">*<a class='hyperLink' href='<?php print htmlspecialchars('graph_templates.php?action=template_edit&id=' . (isset($graphs['graph_template_id']) ? $graphs['graph_template_id'] : '0'));?>'>Edit Graph Template.</a></span><br><?php
+						if (!empty($graph['graph_template_id'])) {
+							?><span class='linkMarker'>*<a class='hyperLink' href='<?php print htmlspecialchars('graph_templates.php?action=template_edit&id=' . (isset($graph['graph_template_id']) ? $graph['graph_template_id'] : '0'));?>'>Edit Graph Template.</a></span><br><?php
 						}
 						if (!empty($_REQUEST['host_id']) || !empty($host_id)) {
-							?><span class="linkMarker">*<a class='hyperLink' href='<?php print htmlspecialchars('host.php?action=edit&id=' . (isset($_REQUEST['host_id']) ? $_REQUEST['host_id'] : $host_id));?>'>Edit Device.</a></span><br><?php
+							?><span class='linkMarker'>*<a class='hyperLink' href='<?php print htmlspecialchars('host.php?action=edit&id=' . (isset($_REQUEST['host_id']) ? $_REQUEST['host_id'] : $host_id));?>'>Edit Device.</a></span><br><?php
 						}
 						if ($locked == 'true') {
-							?><span class="linkMarker">* <span class='hyperLink' id='unlockid'>Unlock Graph</span></span><?php
+							?><span class='linkMarker'>* <span class='hyperLink' id='unlockid'>Unlock Graph</span></span><?php
 						}else{
-							?><span class="linkMarker">* <span class='hyperLink' id='lockid'>Lock Graph</span></span><?php
+							?><span class='linkMarker'>* <span class='hyperLink' id='lockid'>Lock Graph</span></span><?php
 						}
 					?>
 				</td>
@@ -1208,7 +1204,7 @@ function graph_edit() {
 			'method' => 'drop_sql',
 			'friendly_name' => 'Selected Graph Template',
 			'description' => 'Choose a Graph Template to apply to this Graph. Please note that Graph Data may be lost if you change the Graph Template after one is already applied.',
-			'value' => (isset($graphs) ? $graphs['graph_template_id'] : '0'),
+			'value' => (isset($graph) ? $graph['graph_template_id'] : '0'),
 			'none_value' => 'None',
 			'sql' => 'SELECT graph_templates.id,graph_templates.name FROM graph_templates ORDER BY name'
 			),
@@ -1223,19 +1219,19 @@ function graph_edit() {
 			),
 		'graph_template_graph_id' => array(
 			'method' => 'hidden',
-			'value' => (isset($graphs) ? $graphs['id'] : '0')
+			'value' => (isset($graph) ? $graph['id'] : '0')
 			),
 		'local_graph_id' => array(
 			'method' => 'hidden',
-			'value' => (isset($graphs) ? $graphs['local_graph_id'] : '0')
+			'value' => (isset($graph) ? $graph['local_graph_id'] : '0')
 			),
 		'local_graph_template_graph_id' => array(
 			'method' => 'hidden',
-			'value' => (isset($graphs) ? $graphs['local_graph_template_graph_id'] : '0')
+			'value' => (isset($graph) ? $graph['local_graph_template_graph_id'] : '0')
 			),
 		'_graph_template_id' => array(
 			'method' => 'hidden',
-			'value' => (isset($graphs) ? $graphs['graph_template_id'] : '0')
+			'value' => (isset($graph) ? $graph['graph_template_id'] : '0')
 			),
 		'_host_id' => array(
 			'method' => 'hidden',
@@ -1253,26 +1249,26 @@ function graph_edit() {
 	html_end_box();
 
 	/* only display the "inputs" area if we are using a graph template for this graph */
-	if (!empty($graphs['graph_template_id'])) {
+	if (!empty($graph['graph_template_id'])) {
 		html_start_box('<strong>Supplemental Graph Template Data</strong>', '100%', '', '3', 'center', '');
 
-		draw_nontemplated_fields_graph($graphs['graph_template_id'], $graphs, '|field|', '<strong>Graph Fields</strong>', true, true, 0);
-		draw_nontemplated_fields_graph_item($graphs['graph_template_id'], $_REQUEST['id'], '|field|_|id|', '<strong>Graph Item Fields</strong>', true, $locked);
+		draw_nontemplated_fields_graph($graph['graph_template_id'], $graph, '|field|', '<strong>Graph Fields</strong>', true, true, 0);
+		draw_nontemplated_fields_graph_item($graph['graph_template_id'], $_REQUEST['id'], '|field|_|id|', '<strong>Graph Item Fields</strong>', true, $locked);
 
 		html_end_box();
 	}
 
 	/* graph item list goes here */
-	if ((!empty($_REQUEST['id'])) && (empty($graphs['graph_template_id']))) {
+	if ((!empty($_REQUEST['id'])) && (empty($graph['graph_template_id']))) {
 		item();
 	}
 
 	if (!empty($_REQUEST['id'])) {
 		?>
-		<table style='width:100%;text-align:center;'>
+		<table style='width:100%;'>
 			<tr>
-				<td align="center" class="textInfo" colspan="2">
-					<img src="<?php print htmlspecialchars('graph_image.php?action=edit&local_graph_id=' . $_REQUEST['id'] . '&rra_id=' . read_graph_config_option('default_rra_id'));?>" alt="">
+				<td class="textInfo center" colspan="2">
+					<img <?php print ($graph['image_format_id'] == 3 ? "style='width:" . $graph['width'] . "px;height:" . $graph['height'] . "px;'":"");?> src="<?php print htmlspecialchars('graph_image.php?action=edit&local_graph_id=' . $_REQUEST['id'] . '&rra_id=' . read_graph_config_option('default_rra_id'));?>" alt="">
 				</td>
 				<?php
 				if ((isset($_SESSION['graph_debug_mode'])) && (isset($_REQUEST['id']))) {
@@ -1295,7 +1291,7 @@ function graph_edit() {
 		<?php
 	}
 
-	if (((isset($_REQUEST['id'])) || (isset($_REQUEST['new']))) && (empty($graphs['graph_template_id']))) {
+	if (((isset($_REQUEST['id'])) || (isset($_REQUEST['new']))) && (empty($graph['graph_template_id']))) {
 		html_start_box('<strong>Graph Configuration</strong>', '100%', '', '3', 'center', '');
 
 		$form_array = array();
@@ -1303,10 +1299,10 @@ function graph_edit() {
 		while (list($field_name, $field_array) = each($struct_graph)) {
 			$form_array += array($field_name => $struct_graph[$field_name]);
 
-			$form_array[$field_name]['value'] = (isset($graphs) ? $graphs[$field_name] : '');
-			$form_array[$field_name]['form_id'] = (isset($graphs) ? $graphs['id'] : '0');
+			$form_array[$field_name]['value'] = (isset($graph) ? $graph[$field_name] : '');
+			$form_array[$field_name]['form_id'] = (isset($graph) ? $graph['id'] : '0');
 
-			if (!(($use_graph_template == false) || ($graphs_template{'t_' . $field_name} == 'on'))) {
+			if (!(($use_graph_template == false) || ($graph_template{'t_' . $field_name} == 'on'))) {
 				$form_array[$field_name]['method'] = 'template_' . $form_array[$field_name]['method'];
 				$form_array[$field_name]['description'] = '';
 			}

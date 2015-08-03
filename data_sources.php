@@ -737,19 +737,19 @@ function ds_edit() {
 
 	if (!empty($_REQUEST['id'])) {
 		?>
-		<table style='width:100%;text-align:left;'>
+		<table style='width:100%'>
 			<tr>
-				<td class='textInfo' colspan='2' valign='top'>
+				<td class='textInfo left' colspan='2' valign='top'>
 					<?php print htmlspecialchars(get_data_source_title($_REQUEST['id']));?>
 				</td>
-				<td class='textInfo' align='right' valign='top'>
-					<span class='linkMarker'>*<a href='<?php print htmlspecialchars('data_sources.php?action=ds_edit&id=' . (isset($_REQUEST['id']) ? $_REQUEST['id'] : '0'));?>&debug=<?php print (isset($_SESSION['ds_debug_mode']) ? '0' : '1');?>'>Turn <strong><?php print (isset($_SESSION['ds_debug_mode']) ? 'Off' : 'On');?></strong> Data Source Debug Mode.</a><br>
+				<td class='textInfo right' valign='top'>
+					<span class='linkMarker'>*<a class='hyperLink' href='<?php print htmlspecialchars('data_sources.php?action=ds_edit&id=' . (isset($_REQUEST['id']) ? $_REQUEST['id'] : '0'));?>&debug=<?php print (isset($_SESSION['ds_debug_mode']) ? '0' : '1');?>'>Turn <strong><?php print (isset($_SESSION['ds_debug_mode']) ? 'Off' : 'On');?></strong> Data Source Debug Mode.</a><br>
 					<?php
 						if (!empty($data_template['id'])) {
-							?><span class='linkMarker'>*<a href='<?php print htmlspecialchars('data_templates.php?action=template_edit&id=' . (isset($data_template['id']) ? $data_template['id'] : '0'));?>'>Edit Data Template.</a><br><?php
+							?><span class='linkMarker'>*<a class='hyperLink' href='<?php print htmlspecialchars('data_templates.php?action=template_edit&id=' . (isset($data_template['id']) ? $data_template['id'] : '0'));?>'>Edit Data Template.</a><br><?php
 						}
 						if (!empty($_REQUEST['host_id']) || !empty($data_local['host_id'])) {
-							?><span class='linkMarker'>*<a href='<?php print htmlspecialchars('host.php?action=edit&id=' . (isset($_REQUEST['host_id']) ? $_REQUEST['host_id'] : $data_local['host_id']));?>'>Edit Device.</a><br><?php
+							?><span class='linkMarker'>*<a class='hyperLink' href='<?php print htmlspecialchars('host.php?action=edit&id=' . (isset($_REQUEST['host_id']) ? $_REQUEST['host_id'] : $data_local['host_id']));?>'>Edit Device.</a><br><?php
 						}
 					?>
 				</td>
@@ -908,10 +908,10 @@ function ds_edit() {
 		html_start_box('', '100%', '', '3', 'center', '');
 
 		print "	<tr>
-				<td class='textHeaderDark'>
+				<td class='textHeaderDark left'>
 					<strong>Data Source Item</strong> $header_label
 				</td>
-				<td class='textHeaderDark' align='right'>
+				<td class='textHeaderDark right'>
 					" . ((!empty($_REQUEST['id']) && (empty($data_template['id']))) ? "<strong><a class='linkOverDark' href='" . htmlspecialchars('data_sources.php?action=rrd_add&id=' . $_REQUEST['id']) . "'>New</a>&nbsp;</strong>" : '') . "
 				</td>
 			</tr>\n";
@@ -965,7 +965,7 @@ function ds_edit() {
 	/* display the debug mode box if the user wants it */
 	if ((isset($_SESSION['ds_debug_mode'])) && (isset($_REQUEST['id']))) {
 		?>
-		<table style='width:100%;text-align:center;'>
+		<table style='width:100%'>
 			<tr>
 				<td>
 					<span class='textInfo'>Data Source Debug</span><br>
