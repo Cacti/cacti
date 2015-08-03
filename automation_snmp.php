@@ -598,11 +598,11 @@ function automation_snmp_edit() {
 				$form_data = "<td><a class='linkEditMain' href='" . htmlspecialchars('automation_snmp.php?action=item_edit&item_id=' . $item['id'] . '&id=' . $item['snmp_id']) . "'>Item#" . $i . '</a></td>';
 				#$form_data .= '<td>' . 	$item['sequence'] . '</td>';
 				$form_data .= '<td>' . 	$item['snmp_version'] . '</td>';
-				$form_data .= '<td style="text-align:left;">' . 	($item['snmp_version'] == 3 ? 'none' : $item['snmp_readstring']) . '</td>';
-				$form_data .= '<td style="text-align:right;">' . 	$item['snmp_port'] . '</td>';
-				$form_data .= '<td style="text-align:right;">' . 	$item['snmp_timeout'] . '</td>';
-				$form_data .= '<td style="text-align:right;">' . 	$item['snmp_retries'] . '</td>';
-				$form_data .= '<td style="text-align:right;">' . 	$item['max_oids'] . '</td>';
+				$form_data .= '<td class="left">' . 	($item['snmp_version'] == 3 ? 'none' : $item['snmp_readstring']) . '</td>';
+				$form_data .= '<td class="right">' . 	$item['snmp_port'] . '</td>';
+				$form_data .= '<td class="right">' . 	$item['snmp_timeout'] . '</td>';
+				$form_data .= '<td class="right">' . 	$item['snmp_retries'] . '</td>';
+				$form_data .= '<td class="right">' . 	$item['max_oids'] . '</td>';
 				$form_data .= '<td>' . 	($item['snmp_version'] == 3 ? $item['snmp_username'] : 'N/A') . '</td>';
 				$form_data .= '<td>' . 	($item['snmp_version'] == 3 ? $item['snmp_password'] : 'N/A') . '</td>';
 				$form_data .= '<td>' . 	($item['snmp_version'] == 3 ? $item['snmp_auth_protocol'] : 'N/A') . '</td>';
@@ -610,7 +610,7 @@ function automation_snmp_edit() {
 				$form_data .= '<td>' . 	($item['snmp_version'] == 3 ? $item['snmp_priv_protocol'] : 'N/A') . '</td>';
 				$form_data .= '<td>' . 	($item['snmp_version'] == 3 ? $item['snmp_context'] : 'N/A') . '</td>';
 
-				$form_data .= '<td style="white-space:nowrap;text-align:right;">';
+				$form_data .= '<td class="nowrap right">';
 				if ($i < $total_items && $total_items > 1) {
 					$form_data .= '<img style="cursor:pointer;padding:2px;" class="action" href="' . htmlspecialchars('automation_snmp.php?action=item_movedown&item_id=' . $item['id'] . '&id=' . $item['snmp_id']) . '" src="images/move_down.gif" alt="" title="Move Down">';
 				}else{

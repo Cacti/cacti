@@ -279,14 +279,14 @@ function template_edit() {
 			ORDER BY graph_templates.name', array(get_request_var_request('id')));
 
 		$i = 0;
-		if (sizeof($selected_graph_templates) > 0) {
+		if (sizeof($selected_graph_templates)) {
 			foreach ($selected_graph_templates as $item) {
 				form_alternate_row("gt$i", true);
 				?>
-					<td style="padding: 4px;">
+					<td class='left'>
 						<strong><?php print $i;?>)</strong> <?php print htmlspecialchars($item['name']);?>
 					</td>
-					<td style='text-align:right;'>
+					<td class='right'>
 						<a href='<?php print htmlspecialchars('host_templates.php?action=item_remove_gt&id=' . $item['id'] . '&host_template_id=' . $_REQUEST['id']);?>'><img class='deleteIcon' src='images/delete_icon.gif' alt='' title='Delete'></a>
 					</td>
 				<?php
@@ -300,10 +300,10 @@ function template_edit() {
 
 		?>
 		<tr class='odd'>
-			<td colspan="2">
+			<td colspan='2'>
 				<table>
-					<tr style='line-height:10px;'>
-						<td style="padding-right: 15px;">
+					<tr style='line-height:10px'>
+						<td style='padding-right: 15px;'>
 							Add Graph Template
 						</td>
 						<td>
@@ -316,7 +316,7 @@ function template_edit() {
 								ORDER BY graph_templates.name', array(get_request_var_request('id'))),'name','id','','','');?>
 						</td>
 						<td>
-							<input type="submit" value="Add" name="add_gt_x" title="Add Graph Template to Device Template">
+							<input type='submit' value='Add' name='add_gt_x' title='Add Graph Template to Device Template'>
 						</td>
 					</tr>
 				</table>
@@ -337,14 +337,14 @@ function template_edit() {
 			ORDER BY snmp_query.name', array(get_request_var_request('id')));
 
 		$i = 0;
-		if (sizeof($selected_data_queries) > 0) {
+		if (sizeof($selected_data_queries)) {
 			foreach ($selected_data_queries as $item) {
 				form_alternate_row("dq$i", true);
 				?>
-					<td style="padding: 4px;">
+					<td class='left'>
 						<strong><?php print $i;?>)</strong> <?php print htmlspecialchars($item['name']);?>
 					</td>
-					<td style='text-align:right;'>
+					<td class='right'>
 						<a href='<?php print htmlspecialchars('host_templates.php?action=item_remove_dq&id=' . $item['id'] . '&host_template_id=' . $_REQUEST['id']);?>'><img class='deleteIcon' src='images/delete_icon.gif' alt='' title='Delete'></a>
 					</td>
 				<?php
@@ -358,10 +358,10 @@ function template_edit() {
 
 		?>
 		<tr class='odd'>
-			<td colspan="2">
+			<td colspan='2'>
 				<table>
 					<tr style='line-height:10px;'>
-						<td style="padding-right: 15px;">
+						<td style='padding-right: 15px;'>
 							Add Data Query
 						</td>
 						<td>
@@ -374,7 +374,7 @@ function template_edit() {
 								ORDER BY snmp_query.name', array(get_request_var_request('id'))),'name','id','','','');?>
 						</td>
 						<td>
-							<input type="submit" value="Add" name="add_dq_x" title="Add Data Query to Device Template">
+							<input type='submit' value='Add' name='add_dq_x' title='Add Data Query to Device Template'>
 						</td>
 					</tr>
 				</table>

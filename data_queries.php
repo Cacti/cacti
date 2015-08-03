@@ -740,8 +740,8 @@ function data_query_edit() {
 			print "<tr class='tableHeader'>
 					<th class='tableSubHeaderColumn'>Name</th>
 					<th class='tableSubHeaderColumn'>Graph Template Name</th>
-					<th class='tableSubHeaderColumn' style='text-align:right;'>Mapping ID</th>
-					<th class='tableSubHeaderColumn' style='width:60px;text-align:right;'>Action</td>
+					<th class='tableSubHeaderColumn right'>Mapping ID</th>
+					<th class='tableSubHeaderColumn right' style='width:60px;'>Action</td>
 				</tr>";
 
 			$snmp_query_graphs = db_fetch_assoc_prepared('SELECT
@@ -764,11 +764,11 @@ function data_query_edit() {
 						<td>
 							<?php print htmlspecialchars($snmp_query_graph['graph_template_name']);?>
 						</td>
-						<td style='text-align:right;'>
+						<td class='right'>
 							<?php print $snmp_query_graph['id'];?>
 						</td>
-						<td align="right">
-							<a href="<?php print htmlspecialchars('data_queries.php?action=item_remove&id=' . $snmp_query_graph['id'] . '&snmp_query_id=' . $snmp_query['id']);?>"><img class='deleteIcon' src="images/delete_icon.gif" alt="" title="Delete"></a>
+						<td class='right'>
+							<a href='<?php print htmlspecialchars('data_queries.php?action=item_remove&id=' . $snmp_query_graph['id'] . '&snmp_query_id=' . $snmp_query['id']);?>'><img class='deleteIcon' src="images/delete_icon.gif" alt="" title="Delete"></a>
 						</td>
 					</tr>
 					<?php

@@ -614,7 +614,7 @@ function graphs() {
 		/* create a row at the bottom that lets the user create any graph they choose */
 		print "	<tr class='even'>
 				<td width='1'><i>Create</i></td>
-				<td style='text-align:left;'>";
+				<td class='left'>";
 				form_dropdown('cg_g', $available_graph_templates, 'name', 'id', '', '(Select a graph type to create)', '', 'textArea');
 		print '</td>
 			</tr>';
@@ -703,7 +703,7 @@ function graphs() {
 									<td class='textHeaderDark'>
 										<strong>Data Query</strong> [" . $snmp_query['name'] . "]
 									</td>
-									<td style='text-align:right;'>
+									<td class='right'>
 										<span class='reloadquery fa fa-circle-o' id='reload" . $snmp_query['id'] . "' data-id='" . $snmp_query['id'] . "'></span>
 									</td>
 								</tr>
@@ -882,7 +882,7 @@ function graphs() {
 							<td width='100%' valign='middle'>
 								<img src='images/arrow.gif' align='absmiddle' alt=''>
 							</td>
-							<td class='nowrap' style='font-style:italic;text-align:right;''>
+							<td class='nowrap right' style='font-style:italic;'>
 								Select a Graph Type to Create
 							</td>
 							<td align='right'>

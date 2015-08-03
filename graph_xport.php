@@ -184,9 +184,9 @@ if (is_array($xport_array['meta'])) {
 		print "</table><br>\n";
 		print "<table class='cactiTable' align='center' width='100%'>\n";
 
-		print "<tr class='tableHeader'><th class='tableSubHeaderColumn' style='text-align:left;'>Date</th>";
+		print "<tr class='tableHeader'><th class='tableSubHeaderColumn left'>Date</th>";
 		for ($i = 1; $i <= $xport_array['meta']['columns']; $i++) {
-			print "<th class='tableSubHeaderColumn' style='text-align:right;'>" . $xport_array['meta']['legend']['col' . $i] . "</th>";
+			print "<th class='tableSubHeaderColumn right'>" . $xport_array['meta']['legend']['col' . $i] . "</th>";
 		}
 		print "</tr>";
 	}

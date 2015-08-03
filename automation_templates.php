@@ -301,7 +301,7 @@ function template() {
 			}
 			$form_data .= '<img class="deleteIcon action" href="' . htmlspecialchars('automation_templates.php?action=remove&id=' . $dt['id']) . '" src="images/delete_icon.gif" width="10" height="10" alt="" title="Delete">';
 
-			echo "<td class='nowrap'><div style='text-align:right;'>" . $form_data . "</div></td>\n";
+			echo "<td class='nowrap'><div class='right'>" . $form_data . "</div></td>\n";
 			form_end_row();
 
 			$i++;

@@ -48,17 +48,17 @@ switch ($_REQUEST['action']) {
 	case 'item_movedown':
 		item_movedown();
 
-		header('Location: cdef.php?header=false&action=edit&id=' . $_REQUEST['cdef_id']);
+		header('Location: cdef.php?action=edit&id=' . $_REQUEST['cdef_id']);
 		break;
 	case 'item_moveup':
 		item_moveup();
 
-		header('Location: cdef.php?header=false&action=edit&id=' . $_REQUEST['cdef_id']);
+		header('Location: cdef.php?action=edit&id=' . $_REQUEST['cdef_id']);
 		break;
 	case 'item_remove':
 		item_remove();
 
-		header('Location: cdef.php?header=false&action=edit&id=' . $_REQUEST['cdef_id']);
+		header('Location: cdef.php?action=edit&id=' . $_REQUEST['cdef_id']);
 		break;
 	case 'item_edit':
 		top_header();
@@ -424,15 +424,15 @@ function cdef_edit() {
 					<td>
 						<a class='linkEditMain' href='<?php print htmlspecialchars('cdef.php?action=item_edit&id=' . $cdef_item['id'] . '&cdef_id=' . $cdef['id']);?>'>Item #<?php print htmlspecialchars($i);?></a>
 					</td>
-					<td style='text-align:left;width:50;'>
-						<a href='<?php print htmlspecialchars('cdef.php?action=item_movedown&id=' . $cdef_item['id'] . '&cdef_id=' . $cdef['id']);?>'><img src='images/move_down.gif' alt='' title='Move Down'></a>
-						<a href='<?php print htmlspecialchars('cdef.php?action=item_moveup&id=' . $cdef_item['id'] . '&cdef_id=' . $cdef['id']);?>'><img src='images/move_up.gif' alt='' title='Move Up'></a>
+					<td>
+						<a class='pic' href='<?php print htmlspecialchars('cdef.php?action=item_movedown&id=' . $cdef_item['id'] . '&cdef_id=' . $cdef['id']);?>'><img src='images/move_down.gif' alt='' title='Move Down'></a>
+						<a class='pic' href='<?php print htmlspecialchars('cdef.php?action=item_moveup&id=' . $cdef_item['id'] . '&cdef_id=' . $cdef['id']);?>'><img src='images/move_up.gif' alt='' title='Move Up'></a>
 					</td>
 					<td>
 						<em><?php $cdef_item_type = $cdef_item['type']; print $cdef_item_types[$cdef_item_type];?></em>: <strong><?php print htmlspecialchars(get_cdef_item_name($cdef_item['id']));?></strong>
 					</td>
-					<td align='right'>
-						<a href='<?php print htmlspecialchars('cdef.php?action=item_remove&id=' . $cdef_item['id'] . '&cdef_id=' . $cdef['id']);?>'><img class='deleteIcon' src='images/delete_icon.gif' alt='' title='Delete'></a>
+					<td class='right'>
+						<a class='pic' href='<?php print htmlspecialchars('cdef.php?action=item_remove&id=' . $cdef_item['id'] . '&cdef_id=' . $cdef['id']);?>'><img class='deleteIcon' src='images/delete_icon.gif' alt='' title='Delete'></a>
 					</td>
 				</tr>
 			<?php
@@ -535,7 +535,7 @@ function cdef() {
 						</select>
 					</td>
 					<td>
-						<input type="checkbox" id='has_graphs' <?php print ($_REQUEST['has_graphs'] == 'true' ? 'checked':'');?>>
+						<input type='checkbox' id='has_graphs' <?php print ($_REQUEST['has_graphs'] == 'true' ? 'checked':'');?>>
 					</td>
 					<td>
 						<label for='has_graphs'>Has Graphs</label>
