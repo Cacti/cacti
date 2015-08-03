@@ -567,7 +567,7 @@ function automation_graph_rules_edit() {
 	?>
 	<script type='text/javascript'>
 	function applySNMPQueryIdChange() {
-		strURL = '?action=edit&id=' + $('#id').val();
+		strURL = 'automation_graph_rules.php?action=edit&id=' + $('#id').val();
 		strURL = strURL + '&snmp_query_id=' + $('#snmp_query_id').val();
 		strURL = strURL + '&name=' + $('#name').val();
 		strURL = strURL + '&header=false';
@@ -578,7 +578,7 @@ function automation_graph_rules_edit() {
 	}
 
 	function applySNMPQueryTypeChange() {
-		strURL = '?action=edit&id=' + $('#id').val();
+		strURL = 'automation_graph_rules.php?action=edit&id=' + $('#id').val();
 		strURL = strURL + '&snmp_query_id=' + $('#snmp_query_id').val();
 		strURL = strURL + '&name=' + $('#name').val();
 		strURL = strURL + '&snmp_query_type' + $('#name').val();

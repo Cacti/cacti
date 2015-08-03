@@ -261,7 +261,7 @@ function display_matching_hosts($rule, $rule_type, $url) {
 		' LIMIT ' . (get_request_var_request('rows')*(get_request_var_request('hpage')-1)) . ',' . get_request_var_request('rows');
 	$hosts = db_fetch_assoc($sql_query);
 	
-	$nav = html_nav_bar(htmlspecialchars($url . '&filter=' . get_request_var_request('filter')), MAX_DISPLAY_PAGES, get_request_var_request('page'), get_request_var_request('rows'), $total_rows, 7, 'Devices', 'page', 'main');
+	$nav = html_nav_bar($url, MAX_DISPLAY_PAGES, get_request_var_request('page'), get_request_var_request('rows'), $total_rows, 7, 'Devices', 'page', 'main');
 
 	print $nav;
 
@@ -548,7 +548,7 @@ function display_matching_graphs($rule, $rule_type, $url) {
 
 	$graph_list = db_fetch_assoc($sql);
 
-	$nav = html_nav_bar(htmlspecialchars($url . '&filter=' . get_request_var_request('filter')), MAX_DISPLAY_PAGES, get_request_var_request('page'), get_request_var_request('rows'), $total_rows, 8, 'Devices', 'page', 'main');
+	$nav = html_nav_bar($url, MAX_DISPLAY_PAGES, get_request_var_request('page'), get_request_var_request('rows'), $total_rows, 8, 'Devices', 'page', 'main');
 
 	$display_text = array(
 		'description' => array('Device Description', 'ASC'),
@@ -693,7 +693,7 @@ function display_new_graphs($rule) {
 
 		$snmp_query_indexes = db_fetch_assoc($sql_query);
 
-		$nav = html_nav_bar(htmlspecialchars('automation_graph_rules.php&filter=' . get_request_var_request('filter')), MAX_DISPLAY_PAGES, get_request_var_request('page'), $row_limit, $total_rows, 30, 'Data Queries', 'page', 'main');
+		$nav = html_nav_bar('automation_graph_rules.php?action=edit&id=' . $rule['id'], MAX_DISPLAY_PAGES, get_request_var_request('page'), $row_limit, $total_rows, 30, 'Data Queries', 'page', 'main');
 
 		print $nav;
 
@@ -1036,7 +1036,7 @@ function display_matching_trees ($rule_id, $rule_type, $item, $url) {
 
 	cacti_log(__FUNCTION__ . " templates sql: $sql_query", false, 'AUTOMATION TRACE', POLLER_VERBOSITY_MEDIUM);
 	
-	$nav = html_nav_bar(htmlspecialchars($url . '&filter=' . get_request_var_request('filter')), MAX_DISPLAY_PAGES, get_request_var_request('page'), get_request_var_request('rows'), $total_rows, 8, 'Devices', 'page', 'main');
+	$nav = html_nav_bar($url, MAX_DISPLAY_PAGES, get_request_var_request('page'), get_request_var_request('rows'), $total_rows, 8, 'Devices', 'page', 'main');
 
 	html_start_box('', '100%', '', '3', 'center', '');
 
@@ -1425,7 +1425,7 @@ function build_rule_item_filter($automation_rule_items, $prefix = '') {
 				#
 				$sql_filter .= ' ' . $automation_op_array['op'][$automation_rule_item['operator']] . ' ';
 				if ($automation_op_array['binary'][$automation_rule_item['operator']]) {
-					$sql_filter .= ("'" . $automation_op_array['pre'][$automation_rule_item['operator']] . db_qstr($automation_rule_item['pattern']) . $automation_op_array['post'][$automation_rule_item['operator']] . "'");
+					$sql_filter .= (db_qstr($automation_op_array['pre'][$automation_rule_item['operator']] . $automation_rule_item['pattern'] . $automation_op_array['post'][$automation_rule_item['operator']]));
 				}
 			}
 		}
