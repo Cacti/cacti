@@ -1425,7 +1425,7 @@ function build_rule_item_filter($automation_rule_items, $prefix = '') {
 				#
 				$sql_filter .= ' ' . $automation_op_array['op'][$automation_rule_item['operator']] . ' ';
 				if ($automation_op_array['binary'][$automation_rule_item['operator']]) {
-					$sql_filter .= ("'" . $automation_op_array['pre'][$automation_rule_item['operator']]  . mysql_real_escape_string($automation_rule_item['pattern']) . $automation_op_array['post'][$automation_rule_item['operator']] . "'");
+					$sql_filter .= ("'" . $automation_op_array['pre'][$automation_rule_item['operator']] . db_qstr($automation_rule_item['pattern']) . $automation_op_array['post'][$automation_rule_item['operator']] . "'");
 				}
 			}
 		}
