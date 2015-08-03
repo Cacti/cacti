@@ -123,6 +123,14 @@ function color_edit() {
 	html_end_box();
 
 	form_save_button('color.php');
+
+	?>
+	<script type='text/javascript'>
+	$(function() {
+		$('#hex').colorpicker().css({'width':'60px'});
+	});
+	</script>
+	<?php
 }
 
 function color() {
