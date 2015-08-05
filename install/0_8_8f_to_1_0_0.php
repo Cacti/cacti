@@ -1164,12 +1164,12 @@ function upgrade_to_1_0_0() {
 	db_install_execute('1.0', "DELETE FROM plugin_db_changes WHERE plugin='discovery'");
 	db_install_execute('1.0', "DELETE FROM plugin_hooks WHERE name='discovery'");
 
-	db_install_execute('1.0', "UPDATE automation_match_rule_items SET field=REPLACE(field, 'host_template.', 'ht.')")
-	db_install_execute('1.0', "UPDATE automation_match_rule_items SET field=REPLACE(field, 'host.', 'h.')")
-	db_install_execute('1.0', "UPDATE automation_match_rule_items SET field=REPLACE(field, 'graph_templates.', 'gt.')")
-	db_install_execute('1.0', "UPDATE automation_match_rule_items SET field=REPLACE(field, 'graph_templates_graph.', 'gtg.')")
+	db_install_execute('1.0', "UPDATE automation_match_rule_items SET field=REPLACE(field, 'host_template.', 'ht.')");
+	db_install_execute('1.0', "UPDATE automation_match_rule_items SET field=REPLACE(field, 'host.', 'h.')");
+	db_install_execute('1.0', "UPDATE automation_match_rule_items SET field=REPLACE(field, 'graph_templates.', 'gt.')");
+	db_install_execute('1.0', "UPDATE automation_match_rule_items SET field=REPLACE(field, 'graph_templates_graph.', 'gtg.')");
 
-	if (db_fetch_cell("SELECT id FROM user_auth WHERE id=1") == 1) {
+	if (db_fetch_cell('SELECT id FROM user_auth WHERE id=1') == 1) {
 		db_install_execute('1.0', 'INSERT IGNORE INTO user_auth_realm (user_id, realm_id) VALUES (1, 23)');
 	}
 }
