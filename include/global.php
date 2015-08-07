@@ -210,13 +210,14 @@ include_once($config['library_path'] . '/database.php');
 /* connect to the database server */
 db_connect_real($database_hostname, $database_username, $database_password, $database_default, $database_type, $database_port, $database_ssl);
 
+/* include additional modules */
+include_once($config['library_path'] . '/functions.php');
+include_once($config['include_path'] . '/global_constants.php');
+
 /* gather the existing cactidb version */
 $config['cacti_db_version'] = db_fetch_cell("SELECT cacti FROM version LIMIT 1");
 
-/* include additional modules */
-include_once($config['library_path'] . '/functions.php');
 include_once($config['library_path'] . '/auth.php');
-include_once($config['include_path'] . '/global_constants.php');
 include_once($config['library_path'] . '/plugins.php');
 include_once($config['include_path'] . '/plugins.php');
 include_once($config['include_path'] . '/global_arrays.php');
