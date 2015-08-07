@@ -1118,6 +1118,5 @@ $automation_frequencies = array(
 	'40320' => 'Every 4 Weeks'
 );
 
-
 api_plugin_hook('config_arrays');
 
