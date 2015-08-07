@@ -984,9 +984,7 @@ function upgrade_to_1_0_0() {
 	);
 
 	foreach($autom8_tables as $table) {
-		if (in_array($table, $tables)) {
-			db_install_execute('1.0', "RENAME TABLE $table TO " . str_replace('plugin_autom8', 'automation', $table));
-		}
+		db_install_execute('1.0', "RENAME TABLE $table TO " . str_replace('plugin_autom8', 'automation', $table));
 	}
 
 	$id = db_fetch_cell("SELECT * FROM plugin_realms WHERE plugin='autom8'");

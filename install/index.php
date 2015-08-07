@@ -722,7 +722,7 @@ if ($step == '4') {
 									while (list($status, $sql) = each($arr2)) {
 										if ($current_version != $version) {
 											$version_index = array_search($version, $cacti_versions);
-											$upgrade_results .= '<p><strong>' . $cacti_versions{$version_index-1}  . ' -> ' . $cacti_versions{$version_index} . "</strong></p>\n";
+											$upgrade_results .= '<p><strong>' . (isset($cacti_versions{$version_index-1}) ? $cacti_versions{$version_index-1}:'')  . ' -> ' . $cacti_versions{$version_index} . "</strong></p>\n";
 										}
 
 										$upgrade_results .= "<p class='code'>" . $sqltext[$status] . nl2br($sql) . "</p>\n";
