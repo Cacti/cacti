@@ -565,9 +565,9 @@ function graph_edit() {
 	}
 
 	if (!empty($_REQUEST['id']) && $current_tab == 'preview') {
-		print "<td style='white-space:nowrap;' align='right'><a class='textHeader' href='" . htmlspecialchars('aggregate_graphs.php?action=edit&id=' . $_REQUEST['id'] . '&tab=' . $_REQUEST['tab'] .  '&debug=' . (isset($_SESSION['graph_debug_mode']) ? '0' : '1')) . "'>Turn <strong>" . (isset($_SESSION['graph_debug_mode']) ? 'Off' : 'On') . " Graph Debug Mode</a></td>\n</tr></table>\n";
+		print "<td class='nowrap' align='right'><a class='textHeader' href='" . htmlspecialchars('aggregate_graphs.php?action=edit&id=' . $_REQUEST['id'] . '&tab=' . $_REQUEST['tab'] .  '&debug=' . (isset($_SESSION['graph_debug_mode']) ? '0' : '1')) . "'>Turn <strong>" . (isset($_SESSION['graph_debug_mode']) ? 'Off' : 'On') . " Graph Debug Mode</a></td>\n</tr></table>\n";
 	}elseif (!empty($_REQUEST['id']) && $current_tab == 'details' && (!sizeof($template))) {
-		print "<td style='white-space:nowrap;' align='right'><a id='toggle_items' class='textHeader' href='#'>Show Item Details</a></td>\n</tr></table>\n";
+		print "<td class='nowrap right'><a id='toggle_items' class='textHeader' href='#'>Show Item Details</a></td>\n</tr></table>\n";
 	}else{
 		print "<td align='right'></td>\n</tr></table>\n";
 	}
@@ -587,10 +587,10 @@ function graph_edit() {
 				<td>
 					<div style='overflow:auto;'>
 					<span class='textInfo'>RRDTool Command:</span><br>
-					<pre style='font-size:9px;'><?php print @rrdtool_function_graph($_REQUEST['id'], 1, $graph_data_array);?></pre>
+					<pre class='monoSpace'><?php print @rrdtool_function_graph($_REQUEST['id'], 1, $graph_data_array);?></pre>
 					<span class='textInfo'>RRDTool Says:</span><br>
 					<?php unset($graph_data_array['print_source']);?>
-					<pre style='font-size:9px;'><?php print @rrdtool_function_graph($_REQUEST['id'], 1, $graph_data_array);?></pre>
+					<pre class='monoSpace'><?php print @rrdtool_function_graph($_REQUEST['id'], 1, $graph_data_array);?></pre>
 					</div>
 				</td>
 				<?php

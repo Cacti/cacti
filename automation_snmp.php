@@ -612,15 +612,15 @@ function automation_snmp_edit() {
 
 				$form_data .= '<td class="nowrap right">';
 				if ($i < $total_items && $total_items > 1) {
-					$form_data .= '<img style="cursor:pointer;padding:2px;" class="action" href="' . htmlspecialchars('automation_snmp.php?action=item_movedown&item_id=' . $item['id'] . '&id=' . $item['snmp_id']) . '" src="images/move_down.gif" alt="" title="Move Down">';
+					$form_data .= '<img class="action" href="' . htmlspecialchars('automation_snmp.php?action=item_movedown&item_id=' . $item['id'] . '&id=' . $item['snmp_id']) . '" src="images/move_down.gif" alt="" title="Move Down">';
 				}else{
-					$form_data .= '<img style="width:14px;height:14px;" src="images/view_none.gif" alt="">';
+					$form_data .= '<img class="action" src="images/view_none.gif" alt="">';
 				}
 
 				if ($i > 1 && $i <= $total_items) {
-					$form_data .= '<img style="cursor:pointer;padding:2px;" class="action" href="' . htmlspecialchars('automation_snmp.php?action=item_moveup&item_id=' . $item['id'] .	'&id=' . $item['snmp_id']) . '" src="images/move_up.gif" alt="Move Up">';
+					$form_data .= '<img class="action" href="' . htmlspecialchars('automation_snmp.php?action=item_moveup&item_id=' . $item['id'] .	'&id=' . $item['snmp_id']) . '" src="images/move_up.gif" alt="Move Up">';
 				}else{
-					$form_data .= '<img style="width:14px;height:14px;" src="images/view_none.gif" alt="">';
+					$form_data .= '<img class="action" src="images/view_none.gif" alt="">';
 				}
 				$form_data .= '<img class="deleteIcon action" href="' . htmlspecialchars('automation_snmp.php?action=item_remove&item_id=' . $item['id'] .	'&id=' . $item['snmp_id']) . '" src="images/delete_icon.gif" title="Delete" alt="">';
 				$form_data .= '</td></tr>';

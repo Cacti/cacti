@@ -138,6 +138,20 @@ label {
 	border:none;
 }
 
+.action {
+	cursor:pointer;
+	padding:2px;
+}
+
+.monoSpace {
+	font-size:9px;
+	font-family: monospace;
+}
+
+.utilityPick {
+	width: 200px;
+}
+
 .menuoptions {
 	background: none repeat scroll 0 0 #eee;
     border-color: #f5f5f5 #e5e5e5 #ccc;
@@ -656,6 +670,7 @@ legend {
 .linkOverDark, .linkOverDark:visited, .linkOverDark:active {
 	color: white;
 	text-decoration: none;
+	cursor: pointer;
 }
 
 .linkOverDark:hover {
@@ -825,6 +840,7 @@ th.sortable {
 	font-weight:bold;
 	vertical-align:middle;
 	text-align:left;
+	cursor:pointer;
 }
 
 .graphSubHeaderColumn {

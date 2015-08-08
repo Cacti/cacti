@@ -664,10 +664,10 @@ function user_group_graph_perms_edit($tab, $header_label) {
 		html_start_box('<strong>Default Graph Policy</strong>', '100%', '', '3', 'center', '');
 
 		?>
-		<tr class='odd'>
+		<tr class='even'>
 			<td><table><tr>
-			<td class='nowrap' style='width:120px;'>Default Graph policy for this User Group</td>
-			<td style='width:10px;'> 
+			<td class='nowrap'>Default Graph policy for this User Group</td>
+			<td> 
 				<?php form_dropdown('policy_graphs',$policy_array,'','',$policy['policy_graphs'],'',''); ?>
 			</td>
 			<td>
@@ -805,8 +805,8 @@ function user_group_graph_perms_edit($tab, $header_label) {
 		?>
 		<tr class='even'>
 			<td><table><tr>
-			<td class='nowrap' style='width:120px;'>Default Graph policy for this User Group</td>
-			<td style='width:10px;'> 
+			<td class='nowrap'>Default Graph policy for this User Group</td>
+			<td> 
 				<?php form_dropdown('policy_hosts',$policy_array,'','',$policy['policy_hosts'],'',''); ?>
 			</td>
 			<td>
@@ -952,8 +952,8 @@ function user_group_graph_perms_edit($tab, $header_label) {
 		?>
 		<tr class='even'>
 			<td><table><tr>
-			<td class='nowrap' style='width:120px;'>Default Graph Template Template policy for this User Group</td>
-			<td style='width:10px;'> 
+			<td class='nowrap'>Default Graph Template Template policy for this User Group</td>
+			<td> 
 				<?php form_dropdown('policy_graph_templates',$policy_array,'','',$policy['policy_graph_templates'],'',''); ?>
 			</td>
 			<td>
@@ -1091,8 +1091,8 @@ function user_group_graph_perms_edit($tab, $header_label) {
 		?>
 		<tr class='even'>
 			<td><table><tr>
-			<td class='nowrap' style='width:120px;'>Default Tree policy for this User Group</td>
-			<td style='width:10px;'> 
+			<td class='nowrap'>Default Tree policy for this User Group</td>
+			<td>
 				<?php form_dropdown('policy_trees',$policy_array,'','',$policy['policy_trees'],'',''); ?>
 			</td>
 			<td>

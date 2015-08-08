@@ -731,8 +731,8 @@ function graph_perms_edit($tab, $header_label) {
 		?>
 		<tr class='even'>
 			<td><table><tr>
-			<td class='nowrap' style="width:120px;" >Default Graph Policy for this User</td>
-			<td style="width:10;"> 
+			<td class='nowrap'>Default Graph Policy for this User</td>
+			<td>
 				<?php form_dropdown('policy_graphs',$policy_array,'','',$policy['policy_graphs'],'',''); ?>
 			</td>
 			<td>
@@ -1024,8 +1024,8 @@ function graph_perms_edit($tab, $header_label) {
 		?>
 		<tr class='even'>
 			<td><table><tr>
-			<td class='nowrap' style="width:120px;">Default Device Policy for this User</td>
-			<td style="width:10;"> 
+			<td class='nowrap'>Default Device Policy for this User</td>
+			<td>
 				<?php form_dropdown('policy_hosts',$policy_array,'','',$policy['policy_hosts'],'',''); ?>
 			</td>
 			<td>
@@ -1171,8 +1171,8 @@ function graph_perms_edit($tab, $header_label) {
 		?>
 		<tr class='even'>
 			<td><table><tr>
-			<td class='nowrap' style="width:120px;">Default Graph Template Policy for this User</td>
-			<td style="width:10;"> 
+			<td class='nowrap'>Default Graph Template Policy for this User</td>
+			<td>
 				<?php form_dropdown('policy_graph_templates',$policy_array,'','',$policy['policy_graph_templates'],'',''); ?>
 			</td>
 			<td>
@@ -1309,8 +1309,8 @@ function graph_perms_edit($tab, $header_label) {
 		?>
 		<tr class='even'>
 			<td><table><tr>
-			<td class='nowrap' style="width:120px;">Default Tree Policy for this User</td>
-			<td style="width:10px;"> 
+			<td class='nowrap'>Default Tree Policy for this User</td>
+			<td>
 				<?php form_dropdown('policy_trees',$policy_array,'','',$policy['policy_trees'],'',''); ?>
 			</td>
 			<td>

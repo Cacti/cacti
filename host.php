@@ -641,7 +641,7 @@ function ping_host() {
 		$anym = true;
 
 		print "SNMP Information<br>\n";
-		print "<span style='font-size: 10px; font-weight: normal; font-family: monospace;'>\n";
+		print "<span class='monoSpace'>\n";
 
 		if (($host['snmp_community'] == '' && $host['snmp_username'] == '') || $host['snmp_version'] == 0) {
 			print "<span style='color: #ab3f1e; font-weight: bold;'>SNMP not in use</span>\n";
@@ -778,10 +778,6 @@ function host_edit() {
 		'config' => array('no_form_tag' => true),
 		'fields' => inject_form_variables($fields_host_edit, (isset($host) ? $host : array()))
 		));
-
-	/* we have to hide this button to make a form change in the main form trigger the correct
-	 * submit action */
-	echo "<tr style='display:none;'><td colspan='2'><input style='display:none;' type='submit' value='Default Submit Button'></td></tr>\n";
 
 	html_end_box();
 
@@ -997,7 +993,7 @@ function host_edit() {
 	if ((isset($_REQUEST['display_dq_details'])) && (isset($_SESSION['debug_log']['data_query']))) {
 		print "<table id='dqdebug' class='cactiDebugTable'><tr><td>\n";
 		print "<table class='cactiTableTitle'>\n";
-		print "<tr><td class='textHeaderDark'><a style='display:none;' name='dqdbg'></a><strong>Data Query Debug Information</strong></td><td class='textHeaderDark' align='right'><span style='cursor:pointer;' id='dbghide' class='linkOverDark'>Hide</span></td></tr>\n";
+		print "<tr><td class='textHeaderDark'><a style='display:none;' name='dqdbg'></a><strong>Data Query Debug Information</strong></td><td class='textHeaderDark' align='right'><span id='dbghide' class='linkOverDark'>Hide</span></td></tr>\n";
 		print "</table>\n";
 		print "<table class='cactiTable'>\n";
 		print "<tr><td class='debug'><span>" . debug_log_return('data_query') . "</span></td></tr>";

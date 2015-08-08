@@ -289,17 +289,17 @@ function template() {
 			echo "<td>" . htmlspecialchars($dt['sysOid'])   . "</td>\n";
 
 			if ($i < $total_items && $total_items > 1) {
-				$form_data = '<img style="padding:2px;cursor:pointer;" class="action" href="' . htmlspecialchars('automation_templates.php?action=movedown&id=' . $dt['id']) . '" src="images/move_down.gif" alt="" title="Move Down">';
+				$form_data = '<img class="action" href="' . htmlspecialchars('automation_templates.php?action=movedown&id=' . $dt['id']) . '" src="images/move_down.gif" alt="" title="Move Down">';
 			}else{
-				$form_data = '<img height="14" width="14" src="images/view_none.gif" alt="">';
+				$form_data = '<img class="action" src="images/view_none.gif" alt="">';
 			}
 
 			if ($i > 1 && $i <= $total_items) {
-				$form_data .= '<img style="padding:2px;cursor:pointer;" class="action" href="' . htmlspecialchars('automation_templates.php?action=moveup&id=' . $dt['id']) . '" src="images/move_up.gif" alt="" title="Move Up">';
+				$form_data .= '<img class="action" href="' . htmlspecialchars('automation_templates.php?action=moveup&id=' . $dt['id']) . '" src="images/move_up.gif" alt="" title="Move Up">';
 			}else{
-				$form_data .= '<img height="14" width="14" src="images/view_none.gif" alt="">';
+				$form_data .= '<img class="action" src="images/view_none.gif" alt="">';
 			}
-			$form_data .= '<img class="deleteIcon action" href="' . htmlspecialchars('automation_templates.php?action=remove&id=' . $dt['id']) . '" src="images/delete_icon.gif" width="10" height="10" alt="" title="Delete">';
+			$form_data .= '<img class="deleteIcon action" href="' . htmlspecialchars('automation_templates.php?action=remove&id=' . $dt['id']) . '" src="images/delete_icon.gif" alt="" title="Delete">';
 
 			echo "<td class='nowrap'><div class='right'>" . $form_data . "</div></td>\n";
 			form_end_row();

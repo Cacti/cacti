@@ -478,7 +478,7 @@ function filter() {
 					<td>
 						<input id='filter' type='text' name='filter' size='25' value='<?php print $_REQUEST['filter'];?>'>
 					</td>
-					<td style='white-space: nowrap;'>
+					<td class='nowrap'>
 						Time Since Update
 					</td>
 					<td>

@@ -426,19 +426,19 @@ function utilities_view_tech($php_info = '') {
 
 	html_header(array('MySQL Table Information'), 2);
 	print "<tr class='odd'>\n";
-	print "		<td class='textArea' colspan='2' align='center'>";
+	print "		<td colspan='2' style='text-align:left;padding:0px'>";
 	if (sizeof($table_status) > 0) {
-		print "<table>\n";
-		print "<tr>\n";
+		print "<table class='cactiTable' style='width:100%'>\n";
+		print "<tr class='tableHeader'>\n";
 		print "  <th class='tableSubHeaderColumn'>Name</th>\n";
-		print "  <th class='tableSubHeaderColumn'>Rows</th>\n";
+		print "  <th class='tableSubHeaderColumn' style='text-align:right;'>Rows</th>\n";
 		print "  <th class='tableSubHeaderColumn'>Engine</th>\n";
 		print "  <th class='tableSubHeaderColumn'>Collation</th>\n";
 		print "</tr>\n";
 		foreach ($table_status as $item) {
-			print "<tr>\n";
+			form_alternate_row();
 			print '  <td>' . $item['Name'] . "</td>\n";
-			print '  <td>' . $item['Rows'] . "</td>\n";
+			print '  <td style="text-align:right;">' . number_format($item['Rows']) . "</td>\n";
 			if (isset($item['Engine'])) {
 				print '  <td>' . $item['Engine'] . "</td>\n";
 			}else{
@@ -449,7 +449,7 @@ function utilities_view_tech($php_info = '') {
 			} else {
 				print "  <td>Unknown</td>\n";
 			}
-			print "</tr>\n";
+			form_end_row();
 		}
 
 		if (sizeof($skip_tables)) {
@@ -748,7 +748,7 @@ function utilities_view_user_log() {
 			</td>
 			<td class='nowrap'>
 				<?php if (isset($item['full_name'])) {
-						print (strlen(get_request_var_request('filter')) ? (preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span style='filteredValue'>\\1</span>", htmlspecialchars($item['full_name']))) : htmlspecialchars($item['full_name']));
+						print (strlen(get_request_var_request('filter')) ? (preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($item['full_name']))) : htmlspecialchars($item['full_name']));
 					}else{
 						print '(User Removed)';
 					}
@@ -756,14 +756,14 @@ function utilities_view_user_log() {
 			</td>
 			<td class='nowrap'>
 				<?php if (isset($auth_realms[$item['realm']])) {
-						print (strlen(get_request_var_request('filter')) ? (preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span style='filteredValue'>\\1</span>", $auth_realms[$item['realm']])) : $auth_realms[$item['realm']]);
+						print (strlen(get_request_var_request('filter')) ? (preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", $auth_realms[$item['realm']])) : $auth_realms[$item['realm']]);
 					}else{
 						print 'N/A';
 					}
 				?>
 			</td>
 			<td class='nowrap'>
-				<?php print (strlen(get_request_var_request('filter')) ? (preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span style='filteredValue'>\\1</span>", htmlspecialchars($item['time']))) : htmlspecialchars($item['time']));?>
+				<?php print (strlen(get_request_var_request('filter')) ? (preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($item['time']))) : htmlspecialchars($item['time']));?>
 			</td>
 			<td class='nowrap'>
 				<?php print ($item['result'] == 0 ? 'Failed':($item['result'] == 1 ? 'Success - Pswd':'Success - Token'));?>
@@ -2050,40 +2050,40 @@ function boost_display_run_status() {
 	html_header(array('Runtime Statistics'), 2);
 
 	form_alternate_row();
-	print '<td style="width:200px;"><strong>Last Start Time:</strong></td><td>' . $last_run_time . '</td>';
+	print '<td class="utilityPick"><strong>Last Start Time:</strong></td><td>' . $last_run_time . '</td>';
 
 	form_alternate_row();
-	print '<td style="width:200ps;"><strong>Last Run Duration:</strong></td><td>';
+	print '<td class="utilityPick"><strong>Last Run Duration:</strong></td><td>';
 	print (($boost_last_run_duration > 60) ? (int)($boost_last_run_duration/60) . ' minutes ' : '' ) . $boost_last_run_duration%60 . ' seconds';
 	if ($rrd_updates != ''){ print ' (' . round(100*$boost_last_run_duration/$update_interval/60) . '% of update frequency)';}
 	print '</td>';
 
 	form_alternate_row();
-	print '<td style="width:200px;"><strong>RRD Updates:</strong></td><td>' . $boost_rrds_updated . '</td>';
+	print '<td class="utilityPick"><strong>RRD Updates:</strong></td><td>' . $boost_rrds_updated . '</td>';
 
 	form_alternate_row();
-	print '<td style="width:200px;"><strong>Peak Poller Memory:</strong></td><td>' . ((read_config_option('boost_peak_memory') != '') ? (round(read_config_option('boost_peak_memory')/1024/1024,2)) . ' MBytes' : 'N/A') . '</td>';
+	print '<td class="utilityPick"><strong>Peak Poller Memory:</strong></td><td>' . ((read_config_option('boost_peak_memory') != '') ? (round(read_config_option('boost_peak_memory')/1024/1024,2)) . ' MBytes' : 'N/A') . '</td>';
 
 	form_alternate_row();
-	print '<td style="width:200px;"><strong>Detailed Runtime Timers:</strong></td><td>' . (($detail_stats != '') ? $detail_stats:'N/A') . '</td>';
+	print '<td class="utilityPick"><strong>Detailed Runtime Timers:</strong></td><td>' . (($detail_stats != '') ? $detail_stats:'N/A') . '</td>';
 
 	form_alternate_row();
-	print '<td style="width:200px;"><strong>Max Poller Memory Allowed:</strong></td><td>' . ((read_config_option('boost_poller_mem_limit') != '') ? (read_config_option('boost_poller_mem_limit')) . ' MBytes' : 'N/A') . '</td>';
+	print '<td class="utilityPick"><strong>Max Poller Memory Allowed:</strong></td><td>' . ((read_config_option('boost_poller_mem_limit') != '') ? (read_config_option('boost_poller_mem_limit')) . ' MBytes' : 'N/A') . '</td>';
 
 	/* boost runtime display */
 	html_header(array('Run Time Configuration'), 2);
 
 	form_alternate_row();
-	print '<td style="width:200px;"><strong>Update Frequency:</strong></td><td><strong>' . ($rrd_updates == '' ? 'N/A' : $boost_refresh_interval[$update_interval]) . '</strong></td>';
+	print '<td class="utilityPick"><strong>Update Frequency:</strong></td><td><strong>' . ($rrd_updates == '' ? 'N/A' : $boost_refresh_interval[$update_interval]) . '</strong></td>';
 
 	form_alternate_row();
-	print '<td style="width:200px;"><strong>Next Start Time:</strong></td><td>' . $next_run_time . '</td>';
+	print '<td class="utilityPick"><strong>Next Start Time:</strong></td><td>' . $next_run_time . '</td>';
 
 	form_alternate_row();
-	print '<td style="width:200px;"><strong>Maximum Records:</strong></td><td>' . $max_records . ' Records</td>';
+	print '<td class="utilityPick"><strong>Maximum Records:</strong></td><td>' . $max_records . ' Records</td>';
 
 	form_alternate_row();
-	print '<td style="width:200px;"><strong>Maximum Allowed Runtime:</strong></td><td>' . $boost_max_runtime[$max_runtime] . '</td>';
+	print '<td class="utilityPick"><strong>Maximum Allowed Runtime:</strong></td><td>' . $boost_max_runtime[$max_runtime] . '</td>';
 
 	/* boost runtime display */
 	html_header(array('Boost Server Details'), 2);
