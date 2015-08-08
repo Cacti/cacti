@@ -801,7 +801,7 @@ function template() {
 	$display_text = array(
 		'name' => array('display' => 'Data Template Name', 'align' => 'left', 'sort' => 'ASC', 'tip' => 'The name of this Data Template.'),
 		'nosort' => array('display' => 'Deletable', 'align' => 'right', 'tip' => 'Data Templates that are in use can not be Deleted.  In use is defined as being referenced by a Data Source.'), 
-		'data_sources' => array('display' => 'Data Sources Using', 'align' => 'right', 'sort' => 'ASC', 'tip' => 'The number of Data Sources using this Data Template.'),
+		'data_sources' => array('display' => 'Data Sources Using', 'align' => 'right', 'sort' => 'DESC', 'tip' => 'The number of Data Sources using this Data Template.'),
 		'data_input_method' => array('display' => 'Data Input Method', 'align' => 'left', 'sort' => 'ASC', 'tip' => 'The method that is used to place Data into the Data Source RRDfile.'),
 		'active' => array('display' => 'Status', 'align' => 'left', 'sort' => 'ASC', 'tip' => 'Data Sources based on Inactive Data Templates wont be updated when the poller runs.'),
 		'id' => array('display' => 'ID', 'align' => 'right', 'sort' => 'ASC', 'tip' => 'The internal database ID for this Data Template.  Useful when performing automation or debugging.')
