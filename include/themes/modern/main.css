@@ -486,7 +486,7 @@ ul#breadcrumbs {
 }
 
 .cactiConsoleNavigationArea {
-	background: #efefef url('./../../../images/shadow_gray.gif') repeat-x center top;
+	background: snow url('./../../../images/shadow_gray.gif') repeat-x center top;
 	border-right: #aaaaaa 1px solid;
 	padding-left:0px;
 	padding-right:0px;
@@ -500,13 +500,20 @@ ul#breadcrumbs {
 	overflow-y: auto;
 }
 
+.cactiConsoleNavigationArea table {
+	width:160px;
+}
+
 .cactiLogo {
 	background: #efefef url('./../../../images/cacti_logo.gif') no-repeat 40px;
 	display:block;
 	cursor:pointer;
 	padding-bottom:140px;
 	margin-bottom:60px;
-	width:160px;
+	width:156px;
+	margin-top:-6px;
+	margin-left:2px;
+	margin-right:2px;
 }
 
 .loginLeft, .logoutLeft {
@@ -604,10 +611,6 @@ legend {
 	padding:4px 0px;
 }
 
-.cactiConsoleNavigationArea table {
-	width:160px;
-}
-
 .treeTable {
 	width:100%;
 }
@@ -638,7 +641,7 @@ legend {
 	padding-left: 5px;
 	vertical-align: top;
 	display: none;
-	margin-left: 162px;
+	margin-left: 160px;
 }
 
 .hyperLink {
