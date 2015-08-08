@@ -2446,7 +2446,9 @@ function draw_navigation_text($type = 'url') {
 
 	$current_page = basename($_SERVER['PHP_SELF']);
 
-	input_validate_input_regex(get_request_var_request('action'), '^([a-zA-Z0-9_-\s]+)$');
+	if (isset($_REQUEST['action']) && $_REQUEST['action'] != '') {
+		input_validate_input_regex($_REQUEST['action'], '^([-a-zA-Z0-9_\s]+)$');
+	}
 
 	$current_action = (isset($_REQUEST['action']) ? $_REQUEST['action'] : '');
 
