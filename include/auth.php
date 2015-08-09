@@ -24,7 +24,6 @@
 
 include('./include/global.php');
 
-
 if (!isset($config['cacti_db_version'])) {
 	$version = db_fetch_cell('SELECT cacti FROM version');
 	$config['cacti_db_version'] = $version;
@@ -108,7 +107,6 @@ if (read_config_option('auth_method') != 0) {
 		}else{
 			$authorized = false;
 		}
-
 
 		if ($realm_id != -1 && !$authorized) {
 			if (isset($_SERVER['HTTP_REFERER'])) {

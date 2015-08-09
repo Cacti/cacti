@@ -74,7 +74,13 @@ $ldap_error_message = '';
 $realm        = 0;
 
 if ($action == 'login') {
-	switch (read_config_option('auth_method')) {
+	if (get_request_var_post('realm') == 'local') {
+		$auth_method = 1;
+	}else{
+		$auth_method = read_config_option('auth_method');
+	}
+
+	switch ($auth_method) {
 	case '0':
 		/* No auth, no action, also shouldn't get here */
 		exit;
@@ -138,7 +144,7 @@ if ($action == 'login') {
 
 		break;
 	default:
-		secpass_login_process ();
+		secpass_login_process();
 
 		if (!api_plugin_hook_function('login_process', false)) {
 			/* Builtin Auth */
@@ -294,6 +300,7 @@ function auth_display_custom_error_message($message) {
 
 function domains_login_process() {
 	global $user, $realm, $username, $user_auth, $ldap_error, $ldap_error_message;
+
 	if (is_numeric(get_request_var_post('realm')) && (strlen(get_request_var_post('login_password')) > 0)) {
 		/* include LDAP lib */
 		include_once('./lib/ldap.php');
@@ -503,9 +510,9 @@ if (api_plugin_hook_function('custom_login', OPER_MODE_NATIVE) == OPER_MODE_RESK
 										$new_realms['local']['selected'] = true;
 									}
 	
-									return $new_realms;
+									$realms = $new_realms;
 								}else{
-									return $auth_realms;
+									$realms = $auth_realms;
 								}
 							}
 						?>
@@ -525,7 +532,6 @@ if (api_plugin_hook_function('custom_login', OPER_MODE_NATIVE) == OPER_MODE_RESK
 							</td>
 						</tr>
 					<?php } if (read_config_option('auth_cache_enabled') == 'on') { ?>
-
 						<tr>
 							<td colspan='2'>
 								<label for='remember_me'><input style='vertical-align:-3px;' type='checkbox' id='remember_me' name='remember_me' <?php print (isset($_COOKIE['cacti_remembers']) ? 'checked':'');?>>Keep me signed in</label>
