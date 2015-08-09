@@ -1778,6 +1778,14 @@ function user_edit() {
 		<script type='text/javascript'>
 		var minChars=<?php print read_config_option('secpass_minlen');?>;
 
+		function changeRealm() {
+			if ($('#realm').val() != 0) {
+				$('#password_change').prop('disabled', true);
+			}else{
+				$('#password_change').prop('disabled', false);
+			}
+		}
+
 		function checkPassword() {
 			if ($('#password').val().length < minChars) {
 				$('#pass').remove();
@@ -1809,6 +1817,8 @@ function user_edit() {
 		}
 
 		$(function() {
+			changeRealm();
+
 			$('#password').keypress(function() {
 				checkPassword();
 			});
@@ -1816,10 +1826,13 @@ function user_edit() {
 			$('#password_confirm').keypress(function() {
 				checkPasswordConfirm();
 			});
+
+			$('#realm').change(function() {
+				changeRealm();
+			});
 		});
 
 		</script>
-
 		<?php
 
 		break;

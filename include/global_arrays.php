@@ -100,6 +100,12 @@ $messages = array(
 	'clog_purged' => array(
 		'message' => 'Cacti Log Purged Sucessfully', 
 		'type' => 'info'),
+	'nopassword' => array(
+		'message' => 'Error: You are not allowed to change your password.', 
+		'type' => 'error'),
+	'nodomainpassword' => array(
+		'message' => 'Error: LDAP/AD based password change not supported.', 
+		'type' => 'error'),
 	'clog_permissions' => array(
 		'message' => 'Error: Unable to clear log, no write permissions', 
 		'type' => 'error'),
@@ -327,10 +333,7 @@ if (function_exists('ldap_connect')) {
 
 $domain_types = array('1' => 'LDAP', '2' => 'Active Directory');
 
-$auth_realms = array(0 =>
-	'Local',
-	'LDAP',
-	'Web Basic');
+$auth_realms = get_auth_realms();
 
 $ldap_versions = array(
 	2 => 'Version 2',

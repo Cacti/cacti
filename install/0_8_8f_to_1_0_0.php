@@ -464,6 +464,7 @@ function upgrade_to_1_0_0() {
 
 	// Adding email column for future user
 	db_install_add_column ('1.0', 'user_auth', array('name' => 'email_address', 'type' => 'varchar(128)', 'NULL' => true, 'after' => 'full_name'));
+	db_install_add_column ('1.0', 'user_auth', array('name' => 'password_change', 'type' => 'char(3)', 'NULL' => false, 'default' => 'on', 'after' => 'email_address'));
 
 	db_install_execute('1.0', 'DROP TABLE IF EXISTS poller_output_realtime');
 	db_install_execute('1.0', "CREATE TABLE poller_output_realtime (

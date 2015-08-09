@@ -495,25 +495,7 @@ if (api_plugin_hook_function('custom_login', OPER_MODE_NATIVE) == OPER_MODE_RESK
 									)
 								);
 							}else{
-								$realms = db_fetch_assoc('SELECT * FROM user_domains WHERE enabled="on" ORDER BY domain_name');
-								$default_realm = db_fetch_cell('SELECT domain_id FROM user_domains WHERE defdomain=1 AND enabled="on"');
-	
-								if (sizeof($realms)) {
-									$new_realms['local'] = array('name' => 'Local', 'selected' => false);
-									foreach($realms as $realm) {
-										$new_realms[1000+$realm['domain_id']] = array('name' => $realm['domain_name'], 'selected' => false);
-									}
-	
-									if (!empty($default_realm)) {
-										$new_realms[1000+$default_realm]['selected'] = true;
-									}else{
-										$new_realms['local']['selected'] = true;
-									}
-	
-									$realms = $new_realms;
-								}else{
-									$realms = $auth_realms;
-								}
+								$realms = get_auth_realms(true);
 							}
 						?>
 						<tr>

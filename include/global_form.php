@@ -1141,17 +1141,23 @@ $fields_user_user_edit_host = array(
 	'grp1' => array(
 		'friendly_name' => 'Account Options',
 		'method' => 'checkbox_group',
-		'description' => 'Set any user account-specific options here.',
+		'description' => 'Set any user account specific options here.',
 		'items' => array(
 			'must_change_password' => array(
 				'value' => '|arg1:must_change_password|',
-				'friendly_name' => 'User Must Change Password at Next Login',
+				'friendly_name' => 'Must Change Password at Next Login',
+				'form_id' => '|arg1:id|',
+				'default' => ''
+				),
+			'password_change' => array(
+				'value' => '|arg1:password_change|',
+				'friendly_name' => 'Change Password',
 				'form_id' => '|arg1:id|',
 				'default' => ''
 				),
 			'graph_settings' => array(
 				'value' => '|arg1:graph_settings|',
-				'friendly_name' => 'Allow this User to Keep Custom Graph Settings',
+				'friendly_name' => 'Maintain Custom Graph Settings',
 				'form_id' => '|arg1:id|',
 				'default' => 'on'
 				)
@@ -1160,7 +1166,7 @@ $fields_user_user_edit_host = array(
 	'grp2' => array(
 		'friendly_name' => 'Graph Options',
 		'method' => 'checkbox_group',
-		'description' => 'Set any graph-specific options here.',
+		'description' => 'Set any graph specific options here.',
 		'items' => array(
 			'show_tree' => array(
 				'value' => '|arg1:show_tree|',

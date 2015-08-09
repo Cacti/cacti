@@ -26,16 +26,36 @@ include('./include/global.php');
 
 // If the user is not logged in, redirect them to the login page
 if (!isset($_SESSION['sess_user_id'])) {
+	if (isset($_SERVER['HTTP_REFERER'])) {
+		header('Location: ' . $_SERVER['HTTP_REFERER']);
+	}else{
+		header('Location: index.php');
+	}
 	header('Location: index.php');
 	exit;
 }
 
-$user    = db_fetch_row_prepared('SELECT * FROM user_auth WHERE id = ?', array($_SESSION['sess_user_id']));
-$version = db_fetch_cell('SELECT cacti FROM version');
+$user        = db_fetch_row_prepared('SELECT * FROM user_auth WHERE id = ?', array($_SESSION['sess_user_id']));
+$version     = db_fetch_cell('SELECT cacti FROM version');
 $auth_method = read_config_option('auth_method');
 
-if ($auth_method != 1) {
-	header('Location: index.php');
+if ($auth_method != 1 && $user['realm'] != 0) {
+	raise_message('nodomainpassword');
+	if (isset($_SERVER['HTTP_REFERER'])) {
+		header('Location: ' . $_SERVER['HTTP_REFERER']);
+	}else{
+		header('Location: index.php');
+	}
+	exit;
+}
+
+if ($user['password_change'] != 'on') {
+	raise_message('nopassword');
+	if (isset($_SERVER['HTTP_REFERER'])) {
+		header('Location: ' . $_SERVER['HTTP_REFERER']);
+	}else{
+		header('Location: index.php');
+	}
 	exit;
 }
 
