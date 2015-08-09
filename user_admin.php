@@ -505,6 +505,7 @@ function form_save() {
 		$save['full_name'] = form_input_validate(get_request_var_post('full_name'), 'full_name', '', true, 3);
 		$save['password'] = $password;
 		$save['must_change_password'] = form_input_validate(get_request_var_post('must_change_password', ''), 'must_change_password', '', true, 3);
+		$save['password_change'] = form_input_validate(get_request_var_post('password_change', ''), 'password_change', '', true, 3);
 		$save['show_tree'] = form_input_validate(get_request_var_post('show_tree', ''), 'show_tree', '', true, 3);
 		$save['show_list'] = form_input_validate(get_request_var_post('show_list', ''), 'show_list', '', true, 3);
 		$save['show_preview'] = form_input_validate(get_request_var_post('show_preview', ''), 'show_preview', '', true, 3);
@@ -1791,16 +1792,21 @@ function user_edit() {
 				$('#pass').remove();
 				$('#password').after('<span id="pass"><i class="badpassword fa fa-times"></i><span style="padding-left:4px;">Password Too Short</span></span>');
 			}else{
-				$.post('user_admin.php?action=checkpass', { password: $('#password').val(), password_confim: $('#password_confirm').val() } ).done(function(data) {
-					if (data == 'ok') {
-						$('#pass').remove();
-						$('#password').after('<span id="pass"><i class="goodpassword fa fa-check"></i><span style="padding-left:4px;">Password Passes</span></span>');
-						checkPasswordConfirm();
-					}else{
-						$('#pass').remove();
-						$('#password').after('<span id="pass"><i class="badpassword fa fa-times"></i><span style="padding-left:4px;">'+data+'</span></span>');
-					}
-				});
+				if ($('#password_confirm').val().length > 0) {
+					$.post('user_admin.php?action=checkpass', { password: $('#password').val(), password_confim: $('#password_confirm').val() } ).done(function(data) {
+						if (data == 'ok') {
+							$('#pass').remove();
+							$('#password').after('<span id="pass"><i class="goodpassword fa fa-check"></i><span style="padding-left:4px;">Password Validation Passes</span></span>');
+							checkPasswordConfirm();
+						}else{
+							$('#pass').remove();
+							$('#password').after('<span id="pass"><i class="badpassword fa fa-times"></i><span style="padding-left:4px;">'+data+'</span></span>');
+						}
+					});
+				}else{
+					$('#pass').remove();
+					$('#password').after('<span id="pass"><i class="goodpassword fa fa-check"></i><span style="padding-left:4px;">Password Length Good</span></span>');
+				}
 			}
 		}
 
@@ -1819,11 +1825,15 @@ function user_edit() {
 		$(function() {
 			changeRealm();
 
-			$('#password').keypress(function() {
+			/* clear passwords */
+			$('#password').val('');
+			$('#password_confirm').val('');
+
+			$('#password').keyup(function() {
 				checkPassword();
 			});
 
-			$('#password_confirm').keypress(function() {
+			$('#password_confirm').keyup(function() {
 				checkPasswordConfirm();
 			});
 
