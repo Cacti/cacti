@@ -370,7 +370,7 @@ function form_actions() {
 				/* get common info - not dependant on template/no template*/
 				$local_graph_id = 0; // this will be a new graph
 				$member_graphs  = $selected_items;
-				$graph_title    = sql_sanitize(form_input_validate(htmlspecialchars($_POST['title_format']), 'title_format', '', true, 3));
+				$graph_title    = sql_sanitize(form_input_validate($_POST['title_format'], 'title_format', '', true, 3));
 
 				/* future aggregate_graphs entry */
 				$ag_data = array();
@@ -384,17 +384,17 @@ function form_actions() {
 					if (!isset($_POST['aggregate_total_prefix'])) $_POST['aggregate_total_prefix'] = '';
 					if (!isset($_POST['aggregate_order_type']))   $_POST['aggregate_order_type']   = 0;
 	
-					$item_no = form_input_validate(htmlspecialchars($_POST['item_no']), 'item_no', '^[0-9]+$', true, 3);
+					$item_no = form_input_validate($_POST['item_no'], 'item_no', '^[0-9]+$', true, 3);
 
 					$ag_data['aggregate_template_id'] = 0;
 					$ag_data['template_propogation']  = '';
-					$ag_data['graph_template_id']     = form_input_validate(htmlspecialchars($_POST['graph_template_id']), 'graph_template_id', '^[0-9]+$', true, 3);
-					$ag_data['gprint_prefix']         = sql_sanitize(form_input_validate(htmlspecialchars($_POST['gprint_prefix']), 'gprint_prefix', '', true, 3));
-					$ag_data['graph_type']            = form_input_validate(htmlspecialchars($_POST['aggregate_graph_type']), 'aggregate_graph_type', '^[0-9]+$', true, 3);
-					$ag_data['total']                 = form_input_validate(htmlspecialchars($_POST['aggregate_total']), 'aggregate_total', '^[0-9]+$', true, 3);
-					$ag_data['total_type']            = form_input_validate(htmlspecialchars($_POST['aggregate_total_type']), 'aggregate_total_type', '^[0-9]+$', true, 3);
-					$ag_data['total_prefix']          = form_input_validate(htmlspecialchars($_POST['aggregate_total_prefix']), 'aggregate_total_prefix', '', true, 3);
-					$ag_data['order_type']            = form_input_validate(htmlspecialchars($_POST['aggregate_order_type']), 'aggregate_order_type', '^[0-9]+$', true, 3);
+					$ag_data['graph_template_id']     = form_input_validate($_POST['graph_template_id'], 'graph_template_id', '^[0-9]+$', true, 3);
+					$ag_data['gprint_prefix']         = sql_sanitize(form_input_validate($_POST['gprint_prefix'], 'gprint_prefix', '', true, 3));
+					$ag_data['graph_type']            = form_input_validate($_POST['aggregate_graph_type'], 'aggregate_graph_type', '^[0-9]+$', true, 3);
+					$ag_data['total']                 = form_input_validate($_POST['aggregate_total'], 'aggregate_total', '^[0-9]+$', true, 3);
+					$ag_data['total_type']            = form_input_validate($_POST['aggregate_total_type'], 'aggregate_total_type', '^[0-9]+$', true, 3);
+					$ag_data['total_prefix']          = form_input_validate($_POST['aggregate_total_prefix'], 'aggregate_total_prefix', '', true, 3);
+					$ag_data['order_type']            = form_input_validate($_POST['aggregate_order_type'], 'aggregate_order_type', '^[0-9]+$', true, 3);
 				} else {
 					$template_data = db_fetch_row('SELECT * FROM aggregate_graph_templates WHERE id=' . $_POST['aggregate_template_id']);
 

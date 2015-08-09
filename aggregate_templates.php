@@ -88,14 +88,14 @@ function aggregate_form_save() {
 	if (!isset($_POST['total_prefix'])) $_POST['total_prefix'] = '';
 
 	/* populate aggregate template save array and validate posted values*/
-	$save1['name']              = form_input_validate(htmlspecialchars($_POST['name']), 'name', '', false, 3);
+	$save1['name']              = form_input_validate($_POST['name'], 'name', '', false, 3);
 	$save1['graph_template_id'] = $_POST['_graph_template_id'];
-	$save1['gprint_prefix']     = form_input_validate(htmlspecialchars($_POST['gprint_prefix']), 'gprint_prefix', '', true, 3);
-	$save1['graph_type']        = form_input_validate(htmlspecialchars($_POST['graph_type']), 'graph_type', '', false, 3);
-	$save1['total']             = form_input_validate(htmlspecialchars($_POST['total']), 'total', '', false, 3);
-	$save1['total_type']        = form_input_validate(htmlspecialchars($_POST['total_type']), 'total_type', '', false, 3);
-	$save1['total_prefix']      = form_input_validate(htmlspecialchars($_POST['total_prefix']), 'total_prefix', '', true, 3);
-	$save1['order_type']        = form_input_validate(htmlspecialchars($_POST['order_type']), 'order_type', '', false, 3);
+	$save1['gprint_prefix']     = form_input_validate($_POST['gprint_prefix'], 'gprint_prefix', '', true, 3);
+	$save1['graph_type']        = form_input_validate($_POST['graph_type'], 'graph_type', '', false, 3);
+	$save1['total']             = form_input_validate($_POST['total'], 'total', '', false, 3);
+	$save1['total_type']        = form_input_validate($_POST['total_type'], 'total_type', '', false, 3);
+	$save1['total_prefix']      = form_input_validate($_POST['total_prefix'], 'total_prefix', '', true, 3);
+	$save1['order_type']        = form_input_validate($_POST['order_type'], 'order_type', '', false, 3);
 	$save1['user_id']           = $_SESSION['sess_user_id'];
 
 	/* form validation failed */

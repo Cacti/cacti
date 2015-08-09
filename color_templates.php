@@ -129,7 +129,7 @@ function aggregate_color_form_save() {
 			$save1['color_template_id'] = 0;
 		}
 
-		$save1['name'] = form_input_validate(htmlspecialchars($_POST['name']), 'name', '', false, 3);
+		$save1['name'] = form_input_validate($_POST['name'], 'name', '', false, 3);
 
 		cacti_log('Saved ID: ' . $save1['color_template_id'] . ' Name: ' . $save1['name'], FALSE, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
 

@@ -81,7 +81,7 @@ function aggregate_color_item_form_save() {
 
 			$save['color_template_item_id'] = htmlspecialchars($_POST['color_template_item_id']);
 			$save['color_template_id'] = htmlspecialchars($_POST['color_template_id']);
-			$save['color_id'] = form_input_validate((isset($item['color_id']) ? $item['color_id'] : htmlspecialchars($_POST['color_id'])), 'color_id', '', true, 3);
+			$save['color_id'] = form_input_validate((isset($item['color_id']) ? $item['color_id'] : $_POST['color_id']), 'color_id', '', true, 3);
 			$save['sequence'] = htmlspecialchars($_POST['sequence']);
 
 			if (!is_error_message()) {
