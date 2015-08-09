@@ -79,7 +79,7 @@ maint_debug('Checking for Purge Actions');
 $purge = db_fetch_cell('SELECT count(*) FROM data_source_purge_action');
 
 /* if the table that holds the actions is present, work on it */
-if (($purge)) {
+if ($purge) {
 	maint_debug("Purging Required - Files Found $purge");
 
 	/* take the purge in steps */
@@ -108,7 +108,7 @@ if (($purge)) {
 	/* record the start time */
 	list($micro,$seconds) = explode(' ', microtime());
 	$poller_end         = $seconds + $micro;
-	$string = sprintf('MAINT STATS: Time:%4.4f Purged:%s Archived:%s RRDfiles', ($poller_end - $poller_start), $purged, $archived);
+	$string = sprintf('RRDMAINT STATS: Time:%4.4f Purged:%s Archived:%s', ($poller_end - $poller_start), $purged, $archived);
 	cacti_log($string, true, 'SYSTEM');
 }
 
@@ -123,7 +123,7 @@ if (read_config_option('auth_cache_enabled') == 'on') {
 realtime_purge_cache();
 
 // Check expired accounts
-secpass_check_expired ();
+secpass_check_expired();
 
 // Check whether the cacti log needs rotating
 if (read_config_option('logrotate_enabled') == 'on') {
@@ -284,7 +284,7 @@ function remove_files($file_array) {
 			if (unlink($source_file)) {
 				maint_debug('Deleted: ' . $file['name']);
 			} else {
-				cacti_log($file['name'] . " Error: unable to delete from $rra_path!", true, 'MAINT');
+				cacti_log($file['name'] . " ERROR: RRDfile Maintenance unable to delete from $rra_path!", true, 'MAINT');
 			}
 			$purged++;
 			break;
@@ -298,7 +298,7 @@ function remove_files($file_array) {
 			if (rename($source_file, $target_file)) {
 				maint_debug('Moved: ' . $file['name'] . ' to: ' . $rrd_archive);
 			} else {
-				cacti_log($file['name'] . " Error: unable to move to $rrd_archive!", true, 'MAINT');
+				cacti_log($file['name'] . " ERROR: RRDfile Maintenance unable to move to $rrd_archive!", true, 'MAINT');
 			}
 			$archived++;
 			break;
@@ -322,12 +322,12 @@ function remove_files($file_array) {
 
 		if (sizeof($lgis)) {
 			/* anything found? */
-			cacti_log('Processing ' . sizeof($lgis) . ' Graphs for data source id: ' . $file['local_data_id'], true, 'MAINT');
+			maint_debug('Processing ' . sizeof($lgis) . ' Graphs for data source id: ' . $file['local_data_id']);
 
 			/* get them all */
 			foreach ($lgis as $item) {
 				$remove_lgis[] = $item['id'];
-				cacti_log('remove local_graph_id=' . $item['id'], true, 'MAINT');
+				maint_debug('remove local_graph_id=' . $item['id']);
 			}
 
 			/* and remove them in a single run */
@@ -338,12 +338,12 @@ function remove_files($file_array) {
 
 		/* remove related data source if any */
 		if ($file['local_data_id'] > 0) {
-			cacti_log('removing data source: ' . $file['local_data_id'], true, 'MAINT');
+			maint_debug('Removing Data Source: ' . $file['local_data_id']);
 			api_data_source_remove($file['local_data_id']);
 		}
 	}
 
-	cacti_log('RRDClean has finished a purge pass of ' . sizeof($file_array) . ' items', true, 'MAINT');
+	maint_debug('RRDClean has finished a purge pass of ' . sizeof($file_array) . ' items');
 }
 
 function rrdclean_create_path($path) {
@@ -361,7 +361,7 @@ function rrdclean_create_path($path) {
 				@chgrp($path, $group_id);
 			}
 		}else{
-			cacti_log("ERROR: Unable to create directory '" . $path . "'", FALSE);
+			cacti_log("ERROR: RRDfile Maintenence unable to create directory '" . $path . "'", false, 'MAINT');
 		}
 	}
 
@@ -384,7 +384,7 @@ function cleanup_ds_and_graphs() {
 	$remove_ldis = array ();
 	$remove_lgis = array ();
 
-	cacti_log('RRDClean now cleans up all data sources and graphs', true, 'MAINT');
+	maint_debug('RRDClean now cleans up all data sources and graphs');
 	//fetch all local_data_id's which have appropriate data-sources
 	$rrds = db_fetch_assoc("SELECT local_data_id, name_cache, data_source_path 
 		FROM data_template_data 
@@ -399,17 +399,17 @@ function cleanup_ds_and_graphs() {
 		if (!file_exists($real_pth)) {
 			if (!in_array($ldi, $remove_ldis)) {
 				$remove_ldis[] = $ldi;
-				cacti_log("RRD file is missing for data source name: $name (local_data_id=$ldi)", true, 'MAINT');
+				maint_debug("RRD file is missing for data source name: $name (local_data_id=$ldi)");
 			}
 		}
 	}
 
 	if (empty ($remove_ldis)) {
-		cacti_log('No missing rrd files found', true, 'MAINT');
+		maint_debug('No missing rrd files found');
 		return 0;
 	}
 
-	cacti_log('Processing Graphs', true, 'MAINT');
+	maint_debug('Processing Graphs');
 	//fetch all local_graph_id's according to filtered rrds
 	$lgis = db_fetch_assoc('SELECT DISTINCT gl.id
 		FROM graph_local AS gl
@@ -423,18 +423,18 @@ function cleanup_ds_and_graphs() {
 
 	foreach ($lgis as $item) {
 		$remove_lgis[] = $item['id'];
-		cacti_log('RRD file missing for local_graph_id=' . $item['id'], true, 'MAINT');
+		maint_debug('RRD file missing for local_graph_id=' . $item['id']);
 	}
 
 	if (!empty ($remove_lgis)) {
-		cacti_log('removing graphs', true, 'MAINT');
+		maint_debug('removing graphs');
 		api_graph_remove_multi($remove_lgis);
 	}
 
-	cacti_log('removing data sources', true, 'MAINT');
+	maint_debug('removing data sources');
 	api_data_source_remove_multi($remove_ldis);
 
-	cacti_log('removed graphs:' . count($remove_lgis) . ' removed data-sources:' . count($remove_ldis), true, 'MAINT');
+	maint_debug('removed graphs:' . count($remove_lgis) . ' removed data-sources:' . count($remove_ldis));
 }
 
 function maint_debug($message) {
