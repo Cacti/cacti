@@ -609,7 +609,7 @@ function tree_edit() {
 		var branchSortInfo = {};
 
 		function createNode() {
-			var ref = $('#jstree').jstree(true);
+			var ref = $('#jstree').jstree(true),
 			sel = ref.create_node('#', 'New Node', '0');
 			if (sel) {
 				ref.edit(sel);
