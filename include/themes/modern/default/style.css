@@ -104,6 +104,7 @@
 }
 .vakata-context {
   display: none;
+  z-index: 10;
 }
 .vakata-context,
 .vakata-context ul {
