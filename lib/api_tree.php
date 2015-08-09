@@ -95,8 +95,9 @@ function api_tree_copy_node($tree_id, $node_id, $new_parent, $new_position) {
 		$exists = db_fetch_cell_prepared("SELECT id 
 			FROM graph_tree_items 
 			WHERE parent = ? 
+			AND graph_tree_id = ?
 			AND host_id = ?", 
-			array($pdata['branch'], $data['host']));
+			array($pdata['branch'], $tree_id, $data['host']));
 
 		if ($exists) {
 			print 'tbranch:' . $exists;
@@ -106,8 +107,9 @@ function api_tree_copy_node($tree_id, $node_id, $new_parent, $new_position) {
 		$exists = db_fetch_cell_prepared("SELECT id 
 			FROM graph_tree_items 
 			WHERE parent = ?
+			AND graph_tree_id = ?
 			AND local_graph_id = ?",
-			array($pdata['branch'], $data['graph']));
+			array($pdata['branch'], $tree_id, $data['graph']));
 
 		if ($exists) {
 			print 'tbranch:' . $exists;
