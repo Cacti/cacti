@@ -468,7 +468,7 @@ if (api_plugin_hook_function('custom_login', OPER_MODE_NATIVE) == OPER_MODE_RESK
 								<label for='login_username'>Username</label>
 							</td>
 							<td>
-								<input type='text' id='login_username' name='login_username' size='20' value='<?php print htmlspecialchars($username, ENT_QUOTES); ?>' placeholder='Username'>
+								<input type='text' id='login_username' name='login_username' value='<?php print htmlspecialchars($username, ENT_QUOTES); ?>' placeholder='Username'>
 							</td>
 						</tr>
 						<tr>
@@ -476,7 +476,7 @@ if (api_plugin_hook_function('custom_login', OPER_MODE_NATIVE) == OPER_MODE_RESK
 								<label for='login_password'>Password</label>
 							</td>
 							<td>
-								<input type='password' id='login_password' name='login_password' size='20' placeholder='********'>
+								<input type='password' id='login_password' name='login_password' placeholder='********'>
 							</td>
 						</tr>
 						<?php
@@ -503,7 +503,7 @@ if (api_plugin_hook_function('custom_login', OPER_MODE_NATIVE) == OPER_MODE_RESK
 								<label for='realm'>Realm</label>
 							</td>
 							<td>
-								<select id='realm' name='realm' style='width: 295px;'><?php
+								<select id='realm' name='realm'><?php
 									if (sizeof($realms)) {
 									foreach($realms as $name => $realm) {
 										print "\t\t\t\t\t<option value='" . $name . "'" . ($realm['selected'] ? ' selected':'') . '>' . htmlspecialchars($realm['name']) . "</option>\n";

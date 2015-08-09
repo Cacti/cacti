@@ -849,6 +849,10 @@ $(function() {
 });
 
 /* Graph related javascript functions */
+if (typeof urlPath == 'undefined') {
+	var urlPath = '';
+}
+
 var graphPage  = urlPath+'graph_view.php';
 var pageAction = 'preview';
 
