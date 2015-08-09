@@ -138,6 +138,10 @@ function draw_edit_control($field_name, &$field_array) {
 
 		break;
 	case 'textbox_password':
+		// Fake out firefox so that you don't get pre-set passwords
+		print "<input type='text' name='mylogin' style='display:none;'>\n";
+		print "<input type='password' name='mypassword' style='display:none;'>\n";
+
 		form_text_box(
 			$field_name, 
 			$field_array["value"],
@@ -684,6 +688,12 @@ function form_callback($form_name, $classic_sql, $column_display, $column_id, $c
 				clearTimeout(<?php print $form_name;?>Timer);
 			}).on('mouseleave', function() {
 				<?php print $form_name;?>Timer = setTimeout(function() { $('#'+prefix).autocomplete('close'); }, 800);
+			});
+
+			$('ul[id^="ui-id"] > li').each().unbind().on('mouseenter', function() {
+				$(this).addClass('ui-state-hover');
+			}).on('mouseleave', function() {
+				$(this).removeClass('ui-state-hover');
 			});
 
 			$('#'+prefix+'_wrap').unbind().on('mouseenter', function() {

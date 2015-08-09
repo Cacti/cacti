@@ -175,6 +175,8 @@ label {
 .emailtest {
 	cursor:pointer;
 	display:block;
+	float:right;
+	text-align:right;
 }
 
 .reloadquery {

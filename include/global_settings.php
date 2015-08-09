@@ -1241,7 +1241,7 @@ $settings = array(
 		),
 	'mail' => array(
 		'settings_email_header' => array(
-			'friendly_name' => '<table><tr><td class="textSubHeaderDark">Emailing Options</td><td align="right" class="textSubHeaderDark"><span id="emailtest" class="emailtest">Send a Test Email</font></span></td></tr></table>',
+			'friendly_name' => 'Emailing Options<div id="emailtest" class="emailtest textSubHeaderDark">Send a Test Email</div>',
 			'method' => 'spacer',
 			),
 		'settings_test_email' => array(

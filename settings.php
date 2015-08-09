@@ -50,7 +50,7 @@ case 'save':
 			if ($_POST[$field_name] != $_POST[$field_name.'_confirm']) {
 				raise_message(4);
 				break;
-			}elseif (isset($_POST[$field_name])) {
+			}elseif (!empty($_POST[$field_name])) {
 				db_execute_prepared('REPLACE INTO settings (name, value) VALUES (?, ?)', array($field_name, get_request_var_post($field_name)));
 			}
 		}elseif ((isset($field_array['items'])) && (is_array($field_array['items']))) {
@@ -214,156 +214,160 @@ default:
 				});
 			});
 		}
-	});
 
-	if ($('#row_font_method')) {
-		currentTheme = $('#selected_theme').val();
+		if ($('#row_font_method')) {
+			currentTheme = $('#selected_theme').val();
 
-		initFonts();
-		initRealtime();
-
-		$('#font_method').change(function() {
 			initFonts();
-		});
-
-		$('#selected_theme').change(function() {
-			themeChanger();
-		});
-
-		$('#realtime_enabled').change(function() {
 			initRealtime();
-		});
-	}
 
-	if ($('#row_snmp_ver')) {
-		initSNMP();
-		$('#snmp_ver').change(function() {
-			initSNMP();
-		});
-	}
+			$('#font_method').change(function() {
+				initFonts();
+			});
 
-	if ($('#row_availability_method')) {
-		initAvail();
-		$('#availability_method').change(function() {
-			initAvail();
-		});
-	}
+			$('#selected_theme').change(function() {
+				themeChanger();
+			});
 
-	if ($('#row_export_type')) {
-		initFTPExport();
-		initPresentation();
-		initTiming();
-
-		$('#export_type').change(function() {
-			initFTPExport();
-		});
-
-		$('#export_presentation').change(function() {
-			initPresentation();
-		});
-
-		$('#export_timing').change(function() {
-			initTiming();
-		});
-
-		$('#export_type').change(function() {
-			initFTPExport();
-		});
-	}
-
-	if ($('#row_auth_method')) {
-		initAuth();
-		initSearch();
-		initGroupMember();
-
-		$('#auth_method').change(function() {
-			initAuth();
-		});
-
-		$('#ldap_mode').change(function() {
-			initSearch();
-		});
-
-		$('#ldap_group_require').change(function() {
-			initGroupMember();
-		});
-	}
-
-	if ($('#rrd_autoclean')) {
-		initRRDClean();
-
-		$('#rrd_autoclean').change(function() {
-			initRRDClean();
-		});
-
-		$('#rrd_autoclean_method').change(function() {
-			initRRDClean();
-		});
-	}
-
-	if ($('#boost_rrd_update_enable')) {
-		initBoostOD();
-		initBoostServer();
-		initBoostCache();
-
-		$('#boost_rrd_update_enable').change(function() {
-			initBoostOD();
-		});
-
-		$('#boost_server_enable').change(function() {
-			initBoostServer();
-		});
-
-		$('#boost_png_cache_enable').change(function() {
-			initBoostCache();
-		});
-	}
-
-	if ($('#settings_test_email')) {
-		initMail();
-
-		$('#settings_how').change(function() {
-			initMail();
-		});
-	}
-
-	function initMail() {
-		switch($('#settings_how').val()) {
-		case '0':
-			$('#row_settings_sendmail_header').hide();
-			$('#row_settings_sendmail_path').hide();
-			$('#row_settings_smtp_header').hide();
-			$('#row_settings_smtp_host').hide();
-			$('#row_settings_smtp_port').hide();
-			$('#row_settings_smtp_username').hide();
-			$('#row_settings_smtp_password').hide();
-			$('#row_settings_smtp_secure').hide();
-			$('#row_settings_smtp_timeout').hide();
-			break;
-		case '1':
-			$('#row_settings_sendmail_header').show();
-			$('#row_settings_sendmail_path').show();
-			$('#row_settings_smtp_header').hide();
-			$('#row_settings_smtp_host').hide();
-			$('#row_settings_smtp_port').hide();
-			$('#row_settings_smtp_username').hide();
-			$('#row_settings_smtp_password').hide();
-			$('#row_settings_smtp_secure').hide();
-			$('#row_settings_smtp_timeout').hide();
-			break;
-		case '2':
-			$('#row_settings_sendmail_header').hide();
-			$('#row_settings_sendmail_path').hide();
-			$('#row_settings_smtp_header').show();
-			$('#row_settings_smtp_host').show();
-			$('#row_settings_smtp_port').show();
-			$('#row_settings_smtp_username').show();
-			$('#row_settings_smtp_password').show();
-			$('#row_settings_smtp_secure').show();
-			$('#row_settings_smtp_timeout').show();
-			break;
+			$('#realtime_enabled').change(function() {
+				initRealtime();
+			});
 		}
-	}
+
+		if ($('#row_snmp_ver')) {
+			initSNMP();
+			$('#snmp_ver').change(function() {
+				initSNMP();
+			});
+		}
+
+		if ($('#row_availability_method')) {
+			initAvail();
+			$('#availability_method').change(function() {
+				initAvail();
+			});
+		}
+
+		if ($('#row_export_type')) {
+			initFTPExport();
+			initPresentation();
+			initTiming();
+
+			$('#export_type').change(function() {
+				initFTPExport();
+			});
+
+			$('#export_presentation').change(function() {
+				initPresentation();
+			});
+
+			$('#export_timing').change(function() {
+				initTiming();
+			});
+
+			$('#export_type').change(function() {
+				initFTPExport();
+			});
+		}
+
+		if ($('#row_auth_method')) {
+			initAuth();
+			initSearch();
+			initGroupMember();
+
+			$('#auth_method').change(function() {
+				initAuth();
+			});
+
+			$('#ldap_mode').change(function() {
+				initSearch();
+			});
+
+			$('#ldap_group_require').change(function() {
+				initGroupMember();
+			});
+		}
+
+		if ($('#rrd_autoclean')) {
+			initRRDClean();
+
+			$('#rrd_autoclean').change(function() {
+				initRRDClean();
+			});
+
+			$('#rrd_autoclean_method').change(function() {
+				initRRDClean();
+			});
+		}
+
+		if ($('#boost_rrd_update_enable')) {
+			initBoostOD();
+			initBoostServer();
+			initBoostCache();
+
+			$('#boost_rrd_update_enable').change(function() {
+				initBoostOD();
+			});
+
+			$('#boost_server_enable').change(function() {
+				initBoostServer();
+			});
+
+			$('#boost_png_cache_enable').change(function() {
+				initBoostCache();
+			});
+		}
+
+		if ($('#settings_test_email')) {
+			initMail();
+
+			$('#settings_how').change(function() {
+				initMail();
+			});
+		}
+
+		function initMail() {
+			/* clear passwords */
+			$('#settings_smtp_password').val('');
+			$('#settings_smtp_password_confirm').val('');
+
+			switch($('#settings_how').val()) {
+			case '0':
+				$('#row_settings_sendmail_header').hide();
+				$('#row_settings_sendmail_path').hide();
+				$('#row_settings_smtp_header').hide();
+				$('#row_settings_smtp_host').hide();
+				$('#row_settings_smtp_port').hide();
+				$('#row_settings_smtp_username').hide();
+				$('#row_settings_smtp_password').hide();
+				$('#row_settings_smtp_secure').hide();
+				$('#row_settings_smtp_timeout').hide();
+				break;
+			case '1':
+				$('#row_settings_sendmail_header').show();
+				$('#row_settings_sendmail_path').show();
+				$('#row_settings_smtp_header').hide();
+				$('#row_settings_smtp_host').hide();
+				$('#row_settings_smtp_port').hide();
+				$('#row_settings_smtp_username').hide();
+				$('#row_settings_smtp_password').hide();
+				$('#row_settings_smtp_secure').hide();
+				$('#row_settings_smtp_timeout').hide();
+				break;
+			case '2':
+				$('#row_settings_sendmail_header').hide();
+				$('#row_settings_sendmail_path').hide();
+				$('#row_settings_smtp_header').show();
+				$('#row_settings_smtp_host').show();
+				$('#row_settings_smtp_port').show();
+				$('#row_settings_smtp_username').show();
+				$('#row_settings_smtp_password').show();
+				$('#row_settings_smtp_secure').show();
+				$('#row_settings_smtp_timeout').show();
+				break;
+			}
+		}
+	});
 
 	function initBoostCache() {
 		if ($('#boost_png_cache_enable').is(':checked')){
@@ -472,37 +476,52 @@ default:
 	}
 
 	function initSearch() {
-		switch($('#ldap_mode').val()) {
-		case "0":
+		if ($('#auth_method').val() == 3) {
+			switch($('#ldap_mode').val()) {
+			case "0":
+				$('#row_ldap_search_base_header').hide();
+				$('#row_ldap_search_base').hide();
+				$('#row_ldap_search_filter').hide();
+				$('#row_ldap_specific_dn').hide();
+				$('#row_ldap_specific_password').hide();
+				break;
+			case "1":
+				$('#row_ldap_search_base_header').show();
+				$('#row_ldap_search_base').show();
+				$('#row_ldap_search_filter').show();
+				$('#row_ldap_specific_dn').hide();
+				$('#row_ldap_specific_password').hide();
+				break;
+			case "2":
+				$('#row_ldap_search_base_header').show();
+				$('#row_ldap_search_base').show();
+				$('#row_ldap_search_filter').show();
+				$('#row_ldap_specific_dn').show();
+				$('#row_ldap_specific_password').show();
+				break;
+			}
+		}else{
 			$('#row_ldap_search_base_header').hide();
 			$('#row_ldap_search_base').hide();
 			$('#row_ldap_search_filter').hide();
 			$('#row_ldap_specific_dn').hide();
 			$('#row_ldap_specific_password').hide();
-			break;
-		case "1":
-			$('#row_ldap_search_base_header').show();
-			$('#row_ldap_search_base').show();
-			$('#row_ldap_search_filter').show();
-			$('#row_ldap_specific_dn').hide();
-			$('#row_ldap_specific_password').hide();
-			break;
-		case "2":
-			$('#row_ldap_search_base_header').show();
-			$('#row_ldap_search_base').show();
-			$('#row_ldap_search_filter').show();
-			$('#row_ldap_specific_dn').show();
-			$('#row_ldap_specific_password').show();
-			break;
 		}
 	}
 
 	function initGroupMember() {
-		if ($('#ldap_group_require').is(':checked')) {
-			$('#row_ldap_group_header').show();
-			$('#row_ldap_group_dn').show();
-			$('#row_ldap_group_attrib').show();
-			$('#row_ldap_group_member_type').show();
+		if ($('#auth_method').val() == 3) {
+			if ($('#ldap_group_require').is(':checked')) {
+				$('#row_ldap_group_header').show();
+				$('#row_ldap_group_dn').show();
+				$('#row_ldap_group_attrib').show();
+				$('#row_ldap_group_member_type').show();
+			}else{
+				$('#row_ldap_group_header').hide();
+				$('#row_ldap_group_dn').hide();
+				$('#row_ldap_group_attrib').hide();
+				$('#row_ldap_group_member_type').hide();
+			}
 		}else{
 			$('#row_ldap_group_header').hide();
 			$('#row_ldap_group_dn').hide();
@@ -785,6 +804,10 @@ default:
 	}
 
 	function initSNMP() {
+		/* clear passwords */
+		$('#snmp_password').val('');
+		$('#snmp_password_confirm').val('');
+
 		switch($('#snmp_ver').val()) {
 		case "0":
 			$('#row_snmp_community').hide();
