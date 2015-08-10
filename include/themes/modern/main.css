@@ -130,6 +130,7 @@ label {
 .idle {
 	color:green;
 	font-weight:bold;
+}
 
 .running {
 	color:red;
