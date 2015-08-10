@@ -50,8 +50,14 @@ Cacti CHANGELOG
 -feature: All Filters Handled in Ajax
 -feature: Refactor Graph Details page to incldue CSV output, zoom, debug, and download links
 
+0.8.8g
+
+
 0.8.8f
+-bug:0002599: 0.8.8e Poller Script Parser is Broken
 -bug:0002600: cli/upgrade_database.php is missing releases
+-bug:0002603: Graph managment graphs.php save button does not work
+-bug:0002599: Poller Script Parser is Broken
 
 0.8.8e
 -bug: Fixed issue with graph zooming failing to work
