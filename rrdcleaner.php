@@ -306,7 +306,7 @@ function list_rrd() {
 		}
 	}
 
-	html_start_box('<strong>RRD Cleaner</strong>', $width, '', '3', 'center', '');
+	html_start_box('RRD Cleaner', $width, '', '3', 'center', '');
 	filter();
 	html_end_box();
 

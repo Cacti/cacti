@@ -332,7 +332,7 @@ function item_edit() {
 			$template_item[$field_name] = $item_overrides[$field_name];
 	}
 
-	html_start_box("<strong>Override Values for Graph Item</strong>", "100%", '', "3", "center", "");
+	html_start_box("Override Values for Graph Item", "100%", '', "3", "center", "");
 
 	$form_array = array();
 

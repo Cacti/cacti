@@ -247,7 +247,7 @@ function automation_tree_rules_form_actions() {
 
 	form_start('automation_tree_rules.php', 'automation_tree_rules_action');
 
-	html_start_box('<strong>' . $automation_tree_rules_actions{$_POST['drp_action']} . '</strong>', '60%', '', '3', 'center', '');
+	html_start_box($automation_tree_rules_actions{$_POST['drp_action']}, '60%', '', '3', 'center', '');
 
 	if ($_POST['drp_action'] == AUTOMATION_ACTION_TREE_DELETE) { /* DELETE */
 		print "<tr>
@@ -547,7 +547,7 @@ function automation_tree_rules_edit() {
 
 	form_start('automation_tree_rules.php', 'form_automation_tree_rule_edit');
 
-	html_start_box("<strong>Tree Rule Selection</strong> $header_label", '100%', '', '3', 'center', '');
+	html_start_box("Tree Rule Selection $header_label", '100%', '', '3', 'center', '');
 
 	if (!empty($_GET['id'])) {
 		/* display whole rule */
@@ -708,7 +708,7 @@ function automation_tree_rules() {
 	}
 
 
-	html_start_box('<strong>Tree Rules</strong>', '100%', '', '3', 'center', 'automation_tree_rules.php?action=edit');
+	html_start_box('Tree Rules', '100%', '', '3', 'center', 'automation_tree_rules.php?action=edit');
 	#print '<pre>'; print_r($_POST); print_r($_GET); print_r($_REQUEST); print '</pre>';
 
 	?>

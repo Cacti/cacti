@@ -139,7 +139,7 @@ function form_actions() {
 
 	form_start('gprint_presets.php');
 
-	html_start_box('<strong>' . $gprint_actions{$_POST['drp_action']} . '</strong>', '60%', '', '3', 'center', '');
+	html_start_box($gprint_actions{$_POST['drp_action']}, '60%', '', '3', 'center', '');
 
 	if (isset($gprint_array) && sizeof($gprint_array)) {
 		if ($_POST['drp_action'] == '1') { /* delete */
@@ -189,7 +189,7 @@ function gprint_presets_edit() {
 
 	form_start('gprint_presets.php', 'gprint_presets');
 
-	html_start_box("<strong>GPRINT Presets</strong> $header_label", '100%', '', '3', 'center', '');
+	html_start_box("GPRINT Presets $header_label", '100%', '', '3', 'center', '');
 
 	draw_edit_form(array(
 		'config' => array('no_form_tag' => true),
@@ -264,7 +264,7 @@ function gprint_presets() {
     load_current_session_value('sort_direction', 'sess_gprint_sort_direction', 'ASC');
     load_current_session_value('rows', 'sess_default_rows', read_config_option('num_rows_table'));
 
-	html_start_box('<strong>GPRINT Presets</strong>', '100%', '', '3', 'center', 'gprint_presets.php?action=edit');
+	html_start_box('GPRINT Presets', '100%', '', '3', 'center', 'gprint_presets.php?action=edit');
 
 	?>
 	<tr class='even'>

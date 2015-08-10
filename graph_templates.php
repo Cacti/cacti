@@ -237,7 +237,7 @@ function form_actions() {
 
 	form_start('graph_templates.php');
 
-	html_start_box('<strong>' . $graph_actions{$_POST['drp_action']} . '</strong>', '60%', '', '3', 'center', '');
+	html_start_box($graph_actions{$_POST['drp_action']}, '60%', '', '3', 'center', '');
 
 	if (isset($graph_array) && sizeof($graph_array)) {
 		if ($_POST['drp_action'] == '1') { /* delete */
@@ -318,11 +318,11 @@ function item() {
 		$header_label = '[edit: ' . db_fetch_cell('SELECT name FROM graph_templates WHERE id=' . $_REQUEST['id']) . ']';
 	}
 
-	html_start_box('<strong>Graph Template Items</strong> ' . htmlspecialchars($header_label), '100%', '', '3', 'center', 'graph_templates_items.php?action=item_edit&graph_template_id=' . htmlspecialchars(get_request_var_request('id')));
+	html_start_box('Graph Template Items ' . htmlspecialchars($header_label), '100%', '', '3', 'center', 'graph_templates_items.php?action=item_edit&graph_template_id=' . htmlspecialchars(get_request_var_request('id')));
 	draw_graph_items_list($template_item_list, 'graph_templates_items.php', 'graph_template_id=' . $_REQUEST['id'], false);
 	html_end_box();
 
-	html_start_box('<strong>Graph Item Inputs</strong>', '100%', '', '3', 'center', 'graph_templates_inputs.php?action=input_edit&graph_template_id=' . htmlspecialchars(get_request_var_request('id')));
+	html_start_box('Graph Item Inputs', '100%', '', '3', 'center', 'graph_templates_inputs.php?action=input_edit&graph_template_id=' . htmlspecialchars(get_request_var_request('id')));
 
 	print "<tr class='tableHeader'>";
 		DrawMatrixHeaderItem('Name','',2);
@@ -378,7 +378,7 @@ function template_edit() {
 
 	form_start('graph_templates.php', 'graph_templates');
 
-	html_start_box('<strong>Template</strong> ' . htmlspecialchars($header_label), '100%', '', '3', 'center', '');
+	html_start_box('Template ' . htmlspecialchars($header_label), '100%', '', '3', 'center', '');
 
 	draw_edit_form(array(
 		'config' => array('no_form_tag' => true),
@@ -388,7 +388,7 @@ function template_edit() {
 
 	html_end_box();
 
-	html_start_box('<strong>Graph Template</strong>', '100%', '', '3', 'center', '');
+	html_start_box('Graph Template', '100%', '', '3', 'center', '');
 
 	$form_array = array();
 
@@ -507,7 +507,7 @@ function template() {
 	load_current_session_value('sort_direction', 'sess_graph_template_sort_direction', 'ASC');
 	load_current_session_value('rows', 'sess_default_rows', read_config_option('num_rows_table'));
 
-	html_start_box('<strong>Graph Templates</strong>', '100%', '', '3', 'center', 'graph_templates.php?action=template_edit');
+	html_start_box('Graph Templates', '100%', '', '3', 'center', 'graph_templates.php?action=template_edit');
 
 	?>
 	<tr class='even noprint'>

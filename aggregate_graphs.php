@@ -302,7 +302,7 @@ function form_actions() {
 
 	form_start('aggregate_graphs.php');
 
-	html_start_box('<strong>' . $graph_actions{$_POST['drp_action']} . '</strong>', '60%', '', '3', 'center', '');
+	html_start_box($graph_actions{$_POST['drp_action']}, '60%', '', '3', 'center', '');
 
 	if (isset($graph_array) && sizeof($graph_array)) {
 		if ($_POST['drp_action'] == '1') { /* delete */
@@ -487,7 +487,7 @@ function item() {
 		$add_text = '';
 	}
 
-	html_start_box("<strong>Graph Items</strong> $header_label", '100%', '', '3', 'center', $add_text);
+	html_start_box("Graph Items $header_label", '100%', '', '3', 'center', $add_text);
 	draw_graph_items_list($template_item_list, 'aggregate_items.php', 'local_graph_id=' . $_REQUEST['id'], (empty($graph_template_id) ? false : true));
 	html_end_box(false);
 }
@@ -573,7 +573,7 @@ function graph_edit() {
 	}
 
 	if (!empty($_REQUEST['id']) && $current_tab == 'preview') {
-		html_start_box("<strong>Aggregate Preview</strong> $header_label", '100%', '', '3', 'center', '');
+		html_start_box("Aggregate Preview $header_label", '100%', '', '3', 'center', '');
 		?>
 		<tr class='even'>
 			<td align='center' class='textInfo' colspan='2'>
@@ -613,7 +613,7 @@ function graph_edit() {
 		if (sizeof($template)) {
 			print "<div id='templated'>";
 
-			html_start_box("<strong>Aggregate Graph</strong> $header_label", '100%', '', '3', 'center', '');
+			html_start_box("Aggregate Graph $header_label", '100%', '', '3', 'center', '');
 
 			/* add template propogation to the structure */
 			draw_edit_form(array(
@@ -705,7 +705,7 @@ function graph_edit() {
 		}
 
 		if (empty($graphs['graph_template_id'])) {
-			html_start_box('<strong>Graph Configuration</strong>', '100%', '', '3', 'center', '');
+			html_start_box('Graph Configuration', '100%', '', '3', 'center', '');
 
 			$form_array = array();
 
@@ -893,7 +893,7 @@ function aggregate_items() {
 	</script>
 	<?php
 
-	html_start_box('<strong>Matching Graphs</strong>', '100%', '', '3', 'center', '');
+	html_start_box('Matching Graphs', '100%', '', '3', 'center', '');
 
 	?>
 	<tr class='even'>
@@ -1018,7 +1018,7 @@ function aggregate_items() {
 			form_alternate_row('line' . $graph['local_graph_id'], true);
 			form_selectable_cell(get_request_var_request('filter') != '' ? aggregate_format_text(htmlspecialchars($graph['title_cache']), get_request_var_request('filter')) : htmlspecialchars($graph['title_cache']), $graph['local_graph_id']);
 			form_selectable_cell($graph['local_graph_id'], $graph['local_graph_id'], '', 'text-align:right');
-			form_selectable_cell(($graph['agg_graph_id'] != '' ? "<span style='color:green;'><strong>Yes</strong></span>":"<span style='color:red;'><strong>No</strong></span>"), $graph['local_graph_id']);
+			form_selectable_cell(($graph['agg_graph_id'] != '' ? "<span class='associated'>Yes</span>":"<span class='notAssociated'>No</span>"), $graph['local_graph_id']);
 			form_selectable_cell($graph['height'] . 'x' . $graph['width'], $graph['local_graph_id']);
 			form_checkbox_cell($graph['title_cache'], $graph['local_graph_id']);
 			form_end_row();
@@ -1223,7 +1223,7 @@ function graph() {
 	</script>
 	<?php
 
-	html_start_box('<strong>Aggregate Graphs</strong>', '100%', '', '3', 'center', '');
+	html_start_box('Aggregate Graphs', '100%', '', '3', 'center', '');
 
 	?>
 	<tr class='even'>

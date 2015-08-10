@@ -363,7 +363,7 @@ function form_actions() {
 
 	form_start('tree.php');
 
-	html_start_box('<strong>' . $tree_actions{$_POST['drp_action']} . '</strong>', '60%', '', '3', 'center', '');
+	html_start_box($tree_actions{$_POST['drp_action']}, '60%', '', '3', 'center', '');
 
 	if (isset($tree_array) && sizeof($tree_array)) {
 		if ($_POST['drp_action'] == '1') { /* delete */
@@ -479,7 +479,7 @@ function tree_edit() {
 		$header_label = '[new]';
 	}
 
-	html_start_box('<strong>Graph Trees</strong> ' . $header_label, '100%', '', '3', 'center', '');
+	html_start_box('Graph Trees ' . $header_label, '100%', '', '3', 'center', '');
 
 	draw_edit_form(array(
 		'config' => array(),
@@ -516,7 +516,7 @@ function tree_edit() {
 
 		print "<table class='treeTable' valign='top'><tr valign='top'><td class='treeArea'>\n";
 
-		html_start_box('<strong>Tree Items</strong>', '100%', '', '3', 'center', '');
+		html_start_box('Tree Items', '100%', '', '3', 'center', '');
 
 		echo "<tr><td style='padding:7px;'><div id='jstree'></div></td></tr>\n";
 
@@ -524,7 +524,7 @@ function tree_edit() {
 
 		print "</td><td></td><td class='treeItemsArea'>\n";
 
-		html_start_box('<strong>Available Devices</strong>', '100%', '', '3', 'center', '');
+		html_start_box('Available Devices', '100%', '', '3', 'center', '');
 		?>
 		<tr id='treeFilter' class='even noprint'>
 			<td>
@@ -559,7 +559,7 @@ function tree_edit() {
 
 		print "</td><td></td><td class='treeItemsArea'>\n";
 
-		html_start_box('<strong>Available Graphs</strong>', '100%', '', '3', 'center', '');
+		html_start_box('Available Graphs', '100%', '', '3', 'center', '');
 		?>
 		<tr id='treeFilter' class='even noprint'>
 			<td>
@@ -1330,7 +1330,7 @@ function tree() {
 
 	<?php
 
-	html_start_box('<strong>Graph Trees</strong>', '100%', '', '3', 'center', 'tree.php?action=edit');
+	html_start_box('Graph Trees', '100%', '', '3', 'center', 'tree.php?action=edit');
 
 	?>
 	<tr class='even noprint'>

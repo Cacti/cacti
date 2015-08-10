@@ -144,7 +144,7 @@ function manager(){
 	</script>
 	<?php
 
-	html_start_box('<strong>SNMP Notification Receivers</strong>', '100%', '', '3', 'center', 'managers.php?action=edit');
+	html_start_box('SNMP Notification Receivers', '100%', '', '3', 'center', 'managers.php?action=edit');
 
 	?>
 	<tr class='even noprint'>
@@ -316,7 +316,7 @@ function manager_edit() {
 		<?php }
 	}
 
-	html_start_box("<strong>SNMP Notification Receiver</strong> $header_label", '100%', '', '3', 'center', '');
+	html_start_box("SNMP Notification Receiver $header_label", '100%', '', '3', 'center', '');
 
 	switch($_REQUEST['tab']){
 		case 'notifications':
@@ -787,7 +787,7 @@ function manager_logs($id) {
 			div.style.backgroundColor = '#EFFCF0';
 			div.style.border = 'solid 1px grey';
 			div.style.padding = '10px';
-			div.innerHTML = '<b>' + title + '</b><div style="padding-left:10; padding-right:5"><pre>' + desc + '</pre></div>';
+			div.innerHTML = '<b>' + title + '</b><div style="padding-left:10px; padding-right:5px;"><pre>' + desc + '</pre></div>';
 			div.style.left = e.clientX + 15 + 'px';
 			div.style.top = e.clientY + 15 + 'px';
 		}
@@ -930,7 +930,7 @@ function form_actions(){
 
 			form_start('managers.php');
 
-			html_start_box('<strong>' . $manager_actions{$_POST['drp_action']} . '</strong>', '60%', '', '3', 'center', '');
+			html_start_box($manager_actions{$_POST['drp_action']}, '60%', '', '3', 'center', '');
 
 			if (sizeof($selected_items)) {
 				print "<tr>
@@ -983,7 +983,7 @@ function form_actions(){
 
 			form_start('managers.php');
 
-			html_start_box('<strong>' . $manager_notification_actions[ $_POST['drp_action'] ] . '</strong>', '60%', '', '3', 'center', '');
+			html_start_box($manager_notification_actions[$_POST['drp_action']], '60%', '', '3', 'center', '');
 
 			if (sizeof($selected_items)) {
 				$msg = ($_POST['drp_action'] == 1)

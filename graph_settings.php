@@ -127,7 +127,7 @@ function settings() {
 
 	form_start('graph_settings.php');
 
-	html_start_box('<strong>Graph Settings</strong>', '100%', '', '3', 'center', '');
+	html_start_box('Graph Settings', '100%', '', '3', 'center', '');
 
 	while (list($tab_short_name, $tab_fields) = each($settings_graphs)) {
 		$collapsible = true;

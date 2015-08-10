@@ -112,6 +112,54 @@ label {
 	vertical-align:bottom;
 }
 
+.associated {
+	color:green;
+	font-weight:bold;
+}
+
+.notAssociated {
+	color:red;
+	font-weight:bold;
+}
+
+.disabled {
+	color:grey;
+	font-weight:bold;
+}
+
+.idle {
+	color:green;
+	font-weight:bold;
+
+.running {
+	color:red;
+	font-weight:bold;
+}
+
+.newObject{
+	color:blue;
+}
+
+.updateObject {
+	color:grey;
+}
+
+.unmetDependency {
+	color:red;
+}
+
+.foundDependency {
+	color:navy;
+}
+
+.success {
+	color:green;
+}
+
+.failed {
+	color:red;
+}
+
 .accessGranted {
 	color:green;
 	font-weight:bold;
@@ -150,6 +198,44 @@ label {
 
 .utilityPick {
 	width: 200px;
+}
+
+.realms {
+	width:20%;
+	vertical-align:top;
+	white-space:nowrap;
+}
+
+.deviceUp {
+	color: #198e32;
+}
+
+.deviceDown {
+	color: #ff0000;
+}
+
+.deviceUnknown {
+	color: #0000ff;
+}
+
+.deviceDisabled {
+	color: #a1a1a1;
+}
+
+.deviceRecovering {
+	color: #ff8f1e;
+}
+
+.deviceError {
+	color: #750F7D;
+}
+
+.beingGraphed {
+	color: green;
+}
+
+.notBeingGraphed {
+	color: #484848;
 }
 
 .menuoptions {
@@ -673,6 +759,7 @@ legend {
 
 .linkOverDark, .linkOverDark:visited, .linkOverDark:active {
 	color: white;
+	font-weight: normal;
 	text-decoration: none;
 	cursor: pointer;
 }
@@ -721,6 +808,7 @@ legend {
 
 .textHeaderDark {
 	font-size: 12px;
+	font-weight: bold;
 	color: snow;
 }
 

@@ -539,7 +539,7 @@ function form_actions() {
 
 	form_start('graphs.php');
 
-	html_start_box('<strong>' . $graph_actions{$_POST['drp_action']} . '</strong>', '60%', '', '3', 'center', '');
+	html_start_box($graph_actions{$_POST['drp_action']}, '60%', '', '3', 'center', '');
 
 	if (isset($graph_array) && sizeof($graph_array)) {
 		if ($_POST['drp_action'] == '1') { /* delete */
@@ -703,7 +703,7 @@ function form_actions() {
 				draw_aggregate_graph_items_list(0, $graph_template);
 
 				# again, a new html_start_box. Using the one from above would yield ugly formatted NO and YES buttons
-				html_start_box('<strong>Please confirm</strong>', '100%', '', '3', 'center', '');
+				html_start_box('Please confirm', '100%', '', '3', 'center', '');
 
 				?>
 				<script type='text/javascript'>
@@ -888,7 +888,7 @@ function item() {
 		$add_text = '';
 	}
 
-	html_start_box("<strong>Graph Items</strong> $header_label", '100%', '', '3', 'center', $add_text);
+	html_start_box("Graph Items $header_label", '100%', '', '3', 'center', $add_text);
 	draw_graph_items_list($template_item_list, 'graphs_items.php', 'local_graph_id=' . $_REQUEST['id'], (empty($graph_template_id) ? false : true));
 	html_end_box();
 }
@@ -964,7 +964,7 @@ function graph_diff() {
 	<br>
 	<?php
 
-	html_start_box('<strong>Graph Preview</strong>', '100%', '', '3', 'center', '');
+	html_start_box('Graph Preview', '100%', '', '3', 'center', '');
 
 	$graph_item_actions = array('normal' => '', 'add' => '+', 'delete' => '-');
 
@@ -1197,7 +1197,7 @@ function graph_edit() {
 		<?php
 	}
 
-	html_start_box("<strong>Graph Template Selection</strong> $header_label", '100%', '', '3', 'center', '');
+	html_start_box("Graph Template Selection $header_label", '100%', '', '3', 'center', '');
 
 	$form_array = array(
 		'graph_template_id' => array(
@@ -1250,7 +1250,7 @@ function graph_edit() {
 
 	/* only display the "inputs" area if we are using a graph template for this graph */
 	if (!empty($graph['graph_template_id'])) {
-		html_start_box('<strong>Supplemental Graph Template Data</strong>', '100%', '', '3', 'center', '');
+		html_start_box('Supplemental Graph Template Data', '100%', '', '3', 'center', '');
 
 		draw_nontemplated_fields_graph($graph['graph_template_id'], $graph, '|field|', '<strong>Graph Fields</strong>', true, true, 0);
 		draw_nontemplated_fields_graph_item($graph['graph_template_id'], $_REQUEST['id'], '|field|_|id|', '<strong>Graph Item Fields</strong>', true, $locked);
@@ -1292,7 +1292,7 @@ function graph_edit() {
 	}
 
 	if (((isset($_REQUEST['id'])) || (isset($_REQUEST['new']))) && (empty($graph['graph_template_id']))) {
-		html_start_box('<strong>Graph Configuration</strong>', '100%', '', '3', 'center', '');
+		html_start_box('Graph Configuration', '100%', '', '3', 'center', '');
 
 		$form_array = array();
 
@@ -1496,7 +1496,7 @@ function graph() {
 		$add_url = '';
 	}
 
-	html_start_box('<strong>Graph Management</strong>', '100%', '', '3', 'center', $add_url);
+	html_start_box('Graph Management', '100%', '', '3', 'center', $add_url);
 
 	?>
 	<tr class='even noprint'>

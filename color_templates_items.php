@@ -214,7 +214,7 @@ function aggregate_color_item_edit() {
 
 	form_start('color_templates_items.php', 'aggregate_color_item_edit');
 
-	html_start_box("<strong>Color Template Items</strong> $header_label", '100%', '', '3', 'center', '');
+	html_start_box("Color Template Items $header_label", '100%', '', '3', 'center', '');
 
 	draw_edit_form(array(
 		'config' => array('no_form_tag' => true),

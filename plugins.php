@@ -358,7 +358,7 @@ function update_show_current () {
 	</script>
 	<?php
 
-	html_start_box('<strong>Plugin Management</strong> (Cacti Version: ' . $config['cacti_version'] . ')', '100%', '', '3', 'center', '');
+	html_start_box('Plugin Management (Cacti Version: ' . $config['cacti_version'] . ')', '100%', '', '3', 'center', '');
 
 	?>
 	<tr class='even noprint'>

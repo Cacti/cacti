@@ -225,7 +225,7 @@ case 'preview':
 	html_graph_validate_preview_request_vars();
 
 	/* include graph view filter selector */
-	html_start_box('<strong>Graph Preview Filters</strong>' . (isset($_REQUEST['style']) && strlen($_REQUEST['style']) ? ' [ Custom Graph List Applied - Filtering from List ]':''), '100%', '', '3', 'center', '');
+	html_start_box('Graph Preview Filters' . (isset($_REQUEST['style']) && strlen($_REQUEST['style']) ? ' [ Custom Graph List Applied - Filtering from List ]':''), '100%', '', '3', 'center', '');
 
 	html_graph_preview_filter('graph_view.php', 'preview');
 
@@ -399,7 +399,7 @@ case 'list':
 	load_current_session_value('graph_list', 'sess_graph_view_list_graph_list', '');
 
 	/* display graph view filter selector */
-	html_start_box('<strong>Graph List View Filters</strong>' . (isset($_REQUEST['style']) && strlen($_REQUEST['style']) ? ' [ Custom Graph List Applied - Filter FROM List ]':''), '100%', '', '3', 'center', '');
+	html_start_box('Graph List View Filters' . (isset($_REQUEST['style']) && strlen($_REQUEST['style']) ? ' [ Custom Graph List Applied - Filter FROM List ]':''), '100%', '', '3', 'center', '');
 
 	?>
 	<tr class='even noprint'>

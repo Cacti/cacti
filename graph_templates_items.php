@@ -299,7 +299,7 @@ function item_edit() {
 
 	$header_label = '[edit graph: ' . db_fetch_cell_prepared('SELECT name FROM graph_templates WHERE id = ?', array($_REQUEST['graph_template_id'])) . ']';
 
-	html_start_box('<strong>Graph Template Items</strong> ' . htmlspecialchars($header_label), '100%', '', '3', 'center', '');
+	html_start_box('Graph Template Items ' . htmlspecialchars($header_label), '100%', '', '3', 'center', '');
 
 	if (!empty($_REQUEST['id'])) {
 		$template_item = db_fetch_row_prepared('SELECT * FROM graph_templates_item WHERE id = ?', array($_REQUEST['id']));

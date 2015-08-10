@@ -289,7 +289,7 @@ function form_actions() {
 
 	form_start('user_admin.php');
 
-	html_start_box('<strong>' . $user_actions[get_request_var_post('drp_action')] . '</strong>', '40%', '', '3', 'center', '');
+	html_start_box($user_actions[get_request_var_post('drp_action')], '40%', '', '3', 'center', '');
 
 	if (isset($user_array) && sizeof($user_array)) {
 		if ((get_request_var_post('drp_action') == '1') && (sizeof($user_array))) { /* delete */
@@ -727,7 +727,7 @@ function graph_perms_edit($tab, $header_label) {
 		form_start('user_admin.php', 'policy');
 
 		/* box: device permissions */
-		html_start_box('<strong>Default Graph Policy</strong>', '100%', '', '3', 'center', '');
+		html_start_box('Default Graph Policy', '100%', '', '3', 'center', '');
 
 		?>
 		<tr class='even'>
@@ -1020,7 +1020,7 @@ function graph_perms_edit($tab, $header_label) {
 		form_start('user_admin.php', 'policy');
 
 		/* box: device permissions */
-		html_start_box('<strong>Default Device Policy</strong>', '100%', '', '3', 'center', '');
+		html_start_box('Default Device Policy', '100%', '', '3', 'center', '');
 
 		?>
 		<tr class='even'>
@@ -1167,7 +1167,7 @@ function graph_perms_edit($tab, $header_label) {
 		form_start('user_admin.php', 'policy');
 
 		/* box: device permissions */
-		html_start_box('<strong>Default Graph Template Policy</strong>', '100%', '', '3', 'center', '');
+		html_start_box('Default Graph Template Policy', '100%', '', '3', 'center', '');
 
 		?>
 		<tr class='even'>
@@ -1305,7 +1305,7 @@ function graph_perms_edit($tab, $header_label) {
 		form_start('user_admin.php', 'policy');
 
 		/* box: device permissions */
-		html_start_box('<strong>Default Tree Policy</strong>', '100%', '', '3', 'center', '');
+		html_start_box('Default Tree Policy', '100%', '', '3', 'center', '');
 
 		?>
 		<tr class='even'>
@@ -1451,7 +1451,7 @@ function user_realms_edit($header_label) {
 
 	/* do cacti realms first */
 	print "<tr class='tableHeader'><th colspan='2'>Base Permissions</th></tr>\n";
-	print "<tr class='odd'><td colspan='4' style='width:100%;'><table style='width:100%;'><tr><td style='width:20%;veritcal-align:top;white-space:nowrap;'>\n";
+	print "<tr class='odd'><td colspan='4' style='width:100%;'><table style='width:100%;'><tr><td class='realms'>\n";
 	$i = 1;
 	$j = 1;
 	$base = array(7,8,15,1,2,3,4,5,6,9,10,11,12,13,14,16,17,18,19,20,21,22,23,101);
@@ -1472,7 +1472,7 @@ function user_realms_edit($header_label) {
 			unset($all_realms[$realm]);
 
 			if ($j == 5) {
-				print "</td><td style='width:20%;vertical-align:top;white-space:nowrap;'>\n";
+				print "</td><td class='realms'>\n";
 				$j = 1;
 			}
 
@@ -1491,7 +1491,7 @@ function user_realms_edit($header_label) {
 		ORDER BY pc.name, pr.display');
 
 	print "<tr class='tableHeader'><th colspan='2'>Plugin Permissions</th></tr>\n";
-	print "<tr class='odd'><td colspan='4' style='width:100%;'><table><tr><td style='width:20%;vertical-align:top;white-space:nowrap;'>\n";
+	print "<tr class='odd'><td colspan='4' style='width:100%;'><table><tr><td class='realms'>\n";
 	if (sizeof($realms)) {
 		$last_plugin = 'none';
 		$i = 1;
@@ -1502,14 +1502,14 @@ function user_realms_edit($header_label) {
 		foreach($realms as $r) {
 			if ($last_plugin != $r['name']) {
 				if ($break) {
-					print "</td><td style='width:20%;vertical-align:top;white-space:nowrap;'>\n";
+					print "</td><td class='realms'>\n";
 					$break = false;
 					$j = 1;
 				}
 				print '<strong>' . $r['name'] . "</strong><br>\n";
 				$last_plugin = $r['name'];
 			}elseif ($break) {
-				print "</td><td style='width:20%;vertical-align:top;white-space:nowrap;'>\n";
+				print "</td><td class='realms'>\n";
 				$break = false;
 				$j = 1;
 				print '<strong>' . $r['name'] . " (cont)</strong><br>\n";
@@ -1546,8 +1546,9 @@ function user_realms_edit($header_label) {
 	/* get the old PIA 1.x realms */
 	if (sizeof($all_realms)) {
 		if ($break) {
-			print "</td><td style='width:20%;vertical-align:top;white-space:nowrap;'>\n";
+			print "</td><td class='realms'>\n";
 		}
+
 		print "<strong>Legacy 1.x Plugins</strong><br>\n";
 		foreach($all_realms as $realm => $name) {
 			if (sizeof(db_fetch_assoc_prepared('SELECT realm_id FROM user_auth_realm WHERE user_id = ? AND realm_id = ?', array(get_request_var_request('id', 0), $realm))) > 0) {
@@ -1583,7 +1584,7 @@ function graph_settings_edit($header_label) {
 
 	form_start('user_admin.php');
 
-	html_start_box("<strong>Graph Settings</strong> $header_label", '100%', '', '3', 'center', '');
+	html_start_box("Graph Settings $header_label", '100%', '', '3', 'center', '');
 
 	while (list($tab_short_name, $tab_fields) = each($settings_graphs)) {
 		$collapsible = true;
@@ -1762,7 +1763,7 @@ function user_edit() {
 
 		form_start('user_admin.php');
 
-		html_start_box("<strong>User Management</strong> $header_label", '100%', '', '3', 'center', '');
+		html_start_box("User Management $header_label", '100%', '', '3', 'center', '');
 
 		draw_edit_form(
 			array(
@@ -1947,7 +1948,7 @@ function user() {
 	</script>
 	<?php
 
-	html_start_box('<strong>User Management</strong>', '100%', '', '3', 'center', 'user_admin.php?tab=general&action=user_edit');
+	html_start_box('User Management', '100%', '', '3', 'center', 'user_admin.php?tab=general&action=user_edit');
 
 	if ($_REQUEST['rows'] == '-1') {
 		$rows = read_config_option('num_rows_table');
@@ -2394,8 +2395,6 @@ function graph_filter($header_label) {
 
 	?>
 	<script type="text/javascript">
-	<!--
-
 	function applyFilter() {
 		strURL  = 'user_admin.php?action=user_edit&tab=permsg&id=<?php print get_request_var_request('id');?>'
 		strURL += '&rows=' + $('#rows').val();
@@ -2419,11 +2418,10 @@ function graph_filter($header_label) {
 			applyFilter();
 		});
 	});
-	-->
 	</script>
 	<?php
 
-	html_start_box('<strong>Graph Permissions</strong> ' . htmlspecialchars($header_label), '100%', '', '3', 'center', '');
+	html_start_box('Graph Permissions ' . htmlspecialchars($header_label), '100%', '', '3', 'center', '');
 
 	?>
 	<tr class='even'>
@@ -2529,7 +2527,7 @@ function group_filter($header_label) {
 	</script>
 	<?php
 
-	html_start_box('<strong>Group Membership</strong> ' . htmlspecialchars($header_label), '100%', '', '3', 'center', '');
+	html_start_box('Group Membership ' . htmlspecialchars($header_label), '100%', '', '3', 'center', '');
 
 	?>
 	<tr class='even'>
@@ -2614,7 +2612,7 @@ function device_filter($header_label) {
 	</script>
 	<?php
 
-	html_start_box('<strong>Devices Permission</strong> ' . htmlspecialchars($header_label), '100%', '', '3', 'center', '');
+	html_start_box('Devices Permission ' . htmlspecialchars($header_label), '100%', '', '3', 'center', '');
 
 	?>
 	<tr class='even'>
@@ -2716,7 +2714,7 @@ function template_filter($header_label) {
 	</script>
 	<?php
 
-	html_start_box('<strong>Template Permission</strong> ' . htmlspecialchars($header_label), '100%', '', '3', 'center', '');
+	html_start_box('Template Permission ' . htmlspecialchars($header_label), '100%', '', '3', 'center', '');
 
 	?>
 	<tr class='even'>
@@ -2800,7 +2798,7 @@ function tree_filter($header_label) {
 	</script>
 	<?php
 
-	html_start_box('<strong>Tree Permission</strong> ' . htmlspecialchars($header_label), '100%', '', '3', 'center', '');
+	html_start_box('Tree Permission ' . htmlspecialchars($header_label), '100%', '', '3', 'center', '');
 
 	?>
 	<tr class='even'>
@@ -2884,7 +2882,7 @@ function member_filter($header_label) {
 	</script>
 	<?php
 
-	html_start_box('<strong>Tree Permission</strong> ' . htmlspecialchars($header_label), '100%', '', '3', 'center', '');
+	html_start_box('Tree Permission ' . htmlspecialchars($header_label), '100%', '', '3', 'center', '');
 
 	?>
 	<tr class='even'>

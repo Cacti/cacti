@@ -217,7 +217,7 @@ function item_edit() {
 	$id = (!empty($_REQUEST['id']) ? '&id=' . $_REQUEST['id'] : '');
 	$host = db_fetch_row_prepared('SELECT hostname FROM host WHERE id = ?', array(get_request_var_request('host_id')));
 
-	html_start_box('<strong>Data Sources</strong> [host: ' . (empty($host['hostname']) ? 'No Device' : $host['hostname']) . ']', '100%', '', '3', 'center', '');
+	html_start_box('Data Sources [host: ' . (empty($host['hostname']) ? 'No Device' : $host['hostname']) . ']', '100%', '', '3', 'center', '');
 
 	?>
 	<tr class='even noprint'>
@@ -297,7 +297,7 @@ function item_edit() {
 
 	$header_label = '[edit graph: ' . db_fetch_cell_prepared('SELECT title_cache FROM graph_templates_graph WHERE local_graph_id = ?'. array(get_request_var_request('local_graph_id'))) . ']';
 
-	html_start_box("<strong>Graph Items</strong> $header_label", '100%', '', '3', 'center', '');
+	html_start_box("Graph Items $header_label", '100%', '', '3', 'center', '');
 
 	/* by default, select the LAST DS chosen to make everyone's lives easier */
 	if (!empty($_REQUEST['local_graph_id'])) {

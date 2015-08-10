@@ -281,7 +281,7 @@ function aggregate_form_actions() {
 
 	form_start('aggregate_templates.php');
 
-	html_start_box('<strong>' . $aggregate_actions{$_POST['drp_action']} . '</strong>', '60%', '', '3', 'center', '');
+	html_start_box($aggregate_actions{$_POST['drp_action']}, '60%', '', '3', 'center', '');
 
 	if (isset($aggregate_array) && sizeof($aggregate_array)) {
 		if ($_POST['drp_action'] == '1') { /* delete */
@@ -343,7 +343,7 @@ function aggregate_template_edit() {
 
 	form_start('aggregate_templates.php', 'template_edit');
 
-	html_start_box("<strong>Aggregate Template</strong> $header_label", '100%', '', '3', 'center', '');
+	html_start_box("Aggregate Template $header_label", '100%', '', '3', 'center', '');
 
 	draw_edit_form(array(
 		'config' => array('no_form_tag' => true),
@@ -529,7 +529,7 @@ function aggregate_template() {
 
 	form_start('aggregate_templates.php', 'template');
 
-	html_start_box('<strong>Aggregate Templates</strong>', '100%', '', '3', 'center', 'aggregate_templates.php?action=edit');
+	html_start_box('Aggregate Templates', '100%', '', '3', 'center', 'aggregate_templates.php?action=edit');
 
 	$filter_html = '<tr class="even">
 					<td>

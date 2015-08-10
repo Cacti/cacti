@@ -166,7 +166,7 @@ function form_actions() {
 
 	form_start('host_templates.php');
 
-	html_start_box('<strong>' . $host_actions{$_POST['drp_action']} . '</strong>', '60%', '', '3', 'center', '');
+	html_start_box($host_actions{$_POST['drp_action']}, '60%', '', '3', 'center', '');
 
 	if (isset($host_array) && sizeof($host_array)) {
 		if ($_POST['drp_action'] == '1') { /* delete */
@@ -254,7 +254,7 @@ function template_edit() {
 
 	form_start('host_templates.php', 'form_network');
 
-	html_start_box('<strong>Device Templates</strong> ' . htmlspecialchars($header_label), '100%', '', '3', 'center', '');
+	html_start_box('Device Templates ' . htmlspecialchars($header_label), '100%', '', '3', 'center', '');
 
 	draw_edit_form(array(
 		'config' => array('no_form_tag' => 'true'),
@@ -268,7 +268,7 @@ function template_edit() {
 	html_end_box();
 
 	if (!empty($_REQUEST['id'])) {
-		html_start_box('<strong>Associated Graph Templates</strong>', '100%', '', '3', 'center', '');
+		html_start_box('Associated Graph Templates', '100%', '', '3', 'center', '');
 
 		$selected_graph_templates = db_fetch_assoc_prepared('SELECT
 			graph_templates.id,
@@ -326,7 +326,7 @@ function template_edit() {
 		<?php
 		html_end_box();
 
-		html_start_box('<strong>Associated Data Queries</strong>', '100%', '', '3', 'center', '');
+		html_start_box('Associated Data Queries', '100%', '', '3', 'center', '');
 
 		$selected_data_queries = db_fetch_assoc_prepared('SELECT
 			snmp_query.id,
@@ -452,7 +452,7 @@ function template() {
 
 	display_output_messages();
 
-	html_start_box('<strong>Device Templates</strong>', '100%', '', '3', 'center', 'host_templates.php?action=edit');
+	html_start_box('Device Templates', '100%', '', '3', 'center', 'host_templates.php?action=edit');
 
 	?>
 	<tr class='even noprint'>

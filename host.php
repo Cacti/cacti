@@ -405,7 +405,7 @@ function form_actions() {
 
 	form_start('host.php');
 
-	html_start_box('<strong>' . $device_actions[get_request_var_post('drp_action')] . '</strong>', '60%', '', '3', 'center', '');
+	html_start_box($device_actions[get_request_var_post('drp_action')], '60%', '', '3', 'center', '');
 
 	if (isset($host_array) && sizeof($host_array)) {
 		if ($_POST['drp_action'] == '2') { /* Enable Devices */
@@ -767,7 +767,7 @@ function host_edit() {
 
 	form_start('host.php', 'host_form');
 
-	html_start_box("<strong>Device</strong> $header_label", '100%', '', '3', 'center', '');
+	html_start_box("Device $header_label", '100%', '', '3', 'center', '');
 
 	/* preserve the host template id if passed in via a GET variable */
 	if (!empty($_REQUEST['host_template_id'])) {
@@ -1002,7 +1002,7 @@ function host_edit() {
 	}
 
 	if (!empty($host['id'])) {
-		html_start_box('<strong>Associated Graph Templates</strong>', '100%', '', '3', 'center', '');
+		html_start_box('Associated Graph Templates', '100%', '', '3', 'center', '');
 
 		html_header(array('Graph Template Name', 'Status'), 2);
 
@@ -1035,12 +1035,13 @@ function host_edit() {
 						<strong><?php print $i;?>)</strong> <?php print htmlspecialchars($item['name']);?>
 					</td>
 					<td>
-						<?php print (($is_being_graphed == true) ? "<span style='color: green;'>Is Being Graphed</span> (<a class='linkEditMain' href='" . htmlspecialchars('graphs.php?action=graph_edit&id=' . db_fetch_cell_prepared('SELECT id FROM graph_local WHERE graph_template_id = ? AND host_id = ? LIMIT 0,1', array($item['id'], $_REQUEST['id']))) . "'>Edit</a>)" : "<span style='color: #484848;'>Not Being Graphed</span>");?>
+						<?php print (($is_being_graphed == true) ? "<span class='beingGraphed'>Is Being Graphed</span> (<a class='linkEditMain' href='" . htmlspecialchars('graphs.php?action=graph_edit&id=' . db_fetch_cell_prepared('SELECT id FROM graph_local WHERE graph_template_id = ? AND host_id = ? LIMIT 0,1', array($item['id'], $_REQUEST['id']))) . "'>Edit</a>)" : "<span class='notBeingGraphed'>Not Being Graphed</span>");?>
 					</td>
 					<td class='nowrap right'>
 						<span title='Delete Graph Template Association' class='deletequery fa fa-remove' id='gtremove<?php print $item['id'];?>' data-id='<?php print $item['id'];?>'></span>
 					</td>
 				<?php
+
 				form_end_row();
 			}
 		}else{ 
@@ -1050,12 +1051,12 @@ function host_edit() {
 		?>
 		<tr class='odd'>
 			<td class='saveRow' colspan='3'>
-				<table>
+				<table style='width:20%;'>
 					<tr style='line-height:10px;'>
-						<td class='nowrap' style='padding-right:15px;width:1%;'>
+						<td class='nowrap' style='padding-right:15px;'>
 							Add Graph Template
 						</td>
-						<td style='width:1%;'>
+						<td>
 							<?php form_dropdown('graph_template_id',$available_graph_templates,'name','id','','','');?>
 						</td>
 						<td>
@@ -1069,7 +1070,7 @@ function host_edit() {
 		<?php
 		html_end_box();
 
-		html_start_box('<strong>Associated Data Queries</strong>', '100%', '', '3', 'center', '');
+		html_start_box('Associated Data Queries', '100%', '', '3', 'center', '');
 
 		html_header(array('Data Query Name', 'Debugging', 'Re-Index Method', 'Status'), 2);
 
@@ -1125,7 +1126,7 @@ function host_edit() {
 					<?php print $reindex_types{$item['reindex_method']};?>
 					</td>
 					<td>
-						<?php print (($status == 'success') ? "<span style='color: green;'>Success</span>" : "<span style='color: green;'>Fail</span>");?> [<?php print $num_dq_items;?> Item<?php print ($num_dq_items == 1 ? '' : 's');?>, <?php print $num_dq_rows;?> Row<?php print ($num_dq_rows == 1 ? '' : 's');?>]
+						<?php print (($status == 'success') ? "<span class='success'>Success</span>" : "<span class='failed'>Fail</span>");?> [<?php print $num_dq_items;?> Item<?php print ($num_dq_items == 1 ? '' : 's');?>, <?php print $num_dq_rows;?> Row<?php print ($num_dq_rows == 1 ? '' : 's');?>]
 					</td>
 					<td class='nowrap right' style='vertical-align:middle;'>
 						<span class='reloadquery fa fa-circle-o' id='reload<?php print $item['id'];?>' data-id='<?php print $item['id'];?>'></span>
@@ -1141,18 +1142,18 @@ function host_edit() {
 		?>
 		<tr class='odd'>
 			<td class='saveRow' colspan='5'>
-				<table>
+				<table style='width:20%'>
 					<tr style='line-height:10px;'>
-						<td class='nowrap' style='padding-right:15px;width:1%;'>
+						<td class='nowrap' style='padding-right:15px;'>
 							Add Data Query
 						</td>
-						<td style='width:1%;'>
+						<td>
 							<?php form_dropdown('snmp_query_id',$available_data_queries,'name','id','','','');?>
 						</td>
-						<td class='nowrap' style='width:1%;padding-right:15px;'>
+						<td class='nowrap' style='padding-right:15px;'>
 							Re-Index Method
 						</td>
-						<td style='width:1%;'>
+						<td>
 							<?php form_dropdown('reindex_method',$reindex_types,'','',read_config_option('reindex_method'),'','');?>
 						</td>
 						<td>
@@ -1282,7 +1283,7 @@ function host() {
 	</script>
 	<?php
 
-	html_start_box('<strong>Devices</strong>', '100%', '', '3', 'center', 'host.php?action=edit&host_template_id=' . htmlspecialchars(get_request_var_request('host_template_id')) . '&host_status=' . htmlspecialchars(get_request_var_request('host_status')));
+	html_start_box('Devices', '100%', '', '3', 'center', 'host.php?action=edit&host_template_id=' . htmlspecialchars(get_request_var_request('host_template_id')) . '&host_status=' . htmlspecialchars(get_request_var_request('host_status')));
 
 	?>
 	<tr class='even noprint'>

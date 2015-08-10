@@ -207,7 +207,7 @@ function form_automation_snmp_actions() {
 
 	form_start('automation_snmp.php', 'automation_filter');
 
-	html_start_box('<strong>' . $automation_snmp_actions{$_POST['drp_action']} . '</strong>', '60%', '', '3', 'center', '');
+	html_start_box($automation_snmp_actions{$_POST['drp_action']}, '60%', '', '3', 'center', '');
 
 	if (!isset($automation_array)) {
 		print "<tr><td class='even'><span class='textError'>You must select at least one SNMP Option.</span></td></tr>\n";
@@ -308,7 +308,7 @@ function automation_snmp_item_edit() {
 
 	form_start('automation_snmp.php', 'automation_item_edit');
 
-	html_start_box("<strong>SNMP Options</strong> $header_label", '100%', '', '3', 'center', '');
+	html_start_box("SNMP Options $header_label", '100%', '', '3', 'center', '');
 
 	/* this is snmp we are talking about here */
 	unset($snmp_versions[0]);
@@ -533,7 +533,7 @@ function automation_snmp_edit() {
 
 	form_start('automation_snmp.php', 'automation_snmp_group');
 
-	html_start_box("<strong>SNMP Option Set</strong> $header_label", '100%', '', '3', 'center', '');
+	html_start_box("SNMP Option Set $header_label", '100%', '', '3', 'center', '');
 
     /* file: automation_snmp.php, action: edit */
 	$fields_automation_snmp_edit = array(
@@ -564,7 +564,7 @@ function automation_snmp_edit() {
 			WHERE snmp_id=' . $_REQUEST['id'] . '
 			ORDER BY sequence');
 
-		html_start_box('<strong>Automation SNMP Options</strong>', '100%', '', '3', 'center', 'automation_snmp.php?action=item_edit&id=' . $_REQUEST['id']);
+		html_start_box('Automation SNMP Options', '100%', '', '3', 'center', 'automation_snmp.php?action=item_edit&id=' . $_REQUEST['id']);
 
 		print "<tr class='tableHeader'>";
 
@@ -709,7 +709,7 @@ function automation_snmp() {
 
 	form_start('automation_snmp.php', 'automation_snmp');
 
-	html_start_box('<strong>Automation SNMP Options</strong>', '100%', '', '3', 'center', 'automation_snmp.php?action=edit');
+	html_start_box('Automation SNMP Options', '100%', '', '3', 'center', 'automation_snmp.php?action=edit');
 
 	?>
 	<tr class='even'>

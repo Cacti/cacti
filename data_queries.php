@@ -257,7 +257,7 @@ function form_actions() {
 
 	form_start('data_queries.php');
 
-	html_start_box('<strong>' . $dq_actions{$_POST['drp_action']} . '</strong>', '60%', '', '3', 'center', '');
+	html_start_box($dq_actions{$_POST['drp_action']}, '60%', '', '3', 'center', '');
 
 	if (isset($dq_array) && sizeof($dq_array)) {
 		if ($_POST['drp_action'] == '1') { /* delete */
@@ -391,7 +391,7 @@ function data_query_item_edit() {
 
 	form_start('data_queries.php', 'data_queries');
 
-	html_start_box("<strong>Associated Graph/Data Templates</strong> $header_label", '100%', '', '3', 'center', '');
+	html_start_box("Associated Graph/Data Templates $header_label", '100%', '', '3', 'center', '');
 
 	draw_edit_form(array(
 		'config' => array('no_form_tag' => true),
@@ -410,7 +410,7 @@ function data_query_item_edit() {
 	<?php
 
 	if (!empty($snmp_query_item['id'])) {
-		html_start_box('<strong>Associated Data Templates</strong>', '100%', '', '3', 'center', '');
+		html_start_box('Associated Data Templates', '100%', '', '3', 'center', '');
 
 		$data_templates = db_fetch_assoc_prepared('SELECT
 			data_template.id,
@@ -490,7 +490,7 @@ function data_query_item_edit() {
 
 		html_end_box();
 
-		html_start_box('<strong>Suggested Values - Graph Names</strong>', '100%', '', '3', 'center', '');
+		html_start_box('Suggested Values - Graph Names', '100%', '', '3', 'center', '');
 
 		/* suggested values for graphs templates */
 		$suggested_values = db_fetch_assoc_prepared('SELECT text, field_name, id
@@ -549,7 +549,7 @@ function data_query_item_edit() {
 		form_end_row();
 
 		html_end_box();
-		html_start_box('<strong>Suggested Values - Data Source Names</strong>', '100%', '', '3', 'center', '');
+		html_start_box('Suggested Values - Data Source Names', '100%', '', '3', 'center', '');
 
 		reset($data_templates);
 
@@ -710,7 +710,7 @@ function data_query_edit() {
 
 	form_start('data_queries.php', 'data_queries');
 
-	html_start_box("<strong>Data Queries</strong> $header_label", '100%', '', '3', 'center', '');
+	html_start_box("Data Queries $header_label", '100%', '', '3', 'center', '');
 
 	draw_edit_form(array(
 		'config' => array('no_form_tag' => true),
@@ -735,7 +735,7 @@ function data_query_edit() {
 		html_end_box();
 
 		if ($xml_file_exists == true) {
-			html_start_box('<strong>Associated Graph Templates</strong>', '100%', '', '3', 'center', 'data_queries.php?action=item_edit&snmp_query_id=' . $snmp_query['id']);
+			html_start_box('Associated Graph Templates', '100%', '', '3', 'center', 'data_queries.php?action=item_edit&snmp_query_id=' . $snmp_query['id']);
 
 			print "<tr class='tableHeader'>
 					<th class='tableSubHeaderColumn'>Name</th>
@@ -836,7 +836,7 @@ function data_query() {
 	load_current_session_value('filter', 'sess_data_queries_filter', '');
 	load_current_session_value('rows', 'sess_default_rows', read_config_option('num_rows_table'));
 
-	html_start_box('<strong>Data Queries</strong>', '100%', '', '3', 'center', 'data_queries.php?action=edit');
+	html_start_box('Data Queries', '100%', '', '3', 'center', 'data_queries.php?action=edit');
 
 	?>
 	<tr class='even noprint'>

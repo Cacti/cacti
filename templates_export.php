@@ -91,7 +91,7 @@ function export() {
 		$_REQUEST['export_type'] = 'graph_template';
 	}
 
-	html_start_box('<strong>Export Templates</strong>', '100%', '', '3', 'center', '');
+	html_start_box('Export Templates', '100%', '', '3', 'center', '');
 	?>
 	<tr class='tableRow'>
 		<td>
@@ -119,7 +119,7 @@ function export() {
 
 	print "<form method='post' action='templates_export.php'>\n";
 
-	html_start_box('<strong>Available Templates</strong> [' . $export_types{$_REQUEST['export_type']}['name'] . ']', '100%', '', '3', 'center', '');
+	html_start_box('Available Templates [' . $export_types{$_REQUEST['export_type']}['name'] . ']', '100%', '', '3', 'center', '');
 
 	form_alternate_row();?>
 		<td width='50%'>

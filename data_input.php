@@ -193,7 +193,7 @@ function form_actions() {
 
 	form_start('data_input.php');
 
-	html_start_box('<strong>' . $di_actions{$_POST['drp_action']} . '</strong>', '60%', '', '3', 'center', '');
+	html_start_box($di_actions{$_POST['drp_action']}, '60%', '', '3', 'center', '');
 
 	if (isset($di_array) && sizeof($di_array)) {
 		if ($_POST['drp_action'] == '1') { /* delete */
@@ -315,7 +315,7 @@ function field_edit() {
 
 	form_start('data_input.php', 'data_input');
 
-	html_start_box("<strong>$header_name Fields</strong> [edit: " . htmlspecialchars($data_input['name']) . ']', '100%', '', '3', 'center', '');
+	html_start_box("$header_name Fields [edit: " . htmlspecialchars($data_input['name']) . ']', '100%', '', '3', 'center', '');
 
 	$form_array = array();
 
@@ -384,7 +384,7 @@ function data_edit() {
 
 	form_start('data_input.php', 'data_input');
 
-	html_start_box("<strong>Data Input Methods</strong> $header_label", '100%', '', '3', 'center', '');
+	html_start_box("Data Input Methods $header_label", '100%', '', '3', 'center', '');
 
 	draw_edit_form(array(
 		'config' => array('no_form_tag' => true),
@@ -394,7 +394,7 @@ function data_edit() {
 	html_end_box();
 
 	if (!empty($_REQUEST['id'])) {
-		html_start_box('<strong>Input Fields</strong>', '100%', '', '3', 'center', 'data_input.php?action=field_edit&type=in&data_input_id=' . htmlspecialchars(get_request_var_request('id')));
+		html_start_box('Input Fields', '100%', '', '3', 'center', 'data_input.php?action=field_edit&type=in&data_input_id=' . htmlspecialchars(get_request_var_request('id')));
 		print "<tr class='tableHeader'>";
 			DrawMatrixHeaderItem('Name','',1);
 			DrawMatrixHeaderItem('Field Order','',1);
@@ -428,7 +428,7 @@ function data_edit() {
 		}
 		html_end_box();
 
-		html_start_box('<strong>Output Fields</strong>', '100%', '', '3', 'center', 'data_input.php?action=field_edit&type=out&data_input_id=' . $_REQUEST['id']);
+		html_start_box('Output Fields', '100%', '', '3', 'center', 'data_input.php?action=field_edit&type=out&data_input_id=' . $_REQUEST['id']);
 		print "<tr class='tableHeader'>";
 			DrawMatrixHeaderItem('Name','',1);
 			DrawMatrixHeaderItem('Field Order','',1);
@@ -522,7 +522,7 @@ function data() {
 	load_current_session_value('page', 'sess_data_input_current_page', '1');
 	load_current_session_value('rows', 'sess_default_rows', read_config_option('num_rows_table'));
 
-	html_start_box('<strong>Data Input Methods</strong>', '100%', '', '3', 'center', 'data_input.php?action=edit');
+	html_start_box('Data Input Methods', '100%', '', '3', 'center', 'data_input.php?action=edit');
 
 	?>
 	<tr class='even noprint'>

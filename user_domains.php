@@ -214,7 +214,7 @@ function form_actions() {
 
 	form_start('user_domains.php');
 
-	html_start_box('<strong>' . $actions{$_POST['drp_action']} . '</strong>', '60%', '', '3', 'center', '');
+	html_start_box($actions{$_POST['drp_action']}, '60%', '', '3', 'center', '');
 
 	if (isset($d_array) && sizeof($d_array)) {
 		if ($_POST['drp_action'] == '1') { /* delete */
@@ -486,7 +486,7 @@ function domain_edit() {
 			)
 	);
 
-	html_start_box('<strong>User Domain</strong> $header_label', '100%', '', '3', 'center', '');
+	html_start_box("User Domain $header_label", '100%', '', '3', 'center', '');
 
 	draw_edit_form(array(
 		'config' => array(),
@@ -498,7 +498,7 @@ function domain_edit() {
 	if (!empty($_REQUEST['domain_id'])) {
 		$domain = db_fetch_row_prepared('SELECT * FROM user_domains_ldap WHERE domain_id = ?', array($_REQUEST['domain_id']));
 
-		html_start_box('<strong>Domain Properties</strong>', '100%', '', '3', 'center', '');
+		html_start_box('Domain Properties', '100%', '', '3', 'center', '');
 
 		draw_edit_form(array(
 			'config' => array(),
@@ -613,7 +613,7 @@ function domains() {
 	load_current_session_value('sort_direction', 'sess_domains_sort_direction', 'ASC');
 	load_current_session_value('page', 'sess_domains_current_page', '1');
 
-	html_start_box('<strong>User Domains</strong>', '100%', '', '3', 'center', 'user_domains.php?action=edit');
+	html_start_box('User Domains', '100%', '', '3', 'center', 'user_domains.php?action=edit');
 
 	?>
 	<tr class='even' class='noprint'>

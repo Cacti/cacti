@@ -119,7 +119,7 @@ default:
 
 	form_start('settings.php');
 
-	html_start_box('<strong>Cacti Settings (' . $tabs[$current_tab] . ')</strong>', '100%', '', '3', 'center', '');
+	html_start_box('Cacti Settings (' . $tabs[$current_tab] . ')', '100%', '', '3', 'center', '');
 
 	$form_array = array();
 

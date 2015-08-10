@@ -155,7 +155,7 @@ function form_actions() {
 
 	form_start('rra.php');
 
-	html_start_box('<strong>' . $rra_actions{$_POST['drp_action']} . '</strong>', '60%', '', '3', 'center', '');
+	html_start_box($rra_actions{$_POST['drp_action']}, '60%', '', '3', 'center', '');
 
 	if (isset($rra_array) && sizeof($rra_array)) {
 		if ($_POST['drp_action'] == '1') { /* delete */
@@ -205,7 +205,7 @@ function rra_edit() {
 
 	form_start('rra.php', 'rra');
 
-	html_start_box("<strong>Round Robin Archives</strong> $header_label", '100%', '', '3', 'center', '');
+	html_start_box("Round Robin Archives $header_label", '100%', '', '3', 'center', '');
 
 	draw_edit_form(array(
 		'config' => array('no_form_tag' => true),
@@ -296,7 +296,7 @@ function rra() {
     load_current_session_value('sort_direction', 'sess_rra_sort_direction', 'ASC');
     load_current_session_value('rows', 'sess_default_rows', read_config_option('num_rows_table'));
 
-	html_start_box('<strong>Round Robin Archives</strong>', '100%', '', '3', 'center', 'rra.php?action=edit');
+	html_start_box('Round Robin Archives', '100%', '', '3', 'center', 'rra.php?action=edit');
 
 	?>
 	<tr class='even'>

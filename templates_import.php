@@ -90,7 +90,7 @@ function import() {
 	<?php
 
 	if ((isset($_SESSION['import_debug_info'])) && (is_array($_SESSION['import_debug_info']))) {
-		html_start_box('<strong>Import Results</strong>', '100%', '', '3', 'center', '');
+		html_start_box('Import Results', '100%', '', '3', 'center', '');
 
 		print "<tr class='odd'><td><p class='textArea'>Cacti has imported the following items:</p>";
 
@@ -99,31 +99,31 @@ function import() {
 
 			while (list($index, $vals) = each($type_array)) {
 				if ($vals['result'] == 'success') {
-					$result_text = "<span style='color: green;'>[success]</span>";
+					$result_text = "<span class='success'>[success]</span>";
 				}else{
-					$result_text = "<span style='color: red;'>[fail]</span>";
+					$result_text = "<span class='failed'>[fail]</span>";
 				}
 
 				if ($vals['type'] == 'update') {
-					$type_text = "<span style='color: gray;'>[update]</span>";
+					$type_text = "<span class='updateObject'>[update]</span>";
 				}else{
-					$type_text = "<span style='color: blue;'>[new]</span>";
+					$type_text = "<span class='newObject'>[new]</span>";
 				}
 
-				print "<span style='font-family: monospace;'>$result_text " . htmlspecialchars($vals['title']) . " $type_text</span><br>\n";
+				print "<span class='monoSpace'>$result_text " . htmlspecialchars($vals['title']) . " $type_text</span><br>\n";
 
 				$dep_text = '';
 				$there_are_dep_errors = false;
 				if ((isset($vals['dep'])) && (sizeof($vals['dep']) > 0)) {
 					while (list($dep_hash, $dep_status) = each($vals['dep'])) {
 						if ($dep_status == 'met') {
-							$dep_status_text = "<span style='color: navy;'>Found Dependency:</span>";
+							$dep_status_text = "<span class='foundDependency'>Found Dependency:</span>";
 						}else{
-							$dep_status_text = "<span style='color: red;'>Unmet Dependency:</span>";
+							$dep_status_text = "<span class='unmetDependency'>Unmet Dependency:</span>";
 							$there_are_dep_errors = true;
 						}
 
-						$dep_text .= "<span style='font-family: monospace;'>&nbsp;&nbsp;&nbsp;+ $dep_status_text " . hash_to_friendly_name($dep_hash, true) . "</span><br>\n";
+						$dep_text .= "<span class='monoSpace'>&nbsp;&nbsp;&nbsp;+ $dep_status_text " . hash_to_friendly_name($dep_hash, true) . "</span><br>\n";
 					}
 				}
 
@@ -141,7 +141,7 @@ function import() {
 		kill_session_var('import_debug_info');
 	}
 
-	html_start_box('<strong>Import Templates</strong>', '100%', '', '3', 'center', '');
+	html_start_box('Import Templates', '100%', '', '3', 'center', '');
 
 	draw_edit_form(array(
 		'config' => array('no_form_tag' => true),

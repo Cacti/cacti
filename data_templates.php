@@ -316,7 +316,7 @@ function form_actions() {
 
 	form_satrt('data_templates.php');
 
-	html_start_box('<strong>' . $ds_actions{$_POST['drp_action']} . '</strong>', '60%', '', '3', 'center', '');
+	html_start_box($ds_actions{$_POST['drp_action']}, '60%', '', '3', 'center', '');
 
 	if (isset($ds_array) && sizeof($ds_array)) {
 		if ($_POST['drp_action'] == '1') { /* delete */
@@ -429,7 +429,7 @@ function template_edit() {
 
 	form_start('data_templates.php', 'data_templates');
 
-	html_start_box('<strong>Data Templates</strong> ' . htmlspecialchars($header_label), '100%', '', '3', 'center', '');
+	html_start_box('Data Templates ' . htmlspecialchars($header_label), '100%', '', '3', 'center', '');
 
 	draw_edit_form(array(
 		'config' => array('no_form_tag' => 'true'),
@@ -439,7 +439,7 @@ function template_edit() {
 
 	html_end_box();
 
-	html_start_box('<strong>Data Source</strong>', '100%', '', '3', 'center', '');
+	html_start_box('Data Source', '100%', '', '3', 'center', '');
 
 	/* make sure 'data source path' doesn't show up for a template... we should NEVER template this field */
 	unset($struct_data_source['data_source_path']);
@@ -511,7 +511,7 @@ function template_edit() {
 		}
 	}
 
-	html_start_box('<strong>Data Source Item</strong> [' . (isset($template_rrd) ? htmlspecialchars($template_rrd['data_source_name']) : '') . ']', '100%', '', '0', 'center', (!empty($_REQUEST['id']) ? htmlspecialchars('data_templates.php?action=rrd_add&id=' . $_REQUEST['id']):''), '<strong>New</scrong>');
+	html_start_box('Data Source Item [' . (isset($template_rrd) ? htmlspecialchars($template_rrd['data_source_name']) : '') . ']', '100%', '', '0', 'center', (!empty($_REQUEST['id']) ? htmlspecialchars('data_templates.php?action=rrd_add&id=' . $_REQUEST['id']):''), '<strong>New</scrong>');
 
 	/* data input fields list */
 	if ((empty($template_data['data_input_id'])) ||
@@ -555,7 +555,7 @@ function template_edit() {
 		/* get each INPUT field for this data input source */
 		$fields = db_fetch_assoc('SELECT * FROM data_input_fields WHERE data_input_id=' . $template_data['data_input_id'] . " AND input_output='in' ORDER BY name");
 
-		html_start_box('<strong>Custom Data</strong> [data input: ' . htmlspecialchars(db_fetch_cell('SELECT name FROM data_input WHERE id=' . $template_data['data_input_id'])) . ']', '100%', '', '3', 'center', '');
+		html_start_box('Custom Data [data input: ' . htmlspecialchars(db_fetch_cell('SELECT name FROM data_input WHERE id=' . $template_data['data_input_id'])) . ']', '100%', '', '3', 'center', '');
 
 		/* loop through each field found */
 		if (sizeof($fields) > 0) {
@@ -668,7 +668,7 @@ function template() {
 	load_current_session_value('sort_direction', 'sess_data_template_sort_direction', 'ASC');
 	load_current_session_value('rows', 'sess_default_rows', read_config_option('num_rows_table'));
 
-	html_start_box('<strong>Data Templates</strong>', '100%', '', '3', 'center', 'data_templates.php?action=template_edit');
+	html_start_box('Data Templates', '100%', '', '3', 'center', 'data_templates.php?action=template_edit');
 
 	?>
 	<tr class='even noprint'>

@@ -227,7 +227,7 @@ function template_edit() {
 
 	form_start('automation_templates.php', 'form_network');
 
-	html_start_box("<strong>Automation Templates</strong> $header_label", '100%', '', '3', 'center', '');
+	html_start_box("Automation Templates $header_label", '100%', '', '3', 'center', '');
 
 	draw_edit_form(array(
 		'config' => array('no_form_tag' => 'true'),
@@ -258,7 +258,7 @@ function template() {
 
 	display_output_messages();
 
-	html_start_box('<strong>Automation Device Templates</strong>', '100%', '', '3', 'center', 'automation_templates.php?action=edit');
+	html_start_box('Automation Device Templates', '100%', '', '3', 'center', 'automation_templates.php?action=edit');
 
 	$display_text = array(
 		array('display' => 'Template Name', 'align' => 'left'),

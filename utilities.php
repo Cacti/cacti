@@ -253,7 +253,7 @@ function utilities_view_tech($php_info = '') {
 	}
 
 	/* Display tech information */
-	html_start_box('<strong>Technical Support</strong>', '100%', '', '3', 'center', '');
+	html_start_box('Technical Support', '100%', '', '3', 'center', '');
 	html_header(array('General Information'), 2);
 	print "<tr class='odd'>\n";
 	print "		<td class='textArea'>Date</td>\n";
@@ -591,7 +591,7 @@ function utilities_view_user_log() {
 	</script>
 	<?php
 
-	html_start_box('<strong>User Login History</strong>', '100%', '', '3', 'center', '');
+	html_start_box('User Login History', '100%', '', '3', 'center', '');
 
 	?>
 	<tr class='even noprint'>
@@ -895,7 +895,7 @@ function utilities_view_logfile() {
 	</script>
 	<?php
 
-	html_start_box('<strong>Log File Filters</strong>', '100%', '', '3', 'center', '');
+	html_start_box('Log File Filters', '100%', '', '3', 'center', '');
 
 	?>
 	<tr class='even noprint'>
@@ -1089,7 +1089,7 @@ function utilities_clear_logfile() {
 		$logfile = './log/cacti.log';
 	}
 
-	html_start_box('<strong>Clear Cacti Log File</strong>', '100%', '', '3', 'center', '');
+	html_start_box('Clear Cacti Log File', '100%', '', '3', 'center', '');
 	if (file_exists($logfile)) {
 		if (is_writable($logfile)) {
 			$timestamp = date('m/d/Y h:i:s A');
@@ -1195,7 +1195,7 @@ function utilities_view_snmp_cache() {
 	</script>
 	<?php
 
-	html_start_box('<strong>SNMP Cache Items</strong>', '100%', '', '3', 'center', '');
+	html_start_box('SNMP Cache Items', '100%', '', '3', 'center', '');
 
 	?>
 	<tr class='even noprint'>
@@ -1499,7 +1499,7 @@ function utilities_view_poller_cache() {
 	</script>
 	<?php
 
-	html_start_box('<strong>Poller Cache Items</strong>', '100%', '', '3', 'center', '');
+	html_start_box('Poller Cache Items', '100%', '', '3', 'center', '');
 
 	?>
 	<tr class='even noprint'>
@@ -1689,7 +1689,7 @@ function utilities_view_poller_cache() {
 }
 
 function utilities() {
-	html_start_box('<strong>Cacti System Utilities</strong>', '100%', '', '3', 'center', '');
+	html_start_box('Cacti System Utilities', '100%', '', '3', 'center', '');
 
 	?>
 	<colgroup span='3'>
@@ -1827,7 +1827,7 @@ function boost_display_run_status() {
 	$refresh['page'] = 'utilities.php?action=view_boost_status&header=false';
 	$refresh['seconds'] = $_REQUEST['refresh'];
 
-	html_start_box('<strong>Boost Status</strong>', '100%', '', '3', 'center', '');
+	html_start_box('Boost Status', '100%', '', '3', 'center', '');
 
 	?>
 	<script type="text/javascript">
@@ -2228,7 +2228,7 @@ function snmpagent_utilities_run_cache() {
 	</script>
 	<?php
 
-	html_start_box('<strong>SNMPAgent Cache</strong>', '100%', '', '3', 'center', '');
+	html_start_box('SNMPAgent Cache', '100%', '', '3', 'center', '');
 
 	?>
 	<tr class='even noprint'>
@@ -2491,7 +2491,7 @@ function snmpagent_utilities_run_eventlog(){
 	</script>
 
 	<?php
-	html_start_box('<strong>SNMPAgent Notification Log</strong>', '100%', '', '3', 'center', '');
+	html_start_box('SNMPAgent Notification Log', '100%', '', '3', 'center', '');
 
 	?>
 	<tr class='even noprint'>

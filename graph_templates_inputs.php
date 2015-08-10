@@ -166,7 +166,7 @@ function input_edit() {
 		$graph_template_input = db_fetch_row_prepared('SELECT * FROM graph_template_input WHERE id = ?', array(get_request_var_request('id')));
 	}
 
-	html_start_box('<strong>Graph Item Inputs</strong> ' . htmlspecialchars($header_label), '100%', '', '3', 'center', '');
+	html_start_box('Graph Item Inputs ' . htmlspecialchars($header_label), '100%', '', '3', 'center', '');
 
 	draw_edit_form(array(
 		'config' => array(),

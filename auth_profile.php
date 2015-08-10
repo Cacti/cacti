@@ -145,7 +145,7 @@ function settings() {
 
 	form_start('auth_profile.php');
 
-	html_start_box('<strong>User Settings</strong>', '100%', '', '3', 'center', '');
+	html_start_box('User Settings', '100%', '', '3', 'center', '');
 
 	$current_user = db_fetch_row_prepared('SELECT * FROM user_auth WHERE id = ?', array($_SESSION['sess_user_id']));
 
@@ -214,7 +214,7 @@ function settings() {
 			$settings_graphs['tree']['default_tree_id']['sql'] = get_graph_tree_array(true);
 		}
 
-		html_start_box('<strong>Graph Settings</strong>', '100%', '', '3', 'center', '');
+		html_start_box('Graph Settings', '100%', '', '3', 'center', '');
 
 		while (list($tab_short_name, $tab_fields) = each($settings_graphs)) {
 			$collapsible = true;

@@ -435,7 +435,7 @@ function form_actions() {
 
 	form_start('data_sources.php');
 
-	html_start_box('<strong>' . $ds_actions{$_POST['drp_action']} . '</strong>', '60%', '', '3', 'center', '');
+	html_start_box($ds_actions{$_POST['drp_action']}, '60%', '', '3', 'center', '');
 
 	if (isset($ds_array) && sizeof($ds_array)) {
 		if ($_POST['drp_action'] == '1') { /* delete */
@@ -608,7 +608,7 @@ function data_edit() {
 		/* get each INPUT field for this data input source */
 		$fields = db_fetch_assoc_prepared("SELECT * FROM data_input_fields WHERE data_input_id = ? AND input_output = 'in' ORDER BY name", array($data['data_input_id']));
 
-		html_start_box("<strong>Custom Data</strong> [data input: " . htmlspecialchars(db_fetch_cell_prepared('SELECT name FROM data_input WHERE id = ?', array($data['data_input_id']))) . ']', '100%', '', '3', 'center', '');
+		html_start_box("Custom Data [data input: " . htmlspecialchars(db_fetch_cell_prepared('SELECT name FROM data_input WHERE id = ?', array($data['data_input_id']))) . ']', '100%', '', '3', 'center', '');
 
 		/* loop through each field found */
 		if (sizeof($fields) > 0) {
@@ -761,7 +761,7 @@ function ds_edit() {
 
 	form_start('data_sources.php', 'data_source');
 
-	html_start_box("<strong>Data Template Selection</strong> $header_label", '100%', '', '3', 'center', '');
+	html_start_box("Data Template Selection $header_label", '100%', '', '3', 'center', '');
 
 	$form_array = array(
 		'data_template_id' => array(
@@ -818,7 +818,7 @@ function ds_edit() {
 	if (!empty($data['data_template_id'])) {
 		$template_data_rrds = db_fetch_assoc_prepared('SELECT * FROM data_template_rrd WHERE local_data_id = ? ORDER BY data_source_name', array($_REQUEST['id']));
 
-		html_start_box('<strong>Supplemental Data Template Data</strong>', '100%', '', '3', 'center', '');
+		html_start_box('Supplemental Data Template Data', '100%', '', '3', 'center', '');
 
 		draw_nontemplated_fields_data_source($data['data_template_id'], $data['local_data_id'], $data, '|field|', '<strong>Data Source Fields</strong>', true, true, 0);
 		draw_nontemplated_fields_data_source_item($data['data_template_id'], $template_data_rrds, '|field|_|id|', '<strong>Data Source Item Fields</strong>', true, true, true, 0);
@@ -830,7 +830,7 @@ function ds_edit() {
 	}
 
 	if (((isset($_REQUEST['id'])) || (isset($_REQUEST['new']))) && (empty($data['data_template_id']))) {
-		html_start_box('<strong>Data Source</strong>', '100%', '', '3', 'center', '');
+		html_start_box('Data Source', '100%', '', '3', 'center', '');
 
 		$form_array = array();
 
@@ -1117,7 +1117,7 @@ function ds() {
 		$add_url = '';
 	}
 
-	html_start_box('<strong>Data Sources</strong> [host: ' . (empty($host['hostname']) ? 'No Device' : htmlspecialchars($host['hostname'])) . ']', '100%', '', '3', 'center', $add_url);
+	html_start_box('Data Sources [host: ' . (empty($host['hostname']) ? 'No Device' : htmlspecialchars($host['hostname'])) . ']', '100%', '', '3', 'center', $add_url);
 
 	?>
 	<tr class='even noprint'>

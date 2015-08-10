@@ -212,7 +212,7 @@ function form_actions() {
 
 	form_start('cdef.php');
 
-	html_start_box('<strong>' . $cdef_actions{$_POST['drp_action']} . '</strong>', '60%', '', '3', 'center', '');
+	html_start_box($cdef_actions{$_POST['drp_action']}, '60%', '', '3', 'center', '');
 
 	if (isset($cdef_array) && sizeof($cdef_array)) {
 		if ($_POST['drp_action'] == '1') { /* delete */
@@ -308,7 +308,7 @@ function item_edit() {
 
 	form_start('cdef.php', 'form_cdef');
 
-	html_start_box('<strong>CDEF Items</strong> [edit: ' . htmlspecialchars(db_fetch_cell_prepared('SELECT name FROM cdef WHERE id = ?', array(get_request_var_request('cdef_id')))) . ']', '100%', '', '3', 'center', '');
+	html_start_box('CDEF Items [edit: ' . htmlspecialchars(db_fetch_cell_prepared('SELECT name FROM cdef WHERE id = ?', array(get_request_var_request('cdef_id')))) . ']', '100%', '', '3', 'center', '');
 
 	if (isset($_REQUEST['type_select'])) {
 		$current_type = $_REQUEST['type_select'];
@@ -392,7 +392,7 @@ function cdef_edit() {
 
 	form_start('cdef.php', 'cdef');
 
-	html_start_box("<strong>CDEF's</strong> $header_label", '100%', '', '3', 'center', '');
+	html_start_box("CDEF's $header_label", '100%', '', '3', 'center', '');
 
 	draw_edit_form(array(
 		'config' => array('no_form_tag' => true),
@@ -407,7 +407,7 @@ function cdef_edit() {
 		draw_cdef_preview($_REQUEST['id']);
 		html_end_box();
 
-		html_start_box('<strong>CDEF Items</strong>', '100%', '', '3', 'center', 'cdef.php?action=item_edit&cdef_id=' . $cdef['id']);
+		html_start_box('CDEF Items', '100%', '', '3', 'center', 'cdef.php?action=item_edit&cdef_id=' . $cdef['id']);
 
 		print "<tr class='tableHeader'>";
 			DrawMatrixHeaderItem('Item', '', 1);
@@ -506,7 +506,7 @@ function cdef() {
 	load_current_session_value('sort_direction', 'sess_cdef_sort_direction', 'ASC');
 	load_current_session_value('rows', 'sess_default_rows', read_config_option('num_rows_table'));
 
-	html_start_box("<strong>CDEF's</strong>", '100%', '', '3', 'center', 'cdef.php?action=edit');
+	html_start_box("CDEF's", '100%', '', '3', 'center', 'cdef.php?action=edit');
 
 	?>
 	<tr class='even'>

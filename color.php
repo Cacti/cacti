@@ -112,7 +112,7 @@ function color_edit() {
 
 	form_start('color.php', 'color');
 
-	html_start_box("<strong>Colors</strong> $header_label", '100%', '', '3', 'center', '');
+	html_start_box("Colors $header_label", '100%', '', '3', 'center', '');
 
 	draw_edit_form(array(
 		'config' => array('no_form_tag' => true),
@@ -134,7 +134,7 @@ function color_edit() {
 }
 
 function color() {
-	html_start_box('<strong>Colors</strong>', '100%', '', '3', 'center', 'color.php?action=edit');
+	html_start_box('Colors', '100%', '', '3', 'center', 'color.php?action=edit');
 
 	print "<tr class='tableHeader'>";
 		DrawMatrixHeaderItem('Hex Value','',1);

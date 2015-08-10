@@ -240,7 +240,7 @@ function automation_graph_rules_form_actions() {
 
 	form_start('automation_graph_rules.php', 'automation_graph_rules');
 
-	html_start_box('<strong>' . $automation_graph_rules_actions{$_POST['drp_action']} . '</strong>', '60%', $colors['header_panel'], '3', 'center', '');
+	html_start_box($automation_graph_rules_actions{$_POST['drp_action']}, '60%', $colors['header_panel'], '3', 'center', '');
 
 	if ($_POST['drp_action'] == AUTOMATION_ACTION_GRAPH_DELETE) { /* delete */
 		print "	<tr>
@@ -508,7 +508,7 @@ function automation_graph_rules_edit() {
 
 	form_start('form_automation_graph_rule_edit.php', 'automation_graph_rules');
 
-	html_start_box("<strong>Rule Selection</strong> $header_label", '100%', $colors['header'], '3', 'center', '');
+	html_start_box("Rule Selection $header_label", '100%', $colors['header'], '3', 'center', '');
 
 	if (!empty($_GET['id'])) {
 		/* display whole rule */
@@ -667,7 +667,7 @@ function automation_graph_rules() {
 	}
 
 
-	html_start_box('<strong>Graph Rules</strong>', '100%', $colors['header'], '3', 'center', 'automation_graph_rules.php?action=edit');
+	html_start_box('Graph Rules', '100%', $colors['header'], '3', 'center', 'automation_graph_rules.php?action=edit');
 
 	?>
 	<tr class='even'>

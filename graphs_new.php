@@ -265,7 +265,7 @@ function host_new_graphs($host_id, $host_template_id, $selected_graphs_array) {
 			if ($form_type == 'cg') {
 				$graph_template_id = $form_id1;
 
-				html_start_box("<strong>Create Graph from '" . db_fetch_cell_prepared('SELECT name FROM graph_templates WHERE id = ?', array($graph_template_id)) . "'", '100%', '', '3', 'center', '');
+				html_start_box("Create Graph from '" . db_fetch_cell_prepared('SELECT name FROM graph_templates WHERE id = ?', array($graph_template_id)) . "'", '100%', '', '3', 'center', '');
 			}elseif ($form_type == 'sg') {
 				while (list($form_id2, $form_array3) = each($form_array2)) {
 					/* ================= input validation ================= */
@@ -286,7 +286,7 @@ function host_new_graphs($host_id, $host_template_id, $selected_graphs_array) {
 				}
 
 				/* DRAW: Data Query */
-				html_start_box("<strong>Create $num_graphs Graph" . (($num_graphs>1) ? 's' : '') . " from '" . db_fetch_cell_prepared('SELECT name FROM snmp_query WHERE id = ?', array($snmp_query_id)) . "'", '100%', '', '3', 'center', '');
+				html_start_box("Create $num_graphs Graph" . (($num_graphs>1) ? 's' : '') . " from '" . db_fetch_cell_prepared('SELECT name FROM snmp_query WHERE id = ?', array($snmp_query_id)) . "'", '100%', '', '3', 'center', '');
 			}
 
 			/* ================= input validation ================= */
@@ -425,7 +425,7 @@ function graphs() {
 
 	$row_limit = get_request_var_request('rows');
 
-	html_start_box("<strong>New Graphs for</strong> $header" , '100%', '', '3', 'center', '');
+	html_start_box("New Graphs for $header" , '100%', '', '3', 'center', '');
 
 	form_alternate_row();
 	print '<td class="even">';
@@ -547,7 +547,7 @@ function graphs() {
 	$script = "<script type='text/javascript'>\nvar gt_created_graphs = new Array();\nvar created_graphs = new Array()\n";
 
 	if ($_REQUEST['graph_type'] < 0) {
-		html_start_box('<strong>Graph Templates</strong>', '100%', '', '3', 'center', '');
+		html_start_box('Graph Templates', '100%', '', '3', 'center', '');
 
 		print "<tr class='tableHeader'>
 				<th class='tableSubHeaderColumn'>Graph Template Name</th>

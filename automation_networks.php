@@ -260,7 +260,7 @@ function form_actions() {
 
 	form_start('automation_networks.php');
 
-	html_start_box('<strong>' . $network_actions{$_POST['drp_action']} . '</strong>', '60%', $colors['header_panel'], '3', 'center', '');
+	html_start_box($network_actions{$_POST['drp_action']}, '60%', $colors['header_panel'], '3', 'center', '');
 
 	if ($_POST['drp_action'] == '1') { /* delete */
 		print "<tr>
@@ -565,7 +565,7 @@ function network_edit() {
 
 	form_start('automation_networks.php', 'form_network');
 
-	html_start_box("<strong>Network Discovery Range</strong> $header_label", '100%', '', '3', 'center', '');
+	html_start_box("Network Discovery Range $header_label", '100%', '', '3', 'center', '');
 
 	draw_edit_form(array(
 		'config' => array('no_form_tag' => 'true'),
@@ -815,7 +815,7 @@ function networks() {
 		$row_limit = $_REQUEST['rows'];
 	}
 
-	html_start_box('<strong>Network Filters</strong>', '100%', '', '3', 'center', 'automation_networks.php?action=edit');
+	html_start_box('Network Filters', '100%', '', '3', 'center', 'automation_networks.php?action=edit');
 	networks_filter();
 	html_end_box();
 
@@ -855,7 +855,7 @@ function networks() {
 	if (sizeof($networks)) {
 		foreach ($networks as $network) {
 			if ($network['enabled'] == '') {
-				$mystat   = "<span style='color:grey;'>Disabled</span>";
+				$mystat   = "<span class='disabled'>Disabled</span>";
 				$progress = "0/0/0";
 				$status   = array();
 				$updown['up'] = $updown['snmp'] = '0';
@@ -871,7 +871,7 @@ function networks() {
 						FROM automation_ips
 						WHERE network_id = ?', array($network['id']));
 
-					$mystat   = "<span style='color:red;'>Running</span>";
+					$mystat   = "<span class='running'>Running</span>";
 
 					if (empty($status['total'])) {
 						$progress = "0/0/0";
@@ -891,7 +891,7 @@ function networks() {
 					$updown['up']   = $network['up_hosts'];
 					$updown['snmp'] = $network['snmp_hosts'];
 
-					$mystat   = "<span style='color:green;'>Idle</span>";
+					$mystat   = "<span class='idle'>Idle</span>";
 					$progress = "0/0/0";
 				}
 			}
@@ -905,7 +905,7 @@ function networks() {
 			form_selectable_cell(number_format($updown['up']) . '/' . number_format($updown['snmp']), $network['id'], '', 'text-align:right;');
 			form_selectable_cell(number_format($network['threads']), $network['id'], '', 'text-align:right;');
 			form_selectable_cell(round($network['last_runtime'],2), $network['id'], '', 'text-align:right;');
-			form_selectable_cell($network['next_start'] == '0000-00-00 00:00:00' ? substr($network['start_at'],0,16):substr($network['next_start'],0,16), $network['id'], '', 'text-align:right;');
+			form_selectable_cell($network['enabled'] == '' || $network['sched_type'] == '1' ? 'N/A':($network['next_start'] == '0000-00-00 00:00:00' ? substr($network['start_at'],0,16):substr($network['next_start'],0,16)), $network['id'], '', 'text-align:right;');
 			form_selectable_cell($network['last_started'] == '0000-00-00 00:00:00' ? 'Never':substr($network['last_started'],0,16), $network['id'], '', 'text-align:right;');
 			form_checkbox_cell($network['name'], $network['id']);
 			form_end_row();

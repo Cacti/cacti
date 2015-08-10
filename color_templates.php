@@ -204,7 +204,7 @@ function aggregate_color_form_actions() {
 
 	form_start('color_templates.php');
 
-	html_start_box('<strong>' . $aggregate_actions{$_POST['drp_action']} . '</strong>', '60%', '', '3', 'center', '');
+	html_start_box($aggregate_actions{$_POST['drp_action']}, '60%', '', '3', 'center', '');
 
 	if (isset($color_array) && sizeof($color_array)) {
 		if ($_POST['drp_action'] == '1') { /* delete */
@@ -275,7 +275,7 @@ function aggregate_color_item() {
 		$header_label = '[edit: ' . db_fetch_cell('SELECT name FROM color_templates WHERE color_template_id=' . $_GET['color_template_id']) . ']';
 	}
 
-	html_start_box("<strong>Color Template Items</strong> $header_label", '100%', '', '3', 'center', 'color_templates_items.php?action=item_edit&color_template_id=' . htmlspecialchars($_GET['color_template_id']));
+	html_start_box("Color Template Items $header_label", '100%', '', '3', 'center', 'color_templates_items.php?action=item_edit&color_template_id=' . htmlspecialchars($_GET['color_template_id']));
 
 	draw_color_template_items_list($template_item_list, 'color_templates_items.php', 'color_template_id=' . htmlspecialchars($_GET['color_template_id']), false);
 
@@ -304,7 +304,7 @@ function aggregate_color_template_edit() {
 
 	form_start('color_templates.php', 'color_template_edit');
 
-	html_start_box("<strong>Color Template</strong> $header_label", '100%', '', '3', 'center', '');
+	html_start_box("Color Template $header_label", '100%', '', '3', 'center', '');
 
 	draw_edit_form(array(
 		'config' => array('no_form_tag' => true),
@@ -401,7 +401,7 @@ function aggregate_color_template() {
 
 	print ('<form id="form_template" action="color_templates.php" method="get">');
 
-	html_start_box('<strong>Color Templates</strong>', '100%', '', '3', 'center', 'color_templates.php?action=template_edit');
+	html_start_box('Color Templates', '100%', '', '3', 'center', 'color_templates.php?action=template_edit');
 
 	$filter_html = '<tr class="even">
 					<td>
