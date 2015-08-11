@@ -647,61 +647,60 @@ function form_callback($form_name, $classic_sql, $column_display, $column_id, $c
 		print "<input type='hidden' id='" . $form_prefix . "' name='" . $form_prefix . "' value='" . $previous_id . "'>\n";
 		?>
 		<script type='text/javascript'>
-		var prefix = '<?php print $form_name;?>';
 		var <?php print $form_name;?>Timer;
 		var <?php print $form_name;?>ClickTimer;
 		var <?php print $form_name;?>Open = false;
 
 		$(function() {
-		    $('#'+prefix+'_input').unbind().autocomplete({
+		    $('#<?php print $form_prefix;?>_input').autocomplete({
 		        source: '<?php print $_SERVER['PHP_SELF'];?>?action=<?php print $callback;?>',
 				autoFocus: true,
 				minLength: 0,
 				select: function(event,ui) {
-					$('#'+prefix).val(ui.item.id);
+					$('#<?php print $form_prefix;?>').val(ui.item.id);
 					<?php print $on_change;?>;
 				}
 			}).css('border', 'none').css('background-color', 'transparent');
 
-			$('#'+prefix+'_wrap').unbind().dblclick(function() {
+			$('#<?php print $form_prefix;?>_wrap').dblclick(function() {
 				<?php print $form_name;?>Open = false;
 				clearTimeout(<?php print $form_name;?>Timer);
 				clearTimeout(<?php print $form_name;?>ClickTimer);
-				$('#'+prefix+'_input').autocomplete('close');
+				$('#<?php print $form_prefix;?>_input').autocomplete('close');
 			}).click(function() {
 				if (<?php print $form_name;?>Open) {
-					$('#'+prefix+'_input').autocomplete('close');
+					$('#<?php print $form_prefix;?>_input').autocomplete('close');
 					clearTimeout(<?php print $form_name;?>Timer);
 					<?php print $form_name;?>Open = false;
 				}else{
 					<?php print $form_name;?>ClickTimer = setTimeout(function() {
-						$('#'+prefix+'_input').autocomplete('search', $('#'+prefix+'_input').val());
+						$('#<?php print $form_prefix;?>_input').autocomplete('search', $('#<?php print $form_prefix;?>_input').val());
 						clearTimeout(<?php print $form_name;?>Timer);
 						<?php print $form_name;?>Open = true;
 					}, 200);
 				}
 			}).on('mouseleave', function() {
-				<?php print $form_name;?>Timer = setTimeout(function() { $('#'+prefix+'_input').autocomplete('close'); }, 800);
+				<?php print $form_name;?>Timer = setTimeout(function() { $('#<?php print $form_prefix;?>_input').autocomplete('close'); }, 800);
 			});
 
-			$('ul[id^="ui-id"]').unbind().on('mouseenter', function() {
+			$('ul[id^="ui-id"]').on('mouseenter', function() {
 				clearTimeout(<?php print $form_name;?>Timer);
 			}).on('mouseleave', function() {
-				<?php print $form_name;?>Timer = setTimeout(function() { $('#'+prefix).autocomplete('close'); }, 800);
+				<?php print $form_name;?>Timer = setTimeout(function() { $('#<?php print $form_prefix;?>').autocomplete('close'); }, 800);
 			});
 
-			$('ul[id^="ui-id"] > li').each().unbind().on('mouseenter', function() {
+			$('ul[id^="ui-id"] > li').each().on('mouseenter', function() {
 				$(this).addClass('ui-state-hover');
 			}).on('mouseleave', function() {
 				$(this).removeClass('ui-state-hover');
 			});
 
-			$('#'+prefix+'_wrap').unbind().on('mouseenter', function() {
+			$('#<?php print $form_prefix;?>_wrap').on('mouseenter', function() {
 				$(this).addClass('ui-state-hover');
-				$('input#'+prefix+'_input').addClass('ui-state-hover');
+				$('input#<?php print $form_prefix;?>_input').addClass('ui-state-hover');
 			}).on('mouseleave', function() {
 				$(this).removeClass('ui-state-hover');
-				$('input#'+prefix+'_input').removeClass('ui-state-hover');
+				$('input#<?php print $form_prefix;?>_input').removeClass('ui-state-hover');
 			});
 		});
 		</script>

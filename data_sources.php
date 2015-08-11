@@ -773,12 +773,14 @@ function ds_edit() {
 			'sql' => 'SELECT id,name FROM data_template order by name'
 			),
 		'host_id' => array(
-			'method' => 'drop_sql',
+			'method' => 'drop_callback',
 			'friendly_name' => 'Device',
-			'description' => 'Choose the host that this graph belongs to.',
-			'value' => (isset($_REQUEST['host_id']) ? $_REQUEST['host_id'] : $data_local['host_id']),
+			'description' => 'Choose the Device that this Data Source belongs to.',
 			'none_value' => 'None',
-			'sql' => "SELECT id,CONCAT_WS('',description,' (',hostname,')') as name FROM host order by description,hostname"
+			'sql' => 'SELECT id, description as name FROM host ORDER BY name',
+			'action' => 'ajax_hosts_noany',
+			'id' => (isset($_REQUEST['host_id']) ? $_REQUEST['host_id'] : $data_local['host_id']),
+			'value' => db_fetch_cell_prepared('SELECT description FROM host WHERE id = ?', (isset($_REQUEST['host_id']) ? array($_REQUEST['host_id']) : array($data_local['host_id']))),
 			),
 		'_data_template_id' => array(
 			'method' => 'hidden',
