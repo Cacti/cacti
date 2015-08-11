@@ -3314,6 +3314,7 @@ CREATE TABLE user_auth (
   realm mediumint(8) NOT NULL default '0',
   full_name varchar(100) default '0',
   must_change_password char(2) default NULL,
+  password_change char(2) default 'on',
   show_tree char(2) default 'on',
   show_list char(2) default 'on',
   show_preview char(2) NOT NULL default 'on',
