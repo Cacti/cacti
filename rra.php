@@ -100,9 +100,9 @@ function form_save() {
 		}
 
 		if (is_error_message()) {
-			header('Location: rra.php?action=edit&id=' . (empty($rra_id) ? $_POST['id'] : $rra_id));
+			header('Location: rra.php?action=edit&header=false&id=' . (empty($rra_id) ? $_POST['id'] : $rra_id));
 		}else{
-			header('Location: rra.php');
+			header('Location: rra.php?header=false');
 		}
 		exit;
 	}
@@ -130,7 +130,7 @@ function form_actions() {
 			}
 		}
 
-		header('Location: rra.php');
+		header('Location: rra.php?header=false');
 		exit;
 	}
 
