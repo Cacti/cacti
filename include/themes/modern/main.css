@@ -3,6 +3,8 @@
 body, table, tr, td, textarea {
 	font-family: Verdana, Arial, Helvetica, sans-serif;
 	font-size: 12px;
+	/* fix those ever present IE issues */
+	-ms-overflow-style:scrollbar
 }
 
 body {
@@ -575,7 +577,7 @@ ul#breadcrumbs {
 }
 
 .cactiConsoleNavigationArea {
-	background: snow url('./../../../images/shadow_gray.gif') repeat-x center top;
+	background: #ECECEC url('./../../../images/shadow_gray.gif') repeat-x center top;
 	border-right: #aaaaaa 1px solid;
 	padding-left:0px;
 	padding-right:0px;
@@ -584,12 +586,12 @@ ul#breadcrumbs {
 	position: fixed; 
 	left: 0px; 
 	top: 56px; 
-	right: -15px;
-	overflow-y: auto;
+	overflow-y: hidden;
+	width: 167px;
 }
 
 .cactiConsoleNavigationArea table {
-	width:160px;
+	width:162px;
 }
 
 .cactiLogo {
@@ -729,7 +731,7 @@ legend {
 	padding-left: 5px;
 	vertical-align: top;
 	display: none;
-	margin-left: 160px;
+	margin-left: 168px;
 }
 
 .hyperLink {

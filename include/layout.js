@@ -830,12 +830,14 @@ function pulsateStop(element) {
 $(function() {
 	$('body').css('height', $(window).height());
 	$('#navigation').css('height', ($(window).height()-40)+'px');
+	$('#navigation_right').css('height', ($(window).height()-40)+'px');
 
 	$(window).resize(function(event) {
 		$('body').css('height', $(window).height());
 
 		if (!$(event.target).hasClass('ui-resizable')) {
 			$('#navigation').css('height', ($(window).height()-40)+'px');
+			$('#navigation_right').css('height', ($(window).height()-40)+'px');
 		}
 	});
 

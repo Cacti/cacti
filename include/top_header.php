@@ -81,15 +81,17 @@ $using_guest_account = false;
 	<div class='infoBar'><?php echo draw_login_status($using_guest_account);?></div>
 </div>
 <div id='cactiContent' class='cactiContent'>
-	<div id='navigation' class='cactiConsoleNavigationArea'>
-		<table style='width:100%;'>
-			<?php draw_menu();?>
-			<tr>
-				<td style='text-align:center;'>
-					<div class='cactiLogo' onClick='document.location="about.php";'></div>
-				</td>
-			</tr>
-		</table>
+	<div class='cactiConsoleNavigationArea' style='overflow:hidden'>
+		<div id='navigation'>
+			<table style='width:100%;'>
+				<?php draw_menu();?>
+				<tr>
+					<td style='text-align:center;'>
+						<div class='cactiLogo' onClick='document.location="about.php";'></div>
+					</td>
+				</tr>
+			</table>
+		</div>
 	</div>
 	<div id='navigation_right' class='cactiConsoleContentArea'>
 		<div style='display:none;' id='message_container'><?php display_output_messages();?></div>

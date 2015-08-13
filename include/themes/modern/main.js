@@ -162,4 +162,18 @@ function setMenuVisibility() {
 			}
 		}
 	});
+
+	// Hid the scroll bar when not hovering
+	var hoverTimer;
+	$('.cactiConsoleNavigationArea').mouseover(function() {
+		clearTimeout(hoverTimer);
+		hoverTimer = setTimeout(function() {
+			$('.cactiConsoleNavigationArea').css('overflow-y', 'auto');
+		}, 500);
+	}).mouseout(function() {
+		clearTimeout(hoverTimer);
+		hoverTimer = setTimeout(function() {
+			$('.cactiConsoleNavigationArea').css('overflow-y', 'hidden');
+		}, 500);
+	});
 }
