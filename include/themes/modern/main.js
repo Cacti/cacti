@@ -6,6 +6,19 @@ function themeReady() {
 	var clickTimeout = false;
 	var hostOpen = false;
 
+	$('body').css('height', $(window).height());
+	$('#navigation').css('height', ($(window).height()-40)+'px');
+	$('#navigation_right').css('height', ($(window).height()-40)+'px');
+
+	$(window).resize(function(event) {
+		$('body').css('height', $(window).height());
+
+		if (!$(event.target).hasClass('ui-resizable')) {
+			$('#navigation').css('height', ($(window).height()-40)+'px');
+			$('#navigation_right').css('height', ($(window).height()-40)+'px');
+		}
+	});
+
 	// Setup the navigation menu
 	setMenuVisibility();
 
@@ -131,6 +144,20 @@ function themeReady() {
 			$('input#host').removeClass('ui-state-hover');
 		});
 	}
+
+	// Hid the scroll bar when not hovering
+	var hoverTimer;
+	$('.cactiConsoleNavigationArea').mouseover(function() {
+		clearTimeout(hoverTimer);
+		hoverTimer = setTimeout(function() {
+			$('.cactiConsoleNavigationArea').css('overflow-y', 'auto');
+		}, 500);
+	}).mouseout(function() {
+		clearTimeout(hoverTimer);
+		hoverTimer = setTimeout(function() {
+			$('.cactiConsoleNavigationArea').css('overflow-y', 'hidden');
+		}, 500);
+	});
 }
 
 function setMenuVisibility() {
@@ -161,19 +188,5 @@ function setMenuVisibility() {
 				storage.set($(this).text(), 'collapsed');
 			}
 		}
-	});
-
-	// Hid the scroll bar when not hovering
-	var hoverTimer;
-	$('.cactiConsoleNavigationArea').mouseover(function() {
-		clearTimeout(hoverTimer);
-		hoverTimer = setTimeout(function() {
-			$('.cactiConsoleNavigationArea').css('overflow-y', 'auto');
-		}, 500);
-	}).mouseout(function() {
-		clearTimeout(hoverTimer);
-		hoverTimer = setTimeout(function() {
-			$('.cactiConsoleNavigationArea').css('overflow-y', 'hidden');
-		}, 500);
 	});
 }

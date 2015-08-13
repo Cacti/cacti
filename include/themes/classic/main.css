@@ -238,8 +238,8 @@ label {
 	display:block;
 	float:right;
 	position:absolute;
-	right:16px;
-	top:19px;
+	right:12px;
+	top:58px;
   	list-style: none;
 	text-align:right;
 	margin:0px;
@@ -374,10 +374,6 @@ label {
 	border-bottom:1px solid #00438c;
 	height:37px;
 	width:100%;
-	position:fixed;
-	top:0px;
-	left:0px;
-	z-index:2;
 }
 
 .cactiGraphPageHeadBackdrop {
@@ -388,9 +384,6 @@ label {
 	float:right;
 	width:400px;
 	height:37px;
-	top:0px;
-	position:fixed;
-	right:0px;
 }
 
 .loginLogo {
@@ -405,9 +398,6 @@ label {
 	float:right;
 	width:400px;
 	height:37px;
-	top:0px;
-	position:fixed;
-	right:0px;
 }
 
 .navigation {
@@ -421,11 +411,8 @@ label {
 .breadCrumbBar {
 	background-color: #e9e9e9;
 	width:100%;
-	position:fixed;
 	padding:2px;
-	top:37px;
-	left:0px;
-	z-index:2;
+	height:16px;
 }
 
 ul#breadcrumbs {
@@ -434,6 +421,7 @@ ul#breadcrumbs {
 	padding: 0;
 	list-style: none;
 }
+
 .infoBar {
 	vertical-align: middle;
 	display: block;
@@ -461,7 +449,6 @@ ul#breadcrumbs {
 .cactiContent {
 	width: 100%;
 	vertical-align: top;
-	padding-top: 56px;
 }
 
 .cactiTreeNavigationArea {
@@ -472,10 +459,6 @@ ul#breadcrumbs {
 	padding-top:10px;
 	display: none;
 	vertical-align: top;
-	position: fixed; 
-	left: 0px; 
-	top: 56px; 
-	z-index: 2; 
 	overflow-y: auto;
 }
 
@@ -491,11 +474,8 @@ ul#breadcrumbs {
 	padding-right:0px;
 	padding-top:5px;
 	vertical-align:top;
-	position: fixed; 
-	left: 0px; 
-	top: 56px; 
-	right: -15px;
-	overflow-y: auto;
+	float:left;
+	width:162px;
 }
 
 .cactiConsoleNavigationArea table {
@@ -597,10 +577,9 @@ legend {
 	padding-top:10px;
 	padding-right: 5px;
 	padding-left: 5px;
+	margin-left:162px;
 	vertical-align:top;
 	display: none;
-	z-index:3;
-	margin-left: 160px;
 }
 
 .hyperLink {
@@ -929,14 +908,19 @@ legend {
     border-style: solid solid none;
     border-width: 1px 1px medium;
 	font-weight: bold;
+	height: 18px;
 }
 
 div#tabs {
 	padding-bottom: 0px;
+	float: left;
 	vertical-align: bottom;
-	position: fixed;
-	left: 5px;
-	height: 37px;
+}
+
+td#tabs {
+	padding-bottom: 0px;
+	float: left;
+	vertical-align: bottom;
 }
 
 .cactiGraphHeaderBackground {
@@ -944,17 +928,11 @@ div#tabs {
 	height: 37px;
 	width:500px;
 	float:right;
-	position:fixed;
-	top: 0px;
-	right: 0px;
 }
 
 div#gtabs {
 	padding-bottom: 0px;
 	vertical-align: bottom;
-	position:fixed;
-	right: 5px;
-	height: 37px;
 }
 
 .tabs {

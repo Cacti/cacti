@@ -25,6 +25,7 @@ var theme;
 var myRefresh;
 var userMenuTimer;
 var pulsating=true;
+var messageTimer;
 
 var isMobile = {
 	Android: function() {
@@ -828,20 +829,9 @@ function pulsateStop(element) {
 }
 
 $(function() {
-	$('body').css('height', $(window).height());
-	$('#navigation').css('height', ($(window).height()-40)+'px');
-	$('#navigation_right').css('height', ($(window).height()-40)+'px');
-
-	$(window).resize(function(event) {
-		$('body').css('height', $(window).height());
-
-		if (!$(event.target).hasClass('ui-resizable')) {
-			$('#navigation').css('height', ($(window).height()-40)+'px');
-			$('#navigation_right').css('height', ($(window).height()-40)+'px');
-		}
-	});
-
-	$('#message_container').show().delay(2000).slideUp('fast');
+	clearTimeout(messageTimer);
+	$('#message_container').show();
+	messageTimer = setTimeout(function() { $('#message_container').slideUp('fast'); }, 2000);
 
 	setupUserMenu();
 
