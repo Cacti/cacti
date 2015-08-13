@@ -599,8 +599,7 @@ function cdef() {
 		$sql_having = '';
 	}
 
-	/* print checkbox form for validation */
-	print "<form name='chk' method='post' action='cdef.php'>\n";
+	form_start('cdef.php', 'chk');
 
 	html_start_box('', '100%', '', '3', 'center', '');
 
