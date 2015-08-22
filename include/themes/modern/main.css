@@ -796,7 +796,7 @@ legend {
 }
 
 .remover {
-	pointer:cursor;
+	cursor:pointer;
 }
 
 .messageBox {
