@@ -500,25 +500,52 @@ function data_query_item_edit() {
 
 		html_header(array('Name', '', 'Equation'), 2);
 
-		if (sizeof($suggested_values)) {
+		$i = 0;
+		$total_values = sizeof($suggested_values);
+		if ($total_values) {
 			foreach ($suggested_values as $suggested_value) {
 				form_alternate_row();
+
+				$show_up   = false;
+				$show_down = false;
+
+				// Handle up true
+				if ($i != 0) {
+					$show_up = true;
+				}
+
+				// Handle down true
+				if ($total_values > 1 && $i < $total_values-1) {
+					$show_down = true;
+				}
+
 				?>
-					<td style='width;120;'>
-						<strong><?php print htmlspecialchars($suggested_value['field_name']);?></strong>
-					</td>
-					<td style='width:40px;text-align:center;'>
-						<span class='remover' href='<?php print htmlspecialchars('data_queries.php?action=item_movedown_gsv&snmp_query_graph_id=' . $_REQUEST['id'] . '&id=' . $suggested_value['id'] . '&snmp_query_id=' . $_REQUEST['snmp_query_id'] . '&field_name=' . $suggested_value['field_name']);?>'><img src='images/move_down.gif' alt='' title='Move Down'></span>
-						<span class='remover' href='<?php print htmlspecialchars('data_queries.php?action=item_moveup_gsv&snmp_query_graph_id=' . $_REQUEST['id'] . '&id=' . $suggested_value['id'] . '&snmp_query_id=' . $_REQUEST['snmp_query_id'] . '&field_name=' . $suggested_value['field_name']);?>'><img src='images/move_up.gif' alt='' title='Move Up'></span>
-					</td>
-					<td>
-						<?php print htmlspecialchars($suggested_value['text']);?>
-					</td>
-					<td align='right'>
-						<span class='remover' href='<?php print htmlspecialchars('data_queries.php?action=item_remove_gsv&snmp_query_graph_id=' . $_REQUEST['id'] . '&id=' . $suggested_value['id'] . '&snmp_query_id=' . $_REQUEST['snmp_query_id']);?>'><img class='deleteIcon' src='images/delete_icon.gif' alt='' title='Delete'></span>
-					</td>
-				</tr>
+				<td style='width;120;'>
+					<strong><?php print htmlspecialchars($suggested_value['field_name']);?></strong>
+				</td>
+				<td style='width:40px;text-align:center;'>
+					<?php if ($show_down) {?>
+					<span class='remover' href='<?php print htmlspecialchars('data_queries.php?action=item_movedown_gsv&snmp_query_graph_id=' . $_REQUEST['id'] . '&id=' . $suggested_value['id'] . '&snmp_query_id=' . $_REQUEST['snmp_query_id'] . '&field_name=' . $suggested_value['field_name']);?>'><img class='remover' src='images/move_down.gif' alt='' title='Move Down'></span>
+					<?php }else{?>
+					<img src='images/view_none.gif' alt=''/>
+					<?php } ?>
+					<?php if ($show_up) {?>
+					<span class='remover' href='<?php print htmlspecialchars('data_queries.php?action=item_moveup_gsv&snmp_query_graph_id=' . $_REQUEST['id'] . '&id=' . $suggested_value['id'] . '&snmp_query_id=' . $_REQUEST['snmp_query_id'] . '&field_name=' . $suggested_value['field_name']);?>'><img class='remover' src='images/move_up.gif' alt='' title='Move Up'></span>
+					<?php }else{?>
+					<img src='images/view_none.gif' alt=''/>
+					<?php } ?>
+				</td>
+				<td>
+					<?php print htmlspecialchars($suggested_value['text']);?>
+				</td>
+				<td align='right'>
+					<span class='remover' href='<?php print htmlspecialchars('data_queries.php?action=item_remove_gsv&snmp_query_graph_id=' . $_REQUEST['id'] . '&id=' . $suggested_value['id'] . '&snmp_query_id=' . $_REQUEST['snmp_query_id']);?>'><img class='deleteIcon' src='images/delete_icon.gif' alt='' title='Delete'></span>
+				</td>
 				<?php
+
+				form_end_row();
+
+				$i++;
 			}
 		}
 
@@ -564,27 +591,55 @@ function data_query_item_edit() {
 
 			html_header(array('Name', '', 'Equation'), 2);
 
-			if (sizeof($suggested_values)) {
+			$i = 0;
+			$total_values = sizeof($suggested_values);
+
+			if ($total_values) {
 				$prev_name = '';
 				foreach ($suggested_values as $suggested_value) {
 					form_alternate_row();
+
+					$show_up   = false;
+					$show_down = false;
+
+					// Handle up true
+					if ($i != 0) {
+						$show_up = true;
+					}
+
+					// Handle down true
+					if ($total_values > 1 && $i < $total_values-1) {
+						$show_down = true;
+					}
+
 					?>
-						<td style='width:120;'>
-							<strong><?php print htmlspecialchars($suggested_value['field_name']);?></strong>
-						</td>
-						<td style='width:40;text-align:center;'>
-							<span class='remover' href='<?php print htmlspecialchars('data_queries.php?action=item_movedown_dssv&snmp_query_graph_id=' . $_REQUEST['id'] . '&id='. $suggested_value['id'] . '&snmp_query_id=' . $_REQUEST['snmp_query_id'] . '&data_template_id=' . $data_template['id'] . '&field_name=' . $suggested_value['field_name']);?>'><img src='images/move_down.gif' alt='' title='Move Down'></span>
-							<span class='remover' href='<?php print htmlspecialchars('data_queries.php?action=item_moveup_dssv&snmp_query_graph_id=' . $_REQUEST['id'] . '&id=' . $suggested_value['id'] . '&snmp_query_id=' . $_REQUEST['snmp_query_id'] . '&data_template_id=' . $data_template['id'] . '&field_name=' . $suggested_value['field_name']);?>'><img src='images/move_up.gif' alt='' title='Move Up'></span>
-						</td>
-						<td class='nowrap'>
-							<?php print htmlspecialchars($suggested_value['text']);?>
-						</td>
-						<td align='right'>
-							<span class='remover' href='<?php print htmlspecialchars('data_queries.php?action=item_remove_dssv&snmp_query_graph_id=' . $_REQUEST['id'] . '&id=' . $suggested_value['id'] . '&snmp_query_id=' . $_REQUEST['snmp_query_id'] . '&data_template_id=' . $data_template['id']);?>'><img class='deleteIcon' src='images/delete_icon.gif' alt='' title='Delete'></span>
-						</td>
-					</tr>
+					<td style='width:120;'>
+						<strong><?php print htmlspecialchars($suggested_value['field_name']);?></strong>
+					</td>
+					<td style='width:40;text-align:center;'>
+						<?php if ($show_down) {?>
+						<span class='remover' href='<?php print htmlspecialchars('data_queries.php?action=item_movedown_dssv&snmp_query_graph_id=' . $_REQUEST['id'] . '&id='. $suggested_value['id'] . '&snmp_query_id=' . $_REQUEST['snmp_query_id'] . '&data_template_id=' . $data_template['id'] . '&field_name=' . $suggested_value['field_name']);?>'><img class='remover' src='images/move_down.gif' alt='' title='Move Down'></span>
+						<?php }else{?>
+						<img src='images/view_none.gif' alt=''/>
+						<?php } ?>
+						<?php if ($show_up) {?>
+						<span class='remover' href='<?php print htmlspecialchars('data_queries.php?action=item_moveup_dssv&snmp_query_graph_id=' . $_REQUEST['id'] . '&id=' . $suggested_value['id'] . '&snmp_query_id=' . $_REQUEST['snmp_query_id'] . '&data_template_id=' . $data_template['id'] . '&field_name=' . $suggested_value['field_name']);?>'><img class='remover' src='images/move_up.gif' alt='' title='Move Up'></span>
+						<?php }else{?>
+						<img src='images/view_none.gif' alt=''/>
+						<?php } ?>
+					</td>
+					<td class='nowrap'>
+						<?php print htmlspecialchars($suggested_value['text']);?>
+					</td>
+					<td align='right'>
+						<span class='remover' href='<?php print htmlspecialchars('data_queries.php?action=item_remove_dssv&snmp_query_graph_id=' . $_REQUEST['id'] . '&id=' . $suggested_value['id'] . '&snmp_query_id=' . $_REQUEST['snmp_query_id'] . '&data_template_id=' . $data_template['id']);?>'><img class='deleteIcon' src='images/delete_icon.gif' alt='' title='Delete'></span>
+					</td>
 					<?php
+
+					form_end_row();
+
 					$prev_name = $suggested_value['field_name'];
+					$i++;
 				}
 			}
 
