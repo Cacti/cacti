@@ -656,8 +656,8 @@ function cdef() {
 			form_alternate_row('line' . $cdef['id'], false, $disabled);
 			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars('cdef.php?action=edit&id=' . $cdef['id']) . "'>" . (strlen(get_request_var_request('filter')) ? preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($cdef['name'])) : htmlspecialchars($cdef['name'])) . '</a>', $cdef['id']);
 			form_selectable_cell($disabled ? 'No':'Yes', $cdef['id'], '', 'text-align:right');
-			form_selectable_cell($cdef['graphs'], $cdef['id'], '', 'text-align:right');
-			form_selectable_cell($cdef['templates'], $cdef['id'], '', 'text-align:right');
+			form_selectable_cell(number_format($cdef['graphs']), $cdef['id'], '', 'text-align:right');
+			form_selectable_cell(number_format($cdef['templates']), $cdef['id'], '', 'text-align:right');
 			form_checkbox_cell($cdef['name'], $cdef['id'], $disabled);
 			form_end_row();
 		}

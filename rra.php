@@ -457,8 +457,8 @@ function rra() {
 			form_selectable_cell(number_format($rra['steps']), $rra['id'], '', 'text-align:right');
 			form_selectable_cell(number_format($rra['rows']), $rra['id'], '', 'text-align:right');
 			form_selectable_cell(number_format($rra['timespan']), $rra['id'], '', 'text-align:right');
-			form_selectable_cell($rra['data_sources'], $rra['id'], '', 'text-align:right');
-			form_selectable_cell($rra['templates'], $rra['id'], '', 'text-align:right');
+			form_selectable_cell(number_format($rra['data_sources']), $rra['id'], '', 'text-align:right');
+			form_selectable_cell(number_format($rra['templates']), $rra['id'], '', 'text-align:right');
 			form_checkbox_cell($rra['name'], $rra['id'], $disabled);
 			form_end_row();
 		}
