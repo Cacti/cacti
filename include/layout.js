@@ -198,7 +198,7 @@ $.fn.selectRange = function(start, end) {
 		}
 	});
 
-	return this;
+	//return this;
 };
 
 $.fn.focusEnd = function() {
@@ -698,25 +698,36 @@ function saveTableWidths(initial) {
 		var key    = $(this).attr('id');
 		var sizes  = storage.get(key);
 		var items  = sizes ? sizes: new Array();
-		var width  = parseInt($(this).width());
+		var width  = parseInt($(document).width());
 
 		// if the table width changes, reset the columns
-		if (key !== undefined && initial) {
-			if (items[0] != width) {
-				items = new Array();
-				sizes = new Array();
-				storage.remove(key);
-				items[0] = width;
-				sizes[0] = width;
+		if (key !== undefined && sizes == undefined) {
+			//console.log(key+', no sizes');
+			storage.remove(key);
+			sizes = new Array();
+			items = new Array();
+			items[0] = width;
+			sizes[0] = width;
+		}else if (key !== undefined && initial) {
+			if (items.length > 0) {
+				if (items[0] + 18 < width) {
+					//console.log(key+', reset, document: '+width+', key: '+(items[0]+14));
+					storage.remove(key);
+					sizes = new Array();
+					items = new Array();
+					items[0] = width;
+					sizes[0] = width;
+				}
 			}
 		}
 
 		var i = 1;
 		if (key !== undefined) {
 			if (initial && items.length) {
-				$(this).find('th.ui-resizable').each(function(data) {
+				$('#'+key).find('th.ui-resizable').each(function(data) {
 					if (parseInt(items[i]) == 0) {
-						items[i] = parseInt($(this).css('width'));
+						items[i] = parseInt($(this).width());
+						sizes[i] = items[i];
 					}
 
 					if (items[i] != 0) {
@@ -726,18 +737,18 @@ function saveTableWidths(initial) {
 					i++;
 				});
 			}else{
-				sizes    = new Array();
-				sizes[0] = $(this).width();
-				$(this).find('th.ui-resizable').each(function(data) {
-					sizes[i] = parseInt($(this).css('width'));
+				$('#'+key).find('th.ui-resizable').each(function(data) {
+					sizes[i] = parseInt($(this).width());
 
 					if (sizes[i] != 0) {
+						$(this).css('width', items[i]);
 						$(this).attr('resizeWidth', sizes[i]);
 					}
 					i++;
 				});
 
 				if (i > 1) {
+					console.log(key+', '+sizes.length);
 					storage.set(key, sizes);
 				}
 			}
@@ -790,7 +801,6 @@ function applyTableSizing() {
  *  logging out the user, but can be used for simply refreshing the page as in the 
  *  case of the Graphs page. */
 function setupPageTimeout() {
-	//console.log('Page Timeout is :'+refreshMSeconds+', and going to Page :'+refreshPage);
 	if (typeof refreshMSeconds != 'undefined') {
 		clearTimeout(myRefresh);
 		myRefresh = setTimeout(function() {
