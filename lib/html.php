@@ -621,9 +621,9 @@ function html_header($header_items, $last_item_colspan = 1) {
 
 	for ($i=0; $i<count($header_items); $i++) {
 		if (is_array($header_items[$i])) {
-			print "<th style='padding:4px;text-align:" . $header_items[$i]['align'] . ";'" . ((($i+1) == count($header_items)) ? "colspan='$last_item_colspan' " : "") . ">" . $header_items[$i]['display'] . "</th>\n";
+			print "<th style='text-align:" . $header_items[$i]['align'] . ";'" . ((($i+1) == count($header_items)) ? "colspan='$last_item_colspan' " : "") . ">" . $header_items[$i]['display'] . "</th>\n";
 		}else{
-			print "<th style='padding:4px;text-align:left;' " . ((($i+1) == count($header_items)) ? "colspan='$last_item_colspan' " : "") . ">" . $header_items[$i] . "</th>\n";
+			print "<th style='text-align:left;' " . ((($i+1) == count($header_items)) ? "colspan='$last_item_colspan' " : "") . ">" . $header_items[$i] . "</th>\n";
 		}
 	}
 
