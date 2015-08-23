@@ -365,6 +365,14 @@ $struct_graph = array(
 		'description' => 'The name that is printed on the graph.',
 		'size' => '80'
 		),
+	'vertical_label' => array(
+		'friendly_name' => 'Vertical Label (--vertical-label)',
+		'method' => 'textbox',
+		'max_length' => '255',
+		'default' => '',
+		'description' => 'The label vertically printed to the left of the graph.',
+		'size' => '30'
+		),
 	'image_format_id' => array(
 		'friendly_name' => 'Image Format (--imgformat)',
 		'method' => 'drop_array',
@@ -508,14 +516,6 @@ $struct_graph = array(
 		'description' => 'What unit cacti should use on the Y-axis. Use 3 to display everything in "k" or -6
 			to display everything in "u" (micro).',
 		'size' => '12'
-		),
-	'vertical_label' => array(
-		'friendly_name' => 'Vertical Label (--vertical-label)',
-		'method' => 'textbox',
-		'max_length' => '255',
-		'default' => '',
-		'description' => 'The label vertically printed to the left of the graph.',
-		'size' => '30'
 		)
 	);
 
