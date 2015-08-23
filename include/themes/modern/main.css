@@ -124,6 +124,10 @@ label {
 	font-weight:bold;
 }
 
+.disabled_row {
+	color:grey;
+}
+
 .disabled {
 	color:grey;
 	font-weight:bold;

@@ -260,24 +260,22 @@ function applySelectorVisibilityAndActions() {
 	$('tr[id^=gt_line]').each(function(data) {
 		var id = $(this).attr('id');
 		var search = id.substr(7);
-		//console.log('The id is : '+id+', The search is : '+search);
+		//console.log('id:'+id+', search:'+search);
 		if ($.inArray(search, gt_created_graphs) >= 0) {
 			//console.log('The id is : '+id+', The search is : '+search+', Result found');
-			$(this).addClass('disabled');
-			$(this).css('color', '#999999');
+			$(this).addClass('disabled_row');
 			$(this).find(':checkbox').prop('disabled', true);
 		}
 	});
 
 	// Create Actions for Rows
-	$('tr.selectable').find('td').not('.checkbox').each(function(data) {
-		if (!$(this).parent().hasClass('disabled')) {
-			$(this).click(function(data) {
-				$(this).parent().toggleClass('selected');
-				var $checkbox = $(this).parent().find(':checkbox');
-				$checkbox.prop('checked', !$checkbox.is(':checked'));
-			});
-		}
+	$('tr.selectable:not(.disabled_row)').find('td').not('.checkbox').each(function(data) {
+		$(this).click(function(data) {
+			console.log("ello");
+			$(this).parent().toggleClass('selected');
+			var $checkbox = $(this).parent().find(':checkbox');
+			$checkbox.prop('checked', !$checkbox.is(':checked'));
+		});
 	});
 
 	// Create Actions for Checkboxes
@@ -306,7 +304,7 @@ function dqUpdateDeps(snmp_query_id) {
 		var hash = pieces[1];
 
 		if ($.inArray(hash, created_graphs[snmp_query_graph_id]) >= 0) {
-			$(this).addClass('disabled');
+			$(this).addClass('disabled_row');
 			$(this).removeClass('selected');
 			$(this).removeClass('selectable');
 			$(this).find(':checkbox').prop('disabled', true).prop('checked', false);
@@ -320,7 +318,7 @@ function dqUpdateDeps(snmp_query_id) {
 function dqResetDeps(snmp_query_id) {
 	var prefix = 'sg_' + snmp_query_id + '_'
 
-	$('tr[id^=line'+snmp_query_id+'_]').addClass('selectable').removeClass('disabled').find(':checkbox').prop('disabled', false);
+	$('tr[id^=line'+snmp_query_id+'_]').addClass('selectable').removeClass('disabled_row').find(':checkbox').prop('disabled', false);
 }
 
 /** SelectAll - This function will select all non-disabled rows
@@ -328,18 +326,14 @@ function dqResetDeps(snmp_query_id) {
 function SelectAll(attrib, checked) {
 	if (attrib == 'sg') {
 		if (checked == true) {
-			$('tr[id^=gt_line]').each(function(data) {
-				if (!$(this).hasClass('disabled')) {
-					$(this).addClass('selected');
-					$(this).find(':checkbox').prop('checked', true);
-				}
+			$('tr[id^=gt_line]:not(.disabled_row)').each(function(data) {
+				$(this).addClass('selected');
+				$(this).find(':checkbox').prop('checked', true);
 			});
 		}else{
-			$('tr[id^=gt_line]').each(function(data) {
-				if (!$(this).hasClass('disabled')) {
-					$(this).removeClass('selected');
-					$(this).find(':checkbox').prop('checked', false);
-				}
+			$('tr[id^=gt_line]:not(.disabled_row)').each(function(data) {
+				$(this).removeClass('selected');
+				$(this).find(':checkbox').prop('checked', false);
 			});
 		}
 	}else{
@@ -347,18 +341,14 @@ function SelectAll(attrib, checked) {
 		var dq   = attribSplit[1];
 
 		if (checked == true) {
-			$('tr[id^=line'+dq+'\_]').each(function(data) {
-				if (!$(this).hasClass('disabled')) {
-					$(this).addClass('selected');
-					$(this).find(':checkbox').prop('checked', true);
-				}
+			$('tr[id^=line'+dq+'\_]:not(.disabled_row').each(function(data) {
+				$(this).addClass('selected');
+				$(this).find(':checkbox').prop('checked', true);
 			});
 		}else{
-			$('tr[id^=line'+dq+'\_]').each(function(data) {
-				if (!$(this).hasClass('disabled')) {
-					$(this).removeClass('selected');
-					$(this).find(':checkbox').prop('checked', false);
-				}
+			$('tr[id^=line'+dq+'\_]:not(.disabled_row)').each(function(data) {
+				$(this).removeClass('selected');
+				$(this).find(':checkbox').prop('checked', false);
 			});
 		}
 	}
@@ -442,7 +432,7 @@ function applySkin() {
 		applySelectorVisibilityAndActions();
 
 		// Allows selection of a non disabled row
-		$('tr.selectable').find('td').not('.checkbox').each(function(data) {
+		$('tr.selectable:not([id^="gt_line"]').find('td').not('.checkbox').each(function(data) {
 			$(this).unbind().click(function(data) {
 				$(this).parent().toggleClass('selected');
 				var $checkbox = $(this).parent().find(':checkbox');
@@ -509,11 +499,11 @@ function loadPage(href) {
 		$('#breadcrumbs').html(breadCrumbs);
 		$('#main').html(content);
 
-		applySkin();
-
 		if (typeof window.history.pushState !== 'undefined') {
 			window.history.pushState({page:href}, htmlTitle, href);
 		}
+
+		applySkin();
 
 		window.scrollTo(0, 0);
 

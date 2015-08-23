@@ -80,7 +80,7 @@ switch ($_REQUEST['action']) {
 	case 'graph_remove':
 		graph_remove();
 
-		header('Location: graphs.php');
+		header('Location: graphs.php?header=false');
 		break;
 	case 'ajax_hosts':
 		get_allowed_ajax_hosts();
@@ -215,7 +215,7 @@ function form_save() {
 						db_execute_prepared('UPDATE graph_local SET graph_template_id = ? WHERE id = ?', array($_POST['_graph_template_id'], $local_graph_id));
 						db_execute_prepared('UPDATE graph_templates_graph SET graph_template_id = ? WHERE local_graph_id = ?', array($_POST['_graph_template_id'], $local_graph_id));
 
-						header('Location: graphs.php?action=graph_diff&id=$local_graph_id&graph_template_id=' . $_POST['graph_template_id']);
+						header("Location: graphs.php?action=graph_diff&header=false&id=$local_graph_id&graph_template_id=" . $_POST['graph_template_id']);
 						exit;
 					}
 				}
@@ -283,11 +283,11 @@ function form_save() {
 	}
 
 	if ((isset($_POST['save_component_graph_new'])) && (empty($_POST['graph_template_id']))) {
-		header('Location: graphs.php?action=graph_edit&host_id=' . $_POST['host_id'] . '&new=1');
+		header('Location: graphs.php?action=graph_edit&header=false&host_id=' . $_POST['host_id'] . '&new=1');
 	}elseif ((is_error_message()) || (empty($_POST['local_graph_id'])) || (isset($_POST['save_component_graph_diff'])) || ($_POST['graph_template_id'] != $_POST['_graph_template_id']) || ($_POST['host_id'] != $_POST['_host_id'])) {
-		header('Location: graphs.php?action=graph_edit&id=' . (empty($local_graph_id) ? $_POST['local_graph_id'] : $local_graph_id) . (isset($_POST['host_id']) ? '&host_id=' . $_POST['host_id'] : ''));
+		header('Location: graphs.php?action=graph_edit&header=false&id=' . (empty($local_graph_id) ? $_POST['local_graph_id'] : $local_graph_id) . (isset($_POST['host_id']) ? '&host_id=' . $_POST['host_id'] : ''));
 	}else{
-		header('Location: graphs.php');
+		header('Location: graphs.php?header=false');
 	}
 }
 
@@ -493,7 +493,7 @@ function form_actions() {
 				/* create actual graph items */
 				aggregate_create_update($local_graph_id, $member_graphs, $attribs);
 
-				header("Location: aggregate_graphs.php?action=edit&tab=details&id=$local_graph_id");
+				header("Location: aggregate_graphs.php?header=false&action=edit&tab=details&id=$local_graph_id");
 				exit;
 			}elseif ($action == 8) { /* automation */
 				cacti_log('automation_graph_action_execute called: ' . $action, true, 'AUTOMATION TRACE', POLLER_VERBOSITY_MEDIUM);
@@ -511,7 +511,7 @@ function form_actions() {
 			api_plugin_hook_function('graphs_action_bottom', array($_POST['drp_action'], $selected_items));
 		}
 
-		header('Location: graphs.php');
+		header('Location: graphs.php?header=false');
 		exit;
 	}
 
@@ -571,14 +571,15 @@ function form_actions() {
 				}
 				print '</ul></p>';
 
+				print '<span class="nowrap">';
+				form_radio_button('delete_type', '2', '2', 'Delete all <strong>Data Source(s)</strong> referenced by these Graph(s).', '2'); 
+				form_radio_button('delete_type', '1', '2', "Leave the Data Source(s) untouched.", '2'); 
 				print '<br>';
-				form_radio_button('delete_type', '1', '2', "Leave the Data Source(s) untouched.  Not applicable for Graphs created under 'New Graphs' or WHERE the Graphs were created automatically.", '2'); print '<br>';
-				form_radio_button('delete_type', '2', '2', 'Delete all <strong>Data Source(s)</strong> referenced by these Graph(s).', '2'); print '<br>';
+				print '</span>';
 				print '</td></tr>';
 			}
 
-			print "</td>
-				</tr>\n";
+			print "</td></tr>\n";
 
 			$save_html = "<input type='button' value='Cancel' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='Continue' title='Delete Graph(s)'>";
 		}elseif ($_POST['drp_action'] == '2') { /* change graph template */
@@ -588,7 +589,11 @@ function form_actions() {
 					the following Graph(s). Be aware that all warnings will be suppressed during the
 					conversion, so Graph data loss is possible.</p>
 					<p><ul>$graph_list</ul></p>
-					<p><strong>New Graph Template:</strong><br>"; form_dropdown('graph_template_id',db_fetch_assoc('SELECT graph_templates.id,graph_templates.name FROM graph_templates ORDER BY name'),'name','id','','','0'); print "</p>
+					<p><strong>New Graph Template:</strong><br>"; 
+
+					form_dropdown('graph_template_id',db_fetch_assoc('SELECT graph_templates.id,graph_templates.name FROM graph_templates ORDER BY name'),'name','id','','','0'); 
+
+					print "</p>
 				</td>
 			</tr>\n";
 
@@ -599,7 +604,11 @@ function form_actions() {
 					<p>Click 'Continue' to duplicate the following Graph(s). You can
 					optionally change the title format for the new Graph(s).</p>
 					<p><ul>$graph_list</ul></p>
-					<p><strong>Title Format:</strong><br>"; form_text_box('title_format', '<graph_title> (1)', '', '255', '30', 'text'); print "</p>
+					<p><strong>Title Format:</strong><br>"; 
+
+			form_text_box('title_format', '<graph_title> (1)', '', '255', '30', 'text'); 
+
+			print "</p>
 				</td>
 			</tr>\n";
 
@@ -610,7 +619,11 @@ function form_actions() {
 					<p>Click 'Continue' to convert the following Graph(s) into Graph Template(s).
 					You can optionally change the title format for the new Graph Template(s).</p>
 					<p><ul>$graph_list</ul></p>
-					<p><strong>Title Format:</strong><br>"; form_text_box('title_format', '<graph_title> Template', '', '255', '30', 'text'); print "</p>
+					<p><strong>Title Format:</strong><br>"; 
+
+			form_text_box('title_format', '<graph_title> Template', '', '255', '30', 'text'); 
+
+			print "</p>
 				</td>
 			</tr>\n";
 
@@ -620,7 +633,11 @@ function form_actions() {
 				<td class='textArea'>
 					<p>Click 'Continue' to place the following Graph(s) under the Tree Branch selected below.</p>
 					<p><ul>$graph_list</ul></p>
-					<p><strong>Destination Branch:</strong><br>"; grow_dropdown_tree($matches[1], '0', 'tree_item_id', '0'); print "</p>
+					<p><strong>Destination Branch:</strong><br>"; 
+
+			grow_dropdown_tree($matches[1], '0', 'tree_item_id', '0'); 
+
+			print "</p>
 				</td>
 				</tr>
 				<input type='hidden' name='tree_id' value='" . $matches[1] . "'>\n";
@@ -631,7 +648,11 @@ function form_actions() {
 				<td class='textArea'>
 					<p>Choose a new Device for these Graph(s) and click \"Continue\"</p>
 					<p><ul>$graph_list</ul></p>
-					<p><strong>New Device:</strong><br>"; form_dropdown('host_id',db_fetch_assoc("SELECT id,CONCAT_WS('',description,' (',hostname,')') as name FROM host ORDER BY description,hostname"),'name','id','','','0'); print "</p>
+					<p><strong>New Device:</strong><br>"; 
+
+			form_dropdown('host_id',db_fetch_assoc("SELECT id,CONCAT_WS('',description,' (',hostname,')') as name FROM host ORDER BY description,hostname"),'name','id','','','0'); 
+
+			print "</p>
 				</td>
 			</tr>\n";
 
@@ -650,8 +671,12 @@ function form_actions() {
 				<td class='textArea'>
 					<p>Click 'Continue' to resize the following Graph(s).</p>
 					<p><ul>$graph_list</ul></p>
-					<p><strong>Graph Height:</strong><br>"; form_text_box('graph_height', '', '', '255', '30', 'text'); print '</p>
-					<p><strong>Graph Width:</strong><br>'; form_text_box('graph_width', '', '', '255', '30', 'text'); print "</p>
+					<p><strong>Graph Height:</strong><br>"; 
+
+			form_text_box('graph_height', '', '', '255', '30', 'text'); print '</p><p><strong>Graph Width:</strong><br>'; 
+			form_text_box('graph_width', '', '', '255', '30', 'text'); 
+
+			print "</p>
 				</td>
 			</tr>\n";
 
