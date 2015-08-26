@@ -26,6 +26,7 @@ var myRefresh;
 var userMenuTimer;
 var pulsating=true;
 var messageTimer;
+var myTitle;
 
 var isMobile = {
 	Android: function() {
@@ -408,6 +409,10 @@ function applyTimespanFilterChange(objForm) {
 /** cactiReturnTo - This function simply returns to the previous page
  *  @args href - the previous page */
 function cactiReturnTo(href) {
+	if (typeof window.history.pushState !== 'undefined') {
+		window.history.pushState({page:href}, myTitle , href);
+	}
+
 	if (typeof href == 'string') {
 		href = href + (href.indexOf('?') > 0 ? '&':'?') + 'header=false';
 		loadPageNoHeader(href);
@@ -502,6 +507,8 @@ function loadPage(href) {
 		if (typeof window.history.pushState !== 'undefined') {
 			window.history.pushState({page:href}, htmlTitle, href);
 		}
+
+		myTitle = htmlTitle;
 
 		applySkin();
 
@@ -877,10 +884,14 @@ function applyGraphFilter() {
 
 	$.get(href+'&header=false', function(data) {
 		$('#main').html(data);
+
 		applySkin();
+
 		if (typeof window.history.pushState !== 'undefined') {
 			window.history.pushState({ page: href }, 'Preview Mode', href);
 		}
+
+		myTitle = 'Preview Mode';
 
 		initializeGraphs();
 	});
