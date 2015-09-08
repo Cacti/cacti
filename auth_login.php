@@ -538,7 +538,7 @@ if (api_plugin_hook_function('custom_login', OPER_MODE_NATIVE) == OPER_MODE_RESK
 				Invalid User Name/Password Please Retype
 				<?php }
 				if ($user_enabled == '0') {?>
-				<strong>User Account Disabled</strong>
+				User Account Disabled
 				<?php } } ?>
 			</div>
 		</div>

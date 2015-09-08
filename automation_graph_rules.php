@@ -255,7 +255,7 @@ function automation_graph_rules_form_actions() {
 				<p>Click 'Continue' to duplicate the following Rule(s). You can
 				optionally change the title format for the new Rules.</p>
 				<ul>$automation_graph_rules_list</ul>
-				<p><strong>Title Format:</strong><br>"; form_text_box('name_format', '<rule_name> (1)', '', '255', '30', 'text'); print "</p>
+				<p>Title Format:<br>"; form_text_box('name_format', '<rule_name> (1)', '', '255', '30', 'text'); print "</p>
 			</td>
 		</tr>\n";
 	}elseif ($_POST['drp_action'] == AUTOMATION_ACTION_GRAPH_ENABLE) { /* enable */
@@ -263,7 +263,7 @@ function automation_graph_rules_form_actions() {
 			<td class='textArea'>
 				<p>Click 'Continue' to enable the following Rule(s).</p>
 				<ul>$automation_graph_rules_list</ul>
-				<p><strong>Make sure, that those rules have successfully been tested!</strong></p>
+				<p>Make sure, that those rules have successfully been tested!</p>
 			</td>
 		</tr>\n";
 	}elseif ($_POST['drp_action'] == AUTOMATION_ACTION_GRAPH_DISABLE) { /* disable */
@@ -411,7 +411,7 @@ function automation_graph_rules_remove() {
 
 	if ((read_config_option('deletion_verification') == 'on') && (!isset($_GET['confirm']))) {
 		top_header();
-		form_confirm('Are You Sure?', "Are you sure you want to delete the Rule <strong>'" . db_fetch_cell('SELECT name FROM automation_graph_rules WHERE id=' . $_GET['id']) . "'</strong>?", 'automation_graph_rules.php', 'automation_graph_rules.php?action=remove&id=' . $_GET['id']);
+		form_confirm('Are You Sure?', "Are you sure you want to delete the Rule '" . db_fetch_cell('SELECT name FROM automation_graph_rules WHERE id=' . $_GET['id']) . "'?", 'automation_graph_rules.php', 'automation_graph_rules.php?action=remove&id=' . $_GET['id']);
 		bottom_footer();
 		exit;
 	}
@@ -486,7 +486,7 @@ function automation_graph_rules_edit() {
 		?>
 <table style='width:100%;text-align:center;'>
 	<tr>
-		<td class='textInfo' align='right' valign='top'><span class='linkMarker'>*<a class='linkEditMain' href='<?php print htmlspecialchars('automation_graph_rules.php?action=edit&id=' . (isset($_GET['id']) ? $_GET['id'] : 0) . '&show_hosts=') . (isset($_SESSION['automation_graph_rules_show_hosts']) ? '0' : '1');?>'><strong><?php print (isset($_SESSION['automation_graph_rules_show_hosts']) ? 'Dont Show' : 'Show');?></strong> Matching Devices.</a></span><br>
+		<td class='textInfo' align='right' valign='top'><span class='linkMarker'>*<a class='linkEditMain' href='<?php print htmlspecialchars('automation_graph_rules.php?action=edit&id=' . (isset($_GET['id']) ? $_GET['id'] : 0) . '&show_hosts=') . (isset($_SESSION['automation_graph_rules_show_hosts']) ? '0' : '1');?>'><?php print (isset($_SESSION['automation_graph_rules_show_hosts']) ? 'Dont Show' : 'Show');?> Matching Devices.</a></span><br>
 		</td>
 	</tr>
 		<?php
@@ -499,7 +499,7 @@ function automation_graph_rules_edit() {
 		?>
 	<tr>
 		<td class='textInfo' align='right' valign='top'>
-			<span class='linkMarker'>*<a class='linkEditMain' href='<?php print htmlspecialchars('automation_graph_rules.php?action=edit&id=' . (isset($_GET['id']) ? $_GET['id'] : 0) . '&show_graphs=') . (isset($_SESSION['automation_graph_rules_show_graphs']) ? '0' : '1');?>'><strong><?php print (isset($_SESSION['automation_graph_rules_show_graphs']) ? 'Dont Show' : 'Show');?></strong> Matching Graphs.</a></span><br>
+			<span class='linkMarker'>*<a class='linkEditMain' href='<?php print htmlspecialchars('automation_graph_rules.php?action=edit&id=' . (isset($_GET['id']) ? $_GET['id'] : 0) . '&show_graphs=') . (isset($_SESSION['automation_graph_rules_show_graphs']) ? '0' : '1');?>'><?php print (isset($_SESSION['automation_graph_rules_show_graphs']) ? 'Dont Show' : 'Show');?> Matching Graphs.</a></span><br>
 		</td>
 	</tr>
 </table>

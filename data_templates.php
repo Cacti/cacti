@@ -335,7 +335,7 @@ function form_actions() {
 					<p>Click 'Continue' to duplicate the following Data Template(s). You can
 					optionally change the title format for the new Data Template(s).</p>
 					<p><ul>$ds_list</ul></p>
-					<p><strong>Title Format:</strong><br>"; form_text_box('title_format', '<template_title> (1)', '', '255', '30', 'text'); print "</p>
+					<p>Title Format:<br>"; form_text_box('title_format', '<template_title> (1)', '', '255', '30', 'text'); print "</p>
 				</td>
 			</tr>\n";
 
@@ -511,7 +511,7 @@ function template_edit() {
 		}
 	}
 
-	html_start_box('Data Source Item [' . (isset($template_rrd) ? htmlspecialchars($template_rrd['data_source_name']) : '') . ']', '100%', '', '0', 'center', (!empty($_REQUEST['id']) ? htmlspecialchars('data_templates.php?action=rrd_add&id=' . $_REQUEST['id']):''), '<strong>New</scrong>');
+	html_start_box('Data Source Item [' . (isset($template_rrd) ? htmlspecialchars($template_rrd['data_source_name']) : '') . ']', '100%', '', '0', 'center', (!empty($_REQUEST['id']) ? htmlspecialchars('data_templates.php?action=rrd_add&id=' . $_REQUEST['id']):''), 'New');
 
 	/* data input fields list */
 	if ((empty($template_data['data_input_id'])) ||

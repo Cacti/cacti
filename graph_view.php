@@ -57,6 +57,11 @@ if (isset($_REQUEST['action'])) {
 	$_REQUEST['action'] = sanitize_search_string(get_request_var_request('action'));
 }
 
+if (isset($_REQUEST['action']) && $_REQUEST['action'] == 'ajax_hosts') {
+	get_allowed_ajax_hosts();
+	exit;
+}
+
 if (isset($_REQUEST['action']) && $_REQUEST['action'] == 'save') {
 	if (is_view_allowed('graph_settings')) {
 		if (isset($_REQUEST['predefined_timespan'])) {
@@ -185,7 +190,7 @@ case 'tree_content':
 	validate_tree_vars();
 
 	if (!is_view_allowed('show_tree')) {
-		print "<strong><font class='txtErrorTextBox'>YOU DO NOT HAVE RIGHTS FOR TREE VIEW</font></strong>"; return;
+		print "<font class='txtErrorTextBox'>YOU DO NOT HAVE RIGHTS FOR TREE VIEW</font>"; return;
 	}
 
 	?>
@@ -219,7 +224,7 @@ case 'preview':
 	top_graph_header();
 
 	if (!is_view_allowed('show_preview')) {
-		print "<strong><font class='txtErrorTextBox'>YOU DO NOT HAVE RIGHTS FOR PREVIEW VIEW</font></strong>"; return;
+		print "<font class='txtErrorTextBox'>YOU DO NOT HAVE RIGHTS FOR PREVIEW VIEW</font>"; return;
 	}
 
 	html_graph_validate_preview_request_vars();
@@ -319,7 +324,7 @@ case 'list':
 	top_graph_header();
 
 	if (!is_view_allowed('show_list')) {
-		print "<strong><font class='txtErrorTextBox'>YOU DO NOT HAVE RIGHTS FOR LIST VIEW</font></strong>"; return;
+		print "<font class='txtErrorTextBox'>YOU DO NOT HAVE RIGHTS FOR LIST VIEW</font>"; return;
 	}
 
 	/* ================= input validation ================= */
@@ -407,22 +412,7 @@ case 'list':
 		<form id='form_graph_list' name='form_graph_list' method='post' action='graph_view.php?action=list'>
 			<table class='filterTable'>
 				<tr class='noprint'>
-					<td>
-						Device
-					</td>
-					<td>
-						<select id='host_id' name='host_id' onChange='applyFilter()'>
-							<option value='0'<?php if (get_request_var_request('host_id') == '0') {?> selected<?php }?>>Any</option>
-							<?php
-							$hosts = get_allowed_devices();
-							if (sizeof($hosts) > 0) {
-								foreach ($hosts as $host) {
-									print "<option value='" . $host['id'] . "'"; if (get_request_var_request('host_id') == $host['id']) { print ' selected'; } print '>' . htmlspecialchars($host['description']) . "</option>\n";
-								}
-							}
-							?>
-						</select>
-					</td>
+					<?php print html_host_filter($_REQUEST['host_id']);?>
 					<td>
 						Template
 					</td>
@@ -512,7 +502,7 @@ case 'list':
 	if (sizeof($graphs)) {
 		foreach ($graphs as $graph) {
 			form_alternate_row('line' . $graph['local_graph_id'], true);
-			form_selectable_cell("<strong><a href='" . htmlspecialchars('graph.php?local_graph_id=' . $graph['local_graph_id'] . '&rra_id=0') . "'>" . htmlspecialchars($graph['title_cache']) . '</a></strong>', $graph['local_graph_id']);
+			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars('graph.php?local_graph_id=' . $graph['local_graph_id'] . '&rra_id=0') . "'>" . htmlspecialchars($graph['title_cache']) . '</a>', $graph['local_graph_id']);
 			form_selectable_cell($graph['description'], $graph['local_graph_id']);
 			form_selectable_cell($graph['template_name'], $graph['local_graph_id']);
 			form_selectable_cell($graph['height'] . 'x' . $graph['width'], $graph['local_graph_id']);

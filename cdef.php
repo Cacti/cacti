@@ -230,7 +230,7 @@ function form_actions() {
 					<p>Click 'Continue' to duplicate the following CDEF(s). You can
 					optionally change the title format for the new CDEF(s).</p>
 					<p><ul>$cdef_list</ul></p>
-					<p><strong>Title Format:</strong><br>"; form_text_box('title_format', '<cdef_title> (1)', '', '255', '30', 'text'); print "</p>
+					<p>Title Format:<br>"; form_text_box('title_format', '<cdef_title> (1)', '', '255', '30', 'text'); print "</p>
 				</td>
 			</tr>\n";
 
@@ -429,7 +429,7 @@ function cdef_edit() {
 						<a class='pic' href='<?php print htmlspecialchars('cdef.php?action=item_moveup&id=' . $cdef_item['id'] . '&cdef_id=' . $cdef['id']);?>'><img src='images/move_up.gif' alt='' title='Move Up'></a>
 					</td>
 					<td>
-						<em><?php $cdef_item_type = $cdef_item['type']; print $cdef_item_types[$cdef_item_type];?></em>: <strong><?php print htmlspecialchars(get_cdef_item_name($cdef_item['id']));?></strong>
+						<em><?php $cdef_item_type = $cdef_item['type']; print $cdef_item_types[$cdef_item_type];?></em>: <?php print htmlspecialchars(get_cdef_item_name($cdef_item['id']));?>
 					</td>
 					<td class='right'>
 						<a class='pic' href='<?php print htmlspecialchars('cdef.php?action=item_remove&id=' . $cdef_item['id'] . '&cdef_id=' . $cdef['id']);?>'><img class='deleteIcon' src='images/delete_icon.gif' alt='' title='Delete'></a>

@@ -147,7 +147,7 @@ if (is_array($xport_array['meta'])) {
 		print $header . "\n";
 	}else{
 		$second = "align='right' colspan='2'";
-		print "<table align='center' width='100%' style='background-color: #f5f5f5; border: 1px solid #bbbbbb;'><tr><td>\n";
+		print "<table align='center' width='100%' style='border: 1px solid #bbbbbb;'><tr><td>\n";
 		print "<table class='cactiTable' align='center' width='100%'>\n";
 		print "<tr class='tableHeader'><td colspan='2' class='linkOverDark' style='font-weight:bold;'>Summary Details</td><td align='right'><span style='cursor:pointer;' class='download linkOverDark' id='graph_" . $xport_array['meta']['local_graph_id'] . "'>Download</span></td></tr>\n";
 		print "<tr class='even'><td align='left'>Title</td><td $second>"          . trim($xport_array['meta']['title_cache'],"'")      . "</td></tr>\n";
@@ -202,8 +202,9 @@ if (is_array($xport_array['data'])) {
 			print $data . "\n";
 		}
 	}else{
+		$j = 0;
 		foreach($xport_array['data'] as $row) {
-			print "<tr><td align='left'>" . date('Y-m-d H:i:s', $row['timestamp']) . "</td>";
+			print "<tr class='" . ($j % 2 == 0 ? 'odd':'even') . "'><td align='left'>" . date('Y-m-d H:i:s', $row['timestamp']) . "</td>";
 			for ($i = 1; $i <= $xport_array['meta']['columns']; $i++) {
 				if ($row['col' . $i] > 1) {
 					print "<td align='right'>" . trim(number_format(round($row['col' . $i],3)),'0') . "</td>";
@@ -214,6 +215,7 @@ if (is_array($xport_array['data'])) {
 				}
 			}
 			print "</tr>\n";
+			$j++;
 		}
 	}
 }

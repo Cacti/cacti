@@ -358,7 +358,7 @@ function form_actions() {
 					</tr>\n";
 
 					print "<tr>
-						<td class='textArea' width='170'><strong>Aggregate Template:</strong></td>
+						<td class='textArea' width='170'>Aggregate Template:</td>
 						<td>
 							<select name='aggregate_template_id'>\n";
 
@@ -391,7 +391,7 @@ function form_actions() {
 				</td>
 			</tr>\n";
 
-			print "	<tr><td class='textArea' width='170'><strong>Aggregate Name:</strong></td></tr>\n";
+			print "	<tr><td class='textArea' width='170'>Aggregate Name:</td></tr>\n";
 			print "	<tr><td class='textArea'><input name='aggregate_name' size='40' value='New Aggregate'></td></tr>\n";
 
 			$save_html = "<input type='button' value='Cancel' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='Continue' title='Delete Graph(s)'>";
@@ -418,7 +418,7 @@ function form_actions() {
 				<td class='textArea'>
 					<p>Click 'Continue' to place the following Aggregate Graph(s) under the Tree Branch.</p>
 					<p><ul>$graph_list</ul></p>
-					<p><strong>Destination Branch:</strong><br>"; grow_dropdown_tree($matches[1], "tree_item_id", "0"); print "</p>
+					<p>Destination Branch:<br>"; grow_dropdown_tree($matches[1], "tree_item_id", "0"); print "</p>
 				</td>
 			</tr>\n
 			<input type='hidden' name='tree_id' value='" . $matches[1] . "'>\n";
@@ -565,7 +565,7 @@ function graph_edit() {
 	}
 
 	if (!empty($_REQUEST['id']) && $current_tab == 'preview') {
-		print "<td class='nowrap' align='right'><a class='textHeader' href='" . htmlspecialchars('aggregate_graphs.php?action=edit&id=' . $_REQUEST['id'] . '&tab=' . $_REQUEST['tab'] .  '&debug=' . (isset($_SESSION['graph_debug_mode']) ? '0' : '1')) . "'>Turn <strong>" . (isset($_SESSION['graph_debug_mode']) ? 'Off' : 'On') . " Graph Debug Mode</a></td>\n</tr></table>\n";
+		print "<td class='nowrap' align='right'><a class='textHeader' href='" . htmlspecialchars('aggregate_graphs.php?action=edit&id=' . $_REQUEST['id'] . '&tab=' . $_REQUEST['tab'] .  '&debug=' . (isset($_SESSION['graph_debug_mode']) ? '0' : '1')) . "'>Turn " . (isset($_SESSION['graph_debug_mode']) ? 'Off' : 'On') . " Graph Debug Mode</a></td>\n</tr></table>\n";
 	}elseif (!empty($_REQUEST['id']) && $current_tab == 'details' && (!sizeof($template))) {
 		print "<td class='nowrap right'><a id='toggle_items' class='textHeader' href='#'>Show Item Details</a></td>\n</tr></table>\n";
 	}else{

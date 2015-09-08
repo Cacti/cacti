@@ -222,7 +222,7 @@ function aggregate_color_form_actions() {
 					<p>Click 'Continue' to duplicate the following Color Template(s). You can
 					optionally change the title format for the new color templates.</p>
 					<p><ul>$color_list</ul></p>
-					<p><strong>Title Format:</strong><br>"; form_text_box('title_format', '<template_title> (1)', '', '255', '30', 'text'); print "</p>
+					<p>Title Format:<br>"; form_text_box('title_format', '<template_title> (1)', '', '255', '30', 'text'); print "</p>
 				</td>
 			</tr>\n";
 	

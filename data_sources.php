@@ -465,7 +465,7 @@ function form_actions() {
 
 				print '<p><ul>';
 				foreach ($graphs as $graph) {
-					print '<li><strong>' . $graph['title_cache'] . "</strong></li>\n";
+					print '<li>' . $graph['title_cache'] . "</li>\n";
 				}
 				print '</ul></p>';
 				print '<br>';
@@ -487,7 +487,7 @@ function form_actions() {
 					the following Data Source(s). Be aware that all warnings will be suppressed during the
 					conversion, so graph data loss is possible.</p>
 					<p><ul>$ds_list</ul></p>
-					<p><strong>New Data Template:</strong><br>"; form_dropdown('data_template_id',db_fetch_assoc('SELECT data_template.id,data_template.name FROM data_template ORDER BY data_template.name'),'name','id','','','0'); print "</p>
+					<p>New Data Template:<br>"; form_dropdown('data_template_id',db_fetch_assoc('SELECT data_template.id,data_template.name FROM data_template ORDER BY data_template.name'),'name','id','','','0'); print "</p>
 				</td>
 			</tr>\n";
 
@@ -497,7 +497,7 @@ function form_actions() {
 				<td class='textArea'>
 					<p>Choose a new Device for these Data Source(s) and click 'Continue'.</p>
 					<p><ul>$ds_list</ul></p>
-					<p><strong>New Device:</strong><br>"; form_dropdown('host_id',db_fetch_assoc("SELECT id, CONCAT_WS('',description,' (',hostname,')') AS name FROM host ORDER BY description, hostname"),'name','id','','','0'); print "</p>
+					<p>New Device:<br>"; form_dropdown('host_id',db_fetch_assoc("SELECT id, CONCAT_WS('',description,' (',hostname,')') AS name FROM host ORDER BY description, hostname"),'name','id','','','0'); print "</p>
 				</td>
 			</tr>\n";
 
@@ -508,7 +508,7 @@ function form_actions() {
 					<p>Click 'Continue' to duplicate the following Data Source(s). You can
 					optionally change the title format for the new Data Source(s).</p>
 					<p><ul>$ds_list</ul></p>
-					<p><strong>Title Format:</strong><br>"; form_text_box('title_format', '<ds_title> (1)', '', '255', '30', 'text'); print "</p>
+					<p>Title Format:<br>"; form_text_box('title_format', '<ds_title> (1)', '', '255', '30', 'text'); print "</p>
 				</td>
 			</tr>\n";
 
@@ -519,7 +519,7 @@ function form_actions() {
 					<p>Click 'Continue' to convert the following Data Source(s) into Data Template(s).
 					You can optionally change the title format for the new Data Template(s).</p>
 					<p><ul>$ds_list</ul></p>
-					<p><strong>Title Format:</strong><br>"; form_text_box('title_format', '<ds_title> Template', '', '255', '30', 'text'); print "</p>
+					<p>Title Format:<br>"; form_text_box('title_format', '<ds_title> Template', '', '255', '30', 'text'); print "</p>
 				</td>
 			</tr>\n";
 
@@ -743,7 +743,7 @@ function ds_edit() {
 					<?php print htmlspecialchars(get_data_source_title($_REQUEST['id']));?>
 				</td>
 				<td class='textInfo right' valign='top'>
-					<span class='linkMarker'>*<a class='hyperLink' href='<?php print htmlspecialchars('data_sources.php?action=ds_edit&id=' . (isset($_REQUEST['id']) ? $_REQUEST['id'] : '0'));?>&debug=<?php print (isset($_SESSION['ds_debug_mode']) ? '0' : '1');?>'>Turn <strong><?php print (isset($_SESSION['ds_debug_mode']) ? 'Off' : 'On');?></strong> Data Source Debug Mode.</a><br>
+					<span class='linkMarker'>*<a class='hyperLink' href='<?php print htmlspecialchars('data_sources.php?action=ds_edit&id=' . (isset($_REQUEST['id']) ? $_REQUEST['id'] : '0'));?>&debug=<?php print (isset($_SESSION['ds_debug_mode']) ? '0' : '1');?>'>Turn <?php print (isset($_SESSION['ds_debug_mode']) ? 'Off' : 'On');?> Data Source Debug Mode.</a><br>
 					<?php
 						if (!empty($data_template['id'])) {
 							?><span class='linkMarker'>*<a class='hyperLink' href='<?php print htmlspecialchars('data_templates.php?action=template_edit&id=' . (isset($data_template['id']) ? $data_template['id'] : '0'));?>'>Edit Data Template.</a><br><?php
@@ -822,9 +822,9 @@ function ds_edit() {
 
 		html_start_box('Supplemental Data Template Data', '100%', '', '3', 'center', '');
 
-		draw_nontemplated_fields_data_source($data['data_template_id'], $data['local_data_id'], $data, '|field|', '<strong>Data Source Fields</strong>', true, true, 0);
-		draw_nontemplated_fields_data_source_item($data['data_template_id'], $template_data_rrds, '|field|_|id|', '<strong>Data Source Item Fields</strong>', true, true, true, 0);
-		draw_nontemplated_fields_custom_data($data['id'], 'value_|id|', '<strong>Custom Data</strong>', true, true, 0);
+		draw_nontemplated_fields_data_source($data['data_template_id'], $data['local_data_id'], $data, '|field|', 'Data Source Fields', true, true, 0);
+		draw_nontemplated_fields_data_source_item($data['data_template_id'], $template_data_rrds, '|field|_|id|', 'Data Source Item Fields', true, true, true, 0);
+		draw_nontemplated_fields_custom_data($data['id'], 'value_|id|', 'Custom Data', true, true, 0);
 
 		form_hidden_box('save_component_data','1','');
 
@@ -911,10 +911,10 @@ function ds_edit() {
 
 		print "	<tr>
 				<td class='textHeaderDark left'>
-					<strong>Data Source Item</strong> $header_label
+					Data Source Item $header_label
 				</td>
 				<td class='textHeaderDark right'>
-					" . ((!empty($_REQUEST['id']) && (empty($data_template['id']))) ? "<strong><a class='linkOverDark' href='" . htmlspecialchars('data_sources.php?action=rrd_add&id=' . $_REQUEST['id']) . "'>New</a>&nbsp;</strong>" : '') . "
+					" . ((!empty($_REQUEST['id']) && (empty($data_template['id']))) ? "<a class='linkOverDark' href='" . htmlspecialchars('data_sources.php?action=rrd_add&id=' . $_REQUEST['id']) . "'>New</a>&nbsp;" : '') . "
 				</td>
 			</tr>\n";
 

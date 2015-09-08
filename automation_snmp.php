@@ -228,7 +228,7 @@ function form_automation_snmp_actions() {
 					<p>Click 'Continue' to duplicate the following SNMP Options. You can
 					optionally change the title format for the new SNMP Options.</p>
 					<p><ul>$snmp_groups</ul></p>
-					<p><strong>Name Format:</strong><br>"; form_text_box('name_format', '<name> (1)', '', '255', '30', 'text'); print "</p>
+					<p>Name Format:<br>"; form_text_box('name_format', '<name> (1)', '', '255', '30', 'text'); print "</p>
 				</td>
 			</tr>\n";
 		}

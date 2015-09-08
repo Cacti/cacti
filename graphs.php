@@ -567,12 +567,13 @@ function form_actions() {
 
 				print '<p><ul>';
 				foreach ($data_sources as $data_source) {
-					print '<li><strong>' . $data_source['name_cache'] . "</strong></li>\n";
+					print '<li>' . $data_source['name_cache'] . "</li>\n";
 				}
 				print '</ul></p>';
 
 				print '<span class="nowrap">';
 				form_radio_button('delete_type', '2', '2', 'Delete all <strong>Data Source(s)</strong> referenced by these Graph(s).', '2'); 
+				print '<br>';
 				form_radio_button('delete_type', '1', '2', "Leave the Data Source(s) untouched.", '2'); 
 				print '<br>';
 				print '</span>';
@@ -589,7 +590,7 @@ function form_actions() {
 					the following Graph(s). Be aware that all warnings will be suppressed during the
 					conversion, so Graph data loss is possible.</p>
 					<p><ul>$graph_list</ul></p>
-					<p><strong>New Graph Template:</strong><br>"; 
+					<p>New Graph Template<br>"; 
 
 					form_dropdown('graph_template_id',db_fetch_assoc('SELECT graph_templates.id,graph_templates.name FROM graph_templates ORDER BY name'),'name','id','','','0'); 
 
@@ -604,7 +605,7 @@ function form_actions() {
 					<p>Click 'Continue' to duplicate the following Graph(s). You can
 					optionally change the title format for the new Graph(s).</p>
 					<p><ul>$graph_list</ul></p>
-					<p><strong>Title Format:</strong><br>"; 
+					<p>Title Format<br>"; 
 
 			form_text_box('title_format', '<graph_title> (1)', '', '255', '30', 'text'); 
 
@@ -619,7 +620,7 @@ function form_actions() {
 					<p>Click 'Continue' to convert the following Graph(s) into Graph Template(s).
 					You can optionally change the title format for the new Graph Template(s).</p>
 					<p><ul>$graph_list</ul></p>
-					<p><strong>Title Format:</strong><br>"; 
+					<p>Title Format<br>"; 
 
 			form_text_box('title_format', '<graph_title> Template', '', '255', '30', 'text'); 
 
@@ -633,7 +634,7 @@ function form_actions() {
 				<td class='textArea'>
 					<p>Click 'Continue' to place the following Graph(s) under the Tree Branch selected below.</p>
 					<p><ul>$graph_list</ul></p>
-					<p><strong>Destination Branch:</strong><br>"; 
+					<p>Destination Branch<br>"; 
 
 			grow_dropdown_tree($matches[1], '0', 'tree_item_id', '0'); 
 
@@ -648,7 +649,7 @@ function form_actions() {
 				<td class='textArea'>
 					<p>Choose a new Device for these Graph(s) and click \"Continue\"</p>
 					<p><ul>$graph_list</ul></p>
-					<p><strong>New Device:</strong><br>"; 
+					<p>New Device<br>"; 
 
 			form_dropdown('host_id',db_fetch_assoc("SELECT id,CONCAT_WS('',description,' (',hostname,')') as name FROM host ORDER BY description,hostname"),'name','id','','','0'); 
 
@@ -671,9 +672,11 @@ function form_actions() {
 				<td class='textArea'>
 					<p>Click 'Continue' to resize the following Graph(s).</p>
 					<p><ul>$graph_list</ul></p>
-					<p><strong>Graph Height:</strong><br>"; 
+					<p>Graph Height<br>"; 
 
-			form_text_box('graph_height', '', '', '255', '30', 'text'); print '</p><p><strong>Graph Width:</strong><br>'; 
+			form_text_box('graph_height', '', '', '255', '30', 'text'); 
+
+			print '</p><p>Graph Width<br>'; 
 			form_text_box('graph_width', '', '', '255', '30', 'text'); 
 
 			print "</p>
@@ -777,6 +780,8 @@ function form_actions() {
 				<?php
 
 				$save_html = "<input type='button' value='Cancel' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='Continue' title='Resize Selected Graph(s)'>";
+			}else{
+				$save_html = "<input type='button' value='Return' onClick='cactiReturnTo()'>";
 			}
 		}elseif ($_POST['drp_action'] == 'aggregate_template') { /* aggregate template */
 			include_once('./lib/api_aggregate.php');
@@ -799,11 +804,11 @@ function form_actions() {
 					</tr>\n";
 
 					print "<tr><td><table><tr>
-						<td><strong>Graph Title:</strong></td>
+						<td>Graph Title</td>
 						<td><input name='title_format' size='40'></td>
 						</tr>
 						<tr>
-							<td><strong>Aggregate Template:</strong></td>
+							<td>Aggregate Template</td>
 							<td>
 								<select name='aggregate_template_id'>\n";
 
@@ -820,11 +825,14 @@ function form_actions() {
 							<p>There are presently no Aggregate Templates defined for this Graph Template.  Please either first
 							create an Aggregate Template for the selected Graph's Graph Template and try again, or 
 							simply crease an un-templated Aggregate Graph.</p>
+							<p>Press 'Return' to return and select different Graphs</p>
 						</td>
 					</tr>\n";
 
 					$save_html = "<input type='button' value='Return' onClick='cactiReturnTo()'>";
 				}
+			}else{
+				$save_html = "<input type='button' value='Return' onClick='cactiReturnTo()'>";
 			}
 		}elseif ($_POST['drp_action'] == 8) { /* automation */
 			print "<tr>

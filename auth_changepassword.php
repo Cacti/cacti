@@ -76,12 +76,12 @@ switch ($_REQUEST['action']) {
 case 'changepassword':
 	if ($user['password'] != md5($_POST['current_password'])) {
 		$bad_password = true;
-		$errorMessage = "<span color='#FF0000'><strong>Your current password is not correct.  Please try again.</strong></span>";
+		$errorMessage = "<span color='#FF0000'>Your current password is not correct.  Please try again.</span>";
 	}
 
 	if ($user['password'] == md5($_POST['password'])) {
 		$bad_password = true;
-		$errorMessage = "<span color='#FF0000'><strong>Your new password can not be the same as the old password.  Please try again.</strong></span>";
+		$errorMessage = "<span color='#FF0000'>Your new password can not be the same as the old password.  Please try again.</span>";
 	}
 
 	// Secpass checking
@@ -89,12 +89,12 @@ case 'changepassword':
 	$error = secpass_check_pass($_POST['password']);
 	if ($error != '') {
 		$bad_password = true;
-		$errorMessage = "<span color='#FF0000'><strong>$error</strong></span>";
+		$errorMessage = "<span color='#FF0000'>$error</span>";
 
 	}
 	if (!secpass_check_history($_SESSION['sess_user_id'], $_POST['password'])) {
 		$bad_password = true;
-		$errorMessage = "<span color='#FF0000'><strong>You can not use a previously entered password!</strong></span>";
+		$errorMessage = "<span color='#FF0000'>You can not use a previously entered password!</span>";
 	}
 
 	if ($bad_password == false && $_POST['password'] == $_POST['confirm'] && $_POST['password'] != '') {
@@ -163,9 +163,9 @@ if (api_plugin_hook_function('custom_password', OPER_MODE_NATIVE) == OPER_MODE_R
 }
 
 if ($bad_password && $errorMessage == "") {
-	$errorMessage = "<span color='#FF0000'><strong>Your new passwords do not match, please retype.</strong></span>";
+	$errorMessage = "<span color='#FF0000'>Your new passwords do not match, please retype.</span>";
 }elseif ($_REQUEST['action'] == 'force') {
-	$errorMessage = "<span color='#FF0000'><strong>*** Forced password change ***</strong></span>";
+	$errorMessage = "<span color='#FF0000'>*** Forced password change ***</span>";
 }
 
 print "<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.01 Transitional//EN' 'http://www.w3.org/TR/html4/loose.dtd'>\n";

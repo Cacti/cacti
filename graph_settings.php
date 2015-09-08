@@ -116,7 +116,7 @@ function settings() {
 
 	/* Find out whether this user has right here */
 	if (!is_view_allowed('graph_settings')) {
-		print "<strong><font class='txtErrorTextBox'>YOU DO NOT HAVE RIGHTS TO CHANGE GRAPH SETTINGS</font></strong>";
+		print "<font class='txtErrorTextBox'>YOU DO NOT HAVE RIGHTS TO CHANGE GRAPH SETTINGS</font>";
 		bottom_footer();
 		exit;
 	}

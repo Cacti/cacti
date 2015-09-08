@@ -360,7 +360,7 @@ function data_query_item_remove() {
 	if ((read_config_option('deletion_verification') == 'on') && (!isset($_REQUEST['confirm']))) {
 		top_header();
 
-		form_confirm('Are You Sure?', "Are you sure you want to delete the Data Query Graph <strong>'" . htmlspecialchars(db_fetch_cell_prepared('SELECT name FROM snmp_query_graph WHERE id = ?', array($_REQUEST['id'])), ENT_QUOTES) . "'</strong>?", htmlspecialchars('data_queries.php?action=edit&id=' . $_REQUEST['snmp_query_id']), htmlspecialchars('data_queries.php?action=item_remove&id=' . $_REQUEST['id'] . '&snmp_query_id=' . $_REQUEST['snmp_query_id']));
+		form_confirm('Are You Sure?', "Are you sure you want to delete the Data Query Graph '" . htmlspecialchars(db_fetch_cell_prepared('SELECT name FROM snmp_query_graph WHERE id = ?', array($_REQUEST['id'])), ENT_QUOTES) . "'?", htmlspecialchars('data_queries.php?action=edit&id=' . $_REQUEST['snmp_query_id']), htmlspecialchars('data_queries.php?action=item_remove&id=' . $_REQUEST['id'] . '&snmp_query_id=' . $_REQUEST['snmp_query_id']));
 
 		bottom_footer();
 		exit;
@@ -457,7 +457,7 @@ function data_query_item_edit() {
 						<table>
 							<tr>
 								<td style='width:200px;'>
-									<strong>Data Source:</strong>
+									Data Source
 								</td>
 								<td style='width:200px;'>
 									<?php print $data_template_rrd['data_source_name'];?>
@@ -521,7 +521,7 @@ function data_query_item_edit() {
 
 				?>
 				<td style='width;120;'>
-					<strong><?php print htmlspecialchars($suggested_value['field_name']);?></strong>
+					<?php print htmlspecialchars($suggested_value['field_name']);?>
 				</td>
 				<td style='width:40px;text-align:center;'>
 					<?php if ($show_down) {?>
@@ -614,7 +614,7 @@ function data_query_item_edit() {
 
 					?>
 					<td style='width:120;'>
-						<strong><?php print htmlspecialchars($suggested_value['field_name']);?></strong>
+						<?php print htmlspecialchars($suggested_value['field_name']);?>
 					</td>
 					<td style='width:40;text-align:center;'>
 						<?php if ($show_down) {?>
@@ -778,10 +778,10 @@ function data_query_edit() {
 		$xml_filename = str_replace('<path_cacti>', $config['base_path'], $snmp_query['xml_path']);
 
 		if ((file_exists($xml_filename)) && (is_file($xml_filename))) {
-			$text = "<font color='#0d7c09'><strong>Successfully located XML file</strong></font>";
+			$text = "<font color='#0d7c09'>Successfully located XML file</font>";
 			$xml_file_exists = true;
 		}else{
-			$text = "<font class='txtErrorText'><strong>Could not locate XML file.</strong></font>";
+			$text = "<font class='txtErrorText'>Could not locate XML file.</font>";
 			$xml_file_exists = false;
 		}
 
@@ -814,7 +814,7 @@ function data_query_edit() {
 					form_alternate_row();
 					?>
 						<td>
-							<strong><a class='linkEditMain' href="<?php print htmlspecialchars('data_queries.php?action=item_edit&id=' . $snmp_query_graph['id'] . '&snmp_query_id=' . $snmp_query['id']);?>"><?php print htmlspecialchars($snmp_query_graph['name']);?></a></strong>
+							<a class='linkEditMain' href="<?php print htmlspecialchars('data_queries.php?action=item_edit&id=' . $snmp_query_graph['id'] . '&snmp_query_id=' . $snmp_query['id']);?>"><?php print htmlspecialchars($snmp_query_graph['name']);?></a>
 						</td>
 						<td>
 							<?php print htmlspecialchars($snmp_query_graph['graph_template_name']);?>

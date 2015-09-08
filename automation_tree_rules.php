@@ -262,7 +262,7 @@ function automation_tree_rules_form_actions() {
 				<p>Click 'Continue' to duplicate the following Rule(s). You can
 				optionally change the title format for the new Rules.</p>
 				<p><ul>$automation_tree_rules_list</ul></p>
-				<p><strong>Title Format:</strong><br>"; form_text_box('name_format', '<rule_name> (1)', '', '255', '30', 'text'); print "</p>
+				<p>Title Format:<br>"; form_text_box('name_format', '<rule_name> (1)', '', '255', '30', 'text'); print "</p>
 			</td>
 		</tr>\n";
 	}elseif ($_POST['drp_action'] == AUTOMATION_ACTION_TREE_ENABLE) { /* enable */
@@ -270,7 +270,7 @@ function automation_tree_rules_form_actions() {
 			<td class='textArea'>
 				<p>Click 'Continue' to enable the following Rule(s).</p>
 				<p><ul>$automation_tree_rules_list</ul></p>
-				<p><strong>Make sure, that those rules have successfully been tested!</strong></p>
+				<p>Make sure, that those rules have successfully been tested!</p>
 			</td>
 		</tr>\n";
 	}elseif ($_POST['drp_action'] == AUTOMATION_ACTION_TREE_DISABLE) { /* disable */
@@ -379,7 +379,7 @@ function automation_tree_rules_item_edit() {
 				?>
 <table style='width:100%;text-align:center;'>
 	<tr>
-		<td class='textInfo' style='text-align:right;vertical-align:top;'><span class='linkMarker'>*<a class='linkEditMain' href='<?php print htmlspecialchars('automation_tree_rules.php?action=item_edit&id=' . (isset($_GET['id']) ? $_GET['id'] : 0) . '&item_id=' . (isset($_GET['item_id']) ? $_GET['item_id'] : 0) . '&rule_type=' . (isset($_GET['rule_type']) ? $_GET['rule_type'] : 0) .'&show_trees=') . (isset($_SESSION['automation_tree_rules_show_trees']) ? '0' : '1');?>'><strong><?php print (isset($_SESSION['automation_tree_rules_show_trees']) ? 'Dont Show' : 'Show');?></strong> Created Trees.</a></span><br>
+		<td class='textInfo' style='text-align:right;vertical-align:top;'><span class='linkMarker'>*<a class='linkEditMain' href='<?php print htmlspecialchars('automation_tree_rules.php?action=item_edit&id=' . (isset($_GET['id']) ? $_GET['id'] : 0) . '&item_id=' . (isset($_GET['item_id']) ? $_GET['item_id'] : 0) . '&rule_type=' . (isset($_GET['rule_type']) ? $_GET['rule_type'] : 0) .'&show_trees=') . (isset($_SESSION['automation_tree_rules_show_trees']) ? '0' : '1');?>'><?php print (isset($_SESSION['automation_tree_rules_show_trees']) ? 'Dont Show' : 'Show');?> Created Trees.</a></span><br>
 		</td>
 	</tr>
 </table>
@@ -471,7 +471,7 @@ function automation_tree_rules_remove() {
 
 	if ((read_config_option('deletion_verification') == 'on') && (!isset($_GET['confirm']))) {
 		top_header();
-		form_confirm('Are You Sure?', "Are you sure you want to DELETE the Rule <strong>'" . db_fetch_cell('SELECT name FROM automation_tree_rules WHERE id=' . $_GET['id']) . "'</strong>?", 'automation_tree_rules.php', 'automation_tree_rules.php?action=remove&id=' . $_GET['id']);
+		form_confirm('Are You Sure?', "Are you sure you want to DELETE the Rule '" . db_fetch_cell('SELECT name FROM automation_tree_rules WHERE id=' . $_GET['id']) . "'?", 'automation_tree_rules.php', 'automation_tree_rules.php?action=remove&id=' . $_GET['id']);
 		bottom_footer();
 		exit;
 	}
@@ -520,7 +520,7 @@ function automation_tree_rules_edit() {
 		?>
 <table style='width:100%;text-align:center;'>
 	<tr>
-		<td class='textInfo' align='right' valign='top'><span class='linkMarker'>*<a class='linkEditMain' href='<?php print htmlspecialchars('automation_tree_rules.php?action=edit&id=' . (isset($_GET['id']) ? $_GET['id'] : 0) . '&show_hosts=') . (isset($_SESSION['automation_tree_rules_show_objects']) ? '0' : '1');?>'><strong><?php print (isset($_SESSION['automation_tree_rules_show_objects']) ? 'Dont Show' : 'Show');?></strong> Eligible Objects.</a></span><br>
+		<td class='textInfo' align='right' valign='top'><span class='linkMarker'>*<a class='linkEditMain' href='<?php print htmlspecialchars('automation_tree_rules.php?action=edit&id=' . (isset($_GET['id']) ? $_GET['id'] : 0) . '&show_hosts=') . (isset($_SESSION['automation_tree_rules_show_objects']) ? '0' : '1');?>'><?php print (isset($_SESSION['automation_tree_rules_show_objects']) ? 'Dont Show' : 'Show');?> Eligible Objects.</a></span><br>
 		</td>
 	</tr>
 </table>

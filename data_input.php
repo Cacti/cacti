@@ -244,7 +244,7 @@ function field_remove() {
 	if ((read_config_option('deletion_verification') == 'on') && (!isset($_REQUEST['confirm']))) {
 		top_header();
 
-		form_confirm('Are You Sure?', "Are you sure you want to delete the field <strong>'" . htmlspecialchars(db_fetch_cell_prepared('SELECT name FROM data_input_fields WHERE id = ?', array(get_request_var_request('id'))), ENT_QUOTES) . "'</strong>?", htmlspecialchars('data_input.php?action=edit&id=' . $_REQUEST['data_input_id']), htmlspecialchars('data_input.php?action=field_remove&id=' . $_REQUEST['id'] . '&data_input_id=' . $_REQUEST['data_input_id']));
+		form_confirm('Are You Sure?', "Are you sure you want to delete the field '" . htmlspecialchars(db_fetch_cell_prepared('SELECT name FROM data_input_fields WHERE id = ?', array(get_request_var_request('id'))), ENT_QUOTES) . "'?", htmlspecialchars('data_input.php?action=edit&id=' . $_REQUEST['data_input_id']), htmlspecialchars('data_input.php?action=field_remove&id=' . $_REQUEST['id'] . '&data_input_id=' . $_REQUEST['data_input_id']));
 
 		bottom_footer();
 		exit;
