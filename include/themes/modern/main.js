@@ -1,7 +1,5 @@
-// Host Autocomplete Magic
-var pageName = basename($(location).attr('pathname'));
-
 function themeReady() {
+	var pageName = basename($(location).attr('pathname'));
 	var hostTimer = false;
 	var clickTimeout = false;
 	var hostOpen = false;
@@ -39,7 +37,7 @@ function themeReady() {
 		}else if (item.element.closest('select').hasClass('iconselect')) {
 			var li = $('<li>', { text: item.label });
 
-			if ( item.disabled ) {
+			if (item.disabled) {
 				li.addClass('ui-state-disabled');
 			}
 
@@ -95,7 +93,7 @@ function themeReady() {
 		}
 	});
 
-	$('#host').unbind().autocomplete({
+	$('#host').autocomplete({
 		source: pageName+'?action=ajax_hosts',
 		autoFocus: true,
 		minLength: 0,
@@ -106,6 +104,7 @@ function themeReady() {
 	}).addClass('ui-selectmenu-text').css('border', 'none').css('background-color', 'transparent');
 
 	$('#host_click').css('z-index', '4');
+	$('#host').addClass('ui-state-default');
 	$('#host_wrapper').unbind().dblclick(function() {
 		hostOpen = false;
 		clearTimeout(hostTimer);
@@ -127,6 +126,8 @@ function themeReady() {
 		$(this).addClass('ui-state-hover');
 		$('input#host').addClass('ui-state-hover');
 	}).on('mouseleave', function() {
+		$(this).removeClass('ui-state-hover');
+		$('#host').removeClass('ui-state-hover');
 		hostTimer = setTimeout(function() { $('#host').autocomplete('close'); }, 800);
 	});
 
@@ -136,9 +137,9 @@ function themeReady() {
 	});
 
 	if (hostPrefix != '') {
-		$('ul[id="'+hostPrefix+'"]').on('mouseover', function() {
+		$('ul[id="'+hostPrefix+'"]').unbind().on('mouseenter', function() {
 			clearTimeout(hostTimer);
-		}).on('mouseout', function() {
+		}).on('mouseleave', function() {
 			hostTimer = setTimeout(function() { $('#host').autocomplete('close'); }, 800);
 			$(this).removeClass('ui-state-hover');
 			$('input#host').removeClass('ui-state-hover');
@@ -147,15 +148,26 @@ function themeReady() {
 
 	// Hid the scroll bar when not hovering
 	var hoverTimer;
-	$('.cactiConsoleNavigationArea').mouseover(function() {
+	$('.cactiConsoleNavigationArea').unbind().mouseenter(function() {
 		clearTimeout(hoverTimer);
 		hoverTimer = setTimeout(function() {
 			$('.cactiConsoleNavigationArea').css('overflow-y', 'auto');
 		}, 500);
-	}).mouseout(function() {
+	}).mouseleave(function() {
 		clearTimeout(hoverTimer);
 		hoverTimer = setTimeout(function() {
 			$('.cactiConsoleNavigationArea').css('overflow-y', 'hidden');
+		}, 500);
+	});
+	$('.cactiTreeNavigationArea').unbind().mouseenter(function() {
+		clearTimeout(hoverTimer);
+		hoverTimer = setTimeout(function() {
+			$('.cactiTreeNavigationArea').css('overflow-y', 'auto');
+		}, 500);
+	}).mouseleave(function() {
+		clearTimeout(hoverTimer);
+		hoverTimer = setTimeout(function() {
+			$('.cactiTreeNavigationArea').css('overflow-y', 'hidden');
 		}, 500);
 	});
 }

@@ -1038,6 +1038,30 @@ ul#nav {
 	width:100%;
 }
 
+.clogError {
+	background-color: #FF3932;
+}
+
+.clogWarning {
+	background-color: #EACC00;
+}
+
+.clogSQL {
+	background-color: #6DC8FE;
+}
+
+.clogDebug {
+	background-color: #C4FD3D;
+}
+
+.clogStats {
+	background-color: #96E78A;
+}
+
+.clogLimit {
+	background-color: #EACC00;
+}
+
 /* The main calendar widget.  DIV containing a table. */
 
 div.calendar {
