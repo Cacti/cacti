@@ -118,8 +118,8 @@ function clog_view_logfile() {
 				<p>Click 'Continue' to purge the Cacti log file.<br><br><br>Note: If logging is set to Cacti and Syslog, the log information will remain in Syslog.</p>
 			</td>
 		</tr>
-		<tr>
-			<td colspan='2' align='right' bgcolor='#eaeaea'>
+		<tr class='saveRow'>
+			<td colspan='2' align='right'>
 				<input id='cancel' type='button' value='Cancel'>&nbsp
 				<input id='pc' type='button' name='purge_continue' value='Continue' title='Purge cacti.log'>
 				<script type='text/javascript'>
@@ -237,20 +237,20 @@ function clog_view_logfile() {
 
 		/* get the background color */
 		if ((substr_count($new_item, 'ERROR')) || (substr_count($new_item, 'FATAL'))) {
-			$bgcolor = 'FF3932';
+			$class = 'clogError';
 		}elseif (substr_count($new_item, 'WARN')) {
-			$bgcolor = 'EACC00';
+			$class = 'clogWarning';
 		}elseif (substr_count($new_item, ' SQL ')) {
-			$bgcolor = '6DC8FE';
+			$class = 'clogSQL';
 		}elseif (substr_count($new_item, 'DEBUG')) {
-			$bgcolor = 'C4FD3D';
+			$class = 'clogDebug';
 		}elseif (substr_count($new_item, 'STATS')) {
-			$bgcolor = '96E78A';
+			$class = 'clogStats';
 		}else{
 			if ($linecolor) {
-				$bgcolor = 'CCCCCC';
+				$class = 'odd';
 			}else{
-				$bgcolor = 'FFFFFF';
+				$class = 'even';
 			}
 			$linecolor = !$linecolor;
 		}
@@ -262,7 +262,7 @@ function clog_view_logfile() {
 		}
 		if ($show) {
 		?>
-		<tr bgcolor='#<?php print $bgcolor;?>'>
+		<tr class='<?php print $class;?>'>
 			<td>
 				<?php print $new_item;?>
 			</td>

@@ -1029,42 +1029,31 @@ function utilities_view_logfile() {
 
 		/* get the background color */
 		if ((substr_count($new_item, 'ERROR')) || (substr_count($new_item, 'FATAL'))) {
-			$bgcolor = 'FF3932';
+			$class = 'clogError';
 		}elseif (substr_count($new_item, 'WARN')) {
-			$bgcolor = 'EACC00';
+			$class = 'clogWarning';
 		}elseif (substr_count($new_item, ' SQL ')) {
-			$bgcolor = '6DC8FE';
+			$class = 'clogSQL';
 		}elseif (substr_count($new_item, 'DEBUG')) {
-			$bgcolor = 'C4FD3D';
+			$class = 'clogDebug';
 		}elseif (substr_count($new_item, 'STATS')) {
-			$bgcolor = '96E78A';
+			$class = 'clogStats';
 		}else{
 			if ($linecolor) {
-				$bgcolor = 'CCCCCC';
+				$class = 'odd';
 			}else{
-				$bgcolor = 'FFFFFF';
+				$class = 'even';
 			}
 			$linecolor = !$linecolor;
 		}
 
-		?>
-		<tr bgcolor='#<?php print $bgcolor;?>'>
-			<td>
-				<?php print $new_item;?>
-			</td>
-		</tr>
-		<?php
+		print "<tr class='" . $class . "'><td>" . $new_item . "</td></tr>\n";
+
 		$j++;
 		$i++;
 
 		if ($j > 1000) {
-			?>
-			<tr bgcolor='#EACC00'>
-				<td>
-					<?php print '>>>>  LINE LIMIT OF 1000 LINES REACHED!!  <<<<';?>
-				</td>
-			</tr>
-			<?php
+			print "<tr class='clogLimit'><td>>>>>  LINE LIMIT OF 1000 LINES REACHED!!  <<<<</td></tr>\n";
 
 			break;
 		}
