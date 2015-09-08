@@ -975,8 +975,6 @@ function aggregate_create_update(&$local_graph_id, $member_graphs, $attribs) {
 }
 
 function aggregate_get_data_sources($graph_array, &$data_sources, &$graph_template) {
-	global $colors;
-
 	/* find out which (if any) data sources are being used by this graph, so we can tell the user */
 	if (isset($graph_array)) {
 		# fetch all data sources for all selected graphs
@@ -1005,16 +1003,12 @@ function aggregate_get_data_sources($graph_array, &$data_sources, &$graph_templa
 			print "<tr><td colspan='2' class='textArea'>
 			<p>The Graphs chosen for the Aggregate Graph below represent Graphs from multiple Graph Templates. 
 			Aggregate does not support creating Aggregate Graphs from multiple Graph Templates.</p>";
+			print "<p>Press 'Return' to return and select different Graphs</p>\n";
 			print "<ul>";
 			foreach ($used_graph_templates as $graph_template) {
 				print "<li>" . $graph_template["name"] . "</li>\n";
 			}
 			print "</ul></td></tr>";
-
-			html_end_box();
-
-			# again, a new html_start_box. Using the one from above would yield ugly formatted NO and YES buttons
-			html_start_box("<strong>Press 'Return' to return and select different Graphs</strong>", "60%", $colors["header"], "3", "center", "");
 
 			?>
 			<script type='text/javascript'>
@@ -1029,12 +1023,8 @@ function aggregate_get_data_sources($graph_array, &$data_sources, &$graph_templa
 			print "<tr><td colspan='2' class='textArea'>
 			<p>The Graphs chosen for the Aggregate Graph do not use Graph Templates. 
 			Aggregate does not support creating Aggregate Graphs from non-templated graphs.</p>";
+			print "<p>Press 'Return' to return and select different Graphs</p>";
 			print "</td></tr>";
-
-			html_end_box();
-
-			# again, a new html_start_box. Using the one from above would yield ugly formatted NO and YES buttons
-			html_start_box("<strong>Press 'Return' to return and select different Graphs</strong>", "60%", $colors["header"], "3", "center", "");
 
 			?>
 			<script type='text/javascript'>
@@ -1061,7 +1051,7 @@ function aggregate_get_data_sources($graph_array, &$data_sources, &$graph_templa
  # @param int $_object            - either the aggregate or aggregate_template
  */
 function draw_aggregate_graph_items_list($_graph_id = 0, $_graph_template_id = 0, $_object = array()) {
-	global $colors, $config;
+	global $config;
 
 	include($config['include_path'] . '/global_arrays.php');
 
@@ -1137,24 +1127,19 @@ function draw_aggregate_graph_items_list($_graph_id = 0, $_graph_template_id = 0
 	print '</tr>';
 
 	$group_counter = 0; $_graph_type_name = ''; $i = 0;
-	$alternate_color_1 = $colors['alternate']; $alternate_color_2 = $colors['alternate'];
 
 	if (sizeof($item_list) > 0) {
 		foreach ($item_list as $item) {
 			/* graph grouping display logic */
-			$this_row_style = ''; $use_custom_row_color = false; $hard_return = '';
+			$this_row_style = ''; $use_custom_class = false; $hard_return = '';
 
 			if ($graph_item_types{$item['graph_type_id']} != 'GPRINT') {
-				$this_row_style = 'font-weight: bold;'; $use_custom_row_color = true;
+				$this_row_style = 'font-weight: bold;'; $use_custom_class = true;
 
 				if ($group_counter % 2 == 0) {
-					$alternate_color_1 = 'EEEEEE';
-					$alternate_color_2 = 'EEEEEE';
-					$custom_row_color  = 'D5D5D5';
+					$customClass  = 'graphItem';
 				}else{
-					$alternate_color_1 = $colors['alternate'];
-					$alternate_color_2 = $colors['alternate'];
-					$custom_row_color  = 'D2D6E7';
+					$customClass  = 'graphItemAlternate';
 				}
 
 				$group_counter++;
@@ -1166,10 +1151,10 @@ function draw_aggregate_graph_items_list($_graph_id = 0, $_graph_template_id = 0
 			}
 
 			/* alternating row color */
-			if ($use_custom_row_color == false) {
-				form_alternate_row_color($alternate_color_1,$alternate_color_2,$i);
+			if ($use_custom_class == false) {
+				form_alternate_row();
 			}else{
-				print "<tr bgcolor='#$custom_row_color'>";
+				print "<tr class='$customClass'>";
 			}
 
 			/* column 'Graph Item' */
@@ -1256,9 +1241,9 @@ function draw_aggregate_graph_items_list($_graph_id = 0, $_graph_template_id = 0
  * @param int $graph_template_id     - graph template this aggregate template is based on
  */
 function draw_aggregate_template_graph_config($aggregate_template_id, $graph_template_id) {
-	global $colors, $struct_graph;
+	global $struct_graph;
 
-	html_start_box('<strong>Graph Configuration</strong>', '100%', $colors['header'], '3', 'center', '');
+	html_start_box('<strong>Graph Configuration</strong>', '100%', '', '3', 'center', '');
 	$aggregate_templates_graph = db_fetch_row('SELECT * FROM aggregate_graph_templates_graph WHERE aggregate_template_id=' . $aggregate_template_id);
 	$graph_templates_graph = db_fetch_row('SELECT * FROM graph_templates_graph WHERE graph_template_id=' . $graph_template_id);
 
