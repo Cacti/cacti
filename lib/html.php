@@ -738,7 +738,7 @@ function html_split_string($string, $length = 70, $forgiveness = 10) {
      external url
    @arg $disable_controls - whether to hide all edit/delete functionality on this form */
 function draw_graph_items_list($item_list, $filename, $url_data, $disable_controls) {
-	global $colors, $config;
+	global $config;
 
 	include($config["include_path"] . "/global_arrays.php");
 
@@ -751,24 +751,19 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 	print "</tr>";
 
 	$group_counter = 0; $_graph_type_name = ""; $i = 0;
-	$alternate_color_1 = $colors["alternate"]; $alternate_color_2 = $colors["alternate"];
 
 	if (sizeof($item_list) > 0) {
 	foreach ($item_list as $item) {
 		/* graph grouping display logic */
-		$this_row_style = ""; $use_custom_row_color = false; $hard_return = "";
+		$this_row_style = ""; $use_custom_class = false; $hard_return = "";
 
 		if ($graph_item_types{$item["graph_type_id"]} != "GPRINT") {
-			$this_row_style = "font-weight: bold;"; $use_custom_row_color = true;
+			$this_row_style = "font-weight: bold;"; $use_custom_class = true;
 
 			if ($group_counter % 2 == 0) {
-				$alternate_color_1 = "EEEEEE";
-				$alternate_color_2 = "EEEEEE";
-				$custom_row_color = "D5D5D5";
+				$customClass = "graphItem";
 			}else{
-				$alternate_color_1 = $colors["alternate"];
-				$alternate_color_2 = $colors["alternate"];
-				$custom_row_color = "D2D6E7";
+				$customClass = "graphItemAlternate";
 			}
 
 			$group_counter++;
@@ -777,10 +772,10 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 		$_graph_type_name = $graph_item_types{$item["graph_type_id"]};
 
 		/* alternating row color */
-		if ($use_custom_row_color == false) {
+		if ($use_custom_class == false) {
 			form_alternate_row();
 		}else{
-			print "<tr bgcolor='#$custom_row_color'>";
+			print "<tr class='$customClass'>";
 		}
 
 		print "<td>";
@@ -1199,7 +1194,9 @@ function html_show_tabs_left($show_console_tab) {
 function html_graph_tabs_right($current_user) {
 	global $config, $tabs_right;
 
-	if (read_config_option("selected_theme") == 'classic') {
+	$theme = read_config_option('selected_theme');
+
+	if ($theme == 'classic') {
 		if (is_view_allowed('graph_settings')) {
 			print '<a class="righttab" href="' . $config['url_path'] . 'graph_settings.php"><img src="' . $config['url_path'] . 'images/tab_settings';
 			if (basename($_SERVER["PHP_SELF"]) == "graph_settings.php") {
@@ -1239,19 +1236,19 @@ function html_graph_tabs_right($current_user) {
 			),
 			array(
 				'title' => 'Tree View',
-				'image' => 'images/tab_tree.gif',
+				'image' => 'include/themes/' . $theme . '/images/tab_tree.gif',
 				'id'    => 'tree',
 				'url'   => 'graph_view.php?action=tree',
 			),
 			array(
 				'title' => 'List View',
-				'image' => 'images/tab_list.gif',
+				'image' => 'include/themes/' . $theme . '/images/tab_list.gif',
 				'id'    => 'list',
 				'url'   => 'graph_view.php?action=list',
 			),
 			array(
 				'title' => 'Preview',
-				'image' => 'images/tab_preview.gif',
+				'image' => 'include/themes/' . $theme . '/images/tab_preview.gif',
 				'id'    => 'preview',
 				'url'   => 'graph_view.php?action=preview',
 			),

@@ -118,22 +118,7 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 		<form id='form_graph_view' method='post' action='<?php print $page;?>?action=preview'>
 			<table id='device' class='filterTable'>
 				<tr>
-					<td>
-						Device
-					</td>
-					<td>
-						<select id='host_id' onChange='applyGraphFilter()'>
-							<option value='0'<?php if (get_request_var_request('host_id') == '0') {?> selected<?php }?>>Any</option>
-							<?php
-							$hosts = get_allowed_devices($devices_where);
-							if (sizeof($hosts) > 0) {
-								foreach ($hosts as $host) {
-									print "<option value='" . $host['id'] . "'"; if (get_request_var_request('host_id') == $host['id']) { print ' selected'; } print '>' . htmlspecialchars($host['description']) . "</option>\n";
-								}
-							}
-							?>
-						</select>
-					</td>
+					<?php print html_host_filter($_REQUEST['host_id']);?>
 					<td>
 						Template
 					</td>
