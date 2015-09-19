@@ -268,7 +268,7 @@ function template() {
 		array('display' => 'System ObjectId Match', 'align' => 'left'),
 		array('display' => 'Action', 'align' => 'right'));
 
-	html_header($display_text);
+	html_header($display_text, 2);
 
 	$dts = db_fetch_assoc("SELECT at.*, '' AS sysName, ht.name
 		FROM automation_templates AS at
@@ -288,20 +288,23 @@ function template() {
 			echo "<td>" . htmlspecialchars($dt['sysName'])  . "</td>\n";
 			echo "<td>" . htmlspecialchars($dt['sysOid'])   . "</td>\n";
 
+			echo "<td>";
 			if ($i < $total_items && $total_items > 1) {
-				$form_data = '<img class="action" href="' . htmlspecialchars('automation_templates.php?action=movedown&id=' . $dt['id']) . '" src="images/move_down.gif" alt="" title="Move Down">';
+				$form_data = '<a class="pic fa fa-arrow-down moveArrow" href="' . htmlspecialchars('automation_templates.php?action=movedown&id=' . $dt['id']) . '" title="Move Down"></a>';
 			}else{
-				$form_data = '<img class="action" src="images/view_none.gif" alt="">';
+				$form_data = '<span class="moveArrowNone"></span>';
 			}
 
 			if ($i > 1 && $i <= $total_items) {
-				$form_data .= '<img class="action" href="' . htmlspecialchars('automation_templates.php?action=moveup&id=' . $dt['id']) . '" src="images/move_up.gif" alt="" title="Move Up">';
+				$form_data .= '<a class="pic fa fa-arrow-up moveArrow" href="' . htmlspecialchars('automation_templates.php?action=moveup&id=' . $dt['id']) . '" title="Move Up"></a>';
 			}else{
-				$form_data .= '<img class="action" src="images/view_none.gif" alt="">';
+				$form_data .= '<span class="moveArrowNone"></span>';
 			}
-			$form_data .= '<img class="deleteIcon action" href="' . htmlspecialchars('automation_templates.php?action=remove&id=' . $dt['id']) . '" src="images/delete_icon.gif" alt="" title="Delete">';
+			echo "</td>";
 
-			echo "<td class='nowrap'><div class='right'>" . $form_data . "</div></td>\n";
+			$form_data = '<a class="deleteMarker fa fa-remove" href="' . htmlspecialchars('automation_templates.php?action=remove&id=' . $dt['id']) . '" title="Delete">';
+
+			echo "<td class='right'>" . $form_data . "</td>\n";
 			form_end_row();
 
 			$i++;

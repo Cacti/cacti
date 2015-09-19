@@ -50,12 +50,12 @@ switch ($_REQUEST['action']) {
 	case 'item_movedown':
 		automation_snmp_item_movedown();
 
-		header('Location: automation_snmp.php?header=false&action=edit&header=false&id=' . $_REQUEST['id']);
+		header('Location: automation_snmp.php?action=edit&id=' . $_REQUEST['id']);
 		break;
 	case 'item_moveup':
 		automation_snmp_item_moveup();
 
-		header('Location: automation_snmp.php?header=false&action=edit&header=false&id=' . $_REQUEST['id']);
+		header('Location: automation_snmp.php?action=edit&id=' . $_REQUEST['id']);
 		break;
 	case 'item_remove':
 		automation_snmp_item_remove();
@@ -585,7 +585,7 @@ function automation_snmp_edit() {
 			array('display' => 'Action', 'align' => 'right')
 		);
 
-		html_header($display_text);
+		html_header($display_text, 2);
 
 		print '</tr>';
 
@@ -612,18 +612,22 @@ function automation_snmp_edit() {
 
 				$form_data .= '<td class="nowrap right">';
 				if ($i < $total_items && $total_items > 1) {
-					$form_data .= '<img class="action" href="' . htmlspecialchars('automation_snmp.php?action=item_movedown&item_id=' . $item['id'] . '&id=' . $item['snmp_id']) . '" src="images/move_down.gif" alt="" title="Move Down">';
+					$form_data .= '<a class="pic fa fa-arrow-down moveArrow" href="' . htmlspecialchars('automation_snmp.php?action=item_movedown&item_id=' . $item['id'] . '&id=' . $item['snmp_id']) . '" title="Move Down"></a>';
 				}else{
-					$form_data .= '<img class="action" src="images/view_none.gif" alt="">';
+					$form_data .= '<span class="moveArrowNone"></span>';
 				}
 
 				if ($i > 1 && $i <= $total_items) {
-					$form_data .= '<img class="action" href="' . htmlspecialchars('automation_snmp.php?action=item_moveup&item_id=' . $item['id'] .	'&id=' . $item['snmp_id']) . '" src="images/move_up.gif" alt="Move Up">';
+					$form_data .= '<a class="pic fa fa-arrow-up moveArrow" href="' . htmlspecialchars('automation_snmp.php?action=item_moveup&item_id=' . $item['id'] .	'&id=' . $item['snmp_id']) . '" title="Move Up"></a>';
 				}else{
-					$form_data .= '<img class="action" src="images/view_none.gif" alt="">';
+					$form_data .= '<span class="moveArrowNone"></span>';
 				}
-				$form_data .= '<img class="deleteIcon action" href="' . htmlspecialchars('automation_snmp.php?action=item_remove&item_id=' . $item['id'] .	'&id=' . $item['snmp_id']) . '" src="images/delete_icon.gif" title="Delete" alt="">';
+				$form_data .= '</td>';
+
+				$form_data .= '<td class="nowrap right">';
+				$form_data .= '<a class="pic deleteMarker fa fa-remove" href="' . htmlspecialchars('automation_snmp.php?action=item_remove&item_id=' . $item['id'] .	'&id=' . $item['snmp_id']) . '" title="Delete"></a>';
 				$form_data .= '</td></tr>';
+
 				print $form_data;
 
 				$i++;

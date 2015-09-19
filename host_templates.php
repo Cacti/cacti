@@ -107,7 +107,7 @@ function form_save() {
 			}
 		}
 
-		header('Location: host_templates.php?action=edit&id=' . (empty($host_template_id) ? $_POST['id'] : $host_template_id));
+		header('Location: host_templates.php?header=false&action=edit&id=' . (empty($host_template_id) ? $_POST['id'] : $host_template_id));
 	}
 }
 
@@ -287,7 +287,7 @@ function template_edit() {
 						<strong><?php print $i;?>)</strong> <?php print htmlspecialchars($item['name']);?>
 					</td>
 					<td class='right'>
-						<a href='<?php print htmlspecialchars('host_templates.php?action=item_remove_gt&id=' . $item['id'] . '&host_template_id=' . $_REQUEST['id']);?>'><img class='deleteIcon' src='images/delete_icon.gif' alt='' title='Delete'></a>
+						<a class='deleteMarker fa fa-remove' title='Delete' href='<?php print htmlspecialchars('host_templates.php?action=item_remove_gt&id=' . $item['id'] . '&host_template_id=' . $_REQUEST['id']);?>'></a>
 					</td>
 				<?php
 				form_end_row();
@@ -345,7 +345,7 @@ function template_edit() {
 						<strong><?php print $i;?>)</strong> <?php print htmlspecialchars($item['name']);?>
 					</td>
 					<td class='right'>
-						<a href='<?php print htmlspecialchars('host_templates.php?action=item_remove_dq&id=' . $item['id'] . '&host_template_id=' . $_REQUEST['id']);?>'><img class='deleteIcon' src='images/delete_icon.gif' alt='' title='Delete'></a>
+						<a class='deleteMarker fa fa-remove' title='Delete' href='<?php print htmlspecialchars('host_templates.php?action=item_remove_dq&id=' . $item['id'] . '&host_template_id=' . $_REQUEST['id']);?>'></a>
 					</td>
 				<?php
 				form_end_row();

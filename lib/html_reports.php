@@ -1277,7 +1277,7 @@ function display_reports_items($report_id) {
 
 			$form_data .= '<td align="right" style="text-align:right;min-width:5%;white-space:nowrap;"><a href="' . htmlspecialchars(get_reports_page() . '?action=item_movedown&item_id=' . $item['id'] . '&id=' . $report_id) . '"><img src="images/move_down.gif" alt="" title="Move Down"></a>' . '<a	href="' . htmlspecialchars(get_reports_page() . '?action=item_moveup&item_id=' . $item['id'] .	'&id=' . $report_id) . '"><img src="images/move_up.gif" alt="" title="Move Up"></a>' . '</td>';
 
-			$form_data .= '<td align="right"><a href="' . htmlspecialchars(get_reports_page() . '?action=item_remove&item_id=' . $item['id'] . '&id=' . $report_id) . '"><img class="deleteIcon" src="images/delete_icon.gif" alt="" title="Delete"></a>' . '</td></tr>';
+			$form_data .= '<td align="right"><a class="pid deleteMarker fa fa-remove" href="' . htmlspecialchars(get_reports_page() . '?action=item_remove&item_id=' . $item['id'] . '&id=' . $report_id) . '" title="Delete"></a>' . '</td></tr>';
 			print $form_data;
 		}
 	} else {

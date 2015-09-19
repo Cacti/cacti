@@ -752,75 +752,86 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 
 	$group_counter = 0; $_graph_type_name = ""; $i = 0;
 
-	if (sizeof($item_list) > 0) {
-	foreach ($item_list as $item) {
-		/* graph grouping display logic */
-		$this_row_style = ""; $use_custom_class = false; $hard_return = "";
+	if (sizeof($item_list)) {
+		foreach ($item_list as $item) {
+			/* graph grouping display logic */
+			$this_row_style = ""; $use_custom_class = false; $hard_return = "";
 
-		if ($graph_item_types{$item["graph_type_id"]} != "GPRINT") {
-			$this_row_style = "font-weight: bold;"; $use_custom_class = true;
+			if ($graph_item_types{$item["graph_type_id"]} != "GPRINT") {
+				$this_row_style = "font-weight: bold;"; $use_custom_class = true;
 
-			if ($group_counter % 2 == 0) {
-				$customClass = "graphItem";
-			}else{
-				$customClass = "graphItemAlternate";
+				if ($group_counter % 2 == 0) {
+					$customClass = "graphItem";
+				}else{
+					$customClass = "graphItemAlternate";
+				}
+
+				$group_counter++;
 			}
 
-			$group_counter++;
+			$_graph_type_name = $graph_item_types{$item["graph_type_id"]};
+
+			/* alternating row color */
+			if ($use_custom_class == false) {
+				form_alternate_row();
+			}else{
+				print "<tr class='$customClass'>";
+			}
+
+			print "<td>";
+			if ($disable_controls == false) { print "<a class='linkEditMain' href='" . htmlspecialchars("$filename?action=item_edit&id=" . $item["id"] . "&$url_data") . "'>"; }
+			print "<strong>Item # " . ($i+1) . "</strong>";
+			if ($disable_controls == false) { print "</a>"; }
+			print "</td>\n";
+
+			if (empty($item["data_source_name"])) { $item["data_source_name"] = "No Task"; }
+
+			switch (true) {
+			case preg_match("/(AREA|STACK|GPRINT|LINE[123])/", $_graph_type_name):
+				$matrix_title = "(" . $item["data_source_name"] . "): " . $item["text_format"];
+				break;
+			case preg_match("/(HRULE)/", $_graph_type_name):
+				$matrix_title = "HRULE: " . $item["value"];
+				break;
+			case preg_match("/(VRULE)/", $_graph_type_name):
+				$matrix_title = "VRULE: " . $item["value"];
+				break;
+			case preg_match("/(COMMENT)/", $_graph_type_name):
+				$matrix_title = "COMMENT: " . $item["text_format"];
+				break;
+			}
+
+			if ($item["hard_return"] == "on") {
+				$hard_return = "<strong><font color=\"#FF0000\">&lt;HR&gt;</font></strong>";
+			}
+
+			print "<td style='$this_row_style'>" . htmlspecialchars($matrix_title) . $hard_return . "</td>\n";
+			print "<td style='$this_row_style'>" . $graph_item_types{$item["graph_type_id"]} . "</td>\n";
+			print "<td style='$this_row_style'>" . $consolidation_functions{$item["consolidation_function_id"]} . "</td>\n";
+			print "<td style='width:1%;" . ((!empty($item["hex"])) ? "background-color:#" . $item["hex"] . ";'" : "'") . "></td>\n";
+			print "<td style='$this_row_style'>" . $item["hex"] . "</td>\n";
+
+			if ($disable_controls == false) {
+				print "<td style='text-align:right;padding-right:10px;'>\n";
+				if ($i != sizeof($item_list)-1) {
+					print "<a class='moveArrow fa fa-arrow-down' title='Move Down' href='" . htmlspecialchars("$filename?action=item_movedown&id=" . $item["id"] . "&$url_data") . "'></a>\n";
+				}else{
+					print "<span class='moveArrowNone'></span>\n";
+				}
+				if ($i > 0) {
+					print "<a class='moveArrow fa fa-arrow-up' title='Move Up' href='" . htmlspecialchars("$filename?action=item_moveup&id=" . $item["id"] . "&$url_data") . "'></a>\n";
+				}else{
+					print "<span class='moveArrowNone'></span>\n";
+				}
+				print "</td>\n";
+
+				print "<td style='text-align:right;'><a class='deleteMarker fa fa-remove' title='Delete' href='" . htmlspecialchars("$filename?action=item_remove&id=" . $item["id"] . "&$url_data") . "'></a></td>\n";
+			}
+
+			print "</tr>";
+
+			$i++;
 		}
-
-		$_graph_type_name = $graph_item_types{$item["graph_type_id"]};
-
-		/* alternating row color */
-		if ($use_custom_class == false) {
-			form_alternate_row();
-		}else{
-			print "<tr class='$customClass'>";
-		}
-
-		print "<td>";
-		if ($disable_controls == false) { print "<a class='linkEditMain' href='" . htmlspecialchars("$filename?action=item_edit&id=" . $item["id"] . "&$url_data") . "'>"; }
-		print "<strong>Item # " . ($i+1) . "</strong>";
-		if ($disable_controls == false) { print "</a>"; }
-		print "</td>\n";
-
-		if (empty($item["data_source_name"])) { $item["data_source_name"] = "No Task"; }
-
-		switch (true) {
-		case preg_match("/(AREA|STACK|GPRINT|LINE[123])/", $_graph_type_name):
-			$matrix_title = "(" . $item["data_source_name"] . "): " . $item["text_format"];
-			break;
-		case preg_match("/(HRULE)/", $_graph_type_name):
-			$matrix_title = "HRULE: " . $item["value"];
-			break;
-		case preg_match("/(VRULE)/", $_graph_type_name):
-			$matrix_title = "VRULE: " . $item["value"];
-			break;
-		case preg_match("/(COMMENT)/", $_graph_type_name):
-			$matrix_title = "COMMENT: " . $item["text_format"];
-			break;
-		}
-
-		if ($item["hard_return"] == "on") {
-			$hard_return = "<strong><font color=\"#FF0000\">&lt;HR&gt;</font></strong>";
-		}
-
-		print "<td style='$this_row_style'>" . htmlspecialchars($matrix_title) . $hard_return . "</td>\n";
-		print "<td style='$this_row_style'>" . $graph_item_types{$item["graph_type_id"]} . "</td>\n";
-		print "<td style='$this_row_style'>" . $consolidation_functions{$item["consolidation_function_id"]} . "</td>\n";
-		print "<td style='width:1%;" . ((!empty($item["hex"])) ? "background-color:#" . $item["hex"] . ";'" : "'") . ">&nbsp;</td>\n";
-		print "<td style='$this_row_style'>" . $item["hex"] . "</td>\n";
-
-		if ($disable_controls == false) {
-			print "<td><a href='" . htmlspecialchars("$filename?action=item_movedown&id=" . $item["id"] . "&$url_data") . "'><img src='" . $config['url_path'] . "images/move_down.gif' border='0' alt='Move Down'></a>
-					<a href='" . htmlspecialchars("$filename?action=item_moveup&id=" . $item["id"] . "&$url_data") . "'><img src='" . $config['url_path'] . "images/move_up.gif' border='0' alt='Move Up'></a></td>\n";
-			print "<td align='right'><a href='" . htmlspecialchars("$filename?action=item_remove&id=" . $item["id"] . "&$url_data") . "'><img class='deleteIcon' src='" . $config['url_path'] . "images/delete_icon.gif' alt='' title='Delete'></a></td>\n";
-		}
-
-		print "</tr>";
-
-		$i++;
-	}
 	}else{
 		print "<tr class='tableRow'><td colspan='7'><em>No Items</em></td></tr>";
 	}

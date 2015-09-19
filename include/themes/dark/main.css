@@ -213,8 +213,9 @@ label {
 }
 
 .monoSpace {
-	font-size:9px;
+	font-size:10px;
 	font-family: monospace;
+	color: snow;
 }
 
 .utilityPick {
@@ -324,13 +325,13 @@ label {
 }
 
 .even {
-	background: none repeat scroll 0 0 #181818;
+	background: none repeat scroll 0 0 #0F0F0F;
     border: none;
     box-shadow: 0 0 1px rgba(0, 0, 0, 0.1);
 }
 
 .even-alternate {
-	background: none repeat scroll 0 0 #181818;
+	background: none repeat scroll 0 0 #0F0F0F;
     border: none;
     box-shadow: 0 0 1px rgba(0, 0, 0, 0.1);
 }
@@ -414,7 +415,7 @@ label {
 }
 
 .cactiGraphPageHeadBackdrop {
-	background: transparent url('./images/cacti_backdrop2.gif') no-repeat center right;
+	background: transparent url("./images/cacti_logo.svg") no-repeat scroll left 40% / 380px auto;
 	padding-bottom: 0px;
 	float:right;
 	width:400px;
@@ -424,13 +425,8 @@ label {
 	right:0px;
 }
 
-.loginLogo {
-	background: url('./../../../images/auth_login.gif') no-repeat center center;
-	padding-right:40px;
-}
-
 .cactiConsolePageHeadBackdrop {
-	background: transparent url('./images/cacti_backdrop.gif') no-repeat center right;
+	background: transparent url("./images/cacti_logo.svg") no-repeat scroll left 40% / 380px auto;
 	padding-bottom:0px;
 	float:right;
 	width:400px;
@@ -452,7 +448,7 @@ label {
 	width:100%;
 	position:fixed;
 	padding:4px;
-	top:30px;
+	top:29px;
 	left:0px;
 	z-index:4;
 	background: rgba(76,76,76,1);
@@ -613,12 +609,12 @@ ul#breadcrumbs {
 }
 
 .cactiLogo {
-	background: #161616 url('./../../../images/cacti_logo.gif') no-repeat 40px;
+	background: #161616 url('./images/cacti_logo.svg') no-repeat 30px;
 	display:block;
 	cursor:pointer;
-	padding-bottom:140px;
+	padding-bottom:178px;
 	margin-bottom:60px;
-	width:156px;
+	width:146px;
 	margin-top:-6px;
 	margin-left:2px;
 	margin-right:2px;
@@ -652,13 +648,12 @@ ul#breadcrumbs {
 .cactiLoginLogo, .cactiLogoutLogo {
 	position:relative;
 	float:right;
-	top:30%;
-	background: transparent url('./../../../images/cacti_logo_new.gif') no-repeat center;
-	width:90px;
-	height:128px;
+	background: transparent url('./images/cacti_logo.svg') no-repeat center;
+	width:120px;
+	height:148px;
 	z-index:2;
-	margin-top:-90px;
-	margin-left:255px;
+	margin-top:-95px;
+	margin-left:240px;
 	margin-bottom:-20px;
 }
 
@@ -794,8 +789,8 @@ legend {
 
 .textInfo {
 	font-size: 12px;
-	font-weight: normal;
-	color: black;
+	font-weight: bold;
+	color: snow;
 }
 
 .textHeader {
@@ -814,8 +809,9 @@ legend {
 .messageBox {
 	margin-bottom:5px;
 	padding:5px;
-	background-color:snow;
-	border:1px solid #BBBBBB;
+	color: snow;
+	background-color: #161616;
+	border:1px solid #161616;
 	max-width:100%;
 	position:relative;
 	z-index: 6;
@@ -875,6 +871,13 @@ legend {
 
 .filterTable td:first-child {
 	width:55px;
+}
+
+.formItemDescription {
+}
+
+.formItemName {
+	color:snow;
 }
 
 .graphItem {
@@ -1103,7 +1106,29 @@ th.sortable {
 }
 
 .deleteMarker {
-	padding-bottom: 9px !important;
+	color: red !important;
+	height: 14px !important;
+	vertical-align: middle;
+	text-decoration: none !important;
+}
+
+.deleteMarker:hover {
+	text-decoration: none !important;
+}
+
+.moveArrow {
+	color: #00438C !important;
+	height: 14px !important;
+	vertical-align: middle;
+	text-decoration: none !important;
+}
+
+.moveArrow:hover {
+	text-decoration: none !important;
+}
+
+.moveArrowNone {
+	padding-left:15px;
 }
 
 td.tab {
@@ -1121,16 +1146,13 @@ td.tab {
 }
 
 div#tabs {
-	padding-bottom: 0px;
 	vertical-align: bottom;
 	position: fixed;
-	left: 5px;
 	top: 5px;
-	height: 30px;
 }
 
 .cactiGraphHeaderBackground {
-	background: transparent url("./images/cacti_backdrop2.gif") no-repeat scroll left center;
+	background: transparent url("./images/cacti_logo.svg") no-repeat scroll left 10% / 380px auto;
 	height: 35px;
 	width:500px;
 	float:right;
@@ -1154,7 +1176,7 @@ div#gtabs {
 	background: #222222 url("images/ui-bg_highlight-soft_35_222222_1x100.png") repeat-x scroll 50% 50%;
 	color:snow;
 	float:left !important;
-	padding:5px 8px;
+	padding:5px;
 	text-decoration:none;
 	font-size: 11px;
 	vertical-align:bottom;
@@ -1166,7 +1188,7 @@ div#gtabs {
 }
 
 .tabs a.selected, .maintabs a.selected {
-	background: #31442b url("/themeroller/images/ui-bg_highlight-hard_20_31442b_1x100.png") repeat-x scroll 50% 50%;
+	background: #31442b url("images/ui-bg_highlight-hard_20_31442b_1x100.png") repeat-x scroll 50% 50%;
 }
 
 .tabs li, .maintabs li {
@@ -1185,7 +1207,6 @@ div#gtabs {
 	border-bottom:1px solid #fff;
 }
 .tabs nav, .maintabs nav {
-	border-bottom:1px solid #155413;
 	padding:0 0 0 4px;
 	zoom:1;
 }

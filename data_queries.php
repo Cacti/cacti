@@ -525,21 +525,21 @@ function data_query_item_edit() {
 				</td>
 				<td style='width:40px;text-align:center;'>
 					<?php if ($show_down) {?>
-					<span class='remover' href='<?php print htmlspecialchars('data_queries.php?action=item_movedown_gsv&snmp_query_graph_id=' . $_REQUEST['id'] . '&id=' . $suggested_value['id'] . '&snmp_query_id=' . $_REQUEST['snmp_query_id'] . '&field_name=' . $suggested_value['field_name']);?>'><img class='remover' src='images/move_down.gif' alt='' title='Move Down'></span>
+					<span class='remover fa fa-arrow-down moveArrow' title='Move Down' href='<?php print htmlspecialchars('data_queries.php?action=item_movedown_gsv&snmp_query_graph_id=' . $_REQUEST['id'] . '&id=' . $suggested_value['id'] . '&snmp_query_id=' . $_REQUEST['snmp_query_id'] . '&field_name=' . $suggested_value['field_name']);?>'></span>
 					<?php }else{?>
-					<img src='images/view_none.gif' alt=''/>
+					<span class='moveArrowNone'></span>
 					<?php } ?>
 					<?php if ($show_up) {?>
-					<span class='remover' href='<?php print htmlspecialchars('data_queries.php?action=item_moveup_gsv&snmp_query_graph_id=' . $_REQUEST['id'] . '&id=' . $suggested_value['id'] . '&snmp_query_id=' . $_REQUEST['snmp_query_id'] . '&field_name=' . $suggested_value['field_name']);?>'><img class='remover' src='images/move_up.gif' alt='' title='Move Up'></span>
+					<span class='remover fa fa-arrow-up moveArrow' title='Move Up' href='<?php print htmlspecialchars('data_queries.php?action=item_moveup_gsv&snmp_query_graph_id=' . $_REQUEST['id'] . '&id=' . $suggested_value['id'] . '&snmp_query_id=' . $_REQUEST['snmp_query_id'] . '&field_name=' . $suggested_value['field_name']);?>'></span>
 					<?php }else{?>
-					<img src='images/view_none.gif' alt=''/>
+					<span class='moveArrowNone'></span>
 					<?php } ?>
 				</td>
 				<td>
 					<?php print htmlspecialchars($suggested_value['text']);?>
 				</td>
 				<td align='right'>
-					<span class='remover' href='<?php print htmlspecialchars('data_queries.php?action=item_remove_gsv&snmp_query_graph_id=' . $_REQUEST['id'] . '&id=' . $suggested_value['id'] . '&snmp_query_id=' . $_REQUEST['snmp_query_id']);?>'><img class='deleteIcon' src='images/delete_icon.gif' alt='' title='Delete'></span>
+					<span class='remover deleteMarker fa fa-remove' titel='Delete' href='<?php print htmlspecialchars('data_queries.php?action=item_remove_gsv&snmp_query_graph_id=' . $_REQUEST['id'] . '&id=' . $suggested_value['id'] . '&snmp_query_id=' . $_REQUEST['snmp_query_id']);?>'></span>
 				</td>
 				<?php
 
@@ -618,21 +618,21 @@ function data_query_item_edit() {
 					</td>
 					<td style='width:40;text-align:center;'>
 						<?php if ($show_down) {?>
-						<span class='remover' href='<?php print htmlspecialchars('data_queries.php?action=item_movedown_dssv&snmp_query_graph_id=' . $_REQUEST['id'] . '&id='. $suggested_value['id'] . '&snmp_query_id=' . $_REQUEST['snmp_query_id'] . '&data_template_id=' . $data_template['id'] . '&field_name=' . $suggested_value['field_name']);?>'><img class='remover' src='images/move_down.gif' alt='' title='Move Down'></span>
+						<span class='remover fa fa-arrow-down moveArrow' title='Move Down' href='<?php print htmlspecialchars('data_queries.php?action=item_movedown_dssv&snmp_query_graph_id=' . $_REQUEST['id'] . '&id='. $suggested_value['id'] . '&snmp_query_id=' . $_REQUEST['snmp_query_id'] . '&data_template_id=' . $data_template['id'] . '&field_name=' . $suggested_value['field_name']);?>'></span>
 						<?php }else{?>
-						<img src='images/view_none.gif' alt=''/>
+						<span class='moveArrowNone'></span>
 						<?php } ?>
 						<?php if ($show_up) {?>
-						<span class='remover' href='<?php print htmlspecialchars('data_queries.php?action=item_moveup_dssv&snmp_query_graph_id=' . $_REQUEST['id'] . '&id=' . $suggested_value['id'] . '&snmp_query_id=' . $_REQUEST['snmp_query_id'] . '&data_template_id=' . $data_template['id'] . '&field_name=' . $suggested_value['field_name']);?>'><img class='remover' src='images/move_up.gif' alt='' title='Move Up'></span>
+						<span class='remover fa fa-arrow-up moveArrow' title='Move Up' href='<?php print htmlspecialchars('data_queries.php?action=item_moveup_dssv&snmp_query_graph_id=' . $_REQUEST['id'] . '&id=' . $suggested_value['id'] . '&snmp_query_id=' . $_REQUEST['snmp_query_id'] . '&data_template_id=' . $data_template['id'] . '&field_name=' . $suggested_value['field_name']);?>'></span>
 						<?php }else{?>
-						<img src='images/view_none.gif' alt=''/>
+						<span class='moveArrowNone'></span>
 						<?php } ?>
 					</td>
 					<td class='nowrap'>
 						<?php print htmlspecialchars($suggested_value['text']);?>
 					</td>
 					<td align='right'>
-						<span class='remover' href='<?php print htmlspecialchars('data_queries.php?action=item_remove_dssv&snmp_query_graph_id=' . $_REQUEST['id'] . '&id=' . $suggested_value['id'] . '&snmp_query_id=' . $_REQUEST['snmp_query_id'] . '&data_template_id=' . $data_template['id']);?>'><img class='deleteIcon' src='images/delete_icon.gif' alt='' title='Delete'></span>
+						<span class='remover deleteMarker fa fa-remove' title='Delete' href='<?php print htmlspecialchars('data_queries.php?action=item_remove_dssv&snmp_query_graph_id=' . $_REQUEST['id'] . '&id=' . $suggested_value['id'] . '&snmp_query_id=' . $_REQUEST['snmp_query_id'] . '&data_template_id=' . $data_template['id']);?>'></span>
 					</td>
 					<?php
 
@@ -823,7 +823,7 @@ function data_query_edit() {
 							<?php print $snmp_query_graph['id'];?>
 						</td>
 						<td class='right'>
-							<a href='<?php print htmlspecialchars('data_queries.php?action=item_remove&id=' . $snmp_query_graph['id'] . '&snmp_query_id=' . $snmp_query['id']);?>'><img class='deleteIcon' src="images/delete_icon.gif" alt="" title="Delete"></a>
+							<a class='deleteMarker fa fa-remove' title='Delete' href='<?php print htmlspecialchars('data_queries.php?action=item_remove&id=' . $snmp_query_graph['id'] . '&snmp_query_id=' . $snmp_query['id']);?>'></a>
 						</td>
 					</tr>
 					<?php

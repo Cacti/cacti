@@ -399,7 +399,7 @@ label {
 }
 
 .cactiGraphPageHeadBackdrop {
-	background: transparent url('./../../../images/cacti_backdrop2.gif') no-repeat center right;
+	background: transparent url("./images/cacti_logo.svg") no-repeat scroll left 40% / 380px auto;
 	padding-bottom: 0px;
 	float:right;
 	width:400px;
@@ -409,13 +409,8 @@ label {
 	right:0px;
 }
 
-.loginLogo {
-	background: url('./../../../images/auth_login.gif') no-repeat center center;
-	padding-right:40px;
-}
-
 .cactiConsolePageHeadBackdrop {
-	background: transparent url('./../../../images/cacti_backdrop.gif') no-repeat center right;
+	background: transparent url("./images/cacti_logo.svg") no-repeat scroll left 40% / 380px auto;
 	padding-bottom:0px;
 	float:right;
 	width:400px;
@@ -599,7 +594,7 @@ ul#breadcrumbs {
 }
 
 .cactiLogo {
-	background: #efefef url('./../../../images/cacti_logo.gif') no-repeat 40px;
+	background: #efefef url('./images/cacti_logo.svg') no-repeat 30px;
 	display:block;
 	cursor:pointer;
 	padding-bottom:140px;
@@ -640,13 +635,12 @@ ul#breadcrumbs {
 .cactiLoginLogo, .cactiLogoutLogo {
 	position:relative;
 	float:right;
-	top:30%;
-	background: transparent url('./../../../images/cacti_logo_new.gif') no-repeat center;
-	width:90px;
-	height:128px;
+	background: transparent url('./images/cacti_logo.svg') no-repeat center;
+	width:120px;
+	height:148px;
 	z-index:2;
-	margin-top:-90px;
-	margin-left:255px;
+	margin-top:-95px;
+	margin-left:240px;
 	margin-bottom:-20px;
 }
 
@@ -874,6 +868,13 @@ legend {
 	width:55px;
 }
 
+.formItemDescription {
+}
+
+.formItemName {
+	font-weight:bold;
+}
+
 .graphItem {
 	background-color: #D5D5D5;
 }
@@ -1099,7 +1100,29 @@ th.sortable {
 }
 
 .deleteMarker {
-	padding-bottom: 9px !important;
+	color: red !important;
+	height: 14px !important;
+	vertical-align: middle;
+	text-decoration: none !important;
+}
+
+.deleteMarker:hover {
+	text-decoration: none !important;
+}
+
+.moveArrow {
+	color: #00438C !important;
+	height: 14px !important;
+	vertical-align: middle;
+	text-decoration: none !important;
+}
+
+.moveArrow:hover {
+	text-decoration: none !important;
+}
+
+.moveArrowNone {
+	padding-left:15px;
 }
 
 td.tab {
@@ -1126,7 +1149,7 @@ div#tabs {
 }
 
 .cactiGraphHeaderBackground {
-	background: transparent url("./../../../images/cacti_backdrop2.gif") no-repeat scroll right center;
+	background: transparent url("./images/cacti_logo.svg") no-repeat scroll left 10% / 380px auto;
 	height: 35px;
 	width:500px;
 	float:right;
@@ -1157,7 +1180,7 @@ div#gtabs {
 	border-color:#eee #ccc #ccc #eee;
 	color:#333;
 	float:left !important;
-	padding:5px 8px;
+	padding:5px;
 	text-decoration:none;
 	font-size: 11px;
 	vertical-align:bottom;

@@ -70,46 +70,62 @@ function draw_color_template_items_list($item_list, $filename, $url_data, $disab
 	global $config;
 	global $struct_color_template_item;
 
-	print "<tr class='tableHeader'>\n";
-		DrawMatrixHeaderItem('Color Item', '' , 1);
-		DrawMatrixHeaderItem('Seq', '', 1);
-		DrawMatrixHeaderItem('Item Color', '', 2);
-		DrawMatrixHeaderItem('Actions', '', 2);
-	print '</tr>';
+	$display_text = array(
+		array('display' => 'Color Item', 'align' => 'left'),
+		array('display' => 'Item Color', 'align' => 'left'),
+	);
 
-	$group_counter = 0; $_graph_type_name = ''; $i = 0;
+	html_header($display_text, 4);
 
-	if (sizeof($item_list) > 0) {
-	foreach ($item_list as $item) {
-		/* color grouping display logic */
-		$this_row_style = ''; $use_custom_row_color = false; $hard_return = '';
+	$i = 0;
 
-		/* alternating row color */
-		form_alternate_row();
+	if (sizeof($item_list)) {
+		foreach ($item_list as $item) {
+			/* alternating row color */
+			form_alternate_row();
 
-		# print item no.
-		print '<td>';
-		if ($disable_controls == false) { print "<a class='linkEditMain' href='" . htmlspecialchars($filename . '?action=item_edit&color_template_item_id=' . $item['color_template_item_id'] . "&$url_data") . "'>"; }
-		print '<strong>Item # ' . ($i+1) . '</strong>';
-		if ($disable_controls == false) { print '</a>'; }
-		print "</td>\n";
+			print '<td>';
 
-		# print function
+			if ($disable_controls == false) { 
+				print "<a class='linkEditMain' href='" . htmlspecialchars($filename . '?action=item_edit&color_template_item_id=' . $item['color_template_item_id'] . "&$url_data") . "'>"; 
+			}
 
-		print "<td style='$this_row_style'>" . $item['sequence'] . "</td>\n";
-		print '<td style="width:5%;' . ((isset($item['hex'])) ? "background-color:#" . $item['hex'] . ";'" : '') . ">&nbsp;</td>\n";
-		print "<td style='$this_row_style'>" . $item['hex'] . "</td>\n";
+			print '<strong>Item # ' . ($i+1) . '</strong>';
 
-		if ($disable_controls == false) {
-			print "<td><a href='" . htmlspecialchars($filename . "?action=item_movedown&color_template_item_id=" . $item['color_template_item_id'] . "&$url_data") . "'><img src='images/move_down.gif' alt='' title='Move Down'></a>
-					<a href='" . htmlspecialchars($filename . "?action=item_moveup&color_template_item_id=" . $item['color_template_item_id'] . "&$url_data") . "'><img src='images/move_up.gif' alt='' title='Move Up'></a></td>\n";
-			print "<td align='right'><a href='" . htmlspecialchars($filename . "?action=item_remove&color_template_item_id=" . $item['color_template_item_id'] . "&$url_data") . "'><img class='deleteIcon' src='images/delete_icon.gif' alt='' title='Delete'></a></td>\n";
+			if ($disable_controls == false) { 
+				print '</a>'; 
+			}
+
+			print "</td>\n";
+
+			print "<td style='width:1%;" . ((isset($item['hex'])) ? "background-color:#" . $item['hex'] . ";'" : "") . "></td>\n";
+
+			print "<td style='font-weight:bold;'>" . $item['hex'] . "</td>\n";
+
+			if ($disable_controls == false) {
+				print "<td class='right' style='padding-right:10px;'>";
+				if ($i != sizeof($item_list)-1) {
+					print "<a class='pic fa fa-arrow-down moveArrow' href='" . htmlspecialchars($filename . "?action=item_movedown&color_template_item_id=" . $item['color_template_item_id'] . "&$url_data") . "' title='Move Down'></a>\n";
+				}else{
+					print "<span class='moveArrowNone'></span>\n";
+				}
+
+				if ($i > 0) {
+					print "<a class='pic fa fa-arrow-up moveArrow' href='" . htmlspecialchars($filename . "?action=item_moveup&color_template_item_id=" . $item['color_template_item_id'] . "&$url_data") . "' title='Move Up'></a>\n";
+				}else{
+					print "<span class='moveArrowNone'></span>\n";
+				}
+				print "</td>\n";
+			}
+
+			if ($disable_controls == false) {
+				print "<td class='right' style='width:2%;'><a class='pic deleteMarker fa fa-remove' href='" . htmlspecialchars($filename . "?action=item_remove&color_template_item_id=" . $item['color_template_item_id'] . "&$url_data") . "' title='Delete'></a></td>\n";
+			}
+
+			form_end_row();
+
+			$i++;
 		}
-
-		print '</tr>';
-
-		$i++;
-	}
 	}else{
 		print "<tr><td colspan='7'><em>No Items</em></td></tr>";
 	}
@@ -146,11 +162,7 @@ function aggregate_color_form_save() {
 		}
 	}
 
-	if ((is_error_message()) || (empty($_POST['color_template_id']))) {
-		header('Location: color_templates.php?header=false&action=template_edit&color_template_id=' . (empty($color_template_id) ? $_POST['color_template_id'] : $color_template_id));
-	}else{
-		header('Location: color_templates.php?header=false');
-	}
+	header('Location: color_templates.php?header=false&action=template_edit&color_template_id=' . (empty($color_template_id) ? $_POST['color_template_id'] : $color_template_id));
 }
 
 /* ------------------------

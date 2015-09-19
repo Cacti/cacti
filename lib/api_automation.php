@@ -119,7 +119,7 @@ function display_matching_hosts($rule, $rule_type, $url) {
 	</script>
 	<?php
 
-	html_start_box('<strong>Matching Devices</strong>', '100%', '', '3', 'center', '');
+	html_start_box('Matching Devices', '100%', '', '3', 'center', '');
 
 	?>
 	<tr class='even'>
@@ -404,7 +404,7 @@ function display_matching_graphs($rule, $rule_type, $url) {
 	</script>
 	<?php
 
-	html_start_box('<strong>Matching Graphs</strong>', '100%', '', '3', 'center', '');
+	html_start_box('Matching Graphs', '100%', '', '3', 'center', '');
 
 	?>
 	<tr class='even'>
@@ -661,7 +661,7 @@ function display_new_graphs($rule) {
 		$total_rows = 0;
 	}
 
-	html_start_box('<strong>Data Queries</strong> [ ' . $snmp_query['name'] . ']', '100%', '', '3', 'center', '');
+	html_start_box('Data Queries [ ' . $snmp_query['name'] . ']', '100%', '', '3', 'center', '');
 
 	if ($xml_array != false) {
 		$html_dq_header = '';
@@ -884,7 +884,7 @@ function display_matching_trees ($rule_id, $rule_type, $item, $url) {
 
 	print "<form method='post' id='form_automation_tree' action='" . htmlspecialchars($url) . "'>";
 
-	html_start_box('<strong>Matching Items</strong>', '100%', '', '3', 'center', '');
+	html_start_box('Matching Items', '100%', '', '3', 'center', '');
 
 	?>
 	<tr class='even'>
@@ -1107,37 +1107,55 @@ function display_match_rule_items($title, $rule_id, $rule_type, $module) {
 		AND rule_type=$rule_type 
 		ORDER BY sequence");
 
-	html_start_box("<strong>$title</strong>", '100%', '', '3', 'center', $module . '?action=item_edit&id=' . $rule_id . '&rule_type=' . $rule_type);
+	html_start_box("$title", '100%', '', '3', 'center', $module . '?action=item_edit&id=' . $rule_id . '&rule_type=' . $rule_type);
 
-	html_header(array('Item', 'Sequence', 'Operation', 'Field', 'Operator', 'Pattern', 'Actions'), 2, false);
+	$display_text = array(
+		array('display' => 'Item', 'align' => 'left'),
+		array('display' => 'Sequence', 'align' => 'left'),
+		array('display' => 'Operation', 'align' => 'left'),
+		array('display' => 'Field', 'align' => 'left'),
+		array('display' => 'Operator', 'align' => 'left'),
+		array('display' => 'Pattern', 'align' => 'left'),
+		array('display' => 'Actions', 'align' => 'right')
+	);
+
+	html_header($display_text, 2, false);
 
 	$i = 0;
 	if (sizeof($items)) {
 		foreach ($items as $item) {
 			$operation = ($item['operation'] != 0) ? $automation_oper{$item['operation']} : '&nbsp;';
 
-			form_alternate_row(); $i++;
-			$form_data = '<td><a class="linkEditMain" href="' . htmlspecialchars($module . '?action=item_edit&id=' . $rule_id. '&item_id=' . $item['id'] . '&rule_type=' . $rule_type) . '">Item#' . $i . '</a></td>';
+			form_alternate_row();
+			$form_data = '<td><a class="linkEditMain" href="' . htmlspecialchars($module . '?action=item_edit&id=' . $rule_id. '&item_id=' . $item['id'] . '&rule_type=' . $rule_type) . '">Item#' . ($i+1) . '</a></td>';
 			$form_data .= '<td>' . 	$item['sequence'] . '</td>';
 			$form_data .= '<td>' . 	$operation . '</td>';
 			$form_data .= '<td>' . 	$item['field'] . '</td>';
 			$form_data .= '<td>' . 	((isset($item['operator']) && $item['operator'] > 0) ? $automation_op_array['display']{$item['operator']} : '') . '</td>';
 			$form_data .= '<td>' . 	$item['pattern'] . '</td>';
-			$form_data .= '<td class="nowrap">
-				<a href="' . htmlspecialchars($module . '?action=item_movedown&item_id=' . $item['id'] . '&id=' . $rule_id . '&rule_type=' . $rule_type) . '">
-					<img src="images/move_down.gif" alt="" title="Move Down">
-				</a>
-				<a href="' . htmlspecialchars($module . '?action=item_moveup&item_id=' . $item['id'] .	'&id=' . $rule_id .	'&rule_type=' . $rule_type) . '">
-					<img src="images/move_up.gif" alt="" title="Move Up">
-				</a></td>';
 
-			$form_data .= '<td class="nowrap" style="text-align:right;">
-				<a href="' . htmlspecialchars($module . '?action=item_remove&item_id=' . $item['id'] .	'&id=' . $rule_id .	'&rule_type=' . $rule_type) . '">
-					<img class="deleteIcon" src="images/delete_icon.gif" alt="" title="Delete">
-				</a></td>
+			$form_data .= '<td class="right">';
+
+			if ($i != sizeof($items)-1) {
+				$form_data .= '<a class="pic fa fa-arrow-down moveArrow" href="' . htmlspecialchars($module . '?action=item_movedown&item_id=' . $item['id'] . '&id=' . $rule_id . '&rule_type=' . $rule_type) . '" title="Move Down"></a>';
+			}else{
+				$form_data .= '<span class="moveArrowNone"></span>';
+			}
+
+			if ($i > 0) {
+				$form_data .= '<a class="pic fa fa-arrow-up moveArrow" href="' . htmlspecialchars($module . '?action=item_moveup&item_id=' . $item['id'] .	'&id=' . $rule_id .	'&rule_type=' . $rule_type) . '" title="Move Up"></a>';
+			}else{
+				$form_data .= '<span class="moveArrowNone"></span>';
+			}
+			$form_data .= '</td>';
+
+			$form_data .= '<td style="width:1%;">
+				<a class="pid deleteMarker fa fa-remove" href="' . htmlspecialchars($module . '?action=item_remove&item_id=' . $item['id'] .	'&id=' . $rule_id .	'&rule_type=' . $rule_type) . '" title="Delete"></a></td>
 			</tr>';
 
 			print $form_data;
+
+			$i++;
 		}
 	} else {
 		print "<tr><td colspan='7'><em>No Device Selection Criteria</em></td></tr>\n";
@@ -1151,7 +1169,7 @@ function display_graph_rule_items($title, $rule_id, $rule_type, $module) {
 
 	$items = db_fetch_assoc("SELECT * FROM automation_graph_rule_items WHERE rule_id=$rule_id ORDER BY sequence");
 
-	html_start_box("<strong>$title</strong>", '100%', '', '3', 'center', $module . '?action=item_edit&id=' . $rule_id . '&rule_type=' . $rule_type);
+	html_start_box("$title", '100%', '', '3', 'center', $module . '?action=item_edit&id=' . $rule_id . '&rule_type=' . $rule_type);
 
 	html_header(array('Item', 'Sequence', 'Operation', 'Field', 'Operator', 'Pattern', 'Actions'), 2, false);
 
@@ -1161,25 +1179,31 @@ function display_graph_rule_items($title, $rule_id, $rule_type, $module) {
 			#print '<pre>'; print_r($item); print '</pre>';
 			$operation = ($item['operation'] != 0) ? $automation_oper{$item['operation']} : '&nbsp;';
 
-			form_alternate_row(); $i++;
-			$form_data = '<td><a class="linkEditMain" href="' . htmlspecialchars($module . '?action=item_edit&id=' . $rule_id. '&item_id=' . $item['id'] . '&rule_type=' . $rule_type) . '">Item#' . $i . '</a></td>';
+			form_alternate_row();
+			$form_data = '<td><a class="linkEditMain" href="' . htmlspecialchars($module . '?action=item_edit&id=' . $rule_id. '&item_id=' . $item['id'] . '&rule_type=' . $rule_type) . '">Item#' . ($i+1) . '</a></td>';
 			$form_data .= '<td>' . 	$item['sequence'] . '</td>';
 			$form_data .= '<td>' . 	$operation . '</td>';
 			$form_data .= '<td>' . 	$item['field'] . '</td>';
 			$form_data .= '<td>' . 	(($item['operator'] > 0 || $item['operator'] == '') ? $automation_op_array['display']{$item['operator']} : '') . '</td>';
 			$form_data .= '<td>' . 	$item['pattern'] . '</td>';
-			$form_data .= '<td class="nowrap">
-				<a href="' . htmlspecialchars($module . '?action=item_movedown&item_id=' . $item['id'] . '&id=' . $rule_id .	'&rule_type=' . $rule_type) . '">
-					<img src="images/move_down.gif" alt="" title="Move Down">
-				</a>
-				<a href="' . htmlspecialchars($module . '?action=item_moveup&item_id=' . $item['id'] .	'&id=' . $rule_id .	'&rule_type=' . $rule_type) . '">
-					<img src="images/move_up.gif" alt="" title="Move Up">
-				</a></td>';
 
-			$form_data .= '<td class="nowrap" style="text-align:right;">
-				<a href="' . htmlspecialchars($module . '?action=item_remove&item_id=' . $item['id'] .	'&id=' . $rule_id .	'&rule_type=' . $rule_type) . '">
-					<img class="deleteIcon" src="images/delete_icon.gif" alt="" title="Delete">
-				</a></td>
+			$form_data .= '<td class="right">';
+
+			if ($i != sizeof($items)-1) {
+				$form_data .= '<a class="pic fa fa-awwow-down moveArrow" href="' . htmlspecialchars($module . '?action=item_movedown&item_id=' . $item['id'] . '&id=' . $rule_id .	'&rule_type=' . $rule_type) . '" title="Move Down"></a>';
+			}else{
+				$form_data .= '<span class="moveArrowNone"></span>';
+			}
+
+			if ($i > 0) {
+				$form_data .= '<a class="pic fa fa-arrow-up moveArrow" href="' . htmlspecialchars($module . '?action=item_moveup&item_id=' . $item['id'] .	'&id=' . $rule_id .	'&rule_type=' . $rule_type) . '" title="Move Up"></a>';
+			}else{
+				$form_data .= '<span class="moveArrowNone"></span>';
+			}
+			$form_data .= '</td>';
+
+			$form_data .= '<td style="width:1%;">
+				<a class="pic deleteMarker fa fa-remove" href="' . htmlspecialchars($module . '?action=item_remove&item_id=' . $item['id'] .	'&id=' . $rule_id .	'&rule_type=' . $rule_type) . '" title="Delete"></a></td>
 			</tr>';
 
 			print $form_data;
@@ -1197,9 +1221,20 @@ function display_tree_rule_items($title, $rule_id, $item_type, $rule_type, $modu
 
 	$items = db_fetch_assoc("SELECT * FROM automation_tree_rule_items WHERE rule_id=$rule_id ORDER BY sequence");
 
-	html_start_box("<strong>$title</strong>", '100%', '', '3', 'center', $module . '?action=item_edit&id=' . $rule_id . '&rule_type=' . $rule_type);
+	html_start_box("$title", '100%', '', '3', 'center', $module . '?action=item_edit&id=' . $rule_id . '&rule_type=' . $rule_type);
 
-	html_header(array('Item', 'Sequence', 'Field Name', 'Sorting Type', 'Propagate Changes', 'Search Pattern', 'Replace Pattern', 'Actions'), 2, false);
+	$display_text = array(
+		array('display' => 'Item', 'align' => 'left'),
+		array('display' => 'Sequence', 'align' => 'left'),
+		array('display' => 'Field Name', 'align' => 'left'),
+		array('display' => 'Sorting Type', 'align' => 'left'),
+		array('display' => 'Propagate Change', 'align' => 'left'),
+		array('display' => 'Search Pattern', 'align' => 'left'),
+		array('display' => 'Replace Pattern', 'align' => 'left'),
+		array('display' => 'Actions', 'align' => 'right')
+	);
+
+	html_header($display_text, 2, false);
 
 	$i = 0;
 	if (sizeof($items)) {
@@ -1207,29 +1242,36 @@ function display_tree_rule_items($title, $rule_id, $item_type, $rule_type, $modu
 			#print '<pre>'; print_r($item); print '</pre>';
 			$field_name = ($item['field'] === AUTOMATION_TREE_ITEM_TYPE_STRING) ? $automation_tree_header_types[AUTOMATION_TREE_ITEM_TYPE_STRING] : $item['field'];
 
-			form_alternate_row(); $i++;
-			$form_data = '<td><a class="linkEditMain" href="' . htmlspecialchars($module . '?action=item_edit&id=' . $rule_id. '&item_id=' . $item['id'] . '&rule_type=' . $rule_type) . '">Item#' . $i . '</a></td>';
+			form_alternate_row(); 
+			$form_data = '<td><a class="linkEditMain" href="' . htmlspecialchars($module . '?action=item_edit&id=' . $rule_id. '&item_id=' . $item['id'] . '&rule_type=' . $rule_type) . '">Item#' . ($i+1) . '</a></td>';
 			$form_data .= '<td>' . 	$item['sequence'] . '</td>';
 			$form_data .= '<td>' . 	$field_name . '</td>';
 			$form_data .= '<td>' . 	$tree_sort_types{$item['sort_type']} . '</td>';
 			$form_data .= '<td>' . 	($item['propagate_changes'] ? 'Yes' : 'No') . '</td>';
 			$form_data .= '<td>' . 	$item['search_pattern'] . '</td>';
 			$form_data .= '<td>' . 	$item['replace_pattern'] . '</td>';
-			$form_data .= '<td class="nowrap">
-				<a href="' . htmlspecialchars($module . '?action=item_movedown&item_id=' . $item['id'] . '&id=' . $rule_id .	'&rule_type=' . $rule_type) . '">
-					<img src="images/move_down.gif" alt="" title="Move Down">
-				</a>
-				<a href="' . htmlspecialchars($module . '?action=item_moveup&item_id=' . $item['id'] .	'&id=' . $rule_id .	'&rule_type=' . $rule_type) . '">
-					<img src="images/move_up.gif" alt="" title="Move Up">
-				</a></td>';
 
-			$form_data .= '<td class="nowrap" style="text-align:right;">
-				<a href="' . htmlspecialchars($module . '?action=item_remove&item_id=' . $item['id'] .	'&id=' . $rule_id .	'&rule_type=' . $rule_type) . '">
-					<img class="deleteIcon" src="images/delete_icon.gif" alt="" title="Delete">
-				</a></td>
+			$form_data .= '<td class="right">';
+			if ($i != sizeof($items)-1) {
+				$form_data .= '<a class="pic fa fa-arrow-down moveArrow" href="' . htmlspecialchars($module . '?action=item_movedown&item_id=' . $item['id'] . '&id=' . $rule_id .	'&rule_type=' . $rule_type) . '" title="Move Down"></a>';
+			}else{
+				$form_data .= '<span class="moveArrowNone"></span>';
+			}
+
+			if ($i > 0) {
+				$form_data .= '<a class="pic fa fa-arrow-up moveArrow" href="' . htmlspecialchars($module . '?action=item_moveup&item_id=' . $item['id'] .	'&id=' . $rule_id .	'&rule_type=' . $rule_type) . '" title="Move Up"></a>';
+			}else{
+				$form_data .= '<span class="moveArrowNone"></span>';
+			}
+			$form_data .= '</td>';
+
+			$form_data .= '<td style="width:1%;">
+				<a class="pic deleteMarker fa fa-remove" href="' . htmlspecialchars($module . '?action=item_remove&item_id=' . $item['id'] . '&id=' . $rule_id .	'&rule_type=' . $rule_type) . '" title="Delete"></a></td>
 			</tr>';
 
 			print $form_data;
+
+			$i++;
 		}
 	} else {
 		print "<tr><td><em>No Tree Creation Criteria</em></td></tr>\n";
@@ -1780,8 +1822,9 @@ function global_item_edit($rule_id, $rule_item_id, $rule_type) {
 		$automation_item['sequence'] = get_sequence('', 'sequence', $item_table, 'rule_id=' . $rule_id . $sql_and);
 	}
 
-	print "<form method='post' action='" . $module . "' name='form_automation_global_item_edit'>";
-	html_start_box("<strong>Rule Item</strong> $header_label", '100%', '', '3', 'center', '');
+	form_start('automation_graph_rules.php', 'form_automation_global_item_edit');
+
+	html_start_box("Rule Item $header_label", '100%', '', '3', 'center', '');
 
 	draw_edit_form(array(
 		'config' => array('no_form_tag' => true),

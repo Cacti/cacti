@@ -884,24 +884,18 @@ function ds_edit() {
 		$i = 0;
 		if (isset($template_data_rrds)) {
 			if (sizeof($template_data_rrds) > 1) {
+				/* draw the data source tabs on the top of the page */
+				print "	<table class='tabs'><tr>\n";
 
-			/* draw the data source tabs on the top of the page */
-			print "	<table class='tabs'>
-					<tr>\n";
+				foreach ($template_data_rrds as $template_data_rrd) {
+					$i++;
+					print "	<td " . (($template_data_rrd['id'] == $_REQUEST['view_rrd']) ? "class='even'" : "class='odd'") . " style='width:" . ((strlen($template_data_rrd['data_source_name']) * 9) + 50) . ";text-align:center;' class='tab'>
+						<span class='textHeader'><a href='" . htmlspecialchars('data_sources.php?action=ds_edit&id=' . $_REQUEST['id'] . '&view_rrd=' . $template_data_rrd['id']) . "'>$i: " . htmlspecialchars($template_data_rrd['data_source_name']) . '</a>' . (($use_data_template == false) ? " <a class='pic deleteMarker fa fa-remove' href='" . htmlspecialchars('data_sources.php?action=rrd_remove&id=' . $template_data_rrd['id'] . '&local_data_id=' . $_REQUEST['id']) . "' title='Delete'></a>" : '') . "</span>
+						</td>\n";
+					print "<td style='width:1px;'></td>\n";
+				}
 
-					foreach ($template_data_rrds as $template_data_rrd) {
-						$i++;
-						print "	<td " . (($template_data_rrd['id'] == $_REQUEST['view_rrd']) ? "class='even'" : "class='odd'") . " style='width:" . ((strlen($template_data_rrd['data_source_name']) * 9) + 50) . ";text-align:center;' class='tab'>
-								<span class='textHeader'><a href='" . htmlspecialchars('data_sources.php?action=ds_edit&id=' . $_REQUEST['id'] . '&view_rrd=' . $template_data_rrd['id']) . "'>$i: " . htmlspecialchars($template_data_rrd['data_source_name']) . '</a>' . (($use_data_template == false) ? " <a href='" . htmlspecialchars('data_sources.php?action=rrd_remove&id=' . $template_data_rrd['id'] . '&local_data_id=' . $_REQUEST['id']) . "'><img class='deleteIcon' src='images/delete_icon.gif' alt='' title='Delete'></a>" : '') . "</span>
-							</td>\n
-							<td style='width:1px;'></td>\n";
-					}
-
-					print "
-					<td></td>\n
-					</tr>
-				</table>\n";
-
+				print "<td></td></tr></table>\n";
 			}elseif (sizeof($template_data_rrds) == 1) {
 				$_REQUEST['view_rrd'] = $template_data_rrds[0]['id'];
 			}
@@ -909,14 +903,14 @@ function ds_edit() {
 
 		html_start_box('', '100%', '', '3', 'center', '');
 
-		print "	<tr>
-				<td class='textHeaderDark left'>
-					Data Source Item $header_label
-				</td>
-				<td class='textHeaderDark right'>
-					" . ((!empty($_REQUEST['id']) && (empty($data_template['id']))) ? "<a class='linkOverDark' href='" . htmlspecialchars('data_sources.php?action=rrd_add&id=' . $_REQUEST['id']) . "'>New</a>&nbsp;" : '') . "
-				</td>
-			</tr>\n";
+		print "<tr>
+			<td class='textHeaderDark left'>
+				Data Source Item $header_label
+			</td>
+			<td class='textHeaderDark right'>
+				" . ((!empty($_REQUEST['id']) && (empty($data_template['id']))) ? "<a class='linkOverDark' href='" . htmlspecialchars('data_sources.php?action=rrd_add&id=' . $_REQUEST['id']) . "'>New</a>&nbsp;" : '') . "
+			</td>
+		</tr>\n";
 
 		/* data input fields list */
 		if ((empty($data['data_input_id'])) || (db_fetch_cell_prepared('SELECT type_id FROM data_input WHERE id = ?', array($data['data_input_id'])) > '1')) {

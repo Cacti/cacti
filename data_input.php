@@ -405,24 +405,24 @@ function data_edit() {
 
 		$i = 0;
 		if (sizeof($fields) > 0) {
-		foreach ($fields as $field) {
-			form_alternate_row('', true);
-				?>
-				<td>
-					<a class="linkEditMain" href="<?php print htmlspecialchars('data_input.php?action=field_edit&id=' . $field['id'] . '&data_input_id=' . $_REQUEST['id']);?>"><?php print htmlspecialchars($field['data_name']);?></a>
-				</td>
-				<td>
-					<?php print $field['sequence']; if ($field['sequence'] == '0') { print ' (Not In Use)'; }?>
-				</td>
-				<td>
-					<?php print htmlspecialchars($field['name']);?>
-				</td>
-				<td align="right">
-					<a href="<?php print htmlspecialchars('data_input.php?action=field_remove&id=' . $field['id'] . '&data_input_id=' . $_REQUEST['id']);?>"><img class='deleteIcon' src="images/delete_icon.gif" alt="" title="Delete"></a>
-				</td>
-			</tr>
-		<?php
-		}
+			foreach ($fields as $field) {
+				form_alternate_row('', true);
+					?>
+					<td>
+						<a class="linkEditMain" href="<?php print htmlspecialchars('data_input.php?action=field_edit&id=' . $field['id'] . '&data_input_id=' . $_REQUEST['id']);?>"><?php print htmlspecialchars($field['data_name']);?></a>
+					</td>
+					<td>
+						<?php print $field['sequence']; if ($field['sequence'] == '0') { print ' (Not In Use)'; }?>
+					</td>
+					<td>
+						<?php print htmlspecialchars($field['name']);?>
+					</td>
+					<td align="right">
+						<a class='pic deleteMarker fa fa-remove' href='<?php print htmlspecialchars('data_input.php?action=field_remove&id=' . $field['id'] . '&data_input_id=' . $_REQUEST['id']);?>' title='Delete'></a>
+					</td>
+					<?php
+				form_end_row();
+			}
 		}else{
 			print '<tr><td><em>No Input Fields</em></td></tr>';
 		}
@@ -440,30 +440,31 @@ function data_edit() {
 
 		$i = 0;
 		if (sizeof($fields) > 0) {
-		foreach ($fields as $field) {
-			form_alternate_row('', true);
+			foreach ($fields as $field) {
+				form_alternate_row('', true);
 				?>
-				<td>
-					<a class="linkEditMain" href="<?php print htmlspecialchars('data_input.php?action=field_edit&id=' . $field['id'] . '&data_input_id=' . $_REQUEST['id']);?>"><?php print htmlspecialchars($field['data_name']);?></a>
-				</td>
-				<td>
-					<?php print $field['sequence']; if ($field['sequence'] == '0') { print ' (Not In Use)'; }?>
-				</td>
-				<td>
-					<?php print htmlspecialchars($field['name']);?>
-				</td>
-				<td>
-					<?php print html_boolean_friendly($field['update_rra']);?>
-				</td>
-				<td align="right">
-					<a href="<?php print htmlspecialchars('data_input.php?action=field_remove&id=' . $field['id'] . '&data_input_id=' . $_REQUEST['id']);?>"><img class='deleteIcon' src="images/delete_icon.gif" alt="" title="Delete"></a>
-				</td>
-			</tr>
-		<?php
-		}
+					<td>
+						<a class="linkEditMain" href="<?php print htmlspecialchars('data_input.php?action=field_edit&id=' . $field['id'] . '&data_input_id=' . $_REQUEST['id']);?>"><?php print htmlspecialchars($field['data_name']);?></a>
+					</td>
+					<td>
+						<?php print $field['sequence']; if ($field['sequence'] == '0') { print ' (Not In Use)'; }?>
+					</td>
+					<td>
+						<?php print htmlspecialchars($field['name']);?>
+					</td>
+					<td>
+						<?php print html_boolean_friendly($field['update_rra']);?>
+					</td>
+					<td align="right">
+						<a class='pic deleteMarker fa fa-remove' href='<?php print htmlspecialchars('data_input.php?action=field_remove&id=' . $field['id'] . '&data_input_id=' . $_REQUEST['id']);?>' title='Delete'></a>
+					</td>
+				<?php
+				form_end_row();
+			}
 		}else{
 			print '<tr><td><em>No Output Fields</em></td></tr>';
 		}
+
 		html_end_box();
 	}
 

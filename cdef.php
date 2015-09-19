@@ -409,30 +409,40 @@ function cdef_edit() {
 
 		html_start_box('CDEF Items', '100%', '', '3', 'center', 'cdef.php?action=item_edit&cdef_id=' . $cdef['id']);
 
-		print "<tr class='tableHeader'>";
-			DrawMatrixHeaderItem('Item', '', 1);
-			DrawMatrixHeaderItem('Position', '', 1);
-			DrawMatrixHeaderItem('Item Value', '', 2);
-		print '</tr>';
+		$display_text = array(
+			array('display' => 'Item', 'align' => 'left'), 
+			array('display' => '', 'align' => 'center'), 
+			array('display' => 'Item Value', 'align' => 'left')
+		); 
+
+		html_header($display_text, 2);
 
 		$cdef_items = db_fetch_assoc_prepared('SELECT * FROM cdef_items WHERE cdef_id = ? ORDER BY sequence', array(get_request_var_request('id')));
 
 		$i = 0;
-		if (sizeof($cdef_items) > 0) {
+		if (sizeof($cdef_items)) {
 			foreach ($cdef_items as $cdef_item) {
 				form_alternate_row();$i++;?>
 					<td>
 						<a class='linkEditMain' href='<?php print htmlspecialchars('cdef.php?action=item_edit&id=' . $cdef_item['id'] . '&cdef_id=' . $cdef['id']);?>'>Item #<?php print htmlspecialchars($i);?></a>
 					</td>
-					<td>
-						<a class='pic' href='<?php print htmlspecialchars('cdef.php?action=item_movedown&id=' . $cdef_item['id'] . '&cdef_id=' . $cdef['id']);?>'><img src='images/move_down.gif' alt='' title='Move Down'></a>
-						<a class='pic' href='<?php print htmlspecialchars('cdef.php?action=item_moveup&id=' . $cdef_item['id'] . '&cdef_id=' . $cdef['id']);?>'><img src='images/move_up.gif' alt='' title='Move Up'></a>
+					<td class='center'>
+						<?php if ($i != sizeof($cdef_items)) {?>
+						<a class='pic fa fa-arrow-down moveArrow' href='<?php print htmlspecialchars('cdef.php?action=item_movedown&id=' . $cdef_item['id'] . '&cdef_id=' . $cdef['id']);?>' title='Move Down'></a>
+						<?php }else{ ?>
+						<span class='moveArrowNone'></span>
+						<?php } ?>
+						<?php if ($i > 1) {?>
+						<a class='pic fa fa-arrow-up moveArrow' href='<?php print htmlspecialchars('cdef.php?action=item_moveup&id=' . $cdef_item['id'] . '&cdef_id=' . $cdef['id']);?>' title='Move Up'></a>
+						<?php }else{ ?>
+						<span class='moveArrowNone'></span>
+						<?php } ?>
 					</td>
 					<td>
 						<em><?php $cdef_item_type = $cdef_item['type']; print $cdef_item_types[$cdef_item_type];?></em>: <?php print htmlspecialchars(get_cdef_item_name($cdef_item['id']));?>
 					</td>
 					<td class='right'>
-						<a class='pic' href='<?php print htmlspecialchars('cdef.php?action=item_remove&id=' . $cdef_item['id'] . '&cdef_id=' . $cdef['id']);?>'><img class='deleteIcon' src='images/delete_icon.gif' alt='' title='Delete'></a>
+						<a class='pic deleteMarker fa fa-remove' title='Delete' href='<?php print htmlspecialchars('cdef.php?action=item_remove&id=' . $cdef_item['id'] . '&cdef_id=' . $cdef['id']);?>'></a>
 					</td>
 				</tr>
 			<?php

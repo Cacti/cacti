@@ -69,7 +69,7 @@ function draw_edit_form($array) {
 					form_alternate_row('row_' . $field_name);
 				}
 
-				print "<td style='width:" . ((isset($config_array["left_column_width"])) ? $config_array["left_column_width"] . "px;":"50%;") . "'>\n<span class='textEditTitle'>" . $field_array["friendly_name"] . "</span><br>\n";
+				print "<td style='width:" . ((isset($config_array["left_column_width"])) ? $config_array["left_column_width"] . "px;":"50%;") . "'>\n<span class='formItemName'>" . $field_array["friendly_name"] . "</span><br>\n";
 
 				if (isset($field_array["sub_checkbox"])) {
 					form_checkbox($field_array["sub_checkbox"]["name"],
@@ -81,7 +81,7 @@ function draw_edit_form($array) {
 						((isset($field_array["sub_checkbox"]["on_change"])) ? $field_array["sub_checkbox"]["on_change"] : ""));
 				}
 
-				print ((isset($field_array["description"])) ? $field_array["description"] : "") . "</td>\n";
+				print '<span class="formItemDescription">' . ((isset($field_array["description"])) ? $field_array["description"] : "") . "</span></td>\n";
 
 				print "<td>";
 

@@ -63,15 +63,15 @@ label {
 }
 
 .right {
-	text-align:right;
+	text-align:right !important;
 }
 
 .left {
-	text-align:left;
+	text-align:left !important;
 }
 
 .center {
-	text-align:center;
+	text-align:center !important;
 }
 
 .usermenudown {
@@ -173,12 +173,30 @@ label {
 	color:red;
 }
 
-.deleteIcon {
-	width:10px;
-	height:10px;
-	cursor:pointer;
-	padding:2px;
-	border:none;
+.deleteMarker {
+	color: red !important;
+	height: 14px !important;
+	vertical-align: middle;
+	text-decoration: none !important;
+}
+
+.deleteMarker:hover {
+	text-decoration: none !important;
+}
+
+.moveArrow {
+	color: #00438C !important;
+	height: 14px !important;
+	vertical-align: middle;
+	text-decoration: none !important;
+}
+
+.moveArrow:hover {
+	text-decoration: none !important;
+}
+
+.moveArrowNone {
+	padding-left:15px;
 }
 
 .action {
@@ -381,7 +399,7 @@ label {
 }
 
 .cactiGraphPageHeadBackdrop {
-	background: transparent url('./../../../images/cacti_backdrop2.gif') no-repeat center right;
+	background: #a9a9a9 url("./images/cacti_logo.svg") no-repeat scroll left 40% / 380px auto;
 	background-color: #a9a9a9;
 	vertical-align: bottom;
 	padding-bottom: 0px;
@@ -390,14 +408,8 @@ label {
 	height:37px;
 }
 
-.loginLogo {
-	background: url('./../../../images/auth_login.gif') no-repeat center center;
-	padding-right:40px;
-}
-
 .cactiConsolePageHeadBackdrop {
-	background: transparent url('./../../../images/cacti_backdrop.gif') no-repeat center right;
-	background-color: #a9a9a9;
+	background: #a9a9a9 url("./images/cacti_logo.svg") no-repeat scroll left 40% / 380px auto;
 	padding-bottom:0px;
 	float:right;
 	width:400px;
@@ -453,6 +465,7 @@ ul#breadcrumbs {
 .cactiContent {
 	width: 100%;
 	vertical-align: top;
+	display: table;
 }
 
 .cactiTreeNavigationArea {
@@ -461,9 +474,10 @@ ul#breadcrumbs {
 	padding-left:5px;
 	padding-right:5px;
 	padding-top:10px;
-	display: none;
+	width:225px;
+	max-width:400px;
+	display: table-cell;
 	vertical-align: top;
-	overflow-y: auto;
 }
 
 .jstree {
@@ -480,6 +494,7 @@ ul#breadcrumbs {
 	vertical-align:top;
 	float:left;
 	width:162px;
+	overflow:auto;
 }
 
 .cactiConsoleNavigationArea table {
@@ -492,8 +507,7 @@ ul#breadcrumbs {
 
 .cactiLogo {
 	padding-top:20px;
-	background: #f5f5f5 url('./../../../images/cacti_logo.gif') no-repeat center;
-	display:block;
+	background: #f5f5f5 url('./images/cacti_logo.svg') no-repeat 30px;	display:block;
 	cursor:pointer;
 	height:140px;
 	width:156px;
@@ -541,7 +555,7 @@ ul#breadcrumbs {
 
 .loginErrors, .logoutErrors {
 	color:red;
-	min-height:15px;
+	min-height:0px;
 }
 
 legend {
@@ -574,6 +588,8 @@ legend {
 	padding-top:10px;
 	padding-right: 5px;
 	padding-left: 5px;
+	vertical-align:top;
+	display: table-cell;
 }
 
 .cactiConsoleContentArea {
@@ -646,7 +662,7 @@ legend {
 }
 
 .remover {
-	pointer:cursor;
+	cursor: pointer;
 }
 
 .messageBox {
@@ -710,6 +726,21 @@ legend {
 
 .filterTable td:first-child {
 	width:55px;
+}
+
+.formItemDescription {
+}
+
+.formItemName {
+	font-weight:bold;
+}
+
+.graphItem {
+	background-color: #D5D5D5;
+}
+
+.graphItemAlternate {
+	background-color: #D2D6E7;
 }
 
 .break {
@@ -905,14 +936,13 @@ legend {
 .tabs li a {
 	background-color: #DFDFDF;
     float:left !important;
-    padding:3px 4px;
+    padding:5px 4px;
     text-decoration:none;
     font-size: 11px;
 	border-color: #999 #666 !important;
     border-style: solid solid none;
     border-width: 1px 1px medium;
 	font-weight: bold;
-	height: 18px;
 }
 
 div#tabs {
@@ -928,7 +958,7 @@ td#tabs {
 }
 
 .cactiGraphHeaderBackground {
-	background: transparent url("./../../../images/cacti_backdrop2.gif") no-repeat scroll right center;
+	background: transparent url("./images/cacti_logo.svg") no-repeat scroll left 10% / 380px auto;
 	height: 37px;
 	width:500px;
 	float:right;
@@ -937,10 +967,12 @@ td#tabs {
 div#gtabs {
 	padding-bottom: 0px;
 	vertical-align: bottom;
+	float:right;
 }
 
 .tabs {
 	width:100%;
+	display: table-row;
 }
 
 .tabs a:hover {
@@ -955,7 +987,6 @@ div#gtabs {
 	bottom:-1px;
 	float:left;
 	margin:0 3px 0 0;
-	position:relative;
 }
 
 .tabs li.current a {
@@ -968,7 +999,6 @@ div#gtabs {
 	border-bottom:1px solid #fff;
 }
 .tabs nav {
-	border-bottom:1px solid #ccc;
 	padding:0px 4px 0px 0px;
     background-repeat:repeat-x;
 	zoom:1;
@@ -976,7 +1006,6 @@ div#gtabs {
 
 .tabs nav:after {
 	clear:both;
-	content:".";
 	display:block;
 	height:0;
 	visibility:hidden;

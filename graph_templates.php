@@ -166,7 +166,7 @@ function form_save() {
 		}
 	}
 
-	header('Location: graph_templates.php?action=template_edit&id=' . (empty($graph_template_id) ? $_POST['graph_template_id'] : $graph_template_id));
+	header('Location: graph_templates.php?header=false&action=template_edit&id=' . (empty($graph_template_id) ? $_POST['graph_template_id'] : $graph_template_id));
 }
 
 /* ------------------------
@@ -339,7 +339,7 @@ function item() {
 				<a class='linkEditMain' href='<?php print htmlspecialchars('graph_templates_inputs.php?action=input_edit&id=' . $item['id'] . '&graph_template_id=' . $_REQUEST['id']);?>'><?php print htmlspecialchars($item['name']);?></a>
 			</td>
 			<td align='right'>
-				<a href='<?php print htmlspecialchars('graph_templates_inputs.php?action=input_remove&id=' . $item['id'] . '&graph_template_id=' . $_REQUEST['id']);?>'><img class='deleteIcon' src='images/delete_icon.gif' alt='' title='Delete'></a>
+				<a class='deleteMarker fa fa-remove' title='Delete' href='<?php print htmlspecialchars('graph_templates_inputs.php?action=input_remove&id=' . $item['id'] . '&graph_template_id=' . $_REQUEST['id']);?>'></a>
 			</td>
 		</tr>
 		<?php

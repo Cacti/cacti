@@ -49,17 +49,17 @@ switch ($_REQUEST['action']) {
 	case 'item_movedown':
 		automation_tree_rules_item_movedown();
 
-		header('Location: automation_tree_rules.php?header=false&action=edit&id=' . $_GET['id']);
+		header('Location: automation_tree_rules.php?action=edit&id=' . $_GET['id']);
 		break;
 	case 'item_moveup':
 		automation_tree_rules_item_moveup();
 
-		header('Location: automation_tree_rules.php?header=false&action=edit&id=' . $_GET['id']);
+		header('Location: automation_tree_rules.php?action=edit&id=' . $_GET['id']);
 		break;
 	case 'item_remove':
 		automation_tree_rules_item_remove();
 
-		header('Location: automation_tree_rules.php?header=false&action=edit&id=' . $_GET['id']);
+		header('Location: automation_tree_rules.php?action=edit&id=' . $_GET['id']);
 		break;
 	case 'item_edit':
 		top_header();
