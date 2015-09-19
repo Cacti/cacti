@@ -508,9 +508,9 @@ function graph_edit() {
 
 	if (isset($_REQUEST['reset'])) {
 		$_SESSION['aggregate_referer'] = 'aggregate_graphs.php';
-	}elseif (isset($_SERVER['HTTPD_REFERER']) && !substr_count($_SERVER['HTTP_REFERER'], 'aggregate_graphs.php')) {
+	}elseif (isset($_SERVER['HTTP_REFERER']) && !substr_count($_SERVER['HTTP_REFERER'], 'aggregate_graphs.php')) {
 		$_SESSION['aggregate_referer'] = $_SERVER['HTTP_REFERER'];
-	}elseif (isset($_SERVER['HTTPD_REFERER']) && !isset($_SESSION['aggregate_referer'])) {
+	}elseif (isset($_SERVER['HTTP_REFERER']) && !isset($_SESSION['aggregate_referer'])) {
 		$_SESSION['aggregate_referer'] = $_SERVER['HTTP_REFERER'];
 	}
 	$referer = $_SESSION['aggregate_referer'];
