@@ -39,7 +39,7 @@ if (!isset($_REQUEST['action'])) { $_REQUEST['action'] = ''; }
 
 switch ($_REQUEST['action']) {
 	case 'save':
-		automation_graph_rules_form_save();
+		save();
 
 		break;
 	case 'actions':
@@ -49,17 +49,17 @@ switch ($_REQUEST['action']) {
 	case 'item_movedown':
 		automation_graph_rules_item_movedown();
 
-		header('Location: automation_graph_rules.php?header=false&action=edit&id=' . $_GET['id']);
+		header('Location: automation_graph_rules.php?action=edit&id=' . $_GET['id']);
 		break;
 	case 'item_moveup':
 		automation_graph_rules_item_moveup();
 
-		header('Location: automation_graph_rules.php?header=false&action=edit&id=' . $_GET['id']);
+		header('Location: automation_graph_rules.php?action=edit&id=' . $_GET['id']);
 		break;
 	case 'item_remove':
 		automation_graph_rules_item_remove();
 
-		header('Location: automation_graph_rules.php?header=false&action=edit&id=' . $_GET['id']);
+		header('Location: automation_graph_rules.php?action=edit&id=' . $_GET['id']);
 		break;
 	case 'item_edit':
 		top_header();
@@ -87,10 +87,8 @@ switch ($_REQUEST['action']) {
  The Save Function
  -------------------------- */
 
-function automation_graph_rules_form_save() {
-
+function save() {
 	if (isset($_POST['save_component_automation_graph_rule'])) {
-
 		/* ================= input validation ================= */
 		input_validate_input_number(get_request_var_post('id'));
 		/* ==================================================== */
@@ -145,11 +143,11 @@ function automation_graph_rules_form_save() {
 			header('Location: automation_graph_rules.php?header=false&action=edit&id=' . $_POST['id'] . '&rule_type=' . AUTOMATION_RULE_TYPE_GRAPH_ACTION);
 		}
 	}elseif (isset($_POST['save_component_automation_match_item'])) {
-
 		/* ================= input validation ================= */
 		input_validate_input_number(get_request_var_post('id'));
 		input_validate_input_number(get_request_var_post('item_id'));
 		/* ==================================================== */
+
 		unset($save);
 		$save['id'] = form_input_validate($_POST['item_id'], 'item_id', '^[0-9]+$', false, 3);
 		$save['rule_id'] = form_input_validate($_POST['id'], 'id', '^[0-9]+$', false, 3);
@@ -506,7 +504,7 @@ function automation_graph_rules_edit() {
 		<?php
 	}
 
-	form_start('form_automation_graph_rule_edit.php', 'automation_graph_rules');
+	form_start('automation_graph_rules.php', 'automation_graph_rules');
 
 	html_start_box("Rule Selection $header_label", '100%', $colors['header'], '3', 'center', '');
 
@@ -546,6 +544,7 @@ function automation_graph_rules_edit() {
 	}
 
 	form_save_button('automation_graph_rules.php');
+
 	print '<br>';
 
 	if (!empty($rule['id'])) {
