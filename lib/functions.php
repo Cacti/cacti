@@ -2101,9 +2101,9 @@ function draw_navigation_text($type = 'url') {
 			),
 		'rrdcleaner.php:' => array(
 			'title' => 'RRD Cleaner', 
-			'mapping' => 'index.php:', 
+			'mapping' => 'index.php:,utilities.php:', 
 			'url' => 'rrdcleaner.php', 
-			'level' => '1'
+			'level' => '2'
 			),
 		'rrdcleaner.php:actions' => array(
 			'title' => 'Actions', 
@@ -2175,6 +2175,24 @@ function draw_navigation_text($type = 'url') {
 			'title' => 'Boost Status', 
 			'mapping' => 'index.php:,utilities.php:', 
 			'url' => 'utilities.php', 
+			'level' => '2'
+			),
+		'utilities.php:view_snmpagent_cache' => array(
+			'title' => 'View SNMP Agent Cache', 
+			'mapping' => 'index.php:,utilities.php:', 
+			'url' => 'utilities.php', 
+			'level' => '2'
+			),
+		'utilities.php:view_snmpagent_events' => array(
+			'title' => 'View SNMP Agent Notification Log', 
+			'mapping' => 'index.php:,utilities.php:', 
+			'url' => 'utilities.php', 
+			'level' => '2'
+			),
+		'managers.php:' => array(
+			'title' => 'View SNMP Notification Receivers', 
+			'mapping' => 'index.php:,utilities.php:', 
+			'url' => 'managers.php', 
 			'level' => '2'
 			),
 		'settings.php:' => array(

@@ -737,7 +737,7 @@ function utilities_view_user_log() {
 		'result' => array('Result', 'DESC'),
 		'ip' => array('IP Address', 'DESC'));
 
-	html_header_sort($display_text, get_request_var_request('sort_column'), get_request_var_request('sort_direction'));
+	html_header_sort($display_text, get_request_var_request('sort_column'), get_request_var_request('sort_direction'), 1, 'utilities.php?action=view_user_log');
 
 	if (sizeof($user_log) > 0) {
 		foreach ($user_log as $item) {
@@ -1619,7 +1619,7 @@ function utilities_view_poller_cache() {
 		'data_template_data.name_cache' => array('Data Source Name', 'ASC'),
 		'nosort' => array('Details', 'ASC'));
 
-	html_header_sort($display_text, get_request_var_request('sort_column'), get_request_var_request('sort_direction'));
+	html_header_sort($display_text, get_request_var_request('sort_column'), get_request_var_request('sort_direction'), 1, 'utilities.php?action=view_poller_cache');
 
 	$i = 0;
 	if (sizeof($poller_cache) > 0) {

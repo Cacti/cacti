@@ -444,7 +444,8 @@ function html_nav_bar($base_url, $max_pages, $current_page, $rows_per_page, $tot
    @arg $sort_column - the value of current sort column.
    @arg $sort_direction - the value the current sort direction.  The actual sort direction
         will be opposite this direction if the user selects the same named column.
-   @arg $last_item_colspan - the TD 'colspan' to apply to the last cell in the row */
+   @arg $last_item_colspan - the TD 'colspan' to apply to the last cell in the row
+   @arg $url - a base url to redirect sort actions to */
 function html_header_sort($header_items, $sort_column, $sort_direction, $last_item_colspan = 1, $url = '') {
 	/* reverse the sort direction */
 	if ($sort_direction == "ASC") {

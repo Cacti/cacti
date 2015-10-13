@@ -78,7 +78,11 @@ th .fa {
 }
 
 input, select {
-	padding: 0.4em 0.4em 0.4em 0.4em;
+	padding: 0.5em 0.5em 0.5em 0.5em;
+}
+
+*:focus {
+    outline: none;
 }
 
 label {
@@ -853,7 +857,6 @@ legend {
 .cactiTableTitle {
 	width: 100%;
 	background-color: #262626;
-    border: 1px solid #000;
 }
 
 .cactiTableTitle td {
@@ -1178,7 +1181,6 @@ div#gtabs {
 	float:left !important;
 	padding:5px;
 	text-decoration:none;
-	font-size: 11px;
 	vertical-align:bottom;
 }
 
