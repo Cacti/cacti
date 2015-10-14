@@ -127,7 +127,7 @@ function manager(){
 		loadPageNoHeader(strURL);
 	}
 
-	$(function(data) {
+	$(function() {
 		$('#refresh').click(function() {
 			applyFilter();
 		});
@@ -305,75 +305,85 @@ function manager_edit() {
 		if (read_config_option('legacy_menu_nav') != 'on') { ?>
 		<script type='text/javascript'>
 
-		$('.subTab').find('a').click(function(event) {
-			event.preventDefault();
+		$(function() {
+			$('.subTab').find('a').click(function(event) {
+				event.preventDefault();
 
-			strURL  = $(this).attr('href');
-			strURL += (strURL.indexOf('?') > 0 ? '&':'?') + 'header=false';
-			loadPageNoHeader(strURL);
+				strURL  = $(this).attr('href');
+				strURL += (strURL.indexOf('?') > 0 ? '&':'?') + 'header=false';
+				loadPageNoHeader(strURL);
+			});
 		});
 		</script>
 		<?php }
 	}
 
-	html_start_box("SNMP Notification Receiver $header_label", '100%', '', '3', 'center', '');
-
 	switch($_REQUEST['tab']){
 		case 'notifications':
+			html_start_box("SNMP Notification Receiver $header_label", '100%', '', '3', 'center', '');
+
 			manager_notifications($id);
 			html_end_box();
 			draw_actions_dropdown($manager_notification_actions);
 			break;
 		case 'logs':
+			html_start_box("SNMP Notification Receiver $header_label", '100%', '', '3', 'center', '');
+
 			manager_logs($id);
 			html_end_box();
 			break;
 		default:
-			draw_edit_form(array(
-				'config' => array('form_name' => 'chk'),
-				'fields' => inject_form_variables($fields_manager_edit, (isset($manager) ? $manager : array()))
-			));
+			form_start('managers.php');
+
+			html_start_box("SNMP Notification Receiver $header_label", '100%', '', '3', 'center', '');
+
+			draw_edit_form(
+				array(
+					'config' => array('no_form_tag' => true),
+					'fields' => inject_form_variables($fields_manager_edit, (isset($manager) ? $manager : array()))
+				)
+			);
+
 			html_end_box();
+
 			form_save_button('managers.php', 'return');
 
 			?>
 			<script type="text/javascript">
-			<!--
-				function setSNMP() {
-					snmp_version = $('#snmp_version').val();
-					switch(snmp_version) {
-						case "1": // SNMP v1
-						case "2": // SNMP v2c
-							$('#row_snmp_username').hide();
-							$('#row_snmp_password').hide();
-							$('#row_snmp_community').show();
-							$('#row_snmp_auth_password').hide();
-							$('#row_snmp_auth_protocol').hide();
-							$('#row_snmp_priv_password').hide();
-							$('#row_snmp_priv_protocol').hide();
-							$('#row_snmp_context').hide();
-							$('#row_snmp_port').show();
-							$('#row_snmp_timeout').show();
-							break;
-						case "3": // SNMP v3
-							$('#row_snmp_username').show();
-							$('#row_snmp_password').show();
-							$('#row_snmp_community').hide();
-							$('#row_snmp_auth_password').show();
-							$('#row_snmp_auth_protocol').show();
-							$('#row_snmp_priv_password').show();
-							$('#row_snmp_priv_protocol').show();
-							$('#row_snmp_context').show();
-							$('#row_snmp_port').show();
-							$('#row_snmp_timeout').show();
+			function setSNMP() {
+				snmp_version = $('#snmp_version').val();
+				switch(snmp_version) {
+					case "1": // SNMP v1
+					case "2": // SNMP v2c
+						$('#row_snmp_username').hide();
+						$('#row_snmp_password').hide();
+						$('#row_snmp_community').show();
+						$('#row_snmp_auth_password').hide();
+						$('#row_snmp_auth_protocol').hide();
+						$('#row_snmp_priv_password').hide();
+						$('#row_snmp_priv_protocol').hide();
+						$('#row_snmp_context').hide();
+						$('#row_snmp_port').show();
+						$('#row_snmp_timeout').show();
 						break;
-					}
+					case "3": // SNMP v3
+						$('#row_snmp_username').show();
+						$('#row_snmp_password').show();
+						$('#row_snmp_community').hide();
+						$('#row_snmp_auth_password').show();
+						$('#row_snmp_auth_protocol').show();
+						$('#row_snmp_priv_password').show();
+						$('#row_snmp_priv_protocol').show();
+						$('#row_snmp_context').show();
+						$('#row_snmp_port').show();
+						$('#row_snmp_timeout').show();
+					break;
 				}
+			}
 
-				$(function() {
-					setSNMP();
-				});
-			-->
+			$(function() {
+				setSNMP();
+			});
 			</script>
 			<?php
 	}
@@ -455,7 +465,7 @@ function manager_notifications($id){
 		loadPageNoHeader(strURL);
 	}
 
-	$(function(data) {
+	$(function() {
 		$('#refresh').click(function() {
 			applyFilter();
 		});
@@ -807,13 +817,14 @@ function manager_logs($id) {
 }
 
 function form_save() {
-
 	if (!isset($_REQUEST['tab'])) $_REQUEST['tab'] = 'general';
+
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var_post('id'));
 	input_validate_input_number(get_request_var_post('max_log_size'));
+
 	if(!in_array(get_request_var_post('max_log_size'), range(1,31) ) ) {
-	//	die_html_input_error();
+		//	die_html_input_error();
 	}
 	/* ================= input validation ================= */
 
@@ -861,8 +872,7 @@ function form_save() {
 			break;
 	}
 
-	header('Location: managers.php?action=edit&id=' . (empty($manager_id) ? $_POST['id'] : $manager_id) );
-
+	header('Location: managers.php?action=edit&header=false&id=' . (empty($manager_id) ? $_POST['id'] : $manager_id) );
 }
 
 function form_actions(){

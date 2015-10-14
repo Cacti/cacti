@@ -2195,6 +2195,12 @@ function draw_navigation_text($type = 'url') {
 			'url' => 'managers.php', 
 			'level' => '2'
 			),
+		'managers.php:edit' => array(
+			'title' => '(Edit)', 
+			'mapping' => 'index.php:,utilities.php:,managers.php:', 
+			'url' => '', 
+			'level' => '3'
+			),
 		'settings.php:' => array(
 			'title' => 'Cacti Settings', 
 			'mapping' => 'index.php:', 
