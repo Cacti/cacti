@@ -136,10 +136,28 @@ $colors['form_background_dark'] = 'E1E1E1';
 $colors['form_alternate1'] = 'F5F5F5';
 $colors['form_alternate2'] = 'E5E5E5';
 
-if ((!in_array(basename($_SERVER['PHP_SELF']), $no_http_header_files, true)) && ($_SERVER['PHP_SELF'] != '')) {
+/* include base modules */
+include_once($config['library_path'] . '/database.php');
+
+if (isset($cacti_db_session) && $cacti_db_session) {
+	include(dirname(__FILE__) . '/session.php');
+}
+
+/* connect to the database server */
+db_connect_real($database_hostname, $database_username, $database_password, $database_default, $database_type, $database_port, $database_ssl);
+
+/* include additional modules */
+include_once($config['library_path'] . '/functions.php');
+include_once($config['include_path'] . '/global_constants.php');
+
+if (isset($no_http_headers) || in_array(basename($_SERVER['PHP_SELF']), $no_http_header_files, true) || $_SERVER['PHP_SELF'] == '') {
+	// No Headers or session for this use
+}else{
+	//if ((!in_array(basename($_SERVER['PHP_SELF']), $no_http_header_files, true)) && ($_SERVER['PHP_SELF'] != '')) {
 	/* Sanity Check on "Corrupt" PHP_SELF */
 	if ($_SERVER['SCRIPT_NAME'] != $_SERVER['PHP_SELF']) {
 		echo "\nInvalid PHP_SELF Path \n";
+		db_close();
 		exit;
 	}
 
@@ -154,7 +172,7 @@ if ((!in_array(basename($_SERVER['PHP_SELF']), $no_http_header_files, true)) && 
 
 	/* initilize php session */
 	session_name($cacti_session_name);
-	session_start();
+	if (!session_id()) session_start();
 
 	/* detect and handle get_magic_quotes */
 	if (!get_magic_quotes_gpc()) {
@@ -203,16 +221,6 @@ if ((bool)ini_get('register_globals')) {
 
 	unset($input);
 }
-
-/* include base modules */
-include_once($config['library_path'] . '/database.php');
-
-/* connect to the database server */
-db_connect_real($database_hostname, $database_username, $database_password, $database_default, $database_type, $database_port, $database_ssl);
-
-/* include additional modules */
-include_once($config['library_path'] . '/functions.php');
-include_once($config['include_path'] . '/global_constants.php');
 
 /* gather the existing cactidb version */
 $config['cacti_db_version'] = db_fetch_cell("SELECT cacti FROM version LIMIT 1");

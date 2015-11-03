@@ -3554,6 +3554,22 @@ CREATE TABLE `user_domains_ldap` (
 --
 
 --
+-- Table structure for table `sessions`
+--
+
+CREATE TABLE `sessions` (
+  `id` varchar(32) NOT NULL,
+  `remote_addr` varchar(25) NOT NULL DEFAULT '',
+  `access` int(10) unsigned DEFAULT NULL,
+  `data` text,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB COMMENT='Used for Database based Session Storage';
+
+--
+-- Dumping data for table `sessions`
+--
+
+--
 -- Table structure for table `snmpagent_cache`
 --
 
