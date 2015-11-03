@@ -584,7 +584,7 @@ legend {
 }
 
 .cactiGraphContentArea {
-	background: #ffffff url('./../../../images/shadow.gif') repeat-x center top;
+	background: #FFFFFF url('./../../../images/shadow.gif') repeat-x center top;
 	padding-top:10px;
 	padding-right: 5px;
 	padding-left: 5px;
@@ -593,7 +593,7 @@ legend {
 }
 
 .cactiConsoleContentArea {
-	background: snow url('./../../../images/shadow.gif') repeat-x center top;
+	background: #FFFFFF url('./../../../images/shadow.gif') repeat-x center top;
 	padding-top:10px;
 	padding-right: 5px;
 	padding-left: 5px;
