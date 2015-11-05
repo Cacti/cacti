@@ -634,7 +634,7 @@ function form_callback($form_name, $classic_sql, $column_display, $column_id, $c
 
 		$form_data = db_fetch_assoc($classic_sql);
 
-		html_create_list($form_data, $column_display, $column_id, htmlspecialchars($previous_value, ENT_QUOTES));
+		html_create_list($form_data, $column_display, $column_id, htmlspecialchars($previous_id, ENT_QUOTES));
 
 		print "</select>\n";
 	}else{
