@@ -193,7 +193,7 @@ function clog_view_logfile() {
 			while ($host_start) {
 				$host_end    = strpos($item, ']', $host_start);
 				$host_id     = substr($item, $host_start+7, $host_end-($host_start+7));
-				$new_item   .= htmlspecialchars(substr($item, 0, $host_start + 7)) . "<a href='" . htmlspecialchars($config['url_path'] . 'host.php?action=edit&id=' . $host_id) . "'>" . htmlspecialchars(substr($item, $host_start + 5, $host_end-($host_start + 7))) . '</a>';
+				$new_item   .= htmlspecialchars(substr($item, 0, $host_start + 7)) . "<a href='" . htmlspecialchars($config['url_path'] . 'host.php?action=edit&id=' . $host_id) . "'>$host_id</a>";
 				$host_description = db_fetch_cell("SELECT description FROM host WHERE id=$host_id");
 				$new_item   .= '] Description[' . htmlspecialchars($host_description) . '';
 				$item        = substr($item, $host_end);
@@ -205,7 +205,7 @@ function clog_view_logfile() {
 				$ds_end    = strpos($item, ']', $ds_start);
 				$ds_id     = substr($item, $ds_start+3, $ds_end-($ds_start+3));
 				$graph_ids = clog_get_graphs_from_datasource($ds_id);
-				$graph_add = '&graph_add=';
+				$graph_add = $config['url_path'] . 'graph_view.php?page=1&style=selective&action=preview&graph_add=';
 
 				if (sizeof($graph_ids)) {
 					$new_item  .= substr($item, 0, $ds_start + 3) .
@@ -214,9 +214,7 @@ function clog_view_logfile() {
 
 					$i = 0;
 					$titles = '';
-					$graph_add = $config['url_path'] . 'graph_view.php?page=1&style=selective&action=preview&graph_add=';
 					foreach($graph_ids as $key => $title) {
-						$graph_add .= '&graph_' . $key . '=' . $key;
 						$graph_add .= ($i > 0 ? '%2C' : '') . $key;
 						$i++;
 						if (strlen($titles)) {
