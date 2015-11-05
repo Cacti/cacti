@@ -1004,7 +1004,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 				if ($graph['auto_padding'] == 'on') {
 					/* only applies to AREA, STACK and LINEs */
 					if (preg_match('/(AREA|STACK|LINE[123])/', $graph_item_types{$graph_item['graph_type_id']})) {
-						$text_format_length = strlen($graph_variables['text_format'][$graph_item_id]);
+						$text_format_length = strlen(trim($graph_variables['text_format'][$graph_item_id]));
 
 						if ($text_format_length > $padding_estimate) {
 							$padding_estimate = $text_format_length;
@@ -1250,17 +1250,23 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 			if (preg_match('/(AREA|STACK|LINE[123])/', $graph_item_types{$graph_item['graph_type_id']})) {
 				$text_format_length = strlen($graph_variables['text_format'][$graph_item_id]);
 
-				/* we are basing how much to pad on area and stack text format,
-				not gprint. but of course the padding has to be displayed in gprint,
-				how fun! */
-
-				$pad_number = ($padding_estimate - $text_format_length);
-				//cacti_log("MAX: $padding_estimate, CURR: $text_format_lengths[$item_dsid], DSID: $item_dsid");
-				$text_padding = str_pad('', $pad_number);
-
-			/* two GPRINT's in a row screws up the padding, lets not do that */
+				$pad_number = $padding_estimate;
 			} else if (($graph_item_types{$graph_item['graph_type_id']} == 'GPRINT') && ($last_graph_type == 'GPRINT')) {
-				$text_padding = '';
+				/* get the maximum text_format length from the database */
+				if (!isset($max_length)) {
+					$max_length = db_fetch_cell_prepared("SELECT MAX(LENGTH(TRIM(text_format))) 
+						FROM graph_templates_item 
+						WHERE local_graph_id=? 
+						AND graph_type_id IN(" . 
+							GRAPH_ITEM_TYPE_LINE1 . "," . 
+							GRAPH_ITEM_TYPE_LINE2 . "," . 
+							GRAPH_ITEM_TYPE_LINE3 . "," . 
+							GRAPH_ITEM_TYPE_AREA . "," . 
+							GRAPH_ITEM_TYPE_STACK . ")", 
+						array($local_graph_id));
+				}
+
+				$pad_number = $max_length;
 			}
 
 			$last_graph_type = $graph_item_types{$graph_item['graph_type_id']};
@@ -1315,7 +1321,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 				$txt_graph_items .= $graph_item_types{$graph_item['graph_type_id']} . ':' . str_replace(':', '\:', $comment_arg) . ' ';
 			}elseif (($graph_item_types{$graph_item['graph_type_id']} == 'GPRINT') && (!isset($graph_data_array['graph_nolegend']))) {
 				$graph_variables['text_format'][$graph_item_id] = str_replace(':', '\:', $graph_variables['text_format'][$graph_item_id]); /* escape colons */
-				$txt_graph_items .= $graph_item_types{$graph_item['graph_type_id']} . ':' . $data_source_name . ':' . $consolidation_functions{$graph_item['consolidation_function_id']} . ':' . cacti_escapeshellarg($text_padding . $graph_variables['text_format'][$graph_item_id] . $graph_item['gprint_text'] . $hardreturn[$graph_item_id]) . ' ';
+				$txt_graph_items .= $graph_item_types{$graph_item['graph_type_id']} . ':' . $data_source_name . ':' . $consolidation_functions{$graph_item['consolidation_function_id']} . ':' . cacti_escapeshellarg(trim($graph_variables['text_format'][$graph_item_id]) . trim($graph_item['gprint_text']) . ($hardreturn[$graph_item_id] != '' ? $hardreturn[$graph_item_id]:"")) . ' ';
 			}elseif (preg_match('/^(AREA|LINE[123]|STACK|HRULE|VRULE)$/', $graph_item_types{$graph_item['graph_type_id']})) {
 				/* initialize any color syntax for graph item */
 				if (empty($graph_item['hex'])) {
@@ -1327,10 +1333,10 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 
 				if (preg_match('/^(AREA|LINE[123])$/', $graph_item_types{$graph_item['graph_type_id']})) {
 					$graph_item_stack_type = $graph_item_types{$graph_item['graph_type_id']};
-					$graph_variables['text_format'][$graph_item_id] = str_replace(':', '\:', $graph_variables['text_format'][$graph_item_id]); /* escape colons */
+					$graph_variables['text_format'][$graph_item_id] = str_replace(':', '\:', ($graph_variables['text_format'][$graph_item_id] != '' ? str_pad($graph_variables['text_format'][$graph_item_id],$pad_number):"")); /* escape colons */
 					$txt_graph_items .= $graph_item_types{$graph_item['graph_type_id']} . ':' . $data_source_name . $graph_item_color_code . ':' . cacti_escapeshellarg($graph_variables['text_format'][$graph_item_id] . $hardreturn[$graph_item_id]) . ' ';
 				}elseif ($graph_item_types{$graph_item['graph_type_id']} == 'STACK') {
-					$graph_variables['text_format'][$graph_item_id] = str_replace(':', '\:', $graph_variables['text_format'][$graph_item_id]); /* escape colons */
+					$graph_variables['text_format'][$graph_item_id] = str_replace(':', '\:', ($graph_variables['text_format'][$graph_item_id] != '' ? str_pad($graph_variables['text_format'][$graph_item_id],$pad_number):"")); /* escape colons */
 					$txt_graph_items .= $graph_item_stack_type . ':' . $data_source_name . $graph_item_color_code . ':' . cacti_escapeshellarg($graph_variables['text_format'][$graph_item_id] . $hardreturn[$graph_item_id]) . ':STACK';
 				}elseif ($graph_item_types{$graph_item['graph_type_id']} == 'HRULE') {
 					$graph_variables['text_format'][$graph_item_id] = str_replace(':', '\:', $graph_variables['text_format'][$graph_item_id]); /* escape colons */
