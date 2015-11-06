@@ -26,7 +26,7 @@ if (!defined('VALID_HOST_FIELDS')) {
 	$string = api_plugin_hook_function('valid_host_fields', '(hostname|host_id|snmp_community|snmp_username|snmp_password|snmp_auth_protocol|snmp_priv_passphrase|snmp_priv_protocol|snmp_context|snmp_version|snmp_port|snmp_timeout)');
 	define('VALID_HOST_FIELDS', $string);
 }
-$valid_host_field = VALID_HOST_FIELDS;
+$valid_host_fields = VALID_HOST_FIELDS;
 
 /* file: cdef.php, action: edit */
 $fields_cdef_edit = array(
@@ -165,7 +165,7 @@ $fields_data_input_field_edit = array(
 	'type_code' => array(
 		'method' => 'textbox',
 		'friendly_name' => 'Special Type Code',
-		'description' => 'If this field should be treated specially by host templates, indicate so here. Valid keywords for this field are ' . (str_replace(")", "'", str_replace("(", "'", str_replace("|", "", "", $valid_host_fields)))),
+		'description' => 'If this field should be treated specially by host templates, indicate so here. Valid keywords for this field are ' . (str_replace(")", "'", str_replace("(", "'", str_replace("|", ", ", $valid_host_fields)))),
 		'value' => '|arg1:type_code|',
 		'max_length' => '40',
 		'size' => '20'
