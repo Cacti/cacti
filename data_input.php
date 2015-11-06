@@ -44,7 +44,7 @@ switch ($_REQUEST['action']) {
 	case 'field_remove':
 		field_remove();
 
-		header('Location: data_input.php?action=edit&id=' . $_REQUEST['data_input_id']);
+		header('Location: data_input.php?header=false&action=edit&id=' . $_REQUEST['data_input_id']);
 		break;
 	case 'field_edit':
 		top_header();
@@ -106,7 +106,7 @@ function form_save() {
 			}
 		}
 
-		header('Location: data_input.php?action=edit&id=' . (empty($data_input_id) ? $_POST['id'] : $data_input_id));
+		header('Location: data_input.php?header=false&action=edit&id=' . (empty($data_input_id) ? $_POST['id'] : $data_input_id));
 	}elseif (isset($_POST['save_component_field'])) {
 		/* ================= input validation ================= */
 		input_validate_input_number(get_request_var_post('id'));
@@ -142,9 +142,9 @@ function form_save() {
 		}
 
 		if (is_error_message()) {
-			header('Location: data_input.php?action=field_edit&data_input_id=' . $_POST['data_input_id'] . '&id=' . (empty($data_input_field_id) ? $_POST['id'] : $data_input_field_id) . (!empty($_POST['input_output']) ? '&type=' . $_POST['input_output'] : ''));
+			header('Location: data_input.php?header=false&action=field_edit&data_input_id=' . $_POST['data_input_id'] . '&id=' . (empty($data_input_field_id) ? $_POST['id'] : $data_input_field_id) . (!empty($_POST['input_output']) ? '&type=' . $_POST['input_output'] : ''));
 		}else{
-			header('Location: data_input.php?action=edit&id=' . $_POST['data_input_id']);
+			header('Location: data_input.php?header=false&action=edit&id=' . $_POST['data_input_id']);
 		}
 	}
 }
@@ -168,7 +168,7 @@ function form_actions() {
 			}
 		}
 
-		header('Location: data_input.php');
+		header('Location: data_input.php?header=false');
 		exit;
 	}
 
