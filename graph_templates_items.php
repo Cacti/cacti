@@ -36,17 +36,17 @@ switch ($_REQUEST['action']) {
 	case 'item_remove':
 		item_remove();
 
-		header('Location: graph_templates.php?action=template_edit&id=' . $_REQUEST['graph_template_id']);
+		header('Location: graph_templates.php?header=false&action=template_edit&id=' . $_REQUEST['graph_template_id']);
 		break;
 	case 'item_movedown':
 		item_movedown();
 
-		header('Location: graph_templates.php?action=template_edit&id=' . $_REQUEST['graph_template_id']);
+		header('Location: graph_templates.php?header=false&action=template_edit&id=' . $_REQUEST['graph_template_id']);
 		break;
 	case 'item_moveup':
 		item_moveup();
 
-		header('Location: graph_templates.php?action=template_edit&id=' . $_REQUEST['graph_template_id']);
+		header('Location: graph_templates.php?header=false&action=template_edit&id=' . $_REQUEST['graph_template_id']);
 		break;
 	case 'item_edit':
 		top_header();
@@ -197,10 +197,10 @@ function form_save() {
 		}
 
 		if (is_error_message()) {
-			header('Location: graph_templates_items.php?action=item_edit&graph_template_item_id=' . (empty($graph_template_item_id) ? $_POST['graph_template_item_id'] : $graph_template_item_id) . '&id=' . $_POST['graph_template_id']);
+			header('Location: graph_templates_items.php?header=false&action=item_edit&graph_template_item_id=' . (empty($graph_template_item_id) ? $_POST['graph_template_item_id'] : $graph_template_item_id) . '&id=' . $_POST['graph_template_id']);
 			exit;
 		}else{
-			header('Location: graph_templates.php?action=template_edit&id=' . $_POST['graph_template_id']);
+			header('Location: graph_templates.php?header=false&action=template_edit&id=' . $_POST['graph_template_id']);
 			exit;
 		}
 	}
@@ -366,7 +366,6 @@ function item_edit() {
 
 	form_hidden_box('graph_template_item_id', (isset($template_item) ? $template_item['id'] : '0'), '');
 	form_hidden_box('graph_template_id', $_REQUEST['graph_template_id'], '0');
-	form_hidden_box('sequence', (isset($template_item) ? $template_item['sequence'] : '0'), '');
 	form_hidden_box('_graph_type_id', (isset($template_item) ? $template_item['graph_type_id'] : '0'), '');
 	form_hidden_box('_task_item_id', (isset($template_item) ? $template_item['task_item_id'] : '0'), '');
 	form_hidden_box('save_component_item', '1', '');
