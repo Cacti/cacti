@@ -308,12 +308,14 @@ function template_edit() {
 						</td>
 						<td>
 							<?php form_dropdown('graph_template_id',db_fetch_assoc_prepared('SELECT
-								graph_templates.id,
-								graph_templates.name
-								FROM graph_templates LEFT JOIN host_template_graph
-								ON (graph_templates.id = host_template_graph.graph_template_id AND host_template_graph.host_template_id = ?)
-								WHERE host_template_graph.host_template_id is null
-								ORDER BY graph_templates.name', array(get_request_var_request('id'))),'name','id','','','');?>
+								gt.id, gt.name
+								FROM graph_templates AS gt 
+								LEFT JOIN host_template_graph AS htg
+								ON gt.id=htg.graph_template_id 
+								AND htg.host_template_id = ?
+								WHERE htg.host_template_id IS NULL
+								AND gt.id NOT IN (SELECT graph_template_id FROM snmp_query_graph)
+								ORDER BY gt.name', array(get_request_var_request('id'))),'name','id','','','');?>
 						</td>
 						<td>
 							<input type='submit' value='Add' name='add_gt_x' title='Add Graph Template to Device Template'>
