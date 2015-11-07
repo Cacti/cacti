@@ -118,7 +118,7 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 		<form id='form_graph_view' method='post' action='<?php print $page;?>?action=preview'>
 			<table id='device' class='filterTable'>
 				<tr>
-					<?php print html_host_filter($_REQUEST['host_id']);?>
+					<?php print html_host_filter($_REQUEST['host_id'], 'applyGraphFilter');?>
 					<td>
 						Template
 					</td>
