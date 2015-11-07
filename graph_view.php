@@ -198,6 +198,16 @@ case 'tree_content':
 	var graph_start=<?php print get_current_graph_start();?>;
 	var graph_end=<?php print get_current_graph_end();?>;
 	var timeOffset=<?php print date('Z');?>
+
+	// Adjust the height of the tree
+	$(function() {
+		navHeight    = $('.cactiTreeNavigationArea').height();
+		windowHeight = $(window).height();
+		navOffset    = $('.cactiTreeNavigationArea').offset();
+		if (navHeight + navOffset.top < windowHeight) {
+			$('.cactiTreeNavigationArea').height(windowHeight - navOffset.top);
+		}
+	});
 	</script>
 	<?php
 
