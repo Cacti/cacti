@@ -346,7 +346,9 @@ function poller_update_poller_cache_from_buffer($local_data_ids, &$poller_items)
 			$count++;
 		}
 
-		db_execute("UPDATE poller_item SET present=0 WHERE local_data_id IN ($ids)");
+		if ($ids != '') {
+			db_execute("UPDATE poller_item SET present=0 WHERE local_data_id IN ($ids)");
+		}
 	} else {
 		/* don't mark anything in case we have no $local_data_ids => 
 		 *this would flush the whole table at bottom of this function */
