@@ -33,7 +33,7 @@ define('MAX_DISPLAY_PAGES', 21);
 $ds_actions = array(
 	1 => 'Delete',
 	2 => 'Duplicate'
-	);
+);
 
 /* set default action */
 if (!isset($_REQUEST['action'])) { $_REQUEST['action'] = ''; }
@@ -314,7 +314,7 @@ function form_actions() {
 
 	top_header();
 
-	form_satrt('data_templates.php');
+	form_start('data_templates.php');
 
 	html_start_box($ds_actions{$_POST['drp_action']}, '60%', '', '3', 'center', '');
 
