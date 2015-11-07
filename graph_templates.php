@@ -51,12 +51,12 @@ switch ($_REQUEST['action']) {
 	case 'template_remove':
 		template_remove();
 
-		header('Location: graph_templates.php');
+		header('Location: graph_templates.php?header=false');
 		break;
 	case 'input_remove':
 		input_remove();
 
-		header('Location: graph_templates.php?action=template_edit&id=' . $_REQUEST['graph_template_id']);
+		header('Location: graph_templates.php?header=false&action=template_edit&id=' . $_REQUEST['graph_template_id']);
 		break;
 	case 'input_edit':
 		top_header();
@@ -212,7 +212,7 @@ function form_actions() {
 			}
 		}
 
-		header('Location: graph_templates.php');
+		header('Location: graph_templates.php?header=false');
 		exit;
 	}
 
