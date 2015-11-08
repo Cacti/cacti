@@ -377,14 +377,14 @@ $struct_graph = array(
 		'friendly_name' => 'Image Format (--imgformat)',
 		'method' => 'drop_array',
 		'array' => $image_types,
-		'default' => '1',
+		'default' => read_config_option('default_image_format'),
 		'description' => 'The type of graph that is generated; PNG, GIF or SVG.  The selection of graph image type is very RRDtool dependent.'
 		),
 	'height' => array(
 		'friendly_name' => 'Height (--height)',
 		'method' => 'textbox',
 		'max_length' => '50',
-		'default' => '120',
+		'default' => read_config_option('default_graph_height'),
 		'description' => 'The height (in pixels) that the graph is.',
 		'size' => '7'
 		),
@@ -392,7 +392,7 @@ $struct_graph = array(
 		'friendly_name' => 'Width (--width)',
 		'method' => 'textbox',
 		'max_length' => '50',
-		'default' => '500',
+		'default' => read_config_option('default_graph_width'),
 		'description' => 'The width (in pixels) that the graph is.',
 		'size' => '7'
 		),

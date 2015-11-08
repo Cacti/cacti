@@ -341,19 +341,47 @@ $settings = array(
 			'collapsible' => 'true',
 			'method' => 'spacer',
 			),
+		'reindex_method' => array(
+			'friendly_name' => 'Default Reindex Method for Data Queries',
+			'description' => 'The default Reindex Method to use for all Data Queries.',
+			'method' => 'drop_array',
+			'default' => '1',
+			'array' => $reindex_types,
+			),
+		'default_image_format' => array(
+			'friendly_name' => 'Default Graph Template Image Format',
+			'description' => 'The default Image Format to be used for all new Graph Templates.',
+			'method' => 'drop_array',
+			'default' => '1',
+			'array' => $image_types,
+			),
+		'default_graph_width' => array(
+			'friendly_name' => 'Default Graph Template Width',
+			'description' => 'The default Graph Width to be used for all new Graph Templates.',
+			'method' => 'textbox',
+			'default' => '150',
+			'size' => '5',
+			'max_length' => '5'
+			),
+		'default_graph_height' => array(
+			'friendly_name' => 'Default Graph Template Height',
+			'description' => 'The default Graph Width to be used for all new Graph Templates.',
+			'method' => 'textbox',
+			'default' => '500',
+			'size' => '5',
+			'max_length' => '5'
+			),
+		'other1_header' => array(
+			'friendly_name' => 'Other Settings',
+			'collapsible' => 'true',
+			'method' => 'spacer',
+			),
 		'graph_auth_method' => array(
 			'friendly_name' => 'Graph Permission Method',
 			'description' => 'There are two methods for determining a Users Graph Permissions.  The first is "Permissive".  Under the "Permissive" setting, a User only needs access to either the Graph, Device or Graph Template to gain access to the Graphs that apply to them.  Under "Restrictive", the User must have access to the Graph, the Device, and the Graph Template to gain access to the Graph.',
 			'method' => 'drop_array',
 			'default' => '1',
 			'array' => array('1' => 'Permissive', '2' => 'Restrictive')
-			),
-		'reindex_method' => array(
-			'friendly_name' => 'Reindex Method for Data Queries',
-			'description' => 'The default reindex method to use for all Data Queries.',
-			'method' => 'drop_array',
-			'default' => '1',
-			'array' => $reindex_types,
 			),
 		'grds_creation_method' => array(
 			'method' => 'drop_array',
