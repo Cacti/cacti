@@ -36,7 +36,7 @@ switch ($_REQUEST['action']) {
 	case 'input_remove':
 		input_remove();
 
-		header('Location: graph_templates.php?action=template_edit&id=' . $_REQUEST['graph_template_id']);
+		header('Location: graph_templates.php?header=false&action=template_edit&id=' . $_REQUEST['graph_template_id']);
 		break;
 	case 'input_edit':
 		top_header();
@@ -111,10 +111,10 @@ function form_save() {
 		}
 
 		if (is_error_message()) {
-			header('Location: graph_templates_inputs.php?action=input_edit&graph_template_input_id=' . (empty($graph_template_input_id) ? $_POST['graph_template_input_id'] : $graph_template_input_id) . '&graph_template_id=' . $_POST['graph_template_id']);
+			header('Location: graph_templates_inputs.php?header=false&action=input_edit&graph_template_input_id=' . (empty($graph_template_input_id) ? $_POST['graph_template_input_id'] : $graph_template_input_id) . '&graph_template_id=' . $_POST['graph_template_id']);
 			exit;
 		}else{
-			header('Location: graph_templates.php?action=template_edit&id=' . $_POST['graph_template_id']);
+			header('Location: graph_templates.php?header=false&action=template_edit&id=' . $_POST['graph_template_id']);
 			exit;
 		}
 	}
@@ -166,10 +166,12 @@ function input_edit() {
 		$graph_template_input = db_fetch_row_prepared('SELECT * FROM graph_template_input WHERE id = ?', array(get_request_var_request('id')));
 	}
 
+	form_start('graph_templates_inputs.php');
+
 	html_start_box('Graph Item Inputs ' . htmlspecialchars($header_label), '100%', '', '3', 'center', '');
 
 	draw_edit_form(array(
-		'config' => array(),
+		'config' => array('no_form_tag' => true),
 		'fields' => inject_form_variables($fields_graph_template_input_edit, (isset($graph_template_input) ? $graph_template_input : array()), (isset($graph_template_items) ? $graph_template_items : array()), $_REQUEST)
 		));
 
@@ -191,15 +193,17 @@ function input_edit() {
 		AND graph_templates_item.graph_template_id = ?
 		ORDER BY graph_templates_item.sequence", array(get_request_var_request('id'), get_request_var_request('graph_template_id')));
 
-	form_alternate_row();?>
-		<td width="50%">
-			<font class="textEditTitle">Associated Graph Items</font><br>
-			Select the graph items that you want to accept user input for.
-		</td>
-		<td>
-		<?php
-		$i = 0; $any_selected_item = '';
-		if (sizeof($item_list) > 0) {
+	form_alternate_row();
+
+	?>
+	<td width="50%">
+		<font class="textEditTitle">Associated Graph Items</font><br>
+		Select the graph items that you want to accept user input for.
+	</td>
+	<td>
+	<?php
+	$i = 0; $any_selected_item = '';
+	if (sizeof($item_list) > 0) {
 		foreach ($item_list as $item) {
 			if ($item['graph_template_input_id'] == '') {
 				$old_value = '';
@@ -221,17 +225,17 @@ function input_edit() {
 
 			$i++;
 		}
-		}else{
-			print "<tr class='tableRow'><td><em>No Items</em></td></tr>";
-		}
-		?>
-		</td>
+	}else{
+		print "<tr class='tableRow'><td><em>No Items</em></td></tr>";
+	}
+	?>
+	</td>
 	</tr>
-
 	<?php
-	html_end_box();
 
 	form_hidden_box('any_selected_item', $any_selected_item, '');
+
+	html_end_box();
 
 	form_save_button('graph_templates.php?action=template_edit&id=' . $_REQUEST['graph_template_id']);
 }
