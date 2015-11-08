@@ -446,7 +446,7 @@ function template_edit() {
 }
 
 function template() {
-	global $graph_actions, $item_rows;
+	global $graph_actions, $item_rows, $image_types;
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var_request('page'));
@@ -591,7 +591,7 @@ function template() {
 
 	/* form the 'where' clause for our main sql query */
 	if (strlen($_REQUEST['filter'])) {
-		$sql_where = "WHERE (graph_templates.name LIKE '%%" . get_request_var_request('filter') . "%%')";
+		$sql_where = "WHERE (gt.name LIKE '%" . get_request_var_request('filter') . "%')";
 	}else{
 		$sql_where = '';
 	}
@@ -608,36 +608,46 @@ function template() {
 
 	$total_rows = db_fetch_cell("SELECT COUNT(rows)
 		FROM (SELECT
-			COUNT(graph_templates.id) AS rows,
-			COUNT(graph_local.id) AS graphs
-			FROM graph_templates
-			LEFT JOIN graph_local
-			ON graph_templates.id=graph_local.graph_template_id
+			COUNT(gt.id) AS rows,
+			COUNT(gl.id) AS graphs
+			FROM graph_templates AS gt
+			LEFT JOIN graph_local AS gl
+			ON gt.id=gl.graph_template_id
+			LEFT JOIN graph_templates_graph AS gtg
+			ON gtg.graph_template_id=gt.id
+			AND gtg.local_graph_id=0
 			$sql_where
-			GROUP BY graph_templates.id
+			GROUP BY gt.id
 			$sql_having
 		) AS rs");
 
 	$template_list = db_fetch_assoc("SELECT
-		graph_templates.id,graph_templates.name, COUNT(graph_local.id) AS graphs
-		FROM graph_templates
-		LEFT JOIN graph_local
-		ON graph_templates.id=graph_local.graph_template_id
+		gt.id, gt.name, CONCAT(gtg.height,'x',gtg.width) AS size, gtg.vertical_label, 
+		gtg.image_format_id, COUNT(gt.id) AS graphs
+		FROM graph_templates AS gt
+		LEFT JOIN graph_local AS gl
+		ON gt.id=gl.graph_template_id
+		LEFT JOIN graph_templates_graph AS gtg
+		ON gtg.graph_template_id=gt.id
+		AND gtg.local_graph_id=0
 		$sql_where
-		GROUP BY graph_templates.id
+		GROUP BY gt.id
 		$sql_having
 		ORDER BY " . get_request_var_request('sort_column') . ' ' . get_request_var_request('sort_direction') .
 		' LIMIT ' . (get_request_var_request('rows')*(get_request_var_request('page')-1)) . ',' . get_request_var_request('rows'));
 
-	$nav = html_nav_bar('graph_templates.php?filter=' . get_request_var_request('filter'), MAX_DISPLAY_PAGES, get_request_var_request('page'), get_request_var_request('rows'), $total_rows, 5, 'Graph Templates', 'page', 'main');
+	$nav = html_nav_bar('graph_templates.php?filter=' . get_request_var_request('filter'), MAX_DISPLAY_PAGES, get_request_var_request('page'), get_request_var_request('rows'), $total_rows, 8, 'Graph Templates', 'page', 'main');
 
 	print $nav;
 
 	$display_text = array(
-		'name' => array('display' => 'Graph Template Name', 'align' => 'left', 'sort' => 'ASC', 'tip' => 'The name of this Graph Template.'),
-		'nosort' => array('display' => 'Deletable', 'align' => 'right', 'tip' => 'Graph Templates that are in use can not be Deleted.  In use is defined as being referenced by a Graph.'), 
-		'graphs' => array('display' => 'Graphs Using', 'align' => 'right', 'sort' => 'DESC', 'tip' => 'The number of Graphs using this Graph Template.'),
-		'graph_templates.id' => array('display' => 'ID', 'align' => 'right', 'sort' => 'ASC', 'tip' => 'The internal ID for this Graph Template.  Useful when performing automation or debugging.')
+		'name'            => array('display' => 'Graph Template Name', 'align' => 'left', 'sort' => 'ASC', 'tip' => 'The name of this Graph Template.'),
+		'size'            => array('display' => 'Size', 'align' => 'right', 'sort' => 'ASC', 'tip' => 'The default size of the resulting Graphs.'),
+		'image_format_id' => array('display' => 'Image Format', 'align' => 'right', 'sort' => 'ASC', 'tip' => 'The default image formatefor the resulting Graphs.'),
+		'vertical_label'  => array('display' => 'Vertical Label', 'align' => 'right', 'sort' => 'ASC', 'tip' => 'The vertical label for the resulting Graphs.'),
+		'nosort3'         => array('display' => 'Deletable', 'align' => 'right', 'tip' => 'Graph Templates that are in use can not be Deleted.  In use is defined as being referenced by a Graph.'), 
+		'graphs'          => array('display' => 'Graphs Using', 'align' => 'right', 'sort' => 'DESC', 'tip' => 'The number of Graphs using this Graph Template.'),
+		'gt.id'           => array('display' => 'ID', 'align' => 'right', 'sort' => 'ASC', 'tip' => 'The internal ID for this Graph Template.  Useful when performing automation or debugging.')
 	);
 
 	html_header_sort_checkbox($display_text, get_request_var_request('sort_column'), get_request_var_request('sort_direction'), false);
@@ -652,6 +662,9 @@ function template() {
 			}
 			form_alternate_row('line' . $template['id'], true, $disabled);
 			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars('graph_templates.php?action=template_edit&id=' . $template['id']) . "'>" . (strlen(get_request_var_request('filter')) ? preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($template['name'])) : htmlspecialchars($template['name'])) . '</a>', $template['id']);
+			form_selectable_cell($template['size'], $template['id'], '', 'text-align:right');
+			form_selectable_cell($image_types[$template['image_format_id']], $template['id'], '', 'text-align:right');
+			form_selectable_cell($template['vertical_label'], $template['id'], '', 'text-align:right');
 			form_selectable_cell($disabled ? 'No':'Yes', $template['id'], '', 'text-align:right');
 			form_selectable_cell(number_format($template['graphs']), $template['id'], '', 'text-align:right');
 			form_selectable_cell($template['id'], $template['id'], '', 'text-align:right');
