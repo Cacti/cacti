@@ -519,7 +519,7 @@ function form_text_box($form_name, $form_previous_value, $form_default_value, $f
 		}
 	}
 
-	if (isset($_SESSION["sess_field_values"])) {
+	if (isset($_SESSION["sess_field_values"]) && isset($_SESSION["sess_error_fields"])) {
 		if (!empty($_SESSION["sess_field_values"][$form_name])) {
 			$form_previous_value = $_SESSION["sess_field_values"][$form_name];
 		}

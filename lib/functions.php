@@ -225,6 +225,7 @@ function read_config_option($config_name, $force = FALSE) {
    @returns - the original $field_value */
 function form_input_validate($field_value, $field_name, $regexp_match, $allow_nulls, $custom_message = 3) {
 	global $messages;
+
 	/* write current values to the "field_values" array so we can retain them */
 	$_SESSION['sess_field_values'][$field_name] = $field_value;
 
@@ -232,15 +233,14 @@ function form_input_validate($field_value, $field_name, $regexp_match, $allow_nu
 		return $field_value;
 	}
 
-	/* php 4.2+ complains about empty regexps */
-	if (empty($regexp_match)) { $regexp_match = '.*'; }
-
-	if ((!preg_match('/' . $regexp_match . '/', $field_value) || (($allow_nulls == false) && ($field_value === '')))) {
+	if ($allow_nulls == false && $field_value == '') {
 		raise_message($custom_message);
 
 		$_SESSION['sess_error_fields'][$field_name] = $field_name;
-	}else{
-		$_SESSION['sess_field_values'][$field_name] = $field_value;
+	}else if ($regexp_match != '' && !preg_match('/' . $regexp_match . '/', $field_value)) {
+		raise_message($custom_message);
+
+		$_SESSION['sess_error_fields'][$field_name] = $field_name;
 	}
 
 	return $field_value;
