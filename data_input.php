@@ -81,11 +81,11 @@ function form_save() {
 		input_validate_input_number(get_request_var_post('id'));
 		/* ==================================================== */
 
-		$save['id'] = $_POST['id'];
-		$save['hash'] = get_hash_data_input($_POST['id']);
-		$save['name'] = form_input_validate($_POST['name'], 'name', '', false, 3);
+		$save['id']           = $_POST['id'];
+		$save['hash']         = get_hash_data_input($_POST['id']);
+		$save['name']         = form_input_validate($_POST['name'], 'name', '', false, 3);
 		$save['input_string'] = form_input_validate($_POST['input_string'], 'input_string', '', true, 3);
-		$save['type_id'] = form_input_validate($_POST['type_id'], 'type_id', '^[0-9]+$', true, 3);
+		$save['type_id']      = form_input_validate($_POST['type_id'], 'type_id', '^[0-9]+$', true, 3);
 
 		if (!is_error_message()) {
 			$data_input_id = sql_save($save, 'data_input');
@@ -115,17 +115,17 @@ function form_save() {
 		input_validate_input_regex(get_request_var_post('input_output'), '^(in|out)$');
 		/* ==================================================== */
 
-		$save['id'] = $_POST['id'];
-		$save['hash'] = get_hash_data_input($_POST['id'], 'data_input_field');
+		$save['id']            = $_POST['id'];
+		$save['hash']          = get_hash_data_input($_POST['id'], 'data_input_field');
 		$save['data_input_id'] = $_POST['data_input_id'];
-		$save['name'] = form_input_validate($_POST['name'], 'name', '', false, 3);
-		$save['data_name'] = form_input_validate($_POST['data_name'], 'data_name', '', false, 3);
-		$save['input_output'] = $_POST['input_output'];
-		$save['update_rra'] = form_input_validate((isset($_POST['update_rra']) ? $_POST['update_rra'] : ''), 'update_rra', '', true, 3);
-		$save['sequence'] = $_POST['sequence'];
-		$save['type_code'] = form_input_validate((isset($_POST['type_code']) ? $_POST['type_code'] : ''), 'type_code', '', true, 3);
-		$save['regexp_match'] = form_input_validate((isset($_POST['regexp_match']) ? $_POST['regexp_match'] : ''), 'regexp_match', '', true, 3);
-		$save['allow_nulls'] = form_input_validate((isset($_POST['allow_nulls']) ? $_POST['allow_nulls'] : ''), 'allow_nulls', '', true, 3);
+		$save['name']          = form_input_validate($_POST['name'], 'name', '', false, 3);
+		$save['data_name']     = form_input_validate($_POST['data_name'], 'data_name', '', false, 3);
+		$save['input_output']  = $_POST['input_output'];
+		$save['update_rra']    = form_input_validate((isset($_POST['update_rra']) ? $_POST['update_rra'] : ''), 'update_rra', '', true, 3);
+		$save['sequence']      = $_POST['sequence'];
+		$save['type_code']     = form_input_validate((isset($_POST['type_code']) ? $_POST['type_code'] : ''), 'type_code', '', true, 3);
+		$save['regexp_match']  = form_input_validate((isset($_POST['regexp_match']) ? $_POST['regexp_match'] : ''), 'regexp_match', '', true, 3);
+		$save['allow_nulls']   = form_input_validate((isset($_POST['allow_nulls']) ? $_POST['allow_nulls'] : ''), 'allow_nulls', '', true, 3);
 
 		if (!is_error_message()) {
 			$data_input_field_id = sql_save($save, 'data_input_fields');
