@@ -52,7 +52,7 @@ function html_start_box($title, $width, $background_color, $cell_padding, $align
 					<tr>
 						<td class='textHeaderDark'><?php print $title;?></td>
 						<?php if ($add_text!= "") {?>
-						<td class='textHeaderDark' align='right'><a class="linkOverDark" href="<?php print htmlspecialchars($add_text);?>"><?php print $add_label;?></a>&nbsp;</td><?php }?>
+						<td class='textHeaderDark' align='right'><a style='padding-right:5px;' class="linkOverDark" href="<?php print htmlspecialchars($add_text);?>"><?php print $add_label;?></a></td><?php }?>
 					</tr>
 				</table>
 				<?php }?>
@@ -869,7 +869,7 @@ function draw_menu($user_menu = "") {
 
 		if ($show_header_items == true) {
 			// Let's give our menu li's a unique id
-			$id = 'menu_' . strtolower($header_name);
+			$id = 'menu_' . strtolower(clean_up_name($header_name));
 			if (isset($headers[$id])) {
 				$id .= '_' . $i;
 				$i++;
