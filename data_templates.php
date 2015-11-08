@@ -393,7 +393,7 @@ function template_rrd_add() {
 
 	$hash = get_hash_data_template(0, 'data_template_item');
 
-	db_execute_prepared("INSERT INTO data_template_rrd 
+	db_execute_prepared("INSERT IGNORE INTO data_template_rrd 
 		(hash, data_template_id, rrd_maximum, rrd_minimum, rrd_heartbeat, data_source_type_id, data_source_name) 
 	    VALUES (?, ?, 0, 0, 600, 1, 'ds')", array($hash, $_REQUEST['id']));
 
@@ -404,7 +404,7 @@ function template_rrd_add() {
 
 	if (sizeof($children) > 0) {
 	foreach ($children as $item) {
-		db_execute_prepared("INSERT INTO data_template_rrd 
+		db_execute_prepared("INSERT IGNORE INTO data_template_rrd 
 			(local_data_template_rrd_id, local_data_id, data_template_id, rrd_maximum, rrd_minimum, rrd_heartbeat, data_source_type_id, data_source_name) 
 			VALUES (?, ?, ?, 0, 0, 600, 1, 'ds')", array($data_template_rrd_id, $item['local_data_id'], $_REQUEST['id']));
 	}
