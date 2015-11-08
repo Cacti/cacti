@@ -474,8 +474,8 @@ function push_out_host($host_id, $local_data_id = 0, $data_template_id = 0) {
 		if (!isset($template_fields{$data_source["local_data_template_data_id"]})) {
 			$template_fields{$data_source["local_data_template_data_id"]} = db_fetch_assoc("SELECT
 				did.value, did.t_value, dif.id, dif.type_code
-                FROM data_input_fields AS dif
-                LEFT JOIN data_input_data AS did
+				FROM data_input_fields AS dif
+				LEFT JOIN data_input_data AS did
 				ON dif.id=did.data_input_field_id
 				WHERE dif.data_input_id=" . $data_source["data_input_id"] . "
 				AND did.data_template_data_id=" . $data_source["local_data_template_data_id"] . "
@@ -492,7 +492,10 @@ function push_out_host($host_id, $local_data_id = 0, $data_template_id = 0) {
 		if (sizeof($template_fields{$data_source["local_data_template_data_id"]})) {
 		foreach ($template_fields{$data_source["local_data_template_data_id"]} as $template_field) {
 			if ((preg_match('/^' . VALID_HOST_FIELDS . '$/i', $template_field["type_code"])) && ($template_field["value"] == "") && ($template_field["t_value"] == "")) {
-				db_execute_prepared('REPLACE INTO data_input_data (data_input_field_id, data_template_data_id, value) VALUES (?, ?, ?)', array($template_field['id'], $data_source['id'], $host{$template_field['type_code']}));
+				// handle special case type_code
+				if ($template_field['type_code'] == 'host_id') $template_field['type_code'] = 'id';
+
+				db_execute_prepared('REPLACE INTO data_input_data (data_input_field_id, data_template_data_id, value) VALUES (?, ?, ?)', array($template_field['id'], $data_source['id'], $host[$template_field['type_code']]));
 			}
 		}
 		}
