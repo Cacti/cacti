@@ -139,8 +139,8 @@ function draw_edit_control($field_name, &$field_array) {
 		break;
 	case 'textbox_password':
 		// Fake out firefox so that you don't get pre-set passwords
-		print "<input type='text' name='mylogin' style='display:none;'>\n";
-		print "<input type='password' name='mypassword' style='display:none;'>\n";
+		print "<input type='text' name='mylogin' style='display:none;' value='' autocomplete='off' disabled='disabled'>\n";
+		print "<input type='password' name='mypassword' style='display:none;' value='' autocomplete='off' disabled='disabled'>\n";
 
 		form_text_box(
 			$field_name, 
