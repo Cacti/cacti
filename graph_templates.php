@@ -623,7 +623,7 @@ function template() {
 
 	$template_list = db_fetch_assoc("SELECT
 		gt.id, gt.name, CONCAT(gtg.height,'x',gtg.width) AS size, gtg.vertical_label, 
-		gtg.image_format_id, COUNT(gt.id) AS graphs
+		gtg.image_format_id, COUNT(gl.id) AS graphs
 		FROM graph_templates AS gt
 		LEFT JOIN graph_local AS gl
 		ON gt.id=gl.graph_template_id
