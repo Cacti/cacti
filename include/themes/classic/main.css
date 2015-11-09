@@ -24,6 +24,7 @@ td, th, select {
 
 img {
 	border:none;
+	vertical-align:middle;
 }
 
 /* links */

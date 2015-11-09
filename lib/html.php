@@ -353,11 +353,11 @@ function graph_drilldown_icons($local_graph_id, $type = 'graph_buttons') {
 
 	$aggregate_url = aggregate_build_children_url($local_graph_id);
 
-	print "<span class='hyperLink utils' id='graph_" . $local_graph_id . "_util'><img class='drillDown' src='" . $config['url_path'] . "images/cog.png' border='0' alt='' title='Graph Details, Zooming and Debugging Utilities'></span><br>\n";
-	print "<span class='hyperLink csvexport' id='graph_" . $local_graph_id . "_csv'><img class='drillDown' src='" . $config['url_path'] . "images/table_go.png' border='0' alt='' title='CSV Export of Graph Data'></span><br>\n";
-	print "<span class='hyperLink mrgt' id='graph_" . $local_graph_id . "_mrtg'><img class='drillDown' src='" . $config['url_path'] . "images/mrtg.png' border='0' alt='' title='MRTG Graph View'></span><br>\n";
+	print "<span class='hyperLink utils' id='graph_" . $local_graph_id . "_util'><img class='drillDown' src='" . $config['url_path'] . "images/cog.png' alt='' title='Graph Details, Zooming and Debugging Utilities'></span><br>\n";
+	print "<span class='hyperLink csvexport' id='graph_" . $local_graph_id . "_csv'><img class='drillDown' src='" . $config['url_path'] . "images/table_go.png' alt='' title='CSV Export of Graph Data'></span><br>\n";
+	print "<span class='hyperLink mrgt' id='graph_" . $local_graph_id . "_mrtg'><img class='drillDown' src='" . $config['url_path'] . "images/mrtg.png' alt='' title='MRTG Graph View'></span><br>\n";
 	if (read_config_option('realtime_enabled') == 'on') {
-		print "<span class='hyperLink realtime' id='graph_" . $local_graph_id . "_realtime'><img class='drillDown' src='" . $config['url_path'] . "images/chart_curve_go.png' border='0' alt='' title='Click to view just this Graph in Realtime'></span><br/>\n";
+		print "<span class='hyperLink realtime' id='graph_" . $local_graph_id . "_realtime'><img class='drillDown' src='" . $config['url_path'] . "images/chart_curve_go.png' alt='' title='Click to view just this Graph in Realtime'></span><br/>\n";
 	}
 
 	if ($aggregate_url != '') {
@@ -1073,7 +1073,7 @@ function html_show_tabs_left($show_console_tab) {
 
 	if (read_config_option("selected_theme") == 'classic') {
 		if ($show_console_tab == true) {
-			?><a href="<?php echo $config['url_path']; ?>index.php"><img src="<?php echo $config['url_path']; ?>images/tab_console<?php print (is_console_page(basename($_SERVER['PHP_SELF'])) ? '_down':'');?>.gif" alt="Console" align="absmiddle" border="0"></a><?php
+			?><a href="<?php echo $config['url_path']; ?>index.php"><img src="<?php echo $config['url_path']; ?>images/tab_console<?php print (is_console_page(basename($_SERVER['PHP_SELF'])) ? '_down':'');?>.gif" alt="Console"></a><?php
 		}
 
 		if (is_realm_allowed(7)) {
@@ -1082,22 +1082,22 @@ function html_show_tabs_left($show_console_tab) {
 			if ($file == "graph_view.php" || $file == "graph_settings.php" || $file == "graph.php") {
 				print "_down";
 			} 
-			print ".gif";?>" alt="Graphs" align="absmiddle" border="0"></a><?php
+			print ".gif";?>" alt="Graphs"></a><?php
 		}
 
 		if (is_realm_allowed(21) || is_realm_allowed(22)) {
 			if (substr_count($_SERVER["REQUEST_URI"], "reports_")) {
-				print '<a href="' . $config['url_path'] . (is_realm_allowed(22) ? 'reports_admin.php':'reports_user.php') . '"><img src="' . $config['url_path'] . 'images/tab_nectar_down.gif" alt="Reporting" align="absmiddle" border="0"></a>';
+				print '<a href="' . $config['url_path'] . (is_realm_allowed(22) ? 'reports_admin.php':'reports_user.php') . '"><img src="' . $config['url_path'] . 'images/tab_nectar_down.gif" alt="Reporting"></a>';
 			}else{
-				print '<a href="' . $config['url_path'] . (is_realm_allowed(22) ? 'reports_admin.php':'reports_user.php') . '"><img src="' . $config['url_path'] . 'images/tab_nectar.gif" alt="Reporting" align="absmiddle" border="0"></a>';
+				print '<a href="' . $config['url_path'] . (is_realm_allowed(22) ? 'reports_admin.php':'reports_user.php') . '"><img src="' . $config['url_path'] . 'images/tab_nectar.gif" alt="Reporting"></a>';
 			}
 		}
 
 		if (is_realm_allowed(18) || is_realm_allowed(19)) {
 			if (substr_count($_SERVER["REQUEST_URI"], "clog")) {
-				print '<a href="' . $config['url_path'] . (is_realm_allowed(18) ? 'clog.php':'clog_user.php') . '"><img src="' . $config['url_path'] . 'images/tab_clog_down.png" alt="Cacti Log" align="absmiddle" border="0"></a>';
+				print '<a href="' . $config['url_path'] . (is_realm_allowed(18) ? 'clog.php':'clog_user.php') . '"><img src="' . $config['url_path'] . 'images/tab_clog_down.png" alt="Cacti Log"></a>';
 			}else{
-				print '<a href="' . $config['url_path'] . (is_realm_allowed(18) ? 'clog.php':'clog_user.php') . '"><img src="' . $config['url_path'] . 'images/tab_clog.png" alt="Cacti Log" align="absmiddle" border="0"></a>';
+				print '<a href="' . $config['url_path'] . (is_realm_allowed(18) ? 'clog.php':'clog_user.php') . '"><img src="' . $config['url_path'] . 'images/tab_clog.png" alt="Cacti Log"></a>';
 			}
 		}
 
@@ -1214,28 +1214,28 @@ function html_graph_tabs_right($current_user) {
 			if (basename($_SERVER["PHP_SELF"]) == "graph_settings.php") {
 				print "_down";
 			}
-			print '.gif" border="0" alt="Settings" align="absmiddle"></a>';
+			print '.gif" alt="Settings"></a>';
 		}?>&nbsp;&nbsp;<?php
 
 		if (is_view_allowed('show_tree')) {
 			?><a class='righttab' href="<?php print htmlspecialchars($config['url_path'] . "graph_view.php?action=tree");?>"><img src="<?php echo $config['url_path']; ?>images/tab_mode_tree<?php
 			if (isset($_REQUEST["action"]) && $_REQUEST["action"] == "tree") {
 				print "_down";
-			}?>.gif" border="0" title="Tree View" alt="Tree View" align="absmiddle"></a><?php
+			}?>.gif" title="Tree View" alt="Tree View"></a><?php
 		}?><?php
 
 		if (is_view_allowed('show_list')) {
 			?><a class='righttab' href="<?php print htmlspecialchars($config['url_path'] . "graph_view.php?action=list");?>"><img src="<?php echo $config['url_path']; ?>images/tab_mode_list<?php
 			if (isset($_REQUEST["action"]) && $_REQUEST["action"] == "list") {
 				print "_down";
-			}?>.gif" border="0" title="List View" alt="List View" align="absmiddle"></a><?php
+			}?>.gif" title="List View" alt="List View"></a><?php
 		}?><?php
 
 		if (is_view_allowed('show_preview')) {
 			?><a class='righttab' href="<?php print htmlspecialchars($config['url_path'] . "graph_view.php?action=preview");?>"><img src="<?php echo $config['url_path']; ?>images/tab_mode_preview<?php
 			if (isset($_REQUEST["action"]) && $_REQUEST["action"] == "preview") {
 				print "_down";
-			}?>.gif" border="0" title="Preview View" alt="Preview View" align="absmiddle"></a><?php
+			}?>.gif" title="Preview View" alt="Preview View"></a><?php
 		}?>&nbsp;<br>
 		<?php
 	}else{

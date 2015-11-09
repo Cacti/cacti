@@ -3278,14 +3278,14 @@ function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '
 				/* handle the body text */
 				switch ($attachment['inline']) {
 					case 'inline':
-						$body = str_replace('<GRAPH:' . $attachment['graphid'] . ':' . $attachment['timespan'] . '>', "<img border='0' src='cid:$cid' >", $body);
+						$body = str_replace('<GRAPH:' . $attachment['graphid'] . ':' . $attachment['timespan'] . '>', "<img src='cid:$cid' >", $body);
 						break;
 					case 'attachment':
 						$body = str_replace('<GRAPH:' . $attachment['graphid'] . ':' . $attachment['timespan'] . '>', '', $body);
 						break;
 				}
 			} else {
-				$body = str_replace('<GRAPH:' . $attachment['graphid'] . ':' . $attachment['timespan'] . '>', "<img border='0' src='" . $attachment['filename'] . "' ><br>Could not open!<br>" . $attachment['filename'], $body);
+				$body = str_replace('<GRAPH:' . $attachment['graphid'] . ':' . $attachment['timespan'] . '>', "<img src='" . $attachment['filename'] . "' ><br>Could not open!<br>" . $attachment['filename'], $body);
 			}
 
 			$i++;

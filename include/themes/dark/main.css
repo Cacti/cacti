@@ -48,6 +48,7 @@ td, th {
 
 img {
 	border:none;
+	vertical-align:middle;
 }
 
 /* links */

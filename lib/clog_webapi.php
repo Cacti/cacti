@@ -322,13 +322,13 @@ function filter() {
 						</select>
 					</td>
 					<td>
-						<input type='button' id='go' name='go' value='Go' alt='Go' border='0' align='absmiddle'>
+						<input type='button' id='go' name='go' value='Go' alt='Go'>
 					</td>
 					<td>
-						<input type='button' id='clear' name='clear' value='Clear' alt='Clear' border='0' align='absmiddle'>
+						<input type='button' id='clear' name='clear' value='Clear' alt='Clear'>
 					</td>
 					<td>
-						<?php if (clog_admin()) {?><input type='button' id='purge' name='purge' value='Purge' alt='Purge' border='0' align='absmiddle'><?php }?>
+						<?php if (clog_admin()) {?><input type='button' id='purge' name='purge' value='Purge' alt='Purge'><?php }?>
 					</td>
 				</tr>
 				<tr>

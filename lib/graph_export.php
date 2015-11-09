@@ -658,7 +658,7 @@ function classical_export($cacti_root_path, $cacti_export_path) {
 				$total_graphs_created++;
 
 				/* write image related html */
-				fwrite($fp_graph_index, "<div align=center><img src='graphs/graph_" . $graph["local_graph_id"] . "_" . $rra["id"] . ".png' border=0></div>\n
+				fwrite($fp_graph_index, "<div align=center><img src='graphs/graph_" . $graph["local_graph_id"] . "_" . $rra["id"] . ".png'></div>\n
 					<div align=center><strong>" . $rra["name"] . "</strong></div><br>");
 			}
 
@@ -1129,7 +1129,7 @@ function build_html_file($leaf, $type = "", $array_data = array(), $snmp_index =
 		/* write the right pane syntax */
 		if ($leaf["tree_id"] != 0) {
 			/* main graph page html */
-			fwrite($fp, "<td align='center'><a href='" . "graph_" . $graph["local_graph_id"] . ".html'><img src='graphs/thumb_" . $graph["local_graph_id"] . ".png' border='0' alt='" . $graph["title_cache"] . "'></a></td>\n");
+			fwrite($fp, "<td align='center'><a href='" . "graph_" . $graph["local_graph_id"] . ".html'><img src='graphs/thumb_" . $graph["local_graph_id"] . ".png'></a></td>\n");
 
 			/* do new column processing */
 			$i++;
@@ -1391,10 +1391,10 @@ function export_tree_graphs_and_graph_html($path, $tree_id) {
 
 				/* write image related html */
 				if (read_config_option("export_tree_isolation") == "off") {
-					fwrite($fp_graph_index, "<div align=center><img src='graphs/graph_" . $graph["local_graph_id"] . "_" . $rra["id"] . ".png' border=0></div>\n
+					fwrite($fp_graph_index, "<div align=center><img src='graphs/graph_" . $graph["local_graph_id"] . "_" . $rra["id"] . ".png'></div>\n
 						<div align=center><strong>".$rra["name"]."</strong></div><br>");
 				}else{
-					fwrite($fp_graph_index, "<div align=center><img src='" . "graphs/graph_" . $graph["local_graph_id"] . "_" . $rra["id"] . ".png' border=0></div>\n
+					fwrite($fp_graph_index, "<div align=center><img src='" . "graphs/graph_" . $graph["local_graph_id"] . "_" . $rra["id"] . ".png'></div>\n
 						<div align=center><strong>".$rra["name"]."</strong></div><br>");
 				}
 			}
@@ -1960,7 +1960,7 @@ define("HTML_HEADER_TREE",
 			<table>
 				<tr>
 					<td nowrap>
-						&nbsp;<a href='http://www.cacti.net/'><img src='tab_cacti.gif' alt='Cacti - http://www.cacti.net/' align='middle' border='0'></a>
+						&nbsp;<a href='http://www.cacti.net/'><img src='tab_cacti.gif' alt='Cacti - http://www.cacti.net/' align='middle'></a>
 					</td>
 					<td align='right'>
 						<img src='cacti_backdrop.gif' align='middle'>
@@ -1971,7 +1971,7 @@ define("HTML_HEADER_TREE",
 	</tr>
 	<tr style='height:2px;' colspan='2' bgcolor='#183c8f'>
 		<td colspan='2'>
-			<img src='transparent_line.gif' style='width:170px;height:2px;' border='0'><br>
+			<img src='transparent_line.gif' style='width:170px;height:2px;'><br>
 		</td>
 	</tr>
 	<tr style='height:5px;' bgcolor='#e9e9e9'>
@@ -1987,7 +1987,7 @@ define("HTML_HEADER_TREE",
 	</tr>
 	<tr>
 		<td bgcolor='#efefef' colspan='1' style='height:8px;background-image: url(shadow_gray.gif); background-repeat: repeat-x; border-right: #aaaaaa 1px solid;'>
-			<img src='transparent_line.gif' width='200' style='height:2px;' border='0'><br>
+			<img src='transparent_line.gif' width='200' style='height:2px;'><br>
 		</td>
 		<td bgcolor='#ffffff' colspan='1' style='height:8px;background-image: url(shadow.gif); background-repeat: repeat-x;'>
 		</td>
@@ -2046,7 +2046,7 @@ define("HTML_HEADER_CLASSIC", "
 				<table>
 					<tr>
 						<td valign='bottom'>
-							&nbsp;<a href='http://www.cacti.net/'><img src='tab_cacti.gif' alt='Cacti - http://www.cacti.net/' align='middle' border='0'></a>
+							&nbsp;<a href='http://www.cacti.net/'><img src='tab_cacti.gif' alt='Cacti - http://www.cacti.net/' align='middle'></a>
 						</td>
 						<td align='right'>
 							<img src='cacti_backdrop.gif' align='middle'>
@@ -2057,7 +2057,7 @@ define("HTML_HEADER_CLASSIC", "
 		</tr>\n
 		<tr style='height:2px;' bgcolor='#183c8f'>
 			<td colspan='3'>
-				<img src='transparent_line.gif' style='width:170px;height:2px;' border='0'><br>
+				<img src='transparent_line.gif' style='width:170px;height:2px;'><br>
 			</td>
 		</tr>\n
 		<tr style='height:5px;' bgcolor='#e9e9e9'>
