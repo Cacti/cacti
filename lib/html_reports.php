@@ -1120,33 +1120,32 @@ function reports_edit() {
 
 		?>
 		<script type='text/javascript'>
-		var cformat = document.getElementById('cformat');
-		cformat.setAttribute('onclick', 'changeFormat()');
-
-		function addLoadEvent(func) {
-			if(typeof window.onload != 'function')
-				window.onload = func;
-			else {
-				var oldLoad = window.onload;
-
-				window.onload = function() {
-					if(oldLoad) oldLoad();
-					func();
-				}
-			}
-		}
-					
 		function changeFormat() {
 			if (cformat && cformat.checked) {
-				document.getElementById('row_font_size').style.display='none';
-				document.getElementById('row_format_file').style.display='';
+				$('#row_font_size').hide();
+				$('#row_format_file').show();
 			}else{
-				document.getElementById('row_font_size').style.display='';
-				document.getElementById('row_format_file').style.display='none';
+				$('#row_font_size').show();
+				$('#row_format_file').hide();
 			}
 		}
 
-		addLoadEvent(changeFormat);
+		$(function() {
+	                $('#mailtime').datetimepicker({
+				minuteGrid: 10,
+				stepMinute: 1,
+				showAnim: 'slideDown',
+				numberOfMonths: 1,
+				timeFormat: 'HH:mm',
+				dateFormat: 'yy-mm-dd'
+			});
+
+			$('#cformat').click(function() {
+				changeFormat();
+			});
+
+			changeFormat();
+		});
 		</script>
 		<?php
 

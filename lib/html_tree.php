@@ -620,7 +620,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 							<input type='text' id='date1' title='Graph Begin Timestamp' size='18' value='<?php print (isset($_SESSION['sess_current_date1']) ? $_SESSION['sess_current_date1'] : '');?>'>
 						</td>
 						<td>
-							<input type='image' src='images/calendar.gif' align='middle' alt='Start date selector' title='Start date selector' onclick="return showCalendar('date1');">
+                                                        <i id='startDate' class='calendar fa fa-calendar' title='Start Date Selector'></i>
 						</td>
 						<td>
 							To
@@ -629,11 +629,11 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 							<input type='text' id='date2' title='Graph End Timestamp' size='18' value='<?php print (isset($_SESSION['sess_current_date2']) ? $_SESSION['sess_current_date2'] : '');?>'>
 						</td>
 						<td>
-							<input type='image' src='images/calendar.gif' align='middle' alt='End date selector' title='End date selector' onclick="return showCalendar('date2');">
-						</td>
-						<td>
-							<img style='vertical-align:middle;border:0px;cursor:pointer;' src='images/move_left.gif' alt='' title='Shift Left' onClick='timeshiftGraphFilterLeft()'/>
-						</td>
+							<i id='endDate' class='calendar fa fa-calendar' title='End Date Selector'></i>
+                                                </td>
+                                                <td>
+							<i class='shiftArrow fa fa-backward' onClick='timeshiftGraphFilterLeft()' title='Shift Time Backward'></i>
+                                                </td>
 						<td>
 							<select id='predefined_timeshift' name='predefined_timeshift' title='Define Shifting Interval'>
 								<?php
@@ -648,7 +648,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 							</select>
 						</td>
 						<td>
-							<img style='vertical-align:middle;border:0px;cursor:pointer;' name='move_right' src='images/move_right.gif' alt='' title='Shift Right' onClick='timeshiftGraphFilterRight()'/>
+							<i class='shiftArrow fa fa-backward' onClick='timeshiftGraphFilterRight()' title='Shift Time Forward'></i>
 						</td>
 						<td>
 							<input type='button' name='button_refresh_x' value='Refresh' title='Refresh selected time span' onClick='refreshGraphTimespanFilter()'>
@@ -704,6 +704,32 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 	var graphPage  = 'graph_view.php';
 
 	$(function() {
+		$('#startDate').click(function() {
+			$('#date1').datetimepicker('show');
+		});
+
+		$('#endDate').click(function() {
+			$('#date2').datetimepicker('show');
+		});
+
+                $('#date1').datetimepicker({
+                        minuteGrid: 10,
+                        stepMinute: 1,
+			showAnim: 'slideDown',
+			numberOfMonths: 1,
+                        timeFormat: 'HH:mm',
+                        dateFormat: 'yy-mm-dd'
+                });
+
+                $('#date2').datetimepicker({
+                        minuteGrid: 10,
+                        stepMinute: 1,
+			showAnim: 'slideDown',
+			numberOfMonths: 1,
+                        timeFormat: 'HH:mm',
+                        dateFormat: 'yy-mm-dd'
+                });
+
 		var navBar = "<div id='navBar' class='navBar'><?php print draw_navigation_text();?></div>";
 		if (navBar != '') {
 			$('#navBar').replaceWith(navBar);

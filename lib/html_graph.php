@@ -118,7 +118,7 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 		<form id='form_graph_view' method='post' action='<?php print $page;?>?action=preview'>
 			<table id='device' class='filterTable'>
 				<tr>
-					<?php print html_host_filter($_REQUEST['host_id'], 'applyGraphFilter');?>
+					<?php print html_host_filter($_REQUEST['host_id']);?>
 					<td>
 						Template
 					</td>
@@ -204,6 +204,32 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 	var graphPage  = '<?php print $page;?>';
 
 	$(function() {
+		$('#startDate').click(function() {
+			$('#date1').datetimepicker('show');
+		});
+
+		$('#endDate').click(function() {
+			$('#date2').datetimepicker('show');
+		});
+
+                $('#date1').datetimepicker({
+                        minuteGrid: 10,
+                        stepMinute: 1,
+			showAnim: 'slideDown',
+			numberOfMonths: 1,
+                        timeFormat: 'HH:mm',
+                        dateFormat: 'yy-mm-dd'
+                });
+
+                $('#date2').datetimepicker({
+                        minuteGrid: 10,
+                        stepMinute: 1,
+			showAnim: 'slideDown',
+			numberOfMonths: 1,
+                        timeFormat: 'HH:mm',
+                        dateFormat: 'yy-mm-dd'
+                });
+
 		initializeGraphs();
 	});
 
@@ -252,7 +278,7 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 							<input type='text' id='date1' title='Graph Begin Timestamp' size='18' value='<?php print (isset($_SESSION['sess_current_date1']) ? $_SESSION['sess_current_date1'] : '');?>'>
 						</td>
 						<td>
-							<input type='image' src='<?php print $config['url_path'];?>images/calendar.gif' align='middle' alt='Start date selector' title='Start date selector' onclick="return showCalendar('date1');">
+							<i id='startDate' class='calendar fa fa-calendar' title='Start Date Selector'></i>
 						</td>
 						<td>
 							To
@@ -261,10 +287,10 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 							<input type='text' id='date2' title='Graph End Timestamp' size='18' value='<?php print (isset($_SESSION['sess_current_date2']) ? $_SESSION['sess_current_date2'] : '');?>'>
 						</td>
 						<td>
-							<input type='image' src='<?php print $config['url_path'];?>images/calendar.gif' align='middle' alt='End date selector' title='End date selector' onclick="return showCalendar('date2');">
+							<i id='endDate' class='calendar fa fa-calendar' title='End Date Selector'></i>
 						</td>
 						<td>
-							<img style='vertical-align:middle;border:0px;cursor:pointer;' src='<?php print $config['url_path'];?>images/move_left.gif' alt='' title='Shift Left' onClick='timeshiftGraphFilterLeft()'/>
+							<i class='shiftArrow fa fa-backward' onClick='timeshiftGraphFilterLeft()' title='Shift Time Backward'></i>
 						</td>
 						<td>
 							<select id='predefined_timeshift' name='predefined_timeshift' title='Define Shifting Interval'>
@@ -280,7 +306,7 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 							</select>
 						</td>
 						<td>
-							<img style='vertical-align:middle;border:0px;cursor:pointer;' name='move_right' src='<?php print $config['url_path'];?>images/move_right.gif' alt='' title='Shift Right' onClick='timeshiftGraphFilterRight()'/>
+							<i class='shiftArrow fa fa-forward' onClick='timeshiftGraphFilterRight()' title='Shift Time Forward'></i>
 						</td>
 						<td>
 							<input type='button' value='Refresh' name='button_refresh_x' title='Refresh selected time span' onClick='refreshGraphTimespanFilter()'>
