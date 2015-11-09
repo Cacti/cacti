@@ -355,19 +355,19 @@ $settings = array(
 			'default' => '1',
 			'array' => $image_types,
 			),
-		'default_graph_width' => array(
-			'friendly_name' => 'Default Graph Template Width',
-			'description' => 'The default Graph Width to be used for all new Graph Templates.',
-			'method' => 'textbox',
-			'default' => '500',
-			'size' => '5',
-			'max_length' => '5'
-			),
 		'default_graph_height' => array(
 			'friendly_name' => 'Default Graph Template Height',
 			'description' => 'The default Graph Width to be used for all new Graph Templates.',
 			'method' => 'textbox',
 			'default' => '150',
+			'size' => '5',
+			'max_length' => '5'
+			),
+		'default_graph_width' => array(
+			'friendly_name' => 'Default Graph Template Width',
+			'description' => 'The default Graph Width to be used for all new Graph Templates.',
+			'method' => 'textbox',
+			'default' => '500',
 			'size' => '5',
 			'max_length' => '5'
 			),
