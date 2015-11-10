@@ -870,7 +870,8 @@ function refreshGraphTimespanFilter() {
 		date1: $('#date1').val(), 
 		date2: $('#date2').val(), 
 		predefined_timespan: $('#predefined_timespan').val(), 
-		predefined_timeshift: $('#predefined_timeshift').val()
+		predefined_timeshift: $('#predefined_timeshift').val(),
+		__csrf_magic: csrfMagicToken
 	};
 
 	var url  = graphPage+'?action='+pageAction+'&header=false';
@@ -888,7 +889,8 @@ function timeshiftGraphFilterLeft() {
 		date1: $('#date1').val(), 
 		date2: $('#date2').val(), 
 		predefined_timespan: $('#predefined_timespan').val(), 
-		predefined_timeshift: $('#predefined_timeshift').val() 
+		predefined_timeshift: $('#predefined_timeshift').val(),
+		__csrf_magic: csrfMagicToken
 	};
 
 	var url  = graphPage+'?action='+pageAction+'&header=false';
@@ -906,7 +908,8 @@ function timeshiftGraphFilterRight() {
 		date1: $('#date1').val(), 
 		date2: $('#date2').val(), 
 		predefined_timespan: $('#predefined_timespan').val(), 
-		predefined_timeshift: $('#predefined_timeshift').val() 
+		predefined_timeshift: $('#predefined_timeshift').val(),
+		__csrf_magic: csrfMagicToken
 	};
 
 	var url  = graphPage+'?action='+pageAction+'&header=false';
@@ -923,7 +926,8 @@ function clearGraphTimespanFilter() {
 		date1: $('#date1').val(), 
 		date2: $('#date2').val(), 
 		predefined_timespan: $('#predefined_timespan').val(), 
-		predefined_timeshift: $('#predefined_timeshift').val()
+		predefined_timeshift: $('#predefined_timeshift').val(),
+		__csrf_magic: csrfMagicToken
 	};
 
 	var url  = graphPage+'?action='+pageAction+'&header=false';
