@@ -96,7 +96,7 @@ function html_graph_validate_preview_request_vars() {
 		if ($changed) $_REQUEST['page'] = 1;
 	}
 
-	load_current_session_value('host_id', 'sess_graph_view_host', '0');
+	load_current_session_value('host_id', 'sess_graph_view_host', '-1');
 	load_current_session_value('graph_template_id', 'sess_graph_view_graph_template', '0');
 	load_current_session_value('filter', 'sess_graph_view_filter', '');
 	load_current_session_value('style', 'sess_graph_view_style', '');
@@ -118,7 +118,7 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 		<form id='form_graph_view' method='post' action='<?php print $page;?>?action=preview'>
 			<table id='device' class='filterTable'>
 				<tr>
-					<?php print html_host_filter($_REQUEST['host_id']);?>
+					<?php print html_host_filter($_REQUEST['host_id'], 'applyGraphFilter');?>
 					<td>
 						Template
 					</td>
@@ -202,14 +202,28 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 	var timeOffset=<?php print date('Z');?>;
 	var pageAction ='<?php print $action;?>';
 	var graphPage  = '<?php print $page;?>';
+	var date1Open = false;
+	var date2Open = false;
 
 	$(function() {
 		$('#startDate').click(function() {
-			$('#date1').datetimepicker('show');
+			if (date1Open) {
+				date1Open = false;
+				$('#date1').datetimepicker('hide');
+			}else{
+				date1Open = true;
+				$('#date1').datetimepicker('show');
+			}
 		});
 
 		$('#endDate').click(function() {
-			$('#date2').datetimepicker('show');
+			if (date2Open) {
+				date2Open = false;
+				$('#date2').datetimepicker('hide');
+			}else{
+				date2Open = true;
+				$('#date2').datetimepicker('show');
+			}
 		});
 
                 $('#date1').datetimepicker({

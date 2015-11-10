@@ -648,7 +648,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 							</select>
 						</td>
 						<td>
-							<i class='shiftArrow fa fa-backward' onClick='timeshiftGraphFilterRight()' title='Shift Time Forward'></i>
+							<i class='shiftArrow fa fa-forward' onClick='timeshiftGraphFilterRight()' title='Shift Time Forward'></i>
 						</td>
 						<td>
 							<input type='button' name='button_refresh_x' value='Refresh' title='Refresh selected time span' onClick='refreshGraphTimespanFilter()'>
@@ -702,14 +702,28 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 	var timeOffset=<?php print date('Z');?>;
 	var pageAction ='tree_content';
 	var graphPage  = 'graph_view.php';
+	var date1Open  = false;
+	var date2Open  = false;
 
 	$(function() {
 		$('#startDate').click(function() {
-			$('#date1').datetimepicker('show');
+			if (date1Open) {
+				date1Open = false;
+				$('#date1').datetimepicker('hide');
+			}else{
+				date1Open = true;
+				$('#date1').datetimepicker('show');
+			}
 		});
 
 		$('#endDate').click(function() {
-			$('#date2').datetimepicker('show');
+			if (date2Open) {
+				date2Open = false;
+				$('#date2').datetimepicker('hide');
+			}else{
+				date2Open = true;
+				$('#date2').datetimepicker('show');
+			}
 		});
 
                 $('#date1').datetimepicker({

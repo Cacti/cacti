@@ -194,11 +194,6 @@ label {
 	border:none;
 }
 
-.action {
-	cursor:pointer;
-	padding:2px;
-}
-
 .monoSpace {
 	font-size:9px;
 	font-family: monospace;
@@ -1124,6 +1119,11 @@ th.sortable {
 
 .moveArrowNone {
 	padding-left:15px;
+}
+
+.action, .shiftArrow, .calendar {
+	cursor: pointer;
+	padding:2px;
 }
 
 td.tab {

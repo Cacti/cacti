@@ -200,8 +200,8 @@ label {
 	padding-left:15px;
 }
 
-.action {
-	cursor:pointer;
+.action, .shiftArrow, .calendar {
+	cursor: pointer;
 	padding:2px;
 }
 
