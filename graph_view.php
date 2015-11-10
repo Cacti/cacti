@@ -382,7 +382,7 @@ case 'list':
 		if ($changed) $_REQUEST['page'] = 1;
 	}
 
-	load_current_session_value('host_id', 'sess_graph_view_list_host', '0');
+	load_current_session_value('host_id', 'sess_graph_view_list_host', '-1');
 	load_current_session_value('graph_template_id', 'sess_graph_view_list_graph_template', '0');
 	load_current_session_value('filter', 'sess_graph_view_list_filter', '');
 	load_current_session_value('page', 'sess_graph_view_list_current_page', '1');
@@ -490,7 +490,7 @@ case 'list':
 	/* create filter for sql */
 	$sql_where  = '';
 	$sql_where .= (empty($_REQUEST['filter']) ? '' : " gtg.title_cache LIKE '%" . get_request_var_request('filter') . "%'");
-	$sql_where .= ($_REQUEST['host_id'] >= 0 ? '' : (empty($sql_filter) ? '' : ' AND') . ' gl.host_id=' . get_request_var_request('host_id'));
+	$sql_where .= ($_REQUEST['host_id'] < 0 ? '' : (empty($sql_filter) ? '' : ' AND') . ' gl.host_id=' . get_request_var_request('host_id'));
 	$sql_where .= (empty($_REQUEST['graph_template_id']) ? '' : (empty($sql_filter) ? '' : ' AND') . ' gl.graph_template_id=' . get_request_var_request('graph_template_id'));
 
 	$total_rows = 0;
