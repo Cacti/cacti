@@ -100,7 +100,11 @@ function themeReady() {
 		minLength: 0,
 		select: function(event,ui) {
 			$('#host_id').val(ui.item.id);
-			applyFilter();
+			if (typeof applyFilter === 'function') {
+				applyFilter();
+			}else{
+				applyGraphFilter();
+			}
 		}
 	}).addClass('ui-state-default ui-selectmenu-text').css('border', 'none').css('background-color', 'transparent');
 
