@@ -1028,7 +1028,23 @@ $fields_data_query_item_edit = array(
 		'friendly_name' => 'Graph Template',
 		'description' => 'Choose the Graph Template to use for this Data Query Graph Template item.',
 		'value' => '|arg1:graph_template_id|',
-		'sql' => 'SELECT id,name from graph_templates ORDER BY name',
+		'sql' => 'SELECT DISTINCT gt.id, gt.name
+			FROM graph_templates AS gt
+			INNER JOIN graph_templates_graph AS gtg
+			ON gt.id=gtg.graph_template_id
+			AND gtg.local_graph_id=0
+			INNER JOIN graph_templates_item AS gti
+			ON gtg.graph_template_id=gti.graph_template_id
+			AND gti.local_graph_id=0
+			INNER JOIN data_template_rrd AS dtr
+			ON gti.task_item_id=dtr.id
+			AND dtr.local_data_id=0
+			INNER JOIN data_template_data AS dtd
+			ON dtd.data_template_id=dtr.data_template_id
+			AND dtd.local_data_id=0
+			INNER JOIN data_input AS di
+			ON di.id=dtd.data_input_id
+			WHERE di.id in (2,11,12) ORDER BY gt.name',
 		),
 	'name' => array(
 		'method' => 'textbox',

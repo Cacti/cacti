@@ -132,7 +132,7 @@ function form_save() {
 			}
 		}
 
-		header('Location: data_queries.php?action=edit&id=' . (empty($snmp_query_id) ? $_POST['id'] : $snmp_query_id));
+		header('Location: data_queries.php?header=false&action=edit&id=' . (empty($snmp_query_id) ? $_POST['id'] : $snmp_query_id));
 	}elseif (isset($_POST['save_component_snmp_query_item'])) {
 		/* ================= input validation ================= */
 		input_validate_input_number(get_request_var_post('id'));
@@ -209,7 +209,7 @@ function form_save() {
 			}
 		}
 
-		header('Location: data_queries.php?action=item_edit' . $header . '&id=' . (empty($snmp_query_graph_id) ? $_POST['id'] : $snmp_query_graph_id) . '&snmp_query_id=' . $_POST['snmp_query_id']);
+		header('Location: data_queries.php?header=false&action=item_edit' . $header . '&id=' . (empty($snmp_query_graph_id) ? $_POST['id'] : $snmp_query_graph_id) . '&snmp_query_id=' . $_POST['snmp_query_id']);
 	}
 }
 
@@ -232,7 +232,7 @@ function form_actions() {
 			}
 		}
 
-		header('Location: data_queries.php');
+		header('Location: data_queries.php?header=false');
 		exit;
 	}
 
@@ -799,14 +799,12 @@ function data_query_edit() {
 					<th class='tableSubHeaderColumn right' style='width:60px;'>Action</td>
 				</tr>";
 
-			$snmp_query_graphs = db_fetch_assoc_prepared('SELECT
-				snmp_query_graph.id,
-				graph_templates.name AS graph_template_name,
-				snmp_query_graph.name
-				FROM snmp_query_graph
-				LEFT JOIN graph_templates ON (snmp_query_graph.graph_template_id = graph_templates.id)
-				WHERE snmp_query_graph.snmp_query_id = ?
-				ORDER BY snmp_query_graph.name', array($snmp_query['id']));
+			$snmp_query_graphs = db_fetch_assoc_prepared('SELECT sqg.id, gt.name AS graph_template_name, sqg.name
+				FROM snmp_query_graph AS sqg
+				LEFT JOIN graph_templates AS gt
+				ON (sqg.graph_template_id = gt.id)
+				WHERE sqg.snmp_query_id = ?
+				ORDER BY sqg.name', array($snmp_query['id']));
 
 			$i = 0;
 			if (sizeof($snmp_query_graphs) > 0) {
