@@ -150,10 +150,13 @@ db_connect_real($database_hostname, $database_username, $database_password, $dat
 include_once($config['library_path'] . '/functions.php');
 include_once($config['include_path'] . '/global_constants.php');
 
-if (isset($no_http_headers) || in_array(basename($_SERVER['PHP_SELF']), $no_http_header_files, true) || $_SERVER['PHP_SELF'] == '') {
-	// No Headers or session for this use
-}else{
-	//if ((!in_array(basename($_SERVER['PHP_SELF']), $no_http_header_files, true)) && ($_SERVER['PHP_SELF'] != '')) {
+if ((isset($no_http_headers) && $no_http_headers == true) || in_array(basename($_SERVER['PHP_SELF']), $no_http_header_files, true)) {
+	$is_web = false;
+
+	// Don't start a session, this is the CLI
+}elseif ($_SERVER['PHP_SELF'] != '') {
+	$is_web = true;
+
 	/* Sanity Check on "Corrupt" PHP_SELF */
 	if ($_SERVER['SCRIPT_NAME'] != $_SERVER['PHP_SELF']) {
 		echo "\nInvalid PHP_SELF Path \n";
@@ -195,6 +198,8 @@ if (isset($no_http_headers) || in_array(basename($_SERVER['PHP_SELF']), $no_http
 			session_destroy();
 		}
 	}
+}else{
+	$is_web = false;
 }
 
 /* emulate 'register_globals' = 'off' if turned on */
@@ -242,16 +247,18 @@ include_once($config['library_path'] . '/aggregate.php');
 include_once($config['library_path'] . '/api_automation.php');
 
 /* cross site request forgery library */
-include_once($config['include_path'] . '/csrf/csrf-magic.php');
-function csrf_startup() {
-	global $config;
-	csrf_conf('rewrite-js', $config['url_path'] . 'include/csrf/csrf-magic.js');
-}
+if ($is_web) {
+	function csrf_startup() {
+		global $config;
+		csrf_conf('rewrite-js', $config['url_path'] . 'include/csrf/csrf-magic.js');
+	}
+	include_once($config['include_path'] . '/csrf/csrf-magic.php');
 
-if (read_config_option('force_https') == 'on') {
-	if (!isset($_SERVER['HTTPS']) && isset($_SERVER['HTTP_HOST']) && isset($_SERVER['REQUEST_URI'])) {
-		Header('Location: https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] . "\n\n");
-		exit;
+	if (read_config_option('force_https') == 'on') {
+		if (!isset($_SERVER['HTTPS']) && isset($_SERVER['HTTP_HOST']) && isset($_SERVER['REQUEST_URI'])) {
+			Header('Location: https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] . "\n\n");
+			exit;
+		}
 	}
 }
 
