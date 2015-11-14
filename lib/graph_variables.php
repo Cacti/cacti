@@ -476,7 +476,7 @@ function variable_bandwidth_summation(&$regexp_match_array, &$graph_item, &$grap
 		$summation /= pow(10,intval($regexp_match_array[1]));
 	}elseif ($regexp_match_array[1] == "auto") {
 		if ($summation < 1000) {
-			$summation_label = "bytes";
+			$summation_label = "B";
 		}elseif ($summation < 1000000) {
 			$summation_label = "KB";
 			$summation /= 1000;
