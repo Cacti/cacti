@@ -3646,10 +3646,19 @@ function cacti_debug_backtrace($entry = '', $html = false) {
 	$callers = debug_backtrace();
 	$s = '';
 	foreach ($callers as $c) {
-		$file = str_replace($config['base_path'], '', $c['file']);
-		$line = $c['line'];
+		if (isset($c['file'])) {
+			$file = str_replace($config['base_path'], '', $c['file']);
+		}else{
+			$file = '';
+		}
+
+		if (isset($c['line'])) {
+			$line = $c['line'];
+		}else{
+			$line = '';
+		}
 		$func = $c['function'];
-		$s = "($file:$line $func)" . $s;
+		$s = "(" . ($file != '' ? "$file: ":'') . ($line != '' ? "$line ":'') . "$func)" . $s;
 	}
 
 	if ($html) {
