@@ -348,6 +348,20 @@ function item() {
 		print "<tr><td colspan='2'><em>No Inputs</em></td></tr>";
 	}
 
+	?>
+	<script type='text/javascript'>
+	$(function() {
+		$('.deleteMarker, .moveArrow').click(function(event) {
+			event.preventDefault();
+			$.get($(this).attr('href'), function(data) {
+				$('#main').html(data);
+				applySkin();
+			});
+		});
+	});
+	</script>
+	<?php
+
 	html_end_box();
 }
 
