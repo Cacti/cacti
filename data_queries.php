@@ -677,17 +677,18 @@ function data_query_item_edit() {
 
 				$('input[id="svg_x"]').click(function() {
 					$.post('data_queries.php', { 
-						'_graph_template_id':$('#_graph_template_id').val(), 
-						'action':'save',
-						'name':$('#name').val(),
-						'graph_template_id':$('#graph_template_id').val(), 
-						'id':$('#id').val(),
-						'header':'false',
-						'save_component_snmp_query_item':'1', 
-						'snmp_query_id':$('#snmp_query_id').val(), 
-						'svg_field':$('#svg_field').val(), 
-						'svg_text':$('#svg_text').val(), 
-						'svg_x':'Add'
+						_graph_template_id:$('#_graph_template_id').val(), 
+						action:'save',
+						name:$('#name').val(),
+						graph_template_id:$('#graph_template_id').val(), 
+						id:$('#id').val(),
+						header:'false',
+						save_component_snmp_query_item:'1', 
+						snmp_query_id:$('#snmp_query_id').val(), 
+						svg_field:$('#svg_field').val(), 
+						svg_text:$('#svg_text').val(), 
+						svg_x:'Add',
+						__csrf_magic: csrfMagicToken
 					}).done(function(data) {
 						$('#main').html(data);
 						applySkin();
@@ -705,6 +706,7 @@ function data_query_item_edit() {
 						'"graph_template_id":"'+$('#graph_template_id').val() + '", ' +
 						'"id":"'+$('#id').val() + '", ' +
 						'"header":"false", ' +
+						'"__csrf_magic":"'+csrfMagicToken+'", ' +
 						'"save_component_snmp_query_item":"1", ' +
 						'"snmp_query_id":"'+$('#snmp_query_id').val() + '", ' +
 						'"'+svds_field_name+'":"'+$('#svds_field').val() + '", ' +

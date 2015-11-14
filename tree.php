@@ -689,7 +689,7 @@ function tree_edit() {
 
 			$('input[value="Save"]').click(function(event) {
 				event.preventDefault();
-				$.post('tree.php', { action: 'save', name: $('#name').val(), sort_type: $('#sort_type').val(), enabled: $('#enabled').is(':checked'), id: $('#id').val(), save_component_tree: 1 } ).done(function(data) {
+				$.post('tree.php', { action: 'save', name: $('#name').val(), sort_type: $('#sort_type').val(), enabled: $('#enabled').is(':checked'), id: $('#id').val(), save_component_tree: 1, __csrf_magic: csrfMagicToken } ).done(function(data) {
 					$('#main').html(data);
 					applySkin();
 				});

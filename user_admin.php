@@ -1794,7 +1794,7 @@ function user_edit() {
 				$('#password').after('<span id="pass"><i class="badpassword fa fa-times"></i><span style="padding-left:4px;">Password Too Short</span></span>');
 			}else{
 				if ($('#password_confirm').val().length > 0) {
-					$.post('user_admin.php?action=checkpass', { password: $('#password').val(), password_confim: $('#password_confirm').val() } ).done(function(data) {
+					$.post('user_admin.php?action=checkpass', { password: $('#password').val(), password_confim: $('#password_confirm').val(), __csrf_magic: csrfMagicToken } ).done(function(data) {
 						if (data == 'ok') {
 							$('#pass').remove();
 							$('#password').after('<span id="pass"><i class="goodpassword fa fa-check"></i><span style="padding-left:4px;">Password Validation Passes</span></span>');
