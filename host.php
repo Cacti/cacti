@@ -59,8 +59,18 @@ switch ($_REQUEST['action']) {
 		form_actions();
 
 		break;
+	case 'gt_add':
+		host_add_gt();
+
+		header('Location: host.php?header=false&action=edit&id=' . $_REQUEST['host_id']);
+		break;
 	case 'gt_remove':
 		host_remove_gt();
+
+		header('Location: host.php?header=false&action=edit&id=' . $_REQUEST['host_id']);
+		break;
+	case 'query_add':
+		host_add_query();
 
 		header('Location: host.php?header=false&action=edit&id=' . $_REQUEST['host_id']);
 		break;
@@ -120,39 +130,7 @@ function add_tree_names_to_actions_array() {
    -------------------------- */
 
 function form_save() {
-	if ((!empty($_POST['add_dq_x'])) && (!empty($_POST['snmp_query_id']))) {
-		/* ================= input validation ================= */
-		input_validate_input_number(get_request_var_post('id'));
-		input_validate_input_number(get_request_var_post('snmp_query_id'));
-		input_validate_input_number(get_request_var_post('reindex_method'));
-		/* ==================================================== */
-
-		db_execute_prepared('REPLACE INTO host_snmp_query (host_id, snmp_query_id, reindex_method) VALUES (?, ?, ?)', array($_POST['id'], $_POST['snmp_query_id'], $_POST['reindex_method']));
-
-		/* recache snmp data */
-		run_data_query($_POST['id'], $_POST['snmp_query_id']);
-
-		header('Location: host.php?header=false&action=edit&id=' . $_POST['id']);
-		exit;
-	}
-
-	if ((!empty($_POST['add_gt_x'])) && (!empty($_POST['graph_template_id']))) {
-		/* ================= input validation ================= */
-		input_validate_input_number(get_request_var_post('id'));
-		input_validate_input_number(get_request_var_post('graph_template_id'));
-		/* ==================================================== */
-
-		db_execute_prepared('REPLACE INTO host_graph (host_id, graph_template_id) VALUES (?, ?)', array($_POST['id'], $_POST['graph_template_id']));
-
-		automation_hook_graph_template($_POST['id'], $_POST['graph_template_id']);
-
-		api_plugin_hook_function('add_graph_template_to_host', array('host_id' => $_POST['id'], 'graph_template_id' => $_POST['graph_template_id']));
-
-		header('Location: host.php?header=false&action=edit&id=' . $_POST['id']);
-		exit;
-	}
-
-	if ((isset($_POST['save_component_host'])) && (empty($_POST['add_dq_x']))) {
+	if (isset($_POST['save_component_host'])) {
 		if ($_POST['snmp_version'] == 3 && ($_POST['snmp_password'] != $_POST['snmp_password_confirm'])) {
 			raise_message(4);
 		}else{
@@ -571,6 +549,19 @@ function form_actions() {
     Data Query Functions
    ------------------- */
 
+function host_add_query() {
+	/* ================= input validation ================= */
+	input_validate_input_number(get_request_var_post('host_id'));
+	input_validate_input_number(get_request_var_post('snmp_query_id'));
+	input_validate_input_number(get_request_var_post('reindex_method'));
+	/* ==================================================== */
+
+	db_execute_prepared('REPLACE INTO host_snmp_query (host_id, snmp_query_id, reindex_method) VALUES (?, ?, ?)', array($_POST['host_id'], $_POST['snmp_query_id'], $_POST['reindex_method']));
+
+	/* recache snmp data */
+	run_data_query($_POST['host_id'], $_POST['snmp_query_id']);
+}
+
 function host_reload_query() {
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var_request('id'));
@@ -587,6 +578,19 @@ function host_remove_query() {
 	/* ==================================================== */
 
 	api_device_dq_remove($_REQUEST['host_id'], $_REQUEST['id']);
+}
+
+function host_add_gt() {
+	/* ================= input validation ================= */
+	input_validate_input_number(get_request_var_post('host_id'));
+	input_validate_input_number(get_request_var_post('graph_template_id'));
+	/* ==================================================== */
+
+	db_execute_prepared('REPLACE INTO host_graph (host_id, graph_template_id) VALUES (?, ?)', array($_POST['host_id'], $_POST['graph_template_id']));
+
+	automation_hook_graph_template($_POST['host_id'], $_POST['graph_template_id']);
+
+	api_plugin_hook_function('add_graph_template_to_host', array('host_id' => $_POST['host_id'], 'graph_template_id' => $_POST['graph_template_id']));
 }
 
 function host_remove_gt() {
@@ -977,6 +981,20 @@ function host_edit() {
 			loadPageNoHeader(strURL);
 		});
 
+		$('#add_dq').click(function() {
+			$.post('host.php?action=query_add', { host_id: $('#id').val(), snmp_query_id: $('#snmp_query_id').val(), reindex_method: $('#reindex_method').val(), __csrf_magic: csrfMagicToken }).done(function(data) {
+				$('#main').html(data);
+				applySkin();
+			});
+		});
+
+		$('#add_gt').click(function() {
+			$.post('host.php?action=gt_add', { host_id: $('#id').val(), graph_template_id: $('#graph_template_id').val(), __csrf_magic: csrfMagicToken }).done(function(data) {
+				$('#main').html(data);
+				applySkin();
+			});
+		});
+
 		changeHostForm();
 		$('#dbghide').unbind().click(function(data) {
 			$('#dqdebug').fadeOut('fast');
@@ -1060,7 +1078,7 @@ function host_edit() {
 							<?php form_dropdown('graph_template_id',$available_graph_templates,'name','id','','','');?>
 						</td>
 						<td>
-							<input type='submit' value='Add' name='add_gt_x' title='Add Graph Template to Device'>
+							<input type='button' value='Add' id='add_gt' title='Add Graph Template to Device'>
 						</td>
 					</tr>
 				</table>
@@ -1157,7 +1175,7 @@ function host_edit() {
 							<?php form_dropdown('reindex_method',$reindex_types,'','',read_config_option('reindex_method'),'','');?>
 						</td>
 						<td>
-							<input type='submit' value='Add' name='add_dq_x' title='Add Data Query to Device'>
+							<input type='button' value='Add' id='add_dq' title='Add Data Query to Device'>
 						</td>
 					</tr>
 				</table>
