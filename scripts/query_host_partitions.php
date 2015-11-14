@@ -1,23 +1,25 @@
 <?php
 
+$no_http_headers = true;
+
 /* do NOT run this script through a web browser */
 if (!isset($_SERVER["argv"][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($_SERVER['REMOTE_ADDR'])) {
    die("<br><strong>This script is only meant to run at the command line.</strong>");
 }
 
-$no_http_headers = true;
+error_reporting(0);
 
 include(dirname(__FILE__) . "/../include/global.php");
 include(dirname(__FILE__) . "/../lib/snmp.php");
 
 $oids = array(
-	"total" 		=> ".1.3.6.1.2.1.25.2.3.1.5",
-	"used" 			=> ".1.3.6.1.2.1.25.2.3.1.6",
-	"failures" 		=> ".1.3.6.1.2.1.25.2.3.1.7",
-	"index" 		=> ".1.3.6.1.2.1.25.2.3.1.1",
-	"description" 	=> ".1.3.6.1.2.1.25.2.3.1.3",
-	"sau" 			=> ".1.3.6.1.2.1.25.2.3.1.4"
-	);
+	"total"       => ".1.3.6.1.2.1.25.2.3.1.5",
+	"used"        => ".1.3.6.1.2.1.25.2.3.1.6",
+	"failures"    => ".1.3.6.1.2.1.25.2.3.1.7",
+	"index"       => ".1.3.6.1.2.1.25.2.3.1.1",
+	"description" => ".1.3.6.1.2.1.25.2.3.1.3",
+	"sau"         => ".1.3.6.1.2.1.25.2.3.1.4"
+);
 
 $hostname 	= $_SERVER["argv"][1];
 $host_id 	= $_SERVER["argv"][2];
