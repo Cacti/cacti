@@ -188,7 +188,7 @@ function csrf_ob_handler($buffer, $flags) {
  * @return True if check passes or is not necessary, false if failure.
  */
 function csrf_check($fatal = true) {
-    if ($_SERVER['REQUEST_METHOD'] !== 'POST') return true;
+    if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] !== 'POST') return true;
     csrf_start();
     $name = $GLOBALS['csrf']['input-name'];
     $ok = false;
@@ -223,7 +223,11 @@ function csrf_get_tokens() {
     $secret = csrf_get_secret();
     if (!$has_cookies && $secret) {
         // :TODO: Harden this against proxy-spoofing attacks
-        $ip = ';ip:' . csrf_hash($_SERVER['REMOTE_ADDR']);
+	if (isset($_SERVER['REMOTE_ADDR'])) { 
+		$ip = ';ip:' . csrf_hash($_SERVER['REMOTE_ADDR']);
+	} else {
+		$ip = '';
+	}
     } else {
         $ip = '';
     }
@@ -270,7 +274,7 @@ function csrf_flattenpost2($level, $key, $data) {
  */
 function csrf_callback($tokens) {
     // (yes, $tokens is safe to echo without escaping)
-    header($_SERVER['SERVER_PROTOCOL'] . ' 403 Forbidden');
+    header(isset($_SERVER['SERVER_PROTOCOL']) ? $_SERVER['SERVER_PROTOCOL']:'' . ' 403 Forbidden');
     $data = '';
     foreach (csrf_flattenpost($_POST) as $key => $value) {
         if ($key == $GLOBALS['csrf']['input-name']) continue;
