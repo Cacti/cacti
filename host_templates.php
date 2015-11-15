@@ -30,7 +30,7 @@ define('MAX_DISPLAY_PAGES', 21);
 $host_actions = array(
 	1 => 'Delete',
 	2 => 'Duplicate'
-	);
+);
 
 /* set default action */
 if (!isset($_REQUEST['action'])) { $_REQUEST['action'] = ''; }
@@ -44,10 +44,20 @@ switch ($_REQUEST['action']) {
 		form_actions();
 
 		break;
+	case 'item_add_gt':
+		template_item_add_gt();
+
+		header('Location: host_templates.php?header=false&action=edit&id=' . $_REQUEST['host_template_id']);
+		break;
 	case 'item_remove_gt':
 		template_item_remove_gt();
 
 		header('Location: host_templates.php?action=edit&id=' . $_REQUEST['host_template_id']);
+		break;
+	case 'item_add_dq':
+		template_item_add_dq();
+
+		header('Location: host_templates.php?header=false&action=edit&id=' . $_REQUEST['host_template_id']);
 		break;
 	case 'item_remove_dq':
 		template_item_remove_dq();
@@ -83,9 +93,7 @@ function form_save() {
 	/* ==================================================== */
 
 	if (isset($_POST['save_component_template'])) {
-		$redirect_back = false;
-
-		$save['id'] = $_POST['id'];
+		$save['id']   = $_POST['id'];
 		$save['hash'] = get_hash_host_template($_POST['id']);
 		$save['name'] = form_input_validate($_POST['name'], 'name', '', false, 3);
 
@@ -94,14 +102,6 @@ function form_save() {
 
 			if ($host_template_id) {
 				raise_message(1);
-
-				if (isset($_POST['add_gt_x'])) {
-					db_execute_prepared('REPLACE INTO host_template_graph (host_template_id, graph_template_id) VALUES (?, ?)', array($host_template_id, $_POST['graph_template_id']));
-					$redirect_back = true;
-				}elseif (isset($_POST['add_dq_x'])) {
-					db_execute_prepared('REPLACE INTO host_template_snmp_query (host_template_id, snmp_query_id) VALUES (?, ?)', array($host_template_id, $_POST['snmp_query_id']));
-					$redirect_back = true;
-				}
 			}else{
 				raise_message(2);
 			}
@@ -114,6 +114,28 @@ function form_save() {
 /* ------------------------
     The "actions" function
    ------------------------ */
+
+function template_item_add_dq() {
+	/* ================= input validation ================= */
+	input_validate_input_number(get_request_var_post('host_template_id'));
+	input_validate_input_number(get_request_var_post('snmp_query_id'));
+	/* ==================================================== */
+
+	db_execute_prepared('REPLACE INTO host_template_snmp_query 
+		(host_template_id, snmp_query_id) VALUES (?, ?)', 
+		array($_POST['host_template_id'], $_POST['snmp_query_id']));
+}
+
+function template_item_add_gt() {
+	/* ================= input validation ================= */
+	input_validate_input_number(get_request_var_post('host_template_id'));
+	input_validate_input_number(get_request_var_post('graph_template_id'));
+	/* ==================================================== */
+
+	db_execute_prepared('REPLACE INTO host_template_graph 
+		(host_template_id, graph_template_id) VALUES (?, ?)', 
+		array($_POST['host_template_id'], $_POST['graph_template_id']));
+}
 
 function form_actions() {
 	global $host_actions;
@@ -318,7 +340,7 @@ function template_edit() {
 								ORDER BY gt.name', array(get_request_var_request('id'))),'name','id','','','');?>
 						</td>
 						<td>
-							<input type='submit' value='Add' name='add_gt_x' title='Add Graph Template to Device Template'>
+							<input type='button' value='Add' id='add_gt' title='Add Graph Template to Device Template'>
 						</td>
 					</tr>
 				</table>
@@ -376,7 +398,7 @@ function template_edit() {
 								ORDER BY snmp_query.name', array(get_request_var_request('id'))),'name','id','','','');?>
 						</td>
 						<td>
-							<input type='submit' value='Add' name='add_dq_x' title='Add Data Query to Device Template'>
+							<input type='button' value='Add' id='add_dq' title='Add Data Query to Device Template'>
 						</td>
 					</tr>
 				</table>
@@ -388,6 +410,26 @@ function template_edit() {
 	}
 
 	form_save_button('host_templates.php', 'return');
+
+	?>
+	<script type='text/javascript'>
+	$(function() {
+		$('#add_dq').click(function() {
+			$.post('host_templates.php?action=item_add_dq', { host_template_id: $('#id').val(), snmp_query_id: $('#snmp_query_id').val(), reindex_method: $('#reindex_method').val(), __csrf_magic: csrfMagicToken }).done(function(data) {
+				$('#main').html(data);
+				applySkin();
+			});
+		});
+
+		$('#add_gt').click(function() {
+			$.post('host_templates.php?action=item_add_gt', { host_template_id: $('#id').val(), graph_template_id: $('#graph_template_id').val(), __csrf_magic: csrfMagicToken }).done(function(data) {
+				$('#main').html(data);
+				applySkin();
+			});
+		});
+	});
+	</script>
+	<?php
 }
 
 function template() {
