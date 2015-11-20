@@ -849,7 +849,7 @@ function graphs() {
 									if ($field_array['direction'] == 'input') {
 										if (in_array($field_name, $fields)) {
 											if (isset($row[$field_name])) {
-												print "<td><span id='text$query_row" . '_' . $column_counter . "'>" . (strlen($_REQUEST['filter']) ? preg_replace('/(' . preg_quote($_REQUEST['filter']) . ')/i', "<span class='filteredValue'>\\1</span>", $row[$field_name]) : $row[$field_name]) . '</span></td>';
+												print "<td><span id='text$query_row" . '_' . $column_counter . "'>" . (strlen($_REQUEST['filter']) ? preg_replace('/(' . preg_quote($_REQUEST['filter']) . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($row[$field_name])) : htmlspecialchars($row[$field_name])) . '</span></td>';
 											}else{
 												print "<td><span id='text$query_row" . '_' . $column_counter . "'></span></td>";
 											}
@@ -893,7 +893,7 @@ function graphs() {
 					print "<table align='center' width='100%'>
 						<tr>
 							<td width='100%' valign='middle'>
-								<img src='images/arrow.gif' align='absmiddle' alt=''>
+								<img src='images/arrow.gif' alt=''>
 							</td>
 							<td class='nowrap right' style='font-style:italic;'>
 							Select a Graph Type to Create
