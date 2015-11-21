@@ -959,6 +959,14 @@ function initializeGraphs() {
 		applyFilter();
 	});
 
+	mainWidth = $('#main').width();
+	myColumns = $('#columns').val();
+	isThumb   = $('#thumbnails').is(':checked');
+
+	if (isThumb) {
+		myWidth = (mainWidth-(32*myColumns))/myColumns;
+	}
+
 	$('div[id^="wrapper_"]').each(function() {
 		graph_id=$(this).attr('id').replace('wrapper_','');
 		graph_height=$(this).attr('graph_height');
@@ -970,8 +978,18 @@ function initializeGraphs() {
 			'&graph_end='+graph_end+
 			'&graph_height='+graph_height+
 			'&graph_width='+graph_width+
-			($('#thumbnails').is(':checked') ? '&graph_nolegend=true':''),
+			(isThumb ? '&graph_nolegend=true':''),
 			function(data) {
+				if (isThumb && myWidth < data.image_width) {
+					ratio=myWidth/data.image_width;
+					data.image_width  *= ratio;
+					data.image_height *= ratio;
+					data.graph_width  *= ratio;
+					data.graph_height *= ratio;
+					data.graph_top    *= ratio;
+					data.graph_left   *= ratio;
+				}
+
 				$('#wrapper_'+data.local_graph_id).html("<img class='graphimage' id='graph_"+data.local_graph_id+"' src='data:image/"+data.type+";base64,"+data.image+"' graph_start='"+data.graph_start+"' graph_end='"+data.graph_end+"' graph_left='"+data.graph_left+"' graph_top='"+data.graph_top+"' graph_width='"+data.graph_width+"' graph_height='"+data.graph_height+"' width='"+data.image_width+"' height='"+data.image_height+"' image_width='"+data.image_width+"' image_height='"+data.image_height+"' value_min='"+data.value_min+"' value_max='"+data.value_max+"'>");
 				$("#graph_"+data.local_graph_id).zoom({
 					inputfieldStartTime : 'date1', 

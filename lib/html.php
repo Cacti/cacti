@@ -192,7 +192,7 @@ function html_graph_area(&$graph_array, $no_graphs_message = "", $extra_url_args
 			<td style='width:<?php print ceil(100 / $columns);?>%;'>
 				<table align='center'>
 					<tr>
-						<td>
+						<td style='text-align:center;'>
 							<div style='width:100%;' id='wrapper_<?php print $graph['local_graph_id']?>' graph_width='<?php print $graph['width'];?>' graph_height='<?php print $graph['height'];?>' title_font_size='<?php print ((read_graph_config_option("custom_fonts") == "on") ? read_graph_config_option("title_size") : read_config_option("title_size"));?>' style="min-height: <?php echo (1.2 * $graph["height"]) . "px"?>;"></div>
 							<?php print (read_graph_config_option("show_graph_title") == "on" ? "<span align='center'><strong>" . htmlspecialchars($graph["title_cache"]) . "</strong></span>" : "");?>
 						</td>
@@ -1342,7 +1342,7 @@ function html_graph_tabs_right($current_user) {
 	}
 }
 
-function html_host_filter($host_id, $call_back = 'applyFilter') {
+function html_host_filter($host_id = '-1', $call_back = 'applyFilter') {
 	$theme = read_config_option('selected_theme');
 
 	if ($theme == 'classic') {
