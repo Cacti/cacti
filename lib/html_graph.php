@@ -229,19 +229,21 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
                 $('#date1').datetimepicker({
                         minuteGrid: 10,
                         stepMinute: 1,
-			showAnim: 'slideDown',
-			numberOfMonths: 1,
+						showAnim: 'slideDown',
+						numberOfMonths: 1,
                         timeFormat: 'HH:mm',
-                        dateFormat: 'yy-mm-dd'
+                        dateFormat: 'yy-mm-dd',
+						showButtonPanel: false
                 });
 
                 $('#date2').datetimepicker({
                         minuteGrid: 10,
                         stepMinute: 1,
-			showAnim: 'slideDown',
-			numberOfMonths: 1,
+						showAnim: 'slideDown',
+						numberOfMonths: 1,
                         timeFormat: 'HH:mm',
-                        dateFormat: 'yy-mm-dd'
+                        dateFormat: 'yy-mm-dd',
+						showButtonPanel: false
                 });
 
 		initializeGraphs();

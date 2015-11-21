@@ -729,19 +729,21 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
                 $('#date1').datetimepicker({
                         minuteGrid: 10,
                         stepMinute: 1,
-			showAnim: 'slideDown',
-			numberOfMonths: 1,
+						showAnim: 'slideDown',
+						numberOfMonths: 1,
                         timeFormat: 'HH:mm',
-                        dateFormat: 'yy-mm-dd'
+                        dateFormat: 'yy-mm-dd',
+						showButtonPanel: false
                 });
 
                 $('#date2').datetimepicker({
                         minuteGrid: 10,
                         stepMinute: 1,
-			showAnim: 'slideDown',
-			numberOfMonths: 1,
+						showAnim: 'slideDown',
+						numberOfMonths: 1,
                         timeFormat: 'HH:mm',
-                        dateFormat: 'yy-mm-dd'
+                        dateFormat: 'yy-mm-dd',
+						showButtonPanel: false
                 });
 
 		var navBar = "<div id='navBar' class='navBar'><?php print draw_navigation_text();?></div>";
