@@ -183,6 +183,7 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 							<option value='3'<?php if (get_request_var_request('columns') == '3') {?> selected<?php }?>>3 Columns</option>
 							<option value='4'<?php if (get_request_var_request('columns') == '4') {?> selected<?php }?>>4 Columns</option>
 							<option value='5'<?php if (get_request_var_request('columns') == '5') {?> selected<?php }?>>5 Columns</option>
+							<option value='6'<?php if (get_request_var_request('columns') == '6') {?> selected<?php }?>>6 Columns</option>
 						</select>
 					</td>
 					<td>

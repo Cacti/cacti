@@ -193,7 +193,7 @@ function html_graph_area(&$graph_array, $no_graphs_message = "", $extra_url_args
 				<table align='center'>
 					<tr>
 						<td style='text-align:center;'>
-							<div style='width:100%;' id='wrapper_<?php print $graph['local_graph_id']?>' graph_width='<?php print $graph['width'];?>' graph_height='<?php print $graph['height'];?>' title_font_size='<?php print ((read_graph_config_option("custom_fonts") == "on") ? read_graph_config_option("title_size") : read_config_option("title_size"));?>' style="min-height: <?php echo (1.2 * $graph["height"]) . "px"?>;"></div>
+							<div style='width:100%;' id='wrapper_<?php print $graph['local_graph_id']?>' graph_width='<?php print $graph['width'];?>' graph_height='<?php print $graph['height'];?>' title_font_size='<?php print ((read_graph_config_option("custom_fonts") == "on") ? read_graph_config_option("title_size") : read_config_option("title_size"));?>'></div>
 							<?php print (read_graph_config_option("show_graph_title") == "on" ? "<span align='center'><strong>" . htmlspecialchars($graph["title_cache"]) . "</strong></span>" : "");?>
 						</td>
 						<td style='vertical-align:top;align-self:left;padding:3px;' class='noprint'>
@@ -311,7 +311,7 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = "", $extr
 				<table align='center'>
 					<tr>
 						<td align='center'>
-							<div id='wrapper_<?php print $graph['local_graph_id']?>' graph_width='<?php print read_graph_config_option("default_width");?>' graph_height='<?php print read_graph_config_option("default_height");?>' style="min-height: <?php echo (1.2 * read_graph_config_option("default_height")) . "px"?>;"></div>
+							<div id='wrapper_<?php print $graph['local_graph_id']?>' graph_width='<?php print read_graph_config_option("default_width");?>' graph_height='<?php print read_graph_config_option("default_height");?>'></div>
 							<?php print (read_graph_config_option("show_graph_title") == "on" ? "<span align='center'><strong>" . htmlspecialchars($graph["title_cache"]) . "</strong></span>" : "");?>
 						</td>
 						<td align='center' style='vertical-align:top;align: center'>

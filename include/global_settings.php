@@ -1778,14 +1778,14 @@ $settings_graphs = array(
 			'description' => 'The number of columns to use when displaying Thumbnail graphs in Preview mode.',
 			'method' => 'drop_array',
 			'default' => '2',
-			'array' => array('1' => '1 Column','2' => '2 Columns', '3' => '3 Columns', '4' => '4 Columns', '5' => '5 Columns'),
+			'array' => array('1' => '1 Column','2' => '2 Columns', '3' => '3 Columns', '4' => '4 Columns', '5' => '5 Columns', '6' => '6 Columns'),
 			),
 		'num_columns_tree' => array(
 			'friendly_name' => 'Treeview Thumbnail Columns',
 			'description' => 'The number of columns to use when displaying Thumbnail graphs in Tree mode.',
 			'method' => 'drop_array',
 			'default' => '2',
-			'array' => array('1' => '1 Column','2' => '2 Columns', '3' => '3 Columns', '4' => '4 Columns', '5' => '5 Columns'),
+			'array' => array('1' => '1 Column','2' => '2 Columns', '3' => '3 Columns', '4' => '4 Columns', '5' => '5 Columns', '6' => '6 Columns'),
 			),
 		'default_height' => array(
 			'friendly_name' => 'Thumbnail Height',

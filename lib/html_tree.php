@@ -550,6 +550,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 							<option value='3' <?php print (get_request_var_request('columns') == '3' ? ' selected':'');?>>3 Columns</option>
 							<option value='4' <?php print (get_request_var_request('columns') == '4' ? ' selected':'');?>>4 Columns</option>
 							<option value='5' <?php print (get_request_var_request('columns') == '5' ? ' selected':'');?>>5 Columns</option>
+							<option value='6' <?php print (get_request_var_request('columns') == '6' ? ' selected':'');?>>6 Columns</option>
 							<?php }?>
 						</select>
 					</td>
