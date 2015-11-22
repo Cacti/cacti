@@ -87,7 +87,7 @@ switch ($_REQUEST['action']) {
 	case 'query_verbose':
 		host_reload_query();
 
-		header('Location: host.php?header=false&action=edit&id=' . $_REQUEST['host_id'] . '&display_dq_details=true#dqdbg');
+		header('Location: host.php?header=' . (isset($_REQUEST['header']) && $_REQUEST['header'] == 'true' ? 'true':'false') . '&action=edit&id=' . $_REQUEST['host_id'] . '&display_dq_details=true#dqdbg');
 		break;
 	case 'edit':
 		top_header();
