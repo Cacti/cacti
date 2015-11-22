@@ -308,13 +308,13 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = "", $extr
 
 			?>
 			<td style='text-align:center;width:<?php print ceil(100 / $columns);?>%;'>
-				<table align='center'>
+				<table>
 					<tr>
-						<td align='center'>
+						<td>
 							<div id='wrapper_<?php print $graph['local_graph_id']?>' graph_width='<?php print read_graph_config_option("default_width");?>' graph_height='<?php print read_graph_config_option("default_height");?>'></div>
 							<?php print (read_graph_config_option("show_graph_title") == "on" ? "<span align='center'><strong>" . htmlspecialchars($graph["title_cache"]) . "</strong></span>" : "");?>
 						</td>
-						<td align='center' style='vertical-align:top;align: center'>
+						<td style='vertical-align:top;text-align:center'>
 							<?php print graph_drilldown_icons($graph['local_graph_id'], 'graph_buttons_thumbnails');?>
 						</td>
 					</tr>
