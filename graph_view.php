@@ -595,7 +595,7 @@ case 'list':
 			}
 		});
 
-		strURL = '&graph_add=' + strAdd + '&graph_remove=' + strDel;
+		strURL = '&graph_list=<?php print $_REQUEST['graph_list'];?>&graph_add=' + strAdd + '&graph_remove=' + strDel;
 
 		return strNavURL + strURL;
 	}
