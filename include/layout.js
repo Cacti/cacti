@@ -272,7 +272,6 @@ function applySelectorVisibilityAndActions() {
 	// Create Actions for Rows
 	$('tr.selectable:not(.disabled_row)').find('td').not('.checkbox').each(function(data) {
 		$(this).click(function(data) {
-			console.log("ello");
 			$(this).parent().toggleClass('selected');
 			var $checkbox = $(this).parent().find(':checkbox');
 			$checkbox.prop('checked', !$checkbox.is(':checked'));
@@ -325,7 +324,19 @@ function dqResetDeps(snmp_query_id) {
 /** SelectAll - This function will select all non-disabled rows
  *  @arg attrib - The Graph Type either graph template, or data query */
 function SelectAll(attrib, checked) {
-	if (attrib == 'sg') {
+	if (attrib == 'chk_') {
+		if (checked == true) {
+			$('tr[id^=line]:not(.disabled_row').each(function(data) {
+				$(this).addClass('selected');
+				$(this).find(':checkbox').prop('checked', true);
+			});
+		}else{
+			$('tr[id^=line]:not(.disabled_row)').each(function(data) {
+				$(this).removeClass('selected');
+				$(this).find(':checkbox').prop('checked', false);
+			});
+		}
+	}else if (attrib == 'sg') {
 		if (checked == true) {
 			$('tr[id^=gt_line]:not(.disabled_row)').each(function(data) {
 				$(this).addClass('selected');
@@ -391,7 +402,7 @@ function applySkin() {
 	// Select All Action for everyone but graphs_new, else do ugly shit
 	if (basename(document.location.pathname, '.php') == 'graphs_new') {
 		applySelectorVisibilityAndActions();
-
+	}else{
 		// Allows selection of a non disabled row
 		$('tr.selectable:not([id^="gt_line"]').find('td').not('.checkbox').each(function(data) {
 			$(this).unbind().click(function(data) {
