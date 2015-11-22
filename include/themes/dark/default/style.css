@@ -374,10 +374,10 @@
 }
 .jstree-default .jstree-wholerow-hovered {
   border: 0px solid #155413;
-  background: #155413 url("images/ui-bg_highlight-soft_33_155413_1x100.png") 50% 50% repeat-x;
+  background: #155413 url("../images/ui-bg_highlight-soft_33_155413_1x100.png") 50% 50% repeat-x;
 }
 .jstree-default .jstree-wholerow-clicked {
-  background: #31442b url("/themeroller/images/ui-bg_highlight-hard_20_31442b_1x100.png") repeat-x scroll 50% 50%;
+  background: #31442b url("../images/ui-bg_highlight-hard_20_31442b_1x100.png") repeat-x scroll 50% 50%;
 }
 .jstree-default .jstree-node {
   min-height: 24px;

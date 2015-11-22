@@ -712,7 +712,7 @@ function saveTableWidths(initial) {
 				});
 
 				if (i > 1) {
-					console.log(key+', '+sizes.length);
+					//console.log(key+', '+sizes.length);
 					storage.set(key, sizes);
 				}
 			}
@@ -765,8 +765,11 @@ function applyTableSizing() {
  *  logging out the user, but can be used for simply refreshing the page as in the 
  *  case of the Graphs page. */
 function setupPageTimeout() {
-	if (typeof refreshMSeconds != 'undefined') {
+	if (typeof myRefresh != 'undefined') {
 		clearTimeout(myRefresh);
+	}
+
+	if (typeof refreshMSeconds != 'undefined') {
 		myRefresh = setTimeout(function() {
 			if (refreshIsLogout) {
 				document.location = refreshPage;
@@ -1039,10 +1042,11 @@ function initializeGraphs() {
 			setFilters();
 		}else{
 			keepRealtime[graph_id]  = $('#wrapper_'+graph_id).html();
-			$(this).html("<i style='font-size:16px;' title='Click again to take this Graph out of Realtime' class='fa fa-circle-o-notch fa-spin'/>");
+			$(this).html("<i style='text-align:center;padding:0px;' title='Click again to take this Graph out of Realtime' class='fa fa-circle-o-notch fa-spin'/>");
 			$(this).find('i').tooltip();
 			realtimeArray[graph_id] = true;
 			setFilters();
+			realtimeGrapher();
 		}
 	});
 }

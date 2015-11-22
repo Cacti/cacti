@@ -190,9 +190,9 @@ function html_graph_area(&$graph_array, $no_graphs_message = "", $extra_url_args
 
 			?>
 			<td style='width:<?php print ceil(100 / $columns);?>%;'>
-				<table align='center'>
+				<table style='text-align:center;margin:auto;'>
 					<tr>
-						<td style='text-align:center;'>
+						<td>
 							<div style='width:100%;' id='wrapper_<?php print $graph['local_graph_id']?>' graph_width='<?php print $graph['width'];?>' graph_height='<?php print $graph['height'];?>' title_font_size='<?php print ((read_graph_config_option("custom_fonts") == "on") ? read_graph_config_option("title_size") : read_config_option("title_size"));?>'></div>
 							<?php print (read_graph_config_option("show_graph_title") == "on" ? "<span align='center'><strong>" . htmlspecialchars($graph["title_cache"]) . "</strong></span>" : "");?>
 						</td>
@@ -307,8 +307,8 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = "", $extr
 			}
 
 			?>
-			<td style='text-align:center;width:<?php print ceil(100 / $columns);?>%;'>
-				<table>
+			<td style='width:<?php print ceil(100 / $columns);?>%;'>
+				<table style='text-align:center;margin:auto;'>
 					<tr>
 						<td>
 							<div id='wrapper_<?php print $graph['local_graph_id']?>' graph_width='<?php print read_graph_config_option("default_width");?>' graph_height='<?php print read_graph_config_option("default_height");?>'></div>
@@ -353,11 +353,11 @@ function graph_drilldown_icons($local_graph_id, $type = 'graph_buttons') {
 
 	$aggregate_url = aggregate_build_children_url($local_graph_id);
 
-	print "<span class='hyperLink utils' id='graph_" . $local_graph_id . "_util'><img class='drillDown' src='" . $config['url_path'] . "images/cog.png' alt='' title='Graph Details, Zooming and Debugging Utilities'></span><br>\n";
-	print "<span class='hyperLink csvexport' id='graph_" . $local_graph_id . "_csv'><img class='drillDown' src='" . $config['url_path'] . "images/table_go.png' alt='' title='CSV Export of Graph Data'></span><br>\n";
-	print "<span class='hyperLink mrgt' id='graph_" . $local_graph_id . "_mrtg'><img class='drillDown' src='" . $config['url_path'] . "images/mrtg.png' alt='' title='MRTG Graph View'></span><br>\n";
+	print "<span class='utils' id='graph_" . $local_graph_id . "_util'><img class='drillDown' src='" . $config['url_path'] . "images/cog.png' alt='' title='Graph Details, Zooming and Debugging Utilities'></span><br>\n";
+	print "<span class='csvexport' id='graph_" . $local_graph_id . "_csv'><img class='drillDown' src='" . $config['url_path'] . "images/table_go.png' alt='' title='CSV Export of Graph Data'></span><br>\n";
+	print "<span class='mrgt' id='graph_" . $local_graph_id . "_mrtg'><img class='drillDown' src='" . $config['url_path'] . "images/mrtg.png' alt='' title='MRTG Graph View'></span><br>\n";
 	if (read_config_option('realtime_enabled') == 'on') {
-		print "<span class='hyperLink realtime' id='graph_" . $local_graph_id . "_realtime'><img class='drillDown' src='" . $config['url_path'] . "images/chart_curve_go.png' alt='' title='Click to view just this Graph in Realtime'></span><br/>\n";
+		print "<span class='realtime' id='graph_" . $local_graph_id . "_realtime'><img class='drillDown' src='" . $config['url_path'] . "images/chart_curve_go.png' alt='' title='Click to view just this Graph in Realtime'></span><br/>\n";
 	}
 
 	if ($aggregate_url != '') {

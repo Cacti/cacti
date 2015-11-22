@@ -136,6 +136,12 @@ case 'countdown':
 
 	rrdtool_function_graph($_REQUEST['local_graph_id'], '', $graph_data_array);
 
+	$graph_rrd = read_config_option('realtime_cache_path') . '/user_' . session_id() . '_lgi_' . $_REQUEST['local_graph_id'] . '.png';
+
+	if (file_exists($graph_rrd)) {
+		$data = base64_encode(file_get_contents($graph_rrd));
+	}
+
 	/* send text information back to browser as well as image information */
 	$return_array = array(
 		'local_graph_id' => $_REQUEST['local_graph_id'],
@@ -143,6 +149,7 @@ case 'countdown':
 		'left' => $_REQUEST['left'],
 		'ds_step' => (isset($_SESSION['sess_realtime_ds_step']) ? $_SESSION['sess_realtime_ds_step']:$graph_data_array['ds_step']),
 		'graph_start' => (isset($_SESSION['sess_realtime_graph_start']) ? $_SESSION['sess_realtime_graph_start']:$graph_data_array['graph_start']),
+		'data' => (isset($data) ? $data:'')
 	);
 
 	print json_encode($return_array);
@@ -153,7 +160,7 @@ case 'view':
 	$graph_rrd = read_config_option('realtime_cache_path') . '/user_' . session_id() . '_lgi_' . $_REQUEST['local_graph_id'] . '.png';
 
 	if (file_exists($graph_rrd)) {
-		print file_get_contents($graph_rrd);
+		print base64_encode(file_get_contents($graph_rrd));
 	}
 	exit;
 	break;
