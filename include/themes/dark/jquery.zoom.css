@@ -109,7 +109,7 @@
 	white-space: pre-line;
 	font-size: 1em;
 	float: left;
-	background: #FFE87C;
+	background: #161616;
 	padding-left: 3px;
 	padding-right: 3px;
 	border: 1px solid rgba(0,0,0,0.75);
@@ -165,7 +165,7 @@
 .zoom-menu {
 	border:1px solid #aaa;
 	position:absolute;
-	background:#fff;
+	background:#161606;
 	display:none;
 	font-size: 1em;
 	z-index:auto;
@@ -185,7 +185,7 @@
 	border:1px solid #aaa;
 	border-left:1px solid #ccc;
 	margin-top:-28px;
-	background:#fff;
+	background:#161606;
 }
 
 .zoom-menu .sep_li {
@@ -210,4 +210,13 @@
 	width: 16px;
 	height: 16px;
 	background-image:none;
+}
+
+.zoom-menu-hover {
+	background: #31442B;
+	cursor: pointer;
+}
+
+.zoom-menu-highlight {
+	background: #31442B;
 }

@@ -211,3 +211,13 @@
 	height: 16px;
 	background-image:none;
 }
+
+.zoom-menu-hover {
+	background: #E0EDFE;
+	cursor: pointer;
+}
+
+.zoom-menu-highlight {
+	background: #E0EDFE;
+}
+
