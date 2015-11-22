@@ -3028,7 +3028,7 @@ function bottom_footer() {
 function top_header() {
 	global $config;
 
-	if (!isset($_REQUEST['header']) || $_REQUEST['header'] == false) {
+	if (!isset($_REQUEST['header']) || $_REQUEST['header'] == 'true') {
 		include($config['base_path'] . '/include/top_header.php');
 	}
 }
@@ -3036,14 +3036,14 @@ function top_header() {
 function top_graph_header() {
 	global $config;
 
-	if (!isset($_REQUEST['header']) || $_REQUEST['header'] == false) {
+	if (!isset($_REQUEST['header']) || $_REQUEST['header'] == 'true') {
 		include($config['base_path'] . '/include/top_graph_header.php');
 	}
 }
 
 function general_header() {
 	global $config;
-	if (!isset($_REQUEST['header']) || $_REQUEST['header'] == false) {
+	if (!isset($_REQUEST['header']) || $_REQUEST['header'] == 'true') {
 		include($config['base_path'] . '/include/top_general_header.php');
 	}
 }
