@@ -6,6 +6,8 @@ var resltimeTimer   = '';
 var originalRefresh = 0;
 var timeOffset;
 var realtimeTimer;
+var rtWidth         = 0;
+var rtheight        = 0;
 
 function stopRealtime() {
 	for (key in realtimeArray) {
@@ -78,8 +80,10 @@ function realtimeGrapher() {
 			local_graph_id=key
 
 			if (isThumb) {
-				width    = $('#wrapper_'+local_graph_id).find('img').width();
-				height   = $('#wrapper_'+local_graph_id).find('img').height();
+				if (rtWidth == 0) {
+					rtWidth    = $('#wrapper_'+local_graph_id).find('img').width();
+					rtHeight   = $('#wrapper_'+local_graph_id).find('img').height();
+				}
 			}
 
 			position = $('#wrapper_'+local_graph_id).find('img').attr('id', 'dispose_'+local_graph_id).position();
@@ -90,7 +94,7 @@ function realtimeGrapher() {
 				$('#wrapper_'+results.local_graph_id).append("<img style='display:none;position:absolute;left:"+results.left+"px;top:"+results.top+"px;z-index:"+count+";' id='graph_"+results.local_graph_id+"' class='graphimage' alt='' src='data:image/png;base64,"+results.data+"' />");
 
 				if (isThumb) {
-					$('#graph_'+results.local_graph_id).width(width).height(height).show();
+					$('#graph_'+results.local_graph_id).width(rtWidth).height(rtHeight).show();
 				}else{
 					$('#graph_'+results.local_graph_id).show();
 				}
