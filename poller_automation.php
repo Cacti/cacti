@@ -25,6 +25,9 @@
 /* tick use required as of PHP 4.3.0 to accomodate signal handling */
 declare(ticks = 1);
 
+/* we are not talking to the browser */
+$no_http_headers = true;
+
 ini_set('output_buffering', 'Off');
 
 /** sig_handler - provides a generic means to catch exceptions to the Cacti log.

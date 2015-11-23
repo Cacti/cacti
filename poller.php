@@ -25,6 +25,9 @@
 /* tick use required as of PHP 4.3.0 to accomodate signal handling */
 declare(ticks = 1);
 
+/* we are not talking to the browser */
+$no_http_headers = true;
+
 function sig_handler($signo) {
 	switch ($signo) {
 		case SIGTERM:
@@ -55,9 +58,6 @@ function sig_handler($signo) {
 if (!isset($_SERVER['argv'][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($_SERVER['REMOTE_ADDR'])) {
 	die('<br><strong>This script is only meant to run at the command line.</strong>');
 }
-
-/* we are not talking to the browser */
-$no_http_headers = true;
 
 /* start initialization section */
 include(dirname(__FILE__) . '/include/global.php');
