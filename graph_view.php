@@ -49,7 +49,7 @@ input_validate_input_number(get_request_var_request('predefined_timeshift'));
 input_validate_input_regex(get_request_var_request('graph_list'), '^([\,0-9]+)$');
 input_validate_input_regex(get_request_var_request('graph_add'), '^([\,0-9]+)$');
 input_validate_input_regex(get_request_var_request('graph_remove'), '^([\,0-9]+)$');
-input_validate_input_regex(get_request_var_request('nodeid'), '^([_a-zA-Z0-9]+)$');
+input_validate_input_regex(get_request_var_request('nodeid'), '^([_\-a-zA-Z0-9]+)$');
 /* ==================================================== */
 
 /* clean up action string */
