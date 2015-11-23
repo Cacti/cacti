@@ -22,7 +22,6 @@ function _read($id) {
 
 function _write($id, $data) {
     $access = time();
-
 	return db_execute_prepared('REPLACE INTO sessions VALUES (?, ?, ?, ?)', array($id, $_SERVER['REMOTE_ADDR'], $access, $data));
 }
 
@@ -32,7 +31,6 @@ function _destroy($id) {
 
 function _clean($max) {
 	$old = time() - $max;
-
 	return db_execute_prepared('DELETE FROM sessions WHERE access < ?', array($old));
 }
 
