@@ -30,11 +30,6 @@ $guest_account = true;
 include('./include/auth.php');
 include_once('./lib/rrd.php');
 
-api_plugin_hook_function('graph');
-
-include_once('./lib/html_tree.php');
-top_graph_header();
-
 /* ================= input validation ================= */
 input_validate_input_regex(get_request_var_request('rra_id'), '^([0-9]+|all)$');
 input_validate_input_number(get_request_var_request('local_graph_id'));
@@ -42,6 +37,11 @@ input_validate_input_number(get_request_var_request('graph_end'));
 input_validate_input_number(get_request_var_request('graph_start'));
 input_validate_input_regex(get_request_var_request('view_type'), '^([a-zA-Z0-9]+)$');
 /* ==================================================== */
+
+api_plugin_hook_function('graph');
+
+include_once('./lib/html_tree.php');
+top_graph_header();
 
 if (!isset($_REQUEST['rra_id'])) {
 	$_REQUEST['rra_id'] = 'all';
@@ -385,12 +385,12 @@ case 'properties':
 	$graph_data_array['print_source'] = true;
 
 	/* override: graph start time (unix time) */
-	if (!empty($_GET['graph_start'])) {
+	if (!empty($_REQUEST['graph_start'])) {
 		$graph_data_array['graph_start'] = get_request_var_request('graph_start');
 	}
 
 	/* override: graph end time (unix time) */
-	if (!empty($_GET['graph_end'])) {
+	if (!empty($_REQUEST['graph_end'])) {
 		$graph_data_array['graph_end'] = get_request_var_request('graph_end');
 	}
 
