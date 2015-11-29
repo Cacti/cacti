@@ -785,7 +785,7 @@ legend {
 .textError {
 	font-size: 12px;
 	font-weight: normal;
-	color: red;
+	color: red !important;
 }
 
 .textInfo {

@@ -50,6 +50,14 @@ $fields_cdef_edit = array(
 
 /* file: color.php, action: edit */
 $fields_color_edit = array(
+	'name' => array(
+		'method' => 'textbox',
+		'friendly_name' => 'Name',
+		'description' => 'The name of this Color.',
+		'value' => '|arg1:name|',
+		'max_length' => '40',
+		'size' => '40'
+		),
 	'hex' => array(
 		'method' => 'textbox',
 		'friendly_name' => 'Hex Value',
@@ -58,9 +66,22 @@ $fields_color_edit = array(
 		'max_length' => '6',
 		'size' => '5'
 		),
+	'read_only' => array(
+		'method' => 'hidden',
+		'friendly_name' => 'Read Only',
+		'description' => 'Any named color should be read only.',
+		'value' => '|arg1:read_only|',
+		'default' => ''
+		),
 	'id' => array(
 		'method' => 'hidden_zero',
 		'value' => '|arg1:id|'
+		),
+	'hidden_name' => array(
+		'method' => 'hidden',
+		'value' => '|arg1:name|',
+		'max_length' => '40',
+		'size' => '40'
 		),
 	'save_component_color' => array(
 		'method' => 'hidden',
@@ -249,6 +270,13 @@ $struct_data_source = array(
 		'description' => 'The script/source used to gather data for this data source.',
 		'flags' => 'ALWAYSTEMPLATE'
 		),
+//	'data_source_profile' => array(
+//		'friendly_name' => 'Data Source Profile',
+//		'method' => 'drop_array',
+//		'description' => 'Select the Data Source Profile.  The Data Source Profile controls polling interval, the data aggregation, and retention policy for the resulting Data Sources.',
+//		'array' => array('1' => 'My Default Profile', '2' => 'Some other Profile'),
+//		'default' => '1'
+//		),
 	'rra_id' => array(
 		'method' => 'drop_multi_rra',
 		'friendly_name' => 'Associated RRAs',
@@ -1302,6 +1330,14 @@ $fields_template_import = array(
 		'textarea_cols' => '50',
 		'class' => 'textAreaNotes'
 		),
+//	'import_data_source_profile' => array(
+//		'friendly_name' => 'Data Source Profile',
+//		'method' => 'drop_array',
+//		'description' => 'Select the Data Source Profile.  The Data Source Profile controls polling interval, the data aggregation, and retention policy for the resulting Data Sources.',
+//		'array' => array('1' => 'My Default Profile', '2' => 'Some other Profile'),
+//		'value' => '',
+//		'default' => '1'
+//		),
 	'import_rra' => array(
 		'friendly_name' => 'Import RRA Settings',
 		'description' => 'Choose whether to allow Cacti to import custom RRA settings from imported templates or whether to use the defaults for this installation.',

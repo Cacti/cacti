@@ -1171,4 +1171,10 @@ function upgrade_to_1_0_0() {
 	if (db_fetch_cell('SELECT id FROM user_auth WHERE id=1') == 1) {
 		db_install_execute('1.0', 'INSERT IGNORE INTO user_auth_realm (user_id, realm_id) VALUES (1, 23)');
 	}
+
+	db_install_execute('1.0', "ALTER TABLE colors ADD COLUMN name varchar(40) AFTER id, ADD COLUMN read_only CHAR(2) DEFAULT '' AFTER hex, ADD UNIQUE INDEX hex(hex)");
+
+	if (file_exists(dirname(__FILE__) . '/import_colors.php')) {
+		shell_exec('php -q ' . dirname(__FILE__) . '/import_colors.php');
+	}
 }
