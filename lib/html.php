@@ -940,20 +940,24 @@ function draw_menu($user_menu = "") {
      specify it here.  If you don't want any delete actions, set to 0.*/
 function draw_actions_dropdown($actions_array, $delete_action = 1) {
 	global $config;
+
+	if (!isset($actions_array[0])) {
+		$my_actions[0]  = 'Choose an action';
+		$my_actions    += $actions_array;
+		$actions_array  = $my_actions;
+	}
+
 	?>
 	<table class='actionsDropdown'>
 		<tr>
 			<td style='width:100%;'>
 				<img style='text-align:center;' src='<?php echo $config['url_path']; ?>images/arrow.gif' alt=''>&nbsp;
 			</td>
-			<td class='nowrap'>
-				Choose an action:
+			<td>
+				<?php form_dropdown('drp_action',$actions_array, '', '', '0', '', '');?>
 			</td>
 			<td>
-				<?php form_dropdown("drp_action",$actions_array,"","","1","","");?>
-			</td>
-			<td>
-				<input type='submit' value='Go' title='Execute Action'>
+				<input id='submit' type='submit' value='Go' title='Execute Action'>
 			</td>
 		</tr>
 	</table>
@@ -973,8 +977,14 @@ function draw_actions_dropdown($actions_array, $delete_action = 1) {
 				$(this).unbind();
 				$(this).prop('disabled', true).change().closest('tr').removeClass('selectable').removeClass('selected');
 			});
+
+			$('#submit').prop('disabled', false).removeClass('ui-state-disabled');
+		}else if ($('#drp_action').val() == 0) {
+			$('#submit').prop('disabled', true).addClass('ui-state-disabled');
 		}else if (<?php print $delete_action;?> != 0) {
 			$(':checkbox.disabled').prop('disabled', false).change().closest('tr').addClass('selectable').change();
+
+			$('#submit').prop('disabled', false).removeClass('ui-state-disabled');
 		}
 
 		$('tr.selectable').find('td').not('.checkbox').each(function(data) {
