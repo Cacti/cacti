@@ -282,6 +282,19 @@ label {
 	background-color: #e1e1e1;
 }
 
+.import_label {
+	opacity: 0;
+	display: none;
+}
+
+.import_button {
+	opacity: 1;
+}
+
+.import_text {
+	display:none;
+}
+
 .emailtest {
 	cursor:pointer;
 	display:block;

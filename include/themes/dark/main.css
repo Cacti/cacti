@@ -296,6 +296,23 @@ label {
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#45484d', endColorstr='#000000',GradientType=0 ); /* IE6-9 */
 }
 
+.import_label {
+	opacity: 1;
+}
+
+.import_button {
+	opacity: 0;
+	display: none;
+}
+
+.import_text {
+	opacity: 1;
+}
+
+.color-icon {
+	background-image:none !important;
+}
+
 .emailtest {
 	cursor:pointer;
 	display:block;

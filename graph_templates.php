@@ -639,11 +639,11 @@ function template() {
 		gt.id, gt.name, CONCAT(gtg.height,'x',gtg.width) AS size, gtg.vertical_label, 
 		gtg.image_format_id, COUNT(gl.id) AS graphs
 		FROM graph_templates AS gt
-		LEFT JOIN graph_local AS gl
-		ON gt.id=gl.graph_template_id
-		LEFT JOIN graph_templates_graph AS gtg
+		INNER JOIN graph_templates_graph AS gtg
 		ON gtg.graph_template_id=gt.id
 		AND gtg.local_graph_id=0
+		LEFT JOIN graph_local AS gl
+		ON gt.id=gl.graph_template_id
 		$sql_where
 		GROUP BY gt.id
 		$sql_having

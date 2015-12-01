@@ -391,16 +391,18 @@ function form_button($form_name, $value, $title = '', $action = '') {
    @arg $form_size - the size (width) of the textbox */
 function form_file($form_name, $form_size = 30) {
 
-	print "<input type='file'";
+	print "<div>\n";
+	print "<label class='import_label' for='import_file'>Select a File</label>\n";
+	print "<input class='import_button' type='file'";
 
-	if (isset($_SESSION["sess_error_fields"])) {
-		if (!empty($_SESSION["sess_error_fields"][$form_name])) {
-			print "class='txtErrorTextBox'";
-			unset($_SESSION["sess_error_fields"][$form_name]);
-		}
+	if (isset($_SESSION["sess_error_fields"]) && !empty($_SESSION["sess_error_fields"][$form_name])) {
+		print "class='txtErrorTextBox'";
+		unset($_SESSION["sess_error_fields"][$form_name]);
 	}
 
-	print " id='$form_name' name='$form_name' size='$form_size'>";
+	print " id='$form_name' name='$form_name' size='$form_size'>\n";
+	print "<span class='import_text'></span>\n";
+	print "</div>\n";
 }
 
 /* form_filepath_box - draws a standard html textbox and provides status of a files existence
@@ -909,7 +911,7 @@ function form_color_dropdown($form_name, $form_previous_value, $form_none_entry,
 
 	$on_change = " onChange='this.style.backgroundColor=this.options[this.selectedIndex].style.backgroundColor;$on_change'";
 
-	$colors_list = db_fetch_assoc("SELECT id,hex FROM colors ORDER BY hex desc");
+	$colors_list = db_fetch_assoc("SELECT * FROM colors ORDER BY hex DESC");
 
 	print "<select style='background-color: #$current_color;' id='$form_name' name='$form_name'" . $class . $on_change . ">\n";
 
@@ -919,13 +921,18 @@ function form_color_dropdown($form_name, $form_previous_value, $form_none_entry,
 
 	if (sizeof($colors_list) > 0) {
 		foreach ($colors_list as $color) {
-			print "<option style='background-color: #" . $color["hex"] . ";' value='" . $color["id"] . "'";
+			if ($color['name'] == '') {
+				$display = 'Cacti Color (' . $color['hex'] . ')';
+			}else{
+				$display = $color['name'] . ' (' . $color['hex'] . ')';
+			}
+			print "<option data-color='" . $color['hex'] . "' data-style='background-color: #" . $color['hex'] . "' style='background-color: #" . $color['hex'] . ";' value='" . $color['id'] . "'";
 
 			if ($form_previous_value == $color["id"]) {
 				print " selected";
 			}
 
-			print ">" . $color["hex"] . "</option>\n";
+			print ">" . $display . "</option>\n";
 		}
 	}
 

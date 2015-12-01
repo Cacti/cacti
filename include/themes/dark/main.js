@@ -28,12 +28,28 @@ function themeReady() {
 
 	$('input[type="text"], input[type="password"], input[type="checkbox"], textarea').not('image').addClass('ui-state-default ui-corner-all');
 
+	$('.colordropdown').change(function() {
+		id=$(this).attr('id');
+		color=$('#'+id+' option:selected').attr('data-color');
+console.log(id);
+console.log(color);
+		$('<span>', {
+			style: 'background-color:#'+color+',width:16px;height:16px;',
+			'class': 'color-icon'
+		}).appendTo($('#'+id+'-button'));
+	});
+
 	$.ui.selectmenu.prototype._renderItem = function(ui, item) {
 		if (item.element.closest('select').hasClass('colordropdown')) {
 			if (item.label != 'None') {
-				var li = $("<li>").css( "background-color", '#'+item.label );
+				var li = $("<li>", { text: item.label });
+
+				$('<span>', {
+					style: item.element.attr('data-style'),
+					'class': 'ui-icon color-icon'
+				}).appendTo(li);
 			}else{
-				var li = $("<li>").css( "background-color", '' );
+				var li = $("<li>", { text: item.label });
 			}
 		}else if (item.element.closest('select').hasClass('iconselect')) {
 			var li = $('<li>', { text: item.label });
@@ -50,19 +66,31 @@ function themeReady() {
 			return li.appendTo(ui);
 		}else{
 			var li = $("<li>");
+
+			this._setText(li, item.label);
 		}
 
 		if (item.disabled) {
 			li.addClass("ui-state-disabled");
 		}
 
-		this._setText(li, item.label);
-
 		return li.appendTo(ui);
 	}
 
 	$('.checkboxgroup').children('br').remove();
 	$('.checkboxgroup').buttonset();
+
+	// Turn file buttons into jQueryUI buttons
+	$('.import_label').button();
+	$('.import_button').change(function() {
+		text=this.value;
+		setImportFile(text);
+	});
+	setImportFile('No file selected');
+
+	function setImportFile(fileText) {
+		$('.import_text').html(fileText);
+	}
 
 	$('select').each(function() {
 		if ($(this).prop('multiple') != true) {

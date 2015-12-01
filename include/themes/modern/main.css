@@ -270,6 +270,23 @@ label {
 	background: linear-gradient(to bottom, rgba(242, 246, 248, 1) 0%, rgba(216, 225, 231, 1) 50%, rgba(181, 198, 208, 1) 51%, rgba(224, 239, 249, 1) 100%) repeat scroll 0 0 rgba(0, 0, 0, 0);
 }
 
+.import_label {
+	opacity: 1;
+}
+
+.import_button {
+	display: none;
+	opacity: 0;
+}
+
+.import_text {
+	opacity: 1;
+}
+
+.color-icon {
+	background-image:none !important;
+}
+
 .emailtest {
 	cursor:pointer;
 	display:block;

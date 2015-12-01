@@ -278,7 +278,11 @@ function color_import() {
 			Please specify the location of the CSV file containing your Color information.
 		</td>
 		<td align='left'>
-			<input type='file' name='import_file'>
+			<div>
+				<label class='import_label' for='import_file'>Select a File</label>
+				<input class='import_button' type='file' id='import_file'>
+				<span class='import_text'></span>
+			</div>
 		</td>
 	</tr><?php
 	form_alternate_row();?>
@@ -312,22 +316,6 @@ function color_import() {
 		<input id='import' type='submit' value='Import'>
 		</td></tr></table>
 	</form>
-	<script type='text/javascript'>
-	$(function() {
-		$('input[type="file"]').change(function() {
-			ext = this.value.split('.').pop().toLowerCase();
-			console.log(ext);
-			if (ext != 'csv') {
-				$('#message_container').html("<div id='message' class='messageBox textError'>ERROR: Unsupported File Extension only CSV supported</div>");
-				$('#import').prop('disabled', true).addClass('ui-state-disabled');
-				this.value = '';
-				$('#message_container').show().delay(4000).hide('slow');
-			}else{
-				$('#import').prop('disabled', false).removeClass('ui-state-disabled');
-			}
-		});
-	});
-	</script>
 	<?php
 }
 

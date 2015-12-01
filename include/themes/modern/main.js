@@ -30,9 +30,14 @@ function themeReady() {
 	$.ui.selectmenu.prototype._renderItem = function(ui, item) {
 		if (item.element.closest('select').hasClass('colordropdown')) {
 			if (item.label != 'None') {
-				var li = $("<li>").css( "background-color", '#'+item.label );
+				var li = $("<li>", { text: item.label });
+
+				$('<span>', {
+					style: item.element.attr('data-style'),
+					'class': 'ui-icon color-icon'
+				}).appendTo(li);
 			}else{
-				var li = $("<li>").css( "background-color", '' );
+				var li = $("<li>", { text: item.label });
 			}
 		}else if (item.element.closest('select').hasClass('iconselect')) {
 			var li = $('<li>', { text: item.label });
@@ -49,19 +54,31 @@ function themeReady() {
 			return li.appendTo(ui);
 		}else{
 			var li = $("<li>");
+
+			this._setText(li, item.label);
 		}
 
 		if (item.disabled) {
 			li.addClass("ui-state-disabled");
 		}
 
-		this._setText(li, item.label);
-
 		return li.appendTo(ui);
 	}
 
 	$('.checkboxgroup').children('br').remove();
 	$('.checkboxgroup').buttonset();
+
+	// Turn file buttons into jQueryUI buttons
+	$('.import_label').button();
+	$('.import_button').change(function() {
+		text=this.value;
+		setImportFile(text);
+	});
+	setImportFile('No file selected');
+
+	function setImportFile(fileText) {
+		$('.import_text').html(fileText);
+	}
 
 	$('select').each(function() {
 		if ($(this).prop('multiple') != true) {
