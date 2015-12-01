@@ -978,13 +978,13 @@ function draw_actions_dropdown($actions_array, $delete_action = 1) {
 				$(this).prop('disabled', true).change().closest('tr').removeClass('selectable').removeClass('selected');
 			});
 
-			$('#submit').prop('disabled', false).removeClass('ui-state-disabled');
+			$('#submit').prop('disabled', false).removeClass('ui-button-disabled');
 		}else if ($('#drp_action').val() == 0) {
-			$('#submit').prop('disabled', true).addClass('ui-state-disabled');
+			$('#submit').prop('disabled', true).addClass('ui-button-disabled');
 		}else if (<?php print $delete_action;?> != 0) {
 			$(':checkbox.disabled').prop('disabled', false).change().closest('tr').addClass('selectable').change();
 
-			$('#submit').prop('disabled', false).removeClass('ui-state-disabled');
+			$('#submit').prop('disabled', false).removeClass('ui-button-disabled');
 		}
 
 		$('tr.selectable').find('td').not('.checkbox').each(function(data) {
