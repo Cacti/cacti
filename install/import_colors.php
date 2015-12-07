@@ -1,5 +1,7 @@
 <?php
 
+$no_http_headers = true;
+
 include('../include/global.php');
 $contents = file('colors.csv');
 
