@@ -145,7 +145,7 @@
 145,57E964,Stoplight Go Green
 146,64E986,Algae Green
 147,5EFB6E,Jade Green
-148,00FF00,Green
+148,00FF00,Lime Green
 149,5FFB17,Emerald Green
 150,87F717,Lawn Green
 151,8AFB17,Chartreuse
@@ -339,3 +339,9 @@
 339,FEFCFF,Milk White
 340,FFFFFF,White
 341,0000FF,Blue
+342,008000,Green
+343,808000,Olive
+344,C0C0C0,Silver
+345,808080,Grey
+346,800080,Purple
+347,800000,Maroon
