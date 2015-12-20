@@ -841,7 +841,7 @@ function networks() {
 		'sched_type'   => array('display' => 'Schedule', 'align' => 'left', 'sort' => 'DESC'),
 		'total_ips'    => array('display' => 'Total IPs', 'align' => 'right', 'sort' => 'DESC'),
 		'nosort1'      => array('display' => 'Status', 'align' => 'right', 'sort' => 'DESC', 'tip' => 'The Current Status of this Networks Discovery'),
-		'nosort2'      => array('display' => 'Progress', 'align' => 'right', 'sort' => 'DESC', 'tip' => 'Pending/Running/Dene'),
+		'nosort2'      => array('display' => 'Progress', 'align' => 'right', 'sort' => 'DESC', 'tip' => 'Pending/Running/Done'),
 		'nosort3'      => array('display' => 'Up/SNMP Hosts', 'align' => 'right', 'sort' => 'DESC'),
 		'threads'      => array('display' => 'Threads', 'align' => 'right', 'sort' => 'DESC'),
 		'last_runtime' => array('display' => 'Last Runtime', 'align' => 'right', 'sort' => 'ASC'),

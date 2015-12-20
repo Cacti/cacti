@@ -42,5 +42,5 @@ $database_ssl      = false;
 //$cacti_session_name = 'Cacti';
 
 
-/* Save sessions to a database for load balancing *
+/* Save sessions to a database for load balancing */
 $cacti_db_session = true;
