@@ -163,7 +163,7 @@ function form_actions() {
 			}
 		}
 
-		header('Location: host_templates.php');
+		header('Location: host_templates.php?header=false');
 		exit;
 	}
 
@@ -177,7 +177,7 @@ function form_actions() {
 			input_validate_input_number($matches[1]);
 			/* ==================================================== */
 
-			$host_list .= '<li>' . htmlspecialchars(db_fetch_cell_prepared('SELECT name FROM host_template WHERE id = ?'), array($matches[1])) . '</li>';
+			$host_list .= '<li>' . htmlspecialchars(db_fetch_cell_prepared('SELECT name FROM host_template WHERE id = ?', array($matches[1]))) . '</li>';
 			$host_array[$i] = $matches[1];
 
 			$i++;
