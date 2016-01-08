@@ -272,12 +272,6 @@ function form_save() {
 		input_validate_input_number(get_request_var_post('id'));
 		/* ==================================================== */
 
-		if (empty($_POST['id'])) {
-			$header = true;
-		}else{
-			$header = false;
-		}
-
 		$save['id']            = $_POST['id'];
 		$save['name']          = form_input_validate($_POST['name'], 'name', '', false, 3);
 		$save['sort_type']     = form_input_validate($_POST['sort_type'], 'sort_type', '', true, 3);
@@ -301,7 +295,8 @@ function form_save() {
 			}
 		}
 
-		header("Location: tree.php?action=edit" . (!$header ? "&header=false":"") . "&id=$tree_id");
+		header("Location: tree.php?header=false&action=edit&id=$tree_id");
+		exit;
 	}
 }
 
@@ -338,7 +333,7 @@ function form_actions() {
 			}
 		}
 
-		header('Location: tree.php');
+		header('Location: tree.php?header=false');
 		exit;
 	}
 
@@ -478,6 +473,8 @@ function tree_edit() {
 
 		$header_label = '[new]';
 	}
+
+	form_start('tree.php');
 
 	html_start_box('Graph Trees ' . $header_label, '100%', '', '3', 'center', '');
 
