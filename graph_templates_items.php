@@ -395,11 +395,19 @@ function item_edit() {
 		if ($('#color_id').val() != 0) {
 			$('#alpha').prop('disabled', false);
 		}
+		switch($('#graph_type_id').val()) {
+		case '4':
+		case '5':
+		case '6':
+		case '7':
+		case '8':
+			$('#alpha').prop('disabled', false);
+		}
 	}
 
 	function setRowVisibility() {
 		switch($('#graph_type_id').val()) {
-		case "1":
+		case '1':
 			$('#row_task_item_id').hide();
 			$('#row_color_id').hide();
 			$('#row_alpha').hide();
@@ -410,8 +418,8 @@ function item_edit() {
 			$('#row_text_format').show();
 			$('#row_hard_return').show();
 			break;
-		case "2":
-		case "3":
+		case '2':
+		case '3':
 			$('#row_task_item_id').hide();
 			$('#row_color_id').hide();
 			$('#row_alpha').hide();
@@ -422,11 +430,11 @@ function item_edit() {
 			$('#row_text_format').hide();
 			$('#row_hard_return').show();
 			break;
-		case "4":
-		case "5":
-		case "6":
-		case "7":
-		case "8":
+		case '4':
+		case '5':
+		case '6':
+		case '7':
+		case '8':
 			$('#row_task_item_id').show();
 			$('#row_color_id').show();
 			$('#row_alpha').show();
@@ -437,7 +445,7 @@ function item_edit() {
 			$('#row_text_format').show();
 			$('#row_hard_return').show();
 			break;
-		case "9":
+		case '9':
 			$('#row_task_item_id').show();
 			$('#row_color_id').hide();
 			$('#row_alpha').hide();
@@ -448,7 +456,7 @@ function item_edit() {
 			$('#row_text_format').show();
 			$('#row_hard_return').show();
 			break;
-		case "10":
+		case '10':
 			$('#row_task_item_id').show();
 			$('#row_color_id').hide();
 			$('#row_alpha').hide();

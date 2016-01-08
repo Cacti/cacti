@@ -31,8 +31,6 @@ function themeReady() {
 	$('.colordropdown').change(function() {
 		id=$(this).attr('id');
 		color=$('#'+id+' option:selected').attr('data-color');
-console.log(id);
-console.log(color);
 		$('<span>', {
 			style: 'background-color:#'+color+',width:16px;height:16px;',
 			'class': 'color-icon'
@@ -135,6 +133,25 @@ console.log(color);
 			}
 		}
 	}).addClass('ui-state-default ui-selectmenu-text').css('border', 'none').css('background-color', 'transparent');
+
+	$('#drp_action').change(function() {
+		if ($(this).val() != '0') {
+			$('#submit').button('enable');
+		}else{
+			$('#submit').button('disable');
+		}
+	});
+
+	$('#graph_type_id').change(function() {
+		switch($(this).val()) {
+		case '4':
+		case '5':
+		case '6':
+		case '7':
+		case '8':
+			$('#alpha').selectmenu('enable');
+		}
+	});
 
 	$('#host_click').css('z-index', '4');
 	$('#host_wrapper').unbind().dblclick(function() {
