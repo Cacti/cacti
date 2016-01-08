@@ -194,7 +194,7 @@ function aggregate_color_form_actions() {
 			}
 		}
 
-		header('Location: color_templates.php');
+		header('Location: color_templates.php?header=false');
 		exit;
 	}
 
