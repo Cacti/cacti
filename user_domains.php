@@ -157,7 +157,7 @@ function form_save() {
 		}
 	}
 
-	header('Location: user_domains.php?action=edit&domain_id=' . (empty($domain_id) ? $_POST['domain_id'] : $domain_id));
+	header('Location: user_domains.php?header=false&action=edit&domain_id=' . (empty($domain_id) ? $_POST['domain_id'] : $domain_id));
 }
 
 function form_actions() {
@@ -191,7 +191,7 @@ function form_actions() {
 			}
 		}
 
-		header('Location: user_domains.php');
+		header('Location: user_domains.php?header=false');
 		exit;
 	}
 
@@ -485,6 +485,8 @@ function domain_edit() {
 			'value' => '1'
 			)
 	);
+
+	form_start('user_domains.php');
 
 	html_start_box("User Domain $header_label", '100%', '', '3', 'center', '');
 
