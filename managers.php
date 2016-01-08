@@ -893,7 +893,7 @@ function form_actions(){
 					db_execute("UPDATE snmpagent_managers SET disabled = 'on' WHERE id IN (" . implode(',' ,$selected_items) . ')');
 				}
 
-				header('Location: managers.php');
+				header('Location: managers.php?header=false');
 				exit;
 			}
 		}elseif(isset($_POST['action_receiver_notifications'])) {
@@ -917,7 +917,7 @@ function form_actions(){
 				}
 			}
 
-			header('Location: managers.php?action=edit&id=' . $_POST['id'] . '&tab=notifications');
+			header('Location: managers.php?action=edit&id=' . $_POST['id'] . '&tab=notifications&header=false');
 			exit;
 		}
 	}else {
