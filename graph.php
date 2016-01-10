@@ -113,7 +113,7 @@ case 'view':
 							</td>
 							<td valign='top' style='padding: 3px;' class='noprint'>
 								<span class='hyperLink utils' graph_start='<?php print $graph_start;?>' graph_end='<?php print $graph_end;?>' rra_id='<?php print $rra['id'];?>' id='graph_<?php print $_REQUEST['local_graph_id'];?>_util'><img class='drillDown' src='<?php print $config['url_path'];?>images/cog.png' alt='' title='Graph Details, Zooming and Debugging Utilities'></span><br>
-								<a href='<?php print htmlspecialchars('graph_xport.php?local_graph_id=' . $_REQUEST['local_graph_id'] . '&rra_id=' . $rra['id'] . '&view_type=' . $_REQUEST['view_type'] .  '&graph_start=' . $graph_start . '&graph_end=' . $graph_end);?>'><img src='images/table_go.png' alt='CSV Export' title='CSV Export'></a><br>
+								<a href='<?php print htmlspecialchars($config['url_path'] . 'graph_xport.php?local_graph_id=' . $_REQUEST['local_graph_id'] . '&rra_id=' . $rra['id'] . '&view_type=' . $_REQUEST['view_type'] .  '&graph_start=' . $graph_start . '&graph_end=' . $graph_end);?>'><img src='<?php print $config['url_path'] . "images/table_go.png";?>' alt='CSV Export' title='CSV Export'></a><br>
 								<?php if (read_config_option('realtime_enabled') == 'on') print "<a href='#' onclick=\"window.open('".$config['url_path']."graph_realtime.php?top=0&left=0&local_graph_id=" . $_REQUEST['local_graph_id'] . "', 'popup_" . $_REQUEST['local_graph_id'] . "', 'toolbar=no,menubar=no,resizable=yes,location=no,scrollbars=no,status=no,titlebar=no,width=650,height=300')\"><img src='" . $config['url_path'] . "images/chart_curve_go.png' alt='Realtime' title='Realtime'></a><br/>\n";?>
 								<?php print ($aggregate_url != '' ? $aggregate_url:'')?>
 								<?php api_plugin_hook('graph_buttons', array('hook' => 'view', 'local_graph_id' => $_REQUEST['local_graph_id'], 'rra' => $rra['id'], 'view_type' => $_REQUEST['view_type'])); ?>
@@ -144,7 +144,7 @@ case 'view':
 			graph_height=$(this).attr('graph_height');
 			graph_width=$(this).attr('graph_width');
 
-			$.getJSON('graph_json.php?'+
+			$.getJSON(urlPath+'graph_json.php?'+
 				'local_graph_id='+graph_id+
 				'&graph_height='+graph_height+
 				'&rra_id='+rra_id+
@@ -262,11 +262,11 @@ case 'zoom':
 					</td>
 					<td valign='top' style='align:left;padding-top: 3px;' class='noprint'>
 						<span id='graph_<?php print $graph['local_graph_id'];?>_properties' class='hyperLink properties'> 
-							<img class='drillDown' src='images/graph_properties.gif' alt='' title='Graph Source/Properties'>
+							<img class='drillDown' src='<?php print $config['url_path'] . "images/graph_properties.gif";?>' alt='' title='Graph Source/Properties'>
 						</span>
 						<br>
 						<span id='graph_<?php print $graph['local_graph_id'];?>_csv' class='hyperLink properties'> 
-							<img class='drillDown' src='images/table_go.png' alt='' title='Graph Data'>
+							<img class='drillDown' src='<?php print $config['url_path'] . "images/table_go.png";?>' alt='' title='Graph Data'>
 						</span>
 						<br>
 						<?php api_plugin_hook('graph_buttons', array('hook' => 'zoom', 'local_graph_id' => $_REQUEST['local_graph_id'], 'rra' =>  $_REQUEST['rra_id'], 'view_type' => $_REQUEST['view_type'])); ?>
@@ -317,12 +317,12 @@ case 'zoom':
 	}
 
 	function graphXport() {
-		$.get('graph_xport.php?local_graph_id='+graph_id+'&rra_id=0&format=table&graph_start='+$('#graph_start').val()+'&graph_end='+$('#graph_end').val(), function(data) {
+		$.get(urlPath+'graph_xport.php?local_graph_id='+graph_id+'&rra_id=0&format=table&graph_start='+$('#graph_start').val()+'&graph_end='+$('#graph_end').val(), function(data) {
 			$('#data').html(data);
 
 			$('.download').click(function() {
 				graph_id=$(this).attr('id').replace('graph_','');
-				document.location = 'graph_xport.php?local_graph_id='+graph_id+'&rra_id=0&view_type=tree&graph_start='+$('#graph_start').val()+'&graph_end='+$('#graph_end').val();
+				document.location = urlPath+'graph_xport.php?local_graph_id='+graph_id+'&rra_id=0&view_type=tree&graph_start='+$('#graph_start').val()+'&graph_end='+$('#graph_end').val();
 			});
 		});
 		props_on = false;
@@ -335,7 +335,7 @@ case 'zoom':
 			graph_height=$(this).attr('graph_height');
 			graph_width=$(this).attr('graph_width');
 
-			$.getJSON('graph_json.php?rra_id=0'+
+			$.getJSON(urlPath+'graph_json.php?rra_id=0'+
 				'&local_graph_id='+graph_id+
 				'&graph_start='+$('#graph_start').val()+
 				'&graph_end='+$('#graph_end').val()+
