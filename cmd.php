@@ -197,23 +197,23 @@ $polling_interval = read_config_option('poller_interval');
 /* check arguments */
 if ($allhost) {
 	if (isset($polling_interval)) {
-		$polling_items = db_fetch_assoc('SELECT * FROM poller_item WHERE rrd_next_step<=0 ORDER BY host_id');
-		$script_server_calls = db_fetch_cell('SELECT count(*) FROM poller_item WHERE (action=2 AND rrd_next_step<=0)');
+		$polling_items = db_fetch_assoc('SELECT ' . SQL_NO_CACHE . ' * FROM poller_item WHERE rrd_next_step<=0 ORDER BY host_id');
+		$script_server_calls = db_fetch_cell('SELECT ' . SQL_NO_CACHE . ' count(*) FROM poller_item WHERE (action=2 AND rrd_next_step<=0)');
 	}else{
-		$polling_items = db_fetch_assoc('SELECT * FROM poller_item ORDER by host_id');
-		$script_server_calls = db_fetch_cell('SELECT count(*) from poller_item WHERE (action=2)');
+		$polling_items = db_fetch_assoc('SELECT ' . SQL_NO_CACHE . ' * FROM poller_item ORDER by host_id');
+		$script_server_calls = db_fetch_cell('SELECT ' . SQL_NO_CACHE . ' count(*) from poller_item WHERE (action=2)');
 	}
 
 	$print_data_to_stdout = true;
 
 	/* get the number of polling items from the database */
-	$hosts = db_fetch_assoc("SELECT * FROM host WHERE disabled='' ORDER BY id");
+	$hosts = db_fetch_assoc("SELECT " . SQL_NO_CACHE . " * FROM host WHERE disabled='' ORDER BY id");
 
 	/* rework the hosts array to be searchable */
 	$hosts = array_rekey($hosts, 'id', $host_struc);
 
 	$host_count = sizeof($hosts);
-	$script_server_calls = db_fetch_cell('SELECT count(*) FROM poller_item WHERE action IN (' . POLLER_ACTION_SCRIPT_PHP . ',' . POLLER_ACTION_SCRIPT_PHP_COUNT . ')');
+	$script_server_calls = db_fetch_cell('SELECT ' . SQL_NO_CACHE . ' count(*) FROM poller_item WHERE action IN (' . POLLER_ACTION_SCRIPT_PHP . ',' . POLLER_ACTION_SCRIPT_PHP_COUNT . ')');
 
 	/* setup next polling interval */
 	if (isset($polling_interval)) {
@@ -227,7 +227,7 @@ if ($allhost) {
 		input_validate_input_number($first);
 		input_validate_input_number($last);
 
-		$hosts = db_fetch_assoc_prepared("SELECT *
+		$hosts = db_fetch_assoc_prepared("SELECT " . SQL_NO_CACHE . " *
 				FROM host
 				WHERE (disabled = '' AND id >= ? AND id <= ?)
 				ORDER by id", array($first, $last));
@@ -235,12 +235,12 @@ if ($allhost) {
 		$host_count = sizeof($hosts);
 
 		if (isset($polling_interval)) {
-			$polling_items = db_fetch_assoc_prepared('SELECT *
+			$polling_items = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' *
 				FROM poller_item
 				WHERE (host_id >= ? AND host_id <= ? AND rrd_next_step <= 0)
 				ORDER by host_id', array($first, $last));
 
-			$script_server_calls = db_fetch_cell_prepared('SELECT count(*)
+			$script_server_calls = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . ' count(*)
 				FROM poller_item
 				WHERE (action = 2 AND host_id >= ? AND host_id <= ? AND rrd_next_step <= 0)', 
 				array($first, $last));
@@ -256,11 +256,11 @@ if ($allhost) {
 				WHERE (rrd_next_step < 0 AND host_id >= ? AND host_id <= ?)', 
 				array($first, $last));
 		}else{
-			$polling_items = db_fetch_assoc_prepared('SELECT * FROM poller_item
+			$polling_items = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' * FROM poller_item
 					WHERE (host_id >= ? and host_id <= ?) 
 					ORDER by host_id', array($first, $last));
 
-			$script_server_calls = db_fetch_cell_prepared('SELECT count(*) FROM poller_item 
+			$script_server_calls = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . ' count(*) FROM poller_item 
 					WHERE (action IN (' . POLLER_ACTION_SCRIPT_PHP . ',' . POLLER_ACTION_SCRIPT_PHP_COUNT . ') AND (host_id >= ? AND host_id <= ?))', 
 					array($first, $last));
 		}
@@ -350,7 +350,7 @@ if ((sizeof($polling_items) > 0) && (read_config_option('poller_enabled') == 'on
 
 			if (!$host_down) {
 				/* do the reindex check for this host */
-				$reindex = db_fetch_assoc_prepared('SELECT pr.data_query_id, pr.action,
+				$reindex = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' pr.data_query_id, pr.action,
 					pr.op, pr.assert_value, pr.arg1
 					FROM poller_reindex AS pr
 					WHERE pr.host_id=?', array($item['host_id']));

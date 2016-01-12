@@ -156,9 +156,9 @@ function update_reindex_cache($host_id, $data_query_id) {
 	/* will be used to keep track of sql statements to execute later on */
 	$recache_stack = array();
 
-	$host            = db_fetch_row_prepared('SELECT hostname, snmp_community, snmp_version, snmp_username, snmp_password, snmp_auth_protocol, snmp_priv_passphrase, snmp_priv_protocol, snmp_context, snmp_port, snmp_timeout FROM host WHERE id = ?', array($host_id));
-	$data_query      = db_fetch_row_prepared('SELECT reindex_method, sort_field FROM host_snmp_query WHERE host_id = ? AND snmp_query_id = ?', array($host_id, $data_query_id));
-	$data_query_type = db_fetch_cell_prepared('SELECT data_input.type_id FROM (data_input, snmp_query) WHERE data_input.id = snmp_query.data_input_id AND snmp_query.id = ?', array($data_query_id));
+	$host            = db_fetch_row_prepared('SELECT ' . SQL_NO_CACHE . ' hostname, snmp_community, snmp_version, snmp_username, snmp_password, snmp_auth_protocol, snmp_priv_passphrase, snmp_priv_protocol, snmp_context, snmp_port, snmp_timeout FROM host WHERE id = ?', array($host_id));
+	$data_query      = db_fetch_row_prepared('SELECT ' . SQL_NO_CACHE . ' reindex_method, sort_field FROM host_snmp_query WHERE host_id = ? AND snmp_query_id = ?', array($host_id, $data_query_id));
+	$data_query_type = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . ' data_input.type_id FROM (data_input, snmp_query) WHERE data_input.id = snmp_query.data_input_id AND snmp_query.id = ?', array($data_query_id));
 	$data_query_xml  = get_data_query_array($data_query_id);
 
 	switch ($data_query['reindex_method']) {
@@ -206,7 +206,7 @@ function update_reindex_cache($host_id, $data_query_id) {
 			 * we do NOT make use of <oid_num_indexes> or the like!
 			 * this works, even if no <oid_num_indexes> was given
 			 */
-			$assert_value = sizeof(db_fetch_assoc_prepared('SELECT snmp_index FROM host_snmp_cache WHERE host_id = ? AND snmp_query_id = ? GROUP BY snmp_index', array($host_id, $data_query_id)));
+			$assert_value = sizeof(db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' snmp_index FROM host_snmp_cache WHERE host_id = ? AND snmp_query_id = ? GROUP BY snmp_index', array($host_id, $data_query_id)));
 
 			/* now, we have to build the (list of) commands that are later used on a recache event
 			 * the result of those commands will be compared to the assert_value we have just computed
@@ -244,7 +244,7 @@ function update_reindex_cache($host_id, $data_query_id) {
 
 			break;
 		case DATA_QUERY_AUTOINDEX_FIELD_VERIFICATION:
-			$primary_indexes = db_fetch_assoc_prepared('SELECT snmp_index, oid, field_value FROM host_snmp_cache WHERE host_id = ? AND snmp_query_id = ? AND field_name = ?', array($host_id, $data_query_id, $data_query['sort_field']));
+			$primary_indexes = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' snmp_index, oid, field_value FROM host_snmp_cache WHERE host_id = ? AND snmp_query_id = ? AND field_name = ?', array($host_id, $data_query_id, $data_query['sort_field']));
 
 			if (sizeof($primary_indexes) > 0) {
 				foreach ($primary_indexes as $index) {
@@ -377,7 +377,7 @@ function process_poller_output(&$rrdtool_pipe, $remainder = FALSE) {
 			}else{
 				$values = explode(' ', $value);
 
-				$rrd_field_names = array_rekey(db_fetch_assoc_prepared('SELECT
+				$rrd_field_names = array_rekey(db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . '
 					data_template_rrd.data_source_name,
 					data_input_fields.data_name
 					FROM (data_template_rrd, data_input_fields)

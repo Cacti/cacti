@@ -26,22 +26,22 @@ function api_poller_cache_item_add($host_id, $host_field_override, $local_data_i
 	static $hosts = array();
 
 	if (!isset($hosts[$host_id])) {
-	$host = db_fetch_row_prepared('SELECT
-		host.id,
-		host.hostname,
-		host.snmp_community,
-		host.snmp_version,
-		host.snmp_username,
-		host.snmp_password,
-		host.snmp_auth_protocol,
-		host.snmp_priv_passphrase,
-		host.snmp_priv_protocol,
-		host.snmp_context,
-		host.snmp_port,
-		host.snmp_timeout,
-		host.disabled
-		FROM host
-		WHERE host.id = ?', array($host_id));
+		$host = db_fetch_row_prepared('SELECT ' . SQL_NO_CACHE . '
+			host.id,
+			host.hostname,
+			host.snmp_community,
+			host.snmp_version,
+			host.snmp_username,
+			host.snmp_password,
+			host.snmp_auth_protocol,
+			host.snmp_priv_passphrase,
+			host.snmp_priv_protocol,
+			host.snmp_context,
+			host.snmp_port,
+			host.snmp_timeout,
+			host.disabled
+			FROM host
+			WHERE host.id = ?', array($host_id));
 
 		$hosts[$host_id] = $host;
 	} else {

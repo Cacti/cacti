@@ -1008,7 +1008,7 @@ function validate_result(&$result) {
 function get_full_script_path($local_data_id) {
 	global $config;
 
-	$data_source = db_fetch_row_prepared('SELECT
+	$data_source = db_fetch_row_prepared('SELECT ' . SQL_NO_CACHE . '
 		data_template_data.id,
 		data_template_data.data_input_id,
 		data_input.type_id,
@@ -1022,7 +1022,7 @@ function get_full_script_path($local_data_id) {
 		return false;
 	}
 
-	$data = db_fetch_assoc_prepared("SELECT
+	$data = db_fetch_assoc_prepared("SELECT " . SQL_NO_CACHE . "
 		data_input_fields.data_name,
 		data_input_data.value
 		FROM data_input_fields
@@ -1058,7 +1058,7 @@ function get_full_script_path($local_data_id) {
 function get_data_source_item_name($data_template_rrd_id) {
 	if (empty($data_template_rrd_id)) { return ''; }
 
-	$data_source = db_fetch_row_prepared('SELECT
+	$data_source = db_fetch_row_prepared('SELECT ' . SQL_NO_CACHE . '
 		data_template_rrd.data_source_name,
 		data_template_data.name
 		FROM (data_template_rrd, data_template_data)
@@ -1083,29 +1083,38 @@ function get_data_source_item_name($data_template_rrd_id) {
    @returns - the full path to the data source or an empty string for an error */
 function get_data_source_path($local_data_id, $expand_paths) {
 	global $config;
+	static $data_source_path_cache = array();
 
-	if (empty($local_data_id)) { return ''; }
+	if (empty($local_data_id)) { 
+		return ''; 
+	}
 
-	$data_source = db_fetch_row_prepared('SELECT name, data_source_path FROM data_template_data WHERE local_data_id = ?', array($local_data_id));
+	if (!isset($data_source_path_cache[$local_data_id])) {
+		$data_source = db_fetch_row_prepared('SELECT ' . SQL_NO_CACHE . ' name, data_source_path FROM data_template_data WHERE local_data_id = ?', array($local_data_id));
 
-	if (sizeof($data_source) > 0) {
-		if (empty($data_source['data_source_path'])) {
-			/* no custom path was specified */
-			$data_source_path = generate_data_source_path($local_data_id);
-		}else{
-			if (!strstr($data_source['data_source_path'], '/')) {
-				$data_source_path = '<path_rra>/' . $data_source['data_source_path'];
+		if (sizeof($data_source) > 0) {
+			if (empty($data_source['data_source_path'])) {
+				/* no custom path was specified */
+				$data_source_path = generate_data_source_path($local_data_id);
 			}else{
-				$data_source_path = $data_source['data_source_path'];
+				if (!strstr($data_source['data_source_path'], '/')) {
+					$data_source_path = '<path_rra>/' . $data_source['data_source_path'];
+				}else{
+					$data_source_path = $data_source['data_source_path'];
+				}
 			}
-		}
 
-		/* whether to show the "actual" path or the <path_rra> variable name (for edit boxes) */
-		if ($expand_paths == true) {
-			$data_source_path = str_replace('<path_rra>', $config['rra_path'], $data_source_path);
-		}
+			/* whether to show the "actual" path or the <path_rra> variable name (for edit boxes) */
+			if ($expand_paths == true) {
+				$data_source_path = str_replace('<path_rra>', $config['rra_path'], $data_source_path);
+			}
 
-		return $data_source_path;
+			$data_source_path_cache[$local_data_id] = $data_source_path;
+
+			return $data_source_path;
+		}
+	}else{
+		return $data_source_path_cache[$local_data_id];
 	}
 }
 
@@ -2619,7 +2628,7 @@ function resolve_navigation_variables($text) {
    @arg $local_graph_id - (int) the ID of the graph to retrieve a list of RRAs for
    @returns - (array) an array containing the name and id of each RRA found */
 function get_associated_rras($local_graph_id) {
-	return db_fetch_assoc_prepared('SELECT
+	return db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . '
 		rra.id,
 		rra.steps,
 		rra.rows,

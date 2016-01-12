@@ -34,7 +34,7 @@ function sig_handler($signo) {
 		case SIGINT:
 			cacti_log('WARNING: Cacti Master Poller process terminated by user', true, 'POLLER', POLLER_VERBOSITY_LOW);
 
-			$running_processes = db_fetch_assoc('SELECT * FROM poller_time WHERE end_time=\'0000-00-00 00:00:00\'');
+			$running_processes = db_fetch_assoc('SELECT ' . SQL_NO_CACHE . ' * FROM poller_time WHERE end_time=\'0000-00-00 00:00:00\'');
 
 			if (sizeof($running_processes)) {
 			foreach($running_processes as $process) {
@@ -155,9 +155,9 @@ if (isset($poller_interval)) {
 	define('MAX_POLLER_RUNTIME', 298);
 }
 
-$num_polling_items = db_fetch_cell("SELECT COUNT(*) FROM poller_item $sql_where");
+$num_polling_items = db_fetch_cell('SELECT ' . SQL_NO_CACHE . ' COUNT(*) FROM poller_item ' . $sql_where);
 if (isset($concurrent_processes) && $concurrent_processes > 1) {
-	$items_perhost     = array_rekey(db_fetch_assoc("SELECT host_id, COUNT(*) AS data_sources
+	$items_perhost     = array_rekey(db_fetch_assoc("SELECT " . SQL_NO_CACHE . " host_id, COUNT(*) AS data_sources
 		FROM poller_item
 		$sql_where
 		GROUP BY host_id
@@ -223,7 +223,7 @@ ini_set('memory_limit', '512M');
 
 $poller_runs_completed = 0;
 $poller_items_total    = 0;
-$polling_hosts         = array_merge(array(0 => array('id' => '0')), db_fetch_assoc('SELECT id FROM host WHERE disabled=\'\' ORDER BY id'));
+$polling_hosts         = array_merge(array(0 => array('id' => '0')), db_fetch_assoc('SELECT ' . SQL_NO_CACHE . ' id FROM host WHERE disabled=\'\' ORDER BY id'));
 
 while ($poller_runs_completed < $poller_runs) {
 	/* record the start time for this loop */
@@ -254,15 +254,15 @@ while ($poller_runs_completed < $poller_runs) {
 	$max_threads = read_config_option('max_threads');
 
 	/* initialize poller_time and poller_output tables, check poller_output for issues */
-	$running_processes = db_fetch_cell('SELECT count(*) FROM poller_time WHERE end_time=\'0000-00-00 00:00:00\'');
+	$running_processes = db_fetch_cell('SELECT ' . SQL_NO_CACHE . ' count(*) FROM poller_time WHERE end_time=\'0000-00-00 00:00:00\'');
 	if ($running_processes) {
 		cacti_log("WARNING: There are '$running_processes' detected as overrunning a polling process, please investigate", true, 'POLLER');
 	}
 	db_execute('TRUNCATE TABLE poller_time');
 
 	$issues_limit = 20;
-	$issues = db_fetch_assoc('SELECT local_data_id, rrd_name FROM poller_output LIMIT ' . ($issues_limit));
-	$count = db_fetch_cell('SELECT COUNT(*) FROM poller_output');
+	$issues = db_fetch_assoc('SELECT ' . SQL_NO_CACHE . ' local_data_id, rrd_name FROM poller_output LIMIT ' . ($issues_limit));
+	$count = db_fetch_cell('SELECT ' . SQL_NO_CACHE . ' COUNT(*) FROM poller_output');
 	if (sizeof($issues)) {
 		$issue_list = '';
 		foreach($issues as $issue) {
@@ -376,7 +376,7 @@ while ($poller_runs_completed < $poller_runs) {
 		$rrds_processed = 0;
 		$poller_finishing_dispatched = false;
 		while (1) {
-			$finished_processes = db_fetch_cell('SELECT count(*) FROM poller_time WHERE poller_id = 0 AND end_time  >\'0000-00-00 00:00:00\'');
+			$finished_processes = db_fetch_cell('SELECT ' . SQL_NO_CACHE . ' count(*) FROM poller_time WHERE poller_id = 0 AND end_time  >\'0000-00-00 00:00:00\'');
 
 			if ($finished_processes >= $started_processes) {
 				/* all scheduled pollers are finished */
@@ -418,7 +418,7 @@ while ($poller_runs_completed < $poller_runs) {
 		rrd_close($rrdtool_pipe);
 
 		/* process poller commands */
-		if (db_fetch_cell('SELECT COUNT(*) FROM poller_command') > 0) {
+		if (db_fetch_cell('SELECT ' . SQL_NO_CACHE . ' COUNT(*) FROM poller_command') > 0) {
 			$command_string = read_config_option('path_php_binary');
 			$extra_args = '-q "' . $config['base_path'] . '/poller_commands.php"';
 			exec_background($command_string, $extra_args);
