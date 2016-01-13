@@ -1032,11 +1032,14 @@ function host_edit() {
 			AND host_graph.host_id = ?
 			ORDER BY graph_templates.name', array($_REQUEST['id']));
 
-		$available_graph_templates = db_fetch_assoc('SELECT
+		$available_graph_templates = db_fetch_assoc_prepared('SELECT
 			graph_templates.id, graph_templates.name
-			FROM snmp_query_graph RIGHT JOIN graph_templates
-			ON (snmp_query_graph.graph_template_id = graph_templates.id)
-			WHERE (((snmp_query_graph.name) Is Null)) ORDER BY graph_templates.name');
+			FROM snmp_query_graph 
+			RIGHT JOIN graph_templates
+			ON snmp_query_graph.graph_template_id = graph_templates.id
+			WHERE snmp_query_graph.name IS NULL 
+			AND graph_templates.id NOT IN (SELECT graph_template_id FROM host_graph WHERE host_id = ?) 
+			ORDER BY graph_templates.name', array($_REQUEST['id']));
 
 		$i = 0;
 		if (sizeof($selected_graph_templates)) {
