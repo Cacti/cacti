@@ -98,9 +98,7 @@ if (isset($_REQUEST['action']) && $_REQUEST['action'] == 'save') {
 
 /* setup tree selection defaults if the user has not been here before */
 if (!isset($_REQUEST['action'])) {
-	if (isset($_REQUEST['header'])) {
-		$_REQUEST['action'] = 'tree_content';
-	}elseif (!isset($_SESSION['sess_graph_view_action'])) {
+	if (!isset($_SESSION['sess_graph_view_action'])) {
 		if (read_graph_config_option('default_view_mode') == '1') {
 			$_REQUEST['action'] = 'tree';
 		}elseif (read_graph_config_option('default_view_mode') == '2') {
@@ -113,7 +111,7 @@ if (!isset($_REQUEST['action'])) {
 	}
 }
 
-if ($_REQUEST['action'] != 'get_node' && $_REQUEST['action'] != 'tree_content') {
+if ($_REQUEST['action'] != 'get_node') {
 	$_SESSION['sess_graph_view_action'] = $_REQUEST['action'];
 }
 
