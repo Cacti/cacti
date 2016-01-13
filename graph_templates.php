@@ -627,9 +627,12 @@ function template() {
 			FROM graph_templates AS gt
 			LEFT JOIN graph_local AS gl
 			ON gt.id=gl.graph_template_id
-			LEFT JOIN graph_templates_graph AS gtg
+			INNER JOIN (
+				SELECT * 
+				FROM graph_templates_graph AS gtg
+				WHERE gtg.local_graph_id=0
+			) AS gtg
 			ON gtg.graph_template_id=gt.id
-			AND gtg.local_graph_id=0
 			$sql_where
 			GROUP BY gt.id
 			$sql_having
