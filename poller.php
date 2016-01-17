@@ -212,7 +212,7 @@ if ((isset($poller_lastrun) && isset($poller_interval) && $poller_lastrun > 0) &
 
 /* check to see whether we have the poller interval set lower than the poller is actually ran, if so, issue a warning */
 if ((($seconds - $poller_lastrun - 5) > MAX_POLLER_RUNTIME) && ($poller_lastrun > 0)) {
-	cacti_log("WARNING: $task_type is out of sync with the Poller Interval!  The Poller Interval is '$poller_interval' seconds, with a maximum of a '300' second $task_type, but " . ($seconds - $poller_lastrun) . ' seconds have passed since the last poll!', true, 'POLLER');
+	cacti_log("WARNING: $task_type is out of sync with the Poller Interval!  The Poller Interval is '$poller_interval' seconds, with a maximum of a '$min_period' second $task_type, but " . ($seconds - $poller_lastrun) . ' seconds have passed since the last poll!', true, 'POLLER');
 }
 
 db_execute("REPLACE INTO settings (name, value) VALUES ('poller_lastrun'," . $seconds . ')');
