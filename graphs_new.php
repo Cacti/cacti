@@ -784,12 +784,19 @@ function graphs() {
 							}
 						}
 
-						$sql_query .= ' FROM host_snmp_cache
+						$sql_query_worder = $sql_query . ' FROM host_snmp_cache
 							WHERE host_id=' . $host['id'] . '
 							AND snmp_query_id=' . $snmp_query['id'] . "
 							$sql_where
 							GROUP BY host_id, snmp_query_id, snmp_index
 							$sql_order
+							LIMIT " . ($row_limit*($page-1)) . ',' . $row_limit;
+
+						$sql_query .= ' FROM host_snmp_cache
+							WHERE host_id=' . $host['id'] . '
+							AND snmp_query_id=' . $snmp_query['id'] . "
+							$sql_where
+							GROUP BY host_id, snmp_query_id, snmp_index
 							LIMIT " . ($row_limit*($page-1)) . ',' . $row_limit;
 
 						$rows_query = 'SELECT host_id, snmp_query_id, snmp_index
@@ -800,6 +807,9 @@ function graphs() {
 							GROUP BY host_id, snmp_query_id, snmp_index";
 
 						$snmp_query_indexes = db_fetch_assoc($sql_query);
+						if (sizeof($snmp_query_indexes)) {
+							$snmp_query_indexes = db_fetch_assoc($sql_query_worder);
+						}
 
 						$total_rows = sizeof(db_fetch_assoc($rows_query));
 
