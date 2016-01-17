@@ -208,23 +208,127 @@ function get_checkbox_style() {
 	return "";
 }
 
-/* get_request_var - returns the current value of a PHP $_GET variable, optionally
-     returning a default value if the request variable does not exist
+/* set_default_action - sets the required 'action' request variable
+   @arg $default - The default action is not set
+   @returns - null */
+function set_default_action($default = '') {
+	global $_CACTI_REQUEST;
+
+	if (!isset($_REQUEST['action'])) { 
+		$_REQUEST['action'] = $default;
+		$_CACTI_REQUEST['action'] = $default;
+	}else{
+		$_CACTI_REQUEST['action'] = $_REQUEST['action'];
+	}
+}
+
+/* unset_request_var - unsets the request variable
+   @arg $variable - The variable to unset
+   @returns - null */
+function unset_request_var($variable) {
+	global $_CACTI_REQUEST;
+
+	unset($_CACTI_REQUEST[$variable]);
+	unset($_REQUEST[$variable]);
+}
+
+/* isset_request_var - checks to see if the $_REQUEST variable
+   is set.  Returns true or false.
+   @arg $variable - The variable to check
+   @returns - true or false */
+function isset_request_var($variable) {
+	if (isset($_REQUEST[$variable])) {
+		return true;
+	}else{
+		return false;
+	}
+}
+
+/* isempty_request_var - checks to see if the $_REQUEST variable
+   is empty.  Returns true or false.
+   @arg $variable - The variable to check
+   @returns - true or false */
+function isempty_request_var($variable) {
+	if (isset_request_var($variable)) {
+		$value = $_REQUEST[$variable];
+
+		if (!empty($value)) {
+			return false;
+		}
+	}
+
+	return true;
+}
+
+/* set_request_var - sets a given $_REQUEST variable and Cacti global.
+   @arg $variable - The variable to set
+   @arg $value - The value to set the variable to
+   @returns - null */
+function set_request_var($variable, $value) {
+	global $_CACTI_REQUEST;
+
+	$_CACTI_REQUEST[$variable] = $value;
+	$_REQUEST[$variable]       = $value;
+}
+
+/* get_request_var - returns the current value of a PHP $_REQUEST variable, optionally
+     returning a default value if the request variable does not exist.  When Cacti
+     is set to 'developer_mode', it will log all instances where a request variable
+     has not first been filtered.
    @arg $name - the name of the request variable. this should be a valid key in the
-     $_GET array
+     $_REQUEST array
    @arg $default - the value to return if the specified name does not exist in the
-     $_GET array
+     $_REQUEST array
    @returns - the value of the request variable */
-function get_request_var($name, $default = "") {
-	if (isset($_GET[$name])) {
-		if (isset($_POST[$name])) {
-			unset($_POST[$name]);
-			$_REQUEST[$name] = $_GET[$name];
+function get_request_var($name, $default = '') {
+	global $_CACTI_REQUEST;
+
+	$developer = read_config_option('developer_mode');
+
+	if (isset($_CACTI_REQUEST[$name])) {
+		return $_CACTI_REQUEST[$name];
+	}elseif (isset_request_var($name)) {
+		if ($developer == 'on') {
+			html_log_input_error($name);
 		}
 
-		return $_GET[$name];
-	}else{
+		return $_REQUEST[$name];
+	} else {
 		return $default;
+	}
+}
+
+/* get_sanitize_request_var - returns the current value of a PHP $_REQUEST variable and also
+     sanitizing the value using the filter. It will also optionally
+     return a default value if the request variable does not exist
+   @arg $name - the name of the request variable. this should be a valid key in the
+     $_REQUEST array
+   @arg $default - the value to return if the specified name does not exist in the
+     $_REQUEST array
+   @returns - the value of the request variable */
+function get_sanitize_request_var($name, $filter, $options = array()) {
+	if (isset_request_var($name)) {
+		if (!sizeof($options)) {
+			$value = filter_var($_REQUEST[$name], $filter);
+		}else{
+			$value = filter_var($_REQUEST[$name], $filter, $options);
+		}
+
+		if ($value === FALSE) {
+			die_html_input_error();
+		}else{
+			set_request_var($name, $value);
+
+			return $value;
+		}
+	}else{
+		if (isset($options['default'])) {
+			set_request_var($name, $options['default']);
+
+			return $options['default'];
+		}else{
+			return;
+		}
 	}
 }
 
@@ -235,7 +339,7 @@ function get_request_var($name, $default = "") {
    @arg $default - the value to return if the specified name does not exist in the
      $_POST array
    @returns - the value of the request variable */
-function get_request_var_post($name, $default = "") {
+function get_request_var_post($name, $default = '') {
 	if (isset($_POST[$name])) {
 		if (isset($_GET[$name])) {
 			unset($_GET[$name]);
@@ -248,21 +352,138 @@ function get_request_var_post($name, $default = "") {
 	}
 }
 
-/* get_request_var_request - returns the current value of a PHP $_POST variable, optionally
+/* get_request_var - deprecated - alias of get_request_var()
      returning a default value if the request variable does not exist
    @arg $name - the name of the request variable. this should be a valid key in the
-     $_REQUEST array
+     $_GET array
    @arg $default - the value to return if the specified name does not exist in the
-     $_REQUEST array
+     $_GET array
    @returns - the value of the request variable */
-function get_request_var_request($name, $default = "") {
-	if (isset($_REQUEST[$name])) {
-		return $_REQUEST[$name];
-	} else {
-		return $default;
-	}
+function get_request_var_request($name, $default = '') {
+	return get_request_var($name, $default);
 }
 
+/* validate_store_request_vars - validate, sanitize, and store
+     request variables into the custom $_CACTI_REQUEST and desired
+     session variables for Cacti filtering.
+
+
+   @arg $filters - an array keyed with the filter methods.
+   @arg $session_prefix - the prefix for the session variable
+
+   Valid filter include those from PHP filter_var() function syntax.  
+   The format of the array is:
+
+     array(
+       'varA' => array(
+          'filter' => value, 
+          'pageset' => true,      (optional)
+          'session' => sess_name, (optional)
+          'options' => mixed, 
+          'default' => value),
+       'varB' => array(
+          'filter' => value, 
+          'pageset' => true,      (optional)
+          'session' => sess_name, (optional)
+          'options' => mixed, 
+          'default' => value),
+       ...
+     );
+
+   The 'pageset' attribute is optional, and when set, any changes 
+   between what the page returns and what is set in the session 
+   result in the page number being returned to 1.
+
+   The 'session' attribute is also optional, and when set, all
+   changes will be stored to the session variable defined and
+   not to session_prefix . '_' . $variable as the default.  This
+   allows for the concept of global session variables such as
+   'sess_default_rows'.
+
+   Validateion 'filter' follow PHP conventions including:
+
+     FILTER_VALIDATE_BOOLEAN - Validate that the variable is boolean
+     FILTER_VALIDATE_EMAIL   - Validate that the variable is an email
+     FILTER_VALIDATE_FLOAT   - Validate that the variable is a float
+     FILTER_VALIDATE_INT     - Validate that the variable is an integer
+     FILTER_VALIDATE_IP      - Validate that the variable is an IP address
+     FILTER_VALIDATE_MAC     - Validate that the variable is a MAC Address
+     FILTER_VALIDATE_REGEXP  - Validate against a REGEX
+     FILTER_VALIDATE_URL     - Validate that the variable is a valid URL
+
+   Sanitization 'filters' follow PHP conventions including:
+
+     FILTER_SANITIZE_EMAIL              - Sanitize the email address
+     FILTER_SANITIZE_ENCODED            - URL-encode string
+     FILTER_SANITIZE_MAGIC_QUOTES       - Apply addslashes()
+     FILTER_SANITIZE_NUMBER_FLOAT       - Remove all non float values
+     FILTER_SANITIZE_NUMBER_INT         - Remove everything non int
+     FILTER_SANITIZE_SPECIAL_CHARS      - Escape special chars
+     FILTER_SANITIZE_FULL_SPECIAL_CHARS - Equivalent to htmlspecialchars adding ENT_QUOTES
+     FILTER_SANITIZE_STRING             - Strip tags, optionally strip or encode special chars
+     FILTER_SANITIZE_URL                - Remove all characters except letters, digits, etc.
+     FILTER_UNSAFE_RAW                  - Nothing and optional strip or encode
+
+   @returns - the $_REQUEST variable validated and sanitized. */
+function validate_store_request_vars($filters, $sess_prefix) {
+	global $_CACTI_REQUEST;
+
+	$changed = 0;
+
+	if (sizeof($filters)) {
+		foreach($filters as $variable => $options) {
+			// Establish the session variable first
+			if (isset($options['session'])) {
+				$session_variable = $options['session'];
+			}elseif ($variable != 'rows') {
+				$session_variable = $sess_prefix . '_' . $variable;
+			}else{
+				$session_variable = 'sess_default_rows';
+			}
+
+			// Check for special cases 'clear' and 'reset'
+			if (isset_request_var('clear')) {
+				kill_session_var($session_variable);
+				unset_request_var($variable);
+			}elseif (isset_request_var('reset')) {
+				kill_session_var($session_variable);
+			}elseif (isset($options['pageset'])) {
+				$changed += check_changed($variable, $session_variable);
+			}
+
+			if (!isset_request_var($variable)) {
+				if (isset($options['default'])) {
+					set_request_var($variable, $options['default']);
+				}else{
+					cacti_log("Filter Variable: $variable, Must have a default and none is set", false);
+					set_request_var($variable, '');
+				}
+			}else{
+				if (!isset($options['options'])) {
+					$value = filter_var($_REQUEST[$variable], $options['filter']);
+				}else{
+					$value = filter_var($_REQUEST[$variable], $options['filter'], $options['options']);
+				}
+
+				if ($value === FALSE) {
+					die('Request variable:' . $variable . ' With value: ' . $_REQUEST[$variable] . ' Failed validation');
+				}else{
+					set_request_var($variable, $value);
+				}
+			}
+
+			if (isset_request_var($variable)) {
+				$_SESSION[$session_variable] = get_request_var($variable);
+			}elseif (isset($_SESSION[$session_variable])) {
+				set_request_var($variable, $_SESSION[$session_variable]);
+			}
+		}
+	}
+
+	if ($changed) {
+		set_request_var('page', 1);
+	}
+}
 
 /* load_current_session_value - finds the correct value of a variable that is being
      cached as a session variable on an HTML form
@@ -401,9 +622,9 @@ function get_page_list($current_page, $pages_per_screen, $rows_per_page, $total_
 	}
 
 	if ($return_to != '') {
-		$url_page_select .= "<script type='text/javascript'>function goto$page_var(pageNo) { if (typeof url_graph === 'function') { var url_add=url_graph('') }else{ var url_add=''; }; $.get('${url}header=false&$page_var='+pageNo+url_add,function(data) { $('#$return_to').html(data); applySkin(); if (typeof initializeGraphs == 'function') initializeGraphs();}); }</script>";
+		$url_page_select .= "<script type='text/javascript'>function goto$page_var(pageNo) { if (typeof url_graph === 'function') { var url_add=url_graph('') }else{ var url_add=''; }; $.get('${url}&header=false&$page_var='+pageNo+url_add,function(data) { $('#$return_to').html(data); applySkin(); if (typeof initializeGraphs == 'function') initializeGraphs();}); }</script>";
 	}else{
-		$url_page_select .= "<script type='text/javascript'>function goto${page_var}(pageNo) { if (typeof url_graph === 'function') { var url_add=url_graph('') }else{ var url_add=''; }; document.location='$url$page_var='+pageNo+url_add }</script>";
+		$url_page_select .= "<script type='text/javascript'>function goto${page_var}(pageNo) { if (typeof url_graph === 'function') { var url_add=url_graph('') }else{ var url_add=''; }; document.location='$url&$page_var='+pageNo+url_add }</script>";
 	}
 
 	return $url_page_select;

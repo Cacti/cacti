@@ -40,6 +40,10 @@ function input_validate_input_regex($value, $regex) {
 	}
 }
 
+function html_log_input_error($variable) {
+	cacti_debug_backtrace("Input Validation Not Performed for '$variable'");
+}
+
 function die_html_input_error() {
 	global $config;
 

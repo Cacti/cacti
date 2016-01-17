@@ -204,6 +204,10 @@ $settings = array(
 				'log_export' => array(
 					'friendly_name' => 'Graph Export',
 					'default' => ''
+					),
+				'developer_mode' => array(
+					'friendly_name' => 'Developer Mode',
+					'default' => ''
 					)
 				),
 			),
