@@ -199,10 +199,19 @@ function host_new_graphs_save() {
 
 		while (list($form_id1, $form_array2) = each($form_array)) {
 			/* enumerate information from the arrays stored in post variables */
+
+			/* ================= input validation ================= */
+			input_validate_input_number($form_id1);
+			/* ==================================================== */
+
 			if ($form_type == 'cg') {
 				$graph_template_id = $form_id1;
 			}elseif ($form_type == 'sg') {
 				while (list($form_id2, $form_array3) = each($form_array2)) {
+					/* ================= input validation ================= */
+					input_validate_input_number($form_id2);
+					/* ==================================================== */
+
 					$snmp_index_array = $form_array3;
 
 					$snmp_query_array['snmp_query_id'] = $form_id1;
