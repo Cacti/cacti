@@ -271,6 +271,10 @@ function host_new_graphs($host_id, $host_template_id, $selected_graphs_array) {
 
 	while (list($form_type, $form_array) = each($selected_graphs_array)) {
 		while (list($form_id1, $form_array2) = each($form_array)) {
+			/* ================= input validation ================= */
+			input_validate_input_number($form_id1);
+			/* ==================================================== */
+
 			if ($form_type == 'cg') {
 				$graph_template_id = $form_id1;
 
@@ -279,6 +283,7 @@ function host_new_graphs($host_id, $host_template_id, $selected_graphs_array) {
 				while (list($form_id2, $form_array3) = each($form_array2)) {
 					/* ================= input validation ================= */
 					input_validate_input_number($snmp_query_id);
+					input_validate_input_number($form_id2);
 					/* ==================================================== */
 
 					$snmp_query_id = $form_id1;
