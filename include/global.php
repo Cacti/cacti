@@ -45,6 +45,9 @@ $cacti_session_name = 'Cacti';
 /* define default url path */
 $url_path = '/cacti/';
 
+/* allow upto 5000 items to be selected */
+ini_set('max_input_vars', '5000');
+
 /* Include configuration */
 include(dirname(__FILE__) . '/config.php');
 
