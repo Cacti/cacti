@@ -104,7 +104,7 @@ switch ($_REQUEST['action']) {
 	default:
 		top_header();
 
-		graph();
+		graph_management();
 
 		bottom_footer();
 		break;
@@ -1089,7 +1089,7 @@ function graph_diff() {
 		}
 
 		/* draw the TD that shows the user whether we are going to: KEEP, ADD, or DROP the item */
-		print "<td width='1%' class='#$action_column_color' style='font-weight: bold; color: white;'>" . $graph_item_actions[$mode] . '</td>';
+		print "<td class='#$action_column_color' style='width:1%;font-weight: bold; color: white;'>" . $graph_item_actions[$mode] . '</td>';
 		print "<td style='$action_css'><strong>Item # " . $i . "</strong></td>\n";
 
 		if (empty($graph_preview_item_values['task_item_id'])) { $graph_preview_item_values['task_item_id'] = 'No Task'; }
@@ -1120,7 +1120,7 @@ function graph_diff() {
 		print "<td style='$action_css'>" . htmlspecialchars($matrix_title) . $hard_return . "</td>\n";
 		print "<td style='$action_css'>" . $graph_item_types{$graph_preview_item_values['graph_type_id']} . "</td>\n";
 		print "<td style='$action_css'>" . $consolidation_functions{$graph_preview_item_values['consolidation_function_id']} . "</td>\n";
-		print '<td' . ((!empty($graph_preview_item_values['color_id'])) ? " bgcolor='#" . $graph_preview_item_values['color_id'] . "'" : '') . " width='1%'>&nbsp;</td>\n";
+		print '<td style="width:1%;' . ((!empty($graph_preview_item_values['color_id'])) ? "background=color:#" . $graph_preview_item_values['color_id'] . ";" : '') . "\">&nbsp;</td>\n";
 		print "<td style='$action_css'>" . $graph_preview_item_values['color_id'] . "</td>\n";
 
 		print '</tr>';
@@ -1415,7 +1415,7 @@ function graph_edit() {
 	<?php
 }
 
-function graph() {
+function graph_management() {
 	global $graph_actions, $item_rows;
 
 	/* ================= input validation ================= */
