@@ -77,7 +77,7 @@ if (read_config_option('auth_method') != 0) {
 	}
 
 	if (empty($_SESSION['sess_user_id'])) {
-		include($config['base_path'] . './auth_login.php');
+		include($config['base_path'] . '/auth_login.php');
 		exit;
 	}elseif (!empty($_SESSION['sess_user_id'])) {
 		$realm_id = 0;
