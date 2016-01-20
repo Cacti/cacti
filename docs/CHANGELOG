@@ -51,6 +51,7 @@ Cacti CHANGELOG
 -feature: Refactor Graph Details page to incldue CSV output, zoom, debug, and download links
 
 0.8.8g
+-bug:0002642: ping.pl does not take into account host port numbers
 
 
 0.8.8f

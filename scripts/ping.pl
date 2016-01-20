@@ -3,6 +3,7 @@
 # take care for tcp:hostname or TCP:ip@
 $host = $ARGV[0];
 $host =~ s/tcp:/$1/gis;
+$host =~ s/:[0-9]{1,5}/$1/gis;
 
 # old linux version use "icmp_seq"
 # newer use "icmp_req" instead
