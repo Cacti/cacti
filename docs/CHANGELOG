@@ -52,6 +52,7 @@ Cacti CHANGELOG
 
 0.8.8g
 -bug:0002642: ping.pl does not take into account host port numbers
+-bug:0002567: RRDTool 1.5.x Support 
 
 
 0.8.8f
