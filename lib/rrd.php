@@ -266,6 +266,10 @@ function rrdtool_function_create($local_data_id, $show_source, $rrdtool_pipe = '
 					$data_source['rrd_maximum'] = $highSpeed * 1000000;
 				}else{
 					$data_source['rrd_maximum'] = substitute_snmp_query_data('|query_ifSpeed|',$data_local['host_id'], $data_local['snmp_query_id'], $data_local['snmp_index']);
+
+					if (empty($data_source['rrd_maximum']) || $data_source['rrd_maximum'] == '|query_ifSpeed|') {
+						$data_source['rrd_maximum'] = '10000000000000';
+					}
 				}
 			}else{
 				$data_source['rrd_maximum'] = substitute_snmp_query_data($data_source['rrd_maximum'],$data_local['host_id'], $data_local['snmp_query_id'], $data_local['snmp_index']);
