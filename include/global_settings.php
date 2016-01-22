@@ -412,7 +412,7 @@ $settings = array(
 			),
 		'automation_graphs_enabled' => array(
 			'method' => 'checkbox',
-			'friendly_name' => 'Enable Automtic Graph Creation',
+			'friendly_name' => 'Enable Automatic Graph Creation',
 			'description' => 'When disabled, Cacti Automation will not actively create any Graph.' . 
 				'This is useful when adjusting Host settings so as to avoid creating new Graphs each time you save an object. ' . 
 				'Invoking Automation Rules manually will still be possible.',
