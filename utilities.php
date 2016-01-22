@@ -214,14 +214,9 @@ function utilities_view_tech($php_info = '') {
 
 		$out_array = array();
 		exec(cacti_escapeshellcmd(read_config_option('path_rrdtool')), $out_array);
-
 		if (sizeof($out_array) > 0) {
-			if (preg_match('/^RRDtool 1\.4/', $out_array[0])) {
-				$rrdtool_version = 'rrd-1.4.x';
-			}else if (preg_match('/^RRDtool 1\.3\./', $out_array[0])) {
-				$rrdtool_version = 'rrd-1.3.x';
-			}else if (preg_match('/^RRDtool 1\.2\./', $out_array[0])) {
-				$rrdtool_version = 'rrd-1.2.x';
+			if (preg_match('/^RRDtool ([1-9]\.[0-9])/', $out_array[0], $m)) {
+				$rrdtool_version = 'rrd-'. $m[1] .'.x';
 			}
 		}
 	}
