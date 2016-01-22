@@ -107,7 +107,11 @@ if (!isset($_REQUEST['action'])) {
 			$_REQUEST['action'] = 'preview';
 		}
 	}else{
-		$_REQUEST['action'] = $_SESSION['sess_graph_view_action'];
+		if (in_array($_SESSION['sess_graph_view_action'], array('tree', 'list', 'preview'))) {
+			$_REQUEST['action'] = $_SESSION['sess_graph_view_action'];
+		} else {
+			$_REQUEST['action'] = 'tree';
+		}
 	}
 }
 
