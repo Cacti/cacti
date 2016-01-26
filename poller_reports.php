@@ -116,8 +116,7 @@ if (function_exists("pcntl_signal")) {
 }
 
 /* take time and log performance data */
-list($micro,$seconds) = explode(" ", microtime());
-$start = $seconds + $micro;
+$start = microtime(true);
 
 /* let's give this script lot of time to run for ever */
 ini_set("max_execution_time", "0");
@@ -145,8 +144,7 @@ if (sizeof($reports)) {
 	}
 
 	/* record the end time */
-	list($micro,$seconds) = explode(" ", microtime());
-	$end = $seconds + $micro;
+	$end = microtime(true);
 
 	/* log statistics */
 	$reports_stats = sprintf("Time:%01.4f Reports:%s", $end - $start, $number_sent);

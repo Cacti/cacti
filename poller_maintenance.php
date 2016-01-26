@@ -34,8 +34,7 @@ $dir = dirname(__FILE__);
 chdir($dir);
 
 /* record the start time */
-list($micro,$seconds) = explode(' ', microtime());
-$poller_start         = $seconds + $micro;
+$poller_start         = microtime(true);
 
 include ('./include/global.php');
 
@@ -106,8 +105,7 @@ if ($purge) {
 	}
 
 	/* record the start time */
-	list($micro,$seconds) = explode(' ', microtime());
-	$poller_end         = $seconds + $micro;
+	$poller_end         = microtime(true);
 	$string = sprintf('RRDMAINT STATS: Time:%4.4f Purged:%s Archived:%s', ($poller_end - $poller_start), $purged, $archived);
 	cacti_log($string, true, 'SYSTEM');
 }

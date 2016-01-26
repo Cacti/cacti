@@ -113,8 +113,7 @@ if (function_exists('pcntl_signal')) {
 }
 
 /* take time and log performance data */
-list($micro,$seconds) = split(' ', microtime());
-$start = $seconds + $micro;
+$start = microtime(true);
 
 /* let's give this script lot of time to run for ever */
 ini_set('max_execution_time', '0');

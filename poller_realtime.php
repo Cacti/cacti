@@ -97,8 +97,7 @@ if ($interval === FALSE || $interval < 0) {
 }
 
 /* record the start time */
-list($micro,$seconds) = split(" ", microtime());
-$poller_start         = $seconds + $micro;
+$poller_start         = microtime(true);
 
 /* get number of polling items from the database */
 $poller_interval = 1;

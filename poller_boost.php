@@ -193,8 +193,7 @@ function log_boost_statistics($rrd_updates) {
 	global $start, $boost_stats_log, $verbose;
 
 	/* take time and log performance data */
-	list($micro,$seconds) = explode(' ', microtime());
-	$end = $seconds + $micro;
+	$end = microtime(true);
 
 	$cacti_stats = sprintf(
 		'Time:%01.4f ' .
@@ -302,8 +301,7 @@ if (function_exists('pcntl_signal')) {
 }
 
 /* take time and log performance data */
-list($micro,$seconds) = explode(' ', microtime());
-$start = $seconds + $micro;
+$start = microtime(true);
 
 /* let's give this script lot of time to run for ever */
 ini_set('max_execution_time', '0');

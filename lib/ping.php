@@ -49,16 +49,14 @@ class Net_Ping
 	}
 
 	function start_time() {
-		$this->timer_start_time = microtime();
+		$this->timer_start_time = microtime(true);
 	}
 
 	function get_time($acc=2) {
 		// format start time
-		$start_time = explode (" ", $this->timer_start_time);
-		$start_time = $start_time[1] + $start_time[0];
+		$start_time = $this->timer_start_time;
 		// get and format end time
-		$end_time = explode (" ", microtime());
-		$end_time = $end_time[1] + $end_time[0];
+		$end_time = microtime(true);
 		return number_format ($end_time - $start_time, $acc);
 	}
 

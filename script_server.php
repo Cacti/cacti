@@ -72,8 +72,7 @@ if (php_sapi_name() != 'cli') {
 }
 
 /* record the script start time */
-list($micro,$seconds) = explode(' ', microtime());
-$start = $seconds + $micro;
+$start = microtime(true);
 
 /* some debugging */
 $pid = getmypid();

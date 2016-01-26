@@ -39,8 +39,7 @@ include_once($config['base_path'] . '/lib/data_query.php');
 include_once($config['base_path'] . '/lib/rrd.php');
 
 /* Record Start Time */
-list($micro,$seconds) = explode(' ', microtime());
-$start = $seconds + $micro;
+$start = microtime(true);
 
 $poller_commands = db_fetch_assoc('SELECT poller_command.action, poller_command.command FROM poller_command WHERE poller_command.poller_id = 0');
 
@@ -80,8 +79,7 @@ if (sizeof($poller_commands) > 0) {
 		}
 
 		/* record current_time */
-		list($micro,$seconds) = explode(' ', microtime());
-		$current = $seconds + $micro;
+		$current = microtime(true);
 
 		/* end if runtime has been exceeded */
 		if (($current-$start) > MAX_RECACHE_RUNTIME) {
@@ -94,8 +92,7 @@ if (sizeof($poller_commands) > 0) {
 }
 
 /* take time to log performance data */
-list($micro,$seconds) = explode(' ', microtime());
-$recache = $seconds + $micro;
+$recache = microtime(true);
 
 $recache_stats = sprintf('RecacheTime:%01.4f DevicesRecached:%s',	round($recache - $start, 4), $recached_hosts);
 

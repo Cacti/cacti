@@ -485,8 +485,7 @@ function boost_timer($area, $type) {
 	global $boost_stats_log;
 
 	/* get the time */
-	list($micro,$seconds) = explode(' ', microtime());
-	$btime = $seconds + $micro;
+	$btime = microtime(true);
 
 	if ($type == BOOST_TIMER_START) {
 		$boost_stats_log[$area][BOOST_TIMER_START] = $btime;

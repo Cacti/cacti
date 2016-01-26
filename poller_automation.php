@@ -86,8 +86,7 @@ if (!isset($_SERVER["argv"][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($
 }
 
 /* take time and log performance data */
-list($micro,$seconds) = explode(" ", microtime());
-$start = $seconds + $micro;
+$start = microtime(true);
 
 // Unix Timestamp for Database
 $startTime = time();
@@ -286,8 +285,7 @@ if (!$master && $thread == 0) {
 			$totals = db_fetch_row_prepared('SELECT SUM(up_hosts) AS up, SUM(snmp_hosts) AS snmp FROM automation_processes WHERE network_id=?', array($network_id));
 
 			/* take time and log performance data */
-			list($micro,$seconds) = explode(" ", microtime());
-			$end = $seconds + $micro;
+			$end = microtime(true);
 
 			db_execute_prepared('UPDATE automation_networks 
 				SET up_hosts = ?, 

@@ -65,8 +65,7 @@ foreach($parms as $parameter) {
 }
 
 /* record the start time */
-list($micro,$seconds) = explode(" ", microtime());
-$start = $seconds + $micro;
+$start = microtime(true);
 
 /* open a pipe to rrdtool for writing */
 $rrdtool_pipe = rrd_init();

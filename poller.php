@@ -115,8 +115,7 @@ if (function_exists('pcntl_signal')) {
 api_plugin_hook('poller_top');
 
 // record the start time
-list($micro,$seconds) = explode(' ', microtime());
-$poller_start         = $seconds + $micro;
+$poller_start         = microtime(true);
 $overhead_time = 0;
 
 // get number of polling items from the database
@@ -227,8 +226,7 @@ $polling_hosts         = array_merge(array(0 => array('id' => '0')), db_fetch_as
 
 while ($poller_runs_completed < $poller_runs) {
 	/* record the start time for this loop */
-	list($micro,$seconds) = explode(' ', microtime());
-	$loop_start = $seconds + $micro;
+	$loop_start = microtime(true);
 
 	/* calculate overhead time */
 	if ($overhead_time == 0) {
@@ -447,8 +445,7 @@ while ($poller_runs_completed < $poller_runs) {
 	$poller_runs_completed++;
 
 	/* record the start time for this loop */
-	list($micro,$seconds) = explode(' ', microtime());
-	$loop_end  = $seconds + $micro;
+	$loop_end  = microtime(true);
 	$loop_time = $loop_end - $loop_start;
 
 	if ($loop_time < $poller_interval) {
@@ -468,8 +465,7 @@ while ($poller_runs_completed < $poller_runs) {
 
 		/* sleep the appripriate amount of time */
 		if ($poller_runs_completed < $poller_runs) {
-			list($micro, $seconds) = split(' ', microtime());
-			$plugin_start = $seconds + $micro;
+			$plugin_start = microtime(true);
 
 			/* all plugins moved to core */
 			snmpagent_poller_bottom();
@@ -478,8 +474,7 @@ while ($poller_runs_completed < $poller_runs) {
 
 			api_plugin_hook('poller_bottom');
 
-			list($micro, $seconds) = split(' ', microtime());
-			$plugin_end = $seconds + $micro;
+			$plugin_end = microtime(true);
 			if (($sleep_time - ($plugin_end - $plugin_start)) > 0) {
 				usleep(($sleep_time - ($plugin_end - $plugin_start)) * 1000000);
 			}
@@ -494,8 +489,7 @@ function log_cacti_stats($loop_start, $method, $concurrent_processes, $max_threa
 	$hosts_per_process, $num_polling_items, $rrds_processed) {
 
 	/* take time and log performance data */
-	list($micro,$seconds) = explode(' ', microtime());
-	$loop_end = $seconds + $micro;
+	$loop_end = microtime(true);
 
 	$perf_data = array(
 		round($loop_end-$loop_start,4),

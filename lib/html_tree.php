@@ -258,8 +258,7 @@ function draw_dhtml_tree_level($tree_id, $parent = 0, $graphing = false) {
 	global $config;
 
 	/* Record Start Time */
-	list($micro,$seconds) = explode(' ', microtime());
-	$start = $seconds + $micro;
+	$start = microtime(true);
 
 	$dhtml_tree = array();
 
