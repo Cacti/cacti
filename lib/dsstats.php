@@ -397,13 +397,11 @@ function log_dsstats_statistics($type) {
 	global $start;
 
 	/* take time and log performance data */
-	list($micro,$seconds) = split(" ", microtime());
-	$end = $seconds + $micro;
+	$end = microtime(true);
 
 	$cacti_stats = sprintf("Time:%01.4f ", round($end-$start,4));
 	/* take time and log performance data */
-	list($micro,$seconds) = split(" ", microtime());
-	$start = $seconds + $micro;
+	$start = microtime(true);
 
 	/* log to the database */
 	db_execute("REPLACE INTO settings (name,value) VALUES ('stats_dsstats_$type', '" . $cacti_stats . "')");

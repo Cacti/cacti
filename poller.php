@@ -115,8 +115,7 @@ if (function_exists('pcntl_signal')) {
 api_plugin_hook('poller_top');
 
 // record the start time
-list($micro,$seconds) = explode(' ', microtime());
-$poller_start         = $seconds + $micro;
+$poller_start         = microtime(true);
 $overhead_time = 0;
 
 // get number of polling items from the database
@@ -189,7 +188,7 @@ if ($debug) {
 
 $poller_seconds_sincerun = 'never';
 if (isset($poller_lastrun)) {
-	$poller_seconds_sincerun = $seconds - $poller_lastrun;
+	$poller_seconds_sincerun = $poller_start - $poller_lastrun;
 }
 
 cacti_log("NOTE: Poller Int: '$poller_interval', $task_type Int: '$cron_interval', Time Since Last: '$poller_seconds_sincerun', Max Runtime '" . MAX_POLLER_RUNTIME. "', Poller Runs: '$poller_runs'", true, 'POLLER', $level);
@@ -204,18 +203,18 @@ if ($poller_interval <= 60) {
 /* get to see if we are polling faster than reported by the settings, if so, exit */
 if ((isset($poller_lastrun) && isset($poller_interval) && $poller_lastrun > 0) && (!$force)) {
 	/* give the user some flexibility to run a little moe often */
-	if ((($seconds - $poller_lastrun)*1.3) < MAX_POLLER_RUNTIME) {
-		cacti_log("NOTE: $task_type is configured to run too often!  The Poller Interval is '$poller_interval' seconds, with a minimum $task_type period of '$min_period' seconds, but only " . ($seconds - $poller_lastrun) . ' seconds have passed since the poller last ran.', true, 'POLLER', $level);
+	if ((($poller_start - $poller_lastrun)*1.3) < MAX_POLLER_RUNTIME) {
+		cacti_log("NOTE: $task_type is configured to run too often!  The Poller Interval is '$poller_interval' seconds, with a minimum $task_type period of '$min_period' seconds, but only " . ($poller_start - $poller_lastrun) . ' seconds have passed since the poller last ran.', true, 'POLLER', $level);
 		exit;
 	}
 }
 
 /* check to see whether we have the poller interval set lower than the poller is actually ran, if so, issue a warning */
-if ((($seconds - $poller_lastrun - 5) > MAX_POLLER_RUNTIME) && ($poller_lastrun > 0)) {
-	cacti_log("WARNING: $task_type is out of sync with the Poller Interval!  The Poller Interval is '$poller_interval' seconds, with a maximum of a '$min_period' second $task_type, but " . ($seconds - $poller_lastrun) . ' seconds have passed since the last poll!', true, 'POLLER');
+if ((($poller_start - $poller_lastrun - 5) > MAX_POLLER_RUNTIME) && ($poller_lastrun > 0)) {
+	cacti_log("WARNING: $task_type is out of sync with the Poller Interval!  The Poller Interval is '$poller_interval' seconds, with a maximum of a '$min_period' second $task_type, but " . ($poller_start - $poller_lastrun) . ' seconds have passed since the last poll!', true, 'POLLER');
 }
 
-db_execute("REPLACE INTO settings (name, value) VALUES ('poller_lastrun'," . $seconds . ')');
+db_execute("REPLACE INTO settings (name, value) VALUES ('poller_lastrun'," . (int)$poller_start. ')');
 
 /* let PHP only run 1 second longer than the max runtime, plus the poller needs lot's of memory */
 ini_set('max_execution_time', MAX_POLLER_RUNTIME + 1);
@@ -227,8 +226,7 @@ $polling_hosts         = array_merge(array(0 => array('id' => '0')), db_fetch_as
 
 while ($poller_runs_completed < $poller_runs) {
 	/* record the start time for this loop */
-	list($micro,$seconds) = explode(' ', microtime());
-	$loop_start = $seconds + $micro;
+	$loop_start = microtime(true);
 
 	/* calculate overhead time */
 	if ($overhead_time == 0) {
@@ -447,8 +445,7 @@ while ($poller_runs_completed < $poller_runs) {
 	$poller_runs_completed++;
 
 	/* record the start time for this loop */
-	list($micro,$seconds) = explode(' ', microtime());
-	$loop_end  = $seconds + $micro;
+	$loop_end  = microtime(true);
 	$loop_time = $loop_end - $loop_start;
 
 	if ($loop_time < $poller_interval) {
@@ -468,8 +465,7 @@ while ($poller_runs_completed < $poller_runs) {
 
 		/* sleep the appripriate amount of time */
 		if ($poller_runs_completed < $poller_runs) {
-			list($micro, $seconds) = split(' ', microtime());
-			$plugin_start = $seconds + $micro;
+			$plugin_start = microtime(true);
 
 			/* all plugins moved to core */
 			snmpagent_poller_bottom();
@@ -478,8 +474,7 @@ while ($poller_runs_completed < $poller_runs) {
 
 			api_plugin_hook('poller_bottom');
 
-			list($micro, $seconds) = split(' ', microtime());
-			$plugin_end = $seconds + $micro;
+			$plugin_end = microtime(true);
 			if (($sleep_time - ($plugin_end - $plugin_start)) > 0) {
 				usleep(($sleep_time - ($plugin_end - $plugin_start)) * 1000000);
 			}
@@ -494,8 +489,7 @@ function log_cacti_stats($loop_start, $method, $concurrent_processes, $max_threa
 	$hosts_per_process, $num_polling_items, $rrds_processed) {
 
 	/* take time and log performance data */
-	list($micro,$seconds) = explode(' ', microtime());
-	$loop_end = $seconds + $micro;
+	$loop_end = microtime(true);
 
 	$perf_data = array(
 		round($loop_end-$loop_start,4),

@@ -424,16 +424,14 @@ function array_rekey($array, $key, $key_value) {
 function timer_start() {
 	global $timer_start;
 
-	list($micro,$seconds) = explode(' ', microtime());
-	$timer_start = $seconds + $micro;
+	$timer_start = microtime(true);
 }
 
 /* timer end/step function */
 function timer_end($message = 'default') {
 	global $timer_start;
 
-	list($micro,$seconds) = explode(' ', microtime());
-	$timer_end = $seconds + $micro;
+	$timer_end = microtime(true);
 
 	echo "TIMER: '$message' Time:'" . ($timer_end - $timer_start) . "' seconds\n";
 	$timer_start = $timer_end;

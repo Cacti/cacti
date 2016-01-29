@@ -412,7 +412,7 @@ $settings = array(
 			),
 		'automation_graphs_enabled' => array(
 			'method' => 'checkbox',
-			'friendly_name' => 'Enable Automtic Graph Creation',
+			'friendly_name' => 'Enable Automatic Graph Creation',
 			'description' => 'When disabled, Cacti Automation will not actively create any Graph.' . 
 				'This is useful when adjusting Host settings so as to avoid creating new Graphs each time you save an object. ' . 
 				'Invoking Automation Rules manually will still be possible.',
@@ -1585,7 +1585,7 @@ $settings = array(
 			),
 		'boost_server_multiprocess' => array(
 			'friendly_name' => 'Multiprocess Server',
-			'description' => 'Do you want the boost server to fork a seprate update process for each boost request?  A Boost Server restart is required to enact any changes in this setting.',
+			'description' => 'Do you want the boost server to fork a separate update process for each boost request?  A Boost Server restart is required to enact any changes in this setting.',
 			'method' => 'drop_array',
 			'default' => '1',
 			'array' => array('0' => 'No', '1' => 'Yes')

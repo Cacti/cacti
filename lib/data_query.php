@@ -199,8 +199,7 @@ function query_debug_timer_start() {
 	global $query_debug_timer, $query_debug_start;
 
 	/* record the start time */
-	list($micro,$seconds) = explode(' ', microtime());
-	$query_debug_timer = $seconds + $micro;
+	$query_debug_timer = microtime(true);
 	$query_debug_start = $query_debug_timer;
 }
 
@@ -212,8 +211,7 @@ function query_debug_timer_offset($section, $message) {
 	}
 
 	/* record the start time */
-	list($micro,$seconds) = explode(' ', microtime());
-	$cur_time = $seconds + $micro;
+	$cur_time = microtime(true);
 	$delta = $cur_time - $query_debug_timer;
 	$total = $cur_time - $query_debug_start;
 	$query_debug_timer = $cur_time;
@@ -227,8 +225,7 @@ function query_debug_timer_stop($sction, $message) {
 	global $query_debug_timer, $query_debug_start;
 
 	/* record the start time */
-	list($micro,$seconds) = explode(' ', microtime());
-	$cur_time = $seconds + $micro;
+	$cur_time = microtime(true);
 	$delta = $cur_time - $query_debug_timer;
 	$total = $cur_time - $query_debug_start;
 	unset($query_debug_timer);

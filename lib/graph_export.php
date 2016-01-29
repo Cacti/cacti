@@ -26,8 +26,7 @@ function graph_export($force = false) {
 	global $debug;
 
 	/* take time to log performance data */
-	list($micro,$seconds) = explode(" ", microtime());
-	$start = $seconds + $micro;
+	$start = microtime(true);
 
 	if ($debug) {
 		export_debug("This is a forced run");
@@ -152,8 +151,7 @@ function config_graph_export() {
 
 function config_export_stats($start, $total_graphs_created) {
 	/* take time to log performance data */
-	list($micro,$seconds) = explode(" ", microtime());
-	$end = $seconds + $micro;
+	$end = microtime(true);
 
 	$export_stats = sprintf(
 		"ExportDate:%s ExportDuration:%01.4f TotalGraphsExported:%s",
@@ -1572,8 +1570,7 @@ function get_graph_tree_array_export($return_sql = false, $force_refresh = false
 
 function create_dhtml_tree_export($tree_id) {
 	/* record start time */
-	list($micro,$seconds) = explode(" ", microtime());
-	$start = $seconds + $micro;
+	$start = microtime(true);
 	$search_key = "";
 
 	$dhtml_tree = array();
