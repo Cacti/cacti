@@ -282,8 +282,7 @@ function applySelectorVisibilityAndActions() {
 	$('tr.selectable').find('.checkbox').click(function(data) {
 		if (!$(this).is(':disabled')) {
 			$(this).parent().toggleClass('selected');
-			var checked = $(this).is(':checkbox');
-			$(this).prop('checked', checked);
+			$(this).prop('checked', !$(this).is(':checked'));
 		}
 	});
 }
