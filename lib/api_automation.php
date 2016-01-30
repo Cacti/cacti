@@ -1941,7 +1941,7 @@ function automation_execute_data_query($host_id, $snmp_query_id) {
 
 			$hosts = db_fetch_assoc($rows_query);
 
-			cacti_log(__FUNCTION__ . ' Host[' . $data['host_id'] . "] - create sql: $rows_query matches:" . sizeof($hosts), false, 'AUTOMATION TRACE', POLLER_VERBOSITY_MEDIUM);
+			cacti_log(__FUNCTION__ . ' Host[' . $host_id . "] - create sql: $rows_query matches:" . sizeof($hosts), false, 'AUTOMATION TRACE', POLLER_VERBOSITY_MEDIUM);
 
 			if (!sizeof($hosts)) { continue; }
 
