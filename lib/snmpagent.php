@@ -217,7 +217,7 @@ function snmpagent_poller_exiting($poller_index = 1){
 		'cactiApplPollerHostname' => $poller['cactiApplPollerHostname'],
 		'cactiApplPollerIpAddress' => $poller['cactiApplPollerIpAddress']
 	);
-	snmpagent_notification('cactiNotifyPollerRuntimeExceeding', 'CACTI-MIB', $varbinds, EVENT_SEVERITY_HIGH);
+	snmpagent_notification('cactiNotifyPollerRuntimeExceeding', 'CACTI-MIB', $varbinds, SNMPAGENT_EVENT_SEVERITY_HIGH);
 }
 
 function snmpagent_poller_bottom() {
@@ -294,7 +294,7 @@ function snmpagent_poller_bottom() {
 					snmpagent_notification('cactiNotifyDeviceFailedPoll', 'CACTI-MIB', $varbinds);
 				}
 				if($mc_dstatus[$device["id"]] == HOST_UP && $device["status"] == HOST_DOWN ) {
-					snmpagent_notification('cactiNotifyDeviceDown', 'CACTI-MIB', $varbinds, EVENT_SEVERITY_HIGH);
+					snmpagent_notification('cactiNotifyDeviceDown', 'CACTI-MIB', $varbinds, SNMPAGENT_EVENT_SEVERITY_HIGH);
 				}elseif ($mc_dstatus[$device["id"]] == HOST_DOWN && $device["status"] == HOST_RECOVERING ){
 					snmpagent_notification('cactiNotifyDeviceRecovering', 'CACTI-MIB', $varbinds);
 				}
