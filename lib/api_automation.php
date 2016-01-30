@@ -2086,7 +2086,7 @@ function automation_execute_graph_create_tree($graph_id) {
 	 * so we only have a single graph here
 	 */
 	
-	cacti_log(__FUNCTION__ . ' Graph[' . $graph_id . '] called, data: ' . serialize($data), false, 'AUTOMATION TRACE', POLLER_VERBOSITY_MEDIUM);
+	cacti_log(__FUNCTION__ . ' Graph[' . $graph_id . '] called', false, 'AUTOMATION TRACE', POLLER_VERBOSITY_MEDIUM);
 
 	/*
 	 * find all active Tree Rules
