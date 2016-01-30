@@ -41,15 +41,15 @@ case 'countdown':
 	$guest_account = true;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_request('graph_start'));
-	input_validate_input_number(get_request_var_request('graph_end'));
-	input_validate_input_number(get_request_var_request('graph_height'));
-	input_validate_input_number(get_request_var_request('graph_width'));
-	input_validate_input_number(get_request_var_request('local_graph_id'));
-	input_validate_input_number(get_request_var_request('ds_step'));
-	input_validate_input_number(get_request_var_request('count'));
-	input_validate_input_number(get_request_var_request('top'));
-	input_validate_input_number(get_request_var_request('left'));
+	input_validate_input_number(get_request_var('graph_start'));
+	input_validate_input_number(get_request_var('graph_end'));
+	input_validate_input_number(get_request_var('graph_height'));
+	input_validate_input_number(get_request_var('graph_width'));
+	input_validate_input_number(get_request_var('local_graph_id'));
+	input_validate_input_number(get_request_var('ds_step'));
+	input_validate_input_number(get_request_var('count'));
+	input_validate_input_number(get_request_var('top'));
+	input_validate_input_number(get_request_var('left'));
 	/* ==================================================== */
 
 	/* clean up action string */
@@ -167,9 +167,9 @@ case 'view':
 }
 
 /* ================= input validation ================= */
-input_validate_input_number(get_request_var_request('ds_step'));
-input_validate_input_number(get_request_var_request('local_graph_id'));
-input_validate_input_number(get_request_var_request('graph_start'));
+input_validate_input_number(get_request_var('ds_step'));
+input_validate_input_number(get_request_var('local_graph_id'));
+input_validate_input_number(get_request_var('graph_start'));
 /* ==================================================== */
 
 $init = '';

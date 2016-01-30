@@ -254,9 +254,9 @@ function list_rrd() {
 	set_error_handler('rrdclean_error_handler');
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_request('page'));
-	input_validate_input_number(get_request_var_request('age'));
-	input_validate_input_number(get_request_var_request('rows'));
+	input_validate_input_number(get_request_var('page'));
+	input_validate_input_number(get_request_var('age'));
+	input_validate_input_number(get_request_var('rows'));
 	/* ==================================================== */
 
 	/* clean up search string */
@@ -349,7 +349,7 @@ function list_rrd() {
 		ORDER BY " . $_REQUEST['sort_column'] . ' ' . $_REQUEST['sort_direction'] . '
 		LIMIT ' . ($_REQUEST['rows'] * ($_REQUEST['page'] - 1)) . ',' . $_REQUEST['rows']);
 
-	$nav = html_nav_bar($config['url_path'] . 'rrdcleaner.php?filter'. get_request_var_request('filter'), MAX_DISPLAY_PAGES, get_request_var_request('page'), get_request_var_request('rows'), $total_rows, 8, 'RRD Files', 'page', 'main');
+	$nav = html_nav_bar($config['url_path'] . 'rrdcleaner.php?filter'. get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), get_request_var('rows'), $total_rows, 8, 'RRD Files', 'page', 'main');
 
 	print $nav;
 

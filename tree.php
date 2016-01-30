@@ -35,14 +35,14 @@ $tree_actions = array(
 	3 => 'Un Publish'
 );
 
-input_validate_input_number(get_request_var_request('tree_id'));
-input_validate_input_number(get_request_var_request('leaf_id'));
+input_validate_input_number(get_request_var('tree_id'));
+input_validate_input_number(get_request_var('leaf_id'));
 input_validate_input_number(get_request_var_post('graph_tree_id'));
 input_validate_input_number(get_request_var_post('parent_item_id'));
 
 /* clean up id string */
 if (isset($_REQUEST['id']) && $_REQUEST['id'] != '#') {
-	$_REQUEST['id'] = sanitize_search_string(get_request_var_request('id'));
+	$_REQUEST['id'] = sanitize_search_string(get_request_var('id'));
 }
 
 /* set default action */
@@ -139,7 +139,7 @@ function set_host_sort_type() {
 
 	/* clean up type string */
 	if (isset($_REQUEST['type'])) {
-		$_REQUEST['type'] = sanitize_search_string(get_request_var_request('type'));
+		$_REQUEST['type'] = sanitize_search_string(get_request_var('type'));
 	}
 
 	if (isset($_REQUEST['nodeid'])) {
@@ -214,7 +214,7 @@ function set_branch_sort_type() {
 
 	/* clean up type string */
 	if (isset($_REQUEST['type'])) {
-		$_REQUEST['type'] = sanitize_search_string(get_request_var_request('type'));
+		$_REQUEST['type'] = sanitize_search_string(get_request_var('type'));
 	}
 
 	if (isset($_REQUEST['nodeid'])) {
@@ -416,7 +416,7 @@ function form_actions() {
 
 function tree_remove() {
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_request('id'));
+	input_validate_input_number(get_request_var('id'));
 	/* ==================================================== */
 
 	if ((read_config_option('deletion_verification') == 'on') && (!isset($_REQUEST['confirm']))) {
@@ -444,13 +444,13 @@ function tree_edit() {
 	global $fields_tree_edit;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_request('id'));
-	input_validate_input_number(get_request_var_request('type'));
+	input_validate_input_number(get_request_var('id'));
+	input_validate_input_number(get_request_var('type'));
 	/* ==================================================== */
 
 	/* clean up search string */
 	if (isset($_REQUEST['filter'])) {
-		$_REQUEST['filter'] = sanitize_search_string(get_request_var_request('filter'));
+		$_REQUEST['filter'] = sanitize_search_string(get_request_var('filter'));
 	}
 
 	load_current_session_value('filter', 'sess_tree_edit_filter', '');
@@ -532,7 +532,7 @@ function tree_edit() {
 							Search
 						</td>
 						<td>
-							<input id='hfilter' type='text' name='hfilter' size='25' value='<?php print htmlspecialchars(get_request_var_request('hfilter'));?>'>
+							<input id='hfilter' type='text' name='hfilter' size='25' value='<?php print htmlspecialchars(get_request_var('hfilter'));?>'>
 						</td>
 					</tr>
 				</table>
@@ -567,7 +567,7 @@ function tree_edit() {
 							Search
 						</td>
 						<td>
-							<input id='grfilter' type='text' name='grfilter' size='25' value='<?php print htmlspecialchars(get_request_var_request('grfilter'));?>'>
+							<input id='grfilter' type='text' name='grfilter' size='25' value='<?php print htmlspecialchars(get_request_var('grfilter'));?>'>
 						</td>
 					</tr>
 				</table>
@@ -1240,23 +1240,23 @@ function tree() {
 	global $tree_actions, $item_rows;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_request('page'));
-	input_validate_input_number(get_request_var_request('rows'));
+	input_validate_input_number(get_request_var('page'));
+	input_validate_input_number(get_request_var('rows'));
 	/* ==================================================== */
 
 	/* clean up search string */
 	if (isset($_REQUEST['filter'])) {
-		$_REQUEST['filter'] = sanitize_search_string(get_request_var_request('filter'));
+		$_REQUEST['filter'] = sanitize_search_string(get_request_var('filter'));
 	}
 
 	/* clean up sort_column */
 	if (isset($_REQUEST['sort_column'])) {
-		$_REQUEST['sort_column'] = sanitize_search_string(get_request_var_request('sort_column'));
+		$_REQUEST['sort_column'] = sanitize_search_string(get_request_var('sort_column'));
 	}
 
 	/* clean up search string */
 	if (isset($_REQUEST['sort_direction'])) {
-		$_REQUEST['sort_direction'] = sanitize_search_string(get_request_var_request('sort_direction'));
+		$_REQUEST['sort_direction'] = sanitize_search_string(get_request_var('sort_direction'));
 	}
 
 	/* if the user pushed the 'clear' button */
@@ -1339,7 +1339,7 @@ function tree() {
 						Search
 					</td>
 					<td>
-						<input id='filter' type='text' name='filter' size='25' value='<?php print htmlspecialchars(get_request_var_request('filter'));?>'>
+						<input id='filter' type='text' name='filter' size='25' value='<?php print htmlspecialchars(get_request_var('filter'));?>'>
 					</td>
 					<td>
 						Trees
@@ -1349,7 +1349,7 @@ function tree() {
 							<?php
 							if (sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var_request('rows') == $key) { print ' selected'; } print '>' . htmlspecialchars($value) . "</option>\n";
+									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . htmlspecialchars($value) . "</option>\n";
 								}
 							}
 							?>
@@ -1376,8 +1376,8 @@ function tree() {
 	html_start_box('', '100%', '', '3', 'center', '');
 
 	/* form the 'where' clause for our main sql query */
-	if (strlen(get_request_var_request('filter'))) {
-		$sql_where = "WHERE (t.name LIKE '%" . get_request_var_request('filter') . "%' OR ti.title LIKE '%" . get_request_var_request('filter') . "%')";
+	if (strlen(get_request_var('filter'))) {
+		$sql_where = "WHERE (t.name LIKE '%" . get_request_var('filter') . "%' OR ti.title LIKE '%" . get_request_var('filter') . "%')";
 	}else{
 		$sql_where = '';
 	}
@@ -1391,8 +1391,8 @@ function tree() {
 		ON t.id=ti.graph_tree_id
 		$sql_where
 		GROUP BY t.id
-		ORDER BY " . get_request_var_request('sort_column') . ' ' . get_request_var_request('sort_direction') . '
-		LIMIT ' . (get_request_var_request('rows')*(get_request_var_request('page')-1)) . ',' . get_request_var_request('rows'));
+		ORDER BY " . get_request_var('sort_column') . ' ' . get_request_var('sort_direction') . '
+		LIMIT ' . (get_request_var('rows')*(get_request_var('page')-1)) . ',' . get_request_var('rows'));
 
 	$total_rows = db_fetch_cell("SELECT COUNT(*)
 		FROM graph_tree AS t
@@ -1401,7 +1401,7 @@ function tree() {
 		$sql_where
 		GROUP BY t.id");
 
-	$nav = html_nav_bar('tree.php?filter=' . get_request_var_request('filter'), MAX_DISPLAY_PAGES, get_request_var_request('page'), get_request_var_request('rows'), $total_rows, 11, 'Trees', 'page', 'main');
+	$nav = html_nav_bar('tree.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), get_request_var('rows'), $total_rows, 11, 'Trees', 'page', 'main');
 
 	print $nav;
 
@@ -1417,14 +1417,14 @@ function tree() {
 		'hosts' => array('display' => 'Devices', 'align' => 'right', 'sort' => 'DESC', 'tip' => 'The total number of individual Devices in this Tree.'),
 		'graphs' => array('display' => 'Graphs', 'align' => 'right', 'sort' => 'DESC', 'tip' => 'The total number of individual Graphs in this Tree.'));
 
-	html_header_sort_checkbox($display_text, get_request_var_request('sort_column'), get_request_var_request('sort_direction'), false);
+	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
 	$i = 0;
 	if (sizeof($trees) > 0) {
 		foreach ($trees as $tree) {
 			form_alternate_row('line' . $tree['id'], true);
 			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars('tree.php?action=edit&id=' . $tree['id']) . "'>" .
-				(strlen(get_request_var_request('filter')) ? preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($tree['name'])) : htmlspecialchars($tree['name'])) . '</a>', $tree['id']);
+				(strlen(get_request_var('filter')) ? preg_replace('/(' . preg_quote(get_request_var('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($tree['name'])) : htmlspecialchars($tree['name'])) . '</a>', $tree['id']);
 			form_selectable_cell($tree['id'], $tree['id'], '', 'text-align:right');
 			form_selectable_cell($tree['enabled'] == 'on' ? 'Yes':'No', $tree['id']);
 			form_selectable_cell($tree['locked'] == '1' ? 'Yes':'No', $tree['id']);

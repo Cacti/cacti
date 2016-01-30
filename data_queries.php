@@ -299,8 +299,8 @@ function form_actions() {
 
 function data_query_item_movedown_gsv() {
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_request('id'));
-	input_validate_input_number(get_request_var_request('snmp_query_graph_id'));
+	input_validate_input_number(get_request_var('id'));
+	input_validate_input_number(get_request_var('snmp_query_graph_id'));
 	/* ==================================================== */
 
 	move_item_down('snmp_query_graph_sv', $_REQUEST['id'], 'snmp_query_graph_id=' . $_REQUEST['snmp_query_graph_id'] . " AND field_name='" . $_REQUEST['field_name'] . "'");
@@ -308,8 +308,8 @@ function data_query_item_movedown_gsv() {
 
 function data_query_item_moveup_gsv() {
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_request('id'));
-	input_validate_input_number(get_request_var_request('snmp_query_graph_id'));
+	input_validate_input_number(get_request_var('id'));
+	input_validate_input_number(get_request_var('snmp_query_graph_id'));
 	/* ==================================================== */
 
 	move_item_up('snmp_query_graph_sv', $_REQUEST['id'], 'snmp_query_graph_id=' . $_REQUEST['snmp_query_graph_id'] . " AND field_name='" . $_REQUEST['field_name'] . "'");
@@ -317,7 +317,7 @@ function data_query_item_moveup_gsv() {
 
 function data_query_item_remove_gsv() {
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_request('id'));
+	input_validate_input_number(get_request_var('id'));
 	/* ==================================================== */
 
 	db_execute_prepared('DELETE FROM snmp_query_graph_sv WHERE id = ?', array($_REQUEST['id']));
@@ -325,9 +325,9 @@ function data_query_item_remove_gsv() {
 
 function data_query_item_movedown_dssv() {
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_request('id'));
-	input_validate_input_number(get_request_var_request('data_template_id'));
-	input_validate_input_number(get_request_var_request('snmp_query_graph_id'));
+	input_validate_input_number(get_request_var('id'));
+	input_validate_input_number(get_request_var('data_template_id'));
+	input_validate_input_number(get_request_var('snmp_query_graph_id'));
 	/* ==================================================== */
 
 	move_item_down('snmp_query_graph_rrd_sv', $_REQUEST['id'], 'data_template_id=' . $_REQUEST['data_template_id'] . ' AND snmp_query_graph_id=' . $_REQUEST['snmp_query_graph_id'] . " AND field_name='" . $_REQUEST['field_name'] . "'");
@@ -335,9 +335,9 @@ function data_query_item_movedown_dssv() {
 
 function data_query_item_moveup_dssv() {
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_request('id'));
-	input_validate_input_number(get_request_var_request('data_template_id'));
-	input_validate_input_number(get_request_var_request('snmp_query_graph_id'));
+	input_validate_input_number(get_request_var('id'));
+	input_validate_input_number(get_request_var('data_template_id'));
+	input_validate_input_number(get_request_var('snmp_query_graph_id'));
 	/* ==================================================== */
 
 	move_item_up('snmp_query_graph_rrd_sv', $_REQUEST['id'], 'data_template_id=' . $_REQUEST['data_template_id'] . ' AND snmp_query_graph_id=' . $_REQUEST['snmp_query_graph_id'] . " AND field_name='" . $_REQUEST['field_name'] . "'");
@@ -345,7 +345,7 @@ function data_query_item_moveup_dssv() {
 
 function data_query_item_remove_dssv() {
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_request('id'));
+	input_validate_input_number(get_request_var('id'));
 	/* ==================================================== */
 
 	db_execute_prepared('DELETE FROM snmp_query_graph_rrd_sv WHERE id = ?', array($_REQUEST['id']));
@@ -353,8 +353,8 @@ function data_query_item_remove_dssv() {
 
 function data_query_item_remove() {
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_request('id'));
-	input_validate_input_number(get_request_var_request('snmp_query_id'));
+	input_validate_input_number(get_request_var('id'));
+	input_validate_input_number(get_request_var('snmp_query_id'));
 	/* ==================================================== */
 
 	if ((read_config_option('deletion_verification') == 'on') && (!isset($_REQUEST['confirm']))) {
@@ -378,8 +378,8 @@ function data_query_item_edit() {
 	global $fields_data_query_item_edit;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_request('id'));
-	input_validate_input_number(get_request_var_request('snmp_query_id'));
+	input_validate_input_number(get_request_var('id'));
+	input_validate_input_number(get_request_var('snmp_query_id'));
 	/* ==================================================== */
 
 	if (!empty($_REQUEST['id'])) {
@@ -755,7 +755,7 @@ function data_query_edit() {
 	global $fields_data_query_edit, $config;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_request('id'));
+	input_validate_input_number(get_request_var('id'));
 	/* ==================================================== */
 
 	if (!empty($_REQUEST['id'])) {
@@ -843,23 +843,23 @@ function data_query() {
 	global $dq_actions, $item_rows;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_request('page'));
-	input_validate_input_number(get_request_var_request('rows'));
+	input_validate_input_number(get_request_var('page'));
+	input_validate_input_number(get_request_var('rows'));
 	/* ==================================================== */
 
 	/* clean up search string */
 	if (isset($_REQUEST['filter'])) {
-		$_REQUEST['filter'] = sanitize_search_string(get_request_var_request('filter'));
+		$_REQUEST['filter'] = sanitize_search_string(get_request_var('filter'));
 	}
 
 	/* clean up sort_column */
 	if (isset($_REQUEST['sort_column'])) {
-		$_REQUEST['sort_column'] = sanitize_search_string(get_request_var_request('sort_column'));
+		$_REQUEST['sort_column'] = sanitize_search_string(get_request_var('sort_column'));
 	}
 
 	/* clean up search string */
 	if (isset($_REQUEST['sort_direction'])) {
-		$_REQUEST['sort_direction'] = sanitize_search_string(get_request_var_request('sort_direction'));
+		$_REQUEST['sort_direction'] = sanitize_search_string(get_request_var('sort_direction'));
 	}
 
 	/* if the user pushed the 'clear' button */
@@ -903,7 +903,7 @@ function data_query() {
 						Search
 					</td>
 					<td>
-						<input id='filter' type='text' name='filter' size='25' value='<?php print htmlspecialchars(get_request_var_request('filter'));?>'>
+						<input id='filter' type='text' name='filter' size='25' value='<?php print htmlspecialchars(get_request_var('filter'));?>'>
 					</td>
 					<td class='nowrap'>
 						Data Queries
@@ -913,7 +913,7 @@ function data_query() {
 							<?php
 							if (sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var_request('rows') == $key) { print ' selected'; } print '>' . htmlspecialchars($value) . "</option>\n";
+									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . htmlspecialchars($value) . "</option>\n";
 								}
 							}
 							?>
@@ -967,8 +967,8 @@ function data_query() {
 	html_start_box('', '100%', '', '3', 'center', '');
 
 	/* form the 'where' clause for our main sql query */
-	if (strlen(get_request_var_request('filter'))) {
-		$sql_where = "WHERE (sq.name like '%%" . get_request_var_request('filter') . "%%' OR di.name like '%%" . get_request_var_request('filter') . "%%')";
+	if (strlen(get_request_var('filter'))) {
+		$sql_where = "WHERE (sq.name like '%%" . get_request_var('filter') . "%%' OR di.name like '%%" . get_request_var('filter') . "%%')";
 	}else{
 		$sql_where = '';
 	}
@@ -993,10 +993,10 @@ function data_query() {
 		ON gl.snmp_query_id=sq.id
 		$sql_where
 		GROUP BY sq.id
-		ORDER BY " . get_request_var_request('sort_column') . ' ' . get_request_var_request('sort_direction') . '
-		LIMIT ' . (get_request_var_request('rows')*(get_request_var_request('page')-1)) . ',' . get_request_var_request('rows'));
+		ORDER BY " . get_request_var('sort_column') . ' ' . get_request_var('sort_direction') . '
+		LIMIT ' . (get_request_var('rows')*(get_request_var('page')-1)) . ',' . get_request_var('rows'));
 
-	$nav = html_nav_bar('data_queries.php?filter=' . get_request_var_request('filter'), MAX_DISPLAY_PAGES, get_request_var_request('page'), get_request_var_request('rows'), $total_rows, 7, 'Data Queries', 'page', 'main');
+	$nav = html_nav_bar('data_queries.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), get_request_var('rows'), $total_rows, 7, 'Data Queries', 'page', 'main');
 	print $nav;
 
 	$display_text = array(
@@ -1007,7 +1007,7 @@ function data_query() {
 		'data_input_method' => array('display' => 'Data Input Method', 'align' => 'left', 'sort' => 'ASC', 'tip' => 'The Data Input Method used to collect data for Data Sources associated with this Data Query.'),
 		'id' => array('display' => 'ID', 'align' => 'right', 'sort' => 'ASC', 'tip' => 'The internal ID for this Graph Template.  Useful when performing automation or debugging.'));
 
-	html_header_sort_checkbox($display_text, get_request_var_request('sort_column'), get_request_var_request('sort_direction'), false);
+	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
 	$i = 0;
 	if (sizeof($snmp_queries) > 0) {
@@ -1019,11 +1019,11 @@ function data_query() {
 			}
 
 			form_alternate_row('line' . $snmp_query['id'], true, $disabled);
-			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars('data_queries.php?action=edit&id=' . $snmp_query['id']) . "'>" . (strlen(get_request_var_request('filter')) ? preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($snmp_query['name'])) : htmlspecialchars($snmp_query['name'])) . '</a>', $snmp_query['id']);
+			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars('data_queries.php?action=edit&id=' . $snmp_query['id']) . "'>" . (strlen(get_request_var('filter')) ? preg_replace('/(' . preg_quote(get_request_var('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($snmp_query['name'])) : htmlspecialchars($snmp_query['name'])) . '</a>', $snmp_query['id']);
 			form_selectable_cell($disabled ? 'No':'Yes', $snmp_query['id'], '', 'text-align:right');
 			form_selectable_cell(number_format($snmp_query['graphs']), $snmp_query['id'], '', 'text-align:right');
 			form_selectable_cell(number_format($snmp_query['templates']), $snmp_query['id'], '', 'text-align:right');
-			form_selectable_cell((strlen(get_request_var_request('filter')) ? preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($snmp_query['data_input_method'])) : htmlspecialchars($snmp_query['data_input_method'])), $snmp_query['id']);
+			form_selectable_cell((strlen(get_request_var('filter')) ? preg_replace('/(' . preg_quote(get_request_var('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($snmp_query['data_input_method'])) : htmlspecialchars($snmp_query['data_input_method'])), $snmp_query['id']);
 			form_selectable_cell($snmp_query['id'], $snmp_query['id'], '', 'text-align:right;');
 			form_checkbox_cell($snmp_query['name'], $snmp_query['id'], $disabled);
 			form_end_row();

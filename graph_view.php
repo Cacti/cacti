@@ -36,25 +36,25 @@ if (isset($_REQUEST['id']) && $_REQUEST['id'] == '#') {
 	$_REQUEST['id'] = '0';
 }
 
-input_validate_input_number(get_request_var_request('branch_id'));
-input_validate_input_number(get_request_var_request('tree_id'));
-input_validate_input_number(get_request_var_request('graphs'));
-input_validate_input_number(get_request_var_request('rows'));
-input_validate_input_number(get_request_var_request('hide'));
-input_validate_input_number(get_request_var_request('leaf_id'));
-input_validate_input_number(get_request_var_request('rra_id'));
-input_validate_input_number(get_request_var_request('columns'));
-input_validate_input_number(get_request_var_request('predefined_timespan'));
-input_validate_input_number(get_request_var_request('predefined_timeshift'));
-input_validate_input_regex(get_request_var_request('graph_list'), '^([\,0-9]+)$');
-input_validate_input_regex(get_request_var_request('graph_add'), '^([\,0-9]+)$');
-input_validate_input_regex(get_request_var_request('graph_remove'), '^([\,0-9]+)$');
-input_validate_input_regex(get_request_var_request('nodeid'), '^([_\-a-zA-Z0-9]+)$');
+input_validate_input_number(get_request_var('branch_id'));
+input_validate_input_number(get_request_var('tree_id'));
+input_validate_input_number(get_request_var('graphs'));
+input_validate_input_number(get_request_var('rows'));
+input_validate_input_number(get_request_var('hide'));
+input_validate_input_number(get_request_var('leaf_id'));
+input_validate_input_number(get_request_var('rra_id'));
+input_validate_input_number(get_request_var('columns'));
+input_validate_input_number(get_request_var('predefined_timespan'));
+input_validate_input_number(get_request_var('predefined_timeshift'));
+input_validate_input_regex(get_request_var('graph_list'), '^([\,0-9]+)$');
+input_validate_input_regex(get_request_var('graph_add'), '^([\,0-9]+)$');
+input_validate_input_regex(get_request_var('graph_remove'), '^([\,0-9]+)$');
+input_validate_input_regex(get_request_var('nodeid'), '^([_\-a-zA-Z0-9]+)$');
 /* ==================================================== */
 
 /* clean up action string */
 if (isset($_REQUEST['action'])) {
-	$_REQUEST['action'] = sanitize_search_string(get_request_var_request('action'));
+	$_REQUEST['action'] = sanitize_search_string(get_request_var('action'));
 }
 
 if (isset($_REQUEST['action']) && $_REQUEST['action'] == 'ajax_hosts') {
@@ -72,20 +72,20 @@ if (isset($_REQUEST['action']) && $_REQUEST['action'] == 'save') {
 		}
 		if (isset($_REQUEST['section']) && $_REQUEST['section'] == 'preview') {
 			if (isset($_REQUEST['columns'])) {
-				set_graph_config_option('num_columns', get_request_var_request('columns'));
+				set_graph_config_option('num_columns', get_request_var('columns'));
 			}
 			if (isset($_REQUEST['graphs'])) {
-				set_graph_config_option('preview_graphs_per_page', get_request_var_request('graphs'));
+				set_graph_config_option('preview_graphs_per_page', get_request_var('graphs'));
 			}
 			if (isset($_REQUEST['thumbnails'])) {
 				set_graph_config_option('thumbnail_section_preview', $_REQUEST['thumbnails'] == 'true' ? 'on':'');
 			}
 		}else{
 			if (isset($_REQUEST['columns'])) {
-				set_graph_config_option('num_columns_tree', get_request_var_request('columns'));
+				set_graph_config_option('num_columns_tree', get_request_var('columns'));
 			}
 			if (isset($_REQUEST['graphs'])) {
-				set_graph_config_option('treeview_graphs_per_page', get_request_var_request('graphs'));
+				set_graph_config_option('treeview_graphs_per_page', get_request_var('graphs'));
 			}
 			if (isset($_REQUEST['thumbnails'])) {
 				set_graph_config_option('thumbnail_section_tree_2', $_REQUEST['thumbnails'] == 'true' ? 'on':'');
@@ -251,7 +251,7 @@ case 'preview':
 	/* the user select a bunch of graphs of the 'list' view and wants them displayed here */
 	$sql_or = '';
 	if (isset($_REQUEST['style'])) {
-		if (get_request_var_request('style') == 'selective') {
+		if (get_request_var('style') == 'selective') {
 
 			/* process selected graphs */
 			if (!empty($_REQUEST['graph_list'])) {
@@ -283,14 +283,14 @@ case 'preview':
 				/* build sql string including each graph the user checked */
 				$sql_or = array_to_sql_or($graph_array, 'gtg.local_graph_id');
 
-				$set_rra_id = empty($rra_id) ? read_graph_config_option('default_rra_id') : get_request_var_request('rra_id');
+				$set_rra_id = empty($rra_id) ? read_graph_config_option('default_rra_id') : get_request_var('rra_id');
 			}
 		}
 	}
 
 	$total_graphs = 0;
 
-	$sql_where  = (strlen($_REQUEST['filter']) ? "gtg.title_cache LIKE '%%" . get_request_var_request('filter') . "%%'":'');
+	$sql_where  = (strlen($_REQUEST['filter']) ? "gtg.title_cache LIKE '%%" . get_request_var('filter') . "%%'":'');
 	$sql_where .= (strlen($sql_or) && strlen($sql_where) ? ' AND ':'') . $sql_or;
 	$sql_where .= ($_REQUEST['host_id'] >= 0 ? (strlen($sql_where) ? ' AND':'') . ' gl.host_id=' . $_REQUEST['host_id']:'');
 	$sql_where .= ($_REQUEST['graph_template_id'] > 0 ? (strlen($sql_where) ? ' AND':'') . ' gl.graph_template_id=' . $_REQUEST['graph_template_id']:'');
@@ -302,23 +302,23 @@ case 'preview':
 
 	/* do some fancy navigation url construction so we don't have to try and rebuild the url string */
 	if (preg_match('/page=[0-9]+/',basename($_SERVER['QUERY_STRING']))) {
-		$nav_url = str_replace('&page=' . get_request_var_request('page'), '', get_browser_query_string());
+		$nav_url = str_replace('&page=' . get_request_var('page'), '', get_browser_query_string());
 	}else{
-		$nav_url = get_browser_query_string() . '&host_id=' . get_request_var_request('host_id');
+		$nav_url = get_browser_query_string() . '&host_id=' . get_request_var('host_id');
 	}
 
 	$nav_url = preg_replace('/((\?|&)host_id=[0-9]+|(\?|&)filter=[a-zA-Z0-9]*)/', '', $nav_url);
 
 	html_start_box('', '100%', '', '3', 'center', '');
 
-	$nav = html_nav_bar($nav_url, MAX_DISPLAY_PAGES, get_request_var_request('page'), get_request_var_request('graphs'), $total_graphs, get_request_var_request('columns'), 'Graphs', 'page', 'main');
+	$nav = html_nav_bar($nav_url, MAX_DISPLAY_PAGES, get_request_var('page'), get_request_var('graphs'), $total_graphs, get_request_var('columns'), 'Graphs', 'page', 'main');
 
 	print $nav;
 
-	if (get_request_var_request('thumbnails') == 'true') {
-		html_graph_thumbnail_area($graphs, '', 'graph_start=' . get_current_graph_start() . '&graph_end=' . get_current_graph_end(), '', get_request_var_request('columns'));
+	if (get_request_var('thumbnails') == 'true') {
+		html_graph_thumbnail_area($graphs, '', 'graph_start=' . get_current_graph_start() . '&graph_end=' . get_current_graph_end(), '', get_request_var('columns'));
 	}else{
-		html_graph_area($graphs, '', 'graph_start=' . get_current_graph_start() . '&graph_end=' . get_current_graph_end(), '', get_request_var_request('columns'));
+		html_graph_area($graphs, '', 'graph_start=' . get_current_graph_start() . '&graph_end=' . get_current_graph_end(), '', get_request_var('columns'));
 	}
 
 	if ($total_graphs > 0) {
@@ -340,15 +340,15 @@ case 'list':
 	}
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_request('host_id'));
-	input_validate_input_number(get_request_var_request('graph_template_id'));
-	input_validate_input_number(get_request_var_request('rows'));
-	input_validate_input_number(get_request_var_request('page'));
+	input_validate_input_number(get_request_var('host_id'));
+	input_validate_input_number(get_request_var('graph_template_id'));
+	input_validate_input_number(get_request_var('rows'));
+	input_validate_input_number(get_request_var('page'));
 	/* ==================================================== */
 
 	/* clean up search string */
 	if (isset($_REQUEST['filter'])) {
-		$_REQUEST['filter'] = sanitize_search_string(get_request_var_request('filter'));
+		$_REQUEST['filter'] = sanitize_search_string(get_request_var('filter'));
 	}
 
 	/* reset the graph list on a new viewing */
@@ -430,14 +430,14 @@ case 'list':
 					</td>
 					<td>
 						<select id='graph_template_id' name='graph_template_id' onChange='applyFilter()'>
-							<option value='0'<?php print htmlspecialchars(get_request_var_request('filter'));?><?php if (get_request_var_request('host_id') == '0') {?> selected<?php }?>>Any</option>
+							<option value='0'<?php print htmlspecialchars(get_request_var('filter'));?><?php if (get_request_var('host_id') == '0') {?> selected<?php }?>>Any</option>
 							<?php
 
 							$graph_templates = get_allowed_graph_templates();
 
 							if (sizeof($graph_templates) > 0) {
 								foreach ($graph_templates as $template) {
-									print "<option value='" . $template['id'] . "'"; if (get_request_var_request('graph_template_id') == $template['id']) { print ' selected'; } print '>' . htmlspecialchars($template['name']) . "</option>\n";
+									print "<option value='" . $template['id'] . "'"; if (get_request_var('graph_template_id') == $template['id']) { print ' selected'; } print '>' . htmlspecialchars($template['name']) . "</option>\n";
 								}
 							}
 							?>
@@ -451,7 +451,7 @@ case 'list':
 							<?php
 							if (sizeof($item_rows) > 0) {
 							foreach ($item_rows as $key => $value) {
-								print "<option value='" . $key . "'"; if (get_request_var_request('rows') == $key) { print ' selected'; } print '>' . $value . "</option>\n";
+								print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . $value . "</option>\n";
 							}
 							}
 							?>
@@ -461,7 +461,7 @@ case 'list':
 						Search
 					</td>
 					<td>
-						<input id='filter' type='text' name='filter' size='25' value='<?php print htmlspecialchars(get_request_var_request('filter'));?>'>
+						<input id='filter' type='text' name='filter' size='25' value='<?php print htmlspecialchars(get_request_var('filter'));?>'>
 					</td>
 					<td>
 						<input type='button' id='refresh' value='Go' title='Set/Refresh Filters' onClick='applyFilter()'>
@@ -491,9 +491,9 @@ case 'list':
 
 	/* create filter for sql */
 	$sql_where  = '';
-	$sql_where .= (empty($_REQUEST['filter']) ? '' : " gtg.title_cache LIKE '%" . get_request_var_request('filter') . "%'");
-	$sql_where .= ($_REQUEST['host_id'] < 0 ? '' : (empty($sql_filter) ? '' : ' AND') . ' gl.host_id=' . get_request_var_request('host_id'));
-	$sql_where .= (empty($_REQUEST['graph_template_id']) ? '' : (empty($sql_filter) ? '' : ' AND') . ' gl.graph_template_id=' . get_request_var_request('graph_template_id'));
+	$sql_where .= (empty($_REQUEST['filter']) ? '' : " gtg.title_cache LIKE '%" . get_request_var('filter') . "%'");
+	$sql_where .= ($_REQUEST['host_id'] < 0 ? '' : (empty($sql_filter) ? '' : ' AND') . ' gl.host_id=' . get_request_var('host_id'));
+	$sql_where .= (empty($_REQUEST['graph_template_id']) ? '' : (empty($sql_filter) ? '' : ' AND') . ' gl.graph_template_id=' . get_request_var('graph_template_id'));
 
 	$total_rows = 0;
 	$limit      = ($_REQUEST['rows']*($_REQUEST['page']-1)) . ',' . $_REQUEST['rows'];
@@ -504,7 +504,7 @@ case 'list':
 
 	html_start_box('', '100%', '', '3', 'center', '');
 
-	$nav = html_nav_bar('graph_view.php?action=list', MAX_DISPLAY_PAGES, get_request_var_request('page'), get_request_var_request('rows'), $total_rows, 5, 'Graphs', 'page', 'main');
+	$nav = html_nav_bar('graph_view.php?action=list', MAX_DISPLAY_PAGES, get_request_var('page'), get_request_var('rows'), $total_rows, 5, 'Graphs', 'page', 'main');
 
 	print $nav;
 

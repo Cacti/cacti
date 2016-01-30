@@ -177,11 +177,11 @@ function gprint_presets_edit() {
 	global $fields_grprint_presets_edit;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_request('id'));
+	input_validate_input_number(get_request_var('id'));
 	/* ==================================================== */
 
 	if (!empty($_REQUEST['id'])) {
-		$gprint_preset = db_fetch_row_prepared('SELECT * FROM graph_templates_gprint WHERE id = ?', array(get_request_var_request('id')));
+		$gprint_preset = db_fetch_row_prepared('SELECT * FROM graph_templates_gprint WHERE id = ?', array(get_request_var('id')));
 		$header_label = '[edit: ' . htmlspecialchars($gprint_preset['name']) . ']';
 	}else{
 		$header_label = '[new]';
@@ -206,28 +206,28 @@ function gprint_presets() {
 	global $gprint_actions, $item_rows;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_request('page'));
-	input_validate_input_number(get_request_var_request('rows'));
+	input_validate_input_number(get_request_var('page'));
+	input_validate_input_number(get_request_var('rows'));
 	/* ==================================================== */
 
 	/* clean up search string */
 	if (isset($_REQUEST['filter'])) {
-		$_REQUEST['filter'] = sanitize_search_string(get_request_var_request('filter'));
+		$_REQUEST['filter'] = sanitize_search_string(get_request_var('filter'));
 	}
 
 	/* clean up search string */
 	if (isset($_REQUEST['has_graphs'])) {
-		$_REQUEST['has_graphs'] = sanitize_search_string(get_request_var_request('has_graphs'));
+		$_REQUEST['has_graphs'] = sanitize_search_string(get_request_var('has_graphs'));
 	}
 
 	/* clean up sort_column string */
 	if (isset($_REQUEST['sort_column'])) {
-		$_REQUEST['sort_column'] = sanitize_search_string(get_request_var_request('sort_column'));
+		$_REQUEST['sort_column'] = sanitize_search_string(get_request_var('sort_column'));
 	}
 
 	/* clean up sort_direction string */
 	if (isset($_REQUEST['sort_direction'])) {
-		$_REQUEST['sort_direction'] = sanitize_search_string(get_request_var_request('sort_direction'));
+		$_REQUEST['sort_direction'] = sanitize_search_string(get_request_var('sort_direction'));
 	}
 
 	/* if the user pushed the 'clear' button */
@@ -276,7 +276,7 @@ function gprint_presets() {
 						Search
 					</td>
 					<td>
-						<input id='filter' type='text' name='filter' size='25' value='<?php print htmlspecialchars(get_request_var_request('filter'));?>'>
+						<input id='filter' type='text' name='filter' size='25' value='<?php print htmlspecialchars(get_request_var('filter'));?>'>
 					</td>
 					<td>
 						GPRINTs
@@ -286,7 +286,7 @@ function gprint_presets() {
 							<?php
 							if (sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var_request('rows') == $key) { print ' selected'; } print '>' . htmlspecialchars($value) . "</option>\n";
+									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . htmlspecialchars($value) . "</option>\n";
 								}
 							}
 							?>
@@ -346,7 +346,7 @@ function gprint_presets() {
 
 	/* form the 'where' clause for our main sql query */
 	if ($_REQUEST['filter'] != '') {
-		$sql_where = "WHERE (name LIKE '%" . get_request_var_request('filter') . "%')";
+		$sql_where = "WHERE (name LIKE '%" . get_request_var('filter') . "%')";
 	}else{
 		$sql_where = '';
 	}
@@ -387,10 +387,10 @@ function gprint_presets() {
 		$sql_where
 		GROUP BY rs.id
 		$sql_having
-		ORDER BY " . get_request_var_request('sort_column') . ' ' . get_request_var_request('sort_direction') .
-		' LIMIT ' . (get_request_var_request('rows')*(get_request_var_request('page')-1)) . ',' . get_request_var_request('rows'));
+		ORDER BY " . get_request_var('sort_column') . ' ' . get_request_var('sort_direction') .
+		' LIMIT ' . (get_request_var('rows')*(get_request_var('page')-1)) . ',' . get_request_var('rows'));
 
-	$nav = html_nav_bar('gprint_presets.php?filter=' . get_request_var_request('filter'), MAX_DISPLAY_PAGES, get_request_var_request('page'), get_request_var_request('rows'), $total_rows, 5, 'GPRINTs', 'page', 'main');
+	$nav = html_nav_bar('gprint_presets.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), get_request_var('rows'), $total_rows, 5, 'GPRINTs', 'page', 'main');
 
 	print $nav;
 
@@ -401,7 +401,7 @@ function gprint_presets() {
 		'templates' => array('display' => 'Templates Using', 'align' => 'right', 'sort' => 'DESC', 'tip' => 'The number of Graphs Templates using this GPRINT.')
 	);
 
-	html_header_sort_checkbox($display_text, get_request_var_request('sort_column'), get_request_var_request('sort_direction'), false);
+	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
 	$i = 0;
 	if (sizeof($gprint_list) > 0) {
@@ -413,7 +413,7 @@ function gprint_presets() {
 			}
 
             form_alternate_row('line' . $gp['id'], false, $disabled);
-            form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars('gprint_presets.php?action=edit&id=' . $gp['id']) . "'>" . (strlen(get_request_var_request('filter')) ? preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($gp['name'])) : htmlspecialchars($gp['name'])) . '</a>', $gp['id']);
+            form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars('gprint_presets.php?action=edit&id=' . $gp['id']) . "'>" . (strlen(get_request_var('filter')) ? preg_replace('/(' . preg_quote(get_request_var('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($gp['name'])) : htmlspecialchars($gp['name'])) . '</a>', $gp['id']);
             form_selectable_cell($disabled ? 'No':'Yes', $gp['id'], '', 'text-align:right');
             form_selectable_cell(number_format($gp['graphs']), $gp['id'], '', 'text-align:right');
             form_selectable_cell(number_format($gp['templates']), $gp['id'], '', 'text-align:right');

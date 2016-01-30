@@ -564,8 +564,8 @@ function host_add_query() {
 
 function host_reload_query() {
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_request('id'));
-	input_validate_input_number(get_request_var_request('host_id'));
+	input_validate_input_number(get_request_var('id'));
+	input_validate_input_number(get_request_var('host_id'));
 	/* ==================================================== */
 
 	run_data_query($_REQUEST['host_id'], $_REQUEST['id']);
@@ -573,8 +573,8 @@ function host_reload_query() {
 
 function host_remove_query() {
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_request('id'));
-	input_validate_input_number(get_request_var_request('host_id'));
+	input_validate_input_number(get_request_var('id'));
+	input_validate_input_number(get_request_var('host_id'));
 	/* ==================================================== */
 
 	api_device_dq_remove($_REQUEST['host_id'], $_REQUEST['id']);
@@ -595,8 +595,8 @@ function host_add_gt() {
 
 function host_remove_gt() {
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_request('id'));
-	input_validate_input_number(get_request_var_request('host_id'));
+	input_validate_input_number(get_request_var('id'));
+	input_validate_input_number(get_request_var('host_id'));
 	/* ==================================================== */
 
 	api_device_gt_remove($_REQUEST['host_id'], $_REQUEST['id']);
@@ -610,7 +610,7 @@ function host_remove() {
 	global $config;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_request('id'));
+	input_validate_input_number(get_request_var('id'));
 	/* ==================================================== */
 
 	if ((read_config_option('deletion_verification') == 'on') && (!isset($_REQUEST['confirm']))) {
@@ -734,7 +734,7 @@ function host_edit() {
 	global $fields_host_edit, $reindex_types;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_request('id'));
+	input_validate_input_number(get_request_var('id'));
 	/* ==================================================== */
 
 	api_plugin_hook('host_edit_top');
@@ -1199,25 +1199,25 @@ function host() {
 	global $device_actions, $item_rows;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_request('host_template_id'));
-	input_validate_input_number(get_request_var_request('page'));
-	input_validate_input_number(get_request_var_request('host_status'));
-	input_validate_input_number(get_request_var_request('rows'));
+	input_validate_input_number(get_request_var('host_template_id'));
+	input_validate_input_number(get_request_var('page'));
+	input_validate_input_number(get_request_var('host_status'));
+	input_validate_input_number(get_request_var('rows'));
 	/* ==================================================== */
 
 	/* clean up search string */
 	if (isset($_REQUEST['filter'])) {
-		$_REQUEST['filter'] = sanitize_search_string(get_request_var_request('filter'));
+		$_REQUEST['filter'] = sanitize_search_string(get_request_var('filter'));
 	}
 
 	/* clean up sort_column */
 	if (isset($_REQUEST['sort_column'])) {
-		$_REQUEST['sort_column'] = sanitize_search_string(get_request_var_request('sort_column'));
+		$_REQUEST['sort_column'] = sanitize_search_string(get_request_var('sort_column'));
 	}
 
 	/* clean up search string */
 	if (isset($_REQUEST['sort_direction'])) {
-		$_REQUEST['sort_direction'] = sanitize_search_string(get_request_var_request('sort_direction'));
+		$_REQUEST['sort_direction'] = sanitize_search_string(get_request_var('sort_direction'));
 	}
 
 	/* if the user pushed the 'clear' button */
@@ -1304,7 +1304,7 @@ function host() {
 	</script>
 	<?php
 
-	html_start_box('Devices', '100%', '', '3', 'center', 'host.php?action=edit&host_template_id=' . htmlspecialchars(get_request_var_request('host_template_id')) . '&host_status=' . htmlspecialchars(get_request_var_request('host_status')));
+	html_start_box('Devices', '100%', '', '3', 'center', 'host.php?action=edit&host_template_id=' . htmlspecialchars(get_request_var('host_template_id')) . '&host_status=' . htmlspecialchars(get_request_var('host_status')));
 
 	?>
 	<tr class='even noprint'>
@@ -1316,21 +1316,21 @@ function host() {
 						Search
 					</td>
 					<td>
-						<input id='filter' type='text' name='filter' size='25' value='<?php print htmlspecialchars(get_request_var_request('filter'));?>' onChange='applyFilter()'>
+						<input id='filter' type='text' name='filter' size='25' value='<?php print htmlspecialchars(get_request_var('filter'));?>' onChange='applyFilter()'>
 					</td>
 					<td>
 						Template
 					</td>
 					<td>
 						<select id='host_template_id' name='host_template_id' onChange='applyFilter()'>
-							<option value='-1'<?php if (get_request_var_request('host_template_id') == '-1') {?> selected<?php }?>>Any</option>
-							<option value='0'<?php if (get_request_var_request('host_template_id') == '0') {?> selected<?php }?>>None</option>
+							<option value='-1'<?php if (get_request_var('host_template_id') == '-1') {?> selected<?php }?>>Any</option>
+							<option value='0'<?php if (get_request_var('host_template_id') == '0') {?> selected<?php }?>>None</option>
 							<?php
 							$host_templates = db_fetch_assoc('SELECT id, name FROM host_template ORDER BY name');
 
 							if (sizeof($host_templates)) {
 								foreach ($host_templates as $host_template) {
-									print "<option value='" . $host_template['id'] . "'"; if (get_request_var_request('host_template_id') == $host_template['id']) { print ' selected'; } print '>' . htmlspecialchars($host_template['name']) . "</option>\n";
+									print "<option value='" . $host_template['id'] . "'"; if (get_request_var('host_template_id') == $host_template['id']) { print ' selected'; } print '>' . htmlspecialchars($host_template['name']) . "</option>\n";
 								}
 							}
 							?>
@@ -1341,14 +1341,14 @@ function host() {
 					</td>
 					<td>
 						<select id='host_status' name='host_status' onChange='applyFilter()'>
-							<option value='-1'<?php if (get_request_var_request('host_status') == '-1') {?> selected<?php }?>>Any</option>
-							<option value='-3'<?php if (get_request_var_request('host_status') == '-3') {?> selected<?php }?>>Enabled</option>
-							<option value='-2'<?php if (get_request_var_request('host_status') == '-2') {?> selected<?php }?>>Disabled</option>
-							<option value='-4'<?php if (get_request_var_request('host_status') == '-4') {?> selected<?php }?>>Not Up</option>
-							<option value='3'<?php if (get_request_var_request('host_status') == '3') {?> selected<?php }?>>Up</option>
-							<option value='1'<?php if (get_request_var_request('host_status') == '1') {?> selected<?php }?>>Down</option>
-							<option value='2'<?php if (get_request_var_request('host_status') == '2') {?> selected<?php }?>>Recovering</option>
-							<option value='0'<?php if (get_request_var_request('host_status') == '0') {?> selected<?php }?>>Unknown</option>
+							<option value='-1'<?php if (get_request_var('host_status') == '-1') {?> selected<?php }?>>Any</option>
+							<option value='-3'<?php if (get_request_var('host_status') == '-3') {?> selected<?php }?>>Enabled</option>
+							<option value='-2'<?php if (get_request_var('host_status') == '-2') {?> selected<?php }?>>Disabled</option>
+							<option value='-4'<?php if (get_request_var('host_status') == '-4') {?> selected<?php }?>>Not Up</option>
+							<option value='3'<?php if (get_request_var('host_status') == '3') {?> selected<?php }?>>Up</option>
+							<option value='1'<?php if (get_request_var('host_status') == '1') {?> selected<?php }?>>Down</option>
+							<option value='2'<?php if (get_request_var('host_status') == '2') {?> selected<?php }?>>Recovering</option>
+							<option value='0'<?php if (get_request_var('host_status') == '0') {?> selected<?php }?>>Unknown</option>
 						</select>
 					</td>
 					<td>
@@ -1359,7 +1359,7 @@ function host() {
 							<?php
 							if (sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var_request('rows') == $key) { print ' selected'; } print '>' . htmlspecialchars($value) . "</option>\n";
+									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . htmlspecialchars($value) . "</option>\n";
 								}
 							}
 							?>
@@ -1382,30 +1382,30 @@ function host() {
 	html_end_box();
 
 	/* form the 'where' clause for our main sql query */
-	if (strlen(get_request_var_request('filter'))) {
-		$sql_where = "where (host.hostname like '%%" . get_request_var_request('filter') . "%%' OR host.description like '%%" . get_request_var_request('filter') . "%%')";
+	if (strlen(get_request_var('filter'))) {
+		$sql_where = "where (host.hostname like '%%" . get_request_var('filter') . "%%' OR host.description like '%%" . get_request_var('filter') . "%%')";
 	}else{
 		$sql_where = '';
 	}
 
-	if (get_request_var_request('host_status') == '-1') {
+	if (get_request_var('host_status') == '-1') {
 		/* Show all items */
-	}elseif (get_request_var_request('host_status') == '-2') {
+	}elseif (get_request_var('host_status') == '-2') {
 		$sql_where .= (strlen($sql_where) ? " AND host.disabled='on'" : " WHERE host.disabled='on'");
-	}elseif (get_request_var_request('host_status') == '-3') {
+	}elseif (get_request_var('host_status') == '-3') {
 		$sql_where .= (strlen($sql_where) ? " AND host.disabled=''" : " WHERE host.disabled=''");
-	}elseif (get_request_var_request('host_status') == '-4') {
+	}elseif (get_request_var('host_status') == '-4') {
 		$sql_where .= (strlen($sql_where) ? " AND (host.status!='3' OR host.disabled='on')" : " WHERE (host.status!='3' OR host.disabled='on')");
 	}else {
-		$sql_where .= (strlen($sql_where) ? ' AND (host.status=' . get_request_var_request('host_status') . " AND host.disabled = '')" : 'where (host.status=' . get_request_var_request('host_status') . " AND host.disabled = '')");
+		$sql_where .= (strlen($sql_where) ? ' AND (host.status=' . get_request_var('host_status') . " AND host.disabled = '')" : 'where (host.status=' . get_request_var('host_status') . " AND host.disabled = '')");
 	}
 
-	if (get_request_var_request('host_template_id') == '-1') {
+	if (get_request_var('host_template_id') == '-1') {
 		/* Show all items */
-	}elseif (get_request_var_request('host_template_id') == '0') {
+	}elseif (get_request_var('host_template_id') == '0') {
 		$sql_where .= (strlen($sql_where) ? ' AND host.host_template_id=0' : ' WHERE host.host_template_id=0');
 	}elseif (!empty($_REQUEST['host_template_id'])) {
-		$sql_where .= (strlen($sql_where) ? ' AND host.host_template_id=' . get_request_var_request('host_template_id') : ' WHERE host.host_template_id=' . get_request_var_request('host_template_id'));
+		$sql_where .= (strlen($sql_where) ? ' AND host.host_template_id=' . get_request_var('host_template_id') : ' WHERE host.host_template_id=' . get_request_var('host_template_id'));
 	}
 
 	form_start('host.php', 'chk');
@@ -1417,7 +1417,7 @@ function host() {
 		FROM host
 		$sql_where");
 
-	$sortby = get_request_var_request('sort_column');
+	$sortby = get_request_var('sort_column');
 	if ($sortby=='hostname') {
 		$sortby = 'INET_ATON(hostname)';
 	}
@@ -1430,12 +1430,12 @@ function host() {
 		ON host.id=dl.host_id
 		$sql_where
 		GROUP BY host.id
-		ORDER BY " . $sortby . ' ' . get_request_var_request('sort_direction') . '
-		LIMIT ' . (get_request_var_request('rows')*(get_request_var_request('page')-1)) . ',' . get_request_var_request('rows');
+		ORDER BY " . $sortby . ' ' . get_request_var('sort_direction') . '
+		LIMIT ' . (get_request_var('rows')*(get_request_var('page')-1)) . ',' . get_request_var('rows');
 
 	$hosts = db_fetch_assoc($sql_query);
 
-	$nav = html_nav_bar('host.php?filter=' . get_request_var_request('filter') . '&host_template_id=' . get_request_var_request('host_template_id') . '&host_status=' . get_request_var_request('host_status'), MAX_DISPLAY_PAGES, get_request_var_request('page'), get_request_var_request('rows'), $total_rows, 13, 'Devices', 'page', 'main');
+	$nav = html_nav_bar('host.php?filter=' . get_request_var('filter') . '&host_template_id=' . get_request_var('host_template_id') . '&host_status=' . get_request_var('host_status'), MAX_DISPLAY_PAGES, get_request_var('page'), get_request_var('rows'), $total_rows, 13, 'Devices', 'page', 'main');
 
 	print $nav;
 
@@ -1453,7 +1453,7 @@ function host() {
 		'avg_time' => array('display' => 'Average (ms)', 'align' => 'right', 'sort' => 'DESC', 'tip' => 'The average ping time in milliseconds to reach the Device since the counters were cleared for this Device.'),
 		'availability' => array('display' => 'Availability', 'align' => 'right', 'sort' => 'ASC', 'tip' => 'The availability percentage based upon ping results insce the counters were cleared for this Device.'));
 
-	html_header_sort_checkbox($display_text, get_request_var_request('sort_column'), get_request_var_request('sort_direction'), false);
+	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
 	$i = 0;
 	if (sizeof($hosts)) {
@@ -1474,8 +1474,8 @@ function host() {
 
 			form_alternate_row('line' . $host['id'], true);
 			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars('host.php?action=edit&id=' . $host['id']) . "'>" .
-				(strlen(get_request_var_request('filter')) ? preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($host['description'])) : htmlspecialchars($host['description'])) . '</a>', $host['id']);
-			form_selectable_cell((strlen(get_request_var_request('filter')) ? preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($host['hostname'])) : htmlspecialchars($host['hostname'])), $host['id']);
+				(strlen(get_request_var('filter')) ? preg_replace('/(' . preg_quote(get_request_var('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($host['description'])) : htmlspecialchars($host['description'])) . '</a>', $host['id']);
+			form_selectable_cell((strlen(get_request_var('filter')) ? preg_replace('/(' . preg_quote(get_request_var('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($host['hostname'])) : htmlspecialchars($host['hostname'])), $host['id']);
 			form_selectable_cell($host['id'], $host['id'], '', 'text-align:right');
 			form_selectable_cell(number_format($host['graphs']), $host['id'], '', 'text-align:right');
 			form_selectable_cell(number_format($host['data_sources']), $host['id'], '', 'text-align:right');

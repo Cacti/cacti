@@ -87,7 +87,7 @@ default:
 
     /* clean up tab string */
     if (isset($_REQUEST['tab'])) {
-        $_REQUEST['tab'] = sanitize_search_string(get_request_var_request('tab'));
+        $_REQUEST['tab'] = sanitize_search_string(get_request_var('tab'));
     }
 
 	/* set the default settings category */

@@ -321,21 +321,21 @@ function color_import() {
 
 function color_remove() {
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_request('id'));
+	input_validate_input_number(get_request_var('id'));
 	/* ==================================================== */
 
-	db_execute_prepared('DELETE FROM colors WHERE id = ?', array(get_request_var_request('id')));
+	db_execute_prepared('DELETE FROM colors WHERE id = ?', array(get_request_var('id')));
 }
 
 function color_edit() {
 	global $fields_color_edit;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_request('id'));
+	input_validate_input_number(get_request_var('id'));
 	/* ==================================================== */
 
 	if (!empty($_REQUEST['id'])) {
-		$color = db_fetch_row_prepared('SELECT * FROM colors WHERE id = ?', array(get_request_var_request('id')));
+		$color = db_fetch_row_prepared('SELECT * FROM colors WHERE id = ?', array(get_request_var('id')));
 		$header_label = '[edit: ' . $color['hex'] . ']';
 	}else{
 		$header_label = '[new]';
@@ -387,33 +387,33 @@ function color() {
 	global $color_actions, $item_rows;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_request('page'));
-	input_validate_input_number(get_request_var_request('rows'));
+	input_validate_input_number(get_request_var('page'));
+	input_validate_input_number(get_request_var('rows'));
 	/* ==================================================== */
 
 	/* clean up search string */
 	if (isset($_REQUEST['filter'])) {
-		$_REQUEST['filter'] = sanitize_search_string(get_request_var_request('filter'));
+		$_REQUEST['filter'] = sanitize_search_string(get_request_var('filter'));
 	}
 
 	/* clean up named string */
 	if (isset($_REQUEST['named'])) {
-		$_REQUEST['named'] = sanitize_search_string(get_request_var_request('named'));
+		$_REQUEST['named'] = sanitize_search_string(get_request_var('named'));
 	}
 
 	/* clean up has_graph string */
 	if (isset($_REQUEST['has_graphs'])) {
-		$_REQUEST['has_graphs'] = sanitize_search_string(get_request_var_request('has_graphs'));
+		$_REQUEST['has_graphs'] = sanitize_search_string(get_request_var('has_graphs'));
 	}
 
 	/* clean up sort_column string */
 	if (isset($_REQUEST['sort_column'])) {
-		$_REQUEST['sort_column'] = sanitize_search_string(get_request_var_request('sort_column'));
+		$_REQUEST['sort_column'] = sanitize_search_string(get_request_var('sort_column'));
 	}
 
 	/* clean up sort_direction string */
 	if (isset($_REQUEST['sort_direction'])) {
-		$_REQUEST['sort_direction'] = sanitize_search_string(get_request_var_request('sort_direction'));
+		$_REQUEST['sort_direction'] = sanitize_search_string(get_request_var('sort_direction'));
 	}
 
 	/* if the user pushed the 'clear' button */
@@ -466,7 +466,7 @@ function color() {
 						Search
 					</td>
 					<td>
-						<input id='filter' type='text' name='filter' size='25' value='<?php print htmlspecialchars(get_request_var_request('filter'));?>'>
+						<input id='filter' type='text' name='filter' size='25' value='<?php print htmlspecialchars(get_request_var('filter'));?>'>
 					</td>
 					<td>
 						Colors
@@ -476,7 +476,7 @@ function color() {
 							<?php
 							if (sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var_request('rows') == $key) { print ' selected'; } print '>' . htmlspecialchars($value) . "</option>\n";
+									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . htmlspecialchars($value) . "</option>\n";
 								}
 							}
 							?>
@@ -557,8 +557,8 @@ function color() {
 
 	/* form the 'where' clause for our main sql query */
 	if ($_REQUEST['filter'] != '') {
-		$sql_where = "WHERE (name LIKE '%" . get_request_var_request('filter') . "%' 
-			OR hex LIKE '%" .  get_request_var_request('filter') . "%')";
+		$sql_where = "WHERE (name LIKE '%" . get_request_var('filter') . "%' 
+			OR hex LIKE '%" .  get_request_var('filter') . "%')";
 	}else{
 		$sql_where = '';
 	}
@@ -613,9 +613,9 @@ function color() {
 		GROUP BY rs.id
 		$sql_having
 		ORDER BY " . $_REQUEST['sort_column'] . ' ' . $_REQUEST['sort_direction'] . "
-		LIMIT " . (get_request_var_request('rows')*(get_request_var_request('page')-1)) . ',' . get_request_var_request('rows'));
+		LIMIT " . (get_request_var('rows')*(get_request_var('page')-1)) . ',' . get_request_var('rows'));
 
-    $nav = html_nav_bar('color.php?filter=' . get_request_var_request('filter'), MAX_DISPLAY_PAGES, get_request_var_request('page'), get_request_var_request('rows'), $total_rows, 8, 'Colors', 'page', 'main');
+    $nav = html_nav_bar('color.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), get_request_var('rows'), $total_rows, 8, 'Colors', 'page', 'main');
 
     print $nav;
 
@@ -646,7 +646,7 @@ function color() {
 
 			form_alternate_row('line' . $color['id'], false, $disabled);
 			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars('color.php?action=edit&id=' . $color['id']) . "'>" . $color['hex'] . '</a>', $color['id']);
-			form_selectable_cell(strlen(get_request_var_request('filter')) ? preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($color['name'])) : htmlspecialchars($color['name']), $color['id']);
+			form_selectable_cell(strlen(get_request_var('filter')) ? preg_replace('/(' . preg_quote(get_request_var('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($color['name'])) : htmlspecialchars($color['name']), $color['id']);
 			form_selectable_cell($color['read_only'] == 'on' ? 'Yes':'No', $color['id']);
 			form_selectable_cell('', $color['id'], '', 'text-align:right;background-color:#' . $color['hex'] . ';min-width:30%');
 			form_selectable_cell($disabled ? 'No':'Yes', $color['id'], '', 'text-align:right');

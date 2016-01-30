@@ -50,7 +50,7 @@ $pluginslist = retrieve_plugin_list();
 $modes = array('installold', 'uninstallold', 'install', 'uninstall', 'disable', 'enable', 'check', 'moveup', 'movedown');
 
 if (isset($_REQUEST['mode']) && in_array($_REQUEST['mode'], $modes)  && isset($_REQUEST['id'])) {
-	input_validate_input_regex(get_request_var_request('id'), '^([a-zA-Z0-9]+)$');
+	input_validate_input_regex(get_request_var('id'), '^([a-zA-Z0-9]+)$');
 
 	$mode = $_REQUEST['mode'];
 	$id   = sanitize_search_string($_REQUEST['id']);
@@ -282,24 +282,24 @@ function update_show_current () {
 	global $plugins, $pluginslist, $config, $status_names, $actions, $item_rows;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_request('page'));
-	input_validate_input_number(get_request_var_request('rows'));
-	input_validate_input_number(get_request_var_request('state'));
+	input_validate_input_number(get_request_var('page'));
+	input_validate_input_number(get_request_var('rows'));
+	input_validate_input_number(get_request_var('state'));
 	/* ==================================================== */
 
 	/* clean up search string */
 	if (isset($_REQUEST['filter'])) {
-		$_REQUEST['filter'] = sanitize_search_string(get_request_var_request('filter'));
+		$_REQUEST['filter'] = sanitize_search_string(get_request_var('filter'));
 	}
 
 	/* clean up sort_column */
 	if (isset($_REQUEST['sort_column'])) {
-		$_REQUEST['sort_column'] = sanitize_search_string(get_request_var_request('sort_column'));
+		$_REQUEST['sort_column'] = sanitize_search_string(get_request_var('sort_column'));
 	}
 
 	/* clean up search string */
 	if (isset($_REQUEST['sort_direction'])) {
-		$_REQUEST['sort_direction'] = sanitize_search_string(get_request_var_request('sort_direction'));
+		$_REQUEST['sort_direction'] = sanitize_search_string(get_request_var('sort_direction'));
 	}
 
 	/* if the user pushed the 'clear' button */
@@ -370,21 +370,21 @@ function update_show_current () {
 						Search
 					</td>
 					<td>
-						<input id='filter' type='text' name='filter' size='25' value='<?php print get_request_var_request('filter');?>'>
+						<input id='filter' type='text' name='filter' size='25' value='<?php print get_request_var('filter');?>'>
 					</td>
 					<td>
 						Status
 					</td>
 					<td>
 						<select id='state' name='state' onChange='applyFilter()'>
-							<option value='-3'<?php if (get_request_var_request('state') == '-3') {?> selected<?php }?>>All</option>
-							<option value='1'<?php if (get_request_var_request('state') == '1') {?> selected<?php }?>>Active</option>
-							<option value='4'<?php if (get_request_var_request('state') == '4') {?> selected<?php }?>>Installed</option>
-							<option value='5'<?php if (get_request_var_request('state') == '5') {?> selected<?php }?>>Active/Installed</option>
-							<option value='2'<?php if (get_request_var_request('state') == '2') {?> selected<?php }?>>Configuration Issues</option>
-							<option value='0'<?php if (get_request_var_request('state') == '0') {?> selected<?php }?>>Not Installed</option>
-							<option value='-1'<?php if (get_request_var_request('state') == '-1') {?> selected<?php }?>>Legacy Installed</option>
-							<option value='-2'<?php if (get_request_var_request('state') == '-2') {?> selected<?php }?>>Legacy Not Intalled</option>
+							<option value='-3'<?php if (get_request_var('state') == '-3') {?> selected<?php }?>>All</option>
+							<option value='1'<?php if (get_request_var('state') == '1') {?> selected<?php }?>>Active</option>
+							<option value='4'<?php if (get_request_var('state') == '4') {?> selected<?php }?>>Installed</option>
+							<option value='5'<?php if (get_request_var('state') == '5') {?> selected<?php }?>>Active/Installed</option>
+							<option value='2'<?php if (get_request_var('state') == '2') {?> selected<?php }?>>Configuration Issues</option>
+							<option value='0'<?php if (get_request_var('state') == '0') {?> selected<?php }?>>Not Installed</option>
+							<option value='-1'<?php if (get_request_var('state') == '-1') {?> selected<?php }?>>Legacy Installed</option>
+							<option value='-2'<?php if (get_request_var('state') == '-2') {?> selected<?php }?>>Legacy Not Intalled</option>
 						</select>
 					</td>
 					<td>
@@ -395,7 +395,7 @@ function update_show_current () {
 							<?php
 							if (sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var_request('rows') == $key) { print ' selected'; } print '>' . htmlspecialchars($value) . "</option>\n";
+									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . htmlspecialchars($value) . "</option>\n";
 								}
 							}
 							?>
@@ -425,7 +425,7 @@ function update_show_current () {
 
 	/* form the 'where' clause for our main sql query */
 	if (strlen($_REQUEST['filter'])) {
-		$sql_where = "WHERE ($table.name LIKE '%%" . get_request_var_request('filter') . "%%')";
+		$sql_where = "WHERE ($table.name LIKE '%%" . get_request_var('filter') . "%%')";
 	}
 
 	if ($_REQUEST['state'] > -3) {
@@ -436,22 +436,22 @@ function update_show_current () {
 		}
 	}
 
-	if (get_request_var_request('sort_column') == 'version') {
+	if (get_request_var('sort_column') == 'version') {
 		$sortc = 'version+0';
 	}else{
-		$sortc = get_request_var_request('sort_column');
+		$sortc = get_request_var('sort_column');
 	}
 
-	if (get_request_var_request('sort_column') == 'id') {
+	if (get_request_var('sort_column') == 'id') {
 		$sortd = 'ASC';
 	}else{
-		$sortd = get_request_var_request('sort_direction');
+		$sortd = get_request_var('sort_direction');
 	}
 
 	if ($_REQUEST['rows'] == '-1') {
 		$rows = read_config_option('num_rows_table');
 	}else{
-		$rows = get_request_var_request('rows');
+		$rows = get_request_var('rows');
 	}
 
 	$total_rows = db_fetch_cell("SELECT
@@ -463,11 +463,11 @@ function update_show_current () {
 		FROM $table
 		$sql_where
 		ORDER BY " . $sortc . ' ' . $sortd . '
-		LIMIT ' . ($rows*(get_request_var_request('page')-1)) . ',' . $rows);
+		LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows);
 
 	db_execute("DROP TABLE $table");
 
-	$nav = html_nav_bar('plugins.php?filter=' . get_request_var_request('filter'), MAX_DISPLAY_PAGES, get_request_var_request('page'), $rows, $total_rows, 8, 'Plugins', 'page', 'main');
+	$nav = html_nav_bar('plugins.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 8, 'Plugins', 'page', 'main');
 
 	print $nav;
 
@@ -480,7 +480,7 @@ function update_show_current () {
 		'status' => array('display' => 'Status', 'align' => 'left', 'sort' => 'ASC', 'tip' => 'The status of this Plugin.'),
 		'author' => array('display' => 'Author', 'align' => 'left', 'sort' => 'ASC', 'tip' => 'The author of this Plugin.'));
 
-	html_header_sort($display_text, get_request_var_request('sort_column'), get_request_var_request('sort_direction'), 1);
+	html_header_sort($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), 1);
 
 	$i = 0;
 	if (sizeof($plugins)) {
@@ -491,7 +491,7 @@ function update_show_current () {
 			}else{
 				$last_plugin = false;
 			}
-			if ($plugin['status'] <= 0 || (get_request_var_request('sort_column') != 'id')) {
+			if ($plugin['status'] <= 0 || (get_request_var('sort_column') != 'id')) {
 				$load_ordering = false;
 			}else{
 				$load_ordering = true;
@@ -520,7 +520,7 @@ function format_plugin_row($plugin, $last_plugin, $include_ordering) {
 
 	$row = plugin_actions($plugin);
 
-	$row .= "<td><a href='" . htmlspecialchars($plugin['webpage']) . "' target='_blank'><strong>" . (strlen(get_request_var_request('filter')) ? preg_replace('/(' . preg_quote(get_request_var_request('filter')) . ')/i', "<span class='filteredValue'>\\1</span>", ucfirst($plugin['directory'])) : ucfirst($plugin['directory'])) . '</strong></a>' . (is_dir($config['base_path'] . '/plugins/' . $plugin['directory']) ? '':' (<span class="txtErrorText">ERROR: Directory Missing</span>)') . '</td>';
+	$row .= "<td><a href='" . htmlspecialchars($plugin['webpage']) . "' target='_blank'><strong>" . (strlen(get_request_var('filter')) ? preg_replace('/(' . preg_quote(get_request_var('filter')) . ')/i', "<span class='filteredValue'>\\1</span>", ucfirst($plugin['directory'])) : ucfirst($plugin['directory'])) . '</strong></a>' . (is_dir($config['base_path'] . '/plugins/' . $plugin['directory']) ? '':' (<span class="txtErrorText">ERROR: Directory Missing</span>)') . '</td>';
 
 	if ($include_ordering) {
 		$row .= "<td class='nowrap'>";
@@ -539,7 +539,7 @@ function format_plugin_row($plugin, $last_plugin, $include_ordering) {
 		$row .= "<td></td>\n";
 	}
 
-	$row .= "<td class='nowrap'>" . (strlen(get_request_var_request('filter')) ? preg_replace('/(' . preg_quote(get_request_var_request('filter')) . ')/i', "<span class='filteredValue'>\\1</span>", $plugin['name']) : $plugin['name']) . "</td>\n";
+	$row .= "<td class='nowrap'>" . (strlen(get_request_var('filter')) ? preg_replace('/(' . preg_quote(get_request_var('filter')) . ')/i', "<span class='filteredValue'>\\1</span>", $plugin['name']) : $plugin['name']) . "</td>\n";
 	$row .= '<td>' . $plugin['version'] . "</td>\n";
 	$row .= "<td class='nowrap'>" . $status_names[$plugin['status']] . "</td>\n";
 	$row .= "<td class='nowrap'>" . $plugin['author'] . "</td>\n";

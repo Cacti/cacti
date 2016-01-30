@@ -784,26 +784,26 @@ function reports_send($id) {
 
 function reports_item_movedown() {
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_request('item_id'));
-	input_validate_input_number(get_request_var_request('id'));
+	input_validate_input_number(get_request_var('item_id'));
+	input_validate_input_number(get_request_var('id'));
 	/* ==================================================== */
 
-	move_item_down('reports_items', get_request_var_request('item_id'), 'report_id=' . get_request_var_request('id'));
+	move_item_down('reports_items', get_request_var('item_id'), 'report_id=' . get_request_var('id'));
 }
 
 function reports_item_moveup() {
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_request('item_id'));
-	input_validate_input_number(get_request_var_request('id'));
+	input_validate_input_number(get_request_var('item_id'));
+	input_validate_input_number(get_request_var('id'));
 	/* ==================================================== */
-	move_item_up('reports_items', get_request_var_request('item_id'), 'report_id=' . get_request_var_request('id'));
+	move_item_up('reports_items', get_request_var('item_id'), 'report_id=' . get_request_var('id'));
 }
 
 function reports_item_remove() {
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_request('item_id'));
+	input_validate_input_number(get_request_var('item_id'));
 	/* ==================================================== */
-	db_execute('DELETE FROM reports_items WHERE id=' . get_request_var_request('item_id'));
+	db_execute('DELETE FROM reports_items WHERE id=' . get_request_var('item_id'));
 }
 
 function reports_item_edit() {
@@ -811,61 +811,61 @@ function reports_item_edit() {
 	global $fields_reports_item_edit;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_request('id'));
-	input_validate_input_number(get_request_var_request('item_id'));
-	input_validate_input_number(get_request_var_request('item_type'));
-	input_validate_input_number(get_request_var_request('branch_id'));
-	input_validate_input_number(get_request_var_request('tree_id'));
-	input_validate_input_number(get_request_var_request('host_id'));
-	input_validate_input_number(get_request_var_request('host_template_id'));
-	input_validate_input_number(get_request_var_request('graph_template_id'));
+	input_validate_input_number(get_request_var('id'));
+	input_validate_input_number(get_request_var('item_id'));
+	input_validate_input_number(get_request_var('item_type'));
+	input_validate_input_number(get_request_var('branch_id'));
+	input_validate_input_number(get_request_var('tree_id'));
+	input_validate_input_number(get_request_var('host_id'));
+	input_validate_input_number(get_request_var('host_template_id'));
+	input_validate_input_number(get_request_var('graph_template_id'));
 	/* ==================================================== */
 
 	# fetch the current report record
 	$report = db_fetch_row('SELECT *
 		FROM reports 
-		WHERE id=' . get_request_var_request('id'));
+		WHERE id=' . get_request_var('id'));
 
 	# if an existing item was requested, fetch data for it
 	if (isset($_REQUEST['item_id']) && ($_REQUEST['item_id'] > 0)) {
 		$reports_item = db_fetch_row('SELECT *
 			FROM reports_items
-			WHERE id=' . get_request_var_request('item_id'));
+			WHERE id=' . get_request_var('item_id'));
 
 		$header_label = '[edit Report Item: ' . $report['name'] . ']';
 	}else{
 		$header_label = '[new Report Item: ' . $report['name'] . ']';
 		$reports_item = array();
-		$reports_item['report_id'] = get_request_var_request('id');
-		$reports_item['sequence']  = get_sequence('', 'sequence', 'reports_items', 'report_id=' . get_request_var_request('id'));
+		$reports_item['report_id'] = get_request_var('id');
+		$reports_item['sequence']  = get_sequence('', 'sequence', 'reports_items', 'report_id=' . get_request_var('id'));
 		$reports_item['host_id']   = REPORTS_HOST_NONE;
 	}
 
 	# if a different host_template_id was selected, use it
-	if (get_request_var_request('item_type', '') !== '') {
-		$reports_item['item_type'] = get_request_var_request('item_type');
+	if (get_request_var('item_type', '') !== '') {
+		$reports_item['item_type'] = get_request_var('item_type');
 	}
 
-	if (get_request_var_request('tree_id', '') !== '') {
-		$reports_item['tree_id'] = get_request_var_request('tree_id');
+	if (get_request_var('tree_id', '') !== '') {
+		$reports_item['tree_id'] = get_request_var('tree_id');
 	}else if (!isset($reports_item['tree_id'])) {
 		$reports_item['tree_id'] = 0;
 	}
 
-	if (get_request_var_request('host_template_id', '') !== '') {
-		$reports_item['host_template_id'] = get_request_var_request('host_template_id');
+	if (get_request_var('host_template_id', '') !== '') {
+		$reports_item['host_template_id'] = get_request_var('host_template_id');
 	}else if (!isset($reports_item['host_template_id'])) {
 		$reports_item['host_template_id'] = 0;
 	}
 
 	# if a different host_id was selected, use it
-	if (get_request_var_request('host_id', '') !== '') {
-		$reports_item['host_id'] = get_request_var_request('host_id');
+	if (get_request_var('host_id', '') !== '') {
+		$reports_item['host_id'] = get_request_var('host_id');
 	}
 
 	# if a different graph_template_id was selected, use it
-	if (get_request_var_request('graph_template_id', '') !== '') {
-		$reports_item['graph_template_id'] = get_request_var_request('graph_template_id');
+	if (get_request_var('graph_template_id', '') !== '') {
+		$reports_item['graph_template_id'] = get_request_var('graph_template_id');
 	}else if (!isset($reports_item['graph_template_id'])) {
 		$reports_item['graph_template_id'] = 0;
 	}
@@ -898,7 +898,7 @@ function reports_item_edit() {
 
 	echo "<table id='graphdiv' style='text-align:center;width:100%;display:none;'><tr><td align='center' id='graph'></td></tr></table>";
 
-	form_save_button(htmlspecialchars(get_reports_page() . '?action=edit&tab=items&id=' . get_request_var_request('id')), 'return');
+	form_save_button(htmlspecialchars(get_reports_page() . '?action=edit&tab=items&id=' . get_request_var('id')), 'return');
 
 	if (isset($item['item_type']) && $item['item_type'] == REPORTS_ITEM_GRAPH) {
 		$timespan = array();
@@ -1041,18 +1041,18 @@ function reports_edit() {
 	include_once($config['base_path'] . '/lib/reports.php');
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_request('id'));
-	input_validate_input_number(get_request_var_request('page'));
+	input_validate_input_number(get_request_var('id'));
+	input_validate_input_number(get_request_var('page'));
 	/* ==================================================== */
 
 	/* clean up rule name */
 	if (isset($_REQUEST['name'])) {
-		$_REQUEST['name'] = sanitize_search_string(get_request_var_request('name'));
+		$_REQUEST['name'] = sanitize_search_string(get_request_var('name'));
 	}
 
 	/* clean up tab name */
 	if (isset($_REQUEST['tab'])) {
-		$_REQUEST['tab'] = sanitize_search_string(get_request_var_request('tab'));
+		$_REQUEST['tab'] = sanitize_search_string(get_request_var('tab'));
 	}
 
 	/* remember these search fields in session vars so we don't have to keep passing them around */
@@ -1091,7 +1091,7 @@ function reports_edit() {
 		foreach (array_keys($tabs) as $tab_short_name) {
 			print "<li class='subTab'><a class='tab" . (($tab_short_name == $current_tab) ? " selected'" : "'") . 
 				" href='" . htmlspecialchars($config['url_path'] .
-				get_reports_page() . '?action=edit&id=' . get_request_var_request('id') .
+				get_reports_page() . '?action=edit&id=' . get_request_var('id') .
 				'&tab=' . $tab_short_name) .
 				"'>$tabs[$tab_short_name]</a></li>\n";
 		}
@@ -1299,24 +1299,24 @@ function reports() {
 	include_once($config['base_path'] . '/lib/reports.php');
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_request('page'));
-	input_validate_input_number(get_request_var_request('status'));
-	input_validate_input_number(get_request_var_request('rows'));
+	input_validate_input_number(get_request_var('page'));
+	input_validate_input_number(get_request_var('status'));
+	input_validate_input_number(get_request_var('rows'));
 	/* ==================================================== */
 
 	/* clean up search string */
 	if (isset($_REQUEST['filter'])) {
-		$_REQUEST['filter'] = sanitize_search_string(get_request_var_request('filter'));
+		$_REQUEST['filter'] = sanitize_search_string(get_request_var('filter'));
 	}
 
 	/* clean up sort_column string */
 	if (isset($_REQUEST['sort_column'])) {
-		$_REQUEST['sort_column'] = sanitize_search_string(get_request_var_request('sort_column'));
+		$_REQUEST['sort_column'] = sanitize_search_string(get_request_var('sort_column'));
 	}
 
 	/* clean up sort_direction string */
 	if (isset($_REQUEST['sort_direction'])) {
-		$_REQUEST['sort_direction'] = sanitize_search_string(get_request_var_request('sort_direction'));
+		$_REQUEST['sort_direction'] = sanitize_search_string(get_request_var('sort_direction'));
 	}
 
 	/* if the user pushed the 'clear' button */
@@ -1354,7 +1354,7 @@ function reports() {
 	if ($_REQUEST['rows'] == -1) {
 		$rows = read_config_option('num_rows_table');
 	}else{
-		$rows = get_request_var_request('rows');
+		$rows = get_request_var('rows');
 	}
 
 	print '<form id="form_report" action="' . get_reports_page() . '">';
@@ -1369,16 +1369,16 @@ function reports() {
 						Search
 					</td>
 					<td>
-						<input type='text' id='filter' size='20' value='" . get_request_var_request('filter') . "'>
+						<input type='text' id='filter' size='20' value='" . get_request_var('filter') . "'>
 					</td>
 					<td>
 						Status
 					</td>
 					<td>
 						<select id='status' onChange='applyFilter(document.report)'>
-							<option value='-1'" . (get_request_var_request('status') == '-1' ? 'selected':'') . ">Any</option>
-							<option value='-2'" . (get_request_var_request('status') == '-2' ? 'selected':'') . ">Enabled</option>
-							<option value='-3'" . (get_request_var_request('status') == '-3' ? 'selected':'') . ">Disabled</option>
+							<option value='-1'" . (get_request_var('status') == '-1' ? 'selected':'') . ">Any</option>
+							<option value='-2'" . (get_request_var('status') == '-2' ? 'selected':'') . ">Enabled</option>
+							<option value='-3'" . (get_request_var('status') == '-3' ? 'selected':'') . ">Disabled</option>
 						</select>
 					</td>
 					<td>
@@ -1386,11 +1386,11 @@ function reports() {
 					</td>
 					<td>
 						<select id='rows' onChange='applyFilter(document.report)'>
-							<option value='-1'" . (get_request_var_request('rows') == '-1' ? 'selected':'') . '>Default</option>';
+							<option value='-1'" . (get_request_var('rows') == '-1' ? 'selected':'') . '>Default</option>';
 							if (sizeof($item_rows)) {
 							foreach ($item_rows as $key => $value) {
 								print "<option value='" . $key . "'" . 
-									(get_request_var_request('rows') == $key ? ' selected':'') . ">$value</option>\n";
+									(get_request_var('rows') == $key ? ' selected':'') . ">$value</option>\n";
 							}
 							}
 	print "				</select>
@@ -1412,17 +1412,17 @@ function reports() {
 	print "</form>\n";
 
 	/* form the 'where' clause for our main sql query */
-	if (strlen(get_request_var_request('filter'))) {
-		$sql_where = "WHERE (reports.name LIKE '%%" . get_request_var_request('filter') . "%%')";
+	if (strlen(get_request_var('filter'))) {
+		$sql_where = "WHERE (reports.name LIKE '%%" . get_request_var('filter') . "%%')";
 	}else{
 		$sql_where = '';
 	}
 
-	if (get_request_var_request('status') == '-1') {
+	if (get_request_var('status') == '-1') {
 		/* Show all items */
-	}elseif (get_request_var_request('status') == '-2') {
+	}elseif (get_request_var('status') == '-2') {
 		$sql_where .= (strlen($sql_where) ? " AND reports.enabled='on'" : " WHERE reports.enabled='on'");
-	}elseif (get_request_var_request('status') == '-3') {
+	}elseif (get_request_var('status') == '-3') {
 		$sql_where .= (strlen($sql_where) ? " AND reports.enabled=''" : " WHERE reports.enabled=''");
 	}
 
@@ -1448,11 +1448,11 @@ function reports() {
 		$sql_join
 		$sql_where
 		ORDER BY " .
-		get_request_var_request('sort_column') . ' ' .
-		get_request_var_request('sort_direction') .
-		' LIMIT ' . ($rows*(get_request_var_request('page')-1)) . ',' . $rows);
+		get_request_var('sort_column') . ' ' .
+		get_request_var('sort_direction') .
+		' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows);
 
-	$nav = html_nav_bar(get_reports_page() . 'filter=' . get_request_var_request('filter') . '&host_id=' . get_request_var_request('host_id'), MAX_DISPLAY_PAGES, get_request_var_request('page'), $rows, $total_rows, 10, 'Reports', 'page', 'main');
+	$nav = html_nav_bar(get_reports_page() . 'filter=' . get_request_var('filter') . '&host_id=' . get_request_var('host_id'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 10, 'Reports', 'page', 'main');
 
 	/* print checkbox form for validation */
 	print "<form name='chk' method='post' action='". get_reports_page() . "'>\n";
@@ -1486,7 +1486,7 @@ function reports() {
 		);
 	}
 
-	html_header_sort_checkbox($display_text, get_request_var_request('sort_column'), get_request_var_request('sort_direction'), false);
+	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
 	$i = 0;
 	if (sizeof($reports_list) > 0) {
@@ -1495,7 +1495,7 @@ function reports() {
 		foreach ($reports_list as $report) {
 			form_alternate_row('line' . $report['id'], true);
 
-			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars(get_reports_page() . '?action=edit&tab=details&id=' . $report['id'] . "&page=1") . "'>" . (get_request_var_request('filter') != '' ? preg_replace('/(' . preg_quote(get_request_var_request('filter')) . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($report['name'])) : htmlspecialchars($report['name'])) . '</a>', $report['id']);
+			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars(get_reports_page() . '?action=edit&tab=details&id=' . $report['id'] . "&page=1") . "'>" . (get_request_var('filter') != '' ? preg_replace('/(' . preg_quote(get_request_var('filter')) . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($report['name'])) : htmlspecialchars($report['name'])) . '</a>', $report['id']);
 			if (is_reports_admin()) form_selectable_cell($report['full_name'], $report['id']);
 			$interval = 'Every ' . $report['count'] . ' ' . $reports_interval[$report['intrvl']];
 

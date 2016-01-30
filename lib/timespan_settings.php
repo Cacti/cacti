@@ -23,8 +23,8 @@
 */
 
 /* ================= input validation ================= */
-input_validate_input_number(get_request_var_request('predefined_timespan'));
-input_validate_input_number(get_request_var_request('predefined_timeshift'));
+input_validate_input_number(get_request_var('predefined_timespan'));
+input_validate_input_number(get_request_var('predefined_timeshift'));
 /* ==================================================== */
 
 /* clean up date1 string */

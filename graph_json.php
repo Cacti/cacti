@@ -36,19 +36,19 @@ $debug = false;
 
 if ($debug == false) {
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_request('graph_start'));
-	input_validate_input_number(get_request_var_request('graph_end'));
-	input_validate_input_number(get_request_var_request('graph_height'));
-	input_validate_input_number(get_request_var_request('graph_width'));
-	input_validate_input_number(get_request_var_request('local_graph_id'));
-	input_validate_input_number(get_request_var_request('rra_id'));
+	input_validate_input_number(get_request_var('graph_start'));
+	input_validate_input_number(get_request_var('graph_end'));
+	input_validate_input_number(get_request_var('graph_height'));
+	input_validate_input_number(get_request_var('graph_width'));
+	input_validate_input_number(get_request_var('local_graph_id'));
+	input_validate_input_number(get_request_var('rra_id'));
 	/* ==================================================== */
 
-	if (!is_numeric(get_request_var_request('local_graph_id'))) {
+	if (!is_numeric(get_request_var('local_graph_id'))) {
 		die_html_input_error();
 	}
 
-	if (!is_numeric(get_request_var_request('local_graph_id'))) {
+	if (!is_numeric(get_request_var('local_graph_id'))) {
 		die_html_input_error();
 	}
 }else{

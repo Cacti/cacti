@@ -256,25 +256,25 @@ function form_automation_snmp_actions() {
  -------------------------- */
 function automation_snmp_item_movedown() {
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_request('item_id'));
-	input_validate_input_number(get_request_var_request('id'));
+	input_validate_input_number(get_request_var('item_id'));
+	input_validate_input_number(get_request_var('id'));
 	/* ==================================================== */
-	move_item_down('automation_snmp_items', get_request_var_request('item_id'), 'snmp_id=' . get_request_var_request('id'));
+	move_item_down('automation_snmp_items', get_request_var('item_id'), 'snmp_id=' . get_request_var('id'));
 }
 
 function automation_snmp_item_moveup() {
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_request('item_id'));
-	input_validate_input_number(get_request_var_request('id'));
+	input_validate_input_number(get_request_var('item_id'));
+	input_validate_input_number(get_request_var('id'));
 	/* ==================================================== */
-	move_item_up('automation_snmp_items', get_request_var_request('item_id'), 'snmp_id=' . get_request_var_request('id'));
+	move_item_up('automation_snmp_items', get_request_var('item_id'), 'snmp_id=' . get_request_var('id'));
 }
 
 function automation_snmp_item_remove() {
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_request('item_id'));
+	input_validate_input_number(get_request_var('item_id'));
 	/* ==================================================== */
-	db_execute('delete from automation_snmp_items where id=' . get_request_var_request('item_id'));
+	db_execute('delete from automation_snmp_items where id=' . get_request_var('item_id'));
 }
 
 function automation_snmp_item_edit() {
@@ -283,27 +283,27 @@ function automation_snmp_item_edit() {
 	#include_once($config['base_path'].'/plugins/mactrack/lib/automation_functions.php');
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_request('id'));
-	input_validate_input_number(get_request_var_request('item_id'));
+	input_validate_input_number(get_request_var('id'));
+	input_validate_input_number(get_request_var('item_id'));
 	/* ==================================================== */
 
 	# fetch the current mactrack snmp record
 	$snmp_option = db_fetch_row('SELECT * 
 		FROM automation_snmp 
-		WHERE id=' . get_request_var_request('id'));
+		WHERE id=' . get_request_var('id'));
 
 	# if an existing item was requested, fetch data for it
-	if (get_request_var_request('item_id', '') !== '') {
+	if (get_request_var('item_id', '') !== '') {
 		$automation_snmp_item = db_fetch_row('SELECT * 
 			FROM automation_snmp_items 
-			WHERE id=' . get_request_var_request('item_id'));
+			WHERE id=' . get_request_var('item_id'));
 
 		$header_label = '[edit: ' . $snmp_option['name'] . ']';
 	}else{
 		$header_label = '[new]';
 		$automation_snmp_item = array();
-		$automation_snmp_item['snmp_id'] = get_request_var_request('id');
-		$automation_snmp_item['sequence'] = get_sequence('', 'sequence', 'automation_snmp_items', 'snmp_id=' . get_request_var_request('id'));
+		$automation_snmp_item['snmp_id'] = get_request_var('id');
+		$automation_snmp_item['sequence'] = get_sequence('', 'sequence', 'automation_snmp_items', 'snmp_id=' . get_request_var('id'));
 	}
 
 	form_start('automation_snmp.php', 'automation_item_edit');
@@ -441,7 +441,7 @@ function automation_snmp_item_edit() {
 	form_hidden_box('id', (isset($automation_snmp_item['snmp_id']) ? $automation_snmp_item['snmp_id'] : '0'), '');
 	form_hidden_box('save_component_automation_snmp_item', '1', '');
 
-	form_save_button(htmlspecialchars('automation_snmp.php?action=edit&id=' . get_request_var_request('id')));
+	form_save_button(htmlspecialchars('automation_snmp.php?action=edit&id=' . get_request_var('id')));
 
 	?>
 	<script type='text/javascript'>
@@ -508,13 +508,13 @@ function automation_snmp_edit() {
 	#include_once($config["base_path"]."/plugins/mactrack/lib/automation_functions.php");
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_request('id'));
-	input_validate_input_number(get_request_var_request('page'));
+	input_validate_input_number(get_request_var('id'));
+	input_validate_input_number(get_request_var('page'));
 	/* ==================================================== */
 
 	/* clean up rule name */
 	if (isset($_REQUEST['name'])) {
-		$_REQUEST['name'] = sanitize_search_string(get_request_var_request('name'));
+		$_REQUEST['name'] = sanitize_search_string(get_request_var('name'));
 	}
 
 	/* remember these search fields in session vars so we don't have to keep passing them around */
@@ -657,23 +657,23 @@ function automation_snmp() {
 	global $config, $item_rows, $automation_snmp_actions;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_request('page'));
-	input_validate_input_number(get_request_var_request('rows'));
+	input_validate_input_number(get_request_var('page'));
+	input_validate_input_number(get_request_var('rows'));
 	/* ==================================================== */
 
 	/* clean up search string */
 	if (isset($_REQUEST['filter'])) {
-		$_REQUEST['filter'] = sanitize_search_string(get_request_var_request('filter'));
+		$_REQUEST['filter'] = sanitize_search_string(get_request_var('filter'));
 	}
 
 	/* clean up sort_column string */
 	if (isset($_REQUEST['sort_column'])) {
-		$_REQUEST['sort_column'] = sanitize_search_string(get_request_var_request('sort_column'));
+		$_REQUEST['sort_column'] = sanitize_search_string(get_request_var('sort_column'));
 	}
 
 	/* clean up sort_direction string */
 	if (isset($_REQUEST['sort_direction'])) {
-		$_REQUEST['sort_direction'] = sanitize_search_string(get_request_var_request('sort_direction'));
+		$_REQUEST['sort_direction'] = sanitize_search_string(get_request_var('sort_direction'));
 	}
 
 	/* if the user pushed the 'clear' button */
@@ -724,7 +724,7 @@ function automation_snmp() {
 						Search
 					</td>
 					<td>
-						<input type='text' id='filter' size='25' value='<?php print get_request_var_request('filter');?>'>
+						<input type='text' id='filter' size='25' value='<?php print get_request_var('filter');?>'>
 					</td>
 					<td>
 						SNMP Rules
@@ -734,7 +734,7 @@ function automation_snmp() {
                             <?php
                             if (sizeof($item_rows)) {
                                 foreach ($item_rows as $key => $value) {
-                                    print "<option value='" . $key . "'"; if (get_request_var_request('rows') == $key) { print ' selected'; } print '>' . htmlspecialchars($value) . "</option>\n";
+                                    print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . htmlspecialchars($value) . "</option>\n";
                                 }
                             }
                             ?>
@@ -750,7 +750,7 @@ function automation_snmp() {
 			</table>
 		</td>
 		<td>
-			<input type='hidden' name='page' value='<?php print get_request_var_request('page');?>'>
+			<input type='hidden' name='page' value='<?php print get_request_var('page');?>'>
 		</td>
 	</tr>
 	<script type='text/javascript'>
@@ -762,8 +762,8 @@ function automation_snmp() {
 	form_end();
 
 	/* form the 'where' clause for our main sql query */
-	if (strlen(get_request_var_request('filter'))) {
-		$sql_where = "WHERE (automation_snmp.name LIKE '%" . get_request_var_request('filter') . "%')";
+	if (strlen(get_request_var('filter'))) {
+		$sql_where = "WHERE (automation_snmp.name LIKE '%" . get_request_var('filter') . "%')";
 	}else{
 		$sql_where = '';
 	}
@@ -792,10 +792,10 @@ function automation_snmp() {
 		ON asnmp.id=asnmpi.snmp_id
 		GROUP BY asnmp.id
 		$sql_where
-		ORDER BY " . get_request_var_request('sort_column') . ' ' . get_request_var_request('sort_direction') . '
-		LIMIT ' . (get_request_var_request('rows')*(get_request_var_request('page')-1)) . ',' . get_request_var_request('rows'));
+		ORDER BY " . get_request_var('sort_column') . ' ' . get_request_var('sort_direction') . '
+		LIMIT ' . (get_request_var('rows')*(get_request_var('page')-1)) . ',' . get_request_var('rows'));
 
-	$nav = html_nav_bar('automation_snmp.php?filter=' . $_REQUEST['filter'], MAX_DISPLAY_PAGES, get_request_var_request('page'), get_request_var_request('rows'), $total_rows, 12, 'SNMP Option Sets');
+	$nav = html_nav_bar('automation_snmp.php?filter=' . $_REQUEST['filter'], MAX_DISPLAY_PAGES, get_request_var('page'), get_request_var('rows'), $total_rows, 12, 'SNMP Option Sets');
 
 	print $nav;
 
@@ -808,13 +808,13 @@ function automation_snmp() {
 		'v3entries' => array('display' => 'V3 Entries', 'align' => 'right', 'sort' => 'DESC')
 	);
 
-	html_header_sort_checkbox($display_text, get_request_var_request('sort_column'), get_request_var_request('sort_direction'));
+	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'));
 
 	if (sizeof($snmp_groups) > 0) {
 		foreach ($snmp_groups as $snmp_group) {
 			form_alternate_row('line' . $snmp_group['id'], true);
 
-			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars('automation_snmp.php?action=edit&id=' . $snmp_group['id'] . '&page=1') . "'>" . ((get_request_var_request('filter') != '') ? preg_replace('/(' . preg_quote(get_request_var_request('filter')) . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($snmp_group['name'])) : htmlspecialchars($snmp_group['name'])) . '</a>', $snmp_group['id']);
+			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars('automation_snmp.php?action=edit&id=' . $snmp_group['id'] . '&page=1') . "'>" . ((get_request_var('filter') != '') ? preg_replace('/(' . preg_quote(get_request_var('filter')) . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($snmp_group['name'])) : htmlspecialchars($snmp_group['name'])) . '</a>', $snmp_group['id']);
 			form_selectable_cell($snmp_group['networks'], $snmp_group['id'], '', 'text-align:right;');
 			form_selectable_cell($snmp_group['totals'], $snmp_group['id'], '', 'text-align:right;');
 			form_selectable_cell($snmp_group['v1entries'], $snmp_group['id'], '', 'text-align:right;');

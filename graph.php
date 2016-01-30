@@ -31,11 +31,11 @@ include('./include/auth.php');
 include_once('./lib/rrd.php');
 
 /* ================= input validation ================= */
-input_validate_input_regex(get_request_var_request('rra_id'), '^([0-9]+|all)$');
-input_validate_input_number(get_request_var_request('local_graph_id'));
-input_validate_input_number(get_request_var_request('graph_end'));
-input_validate_input_number(get_request_var_request('graph_start'));
-input_validate_input_regex(get_request_var_request('view_type'), '^([a-zA-Z0-9]+)$');
+input_validate_input_regex(get_request_var('rra_id'), '^([0-9]+|all)$');
+input_validate_input_number(get_request_var('local_graph_id'));
+input_validate_input_number(get_request_var('graph_end'));
+input_validate_input_number(get_request_var('graph_start'));
+input_validate_input_regex(get_request_var('view_type'), '^([a-zA-Z0-9]+)$');
 /* ==================================================== */
 
 api_plugin_hook_function('graph');
@@ -54,7 +54,7 @@ if ($_REQUEST['rra_id'] == 'all') {
 }
 
 /* make sure the graph requested exists (sanity) */
-if (!(db_fetch_cell_prepared('SELECT local_graph_id FROM graph_templates_graph WHERE local_graph_id = ?', array(get_request_var_request('local_graph_id'))))) {
+if (!(db_fetch_cell_prepared('SELECT local_graph_id FROM graph_templates_graph WHERE local_graph_id = ?', array(get_request_var('local_graph_id'))))) {
 	print "<strong><font class='txtErrorTextBox'>GRAPH DOES NOT EXIST</font></strong>"; 
 	exit;
 }
@@ -206,7 +206,7 @@ case 'zoom':
 		WHERE graph_templates_item.task_item_id = data_template_rrd.id
 		AND data_template_rrd.local_data_id = data_template_data.local_data_id
 		AND graph_templates_item.local_graph_id = ?
-		LIMIT 0,1', array(get_request_var_request('local_graph_id')));
+		LIMIT 0,1', array(get_request_var('local_graph_id')));
 	$ds_step = empty($ds_step) ? 300 : $ds_step;
 	$seconds_between_graph_updates = ($ds_step * $rra['steps']);
 
@@ -233,7 +233,7 @@ case 'zoom':
 		$graph_start--;
 	}
 
-	$graph = db_fetch_row_prepared('SELECT * FROM graph_templates_graph WHERE local_graph_id = ?', array(get_request_var_request('local_graph_id')));
+	$graph = db_fetch_row_prepared('SELECT * FROM graph_templates_graph WHERE local_graph_id = ?', array(get_request_var('local_graph_id')));
 
 	$graph_height = $graph['height'];
 	$graph_width  = $graph['width'];
@@ -386,19 +386,19 @@ case 'properties':
 
 	/* override: graph start time (unix time) */
 	if (!empty($_REQUEST['graph_start'])) {
-		$graph_data_array['graph_start'] = get_request_var_request('graph_start');
+		$graph_data_array['graph_start'] = get_request_var('graph_start');
 	}
 
 	/* override: graph end time (unix time) */
 	if (!empty($_REQUEST['graph_end'])) {
-		$graph_data_array['graph_end'] = get_request_var_request('graph_end');
+		$graph_data_array['graph_end'] = get_request_var('graph_end');
 	}
 
 	print "<table align='center' width='100%' class='cactiTable'<tr><td>\n";
 	print "<table class='cactiTable' width='100%'>\n";
 	print "<tr class='tableHeader'><td colspan='3' class='linkOverDark' style='font-weight:bold;'>RRDtool Graph Syntax</td></tr>\n";
 	print "<tr><td><pre>\n";
-	print trim(@rrdtool_function_graph(get_request_var_request('local_graph_id'), get_request_var_request('rra_id'), $graph_data_array));
+	print trim(@rrdtool_function_graph(get_request_var('local_graph_id'), get_request_var('rra_id'), $graph_data_array));
 	print "</pre></td></tr>\n";
 	print "</table></td></tr></table>\n";
 

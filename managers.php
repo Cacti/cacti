@@ -69,23 +69,23 @@ function manager(){
 	global $manager_actions, $item_rows;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_request('page'));
-	input_validate_input_number(get_request_var_request('rows'));
+	input_validate_input_number(get_request_var('page'));
+	input_validate_input_number(get_request_var('rows'));
 	/* ==================================================== */
 
 	/* clean up search string */
 	if (isset($_REQUEST['filter'])) {
-		$_REQUEST['filter'] = sanitize_search_string(get_request_var_request('filter'));
+		$_REQUEST['filter'] = sanitize_search_string(get_request_var('filter'));
 	}
 
 	/* clean up sort_column */
 	if (isset($_REQUEST['sort_column'])) {
-		$_REQUEST['sort_column'] = sanitize_search_string(get_request_var_request('sort_column'));
+		$_REQUEST['sort_column'] = sanitize_search_string(get_request_var('sort_column'));
 	}
 
 	/* clean up sort_direction string */
 	if (isset($_REQUEST['sort_direction'])) {
-		$_REQUEST['sort_direction'] = sanitize_search_string(get_request_var_request('sort_direction'));
+		$_REQUEST['sort_direction'] = sanitize_search_string(get_request_var('sort_direction'));
 	}
 
 	/* if the user pushed the 'clear' button */
@@ -156,7 +156,7 @@ function manager(){
 							Search
 						</td>
 						<td>
-							<input id='filter' type='text' name='filter' size='25' value='<?php print htmlspecialchars(get_request_var_request('filter'));?>' onChange='applyFilter()'>
+							<input id='filter' type='text' name='filter' size='25' value='<?php print htmlspecialchars(get_request_var('filter'));?>' onChange='applyFilter()'>
 						</td>
 						<td>
 							Receivers
@@ -166,7 +166,7 @@ function manager(){
 								<?php
 								if (sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var_request('rows') == $key) { print ' selected'; } print '>' . htmlspecialchars($value) . "</option>\n";
+									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . htmlspecialchars($value) . "</option>\n";
 								}
 								}
 								?>
@@ -188,8 +188,8 @@ function manager(){
 	html_end_box();
 
 	/* form the 'where' clause for our main sql query */
-	$sql_where = "WHERE (snmpagent_managers.hostname LIKE '%%" . get_request_var_request('filter') . "%%'
-						OR snmpagent_managers.description LIKE '%%" . get_request_var_request('filter') . "%%')";
+	$sql_where = "WHERE (snmpagent_managers.hostname LIKE '%%" . get_request_var('filter') . "%%'
+						OR snmpagent_managers.description LIKE '%%" . get_request_var('filter') . "%%')";
 
 	html_start_box('', '100%', '', '3', 'center', '');
 
@@ -219,11 +219,11 @@ function manager(){
 		) AS snmpagent_notifications_log
 		ON snmpagent_notifications_log.manager_id = snmpagent_managers.id
 		$sql_where
-		ORDER BY " . get_request_var_request('sort_column') . ' ' . get_request_var_request('sort_direction') .  ' 
-		LIMIT ' . (get_request_var_request('rows')*(get_request_var_request('page')-1)) . ',' . get_request_var_request('rows'));
+		ORDER BY " . get_request_var('sort_column') . ' ' . get_request_var('sort_direction') .  ' 
+		LIMIT ' . (get_request_var('rows')*(get_request_var('page')-1)) . ',' . get_request_var('rows'));
 
 	/* generate page list */
-	$nav = html_nav_bar('managers.php?filter=' . get_request_var_request('filter'), MAX_DISPLAY_PAGES, get_request_var_request('page'), get_request_var_request('rows'), $total_rows, 11, 'Receivers', 'page', 'main');
+	$nav = html_nav_bar('managers.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), get_request_var('rows'), $total_rows, 11, 'Receivers', 'page', 'main');
 	print $nav;
 
 	$display_text = array(
@@ -237,13 +237,13 @@ function manager(){
 
 	form_start('managers.php', 'chk');
 
-	html_header_sort_checkbox($display_text, get_request_var_request('sort_column'), get_request_var_request('sort_direction'), false);
+	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
 	$i = 0;
 	if (sizeof($managers) > 0) {
 		foreach ($managers as $item) {
-			$description = (strlen(get_request_var_request('filter')) ? (preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($item['description']))) : htmlspecialchars($item['description']));
-			$hostname = (strlen(get_request_var_request('filter')) ? (preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($item['hostname']))): htmlspecialchars($item['hostname']));
+			$description = (strlen(get_request_var('filter')) ? (preg_replace('/(' . preg_quote(get_request_var('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($item['description']))) : htmlspecialchars($item['description']));
+			$hostname = (strlen(get_request_var('filter')) ? (preg_replace('/(' . preg_quote(get_request_var('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($item['hostname']))): htmlspecialchars($item['hostname']));
 			form_alternate_row('line' . $item['id'], false);
 			form_selectable_cell( '<a class="linkEditMain" href="managers.php?action=edit&id=' . $item['id'] . '">' . $description . '</a>', $item['id']);
 			form_selectable_cell( $item['id'], $item['id']);
@@ -271,7 +271,7 @@ function manager_edit() {
 		$tabs_manager_edit, $fields_manager_edit, $manager_notification_actions;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_request('id'));
+	input_validate_input_number(get_request_var('id'));
 	/* ==================================================== */
 
 	if (!isset($_REQUEST['tab'])) $_REQUEST['tab'] = 'general';
@@ -294,7 +294,7 @@ function manager_edit() {
 		}else {
 				print "<li class='subTab'><a " . (($tab_short_name == $_REQUEST['tab']) ? "class='selected'" : '') .
 					" href='" . htmlspecialchars($config['url_path'] .
-					'managers.php?action=edit&id=' . get_request_var_request('id') .
+					'managers.php?action=edit&id=' . get_request_var('id') .
 					'&tab=' . $tab_short_name) .
 					"'>$tabs_manager_edit[$tab_short_name]</a></li>\n";
 		}
@@ -412,16 +412,16 @@ function manager_notifications($id){
 	if(!$id | !is_numeric($id)) {
 		die_html_input_error();
 	}
-	if(!in_array(get_request_var_request('mib'), $registered_mibs) && get_request_var_request('mib') != '-1' && get_request_var_request('mib') != '') {
+	if(!in_array(get_request_var('mib'), $registered_mibs) && get_request_var('mib') != '-1' && get_request_var('mib') != '') {
 		die_html_input_error();
 	}
-	input_validate_input_number(get_request_var_request('page'));
+	input_validate_input_number(get_request_var('page'));
 
 	/* ==================================================== */
 
 	/* clean up search filter */
 	if (isset($_REQUEST['filter'])) {
-		$_REQUEST['filter'] = sanitize_search_string(get_request_var_request('filter'));
+		$_REQUEST['filter'] = sanitize_search_string(get_request_var('filter'));
 	}
 
 	/* if the user pushed the 'clear' button */
@@ -435,7 +435,7 @@ function manager_notifications($id){
 	}
 
 	/* reset the current page if the user changed the mib filter*/
-	if(isset($_SESSION['sess_snmp_cache_mib']) && get_request_var_request('mib') != $_SESSION['sess_snmp_cache_mib']) {
+	if(isset($_SESSION['sess_snmp_cache_mib']) && get_request_var('mib') != $_SESSION['sess_snmp_cache_mib']) {
 		kill_session_var('sess_snmp_cache_current_page');
 		unset($_REQUEST['page']);
 	}
@@ -491,11 +491,11 @@ function manager_notifications($id){
 						</td>
 						<td>
 							<select id='mib' name='mib' onChange='applyFilter()'>
-								<option value='-1'<?php if (get_request_var_request('mib') == '-1') {?> selected<?php }?>>Any</option>
+								<option value='-1'<?php if (get_request_var('mib') == '-1') {?> selected<?php }?>>Any</option>
 								<?php
 								if (sizeof($mibs) > 0) {
 								foreach ($mibs as $mib) {
-									print "<option value='" . $mib['mib'] . "'"; if (get_request_var_request('mib') == $mib['mib']) { print ' selected'; } print '>' . $mib['mib'] . "</option>\n";
+									print "<option value='" . $mib['mib'] . "'"; if (get_request_var('mib') == $mib['mib']) { print ' selected'; } print '>' . $mib['mib'] . "</option>\n";
 								}
 								}
 								?>
@@ -505,7 +505,7 @@ function manager_notifications($id){
 							Search
 						</td>
 						<td>
-							<input id='filter' type='text' size='25' value='<?php print htmlspecialchars(get_request_var_request('filter'));?>' onChange='applyFilter()'>
+							<input id='filter' type='text' size='25' value='<?php print htmlspecialchars(get_request_var('filter'));?>' onChange='applyFilter()'>
 						</td>
 						<td>
 							Receivers
@@ -515,7 +515,7 @@ function manager_notifications($id){
 								<?php
 								if (sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var_request('rows') == $key) { print ' selected'; } print '>' . htmlspecialchars($value) . "</option>\n";
+									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . htmlspecialchars($value) . "</option>\n";
 								}
 								}
 								?>
@@ -540,16 +540,16 @@ function manager_notifications($id){
 	$sql_where = " AND `kind`='Notification'";
 
 	/* filter by host */
-	if (get_request_var_request('mib') == '-1') {
+	if (get_request_var('mib') == '-1') {
 		/* Show all items */
 	}elseif (!empty($_REQUEST['mib'])) {
-		$sql_where .= " AND snmpagent_cache.mib='" . get_request_var_request('mib') . "'";
+		$sql_where .= " AND snmpagent_cache.mib='" . get_request_var('mib') . "'";
 	}
 	/* filter by search string */
-	if (get_request_var_request('filter') != '') {
-		$sql_where .= " AND (`oid` LIKE '%%" . get_request_var_request('filter') . "%%'
-			OR `name` LIKE '%%" . get_request_var_request('filter') . "%%'
-			OR `mib` LIKE '%%" . get_request_var_request('filter') . "%%')";
+	if (get_request_var('filter') != '') {
+		$sql_where .= " AND (`oid` LIKE '%%" . get_request_var('filter') . "%%'
+			OR `name` LIKE '%%" . get_request_var('filter') . "%%'
+			OR `mib` LIKE '%%" . get_request_var('filter') . "%%')";
 	}
 	$sql_where .= ' ORDER by `oid`';
 
@@ -562,7 +562,7 @@ function manager_notifications($id){
 	/* FIXME: Change SQL Queries to not use WHERE 1 */
 	$total_rows = db_fetch_cell("SELECT COUNT(*) FROM snmpagent_cache WHERE 1 $sql_where");
 
-	$snmp_cache_sql = "SELECT * FROM snmpagent_cache WHERE 1 $sql_where LIMIT " . ($rows*(get_request_var_request('page')-1)) . ',' . $rows;
+	$snmp_cache_sql = "SELECT * FROM snmpagent_cache WHERE 1 $sql_where LIMIT " . ($rows*(get_request_var('page')-1)) . ',' . $rows;
 	$snmp_cache = db_fetch_assoc($snmp_cache_sql);
 
 	$registered_notifications = db_fetch_assoc_prepared('SELECT notification, mib FROM snmpagent_managers_notifications WHERE manager_id = ?', array($id));
@@ -574,7 +574,7 @@ function manager_notifications($id){
 	}
 
 	/* generate page list */
-	$nav = html_nav_bar('managers.php?action=edit&id=' . $id . '&tab=notifications&mib=' . get_request_var_request('mib') . '&filter=' . get_request_var_request('filter'), MAX_DISPLAY_PAGES, get_request_var_request('page'), $rows, $total_rows, 11, '', 'page', 'main');
+	$nav = html_nav_bar('managers.php?action=edit&id=' . $id . '&tab=notifications&mib=' . get_request_var('mib') . '&filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 11, '', 'page', 'main');
 	print $nav;
 
 	html_header_checkbox( array('Name', 'OID', 'MIB', 'Kind', 'Max-Access', 'Monitored'), true, 'managers.php?action=edit&tab=notifications&id=' . $id);
@@ -582,9 +582,9 @@ function manager_notifications($id){
 	if (sizeof($snmp_cache) > 0) {
 		foreach ($snmp_cache as $item) {
 			$row_id = $item['mib'] . '__' . $item['name'];
-			$oid = (strlen(get_request_var_request('filter')) ? (preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($item['oid']))) : htmlspecialchars($item['oid']));
-			$name = (strlen(get_request_var_request('filter')) ? (preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($item['name']))): htmlspecialchars($item['name']));
-			$mib = (strlen(get_request_var_request('filter')) ? (preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($item['mib']))): htmlspecialchars($item['mib']));
+			$oid = (strlen(get_request_var('filter')) ? (preg_replace('/(' . preg_quote(get_request_var('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($item['oid']))) : htmlspecialchars($item['oid']));
+			$name = (strlen(get_request_var('filter')) ? (preg_replace('/(' . preg_quote(get_request_var('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($item['name']))): htmlspecialchars($item['name']));
+			$mib = (strlen(get_request_var('filter')) ? (preg_replace('/(' . preg_quote(get_request_var('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($item['mib']))): htmlspecialchars($item['mib']));
 
 			form_alternate_row('line' . $row_id, false);
 			if($item['description']) {
@@ -632,15 +632,15 @@ function manager_logs($id) {
 	if(!$id | !is_numeric($id)) {
 		die_html_input_error();
 	}
-	if(!in_array(get_request_var_request('severity'), array_keys($severity_levels)) && get_request_var_request('severity') != '-1' && get_request_var_request('severity') != '') {
+	if(!in_array(get_request_var('severity'), array_keys($severity_levels)) && get_request_var('severity') != '-1' && get_request_var('severity') != '') {
 		die_html_input_error();
 	}
-	input_validate_input_number(get_request_var_request('page'));
+	input_validate_input_number(get_request_var('page'));
 	/* ==================================================== */
 
 	/* clean up search filter */
 	if (isset($_REQUEST['filter'])) {
-		$_REQUEST['filter'] = sanitize_search_string(get_request_var_request('filter'));
+		$_REQUEST['filter'] = sanitize_search_string(get_request_var('filter'));
 	}
 	if (isset($_REQUEST['purge_snmpagent__manager_logs_x'])) {
 		db_execute_prepared('DELETE FROM snmpagent_notifications_log WHERE manager_id = ?', array($id));
@@ -659,7 +659,7 @@ function manager_logs($id) {
 	}
 
 	/* reset the current page if the user changed the mib filter*/
-	if(isset($_SESSION['sess_snmp_logs_severity']) && get_request_var_request('severity') != $_SESSION['sess_snmp_logs_severity']) {
+	if(isset($_SESSION['sess_snmp_logs_severity']) && get_request_var('severity') != $_SESSION['sess_snmp_logs_severity']) {
 		kill_session_var('sess_snmp_cache_current_page');
 		unset($_REQUEST['page']);
 	}
@@ -690,17 +690,17 @@ function manager_logs($id) {
 							Search
 						</td>
 						<td>
-							<input type='text' id='filter' size='25' value='<?php print htmlspecialchars(get_request_var_request('filter'));?>'>
+							<input type='text' id='filter' size='25' value='<?php print htmlspecialchars(get_request_var('filter'));?>'>
 						</td>
 						<td>
 							Severity
 						</td>
 						<td>
 							<select id='severity' onChange='applyFilter()'>
-								<option value='-1'<?php if (get_request_var_request('severity') == '-1') {?> selected<?php }?>>Any</option>
+								<option value='-1'<?php if (get_request_var('severity') == '-1') {?> selected<?php }?>>Any</option>
 								<?php
 								foreach ($severity_levels as $level => $name) {
-									print "<option value='" . $level . "'"; if (get_request_var_request('severity') == $level) { print ' selected'; } print '>' . $name . "</option>\n";
+									print "<option value='" . $level . "'"; if (get_request_var('severity') == $level) { print ' selected'; } print '>' . $name . "</option>\n";
 								}
 								?>
 							</select>
@@ -730,15 +730,15 @@ function manager_logs($id) {
 	$sql_where = " snmpagent_notifications_log.manager_id='" . $id . "'";
 
 	/* filter by severity */
-	if (get_request_var_request('severity') == '-1') {
+	if (get_request_var('severity') == '-1') {
 		/* Show all items */
 	}elseif (!empty($_REQUEST['severity'])) {
-		$sql_where .= " AND snmpagent_notifications_log.severity='" . get_request_var_request('severity') . "'";
+		$sql_where .= " AND snmpagent_notifications_log.severity='" . get_request_var('severity') . "'";
 	}
 
 	/* filter by search string */
-	if (get_request_var_request('filter') != '') {
-		$sql_where .= " AND (`varbinds` LIKE '%%" . get_request_var_request('filter') . "%%')";
+	if (get_request_var('filter') != '') {
+		$sql_where .= " AND (`varbinds` LIKE '%%" . get_request_var('filter') . "%%')";
 	}
 	$sql_where .= ' ORDER by `id` DESC';
 	$sql_query = "SELECT snmpagent_notifications_log.*, snmpagent_cache.description 
@@ -746,7 +746,7 @@ function manager_logs($id) {
 		LEFT JOIN snmpagent_cache 
 		ON snmpagent_cache.name = snmpagent_notifications_log.notification
 		WHERE $sql_where 
-		LIMIT " . (read_config_option('num_rows_table')*(get_request_var_request('page')-1)) . ',' . read_config_option('num_rows_table');
+		LIMIT " . (read_config_option('num_rows_table')*(get_request_var('page')-1)) . ',' . read_config_option('num_rows_table');
 
 	form_start('managers.php', 'chk');
 
@@ -756,7 +756,7 @@ function manager_logs($id) {
 
 	$logs = db_fetch_assoc($sql_query);
 
-	$nav = html_nav_bar('managers.php?action=exit&id=' . $id . '&tab=logs&mib=' . get_request_var_request('mib') . '&filter=' . get_request_var_request('filter'), MAX_DISPLAY_PAGES, get_request_var_request('page'), get_request_var_request('rows'), $total_rows, 7, 'Receivers', 'page', 'main');
+	$nav = html_nav_bar('managers.php?action=exit&id=' . $id . '&tab=logs&mib=' . get_request_var('mib') . '&filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), get_request_var('rows'), $total_rows, 7, 'Receivers', 'page', 'main');
 
 	print $nav;
 
@@ -764,7 +764,7 @@ function manager_logs($id) {
 
 	if (sizeof($logs)) {
 		foreach ($logs as $item) {
-			$varbinds = (strlen(get_request_var_request('filter')) ? (preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($item['varbinds']))): htmlspecialchars($item['varbinds']));
+			$varbinds = (strlen(get_request_var('filter')) ? (preg_replace('/(' . preg_quote(get_request_var('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($item['varbinds']))): htmlspecialchars($item['varbinds']));
 			form_alternate_row('line' . $item['id'], true);
 			print "<td title='Severity Level: " . $severity_levels[ $item['severity'] ] . "' style='width:10px;background-color: " . $severity_colors[ $item['severity'] ] . ";border-top:1px solid white;border-bottom:1px solid white;'></td>";
 			print "<td class='nowrap'>" . date( 'Y/m/d H:i:s', $item['time']) . '</td>';

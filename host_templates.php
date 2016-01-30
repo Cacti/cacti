@@ -243,31 +243,31 @@ function form_actions() {
 
 function template_item_remove_gt() {
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_request('id'));
-	input_validate_input_number(get_request_var_request('host_template_id'));
+	input_validate_input_number(get_request_var('id'));
+	input_validate_input_number(get_request_var('host_template_id'));
 	/* ==================================================== */
 
-	db_execute_prepared('DELETE FROM host_template_graph WHERE graph_template_id = ? AND host_template_id = ?', array(get_request_var_request('id'), get_request_var_request('host_template_id')));
+	db_execute_prepared('DELETE FROM host_template_graph WHERE graph_template_id = ? AND host_template_id = ?', array(get_request_var('id'), get_request_var('host_template_id')));
 }
 
 function template_item_remove_dq() {
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_request('id'));
-	input_validate_input_number(get_request_var_request('host_template_id'));
+	input_validate_input_number(get_request_var('id'));
+	input_validate_input_number(get_request_var('host_template_id'));
 	/* ==================================================== */
 
-	db_execute_prepared('DELETE FROM host_template_snmp_query WHERE snmp_query_id = ? AND host_template_id = ?', array(get_request_var_request('id'), get_request_var_request('host_template_id')));
+	db_execute_prepared('DELETE FROM host_template_snmp_query WHERE snmp_query_id = ? AND host_template_id = ?', array(get_request_var('id'), get_request_var('host_template_id')));
 }
 
 function template_edit() {
 	global $fields_host_template_edit;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_request('id'));
+	input_validate_input_number(get_request_var('id'));
 	/* ==================================================== */
 
 	if (!empty($_REQUEST['id'])) {
-		$host_template = db_fetch_row_prepared('SELECT * FROM host_template WHERE id = ?', array(get_request_var_request('id')));
+		$host_template = db_fetch_row_prepared('SELECT * FROM host_template WHERE id = ?', array(get_request_var('id')));
 		$header_label = '[edit: ' . $host_template['name'] . ']';
 	}else{
 		$header_label = '[new]';
@@ -298,7 +298,7 @@ function template_edit() {
 			FROM (graph_templates,host_template_graph)
 			WHERE graph_templates.id = host_template_graph.graph_template_id
 			AND host_template_graph.host_template_id = ?
-			ORDER BY graph_templates.name', array(get_request_var_request('id')));
+			ORDER BY graph_templates.name', array(get_request_var('id')));
 
 		$i = 0;
 		if (sizeof($selected_graph_templates)) {
@@ -337,7 +337,7 @@ function template_edit() {
 								AND htg.host_template_id = ?
 								WHERE htg.host_template_id IS NULL
 								AND gt.id NOT IN (SELECT graph_template_id FROM snmp_query_graph)
-								ORDER BY gt.name', array(get_request_var_request('id'))),'name','id','','','');?>
+								ORDER BY gt.name', array(get_request_var('id'))),'name','id','','','');?>
 						</td>
 						<td>
 							<input type='button' value='Add' id='add_gt' title='Add Graph Template to Device Template'>
@@ -358,7 +358,7 @@ function template_edit() {
 			FROM (snmp_query, host_template_snmp_query)
 			WHERE snmp_query.id = host_template_snmp_query.snmp_query_id
 			AND host_template_snmp_query.host_template_id = ?
-			ORDER BY snmp_query.name', array(get_request_var_request('id')));
+			ORDER BY snmp_query.name', array(get_request_var('id')));
 
 		$i = 0;
 		if (sizeof($selected_data_queries)) {
@@ -395,7 +395,7 @@ function template_edit() {
 								FROM snmp_query LEFT JOIN host_template_snmp_query
 								ON (snmp_query.id = host_template_snmp_query.snmp_query_id AND host_template_snmp_query.host_template_id = ?)
 								WHERE host_template_snmp_query.host_template_id is null
-								ORDER BY snmp_query.name', array(get_request_var_request('id'))),'name','id','','','');?>
+								ORDER BY snmp_query.name', array(get_request_var('id'))),'name','id','','','');?>
 						</td>
 						<td>
 							<input type='button' value='Add' id='add_dq' title='Add Data Query to Device Template'>
@@ -436,28 +436,28 @@ function template() {
 	global $host_actions, $item_rows;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_request('page'));
-	input_validate_input_number(get_request_var_request('rows'));
+	input_validate_input_number(get_request_var('page'));
+	input_validate_input_number(get_request_var('rows'));
 	/* ==================================================== */
 
 	/* clean up has_hosts string */
 	if (isset($_REQUEST['has_hosts'])) {
-		$_REQUEST['has_hosts'] = sanitize_search_string(get_request_var_request('has_hosts'));
+		$_REQUEST['has_hosts'] = sanitize_search_string(get_request_var('has_hosts'));
 	}
 
 	/* clean up search string */
 	if (isset($_REQUEST['filter'])) {
-		$_REQUEST['filter'] = sanitize_search_string(get_request_var_request('filter'));
+		$_REQUEST['filter'] = sanitize_search_string(get_request_var('filter'));
 	}
 
 	/* clean up sort_column */
 	if (isset($_REQUEST['sort_column'])) {
-		$_REQUEST['sort_column'] = sanitize_search_string(get_request_var_request('sort_column'));
+		$_REQUEST['sort_column'] = sanitize_search_string(get_request_var('sort_column'));
 	}
 
 	/* clean up sort_direction string */
 	if (isset($_REQUEST['sort_direction'])) {
-		$_REQUEST['sort_direction'] = sanitize_search_string(get_request_var_request('sort_direction'));
+		$_REQUEST['sort_direction'] = sanitize_search_string(get_request_var('sort_direction'));
 	}
 
 	/* if the user pushed the 'clear' button */
@@ -508,7 +508,7 @@ function template() {
 						Search
 					</td>
 					<td>
-						<input id='filter' type='text' name='filter' size='25' value='<?php print htmlspecialchars(get_request_var_request('filter'));?>'>
+						<input id='filter' type='text' name='filter' size='25' value='<?php print htmlspecialchars(get_request_var('filter'));?>'>
 					</td>
 					<td class='nowrap'>
 						Device Templates
@@ -518,7 +518,7 @@ function template() {
 							<?php
 							if (sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var_request('rows') == $key) { print ' selected'; } print '>' . htmlspecialchars($value) . "</option>\n";
+									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . htmlspecialchars($value) . "</option>\n";
 								}
 							}
 							?>
@@ -574,7 +574,7 @@ function template() {
 
 	/* form the 'where' clause for our main sql query */
 	if (strlen($_REQUEST['filter'])) {
-		$sql_where = "WHERE (host_template.name LIKE '%%" . get_request_var_request('filter') . "%%')";
+		$sql_where = "WHERE (host_template.name LIKE '%%" . get_request_var('filter') . "%%')";
 	}else{
 		$sql_where = '';
 	}
@@ -607,10 +607,10 @@ function template() {
 		$sql_where
 		GROUP BY host_template.id
 		$sql_having
-		ORDER BY " . get_request_var_request('sort_column') . ' ' . get_request_var_request('sort_direction') .
-		' LIMIT ' . (get_request_var_request('rows')*(get_request_var_request('page')-1)) . ',' . get_request_var_request('rows'));
+		ORDER BY " . get_request_var('sort_column') . ' ' . get_request_var('sort_direction') .
+		' LIMIT ' . (get_request_var('rows')*(get_request_var('page')-1)) . ',' . get_request_var('rows'));
 
-	$nav = html_nav_bar('host_templates.php?filter=' . get_request_var_request('filter'), MAX_DISPLAY_PAGES, get_request_var_request('page'), get_request_var_request('rows'), $total_rows, 5, 'Device Templates', 'page', 'main');
+	$nav = html_nav_bar('host_templates.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), get_request_var('rows'), $total_rows, 5, 'Device Templates', 'page', 'main');
 
 	print $nav;
 
@@ -621,7 +621,7 @@ function template() {
 		'host_template.id' => array('display' => 'ID', 'align' => 'right', 'sort' => 'ASC', 'tip' => 'The internal database ID for this Device Template.  Useful when performing automation or debugging.')
 	);
 
-	html_header_sort_checkbox($display_text, get_request_var_request('sort_column'), get_request_var_request('sort_direction'), false);
+	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
 	$i = 0;
 	if (sizeof($template_list) > 0) {
@@ -633,7 +633,7 @@ function template() {
 			}
 
 			form_alternate_row('line' . $template['id'], true);
-			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars('host_templates.php?action=edit&id=' . $template['id']) . "'>" . (strlen(get_request_var_request('filter')) ? preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($template['name'])) : htmlspecialchars($template['name'])) . '</a>', $template['id'], $disabled);
+			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars('host_templates.php?action=edit&id=' . $template['id']) . "'>" . (strlen(get_request_var('filter')) ? preg_replace('/(' . preg_quote(get_request_var('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($template['name'])) : htmlspecialchars($template['name'])) . '</a>', $template['id'], $disabled);
 			form_selectable_cell($disabled ? 'No':'Yes', $template['id'], '', 'text-align:right', $disabled);
 			form_selectable_cell(number_format($template['hosts']), $template['id'], '', 'text-align:right', $disabled);
 			form_selectable_cell($template['id'], $template['id'], '', 'text-align:right', $disabled);

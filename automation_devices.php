@@ -29,7 +29,7 @@ $device_actions = array(
 );
 
 if (isset($_REQUEST['action']) && $_REQUEST['action'] == 'purge') {
-	input_validate_input_number(get_request_var_request('network'));
+	input_validate_input_number(get_request_var('network'));
 	
 	db_execute('TRUNCATE TABLE automation_devices' . ($_REQUEST['network'] > 0 ? 'WHERE network_id=' . $_REQUEST['network']:''));
 
@@ -49,44 +49,44 @@ $networks   = array_rekey(db_fetch_assoc('SELECT an.id, an.name
 	ORDER BY name'), 'id', 'name');
 
 /* ================= input validation ================= */
-input_validate_input_number(get_request_var_request('page'));
-input_validate_input_number(get_request_var_request('rows'));
+input_validate_input_number(get_request_var('page'));
+input_validate_input_number(get_request_var('rows'));
 /* ==================================================== */
 
 /* clean up status string */
 if (isset($_REQUEST['status'])) {
-	$_REQUEST['status'] = sanitize_search_string(get_request_var_request('status'));
+	$_REQUEST['status'] = sanitize_search_string(get_request_var('status'));
 }
 
 /* clean up network string */
 if (isset($_REQUEST['network'])) {
-	$_REQUEST['network'] = sanitize_search_string(get_request_var_request('network'));
+	$_REQUEST['network'] = sanitize_search_string(get_request_var('network'));
 }
 
 /* clean up snmp string */
 /* clean up snmp string */
 if (isset($_REQUEST['snmp'])) {
-	$_REQUEST['snmp'] = sanitize_search_string(get_request_var_request('snmp'));
+	$_REQUEST['snmp'] = sanitize_search_string(get_request_var('snmp'));
 }
 
 /* clean up os string */
 if (isset($_REQUEST['os'])) {
-	$_REQUEST['os'] = sanitize_search_string(get_request_var_request('os'));
+	$_REQUEST['os'] = sanitize_search_string(get_request_var('os'));
 }
 
 /* clean up filter string */
 if (isset($_REQUEST['filter'])) {
-	$_REQUEST['filter'] = sanitize_search_string(get_request_var_request('filter'));
+	$_REQUEST['filter'] = sanitize_search_string(get_request_var('filter'));
 }
 
 /* clean up sort_column */
 if (isset($_REQUEST['sort_column'])) {
-	$_REQUEST['sort_column'] = sanitize_search_string(get_request_var_request('sort_column'));
+	$_REQUEST['sort_column'] = sanitize_search_string(get_request_var('sort_column'));
 }
 
 /* clean up search string */
 if (isset($_REQUEST['sort_direction'])) {
-	$_REQUEST['sort_direction'] = sanitize_search_string(get_request_var_request('sort_direction'));
+	$_REQUEST['sort_direction'] = sanitize_search_string(get_request_var('sort_direction'));
 }
 
 /* if the user pushed the 'clear' button */
@@ -136,11 +136,11 @@ load_current_session_value('sort_column', 'sess_autom_sort_column', 'hostname');
 load_current_session_value('sort_direction', 'sess_autom_sort_direction', 'ASC');
 
 $sql_where  = '';
-$status     = get_request_var_request('status');
-$network    = get_request_var_request('network');
-$snmp       = get_request_var_request('snmp');
-$os         = get_request_var_request('os');
-$filter     = get_request_var_request('filter');
+$status     = get_request_var('status');
+$network    = get_request_var('network');
+$snmp       = get_request_var('snmp');
+$os         = get_request_var('os');
+$filter     = get_request_var('filter');
 
 if ($status == 'Down') {
 	$sql_where .= 'WHERE up=0';
@@ -205,14 +205,14 @@ $total_rows = db_fetch_cell("SELECT
 	FROM automation_devices
 	$sql_where");
 
-$page    = get_request_var_request('page');
-if (get_request_var_request('rows') == '-1') {
+$page    = get_request_var('page');
+if (get_request_var('rows') == '-1') {
 	$per_row = read_config_option('num_rows_table');
 }else{
-	$per_row = get_request_var_request('rows');
+	$per_row = get_request_var('rows');
 }
 
-$sortby  = get_request_var_request('sort_column');
+$sortby  = get_request_var('sort_column');
 if ($sortby=='ip') {
 	$sortby = 'INET_ATON(ip)';
 }
@@ -220,7 +220,7 @@ if ($sortby=='ip') {
 $sql_query = "SELECT *, FROM_UNIXTIME(time) AS mytime
 	FROM automation_devices
 	$sql_where
-	ORDER BY " . $sortby . ' ' . get_request_var_request('sort_direction') . '
+	ORDER BY " . $sortby . ' ' . get_request_var('sort_direction') . '
 	LIMIT ' . ($per_row*($page-1)) . ',' . $per_row;
 
 $result = db_fetch_assoc($sql_query);
@@ -237,18 +237,18 @@ html_start_box('<strong>Discovery Filters</strong>', '100%', $colors['header'], 
 					Search
 				</td>
 				<td>
-					<input type='text' id='filter' size='25' value='<?php print get_request_var_request('filter');?>'>
+					<input type='text' id='filter' size='25' value='<?php print get_request_var('filter');?>'>
 				</td>
 				<td>
 					Network
 				</td>
 				<td>
 					<select id='network' onChange='applyFilter()'>
-						<option value='-1' <?php if (get_request_var_request('network') == -1) {?> selected<?php }?>>Any</option>
+						<option value='-1' <?php if (get_request_var('network') == -1) {?> selected<?php }?>>Any</option>
 						<?php
 						if (sizeof($networks)) {
 						foreach ($networks as $key => $name) {
-							print "<option value='" . $key . "'"; if (get_request_var_request('network') == $key) { print ' selected'; } print '>' . $name . "</option>\n";
+							print "<option value='" . $key . "'"; if (get_request_var('network') == $key) { print ' selected'; } print '>' . $name . "</option>\n";
 						}
 						}
 						?>
@@ -258,11 +258,11 @@ html_start_box('<strong>Discovery Filters</strong>', '100%', $colors['header'], 
 				</td>
 				<td>
 					<select id='status' onChange='applyFilter()'>
-						<option value='-1' <?php if (get_request_var_request('status') == '') {?> selected<?php }?>>Any</option>
+						<option value='-1' <?php if (get_request_var('status') == '') {?> selected<?php }?>>Any</option>
 						<?php
 						if (sizeof($status_arr)) {
 						foreach ($status_arr as $st) {
-							print "<option value='" . $st . "'"; if (get_request_var_request('status') == $st) { print ' selected'; } print '>' . $st . "</option>\n";
+							print "<option value='" . $st . "'"; if (get_request_var('status') == $st) { print ' selected'; } print '>' . $st . "</option>\n";
 						}
 						}
 						?>
@@ -273,11 +273,11 @@ html_start_box('<strong>Discovery Filters</strong>', '100%', $colors['header'], 
 				</td>
 				<td>
 					<select id='os' onChange='applyFilter()'>
-						<option value='-1' <?php if (get_request_var_request('os') == '') {?> selected<?php }?>>Any</option>
+						<option value='-1' <?php if (get_request_var('os') == '') {?> selected<?php }?>>Any</option>
 						<?php
 						if (sizeof($os_arr)) {
 						foreach ($os_arr as $st) {
-							print "<option value='" . $st . "'"; if (get_request_var_request('os') == $st) { print ' selected'; } print '>' . $st . "</option>\n";
+							print "<option value='" . $st . "'"; if (get_request_var('os') == $st) { print ' selected'; } print '>' . $st . "</option>\n";
 						}
 						}
 						?>
@@ -288,11 +288,11 @@ html_start_box('<strong>Discovery Filters</strong>', '100%', $colors['header'], 
 				</td>
 				<td>
 					<select id='snmp' onChange='applyFilter()'>
-						<option value='-1' <?php if (get_request_var_request('snmp') == '') {?> selected<?php }?>>Any</option>
+						<option value='-1' <?php if (get_request_var('snmp') == '') {?> selected<?php }?>>Any</option>
 						<?php
 						if (sizeof($status_arr)) {
 						foreach ($status_arr as $st) {
-							print "<option value='" . $st . "'"; if (get_request_var_request('snmp') == $st) { print ' selected'; } print '>' . $st . "</option>\n";
+							print "<option value='" . $st . "'"; if (get_request_var('snmp') == $st) { print ' selected'; } print '>' . $st . "</option>\n";
 						}
 						}
 						?>
@@ -303,11 +303,11 @@ html_start_box('<strong>Discovery Filters</strong>', '100%', $colors['header'], 
 				</td>
 				<td>
 					<select id='rows' onChange='applyFilter()'>
-						<option value='-1' <?php if (get_request_var_request('rows') == '-1') {?> selected<?php }?>>Default</option>
+						<option value='-1' <?php if (get_request_var('rows') == '-1') {?> selected<?php }?>>Default</option>
 						<?php
 						if (sizeof($item_rows) > 0) {
 						foreach ($item_rows as $key => $value) {
-							print "<option value='" . $key . "'"; if (get_request_var_request('rows') == $key) { print ' selected'; } print '>' . $value . "</option>\n";
+							print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . $value . "</option>\n";
 						}
 						}
 						?>
@@ -381,7 +381,7 @@ form_start('automation_devices.php', 'automation_devices');
 html_start_box('', '100%', $colors['header'], '3', 'center', '');
 
 /* generate page list */
-$nav = html_nav_bar('automation_devices.php', MAX_DISPLAY_PAGES, get_request_var_request('page'), $per_row, $total_rows, 12, 'Devices', 'page', 'main');
+$nav = html_nav_bar('automation_devices.php', MAX_DISPLAY_PAGES, get_request_var('page'), $per_row, $total_rows, 12, 'Devices', 'page', 'main');
 
 print $nav;
 
@@ -398,7 +398,7 @@ $display_text = array(
 	'up' => array('display' => 'Status', 'align' => 'right', 'sort' => 'ASC'),
 	'mytime' => array('display' => 'Last Check', 'align' => 'right', 'sort' => 'DESC'));
 
-html_header_sort_checkbox($display_text, get_request_var_request('sort_column'), get_request_var_request('sort_direction'), false);
+html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
 $snmp_version        = read_config_option('snmp_ver');
 $snmp_port           = read_config_option('snmp_port');
@@ -427,8 +427,8 @@ if (sizeof($result)) {
 			$host['hostname'] = 'Not Detected';
 		}
 
-		form_selectable_cell((strlen(get_request_var_request('filter')) ? preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($host['hostname'])) : htmlspecialchars($host['hostname'])), $host['ip']);
-		form_selectable_cell((strlen(get_request_var_request('filter')) ? preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($host['ip'])) : htmlspecialchars($host['ip'])), $host['ip']);
+		form_selectable_cell((strlen(get_request_var('filter')) ? preg_replace('/(' . preg_quote(get_request_var('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($host['hostname'])) : htmlspecialchars($host['hostname'])), $host['ip']);
+		form_selectable_cell((strlen(get_request_var('filter')) ? preg_replace('/(' . preg_quote(get_request_var('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($host['ip'])) : htmlspecialchars($host['ip'])), $host['ip']);
 		form_selectable_cell(snmp_data($host['sysName']), $host['ip'], '', 'text-align:left');
 		form_selectable_cell(snmp_data($host['sysLocation']), $host['ip'], '', 'text-align:left');
 		form_selectable_cell(snmp_data($host['sysContact']), $host['ip'], '', 'text-align:left');

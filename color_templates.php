@@ -344,8 +344,8 @@ function aggregate_color_template() {
 	include_once($config['base_path'] . '/lib/api_aggregate.php');
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_request('page'));
-	input_validate_input_number(get_request_var_request('rows'));
+	input_validate_input_number(get_request_var('page'));
+	input_validate_input_number(get_request_var('rows'));
 	/* ==================================================== */
 
 	/* clean up search string */
@@ -423,7 +423,7 @@ function aggregate_color_template() {
 								Search
 							</td>
 							<td>
-								<input type="text" id="filter" size="25" value="' . get_request_var_request('filter') . '">
+								<input type="text" id="filter" size="25" value="' . get_request_var('filter') . '">
 							</td>
 							<td>
 								Color Templates
@@ -431,14 +431,14 @@ function aggregate_color_template() {
 							<td>
 								<select id="rows" onChange="applyFilter()">
 								<option value="-1"';
-	if (get_request_var_request('rows') == '-1') {
+	if (get_request_var('rows') == '-1') {
 		$filter_html .= 'selected';
 	}
 	$filter_html .= '>Default</option>';
 	if (sizeof($item_rows) > 0) {
 		foreach ($item_rows as $key => $value) {
 			$filter_html .= "<option value='" . $key . "'";
-			if (get_request_var_request('rows') == $key) {
+			if (get_request_var('rows') == $key) {
 				$filter_html .= ' selected';
 			}
 			$filter_html .= '>' . $value . "</option>\n";
@@ -518,9 +518,9 @@ function aggregate_color_template() {
 		ON ct.color_template_id=graphs.color_template
 		$sql_where
 		ORDER BY " . $_REQUEST['sort_column'] . ' ' . $_REQUEST['sort_direction'] .
-		' LIMIT ' . (get_request_var_request('rows')*(get_request_var_request('page')-1)) . ',' . get_request_var_request('rows'));
+		' LIMIT ' . (get_request_var('rows')*(get_request_var('page')-1)) . ',' . get_request_var('rows'));
 
-	$nav = html_nav_bar('color_templates.php', MAX_DISPLAY_PAGES, get_request_var_request('page'), get_request_var_request('rows'), $total_rows, 5, 'Color Templates', 'page', 'main');
+	$nav = html_nav_bar('color_templates.php', MAX_DISPLAY_PAGES, get_request_var('page'), get_request_var('rows'), $total_rows, 5, 'Color Templates', 'page', 'main');
 
 	print $nav;
 
@@ -543,7 +543,7 @@ function aggregate_color_template() {
 
 			form_alternate_row('line' . $template['color_template_id'], true);
 
-			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars('color_templates.php?action=template_edit&color_template_id=' . $template['color_template_id'] . '&page=1') . "'>" . (get_request_var_request('filter') != '' ? preg_replace('/(' . preg_quote(get_request_var_request('filter')) . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($template['name'])) : htmlspecialchars($template['name'])) . '</a>', $template['color_template_id']);
+			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars('color_templates.php?action=template_edit&color_template_id=' . $template['color_template_id'] . '&page=1') . "'>" . (get_request_var('filter') != '' ? preg_replace('/(' . preg_quote(get_request_var('filter')) . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($template['name'])) : htmlspecialchars($template['name'])) . '</a>', $template['color_template_id']);
 			form_selectable_cell($disabled ? 'No':'Yes', $template['color_template_id'], '', 'text-align:right');
             form_selectable_cell(number_format($template['graphs']), $template['color_template_id'], '', 'text-align:right;');
             form_selectable_cell(number_format($template['templates']), $template['color_template_id'], '', 'text-align:right;');

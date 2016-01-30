@@ -368,8 +368,8 @@ function form_actions() {
 
 function template_rrd_remove() {
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_request('id'));
-	input_validate_input_number(get_request_var_request('data_template_id'));
+	input_validate_input_number(get_request_var('id'));
+	input_validate_input_number(get_request_var('data_template_id'));
 	/* ==================================================== */
 
 	$children = db_fetch_assoc_prepared('SELECT id FROM data_template_rrd WHERE local_data_template_rrd_id = ? OR id = ?', array($_REQUEST['id'], $_REQUEST['id']));
@@ -387,8 +387,8 @@ function template_rrd_remove() {
 
 function template_rrd_add() {
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_request('id'));
-	input_validate_input_number(get_request_var_request('local_data_id'));
+	input_validate_input_number(get_request_var('id'));
+	input_validate_input_number(get_request_var('local_data_id'));
 	/* ==================================================== */
 
 	$hash = get_hash_data_template(0, 'data_template_item');
@@ -417,8 +417,8 @@ function template_edit() {
 	global $struct_data_source, $struct_data_source_item, $data_source_types, $fields_data_template_template_edit;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_request('id'));
-	input_validate_input_number(get_request_var_request('view_rrd'));
+	input_validate_input_number(get_request_var('id'));
+	input_validate_input_number(get_request_var('view_rrd'));
 	/* ==================================================== */
 
 	if (!empty($_REQUEST['id'])) {
@@ -615,28 +615,28 @@ function template() {
 	global $ds_actions, $item_rows;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_request('page'));
-	input_validate_input_number(get_request_var_request('rows'));
+	input_validate_input_number(get_request_var('page'));
+	input_validate_input_number(get_request_var('rows'));
 	/* ==================================================== */
 
 	/* clean up search string */
 	if (isset($_REQUEST['filter'])) {
-		$_REQUEST['filter'] = sanitize_search_string(get_request_var_request('filter'));
+		$_REQUEST['filter'] = sanitize_search_string(get_request_var('filter'));
 	}
 
 	/* clean up has_data string */
 	if (isset($_REQUEST['has_data'])) {
-		$_REQUEST['has_data'] = sanitize_search_string(get_request_var_request('has_data'));
+		$_REQUEST['has_data'] = sanitize_search_string(get_request_var('has_data'));
 	}
 
 	/* clean up sort_column string */
 	if (isset($_REQUEST['sort_column'])) {
-		$_REQUEST['sort_column'] = sanitize_search_string(get_request_var_request('sort_column'));
+		$_REQUEST['sort_column'] = sanitize_search_string(get_request_var('sort_column'));
 	}
 
 	/* clean up sort_direction string */
 	if (isset($_REQUEST['sort_direction'])) {
-		$_REQUEST['sort_direction'] = sanitize_search_string(get_request_var_request('sort_direction'));
+		$_REQUEST['sort_direction'] = sanitize_search_string(get_request_var('sort_direction'));
 	}
 
 	/* if the user pushed the 'clear' button */
@@ -685,7 +685,7 @@ function template() {
 						Search
 					</td>
 					<td>
-						<input id='filter' type='text' name='filter' size='25' value='<?php print htmlspecialchars(get_request_var_request('filter'));?>'>
+						<input id='filter' type='text' name='filter' size='25' value='<?php print htmlspecialchars(get_request_var('filter'));?>'>
 					</td>
 					<td class='nowrap'>
 						Data Templates
@@ -695,7 +695,7 @@ function template() {
 							<?php
 							if (sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var_request('rows') == $key) { print ' selected'; } print '>' . htmlspecialchars($value) . "</option>\n";
+									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . htmlspecialchars($value) . "</option>\n";
 								}
 							}
 							?>
@@ -756,7 +756,7 @@ function template() {
 	/* form the 'where' clause for our main sql query */
 	$rows_where = '';
 	if (strlen($_REQUEST['filter'])) {
-		$sql_where = " WHERE (dt.name like '%" . get_request_var_request('filter') . "%')";
+		$sql_where = " WHERE (dt.name like '%" . get_request_var('filter') . "%')";
 	}else{
 		$sql_where = '';
 	}
@@ -796,10 +796,10 @@ function template() {
 		$sql_where
 		GROUP BY dt.id
 		$sql_having
-		ORDER BY " . get_request_var_request('sort_column') . ' ' . get_request_var_request('sort_direction') .
-		' LIMIT ' . (get_request_var_request('rows')*(get_request_var_request('page')-1)) . ',' . get_request_var_request('rows'));
+		ORDER BY " . get_request_var('sort_column') . ' ' . get_request_var('sort_direction') .
+		' LIMIT ' . (get_request_var('rows')*(get_request_var('page')-1)) . ',' . get_request_var('rows'));
 
-	$nav = html_nav_bar('data_templates.php?filter=' . get_request_var_request('filter'), MAX_DISPLAY_PAGES, get_request_var_request('page'), get_request_var_request('rows'), $total_rows, 7, 'Data Templates', 'page', 'main');
+	$nav = html_nav_bar('data_templates.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), get_request_var('rows'), $total_rows, 7, 'Data Templates', 'page', 'main');
 
 	print $nav;
 
@@ -812,7 +812,7 @@ function template() {
 		'id' => array('display' => 'ID', 'align' => 'right', 'sort' => 'ASC', 'tip' => 'The internal database ID for this Data Template.  Useful when performing automation or debugging.')
 	);
 
-	html_header_sort_checkbox($display_text, get_request_var_request('sort_column'), get_request_var_request('sort_direction'), false);
+	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
 	if (sizeof($template_list) > 0) {
 		foreach ($template_list as $template) {
@@ -822,7 +822,7 @@ function template() {
 				$disabled = false;
 			}
 			form_alternate_row('line' . $template['id'], true, $disabled);
-			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars('data_templates.php?action=template_edit&id=' . $template['id']) . "'>" . (strlen(get_request_var_request('filter')) ? preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($template['name'])) : htmlspecialchars($template['name'])) . '</a>', $template['id']);
+			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars('data_templates.php?action=template_edit&id=' . $template['id']) . "'>" . (strlen(get_request_var('filter')) ? preg_replace('/(' . preg_quote(get_request_var('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($template['name'])) : htmlspecialchars($template['name'])) . '</a>', $template['id']);
 			form_selectable_cell($disabled ? 'No':'Yes', $template['id'], '', 'text-align:right');
 			form_selectable_cell(number_format($template['data_sources']), $template['id'], '', 'text-align:right');
 			form_selectable_cell((empty($template['data_input_method']) ? '<em>None</em>': htmlspecialchars($template['data_input_method'])), $template['id']);

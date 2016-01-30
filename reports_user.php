@@ -28,7 +28,7 @@ include($config['library_path'] . '/reports.php');
 include($config['library_path'] . '/html_reports.php');
 define('MAX_DISPLAY_PAGES', 21);
 
-input_validate_input_number(get_request_var_request('id'));
+input_validate_input_number(get_request_var('id'));
 
 /* set default action */
 if (!isset($_REQUEST['action'])) { $_REQUEST['action'] = ''; }

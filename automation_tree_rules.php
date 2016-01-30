@@ -490,18 +490,18 @@ function automation_tree_rules_edit() {
 	include_once($config['base_path'].'/lib/html_tree.php');
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_request('id'));
-	input_validate_input_number(get_request_var_request('rows'));
-	input_validate_input_number(get_request_var_request('tree_id'));
-	input_validate_input_number(get_request_var_request('leaf_type'));
-	input_validate_input_number(get_request_var_request('host_grouping_type'));
-	input_validate_input_number(get_request_var_request('rra_id'));
-	input_validate_input_number(get_request_var_request('tree_item_id'));
+	input_validate_input_number(get_request_var('id'));
+	input_validate_input_number(get_request_var('rows'));
+	input_validate_input_number(get_request_var('tree_id'));
+	input_validate_input_number(get_request_var('leaf_type'));
+	input_validate_input_number(get_request_var('host_grouping_type'));
+	input_validate_input_number(get_request_var('rra_id'));
+	input_validate_input_number(get_request_var('tree_item_id'));
 	/* ==================================================== */
 
 	/* clean up rule name */
 	if (isset($_REQUEST['name'])) {
-		$_REQUEST['name'] = sanitize_search_string(get_request_var_request('name'));
+		$_REQUEST['name'] = sanitize_search_string(get_request_var('name'));
 	}
 
 	/* remember these search fields in session vars so we don't have to keep passing them around */
@@ -642,9 +642,9 @@ function automation_tree_rules() {
 	global $automation_tree_item_types, $host_group_types;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_request('page'));
-	input_validate_input_number(get_request_var_request('status'));
-	input_validate_input_number(get_request_var_request('rows'));
+	input_validate_input_number(get_request_var('page'));
+	input_validate_input_number(get_request_var('status'));
+	input_validate_input_number(get_request_var('rows'));
 	/* ==================================================== */
 
 	/* clean up search string */
@@ -721,16 +721,16 @@ function automation_tree_rules() {
 							Search
 						</td>
 						<td>
-							<input type='text' id='filter' size='25' value='<?php print get_request_var_request('filter');?>'>
+							<input type='text' id='filter' size='25' value='<?php print get_request_var('filter');?>'>
 						</td>
 						<td>
 							Status
 						</td>
 						<td>
 							<select id='status'>
-								<option value='-1' <?php print (get_request_var_request('status') == '-1' ? ' selected':'');?>>Any</option>
-								<option value='-2' <?php print (get_request_var_request('status') == '-2' ? ' selected':'');?>>Enabled</option>
-								<option value='-3' <?php print (get_request_var_request('status') == '-3' ? ' selected':'');?>>Disabled</option>
+								<option value='-1' <?php print (get_request_var('status') == '-1' ? ' selected':'');?>>Any</option>
+								<option value='-2' <?php print (get_request_var('status') == '-2' ? ' selected':'');?>>Enabled</option>
+								<option value='-3' <?php print (get_request_var('status') == '-3' ? ' selected':'');?>>Disabled</option>
 							</select>
 						</td>
 						<td>
@@ -738,11 +738,11 @@ function automation_tree_rules() {
 						</td>
 						<td>
 							<select id='rows'>
-								<option value='-1' <?php print (get_request_var_request('rows') == '-1' ? ' selected':'');?>>Default</option>
+								<option value='-1' <?php print (get_request_var('rows') == '-1' ? ' selected':'');?>>Default</option>
 								<?php
 								if (sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'" . (get_request_var_request('rows') == $key ? ' selected':'') . '>' . $value . "</option>\n";
+									print "<option value='" . $key . "'" . (get_request_var('rows') == $key ? ' selected':'') . '>' . $value . "</option>\n";
 								}
 								}
 								?>
@@ -799,17 +799,17 @@ function automation_tree_rules() {
 	form_end();
 
 	/* form the 'WHERE' clause for our main sql query */
-	if (strlen(get_request_var_request('filter'))) {
-		$sql_where = "WHERE (atr.name LIKE '%%" . get_request_var_request('filter') . "%%')";
+	if (strlen(get_request_var('filter'))) {
+		$sql_where = "WHERE (atr.name LIKE '%%" . get_request_var('filter') . "%%')";
 	}else{
 		$sql_where = '';
 	}
 
-	if (get_request_var_request('status') == '-1') {
+	if (get_request_var('status') == '-1') {
 		/* Show all items */
-	}elseif (get_request_var_request('status') == '-2') {
+	}elseif (get_request_var('status') == '-2') {
 		$sql_where .= (strlen($sql_where) ? " AND atr.enabled='on'" : "WHERE .atr.enabled='on'");
-	}elseif (get_request_var_request('status') == '-3') {
+	}elseif (get_request_var('status') == '-3') {
 		$sql_where .= (strlen($sql_where) ? " AND atr.enabled=''" : "WHERE atr.enabled=''");
 	}
 
@@ -834,10 +834,10 @@ function automation_tree_rules() {
 		LEFT JOIN rra
 		ON atr.rra_id=rra.id
 		$sql_where
-		ORDER BY " . get_request_var_request('sort_column') . ' ' . get_request_var_request('sort_direction') . "
-		LIMIT " . (get_request_var_request('rows')*(get_request_var_request('page')-1)) . ',' . get_request_var_request('rows'));
+		ORDER BY " . get_request_var('sort_column') . ' ' . get_request_var('sort_direction') . "
+		LIMIT " . (get_request_var('rows')*(get_request_var('page')-1)) . ',' . get_request_var('rows'));
 
-	$nav = html_nav_bar('automation_tree_rules.php?filter=' . get_request_var_request('filter'), MAX_DISPLAY_PAGES, get_request_var_request('page'), $_REQUEST['rows'], $total_rows, 11, 'Trees', 'page', 'main');
+	$nav = html_nav_bar('automation_tree_rules.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $_REQUEST['rows'], $total_rows, 11, 'Trees', 'page', 'main');
 
 	print $nav;
 
@@ -851,7 +851,7 @@ function automation_tree_rules() {
 		'rra_id'				=> array('display' => 'Using Round Robin Archive', 'align' => 'left', 'sort' => 'ASC'),
 		'enabled' 				=> array('display' => 'Enabled', 'align' => 'right', 'sort' => 'ASC'));
 
-	html_header_sort_checkbox($display_text, get_request_var_request('sort_column'), get_request_var_request('sort_direction'), false);
+	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
 	if (sizeof($automation_tree_rules) > 0) {
 		foreach ($automation_tree_rules as 	$automation_tree_rule) {
@@ -860,7 +860,7 @@ function automation_tree_rules() {
 			$tree_host_grouping_type = ((empty($host_group_types{$automation_tree_rule['host_grouping_type']})) ? '' : $host_group_types{$automation_tree_rule['host_grouping_type']});
 			form_alternate_row('line' .  $automation_tree_rule['id'], true);
 
-			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars('automation_tree_rules.php?action=edit&id=' . $automation_tree_rule['id'] . '&page=1') . "'>" . (get_request_var_request('filter') != '' ? preg_replace('/(' . preg_quote(get_request_var_request('filter')) . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($automation_tree_rule['name'])) : htmlspecialchars($automation_tree_rule['name'])) . '</a>', $automation_tree_rule['id']);
+			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars('automation_tree_rules.php?action=edit&id=' . $automation_tree_rule['id'] . '&page=1') . "'>" . (get_request_var('filter') != '' ? preg_replace('/(' . preg_quote(get_request_var('filter')) . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($automation_tree_rule['name'])) : htmlspecialchars($automation_tree_rule['name'])) . '</a>', $automation_tree_rule['id']);
 			form_selectable_cell($automation_tree_rule['id'], $automation_tree_rule['id'], '', 'text-align:right');
 			form_selectable_cell($automation_tree_rule['tree_name'], $automation_tree_rule['id']);
 			form_selectable_cell($subtree_name, $automation_tree_rule['id']);

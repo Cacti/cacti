@@ -70,10 +70,10 @@ function clog_view_logfile() {
 	/* helps determine output color */
 	$linecolor = true;
 
-	input_validate_input_number(get_request_var_request('tail_files'));
-	input_validate_input_number(get_request_var_request('message_type'));
-	input_validate_input_number(get_request_var_request('refresh'));
-	input_validate_input_number(get_request_var_request('reverse'));
+	input_validate_input_number(get_request_var('tail_files'));
+	input_validate_input_number(get_request_var('message_type'));
+	input_validate_input_number(get_request_var('refresh'));
+	input_validate_input_number(get_request_var('reverse'));
 
 	/* enable page refreshes */
 	kill_session_var('custom');

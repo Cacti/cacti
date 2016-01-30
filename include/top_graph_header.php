@@ -32,9 +32,9 @@ if ($oper_mode == OPER_MODE_RESKIN) {
 }
 
 /* ================= input validation ================= */
-input_validate_input_number(get_request_var_request('local_graph_id'));
-input_validate_input_number(get_request_var_request('graph_start'));
-input_validate_input_number(get_request_var_request('graph_end'));
+input_validate_input_number(get_request_var('local_graph_id'));
+input_validate_input_number(get_request_var('graph_start'));
+input_validate_input_number(get_request_var('graph_end'));
 /* ==================================================== */
 
 if (read_config_option('auth_method') != 0) {

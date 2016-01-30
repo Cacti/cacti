@@ -212,8 +212,8 @@ function form_save() {
 
 function item_movedown() {
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_request('id'));
-	input_validate_input_number(get_request_var_request('graph_template_id'));
+	input_validate_input_number(get_request_var('id'));
+	input_validate_input_number(get_request_var('graph_template_id'));
 	/* ==================================================== */
 
 	global $graph_item_types;
@@ -236,8 +236,8 @@ function item_movedown() {
 
 function item_moveup() {
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_request('id'));
-	input_validate_input_number(get_request_var_request('graph_template_id'));
+	input_validate_input_number(get_request_var('id'));
+	input_validate_input_number(get_request_var('graph_template_id'));
 	/* ==================================================== */
 
 	global $graph_item_types;
@@ -260,8 +260,8 @@ function item_moveup() {
 
 function item_remove() {
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_request('id'));
-	input_validate_input_number(get_request_var_request('graph_template_id'));
+	input_validate_input_number(get_request_var('id'));
+	input_validate_input_number(get_request_var('graph_template_id'));
 	/* ==================================================== */
 
 	db_execute_prepared('DELETE FROM graph_templates_item WHERE id = ?', array($_REQUEST['id']));
@@ -291,8 +291,8 @@ function item_edit() {
 	global $struct_graph_item, $graph_item_types, $consolidation_functions;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_request('id'));
-	input_validate_input_number(get_request_var_request('graph_template_id'));
+	input_validate_input_number(get_request_var('id'));
+	input_validate_input_number(get_request_var('graph_template_id'));
 	/* ==================================================== */
 
 	form_start('graph_templates_items.php', 'graph_items');

@@ -1362,14 +1362,14 @@ function html_host_filter($host_id = '-1', $call_back = 'applyFilter') {
 		</td>
 		<td>
 			<select id='host_id' name='host_id' onChange='<?php print $call_back;?>()'>
-				<option value='-1'<?php if (get_request_var_request('host_id') == '-1') {?> selected<?php }?>>Any</option>
-				<option value='0'<?php if (get_request_var_request('host_id') == '0') {?> selected<?php }?>>None</option>
+				<option value='-1'<?php if (get_request_var('host_id') == '-1') {?> selected<?php }?>>Any</option>
+				<option value='0'<?php if (get_request_var('host_id') == '0') {?> selected<?php }?>>None</option>
 				<?php
 				$hosts = db_fetch_assoc("SELECT id, CONCAT_WS('',description,' (',hostname,')') AS name FROM host ORDER BY description, hostname");
 
 				if (sizeof($hosts) > 0) {
 					foreach ($hosts as $host) {
-						print "<option value='" . $host['id'] . "'"; if (get_request_var_request('host_id') == $host['id']) { print ' selected'; } print '>' . title_trim(htmlspecialchars($host['name']), 40) . "</option>\n";
+						print "<option value='" . $host['id'] . "'"; if (get_request_var('host_id') == $host['id']) { print ' selected'; } print '>' . title_trim(htmlspecialchars($host['name']), 40) . "</option>\n";
 					}
 				}
 				?>

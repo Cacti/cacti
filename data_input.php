@@ -237,14 +237,14 @@ function field_remove() {
 	global $registered_cacti_names;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_request('id'));
-	input_validate_input_number(get_request_var_request('data_input_id'));
+	input_validate_input_number(get_request_var('id'));
+	input_validate_input_number(get_request_var('data_input_id'));
 	/* ==================================================== */
 
 	if ((read_config_option('deletion_verification') == 'on') && (!isset($_REQUEST['confirm']))) {
 		top_header();
 
-		form_confirm('Are You Sure?', "Are you sure you want to delete the field '" . htmlspecialchars(db_fetch_cell_prepared('SELECT name FROM data_input_fields WHERE id = ?', array(get_request_var_request('id'))), ENT_QUOTES) . "'?", htmlspecialchars('data_input.php?action=edit&id=' . $_REQUEST['data_input_id']), htmlspecialchars('data_input.php?action=field_remove&id=' . $_REQUEST['id'] . '&data_input_id=' . $_REQUEST['data_input_id']));
+		form_confirm('Are You Sure?', "Are you sure you want to delete the field '" . htmlspecialchars(db_fetch_cell_prepared('SELECT name FROM data_input_fields WHERE id = ?', array(get_request_var('id'))), ENT_QUOTES) . "'?", htmlspecialchars('data_input.php?action=edit&id=' . $_REQUEST['data_input_id']), htmlspecialchars('data_input.php?action=field_remove&id=' . $_REQUEST['id'] . '&data_input_id=' . $_REQUEST['data_input_id']));
 
 		bottom_footer();
 		exit;
@@ -252,10 +252,10 @@ function field_remove() {
 
 	if ((read_config_option('deletion_verification') == '') || (isset($_REQUEST['confirm']))) {
 		/* get information about the field we're going to delete so we can re-order the seqs */
-		$field = db_fetch_row_prepared('SELECT input_output,data_input_id FROM data_input_fields WHERE id = ?', array(get_request_var_request('id')));
+		$field = db_fetch_row_prepared('SELECT input_output,data_input_id FROM data_input_fields WHERE id = ?', array(get_request_var('id')));
 
-		db_execute_prepared('DELETE FROM data_input_fields WHERE id = ?', array(get_request_var_request('id')));
-		db_execute_prepared('DELETE FROM data_input_data WHERE data_input_field_id = ?', array(get_request_var_request('id')));
+		db_execute_prepared('DELETE FROM data_input_fields WHERE id = ?', array(get_request_var('id')));
+		db_execute_prepared('DELETE FROM data_input_data WHERE data_input_field_id = ?', array(get_request_var('id')));
 
 		/* when a field is deleted; we need to re-order the field sequences */
 		if (($field['input_output'] == 'in') && (preg_match_all('/<([_a-zA-Z0-9]+)>/', db_fetch_cell_prepared('SELECT input_string FROM data_input WHERE id = ?', array($field['data_input_id'])), $matches))) {
@@ -274,13 +274,13 @@ function field_edit() {
 	global $registered_cacti_names, $fields_data_input_field_edit_1, $fields_data_input_field_edit_2, $fields_data_input_field_edit;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_request('id'));
-	input_validate_input_number(get_request_var_request('data_input_id'));
-	input_validate_input_regex(get_request_var_request('type'), '^(in|out)$');
+	input_validate_input_number(get_request_var('id'));
+	input_validate_input_number(get_request_var('data_input_id'));
+	input_validate_input_regex(get_request_var('type'), '^(in|out)$');
 	/* ==================================================== */
 
 	if (!empty($_REQUEST['id'])) {
-		$field = db_fetch_row_prepared('SELECT * FROM data_input_fields WHERE id = ?', array(get_request_var_request('id')));
+		$field = db_fetch_row_prepared('SELECT * FROM data_input_fields WHERE id = ?', array(get_request_var('id')));
 	}
 
 	if (!empty($_REQUEST['type'])) {
@@ -295,7 +295,7 @@ function field_edit() {
 		$header_name = 'Input';
 	}
 
-	$data_input = db_fetch_row_prepared('SELECT type_id, name FROM data_input WHERE id = ?', array(get_request_var_request('data_input_id')));
+	$data_input = db_fetch_row_prepared('SELECT type_id, name FROM data_input WHERE id = ?', array(get_request_var('data_input_id')));
 
 	/* obtain a list of available fields for this given field type (input/output) */
 	if (($current_field_type == 'in') && (preg_match_all('/<([_a-zA-Z0-9]+)>/', db_fetch_cell_prepared('SELECT input_string FROM data_input WHERE id = ?', array(($_REQUEST['data_input_id'] ? $_REQUEST['data_input_id'] : $field['data_input_id']))), $matches))) {
@@ -372,11 +372,11 @@ function data_edit() {
 	global $fields_data_input_edit;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_request('id'));
+	input_validate_input_number(get_request_var('id'));
 	/* ==================================================== */
 
 	if (!empty($_REQUEST['id'])) {
-		$data_input = db_fetch_row_prepared('SELECT * FROM data_input WHERE id = ?', array(get_request_var_request('id')));
+		$data_input = db_fetch_row_prepared('SELECT * FROM data_input WHERE id = ?', array(get_request_var('id')));
 		$header_label = '[edit: ' . htmlspecialchars($data_input['name']) . ']';
 	}else{
 		$header_label = '[new]';
@@ -394,14 +394,14 @@ function data_edit() {
 	html_end_box();
 
 	if (!empty($_REQUEST['id'])) {
-		html_start_box('Input Fields', '100%', '', '3', 'center', 'data_input.php?action=field_edit&type=in&data_input_id=' . htmlspecialchars(get_request_var_request('id')));
+		html_start_box('Input Fields', '100%', '', '3', 'center', 'data_input.php?action=field_edit&type=in&data_input_id=' . htmlspecialchars(get_request_var('id')));
 		print "<tr class='tableHeader'>";
 			DrawMatrixHeaderItem('Name','',1);
 			DrawMatrixHeaderItem('Field Order','',1);
 			DrawMatrixHeaderItem('Friendly Name','',2);
 		print '</tr>';
 
-		$fields = db_fetch_assoc_prepared("SELECT id, data_name, name, sequence FROM data_input_fields WHERE data_input_id = ? AND input_output = 'in' ORDER BY sequence, data_name", array(get_request_var_request('id')));
+		$fields = db_fetch_assoc_prepared("SELECT id, data_name, name, sequence FROM data_input_fields WHERE data_input_id = ? AND input_output = 'in' ORDER BY sequence, data_name", array(get_request_var('id')));
 
 		$i = 0;
 		if (sizeof($fields) > 0) {
@@ -436,7 +436,7 @@ function data_edit() {
 			DrawMatrixHeaderItem('Update RRA','',2);
 		print '</tr>';
 
-		$fields = db_fetch_assoc_prepared("SELECT id, name, data_name, update_rra, sequence FROM data_input_fields WHERE data_input_id = ? and input_output = 'out' ORDER BY sequence, data_name", array(get_request_var_request('id')));
+		$fields = db_fetch_assoc_prepared("SELECT id, name, data_name, update_rra, sequence FROM data_input_fields WHERE data_input_id = ? and input_output = 'out' ORDER BY sequence, data_name", array(get_request_var('id')));
 
 		$i = 0;
 		if (sizeof($fields) > 0) {
@@ -475,23 +475,23 @@ function data() {
 	global $input_types, $di_actions, $item_rows;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_request('page'));
-	input_validate_input_number(get_request_var_request('rows'));
+	input_validate_input_number(get_request_var('page'));
+	input_validate_input_number(get_request_var('rows'));
 	/* ==================================================== */
 
 	/* clean up search string */
 	if (isset($_REQUEST['filter'])) {
-		$_REQUEST['filter'] = sanitize_search_string(get_request_var_request('filter'));
+		$_REQUEST['filter'] = sanitize_search_string(get_request_var('filter'));
 	}
 
 	/* clean up sort_column */
 	if (isset($_REQUEST['sort_column'])) {
-		$_REQUEST['sort_column'] = sanitize_search_string(get_request_var_request('sort_column'));
+		$_REQUEST['sort_column'] = sanitize_search_string(get_request_var('sort_column'));
 	}
 
 	/* clean up search string */
 	if (isset($_REQUEST['sort_direction'])) {
-		$_REQUEST['sort_direction'] = sanitize_search_string(get_request_var_request('sort_direction'));
+		$_REQUEST['sort_direction'] = sanitize_search_string(get_request_var('sort_direction'));
 	}
 
 	/* if the user pushed the 'clear' button */
@@ -535,7 +535,7 @@ function data() {
 						Search
 					</td>
 					<td>
-						<input id='filter' type='text' name='filter' size='25' value='<?php print htmlspecialchars(get_request_var_request('filter'));?>'>
+						<input id='filter' type='text' name='filter' size='25' value='<?php print htmlspecialchars(get_request_var('filter'));?>'>
 					</td>
 					<td class='nowrap'>
 						Input Methods
@@ -545,7 +545,7 @@ function data() {
 							<?php
 							if (sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var_request('rows') == $key) { print ' selected'; } print '>' . htmlspecialchars($value) . "</option>\n";
+									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . htmlspecialchars($value) . "</option>\n";
 								}
 							}
 							?>
@@ -600,7 +600,7 @@ function data() {
 
 	/* form the 'where' clause for our main sql query */
 	if ($_REQUEST['filter'] != '') {
-		$sql_where = "WHERE (di.name like '%" . get_request_var_request('filter') . "%')";
+		$sql_where = "WHERE (di.name like '%" . get_request_var('filter') . "%')";
 	}else{
 		$sql_where = '';
 	}
@@ -623,10 +623,10 @@ function data() {
 		ON di.id=dtd.data_template_id
 		$sql_where
 		GROUP BY di.id
-		ORDER BY " . get_request_var_request('sort_column') . ' ' . get_request_var_request('sort_direction') . '
-		LIMIT ' . (get_request_var_request('rows')*(get_request_var_request('page')-1)) . ',' . get_request_var_request('rows'));
+		ORDER BY " . get_request_var('sort_column') . ' ' . get_request_var('sort_direction') . '
+		LIMIT ' . (get_request_var('rows')*(get_request_var('page')-1)) . ',' . get_request_var('rows'));
 
-	$nav = html_nav_bar('data_input.php?filter=' . get_request_var_request('filter'), MAX_DISPLAY_PAGES, get_request_var_request('page'), get_request_var_request('rows'), $total_rows, 6, 'Input Methods', 'page', 'main');
+	$nav = html_nav_bar('data_input.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), get_request_var('rows'), $total_rows, 6, 'Input Methods', 'page', 'main');
 
 	print $nav;
 
@@ -637,7 +637,7 @@ function data() {
 		'templates' => array('display' => 'Templates Using', 'align' => 'right', 'sort' => 'DESC', 'tip' => 'The number of Data Templates that use this Data Input Method.'),
 		'type_id' => array('display' => 'Data Input Method', 'align' => 'left', 'sort' => 'ASC', 'tip' => 'The method used to gather information for this Data Input Method.'));
 
-	html_header_sort_checkbox($display_text, get_request_var_request('sort_column'), get_request_var_request('sort_direction'), false);
+	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
 	$i = 0;
 	if (sizeof($data_inputs) > 0) {
@@ -649,7 +649,7 @@ function data() {
 				$disabled = false;
 			}
 			form_alternate_row('line' . $data_input['id'], true, $disabled);
-			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars('data_input.php?action=edit&id=' . $data_input['id']) . "'>" . (strlen(get_request_var_request('filter')) ? preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($data_input['name'])) : htmlspecialchars($data_input['name'])) . '</a>', $data_input['id']);
+			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars('data_input.php?action=edit&id=' . $data_input['id']) . "'>" . (strlen(get_request_var('filter')) ? preg_replace('/(' . preg_quote(get_request_var('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($data_input['name'])) : htmlspecialchars($data_input['name'])) . '</a>', $data_input['id']);
 			form_selectable_cell($disabled ? 'No':'Yes', $data_input['id'],'', 'text-align:right');
 			form_selectable_cell(number_format($data_input['data_sources']), $data_input['id'],'', 'text-align:right');
 			form_selectable_cell(number_format($data_input['templates']), $data_input['id'],'', 'text-align:right');

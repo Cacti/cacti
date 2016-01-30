@@ -66,23 +66,23 @@ switch ($_REQUEST['action']) {
 
 function automation_movedown() {
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_request('id'));
+	input_validate_input_number(get_request_var('id'));
 	/* ==================================================== */
-	move_item_down('automation_templates', get_request_var_request('id'));
+	move_item_down('automation_templates', get_request_var('id'));
 }
 
 function automation_moveup() {
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_request('id'));
+	input_validate_input_number(get_request_var('id'));
 	/* ==================================================== */
-	move_item_up('automation_templates', get_request_var_request('id'));
+	move_item_up('automation_templates', get_request_var('id'));
 }
 
 function automation_remove() {
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_request('id'));
+	input_validate_input_number(get_request_var('id'));
 	/* ==================================================== */
-	db_execute('DELETE FROM automation_templates WHERE id=' . get_request_var_request('id'));
+	db_execute('DELETE FROM automation_templates WHERE id=' . get_request_var('id'));
 }
 
 function form_save() {

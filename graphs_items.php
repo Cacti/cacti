@@ -157,8 +157,8 @@ function item_movedown() {
 	global $graph_item_types;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_request('id'));
-	input_validate_input_number(get_request_var_request('local_graph_id'));
+	input_validate_input_number(get_request_var('id'));
+	input_validate_input_number(get_request_var('local_graph_id'));
 	/* ==================================================== */
 
 	$arr = get_graph_group($_REQUEST['id']);
@@ -166,7 +166,7 @@ function item_movedown() {
 
 	if ((!empty($next_id)) && (isset($arr{$_REQUEST['id']}))) {
 		move_graph_group($_REQUEST['id'], $arr, $next_id, 'next');
-	}elseif (preg_match('/(GPRINT|VRULE|HRULE|COMMENT)/', $graph_item_types{db_fetch_cell_prepared('SELECT graph_type_id FROM graph_templates_item WHERE id = ?', array(get_request_var_request('id')))})) {
+	}elseif (preg_match('/(GPRINT|VRULE|HRULE|COMMENT)/', $graph_item_types{db_fetch_cell_prepared('SELECT graph_type_id FROM graph_templates_item WHERE id = ?', array(get_request_var('id')))})) {
 		move_item_down('graph_templates_item', $_REQUEST['id'], 'local_graph_id=' . $_REQUEST['local_graph_id']);
 	}
 }
@@ -175,8 +175,8 @@ function item_moveup() {
 	global $graph_item_types;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_request('id'));
-	input_validate_input_number(get_request_var_request('local_graph_id'));
+	input_validate_input_number(get_request_var('id'));
+	input_validate_input_number(get_request_var('local_graph_id'));
 	/* ==================================================== */
 
 	$arr = get_graph_group($_REQUEST['id']);
@@ -184,29 +184,29 @@ function item_moveup() {
 
 	if ((!empty($previous_id)) && (isset($arr{$_REQUEST['id']}))) {
 		move_graph_group($_REQUEST['id'], $arr, $previous_id, 'previous');
-	}elseif (preg_match('/(GPRINT|VRULE|HRULE|COMMENT)/', $graph_item_types{db_fetch_cell_prepared('SELECT graph_type_id FROM graph_templates_item WHERE id = ?', array(get_request_var_request('id')))})) {
+	}elseif (preg_match('/(GPRINT|VRULE|HRULE|COMMENT)/', $graph_item_types{db_fetch_cell_prepared('SELECT graph_type_id FROM graph_templates_item WHERE id = ?', array(get_request_var('id')))})) {
 		move_item_up('graph_templates_item', $_REQUEST['id'], 'local_graph_id=' . $_REQUEST['local_graph_id']);
 	}
 }
 
 function item_remove() {
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_request('id'));
+	input_validate_input_number(get_request_var('id'));
 	/* ==================================================== */
 
-	db_execute_prepared('DELETE FROM graph_templates_item WHERE id = ?', array(get_request_var_request('id')));
+	db_execute_prepared('DELETE FROM graph_templates_item WHERE id = ?', array(get_request_var('id')));
 }
 
 function item_edit() {
 	global $struct_graph_item, $graph_item_types, $consolidation_functions;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_request('id'));
-	input_validate_input_number(get_request_var_request('host_id'));
-	input_validate_input_number(get_request_var_request('graph_template_id'));
-	input_validate_input_number(get_request_var_request('local_graph_id'));
-	input_validate_input_number(get_request_var_request('host_id'));
-	input_validate_input_number(get_request_var_request('data_template_id'));
+	input_validate_input_number(get_request_var('id'));
+	input_validate_input_number(get_request_var('host_id'));
+	input_validate_input_number(get_request_var('graph_template_id'));
+	input_validate_input_number(get_request_var('local_graph_id'));
+	input_validate_input_number(get_request_var('host_id'));
+	input_validate_input_number(get_request_var('data_template_id'));
 	/* ==================================================== */
 
 	/* remember these search fields in session vars so we don't have to keep passing them around */
@@ -215,7 +215,7 @@ function item_edit() {
 	load_current_session_value('data_template_id', 'sess_data_template_id', '-1');
 
 	$id = (!empty($_REQUEST['id']) ? '&id=' . $_REQUEST['id'] : '');
-	$host = db_fetch_row_prepared('SELECT hostname FROM host WHERE id = ?', array(get_request_var_request('host_id')));
+	$host = db_fetch_row_prepared('SELECT hostname FROM host WHERE id = ?', array(get_request_var('host_id')));
 
 	html_start_box('Data Sources [host: ' . (empty($host['hostname']) ? 'No Device' : $host['hostname']) . ']', '100%', '', '3', 'center', '');
 
@@ -230,14 +230,14 @@ function item_edit() {
 					</td>
 					<td>
 						<select name='cbo_host_id' onChange='window.location=document.form_graph_items.cbo_host_id.options[document.form_graph_items.cbo_host_id.selectedIndex].value'>
-							<option value='graphs_items.php?action=item_edit<?php print $id; ?>&local_graph_id=<?php print get_request_var_request('local_graph_id');?>&host_id=-1&data_template_id=<?php print get_request_var_request('data_template_id');?>'<?php if (get_request_var_request('host_id') == '-1') {?> selected<?php }?>>Any</option>
-							<option value='graphs_items.php?action=item_edit<?php print $id; ?>&local_graph_id=<?php print get_request_var_request('local_graph_id');?>&host_id=0&data_template_id=<?php print get_request_var_request('data_template_id');?>'<?php if (get_request_var_request('host_id') == '0') {?> selected<?php }?>>None</option>
+							<option value='graphs_items.php?action=item_edit<?php print $id; ?>&local_graph_id=<?php print get_request_var('local_graph_id');?>&host_id=-1&data_template_id=<?php print get_request_var('data_template_id');?>'<?php if (get_request_var('host_id') == '-1') {?> selected<?php }?>>Any</option>
+							<option value='graphs_items.php?action=item_edit<?php print $id; ?>&local_graph_id=<?php print get_request_var('local_graph_id');?>&host_id=0&data_template_id=<?php print get_request_var('data_template_id');?>'<?php if (get_request_var('host_id') == '0') {?> selected<?php }?>>None</option>
 							<?php
 							$hosts = db_fetch_assoc("SELECT id, CONCAT_WS('',description,' (',hostname,')') AS name FROM host ORDER BY description, hostname");
 
 							if (sizeof($hosts) > 0) {
 								foreach ($hosts as $host) {
-									print "<option value='graphs_items.php?action=item_edit" . $id . '&local_graph_id=' . get_request_var_request('local_graph_id') . '&host_id=' . $host['id'] . '&data_template_id=' . get_request_var_request('data_template_id') . "'"; if (get_request_var_request('host_id') == $host['id']) { print ' selected'; } print '>' . $host['name'] . "</option>\n";
+									print "<option value='graphs_items.php?action=item_edit" . $id . '&local_graph_id=' . get_request_var('local_graph_id') . '&host_id=' . $host['id'] . '&data_template_id=' . get_request_var('data_template_id') . "'"; if (get_request_var('host_id') == $host['id']) { print ' selected'; } print '>' . $host['name'] . "</option>\n";
 								}
 							}
 							?>
@@ -251,14 +251,14 @@ function item_edit() {
 					</td>
 					<td>
 						<select name='cbo_data_template_id' onChange='window.location=document.form_graph_items.cbo_data_template_id.options[document.form_graph_items.cbo_data_template_id.selectedIndex].value'>
-							<option value='graphs_items.php?action=item_edit<?php print $id; ?>&local_graph_id=<?php print get_request_var_request('local_graph_id');?>&data_template_id=-1&host_id=<?php print get_request_var_request('host_id');?>'<?php if (get_request_var_request('data_template_id') == '-1') {?> selected<?php }?>>Any</option>
-							<option value='graphs_items.php?action=item_edit<?php print $id; ?>&local_graph_id=<?php print get_request_var_request('local_graph_id');?>&data_template_id=0&host_id=<?php print get_request_var_request('host_id');?>'<?php if (get_request_var_request('data_template_id') == '0') {?> selected<?php }?>>None</option>
+							<option value='graphs_items.php?action=item_edit<?php print $id; ?>&local_graph_id=<?php print get_request_var('local_graph_id');?>&data_template_id=-1&host_id=<?php print get_request_var('host_id');?>'<?php if (get_request_var('data_template_id') == '-1') {?> selected<?php }?>>Any</option>
+							<option value='graphs_items.php?action=item_edit<?php print $id; ?>&local_graph_id=<?php print get_request_var('local_graph_id');?>&data_template_id=0&host_id=<?php print get_request_var('host_id');?>'<?php if (get_request_var('data_template_id') == '0') {?> selected<?php }?>>None</option>
 							<?php
 							$data_templates = db_fetch_assoc('SELECT id, name FROM data_template ORDER BY name');
 
 							if (sizeof($data_templates) > 0) {
 								foreach ($data_templates as $data_template) {
-									print "<option value='graphs_items.php?action=item_edit" . $id . '&local_graph_id=' . get_request_var_request('local_graph_id') . '&data_template_id=' . $data_template['id']. '&host_id=' . get_request_var_request('host_id') . "'"; if (get_request_var_request('data_template_id') == $data_template['id']) { print ' selected'; } print '>' . $data_template['name'] . "</option>\n";
+									print "<option value='graphs_items.php?action=item_edit" . $id . '&local_graph_id=' . get_request_var('local_graph_id') . '&data_template_id=' . $data_template['id']. '&host_id=' . get_request_var('host_id') . "'"; if (get_request_var('data_template_id') == $data_template['id']) { print ' selected'; } print '>' . $data_template['name'] . "</option>\n";
 								}
 							}
 							?>
@@ -274,34 +274,34 @@ function item_edit() {
 
 	html_end_box();
 
-	if (get_request_var_request('host_id') == '-1') {
+	if (get_request_var('host_id') == '-1') {
 		$sql_where = '';
-	}elseif (get_request_var_request('host_id') == '0') {
+	}elseif (get_request_var('host_id') == '0') {
 		$sql_where = ' data_local.host_id=0 AND ';
 	}elseif (!empty($_REQUEST['host_id'])) {
-		$sql_where = ' data_local.host_id=' . get_request_var_request('host_id') . ' AND ';
+		$sql_where = ' data_local.host_id=' . get_request_var('host_id') . ' AND ';
 	}
 
-	if (get_request_var_request('data_template_id') == '-1') {
+	if (get_request_var('data_template_id') == '-1') {
 		$sql_where .= '';
-	}elseif (get_request_var_request('data_template_id') == '0') {
+	}elseif (get_request_var('data_template_id') == '0') {
 		$sql_where .= ' data_local.data_template_id=0 AND ';
 	}elseif (!empty($_REQUEST['data_template_id'])) {
-		$sql_where .= ' data_local.data_template_id=' . get_request_var_request('data_template_id') . ' AND ';
+		$sql_where .= ' data_local.data_template_id=' . get_request_var('data_template_id') . ' AND ';
 	}
 
 	if (!empty($_REQUEST['id'])) {
-		$template_item = db_fetch_row_prepared('SELECT * FROM graph_templates_item WHERE id = ?', array(get_request_var_request('id')));
-		$host_id = db_fetch_cell_prepared('SELECT host_id FROM graph_local WHERE id = ?', array(get_request_var_request('local_graph_id')));
+		$template_item = db_fetch_row_prepared('SELECT * FROM graph_templates_item WHERE id = ?', array(get_request_var('id')));
+		$host_id = db_fetch_cell_prepared('SELECT host_id FROM graph_local WHERE id = ?', array(get_request_var('local_graph_id')));
 	}
 
-	$header_label = '[edit graph: ' . db_fetch_cell_prepared('SELECT title_cache FROM graph_templates_graph WHERE local_graph_id = ?'. array(get_request_var_request('local_graph_id'))) . ']';
+	$header_label = '[edit graph: ' . db_fetch_cell_prepared('SELECT title_cache FROM graph_templates_graph WHERE local_graph_id = ?'. array(get_request_var('local_graph_id'))) . ']';
 
 	html_start_box("Graph Items $header_label", '100%', '', '3', 'center', '');
 
 	/* by default, select the LAST DS chosen to make everyone's lives easier */
 	if (!empty($_REQUEST['local_graph_id'])) {
-		$default = db_fetch_row_prepared('SELECT task_item_id FROM graph_templates_item WHERE local_graph_id = ? ORDER BY sequence DESC', array(get_request_var_request('local_graph_id')));
+		$default = db_fetch_row_prepared('SELECT task_item_id FROM graph_templates_item WHERE local_graph_id = ? ORDER BY sequence DESC', array(get_request_var('local_graph_id')));
 
 		if (sizeof($default) > 0) {
 			$struct_graph_item['task_item_id']['default'] = $default['task_item_id'];
@@ -346,7 +346,7 @@ function item_edit() {
 			)
 		);
 
-	form_hidden_box('local_graph_id', get_request_var_request('local_graph_id'), '0');
+	form_hidden_box('local_graph_id', get_request_var('local_graph_id'), '0');
 	form_hidden_box('graph_template_item_id', (isset($template_item) ? $template_item['id'] : '0'), '');
 	form_hidden_box('local_graph_template_item_id', (isset($template_item) ? $template_item['local_graph_template_item_id'] : '0'), '');
 	form_hidden_box('graph_template_id', (isset($template_item) ? $template_item['graph_template_id'] : '0'), '');
@@ -358,7 +358,7 @@ function item_edit() {
 
 	html_end_box();
 
-	form_save_button('graphs.php?action=graph_edit&id=' . get_request_var_request('local_graph_id'));
+	form_save_button('graphs.php?action=graph_edit&id=' . get_request_var('local_graph_id'));
 	?>
 	<script type='text/javascript'>
 

@@ -298,6 +298,17 @@ function get_request_var($name, $default = '') {
 	}
 }
 
+/* get_request_var_request - deprecated - alias of get_request_var()
+     returning a default value if the request variable does not exist
+   @arg $name - the name of the request variable. this should be a valid key in the
+     $_GET array
+   @arg $default - the value to return if the specified name does not exist in the
+     $_GET array
+   @returns - the value of the request variable */
+function get_request_var_request($name, $default = '') {
+	return get_request_var($name, $default);
+}
+
 /* get_sanitize_request_var - returns the current value of a PHP $_REQUEST variable and also
      sanitizing the value using the filter. It will also optionally
      return a default value if the request variable does not exist
@@ -352,20 +363,9 @@ function get_request_var_post($name, $default = '') {
 	}
 }
 
-/* get_request_var - deprecated - alias of get_request_var()
-     returning a default value if the request variable does not exist
-   @arg $name - the name of the request variable. this should be a valid key in the
-     $_GET array
-   @arg $default - the value to return if the specified name does not exist in the
-     $_GET array
-   @returns - the value of the request variable */
-function get_request_var_request($name, $default = '') {
-	return get_request_var($name, $default);
-}
-
 /* validate_store_request_vars - validate, sanitize, and store
-     request variables into the custom $_CACTI_REQUEST and desired
-     session variables for Cacti filtering.
+   request variables into the custom $_CACTI_REQUEST and desired
+   session variables for Cacti filtering.
 
 
    @arg $filters - an array keyed with the filter methods.

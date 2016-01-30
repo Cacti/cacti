@@ -193,11 +193,11 @@ function rra_edit() {
 	global $fields_rra_edit;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_request('id'));
+	input_validate_input_number(get_request_var('id'));
 	/* ==================================================== */
 
 	if (!empty($_REQUEST['id'])) {
-		$rra = db_fetch_row_prepared('SELECT * FROM rra WHERE id = ?', array(get_request_var_request('id')));
+		$rra = db_fetch_row_prepared('SELECT * FROM rra WHERE id = ?', array(get_request_var('id')));
 		$header_label = '[edit: ' . htmlspecialchars($rra['name']) . ']';
 	}else{
 		$header_label = '[new]';
@@ -238,28 +238,28 @@ function rra() {
 	global $rra_actions, $item_rows;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_request('page'));
-	input_validate_input_number(get_request_var_request('rows'));
+	input_validate_input_number(get_request_var('page'));
+	input_validate_input_number(get_request_var('rows'));
 	/* ==================================================== */
 
 	/* clean up search string */
 	if (isset($_REQUEST['filter'])) {
-		$_REQUEST['filter'] = sanitize_search_string(get_request_var_request('filter'));
+		$_REQUEST['filter'] = sanitize_search_string(get_request_var('filter'));
 	}
 
 	/* clean up has_data string */
 	if (isset($_REQUEST['has_data'])) {
-		$_REQUEST['has_data'] = sanitize_search_string(get_request_var_request('has_data'));
+		$_REQUEST['has_data'] = sanitize_search_string(get_request_var('has_data'));
 	}
 
 	/* clean up sort_column string */
 	if (isset($_REQUEST['sort_column'])) {
-		$_REQUEST['sort_column'] = sanitize_search_string(get_request_var_request('sort_column'));
+		$_REQUEST['sort_column'] = sanitize_search_string(get_request_var('sort_column'));
 	}
 
 	/* clean up sort_direction string */
 	if (isset($_REQUEST['sort_direction'])) {
-		$_REQUEST['sort_direction'] = sanitize_search_string(get_request_var_request('sort_direction'));
+		$_REQUEST['sort_direction'] = sanitize_search_string(get_request_var('sort_direction'));
 	}
 
 	/* if the user pushed the 'clear' button */
@@ -308,7 +308,7 @@ function rra() {
 						Search
 					</td>
 					<td>
-						<input id='filter' type='text' name='filter' size='25' value='<?php print htmlspecialchars(get_request_var_request('filter'));?>'>
+						<input id='filter' type='text' name='filter' size='25' value='<?php print htmlspecialchars(get_request_var('filter'));?>'>
 					</td>
 					<td>
 						RRAs
@@ -318,7 +318,7 @@ function rra() {
 							<?php
 							if (sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var_request('rows') == $key) { print ' selected'; } print '>' . htmlspecialchars($value) . "</option>\n";
+									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . htmlspecialchars($value) . "</option>\n";
 								}
 							}
 							?>
@@ -378,7 +378,7 @@ function rra() {
 
 	/* form the 'where' clause for our main sql query */
 	if ($_REQUEST['filter'] != '') {
-		$sql_where = "WHERE (rs.name LIKE '%" . get_request_var_request('filter') . "%')";
+		$sql_where = "WHERE (rs.name LIKE '%" . get_request_var('filter') . "%')";
 	}else{
 		$sql_where = '';
 	}
@@ -426,7 +426,7 @@ function rra() {
 		$sql_having
 		ORDER BY " . $_REQUEST['sort_column'] . ' ' . $_REQUEST['sort_direction']);
 
-    $nav = html_nav_bar('rra.php?filter=' . get_request_var_request('filter'), MAX_DISPLAY_PAGES, get_request_var_request('page'), get_request_var_request('rows'), $total_rows, 8, 'RRAs', 'page', 'main');
+    $nav = html_nav_bar('rra.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), get_request_var('rows'), $total_rows, 8, 'RRAs', 'page', 'main');
 
     print $nav;
 
@@ -452,7 +452,7 @@ function rra() {
 			}
 
 			form_alternate_row('line' . $rra['id'], false, $disabled);
-			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars('rra.php?action=edit&id=' . $rra['id']) . "'>" . (strlen(get_request_var_request('filter')) ? preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($rra['name'])) : htmlspecialchars($rra['name'])) . '</a>', $rra['id']);
+			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars('rra.php?action=edit&id=' . $rra['id']) . "'>" . (strlen(get_request_var('filter')) ? preg_replace('/(' . preg_quote(get_request_var('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($rra['name'])) : htmlspecialchars($rra['name'])) . '</a>', $rra['id']);
 			form_selectable_cell($disabled ? 'No':'Yes', $rra['id'], '', 'text-align:right');
 			form_selectable_cell(number_format($rra['steps']), $rra['id'], '', 'text-align:right');
 			form_selectable_cell(number_format($rra['rows']), $rra['id'], '', 'text-align:right');

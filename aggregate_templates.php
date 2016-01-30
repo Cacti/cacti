@@ -465,8 +465,8 @@ function aggregate_template() {
 	global $aggregate_actions, $item_rows, $config;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_request('page'));
-	input_validate_input_number(get_request_var_request('rows'));
+	input_validate_input_number(get_request_var('page'));
+	input_validate_input_number(get_request_var('rows'));
 	/* ==================================================== */
 
 	/* clean up search string */
@@ -539,7 +539,7 @@ function aggregate_template() {
 								Search
 							</td>
 							<td>
-								<input type="text" id="filter" size="25" value="' . get_request_var_request("filter") . '">
+								<input type="text" id="filter" size="25" value="' . get_request_var("filter") . '">
 							</td>
 							<td>
 								Templates
@@ -547,14 +547,14 @@ function aggregate_template() {
 							<td>
 								<select id="rows" onChange="applyFilter()">
 								<option value="-1"';
-	if (get_request_var_request("rows") == "-1") {
+	if (get_request_var("rows") == "-1") {
 		$filter_html .= 'selected';
 	}
 	$filter_html .= '>Default</option>';
 	if (sizeof($item_rows) > 0) {
 		foreach ($item_rows as $key => $value) {
 			$filter_html .= "<option value='" . $key . "'";
-			if (get_request_var_request("rows") == $key) {
+			if (get_request_var("rows") == $key) {
 				$filter_html .= " selected";
 			}
 			$filter_html .= ">" . $value . "</option>\n";
@@ -625,9 +625,9 @@ function aggregate_template() {
 		ON gt.id=pgt.graph_template_id
 		$sql_where
 		ORDER BY " . $_REQUEST['sort_column'] . ' ' . $_REQUEST['sort_direction'] .
-		' LIMIT ' . (get_request_var_request('rows')*(get_request_var_request('page')-1)) . ',' . get_request_var_request('rows'));
+		' LIMIT ' . (get_request_var('rows')*(get_request_var('page')-1)) . ',' . get_request_var('rows'));
 
-	$nav = html_nav_bar('aggregate_templates.php', MAX_DISPLAY_PAGES, get_request_var_request('page'), get_request_var_request('rows'), $total_rows, 5, 'Aggregate Templates', 'page', 'main');
+	$nav = html_nav_bar('aggregate_templates.php', MAX_DISPLAY_PAGES, get_request_var('page'), get_request_var('rows'), $total_rows, 5, 'Aggregate Templates', 'page', 'main');
 
 	print $nav;
 
@@ -648,10 +648,10 @@ function aggregate_template() {
 			}
 
 			form_alternate_row('line' . $template['id'], true, $disabled);
-			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars('aggregate_templates.php?action=edit&id=' . $template['id'] . '&page=1'). "'>" . ((get_request_var_request('filter') != '') ? preg_replace('/(' . preg_quote(get_request_var_request('filter')) . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($template['name'])) : htmlspecialchars($template['name'])) . '</a>', $template['id']);
+			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars('aggregate_templates.php?action=edit&id=' . $template['id'] . '&page=1'). "'>" . ((get_request_var('filter') != '') ? preg_replace('/(' . preg_quote(get_request_var('filter')) . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($template['name'])) : htmlspecialchars($template['name'])) . '</a>', $template['id']);
 			form_selectable_cell($disabled ? 'No':'Yes', $template['id'], '', 'text-align:right');
 			form_selectable_cell(number_format($template['graphs']), $template['id'], '', 'text-align:right;');
-			form_selectable_cell(((get_request_var_request('filter') != '') ? preg_replace('/(' . preg_quote(get_request_var_request('filter')) . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($template['graph_template_name'])) : htmlspecialchars($template['graph_template_name'])), $template['id']);
+			form_selectable_cell(((get_request_var('filter') != '') ? preg_replace('/(' . preg_quote(get_request_var('filter')) . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($template['graph_template_name'])) : htmlspecialchars($template['graph_template_name'])), $template['id']);
 			form_checkbox_cell($template['graph_template_name'], $template['id'], $disabled);
 			form_end_row();
 		}

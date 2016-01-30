@@ -270,10 +270,10 @@ function item_edit() {
 	global $config, $struct_graph_item, $graph_item_types, $consolidation_functions;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_request("id"));
-	input_validate_input_number(get_request_var_request("local_graph_id"));
-	input_validate_input_number(get_request_var_request("aggregate_graph_id"));
-	input_validate_input_number(get_request_var_request("aggregate_template_id"));
+	input_validate_input_number(get_request_var("id"));
+	input_validate_input_number(get_request_var("local_graph_id"));
+	input_validate_input_number(get_request_var("aggregate_graph_id"));
+	input_validate_input_number(get_request_var("aggregate_template_id"));
 	/* ==================================================== */
 
 	/* remember these search fields in session vars so we don't have to keep passing them around */
@@ -296,15 +296,15 @@ function item_edit() {
 	}
 
 	if (!empty($_REQUEST["id"])) {
-		$template_item = db_fetch_row("select * from graph_templates_item where id=" . get_request_var_request("id"));
+		$template_item = db_fetch_row("select * from graph_templates_item where id=" . get_request_var("id"));
 	}
 
 	/* override some template_item values from aggregate tables */
 	$item_overrides = db_fetch_row("SELECT
 		*
 		FROM $table_name 
-		WHERE $id_field= ".get_request_var_request($id_field)."
-		AND graph_templates_item_id=".get_request_var_request("id")
+		WHERE $id_field= ".get_request_var($id_field)."
+		AND graph_templates_item_id=".get_request_var("id")
 	);
 	if (sizeof($item_overrides) == 0) {
 		/* this item is not currently in aggregate tables
@@ -312,16 +312,16 @@ function item_edit() {
 		 * save it now
 		 */
 		$item_new = array(
-			$id_field => get_request_var_request($id_field),
-			'graph_templates_item_id' => get_request_var_request("id"),
+			$id_field => get_request_var($id_field),
+			'graph_templates_item_id' => get_request_var("id"),
 			'sequence' => $template_item['sequence']
 		);
 		aggregate_graph_items_save(array($item_new), $table_name);
 		$item_overrides = db_fetch_row("SELECT
 			*
 			FROM $table_name 
-			WHERE $id_field= ".get_request_var_request($id_field)."
-			AND graph_templates_item_id=".get_request_var_request("id")
+			WHERE $id_field= ".get_request_var($id_field)."
+			AND graph_templates_item_id=".get_request_var("id")
 		);
 	}
 	foreach (array_keys($template_item) as $field_name) {
@@ -362,7 +362,7 @@ function item_edit() {
 			)
 		);
 
-	form_hidden_box("local_graph_id", get_request_var_request("local_graph_id"), "0");
+	form_hidden_box("local_graph_id", get_request_var("local_graph_id"), "0");
 	form_hidden_box("graph_template_item_id", (isset($template_item) ? $template_item["id"] : "0"), "");
 	form_hidden_box("local_graph_template_item_id", (isset($template_item) ? $template_item["local_graph_template_item_id"] : "0"), "");
 	form_hidden_box("graph_template_id", (isset($template_item) ? $template_item["graph_template_id"] : "0"), "");
@@ -371,12 +371,12 @@ function item_edit() {
 	form_hidden_box("save_component_item", "1", "");
 	form_hidden_box("invisible_alpha", $form_array["alpha"]["value"], "FF");
 	form_hidden_box("rrdtool_version", read_config_option("rrdtool_version"), "");
-	form_hidden_box("aggregate_graph_id", get_request_var_request("aggregate_graph_id"), "0");
-	form_hidden_box("aggregate_template_id", get_request_var_request("aggregate_template_id"), "0");
+	form_hidden_box("aggregate_graph_id", get_request_var("aggregate_graph_id"), "0");
+	form_hidden_box("aggregate_template_id", get_request_var("aggregate_template_id"), "0");
 
 	html_end_box();
 
-	form_save_button($config['url_path'] . "$page_name?action=edit&id=" . get_request_var_request("local_graph_id"));
+	form_save_button($config['url_path'] . "$page_name?action=edit&id=" . get_request_var("local_graph_id"));
 
 //Now we need some javascript to make it dynamic
 ?>

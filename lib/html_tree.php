@@ -401,26 +401,26 @@ function create_dhtml_tree() {
 
 function validate_tree_vars() {
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_request('graphs'));
-	input_validate_input_number(get_request_var_request('columns'));
-	input_validate_input_number(get_request_var_request('page'));
-	input_validate_input_number(get_request_var_request('tree_id'));
-	input_validate_input_number(get_request_var_request('leaf_id'));
+	input_validate_input_number(get_request_var('graphs'));
+	input_validate_input_number(get_request_var('columns'));
+	input_validate_input_number(get_request_var('page'));
+	input_validate_input_number(get_request_var('tree_id'));
+	input_validate_input_number(get_request_var('leaf_id'));
 	/* ==================================================== */
 
 	/* clean up search string */
 	if (isset($_REQUEST['filter'])) {
-		$_REQUEST['filter'] = sanitize_search_string(get_request_var_request('filter'));
+		$_REQUEST['filter'] = sanitize_search_string(get_request_var('filter'));
 	}
 
 	/* clean up search string */
 	if (isset($_REQUEST['thumbnails'])) {
-		$_REQUEST['thumbnails'] = sanitize_search_string(get_request_var_request('thumbnails'));
+		$_REQUEST['thumbnails'] = sanitize_search_string(get_request_var('thumbnails'));
 	}
 
 	/* clean up host_group_data string */
 	if (isset($_REQUEST['host_group_data'])) {
-		$_REQUEST['host_group_data'] = sanitize_search_string(get_request_var_request('host_group_data'));
+		$_REQUEST['host_group_data'] = sanitize_search_string(get_request_var('host_group_data'));
 	}
 
 	/* if the user pushed the 'clear' button */
@@ -508,7 +508,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 
 	validate_tree_vars($tree_id, $leaf_id, $host_group_data);
 
-	html_start_box('<strong>Graph Filters</strong>' . (strlen(get_request_var_request('filter')) ? " [ Filter '" . htmlspecialchars(get_request_var_request('filter')) . "' Applied ]" : ''), '100%', "", '3', 'center', '');
+	html_start_box('<strong>Graph Filters</strong>' . (strlen(get_request_var('filter')) ? " [ Filter '" . htmlspecialchars(get_request_var('filter')) . "' Applied ]" : ''), '100%', "", '3', 'center', '');
 
 	?>
 	<tr class='even noprint' id='search'>
@@ -520,7 +520,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 						Search
 					</td>
 					<td>
-						<input id='filter' size='30' name='filter' value='<?php print htmlspecialchars(get_request_var_request('filter'));?>'>
+						<input id='filter' size='30' name='filter' value='<?php print htmlspecialchars(get_request_var('filter'));?>'>
 					</td>
 					<td>
 						Graphs
@@ -530,7 +530,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 							<?php
 							if (sizeof($graphs_per_page) > 0) {
 							foreach ($graphs_per_page as $key => $value) {
-								print "<option value='" . $key . "'"; if (get_request_var_request('graphs') == $key) { print ' selected'; } print '>' . $value . "</option>\n";
+								print "<option value='" . $key . "'"; if (get_request_var('graphs') == $key) { print ' selected'; } print '>' . $value . "</option>\n";
 							}
 							}
 							?>
@@ -540,16 +540,16 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 						Columns
 					</td>
 					<td>
-						<select name='columns' id='columns' onChange='applyGraphFilter()' <?php print get_request_var_request('thumbnails') == 'false' ? 'disabled':'';?>>
-							<?php if ( get_request_var_request('thumbnails') == 'false') {?>
-							<option value='<?php print get_request_var_request('columns');?>' selected>N/A</option>
+						<select name='columns' id='columns' onChange='applyGraphFilter()' <?php print get_request_var('thumbnails') == 'false' ? 'disabled':'';?>>
+							<?php if ( get_request_var('thumbnails') == 'false') {?>
+							<option value='<?php print get_request_var('columns');?>' selected>N/A</option>
 							<?php }else{?>
-							<option value='1' <?php print (get_request_var_request('columns') == '1' ? ' selected':'');?>>1 Column</option>
-							<option value='2' <?php print (get_request_var_request('columns') == '2' ? ' selected':'');?>>2 Columns</option>
-							<option value='3' <?php print (get_request_var_request('columns') == '3' ? ' selected':'');?>>3 Columns</option>
-							<option value='4' <?php print (get_request_var_request('columns') == '4' ? ' selected':'');?>>4 Columns</option>
-							<option value='5' <?php print (get_request_var_request('columns') == '5' ? ' selected':'');?>>5 Columns</option>
-							<option value='6' <?php print (get_request_var_request('columns') == '6' ? ' selected':'');?>>6 Columns</option>
+							<option value='1' <?php print (get_request_var('columns') == '1' ? ' selected':'');?>>1 Column</option>
+							<option value='2' <?php print (get_request_var('columns') == '2' ? ' selected':'');?>>2 Columns</option>
+							<option value='3' <?php print (get_request_var('columns') == '3' ? ' selected':'');?>>3 Columns</option>
+							<option value='4' <?php print (get_request_var('columns') == '4' ? ' selected':'');?>>4 Columns</option>
+							<option value='5' <?php print (get_request_var('columns') == '5' ? ' selected':'');?>>5 Columns</option>
+							<option value='6' <?php print (get_request_var('columns') == '6' ? ' selected':'');?>>6 Columns</option>
 							<?php }?>
 						</select>
 					</td>
@@ -774,8 +774,8 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 
 	if (($leaf_type == 'header') || (empty($leaf_id))) {
 		$sql_where = '';
-		if (strlen(get_request_var_request('filter'))) {
-			$sql_where = " (gtg.title_cache LIKE '%" . get_request_var_request('filter') . "%' OR gtg.title LIKE '%" . get_request_var_request('filter') . "%')";
+		if (strlen(get_request_var('filter'))) {
+			$sql_where = " (gtg.title_cache LIKE '%" . get_request_var('filter') . "%' OR gtg.title LIKE '%" . get_request_var('filter') . "%')";
 		}
 
 		$graph_list = get_allowed_tree_header_graphs($tree_id, $leaf_id, $sql_where);
@@ -794,8 +794,8 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 			if (sizeof($graph_templates) > 0) {
 			foreach ($graph_templates as $graph_template) {
 				$sql_where = '';
-				if (strlen(get_request_var_request('filter'))) {
-					$sql_where = " (gtg.title_cache LIKE '%" . get_request_var_request('filter') . "%')";
+				if (strlen(get_request_var('filter'))) {
+					$sql_where = " (gtg.title_cache LIKE '%" . get_request_var('filter') . "%')";
 				}
 				$sql_where .= (strlen($sql_where) ? 'AND':'') . ' gl.graph_template_id=' . $graph_template['id'] . ' AND gl.host_id=' . $leaf['host_id'];
 
@@ -838,8 +838,8 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 				/* fetch a list of field names that are sorted by the preferred sort field */
 				$sort_field_data = get_formatted_data_query_indexes($leaf['host_id'], $data_query['id']);
 
-				if (strlen(get_request_var_request('filter'))) {
-					$sql_where = " (gtg.title_cache LIKE '%" . get_request_var_request('filter') . "%')";
+				if (strlen(get_request_var('filter'))) {
+					$sql_where = " (gtg.title_cache LIKE '%" . get_request_var('filter') . "%')";
 				}
 
 				/* grab a list of all graphs for this host/data query combination */
@@ -879,15 +879,15 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 	$total_rows = sizeof($graph_list);
 
 	/* generate page list */
-	$nav = html_nav_bar("graph_view.php?action=tree_content&tree_id=$tree_id&leaf_id=$leaf_id&nodeid=" . get_request_var_request('nodeid') . '&host_group_data=' . get_request_var_request('host_group_data'), MAX_DISPLAY_PAGES, get_request_var_request('page'), get_request_var_request('graphs'), $total_rows, get_request_var_request('columns'), 'Graphs', 'page', 'main');
+	$nav = html_nav_bar("graph_view.php?action=tree_content&tree_id=$tree_id&leaf_id=$leaf_id&nodeid=" . get_request_var('nodeid') . '&host_group_data=' . get_request_var('host_group_data'), MAX_DISPLAY_PAGES, get_request_var('page'), get_request_var('graphs'), $total_rows, get_request_var('columns'), 'Graphs', 'page', 'main');
 
 	print $nav;
 
 	/* start graph display */
 	print "<tr class='tableHeader'><td style='width:390px;' colspan='11' class='graphSubHeaderColumn textHeaderDark'>$title</td></tr>";
 
-	$i = get_request_var_request('graphs') * (get_request_var_request('page') - 1);
-	$last_graph = $i + get_request_var_request('graphs');
+	$i = get_request_var('graphs') * (get_request_var('page') - 1);
+	$last_graph = $i + get_request_var('graphs');
 
 	$new_graph_list = array();
 	while ($i < $total_rows && $i < $last_graph) {
@@ -896,13 +896,13 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 	}
 
 	if ($_REQUEST['thumbnails'] == 'true') {
-		html_graph_thumbnail_area($new_graph_list, '', 'view_type=tree&graph_start=' . get_current_graph_start() . '&graph_end=' . get_current_graph_end(), '', get_request_var_request('columns'));
+		html_graph_thumbnail_area($new_graph_list, '', 'view_type=tree&graph_start=' . get_current_graph_start() . '&graph_end=' . get_current_graph_end(), '', get_request_var('columns'));
 	}else{
 		html_graph_area($new_graph_list, '', 'view_type=tree&graph_start=' . get_current_graph_start() . '&graph_end=' . get_current_graph_end(), '', 1);
 	}
 
 	if (!empty($leaf_id)) {
-		api_plugin_hook_function('tree_after',$host_name.','.get_request_var_request('leaf_id'));
+		api_plugin_hook_function('tree_after',$host_name.','.get_request_var('leaf_id'));
 	}
 
 	api_plugin_hook_function('tree_view_page_end');

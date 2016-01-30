@@ -585,7 +585,7 @@ function form_actions() {
 
 function data_edit() {
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_request('id'));
+	input_validate_input_number(get_request_var('id'));
 	/* ==================================================== */
 
 	global $config;
@@ -667,7 +667,7 @@ function data_edit() {
 
 function ds_rrd_remove() {
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_request('id'));
+	input_validate_input_number(get_request_var('id'));
 	/* ==================================================== */
 
 	db_execute_prepared('DELETE FROM data_template_rrd WHERE id = ?', array($_REQUEST['id']));
@@ -678,7 +678,7 @@ function ds_rrd_remove() {
 
 function ds_rrd_add() {
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_request('id'));
+	input_validate_input_number(get_request_var('id'));
 	/* ==================================================== */
 
 	db_execute_prepared("INSERT INTO data_template_rrd (local_data_id, rrd_maximum, rrd_minimum, rrd_heartbeat, data_source_type_id, data_source_name) VALUES (?, 100, 0, 600, 1, 'ds')", array($_REQUEST['id']));
@@ -691,8 +691,8 @@ function ds_edit() {
 	global $struct_data_source, $struct_data_source_item, $data_source_types;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_request('id'));
-	input_validate_input_number(get_request_var_request('host_id'));
+	input_validate_input_number(get_request_var('id'));
+	input_validate_input_number(get_request_var('host_id'));
 	/* ==================================================== */
 
 	api_plugin_hook('data_source_edit_top');
@@ -1001,26 +1001,26 @@ function ds() {
 	global $ds_actions, $item_rows;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_request('rows'));
-	input_validate_input_number(get_request_var_request('host_id'));
-	input_validate_input_number(get_request_var_request('template_id'));
-	input_validate_input_number(get_request_var_request('method_id'));
-	input_validate_input_number(get_request_var_request('page'));
+	input_validate_input_number(get_request_var('rows'));
+	input_validate_input_number(get_request_var('host_id'));
+	input_validate_input_number(get_request_var('template_id'));
+	input_validate_input_number(get_request_var('method_id'));
+	input_validate_input_number(get_request_var('page'));
 	/* ==================================================== */
 
 	/* clean up search string */
 	if (isset($_REQUEST['filter'])) {
-		$_REQUEST['filter'] = sanitize_search_string(get_request_var_request('filter'));
+		$_REQUEST['filter'] = sanitize_search_string(get_request_var('filter'));
 	}
 
 	/* clean up sort_column string */
 	if (isset($_REQUEST['sort_column'])) {
-		$_REQUEST['sort_column'] = sanitize_search_string(get_request_var_request('sort_column'));
+		$_REQUEST['sort_column'] = sanitize_search_string(get_request_var('sort_column'));
 	}
 
 	/* clean up sort_direction string */
 	if (isset($_REQUEST['sort_direction'])) {
-		$_REQUEST['sort_direction'] = sanitize_search_string(get_request_var_request('sort_direction'));
+		$_REQUEST['sort_direction'] = sanitize_search_string(get_request_var('sort_direction'));
 	}
 
 	/* if the user pushed the 'clear' button */
@@ -1065,10 +1065,10 @@ function ds() {
 	load_current_session_value('template_id', 'sess_ds_template_id', '-1');
 	load_current_session_value('method_id', 'sess_ds_method_id', '-1');
 
-	$host = db_fetch_row_prepared('SELECT hostname FROM host WHERE id = ?', array(get_request_var_request('host_id')));
+	$host = db_fetch_row_prepared('SELECT hostname FROM host WHERE id = ?', array(get_request_var('host_id')));
 
 	/* if the number of rows is -1, set it to the default */
-	if (get_request_var_request('rows') == -1) {
+	if (get_request_var('rows') == -1) {
 		$_REQUEST['rows'] = read_config_option('num_rows_table');
 	}
 
@@ -1108,7 +1108,7 @@ function ds() {
 	<?php
 
 	if (read_config_option('grds_creation_method') == 1 ) {
-		$add_url = htmlspecialchars('data_sources.php?action=ds_edit&host_id=' . get_request_var_request('host_id'));
+		$add_url = htmlspecialchars('data_sources.php?action=ds_edit&host_id=' . get_request_var('host_id'));
 	}else{
 		$add_url = '';
 	}
@@ -1127,8 +1127,8 @@ function ds() {
 					</td>
 					<td>
 						<select id='template_id' name='template_id' onChange='applyFilter()'>
-							<option value='-1'<?php if (get_request_var_request('template_id') == '-1') {?> selected<?php }?>>Any</option>
-							<option value='0'<?php if (get_request_var_request('template_id') == '0') {?> selected<?php }?>>None</option>
+							<option value='-1'<?php if (get_request_var('template_id') == '-1') {?> selected<?php }?>>Any</option>
+							<option value='0'<?php if (get_request_var('template_id') == '0') {?> selected<?php }?>>None</option>
 							<?php
 
 							$templates = db_fetch_assoc('SELECT DISTINCT data_template.id, data_template.name
@@ -1140,7 +1140,7 @@ function ds() {
 
 							if (sizeof($templates) > 0) {
 								foreach ($templates as $template) {
-									print "<option value='" . $template['id'] . "'"; if (get_request_var_request('template_id') == $template['id']) { print ' selected'; } print '>' . title_trim(htmlspecialchars($template['name']), 40) . "</option>\n";
+									print "<option value='" . $template['id'] . "'"; if (get_request_var('template_id') == $template['id']) { print ' selected'; } print '>' . title_trim(htmlspecialchars($template['name']), 40) . "</option>\n";
 								}
 							}
 							?>
@@ -1160,8 +1160,8 @@ function ds() {
 					</td>
 					<td>
 						<select id='method_id' name='method_id' onChange='applyFilter()'>
-							<option value='-1'<?php if (get_request_var_request('method_id') == '-1') {?> selected<?php }?>>Any</option>
-							<option value='0'<?php if (get_request_var_request('method_id') == '0') {?> selected<?php }?>>None</option>
+							<option value='-1'<?php if (get_request_var('method_id') == '-1') {?> selected<?php }?>>Any</option>
+							<option value='0'<?php if (get_request_var('method_id') == '0') {?> selected<?php }?>>None</option>
 							<?php
 
 							$methods = db_fetch_assoc('SELECT DISTINCT data_input.id, data_input.name
@@ -1173,7 +1173,7 @@ function ds() {
 
 							if (sizeof($methods) > 0) {
 								foreach ($methods as $method) {
-									print "<option value='" . $method['id'] . "'"; if (get_request_var_request('method_id') == $method['id']) { print ' selected'; } print '>' . title_trim(htmlspecialchars($method['name']), 40) . "</option>\n";
+									print "<option value='" . $method['id'] . "'"; if (get_request_var('method_id') == $method['id']) { print ' selected'; } print '>' . title_trim(htmlspecialchars($method['name']), 40) . "</option>\n";
 								}
 							}
 							?>
@@ -1187,7 +1187,7 @@ function ds() {
 							<?php
 							if (sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var_request('rows') == $key) { print ' selected'; } print '>' . htmlspecialchars($value) . "</option>\n";
+									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . htmlspecialchars($value) . "</option>\n";
 								}
 							}
 							?>
@@ -1201,7 +1201,7 @@ function ds() {
 						Search
 					</td>
 					<td>
-						<input id='filter' type='text' size='25' value='<?php print htmlspecialchars(get_request_var_request('filter'));?>' onChange='applyFilter()'>
+						<input id='filter' type='text' size='25' value='<?php print htmlspecialchars(get_request_var('filter'));?>' onChange='applyFilter()'>
 					</td>
 				</tr>
 			</table>
@@ -1214,47 +1214,47 @@ function ds() {
 	html_end_box();
 
 	/* form the 'where' clause for our main sql query */
-	if (strlen(get_request_var_request('filter'))) {
-		$sql_where1 = "AND (data_template_data.name_cache like '%" . get_request_var_request('filter') . "%'" .
-			" OR data_template_data.local_data_id like '%" . get_request_var_request('filter') . "%'" .
-			" OR data_template.name like '%" . get_request_var_request('filter') . "%'" .
-			" OR data_input.name like '%" . get_request_var_request('filter') . "%')";
+	if (strlen(get_request_var('filter'))) {
+		$sql_where1 = "AND (data_template_data.name_cache like '%" . get_request_var('filter') . "%'" .
+			" OR data_template_data.local_data_id like '%" . get_request_var('filter') . "%'" .
+			" OR data_template.name like '%" . get_request_var('filter') . "%'" .
+			" OR data_input.name like '%" . get_request_var('filter') . "%')";
 
-		$sql_where2 = "AND (data_template_data.name_cache like '%" . get_request_var_request('filter') . "%'" .
-			" OR data_template.name like '%" . get_request_var_request('filter') . "%')";
+		$sql_where2 = "AND (data_template_data.name_cache like '%" . get_request_var('filter') . "%'" .
+			" OR data_template.name like '%" . get_request_var('filter') . "%')";
 	}else{
 		$sql_where1 = '';
 		$sql_where2 = '';
 	}
 
-	if (get_request_var_request('host_id') == '-1') {
+	if (get_request_var('host_id') == '-1') {
 		/* Show all items */
-	}elseif (get_request_var_request('host_id') == '0') {
+	}elseif (get_request_var('host_id') == '0') {
 		$sql_where1 .= ' AND data_local.host_id=0';
 		$sql_where2 .= ' AND data_local.host_id=0';
 	}elseif (!empty($_REQUEST['host_id'])) {
-		$sql_where1 .= ' AND data_local.host_id=' . get_request_var_request('host_id');
-		$sql_where2 .= ' AND data_local.host_id=' . get_request_var_request('host_id');
+		$sql_where1 .= ' AND data_local.host_id=' . get_request_var('host_id');
+		$sql_where2 .= ' AND data_local.host_id=' . get_request_var('host_id');
 	}
 
-	if (get_request_var_request('template_id') == '-1') {
+	if (get_request_var('template_id') == '-1') {
 		/* Show all items */
-	}elseif (get_request_var_request('template_id') == '0') {
+	}elseif (get_request_var('template_id') == '0') {
 		$sql_where1 .= ' AND data_template_data.data_template_id=0';
 		$sql_where2 .= ' AND data_template_data.data_template_id=0';
 	}elseif (!empty($_REQUEST['host_id'])) {
-		$sql_where1 .= ' AND data_template_data.data_template_id=' . get_request_var_request('template_id');
-		$sql_where2 .= ' AND data_template_data.data_template_id=' . get_request_var_request('template_id');
+		$sql_where1 .= ' AND data_template_data.data_template_id=' . get_request_var('template_id');
+		$sql_where2 .= ' AND data_template_data.data_template_id=' . get_request_var('template_id');
 	}
 
-	if (get_request_var_request('method_id') == '-1') {
+	if (get_request_var('method_id') == '-1') {
 		/* Show all items */
-	}elseif (get_request_var_request('method_id') == '0') {
+	}elseif (get_request_var('method_id') == '0') {
 		$sql_where1 .= ' AND data_template_data.data_input_id=0';
 		$sql_where2 .= ' AND data_template_data.data_input_id=0';
 	}elseif (!empty($_REQUEST['method_id'])) {
-		$sql_where1 .= ' AND data_template_data.data_input_id=' . get_request_var_request('method_id');
-		$sql_where2 .= ' AND data_template_data.data_input_id=' . get_request_var_request('method_id');
+		$sql_where1 .= ' AND data_template_data.data_input_id=' . get_request_var('method_id');
+		$sql_where2 .= ' AND data_template_data.data_input_id=' . get_request_var('method_id');
 	}
 
 	$total_rows = sizeof(db_fetch_assoc("SELECT
@@ -1291,14 +1291,14 @@ function ds() {
 		ON (data_local.data_template_id=data_template.id)
 		WHERE data_local.id=data_template_data.local_data_id
 		$sql_where1
-		ORDER BY ". get_request_var_request('sort_column') . ' ' . get_request_var_request('sort_direction') .
-		' LIMIT ' . (get_request_var_request('rows')*(get_request_var_request('page')-1)) . ',' . get_request_var_request('rows'));
+		ORDER BY ". get_request_var('sort_column') . ' ' . get_request_var('sort_direction') .
+		' LIMIT ' . (get_request_var('rows')*(get_request_var('page')-1)) . ',' . get_request_var('rows'));
 
 	form_start('data_sources.php', 'chk');
 
 	html_start_box('', '100%', '', '3', 'center', '');
 
-	$nav = html_nav_bar('data_sources.php?filter=' . get_request_var_request('filter') . '&host_id=' . get_request_var_request('host_id'), MAX_DISPLAY_PAGES, get_request_var_request('page'), get_request_var_request('rows'), $total_rows, 7, 'Data Sources', 'page', 'main');
+	$nav = html_nav_bar('data_sources.php?filter=' . get_request_var('filter') . '&host_id=' . get_request_var('host_id'), MAX_DISPLAY_PAGES, get_request_var('page'), get_request_var('rows'), $total_rows, 7, 'Data Sources', 'page', 'main');
 
 	print $nav;
 
@@ -1310,7 +1310,7 @@ function ds() {
 		'active' => array('display' => 'Active', 'align' => 'left', 'sort' => 'ASC', 'tip' => 'Whether or not data will be collected for this Data Source.  Controlled at the Data Template level.'),
 		'data_template_name' => array('display' => 'Template Name', 'align' => 'left', 'sort' => 'ASC', 'tip' => 'The Data Template that this Data Source was based upon.'));
 
-	html_header_sort_checkbox($display_text, get_request_var_request('sort_column'), get_request_var_request('sort_direction'), false);
+	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
 	$i = 0;
 	if (sizeof($data_sources) > 0) {
@@ -1318,8 +1318,8 @@ function ds() {
 			$data_source['data_template_name'] = htmlspecialchars($data_source['data_template_name']);
 			$data_name_cache = title_trim(htmlspecialchars($data_source['name_cache']), read_config_option('max_title_length'));
 
-			if (trim(get_request_var_request('filter') != '')) {
-				$data_name_cache = preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", ($data_name_cache));
+			if (trim(get_request_var('filter') != '')) {
+				$data_name_cache = preg_replace('/(' . preg_quote(get_request_var('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", ($data_name_cache));
 			}
 
 			/* keep copy of data source for comparison */
@@ -1331,9 +1331,9 @@ function ds() {
 			} elseif ($data_source_orig['data_template_name'] != $data_source['data_template_name']) {
 				/* was changed by plugin, plugin has to take care for html-escaping */
 				$data_template_name = ((empty($data_source['data_template_name'])) ? '<em>None</em>' : $data_source['data_template_name']);
-			} elseif (trim(get_request_var_request('filter') != '')) {
+			} elseif (trim(get_request_var('filter') != '')) {
 				/* we take care of html-escaping */
-				$data_template_name = preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($data_source['data_template_name']));
+				$data_template_name = preg_replace('/(' . preg_quote(get_request_var('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($data_source['data_template_name']));
 			} else {
 				$data_template_name = htmlspecialchars($data_source['data_template_name']);
 			}
@@ -1343,9 +1343,9 @@ function ds() {
 			} elseif ($data_source_orig['data_input_name'] != $data_source['data_input_name']) {
 				/* was changed by plugin, plugin has to take care for html-escaping */
 				$data_input_name = ((empty($data_source['data_input_name'])) ? '<em>None</em>' : $data_source['data_input_name']);
-			} elseif (trim(get_request_var_request('filter') != '')) {
+			} elseif (trim(get_request_var('filter') != '')) {
 				/* we take care of html-escaping */
-				$data_input_name = preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($data_source['data_input_name']));
+				$data_input_name = preg_replace('/(' . preg_quote(get_request_var('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($data_source['data_input_name']));
 			} else {
 				$data_input_name = htmlspecialchars($data_source['data_input_name']);
 			}
@@ -1353,7 +1353,7 @@ function ds() {
 			$poller_interval    = ((isset($poller_intervals[$data_source['local_data_id']])) ? $poller_intervals[$data_source['local_data_id']] : 0);
 
 			form_alternate_row('line' . $data_source['local_data_id'], true);
-			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars('data_sources.php?action=ds_edit&id=' . $data_source['local_data_id']) . "'>" . ((get_request_var_request('filter') != '') ? preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", title_trim(htmlspecialchars($data_source['name_cache']), read_config_option('max_title_length'))) : title_trim(htmlspecialchars($data_source['name_cache']), read_config_option('max_title_length'))) . '</a>', $data_source['local_data_id']);
+			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars('data_sources.php?action=ds_edit&id=' . $data_source['local_data_id']) . "'>" . ((get_request_var('filter') != '') ? preg_replace('/(' . preg_quote(get_request_var('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", title_trim(htmlspecialchars($data_source['name_cache']), read_config_option('max_title_length'))) : title_trim(htmlspecialchars($data_source['name_cache']), read_config_option('max_title_length'))) . '</a>', $data_source['local_data_id']);
 			form_selectable_cell($data_source['local_data_id'], $data_source['local_data_id'], '', 'text-align:right');
 			form_selectable_cell($data_input_name, $data_source['local_data_id']);
 			form_selectable_cell(get_poller_interval($poller_interval), $data_source['local_data_id']);

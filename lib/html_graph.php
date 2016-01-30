@@ -24,21 +24,21 @@
 
 function html_graph_validate_preview_request_vars() {
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_request('host_id'));
-	input_validate_input_number(get_request_var_request('graph_template_id'));
-	input_validate_input_number(get_request_var_request('page'));
-	input_validate_input_number(get_request_var_request('graphs'));
-	input_validate_input_number(get_request_var_request('columns'));
+	input_validate_input_number(get_request_var('host_id'));
+	input_validate_input_number(get_request_var('graph_template_id'));
+	input_validate_input_number(get_request_var('page'));
+	input_validate_input_number(get_request_var('graphs'));
+	input_validate_input_number(get_request_var('columns'));
 	/* ==================================================== */
 
 	/* clean up search string */
 	if (isset($_REQUEST['filter'])) {
-		$_REQUEST['filter'] = sanitize_search_string(get_request_var_request('filter'));
+		$_REQUEST['filter'] = sanitize_search_string(get_request_var('filter'));
 	}
 
 	/* clean up search string */
 	if (isset($_REQUEST['thumbnails'])) {
-		$_REQUEST['thumbnails'] = sanitize_search_string(get_request_var_request('thumbnails'));
+		$_REQUEST['thumbnails'] = sanitize_search_string(get_request_var('thumbnails'));
 	}
 
 	/* reset the graph list on a new viewing */
@@ -124,14 +124,14 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 					</td>
 					<td>
 						<select id='graph_template_id' onChange='applyGraphFilter()'>
-							<option value='0'<?php if (get_request_var_request('graph_template_id') == '0') {?> selected<?php }?>>Any</option>
+							<option value='0'<?php if (get_request_var('graph_template_id') == '0') {?> selected<?php }?>>Any</option>
 							<?php
 
 							$graph_templates = get_allowed_graph_templates($templates_where);
 
 							if (sizeof($graph_templates) > 0) {
 								foreach ($graph_templates as $template) {
-									print "<option value='" . $template['id'] . "'"; if (get_request_var_request('graph_template_id') == $template['id']) { print ' selected'; } print '>' . htmlspecialchars($template['name']) . "</option>\n";
+									print "<option value='" . $template['id'] . "'"; if (get_request_var('graph_template_id') == $template['id']) { print ' selected'; } print '>' . htmlspecialchars($template['name']) . "</option>\n";
 								}
 							}
 							?>
@@ -157,7 +157,7 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 						Search
 					</td>
 					<td>
-						<input type='text' id='filter' size='25' value='<?php print htmlspecialchars(get_request_var_request('filter'));?>' onChange='applyGraphFilter()'>
+						<input type='text' id='filter' size='25' value='<?php print htmlspecialchars(get_request_var('filter'));?>' onChange='applyGraphFilter()'>
 					</td>
 					<td>
 						Graphs
@@ -167,7 +167,7 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 							<?php
 							if (sizeof($graphs_per_page)) {
 							foreach ($graphs_per_page as $key => $value) {
-								print "<option value='" . $key . "'"; if (get_request_var_request('graphs') == $key) { print ' selected'; } print '>' . $value . "</option>\n";
+								print "<option value='" . $key . "'"; if (get_request_var('graphs') == $key) { print ' selected'; } print '>' . $value . "</option>\n";
 							}
 							}
 							?>
@@ -178,12 +178,12 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 					</td>
 					<td>
 						<select id='columns' onChange='applyGraphFilter()'>
-							<option value='1'<?php if (get_request_var_request('columns') == '1') {?> selected<?php }?>>1 Column</option>
-							<option value='2'<?php if (get_request_var_request('columns') == '2') {?> selected<?php }?>>2 Columns</option>
-							<option value='3'<?php if (get_request_var_request('columns') == '3') {?> selected<?php }?>>3 Columns</option>
-							<option value='4'<?php if (get_request_var_request('columns') == '4') {?> selected<?php }?>>4 Columns</option>
-							<option value='5'<?php if (get_request_var_request('columns') == '5') {?> selected<?php }?>>5 Columns</option>
-							<option value='6'<?php if (get_request_var_request('columns') == '6') {?> selected<?php }?>>6 Columns</option>
+							<option value='1'<?php if (get_request_var('columns') == '1') {?> selected<?php }?>>1 Column</option>
+							<option value='2'<?php if (get_request_var('columns') == '2') {?> selected<?php }?>>2 Columns</option>
+							<option value='3'<?php if (get_request_var('columns') == '3') {?> selected<?php }?>>3 Columns</option>
+							<option value='4'<?php if (get_request_var('columns') == '4') {?> selected<?php }?>>4 Columns</option>
+							<option value='5'<?php if (get_request_var('columns') == '5') {?> selected<?php }?>>5 Columns</option>
+							<option value='6'<?php if (get_request_var('columns') == '6') {?> selected<?php }?>>6 Columns</option>
 						</select>
 					</td>
 					<td>

@@ -301,7 +301,7 @@ function domain_edit() {
 	global $ldap_versions, $ldap_encryption, $ldap_modes, $domain_types;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_request('domain_id'));
+	input_validate_input_number(get_request_var('domain_id'));
 	/* ==================================================== */
 
 	if (!empty($_REQUEST['domain_id'])) {
@@ -574,23 +574,23 @@ function domains() {
 	global $domain_types, $actions, $item_rows;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_request('page'));
-	input_validate_input_number(get_request_var_request('rows'));
+	input_validate_input_number(get_request_var('page'));
+	input_validate_input_number(get_request_var('rows'));
 	/* ==================================================== */
 
 	/* clean up search string */
 	if (isset($_REQUEST['filter'])) {
-		$_REQUEST['filter'] = sanitize_search_string(get_request_var_request('filter'));
+		$_REQUEST['filter'] = sanitize_search_string(get_request_var('filter'));
 	}
 
 	/* clean up sort_column */
 	if (isset($_REQUEST['sort_column'])) {
-		$_REQUEST['sort_column'] = sanitize_search_string(get_request_var_request('sort_column'));
+		$_REQUEST['sort_column'] = sanitize_search_string(get_request_var('sort_column'));
 	}
 
 	/* clean up search string */
 	if (isset($_REQUEST['sort_direction'])) {
-		$_REQUEST['sort_direction'] = sanitize_search_string(get_request_var_request('sort_direction'));
+		$_REQUEST['sort_direction'] = sanitize_search_string(get_request_var('sort_direction'));
 	}
 
 	/* if the user pushed the 'clear' button */
@@ -627,7 +627,7 @@ function domains() {
 						Search
 					</td>
 					<td>
-						<input id='filter' type='text' name='filter' size='25' value='<?php print get_request_var_request('filter');?>'>
+						<input id='filter' type='text' name='filter' size='25' value='<?php print get_request_var('filter');?>'>
 					</td>
 					<td>
 						Domains
@@ -637,7 +637,7 @@ function domains() {
 							<?php
 							if (sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var_request('rows') == $key) { print ' selected'; } print '>' . htmlspecialchars($value) . "</option>\n";
+									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . htmlspecialchars($value) . "</option>\n";
 								}
 							}
 							?>
@@ -694,8 +694,8 @@ function domains() {
 
 	/* form the 'where' clause for our main sql query */
 	if ($_REQUEST['filter'] != '') {
-		$sql_where = "WHERE (domain_name LIKE '%%" . get_request_var_request('filter') . "%%') ||
-			(type LIKE '%%" . get_request_var_request('filter') . "%%')";
+		$sql_where = "WHERE (domain_name LIKE '%%" . get_request_var('filter') . "%%') ||
+			(type LIKE '%%" . get_request_var('filter') . "%%')";
 	}else{
 		$sql_where = '';
 	}
@@ -708,10 +708,10 @@ function domains() {
 	$domains = db_fetch_assoc("SELECT *
 		FROM user_domains
 		$sql_where
-		ORDER BY " . get_request_var_request('sort_column') . ' ' . get_request_var_request('sort_direction') . '
-		LIMIT ' . (get_request_var_request('rows')*(get_request_var_request('page')-1)) . ',' . get_request_var_request('rows'));
+		ORDER BY " . get_request_var('sort_column') . ' ' . get_request_var('sort_direction') . '
+		LIMIT ' . (get_request_var('rows')*(get_request_var('page')-1)) . ',' . get_request_var('rows'));
 
-	$nav = html_nav_bar('user_user_domains.php?filter=' . get_request_var_request('filter'), MAX_DISPLAY_PAGES, get_request_var_request('page'), get_request_var_request('rows'), $total_rows, 6, 'User Domains', 'page', 'main');
+	$nav = html_nav_bar('user_user_domains.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), get_request_var('rows'), $total_rows, 6, 'User Domains', 'page', 'main');
 
 	print $nav;
 
@@ -722,14 +722,14 @@ function domains() {
 		'user_id' => array('Effective User', 'ASC'),
 		'enabled' => array('Enabled', 'ASC'));
 
-	html_header_sort_checkbox($display_text, get_request_var_request('sort_column'), get_request_var_request('sort_direction'), false);
+	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
 	$i = 0;
 	if (sizeof($domains) > 0) {
 		foreach ($domains as $domain) {
 			/* hide system types */
 			form_alternate_row('line' . $domain['domain_id'], true);
-			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars('user_domains.php?action=edit&domain_id=' . $domain['domain_id']) . "'>" . (strlen(get_request_var_request('filter')) ? preg_replace('/(' . preg_quote(get_request_var_request('filter')) . ')/i', "<span class='filteredValue>\\1</span>", htmlspecialchars($domain['domain_name'])) : htmlspecialchars($domain['domain_name'])) . '</a>', $domain['domain_id']);
+			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars('user_domains.php?action=edit&domain_id=' . $domain['domain_id']) . "'>" . (strlen(get_request_var('filter')) ? preg_replace('/(' . preg_quote(get_request_var('filter')) . ')/i', "<span class='filteredValue>\\1</span>", htmlspecialchars($domain['domain_name'])) : htmlspecialchars($domain['domain_name'])) . '</a>', $domain['domain_id']);
 			form_selectable_cell($domain_types{$domain['type']}, $domain['domain_id']);
 			form_selectable_cell(($domain['defdomain'] == '0' ? '--':'Yes'), $domain['domain_id']);
 			form_selectable_cell(($domain['user_id'] == '0' ? 'None Selected': db_fetch_cell_prepared('SELECT username FROM user_auth WHERE id = ?', array($domain['user_id']))), $domain['domain_id']);

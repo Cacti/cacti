@@ -26,25 +26,25 @@ function display_matching_hosts($rule, $rule_type, $url) {
 	global $device_actions, $item_rows;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_request('host_template_id'));
-	input_validate_input_number(get_request_var_request('hpage'));
-	input_validate_input_number(get_request_var_request('host_status'));
-	input_validate_input_number(get_request_var_request('rows'));
+	input_validate_input_number(get_request_var('host_template_id'));
+	input_validate_input_number(get_request_var('hpage'));
+	input_validate_input_number(get_request_var('host_status'));
+	input_validate_input_number(get_request_var('rows'));
 	/* ==================================================== */
 
 	/* clean up search string */
 	if (isset($_REQUEST['filter'])) {
-		$_REQUEST['filter'] = sanitize_search_string(get_request_var_request('filter'));
+		$_REQUEST['filter'] = sanitize_search_string(get_request_var('filter'));
 	}
 
 	/* clean up sort_column */
 	if (isset($_REQUEST['sort_column'])) {
-		$_REQUEST['sort_column'] = sanitize_search_string(get_request_var_request('sort_column'));
+		$_REQUEST['sort_column'] = sanitize_search_string(get_request_var('sort_column'));
 	}
 
 	/* clean up search string */
 	if (isset($_REQUEST['sort_direction'])) {
-		$_REQUEST['sort_direction'] = sanitize_search_string(get_request_var_request('sort_direction'));
+		$_REQUEST['sort_direction'] = sanitize_search_string(get_request_var('sort_direction'));
 	}
 
 	/* if the user pushed the 'clear' button */
@@ -132,14 +132,14 @@ function display_matching_hosts($rule, $rule_type, $url) {
 						</td>
 						<td>
 							<select id='host_template_id' onChange='applyFilter()'>
-								<option value='-1'<?php if (get_request_var_request('host_template_id') == '-1') {?> selected<?php }?>>Any</option>
-								<option value='0'<?php if (get_request_var_request('host_template_id') == '0') {?> selected<?php }?>>None</option>
+								<option value='-1'<?php if (get_request_var('host_template_id') == '-1') {?> selected<?php }?>>Any</option>
+								<option value='0'<?php if (get_request_var('host_template_id') == '0') {?> selected<?php }?>>None</option>
 								<?php
 								$host_templates = db_fetch_assoc('SELECT id,name FROM host_template ORDER BY name');
 	
 								if (sizeof($host_templates) > 0) {
 								foreach ($host_templates as $host_template) {
-									print "<option value='" . $host_template['id'] . "'"; if (get_request_var_request('host_template_id') == $host_template['id']) { print ' selected'; } print '>' . $host_template['name'] . "</option>\n";
+									print "<option value='" . $host_template['id'] . "'"; if (get_request_var('host_template_id') == $host_template['id']) { print ' selected'; } print '>' . $host_template['name'] . "</option>\n";
 								}
 								}
 								?>
@@ -150,14 +150,14 @@ function display_matching_hosts($rule, $rule_type, $url) {
 						</td>
 						<td>
 							<select id='host_status' onChange='applyFilter()'>
-								<option value='-1'<?php if (get_request_var_request('host_status') == '-1') {?> selected<?php }?>>Any</option>
-								<option value='-3'<?php if (get_request_var_request('host_status') == '-3') {?> selected<?php }?>>Enabled</option>
-								<option value='-2'<?php if (get_request_var_request('host_status') == '-2') {?> selected<?php }?>>Disabled</option>
-								<option value='-4'<?php if (get_request_var_request('host_status') == '-4') {?> selected<?php }?>>Not Up</option>
-								<option value='3'<?php if (get_request_var_request('host_status') == '3') {?> selected<?php }?>>Up</option>
-								<option value='1'<?php if (get_request_var_request('host_status') == '1') {?> selected<?php }?>>Down</option>
-								<option value='2'<?php if (get_request_var_request('host_status') == '2') {?> selected<?php }?>>Recovering</option>
-								<option value='0'<?php if (get_request_var_request('host_status') == '0') {?> selected<?php }?>>Unknown</option>
+								<option value='-1'<?php if (get_request_var('host_status') == '-1') {?> selected<?php }?>>Any</option>
+								<option value='-3'<?php if (get_request_var('host_status') == '-3') {?> selected<?php }?>>Enabled</option>
+								<option value='-2'<?php if (get_request_var('host_status') == '-2') {?> selected<?php }?>>Disabled</option>
+								<option value='-4'<?php if (get_request_var('host_status') == '-4') {?> selected<?php }?>>Not Up</option>
+								<option value='3'<?php if (get_request_var('host_status') == '3') {?> selected<?php }?>>Up</option>
+								<option value='1'<?php if (get_request_var('host_status') == '1') {?> selected<?php }?>>Down</option>
+								<option value='2'<?php if (get_request_var('host_status') == '2') {?> selected<?php }?>>Recovering</option>
+								<option value='0'<?php if (get_request_var('host_status') == '0') {?> selected<?php }?>>Unknown</option>
 							</select>
 						</td>
 						<td>
@@ -172,18 +172,18 @@ function display_matching_hosts($rule, $rule_type, $url) {
 							Search
 						</td>
 						<td>
-							<input type='text' id='filter' size='25' value='<?php print get_request_var_request('filter');?>'>
+							<input type='text' id='filter' size='25' value='<?php print get_request_var('filter');?>'>
 						</td>
 						<td>
 							Devices
 						</td>
 						<td>
 							<select id='rows' onChange='applyFilter()'>
-								<option value='-1'<?php if (get_request_var_request('rows') == '-1') {?> selected<?php }?>>Default</option>
+								<option value='-1'<?php if (get_request_var('rows') == '-1') {?> selected<?php }?>>Default</option>
 								<?php
 								if (sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='". $key . "'"; if (get_request_var_request('rows') == $key) { print ' selected'; } print '>' . $value . '</option>\n';
+									print "<option value='". $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . $value . '</option>\n';
 								}
 								}
 								?>
@@ -201,29 +201,29 @@ function display_matching_hosts($rule, $rule_type, $url) {
 
 	/* form the 'where' clause for our main sql query */
 	if (strlen($_REQUEST['filter'])) {
-		$sql_where = "WHERE (h.hostname LIKE '%%" . get_request_var_request('filter') . "%%' OR h.description LIKE '%%" . get_request_var_request('filter') . "%%' OR ht.name LIKE '%%" . get_request_var_request('filter') . "%%')";
+		$sql_where = "WHERE (h.hostname LIKE '%%" . get_request_var('filter') . "%%' OR h.description LIKE '%%" . get_request_var('filter') . "%%' OR ht.name LIKE '%%" . get_request_var('filter') . "%%')";
 	}else{
 		$sql_where = '';
 	}
 
-	if (get_request_var_request('host_status') == '-1') {
+	if (get_request_var('host_status') == '-1') {
 		/* Show all items */
-	}elseif (get_request_var_request('host_status') == '-2') {
+	}elseif (get_request_var('host_status') == '-2') {
 		$sql_where .= (strlen($sql_where) ? " AND h.disabled='on'" : "WHERE h.disabled='on'");
-	}elseif (get_request_var_request('host_status') == '-3') {
+	}elseif (get_request_var('host_status') == '-3') {
 		$sql_where .= (strlen($sql_where) ? " AND h.disabled=''" : "WHERE h.disabled=''");
-	}elseif (get_request_var_request('host_status') == '-4') {
+	}elseif (get_request_var('host_status') == '-4') {
 		$sql_where .= (strlen($sql_where) ? " AND (h.status!='3' or h.disabled='on')" : "WHERE (h.status!='3' or h.disabled='on')");
 	}else {
-		$sql_where .= (strlen($sql_where) ? ' AND (h.status=' . get_request_var_request('host_status') . " AND h.disabled = '')" : "WHERE (h.status=" . get_request_var_request('host_status') . " AND h.disabled = '')");
+		$sql_where .= (strlen($sql_where) ? ' AND (h.status=' . get_request_var('host_status') . " AND h.disabled = '')" : "WHERE (h.status=" . get_request_var('host_status') . " AND h.disabled = '')");
 	}
 
-	if (get_request_var_request('host_template_id') == '-1') {
+	if (get_request_var('host_template_id') == '-1') {
 		/* Show all items */
-	}elseif (get_request_var_request('host_template_id') == '0') {
+	}elseif (get_request_var('host_template_id') == '0') {
 		$sql_where .= (strlen($sql_where) ? ' AND h.host_template_id=0' : 'WHERE h.host_template_id=0');
 	}elseif (!empty($_REQUEST['host_template_id'])) {
-		$sql_where .= (strlen($sql_where) ? ' AND h.host_template_id=' . get_request_var_request('host_template_id') : 'WHERE h.host_template_id=' . get_request_var_request('host_template_id'));
+		$sql_where .= (strlen($sql_where) ? ' AND h.host_template_id=' . get_request_var('host_template_id') : 'WHERE h.host_template_id=' . get_request_var('host_template_id'));
 	}
 
 	html_start_box('', '100%', '', '3', 'center', '');
@@ -251,17 +251,17 @@ function display_matching_hosts($rule, $rule_type, $url) {
 	$rows_query = $sql_query . $sql_where . $sql_filter;
 	$total_rows = sizeof(db_fetch_assoc($rows_query));
 
-	$sortby = get_request_var_request('sort_column');
+	$sortby = get_request_var('sort_column');
 	if ($sortby=='hostname') {
 		$sortby = 'INET_ATON(hostname)';
 	}
 
 	$sql_query = $rows_query .
-		' ORDER BY ' . $sortby . ' ' . get_request_var_request('sort_direction') .
-		' LIMIT ' . (get_request_var_request('rows')*(get_request_var_request('hpage')-1)) . ',' . get_request_var_request('rows');
+		' ORDER BY ' . $sortby . ' ' . get_request_var('sort_direction') .
+		' LIMIT ' . (get_request_var('rows')*(get_request_var('hpage')-1)) . ',' . get_request_var('rows');
 	$hosts = db_fetch_assoc($sql_query);
 	
-	$nav = html_nav_bar($url, MAX_DISPLAY_PAGES, get_request_var_request('page'), get_request_var_request('rows'), $total_rows, 7, 'Devices', 'page', 'main');
+	$nav = html_nav_bar($url, MAX_DISPLAY_PAGES, get_request_var('page'), get_request_var('rows'), $total_rows, 7, 'Devices', 'page', 'main');
 
 	print $nav;
 
@@ -277,20 +277,20 @@ function display_matching_hosts($rule, $rule_type, $url) {
 
 	html_header_sort(
 		$display_text, 
-		get_request_var_request('sort_column'), 
-		get_request_var_request('sort_direction'), 
+		get_request_var('sort_column'), 
+		get_request_var('sort_direction'), 
 		'1', 
-		$url . '?action=edit&id=' . get_request_var_request('id') . '&page=' . get_request_var_request('page')
+		$url . '?action=edit&id=' . get_request_var('id') . '&page=' . get_request_var('page')
 	);
 
 	if (sizeof($hosts)) {
 		foreach ($hosts as $host) {
 			form_alternate_row('line' . $host['host_id'], true);
 			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars('host.php?action=edit&id=' . $host['host_id']) . "'>" .
-				(strlen(get_request_var_request('filter')) ? preg_replace('/(' . preg_quote(get_request_var_request('filter')) . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($host['description'])) : htmlspecialchars($host['description'])) . '</a>', $host['host_id']);
-			form_selectable_cell((strlen(get_request_var_request('filter')) ? preg_replace('/(' . preg_quote(get_request_var_request('filter')) . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($host['hostname'])) : htmlspecialchars($host['hostname'])), $host['host_id']);
+				(strlen(get_request_var('filter')) ? preg_replace('/(' . preg_quote(get_request_var('filter')) . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($host['description'])) : htmlspecialchars($host['description'])) . '</a>', $host['host_id']);
+			form_selectable_cell((strlen(get_request_var('filter')) ? preg_replace('/(' . preg_quote(get_request_var('filter')) . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($host['hostname'])) : htmlspecialchars($host['hostname'])), $host['host_id']);
 			form_selectable_cell(get_colored_device_status(($host['disabled'] == 'on' ? true : false), $host['status']), $host['host_id']);
-			form_selectable_cell((strlen(get_request_var_request('filter')) ? preg_replace('/(' . preg_quote(get_request_var_request('filter')) . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($host['host_template_name'])) : htmlspecialchars($host['host_template_name'])), $host['host_id']);
+			form_selectable_cell((strlen(get_request_var('filter')) ? preg_replace('/(' . preg_quote(get_request_var('filter')) . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($host['host_template_name'])) : htmlspecialchars($host['host_template_name'])), $host['host_id']);
 			form_selectable_cell(round(($host['host_id']), 2), $host['host_id']);
 			form_selectable_cell((isset($host_graphs[$host['host_id']]) ? $host_graphs[$host['host_id']] : 0), $host['host_id']);
 			form_selectable_cell((isset($host_data_sources[$host['host_id']]) ? $host_data_sources[$host['host_id']] : 0), $host['host_id']);
@@ -311,25 +311,25 @@ function display_matching_graphs($rule, $rule_type, $url) {
 	global $graph_actions, $item_rows;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_request('host_id'));
-	input_validate_input_number(get_request_var_request('rows'));
-	input_validate_input_number(get_request_var_request('template_id'));
-	input_validate_input_number(get_request_var_request('page'));
+	input_validate_input_number(get_request_var('host_id'));
+	input_validate_input_number(get_request_var('rows'));
+	input_validate_input_number(get_request_var('template_id'));
+	input_validate_input_number(get_request_var('page'));
 	/* ==================================================== */
 
 	/* clean up search string */
 	if (isset($_REQUEST['filter'])) {
-		$_REQUEST['filter'] = sanitize_search_string(get_request_var_request('filter'));
+		$_REQUEST['filter'] = sanitize_search_string(get_request_var('filter'));
 	}
 
 	/* clean up sort_column string */
 	if (isset($_REQUEST['sort_column'])) {
-		$_REQUEST['sort_column'] = sanitize_search_string(get_request_var_request('sort_column'));
+		$_REQUEST['sort_column'] = sanitize_search_string(get_request_var('sort_column'));
 	}
 
 	/* clean up sort_direction string */
 	if (isset($_REQUEST['sort_direction'])) {
-		$_REQUEST['sort_direction'] = sanitize_search_string(get_request_var_request('sort_direction'));
+		$_REQUEST['sort_direction'] = sanitize_search_string(get_request_var('sort_direction'));
 	}
 
 	/* if the user pushed the 'clear' button */
@@ -361,7 +361,7 @@ function display_matching_graphs($rule, $rule_type, $url) {
 	load_current_session_value('template_id', 'sess_automation_graph_template_id', '-1');
 
 	/* if the number of rows is -1, set it to the default */
-	if (get_request_var_request('rows') == -1) {
+	if (get_request_var('rows') == -1) {
 		$_REQUEST['rows'] = read_config_option('num_rows_table');
 	}
 
@@ -417,13 +417,13 @@ function display_matching_graphs($rule, $rule_type, $url) {
 						</td>
 						<td>
 							<select id='host_id'>
-								<option value='-1'<?php if (get_request_var_request('host_id') == '-1') {?> selected<?php }?>>Any</option>
-								<option value='0'<?php if (get_request_var_request('host_id') == '0') {?> selected<?php }?>>None</option>
+								<option value='-1'<?php if (get_request_var('host_id') == '-1') {?> selected<?php }?>>Any</option>
+								<option value='0'<?php if (get_request_var('host_id') == '0') {?> selected<?php }?>>None</option>
 								<?php
 								$hosts = get_allowed_devices();
 								if (sizeof($hosts)) {
 									foreach ($hosts as $host) {
-										print "<option value='" . $host['id'] . "'"; if (get_request_var_request('host_id') == $host['id']) { print ' selected'; } print '>' . htmlspecialchars($host['description']) . "</option>\n";
+										print "<option value='" . $host['id'] . "'"; if (get_request_var('host_id') == $host['id']) { print ' selected'; } print '>' . htmlspecialchars($host['description']) . "</option>\n";
 									}
 								}
 								?>
@@ -434,14 +434,14 @@ function display_matching_graphs($rule, $rule_type, $url) {
 						</td>
 						<td>
 							<select id='template_id'>
-								<option value='-1'<?php if (get_request_var_request('template_id') == '-1') {?> selected<?php }?>>Any</option>
-								<option value='0'<?php if (get_request_var_request('template_id') == '0') {?> selected<?php }?>>None</option>
+								<option value='-1'<?php if (get_request_var('template_id') == '-1') {?> selected<?php }?>>Any</option>
+								<option value='0'<?php if (get_request_var('template_id') == '0') {?> selected<?php }?>>None</option>
 								<?php
 								$templates = get_allowed_graph_templates();
 
 								if (sizeof($templates) > 0) {
 								foreach ($templates as $template) {
-									print "<option value=' " . $template['id'] . "'"; if (get_request_var_request('template_id') == $template['id']) { print ' selected'; } print '>' . title_trim($template['name'], 40) . "</option>\n";
+									print "<option value=' " . $template['id'] . "'"; if (get_request_var('template_id') == $template['id']) { print ' selected'; } print '>' . title_trim($template['name'], 40) . "</option>\n";
 								}
 								}
 								?>
@@ -459,18 +459,18 @@ function display_matching_graphs($rule, $rule_type, $url) {
 							Search
 						</td>
 						<td>
-							<input id='filter' type='text' size='25' value='<?php print get_request_var_request('filter');?>'>
+							<input id='filter' type='text' size='25' value='<?php print get_request_var('filter');?>'>
 						</td>
 						<td>
 							Devices
 						</td>
 						<td>
 							<select id='rows'>
-								<option value='-1'<?php if (get_request_var_request('rows') == '-1') {?> selected<?php }?>>Default</option>
+								<option value='-1'<?php if (get_request_var('rows') == '-1') {?> selected<?php }?>>Default</option>
 								<?php
 								if (sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var_request('rows') == $key) { print ' selected'; } print '>' . $value . "</option>\n";
+									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . $value . "</option>\n";
 								}
 								}
 								?>
@@ -487,29 +487,29 @@ function display_matching_graphs($rule, $rule_type, $url) {
 	html_end_box(false);
 
 	/* form the 'where' clause for our main sql query */
-	if (strlen(get_request_var_request('filter'))) {
-		$sql_where = "WHERE (gtg.title_cache LIKE '%" . get_request_var_request('filter') . "%'" .
-			" OR gt.name LIKE '%" . get_request_var_request('filter') . "%'" . 
-			" OR h.description LIKE '%" . get_request_var_request('filter') . "%'" . 
-			" OR h.hostname LIKE '%" . get_request_var_request('filter') . "%')";
+	if (strlen(get_request_var('filter'))) {
+		$sql_where = "WHERE (gtg.title_cache LIKE '%" . get_request_var('filter') . "%'" .
+			" OR gt.name LIKE '%" . get_request_var('filter') . "%'" . 
+			" OR h.description LIKE '%" . get_request_var('filter') . "%'" . 
+			" OR h.hostname LIKE '%" . get_request_var('filter') . "%')";
 	}else{
 		$sql_where = '';
 	}
 
-	if (get_request_var_request('host_id') == '-1') {
+	if (get_request_var('host_id') == '-1') {
 		/* Show all items */
-	}elseif (get_request_var_request('host_id') == '0') {
+	}elseif (get_request_var('host_id') == '0') {
 		$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') . ' gl.host_id=0';
 	}elseif (!empty($_REQUEST['host_id'])) {
-		$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') . ' gl.host_id=' . get_request_var_request('host_id');
+		$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') . ' gl.host_id=' . get_request_var('host_id');
 	}
 
-	if (get_request_var_request('template_id') == '-1') {
+	if (get_request_var('template_id') == '-1') {
 		/* Show all items */
-	}elseif (get_request_var_request('template_id') == '0') {
+	}elseif (get_request_var('template_id') == '0') {
 		$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') . ' gtg.graph_template_id=0';
 	}elseif (!empty($_REQUEST['template_id'])) {
-		$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') .' gtg.graph_template_id=' . get_request_var_request('template_id');
+		$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') .' gtg.graph_template_id=' . get_request_var('template_id');
 	}
 
 	/* get the WHERE clause for matching graphs */
@@ -543,12 +543,12 @@ function display_matching_graphs($rule, $rule_type, $url) {
 		LEFT JOIN host_template AS ht
 		ON h.host_template_id=ht.id
 		$sql_where
-		ORDER BY " . $_REQUEST['sort_column'] . ' ' . get_request_var_request('sort_direction') . '
-		LIMIT ' . (get_request_var_request('rows')*(get_request_var_request('page')-1)) . ',' . get_request_var_request('rows');
+		ORDER BY " . $_REQUEST['sort_column'] . ' ' . get_request_var('sort_direction') . '
+		LIMIT ' . (get_request_var('rows')*(get_request_var('page')-1)) . ',' . get_request_var('rows');
 
 	$graph_list = db_fetch_assoc($sql);
 
-	$nav = html_nav_bar($url, MAX_DISPLAY_PAGES, get_request_var_request('page'), get_request_var_request('rows'), $total_rows, 8, 'Devices', 'page', 'main');
+	$nav = html_nav_bar($url, MAX_DISPLAY_PAGES, get_request_var('page'), get_request_var('rows'), $total_rows, 8, 'Devices', 'page', 'main');
 
 	$display_text = array(
 		'description' => array('Device Description', 'ASC'),
@@ -562,10 +562,10 @@ function display_matching_graphs($rule, $rule_type, $url) {
 
 	html_header_sort(
 		$display_text, 
-		get_request_var_request('sort_column'), 
-		get_request_var_request('sort_direction'),
+		get_request_var('sort_column'), 
+		get_request_var('sort_direction'),
 		'1', 
-		$url . '?action=edit&id=' . get_request_var_request('id') . '&page=' . get_request_var_request('page')
+		$url . '?action=edit&id=' . get_request_var('id') . '&page=' . get_request_var('page')
 	);
 
 	if (sizeof($graph_list)) {
@@ -574,14 +574,14 @@ function display_matching_graphs($rule, $rule_type, $url) {
 			form_alternate_row('line' . $graph['local_graph_id'], true);
 
 			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars("host.php?action=edit&id=" . $graph['host_id']) . "'>" .
-				(strlen(get_request_var_request('filter')) ? preg_replace('/(' . preg_quote(get_request_var_request('filter')) . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($graph['description'])) : htmlspecialchars($graph['description'])) . '</a>', $graph['host_id']);
-			form_selectable_cell((strlen(get_request_var_request('filter')) ? preg_replace('/(' . preg_quote(get_request_var_request('filter')) . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($graph['hostname'])) : htmlspecialchars($graph['hostname'])), $graph['host_id']);
-			form_selectable_cell((strlen(get_request_var_request('filter')) ? preg_replace('/(' . preg_quote(get_request_var_request('filter')) . ')/i', "<span class='filteredValue;'>\\1</span>", htmlspecialchars($graph['host_template_name'])) : htmlspecialchars($graph['host_template_name'])), $graph['host_id']);
+				(strlen(get_request_var('filter')) ? preg_replace('/(' . preg_quote(get_request_var('filter')) . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($graph['description'])) : htmlspecialchars($graph['description'])) . '</a>', $graph['host_id']);
+			form_selectable_cell((strlen(get_request_var('filter')) ? preg_replace('/(' . preg_quote(get_request_var('filter')) . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($graph['hostname'])) : htmlspecialchars($graph['hostname'])), $graph['host_id']);
+			form_selectable_cell((strlen(get_request_var('filter')) ? preg_replace('/(' . preg_quote(get_request_var('filter')) . ')/i', "<span class='filteredValue;'>\\1</span>", htmlspecialchars($graph['host_template_name'])) : htmlspecialchars($graph['host_template_name'])), $graph['host_id']);
 			form_selectable_cell(get_colored_device_status(($graph['disabled'] == 'on' ? true : false), $graph['status']), $graph['host_id']);
 
-			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars('graphs.php?action=graph_edit&id=' . $graph['local_graph_id']) . "'>" . ((get_request_var_request('filter') != '') ? preg_replace('/(' . preg_quote(get_request_var_request('filter')) . ')/i', "<span class='filteredValue'>\\1</span>", title_trim(htmlspecialchars($graph['title_cache']), read_config_option('max_title_length'))) : title_trim(htmlspecialchars($graph['title_cache']), read_config_option('max_title_length'))) . '</a>', $graph['local_graph_id']);
+			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars('graphs.php?action=graph_edit&id=' . $graph['local_graph_id']) . "'>" . ((get_request_var('filter') != '') ? preg_replace('/(' . preg_quote(get_request_var('filter')) . ')/i', "<span class='filteredValue'>\\1</span>", title_trim(htmlspecialchars($graph['title_cache']), read_config_option('max_title_length'))) : title_trim(htmlspecialchars($graph['title_cache']), read_config_option('max_title_length'))) . '</a>', $graph['local_graph_id']);
 			form_selectable_cell($graph['local_graph_id'], $graph['local_graph_id']);
-			form_selectable_cell(((get_request_var_request('filter') != '') ? preg_replace('/(' . preg_quote(get_request_var_request('filter')) . ')/i', "<span class='filteredValue;'>\\1</span>", $template_name) : $template_name) . '</a>', $graph['local_graph_id']);
+			form_selectable_cell(((get_request_var('filter') != '') ? preg_replace('/(' . preg_quote(get_request_var('filter')) . ')/i', "<span class='filteredValue;'>\\1</span>", $template_name) : $template_name) . '</a>', $graph['local_graph_id']);
 			form_end_row();
 		}
 
@@ -600,7 +600,7 @@ function display_new_graphs($rule) {
 	global $config;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_request('page'));
+	input_validate_input_number(get_request_var('page'));
 	/* ==================================================== */
 
 	/* if the user pushed the 'clear' button */
@@ -685,15 +685,15 @@ function display_new_graphs($rule) {
 		$rows_query = "SELECT * FROM ($sql_query) AS a " . ($sql_filter != '' ? "WHERE ($sql_filter)":'');
 		$total_rows = sizeof(db_fetch_assoc($rows_query));
 
-		if ($total_rows < (get_request_var_request('rows')*(get_request_var_request('page')-1))+1) {
+		if ($total_rows < (get_request_var('rows')*(get_request_var('page')-1))+1) {
 			$_REQUEST['page'] = 1;
 		}
 
-		$sql_query = $rows_query . ' LIMIT ' . ($row_limit*(get_request_var_request('page')-1)) . ',' . $row_limit;
+		$sql_query = $rows_query . ' LIMIT ' . ($row_limit*(get_request_var('page')-1)) . ',' . $row_limit;
 
 		$snmp_query_indexes = db_fetch_assoc($sql_query);
 
-		$nav = html_nav_bar('automation_graph_rules.php?action=edit&id=' . $rule['id'], MAX_DISPLAY_PAGES, get_request_var_request('page'), $row_limit, $total_rows, 30, 'Data Queries', 'page', 'main');
+		$nav = html_nav_bar('automation_graph_rules.php?action=edit&id=' . $rule['id'], MAX_DISPLAY_PAGES, get_request_var('page'), $row_limit, $total_rows, 30, 'Data Queries', 'page', 'main');
 
 		print $nav;
 
@@ -787,25 +787,25 @@ function display_matching_trees ($rule_id, $rule_type, $item, $url) {
 	cacti_log(__FUNCTION__ . " called: $rule_id/$rule_type", false, 'AUTOMATION TRACE', POLLER_VERBOSITY_MEDIUM);
 	
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_request('host_template_id'));
-	input_validate_input_number(get_request_var_request('page'));
-	input_validate_input_number(get_request_var_request('host_status'));
-	input_validate_input_number(get_request_var_request('rows'));
+	input_validate_input_number(get_request_var('host_template_id'));
+	input_validate_input_number(get_request_var('page'));
+	input_validate_input_number(get_request_var('host_status'));
+	input_validate_input_number(get_request_var('rows'));
 	/* ==================================================== */
 
 	/* clean up search string */
 	if (isset($_REQUEST['filter'])) {
-		$_REQUEST['filter'] = sanitize_search_string(get_request_var_request('filter'));
+		$_REQUEST['filter'] = sanitize_search_string(get_request_var('filter'));
 	}
 
 	/* clean up sort_column */
 	if (isset($_REQUEST['sort_column'])) {
-		$_REQUEST['sort_column'] = sanitize_search_string(get_request_var_request('sort_column'));
+		$_REQUEST['sort_column'] = sanitize_search_string(get_request_var('sort_column'));
 	}
 
 	/* clean up search string */
 	if (isset($_REQUEST['sort_direction'])) {
-		$_REQUEST['sort_direction'] = sanitize_search_string(get_request_var_request('sort_direction'));
+		$_REQUEST['sort_direction'] = sanitize_search_string(get_request_var('sort_direction'));
 	}
 
 	/* if the user pushed the 'clear' button */
@@ -896,14 +896,14 @@ function display_matching_trees ($rule_id, $rule_type, $item, $url) {
 					</td>
 					<td>
 						<select id='host_template_id' onChange='applyFilter()'>
-							<option value='-1'<?php if (get_request_var_request('host_template_id') == '-1') {?> selected<?php }?>>Any</option>
-							<option value='0'<?php if (get_request_var_request('host_template_id') == '0') {?> selected<?php }?>>None</option>
+							<option value='-1'<?php if (get_request_var('host_template_id') == '-1') {?> selected<?php }?>>Any</option>
+							<option value='0'<?php if (get_request_var('host_template_id') == '0') {?> selected<?php }?>>None</option>
 							<?php
 							$host_templates = db_fetch_assoc('select id,name from host_template order by name');
 
 							if (sizeof($host_templates) > 0) {
 							foreach ($host_templates as $host_template) {
-								print "<option value='" . $host_template['id'] . "'"; if (get_request_var_request('host_template_id') == $host_template['id']) { print ' selected'; } print '>' . $host_template['name'] . "</option>\n";
+								print "<option value='" . $host_template['id'] . "'"; if (get_request_var('host_template_id') == $host_template['id']) { print ' selected'; } print '>' . $host_template['name'] . "</option>\n";
 							}
 							}
 							?>
@@ -914,14 +914,14 @@ function display_matching_trees ($rule_id, $rule_type, $item, $url) {
 					</td>
 					<td>
 						<select id='host_status' onChange='applyFilter()'>
-							<option value='-1'<?php if (get_request_var_request('host_status') == '-1') {?> selected<?php }?>>Any</option>
-							<option value='-3'<?php if (get_request_var_request('host_status') == '-3') {?> selected<?php }?>>Enabled</option>
-							<option value='-2'<?php if (get_request_var_request('host_status') == '-2') {?> selected<?php }?>>Disabled</option>
-							<option value='-4'<?php if (get_request_var_request('host_status') == '-4') {?> selected<?php }?>>Not Up</option>
-							<option value='3'<?php if (get_request_var_request('host_status') == '3') {?> selected<?php }?>>Up</option>
-							<option value='1'<?php if (get_request_var_request('host_status') == '1') {?> selected<?php }?>>Down</option>
-							<option value='2'<?php if (get_request_var_request('host_status') == '2') {?> selected<?php }?>>Recovering</option>
-							<option value='0'<?php if (get_request_var_request('host_status') == '0') {?> selected<?php }?>>Unknown</option>
+							<option value='-1'<?php if (get_request_var('host_status') == '-1') {?> selected<?php }?>>Any</option>
+							<option value='-3'<?php if (get_request_var('host_status') == '-3') {?> selected<?php }?>>Enabled</option>
+							<option value='-2'<?php if (get_request_var('host_status') == '-2') {?> selected<?php }?>>Disabled</option>
+							<option value='-4'<?php if (get_request_var('host_status') == '-4') {?> selected<?php }?>>Not Up</option>
+							<option value='3'<?php if (get_request_var('host_status') == '3') {?> selected<?php }?>>Up</option>
+							<option value='1'<?php if (get_request_var('host_status') == '1') {?> selected<?php }?>>Down</option>
+							<option value='2'<?php if (get_request_var('host_status') == '2') {?> selected<?php }?>>Recovering</option>
+							<option value='0'<?php if (get_request_var('host_status') == '0') {?> selected<?php }?>>Unknown</option>
 						</select>
 					</td>
 					<td>
@@ -936,18 +936,18 @@ function display_matching_trees ($rule_id, $rule_type, $item, $url) {
 						Search
 					</td>
 					<td>
-						<input type='text' id='filter' size='25' value='<?php print get_request_var_request('filter');?>'>
+						<input type='text' id='filter' size='25' value='<?php print get_request_var('filter');?>'>
 					</td>
 					<td class='nowrap'>
 						Data Queries
 					</td>
 					<td>
 						<select id='rows' onChange='applyFilter()'>
-							<option value='-1'<?php if (get_request_var_request('rows') == '-1') {?> selected<?php }?>>Default</option>
+							<option value='-1'<?php if (get_request_var('rows') == '-1') {?> selected<?php }?>>Default</option>
 							<?php
 							if (sizeof($item_rows) > 0) {
 							foreach ($item_rows as $key => $value) {
-								print "<option value='" . $key . "'"; if (get_request_var_request('rows') == $key) { print ' selected'; } print '>' . $value . "</option>\n";
+								print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . $value . "</option>\n";
 							}
 							}
 							?>
@@ -985,28 +985,28 @@ function display_matching_trees ($rule_id, $rule_type, $item, $url) {
 	}
 
 	/* form the 'where' clause for our main sql query */
-	if (strlen(get_request_var_request('filter'))) {
-		$sql_where .= " AND (h.hostname LIKE '%%" . get_request_var_request('filter') . "%%' OR h.description LIKE '%%" . get_request_var_request('filter') . "%%' OR ht.name LIKE '%%" . get_request_var_request('filter') . "%%')";
+	if (strlen(get_request_var('filter'))) {
+		$sql_where .= " AND (h.hostname LIKE '%%" . get_request_var('filter') . "%%' OR h.description LIKE '%%" . get_request_var('filter') . "%%' OR ht.name LIKE '%%" . get_request_var('filter') . "%%')";
 	}
 
-	if (get_request_var_request('host_status') == '-1') {
+	if (get_request_var('host_status') == '-1') {
 		/* Show all items */
-	}elseif (get_request_var_request('host_status') == '-2') {
+	}elseif (get_request_var('host_status') == '-2') {
 		$sql_where .= " AND h.disabled='on'";
-	}elseif (get_request_var_request('host_status') == '-3') {
+	}elseif (get_request_var('host_status') == '-3') {
 		$sql_where .= " AND h.disabled=''";
-	}elseif (get_request_var_request('host_status') == '-4') {
+	}elseif (get_request_var('host_status') == '-4') {
 		$sql_where .= " AND (h.status!='3' or h.disabled='on')";
 	}else {
-		$sql_where .= ' AND (h.status=' . get_request_var_request('host_status') . " AND h.disabled = '')";
+		$sql_where .= ' AND (h.status=' . get_request_var('host_status') . " AND h.disabled = '')";
 	}
 
-	if (get_request_var_request('host_template_id') == '-1') {
+	if (get_request_var('host_template_id') == '-1') {
 		/* Show all items */
-	}elseif (get_request_var_request('host_template_id') == '0') {
+	}elseif (get_request_var('host_template_id') == '0') {
 		$sql_where .= ' AND h.host_template_id=0';
 	}elseif (!empty($_REQUEST['host_template_id'])) {
-		$sql_where .= ' AND h.host_template_id=' . get_request_var_request('host_template_id');
+		$sql_where .= ' AND h.host_template_id=' . get_request_var('host_template_id');
 	}
 
 	/* get the WHERE clause for matching hosts */
@@ -1023,20 +1023,20 @@ function display_matching_trees ($rule_id, $rule_type, $item, $url) {
 
 	$total_rows = sizeof(db_fetch_assoc($rows_query));
 
-	$sortby = get_request_var_request('sort_column');
+	$sortby = get_request_var('sort_column');
 	if ($sortby=='h.hostname') {
 		$sortby = 'INET_ATON(h.hostname)';
 	}
 
 	$sql_query = "$rows_query ORDER BY $sortby " . 
-		get_request_var_request('sort_direction') . ' LIMIT ' . 
-		(get_request_var_request('rows')*(get_request_var_request('page')-1)) . ',' . get_request_var_request('rows');
+		get_request_var('sort_direction') . ' LIMIT ' . 
+		(get_request_var('rows')*(get_request_var('page')-1)) . ',' . get_request_var('rows');
 
 	$templates = db_fetch_assoc($sql_query);
 
 	cacti_log(__FUNCTION__ . " templates sql: $sql_query", false, 'AUTOMATION TRACE', POLLER_VERBOSITY_MEDIUM);
 	
-	$nav = html_nav_bar($url, MAX_DISPLAY_PAGES, get_request_var_request('page'), get_request_var_request('rows'), $total_rows, 8, 'Devices', 'page', 'main');
+	$nav = html_nav_bar($url, MAX_DISPLAY_PAGES, get_request_var('page'), get_request_var('rows'), $total_rows, 8, 'Devices', 'page', 'main');
 
 	html_start_box('', '100%', '', '3', 'center', '');
 
@@ -1053,10 +1053,10 @@ function display_matching_trees ($rule_id, $rule_type, $item, $url) {
 
 	html_header_sort(
 		$display_text, 
-		get_request_var_request('sort_column'), 
-		get_request_var_request('sort_direction'), 
+		get_request_var('sort_column'), 
+		get_request_var('sort_direction'), 
 		'1', 
-		$url . '?action=edit&id=' . get_request_var_request('id') . '&page=' . get_request_var_request('page')
+		$url . '?action=edit&id=' . get_request_var('id') . '&page=' . get_request_var('page')
 	);
 
 	$i = 0;
@@ -1079,9 +1079,9 @@ function display_matching_trees ($rule_id, $rule_type, $item, $url) {
 			
 			form_alternate_row('line' . $template['host_id'], true);
 			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars("host.php?action=edit&id=" . $template['host_id']) . "'>" .
-				(strlen(get_request_var_request('filter')) ? preg_replace('/(' . preg_quote(get_request_var_request('filter')) . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($template['description'])) : htmlspecialchars($template['description'])) . '</a>', $template['host_id']);
-			form_selectable_cell((strlen(get_request_var_request('filter')) ? preg_replace('/(' . preg_quote(get_request_var_request('filter')) . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($template['hostname'])) : htmlspecialchars($template['hostname'])), $template['host_id']);
-			form_selectable_cell((strlen(get_request_var_request('filter')) ? preg_replace('/(' . preg_quote(get_request_var_request('filter')) . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($template['host_template_name'])) : htmlspecialchars($template['host_template_name'])), $template['host_id']);
+				(strlen(get_request_var('filter')) ? preg_replace('/(' . preg_quote(get_request_var('filter')) . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($template['description'])) : htmlspecialchars($template['description'])) . '</a>', $template['host_id']);
+			form_selectable_cell((strlen(get_request_var('filter')) ? preg_replace('/(' . preg_quote(get_request_var('filter')) . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($template['hostname'])) : htmlspecialchars($template['hostname'])), $template['host_id']);
+			form_selectable_cell((strlen(get_request_var('filter')) ? preg_replace('/(' . preg_quote(get_request_var('filter')) . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($template['host_template_name'])) : htmlspecialchars($template['host_template_name'])), $template['host_id']);
 			form_selectable_cell(get_colored_device_status(($template['disabled'] == 'on' ? true : false), $template['status']), $template['host_id']);
 			form_selectable_cell($template['source'], $template['host_id']);
 			form_selectable_cell($repl, $template['host_id']);

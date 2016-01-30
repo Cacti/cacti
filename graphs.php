@@ -882,7 +882,7 @@ function item() {
 	global $consolidation_functions, $graph_item_types, $struct_graph_item;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_request('id'));
+	input_validate_input_number(get_request_var('id'));
 	/* ==================================================== */
 
 	if (empty($_REQUEST['id'])) {
@@ -934,8 +934,8 @@ function graph_diff() {
 	global  $struct_graph_item, $graph_item_types, $consolidation_functions;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_request('id'));
-	input_validate_input_number(get_request_var_request('graph_template_id'));
+	input_validate_input_number(get_request_var('id'));
+	input_validate_input_number(get_request_var('graph_template_id'));
 	/* ==================================================== */
 
 	$template_query = "SELECT
@@ -1155,7 +1155,7 @@ function graph_edit() {
 	global $struct_graph, $image_types, $consolidation_functions, $graph_item_types, $struct_graph_item;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_request('id'));
+	input_validate_input_number(get_request_var('id'));
 	/* ==================================================== */
 
 	$locked = 'false';
@@ -1419,25 +1419,25 @@ function graph_management() {
 	global $graph_actions, $item_rows;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_request('host_id'));
-	input_validate_input_number(get_request_var_request('rows'));
-	input_validate_input_number(get_request_var_request('template_id'));
-	input_validate_input_number(get_request_var_request('page'));
+	input_validate_input_number(get_request_var('host_id'));
+	input_validate_input_number(get_request_var('rows'));
+	input_validate_input_number(get_request_var('template_id'));
+	input_validate_input_number(get_request_var('page'));
 	/* ==================================================== */
 
 	/* clean up search string */
 	if (isset($_REQUEST['filter'])) {
-		$_REQUEST['filter'] = sanitize_search_string(get_request_var_request('filter'));
+		$_REQUEST['filter'] = sanitize_search_string(get_request_var('filter'));
 	}
 
 	/* clean up sort_column string */
 	if (isset($_REQUEST['sort_column'])) {
-		$_REQUEST['sort_column'] = sanitize_search_string(get_request_var_request('sort_column'));
+		$_REQUEST['sort_column'] = sanitize_search_string(get_request_var('sort_column'));
 	}
 
 	/* clean up sort_direction string */
 	if (isset($_REQUEST['sort_direction'])) {
-		$_REQUEST['sort_direction'] = sanitize_search_string(get_request_var_request('sort_direction'));
+		$_REQUEST['sort_direction'] = sanitize_search_string(get_request_var('sort_direction'));
 	}
 
 	/* if the user pushed the 'clear' button */
@@ -1479,7 +1479,7 @@ function graph_management() {
 	load_current_session_value('template_id', 'sess_graph_template_id', '-1');
 
 	/* if the number of rows is -1, set it to the default */
-	if (get_request_var_request('rows') == -1) {
+	if (get_request_var('rows') == -1) {
 		$_REQUEST['rows'] = read_config_option('num_rows_table');
 	}
 
@@ -1524,7 +1524,7 @@ function graph_management() {
 	<?php
 
 	if (read_config_option('grds_creation_method') == 1) {
-		$add_url = htmlspecialchars('graphs.php?action=graph_edit&host_id=' . get_request_var_request('host_id'));
+		$add_url = htmlspecialchars('graphs.php?action=graph_edit&host_id=' . get_request_var('host_id'));
 	}else{
 		$add_url = '';
 	}
@@ -1543,13 +1543,13 @@ function graph_management() {
 					</td>
 					<td>
 						<select id='template_id' name='template_id' onChange='applyFilter()'>
-							<option value='-1'<?php if (get_request_var_request('template_id') == '-1') {?> selected<?php }?>>Any</option>
-							<option value='0'<?php if (get_request_var_request('template_id') == '0') {?> selected<?php }?>>None</option>
+							<option value='-1'<?php if (get_request_var('template_id') == '-1') {?> selected<?php }?>>Any</option>
+							<option value='0'<?php if (get_request_var('template_id') == '0') {?> selected<?php }?>>None</option>
 							<?php
 							$templates = get_allowed_graph_templates();
 							if (sizeof($templates) > 0) {
 								foreach ($templates as $template) {
-									print "<option value='" . $template['id'] . "'"; if (get_request_var_request('template_id') == $template['id']) { print ' selected'; } print '>' . title_trim(htmlspecialchars($template['name']), 40) . "</option>\n";
+									print "<option value='" . $template['id'] . "'"; if (get_request_var('template_id') == $template['id']) { print ' selected'; } print '>' . title_trim(htmlspecialchars($template['name']), 40) . "</option>\n";
 								}
 							}
 							?>
@@ -1569,7 +1569,7 @@ function graph_management() {
 						Search
 					</td>
 					<td>
-						<input id='filter' type='text' name='filter' size='25' value='<?php print htmlspecialchars(get_request_var_request('filter'));?>'>
+						<input id='filter' type='text' name='filter' size='25' value='<?php print htmlspecialchars(get_request_var('filter'));?>'>
 					</td>
 					<td>
 						Graphs
@@ -1579,7 +1579,7 @@ function graph_management() {
 							<?php
 							if (sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var_request('rows') == $key) { print ' selected'; } print '>' . htmlspecialchars($value) . "</option>\n";
+									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . htmlspecialchars($value) . "</option>\n";
 								}
 							}
 							?>
@@ -1597,25 +1597,25 @@ function graph_management() {
 
 	/* form the 'where' clause for our main sql query */
 	$sql_where = '';
-	if (strlen(get_request_var_request('filter'))) {
-		$sql_where = " WHERE (gtg.title_cache LIKE '%" . get_request_var_request('filter') . "%'" .
-			" OR gt.name LIKE '%" . get_request_var_request('filter') . "%')";
+	if (strlen(get_request_var('filter'))) {
+		$sql_where = " WHERE (gtg.title_cache LIKE '%" . get_request_var('filter') . "%'" .
+			" OR gt.name LIKE '%" . get_request_var('filter') . "%')";
 	}
 
-	if (get_request_var_request('host_id') == '-1') {
+	if (get_request_var('host_id') == '-1') {
 		/* Show all items */
-	}elseif (get_request_var_request('host_id') == '0') {
+	}elseif (get_request_var('host_id') == '0') {
 		$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') . ' gl.host_id=0';
 	}elseif (!empty($_REQUEST['host_id'])) {
-		$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') . ' gl.host_id=' . get_request_var_request('host_id');
+		$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') . ' gl.host_id=' . get_request_var('host_id');
 	}
 
-	if (get_request_var_request('template_id') == '-1') {
+	if (get_request_var('template_id') == '-1') {
 		/* Show all items */
-	}elseif (get_request_var_request('template_id') == '0') {
+	}elseif (get_request_var('template_id') == '0') {
 		$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') . ' gtg.graph_template_id=0';
 	}elseif (!empty($_REQUEST['template_id'])) {
-		$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') . ' gtg.graph_template_id=' . get_request_var_request('template_id');
+		$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') . ' gtg.graph_template_id=' . get_request_var('template_id');
 	}
 
 	/* don't allow aggregates to be view here */
@@ -1649,10 +1649,10 @@ function graph_management() {
 		LEFT JOIN aggregate_graphs AS ag
 		ON ag.local_graph_id=gl.id
 		$sql_where
-		ORDER BY " . $_REQUEST['sort_column'] . ' ' . get_request_var_request('sort_direction') .
-		' LIMIT ' . (get_request_var_request('rows')*(get_request_var_request('page')-1)) . ',' . get_request_var_request('rows'));
+		ORDER BY " . $_REQUEST['sort_column'] . ' ' . get_request_var('sort_direction') .
+		' LIMIT ' . (get_request_var('rows')*(get_request_var('page')-1)) . ',' . get_request_var('rows'));
 
-	$nav = html_nav_bar('graphs.php?filter=' . get_request_var_request('filter') . '&host_id=' . get_request_var_request('host_id'), MAX_DISPLAY_PAGES, get_request_var_request('page'), get_request_var_request('rows'), $total_rows, 5, 'Graphs', 'page', 'main');
+	$nav = html_nav_bar('graphs.php?filter=' . get_request_var('filter') . '&host_id=' . get_request_var('host_id'), MAX_DISPLAY_PAGES, get_request_var('page'), get_request_var('rows'), $total_rows, 5, 'Graphs', 'page', 'main');
 
 	print $nav;
 
@@ -1662,7 +1662,7 @@ function graph_management() {
 		'name' => array('display' => 'Template Name', 'align' => 'left', 'sort' => 'ASC', 'tip' => 'The Graph Template that this Graph was based upon.'),
 		'height' => array('display' => 'Size', 'align' => 'left', 'sort' => 'ASC', 'tip' => 'The size of this Graph when not in Preview mode.'));
 
-	html_header_sort_checkbox($display_text, get_request_var_request('sort_column'), get_request_var_request('sort_direction'), false);
+	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
 	$i = 0;
 	if (sizeof($graph_list) > 0) {
@@ -1670,9 +1670,9 @@ function graph_management() {
 			/* we're escaping strings here, so no need to escape them on form_selectable_cell */
 			$template_name = ((empty($graph['name'])) ? '<em>None</em>' : htmlspecialchars($graph['name']));
 			form_alternate_row('line' . $graph['local_graph_id'], true);
-			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars('graphs.php?action=graph_edit&id=' . $graph['local_graph_id']) . "'>" . ((get_request_var_request('filter') != '') ? preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", title_trim(htmlspecialchars($graph['title_cache']), read_config_option('max_title_length'))) : title_trim(htmlspecialchars($graph['title_cache']), read_config_option('max_title_length'))) . '</a>', $graph['local_graph_id']);
+			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars('graphs.php?action=graph_edit&id=' . $graph['local_graph_id']) . "'>" . ((get_request_var('filter') != '') ? preg_replace('/(' . preg_quote(get_request_var('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", title_trim(htmlspecialchars($graph['title_cache']), read_config_option('max_title_length'))) : title_trim(htmlspecialchars($graph['title_cache']), read_config_option('max_title_length'))) . '</a>', $graph['local_graph_id']);
 			form_selectable_cell($graph['local_graph_id'], $graph['local_graph_id'], '', 'text-align:right');
-			form_selectable_cell(((get_request_var_request('filter') != '') ? preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", $template_name) : $template_name), $graph['local_graph_id']);
+			form_selectable_cell(((get_request_var('filter') != '') ? preg_replace('/(' . preg_quote(get_request_var('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", $template_name) : $template_name), $graph['local_graph_id']);
 			form_selectable_cell($graph['height'] . 'x' . $graph['width'], $graph['local_graph_id']);
 			form_checkbox_cell($graph['title_cache'], $graph['local_graph_id']);
 			form_end_row();

@@ -287,7 +287,7 @@ function item() {
 	global $consolidation_functions, $graph_item_types;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_request('id'));
+	input_validate_input_number(get_request_var('id'));
 	/* ==================================================== */
 
 	if (empty($_REQUEST['id'])) {
@@ -318,11 +318,11 @@ function item() {
 		$header_label = '[edit: ' . db_fetch_cell('SELECT name FROM graph_templates WHERE id=' . $_REQUEST['id']) . ']';
 	}
 
-	html_start_box('Graph Template Items ' . htmlspecialchars($header_label), '100%', '', '3', 'center', 'graph_templates_items.php?action=item_edit&graph_template_id=' . htmlspecialchars(get_request_var_request('id')));
+	html_start_box('Graph Template Items ' . htmlspecialchars($header_label), '100%', '', '3', 'center', 'graph_templates_items.php?action=item_edit&graph_template_id=' . htmlspecialchars(get_request_var('id')));
 	draw_graph_items_list($template_item_list, 'graph_templates_items.php', 'graph_template_id=' . $_REQUEST['id'], false);
 	html_end_box();
 
-	html_start_box('Graph Item Inputs', '100%', '', '3', 'center', 'graph_templates_inputs.php?action=input_edit&graph_template_id=' . htmlspecialchars(get_request_var_request('id')));
+	html_start_box('Graph Item Inputs', '100%', '', '3', 'center', 'graph_templates_inputs.php?action=input_edit&graph_template_id=' . htmlspecialchars(get_request_var('id')));
 
 	print "<tr class='tableHeader'>";
 		DrawMatrixHeaderItem('Name','',2);
@@ -373,7 +373,7 @@ function template_edit() {
 	global $struct_graph, $image_types, $fields_graph_template_template_edit;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_request('id'));
+	input_validate_input_number(get_request_var('id'));
 	/* ==================================================== */
 
 	/* graph item list goes here */
@@ -463,28 +463,28 @@ function template() {
 	global $graph_actions, $item_rows, $image_types;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_request('page'));
-	input_validate_input_number(get_request_var_request('rows'));
+	input_validate_input_number(get_request_var('page'));
+	input_validate_input_number(get_request_var('rows'));
 	/* ==================================================== */
 
 	/* clean up search string */
 	if (isset($_REQUEST['filter'])) {
-		$_REQUEST['filter'] = sanitize_search_string(get_request_var_request('filter'));
+		$_REQUEST['filter'] = sanitize_search_string(get_request_var('filter'));
 	}
 
 	/* clean up has_graphs string */
 	if (isset($_REQUEST['has_graphs'])) {
-		$_REQUEST['has_graphs'] = sanitize_search_string(get_request_var_request('has_graphs'));
+		$_REQUEST['has_graphs'] = sanitize_search_string(get_request_var('has_graphs'));
 	}
 
 	/* clean up sort_column string */
 	if (isset($_REQUEST['sort_column'])) {
-		$_REQUEST['sort_column'] = sanitize_search_string(get_request_var_request('sort_column'));
+		$_REQUEST['sort_column'] = sanitize_search_string(get_request_var('sort_column'));
 	}
 
 	/* clean up sort_direction string */
 	if (isset($_REQUEST['sort_direction'])) {
-		$_REQUEST['sort_direction'] = sanitize_search_string(get_request_var_request('sort_direction'));
+		$_REQUEST['sort_direction'] = sanitize_search_string(get_request_var('sort_direction'));
 	}
 
 	/* if the user pushed the 'clear' button */
@@ -533,7 +533,7 @@ function template() {
 						Search
 					</td>
 					<td>
-						<input id='filter' type='text' name='filter' size='25' value='<?php print htmlspecialchars(get_request_var_request('filter'));?>'>
+						<input id='filter' type='text' name='filter' size='25' value='<?php print htmlspecialchars(get_request_var('filter'));?>'>
 					</td>
 					<td class='nowrap'>
 						Graph Templates
@@ -543,7 +543,7 @@ function template() {
 							<?php
 							if (sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var_request('rows') == $key) { print ' selected'; } print '>' . htmlspecialchars($value) . "</option>\n";
+									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . htmlspecialchars($value) . "</option>\n";
 								}
 							}
 							?>
@@ -605,7 +605,7 @@ function template() {
 
 	/* form the 'where' clause for our main sql query */
 	if (strlen($_REQUEST['filter'])) {
-		$sql_where = "WHERE (gt.name LIKE '%" . get_request_var_request('filter') . "%')";
+		$sql_where = "WHERE (gt.name LIKE '%" . get_request_var('filter') . "%')";
 	}else{
 		$sql_where = '';
 	}
@@ -650,10 +650,10 @@ function template() {
 		$sql_where
 		GROUP BY gt.id
 		$sql_having
-		ORDER BY " . get_request_var_request('sort_column') . ' ' . get_request_var_request('sort_direction') .
-		' LIMIT ' . (get_request_var_request('rows')*(get_request_var_request('page')-1)) . ',' . get_request_var_request('rows'));
+		ORDER BY " . get_request_var('sort_column') . ' ' . get_request_var('sort_direction') .
+		' LIMIT ' . (get_request_var('rows')*(get_request_var('page')-1)) . ',' . get_request_var('rows'));
 
-	$nav = html_nav_bar('graph_templates.php?filter=' . get_request_var_request('filter'), MAX_DISPLAY_PAGES, get_request_var_request('page'), get_request_var_request('rows'), $total_rows, 8, 'Graph Templates', 'page', 'main');
+	$nav = html_nav_bar('graph_templates.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), get_request_var('rows'), $total_rows, 8, 'Graph Templates', 'page', 'main');
 
 	print $nav;
 
@@ -667,7 +667,7 @@ function template() {
 		'gt.id'           => array('display' => 'ID', 'align' => 'right', 'sort' => 'ASC', 'tip' => 'The internal ID for this Graph Template.  Useful when performing automation or debugging.')
 	);
 
-	html_header_sort_checkbox($display_text, get_request_var_request('sort_column'), get_request_var_request('sort_direction'), false);
+	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
 	$i = 0;
 	if (sizeof($template_list) > 0) {
@@ -678,7 +678,7 @@ function template() {
 				$disabled = false;
 			}
 			form_alternate_row('line' . $template['id'], true, $disabled);
-			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars('graph_templates.php?action=template_edit&id=' . $template['id']) . "'>" . (strlen(get_request_var_request('filter')) ? preg_replace('/(' . preg_quote(get_request_var_request('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($template['name'])) : htmlspecialchars($template['name'])) . '</a>', $template['id']);
+			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars('graph_templates.php?action=template_edit&id=' . $template['id']) . "'>" . (strlen(get_request_var('filter')) ? preg_replace('/(' . preg_quote(get_request_var('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($template['name'])) : htmlspecialchars($template['name'])) . '</a>', $template['id']);
 			form_selectable_cell($template['size'], $template['id'], '', 'text-align:right');
 			form_selectable_cell($image_types[$template['image_format_id']], $template['id'], '', 'text-align:right');
 			form_selectable_cell($template['vertical_label'], $template['id'], '', 'text-align:right');

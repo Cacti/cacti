@@ -126,22 +126,22 @@ function form_save() {
 
 function input_remove() {
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_request('id'));
-	input_validate_input_number(get_request_var_request('graph_template_id'));
+	input_validate_input_number(get_request_var('id'));
+	input_validate_input_number(get_request_var('graph_template_id'));
 	/* ==================================================== */
 
 	if ((read_config_option('deletion_verification') == 'on') && (!isset($_REQUEST['confirm']))) {
 		top_header();
 
-		form_confirm('Are You Sure?', "Are you sure you want to delete the input item <strong>'" . htmlspecialchars(db_fetch_cell_prepared('SELECT name FROM graph_template_input WHERE id = ?', array(get_request_var_request('id'))), ENT_QUOTES) . "'</strong>? NOTE: Deleting this item will NOT affect graphs that use this template.", htmlspecialchars('graph_templates.php?action=template_edit&id=' . $_REQUEST['graph_template_id']), htmlspecialchars('graph_templates_inputs.php?action=input_remove&id=' . $_REQUEST['id'] . '&graph_template_id=' . $_REQUEST['graph_template_id']));
+		form_confirm('Are You Sure?', "Are you sure you want to delete the input item <strong>'" . htmlspecialchars(db_fetch_cell_prepared('SELECT name FROM graph_template_input WHERE id = ?', array(get_request_var('id'))), ENT_QUOTES) . "'</strong>? NOTE: Deleting this item will NOT affect graphs that use this template.", htmlspecialchars('graph_templates.php?action=template_edit&id=' . $_REQUEST['graph_template_id']), htmlspecialchars('graph_templates_inputs.php?action=input_remove&id=' . $_REQUEST['id'] . '&graph_template_id=' . $_REQUEST['graph_template_id']));
 
 		bottom_footer();
 		exit;
 	}
 
 	if ((read_config_option('deletion_verification') == '') || (isset($_REQUEST['confirm']))) {
-		db_execute_prepared('DELETE FROM graph_template_input WHERE id = ?', array(get_request_var_request('id')));
-		db_execute_prepared('DELETE FROM graph_template_input_defs WHERE graph_template_input_id = ?', array(get_request_var_request('id')));
+		db_execute_prepared('DELETE FROM graph_template_input WHERE id = ?', array(get_request_var('id')));
+		db_execute_prepared('DELETE FROM graph_template_input_defs WHERE graph_template_input_id = ?', array(get_request_var('id')));
 	}
 }
 
@@ -149,11 +149,11 @@ function input_edit() {
 	global $consolidation_functions, $graph_item_types, $struct_graph_item, $fields_graph_template_input_edit;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_request('id'));
-	input_validate_input_number(get_request_var_request('graph_template_id'));
+	input_validate_input_number(get_request_var('id'));
+	input_validate_input_number(get_request_var('graph_template_id'));
 	/* ==================================================== */
 
-	$header_label = '[edit graph: ' . db_fetch_cell_prepared('SELECT name FROM graph_templates WHERE id = ?', array(get_request_var_request('graph_template_id'))) . ']';
+	$header_label = '[edit graph: ' . db_fetch_cell_prepared('SELECT name FROM graph_templates WHERE id = ?', array(get_request_var('graph_template_id'))) . ']';
 
 	/* get a list of all graph item field names and populate an array for user display */
 	while (list($field_name, $field_array) = each($struct_graph_item)) {
@@ -163,7 +163,7 @@ function input_edit() {
 	}
 
 	if (!empty($_REQUEST['id'])) {
-		$graph_template_input = db_fetch_row_prepared('SELECT * FROM graph_template_input WHERE id = ?', array(get_request_var_request('id')));
+		$graph_template_input = db_fetch_row_prepared('SELECT * FROM graph_template_input WHERE id = ?', array(get_request_var('id')));
 	}
 
 	form_start('graph_templates_inputs.php');
@@ -191,7 +191,7 @@ function input_edit() {
 		LEFT JOIN data_template_data ON (data_local.id = data_template_data.local_data_id)
 		WHERE graph_templates_item.local_graph_id = 0
 		AND graph_templates_item.graph_template_id = ?
-		ORDER BY graph_templates_item.sequence", array(get_request_var_request('id'), get_request_var_request('graph_template_id')));
+		ORDER BY graph_templates_item.sequence", array(get_request_var('id'), get_request_var('graph_template_id')));
 
 	form_alternate_row();
 

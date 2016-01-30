@@ -128,8 +128,8 @@ function draw_edit_form_row($field_array, $field_name, $previous_value) {
 
 function host_reload_query() {
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_request('id'));
-	input_validate_input_number(get_request_var_request('host_id'));
+	input_validate_input_number(get_request_var('id'));
+	input_validate_input_number(get_request_var('host_id'));
 	/* ==================================================== */
 
 	run_data_query($_REQUEST['host_id'], $_REQUEST['id']);
@@ -397,14 +397,14 @@ function graphs() {
 	global $item_rows;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_request('host_id'));
-	input_validate_input_number(get_request_var_request('graph_type'));
-	input_validate_input_number(get_request_var_request('rows'));
+	input_validate_input_number(get_request_var('host_id'));
+	input_validate_input_number(get_request_var('graph_type'));
+	input_validate_input_number(get_request_var('rows'));
 	/* ==================================================== */
 
 	/* clean up search string */
 	if (isset($_REQUEST['filter'])) {
-		$_REQUEST['filter'] = sanitize_search_string(get_request_var_request('filter'));
+		$_REQUEST['filter'] = sanitize_search_string(get_request_var('filter'));
 	}
 
 	/* if the user pushed the 'clear' button */
@@ -437,7 +437,7 @@ function graphs() {
 		$header = 'None Host Type';
 	}
 
-	$row_limit = get_request_var_request('rows');
+	$row_limit = get_request_var('rows');
 
 	html_start_box("New Graphs for $header" , '100%', '', '3', 'center', '');
 
@@ -503,7 +503,7 @@ function graphs() {
 					<?php
 					if (sizeof($item_rows) > 0) {
 						foreach ($item_rows as $key => $value) {
-							print "<option value='" . $key . "'"; if (get_request_var_request('rows') == $key) { print ' selected'; } print '>' . htmlspecialchars($value) . "</option>\n";
+							print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . htmlspecialchars($value) . "</option>\n";
 						}
 					}
 					?>
@@ -520,7 +520,7 @@ function graphs() {
 				Search
 			</td>
 			<td>
-				<input id='filter' type='text' name='filter' size='25' value='<?php print htmlspecialchars(get_request_var_request('filter'));?>'>
+				<input id='filter' type='text' name='filter' size='25' value='<?php print htmlspecialchars(get_request_var('filter'));?>'>
 			</td>
 			<td colspan='3' class='nowrap'>
 				<input type='submit' value='Go' title='Set/Refresh Filters'>
