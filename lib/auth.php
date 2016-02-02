@@ -1385,3 +1385,22 @@ function secpass_check_history($id, $p) {
 	}
 	return true;
 }
+
+function rsa_check_keypair() {
+	global $config;
+	
+	set_include_path($config["include_path"] . "/phpseclib/");
+	include_once('Crypt/RSA.php');
+	include_once('Crypt/AES.php');
+	
+	$public_key = read_config_option('rsa_public_key');
+
+	if(!$public_key) {
+		$rsa = new Crypt_RSA();
+		$keys = $rsa->createKey(2048);
+		$rsa->loadKey($keys['publickey']);
+		$fingerprint = $rsa->getPublicKeyFingerprint();
+
+		db_execute_prepared("INSERT INTO settings (`name`, `value`) VALUES ('rsa_public_key', '" . $keys['publickey'] . "'),('rsa_private_key', '" . $keys['privatekey'] . "'),('rsa_fingerprint', '" . $fingerprint . "')");
+	}
+}

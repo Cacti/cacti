@@ -70,7 +70,7 @@ function basename(path, suffix) {
 	return b;
 }
 
-/** getTimestampFromDate - Simple function to convert a MySQL Date 
+/** getTimestampFromDate - Simple function to convert a MySQL Date
  * to a timestamp */
 function getTimestampFromDate(dateStamp) {
 	var dateParts = dateStamp.split(' ');
@@ -91,14 +91,14 @@ function getQueryString(name) {
 }
 
 
-/** delayKeyup - this function will delay the keyup to 
+/** delayKeyup - this function will delay the keyup to
  *  provide debouncing of input strokes on the keyboard
  *  this preventing your backend server from becoming overloaded
  *  usage: $("#yourid").delayKeyup(function(){ console.log('do something'); }, 500);
  *  @args name - the variable name to return */
 $.fn.delayKeyup = function(callback, ms){
 	var timer = 0;
-	$(this).keyup(function(){                   
+	$(this).keyup(function(){
 		clearTimeout (timer);
 		timer = setTimeout(callback, ms);
 	});
@@ -111,13 +111,13 @@ $.fn.bindFirst = function(which, handler) {
 	var $el = $(this);
 	$el.unbind(which, handler);
 	$el.bind(which, handler);
-  
+
 	var events = $._data($el[0]).events;
 	var registered = events[which];
 	registered.unshift(registered.pop());
-   
+
 	events[which] = registered;
-} 
+}
 
 /** replaceOptions - function replaces the options in a select dropdown */
 $.fn.replaceOptions = function(options, selected) {
@@ -185,7 +185,7 @@ $.fn.setCursorPosition = function(position) {
 };
 
 $.fn.selectRange = function(start, end) {
-	if(!end) end = start; 
+	if(!end) end = start;
 	return this.each(function() {
 		if (this.setSelectionRange) {
 			this.focus();
@@ -738,7 +738,7 @@ function applyTableSizing() {
 				$(this).attr('resizeWidth', parseInt($(this).width()));
 			});
 		 },
- 
+
 		resize: function(event, ui) {
 			var resizeDelta = parseInt(ui.size.width - originalSize);
 			var newColWidth = parseInt(colWidth + resizeDelta);
@@ -761,7 +761,7 @@ function applyTableSizing() {
 /** setupPageTimeout - This function will setup the page timeout based upon
  *  the plugin developers $refresh requirements.  It also sets up a location
  *  to redirect the user to upon timeout.  This is generally done for automatically
- *  logging out the user, but can be used for simply refreshing the page as in the 
+ *  logging out the user, but can be used for simply refreshing the page as in the
  *  case of the Graphs page. */
 function setupPageTimeout() {
 	if (typeof myRefresh != 'undefined') {

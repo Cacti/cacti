@@ -426,6 +426,9 @@ if ($step == '4') {
 
 		/* fill up the snmpcache */
 		snmpagent_cache_rebuilt();
+		
+		/* generate RSA key pair */
+		rsa_check_keypair();
 	}
 	
 	db_execute('DELETE FROM version');

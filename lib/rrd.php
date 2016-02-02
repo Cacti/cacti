@@ -25,13 +25,27 @@
 define('RRD_NL', " \\\n");
 define('MAX_FETCH_CACHE_SIZE', 5);
 
+if( read_config_option('storage_location') ) {
+	/* load crypt libraries only if the Cacti RRDtool Proxy Server is in use */
+	set_include_path($config["include_path"] . "/phpseclib/");
+	include_once('Crypt/RSA.php');
+	include_once('Crypt/AES.php');
+}
+
 function escape_command($command) {
 	return $command;		# we escape every single argument now, no need for "special" escaping
 	#return preg_replace("/(\\\$|`)/", "", $command); # current cacti code
 	#TODO return preg_replace((\\\$(?=\w+|\*|\@|\#|\?|\-|\\\$|\!|\_|[0-9]|\(.*\))|`(?=.*(?=`)))","$2", $command);  #suggested by ldevantier to allow for a single $
 }
 
-function rrd_init($output_to_term = TRUE) {
+function rrd_init() {
+	global $config;
+	$args = func_get_args();
+	$function = read_config_option('storage_location') ? '__rrd_proxy_init' : '__rrd_init';
+	return call_user_func_array($function, $args);
+}
+
+function __rrd_init($output_to_term = TRUE) {
 	global $config;
 
 	/* set the rrdtool default font */
@@ -52,14 +66,135 @@ function rrd_init($output_to_term = TRUE) {
 	return popen($command, 'w');
 }
 
-function rrd_close($rrdtool_pipe) {
+function __rrd_proxy_init() {
+	global $config;
+	
+	$rsa = new Crypt_RSA();
+	
+	$rrdp_socket = @socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
+	if ($rrdp_socket === false) {
+		// TODO: log entry ..
+		return false;
+	}
+	
+	$rrdp_address = read_config_option('rrdp_server');
+	$rrdp_port = read_config_option('rrdp_port');
+	$rrdp_fingerprint = read_config_option('rrdp_fingerprint');
+	
+	$rrdp = @socket_connect($rrdp_socket, $rrdp_address, $rrdp_port);
+		
+	if($rrdp === false) {
+		// TODO: log entry ..
+		return false;
+	}else {
+		socket_write($rrdp_socket, read_config_option('rsa_public_key') . "\r\n");
+	
+		/* read public key being returned by the proxy server */
+		$rrdp_public_key = '';
+		while(1) {
+			$recv = socket_read($rrdp_socket, 1000, PHP_BINARY_READ );
+			if($recv === false) {
+				/* timeout  */
+				/* TODO error log */
+				$rrdp_public_key = false;
+				break;
+			}else if($recv == '') {
+				/* session closed by Proxy */
+				break;	
+			}else {
+				$rrdp_public_key .= $recv;
+				if (substr($rrdp_public_key, -1) == "\n") {
+					$rrdp_public_key = trim($rrdp_public_key);
+					break;
+				}
+			}
+		}
+	
+		$rsa->loadKey($rrdp_public_key);
+		$fingerprint = $rsa->getPublicKeyFingerprint();
+
+		if($rrdp_fingerprint != $fingerprint) {
+			/* todo -- error logging */
+			return false;
+		}else {
+			$rrdproxy = array($rrdp_socket, $rrdp_public_key);
+			/* set the rrdtool default font */
+			if (read_config_option('path_rrdtool_default_font')) {
+				rrdtool_execute("setenv RRD_DEFAULT_FONT '" . read_config_option('path_rrdtool_default_font') . "'", false, RRDTOOL_OUTPUT_NULL, $rrdproxy, $logopt = 'WEBLOG');
+			}
+			
+			return $rrdproxy;
+		}
+	}
+}
+
+function rrd_close() {
+	global $config;
+	$args = func_get_args();
+	$function = read_config_option('storage_location') ? '__rrd_proxy_close' : '__rrd_close';
+	return call_user_func_array($function, $args);
+}
+
+function __rrd_close($rrdtool_pipe) {
 	/* close the rrdtool file descriptor */
 	if (is_resource($rrdtool_pipe)) {
 		pclose($rrdtool_pipe);
 	}
 }
 
-function rrdtool_execute($command_line, $log_to_stdout, $output_flag, $rrdtool_pipe = '', $logopt = 'WEBLOG') {
+function __rrd_proxy_close($rrdp) {
+	/* close the rrdtool proxy server connection */
+	if ($rrdp) {
+		socket_write($rrdp[0], encrypt('quit', $rrdp[1]) . "\r\n");
+		@socket_shutdown($rrdp[0], 2);
+		@socket_close($rrdp[0]);
+		return;
+	}
+}
+
+function encrypt($output, $rsa_key) {
+
+	$rsa = new Crypt_RSA();
+	$aes = new Crypt_AES();
+
+	$aes_key = crypt_random_string(192);
+	
+	$aes->setKey($aes_key);
+	$ciphertext = base64_encode($aes->encrypt($output));
+	$rsa->loadKey($rsa_key);
+	$aes_key = base64_encode($rsa->encrypt($aes_key));
+	$aes_key_length = str_pad(dechex(strlen($aes_key)),3,'0',STR_PAD_LEFT); 
+	
+	return $aes_key_length . $aes_key . $ciphertext;
+}
+
+function decrypt($input){
+			 
+	$rsa = new Crypt_RSA();
+	$aes = new Crypt_AES();
+
+	$rsa_private_key = read_config_option('rsa_private_key');
+	
+	$aes_key_length = hexdec(substr($input,0,3));
+	$aes_key = base64_decode(substr($input,3,$aes_key_length)); 
+	$ciphertext = base64_decode(substr($input,3+$aes_key_length));
+	
+	$rsa->loadKey( $rsa_private_key );
+	$aes_key = $rsa->decrypt($aes_key);
+	$aes->setKey($aes_key);
+	$plaintext = $aes->decrypt($ciphertext);
+
+	return $plaintext;
+}
+
+function rrdtool_execute() {
+	global $config;
+	$args = func_get_args();
+	$function = read_config_option('storage_location') ? '__rrd_proxy_execute' : '__rrd_execute';
+	return call_user_func_array($function, $args);
+}
+
+function __rrd_execute($command_line, $log_to_stdout, $output_flag, $rrdtool_pipe = '', $logopt = 'WEBLOG') {
 	global $config;
 
 	static $last_command;
@@ -185,6 +320,111 @@ function rrdtool_execute($command_line, $log_to_stdout, $output_flag, $rrdtool_p
 
 			break;
 	}
+}
+
+function __rrd_proxy_execute($command_line, $log_to_stdout, $output_flag, $rrdp='', $logopt = "WEBLOG") {
+	global $config;
+
+	static $last_command;
+
+	if (!is_numeric($output_flag)) {
+		$output_flag = RRDTOOL_OUTPUT_STDOUT;
+	}
+
+	/* WIN32: before sending this command off to rrdtool, get rid
+	of all of the '\' characters. Unix does not care; win32 does.
+	Also make sure to replace all of the fancy \'s at the end of the line,
+	but make sure not to get rid of the "\n"'s that are supposed to be
+	in there (text format) */
+	$command_line = str_replace("\\\n", " ", $command_line);
+
+	/* output information to the log file if appropriate */
+	//if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_DEBUG) {
+		cacti_log("CACTI2RRDP: " . read_config_option("path_rrdtool") . " $command_line", $log_to_stdout, $logopt);
+	//}
+	
+	/* store the last command to provide rrdtool segfault diagnostics */
+	$last_command = $command_line;
+	$rrdp_auto_close = FALSE;
+	
+	if(!$rrdp) {
+		$rrdp = __rrd_proxy_init();
+		$rrdp_auto_close = TRUE;
+	}
+	
+	if(!$rrdp) {
+		/* TODO log */
+		return null;	
+	}
+
+	$rrdp_socket = $rrdp[0];
+	$rrdp_public_key = $rrdp[1];
+	
+	socket_write($rrdp_socket, encrypt($command_line, $rrdp_public_key) . "\r\n");
+	
+	$input = '';
+	$output = '';
+
+	while(1) {
+		$recv = socket_read($rrdp_socket, 100000, PHP_BINARY_READ );
+		if($recv === false) {
+			/* timeout  */
+			/* TODO error log */
+			break;
+		}else if($recv == '') {
+			/* session closed by Proxy */
+			if($output) {
+				if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_DEBUG) {
+					cacti_log("RRDP: Connection closed by proxy" , $log_to_stdout, $logopt);
+				}
+			}
+			break;			
+		}else {
+			$input .= $recv;
+			if (strpos($input, "\n") !== false) {
+				$chunks = explode("\n", $input);
+				$input = array_pop($chunks);
+					
+				foreach($chunks as $chunk) {
+					$output .= decrypt(trim($chunk));
+					if ( substr_count($output, "OK u") || substr_count($output, "ERROR:") ) {
+	//					if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_DEBUG) {						
+							cacti_log("RRDP: " . $output, $log_to_stdout, $logopt);
+	//					}
+						break 2;
+					}
+				}
+			}
+		}	
+	}
+	
+	if($rrdp_auto_close) {
+		__rrd_proxy_close($rrdp);
+	}
+	
+	switch ($output_flag) {
+		case RRDTOOL_OUTPUT_NULL:
+			return;
+		case RRDTOOL_OUTPUT_STDOUT:
+			return $output;
+			break;
+		case RRDTOOL_OUTPUT_STDERR:
+			if (substr($output, 1, 3) == "PNG") {
+				return "OK";
+			}
+			if (substr($output, 0, 5) == "GIF87") {
+				return "OK";
+			}
+			print $output;
+			break;
+		case RRDTOOL_OUTPUT_GRAPH_DATA:
+			return $output;
+			break;
+		case RRDTOOL_OUTPUT_BOOLEAN :
+			return (substr_count($output, "OK u")) ? TRUE : FALSE;
+			break;
+	}
+	
 }
 
 function rrdtool_function_create($local_data_id, $show_source, $rrdtool_pipe = '') {
@@ -332,9 +572,14 @@ function rrdtool_function_update($update_cache_array, $rrdtool_pipe = '') {
 		$create_rrd_file = false;
 
 		/* create the rrd if one does not already exist */
-		if (!file_exists($rrd_path)) {
-			rrdtool_function_create($rrd_fields['local_data_id'], false, $rrdtool_pipe);
+		if(read_config_option('storage_location')) {
+			$file_exists = rrdtool_execute("file_exists $rrd_path" , true, RRDTOOL_OUTPUT_BOOLEAN, $rrdtool_pipe, 'POLLER');
+		}else {
+			$file_exists = file_exists($rrd_path);
+		}
 
+		if($file_exists === false) {
+			rrdtool_function_create($rrd_fields['local_data_id'], false, $rrdtool_pipe);
 			$create_rrd_file = true;
 		}
 

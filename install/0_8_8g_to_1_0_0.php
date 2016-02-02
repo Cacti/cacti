@@ -1177,4 +1177,7 @@ function upgrade_to_1_0_0() {
 	if (file_exists(dirname(__FILE__) . '/import_colors.php')) {
 		shell_exec('php -q ' . dirname(__FILE__) . '/import_colors.php');
 	}
+	
+	db_install_execute('1.0', "ALTER TABLE settings MODIFY COLUMN value varchar(2048) NOT NULL default ''");
+	rsa_check_keypair();
 }

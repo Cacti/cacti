@@ -38,6 +38,7 @@ $tabs = array(
 	'general' => 'General',
 	'path' => 'Paths',
 	'poller' => 'Poller',
+	'storage' => 'Data Storage',
 	'export' => 'Graph Export',
 	'visual' => 'Visual',
 	'authentication' => 'Authentication',
@@ -138,16 +139,6 @@ $settings = array(
 			'method' => 'filepath',
 			'max_length' => '255'
 			),
-		'extendedpaths_header' => array(
-			'friendly_name' => 'Structured RRD Path',
-			'collapsible' => 'true',
-			'method' => 'spacer',
-			),
-		'extended_paths' => array(
-			'friendly_name' => 'Structured RRA Path (/host_id/local_data_id.rrd)',
-			'description' => 'Use a seperate subfolder for each hosts RRD files.',
-			'method' => 'checkbox'
- 			),
 		'rrdclean_header' => array(
 			'friendly_name' => 'RRD Cleaner',
 			'method' => 'spacer',
@@ -1657,6 +1648,79 @@ $settings = array(
 			'max_length' => '255'
 			)
 		),
+	'storage' => array(
+		'general_header' => array(
+			'friendly_name' => 'General',
+			'method' => 'spacer',
+			'collapsible' => 'true'
+			),
+		'storage_location' => array(
+			'friendly_name' => 'Location',
+			'description' => 'Choose if RRDs will be stored locally or being handled by an external RRDtool proxy server. Note: Once this setting has been chanced poller cache needs to be rebuild.',
+			'method' => 'drop_array',
+			'default' => 'Local',
+			'array' => array('Local', 'RRDtool Proxy Server'),
+			),
+		'extended_paths' => array(
+			'friendly_name' => 'Structured RRD Path (/host_id/local_data_id.rrd)',
+			'description' => 'Use a seperate subfolder for each hosts RRD files.',
+			'method' => 'checkbox'
+			),
+		'rrdp_header' => array(
+			'friendly_name' => 'RRDtool Proxy Server',
+			'method' => 'spacer',
+			'collapsible' => 'true'
+		),
+		'rrdp_server' => array(
+			'friendly_name' => 'Proxy Server',
+			'description' => 'The dns hostname or ip address of the rrdtool proxy server.',
+			'method' => 'textbox',
+			'max_length' => '255'
+			),
+		'rrdp_port' => array(
+			'friendly_name' => 'Proxy Port Number',
+			'description' => 'TCP port for encrypted communication.',
+			'method' => 'textbox',
+			'max_length' => '5',
+			'default' => '40301',
+			'size' => '5'
+			),
+		'rrdp_fingerprint' => array(
+			'friendly_name' => 'RSA Fingerprint',
+			'description' => 'The fingerprint of the current public RSA key the proxy is using. This is required to establish a trusted connection.',
+			'method' => 'textbox',
+			'max_length' => '47',
+			'default' => '',
+			'size' => '47'
+			),
+		'rrdp_header2' => array(
+			'friendly_name' => 'RRDtool Proxy Server - Backup',
+			'method' => 'spacer',
+			'collapsible' => 'true'
+		),
+		'rrdp_server_backup' => array(
+			'friendly_name' => 'Proxy Server',
+			'description' => 'The dns hostname or ip address of the rrdtool backup proxy server if proxy is running in MSR mode.',
+			'method' => 'textbox',
+			'max_length' => '255'
+			),
+		'rrdp_port_backup' => array(
+			'friendly_name' => 'Proxy Port Number',
+			'description' => 'TCP port for encrypted communication with the backup proxy.',
+			'method' => 'textbox',
+			'max_length' => '5',
+			'default' => '40301',
+			'size' => '5'
+			),
+		'rrdp_fingerprint_backup' => array(
+			'friendly_name' => 'RSA Fingerprint',
+			'description' => 'The fingerprint of the current public RSA key the backup proxy is using. This required to establish a trusted connection.',
+			'method' => 'textbox',
+			'max_length' => '47',
+			'default' => '',
+			'size' => '47'
+			),
+ 		),
 	);
 
 $settings_graphs = array(

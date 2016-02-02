@@ -3324,7 +3324,7 @@ INSERT INTO rra_cf VALUES (5,3);
 
 CREATE TABLE settings (
   name varchar(50) NOT NULL default '',
-  value varchar(255) NOT NULL default '',
+  value varchar(2048) NOT NULL default '',
   PRIMARY KEY  (name)
 ) ENGINE=MyISAM;
 

@@ -263,6 +263,10 @@ function utilities_view_tech($php_info = '') {
 	print "		<td class='textArea'>Cacti OS</td>\n";
 	print "		<td class='textArea'>" . $config['cacti_server_os'] . "</td>\n";
 	print "</tr>\n";
+	print "<tr class='odd'>\n";
+	print "		<td class='textArea'>RSA Fingerprint</td>\n";
+	print "		<td class='textArea'>" . read_config_option('rsa_fingerprint') . "</td>\n";
+	print "</tr>\n";
 	print "<tr class='even'>\n";
 	print "		<td class='textArea'>SNMP Version</td>\n";
 	print "		<td class='textArea'>" . $snmp_version . "</td>\n";
