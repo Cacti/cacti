@@ -1104,7 +1104,7 @@ function get_data_source_path($local_data_id, $expand_paths) {
 
 			/* whether to show the "actual" path or the <path_rra> variable name (for edit boxes) */
 			if ($expand_paths == true) {
-				$data_source_path = str_replace('<path_rra>/', (read_config_option('storage_location') ? './' : $config['rra_path']), $data_source_path);
+				$data_source_path = str_replace('<path_rra>/', (read_config_option('storage_location') ? './' : $config['rra_path'] . '/'), $data_source_path);
 			}
 
 			$data_source_path_cache[$local_data_id] = $data_source_path;
@@ -3088,7 +3088,7 @@ function send_mail($to, $from, $subject, $body, $attachments = '', $headers = ''
 function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '', $attachments, $headers, $html = true) {
 	global $config;
 
-	include_once($config['base_path'] . '/lib/PHPMailer/PHPMailerAutoload.php');
+	include_once($config['include_path'] . '/phpmailer/PHPMailerAutoload.php');
 
 	// Set the to informaiotn
 	if ($to == '') {
@@ -3348,7 +3348,7 @@ function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '
 function ping_mail_server($host, $port, $user, $password, $timeout = 5, $secure = 'none') {
 	global $config;
 
-	include_once($config['base_path'] . '/lib/PHPMailer/PHPMailerAutoload.php');
+	include_once($config['include_path'] . '/phpmailer/PHPMailerAutoload.php');
 
 	//Create a new SMTP instance
 	$smtp = new SMTP;
