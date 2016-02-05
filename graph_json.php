@@ -140,25 +140,24 @@ $output = @rrdtool_function_graph($_REQUEST['local_graph_id'], (array_key_exists
 
 $oarray = array('type' => $gtype, 'local_graph_id' => $_REQUEST['local_graph_id'], 'rra_id' => $_REQUEST['rra_id']);
 
-$lpos   = 0;
-
-while (true) {
-	$pos = strpos($output, "\n", $lpos);
-
-	if ($pos > 0) {
-		//echo ">>>>" . substr($output,$lpos,$pos-$lpos) . "<<<<\n";
-		$parts = explode('=', substr($output,$lpos,$pos-$lpos));
-		$name  = trim($parts[0]);
-		$value = trim($parts[1]);
-		if ($name == 'image') {
-			$oarray[$name] = base64_encode(substr($output,$pos+1));
-			break;
-		}else{
-			$oarray[$name] = $value;
-		}
-
-		$lpos = $pos + 1;
+// Check if we received back something populated from rrdtool
+if ($output) {
+	// Find the beginning of the image definition row
+	$image_begin_pos  = strpos($output, "image = ");
+	// Find the end of the line of the image definition row, after this the raw image data will come
+	$image_data_pos   = strpos($output, "\n" , $image_begin_pos) + 1;
+	// Insert the raw image data to the array
+	$oarray['image']  = base64_encode(substr($output, $image_data_pos));
+	
+	// Parse and populate everything before the image definition row
+	$header_lines     = explode("\n", substr($output, 0, $image_begin_pos - 1));
+	foreach ($header_lines as $line) {
+		$parts = explode(" = ", $line);
+		$oarray[$parts[0]] = trim($parts[1]);
 	}
+} else { 
+	// We most likely got back an empty image since the graph data doesn't exist yet, show a placeholder
+	$oarray['image']  = base64_encode(file_get_contents(__DIR__."/images/rrd_not_found.png"));
 }
 
 print json_encode($oarray);
