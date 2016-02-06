@@ -122,12 +122,12 @@ function process_html_variables() {
 /* when a span time preselection has been defined update the span time fields */
 /* someone hit a button and not a dropdown */
 function process_user_input(&$timespan, $timeshift) {
-	if (isset($_POST['date1'])) {
+	if (isset(get_request_var_post('date1'))) {
 		/* the dates have changed, therefore, I am now custom */
-		if (($_SESSION['sess_current_date1'] != $_POST['date1']) || ($_SESSION['sess_current_date2'] != $_POST['date2']) || (isset($_REQUEST['custom']))) {
-			$timespan['current_value_date1'] = sanitize_search_string($_POST['date1']);
+		if (($_SESSION['sess_current_date1'] != get_request_var_post('date1')) || ($_SESSION['sess_current_date2'] != get_request_var_post('date2')) || (isset($_REQUEST['custom']))) {
+			$timespan['current_value_date1'] = sanitize_search_string(get_request_var_post('date1'));
 			$timespan['begin_now'] =strtotime($timespan['current_value_date1']);
-			$timespan['current_value_date2'] = sanitize_search_string($_POST['date2']);
+			$timespan['current_value_date2'] = sanitize_search_string(get_request_var_post('date2'));
 			$timespan['end_now']=strtotime($timespan['current_value_date2']);
 			$_SESSION['sess_current_timespan'] = GT_CUSTOM;
 			$_SESSION['custom'] = 1;
@@ -135,8 +135,8 @@ function process_user_input(&$timespan, $timeshift) {
 		}else {
 			/* the default button wasn't pushed */
 			if (!isset($_POST['button_clear'])) {
-				$timespan['current_value_date1'] = sanitize_search_string($_POST['date1']);
-				$timespan['current_value_date2'] = sanitize_search_string($_POST['date2']);
+				$timespan['current_value_date1'] = sanitize_search_string(get_request_var_post('date1'));
+				$timespan['current_value_date2'] = sanitize_search_string(get_request_var_post('date2'));
 				$timespan['begin_now'] = $_SESSION['sess_current_timespan_begin_now'];
 				$timespan['end_now'] = $_SESSION['sess_current_timespan_end_now'];
 

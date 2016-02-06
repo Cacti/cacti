@@ -399,7 +399,7 @@ function generate_report($report, $force = false) {
 		if (isset($_REQUEST['id'])) {
 			$_SESSION['reports_error'] = "Problems sending Report '" . $report['name'] . "'.  Problem with e-mail Subsystem Error is '$error'";
 
-			if (!isset($_POST['selected_items'])) {
+			if (!isset(get_request_var_post('selected_items'))) {
 				raise_message('reports_error');
 			}
 		} else {
@@ -408,7 +408,7 @@ function generate_report($report, $force = false) {
 	} elseif (isset($_REQUEST)) {
 		$_SESSION['reports_message'] = "Report '" . $report['name'] . "' Sent Successfully";
 
-		if (!isset($_POST['selected_items'])) {
+		if (!isset(get_request_var_post('selected_items'))) {
 			raise_message('reports_message');
 		}
 	}
@@ -1399,15 +1399,15 @@ function reports_graphs_action_execute($action) {
 		$message = '';
 
 		/* loop through each of the graph_items selected on the previous page for skipped items */
-		if (isset($_POST['selected_items'])) {
-			$selected_items = sanitize_unserialize_selected_items($_POST['selected_items']);
+		if (isset(get_request_var_post('selected_items'))) {
+			$selected_items = sanitize_unserialize_selected_items(get_request_var_post('selected_items'));
 
 			if ($selected_items != false) {
 				$reports_id      = $_POST['reports_id'];
 
 				input_validate_input_number($reports_id);
-				input_validate_input_number($_POST['timespan']);
-				input_validate_input_number($_POST['alignment']);
+				input_validate_input_number(get_request_var_post('timespan'));
+				input_validate_input_number(get_request_var_post('alignment'));
 
 				$report = db_fetch_row_prepared('SELECT * FROM reports WHERE id = ?',  array($reports_id));
 
@@ -1417,7 +1417,7 @@ function reports_graphs_action_execute($action) {
 						FROM reports_items
 						WHERE local_graph_id = ?
 						AND report_id = ?
-						AND timespan = ?', array($local_graph_id, $reports_id, $_POST['timespan']));
+						AND timespan = ?', array($local_graph_id, $reports_id, get_request_var_post('timespan')));
 
 					if (!$existing) {
 						$sequence = db_fetch_cell_prepared('SELECT max(sequence)
@@ -1448,8 +1448,8 @@ function reports_graphs_action_execute($action) {
 						$save['host_id']           = $graph_data['host_id'];
 						$save['graph_template_id'] = $graph_data['graph_template_id'];
 						$save['local_graph_id']    = $local_graph_id;
-						$save['timespan']          = $_POST['timespan'];
-						$save['align']             = $_POST['alignment'];
+						$save['timespan']          = get_request_var_post('timespan');
+						$save['align']             = get_request_var_post('alignment');
 						$save['item_text']         = '';
 						$save['font_size']         = $report['font_size'];
 						$save['sequence']          = $sequence;

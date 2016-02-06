@@ -444,34 +444,34 @@ function reports_form_save() {
 		/* ==================================================== */
 		$now = time();
 
-		if ($_POST['id'] == 0 || $_POST['id'] == '') {
+		if (get_request_var_post('id') == 0 || $_POST['id'] == '') {
 			$save['user_id'] = $_SESSION['sess_user_id'];
 		}else{
-			$save['user_id'] = db_fetch_cell('SELECT user_id FROM reports WHERE id=' . $_POST['id']);
+			$save['user_id'] = db_fetch_cell('SELECT user_id FROM reports WHERE id=' . get_request_var_post('id'));
 		}
 
-		$save['id']				= $_POST['id'];
+		$save['id']				= get_request_var_post('id');
 		$save['name']			= sql_sanitize(form_input_validate($_POST['name'], 'name', '', false, 3));
 		$save['email']			= sql_sanitize(form_input_validate($_POST['email'], 'email', '', false, 3));
 		$save['enabled']		= (isset($_POST['enabled']) ? 'on' : '');
 
 		$save['cformat']		= (isset($_POST['cformat']) ? 'on' : '');
-		$save['format_file']	= sql_sanitize($_POST['format_file']);
-		$save['font_size']		= form_input_validate($_POST['font_size'], 'font_size', '^[0-9]+$', false, 3);
-		$save['alignment']		= form_input_validate($_POST['alignment'], 'alignment', '^[0-9]+$', false, 3);
+		$save['format_file']	= sql_sanitize(get_request_var_post('format_file'));
+		$save['font_size']		= form_input_validate(get_request_var_post('font_size'), 'font_size', '^[0-9]+$', false, 3);
+		$save['alignment']		= form_input_validate(get_request_var_post('alignment'), 'alignment', '^[0-9]+$', false, 3);
 		$save['graph_linked']	= (isset($_POST['graph_linked']) ? 'on' : '');
 
-		$save['graph_columns']	= form_input_validate($_POST['graph_columns'], 'graph_columns', '^[0-9]+$', false, 3);
-		$save['graph_width']	= form_input_validate($_POST['graph_width'], 'graph_width', '^[0-9]+$', false, 3);
-		$save['graph_height']	= form_input_validate($_POST['graph_height'], 'graph_height', '^[0-9]+$', false, 3);
+		$save['graph_columns']	= form_input_validate(get_request_var_post('graph_columns'), 'graph_columns', '^[0-9]+$', false, 3);
+		$save['graph_width']	= form_input_validate(get_request_var_post('graph_width'), 'graph_width', '^[0-9]+$', false, 3);
+		$save['graph_height']	= form_input_validate(get_request_var_post('graph_height'), 'graph_height', '^[0-9]+$', false, 3);
 		$save['thumbnails']		= form_input_validate((isset($_POST['thumbnails']) ? $_POST['thumbnails']:''), 'thumbnails', '', true, 3);
 
-		$save['intrvl']			= form_input_validate($_POST['intrvl'], 'intrvl', '^[-+]?[0-9]+$', false, 3);
-		$save['count']			= form_input_validate($_POST['count'], 'count', '^[0-9]+$', false, 3);
+		$save['intrvl']			= form_input_validate(get_request_var_post('intrvl'), 'intrvl', '^[-+]?[0-9]+$', false, 3);
+		$save['count']			= form_input_validate(get_request_var_post('count'), 'count', '^[0-9]+$', false, 3);
 		$save['offset']			= '0';
 
 		/* adjust mailtime according to rules */
-		$timestamp = strtotime($_POST['mailtime']);
+		$timestamp = strtotime(get_request_var_post('mailtime'));
 		if ($timestamp === false) {
 			$timestamp  = $now;
 		} elseif (($timestamp + read_config_option('poller_interval')) < $now) {
@@ -488,27 +488,27 @@ function reports_form_save() {
 
 		$save['mailtime']     = form_input_validate($timestamp, 'mailtime', '^[0-9]+$', false, 3);
 
-		if (strlen($_POST['subject'])) {
-			$save['subject']          = sql_sanitize($_POST['subject']);
+		if (strlen(get_request_var_post('subject'))) {
+			$save['subject']          = sql_sanitize(get_request_var_post('subject'));
 		}else{
 			$save['subject'] = $save['name'];
 		}
-		$save['from_name']        = sql_sanitize($_POST['from_name']);
-		$save['from_email']       = sql_sanitize($_POST['from_email']);
-		$save['bcc']              = sql_sanitize($_POST['bcc']);
-		if (($_POST['attachment_type'] != REPORTS_TYPE_INLINE_PNG) &&
-			($_POST['attachment_type'] != REPORTS_TYPE_INLINE_JPG) &&
-			($_POST['attachment_type'] != REPORTS_TYPE_INLINE_GIF) &&
-			($_POST['attachment_type'] != REPORTS_TYPE_ATTACH_PNG) &&
-			($_POST['attachment_type'] != REPORTS_TYPE_ATTACH_JPG) &&
-			($_POST['attachment_type'] != REPORTS_TYPE_ATTACH_GIF) &&
-			($_POST['attachment_type'] != REPORTS_TYPE_INLINE_PNG_LN) &&
-			($_POST['attachment_type'] != REPORTS_TYPE_INLINE_JPG_LN) &&
-			($_POST['attachment_type'] != REPORTS_TYPE_INLINE_GIF_LN) &&
-			($_POST['attachment_type'] != REPORTS_TYPE_ATTACH_PDF)) {
-			$_POST['attachment_type'] = REPORTS_TYPE_INLINE_PNG;
+		$save['from_name']        = sql_sanitize(get_request_var_post('from_name'));
+		$save['from_email']       = sql_sanitize(get_request_var_post('from_email'));
+		$save['bcc']              = sql_sanitize(get_request_var_post('bcc'));
+		if ((get_request_var_post('attachment_type') != REPORTS_TYPE_INLINE_PNG) &&
+			(get_request_var_post('attachment_type') != REPORTS_TYPE_INLINE_JPG) &&
+			(get_request_var_post('attachment_type') != REPORTS_TYPE_INLINE_GIF) &&
+			(get_request_var_post('attachment_type') != REPORTS_TYPE_ATTACH_PNG) &&
+			(get_request_var_post('attachment_type') != REPORTS_TYPE_ATTACH_JPG) &&
+			(get_request_var_post('attachment_type') != REPORTS_TYPE_ATTACH_GIF) &&
+			(get_request_var_post('attachment_type') != REPORTS_TYPE_INLINE_PNG_LN) &&
+			(get_request_var_post('attachment_type') != REPORTS_TYPE_INLINE_JPG_LN) &&
+			(get_request_var_post('attachment_type') != REPORTS_TYPE_INLINE_GIF_LN) &&
+			(get_request_var_post('attachment_type') != REPORTS_TYPE_ATTACH_PDF)) {
+			get_request_var_post('attachment_type') = REPORTS_TYPE_INLINE_PNG;
 		}
-		$save['attachment_type']  = form_input_validate($_POST['attachment_type'], 'attachment_type', '^[0-9]+$', false, 3);
+		$save['attachment_type']  = form_input_validate(get_request_var_post('attachment_type'), 'attachment_type', '^[0-9]+$', false, 3);
 		$save['lastsent']         = 0;
 
 		if (!is_error_message()) {
@@ -521,7 +521,7 @@ function reports_form_save() {
 			}
 		}
 
-		header('Location: ' . get_reports_page() . '?action=edit&id=' . (empty($id) ? $_POST['id'] : $id));
+		header('Location: ' . get_reports_page() . '?action=edit&id=' . (empty($id) ? get_request_var_post('id') : $id));
 		exit;
 	}elseif (isset($_POST['save_component_report_item'])) {
 		/* ================= input validation ================= */
@@ -531,22 +531,22 @@ function reports_form_save() {
 
 		$save = array();
 
-		$save['id']                = $_POST['id'];
-		$save['report_id']         = form_input_validate($_POST['report_id'], 'report_id', '^[0-9]+$', false, 3);
-		$save['sequence']          = form_input_validate($_POST['sequence'], 'sequence', '^[0-9]+$', false, 3);
-		$save['item_type']         = form_input_validate($_POST['item_type'], 'item_type', '^[-0-9]+$', false, 3);
+		$save['id']                = get_request_var_post('id');
+		$save['report_id']         = form_input_validate(get_request_var_post('report_id'), 'report_id', '^[0-9]+$', false, 3);
+		$save['sequence']          = form_input_validate(get_request_var_post('sequence'), 'sequence', '^[0-9]+$', false, 3);
+		$save['item_type']         = form_input_validate(get_request_var_post('item_type'), 'item_type', '^[-0-9]+$', false, 3);
 		$save['tree_id']           = (isset($_POST['tree_id']) ? form_input_validate($_POST['tree_id'], 'tree_id', '^[-0-9]+$', true, 3) : 0);
 		$save['branch_id']         = (isset($_POST['branch_id']) ? form_input_validate($_POST['branch_id'], 'branch_id', '^[-0-9]+$', true, 3) : 0);
 		$save['tree_cascade']      = (isset($_POST['tree_cascade']) ? 'on':'');
-		$save['graph_name_regexp'] = sql_sanitize($_POST['graph_name_regexp']);
+		$save['graph_name_regexp'] = sql_sanitize(get_request_var_post('graph_name_regexp'));
 		$save['host_template_id']  = (isset($_POST['host_template_id']) ? form_input_validate($_POST['host_template_id'], 'host_template_id', '^[-0-9]+$', true, 3) : 0);
 		$save['host_id']           = (isset($_POST['host_id']) ? form_input_validate($_POST['host_id'], 'host_id', '^[-0-9]+$', true, 3) : 0);
 		$save['graph_template_id'] = (isset($_POST['graph_template_id']) ? form_input_validate($_POST['graph_template_id'], 'graph_template_id', '^[-0-9]+$', true, 3) : 0);
 		$save['local_graph_id']    = (isset($_POST['local_graph_id']) ? form_input_validate($_POST['local_graph_id'], 'local_graph_id', '^[0-9]+$', true, 3) : 0);
-		$save['timespan']          = (isset($_POST['timespan']) ? form_input_validate($_POST['timespan'], 'timespan', '^[0-9]+$', true, 3) : 0);
+		$save['timespan']          = (isset(get_request_var_post('timespan')) ? form_input_validate($_POST['timespan'], 'timespan', '^[0-9]+$', true, 3) : 0);
 		$save['item_text']         = (isset($_POST['item_text']) ? sql_sanitize(form_input_validate($_POST['item_text'], 'item_text', '', true, 3)) : '');
 		$save['align']             = (isset($_POST['align']) ? form_input_validate($_POST['align'], 'align', '^[0-9]+$', true, 3) : REPORTS_ALIGN_LEFT);
-		$save['font_size']         = (isset($_POST['font_size']) ? form_input_validate($_POST['font_size'], 'font_size', '^[0-9]+$', true, 3) : REPORTS_FONT_SIZE);
+		$save['font_size']         = (isset(get_request_var_post('font_size')) ? form_input_validate($_POST['font_size'], 'font_size', '^[0-9]+$', true, 3) : REPORTS_FONT_SIZE);
 
 		if (!is_error_message()) {
 			$item_id = sql_save($save, 'reports_items');
@@ -558,7 +558,7 @@ function reports_form_save() {
 			}
 		}
 
-		header('Location: ' . get_reports_page() . '?action=item_edit&id=' . $_POST['report_id'] . '&item_id=' . (empty($item_id) ? $_POST['id'] : $item_id));
+		header('Location: ' . get_reports_page() . '?action=item_edit&id=' . get_request_var_post('report_id') . '&item_id=' . (empty($item_id) ? get_request_var_post('id') : $item_id));
 	} else {
 		header('Location: ' . get_reports_page());
 	}
@@ -577,34 +577,34 @@ function reports_form_actions() {
 	/* ==================================================== */
 
 	/* if we are to save this form, instead of display it */
-	if (isset($_POST['selected_items'])) {
-		$selected_items = sanitize_unserialize_selected_items($_POST['selected_items']);
+	if (isset(get_request_var_post('selected_items'))) {
+		$selected_items = sanitize_unserialize_selected_items(get_request_var_post('selected_items'));
 
 		if ($selected_items != false) {
-			if ($_POST['drp_action'] == REPORTS_DELETE) { /* delete */
+			if (get_request_var_post('drp_action') == REPORTS_DELETE) { /* delete */
 				db_execute('DELETE FROM reports WHERE ' . array_to_sql_or($selected_items, 'id'));
 				db_execute('DELETE FROM reports_items WHERE ' . str_replace('id', 'report_id', array_to_sql_or($selected_items, 'id')));
-			}elseif ($_POST['drp_action'] == REPORTS_OWN) { /* take ownership */
+			}elseif (get_request_var_post('drp_action') == REPORTS_OWN) { /* take ownership */
 				for ($i=0;($i<count($selected_items));$i++) {
 					reports_log(__FUNCTION__ . ', takeown: ' . $selected_items[$i] . ' user: ' . $_SESSION['sess_user_id'], false, 'REPORTS TRACE', POLLER_VERBOSITY_MEDIUM);
 					db_execute('UPDATE reports SET user_id=' . $_SESSION['sess_user_id'] . ' WHERE id=' . $selected_items[$i]);
 				}
-			}elseif ($_POST['drp_action'] == REPORTS_DUPLICATE) { /* duplicate */
+			}elseif (get_request_var_post('drp_action') == REPORTS_DUPLICATE) { /* duplicate */
 				for ($i=0;($i<count($selected_items));$i++) {
 					reports_log(__FUNCTION__ . ', duplicate: ' . $selected_items[$i] . ' name: ' . $_POST['name_format'], false, 'REPORTS TRACE', POLLER_VERBOSITY_MEDIUM);
 					duplicate_report($selected_items[$i], $_POST['name_format']);
 				}
-			}elseif ($_POST['drp_action'] == REPORTS_ENABLE) { /* enable */
+			}elseif (get_request_var_post('drp_action') == REPORTS_ENABLE) { /* enable */
 				for ($i=0;($i<count($selected_items));$i++) {
 					reports_log(__FUNCTION__ . ', enable: ' . $selected_items[$i], false, 'REPORTS TRACE', POLLER_VERBOSITY_MEDIUM);
 					db_execute("UPDATE reports SET enabled='on' WHERE id=" . $selected_items[$i]);
 				}
-			}elseif ($_POST['drp_action'] == REPORTS_DISABLE) { /* disable */
+			}elseif (get_request_var_post('drp_action') == REPORTS_DISABLE) { /* disable */
 				for ($i=0;($i<count($selected_items));$i++) {
 					reports_log(__FUNCTION__ . ', disable: ' . $selected_items[$i], false, 'REPORTS TRACE', POLLER_VERBOSITY_MEDIUM);
 					db_execute("UPDATE reports SET enabled='' WHERE id=" . $selected_items[$i]);
 				}
-			}elseif ($_POST['drp_action'] == REPORTS_SEND_NOW) { /* send now */
+			}elseif (get_request_var_post('drp_action') == REPORTS_SEND_NOW) { /* send now */
 				include_once($config['base_path'] . '/lib/reports.php');
 				$message = '';
 
@@ -658,7 +658,7 @@ function reports_form_actions() {
 
 	print "<form name='report' action='" . get_reports_page() . "' method='post'>";
 
-	html_start_box('<strong>' . $reports_actions{$_POST['drp_action']} . '</strong>', '60%', '', '3', 'center', '');
+	html_start_box('<strong>' . $reports_actions{get_request_var_post('drp_action')} . '</strong>', '60%', '', '3', 'center', '');
 
 	if (!isset($reports_array)) {
 		print "<tr><td class='even'><span class='textError'>You must select at least one Report.</span></td></tr>\n";
@@ -666,21 +666,21 @@ function reports_form_actions() {
 	}else{
 		$save_html = "<input type='submit' value='Continue' name='save'>";
 
-		if ($_POST['drp_action'] == REPORTS_DELETE) { /* delete */
+		if (get_request_var_post('drp_action') == REPORTS_DELETE) { /* delete */
 			print "<tr>
 				<td class='textArea'>
 					<p>Click 'Continue' to delete the following Report(s).</p>
 					<p><ul>$reports_list</ul></p>
 				</td>
 			</tr>\n";
-		}elseif (is_reports_admin() && $_POST['drp_action'] == REPORTS_OWN) { /* take ownership */
+		}elseif (is_reports_admin() && get_request_var_post('drp_action') == REPORTS_OWN) { /* take ownership */
 			print "<tr>
 				<td class='textArea'>
 					<p>Click 'Continue' to take ownership of the following Report(s).</p>
 					<p><ul>$reports_list</ul></p>
 				</td>
 			</tr>\n";
-		}elseif ($_POST['drp_action'] == REPORTS_DUPLICATE) { /* duplicate */
+		}elseif (get_request_var_post('drp_action') == REPORTS_DUPLICATE) { /* duplicate */
 			print "<tr>
 				<td class='textArea'>
 					<p>Click 'Continue' to duplicate the following Report(s). 
@@ -693,7 +693,7 @@ function reports_form_actions() {
 			print "</p>
 				</td>
 			</tr>\n";
-		}elseif ($_POST['drp_action'] == REPORTS_ENABLE) { /* enable */
+		}elseif (get_request_var_post('drp_action') == REPORTS_ENABLE) { /* enable */
 			print "<tr>
 				<td class='textArea'>
 					<p>Click 'Continue' to enable the following Report(s).</p>
@@ -701,14 +701,14 @@ function reports_form_actions() {
 					<p>Please be certain that those Report(s) have successfully been tested first!</p>
 				</td>
 			</tr>\n";
-		}elseif ($_POST['drp_action'] == REPORTS_DISABLE) { /* disable */
+		}elseif (get_request_var_post('drp_action') == REPORTS_DISABLE) { /* disable */
 			print "<tr>
 				<td class='textArea'>
 					<p>Click 'Continue' to disable the following Reports.</p>
 					<p><ul>$reports_list</ul></p>
 				</td>
 			</tr>\n";
-		}elseif ($_POST['drp_action'] == REPORTS_SEND_NOW) { /* send now */
+		}elseif (get_request_var_post('drp_action') == REPORTS_SEND_NOW) { /* send now */
 			print "<tr>
 				<td class='textArea'>
 					<p>Click 'Continue' to send the following Report(s) now.</p>
@@ -722,7 +722,7 @@ function reports_form_actions() {
 		<td class='saveRow'>
 			<input type='hidden' name='action' value='actions'>
 			<input type='hidden' name='selected_items' value='" . (isset($reports_array) ? serialize($reports_array) : '') . "'>
-			<input type='hidden' name='drp_action' value='" . $_POST['drp_action'] . "'>
+			<input type='hidden' name='drp_action' value='" . get_request_var_post('drp_action') . "'>
 			<input type='button' onClick='cactiReturnTo()' value='" . ($save_html == '' ? 'Return':'Cancel') . "' name='cancel'>
 			$save_html
 		</td>
@@ -758,22 +758,22 @@ function reports_send($id) {
 		};
 		if (!strlen($report['email'])) {
 			$_SESSION['reports_error'] = "Unable to send Report '" . $report['name'] . "'.  Please set destination e-mail addresses";
-			if (!isset($_POST['selected_items'])) {
+			if (!isset(get_request_var_post('selected_items'))) {
 				raise_message('reports_error');
 			}
 		}elseif (!strlen($report['subject'])) {
 			$_SESSION['reports_error'] = "Unable to send Report '" . $report['name'] . "'.  Please set an e-mail subject";
-			if (!isset($_POST['selected_items'])) {
+			if (!isset(get_request_var_post('selected_items'))) {
 				raise_message('reports_error');
 			}
 		}elseif (!strlen($report['from_name'])) {
 			$_SESSION['reports_error'] = "Unable to send Report '" . $report['name'] . "'.  Please set an e-mail From Name";
-			if (!isset($_POST['selected_items'])) {
+			if (!isset(get_request_var_post('selected_items'))) {
 				raise_message('reports_error');
 			}
 		}elseif (!strlen($report['from_email'])) {
 			$_SESSION['reports_error'] = "Unable to send Report '" . $report['name'] . "'.  Please set an e-mail from address";
-			if (!isset($_POST['selected_items'])) {
+			if (!isset(get_request_var_post('selected_items'))) {
 				raise_message('reports_error');
 			}
 		}else{
