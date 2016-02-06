@@ -47,7 +47,7 @@ $ds_actions = array(
 $ds_actions = api_plugin_hook_function('data_source_action_array', $ds_actions);
 
 /* set default action */
-if (!isset($_REQUEST['action'])) { $_REQUEST['action'] = ''; }
+set_default_action();
 
 switch ($_REQUEST['action']) {
 	case 'save':

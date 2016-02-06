@@ -29,7 +29,7 @@ define('MAX_DISPLAY_PAGES', 21);
 $color_actions = array('1' => 'Delete');
 
 /* set default action */
-if (!isset($_REQUEST['action'])) { $_REQUEST['action'] = ''; }
+set_default_action();
 
 switch ($_REQUEST['action']) {
 	case 'save':

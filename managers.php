@@ -44,7 +44,7 @@ $tabs_manager_edit = array(
 );
 
 /* set default action */
-if (!isset($_REQUEST['action'])) { $_REQUEST['action'] = ''; }
+set_default_action();
 
 switch ($_REQUEST['action']) {
 	case 'save':

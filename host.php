@@ -48,7 +48,7 @@ $device_actions = array(
 $device_actions = api_plugin_hook_function('device_action_array', $device_actions);
 
 /* set default action */
-if (!isset($_REQUEST['action'])) { $_REQUEST['action'] = ''; }
+set_default_action();
 
 switch ($_REQUEST['action']) {
 	case 'save':

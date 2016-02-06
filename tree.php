@@ -46,7 +46,7 @@ if (isset($_REQUEST['id']) && $_REQUEST['id'] != '#') {
 }
 
 /* set default action */
-if (!isset($_REQUEST['action'])) { $_REQUEST['action'] = ''; }
+set_default_action();
 
 switch ($_REQUEST['action']) {
 	case 'save':

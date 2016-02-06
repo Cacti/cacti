@@ -33,7 +33,7 @@ $automation_snmp_actions = array(
 );
 
 /* set default action */
-if (!isset($_REQUEST['action'])) { $_REQUEST['action'] = ''; }
+set_default_action();
 
 /* correct for a cancel button */
 if (isset($_REQUEST['cancel'])) { $_REQUEST['action'] = ''; }

@@ -26,7 +26,7 @@ include('./include/auth.php');
 include_once('./lib/template.php');
 
 /* set default action */
-if (!isset($_REQUEST['action'])) { $_REQUEST['action'] = ''; }
+set_default_action();
 
 switch ($_REQUEST['action']) {
 	case 'save':

@@ -27,7 +27,7 @@ include_once('./lib/utility.php');
 include_once('./lib/boost.php');
 
 /* set default action */
-if (!isset($_REQUEST['action'])) { $_REQUEST['action'] = ''; }
+set_default_action();
 
 switch ($_REQUEST['action']) {
 	case 'clear_poller_cache':

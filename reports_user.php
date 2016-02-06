@@ -31,7 +31,7 @@ define('MAX_DISPLAY_PAGES', 21);
 input_validate_input_number(get_request_var('id'));
 
 /* set default action */
-if (!isset($_REQUEST['action'])) { $_REQUEST['action'] = ''; }
+set_default_action();
 
 switch ($_REQUEST['action']) {
 	case 'save':
