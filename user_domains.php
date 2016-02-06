@@ -114,7 +114,7 @@ function form_save() {
 				$save['mode']              = $_POST['mode'];
 				$save['group_member_type'] = $_POST['group_member_type'];
 				$save['dn']                = form_input_validate(get_request_var_post('dn'),                'dn',              '', true, 3);
-				$save['group_require']     = isset(get_request_var_post('group_require')) ? 'on':'';
+				$save['group_require']     = isset_request_var('group_require') ? 'on':'';
 				$save['group_dn']          = form_input_validate(get_request_var_post('group_dn'),          'group_dn',        '', true, 3);
 				$save['group_attrib']      = form_input_validate(get_request_var_post('group_attrib'),      'group_attrib',    '', true, 3);
 				$save['search_base']       = form_input_validate(get_request_var_post('search_base'),       'search_base',     '', true, 3);
@@ -164,7 +164,7 @@ function form_actions() {
 	global $actions;
 
 	/* if we are to save this form, instead of display it */
-	if (isset(get_request_var_post('selected_items'))) {
+	if (isset_request_var('selected_items')) {
 		$selected_items = sanitize_unserialize_selected_items(get_request_var_post('selected_items'));
 
 		if ($selected_items != false) {

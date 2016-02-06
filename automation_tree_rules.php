@@ -98,10 +98,10 @@ function automation_tree_rules_form_save() {
 		$save['id'] = get_request_var_post('id');
 		$save['name'] = form_input_validate(get_request_var_post('name'), 'name', '', true, 3);
 		$save['tree_id'] = form_input_validate(get_request_var_post('tree_id'), 'tree_id', '^[0-9]+$', false, 3);
-		$save['tree_item_id'] = isset(get_request_var_post('tree_item_id')) ? form_input_validate($_POST['tree_item_id'], 'tree_item_id', '^[0-9]+$', false, 3) : 0;
+		$save['tree_item_id'] = isset_request_var('tree_item_id') ? form_input_validate($_POST['tree_item_id'], 'tree_item_id', '^[0-9]+$', false, 3) : 0;
 		$save['leaf_type'] = (isset($_POST['leaf_type'])) ? form_input_validate($_POST['leaf_type'], 'leaf_type', '^[0-9]+$', false, 3) : 0;
-		$save['host_grouping_type'] = isset(get_request_var_post('host_grouping_type')) ? form_input_validate($_POST['host_grouping_type'], 'host_grouping_type', '^[0-9]+$', false, 3) : 0;
-		$save['rra_id'] = isset(get_request_var_post('rra_id')) ? form_input_validate(get_request_var_post('rra_id'), 'rra_id', '^[0-9]+$', false, 3) : 0;
+		$save['host_grouping_type'] = isset_request_var('host_grouping_type') ? form_input_validate($_POST['host_grouping_type'], 'host_grouping_type', '^[0-9]+$', false, 3) : 0;
+		$save['rra_id'] = isset_request_var('rra_id') ? form_input_validate(get_request_var_post('rra_id'), 'rra_id', '^[0-9]+$', false, 3) : 0;
 		$save['enabled'] = (isset($_POST['enabled']) ? 'on' : '');
 		if (!is_error_message()) {
 			$rule_id = sql_save($save, 'automation_tree_rules');
@@ -159,8 +159,8 @@ function automation_tree_rules_form_save() {
 		$save['field']             = form_input_validate((isset($_POST['field']) ? $_POST['field'] : ''), 'field', '', true, 3);
 		$save['sort_type']         = form_input_validate(get_request_var_post('sort_type'), 'sort_type', '^[0-9]+$', false, 3);
 		$save['propagate_changes'] = (isset($_POST['propagate_changes']) ? 'on' : '');
-		$save['search_pattern']    = isset(get_request_var_post('search_pattern')) ? form_input_validate($_POST['search_pattern'], 'search_pattern', '', false, 3) : '';
-		$save['replace_pattern']   = isset(get_request_var_post('replace_pattern')) ? form_input_validate($_POST['replace_pattern'], 'replace_pattern', '', true, 3) : '';
+		$save['search_pattern']    = isset_request_var('search_pattern') ? form_input_validate($_POST['search_pattern'], 'search_pattern', '', false, 3) : '';
+		$save['replace_pattern']   = isset_request_var('replace_pattern') ? form_input_validate($_POST['replace_pattern'], 'replace_pattern', '', true, 3) : '';
 
 		if (!is_error_message()) {
 			$automation_graph_rule_item_id = sql_save($save, 'automation_tree_rule_items');
@@ -192,7 +192,7 @@ function automation_tree_rules_form_actions() {
 	global $config;
 
 	/* if we are to save this form, instead of display it */
-	if (isset(get_request_var_post('selected_items'))) {
+	if (isset_request_var('selected_items')) {
 		$selected_items = sanitize_unserialize_selected_items(get_request_var_post('selected_items'));
 
 		if ($selected_items != false) {

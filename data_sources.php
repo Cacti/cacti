@@ -324,12 +324,12 @@ function form_actions() {
 	/* ==================================================== */
 
 	/* if we are to save this form, instead of display it */
-	if (isset(get_request_var_post('selected_items'))) {
+	if (isset_request_var('selected_items')) {
 		$selected_items = sanitize_unserialize_selected_items(get_request_var_post('selected_items'));
 
 		if ($selected_items != false) {
 			if (get_request_var_post('drp_action') == '1') { /* delete */
-				if (!isset(get_request_var_post('delete_type'))) { $_POST['delete_type'] = 1; }
+				if (!isset_request_var('delete_type')) { $_POST['delete_type'] = 1; }
 
 				switch (get_request_var_post('delete_type')) {
 					case '2': /* delete all graph items tied to this data source */

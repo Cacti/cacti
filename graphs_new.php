@@ -79,11 +79,11 @@ function form_save() {
 			}
 		}
 
-		if (!isset(get_request_var_post('host_id'))) {
+		if (!isset_request_var('host_id')) {
 			get_request_var_post('host_id') = 0;
 		}
 
-		if (!isset(get_request_var_post('host_template_id'))) {
+		if (!isset_request_var('host_template_id')) {
 			get_request_var_post('host_template_id') = 0;
 		}
 

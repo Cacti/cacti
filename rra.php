@@ -83,7 +83,7 @@ function form_save() {
 
 				db_execute_prepared('DELETE FROM rra_cf WHERE rra_id = ?', array($rra_id));
 
-				if (isset(get_request_var_post('consolidation_function_id'))) {
+				if (isset_request_var('consolidation_function_id')) {
 					for ($i = 0; ($i < count(get_request_var_post('consolidation_function_id'))); $i++) {
 						/* ================= input validation ================= */
 						input_validate_input_number(get_request_var_post('consolidation_function_id')[$i]);
@@ -120,7 +120,7 @@ function form_actions() {
 	/* ==================================================== */
 	
 	/* if we are to save this form, instead of display it */
-	if (isset(get_request_var_post('selected_items'))) {
+	if (isset_request_var('selected_items')) {
 		$selected_items = sanitize_unserialize_selected_items(get_request_var_post('selected_items'));
 
 		if ($selected_items != false) {

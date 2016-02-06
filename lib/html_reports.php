@@ -543,10 +543,10 @@ function reports_form_save() {
 		$save['host_id']           = (isset($_POST['host_id']) ? form_input_validate($_POST['host_id'], 'host_id', '^[-0-9]+$', true, 3) : 0);
 		$save['graph_template_id'] = (isset($_POST['graph_template_id']) ? form_input_validate($_POST['graph_template_id'], 'graph_template_id', '^[-0-9]+$', true, 3) : 0);
 		$save['local_graph_id']    = (isset($_POST['local_graph_id']) ? form_input_validate($_POST['local_graph_id'], 'local_graph_id', '^[0-9]+$', true, 3) : 0);
-		$save['timespan']          = (isset(get_request_var_post('timespan')) ? form_input_validate($_POST['timespan'], 'timespan', '^[0-9]+$', true, 3) : 0);
+		$save['timespan']          = (isset_request_var('timespan')) ? form_input_validate($_POST['timespan'], 'timespan', '^[0-9]+$', true, 3) : 0);
 		$save['item_text']         = (isset($_POST['item_text']) ? sql_sanitize(form_input_validate($_POST['item_text'], 'item_text', '', true, 3)) : '');
 		$save['align']             = (isset($_POST['align']) ? form_input_validate($_POST['align'], 'align', '^[0-9]+$', true, 3) : REPORTS_ALIGN_LEFT);
-		$save['font_size']         = (isset(get_request_var_post('font_size')) ? form_input_validate($_POST['font_size'], 'font_size', '^[0-9]+$', true, 3) : REPORTS_FONT_SIZE);
+		$save['font_size']         = (isset_request_var('font_size')) ? form_input_validate($_POST['font_size'], 'font_size', '^[0-9]+$', true, 3) : REPORTS_FONT_SIZE);
 
 		if (!is_error_message()) {
 			$item_id = sql_save($save, 'reports_items');
@@ -577,7 +577,7 @@ function reports_form_actions() {
 	/* ==================================================== */
 
 	/* if we are to save this form, instead of display it */
-	if (isset(get_request_var_post('selected_items'))) {
+	if (isset_request_var('selected_items')) {
 		$selected_items = sanitize_unserialize_selected_items(get_request_var_post('selected_items'));
 
 		if ($selected_items != false) {
@@ -758,22 +758,22 @@ function reports_send($id) {
 		};
 		if (!strlen($report['email'])) {
 			$_SESSION['reports_error'] = "Unable to send Report '" . $report['name'] . "'.  Please set destination e-mail addresses";
-			if (!isset(get_request_var_post('selected_items'))) {
+			if (!isset_request_var('selected_items')) {
 				raise_message('reports_error');
 			}
 		}elseif (!strlen($report['subject'])) {
 			$_SESSION['reports_error'] = "Unable to send Report '" . $report['name'] . "'.  Please set an e-mail subject";
-			if (!isset(get_request_var_post('selected_items'))) {
+			if (!isset_request_var('selected_items')) {
 				raise_message('reports_error');
 			}
 		}elseif (!strlen($report['from_name'])) {
 			$_SESSION['reports_error'] = "Unable to send Report '" . $report['name'] . "'.  Please set an e-mail From Name";
-			if (!isset(get_request_var_post('selected_items'))) {
+			if (!isset_request_var('selected_items')) {
 				raise_message('reports_error');
 			}
 		}elseif (!strlen($report['from_email'])) {
 			$_SESSION['reports_error'] = "Unable to send Report '" . $report['name'] . "'.  Please set an e-mail from address";
-			if (!isset(get_request_var_post('selected_items'))) {
+			if (!isset_request_var('selected_items')) {
 				raise_message('reports_error');
 			}
 		}else{

@@ -165,7 +165,7 @@ function form_actions() {
 	/* ==================================================== */
 
 	/* if we are to save this form, instead of display it */
-	if (isset(get_request_var_post('selected_items'))) {
+	if (isset_request_var('selected_items')) {
 		$selected_items = sanitize_unserialize_selected_items(get_request_var_post('selected_items'));
 
 		if ($selected_items != false) {
@@ -225,7 +225,7 @@ function form_actions() {
 					push_out_host($selected_items[$i]);
 				}
 			}elseif (get_request_var_post('drp_action') == '1') { /* delete */
-				if (!isset(get_request_var_post('delete_type'))) { $_POST['delete_type'] = 2; }
+				if (!isset_request_var('delete_type')) { $_POST['delete_type'] = 2; }
 
 				$data_sources_to_act_on = array();
 				$graphs_to_act_on       = array();

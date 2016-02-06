@@ -73,7 +73,7 @@ function aggregate_form_save() {
 	$save1 = array();
 
 	/* updating existing template or creating a new one? */
-	if (isset(get_request_var_post('id')) && $_POST['id'] > 0) {
+	if (isset_request_var('id') && $_POST['id'] > 0) {
 		$is_new = false;
 		$save1['id'] = get_request_var_post('id');
 	} else {
@@ -82,10 +82,10 @@ function aggregate_form_save() {
 	}
 
 	/* set some defaults for possibly disabled values */
-	if (!isset(get_request_var_post('total')))        $_POST['total']        = 0;
-	if (!isset(get_request_var_post('total_type')))   $_POST['total_type']   = 0;
-	if (!isset(get_request_var_post('order_type')))   $_POST['order_type']   = 0;
-	if (!isset(get_request_var_post('total_prefix'))) $_POST['total_prefix'] = '';
+	if (!isset_request_var('total'))        $_POST['total']        = 0;
+	if (!isset_request_var('total_type'))   $_POST['total_type']   = 0;
+	if (!isset_request_var('order_type'))   $_POST['order_type']   = 0;
+	if (!isset_request_var('total_prefix')) $_POST['total_prefix'] = '';
 
 	/* populate aggregate template save array and validate posted values*/
 	$save1['name']              = form_input_validate(get_request_var_post('name'), 'name', '', false, 3);
@@ -246,7 +246,7 @@ function aggregate_form_actions() {
 	/* ==================================================== */
 
 	/* if we are to save this form, instead of display it */
-	if (isset(get_request_var_post('selected_items'))) {
+	if (isset_request_var('selected_items')) {
 		$selected_items = sanitize_unserialize_selected_items(get_request_var_post('selected_items'));
 
 		if ($selected_items != false) {
@@ -333,7 +333,7 @@ function aggregate_template_edit() {
 	}
 
 	/* populate the graph template id if it's set */
-	if (isset(get_request_var_post('graph_template_id')) && !isset($template)) {
+	if (isset_request_var('graph_template_id') && !isset($template)) {
 		/* ================= input validation ================= */
 		input_validate_input_number(get_request_var('graph_template_id'));
 		/* ==================================================== */

@@ -878,7 +878,7 @@ function form_save() {
 function form_actions(){
 	global $manager_actions, $manager_notification_actions;
 
-	if (isset(get_request_var_post('selected_items'))) {
+	if (isset_request_var('selected_items')) {
 		if(isset($_POST['action_receivers'])) {
 			$selected_items = sanitize_unserialize_selected_items(get_request_var_post('selected_items'));
 

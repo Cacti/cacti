@@ -122,7 +122,7 @@ function process_html_variables() {
 /* when a span time preselection has been defined update the span time fields */
 /* someone hit a button and not a dropdown */
 function process_user_input(&$timespan, $timeshift) {
-	if (isset(get_request_var_post('date1'))) {
+	if (isset_request_var('date1')) {
 		/* the dates have changed, therefore, I am now custom */
 		if (($_SESSION['sess_current_date1'] != get_request_var_post('date1')) || ($_SESSION['sess_current_date2'] != get_request_var_post('date2')) || (isset($_REQUEST['custom']))) {
 			$timespan['current_value_date1'] = sanitize_search_string(get_request_var_post('date1'));

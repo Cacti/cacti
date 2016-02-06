@@ -285,7 +285,7 @@ function form_save() {
 	if ((isset($_POST['save_component_graph_new'])) && (empty(get_request_var_post('graph_template_id')))) {
 		header('Location: graphs.php?action=graph_edit&header=false&host_id=' . get_request_var_post('host_id') . '&new=1');
 	}elseif ((is_error_message()) || (empty(get_request_var_post('local_graph_id'))) || (isset($_POST['save_component_graph_diff'])) || (get_request_var_post('graph_template_id') != $_POST['_graph_template_id']) || (get_request_var_post('host_id') != $_POST['_host_id'])) {
-		header('Location: graphs.php?action=graph_edit&header=false&id=' . (empty($local_graph_id) ? get_request_var_post('local_graph_id') : $local_graph_id) . (isset(get_request_var_post('host_id')) ? '&host_id=' . $_POST['host_id'] : ''));
+		header('Location: graphs.php?action=graph_edit&header=false&id=' . (empty($local_graph_id) ? get_request_var_post('local_graph_id') : $local_graph_id) . (isset_request_var('host_id')) ? '&host_id=' . $_POST['host_id'] : ''));
 	}else{
 		header('Location: graphs.php?header=false');
 	}
@@ -303,12 +303,12 @@ function form_actions() {
 	/* ==================================================== */
 
 	/* if we are to save this form, instead of display it */
-	if (isset(get_request_var_post('selected_items'))) {
+	if (isset_request_var('selected_items')) {
 		$selected_items = sanitize_unserialize_selected_items(get_request_var_post('selected_items'));
 
 		if ($selected_items != false) {
 			if (get_request_var_post('drp_action') == '1') { /* delete */
-				if (!isset(get_request_var_post('delete_type'))) { $_POST['delete_type'] = 1; }
+				if (!isset_request_var('delete_type')) { $_POST['delete_type'] = 1; }
 
 				switch (get_request_var_post('delete_type')) {
 					case '2': /* delete all data sources referenced by this graph */
@@ -379,10 +379,10 @@ function form_actions() {
 				$ag_data['user_id']      = $_SESSION['sess_user_id'];
 
 				if (get_request_var_post('drp_action') == 'aggregate') {
-					if (!isset(get_request_var_post('aggregate_total_type')))   $_POST['aggregate_total_type']   = 0;
-					if (!isset(get_request_var_post('aggregate_total')))        $_POST['aggregate_total']        = 0;
-					if (!isset(get_request_var_post('aggregate_total_prefix'))) $_POST['aggregate_total_prefix'] = '';
-					if (!isset(get_request_var_post('aggregate_order_type')))   $_POST['aggregate_order_type']   = 0;
+					if (!isset_request_var('aggregate_total_type'))   $_POST['aggregate_total_type']   = 0;
+					if (!isset_request_var('aggregate_total'))        $_POST['aggregate_total']        = 0;
+					if (!isset_request_var('aggregate_total_prefix')) $_POST['aggregate_total_prefix'] = '';
+					if (!isset_request_var('aggregate_order_type'))   $_POST['aggregate_order_type']   = 0;
 	
 					$item_no = form_input_validate(get_request_var_post('item_no'), 'item_no', '^[0-9]+$', true, 3);
 

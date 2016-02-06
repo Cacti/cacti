@@ -399,7 +399,7 @@ function generate_report($report, $force = false) {
 		if (isset($_REQUEST['id'])) {
 			$_SESSION['reports_error'] = "Problems sending Report '" . $report['name'] . "'.  Problem with e-mail Subsystem Error is '$error'";
 
-			if (!isset(get_request_var_post('selected_items'))) {
+			if (!isset_request_var('selected_items')) {
 				raise_message('reports_error');
 			}
 		} else {
@@ -408,7 +408,7 @@ function generate_report($report, $force = false) {
 	} elseif (isset($_REQUEST)) {
 		$_SESSION['reports_message'] = "Report '" . $report['name'] . "' Sent Successfully";
 
-		if (!isset(get_request_var_post('selected_items'))) {
+		if (!isset_request_var('selected_items')) {
 			raise_message('reports_message');
 		}
 	}
@@ -1399,7 +1399,7 @@ function reports_graphs_action_execute($action) {
 		$message = '';
 
 		/* loop through each of the graph_items selected on the previous page for skipped items */
-		if (isset(get_request_var_post('selected_items'))) {
+		if (isset_request_var('selected_items')) {
 			$selected_items = sanitize_unserialize_selected_items(get_request_var_post('selected_items'));
 
 			if ($selected_items != false) {

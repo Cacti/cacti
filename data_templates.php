@@ -200,7 +200,7 @@ function form_save() {
 			/* save entries in 'selected rras' field */
 			db_execute_prepared('DELETE FROM data_template_data_rra WHERE data_template_data_id = ?', array($data_template_data_id));
 
-			if (isset(get_request_var_post('rra_id'))) {
+			if (isset_request_var('rra_id')) {
 				for ($i=0; ($i < count(get_request_var_post('rra_id'))); $i++) {
 					/* ================= input validation ================= */
 					input_validate_input_number(get_request_var_post('rra_id')[$i]);
@@ -261,7 +261,7 @@ function form_actions() {
 	/* ==================================================== */
 
 	/* if we are to save this form, instead of display it */
-	if (isset(get_request_var_post('selected_items'))) {
+	if (isset_request_var('selected_items')) {
 		$selected_items = sanitize_unserialize_selected_items(get_request_var_post('selected_items'));
 
 		if ($selected_items != false) {

@@ -84,10 +84,10 @@ if (isset($_POST['update_policy'])) {
 function update_policies() {
 	$set = '';
 
-	$set .= isset(get_request_var_post('policy_graphs')) ? 'policy_graphs=' . get_request_var_post('policy_graphs'):'';
-	$set .= isset(get_request_var_post('policy_trees')) ? (strlen($set) ? ',':'') . 'policy_trees=' . get_request_var_post('policy_trees'):'';
-	$set .= isset(get_request_var_post('policy_hosts')) ? (strlen($set) ? ',':'') . 'policy_hosts=' . get_request_var_post('policy_hosts'):'';
-	$set .= isset(get_request_var_post('policy_graph_templates')) ? (strlen($set) ? ',':'') . 'policy_graph_templates=' . get_request_var_post('policy_graph_templates'):'';
+	$set .= isset_request_var('policy_graphs') ? 'policy_graphs=' . get_request_var_post('policy_graphs'):'';
+	$set .= isset_request_var('policy_trees') ? (strlen($set) ? ',':'') . 'policy_trees=' . get_request_var_post('policy_trees'):'';
+	$set .= isset_request_var('policy_hosts') ? (strlen($set) ? ',':'') . 'policy_hosts=' . get_request_var_post('policy_hosts'):'';
+	$set .= isset_request_var('policy_graph_templates') ? (strlen($set) ? ',':'') . 'policy_graph_templates=' . get_request_var_post('policy_graph_templates'):'';
 
 	if (strlen($set)) {
 		db_execute_prepared("UPDATE user_auth SET $set WHERE id = ?", array(get_request_var_post('id')));
@@ -186,7 +186,7 @@ function form_actions() {
 
 		header('Location: user_admin.php?action=user_edit&header=false&tab=permstr&id=' . get_request_var_post('id'));
 		exit;
-	}elseif (isset(get_request_var_post('selected_items'))) {
+	}elseif (isset_request_var('selected_items')) {
 		if (get_request_var_post('drp_action') == '2') { /* copy */
 			/* ================= input validation ================= */
 			input_validate_input_number(get_request_var_post('selected_items'));

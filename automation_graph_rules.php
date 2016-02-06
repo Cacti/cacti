@@ -187,7 +187,7 @@ function automation_graph_rules_form_actions() {
 	global $config, $colors, $automation_graph_rules_actions;
 
 	/* if we are to save this form, instead of display it */
-	if (isset(get_request_var_post('selected_items'))) {
+	if (isset_request_var('selected_items')) {
 		$selected_items = sanitize_unserialize_selected_items(get_request_var_post('selected_items'));
 
 		if ($selected_items != false) {
