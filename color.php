@@ -78,11 +78,11 @@ function form_save() {
 		input_validate_input_number(get_request_var_post('id'));
 		/* ==================================================== */
 
-		$save['id']        = $_POST['id'];
+		$save['id']        = get_request_var_post('id');
 
 		if (!isset($_POST['read_only'])) {
-			$save['name']      = $_POST['name'];
-			$save['hex']       = form_input_validate($_POST['hex'],  'hex',  '^[a-fA-F0-9]+$' , false, 3);
+			$save['name']      = get_request_var_post('name');
+			$save['hex']       = form_input_validate(get_request_var_post('hex'),  'hex',  '^[a-fA-F0-9]+$' , false, 3);
 		}else{
 			$save['name']      = $_POST['hidden_name'];
 			$save['read_only'] = 'on';
@@ -99,7 +99,7 @@ function form_save() {
 		}
 
 		if (is_error_message()) {
-			header('Location: color.php?header=false&action=edit&id=' . (empty($color_id) ? $_POST['id'] : $color_id));
+			header('Location: color.php?header=false&action=edit&id=' . (empty($color_id) ? get_request_var_post('id') : $color_id));
 		}else{
 			header('Location: color.php?header=false');
 		}

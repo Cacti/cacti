@@ -89,9 +89,9 @@ function form_save() {
 	if (isset($_POST['save_component_template'])) {
 		$redirect_back = false;
 
-		$save['id'] = $_POST['id'];
-		$save['host_template'] = form_input_validate($_POST['host_template'], 'host_template', '', false, 3);
-		$save['availability_method']  = form_input_validate($_POST['availability_method'], 'availability_method', '', false, 3);
+		$save['id'] = get_request_var_post('id');
+		$save['host_template'] = form_input_validate(get_request_var_post('host_template'), 'host_template', '', false, 3);
+		$save['availability_method']  = form_input_validate(get_request_var_post('availability_method'), 'availability_method', '', false, 3);
 		$save['sysDescr']      = $_POST['sysDescr'];
 		$save['sysName']       = $_POST['sysName'];
 		$save['sysOid']        = $_POST['sysOid'];
@@ -111,8 +111,8 @@ function form_save() {
 			}
 		}
 
-		if (is_error_message() || empty($_POST['id'])) {
-			header('Location: automation_templates.php?header=false&id=' . (empty($template_id) ? $_POST['id'] : $template_id));
+		if (is_error_message() || empty(get_request_var_post('id'))) {
+			header('Location: automation_templates.php?header=false&id=' . (empty($template_id) ? get_request_var_post('id') : $template_id));
 		}else{
 			header('Location: automation_templates.php?header=false');
 		}

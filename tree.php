@@ -272,9 +272,9 @@ function form_save() {
 		input_validate_input_number(get_request_var_post('id'));
 		/* ==================================================== */
 
-		$save['id']            = $_POST['id'];
-		$save['name']          = form_input_validate($_POST['name'], 'name', '', false, 3);
-		$save['sort_type']     = form_input_validate($_POST['sort_type'], 'sort_type', '', true, 3);
+		$save['id']            = get_request_var_post('id');
+		$save['name']          = form_input_validate(get_request_var_post('name'), 'name', '', false, 3);
+		$save['sort_type']     = form_input_validate(get_request_var_post('sort_type'), 'sort_type', '', true, 3);
 		$save['last_modified'] = date('Y-m-d H:i:s', time());
 		$save['enabled']       = $_POST['enabled'] == 'true' ? 'on':'-';
 		$save['modified_by']   = $_SESSION['sess_user_id'];
@@ -289,7 +289,7 @@ function form_save() {
 				raise_message(1);
 
 				/* sort the tree using the algorithm chosen by the user */
-				api_tree_sort_tree(SORT_TYPE_TREE, $tree_id, $_POST['sort_type']);
+				api_tree_sort_tree(SORT_TYPE_TREE, $tree_id, get_request_var_post('sort_type'));
 			}else{
 				raise_message(2);
 			}
@@ -311,20 +311,20 @@ function form_actions() {
 	/* ==================================================== */
 
 	/* if we are to save this form, instead of display it */
-	if (isset($_POST['selected_items'])) {
-		$selected_items = sanitize_unserialize_selected_items($_POST['selected_items']);
+	if (isset(get_request_var_post('selected_items'))) {
+		$selected_items = sanitize_unserialize_selected_items(get_request_var_post('selected_items'));
 
 		if ($selected_items != false) {
-			if ($_POST['drp_action'] == '1') { /* delete */
+			if (get_request_var_post('drp_action') == '1') { /* delete */
 				db_execute('DELETE FROM graph_tree WHERE ' . array_to_sql_or($selected_items, 'id'));
 				db_execute('DELETE FROM graph_tree_items WHERE ' . array_to_sql_or($selected_items, 'graph_tree_id'));
-			}elseif ($_POST['drp_action'] == '2') { /* publish */
+			}elseif (get_request_var_post('drp_action') == '2') { /* publish */
 				db_execute("UPDATE graph_tree 
 					SET enabled='on',
 					last_modified=NOW(),
 					modified_by=" . $_SESSION['sess_user_id'] . '
 					WHERE ' . array_to_sql_or($selected_items, 'id'));
-			}elseif ($_POST['drp_action'] == '3') { /* un-publish */
+			}elseif (get_request_var_post('drp_action') == '3') { /* un-publish */
 				db_execute("UPDATE graph_tree 
 					SET enabled='',
 					last_modified=NOW(),
@@ -358,10 +358,10 @@ function form_actions() {
 
 	form_start('tree.php');
 
-	html_start_box($tree_actions{$_POST['drp_action']}, '60%', '', '3', 'center', '');
+	html_start_box($tree_actions{get_request_var_post('drp_action')}, '60%', '', '3', 'center', '');
 
 	if (isset($tree_array) && sizeof($tree_array)) {
-		if ($_POST['drp_action'] == '1') { /* delete */
+		if (get_request_var_post('drp_action') == '1') { /* delete */
 			print "<tr>
 				<td class='textArea' class='odd'>
 					<p>Click 'Continue' to delete the folling Tree(s).</p>
@@ -370,7 +370,7 @@ function form_actions() {
 			</tr>\n";
 
 			$save_html = "<input type='button' value='Cancel' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='Continue' title='Delete Tree(s)'>";
-		}elseif ($_POST['drp_action'] == '2') { /* publish */
+		}elseif (get_request_var_post('drp_action') == '2') { /* publish */
 			print "<tr>
 				<td class='textArea' class='odd'>
 					<p>Click 'Continue' to publish the following Tree(s).</p>
@@ -379,7 +379,7 @@ function form_actions() {
 			</tr>\n";
 
 			$save_html = "<input type='button' value='Cancel' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='Continue' title='Publish Tree(s)'>";
-		}elseif ($_POST['drp_action'] == '3') { /* un-publish */
+		}elseif (get_request_var_post('drp_action') == '3') { /* un-publish */
 			print "<tr>
 				<td class='textArea' class='odd'>
 					<p>Click 'Continue' to un-publish the following Tree(s).</p>
@@ -398,7 +398,7 @@ function form_actions() {
 		<td class='saveRow'>
 			<input type='hidden' name='action' value='actions'>
 			<input type='hidden' name='selected_items' value='" . (isset($tree_array) ? serialize($tree_array) : '') . "'>
-			<input type='hidden' name='drp_action' value='" . $_POST['drp_action'] . "'>
+			<input type='hidden' name='drp_action' value='" . get_request_var_post('drp_action') . "'>
 			$save_html
 		</td>
 	</tr>\n";

@@ -77,9 +77,9 @@ function form_save() {
 		/* ==================================================== */
 
 		$save['domain_id']   = $_POST['domain_id'];
-		$save['type']        = $_POST['type'];
+		$save['type']        = get_request_var_post('type');
 		$save['user_id']     = $_POST['user_id'];
-		$save['domain_name'] = form_input_validate($_POST['domain_name'], 'domain_name', '', false, 3);
+		$save['domain_name'] = form_input_validate(get_request_var_post('domain_name'), 'domain_name', '', false, 3);
 		$save['enabled']     = (isset($_POST['enabled']) ? form_input_validate($_POST['enabled'],     'enabled',     '', true,  3):'');
 
 		if (!is_error_message()) {
@@ -105,7 +105,7 @@ function form_save() {
 
 				$save                      = array();
 				$save['domain_id']         = $domain_id;
-				$save['server']            = form_input_validate($_POST['server'], 'server', '', false, 3);
+				$save['server']            = form_input_validate(get_request_var_post('server'), 'server', '', false, 3);
 				$save['port']              = $_POST['port'];
 				$save['port_ssl']          = $_POST['port_ssl'];
 				$save['proto_version']     = $_POST['proto_version'];
@@ -113,14 +113,14 @@ function form_save() {
 				$save['referrals']         = $_POST['referrals'];
 				$save['mode']              = $_POST['mode'];
 				$save['group_member_type'] = $_POST['group_member_type'];
-				$save['dn']                = form_input_validate($_POST['dn'],                'dn',              '', true, 3);
-				$save['group_require']     = isset($_POST['group_require']) ? 'on':'';
-				$save['group_dn']          = form_input_validate($_POST['group_dn'],          'group_dn',        '', true, 3);
-				$save['group_attrib']      = form_input_validate($_POST['group_attrib'],      'group_attrib',    '', true, 3);
-				$save['search_base']       = form_input_validate($_POST['search_base'],       'search_base',     '', true, 3);
-				$save['search_filter']     = form_input_validate($_POST['search_filter'],     'search_filter',   '', true, 3);
-				$save['specific_dn']         = form_input_validate($_POST['specific_dn'],         'specific_dn',       '', true, 3);
-				$save['specific_password']   = form_input_validate($_POST['specific_password'],   'specific_password', '', true, 3);
+				$save['dn']                = form_input_validate(get_request_var_post('dn'),                'dn',              '', true, 3);
+				$save['group_require']     = isset(get_request_var_post('group_require')) ? 'on':'';
+				$save['group_dn']          = form_input_validate(get_request_var_post('group_dn'),          'group_dn',        '', true, 3);
+				$save['group_attrib']      = form_input_validate(get_request_var_post('group_attrib'),      'group_attrib',    '', true, 3);
+				$save['search_base']       = form_input_validate(get_request_var_post('search_base'),       'search_base',     '', true, 3);
+				$save['search_filter']     = form_input_validate(get_request_var_post('search_filter'),     'search_filter',   '', true, 3);
+				$save['specific_dn']         = form_input_validate(get_request_var_post('specific_dn'),         'specific_dn',       '', true, 3);
+				$save['specific_password']   = form_input_validate(get_request_var_post('specific_password'),   'specific_password', '', true, 3);
 
 				if (!is_error_message()) {
 					$insert_id = sql_save($save, 'user_domains_ldap', 'domain_id', false);
@@ -141,8 +141,8 @@ function form_save() {
 		/* ==================================================== */
 
 		$save['domain_id']   = $_POST['domain_id'];
-		$save['domain_name'] = form_input_validate($_POST['domain_name'], 'domain_name', '', false, 3);
-		$save['type']        = $_POST['type'];
+		$save['domain_name'] = form_input_validate(get_request_var_post('domain_name'), 'domain_name', '', false, 3);
+		$save['type']        = get_request_var_post('type');
 		$save['user_id']     = $_POST['user_id'];
 		$save['enabled']     = (isset($_POST['enabled']) ? form_input_validate($_POST['enabled'],     'enabled',     '', true,  3):'');
 
@@ -164,23 +164,23 @@ function form_actions() {
 	global $actions;
 
 	/* if we are to save this form, instead of display it */
-	if (isset($_POST['selected_items'])) {
-		$selected_items = sanitize_unserialize_selected_items($_POST['selected_items']);
+	if (isset(get_request_var_post('selected_items'))) {
+		$selected_items = sanitize_unserialize_selected_items(get_request_var_post('selected_items'));
 
 		if ($selected_items != false) {
-			if ($_POST['drp_action'] == '1') { /* delete */
+			if (get_request_var_post('drp_action') == '1') { /* delete */
 				for ($i=0;($i<count($selected_items));$i++) {
 					domain_remove($selected_items[$i]);
 				}
-			}elseif ($_POST['drp_action'] == '2') { /* disable */
+			}elseif (get_request_var_post('drp_action') == '2') { /* disable */
 				for ($i=0;($i<count($selected_items));$i++) {
 					domain_disable($selected_items[$i]);
 				}
-			}elseif ($_POST['drp_action'] == '3') { /* enable */
+			}elseif (get_request_var_post('drp_action') == '3') { /* enable */
 				for ($i=0;($i<count($selected_items));$i++) {
 					domain_enable($selected_items[$i]);
 				}
-			}elseif ($_POST['drp_action'] == '4') { /* default */
+			}elseif (get_request_var_post('drp_action') == '4') { /* default */
 				if (sizeof($selected_items) > 1) {
 					/* error message */
 				}else{
@@ -214,10 +214,10 @@ function form_actions() {
 
 	form_start('user_domains.php');
 
-	html_start_box($actions{$_POST['drp_action']}, '60%', '', '3', 'center', '');
+	html_start_box($actions{get_request_var_post('drp_action')}, '60%', '', '3', 'center', '');
 
 	if (isset($d_array) && sizeof($d_array)) {
-		if ($_POST['drp_action'] == '1') { /* delete */
+		if (get_request_var_post('drp_action') == '1') { /* delete */
 			print "<tr>
 				<td class='textArea'>
 					<p>Click 'Continue' to delete the following User Domain(s).</p>
@@ -226,7 +226,7 @@ function form_actions() {
 			</tr>\n";
 
 			$save_html = "<input type='button' value='Cancel' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='Continue' title='Delete User Domain(s)'>";
-		}else if ($_POST['drp_action'] == '2') { /* disable */
+		}else if (get_request_var_post('drp_action') == '2') { /* disable */
 			print "<tr>
 				<td class='textArea'>
 					<p>Click 'Continue' to disable the following User Domain(s).</p>
@@ -235,7 +235,7 @@ function form_actions() {
 			</tr>\n";
 
 			$save_html = "<input type='button' value='Cancel' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='Continue' title='Disable User Domain(s)'>";
-		}else if ($_POST['drp_action'] == '3') { /* enable */
+		}else if (get_request_var_post('drp_action') == '3') { /* enable */
 			print "<tr>
 				<td class='textArea'>
 					<p>Click  'Continue' to enable the following User Domain(s).</p>
@@ -244,7 +244,7 @@ function form_actions() {
 			</tr>\n";
 
 			$save_html = "<input type='button' value='Cancel' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='Continue' title='Enabled User Domain(s)'>";
-		}else if ($_POST['drp_action'] == '4') { /* default */
+		}else if (get_request_var_post('drp_action') == '4') { /* default */
 			print "<tr>
 				<td class='textArea'>
 					<p>Click 'Continue' to make the following the following User Domain the default one.</p>
@@ -263,7 +263,7 @@ function form_actions() {
 		<td class='saveRow'>
 			<input type='hidden' name='action' value='actions'>
 			<input type='hidden' name='selected_items' value='" . (isset($d_array) ? serialize($d_array) : '') . "'>
-			<input type='hidden' name='drp_action' value='" . $_POST['drp_action'] . "'>
+			<input type='hidden' name='drp_action' value='" . get_request_var_post('drp_action') . "'>
 			$save_html
 		</td>
 	</tr>\n";

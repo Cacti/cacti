@@ -71,7 +71,7 @@ function form_save() {
 	if (isset($_POST['save_component_network'])) {
 		$network_id = api_networks_save($_POST);
 
-		header('Location: automation_networks.php?header=false&action=edit&id=' . (empty($network_id) ? $_POST['id'] : $network_id));
+		header('Location: automation_networks.php?header=false&action=edit&id=' . (empty($network_id) ? get_request_var_post('id') : $network_id));
 	}
 }
 
@@ -206,27 +206,27 @@ function form_actions() {
 	/* ==================================================== */
 
 	/* if we are to save this form, instead of display it */
-	if (isset($_POST['selected_items'])) {
-		$selected_items = sanitize_unserialize_selected_items($_POST['selected_items']);
+	if (isset(get_request_var_post('selected_items'))) {
+		$selected_items = sanitize_unserialize_selected_items(get_request_var_post('selected_items'));
 
 		if ($selected_items != false) {
-			if ($_POST['drp_action'] == '1') { /* delete */
+			if (get_request_var_post('drp_action') == '1') { /* delete */
 				foreach($selected_items as $item) {
 					api_networks_remove($item);
 				}
-			}elseif ($_POST['drp_action'] == '3') { /* enable */
+			}elseif (get_request_var_post('drp_action') == '3') { /* enable */
 				foreach($selected_items as $item) {
 					api_networks_enable($item);
 				}
-			}elseif ($_POST['drp_action'] == '2') { /* disable */
+			}elseif (get_request_var_post('drp_action') == '2') { /* disable */
 				foreach($selected_items as $item) {
 					api_networks_disable($item);
 				}
-			}elseif ($_POST['drp_action'] == '4') { /* run now */
+			}elseif (get_request_var_post('drp_action') == '4') { /* run now */
 				foreach($selected_items as $item) {
 					api_networks_discover($item);
 				}
-			}elseif ($_POST['drp_action'] == '5') { /* cancel */
+			}elseif (get_request_var_post('drp_action') == '5') { /* cancel */
 				foreach($selected_items as $item) {
 					api_networks_cancel($item);
 				}
@@ -260,37 +260,37 @@ function form_actions() {
 
 	form_start('automation_networks.php');
 
-	html_start_box($network_actions{$_POST['drp_action']}, '60%', $colors['header_panel'], '3', 'center', '');
+	html_start_box($network_actions{get_request_var_post('drp_action')}, '60%', $colors['header_panel'], '3', 'center', '');
 
-	if ($_POST['drp_action'] == '1') { /* delete */
+	if (get_request_var_post('drp_action') == '1') { /* delete */
 		print "<tr>
 			<td class='textArea'>
 				<p>Click 'Continue' to delete the following Network(s).</p>
 				<p><ul>$networks_list</ul></p>
 			</td>
 		</tr>\n";
-	}elseif ($_POST['drp_action'] == '3') { /* enable */
+	}elseif (get_request_var_post('drp_action') == '3') { /* enable */
 		print "<tr>
 			<td class='textArea'>
 				<p>Click 'Continue' to enable the following Network(s).</p>
 				<p><ul>$networks_list</ul></p>
 			</td>
 		</tr>\n";
-	}elseif ($_POST['drp_action'] == '2') { /* disable */
+	}elseif (get_request_var_post('drp_action') == '2') { /* disable */
 		print "<tr>
 			<td class='textArea'>
 				<p>Click 'Continue' to disable the following Network(s).</p>
 				<p><ul>$networks_list</ul></p>
 			</td>
 		</tr>\n";
-	}elseif ($_POST['drp_action'] == '4') { /* discover now */
+	}elseif (get_request_var_post('drp_action') == '4') { /* discover now */
 		print "<tr>
 			<td class='textArea'>
 				<p>Click 'Continue' to discover the following Network(s).</p>
 				<p><ul>$networks_list</ul></p>
 			</td>
 		</tr>\n";
-	}elseif ($_POST['drp_action'] == '5') { /* cancel discovery now */
+	}elseif (get_request_var_post('drp_action') == '5') { /* cancel discovery now */
 		print "<tr>
 			<td class='textArea'>
 				<p>Click 'Continue' to cancel on going Network Discovery(s).</p>
@@ -310,7 +310,7 @@ function form_actions() {
 		<td colspan='2' class='saveRow'>
 			<input type='hidden' name='action' value='actions'>
 			<input type='hidden' name='selected_items' value='" . (isset($networks_array) ? serialize($networks_array) : '') . "'>
-			<input type='hidden' name='drp_action' value='" . $_POST['drp_action'] . "'>" . (strlen($save_html) ? "
+			<input type='hidden' name='drp_action' value='" . get_request_var_post('drp_action') . "'>" . (strlen($save_html) ? "
 			<input type='submit' name='cancel' value='Cancel'>
 			$save_html" : "<input type='submit' name='cancel' value='Return'>") . "
 		</td>

@@ -79,25 +79,25 @@ case 'changepassword':
 		$errorMessage = "<span color='#FF0000'>Your current password is not correct.  Please try again.</span>";
 	}
 
-	if ($user['password'] == md5($_POST['password'])) {
+	if ($user['password'] == md5(get_request_var_post('password'))) {
 		$bad_password = true;
 		$errorMessage = "<span color='#FF0000'>Your new password can not be the same as the old password.  Please try again.</span>";
 	}
 
 	// Secpass checking
 
-	$error = secpass_check_pass($_POST['password']);
+	$error = secpass_check_pass(get_request_var_post('password'));
 	if ($error != '') {
 		$bad_password = true;
 		$errorMessage = "<span color='#FF0000'>$error</span>";
 
 	}
-	if (!secpass_check_history($_SESSION['sess_user_id'], $_POST['password'])) {
+	if (!secpass_check_history($_SESSION['sess_user_id'], get_request_var_post('password'))) {
 		$bad_password = true;
 		$errorMessage = "<span color='#FF0000'>You can not use a previously entered password!</span>";
 	}
 
-	if ($bad_password == false && $_POST['password'] == $_POST['confirm'] && $_POST['password'] != '') {
+	if ($bad_password == false && get_request_var_post('password') == $_POST['confirm'] && $_POST['password'] != '') {
 		// Password change is good to go
 		if (read_config_option('secpass_expirepass') > 0) {
 				db_execute("UPDATE user_auth SET lastchange = " . time() . " WHERE id = " . intval($_SESSION['sess_user_id']) . " AND realm = 0 AND enabled = 'on'");
@@ -116,7 +116,7 @@ case 'changepassword':
 		}
 
 		db_execute_prepared('INSERT IGNORE INTO user_log (username, result, ip) VALUES (?, 3, ?)', array($user['username'], $_SERVER['REMOTE_ADDR']));
-		db_execute_prepared("UPDATE user_auth SET must_change_password = '', password = ? WHERE id = ?", array(md5($_POST['password']), $_SESSION['sess_user_id']));
+		db_execute_prepared("UPDATE user_auth SET must_change_password = '', password = ? WHERE id = ?", array(md5(get_request_var_post('password')), $_SESSION['sess_user_id']));
 
 		kill_session_var('sess_change_password');
 

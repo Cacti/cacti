@@ -452,7 +452,7 @@ function do_rrd() {
 
 			/* add to data_source_purge_action table */
 			$sql = "INSERT INTO data_source_purge_action VALUES('', ?, ?, ?) ON DUPLICATE KEY UPDATE local_data_id = VALUES(local_data_id)";
-			db_execute_prepared($sql, array($unused_file['name'], $unused_file['local_data_id'], $_POST['drp_action']));
+			db_execute_prepared($sql, array($unused_file['name'], $unused_file['local_data_id'], get_request_var_post('drp_action')));
 
 			/* drop from data_source_purge table */
 			db_execute_prepared('DELETE FROM data_source_purge_temp WHERE id = ?', array($matches[1]));

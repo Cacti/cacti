@@ -95,13 +95,13 @@ function automation_tree_rules_form_save() {
 		input_validate_input_number(get_request_var_post('id'));
 		/* ==================================================== */
 
-		$save['id'] = $_POST['id'];
-		$save['name'] = form_input_validate($_POST['name'], 'name', '', true, 3);
-		$save['tree_id'] = form_input_validate($_POST['tree_id'], 'tree_id', '^[0-9]+$', false, 3);
-		$save['tree_item_id'] = isset($_POST['tree_item_id']) ? form_input_validate($_POST['tree_item_id'], 'tree_item_id', '^[0-9]+$', false, 3) : 0;
+		$save['id'] = get_request_var_post('id');
+		$save['name'] = form_input_validate(get_request_var_post('name'), 'name', '', true, 3);
+		$save['tree_id'] = form_input_validate(get_request_var_post('tree_id'), 'tree_id', '^[0-9]+$', false, 3);
+		$save['tree_item_id'] = isset(get_request_var_post('tree_item_id')) ? form_input_validate($_POST['tree_item_id'], 'tree_item_id', '^[0-9]+$', false, 3) : 0;
 		$save['leaf_type'] = (isset($_POST['leaf_type'])) ? form_input_validate($_POST['leaf_type'], 'leaf_type', '^[0-9]+$', false, 3) : 0;
-		$save['host_grouping_type'] = isset($_POST['host_grouping_type']) ? form_input_validate($_POST['host_grouping_type'], 'host_grouping_type', '^[0-9]+$', false, 3) : 0;
-		$save['rra_id'] = isset($_POST['rra_id']) ? form_input_validate($_POST['rra_id'], 'rra_id', '^[0-9]+$', false, 3) : 0;
+		$save['host_grouping_type'] = isset(get_request_var_post('host_grouping_type')) ? form_input_validate($_POST['host_grouping_type'], 'host_grouping_type', '^[0-9]+$', false, 3) : 0;
+		$save['rra_id'] = isset(get_request_var_post('rra_id')) ? form_input_validate(get_request_var_post('rra_id'), 'rra_id', '^[0-9]+$', false, 3) : 0;
 		$save['enabled'] = (isset($_POST['enabled']) ? 'on' : '');
 		if (!is_error_message()) {
 			$rule_id = sql_save($save, 'automation_tree_rules');
@@ -113,7 +113,7 @@ function automation_tree_rules_form_save() {
 			}
 		}
 
-		header('Location: automation_tree_rules.php?header=false&action=edit&id=' . (empty($rule_id) ? $_POST['id'] : $rule_id));
+		header('Location: automation_tree_rules.php?header=false&action=edit&id=' . (empty($rule_id) ? get_request_var_post('id') : $rule_id));
 
 	}elseif (isset($_POST['save_component_automation_match_item'])) {
 		/* ================= input validation ================= */
@@ -121,11 +121,11 @@ function automation_tree_rules_form_save() {
 		input_validate_input_number(get_request_var_post('item_id'));
 		/* ==================================================== */
 		$save = array();
-		$save['id']        = form_input_validate($_POST['item_id'], 'item_id', '^[0-9]+$', false, 3);
-		$save['rule_id']   = form_input_validate($_POST['id'], 'id', '^[0-9]+$', false, 3);
+		$save['id']        = form_input_validate(get_request_var_post('item_id'), 'item_id', '^[0-9]+$', false, 3);
+		$save['rule_id']   = form_input_validate(get_request_var_post('id'), 'id', '^[0-9]+$', false, 3);
 		$save['rule_type'] = AUTOMATION_RULE_TYPE_TREE_MATCH;
-		$save['sequence']  = form_input_validate($_POST['sequence'], 'sequence', '^[0-9]+$', false, 3);
-		$save['operation'] = form_input_validate($_POST['operation'], 'operation', '^[-0-9]+$', true, 3);
+		$save['sequence']  = form_input_validate(get_request_var_post('sequence'), 'sequence', '^[0-9]+$', false, 3);
+		$save['operation'] = form_input_validate(get_request_var_post('operation'), 'operation', '^[-0-9]+$', true, 3);
 		$save['field']     = form_input_validate(((isset($_POST['field']) && $_POST['field'] != '0') ? $_POST['field'] : ''), 'field', '', true, 3);
 		$save['operator']  = form_input_validate((isset($_POST['operator']) ? $_POST['operator'] : ''), 'operator', '^[0-9]+$', true, 3);
 		$save['pattern']   = form_input_validate((isset($_POST['pattern']) ? $_POST['pattern'] : ''), 'pattern', '', true, 3);
@@ -141,9 +141,9 @@ function automation_tree_rules_form_save() {
 		}
 
 		if (is_error_message()) {
-			header('Location: automation_tree_rules.php?header=false&action=item_edit&id=' . $_POST['id'] . '&item_id=' . (empty($item_id) ? $_POST['item_id'] : $item_id) . '&rule_type=' . AUTOMATION_RULE_TYPE_TREE_MATCH);
+			header('Location: automation_tree_rules.php?header=false&action=item_edit&id=' . get_request_var_post('id') . '&item_id=' . (empty($item_id) ? get_request_var_post('item_id') : $item_id) . '&rule_type=' . AUTOMATION_RULE_TYPE_TREE_MATCH);
 		}else{
-			header('Location: automation_tree_rules.php?header=false&action=edit&id=' . $_POST['id'] . '&rule_type=' . AUTOMATION_RULE_TYPE_TREE_MATCH);
+			header('Location: automation_tree_rules.php?header=false&action=edit&id=' . get_request_var_post('id') . '&rule_type=' . AUTOMATION_RULE_TYPE_TREE_MATCH);
 		}
 	}elseif (isset($_POST['save_component_automation_tree_rule_item'])) {
 
@@ -153,14 +153,14 @@ function automation_tree_rules_form_save() {
 		/* ==================================================== */
 
 		unset($save);
-		$save['id']                = form_input_validate($_POST['item_id'], 'item_id', '^[0-9]+$', false, 3);
-		$save['rule_id']           = form_input_validate($_POST['id'], 'id', '^[0-9]+$', false, 3);
-		$save['sequence']          = form_input_validate($_POST['sequence'], 'sequence', '^[0-9]+$', false, 3);
+		$save['id']                = form_input_validate(get_request_var_post('item_id'), 'item_id', '^[0-9]+$', false, 3);
+		$save['rule_id']           = form_input_validate(get_request_var_post('id'), 'id', '^[0-9]+$', false, 3);
+		$save['sequence']          = form_input_validate(get_request_var_post('sequence'), 'sequence', '^[0-9]+$', false, 3);
 		$save['field']             = form_input_validate((isset($_POST['field']) ? $_POST['field'] : ''), 'field', '', true, 3);
-		$save['sort_type']         = form_input_validate($_POST['sort_type'], 'sort_type', '^[0-9]+$', false, 3);
+		$save['sort_type']         = form_input_validate(get_request_var_post('sort_type'), 'sort_type', '^[0-9]+$', false, 3);
 		$save['propagate_changes'] = (isset($_POST['propagate_changes']) ? 'on' : '');
-		$save['search_pattern']    = isset($_POST['search_pattern']) ? form_input_validate($_POST['search_pattern'], 'search_pattern', '', false, 3) : '';
-		$save['replace_pattern']   = isset($_POST['replace_pattern']) ? form_input_validate($_POST['replace_pattern'], 'replace_pattern', '', true, 3) : '';
+		$save['search_pattern']    = isset(get_request_var_post('search_pattern')) ? form_input_validate($_POST['search_pattern'], 'search_pattern', '', false, 3) : '';
+		$save['replace_pattern']   = isset(get_request_var_post('replace_pattern')) ? form_input_validate($_POST['replace_pattern'], 'replace_pattern', '', true, 3) : '';
 
 		if (!is_error_message()) {
 			$automation_graph_rule_item_id = sql_save($save, 'automation_tree_rule_items');
@@ -173,9 +173,9 @@ function automation_tree_rules_form_save() {
 		}
 
 		if (is_error_message()) {
-			header('Location: automation_tree_rules.php?header=false&action=item_edit&id=' . $_POST['id'] . '&item_id=' . (empty($automation_graph_rule_item_id) ? $_POST['item_id'] : $automation_graph_rule_item_id) . '&rule_type=' . AUTOMATION_RULE_TYPE_TREE_ACTION);
+			header('Location: automation_tree_rules.php?header=false&action=item_edit&id=' . get_request_var_post('id') . '&item_id=' . (empty($automation_graph_rule_item_id) ? get_request_var_post('item_id') : $automation_graph_rule_item_id) . '&rule_type=' . AUTOMATION_RULE_TYPE_TREE_ACTION);
 		}else{
-			header('Location: automation_tree_rules.php?header=false&action=edit&id=' . $_POST['id'] . '&rule_type=' . AUTOMATION_RULE_TYPE_TREE_ACTION);
+			header('Location: automation_tree_rules.php?header=false&action=edit&id=' . get_request_var_post('id') . '&rule_type=' . AUTOMATION_RULE_TYPE_TREE_ACTION);
 		}
 	} else {
 		raise_message(2);
@@ -192,29 +192,29 @@ function automation_tree_rules_form_actions() {
 	global $config;
 
 	/* if we are to save this form, instead of display it */
-	if (isset($_POST['selected_items'])) {
-		$selected_items = sanitize_unserialize_selected_items($_POST['selected_items']);
+	if (isset(get_request_var_post('selected_items'))) {
+		$selected_items = sanitize_unserialize_selected_items(get_request_var_post('selected_items'));
 
 		if ($selected_items != false) {
-			if ($_POST['drp_action'] == AUTOMATION_ACTION_TREE_DELETE) { /* DELETE */
+			if (get_request_var_post('drp_action') == AUTOMATION_ACTION_TREE_DELETE) { /* DELETE */
 				cacti_log('form_actions DELETE: ' . serialize($selected_items), true, 'AUTOMATION TRACE', POLLER_VERBOSITY_MEDIUM);
 
 				db_execute('DELETE FROM automation_tree_rules WHERE ' . array_to_sql_or($selected_items, 'id'));
 				db_execute('DELETE FROM automation_tree_rule_items WHERE ' . array_to_sql_or($selected_items, 'rule_id'));
 				db_execute('DELETE FROM automation_match_rule_items WHERE ' . array_to_sql_or($selected_items, 'rule_id'));
-			}elseif ($_POST['drp_action'] == AUTOMATION_ACTION_TREE_DUPLICATE) { /* duplicate */
+			}elseif (get_request_var_post('drp_action') == AUTOMATION_ACTION_TREE_DUPLICATE) { /* duplicate */
 				for ($i=0;($i<count($selected_items));$i++) {
 					cacti_log('form_actions duplicate: ' . $selected_items[$i], true, 'AUTOMATION TRACE', POLLER_VERBOSITY_MEDIUM);
 	
 					duplicate_automation_tree_rules($selected_items[$i], $_POST['name_format']);
 				}
-			}elseif ($_POST['drp_action'] == AUTOMATION_ACTION_TREE_ENABLE) { /* enable */
+			}elseif (get_request_var_post('drp_action') == AUTOMATION_ACTION_TREE_ENABLE) { /* enable */
 				for ($i=0;($i<count($selected_items));$i++) {
 					cacti_log('form_actions enable: ' . $selected_items[$i], true, 'AUTOMATION TRACE', POLLER_VERBOSITY_MEDIUM);
 	
 					db_execute("UPDATE automation_tree_rules SET enabled='on' WHERE id=" . $selected_items[$i]);
 				}
-			}elseif ($_POST['drp_action'] == AUTOMATION_ACTION_TREE_DISABLE) { /* disable */
+			}elseif (get_request_var_post('drp_action') == AUTOMATION_ACTION_TREE_DISABLE) { /* disable */
 				for ($i=0;($i<count($selected_items));$i++) {
 					cacti_log('form_actions disable: ' . $selected_items[$i], true, 'AUTOMATION TRACE', POLLER_VERBOSITY_MEDIUM);
 	
@@ -247,16 +247,16 @@ function automation_tree_rules_form_actions() {
 
 	form_start('automation_tree_rules.php', 'automation_tree_rules_action');
 
-	html_start_box($automation_tree_rules_actions{$_POST['drp_action']}, '60%', '', '3', 'center', '');
+	html_start_box($automation_tree_rules_actions{get_request_var_post('drp_action')}, '60%', '', '3', 'center', '');
 
-	if ($_POST['drp_action'] == AUTOMATION_ACTION_TREE_DELETE) { /* DELETE */
+	if (get_request_var_post('drp_action') == AUTOMATION_ACTION_TREE_DELETE) { /* DELETE */
 		print "<tr>
 			<td class='textArea'>
 				<p>Click 'Continue' to delete the following Rule(s).</p>
 				<p><ul>$automation_tree_rules_list</ul></p>
 			</td>
 		</tr>\n";
-	}elseif ($_POST['drp_action'] == AUTOMATION_ACTION_TREE_DUPLICATE) { /* duplicate */
+	}elseif (get_request_var_post('drp_action') == AUTOMATION_ACTION_TREE_DUPLICATE) { /* duplicate */
 		print "<tr>
 			<td class='textArea'>
 				<p>Click 'Continue' to duplicate the following Rule(s). You can
@@ -265,7 +265,7 @@ function automation_tree_rules_form_actions() {
 				<p>Title Format:<br>"; form_text_box('name_format', '<rule_name> (1)', '', '255', '30', 'text'); print "</p>
 			</td>
 		</tr>\n";
-	}elseif ($_POST['drp_action'] == AUTOMATION_ACTION_TREE_ENABLE) { /* enable */
+	}elseif (get_request_var_post('drp_action') == AUTOMATION_ACTION_TREE_ENABLE) { /* enable */
 		print "<tr>
 			<td class='textArea'>
 				<p>Click 'Continue' to enable the following Rule(s).</p>
@@ -273,7 +273,7 @@ function automation_tree_rules_form_actions() {
 				<p>Make sure, that those rules have successfully been tested!</p>
 			</td>
 		</tr>\n";
-	}elseif ($_POST['drp_action'] == AUTOMATION_ACTION_TREE_DISABLE) { /* disable */
+	}elseif (get_request_var_post('drp_action') == AUTOMATION_ACTION_TREE_DISABLE) { /* disable */
 		print "<tr>
 			<td class='textArea'>
 				<p>Click 'Continue' to disable the following Rule(s).</p>
@@ -293,7 +293,7 @@ function automation_tree_rules_form_actions() {
 		<td class='saveRow'>
 			<input type='hidden' name='action' value='actions'>
 			<input type='hidden' name='selected_items' value='" . (isset($automation_tree_rules_array) ? serialize($automation_tree_rules_array) : '') . "'>
-			<input type='hidden' name='drp_action' value='" . $_POST['drp_action'] . "'>
+			<input type='hidden' name='drp_action' value='" . get_request_var_post('drp_action') . "'>
 			$save_html
 		</td>
 	</tr>\n";

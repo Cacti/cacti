@@ -57,7 +57,7 @@ if (isset($_POST['update_policy'])) {
 
 		break;
 	case 'checkpass':
-		$error = secpass_check_pass($_POST['password']);
+		$error = secpass_check_pass(get_request_var_post('password'));
 
 		if ($error == '') {
 			print $error;
@@ -84,10 +84,10 @@ if (isset($_POST['update_policy'])) {
 function update_policies() {
 	$set = '';
 
-	$set .= isset($_POST['policy_graphs']) ? 'policy_graphs=' . get_request_var_post('policy_graphs'):'';
-	$set .= isset($_POST['policy_trees']) ? (strlen($set) ? ',':'') . 'policy_trees=' . get_request_var_post('policy_trees'):'';
-	$set .= isset($_POST['policy_hosts']) ? (strlen($set) ? ',':'') . 'policy_hosts=' . get_request_var_post('policy_hosts'):'';
-	$set .= isset($_POST['policy_graph_templates']) ? (strlen($set) ? ',':'') . 'policy_graph_templates=' . get_request_var_post('policy_graph_templates'):'';
+	$set .= isset(get_request_var_post('policy_graphs')) ? 'policy_graphs=' . get_request_var_post('policy_graphs'):'';
+	$set .= isset(get_request_var_post('policy_trees')) ? (strlen($set) ? ',':'') . 'policy_trees=' . get_request_var_post('policy_trees'):'';
+	$set .= isset(get_request_var_post('policy_hosts')) ? (strlen($set) ? ',':'') . 'policy_hosts=' . get_request_var_post('policy_hosts'):'';
+	$set .= isset(get_request_var_post('policy_graph_templates')) ? (strlen($set) ? ',':'') . 'policy_graph_templates=' . get_request_var_post('policy_graph_templates'):'';
 
 	if (strlen($set)) {
 		db_execute_prepared("UPDATE user_auth SET $set WHERE id = ?", array(get_request_var_post('id')));
@@ -186,7 +186,7 @@ function form_actions() {
 
 		header('Location: user_admin.php?action=user_edit&header=false&tab=permstr&id=' . get_request_var_post('id'));
 		exit;
-	}elseif (isset($_POST['selected_items'])) {
+	}elseif (isset(get_request_var_post('selected_items'))) {
 		if (get_request_var_post('drp_action') == '2') { /* copy */
 			/* ================= input validation ================= */
 			input_validate_input_number(get_request_var_post('selected_items'));
@@ -210,7 +210,7 @@ function form_actions() {
 				}
 			}
 		}else{
-			$selected_items = sanitize_unserialize_selected_items($_POST['selected_items']);
+			$selected_items = sanitize_unserialize_selected_items(get_request_var_post('selected_items'));
 
 			if ($selected_items != false) {
 				if (get_request_var_post('drp_action') == '1') { /* delete */
@@ -549,7 +549,7 @@ function form_save() {
 						db_execute_prepared('REPLACE INTO settings_graphs (user_id, name, value) VALUES (?, ?, ?)', array((!empty($user_id) ? $user_id : get_request_var_post('id')), $sub_field_name, get_request_var_post($sub_field_name, '')));
 					}
 				}else{
-					db_execute_prepared('REPLACE INTO settings_graphs (user_id, name, value) VALUES (?, ?, ?)', array((!empty($user_id) ? $user_id : $_POST['id']), $field_name, get_request_var_post($field_name)));
+					db_execute_prepared('REPLACE INTO settings_graphs (user_id, name, value) VALUES (?, ?, ?)', array((!empty($user_id) ? $user_id : get_request_var_post('id')), $field_name, get_request_var_post($field_name)));
 				}
 			}
 		}
@@ -566,7 +566,7 @@ function form_save() {
 	}
 
 	/* redirect to the appropriate page */
-	header('Location: user_admin.php?action=user_edit&header=false&id=' . (empty($user_id) ? $_POST['id'] : $user_id));
+	header('Location: user_admin.php?action=user_edit&header=false&id=' . (empty($user_id) ? get_request_var_post('id') : $user_id));
 }
 
 /* --------------------------

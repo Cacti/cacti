@@ -92,8 +92,8 @@ function form_automation_snmp_save() {
 		input_validate_input_number(get_request_var_post('id'));
 		/* ==================================================== */
 
-		$save['id']     = $_POST['id'];
-		$save['name']   = sql_sanitize(form_input_validate($_POST['name'], 'name', '', false, 3));
+		$save['id']     = get_request_var_post('id');
+		$save['name']   = sql_sanitize(form_input_validate(get_request_var_post('name'), 'name', '', false, 3));
 
 		if (!is_error_message()) {
 			$id = sql_save($save, 'automation_snmp');
@@ -104,7 +104,7 @@ function form_automation_snmp_save() {
 			}
 		}
 
-		header('Location: automation_snmp.php?header=false&action=edit&id=' . (empty($id) ? $_POST['id'] : $id));
+		header('Location: automation_snmp.php?header=false&action=edit&id=' . (empty($id) ? get_request_var_post('id') : $id));
 	}elseif (isset($_POST['save_component_automation_snmp_item'])) {
 		/* ================= input validation ================= */
 		input_validate_input_number(get_request_var_post('item_id'));
@@ -112,21 +112,21 @@ function form_automation_snmp_save() {
 		/* ==================================================== */
 
 		$save = array();
-		$save['id']						= form_input_validate($_POST['item_id'], '', '^[0-9]+$', false, 3);
-		$save['snmp_id'] 				= form_input_validate($_POST['id'], 'snmp_id', '^[0-9]+$', false, 3);
-		$save['sequence'] 				= form_input_validate($_POST['sequence'], 'sequence', '^[0-9]+$', false, 3);
-		$save['snmp_readstring'] 		= form_input_validate($_POST['snmp_readstring'], 'snmp_readstring', '', false, 3);
-		$save['snmp_version'] 			= form_input_validate($_POST['snmp_version'], 'snmp_version', '', false, 3);
-		$save['snmp_username']			= form_input_validate($_POST['snmp_username'], 'snmp_username', '', true, 3);
-		$save['snmp_password']			= form_input_validate($_POST['snmp_password'], 'snmp_password', '', true, 3);
-		$save['snmp_auth_protocol']		= form_input_validate($_POST['snmp_auth_protocol'], 'snmp_auth_protocol', '', true, 3);
-		$save['snmp_priv_passphrase']	= form_input_validate($_POST['snmp_priv_passphrase'], 'snmp_priv_passphrase', '', true, 3);
-		$save['snmp_priv_protocol']		= form_input_validate($_POST['snmp_priv_protocol'], 'snmp_priv_protocol', '', true, 3);
-		$save['snmp_context']			= form_input_validate($_POST['snmp_context'], 'snmp_context', '', true, 3);
-		$save['snmp_port']				= form_input_validate($_POST['snmp_port'], 'snmp_port', '^[0-9]+$', false, 3);
-		$save['snmp_timeout']			= form_input_validate($_POST['snmp_timeout'], 'snmp_timeout', '^[0-9]+$', false, 3);
-		$save['snmp_retries']			= form_input_validate($_POST['snmp_retries'], 'snmp_retries', '^[0-9]+$', false, 3);
-		$save['max_oids']				= form_input_validate($_POST['max_oids'], 'max_oids', '^[0-9]+$', false, 3);
+		$save['id']						= form_input_validate(get_request_var_post('item_id'), '', '^[0-9]+$', false, 3);
+		$save['snmp_id'] 				= form_input_validate(get_request_var_post('id'), 'snmp_id', '^[0-9]+$', false, 3);
+		$save['sequence'] 				= form_input_validate(get_request_var_post('sequence'), 'sequence', '^[0-9]+$', false, 3);
+		$save['snmp_readstring'] 		= form_input_validate(get_request_var_post('snmp_readstring'), 'snmp_readstring', '', false, 3);
+		$save['snmp_version'] 			= form_input_validate(get_request_var_post('snmp_version'), 'snmp_version', '', false, 3);
+		$save['snmp_username']			= form_input_validate(get_request_var_post('snmp_username'), 'snmp_username', '', true, 3);
+		$save['snmp_password']			= form_input_validate(get_request_var_post('snmp_password'), 'snmp_password', '', true, 3);
+		$save['snmp_auth_protocol']		= form_input_validate(get_request_var_post('snmp_auth_protocol'), 'snmp_auth_protocol', '', true, 3);
+		$save['snmp_priv_passphrase']	= form_input_validate(get_request_var_post('snmp_priv_passphrase'), 'snmp_priv_passphrase', '', true, 3);
+		$save['snmp_priv_protocol']		= form_input_validate(get_request_var_post('snmp_priv_protocol'), 'snmp_priv_protocol', '', true, 3);
+		$save['snmp_context']			= form_input_validate(get_request_var_post('snmp_context'), 'snmp_context', '', true, 3);
+		$save['snmp_port']				= form_input_validate(get_request_var_post('snmp_port'), 'snmp_port', '^[0-9]+$', false, 3);
+		$save['snmp_timeout']			= form_input_validate(get_request_var_post('snmp_timeout'), 'snmp_timeout', '^[0-9]+$', false, 3);
+		$save['snmp_retries']			= form_input_validate(get_request_var_post('snmp_retries'), 'snmp_retries', '^[0-9]+$', false, 3);
+		$save['max_oids']				= form_input_validate(get_request_var_post('max_oids'), 'max_oids', '^[0-9]+$', false, 3);
 
 		if (!is_error_message()) {
 			$item_id = sql_save($save, 'automation_snmp_items');
@@ -139,9 +139,9 @@ function form_automation_snmp_save() {
 		}
 
 		if (is_error_message()) {
-			header('Location: automation_snmp.php?header=false&action=item_edit&id=' . $_POST['id'] . '&item_id=' . (empty($item_id) ? $_POST['id'] : $item_id));
+			header('Location: automation_snmp.php?header=false&action=item_edit&id=' . get_request_var_post('id') . '&item_id=' . (empty($item_id) ? $_POST['id'] : $item_id));
 		}else{
-			header('Location: automation_snmp.php?header=false&action=edit&id=' . $_POST['id']);
+			header('Location: automation_snmp.php?header=false&action=edit&id=' . get_request_var_post('id'));
 		}
 	} else {
 		raise_message(2);
@@ -161,14 +161,14 @@ function form_automation_snmp_actions() {
 	/* ==================================================== */
 
 	/* if we are to save this form, instead of display it */
-	if (isset($_POST['selected_items'])) {
-		$selected_items = sanitize_unserialize_selected_items($_POST['selected_items']);
+	if (isset(get_request_var_post('selected_items'))) {
+		$selected_items = sanitize_unserialize_selected_items(get_request_var_post('selected_items'));
 
 		if ($selected_items != false) {
-			if ($_POST['drp_action'] == '1') { /* delete */
+			if (get_request_var_post('drp_action') == '1') { /* delete */
 				db_execute('DELETE FROM automation_snmp WHERE ' . array_to_sql_or($selected_items, 'id'));
 				db_execute('DELETE FROM automation_snmp_items WHERE ' . str_replace('id', 'snmp_id', array_to_sql_or($selected_items, 'id')));
-			}elseif ($_POST['drp_action'] == '2') { /* duplicate */
+			}elseif (get_request_var_post('drp_action') == '2') { /* duplicate */
 				for ($i=0;($i<count($selected_items));$i++) {
 					duplicate_mactrack($selected_items[$i], $_POST['name_format']);
 				}
@@ -207,7 +207,7 @@ function form_automation_snmp_actions() {
 
 	form_start('automation_snmp.php', 'automation_filter');
 
-	html_start_box($automation_snmp_actions{$_POST['drp_action']}, '60%', '', '3', 'center', '');
+	html_start_box($automation_snmp_actions{get_request_var_post('drp_action')}, '60%', '', '3', 'center', '');
 
 	if (!isset($automation_array)) {
 		print "<tr><td class='even'><span class='textError'>You must select at least one SNMP Option.</span></td></tr>\n";
@@ -215,14 +215,14 @@ function form_automation_snmp_actions() {
 	}else{
 		$save_html = "<input type='submit' value='Continue' name='save'>";
 
-		if ($_POST['drp_action'] == '1') { /* delete */
+		if (get_request_var_post('drp_action') == '1') { /* delete */
 			print "<tr>
 				<td class='textArea'>
 					<p>Click 'Continue' to delete the following SNMP Option(s).</p>
 					<p><ul>$snmp_groups</ul></p>
 				</td>
 			</tr>\n";
-		}elseif ($_POST['drp_action'] == '2') { /* duplicate */
+		}elseif (get_request_var_post('drp_action') == '2') { /* duplicate */
 			print "<tr>
 				<td class='textArea'>
 					<p>Click 'Continue' to duplicate the following SNMP Options. You can
@@ -238,7 +238,7 @@ function form_automation_snmp_actions() {
 		<td class='saveRow'>
 			<input type='hidden' name='action' value='actions'>
 			<input type='hidden' name='selected_items' value='" . (isset($automation_array) ? serialize($automation_array) : '') . "'>
-			<input type='hidden' name='drp_action' value='" . $_POST['drp_action'] . "'>
+			<input type='hidden' name='drp_action' value='" . get_request_var_post('drp_action') . "'>
 			<input type='button' onClick='goTo(\"" . "automation_snmp.php" . "\")' value='" . ($save_html == '' ? 'Return':'Cancel') . "' name='cancel'>
 			$save_html
 		</td>

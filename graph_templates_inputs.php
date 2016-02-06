@@ -57,12 +57,12 @@ function form_save() {
 		input_validate_input_number(get_request_var_post('graph_template_id'));
 		/* ==================================================== */
 		
-		$save['id'] = $_POST['graph_template_input_id'];
-		$save['hash'] = get_hash_graph_template($_POST['graph_template_input_id'], 'graph_template_input');
-		$save['graph_template_id'] = $_POST['graph_template_id'];
-		$save['name'] = form_input_validate($_POST['name'], 'name', '', false, 3);
-		$save['description'] = form_input_validate($_POST['description'], 'description', '', true, 3);
-		$save['column_name'] = form_input_validate($_POST['column_name'], 'column_name', '', true, 3);
+		$save['id'] = get_request_var_post('graph_template_input_id');
+		$save['hash'] = get_hash_graph_template(get_request_var_post('graph_template_input_id'), 'graph_template_input');
+		$save['graph_template_id'] = get_request_var_post('graph_template_id');
+		$save['name'] = form_input_validate(get_request_var_post('name'), 'name', '', false, 3);
+		$save['description'] = form_input_validate(get_request_var_post('description'), 'description', '', true, 3);
+		$save['column_name'] = form_input_validate(get_request_var_post('column_name'), 'column_name', '', true, 3);
 
 		if (!is_error_message()) {
 			$graph_template_input_id = sql_save($save, 'graph_template_input');
@@ -111,10 +111,10 @@ function form_save() {
 		}
 
 		if (is_error_message()) {
-			header('Location: graph_templates_inputs.php?header=false&action=input_edit&graph_template_input_id=' . (empty($graph_template_input_id) ? $_POST['graph_template_input_id'] : $graph_template_input_id) . '&graph_template_id=' . $_POST['graph_template_id']);
+			header('Location: graph_templates_inputs.php?header=false&action=input_edit&graph_template_input_id=' . (empty($graph_template_input_id) ? get_request_var_post('graph_template_input_id') : $graph_template_input_id) . '&graph_template_id=' . get_request_var_post('graph_template_id'));
 			exit;
 		}else{
-			header('Location: graph_templates.php?header=false&action=template_edit&id=' . $_POST['graph_template_id']);
+			header('Location: graph_templates.php?header=false&action=template_edit&id=' . get_request_var_post('graph_template_id'));
 			exit;
 		}
 	}

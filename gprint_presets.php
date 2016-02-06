@@ -66,10 +66,10 @@ function form_save() {
 		input_validate_input_number(get_request_var_post('id'));
 		/* ==================================================== */
 
-		$save['id'] = $_POST['id'];
-		$save['hash'] = get_hash_gprint($_POST['id']);
-		$save['name'] = form_input_validate($_POST['name'], 'name', '', false, 3);
-		$save['gprint_text'] = form_input_validate($_POST['gprint_text'], 'gprint_text', '', false, 3);
+		$save['id'] = get_request_var_post('id');
+		$save['hash'] = get_hash_gprint(get_request_var_post('id'));
+		$save['name'] = form_input_validate(get_request_var_post('name'), 'name', '', false, 3);
+		$save['gprint_text'] = form_input_validate(get_request_var_post('gprint_text'), 'gprint_text', '', false, 3);
 
 		if (!is_error_message()) {
 			$gprint_preset_id = sql_save($save, 'graph_templates_gprint');
@@ -82,7 +82,7 @@ function form_save() {
 		}
 
 		if (is_error_message()) {
-			header('Location: gprint_presets.php?header=false&action=edit&id=' . (empty($gprint_preset_id) ? $_POST['id'] : $gprint_preset_id));
+			header('Location: gprint_presets.php?header=false&action=edit&id=' . (empty($gprint_preset_id) ? get_request_var_post('id') : $gprint_preset_id));
 			exit;
 		}else{
 			header('Location: gprint_presets.php?header=false');
@@ -104,11 +104,11 @@ function form_actions() {
 	/* ==================================================== */
 	
 	/* if we are to save this form, instead of display it */
-	if (isset($_POST['selected_items'])) {
-		$selected_items = sanitize_unserialize_selected_items($_POST['selected_items']);
+	if (isset(get_request_var_post('selected_items'))) {
+		$selected_items = sanitize_unserialize_selected_items(get_request_var_post('selected_items'));
 
 		if ($selected_items != false) {
-			if ($_POST['drp_action'] == '1') { /* delete */
+			if (get_request_var_post('drp_action') == '1') { /* delete */
 				db_execute('DELETE FROM graph_templates_gprint WHERE ' . array_to_sql_or($selected_items, 'id'));
 			}
 		}
@@ -139,10 +139,10 @@ function form_actions() {
 
 	form_start('gprint_presets.php');
 
-	html_start_box($gprint_actions{$_POST['drp_action']}, '60%', '', '3', 'center', '');
+	html_start_box($gprint_actions{get_request_var_post('drp_action')}, '60%', '', '3', 'center', '');
 
 	if (isset($gprint_array) && sizeof($gprint_array)) {
-		if ($_POST['drp_action'] == '1') { /* delete */
+		if (get_request_var_post('drp_action') == '1') { /* delete */
 			print "<tr>
 				<td class='textArea' class='odd'>
 					<p>Click 'Continue' to delete the folling GPRINT Preset(s).</p>
@@ -161,7 +161,7 @@ function form_actions() {
 		<td class='saveRow'>
 			<input type='hidden' name='action' value='actions'>
 			<input type='hidden' name='selected_items' value='" . (isset($gprint_array) ? serialize($gprint_array) : '') . "'>
-			<input type='hidden' name='drp_action' value='" . $_POST['drp_action'] . "'>
+			<input type='hidden' name='drp_action' value='" . get_request_var_post('drp_action') . "'>
 			$save_html
 		</td>
 	</tr>\n";

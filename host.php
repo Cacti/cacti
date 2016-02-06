@@ -131,25 +131,25 @@ function add_tree_names_to_actions_array() {
 
 function form_save() {
 	if (isset($_POST['save_component_host'])) {
-		if ($_POST['snmp_version'] == 3 && ($_POST['snmp_password'] != $_POST['snmp_password_confirm'])) {
+		if (get_request_var_post('snmp_version') == 3 && (get_request_var_post('snmp_password') != $_POST['snmp_password_confirm'])) {
 			raise_message(4);
 		}else{
 			input_validate_input_number(get_request_var_post('id'));
 			input_validate_input_number(get_request_var_post('host_template_id'));
 
-			$host_id = api_device_save($_POST['id'], $_POST['host_template_id'], $_POST['description'],
-				trim($_POST['hostname']), $_POST['snmp_community'], $_POST['snmp_version'],
-				$_POST['snmp_username'], $_POST['snmp_password'],
-				$_POST['snmp_port'], $_POST['snmp_timeout'],
+			$host_id = api_device_save(get_request_var_post('id'), get_request_var_post('host_template_id'), get_request_var_post('description'),
+				trim(get_request_var_post('hostname')), $_POST['snmp_community'], get_request_var_post('snmp_version'),
+				get_request_var_post('snmp_username'), get_request_var_post('snmp_password'),
+				get_request_var_post('snmp_port'), get_request_var_post('snmp_timeout'),
 				(isset($_POST['disabled']) ? $_POST['disabled'] : ''),
-				$_POST['availability_method'], $_POST['ping_method'],
+				get_request_var_post('availability_method'), $_POST['ping_method'],
 				$_POST['ping_port'], $_POST['ping_timeout'],
 				$_POST['ping_retries'], $_POST['notes'],
-				$_POST['snmp_auth_protocol'], $_POST['snmp_priv_passphrase'],
-				$_POST['snmp_priv_protocol'], $_POST['snmp_context'], $_POST['max_oids'], $_POST['device_threads']);
+				get_request_var_post('snmp_auth_protocol'), get_request_var_post('snmp_priv_passphrase'),
+				get_request_var_post('snmp_priv_protocol'), get_request_var_post('snmp_context'), get_request_var_post('max_oids'), $_POST['device_threads']);
 		}
 
-		header('Location: host.php?header=false&action=edit&id=' . (empty($host_id) ? $_POST['id'] : $host_id));
+		header('Location: host.php?header=false&action=edit&id=' . (empty($host_id) ? get_request_var_post('id') : $host_id));
 	}
 }
 
@@ -165,11 +165,11 @@ function form_actions() {
 	/* ==================================================== */
 
 	/* if we are to save this form, instead of display it */
-	if (isset($_POST['selected_items'])) {
-		$selected_items = sanitize_unserialize_selected_items($_POST['selected_items']);
+	if (isset(get_request_var_post('selected_items'))) {
+		$selected_items = sanitize_unserialize_selected_items(get_request_var_post('selected_items'));
 
 		if ($selected_items != false) {
-			if ($_POST['drp_action'] == '2') { /* Enable Selected Devices */
+			if (get_request_var_post('drp_action') == '2') { /* Enable Selected Devices */
 				for ($i=0;($i<count($selected_items));$i++) {
 					db_execute_prepared("UPDATE host SET disabled = '' WHERE id = ?", array($selected_items[$i]));
 
@@ -188,7 +188,7 @@ function form_actions() {
 						poller_update_poller_cache_from_buffer($local_data_ids, $poller_items);
 					}
 				}
-			}elseif ($_POST['drp_action'] == '3') { /* Disable Selected Devices */
+			}elseif (get_request_var_post('drp_action') == '3') { /* Disable Selected Devices */
 				for ($i=0;($i<count($selected_items));$i++) {
 					db_execute_prepared("UPDATE host SET disabled='on' WHERE id = ?", array($selected_items[$i]));
 
@@ -196,7 +196,7 @@ function form_actions() {
 					db_execute_prepared('DELETE FROM poller_item WHERE host_id = ?', array($selected_items[$i]));
 					db_execute_prepared('DELETE FROM poller_reindex WHERE host_id = ?', array($selected_items[$i]));
 				}
-			}elseif ($_POST['drp_action'] == '4') { /* change snmp options */
+			}elseif (get_request_var_post('drp_action') == '4') { /* change snmp options */
 				for ($i=0;($i<count($selected_items));$i++) {
 					reset($fields_host_edit);
 					while (list($field_name, $field_array) = each($fields_host_edit)) {
@@ -207,13 +207,13 @@ function form_actions() {
 
 					push_out_host($selected_items[$i]);
 				}
-			}elseif ($_POST['drp_action'] == '5') { /* Clear Statisitics for Selected Devices */
+			}elseif (get_request_var_post('drp_action') == '5') { /* Clear Statisitics for Selected Devices */
 				for ($i=0;($i<count($selected_items));$i++) {
 					db_execute_prepared("UPDATE host SET min_time = '9.99999', max_time = '0', cur_time = '0', avg_time = '0',
 						total_polls = '0', failed_polls = '0',	availability = '100.00'
 						where id = ?", array($selected_items[$i]));
 				}
-			}elseif ($_POST['drp_action'] == '6') { /* change availability options */
+			}elseif (get_request_var_post('drp_action') == '6') { /* change availability options */
 				for ($i=0;($i<count($selected_items));$i++) {
 					reset($fields_host_edit);
 					while (list($field_name, $field_array) = each($fields_host_edit)) {
@@ -224,8 +224,8 @@ function form_actions() {
 
 					push_out_host($selected_items[$i]);
 				}
-			}elseif ($_POST['drp_action'] == '1') { /* delete */
-				if (!isset($_POST['delete_type'])) { $_POST['delete_type'] = 2; }
+			}elseif (get_request_var_post('drp_action') == '1') { /* delete */
+				if (!isset(get_request_var_post('delete_type'))) { $_POST['delete_type'] = 2; }
 
 				$data_sources_to_act_on = array();
 				$graphs_to_act_on       = array();
@@ -243,7 +243,7 @@ function form_actions() {
 						}
 					}
 
-					if ($_POST['delete_type'] == 2) {
+					if (get_request_var_post('delete_type') == 2) {
 						$graphs = db_fetch_assoc('SELECT
 							graph_local.id AS local_graph_id
 							FROM graph_local
@@ -259,7 +259,7 @@ function form_actions() {
 					$devices_to_act_on[] = $selected_items[$i];
 				}
 
-				switch ($_POST['delete_type']) {
+				switch (get_request_var_post('delete_type')) {
 					case '1': /* leave graphs and data_sources in place, but disable the data sources */
 						api_data_source_disable_multi($data_sources_to_act_on);
 
@@ -279,17 +279,17 @@ function form_actions() {
 				api_device_remove_multi($devices_to_act_on);
 
 				api_plugin_hook_function('device_remove', $devices_to_act_on);
-			}elseif (preg_match('/^tr_([0-9]+)$/', $_POST['drp_action'], $matches)) { /* place on tree */
+			}elseif (preg_match('/^tr_([0-9]+)$/', get_request_var_post('drp_action'), $matches)) { /* place on tree */
 				input_validate_input_number(get_request_var_post('tree_id'));
 				input_validate_input_number(get_request_var_post('tree_item_id'));
 
 				for ($i=0;($i<count($selected_items));$i++) {
-					api_tree_item_save(0, $_POST['tree_id'], TREE_ITEM_TYPE_HOST, $_POST['tree_item_id'], '', 0, read_graph_config_option('default_rra_id'), $selected_items[$i], 1, 1, false);
+					api_tree_item_save(0, get_request_var_post('tree_id'), TREE_ITEM_TYPE_HOST, get_request_var_post('tree_item_id'), '', 0, read_graph_config_option('default_rra_id'), $selected_items[$i], 1, 1, false);
 				}
 			}elseif ($action == 7) { /* automation */
 				cacti_log(__FUNCTION__ . ' called, action: ' . $action, true, 'AUTOMATION TRACE', POLLER_VERBOSITY_MEDIUM);
 
-				cacti_log(__FUNCTION__ . ', items: ' . $_POST['selected_items'], true, 'AUTOMATION TRACE', POLLER_VERBOSITY_MEDIUM);
+				cacti_log(__FUNCTION__ . ', items: ' . get_request_var_post('selected_items'), true, 'AUTOMATION TRACE', POLLER_VERBOSITY_MEDIUM);
 
 				/* work on all selected hosts */
 				for ($i=0;($i<count($selected_items));$i++) {
@@ -346,14 +346,14 @@ function form_actions() {
 					automation_execute_device_create_tree($host_id);
 				}
 			} else {
-				api_plugin_hook_function('device_action_execute', $_POST['drp_action']);
+				api_plugin_hook_function('device_action_execute', get_request_var_post('drp_action'));
 			}
 		}
 
 		/* update snmpcache */
-		snmpagent_device_action_bottom(array($_POST['drp_action'], $selected_items));
+		snmpagent_device_action_bottom(array(get_request_var_post('drp_action'), $selected_items));
 		
-		api_plugin_hook_function('device_action_bottom', array($_POST['drp_action'], $selected_items));
+		api_plugin_hook_function('device_action_bottom', array(get_request_var_post('drp_action'), $selected_items));
 
 		header('Location: host.php?header=false');
 		exit;
@@ -386,7 +386,7 @@ function form_actions() {
 	html_start_box($device_actions[get_request_var_post('drp_action')], '60%', '', '3', 'center', '');
 
 	if (isset($host_array) && sizeof($host_array)) {
-		if ($_POST['drp_action'] == '2') { /* Enable Devices */
+		if (get_request_var_post('drp_action') == '2') { /* Enable Devices */
 			print "<tr>
 				<td colspan='2' class='textArea'>
 					<p>Click 'Continue' to enable the following Device(s).</p>
@@ -395,7 +395,7 @@ function form_actions() {
 			</tr>\n";
 
 			$save_html = "<input type='button' value='Cancel' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='Continue' title='Enable Device(s)'>";
-		}elseif ($_POST['drp_action'] == '3') { /* Disable Devices */
+		}elseif (get_request_var_post('drp_action') == '3') { /* Disable Devices */
 			print "	<tr>
 				<td colspan='2' class='textArea'>
 					<p>Click 'Continue' to disable the following Device(s).</p>
@@ -404,7 +404,7 @@ function form_actions() {
 				</tr>\n";
 
 			$save_html = "<input type='button' value='Cancel' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='Continue' title='Disable Device(s)'>";
-		}elseif ($_POST['drp_action'] == '4') { /* change snmp options */
+		}elseif (get_request_var_post('drp_action') == '4') { /* change snmp options */
 			print "<tr>
 				<td colspan='2' class='textArea'>
 					<p>Click 'Continue' to change SNMP parameters for the following Device(s).  
@@ -439,7 +439,7 @@ function form_actions() {
 			);
 
 			$save_html = "<input type='button' value='Cancel' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='Continue' title='Change Device(s) SNMP Options'>";
-		}elseif ($_POST['drp_action'] == '6') { /* change availability options */
+		}elseif (get_request_var_post('drp_action') == '6') { /* change availability options */
 			print "<tr>
 				<td colspan='2' class='textArea'>
 					<p>Click 'Continue' to change Availability parameters for the following Device(s). 
@@ -473,7 +473,7 @@ function form_actions() {
 			);
 
 			$save_html = "<input type='button' value='Cancel' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='Continue' title='Change Device(s) Availability Options'>";
-		}elseif ($_POST['drp_action'] == '5') { /* Clear Statisitics for Selected Devices */
+		}elseif (get_request_var_post('drp_action') == '5') { /* Clear Statisitics for Selected Devices */
 			print "<tr>
 				<td colspan='2' class='textArea'>
 					<p>Click 'Continue' to clear the counters for the following Device(s).</p>
@@ -482,7 +482,7 @@ function form_actions() {
 			</tr>\n";
 
 			$save_html = "<input type='button' value='Cancel' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='Continue' title='Clear Statistics on Device(s)'>";
-		}elseif ($_POST['drp_action'] == '1') { /* delete */
+		}elseif (get_request_var_post('drp_action') == '1') { /* delete */
 			print "<tr>
 				<td class='textArea'>
 					<p>Click 'Continue' to delete the following Device(s).</p>
@@ -496,7 +496,7 @@ function form_actions() {
 			</tr>\n";
 
 			$save_html = "<input type='button' value='Cancel' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='Continue' title='Delete Device(s)'>";
-		}elseif (preg_match('/^tr_([0-9]+)$/', $_POST['drp_action'], $matches)) { /* place on tree */
+		}elseif (preg_match('/^tr_([0-9]+)$/', get_request_var_post('drp_action'), $matches)) { /* place on tree */
 			print "<tr>
 				<td class='textArea'>
 					<p>Click 'Continue' to place the following Device(s) under the branch selected below.</p>
@@ -518,7 +518,7 @@ function form_actions() {
 				</td>
 			</tr>\n";
 		} else {
-			$save['drp_action'] = $_POST['drp_action'];
+			$save['drp_action'] = get_request_var_post('drp_action');
 			$save['host_list'] = $host_list;
 			$save['host_array'] = (isset($host_array)? $host_array : array());
 			api_plugin_hook_function('device_action_prepare', $save);
@@ -533,7 +533,7 @@ function form_actions() {
 		<td colspan='2' class='saveRow'>
 			<input type='hidden' name='action' value='actions'>
 			<input type='hidden' name='selected_items' value='" . (isset($host_array) ? serialize($host_array) : '') . "'>
-			<input type='hidden' name='drp_action' value='" . $_POST['drp_action'] . "'>
+			<input type='hidden' name='drp_action' value='" . get_request_var_post('drp_action') . "'>
 			$save_html
 		</td>
 	</tr>\n";
@@ -556,10 +556,10 @@ function host_add_query() {
 	input_validate_input_number(get_request_var_post('reindex_method'));
 	/* ==================================================== */
 
-	db_execute_prepared('REPLACE INTO host_snmp_query (host_id, snmp_query_id, reindex_method) VALUES (?, ?, ?)', array($_POST['host_id'], $_POST['snmp_query_id'], $_POST['reindex_method']));
+	db_execute_prepared('REPLACE INTO host_snmp_query (host_id, snmp_query_id, reindex_method) VALUES (?, ?, ?)', array(get_request_var_post('host_id'), get_request_var_post('snmp_query_id'), $_POST['reindex_method']));
 
 	/* recache snmp data */
-	run_data_query($_POST['host_id'], $_POST['snmp_query_id']);
+	run_data_query(get_request_var_post('host_id'), get_request_var_post('snmp_query_id'));
 }
 
 function host_reload_query() {
@@ -586,11 +586,11 @@ function host_add_gt() {
 	input_validate_input_number(get_request_var_post('graph_template_id'));
 	/* ==================================================== */
 
-	db_execute_prepared('REPLACE INTO host_graph (host_id, graph_template_id) VALUES (?, ?)', array($_POST['host_id'], $_POST['graph_template_id']));
+	db_execute_prepared('REPLACE INTO host_graph (host_id, graph_template_id) VALUES (?, ?)', array(get_request_var_post('host_id'), get_request_var_post('graph_template_id')));
 
-	automation_hook_graph_template($_POST['host_id'], $_POST['graph_template_id']);
+	automation_hook_graph_template(get_request_var_post('host_id'), get_request_var_post('graph_template_id'));
 
-	api_plugin_hook_function('add_graph_template_to_host', array('host_id' => $_POST['host_id'], 'graph_template_id' => $_POST['graph_template_id']));
+	api_plugin_hook_function('add_graph_template_to_host', array('host_id' => get_request_var_post('host_id'), 'graph_template_id' => get_request_var_post('graph_template_id')));
 }
 
 function host_remove_gt() {

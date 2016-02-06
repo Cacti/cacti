@@ -115,12 +115,12 @@ function form_save() {
 		input_validate_input_number(get_request_var_post('id'));
 		input_validate_input_number(get_request_var_post('data_input_id'));
 
-		$save['id'] = $_POST['id'];
-		$save['hash'] = get_hash_data_query($_POST['id']);
-		$save['name'] = form_input_validate($_POST['name'], 'name', '', false, 3);
-		$save['description'] = form_input_validate($_POST['description'], 'description', '', true, 3);
-		$save['xml_path'] = form_input_validate($_POST['xml_path'], 'xml_path', '', false, 3);
-		$save['data_input_id'] = $_POST['data_input_id'];
+		$save['id'] = get_request_var_post('id');
+		$save['hash'] = get_hash_data_query(get_request_var_post('id'));
+		$save['name'] = form_input_validate(get_request_var_post('name'), 'name', '', false, 3);
+		$save['description'] = form_input_validate(get_request_var_post('description'), 'description', '', true, 3);
+		$save['xml_path'] = form_input_validate(get_request_var_post('xml_path'), 'xml_path', '', false, 3);
+		$save['data_input_id'] = get_request_var_post('data_input_id');
 
 		if (!is_error_message()) {
 			$snmp_query_id = sql_save($save, 'snmp_query');
@@ -132,7 +132,7 @@ function form_save() {
 			}
 		}
 
-		header('Location: data_queries.php?header=false&action=edit&id=' . (empty($snmp_query_id) ? $_POST['id'] : $snmp_query_id));
+		header('Location: data_queries.php?header=false&action=edit&id=' . (empty($snmp_query_id) ? get_request_var_post('id') : $snmp_query_id));
 	}elseif (isset($_POST['save_component_snmp_query_item'])) {
 		/* ================= input validation ================= */
 		input_validate_input_number(get_request_var_post('id'));
@@ -142,11 +142,11 @@ function form_save() {
 
 		$redirect_back = false;
 
-		$save['id'] = $_POST['id'];
-		$save['hash'] = get_hash_data_query($_POST['id'], 'data_query_graph');
-		$save['snmp_query_id'] = $_POST['snmp_query_id'];
-		$save['name'] = form_input_validate($_POST['name'], 'name', '', false, 3);
-		$save['graph_template_id'] = $_POST['graph_template_id'];
+		$save['id'] = get_request_var_post('id');
+		$save['hash'] = get_hash_data_query(get_request_var_post('id'), 'data_query_graph');
+		$save['snmp_query_id'] = get_request_var_post('snmp_query_id');
+		$save['name'] = form_input_validate(get_request_var_post('name'), 'name', '', false, 3);
+		$save['graph_template_id'] = get_request_var_post('graph_template_id');
 
 		if (!is_error_message()) {
 			$snmp_query_graph_id = sql_save($save, 'snmp_query_graph');
@@ -156,7 +156,7 @@ function form_save() {
 
 				/* if the user changed the graph template, go through and delete everything that
 				was associated with the old graph template */
-				if ($_POST['graph_template_id'] != $_POST['_graph_template_id']) {
+				if (get_request_var_post('graph_template_id') != $_POST['_graph_template_id']) {
 					db_execute_prepared('DELETE FROM snmp_query_graph_rrd_sv WHERE snmp_query_graph_id = ?', array($snmp_query_graph_id));
 					db_execute_prepared('DELETE FROM snmp_query_graph_sv WHERE snmp_query_graph_id = ?', array($snmp_query_graph_id));
 					$redirect_back = true;
@@ -181,17 +181,17 @@ function form_save() {
 						input_validate_input_number($matches[1]);
 						/* ==================================================== */
 
-						$sequence = get_sequence(0, 'sequence', 'snmp_query_graph_rrd_sv', 'snmp_query_graph_id=' . $_POST['id']  . ' AND data_template_id=' . $matches[1] . " AND field_name='" . $_POST{'svds_' . $matches[1] . '_field'} . "'");
+						$sequence = get_sequence(0, 'sequence', 'snmp_query_graph_rrd_sv', 'snmp_query_graph_id=' . get_request_var_post('id')  . ' AND data_template_id=' . $matches[1] . " AND field_name='" . $_POST{'svds_' . $matches[1] . '_field'} . "'");
 						$hash = get_hash_data_query(0, 'data_query_sv_data_source');
-						db_execute_prepared('INSERT INTO snmp_query_graph_rrd_sv (hash, snmp_query_graph_id, data_template_id, sequence, field_name, text) VALUES (?, ?, ?, ?, ?, ?)', array($hash, $_POST['id'], $matches[1], $sequence, $_POST{'svds_' . $matches[1] . '_field'}, $_POST{'svds_' . $matches[1] . '_text'}));
+						db_execute_prepared('INSERT INTO snmp_query_graph_rrd_sv (hash, snmp_query_graph_id, data_template_id, sequence, field_name, text) VALUES (?, ?, ?, ?, ?, ?)', array($hash, get_request_var_post('id'), $matches[1], $sequence, $_POST{'svds_' . $matches[1] . '_field'}, $_POST{'svds_' . $matches[1] . '_text'}));
 
 						$redirect_back = true;
 						clear_messages();
 					}elseif ((preg_match('/^svg_x/i', $var)) && (!empty($_POST{'svg_text'})) && (!empty($_POST{'svg_field'}))) {
 						/* suggested values -- graph templates */
-						$sequence = get_sequence(0, 'sequence', 'snmp_query_graph_sv', 'snmp_query_graph_id=' . $_POST['id'] . " AND field_name='" . $_POST{'svg_field'} . "'");
+						$sequence = get_sequence(0, 'sequence', 'snmp_query_graph_sv', 'snmp_query_graph_id=' . get_request_var_post('id') . " AND field_name='" . $_POST{'svg_field'} . "'");
 						$hash = get_hash_data_query(0, 'data_query_sv_graph');
-						db_execute_prepared('INSERT INTO snmp_query_graph_sv (hash, snmp_query_graph_id, sequence, field_name, text) VALUES (?, ?, ?, ?, ?)', array($hash, $_POST['id'], $sequence, $_POST{'svg_field'}, $_POST{'svg_text'}));
+						db_execute_prepared('INSERT INTO snmp_query_graph_sv (hash, snmp_query_graph_id, sequence, field_name, text) VALUES (?, ?, ?, ?, ?)', array($hash, get_request_var_post('id'), $sequence, $_POST{'svg_field'}, $_POST{'svg_text'}));
 
 						$redirect_back = true;
 						clear_messages();
@@ -209,7 +209,7 @@ function form_save() {
 			}
 		}
 
-		header('Location: data_queries.php?header=false&action=item_edit' . $header . '&id=' . (empty($snmp_query_graph_id) ? $_POST['id'] : $snmp_query_graph_id) . '&snmp_query_id=' . $_POST['snmp_query_id']);
+		header('Location: data_queries.php?header=false&action=item_edit' . $header . '&id=' . (empty($snmp_query_graph_id) ? get_request_var_post('id') : $snmp_query_graph_id) . '&snmp_query_id=' . get_request_var_post('snmp_query_id'));
 	}
 }
 
@@ -221,11 +221,11 @@ function form_actions() {
 	/* ==================================================== */
 
 	/* if we are to save this form, instead of display it */
-	if (isset($_POST['selected_items'])) {
-		$selected_items = sanitize_unserialize_selected_items($_POST['selected_items']);
+	if (isset(get_request_var_post('selected_items'))) {
+		$selected_items = sanitize_unserialize_selected_items(get_request_var_post('selected_items'));
 
 		if ($selected_items != false) {
-			if ($_POST['drp_action'] == '1') { /* delete */
+			if (get_request_var_post('drp_action') == '1') { /* delete */
 				for ($i=0;($i<count($selected_items));$i++) {
 					 data_query_remove($selected_items[$i]);
 				}
@@ -257,10 +257,10 @@ function form_actions() {
 
 	form_start('data_queries.php');
 
-	html_start_box($dq_actions{$_POST['drp_action']}, '60%', '', '3', 'center', '');
+	html_start_box($dq_actions{get_request_var_post('drp_action')}, '60%', '', '3', 'center', '');
 
 	if (isset($dq_array) && sizeof($dq_array)) {
-		if ($_POST['drp_action'] == '1') { /* delete */
+		if (get_request_var_post('drp_action') == '1') { /* delete */
 			$graphs = array();
 
 			print "<tr>
@@ -281,7 +281,7 @@ function form_actions() {
 		<td class='saveRow'>
 			<input type='hidden' name='action' value='actions'>
 			<input type='hidden' name='selected_items' value='" . (isset($dq_array) ? serialize($dq_array) : '') . "'>
-			<input type='hidden' name='drp_action' value='" . $_POST['drp_action'] . "'>
+			<input type='hidden' name='drp_action' value='" . get_request_var_post('drp_action') . "'>
 			$save_html
 		</td>
 	</tr>\n";

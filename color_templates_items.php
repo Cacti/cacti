@@ -75,14 +75,14 @@ function aggregate_color_item_form_save() {
 
 		foreach ($items as $item) {
 			/* generate a new sequence if needed */
-			if (empty($_POST['sequence'])) {
-				$_POST['sequence'] = get_next_sequence($_POST['sequence'], 'sequence', 'color_template_items', 'color_template_id=' . $_POST['color_template_id'], 'color_template_id');
+			if (empty(get_request_var_post('sequence'))) {
+				get_request_var_post('sequence') = get_next_sequence($_POST['sequence'], 'sequence', 'color_template_items', 'color_template_id=' . get_request_var_post('color_template_id'), 'color_template_id');
 			}
 
-			$save['color_template_item_id'] = htmlspecialchars($_POST['color_template_item_id']);
-			$save['color_template_id'] = htmlspecialchars($_POST['color_template_id']);
+			$save['color_template_item_id'] = htmlspecialchars(get_request_var_post('color_template_item_id'));
+			$save['color_template_id'] = htmlspecialchars(get_request_var_post('color_template_id'));
 			$save['color_id'] = form_input_validate((isset($item['color_id']) ? $item['color_id'] : $_POST['color_id']), 'color_id', '', true, 3);
-			$save['sequence'] = htmlspecialchars($_POST['sequence']);
+			$save['sequence'] = htmlspecialchars(get_request_var_post('sequence'));
 
 			if (!is_error_message()) {
 				$color_template_item_id = sql_save($save, 'color_template_items', 'color_template_item_id');
@@ -93,14 +93,14 @@ function aggregate_color_item_form_save() {
 				}
 			}
 
-			$_POST['sequence'] = 0;
+			get_request_var_post('sequence') = 0;
 		}
 
 		if (is_error_message()) {
-			header('Location: color_templates_items.php?header=false&action=item_edit&color_template_item_id=' . (empty($color_template_item_id) ? $_POST['color_template_item_id'] : $color_template_item_id) . '&color_template_id=' . $_POST['color_template_id']);
+			header('Location: color_templates_items.php?header=false&action=item_edit&color_template_item_id=' . (empty($color_template_item_id) ? get_request_var_post('color_template_item_id') : $color_template_item_id) . '&color_template_id=' . get_request_var_post('color_template_id'));
 			exit;
 		}else{
-			header('Location: color_templates.php?header=false&action=template_edit&color_template_id=' . $_POST['color_template_id']);
+			header('Location: color_templates.php?header=false&action=template_edit&color_template_id=' . get_request_var_post('color_template_id'));
 			exit;
 		}
 	}

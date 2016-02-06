@@ -830,7 +830,7 @@ function form_save() {
 
 	switch($_REQUEST['tab']){
 		case 'notifications':
-			header('Location: managers.php?action=edit&tab=notifications&id=' . (empty($manager_id) ? $_POST['id'] : $manager_id) );
+			header('Location: managers.php?action=edit&tab=notifications&id=' . (empty($manager_id) ? get_request_var_post('id') : $manager_id) );
 			break;
 		default:
 			$save['id']                       = $_REQUEST['id'];
@@ -872,24 +872,24 @@ function form_save() {
 			break;
 	}
 
-	header('Location: managers.php?action=edit&header=false&id=' . (empty($manager_id) ? $_POST['id'] : $manager_id) );
+	header('Location: managers.php?action=edit&header=false&id=' . (empty($manager_id) ? get_request_var_post('id') : $manager_id) );
 }
 
 function form_actions(){
 	global $manager_actions, $manager_notification_actions;
 
-	if (isset($_POST['selected_items'])) {
+	if (isset(get_request_var_post('selected_items'))) {
 		if(isset($_POST['action_receivers'])) {
-			$selected_items = sanitize_unserialize_selected_items($_POST['selected_items']);
+			$selected_items = sanitize_unserialize_selected_items(get_request_var_post('selected_items'));
 
 			if ($selected_items != false) {
-				if ($_POST['drp_action'] == '1') { /* delete */
+				if (get_request_var_post('drp_action') == '1') { /* delete */
 					db_execute('DELETE FROM snmpagent_managers WHERE id IN (' . implode(',' ,$selected_items) . ')');
 					db_execute('DELETE FROM snmpagent_managers_notifications WHERE manager_id IN (' . implode(',' ,$selected_items) . ')');
 					db_execute('DELETE FROM snmpagent_notifications_log WHERE manager_id IN (' . implode(',' ,$selected_items) . ')');
-				}elseif ($_POST['drp_action'] == '2') { /* enable */
+				}elseif (get_request_var_post('drp_action') == '2') { /* enable */
 					db_execute("UPDATE snmpagent_managers SET disabled = '' WHERE id IN (" . implode(',' ,$selected_items) . ')');
-				}elseif ($_POST['drp_action'] == '3') { /* disable */
+				}elseif (get_request_var_post('drp_action') == '3') { /* disable */
 					db_execute("UPDATE snmpagent_managers SET disabled = 'on' WHERE id IN (" . implode(',' ,$selected_items) . ')');
 				}
 
@@ -901,23 +901,23 @@ function form_actions(){
 			input_validate_input_number(get_request_var_post('id'));
 			/* ==================================================== */
 
-			$selected_items = unserialize(stripslashes($_POST['selected_items']));
+			$selected_items = unserialize(stripslashes(get_request_var_post('selected_items')));
 
-			if ($_POST['drp_action'] == '0') { /* disable */
+			if (get_request_var_post('drp_action') == '0') { /* disable */
 				foreach($selected_items as $mib => $notifications) {
 					foreach($notifications as $notification => $state) {
-						db_execute_prepared('DELETE FROM snmpagent_managers_notifications WHERE `manager_id` = ? AND `mib` = ? AND `notification` = ? LIMIT 1', array($_POST['id'], $mib, $notification));
+						db_execute_prepared('DELETE FROM snmpagent_managers_notifications WHERE `manager_id` = ? AND `mib` = ? AND `notification` = ? LIMIT 1', array(get_request_var_post('id'), $mib, $notification));
 					}
 				}
-			}elseif ($_POST['drp_action'] == '1') { /* enable */
+			}elseif (get_request_var_post('drp_action') == '1') { /* enable */
 				foreach($selected_items as $mib => $notifications) {
 					foreach($notifications as $notification => $state) {
-						db_execute_prepared('INSERT IGNORE INTO snmpagent_managers_notifications (`manager_id`, `notification`, `mib`) VALUES (?, ?, ?)', array($_POST['id'], $notification), $mib);
+						db_execute_prepared('INSERT IGNORE INTO snmpagent_managers_notifications (`manager_id`, `notification`, `mib`) VALUES (?, ?, ?)', array(get_request_var_post('id'), $notification), $mib);
 					}
 				}
 			}
 
-			header('Location: managers.php?action=edit&id=' . $_POST['id'] . '&tab=notifications&header=false');
+			header('Location: managers.php?action=edit&id=' . get_request_var_post('id') . '&tab=notifications&header=false');
 			exit;
 		}
 	}else {
@@ -940,17 +940,17 @@ function form_actions(){
 
 			form_start('managers.php');
 
-			html_start_box($manager_actions{$_POST['drp_action']}, '60%', '', '3', 'center', '');
+			html_start_box($manager_actions{get_request_var_post('drp_action')}, '60%', '', '3', 'center', '');
 
 			if (sizeof($selected_items)) {
 				print "<tr>
 					<td class='textArea'>
-						<p>Click 'Continue' to " . strtolower($manager_actions[$_POST['drp_action']]) . " the following Notification Receiver(s).</p>
+						<p>Click 'Continue' to " . strtolower($manager_actions[get_request_var_post('drp_action')]) . " the following Notification Receiver(s).</p>
 						<p><ul>$list</ul></p>
 					</td>
 				</tr>\n";
 
-				$save_html = "<input type='button' value='Cancel' onClick='cactiReturnTo()'><input type='submit' value='Continue' title='" . $manager_actions[$_POST['drp_action']] . " Notification Receiver(s)'>";
+				$save_html = "<input type='button' value='Cancel' onClick='cactiReturnTo()'><input type='submit' value='Continue' title='" . $manager_actions[get_request_var_post('drp_action')] . " Notification Receiver(s)'>";
 			} else {
 				print "<tr><td class='even'><span class='textError'>You must select at least one Notification Receiver.</span></td></tr>\n";
 				$save_html = "<input type='button' value='Return' onClick='cactiReturnTo()'>";
@@ -961,7 +961,7 @@ function form_actions(){
 				<input type='hidden' name='action' value='actions'>
 				<input type='hidden' name='action_receivers' value='1'>
 				<input type='hidden' name='selected_items' value='" . (isset($selected_items) ? serialize($selected_items) : '') . "'>
-				<input type='hidden' name='drp_action' value='" . $_POST['drp_action'] . "'>
+				<input type='hidden' name='drp_action' value='" . get_request_var_post('drp_action') . "'>
 				$save_html
 				</td>
 			</tr>\n";
@@ -993,10 +993,10 @@ function form_actions(){
 
 			form_start('managers.php');
 
-			html_start_box($manager_notification_actions[$_POST['drp_action']], '60%', '', '3', 'center', '');
+			html_start_box($manager_notification_actions[get_request_var_post('drp_action')], '60%', '', '3', 'center', '');
 
 			if (sizeof($selected_items)) {
-				$msg = ($_POST['drp_action'] == 1)
+				$msg = (get_request_var_post('drp_action') == 1)
 					 ? "Click 'Continue' to forward the following Notification Objects to this Noticification Receiver."
 					 : "Click 'Continue' to disable forwarding the following Notification Objects to this Noticification Receiver.";
 
@@ -1018,8 +1018,8 @@ function form_actions(){
 				<input type='hidden' name='action' value='actions'>
 				<input type='hidden' name='action_receiver_notifications' value='1'>
 				<input type='hidden' name='selected_items' value='" . (isset($selected_items) ? serialize($selected_items) : '') . "'>
-				<input type='hidden' name='id' value='" . $_POST['id'] . "'>
-				<input type='hidden' name='drp_action' value='" . $_POST['drp_action'] . "'>
+				<input type='hidden' name='id' value='" . get_request_var_post('id') . "'>
+				<input type='hidden' name='drp_action' value='" . get_request_var_post('drp_action') . "'>
 				$save_html
 				</td>
 			</tr>\n";

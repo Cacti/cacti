@@ -105,26 +105,26 @@ function form_save() {
 
 		foreach ($items as $item) {
 			/* generate a new sequence if needed */
-			if (empty($_POST['sequence'])) {
-				$_POST['sequence'] = get_sequence($_POST['sequence'], 'sequence', 'graph_templates_item', 'local_graph_id=' . $_POST['local_graph_id']);
+			if (empty(get_request_var_post('sequence'))) {
+				get_request_var_post('sequence') = get_sequence($_POST['sequence'], 'sequence', 'graph_templates_item', 'local_graph_id=' . get_request_var_post('local_graph_id'));
 			}
-			$save['id'] = $_POST['graph_template_item_id'];
-			$save['graph_template_id'] = $_POST['graph_template_id'];
+			$save['id'] = get_request_var_post('graph_template_item_id');
+			$save['graph_template_id'] = get_request_var_post('graph_template_id');
 			$save['local_graph_template_item_id'] = $_POST['local_graph_template_item_id'];
-			$save['local_graph_id'] = $_POST['local_graph_id'];
-			$save['task_item_id'] = form_input_validate($_POST['task_item_id'], 'task_item_id', '^[0-9]+$', true, 3);
+			$save['local_graph_id'] = get_request_var_post('local_graph_id');
+			$save['task_item_id'] = form_input_validate(get_request_var_post('task_item_id'), 'task_item_id', '^[0-9]+$', true, 3);
 			$save['color_id'] = form_input_validate((isset($item['color_id']) ? $item['color_id'] : $_POST['color_id']), 'color_id', '^[0-9]+$', true, 3);
 			/* if alpha is disabled, use invisible_alpha instead */
 			if (!isset($_POST['alpha'])) {$_POST['alpha'] = $_POST['invisible_alpha'];}
 			$save['alpha'] = form_input_validate((isset($item['alpha']) ? $item['alpha'] : $_POST['alpha']), 'alpha', '', true, 3);
 			$save['graph_type_id'] = form_input_validate((isset($item['graph_type_id']) ? $item['graph_type_id'] : $_POST['graph_type_id']), 'graph_type_id', '^[0-9]+$', true, 3);
-			$save['cdef_id'] = form_input_validate($_POST['cdef_id'], 'cdef_id', '^[0-9]+$', true, 3);
-			$save['consolidation_function_id'] = form_input_validate((isset($item['consolidation_function_id']) ? $item['consolidation_function_id'] : $_POST['consolidation_function_id']), 'consolidation_function_id', '^[0-9]+$', true, 3);
+			$save['cdef_id'] = form_input_validate(get_request_var_post('cdef_id'), 'cdef_id', '^[0-9]+$', true, 3);
+			$save['consolidation_function_id'] = form_input_validate((isset($item['consolidation_function_id']) ? $item['consolidation_function_id'] : get_request_var_post('consolidation_function_id')), 'consolidation_function_id', '^[0-9]+$', true, 3);
 			$save['text_format'] = form_input_validate((isset($item['text_format']) ? $item['text_format'] : $_POST['text_format']), 'text_format', '', true, 3);
-			$save['value'] = form_input_validate($_POST['value'], 'value', '', true, 3);
+			$save['value'] = form_input_validate(get_request_var_post('value'), 'value', '', true, 3);
 			$save['hard_return'] = form_input_validate(((isset($item['hard_return']) ? $item['hard_return'] : (isset($_POST['hard_return']) ? $_POST['hard_return'] : ''))), 'hard_return', '', true, 3);
-			$save['gprint_id'] = form_input_validate($_POST['gprint_id'], 'gprint_id', '^[0-9]+$', true, 3);
-			$save['sequence'] = $_POST['sequence'];
+			$save['gprint_id'] = form_input_validate(get_request_var_post('gprint_id'), 'gprint_id', '^[0-9]+$', true, 3);
+			$save['sequence'] = get_request_var_post('sequence');
 
 			if (!is_error_message()) {
 				$graph_template_item_id = sql_save($save, 'graph_templates_item');
@@ -136,14 +136,14 @@ function form_save() {
 				}
 			}
 
-			$_POST['sequence'] = 0;
+			get_request_var_post('sequence') = 0;
 		}
 
 		if (is_error_message()) {
-			header('Location: graphs.php?header=false&action=item_edit&graph_template_item_id=' . (empty($graph_template_item_id) ? $_POST['graph_template_item_id'] : $graph_template_item_id) . '&id=' . $_POST['local_graph_id']);
+			header('Location: graphs.php?header=false&action=item_edit&graph_template_item_id=' . (empty($graph_template_item_id) ? get_request_var_post('graph_template_item_id') : $graph_template_item_id) . '&id=' . get_request_var_post('local_graph_id'));
 			exit;
 		}else{
-			header('Location: graphs.php?header=false&action=graph_edit&id=' . $_POST['local_graph_id']);
+			header('Location: graphs.php?header=false&action=graph_edit&id=' . get_request_var_post('local_graph_id'));
 			exit;
 		}
 	}

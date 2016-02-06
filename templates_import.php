@@ -60,9 +60,9 @@ function form_save() {
 			header('Location: templates_import.php'); exit;
 		}
 
-		if ($_POST['import_rra'] == '1') {
+		if (get_request_var_post('import_rra') == '1') {
 			$import_custom_rra_settings = false;
-			$rra_array = (isset($_POST['rra_id']) ? $_POST['rra_id'] : array());
+			$rra_array = (isset(get_request_var_post('rra_id')) ? get_request_var_post('rra_id') : array());
 		}else{
 			$import_custom_rra_settings = true;
 			$rra_array = array();

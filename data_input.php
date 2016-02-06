@@ -81,11 +81,11 @@ function form_save() {
 		input_validate_input_number(get_request_var_post('id'));
 		/* ==================================================== */
 
-		$save['id']           = $_POST['id'];
-		$save['hash']         = get_hash_data_input($_POST['id']);
-		$save['name']         = form_input_validate($_POST['name'], 'name', '', false, 3);
-		$save['input_string'] = form_input_validate($_POST['input_string'], 'input_string', '', true, 3);
-		$save['type_id']      = form_input_validate($_POST['type_id'], 'type_id', '^[0-9]+$', true, 3);
+		$save['id']           = get_request_var_post('id');
+		$save['hash']         = get_hash_data_input(get_request_var_post('id'));
+		$save['name']         = form_input_validate(get_request_var_post('name'), 'name', '', false, 3);
+		$save['input_string'] = form_input_validate(get_request_var_post('input_string'), 'input_string', '', true, 3);
+		$save['type_id']      = form_input_validate(get_request_var_post('type_id'), 'type_id', '^[0-9]+$', true, 3);
 
 		if (!is_error_message()) {
 			$data_input_id = sql_save($save, 'data_input');
@@ -94,10 +94,10 @@ function form_save() {
 				raise_message(1);
 
 				/* get a list of each field so we can note their sequence of occurance in the database */
-				if (!empty($_POST['id'])) {
+				if (!empty(get_request_var_post('id'))) {
 					db_execute_prepared('UPDATE data_input_fields SET sequence = 0 WHERE data_input_id = ?', array(get_request_var_post('id')));
 
-					generate_data_input_field_sequences($_POST['input_string'], $_POST['id']);
+					generate_data_input_field_sequences(get_request_var_post('input_string'), get_request_var_post('id'));
 				}
 
 				push_out_data_input_method($data_input_id);
@@ -106,7 +106,7 @@ function form_save() {
 			}
 		}
 
-		header('Location: data_input.php?header=false&action=edit&id=' . (empty($data_input_id) ? $_POST['id'] : $data_input_id));
+		header('Location: data_input.php?header=false&action=edit&id=' . (empty($data_input_id) ? get_request_var_post('id') : $data_input_id));
 	}elseif (isset($_POST['save_component_field'])) {
 		/* ================= input validation ================= */
 		input_validate_input_number(get_request_var_post('id'));
@@ -115,14 +115,14 @@ function form_save() {
 		input_validate_input_regex(get_request_var_post('input_output'), '^(in|out)$');
 		/* ==================================================== */
 
-		$save['id']            = $_POST['id'];
-		$save['hash']          = get_hash_data_input($_POST['id'], 'data_input_field');
-		$save['data_input_id'] = $_POST['data_input_id'];
-		$save['name']          = form_input_validate($_POST['name'], 'name', '', false, 3);
-		$save['data_name']     = form_input_validate($_POST['data_name'], 'data_name', '', false, 3);
+		$save['id']            = get_request_var_post('id');
+		$save['hash']          = get_hash_data_input(get_request_var_post('id'), 'data_input_field');
+		$save['data_input_id'] = get_request_var_post('data_input_id');
+		$save['name']          = form_input_validate(get_request_var_post('name'), 'name', '', false, 3);
+		$save['data_name']     = form_input_validate(get_request_var_post('data_name'), 'data_name', '', false, 3);
 		$save['input_output']  = $_POST['input_output'];
 		$save['update_rra']    = form_input_validate((isset($_POST['update_rra']) ? $_POST['update_rra'] : ''), 'update_rra', '', true, 3);
-		$save['sequence']      = $_POST['sequence'];
+		$save['sequence']      = get_request_var_post('sequence');
 		$save['type_code']     = form_input_validate((isset($_POST['type_code']) ? $_POST['type_code'] : ''), 'type_code', '', true, 3);
 		$save['regexp_match']  = form_input_validate((isset($_POST['regexp_match']) ? $_POST['regexp_match'] : ''), 'regexp_match', '', true, 3);
 		$save['allow_nulls']   = form_input_validate((isset($_POST['allow_nulls']) ? $_POST['allow_nulls'] : ''), 'allow_nulls', '', true, 3);
@@ -142,9 +142,9 @@ function form_save() {
 		}
 
 		if (is_error_message()) {
-			header('Location: data_input.php?header=false&action=field_edit&data_input_id=' . $_POST['data_input_id'] . '&id=' . (empty($data_input_field_id) ? $_POST['id'] : $data_input_field_id) . (!empty($_POST['input_output']) ? '&type=' . $_POST['input_output'] : ''));
+			header('Location: data_input.php?header=false&action=field_edit&data_input_id=' . get_request_var_post('data_input_id') . '&id=' . (empty($data_input_field_id) ? get_request_var_post('id') : $data_input_field_id) . (!empty($_POST['input_output']) ? '&type=' . $_POST['input_output'] : ''));
 		}else{
-			header('Location: data_input.php?header=false&action=edit&id=' . $_POST['data_input_id']);
+			header('Location: data_input.php?header=false&action=edit&id=' . get_request_var_post('data_input_id'));
 		}
 	}
 }
@@ -157,11 +157,11 @@ function form_actions() {
 	/* ==================================================== */
 
 	/* if we are to save this form, instead of display it */
-	if (isset($_POST['selected_items'])) {
-		$selected_items = sanitize_unserialize_selected_items($_POST['selected_items']);
+	if (isset(get_request_var_post('selected_items'))) {
+		$selected_items = sanitize_unserialize_selected_items(get_request_var_post('selected_items'));
 
 		if ($selected_items != false) {
-			if ($_POST['drp_action'] == '1') { /* delete */
+			if (get_request_var_post('drp_action') == '1') { /* delete */
 				for ($i=0;($i<count($selected_items));$i++) {
 					data_remove($selected_items[$i]);
 				}
@@ -193,10 +193,10 @@ function form_actions() {
 
 	form_start('data_input.php');
 
-	html_start_box($di_actions{$_POST['drp_action']}, '60%', '', '3', 'center', '');
+	html_start_box($di_actions{get_request_var_post('drp_action')}, '60%', '', '3', 'center', '');
 
 	if (isset($di_array) && sizeof($di_array)) {
-		if ($_POST['drp_action'] == '1') { /* delete */
+		if (get_request_var_post('drp_action') == '1') { /* delete */
 			$graphs = array();
 
 			print "<tr>
@@ -217,7 +217,7 @@ function form_actions() {
 		<td class='saveRow'>
 			<input type='hidden' name='action' value='actions'>
 			<input type='hidden' name='selected_items' value='" . (isset($di_array) ? serialize($di_array) : '') . "'>
-			<input type='hidden' name='drp_action' value='" . $_POST['drp_action'] . "'>
+			<input type='hidden' name='drp_action' value='" . get_request_var_post('drp_action') . "'>
 			$save_html
 		</td>
 	</tr>\n";

@@ -110,27 +110,27 @@ function form_save() {
 
 		foreach ($items as $item) {
 			/* generate a new sequence if needed */
-			if (empty($_POST['sequence'])) {
-				$_POST['sequence'] = get_sequence($_POST['sequence'], 'sequence', 'graph_templates_item', 'graph_template_id=' . $_POST['graph_template_id'] . ' AND local_graph_id=0');
+			if (empty(get_request_var_post('sequence'))) {
+				get_request_var_post('sequence') = get_sequence($_POST['sequence'], 'sequence', 'graph_templates_item', 'graph_template_id=' . get_request_var_post('graph_template_id') . ' AND local_graph_id=0');
 			}
 
-			$save['id'] = $_POST['graph_template_item_id'];
-			$save['hash'] = get_hash_graph_template($_POST['graph_template_item_id'], 'graph_template_item');
-			$save['graph_template_id'] = $_POST['graph_template_id'];
+			$save['id'] = get_request_var_post('graph_template_item_id');
+			$save['hash'] = get_hash_graph_template(get_request_var_post('graph_template_item_id'), 'graph_template_item');
+			$save['graph_template_id'] = get_request_var_post('graph_template_id');
 			$save['local_graph_id'] = 0;
-			$save['task_item_id'] = form_input_validate($_POST['task_item_id'], 'task_item_id', '^[0-9]+$', true, 3);
+			$save['task_item_id'] = form_input_validate(get_request_var_post('task_item_id'), 'task_item_id', '^[0-9]+$', true, 3);
 			$save['color_id'] = form_input_validate((isset($item['color_id']) ? $item['color_id'] : $_POST['color_id']), 'color_id', '', true, 3);
 			/* if alpha is disabled, use invisible_alpha instead */
 			if (!isset($_POST['alpha'])) {$_POST['alpha'] = $_POST['invisible_alpha'];}
 			$save['alpha'] = form_input_validate((isset($item['alpha']) ? $item['alpha'] : $_POST['alpha']), 'alpha', '', true, 3);
 			$save['graph_type_id'] = form_input_validate((isset($item['graph_type_id']) ? $item['graph_type_id'] : $_POST['graph_type_id']), 'graph_type_id', '^[0-9]+$', true, 3);
-			$save['cdef_id'] = form_input_validate($_POST['cdef_id'], 'cdef_id', '^[0-9]+$', true, 3);
-			$save['consolidation_function_id'] = form_input_validate((isset($item['consolidation_function_id']) ? $item['consolidation_function_id'] : $_POST['consolidation_function_id']), 'consolidation_function_id', '^[0-9]+$', true, 3);
+			$save['cdef_id'] = form_input_validate(get_request_var_post('cdef_id'), 'cdef_id', '^[0-9]+$', true, 3);
+			$save['consolidation_function_id'] = form_input_validate((isset($item['consolidation_function_id']) ? $item['consolidation_function_id'] : get_request_var_post('consolidation_function_id')), 'consolidation_function_id', '^[0-9]+$', true, 3);
 			$save['text_format'] = form_input_validate((isset($item['text_format']) ? $item['text_format'] : $_POST['text_format']), 'text_format', '', true, 3);
-			$save['value'] = form_input_validate($_POST['value'], 'value', '', true, 3);
+			$save['value'] = form_input_validate(get_request_var_post('value'), 'value', '', true, 3);
 			$save['hard_return'] = form_input_validate(((isset($item['hard_return']) ? $item['hard_return'] : (isset($_POST['hard_return']) ? $_POST['hard_return'] : ''))), 'hard_return', '', true, 3);
-			$save['gprint_id'] = form_input_validate($_POST['gprint_id'], 'gprint_id', '^[0-9]+$', true, 3);
-			$save['sequence'] = $_POST['sequence'];
+			$save['gprint_id'] = form_input_validate(get_request_var_post('gprint_id'), 'gprint_id', '^[0-9]+$', true, 3);
+			$save['sequence'] = get_request_var_post('sequence');
 
 			if (!is_error_message()) {
 				/* Before we save the item, let's get a look at task_item_id <-> input associations */
@@ -154,7 +154,7 @@ function form_save() {
 
 					if (!empty($save['task_item_id'])) {
 						/* old item clean-up.  Don't delete anything if the item <-> task_item_id association remains the same. */
-						if ($_POST['_task_item_id'] != $_POST['task_item_id']) {
+						if (get_request_var_post('_task_item_id') != get_request_var_post('task_item_id')) {
 							/* It changed.  Delete any old associations */
 							db_execute_prepared('DELETE FROM graph_template_input_defs WHERE graph_template_item_id = ?', array($graph_template_item_id));
 
@@ -166,13 +166,13 @@ function form_save() {
 
 						/* an input for the current data source does NOT currently exist, let's create one */
 						if (!isset($orig_data_source_to_input{$save['task_item_id']})) {
-							$ds_name = db_fetch_cell_prepared('SELECT data_source_name FROM data_template_rrd WHERE id = ?', array($_POST['task_item_id']));
+							$ds_name = db_fetch_cell_prepared('SELECT data_source_name FROM data_template_rrd WHERE id = ?', array(get_request_var_post('task_item_id')));
 
 							db_execute_prepared("REPLACE INTO graph_template_input (hash, graph_template_id, name, column_name) VALUES (?, ?, ?, 'task_item_id')", array(get_hash_graph_template(0, 'graph_template_input'), $save['graph_template_id'], "Data Source [$ds_name]"));
 
 							$graph_template_input_id = db_fetch_insert_id();
 
-							$graph_items = db_fetch_assoc_prepared('SELECT id FROM graph_templates_item WHERE graph_template_id = ? AND task_item_id = ?', array($save['graph_template_id'], $_POST['task_item_id']));
+							$graph_items = db_fetch_assoc_prepared('SELECT id FROM graph_templates_item WHERE graph_template_id = ? AND task_item_id = ?', array($save['graph_template_id'], get_request_var_post('task_item_id')));
 
 							if (sizeof($graph_items) > 0) {
 								foreach ($graph_items as $graph_item) {
@@ -184,23 +184,23 @@ function form_save() {
 
 					push_out_graph_item($graph_template_item_id);
 
-					if (isset($orig_data_source_to_input{$_POST['task_item_id']})) {
+					if (isset($orig_data_source_to_input{get_request_var_post('task_item_id')})) {
 						/* make sure all current graphs using this graph input are aware of this change */
-						push_out_graph_input($orig_data_source_to_input{$_POST['task_item_id']}, $graph_template_item_id, array($graph_template_item_id => $graph_template_item_id));
+						push_out_graph_input($orig_data_source_to_input{get_request_var_post('task_item_id')}, $graph_template_item_id, array($graph_template_item_id => $graph_template_item_id));
 					}
 				}else{
 					raise_message(2);
 				}
 			}
 
-			$_POST['sequence'] = 0;
+			get_request_var_post('sequence') = 0;
 		}
 
 		if (is_error_message()) {
-			header('Location: graph_templates_items.php?header=false&action=item_edit&graph_template_item_id=' . (empty($graph_template_item_id) ? $_POST['graph_template_item_id'] : $graph_template_item_id) . '&id=' . $_POST['graph_template_id']);
+			header('Location: graph_templates_items.php?header=false&action=item_edit&graph_template_item_id=' . (empty($graph_template_item_id) ? get_request_var_post('graph_template_item_id') : $graph_template_item_id) . '&id=' . get_request_var_post('graph_template_id'));
 			exit;
 		}else{
-			header('Location: graph_templates.php?header=false&action=template_edit&id=' . $_POST['graph_template_id']);
+			header('Location: graph_templates.php?header=false&action=template_edit&id=' . get_request_var_post('graph_template_id'));
 			exit;
 		}
 	}

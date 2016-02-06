@@ -93,9 +93,9 @@ function form_save() {
 	/* ==================================================== */
 
 	if (isset($_POST['save_component_template'])) {
-		$save['id']   = $_POST['id'];
-		$save['hash'] = get_hash_host_template($_POST['id']);
-		$save['name'] = form_input_validate($_POST['name'], 'name', '', false, 3);
+		$save['id']   = get_request_var_post('id');
+		$save['hash'] = get_hash_host_template(get_request_var_post('id'));
+		$save['name'] = form_input_validate(get_request_var_post('name'), 'name', '', false, 3);
 
 		if (!is_error_message()) {
 			$host_template_id = sql_save($save, 'host_template');
@@ -107,7 +107,7 @@ function form_save() {
 			}
 		}
 
-		header('Location: host_templates.php?header=false&action=edit&id=' . (empty($host_template_id) ? $_POST['id'] : $host_template_id));
+		header('Location: host_templates.php?header=false&action=edit&id=' . (empty($host_template_id) ? get_request_var_post('id') : $host_template_id));
 	}
 }
 
@@ -123,7 +123,7 @@ function template_item_add_dq() {
 
 	db_execute_prepared('REPLACE INTO host_template_snmp_query 
 		(host_template_id, snmp_query_id) VALUES (?, ?)', 
-		array($_POST['host_template_id'], $_POST['snmp_query_id']));
+		array(get_request_var_post('host_template_id'), get_request_var_post('snmp_query_id')));
 }
 
 function template_item_add_gt() {
@@ -134,7 +134,7 @@ function template_item_add_gt() {
 
 	db_execute_prepared('REPLACE INTO host_template_graph 
 		(host_template_id, graph_template_id) VALUES (?, ?)', 
-		array($_POST['host_template_id'], $_POST['graph_template_id']));
+		array(get_request_var_post('host_template_id'), get_request_var_post('graph_template_id')));
 }
 
 function form_actions() {
@@ -145,18 +145,18 @@ function form_actions() {
 	/* ==================================================== */
 
 	/* if we are to save this form, instead of display it */
-	if (isset($_POST['selected_items'])) {
-		$selected_items = sanitize_unserialize_selected_items($_POST['selected_items']);
+	if (isset(get_request_var_post('selected_items'))) {
+		$selected_items = sanitize_unserialize_selected_items(get_request_var_post('selected_items'));
 
 		if ($selected_items != false) {
-			if ($_POST['drp_action'] == '1') { /* delete */
+			if (get_request_var_post('drp_action') == '1') { /* delete */
 				db_execute('DELETE FROM host_template WHERE ' . array_to_sql_or($selected_items, 'id'));
 				db_execute('DELETE FROM host_template_snmp_query WHERE ' . array_to_sql_or($selected_items, 'host_template_id'));
 				db_execute('DELETE FROM host_template_graph WHERE ' . array_to_sql_or($selected_items, 'host_template_id'));
 
 				/* "undo" any device that is currently using this template */
 				db_execute('UPDATE host SET host_template_id=0 WHERE ' . array_to_sql_or($selected_items, 'host_template_id'));
-			}elseif ($_POST['drp_action'] == '2') { /* duplicate */
+			}elseif (get_request_var_post('drp_action') == '2') { /* duplicate */
 				for ($i=0;($i<count($selected_items));$i++) {
 					duplicate_host_template($selected_items[$i], $_POST['title_format']);
 				}
@@ -188,10 +188,10 @@ function form_actions() {
 
 	form_start('host_templates.php');
 
-	html_start_box($host_actions{$_POST['drp_action']}, '60%', '', '3', 'center', '');
+	html_start_box($host_actions{get_request_var_post('drp_action')}, '60%', '', '3', 'center', '');
 
 	if (isset($host_array) && sizeof($host_array)) {
-		if ($_POST['drp_action'] == '1') { /* delete */
+		if (get_request_var_post('drp_action') == '1') { /* delete */
 			print "<tr>
 				<td class='textArea'>
 					<p>Click 'Continue' to delete the following Device Template(s).</p>
@@ -200,7 +200,7 @@ function form_actions() {
 			</tr>\n";
 
 			$save_html = "<input type='button' value='Cancel' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='Continue' title='Delete Device Template(s)'>";
-		}elseif ($_POST['drp_action'] == '2') { /* duplicate */
+		}elseif (get_request_var_post('drp_action') == '2') { /* duplicate */
 			print "<tr>
 				<td class='textArea'>
 					<p>Click 'Continue' to duplicate the following Device Template(s).
@@ -225,7 +225,7 @@ function form_actions() {
 		<td class='saveRow'>
 			<input type='hidden' name='action' value='actions'>
 			<input type='hidden' name='selected_items' value='" . (isset($host_array) ? serialize($host_array) : '') . "'>
-			<input type='hidden' name='drp_action' value='" . $_POST['drp_action'] . "'>
+			<input type='hidden' name='drp_action' value='" . get_request_var_post('drp_action') . "'>
 			$save_html
 		</td>
 	</tr>\n";
