@@ -496,19 +496,21 @@ function reports_form_save() {
 		$save['from_name']        = sql_sanitize(get_request_var_post('from_name'));
 		$save['from_email']       = sql_sanitize(get_request_var_post('from_email'));
 		$save['bcc']              = sql_sanitize(get_request_var_post('bcc'));
-		if ((get_request_var_post('attachment_type') != REPORTS_TYPE_INLINE_PNG) &&
-			(get_request_var_post('attachment_type') != REPORTS_TYPE_INLINE_JPG) &&
-			(get_request_var_post('attachment_type') != REPORTS_TYPE_INLINE_GIF) &&
-			(get_request_var_post('attachment_type') != REPORTS_TYPE_ATTACH_PNG) &&
-			(get_request_var_post('attachment_type') != REPORTS_TYPE_ATTACH_JPG) &&
-			(get_request_var_post('attachment_type') != REPORTS_TYPE_ATTACH_GIF) &&
-			(get_request_var_post('attachment_type') != REPORTS_TYPE_INLINE_PNG_LN) &&
-			(get_request_var_post('attachment_type') != REPORTS_TYPE_INLINE_JPG_LN) &&
-			(get_request_var_post('attachment_type') != REPORTS_TYPE_INLINE_GIF_LN) &&
-			(get_request_var_post('attachment_type') != REPORTS_TYPE_ATTACH_PDF)) {
-			get_request_var_post('attachment_type') = REPORTS_TYPE_INLINE_PNG;
+
+		$atype = get_request_var_post('attachment_type');
+		if (($atype != REPORTS_TYPE_INLINE_PNG) &&
+			($atype != REPORTS_TYPE_INLINE_JPG) &&
+			($atype != REPORTS_TYPE_INLINE_GIF) &&
+			($atype != REPORTS_TYPE_ATTACH_PNG) &&
+			($atype != REPORTS_TYPE_ATTACH_JPG) &&
+			($atype != REPORTS_TYPE_ATTACH_GIF) &&
+			($atype != REPORTS_TYPE_INLINE_PNG_LN) &&
+			($atype != REPORTS_TYPE_INLINE_JPG_LN) &&
+			($atype != REPORTS_TYPE_INLINE_GIF_LN) &&
+			($atype != REPORTS_TYPE_ATTACH_PDF)) {
+			$atype = REPORTS_TYPE_INLINE_PNG;
 		}
-		$save['attachment_type']  = form_input_validate(get_request_var_post('attachment_type'), 'attachment_type', '^[0-9]+$', false, 3);
+		$save['attachment_type']  = form_input_validate($atype, 'attachment_type', '^[0-9]+$', false, 3);
 		$save['lastsent']         = 0;
 
 		if (!is_error_message()) {
@@ -543,10 +545,10 @@ function reports_form_save() {
 		$save['host_id']           = (isset($_POST['host_id']) ? form_input_validate($_POST['host_id'], 'host_id', '^[-0-9]+$', true, 3) : 0);
 		$save['graph_template_id'] = (isset($_POST['graph_template_id']) ? form_input_validate($_POST['graph_template_id'], 'graph_template_id', '^[-0-9]+$', true, 3) : 0);
 		$save['local_graph_id']    = (isset($_POST['local_graph_id']) ? form_input_validate($_POST['local_graph_id'], 'local_graph_id', '^[0-9]+$', true, 3) : 0);
-		$save['timespan']          = (isset_request_var('timespan')) ? form_input_validate($_POST['timespan'], 'timespan', '^[0-9]+$', true, 3) : 0);
+		$save['timespan']          = (isset_request_var('timespan') ? form_input_validate($_POST['timespan'], 'timespan', '^[0-9]+$', true, 3) : 0);
 		$save['item_text']         = (isset($_POST['item_text']) ? sql_sanitize(form_input_validate($_POST['item_text'], 'item_text', '', true, 3)) : '');
 		$save['align']             = (isset($_POST['align']) ? form_input_validate($_POST['align'], 'align', '^[0-9]+$', true, 3) : REPORTS_ALIGN_LEFT);
-		$save['font_size']         = (isset_request_var('font_size')) ? form_input_validate($_POST['font_size'], 'font_size', '^[0-9]+$', true, 3) : REPORTS_FONT_SIZE);
+		$save['font_size']         = (isset_request_var('font_size') ? form_input_validate($_POST['font_size'], 'font_size', '^[0-9]+$', true, 3) : REPORTS_FONT_SIZE);
 
 		if (!is_error_message()) {
 			$item_id = sql_save($save, 'reports_items');

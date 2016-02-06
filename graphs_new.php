@@ -65,7 +65,7 @@ switch ($_REQUEST['action']) {
    -------------------------- */
 
 function form_save() {
-	if (isset($_POST['save_component_graph'])) {
+	if (isset_request_var('save_component_graph')) {
 		/* summarize the 'create graph from host template/snmp index' stuff into an array */
 		while (list($var, $val) = each($_POST)) {
 			if (preg_match('/^cg_(\d+)$/', $var, $matches)) {
@@ -80,25 +80,29 @@ function form_save() {
 		}
 
 		if (!isset_request_var('host_id')) {
-			get_request_var_post('host_id') = 0;
+			$host_id = 0;
+		}else{
+			$host_id = get_sanitize_request_var('host_id', FILTER_VALIDATE_INT);
 		}
 
 		if (!isset_request_var('host_template_id')) {
-			get_request_var_post('host_template_id') = 0;
+			$host_template_id = 0;
+		}else{
+			$host_template_id = get_sanitize_request_var('host_template_id', FILTER_VALIDATE_INT);
 		}
 
 		if (isset($selected_graphs)) {
-			host_new_graphs(get_request_var_post('host_id'), get_request_var_post('host_template_id'), $selected_graphs);
+			host_new_graphs($host_id, $host_template_id, $selected_graphs);
 			exit;
 		}
 
-		header('Location: graphs_new.php?host_id=' . get_request_var_post('host_id') . '&header=false');
+		header('Location: graphs_new.php?host_id=' . $host_id . '&header=false');
 	}
 
 	if (isset($_POST['save_component_new_graphs'])) {
-		host_new_graphs_save();
+		host_new_graphs_save($host_id);
 
-		header('Location: graphs_new.php?host_id=' . get_request_var_post('host_id') . '&header=false');
+		header('Location: graphs_new.php?host_id=' . $host_id . '&header=false');
 	}
 }
 
@@ -139,7 +143,7 @@ function host_reload_query() {
     New Graph Functions
    ------------------- */
 
-function host_new_graphs_save() {
+function host_new_graphs_save($host_id) {
 	$selected_graphs_array = unserialize(stripslashes($_POST['selected_graphs_array']));
 
 	/* form an array that contains all of the data on the previous form */
@@ -215,7 +219,7 @@ function host_new_graphs_save() {
 					$snmp_index_array = $form_array3;
 
 					$snmp_query_array['snmp_query_id'] = $form_id1;
-					$snmp_query_array['snmp_index_on'] = get_best_data_query_index_type(get_request_var_post('host_id'), $form_id1);
+					$snmp_query_array['snmp_index_on'] = get_best_data_query_index_type($host_id, $form_id1);
 					$snmp_query_array['snmp_query_graph_id'] = $form_id2;
 				}
 
@@ -223,30 +227,30 @@ function host_new_graphs_save() {
 			}
 
 			if ($current_form_type == 'cg') {
-				$return_array = create_complete_graph_from_template($graph_template_id, get_request_var_post('host_id'), '', $values['cg']);
+				$return_array = create_complete_graph_from_template($graph_template_id, $host_id, '', $values['cg']);
 
 				debug_log_insert('new_graphs', 'Created graph: ' . get_graph_title($return_array['local_graph_id']));
 
 				/* lastly push host-specific information to our data sources */
 				if (sizeof($return_array['local_data_id'])) { # we expect at least one data source associated
 					foreach($return_array['local_data_id'] as $item) {
-						push_out_host(get_request_var_post('host_id'), $item);
+						push_out_host($host_id, $item);
 					}
 				} else {
 					debug_log_insert('new_graphs', 'ERROR: no Data Source associated. Check Template');
 				}
 			}elseif ($current_form_type == 'sg') {
 				while (list($snmp_index, $true) = each($snmp_index_array)) {
-					$snmp_query_array['snmp_index'] = decode_data_query_index($snmp_index, $snmp_query_array['snmp_query_id'], get_request_var_post('host_id'));
+					$snmp_query_array['snmp_index'] = decode_data_query_index($snmp_index, $snmp_query_array['snmp_query_id'], $host_id);
 
-					$return_array = create_complete_graph_from_template($graph_template_id, get_request_var_post('host_id'), $snmp_query_array, $values['sg']{$snmp_query_array['snmp_query_id']});
+					$return_array = create_complete_graph_from_template($graph_template_id, $host_id, $snmp_query_array, $values['sg']{$snmp_query_array['snmp_query_id']});
 
 					debug_log_insert('new_graphs', 'Created graph: ' . get_graph_title($return_array['local_graph_id']));
 
 					/* lastly push host-specific information to our data sources */
 					if (sizeof($return_array['local_data_id'])) { # we expect at least one data source associated
 						foreach($return_array['local_data_id'] as $item) {
-							push_out_host(get_request_var_post('host_id'), $item);
+							push_out_host($host_id, $item);
 						}
 					} else {
 						debug_log_insert('new_graphs', 'ERROR: no Data Source associated. Check Template');
@@ -360,14 +364,12 @@ function host_new_graphs($host_id, $host_template_id, $selected_graphs_array) {
 
 		/* since the user didn't actually click "Create" to POST the data; we have to
 		pretend like they did here */
-		get_request_var_post('host_template_id') = $host_template_id;
-		get_request_var_post('host_id') = $host_id;
 		$_POST['save_component_new_graphs'] = '1';
 		$_POST['selected_graphs_array'] = serialize($selected_graphs_array);
 
-		host_new_graphs_save();
+		host_new_graphs_save($host_id);
 
-		header('Location: graphs_new.php?host_id=' . get_request_var_post('host_id') . '&header=false');
+		header('Location: graphs_new.php?host_id=' . $host_id . '&header=false');
 		exit;
 	}
 

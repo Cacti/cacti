@@ -88,18 +88,19 @@ switch ($_REQUEST['action']) {
 function form_save() {
 
 	// sanitize ids
-	if (isset_request_var('graph_template_id')) && ! is_numeric($_POST['graph_template_id'])) {
-		get_request_var_post('graph_template_id') = 0;
+	if (isset_request_var('graph_template_id') && !is_numeric(get_request_var_post('graph_template_id'))) {
+		$graph_template_id = 0;
+	}else{
+		$graph_template_id = get_request_var_post('graph_template_id');
 	}
 
 	if (isset($_POST['save_component_template'])) {
 		/* ================= input validation ================= */
-		input_validate_input_number(get_request_var_post('graph_template_id'));
 		input_validate_input_number(get_request_var_post('graph_template_graph_id'));
 		/* ==================================================== */
 
-		$save1['id'] = get_request_var_post('graph_template_id');
-		$save1['hash'] = get_hash_graph_template(get_request_var_post('graph_template_id'));
+		$save1['id']   = $graph_template_id;
+		$save1['hash'] = get_hash_graph_template($graph_template_id);
 		$save1['name'] = form_input_validate(get_request_var_post('name'), 'name', '', false, 3);
 
 		$save2['id'] = $_POST['graph_template_graph_id'];

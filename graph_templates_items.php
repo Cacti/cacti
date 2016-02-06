@@ -108,10 +108,12 @@ function form_save() {
 					));
 		}
 
+		$sequence = get_request_var_post('sequence');
+
 		foreach ($items as $item) {
 			/* generate a new sequence if needed */
-			if (empty(get_request_var_post('sequence'))) {
-				get_request_var_post('sequence') = get_sequence($_POST['sequence'], 'sequence', 'graph_templates_item', 'graph_template_id=' . get_request_var_post('graph_template_id') . ' AND local_graph_id=0');
+			if (empty($sequence)) {
+				$sequence = get_sequence($sequence, 'sequence', 'graph_templates_item', 'graph_template_id=' . get_request_var_post('graph_template_id') . ' AND local_graph_id=0');
 			}
 
 			$save['id'] = get_request_var_post('graph_template_item_id');
@@ -130,7 +132,7 @@ function form_save() {
 			$save['value'] = form_input_validate(get_request_var_post('value'), 'value', '', true, 3);
 			$save['hard_return'] = form_input_validate(((isset($item['hard_return']) ? $item['hard_return'] : (isset($_POST['hard_return']) ? $_POST['hard_return'] : ''))), 'hard_return', '', true, 3);
 			$save['gprint_id'] = form_input_validate(get_request_var_post('gprint_id'), 'gprint_id', '^[0-9]+$', true, 3);
-			$save['sequence'] = get_request_var_post('sequence');
+			$save['sequence'] = $sequence;
 
 			if (!is_error_message()) {
 				/* Before we save the item, let's get a look at task_item_id <-> input associations */
@@ -193,7 +195,7 @@ function form_save() {
 				}
 			}
 
-			get_request_var_post('sequence') = 0;
+			$sequence = 0;
 		}
 
 		if (is_error_message()) {

@@ -285,7 +285,7 @@ function form_save() {
 	if ((isset($_POST['save_component_graph_new'])) && (empty(get_request_var_post('graph_template_id')))) {
 		header('Location: graphs.php?action=graph_edit&header=false&host_id=' . get_request_var_post('host_id') . '&new=1');
 	}elseif ((is_error_message()) || (empty(get_request_var_post('local_graph_id'))) || (isset($_POST['save_component_graph_diff'])) || (get_request_var_post('graph_template_id') != $_POST['_graph_template_id']) || (get_request_var_post('host_id') != $_POST['_host_id'])) {
-		header('Location: graphs.php?action=graph_edit&header=false&id=' . (empty($local_graph_id) ? get_request_var_post('local_graph_id') : $local_graph_id) . (isset_request_var('host_id')) ? '&host_id=' . $_POST['host_id'] : ''));
+		header('Location: graphs.php?action=graph_edit&header=false&id=' . (empty($local_graph_id) ? get_request_var_post('local_graph_id') : $local_graph_id) . (isset_request_var('host_id') ? '&host_id=' . $_POST['host_id'] : ''));
 	}else{
 		header('Location: graphs.php?header=false');
 	}

@@ -70,19 +70,22 @@ function aggregate_color_item_form_save() {
 	if (isset($_POST['save_component_item'])) {
 		/* ================= input validation ================= */
 		input_validate_input_number(get_request_var_post('color_template_id'));
+		input_validate_input_number(get_request_var_post('sequence'));
 		/* ==================================================== */
+
 		$items[0] = array();
+		$sequence = get_request_var_post('sequence');
 
 		foreach ($items as $item) {
 			/* generate a new sequence if needed */
-			if (empty(get_request_var_post('sequence'))) {
-				get_request_var_post('sequence') = get_next_sequence($_POST['sequence'], 'sequence', 'color_template_items', 'color_template_id=' . get_request_var_post('color_template_id'), 'color_template_id');
+			if (empty($sequence)) {
+				$sequence = get_next_sequence($sequence, 'sequence', 'color_template_items', 'color_template_id=' . get_request_var_post('color_template_id'), 'color_template_id');
 			}
 
 			$save['color_template_item_id'] = htmlspecialchars(get_request_var_post('color_template_item_id'));
 			$save['color_template_id'] = htmlspecialchars(get_request_var_post('color_template_id'));
 			$save['color_id'] = form_input_validate((isset($item['color_id']) ? $item['color_id'] : $_POST['color_id']), 'color_id', '', true, 3);
-			$save['sequence'] = htmlspecialchars(get_request_var_post('sequence'));
+			$save['sequence'] = $sequence;
 
 			if (!is_error_message()) {
 				$color_template_item_id = sql_save($save, 'color_template_items', 'color_template_item_id');
@@ -93,7 +96,7 @@ function aggregate_color_item_form_save() {
 				}
 			}
 
-			get_request_var_post('sequence') = 0;
+			$sequence = 0;
 		}
 
 		if (is_error_message()) {
