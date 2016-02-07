@@ -31,7 +31,7 @@ $rra_actions = array(1 => 'Delete');
 /* set default action */
 set_default_action();
 
-switch ($_REQUEST['action']) {
+switch (get_request_var('action')) {
 	case 'save':
 		form_save();
 
@@ -61,9 +61,9 @@ switch ($_REQUEST['action']) {
    -------------------------- */
 
 function form_save() {
-	if (isset($_POST['save_component_rra'])) {
+	if (isset_request_var('save_component_rra')) {
 		/* ================= input validation ================= */
-		input_validate_input_number(get_request_var_post('id'));
+		get_filter_request_var('id');
 		/* ==================================================== */
 
 		$save['id'] = get_request_var_post('id');
@@ -86,10 +86,13 @@ function form_save() {
 				if (isset_request_var('consolidation_function_id')) {
 					for ($i = 0; ($i < count(get_request_var_post('consolidation_function_id'))); $i++) {
 						/* ================= input validation ================= */
-						input_validate_input_number(get_request_var_post('consolidation_function_id')[$i]);
+						$consolidation_function_id = $_REQUEST['consolidation_function_id'][$i];
+						if (!is_numeric($consolidation_function_id)) {
+							exit;
+						}
 						/* ==================================================== */
 
-						db_execute_prepared('INSERT INTO rra_cf (rra_id, consolidation_function_id) VALUES (?, ?)', array($rra_id, get_request_var_post('consolidation_function_id')[$i]));
+						db_execute_prepared('INSERT INTO rra_cf (rra_id, consolidation_function_id) VALUES (?, ?)', array($rra_id, $consolidation_function_id));
 					}
 				}else{
 					raise_message(2);
@@ -193,10 +196,10 @@ function rra_edit() {
 	global $fields_rra_edit;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var('id'));
+	get_filter_request_var('id');
 	/* ==================================================== */
 
-	if (!empty($_REQUEST['id'])) {
+	if (!isempty_request_var('id')) {
 		$rra = db_fetch_row_prepared('SELECT * FROM rra WHERE id = ?', array(get_request_var('id')));
 		$header_label = '[edit: ' . htmlspecialchars($rra['name']) . ']';
 	}else{
@@ -238,8 +241,8 @@ function rra() {
 	global $rra_actions, $item_rows;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var('page'));
-	input_validate_input_number(get_request_var('rows'));
+	get_filter_request_var('page');
+	get_filter_request_var('rows');
 	/* ==================================================== */
 
 	/* clean up search string */
@@ -325,7 +328,7 @@ function rra() {
 						</select>
 					</td>
 					<td>
-						<input type="checkbox" id='has_data' <?php print ($_REQUEST['has_data'] == 'true' ? 'checked':'');?>>
+						<input type="checkbox" id='has_data' <?php print (get_request_var('has_data') == 'true' ? 'checked':'');?>>
 					</td>
 					<td>
 						<label for='has_data'>Has Data Sources</label>
@@ -338,7 +341,7 @@ function rra() {
 					</td>
 				</tr>
 			</table>
-			<input type='hidden' id='page' value='<?php print $_REQUEST['page'];?>'>
+			<input type='hidden' id='page' value='<?php print get_request_var('page');?>'>
 			</form>
 			<script type='text/javascript'>
 			function applyFilter() {
@@ -377,13 +380,13 @@ function rra() {
 	html_end_box();
 
 	/* form the 'where' clause for our main sql query */
-	if ($_REQUEST['filter'] != '') {
+	if (get_request_var('filter') != '') {
 		$sql_where = "WHERE (rs.name LIKE '%" . get_request_var('filter') . "%')";
 	}else{
 		$sql_where = '';
 	}
 
-	if ($_REQUEST['has_data'] == 'true') {
+	if (get_request_var('has_data') == 'true') {
 		$sql_having = 'HAVING data_sources>0';
 	}else{
 		$sql_having = '';
@@ -424,7 +427,7 @@ function rra() {
 		$sql_where
 		GROUP BY rs.id
 		$sql_having
-		ORDER BY " . $_REQUEST['sort_column'] . ' ' . $_REQUEST['sort_direction']);
+		ORDER BY " . get_request_var('sort_column') . ' ' . get_request_var('sort_direction'));
 
     $nav = html_nav_bar('rra.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), get_request_var('rows'), $total_rows, 8, 'RRAs', 'page', 'main');
 
@@ -440,7 +443,7 @@ function rra() {
 		'templates' => array('display' => 'Templates Using', 'align' => 'right', 'sort' => 'DESC', 'tip' => 'The number of Data Templates using this RRA definition')
 	);
 
-	html_header_sort_checkbox($display_text, $_REQUEST['sort_column'], $_REQUEST['sort_direction'], false);
+	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
 	$i = 0;
 	if (sizeof($rras) > 0) {

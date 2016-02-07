@@ -31,12 +31,12 @@ define('MAX_DISPLAY_PAGES', 21);
 $cdef_actions = array(
 	1 => 'Delete',
 	2 => 'Duplicate'
-	);
+);
 
 /* set default action */
 set_default_action();
 
-switch ($_REQUEST['action']) {
+switch (get_request_var('action')) {
 	case 'save':
 		form_save();
 
@@ -46,19 +46,25 @@ switch ($_REQUEST['action']) {
 
 		break;
 	case 'item_movedown':
+		get_filter_request_var('cdef_id');
+
 		item_movedown();
 
-		header('Location: cdef.php?action=edit&id=' . $_REQUEST['cdef_id']);
+		header('Location: cdef.php?action=edit&id=' . get_request_var('cdef_id'));
 		break;
 	case 'item_moveup':
+		get_filter_request_var('cdef_id');
+
 		item_moveup();
 
-		header('Location: cdef.php?action=edit&id=' . $_REQUEST['cdef_id']);
+		header('Location: cdef.php?action=edit&id=' . get_request_var('cdef_id'));
 		break;
 	case 'item_remove':
+		get_filter_request_var('cdef_id');
+
 		item_remove();
 
-		header('Location: cdef.php?action=edit&id=' . $_REQUEST['cdef_id']);
+		header('Location: cdef.php?action=edit&id=' . get_request_var('cdef_id'));
 		break;
 	case 'item_edit':
 		top_header();
@@ -104,14 +110,15 @@ function draw_cdef_preview($cdef_id) {
 function form_save() {
 
 	// make sure ids are numeric
-	if (isset($_POST["id"]) && ! is_numeric($_POST["id"])) {
-		$_POST["id"] = 0;
-	}
-	if (isset($_POST["cdef_id"]) && ! is_numeric($_POST["cdef_id"])) {
-		$_POST["cdef_id"] = 0;
+	if (isset_request_var('id') && ! is_numeric(get_filter_request_var('id'))) {
+		set_request_var('id', 0);
 	}
 
-	if (isset($_POST['save_component_cdef'])) {
+	if (isset_request_var('cdef_id') && ! is_numeric(get_filter_request_var('cdef_id'))) {
+		set_request_var('cdef_id', 0);
+	}
+
+	if (isset_request_var('save_component_cdef')) {
 		$save['id']   = form_input_validate(get_request_var_post('id'), 'id', '^[0-9]+$', false, 3);
 		$save['hash'] = get_hash_cdef(get_request_var_post('id'));
 		$save['name'] = form_input_validate(get_request_var_post('name'), 'name', '', false, 3);
@@ -127,11 +134,11 @@ function form_save() {
 		}
 
 		header('Location: cdef.php?header=false&action=edit&id=' . (empty($cdef_id) ? get_request_var_post('id') : $cdef_id));
-	}elseif (isset($_POST['save_component_item'])) {
+	}elseif (isset_request_var('save_component_item')) {
 		/* ================= input validation ================= */
-		input_validate_input_number(get_request_var_post('id'));
-		input_validate_input_number(get_request_var_post('cdef_id'));
-		input_validate_input_number(get_request_var_post('type'));
+		get_filter_request_var('id');
+		get_filter_request_var('cdef_id');
+		get_filter_request_var('type');
 		/* ==================================================== */
 
 		$sequence = get_sequence(get_request_var_post('id'), 'sequence', 'cdef_items', 'cdef_id=' . get_request_var_post('cdef_id'));
@@ -182,7 +189,7 @@ function form_actions() {
 				db_execute('DELETE FROM cdef_items WHERE ' . array_to_sql_or($selected_items, 'cdef_id'));
 			}elseif (get_request_var_post('drp_action') == '2') { /* duplicate */
 				for ($i=0;($i<count($selected_items));$i++) {
-					duplicate_cdef($selected_items[$i], $_POST['title_format']);
+					duplicate_cdef($selected_items[$i], get_nfilter_request_var('title_format'));
 				}
 			}
 		}
@@ -263,26 +270,26 @@ function form_actions() {
 
 function item_movedown() {
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var('id'));
-	input_validate_input_number(get_request_var('cdef_id'));
+	get_filter_request_var('id');
+	get_filter_request_var('cdef_id');
 	/* ==================================================== */
 
-	move_item_down('cdef_items', $_REQUEST['id'], 'cdef_id=' . $_REQUEST['cdef_id']);
+	move_item_down('cdef_items', get_request_var('id'), 'cdef_id=' . get_request_var('cdef_id'));
 }
 
 function item_moveup() {
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var('id'));
-	input_validate_input_number(get_request_var('cdef_id'));
+	get_filter_request_var('id');
+	get_filter_request_var('cdef_id');
 	/* ==================================================== */
 
-	move_item_up('cdef_items', $_REQUEST['id'], 'cdef_id=' . $_REQUEST['cdef_id']);
+	move_item_up('cdef_items', get_request_var('id'), 'cdef_id=' . get_request_var('cdef_id'));
 }
 
 function item_remove() {
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var('id'));
-	input_validate_input_number(get_request_var('cdef_id'));
+	get_filter_request_var('id');
+	get_filter_request_var('cdef_id');
 	/* ==================================================== */
 
 	db_execute_prepared('DELETE FROM cdef_items WHERE id = ?', array(get_request_var('id')));
@@ -292,26 +299,26 @@ function item_edit() {
 	global $cdef_item_types, $cdef_functions, $cdef_operators, $custom_data_source_types;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var('id'));
-	input_validate_input_number(get_request_var('cdef_id'));
+	get_filter_request_var('id');
+	get_filter_request_var('cdef_id');
 	/* ==================================================== */
 
-	if (!empty($_REQUEST['id'])) {
+	if (!isempty_request_var('id')) {
 		$cdef = db_fetch_row_prepared('SELECT * FROM cdef_items WHERE id = ?', array(get_request_var('id')));
 		$current_type = $cdef['type'];
 		$values[$current_type] = $cdef['value'];
 	}
 
 	html_start_box('', '100%', '', '3', 'center', '');
-	draw_cdef_preview($_REQUEST['cdef_id']);
+	draw_cdef_preview(get_request_var('cdef_id'));
 	html_end_box();
 
 	form_start('cdef.php', 'form_cdef');
 
 	html_start_box('CDEF Items [edit: ' . htmlspecialchars(db_fetch_cell_prepared('SELECT name FROM cdef WHERE id = ?', array(get_request_var('cdef_id')))) . ']', '100%', '', '3', 'center', '');
 
-	if (isset($_REQUEST['type_select'])) {
-		$current_type = $_REQUEST['type_select'];
+	if (isset_request_var('type_select')) {
+		$current_type = get_request_var('type_select');
 	}elseif (isset($cdef['type'])) {
 		$current_type = $cdef['type'];
 	}else{
@@ -327,7 +334,7 @@ function item_edit() {
 			<select name='type_select' onChange='window.location=document.form_cdef.type_select.options[document.form_cdef.type_select.selectedIndex].value'>
 				<?php
 				while (list($var, $val) = each($cdef_item_types)) {
-					print "<option value='cdef.php?action=item_edit" . (isset($_REQUEST['id']) ? '&id=' . $_REQUEST['id'] : '') . '&cdef_id=' . $_REQUEST['cdef_id'] . "&type_select=$var'"; if ($var == $current_type) { print ' selected'; } print ">$val</option>\n";
+					print "<option value='cdef.php?action=item_edit" . get_request_var('id') . '&cdef_id=' . get_request_var('cdef_id') . "&type_select=$var'"; if ($var == $current_type) { print ' selected'; } print ">$val</option>\n";
 				}
 				?>
 			</select>
@@ -354,7 +361,7 @@ function item_edit() {
 				form_dropdown('value', db_fetch_assoc('SELECT name, id FROM cdef ORDER BY name'), 'name', 'id', (isset($cdef['value']) ? $cdef['value'] : ''), '', '');
 				break;
 			case '6':
-				form_text_box('value', (isset($cdef['value']) ? $cdef['value'] : ''), '', '255', 30, 'text', (isset($_REQUEST['id']) ? $_REQUEST['id'] : '0'));
+				form_text_box('value', (isset($cdef['value']) ? $cdef['value'] : ''), '', '255', 30, 'text', isset_request_var('id') ? get_request_var('id') : '0');
 				break;
 			}
 			?>
@@ -362,14 +369,14 @@ function item_edit() {
 	</tr>
 	<?php
 
-	form_hidden_box('id', (isset($_REQUEST['id']) ? $_REQUEST['id'] : '0'), '');
+	form_hidden_box('id', (isset_request_var('id') ? get_request_var('id') : '0'), '');
 	form_hidden_box('type', $current_type, '');
-	form_hidden_box('cdef_id', $_REQUEST['cdef_id'], '');
+	form_hidden_box('cdef_id', get_request_var('cdef_id'), '');
 	form_hidden_box('save_component_item', '1', '');
 
 	html_end_box();
 
-	form_save_button('cdef.php?action=edit&id=' . $_REQUEST['cdef_id']);
+	form_save_button('cdef.php?action=edit&id=' . get_request_var('cdef_id'));
 }
 
 /* ---------------------
@@ -380,10 +387,10 @@ function cdef_edit() {
 	global $cdef_item_types, $fields_cdef_edit;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var('id'));
+	get_filter_request_var('id');
 	/* ==================================================== */
 
-	if (!empty($_REQUEST['id'])) {
+	if (!isempty_request_var('id')) {
 		$cdef = db_fetch_row_prepared('SELECT * FROM cdef WHERE id = ?', array(get_request_var('id')));
 		$header_label = '[edit: ' . htmlspecialchars($cdef['name']) . ']';
 	}else{
@@ -402,9 +409,9 @@ function cdef_edit() {
 
 	html_end_box();
 
-	if (!empty($_REQUEST['id'])) {
+	if (!isempty_request_var('id')) {
 		html_start_box('', '100%', '', '3', 'center', '');
-		draw_cdef_preview($_REQUEST['id']);
+		draw_cdef_preview(get_request_var('id'));
 		html_end_box();
 
 		html_start_box('CDEF Items', '100%', '', '3', 'center', 'cdef.php?action=item_edit&cdef_id=' . $cdef['id']);
@@ -458,8 +465,8 @@ function cdef() {
 	global $cdef_actions, $item_rows;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var('page'));
-	input_validate_input_number(get_request_var('rows'));
+	get_filter_request_var('page');
+	get_filter_request_var('rows');
 	/* ==================================================== */
 
 	/* clean up search string */
@@ -545,7 +552,7 @@ function cdef() {
 						</select>
 					</td>
 					<td>
-						<input type='checkbox' id='has_graphs' <?php print ($_REQUEST['has_graphs'] == 'true' ? 'checked':'');?>>
+						<input type='checkbox' id='has_graphs' <?php print (get_request_var('has_graphs') == 'true' ? 'checked':'');?>>
 					</td>
 					<td>
 						<label for='has_graphs'>Has Graphs</label>
@@ -558,7 +565,7 @@ function cdef() {
 					</td>
 				</tr>
 			</table>
-			<input type='hidden' id='page' name='page' value='<?php print $_REQUEST['page'];?>'>
+			<input type='hidden' id='page' name='page' value='<?php print get_request_var('page');?>'>
 			</form>
 			<script type='text/javascript'>
 			function applyFilter() {
@@ -597,13 +604,13 @@ function cdef() {
 	html_end_box();
 
 	/* form the 'where' clause for our main sql query */
-	if ($_REQUEST['filter'] != '') {
+	if (get_request_var('filter') != '') {
 		$sql_where = "WHERE (name LIKE '%" . get_request_var('filter') . "%')";
 	}else{
 		$sql_where = '';
 	}
 
-	if ($_REQUEST['has_graphs'] == 'true') {
+	if (get_request_var('has_graphs') == 'true') {
 		$sql_having = 'HAVING graphs>0';
 	}else{
 		$sql_having = '';

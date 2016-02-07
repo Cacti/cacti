@@ -32,20 +32,20 @@ include_once('./lib/timespan_settings.php');
 define('MAX_DISPLAY_PAGES', 21);
 
 /* ================= input validation ================= */
-if (isset($_REQUEST['id']) && $_REQUEST['id'] == '#') {
-	$_REQUEST['id'] = '0';
+if (isset_request_var('id') && get_request_var('id') == '#') {
+	set_request_var('id', '0');
 }
 
-input_validate_input_number(get_request_var('branch_id'));
-input_validate_input_number(get_request_var('tree_id'));
-input_validate_input_number(get_request_var('graphs'));
-input_validate_input_number(get_request_var('rows'));
-input_validate_input_number(get_request_var('hide'));
-input_validate_input_number(get_request_var('leaf_id'));
-input_validate_input_number(get_request_var('rra_id'));
-input_validate_input_number(get_request_var('columns'));
-input_validate_input_number(get_request_var('predefined_timespan'));
-input_validate_input_number(get_request_var('predefined_timeshift'));
+get_filter_request_var('branch_id');
+get_filter_request_var('tree_id');
+get_filter_request_var('graphs');
+get_filter_request_var('rows');
+get_filter_request_var('hide');
+get_filter_request_var('leaf_id');
+get_filter_request_var('rra_id');
+get_filter_request_var('columns');
+get_filter_request_var('predefined_timespan');
+get_filter_request_var('predefined_timeshift');
 input_validate_input_regex(get_request_var('graph_list'), '^([\,0-9]+)$');
 input_validate_input_regex(get_request_var('graph_add'), '^([\,0-9]+)$');
 input_validate_input_regex(get_request_var('graph_remove'), '^([\,0-9]+)$');
@@ -53,42 +53,42 @@ input_validate_input_regex(get_request_var('nodeid'), '^([_\-a-zA-Z0-9]+)$');
 /* ==================================================== */
 
 /* clean up action string */
-if (isset($_REQUEST['action'])) {
-	$_REQUEST['action'] = sanitize_search_string(get_request_var('action'));
+if (isset_request_var('action')) {
+	set_request_var('action', sanitize_search_string(get_request_var('action')));
 }
 
-if (isset($_REQUEST['action']) && $_REQUEST['action'] == 'ajax_hosts') {
+if (isset_request_var('action') && get_request_var('action') == 'ajax_hosts') {
 	get_allowed_ajax_hosts();
 	exit;
 }
 
-if (isset($_REQUEST['action']) && $_REQUEST['action'] == 'save') {
+if (isset_request_var('action') && get_request_var('action') == 'save') {
 	if (is_view_allowed('graph_settings')) {
-		if (isset($_REQUEST['predefined_timespan'])) {
-			set_graph_config_option('default_timespan', $_REQUEST['predefined_timespan']);
+		if (isset_request_var('predefined_timespan')) {
+			set_graph_config_option('default_timespan', get_request_var('predefined_timespan'));
 		}
-		if (isset($_REQUEST['predefined_timeshift'])) {
-			set_graph_config_option('default_timeshift', $_REQUEST['predefined_timeshift']);
+		if (isset_request_var('predefined_timeshift')) {
+			set_graph_config_option('default_timeshift', get_request_var('predefined_timeshift'));
 		}
-		if (isset($_REQUEST['section']) && $_REQUEST['section'] == 'preview') {
-			if (isset($_REQUEST['columns'])) {
+		if (isset_request_var('section') && get_request_var('section') == 'preview') {
+			if (isset_request_var('columns')) {
 				set_graph_config_option('num_columns', get_request_var('columns'));
 			}
-			if (isset($_REQUEST['graphs'])) {
+			if (isset_request_var('graphs')) {
 				set_graph_config_option('preview_graphs_per_page', get_request_var('graphs'));
 			}
-			if (isset($_REQUEST['thumbnails'])) {
-				set_graph_config_option('thumbnail_section_preview', $_REQUEST['thumbnails'] == 'true' ? 'on':'');
+			if (isset_request_var('thumbnails')) {
+				set_graph_config_option('thumbnail_section_preview', get_request_var('thumbnails') == 'true' ? 'on':'');
 			}
 		}else{
-			if (isset($_REQUEST['columns'])) {
+			if (isset_request_var('columns')) {
 				set_graph_config_option('num_columns_tree', get_request_var('columns'));
 			}
-			if (isset($_REQUEST['graphs'])) {
+			if (isset_request_var('graphs')) {
 				set_graph_config_option('treeview_graphs_per_page', get_request_var('graphs'));
 			}
-			if (isset($_REQUEST['thumbnails'])) {
-				set_graph_config_option('thumbnail_section_tree_2', $_REQUEST['thumbnails'] == 'true' ? 'on':'');
+			if (isset_request_var('thumbnails')) {
+				set_graph_config_option('thumbnail_section_tree_2', get_request_var('thumbnails') == 'true' ? 'on':'');
 			}
 		}
 	}
@@ -97,38 +97,38 @@ if (isset($_REQUEST['action']) && $_REQUEST['action'] == 'save') {
 }
 
 /* setup tree selection defaults if the user has not been here before */
-if (!isset($_REQUEST['action'])) {
+if (!isset_request_var('action')) {
 	if (!isset($_SESSION['sess_graph_view_action'])) {
 		if (read_graph_config_option('default_view_mode') == '1') {
-			$_REQUEST['action'] = 'tree';
+			set_request_var('action', 'tree');
 		}elseif (read_graph_config_option('default_view_mode') == '2') {
-			$_REQUEST['action'] = 'list';
+			set_request_var('action', 'list');
 		}elseif (read_graph_config_option('default_view_mode') == '3') {
-			$_REQUEST['action'] = 'preview';
+			set_request_var('action', 'preview');
 		}
 	}else{
 		if (in_array($_SESSION['sess_graph_view_action'], array('tree', 'list', 'preview'))) {
-			$_REQUEST['action'] = $_SESSION['sess_graph_view_action'];
+			set_request_var('action', $_SESSION['sess_graph_view_action']);
 		} else {
-			$_REQUEST['action'] = 'tree';
+			set_request_var('action', 'tree');
 		}
 	}
 }
 
-if ($_REQUEST['action'] != 'get_node') {
-	$_SESSION['sess_graph_view_action'] = $_REQUEST['action'];
+if (get_request_var('action') != 'get_node') {
+	$_SESSION['sess_graph_view_action'] = get_request_var('action');
 }
 
 if (read_config_option('auth_method') != 0) {
 	$current_user = db_fetch_row_prepared('SELECT * FROM user_auth WHERE id = ?', array($_SESSION['sess_user_id']));
 }
 
-if (isset($_REQUEST['hide'])) {
-	if (($_REQUEST['hide'] == '0') || ($_REQUEST['hide'] == '1')) {
+if (isset_request_var('hide')) {
+	if ((get_request_var('hide') == '0') || (get_request_var('hide') == '1')) {
 		/* only update expand/contract info is this user has rights to keep their own settings */
 		if ((isset($current_user)) && ($current_user['graph_settings'] == 'on')) {
-			db_execute_prepared('DELETE FROM settings_tree WHERE graph_tree_item_id = ? AND user_id = ?', array($_REQUEST['branch_id'], $_SESSION['sess_user_id']));
-			db_execute_prepared('INSERT INTO settings_tree (graph_tree_item_id, user_id,status) values (?, ?, ?)', array($_REQUEST['branch_id'], $_SESSION['sess_user_id'], $_REQUEST['hide']));
+			db_execute_prepared('DELETE FROM settings_tree WHERE graph_tree_item_id = ? AND user_id = ?', array(get_request_var('branch_id'), $_SESSION['sess_user_id']));
+			db_execute_prepared('INSERT INTO settings_tree (graph_tree_item_id, user_id,status) values (?, ?, ?)', array(get_request_var('branch_id'), $_SESSION['sess_user_id'], get_request_var('hide')));
 		}
 	}
 }
@@ -140,10 +140,10 @@ if (!isset($_SESSION['sess_realtime_window'])) {
 	$_SESSION['sess_realtime_window'] = read_config_option('realtime_gwindow');
 }
 
-switch ($_REQUEST['action']) {
+switch (get_request_var('action')) {
 case 'tree':
-	if (isset($_REQUEST['tree_id'])) {
-		$_SESSION['sess_tree_id'] = $_REQUEST['tree_id'];
+	if (isset_request_var('tree_id')) {
+		$_SESSION['sess_tree_id'] = get_request_var('tree_id');
 	}
 
 	top_graph_header();
@@ -154,11 +154,11 @@ case 'tree':
 case 'get_node':
 	$parent  = -1;
 	$tree_id = 0;
-	if (isset($_REQUEST['tree_id'])) {
-		if ($_REQUEST['tree_id'] == 'default' || $_REQUEST['tree_id'] == 'undefined') {
+	if (isset_request_var('tree_id')) {
+		if (get_request_var('tree_id') == 'default' || get_request_var('tree_id') == 'undefined') {
 			$tree_id = read_graph_config_option('default_tree_id');
-		}elseif ($_REQUEST['tree_id'] == 0 && substr_count($_REQUEST['id'], 'tree_anchor') > 0) {
-			$ndata = explode('-', $_REQUEST['id']);
+		}elseif (get_request_var('tree_id') == 0 && substr_count(get_request_var('id'), 'tree_anchor') > 0) {
+			$ndata = explode('-', get_request_var('id'));
 			$tree_id = $ndata[1];
 			input_validate_input_number($tree_id);
 		}
@@ -166,11 +166,11 @@ case 'get_node':
 		$tree_id = read_graph_config_option('default_tree_id');
 	}
 
-	if (isset($_REQUEST['id']) && $_REQUEST['id'] != '#') {
-		if (substr_count($_REQUEST['id'], 'tree_anchor')) {
+	if (isset_request_var('id') && get_request_var('id') != '#') {
+		if (substr_count(get_request_var('id'), 'tree_anchor')) {
 			$parent = -1;
 		}else{
-			$ndata = explode('_', $_REQUEST['id']);
+			$ndata = explode('_', get_request_var('id'));
 
 			foreach($ndata as $node) {
 				$pnode = explode('-', $node);
@@ -216,19 +216,19 @@ case 'tree_content':
 	$access_denied = false;
 	$tree_parameters = array();
 
-	if (isset($_REQUEST['nodeid'])) {
-		$_SESSION['sess_node_id'] = 'tbranch-' . $_REQUEST['nodeid'];
+	if (isset_request_var('nodeid')) {
+		$_SESSION['sess_node_id'] = 'tbranch-' . get_request_var('nodeid');
 	}
 
-	if (isset($_REQUEST['tree_id'])) {
-		if (!is_tree_allowed($_REQUEST['tree_id'])) {
+	if (isset_request_var('tree_id')) {
+		if (!is_tree_allowed(get_request_var('tree_id'))) {
 			header('Location: permission_denied.php');
 			exit;
 		}
 
-        $_SESSION['sess_tree_id'] = $_REQUEST['tree_id'];
+        $_SESSION['sess_tree_id'] = get_request_var('tree_id');
 
-		grow_right_pane_tree((isset($_REQUEST['tree_id']) ? $_REQUEST['tree_id'] : 0), (isset($_REQUEST['leaf_id']) ? $_REQUEST['leaf_id'] : 0), (isset($_REQUEST['host_group_data']) ? urldecode($_REQUEST['host_group_data']) : 0));
+		grow_right_pane_tree((isset_request_var('tree_id') ? get_request_var('tree_id') : 0), (isset_request_var('leaf_id') ? get_request_var('leaf_id') : 0), (isset_request_var('host_group_data') ? urldecode(get_request_var('host_group_data')) : 0));
 	}
 
 	break;
@@ -242,7 +242,7 @@ case 'preview':
 	html_graph_validate_preview_request_vars();
 
 	/* include graph view filter selector */
-	html_start_box('Graph Preview Filters' . (isset($_REQUEST['style']) && strlen($_REQUEST['style']) ? ' [ Custom Graph List Applied - Filtering from List ]':''), '100%', '', '3', 'center', '');
+	html_start_box('Graph Preview Filters' . (isset_request_var('style') && strlen(get_request_var('style')) ? ' [ Custom Graph List Applied - Filtering from List ]':''), '100%', '', '3', 'center', '');
 
 	html_graph_preview_filter('graph_view.php', 'preview');
 
@@ -250,25 +250,25 @@ case 'preview':
 
 	/* the user select a bunch of graphs of the 'list' view and wants them displayed here */
 	$sql_or = '';
-	if (isset($_REQUEST['style'])) {
+	if (isset_request_var('style')) {
 		if (get_request_var('style') == 'selective') {
 
 			/* process selected graphs */
-			if (!empty($_REQUEST['graph_list'])) {
-				foreach (explode(',',$_REQUEST['graph_list']) as $item) {
+			if (!isempty_request_var('graph_list')) {
+				foreach (explode(',', get_request_var('graph_list')) as $item) {
 					$graph_list[$item] = 1;
 				}
 			}else{
 				$graph_list = array();
 			}
-			if (!empty($_REQUEST['graph_add'])) {
-				foreach (explode(',',$_REQUEST['graph_add']) as $item) {
+			if (!isempty_request_var('graph_add')) {
+				foreach (explode(',', get_request_var('graph_add')) as $item) {
 					$graph_list[$item] = 1;
 				}
 			}
 			/* remove items */
-			if (!empty($_REQUEST['graph_remove'])) {
-				foreach (explode(',',$_REQUEST['graph_remove']) as $item) {
+			if (!isempty_request_var('graph_remove')) {
+				foreach (explode(',', get_request_var('graph_remove')) as $item) {
 					unset($graph_list[$item]);
 				}
 			}
@@ -290,12 +290,12 @@ case 'preview':
 
 	$total_graphs = 0;
 
-	$sql_where  = (strlen($_REQUEST['filter']) ? "gtg.title_cache LIKE '%%" . get_request_var('filter') . "%%'":'');
+	$sql_where  = (strlen(get_request_var('filter')) ? "gtg.title_cache LIKE '%" . get_request_var('filter') . "%'":'');
 	$sql_where .= (strlen($sql_or) && strlen($sql_where) ? ' AND ':'') . $sql_or;
-	$sql_where .= ($_REQUEST['host_id'] >= 0 ? (strlen($sql_where) ? ' AND':'') . ' gl.host_id=' . $_REQUEST['host_id']:'');
-	$sql_where .= ($_REQUEST['graph_template_id'] > 0 ? (strlen($sql_where) ? ' AND':'') . ' gl.graph_template_id=' . $_REQUEST['graph_template_id']:'');
+	$sql_where .= (get_request_var('host_id') >= 0 ? (strlen($sql_where) ? ' AND':'') . ' gl.host_id=' . get_request_var('host_id'):'');
+	$sql_where .= (get_request_var('graph_template_id') > 0 ? (strlen($sql_where) ? ' AND':'') . ' gl.graph_template_id=' . get_request_var('graph_template_id'):'');
 
-	$limit      = ($_REQUEST['graphs']*($_REQUEST['page']-1)) . ',' . $_REQUEST['graphs'];
+	$limit      = (get_request_var('graphs')*(get_request_var('page')-1)) . ',' . get_request_var('graphs');
 	$order      = 'gtg.title_cache';
 
 	$graphs     = get_allowed_graphs($sql_where, $order, $limit, $total_graphs);	
@@ -327,7 +327,7 @@ case 'preview':
 
 	html_end_box();
 
-	if (!isset($_REQUEST['header']) || $_REQUEST['header'] == false) {
+	if (!isset_request_var('header') || get_request_var('header') == false) {
 		bottom_footer();
 	}
 
@@ -340,15 +340,15 @@ case 'list':
 	}
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var('host_id'));
-	input_validate_input_number(get_request_var('graph_template_id'));
-	input_validate_input_number(get_request_var('rows'));
-	input_validate_input_number(get_request_var('page'));
+	get_filter_request_var('host_id');
+	get_filter_request_var('graph_template_id');
+	get_filter_request_var('rows');
+	get_filter_request_var('page');
 	/* ==================================================== */
 
 	/* clean up search string */
-	if (isset($_REQUEST['filter'])) {
-		$_REQUEST['filter'] = sanitize_search_string(get_request_var('filter'));
+	if (isset_request_var('filter')) {
+		set_request_var('filter', sanitize_search_string(get_request_var('filter')));
 	}
 
 	/* reset the graph list on a new viewing */
@@ -392,31 +392,33 @@ case 'list':
 	load_current_session_value('graph_list', 'sess_graph_view_list_graph_list', '');
 
 	/* save selected graphs into url */
-	if (!empty($_REQUEST['graph_list'])) {
-		foreach (explode(',',$_REQUEST['graph_list']) as $item) {
+	if (!isempty_request_var('graph_list')) {
+		foreach (explode(',', get_request_var('graph_list')) as $item) {
 			$graph_list[$item] = 1;
 		}
 	}else{
 		$graph_list = array();
 	}
-	if (!empty($_REQUEST['graph_add'])) {
-		foreach (explode(',',$_REQUEST['graph_add']) as $item) {
+
+	if (!isempty_request_var('graph_add')) {
+		foreach (explode(',', get_request_var('graph_add')) as $item) {
 			$graph_list[$item] = 1;
 		}
 	}
+
 	/* remove items */
-	if (!empty($_REQUEST['graph_remove'])) {
-		foreach (explode(',',$_REQUEST['graph_remove']) as $item) {
+	if (!isempty_request_var('graph_remove')) {
+		foreach (explode(',', get_request_var('graph_remove')) as $item) {
 			unset($graph_list[$item]);
 		}
 	}
 
 	/* update the revised graph list session variable */
-	$_REQUEST['graph_list'] = implode(',', array_keys($graph_list));
+	set_request_var('graph_limit', implode(',', array_keys($graph_list)));
 	load_current_session_value('graph_list', 'sess_graph_view_list_graph_list', '');
 
 	/* display graph view filter selector */
-	html_start_box('Graph List View Filters' . (isset($_REQUEST['style']) && strlen($_REQUEST['style']) ? ' [ Custom Graph List Applied - Filter FROM List ]':''), '100%', '', '3', 'center', '');
+	html_start_box('Graph List View Filters' . (isset_request_var('style') && strlen(get_request_var('style')) ? ' [ Custom Graph List Applied - Filter FROM List ]':''), '100%', '', '3', 'center', '');
 
 	?>
 	<tr class='even noprint'>
@@ -424,7 +426,7 @@ case 'list':
 		<form id='form_graph_list' name='form_graph_list' method='post' action='graph_view.php?action=list'>
 			<table class='filterTable'>
 				<tr class='noprint'>
-					<?php print html_host_filter($_REQUEST['host_id']);?>
+					<?php print html_host_filter(get_request_var('host_id'));?>
 					<td>
 						Template
 					</td>
@@ -476,8 +478,8 @@ case 'list':
 			</table>
 			<input type='hidden' name='graph_add' value=''>
 			<input type='hidden' name='graph_remove' value=''>
-			<input type='hidden' name='graph_list' value='<?php print $_REQUEST['graph_list'];?>'>
-			<input type='hidden' id='page' name='page' value='<?php print $_REQUEST['page'];?>'>
+			<input type='hidden' name='graph_list' value='<?php print get_request_var('graph_list');?>'>
+			<input type='hidden' id='page' name='page' value='<?php print get_request_var('page');?>'>
 		</form>
 		</td>
 	</tr>
@@ -485,18 +487,18 @@ case 'list':
 	html_end_box();
 
 	/* if the number of rows is -1, set it to the default */
-	if ($_REQUEST['rows'] == -1) {
-		$_REQUEST['rows'] = read_graph_config_option('num_rows_table');
+	if (get_request_var('rows') == -1) {
+		set_request_var('rows', read_graph_config_option('num_rows_table'));
 	}
 
 	/* create filter for sql */
 	$sql_where  = '';
-	$sql_where .= (empty($_REQUEST['filter']) ? '' : " gtg.title_cache LIKE '%" . get_request_var('filter') . "%'");
-	$sql_where .= ($_REQUEST['host_id'] < 0 ? '' : (empty($sql_filter) ? '' : ' AND') . ' gl.host_id=' . get_request_var('host_id'));
-	$sql_where .= (empty($_REQUEST['graph_template_id']) ? '' : (empty($sql_filter) ? '' : ' AND') . ' gl.graph_template_id=' . get_request_var('graph_template_id'));
+	$sql_where .= (isempty_request_var('filter') ? '' : " gtg.title_cache LIKE '%" . get_request_var('filter') . "%'");
+	$sql_where .= (get_request_var('host_id') < 0 ? '' : (empty($sql_filter) ? '' : ' AND') . ' gl.host_id=' . get_request_var('host_id'));
+	$sql_where .= (isempty_request_var('graph_template_id') ? '' : (empty($sql_filter) ? '' : ' AND') . ' gl.graph_template_id=' . get_request_var('graph_template_id'));
 
 	$total_rows = 0;
-	$limit      = ($_REQUEST['rows']*($_REQUEST['page']-1)) . ',' . $_REQUEST['rows'];
+	$limit      = (get_request_var('rows')*(get_request_var('page')-1)) . ',' . get_request_var('rows');
 
 	$graphs = get_allowed_graphs($sql_where, 'gtg.title_cache', $limit, $total_rows);
 
@@ -536,12 +538,12 @@ case 'list':
 	</table>
 	<input type='hidden' name='style' value='selective'>
 	<input type='hidden' name='action' value='preview'>
-	<input type='hidden' id='graph_list' name='graph_list' value='<?php print $_REQUEST['graph_list']; ?>'>
+	<input type='hidden' id='graph_list' name='graph_list' value='<?php print get_request_var('graph_list'); ?>'>
 	<input type='hidden' id='graph_add' name='graph_add' value=''>
 	<input type='hidden' id='graph_remove' name='graph_remove' value=''>
 	</form>
 	<script type='text/javascript'>
-	var graph_list_array = new Array(<?php print $_REQUEST['graph_list'];?>);
+	var graph_list_array = new Array(<?php print get_request_var('graph_list');?>);
 
 	$(function() {
 		initializeChecks();
@@ -597,7 +599,7 @@ case 'list':
 			}
 		});
 
-		strURL = '&graph_list=<?php print $_REQUEST['graph_list'];?>&graph_add=' + strAdd + '&graph_remove=' + strDel;
+		strURL = '&graph_list=<?php print get_request_var('graph_list');?>&graph_add=' + strAdd + '&graph_remove=' + strDel;
 
 		return strNavURL + strURL;
 	}

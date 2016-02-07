@@ -32,7 +32,7 @@ $host_actions = array(
 /* set default action */
 set_default_action();
 
-switch ($_REQUEST['action']) {
+switch (get_request_var('action')) {
 	case 'save':
 		form_save();
 
@@ -66,35 +66,35 @@ switch ($_REQUEST['action']) {
 
 function automation_movedown() {
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var('id'));
+	get_filter_request_var('id');
 	/* ==================================================== */
 	move_item_down('automation_templates', get_request_var('id'));
 }
 
 function automation_moveup() {
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var('id'));
+	get_filter_request_var('id');
 	/* ==================================================== */
 	move_item_up('automation_templates', get_request_var('id'));
 }
 
 function automation_remove() {
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var('id'));
+	get_filter_request_var('id');
 	/* ==================================================== */
 	db_execute('DELETE FROM automation_templates WHERE id=' . get_request_var('id'));
 }
 
 function form_save() {
-	if (isset($_POST['save_component_template'])) {
+	if (isset_request_var('save_component_template')) {
 		$redirect_back = false;
 
 		$save['id'] = get_request_var_post('id');
 		$save['host_template'] = form_input_validate(get_request_var_post('host_template'), 'host_template', '', false, 3);
 		$save['availability_method']  = form_input_validate(get_request_var_post('availability_method'), 'availability_method', '', false, 3);
-		$save['sysDescr']      = $_POST['sysDescr'];
-		$save['sysName']       = $_POST['sysName'];
-		$save['sysOid']        = $_POST['sysOid'];
+		$save['sysDescr']      = get_nfilter_request_var('sysDescr');
+		$save['sysName']       = get_nfilter_request_var('sysName');
+		$save['sysOid']        = get_nfilter_request_var('sysOid');
 		if (function_exists('filter_var')) {
 			$save['sysDescr'] = filter_var($save['sysDescr'], FILTER_SANITIZE_STRING);
 		} else {
@@ -111,7 +111,7 @@ function form_save() {
 			}
 		}
 
-		if (is_error_message() || empty(get_request_var_post('id'))) {
+		if (is_error_message() || isempty_request_var_post('id')) {
 			header('Location: automation_templates.php?header=false&id=' . (empty($template_id) ? get_request_var_post('id') : $template_id));
 		}else{
 			header('Location: automation_templates.php?header=false');
@@ -212,17 +212,17 @@ function template_edit() {
 		);
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var('id'));
+	get_filter_request_var('id');
 	/* ==================================================== */
 
 	display_output_messages();
 
-	if (!empty($_GET['id'])) {
-		$host_template = db_fetch_row('SELECT * FROM automation_templates WHERE id=' . $_GET['id']);
+	if (!isempty_request_var('id')) {
+		$host_template = db_fetch_row('SELECT * FROM automation_templates WHERE id=' . get_request_var('id'));
 		$header_label = '[edit: ' . $template_names[$host_template['host_template']] . ']';
 	}else{
 		$header_label = '[new]';
-		$_GET['id'] = 0;
+		set_request_var('id', 0);
 	}
 
 	form_start('automation_templates.php', 'form_network');

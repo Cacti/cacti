@@ -39,7 +39,7 @@ $graph_actions = array(
 /* set default action */
 set_default_action();
 
-switch ($_REQUEST['action']) {
+switch (get_request_var('action')) {
 	case 'save':
 		form_save();
 
@@ -54,9 +54,11 @@ switch ($_REQUEST['action']) {
 		header('Location: graph_templates.php?header=false');
 		break;
 	case 'input_remove':
+		get_filter_request_var('graph_template_id');
+
 		input_remove();
 
-		header('Location: graph_templates.php?header=false&action=template_edit&id=' . $_REQUEST['graph_template_id']);
+		header('Location: graph_templates.php?header=false&action=template_edit&id=' . get_request_var('graph_template_id'));
 		break;
 	case 'input_edit':
 		top_header();
@@ -94,54 +96,54 @@ function form_save() {
 		$graph_template_id = get_request_var_post('graph_template_id');
 	}
 
-	if (isset($_POST['save_component_template'])) {
+	if (isset_request_var('save_component_template')) {
 		/* ================= input validation ================= */
-		input_validate_input_number(get_request_var_post('graph_template_graph_id'));
+		get_filter_request_var('graph_template_graph_id');
 		/* ==================================================== */
 
 		$save1['id']   = $graph_template_id;
 		$save1['hash'] = get_hash_graph_template($graph_template_id);
 		$save1['name'] = form_input_validate(get_request_var_post('name'), 'name', '', false, 3);
 
-		$save2['id'] = $_POST['graph_template_graph_id'];
+		$save2['id']                    = get_nfilter_request_var('graph_template_graph_id');
 		$save2['local_graph_template_graph_id'] = 0;
-		$save2['local_graph_id'] = 0;
-		$save2['t_image_format_id'] = (isset($_POST['t_image_format_id']) ? $_POST['t_image_format_id'] : '');
-		$save2['image_format_id'] = form_input_validate(get_request_var_post('image_format_id'), 'image_format_id', '^[0-9]+$', true, 3);
-		$save2['t_title'] = form_input_validate((isset($_POST['t_title']) ? $_POST['t_title'] : ''), 't_title', '', true, 3);
-		$save2['title'] = form_input_validate(get_request_var_post('title'), 'title', '', (isset($_POST['t_title']) ? true : false), 3);
-		$save2['t_height'] = form_input_validate((isset($_POST['t_height']) ? $_POST['t_height'] : ''), 't_height', '', true, 3);
-		$save2['height'] = form_input_validate(get_request_var_post('height'), 'height', '^[0-9]+$', (isset($_POST['t_height']) ? true : false), 3);
-		$save2['t_width'] = form_input_validate((isset($_POST['t_width']) ? $_POST['t_width'] : ''), 't_width', '', true, 3);
-		$save2['width'] = form_input_validate(get_request_var_post('width'), 'width', '^[0-9]+$', (isset($_POST['t_width']) ? true : false), 3);
-		$save2['t_upper_limit'] = form_input_validate((isset($_POST['t_upper_limit']) ? $_POST['t_upper_limit'] : ''), 't_upper_limit', '', true, 3);
-		$save2['upper_limit'] = form_input_validate(get_request_var_post('upper_limit'), 'upper_limit', '^(-?([0-9]+(\.[0-9]*)?|[0-9]*\.[0-9]+)([eE][+\-]?[0-9]+)?)|U$', ((isset($_POST['t_upper_limit']) || (strlen($_POST['upper_limit']) === 0)) ? true : false), 3);
-		$save2['t_lower_limit'] = form_input_validate((isset($_POST['t_lower_limit']) ? $_POST['t_lower_limit'] : ''), 't_lower_limit', '', true, 3);
-		$save2['lower_limit'] = form_input_validate(get_request_var_post('lower_limit'), 'lower_limit', '^(-?([0-9]+(\.[0-9]*)?|[0-9]*\.[0-9]+)([eE][+\-]?[0-9]+)?)|U$', ((isset($_POST['t_lower_limit']) || (strlen($_POST['lower_limit']) === 0)) ? true : false), 3);
-		$save2['t_vertical_label'] = form_input_validate((isset($_POST['t_vertical_label']) ? $_POST['t_vertical_label'] : ''), 't_vertical_label', '', true, 3);
-		$save2['vertical_label'] = form_input_validate(get_request_var_post('vertical_label'), 'vertical_label', '', true, 3);
-		$save2['t_slope_mode'] = form_input_validate((isset($_POST['t_slope_mode']) ? $_POST['t_slope_mode'] : ''), 't_slope_mode', '', true, 3);
-		$save2['slope_mode'] = form_input_validate((isset($_POST['slope_mode']) ? $_POST['slope_mode'] : ''), 'slope_mode', '', true, 3);
-		$save2['t_auto_scale'] = form_input_validate((isset($_POST['t_auto_scale']) ? $_POST['t_auto_scale'] : ''), 't_auto_scale', '', true, 3);
-		$save2['auto_scale'] = form_input_validate((isset($_POST['auto_scale']) ? $_POST['auto_scale'] : ''), 'auto_scale', '', true, 3);
-		$save2['t_auto_scale_opts'] = form_input_validate((isset($_POST['t_auto_scale_opts']) ? $_POST['t_auto_scale_opts'] : ''), 't_auto_scale_opts', '', true, 3);
-		$save2['auto_scale_opts'] = form_input_validate(get_request_var_post('auto_scale_opts'), 'auto_scale_opts', '', true, 3);
-		$save2['t_auto_scale_log'] = form_input_validate((isset($_POST['t_auto_scale_log']) ? $_POST['t_auto_scale_log'] : ''), 't_auto_scale_log', '', true, 3);
-		$save2['auto_scale_log'] = form_input_validate((isset($_POST['auto_scale_log']) ? $_POST['auto_scale_log'] : ''), 'auto_scale_log', '', true, 3);
-		$save2['t_scale_log_units'] = form_input_validate((isset($_POST['t_scale_log_units']) ? $_POST['t_scale_log_units'] : ''), 't_scale_log_units', '', true, 3);
-		$save2['scale_log_units'] = form_input_validate((isset($_POST['scale_log_units']) ? $_POST['scale_log_units'] : ''), 'scale_log_units', '', true, 3);
-		$save2['t_auto_scale_rigid'] = form_input_validate((isset($_POST['t_auto_scale_rigid']) ? $_POST['t_auto_scale_rigid'] : ''), 't_auto_scale_rigid', '', true, 3);
-		$save2['auto_scale_rigid'] = form_input_validate((isset($_POST['auto_scale_rigid']) ? $_POST['auto_scale_rigid'] : ''), 'auto_scale_rigid', '', true, 3);
-		$save2['t_auto_padding'] = form_input_validate((isset($_POST['t_auto_padding']) ? $_POST['t_auto_padding'] : ''), 't_auto_padding', '', true, 3);
-		$save2['auto_padding'] = form_input_validate((isset($_POST['auto_padding']) ? $_POST['auto_padding'] : ''), 'auto_padding', '', true, 3);
-		$save2['t_base_value'] = form_input_validate((isset($_POST['t_base_value']) ? $_POST['t_base_value'] : ''), 't_base_value', '', true, 3);
-		$save2['base_value'] = form_input_validate(get_request_var_post('base_value'), 'base_value', '^[0-9]+$', (isset($_POST['t_base_value']) ? true : false), 3);
-		$save2['t_export'] = form_input_validate((isset($_POST['t_export']) ? $_POST['t_export'] : ''), 't_export', '', true, 3);
-		$save2['export'] = form_input_validate((isset($_POST['export']) ? $_POST['export'] : ''), 'export', '', true, 3);
-		$save2['t_unit_value'] = form_input_validate((isset($_POST['t_unit_value']) ? $_POST['t_unit_value'] : ''), 't_unit_value', '', true, 3);
-		$save2['unit_value'] = form_input_validate(get_request_var_post('unit_value'), 'unit_value', '', true, 3);
-		$save2['t_unit_exponent_value'] = form_input_validate((isset($_POST['t_unit_exponent_value']) ? $_POST['t_unit_exponent_value'] : ''), 't_unit_exponent_value', '', true, 3);
-		$save2['unit_exponent_value'] = form_input_validate(get_request_var_post('unit_exponent_value'), 'unit_exponent_value', '^-?[0-9]+$', true, 3);
+		$save2['local_graph_id']        = 0;
+		$save2['t_image_format_id']     = (isset_request_var('t_image_format_id') ? get_nfilter_request_var('t_image_format_id') : '');
+		$save2['image_format_id']       = form_input_validate(get_request_var_post('image_format_id'), 'image_format_id', '^[0-9]+$', true, 3);
+		$save2['t_title']               = form_input_validate((isset_request_var('t_title') ? get_nfilter_request_var('t_title') : ''), 't_title', '', true, 3);
+		$save2['title']                 = form_input_validate(get_request_var_post('title'), 'title', '', (isset_request_var('t_title') ? true : false), 3);
+		$save2['t_height']              = form_input_validate((isset_request_var('t_height') ? get_nfilter_request_var('t_height') : ''), 't_height', '', true, 3);
+		$save2['height']                = form_input_validate(get_request_var_post('height'), 'height', '^[0-9]+$', (isset_request_var('t_height') ? true : false), 3);
+		$save2['t_width']               = form_input_validate((isset_request_var('t_width') ? get_nfilter_request_var('t_width') : ''), 't_width', '', true, 3);
+		$save2['width']                 = form_input_validate(get_request_var_post('width'), 'width', '^[0-9]+$', (isset_request_var('t_width') ? true : false), 3);
+		$save2['t_upper_limit']         = form_input_validate((isset_request_var('t_upper_limit') ? get_nfilter_request_var('t_upper_limit') : ''), 't_upper_limit', '', true, 3);
+		$save2['upper_limit']           = form_input_validate(get_request_var_post('upper_limit'), 'upper_limit', '^(-?([0-9]+(\.[0-9]*)?|[0-9]*\.[0-9]+)([eE][+\-]?[0-9]+)?)|U$', ((isset_request_var('t_upper_limit') || (strlen(get_nfilter_request_var('upper_limit')) === 0)) ? true : false), 3);
+		$save2['t_lower_limit']         = form_input_validate((isset_request_var('t_lower_limit') ? get_nfilter_request_var('t_lower_limit') : ''), 't_lower_limit', '', true, 3);
+		$save2['lower_limit']           = form_input_validate(get_request_var_post('lower_limit'), 'lower_limit', '^(-?([0-9]+(\.[0-9]*)?|[0-9]*\.[0-9]+)([eE][+\-]?[0-9]+)?)|U$', ((isset_request_var('t_lower_limit') || (strlen(get_nfilter_request_var('lower_limit')) === 0)) ? true : false), 3);
+		$save2['t_vertical_label']      = form_input_validate((isset_request_var('t_vertical_label') ? get_nfilter_request_var('t_vertical_label') : ''), 't_vertical_label', '', true, 3);
+		$save2['vertical_label']        = form_input_validate(get_request_var_post('vertical_label'), 'vertical_label', '', true, 3);
+		$save2['t_slope_mode']          = form_input_validate((isset_request_var('t_slope_mode') ? get_nfilter_request_var('t_slope_mode') : ''), 't_slope_mode', '', true, 3);
+		$save2['slope_mode']            = form_input_validate((isset_request_var('slope_mode') ? get_nfilter_request_var('slope_mode') : ''), 'slope_mode', '', true, 3);
+		$save2['t_auto_scale']          = form_input_validate((isset_request_var('t_auto_scale') ? get_nfilter_request_var('t_auto_scale') : ''), 't_auto_scale', '', true, 3);
+		$save2['auto_scale']            = form_input_validate((isset_request_var('auto_scale') ? get_nfilter_request_var('auto_scale') : ''), 'auto_scale', '', true, 3);
+		$save2['t_auto_scale_opts']     = form_input_validate((isset_request_var('t_auto_scale_opts') ? get_nfilter_request_var('t_auto_scale_opts') : ''), 't_auto_scale_opts', '', true, 3);
+		$save2['auto_scale_opts']       = form_input_validate(get_request_var_post('auto_scale_opts'), 'auto_scale_opts', '', true, 3);
+		$save2['t_auto_scale_log']      = form_input_validate((isset_request_var('t_auto_scale_log') ? get_nfilter_request_var('t_auto_scale_log') : ''), 't_auto_scale_log', '', true, 3);
+		$save2['auto_scale_log']        = form_input_validate((isset_request_var('auto_scale_log') ? get_nfilter_request_var('auto_scale_log') : ''), 'auto_scale_log', '', true, 3);
+		$save2['t_scale_log_units']     = form_input_validate((isset_request_var('t_scale_log_units') ? get_nfilter_request_var('t_scale_log_units') : ''), 't_scale_log_units', '', true, 3);
+		$save2['scale_log_units']       = form_input_validate((isset_request_var('scale_log_units') ? get_nfilter_request_var('scale_log_units') : ''), 'scale_log_units', '', true, 3);
+		$save2['t_auto_scale_rigid']    = form_input_validate((isset_request_var('t_auto_scale_rigid') ? get_nfilter_request_var('t_auto_scale_rigid') : ''), 't_auto_scale_rigid', '', true, 3);
+		$save2['auto_scale_rigid']      = form_input_validate((isset_request_var('auto_scale_rigid') ? get_nfilter_request_var('auto_scale_rigid') : ''), 'auto_scale_rigid', '', true, 3);
+		$save2['t_auto_padding']        = form_input_validate((isset_request_var('t_auto_padding') ? get_nfilter_request_var('t_auto_padding') : ''), 't_auto_padding', '', true, 3);
+		$save2['auto_padding']          = form_input_validate((isset_request_var('auto_padding') ? get_nfilter_request_var('auto_padding') : ''), 'auto_padding', '', true, 3);
+		$save2['t_base_value']          = form_input_validate((isset_request_var('t_base_value') ? get_nfilter_request_var('t_base_value') : ''), 't_base_value', '', true, 3);
+		$save2['base_value']            = form_input_validate(get_request_var_post('base_value'), 'base_value', '^[0-9]+$', (isset_request_var('t_base_value') ? true : false), 3);
+		$save2['t_export']              = form_input_validate((isset_request_var('t_export') ? get_nfilter_request_var('t_export') : ''), 't_export', '', true, 3);
+		$save2['export']                = form_input_validate((isset_request_var('export') ? get_nfilter_request_var('export') : ''), 'export', '', true, 3);
+		$save2['t_unit_value']          = form_input_validate((isset_request_var('t_unit_value') ? get_nfilter_request_var('t_unit_value') : ''), 't_unit_value', '', true, 3);
+		$save2['unit_value']            = form_input_validate(get_request_var_post('unit_value'), 'unit_value', '', true, 3);
+		$save2['t_unit_exponent_value'] = form_input_validate((isset_request_var('t_unit_exponent_value') ? get_nfilter_request_var('t_unit_exponent_value') : ''), 't_unit_exponent_value', '', true, 3);
+		$save2['unit_exponent_value']   = form_input_validate(get_request_var_post('unit_exponent_value'), 'unit_exponent_value', '^-?[0-9]+$', true, 3);
 
 		if (!is_error_message()) {
 			$graph_template_id = sql_save($save1, 'graph_templates');
@@ -208,7 +210,7 @@ function form_actions() {
 				db_execute('UPDATE graph_local SET graph_template_id=0 WHERE ' . array_to_sql_or($selected_items, 'graph_template_id'));
 			}elseif (get_request_var_post('drp_action') == '2') { /* duplicate */
 				for ($i=0;($i<count($selected_items));$i++) {
-					duplicate_graph(0, $selected_items[$i], $_POST['title_format']);
+					duplicate_graph(0, $selected_items[$i], get_nfilter_request_var('title_format'));
 				}
 			}
 		}
@@ -272,7 +274,7 @@ function form_actions() {
 		<td class='saveRow'>
 			<input type='hidden' name='action' value='actions'>
 			<input type='hidden' name='selected_items' value='" . (isset($graph_array) ? serialize($graph_array) : '') . "'>
-			<input type='hidden' name='drp_action' value='" . $_POST["drp_action"] . "'>
+			<input type='hidden' name='drp_action' value='" . get_nfilter_request_var('drp_action') . "'>
 			$save_html
 		</td>
 	</tr>\n";
@@ -288,10 +290,10 @@ function item() {
 	global $consolidation_functions, $graph_item_types;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var('id'));
+	get_filter_request_var('id');
 	/* ==================================================== */
 
-	if (empty($_REQUEST['id'])) {
+	if (isempty_request_var('id')) {
 		$template_item_list = array();
 
 		$header_label = '[new]';
@@ -312,15 +314,15 @@ function item() {
 			LEFT JOIN data_template_data ON (data_local.id=data_template_data.local_data_id)
 			LEFT JOIN cdef ON (cdef_id=cdef.id)
 			LEFT JOIN colors ON (color_id=colors.id)
-			WHERE graph_templates_item.graph_template_id=" . $_REQUEST['id'] . "
+			WHERE graph_templates_item.graph_template_id=" . get_request_var('id') . "
 			AND graph_templates_item.local_graph_id=0
 			ORDER BY graph_templates_item.sequence");
 
-		$header_label = '[edit: ' . db_fetch_cell('SELECT name FROM graph_templates WHERE id=' . $_REQUEST['id']) . ']';
+		$header_label = '[edit: ' . db_fetch_cell('SELECT name FROM graph_templates WHERE id=' . get_request_var('id')) . ']';
 	}
 
 	html_start_box('Graph Template Items ' . htmlspecialchars($header_label), '100%', '', '3', 'center', 'graph_templates_items.php?action=item_edit&graph_template_id=' . htmlspecialchars(get_request_var('id')));
-	draw_graph_items_list($template_item_list, 'graph_templates_items.php', 'graph_template_id=' . $_REQUEST['id'], false);
+	draw_graph_items_list($template_item_list, 'graph_templates_items.php', 'graph_template_id=' . get_request_var('id'), false);
 	html_end_box();
 
 	html_start_box('Graph Item Inputs', '100%', '', '3', 'center', 'graph_templates_inputs.php?action=input_edit&graph_template_id=' . htmlspecialchars(get_request_var('id')));
@@ -329,7 +331,7 @@ function item() {
 		DrawMatrixHeaderItem('Name','',2);
 	print '</tr>';
 
-	$template_item_list = db_fetch_assoc('SELECT id,name FROM graph_template_input WHERE graph_template_id=' . $_REQUEST['id'] . ' ORDER BY name');
+	$template_item_list = db_fetch_assoc('SELECT id,name FROM graph_template_input WHERE graph_template_id=' . get_request_var('id') . ' ORDER BY name');
 
 	$i = 0;
 	if (sizeof($template_item_list) > 0) {
@@ -337,10 +339,10 @@ function item() {
 			form_alternate_row('', true);
 			?>
 			<td>
-				<a class='linkEditMain' href='<?php print htmlspecialchars('graph_templates_inputs.php?action=input_edit&id=' . $item['id'] . '&graph_template_id=' . $_REQUEST['id']);?>'><?php print htmlspecialchars($item['name']);?></a>
+				<a class='linkEditMain' href='<?php print htmlspecialchars('graph_templates_inputs.php?action=input_edit&id=' . $item['id'] . '&graph_template_id=' . get_request_var('id'));?>'><?php print htmlspecialchars($item['name']);?></a>
 			</td>
 			<td align='right'>
-				<a class='deleteMarker fa fa-remove' title='Delete' href='<?php print htmlspecialchars('graph_templates_inputs.php?action=input_remove&id=' . $item['id'] . '&graph_template_id=' . $_REQUEST['id']);?>'></a>
+				<a class='deleteMarker fa fa-remove' title='Delete' href='<?php print htmlspecialchars('graph_templates_inputs.php?action=input_remove&id=' . $item['id'] . '&graph_template_id=' . get_request_var('id'));?>'></a>
 			</td>
 		</tr>
 		<?php
@@ -374,17 +376,17 @@ function template_edit() {
 	global $struct_graph, $image_types, $fields_graph_template_template_edit;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var('id'));
+	get_filter_request_var('id');
 	/* ==================================================== */
 
 	/* graph item list goes here */
-	if (!empty($_REQUEST['id'])) {
+	if (!isempty_request_var('id')) {
 		item();
 	}
 
-	if (!empty($_REQUEST['id'])) {
-		$template = db_fetch_row('SELECT * FROM graph_templates WHERE id=' . $_REQUEST['id']);
-		$template_graph = db_fetch_row('SELECT * FROM graph_templates_graph WHERE graph_template_id=' . $_REQUEST['id'] . ' AND local_graph_id=0');
+	if (!isempty_request_var('id')) {
+		$template = db_fetch_row('SELECT * FROM graph_templates WHERE id=' . get_request_var('id'));
+		$template_graph = db_fetch_row('SELECT * FROM graph_templates_graph WHERE graph_template_id=' . get_request_var('id') . ' AND local_graph_id=0');
 
 		$header_label = '[edit: ' . $template['name'] . ']';
 	}else{
@@ -464,8 +466,8 @@ function template() {
 	global $graph_actions, $item_rows, $image_types;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var('page'));
-	input_validate_input_number(get_request_var('rows'));
+	get_filter_request_var('page');
+	get_filter_request_var('rows');
 	/* ==================================================== */
 
 	/* clean up search string */
@@ -551,7 +553,7 @@ function template() {
 						</select>
 					</td>
 					<td>
-						<input type='checkbox' id='has_graphs' <?php print ($_REQUEST['has_graphs'] == 'true' ? 'checked':'');?>>
+						<input type='checkbox' id='has_graphs' <?php print (get_request_var('has_graphs') == 'true' ? 'checked':'');?>>
 					</td>
 					<td>
 						<label for='has_graphs'>Has Graphs</label>
@@ -564,7 +566,7 @@ function template() {
 					</td>
 				</tr>
 			</table>
-			<input type='hidden' id='page' name='page' value='<?php print $_REQUEST['page'];?>'>
+			<input type='hidden' id='page' name='page' value='<?php print get_request_var('page');?>'>
 		</form>
 		<script type='text/javascript'>
 		var disabled = true;
@@ -605,13 +607,13 @@ function template() {
 	html_end_box();
 
 	/* form the 'where' clause for our main sql query */
-	if (strlen($_REQUEST['filter'])) {
+	if (get_request_var('filter') != '') {
 		$sql_where = "WHERE (gt.name LIKE '%" . get_request_var('filter') . "%')";
 	}else{
 		$sql_where = '';
 	}
 
-	if ($_REQUEST['has_graphs'] == 'true') {
+	if (get_request_var('has_graphs') == 'true') {
 		$sql_having = 'HAVING graphs>0';
 	}else{
 		$sql_having = '';

@@ -36,15 +36,13 @@ $ds_actions = array (
 $rra_path = $config['rra_path'] . '/';
 
 /* set default action */
-if (!isset ($_REQUEST['action'])) {
-	$_REQUEST['action'] = '';
+set_default_action();
+
+if (isset_request_var('rescan')) {
+	set_request_var('action', 'restart');
 }
 
-if (isset($_REQUEST['rescan'])) {
-	$_REQUEST['action'] = 'restart';
-}
-
-switch ($_REQUEST['action']) {
+switch(get_request_var('action')) {
 case 'actions' :
 	top_header();
 	do_rrd();
@@ -254,9 +252,9 @@ function list_rrd() {
 	set_error_handler('rrdclean_error_handler');
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var('page'));
-	input_validate_input_number(get_request_var('age'));
-	input_validate_input_number(get_request_var('rows'));
+	get_filter_request_var('page');
+	get_filter_request_var('age');
+	get_filter_request_var('rows');
 	/* ==================================================== */
 
 	/* clean up search string */
@@ -312,13 +310,13 @@ function list_rrd() {
 
 	$sql_where = 'WHERE in_cacti=0';
 	/* form the 'where' clause for our main sql query */
-	if ($_REQUEST['filter'] != '') {
-		$sql_where .= " AND (rc.name LIKE '%" . $_REQUEST['filter'] . "%' OR rc.name_cache LIKE '%" . $_REQUEST['filter'] . "%' OR dt.name LIKE '%" . $_REQUEST['filter'] . "%')";
+	if (get_request_var('filter') != '') {
+		$sql_where .= " AND (rc.name LIKE '%" . get_request_var('filter') . "%' OR rc.name_cache LIKE '%" . get_request_var('filter') . "%' OR dt.name LIKE '%" . get_request_var('filter') . "%')";
 	}
 
-	$secsback = $_REQUEST['age'];
+	$secsback = get_request_var('age');
 
-	if ($REQUEST['age'] != 0) {
+	if (get_request_var('age') != 0) {
 		$sql_where .= " AND last_mod>='" . date("Y-m-d H:i:s", time()-(86400*7)) . "'";
 	}else{
 		$sql_where .= " AND last_mod<='" . date("Y-m-d H:i:s", (time() - $secsback)) . "'";
@@ -346,8 +344,8 @@ function list_rrd() {
 		LEFT JOIN data_template AS dt
 		ON dt.id = rc.data_template_id
 		$sql_where 
-		ORDER BY " . $_REQUEST['sort_column'] . ' ' . $_REQUEST['sort_direction'] . '
-		LIMIT ' . ($_REQUEST['rows'] * ($_REQUEST['page'] - 1)) . ',' . $_REQUEST['rows']);
+		ORDER BY " . get_request_var('sort_column') . ' ' . get_request_var('sort_direction') . '
+		LIMIT ' . (get_request_var('rows') * (get_request_var('page') - 1)) . ',' . get_request_var('rows'));
 
 	$nav = html_nav_bar($config['url_path'] . 'rrdcleaner.php?filter'. get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), get_request_var('rows'), $total_rows, 8, 'RRD Files', 'page', 'main');
 
@@ -363,17 +361,17 @@ function list_rrd() {
 		'size'               => array('Size [KB]', 'DESC')
 	);
 
-	html_header_sort_checkbox($display_text, $_REQUEST['sort_column'], $_REQUEST['sort_direction'], false);
+	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
 	if (sizeof($file_list)) {
 		foreach($file_list as $file) {
 			$data_template_name = ((empty($file['data_template_name'])) ? '<em>None</em>' : $file['data_template_name']);
 			form_alternate_row('line' . $file['id'], true);
-			form_selectable_cell((($_REQUEST['filter'] != '') ? preg_replace('/(' . preg_quote($_REQUEST['filter']) . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($file['name'])) : htmlspecialchars($file['name'])) . '</a>', $file['id']);
-			form_selectable_cell(($file['local_data_id'] != 0) ? "<a class='linkEditMain' href='../../data_sources.php?action=ds_edit&id=" . $file['local_data_id'] . "'>" . (($_REQUEST['filter'] != '') ? preg_replace('/(' . preg_quote($_REQUEST['filter']) . ')/i', "<span class='filteredValue'>\\1</span>", title_trim(htmlspecialchars($file['name_cache']), read_config_option('max_title_length'))) : title_trim(htmlspecialchars($file['name_cache']), read_config_option('max_title_length'))) . '</a>' : '<i>Deleted</i>', $file['id']);
+			form_selectable_cell(((get_request_var('filter') != '') ? preg_replace('/(' . preg_quote(get_request_var('filter')) . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($file['name'])) : htmlspecialchars($file['name'])) . '</a>', $file['id']);
+			form_selectable_cell(($file['local_data_id'] != 0) ? "<a class='linkEditMain' href='../../data_sources.php?action=ds_edit&id=" . $file['local_data_id'] . "'>" . ((get_request_var('filter') != '') ? preg_replace('/(' . preg_quote(get_request_var('filter')) . ')/i', "<span class='filteredValue'>\\1</span>", title_trim(htmlspecialchars($file['name_cache']), read_config_option('max_title_length'))) : title_trim(htmlspecialchars($file['name_cache']), read_config_option('max_title_length'))) . '</a>' : '<i>Deleted</i>', $file['id']);
 			form_selectable_cell($file['local_data_id'] > 0 ? $file['local_data_id']:'<i>Deleted</i>', $file['id']);
 			form_selectable_cell($file['data_template_id'] > 0 ? $file['data_template_id']:'<i>Deleted</i>', $file['id']);
-			form_selectable_cell($file['data_template_id'] > 0 ? ($_REQUEST['filter'] != '' ? preg_replace('/(' . preg_quote($_REQUEST['filter']) . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($file['data_template_name'])) . '</a>': htmlspecialchars($file['data_template_name'])):'<i>Deleted</i>', $file['id']);
+			form_selectable_cell($file['data_template_id'] > 0 ? (get_request_var('filter') != '' ? preg_replace('/(' . preg_quote(get_request_var('filter')) . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($file['data_template_name'])) . '</a>': htmlspecialchars($file['data_template_name'])):'<i>Deleted</i>', $file['id']);
 			form_selectable_cell($file['last_mod'], $file['id']);
 			form_selectable_cell(round($file['size']/1024,2), $file['id']);
 			form_checkbox_cell($file['id'], $file['id']);
@@ -418,7 +416,7 @@ function remove_all_rrds() {
 	/* install the rrdclean error handler */
 	set_error_handler('rrdclean_error_handler');
 
-	$action = $_REQUEST['raction'];
+	$action = get_request_var('raction');
 
 	/* add to data_source_purge_action table */
 	db_execute("INSERT INTO data_source_purge_action SELECT '' AS id, name, local_data_id, '$action' AS action FROM data_source_purge_temp WHERE in_cacti = 0 ON DUPLICATE KEY UPDATE action = VALUES(action)");
@@ -476,22 +474,22 @@ function filter() {
 						Search
 					</td>
 					<td>
-						<input id='filter' type='text' name='filter' size='25' value='<?php print $_REQUEST['filter'];?>'>
+						<input id='filter' type='text' name='filter' size='25' value='<?php print get_request_var('filter');?>'>
 					</td>
 					<td class='nowrap'>
 						Time Since Update
 					</td>
 					<td>
 						<select id='age' name='age' onChange='refreshForm()'>
-							<option value='0'   <?php print ($_REQUEST['age'] == '0'   ? ' selected':'');?>>&lt; 1 Week</option>
-							<option value='604800'   <?php print ($_REQUEST['age'] == '604800'   ? ' selected':'');?>>&gt; 1 Week</option>
-							<option value='1209600'  <?php print ($_REQUEST['age'] == '1209600'  ? ' selected':'');?>>&gt; 2 Weeks</option>
-							<option value='1814400'  <?php print ($_REQUEST['age'] == '1814400'  ? ' selected':'');?>>&gt; 3 Weeks</option>
-							<option value='2628000'  <?php print ($_REQUEST['age'] == '2628000'  ? ' selected':'');?>>&gt; 1 Month</option>
-							<option value='5256000'  <?php print ($_REQUEST['age'] == '5256000'  ? ' selected':'');?>>&gt; 2 Months</option>
-							<option value='10512000' <?php print ($_REQUEST['age'] == '10512000' ? ' selected':'');?>>&gt; 4 Months</option>
-							<option value='15768000' <?php print ($_REQUEST['age'] == '15768000' ? ' selected':'');?>>&gt; 6 Months</option>
-							<option value='31536000' <?php print ($_REQUEST['age'] == '31536000' ? ' selected':'');?>>&gt; 1 Year</option>
+							<option value='0'   <?php print (get_request_var('age') == '0'   ? ' selected':'');?>>&lt; 1 Week</option>
+							<option value='604800'   <?php print (get_request_var('age') == '604800'   ? ' selected':'');?>>&gt; 1 Week</option>
+							<option value='1209600'  <?php print (get_request_var('age') == '1209600'  ? ' selected':'');?>>&gt; 2 Weeks</option>
+							<option value='1814400'  <?php print (get_request_var('age') == '1814400'  ? ' selected':'');?>>&gt; 3 Weeks</option>
+							<option value='2628000'  <?php print (get_request_var('age') == '2628000'  ? ' selected':'');?>>&gt; 1 Month</option>
+							<option value='5256000'  <?php print (get_request_var('age') == '5256000'  ? ' selected':'');?>>&gt; 2 Months</option>
+							<option value='10512000' <?php print (get_request_var('age') == '10512000' ? ' selected':'');?>>&gt; 4 Months</option>
+							<option value='15768000' <?php print (get_request_var('age') == '15768000' ? ' selected':'');?>>&gt; 6 Months</option>
+							<option value='31536000' <?php print (get_request_var('age') == '31536000' ? ' selected':'');?>>&gt; 1 Year</option>
 						</select>
 					</td>
 					<td>
@@ -502,7 +500,7 @@ function filter() {
 						<?php
 						if (sizeof($item_rows) > 0) {
 						foreach ($item_rows as $key => $value) {
-							print '<option value="' . $key . '"'; if ($_REQUEST['rows'] == $key) { print ' selected'; } print '>' . $value . "</option>\n";
+							print '<option value="' . $key . '"'; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . $value . "</option>\n";
 						}
 						}
 						?>

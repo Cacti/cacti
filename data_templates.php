@@ -38,7 +38,7 @@ $ds_actions = array(
 /* set default action */
 set_default_action();
 
-switch ($_REQUEST['action']) {
+switch (get_request_var('action')) {
 	case 'save':
 		form_save();
 
@@ -81,51 +81,54 @@ switch ($_REQUEST['action']) {
    -------------------------- */
 
 function form_save() {
-	if (isset($_POST['save_component_template'])) {
+	if (isset_request_var('save_component_template')) {
 		/* ================= input validation ================= */
-		input_validate_input_number(get_request_var_post('data_input_id'));
-		input_validate_input_number(get_request_var_post('data_template_id'));
-		input_validate_input_number(get_request_var_post('data_template_data_id'));
-		input_validate_input_number(get_request_var_post('data_template_rrd_id'));
+		get_filter_request_var('data_input_id');
+		get_filter_request_var('data_template_id');
+		get_filter_request_var('data_template_data_id');
+		get_filter_request_var('data_template_rrd_id');
+		get_filter_request_var('data_source_type_id');
+		get_filter_request_var('rrd_step');
+		get_filter_request_var('rrd_heartbeat');
 		/* ==================================================== */
 
 		/* save: data_template */
-		$save1['id'] = get_request_var_post('data_template_id');
-		$save1['hash'] = get_hash_data_template(get_request_var_post('data_template_id'));
+		$save1['id']   = get_request_var('data_template_id');
+		$save1['hash'] = get_hash_data_template(get_request_var('data_template_id'));
 		$save1['name'] = form_input_validate(get_request_var_post('template_name'), 'template_name', '', false, 3);
 
 		/* save: data_template_data */
-		$save2['id'] = get_request_var_post('data_template_data_id');
+		$save2['id']            = get_request_var('data_template_data_id');
 		$save2['local_data_template_data_id'] = 0;
 		$save2['local_data_id'] = 0;
 
-		$save2['data_input_id'] = form_input_validate(get_request_var_post('data_input_id'), 'data_input_id', '^[0-9]+$', true, 3);
-		$save2['t_name'] = form_input_validate((isset($_POST['t_name']) ? $_POST['t_name'] : ''), 't_name', '', true, 3);
-		$save2['name'] = form_input_validate(get_request_var_post('name'), 'name', '', (isset($_POST['t_name']) ? true : false), 3);
-		$save2['t_active'] = form_input_validate((isset($_POST['t_active']) ? $_POST['t_active'] : ''), 't_active', '', true, 3);
-		$save2['active'] = form_input_validate((isset($_POST['active']) ? $_POST['active'] : ''), 'active', '', true, 3);
-		$save2['t_rrd_step'] = form_input_validate((isset($_POST['t_rrd_step']) ? $_POST['t_rrd_step'] : ''), 't_rrd_step', '', true, 3);
-		$save2['rrd_step'] = form_input_validate(get_request_var_post('rrd_step'), 'rrd_step', '^[0-9]+$', (isset($_POST['t_rrd_step']) ? true : false), 3);
-		$save2['t_rra_id'] = form_input_validate((isset($_POST['t_rra_id']) ? $_POST['t_rra_id'] : ''), 't_rra_id', '', true, 3);
+		$save2['data_input_id'] = form_input_validate(get_request_var('data_input_id'), 'data_input_id', '^[0-9]+$', true, 3);
+		$save2['t_name']        = form_input_validate((isset_request_var('t_name') ? get_nfilter_request_var('t_name') : ''), 't_name', '', true, 3);
+		$save2['name']          = form_input_validate(get_request_var_post('name'), 'name', '', (isset_request_var('t_name') ? true : false), 3);
+		$save2['t_active']      = form_input_validate((isset_request_var('t_active') ? get_nfilter_request_var('t_active') : ''), 't_active', '', true, 3);
+		$save2['active']        = form_input_validate((isset_request_var('active') ? get_nfilter_request_var('active') : ''), 'active', '', true, 3);
+		$save2['t_rrd_step']    = form_input_validate((isset_request_var('t_rrd_step') ? get_nfilter_request_var('t_rrd_step') : ''), 't_rrd_step', '', true, 3);
+		$save2['rrd_step']      = form_input_validate(get_request_var('rrd_step'), 'rrd_step', '^[0-9]+$', (isset_request_var('t_rrd_step') ? true : false), 3);
+		$save2['t_rra_id']      = form_input_validate((isset_request_var('t_rra_id') ? get_nfilter_request_var('t_rra_id') : ''), 't_rra_id', '', true, 3);
 
 		/* save: data_template_rrd */
-		$save3['id'] = get_request_var_post('data_template_rrd_id');
-		$save3['hash'] = get_hash_data_template(get_request_var_post('data_template_rrd_id'), 'data_template_item');
+		$save3['id']              = get_request_var('data_template_rrd_id');
+		$save3['hash']            = get_hash_data_template(get_request_var('data_template_rrd_id'), 'data_template_item');
 		$save3['local_data_template_rrd_id'] = 0;
-		$save3['local_data_id'] = 0;
+		$save3['local_data_id']   = 0;
 
-		$save3['t_rrd_maximum'] = form_input_validate((isset($_POST['t_rrd_maximum']) ? $_POST['t_rrd_maximum'] : ''), 't_rrd_maximum', '', true, 3);
-		$save3['rrd_maximum'] = form_input_validate(get_request_var_post('rrd_maximum'), 'rrd_maximum', '^(-?([0-9]+(\.[0-9]*)?|[0-9]*\.[0-9]+)([eE][+\-]?[0-9]+)?)|U$', (isset($_POST['t_rrd_maximum']) ? true : false), 3);
-		$save3['t_rrd_minimum'] = form_input_validate((isset($_POST['t_rrd_minimum']) ? $_POST['t_rrd_minimum'] : ''), 't_rrd_minimum', '', true, 3);
-		$save3['rrd_minimum'] = form_input_validate(get_request_var_post('rrd_minimum'), 'rrd_minimum', '^(-?([0-9]+(\.[0-9]*)?|[0-9]*\.[0-9]+)([eE][+\-]?[0-9]+)?)|U$', (isset($_POST['t_rrd_minimum']) ? true : false), 3);
-		$save3['t_rrd_heartbeat'] = form_input_validate((isset($_POST['t_rrd_heartbeat']) ? $_POST['t_rrd_heartbeat'] : ''), 't_rrd_heartbeat', '', true, 3);
-		$save3['rrd_heartbeat'] = form_input_validate(get_request_var_post('rrd_heartbeat'), 'rrd_heartbeat', '^[0-9]+$', (isset($_POST['t_rrd_heartbeat']) ? true : false), 3);
-		$save3['t_data_source_type_id'] = form_input_validate((isset($_POST['t_data_source_type_id']) ? $_POST['t_data_source_type_id'] : ''), 't_data_source_type_id', '', true, 3);
-		$save3['data_source_type_id'] = form_input_validate(get_request_var_post('data_source_type_id'), 'data_source_type_id', '^[0-9]+$', true, 3);
-		$save3['t_data_source_name'] = form_input_validate((isset($_POST['t_data_source_name']) ? $_POST['t_data_source_name'] : ''), 't_data_source_name', '', true, 3);
-		$save3['data_source_name'] = form_input_validate(get_request_var_post('data_source_name'), 'data_source_name', '^[a-zA-Z0-9_]{1,19}$', (isset($_POST['t_data_source_name']) ? true : false), 3);
-		$save3['t_data_input_field_id'] = form_input_validate((isset($_POST['t_data_input_field_id']) ? $_POST['t_data_input_field_id'] : ''), 't_data_input_field_id', '', true, 3);
-		$save3['data_input_field_id'] = form_input_validate((isset($_POST['data_input_field_id']) ? $_POST['data_input_field_id'] : '0'), 'data_input_field_id', '', true, 3);
+		$save3['t_rrd_maximum']   = form_input_validate((isset_request_var('t_rrd_maximum') ? get_nfilter_request_var('t_rrd_maximum') : ''), 't_rrd_maximum', '', true, 3);
+		$save3['rrd_maximum']     = form_input_validate(get_request_var_post('rrd_maximum'), 'rrd_maximum', '^(-?([0-9]+(\.[0-9]*)?|[0-9]*\.[0-9]+)([eE][+\-]?[0-9]+)?)|U$', (isset_request_var('t_rrd_maximum') ? true : false), 3);
+		$save3['t_rrd_minimum']   = form_input_validate((isset_request_var('t_rrd_minimum') ? get_nfilter_request_var('t_rrd_minimum') : ''), 't_rrd_minimum', '', true, 3);
+		$save3['rrd_minimum']     = form_input_validate(get_request_var_post('rrd_minimum'), 'rrd_minimum', '^(-?([0-9]+(\.[0-9]*)?|[0-9]*\.[0-9]+)([eE][+\-]?[0-9]+)?)|U$', (isset_request_var('t_rrd_minimum') ? true : false), 3);
+		$save3['t_rrd_heartbeat'] = form_input_validate((isset_request_var('t_rrd_heartbeat') ? get_nfilter_request_var('t_rrd_heartbeat') : ''), 't_rrd_heartbeat', '', true, 3);
+		$save3['rrd_heartbeat']   = form_input_validate(get_request_var('rrd_heartbeat'), 'rrd_heartbeat', '^[0-9]+$', (isset_request_var('t_rrd_heartbeat') ? true : false), 3);
+		$save3['t_data_source_type_id'] = form_input_validate((isset_request_var('t_data_source_type_id') ? get_nfilter_request_var('t_data_source_type_id') : ''), 't_data_source_type_id', '', true, 3);
+		$save3['data_source_type_id']   = form_input_validate(get_request_var('data_source_type_id'), 'data_source_type_id', '^[0-9]+$', true, 3);
+		$save3['t_data_source_name']    = form_input_validate((isset_request_var('t_data_source_name') ? get_nfilter_request_var('t_data_source_name') : ''), 't_data_source_name', '', true, 3);
+		$save3['data_source_name']      = form_input_validate(get_request_var_post('data_source_name'), 'data_source_name', '^[a-zA-Z0-9_]{1,19}$', (isset_request_var('t_data_source_name') ? true : false), 3);
+		$save3['t_data_input_field_id'] = form_input_validate((isset_request_var('t_data_input_field_id') ? get_nfilter_request_var('t_data_input_field_id') : ''), 't_data_input_field_id', '', true, 3);
+		$save3['data_input_field_id']   = form_input_validate((isset_request_var('data_input_field_id') ? get_nfilter_request_var('data_input_field_id') : '0'), 'data_input_field_id', '', true, 3);
 
 		/* ok, first pull out all 'input' values so we know how much to save */
 		$input_fields = db_fetch_assoc_prepared("SELECT
@@ -137,16 +140,16 @@ function form_save() {
 			data_name
 			FROM data_input_fields
 			WHERE data_input_id = ?
-			AND input_output = 'in'", array(get_request_var_post('data_input_id')));
+			AND input_output = 'in'", array(get_request_var('data_input_id')));
 
 		/* pass 1 for validation */
 		if (sizeof($input_fields) > 0) {
 			foreach ($input_fields as $input_field) {
 				$form_value = 'value_' . $input_field['data_name'];
 
-				if ((isset($_POST[$form_value])) && ($input_field['type_code'] == '')) {
-					if ((isset($_POST['t_' . $form_value])) &&
-						($_POST['t_' . $form_value] == 'on')) {
+				if ((isset_request_var($form_value)) && ($input_field['type_code'] == '')) {
+					if ((isset_request_var('t_' . $form_value)) &&
+						(get_nfilter_request_var('t_' . $form_value) == 'on')) {
 						$not_required = true;
 					}else if ($input_field['allow_nulls'] == 'on') {
 						$not_required = true;
@@ -154,7 +157,7 @@ function form_save() {
 						$not_required = false;
 					}
 
-					form_input_validate($_POST[$form_value], 'value_' . $input_field['data_name'], $input_field['regexp_match'], $not_required, 3);
+					form_input_validate(get_nfilter_request_var($form_value), 'value_' . $input_field['data_name'], $input_field['regexp_match'], $not_required, 3);
 				}
 			}
 		}
@@ -182,7 +185,7 @@ function form_save() {
 
 		/* update actual host template information for live hosts */
 		if ((!is_error_message()) && ($save2['id'] > 0)) {
-			db_execute_prepared('UPDATE data_template_data set data_input_id = ? WHERE data_template_id = ?', array(get_request_var_post('data_input_id'), get_request_var_post('data_template_id')));
+			db_execute_prepared('UPDATE data_template_data set data_input_id = ? WHERE data_template_id = ?', array(get_request_var('data_input_id'), get_request_var('data_template_id')));
 		}
 
 		if (!is_error_message()) {
@@ -203,15 +206,18 @@ function form_save() {
 			if (isset_request_var('rra_id')) {
 				for ($i=0; ($i < count(get_request_var_post('rra_id'))); $i++) {
 					/* ================= input validation ================= */
-					input_validate_input_number(get_request_var_post('rra_id')[$i]);
+					$rra_id = $_REQUEST['rra_id'][$i];
+					if (!is_numeric($rra_id)) {
+						exit;
+					}
 					/* ==================================================== */
 
 					db_execute_prepared('INSERT INTO data_template_data_rra (rra_id, data_template_data_id)
-						VALUES (?, ?)', array(get_request_var_post('rra_id')[$i], $data_template_data_id));
+						VALUES (?, ?)', array($rra_id, $data_template_data_id));
 				}
 			}
 
-			if (!empty(get_request_var_post('data_template_id'))) {
+			if (!isempty_request_var('data_template_id')) {
 				/* push out all data source settings to child data source using this template */
 				push_out_data_source($data_template_data_id);
 				push_out_data_source_item($data_template_rrd_id);
@@ -223,17 +229,17 @@ function form_save() {
 				foreach ($input_fields as $input_field) {
 					$form_value = 'value_' . $input_field['data_name'];
 
-					if (isset($_POST[$form_value])) {
+					if (isset_request_var($form_value)) {
 						/* save the data into the 'host_template_data' table */
-						if (isset($_POST{'t_value_' . $input_field['data_name']})) {
+						if (isset_request_var('t_value_' . $input_field['data_name'])) {
 							$template_this_item = 'on';
 						}else{
 							$template_this_item = '';
 						}
 
-						if ((!empty($form_value)) || (!empty($_POST{'t_value_' . $input_field['data_name']}))) {
+						if ((!empty($form_value)) || (!isempty_request_var('t_value_' . $input_field['data_name']))) {
 							db_execute_prepared('INSERT INTO data_input_data (data_input_field_id, data_template_data_id, t_value, value)
-								values (?, ?, ?, ?)', array($input_field['id'], $data_template_data_id, $template_this_item, trim($_POST[$form_value]) ));
+								values (?, ?, ?, ?)', array($input_field['id'], $data_template_data_id, $template_this_item, trim(get_nfilter_request_var($form_value)) ));
 						}
 					}
 				}
@@ -245,7 +251,7 @@ function form_save() {
 			}
 		}
 
-		header('Location: data_templates.php?header=false&action=template_edit&id=' . (empty($data_template_id) ? get_request_var_post('data_template_id') : $data_template_id) . (empty($_POST['current_rrd']) ? '' : '&view_rrd=' . ($_POST['current_rrd'] ? $_POST['current_rrd'] : $data_template_rrd_id)));
+		header('Location: data_templates.php?header=false&action=template_edit&id=' . (empty($data_template_id) ? get_request_var('data_template_id') : $data_template_id) . (isempty_request_var('current_rrd') ? '' : '&view_rrd=' . (get_nfilter_request_var('current_rrd') ? get_nfilter_request_var('current_rrd') : $data_template_rrd_id)));
 	}
 }
 
@@ -286,7 +292,7 @@ function form_actions() {
 				db_execute('UPDATE data_local set data_template_id=0 WHERE ' . array_to_sql_or($selected_items, 'data_template_id'));
 			}elseif (get_request_var_post('drp_action') == '2') { /* duplicate */
 				for ($i=0;($i<count($selected_items));$i++) {
-					duplicate_data_source(0, $selected_items[$i], $_POST['title_format']);
+					duplicate_data_source(0, $selected_items[$i], get_nfilter_request_var('title_format'));
 				}
 			}
 		}
@@ -368,11 +374,11 @@ function form_actions() {
 
 function template_rrd_remove() {
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var('id'));
-	input_validate_input_number(get_request_var('data_template_id'));
+	get_filter_request_var('id');
+	get_filter_request_var('data_template_id');
 	/* ==================================================== */
 
-	$children = db_fetch_assoc_prepared('SELECT id FROM data_template_rrd WHERE local_data_template_rrd_id = ? OR id = ?', array($_REQUEST['id'], $_REQUEST['id']));
+	$children = db_fetch_assoc_prepared('SELECT id FROM data_template_rrd WHERE local_data_template_rrd_id = ? OR id = ?', array(get_request_var('id'), get_request_var('id')));
 
 	if (sizeof($children) > 0) {
 	foreach ($children as $item) {
@@ -382,48 +388,48 @@ function template_rrd_remove() {
 	}
 	}
 
-	header('Location: data_templates.php?action=template_edit&id=' . $_REQUEST['data_template_id']);
+	header('Location: data_templates.php?action=template_edit&id=' . get_request_var('data_template_id'));
 }
 
 function template_rrd_add() {
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var('id'));
-	input_validate_input_number(get_request_var('local_data_id'));
+	get_filter_request_var('id');
+	get_filter_request_var('local_data_id');
 	/* ==================================================== */
 
 	$hash = get_hash_data_template(0, 'data_template_item');
 
 	db_execute_prepared("INSERT IGNORE INTO data_template_rrd 
 		(hash, data_template_id, rrd_maximum, rrd_minimum, rrd_heartbeat, data_source_type_id, data_source_name) 
-	    VALUES (?, ?, 0, 0, 600, 1, 'ds')", array($hash, $_REQUEST['id']));
+	    VALUES (?, ?, 0, 0, 600, 1, 'ds')", array($hash, get_request_var('id')));
 
 	$data_template_rrd_id = db_fetch_insert_id();
 
 	/* add this data template item to each data source using this data template */
-	$children = db_fetch_assoc_prepared('SELECT local_data_id FROM data_template_data WHERE data_template_id = ? AND local_data_id > 0', array($_REQUEST['id']));
+	$children = db_fetch_assoc_prepared('SELECT local_data_id FROM data_template_data WHERE data_template_id = ? AND local_data_id > 0', array(get_request_var('id')));
 
 	if (sizeof($children) > 0) {
 	foreach ($children as $item) {
 		db_execute_prepared("INSERT IGNORE INTO data_template_rrd 
 			(local_data_template_rrd_id, local_data_id, data_template_id, rrd_maximum, rrd_minimum, rrd_heartbeat, data_source_type_id, data_source_name) 
-			VALUES (?, ?, ?, 0, 0, 600, 1, 'ds')", array($data_template_rrd_id, $item['local_data_id'], $_REQUEST['id']));
+			VALUES (?, ?, ?, 0, 0, 600, 1, 'ds')", array($data_template_rrd_id, $item['local_data_id'], get_request_var('id')));
 	}
 	}
 
-	header('Location: data_templates.php?action=template_edit&id=' . $_REQUEST['id'] . "&view_rrd=$data_template_rrd_id");
+	header('Location: data_templates.php?action=template_edit&id=' . get_request_var('id') . "&view_rrd=$data_template_rrd_id");
 }
 
 function template_edit() {
 	global $struct_data_source, $struct_data_source_item, $data_source_types, $fields_data_template_template_edit;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var('id'));
-	input_validate_input_number(get_request_var('view_rrd'));
+	get_filter_request_var('id');
+	get_filter_request_var('view_rrd');
 	/* ==================================================== */
 
-	if (!empty($_REQUEST['id'])) {
-		$template_data = db_fetch_row_prepared('SELECT * FROM data_template_data WHERE data_template_id = ? AND local_data_id = 0', array($_REQUEST['id']));
-		$template = db_fetch_row_prepared('SELECT * FROM data_template WHERE id = ?', array($_REQUEST['id']));
+	if (!isempty_request_var('id')) {
+		$template_data = db_fetch_row_prepared('SELECT * FROM data_template_data WHERE data_template_id = ? AND local_data_id = 0', array(get_request_var('id')));
+		$template = db_fetch_row_prepared('SELECT * FROM data_template WHERE id = ?', array(get_request_var('id')));
 
 		$header_label = '[edit: ' . $template['name'] . ']';
 	}else{
@@ -477,18 +483,18 @@ function template_edit() {
 	html_end_box();
 
 	/* fetch ALL rrd's for this data source */
-	if (!empty($_REQUEST['id'])) {
-		$template_data_rrds = db_fetch_assoc_prepared('SELECT id, data_source_name FROM data_template_rrd WHERE data_template_id = ? AND local_data_id = 0 ORDER BY data_source_name', array($_REQUEST['id']));
+	if (!isempty_request_var('id')) {
+		$template_data_rrds = db_fetch_assoc_prepared('SELECT id, data_source_name FROM data_template_rrd WHERE data_template_id = ? AND local_data_id = 0 ORDER BY data_source_name', array(get_request_var('id')));
 	}
 
 	/* select the first "rrd" of this data source by default */
-	if (empty($_REQUEST['view_rrd'])) {
-		$_REQUEST['view_rrd'] = (isset($template_data_rrds[0]['id']) ? $template_data_rrds[0]['id'] : '0');
+	if (isempty_request_var('view_rrd')) {
+		set_request_var('view_rrd', (isset($template_data_rrds[0]['id']) ? $template_data_rrds[0]['id'] : '0'));
 	}
 
 	/* get more information about the rrd we chose */
-	if (!empty($_REQUEST['view_rrd'])) {
-		$template_rrd = db_fetch_row_prepared('SELECT * FROM data_template_rrd WHERE id = ?', array($_REQUEST['view_rrd']));
+	if (!isempty_request_var('view_rrd')) {
+		$template_rrd = db_fetch_row_prepared('SELECT * FROM data_template_rrd WHERE id = ?', array(get_request_var('view_rrd')));
 	}
 
 	$i = 0;
@@ -501,8 +507,8 @@ function template_edit() {
 		foreach ($template_data_rrds as $template_data_rrd) {
 			$i++;
 			print "<li>
-				<a " . (($template_data_rrd['id'] == $_REQUEST['view_rrd']) ? "class='selected'" : "class=''") . " href='" . htmlspecialchars('data_templates.php?action=template_edit&id=' . $_REQUEST['id'] . '&view_rrd=' . $template_data_rrd['id']) . "'>$i: " . htmlspecialchars($template_data_rrd['data_source_name']) . "</a>
-				<a class='deleteMarker fa fa-remove' title='Delete' href='" . htmlspecialchars('data_templates.php?action=rrd_remove&id=' . $template_data_rrd['id'] . '&data_template_id=' . $_REQUEST['id']) . "'></a></li>\n";
+				<a " . (($template_data_rrd['id'] == get_request_var('view_rrd')) ? "class='selected'" : "class=''") . " href='" . htmlspecialchars('data_templates.php?action=template_edit&id=' . get_request_var('id') . '&view_rrd=' . $template_data_rrd['id']) . "'>$i: " . htmlspecialchars($template_data_rrd['data_source_name']) . "</a>
+				<a class='deleteMarker fa fa-remove' title='Delete' href='" . htmlspecialchars('data_templates.php?action=rrd_remove&id=' . $template_data_rrd['id'] . '&data_template_id=' . get_request_var('id')) . "'></a></li>\n";
 		}
 
 		print "
@@ -510,11 +516,11 @@ function template_edit() {
 		</div>\n";
 
 		}elseif (sizeof($template_data_rrds) == 1) {
-			$_REQUEST['view_rrd'] = $template_data_rrds[0]['id'];
+			set_request_var('view_rrd', $template_data_rrds[0]['id']);
 		}
 	}
 
-	html_start_box('Data Source Item [' . (isset($template_rrd) ? htmlspecialchars($template_rrd['data_source_name']) : '') . ']', '100%', '', '0', 'center', (!empty($_REQUEST['id']) ? 'data_templates.php?action=rrd_add&id=' . $_REQUEST['id']:''), 'New');
+	html_start_box('Data Source Item [' . (isset($template_rrd) ? htmlspecialchars($template_rrd['data_source_name']) : '') . ']', '100%', '', '0', 'center', (!isempty_request_var('id') ? 'data_templates.php?action=rrd_add&id=' . get_request_var('id'):''), 'New');
 
 	/* data input fields list */
 	if ((empty($template_data['data_input_id'])) ||
@@ -554,7 +560,7 @@ function template_edit() {
 	html_end_box();
 
 	$i = 0;
-	if (!empty($_REQUEST['id'])) {
+	if (!isempty_request_var('id')) {
 		/* get each INPUT field for this data input source */
 		$fields = db_fetch_assoc('SELECT * FROM data_input_fields WHERE data_input_id=' . $template_data['data_input_id'] . " AND input_output='in' ORDER BY name");
 
@@ -576,7 +582,7 @@ function template_edit() {
 				?>
 				<td style='width:50%;'>
 					<strong><?php print $field['name'];?></strong><br>
-					<?php form_checkbox('t_value_' . $field['data_name'], $data_input_data['t_value'], 'Use Per-Data Source Value (Ignore this Value)', '', '', $_REQUEST['id']);?>
+					<?php form_checkbox('t_value_' . $field['data_name'], $data_input_data['t_value'], 'Use Per-Data Source Value (Ignore this Value)', '', '', get_request_var('id'));?>
 				</td>
 				<td>
 					<?php form_text_box('value_' . $field['data_name'],$old_value,'','');?>
@@ -615,8 +621,8 @@ function template() {
 	global $ds_actions, $item_rows;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var('page'));
-	input_validate_input_number(get_request_var('rows'));
+	get_filter_request_var('page');
+	get_filter_request_var('rows');
 	/* ==================================================== */
 
 	/* clean up search string */
@@ -702,7 +708,7 @@ function template() {
 						</select>
 					</td>
 					<td>
-						<input type='checkbox' id='has_data' <?php print ($_REQUEST['has_data'] == 'true' ? 'checked':'');?>>
+						<input type='checkbox' id='has_data' <?php print (get_request_var('has_data') == 'true' ? 'checked':'');?>>
 					</td>
 					<td>
 						<label for='has_data'>Has Data Sources</label>
@@ -715,7 +721,7 @@ function template() {
 					</td>
 				</tr>
 			</table>
-			<input type='hidden' id='page' name='page' value='<?php print $_REQUEST['page'];?>'>
+			<input type='hidden' id='page' name='page' value='<?php print get_request_var('page');?>'>
 		</form>
 		</td>
 		<script type='text/javascript'>
@@ -755,13 +761,13 @@ function template() {
 
 	/* form the 'where' clause for our main sql query */
 	$rows_where = '';
-	if (strlen($_REQUEST['filter'])) {
+	if (get_request_var('filter') != '') {
 		$sql_where = " WHERE (dt.name like '%" . get_request_var('filter') . "%')";
 	}else{
 		$sql_where = '';
 	}
 
-	if ($_REQUEST['has_data'] == 'true') {
+	if (get_request_var('has_data') == 'true') {
 		$sql_having = 'HAVING data_sources>0';
 	}else{
 		$sql_having = '';

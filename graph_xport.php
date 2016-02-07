@@ -31,13 +31,13 @@ include('./include/auth.php');
 include_once('./lib/rrd.php');
 
 /* ================= input validation ================= */
-input_validate_input_number(get_request_var('graph_start'));
-input_validate_input_number(get_request_var('graph_end'));
-input_validate_input_number(get_request_var('graph_height'));
-input_validate_input_number(get_request_var('graph_width'));
-input_validate_input_number(get_request_var('local_graph_id'));
-input_validate_input_number(get_request_var('rra_id'));
-input_validate_input_number(get_request_var('stdout'));
+get_filter_request_var('graph_start');
+get_filter_request_var('graph_end');
+get_filter_request_var('graph_height');
+get_filter_request_var('graph_width');
+get_filter_request_var('local_graph_id');
+get_filter_request_var('rra_id');
+get_filter_request_var('stdout');
 /* ==================================================== */
 
 /* flush the headers now */
@@ -47,38 +47,33 @@ session_write_close();
 
 $graph_data_array = array();
 
-/* ================= input validation ================= */
-input_validate_input_number(get_request_var('local_graph_id'));
-input_validate_input_number(get_request_var('rra_id'));
-/* ==================================================== */
-
 /* override: graph start time (unix time) */
-if (!empty($_REQUEST['graph_start']) && is_numeric($_REQUEST['graph_start']) && $_REQUEST['graph_start'] < 1600000000) {
+if (!isempty_request_var('graph_start') && is_numeric(get_request_var('graph_start')) && get_request_var('graph_start') < 1600000000) {
 	$graph_data_array['graph_start'] = get_request_var('graph_start');
 }
 
 /* override: graph end time (unix time) */
-if (!empty($_REQUEST['graph_end']) && is_numeric($_REQUEST['graph_end']) && $_REQUEST['graph_end'] < 1600000000) {
+if (!isempty_request_var('graph_end') && is_numeric(get_request_var('graph_end')) && get_request_var('graph_end') < 1600000000) {
 	$graph_data_array['graph_end'] = get_request_var('graph_end');
 }
 
 /* override: graph height (in pixels) */
-if (!empty($_REQUEST['graph_height']) && is_numeric($_REQUEST['graph_height']) && $_REQUEST['graph_height'] < 3000) {
+if (!isempty_request_var('graph_height') && is_numeric(get_request_var('graph_height')) && get_request_var('graph_height') < 3000) {
 	$graph_data_array['graph_height'] = get_request_var('graph_height');
 }
 
 /* override: graph width (in pixels) */
-if (!empty($_REQUEST['graph_width']) && is_numeric($_REQUEST['graph_width']) && $_REQUEST['graph_width'] < 3000) {
+if (!isempty_request_var('graph_width') && is_numeric(get_request_var('graph_width')) && get_request_var('graph_width') < 3000) {
 	$graph_data_array['graph_width'] = get_request_var('graph_width');
 }
 
 /* override: skip drawing the legend? */
-if (!empty($_REQUEST['graph_nolegend'])) {
+if (!isempty_request_var('graph_nolegend')) {
 	$graph_data_array['graph_nolegend'] = get_request_var('graph_nolegend');
 }
 
 /* print RRDTool graph source? */
-if (!empty($_REQUEST['show_source'])) {
+if (!isempty_request_var('show_source')) {
 	$graph_data_array['print_source'] = get_request_var('show_source');
 }
 
@@ -91,7 +86,7 @@ $xport_meta = array();
 $graph_data_array['export_csv'] = true;
 
 /* Get graph export */
-$xport_array = rrdtool_function_xport($_REQUEST['local_graph_id'], get_request_var('rra_id'), $graph_data_array, $xport_meta);
+$xport_array = rrdtool_function_xport(get_request_var('local_graph_id'), get_request_var('rra_id'), $graph_data_array, $xport_meta);
 
 /* Make graph title the suggested file name */
 if (is_array($xport_array['meta'])) {
@@ -106,11 +101,11 @@ if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') {
 }
 
 header('Cache-Control: max-age=15');
-if (!isset($_REQUEST['stdout'])) {
+if (!isset_request_var('stdout')) {
 	header('Content-Disposition: attachment; filename="' . $filename . '"');
 }
 
-if (isset($_REQUEST['format']) && $_REQUEST['format'] == 'table') {
+if (isset_request_var('format') && get_request_var('format') == 'table') {
 	$html = true;
 }else{
 	$html = false;

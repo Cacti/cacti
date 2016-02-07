@@ -28,38 +28,46 @@ include($config['library_path'] . '/reports.php');
 include($config['library_path'] . '/html_reports.php');
 define('MAX_DISPLAY_PAGES', 21);
 
-input_validate_input_number(get_request_var('id'));
+get_filter_request_var('id');
 
 /* set default action */
 set_default_action();
 
-switch ($_REQUEST['action']) {
+switch (get_request_var('action')) {
 	case 'save':
 		reports_form_save();
 
 		break;
 	case 'send':
-		reports_send($_REQUEST['id']);
+		get_filter_request_var('id');
 
-		header('Location: reports_user.php?action=edit&tab=' . $_REQUEST['tab'] . '&id=' . $_REQUEST['id']);
+		reports_send(get_request_var('id'));
+
+		header('Location: reports_user.php?action=edit&tab=' . get_request_var('tab') . '&id=' . get_request_var('id'));
 		break;
 	case 'actions':
 		reports_form_actions();
 		break;
 	case 'item_movedown':
+		get_filter_request_var('id');
+
 		reports_item_movedown();
 
-		header('Location: reports_user.php?action=edit&tab=items&id=' . $_REQUEST['id']);
+		header('Location: reports_user.php?action=edit&tab=items&id=' . get_request_var('id'));
 		break;
 	case 'item_moveup':
+		get_filter_request_var('id');
+
 		reports_item_moveup();
 
-		header('Location: reports_user.php?action=edit&tab=items&id=' . $_REQUEST['id']);
+		header('Location: reports_user.php?action=edit&tab=items&id=' . get_request_var('id'));
 		break;
 	case 'item_remove':
+		get_filter_request_var('id');
+
 		reports_item_remove();
 
-		header('Location: reports_user.php?action=edit&tab=items&id=' . $_REQUEST['id']);
+		header('Location: reports_user.php?action=edit&tab=items&id=' . get_request_var('id'));
 		break;
 	case 'item_edit':
 		general_header();

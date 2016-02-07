@@ -23,8 +23,11 @@
 */
 
 /* set default action */
-if (!isset($_REQUEST['action'])) { $_REQUEST['action'] = 'view'; }
-if (!isset($_REQUEST['view_type'])) { $_REQUEST['view_type'] = ''; }
+set_default_action('view');
+
+if (!isset_request_var('view_type')) { 
+	set_request_var('view_type', '');
+}
 
 $guest_account = true;
 include('./include/auth.php');
@@ -32,9 +35,9 @@ include_once('./lib/rrd.php');
 
 /* ================= input validation ================= */
 input_validate_input_regex(get_request_var('rra_id'), '^([0-9]+|all)$');
-input_validate_input_number(get_request_var('local_graph_id'));
-input_validate_input_number(get_request_var('graph_end'));
-input_validate_input_number(get_request_var('graph_start'));
+get_filter_request_var('local_graph_id');
+get_filter_request_var('graph_end');
+get_filter_request_var('graph_start');
 input_validate_input_regex(get_request_var('view_type'), '^([a-zA-Z0-9]+)$');
 /* ==================================================== */
 
@@ -43,14 +46,14 @@ api_plugin_hook_function('graph');
 include_once('./lib/html_tree.php');
 top_graph_header();
 
-if (!isset($_REQUEST['rra_id'])) {
-	$_REQUEST['rra_id'] = 'all';
+if (!isset_request_var('rra_id')) {
+	set_request_var('rra_id', 'all');
 }
 
-if ($_REQUEST['rra_id'] == 'all') {
+if (get_request_var('rra_id') == 'all') {
 	$sql_where = ' WHERE id IS NOT NULL';
 }else{
-	$sql_where = ' WHERE id=' . $_REQUEST['rra_id'];
+	$sql_where = ' WHERE id=' . get_request_var('rra_id');
 }
 
 /* make sure the graph requested exists (sanity) */
@@ -60,27 +63,30 @@ if (!(db_fetch_cell_prepared('SELECT local_graph_id FROM graph_templates_graph W
 }
 
 /* take graph permissions into account here */
-if (!is_graph_allowed($_REQUEST['local_graph_id'])) {
+if (!is_graph_allowed(get_request_var('local_graph_id'))) {
 	header('Location: permission_denied.php');
 	exit;
 }
 
-$graph_title = get_graph_title($_REQUEST['local_graph_id']);
+$graph_title = get_graph_title(get_request_var('local_graph_id'));
 
-if ($_REQUEST['action'] != 'properties') {
+if (get_request_var('action') != 'properties') {
 	print "<table width='100%' class='cactiTable'>";
 }
 
-$rras = get_associated_rras($_REQUEST['local_graph_id']);
+$rras = get_associated_rras(get_request_var('local_graph_id'));
 
-switch ($_REQUEST['action']) {
+switch (get_request_var('action')) {
 case 'view':
 	api_plugin_hook_function('page_buttons',
-		array('lgid' => $_REQUEST['local_graph_id'],
+		array(
+			'lgid'   => get_request_var('local_graph_id'),
 			'leafid' => '',//$leaf_id,
-			'mode' => 'mrtg',
-			'rraid' => $_REQUEST['rra_id'])
-		);
+			'mode'   => 'mrtg',
+			'rraid'  => get_request_var('rra_id')
+		)
+	);
+
 	?>
 	<tr class='tableHeader'>
 		<td colspan='3' class='textHeaderDark'>
@@ -95,14 +101,14 @@ case 'view':
 	</tr>
 	<?php
 
-	$graph = db_fetch_row("SELECT * FROM graph_templates_graph WHERE local_graph_id=" . $_REQUEST['local_graph_id']);
+	$graph = db_fetch_row("SELECT * FROM graph_templates_graph WHERE local_graph_id=" . get_request_var('local_graph_id'));
 
 	$i = 0;
 	if (sizeof($rras) > 0) {
 		$graph_end   = time();
 		foreach ($rras as $rra) {
 			$graph_start = $graph_end - db_fetch_cell_prepared('SELECT timespan FROM rra WHERE id = ?', array($rra['id']));
-			$aggregate_url = aggregate_build_children_url($_REQUEST['local_graph_id'], $graph_start, $graph_end, $rra['id']);
+			$aggregate_url = aggregate_build_children_url(get_request_var('local_graph_id'), $graph_start, $graph_end, $rra['id']);
 			?>
 			<tr>
 				<td align='center'>
@@ -112,11 +118,11 @@ case 'view':
 								<div id='wrapper_<?php print $graph['local_graph_id'] . '_' . $rra['id'];?>' graph_id='<?php print $graph['local_graph_id'];?>' rra_id='<?php print $rra['id'];?>' graph_width='<?php print $graph['width'];?>' graph_height='<?php print $graph['height'];?>' title_font_size='<?php print ((read_graph_config_option("custom_fonts") == "on") ? read_graph_config_option("title_size") : read_config_option("title_size"));?>' style="min-height: <?php echo (1.2 * $graph["height"]) . "px"?>;"></div>
 							</td>
 							<td valign='top' style='padding: 3px;' class='noprint'>
-								<span class='hyperLink utils' graph_start='<?php print $graph_start;?>' graph_end='<?php print $graph_end;?>' rra_id='<?php print $rra['id'];?>' id='graph_<?php print $_REQUEST['local_graph_id'];?>_util'><img class='drillDown' src='<?php print $config['url_path'];?>images/cog.png' alt='' title='Graph Details, Zooming and Debugging Utilities'></span><br>
-								<a href='<?php print htmlspecialchars($config['url_path'] . 'graph_xport.php?local_graph_id=' . $_REQUEST['local_graph_id'] . '&rra_id=' . $rra['id'] . '&view_type=' . $_REQUEST['view_type'] .  '&graph_start=' . $graph_start . '&graph_end=' . $graph_end);?>'><img src='<?php print $config['url_path'] . "images/table_go.png";?>' alt='CSV Export' title='CSV Export'></a><br>
-								<?php if (read_config_option('realtime_enabled') == 'on') print "<a href='#' onclick=\"window.open('".$config['url_path']."graph_realtime.php?top=0&left=0&local_graph_id=" . $_REQUEST['local_graph_id'] . "', 'popup_" . $_REQUEST['local_graph_id'] . "', 'toolbar=no,menubar=no,resizable=yes,location=no,scrollbars=no,status=no,titlebar=no,width=650,height=300')\"><img src='" . $config['url_path'] . "images/chart_curve_go.png' alt='Realtime' title='Realtime'></a><br/>\n";?>
+								<span class='hyperLink utils' graph_start='<?php print $graph_start;?>' graph_end='<?php print $graph_end;?>' rra_id='<?php print $rra['id'];?>' id='graph_<?php print get_request_var('local_graph_id');?>_util'><img class='drillDown' src='<?php print $config['url_path'];?>images/cog.png' alt='' title='Graph Details, Zooming and Debugging Utilities'></span><br>
+								<a href='<?php print htmlspecialchars($config['url_path'] . 'graph_xport.php?local_graph_id=' . get_request_var('local_graph_id') . '&rra_id=' . $rra['id'] . '&view_type=' . get_request_var('view_type') .  '&graph_start=' . $graph_start . '&graph_end=' . $graph_end);?>'><img src='<?php print $config['url_path'] . "images/table_go.png";?>' alt='CSV Export' title='CSV Export'></a><br>
+								<?php if (read_config_option('realtime_enabled') == 'on') print "<a href='#' onclick=\"window.open('".$config['url_path']."graph_realtime.php?top=0&left=0&local_graph_id=" . get_request_var('local_graph_id') . "', 'popup_" . get_request_var('local_graph_id') . "', 'toolbar=no,menubar=no,resizable=yes,location=no,scrollbars=no,status=no,titlebar=no,width=650,height=300')\"><img src='" . $config['url_path'] . "images/chart_curve_go.png' alt='Realtime' title='Realtime'></a><br/>\n";?>
 								<?php print ($aggregate_url != '' ? $aggregate_url:'')?>
-								<?php api_plugin_hook('graph_buttons', array('hook' => 'view', 'local_graph_id' => $_REQUEST['local_graph_id'], 'rra' => $rra['id'], 'view_type' => $_REQUEST['view_type'])); ?>
+								<?php api_plugin_hook('graph_buttons', array('hook' => 'view', 'local_graph_id' => get_request_var('local_graph_id'), 'rra' => $rra['id'], 'view_type' => get_request_var('view_type'))); ?>
 							</td>
 						</tr>
 						<tr>
@@ -150,7 +156,7 @@ case 'view':
 				'&rra_id='+rra_id+
 				'&graph_width='+graph_width+
 				'&disable_cache=true'+
-				<?php print (isset($_REQUEST['thumbnails']) && $_REQUEST['thumbnails'] == 'true' ? "'&graph_nolegend=true'":"''");?>,
+				<?php print (isset_request_var('thumbnails') && get_request_var('thumbnails') == 'true' ? "'&graph_nolegend=true'":"''");?>,
 				function(data) {
 					$('#wrapper_'+data.local_graph_id+'_'+data.rra_id).html("<img class='graphimage' id='graph_"+data.local_graph_id+"' src='data:image/"+data.type+";base64,"+data.image+"' graph_start='"+data.graph_start+"' graph_end='"+data.graph_end+"' graph_left='"+data.graph_left+"' graph_top='"+data.graph_top+"' graph_width='"+data.graph_width+"' graph_height='"+data.graph_height+"' width='"+data.image_width+"' height='"+data.image_height+"' image_width='"+data.image_width+"' image_height='"+data.image_height+"' value_min='"+data.value_min+"' value_max='"+data.value_max+"'>");
 				});
@@ -190,8 +196,8 @@ case 'zoom':
 	}
 
 	/* fetch information for the current RRA */
-	if (isset($_REQUEST['rra_id']) && $_REQUEST['rra_id'] > 0) {
-		$rra = db_fetch_row_prepared('SELECT id, timespan, steps, name FROM rra WHERE id = ?', array($_REQUEST['rra_id']));
+	if (isset_request_var('rra_id') && get_request_var('rra_id') > 0) {
+		$rra = db_fetch_row_prepared('SELECT id, timespan, steps, name FROM rra WHERE id = ?', array(get_request_var('rra_id')));
 	}else{
 		$rra = db_fetch_row_prepared('SELECT id, timespan, steps, name FROM rra WHERE id = ?', array($rras[0]['id']));
 	}
@@ -212,17 +218,17 @@ case 'zoom':
 
 	$now = time();
 
-	if (isset($_REQUEST['graph_end']) && ($_REQUEST['graph_end'] <= $now - $seconds_between_graph_updates)) {
-		$graph_end = $_REQUEST['graph_end'];
+	if (isset_request_var('graph_end') && (get_request_var('graph_end') <= $now - $seconds_between_graph_updates)) {
+		$graph_end = get_request_var('graph_end');
 	}else{
 		$graph_end = $now - $seconds_between_graph_updates;
 	}
 
-	if (isset($_REQUEST['graph_start'])) {
-		if (($graph_end - $_REQUEST['graph_start'])>$max_timespan) {
+	if (isset_request_var('graph_start')) {
+		if (($graph_end - get_request_var('graph_start'))>$max_timespan) {
 			$graph_start = $now - $max_timespan;
 		}else {
-			$graph_start = $_REQUEST['graph_start'];
+			$graph_start = get_request_var('graph_start');
 		}
 	}else{
 		$graph_start = $now + $timespan;
@@ -269,7 +275,7 @@ case 'zoom':
 							<img class='drillDown' src='<?php print $config['url_path'] . "images/table_go.png";?>' alt='' title='Graph Data'>
 						</span>
 						<br>
-						<?php api_plugin_hook('graph_buttons', array('hook' => 'zoom', 'local_graph_id' => $_REQUEST['local_graph_id'], 'rra' =>  $_REQUEST['rra_id'], 'view_type' => $_REQUEST['view_type'])); ?>
+						<?php api_plugin_hook('graph_buttons', array('hook' => 'zoom', 'local_graph_id' => get_request_var('local_graph_id'), 'rra' =>  get_request_var('rra_id'), 'view_type' => get_request_var('view_type'))); ?>
 					</td>
 				</tr>
 				<tr>
@@ -290,7 +296,7 @@ case 'zoom':
 		<td id='data'></td>
 	</tr>
 	<script type="text/javascript" >
-	var graph_id=<?php print $_REQUEST['local_graph_id'] . ";\n";?>
+	var graph_id=<?php print get_request_var('local_graph_id') . ";\n";?>
 	var props_on=false;
 	var graph_data_on=true;
 
@@ -309,7 +315,7 @@ case 'zoom':
 	}
 
 	function graphProperties() {
-		$.get('graph.php?action=properties&header=false&local_graph_id='+graph_id+'&rra_id=<?php print $_REQUEST['rra_id'];?>&view_type=<?php print (isset($_REQUEST['view_type']) ? $_REQUEST['view_type']:'');?>&graph_start='+$('#graph_start').val()+'&graph_end='+$('#graph_end').val(), function(data) {
+		$.get('graph.php?action=properties&header=false&local_graph_id='+graph_id+'&rra_id=<?php print get_request_var('rra_id');?>&view_type=<?php print get_request_var('view_type');?>&graph_start='+$('#graph_start').val()+'&graph_end='+$('#graph_end').val(), function(data) {
 			$('#data').html(data);
 		});
 		props_on = true;
@@ -342,7 +348,7 @@ case 'zoom':
 				'&graph_height='+graph_height+
 				'&graph_width='+graph_width+
 				'&disable_cache=true'+
-				<?php print (isset($_REQUEST['thumbnails']) && $_REQUEST['thumbnails'] == 'true' ? "'&graph_nolegend=true'":"''");?>,
+				<?php print (isset_request_var('thumbnails') && get_request_var('thumbnails') == 'true' ? "'&graph_nolegend=true'":"''");?>,
 				function(data) {
 					$('#wrapper_'+data.local_graph_id).html("<img class='graphimage' id='graph_"+data.local_graph_id+"' src='data:image/"+data.type+";base64,"+data.image+"' graph_start='"+data.graph_start+"' graph_end='"+data.graph_end+"' graph_left='"+data.graph_left+"' graph_top='"+data.graph_top+"' graph_width='"+data.graph_width+"' graph_height='"+data.graph_height+"' width='"+data.image_width+"' height='"+data.image_height+"' image_width='"+data.image_width+"' image_height='"+data.image_height+"' value_min='"+data.value_min+"' value_max='"+data.value_max+"'>");
 
@@ -385,12 +391,12 @@ case 'properties':
 	$graph_data_array['print_source'] = true;
 
 	/* override: graph start time (unix time) */
-	if (!empty($_REQUEST['graph_start'])) {
+	if (!isempty_request_var('graph_start')) {
 		$graph_data_array['graph_start'] = get_request_var('graph_start');
 	}
 
 	/* override: graph end time (unix time) */
-	if (!empty($_REQUEST['graph_end'])) {
+	if (!isempty_request_var('graph_end')) {
 		$graph_data_array['graph_end'] = get_request_var('graph_end');
 	}
 

@@ -28,10 +28,12 @@ $device_actions = array(
 	1 => 'Add Device'
 );
 
-if (isset($_REQUEST['action']) && $_REQUEST['action'] == 'purge') {
-	input_validate_input_number(get_request_var('network'));
+set_default_action();
+
+if (get_request_var('action') == 'purge') {
+	get_filter_request_var('network');
 	
-	db_execute('TRUNCATE TABLE automation_devices' . ($_REQUEST['network'] > 0 ? 'WHERE network_id=' . $_REQUEST['network']:''));
+	db_execute('TRUNCATE TABLE automation_devices' . (get_request_var('network') > 0 ? 'WHERE network_id=' . get_request_var('network'):''));
 
 	header('Location: automation_devices.php?header=false');
 
@@ -49,48 +51,47 @@ $networks   = array_rekey(db_fetch_assoc('SELECT an.id, an.name
 	ORDER BY name'), 'id', 'name');
 
 /* ================= input validation ================= */
-input_validate_input_number(get_request_var('page'));
-input_validate_input_number(get_request_var('rows'));
+get_filter_request_var('page');
+get_filter_request_var('rows');
 /* ==================================================== */
 
 /* clean up status string */
-if (isset($_REQUEST['status'])) {
-	$_REQUEST['status'] = sanitize_search_string(get_request_var('status'));
+if (isset_request_var('status')) {
+	set_request_var('status', sanitize_search_string(get_request_var('status')));
 }
 
 /* clean up network string */
-if (isset($_REQUEST['network'])) {
-	$_REQUEST['network'] = sanitize_search_string(get_request_var('network'));
+if (isset_request_var('network')) {
+	set_request_var('network', sanitize_search_string(get_request_var('network')));
 }
 
 /* clean up snmp string */
-/* clean up snmp string */
-if (isset($_REQUEST['snmp'])) {
-	$_REQUEST['snmp'] = sanitize_search_string(get_request_var('snmp'));
+if (isset_request_var('snmp')) {
+	set_request_var('snmp', sanitize_search_string(get_request_var('snmp')));
 }
 
 /* clean up os string */
-if (isset($_REQUEST['os'])) {
-	$_REQUEST['os'] = sanitize_search_string(get_request_var('os'));
+if (isset_request_var('os')) {
+	set_request_var('os', sanitize_search_string(get_request_var('os')));
 }
 
 /* clean up filter string */
-if (isset($_REQUEST['filter'])) {
-	$_REQUEST['filter'] = sanitize_search_string(get_request_var('filter'));
+if (isset_request_var('filter')) {
+	set_request_var('filter', sanitize_search_string(get_request_var('filter')));
 }
 
 /* clean up sort_column */
-if (isset($_REQUEST['sort_column'])) {
-	$_REQUEST['sort_column'] = sanitize_search_string(get_request_var('sort_column'));
+if (isset_request_var('sort_column')) {
+	set_request_var('sort_column', sanitize_search_string(get_request_var('sort_column')));
 }
 
 /* clean up search string */
-if (isset($_REQUEST['sort_direction'])) {
-	$_REQUEST['sort_direction'] = sanitize_search_string(get_request_var('sort_direction'));
+if (isset_request_var('sort_direction')) {
+	set_request_var('sort_direction', sanitize_search_string(get_request_var('sort_direction')));
 }
 
 /* if the user pushed the 'clear' button */
-if (isset($_REQUEST['clear'])) {
+if (isset_request_var('clear')) {
 	kill_session_var('sess_autom_current_page');
 	kill_session_var('sess_autom_status');
 	kill_session_var('sess_autom_network');
@@ -166,7 +167,7 @@ if ($filter != '') {
 	$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') . "(hostname LIKE '%$filter%' OR ip LIKE '%$filter%')";
 }
 
-if (isset($_REQUEST['export'])) {
+if (isset_request_var('export')) {
 	$result = db_fetch_assoc("SELECT * FROM automation_devices $sql_where order by INET_ATON(ip)");
 
 	header('Content-type: application/csv');
@@ -325,7 +326,7 @@ html_start_box('<strong>Discovery Filters</strong>', '100%', $colors['header'], 
 				<td>
 					<input type='button' id='purge' value='Purge' title='Purge Discovered Devices'>
 				</td>
-				<input type='hidden' id='page' value='<?php print $_REQUEST['page'];?>'>
+				<input type='hidden' id='page' value='<?php print get_request_var('page');?>'>
 			</tr>
 		</table>
 	</form>

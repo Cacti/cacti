@@ -26,6 +26,8 @@ include('./include/auth.php');
 
 global $config;
 
+set_default_action();
+
 api_plugin_hook('logout_pre_session_destroy');
 
 /* Clear session */
@@ -37,7 +39,7 @@ $version = db_fetch_cell('SELECT cacti FROM version');
 api_plugin_hook('logout_post_session_destroy');
 
 /* Check to see if we are using Web Basic Auth */
-if (isset($_REQUEST['action']) && $_REQUEST['action'] == 'timeout') {
+if (get_request_var('action') == 'timeout') {
 	print "<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.01 Transitional//EN' 'http://www.w3.org/TR/html4/loose.dtd'>\n";
 	print "<html>\n";
 	print "<head>\n";

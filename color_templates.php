@@ -34,7 +34,7 @@ $aggregate_actions = array(
 /* set default action */
 set_default_action();
 
-switch ($_REQUEST['action']) {
+switch (get_request_var('action')) {
 	case 'save':
 		aggregate_color_form_save();
 
@@ -138,7 +138,7 @@ function draw_color_template_items_list($item_list, $filename, $url_data, $disab
  * aggregate_color_form_save	the save function
  */
 function aggregate_color_form_save() {
-	if (isset($_POST['save_component_color'])) {
+	if (isset_request_var('save_component_color')) {
 		if (isset_request_var('color_template_id')) {
 			$save1['color_template_id'] = get_request_var_post('color_template_id');
 		} else {
@@ -176,7 +176,7 @@ function aggregate_color_form_actions() {
 	include_once($config['base_path'] . '/lib/api_aggregate.php');
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_post('drp_action'));
+	get_filter_request_var('drp_action');
 	/* ==================================================== */
 
 	/* if we are to save this form, instead of display it */
@@ -189,7 +189,7 @@ function aggregate_color_form_actions() {
 				db_execute('DELETE FROM color_template_items WHERE ' . array_to_sql_or($selected_items, 'color_template_id'));
 			}elseif (get_request_var_post('drp_action') == '2') { /* duplicate */
 				for ($i=0;($i<count($selected_items));$i++) {
-					duplicate_color_template($selected_items[$i], $_POST['title_format']);
+					duplicate_color_template($selected_items[$i], get_nfilter_request_var('title_format'));
 				}
 			}
 		}
@@ -268,10 +268,10 @@ function aggregate_color_item() {
 	global $config;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var('color_template_id'));
+	get_filter_request_var('color_template_id');
 	/* ==================================================== */
 
-	if (empty($_GET['color_template_id'])) {
+	if (isempty_request_var('color_template_id')) {
 		$template_item_list = array();
 
 		$header_label = '[new]';
@@ -281,15 +281,15 @@ function aggregate_color_item() {
 			FROM color_template_items AS cti
 			LEFT JOIN colors 
 			ON cti.color_id=colors.id
-			WHERE cti.color_template_id=' . $_GET['color_template_id'] . '
+			WHERE cti.color_template_id=' . get_request_var('color_template_id') . '
 			ORDER BY cti.sequence ASC');
 
-		$header_label = '[edit: ' . db_fetch_cell('SELECT name FROM color_templates WHERE color_template_id=' . $_GET['color_template_id']) . ']';
+		$header_label = '[edit: ' . db_fetch_cell('SELECT name FROM color_templates WHERE color_template_id=' . get_request_var('color_template_id')) . ']';
 	}
 
-	html_start_box("Color Template Items $header_label", '100%', '', '3', 'center', 'color_templates_items.php?action=item_edit&color_template_id=' . htmlspecialchars($_GET['color_template_id']));
+	html_start_box("Color Template Items $header_label", '100%', '', '3', 'center', 'color_templates_items.php?action=item_edit&color_template_id=' . htmlspecialchars(get_request_var('color_template_id')));
 
-	draw_color_template_items_list($template_item_list, 'color_templates_items.php', 'color_template_id=' . htmlspecialchars($_GET['color_template_id']), false);
+	draw_color_template_items_list($template_item_list, 'color_templates_items.php', 'color_template_id=' . htmlspecialchars(get_request_var('color_template_id')), false);
 
 	html_end_box();
 }
@@ -305,10 +305,10 @@ function aggregate_color_template_edit() {
 	include_once($config['base_path'] . '/lib/api_aggregate.php');
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var('color_template_id'));
+	get_filter_request_var('color_template_id');
 	/* ==================================================== */
-	if (!empty($_GET['color_template_id'])) {
-		$template = db_fetch_row('SELECT * FROM color_templates WHERE color_template_id=' . $_GET['color_template_id']);
+	if (!isempty_request_var('color_template_id')) {
+		$template = db_fetch_row('SELECT * FROM color_templates WHERE color_template_id=' . get_request_var('color_template_id'));
 		$header_label = '[edit: ' . $template['name'] . ']';
 	}else{
 		$header_label = '[new]';
@@ -328,7 +328,7 @@ function aggregate_color_template_edit() {
 	form_hidden_box('save_component_color', '1', '');
 
 	/* color item list goes here */
-	if (!empty($_GET['color_template_id'])) {
+	if (!isempty_request_var('color_template_id')) {
 		aggregate_color_item();
 	}
 
@@ -344,8 +344,8 @@ function aggregate_color_template() {
 	include_once($config['base_path'] . '/lib/api_aggregate.php');
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var('page'));
-	input_validate_input_number(get_request_var('rows'));
+	get_filter_request_var('page');
+	get_filter_request_var('rows');
 	/* ==================================================== */
 
 	/* clean up search string */
@@ -447,7 +447,7 @@ function aggregate_color_template() {
 	$filter_html .= '					</select>
 							</td>
 							<td>
-								<input type="checkbox" id="has_graphs" ' . ($_REQUEST['has_graphs'] == 'true' ? 'checked':'') . ' onChange="applyFilter()">
+								<input type="checkbox" id="has_graphs" ' . (get_request_var('has_graphs') == 'true' ? 'checked':'') . ' onChange="applyFilter()">
 							</td>
 							<td>
 								<label for="has_graphs">Has Graphs</label>
@@ -461,7 +461,7 @@ function aggregate_color_template() {
 						</tr>
 					</table>
 					</td>
-					<td><input type="hidden" id="page" value="' . $_REQUEST['page'] . '"></td>
+					<td><input type="hidden" id="page" value="' . get_request_var('page') . '"></td>
 				</tr>';
 
 	print $filter_html;
@@ -472,11 +472,11 @@ function aggregate_color_template() {
 
 	/* form the 'where' clause for our main sql query */
 	$sql_where = '';
-	if ($_REQUEST['filter'] != '') {
-		$sql_where = "WHERE (ct.name LIKE '%%" . $_REQUEST['filter'] . "%%')";
+	if (get_request_var('filter') != '') {
+		$sql_where = "WHERE (ct.name LIKE '%" . get_request_var('filter') . "%')";
 	}
 
-	if ($_REQUEST['has_graphs'] == 'true') {
+	if (get_request_var('has_graphs') == 'true') {
 		$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') . ' (templates>0 OR graphs>0)';
 	}
 
@@ -517,7 +517,7 @@ function aggregate_color_template() {
 		) AS graphs
 		ON ct.color_template_id=graphs.color_template
 		$sql_where
-		ORDER BY " . $_REQUEST['sort_column'] . ' ' . $_REQUEST['sort_direction'] .
+		ORDER BY " . get_request_var('sort_column') . ' ' . get_request_var('sort_direction') .
 		' LIMIT ' . (get_request_var('rows')*(get_request_var('page')-1)) . ',' . get_request_var('rows'));
 
 	$nav = html_nav_bar('color_templates.php', MAX_DISPLAY_PAGES, get_request_var('page'), get_request_var('rows'), $total_rows, 5, 'Color Templates', 'page', 'main');
@@ -531,7 +531,7 @@ function aggregate_color_template() {
 		'templates' => array('display' => 'Templates', 'align' => 'right', 'sort' => 'DESC')
 	);
 
-	html_header_sort_checkbox($display_text, $_REQUEST['sort_column'], $_REQUEST['sort_direction'], false);
+	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
 	if (sizeof($template_list) > 0) {
 		foreach ($template_list as $template) {

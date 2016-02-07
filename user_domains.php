@@ -37,7 +37,7 @@ $actions = array(
 /* set default action */
 set_default_action();
 
-switch ($_REQUEST['action']) {
+switch (get_request_var('action')) {
 	case 'save':
 		form_save();
 
@@ -69,18 +69,18 @@ switch ($_REQUEST['action']) {
 function form_save() {
 	global $registered_cacti_names;
 
-	if (isset($_POST['save_component_domain_ldap'])) {
+	if (isset_request_var('save_component_domain_ldap')) {
 		/* ================= input validation ================= */
-		input_validate_input_number(get_request_var_post('domain_id'));
-		input_validate_input_number(get_request_var_post('type'));
-		input_validate_input_number(get_request_var_post('user_id'));
+		get_filter_request_var('domain_id');
+		get_filter_request_var('type');
+		get_filter_request_var('user_id');
 		/* ==================================================== */
 
-		$save['domain_id']   = $_POST['domain_id'];
+		$save['domain_id']   = get_nfilter_request_var('domain_id');
 		$save['type']        = get_request_var_post('type');
-		$save['user_id']     = $_POST['user_id'];
+		$save['user_id']     = get_nfilter_request_var('user_id');
 		$save['domain_name'] = form_input_validate(get_request_var_post('domain_name'), 'domain_name', '', false, 3);
-		$save['enabled']     = (isset($_POST['enabled']) ? form_input_validate($_POST['enabled'],     'enabled',     '', true,  3):'');
+		$save['enabled']     = (isset_request_var('enabled') ? form_input_validate(get_nfilter_request_var('enabled'), 'enabled', '', true,  3):'');
 
 		if (!is_error_message()) {
 			$domain_id = sql_save($save, 'user_domains', 'domain_id');
@@ -93,26 +93,26 @@ function form_save() {
 
 			if (!is_error_message()) {
 				/* ================= input validation ================= */
-				input_validate_input_number(get_request_var_post('domain_id'));
-				input_validate_input_number(get_request_var_post('port'));
-				input_validate_input_number(get_request_var_post('port_ssl'));
-				input_validate_input_number(get_request_var_post('proto_version'));
-				input_validate_input_number(get_request_var_post('encryption'));
-				input_validate_input_number(get_request_var_post('referrals'));
-				input_validate_input_number(get_request_var_post('mode'));
-				input_validate_input_number(get_request_var_post('group_member_type'));
+				get_filter_request_var('domain_id');
+				get_filter_request_var('port');
+				get_filter_request_var('port_ssl');
+				get_filter_request_var('proto_version');
+				get_filter_request_var('encryption');
+				get_filter_request_var('referrals');
+				get_filter_request_var('mode');
+				get_filter_request_var('group_member_type');
 				/* ==================================================== */
 
 				$save                      = array();
 				$save['domain_id']         = $domain_id;
 				$save['server']            = form_input_validate(get_request_var_post('server'), 'server', '', false, 3);
-				$save['port']              = $_POST['port'];
-				$save['port_ssl']          = $_POST['port_ssl'];
-				$save['proto_version']     = $_POST['proto_version'];
-				$save['encryption']        = $_POST['encryption'];
-				$save['referrals']         = $_POST['referrals'];
-				$save['mode']              = $_POST['mode'];
-				$save['group_member_type'] = $_POST['group_member_type'];
+				$save['port']              = get_nfilter_request_var('port');
+				$save['port_ssl']          = get_nfilter_request_var('port_ssl');
+				$save['proto_version']     = get_nfilter_request_var('proto_version');
+				$save['encryption']        = get_nfilter_request_var('encryption');
+				$save['referrals']         = get_nfilter_request_var('referrals');
+				$save['mode']              = get_nfilter_request_var('mode');
+				$save['group_member_type'] = get_nfilter_request_var('group_member_type');
 				$save['dn']                = form_input_validate(get_request_var_post('dn'),                'dn',              '', true, 3);
 				$save['group_require']     = isset_request_var('group_require') ? 'on':'';
 				$save['group_dn']          = form_input_validate(get_request_var_post('group_dn'),          'group_dn',        '', true, 3);
@@ -133,18 +133,18 @@ function form_save() {
 				}
 			}
 		}
-	}elseif (isset($_POST['save_component_domain'])) {
+	}elseif (isset_request_var('save_component_domain')) {
 		/* ================= input validation ================= */
-		input_validate_input_number(get_request_var_post('domain_id'));
-		input_validate_input_number(get_request_var_post('type'));
-		input_validate_input_number(get_request_var_post('user_id'));
+		get_filter_request_var('domain_id');
+		get_filter_request_var('type');
+		get_filter_request_var('user_id');
 		/* ==================================================== */
 
-		$save['domain_id']   = $_POST['domain_id'];
+		$save['domain_id']   = get_nfilter_request_var('domain_id');
 		$save['domain_name'] = form_input_validate(get_request_var_post('domain_name'), 'domain_name', '', false, 3);
 		$save['type']        = get_request_var_post('type');
-		$save['user_id']     = $_POST['user_id'];
-		$save['enabled']     = (isset($_POST['enabled']) ? form_input_validate($_POST['enabled'],     'enabled',     '', true,  3):'');
+		$save['user_id']     = get_nfilter_request_var('user_id');
+		$save['enabled']     = (isset_request_var('enabled') ? form_input_validate(get_nfilter_request_var('enabled'), 'enabled', '', true,  3):'');
 
 		if (!is_error_message()) {
 			$domain_id = sql_save($save, 'user_domains', 'domain_id');
@@ -157,7 +157,7 @@ function form_save() {
 		}
 	}
 
-	header('Location: user_domains.php?header=false&action=edit&domain_id=' . (empty($domain_id) ? $_POST['domain_id'] : $domain_id));
+	header('Location: user_domains.php?header=false&action=edit&domain_id=' . (empty($domain_id) ? get_nfilter_request_var('domain_id') : $domain_id));
 }
 
 function form_actions() {
@@ -301,11 +301,11 @@ function domain_edit() {
 	global $ldap_versions, $ldap_encryption, $ldap_modes, $domain_types;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var('domain_id'));
+	get_filter_request_var('domain_id');
 	/* ==================================================== */
 
-	if (!empty($_REQUEST['domain_id'])) {
-		$domain = db_fetch_row_prepared('SELECT * FROM user_domains WHERE domain_id = ?', array($_REQUEST['domain_id']));
+	if (!isempty_request_var('domain_id')) {
+		$domain = db_fetch_row_prepared('SELECT * FROM user_domains WHERE domain_id = ?', array(get_request_var('domain_id')));
 		$header_label = '[edit: ' . $domain['domain_name'] . ']';
 	}else{
 		$header_label = '[new]';
@@ -497,8 +497,8 @@ function domain_edit() {
 
 	html_end_box();
 
-	if (!empty($_REQUEST['domain_id'])) {
-		$domain = db_fetch_row_prepared('SELECT * FROM user_domains_ldap WHERE domain_id = ?', array($_REQUEST['domain_id']));
+	if (!isempty_request_var('domain_id')) {
+		$domain = db_fetch_row_prepared('SELECT * FROM user_domains_ldap WHERE domain_id = ?', array(get_request_var('domain_id')));
 
 		html_start_box('Domain Properties', '100%', '', '3', 'center', '');
 
@@ -574,8 +574,8 @@ function domains() {
 	global $domain_types, $actions, $item_rows;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var('page'));
-	input_validate_input_number(get_request_var('rows'));
+	get_filter_request_var('page');
+	get_filter_request_var('rows');
 	/* ==================================================== */
 
 	/* clean up search string */
@@ -651,7 +651,7 @@ function domains() {
 					</td>
 				</tr>
 			</table>
-			<input type='hidden' name='page' value='<?php print $_REQUEST['page'];?>'>
+			<input type='hidden' name='page' value='<?php print get_request_var('page');?>'>
 		</form>
 		<script type='text/javascript'>
 		function applyFilter() {
@@ -693,7 +693,7 @@ function domains() {
 	html_start_box('', '100%', '', '3', 'center', '');
 
 	/* form the 'where' clause for our main sql query */
-	if ($_REQUEST['filter'] != '') {
+	if (get_request_var('filter') != '') {
 		$sql_where = "WHERE (domain_name LIKE '%%" . get_request_var('filter') . "%%') ||
 			(type LIKE '%%" . get_request_var('filter') . "%%')";
 	}else{

@@ -143,10 +143,10 @@ function form_save() {
 		$save['gprint_prefix']        = get_request_var_post('gprint_prefix');
 		$save['total_prefix']         = get_request_var_post('total_prefix');
 
-		$save['total']                = get_sanitize_request_var('total',      FILTER_VALIDATE_INT);
-		$save['graph_type']           = get_sanitize_request_var('graph_type', FILTER_VALIDATE_INT);
-		$save['total_type']           = get_sanitize_request_var('total_type', FILTER_VALIDATE_INT);
-		$save['order_type']           = get_sanitize_request_var('order_type', FILTER_VALIDATE_INT);
+		$save['total']                = get_filter_request_var('total');
+		$save['graph_type']           = get_filter_request_var('graph_type');
+		$save['total_type']           = get_filter_request_var('total_type');
+		$save['order_type']           = get_filter_request_var('order_type');
 
 		/* see if anything changed, if so, we will have to push out the aggregate */
 		if (!empty($aggregate_graph_id)) {
@@ -256,8 +256,8 @@ function form_actions() {
 			}elseif (get_request_var_post('drp_action') == '11') { /* dis-associate with aggregate */
 				api_aggregate_disassociate($selected_items);
 			}elseif (preg_match('/^tr_([0-9]+)$/', get_request_var_post('drp_action'), $matches)) { /* place on tree */
-				input_validate_input_number(get_request_var_post('tree_id'));
-				input_validate_input_number(get_request_var_post('tree_item_id'));
+				get_filter_request_var('tree_id');
+				get_filter_request_var('tree_item_id');
 				for ($i=0;($i<count($selected_items));$i++) {
 					api_tree_item_save(0, get_request_var_post('tree_id'), TREE_ITEM_TYPE_GRAPH, get_request_var_post('tree_item_id'), '', $selected_items[$i], read_graph_config_option('default_rra_id'), 0, 0, 0, false);
 				}
@@ -446,7 +446,7 @@ function item() {
 	global $consolidation_functions, $graph_item_types, $struct_graph_item;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var('id'));
+	get_filter_request_var('id');
 	/* ==================================================== */
 
 	if (isempty_request_var('id')) {
@@ -491,7 +491,7 @@ function graph_edit() {
 	global $config, $struct_graph, $struct_aggregate_graph, $image_types, $consolidation_functions, $graph_item_types, $struct_graph_item;
 
 	/* ================= input validation ================= */
-	get_sanitize_request_var('id', FILTER_VALIDATE_INT);
+	get_filter_request_var('id');
 	/* ==================================================== */
 
 	/* purge any old graphs */

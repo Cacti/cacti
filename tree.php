@@ -35,20 +35,20 @@ $tree_actions = array(
 	3 => 'Un Publish'
 );
 
-input_validate_input_number(get_request_var('tree_id'));
-input_validate_input_number(get_request_var('leaf_id'));
-input_validate_input_number(get_request_var_post('graph_tree_id'));
-input_validate_input_number(get_request_var_post('parent_item_id'));
+get_filter_request_var('tree_id');
+get_filter_request_var('leaf_id');
+get_filter_request_var('graph_tree_id');
+get_filter_request_var('parent_item_id');
 
 /* clean up id string */
-if (isset($_REQUEST['id']) && $_REQUEST['id'] != '#') {
-	$_REQUEST['id'] = sanitize_search_string(get_request_var('id'));
+if (isset_request_var('id') && get_request_var('id') != '#') {
+	set_request_var('id', sanitize_search_string(get_request_var('id')));
 }
 
 /* set default action */
 set_default_action();
 
-switch ($_REQUEST['action']) {
+switch (get_request_var('action')) {
 	case 'save':
 		form_save();
 		break;
@@ -67,28 +67,28 @@ switch ($_REQUEST['action']) {
 		display_graphs();
 		break;
 	case 'lock':
-		api_tree_lock($_REQUEST['id'], $_SESSION['sess_user_id']);
+		api_tree_lock(get_request_var('id'), $_SESSION['sess_user_id']);
 		break;
 	case 'unlock':
-		api_tree_unlock($_REQUEST['id'], $_SESSION['sess_user_id']);
+		api_tree_unlock(get_request_var('id'), $_SESSION['sess_user_id']);
 		break;
 	case 'copy_node':
-		api_tree_copy_node($_REQUEST['tree_id'], $_REQUEST['id'], $_REQUEST['parent'], $_REQUEST['position']);
+		api_tree_copy_node(get_request_var('tree_id'), get_request_var('id'), get_request_var('parent'), get_request_var('position'));
 		break;
 	case 'create_node':
-		api_tree_create_node($_REQUEST['tree_id'], $_REQUEST['id'], $_REQUEST['position'], $_REQUEST['text']);
+		api_tree_create_node(get_request_var('tree_id'), get_request_var('id'), get_request_var('position'), get_request_var('text'));
 		break;
 	case 'delete_node':
-		api_tree_delete_node($_REQUEST['tree_id'], $_REQUEST['id']);
+		api_tree_delete_node(get_request_var('tree_id'), get_request_var('id'));
 		break;
 	case 'move_node':
-		api_tree_move_node($_REQUEST['tree_id'], $_REQUEST['id'], $_REQUEST['parent'], $_REQUEST['position']);
+		api_tree_move_node(get_request_var('tree_id'), get_request_var('id'), get_request_var('parent'), get_request_var('position'));
 		break;
 	case 'rename_node':
-		api_tree_rename_node($_REQUEST['tree_id'], $_REQUEST['id'], $_REQUEST['text']);
+		api_tree_rename_node(get_request_var('tree_id'), get_request_var('id'), get_request_var('text'));
 		break;
 	case 'get_node':
-		api_tree_get_node($_REQUEST['tree_id'], $_REQUEST['id']);
+		api_tree_get_node(get_request_var('tree_id'), get_request_var('id'));
 		break;
 	case 'get_host_sort':
 		get_host_sort_type();
@@ -110,8 +110,8 @@ switch ($_REQUEST['action']) {
 }
 
 function get_host_sort_type() {
-	if (isset($_REQUEST['nodeid'])) {
-		$ndata = explode('_', $_REQUEST['nodeid']);
+	if (isset_request_var('nodeid')) {
+		$ndata = explode('_', get_request_var('nodeid'));
 		if (sizeof($ndata)) {
 			foreach($ndata as $n) {
 				$parts = explode(':', $n);
@@ -138,12 +138,12 @@ function set_host_sort_type() {
 	$branch = '';
 
 	/* clean up type string */
-	if (isset($_REQUEST['type'])) {
-		$_REQUEST['type'] = sanitize_search_string(get_request_var('type'));
+	if (isset_request_var('type')) {
+		set_request_var('type', sanitize_search_string(get_request_var('type')));
 	}
 
-	if (isset($_REQUEST['nodeid'])) {
-		$ndata = explode('_', $_REQUEST['nodeid']);
+	if (isset_request_var('nodeid')) {
+		$ndata = explode('_', get_request_var('nodeid'));
 		if (sizeof($ndata)) {
 			foreach($ndata as $n) {
 				$parts = explode(':', $n);
@@ -152,7 +152,7 @@ function set_host_sort_type() {
 					$branch = $parts[1];
 					input_validate_input_number($branch);
 
-					if ($_REQUEST['type'] == 'hsgt') {
+					if (get_request_var('type') == 'hsgt') {
 						$type = HOST_GROUPING_GRAPH_TEMPLATE;
 					}else{
 						$type = HOST_GROUPING_DATA_QUERY_INDEX;
@@ -169,8 +169,8 @@ function set_host_sort_type() {
 }
 
 function get_branch_sort_type() {
-	if (isset($_REQUEST['nodeid'])) {
-		$ndata = explode('_', $_REQUEST['nodeid']);
+	if (isset_request_var('nodeid')) {
+		$ndata = explode('_', get_request_var('nodeid'));
 		if (sizeof($ndata)) {
 		foreach($ndata as $n) {
 			$parts = explode(':', $n);
@@ -213,12 +213,12 @@ function set_branch_sort_type() {
 	$branch = '';
 
 	/* clean up type string */
-	if (isset($_REQUEST['type'])) {
-		$_REQUEST['type'] = sanitize_search_string(get_request_var('type'));
+	if (isset_request_var('type')) {
+		set_request_var('type', sanitize_search_string(get_request_var('type')));
 	}
 
-	if (isset($_REQUEST['nodeid'])) {
-		$ndata = explode('_', $_REQUEST['nodeid']);
+	if (isset_request_var('nodeid')) {
+		$ndata = explode('_', get_request_var('nodeid'));
 		if (sizeof($ndata)) {
 		foreach($ndata as $n) {
 			$parts = explode(':', $n);
@@ -227,7 +227,7 @@ function set_branch_sort_type() {
 				$branch = $parts[1];
 				input_validate_input_number($branch);
 
-				switch($_REQUEST['type']) {
+				switch(get_request_var('type')) {
 				case 'inherit':
 					$type = TREE_ORDERING_INHERIT;
 					break;
@@ -267,16 +267,16 @@ function form_save() {
 		unset($_SESSION['dhtml_tree']);
 	}
 
-	if (isset($_POST['save_component_tree'])) {
+	if (isset_request_var('save_component_tree')) {
 		/* ================= input validation ================= */
-		input_validate_input_number(get_request_var_post('id'));
+		get_filter_request_var('id');
 		/* ==================================================== */
 
 		$save['id']            = get_request_var_post('id');
 		$save['name']          = form_input_validate(get_request_var_post('name'), 'name', '', false, 3);
 		$save['sort_type']     = form_input_validate(get_request_var_post('sort_type'), 'sort_type', '', true, 3);
 		$save['last_modified'] = date('Y-m-d H:i:s', time());
-		$save['enabled']       = $_POST['enabled'] == 'true' ? 'on':'-';
+		$save['enabled']       = get_nfilter_request_var('enabled') == 'true' ? 'on':'-';
 		$save['modified_by']   = $_SESSION['sess_user_id'];
 		if (empty($save['id'])) {
 			$save['user_id'] = $_SESSION['sess_user_id'];
@@ -416,21 +416,21 @@ function form_actions() {
 
 function tree_remove() {
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var('id'));
+	get_filter_request_var('id');
 	/* ==================================================== */
 
-	if ((read_config_option('deletion_verification') == 'on') && (!isset($_REQUEST['confirm']))) {
+	if ((read_config_option('deletion_verification') == 'on') && (!isset_request_var('confirm'))) {
 		top_header();
 
-		form_confirm('Are You Sure?', "Are you sure you want to delete the tree <strong>'" . htmlspecialchars(db_fetch_cell_prepared('SELECT name FROM graph_tree WHERE id = ?', array($_REQUEST['id'])), ENT_QUOTES) . "'</strong>?", htmlspecialchars('tree.php'), htmlspecialchars('tree.php?action=remove&id=' . $_REQUEST['id']));
+		form_confirm('Are You Sure?', "Are you sure you want to delete the tree <strong>'" . htmlspecialchars(db_fetch_cell_prepared('SELECT name FROM graph_tree WHERE id = ?', array(get_request_var('id'))), ENT_QUOTES) . "'</strong>?", htmlspecialchars('tree.php'), htmlspecialchars('tree.php?action=remove&id=' . get_request_var('id')));
 
 		bottom_footer();
 		exit;
 	}
 
-	if ((read_config_option('deletion_verification') == '') || (isset($_REQUEST['confirm']))) {
-		db_execute_prepared('DELETE FROM graph_tree WHERE id = ?', array($_REQUEST['id']));
-		db_execute_prepared('DELETE FROM graph_tree_items WHERE graph_tree_id = ?', array($_REQUEST['id']));
+	if ((read_config_option('deletion_verification') == '') || (isset_request_var('confirm'))) {
+		db_execute_prepared('DELETE FROM graph_tree WHERE id = ?', array(get_request_var('id')));
+		db_execute_prepared('DELETE FROM graph_tree_items WHERE graph_tree_id = ?', array(get_request_var('id')));
 	}
 
 	/* clear graph tree cache on save - affects current user only, other users should see changes in <5 minutes */
@@ -444,8 +444,8 @@ function tree_edit() {
 	global $fields_tree_edit;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var('id'));
-	input_validate_input_number(get_request_var('type'));
+	get_filter_request_var('id');
+	get_filter_request_var('type');
 	/* ==================================================== */
 
 	/* clean up search string */
@@ -508,7 +508,7 @@ function tree_edit() {
 		form_save_button('tree.php', 'return');
 	}
 		
-	if (!empty($_REQUEST['id'])) {
+	if (!isempty_request_var('id')) {
 		print $lockdiv;
 
 		print "<table class='treeTable' valign='top'><tr valign='top'><td class='treeArea'>\n";
@@ -761,7 +761,7 @@ function tree_edit() {
 					'url' : true,
 					'dots' : false
 				},
-				'state': { 'key': 'tree_<?php print $_REQUEST['id'];?>' },
+				'state': { 'key': 'tree_<?php print get_request_var('id');?>' },
 				'plugins' : [ 'state', 'wholerow', <?php if ($editable) {?>'contextmenu', 'dnd', <?php }?>'types' ]
 			})
 			.on('ready.jstree', function(e, data) {
@@ -1184,8 +1184,8 @@ function tree_edit() {
 }
 
 function display_hosts() {
-	if ($_REQUEST['filter'] != '') {
-		$sql_where = "WHERE hostname LIKE '%" . $_REQUEST['filter'] . "%' OR description LIKE '%" . $_REQUEST['filter'] . "%'";
+	if (get_request_var('filter') != '') {
+		$sql_where = "WHERE hostname LIKE '%" . get_request_var('filter') . "%' OR description LIKE '%" . get_request_var('filter') . "%'";
 	}else{
 		$sql_where = '';
 	}
@@ -1210,8 +1210,8 @@ function display_hosts() {
 }
 
 function display_graphs() {
-	if ($_REQUEST['filter'] != '') {
-		$sql_where = "WHERE (title_cache LIKE '%" . $_REQUEST['filter'] . "%' OR gt.name LIKE '%" . $_REQUEST['filter'] . "%') AND local_graph_id>0";
+	if (get_request_var('filter') != '') {
+		$sql_where = "WHERE (title_cache LIKE '%" . get_request_var('filter') . "%' OR gt.name LIKE '%" . get_request_var('filter') . "%') AND local_graph_id>0";
 	}else{
 		$sql_where = 'WHERE local_graph_id>0';
 	}
@@ -1240,8 +1240,8 @@ function tree() {
 	global $tree_actions, $item_rows;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var('page'));
-	input_validate_input_number(get_request_var('rows'));
+	get_filter_request_var('page');
+	get_filter_request_var('rows');
 	/* ==================================================== */
 
 	/* clean up search string */
@@ -1363,7 +1363,7 @@ function tree() {
 					</td>
 				</tr>
 			</table>
-			<input type='hidden' id='page' name='page' value='<?php print $_REQUEST['page'];?>'>
+			<input type='hidden' id='page' name='page' value='<?php print get_request_var('page');?>'>
 		</form>
 		</td>
 	</tr>

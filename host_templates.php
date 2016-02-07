@@ -35,7 +35,7 @@ $host_actions = array(
 /* set default action */
 set_default_action();
 
-switch ($_REQUEST['action']) {
+switch (get_request_var('action')) {
 	case 'save':
 		form_save();
 
@@ -45,24 +45,32 @@ switch ($_REQUEST['action']) {
 
 		break;
 	case 'item_add_gt':
+		get_filter_request_var('host_template_id');
+
 		template_item_add_gt();
 
-		header('Location: host_templates.php?header=false&action=edit&id=' . $_REQUEST['host_template_id']);
+		header('Location: host_templates.php?header=false&action=edit&id=' . get_request_var('host_template_id'));
 		break;
 	case 'item_remove_gt':
+		get_filter_request_var('host_template_id');
+
 		template_item_remove_gt();
 
-		header('Location: host_templates.php?action=edit&id=' . $_REQUEST['host_template_id']);
+		header('Location: host_templates.php?action=edit&id=' . get_request_var('host_template_id'));
 		break;
 	case 'item_add_dq':
+		get_filter_request_var('host_template_id');
+
 		template_item_add_dq();
 
-		header('Location: host_templates.php?header=false&action=edit&id=' . $_REQUEST['host_template_id']);
+		header('Location: host_templates.php?header=false&action=edit&id=' . get_request_var('host_template_id'));
 		break;
 	case 'item_remove_dq':
+		get_filter_request_var('host_template_id');
+
 		template_item_remove_dq();
 
-		header('Location: host_templates.php?action=edit&id=' . $_REQUEST['host_template_id']);
+		header('Location: host_templates.php?action=edit&id=' . get_request_var('host_template_id'));
 		break;
 	case 'edit':
 		top_header();
@@ -86,13 +94,13 @@ switch ($_REQUEST['action']) {
 
 function form_save() {
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_post('id'));
-	input_validate_input_number(get_request_var_post('host_template_id'));
-	input_validate_input_number(get_request_var_post('snmp_query_id'));
-	input_validate_input_number(get_request_var_post('graph_template_id'));
+	get_filter_request_var('id');
+	get_filter_request_var('host_template_id');
+	get_filter_request_var('snmp_query_id');
+	get_filter_request_var('graph_template_id');
 	/* ==================================================== */
 
-	if (isset($_POST['save_component_template'])) {
+	if (isset_request_var('save_component_template')) {
 		$save['id']   = get_request_var_post('id');
 		$save['hash'] = get_hash_host_template(get_request_var_post('id'));
 		$save['name'] = form_input_validate(get_request_var_post('name'), 'name', '', false, 3);
@@ -117,8 +125,8 @@ function form_save() {
 
 function template_item_add_dq() {
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_post('host_template_id'));
-	input_validate_input_number(get_request_var_post('snmp_query_id'));
+	get_filter_request_var('host_template_id');
+	get_filter_request_var('snmp_query_id');
 	/* ==================================================== */
 
 	db_execute_prepared('REPLACE INTO host_template_snmp_query 
@@ -128,8 +136,8 @@ function template_item_add_dq() {
 
 function template_item_add_gt() {
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_post('host_template_id'));
-	input_validate_input_number(get_request_var_post('graph_template_id'));
+	get_filter_request_var('host_template_id');
+	get_filter_request_var('graph_template_id');
 	/* ==================================================== */
 
 	db_execute_prepared('REPLACE INTO host_template_graph 
@@ -158,7 +166,7 @@ function form_actions() {
 				db_execute('UPDATE host SET host_template_id=0 WHERE ' . array_to_sql_or($selected_items, 'host_template_id'));
 			}elseif (get_request_var_post('drp_action') == '2') { /* duplicate */
 				for ($i=0;($i<count($selected_items));$i++) {
-					duplicate_host_template($selected_items[$i], $_POST['title_format']);
+					duplicate_host_template($selected_items[$i], get_nfilter_request_var('title_format'));
 				}
 			}
 		}
@@ -243,8 +251,8 @@ function form_actions() {
 
 function template_item_remove_gt() {
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var('id'));
-	input_validate_input_number(get_request_var('host_template_id'));
+	get_filter_request_var('id');
+	get_filter_request_var('host_template_id');
 	/* ==================================================== */
 
 	db_execute_prepared('DELETE FROM host_template_graph WHERE graph_template_id = ? AND host_template_id = ?', array(get_request_var('id'), get_request_var('host_template_id')));
@@ -252,8 +260,8 @@ function template_item_remove_gt() {
 
 function template_item_remove_dq() {
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var('id'));
-	input_validate_input_number(get_request_var('host_template_id'));
+	get_filter_request_var('id');
+	get_filter_request_var('host_template_id');
 	/* ==================================================== */
 
 	db_execute_prepared('DELETE FROM host_template_snmp_query WHERE snmp_query_id = ? AND host_template_id = ?', array(get_request_var('id'), get_request_var('host_template_id')));
@@ -263,15 +271,15 @@ function template_edit() {
 	global $fields_host_template_edit;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var('id'));
+	get_filter_request_var('id');
 	/* ==================================================== */
 
-	if (!empty($_REQUEST['id'])) {
+	if (!isempty_request_var('id')) {
 		$host_template = db_fetch_row_prepared('SELECT * FROM host_template WHERE id = ?', array(get_request_var('id')));
 		$header_label = '[edit: ' . $host_template['name'] . ']';
 	}else{
 		$header_label = '[new]';
-		$_REQUEST['id'] = 0;
+		set_request_var('id', 0);
 	}
 
 	form_start('host_templates.php', 'form_network');
@@ -289,7 +297,7 @@ function template_edit() {
 
 	html_end_box();
 
-	if (!empty($_REQUEST['id'])) {
+	if (!isempty_request_var('id')) {
 		html_start_box('Associated Graph Templates', '100%', '', '3', 'center', '');
 
 		$selected_graph_templates = db_fetch_assoc_prepared('SELECT
@@ -309,7 +317,7 @@ function template_edit() {
 						<strong><?php print $i;?>)</strong> <?php print htmlspecialchars($item['name']);?>
 					</td>
 					<td class='right'>
-						<a class='deleteMarker fa fa-remove' title='Delete' href='<?php print htmlspecialchars('host_templates.php?action=item_remove_gt&id=' . $item['id'] . '&host_template_id=' . $_REQUEST['id']);?>'></a>
+						<a class='deleteMarker fa fa-remove' title='Delete' href='<?php print htmlspecialchars('host_templates.php?action=item_remove_gt&id=' . $item['id'] . '&host_template_id=' . get_request_var('id'));?>'></a>
 					</td>
 				<?php
 				form_end_row();
@@ -369,7 +377,7 @@ function template_edit() {
 						<strong><?php print $i;?>)</strong> <?php print htmlspecialchars($item['name']);?>
 					</td>
 					<td class='right'>
-						<a class='deleteMarker fa fa-remove' title='Delete' href='<?php print htmlspecialchars('host_templates.php?action=item_remove_dq&id=' . $item['id'] . '&host_template_id=' . $_REQUEST['id']);?>'></a>
+						<a class='deleteMarker fa fa-remove' title='Delete' href='<?php print htmlspecialchars('host_templates.php?action=item_remove_dq&id=' . $item['id'] . '&host_template_id=' . get_request_var('id'));?>'></a>
 					</td>
 				<?php
 				form_end_row();
@@ -436,8 +444,8 @@ function template() {
 	global $host_actions, $item_rows;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var('page'));
-	input_validate_input_number(get_request_var('rows'));
+	get_filter_request_var('page');
+	get_filter_request_var('rows');
 	/* ==================================================== */
 
 	/* clean up has_hosts string */
@@ -525,7 +533,7 @@ function template() {
 						</select>
 					</td>
 					<td>
-						<input type='checkbox' id='has_hosts' <?php print ($_REQUEST['has_hosts'] == 'true' ? 'checked':'');?>>
+						<input type='checkbox' id='has_hosts' <?php print (get_request_var('has_hosts') == 'true' ? 'checked':'');?>>
 					</td>
 					<td>
 						<label for='has_hosts'>Has Devices</label>
@@ -538,7 +546,7 @@ function template() {
 					</td>
 				</tr>
 			</table>
-		<input type='hidden' id='page' name='page' value='<?php print $_REQUEST['page'];?>'>
+		<input type='hidden' id='page' name='page' value='<?php print get_request_var('page');?>'>
 		</form>
 		</td>
 		<script type='text/javascript'>
@@ -573,7 +581,7 @@ function template() {
 	html_end_box();
 
 	/* form the 'where' clause for our main sql query */
-	if (strlen($_REQUEST['filter'])) {
+	if (get_request_var('filter') != '') {
 		$sql_where = "WHERE (host_template.name LIKE '%%" . get_request_var('filter') . "%%')";
 	}else{
 		$sql_where = '';
@@ -583,7 +591,7 @@ function template() {
 
 	html_start_box('', '100%', '', '3', 'center', '');
 
-	if ($_REQUEST['has_hosts'] == 'true') {
+	if (get_request_var('has_hosts') == 'true') {
 		$sql_having = 'HAVING hosts>0';
 	}else{
 		$sql_having = '';

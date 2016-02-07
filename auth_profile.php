@@ -28,7 +28,7 @@ include('./include/auth.php');
 /* set default action */
 set_default_action();
 
-switch ($_REQUEST['action']) {
+switch (get_request_var('action')) {
 	case 'save':
 		form_save();
 
@@ -66,8 +66,8 @@ function form_save() {
 	global $settings_graphs;
 
 	// Save the users profile information
-	if (isset($_POST['full_name']) && isset($_POST['email_address']) && isset($_SESSION['sess_user_id'])) {
-		db_execute_prepared("UPDATE user_auth SET full_name = ?, email_address = ? WHERE id = ?", array($_POST['full_name'], $_POST['email_address'], $_SESSION['sess_user_id']));
+	if (isset_request_var('full_name') && isset_request_var('email_address') && isset($_SESSION['sess_user_id'])) {
+		db_execute_prepared("UPDATE user_auth SET full_name = ?, email_address = ? WHERE id = ?", array(get_nfilter_request_var('full_name'), get_nfilter_request_var('email_address'), $_SESSION['sess_user_id']));
 	}
 
 	// Save the users graph settings if they have permission
@@ -76,37 +76,38 @@ function form_save() {
 			while (list($field_name, $field_array) = each($tab_fields)) {
 				/* Check every field with a numeric default value and reset it to default if the inputted value is not numeric  */
 				if (isset($field_array['default']) && is_numeric($field_array['default']) && !is_numeric(get_request_var_post($field_name))) {
-					$_POST[$field_name] = $field_array['default'];
+					set_request_var($field_name, $field_array['default']);
 				}
+
 				if ($field_array['method'] == 'checkbox') {
-					if (isset($_POST[$field_name])) {
+					if (isset_request_var($field_name)) {
 						db_execute_prepared("REPLACE INTO settings_graphs (user_id,name,value) VALUES (?, ?, 'on')", array($_SESSION['sess_user_id'], $field_name));
 					}else{
 						db_execute_prepared("REPLACE INTO settings_graphs (user_id,name,value) VALUES (?, ?, '')", array($_SESSION['sess_user_id'], $field_name));
 					}
 				}elseif ($field_array['method'] == 'checkbox_group') {
 					while (list($sub_field_name, $sub_field_array) = each($field_array['items'])) {
-						if (isset($_POST[$sub_field_name])) {
+						if (isset_request_var($sub_field_name)) {
 							db_execute_prepared("REPLACE INTO settings_graphs (user_id,name,value) VALUES (?, ?, 'on')", array($_SESSION['sess_user_id'], $sub_field_name));
 						}else{
 							db_execute_prepared("REPLACE INTO settings_graphs (user_id,name,value) VALUES (?, ?, '')", array($_SESSION['sess_user_id'], $sub_field_name));
 						}
 					}
 				}elseif ($field_array['method'] == 'textbox_password') {
-					if ($_POST[$field_name] != $_POST[$field_name.'_confirm']) {
+					if (get_nfilter_request_var($field_name) != get_nfilter_request_var($field_name.'_confirm')) {
 						raise_message(4);
 						break;
-					}elseif (isset($_POST[$field_name])) {
-						db_execute_prepared('REPLACE INTO settings_graphs (user_id, name, value) VALUES (?, ?, ?)', array($_SESSION['sess_user_id'], $field_name, get_request_var_post($field_name)));
+					}elseif (isset_request_var($field_name)) {
+						db_execute_prepared('REPLACE INTO settings_graphs (user_id, name, value) VALUES (?, ?, ?)', array($_SESSION['sess_user_id'], $field_name, get_nfilter_request_var($field_name)));
 					}
 				}elseif ((isset($field_array['items'])) && (is_array($field_array['items']))) {
 					while (list($sub_field_name, $sub_field_array) = each($field_array['items'])) {
-						if (isset($_POST[$sub_field_name])) {
+						if (isset_request_var($sub_field_name)) {
 							db_execute_prepared('REPLACE INTO settings_graphs (user_id, name, value) values (?, ?, ?)', array($_SESSION['sess_user_id'], $sub_field_name, get_request_var_post($sub_field_name)));
 						}
 					}
-				}else if (isset($_POST[$field_name])) {
-					db_execute_prepared('REPLACE INTO settings_graphs (user_id, name, value) values (?, ?, ?)', array($_SESSION['sess_user_id'], $field_name, get_request_var_post($field_name)));
+				}else if (isset_request_var($field_name)) {
+					db_execute_prepared('REPLACE INTO settings_graphs (user_id, name, value) values (?, ?, ?)', array($_SESSION['sess_user_id'], $field_name, get_nfilter_request_var($field_name)));
 				}
 			}
 		}
@@ -132,7 +133,7 @@ function settings() {
 		return;
 	}
 
-	if ($_REQUEST['action'] == 'edit') {
+	if (get_request_var('action') == 'edit') {
 		if (isset($_SERVER['HTTP_REFERER'])) {
 			$timespan_sel_pos = strpos($_SERVER['HTTP_REFERER'],'&predefined_timespan');
 			if ($timespan_sel_pos) {

@@ -27,25 +27,31 @@ include_once('./include/auth.php');
 /* set default action */
 set_default_action();
 
-switch ($_REQUEST['action']) {
+switch (get_request_var('action')) {
 	case 'save':
 		aggregate_color_item_form_save();
 
 		break;
 	case 'item_remove':
+		get_filter_request_var('color_template_id');
+
 		aggregate_color_item_remove();
 
-		header('Location: color_templates.php?header=false&action=template_edit&color_template_id=' . $_GET['color_template_id']);
+		header('Location: color_templates.php?header=false&action=template_edit&color_template_id=' . get_request_var('color_template_id'));
 		break;
 	case 'item_movedown':
+		get_filter_request_var('color_template_id');
+
 		aggregate_color_item_movedown();
 
-		header('Location: color_templates.php?header=false&action=template_edit&color_template_id=' . $_GET['color_template_id']);
+		header('Location: color_templates.php?header=false&action=template_edit&color_template_id=' . get_request_var('color_template_id'));
 		break;
 	case 'item_moveup':
+		get_filter_request_var('color_template_id');
+
 		aggregate_color_item_moveup();
 
-		header('Location: color_templates.php?header=false&action=template_edit&color_template_id=' . $_GET['color_template_id']);
+		header('Location: color_templates.php?header=false&action=template_edit&color_template_id=' . get_request_var('color_template_id'));
 		break;
 	case 'item_edit':
 		top_header();
@@ -67,10 +73,10 @@ switch ($_REQUEST['action']) {
  */
 function aggregate_color_item_form_save() {
 
-	if (isset($_POST['save_component_item'])) {
+	if (isset_request_var('save_component_item')) {
 		/* ================= input validation ================= */
-		input_validate_input_number(get_request_var_post('color_template_id'));
-		input_validate_input_number(get_request_var_post('sequence'));
+		get_filter_request_var('color_template_id');
+		get_filter_request_var('sequence');
 		/* ==================================================== */
 
 		$items[0] = array();
@@ -84,7 +90,7 @@ function aggregate_color_item_form_save() {
 
 			$save['color_template_item_id'] = htmlspecialchars(get_request_var_post('color_template_item_id'));
 			$save['color_template_id'] = htmlspecialchars(get_request_var_post('color_template_id'));
-			$save['color_id'] = form_input_validate((isset($item['color_id']) ? $item['color_id'] : $_POST['color_id']), 'color_id', '', true, 3);
+			$save['color_id'] = form_input_validate((isset($item['color_id']) ? $item['color_id'] : get_nfilter_request_var('color_id')), 'color_id', '', true, 3);
 			$save['sequence'] = $sequence;
 
 			if (!is_error_message()) {
@@ -118,31 +124,31 @@ function aggregate_color_item_form_save() {
  */
 function aggregate_color_item_movedown() {
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var('color_template_item_id'));
-	input_validate_input_number(get_request_var('color_template_id'));
+	get_filter_request_var('color_template_item_id');
+	get_filter_request_var('color_template_id');
 	/* ==================================================== */
 	$current_sequence = db_fetch_row('SELECT color_template_item_id, sequence
 		FROM color_template_items
-		WHERE color_template_item_id=' . $_GET['color_template_item_id'], true);
+		WHERE color_template_item_id=' . get_request_var('color_template_item_id'), true);
 
 	cacti_log('movedown Id: ' . $current_sequence['color_template_item_id'] . ' Seq:' . $current_sequence['sequence'], FALSE, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
 
 	$next_sequence = db_fetch_row('SELET color_template_item_id, sequence
 		FROM color_template_items
 		WHERE sequence>' . $current_sequence['sequence'] . '
-		AND color_template_id=' . $_GET['color_template_id'] . '
+		AND color_template_id=' . get_request_var('color_template_id') . '
 		ORDER BY sequence ASC limit 1', true);
 
 	cacti_log('movedown Id: ' . $next_sequence['color_template_item_id'] . ' Seq:' . $next_sequence['sequence'], FALSE, POLLER_VERBOSITY_DEBUG);
 
 	db_execute('UPDATE color_template_items
 		SET sequence=' . $next_sequence['sequence'] . '
-		WHERE color_template_id=' . $_GET['color_template_id'] . '
+		WHERE color_template_id=' . get_request_var('color_template_id') . '
 		AND color_template_item_id=' . $current_sequence['color_template_item_id']);
 
 	db_execute('UPDATE color_template_items
 		SET sequence=' . $current_sequence['sequence'] . '
-		WHERE color_template_id=' . $_GET['color_template_id'] . '
+		WHERE color_template_id=' . get_request_var('color_template_id') . '
 		AND color_template_item_id=' . $next_sequence['color_template_item_id']);
 }
 
@@ -152,32 +158,32 @@ function aggregate_color_item_movedown() {
  */
 function aggregate_color_item_moveup() {
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var('color_template_item_id'));
-	input_validate_input_number(get_request_var('color_template_id'));
+	get_filter_request_var('color_template_item_id');
+	get_filter_request_var('color_template_id');
 	/* ==================================================== */
 
 	$current_sequence = db_fetch_row('SELECT color_template_item_id, sequence
 		FROM color_template_items
-		WHERE color_template_item_id=' . $_GET['color_template_item_id'], true);
+		WHERE color_template_item_id=' . get_request_var('color_template_item_id'), true);
 
 	cacti_log('moveup Id: ' . $current_sequence['color_template_item_id'] . ' Seq:' . $current_sequence['sequence'], FALSE, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
 
 	$previous_sequence = db_fetch_row('SELECT color_template_item_id, sequence
 		FROM color_template_items
 		WHERE sequence < ' . $current_sequence['sequence'] . '
-		AND color_template_id=' . $_GET['color_template_id'] . '
+		AND color_template_id=' . get_request_var('color_template_id') . '
 		ORDER BY sequence DESC limit 1', true);
 
 	cacti_log('moveup Id: ' . $previous_sequence['color_template_item_id'] . ' Seq:' . $previous_sequence['sequence'], FALSE, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
 
 	db_execute('UPDATE color_template_items
 		SET sequence=' . $previous_sequence['sequence'] . '
-		WHERE color_template_id=' . $_GET['color_template_id'] . '
+		WHERE color_template_id=' . get_request_var('color_template_id') . '
 		AND color_template_item_id=' . $current_sequence['color_template_item_id']);
 
 	db_execute('UPDATE color_template_items
 		SET sequence=' . $current_sequence['sequence'] . '
-		WHERE color_template_id=' . $_GET['color_template_id'] . '
+		WHERE color_template_id=' . get_request_var('color_template_id') . '
 		AND color_template_item_id=' . $previous_sequence['color_template_item_id']);
 }
 
@@ -186,11 +192,11 @@ function aggregate_color_item_moveup() {
  */
 function aggregate_color_item_remove() {
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var('color_template_item_id'));
-	input_validate_input_number(get_request_var('color_template_id'));
+	get_filter_request_var('color_template_item_id');
+	get_filter_request_var('color_template_id');
 	/* ==================================================== */
 
-	db_execute('DELETE FROM color_template_items WHERE color_template_item_id=' . $_GET['color_template_item_id']);
+	db_execute('DELETE FROM color_template_items WHERE color_template_item_id=' . get_request_var('color_template_item_id'));
 }
 
 
@@ -201,14 +207,14 @@ function aggregate_color_item_edit() {
 	global $struct_color_template_item;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var('color_template_item_id'));
-	input_validate_input_number(get_request_var('color_template_id'));
+	get_filter_request_var('color_template_item_id');
+	get_filter_request_var('color_template_id');
 	/* ==================================================== */
 
-	$template = db_fetch_row('SELECT * FROM color_templates WHERE color_template_id=' . $_GET['color_template_id']);
+	$template = db_fetch_row('SELECT * FROM color_templates WHERE color_template_id=' . get_request_var('color_template_id'));
 
-	if (isset($_REQUEST['color_template_item_id']) && ($_REQUEST['color_template_item_id'] > 0)) {
-		$template_item = db_fetch_row('select * from color_template_items where color_template_item_id=' . $_GET['color_template_item_id']);
+	if (isset_request_var('color_template_item_id') && (get_request_var('color_template_item_id') > 0)) {
+		$template_item = db_fetch_row('select * from color_template_items where color_template_item_id=' . get_request_var('color_template_item_id'));
 		$header_label = '[edit Report Item: ' . $template['name'] . ']';
 	}else{
 		$template_item = array();
@@ -227,10 +233,10 @@ function aggregate_color_item_edit() {
 	html_end_box();
 
 	form_hidden_box('color_template_item_id', (array_key_exists('color_template_item_id', $template_item) ? $template_item['color_template_item_id'] : '0'), '');
-	form_hidden_box('color_template_id', $_GET['color_template_id'], '0');
+	form_hidden_box('color_template_id', get_request_var('color_template_id'), '0');
 	form_hidden_box('sequence', (array_key_exists('sequence', $template_item) ? $template_item['sequence'] : '0'), '');
 	form_hidden_box('save_component_item', '1', '');
 
-	form_save_button(htmlspecialchars('color_templates.php?header=false&action=template_edit&color_template_id=' . $_GET['color_template_id']), '', 'color_template_item_id');
+	form_save_button(htmlspecialchars('color_templates.php?header=false&action=template_edit&color_template_id=' . get_request_var('color_template_id')), '', 'color_template_item_id');
 }
 

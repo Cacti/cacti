@@ -23,16 +23,13 @@
 */
 
 /* set default action */
-if (isset($_REQUEST['action'])) {
-	$action = $_REQUEST['action'];
-}else{
-	$action = '';
-}
+set_default_action();
 
 /* Get the username */
 if (read_config_option('auth_method') == '2') {
 	/* Get the Web Basic Auth username and set action so we login right away */
-	$action = 'login';
+	set_request_var('action', 'login');
+
 	if (isset($_SERVER['PHP_AUTH_USER'])) {
 		$username = str_replace("\\", "\\\\", $_SERVER['PHP_AUTH_USER']);
 	}elseif (isset($_SERVER['REMOTE_USER'])) {
@@ -54,7 +51,7 @@ if (read_config_option('auth_method') == '2') {
 		exit;
 	}
 }else{
-	if ($action == 'login') {
+	if (get_nfilter_request_var('action') == 'login') {
 		/* LDAP and Builtin get username from Form */
 		$username = get_request_var_post('login_username');
 	}else{
@@ -73,7 +70,7 @@ $ldap_error   = false;
 $ldap_error_message = '';
 $realm        = 0;
 
-if ($action == 'login') {
+if (get_nfilter_request_var('action') == 'login') {
 	if (get_request_var_post('realm') == 'local') {
 		$auth_method = 1;
 	}else{
@@ -210,7 +207,7 @@ if ($action == 'login') {
 		}
 
 		/* remember this user */
-		if (isset($_POST['remember_me']) && read_config_option('auth_cache_enabled') == 'on') {
+		if (isset_request_var('remember_me') && read_config_option('auth_cache_enabled') == 'on') {
 			set_auth_cookie($user);
 		}
 
@@ -463,7 +460,7 @@ if (api_plugin_hook_function('custom_login', OPER_MODE_NATIVE) == OPER_MODE_RESK
 						'ldap_error_message' => $ldap_error_message, 
 						'username' => $username, 
 						'user_enabled' => $user_enabled, 
-						'action' => $action)); 
+						'action' => get_nfilter_request_var('action'))); 
 				?>
 				<div class='loginTitle'>
 					<p>Enter your Username and Password below</p>
@@ -541,7 +538,7 @@ if (api_plugin_hook_function('custom_login', OPER_MODE_NATIVE) == OPER_MODE_RESK
 				if ($ldap_error) {?>
 				<?php print $ldap_error_message; ?>
 				<?php }else{
-				if ($action == 'login') {?>
+				if (get_nfilter_request_var('action') == 'login') {?>
 				Invalid User Name/Password Please Retype
 				<?php }
 				if ($user_enabled == '0') {?>

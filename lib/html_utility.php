@@ -228,8 +228,13 @@ function set_default_action($default = '') {
 function unset_request_var($variable) {
 	global $_CACTI_REQUEST;
 
-	unset($_CACTI_REQUEST[$variable]);
-	unset($_REQUEST[$variable]);
+	if (isset($_CACTI_REQUEST[$variable])) {
+		unset($_CACTI_REQUEST[$variable]);
+	}
+
+	if (isset($_REQUEST[$variable])) {
+		unset($_REQUEST[$variable]);
+	}
 }
 
 /* isset_request_var - checks to see if the $_REQUEST variable
@@ -269,6 +274,8 @@ function set_request_var($variable, $value) {
 
 	$_CACTI_REQUEST[$variable] = $value;
 	$_REQUEST[$variable]       = $value;
+	$_POST[$variable]          = $value;
+	$_GET[$variable]           = $value;
 }
 
 /* get_request_var - returns the current value of a PHP $_REQUEST variable, optionally
@@ -292,6 +299,8 @@ function get_request_var($name, $default = '') {
 			html_log_input_error($name);
 		}
 
+		set_request_var($name, $_REQUEST[$name]);
+
 		return $_REQUEST[$name];
 	} else {
 		return $default;
@@ -309,7 +318,7 @@ function get_request_var_request($name, $default = '') {
 	return get_request_var($name, $default);
 }
 
-/* get_sanitize_request_var - returns the current value of a PHP $_REQUEST variable and also
+/* get_filter_request_var - returns the current value of a PHP $_REQUEST variable and also
      sanitizing the value using the filter. It will also optionally
      return a default value if the request variable does not exist
    @arg $name - the name of the request variable. this should be a valid key in the
@@ -317,7 +326,7 @@ function get_request_var_request($name, $default = '') {
    @arg $default - the value to return if the specified name does not exist in the
      $_REQUEST array
    @returns - the value of the request variable */
-function get_sanitize_request_var($name, $filter, $options = array()) {
+function get_filter_request_var($name, $filter = FILTER_VALIDATE_INT, $options = array()) {
 	if (isset_request_var($name)) {
 		if (!sizeof($options)) {
 			$value = filter_var($_REQUEST[$name], $filter);
@@ -343,24 +352,35 @@ function get_sanitize_request_var($name, $filter, $options = array()) {
 	}
 }
 
-/* get_request_var_post - returns the current value of a PHP $_POST variable, optionally
-     returning a default value if the request variable does not exist
+/* get_nfilter_request_var - returns the value of the request variable deferring
+   any filtering.
+   @arg $name - the name of the request variable. this should be a valid key in the
+     $_POST array
+   @arg $default - the value to return if the specified name does not exist in the
+     $_POST array
+   @returns - the value of the request variable */
+function get_nfilter_request_var($name, $default = '') {
+	global $_CACTI_REQUEST;
+
+	if (isset($_CACTI_REQUEST[$name])) {
+		return $_CACTI_REQUEST[$name];
+	}elseif (isset($_REQUEST[$name])) {
+		return $_REQUEST[$name];
+	}else{
+		return $default;
+	}
+}
+
+/* get_request_var_post - depricated - returns the current value of a 
+     PHP $_POST variable, optionally returning a default value if the 
+     request variable does not exist.
    @arg $name - the name of the request variable. this should be a valid key in the
      $_POST array
    @arg $default - the value to return if the specified name does not exist in the
      $_POST array
    @returns - the value of the request variable */
 function get_request_var_post($name, $default = '') {
-	if (isset($_POST[$name])) {
-		if (isset($_GET[$name])) {
-			unset($_GET[$name]);
-			$_REQUEST[$name] = $_POST[$name];
-		}
-
-		return $_POST[$name];
-	}else{
-		return $default;
-	}
+	return get_nfilter_request_var($name, $default);
 }
 
 /* validate_store_request_vars - validate, sanitize, and store

@@ -27,39 +27,39 @@ include('./include/auth.php');
 /* set default action */
 set_default_action();
 
-switch ($_REQUEST['action']) {
+switch (get_request_var('action')) {
 case 'save':
-	while (list($field_name, $field_array) = each($settings{$_POST['tab']})) {
+	while (list($field_name, $field_array) = each($settings{get_nfilter_request_var('tab')})) {
 		if (($field_array['method'] == 'header') || ($field_array['method'] == 'spacer' )){
 			/* do nothing */
 		}elseif ($field_array['method'] == 'checkbox') {
-			if (isset($_POST[$field_name])) {
+			if (isset_request_var($field_name)) {
 				db_execute_prepared("REPLACE INTO settings (name, value) VALUES (?, 'on')", array($field_name));
 			}else{
 				db_execute_prepared("REPLACE INTO settings (name, value) VALUES (?, '')", array($field_name));
 			}
 		}elseif ($field_array['method'] == 'checkbox_group') {
 			while (list($sub_field_name, $sub_field_array) = each($field_array['items'])) {
-				if (isset($_POST[$sub_field_name])) {
+				if (isset_request_var($sub_field_name)) {
 					db_execute_prepared("REPLACE INTO settings (name, value) VALUES (?, 'on')", array($sub_field_name));
 				}else{
 					db_execute_prepared("REPLACE INTO settings (name, value) VALUES (?, '')", array($sub_field_name));
 				}
 			}
 		}elseif ($field_array['method'] == 'textbox_password') {
-			if ($_POST[$field_name] != $_POST[$field_name.'_confirm']) {
+			if (get_nfilter_request_var($field_name) != get_nfilter_request_var($field_name.'_confirm')) {
 				raise_message(4);
 				break;
-			}elseif (!empty($_POST[$field_name])) {
+			}elseif (!isempty_request_var($field_name)) {
 				db_execute_prepared('REPLACE INTO settings (name, value) VALUES (?, ?)', array($field_name, get_request_var_post($field_name)));
 			}
 		}elseif ((isset($field_array['items'])) && (is_array($field_array['items']))) {
 			while (list($sub_field_name, $sub_field_array) = each($field_array['items'])) {
-				if (isset($_POST[$sub_field_name])) {
+				if (isset_request_var($sub_field_name)) {
 					db_execute_prepared('REPLACE INTO settings (name, value) VALUES (?, ?)', array($sub_field_name, get_request_var_post($sub_field_name)));
 				}
 			}
-		}elseif (isset($_POST[$field_name])) {
+		}elseif (isset_request_var($field_name)) {
 			db_execute_prepared('REPLACE INTO settings (name, value) VALUES (?, ?)', array($field_name, get_request_var_post($field_name)));
 		}
 	}
@@ -72,10 +72,10 @@ case 'save':
 	/* reset local settings cache so the user sees the new settings */
 	kill_session_var('sess_config_array');
 
-	if (isset($_REQUEST['header']) && $_REQUEST['header'] == 'false') {
-		header('Location: settings.php?header=false&tab=' . $_POST['tab']);
+	if (isset_request_var('header') && get_request_var('header') == 'false') {
+		header('Location: settings.php?header=false&tab=' . get_nfilter_request_var('tab'));
 	}else{
-		header('Location: settings.php?tab=' . $_POST['tab']);
+		header('Location: settings.php?tab=' . get_nfilter_request_var('tab'));
 	}
 
 	break;
@@ -86,12 +86,12 @@ default:
 	top_header();
 
     /* clean up tab string */
-    if (isset($_REQUEST['tab'])) {
-        $_REQUEST['tab'] = sanitize_search_string(get_request_var('tab'));
+    if (isset_request_var('tab')) {
+		set_request_var('tab', sanitize_search_string(get_request_var('tab')));
     }
 
 	/* set the default settings category */
-	if (!isset($_REQUEST['tab'])) {
+	if (!isset_request_var('tab')) {
 		/* there is no selected tab; select the first one */
 		if (isset($_SESSION['sess_settings_tab'])) {
 			$current_tab = $_SESSION['sess_settings_tab'];
@@ -100,7 +100,7 @@ default:
 			$current_tab = $current_tab[0];
 		}
 	}else{
-		$current_tab = $_REQUEST['tab'];
+		$current_tab = get_request_var('tab');
 	}
 	$_SESSION['sess_settings_tab'] = $current_tab;
 

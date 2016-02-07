@@ -40,7 +40,7 @@ $network_actions = array(
 /* set default action */
 set_default_action();
 
-switch ($_REQUEST['action']) {
+switch (get_request_var('action')) {
 case 'save':
 	form_save();
 
@@ -68,7 +68,7 @@ default:
    -------------------------- */
 
 function form_save() {
-	if (isset($_POST['save_component_network'])) {
+	if (isset_request_var('save_component_network')) {
 		$network_id = api_networks_save($_POST);
 
 		header('Location: automation_networks.php?header=false&action=edit&id=' . (empty($network_id) ? get_request_var_post('id') : $network_id));
@@ -202,7 +202,7 @@ function form_actions() {
 	global $colors, $config, $network_actions, $fields_networkss_edit;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_post('drp_action'));
+	get_filter_request_var('drp_action');
 	/* ==================================================== */
 
 	/* if we are to save this form, instead of display it */
@@ -327,15 +327,15 @@ function network_edit() {
 	global $config, $ping_methods;;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var('id'));
+	get_filter_request_var('id');
 	/* ==================================================== */
 
 	display_output_messages();
 
 	$sched_types = array('1' => 'Manual', '2' => 'Daily', '3' => 'Weekly', '4' => 'Monthly', '5' => 'Monthly on Day');
 
-	if (!empty($_GET['id'])) {
-		$network = db_fetch_row('SELECT * FROM automation_networks WHERE id=' . $_GET['id']);
+	if (!isempty_request_var('id')) {
+		$network = db_fetch_row('SELECT * FROM automation_networks WHERE id=' . get_request_var('id'));
 		$header_label = '[edit: ' . $network['name'] . ']';
 	}else{
 		$header_label = '[new]';
@@ -575,7 +575,7 @@ function network_edit() {
 	html_end_box();
 
 	form_hidden_box('save_component_network', '1', '');
-	form_hidden_box('id', !empty($_GET['id']) ? $_GET['id']:0, 0);
+	form_hidden_box('id', !isempty_request_var('id') ? get_request_var('id'):0, 0);
 
 	form_save_button('automation_networks.php', 'return');
 
@@ -747,17 +747,17 @@ function network_edit() {
 }
 
 function get_networks(&$sql_where, $row_limit, $apply_limits = TRUE) {
-	if ($_REQUEST['filter'] != '') {
-		$sql_where = " WHERE (automation_networks.name LIKE '%%" . $_REQUEST['filter'] . "%%')";
+	if (get_request_var('filter') != '') {
+		$sql_where = " WHERE (automation_networks.name LIKE '%" . get_request_var('filter') . "%')";
 	}
 
 	$query_string = "SELECT *
 		FROM automation_networks
 		$sql_where
-		ORDER BY " . $_REQUEST['sort_column'] . ' ' . $_REQUEST['sort_direction'];
+		ORDER BY " . get_request_var('sort_column') . ' ' . get_request_var('sort_direction');
 
 	if ($apply_limits) {
-		$query_string .= ' LIMIT ' . ($row_limit*($_REQUEST['page']-1)) . ',' . $row_limit;
+		$query_string .= ' LIMIT ' . ($row_limit*(get_request_var('page') -1)) . ',' . $row_limit;
 	}
 
 	return db_fetch_assoc($query_string);
@@ -767,8 +767,8 @@ function networks() {
 	global $colors, $network_actions, $networkss, $config, $item_rows;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var('page'));
-	input_validate_input_number(get_request_var('rows'));
+	get_filter_request_var('page');
+	get_filter_request_var('rows');
 	/* ==================================================== */
 
 	if (isset($_REQUEST['filter'])) {
@@ -850,7 +850,7 @@ function networks() {
 
 	$status = 'Idle';
 
-	html_header_sort_checkbox($display_text, $_REQUEST['sort_column'], $_REQUEST['sort_direction'], false);
+	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
 	if (sizeof($networks)) {
 		foreach ($networks as $network) {
@@ -938,7 +938,7 @@ function networks_filter() {
 						Search
 					</td>
 					<td>
-						<input type='text' id='filter' size='25' value='<?php print $_REQUEST['filter'];?>'>
+						<input type='text' id='filter' size='25' value='<?php print get_request_var('filter');?>'>
 					</td>
 					<td>
 						Networks
@@ -963,7 +963,7 @@ function networks_filter() {
 					</td>
 				</tr>
 			</table>
-			<input type='hidden' id='page' value='<?php print $_REQUEST['page'];?>'>
+			<input type='hidden' id='page' value='<?php print get_request_var('page');?>'>
 			</form>
 			<script type='text/javascript'>
 			function applyFilter() {

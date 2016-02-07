@@ -31,7 +31,7 @@ $color_actions = array('1' => 'Delete');
 /* set default action */
 set_default_action();
 
-switch ($_REQUEST['action']) {
+switch (get_request_var('action')) {
 	case 'save':
 		form_save();
 
@@ -73,18 +73,18 @@ switch ($_REQUEST['action']) {
    -------------------------- */
 
 function form_save() {
-	if (isset($_POST['save_component_color'])) {
+	if (isset_request_var('save_component_color')) {
 		/* ================= input validation ================= */
-		input_validate_input_number(get_request_var_post('id'));
+		get_filter_request_var('id');
 		/* ==================================================== */
 
 		$save['id']        = get_request_var_post('id');
 
-		if (!isset($_POST['read_only'])) {
+		if (!isset_request_var('read_only')) {
 			$save['name']      = get_request_var_post('name');
 			$save['hex']       = form_input_validate(get_request_var_post('hex'),  'hex',  '^[a-fA-F0-9]+$' , false, 3);
 		}else{
-			$save['name']      = $_POST['hidden_name'];
+			$save['name']      = get_nfilter_request_var('hidden_name');
 			$save['read_only'] = 'on';
 		}
 
@@ -103,7 +103,7 @@ function form_save() {
 		}else{
 			header('Location: color.php?header=false');
 		}
-	}elseif (isset($_POST['save_component_import'])) {
+	}elseif (isset_request_var('save_component_import')) {
 		if (($_FILES['import_file']['tmp_name'] != 'none') && ($_FILES['import_file']['tmp_name'] != '')) {
             $csv_data = file($_FILES['import_file']['tmp_name']);
 			$debug_data = color_import_processor($csv_data);
@@ -214,7 +214,7 @@ function color_import_processor(&$colors) {
 			$save_value .= ')';
 
 			if ($j > 0) {
-				if (isset($_POST['allow_update'])) {
+				if (isset_request_var('allow_update')) {
 					$sql_execute = 'INSERT INTO colors ' . $save_order .
 						' VALUES ' . $save_value . $update_suffix;
 
@@ -321,7 +321,7 @@ function color_import() {
 
 function color_remove() {
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var('id'));
+	get_filter_request_var('id');
 	/* ==================================================== */
 
 	db_execute_prepared('DELETE FROM colors WHERE id = ?', array(get_request_var('id')));
@@ -331,10 +331,10 @@ function color_edit() {
 	global $fields_color_edit;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var('id'));
+	get_filter_request_var('id');
 	/* ==================================================== */
 
-	if (!empty($_REQUEST['id'])) {
+	if (!isempty_request_var('id')) {
 		$color = db_fetch_row_prepared('SELECT * FROM colors WHERE id = ?', array(get_request_var('id')));
 		$header_label = '[edit: ' . $color['hex'] . ']';
 	}else{
@@ -387,8 +387,8 @@ function color() {
 	global $color_actions, $item_rows;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var('page'));
-	input_validate_input_number(get_request_var('rows'));
+	get_filter_request_var('page');
+	get_filter_request_var('rows');
 	/* ==================================================== */
 
 	/* clean up search string */
@@ -483,13 +483,13 @@ function color() {
 						</select>
 					</td>
 					<td>
-						<input type="checkbox" id='named' <?php print ($_REQUEST['named'] == 'true' ? 'checked':'');?>>
+						<input type="checkbox" id='named' <?php print (get_request_var('named') == 'true' ? 'checked':'');?>>
 					</td>
 					<td>
 						<label for='named'>Named Colors</label>
 					</td>
 					<td>
-						<input type="checkbox" id='has_graphs' <?php print ($_REQUEST['has_graphs'] == 'true' ? 'checked':'');?>>
+						<input type="checkbox" id='has_graphs' <?php print (get_request_var('has_graphs') == 'true' ? 'checked':'');?>>
 					</td>
 					<td>
 						<label for='has_graphs'>Has Graphs</label>
@@ -508,7 +508,7 @@ function color() {
 					</td>
 				</tr>
 			</table>
-			<input type='hidden' id='page' value='<?php print $_REQUEST['page'];?>'>
+			<input type='hidden' id='page' value='<?php print get_request_var('page');?>'>
 			</form>
 			<script type='text/javascript'>
 			function applyFilter() {
@@ -556,18 +556,18 @@ function color() {
 	html_end_box();
 
 	/* form the 'where' clause for our main sql query */
-	if ($_REQUEST['filter'] != '') {
+	if (get_request_var('filter') != '') {
 		$sql_where = "WHERE (name LIKE '%" . get_request_var('filter') . "%' 
 			OR hex LIKE '%" .  get_request_var('filter') . "%')";
 	}else{
 		$sql_where = '';
 	}
 
-	if ($_REQUEST['named'] == 'true') {
+	if (get_request_var('named') == 'true') {
 		$sql_where .= (strlen($sql_where) ? ' AND':'WHERE') . " read_only='on'";
 	}
 
-	if ($_REQUEST['has_graphs'] == 'true') {
+	if (get_request_var('has_graphs') == 'true') {
 		$sql_having = 'HAVING graphs>0 OR templates>0';
 	}else{
 		$sql_having = '';
@@ -612,7 +612,7 @@ function color() {
 		$sql_where
 		GROUP BY rs.id
 		$sql_having
-		ORDER BY " . $_REQUEST['sort_column'] . ' ' . $_REQUEST['sort_direction'] . "
+		ORDER BY " . get_request_var('sort_column') . ' ' . get_request_var('sort_direction') . "
 		LIMIT " . (get_request_var('rows')*(get_request_var('page')-1)) . ',' . get_request_var('rows'));
 
     $nav = html_nav_bar('color.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), get_request_var('rows'), $total_rows, 8, 'Colors', 'page', 'main');
@@ -629,7 +629,7 @@ function color() {
 		'templates' => array('display' => 'Templates', 'align' => 'right', 'sort' => 'DESC', 'tip' => 'The number of Graph Templates using this Color.')
 	);
 
-	html_header_sort_checkbox($display_text, $_REQUEST['sort_column'], $_REQUEST['sort_direction'], false);
+	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
 	$i = 0;
 	if (sizeof($colors) > 0) {

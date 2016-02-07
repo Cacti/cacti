@@ -36,9 +36,11 @@ $automation_snmp_actions = array(
 set_default_action();
 
 /* correct for a cancel button */
-if (isset($_REQUEST['cancel'])) { $_REQUEST['action'] = ''; }
+if (isset_request_var('cancel')) { 
+	set_request_var('action', '');
+}
 
-switch ($_REQUEST['action']) {
+switch (get_request_var('action')) {
 	case 'save':
 		form_automation_snmp_save();
 
@@ -48,19 +50,25 @@ switch ($_REQUEST['action']) {
 
 		break;
 	case 'item_movedown':
+		get_filter_request_var('id');
+
 		automation_snmp_item_movedown();
 
-		header('Location: automation_snmp.php?action=edit&id=' . $_REQUEST['id']);
+		header('Location: automation_snmp.php?action=edit&id=' . get_request_var('id'));
 		break;
 	case 'item_moveup':
+		get_filter_request_var('id');
+
 		automation_snmp_item_moveup();
 
-		header('Location: automation_snmp.php?action=edit&id=' . $_REQUEST['id']);
+		header('Location: automation_snmp.php?action=edit&id=' . get_request_var('id'));
 		break;
 	case 'item_remove':
+		get_filter_request_var('id');
+
 		automation_snmp_item_remove();
 
-		header('Location: automation_snmp.php?header=false&action=edit&header=false&id=' . $_REQUEST['id']);
+		header('Location: automation_snmp.php?header=false&action=edit&header=false&id=' . get_request_var('id'));
 		break;
 	case 'item_edit':
 		top_header();
@@ -87,9 +95,9 @@ switch ($_REQUEST['action']) {
 
 function form_automation_snmp_save() {
 
-	if (isset($_POST['save_component_automation_snmp'])) {
+	if (isset_request_var('save_component_automation_snmp')) {
 		/* ================= input validation ================= */
-		input_validate_input_number(get_request_var_post('id'));
+		get_filter_request_var('id');
 		/* ==================================================== */
 
 		$save['id']     = get_request_var_post('id');
@@ -105,10 +113,10 @@ function form_automation_snmp_save() {
 		}
 
 		header('Location: automation_snmp.php?header=false&action=edit&id=' . (empty($id) ? get_request_var_post('id') : $id));
-	}elseif (isset($_POST['save_component_automation_snmp_item'])) {
+	}elseif (isset_request_var('save_component_automation_snmp_item')) {
 		/* ================= input validation ================= */
-		input_validate_input_number(get_request_var_post('item_id'));
-		input_validate_input_number(get_request_var_post('id'));
+		get_filter_request_var('item_id');
+		get_filter_request_var('id');
 		/* ==================================================== */
 
 		$save = array();
@@ -139,7 +147,7 @@ function form_automation_snmp_save() {
 		}
 
 		if (is_error_message()) {
-			header('Location: automation_snmp.php?header=false&action=item_edit&id=' . get_request_var_post('id') . '&item_id=' . (empty($item_id) ? $_POST['id'] : $item_id));
+			header('Location: automation_snmp.php?header=false&action=item_edit&id=' . get_request_var_post('id') . '&item_id=' . (empty($item_id) ? get_filter_request_var('id') : $item_id));
 		}else{
 			header('Location: automation_snmp.php?header=false&action=edit&id=' . get_request_var_post('id'));
 		}
@@ -157,7 +165,7 @@ function form_automation_snmp_actions() {
 	global $config, $automation_snmp_actions;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_post('drp_action'));
+	get_filter_request_var('drp_action');
 	/* ==================================================== */
 
 	/* if we are to save this form, instead of display it */
@@ -170,7 +178,7 @@ function form_automation_snmp_actions() {
 				db_execute('DELETE FROM automation_snmp_items WHERE ' . str_replace('id', 'snmp_id', array_to_sql_or($selected_items, 'id')));
 			}elseif (get_request_var_post('drp_action') == '2') { /* duplicate */
 				for ($i=0;($i<count($selected_items));$i++) {
-					duplicate_mactrack($selected_items[$i], $_POST['name_format']);
+					duplicate_mactrack($selected_items[$i], get_nfilter_request_var('name_format'));
 				}
 			}
 		}
@@ -256,23 +264,23 @@ function form_automation_snmp_actions() {
  -------------------------- */
 function automation_snmp_item_movedown() {
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var('item_id'));
-	input_validate_input_number(get_request_var('id'));
+	get_filter_request_var('item_id');
+	get_filter_request_var('id');
 	/* ==================================================== */
 	move_item_down('automation_snmp_items', get_request_var('item_id'), 'snmp_id=' . get_request_var('id'));
 }
 
 function automation_snmp_item_moveup() {
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var('item_id'));
-	input_validate_input_number(get_request_var('id'));
+	get_filter_request_var('item_id');
+	get_filter_request_var('id');
 	/* ==================================================== */
 	move_item_up('automation_snmp_items', get_request_var('item_id'), 'snmp_id=' . get_request_var('id'));
 }
 
 function automation_snmp_item_remove() {
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var('item_id'));
+	get_filter_request_var('item_id');
 	/* ==================================================== */
 	db_execute('delete from automation_snmp_items where id=' . get_request_var('item_id'));
 }
@@ -283,8 +291,8 @@ function automation_snmp_item_edit() {
 	#include_once($config['base_path'].'/plugins/mactrack/lib/automation_functions.php');
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var('id'));
-	input_validate_input_number(get_request_var('item_id'));
+	get_filter_request_var('id');
+	get_filter_request_var('item_id');
 	/* ==================================================== */
 
 	# fetch the current mactrack snmp record
@@ -437,7 +445,7 @@ function automation_snmp_item_edit() {
 	));
 
 	html_end_box();
-	form_hidden_box('item_id', (isset($_REQUEST['item_id']) ? $_REQUEST['item_id'] : '0'), '');
+	form_hidden_box('item_id', (isset_request_var('item_id') ? get_request_var('item_id') : '0'), '');
 	form_hidden_box('id', (isset($automation_snmp_item['snmp_id']) ? $automation_snmp_item['snmp_id'] : '0'), '');
 	form_hidden_box('save_component_automation_snmp_item', '1', '');
 
@@ -508,8 +516,8 @@ function automation_snmp_edit() {
 	#include_once($config["base_path"]."/plugins/mactrack/lib/automation_functions.php");
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var('id'));
-	input_validate_input_number(get_request_var('page'));
+	get_filter_request_var('id');
+	get_filter_request_var('page');
 	/* ==================================================== */
 
 	/* clean up rule name */
@@ -523,8 +531,8 @@ function automation_snmp_edit() {
 
 	/* display the mactrack snmp option set */
 	$snmp_group = array();
-	if (!empty($_REQUEST['id'])) {
-		$snmp_group = db_fetch_row('SELECT * FROM automation_snmp where id=' . $_REQUEST['id']);
+	if (!isempty_request_var('id')) {
+		$snmp_group = db_fetch_row('SELECT * FROM automation_snmp where id=' . get_request_var('id'));
 		# setup header
 		$header_label = '[edit: ' . $snmp_group['name'] . ']';
 	}else{
@@ -555,16 +563,16 @@ function automation_snmp_edit() {
 	));
 
 	html_end_box();
-	form_hidden_box('id', (isset($_REQUEST['id']) ? $_REQUEST['id'] : '0'), '');
+	form_hidden_box('id', (isset_request_var('id') ? get_request_var('id'): '0'), '');
 	form_hidden_box('save_component_automation_snmp', '1', '');
 
-	if (!empty($_REQUEST['id'])) {
+	if (!isempty_request_var('id')) {
 		$items = db_fetch_assoc('SELECT * 
 			FROM automation_snmp_items
-			WHERE snmp_id=' . $_REQUEST['id'] . '
+			WHERE snmp_id=' . get_request_var('id') . '
 			ORDER BY sequence');
 
-		html_start_box('Automation SNMP Options', '100%', '', '3', 'center', 'automation_snmp.php?action=item_edit&id=' . $_REQUEST['id']);
+		html_start_box('Automation SNMP Options', '100%', '', '3', 'center', 'automation_snmp.php?action=item_edit&id=' . get_request_var('id'));
 
 		print "<tr class='tableHeader'>";
 
@@ -657,8 +665,8 @@ function automation_snmp() {
 	global $config, $item_rows, $automation_snmp_actions;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var('page'));
-	input_validate_input_number(get_request_var('rows'));
+	get_filter_request_var('page');
+	get_filter_request_var('rows');
 	/* ==================================================== */
 
 	/* clean up search string */
@@ -795,7 +803,7 @@ function automation_snmp() {
 		ORDER BY " . get_request_var('sort_column') . ' ' . get_request_var('sort_direction') . '
 		LIMIT ' . (get_request_var('rows')*(get_request_var('page')-1)) . ',' . get_request_var('rows'));
 
-	$nav = html_nav_bar('automation_snmp.php?filter=' . $_REQUEST['filter'], MAX_DISPLAY_PAGES, get_request_var('page'), get_request_var('rows'), $total_rows, 12, 'SNMP Option Sets');
+	$nav = html_nav_bar('automation_snmp.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), get_request_var('rows'), $total_rows, 12, 'SNMP Option Sets');
 
 	print $nav;
 

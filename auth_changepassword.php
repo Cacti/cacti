@@ -72,9 +72,9 @@ $errorMessage = '';
 /* set default action */
 set_default_action();
 
-switch ($_REQUEST['action']) {
+switch (get_request_var('action')) {
 case 'changepassword':
-	if ($user['password'] != md5($_POST['current_password'])) {
+	if ($user['password'] != md5(get_nfilter_request_var('current_password'))) {
 		$bad_password = true;
 		$errorMessage = "<span color='#FF0000'>Your current password is not correct.  Please try again.</span>";
 	}
@@ -97,7 +97,7 @@ case 'changepassword':
 		$errorMessage = "<span color='#FF0000'>You can not use a previously entered password!</span>";
 	}
 
-	if ($bad_password == false && get_request_var_post('password') == $_POST['confirm'] && $_POST['password'] != '') {
+	if ($bad_password == false && get_request_var_post('password') == get_nfilter_request_var('confirm') && get_nfilter_request_var('password') != '') {
 		// Password change is good to go
 		if (read_config_option('secpass_expirepass') > 0) {
 				db_execute("UPDATE user_auth SET lastchange = " . time() . " WHERE id = " . intval($_SESSION['sess_user_id']) . " AND realm = 0 AND enabled = 'on'");
@@ -127,18 +127,18 @@ case 'changepassword':
 		$realm_id    = $user_auth_realm_filenames['index.php'];
 		$has_console = db_fetch_cell('SELECT realm_id FROM user_auth_realm WHERE user_id = ? AND realm_id = ?', array($_SESSION['sess_user_id'], $realm_id));
 
-		if (basename($_POST['ref']) == 'auth_changepassword.php' || basename($_POST['ref']) == '') {
+		if (basename(get_nfilter_request_var('ref')) == 'auth_changepassword.php' || basename(get_nfilter_request_var('ref')) == '') {
 			if ($has_console) {
-				$_POST['ref'] = 'index.php';
+				set_request_var('ref', 'index.php');
 			}else{
-				$_POST['ref'] = 'graph_view.php';
+				set_request_var('ref', 'graph_view.php');
 			}
 		}
 
 		if (!empty($has_console)) {
 			switch ($user['login_opts']) {
 				case '1': /* referer */
-					header('Location: ' . sanitize_uri($_POST['ref'])); break;
+					header('Location: ' . sanitize_uri(get_nfilter_request_var('ref'))); break;
 				case '2': /* default console page */
 					header('Location: index.php'); break;
 				case '3': /* default graph page */
@@ -164,7 +164,7 @@ if (api_plugin_hook_function('custom_password', OPER_MODE_NATIVE) == OPER_MODE_R
 
 if ($bad_password && $errorMessage == "") {
 	$errorMessage = "<span color='#FF0000'>Your new passwords do not match, please retype.</span>";
-}elseif ($_REQUEST['action'] == 'force') {
+}elseif (get_request_var('action') == 'force') {
 	$errorMessage = "<span color='#FF0000'>*** Forced password change ***</span>";
 }
 
@@ -192,7 +192,7 @@ print "<body class='loginBody'>
 			<legend>Change Password</legend>
 			<form name='login' method='post' action='" . basename($_SERVER['PHP_SELF']) . "'>
 				<input type='hidden' name='action' value='changepassword'>
-				<input type='hidden' name='ref' value='" . (isset($_REQUEST['ref']) ? sanitize_uri($_REQUEST['ref']) : '') . "'>
+				<input type='hidden' name='ref' value='" . sanitize_uri(get_request_var('ref')) . "'>
 				<input type='hidden' name='name' value='" . (isset($user['username']) ? $user['username'] : '') . "'>
 				<div class='loginTitle'>
 					<p>Please enter your current password and your new<br>Cacti password.</p>

@@ -49,11 +49,11 @@ $pluginslist = retrieve_plugin_list();
 /* Check to see if we are installing, etc... */
 $modes = array('installold', 'uninstallold', 'install', 'uninstall', 'disable', 'enable', 'check', 'moveup', 'movedown');
 
-if (isset($_REQUEST['mode']) && in_array($_REQUEST['mode'], $modes)  && isset($_REQUEST['id'])) {
+if (isset_request_var('mode') && in_array(get_request_var('mode'), $modes)  && isset_request_var('id')) {
 	input_validate_input_regex(get_request_var('id'), '^([a-zA-Z0-9]+)$');
 
-	$mode = $_REQUEST['mode'];
-	$id   = sanitize_search_string($_REQUEST['id']);
+	$mode = get_request_var('mode');
+	$id   = sanitize_search_string(get_request_var('id'));
 
 	switch ($mode) {
 		case 'installold':
@@ -282,9 +282,9 @@ function update_show_current () {
 	global $plugins, $pluginslist, $config, $status_names, $actions, $item_rows;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var('page'));
-	input_validate_input_number(get_request_var('rows'));
-	input_validate_input_number(get_request_var('state'));
+	get_filter_request_var('page');
+	get_filter_request_var('rows');
+	get_filter_request_var('state');
 	/* ==================================================== */
 
 	/* clean up search string */
@@ -409,7 +409,7 @@ function update_show_current () {
 					</td>
 				</tr>
 			</table>
-			<input type='hidden' id='page' name='page' value='<?php print $_REQUEST['page'];?>'>
+			<input type='hidden' id='page' name='page' value='<?php print get_request_var('page');?>'>
 		</form>
 		</td>
 	</tr>
@@ -424,15 +424,15 @@ function update_show_current () {
 	$sql_where = '';
 
 	/* form the 'where' clause for our main sql query */
-	if (strlen($_REQUEST['filter'])) {
-		$sql_where = "WHERE ($table.name LIKE '%%" . get_request_var('filter') . "%%')";
+	if (get_request_var('filter') != '') {
+		$sql_where = "WHERE ($table.name LIKE '%" . get_request_var('filter') . "%')";
 	}
 
-	if ($_REQUEST['state'] > -3) {
-		if ($_REQUEST['state'] == 5) {
+	if (get_request_var('state') > -3) {
+		if (get_request_var('state') == 5) {
 			$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') . ' status IN(1,4)';
 		}else{
-			$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') . ' status=' . $_REQUEST['state'];
+			$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') . ' status=' . get_request_var('state');
 		}
 	}
 
@@ -448,7 +448,7 @@ function update_show_current () {
 		$sortd = get_request_var('sort_direction');
 	}
 
-	if ($_REQUEST['rows'] == '-1') {
+	if (get_request_var('rows') == '-1') {
 		$rows = read_config_option('num_rows_table');
 	}else{
 		$rows = get_request_var('rows');

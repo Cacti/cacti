@@ -29,7 +29,7 @@ include_once('./lib/boost.php');
 /* set default action */
 set_default_action();
 
-switch ($_REQUEST['action']) {
+switch (get_request_var('action')) {
 	case 'clear_poller_cache':
 		/* obtain timeout settings */
 		$max_execution = ini_get('max_execution_time');
@@ -96,7 +96,7 @@ switch ($_REQUEST['action']) {
 		bottom_footer();
 		break;
 	default:
-		if (!api_plugin_hook_function('utilities_action', $_REQUEST['action'])) {
+		if (!api_plugin_hook_function('utilities_action', get_request_var('action'))) {
 			top_header();
 			utilities();
 			bottom_footer();
@@ -483,9 +483,9 @@ function utilities_view_user_log() {
 	define('MAX_DISPLAY_PAGES', 21);
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var('result'));
-	input_validate_input_number(get_request_var('page'));
-	input_validate_input_number(get_request_var('rows'));
+	get_filter_request_var('result');
+	get_filter_request_var('page');
+	get_filter_request_var('rows');
 	/* ==================================================== */
 
 	/* clean up username */
@@ -662,7 +662,7 @@ function utilities_view_user_log() {
 					</td>
 				</tr>
 			</table>
-			<input type='hidden' id='page' value='<?php print $_REQUEST['page'];?>'>
+			<input type='hidden' id='page' value='<?php print get_request_var('page');?>'>
 			<input type='hidden' name='action' value='view_user_log'>
 		</form>
 		</td>
@@ -811,10 +811,10 @@ function utilities_view_logfile() {
 	/* helps determine output color */
 	$linecolor = True;
 
-	input_validate_input_number(get_request_var('tail_files'));
-	input_validate_input_number(get_request_var('message_type'));
-	input_validate_input_number(get_request_var('refresh'));
-	input_validate_input_number(get_request_var('reverse'));
+	get_filter_request_var('tail_files');
+	get_filter_request_var('message_type');
+	get_filter_request_var('refresh');
+	get_filter_request_var('reverse');
 
 	/* if the user pushed the 'clear' button */
 	if (isset($_REQUEST['clear'])) {
@@ -1100,10 +1100,10 @@ function utilities_view_snmp_cache() {
 	define('MAX_DISPLAY_PAGES', 21);
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var('host_id'));
-	input_validate_input_number(get_request_var('snmp_query_id'));
-	input_validate_input_number(get_request_var('page'));
-	input_validate_input_number(get_request_var('poller_action'));
+	get_filter_request_var('host_id');
+	get_filter_request_var('snmp_query_id');
+	get_filter_request_var('page');
+	get_filter_request_var('poller_action');
 	/* ==================================================== */
 
 	/* clean up search filter */
@@ -1288,7 +1288,7 @@ function utilities_view_snmp_cache() {
 					</td>
 				</tr>
 			</table>
-			<input type='hidden' id='page' value='<?php print $_REQUEST['page'];?>'>
+			<input type='hidden' id='page' value='<?php print get_request_var('page');?>'>
 			<input type='hidden' name='action' value='view_snmp_cache'>
 		</form>
 		</td>
@@ -1304,14 +1304,14 @@ function utilities_view_snmp_cache() {
 		/* Show all items */
 	}elseif (get_request_var('host_id') == '0') {
 		$sql_where .= ' AND host.id=0';
-	}elseif (!empty($_REQUEST['host_id'])) {
+	}elseif (!isempty_request_var('host_id')) {
 		$sql_where .= ' AND host.id=' . get_request_var('host_id');
 	}
 
 	/* filter by query name */
 	if (get_request_var('snmp_query_id') == '-1') {
 		/* Show all items */
-	}elseif (!empty($_REQUEST['snmp_query_id'])) {
+	}elseif (!isempty_request_var('snmp_query_id')) {
 		$sql_where .= ' AND host_snmp_cache.snmp_query_id=' . get_request_var('snmp_query_id');
 	}
 
@@ -1390,10 +1390,10 @@ function utilities_view_poller_cache() {
 	define('MAX_DISPLAY_PAGES', 21);
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var('host_id'));
-	input_validate_input_number(get_request_var('page'));
-	input_validate_input_number(get_request_var('rows'));
-	input_validate_input_number(get_request_var('poller_action'));
+	get_filter_request_var('host_id');
+	get_filter_request_var('page');
+	get_filter_request_var('rows');
+	get_filter_request_var('poller_action');
 	/* ==================================================== */
 
 	/* clean up search filter */
@@ -1552,7 +1552,7 @@ function utilities_view_poller_cache() {
 					</td>
 				</tr>
 			</table>
-			<input type='hidden' id='page' value='<?php print $_REQUEST['page'];?>'>
+			<input type='hidden' id='page' value='<?php print get_request_var('page');?>'>
 			<input type='hidden' name='action' value='view_poller_cache'>
 		</form>
 		</td>
@@ -1572,7 +1572,7 @@ function utilities_view_poller_cache() {
 		/* Show all items */
 	}elseif (get_request_var('host_id') == '0') {
 		$sql_where .= ' AND poller_item.host_id = 0';
-	}elseif (!empty($_REQUEST['host_id'])) {
+	}elseif (!isempty_request_var('host_id')) {
 		$sql_where .= ' AND poller_item.host_id = ' . get_request_var('host_id');
 	}
 
@@ -1794,7 +1794,7 @@ function boost_display_run_status() {
 	global $refresh, $config, $refresh_interval, $boost_utilities_interval, $boost_refresh_interval, $boost_max_runtime;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var('refresh'));
+	get_filter_request_var('refresh');
 	/* ==================================================== */
 
 	load_current_session_value('refresh', 'sess_boost_utilities_refresh', '30');
@@ -1813,7 +1813,7 @@ function boost_display_run_status() {
 	$detail_stats    = read_config_option('stats_detail_boost', TRUE);
 
 	$refresh['page'] = 'utilities.php?action=view_boost_status&header=false';
-	$refresh['seconds'] = $_REQUEST['refresh'];
+	$refresh['seconds'] = get_request_var('refresh');
 
 	html_start_box('Boost Status', '100%', '', '3', 'center', '');
 
@@ -1840,7 +1840,7 @@ function boost_display_run_status() {
 						<select id='refresh' name='refresh' onChange='applyFilter()'>
 						<?php
 						foreach ($boost_utilities_interval as $key => $interval) {
-							print '<option value="' . $key . '"'; if ($_REQUEST['refresh'] == $key) { print ' selected'; } print '>' . $interval . '</option>';
+							print '<option value="' . $key . '"'; if (get_request_var('refresh') == $key) { print ' selected'; } print '>' . $interval . '</option>';
 						}
 						?>
 					</td>
@@ -2140,8 +2140,8 @@ function snmpagent_utilities_run_cache() {
 	if(!in_array(get_request_var('mib'), $registered_mibs) && get_request_var('mib') != '-1' && get_request_var('mib') != '') {
 		die_html_input_error();
 	}
-	input_validate_input_number(get_request_var('page'));
-	input_validate_input_number(get_request_var('rows'));
+	get_filter_request_var('page');
+	get_filter_request_var('rows');
 	/* ==================================================== */
 
 	/* clean up search filter */
@@ -2178,8 +2178,8 @@ function snmpagent_utilities_run_cache() {
 	load_current_session_value('rows', 'sess_default_rows', read_config_option('num_rows_table'));
 
 	/* if the number of rows is -1, set it to the default */
-	if ($_REQUEST['rows'] == -1) {
-		$_REQUEST['rows'] = read_config_option('num_rows_table');
+	if (get_request_var('rows') == -1) {
+		set_request_var('rows', read_config_option('num_rows_table'));
 	}
 
 	?>
@@ -2268,7 +2268,7 @@ function snmpagent_utilities_run_cache() {
 						</td>
 					</tr>
 				</table>
-				<input type='hidden' id='page' value='<?php print $_REQUEST['page'];?>'>
+				<input type='hidden' id='page' value='<?php print get_request_var('page');?>'>
 			</form>
 		</td>
 	</tr>
@@ -2281,7 +2281,7 @@ function snmpagent_utilities_run_cache() {
 	/* filter by host */
 	if (get_request_var('mib') == '-1') {
 		/* Show all items */
-	}elseif (!empty($_REQUEST['mib'])) {
+	}elseif (!isempty_request_var('mib')) {
 		$sql_where .= " AND snmpagent_cache.mib='" . get_request_var('mib') . "'";
 	}
 
@@ -2373,13 +2373,13 @@ function snmpagent_utilities_run_eventlog(){
 	$receivers = db_fetch_assoc('SELECT DISTINCT manager_id, hostname FROM snmpagent_notifications_log INNER JOIN snmpagent_managers ON snmpagent_managers.id = snmpagent_notifications_log.manager_id');
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var('receiver'));
+	get_filter_request_var('receiver');
 
 	if(!in_array(get_request_var('severity'), array_keys($severity_levels)) && get_request_var('severity') != '-1' && get_request_var('severity') != '') {
 		die_html_input_error();
 	}
-	input_validate_input_number(get_request_var('page'));
-	input_validate_input_number(get_request_var('rows'));
+	get_filter_request_var('page');
+	get_filter_request_var('rows');
 	/* ==================================================== */
 
 	/* clean up search filter */
@@ -2387,10 +2387,11 @@ function snmpagent_utilities_run_eventlog(){
 		$_REQUEST['filter'] = sanitize_search_string(get_request_var('filter'));
 	}
 
-	if (isset($_REQUEST['purge'])) {
+	if (isset_request_var('purge')) {
 		db_execute('TRUNCATE table snmpagent_notifications_log');
+
 		/* reset filters */
-		$_REQUEST['clear'] = true;
+		set_request_var('clear', true);
 	}
 
 	/* if the user pushed the 'clear' button */
@@ -2432,8 +2433,8 @@ function snmpagent_utilities_run_eventlog(){
 	load_current_session_value('rows', 'sess_default_rows', read_config_option('num_rows_table'));
 
 	/* if the number of rows is -1, set it to the default */
-	if ($_REQUEST['rows'] == -1) {
-		$_REQUEST['rows'] = read_config_option('num_rows_table');
+	if (get_request_var('rows') == -1) {
+		set_request_var('rows', read_config_option('num_rows_table'));
 	}
 
 	?>
@@ -2541,7 +2542,7 @@ function snmpagent_utilities_run_eventlog(){
 						</td>
 					</tr>
 				</table>
-				<input type='hidden' id='page' value='<?php print $_REQUEST['page'];?>'>
+				<input type='hidden' id='page' value='<?php print get_request_var('page');?>'>
 			</form>
 		</td>
 	</tr>
@@ -2559,7 +2560,7 @@ function snmpagent_utilities_run_eventlog(){
 	/* filter by severity */
 	if (get_request_var('severity') == '-1') {
 	/* Show all items */
-	}elseif (!empty($_REQUEST['severity'])) {
+	}elseif (!isempty_request_var('severity')) {
 		$sql_where .= " AND snmpagent_notifications_log.severity='" . get_request_var('severity') . "'";
 	}
 

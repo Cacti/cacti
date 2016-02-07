@@ -36,12 +36,12 @@ $debug = false;
 
 if ($debug == false) {
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var('graph_start'));
-	input_validate_input_number(get_request_var('graph_end'));
-	input_validate_input_number(get_request_var('graph_height'));
-	input_validate_input_number(get_request_var('graph_width'));
-	input_validate_input_number(get_request_var('local_graph_id'));
-	input_validate_input_number(get_request_var('rra_id'));
+	get_filter_request_var('graph_start');
+	get_filter_request_var('graph_end');
+	get_filter_request_var('graph_height');
+	get_filter_request_var('graph_width');
+	get_filter_request_var('local_graph_id');
+	get_filter_request_var('rra_id');
 	/* ==================================================== */
 
 	if (!is_numeric(get_request_var('local_graph_id'))) {
@@ -52,14 +52,14 @@ if ($debug == false) {
 		die_html_input_error();
 	}
 }else{
-	$_REQUEST['graph_width'] = 700;
-	$_REQUEST['graph_height'] = 200;
-	$_REQUEST['title_font_size'] = 10;
-	$_REQUEST['view_type'] = 'tree';
-	$_REQUEST['graph_start'] = -1600;
-	$_REQUEST['graph_end'] = 0;
-	$_REQUEST['local_graph_id'] = 53;
-	$_REQUEST['rra_id'] = 0;
+	set_request_var('graph_width', 700);
+	set_request_var('graph_height', 200);
+	set_request_var('title_font_size', 10);
+	set_request_var('view_type', 'tree');
+	set_request_var('graph_start', -1600);
+	set_request_var('graph_end', 0);
+	set_request_var('local_graph_id', 53);
+	set_request_var('rra_id', 0);
 }
 
 /* flush the headers now */
@@ -70,45 +70,45 @@ session_write_close();
 $graph_data_array = array();
 
 /* override: graph start time (unix time) */
-if (!empty($_REQUEST['graph_start']) && $_REQUEST['graph_start'] < 1600000000) {
-	$graph_data_array['graph_start'] = $_REQUEST['graph_start'];
+if (!isempty_request_var('graph_start') && get_request_var('graph_start') < 1600000000) {
+	$graph_data_array['graph_start'] = get_request_var('graph_start');
 }
 
 /* override: graph end time (unix time) */
-if (!empty($_REQUEST['graph_end']) && $_REQUEST['graph_end'] < 1600000000) {
-	$graph_data_array['graph_end'] = $_REQUEST['graph_end'];
+if (!isempty_request_var('graph_end') && get_request_var('graph_end') < 1600000000) {
+	$graph_data_array['graph_end'] = get_request_var('graph_end');
 }
 
 /* override: graph height (in pixels) */
-if (!empty($_REQUEST['graph_height']) && $_REQUEST['graph_height'] < 3000) {
-	$graph_data_array['graph_height'] = $_REQUEST['graph_height'];
+if (!isempty_request_var('graph_height') && get_request_var('graph_height') < 3000) {
+	$graph_data_array['graph_height'] = get_request_var('graph_height');
 }
 
 /* override: graph width (in pixels) */
-if (!empty($_REQUEST['graph_width']) && $_REQUEST['graph_width'] < 3000) {
-	$graph_data_array['graph_width'] = $_REQUEST['graph_width'];
+if (!isempty_request_var('graph_width') && get_request_var('graph_width') < 3000) {
+	$graph_data_array['graph_width'] = get_request_var('graph_width');
 }
 
 /* override: skip drawing the legend? */
-if (!empty($_REQUEST['graph_nolegend'])) {
-	$graph_data_array['graph_nolegend'] = $_REQUEST['graph_nolegend'];
+if (!isempty_request_var('graph_nolegend')) {
+	$graph_data_array['graph_nolegend'] = get_request_var('graph_nolegend');
 }
 
 /* print RRDTool graph source? */
-if (!empty($_REQUEST['show_source'])) {
-	$graph_data_array['print_source'] = $_REQUEST['show_source'];
+if (!isempty_request_var('show_source')) {
+	$graph_data_array['print_source'] = get_request_var('show_source');
 }
 
 /* disable cache check */
-if (isset($_REQUEST['disable_cache'])) {
+if (isset_request_var('disable_cache')) {
 	$graph_data_array['disable_cache'] = true;
 }
 
 $graph_data_array['graphv'] = true;
 
 // Determine the graph type of the output
-if (!isset($_REQUEST['image_format'])) {
-	$type   = db_fetch_cell('SELECT image_format_id FROM graph_templates_graph WHERE local_graph_id=' . $_REQUEST['local_graph_id']);
+if (!isset_request_var('image_format')) {
+	$type   = db_fetch_cell('SELECT image_format_id FROM graph_templates_graph WHERE local_graph_id=' . get_request_var('local_graph_id'));
 	switch($type) {
 	case '1':
 		$gtype = 'png';
@@ -121,7 +121,7 @@ if (!isset($_REQUEST['image_format'])) {
 		break;
 	}
 }else{
-	switch(strtolower($_REQUEST['image_format'])) {
+	switch(strtolower(get_request_var('image_format'))) {
 	case 'png':
 		$graph_data_array['image_format'] = 'png';
 		break;
@@ -136,9 +136,9 @@ if (!isset($_REQUEST['image_format'])) {
 
 $graph_data_array['image_format'] = $gtype;
 
-$output = @rrdtool_function_graph($_REQUEST['local_graph_id'], (array_key_exists('rra_id', $_REQUEST) ? $_REQUEST['rra_id'] : null), $graph_data_array);
+$output = @rrdtool_function_graph(get_request_var('local_graph_id'), (array_key_exists('rra_id', $_REQUEST) ? get_request_var('rra_id') : null), $graph_data_array);
 
-$oarray = array('type' => $gtype, 'local_graph_id' => $_REQUEST['local_graph_id'], 'rra_id' => $_REQUEST['rra_id']);
+$oarray = array('type' => $gtype, 'local_graph_id' => get_request_var('local_graph_id'), 'rra_id' => get_request_var('rra_id'));
 
 // Check if we received back something populated from rrdtool
 if ($output) {

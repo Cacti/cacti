@@ -28,7 +28,7 @@ $script = basename($_SERVER['SCRIPT_NAME']);
 if ($script == 'graph_view.php' || $script == 'graph.php') {
 	if (isset($_SESSION['custom']) && $_SESSION['custom'] == true) {
 		$refreshIsLogout = 'true';
-	}else if (isset($_REQUEST['action']) && $_REQUEST['action'] == 'zoom') {
+	}else if (isset_request_var('action') && get_nfilter_request_var('action') == 'zoom') {
 		$refreshIsLogout = 'true';
 	}else{
 		$refresh = api_plugin_hook_function('top_graph_refresh', read_graph_config_option('page_refresh'));

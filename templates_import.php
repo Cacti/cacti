@@ -28,7 +28,7 @@ include_once('./lib/import.php');
 /* set default action */
 set_default_action();
 
-switch ($_REQUEST['action']) {
+switch (get_request_var('action')) {
 	case 'save':
 		form_save();
 
@@ -47,10 +47,10 @@ switch ($_REQUEST['action']) {
    -------------------------- */
 
 function form_save() {
-	if (isset($_POST['save_component_import'])) {
-		if (trim($_POST['import_text'] != '')) {
+	if (isset_request_var('save_component_import')) {
+		if (trim(get_nfilter_request_var('import_text') != '')) {
 			/* textbox input */
-			$xml_data = $_POST['import_text'];
+			$xml_data = get_nfilter_request_var('import_text');
 		}elseif (($_FILES['import_file']['tmp_name'] != 'none') && ($_FILES['import_file']['tmp_name'] != '')) {
 			/* file upload */
 			$fp = fopen($_FILES['import_file']['tmp_name'],'r');

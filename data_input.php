@@ -32,7 +32,7 @@ $di_actions = array(1 => 'Delete');
 /* set default action */
 set_default_action();
 
-switch ($_REQUEST['action']) {
+switch (get_request_var('action')) {
 	case 'save':
 		form_save();
 
@@ -42,9 +42,11 @@ switch ($_REQUEST['action']) {
 
 		break;
 	case 'field_remove':
+		get_filter_request_var('data_input_id');
+
 		field_remove();
 
-		header('Location: data_input.php?header=false&action=edit&id=' . $_REQUEST['data_input_id']);
+		header('Location: data_input.php?header=false&action=edit&id=' . get_request_var('data_input_id'));
 		break;
 	case 'field_edit':
 		top_header();
@@ -76,9 +78,9 @@ switch ($_REQUEST['action']) {
 function form_save() {
 	global $registered_cacti_names;
 
-	if (isset($_POST['save_component_data_input'])) {
+	if (isset_request_var('save_component_data_input')) {
 		/* ================= input validation ================= */
-		input_validate_input_number(get_request_var_post('id'));
+		get_filter_request_var('id');
 		/* ==================================================== */
 
 		$save['id']           = get_request_var_post('id');
@@ -94,7 +96,7 @@ function form_save() {
 				raise_message(1);
 
 				/* get a list of each field so we can note their sequence of occurance in the database */
-				if (!empty(get_request_var_post('id'))) {
+				if (!isempty_request_var('id')) {
 					db_execute_prepared('UPDATE data_input_fields SET sequence = 0 WHERE data_input_id = ?', array(get_request_var_post('id')));
 
 					generate_data_input_field_sequences(get_request_var_post('input_string'), get_request_var_post('id'));
@@ -107,11 +109,11 @@ function form_save() {
 		}
 
 		header('Location: data_input.php?header=false&action=edit&id=' . (empty($data_input_id) ? get_request_var_post('id') : $data_input_id));
-	}elseif (isset($_POST['save_component_field'])) {
+	}elseif (isset_request_var('save_component_field')) {
 		/* ================= input validation ================= */
-		input_validate_input_number(get_request_var_post('id'));
-		input_validate_input_number(get_request_var_post('data_input_id'));
-		input_validate_input_number(get_request_var_post('sequence'));
+		get_filter_request_var('id');
+		get_filter_request_var('data_input_id');
+		get_filter_request_var('sequence');
 		input_validate_input_regex(get_request_var_post('input_output'), '^(in|out)$');
 		/* ==================================================== */
 
@@ -120,12 +122,12 @@ function form_save() {
 		$save['data_input_id'] = get_request_var_post('data_input_id');
 		$save['name']          = form_input_validate(get_request_var_post('name'), 'name', '', false, 3);
 		$save['data_name']     = form_input_validate(get_request_var_post('data_name'), 'data_name', '', false, 3);
-		$save['input_output']  = $_POST['input_output'];
-		$save['update_rra']    = form_input_validate((isset($_POST['update_rra']) ? $_POST['update_rra'] : ''), 'update_rra', '', true, 3);
+		$save['input_output']  = get_nfilter_request_var('input_output');
+		$save['update_rra']    = form_input_validate((isset_request_var('update_rra') ? get_nfilter_request_var('update_rra') : ''), 'update_rra', '', true, 3);
 		$save['sequence']      = get_request_var_post('sequence');
-		$save['type_code']     = form_input_validate((isset($_POST['type_code']) ? $_POST['type_code'] : ''), 'type_code', '', true, 3);
-		$save['regexp_match']  = form_input_validate((isset($_POST['regexp_match']) ? $_POST['regexp_match'] : ''), 'regexp_match', '', true, 3);
-		$save['allow_nulls']   = form_input_validate((isset($_POST['allow_nulls']) ? $_POST['allow_nulls'] : ''), 'allow_nulls', '', true, 3);
+		$save['type_code']     = form_input_validate((isset_request_var('type_code') ? get_nfilter_request_var('type_code') : ''), 'type_code', '', true, 3);
+		$save['regexp_match']  = form_input_validate((isset_request_var('regexp_match') ? get_nfilter_request_var('regexp_match') : ''), 'regexp_match', '', true, 3);
+		$save['allow_nulls']   = form_input_validate((isset_request_var('allow_nulls') ? get_nfilter_request_var('allow_nulls') : ''), 'allow_nulls', '', true, 3);
 
 		if (!is_error_message()) {
 			$data_input_field_id = sql_save($save, 'data_input_fields');
@@ -133,7 +135,7 @@ function form_save() {
 			if ($data_input_field_id) {
 				raise_message(1);
 
-				if ((!empty($data_input_field_id)) && ($_POST['input_output'] == 'in')) {
+				if ((!empty($data_input_field_id)) && (get_nfilter_request_var('input_output') == 'in')) {
 					generate_data_input_field_sequences(db_fetch_cell_prepared('SELECT input_string FROM data_input WHERE id = ?', array(get_request_var_post('data_input_id'))), get_request_var_post('data_input_id'));
 				}
 			}else{
@@ -142,7 +144,7 @@ function form_save() {
 		}
 
 		if (is_error_message()) {
-			header('Location: data_input.php?header=false&action=field_edit&data_input_id=' . get_request_var_post('data_input_id') . '&id=' . (empty($data_input_field_id) ? get_request_var_post('id') : $data_input_field_id) . (!empty($_POST['input_output']) ? '&type=' . $_POST['input_output'] : ''));
+			header('Location: data_input.php?header=false&action=field_edit&data_input_id=' . get_request_var_post('data_input_id') . '&id=' . (empty($data_input_field_id) ? get_request_var_post('id') : $data_input_field_id) . (!isempty_request_var('input_output') ? '&type=' . get_nfilter_request_var('input_output') : ''));
 		}else{
 			header('Location: data_input.php?header=false&action=edit&id=' . get_request_var_post('data_input_id'));
 		}
@@ -237,20 +239,20 @@ function field_remove() {
 	global $registered_cacti_names;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var('id'));
-	input_validate_input_number(get_request_var('data_input_id'));
+	get_filter_request_var('id');
+	get_filter_request_var('data_input_id');
 	/* ==================================================== */
 
-	if ((read_config_option('deletion_verification') == 'on') && (!isset($_REQUEST['confirm']))) {
+	if ((read_config_option('deletion_verification') == 'on') && (!isset_request_var('confirm'))) {
 		top_header();
 
-		form_confirm('Are You Sure?', "Are you sure you want to delete the field '" . htmlspecialchars(db_fetch_cell_prepared('SELECT name FROM data_input_fields WHERE id = ?', array(get_request_var('id'))), ENT_QUOTES) . "'?", htmlspecialchars('data_input.php?action=edit&id=' . $_REQUEST['data_input_id']), htmlspecialchars('data_input.php?action=field_remove&id=' . $_REQUEST['id'] . '&data_input_id=' . $_REQUEST['data_input_id']));
+		form_confirm('Are You Sure?', "Are you sure you want to delete the field '" . htmlspecialchars(db_fetch_cell_prepared('SELECT name FROM data_input_fields WHERE id = ?', array(get_request_var('id'))), ENT_QUOTES) . "'?", htmlspecialchars('data_input.php?action=edit&id=' . get_request_var('data_input_id')), htmlspecialchars('data_input.php?action=field_remove&id=' . get_request_var('id') . '&data_input_id=' . get_request_var('data_input_id')));
 
 		bottom_footer();
 		exit;
 	}
 
-	if ((read_config_option('deletion_verification') == '') || (isset($_REQUEST['confirm']))) {
+	if ((read_config_option('deletion_verification') == '') || (isset_request_var('confirm'))) {
 		/* get information about the field we're going to delete so we can re-order the seqs */
 		$field = db_fetch_row_prepared('SELECT input_output,data_input_id FROM data_input_fields WHERE id = ?', array(get_request_var('id')));
 
@@ -274,17 +276,17 @@ function field_edit() {
 	global $registered_cacti_names, $fields_data_input_field_edit_1, $fields_data_input_field_edit_2, $fields_data_input_field_edit;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var('id'));
-	input_validate_input_number(get_request_var('data_input_id'));
+	get_filter_request_var('id');
+	get_filter_request_var('data_input_id');
 	input_validate_input_regex(get_request_var('type'), '^(in|out)$');
 	/* ==================================================== */
 
-	if (!empty($_REQUEST['id'])) {
+	if (!isempty_request_var('id')) {
 		$field = db_fetch_row_prepared('SELECT * FROM data_input_fields WHERE id = ?', array(get_request_var('id')));
 	}
 
-	if (!empty($_REQUEST['type'])) {
-		$current_field_type = $_REQUEST['type'];
+	if (!isempty_request_var('type')) {
+		$current_field_type = get_request_var('type');
 	}else{
 		$current_field_type = $field['input_output'];
 	}
@@ -298,7 +300,7 @@ function field_edit() {
 	$data_input = db_fetch_row_prepared('SELECT type_id, name FROM data_input WHERE id = ?', array(get_request_var('data_input_id')));
 
 	/* obtain a list of available fields for this given field type (input/output) */
-	if (($current_field_type == 'in') && (preg_match_all('/<([_a-zA-Z0-9]+)>/', db_fetch_cell_prepared('SELECT input_string FROM data_input WHERE id = ?', array(($_REQUEST['data_input_id'] ? $_REQUEST['data_input_id'] : $field['data_input_id']))), $matches))) {
+	if (($current_field_type == 'in') && (preg_match_all('/<([_a-zA-Z0-9]+)>/', db_fetch_cell_prepared('SELECT input_string FROM data_input WHERE id = ?', array(!isempty_request_var('data_input_id') ? get_request_var('data_input_id') : $field['data_input_id'])), $matches))) {
 		for ($i=0; ($i < count($matches[1])); $i++) {
 			if (in_array($matches[1][$i], $registered_cacti_names) == false) {
 				$current_field_name = $matches[1][$i];
@@ -308,7 +310,7 @@ function field_edit() {
 	}
 
 	/* if there are no input fields to choose from, complain */
-	if ((!isset($array_field_names)) && (isset($_REQUEST['type']) ? $_REQUEST['type'] == 'in' : false) && ($data_input['type_id'] == '1')) {
+	if ((!isset($array_field_names)) && (isset_request_var('type') ? get_request_var('type') == 'in' : false) && ($data_input['type_id'] == '1')) {
 		display_custom_error_message('This script appears to have no input values, therefore there is nothing to add.');
 		return;
 	}
@@ -348,7 +350,7 @@ function field_edit() {
 
 	html_end_box();
 
-	form_save_button('data_input.php?action=edit&id=' . $_REQUEST['data_input_id']);
+	form_save_button('data_input.php?action=edit&id=' . get_request_var('data_input_id'));
 }
 
 /* -----------------------
@@ -372,10 +374,10 @@ function data_edit() {
 	global $fields_data_input_edit;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var('id'));
+	get_filter_request_var('id');
 	/* ==================================================== */
 
-	if (!empty($_REQUEST['id'])) {
+	if (!isempty_request_var('id')) {
 		$data_input = db_fetch_row_prepared('SELECT * FROM data_input WHERE id = ?', array(get_request_var('id')));
 		$header_label = '[edit: ' . htmlspecialchars($data_input['name']) . ']';
 	}else{
@@ -393,7 +395,7 @@ function data_edit() {
 
 	html_end_box();
 
-	if (!empty($_REQUEST['id'])) {
+	if (!isempty_request_var('id')) {
 		html_start_box('Input Fields', '100%', '', '3', 'center', 'data_input.php?action=field_edit&type=in&data_input_id=' . htmlspecialchars(get_request_var('id')));
 		print "<tr class='tableHeader'>";
 			DrawMatrixHeaderItem('Name','',1);
@@ -409,7 +411,7 @@ function data_edit() {
 				form_alternate_row('', true);
 					?>
 					<td>
-						<a class="linkEditMain" href="<?php print htmlspecialchars('data_input.php?action=field_edit&id=' . $field['id'] . '&data_input_id=' . $_REQUEST['id']);?>"><?php print htmlspecialchars($field['data_name']);?></a>
+						<a class="linkEditMain" href="<?php print htmlspecialchars('data_input.php?action=field_edit&id=' . $field['id'] . '&data_input_id=' . get_request_var('id'));?>"><?php print htmlspecialchars($field['data_name']);?></a>
 					</td>
 					<td>
 						<?php print $field['sequence']; if ($field['sequence'] == '0') { print ' (Not In Use)'; }?>
@@ -418,7 +420,7 @@ function data_edit() {
 						<?php print htmlspecialchars($field['name']);?>
 					</td>
 					<td align="right">
-						<a class='pic deleteMarker fa fa-remove' href='<?php print htmlspecialchars('data_input.php?action=field_remove&id=' . $field['id'] . '&data_input_id=' . $_REQUEST['id']);?>' title='Delete'></a>
+						<a class='pic deleteMarker fa fa-remove' href='<?php print htmlspecialchars('data_input.php?action=field_remove&id=' . $field['id'] . '&data_input_id=' . get_request_var('id'));?>' title='Delete'></a>
 					</td>
 					<?php
 				form_end_row();
@@ -428,7 +430,7 @@ function data_edit() {
 		}
 		html_end_box();
 
-		html_start_box('Output Fields', '100%', '', '3', 'center', 'data_input.php?action=field_edit&type=out&data_input_id=' . $_REQUEST['id']);
+		html_start_box('Output Fields', '100%', '', '3', 'center', 'data_input.php?action=field_edit&type=out&data_input_id=' . get_request_var('id'));
 		print "<tr class='tableHeader'>";
 			DrawMatrixHeaderItem('Name','',1);
 			DrawMatrixHeaderItem('Field Order','',1);
@@ -444,7 +446,7 @@ function data_edit() {
 				form_alternate_row('', true);
 				?>
 					<td>
-						<a class="linkEditMain" href="<?php print htmlspecialchars('data_input.php?action=field_edit&id=' . $field['id'] . '&data_input_id=' . $_REQUEST['id']);?>"><?php print htmlspecialchars($field['data_name']);?></a>
+						<a class="linkEditMain" href="<?php print htmlspecialchars('data_input.php?action=field_edit&id=' . $field['id'] . '&data_input_id=' . get_request_var('id'));?>"><?php print htmlspecialchars($field['data_name']);?></a>
 					</td>
 					<td>
 						<?php print $field['sequence']; if ($field['sequence'] == '0') { print ' (Not In Use)'; }?>
@@ -456,7 +458,7 @@ function data_edit() {
 						<?php print html_boolean_friendly($field['update_rra']);?>
 					</td>
 					<td align="right">
-						<a class='pic deleteMarker fa fa-remove' href='<?php print htmlspecialchars('data_input.php?action=field_remove&id=' . $field['id'] . '&data_input_id=' . $_REQUEST['id']);?>' title='Delete'></a>
+						<a class='pic deleteMarker fa fa-remove' href='<?php print htmlspecialchars('data_input.php?action=field_remove&id=' . $field['id'] . '&data_input_id=' . get_request_var('id'));?>' title='Delete'></a>
 					</td>
 				<?php
 				form_end_row();
@@ -475,8 +477,8 @@ function data() {
 	global $input_types, $di_actions, $item_rows;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var('page'));
-	input_validate_input_number(get_request_var('rows'));
+	get_filter_request_var('page');
+	get_filter_request_var('rows');
 	/* ==================================================== */
 
 	/* clean up search string */
@@ -559,7 +561,7 @@ function data() {
 					</td>
 				</tr>
 			</table>
-			<input type='hidden' id='page' name='page' value='<?php print $_REQUEST['page'];?>'>
+			<input type='hidden' id='page' name='page' value='<?php print get_request_var('page');?>'>
 		</form>
 		<script type='text/javascript'>
 		function applyFilter() {
@@ -599,7 +601,7 @@ function data() {
 	html_start_box('', '100%', '', '3', 'center', '');
 
 	/* form the 'where' clause for our main sql query */
-	if ($_REQUEST['filter'] != '') {
+	if (get_request_var('filter') != '') {
 		$sql_where = "WHERE (di.name like '%" . get_request_var('filter') . "%')";
 	}else{
 		$sql_where = '';

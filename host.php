@@ -50,7 +50,7 @@ $device_actions = api_plugin_hook_function('device_action_array', $device_action
 /* set default action */
 set_default_action();
 
-switch ($_REQUEST['action']) {
+switch (get_request_var('action')) {
 	case 'save':
 		form_save();
 
@@ -60,34 +60,46 @@ switch ($_REQUEST['action']) {
 
 		break;
 	case 'gt_add':
+		get_filter_request_var('host_id');
+
 		host_add_gt();
 
-		header('Location: host.php?header=false&action=edit&id=' . $_REQUEST['host_id']);
+		header('Location: host.php?header=false&action=edit&id=' . get_request_var('host_id'));
 		break;
 	case 'gt_remove':
+		get_filter_request_var('host_id');
+
 		host_remove_gt();
 
-		header('Location: host.php?header=false&action=edit&id=' . $_REQUEST['host_id']);
+		header('Location: host.php?header=false&action=edit&id=' . get_request_var('host_id'));
 		break;
 	case 'query_add':
+		get_filter_request_var('host_id');
+
 		host_add_query();
 
-		header('Location: host.php?header=false&action=edit&id=' . $_REQUEST['host_id']);
+		header('Location: host.php?header=false&action=edit&id=' . get_request_var('host_id'));
 		break;
 	case 'query_remove':
+		get_filter_request_var('host_id');
+
 		host_remove_query();
 
-		header('Location: host.php?header=false&action=edit&id=' . $_REQUEST['host_id']);
+		header('Location: host.php?header=false&action=edit&id=' . get_request_var('host_id'));
 		break;
 	case 'query_reload':
+		get_filter_request_var('host_id');
+
 		host_reload_query();
 
-		header('Location: host.php?header=false&action=edit&id=' . $_REQUEST['host_id']);
+		header('Location: host.php?header=false&action=edit&id=' . get_request_var('host_id'));
 		break;
 	case 'query_verbose':
+		get_filter_request_var('host_id');
+
 		host_reload_query();
 
-		header('Location: host.php?header=' . (isset($_REQUEST['header']) && $_REQUEST['header'] == 'true' ? 'true':'false') . '&action=edit&id=' . $_REQUEST['host_id'] . '&display_dq_details=true#dqdbg');
+		header('Location: host.php?header=' . (isset_request_var('header') && get_request_var('header') == 'true' ? 'true':'false') . '&action=edit&id=' . get_request_var('host_id') . '&display_dq_details=true#dqdbg');
 		break;
 	case 'edit':
 		top_header();
@@ -130,23 +142,24 @@ function add_tree_names_to_actions_array() {
    -------------------------- */
 
 function form_save() {
-	if (isset($_POST['save_component_host'])) {
-		if (get_request_var_post('snmp_version') == 3 && (get_request_var_post('snmp_password') != $_POST['snmp_password_confirm'])) {
+	if (isset_request_var('save_component_host')) {
+		if (get_request_var_post('snmp_version') == 3 && (get_request_var_post('snmp_password') != get_nfilter_request_var('snmp_password_confirm'))) {
 			raise_message(4);
 		}else{
-			input_validate_input_number(get_request_var_post('id'));
-			input_validate_input_number(get_request_var_post('host_template_id'));
+			get_filter_request_var('id');
+			get_filter_request_var('host_template_id');
 
 			$host_id = api_device_save(get_request_var_post('id'), get_request_var_post('host_template_id'), get_request_var_post('description'),
-				trim(get_request_var_post('hostname')), $_POST['snmp_community'], get_request_var_post('snmp_version'),
+				trim(get_request_var_post('hostname')), get_nfilter_request_var('snmp_community'), get_request_var_post('snmp_version'),
 				get_request_var_post('snmp_username'), get_request_var_post('snmp_password'),
 				get_request_var_post('snmp_port'), get_request_var_post('snmp_timeout'),
-				(isset($_POST['disabled']) ? $_POST['disabled'] : ''),
-				get_request_var_post('availability_method'), $_POST['ping_method'],
-				$_POST['ping_port'], $_POST['ping_timeout'],
-				$_POST['ping_retries'], $_POST['notes'],
+				(isset_request_var('disabled') ? get_nfilter_request_var('disabled') : ''),
+				get_request_var_post('availability_method'), get_nfilter_request_var('ping_method'),
+				get_nfilter_request_var('ping_port'), get_nfilter_request_var('ping_timeout'),
+				get_nfilter_request_var('ping_retries'), get_nfilter_request_var('notes'),
 				get_request_var_post('snmp_auth_protocol'), get_request_var_post('snmp_priv_passphrase'),
-				get_request_var_post('snmp_priv_protocol'), get_request_var_post('snmp_context'), get_request_var_post('max_oids'), $_POST['device_threads']);
+				get_request_var_post('snmp_priv_protocol'), get_request_var_post('snmp_context'), 
+				get_request_var_post('max_oids'), get_nfilter_request_var('device_threads'));
 		}
 
 		header('Location: host.php?header=false&action=edit&id=' . (empty($host_id) ? get_request_var_post('id') : $host_id));
@@ -200,8 +213,8 @@ function form_actions() {
 				for ($i=0;($i<count($selected_items));$i++) {
 					reset($fields_host_edit);
 					while (list($field_name, $field_array) = each($fields_host_edit)) {
-						if (isset($_POST["t_$field_name"])) {
-							db_execute_prepared("UPDATE host SET $field_name = ? WHERE id = ?", array($_POST[$field_name], $selected_items[$i]));
+						if (isset_request_var("t_$field_name")) {
+							db_execute_prepared("UPDATE host SET $field_name = ? WHERE id = ?", array(get_nfilter_request_var($field_name), $selected_items[$i]));
 						}
 					}
 
@@ -217,15 +230,17 @@ function form_actions() {
 				for ($i=0;($i<count($selected_items));$i++) {
 					reset($fields_host_edit);
 					while (list($field_name, $field_array) = each($fields_host_edit)) {
-						if (isset($_POST["t_$field_name"])) {
-							db_execute_prepared("UPDATE host SET $field_name = ? WHERE id = ?", array($_POST[$field_name], $selected_items[$i]));
+						if (isset_request_var("t_$field_name")) {
+							db_execute_prepared("UPDATE host SET $field_name = ? WHERE id = ?", array(get_nfilter_request_var($field_name), $selected_items[$i]));
 						}
 					}
 
 					push_out_host($selected_items[$i]);
 				}
 			}elseif (get_request_var_post('drp_action') == '1') { /* delete */
-				if (!isset_request_var('delete_type')) { $_POST['delete_type'] = 2; }
+				if (!isset_request_var('delete_type')) {
+					set_request_var('delete_type', 2);
+				}
 
 				$data_sources_to_act_on = array();
 				$graphs_to_act_on       = array();
@@ -280,8 +295,8 @@ function form_actions() {
 
 				api_plugin_hook_function('device_remove', $devices_to_act_on);
 			}elseif (preg_match('/^tr_([0-9]+)$/', get_request_var_post('drp_action'), $matches)) { /* place on tree */
-				input_validate_input_number(get_request_var_post('tree_id'));
-				input_validate_input_number(get_request_var_post('tree_item_id'));
+				get_filter_request_var('tree_id');
+				get_filter_request_var('tree_item_id');
 
 				for ($i=0;($i<count($selected_items));$i++) {
 					api_tree_item_save(0, get_request_var_post('tree_id'), TREE_ITEM_TYPE_HOST, get_request_var_post('tree_item_id'), '', 0, read_graph_config_option('default_rra_id'), $selected_items[$i], 1, 1, false);
@@ -551,12 +566,12 @@ function form_actions() {
 
 function host_add_query() {
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_post('host_id'));
-	input_validate_input_number(get_request_var_post('snmp_query_id'));
-	input_validate_input_number(get_request_var_post('reindex_method'));
+	get_filter_request_var('host_id');
+	get_filter_request_var('snmp_query_id');
+	get_filter_request_var('reindex_method');
 	/* ==================================================== */
 
-	db_execute_prepared('REPLACE INTO host_snmp_query (host_id, snmp_query_id, reindex_method) VALUES (?, ?, ?)', array(get_request_var_post('host_id'), get_request_var_post('snmp_query_id'), $_POST['reindex_method']));
+	db_execute_prepared('REPLACE INTO host_snmp_query (host_id, snmp_query_id, reindex_method) VALUES (?, ?, ?)', array(get_request_var_post('host_id'), get_request_var_post('snmp_query_id'), get_nfilter_request_var('reindex_method')));
 
 	/* recache snmp data */
 	run_data_query(get_request_var_post('host_id'), get_request_var_post('snmp_query_id'));
@@ -564,26 +579,26 @@ function host_add_query() {
 
 function host_reload_query() {
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var('id'));
-	input_validate_input_number(get_request_var('host_id'));
+	get_filter_request_var('id');
+	get_filter_request_var('host_id');
 	/* ==================================================== */
 
-	run_data_query($_REQUEST['host_id'], $_REQUEST['id']);
+	run_data_query(get_request_var('host_id'), get_request_var('id'));
 }
 
 function host_remove_query() {
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var('id'));
-	input_validate_input_number(get_request_var('host_id'));
+	get_filter_request_var('id');
+	get_filter_request_var('host_id');
 	/* ==================================================== */
 
-	api_device_dq_remove($_REQUEST['host_id'], $_REQUEST['id']);
+	api_device_dq_remove(get_request_var('host_id'), get_request_var('id'));
 }
 
 function host_add_gt() {
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_post('host_id'));
-	input_validate_input_number(get_request_var_post('graph_template_id'));
+	get_filter_request_var('host_id');
+	get_filter_request_var('graph_template_id');
 	/* ==================================================== */
 
 	db_execute_prepared('REPLACE INTO host_graph (host_id, graph_template_id) VALUES (?, ?)', array(get_request_var_post('host_id'), get_request_var_post('graph_template_id')));
@@ -595,11 +610,11 @@ function host_add_gt() {
 
 function host_remove_gt() {
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var('id'));
-	input_validate_input_number(get_request_var('host_id'));
+	get_filter_request_var('id');
+	get_filter_request_var('host_id');
 	/* ==================================================== */
 
-	api_device_gt_remove($_REQUEST['host_id'], $_REQUEST['id']);
+	api_device_gt_remove(get_request_var('host_id'), get_request_var('id'));
 }
 
 /* ---------------------
@@ -610,31 +625,31 @@ function host_remove() {
 	global $config;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var('id'));
+	get_filter_request_var('id');
 	/* ==================================================== */
 
-	if ((read_config_option('deletion_verification') == 'on') && (!isset($_REQUEST['confirm']))) {
+	if ((read_config_option('deletion_verification') == 'on') && (!isset_request_var('confirm'))) {
 		top_header();
 
-		form_confirm('Are You Sure?', "Are you sure you want to delete the host <strong>'" . htmlspecialchars(db_fetch_cell_prepared('SELECT description FROM host WHERE id = ?', array($_REQUEST['id']))) . "'</strong>?", htmlspecialchars('host.php'), htmlspecialchars('host.php?action=remove&id=' . $_REQUEST['id']));
+		form_confirm('Are You Sure?', "Are you sure you want to delete the host <strong>'" . htmlspecialchars(db_fetch_cell_prepared('SELECT description FROM host WHERE id = ?', array(get_request_var('id')))) . "'</strong>?", htmlspecialchars('host.php'), htmlspecialchars('host.php?action=remove&id=' . get_request_var('id')));
 
 		bottom_footer();
 		exit;
 	}
 
-	if ((read_config_option('deletion_verification') == '') || (isset($_REQUEST['confirm']))) {
-		api_device_remove($_REQUEST['id']);
+	if ((read_config_option('deletion_verification') == '') || (isset_request_var('confirm'))) {
+		api_device_remove(get_request_var('id'));
 	}
 }
 
 function ping_host() {
-	input_validate_input_number($_REQUEST['id']);
+	get_filter_request_var('id');
 
-	if (empty($_REQUEST['id'])) {
+	if (isempty_request_var('id')) {
 		return "";
 	}
 
-	$host = db_fetch_row_prepared('SELECT * FROM host WHERE id = ?', array($_REQUEST['id']));
+	$host = db_fetch_row_prepared('SELECT * FROM host WHERE id = ?', array(get_request_var('id')));
 	$am   = $host['availability_method'];
 	$anym = false;
 
@@ -734,13 +749,13 @@ function host_edit() {
 	global $fields_host_edit, $reindex_types;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var('id'));
+	get_filter_request_var('id');
 	/* ==================================================== */
 
 	api_plugin_hook('host_edit_top');
 
-	if (!empty($_REQUEST['id'])) {
-		$host = db_fetch_row_prepared('SELECT * FROM host WHERE id = ?', array($_REQUEST['id']));
+	if (!isempty_request_var('id')) {
+		$host = db_fetch_row_prepared('SELECT * FROM host WHERE id = ?', array(get_request_var('id')));
 		$header_label = '[edit: ' . htmlspecialchars($host['description']) . ']';
 	}else{
 		$header_label = '[new]';
@@ -774,8 +789,8 @@ function host_edit() {
 	html_start_box("Device $header_label", '100%', '', '3', 'center', '');
 
 	/* preserve the host template id if passed in via a GET variable */
-	if (!empty($_REQUEST['host_template_id'])) {
-		$fields_host_edit['host_template_id']['value'] = $_REQUEST['host_template_id'];
+	if (!isempty_request_var('host_template_id')) {
+		$fields_host_edit['host_template_id']['value'] = get_request_var('host_template_id');
 	}
 
 	draw_edit_form(array(
@@ -1008,7 +1023,7 @@ function host_edit() {
 	</script>
 	<?php
 
-	if ((isset($_REQUEST['display_dq_details'])) && (isset($_SESSION['debug_log']['data_query']))) {
+	if ((isset_request_var('display_dq_details')) && (isset($_SESSION['debug_log']['data_query']))) {
 		print "<table id='dqdebug' class='cactiDebugTable'><tr><td>\n";
 		print "<table class='cactiTableTitle'>\n";
 		print "<tr><td class='textHeaderDark'><a style='display:none;' name='dqdbg'></a><strong>Data Query Debug Information</strong></td><td class='textHeaderDark' align='right'><span id='dbghide' class='linkOverDark'>Hide</span></td></tr>\n";
@@ -1030,7 +1045,7 @@ function host_edit() {
 			FROM (graph_templates, host_graph)
 			WHERE graph_templates.id = host_graph.graph_template_id
 			AND host_graph.host_id = ?
-			ORDER BY graph_templates.name', array($_REQUEST['id']));
+			ORDER BY graph_templates.name', array(get_request_var('id')));
 
 		$available_graph_templates = db_fetch_assoc_prepared('SELECT
 			graph_templates.id, graph_templates.name
@@ -1039,7 +1054,7 @@ function host_edit() {
 			ON snmp_query_graph.graph_template_id = graph_templates.id
 			WHERE snmp_query_graph.name IS NULL 
 			AND graph_templates.id NOT IN (SELECT graph_template_id FROM host_graph WHERE host_id = ?) 
-			ORDER BY graph_templates.name', array($_REQUEST['id']));
+			ORDER BY graph_templates.name', array(get_request_var('id')));
 
 		$i = 0;
 		if (sizeof($selected_graph_templates)) {
@@ -1049,14 +1064,14 @@ function host_edit() {
 				form_alternate_row("gt$i", true);
 
 				/* get status information for this graph template */
-				$is_being_graphed = (sizeof(db_fetch_assoc_prepared('SELECT id FROM graph_local WHERE graph_template_id = ? AND host_id = ?', array($item['id'], $_REQUEST['id']))) > 0) ? true : false;
+				$is_being_graphed = (sizeof(db_fetch_assoc_prepared('SELECT id FROM graph_local WHERE graph_template_id = ? AND host_id = ?', array($item['id'], get_request_var('id')))) > 0) ? true : false;
 
 				?>
 					<td style="padding: 4px;">
 						<strong><?php print $i;?>)</strong> <?php print htmlspecialchars($item['name']);?>
 					</td>
 					<td>
-						<?php print (($is_being_graphed == true) ? "<span class='beingGraphed'>Is Being Graphed</span> (<a class='linkEditMain' href='" . htmlspecialchars('graphs.php?action=graph_edit&id=' . db_fetch_cell_prepared('SELECT id FROM graph_local WHERE graph_template_id = ? AND host_id = ? LIMIT 0,1', array($item['id'], $_REQUEST['id']))) . "'>Edit</a>)" : "<span class='notBeingGraphed'>Not Being Graphed</span>");?>
+						<?php print (($is_being_graphed == true) ? "<span class='beingGraphed'>Is Being Graphed</span> (<a class='linkEditMain' href='" . htmlspecialchars('graphs.php?action=graph_edit&id=' . db_fetch_cell_prepared('SELECT id FROM graph_local WHERE graph_template_id = ? AND host_id = ? LIMIT 0,1', array($item['id'], get_request_var('id')))) . "'>Edit</a>)" : "<span class='notBeingGraphed'>Not Being Graphed</span>");?>
 					</td>
 					<td class='nowrap right'>
 						<span title='Delete Graph Template Association' class='deletequery fa fa-remove' id='gtremove<?php print $item['id'];?>' data-id='<?php print $item['id'];?>'></span>
@@ -1102,7 +1117,7 @@ function host_edit() {
 			FROM (snmp_query, host_snmp_query)
 			WHERE snmp_query.id = host_snmp_query.snmp_query_id
 			AND host_snmp_query.host_id = ?
-			ORDER BY snmp_query.name', array($_REQUEST['id']));
+			ORDER BY snmp_query.name', array(get_request_var('id')));
 
 		$available_data_queries = db_fetch_assoc('SELECT
 			snmp_query.id,
@@ -1113,7 +1128,7 @@ function host_edit() {
 		$keeper = array();
 		if (sizeof($available_data_queries)) {
 			foreach ($available_data_queries as $item) {
-				if (sizeof(db_fetch_assoc_prepared('SELECT snmp_query_id FROM host_snmp_query WHERE host_id = ? AND snmp_query_id = ?', array($_REQUEST['id'], $item['id']))) > 0) {
+				if (sizeof(db_fetch_assoc_prepared('SELECT snmp_query_id FROM host_snmp_query WHERE host_id = ? AND snmp_query_id = ?', array(get_request_var('id'), $item['id']))) > 0) {
 					/* do nothing */
 				} else {
 					array_push($keeper, $item);
@@ -1131,8 +1146,8 @@ function host_edit() {
 				form_alternate_row("dg$i", true);
 
 				/* get status information for this data query */
-				$num_dq_items = sizeof(db_fetch_assoc_prepared('SELECT snmp_index FROM host_snmp_cache WHERE host_id = ? AND snmp_query_id = ?', array($_REQUEST['id'], $item['id'])));
-				$num_dq_rows  = sizeof(db_fetch_assoc_prepared('SELECT snmp_index FROM host_snmp_cache WHERE host_id = ? AND snmp_query_id = ? GROUP BY snmp_index', array($_REQUEST['id'], $item['id'])));
+				$num_dq_items = sizeof(db_fetch_assoc_prepared('SELECT snmp_index FROM host_snmp_cache WHERE host_id = ? AND snmp_query_id = ?', array(get_request_var('id'), $item['id'])));
+				$num_dq_rows  = sizeof(db_fetch_assoc_prepared('SELECT snmp_index FROM host_snmp_cache WHERE host_id = ? AND snmp_query_id = ? GROUP BY snmp_index', array(get_request_var('id'), $item['id'])));
 
 				$status = 'success';
 
@@ -1199,10 +1214,10 @@ function host() {
 	global $device_actions, $item_rows;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var('host_template_id'));
-	input_validate_input_number(get_request_var('page'));
-	input_validate_input_number(get_request_var('host_status'));
-	input_validate_input_number(get_request_var('rows'));
+	get_filter_request_var('host_template_id');
+	get_filter_request_var('page');
+	get_filter_request_var('host_status');
+	get_filter_request_var('rows');
 	/* ==================================================== */
 
 	/* clean up search string */
@@ -1373,7 +1388,7 @@ function host() {
 					</td>
 				</tr>
 			</table>
-			<input type='hidden' id='page' name='page' value='<?php print $_REQUEST['page'];?>'>
+			<input type='hidden' id='page' name='page' value='<?php print get_request_var('page');?>'>
 		</form>
 		</td>
 	</tr>
@@ -1404,7 +1419,7 @@ function host() {
 		/* Show all items */
 	}elseif (get_request_var('host_template_id') == '0') {
 		$sql_where .= (strlen($sql_where) ? ' AND host.host_template_id=0' : ' WHERE host.host_template_id=0');
-	}elseif (!empty($_REQUEST['host_template_id'])) {
+	}elseif (!isempty_request_var('host_template_id')) {
 		$sql_where .= (strlen($sql_where) ? ' AND host.host_template_id=' . get_request_var('host_template_id') : ' WHERE host.host_template_id=' . get_request_var('host_template_id'));
 	}
 

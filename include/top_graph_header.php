@@ -54,8 +54,8 @@ if (read_config_option('auth_method') != 0) {
 }
 
 /* need to correct $_SESSION["sess_nav_level_cache"] in zoom view */
-if (isset($_REQUEST['action']) && $_REQUEST['action'] == 'zoom') {
-	$_SESSION['sess_nav_level_cache'][2]['url'] = 'graph.php?local_graph_id=' . $_REQUEST['local_graph_id'] . '&rra_id=0';
+if (isset_request_var('action') && get_nfilter_request_var('action') == 'zoom') {
+	$_SESSION['sess_nav_level_cache'][2]['url'] = 'graph.php?local_graph_id=' . get_filter_request_var('local_graph_id') . '&rra_id=0';
 }
 
 $page_title = api_plugin_hook_function('page_title', draw_navigation_text('title'));
@@ -114,7 +114,7 @@ load_current_session_value('action', 'sess_cacti_graph_action', $graph_views['2'
 	<div class='infoBar'><?php echo draw_login_status($using_guest_account);?></div>
 </div>
 <div id='cactiContent' class='cactiContent'>
-	<?php if (basename($_SERVER['PHP_SELF']) == 'graph_view.php' && ($_REQUEST['action'] == 'tree' || (isset($_REQUEST['view_type']) && $_REQUEST['view_type'] == 'tree'))) { ?>
+	<?php if (basename($_SERVER['PHP_SELF']) == 'graph_view.php' && (get_nfilter_request_var('action') == 'tree' || (isset_request_var('view_type') && get_nfilter_request_var('view_type') == 'tree'))) { ?>
 	<div id='navigation' class='cactiTreeNavigationArea'><?php grow_dhtml_trees();?></div>
 	<div id='navigation_right' class='cactiGraphContentArea'>
 	<?php }else{ ?>

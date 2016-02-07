@@ -31,7 +31,7 @@ $gprint_actions = array(1 => 'Delete');
 /* set default action */
 set_default_action();
 
-switch ($_REQUEST['action']) {
+switch (get_request_var('action')) {
 	case 'save':
 		form_save();
 
@@ -61,14 +61,14 @@ switch ($_REQUEST['action']) {
    -------------------------- */
 
 function form_save() {
-	if (isset($_POST['save_component_gprint_presets'])) {
+	if (isset_request_var('save_component_gprint_presets')) {
 		/* ================= input validation ================= */
-		input_validate_input_number(get_request_var_post('id'));
+		get_filter_request_var('id');
 		/* ==================================================== */
 
-		$save['id'] = get_request_var_post('id');
-		$save['hash'] = get_hash_gprint(get_request_var_post('id'));
-		$save['name'] = form_input_validate(get_request_var_post('name'), 'name', '', false, 3);
+		$save['id']          = get_request_var('id');
+		$save['hash']        = get_hash_gprint(get_request_var('id'));
+		$save['name']        = form_input_validate(get_request_var_post('name'), 'name', '', false, 3);
 		$save['gprint_text'] = form_input_validate(get_request_var_post('gprint_text'), 'gprint_text', '', false, 3);
 
 		if (!is_error_message()) {
@@ -177,10 +177,10 @@ function gprint_presets_edit() {
 	global $fields_grprint_presets_edit;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var('id'));
+	get_filter_request_var('id');
 	/* ==================================================== */
 
-	if (!empty($_REQUEST['id'])) {
+	if (!isempty_request_var('id')) {
 		$gprint_preset = db_fetch_row_prepared('SELECT * FROM graph_templates_gprint WHERE id = ?', array(get_request_var('id')));
 		$header_label = '[edit: ' . htmlspecialchars($gprint_preset['name']) . ']';
 	}else{
@@ -206,8 +206,8 @@ function gprint_presets() {
 	global $gprint_actions, $item_rows;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var('page'));
-	input_validate_input_number(get_request_var('rows'));
+	get_filter_request_var('page');
+	get_filter_request_var('rows');
 	/* ==================================================== */
 
 	/* clean up search string */
@@ -293,7 +293,7 @@ function gprint_presets() {
 						</select>
 					</td>
 					<td>
-						<input type="checkbox" id='has_graphs' <?php print ($_REQUEST['has_graphs'] == 'true' ? 'checked':'');?>>
+						<input type="checkbox" id='has_graphs' <?php print (get_request_var('has_graphs') == 'true' ? 'checked':'');?>>
 					</td>
 					<td>
 						<label for='has_graphs'>Has Graphs</label>
@@ -306,7 +306,7 @@ function gprint_presets() {
 					</td>
 				</tr>
 			</table>
-			<input type='hidden' id='page' name='page' value='<?php print $_REQUEST['page'];?>'>
+			<input type='hidden' id='page' name='page' value='<?php print get_request_var('page');?>'>
 			</form>
 			<script type='text/javascript'>
 			function applyFilter() {
@@ -345,13 +345,13 @@ function gprint_presets() {
 	html_end_box();
 
 	/* form the 'where' clause for our main sql query */
-	if ($_REQUEST['filter'] != '') {
+	if (get_request_var('filter') != '') {
 		$sql_where = "WHERE (name LIKE '%" . get_request_var('filter') . "%')";
 	}else{
 		$sql_where = '';
 	}
 
-	if ($_REQUEST['has_graphs'] == 'true') {
+	if (get_request_var('has_graphs') == 'true') {
 		$sql_having = 'HAVING graphs>0';
 	}else{
 		$sql_having = '';
