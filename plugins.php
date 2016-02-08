@@ -574,7 +574,7 @@ function plugin_actions($plugin) {
 			$link .= "<a href='" . htmlspecialchars($config['url_path'] . 'plugins.php?mode=uninstall&id=' . $plugin['directory']) . "' title='Uninstall Plugin' class='linkEditMain'><img align='absmiddle' src='" . $config['url_path'] . "images/uninstall_icon.gif'></a>";
 			$link .= "<a href='" . htmlspecialchars($config['url_path'] . 'plugins.php?mode=disable&id=' . $plugin['directory']) . "' title='Disable Plugin' class='linkEditMain'><img align='absmiddle' src='" . $config['url_path'] . "images/disable_icon.png'></a>";
 			break;
-		case '2': // Cinfiguration issues
+		case '2': // Configuration issues
 			$link .= "<a href='" . htmlspecialchars($config['url_path'] . 'plugins.php?mode=uninstall&id=' . $plugin['directory']) . "' title='Uninstall Plugin' class='linkEditMain'><img align='absmiddle' src='" . $config['url_path'] . "images/uninstall_icon.gif'></a>";
 			break;
 		case '4':	// Installed but not active

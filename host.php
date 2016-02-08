@@ -891,7 +891,7 @@ function host_edit() {
 			$('#availability_method').replaceOptions(methods, $('#availability_method').val());
 		}
 
-		switch($('#availibility_method').val()) {
+		switch($('#availability_method').val()) {
 			case '0': // availability none
 				$('#row_ping_method').hide();
 				$('#ping_method').val(0);

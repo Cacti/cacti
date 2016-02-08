@@ -95,7 +95,7 @@ function form_save() {
 			if ($data_input_id) {
 				raise_message(1);
 
-				/* get a list of each field so we can note their sequence of occurance in the database */
+				/* get a list of each field so we can note their sequence of occurrence in the database */
 				if (!isempty_request_var('id')) {
 					db_execute_prepared('UPDATE data_input_fields SET sequence = 0 WHERE data_input_id = ?', array(get_request_var_post('id')));
 

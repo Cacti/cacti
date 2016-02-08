@@ -206,7 +206,7 @@ function form_save() {
 			if ($graph_templates_graph_id) {
 				raise_message(1);
 
-				/* if template information chanegd, update all necessary template information */
+				/* if template information changed, update all necessary template information */
 				if (get_request_var_post('graph_template_id') != get_nfilter_request_var('_graph_template_id')) {
 					/* check to see if the number of graph items differs, if it does; we need user input */
 					if ((!isempty_request_var('graph_template_id')) && (!isempty_request_var('local_graph_id')) && (sizeof(db_fetch_assoc_prepared('SELECT id FROM graph_templates_item WHERE local_graph_id = ?', array($local_graph_id))) != sizeof(db_fetch_assoc_prepared('SELECT id from graph_templates_item WHERE local_graph_id = 0 AND graph_template_id = ?', array(get_nfilter_request_var('graph_template_id')))))) {
@@ -701,7 +701,7 @@ function form_actions() {
 				/* list affected graphs */
 				print '<tr>';
 				print "<td class='textArea'>
-					<p>Click 'Continue' to create an Aggreate Graph from the selected Graph(s)</p>
+					<p>Click 'Continue' to create an Aggregate Graph from the selected Graph(s)</p>
 					<p><ul>" . get_nfilter_request_var('graph_list') . "</ul></p>
 				</td>\n";
 
@@ -1646,7 +1646,7 @@ function graph_management() {
 	print $nav;
 
 	$display_text = array(
-		'title_cache' => array('display' => 'Graph Name', 'align' => 'left', 'sort' => 'ASC', 'tip' => 'The Title of this Graph.  Generally programatically generated from the Graph Template defition or Suggested Naming rules.  The max length of the Title is controlled under Settings->Visual.'),
+		'title_cache' => array('display' => 'Graph Name', 'align' => 'left', 'sort' => 'ASC', 'tip' => 'The Title of this Graph.  Generally programatically generated from the Graph Template definition or Suggested Naming rules.  The max length of the Title is controlled under Settings->Visual.'),
 		'local_graph_id' => array('display' => 'ID', 'align' => 'right', 'sort' => 'ASC', 'tip' => 'The internal database ID fro this Graph.  Useful when performing automation or debugging.'),
 		'name' => array('display' => 'Template Name', 'align' => 'left', 'sort' => 'ASC', 'tip' => 'The Graph Template that this Graph was based upon.'),
 		'height' => array('display' => 'Size', 'align' => 'left', 'sort' => 'ASC', 'tip' => 'The size of this Graph when not in Preview mode.'));

@@ -104,7 +104,7 @@ function form_save() {
 	/* get the aggregate graph id */
 	$aggregate_graph_id  = db_fetch_cell('SELECT id FROM aggregate_graphs WHERE local_graph_id=' . $local_graph_id );
 
-	/* if user disabled template propogation we need to get graph data from form */
+	/* if user disabled template propagation we need to get graph data from form */
 	if (!isset_request_var('template_propogation')) {
 		$aggregate_template_id = 0;
 		$new_data = aggregate_validate_graph_params($_POST, false);
@@ -315,7 +315,7 @@ function form_actions() {
 			}
 			$lgid = implode(',',$local_graph_ids);
 
-			/* for whatever reason,  subquery performance in mysql is sub-obtimal.  Therefore, let's do this
+			/* for whatever reason,  subquery performance in mysql is sub-optimal.  Therefore, let's do this
 			 * as a few queries instead.
 			 */
 			$task_items = array_rekey(db_fetch_assoc("SELECT DISTINCT task_item_id FROM graph_templates_item WHERE local_graph_id IN($lgid)"), 'task_item_id', 'task_item_id');
@@ -609,14 +609,14 @@ function graph_edit() {
 
 	form_start('aggregate_graphs.php', 'template_edit');
 
-	/* we will show the templated representation only when when there is a template and propogation is enabled */
+	/* we will show the templated representation only when when there is a template and propagation is enabled */
 	if (!isempty_request_var('id') && $current_tab == 'details') {
 		if (sizeof($template)) {
 			print "<div id='templated'>";
 
 			html_start_box("Aggregate Graph $header_label", '100%', '', '3', 'center', '');
 
-			/* add template propogation to the structure */
+			/* add template propagation to the structure */
 			draw_edit_form(array(
 				'config' => array('no_form_tag' => true),
 				'fields' => inject_form_variables($struct_aggregate_graph, (isset($aginfo) ? $aginfo : array()))
@@ -1310,7 +1310,7 @@ function aggregate_graph() {
 	$display_text = array(
 		'title_cache' => array('display' => 'Graph Title', 'align' => 'left', 'sort' => 'ASC', 'tip' => 'The title for the Aggregate Graphs'),
 		'local_graph_id' => array('display' => 'ID', 'align' => 'right', 'sort' => 'ASC', 'tip' => 'The internal database identifier for this object'),
-		'name' => array('display' => 'Aggregate Template', 'align' => 'left', 'sort' => 'ASC', 'top' => 'The Aggreate Template that this Aggregate Graphs is based upon'),
+		'name' => array('display' => 'Aggregate Template', 'align' => 'left', 'sort' => 'ASC', 'top' => 'The Aggregate Template that this Aggregate Graphs is based upon'),
 		'height' => array('Size', 'ASC'));
 
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), 'filter=' . get_request_var('filter'), false);

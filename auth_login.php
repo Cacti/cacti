@@ -153,7 +153,7 @@ if (get_nfilter_request_var('action') == 'login') {
 		if (!api_plugin_hook_function('login_process', false)) {
 			/* Builtin Auth */
 			if ((!$user_auth) && (!$ldap_error)) {
-				/* if auth has not occured process for builtin - AKA Ldap fall through */
+				/* if auth has not occurred process for builtin - AKA Ldap fall through */
 				$user = db_fetch_row_prepared('SELECT * FROM user_auth WHERE username = ? AND password = ? AND realm = 0', array($username, md5(get_request_var_post('login_password'))));
 			}
 		}
@@ -183,7 +183,7 @@ if (get_nfilter_request_var('action') == 'login') {
 		/* Locate guest user record */
 		$user = db_fetch_row_prepared('SELECT * FROM user_auth WHERE username = ?', array(read_config_option('guest_user')));
 		if ($user) {
-			cacti_log("LOGIN: Authenicated user '" . $username . "' using guest account '" . $user['username'] . "'", false, 'AUTH');
+			cacti_log("LOGIN: Authenticated user '" . $username . "' using guest account '" . $user['username'] . "'", false, 'AUTH');
 			$guest_user = true;
 		}else{
 			/* error */

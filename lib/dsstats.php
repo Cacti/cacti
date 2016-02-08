@@ -415,7 +415,7 @@ function log_dsstats_statistics($type) {
    @arg $errno - (int) The errornum reported by the system
    @arg $errmsg - (string) The error message provides by the error
    @arg $filename - (string) The filename that encountered the error
-   @arg $linenum - (int) The line number where the error occured
+   @arg $linenum - (int) The line number where the error occurred
    @arg $vars - (mixed) The current state of PHP variables.
    @returns - (bool) always returns true for some reason */
 function dsstats_error_handler($errno, $errmsg, $filename, $linenum, $vars) {

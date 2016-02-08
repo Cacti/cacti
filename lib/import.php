@@ -840,7 +840,7 @@ function parse_xml_hash($hash) {
 		$parsed_hash["version"] = strval(check_hash_version($matches[2]));
 		$parsed_hash["hash"] = $matches[3];
 
-		/* an error has occured */
+		/* an error has occurred */
 		if (($parsed_hash["type"] === false) || ($parsed_hash["version"] === false)) {
 			return false;
 		}

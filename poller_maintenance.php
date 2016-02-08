@@ -359,7 +359,7 @@ function rrdclean_create_path($path) {
 				@chgrp($path, $group_id);
 			}
 		}else{
-			cacti_log("ERROR: RRDfile Maintenence unable to create directory '" . $path . "'", false, 'MAINT');
+			cacti_log("ERROR: RRDfile Maintenance unable to create directory '" . $path . "'", false, 'MAINT');
 		}
 	}
 

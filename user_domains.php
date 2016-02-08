@@ -405,7 +405,7 @@ function domain_edit() {
 			),
 		'mode' => array(
 			'friendly_name' => 'Mode',
-			'description' => 'Mode which cacti will attempt to authenicate against the LDAP server.<blockquote><i>No Searching</i> - No Distinguished Name (DN) searching occurs, just attempt to bind with the provided Distinguished Name (DN) format.<br><br><i>Anonymous Searching</i> - Attempts to search for username against LDAP directory via anonymous binding to locate the users Distinguished Name (DN).<br><br><i>Specific Searching</i> - Attempts search for username against LDAP directory via Specific Distinguished Name (DN) and Specific Password for binding to locate the users Distinguished Name (DN).',
+			'description' => 'Mode which cacti will attempt to authenticate against the LDAP server.<blockquote><i>No Searching</i> - No Distinguished Name (DN) searching occurs, just attempt to bind with the provided Distinguished Name (DN) format.<br><br><i>Anonymous Searching</i> - Attempts to search for username against LDAP directory via anonymous binding to locate the users Distinguished Name (DN).<br><br><i>Specific Searching</i> - Attempts search for username against LDAP directory via Specific Distinguished Name (DN) and Specific Password for binding to locate the users Distinguished Name (DN).',
 			'method' => 'drop_array',
 			'value' => '|arg1:mode|',
 			'array' => $ldap_modes
@@ -419,7 +419,7 @@ function domain_edit() {
 			),
 		'group_require' => array(
 			'friendly_name' => 'Require Group Membership',
-			'description' => 'Require user to be member of group to authenicate. Group settings must be set for this to work, enabling without proper group settings will cause authenication failure.',
+			'description' => 'Require user to be member of group to authenticate. Group settings must be set for this to work, enabling without proper group settings will cause authenication failure.',
 			'value' => '|arg1:group_require|',
 			'method' => 'checkbox'
 			),

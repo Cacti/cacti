@@ -42,7 +42,7 @@ html_start_box('About Cacti', '100%', '', '3', 'center', '');
 		network administrator's job easier by taking care of all the necessary details necessary to create
 		meaningful graphs.
 
-		<p>Please see the offical <a href="http://www.cacti.net/?version=<?php print $config['cacti_version'];?>">Cacti website</a> for information, support, and updates.</p>
+		<p>Please see the official <a href="http://www.cacti.net/?version=<?php print $config['cacti_version'];?>">Cacti website</a> for information, support, and updates.</p>
 
 		<p><strong>Current Cacti Developers</strong><br>
 		<ul type="disc">
@@ -50,16 +50,16 @@ html_start_box('About Cacti', '100%', '', '3', 'center', '');
 				developer for over two years, writing code, supporting users, and keeping the project active. Over the years, Ian has moved from
 				hist role as a fledgling developer to starting multiple companies focusing on building unique internet based services for customers worldwide.</li>
 			<li><strong>Larry Adams</strong> (TheWitness) joined the Cacti Group in June of 2004 right before the major 0.8.6 release. He helped bring the new poller
-				architecture to life by providing ideas, writing code, and managing an active group of beta testers. Larry, has since moved on to creating unique Cacti based solutions for HPC customers across the globe.  Over the years, Larry has developed dozens of Cacti add-ons, and now leads a group of Cacti development and support personel where he works today.</li>
+				architecture to life by providing ideas, writing code, and managing an active group of beta testers. Larry, has since moved on to creating unique Cacti based solutions for HPC customers across the globe.  Over the years, Larry has developed dozens of Cacti add-ons, and now leads a group of Cacti development and support personnel where he works today.</li>
 			<li><strong>Tony Roman</strong> (rony) joined the Cacti Group in October of 2004 offering years of programming and system administration
 				experience to the project.  Tony has gone on to holding key roles with his employers and uses Cacti every day at his current employer.</li>
-			<li><strong>J.P. Pasnak, CD</strong> (Linegod) joined the Cacti Group in August of 2005.  He is contributing to releases and maintains the <a href="http://docs.cacti.net/">Documentation System</a>  Jeff is one of our true leaders on the team.  He plays a diminished role, but when he speaks, the rest of the team listen, if for nothing else, but to prep the pallete for another swig of hard cider and shephards pie!
+			<li><strong>J.P. Pasnak, CD</strong> (Linegod) joined the Cacti Group in August of 2005.  He is contributing to releases and maintains the <a href="http://docs.cacti.net/">Documentation System</a>  Jeff is one of our true leaders on the team.  He plays a diminished role, but when he speaks, the rest of the team listen, if for nothing else, but to prep the palate for another swig of hard cider and shepherds pie!
 			</li>
 			<li><strong>Jimmy Conner</strong> (cigamit) joined the Cacti Group in January of 2006.  He is currently in charge of the Plug-in Architecture, the new events system and maintaining many of the popular plugins.
 			</li>
 			<li><strong>Reinhard Scheck</strong> (gandalf) joined the Cacti team in June of 2007.  Reinhard is focusing on howto's and graph presentation as well as being the 'European Arm' of the Cacti Group.  He is our RRDtool expert on the team.
 			</li>
-			<li><strong>Andreas Braun</strong> (browniebraun) joined the Cacti Group in July of 2009. As the second european developer Andreas is focusing on internationalization of Cacti.  Andreas has developed many unique plugins for his current employer, and enjoys interacting with the team.
+			<li><strong>Andreas Braun</strong> (browniebraun) joined the Cacti Group in July of 2009. As the second European developer Andreas is focusing on internationalization of Cacti.  Andreas has developed many unique plugins for his current employer, and enjoys interacting with the team.
 			</li>
 		</ul>
 		</p>
