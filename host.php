@@ -1213,75 +1213,59 @@ function host_edit() {
 function host() {
 	global $device_actions, $item_rows;
 
+	if ((!empty($_SESSION['sess_host_status'])) && (!isempty_request_var('host_status'))) {
+		if ($_SESSION['sess_host_status'] != get_nfilter_request_var('host_status')) {
+			set_request_var('page', '1');
+		}
+	}
+
+	/* ================= input validation and session storage ================= */
+	$filters = array(
+		'rows' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'pageset' => true,
+			'default' => read_config_option('num_rows_table')
+			),
+		'page' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'default' => '1'
+			),
+		'filter' => array(
+			'filter' => FILTER_CALLBACK, 
+			'pageset' => true,
+			'default' => '', 
+			'options' => array('options' => 'sanitize_search_string')
+			),
+		'sort_column' => array(
+			'filter' => FILTER_CALLBACK, 
+			'default' => 'description', 
+			'options' => array('options' => 'sanitize_search_string')
+			),
+		'sort_direction' => array(
+			'filter' => FILTER_CALLBACK, 
+			'default' => 'ASC', 
+			'options' => array('options' => 'sanitize_search_string')
+			),
+		'host_status' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'pageset' => true,
+			'default' => '-1'
+			),
+		'host_template_id' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'pageset' => true,
+			'default' => '-1'
+			)
+	);
+
+	validate_store_request_vars($filters, 'sess_host');
 	/* ================= input validation ================= */
-	get_filter_request_var('host_template_id');
-	get_filter_request_var('page');
-	get_filter_request_var('host_status');
-	get_filter_request_var('rows');
-	/* ==================================================== */
-
-	/* clean up search string */
-	if (isset($_REQUEST['filter'])) {
-		$_REQUEST['filter'] = sanitize_search_string(get_request_var('filter'));
-	}
-
-	/* clean up sort_column */
-	if (isset($_REQUEST['sort_column'])) {
-		$_REQUEST['sort_column'] = sanitize_search_string(get_request_var('sort_column'));
-	}
-
-	/* clean up search string */
-	if (isset($_REQUEST['sort_direction'])) {
-		$_REQUEST['sort_direction'] = sanitize_search_string(get_request_var('sort_direction'));
-	}
-
-	/* if the user pushed the 'clear' button */
-	if (isset($_REQUEST['clear'])) {
-		kill_session_var('sess_device_current_page');
-		kill_session_var('sess_device_filter');
-		kill_session_var('sess_device_host_template_id');
-		kill_session_var('sess_host_status');
-		kill_session_var('sess_default_rows');
-		kill_session_var('sess_host_sort_column');
-		kill_session_var('sess_host_sort_direction');
-
-		unset($_REQUEST['page']);
-		unset($_REQUEST['filter']);
-		unset($_REQUEST['host_template_id']);
-		unset($_REQUEST['host_status']);
-		unset($_REQUEST['rows']);
-		unset($_REQUEST['sort_column']);
-		unset($_REQUEST['sort_direction']);
-	}else{
-		$changed = 0;
-		$changed += check_changed('host_template_id', 'sess_device_host_template_id');
-		$changed += check_changed('filter',           'sess_device_filter');
-		$changed += check_changed('host_status',      'sess_host_status');
-		$changed += check_changed('rows',             'sess_default_rows');
-
-		if ($changed) {
-			$_REQUEST['page'] = 1;
-		}
-	}
-
-	if ((!empty($_SESSION['sess_host_status'])) && (!empty($_REQUEST['host_status']))) {
-		if ($_SESSION['sess_host_status'] != $_REQUEST['host_status']) {
-			$_REQUEST['page'] = 1;
-		}
-	}
-
-	/* remember these search fields in session vars so we don't have to keep passing them around */
-	load_current_session_value('page', 'sess_device_current_page', '1');
-	load_current_session_value('filter', 'sess_device_filter', '');
-	load_current_session_value('host_template_id', 'sess_device_host_template_id', '-1');
-	load_current_session_value('host_status', 'sess_host_status', '-1');
-	load_current_session_value('rows', 'sess_default_rows', read_config_option('num_rows_table'));
-	load_current_session_value('sort_column', 'sess_host_sort_column', 'description');
-	load_current_session_value('sort_direction', 'sess_host_sort_direction', 'ASC');
 
 	/* if the number of rows is -1, set it to the default */
-	if ($_REQUEST['rows'] == -1) {
-		$_REQUEST['rows'] = read_config_option('num_rows_table');
+	if (get_request_var('rows') == -1) {
+		$rows = read_config_option('num_rows_table');
+	}else{
+		$rows = get_request_var('rows');
 	}
 
 	?>
@@ -1446,11 +1430,11 @@ function host() {
 		$sql_where
 		GROUP BY host.id
 		ORDER BY " . $sortby . ' ' . get_request_var('sort_direction') . '
-		LIMIT ' . (get_request_var('rows')*(get_request_var('page')-1)) . ',' . get_request_var('rows');
+		LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;
 
 	$hosts = db_fetch_assoc($sql_query);
 
-	$nav = html_nav_bar('host.php?filter=' . get_request_var('filter') . '&host_template_id=' . get_request_var('host_template_id') . '&host_status=' . get_request_var('host_status'), MAX_DISPLAY_PAGES, get_request_var('page'), get_request_var('rows'), $total_rows, 13, 'Devices', 'page', 'main');
+	$nav = html_nav_bar('host.php?filter=' . get_request_var('filter') . '&host_template_id=' . get_request_var('host_template_id') . '&host_status=' . get_request_var('host_status'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 13, 'Devices', 'page', 'main');
 
 	print $nav;
 

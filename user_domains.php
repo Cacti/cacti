@@ -573,47 +573,37 @@ function domain_edit() {
 function domains() {
 	global $domain_types, $actions, $item_rows;
 
+	/* ================= input validation and session storage ================= */
+	$filters = array(
+		'rows' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'pageset' => true,
+			'default' => read_config_option('num_rows_table')
+			),
+		'page' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'default' => '1'
+			),
+		'filter' => array(
+			'filter' => FILTER_CALLBACK, 
+			'pageset' => true,
+			'default' => '', 
+			'options' => array('options' => 'sanitize_search_string')
+			),
+		'sort_column' => array(
+			'filter' => FILTER_CALLBACK, 
+			'default' => 'domain_name', 
+			'options' => array('options' => 'sanitize_search_string')
+			),
+		'sort_direction' => array(
+			'filter' => FILTER_CALLBACK, 
+			'default' => 'ASC', 
+			'options' => array('options' => 'sanitize_search_string')
+			)
+	);
+
+	validate_store_request_vars($filters, 'sess_domains');
 	/* ================= input validation ================= */
-	get_filter_request_var('page');
-	get_filter_request_var('rows');
-	/* ==================================================== */
-
-	/* clean up search string */
-	if (isset($_REQUEST['filter'])) {
-		$_REQUEST['filter'] = sanitize_search_string(get_request_var('filter'));
-	}
-
-	/* clean up sort_column */
-	if (isset($_REQUEST['sort_column'])) {
-		$_REQUEST['sort_column'] = sanitize_search_string(get_request_var('sort_column'));
-	}
-
-	/* clean up search string */
-	if (isset($_REQUEST['sort_direction'])) {
-		$_REQUEST['sort_direction'] = sanitize_search_string(get_request_var('sort_direction'));
-	}
-
-	/* if the user pushed the 'clear' button */
-	if (isset($_REQUEST['clear'])) {
-		kill_session_var('sess_domains_filter');
-		kill_session_var('sess_domains_rows');
-		kill_session_var('sess_domains_sort_column');
-		kill_session_var('sess_domains_sort_direction');
-
-		unset($_REQUEST['page']);
-		unset($_REQUEST['rows']);
-		unset($_REQUEST['filter']);
-		unset($_REQUEST['sort_column']);
-		unset($_REQUEST['sort_direction']);
-		$_REQUEST['page'] = 1;
-	}
-
-	/* remember these search fields in session vars so we don't have to keep passing them around */
-	load_current_session_value('filter', 'sess_domains_filter', '');
-	load_current_session_value('rows', 'sess_table_rows', read_config_option('num_rows_table'));
-	load_current_session_value('sort_column', 'sess_domains_sort_column', 'domain_name');
-	load_current_session_value('sort_direction', 'sess_domains_sort_direction', 'ASC');
-	load_current_session_value('page', 'sess_domains_current_page', '1');
 
 	html_start_box('User Domains', '100%', '', '3', 'center', 'user_domains.php?action=edit');
 
@@ -651,7 +641,7 @@ function domains() {
 					</td>
 				</tr>
 			</table>
-			<input type='hidden' name='page' value='<?php print get_request_var('page');?>'>
+			<input type='hidden' id='page' value='<?php print get_request_var('page');?>'>
 		</form>
 		<script type='text/javascript'>
 		function applyFilter() {

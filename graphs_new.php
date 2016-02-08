@@ -398,37 +398,32 @@ function host_new_graphs($host_id, $host_template_id, $selected_graphs_array) {
 function graphs() {
 	global $item_rows;
 
+	/* ================= input validation and session storage ================= */
+	$filters = array(
+		'rows' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'pageset' => true,
+			'default' => read_config_option('num_rows_table')
+			),
+		'filter' => array(
+			'filter' => FILTER_CALLBACK, 
+			'pageset' => true,
+			'default' => '', 
+			'options' => array('options' => 'sanitize_search_string')
+			),
+		'host_id' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'pageset' => true,
+			'default' => db_fetch_cell('SELECT id FROM host ORDER BY description, hostname LIMIT 1')
+			),
+		'graph_type' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'default' => read_config_option('default_graphs_new_dropdown')
+			)
+	);
+
+	validate_store_request_vars($filters, 'sess_grn');
 	/* ================= input validation ================= */
-	get_filter_request_var('host_id');
-	get_filter_request_var('graph_type');
-	get_filter_request_var('rows');
-	/* ==================================================== */
-
-	/* clean up search string */
-	if (isset($_REQUEST['filter'])) {
-		$_REQUEST['filter'] = sanitize_search_string(get_request_var('filter'));
-	}
-
-	/* if the user pushed the 'clear' button */
-	if (isset($_REQUEST['clear'])) {
-		kill_session_var('sess_graphs_new_filter');
-		kill_session_var('sess_default_rows');
-		unset($_REQUEST['filter']);
-		unset($_REQUEST['rows']);
-		$changed = true;
-	}else{
-		/* if any of the settings changed, reset the page number */
-		$changed = false;
-		$changed += check_changed('host_id',    'sess_graphs_new_host_id');
-		$changed += check_changed('graph_type', 'sess_graphs_new_graph_type');
-		$changed += check_changed('filter',     'sess_graphs_new_filter');
-		$changed += check_changed('rows',       'sess_default_rows');
-	}
-
-	load_current_session_value('host_id',    'sess_graphs_new_host_id',    db_fetch_cell('SELECT id FROM host ORDER BY description, hostname LIMIT 1'));
-	load_current_session_value('graph_type', 'sess_graphs_new_graph_type', read_config_option('default_graphs_new_dropdown'));
-	load_current_session_value('filter',     'sess_graphs_new_filter',     '');
-	load_current_session_value('rows',       'sess_default_rows',          read_config_option('num_rows_table'));
 
 	if (!isempty_request_var('host_id')) {
 		$host   = db_fetch_row_prepared('SELECT id, description, hostname, host_template_id FROM host WHERE id = ?', array(get_request_var('host_id')));
@@ -544,7 +539,7 @@ function graphs() {
 
 	$i = 0;
 
-	if ($changed) {
+	if (get_request_var('changed')) {
 		foreach($snmp_queries as $query) {
 			kill_session_var('sess_graphs_new_page' . $query['id']);
 			unset_request_var('page' . $query['id']);
@@ -656,7 +651,7 @@ function graphs() {
 			foreach ($snmp_queries as $snmp_query) {
 				unset($total_rows);
 
-				if (!$changed) {
+				if (!get_request_var('changed')) {
 					$page = get_request_var('page' . $snmp_query['id']);
 				}else{
 					$page = 1;

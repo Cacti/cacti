@@ -502,6 +502,7 @@ function validate_store_request_vars($filters, $sess_prefix) {
 
 	if ($changed) {
 		set_request_var('page', 1);
+		set_request_var('changed', 1);
 	}
 }
 

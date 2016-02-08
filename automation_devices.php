@@ -50,91 +50,61 @@ $networks   = array_rekey(db_fetch_assoc('SELECT an.id, an.name
 	ON an.id=ad.network_id 
 	ORDER BY name'), 'id', 'name');
 
+/* ================= input validation and session storage ================= */
+$filters = array(
+	'rows' => array(
+		'filter' => FILTER_VALIDATE_INT, 
+		'pageset' => true,
+		'default' => read_config_option('num_rows_table')
+		),
+	'page' => array(
+		'filter' => FILTER_VALIDATE_INT, 
+		'default' => '1'
+		),
+	'filter' => array(
+		'filter' => FILTER_CALLBACK, 
+		'pageset' => true,
+		'default' => '', 
+		'options' => array('options' => 'sanitize_search_string')
+		),
+	'sort_column' => array(
+		'filter' => FILTER_CALLBACK, 
+		'default' => 'hostname', 
+		'options' => array('options' => 'sanitize_search_string')
+		),
+	'sort_direction' => array(
+		'filter' => FILTER_CALLBACK, 
+		'default' => 'ASC', 
+		'options' => array('options' => 'sanitize_search_string')
+		),
+	'status' => array(
+		'filter' => FILTER_CALLBACK, 
+		'pageset' => true,
+		'default' => '', 
+		'options' => array('options' => 'sanitize_search_string')
+		),
+	'network' => array(
+		'filter' => FILTER_CALLBACK, 
+		'pageset' => true,
+		'default' => '', 
+		'options' => array('options' => 'sanitize_search_string')
+		),
+	'snmp' => array(
+		'filter' => FILTER_CALLBACK, 
+		'pageset' => true,
+		'default' => '', 
+		'options' => array('options' => 'sanitize_search_string')
+		),
+	'os' => array(
+		'filter' => FILTER_CALLBACK, 
+		'pageset' => true,
+		'default' => '', 
+		'options' => array('options' => 'sanitize_search_string')
+		)
+);
+
+validate_store_request_vars($filters, 'sess_autom');
 /* ================= input validation ================= */
-get_filter_request_var('page');
-get_filter_request_var('rows');
-/* ==================================================== */
-
-/* clean up status string */
-if (isset_request_var('status')) {
-	set_request_var('status', sanitize_search_string(get_request_var('status')));
-}
-
-/* clean up network string */
-if (isset_request_var('network')) {
-	set_request_var('network', sanitize_search_string(get_request_var('network')));
-}
-
-/* clean up snmp string */
-if (isset_request_var('snmp')) {
-	set_request_var('snmp', sanitize_search_string(get_request_var('snmp')));
-}
-
-/* clean up os string */
-if (isset_request_var('os')) {
-	set_request_var('os', sanitize_search_string(get_request_var('os')));
-}
-
-/* clean up filter string */
-if (isset_request_var('filter')) {
-	set_request_var('filter', sanitize_search_string(get_request_var('filter')));
-}
-
-/* clean up sort_column */
-if (isset_request_var('sort_column')) {
-	set_request_var('sort_column', sanitize_search_string(get_request_var('sort_column')));
-}
-
-/* clean up search string */
-if (isset_request_var('sort_direction')) {
-	set_request_var('sort_direction', sanitize_search_string(get_request_var('sort_direction')));
-}
-
-/* if the user pushed the 'clear' button */
-if (isset_request_var('clear')) {
-	kill_session_var('sess_autom_current_page');
-	kill_session_var('sess_autom_status');
-	kill_session_var('sess_autom_network');
-	kill_session_var('sess_autom_snmp');
-	kill_session_var('sess_autom_os');
-	kill_session_var('sess_autom_filter');
-	kill_session_var('sess_default_rows');
-	kill_session_var('sess_autom_sort_column');
-	kill_session_var('sess_autom_sort_direction');
-
-	unset($_REQUEST['page']);
-	unset($_REQUEST['status']);
-	unset($_REQUEST['network']);
-	unset($_REQUEST['snmp']);
-	unset($_REQUEST['os']);
-	unset($_REQUEST['filter']);
-	unset($_REQUEST['rows']);
-	unset($_REQUEST['sort_column']);
-	unset($_REQUEST['sort_direction']);
-}else{
-	$changed = 0;
-	$changed += check_changed('snmp',   'sess_autom_snmp');
-	$changed += check_changed('status', 'sess_autom_status');
-	$changed += check_changed('network', 'sess_autom_network');
-	$changed += check_changed('os',     'sess_autom_os');
-	$changed += check_changed('rows',   'sess_default_rows');
-	$changed += check_changed('filter', 'sess_autom_filter');
-
-	if ($changed) {
-		$_REQUEST['page'] = 1;
-	}
-}
-
-/* remember these search fields in session vars so we don't have to keep passing them around */
-load_current_session_value('page', 'sess_autom_current_page', '1');
-load_current_session_value('status', 'sess_autom_status', '');
-load_current_session_value('network', 'sess_autom_network', '');
-load_current_session_value('snmp', 'sess_autom_snmp', '');
-load_current_session_value('os', 'sess_autom_os', '');
-load_current_session_value('filter', 'sess_autom_filter', '');
-load_current_session_value('rows', 'sess_default_rows', read_config_option('num_rows_table'));
-load_current_session_value('sort_column', 'sess_autom_sort_column', 'hostname');
-load_current_session_value('sort_direction', 'sess_autom_sort_direction', 'ASC');
 
 $sql_where  = '';
 $status     = get_request_var('status');

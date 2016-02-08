@@ -68,49 +68,37 @@ switch (get_request_var('action')) {
 function manager(){
 	global $manager_actions, $item_rows;
 
+	/* ================= input validation and session storage ================= */
+	$filters = array(
+		'rows' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'pageset' => true,
+			'default' => read_config_option('num_rows_table')
+			),
+		'page' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'default' => '1'
+			),
+		'filter' => array(
+			'filter' => FILTER_CALLBACK, 
+			'pageset' => true,
+			'default' => '', 
+			'options' => array('options' => 'sanitize_search_string')
+			),
+		'sort_column' => array(
+			'filter' => FILTER_CALLBACK, 
+			'default' => 'hostname', 
+			'options' => array('options' => 'sanitize_search_string')
+			),
+		'sort_direction' => array(
+			'filter' => FILTER_CALLBACK, 
+			'default' => 'ASC', 
+			'options' => array('options' => 'sanitize_search_string')
+			)
+	);
+
+	validate_store_request_vars($filters, 'sess_snmp_mgr');
 	/* ================= input validation ================= */
-	get_filter_request_var('page');
-	get_filter_request_var('rows');
-	/* ==================================================== */
-
-	/* clean up search string */
-	if (isset($_REQUEST['filter'])) {
-		$_REQUEST['filter'] = sanitize_search_string(get_request_var('filter'));
-	}
-
-	/* clean up sort_column */
-	if (isset($_REQUEST['sort_column'])) {
-		$_REQUEST['sort_column'] = sanitize_search_string(get_request_var('sort_column'));
-	}
-
-	/* clean up sort_direction string */
-	if (isset($_REQUEST['sort_direction'])) {
-		$_REQUEST['sort_direction'] = sanitize_search_string(get_request_var('sort_direction'));
-	}
-
-	/* if the user pushed the 'clear' button */
-	if (isset($_REQUEST['clear'])) {
-		kill_session_var('sess_snmp_mgr_current_page');
-		kill_session_var('sess_snmp_mgr_filter');
-		kill_session_var('sess_snmp_mgr_rows');
-		kill_session_var('sess_snmp_mgr_sort_column');
-		kill_session_var('sess_snmp_mgr_sort_direction');
-
-		unset($_REQUEST['page']);
-		unset($_REQUEST['filter']);
-		unset($_REQUEST['rows']);
-		unset($_REQUEST['sort_column']);
-		unset($_REQUEST['sort_direction']);
-	}
-
-	/* remember these search fields in session vars so we don't have to keep passing them around */
-	load_current_session_value('page', 'sess_snmp_mgr_current_page', '1');
-	load_current_session_value('filter', 'sess_snmp_mgr_filter', '');
-	load_current_session_value('rows', 'sess_default_rows', read_config_option('num_rows_table'));
-	load_current_session_value('sort_column', 'sess_snmp_mgr_sort_column', 'hostname');
-	load_current_session_value('sort_direction', 'sess_snmp_mgr_sort_direction', 'ASC');
-
-	display_output_messages();
 
 	?>
 	<script type="text/javascript">
@@ -414,39 +402,49 @@ function manager_notifications($id){
 	if (!$id | !is_numeric($id)) {
 		die_html_input_error();
 	}
+
 	if (!in_array(get_request_var('mib'), $registered_mibs) && get_request_var('mib') != '-1' && get_request_var('mib') != '') {
 		die_html_input_error();
 	}
-	get_filter_request_var('page');
-
 	/* ==================================================== */
 
-	/* clean up search filter */
-	if (isset($_REQUEST['filter'])) {
-		$_REQUEST['filter'] = sanitize_search_string(get_request_var('filter'));
-	}
+	/* ================= input validation and session storage ================= */
+	$filters = array(
+		'rows' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'pageset' => true,
+			'default' => read_config_option('num_rows_table')
+			),
+		'page' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'default' => '1'
+			),
+		'filter' => array(
+			'filter' => FILTER_CALLBACK, 
+			'pageset' => true,
+			'default' => '', 
+			'options' => array('options' => 'sanitize_search_string')
+			),
+		'mib' => array(
+			'filter' => FILTER_CALLBACK, 
+			'pageset' => true,
+			'default' => '-1', 
+			'options' => array('options' => 'sanitize_search_string')
+			),
+		'sort_column' => array(
+			'filter' => FILTER_CALLBACK, 
+			'default' => 'name', 
+			'options' => array('options' => 'sanitize_search_string')
+			),
+		'sort_direction' => array(
+			'filter' => FILTER_CALLBACK, 
+			'default' => 'ASC', 
+			'options' => array('options' => 'sanitize_search_string')
+			)
+	);
 
-	/* if the user pushed the 'clear' button */
-	if (isset($_REQUEST['clear'])) {
-		kill_session_var('sess_snmp_cache_mib');
-		kill_session_var('sess_snmp_cache_current_page');
-		kill_session_var('sess_snmp_cache_filter');
-		unset($_REQUEST['mib']);
-		unset($_REQUEST['page']);
-		unset($_REQUEST['filter']);
-	}
-
-	/* reset the current page if the user changed the mib filter*/
-	if (isset($_SESSION['sess_snmp_cache_mib']) && get_request_var('mib') != $_SESSION['sess_snmp_cache_mib']) {
-		kill_session_var('sess_snmp_cache_current_page');
-		unset($_REQUEST['page']);
-	}
-
-	/* remember these search fields in session vars so we don't have to keep passing them around */
-	load_current_session_value('page', 'sess_snmp_cache_current_page', '1');
-	load_current_session_value('rows', 'sess_default_rows', read_config_option('num_rows_table'));
-	load_current_session_value('mib', 'sess_snmp_cache_mib', '-1');
-	load_current_session_value('filter', 'sess_snmp_cache_filter', '');
+	validate_store_request_vars($filters, 'sess_snmp_cache');
+	/* ================= input validation ================= */
 
 	?>
 	<script type="text/javascript">
@@ -630,6 +628,11 @@ function manager_logs($id) {
 		SNMPAGENT_EVENT_SEVERITY_CRITICAL => '#FF00FF'
 	);
 
+	if (isset_request_var('purge')) {
+		db_execute_prepared('DELETE FROM snmpagent_notifications_log WHERE manager_id = ?', array($id));
+		set_request_var('clear', true);
+	}
+
 	/* ================= input validation ================= */
 	if (!$id | !is_numeric($id)) {
 		die_html_input_error();
@@ -640,46 +643,40 @@ function manager_logs($id) {
 	get_filter_request_var('page');
 	/* ==================================================== */
 
-	/* clean up search filter */
-	if (isset($_REQUEST['filter'])) {
-		$_REQUEST['filter'] = sanitize_search_string(get_request_var('filter'));
-	}
-	if (isset($_REQUEST['purge_snmpagent__manager_logs_x'])) {
-		db_execute_prepared('DELETE FROM snmpagent_notifications_log WHERE manager_id = ?', array($id));
-		/* reset filters */
-		$_REQUEST['clear_snmpagent__manager_logs_x'] = true;
-	}
+	/* ================= input validation and session storage ================= */
+	$filters = array(
+		'rows' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'pageset' => true,
+			'default' => read_config_option('num_rows_table')
+			),
+		'page' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'default' => '1'
+			),
+		'filter' => array(
+			'filter' => FILTER_CALLBACK, 
+			'pageset' => true,
+			'default' => '', 
+			'options' => array('options' => 'sanitize_search_string')
+			),
+		'severity' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'default' => '-1'
+			)
+	);
 
-	/* if the user pushed the 'clear' button */
-	if (isset($_REQUEST['clear_snmpagent__manager_logs_x'])) {
-		kill_session_var('sess_snmp_logs_severity');
-		kill_session_var('sess_snmp_logs_current_page');
-		kill_session_var('sess_snmp_logs_filter');
-		unset($_REQUEST['severity']);
-		unset($_REQUEST['page']);
-		unset($_REQUEST['filter']);
-	}
-
-	/* reset the current page if the user changed the mib filter*/
-	if (isset($_SESSION['sess_snmp_logs_severity']) && get_request_var('severity') != $_SESSION['sess_snmp_logs_severity']) {
-		kill_session_var('sess_snmp_cache_current_page');
-		unset($_REQUEST['page']);
-	}
-
-	/* remember these search fields in session vars so we don't have to keep passing them around */
-	load_current_session_value('page', 'sess_snmp_logs_current_page', '1');
-	load_current_session_value('rows', 'sess_default_rows', read_config_option('num_rows_table'));
-	load_current_session_value('severity', 'sess_snmp_logs_severity', '-1');
-	load_current_session_value('filter', 'sess_snmp_logs_filter', '');
+	validate_store_request_vars($filters, 'sess_snmp_logs');
+	/* ================= input validation ================= */
 
 	?>
 	<script type='text/javascript'>
 
 	function applyFilter(objForm) {
-		strURL = '?severity=' + objForm.severity.value;
-		strURL = strURL + '&filter=' + objForm.filter.value;
-		strURL = strURL + '&action=edit&tab=logs&id=<?php print $_REQUEST['id']; ?>';
-		document.location = strURL;
+		strURL  = '?header=false&severity=' + $('#severity').val();
+		strURL += '&filter=' + $('#filter').val();
+		strURL += '&action=edit&tab=logs&id=<?php print get_request_var('id'); ?>';
+		loadPageNoHeader(strURL);
 	}
 
 	</script>
@@ -718,10 +715,10 @@ function manager_logs($id) {
 						</td>
 					</tr>
 				</table>
-				<input type='hidden' id='page' value='<?php print $_REQUEST['page'];?>'>
+				<input type='hidden' id='page' value='<?php print get_request_var('page');?>'>
 				<input type='hidden' name='action' value='edit'>
 				<input type='hidden' name='tab' value='logs'>
-				<input type='hidden' id='id' value='<?php print $_REQUEST['id']; ?>'>
+				<input type='hidden' id='id' value='<?php print get_request_var('id'); ?>'>
 			</form>
 		</td>
 	</tr>

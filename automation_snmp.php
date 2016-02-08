@@ -513,21 +513,9 @@ function automation_snmp_item_edit() {
 function automation_snmp_edit() {
 	global $config, $fields_automation_snmp_edit;
 
-	#include_once($config["base_path"]."/plugins/mactrack/lib/automation_functions.php");
-
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
-	get_filter_request_var('page');
 	/* ==================================================== */
-
-	/* clean up rule name */
-	if (isset($_REQUEST['name'])) {
-		$_REQUEST['name'] = sanitize_search_string(get_request_var('name'));
-	}
-
-	/* remember these search fields in session vars so we don't have to keep passing them around */
-	load_current_session_value('page', 'sess_autom_snmp_edit_current_page', '1');
-	load_current_session_value('rows', 'sess_default_rows', read_config_option('num_rows_table'));
 
 	/* display the mactrack snmp option set */
 	$snmp_group = array();
@@ -664,59 +652,42 @@ function automation_snmp_edit() {
 function automation_snmp() {
 	global $config, $item_rows, $automation_snmp_actions;
 
-	/* ================= input validation ================= */
-	get_filter_request_var('page');
-	get_filter_request_var('rows');
-	/* ==================================================== */
+	/* ================= input validation and session storage ================= */
+	$filters = array(
+		'rows' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'pageset' => true,
+			'default' => read_config_option('num_rows_table')
+			),
+		'page' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'default' => '1'
+			),
+		'filter' => array(
+			'filter' => FILTER_CALLBACK, 
+			'pageset' => true,
+			'default' => '', 
+			'options' => array('options' => 'sanitize_search_string')
+			),
+		'sort_column' => array(
+			'filter' => FILTER_CALLBACK, 
+			'default' => 'name', 
+			'options' => array('options' => 'sanitize_search_string')
+			),
+		'sort_direction' => array(
+			'filter' => FILTER_CALLBACK, 
+			'default' => 'ASC', 
+			'options' => array('options' => 'sanitize_search_string')
+			)
+	);
 
-	/* clean up search string */
-	if (isset($_REQUEST['filter'])) {
-		$_REQUEST['filter'] = sanitize_search_string(get_request_var('filter'));
-	}
-
-	/* clean up sort_column string */
-	if (isset($_REQUEST['sort_column'])) {
-		$_REQUEST['sort_column'] = sanitize_search_string(get_request_var('sort_column'));
-	}
-
-	/* clean up sort_direction string */
-	if (isset($_REQUEST['sort_direction'])) {
-		$_REQUEST['sort_direction'] = sanitize_search_string(get_request_var('sort_direction'));
-	}
-
-	/* if the user pushed the 'clear' button */
-	if (isset($_REQUEST['clear'])) {
-		kill_session_var('sess_autom_snmp_current_page');
-		kill_session_var('sess_autom_snmp_filter');
-		kill_session_var('sess_autom_snmp_sort_column');
-		kill_session_var('sess_autom_snmp_sort_direction');
-		kill_session_var('sess_default_rows');
-
-		unset($_REQUEST['page']);
-		unset($_REQUEST['filter']);
-		unset($_REQUEST['sort_column']);
-		unset($_REQUEST['sort_direction']);
-		unset($_REQUEST['rows']);
-	}else{
-		$changed = 0;
-		$changed += check_changed('rows',   'sess_default_rows');
-		$changed += check_changed('filter', 'sess_autom_snmp_filter');
-
-		if ($changed) {
-			$_REQUEST['page'] = 1;
-		}
-	}
-
-	/* remember these search fields in session vars so we don't have to keep passing them around */
-	load_current_session_value('page', 'sess_autom_snmp_current_page', '1');
-	load_current_session_value('filter', 'sess_autom_snmp_filter', '');
-	load_current_session_value('sort_column', 'sess_autom_snmp_sort_column', 'name');
-	load_current_session_value('sort_direction', 'sess_autom_snmp_sort_direction', 'ASC');
-	load_current_session_value('rows', 'sess_default_rows', read_config_option('num_rows_table'));
+	validate_store_request_vars($filters, 'sess_autom_snmp');
 
 	/* if the number of rows is -1, set it to the default */
-	if ($_REQUEST['rows'] == -1) {
-		$_REQUEST['rows'] = read_config_option('num_rows_table');
+	if (get_request_var('rows') == -1) {
+		$rows = read_config_option('num_rows_table');
+	}else{
+		$rows = get_request_var('rows');
 	}
 
 	form_start('automation_snmp.php', 'automation_snmp');
@@ -801,9 +772,9 @@ function automation_snmp() {
 		GROUP BY asnmp.id
 		$sql_where
 		ORDER BY " . get_request_var('sort_column') . ' ' . get_request_var('sort_direction') . '
-		LIMIT ' . (get_request_var('rows')*(get_request_var('page')-1)) . ',' . get_request_var('rows'));
+		LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows);
 
-	$nav = html_nav_bar('automation_snmp.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), get_request_var('rows'), $total_rows, 12, 'SNMP Option Sets');
+	$nav = html_nav_bar('automation_snmp.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 12, 'SNMP Option Sets');
 
 	print $nav;
 
@@ -846,10 +817,10 @@ function automation_snmp() {
 
 	?>
 	<script type='text/javascript'>
-	function applyViewmactrackFilterChange(objForm) {
-		strURL = 'automation_snmp.php?rows=' + objForm.rows.value;
-		strURL = strURL + '&filter=' + objForm.filter.value;
-		document.location = strURL;
+	function applyFilter() {
+		strURL  = 'automation_snmp.php?header=false&rows=' + $('#rows').val();
+		strURL += strURL + '&filter=' + $('#filter').val();
+		loadPageNoHeader(strURL);
 	}
 	</script>
 	<?php

@@ -41,7 +41,11 @@ get_filter_request_var('tree_id');
 get_filter_request_var('graphs');
 get_filter_request_var('rows');
 get_filter_request_var('hide');
-get_filter_request_var('leaf_id');
+
+if (!isempty_request_var('leaf_id')) {
+	get_filter_request_var('leaf_id');
+}
+
 get_filter_request_var('rra_id');
 get_filter_request_var('columns');
 get_filter_request_var('predefined_timespan');
@@ -339,57 +343,55 @@ case 'list':
 		print "<font class='txtErrorTextBox'>YOU DO NOT HAVE RIGHTS FOR LIST VIEW</font>"; return;
 	}
 
-	/* ================= input validation ================= */
-	get_filter_request_var('host_id');
-	get_filter_request_var('graph_template_id');
-	get_filter_request_var('rows');
-	get_filter_request_var('page');
-	/* ==================================================== */
-
-	/* clean up search string */
-	if (isset_request_var('filter')) {
-		set_request_var('filter', sanitize_search_string(get_request_var('filter')));
-	}
-
 	/* reset the graph list on a new viewing */
-	if (!isset($_REQUEST['page'])) {
-		$_REQUEST['graph_list'] = '';
-		$_REQUEST['page'] = 1;
+	if (!isset_request_var('page')) {
+		set_request_var('graph_list', '');
+		set_request_var('page', 1);
 	}
 
-	/* if the user pushed the 'clear' button */
-	if (isset($_REQUEST['clear'])) {
-		kill_session_var('sess_graph_view_list_current_page');
-		kill_session_var('sess_graph_view_list_filter');
-		kill_session_var('sess_graph_view_list_host');
-		kill_session_var('sess_graph_view_list_graph_template');
-		kill_session_var('sess_graph_view_list_rows');
-		kill_session_var('sess_graph_view_list_graph_list');
+	/* ================= input validation and session storage ================= */
+	$filters = array(
+		'rows' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'pageset' => true,
+			'default' => read_config_option('num_rows_table')
+			),
+		'page' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'default' => '1'
+			),
+		'filter' => array(
+			'filter' => FILTER_CALLBACK, 
+			'pageset' => true,
+			'default' => '', 
+			'options' => array('options' => 'sanitize_search_string')
+			),
+		'graph_template_id' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'pageset' => true,
+			'default' => '0'
+			),
+		'host_id' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'pageset' => true,
+			'default' => '-1'
+			),
+		'graph_list' => array(
+			'filter' => FILTER_DEFAULT,
+			'default' => ''
+			),
+		'graph_add' => array(
+			'filter' => FILTER_DEFAULT,
+			'default' => ''
+			),
+		'graph_remove' => array(
+			'filter' => FILTER_DEFAULT,
+			'default' => ''
+			)
+	);
 
-		unset($_REQUEST['page']);
-		unset($_REQUEST['rows']);
-		unset($_REQUEST['filter']);
-		unset($_REQUEST['host_id']);
-		unset($_REQUEST['graph_template_id']);
-		unset($_REQUEST['graph_list']);
-		unset($_REQUEST['graph_add']);
-		unset($_REQUEST['graph_remove']);
-	}else{
-		/* if any of the settings changed, reset the page number */
-		$changed = false;
-		$changed += check_changed('host_id', 'sess_graph_view_list_host');
-		$changed += check_changed('rows', 'sess_graph_view_list_rows');
-		$changed += check_changed('graph_template_id', 'sess_graph_view_list_graph_template');
-		$changed += check_changed('filter', 'sess_graph_view_list_filter');
-		if ($changed) $_REQUEST['page'] = 1;
-	}
-
-	load_current_session_value('host_id', 'sess_graph_view_list_host', '-1');
-	load_current_session_value('graph_template_id', 'sess_graph_view_list_graph_template', '0');
-	load_current_session_value('filter', 'sess_graph_view_list_filter', '');
-	load_current_session_value('page', 'sess_graph_view_list_current_page', '1');
-	load_current_session_value('rows', 'sess_default_rows', read_config_option('num_rows_table'));
-	load_current_session_value('graph_list', 'sess_graph_view_list_graph_list', '');
+	validate_store_request_vars($filters, 'sess_gl');
+	/* ================= input validation ================= */
 
 	/* save selected graphs into url */
 	if (!isempty_request_var('graph_list')) {
@@ -414,7 +416,7 @@ case 'list':
 	}
 
 	/* update the revised graph list session variable */
-	set_request_var('graph_limit', implode(',', array_keys($graph_list)));
+	set_request_var('graph_list', implode(',', array_keys($graph_list)));
 	load_current_session_value('graph_list', 'sess_graph_view_list_graph_list', '');
 
 	/* display graph view filter selector */

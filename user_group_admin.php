@@ -1572,48 +1572,43 @@ function group_edit() {
 function user_group() {
 	global $group_actions, $item_rows;
 
+	/* ================= input validation and session storage ================= */
+	$filters = array(
+		'rows' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'pageset' => true,
+			'default' => read_config_option('num_rows_table')
+			),
+		'page' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'default' => '1'
+			),
+		'filter' => array(
+			'filter' => FILTER_CALLBACK, 
+			'pageset' => true,
+			'default' => '', 
+			'options' => array('options' => 'sanitize_search_string')
+			),
+		'sort_column' => array(
+			'filter' => FILTER_CALLBACK, 
+			'default' => 'name', 
+			'options' => array('options' => 'sanitize_search_string')
+			),
+		'sort_direction' => array(
+			'filter' => FILTER_CALLBACK, 
+			'default' => 'ASC', 
+			'options' => array('options' => 'sanitize_search_string')
+			),
+		'has_graphs' => array(
+			'filter' => FILTER_VALIDATE_REGEXP, 
+			'options' => array('options' => array('regexp' => '(true|false)')),
+			'pageset' => true,
+			'default' => 'true'
+			)
+	);
+
+	validate_store_request_vars($filters, 'sess_ugad');
 	/* ================= input validation ================= */
-	get_filter_request_var('page');
-	get_filter_request_var('rows');
-	/* ==================================================== */
-
-	/* clean up search string */
-	if (isset($_REQUEST['filter'])) {
-		$_REQUEST['filter'] = sanitize_search_string(get_request_var('filter'));
-	}
-
-	/* clean up sort_column */
-	if (isset($_REQUEST['sort_column'])) {
-		$_REQUEST['sort_column'] = sanitize_search_string(get_request_var('sort_column'));
-	}
-
-	/* clean up sort_direction string */
-	if (isset($_REQUEST['sort_direction'])) {
-		$_REQUEST['sort_direction'] = sanitize_search_string(get_request_var('sort_direction'));
-	}
-
-	/* if the user pushed the 'clear' button */
-	if (isset($_REQUEST['clear'])) {
-		kill_session_var('sess_user_group_admin_page');
-		kill_session_var('sess_user_group_admin_rows');
-		kill_session_var('sess_user_group_admin_filter');
-		kill_session_var('sess_user_group_admin_sort_column');
-		kill_session_var('sess_user_group_admin_sort_direction');
-
-		unset($_REQUEST['page']);
-		unset($_REQUEST['rows']);
-		unset($_REQUEST['filter']);
-		unset($_REQUEST['sort_column']);
-		unset($_REQUEST['sort_direction']);
-	}else{
-	}
-
-	/* remember these search fields in session vars so we don't have to keep passing them around */
-	load_current_session_value('page', 'sess_user_group_admin_page', '1');
-	load_current_session_value('rows', 'sess_user_group_admin_rows', '-1');
-	load_current_session_value('filter', 'sess_user_group_admin_filter', '');
-	load_current_session_value('sort_column', 'sess_user_group_admin_sort_column', 'name');
-	load_current_session_value('sort_direction', 'sess_user_group_admin_sort_direction', 'ASC');
 
 	?>
 	<script type='text/javascript'>
@@ -1770,325 +1765,168 @@ function user_group() {
 }
 
 function process_graph_request_vars() {
+	/* ================= input validation and session storage ================= */
+	$filters = array(
+		'rows' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'pageset' => true,
+			'default' => read_config_option('num_rows_table')
+			),
+		'page' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'default' => '1'
+			),
+		'filter' => array(
+			'filter' => FILTER_CALLBACK, 
+			'pageset' => true,
+			'default' => '', 
+			'options' => array('options' => 'sanitize_search_string')
+			),
+		'associated' => array(
+			'filter' => FILTER_VALIDATE_REGEXP, 
+			'options' => array('options' => array('regexp' => '(true|false)')),
+			'pageset' => true,
+			'default' => 'true'
+			),
+		'graph_template_id' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'pageset' => true,
+			'default' => '-1'
+			)
+	);
+
+	validate_store_request_vars($filters, 'sess_ugg');
 	/* ================= input validation ================= */
-	get_filter_request_var('graph_template_id');
-	get_filter_request_var('rows');
-	get_filter_request_var('page');
-	/* ==================================================== */
-
-	/* clean up search string */
-	if (isset($_REQUEST['filter'])) {
-		$_REQUEST['filter'] = sanitize_search_string(get_request_var('filter'));
-	}
-
-	/* clean up sort solumn */
-	if (isset($_REQUEST['sort_column'])) {
-		$_REQUEST['sort_column'] = sanitize_search_string(get_request_var('sort_column'));
-	}
-
-	/* clean up sort direction */
-	if (isset($_REQUEST['sort_direction'])) {
-		$_REQUEST['sort_direction'] = sanitize_search_string(get_request_var('sort_direction'));
-	}
-
-	/* clean up associated */
-	if (isset($_REQUEST['associated'])) {
-		$_REQUEST['associated'] = sanitize_search_string(get_request_var('associated'));
-	}elseif (isset($_SESSION['sess_ugg_associated'])) {
-		$_REQUEST['associated'] = $_SESSION['sess_ugg_associated'];
-	}
-
-	/* if the user pushed the 'clear' button */
-	if (isset($_REQUEST['clearf'])) {
-		kill_session_var('sess_ugg_page');
-		kill_session_var('sess_default_rows');
-		kill_session_var('sess_ugg_filter');
-		kill_session_var('sess_ugg_graph_template_id');
-		kill_session_var('sess_ugg_associated');
-		kill_session_var('sess_ugg_sort_column');
-		kill_session_var('sess_ugg_sort_direction');
-
-		unset($_REQUEST['page']);
-		unset($_REQUEST['rows']);
-		unset($_REQUEST['filter']);
-		unset($_REQUEST['graph_template_id']);
-		unset($_REQUEST['associated']);
-		unset($_REQUEST['sort_column']);
-		unset($_REQUEST['sort_direction']);
-	}else{
-		$changed = 0;
-		$changed += check_changed('rows', 'sess_default_rows');
-		$changed += check_changed('filter', 'sess_ugg_filter');
-		$changed += check_changed('graph_template_id', 'sess_ugg_graph_template_id');
-		$changed += check_changed('associated', 'sess_ugg_associated');
-		$changed += check_changed('sort_column', 'sess_ugg_sort_column');
-		$changed += check_changed('sort_direction', 'sess_ugg_sort_direction');
-		if ($changed) {
-			$_REQUEST['page'] = '1';
-		}
-	}
-
-	/* remember these search fields in session vars so we don't have to keep passing them around */
-	load_current_session_value('page', 'sess_ugg_page', '1');
-	load_current_session_value('filter', 'sess_ugg_filter', '');
-	load_current_session_value('associated', 'sess_ugg_associated', 'true');
-	load_current_session_value('graph_template_id', 'sess_ugd_graph_template_id', '-1');
-	load_current_session_value('rows', 'sess_default_rows', read_config_option('num_rows_table'));
 }
 
 function process_device_request_vars() {
+	/* ================= input validation and session storage ================= */
+	$filters = array(
+		'rows' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'pageset' => true,
+			'default' => read_config_option('num_rows_table')
+			),
+		'page' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'default' => '1'
+			),
+		'filter' => array(
+			'filter' => FILTER_CALLBACK, 
+			'pageset' => true,
+			'default' => '', 
+			'options' => array('options' => 'sanitize_search_string')
+			),
+		'associated' => array(
+			'filter' => FILTER_VALIDATE_REGEXP, 
+			'options' => array('options' => array('regexp' => '(true|false)')),
+			'pageset' => true,
+			'default' => 'true'
+			),
+		'host_template_id' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'pageset' => true,
+			'default' => '-1'
+			)
+	);
+
+	validate_store_request_vars($filters, 'sess_ugd');
 	/* ================= input validation ================= */
-	get_filter_request_var('host_template_id');
-	get_filter_request_var('rows');
-	get_filter_request_var('page');
-	/* ==================================================== */
-
-	/* clean up search string */
-	if (isset($_REQUEST['filter'])) {
-		$_REQUEST['filter'] = sanitize_search_string(get_request_var('filter'));
-	}
-
-	/* clean up sort solumn */
-	if (isset($_REQUEST['sort_column'])) {
-		$_REQUEST['sort_column'] = sanitize_search_string(get_request_var('sort_column'));
-	}
-
-	/* clean up sort direction */
-	if (isset($_REQUEST['sort_direction'])) {
-		$_REQUEST['sort_direction'] = sanitize_search_string(get_request_var('sort_direction'));
-	}
-
-	/* clean up associated */
-	if (isset($_REQUEST['associated'])) {
-		$_REQUEST['associated'] = sanitize_search_string(get_request_var('associated'));
-	}elseif (isset($_SESSION['sess_ugd_associated'])) {
-		$_REQUEST['associated'] = $_SESSION['sess_ugd_associated'];
-	}
-
-	/* if the user pushed the 'clear' button */
-	if (isset($_REQUEST['clearf'])) {
-		kill_session_var('sess_ugd_page');
-		kill_session_var('sess_default_rows');
-		kill_session_var('sess_ugd_filter');
-		kill_session_var('sess_ugd_host_template_id');
-		kill_session_var('sess_ugd_associated');
-		kill_session_var('sess_ugd_sort_column');
-		kill_session_var('sess_ugd_sort_direction');
-
-		unset($_REQUEST['page']);
-		unset($_REQUEST['rows']);
-		unset($_REQUEST['filter']);
-		unset($_REQUEST['host_template_id']);
-		unset($_REQUEST['associated']);
-		unset($_REQUEST['sort_column']);
-		unset($_REQUEST['sort_direction']);
-	}else{
-		$changed = 0;
-		$changed += check_changed('rows', 'sess_default_rows');
-		$changed += check_changed('filter', 'sess_ugd_filter');
-		$changed += check_changed('host_template_id', 'sess_ugd_host_template_id');
-		$changed += check_changed('associated', 'sess_ugd_associated');
-		$changed += check_changed('sort_column', 'sess_ugd_sort_column');
-		$changed += check_changed('sort_direction', 'sess_ugd_sort_direction');
-		if ($changed) {
-			$_REQUEST['page'] = '1';
-		}
-	}
-
-	/* remember these search fields in session vars so we don't have to keep passing them around */
-	load_current_session_value('page', 'sess_ugd_page', '1');
-	load_current_session_value('filter', 'sess_ugd_filter', '');
-	load_current_session_value('associated', 'sess_ugd_associated', 'true');
-	load_current_session_value('host_template_id', 'sess_ugd_host_template_id', '-1');
-	load_current_session_value('rows', 'sess_default_rows', read_config_option('num_rows_table'));
 }
 
 function process_template_request_vars() {
+	/* ================= input validation and session storage ================= */
+	$filters = array(
+		'rows' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'pageset' => true,
+			'default' => read_config_option('num_rows_table')
+			),
+		'page' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'default' => '1'
+			),
+		'filter' => array(
+			'filter' => FILTER_CALLBACK, 
+			'pageset' => true,
+			'default' => '', 
+			'options' => array('options' => 'sanitize_search_string')
+			),
+		'associated' => array(
+			'filter' => FILTER_VALIDATE_REGEXP, 
+			'options' => array('options' => array('regexp' => '(true|false)')),
+			'pageset' => true,
+			'default' => 'true'
+			),
+		'host_template_id' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'pageset' => true,
+			'default' => '-1'
+			)
+	);
+
+	validate_store_request_vars($filters, 'sess_ugte');
 	/* ================= input validation ================= */
-	get_filter_request_var('rows');
-	get_filter_request_var('page');
-	/* ==================================================== */
-
-	/* clean up search string */
-	if (isset($_REQUEST['filter'])) {
-		$_REQUEST['filter'] = sanitize_search_string(get_request_var('filter'));
-	}
-
-	/* clean up sort solumn */
-	if (isset($_REQUEST['sort_column'])) {
-		$_REQUEST['sort_column'] = sanitize_search_string(get_request_var('sort_column'));
-	}
-
-	/* clean up sort direction */
-	if (isset($_REQUEST['sort_direction'])) {
-		$_REQUEST['sort_direction'] = sanitize_search_string(get_request_var('sort_direction'));
-	}
-
-	/* clean up associated */
-	if (isset($_REQUEST['associated'])) {
-		$_REQUEST['associated'] = sanitize_search_string(get_request_var('associated'));
-	}elseif (isset($_SESSION['sess_ugte_associated'])) {
-		$_REQUEST['associated'] = $_SESSION['sess_ugte_associated'];
-	}
-
-	/* if the user pushed the 'clear' button */
-	if (isset($_REQUEST['clearf'])) {
-		kill_session_var('sess_ugte_page');
-		kill_session_var('sess_default_rows');
-		kill_session_var('sess_ugte_filter');
-		kill_session_var('sess_ugte_associated');
-		kill_session_var('sess_ugte_sort_column');
-		kill_session_var('sess_ugte_sort_direction');
-
-		unset($_REQUEST['page']);
-		unset($_REQUEST['rows']);
-		unset($_REQUEST['filter']);
-		unset($_REQUEST['associated']);
-		unset($_REQUEST['sort_column']);
-		unset($_REQUEST['sort_direction']);
-	}else{
-		$changed = 0;
-		$changed += check_changed('rows', 'sess_default_rows');
-		$changed += check_changed('filter', 'sess_ugte_filter');
-		$changed += check_changed('associated', 'sess_ugte_associated');
-		$changed += check_changed('sort_column', 'sess_ugte_sort_column');
-		$changed += check_changed('sort_direction', 'sess_ugte_sort_direction');
-		if ($changed) {
-			$_REQUEST['page'] = '1';
-		}
-	}
-
-	/* remember these search fields in session vars so we don't have to keep passing them around */
-	load_current_session_value('page', 'sess_ugte_page', '1');
-	load_current_session_value('filter', 'sess_ugte_filter', '');
-	load_current_session_value('associated', 'sess_ugte_associated', 'true');
-	load_current_session_value('rows', 'sess_default_rows', read_config_option('num_rows_table'));
 }
 
 function process_tree_request_vars() {
+	/* ================= input validation and session storage ================= */
+	$filters = array(
+		'rows' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'pageset' => true,
+			'default' => read_config_option('num_rows_table')
+			),
+		'page' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'default' => '1'
+			),
+		'filter' => array(
+			'filter' => FILTER_CALLBACK, 
+			'pageset' => true,
+			'default' => '', 
+			'options' => array('options' => 'sanitize_search_string')
+			),
+		'associated' => array(
+			'filter' => FILTER_VALIDATE_REGEXP, 
+			'options' => array('options' => array('regexp' => '(true|false)')),
+			'pageset' => true,
+			'default' => 'true'
+			)
+	);
+
+	validate_store_request_vars($filters, 'sess_ugtr');
 	/* ================= input validation ================= */
-	get_filter_request_var('rows');
-	get_filter_request_var('page');
-	/* ==================================================== */
-
-	/* clean up search string */
-	if (isset($_REQUEST['filter'])) {
-		$_REQUEST['filter'] = sanitize_search_string(get_request_var('filter'));
-	}
-
-	/* clean up sort solumn */
-	if (isset($_REQUEST['sort_column'])) {
-		$_REQUEST['sort_column'] = sanitize_search_string(get_request_var('sort_column'));
-	}
-
-	/* clean up sort direction */
-	if (isset($_REQUEST['sort_direction'])) {
-		$_REQUEST['sort_direction'] = sanitize_search_string(get_request_var('sort_direction'));
-	}
-
-	/* clean up associated */
-	if (isset($_REQUEST['associated'])) {
-		$_REQUEST['associated'] = sanitize_search_string(get_request_var('associated'));
-	}elseif (isset($_SESSION['sess_ugtr_associated'])) {
-		$_REQUEST['associated'] = $_SESSION['sess_ugtr_associated'];
-	}
-
-	/* if the user pushed the 'clear' button */
-	if (isset($_REQUEST['clearf'])) {
-		kill_session_var('sess_ugtr_page');
-		kill_session_var('sess_default_rows');
-		kill_session_var('sess_ugtr_filter');
-		kill_session_var('sess_ugtr_associated');
-		kill_session_var('sess_ugtr_sort_column');
-		kill_session_var('sess_ugtr_sort_direction');
-
-		unset($_REQUEST['page']);
-		unset($_REQUEST['rows']);
-		unset($_REQUEST['filter']);
-		unset($_REQUEST['associated']);
-		unset($_REQUEST['sort_column']);
-		unset($_REQUEST['sort_direction']);
-	}else{
-		$changed = 0;
-		$changed += check_changed('rows', 'sess_default_rows');
-		$changed += check_changed('filter', 'sess_ugtr_filter');
-		$changed += check_changed('associated', 'sess_ugtr_associated');
-		$changed += check_changed('sort_column', 'sess_ugtr_sort_column');
-		$changed += check_changed('sort_direction', 'sess_ugtr_sort_direction');
-		if ($changed) {
-			$_REQUEST['page'] = '1';
-		}
-
-		$reset_multi = false;
-	}
-
-	/* remember these search fields in session vars so we don't have to keep passing them around */
-	load_current_session_value('page', 'sess_ugtr_page', '1');
-	load_current_session_value('filter', 'sess_ugtr_filter', '');
-	load_current_session_value('associated', 'sess_ugtr_associated', 'true');
-	load_current_session_value('rows', 'sess_default_rows', read_config_option('num_rows_table'));
 }
 
 function process_member_request_vars() {
+	/* ================= input validation and session storage ================= */
+	$filters = array(
+		'rows' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'pageset' => true,
+			'default' => read_config_option('num_rows_table')
+			),
+		'page' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'default' => '1'
+			),
+		'filter' => array(
+			'filter' => FILTER_CALLBACK, 
+			'pageset' => true,
+			'default' => '', 
+			'options' => array('options' => 'sanitize_search_string')
+			),
+		'associated' => array(
+			'filter' => FILTER_VALIDATE_REGEXP, 
+			'options' => array('options' => array('regexp' => '(true|false)')),
+			'pageset' => true,
+			'default' => 'true'
+			)
+	);
+
+	validate_store_request_vars($filters, 'sess_ugm');
 	/* ================= input validation ================= */
-	get_filter_request_var('rows');
-	get_filter_request_var('page');
-	/* ==================================================== */
-
-	/* clean up search string */
-	if (isset($_REQUEST['filter'])) {
-		$_REQUEST['filter'] = sanitize_search_string(get_request_var('filter'));
-	}
-
-	/* clean up sort solumn */
-	if (isset($_REQUEST['sort_column'])) {
-		$_REQUEST['sort_column'] = sanitize_search_string(get_request_var('sort_column'));
-	}
-
-	/* clean up sort direction */
-	if (isset($_REQUEST['sort_direction'])) {
-		$_REQUEST['sort_direction'] = sanitize_search_string(get_request_var('sort_direction'));
-	}
-
-	/* clean up associated */
-	if (isset($_REQUEST['associated'])) {
-		$_REQUEST['associated'] = sanitize_search_string(get_request_var('associated'));
-	}elseif (isset($_SESSION['sess_ugm_associated'])) {
-		$_REQUEST['associated'] = $_SESSION['sess_ugm_associated'];
-	}
-
-	/* if the user pushed the 'clear' button */
-	if (isset($_REQUEST['clearf'])) {
-		kill_session_var('sess_ugm_page');
-		kill_session_var('sess_default_rows');
-		kill_session_var('sess_ugm_filter');
-		kill_session_var('sess_ugm_associated');
-		kill_session_var('sess_ugm_sort_column');
-		kill_session_var('sess_ugm_sort_direction');
-
-		unset($_REQUEST['page']);
-		unset($_REQUEST['rows']);
-		unset($_REQUEST['filter']);
-		unset($_REQUEST['associated']);
-		unset($_REQUEST['sort_column']);
-		unset($_REQUEST['sort_direction']);
-	}else{
-		$changed = 0;
-		$changed += check_changed('rows', 'sess_default_rows');
-		$changed += check_changed('filter', 'sess_ugm_filter');
-		$changed += check_changed('associated', 'sess_ugm_associated');
-		$changed += check_changed('sort_column', 'sess_ugm_sort_column');
-		$changed += check_changed('sort_direction', 'sess_ugm_sort_direction');
-		if ($changed) {
-			$_REQUEST['page'] = '1';
-		}
-	}
-
-	/* remember these search fields in session vars so we don't have to keep passing them around */
-	load_current_session_value('page', 'sess_ugm_page', '1');
-	load_current_session_value('filter', 'sess_ugm_filter', '');
-	load_current_session_value('associated', 'sess_ugm_associated', 'true');
-	load_current_session_value('rows', 'sess_default_rows', read_config_option('num_rows_table'));
 }
 
 function graph_filter($header_label) {

@@ -1423,69 +1423,53 @@ function graph_edit() {
 function graph_management() {
 	global $graph_actions, $item_rows;
 
+	/* ================= input validation and session storage ================= */
+	$filters = array(
+		'rows' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'pageset' => true,
+			'default' => read_config_option('num_rows_table')
+			),
+		'page' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'default' => '1'
+			),
+		'filter' => array(
+			'filter' => FILTER_CALLBACK, 
+			'pageset' => true,
+			'default' => '', 
+			'options' => array('options' => 'sanitize_search_string')
+			),
+		'sort_column' => array(
+			'filter' => FILTER_CALLBACK, 
+			'default' => 'title_cache', 
+			'options' => array('options' => 'sanitize_search_string')
+			),
+		'sort_direction' => array(
+			'filter' => FILTER_CALLBACK, 
+			'default' => 'ASC', 
+			'options' => array('options' => 'sanitize_search_string')
+			),
+		'host_id' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'pageset' => true,
+			'default' => '-1'
+			),
+		'template_id' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'pageset' => true,
+			'default' => '-1'
+			)
+	);
+
+	validate_store_request_vars($filters, 'sess_graph');
 	/* ================= input validation ================= */
-	get_filter_request_var('host_id');
-	get_filter_request_var('rows');
-	get_filter_request_var('template_id');
-	get_filter_request_var('page');
-	/* ==================================================== */
-
-	/* clean up search string */
-	if (isset($_REQUEST['filter'])) {
-		$_REQUEST['filter'] = sanitize_search_string(get_request_var('filter'));
-	}
-
-	/* clean up sort_column string */
-	if (isset($_REQUEST['sort_column'])) {
-		$_REQUEST['sort_column'] = sanitize_search_string(get_request_var('sort_column'));
-	}
-
-	/* clean up sort_direction string */
-	if (isset($_REQUEST['sort_direction'])) {
-		$_REQUEST['sort_direction'] = sanitize_search_string(get_request_var('sort_direction'));
-	}
-
-	/* if the user pushed the 'clear' button */
-	if (isset($_REQUEST['clear'])) {
-		kill_session_var('sess_graph_current_page');
-		kill_session_var('sess_graph_filter');
-		kill_session_var('sess_graph_sort_column');
-		kill_session_var('sess_graph_sort_direction');
-		kill_session_var('sess_graph_host_id');
-		kill_session_var('sess_default_rows');
-		kill_session_var('sess_graph_template_id');
-
-		unset($_REQUEST['page']);
-		unset($_REQUEST['filter']);
-		unset($_REQUEST['sort_column']);
-		unset($_REQUEST['sort_direction']);
-		unset($_REQUEST['host_id']);
-		unset($_REQUEST['rows']);
-		unset($_REQUEST['template_id']);
-	}else{
-		$changed = 0;
-		$changed += check_changed('template_id', 'sess_graph_template_id');
-		$changed += check_changed('host_id',     'sess_graph_host_id');
-		$changed += check_changed('filter',      'sess_graph_filter');
-		$changed += check_changed('rows',        'sess_default_rows');
-
-		if ($changed) {
-			$_REQUEST['page'] = 1;
-		}
-	}
-
-	/* remember these search fields in session vars so we don't have to keep passing them around */
-	load_current_session_value('page', 'sess_graph_current_page', '1');
-	load_current_session_value('filter', 'sess_graph_filter', '');
-	load_current_session_value('sort_column', 'sess_graph_sort_column', 'title_cache');
-	load_current_session_value('sort_direction', 'sess_graph_sort_direction', 'ASC');
-	load_current_session_value('host_id', 'sess_graph_host_id', '-1');
-	load_current_session_value('rows', 'sess_default_rows', read_config_option('num_rows_table'));
-	load_current_session_value('template_id', 'sess_graph_template_id', '-1');
 
 	/* if the number of rows is -1, set it to the default */
 	if (get_request_var('rows') == -1) {
-		$_REQUEST['rows'] = read_config_option('num_rows_table');
+		$rows = read_config_option('num_rows_table');
+	}else{
+		$rows = get_request_var('rows');
 	}
 
 	?>
@@ -1655,9 +1639,9 @@ function graph_management() {
 		ON ag.local_graph_id=gl.id
 		$sql_where
 		ORDER BY " . get_request_var('sort_column') . ' ' . get_request_var('sort_direction') .
-		' LIMIT ' . (get_request_var('rows')*(get_request_var('page')-1)) . ',' . get_request_var('rows'));
+		' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows);
 
-	$nav = html_nav_bar('graphs.php?filter=' . get_request_var('filter') . '&host_id=' . get_request_var('host_id'), MAX_DISPLAY_PAGES, get_request_var('page'), get_request_var('rows'), $total_rows, 5, 'Graphs', 'page', 'main');
+	$nav = html_nav_bar('graphs.php?filter=' . get_request_var('filter') . '&host_id=' . get_request_var('host_id'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 5, 'Graphs', 'page', 'main');
 
 	print $nav;
 

@@ -343,72 +343,49 @@ function aggregate_color_template() {
 	global $aggregate_actions, $item_rows, $config;
 	include_once($config['base_path'] . '/lib/api_aggregate.php');
 
+	/* ================= input validation and session storage ================= */
+	$filters = array(
+		'rows' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'pageset' => true,
+			'default' => read_config_option('num_rows_table')
+			),
+		'page' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'default' => '1'
+			),
+		'filter' => array(
+			'filter' => FILTER_CALLBACK, 
+			'pageset' => true,
+			'default' => '', 
+			'options' => array('options' => 'sanitize_search_string')
+			),
+		'sort_column' => array(
+			'filter' => FILTER_CALLBACK, 
+			'default' => 'name', 
+			'options' => array('options' => 'sanitize_search_string')
+			),
+		'sort_direction' => array(
+			'filter' => FILTER_CALLBACK, 
+			'default' => 'ASC', 
+			'options' => array('options' => 'sanitize_search_string')
+			),
+		'has_graphs' => array(
+			'filter' => FILTER_VALIDATE_REGEXP, 
+			'options' => array('options' => array('regexp' => '(true|false)')),
+			'pageset' => true,
+			'default' => 'true'
+			)
+	);
+
+	validate_store_request_vars($filters, 'sess_ct');
 	/* ================= input validation ================= */
-	get_filter_request_var('page');
-	get_filter_request_var('rows');
-	/* ==================================================== */
-
-	/* clean up search string */
-	if (isset($_REQUEST['filter'])) {
-		$_REQUEST['filter'] = sanitize_search_string(get_request_var('filter'));
-	}
-
-	/* clean up search string */
-	if (isset($_REQUEST['has_graphs'])) {
-		$_REQUEST['has_graphs'] = sanitize_search_string(get_request_var('has_graphs'));
-	}
-
-	/* clean up sort_column string */
-	if (isset($_REQUEST['sort_column'])) {
-		$_REQUEST['sort_column'] = sanitize_search_string(get_request_var('sort_column'));
-	} else {
-		$_REQUEST['sort_column'] = 'name';
-	}
-
-	/* clean up sort_direction string */
-	if (isset($_REQUEST['sort_direction'])) {
-		$_REQUEST['sort_direction'] = sanitize_search_string(get_request_var('sort_direction'));
-	} else {
-		$_REQUEST['sort_direction'] = 'ASC';
-	}
-
-	/* if the user pushed the 'clear' button */
-	if (isset($_REQUEST['clear'])) {
-		kill_session_var('sess_color_template_current_page');
-		kill_session_var('sess_color_template_filter');
-		kill_session_var('sess_color_template_has_graphs');
-		kill_session_var('sess_color_template_sort_column');
-		kill_session_var('sess_color_template_sort_direction');
-		kill_session_var('sess_default_rows');
-
-		unset($_REQUEST['page']);
-		unset($_REQUEST['filter']);
-		unset($_REQUEST['has_graphs']);
-		unset($_REQUEST['sort_column']);
-		unset($_REQUEST['sort_direction']);
-		unset($_REQUEST['sess_default_rows']);
-	}else{
-		$changed = 0;
-		$changed += check_changed('has_graphs', 'sess_color_template_has_graphs');
-		$changed += check_changed('rows',       'sess_default_rows');
-		$changed += check_changed('filter',     'sess_color_template_filter');
-
-		if ($changed) {
-			$_REQUEST['page'] = 1;
-		}
-	}
-
-	/* remember these search fields in session vars so we don't have to keep passing them around */
-	load_current_session_value('page', 'sess_color_template_current_page', '1');
-	load_current_session_value('filter', 'sess_color_template_filter', '');
-	load_current_session_value('has_graphs', 'sess_color_template_has_graphs', '');
-	load_current_session_value('sort_column', 'sess_color_template_sort_column', 'name');
-	load_current_session_value('sort_direction', 'sess_color_template_sort_direction', 'ASC');
-	load_current_session_value('rows', 'sess_default_rows', read_config_option('num_rows_table'));
 
 	/* if the number of rows is -1, set it to the default */
-	if ($_REQUEST['rows'] == -1) {
-		$_REQUEST['rows'] = read_config_option('num_rows_table');
+	if (get_request_var('rows') == -1) {
+		$rows = read_config_option('num_rows_table');
+	}else{
+		$rows = get_request_var('rows');
 	}
 
 	print ('<form id="form_template" action="color_templates.php" method="get">');
@@ -518,9 +495,9 @@ function aggregate_color_template() {
 		ON ct.color_template_id=graphs.color_template
 		$sql_where
 		ORDER BY " . get_request_var('sort_column') . ' ' . get_request_var('sort_direction') .
-		' LIMIT ' . (get_request_var('rows')*(get_request_var('page')-1)) . ',' . get_request_var('rows'));
+		' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows);
 
-	$nav = html_nav_bar('color_templates.php', MAX_DISPLAY_PAGES, get_request_var('page'), get_request_var('rows'), $total_rows, 5, 'Color Templates', 'page', 'main');
+	$nav = html_nav_bar('color_templates.php', MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 5, 'Color Templates', 'page', 'main');
 
 	print $nav;
 

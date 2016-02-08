@@ -363,7 +363,6 @@ function automation_tree_rules_item_edit() {
 	get_filter_request_var('show_trees');
 	/* ==================================================== */
 
-
 	/* handle show_trees mode */
 	if (isset_request_var('show_trees')) {
 		if (get_request_var('show_trees') == '0') {
@@ -660,72 +659,55 @@ function automation_tree_rules() {
 	global $automation_tree_rules_actions, $config, $item_rows;
 	global $automation_tree_item_types, $host_group_types;
 
-	/* ================= input validation ================= */
-	get_filter_request_var('page');
-	get_filter_request_var('status');
-	get_filter_request_var('rows');
-	/* ==================================================== */
-
-	/* clean up search string */
-	if (isset($_REQUEST['filter'])) {
-		$_REQUEST['filter'] = sanitize_search_string(get_request_var('filter'));
-	}
-
-	/* clean up sort_column string */
-	if (isset($_REQUEST['sort_column'])) {
-		$_REQUEST['sort_column'] = sanitize_search_string(get_request_var('sort_column'));
-	}
-
-	/* clean up sort_direction string */
-	if (isset($_REQUEST['sort_direction'])) {
-		$_REQUEST['sort_direction'] = sanitize_search_string(get_request_var('sort_direction'));
-	}
-
-	/* if the user pushed the 'clear' button */
-	if (isset($_REQUEST['clear'])) {
-		kill_session_var('sess_autom_tr_current_page');
-		kill_session_var('sess_autom_tr_filter');
-		kill_session_var('sess_autom_tr_sort_column');
-		kill_session_var('sess_autom_tr_sort_direction');
-		kill_session_var('sess_autom_tr_status');
-		kill_session_var('sess_autom_tr_rows');
-
-		unset($_REQUEST['page']);
-		unset($_REQUEST['filter']);
-		unset($_REQUEST['sort_column']);
-		unset($_REQUEST['sort_direction']);
-		unset($_REQUEST['status']);
-		unset($_REQUEST['rows']);
-	}else{
-		$changed = 0;
-		$changed += check_changed('status', 'sess_autom_tr_status');
-		$changed += check_changed('rows',   'sess_default_rows');
-		$changed += check_changed('filter', 'sess_autom_tr_filter');
-
-		if ($changed) {
-			$_REQUEST['page'] = 1;
-		}
-	}
-
 	if ((!empty($_SESSION['sess_autom_tr_status'])) && (!isempty_request_var('status'))) {
-		if ($_SESSION['sess_autom_tr_status'] != get_request_var('status')) {
+		if ($_SESSION['sess_autom_tr_status'] != get_nfilter_request_var('status')) {
 			set_request_var('page', 1);
 		}
 	}
 
-	/* remember these search fields in session vars so we don't have to keep passing them around */
-	load_current_session_value('page', 'sess_autom_tr_current_page', '1');
-	load_current_session_value('filter', 'sess_autom_tr_filter', '');
-	load_current_session_value('sort_column', 'sess_autom_tr_sort_column', 'name');
-	load_current_session_value('sort_direction', 'sess_autom_tr_sort_direction', 'ASC');
-	load_current_session_value('status', 'sess_autom_tr_status', '-1');
-	load_current_session_value('rows', 'sess_default_rows', read_config_option('num_rows_table'));
+	/* ================= input validation and session storage ================= */
+	$filters = array(
+		'rows' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'pageset' => true,
+			'default' => read_config_option('num_rows_table')
+			),
+		'page' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'default' => '1'
+			),
+		'filter' => array(
+			'filter' => FILTER_CALLBACK, 
+			'pageset' => true,
+			'default' => '', 
+			'options' => array('options' => 'sanitize_search_string')
+			),
+		'sort_column' => array(
+			'filter' => FILTER_CALLBACK, 
+			'default' => 'name', 
+			'options' => array('options' => 'sanitize_search_string')
+			),
+		'sort_direction' => array(
+			'filter' => FILTER_CALLBACK, 
+			'default' => 'ASC', 
+			'options' => array('options' => 'sanitize_search_string')
+			),
+		'status' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'pageset' => true,
+			'default' => ''
+			)
+	);
+
+	validate_store_request_vars($filters, 'sess_autom_tr');
+	/* ================= input validation ================= */
 
 	/* if the number of rows is -1, set it to the default */
-	if ($_REQUEST['rows'] == -1) {
-		$_REQUEST['rows'] = read_config_option('num_rows_table');
+	if (get_request_var('rows') == -1) {
+		$rows = read_config_option('num_rows_table');
+	}else{
+		$rows = get_request_var('rows');
 	}
-
 
 	html_start_box('Tree Rules', '100%', '', '3', 'center', 'automation_tree_rules.php?action=edit');
 
@@ -853,9 +835,9 @@ function automation_tree_rules() {
 		ON atr.rra_id=rra.id
 		$sql_where
 		ORDER BY " . get_request_var('sort_column') . ' ' . get_request_var('sort_direction') . "
-		LIMIT " . (get_request_var('rows')*(get_request_var('page')-1)) . ',' . get_request_var('rows'));
+		LIMIT " . ($rows*(get_request_var('page')-1)) . ',' . $rows);
 
-	$nav = html_nav_bar('automation_tree_rules.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), get_request_var('rows'), $total_rows, 11, 'Trees', 'page', 'main');
+	$nav = html_nav_bar('automation_tree_rules.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 11, 'Trees', 'page', 'main');
 
 	print $nav;
 

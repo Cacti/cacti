@@ -443,66 +443,43 @@ function template_edit() {
 function template() {
 	global $host_actions, $item_rows;
 
+	/* ================= input validation and session storage ================= */
+	$filters = array(
+		'rows' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'pageset' => true,
+			'default' => read_config_option('num_rows_table')
+			),
+		'page' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'default' => '1'
+			),
+		'filter' => array(
+			'filter' => FILTER_CALLBACK, 
+			'pageset' => true,
+			'default' => '', 
+			'options' => array('options' => 'sanitize_search_string')
+			),
+		'sort_column' => array(
+			'filter' => FILTER_CALLBACK, 
+			'default' => 'name', 
+			'options' => array('options' => 'sanitize_search_string')
+			),
+		'sort_direction' => array(
+			'filter' => FILTER_CALLBACK, 
+			'default' => 'ASC', 
+			'options' => array('options' => 'sanitize_search_string')
+			),
+		'has_hosts' => array(
+			'filter' => FILTER_VALIDATE_REGEXP, 
+			'options' => array('options' => array('regexp' => '(true|false)')),
+			'pageset' => true,
+			'default' => 'true'
+			)
+	);
+
+	validate_store_request_vars($filters, 'sess_ht');
 	/* ================= input validation ================= */
-	get_filter_request_var('page');
-	get_filter_request_var('rows');
-	/* ==================================================== */
-
-	/* clean up has_hosts string */
-	if (isset($_REQUEST['has_hosts'])) {
-		$_REQUEST['has_hosts'] = sanitize_search_string(get_request_var('has_hosts'));
-	}
-
-	/* clean up search string */
-	if (isset($_REQUEST['filter'])) {
-		$_REQUEST['filter'] = sanitize_search_string(get_request_var('filter'));
-	}
-
-	/* clean up sort_column */
-	if (isset($_REQUEST['sort_column'])) {
-		$_REQUEST['sort_column'] = sanitize_search_string(get_request_var('sort_column'));
-	}
-
-	/* clean up sort_direction string */
-	if (isset($_REQUEST['sort_direction'])) {
-		$_REQUEST['sort_direction'] = sanitize_search_string(get_request_var('sort_direction'));
-	}
-
-	/* if the user pushed the 'clear' button */
-	if (isset($_REQUEST['clear'])) {
-		kill_session_var('sess_host_template_current_page');
-		kill_session_var('sess_host_template_has_hosts');
-		kill_session_var('sess_host_template_filter');
-		kill_session_var('sess_default_rows');
-		kill_session_var('sess_host_template_sort_column');
-		kill_session_var('sess_host_template_sort_direction');
-
-		unset($_REQUEST['page']);
-		unset($_REQUEST['has_hosts']);
-		unset($_REQUEST['filter']);
-		unset($_REQUEST['rows']);
-		unset($_REQUEST['sort_column']);
-		unset($_REQUEST['sort_direction']);
-	}else{
-		$changed = 0;
-		$changed += check_changed('has_hosts', 'sess_host_template_has_hosts');
-		$changed += check_changed('rows', 'sess_default_rows');
-		$changed += check_changed('filter', 'sess_host_template_filter');
-
-		if ($changed) {
-			$_REQUEST['page'] = 1;
-		}
-	}
-
-	/* remember these search fields in session vars so we don't have to keep passing them around */
-	load_current_session_value('page', 'sess_host_template_current_page', '1');
-	load_current_session_value('has_hosts', 'sess_host_template_has_hosts', 'true');
-	load_current_session_value('filter', 'sess_host_template_filter', '');
-	load_current_session_value('sort_column', 'sess_host_template_sort_column', 'name');
-	load_current_session_value('sort_direction', 'sess_host_template_sort_direction', 'ASC');
-	load_current_session_value('rows', 'sess_default_rows', read_config_option('num_rows_table'));
-
-	display_output_messages();
 
 	html_start_box('Device Templates', '100%', '', '3', 'center', 'host_templates.php?action=edit');
 

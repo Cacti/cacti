@@ -482,69 +482,47 @@ function utilities_view_user_log() {
 
 	define('MAX_DISPLAY_PAGES', 21);
 
+	/* ================= input validation and session storage ================= */
+	$filters = array(
+		'rows' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'pageset' => true,
+			'default' => read_config_option('num_rows_table')
+			),
+		'page' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'default' => '1'
+			),
+		'filter' => array(
+			'filter' => FILTER_CALLBACK, 
+			'pageset' => true,
+			'default' => '', 
+			'options' => array('options' => 'sanitize_search_string')
+			),
+		'sort_column' => array(
+			'filter' => FILTER_CALLBACK, 
+			'default' => 'time', 
+			'options' => array('options' => 'sanitize_search_string')
+			),
+		'sort_direction' => array(
+			'filter' => FILTER_CALLBACK, 
+			'default' => 'ASC', 
+			'options' => array('options' => 'sanitize_search_string')
+			),
+		'username' => array(
+			'filter' => FILTER_CALLBACK, 
+			'default' => '-1', 
+			'options' => array('options' => 'sanitize_search_string')
+			),
+		'result' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'pageset' => true,
+			'default' => '-1'
+			)
+	);
+
+	validate_store_request_vars($filters, 'sess_userlog');
 	/* ================= input validation ================= */
-	get_filter_request_var('result');
-	get_filter_request_var('page');
-	get_filter_request_var('rows');
-	/* ==================================================== */
-
-	/* clean up username */
-	if (isset($_REQUEST['username'])) {
-		$_REQUEST['username'] = sanitize_search_string(get_request_var('username'));
-	}
-
-	/* clean up search filter */
-	if (isset($_REQUEST['filter'])) {
-		$_REQUEST['filter'] = sanitize_search_string(get_request_var('filter'));
-	}
-
-	/* clean up sort_column */
-	if (isset($_REQUEST['sort_column'])) {
-		$_REQUEST['sort_column'] = sanitize_search_string(get_request_var('sort_column'));
-	}
-
-	/* clean up sort direction */
-	if (isset($_REQUEST['sort_direction'])) {
-		$_REQUEST['sort_direction'] = sanitize_search_string(get_request_var('sort_direction'));
-	}
-
-	/* if the user pushed the 'clear' button */
-	if (isset($_REQUEST['clear'])) {
-		kill_session_var('sess_userlog_current_page');
-		kill_session_var('sess_userlog_username');
-		kill_session_var('sess_userlog_result');
-		kill_session_var('sess_userlog_filter');
-		kill_session_var('sess_default_rows');
-		kill_session_var('sess_userlog_sort_column');
-		kill_session_var('sess_userlog_sort_direction');
-
-		unset($_REQUEST['page']);
-		unset($_REQUEST['result']);
-		unset($_REQUEST['filter']);
-		unset($_REQUEST['rows']);
-		unset($_REQUEST['username']);
-		unset($_REQUEST['sort_column']);
-		unset($_REQUEST['sort_direction']);
-	}else{
-		$changed = 0;
-		$changed += check_changed('rows',     'sess_default_rows');
-		$changed += check_changed('filter',   'sess_userlog_filter');
-		$changed += check_changed('result',   'sess_userlog_result');
-		$changed += check_changed('username', 'sess_userlog_username');
-
-		if ($changed) {
-			$_REQUEST['page'] = 1;
-		}
-	}
-
-	/* remember these search fields in session vars so we don't have to keep passing them around */
-	load_current_session_value('page', 'sess_userlog_current_page', '1');
-	load_current_session_value('username', 'sess_userlog_username', '-1');
-	load_current_session_value('result', 'sess_userlog_result', '-1');
-	load_current_session_value('filter', 'sess_userlog_filter', '');
-	load_current_session_value('sort_column', 'sess_userlog_sort_column', 'time');
-	load_current_session_value('sort_direction', 'sess_userlog_sort_direction', 'DESC');
-	load_current_session_value('rows', 'sess_default_rows', read_config_option('num_rows_table'));
 
 	?>
 	<script type="text/javascript">
@@ -811,32 +789,38 @@ function utilities_view_logfile() {
 	/* helps determine output color */
 	$linecolor = True;
 
-	get_filter_request_var('tail_files');
-	get_filter_request_var('message_type');
-	get_filter_request_var('refresh');
-	get_filter_request_var('reverse');
+	/* ================= input validation and session storage ================= */
+	$filters = array(
+		'tail_lines' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'pageset' => true,
+			'default' => read_config_option('num_rows_log')
+			),
+		'filter' => array(
+			'filter' => FILTER_CALLBACK, 
+			'pageset' => true,
+			'default' => '', 
+			'options' => array('options' => 'sanitize_search_string')
+			),
+		'message_type' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'pageset' => true,
+			'default' => '-1'
+			),
+		'reverse' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'pageset' => true,
+			'default' => '1'
+			),
+		'refresh' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'pageset' => true,
+			'default' => read_config_option('log_refresh_interval')
+			)
+	);
 
-	/* if the user pushed the 'clear' button */
-	if (isset($_REQUEST['clear'])) {
-		kill_session_var('sess_logfile_tail_lines');
-		kill_session_var('sess_logfile_message_type');
-		kill_session_var('sess_logfile_filter');
-		kill_session_var('sess_logfile_refresh');
-		kill_session_var('sess_logfile_reverse');
-
-		unset($_REQUEST['tail_lines']);
-		unset($_REQUEST['message_type']);
-		unset($_REQUEST['filter']);
-		unset($_REQUEST['refresh']);
-		unset($_REQUEST['reverse']);
-	}
-
-	load_current_session_value('tail_lines', 'sess_logfile_tail_lines', read_config_option('num_rows_log'));
-	load_current_session_value('message_type', 'sess_logfile_message_type', '-1');
-	load_current_session_value('filter', 'sess_logfile_filter', '');
-	load_current_session_value('refresh', 'sess_logfile_refresh', read_config_option('log_refresh_interval'));
-	load_current_session_value('reverse', 'sess_logfile_reverse', 1);
-	load_current_session_value('rows', 'sess_default_rows', read_config_option('num_rows_table'));
+	validate_store_request_vars($filters, 'sess_log');
+	/* ================= input validation ================= */
 
 	$refresh['seconds'] = get_request_var('refresh');
 	$refresh['page'] = 'utilities.php?action=view_logfile&header=false';
@@ -1099,47 +1083,42 @@ function utilities_view_snmp_cache() {
 
 	define('MAX_DISPLAY_PAGES', 21);
 
+	/* ================= input validation and session storage ================= */
+	$filters = array(
+		'rows' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'pageset' => true,
+			'default' => read_config_option('num_rows_table')
+			),
+		'page' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'default' => '1'
+			),
+		'filter' => array(
+			'filter' => FILTER_CALLBACK, 
+			'pageset' => true,
+			'default' => '', 
+			'options' => array('options' => 'sanitize_search_string')
+			),
+		'host_id' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'pageset' => true,
+			'default' => '-1'
+			),
+		'snmp_query_id' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'pageset' => true,
+			'default' => '-1'
+			),
+		'poller_action' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'pageset' => true,
+			'default' => '-1'
+			)
+	);
+
+	validate_store_request_vars($filters, 'sess_usnmp');
 	/* ================= input validation ================= */
-	get_filter_request_var('host_id');
-	get_filter_request_var('snmp_query_id');
-	get_filter_request_var('page');
-	get_filter_request_var('poller_action');
-	/* ==================================================== */
-
-	/* clean up search filter */
-	if (isset($_REQUEST['filter'])) {
-		$_REQUEST['filter'] = sanitize_search_string(get_request_var('filter'));
-	}
-
-	/* if the user pushed the 'clear' button */
-	if (isset($_REQUEST['clear'])) {
-		kill_session_var('sess_snmp_current_page');
-		kill_session_var('sess_snmp_host_id');
-		kill_session_var('sess_snmp_snmp_query_id');
-		kill_session_var('sess_snmp_filter');
-
-		unset($_REQUEST['page']);
-		unset($_REQUEST['filter']);
-		unset($_REQUEST['host_id']);
-		unset($_REQUEST['snmp_query_id']);
-	}else{
-		$changed = 0;
-		$changed += check_changed('rows',          'sess_default_rows');
-		$changed += check_changed('filter',        'sess_snmp_filter');
-		$changed += check_changed('host_id',       'sess_snmp_host_id');
-		$changed += check_changed('snmp_query_id', 'sess_snmp_snmp_query_id');
-
-		if ($changed) {
-			$_REQUEST['page'] = 1;
-		}
-	}
-
-	/* remember these search fields in session vars so we don't have to keep passing them around */
-	load_current_session_value('page', 'sess_snmp_current_page', '1');
-	load_current_session_value('host_id', 'sess_snmp_host_id', '-1');
-	load_current_session_value('snmp_query_id', 'sess_snmp_snmp_query_id', '-1');
-	load_current_session_value('filter', 'sess_snmp_filter', '');
-	load_current_session_value('rows', 'sess_default_rows', read_config_option('num_rows_table'));
 
 	$refresh['seconds'] = '300';
 	$refresh['page'] = 'utilities.php?action=view_snmp_cache&header=false';
@@ -1389,61 +1368,47 @@ function utilities_view_poller_cache() {
 
 	define('MAX_DISPLAY_PAGES', 21);
 
+	/* ================= input validation and session storage ================= */
+	$filters = array(
+		'rows' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'pageset' => true,
+			'default' => read_config_option('num_rows_table')
+			),
+		'page' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'default' => '1'
+			),
+		'filter' => array(
+			'filter' => FILTER_CALLBACK, 
+			'pageset' => true,
+			'default' => '', 
+			'options' => array('options' => 'sanitize_search_string')
+			),
+		'sort_column' => array(
+			'filter' => FILTER_CALLBACK, 
+			'default' => 'data_template_data.name_cache', 
+			'options' => array('options' => 'sanitize_search_string')
+			),
+		'sort_direction' => array(
+			'filter' => FILTER_CALLBACK, 
+			'default' => 'ASC', 
+			'options' => array('options' => 'sanitize_search_string')
+			),
+		'host_id' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'pageset' => true,
+			'default' => '-1'
+			),
+		'poller_action' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'pageset' => true,
+			'default' => '-1'
+			)
+	);
+
+	validate_store_request_vars($filters, 'sess_poller');
 	/* ================= input validation ================= */
-	get_filter_request_var('host_id');
-	get_filter_request_var('page');
-	get_filter_request_var('rows');
-	get_filter_request_var('poller_action');
-	/* ==================================================== */
-
-	/* clean up search filter */
-	if (isset($_REQUEST['filter'])) {
-		$_REQUEST['filter'] = sanitize_search_string(get_request_var('filter'));
-	}
-
-	/* clean up sort_column */
-	if (isset($_REQUEST['sort_column'])) {
-		$_REQUEST['sort_column'] = sanitize_search_string(get_request_var('sort_column'));
-	}
-
-	/* clean up sort direction */
-	if (isset($_REQUEST['sort_direction'])) {
-		$_REQUEST['sort_direction'] = sanitize_search_string(get_request_var('sort_direction'));
-	}
-
-	/* if the user pushed the 'clear' button */
-	if (isset($_REQUEST['clear'])) {
-		kill_session_var('sess_poller_current_page');
-		kill_session_var('sess_poller_host_id');
-		kill_session_var('sess_poller_poller_action');
-		kill_session_var('sess_poller_filter');
-		kill_session_var('sess_default_rows');
-
-		unset($_REQUEST['page']);
-		unset($_REQUEST['filter']);
-		unset($_REQUEST['rows']);
-		unset($_REQUEST['host_id']);
-		unset($_REQUEST['poller_action']);
-	}else{
-		$changed = 0;
-		$changed += check_changed('rows',          'sess_default_rows');
-		$changed += check_changed('filter',        'sess_poller_filter');
-		$changed += check_changed('poller_action', 'sess_poller_poller_action');
-		$changed += check_changed('host_id',       'sess_poller_host_id');
-
-		if ($changed) {
-			$_REQUEST['page'] = 1;
-		}
-	}
-
-	/* remember these search fields in session vars so we don't have to keep passing them around */
-	load_current_session_value('page', 'sess_poller_current_page', '1');
-	load_current_session_value('host_id', 'sess_poller_host_id', '-1');
-	load_current_session_value('poller_action', 'sess_poller_poller_action', '-1');
-	load_current_session_value('filter', 'sess_poller_filter', '');
-	load_current_session_value('sort_column', 'sess_poller_sort_column', 'data_template_data.name_cache');
-	load_current_session_value('sort_direction', 'sess_poller_sort_direction', 'ASC');
-	load_current_session_value('rows', 'sess_default_rows', read_config_option('num_rows_table'));
 
 	$refresh['seconds'] = '300';
 	$refresh['page'] = 'utilities.php?action=view_poller_cache&header=false';
@@ -2140,46 +2105,40 @@ function snmpagent_utilities_run_cache() {
 	if(!in_array(get_request_var('mib'), $registered_mibs) && get_request_var('mib') != '-1' && get_request_var('mib') != '') {
 		die_html_input_error();
 	}
-	get_filter_request_var('page');
-	get_filter_request_var('rows');
 	/* ==================================================== */
 
-	/* clean up search filter */
-	if (isset($_REQUEST['filter'])) {
-		$_REQUEST['filter'] = sanitize_search_string(get_request_var('filter'));
-	}
+	/* ================= input validation and session storage ================= */
+	$filters = array(
+		'rows' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'pageset' => true,
+			'default' => read_config_option('num_rows_table')
+			),
+		'page' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'default' => '1'
+			),
+		'filter' => array(
+			'filter' => FILTER_CALLBACK, 
+			'pageset' => true,
+			'default' => '', 
+			'options' => array('options' => 'sanitize_search_string')
+			),
+		'mib' => array(
+			'filter' => FILTER_CALLBACK, 
+			'default' => '-1', 
+			'options' => array('options' => 'sanitize_search_string')
+			)
+	);
 
-	/* if the user pushed the 'clear' button */
-	if (isset($_REQUEST['clear'])) {
-		kill_session_var('sess_snmpagent_cache_mib');
-		kill_session_var('sess_snmpagent_cache_current_page');
-		kill_session_var('sess_snmpagent_cache_filter');
-		kill_session_var('sess_default_rows');
-
-		unset($_REQUEST['mib']);
-		unset($_REQUEST['page']);
-		unset($_REQUEST['filter']);
-		unset($_REQUEST['rows']);
-	}else{
-		$changed = 0;
-		$changed += check_changed('rows',   'sess_default_rows');
-		$changed += check_changed('filter', 'sess_snmpagent_cache_filter');
-		$changed += check_changed('mib',    'sess_snmpagent_cache_mib');
-
-		if ($changed) {
-			$_REQUEST['page'] = 1;
-		}
-	}
-
-	/* remember these search fields in session vars so we don't have to keep passing them around */
-	load_current_session_value('page', 'sess_snmpagent_cache_current_page', '1');
-	load_current_session_value('mib', 'sess_snmpagent_cache_mib', '-1');
-	load_current_session_value('filter', 'sess_snmpagent_cache_filter', '');
-	load_current_session_value('rows', 'sess_default_rows', read_config_option('num_rows_table'));
+	validate_store_request_vars($filters, 'sess_snmpac');
+	/* ================= input validation ================= */
 
 	/* if the number of rows is -1, set it to the default */
 	if (get_request_var('rows') == -1) {
-		set_request_var('rows', read_config_option('num_rows_table'));
+		$rows = read_config_option('num_rows_table');
+	}else{
+		$rows = get_request_var('rows');
 	}
 
 	?>
@@ -2297,16 +2256,13 @@ function snmpagent_utilities_run_cache() {
 
 	$total_rows = db_fetch_cell("SELECT COUNT(*) FROM snmpagent_cache WHERE 1 $sql_where");
 
-
-	$snmp_cache_sql = "SELECT * FROM snmpagent_cache WHERE 1 $sql_where LIMIT " . (get_request_var('rows')*(get_request_var('page')-1)) . ',' . get_request_var('rows');
+	$snmp_cache_sql = "SELECT * FROM snmpagent_cache WHERE 1 $sql_where LIMIT " . ($rows*(get_request_var('page')-1)) . ',' . $rows;
 	$snmp_cache = db_fetch_assoc($snmp_cache_sql);
 
 	/* generate page list */
-	$nav = html_nav_bar('utilities.php?action=view_snmpagent_cache&mib=' . get_request_var('mib') . '&filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), get_request_var('rows'), $total_rows, 11, '', 'page', 'main');
+	$nav = html_nav_bar('utilities.php?action=view_snmpagent_cache&mib=' . get_request_var('mib') . '&filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 11, '', 'page', 'main');
 
 	print $nav;
-
-
 
 	html_header(array( 'OID', 'Name', 'MIB', 'Kind', 'Max-Access', 'Value'));
 
@@ -2378,14 +2334,7 @@ function snmpagent_utilities_run_eventlog(){
 	if(!in_array(get_request_var('severity'), array_keys($severity_levels)) && get_request_var('severity') != '-1' && get_request_var('severity') != '') {
 		die_html_input_error();
 	}
-	get_filter_request_var('page');
-	get_filter_request_var('rows');
 	/* ==================================================== */
-
-	/* clean up search filter */
-	if (isset($_REQUEST['filter'])) {
-		$_REQUEST['filter'] = sanitize_search_string(get_request_var('filter'));
-	}
 
 	if (isset_request_var('purge')) {
 		db_execute('TRUNCATE table snmpagent_notifications_log');
@@ -2394,43 +2343,37 @@ function snmpagent_utilities_run_eventlog(){
 		set_request_var('clear', true);
 	}
 
-	/* if the user pushed the 'clear' button */
-	if (isset($_REQUEST['clear'])) {
-		kill_session_var('sess_snmpagent_logs_receiver');
-		kill_session_var('sess_snmpagent_logs_severity');
-		kill_session_var('sess_snmpagent_logs_current_page');
-		kill_session_var('sess_snmpagent_logs_filter');
-		kill_session_var('sess_default_rows');
+	/* ================= input validation and session storage ================= */
+	$filters = array(
+		'rows' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'pageset' => true,
+			'default' => read_config_option('num_rows_table')
+			),
+		'page' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'default' => '1'
+			),
+		'filter' => array(
+			'filter' => FILTER_CALLBACK, 
+			'pageset' => true,
+			'default' => '', 
+			'options' => array('options' => 'sanitize_search_string')
+			),
+		'severity' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'pageset' => true,
+			'default' => '-1'
+			),
+		'receiver' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'pageset' => true,
+			'default' => '-1'
+			)
+	);
 
-		unset($_REQUEST['receiver']);
-		unset($_REQUEST['severity']);
-		unset($_REQUEST['page']);
-		unset($_REQUEST['filter']);
-		unset($_REQUEST['rows']);
-	}else{
-		$changed = 0;
-		$changed += check_changed('rows',     'sess_default_rows');
-		$changed += check_changed('filter',   'sess_snmpagent_logs_filter');
-		$changed += check_changed('receiver', 'sess_snmpagent_logs_receiver');
-		$changed += check_changed('severity', 'sess_snmpagent_logs_severity');
-
-		if ($changed) {
-			$_REQUEST['page'] = 1;
-		}
-	}
-
-	/* reset the current page if the user changed the severity */
-	if(isset($_SESSION['sess_snmpagent_logs_severity']) && get_request_var('severity') != $_SESSION['sess_snmpagent__logs_severity']) {
-		kill_session_var('sess_snmpagent_logs_current_page');
-		unset($_REQUEST['page']);
-	}
-
-	/* remember these search fields in session vars so we don't have to keep passing them around */
-	load_current_session_value('receiver', 'sess_snmpagent_logs_receiver', '-1');
-	load_current_session_value('page', 'sess_snmpagent_logs_current_page', '1');
-	load_current_session_value('severity', 'sess_snmpagent_logs_severity', '-1');
-	load_current_session_value('filter', 'sess_snmpagent_logs_filter', '');
-	load_current_session_value('rows', 'sess_default_rows', read_config_option('num_rows_table'));
+	validate_store_request_vars($filters, 'sess_snmpl');
+	/* ================= input validation ================= */
 
 	/* if the number of rows is -1, set it to the default */
 	if (get_request_var('rows') == -1) {

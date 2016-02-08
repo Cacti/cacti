@@ -449,25 +449,25 @@ function tree_edit() {
 	/* ==================================================== */
 
 	/* clean up search string */
-	if (isset($_REQUEST['filter'])) {
-		$_REQUEST['filter'] = sanitize_search_string(get_request_var('filter'));
+	if (isset_request_var('filter')) {
+		set_request_var('filter', sanitize_search_string(get_request_var('filter')));
 	}
 
 	load_current_session_value('filter', 'sess_tree_edit_filter', '');
 	load_current_session_value('type', 'sess_tree_edit_type', '0');
 
-	if (!empty($_REQUEST['id'])) {
-		$tree = db_fetch_row_prepared('SELECT * FROM graph_tree WHERE id = ?', array($_REQUEST['id']));
+	if (!isempty_request_var('id')) {
+		$tree = db_fetch_row_prepared('SELECT * FROM graph_tree WHERE id = ?', array(get_request_var('id')));
 
 		$header_label = '[edit: ' . htmlspecialchars($tree['name']) . ']';
 
 		// Reset the cookie state if tree id has changed
-		if (isset($_SESSION['sess_tree_id']) && $_SESSION['sess_tree_id'] != $_REQUEST['id']) {
+		if (isset($_SESSION['sess_tree_id']) && $_SESSION['sess_tree_id'] != get_request_var('id')) {
 			$select_first = true;
 		}else{
 			$select_first = false;
 		}
-		$_SESSION['sess_tree_id'] = $_REQUEST['id'];
+		$_SESSION['sess_tree_id'] = get_request_var('id');
 	}else{
 		$tree = array();
 
@@ -1239,59 +1239,43 @@ function display_graphs() {
 function tree() {
 	global $tree_actions, $item_rows;
 
+	/* ================= input validation and session storage ================= */
+	$filters = array(
+		'rows' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'pageset' => true,
+			'default' => read_config_option('num_rows_table')
+			),
+		'page' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'default' => '1'
+			),
+		'filter' => array(
+			'filter' => FILTER_CALLBACK, 
+			'pageset' => true,
+			'default' => '', 
+			'options' => array('options' => 'sanitize_search_string')
+			),
+		'sort_column' => array(
+			'filter' => FILTER_CALLBACK, 
+			'default' => 'name', 
+			'options' => array('options' => 'sanitize_search_string')
+			),
+		'sort_direction' => array(
+			'filter' => FILTER_CALLBACK, 
+			'default' => 'ASC', 
+			'options' => array('options' => 'sanitize_search_string')
+			)
+	);
+
+	validate_store_request_vars($filters, 'sess_tree');
 	/* ================= input validation ================= */
-	get_filter_request_var('page');
-	get_filter_request_var('rows');
-	/* ==================================================== */
-
-	/* clean up search string */
-	if (isset($_REQUEST['filter'])) {
-		$_REQUEST['filter'] = sanitize_search_string(get_request_var('filter'));
-	}
-
-	/* clean up sort_column */
-	if (isset($_REQUEST['sort_column'])) {
-		$_REQUEST['sort_column'] = sanitize_search_string(get_request_var('sort_column'));
-	}
-
-	/* clean up search string */
-	if (isset($_REQUEST['sort_direction'])) {
-		$_REQUEST['sort_direction'] = sanitize_search_string(get_request_var('sort_direction'));
-	}
-
-	/* if the user pushed the 'clear' button */
-	if (isset($_REQUEST['clear'])) {
-		kill_session_var('sess_tree_current_page');
-		kill_session_var('sess_tree_filter');
-		kill_session_var('sess_default_rows');
-		kill_session_var('sess_tree_sort_column');
-		kill_session_var('sess_tree_sort_direction');
-
-		unset($_REQUEST['page']);
-		unset($_REQUEST['filter']);
-		unset($_REQUEST['rows']);
-		unset($_REQUEST['sort_column']);
-		unset($_REQUEST['sort_direction']);
-	}else{
-		$changed = 0;
-		$changed += check_changed('filter',      'sess_tree_filter');
-		$changed += check_changed('rows',        'sess_default_rows');
-
-		if ($changed) {
-			$_REQUEST['page'] = 1;
-		}
-	}
-
-	/* remember these search fields in session vars so we don't have to keep passing them around */
-	load_current_session_value('page', 'sess_tree_current_page', '1');
-	load_current_session_value('filter', 'sess_tree_filter', '');
-	load_current_session_value('rows', 'sess_default_rows', read_config_option('num_rows_table'));
-	load_current_session_value('sort_column', 'sess_tree_sort_column', 'name');
-	load_current_session_value('sort_direction', 'sess_tree_sort_direction', 'ASC');
 
 	/* if the number of rows is -1, set it to the default */
-	if ($_REQUEST['rows'] == -1) {
-		$_REQUEST['rows'] = read_config_option('num_rows_table');
+	if (get_request_var('rows') == -1) {
+		$rows = read_config_option('num_rows_table');
+	}else{
+		$rows = get_request_var('rows');
 	}
 
 	?>
@@ -1392,16 +1376,15 @@ function tree() {
 		$sql_where
 		GROUP BY t.id
 		ORDER BY " . get_request_var('sort_column') . ' ' . get_request_var('sort_direction') . '
-		LIMIT ' . (get_request_var('rows')*(get_request_var('page')-1)) . ',' . get_request_var('rows'));
+		LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows);
 
-	$total_rows = db_fetch_cell("SELECT COUNT(*)
+	$total_rows = db_fetch_cell("SELECT COUNT(DISTINCT(ti.graph_tree_id))
 		FROM graph_tree AS t
 		LEFT JOIN graph_tree_items AS ti
 		ON t.id=ti.graph_tree_id
-		$sql_where
-		GROUP BY t.id");
+		$sql_where");
 
-	$nav = html_nav_bar('tree.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), get_request_var('rows'), $total_rows, 11, 'Trees', 'page', 'main');
+	$nav = html_nav_bar('tree.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 11, 'Trees', 'page', 'main');
 
 	print $nav;
 

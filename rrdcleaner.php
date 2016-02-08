@@ -251,60 +251,45 @@ function list_rrd() {
 	/* install the rrdclean error handler */
 	set_error_handler('rrdclean_error_handler');
 
-	/* ================= input validation ================= */
-	get_filter_request_var('page');
-	get_filter_request_var('age');
-	get_filter_request_var('rows');
-	/* ==================================================== */
+	/* ================= input validation and session storage ================= */
+	$filters = array(
+		'rows' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'pageset' => true,
+			'default' => read_config_option('num_rows_table')
+			),
+		'page' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'default' => '1'
+			),
+		'filter' => array(
+			'filter' => FILTER_CALLBACK, 
+			'pageset' => true,
+			'default' => '', 
+			'options' => array('options' => 'sanitize_search_string')
+			),
+		'sort_column' => array(
+			'filter' => FILTER_CALLBACK, 
+			'default' => 'name', 
+			'options' => array('options' => 'sanitize_search_string')
+			),
+		'sort_direction' => array(
+			'filter' => FILTER_CALLBACK, 
+			'default' => 'ASC', 
+			'options' => array('options' => 'sanitize_search_string')
+			),
+		'age' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'pageset' => true,
+			'default' => '0'
+			)
+	);
 
-	/* clean up search string */
-	if (isset ($_REQUEST['filter'])) {
-		$_REQUEST['filter'] = sanitize_search_string(get_request_var('filter'));
-	}
+	validate_store_request_vars($filters, 'sess_rrdc');
 
-	/* clean up sort_column string */
-	if (isset ($_REQUEST['sort_column'])) {
-		$_REQUEST['sort_column'] = sanitize_search_string(get_request_var('sort_column'));
-	}
+	/* ================= input validation and session storage ================= */
 
-	/* clean up sort_direction string */
-	if (isset ($_REQUEST['sort_direction'])) {
-		$_REQUEST['sort_direction'] = sanitize_search_string(get_request_var('sort_direction'));
-	}
-
-	/* if the user pushed the 'clear' button */
-	if (isset ($_REQUEST['clear'])) {
-		kill_session_var('sess_rrdclean_current_page');
-		kill_session_var('sess_rrdclean_age');
-		kill_session_var('sess_default_rows');
-		kill_session_var('sess_rrdclean_filter');
-		kill_session_var('sess_rrdclean_sort_column');
-		kill_session_var('sess_rrdclean_sort_direction');
-
-		unset ($_REQUEST['page']);
-		unset ($_REQUEST['age']);
-		unset ($_REQUEST['rows']);
-		unset ($_REQUEST['filter']);
-		unset ($_REQUEST['sort_column']);
-		unset ($_REQUEST['sort_direction']);
-	}
-
-	/* remember these search fields in session vars so we don't have to keep passing them around */
-	load_current_session_value('page', 'sess_rrdclean_current_page', '1');
-	load_current_session_value('age', 'sess_rrdclean_current_age', '1');
-	load_current_session_value('rows', 'sess_default_rows', read_config_option('num_rows_table'));
-	load_current_session_value('filter', 'sess_rrdclean_filter', '');
-	load_current_session_value('sort_column', 'sess_rrdclean_sort_column', 'name');
-	load_current_session_value('sort_direction', 'sess_rrdclean_sort_direction', 'ASC');
-
-	$width = '100%';
-	if (isset ($hash_version_codes[$config['cacti_version']])) {
-		if ($hash_version_codes[$config['cacti_version']] > 13) {
-			$width = '100%';
-		}
-	}
-
-	html_start_box('RRD Cleaner', $width, '', '3', 'center', '');
+	html_start_box('RRD Cleaner', '100%', '', '3', 'center', '');
 	filter();
 	html_end_box();
 
@@ -316,7 +301,7 @@ function list_rrd() {
 
 	$secsback = get_request_var('age');
 
-	if (get_request_var('age') != 0) {
+	if (get_request_var('age') == 0) {
 		$sql_where .= " AND last_mod>='" . date("Y-m-d H:i:s", time()-(86400*7)) . "'";
 	}else{
 		$sql_where .= " AND last_mod<='" . date("Y-m-d H:i:s", (time() - $secsback)) . "'";
