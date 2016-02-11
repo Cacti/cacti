@@ -1007,7 +1007,7 @@ function upgrade_to_1_0_0() {
 		db_install_execute('1.0', "ALTER TABLE automation_devices 
 			ADD COLUMN network_id INT unsigned NOT NULL default '0' FIRST, 
 			DROP COLUMN hash,
-			ADD INDEX network_id(network_id)
+			ADD INDEX network_id(network_id),
 			COMMENT='Table of Discovered Devices'");
 
 		if (in_array('plugin_discover_processes', $tables)) {
