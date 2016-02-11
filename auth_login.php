@@ -53,7 +53,7 @@ if (read_config_option('auth_method') == '2') {
 }else{
 	if (get_nfilter_request_var('action') == 'login') {
 		/* LDAP and Builtin get username from Form */
-		$username = get_request_var_post('login_username');
+		$username = get_nfilter_request_var('login_username');
 	}else{
 		$username = '';
 	}
@@ -71,7 +71,7 @@ $ldap_error_message = '';
 $realm        = 0;
 
 if (get_nfilter_request_var('action') == 'login') {
-	if (get_request_var_post('realm') == 'local') {
+	if (get_nfilter_request_var('realm') == 'local') {
 		$auth_method = 1;
 	}else{
 		$auth_method = read_config_option('auth_method');
@@ -101,7 +101,7 @@ if (get_nfilter_request_var('action') == 'login') {
 		break;
 	case '3':
 		/* LDAP Auth */
- 		if ((get_request_var_post('realm') == 'ldap') && (strlen(get_request_var_post('login_password')) > 0)) {
+ 		if ((get_nfilter_request_var('realm') == 'ldap') && (strlen(get_nfilter_request_var('login_password')) > 0)) {
 			/* include LDAP lib */
 			include_once('./lib/ldap.php');
 
@@ -120,7 +120,7 @@ if (get_nfilter_request_var('action') == 'login') {
 
 			if (!$ldap_error) {
 				/* auth user with LDAP */
-				$ldap_auth_response = cacti_ldap_auth($username,stripslashes(get_request_var_post('login_password')),$ldap_dn);
+				$ldap_auth_response = cacti_ldap_auth($username,stripslashes(get_nfilter_request_var('login_password')),$ldap_dn);
 
 				if ($ldap_auth_response['error_num'] == '0') {
 					/* User ok */
@@ -154,7 +154,7 @@ if (get_nfilter_request_var('action') == 'login') {
 			/* Builtin Auth */
 			if ((!$user_auth) && (!$ldap_error)) {
 				/* if auth has not occurred process for builtin - AKA Ldap fall through */
-				$user = db_fetch_row_prepared('SELECT * FROM user_auth WHERE username = ? AND password = ? AND realm = 0', array($username, md5(get_request_var_post('login_password'))));
+				$user = db_fetch_row_prepared('SELECT * FROM user_auth WHERE username = ? AND password = ? AND realm = 0', array($username, md5(get_nfilter_request_var('login_password'))));
 			}
 		}
 	}
@@ -305,12 +305,12 @@ function auth_display_custom_error_message($message) {
 function domains_login_process() {
 	global $user, $realm, $username, $user_auth, $ldap_error, $ldap_error_message;
 
-	if (is_numeric(get_request_var_post('realm')) && (strlen(get_request_var_post('login_password')) > 0)) {
+	if (is_numeric(get_nfilter_request_var('realm')) && (strlen(get_nfilter_request_var('login_password')) > 0)) {
 		/* include LDAP lib */
 		include_once('./lib/ldap.php');
 
 		/* get user DN */
-		$ldap_dn_search_response = domains_ldap_search_dn($username, get_request_var_post('realm'));
+		$ldap_dn_search_response = domains_ldap_search_dn($username, get_nfilter_request_var('realm'));
 		if ($ldap_dn_search_response['error_num'] == '0') {
 			$ldap_dn = $ldap_dn_search_response['dn'];
 		}else{
@@ -324,19 +324,19 @@ function domains_login_process() {
 
 		if (!$ldap_error) {
 			/* auth user with LDAP */
-			$ldap_auth_response = domains_ldap_auth($username, stripslashes(get_request_var_post('login_password')), $ldap_dn, get_request_var_post('realm'));
+			$ldap_auth_response = domains_ldap_auth($username, stripslashes(get_nfilter_request_var('login_password')), $ldap_dn, get_nfilter_request_var('realm'));
 
 			if ($ldap_auth_response['error_num'] == '0') {
 				/* User ok */
 				$user_auth = true;
 				$copy_user = true;
-				$realm = get_request_var_post('realm');
+				$realm = get_nfilter_request_var('realm');
 				/* Locate user in database */
 				cacti_log("LOGIN: LDAP User '" . $username . "' Authenticated from Domain '" . db_fetch_cell('SELECT domain_name FROM user_domains WHERE domain_id=' . ($realm-1000)) . "'", false, 'AUTH');
 				$user = db_fetch_row_prepared('SELECT * FROM user_auth WHERE username = ? AND realm = ?', array($username, $realm));
 
 				/* Create user from template if requested */
-				$template_user = db_fetch_cell_prepared('SELECT user_id FROM user_domains WHERE domain_id = ?', array(get_request_var_post('realm')-1000));
+				$template_user = db_fetch_cell_prepared('SELECT user_id FROM user_domains WHERE domain_id = ?', array(get_nfilter_request_var('realm')-1000));
 				$template_username = db_fetch_cell_prepared('SELECT username FROM user_auth WHERE id = ?', array($template_user));
 				if ((!sizeof($user)) && ($copy_user) && ($template_user != '0') && (strlen($username) > 0)) {
 					cacti_log("WARN: User '" . $username . "' does not exist, copying template user", false, 'AUTH');

@@ -187,8 +187,8 @@ function form_save() {
 		$save2['local_data_template_data_id'] = get_filter_request_var('local_data_template_data_id');
 		$save2['data_template_id']            = get_filter_request_var('data_template_id');
 		$save2['data_input_id']               = form_input_validate(get_request_var('data_input_id'), 'data_input_id', '^[0-9]+$', true, 3);
-		$save2['name']                        = form_input_validate(get_request_var_post('name'), 'name', '', false, 3);
-		$save2['data_source_path']            = form_input_validate(get_request_var_post('data_source_path'), 'data_source_path', '', true, 3);
+		$save2['name']                        = form_input_validate(get_nfilter_request_var('name'), 'name', '', false, 3);
+		$save2['data_source_path']            = form_input_validate(get_nfilter_request_var('data_source_path'), 'data_source_path', '', true, 3);
 		$save2['active']                      = form_input_validate((isset_request_var('active') ? get_nfilter_request_var('active') : ''), 'active', '', true, 3);
 		$save2['rrd_step']                    = form_input_validate(get_request_var('rrd_step'), 'rrd_step', '^[0-9]+$', false, 3);
 
@@ -313,15 +313,15 @@ function form_actions() {
 	global $ds_actions;
 
 	/* ================= input validation ================= */
-	input_validate_input_regex(get_request_var_post('drp_action'), '^([a-zA-Z0-9_]+)$');
+	input_validate_input_regex(get_nfilter_request_var('drp_action'), '^([a-zA-Z0-9_]+)$');
 	/* ==================================================== */
 
 	/* if we are to save this form, instead of display it */
 	if (isset_request_var('selected_items')) {
-		$selected_items = sanitize_unserialize_selected_items(get_request_var_post('selected_items'));
+		$selected_items = sanitize_unserialize_selected_items(get_nfilter_request_var('selected_items'));
 
 		if ($selected_items != false) {
-			if (get_request_var_post('drp_action') == '1') { /* delete */
+			if (get_nfilter_request_var('drp_action') == '1') { /* delete */
 				if (!isset_request_var('delete_type')) { 
 					set_request_var('delete_type', 1); 
 				}else{
@@ -362,50 +362,50 @@ function form_actions() {
 				api_data_source_remove_multi($selected_items);
 
 				api_plugin_hook_function('data_source_remove', $selected_items);
-			}elseif (get_request_var_post('drp_action') == '2') { /* change graph template */
+			}elseif (get_nfilter_request_var('drp_action') == '2') { /* change graph template */
 				get_filter_request_var('data_template_id');
 
 				for ($i=0;($i<count($selected_items));$i++) {
-					change_data_template($selected_items[$i], get_request_var_post('data_template_id'));
+					change_data_template($selected_items[$i], get_nfilter_request_var('data_template_id'));
 				}
-			}elseif (get_request_var_post('drp_action') == '3') { /* change host */
+			}elseif (get_nfilter_request_var('drp_action') == '3') { /* change host */
 				get_filter_request_var('host_id');
 
 				for ($i=0;($i<count($selected_items));$i++) {
-					db_execute_prepared('UPDATE data_local SET host_id = ? WHERE id = ?', array(get_request_var_post('host_id'), $selected_items[$i]));
-					push_out_host(get_request_var_post('host_id'), $selected_items[$i]);
+					db_execute_prepared('UPDATE data_local SET host_id = ? WHERE id = ?', array(get_nfilter_request_var('host_id'), $selected_items[$i]));
+					push_out_host(get_nfilter_request_var('host_id'), $selected_items[$i]);
 					update_data_source_title_cache($selected_items[$i]);
 				}
-			}elseif (get_request_var_post('drp_action') == '4') { /* duplicate */
+			}elseif (get_nfilter_request_var('drp_action') == '4') { /* duplicate */
 				for ($i=0;($i<count($selected_items));$i++) {
 					duplicate_data_source($selected_items[$i], 0, get_nfilter_request_var('title_format'));
 				}
-			}elseif (get_request_var_post('drp_action') == '5') { /* data source -> data template */
+			}elseif (get_nfilter_request_var('drp_action') == '5') { /* data source -> data template */
 				for ($i=0;($i<count($selected_items));$i++) {
 					data_source_to_data_template($selected_items[$i], get_nfilter_request_var('title_format'));
 				}
-			}elseif (get_request_var_post('drp_action') == '6') { /* data source enable */
+			}elseif (get_nfilter_request_var('drp_action') == '6') { /* data source enable */
 				for ($i=0;($i<count($selected_items));$i++) {
 					api_data_source_enable($selected_items[$i]);
 				}
-			}elseif (get_request_var_post('drp_action') == '7') { /* data source disable */
+			}elseif (get_nfilter_request_var('drp_action') == '7') { /* data source disable */
 				for ($i=0;($i<count($selected_items));$i++) {
 					api_data_source_disable($selected_items[$i]);
 				}
-			}elseif (get_request_var_post('drp_action') == '8') { /* reapply suggested data source naming */
+			}elseif (get_nfilter_request_var('drp_action') == '8') { /* reapply suggested data source naming */
 				for ($i=0;($i<count($selected_items));$i++) {
 					api_reapply_suggested_data_source_title($selected_items[$i]);
 					update_data_source_title_cache($selected_items[$i]);
 				}
 			} else {
-				api_plugin_hook_function('data_source_action_execute', get_request_var_post('drp_action'));
+				api_plugin_hook_function('data_source_action_execute', get_nfilter_request_var('drp_action'));
 			}
 		}
 
 		/* update snmpcache */
-		snmpagent_data_source_action_bottom(array(get_request_var_post('drp_action'), $selected_items));
+		snmpagent_data_source_action_bottom(array(get_nfilter_request_var('drp_action'), $selected_items));
 
-		api_plugin_hook_function('data_source_action_bottom', array(get_request_var_post('drp_action'), $selected_items));
+		api_plugin_hook_function('data_source_action_bottom', array(get_nfilter_request_var('drp_action'), $selected_items));
 
 		header('Location: data_sources.php?header=false');
 		exit;
@@ -432,10 +432,10 @@ function form_actions() {
 
 	form_start('data_sources.php');
 
-	html_start_box($ds_actions{get_request_var_post('drp_action')}, '60%', '', '3', 'center', '');
+	html_start_box($ds_actions{get_nfilter_request_var('drp_action')}, '60%', '', '3', 'center', '');
 
 	if (isset($ds_array) && sizeof($ds_array)) {
-		if (get_request_var_post('drp_action') == '1') { /* delete */
+		if (get_nfilter_request_var('drp_action') == '1') { /* delete */
 			$graphs = array();
 
 			/* find out which (if any) graphs are using this data source, so we can tell the user */
@@ -477,7 +477,7 @@ function form_actions() {
 				</tr>\n";
 
 			$save_html = "<input type='button' value='Cancel' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='Continue' title='Delete Data Source(s)'>";
-		}elseif (get_request_var_post('drp_action') == '2') { /* change graph template */
+		}elseif (get_nfilter_request_var('drp_action') == '2') { /* change graph template */
 			print "<tr>
 				<td class='textArea'>
 					<p>Choose a Data Template and click \"Continue\" to change the Data Template for
@@ -489,7 +489,7 @@ function form_actions() {
 			</tr>\n";
 
 			$save_html = "<input type='button' value='Cancel' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='Continue' title='Change Graph Template for Data Source(s)'>";
-		}elseif (get_request_var_post('drp_action') == '3') { /* change host */
+		}elseif (get_nfilter_request_var('drp_action') == '3') { /* change host */
 			print "<tr>
 				<td class='textArea'>
 					<p>Choose a new Device for these Data Source(s) and click 'Continue'.</p>
@@ -499,7 +499,7 @@ function form_actions() {
 			</tr>\n";
 
 			$save_html = "<input type='button' value='Cancel' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='Continue' title='Change Device'>";
-		}elseif (get_request_var_post('drp_action') == '4') { /* duplicate */
+		}elseif (get_nfilter_request_var('drp_action') == '4') { /* duplicate */
 			print "<tr>
 				<td class='textArea'>
 					<p>Click 'Continue' to duplicate the following Data Source(s). You can
@@ -510,7 +510,7 @@ function form_actions() {
 			</tr>\n";
 
 			$save_html = "<input type='button' value='Cancel' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='Continue' title='Duplicate Data Source(s)'>";
-		}elseif (get_request_var_post('drp_action') == '5') { /* data source -> data template */
+		}elseif (get_nfilter_request_var('drp_action') == '5') { /* data source -> data template */
 			print "<tr>
 				<td class='textArea'>
 					<p>Click 'Continue' to convert the following Data Source(s) into Data Template(s).
@@ -521,7 +521,7 @@ function form_actions() {
 			</tr>\n";
 
 			$save_html = "<input type='button' value='Cancel' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='Continue' title='Convert Data Source(s) to Data Template(s)'>";
-		}elseif (get_request_var_post('drp_action') == '6') { /* data source enable */
+		}elseif (get_nfilter_request_var('drp_action') == '6') { /* data source enable */
 			print "<tr>
 				<td class='textArea'>
 					<p>Click 'Continue' to enable the following Data Source(s).</p>
@@ -530,7 +530,7 @@ function form_actions() {
 			</tr>\n";
 
 			$save_html = "<input type='button' value='Cancel' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='Continue' title='Enable Data Source(s)'>";
-		}elseif (get_request_var_post('drp_action') == '7') { /* data source disable */
+		}elseif (get_nfilter_request_var('drp_action') == '7') { /* data source disable */
 			print "<tr>
 				<td class='textArea'>
 					<p>Click 'Continue' to disable the following Data Source(s).</p>
@@ -539,7 +539,7 @@ function form_actions() {
 			</tr>\n";
 
 			$save_html = "<input type='button' value='Cancel' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='Continue' title='Disable Data Source(s)'>";
-		}elseif (get_request_var_post('drp_action') == '8') { /* reapply suggested data source naming */
+		}elseif (get_nfilter_request_var('drp_action') == '8') { /* reapply suggested data source naming */
 			print "<tr>
 				<td class='textArea'>
 					<p>Click 'Continue' to re-apply the suggested names to the following Data Source(s).</p>
@@ -549,7 +549,7 @@ function form_actions() {
 
 			$save_html = "<input type='button' value='Cancel' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='Continue' title='Reapply Suggested Naming to Data Source(s)'>";
 		}else{
-			$save['drp_action'] = get_request_var_post('drp_action');
+			$save['drp_action'] = get_nfilter_request_var('drp_action');
 			$save['ds_list'] = $ds_list;
 			$save['ds_array'] = (isset($ds_array)? $ds_array : array());
 			api_plugin_hook_function('data_source_action_prepare', $save);
@@ -564,7 +564,7 @@ function form_actions() {
 		<td class='saveRow'>
 			<input type='hidden' name='action' value='actions'>
 			<input type='hidden' name='selected_items' value='" . (isset($ds_array) ? serialize($ds_array) : '') . "'>
-			<input type='hidden' name='drp_action' value='" . get_request_var_post('drp_action') . "'>
+			<input type='hidden' name='drp_action' value='" . get_nfilter_request_var('drp_action') . "'>
 			$save_html
 		</td>
 	</tr>\n";

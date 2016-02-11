@@ -224,16 +224,16 @@ function user_group_remove($id) {
 function update_policies() {
 	$set = '';
 
-	$set .= isset_request_var('policy_graphs') ? 'policy_graphs=' . get_request_var_post('policy_graphs'):'';
-	$set .= isset_request_var('policy_trees') ? (strlen($set) ? ',':'') . 'policy_trees=' . get_request_var_post('policy_trees'):'';
-	$set .= isset_request_var('policy_hosts') ? (strlen($set) ? ',':'') . 'policy_hosts=' . get_request_var_post('policy_hosts'):'';
-	$set .= isset_request_var('policy_graph_templates') ? (strlen($set) ? ',':'') . 'policy_graph_templates=' . get_request_var_post('policy_graph_templates'):'';
+	$set .= isset_request_var('policy_graphs') ? 'policy_graphs=' . get_nfilter_request_var('policy_graphs'):'';
+	$set .= isset_request_var('policy_trees') ? (strlen($set) ? ',':'') . 'policy_trees=' . get_nfilter_request_var('policy_trees'):'';
+	$set .= isset_request_var('policy_hosts') ? (strlen($set) ? ',':'') . 'policy_hosts=' . get_nfilter_request_var('policy_hosts'):'';
+	$set .= isset_request_var('policy_graph_templates') ? (strlen($set) ? ',':'') . 'policy_graph_templates=' . get_nfilter_request_var('policy_graph_templates'):'';
 
 	if (strlen($set)) {
-		db_execute_prepared("UPDATE user_auth_group SET $set WHERE id = ?", array(get_request_var_post('id')));
+		db_execute_prepared("UPDATE user_auth_group SET $set WHERE id = ?", array(get_nfilter_request_var('id')));
 	}
 
-	header('Location: user_group_admin.php?action=edit&header=false&tab=' .  get_request_var_post('tab') . '&id=' . get_request_var_post('id'));
+	header('Location: user_group_admin.php?action=edit&header=false&tab=' .  get_nfilter_request_var('tab') . '&id=' . get_nfilter_request_var('id'));
 	exit;
 }
 
@@ -248,15 +248,15 @@ function form_actions() {
 				input_validate_input_number($matches[1]);
 				/* ==================================================== */
 
-				if (get_request_var_post('drp_action') == '1') {
-					db_execute_prepared('REPLACE INTO user_auth_group_perms (group_id, item_id, type) VALUES (?, ?, 3)', array(get_request_var_post('id'), $matches[1]));
+				if (get_nfilter_request_var('drp_action') == '1') {
+					db_execute_prepared('REPLACE INTO user_auth_group_perms (group_id, item_id, type) VALUES (?, ?, 3)', array(get_nfilter_request_var('id'), $matches[1]));
 				}else{
-					db_execute_prepared('DELETE FROM user_auth_group_perms WHERE group_id = ? AND item_id = ? AND type = 3', array(get_request_var_post('id'), $matches[1]));
+					db_execute_prepared('DELETE FROM user_auth_group_perms WHERE group_id = ? AND item_id = ? AND type = 3', array(get_nfilter_request_var('id'), $matches[1]));
 				}
 			}
 		}
 
-		header('Location: user_group_admin.php?action=edit&header=false&tab=permsd&id=' . get_request_var_post('id'));
+		header('Location: user_group_admin.php?action=edit&header=false&tab=permsd&id=' . get_nfilter_request_var('id'));
 		exit;
 	}elseif (isset_request_var('associate_graph')) {
 		while (list($var,$val) = each($_POST)) {
@@ -265,15 +265,15 @@ function form_actions() {
 				input_validate_input_number($matches[1]);
 				/* ==================================================== */
 
-				if (get_request_var_post('drp_action') == '1') {
-					db_execute_prepared('REPLACE INTO user_auth_group_perms (group_id, item_id, type) VALUES (?, ?, 1)', array(get_request_var_post('id'), $matches[1]));
+				if (get_nfilter_request_var('drp_action') == '1') {
+					db_execute_prepared('REPLACE INTO user_auth_group_perms (group_id, item_id, type) VALUES (?, ?, 1)', array(get_nfilter_request_var('id'), $matches[1]));
 				}else{
-					db_execute_prepared('DELETE FROM user_auth_group_perms WHERE group_id = ? AND item_id = ? AND type = 1', array(get_request_var_post('id'), $matches[1]));
+					db_execute_prepared('DELETE FROM user_auth_group_perms WHERE group_id = ? AND item_id = ? AND type = 1', array(get_nfilter_request_var('id'), $matches[1]));
 				}
 			}
 		}
 
-		header('Location: user_group_admin.php?action=edit&header=false&tab=permsg&id=' . get_request_var_post('id'));
+		header('Location: user_group_admin.php?action=edit&header=false&tab=permsg&id=' . get_nfilter_request_var('id'));
 		exit;
 	}elseif (isset_request_var('associate_template')) {
 		while (list($var,$val) = each($_POST)) {
@@ -282,15 +282,15 @@ function form_actions() {
 				input_validate_input_number($matches[1]);
 				/* ==================================================== */
 
-				if (get_request_var_post('drp_action') == '1') {
-					db_execute_prepared('REPLACE INTO user_auth_group_perms (group_id, item_id, type) VALUES (?, ?, 4)', array(get_request_var_post('id'), $matches[1]));
+				if (get_nfilter_request_var('drp_action') == '1') {
+					db_execute_prepared('REPLACE INTO user_auth_group_perms (group_id, item_id, type) VALUES (?, ?, 4)', array(get_nfilter_request_var('id'), $matches[1]));
 				}else{
-					db_execute_prepared('DELETE FROM user_auth_group_perms WHERE group_id = ? AND item_id = ? AND type = 4', array(get_request_var_post('id'), $matches[1]));
+					db_execute_prepared('DELETE FROM user_auth_group_perms WHERE group_id = ? AND item_id = ? AND type = 4', array(get_nfilter_request_var('id'), $matches[1]));
 				}
 			}
 		}
 
-		header('Location: user_group_admin.php?action=edit&header=false&tab=permste&id=' . get_request_var_post('id'));
+		header('Location: user_group_admin.php?action=edit&header=false&tab=permste&id=' . get_nfilter_request_var('id'));
 		exit;
 	}elseif (isset_request_var('associate_tree')) {
 		while (list($var,$val) = each($_POST)) {
@@ -299,15 +299,15 @@ function form_actions() {
 				input_validate_input_number($matches[1]);
 				/* ==================================================== */
 
-				if (get_request_var_post('drp_action') == '1') {
-					db_execute_prepared('REPLACE INTO user_auth_group_perms (group_id, item_id, type) VALUES (?, ?, 2)', array(get_request_var_post('id'), $matches[1]));
+				if (get_nfilter_request_var('drp_action') == '1') {
+					db_execute_prepared('REPLACE INTO user_auth_group_perms (group_id, item_id, type) VALUES (?, ?, 2)', array(get_nfilter_request_var('id'), $matches[1]));
 				}else{
-					db_execute_prepared('DELETE FROM user_auth_group_perms WHERE group_id = ? AND item_id = ? AND type = 2', array(get_request_var_post('id'), $matches[1]));
+					db_execute_prepared('DELETE FROM user_auth_group_perms WHERE group_id = ? AND item_id = ? AND type = 2', array(get_nfilter_request_var('id'), $matches[1]));
 				}
 			}
 		}
 
-		header('Location: user_group_admin.php?action=edit&header=false&tab=permstr&id=' . get_request_var_post('id'));
+		header('Location: user_group_admin.php?action=edit&header=false&tab=permstr&id=' . get_nfilter_request_var('id'));
 		exit;
 	}elseif (isset_request_var('associate_member')) {
 		while (list($var,$val) = each($_POST)) {
@@ -316,29 +316,29 @@ function form_actions() {
 				input_validate_input_number($matches[1]);
 				/* ==================================================== */
 
-				if (get_request_var_post('drp_action') == '1') {
-					db_execute_prepared('REPLACE INTO user_auth_group_members (group_id, user_id) VALUES (?, ?)', array(get_request_var_post('id'), $matches[1]));
+				if (get_nfilter_request_var('drp_action') == '1') {
+					db_execute_prepared('REPLACE INTO user_auth_group_members (group_id, user_id) VALUES (?, ?)', array(get_nfilter_request_var('id'), $matches[1]));
 				}else{
-					db_execute_prepared('DELETE FROM user_auth_group_members WHERE group_id = ? AND user_id = ?', array(get_request_var_post('id'), $matches[1]));
+					db_execute_prepared('DELETE FROM user_auth_group_members WHERE group_id = ? AND user_id = ?', array(get_nfilter_request_var('id'), $matches[1]));
 				}
 			}
 		}
 
-		header('Location: user_group_admin.php?action=edit&header=false&tab=members&id=' . get_request_var_post('id'));
+		header('Location: user_group_admin.php?action=edit&header=false&tab=members&id=' . get_nfilter_request_var('id'));
 		exit;
 	}elseif (isset_request_var('selected_items')) {
-		$selected_items = sanitize_unserialize_selected_items(get_request_var_post('selected_items'));
+		$selected_items = sanitize_unserialize_selected_items(get_nfilter_request_var('selected_items'));
 
 		if ($selected_items != false) {
-			if (get_request_var_post('drp_action') == '1') { /* delete */
+			if (get_nfilter_request_var('drp_action') == '1') { /* delete */
 				for ($i=0;($i<count($selected_items));$i++) {
 					user_group_remove($selected_items[$i]);
 				}
-			}elseif (get_request_var_post('drp_action') == '3') { /* enable */
+			}elseif (get_nfilter_request_var('drp_action') == '3') { /* enable */
 				for ($i=0;($i<count($selected_items));$i++) {
 					user_group_enable($selected_items[$i]);
 				}
-			}elseif (get_request_var_post('drp_action') == '4') { /* disable */
+			}elseif (get_nfilter_request_var('drp_action') == '4') { /* disable */
 				for ($i=0;($i<count($selected_items));$i++) {
 					user_group_disable($selected_items[$i]);
 				}
@@ -359,7 +359,7 @@ function form_actions() {
 			input_validate_input_number($matches[1]);
 			/* ==================================================== */
 
-			if (get_request_var_post('drp_action') != '2') {
+			if (get_nfilter_request_var('drp_action') != '2') {
 				$group_list .= '<li>' . db_fetch_cell_prepared('SELECT name FROM user_auth_group WHERE id = ?', array($matches[1])) . '</li>';
 			}
 			$group_array[$i] = $matches[1];
@@ -372,10 +372,10 @@ function form_actions() {
 
 	form_start('user_group_admin.php');
 
-	html_start_box($group_actions[get_request_var_post('drp_action')], '60%', '', '3', 'center', '');
+	html_start_box($group_actions[get_nfilter_request_var('drp_action')], '60%', '', '3', 'center', '');
 
 	if (isset($group_array) && sizeof($group_array)) {
-		if ((get_request_var_post('drp_action') == '1') && (sizeof($group_array))) { /* delete */
+		if ((get_nfilter_request_var('drp_action') == '1') && (sizeof($group_array))) { /* delete */
 			print "<tr>
 				<td class='textArea'>
 					<p>Click 'Continue' and the the selected User Group(s).</p>
@@ -388,7 +388,7 @@ function form_actions() {
 
 		$group_id = '';
 
-		if ((get_request_var_post('drp_action') == '3') && (sizeof($group_array))) { /* enable */
+		if ((get_nfilter_request_var('drp_action') == '3') && (sizeof($group_array))) { /* enable */
 			print "<tr>
 				<td class='textArea'>
 					<p>Click 'Continue' to enable the selected User Group(s).</p>
@@ -399,7 +399,7 @@ function form_actions() {
 			$save_html = "<input type='button' value='Cancel' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='Continue' title='Enable User Group(s)'>";
 		}
 
-		if ((get_request_var_post('drp_action') == '4') && (sizeof($group_array))) { /* disable */
+		if ((get_nfilter_request_var('drp_action') == '4') && (sizeof($group_array))) { /* disable */
 			print "<tr>
 				<td class='textArea'>
 					<p>Click 'Continue' to disable the selected User Group(s).</p>
@@ -417,12 +417,12 @@ function form_actions() {
 	print "<tr>
 		<td class='saveRow'>
 			<input type='hidden' name='action' value='actions'>";
-	if (get_request_var_post('drp_action') == '2') { /* copy */
+	if (get_nfilter_request_var('drp_action') == '2') { /* copy */
 		print "<input type='hidden' name='selected_items' value='" . $group_id . "'>\n";
 	}else{
 		print "<input type='hidden' name='selected_items' value='" . (isset($group_array) ? serialize($group_array) : '') . "'>\n";
 	}
-	print "				<input type='hidden' name='drp_action' value='" . get_request_var_post('drp_action') . "'>
+	print "				<input type='hidden' name='drp_action' value='" . get_nfilter_request_var('drp_action') . "'>
 			$save_html
 		</td>
 	</tr>\n";
@@ -448,19 +448,19 @@ function form_save() {
 		/* ==================================================== */
 
 		/* check duplicate group */
-		if (sizeof(db_fetch_row_prepared('SELECT * FROM user_auth_group WHERE name = ? AND id != ?', array(get_request_var_post('name'), get_request_var_post('id'))))) {
+		if (sizeof(db_fetch_row_prepared('SELECT * FROM user_auth_group WHERE name = ? AND id != ?', array(get_nfilter_request_var('name'), get_nfilter_request_var('id'))))) {
 			raise_message(12);
 		}
 
-		$save['id'] = get_request_var_post('id');
-		$save['name'] = form_input_validate(get_request_var_post('name'), 'name', "^[A-Za-z0-9\._\\\@\ -]+$", false, 3);
-		$save['description'] = form_input_validate(get_request_var_post('description'), 'description', '', true, 3);
-		$save['show_tree'] = form_input_validate(get_request_var_post('show_tree', ''), 'show_tree', '', true, 3);
-		$save['show_list'] = form_input_validate(get_request_var_post('show_list', ''), 'show_list', '', true, 3);
-		$save['show_preview'] = form_input_validate(get_request_var_post('show_preview', ''), 'show_preview', '', true, 3);
-		$save['graph_settings'] = form_input_validate(get_request_var_post('graph_settings', ''), 'graph_settings', '', true, 3);
-		$save['login_opts'] = form_input_validate(get_request_var_post('login_opts'), 'login_opts', '', true, 3);
-		$save['enabled'] = form_input_validate(get_request_var_post('enabled', ''), 'enabled', '', true, 3);
+		$save['id'] = get_nfilter_request_var('id');
+		$save['name'] = form_input_validate(get_nfilter_request_var('name'), 'name', "^[A-Za-z0-9\._\\\@\ -]+$", false, 3);
+		$save['description'] = form_input_validate(get_nfilter_request_var('description'), 'description', '', true, 3);
+		$save['show_tree'] = form_input_validate(get_nfilter_request_var('show_tree', ''), 'show_tree', '', true, 3);
+		$save['show_list'] = form_input_validate(get_nfilter_request_var('show_list', ''), 'show_list', '', true, 3);
+		$save['show_preview'] = form_input_validate(get_nfilter_request_var('show_preview', ''), 'show_preview', '', true, 3);
+		$save['graph_settings'] = form_input_validate(get_nfilter_request_var('graph_settings', ''), 'graph_settings', '', true, 3);
+		$save['login_opts'] = form_input_validate(get_nfilter_request_var('login_opts'), 'login_opts', '', true, 3);
+		$save['enabled'] = form_input_validate(get_nfilter_request_var('enabled', ''), 'enabled', '', true, 3);
 		$save = api_plugin_hook_function('user_group_admin_setup_sql_save', $save);
 
 		if (!is_error_message()) {
@@ -474,32 +474,32 @@ function form_save() {
 
 		}
 
-		header('Location: user_group_admin.php?action=edit&header=false&tab=general&id=' . (isset($group_id) && $group_id > 0 ? $group_id : get_request_var_post('id')));
+		header('Location: user_group_admin.php?action=edit&header=false&tab=general&id=' . (isset($group_id) && $group_id > 0 ? $group_id : get_nfilter_request_var('id')));
 		exit;
 	}elseif (isset_request_var('save_component_realm_perms')) {
-		db_execute_prepared('DELETE FROM user_auth_group_realm WHERE group_id = ?', array(get_request_var_post('id')));
+		db_execute_prepared('DELETE FROM user_auth_group_realm WHERE group_id = ?', array(get_nfilter_request_var('id')));
 
 		while (list($var, $val) = each($_POST)) {
 			if (preg_match('/^[section]/i', $var)) {
 				if (substr($var, 0, 7) == 'section') {
-				    db_execute_prepared('REPLACE INTO user_auth_group_realm (group_id, realm_id) VALUES (?, ?)', array(get_request_var_post('id'), substr($var, 7)));
+				    db_execute_prepared('REPLACE INTO user_auth_group_realm (group_id, realm_id) VALUES (?, ?)', array(get_nfilter_request_var('id'), substr($var, 7)));
 				}
 			}
 		}
 
 		raise_message(1);
 
-		header('Location: user_group_admin.php?action=edit&header=false&tab=realms&id=' . get_request_var_post('id'));
+		header('Location: user_group_admin.php?action=edit&header=false&tab=realms&id=' . get_nfilter_request_var('id'));
 		exit;
 	}elseif (isset_request_var('save_component_graph_settings')) {
 		while (list($tab_short_name, $tab_fields) = each($settings_graphs)) {
 			while (list($field_name, $field_array) = each($tab_fields)) {
 				if ((isset($field_array['items'])) && (is_array($field_array['items']))) {
 					while (list($sub_field_name, $sub_field_array) = each($field_array['items'])) {
-						db_execute_prepared('REPLACE INTO settings_graphs_group (group_id, name, value) VALUES (?, ?, ?)', array(get_request_var_post('id'), $sub_field_name, get_request_var_post($sub_field_name, '')));
+						db_execute_prepared('REPLACE INTO settings_graphs_group (group_id, name, value) VALUES (?, ?, ?)', array(get_nfilter_request_var('id'), $sub_field_name, get_nfilter_request_var($sub_field_name, '')));
 					}
 				}else{
-					db_execute_prepared('REPLACE INTO settings_graphs_group (group_id, name, value) VALUES (?, ?, ?)', array(get_request_var_post('id'), $field_name, get_request_var_post($field_name)));
+					db_execute_prepared('REPLACE INTO settings_graphs_group (group_id, name, value) VALUES (?, ?, ?)', array(get_nfilter_request_var('id'), $field_name, get_nfilter_request_var($field_name)));
 				}
 			}
 		}
@@ -509,14 +509,14 @@ function form_save() {
 
 		raise_message(1);
 
-		header('Location: user_group_admin.php?action=edit&header=false&tab=settings&id=' . get_request_var_post('id'));
+		header('Location: user_group_admin.php?action=edit&header=false&tab=settings&id=' . get_nfilter_request_var('id'));
 		exit;
 	} else {
 		api_plugin_hook('user_group_admin_save');
 	}
 
 	/* redirect to the appropriate page */
-	header('Location: user_group_admin.php?action=edit&header=false&tab=general&id=' .  get_request_var_post('id'));
+	header('Location: user_group_admin.php?action=edit&header=false&tab=general&id=' .  get_nfilter_request_var('id'));
 }
 
 /* --------------------------

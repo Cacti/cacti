@@ -35,18 +35,58 @@ $tree_actions = array(
 	3 => 'Un Publish'
 );
 
-get_filter_request_var('tree_id');
-get_filter_request_var('leaf_id');
-get_filter_request_var('graph_tree_id');
-get_filter_request_var('parent_item_id');
-
-/* clean up id string */
-if (isset_request_var('id') && get_request_var('id') != '#') {
-	set_request_var('id', sanitize_search_string(get_request_var('id')));
-}
-
 /* set default action */
 set_default_action();
+
+if (get_request_var('action') != '') {
+	/* ================= input validation and session storage ================= */
+	$filters = array(
+		'tree_id' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'default' => ''
+			),
+		'leaf_id' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'default' => ''
+			),
+		'graph_tree_id' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'default' => ''
+			),
+		'parent_item_id' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'default' => ''
+			),
+		'parent' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'default' => ''
+			),
+		'position' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'default' => ''
+			),
+		'nodeid' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'default' => ''
+			),
+		'filter' => array(
+			'filter' => FILTER_CALLBACK, 
+			'default' => '', 
+			'options' => array('options' => 'sanitize_search_string')
+			)
+	);
+
+	validate_store_request_vars($filters);
+	/* ================= input validation ================= */
+
+	if (isset_request_var('id')) {
+		if (!is_numeric(get_nfilter_request_var('id'))) {
+			get_filter_request_var('id', FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => '/([_a-z:0-9#]+)/')));
+		}else{
+			get_filter_request_var('id');
+		}
+	}
+}
 
 switch (get_request_var('action')) {
 	case 'save':
@@ -272,9 +312,9 @@ function form_save() {
 		get_filter_request_var('id');
 		/* ==================================================== */
 
-		$save['id']            = get_request_var_post('id');
-		$save['name']          = form_input_validate(get_request_var_post('name'), 'name', '', false, 3);
-		$save['sort_type']     = form_input_validate(get_request_var_post('sort_type'), 'sort_type', '', true, 3);
+		$save['id']            = get_nfilter_request_var('id');
+		$save['name']          = form_input_validate(get_nfilter_request_var('name'), 'name', '', false, 3);
+		$save['sort_type']     = form_input_validate(get_nfilter_request_var('sort_type'), 'sort_type', '', true, 3);
 		$save['last_modified'] = date('Y-m-d H:i:s', time());
 		$save['enabled']       = get_nfilter_request_var('enabled') == 'true' ? 'on':'-';
 		$save['modified_by']   = $_SESSION['sess_user_id'];
@@ -289,7 +329,7 @@ function form_save() {
 				raise_message(1);
 
 				/* sort the tree using the algorithm chosen by the user */
-				api_tree_sort_tree(SORT_TYPE_TREE, $tree_id, get_request_var_post('sort_type'));
+				api_tree_sort_tree(SORT_TYPE_TREE, $tree_id, get_nfilter_request_var('sort_type'));
 			}else{
 				raise_message(2);
 			}
@@ -307,24 +347,24 @@ function form_actions() {
 	global $tree_actions;
 
 	/* ================= input validation ================= */
-	input_validate_input_regex(get_request_var_post('drp_action'), '^([a-zA-Z0-9_]+)$');
+	input_validate_input_regex(get_nfilter_request_var('drp_action'), '^([a-zA-Z0-9_]+)$');
 	/* ==================================================== */
 
 	/* if we are to save this form, instead of display it */
 	if (isset_request_var('selected_items')) {
-		$selected_items = sanitize_unserialize_selected_items(get_request_var_post('selected_items'));
+		$selected_items = sanitize_unserialize_selected_items(get_nfilter_request_var('selected_items'));
 
 		if ($selected_items != false) {
-			if (get_request_var_post('drp_action') == '1') { /* delete */
+			if (get_nfilter_request_var('drp_action') == '1') { /* delete */
 				db_execute('DELETE FROM graph_tree WHERE ' . array_to_sql_or($selected_items, 'id'));
 				db_execute('DELETE FROM graph_tree_items WHERE ' . array_to_sql_or($selected_items, 'graph_tree_id'));
-			}elseif (get_request_var_post('drp_action') == '2') { /* publish */
+			}elseif (get_nfilter_request_var('drp_action') == '2') { /* publish */
 				db_execute("UPDATE graph_tree 
 					SET enabled='on',
 					last_modified=NOW(),
 					modified_by=" . $_SESSION['sess_user_id'] . '
 					WHERE ' . array_to_sql_or($selected_items, 'id'));
-			}elseif (get_request_var_post('drp_action') == '3') { /* un-publish */
+			}elseif (get_nfilter_request_var('drp_action') == '3') { /* un-publish */
 				db_execute("UPDATE graph_tree 
 					SET enabled='',
 					last_modified=NOW(),
@@ -358,10 +398,10 @@ function form_actions() {
 
 	form_start('tree.php');
 
-	html_start_box($tree_actions{get_request_var_post('drp_action')}, '60%', '', '3', 'center', '');
+	html_start_box($tree_actions{get_nfilter_request_var('drp_action')}, '60%', '', '3', 'center', '');
 
 	if (isset($tree_array) && sizeof($tree_array)) {
-		if (get_request_var_post('drp_action') == '1') { /* delete */
+		if (get_nfilter_request_var('drp_action') == '1') { /* delete */
 			print "<tr>
 				<td class='textArea' class='odd'>
 					<p>Click 'Continue' to delete the folling Tree(s).</p>
@@ -370,7 +410,7 @@ function form_actions() {
 			</tr>\n";
 
 			$save_html = "<input type='button' value='Cancel' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='Continue' title='Delete Tree(s)'>";
-		}elseif (get_request_var_post('drp_action') == '2') { /* publish */
+		}elseif (get_nfilter_request_var('drp_action') == '2') { /* publish */
 			print "<tr>
 				<td class='textArea' class='odd'>
 					<p>Click 'Continue' to publish the following Tree(s).</p>
@@ -379,7 +419,7 @@ function form_actions() {
 			</tr>\n";
 
 			$save_html = "<input type='button' value='Cancel' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='Continue' title='Publish Tree(s)'>";
-		}elseif (get_request_var_post('drp_action') == '3') { /* un-publish */
+		}elseif (get_nfilter_request_var('drp_action') == '3') { /* un-publish */
 			print "<tr>
 				<td class='textArea' class='odd'>
 					<p>Click 'Continue' to un-publish the following Tree(s).</p>
@@ -398,7 +438,7 @@ function form_actions() {
 		<td class='saveRow'>
 			<input type='hidden' name='action' value='actions'>
 			<input type='hidden' name='selected_items' value='" . (isset($tree_array) ? serialize($tree_array) : '') . "'>
-			<input type='hidden' name='drp_action' value='" . get_request_var_post('drp_action') . "'>
+			<input type='hidden' name='drp_action' value='" . get_nfilter_request_var('drp_action') . "'>
 			$save_html
 		</td>
 	</tr>\n";

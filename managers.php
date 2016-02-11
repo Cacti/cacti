@@ -822,31 +822,31 @@ function form_save() {
 	get_filter_request_var('id');
 	get_filter_request_var('max_log_size');
 
-	if (!in_array(get_request_var_post('max_log_size'), range(1,31) ) ) {
+	if (!in_array(get_nfilter_request_var('max_log_size'), range(1,31) ) ) {
 		//	die_html_input_error();
 	}
 	/* ================= input validation ================= */
 
 	switch($_REQUEST['tab']){
 		case 'notifications':
-			header('Location: managers.php?action=edit&tab=notifications&id=' . (empty($manager_id) ? get_request_var_post('id') : $manager_id) );
+			header('Location: managers.php?action=edit&tab=notifications&id=' . (empty($manager_id) ? get_nfilter_request_var('id') : $manager_id) );
 			break;
 		default:
 			$save['id']                       = get_request_var('id');
-			$save['description']              = form_input_validate(trim(get_request_var_post('description')), 'description', '', false, 3);
-			$save['hostname']                 = form_input_validate(trim(get_request_var_post('hostname')), 'hostname', '', false, 3);
-			$save['disabled']                 = form_input_validate(get_request_var_post('disabled'), 'disabled', '^on$', true, 3);
+			$save['description']              = form_input_validate(trim(get_nfilter_request_var('description')), 'description', '', false, 3);
+			$save['hostname']                 = form_input_validate(trim(get_nfilter_request_var('hostname')), 'hostname', '', false, 3);
+			$save['disabled']                 = form_input_validate(get_nfilter_request_var('disabled'), 'disabled', '^on$', true, 3);
 			$save['max_log_size']             = get_nfilter_request_var('max_log_size');
 
-			$save['snmp_version']             = form_input_validate(get_request_var_post('snmp_version'), 'snmp_version', '^[1-3]$', false, 3);
-			$save['snmp_community']           = form_input_validate(get_request_var_post('snmp_community'), 'snmp_community', '', true, 3);
+			$save['snmp_version']             = form_input_validate(get_nfilter_request_var('snmp_version'), 'snmp_version', '^[1-3]$', false, 3);
+			$save['snmp_community']           = form_input_validate(get_nfilter_request_var('snmp_community'), 'snmp_community', '', true, 3);
 
 			if ($save['snmp_version'] == 3) {
-				$save['snmp_username']        = form_input_validate(get_request_var_post('snmp_username'), 'snmp_username', '', true, 3);
-				$save['snmp_auth_password']   = form_input_validate(get_request_var_post('snmp_auth_password'), 'snmp_auth_password', '', true, 3);
-				$save['snmp_auth_protocol']   = form_input_validate(get_request_var_post('snmp_auth_protocol'), 'snmp_auth_protocol', "^\[None\]|MD5|SHA$", true, 3);
-				$save['snmp_priv_password']   = form_input_validate(get_request_var_post('snmp_priv_password'), 'snmp_priv_password', '', true, 3);
-				$save['snmp_priv_protocol']   = form_input_validate(get_request_var_post('snmp_priv_protocol'), 'snmp_priv_protocol', "^\[None\]|DES|AES128$", true, 3);
+				$save['snmp_username']        = form_input_validate(get_nfilter_request_var('snmp_username'), 'snmp_username', '', true, 3);
+				$save['snmp_auth_password']   = form_input_validate(get_nfilter_request_var('snmp_auth_password'), 'snmp_auth_password', '', true, 3);
+				$save['snmp_auth_protocol']   = form_input_validate(get_nfilter_request_var('snmp_auth_protocol'), 'snmp_auth_protocol', "^\[None\]|MD5|SHA$", true, 3);
+				$save['snmp_priv_password']   = form_input_validate(get_nfilter_request_var('snmp_priv_password'), 'snmp_priv_password', '', true, 3);
+				$save['snmp_priv_protocol']   = form_input_validate(get_nfilter_request_var('snmp_priv_protocol'), 'snmp_priv_protocol', "^\[None\]|DES|AES128$", true, 3);
 			} else {
 				$save['snmp_username']        = '';
 				$save['snmp_auth_password']   = '';
@@ -855,9 +855,9 @@ function form_save() {
 				$save['snmp_priv_protocol']   = '';
 			}
 
-			$save['snmp_port']                = form_input_validate(get_request_var_post('snmp_port'), 'snmp_port', '^[0-9]+$', false, 3);
-			$save['snmp_message_type']        = form_input_validate(get_request_var_post('snmp_message_type'), 'snmp_message_type', '^[1-2]$', false, 3);
-			$save['notes']                    = form_input_validate(get_request_var_post('notes'), 'notes', '', true, 3);
+			$save['snmp_port']                = form_input_validate(get_nfilter_request_var('snmp_port'), 'snmp_port', '^[0-9]+$', false, 3);
+			$save['snmp_message_type']        = form_input_validate(get_nfilter_request_var('snmp_message_type'), 'snmp_message_type', '^[1-2]$', false, 3);
+			$save['notes']                    = form_input_validate(get_nfilter_request_var('notes'), 'notes', '', true, 3);
 
 			if ($save['snmp_version'] == 3 && ($save['snmp_auth_password'] != $save['snmp_auth_password_confirm'])) {
 				raise_message(4);
@@ -871,7 +871,7 @@ function form_save() {
 			break;
 	}
 
-	header('Location: managers.php?action=edit&header=false&id=' . (empty($manager_id) ? get_request_var_post('id') : $manager_id) );
+	header('Location: managers.php?action=edit&header=false&id=' . (empty($manager_id) ? get_nfilter_request_var('id') : $manager_id) );
 }
 
 function form_actions(){
@@ -879,16 +879,16 @@ function form_actions(){
 
 	if (isset_request_var('selected_items')) {
 		if (isset_request_var('action_receivers')) {
-			$selected_items = sanitize_unserialize_selected_items(get_request_var_post('selected_items'));
+			$selected_items = sanitize_unserialize_selected_items(get_nfilter_request_var('selected_items'));
 
 			if ($selected_items != false) {
-				if (get_request_var_post('drp_action') == '1') { /* delete */
+				if (get_nfilter_request_var('drp_action') == '1') { /* delete */
 					db_execute('DELETE FROM snmpagent_managers WHERE id IN (' . implode(',' ,$selected_items) . ')');
 					db_execute('DELETE FROM snmpagent_managers_notifications WHERE manager_id IN (' . implode(',' ,$selected_items) . ')');
 					db_execute('DELETE FROM snmpagent_notifications_log WHERE manager_id IN (' . implode(',' ,$selected_items) . ')');
-				}elseif (get_request_var_post('drp_action') == '2') { /* enable */
+				}elseif (get_nfilter_request_var('drp_action') == '2') { /* enable */
 					db_execute("UPDATE snmpagent_managers SET disabled = '' WHERE id IN (" . implode(',' ,$selected_items) . ')');
-				}elseif (get_request_var_post('drp_action') == '3') { /* disable */
+				}elseif (get_nfilter_request_var('drp_action') == '3') { /* disable */
 					db_execute("UPDATE snmpagent_managers SET disabled = 'on' WHERE id IN (" . implode(',' ,$selected_items) . ')');
 				}
 
@@ -900,23 +900,23 @@ function form_actions(){
 			get_filter_request_var('id');
 			/* ==================================================== */
 
-			$selected_items = unserialize(stripslashes(get_request_var_post('selected_items')));
+			$selected_items = unserialize(stripslashes(get_nfilter_request_var('selected_items')));
 
-			if (get_request_var_post('drp_action') == '0') { /* disable */
+			if (get_nfilter_request_var('drp_action') == '0') { /* disable */
 				foreach($selected_items as $mib => $notifications) {
 					foreach($notifications as $notification => $state) {
-						db_execute_prepared('DELETE FROM snmpagent_managers_notifications WHERE `manager_id` = ? AND `mib` = ? AND `notification` = ? LIMIT 1', array(get_request_var_post('id'), $mib, $notification));
+						db_execute_prepared('DELETE FROM snmpagent_managers_notifications WHERE `manager_id` = ? AND `mib` = ? AND `notification` = ? LIMIT 1', array(get_nfilter_request_var('id'), $mib, $notification));
 					}
 				}
-			}elseif (get_request_var_post('drp_action') == '1') { /* enable */
+			}elseif (get_nfilter_request_var('drp_action') == '1') { /* enable */
 				foreach($selected_items as $mib => $notifications) {
 					foreach($notifications as $notification => $state) {
-						db_execute_prepared('INSERT IGNORE INTO snmpagent_managers_notifications (`manager_id`, `notification`, `mib`) VALUES (?, ?, ?)', array(get_request_var_post('id'), $notification), $mib);
+						db_execute_prepared('INSERT IGNORE INTO snmpagent_managers_notifications (`manager_id`, `notification`, `mib`) VALUES (?, ?, ?)', array(get_nfilter_request_var('id'), $notification), $mib);
 					}
 				}
 			}
 
-			header('Location: managers.php?action=edit&id=' . get_request_var_post('id') . '&tab=notifications&header=false');
+			header('Location: managers.php?action=edit&id=' . get_nfilter_request_var('id') . '&tab=notifications&header=false');
 			exit;
 		}
 	}else {
@@ -939,17 +939,17 @@ function form_actions(){
 
 			form_start('managers.php');
 
-			html_start_box($manager_actions{get_request_var_post('drp_action')}, '60%', '', '3', 'center', '');
+			html_start_box($manager_actions{get_nfilter_request_var('drp_action')}, '60%', '', '3', 'center', '');
 
 			if (sizeof($selected_items)) {
 				print "<tr>
 					<td class='textArea'>
-						<p>Click 'Continue' to " . strtolower($manager_actions[get_request_var_post('drp_action')]) . " the following Notification Receiver(s).</p>
+						<p>Click 'Continue' to " . strtolower($manager_actions[get_nfilter_request_var('drp_action')]) . " the following Notification Receiver(s).</p>
 						<p><ul>$list</ul></p>
 					</td>
 				</tr>\n";
 
-				$save_html = "<input type='button' value='Cancel' onClick='cactiReturnTo()'><input type='submit' value='Continue' title='" . $manager_actions[get_request_var_post('drp_action')] . " Notification Receiver(s)'>";
+				$save_html = "<input type='button' value='Cancel' onClick='cactiReturnTo()'><input type='submit' value='Continue' title='" . $manager_actions[get_nfilter_request_var('drp_action')] . " Notification Receiver(s)'>";
 			} else {
 				print "<tr><td class='even'><span class='textError'>You must select at least one Notification Receiver.</span></td></tr>\n";
 				$save_html = "<input type='button' value='Return' onClick='cactiReturnTo()'>";
@@ -960,7 +960,7 @@ function form_actions(){
 				<input type='hidden' name='action' value='actions'>
 				<input type='hidden' name='action_receivers' value='1'>
 				<input type='hidden' name='selected_items' value='" . (isset($selected_items) ? serialize($selected_items) : '') . "'>
-				<input type='hidden' name='drp_action' value='" . get_request_var_post('drp_action') . "'>
+				<input type='hidden' name='drp_action' value='" . get_nfilter_request_var('drp_action') . "'>
 				$save_html
 				</td>
 			</tr>\n";
@@ -975,7 +975,7 @@ function form_actions(){
 			$list = '';
 
 			/* ================= input validation ================= */
-			input_validate_input_number( get_request_var_post('id'));
+			input_validate_input_number( get_nfilter_request_var('id'));
 			/* ==================================================== */
 
 			foreach($_POST as $key => $value) {
@@ -992,10 +992,10 @@ function form_actions(){
 
 			form_start('managers.php');
 
-			html_start_box($manager_notification_actions[get_request_var_post('drp_action')], '60%', '', '3', 'center', '');
+			html_start_box($manager_notification_actions[get_nfilter_request_var('drp_action')], '60%', '', '3', 'center', '');
 
 			if (sizeof($selected_items)) {
-				$msg = (get_request_var_post('drp_action') == 1)
+				$msg = (get_nfilter_request_var('drp_action') == 1)
 					 ? "Click 'Continue' to forward the following Notification Objects to this Noticification Receiver."
 					 : "Click 'Continue' to disable forwarding the following Notification Objects to this Noticification Receiver.";
 
@@ -1017,8 +1017,8 @@ function form_actions(){
 				<input type='hidden' name='action' value='actions'>
 				<input type='hidden' name='action_receiver_notifications' value='1'>
 				<input type='hidden' name='selected_items' value='" . (isset($selected_items) ? serialize($selected_items) : '') . "'>
-				<input type='hidden' name='id' value='" . get_request_var_post('id') . "'>
-				<input type='hidden' name='drp_action' value='" . get_request_var_post('drp_action') . "'>
+				<input type='hidden' name='id' value='" . get_nfilter_request_var('id') . "'>
+				<input type='hidden' name='drp_action' value='" . get_nfilter_request_var('drp_action') . "'>
 				$save_html
 				</td>
 			</tr>\n";

@@ -55,24 +55,24 @@ function form_save() {
 
 	if (isset_request_var('save_component_export')) {
 		$export_errors = 0;
-		$xml_data = get_item_xml(get_request_var_post('export_type'), get_nfilter_request_var('export_item_id'), (((isset_request_var('include_deps') ? get_nfilter_request_var('include_deps') : '') == '') ? false : true));
+		$xml_data = get_item_xml(get_nfilter_request_var('export_type'), get_nfilter_request_var('export_item_id'), (((isset_request_var('include_deps') ? get_nfilter_request_var('include_deps') : '') == '') ? false : true));
 
-		if (get_request_var_post('output_format') == '1') {
+		if (get_nfilter_request_var('output_format') == '1') {
 			top_header();
 
 			print "<table width='100%' align='center'><tr><td><pre>" . htmlspecialchars($xml_data) . '</pre></td></tr></table>';
 
 			bottom_footer();
-		}elseif (get_request_var_post('output_format') == '2') {
+		}elseif (get_nfilter_request_var('output_format') == '2') {
 			header('Content-type: application/xml');
 			if ($export_errors) echo "WARNING: Export Errors Encountered.  Refresh Browser Window for Details!\n";
 			print $xml_data;
-		}elseif (get_request_var_post('output_format') == '3') {
+		}elseif (get_nfilter_request_var('output_format') == '3') {
 			if ($export_errors) {
 				header('Location: templates_export.php');
 			}else{
 				header('Content-type: application/xml');
-				header('Content-Disposition: attachment; filename=cacti_' . get_request_var_post('export_type') . '_' . strtolower(clean_up_file_name(db_fetch_cell(str_replace('|id|', get_nfilter_request_var('export_item_id'), $export_types{get_nfilter_request_var('export_type')}['title_sql'])))) . '.xml');
+				header('Content-Disposition: attachment; filename=cacti_' . get_nfilter_request_var('export_type') . '_' . strtolower(clean_up_file_name(db_fetch_cell(str_replace('|id|', get_nfilter_request_var('export_item_id'), $export_types{get_nfilter_request_var('export_type')}['title_sql'])))) . '.xml');
 				print $xml_data;
 			}
 		}

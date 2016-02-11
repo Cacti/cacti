@@ -80,16 +80,16 @@ function aggregate_color_item_form_save() {
 		/* ==================================================== */
 
 		$items[0] = array();
-		$sequence = get_request_var_post('sequence');
+		$sequence = get_nfilter_request_var('sequence');
 
 		foreach ($items as $item) {
 			/* generate a new sequence if needed */
 			if (empty($sequence)) {
-				$sequence = get_next_sequence($sequence, 'sequence', 'color_template_items', 'color_template_id=' . get_request_var_post('color_template_id'), 'color_template_id');
+				$sequence = get_next_sequence($sequence, 'sequence', 'color_template_items', 'color_template_id=' . get_nfilter_request_var('color_template_id'), 'color_template_id');
 			}
 
-			$save['color_template_item_id'] = htmlspecialchars(get_request_var_post('color_template_item_id'));
-			$save['color_template_id'] = htmlspecialchars(get_request_var_post('color_template_id'));
+			$save['color_template_item_id'] = htmlspecialchars(get_nfilter_request_var('color_template_item_id'));
+			$save['color_template_id'] = htmlspecialchars(get_nfilter_request_var('color_template_id'));
 			$save['color_id'] = form_input_validate((isset($item['color_id']) ? $item['color_id'] : get_nfilter_request_var('color_id')), 'color_id', '', true, 3);
 			$save['sequence'] = $sequence;
 
@@ -106,10 +106,10 @@ function aggregate_color_item_form_save() {
 		}
 
 		if (is_error_message()) {
-			header('Location: color_templates_items.php?header=false&action=item_edit&color_template_item_id=' . (empty($color_template_item_id) ? get_request_var_post('color_template_item_id') : $color_template_item_id) . '&color_template_id=' . get_request_var_post('color_template_id'));
+			header('Location: color_templates_items.php?header=false&action=item_edit&color_template_item_id=' . (empty($color_template_item_id) ? get_nfilter_request_var('color_template_item_id') : $color_template_item_id) . '&color_template_id=' . get_nfilter_request_var('color_template_id'));
 			exit;
 		}else{
-			header('Location: color_templates.php?header=false&action=template_edit&color_template_id=' . get_request_var_post('color_template_id'));
+			header('Location: color_templates.php?header=false&action=template_edit&color_template_id=' . get_nfilter_request_var('color_template_id'));
 			exit;
 		}
 	}

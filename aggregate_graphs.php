@@ -86,15 +86,15 @@ function add_tree_names_to_actions_array() {
 
 function form_save() {
 	if (!isset_request_var('save_component_graph')) {
-		header('Location: aggregate_graphs.php?header=false&action=edit&id=' . get_request_var_post('id'));
+		header('Location: aggregate_graphs.php?header=false&action=edit&id=' . get_nfilter_request_var('id'));
 		return null;
 	}
 
 	/* remember some often used values */
-	$local_graph_id        = get_request_var_post('local_graph_id', 0);
-	$graph_template_id     = get_request_var_post('graph_template_id', 0);
-	$aggregate_template_id = get_request_var_post('aggregate_template_id', 0);
-	$graph_title           = form_input_validate(get_request_var_post('title_format'), 'title_format', '', false, 3);
+	$local_graph_id        = get_nfilter_request_var('local_graph_id', 0);
+	$graph_template_id     = get_nfilter_request_var('graph_template_id', 0);
+	$aggregate_template_id = get_nfilter_request_var('aggregate_template_id', 0);
+	$graph_title           = form_input_validate(get_nfilter_request_var('title_format'), 'title_format', '', false, 3);
 	if (is_error_message()) {
 		raise_message(2);
 		header('Location: aggregate_graphs.php?header=false&action=edit&id=' . $local_graph_id);
@@ -140,8 +140,8 @@ function form_save() {
 		$save                         = array();
 		$save['id']                   = $aggregate_graph_id;
 		$save['template_propogation'] = '';
-		$save['gprint_prefix']        = get_request_var_post('gprint_prefix');
-		$save['total_prefix']         = get_request_var_post('total_prefix');
+		$save['gprint_prefix']        = get_nfilter_request_var('gprint_prefix');
+		$save['total_prefix']         = get_nfilter_request_var('total_prefix');
 
 		$save['total']                = get_filter_request_var('total');
 		$save['graph_type']           = get_filter_request_var('graph_type');
@@ -233,7 +233,7 @@ function form_actions() {
 	global $graph_actions, $agg_item_actions;
 
 	/* ================= input validation ================= */
-	input_validate_input_regex(get_request_var_post('drp_action'), '^([a-zA-Z0-9_]+)$');
+	input_validate_input_regex(get_nfilter_request_var('drp_action'), '^([a-zA-Z0-9_]+)$');
 	/* ==================================================== */
 
 	/* we are performing two set's of actions here */
@@ -241,25 +241,25 @@ function form_actions() {
 
 	/* if we are to save this form, instead of display it */
 	if (isset_request_var('selected_items')) {
-		$selected_items = sanitize_unserialize_selected_items(get_request_var_post('selected_items'));
+		$selected_items = sanitize_unserialize_selected_items(get_nfilter_request_var('selected_items'));
 
 		if ($selected_items != false) {
-			if (get_request_var_post('drp_action') == '1') { /* delete */
+			if (get_nfilter_request_var('drp_action') == '1') { /* delete */
 				api_aggregate_remove_multi($selected_items);
-			}elseif (get_request_var_post('drp_action') == '2') { /* migrate to template */
+			}elseif (get_nfilter_request_var('drp_action') == '2') { /* migrate to template */
 				api_aggregate_convert_template($selected_items);
-			}elseif (get_request_var_post('drp_action') == '3') { /* create aggregate from aggregate */
+			}elseif (get_nfilter_request_var('drp_action') == '3') { /* create aggregate from aggregate */
 				$aggregate_name = get_request_var('aggregate_name');
 				api_aggregate_create($aggregate_name, $selected_items);
-			}elseif (get_request_var_post('drp_action') == '10') { /* associate with aggregate */
+			}elseif (get_nfilter_request_var('drp_action') == '10') { /* associate with aggregate */
 				api_aggregate_associate($selected_items);
-			}elseif (get_request_var_post('drp_action') == '11') { /* dis-associate with aggregate */
+			}elseif (get_nfilter_request_var('drp_action') == '11') { /* dis-associate with aggregate */
 				api_aggregate_disassociate($selected_items);
-			}elseif (preg_match('/^tr_([0-9]+)$/', get_request_var_post('drp_action'), $matches)) { /* place on tree */
+			}elseif (preg_match('/^tr_([0-9]+)$/', get_nfilter_request_var('drp_action'), $matches)) { /* place on tree */
 				get_filter_request_var('tree_id');
 				get_filter_request_var('tree_item_id');
 				for ($i=0;($i<count($selected_items));$i++) {
-					api_tree_item_save(0, get_request_var_post('tree_id'), TREE_ITEM_TYPE_GRAPH, get_request_var_post('tree_item_id'), '', $selected_items[$i], read_graph_config_option('default_rra_id'), 0, 0, 0, false);
+					api_tree_item_save(0, get_nfilter_request_var('tree_id'), TREE_ITEM_TYPE_GRAPH, get_nfilter_request_var('tree_item_id'), '', $selected_items[$i], read_graph_config_option('default_rra_id'), 0, 0, 0, false);
 				}
 			}
 		}
@@ -293,10 +293,10 @@ function form_actions() {
 
 	form_start('aggregate_graphs.php');
 
-	html_start_box($graph_actions{get_request_var_post('drp_action')}, '60%', '', '3', 'center', '');
+	html_start_box($graph_actions{get_nfilter_request_var('drp_action')}, '60%', '', '3', 'center', '');
 
 	if (isset($graph_array) && sizeof($graph_array)) {
-		if (get_request_var_post('drp_action') == '1') { /* delete */
+		if (get_nfilter_request_var('drp_action') == '1') { /* delete */
 			print "<tr>
 				<td class='textArea'>
 					<p>Click 'Continue' to delete the following Aggregate Graph(s).</p>
@@ -305,7 +305,7 @@ function form_actions() {
 			</tr>\n";
 
 			$save_html = "<input type='button' value='Cancel' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='Continue' title='Delete Graph(s)'>";
-		}elseif (get_request_var_post('drp_action') == '2') { /* migrate to aggregate */
+		}elseif (get_nfilter_request_var('drp_action') == '2') { /* migrate to aggregate */
 			/* determine the common graph template if any */
 			reset($_POST);
 			while (list($var,$val) = each($_POST)) {
@@ -374,7 +374,7 @@ function form_actions() {
 					$save_html = "<input type='button' value='Return' onClick='cactiReturnTo()'>";
 				}
 			}
-		}elseif (get_request_var_post("drp_action") == "3") { /* create aggregate from aggregates */
+		}elseif (get_nfilter_request_var("drp_action") == "3") { /* create aggregate from aggregates */
 			print "<tr>
 				<td colspan='2' class='textArea'>
 					<p>Click 'Continue' to combined the following Aggregate Graph(s) into a single Aggregate Graph.</p>
@@ -386,7 +386,7 @@ function form_actions() {
 			print "	<tr><td class='textArea'><input name='aggregate_name' size='40' value='New Aggregate'></td></tr>\n";
 
 			$save_html = "<input type='button' value='Cancel' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='Continue' title='Delete Graph(s)'>";
-		}elseif (get_request_var_post("drp_action") == "10") { /* associate with aggregate */
+		}elseif (get_nfilter_request_var("drp_action") == "10") { /* associate with aggregate */
 			print "<tr>
 				<td class='textArea'>
 					<p>Click 'Continue' to associate the following Graph(s) with the Aggregate Graph.</p>
@@ -395,7 +395,7 @@ function form_actions() {
 			</tr>\n";
 
 			$save_html = "<input type='button' value='Cancel' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='Continue' title='Associate Graph(s)'>";
-		}elseif (get_request_var_post("drp_action") == "11") { /* dis-associate with aggregate */
+		}elseif (get_nfilter_request_var("drp_action") == "11") { /* dis-associate with aggregate */
 			print "<tr>
 				<td class='textArea'>
 					<p>Click 'Continue' to disassociate the following Graph(s) from the Aggregate.</p>
@@ -404,7 +404,7 @@ function form_actions() {
 			</tr>\n";
 
 			$save_html = "<input type='button' value='Cancel' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='Continue' title='Dis-Associate Graph(s)'>";
-		}elseif (preg_match("/^tr_([0-9]+)$/", get_request_var_post("drp_action"), $matches)) { /* place on tree */
+		}elseif (preg_match("/^tr_([0-9]+)$/", get_nfilter_request_var("drp_action"), $matches)) { /* place on tree */
 			print "<tr>
 				<td class='textArea'>
 					<p>Click 'Continue' to place the following Aggregate Graph(s) under the Tree Branch.</p>
@@ -424,9 +424,9 @@ function form_actions() {
 	print "	<tr>
 		<td class='saveRow'>
 			<input type='hidden' name='action' value='actions'>
-			<input type='hidden' name='local_graph_id' value='" . (isset_request_var('local_graph_id') ? get_request_var_post('local_graph_id'):0) . "'>
+			<input type='hidden' name='local_graph_id' value='" . (isset_request_var('local_graph_id') ? get_nfilter_request_var('local_graph_id'):0) . "'>
 			<input type='hidden' name='selected_items' value='" . (isset($graph_array) ? serialize($graph_array) : '') . "'>
-			<input type='hidden' name='drp_action' value='" . get_request_var_post('drp_action') . "'>
+			<input type='hidden' name='drp_action' value='" . get_nfilter_request_var('drp_action') . "'>
 			$save_html
 		</td>
 	</tr>\n";

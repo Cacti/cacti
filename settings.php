@@ -51,16 +51,16 @@ case 'save':
 				raise_message(4);
 				break;
 			}elseif (!isempty_request_var($field_name)) {
-				db_execute_prepared('REPLACE INTO settings (name, value) VALUES (?, ?)', array($field_name, get_request_var_post($field_name)));
+				db_execute_prepared('REPLACE INTO settings (name, value) VALUES (?, ?)', array($field_name, get_nfilter_request_var($field_name)));
 			}
 		}elseif ((isset($field_array['items'])) && (is_array($field_array['items']))) {
 			while (list($sub_field_name, $sub_field_array) = each($field_array['items'])) {
 				if (isset_request_var($sub_field_name)) {
-					db_execute_prepared('REPLACE INTO settings (name, value) VALUES (?, ?)', array($sub_field_name, get_request_var_post($sub_field_name)));
+					db_execute_prepared('REPLACE INTO settings (name, value) VALUES (?, ?)', array($sub_field_name, get_nfilter_request_var($sub_field_name)));
 				}
 			}
 		}elseif (isset_request_var($field_name)) {
-			db_execute_prepared('REPLACE INTO settings (name, value) VALUES (?, ?)', array($field_name, get_request_var_post($field_name)));
+			db_execute_prepared('REPLACE INTO settings (name, value) VALUES (?, ?)', array($field_name, get_nfilter_request_var($field_name)));
 		}
 	}
 	/* update snmpcache */

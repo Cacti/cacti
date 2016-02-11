@@ -57,7 +57,7 @@ if (isset_request_var('update_policy')) {
 
 		break;
 	case 'checkpass':
-		$error = secpass_check_pass(get_request_var_post('password'));
+		$error = secpass_check_pass(get_nfilter_request_var('password'));
 
 		if ($error == '') {
 			print $error;
@@ -84,16 +84,16 @@ if (isset_request_var('update_policy')) {
 function update_policies() {
 	$set = '';
 
-	$set .= isset_request_var('policy_graphs') ? 'policy_graphs=' . get_request_var_post('policy_graphs'):'';
-	$set .= isset_request_var('policy_trees') ? (strlen($set) ? ',':'') . 'policy_trees=' . get_request_var_post('policy_trees'):'';
-	$set .= isset_request_var('policy_hosts') ? (strlen($set) ? ',':'') . 'policy_hosts=' . get_request_var_post('policy_hosts'):'';
-	$set .= isset_request_var('policy_graph_templates') ? (strlen($set) ? ',':'') . 'policy_graph_templates=' . get_request_var_post('policy_graph_templates'):'';
+	$set .= isset_request_var('policy_graphs') ? 'policy_graphs=' . get_nfilter_request_var('policy_graphs'):'';
+	$set .= isset_request_var('policy_trees') ? (strlen($set) ? ',':'') . 'policy_trees=' . get_nfilter_request_var('policy_trees'):'';
+	$set .= isset_request_var('policy_hosts') ? (strlen($set) ? ',':'') . 'policy_hosts=' . get_nfilter_request_var('policy_hosts'):'';
+	$set .= isset_request_var('policy_graph_templates') ? (strlen($set) ? ',':'') . 'policy_graph_templates=' . get_nfilter_request_var('policy_graph_templates'):'';
 
 	if (strlen($set)) {
-		db_execute_prepared("UPDATE user_auth SET $set WHERE id = ?", array(get_request_var_post('id')));
+		db_execute_prepared("UPDATE user_auth SET $set WHERE id = ?", array(get_nfilter_request_var('id')));
 	}
 
-	header('Location: user_admin.php?action=user_edit&header=false&tab=' .  get_request_var_post('tab') . '&id=' . get_request_var_post('id'));
+	header('Location: user_admin.php?action=user_edit&header=false&tab=' .  get_nfilter_request_var('tab') . '&id=' . get_nfilter_request_var('id'));
 	exit;
 }
 
@@ -108,15 +108,15 @@ function form_actions() {
 				input_validate_input_number($matches[1]);
 				/* ==================================================== */
 
-				if (get_request_var_post('drp_action') == '1') {
-					db_execute_prepared('REPLACE INTO user_auth_perms (user_id, item_id, type) VALUES (?, ?, 3)', array(get_request_var_post('id'), $matches[1]));
+				if (get_nfilter_request_var('drp_action') == '1') {
+					db_execute_prepared('REPLACE INTO user_auth_perms (user_id, item_id, type) VALUES (?, ?, 3)', array(get_nfilter_request_var('id'), $matches[1]));
 				}else{
-					db_execute_prepared('DELETE FROM user_auth_perms WHERE user_id = ? AND item_id = ? AND type = 3', array(get_request_var_post('id'), $matches[1]));
+					db_execute_prepared('DELETE FROM user_auth_perms WHERE user_id = ? AND item_id = ? AND type = 3', array(get_nfilter_request_var('id'), $matches[1]));
 				}
 			}
 		}
 
-		header('Location: user_admin.php?action=user_edit&header=false&tab=permsd&id=' . get_request_var_post('id'));
+		header('Location: user_admin.php?action=user_edit&header=false&tab=permsd&id=' . get_nfilter_request_var('id'));
 		exit;
 	}elseif (isset_request_var('associate_graph')) {
 		while (list($var,$val) = each($_POST)) {
@@ -125,15 +125,15 @@ function form_actions() {
 				input_validate_input_number($matches[1]);
 				/* ==================================================== */
 
-				if (get_request_var_post('drp_action') == '1') {
-					db_execute_prepared('REPLACE INTO user_auth_perms (user_id, item_id, type) VALUES (?, ?, 1)', array(get_request_var_post('id'), $matches[1]));
+				if (get_nfilter_request_var('drp_action') == '1') {
+					db_execute_prepared('REPLACE INTO user_auth_perms (user_id, item_id, type) VALUES (?, ?, 1)', array(get_nfilter_request_var('id'), $matches[1]));
 				}else{
-					db_execute_prepared('DELETE FROM user_auth_perms WHERE user_id = ? AND item_id = ? AND type = 1', array(get_request_var_post('id'), $matches[1]));
+					db_execute_prepared('DELETE FROM user_auth_perms WHERE user_id = ? AND item_id = ? AND type = 1', array(get_nfilter_request_var('id'), $matches[1]));
 				}
 			}
 		}
 
-		header('Location: user_admin.php?action=user_edit&header=false&tab=permsg&id=' . get_request_var_post('id'));
+		header('Location: user_admin.php?action=user_edit&header=false&tab=permsg&id=' . get_nfilter_request_var('id'));
 		exit;
 	}elseif (isset_request_var('associate_template')) {
 		while (list($var,$val) = each($_POST)) {
@@ -142,15 +142,15 @@ function form_actions() {
 				input_validate_input_number($matches[1]);
 				/* ==================================================== */
 
-				if (get_request_var_post('drp_action') == '1') {
-					db_execute_prepared('REPLACE INTO user_auth_perms (user_id, item_id, type) VALUES (?, ?, 4)', array(get_request_var_post('id'), $matches[1]));
+				if (get_nfilter_request_var('drp_action') == '1') {
+					db_execute_prepared('REPLACE INTO user_auth_perms (user_id, item_id, type) VALUES (?, ?, 4)', array(get_nfilter_request_var('id'), $matches[1]));
 				}else{
-					db_execute_prepared('DELETE FROM user_auth_perms WHERE user_id = ? AND item_id = ? AND type = 4', array(get_request_var_post('id'), $matches[1]));
+					db_execute_prepared('DELETE FROM user_auth_perms WHERE user_id = ? AND item_id = ? AND type = 4', array(get_nfilter_request_var('id'), $matches[1]));
 				}
 			}
 		}
 
-		header('Location: user_admin.php?action=user_edit&header=false&tab=permste&id=' . get_request_var_post('id'));
+		header('Location: user_admin.php?action=user_edit&header=false&tab=permste&id=' . get_nfilter_request_var('id'));
 		exit;
 	}elseif (isset_request_var('associate_groups')) {
 		while (list($var,$val) = each($_POST)) {
@@ -159,15 +159,15 @@ function form_actions() {
 				input_validate_input_number($matches[1]);
 				/* ==================================================== */
 
-				if (get_request_var_post('drp_action') == '1') {
-					db_execute_prepared('REPLACE INTO user_auth_group_members (user_id, group_id) VALUES (?, ?)', array(get_request_var_post('id'), $matches[1]));
+				if (get_nfilter_request_var('drp_action') == '1') {
+					db_execute_prepared('REPLACE INTO user_auth_group_members (user_id, group_id) VALUES (?, ?)', array(get_nfilter_request_var('id'), $matches[1]));
 				}else{
-					db_execute_prepared('DELETE FROM user_auth_group_members WHERE user_id = ? AND group_id = ?', array(get_request_var_post('id'), $matches[1]));
+					db_execute_prepared('DELETE FROM user_auth_group_members WHERE user_id = ? AND group_id = ?', array(get_nfilter_request_var('id'), $matches[1]));
 				}
 			}
 		}
 
-		header('Location: user_admin.php?action=user_edit&header=false&tab=permsgr&id=' . get_request_var_post('id'));
+		header('Location: user_admin.php?action=user_edit&header=false&tab=permsgr&id=' . get_nfilter_request_var('id'));
 		exit;
 	}elseif (isset_request_var('associate_tree')) {
 		while (list($var,$val) = each($_POST)) {
@@ -176,27 +176,27 @@ function form_actions() {
 				input_validate_input_number($matches[1]);
 				/* ==================================================== */
 
-				if (get_request_var_post('drp_action') == '1') {
-					db_execute_prepared('REPLACE INTO user_auth_perms (user_id, item_id, type) VALUES (?, ?, 2)', array(get_request_var_post('id'), $matches[1]));;
+				if (get_nfilter_request_var('drp_action') == '1') {
+					db_execute_prepared('REPLACE INTO user_auth_perms (user_id, item_id, type) VALUES (?, ?, 2)', array(get_nfilter_request_var('id'), $matches[1]));;
 				}else{
-					db_execute_prepared('DELETE FROM user_auth_perms WHERE user_id = ? AND item_id = ? AND type = 2', array(get_request_var_post('id'), $matches[1]));;
+					db_execute_prepared('DELETE FROM user_auth_perms WHERE user_id = ? AND item_id = ? AND type = 2', array(get_nfilter_request_var('id'), $matches[1]));;
 				}
 			}
 		}
 
-		header('Location: user_admin.php?action=user_edit&header=false&tab=permstr&id=' . get_request_var_post('id'));
+		header('Location: user_admin.php?action=user_edit&header=false&tab=permstr&id=' . get_nfilter_request_var('id'));
 		exit;
 	}elseif (isset_request_var('selected_items')) {
-		if (get_request_var_post('drp_action') == '2') { /* copy */
+		if (get_nfilter_request_var('drp_action') == '2') { /* copy */
 			/* ================= input validation ================= */
 			get_filter_request_var('selected_items');
 			get_filter_request_var('new_realm');
 			/* ==================================================== */
 
-			$new_username  = get_request_var_post('new_username');
-			$new_realm     = get_request_var_post('new_realm', 0);
-			$template_user = db_fetch_row_prepared('SELECT username, realm FROM user_auth WHERE id = ?', array(get_request_var_post('selected_items')));
-			$overwrite     = array( 'full_name' => get_request_var_post('new_fullname') );
+			$new_username  = get_nfilter_request_var('new_username');
+			$new_realm     = get_nfilter_request_var('new_realm', 0);
+			$template_user = db_fetch_row_prepared('SELECT username, realm FROM user_auth WHERE id = ?', array(get_nfilter_request_var('selected_items')));
+			$overwrite     = array( 'full_name' => get_nfilter_request_var('new_fullname') );
 
 			if (strlen($new_username)) {
 				if (sizeof(db_fetch_assoc_prepared('SELECT username FROM user_auth WHERE username = ? AND realm = ?', array($new_username, $new_realm)))) {
@@ -210,30 +210,30 @@ function form_actions() {
 				}
 			}
 		}else{
-			$selected_items = sanitize_unserialize_selected_items(get_request_var_post('selected_items'));
+			$selected_items = sanitize_unserialize_selected_items(get_nfilter_request_var('selected_items'));
 
 			if ($selected_items != false) {
-				if (get_request_var_post('drp_action') == '1') { /* delete */
+				if (get_nfilter_request_var('drp_action') == '1') { /* delete */
 					for ($i=0;($i<count($selected_items));$i++) {
 						user_remove($selected_items[$i]);
 
 						api_plugin_hook_function('user_remove', $selected_items[$i]);
 					}
-				}elseif (get_request_var_post('drp_action') == '3') { /* enable */
+				}elseif (get_nfilter_request_var('drp_action') == '3') { /* enable */
 					for ($i=0;($i<count($selected_items));$i++) {
 						user_enable($selected_items[$i]);
 					}
-				}elseif (get_request_var_post('drp_action') == '4') { /* disable */
+				}elseif (get_nfilter_request_var('drp_action') == '4') { /* disable */
 					for ($i=0;($i<count($selected_items));$i++) {
 						user_disable($selected_items[$i]);
 					}
-				}elseif (get_request_var_post('drp_action') == '5') { /* batch copy */
+				}elseif (get_nfilter_request_var('drp_action') == '5') { /* batch copy */
 					/* ================= input validation ================= */
 					get_filter_request_var('template_user');
 					/* ==================================================== */
 
 					$copy_error = false;
-					$template = db_fetch_row_prepared('SELECT username, realm FROM user_auth WHERE id = ?', array(get_request_var_post('template_user')));
+					$template = db_fetch_row_prepared('SELECT username, realm FROM user_auth WHERE id = ?', array(get_nfilter_request_var('template_user')));
 					for ($i=0;($i<count($selected_items));$i++) {
 						$user = db_fetch_row_prepared('SELECT username, realm FROM user_auth WHERE id = ?', array($selected_items[$i]));
 						if ((isset($user)) && (isset($template))) {
@@ -266,7 +266,7 @@ function form_actions() {
 			input_validate_input_number($matches[1]);
 			/* ==================================================== */
 
-			if (get_request_var_post('drp_action') != '2') {
+			if (get_nfilter_request_var('drp_action') != '2') {
 				$user_list .= '<li>' . htmlspecialchars(db_fetch_cell_prepared('SELECT username FROM user_auth WHERE id = ?', array($matches[1]))) . '</li>';
 			}
 			$user_array[$i] = $matches[1];
@@ -276,7 +276,7 @@ function form_actions() {
 	}
 
 	/* Check for deleting of Graph Export User */
-	if ((get_request_var_post('drp_action') == '1') && isset($user_array) && sizeof($user_array)) { /* delete */
+	if ((get_nfilter_request_var('drp_action') == '1') && isset($user_array) && sizeof($user_array)) { /* delete */
 		$exportuser = read_config_option('export_user_id');
 		if (in_array($exportuser, $user_array)) {
 			raise_message(22);
@@ -289,10 +289,10 @@ function form_actions() {
 
 	form_start('user_admin.php');
 
-	html_start_box($user_actions[get_request_var_post('drp_action')], '40%', '', '3', 'center', '');
+	html_start_box($user_actions[get_nfilter_request_var('drp_action')], '40%', '', '3', 'center', '');
 
 	if (isset($user_array) && sizeof($user_array)) {
-		if ((get_request_var_post('drp_action') == '1') && (sizeof($user_array))) { /* delete */
+		if ((get_nfilter_request_var('drp_action') == '1') && (sizeof($user_array))) { /* delete */
 			print "<tr>
 				<td class='textArea'>
 					<p>Click 'Continue' to delete the selected User(s).</p>
@@ -304,7 +304,7 @@ function form_actions() {
 		}
 		$user_id = '';
 
-		if ((get_request_var_post('drp_action') == '2') && (sizeof($user_array))) { /* copy */
+		if ((get_nfilter_request_var('drp_action') == '2') && (sizeof($user_array))) { /* copy */
 			$user_id = $user_array[0];
 			$user_realm = db_fetch_cell_prepared('SELECT realm FROM user_auth WHERE id = ?', array($user_id));
 
@@ -343,7 +343,7 @@ function form_actions() {
 			$save_html = "<input type='button' value='Cancel' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='Continue' title='Copy User'>";
 		}
 
-		if ((get_request_var_post('drp_action') == '3') && (sizeof($user_array))) { /* enable */
+		if ((get_nfilter_request_var('drp_action') == '3') && (sizeof($user_array))) { /* enable */
 			print "<tr>
 				<td class='textArea'>
 					<p>Click 'Continue' to enable the selected User(s).</p>
@@ -354,7 +354,7 @@ function form_actions() {
 			$save_html = "<input type='button' value='Cancel' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='Continue' title='Enable User(s)'>";
 		}
 
-		if ((get_request_var_post('drp_action') == '4') && (sizeof($user_array))) { /* disable */
+		if ((get_nfilter_request_var('drp_action') == '4') && (sizeof($user_array))) { /* disable */
 			print "<tr>
 				<td class='textArea'>
 					<p>Click 'Continue' to disable the selected User(s).</p>
@@ -365,7 +365,7 @@ function form_actions() {
 			$save_html = "<input type='button' value='Cancel' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='Continue' title='Disable User(s)'>";
 		}
 
-		if ((get_request_var_post('drp_action') == '5') && (sizeof($user_array))) { /* batch copy */
+		if ((get_nfilter_request_var('drp_action') == '5') && (sizeof($user_array))) { /* batch copy */
 			$usernames = db_fetch_assoc('SELECT id, username FROM user_auth WHERE realm = 0 ORDER BY username');
 
 			print "<tr>
@@ -396,13 +396,13 @@ function form_actions() {
 		<td class='saveRow'>
 			<input type='hidden' name='action' value='actions'>";
 
-	if (get_request_var_post('drp_action') == '2') { /* copy */
+	if (get_nfilter_request_var('drp_action') == '2') { /* copy */
 		print "<input type='hidden' name='selected_items' value='" . $user_id . "'>\n";
 	}else{
 		print "<input type='hidden' name='selected_items' value='" . (isset($user_array) ? serialize($user_array) : '') . "'>\n";
 	}
 
-	print "<input type='hidden' name='drp_action' value='" . get_request_var_post('drp_action') . "'>
+	print "<input type='hidden' name='drp_action' value='" . get_nfilter_request_var('drp_action') . "'>
 		$save_html
 		</td>
 	</tr>\n";
@@ -438,21 +438,21 @@ function form_save() {
 		$add_button_clicked = false;
 
 		if (isset_request_var('add_graph_x')) {
-			db_execute_prepared('REPLACE INTO user_auth_perms (user_id,item_id,type) VALUES (?, ?, 1)', array(get_request_var_post('id'), get_request_var_post('perm_graphs')));
+			db_execute_prepared('REPLACE INTO user_auth_perms (user_id,item_id,type) VALUES (?, ?, 1)', array(get_nfilter_request_var('id'), get_nfilter_request_var('perm_graphs')));
 			$add_button_clicked = true;
 		}elseif (isset_request_var('add_tree_x')) {
-			db_execute_prepared('REPLACE INTO user_auth_perms (user_id,item_id,type) VALUES (?, ?, 2)', array(get_request_var_post('id'), get_request_var_post('perm_trees')));
+			db_execute_prepared('REPLACE INTO user_auth_perms (user_id,item_id,type) VALUES (?, ?, 2)', array(get_nfilter_request_var('id'), get_nfilter_request_var('perm_trees')));
 			$add_button_clicked = true;
 		}elseif (isset_request_var('add_host_x')) {
-			db_execute_prepared('REPLACE INTO user_auth_perms (user_id,item_id,type) VALUES (?, ?, 3)', array(get_request_var_post('id'), get_request_var_post('perm_hosts')));
+			db_execute_prepared('REPLACE INTO user_auth_perms (user_id,item_id,type) VALUES (?, ?, 3)', array(get_nfilter_request_var('id'), get_nfilter_request_var('perm_hosts')));
 			$add_button_clicked = true;
 		}elseif (isset_request_var('add_graph_template_x')) {
-			db_execute_prepared('REPLACE INTO user_auth_perms (user_id,item_id,type) VALUES (?, ?, 4)', array(get_request_var_post('id'), get_request_var_post('perm_graph_templates')));
+			db_execute_prepared('REPLACE INTO user_auth_perms (user_id,item_id,type) VALUES (?, ?, 4)', array(get_nfilter_request_var('id'), get_nfilter_request_var('perm_graph_templates')));
 			$add_button_clicked = true;
 		}
 
 		if ($add_button_clicked == true) {
-			header('Location: user_admin.php?action=user_edit&header=false&tab=graph_perms_edit&id=' . get_request_var_post('id'));
+			header('Location: user_admin.php?action=user_edit&header=false&tab=graph_perms_edit&id=' . get_nfilter_request_var('id'));
 			exit;
 		}
 	}elseif (isset_request_var('save_component_user')) {
@@ -466,20 +466,20 @@ function form_save() {
 		get_filter_request_var('policy_graph_templates');
 		/* ==================================================== */
 
-		if ((get_request_var_post('password') == '') && (get_request_var_post('password_confirm') == '')) {
-			$password = db_fetch_cell_prepared('SELECT password FROM user_auth WHERE id = ?', array(get_request_var_post('id')));
+		if ((get_nfilter_request_var('password') == '') && (get_nfilter_request_var('password_confirm') == '')) {
+			$password = db_fetch_cell_prepared('SELECT password FROM user_auth WHERE id = ?', array(get_nfilter_request_var('id')));
 		}else{
-			$password = md5(get_request_var_post('password'));
+			$password = md5(get_nfilter_request_var('password'));
 		}
 
 		/* check duplicate username */
-		if (sizeof(db_fetch_row_prepared('SELECT * FROM user_auth WHERE realm = ? AND username = ? AND id != ?', array(get_request_var_post('realm'), get_request_var_post('username'), get_request_var_post('id'))))) {
+		if (sizeof(db_fetch_row_prepared('SELECT * FROM user_auth WHERE realm = ? AND username = ? AND id != ?', array(get_nfilter_request_var('realm'), get_nfilter_request_var('username'), get_nfilter_request_var('id'))))) {
 			raise_message(12);
 		}
 
 		/* check for guest or template user */
-		$username = db_fetch_cell_prepared('SELECT username FROM user_auth WHERE id = ?', array(get_request_var_post('id')));
-		if ($username != '' && $username != get_request_var_post('username')) {
+		$username = db_fetch_cell_prepared('SELECT username FROM user_auth WHERE id = ?', array(get_nfilter_request_var('id')));
+		if ($username != '' && $username != get_nfilter_request_var('username')) {
 			$template_user = read_config_option('user_template');
 			$guest_user    = read_config_option('guest_user');
 
@@ -493,27 +493,27 @@ function form_save() {
 		}
 
 		/* check to make sure the passwords match; if not error */
-		if (get_request_var_post('password') != get_request_var_post('password_confirm')) {
+		if (get_nfilter_request_var('password') != get_nfilter_request_var('password_confirm')) {
 			raise_message(4);
 		}
 
-		form_input_validate(get_request_var_post('password'), 'password', '' . preg_quote(get_request_var_post('password_confirm')) . '', true, 4);
-		form_input_validate(get_request_var_post('password_confirm'), 'password_confirm', '' . preg_quote(get_request_var_post('password')) . '', true, 4);
+		form_input_validate(get_nfilter_request_var('password'), 'password', '' . preg_quote(get_nfilter_request_var('password_confirm')) . '', true, 4);
+		form_input_validate(get_nfilter_request_var('password_confirm'), 'password_confirm', '' . preg_quote(get_nfilter_request_var('password')) . '', true, 4);
 
-		$save['id'] = get_request_var_post('id');
-		$save['username'] = form_input_validate(get_request_var_post('username'), 'username', "^[A-Za-z0-9\._\\\@\ -]+$", false, 3);
-		$save['full_name'] = form_input_validate(get_request_var_post('full_name'), 'full_name', '', true, 3);
+		$save['id'] = get_nfilter_request_var('id');
+		$save['username'] = form_input_validate(get_nfilter_request_var('username'), 'username', "^[A-Za-z0-9\._\\\@\ -]+$", false, 3);
+		$save['full_name'] = form_input_validate(get_nfilter_request_var('full_name'), 'full_name', '', true, 3);
 		$save['password'] = $password;
-		$save['must_change_password'] = form_input_validate(get_request_var_post('must_change_password', ''), 'must_change_password', '', true, 3);
-		$save['password_change'] = form_input_validate(get_request_var_post('password_change', ''), 'password_change', '', true, 3);
-		$save['show_tree'] = form_input_validate(get_request_var_post('show_tree', ''), 'show_tree', '', true, 3);
-		$save['show_list'] = form_input_validate(get_request_var_post('show_list', ''), 'show_list', '', true, 3);
-		$save['show_preview'] = form_input_validate(get_request_var_post('show_preview', ''), 'show_preview', '', true, 3);
-		$save['graph_settings'] = form_input_validate(get_request_var_post('graph_settings', ''), 'graph_settings', '', true, 3);
-		$save['login_opts'] = form_input_validate(get_request_var_post('login_opts'), 'login_opts', '', true, 3);
-		$save['realm'] = get_request_var_post('realm', 0);
-		$save['enabled'] = form_input_validate(get_request_var_post('enabled', ''), 'enabled', '', true, 3);
-		$save['locked'] = form_input_validate(get_request_var_post('locked', ''), 'locked', '', true, 3);
+		$save['must_change_password'] = form_input_validate(get_nfilter_request_var('must_change_password', ''), 'must_change_password', '', true, 3);
+		$save['password_change'] = form_input_validate(get_nfilter_request_var('password_change', ''), 'password_change', '', true, 3);
+		$save['show_tree'] = form_input_validate(get_nfilter_request_var('show_tree', ''), 'show_tree', '', true, 3);
+		$save['show_list'] = form_input_validate(get_nfilter_request_var('show_list', ''), 'show_list', '', true, 3);
+		$save['show_preview'] = form_input_validate(get_nfilter_request_var('show_preview', ''), 'show_preview', '', true, 3);
+		$save['graph_settings'] = form_input_validate(get_nfilter_request_var('graph_settings', ''), 'graph_settings', '', true, 3);
+		$save['login_opts'] = form_input_validate(get_nfilter_request_var('login_opts'), 'login_opts', '', true, 3);
+		$save['realm'] = get_nfilter_request_var('realm', 0);
+		$save['enabled'] = form_input_validate(get_nfilter_request_var('enabled', ''), 'enabled', '', true, 3);
+		$save['locked'] = form_input_validate(get_nfilter_request_var('locked', ''), 'locked', '', true, 3);
 		if ($save['locked'] == '') {
 			$save['failed_attempts'] = 0;
 		}		
@@ -530,12 +530,12 @@ function form_save() {
 			}
 		}
 	}elseif (isset_request_var('save_component_realm_perms')) {
-		db_execute_prepared('DELETE FROM user_auth_realm WHERE user_id = ?', array(get_request_var_post('id')));
+		db_execute_prepared('DELETE FROM user_auth_realm WHERE user_id = ?', array(get_nfilter_request_var('id')));
 
 		while (list($var, $val) = each($_POST)) {
 			if (preg_match('/^[section]/i', $var)) {
 				if (substr($var, 0, 7) == 'section') {
-					db_execute_prepared('REPLACE INTO user_auth_realm (user_id, realm_id) VALUES (?, ?)', array(get_request_var_post('id'), substr($var, 7)));
+					db_execute_prepared('REPLACE INTO user_auth_realm (user_id, realm_id) VALUES (?, ?)', array(get_nfilter_request_var('id'), substr($var, 7)));
 				}
 			}
 		}
@@ -546,10 +546,10 @@ function form_save() {
 			while (list($field_name, $field_array) = each($tab_fields)) {
 				if ((isset($field_array['items'])) && (is_array($field_array['items']))) {
 					while (list($sub_field_name, $sub_field_array) = each($field_array['items'])) {
-						db_execute_prepared('REPLACE INTO settings_graphs (user_id, name, value) VALUES (?, ?, ?)', array((!empty($user_id) ? $user_id : get_request_var_post('id')), $sub_field_name, get_request_var_post($sub_field_name, '')));
+						db_execute_prepared('REPLACE INTO settings_graphs (user_id, name, value) VALUES (?, ?, ?)', array((!empty($user_id) ? $user_id : get_nfilter_request_var('id')), $sub_field_name, get_nfilter_request_var($sub_field_name, '')));
 					}
 				}else{
-					db_execute_prepared('REPLACE INTO settings_graphs (user_id, name, value) VALUES (?, ?, ?)', array((!empty($user_id) ? $user_id : get_request_var_post('id')), $field_name, get_request_var_post($field_name)));
+					db_execute_prepared('REPLACE INTO settings_graphs (user_id, name, value) VALUES (?, ?, ?)', array((!empty($user_id) ? $user_id : get_nfilter_request_var('id')), $field_name, get_nfilter_request_var($field_name)));
 				}
 			}
 		}
@@ -560,13 +560,13 @@ function form_save() {
 		raise_message(1);
 	}elseif (isset_request_var('save_component_graph_perms')) {
 		db_execute_prepared('UPDATE user_auth SET policy_graphs = ?, policy_trees = ?, policy_hosts = ?, policy_graph_templates = ? WHERE id = ?', 
-			array(get_request_var_post('policy_graphs'), get_request_var_post('policy_trees'), get_request_var_post('policy_hosts'), get_request_var_post('policy_graph_templates'), get_request_var_post('id')));
+			array(get_nfilter_request_var('policy_graphs'), get_nfilter_request_var('policy_trees'), get_nfilter_request_var('policy_hosts'), get_nfilter_request_var('policy_graph_templates'), get_nfilter_request_var('id')));
 	} else {
 		api_plugin_hook('user_admin_user_save');
 	}
 
 	/* redirect to the appropriate page */
-	header('Location: user_admin.php?action=user_edit&header=false&id=' . (empty($user_id) ? get_request_var_post('id') : $user_id));
+	header('Location: user_admin.php?action=user_edit&header=false&id=' . (empty($user_id) ? get_nfilter_request_var('id') : $user_id));
 }
 
 /* --------------------------

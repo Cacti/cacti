@@ -140,12 +140,12 @@ function draw_color_template_items_list($item_list, $filename, $url_data, $disab
 function aggregate_color_form_save() {
 	if (isset_request_var('save_component_color')) {
 		if (isset_request_var('color_template_id')) {
-			$save1['color_template_id'] = get_request_var_post('color_template_id');
+			$save1['color_template_id'] = get_nfilter_request_var('color_template_id');
 		} else {
 			$save1['color_template_id'] = 0;
 		}
 
-		$save1['name'] = form_input_validate(get_request_var_post('name'), 'name', '', false, 3);
+		$save1['name'] = form_input_validate(get_nfilter_request_var('name'), 'name', '', false, 3);
 
 		cacti_log('Saved ID: ' . $save1['color_template_id'] . ' Name: ' . $save1['name'], FALSE, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
 
@@ -162,7 +162,7 @@ function aggregate_color_form_save() {
 		}
 	}
 
-	header('Location: color_templates.php?header=false&action=template_edit&color_template_id=' . (empty($color_template_id) ? get_request_var_post('color_template_id') : $color_template_id));
+	header('Location: color_templates.php?header=false&action=template_edit&color_template_id=' . (empty($color_template_id) ? get_nfilter_request_var('color_template_id') : $color_template_id));
 }
 
 /* ------------------------
@@ -181,13 +181,13 @@ function aggregate_color_form_actions() {
 
 	/* if we are to save this form, instead of display it */
 	if (isset_request_var('selected_items')) {
-		$selected_items = sanitize_unserialize_selected_items(get_request_var_post('selected_items'));
+		$selected_items = sanitize_unserialize_selected_items(get_nfilter_request_var('selected_items'));
 
 		if ($selected_items != false) {
-			if (get_request_var_post('drp_action') == '1') { /* delete */
+			if (get_nfilter_request_var('drp_action') == '1') { /* delete */
 				db_execute('DELETE FROM color_templates WHERE ' . array_to_sql_or($selected_items, 'color_template_id'));
 				db_execute('DELETE FROM color_template_items WHERE ' . array_to_sql_or($selected_items, 'color_template_id'));
-			}elseif (get_request_var_post('drp_action') == '2') { /* duplicate */
+			}elseif (get_nfilter_request_var('drp_action') == '2') { /* duplicate */
 				for ($i=0;($i<count($selected_items));$i++) {
 					duplicate_color_template($selected_items[$i], get_nfilter_request_var('title_format'));
 				}
@@ -216,10 +216,10 @@ function aggregate_color_form_actions() {
 
 	form_start('color_templates.php');
 
-	html_start_box($aggregate_actions{get_request_var_post('drp_action')}, '60%', '', '3', 'center', '');
+	html_start_box($aggregate_actions{get_nfilter_request_var('drp_action')}, '60%', '', '3', 'center', '');
 
 	if (isset($color_array) && sizeof($color_array)) {
-		if (get_request_var_post('drp_action') == '1') { /* delete */
+		if (get_nfilter_request_var('drp_action') == '1') { /* delete */
 			print "<tr>
 				<td class='textArea'>
 					<p>Click 'Continue' to delete the following Color Template(s)?</p>
@@ -228,7 +228,7 @@ function aggregate_color_form_actions() {
 			</tr>\n";
 	
 			$save_html = "<input type='button' value='Cancel' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='Continue' title='Delete Color Template(s)'>";
-		}elseif (get_request_var_post('drp_action') == '2') { /* duplicate */
+		}elseif (get_nfilter_request_var('drp_action') == '2') { /* duplicate */
 			print "<tr>
 				<td class='textArea'>
 					<p>Click 'Continue' to duplicate the following Color Template(s). You can
@@ -249,7 +249,7 @@ function aggregate_color_form_actions() {
 		<td class='saveRow'>
 			<input type='hidden' name='action' value='actions'>
 			<input type='hidden' name='selected_items' value='" . (isset($color_array) ? serialize($color_array) : '') . "'>
-			<input type='hidden' name='drp_action' value='" . get_request_var_post('drp_action') . "'>
+			<input type='hidden' name='drp_action' value='" . get_nfilter_request_var('drp_action') . "'>
 			$save_html
 		</td>
 	</tr>\n";

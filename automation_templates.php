@@ -89,9 +89,9 @@ function form_save() {
 	if (isset_request_var('save_component_template')) {
 		$redirect_back = false;
 
-		$save['id'] = get_request_var_post('id');
-		$save['host_template'] = form_input_validate(get_request_var_post('host_template'), 'host_template', '', false, 3);
-		$save['availability_method']  = form_input_validate(get_request_var_post('availability_method'), 'availability_method', '', false, 3);
+		$save['id'] = get_nfilter_request_var('id');
+		$save['host_template'] = form_input_validate(get_nfilter_request_var('host_template'), 'host_template', '', false, 3);
+		$save['availability_method']  = form_input_validate(get_nfilter_request_var('availability_method'), 'availability_method', '', false, 3);
 		$save['sysDescr']      = get_nfilter_request_var('sysDescr');
 		$save['sysName']       = get_nfilter_request_var('sysName');
 		$save['sysOid']        = get_nfilter_request_var('sysOid');
@@ -112,7 +112,7 @@ function form_save() {
 		}
 
 		if (is_error_message() || isempty_request_var_post('id')) {
-			header('Location: automation_templates.php?header=false&id=' . (empty($template_id) ? get_request_var_post('id') : $template_id));
+			header('Location: automation_templates.php?header=false&id=' . (empty($template_id) ? get_nfilter_request_var('id') : $template_id));
 		}else{
 			header('Location: automation_templates.php?header=false');
 		}

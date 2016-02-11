@@ -56,7 +56,7 @@ function form_save() {
 	while (list($tab_short_name, $tab_fields) = each($settings_graphs)) {
 		while (list($field_name, $field_array) = each($tab_fields)) {
 			/* Check every field with a numeric default value and reset it to default if the inputted value is not numeric  */
-			if (isset($field_array['default']) && is_numeric($field_array['default']) && !is_numeric(get_request_var_post($field_name))) {
+			if (isset($field_array['default']) && is_numeric($field_array['default']) && !is_numeric(get_nfilter_request_var($field_name))) {
 				set_request_var($field_name, $field_array['default']);
 			}
 			if ($field_array['method'] == 'checkbox') {
@@ -78,16 +78,16 @@ function form_save() {
 					raise_message(4);
 					break;
 				}elseif (isset_request_var($field_name)) {
-					db_execute_prepared('REPLACE INTO settings_graphs (user_id, name, value) VALUES (?, ?, ?)', array($_SESSION['sess_user_id'], $field_name, get_request_var_post($field_name)));
+					db_execute_prepared('REPLACE INTO settings_graphs (user_id, name, value) VALUES (?, ?, ?)', array($_SESSION['sess_user_id'], $field_name, get_nfilter_request_var($field_name)));
 				}
 			}elseif ((isset($field_array['items'])) && (is_array($field_array['items']))) {
 				while (list($sub_field_name, $sub_field_array) = each($field_array['items'])) {
 					if (isset_request_var($sub_field_name)) {
-						db_execute_prepared('REPLACE INTO settings_graphs (user_id, name, value) values (?, ?, ?)', array($_SESSION['sess_user_id'], $sub_field_name, get_request_var_post($sub_field_name)));
+						db_execute_prepared('REPLACE INTO settings_graphs (user_id, name, value) values (?, ?, ?)', array($_SESSION['sess_user_id'], $sub_field_name, get_nfilter_request_var($sub_field_name)));
 					}
 				}
 			}else if (isset_request_var($field_name)) {
-				db_execute_prepared('REPLACE INTO settings_graphs (user_id, name, value) values (?, ?, ?)', array($_SESSION['sess_user_id'], $field_name, get_request_var_post($field_name)));
+				db_execute_prepared('REPLACE INTO settings_graphs (user_id, name, value) values (?, ?, ?)', array($_SESSION['sess_user_id'], $field_name, get_nfilter_request_var($field_name)));
 			}
 		}
 	}

@@ -83,11 +83,11 @@ function form_save() {
 		get_filter_request_var('id');
 		/* ==================================================== */
 
-		$save['id']           = get_request_var_post('id');
-		$save['hash']         = get_hash_data_input(get_request_var_post('id'));
-		$save['name']         = form_input_validate(get_request_var_post('name'), 'name', '', false, 3);
-		$save['input_string'] = form_input_validate(get_request_var_post('input_string'), 'input_string', '', true, 3);
-		$save['type_id']      = form_input_validate(get_request_var_post('type_id'), 'type_id', '^[0-9]+$', true, 3);
+		$save['id']           = get_nfilter_request_var('id');
+		$save['hash']         = get_hash_data_input(get_nfilter_request_var('id'));
+		$save['name']         = form_input_validate(get_nfilter_request_var('name'), 'name', '', false, 3);
+		$save['input_string'] = form_input_validate(get_nfilter_request_var('input_string'), 'input_string', '', true, 3);
+		$save['type_id']      = form_input_validate(get_nfilter_request_var('type_id'), 'type_id', '^[0-9]+$', true, 3);
 
 		if (!is_error_message()) {
 			$data_input_id = sql_save($save, 'data_input');
@@ -97,9 +97,9 @@ function form_save() {
 
 				/* get a list of each field so we can note their sequence of occurrence in the database */
 				if (!isempty_request_var('id')) {
-					db_execute_prepared('UPDATE data_input_fields SET sequence = 0 WHERE data_input_id = ?', array(get_request_var_post('id')));
+					db_execute_prepared('UPDATE data_input_fields SET sequence = 0 WHERE data_input_id = ?', array(get_nfilter_request_var('id')));
 
-					generate_data_input_field_sequences(get_request_var_post('input_string'), get_request_var_post('id'));
+					generate_data_input_field_sequences(get_nfilter_request_var('input_string'), get_nfilter_request_var('id'));
 				}
 
 				push_out_data_input_method($data_input_id);
@@ -108,23 +108,23 @@ function form_save() {
 			}
 		}
 
-		header('Location: data_input.php?header=false&action=edit&id=' . (empty($data_input_id) ? get_request_var_post('id') : $data_input_id));
+		header('Location: data_input.php?header=false&action=edit&id=' . (empty($data_input_id) ? get_nfilter_request_var('id') : $data_input_id));
 	}elseif (isset_request_var('save_component_field')) {
 		/* ================= input validation ================= */
 		get_filter_request_var('id');
 		get_filter_request_var('data_input_id');
 		get_filter_request_var('sequence');
-		input_validate_input_regex(get_request_var_post('input_output'), '^(in|out)$');
+		input_validate_input_regex(get_nfilter_request_var('input_output'), '^(in|out)$');
 		/* ==================================================== */
 
-		$save['id']            = get_request_var_post('id');
-		$save['hash']          = get_hash_data_input(get_request_var_post('id'), 'data_input_field');
-		$save['data_input_id'] = get_request_var_post('data_input_id');
-		$save['name']          = form_input_validate(get_request_var_post('name'), 'name', '', false, 3);
-		$save['data_name']     = form_input_validate(get_request_var_post('data_name'), 'data_name', '', false, 3);
+		$save['id']            = get_nfilter_request_var('id');
+		$save['hash']          = get_hash_data_input(get_nfilter_request_var('id'), 'data_input_field');
+		$save['data_input_id'] = get_nfilter_request_var('data_input_id');
+		$save['name']          = form_input_validate(get_nfilter_request_var('name'), 'name', '', false, 3);
+		$save['data_name']     = form_input_validate(get_nfilter_request_var('data_name'), 'data_name', '', false, 3);
 		$save['input_output']  = get_nfilter_request_var('input_output');
 		$save['update_rra']    = form_input_validate((isset_request_var('update_rra') ? get_nfilter_request_var('update_rra') : ''), 'update_rra', '', true, 3);
-		$save['sequence']      = get_request_var_post('sequence');
+		$save['sequence']      = get_nfilter_request_var('sequence');
 		$save['type_code']     = form_input_validate((isset_request_var('type_code') ? get_nfilter_request_var('type_code') : ''), 'type_code', '', true, 3);
 		$save['regexp_match']  = form_input_validate((isset_request_var('regexp_match') ? get_nfilter_request_var('regexp_match') : ''), 'regexp_match', '', true, 3);
 		$save['allow_nulls']   = form_input_validate((isset_request_var('allow_nulls') ? get_nfilter_request_var('allow_nulls') : ''), 'allow_nulls', '', true, 3);
@@ -136,7 +136,7 @@ function form_save() {
 				raise_message(1);
 
 				if ((!empty($data_input_field_id)) && (get_nfilter_request_var('input_output') == 'in')) {
-					generate_data_input_field_sequences(db_fetch_cell_prepared('SELECT input_string FROM data_input WHERE id = ?', array(get_request_var_post('data_input_id'))), get_request_var_post('data_input_id'));
+					generate_data_input_field_sequences(db_fetch_cell_prepared('SELECT input_string FROM data_input WHERE id = ?', array(get_nfilter_request_var('data_input_id'))), get_nfilter_request_var('data_input_id'));
 				}
 			}else{
 				raise_message(2);
@@ -144,9 +144,9 @@ function form_save() {
 		}
 
 		if (is_error_message()) {
-			header('Location: data_input.php?header=false&action=field_edit&data_input_id=' . get_request_var_post('data_input_id') . '&id=' . (empty($data_input_field_id) ? get_request_var_post('id') : $data_input_field_id) . (!isempty_request_var('input_output') ? '&type=' . get_nfilter_request_var('input_output') : ''));
+			header('Location: data_input.php?header=false&action=field_edit&data_input_id=' . get_nfilter_request_var('data_input_id') . '&id=' . (empty($data_input_field_id) ? get_nfilter_request_var('id') : $data_input_field_id) . (!isempty_request_var('input_output') ? '&type=' . get_nfilter_request_var('input_output') : ''));
 		}else{
-			header('Location: data_input.php?header=false&action=edit&id=' . get_request_var_post('data_input_id'));
+			header('Location: data_input.php?header=false&action=edit&id=' . get_nfilter_request_var('data_input_id'));
 		}
 	}
 }
@@ -155,15 +155,15 @@ function form_actions() {
 	global $di_actions;
 
 	/* ================= input validation ================= */
-	input_validate_input_regex(get_request_var_post('drp_action'), '^([a-zA-Z0-9_]+)$');
+	input_validate_input_regex(get_nfilter_request_var('drp_action'), '^([a-zA-Z0-9_]+)$');
 	/* ==================================================== */
 
 	/* if we are to save this form, instead of display it */
 	if (isset_request_var('selected_items')) {
-		$selected_items = sanitize_unserialize_selected_items(get_request_var_post('selected_items'));
+		$selected_items = sanitize_unserialize_selected_items(get_nfilter_request_var('selected_items'));
 
 		if ($selected_items != false) {
-			if (get_request_var_post('drp_action') == '1') { /* delete */
+			if (get_nfilter_request_var('drp_action') == '1') { /* delete */
 				for ($i=0;($i<count($selected_items));$i++) {
 					data_remove($selected_items[$i]);
 				}
@@ -195,10 +195,10 @@ function form_actions() {
 
 	form_start('data_input.php');
 
-	html_start_box($di_actions{get_request_var_post('drp_action')}, '60%', '', '3', 'center', '');
+	html_start_box($di_actions{get_nfilter_request_var('drp_action')}, '60%', '', '3', 'center', '');
 
 	if (isset($di_array) && sizeof($di_array)) {
-		if (get_request_var_post('drp_action') == '1') { /* delete */
+		if (get_nfilter_request_var('drp_action') == '1') { /* delete */
 			$graphs = array();
 
 			print "<tr>
@@ -219,7 +219,7 @@ function form_actions() {
 		<td class='saveRow'>
 			<input type='hidden' name='action' value='actions'>
 			<input type='hidden' name='selected_items' value='" . (isset($di_array) ? serialize($di_array) : '') . "'>
-			<input type='hidden' name='drp_action' value='" . get_request_var_post('drp_action') . "'>
+			<input type='hidden' name='drp_action' value='" . get_nfilter_request_var('drp_action') . "'>
 			$save_html
 		</td>
 	</tr>\n";

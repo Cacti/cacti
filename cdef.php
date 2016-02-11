@@ -119,9 +119,9 @@ function form_save() {
 	}
 
 	if (isset_request_var('save_component_cdef')) {
-		$save['id']   = form_input_validate(get_request_var_post('id'), 'id', '^[0-9]+$', false, 3);
-		$save['hash'] = get_hash_cdef(get_request_var_post('id'));
-		$save['name'] = form_input_validate(get_request_var_post('name'), 'name', '', false, 3);
+		$save['id']   = form_input_validate(get_nfilter_request_var('id'), 'id', '^[0-9]+$', false, 3);
+		$save['hash'] = get_hash_cdef(get_nfilter_request_var('id'));
+		$save['name'] = form_input_validate(get_nfilter_request_var('name'), 'name', '', false, 3);
 
 		if (!is_error_message()) {
 			$cdef_id = sql_save($save, 'cdef');
@@ -133,7 +133,7 @@ function form_save() {
 			}
 		}
 
-		header('Location: cdef.php?header=false&action=edit&id=' . (empty($cdef_id) ? get_request_var_post('id') : $cdef_id));
+		header('Location: cdef.php?header=false&action=edit&id=' . (empty($cdef_id) ? get_nfilter_request_var('id') : $cdef_id));
 	}elseif (isset_request_var('save_component_item')) {
 		/* ================= input validation ================= */
 		get_filter_request_var('id');
@@ -141,14 +141,14 @@ function form_save() {
 		get_filter_request_var('type');
 		/* ==================================================== */
 
-		$sequence = get_sequence(get_request_var_post('id'), 'sequence', 'cdef_items', 'cdef_id=' . get_request_var_post('cdef_id'));
+		$sequence = get_sequence(get_nfilter_request_var('id'), 'sequence', 'cdef_items', 'cdef_id=' . get_nfilter_request_var('cdef_id'));
 
-		$save['id']       = form_input_validate(get_request_var_post('id'), 'id', '^[0-9]+$', false, 3);
-		$save['hash']     = get_hash_cdef(get_request_var_post('id'), 'cdef_item');
-		$save['cdef_id']  = form_input_validate(get_request_var_post('cdef_id'), 'cdef_id', '^[0-9]+$', false, 3);
+		$save['id']       = form_input_validate(get_nfilter_request_var('id'), 'id', '^[0-9]+$', false, 3);
+		$save['hash']     = get_hash_cdef(get_nfilter_request_var('id'), 'cdef_item');
+		$save['cdef_id']  = form_input_validate(get_nfilter_request_var('cdef_id'), 'cdef_id', '^[0-9]+$', false, 3);
 		$save['sequence'] = $sequence;
-		$save['type']     = form_input_validate(get_request_var_post('type'), 'type', '^[0-9]+$', false, 3);
-		$save['value']    = form_input_validate(get_request_var_post('value'), 'value', '', false, 3);
+		$save['type']     = form_input_validate(get_nfilter_request_var('type'), 'type', '^[0-9]+$', false, 3);
+		$save['value']    = form_input_validate(get_nfilter_request_var('value'), 'value', '', false, 3);
 
 		if (!is_error_message()) {
 			$cdef_item_id = sql_save($save, 'cdef_items');
@@ -161,9 +161,9 @@ function form_save() {
 		}
 
 		if (is_error_message()) {
-			header('Location: cdef.php?header=false&action=item_edit&cdef_id=' . get_request_var_post('cdef_id') . '&id=' . (empty($cdef_item_id) ? get_request_var_post('id') : $cdef_item_id));
+			header('Location: cdef.php?header=false&action=item_edit&cdef_id=' . get_nfilter_request_var('cdef_id') . '&id=' . (empty($cdef_item_id) ? get_nfilter_request_var('id') : $cdef_item_id));
 		}else{
-			header('Location: cdef.php?header=false&action=edit&id=' . get_request_var_post('cdef_id'));
+			header('Location: cdef.php?header=false&action=edit&id=' . get_nfilter_request_var('cdef_id'));
 		}
 	}
 }
@@ -176,18 +176,18 @@ function form_actions() {
 	global $cdef_actions;
 
 	/* ================= input validation ================= */
-	input_validate_input_regex(get_request_var_post('drp_action'), '^([a-zA-Z0-9_]+)$');
+	input_validate_input_regex(get_nfilter_request_var('drp_action'), '^([a-zA-Z0-9_]+)$');
 	/* ==================================================== */
 	
 	/* if we are to save this form, instead of display it */
 	if (isset_request_var('selected_items')) {
-		$selected_items = sanitize_unserialize_selected_items(get_request_var_post('selected_items'));
+		$selected_items = sanitize_unserialize_selected_items(get_nfilter_request_var('selected_items'));
 
 		if ($selected_items != false) {
-			if (get_request_var_post('drp_action') == '1') { /* delete */
+			if (get_nfilter_request_var('drp_action') == '1') { /* delete */
 				db_execute('DELETE FROM cdef WHERE ' . array_to_sql_or($selected_items, 'id'));
 				db_execute('DELETE FROM cdef_items WHERE ' . array_to_sql_or($selected_items, 'cdef_id'));
-			}elseif (get_request_var_post('drp_action') == '2') { /* duplicate */
+			}elseif (get_nfilter_request_var('drp_action') == '2') { /* duplicate */
 				for ($i=0;($i<count($selected_items));$i++) {
 					duplicate_cdef($selected_items[$i], get_nfilter_request_var('title_format'));
 				}
@@ -219,10 +219,10 @@ function form_actions() {
 
 	form_start('cdef.php');
 
-	html_start_box($cdef_actions{get_request_var_post('drp_action')}, '60%', '', '3', 'center', '');
+	html_start_box($cdef_actions{get_nfilter_request_var('drp_action')}, '60%', '', '3', 'center', '');
 
 	if (isset($cdef_array) && sizeof($cdef_array)) {
-		if (get_request_var_post('drp_action') == '1') { /* delete */
+		if (get_nfilter_request_var('drp_action') == '1') { /* delete */
 			print "<tr>
 				<td class='textArea' class='odd'>
 					<p>Click 'Continue' to delete the folling CDEF(s).</p>
@@ -231,7 +231,7 @@ function form_actions() {
 			</tr>\n";
 
 			$save_html = "<input type='button' value='Cancel' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='Continue' title='Delete CDEF(s)'>";
-		}elseif (get_request_var_post('drp_action') == '2') { /* duplicate */
+		}elseif (get_nfilter_request_var('drp_action') == '2') { /* duplicate */
 			print "<tr>
 				<td class='textArea' class='odd'>
 					<p>Click 'Continue' to duplicate the following CDEF(s). You can
@@ -252,7 +252,7 @@ function form_actions() {
 		<td class='saveRow'>
 			<input type='hidden' name='action' value='actions'>
 			<input type='hidden' name='selected_items' value='" . (isset($cdef_array) ? serialize($cdef_array) : '') . "'>
-			<input type='hidden' name='drp_action' value='" . get_request_var_post('drp_action') . "'>
+			<input type='hidden' name='drp_action' value='" . get_nfilter_request_var('drp_action') . "'>
 			$save_html
 		</td>
 	</tr>\n";

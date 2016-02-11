@@ -68,7 +68,7 @@ switch (get_request_var('action')) {
 function aggregate_form_save() {
 	/* make sure we are saving aggregate template */
 	if (!isset_request_var('save_component_template')) {
-		header('Location: aggregate_templates.php?header=false&action=edit&id=' . get_request_var_post('id'));
+		header('Location: aggregate_templates.php?header=false&action=edit&id=' . get_nfilter_request_var('id'));
 		return null;
 	}
 
@@ -77,7 +77,7 @@ function aggregate_form_save() {
 	/* updating existing template or creating a new one? */
 	if (isset_request_var('id') && get_request_var('id') > 0) {
 		$is_new = false;
-		$save1['id'] = get_request_var_post('id');
+		$save1['id'] = get_nfilter_request_var('id');
 	} else {
 		$is_new = true;
 		$save1['id'] = 0;
@@ -90,19 +90,19 @@ function aggregate_form_save() {
 	if (!isset_request_var('total_prefix')) set_request_var('total_prefix', '');
 
 	/* populate aggregate template save array and validate posted values*/
-	$save1['name']              = form_input_validate(get_request_var_post('name'), 'name', '', false, 3);
+	$save1['name']              = form_input_validate(get_nfilter_request_var('name'), 'name', '', false, 3);
 	$save1['graph_template_id'] = get_filter_request_var('_graph_template_id');
-	$save1['gprint_prefix']     = form_input_validate(get_request_var_post('gprint_prefix'), 'gprint_prefix', '', true, 3);
-	$save1['graph_type']        = form_input_validate(get_request_var_post('graph_type'), 'graph_type', '', false, 3);
-	$save1['total']             = form_input_validate(get_request_var_post('total'), 'total', '', false, 3);
-	$save1['total_type']        = form_input_validate(get_request_var_post('total_type'), 'total_type', '', false, 3);
-	$save1['total_prefix']      = form_input_validate(get_request_var_post('total_prefix'), 'total_prefix', '', true, 3);
-	$save1['order_type']        = form_input_validate(get_request_var_post('order_type'), 'order_type', '', false, 3);
+	$save1['gprint_prefix']     = form_input_validate(get_nfilter_request_var('gprint_prefix'), 'gprint_prefix', '', true, 3);
+	$save1['graph_type']        = form_input_validate(get_nfilter_request_var('graph_type'), 'graph_type', '', false, 3);
+	$save1['total']             = form_input_validate(get_nfilter_request_var('total'), 'total', '', false, 3);
+	$save1['total_type']        = form_input_validate(get_nfilter_request_var('total_type'), 'total_type', '', false, 3);
+	$save1['total_prefix']      = form_input_validate(get_nfilter_request_var('total_prefix'), 'total_prefix', '', true, 3);
+	$save1['order_type']        = form_input_validate(get_nfilter_request_var('order_type'), 'order_type', '', false, 3);
 	$save1['user_id']           = $_SESSION['sess_user_id'];
 
 	/* form validation failed */
 	if (is_error_message()) {
-		header('Location: aggregate_templates.php?header=false&action=edit&id=' . get_request_var_post('id'));
+		header('Location: aggregate_templates.php?header=false&action=edit&id=' . get_nfilter_request_var('id'));
 		return null;
 	}
 
@@ -142,7 +142,7 @@ function aggregate_form_save() {
 
 	if (!$id) {
 		raise_message(2);
-		header('Location: aggregate_templates.php?header=false&action=edit&id=' . get_request_var_post('id'));
+		header('Location: aggregate_templates.php?header=false&action=edit&id=' . get_nfilter_request_var('id'));
 		return null;
 	}
 
@@ -227,7 +227,7 @@ function aggregate_form_save() {
 
 	raise_message(1);
 
-	header('Location: aggregate_templates.php?header=false&action=edit&id=' . (empty($id) ? get_request_var_post('id') : $id));
+	header('Location: aggregate_templates.php?header=false&action=edit&id=' . (empty($id) ? get_nfilter_request_var('id') : $id));
 }
 
 
@@ -251,10 +251,10 @@ function aggregate_form_actions() {
 
 	/* if we are to save this form, instead of display it */
 	if (isset_request_var('selected_items')) {
-		$selected_items = sanitize_unserialize_selected_items(get_request_var_post('selected_items'));
+		$selected_items = sanitize_unserialize_selected_items(get_nfilter_request_var('selected_items'));
 
 		if ($selected_items != false) {
-			if (get_request_var_post('drp_action') == '1') { /* delete */
+			if (get_nfilter_request_var('drp_action') == '1') { /* delete */
 				db_execute('DELETE FROM aggregate_graph_templates WHERE ' . array_to_sql_or($selected_items, 'id'));
 				db_execute('DELETE FROM aggregate_graph_templates_item WHERE ' . array_to_sql_or($selected_items, 'aggregate_template_id'));
 				db_execute('DELETE FROM aggregate_graph_templates_graph WHERE ' . array_to_sql_or($selected_items, 'aggregate_template_id'));
@@ -285,10 +285,10 @@ function aggregate_form_actions() {
 
 	form_start('aggregate_templates.php');
 
-	html_start_box($aggregate_actions{get_request_var_post('drp_action')}, '60%', '', '3', 'center', '');
+	html_start_box($aggregate_actions{get_nfilter_request_var('drp_action')}, '60%', '', '3', 'center', '');
 
 	if (isset($aggregate_array) && sizeof($aggregate_array)) {
-		if (get_request_var_post('drp_action') == '1') { /* delete */
+		if (get_nfilter_request_var('drp_action') == '1') { /* delete */
 			print "<tr>
 					<td class='textArea'>
 						<p>Are you sure you want to Delete the following Aggregate Graph Template(s)?</p>
@@ -307,7 +307,7 @@ function aggregate_form_actions() {
 		<td class='saveRow'>
 			<input type='hidden' name='action' value='actions'>
 			<input type='hidden' name='selected_items' value='" . (isset($aggregate_array) ? serialize($aggregate_array) : '') . "'>
-			<input type='hidden' name='drp_action' value='" . get_request_var_post('drp_action') . "'>
+			<input type='hidden' name='drp_action' value='" . get_nfilter_request_var('drp_action') . "'>
 			$save_html
 		</td>
 	</tr>\n";
@@ -341,7 +341,7 @@ function aggregate_template_edit() {
 		/* ================= input validation ================= */
 		get_filter_request_var('graph_template_id');
 		/* ==================================================== */
-		$template['graph_template_id'] = get_request_var_post('graph_template_id');
+		$template['graph_template_id'] = get_nfilter_request_var('graph_template_id');
 		$template['id']                = 0;
 	}
 

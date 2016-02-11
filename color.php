@@ -78,11 +78,11 @@ function form_save() {
 		get_filter_request_var('id');
 		/* ==================================================== */
 
-		$save['id']        = get_request_var_post('id');
+		$save['id']        = get_nfilter_request_var('id');
 
 		if (!isset_request_var('read_only')) {
-			$save['name']      = get_request_var_post('name');
-			$save['hex']       = form_input_validate(get_request_var_post('hex'),  'hex',  '^[a-fA-F0-9]+$' , false, 3);
+			$save['name']      = get_nfilter_request_var('name');
+			$save['hex']       = form_input_validate(get_nfilter_request_var('hex'),  'hex',  '^[a-fA-F0-9]+$' , false, 3);
 		}else{
 			$save['name']      = get_nfilter_request_var('hidden_name');
 			$save['read_only'] = 'on';
@@ -99,7 +99,7 @@ function form_save() {
 		}
 
 		if (is_error_message()) {
-			header('Location: color.php?header=false&action=edit&id=' . (empty($color_id) ? get_request_var_post('id') : $color_id));
+			header('Location: color.php?header=false&action=edit&id=' . (empty($color_id) ? get_nfilter_request_var('id') : $color_id));
 		}else{
 			header('Location: color.php?header=false');
 		}

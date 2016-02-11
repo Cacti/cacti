@@ -109,18 +109,18 @@ function form_save() {
 					));
 		}
 
-		$sequence = get_request_var_post('sequence');
+		$sequence = get_nfilter_request_var('sequence');
 
 		foreach ($items as $item) {
 			/* generate a new sequence if needed */
 			if (empty($sequence)) {
-				$sequence = get_sequence($sequence, 'sequence', 'graph_templates_item', 'local_graph_id=' . get_request_var_post('local_graph_id'));
+				$sequence = get_sequence($sequence, 'sequence', 'graph_templates_item', 'local_graph_id=' . get_nfilter_request_var('local_graph_id'));
 			}
-			$save['id']                           = get_request_var_post('graph_template_item_id');
-			$save['graph_template_id']            = get_request_var_post('graph_template_id');
+			$save['id']                           = get_nfilter_request_var('graph_template_item_id');
+			$save['graph_template_id']            = get_nfilter_request_var('graph_template_id');
 			$save['local_graph_template_item_id'] = get_nfilter_request_var('local_graph_template_item_id');
-			$save['local_graph_id']               = get_request_var_post('local_graph_id');
-			$save['task_item_id']                 = form_input_validate(get_request_var_post('task_item_id'), 'task_item_id', '^[0-9]+$', true, 3);
+			$save['local_graph_id']               = get_nfilter_request_var('local_graph_id');
+			$save['task_item_id']                 = form_input_validate(get_nfilter_request_var('task_item_id'), 'task_item_id', '^[0-9]+$', true, 3);
 			$save['color_id']                     = form_input_validate((isset($item['color_id']) ? $item['color_id'] : get_nfilter_request_var('color_id')), 'color_id', '^[0-9]+$', true, 3);
 
 			/* if alpha is disabled, use invisible_alpha instead */
@@ -130,12 +130,12 @@ function form_save() {
 
 			$save['alpha']         = form_input_validate((isset($item['alpha']) ? $item['alpha'] : get_nfilter_request_var('alpha')), 'alpha', '', true, 3);
 			$save['graph_type_id'] = form_input_validate((isset($item['graph_type_id']) ? $item['graph_type_id'] : get_nfilter_request_var('graph_type_id')), 'graph_type_id', '^[0-9]+$', true, 3);
-			$save['cdef_id']       = form_input_validate(get_request_var_post('cdef_id'), 'cdef_id', '^[0-9]+$', true, 3);
-			$save['consolidation_function_id'] = form_input_validate((isset($item['consolidation_function_id']) ? $item['consolidation_function_id'] : get_request_var_post('consolidation_function_id')), 'consolidation_function_id', '^[0-9]+$', true, 3);
+			$save['cdef_id']       = form_input_validate(get_nfilter_request_var('cdef_id'), 'cdef_id', '^[0-9]+$', true, 3);
+			$save['consolidation_function_id'] = form_input_validate((isset($item['consolidation_function_id']) ? $item['consolidation_function_id'] : get_nfilter_request_var('consolidation_function_id')), 'consolidation_function_id', '^[0-9]+$', true, 3);
 			$save['text_format']   = form_input_validate((isset($item['text_format']) ? $item['text_format'] : get_nfilter_request_var('text_format')), 'text_format', '', true, 3);
-			$save['value']         = form_input_validate(get_request_var_post('value'), 'value', '', true, 3);
+			$save['value']         = form_input_validate(get_nfilter_request_var('value'), 'value', '', true, 3);
 			$save['hard_return']   = form_input_validate(((isset($item['hard_return']) ? $item['hard_return'] : (isset_request_var('hard_return') ? get_nfilter_request_var('hard_return') : ''))), 'hard_return', '', true, 3);
-			$save['gprint_id']     = form_input_validate(get_request_var_post('gprint_id'), 'gprint_id', '^[0-9]+$', true, 3);
+			$save['gprint_id']     = form_input_validate(get_nfilter_request_var('gprint_id'), 'gprint_id', '^[0-9]+$', true, 3);
 			$save['sequence']      = $sequence;
 
 			if (!is_error_message()) {
@@ -152,10 +152,10 @@ function form_save() {
 		}
 
 		if (is_error_message()) {
-			header('Location: graphs.php?header=false&action=item_edit&graph_template_item_id=' . (empty($graph_template_item_id) ? get_request_var_post('graph_template_item_id') : $graph_template_item_id) . '&id=' . get_request_var_post('local_graph_id'));
+			header('Location: graphs.php?header=false&action=item_edit&graph_template_item_id=' . (empty($graph_template_item_id) ? get_nfilter_request_var('graph_template_item_id') : $graph_template_item_id) . '&id=' . get_nfilter_request_var('local_graph_id'));
 			exit;
 		}else{
-			header('Location: graphs.php?header=false&action=graph_edit&id=' . get_request_var_post('local_graph_id'));
+			header('Location: graphs.php?header=false&action=graph_edit&id=' . get_nfilter_request_var('local_graph_id'));
 			exit;
 		}
 	}

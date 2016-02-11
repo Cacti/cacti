@@ -66,14 +66,14 @@ function form_save() {
 		get_filter_request_var('id');
 		/* ==================================================== */
 
-		$save['id'] = get_request_var_post('id');
-		$save['hash'] = get_hash_round_robin_archive(get_request_var_post('id'));
-		$save['name'] = form_input_validate(get_request_var_post('name'), 'name', '', false, 3);
-		$dummy = form_input_validate(count(get_request_var_post('consolidation_function_id')), 'consolidation_function_id', '^[0-9]*$', false, 3);
-		$save['x_files_factor'] = form_input_validate(get_request_var_post('x_files_factor'), 'x_files_factor', "^[01]?(\.[0-9]+)?$", false, 3);
-		$save['steps'] = form_input_validate(get_request_var_post('steps'), 'steps', '^[0-9]*$', false, 3);
-		$save['rows'] = form_input_validate(get_request_var_post('rows'), 'rows', '^[0-9]*$', false, 3);
-		$save['timespan'] = form_input_validate(get_request_var_post('timespan'), 'timespan', '^[0-9]*$', false, 3);
+		$save['id'] = get_nfilter_request_var('id');
+		$save['hash'] = get_hash_round_robin_archive(get_nfilter_request_var('id'));
+		$save['name'] = form_input_validate(get_nfilter_request_var('name'), 'name', '', false, 3);
+		$dummy = form_input_validate(count(get_nfilter_request_var('consolidation_function_id')), 'consolidation_function_id', '^[0-9]*$', false, 3);
+		$save['x_files_factor'] = form_input_validate(get_nfilter_request_var('x_files_factor'), 'x_files_factor', "^[01]?(\.[0-9]+)?$", false, 3);
+		$save['steps'] = form_input_validate(get_nfilter_request_var('steps'), 'steps', '^[0-9]*$', false, 3);
+		$save['rows'] = form_input_validate(get_nfilter_request_var('rows'), 'rows', '^[0-9]*$', false, 3);
+		$save['timespan'] = form_input_validate(get_nfilter_request_var('timespan'), 'timespan', '^[0-9]*$', false, 3);
 
 		if (!is_error_message()) {
 			$rra_id = sql_save($save, 'rra');
@@ -84,7 +84,7 @@ function form_save() {
 				db_execute_prepared('DELETE FROM rra_cf WHERE rra_id = ?', array($rra_id));
 
 				if (isset_request_var('consolidation_function_id')) {
-					for ($i = 0; ($i < count(get_request_var_post('consolidation_function_id'))); $i++) {
+					for ($i = 0; ($i < count(get_nfilter_request_var('consolidation_function_id'))); $i++) {
 						/* ================= input validation ================= */
 						$consolidation_function_id = $_REQUEST['consolidation_function_id'][$i];
 						if (!is_numeric($consolidation_function_id)) {
@@ -103,7 +103,7 @@ function form_save() {
 		}
 
 		if (is_error_message()) {
-			header('Location: rra.php?action=edit&header=false&id=' . (empty($rra_id) ? get_request_var_post('id') : $rra_id));
+			header('Location: rra.php?action=edit&header=false&id=' . (empty($rra_id) ? get_nfilter_request_var('id') : $rra_id));
 		}else{
 			header('Location: rra.php?header=false');
 		}
@@ -119,15 +119,15 @@ function form_actions() {
 	global $rra_actions;
 
 	/* ================= input validation ================= */
-	input_validate_input_regex(get_request_var_post('drp_action'), '^([a-zA-Z0-9_]+)$');
+	input_validate_input_regex(get_nfilter_request_var('drp_action'), '^([a-zA-Z0-9_]+)$');
 	/* ==================================================== */
 	
 	/* if we are to save this form, instead of display it */
 	if (isset_request_var('selected_items')) {
-		$selected_items = sanitize_unserialize_selected_items(get_request_var_post('selected_items'));
+		$selected_items = sanitize_unserialize_selected_items(get_nfilter_request_var('selected_items'));
 
 		if ($selected_items != false) {
-			if (get_request_var_post('drp_action') == '1') { /* delete */
+			if (get_nfilter_request_var('drp_action') == '1') { /* delete */
 				db_execute('DELETE FROM rra WHERE ' . array_to_sql_or($selected_items, 'id'));
 				db_execute('DELETE FROM rra_cf WHERE ' . array_to_sql_or($selected_items, 'rra_id'));
 			}
@@ -158,10 +158,10 @@ function form_actions() {
 
 	form_start('rra.php');
 
-	html_start_box($rra_actions{get_request_var_post('drp_action')}, '60%', '', '3', 'center', '');
+	html_start_box($rra_actions{get_nfilter_request_var('drp_action')}, '60%', '', '3', 'center', '');
 
 	if (isset($rra_array) && sizeof($rra_array)) {
-		if (get_request_var_post('drp_action') == '1') { /* delete */
+		if (get_nfilter_request_var('drp_action') == '1') { /* delete */
 			print "<tr>
 				<td class='textArea' class='odd'>
 					<p>Click 'Continue' to delete the folling Round Robin Archive definition(s).</p>
@@ -180,7 +180,7 @@ function form_actions() {
 		<td class='saveRow'>
 			<input type='hidden' name='action' value='actions'>
 			<input type='hidden' name='selected_items' value='" . (isset($rra_array) ? serialize($rra_array) : '') . "'>
-			<input type='hidden' name='drp_action' value='" . get_request_var_post('drp_action') . "'>
+			<input type='hidden' name='drp_action' value='" . get_nfilter_request_var('drp_action') . "'>
 			$save_html
 		</td>
 	</tr>\n";
