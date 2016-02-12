@@ -894,7 +894,7 @@ function host_edit() {
 		switch($('#availability_method').val()) {
 			case '0': // availability none
 				$('#row_ping_method').hide();
-				$('#ping_method').val(0);
+				$('#ping_method').val('1');
 				$('#row_ping_timeout').hide();
 				$('#row_ping_port').hide();
 				$('#row_ping_timeout').hide();
@@ -904,18 +904,14 @@ function host_edit() {
 			case '1': // ping and snmp sysUptime
 			case '3': // ping
 			case '4': // ping or snmp sysUptime
-				if (($('#row_ping_method').css('display', 'none')) ||
-					($('#row_ping_method').css('display') == undefined)) {
-					$('#ping_method').val(ping_method);
-					$('#row_ping_method').css('display', '');
-				}
+				$('#row_ping_method').show();
 
 				break;
 			case '2': // snmp sysUptime
 			case '5': // snmp sysDesc
 			case '6': // snmp getNext
-				$('#row_ping_method').css('display', 'none');
-				$('#ping_method').val(0);
+				$('#row_ping_method').hide();
+				$('#ping_method').val('1');
 
 				break;
 		}
