@@ -888,11 +888,7 @@ function boost_rrdtool_get_last_update_time($rrd_path, $rrdtool_pipe) {
 }
 
 function boost_determine_caching_state() {
-	if (isset($_REQUEST['action'])) {
-		$action = $_REQUEST['action'];
-	}else{
-		$action = '';
-	}
+	set_default_action();
 
 	/* turn off image caching if viewing thold vrules */
 	if ((isset($_SESSION['sess_config_array']['thold_draw_vrules'])) &&

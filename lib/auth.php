@@ -233,7 +233,7 @@ function user_remove($user_id) {
 
 	/* check for guest or template user */
 	$username = db_fetch_cell_prepared('SELECT username FROM user_auth WHERE id = ?', array($user_id));
-	if ($username != get_request_var_post('username')) {
+	if ($username != get_nfilter_request_var('username')) {
 		if ($username == read_config_option('user_template')) {
 			raise_message(21);
 			return;
@@ -1250,11 +1250,11 @@ function get_host_array() {
 
 function get_allowed_ajax_hosts($include_any = true, $include_none = true) {
 	$return    = array();
-	$term      = $_REQUEST['term'];
+	$term      = get_filter_request_var('term', FILTER_CALLBACK, array('options' => 'sanitize_search_string'));
 	$sql_where = "hostname LIKE '%$term%' OR description LIKE '%$term%' OR notes LIKE '%$term%'";
 	$hosts     = get_allowed_devices($sql_where, 'description', 30);
 
-	if ($_REQUEST['term'] == '') {
+	if (get_request_var('term') == '') {
 		if ($include_any) {
 			$return[] = array('label' => 'Any', 'value' => 'Any', 'id' => '-1');
 		}
@@ -1274,13 +1274,13 @@ function get_allowed_ajax_hosts($include_any = true, $include_none = true) {
 
 function secpass_login_process () {
 	$users = db_fetch_assoc('SELECT username FROM user_auth WHERE realm = 0');
-	$username = sanitize_search_string(get_request_var_post('login_username'));
+	$username = sanitize_search_string(get_nfilter_request_var('login_username'));
 
 	# Mark failed login attempts
 	if (read_config_option('secpass_lockfailed') > 0) {
 		$max = intval(read_config_option('secpass_lockfailed'));
 		if ($max > 0) {
-			$p = get_request_var_post('login_password');
+			$p = get_nfilter_request_var('login_password');
 			foreach ($users as $fa) {
 				if ($fa['username'] == $username) {
 
@@ -1322,12 +1322,12 @@ function secpass_login_process () {
 
 	# Check if old password doesn't meet specifications and must be changed
 	if (read_config_option('secpass_forceold') == 'on') {
-		$p = get_request_var_post('login_password');
+		$p = get_nfilter_request_var('login_password');
 		$error = secpass_check_pass($p);
 		if ($error != '') {
 			foreach ($users as $fa) {
 				if ($fa['username'] == $username) {
-					db_execute_prepared("UPDATE user_auth SET must_change_password = 'on' WHERE username = ? AND password = ? AND realm = 0 AND enabled = 'on'", array($username, md5(get_request_var_post('login_password'))));
+					db_execute_prepared("UPDATE user_auth SET must_change_password = 'on' WHERE username = ? AND password = ? AND realm = 0 AND enabled = 'on'", array($username, md5(get_nfilter_request_var('login_password'))));
 					return true;
 				}
 			}
@@ -1335,10 +1335,10 @@ function secpass_login_process () {
 	}
 	# Set the last Login time
 	if (read_config_option('secpass_expireaccount') > 0) {
-		$p = get_request_var_post('login_password');
+		$p = get_nfilter_request_var('login_password');
 		foreach ($users as $fa) {
 			if ($fa['username'] == $username) {
-				db_execute_prepared("UPDATE user_auth SET lastlogin = ? WHERE username = ? AND password = ? AND realm = 0 AND enabled = 'on'", array(time(), $username, md5(get_request_var_post('login_password'))));
+				db_execute_prepared("UPDATE user_auth SET lastlogin = ? WHERE username = ? AND password = ? AND realm = 0 AND enabled = 'on'", array(time(), $username, md5(get_nfilter_request_var('login_password'))));
 			}
 		}
 	}

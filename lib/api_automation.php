@@ -25,65 +25,65 @@
 function display_matching_hosts($rule, $rule_type, $url) {
 	global $device_actions, $item_rows;
 
+	/* ================= input validation and session storage ================= */
+	$filters = array(
+		'rows' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'pageset' => true,
+			'default' => read_config_option('num_rows_table')
+			),
+		'page' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'default' => '1'
+			),
+		'host_status' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'pageset' => true,
+			'default' => '-1'
+			),
+		'host_template_id' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'pageset' => true,
+			'default' => '-1'
+			),
+		'filter' => array(
+			'filter' => FILTER_CALLBACK, 
+			'pageset' => true,
+			'default' => '', 
+			'options' => array('options' => 'sanitize_search_string')
+			),
+		'sort_column' => array(
+			'filter' => FILTER_CALLBACK, 
+			'default' => 'description', 
+			'options' => array('options' => 'sanitize_search_string')
+			),
+		'sort_direction' => array(
+			'filter' => FILTER_CALLBACK, 
+			'default' => 'ASC', 
+			'options' => array('options' => 'sanitize_search_string')
+			),
+		'has_graphs' => array(
+			'filter' => FILTER_VALIDATE_REGEXP, 
+			'options' => array('options' => array('regexp' => '(true|false)')),
+			'pageset' => true,
+			'default' => 'true'
+			)
+	);
+
+	validate_store_request_vars($filters, 'sess_auto');
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var('host_template_id'));
-	input_validate_input_number(get_request_var('hpage'));
-	input_validate_input_number(get_request_var('host_status'));
-	input_validate_input_number(get_request_var('rows'));
-	/* ==================================================== */
 
-	/* clean up search string */
-	if (isset($_REQUEST['filter'])) {
-		$_REQUEST['filter'] = sanitize_search_string(get_request_var('filter'));
-	}
-
-	/* clean up sort_column */
-	if (isset($_REQUEST['sort_column'])) {
-		$_REQUEST['sort_column'] = sanitize_search_string(get_request_var('sort_column'));
-	}
-
-	/* clean up search string */
-	if (isset($_REQUEST['sort_direction'])) {
-		$_REQUEST['sort_direction'] = sanitize_search_string(get_request_var('sort_direction'));
-	}
-
-	/* if the user pushed the 'clear' button */
-	if (isset($_REQUEST['clear'])) {
-		kill_session_var('sess_automation_device_current_page');
-		kill_session_var('sess_automation_device_filter');
-		kill_session_var('sess_automation_device_host_template_id');
-		kill_session_var('sess_automation_host_status');
-		kill_session_var('sess_default_rows');
-		kill_session_var('sess_automation_host_sort_column');
-		kill_session_var('sess_automation_host_sort_direction');
-
-		unset($_REQUEST['hpage']);
-		unset($_REQUEST['filter']);
-		unset($_REQUEST['host_template_id']);
-		unset($_REQUEST['host_status']);
-		unset($_REQUEST['rows']);
-		unset($_REQUEST['sort_column']);
-		unset($_REQUEST['sort_direction']);
-	}
-
-	if ((!empty($_SESSION['sess_automation_host_status'])) && (!empty($_REQUEST['host_status']))) {
-		if ($_SESSION['sess_automation_host_status'] != $_REQUEST['host_status']) {
-			$_REQUEST['hpage'] = 1;
+	if ((!empty($_SESSION['sess_automation_host_status'])) && (!isempty_request_var('host_status'))) {
+		if ($_SESSION['sess_automation_host_status'] != get_request_var('host_status')) {
+			set_request_var('page', '1');
 		}
 	}
 
-	/* remember these search fields in session vars so we don't have to keep passing them around */
-	load_current_session_value('hpage', 'sess_automation_device_current_page', '1');
-	load_current_session_value('filter', 'sess_automation_device_filter', '');
-	load_current_session_value('host_template_id', 'sess_automation_device_host_template_id', '-1');
-	load_current_session_value('host_status', 'sess_automation_host_status', '-1');
-	load_current_session_value('rows', 'sess_default_rows', read_config_option('num_rows_table'));
-	load_current_session_value('sort_column', 'sess_automation_host_sort_column', 'description');
-	load_current_session_value('sort_direction', 'sess_automation_host_sort_direction', 'ASC');
-
 	/* if the number of rows is -1, set it to the default */
-	if ($_REQUEST['rows'] == -1) {
-		$_REQUEST['rows'] = read_config_option('num_rows_table');
+	if (get_request_var('rows') == -1) {
+		$rows = read_config_option('num_rows_table');
+	}else{
+		$rows = get_request_var('rows');
 	}
 
 	?>
@@ -191,7 +191,7 @@ function display_matching_hosts($rule, $rule_type, $url) {
 						</td>
 					</tr>
 				</table>
-				<input type='hidden' id='page' value='<?php print $_REQUEST['page'];?>'>
+				<input type='hidden' id='page' value='<?php print get_request_var('page');?>'>
 			</form>
 		</td>
 	</tr>
@@ -200,7 +200,7 @@ function display_matching_hosts($rule, $rule_type, $url) {
 	html_end_box();
 
 	/* form the 'where' clause for our main sql query */
-	if (strlen($_REQUEST['filter'])) {
+	if (get_request_var('filter') != '') {
 		$sql_where = "WHERE (h.hostname LIKE '%%" . get_request_var('filter') . "%%' OR h.description LIKE '%%" . get_request_var('filter') . "%%' OR ht.name LIKE '%%" . get_request_var('filter') . "%%')";
 	}else{
 		$sql_where = '';
@@ -222,7 +222,7 @@ function display_matching_hosts($rule, $rule_type, $url) {
 		/* Show all items */
 	}elseif (get_request_var('host_template_id') == '0') {
 		$sql_where .= (strlen($sql_where) ? ' AND h.host_template_id=0' : 'WHERE h.host_template_id=0');
-	}elseif (!empty($_REQUEST['host_template_id'])) {
+	}elseif (!isempty_request_var('host_template_id')) {
 		$sql_where .= (strlen($sql_where) ? ' AND h.host_template_id=' . get_request_var('host_template_id') : 'WHERE h.host_template_id=' . get_request_var('host_template_id'));
 	}
 
@@ -258,10 +258,10 @@ function display_matching_hosts($rule, $rule_type, $url) {
 
 	$sql_query = $rows_query .
 		' ORDER BY ' . $sortby . ' ' . get_request_var('sort_direction') .
-		' LIMIT ' . (get_request_var('rows')*(get_request_var('hpage')-1)) . ',' . get_request_var('rows');
+		' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;
 	$hosts = db_fetch_assoc($sql_query);
 	
-	$nav = html_nav_bar($url, MAX_DISPLAY_PAGES, get_request_var('page'), get_request_var('rows'), $total_rows, 7, 'Devices', 'page', 'main');
+	$nav = html_nav_bar($url, MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 7, 'Devices', 'page', 'main');
 
 	print $nav;
 
@@ -310,59 +310,59 @@ function display_matching_hosts($rule, $rule_type, $url) {
 function display_matching_graphs($rule, $rule_type, $url) {
 	global $graph_actions, $item_rows;
 
+	/* ================= input validation and session storage ================= */
+	$filters = array(
+		'rows' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'pageset' => true,
+			'default' => read_config_option('num_rows_table')
+			),
+		'page' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'default' => '1'
+			),
+		'host_id' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'pageset' => true,
+			'default' => '-1'
+			),
+		'template_id' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'pageset' => true,
+			'default' => '-1'
+			),
+		'filter' => array(
+			'filter' => FILTER_CALLBACK, 
+			'pageset' => true,
+			'default' => '', 
+			'options' => array('options' => 'sanitize_search_string')
+			),
+		'sort_column' => array(
+			'filter' => FILTER_CALLBACK, 
+			'default' => 'title_cache', 
+			'options' => array('options' => 'sanitize_search_string')
+			),
+		'sort_direction' => array(
+			'filter' => FILTER_CALLBACK, 
+			'default' => 'ASC', 
+			'options' => array('options' => 'sanitize_search_string')
+			),
+		'has_graphs' => array(
+			'filter' => FILTER_VALIDATE_REGEXP, 
+			'options' => array('options' => array('regexp' => '(true|false)')),
+			'pageset' => true,
+			'default' => 'true'
+			)
+	);
+
+	validate_store_request_vars($filters, 'sess_autog');
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var('host_id'));
-	input_validate_input_number(get_request_var('rows'));
-	input_validate_input_number(get_request_var('template_id'));
-	input_validate_input_number(get_request_var('page'));
-	/* ==================================================== */
-
-	/* clean up search string */
-	if (isset($_REQUEST['filter'])) {
-		$_REQUEST['filter'] = sanitize_search_string(get_request_var('filter'));
-	}
-
-	/* clean up sort_column string */
-	if (isset($_REQUEST['sort_column'])) {
-		$_REQUEST['sort_column'] = sanitize_search_string(get_request_var('sort_column'));
-	}
-
-	/* clean up sort_direction string */
-	if (isset($_REQUEST['sort_direction'])) {
-		$_REQUEST['sort_direction'] = sanitize_search_string(get_request_var('sort_direction'));
-	}
-
-	/* if the user pushed the 'clear' button */
-	if (isset($_REQUEST['clear'])) {
-		kill_session_var('sess_automation_graph_current_page');
-		kill_session_var('sess_automation_graph_filter');
-		kill_session_var('sess_automation_graph_sort_column');
-		kill_session_var('sess_automation_graph_sort_direction');
-		kill_session_var('sess_automation_graph_host_id');
-		kill_session_var('sess_default_rows');
-		kill_session_var('sess_automation_graph_template_id');
-
-		unset($_REQUEST['page']);
-		unset($_REQUEST['filter']);
-		unset($_REQUEST['sort_column']);
-		unset($_REQUEST['sort_direction']);
-		unset($_REQUEST['host_id']);
-		unset($_REQUEST['rows']);
-		unset($_REQUEST['template_id']);
-	}
-
-	/* remember these search fields in session vars so we don't have to keep passing them around */
-	load_current_session_value('page', 'sess_automation_graph_current_page', '1');
-	load_current_session_value('filter', 'sess_automation_graph_filter', '');
-	load_current_session_value('sort_column', 'sess_automation_graph_sort_column', 'title_cache');
-	load_current_session_value('sort_direction', 'sess_automation_graph_sort_direction', 'ASC');
-	load_current_session_value('host_id', 'sess_automation_graph_host_id', '-1');
-	load_current_session_value('rows', 'sess_default_rows', read_config_option('num_rows_table'));
-	load_current_session_value('template_id', 'sess_automation_graph_template_id', '-1');
 
 	/* if the number of rows is -1, set it to the default */
 	if (get_request_var('rows') == -1) {
-		$_REQUEST['rows'] = read_config_option('num_rows_table');
+		$rows = read_config_option('num_rows_table');
+	}else{
+		$rows = get_request_var('rows');
 	}
 
 	?>
@@ -478,7 +478,7 @@ function display_matching_graphs($rule, $rule_type, $url) {
 						</td>
 					</tr>
 				</table>
-				<input type='hidden' id='page' value='<?php print $_REQUEST['page'];?>'>
+				<input type='hidden' id='page' value='<?php print get_request_var('page');?>'>
 			</form>
 		</td>
 	</tr>
@@ -500,7 +500,7 @@ function display_matching_graphs($rule, $rule_type, $url) {
 		/* Show all items */
 	}elseif (get_request_var('host_id') == '0') {
 		$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') . ' gl.host_id=0';
-	}elseif (!empty($_REQUEST['host_id'])) {
+	}elseif (!isempty_request_var('host_id')) {
 		$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') . ' gl.host_id=' . get_request_var('host_id');
 	}
 
@@ -508,7 +508,7 @@ function display_matching_graphs($rule, $rule_type, $url) {
 		/* Show all items */
 	}elseif (get_request_var('template_id') == '0') {
 		$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') . ' gtg.graph_template_id=0';
-	}elseif (!empty($_REQUEST['template_id'])) {
+	}elseif (!isempty_request_var('template_id')) {
 		$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') .' gtg.graph_template_id=' . get_request_var('template_id');
 	}
 
@@ -543,12 +543,12 @@ function display_matching_graphs($rule, $rule_type, $url) {
 		LEFT JOIN host_template AS ht
 		ON h.host_template_id=ht.id
 		$sql_where
-		ORDER BY " . $_REQUEST['sort_column'] . ' ' . get_request_var('sort_direction') . '
-		LIMIT ' . (get_request_var('rows')*(get_request_var('page')-1)) . ',' . get_request_var('rows');
+		ORDER BY " . get_request_var('sort_column') . ' ' . get_request_var('sort_direction') . '
+		LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;
 
 	$graph_list = db_fetch_assoc($sql);
 
-	$nav = html_nav_bar($url, MAX_DISPLAY_PAGES, get_request_var('page'), get_request_var('rows'), $total_rows, 8, 'Devices', 'page', 'main');
+	$nav = html_nav_bar($url, MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 8, 'Devices', 'page', 'main');
 
 	$display_text = array(
 		'description' => array('Device Description', 'ASC'),
@@ -600,14 +600,14 @@ function display_new_graphs($rule) {
 	global $config;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var('page'));
+	get_filter_request_var('page');
 	/* ==================================================== */
 
 	/* if the user pushed the 'clear' button */
-	if (isset($_REQUEST['clear'])) {
+	if (isset_request_var('clear')) {
 		kill_session_var('sess_automation_graph_current_page');
 
-		unset($_REQUEST['page']);
+		unset_request_var('page');
 	}
 
 	/* remember these search fields in session vars so we don't have to keep passing them around */
@@ -628,7 +628,7 @@ function display_new_graphs($rule) {
 	$changed += check_changed('snmp_query_id',		'sess_automation_graph_rule_snmp_query_id');
 
 	if (!$changed) {
-		$page = $_REQUEST['page'];
+		$page = get_request_var('page');
 	}else{
 		$page = 1;
 	}
@@ -686,7 +686,7 @@ function display_new_graphs($rule) {
 		$total_rows = sizeof(db_fetch_assoc($rows_query));
 
 		if ($total_rows < (get_request_var('rows')*(get_request_var('page')-1))+1) {
-			$_REQUEST['page'] = 1;
+			set_request_var('page', '1');
 		}
 
 		$sql_query = $rows_query . ' LIMIT ' . ($row_limit*(get_request_var('page')-1)) . ',' . $row_limit;
@@ -785,66 +785,60 @@ function display_matching_trees ($rule_id, $rule_type, $item, $url) {
 	global $device_actions, $item_rows;
 
 	cacti_log(__FUNCTION__ . " called: $rule_id/$rule_type", false, 'AUTOMATION TRACE', POLLER_VERBOSITY_MEDIUM);
-	
+
+	/* ================= input validation and session storage ================= */
+	$filters = array(
+		'rows' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'pageset' => true,
+			'default' => read_config_option('num_rows_table')
+			),
+		'page' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'default' => '1'
+			),
+		'host_template_id' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'pageset' => true,
+			'default' => '-1'
+			),
+		'host_status' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'pageset' => true,
+			'default' => '-1'
+			),
+		'filter' => array(
+			'filter' => FILTER_CALLBACK, 
+			'pageset' => true,
+			'default' => '', 
+			'options' => array('options' => 'sanitize_search_string')
+			),
+		'sort_column' => array(
+			'filter' => FILTER_CALLBACK, 
+			'default' => 'description', 
+			'options' => array('options' => 'sanitize_search_string')
+			),
+		'sort_direction' => array(
+			'filter' => FILTER_CALLBACK, 
+			'default' => 'ASC', 
+			'options' => array('options' => 'sanitize_search_string')
+			)
+	);
+
+	validate_store_request_vars($filters, 'sess_autot');
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var('host_template_id'));
-	input_validate_input_number(get_request_var('page'));
-	input_validate_input_number(get_request_var('host_status'));
-	input_validate_input_number(get_request_var('rows'));
-	/* ==================================================== */
 
-	/* clean up search string */
-	if (isset($_REQUEST['filter'])) {
-		$_REQUEST['filter'] = sanitize_search_string(get_request_var('filter'));
-	}
-
-	/* clean up sort_column */
-	if (isset($_REQUEST['sort_column'])) {
-		$_REQUEST['sort_column'] = sanitize_search_string(get_request_var('sort_column'));
-	}
-
-	/* clean up search string */
-	if (isset($_REQUEST['sort_direction'])) {
-		$_REQUEST['sort_direction'] = sanitize_search_string(get_request_var('sort_direction'));
-	}
-
-	/* if the user pushed the 'clear' button */
-	if (isset($_REQUEST['clear'])) {
-		kill_session_var('sess_automation_tree_current_page');
-		kill_session_var('sess_automation_tree_filter');
-		kill_session_var('sess_automation_tree_host_template_id');
-		kill_session_var('sess_automation_tree_host_status');
-		kill_session_var('sess_default_rows');
-		kill_session_var('sess_automation_tree_sort_column');
-		kill_session_var('sess_automation_tree_sort_direction');
-
-		unset($_REQUEST['page']);
-		unset($_REQUEST['filter']);
-		unset($_REQUEST['host_template_id']);
-		unset($_REQUEST['host_status']);
-		unset($_REQUEST['rows']);
-		unset($_REQUEST['sort_column']);
-		unset($_REQUEST['sort_direction']);
-	}
-
-	if ((!empty($_SESSION['sess_automation_host_status'])) && (!empty($_REQUEST['host_status']))) {
-		if ($_SESSION['sess_automation_host_status'] != $_REQUEST['host_status']) {
-			$_REQUEST['page'] = 1;
+	if ((!empty($_SESSION['sess_automation_host_status'])) && (!isempty_request_var('host_status'))) {
+		if ($_SESSION['sess_automation_host_status'] != get_request_var('host_status')) {
+			set_request_var('page', '1');
 		}
 	}
 
-	/* remember these search fields in session vars so we don't have to keep passing them around */
-	load_current_session_value('page', 'sess_automation_tree_current_page', '1');
-	load_current_session_value('filter', 'sess_automation_tree_filter', '');
-	load_current_session_value('host_template_id', 'sess_automation_tree_host_template_id', '-1');
-	load_current_session_value('host_status', 'sess_automation_tree_host_status', '-1');
-	load_current_session_value('rows', 'default_rows', read_config_option('num_rows_table'));
-	load_current_session_value('sort_column', 'sess_automation_tree_sort_column', 'description');
-	load_current_session_value('sort_direction', 'sess_automation_tree_sort_direction', 'ASC');
-
 	/* if the number of rows is -1, set it to the default */
-	if ($_REQUEST['rows'] == -1) {
-		$_REQUEST['rows'] = read_config_option('num_rows_table');
+	if (get_request_var('rows') == -1) {
+		$rows = read_config_option('num_rows_table');
+	}else{
+		$rows = get_request_var('rows');
 	}
 
 	?>
@@ -1005,7 +999,7 @@ function display_matching_trees ($rule_id, $rule_type, $item, $url) {
 		/* Show all items */
 	}elseif (get_request_var('host_template_id') == '0') {
 		$sql_where .= ' AND h.host_template_id=0';
-	}elseif (!empty($_REQUEST['host_template_id'])) {
+	}elseif (!isempty_request_var('host_template_id')) {
 		$sql_where .= ' AND h.host_template_id=' . get_request_var('host_template_id');
 	}
 
@@ -1030,13 +1024,13 @@ function display_matching_trees ($rule_id, $rule_type, $item, $url) {
 
 	$sql_query = "$rows_query ORDER BY $sortby " . 
 		get_request_var('sort_direction') . ' LIMIT ' . 
-		(get_request_var('rows')*(get_request_var('page')-1)) . ',' . get_request_var('rows');
+		($rows*(get_request_var('page')-1)) . ',' . $rows;
 
 	$templates = db_fetch_assoc($sql_query);
 
 	cacti_log(__FUNCTION__ . " templates sql: $sql_query", false, 'AUTOMATION TRACE', POLLER_VERBOSITY_MEDIUM);
 	
-	$nav = html_nav_bar($url, MAX_DISPLAY_PAGES, get_request_var('page'), get_request_var('rows'), $total_rows, 8, 'Devices', 'page', 'main');
+	$nav = html_nav_bar($url, MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 8, 'Devices', 'page', 'main');
 
 	html_start_box('', '100%', '', '3', 'center', '');
 
@@ -2837,7 +2831,7 @@ function automation_create_graphs ($host_id) {
 		if (preg_match('/^cg_(\d+)$/', $var, $matches)) {
 			$selected_graphs["cg"]{$matches[1]}{$matches[1]} = true;
 		}elseif (preg_match('/^cg_g$/', $var)) {
-			if ($_POST["cg_g"] > 0) {
+			if (get_nfilter_request_var("cg_g") > 0) {
 				$selected_graphs["cg"]{$sgraphs["cg_g"]}{$sgraphs["cg_g"]} = true;
 			}
 		}elseif (preg_match('/^sg_(\d+)_([a-f0-9]{32})$/', $var, $matches)) {

@@ -34,12 +34,12 @@ function html_start_box($title, $width, $background_color, $cell_padding, $align
 	static $table_suffix = 1;
 
 	$table_prefix = basename($_SERVER['PHP_SELF'], '.php');;
-	if (isset($_REQUEST['report']) && $_REQUEST['report'] != '') {
-		$table_prefix .= '_' . $_REQUEST['report'];
-	} elseif (isset($_REQUEST['tab']) && $_REQUEST['tab'] != '') {
-		$table_prefix .= '_' . $_REQUEST['tab'];
-	} elseif (isset($_REQUEST['action']) && $_REQUEST['action'] != '') {
-		$table_prefix .= '_' . $_REQUEST['action'];
+	if (!isempty_request_var('report')) {
+		$table_prefix .= '_' . clean_up_name(get_nfilter_request_var('report'));
+	} elseif (!isempty_request_var('tab')) {
+		$table_prefix .= '_' . clean_up_name(get_nfilter_request_var('tab'));
+	} elseif (!isempty_request_var('action')) {
+		$table_prefix .= '_' . clean_up_name(get_nfilter_request_var('action'));
 	}
 	$table_id = $table_prefix . $table_suffix;
 
@@ -1221,31 +1221,31 @@ function html_graph_tabs_right($current_user) {
 	if ($theme == 'classic') {
 		if (is_view_allowed('graph_settings')) {
 			print '<a class="righttab" href="' . $config['url_path'] . 'graph_settings.php"><img src="' . $config['url_path'] . 'images/tab_settings';
-			if (basename($_SERVER["PHP_SELF"]) == "graph_settings.php") {
-				print "_down";
+			if (basename($_SERVER['PHP_SELF']) == 'graph_settings.php') {
+				print '_down';
 			}
 			print '.gif" alt="Settings"></a>';
 		}?>&nbsp;&nbsp;<?php
 
 		if (is_view_allowed('show_tree')) {
-			?><a class='righttab' href="<?php print htmlspecialchars($config['url_path'] . "graph_view.php?action=tree");?>"><img src="<?php echo $config['url_path']; ?>images/tab_mode_tree<?php
-			if (isset($_REQUEST["action"]) && $_REQUEST["action"] == "tree") {
-				print "_down";
-			}?>.gif" title="Tree View" alt="Tree View"></a><?php
+			?><a class='righttab' href='<?php print htmlspecialchars($config['url_path'] . 'graph_view.php?action=tree');?>'><img src='<?php echo $config['url_path']; ?>images/tab_mode_tree<?php
+			if (isset_request_var('action') && get_nfilter_request_var('action') == 'tree') {
+				print '_down';
+			}?>.gif' title='Tree View' alt=''></a><?php
 		}?><?php
 
 		if (is_view_allowed('show_list')) {
-			?><a class='righttab' href="<?php print htmlspecialchars($config['url_path'] . "graph_view.php?action=list");?>"><img src="<?php echo $config['url_path']; ?>images/tab_mode_list<?php
-			if (isset($_REQUEST["action"]) && $_REQUEST["action"] == "list") {
-				print "_down";
-			}?>.gif" title="List View" alt="List View"></a><?php
+			?><a class='righttab' href='<?php print htmlspecialchars($config['url_path'] . 'graph_view.php?action=list');?>'><img src='<?php echo $config['url_path']; ?>images/tab_mode_list<?php
+			if (isset_request_var('action') && get_nfilter_request_var('action') == 'list') {
+				print '_down';
+			}?>.gif' title='List View' alt=''></a><?php
 		}?><?php
 
 		if (is_view_allowed('show_preview')) {
-			?><a class='righttab' href="<?php print htmlspecialchars($config['url_path'] . "graph_view.php?action=preview");?>"><img src="<?php echo $config['url_path']; ?>images/tab_mode_preview<?php
-			if (isset($_REQUEST["action"]) && $_REQUEST["action"] == "preview") {
-				print "_down";
-			}?>.gif" title="Preview View" alt="Preview View"></a><?php
+			?><a class='righttab' href='<?php print htmlspecialchars($config['url_path'] . 'graph_view.php?action=preview');?>'><img src='<?php echo $config['url_path']; ?>images/tab_mode_preview<?php
+			if (isset_request_var('action') && get_nfilter_request_var('action') == 'preview') {
+				print '_down';
+			}?>.gif' title='Preview View' alt=''></a><?php
 		}?>&nbsp;<br>
 		<?php
 	}else{
@@ -1281,15 +1281,15 @@ function html_graph_tabs_right($current_user) {
 			if ($tab['url'] == 'graph_settings.php' && (basename($_SERVER['PHP_SELF']) == 'graph_settings.php')) {
 				$tabs_right[$i]['selected'] = true;
 			}elseif ($tab['id'] == 'tree') {
-				if (isset($_REQUEST['action']) && $_REQUEST['action'] == 'tree') {
+				if (isset_request_var('action') && get_nfilter_request_var('action') == 'tree') {
 					$tabs_right[$i]['selected'] = true;
 				}
 			}elseif ($tab['id'] == 'list') {
-				if (isset($_REQUEST['action']) && $_REQUEST['action'] == 'list') {
+				if (isset_request_var('action') && get_nfilter_request_var('action') == 'list') {
 					$tabs_right[$i]['selected'] = true;
 				}
 			}elseif ($tab['id'] == 'preview') {
-				if (isset($_REQUEST['action']) && $_REQUEST['action'] == 'preview') {
+				if (isset_request_var('action') && get_nfilter_request_var('action') == 'preview') {
 					$tabs_right[$i]['selected'] = true;
 				}
 			}elseif (strstr($_SERVER['PHP_SELF'], $tab['url'])) {

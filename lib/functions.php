@@ -249,8 +249,8 @@ function form_input_validate($field_value, $field_name, $regexp_match, $allow_nu
 /* check_changed - determines if a request variable has changed between page loads
    @returns - (bool) true if the value changed between loads */
 function check_changed($request, $session) {
-	if ((isset($_REQUEST[$request])) && (isset($_SESSION[$session]))) {
-		if ($_REQUEST[$request] != $_SESSION[$session]) {
+	if ((isset_request_var($request)) && (isset($_SESSION[$session]))) {
+		if (get_request_var($request) != $_SESSION[$session]) {
 			return 1;
 		}
 	}
@@ -2478,11 +2478,11 @@ function draw_navigation_text($type = 'url') {
 
 	$current_page = basename($_SERVER['PHP_SELF']);
 
-	if (isset($_REQUEST['action']) && $_REQUEST['action'] != '') {
-		input_validate_input_regex($_REQUEST['action'], '^([-a-zA-Z0-9_\s]+)$');
+	if (!isempty_request_var('action')) {
+		get_filter_request_var('action', FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => '/^([-a-zA-Z0-9_\s]+)$/')));
 	}
 
-	$current_action = (isset($_REQUEST['action']) ? $_REQUEST['action'] : '');
+	$current_action = (isset_request_var('action') ? get_request_var('action') : '');
 
 	/* find the current page in the big array */
 	if (isset($nav[$current_page . ':' . $current_action])) {
@@ -2539,12 +2539,12 @@ function draw_navigation_text($type = 'url') {
 		$current_nav .= "<li><a id='nav_$i' href='$url'>" . htmlspecialchars(resolve_navigation_variables($current_array['title'])) . '</a></li>';
 	}
 
-	if (isset($_REQUEST['tree_id']) || isset($_REQUEST['leaf_id'])) {
+	if (isset_request_var('tree_id') || isset_request_var('leaf_id')) {
 		$leaf_sub  = '';
 		$leaf_name = '';
 		$tree_name = '';
-		if (isset($_REQUEST['leaf_id']) && $_REQUEST['leaf_id'] != '') {
-			$leaf = db_fetch_row_prepared('SELECT * FROM graph_tree_items WHERE id = ?', array($_REQUEST['leaf_id']));
+		if (isset_request_var('leaf_id') && get_request_var('leaf_id') != '') {
+			$leaf = db_fetch_row_prepared('SELECT * FROM graph_tree_items WHERE id = ?', array(get_request_var('leaf_id')));
 
 			if (sizeof($leaf)) {
 				if ($leaf['host_id'] > 0) {
@@ -2558,8 +2558,8 @@ function draw_navigation_text($type = 'url') {
 				$leaf_name = 'Leaf';
 			}
 
-			if (isset($_REQUEST['host_group_data']) && $_REQUEST['host_group_data'] != '') {
-				$parts = explode(':', $_REQUEST['host_group_data']);
+			if (isset_request_var('host_group_data') && get_request_var('host_group_data') != '') {
+				$parts = explode(':', get_request_var('host_group_data'));
 				input_validate_input_number($parts[1]);
 
 				if ($parts[0] == 'graph_template') {
@@ -2577,8 +2577,8 @@ function draw_navigation_text($type = 'url') {
 		}else{
 			$leaf_name = '';
 
-			if (isset($_REQUEST['tree_id'])) {
-				$tree_name = db_fetch_cell_prepared('SELECT name FROM graph_tree WHERE id = ?', array($_REQUEST['tree_id']));
+			if (isset_request_var('tree_id')) {
+				$tree_name = db_fetch_cell_prepared('SELECT name FROM graph_tree WHERE id = ?', array(get_request_var('tree_id')));
 			}else{
 				$tree_name = '';
 			}
@@ -2613,7 +2613,7 @@ function resolve_navigation_variables($text) {
 		for ($i=0; $i<count($matches[1]); $i++) {
 			switch ($matches[1][$i]) {
 			case 'current_graph_title':
-				$text = str_replace('|' . $matches[1][$i] . '|', get_graph_title($_GET['local_graph_id']), $text);
+				$text = str_replace('|' . $matches[1][$i] . '|', get_graph_title(get_filter_request_var('local_graph_id')), $text);
 				break;
 			}
 		}
@@ -3005,7 +3005,7 @@ function cacti_escapeshellarg($string, $quote=true) {
 function bottom_footer() {
 	global $config;
 
-	if (!isset($_REQUEST['header']) || $_REQUEST['header'] == false) {
+	if (!isset_request_var('header') || get_nfilter_request_var('header') == 'true') {
 		include($config['base_path'] . '/include/bottom_footer.php');
 	}else{
 		?>
@@ -3038,7 +3038,7 @@ function bottom_footer() {
 function top_header() {
 	global $config;
 
-	if (!isset($_REQUEST['header']) || $_REQUEST['header'] == 'true') {
+	if (!isset_request_var('header') || get_nfilter_request_var('header') == 'true') {
 		include($config['base_path'] . '/include/top_header.php');
 	}
 }
@@ -3046,14 +3046,14 @@ function top_header() {
 function top_graph_header() {
 	global $config;
 
-	if (!isset($_REQUEST['header']) || $_REQUEST['header'] == 'true') {
+	if (!isset_request_var('header') || get_nfilter_request_var('header') == 'true') {
 		include($config['base_path'] . '/include/top_graph_header.php');
 	}
 }
 
 function general_header() {
 	global $config;
-	if (!isset($_REQUEST['header']) || $_REQUEST['header'] == 'true') {
+	if (!isset_request_var('header') || get_nfilter_request_var('header') == 'true') {
 		include($config['base_path'] . '/include/top_general_header.php');
 	}
 }

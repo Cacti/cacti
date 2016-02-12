@@ -23,90 +23,64 @@
 */
 
 function html_graph_validate_preview_request_vars() {
+	/* ================= input validation and session storage ================= */
+	$filters = array(
+		'graphs' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'pageset' => true,
+			'default' => read_graph_config_option('preview_graphs_per_page')
+			),
+		'page' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'default' => '1'
+			),
+		'graph_template_id' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'pageset' => true,
+			'default' => '0'
+			),
+		'columns' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'pageset' => true,
+			'default' => read_graph_config_option('num_columns')
+			),
+		'host_id' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'pageset' => true,
+			'default' => '-1'
+			),
+		'filter' => array(
+			'filter' => FILTER_CALLBACK, 
+			'pageset' => true,
+			'default' => '', 
+			'options' => array('options' => 'sanitize_search_string')
+			),
+		'thumbnails' => array(
+			'filter' => FILTER_VALIDATE_REGEXP, 
+			'options' => array('options' => array('regexp' => '(true|false)')),
+			'pageset' => true,
+			'default' => read_graph_config_option('thumbnail_section_preview') == 'on' ? 'true':'false'
+			),
+		'graph_list' => array(
+			'filter' => FILTER_DEFAULT,
+			'default' => ''
+			),
+		'graph_add' => array(
+			'filter' => FILTER_DEFAULT,
+			'default' => ''
+			),
+		'graph_remove' => array(
+			'filter' => FILTER_DEFAULT,
+			'default' => ''
+			),
+		'style' => array(
+			'filter' => FILTER_DEFAULT,
+			'default' => ''
+			)
+	);
+
+	validate_store_request_vars($filters, 'sess_grview');
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var('host_id'));
-	input_validate_input_number(get_request_var('graph_template_id'));
-	input_validate_input_number(get_request_var('page'));
-	input_validate_input_number(get_request_var('graphs'));
-	input_validate_input_number(get_request_var('columns'));
-	/* ==================================================== */
-
-	/* clean up search string */
-	if (isset($_REQUEST['filter'])) {
-		$_REQUEST['filter'] = sanitize_search_string(get_request_var('filter'));
-	}
-
-	/* clean up search string */
-	if (isset($_REQUEST['thumbnails'])) {
-		$_REQUEST['thumbnails'] = sanitize_search_string(get_request_var('thumbnails'));
-	}
-
-	/* reset the graph list on a new viewing */
-	if (!isset($_REQUEST['page'])) {
-		$_REQUEST['page'] = 1;
-	}
-
-	/* if the user pushed the 'clear' button */
-	if (isset($_REQUEST['reset'])) {
-		kill_session_var('sess_graph_view_current_page');
-		kill_session_var('sess_graph_view_filter');
-		kill_session_var('sess_graph_view_graph_template');
-		kill_session_var('sess_graph_view_host');
-		kill_session_var('sess_graph_view_graphs');
-		kill_session_var('sess_graph_view_columns');
-		kill_session_var('sess_graph_view_thumbnails');
-		kill_session_var('sess_graph_view_graph_list');
-		kill_session_var('sess_graph_view_graph_add');
-		kill_session_var('sess_graph_view_graph_remove');
-	}elseif (isset($_REQUEST['clear']) || isset($_REQUEST['style'])) {
-		kill_session_var('sess_graph_view_current_page');
-		kill_session_var('sess_graph_view_filter');
-		kill_session_var('sess_graph_view_graph_template');
-		kill_session_var('sess_graph_view_host');
-		kill_session_var('sess_graph_view_graphs');
-		kill_session_var('sess_graph_view_columns');
-
-		unset($_REQUEST['page']);
-		unset($_REQUEST['graphs']);
-		unset($_REQUEST['host_id']);
-		unset($_REQUEST['graph_template_id']);
-
-		if (isset($_REQUEST['clear'])) {
-			unset($_REQUEST['filter']);
-			unset($_REQUEST['graph_list']);
-			unset($_REQUEST['graph_add']);
-			unset($_REQUEST['graph_remove']);
-			unset($_REQUEST['columns']);
-			unset($_REQUEST['thumbnails']);
-			unset($_REQUEST['style']);
-			kill_session_var('sess_graph_view_graph_list');
-			kill_session_var('sess_graph_view_graph_add');
-			kill_session_var('sess_graph_view_graph_remove');
-			kill_session_var('sess_graph_view_thumbnails');
-			kill_session_var('sess_graph_view_style');
-		}
-	}else{
-		/* if any of the settings changed, reset the page number */
-		$changed = false;
-		$changed += check_changed('host_id', 'sess_graph_view_host');
-		$changed += check_changed('graphs', 'sess_graph_view_graphs');
-		$changed += check_changed('graph_template_id', 'sess_graph_view_graph_template');
-		$changed += check_changed('filter', 'sess_graph_view_filter');
-		$changed += check_changed('columns', 'sess_graph_view_columns');
-		if ($changed) $_REQUEST['page'] = 1;
-	}
-
-	load_current_session_value('host_id', 'sess_graph_view_host', '-1');
-	load_current_session_value('graph_template_id', 'sess_graph_view_graph_template', '0');
-	load_current_session_value('filter', 'sess_graph_view_filter', '');
-	load_current_session_value('style', 'sess_graph_view_style', '');
-	load_current_session_value('page', 'sess_graph_view_current_page', '1');
-	load_current_session_value('graphs', 'sess_graph_view_graphs', read_graph_config_option('preview_graphs_per_page'));
-	load_current_session_value('columns', 'sess_graph_view_columns', read_graph_config_option('num_columns'));
-	load_current_session_value('thumbnails', 'sess_graph_view_thumbnails', read_graph_config_option('thumbnail_section_preview') == 'on' ? 'true':'false');
-	load_current_session_value('graph_list', 'sess_graph_view_graph_list', '');
-	load_current_session_value('graph_add', 'sess_graph_view_graph_add', '');
-	load_current_session_value('graph_remove', 'sess_graph_view_graph_remove', '');
 }
 
 function html_graph_preview_filter($page, $action, $devices_where = '', $templates_where = '') {
@@ -118,7 +92,7 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 		<form id='form_graph_view' method='post' action='<?php print $page;?>?action=preview'>
 			<table id='device' class='filterTable'>
 				<tr>
-					<?php print html_host_filter($_REQUEST['host_id'], 'applyGraphFilter');?>
+					<?php print html_host_filter(get_request_var('host_id'), 'applyGraphFilter');?>
 					<td>
 						Template
 					</td>
@@ -190,7 +164,7 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 						<label for='thumbnails'>Thumbnails</label>
 					</td>
 					<td>
-						<input id='thumbnails' type='checkbox' onClick='applyGraphFilter()' <?php print (($_REQUEST['thumbnails'] == 'true') ? 'checked':'');?>>
+						<input id='thumbnails' type='checkbox' onClick='applyGraphFilter()' <?php print ((get_request_var('thumbnails') == 'true') ? 'checked':'');?>>
 					</td>
 				</tr>
 			</table>

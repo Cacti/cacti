@@ -106,11 +106,11 @@ function grow_dhtml_trees() {
 	?>
 	<script type='text/javascript'>
 	<?php
-	if ((!isset($_SESSION['sess_node_id']) && !isset($_REQUEST['tree_id']))) {
+	if ((!isset($_SESSION['sess_node_id']) && !isset_request_var('tree_id'))) {
 		print "var node='tree_anchor-" . $default_tree_id . "';\n";
 		print "var reset=true;\n";
-	}elseif (isset($_REQUEST['nodeid']) && $_REQUEST['nodeid'] != '') {
-		print "var node='" . $_REQUEST['nodeid'] . "';\n";
+	}elseif (isset_request_var('nodeid') && get_request_var('nodeid') != '') {
+		print "var node='" . get_request_var('nodeid') . "';\n";
 		print "var reset=false;\n";
 	}elseif (isset($_SESSION['sess_node_id'])) {
 		if ($_SESSION['sess_node_id'] == 'tbranch-0') {
@@ -125,15 +125,15 @@ function grow_dhtml_trees() {
 			print "var node='" . $_SESSION['sess_node_id'] . "';\n";
 			print "var reset=false;\n";
 		}
-	}elseif (isset($_REQUEST['tree_id'])) {
-		print "var node='tree_anchor-" . $_REQUEST['tree_id'] . "';\n";
+	}elseif (isset_request_var('tree_id')) {
+		print "var node='tree_anchor-" . get_request_var('tree_id') . "';\n";
 		print "var reset=false;\n";
 	}else{
 		print "var node='';\n";
 		print "var reset=true;\n";
 	}
-	if (isset($_REQUEST['leaf_id'])) {
-		print "var leaf='" . $_REQUEST['leaf_id'] . "';\n";
+	if (isset_request_var('leaf_id')) {
+		print "var leaf='" . get_request_var('leaf_id') . "';\n";
 	}else{
 		print "var leaf='';\n";
 	}
@@ -400,65 +400,54 @@ function create_dhtml_tree() {
 }
 
 function validate_tree_vars() {
+	/* ================= input validation and session storage ================= */
+	$filters = array(
+		'graphs' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'pageset' => true,
+			'default' => read_graph_config_option('treeview_graphs_per_page')
+			),
+		'columns' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'default' => read_graph_config_option('num_columns_tree')
+			),
+		'page' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'default' => '1'
+			),
+		'tree_id' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'default' => read_graph_config_option('default_tree_id')
+			),
+		'leaf_id' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'default' => ''
+			),
+		'nodeid' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'default' => ''
+			),
+		'filter' => array(
+			'filter' => FILTER_CALLBACK, 
+			'pageset' => true,
+			'default' => '', 
+			'options' => array('options' => 'sanitize_search_string')
+			),
+		'host_group_data' => array(
+			'filter' => FILTER_CALLBACK, 
+			'default' => '', 
+			'options' => array('options' => 'sanitize_search_string')
+			),
+		'thumbnails' => array(
+			'filter' => FILTER_VALIDATE_REGEXP, 
+			'options' => array('options' => array('regexp' => '(true|false)')),
+			'pageset' => true,
+			'default' => 'true'
+			)
+	);
+
+	validate_store_request_vars($filters, 'sess_gt');
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var('graphs'));
-	input_validate_input_number(get_request_var('columns'));
-	input_validate_input_number(get_request_var('page'));
-	input_validate_input_number(get_request_var('tree_id'));
-	input_validate_input_number(get_request_var('leaf_id'));
-	/* ==================================================== */
-
-	/* clean up search string */
-	if (isset($_REQUEST['filter'])) {
-		$_REQUEST['filter'] = sanitize_search_string(get_request_var('filter'));
-	}
-
-	/* clean up search string */
-	if (isset($_REQUEST['thumbnails'])) {
-		$_REQUEST['thumbnails'] = sanitize_search_string(get_request_var('thumbnails'));
-	}
-
-	/* clean up host_group_data string */
-	if (isset($_REQUEST['host_group_data'])) {
-		$_REQUEST['host_group_data'] = sanitize_search_string(get_request_var('host_group_data'));
-	}
-
-	/* if the user pushed the 'clear' button */
-	if (isset($_REQUEST['clear'])) {
-		kill_session_var('sess_graph_tree_graphs');
-		kill_session_var('sess_graph_tree_columns');
-		kill_session_var('sess_graph_tree_filter');
-		kill_session_var('sess_graph_tree_thumbnails');
-		kill_session_var('sess_graph_tree_page');
-
-		unset($_REQUEST['graphs']);
-		unset($_REQUEST['columns']);
-		unset($_REQUEST['filter']);
-		unset($_REQUEST['page']);
-		unset($_REQUEST['thumbnails']);
-
-		$changed = true;
-	}else{
-		/* if any of the settings changed, reset the page number */
-		$changed = 0;
-		$changed += check_changed('graphs', 'sess_graph_tree_graphs');
-		$changed += check_changed('columns', 'sess_graph_tree_columns');
-		$changed += check_changed('filter', 'sess_graph_tree_filter');
-	}
-
-	if ($changed) {
-		$_REQUEST['page'] = 1;
-	}
-
-	load_current_session_value('page',   'sess_graph_tree_page',   '1');
-	load_current_session_value('graphs', 'sess_graph_tree_graphs', read_graph_config_option('treeview_graphs_per_page'));
-	load_current_session_value('columns', 'sess_graph_tree_columns', read_graph_config_option('num_columns_tree'));
-	load_current_session_value('filter', 'sess_graph_tree_filter', '');
-	load_current_session_value('thumbnails', 'sess_graph_tree_thumbnails', read_graph_config_option('thumbnail_section_tree_2') == 'on' ? 'true':'false');
-	load_current_session_value('leaf_id', 'sess_graph_tree_leaf_id', '');
-	load_current_session_value('tree_id', 'sess_graph_tree_tree_id', read_graph_config_option('default_tree_id'));
-	load_current_session_value('nodeid', 'sess_graph_tree_nodeid', '');
-	load_current_session_value('host_group_data', 'sess_graph_tree_host_group_data', '');
 }
 
 function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
@@ -557,7 +546,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 						<label for='thumbnails'>Thumbnails</label>
 					</td>
 					<td>
-						<input id='thumbnails' type='checkbox' name='thumbnails' onClick='applyGraphFilter()' <?php print (($_REQUEST['thumbnails'] == 'true') ? 'checked':'');?>>
+						<input id='thumbnails' type='checkbox' name='thumbnails' onClick='applyGraphFilter()' <?php print ((get_request_var('thumbnails') == 'true') ? 'checked':'');?>>
 					</td>
 					<td>
 						<input type='button' value='Go' title='Set/Refresh Filter' onClick='applyGraphFilter()'>
@@ -895,7 +884,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 		$i++;
 	}
 
-	if ($_REQUEST['thumbnails'] == 'true') {
+	if (get_request_var('thumbnails') == 'true') {
 		html_graph_thumbnail_area($new_graph_list, '', 'view_type=tree&graph_start=' . get_current_graph_start() . '&graph_end=' . get_current_graph_end(), '', get_request_var('columns'));
 	}else{
 		html_graph_area($new_graph_list, '', 'view_type=tree&graph_start=' . get_current_graph_start() . '&graph_end=' . get_current_graph_end(), '', 1);

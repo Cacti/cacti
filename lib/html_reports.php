@@ -434,44 +434,44 @@ function reports_form_save() {
 	global $config, $messages;
 	# when using cacti_log: include_once($config['library_path'] . '/functions.php');
 
-	if (isset($_POST['save_component_report'])) {
+	if (isset_request_var('save_component_report')) {
 		/* ================= input validation ================= */
-		input_validate_input_number(get_request_var_post('id'));
-		input_validate_input_number(get_request_var_post('font_size'));
-		input_validate_input_number(get_request_var_post('graph_width'));
-		input_validate_input_number(get_request_var_post('graph_height'));
-		input_validate_input_number(get_request_var_post('graph_columns'));
+		get_filter_request_var('id');
+		get_filter_request_var('font_size');
+		get_filter_request_var('graph_width');
+		get_filter_request_var('graph_height');
+		get_filter_request_var('graph_columns');
 		/* ==================================================== */
 		$now = time();
 
-		if (get_request_var_post('id') == 0 || $_POST['id'] == '') {
+		if (isempty_request_var('id')) {
 			$save['user_id'] = $_SESSION['sess_user_id'];
 		}else{
-			$save['user_id'] = db_fetch_cell('SELECT user_id FROM reports WHERE id=' . get_request_var_post('id'));
+			$save['user_id'] = db_fetch_cell('SELECT user_id FROM reports WHERE id=' . get_nfilter_request_var('id'));
 		}
 
-		$save['id']				= get_request_var_post('id');
-		$save['name']			= sql_sanitize(form_input_validate($_POST['name'], 'name', '', false, 3));
-		$save['email']			= sql_sanitize(form_input_validate($_POST['email'], 'email', '', false, 3));
-		$save['enabled']		= (isset($_POST['enabled']) ? 'on' : '');
+		$save['id']				= get_nfilter_request_var('id');
+		$save['name']			= sql_sanitize(form_input_validate(get_nfilter_request_var('name'), 'name', '', false, 3));
+		$save['email']			= sql_sanitize(form_input_validate(get_nfilter_request_var('email'), 'email', '', false, 3));
+		$save['enabled']		= (isset_request_var('enabled') ? 'on' : '');
 
-		$save['cformat']		= (isset($_POST['cformat']) ? 'on' : '');
-		$save['format_file']	= sql_sanitize(get_request_var_post('format_file'));
-		$save['font_size']		= form_input_validate(get_request_var_post('font_size'), 'font_size', '^[0-9]+$', false, 3);
-		$save['alignment']		= form_input_validate(get_request_var_post('alignment'), 'alignment', '^[0-9]+$', false, 3);
-		$save['graph_linked']	= (isset($_POST['graph_linked']) ? 'on' : '');
+		$save['cformat']		= (isset_request_var('cformat') ? 'on' : '');
+		$save['format_file']	= sql_sanitize(get_nfilter_request_var('format_file'));
+		$save['font_size']		= form_input_validate(get_nfilter_request_var('font_size'), 'font_size', '^[0-9]+$', false, 3);
+		$save['alignment']		= form_input_validate(get_nfilter_request_var('alignment'), 'alignment', '^[0-9]+$', false, 3);
+		$save['graph_linked']	= (isset_request_var('graph_linked') ? 'on' : '');
 
-		$save['graph_columns']	= form_input_validate(get_request_var_post('graph_columns'), 'graph_columns', '^[0-9]+$', false, 3);
-		$save['graph_width']	= form_input_validate(get_request_var_post('graph_width'), 'graph_width', '^[0-9]+$', false, 3);
-		$save['graph_height']	= form_input_validate(get_request_var_post('graph_height'), 'graph_height', '^[0-9]+$', false, 3);
-		$save['thumbnails']		= form_input_validate((isset($_POST['thumbnails']) ? $_POST['thumbnails']:''), 'thumbnails', '', true, 3);
+		$save['graph_columns']	= form_input_validate(get_nfilter_request_var('graph_columns'), 'graph_columns', '^[0-9]+$', false, 3);
+		$save['graph_width']	= form_input_validate(get_nfilter_request_var('graph_width'), 'graph_width', '^[0-9]+$', false, 3);
+		$save['graph_height']	= form_input_validate(get_nfilter_request_var('graph_height'), 'graph_height', '^[0-9]+$', false, 3);
+		$save['thumbnails']		= form_input_validate((isset_request_var('thumbnails') ? get_nfilter_request_var('thumbnails'):''), 'thumbnails', '', true, 3);
 
-		$save['intrvl']			= form_input_validate(get_request_var_post('intrvl'), 'intrvl', '^[-+]?[0-9]+$', false, 3);
-		$save['count']			= form_input_validate(get_request_var_post('count'), 'count', '^[0-9]+$', false, 3);
+		$save['intrvl']			= form_input_validate(get_nfilter_request_var('intrvl'), 'intrvl', '^[-+]?[0-9]+$', false, 3);
+		$save['count']			= form_input_validate(get_nfilter_request_var('count'), 'count', '^[0-9]+$', false, 3);
 		$save['offset']			= '0';
 
 		/* adjust mailtime according to rules */
-		$timestamp = strtotime(get_request_var_post('mailtime'));
+		$timestamp = strtotime(get_nfilter_request_var('mailtime'));
 		if ($timestamp === false) {
 			$timestamp  = $now;
 		} elseif (($timestamp + read_config_option('poller_interval')) < $now) {
@@ -488,16 +488,16 @@ function reports_form_save() {
 
 		$save['mailtime']     = form_input_validate($timestamp, 'mailtime', '^[0-9]+$', false, 3);
 
-		if (strlen(get_request_var_post('subject'))) {
-			$save['subject']          = sql_sanitize(get_request_var_post('subject'));
+		if (strlen(get_nfilter_request_var('subject'))) {
+			$save['subject']          = sql_sanitize(get_nfilter_request_var('subject'));
 		}else{
 			$save['subject'] = $save['name'];
 		}
-		$save['from_name']        = sql_sanitize(get_request_var_post('from_name'));
-		$save['from_email']       = sql_sanitize(get_request_var_post('from_email'));
-		$save['bcc']              = sql_sanitize(get_request_var_post('bcc'));
+		$save['from_name']        = sql_sanitize(get_nfilter_request_var('from_name'));
+		$save['from_email']       = sql_sanitize(get_nfilter_request_var('from_email'));
+		$save['bcc']              = sql_sanitize(get_nfilter_request_var('bcc'));
 
-		$atype = get_request_var_post('attachment_type');
+		$atype = get_nfilter_request_var('attachment_type');
 		if (($atype != REPORTS_TYPE_INLINE_PNG) &&
 			($atype != REPORTS_TYPE_INLINE_JPG) &&
 			($atype != REPORTS_TYPE_INLINE_GIF) &&
@@ -523,32 +523,32 @@ function reports_form_save() {
 			}
 		}
 
-		header('Location: ' . get_reports_page() . '?action=edit&id=' . (empty($id) ? get_request_var_post('id') : $id));
+		header('Location: ' . get_reports_page() . '?action=edit&id=' . (empty($id) ? get_nfilter_request_var('id') : $id));
 		exit;
-	}elseif (isset($_POST['save_component_report_item'])) {
+	}elseif (isset_request_var('save_component_report_item')) {
 		/* ================= input validation ================= */
-		input_validate_input_number(get_request_var_post('report_id'));
-		input_validate_input_number(get_request_var_post('id'));
+		get_filter_request_var('report_id');
+		get_filter_request_var('id');
 		/* ==================================================== */
 
 		$save = array();
 
-		$save['id']                = get_request_var_post('id');
-		$save['report_id']         = form_input_validate(get_request_var_post('report_id'), 'report_id', '^[0-9]+$', false, 3);
-		$save['sequence']          = form_input_validate(get_request_var_post('sequence'), 'sequence', '^[0-9]+$', false, 3);
-		$save['item_type']         = form_input_validate(get_request_var_post('item_type'), 'item_type', '^[-0-9]+$', false, 3);
-		$save['tree_id']           = (isset($_POST['tree_id']) ? form_input_validate($_POST['tree_id'], 'tree_id', '^[-0-9]+$', true, 3) : 0);
-		$save['branch_id']         = (isset($_POST['branch_id']) ? form_input_validate($_POST['branch_id'], 'branch_id', '^[-0-9]+$', true, 3) : 0);
-		$save['tree_cascade']      = (isset($_POST['tree_cascade']) ? 'on':'');
-		$save['graph_name_regexp'] = sql_sanitize(get_request_var_post('graph_name_regexp'));
-		$save['host_template_id']  = (isset($_POST['host_template_id']) ? form_input_validate($_POST['host_template_id'], 'host_template_id', '^[-0-9]+$', true, 3) : 0);
-		$save['host_id']           = (isset($_POST['host_id']) ? form_input_validate($_POST['host_id'], 'host_id', '^[-0-9]+$', true, 3) : 0);
-		$save['graph_template_id'] = (isset($_POST['graph_template_id']) ? form_input_validate($_POST['graph_template_id'], 'graph_template_id', '^[-0-9]+$', true, 3) : 0);
-		$save['local_graph_id']    = (isset($_POST['local_graph_id']) ? form_input_validate($_POST['local_graph_id'], 'local_graph_id', '^[0-9]+$', true, 3) : 0);
-		$save['timespan']          = (isset_request_var('timespan') ? form_input_validate($_POST['timespan'], 'timespan', '^[0-9]+$', true, 3) : 0);
-		$save['item_text']         = (isset($_POST['item_text']) ? sql_sanitize(form_input_validate($_POST['item_text'], 'item_text', '', true, 3)) : '');
-		$save['align']             = (isset($_POST['align']) ? form_input_validate($_POST['align'], 'align', '^[0-9]+$', true, 3) : REPORTS_ALIGN_LEFT);
-		$save['font_size']         = (isset_request_var('font_size') ? form_input_validate($_POST['font_size'], 'font_size', '^[0-9]+$', true, 3) : REPORTS_FONT_SIZE);
+		$save['id']                = get_nfilter_request_var('id');
+		$save['report_id']         = form_input_validate(get_nfilter_request_var('report_id'), 'report_id', '^[0-9]+$', false, 3);
+		$save['sequence']          = form_input_validate(get_nfilter_request_var('sequence'), 'sequence', '^[0-9]+$', false, 3);
+		$save['item_type']         = form_input_validate(get_nfilter_request_var('item_type'), 'item_type', '^[-0-9]+$', false, 3);
+		$save['tree_id']           = (isset_request_var('tree_id') ? form_input_validate(get_nfilter_request_var('tree_id'), 'tree_id', '^[-0-9]+$', true, 3) : 0);
+		$save['branch_id']         = (isset_request_var('branch_id') ? form_input_validate(get_nfilter_request_var('branch_id'), 'branch_id', '^[-0-9]+$', true, 3) : 0);
+		$save['tree_cascade']      = (isset_request_var('tree_cascade') ? 'on':'');
+		$save['graph_name_regexp'] = sql_sanitize(get_nfilter_request_var('graph_name_regexp'));
+		$save['host_template_id']  = (isset_request_var('host_template_id') ? form_input_validate(get_nfilter_request_var('host_template_id'), 'host_template_id', '^[-0-9]+$', true, 3) : 0);
+		$save['host_id']           = (isset_request_var('host_id') ? form_input_validate(get_nfilter_request_var('host_id'), 'host_id', '^[-0-9]+$', true, 3) : 0);
+		$save['graph_template_id'] = (isset_request_var('graph_template_id') ? form_input_validate(get_nfilter_request_var('graph_template_id'), 'graph_template_id', '^[-0-9]+$', true, 3) : 0);
+		$save['local_graph_id']    = (isset_request_var('local_graph_id') ? form_input_validate(get_nfilter_request_var('local_graph_id'), 'local_graph_id', '^[0-9]+$', true, 3) : 0);
+		$save['timespan']          = (isset_request_var('timespan') ? form_input_validate(get_nfilter_request_var('timespan'), 'timespan', '^[0-9]+$', true, 3) : 0);
+		$save['item_text']         = (isset_request_var('item_text') ? sql_sanitize(form_input_validate(get_nfilter_request_var('item_text'), 'item_text', '', true, 3)) : '');
+		$save['align']             = (isset_request_var('align') ? form_input_validate(get_nfilter_request_var('align'), 'align', '^[0-9]+$', true, 3) : REPORTS_ALIGN_LEFT);
+		$save['font_size']         = (isset_request_var('font_size') ? form_input_validate(get_nfilter_request_var('font_size'), 'font_size', '^[0-9]+$', true, 3) : REPORTS_FONT_SIZE);
 
 		if (!is_error_message()) {
 			$item_id = sql_save($save, 'reports_items');
@@ -560,7 +560,7 @@ function reports_form_save() {
 			}
 		}
 
-		header('Location: ' . get_reports_page() . '?action=item_edit&id=' . get_request_var_post('report_id') . '&item_id=' . (empty($item_id) ? get_request_var_post('id') : $item_id));
+		header('Location: ' . get_reports_page() . '?action=item_edit&id=' . get_nfilter_request_var('report_id') . '&item_id=' . (empty($item_id) ? get_nfilter_request_var('id') : $item_id));
 	} else {
 		header('Location: ' . get_reports_page());
 	}
@@ -575,38 +575,38 @@ function reports_form_actions() {
 	global $config, $reports_actions;
 	include_once($config['base_path'].'/lib/reports.php');
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_post('drp_action'));
+	get_filter_request_var('drp_action');
 	/* ==================================================== */
 
 	/* if we are to save this form, instead of display it */
 	if (isset_request_var('selected_items')) {
-		$selected_items = sanitize_unserialize_selected_items(get_request_var_post('selected_items'));
+		$selected_items = sanitize_unserialize_selected_items(get_nfilter_request_var('selected_items'));
 
 		if ($selected_items != false) {
-			if (get_request_var_post('drp_action') == REPORTS_DELETE) { /* delete */
+			if (get_nfilter_request_var('drp_action') == REPORTS_DELETE) { /* delete */
 				db_execute('DELETE FROM reports WHERE ' . array_to_sql_or($selected_items, 'id'));
 				db_execute('DELETE FROM reports_items WHERE ' . str_replace('id', 'report_id', array_to_sql_or($selected_items, 'id')));
-			}elseif (get_request_var_post('drp_action') == REPORTS_OWN) { /* take ownership */
+			}elseif (get_nfilter_request_var('drp_action') == REPORTS_OWN) { /* take ownership */
 				for ($i=0;($i<count($selected_items));$i++) {
 					reports_log(__FUNCTION__ . ', takeown: ' . $selected_items[$i] . ' user: ' . $_SESSION['sess_user_id'], false, 'REPORTS TRACE', POLLER_VERBOSITY_MEDIUM);
 					db_execute('UPDATE reports SET user_id=' . $_SESSION['sess_user_id'] . ' WHERE id=' . $selected_items[$i]);
 				}
-			}elseif (get_request_var_post('drp_action') == REPORTS_DUPLICATE) { /* duplicate */
+			}elseif (get_nfilter_request_var('drp_action') == REPORTS_DUPLICATE) { /* duplicate */
 				for ($i=0;($i<count($selected_items));$i++) {
-					reports_log(__FUNCTION__ . ', duplicate: ' . $selected_items[$i] . ' name: ' . $_POST['name_format'], false, 'REPORTS TRACE', POLLER_VERBOSITY_MEDIUM);
-					duplicate_report($selected_items[$i], $_POST['name_format']);
+					reports_log(__FUNCTION__ . ', duplicate: ' . $selected_items[$i] . ' name: ' . get_nfilter_request_var('name_format'), false, 'REPORTS TRACE', POLLER_VERBOSITY_MEDIUM);
+					duplicate_report($selected_items[$i], get_nfilter_request_var('name_format'));
 				}
-			}elseif (get_request_var_post('drp_action') == REPORTS_ENABLE) { /* enable */
+			}elseif (get_nfilter_request_var('drp_action') == REPORTS_ENABLE) { /* enable */
 				for ($i=0;($i<count($selected_items));$i++) {
 					reports_log(__FUNCTION__ . ', enable: ' . $selected_items[$i], false, 'REPORTS TRACE', POLLER_VERBOSITY_MEDIUM);
 					db_execute("UPDATE reports SET enabled='on' WHERE id=" . $selected_items[$i]);
 				}
-			}elseif (get_request_var_post('drp_action') == REPORTS_DISABLE) { /* disable */
+			}elseif (get_nfilter_request_var('drp_action') == REPORTS_DISABLE) { /* disable */
 				for ($i=0;($i<count($selected_items));$i++) {
 					reports_log(__FUNCTION__ . ', disable: ' . $selected_items[$i], false, 'REPORTS TRACE', POLLER_VERBOSITY_MEDIUM);
 					db_execute("UPDATE reports SET enabled='' WHERE id=" . $selected_items[$i]);
 				}
-			}elseif (get_request_var_post('drp_action') == REPORTS_SEND_NOW) { /* send now */
+			}elseif (get_nfilter_request_var('drp_action') == REPORTS_SEND_NOW) { /* send now */
 				include_once($config['base_path'] . '/lib/reports.php');
 				$message = '';
 
@@ -660,7 +660,7 @@ function reports_form_actions() {
 
 	print "<form name='report' action='" . get_reports_page() . "' method='post'>";
 
-	html_start_box('<strong>' . $reports_actions{get_request_var_post('drp_action')} . '</strong>', '60%', '', '3', 'center', '');
+	html_start_box('<strong>' . $reports_actions{get_nfilter_request_var('drp_action')} . '</strong>', '60%', '', '3', 'center', '');
 
 	if (!isset($reports_array)) {
 		print "<tr><td class='even'><span class='textError'>You must select at least one Report.</span></td></tr>\n";
@@ -668,21 +668,21 @@ function reports_form_actions() {
 	}else{
 		$save_html = "<input type='submit' value='Continue' name='save'>";
 
-		if (get_request_var_post('drp_action') == REPORTS_DELETE) { /* delete */
+		if (get_nfilter_request_var('drp_action') == REPORTS_DELETE) { /* delete */
 			print "<tr>
 				<td class='textArea'>
 					<p>Click 'Continue' to delete the following Report(s).</p>
 					<p><ul>$reports_list</ul></p>
 				</td>
 			</tr>\n";
-		}elseif (is_reports_admin() && get_request_var_post('drp_action') == REPORTS_OWN) { /* take ownership */
+		}elseif (is_reports_admin() && get_nfilter_request_var('drp_action') == REPORTS_OWN) { /* take ownership */
 			print "<tr>
 				<td class='textArea'>
 					<p>Click 'Continue' to take ownership of the following Report(s).</p>
 					<p><ul>$reports_list</ul></p>
 				</td>
 			</tr>\n";
-		}elseif (get_request_var_post('drp_action') == REPORTS_DUPLICATE) { /* duplicate */
+		}elseif (get_nfilter_request_var('drp_action') == REPORTS_DUPLICATE) { /* duplicate */
 			print "<tr>
 				<td class='textArea'>
 					<p>Click 'Continue' to duplicate the following Report(s). 
@@ -695,7 +695,7 @@ function reports_form_actions() {
 			print "</p>
 				</td>
 			</tr>\n";
-		}elseif (get_request_var_post('drp_action') == REPORTS_ENABLE) { /* enable */
+		}elseif (get_nfilter_request_var('drp_action') == REPORTS_ENABLE) { /* enable */
 			print "<tr>
 				<td class='textArea'>
 					<p>Click 'Continue' to enable the following Report(s).</p>
@@ -703,14 +703,14 @@ function reports_form_actions() {
 					<p>Please be certain that those Report(s) have successfully been tested first!</p>
 				</td>
 			</tr>\n";
-		}elseif (get_request_var_post('drp_action') == REPORTS_DISABLE) { /* disable */
+		}elseif (get_nfilter_request_var('drp_action') == REPORTS_DISABLE) { /* disable */
 			print "<tr>
 				<td class='textArea'>
 					<p>Click 'Continue' to disable the following Reports.</p>
 					<p><ul>$reports_list</ul></p>
 				</td>
 			</tr>\n";
-		}elseif (get_request_var_post('drp_action') == REPORTS_SEND_NOW) { /* send now */
+		}elseif (get_nfilter_request_var('drp_action') == REPORTS_SEND_NOW) { /* send now */
 			print "<tr>
 				<td class='textArea'>
 					<p>Click 'Continue' to send the following Report(s) now.</p>
@@ -724,7 +724,7 @@ function reports_form_actions() {
 		<td class='saveRow'>
 			<input type='hidden' name='action' value='actions'>
 			<input type='hidden' name='selected_items' value='" . (isset($reports_array) ? serialize($reports_array) : '') . "'>
-			<input type='hidden' name='drp_action' value='" . get_request_var_post('drp_action') . "'>
+			<input type='hidden' name='drp_action' value='" . get_nfilter_request_var('drp_action') . "'>
 			<input type='button' onClick='cactiReturnTo()' value='" . ($save_html == '' ? 'Return':'Cancel') . "' name='cancel'>
 			$save_html
 		</td>
@@ -813,14 +813,14 @@ function reports_item_edit() {
 	global $fields_reports_item_edit;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var('id'));
-	input_validate_input_number(get_request_var('item_id'));
-	input_validate_input_number(get_request_var('item_type'));
-	input_validate_input_number(get_request_var('branch_id'));
-	input_validate_input_number(get_request_var('tree_id'));
-	input_validate_input_number(get_request_var('host_id'));
-	input_validate_input_number(get_request_var('host_template_id'));
-	input_validate_input_number(get_request_var('graph_template_id'));
+	get_filter_request_var('id');
+	get_filter_request_var('item_id');
+	get_filter_request_var('item_type');
+	get_filter_request_var('branch_id');
+	get_filter_request_var('tree_id');
+	get_filter_request_var('host_id');
+	get_filter_request_var('host_template_id');
+	get_filter_request_var('graph_template_id');
 	/* ==================================================== */
 
 	# fetch the current report record
@@ -829,7 +829,7 @@ function reports_item_edit() {
 		WHERE id=' . get_request_var('id'));
 
 	# if an existing item was requested, fetch data for it
-	if (isset($_REQUEST['item_id']) && ($_REQUEST['item_id'] > 0)) {
+	if (isset_request_var('item_id') && (get_request_var('item_id') > 0)) {
 		$reports_item = db_fetch_row('SELECT *
 			FROM reports_items
 			WHERE id=' . get_request_var('item_id'));
@@ -1042,30 +1042,46 @@ function reports_edit() {
 	global $fields_reports_edit;
 	include_once($config['base_path'] . '/lib/reports.php');
 
+	/* ================= input validation and session storage ================= */
+	$filters = array(
+		'id' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'pageset' => true,
+			'default' => read_config_option('num_rows_table')
+			),
+		'rows' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'default' => read_config_option('num_rows_table')
+			),
+		'page' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'default' => '1'
+			),
+		'filter' => array(
+			'filter' => FILTER_CALLBACK, 
+			'pageset' => true,
+			'default' => '', 
+			'options' => array('options' => 'sanitize_search_string')
+			),
+		'name' => array(
+			'filter' => FILTER_CALLBACK, 
+			'default' => 'name', 
+			'options' => array('options' => 'sanitize_search_string')
+			),
+		'tab' => array(
+			'filter' => FILTER_CALLBACK, 
+			'default' => 'details', 
+			'options' => array('options' => 'sanitize_search_string')
+			)
+	);
+
+	validate_store_request_vars($filters, 'sess_reports');
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var('id'));
-	input_validate_input_number(get_request_var('page'));
-	/* ==================================================== */
-
-	/* clean up rule name */
-	if (isset($_REQUEST['name'])) {
-		$_REQUEST['name'] = sanitize_search_string(get_request_var('name'));
-	}
-
-	/* clean up tab name */
-	if (isset($_REQUEST['tab'])) {
-		$_REQUEST['tab'] = sanitize_search_string(get_request_var('tab'));
-	}
-
-	/* remember these search fields in session vars so we don't have to keep passing them around */
-	load_current_session_value('page', 'sess_reports_edit_current_page', '1');
-	load_current_session_value('tab', 'sess_reports_edit_tab', 'detail');
-	load_current_session_value('rows', 'sess_default_rows', read_config_option('num_rows_table'));
 
 	/* display the report */
 	$report = array();
-	if (!empty($_REQUEST['id'])) {
-		$report = db_fetch_row('SELECT * FROM reports WHERE id=' . $_REQUEST['id']);
+	if (!isempty_request_var('id')) {
+		$report = db_fetch_row('SELECT * FROM reports WHERE id=' . get_request_var('id'));
 		# reformat mailtime to human readable format
 		$report['mailtime'] = date(reports_date_time_format(), $report['mailtime']);
 		# setup header
@@ -1083,10 +1099,10 @@ function reports_edit() {
 	$tabs = array('details' => 'Details', 'items' => 'Items', 'preview' => 'Preview', 'events' => 'Events');
 
 	/* set the default settings category */
-	if (!isset($_REQUEST['tab'])) $_REQUEST['tab'] = 'details';
-	$current_tab = $_REQUEST['tab'];
+	if (!isset_request_var('tab')) set_request_var('tab', 'details');
+	$current_tab = get_request_var('tab');
 
-	if (sizeof($tabs) && isset($_REQUEST['id'])) {
+	if (sizeof($tabs) && isset_request_var('id')) {
 		/* draw the tabs */
 		print "<div class='tabs'><nav><ul>\n";
 
@@ -1095,18 +1111,18 @@ function reports_edit() {
 				" href='" . htmlspecialchars($config['url_path'] .
 				get_reports_page() . '?action=edit&id=' . get_request_var('id') .
 				'&tab=' . $tab_short_name) .
-				"'>$tabs[$tab_short_name]</a></li>\n";
+				"'>" . $tabs[$tab_short_name] . "</a></li>\n";
 		}
 
 
-		if (!empty($_REQUEST['id'])) {
-			print "<li style='float:right;position:relative;'><a class='tab' href='" . htmlspecialchars(get_reports_page() . '?action=send&id=' . $_REQUEST['id'] . '&tab=' . $_REQUEST['tab']) . "'>Send Report</a></li>\n";
+		if (!isempty_request_var('id')) {
+			print "<li style='float:right;position:relative;'><a class='tab' href='" . htmlspecialchars(get_reports_page() . '?action=send&id=' . get_request_var('id') . '&tab=' . get_request_var('tab')) . "'>Send Report</a></li>\n";
 		}
 
 		print "</ul></nav></div>\n";
 	}
 
-	switch($_REQUEST['tab']) {
+	switch(get_request_var('tab')) {
 	case 'details':
 		print '<form name="report" action="' . get_reports_page() . '" method="post">';
 		html_start_box("<strong>Report Details</strong> $header_label", '100%', '', '3', 'center', '');
@@ -1155,7 +1171,7 @@ function reports_edit() {
 
 		break;
 	case 'items':
-		html_start_box("<strong>Report Items</strong> $header_label", '100%', '', '3', 'center', get_reports_page() . '?action=item_edit&id=' . $_REQUEST['id']);
+		html_start_box("<strong>Report Items</strong> $header_label", '100%', '', '3', 'center', get_reports_page() . '?action=item_edit&id=' . get_request_var('id'));
 
 		/* display the items */
 		if (!empty($report['id'])) {
@@ -1300,60 +1316,56 @@ function reports() {
 
 	include_once($config['base_path'] . '/lib/reports.php');
 
+	/* ================= input validation and session storage ================= */
+	$filters = array(
+		'rows' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'pageset' => true,
+			'default' => read_config_option('num_rows_table')
+			),
+		'page' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'default' => '1'
+			),
+		'status' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'default' => '-1'
+			),
+		'filter' => array(
+			'filter' => FILTER_CALLBACK, 
+			'pageset' => true,
+			'default' => '', 
+			'options' => array('options' => 'sanitize_search_string')
+			),
+		'sort_column' => array(
+			'filter' => FILTER_CALLBACK, 
+			'default' => 'name', 
+			'options' => array('options' => 'sanitize_search_string')
+			),
+		'sort_direction' => array(
+			'filter' => FILTER_CALLBACK, 
+			'default' => 'ASC', 
+			'options' => array('options' => 'sanitize_search_string')
+			),
+		'has_graphs' => array(
+			'filter' => FILTER_VALIDATE_REGEXP, 
+			'options' => array('options' => array('regexp' => '(true|false)')),
+			'pageset' => true,
+			'default' => 'true'
+			)
+	);
+
+	validate_store_request_vars($filters, 'sess_reports');
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var('page'));
-	input_validate_input_number(get_request_var('status'));
-	input_validate_input_number(get_request_var('rows'));
-	/* ==================================================== */
 
-	/* clean up search string */
-	if (isset($_REQUEST['filter'])) {
-		$_REQUEST['filter'] = sanitize_search_string(get_request_var('filter'));
-	}
-
-	/* clean up sort_column string */
-	if (isset($_REQUEST['sort_column'])) {
-		$_REQUEST['sort_column'] = sanitize_search_string(get_request_var('sort_column'));
-	}
-
-	/* clean up sort_direction string */
-	if (isset($_REQUEST['sort_direction'])) {
-		$_REQUEST['sort_direction'] = sanitize_search_string(get_request_var('sort_direction'));
-	}
-
-	/* if the user pushed the 'clear' button */
-	if (isset($_REQUEST['clear'])) {
-		kill_session_var('sess_reports_current_page');
-		kill_session_var('sess_reports_filter');
-		kill_session_var('sess_reports_sort_column');
-		kill_session_var('sess_reports_sort_direction');
-		kill_session_var('sess_status');
-		kill_session_var('sess_default_rows');
-
-		unset($_REQUEST['page']);
-		unset($_REQUEST['filter']);
-		unset($_REQUEST['sort_column']);
-		unset($_REQUEST['sort_direction']);
-		unset($_REQUEST['status']);
-		unset($_REQUEST['rows']);
-	}
-
-	if ((!empty($_SESSION['sess_status'])) && (!empty($_REQUEST['status']))) {
-		if ($_SESSION['sess_status'] != $_REQUEST['status']) {
-			$_REQUEST['page'] = 1;
+	if ((!empty($_SESSION['sess_status'])) && (!isempty_request_var('status'))) {
+		if ($_SESSION['sess_status'] != get_request_var('status')) {
+			set_request_var('page', '1');
 		}
 	}
 
-	/* remember these search fields in session vars so we don't have to keep passing them around */
-	load_current_session_value('page', 'sess_reports_current_page', '1');
-	load_current_session_value('filter', 'sess_reports_filter', '');
-	load_current_session_value('sort_column', 'sess_reports_sort_column', 'name');
-	load_current_session_value('sort_direction', 'sess_reports_sort_direction', 'ASC');
-	load_current_session_value('status', 'sess_reports_status', '-1');
-	load_current_session_value('rows', 'sess_default_rows', read_config_option('num_rows_table'));
-
 	/* if the number of rows is -1, set it to the default */
-	if ($_REQUEST['rows'] == -1) {
+	if (get_request_var('rows') == -1) {
 		$rows = read_config_option('num_rows_table');
 	}else{
 		$rows = get_request_var('rows');
@@ -1406,7 +1418,7 @@ function reports() {
 				</tr>
 			</table>
 		</td>
-		<td><input type='hidden' name='page' value='" . $_REQUEST['page']. "'></td>
+		<td><input type='hidden' name='page' value='" . get_request_var('page') . "'></td>
 	</tr>\n";
 
 	html_end_box(TRUE);

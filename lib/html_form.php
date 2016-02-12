@@ -1045,7 +1045,7 @@ function form_save_button($cancel_url, $force_type = "", $key_field = "id") {
 	$calt = "Cancel";
 
 	if (empty($force_type) || $force_type == "return") {
-		if (empty($_GET[$key_field])) {
+		if (isempty_request_var($key_field)) {
 			$alt = "Create";
 		}else{
 			$alt = "Save";

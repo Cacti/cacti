@@ -214,11 +214,10 @@ function get_checkbox_style() {
 function set_default_action($default = '') {
 	global $_CACTI_REQUEST;
 
-	if (!isset($_REQUEST['action'])) { 
-		$_REQUEST['action'] = $default;
-		$_CACTI_REQUEST['action'] = $default;
+	if (!isset_request_var('action')) { 
+		set_request_var('action', $default);
 	}else{
-		$_CACTI_REQUEST['action'] = $_REQUEST['action'];
+		set_request_var('action', $_REQUEST['action']);
 	}
 }
 
@@ -445,7 +444,7 @@ function get_request_var_post($name, $default = '') {
      FILTER_UNSAFE_RAW                  - Nothing and optional strip or encode
 
    @returns - the $_REQUEST variable validated and sanitized. */
-function validate_store_request_vars($filters, $sess_prefix) {
+function validate_store_request_vars($filters, $sess_prefix = '') {
 	global $_CACTI_REQUEST;
 
 	$changed = 0;
@@ -453,12 +452,14 @@ function validate_store_request_vars($filters, $sess_prefix) {
 	if (sizeof($filters)) {
 		foreach($filters as $variable => $options) {
 			// Establish the session variable first
-			if (isset($options['session'])) {
-				$session_variable = $options['session'];
-			}elseif ($variable != 'rows') {
-				$session_variable = $sess_prefix . '_' . $variable;
-			}else{
-				$session_variable = 'sess_default_rows';
+			if ($sess_prefix != '') {
+				if (isset($options['session'])) {
+					$session_variable = $options['session'];
+				}elseif ($variable != 'rows') {
+					$session_variable = $sess_prefix . '_' . $variable;
+				}else{
+					$session_variable = 'sess_default_rows';
+				}
 			}
 
 			// Check for special cases 'clear' and 'reset'
@@ -492,10 +493,12 @@ function validate_store_request_vars($filters, $sess_prefix) {
 				}
 			}
 
-			if (isset_request_var($variable)) {
-				$_SESSION[$session_variable] = get_request_var($variable);
-			}elseif (isset($_SESSION[$session_variable])) {
-				set_request_var($variable, $_SESSION[$session_variable]);
+			if ($sess_prefix != '') {
+				if (isset_request_var($variable)) {
+					$_SESSION[$session_variable] = get_request_var($variable);
+				}elseif (isset($_SESSION[$session_variable])) {
+					set_request_var($variable, $_SESSION[$session_variable]);
+				}
 			}
 		}
 	}

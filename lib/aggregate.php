@@ -45,7 +45,7 @@ function aggregate_build_children_url($local_graph_id, $graph_start = -1, $graph
 }
 
 function api_aggregate_convert_template($graphs) {
-	$aggregate_template_id = $_POST['aggregate_template_id'];
+	$aggregate_template_id = get_nfilter_request_var('aggregate_template_id');
 	$aggregate_template    = db_fetch_row("SELECT * FROM aggregate_graph_templates WHERE id=$aggregate_template_id");
 
 	foreach($graphs as $graph) {
@@ -82,7 +82,7 @@ function api_aggregate_convert_template($graphs) {
 }
 
 function api_aggregate_associate($graphs) {
-	$local_graph_id     = $_POST['local_graph_id'];
+	$local_graph_id     = get_nfilter_request_var('local_graph_id');
 	$aggregate_template = db_fetch_cell("SELECT aggregate_template_id FROM aggregate_graphs WHERE local_graph_id=$local_graph_id");
 	$aggregate_id       = db_fetch_cell("SELECT id FROM aggregate_graphs WHERE local_graph_id=$local_graph_id");
 	$max_sequence       = db_fetch_cell("SELECT MAX(sequence) FROM aggregate_graphs_items WHERE aggregate_graph_id=$aggregate_id");
@@ -101,7 +101,7 @@ function api_aggregate_associate($graphs) {
 }
 
 function api_aggregate_disassociate($graphs) {
-	$local_graph_id     = $_POST['local_graph_id'];
+	$local_graph_id     = get_nfilter_request_var('local_graph_id');
 	$aggregate_template = db_fetch_cell("SELECT aggregate_template_id FROM aggregate_graphs WHERE local_graph_id=$local_graph_id");
 	$aggregate_id       = db_fetch_cell("SELECT id FROM aggregate_graphs WHERE local_graph_id=$local_graph_id");
 

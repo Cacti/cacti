@@ -70,45 +70,47 @@ function clog_view_logfile() {
 	/* helps determine output color */
 	$linecolor = true;
 
-	input_validate_input_number(get_request_var('tail_files'));
-	input_validate_input_number(get_request_var('message_type'));
-	input_validate_input_number(get_request_var('refresh'));
-	input_validate_input_number(get_request_var('reverse'));
+	/* ================= input validation and session storage ================= */
+	$filters = array(
+		'tail_lines' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'default' => read_config_option('num_rows_log')
+			),
+		'message_type' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'default' => '-1'
+			),
+		'refresh' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'default' => read_config_option('log_refresh_interval')
+			),
+		'reverse' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'default' => '1'
+			),
+		'filter' => array(
+			'filter' => FILTER_CALLBACK, 
+			'default' => '', 
+			'options' => array('options' => 'sanitize_search_string')
+			)
+	);
+
+	validate_store_request_vars($filters, 'sess_clog');
+	/* ================= input validation ================= */
 
 	/* enable page refreshes */
 	kill_session_var('custom');
 
-	/* if the user pushed the 'clear' button */
-	if (isset($_REQUEST['clear'])) {
-		kill_session_var('sess_clog_tail_lines');
-		kill_session_var('sess_clog_message_type');
-		kill_session_var('sess_clog_filter');
-		kill_session_var('sess_clog_refresh');
-		kill_session_var('sess_clog_reverse');
-
-		unset($_REQUEST['tail_lines']);
-		unset($_REQUEST['message_type']);
-		unset($_REQUEST['filter']);
-		unset($_REQUEST['refresh']);
-		unset($_REQUEST['reverse']);
-	}
-
-	load_current_session_value('tail_lines', 'sess_clog_tail_lines', read_config_option('num_rows_log'));
-	load_current_session_value('message_type', 'sess_clog_message_type', '-1');
-	load_current_session_value('filter', 'sess_clog_filter', '');
-	load_current_session_value('refresh', 'sess_clog_refresh', read_config_option('log_refresh_interval'));
-	load_current_session_value('reverse', 'sess_clog_reverse', 1);
-
-	$_REQUEST['page_referrer'] = 'view_logfile';
+	set_request_var('page_referrer', 'view_logfile');
 	load_current_session_value('page_referrer', 'page_referrer', 'view_logfile');
 
-	$refresh['seconds'] = $_REQUEST['refresh'];
+	$refresh['seconds'] = get_request_var('refresh');
 	$refresh['page']    = $config['url_path'] . 'clog' . (!clog_admin() ? '_user':'') . '.php?header=false';
-	if ((isset($_REQUEST['purge_continue'])) && (clog_admin())) clog_purge_logfile();
+	if ((isset_request_var('purge_continue')) && (clog_admin())) clog_purge_logfile();
 
 	general_header();
 
-	if ((isset($_REQUEST['purge'])) && (clog_admin())) {
+	if ((isset_request_var('purge')) && (clog_admin())) {
 		form_start('clog.php');
 
 		html_start_box('<strong>Purge</strong>', '50%', '', '3', 'center', '');
@@ -152,10 +154,10 @@ function clog_view_logfile() {
 	html_end_box();
 
 	/* read logfile into an array and display */
-	$logcontents   = tail_file($logfile, $_REQUEST['tail_lines'], $_REQUEST['message_type'], $_REQUEST['filter']);
+	$logcontents   = tail_file($logfile, get_request_var('tail_lines'), get_request_var('message_type'), get_request_var('filter'));
 	$exclude_regex = read_config_option('clog_exclude', true);
 
-	if ($_REQUEST['reverse'] == 1) {
+	if (get_request_var('reverse') == 1) {
 		$logcontents = array_reverse($logcontents);
 	}
 
@@ -169,7 +171,7 @@ function clog_view_logfile() {
 		$ad_filter = ' - Admin View';
 	}
 
-	if ($_REQUEST['message_type'] > 0) {
+	if (get_request_var('message_type') > 0) {
 		$start_string = '<strong>Log File</strong> [Total Lines: ' . sizeof($logcontents) . $ad_filter . ' - Additional Filter in Affect]';
 	}else{
 		$start_string = '<strong>Log File</strong> [Total Lines: ' . sizeof($logcontents) . $ad_filter . ' - No Other Filter in Affect]';
@@ -303,7 +305,7 @@ function filter() {
 						<select id='tail_lines' name='tail_lines'>
 							<?php
 							foreach($log_tail_lines AS $tail_lines => $display_text) {
-								print "<option value='" . $tail_lines . "'"; if ($_REQUEST['tail_lines'] == $tail_lines) { print ' selected'; } print '>' . $display_text . "</option>\n";
+								print "<option value='" . $tail_lines . "'"; if (get_request_var('tail_lines') == $tail_lines) { print ' selected'; } print '>' . $display_text . "</option>\n";
 							}
 							?>
 						</select>
@@ -313,12 +315,12 @@ function filter() {
 					</td>
 					<td>
 						<select id='message_type' name='message_type'>
-							<option value='-1'<?php if ($_REQUEST['message_type'] == '-1') {?> selected<?php }?>>All</option>
-							<option value='1'<?php if ($_REQUEST['message_type'] == '1') {?> selected<?php }?>>Stats</option>
-							<option value='2'<?php if ($_REQUEST['message_type'] == '2') {?> selected<?php }?>>Warnings</option>
-							<option value='3'<?php if ($_REQUEST['message_type'] == '3') {?> selected<?php }?>>Errors</option>
-							<option value='4'<?php if ($_REQUEST['message_type'] == '4') {?> selected<?php }?>>Debug</option>
-							<option value='5'<?php if ($_REQUEST['message_type'] == '5') {?> selected<?php }?>>SQL Calls</option>
+							<option value='-1'<?php if (get_request_var('message_type') == '-1') {?> selected<?php }?>>All</option>
+							<option value='1'<?php if (get_request_var('message_type') == '1') {?> selected<?php }?>>Stats</option>
+							<option value='2'<?php if (get_request_var('message_type') == '2') {?> selected<?php }?>>Warnings</option>
+							<option value='3'<?php if (get_request_var('message_type') == '3') {?> selected<?php }?>>Errors</option>
+							<option value='4'<?php if (get_request_var('message_type') == '4') {?> selected<?php }?>>Debug</option>
+							<option value='5'<?php if (get_request_var('message_type') == '5') {?> selected<?php }?>>SQL Calls</option>
 						</select>
 					</td>
 					<td>
@@ -339,7 +341,7 @@ function filter() {
 						<select id='refresh' name='refresh'>
 							<?php
 							foreach($page_refresh_interval AS $seconds => $display_text) {
-								print "<option value='" . $seconds . "'"; if ($_REQUEST['refresh'] == $seconds) { print ' selected'; } print '>' . $display_text . "</option>\n";
+								print "<option value='" . $seconds . "'"; if (get_request_var('refresh') == $seconds) { print ' selected'; } print '>' . $display_text . "</option>\n";
 							}
 							?>
 						</select>
@@ -349,8 +351,8 @@ function filter() {
 					</td>
 					<td>
 						<select id='reverse' name='reverse'>
-							<option value='1'<?php if ($_REQUEST['reverse'] == '1') {?> selected<?php }?>>Newest First</option>
-							<option value='2'<?php if ($_REQUEST['reverse'] == '2') {?> selected<?php }?>>Oldest First</option>
+							<option value='1'<?php if (get_request_var('reverse') == '1') {?> selected<?php }?>>Newest First</option>
+							<option value='2'<?php if (get_request_var('reverse') == '2') {?> selected<?php }?>>Oldest First</option>
 						</select>
 					</td>
 				</tr>
@@ -361,7 +363,7 @@ function filter() {
 						SearchRegex
 					</td>
 					<td>
-						<input id='filter' type='text' name='filter' size='75' value='<?php print $_REQUEST['filter'];?>'>
+						<input id='filter' type='text' name='filter' size='75' value='<?php print get_request_var('filter');?>'>
 					</td>
 				</tr>
 			</table>
