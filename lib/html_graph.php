@@ -56,7 +56,7 @@ function set_default_graph_action() {
 	}
 
 	if (get_nfilter_request_var('action') != 'get_node') {
-		$_SESSION['sess_graph_view_action'] = get_request_var('action');
+		$_SESSION['sess_graph_view_action'] = get_nfilter_request_var('action');
 	}
 }
 
