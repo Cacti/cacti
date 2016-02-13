@@ -23,6 +23,7 @@
 */
 
 $guest_account = true;
+
 include('./include/auth.php');
 include_once('./lib/html_tree.php');
 include_once('./lib/html_graph.php');
@@ -31,43 +32,27 @@ include_once('./lib/timespan_settings.php');
 
 define('MAX_DISPLAY_PAGES', 21);
 
-/* ================= input validation ================= */
-if (isset_request_var('id') && get_request_var('id') == '#') {
-	set_request_var('id', '0');
-}
+/* set the default graph action */
+set_default_graph_action();
 
-get_filter_request_var('branch_id');
-get_filter_request_var('tree_id');
-get_filter_request_var('graphs');
-get_filter_request_var('rows');
-get_filter_request_var('hide');
+/* process tree settings */
+process_tree_settings();
 
-if (!isempty_request_var('leaf_id')) {
-	get_filter_request_var('leaf_id');
-}
+/* setup realtime defaults if they are not set */
+initialize_realtime_step_and_window();
 
-get_filter_request_var('rra_id');
-get_filter_request_var('columns');
-get_filter_request_var('predefined_timespan');
-get_filter_request_var('predefined_timeshift');
-input_validate_input_regex(get_request_var('graph_list'), '^([\,0-9]+)$');
-input_validate_input_regex(get_request_var('graph_add'), '^([\,0-9]+)$');
-input_validate_input_regex(get_request_var('graph_remove'), '^([\,0-9]+)$');
-input_validate_input_regex(get_request_var('nodeid'), '^([_\-a-zA-Z0-9]+)$');
-/* ==================================================== */
-
-/* clean up action string */
-if (isset_request_var('action')) {
-	set_request_var('action', sanitize_search_string(get_request_var('action')));
-}
-
-if (isset_request_var('action') && get_request_var('action') == 'ajax_hosts') {
+switch (get_request_var('action')) {
+case 'ajax_hosts':
 	get_allowed_ajax_hosts();
-	exit;
-}
 
-if (isset_request_var('action') && get_request_var('action') == 'save') {
+	break;
+case 'save':
 	if (is_view_allowed('graph_settings')) {
+		get_filter_request_var('columns');
+		get_filter_request_var('predefined_timespan');
+		get_filter_request_var('predefined_timeshift');
+		get_filter_request_var('graphs');
+
 		if (isset_request_var('predefined_timespan')) {
 			set_graph_config_option('default_timespan', get_request_var('predefined_timespan'));
 		}
@@ -97,54 +82,7 @@ if (isset_request_var('action') && get_request_var('action') == 'save') {
 		}
 	}
 
-	exit;
-}
-
-/* setup tree selection defaults if the user has not been here before */
-if (!isset_request_var('action')) {
-	if (!isset($_SESSION['sess_graph_view_action'])) {
-		if (read_graph_config_option('default_view_mode') == '1') {
-			set_request_var('action', 'tree');
-		}elseif (read_graph_config_option('default_view_mode') == '2') {
-			set_request_var('action', 'list');
-		}elseif (read_graph_config_option('default_view_mode') == '3') {
-			set_request_var('action', 'preview');
-		}
-	}else{
-		if (in_array($_SESSION['sess_graph_view_action'], array('tree', 'list', 'preview'))) {
-			set_request_var('action', $_SESSION['sess_graph_view_action']);
-		} else {
-			set_request_var('action', 'tree');
-		}
-	}
-}
-
-if (get_request_var('action') != 'get_node') {
-	$_SESSION['sess_graph_view_action'] = get_request_var('action');
-}
-
-if (read_config_option('auth_method') != 0) {
-	$current_user = db_fetch_row_prepared('SELECT * FROM user_auth WHERE id = ?', array($_SESSION['sess_user_id']));
-}
-
-if (isset_request_var('hide')) {
-	if ((get_request_var('hide') == '0') || (get_request_var('hide') == '1')) {
-		/* only update expand/contract info is this user has rights to keep their own settings */
-		if ((isset($current_user)) && ($current_user['graph_settings'] == 'on')) {
-			db_execute_prepared('DELETE FROM settings_tree WHERE graph_tree_item_id = ? AND user_id = ?', array(get_request_var('branch_id'), $_SESSION['sess_user_id']));
-			db_execute_prepared('INSERT INTO settings_tree (graph_tree_item_id, user_id,status) values (?, ?, ?)', array(get_request_var('branch_id'), $_SESSION['sess_user_id'], get_request_var('hide')));
-		}
-	}
-}
-
-if (!isset($_SESSION['sess_realtime_dsstep'])) {
-	$_SESSION['sess_realtime_dsstep'] = read_config_option('realtime_interval');
-}
-if (!isset($_SESSION['sess_realtime_window'])) {
-	$_SESSION['sess_realtime_window'] = read_config_option('realtime_gwindow');
-}
-
-switch (get_request_var('action')) {
+	break;
 case 'tree':
 	if (isset_request_var('tree_id')) {
 		$_SESSION['sess_tree_id'] = get_request_var('tree_id');
@@ -158,11 +96,17 @@ case 'tree':
 case 'get_node':
 	$parent  = -1;
 	$tree_id = 0;
+
 	if (isset_request_var('tree_id')) {
-		if (get_request_var('tree_id') == 'default' || get_request_var('tree_id') == 'undefined') {
+		if (get_nfilter_request_var('tree_id') == 'default' || 
+			get_nfilter_request_var('tree_id') == 'undefined' || 
+			get_nfilter_request_var('tree_id') == '') {
+
 			$tree_id = read_graph_config_option('default_tree_id');
-		}elseif (get_request_var('tree_id') == 0 && substr_count(get_request_var('id'), 'tree_anchor') > 0) {
-			$ndata = explode('-', get_request_var('id'));
+		}elseif (get_nfilter_request_var('tree_id') == 0 && 
+			substr_count(get_nfilter_request_var('id'), 'tree_anchor') > 0) {
+
+			$ndata = explode('-', get_nfilter_request_var('id'));
 			$tree_id = $ndata[1];
 			input_validate_input_number($tree_id);
 		}
@@ -170,11 +114,11 @@ case 'get_node':
 		$tree_id = read_graph_config_option('default_tree_id');
 	}
 
-	if (isset_request_var('id') && get_request_var('id') != '#') {
-		if (substr_count(get_request_var('id'), 'tree_anchor')) {
+	if (isset_request_var('id') && get_nfilter_request_var('id') != '#') {
+		if (substr_count(get_nfilter_request_var('id'), 'tree_anchor')) {
 			$parent = -1;
 		}else{
-			$ndata = explode('_', get_request_var('id'));
+			$ndata = explode('_', get_nfilter_request_var('id'));
 
 			foreach($ndata as $node) {
 				$pnode = explode('-', $node);
@@ -189,11 +133,11 @@ case 'get_node':
 		}
 	}
 
-	api_tree_get_main($tree_id, $parent); exit;
+	api_tree_get_main($tree_id, $parent);
 	
 	break;
 case 'tree_content':
-	validate_tree_vars();
+	html_validate_tree_vars();
 
 	if (!is_view_allowed('show_tree')) {
 		print "<font class='txtErrorTextBox'>YOU DO NOT HAVE RIGHTS FOR TREE VIEW</font>"; return;

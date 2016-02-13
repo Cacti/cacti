@@ -22,6 +22,44 @@
  +-------------------------------------------------------------------------+
 */
 
+function initialize_realtime_step_and_window() {
+	if (!isset($_SESSION['sess_realtime_dsstep'])) {
+		$_SESSION['sess_realtime_dsstep'] = read_config_option('realtime_interval');
+	}
+	if (!isset($_SESSION['sess_realtime_window'])) {
+		$_SESSION['sess_realtime_window'] = read_config_option('realtime_gwindow');
+	}
+}
+
+function set_default_graph_action() {
+	if (!isset_request_var('action')) {
+		/* setup the default action */
+		if (!isset($_SESSION['sess_graph_view_action'])) {
+			switch(read_graph_config_option('default_view_mode')) {
+			case '1':
+				set_request_var('action', 'tree');
+				break;
+			case '2':
+				set_request_var('action', 'list');
+				break;
+			case '3':
+				set_request_var('action', 'preview');
+				break;
+			default:
+				break;
+			}
+		}elseif (in_array($_SESSION['sess_graph_view_action'], array('tree', 'list', 'preview'))) {
+			set_request_var('action', $_SESSION['sess_graph_view_action']);
+		} else {
+			set_request_var('action', 'tree');
+		}
+	}
+
+	if (get_nfilter_request_var('action') != 'get_node') {
+		$_SESSION['sess_graph_view_action'] = get_request_var('action');
+	}
+}
+
 function html_graph_validate_preview_request_vars() {
 	/* ================= input validation and session storage ================= */
 	$filters = array(
@@ -62,16 +100,22 @@ function html_graph_validate_preview_request_vars() {
 			'default' => read_graph_config_option('thumbnail_section_preview') == 'on' ? 'true':'false'
 			),
 		'graph_list' => array(
-			'filter' => FILTER_DEFAULT,
-			'default' => ''
+			'filter' => FILTER_VALIDATE_REGEXP, 
+			'options' => array('options' => array('regexp' => '/^([\,0-9]+)$/')),
+			'pageset' => true,
+			'default' => read_graph_config_option('thumbnail_section_preview') == 'on' ? 'true':'false'
 			),
 		'graph_add' => array(
-			'filter' => FILTER_DEFAULT,
-			'default' => ''
+			'filter' => FILTER_VALIDATE_REGEXP, 
+			'options' => array('options' => array('regexp' => '/^([\,0-9]+)$/')),
+			'pageset' => true,
+			'default' => read_graph_config_option('thumbnail_section_preview') == 'on' ? 'true':'false'
 			),
 		'graph_remove' => array(
-			'filter' => FILTER_DEFAULT,
-			'default' => ''
+			'filter' => FILTER_VALIDATE_REGEXP, 
+			'options' => array('options' => array('regexp' => '/^([\,0-9]+)$/')),
+			'pageset' => true,
+			'default' => read_graph_config_option('thumbnail_section_preview') == 'on' ? 'true':'false'
 			),
 		'style' => array(
 			'filter' => FILTER_DEFAULT,

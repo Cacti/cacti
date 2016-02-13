@@ -22,6 +22,18 @@
  +-------------------------------------------------------------------------+
 */
 
+function process_tree_settings() {
+	if (isset_request_var('hide')) {
+		if ((get_request_var('hide') == '0') || (get_request_var('hide') == '1')) {
+			/* only update expand/contract info is this user has rights to keep their own settings */
+			if ((isset($current_user)) && ($current_user['graph_settings'] == 'on')) {
+				db_execute_prepared('DELETE FROM settings_tree WHERE graph_tree_item_id = ? AND user_id = ?', array(get_request_var('branch_id'), $_SESSION['sess_user_id']));
+				db_execute_prepared('INSERT INTO settings_tree (graph_tree_item_id, user_id,status) values (?, ?, ?)', array(get_request_var('branch_id'), $_SESSION['sess_user_id'], get_request_var('hide')));
+			}
+		}
+	}
+}
+
 function grow_dropdown_tree($tree_id, $parent = 0, $form_name = '', $selected_tree_item_id = '') {
 	global $config;
 
@@ -399,7 +411,7 @@ function create_dhtml_tree() {
 	return $dhtml_tree;
 }
 
-function validate_tree_vars() {
+function html_validate_tree_vars() {
 	/* ================= input validation and session storage ================= */
 	$filters = array(
 		'graphs' => array(
@@ -419,12 +431,26 @@ function validate_tree_vars() {
 			'filter' => FILTER_VALIDATE_INT, 
 			'default' => read_graph_config_option('default_tree_id')
 			),
+		'predefined_timeshift' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'default' => read_graph_config_option('default_timeshift')
+			),
+		'predefined_timespan' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'default' => read_graph_config_option('default_timespan')
+			),
+		'branch_id' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'default' => ''
+			),
 		'leaf_id' => array(
 			'filter' => FILTER_VALIDATE_INT, 
 			'default' => ''
 			),
 		'nodeid' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_REGEXP, 
+			'options' => array('options' => array('regexp' => '/([_\-a-z:0-9#]+)/')),
+			'pageset' => true,
 			'default' => ''
 			),
 		'filter' => array(
@@ -446,7 +472,8 @@ function validate_tree_vars() {
 			)
 	);
 
-	validate_store_request_vars($filters, 'sess_gt');
+	//validate_store_request_vars($filters, 'sess_gt');
+	validate_store_request_vars($filters);
 	/* ================= input validation ================= */
 }
 
@@ -494,8 +521,6 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 	if (!empty($leaf_name)) { $title .= $title_delimeter . '<strong>Leaf:</strong>' . htmlspecialchars($leaf_name, ENT_QUOTES); $title_delimeter = '-> '; }
 	if (!empty($host_name)) { $title .= $title_delimeter . '<strong>Device:</strong>' . htmlspecialchars($host_name, ENT_QUOTES); $title_delimeter = '-> '; }
 	if (!empty($host_group_data_name)) { $title .= $title_delimeter . " $host_group_data_name"; $title_delimeter = '-> '; }
-
-	validate_tree_vars($tree_id, $leaf_id, $host_group_data);
 
 	html_start_box('<strong>Graph Filters</strong>' . (strlen(get_request_var('filter')) ? " [ Filter '" . htmlspecialchars(get_request_var('filter')) . "' Applied ]" : ''), '100%', "", '3', 'center', '');
 
