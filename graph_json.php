@@ -42,6 +42,10 @@ if ($debug == false) {
 	get_filter_request_var('graph_width');
 	get_filter_request_var('local_graph_id');
 	get_filter_request_var('rra_id');
+
+	if (isset_request_var('graph_nolegend')) {
+		set_request_var('graph_nolegend', 'true');
+	}
 	/* ==================================================== */
 
 	if (!is_numeric(get_request_var('local_graph_id'))) {

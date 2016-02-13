@@ -250,7 +250,7 @@ function form_input_validate($field_value, $field_name, $regexp_match, $allow_nu
    @returns - (bool) true if the value changed between loads */
 function check_changed($request, $session) {
 	if ((isset_request_var($request)) && (isset($_SESSION[$session]))) {
-		if (get_request_var($request) != $_SESSION[$session]) {
+		if (get_nfilter_request_var($request) != $_SESSION[$session]) {
 			return 1;
 		}
 	}

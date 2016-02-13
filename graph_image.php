@@ -30,8 +30,6 @@ $guest_account = true;
 include('./include/auth.php');
 include_once('./lib/rrd.php');
 
-api_plugin_hook_function('graph_image');
-
 /* ================= input validation ================= */
 get_filter_request_var('graph_start');
 get_filter_request_var('graph_end');
@@ -39,15 +37,13 @@ get_filter_request_var('graph_height');
 get_filter_request_var('graph_width');
 get_filter_request_var('local_graph_id');
 get_filter_request_var('rra_id');
+
+if (isset_request_var('graph_nolegend')) {
+	set_request_var('graph_nolegend', 'true');
+}
 /* ==================================================== */
 
-if (!is_numeric(get_request_var('local_graph_id'))) {
-	die_html_input_error();
-}
-
-if (!is_numeric(get_request_var('local_graph_id'))) {
-	die_html_input_error();
-}
+api_plugin_hook_function('graph_image');
 
 $graph_data_array = array();
 
