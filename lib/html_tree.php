@@ -472,8 +472,7 @@ function html_validate_tree_vars() {
 			)
 	);
 
-	//validate_store_request_vars($filters, 'sess_gt');
-	validate_store_request_vars($filters);
+	validate_store_request_vars($filters, 'sess_grt');
 	/* ================= input validation ================= */
 }
 
