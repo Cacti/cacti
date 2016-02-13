@@ -44,14 +44,14 @@ function html_log_input_error($variable) {
 	cacti_debug_backtrace("Input Validation Not Performed for '$variable'");
 }
 
-function die_html_input_error() {
+function die_html_input_error($variable = '', $value = '') {
 	global $config;
 
 	?>
 	<table style="width:100%;text-align:center;">
 		<tr>
 			<td>
-				Validation error.  See backtrace below for more details.
+				Validation error<?php print $variable != '' ? ' for variable ' . $variable . ' with value of "' . $value .'"':'';?>.  See backtrace below for more details.
 			</td>
 		</tr>
 	</table>
