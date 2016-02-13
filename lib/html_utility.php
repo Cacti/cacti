@@ -327,14 +327,18 @@ function get_request_var_request($name, $default = '') {
    @returns - the value of the request variable */
 function get_filter_request_var($name, $filter = FILTER_VALIDATE_INT, $options = array()) {
 	if (isset_request_var($name)) {
-		if (!sizeof($options)) {
-			$value = filter_var($_REQUEST[$name], $filter);
+		if (isempty_request_var($name)) {
+			$value = true;
 		}else{
-			$value = filter_var($_REQUEST[$name], $filter, $options);
+			if (!sizeof($options)) {
+				$value = filter_var($_REQUEST[$name], $filter);
+			}else{
+				$value = filter_var($_REQUEST[$name], $filter, $options);
+			}
 		}
 
-		if ($value === FALSE) {
-			die_html_input_error();
+		if ($value === false) {
+			die_html_input_error($name, get_request_var($name));
 		}else{
 			set_request_var($name, $value);
 
@@ -460,34 +464,38 @@ function validate_store_request_vars($filters, $sess_prefix = '') {
 				}else{
 					$session_variable = 'sess_default_rows';
 				}
-			}
 
-			// Check for special cases 'clear' and 'reset'
-			if (isset_request_var('clear')) {
-				kill_session_var($session_variable);
-				unset_request_var($variable);
-			}elseif (isset_request_var('reset')) {
-				kill_session_var($session_variable);
-			}elseif (isset($options['pageset'])) {
-				$changed += check_changed($variable, $session_variable);
+				// Check for special cases 'clear' and 'reset'
+				if (isset_request_var('clear')) {
+					kill_session_var($session_variable);
+					unset_request_var($variable);
+				}elseif (isset_request_var('reset')) {
+					kill_session_var($session_variable);
+				}elseif (isset($options['pageset'])) {
+					$changed += check_changed($variable, $session_variable);
+				}
 			}
 
 			if (!isset_request_var($variable)) {
-				if (isset($options['default'])) {
+				if ($sess_prefix != '' && isset($_SESSION[$session_variable])) {
+					set_request_var($variable, $_SESSION[$session_variable]);
+				}elseif (isset($options['default'])) {
 					set_request_var($variable, $options['default']);
 				}else{
 					cacti_log("Filter Variable: $variable, Must have a default and none is set", false);
 					set_request_var($variable, '');
 				}
 			}else{
-				if (!isset($options['options'])) {
+				if (isempty_request_var($variable)) {
+					$value = '';
+				}elseif (!isset($options['options'])) {
 					$value = filter_var($_REQUEST[$variable], $options['filter']);
 				}else{
 					$value = filter_var($_REQUEST[$variable], $options['filter'], $options['options']);
 				}
 
 				if ($value === FALSE) {
-					die('Request variable:' . $variable . ' With value: ' . $_REQUEST[$variable] . ' Failed validation');
+					die_html_input_error($variable, $_REQUEST[$variable]);
 				}else{
 					set_request_var($variable, $value);
 				}
