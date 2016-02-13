@@ -22,6 +22,8 @@
  +-------------------------------------------------------------------------+
 */
 
+global $current_user;
+
 include('./include/global.php');
 
 if (!isset($config['cacti_db_version'])) {
@@ -158,6 +160,8 @@ if (read_config_option('auth_method') != 0) {
 			</html>\n";
 			exit;
 		}
+
+		$current_user = db_fetch_row_prepared('SELECT * FROM user_auth WHERE id = ?', array($_SESSION['sess_user_id']));
 	}
 }
 
