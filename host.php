@@ -99,7 +99,7 @@ switch (get_request_var('action')) {
 
 		host_reload_query();
 
-		header('Location: host.php?header=' . (isset_request_var('header') && get_request_var('header') == 'true' ? 'true':'false') . '&action=edit&id=' . get_request_var('host_id') . '&display_dq_details=true#dqdbg');
+		header('Location: host.php?header=' . (isset_request_var('header') && get_nfilter_request_var('header') == 'true' ? 'true':'false') . '&action=edit&id=' . get_request_var('host_id') . '&display_dq_details=true#dqdbg');
 		break;
 	case 'edit':
 		top_header();
@@ -790,7 +790,7 @@ function host_edit() {
 
 	/* preserve the host template id if passed in via a GET variable */
 	if (!isempty_request_var('host_template_id')) {
-		$fields_host_edit['host_template_id']['value'] = get_request_var('host_template_id');
+		$fields_host_edit['host_template_id']['value'] = get_filter_request_var('host_template_id');
 	}
 
 	draw_edit_form(array(
