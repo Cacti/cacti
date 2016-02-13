@@ -41,7 +41,7 @@ process_tree_settings();
 /* setup realtime defaults if they are not set */
 initialize_realtime_step_and_window();
 
-switch (get_request_var('action')) {
+switch (get_nfilter_request_var('action')) {
 case 'ajax_hosts':
 	get_allowed_ajax_hosts();
 
