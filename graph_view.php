@@ -275,7 +275,7 @@ case 'preview':
 
 	html_end_box();
 
-	if (!isset_request_var('header') || get_request_var('header') == false) {
+	if (!isset_request_var('header') || get_nfilter_request_var('header') == 'false') {
 		bottom_footer();
 	}
 
