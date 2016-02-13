@@ -26,6 +26,7 @@
 ob_start();
 
 $guest_account = true;
+$gtype         = 'png';
 
 include('./include/auth.php');
 include_once('./lib/rrd.php');
@@ -125,7 +126,7 @@ if (!isset_request_var('image_format')) {
 		break;
 	}
 }else{
-	switch(strtolower(get_request_var('image_format'))) {
+	switch(strtolower(get_nfilter_request_var('image_format'))) {
 	case 'png':
 		$graph_data_array['image_format'] = 'png';
 		break;
