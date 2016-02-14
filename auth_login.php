@@ -229,6 +229,12 @@ if (get_nfilter_request_var('action') == 'login') {
 			$user['login_opts'] = $group_options;
 		}
 
+		$newtheme = false;
+		if (user_setting_exists('selected_theme', $_SESSION['sess_user_id']) && read_config_option('selected_theme') != read_user_setting('selected_theme')) {
+			unset($_SESSION['selected_theme']);
+			$newtheme = true;
+		}
+
 		/* ok, at the point the user has been sucessfully authenticated; so we must
 		decide what to do next */
 		switch ($user['login_opts']) {
@@ -239,32 +245,32 @@ if (get_nfilter_request_var('action') == 'login') {
 				if (isset($_SERVER['HTTP_REFERER'])) {
 					$referer = $_SERVER['HTTP_REFERER'];
 					if (basename($referer) == 'logout.php') {
-						$referer = $config['url_path'] . 'index.php';
+						$referer = $config['url_path'] . 'index.php' . ($newtheme ? '?newtheme=1':'');
 					}
 				} else if (isset($_SERVER['REQUEST_URI'])) {
 					$referer = $_SERVER['REQUEST_URI'];
 					if (basename($referer) == 'logout.php') {
-						$referer = $config['url_path'] . 'index.php';
+						$referer = $config['url_path'] . 'index.php' . ($newtheme ? '?newtheme=1':'');
 					}
 				} else {
-					$referer = $config['url_path'] . 'index.php';
+					$referer = $config['url_path'] . 'index.php' . ($newtheme ? '?newtheme=1':'');
 				}
 
 				if (substr_count($referer, 'plugins')) {
 					header('Location: ' . $referer);
 				} elseif (sizeof(db_fetch_assoc_prepared('SELECT realm_id FROM user_auth_realm WHERE realm_id = 8 AND user_id = ?', array($_SESSION['sess_user_id']))) == 0) {
-					header('Location: graph_view.php');
+					header('Location: graph_view.php' . ($newtheme ? '?newtheme=1':''));
 				} else {
-					header("Location: $referer");
+					header("Location: $referer" . ($newtheme ? '?newtheme=1':''));
 				}
 
 				break;
 			case '2': /* default console page */
-				header('Location: ' . $config['url_path'] . 'index.php');
+				header('Location: ' . $config['url_path'] . 'index.php' . ($newtheme ? '?newtheme=1':''));
 
 				break;
 			case '3': /* default graph page */
-				header('Location: ' . $config['url_path'] . 'graph_view.php');
+				header('Location: ' . $config['url_path'] . 'graph_view.php' . ($newtheme ? '?newtheme=1':''));
 
 				break;
 			default:
