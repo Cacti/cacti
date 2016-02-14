@@ -1762,7 +1762,13 @@ function rrdtool_function_theme_font_options(&$graph_data_array) {
 	/* implement theme colors */
 	$graph_opts = '';
 	$themefonts = array();
-	$rrdtheme   = $config['base_path'] . '/include/themes/' . get_selected_theme() . '/rrdtheme.php';
+
+	if (isset($graph_data_array['graph_theme'])) {
+		$rrdtheme = $config['base_path'] . '/include/themes/' . $graph_data_array['graph_theme'] . '/rrdtheme.php';
+	}else{
+		$rrdtheme = $config['base_path'] . '/include/themes/' . get_selected_theme() . '/rrdtheme.php';
+	}
+
 	if (file_exists($rrdtheme) && is_readable($rrdtheme)) {
 		$rrdversion = str_replace('rrd-', '', str_replace('.x', '', read_config_option('rrdtool_version')));
 		include($rrdtheme);

@@ -47,15 +47,9 @@ if ($debug == false) {
 	if (isset_request_var('graph_nolegend')) {
 		set_request_var('graph_nolegend', 'true');
 	}
+
+	get_filter_request_var('graph_theme', FILTER_CALLBACK, array('options' => 'sanitize_search_string'));
 	/* ==================================================== */
-
-	if (!is_numeric(get_request_var('local_graph_id'))) {
-		die_html_input_error();
-	}
-
-	if (!is_numeric(get_request_var('local_graph_id'))) {
-		die_html_input_error();
-	}
 }else{
 	set_request_var('graph_width', 700);
 	set_request_var('graph_height', 200);
@@ -107,6 +101,11 @@ if (!isempty_request_var('show_source')) {
 /* disable cache check */
 if (isset_request_var('disable_cache')) {
 	$graph_data_array['disable_cache'] = true;
+}
+
+/* set the theme */
+if (isset_request_var('graph_theme')) {
+	$graph_data_array['graph_theme'] = get_request_var('graph_theme');
 }
 
 $graph_data_array['graphv'] = true;

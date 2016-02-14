@@ -430,9 +430,12 @@ function generate_report($report, $force = false) {
  * @param bool $report_tag_included - a boolean that informs the caller if the report tag is present
  * @return bool						- wether or not the format file was processed correctly
  */
-function reports_load_format_file($format_file, &$output, &$report_tag_included) {
+function reports_load_format_file($format_file, &$output, &$report_tag_included, &$theme) {
 	global $config;
+
 	$contents = array();
+	$theme    = 'classic';
+
 	if (file_exists($config['base_path'] . '/formats/' . $format_file)) {
 		$contents = file($config['base_path'] . '/formats/' . $format_file);
 	}	
@@ -448,6 +451,9 @@ function reports_load_format_file($format_file, &$output, &$report_tag_included)
 
 			if (substr($line, 0, 1) != '#') {
 				$output .= $line . "\n";
+			}elseif (strstr($line, 'Theme:') !== false) {
+				$tparts = explode(':', $line);
+				$theme  = trim($tparts[1]);
 			}
 		}
 	} else {
@@ -537,6 +543,7 @@ function reports_generate_html ($reports_id, $output = REPORTS_OUTPUT_STDOUT) {
 	$format_data  = '';
 	$report_tag   = false;
 	$format_ok    = false;
+	$theme        = 'classic';
 
 	$time = time();
 	# get config option for first-day-of-the-week
@@ -544,7 +551,7 @@ function reports_generate_html ($reports_id, $output = REPORTS_OUTPUT_STDOUT) {
 
 	/* process the format file as applicable */
 	if ($report['cformat'] == 'on') {
-		$format_ok = reports_load_format_file($report['format_file'], $format_data, $report_tag);
+		$format_ok = reports_load_format_file($report['format_file'], $format_data, $report_tag, $theme);
 	}
 
 	if ($output == REPORTS_OUTPUT_STDOUT) {
@@ -618,7 +625,7 @@ function reports_generate_html ($reports_id, $output = REPORTS_OUTPUT_STDOUT) {
 				} else {
 					$outstr .= "\t\t\t\t\t\t<td style='padding:5px;text-align:" . $alignment[$item['align']] . ";'>\n";
 				}
-				$outstr .= "\t\t\t\t\t\t\t" . reports_graph_image($report, $item, $timespan, $output) . "\n";
+				$outstr .= "\t\t\t\t\t\t\t" . reports_graph_image($report, $item, $timespan, $output, $theme) . "\n";
 				$outstr .= "\t\t\t\t\t\t</td>\n";
 
 				if ($report['graph_columns'] > 1) {
@@ -646,9 +653,9 @@ function reports_generate_html ($reports_id, $output = REPORTS_OUTPUT_STDOUT) {
 				$column = 0;
 			} elseif ($item['item_type'] == REPORTS_ITEM_TREE) {
 				if ($item['tree_cascade'] == 'on') {
-					$outstr .= expand_branch($report, $item, $item['branch_id'], $output, $format_ok);
+					$outstr .= expand_branch($report, $item, $item['branch_id'], $output, $format_ok, $theme);
 				} elseif (reports_tree_has_graphs($item['tree_id'], $item['branch_id'], $report['user_id'], $item['graph_name_regexp'])) {
-					$outstr .= reports_expand_tree($report, $item, $item['branch_id'], $output, $format_ok, false);
+					$outstr .= reports_expand_tree($report, $item, $item['branch_id'], $output, $format_ok, $theme, false);
 				}
 			} else {
 				$outstr .= '<tr><td><br><hr><br></td></tr>';
@@ -672,11 +679,11 @@ function reports_generate_html ($reports_id, $output = REPORTS_OUTPUT_STDOUT) {
 	}
 }
 
-function expand_branch(&$report, &$item, $branch_id, $output, $format_ok) {
+function expand_branch(&$report, &$item, $branch_id, $output, $format_ok, $theme = 'classic') {
 	$outstr = '';
 
 	if (reports_tree_has_graphs($item['tree_id'], $branch_id, $report['user_id'], $item['graph_name_regexp'])) {
-		$outstr .= reports_expand_tree($report, $item, $branch_id, $output, $format_ok, true);
+		$outstr .= reports_expand_tree($report, $item, $branch_id, $output, $format_ok, $theme, true);
 	}
 
 	$tree_branches = db_fetch_assoc_prepared('SELECT id
@@ -688,7 +695,7 @@ function expand_branch(&$report, &$item, $branch_id, $output, $format_ok) {
 
 	if (sizeof($tree_branches)) {
 		foreach ($tree_branches as $branch) {
-			$outstr .= expand_branch($report, $item, $branch['id'], $output, $format_ok);
+			$outstr .= expand_branch($report, $item, $branch['id'], $output, $format_ok, $theme);
 		}
 	}
 
@@ -703,7 +710,7 @@ function expand_branch(&$report, &$item, $branch_id, $output, $format_ok) {
  * @param $output		- type of output
  * @return string		- generated html
  */
- function reports_graph_image($report, $item, $timespan, $output) {
+ function reports_graph_image($report, $item, $timespan, $output, $theme = 'classic') {
  	global $config;
 
 	$out = ''; 	
@@ -715,6 +722,7 @@ function expand_branch(&$report, &$item, $branch_id, $output, $format_ok) {
 				'&local_graph_id=' . $item['local_graph_id'] .
 				'&graph_start=' . $timespan['begin_now'] .
 				'&graph_end=' . $timespan['end_now'] .
+				'&graph_theme=' . $theme .
 				'&image_format=png' . 
 				'&rra_id=0') . "'>";
 	} else {
@@ -738,7 +746,7 @@ function expand_branch(&$report, &$item, $branch_id, $output, $format_ok) {
  * @param bool $nested		- nested tree?
  * @return string			- html
  */
-function reports_expand_tree($report, $item, $parent, $output, $format_ok, $nested = false) {
+function reports_expand_tree($report, $item, $parent, $output, $format_ok, $theme = 'classic', $nested = false) {
 	global $colors, $config, $alignment;
 
 	include($config['include_path'] . '/global_arrays.php');
@@ -879,7 +887,7 @@ function reports_expand_tree($report, $item, $parent, $output, $format_ok, $nest
 					$outstr .= "\t\t</tr>\n";
 				}
 
-				$outstr .= reports_graph_area($mygraphs, $report, $item, $timespan, $output, $format_ok);
+				$outstr .= reports_graph_area($mygraphs, $report, $item, $timespan, $output, $format_ok, $theme);
 			}
 		} elseif ($leaf_type == 'graph') {
 			$gr_where = '';
@@ -906,7 +914,7 @@ function reports_expand_tree($report, $item, $parent, $output, $format_ok, $nest
 				}
 
 				$graph_list = array(array('local_graph_id' => $leaf['local_graph_id'], 'title_cache' => $graph_name));
-				$outstr .= reports_graph_area($graph_list, $report, $item, $timespan, $output, $format_ok);
+				$outstr .= reports_graph_area($graph_list, $report, $item, $timespan, $output, $format_ok, $theme);
 			}
 		} elseif ($leaf_type == 'host' && $nested) {
 			/* graph template grouping */
@@ -974,7 +982,7 @@ function reports_expand_tree($report, $item, $parent, $output, $format_ok, $nest
 							$outstr .= "\t\t\t</td>\n";
 							$outstr .= "\t\t</tr>\n";
 						}
-						$outstr .= reports_graph_area($outgraphs, $report, $item, $timespan, $output, $format_ok);
+						$outstr .= reports_graph_area($outgraphs, $report, $item, $timespan, $output, $format_ok, $theme);
 					}
 				}
 			/* data query index grouping */
@@ -1069,7 +1077,7 @@ function reports_expand_tree($report, $item, $parent, $output, $format_ok, $nest
 							}
 						}
 						if (sizeof($graph_list)) {
-							$outstr .= reports_graph_area($graph_list, $report, $item, $timespan, $output, $format_ok);
+							$outstr .= reports_graph_area($graph_list, $report, $item, $timespan, $output, $format_ok, $theme);
 						}
 					}
 				}
@@ -1101,7 +1109,7 @@ function necturally_sort_graphs($a, $b) {
  * @param int $output		- type of output
  * @param bool $format_ok	- use css styling
  */
-function reports_graph_area($graphs, $report, $item, $timespan, $output, $format_ok) {
+function reports_graph_area($graphs, $report, $item, $timespan, $output, $format_ok, $theme = 'classic') {
 	global $alignment;
 
 	$column = 0;
@@ -1122,7 +1130,7 @@ function reports_graph_area($graphs, $report, $item, $timespan, $output, $format
 		} else {
 			$outstr .= "\t\t\t\t\t\t<td style='padding:5px;text-align='" . $alignment{$item['align']} . ";'>\n";
 		}
-		$outstr .= "\t\t\t\t\t\t\t" . reports_graph_image($report, $item, $timespan, $output) . "\n";
+		$outstr .= "\t\t\t\t\t\t\t" . reports_graph_image($report, $item, $timespan, $output, $theme) . "\n";
 		$outstr .= "\t\t\t\t\t\t</td>\n";
 
 		if ($report['graph_columns'] > 1) {

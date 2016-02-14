@@ -29,6 +29,7 @@ include($config['library_path'] . '/html_reports.php');
 define('MAX_DISPLAY_PAGES', 21);
 
 get_filter_request_var('id');
+get_filter_request_var('tab', FILTER_CALLBACK, array('options' => 'sanitize_search_string'));
 
 /* set default action */
 set_default_action();

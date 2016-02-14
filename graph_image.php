@@ -42,6 +42,8 @@ get_filter_request_var('rra_id');
 if (isset_request_var('graph_nolegend')) {
 	set_request_var('graph_nolegend', 'true');
 }
+
+get_filter_request_var('graph_theme', FILTER_CALLBACK, array('options' => 'sanitize_search_string'));
 /* ==================================================== */
 
 api_plugin_hook_function('graph_image');
@@ -115,6 +117,11 @@ if (!isempty_request_var('show_source')) {
 /* disable cache check */
 if (isset_request_var('disable_cache')) {
 	$graph_data_array['disable_cache'] = true;
+}
+
+/* set the theme */
+if (isset_request_var('graph_theme')) {
+	$graph_data_array['graph_theme'] = get_request_var('graph_theme');
 }
 
 print @rrdtool_function_graph(get_request_var('local_graph_id'), (array_key_exists('rra_id', $_REQUEST) ? get_request_var('rra_id') : null), $graph_data_array);

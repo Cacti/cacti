@@ -1,5 +1,5 @@
-# Description: Cacti Group Format
-# Theme: classic
+# Description: Cacti Group Dark Format
+# Theme: dark
 <html>
 <head>
 <meta http-equiv='Content-Type' content='text/html; charset=utf-8' />
@@ -8,32 +8,33 @@
 <style type='text/css'>
 
 body {
-	margin-left:auto;
-	margin-right:auto;
+	background-color:#161616;
+	color: snow;
 }
 
 .report_table {
-	background-color:#F9F9F9;
+	background-color:#161616;
 	align: center;
 	border:0;
 	width:100%;
-    border: 3px outset #CCCCCC; 
+    border: 3px double #666666; 
     padding: 4px;
-	margin: auto;
+	margin-left: auto;
+	margin-right: auto;
 }
 
 .title_row {
-	background-color:#EAEAEA;
-    border: 2px double #CCCCCC; 
+	background-color:#222222;
+    border: 2px double #222222; 
     padding: 3px;
 }
 
 .title {
-	background-color:#EAEAEA;
+	background-color:#222222;
 	font-size:16pt;
 	text-align:left;
 	align:center;
-    border: 2px double #CCCCCC; 
+    border: 2px double #222222; 
     padding: 3px;
 }
 
@@ -53,33 +54,33 @@ body {
 }
 
 .text_row {
-	background-color:#EAEAEA;
+	background-color:#222222;
 }
 
 .text {
-	background-color:#EAEAEA;
 	font-size: 16pt;
 	text-align: left;
-    border: 1px solid #CCCCCC; 
+    border: 1px solid #222222; 
     padding: 0px;
 
 }
 
 .header_table {
-	background-color:#3F750F;
+	background-color:#222222;
 	align: center;
 	width:100%;
-    border: 3px ridge #3F750F; 
+    border: 3px ridge #222222; 
     padding: 4px;
-	margin: auto;
+	margin-left: auto;
+	margin-right: auto;
 }
 
 .header_row {
-	background-color:#3F750F;
+	background-color:#222222;
    }
 
 .header {
-	background-color:#3F750F;
+	background-color:#222222;
 	font-size:16pt;
 	text-align:left;
 	align:center;
@@ -87,7 +88,7 @@ body {
 }
 
 .footer {
-	background-color:#3F750F;
+	background-color:#222222;
 	font-size:10pt;
 	text-align:left;
 	align:center;
