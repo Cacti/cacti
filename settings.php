@@ -27,9 +27,11 @@ include('./include/auth.php');
 /* set default action */
 set_default_action();
 
+get_filter_request_var('tab', FILTER_CALLBACK, array('options' => 'sanitize_search_string'));
+
 switch (get_request_var('action')) {
 case 'save':
-	while (list($field_name, $field_array) = each($settings{get_nfilter_request_var('tab')})) {
+	while (list($field_name, $field_array) = each($settings{get_request_var('tab')})) {
 		if (($field_array['method'] == 'header') || ($field_array['method'] == 'spacer' )){
 			/* do nothing */
 		}elseif ($field_array['method'] == 'checkbox') {
@@ -73,9 +75,9 @@ case 'save':
 	kill_session_var('sess_config_array');
 
 	if (isset_request_var('header') && get_nfilter_request_var('header') == 'false') {
-		header('Location: settings.php?header=false&tab=' . get_nfilter_request_var('tab'));
+		header('Location: settings.php?header=false&tab=' . get_request_var('tab'));
 	}else{
-		header('Location: settings.php?tab=' . get_nfilter_request_var('tab'));
+		header('Location: settings.php?tab=' . get_request_var('tab'));
 	}
 
 	break;
@@ -84,11 +86,6 @@ case 'send_test':
 	break;
 default:
 	top_header();
-
-    /* clean up tab string */
-    if (isset_request_var('tab')) {
-		set_request_var('tab', sanitize_search_string(get_request_var('tab')));
-    }
 
 	/* set the default settings category */
 	if (!isset_request_var('tab')) {
