@@ -46,6 +46,8 @@ $tabs_manager_edit = array(
 /* set default action */
 set_default_action();
 
+get_filter_request_var('tab', FILTER_CALLBACK, array('options' => 'sanitize_search_string'));
+
 switch (get_request_var('action')) {
 	case 'save':
 		form_save();

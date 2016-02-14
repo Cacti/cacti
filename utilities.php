@@ -2095,6 +2095,8 @@ function snmpagent_utilities_run_cache() {
 
 	define('MAX_DISPLAY_PAGES', 21);
 
+	get_filter_request_var('mib', FILTER_CALLBACK, array('options' => 'sanitize_search_string'));
+
 	$mibs = db_fetch_assoc('SELECT DISTINCT mib FROM snmpagent_cache');
 	$registered_mibs = array();
 	if($mibs && $mibs >0) {
