@@ -384,9 +384,9 @@ function host_new_graphs($host_id, $host_template_id, $selected_graphs_array) {
 	if (!substr_count($_SERVER['HTTP_REFERER'], 'graphs_new')) {
 		set_request_var('returnto', basename($_SERVER['HTTP_REFERER']));
 	}
-	load_current_session_value('returnto', 'sess_graphs_new_returnto', '');
+	load_current_session_value('returnto', 'sess_grn_returnto', '');
 
-	form_save_button(get_request_var('returnto'));
+	form_save_button(get_nfilter_request_var('returnto'));
 
 	bottom_footer();
 }
@@ -459,72 +459,77 @@ function graphs() {
 			$(this).removeClass('fa-circle-o').addClass('fa-circle-o-notch fa-spin');
 			loadPageNoHeader('graphs_new.php?action=query_reload&id='+$(this).attr('data-id')+'&host_id='+$('#host_id').val());
 		});
+
+		$('#graphs_new').submit(function(event) {
+			event.preventDefault();
+			applyFilter();
+		});
 	});
 
 	</script>
-	<form name='form_graphs_new' action='graphs_new.php'>
-	<table class='filterTable'>
-		<tr>
-			<?php print html_host_filter(get_request_var('host_id'));?>
-			<td>
-				Graph Types
-			</td>
-			<td>
-				<select id='graph_type' name='graph_type' onChange='applyFilter()'>
-					<option value='-2'<?php if (get_request_var('graph_type') == '-2') {?> selected<?php }?>>All</option>
-					<option value='-1'<?php if (get_request_var('graph_type') == '-1') {?> selected<?php }?>>Graph Template Based</option>
-					<?php
+	<form id='graphs_new' action='graphs_new.php'>
+		<table class='filterTable'>
+			<tr>
+				<?php print html_host_filter(get_request_var('host_id'));?>
+				<td>
+					Graph Types
+				</td>
+				<td>
+					<select id='graph_type' name='graph_type' onChange='applyFilter()'>
+						<option value='-2'<?php if (get_request_var('graph_type') == '-2') {?> selected<?php }?>>All</option>
+						<option value='-1'<?php if (get_request_var('graph_type') == '-1') {?> selected<?php }?>>Graph Template Based</option>
+						<?php
 
-					$snmp_queries = db_fetch_assoc_prepared('SELECT
-						snmp_query.id,
-						snmp_query.name,
-						snmp_query.xml_path
-						FROM (snmp_query, host_snmp_query)
-						WHERE host_snmp_query.snmp_query_id = snmp_query.id
-						AND host_snmp_query.host_id = ?
-						ORDER BY snmp_query.name', array($host['id']));
+						$snmp_queries = db_fetch_assoc_prepared('SELECT
+							snmp_query.id,
+							snmp_query.name,
+							snmp_query.xml_path
+							FROM (snmp_query, host_snmp_query)
+							WHERE host_snmp_query.snmp_query_id = snmp_query.id
+							AND host_snmp_query.host_id = ?
+							ORDER BY snmp_query.name', array($host['id']));
 
-					if (sizeof($snmp_queries) > 0) {
-					foreach ($snmp_queries as $query) {
-						print "<option value='" . $query['id'] . "'"; if (get_request_var('graph_type') == $query['id']) { print ' selected'; } print '>' . $query['name'] . "</option>\n";
-					}
-					}
-					?>
-				</select>
-			</td>
-			<td>
-				Rows
-			</td>
-			<td>
-				<select id='rows' name='rows' onChange='applyFilter()'>
-					<?php
-					if (sizeof($item_rows) > 0) {
-						foreach ($item_rows as $key => $value) {
-							print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . htmlspecialchars($value) . "</option>\n";
+						if (sizeof($snmp_queries) > 0) {
+						foreach ($snmp_queries as $query) {
+							print "<option value='" . $query['id'] . "'"; if (get_request_var('graph_type') == $query['id']) { print ' selected'; } print '>' . $query['name'] . "</option>\n";
 						}
-					}
-					?>
-				</select>
-			</td>
-			<td rowspan='3' class='textInfo' style='text-align:right;vertical-align:top;width:100%;'>
-				<span class='linkMarker'>*</span><a class='hyperLink' href='<?php print htmlspecialchars('host.php?action=edit&id=' . get_request_var('host_id'));?>'>Edit this Device</a><br>
-				<span class='linkMarker'>*</span><a class='hyperLink' href='<?php print htmlspecialchars('host.php?action=edit');?>'>Create New Device</a><br>
-				<?php api_plugin_hook('graphs_new_top_links'); ?>
-			</td>
-		</tr>
-		<tr style='<?php if (get_request_var('graph_type') <= 0) {?>display:none;<?php }?>'>
-			<td>
-				Search
-			</td>
-			<td>
-				<input id='filter' type='text' name='filter' size='25' value='<?php print htmlspecialchars(get_request_var('filter'));?>'>
-			</td>
-			<td colspan='3' class='nowrap'>
-				<input type='submit' value='Go' title='Set/Refresh Filters'>
-				<input type='submit' name='clear' value='Clear' title='Clear Filters'>
-			</td>
-		</tr>
-	</table>
+						}
+						?>
+					</select>
+				</td>
+				<td>
+					Rows
+				</td>
+				<td>
+					<select id='rows' name='rows' onChange='applyFilter()'>
+						<?php
+						if (sizeof($item_rows) > 0) {
+							foreach ($item_rows as $key => $value) {
+								print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . htmlspecialchars($value) . "</option>\n";
+							}
+						}
+						?>
+					</select>
+				</td>
+				<td rowspan='3' class='textInfo' style='text-align:right;vertical-align:top;width:100%;'>
+					<span class='linkMarker'>*</span><a class='hyperLink' href='<?php print htmlspecialchars('host.php?action=edit&id=' . get_request_var('host_id'));?>'>Edit this Device</a><br>
+					<span class='linkMarker'>*</span><a class='hyperLink' href='<?php print htmlspecialchars('host.php?action=edit');?>'>Create New Device</a><br>
+					<?php api_plugin_hook('graphs_new_top_links'); ?>
+				</td>
+			</tr>
+			<tr style='<?php if (get_request_var('graph_type') <= 0) {?>display:none;<?php }?>'>
+				<td>
+					Search
+				</td>
+				<td>
+					<input id='filter' type='text' name='filter' size='25' value='<?php print htmlspecialchars(get_request_var('filter'));?>'>
+				</td>
+				<td colspan='3' class='nowrap'>
+					<input type='submit' value='Go' title='Set/Refresh Filters'>
+					<input type='submit' name='clear' value='Clear' title='Clear Filters'>
+				</td>
+			</tr>
+		</table>
 	</form>
 	</td>
 	</tr>
@@ -541,17 +546,17 @@ function graphs() {
 
 	if (get_request_var('changed')) {
 		foreach($snmp_queries as $query) {
-			kill_session_var('sess_graphs_new_page' . $query['id']);
+			kill_session_var('sess_grn_page' . $query['id']);
 			unset_request_var('page' . $query['id']);
-			load_current_session_value('page' . $query['id'], 'sess_graphs_new_page' . $query['id'], '1');
+			load_current_session_value('page' . $query['id'], 'sess_grn_page' . $query['id'], '1');
 		}
 	}
 
 	if (get_request_var('graph_type') > 0) {
-		load_current_session_value('page' . get_request_var('graph_type'), 'sess_graphs_new_page' . get_request_var('graph_type'), '1');
+		load_current_session_value('page' . get_request_var('graph_type'), 'sess_grn_page' . get_request_var('graph_type'), '1');
 	}else if (get_request_var('graph_type') == -2) {
 		foreach($snmp_queries as $query) {
-			load_current_session_value('page' . $query['id'], 'sess_graphs_new_page' . $query['id'], '1');
+			load_current_session_value('page' . $query['id'], 'sess_grn_page' . $query['id'], '1');
 		}
 	}
 
@@ -827,7 +832,7 @@ function graphs() {
 						if (($page - 1) * $row_limit > $total_rows) {
 							$page = 1;
 							set_request_var('page' . $query['id'], $page);
-							load_current_session_value('page' . $query['id'], 'sess_graphs_new_page' . $query['id'], '1');
+							load_current_session_value('page' . $query['id'], 'sess_grn_page' . $query['id'], '1');
 						}
 
 						$nav = html_nav_bar('graphs_new.php', MAX_DISPLAY_PAGES, $page, $row_limit, $total_rows, 15, 'Items', 'page' . $snmp_query['id']);
@@ -951,11 +956,11 @@ function graphs() {
 		set_request_var('returnto', basename($_SERVER['HTTP_REFERER']));
 	}
 
-	load_current_session_value('returnto', 'sess_graphs_new_returnto', '');
-	if (substr_count(get_request_var('returnto'), 'host.php') == 0) {
+	load_current_session_value('returnto', 'sess_grn_returnto', '');
+	if (substr_count(get_nfilter_request_var('returnto'), 'host.php') == 0) {
 		set_request_var('returnto', '');
 	}
 
-	form_save_button(get_request_var('returnto'), 'create');
+	form_save_button(get_nfilter_request_var('returnto'), 'create');
 }
 
