@@ -1263,6 +1263,18 @@ $settings = array(
 			),
 		),
 	'mail' => array(
+		'settings_web_url' => array(
+			'friendly_name' => 'URL Linking',
+			'method' => 'spacer',
+			),
+		'base_url' => array(
+			'friendly_name' => 'Server Base URL',
+			'description' => 'This is a the server location that will be used for links to the Cacti site.',
+			'method' => 'textbox',
+			'max_length' => 255,
+			'size' => '60',
+			'default' => 'http://' . gethostname()
+			),
 		'settings_email_header' => array(
 			'friendly_name' => 'Emailing Options<div id="emailtest" class="emailtest textSubHeaderDark">Send a Test Email</div>',
 			'method' => 'spacer',
