@@ -453,11 +453,19 @@ function graphs() {
 		loadPageNoHeader(strURL);
 	}
 
+	function clearFilter() {
+		loadPageNoHeader('graphs_new.php?filter=&header=false');
+	}
+
 	$(function() {
 		$('[id^="reload"]').click(function(data) {
 			//$(this).removeClass('fa-circle-o').addClass('fa-spinner fa-spin');
 			$(this).removeClass('fa-circle-o').addClass('fa-circle-o-notch fa-spin');
 			loadPageNoHeader('graphs_new.php?action=query_reload&id='+$(this).attr('data-id')+'&host_id='+$('#host_id').val());
+		});
+
+		$('#clear').click(function() {
+			clearFilter();
 		});
 
 		$('#graphs_new').submit(function(event) {
@@ -526,7 +534,7 @@ function graphs() {
 				</td>
 				<td colspan='3' class='nowrap'>
 					<input type='submit' value='Go' title='Set/Refresh Filters'>
-					<input type='submit' name='clear' value='Clear' title='Clear Filters'>
+					<input type='button' id='clear' value='Clear' title='Clear Filters'>
 				</td>
 			</tr>
 		</table>
