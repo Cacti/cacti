@@ -1532,7 +1532,7 @@ function get_graph_tree_array_export($return_sql = false, $force_refresh = false
 
 	/* build tree array */
 	if (!isset($config["config_options_array"]["tree_array"]) || ($force_refresh) ||
-		(($config["config_options_array"]["tree_update_time"] + read_graph_config_option("page_refresh")) < time())) {
+		(($config["config_options_array"]["tree_update_time"] + read_user_setting("page_refresh")) < time())) {
 
 		if (read_config_option("auth_method") != 0) {
 			$current_user = db_fetch_row("SELECT id, policy_trees FROM user_auth WHERE id=" . read_config_option("export_user_id"));
@@ -1575,7 +1575,7 @@ function create_dhtml_tree_export($tree_id) {
 
 	$dhtml_tree = array();
 	$dhtml_tree[0] = $start;
-	$dhtml_tree[1] = read_graph_config_option("expand_hosts");
+	$dhtml_tree[1] = read_user_setting("expand_hosts");
 	$i = 1;
 
 	$tree_list = get_graph_tree_array_export();

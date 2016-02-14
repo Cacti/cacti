@@ -47,7 +47,7 @@ initialize_timespan($timespan);
 $timeshift = set_timeshift();
 
 /* if the user does not want to see timespan selectors */
-if (read_graph_config_option('timespan_sel') == '') {
+if (read_user_setting('timespan_sel') == '') {
 	set_preset_timespan($timespan);
 /* the user does want to see them */
 }else {
@@ -61,8 +61,8 @@ finalize_timespan($timespan);
 function initialize_timespan(&$timespan) {
 	/* initialize the default timespan if not set */
 	if ((!isset($_SESSION['sess_current_timespan'])) || (isset($_POST['button_clear']))) {
-		$_SESSION['sess_current_timespan'] = read_graph_config_option('default_timespan');
-		$_REQUEST['predefined_timespan'] = read_graph_config_option('default_timespan');
+		$_SESSION['sess_current_timespan'] = read_user_setting('default_timespan');
+		$_REQUEST['predefined_timespan'] = read_user_setting('default_timespan');
 		$_SESSION['custom'] = 0;
 	}
 
@@ -84,19 +84,19 @@ function process_html_variables() {
 					$_REQUEST['predefined_timespan'] = $_SESSION['sess_current_timespan'];
 				}
 			}else {
-				$_REQUEST['predefined_timespan'] = read_graph_config_option('default_timespan');
-				$_SESSION['sess_current_timespan'] = read_graph_config_option('default_timespan');
+				$_REQUEST['predefined_timespan'] = read_user_setting('default_timespan');
+				$_SESSION['sess_current_timespan'] = read_user_setting('default_timespan');
 			}
 		}
 	} else {
 		if (isset($_SESSION['sess_current_timespan'])) {
 			$_REQUEST['predefined_timespan'] = $_SESSION['sess_current_timespan'];
 		}else {
-			$_REQUEST['predefined_timespan'] = read_graph_config_option('default_timespan');
-			$_SESSION['sess_current_timespan'] = read_graph_config_option('default_timespan');
+			$_REQUEST['predefined_timespan'] = read_user_setting('default_timespan');
+			$_SESSION['sess_current_timespan'] = read_user_setting('default_timespan');
 		}
 	}
-	load_current_session_value('predefined_timespan', 'sess_current_timespan', read_graph_config_option('default_timespan'));
+	load_current_session_value('predefined_timespan', 'sess_current_timespan', read_user_setting('default_timespan'));
 
 	# process timeshift
 	if (isset($_REQUEST['predefined_timeshift'])) {
@@ -104,19 +104,19 @@ function process_html_variables() {
 			if (isset($_SESSION['sess_current_timeshift'])) {
 				$_REQUEST['predefined_timeshift'] = $_SESSION['sess_current_timeshift'];
 			}else {
-				$_REQUEST['predefined_timeshift'] = read_graph_config_option('default_timeshift');
-				$_SESSION['sess_current_timeshift'] = read_graph_config_option('default_timeshift');
+				$_REQUEST['predefined_timeshift'] = read_user_setting('default_timeshift');
+				$_SESSION['sess_current_timeshift'] = read_user_setting('default_timeshift');
 			}
 		}
 	} else {
 		if (isset($_SESSION['sess_current_timeshift'])) {
 			$_REQUEST['predefined_timeshift'] = $_SESSION['sess_current_timeshift'];
 		}else {
-			$_REQUEST['predefined_timeshift'] = read_graph_config_option('default_timeshift');
-			$_SESSION['sess_current_timeshift'] = read_graph_config_option('default_timeshift');
+			$_REQUEST['predefined_timeshift'] = read_user_setting('default_timeshift');
+			$_SESSION['sess_current_timeshift'] = read_user_setting('default_timeshift');
 		}
 	}
-	load_current_session_value('predefined_timeshift', 'sess_current_timeshift', read_graph_config_option('default_timeshift'));
+	load_current_session_value('predefined_timeshift', 'sess_current_timeshift', read_user_setting('default_timeshift'));
 }
 
 /* when a span time preselection has been defined update the span time fields */
@@ -184,12 +184,12 @@ function process_user_input(&$timespan, $timeshift) {
 /* establish graph timespan from either a user select or the default */
 function set_preset_timespan(&$timespan) {
 	# no current timespan: get default timespan
-	if ((!isset($_SESSION['sess_current_timespan'])) || (read_graph_config_option('timespan_sel') == '')) {
-		$_SESSION['sess_current_timespan'] = read_graph_config_option('default_timespan');
+	if ((!isset($_SESSION['sess_current_timespan'])) || (read_user_setting('timespan_sel') == '')) {
+		$_SESSION['sess_current_timespan'] = read_user_setting('default_timespan');
 	}
 
 	# get config option for first-day-of-the-week
-	$first_weekdayid = read_graph_config_option('first_weekdayid');
+	$first_weekdayid = read_user_setting('first_weekdayid');
 	# get start/end time-since-epoch for actual time (now()) and given current-session-timespan
 	get_timespan( $timespan, time(),$_SESSION['sess_current_timespan'] , $first_weekdayid);
 
@@ -210,14 +210,14 @@ function finalize_timespan(&$timespan) {
 	/* correct bad dates on calendar */
 	if ($timespan['end_now'] < $timespan['begin_now']) {
 		set_preset_timespan($timespan);
-		$_SESSION['sess_current_timespan'] = read_graph_config_option('default_timespan');
+		$_SESSION['sess_current_timespan'] = read_user_setting('default_timespan');
 
 		$timespan['current_value_date1'] = date('Y-m-d H:i', $timespan['begin_now']);
 		$timespan['current_value_date2'] = date('Y-m-d H:i', $timespan['end_now']);
 	}
 
 	/* if moved to future although not allow by settings, stop at current time */
-	if ( ($timespan['end_now'] > time()) && (read_graph_config_option('allow_graph_dates_in_future') == '') ) {
+	if ( ($timespan['end_now'] > time()) && (read_user_setting('allow_graph_dates_in_future') == '') ) {
 		$timespan['end_now'] = time();
 		# convert end time to human readable format
 		$timespan['current_value_date2'] = date('Y-m-d H:i', $timespan['end_now']);
@@ -242,11 +242,11 @@ function set_timeshift() {
 
 	# no current timeshift: get default timeshift
 	if ((!isset($_SESSION['sess_current_timeshift'])) ||
-		(read_graph_config_option('timespan_sel') == '') ||
+		(read_user_setting('timespan_sel') == '') ||
 		(isset($_POST['button_clear']))
 		) {
-		$_SESSION['sess_current_timeshift'] = read_graph_config_option('default_timeshift');
-		$_REQUEST['predefined_timeshift'] = read_graph_config_option('default_timeshift');
+		$_SESSION['sess_current_timeshift'] = read_user_setting('default_timeshift');
+		$_REQUEST['predefined_timeshift'] = read_user_setting('default_timeshift');
 		$_SESSION['custom'] = 0;
 	}
 

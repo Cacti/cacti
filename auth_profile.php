@@ -63,7 +63,7 @@ function api_auth_logout_everywhere() {
 }
 
 function form_save() {
-	global $settings_graphs;
+	global $settings_user;
 
 	// Save the users profile information
 	if (isset_request_var('full_name') && isset_request_var('email_address') && isset($_SESSION['sess_user_id'])) {
@@ -72,7 +72,7 @@ function form_save() {
 
 	// Save the users graph settings if they have permission
 	if (is_view_allowed('graph_settings') == true) {
-		while (list($tab_short_name, $tab_fields) = each($settings_graphs)) {
+		while (list($tab_short_name, $tab_fields) = each($settings_user)) {
 			while (list($field_name, $field_array) = each($tab_fields)) {
 				/* Check every field with a numeric default value and reset it to default if the inputted value is not numeric  */
 				if (isset($field_array['default']) && is_numeric($field_array['default']) && !is_numeric(get_nfilter_request_var($field_name))) {
@@ -81,16 +81,16 @@ function form_save() {
 
 				if ($field_array['method'] == 'checkbox') {
 					if (isset_request_var($field_name)) {
-						db_execute_prepared("REPLACE INTO settings_graphs (user_id,name,value) VALUES (?, ?, 'on')", array($_SESSION['sess_user_id'], $field_name));
+						db_execute_prepared("REPLACE INTO settings_user (user_id,name,value) VALUES (?, ?, 'on')", array($_SESSION['sess_user_id'], $field_name));
 					}else{
-						db_execute_prepared("REPLACE INTO settings_graphs (user_id,name,value) VALUES (?, ?, '')", array($_SESSION['sess_user_id'], $field_name));
+						db_execute_prepared("REPLACE INTO settings_user (user_id,name,value) VALUES (?, ?, '')", array($_SESSION['sess_user_id'], $field_name));
 					}
 				}elseif ($field_array['method'] == 'checkbox_group') {
 					while (list($sub_field_name, $sub_field_array) = each($field_array['items'])) {
 						if (isset_request_var($sub_field_name)) {
-							db_execute_prepared("REPLACE INTO settings_graphs (user_id,name,value) VALUES (?, ?, 'on')", array($_SESSION['sess_user_id'], $sub_field_name));
+							db_execute_prepared("REPLACE INTO settings_user (user_id,name,value) VALUES (?, ?, 'on')", array($_SESSION['sess_user_id'], $sub_field_name));
 						}else{
-							db_execute_prepared("REPLACE INTO settings_graphs (user_id,name,value) VALUES (?, ?, '')", array($_SESSION['sess_user_id'], $sub_field_name));
+							db_execute_prepared("REPLACE INTO settings_user (user_id,name,value) VALUES (?, ?, '')", array($_SESSION['sess_user_id'], $sub_field_name));
 						}
 					}
 				}elseif ($field_array['method'] == 'textbox_password') {
@@ -98,16 +98,16 @@ function form_save() {
 						raise_message(4);
 						break;
 					}elseif (isset_request_var($field_name)) {
-						db_execute_prepared('REPLACE INTO settings_graphs (user_id, name, value) VALUES (?, ?, ?)', array($_SESSION['sess_user_id'], $field_name, get_nfilter_request_var($field_name)));
+						db_execute_prepared('REPLACE INTO settings_user (user_id, name, value) VALUES (?, ?, ?)', array($_SESSION['sess_user_id'], $field_name, get_nfilter_request_var($field_name)));
 					}
 				}elseif ((isset($field_array['items'])) && (is_array($field_array['items']))) {
 					while (list($sub_field_name, $sub_field_array) = each($field_array['items'])) {
 						if (isset_request_var($sub_field_name)) {
-							db_execute_prepared('REPLACE INTO settings_graphs (user_id, name, value) values (?, ?, ?)', array($_SESSION['sess_user_id'], $sub_field_name, get_nfilter_request_var($sub_field_name)));
+							db_execute_prepared('REPLACE INTO settings_user (user_id, name, value) values (?, ?, ?)', array($_SESSION['sess_user_id'], $sub_field_name, get_nfilter_request_var($sub_field_name)));
 						}
 					}
 				}else if (isset_request_var($field_name)) {
-					db_execute_prepared('REPLACE INTO settings_graphs (user_id, name, value) values (?, ?, ?)', array($_SESSION['sess_user_id'], $field_name, get_nfilter_request_var($field_name)));
+					db_execute_prepared('REPLACE INTO settings_user (user_id, name, value) values (?, ?, ?)', array($_SESSION['sess_user_id'], $field_name, get_nfilter_request_var($field_name)));
 				}
 			}
 		}
@@ -124,7 +124,7 @@ function form_save() {
    -------------------------- */
 
 function settings() {
-	global $tabs_graphs, $settings_graphs, $current_user, $graph_views, $current_user;
+	global $tabs_graphs, $settings_user, $current_user, $graph_views, $current_user;
 
 	/* you cannot have per-user graph settings if cacti's user management is not turned on */
 	if (read_config_option('auth_method') == 0) {
@@ -212,12 +212,12 @@ function settings() {
 
 	if (is_view_allowed('graph_settings') == true) {
 		if (read_config_option('auth_method') != 0) {
-			$settings_graphs['tree']['default_tree_id']['sql'] = get_graph_tree_array(true);
+			$settings_user['tree']['default_tree_id']['sql'] = get_graph_tree_array(true);
 		}
 
 		html_start_box('User Settings', '100%', '', '3', 'center', '');
 
-		while (list($tab_short_name, $tab_fields) = each($settings_graphs)) {
+		while (list($tab_short_name, $tab_fields) = each($settings_user)) {
 			$collapsible = true;
 
 			print "<tr class='spacer tableHeader" . ($collapsible ? ' collapsible':'') . "' id='row_$tab_short_name'><td colspan='2' class='tableSubHeaderColumn'>" . $tabs_graphs[$tab_short_name] . ($collapsible ? "<div style='float:right;padding-right:4px;'><i class='fa fa-angle-double-up'></i></div>":"") . "</td></tr>\n";
@@ -233,14 +233,14 @@ function settings() {
 							$form_array[$field_name]['items'][$sub_field_name]['form_id'] = 1;
 						}
 
-						$form_array[$field_name]['items'][$sub_field_name]['value'] =  db_fetch_cell_prepared('SELECT value FROM settings_graphs WHERE name = ? AND user_id = ?', array($sub_field_name, $_SESSION['sess_user_id']));
+						$form_array[$field_name]['items'][$sub_field_name]['value'] =  db_fetch_cell_prepared('SELECT value FROM settings_user WHERE name = ? AND user_id = ?', array($sub_field_name, $_SESSION['sess_user_id']));
 					}
 				}else{
 					if (graph_config_value_exists($field_name, $_SESSION['sess_user_id'])) {
 						$form_array[$field_name]['form_id'] = 1;
 					}
 
-					$form_array[$field_name]['value'] = db_fetch_cell_prepared('SELECT value FROM settings_graphs WHERE name = ? AND user_id = ?', array($field_name, $_SESSION['sess_user_id']));
+					$form_array[$field_name]['value'] = db_fetch_cell_prepared('SELECT value FROM settings_user WHERE name = ? AND user_id = ?', array($field_name, $_SESSION['sess_user_id']));
 				}
 			}
 

@@ -80,7 +80,7 @@ function grow_dhtml_trees() {
 
 	include_once($config['library_path'] . '/data_query.php');
 
-	$default_tree_id = read_graph_config_option('default_tree_id');
+	$default_tree_id = read_user_setting('default_tree_id');
 
 	if (empty($default_tree_id)) {
 		$user = db_fetch_row('SELECT * FROM user_auth WHERE id=' . $_SESSION['sess_user_id']);
@@ -315,7 +315,7 @@ function draw_dhtml_tree_level_graphing($tree_id, $parent = 0) {
 				if ($leaf['host_id'] > 0) {  //It's a host
 					$dhtml_tree[] = "\t\t\t\t<li id='tbranch-" . $leaf['id'] . "' data-jstree='{ \"icon\" : \"" . $config['url_path'] . "images/server.png\" }'><a href=\"" . htmlspecialchars('graph_view.php?action=tree&tree_id=' . $tree_id . '&leaf_id=' . $leaf['id'] . '&host_group_data=') . '">Device: ' . htmlspecialchars($leaf['hostname']) . "</a>\n";
 
-					if (read_graph_config_option('expand_hosts') == 'on') {
+					if (read_user_setting('expand_hosts') == 'on') {
 						$dhtml_tree[] = "\t\t\t\t\t<ul>\n";
 						if ($leaf['host_grouping_type'] == HOST_GROUPING_GRAPH_TEMPLATE) {
 							$graph_templates = get_allowed_graph_templates('gl.host_id=' . $leaf['host_id']);
@@ -417,11 +417,11 @@ function html_validate_tree_vars() {
 		'graphs' => array(
 			'filter' => FILTER_VALIDATE_INT, 
 			'pageset' => true,
-			'default' => read_graph_config_option('treeview_graphs_per_page')
+			'default' => read_user_setting('treeview_graphs_per_page')
 			),
 		'columns' => array(
 			'filter' => FILTER_VALIDATE_INT, 
-			'default' => read_graph_config_option('num_columns_tree')
+			'default' => read_user_setting('num_columns_tree')
 			),
 		'page' => array(
 			'filter' => FILTER_VALIDATE_INT, 
@@ -429,15 +429,15 @@ function html_validate_tree_vars() {
 			),
 		'tree_id' => array(
 			'filter' => FILTER_VALIDATE_INT, 
-			'default' => read_graph_config_option('default_tree_id')
+			'default' => read_user_setting('default_tree_id')
 			),
 		'predefined_timeshift' => array(
 			'filter' => FILTER_VALIDATE_INT, 
-			'default' => read_graph_config_option('default_timeshift')
+			'default' => read_user_setting('default_timeshift')
 			),
 		'predefined_timespan' => array(
 			'filter' => FILTER_VALIDATE_INT, 
-			'default' => read_graph_config_option('default_timespan')
+			'default' => read_user_setting('default_timespan')
 			),
 		'branch_id' => array(
 			'filter' => FILTER_VALIDATE_INT, 
@@ -592,7 +592,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 	<?php
 
 	/* include time span selector */
-	if (read_graph_config_option('timespan_sel') == 'on') {
+	if (read_user_setting('timespan_sel') == 'on') {
 		?>
 		<tr class='even noprint'>
 			<td class='noprint'>

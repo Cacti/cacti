@@ -35,7 +35,7 @@ function set_default_graph_action() {
 	if (!isset_request_var('action')) {
 		/* setup the default action */
 		if (!isset($_SESSION['sess_graph_view_action'])) {
-			switch(read_graph_config_option('default_view_mode')) {
+			switch(read_user_setting('default_view_mode')) {
 			case '1':
 				set_request_var('action', 'tree');
 				break;
@@ -66,7 +66,7 @@ function html_graph_validate_preview_request_vars() {
 		'graphs' => array(
 			'filter' => FILTER_VALIDATE_INT, 
 			'pageset' => true,
-			'default' => read_graph_config_option('preview_graphs_per_page')
+			'default' => read_user_setting('preview_graphs_per_page')
 			),
 		'page' => array(
 			'filter' => FILTER_VALIDATE_INT, 
@@ -80,7 +80,7 @@ function html_graph_validate_preview_request_vars() {
 		'columns' => array(
 			'filter' => FILTER_VALIDATE_INT, 
 			'pageset' => true,
-			'default' => read_graph_config_option('num_columns')
+			'default' => read_user_setting('num_columns')
 			),
 		'host_id' => array(
 			'filter' => FILTER_VALIDATE_INT, 
@@ -97,25 +97,25 @@ function html_graph_validate_preview_request_vars() {
 			'filter' => FILTER_VALIDATE_REGEXP, 
 			'options' => array('options' => array('regexp' => '(true|false)')),
 			'pageset' => true,
-			'default' => read_graph_config_option('thumbnail_section_preview') == 'on' ? 'true':'false'
+			'default' => read_user_setting('thumbnail_section_preview') == 'on' ? 'true':'false'
 			),
 		'graph_list' => array(
 			'filter' => FILTER_VALIDATE_REGEXP, 
 			'options' => array('options' => array('regexp' => '/^([\,0-9]+)$/')),
 			'pageset' => true,
-			'default' => read_graph_config_option('thumbnail_section_preview') == 'on' ? 'true':'false'
+			'default' => read_user_setting('thumbnail_section_preview') == 'on' ? 'true':'false'
 			),
 		'graph_add' => array(
 			'filter' => FILTER_VALIDATE_REGEXP, 
 			'options' => array('options' => array('regexp' => '/^([\,0-9]+)$/')),
 			'pageset' => true,
-			'default' => read_graph_config_option('thumbnail_section_preview') == 'on' ? 'true':'false'
+			'default' => read_user_setting('thumbnail_section_preview') == 'on' ? 'true':'false'
 			),
 		'graph_remove' => array(
 			'filter' => FILTER_VALIDATE_REGEXP, 
 			'options' => array('options' => array('regexp' => '/^([\,0-9]+)$/')),
 			'pageset' => true,
-			'default' => read_graph_config_option('thumbnail_section_preview') == 'on' ? 'true':'false'
+			'default' => read_user_setting('thumbnail_section_preview') == 'on' ? 'true':'false'
 			),
 		'style' => array(
 			'filter' => FILTER_DEFAULT,
@@ -272,7 +272,7 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 	<?php
 
 	/* include time span selector */
-	if (read_graph_config_option('timespan_sel') == 'on') {
+	if (read_user_setting('timespan_sel') == 'on') {
 		?>
 		<tr class='even noprint'>
 			<td class='noprint'>

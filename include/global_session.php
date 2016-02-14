@@ -31,7 +31,7 @@ if ($script == 'graph_view.php' || $script == 'graph.php') {
 	}else if (isset_request_var('action') && get_nfilter_request_var('action') == 'zoom') {
 		$refreshIsLogout = 'true';
 	}else{
-		$refresh = api_plugin_hook_function('top_graph_refresh', read_graph_config_option('page_refresh'));
+		$refresh = api_plugin_hook_function('top_graph_refresh', read_user_setting('page_refresh'));
 		$refreshIsLogout = 'false';
 	}
 } elseif (strstr($_SERVER['SCRIPT_NAME'], 'plugins')) {

@@ -349,7 +349,7 @@ function form_actions() {
 				get_filter_request_var('tree_id');
 				get_filter_request_var('tree_item_id');
 				for ($i=0;($i<count($selected_items));$i++) {
-					api_tree_item_save(0, get_nfilter_request_var('tree_id'), TREE_ITEM_TYPE_GRAPH, get_nfilter_request_var('tree_item_id'), '', $selected_items[$i], read_graph_config_option('default_rra_id'), 0, 0, 0, false);
+					api_tree_item_save(0, get_nfilter_request_var('tree_id'), TREE_ITEM_TYPE_GRAPH, get_nfilter_request_var('tree_item_id'), '', $selected_items[$i], read_user_setting('default_rra_id'), 0, 0, 0, false);
 				}
 			}elseif (get_nfilter_request_var('drp_action') == '5') { /* change host */
 				get_filter_request_var('host_id');
@@ -1306,7 +1306,7 @@ function graph_edit() {
 		<table style='width:100%;'>
 			<tr>
 				<td class="textInfo center" colspan="2">
-					<img <?php print ($graph['image_format_id'] == 3 ? "style='width:" . $graph['width'] . "px;height:" . $graph['height'] . "px;'":"");?> src="<?php print htmlspecialchars('graph_image.php?action=edit&local_graph_id=' . get_request_var('id') . '&rra_id=' . read_graph_config_option('default_rra_id'));?>" alt="">
+					<img <?php print ($graph['image_format_id'] == 3 ? "style='width:" . $graph['width'] . "px;height:" . $graph['height'] . "px;'":"");?> src="<?php print htmlspecialchars('graph_image.php?action=edit&local_graph_id=' . get_request_var('id') . '&rra_id=' . read_user_setting('default_rra_id'));?>" alt="">
 				</td>
 				<?php
 				if ((isset($_SESSION['graph_debug_mode'])) && (isset_request_var('id'))) {

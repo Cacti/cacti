@@ -3334,29 +3334,29 @@ CREATE TABLE settings (
 
 
 --
--- Table structure for table `settings_graphs`
+-- Table structure for table `settings_user`
 --
 
-CREATE TABLE settings_graphs (
+CREATE TABLE settings_user (
   user_id smallint(8) unsigned NOT NULL default '0',
   name varchar(50) NOT NULL default '',
-  value varchar(255) NOT NULL default '',
+  value varchar(2048) NOT NULL default '',
   PRIMARY KEY  (user_id,name)
 ) ENGINE=MyISAM;
 
 --
--- Dumping data for table `settings_graphs`
+-- Dumping data for table `settings_user`
 --
 
 
 --
--- Table structure for table `settings_graphs_group`
+-- Table structure for table `settings_user_group`
 --
 
-CREATE TABLE settings_graphs_group (
+CREATE TABLE settings_user_group (
   group_id smallint(8) unsigned NOT NULL DEFAULT '0',
   name varchar(50) NOT NULL DEFAULT '',
-  value varchar(255) NOT NULL DEFAULT '',
+  value varchar(2048) NOT NULL DEFAULT '',
   PRIMARY KEY (group_id,name)
 ) ENGINE=MyISAM COMMENT='Stores the Default User Group Graph Settings';
 

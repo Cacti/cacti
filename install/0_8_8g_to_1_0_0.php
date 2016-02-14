@@ -70,7 +70,7 @@ function upgrade_to_1_0_0() {
 		ENGINE=MyISAM
 		COMMENT='Table that Contains User Group Members';");
 
-	db_install_execute('1.0', "CREATE TABLE IF NOT EXISTS `settings_graphs_group` (
+	db_install_execute('1.0', "CREATE TABLE IF NOT EXISTS `settings_user_group` (
 		`group_id` smallint(8) unsigned NOT NULL DEFAULT '0',
 		`name` varchar(50) NOT NULL DEFAULT '',
 		`value` varchar(255) NOT NULL DEFAULT '',
@@ -1179,5 +1179,9 @@ function upgrade_to_1_0_0() {
 	}
 	
 	db_install_execute('1.0', "ALTER TABLE settings MODIFY COLUMN value varchar(2048) NOT NULL default ''");
+	db_install_execute('1.0', "ALTER TABLE settings_graphs MODIFY COLUMN value varchar(2048) NOT NULL default ''");
+
+	db_install_execute('1.0', 'RENAME TABLE settings_graphs TO settings_user');
+
 	rsa_check_keypair();
 }

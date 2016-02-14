@@ -102,7 +102,7 @@ case 'get_node':
 			get_nfilter_request_var('tree_id') == 'undefined' || 
 			get_nfilter_request_var('tree_id') == '') {
 
-			$tree_id = read_graph_config_option('default_tree_id');
+			$tree_id = read_user_setting('default_tree_id');
 		}elseif (get_nfilter_request_var('tree_id') == 0 && 
 			substr_count(get_nfilter_request_var('id'), 'tree_anchor') > 0) {
 
@@ -111,7 +111,7 @@ case 'get_node':
 			input_validate_input_number($tree_id);
 		}
 	}else{
-		$tree_id = read_graph_config_option('default_tree_id');
+		$tree_id = read_user_setting('default_tree_id');
 	}
 
 	if (isset_request_var('id') && get_nfilter_request_var('id') != '#') {
@@ -231,7 +231,7 @@ case 'preview':
 				/* build sql string including each graph the user checked */
 				$sql_or = array_to_sql_or($graph_array, 'gtg.local_graph_id');
 
-				$set_rra_id = empty($rra_id) ? read_graph_config_option('default_rra_id') : get_request_var('rra_id');
+				$set_rra_id = empty($rra_id) ? read_user_setting('default_rra_id') : get_request_var('rra_id');
 			}
 		}
 	}
@@ -434,7 +434,7 @@ case 'list':
 
 	/* if the number of rows is -1, set it to the default */
 	if (get_request_var('rows') == -1) {
-		set_request_var('rows', read_graph_config_option('num_rows_table'));
+		set_request_var('rows', read_user_setting('num_rows_table'));
 	}
 
 	/* create filter for sql */

@@ -299,7 +299,7 @@ function form_actions() {
 				get_filter_request_var('tree_item_id');
 
 				for ($i=0;($i<count($selected_items));$i++) {
-					api_tree_item_save(0, get_nfilter_request_var('tree_id'), TREE_ITEM_TYPE_HOST, get_nfilter_request_var('tree_item_id'), '', 0, read_graph_config_option('default_rra_id'), $selected_items[$i], 1, 1, false);
+					api_tree_item_save(0, get_nfilter_request_var('tree_id'), TREE_ITEM_TYPE_HOST, get_nfilter_request_var('tree_item_id'), '', 0, read_user_setting('default_rra_id'), $selected_items[$i], 1, 1, false);
 				}
 			}elseif ($action == 7) { /* automation */
 				cacti_log(__FUNCTION__ . ' called, action: ' . $action, true, 'AUTOMATION TRACE', POLLER_VERBOSITY_MEDIUM);

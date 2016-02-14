@@ -439,7 +439,7 @@ function form_actions() {
    -------------------------- */
 
 function form_save() {
-	global $settings_graphs;
+	global $settings_user;
 
 	if (isset_request_var('save_component_group')) {
 		/* ================= input validation ================= */
@@ -492,14 +492,14 @@ function form_save() {
 		header('Location: user_group_admin.php?action=edit&header=false&tab=realms&id=' . get_nfilter_request_var('id'));
 		exit;
 	}elseif (isset_request_var('save_component_graph_settings')) {
-		while (list($tab_short_name, $tab_fields) = each($settings_graphs)) {
+		while (list($tab_short_name, $tab_fields) = each($settings_user)) {
 			while (list($field_name, $field_array) = each($tab_fields)) {
 				if ((isset($field_array['items'])) && (is_array($field_array['items']))) {
 					while (list($sub_field_name, $sub_field_array) = each($field_array['items'])) {
-						db_execute_prepared('REPLACE INTO settings_graphs_group (group_id, name, value) VALUES (?, ?, ?)', array(get_nfilter_request_var('id'), $sub_field_name, get_nfilter_request_var($sub_field_name, '')));
+						db_execute_prepared('REPLACE INTO settings_user_group (group_id, name, value) VALUES (?, ?, ?)', array(get_nfilter_request_var('id'), $sub_field_name, get_nfilter_request_var($sub_field_name, '')));
 					}
 				}else{
-					db_execute_prepared('REPLACE INTO settings_graphs_group (group_id, name, value) VALUES (?, ?, ?)', array(get_nfilter_request_var('id'), $field_name, get_nfilter_request_var($field_name)));
+					db_execute_prepared('REPLACE INTO settings_user_group (group_id, name, value) VALUES (?, ?, ?)', array(get_nfilter_request_var('id'), $field_name, get_nfilter_request_var($field_name)));
 				}
 			}
 		}
@@ -1350,7 +1350,7 @@ function user_group_realms_edit($header_label) {
 }
 
 function user_group_graph_settings_edit($header_label) {
-	global $settings_graphs, $tabs_graphs, $graph_views;
+	global $settings_user, $tabs_graphs, $graph_views;
 
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
@@ -1360,7 +1360,7 @@ function user_group_graph_settings_edit($header_label) {
 
 	html_start_box("Graph Settings $header_label", '100%', '', '3', 'center', '');
 
-	while (list($tab_short_name, $tab_fields) = each($settings_graphs)) {
+	while (list($tab_short_name, $tab_fields) = each($settings_user)) {
 		$collapsible = true;
 
 		print "<tr class='spacer tableHeader" . ($collapsible ? ' collapsible':'') . "' id='row_$tab_short_name'><td colspan='2' style='cursor:pointer;' class='tableSubHeaderColumn'>" . $tabs_graphs[$tab_short_name] . ($collapsible ? "<div style='float:right;padding-right:4px;'><i class='fa fa-angle-double-up'></i></div>":"") . "</td></tr>\n";
@@ -1376,14 +1376,14 @@ function user_group_graph_settings_edit($header_label) {
 						$form_array[$field_name]['items'][$sub_field_name]['form_id'] = 1;
 					}
 
-					$form_array[$field_name]['items'][$sub_field_name]['value'] =  db_fetch_cell_prepared('SELECT value FROM settings_graphs_group WHERE name = ? AND group_id = ?', array($sub_field_name, get_request_var('id')));
+					$form_array[$field_name]['items'][$sub_field_name]['value'] =  db_fetch_cell_prepared('SELECT value FROM settings_user_group WHERE name = ? AND group_id = ?', array($sub_field_name, get_request_var('id')));
 				}
 			}else{
 				if (graph_config_value_exists($field_name, get_request_var('id'))) {
 					$form_array[$field_name]['form_id'] = 1;
 				}
 
-				$form_array[$field_name]['value'] = db_fetch_cell_prepared('SELECT value FROM settings_graphs_group WHERE name = ? AND group_id = ?', array($field_name, get_request_var('id')));
+				$form_array[$field_name]['value'] = db_fetch_cell_prepared('SELECT value FROM settings_user_group WHERE name = ? AND group_id = ?', array($field_name, get_request_var('id')));
 			}
 		}
 

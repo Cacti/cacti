@@ -97,8 +97,8 @@ case 'countdown':
 	/* override: skip drawing the legend? */
 	if (!isempty_request_var('graph_nolegend')) {
 		$graph_data_array['graph_nolegend'] = get_request_var('graph_nolegend');
-		$graph_data_array['graph_width']    = read_graph_config_option('default_width');
-		$graph_data_array['graph_height']   = read_graph_config_option('default_height');
+		$graph_data_array['graph_width']    = read_user_setting('default_width');
+		$graph_data_array['graph_height']   = read_user_setting('default_height');
 	}
 
 	/* override: graph start */

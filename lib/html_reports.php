@@ -905,7 +905,7 @@ function reports_item_edit() {
 	if (isset($item['item_type']) && $item['item_type'] == REPORTS_ITEM_GRAPH) {
 		$timespan = array();
 		# get config option for first-day-of-the-week
-		$first_weekdayid = read_graph_config_option('first_weekdayid');
+		$first_weekdayid = read_user_setting('first_weekdayid');
 		# get start/end time-since-epoch for actual time (now()) and given current-session-timespan
 		get_timespan($timespan, time(), $item['timespan'], $first_weekdayid);
 	}

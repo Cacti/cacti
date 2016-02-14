@@ -95,8 +95,8 @@ function get_timespan(&$span, $curr_time, $timespan_given, $first_weekdayid) {
 			break;
 		case GT_DAY_SHIFT:
 			# take this day, start and end time fetched from config_settings
-			$span['begin_now'] = strtotime(date('Y-m-d', $curr_time) . ' ' . read_graph_config_option('day_shift_start'));
-			$span['end_now']   = strtotime(date('Y-m-d', $curr_time) . ' ' . read_graph_config_option('day_shift_end'));
+			$span['begin_now'] = strtotime(date('Y-m-d', $curr_time) . ' ' . read_user_setting('day_shift_start'));
+			$span['end_now']   = strtotime(date('Y-m-d', $curr_time) . ' ' . read_user_setting('day_shift_end'));
 			break;
 		case GT_THIS_DAY:
 			# return Year-Month-Day for given 'time since epoch'
@@ -238,8 +238,8 @@ function date_time_format() {
 	$graph_date = '';
 
 	/* setup date format */
-	$date_fmt = read_graph_config_option('default_date_format');
-	$datechar = read_graph_config_option('default_datechar');
+	$date_fmt = read_user_setting('default_date_format');
+	$datechar = read_user_setting('default_datechar');
 
 	switch ($datechar) {
 		case GDC_HYPHEN: 	$datechar = '-'; break;

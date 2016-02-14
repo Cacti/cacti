@@ -1714,8 +1714,8 @@ function rrdtool_function_xport($local_graph_id, $rra_id, $xport_data_array, &$x
 function rrdtool_function_format_graph_date(&$graph_data_array) {
 	$graph_legend = '';
 	/* setup date format */
-	$date_fmt = read_graph_config_option('default_date_format');
-	$datechar = read_graph_config_option('default_datechar');
+	$date_fmt = read_user_setting('default_date_format');
+	$datechar = read_user_setting('default_datechar');
 
 	if ($datechar == GDC_HYPHEN) {
 		$datechar = '-';
@@ -1816,9 +1816,9 @@ function rrdtool_function_set_font($type, $no_legend, $themefonts) {
 	global $config;
 
 	if (read_config_option('font_method') == 0) {
-		if (read_graph_config_option('custom_fonts') == 'on') {
-			$font = read_graph_config_option($type . '_font');
-			$size = read_graph_config_option($type . '_size');
+		if (read_user_setting('custom_fonts') == 'on') {
+			$font = read_user_setting($type . '_font');
+			$size = read_user_setting($type . '_size');
 		}else{
 			$font = read_config_option($type . '_font');
 			$size = read_config_option($type . '_size');

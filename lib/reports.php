@@ -72,8 +72,8 @@ function reports_date_time_format() {
 	$graph_date = '';
 
 	/* setup date format */
-	$date_fmt = read_graph_config_option('default_date_format');
-	$datechar = read_graph_config_option('default_datechar');
+	$date_fmt = read_user_setting('default_date_format');
+	$datechar = read_user_setting('default_datechar');
 
 	switch ($datechar) {
 		case GDC_HYPHEN: 	$datechar = '-'; break;
@@ -216,7 +216,7 @@ function generate_report($report, $force = false) {
 
 	$time = time();
 	# get config option for first-day-of-the-week
-	$first_weekdayid = read_graph_config_option('first_weekdayid');
+	$first_weekdayid = read_user_setting('first_weekdayid');
 
 	$offset      = 0;
 	$graphids    = array();
@@ -547,7 +547,7 @@ function reports_generate_html ($reports_id, $output = REPORTS_OUTPUT_STDOUT) {
 
 	$time = time();
 	# get config option for first-day-of-the-week
-	$first_weekdayid = read_graph_config_option('first_weekdayid');
+	$first_weekdayid = read_user_setting('first_weekdayid');
 
 	/* process the format file as applicable */
 	if ($report['cformat'] == 'on') {
@@ -596,7 +596,7 @@ function reports_generate_html ($reports_id, $output = REPORTS_OUTPUT_STDOUT) {
 		# so let's use time()
 		$time = time();
 		# get config option for first-day-of-the-week
-		$first_weekdayid = read_graph_config_option('first_weekdayid');
+		$first_weekdayid = read_user_setting('first_weekdayid');
 
 		/* don't cache previews */
 		$_SESSION['custom'] = 'true';
@@ -759,7 +759,7 @@ function reports_expand_tree($report, $item, $parent, $output, $format_ok, $them
 
 	$time = time();
 	# get config option for first-day-of-the-week
-	$first_weekdayid = read_graph_config_option('first_weekdayid');
+	$first_weekdayid = read_user_setting('first_weekdayid');
 
 	/* check if we have enough data */
 	if (isset($_SESSION['sess_current_user'])) {

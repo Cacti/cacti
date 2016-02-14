@@ -1735,7 +1735,7 @@ $settings = array(
  		),
 	);
 
-$settings_graphs = array(
+$settings_user = array(
 	'general' => array(
 		'selected_theme' => array(
 			'friendly_name' => 'Theme',

@@ -259,7 +259,7 @@ function form_actions() {
 				get_filter_request_var('tree_id');
 				get_filter_request_var('tree_item_id');
 				for ($i=0;($i<count($selected_items));$i++) {
-					api_tree_item_save(0, get_nfilter_request_var('tree_id'), TREE_ITEM_TYPE_GRAPH, get_nfilter_request_var('tree_item_id'), '', $selected_items[$i], read_graph_config_option('default_rra_id'), 0, 0, 0, false);
+					api_tree_item_save(0, get_nfilter_request_var('tree_id'), TREE_ITEM_TYPE_GRAPH, get_nfilter_request_var('tree_item_id'), '', $selected_items[$i], read_user_setting('default_rra_id'), 0, 0, 0, false);
 				}
 			}
 		}
@@ -578,7 +578,7 @@ function graph_edit() {
 		?>
 		<tr class='even'>
 			<td align='center' class='textInfo' colspan='2'>
-				<img src='<?php print htmlspecialchars($config['url_path'] . 'graph_image.php?action=edit&local_graph_id=' . get_request_var('id') . '&rra_id=' . read_graph_config_option('default_rra_id'));?>' alt=''>
+				<img src='<?php print htmlspecialchars($config['url_path'] . 'graph_image.php?action=edit&local_graph_id=' . get_request_var('id') . '&rra_id=' . read_user_setting('default_rra_id'));?>' alt=''>
 			</td>
 			<?php
 			if (isset($_SESSION['graph_debug_mode']) && isset_request_var('id')) {

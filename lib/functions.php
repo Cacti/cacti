@@ -37,30 +37,73 @@ function title_trim($text, $max_length) {
 	}
 }
 
-/* set_graph_config_option - sets/updates a user graph config option with the given value.
+/* set_graph_config_option - deprecated - wrapper to set_user_setting().
    @arg $config_name - the name of the configuration setting as specified $settings array
    @arg $value       - the values to be saved
    @arg $user        - the user id, otherwise the session user
    @returns          - void */
 function set_graph_config_option($config_name, $value, $user = -1) {
-	if ($user == -1) {
-		$user = $_SESSION['sess_user_id'];
-	}
-	db_execute_prepared('REPLACE INTO settings_graphs SET user_id = ?, name = ?, value = ?', array($user, $config_name, $value));
-
-	unset($_SESSION['sess_graph_config_array']);
-	unset($settings_graphs);
+	set_user_setting($config_name, $value, $user);
 }
 
-/* read_default_graph_config_option - finds the default value of a graph configuration setting
+/* graph_config_value_exists - deprecated - wrapper to user_setting_exists
+   @arg $config_name - the name of the configuration setting as specified $settings_user array
+     in 'include/global_settings.php'
+   @arg $user_id - the id of the user to check the configuration value for
+   @returns (bool) - true if a value exists, false if a value does not exist */
+function graph_config_value_exists($config_name, $user_id) {
+	return user_setting_exists($config_name, $user_id);
+}
+
+/* read_default_graph_config_option - deprecated - wrapper to read_default_user_setting
    @arg $config_name - the name of the configuration setting as specified $settings array
      in 'include/global_settings.php'
    @returns - the default value of the configuration option */
 function read_default_graph_config_option($config_name) {
-	global $config, $settings_graphs;
+	return read_default_user_setting($config_name);
+}
 
-	reset($settings_graphs);
-	while (list($tab_name, $tab_array) = each($settings_graphs)) {
+/* read_graph_config_option - deprecated - finds the current value of a graph configuration setting
+   @arg $config_name - the name of the configuration setting as specified $settings_user array
+     in 'include/global_settings.php'
+   @returns - the current value of the graph configuration option */
+function read_graph_config_option($config_name, $force = FALSE) {
+	return read_user_setting($config_name, $force);
+}
+
+/* set_user_setting - sets/updates a user setting with the given value.
+   @arg $config_name - the name of the configuration setting as specified $settings array
+   @arg $value       - the values to be saved
+   @arg $user        - the user id, otherwise the session user
+   @returns          - void */
+function set_user_setting($config_name, $value, $user = -1) {
+	if ($user == -1) {
+		$user = $_SESSION['sess_user_id'];
+	}
+	db_execute_prepared('REPLACE INTO settings_user SET user_id = ?, name = ?, value = ?', array($user, $config_name, $value));
+
+	unset($_SESSION['sess_graph_config_array']);
+	unset($settings_user);
+}
+
+/* user_setting_exists - determines if a value exists for the current user/setting specified
+   @arg $config_name - the name of the configuration setting as specified $settings_user array
+     in 'include/global_settings.php'
+   @arg $user_id - the id of the user to check the configuration value for
+   @returns (bool) - true if a value exists, false if a value does not exist */
+function user_setting_exists($config_name, $user_id) {
+	return sizeof(db_fetch_assoc_prepared('SELECT value FROM settings_user WHERE name = ? AND user_id = ?', array($config_name, $user_id)));
+}
+
+/* read_default_user_setting - finds the default value of a user configuration setting
+   @arg $config_name - the name of the configuration setting as specified $settings array
+     in 'include/global_settings.php'
+   @returns - the default value of the configuration option */
+function read_default_user_setting($config_name) {
+	global $config, $settings_user;
+
+	reset($settings_user);
+	while (list($tab_name, $tab_array) = each($settings_user)) {
 		if ((isset($tab_array[$config_name])) && (isset($tab_array[$config_name]['default']))) {
 			return $tab_array[$config_name]['default'];
 		}else{
@@ -73,11 +116,11 @@ function read_default_graph_config_option($config_name) {
 	}
 }
 
-/* read_graph_config_option - finds the current value of a graph configuration setting
-   @arg $config_name - the name of the configuration setting as specified $settings_graphs array
+/* read_user_setting - finds the current value of a graph configuration setting
+   @arg $config_name - the name of the configuration setting as specified $settings_user array
      in 'include/global_settings.php'
    @returns - the current value of the graph configuration option */
-function read_graph_config_option($config_name, $force = FALSE) {
+function read_user_setting($config_name, $force = FALSE) {
 	global $config;
 
 	/* users must have cacti user auth turned on to use this, or the guest account must be active */
@@ -94,7 +137,7 @@ function read_graph_config_option($config_name, $force = FALSE) {
 			$effective_uid = 0;
 		}
 
-		$db_setting = db_fetch_row_prepared('SELECT value FROM settings_graphs WHERE name = ? AND user_id = ?', array($config_name, $effective_uid));
+		$db_setting = db_fetch_row_prepared('SELECT value FROM settings_user WHERE name = ? AND user_id = ?', array($config_name, $effective_uid));
 
 		if (isset($db_setting['value'])) {
 			return $db_setting['value'];
@@ -116,7 +159,7 @@ function read_graph_config_option($config_name, $force = FALSE) {
 	}
 
 	if (!isset($graph_config_array[$config_name])) {
-		$db_setting = db_fetch_row_prepared('SELECT value FROM settings_graphs WHERE name = ? AND user_id = ?', array($config_name, $effective_uid));
+		$db_setting = db_fetch_row_prepared('SELECT value FROM settings_user WHERE name = ? AND user_id = ?', array($config_name, $effective_uid));
 
 		if (isset($db_setting['value'])) {
 			$graph_config_array[$config_name] = $db_setting['value'];
@@ -134,21 +177,20 @@ function read_graph_config_option($config_name, $force = FALSE) {
 	return $graph_config_array[$config_name];
 }
 
+/* set_config_option - sets/updates a cacti config option with the given value.
+   @arg $config_name - the name of the configuration setting as specified $settings array
+   @arg $value       - the values to be saved
+   @returns          - void */
+function set_config_option($config_name, $value) {
+	db_execute_prepared('REPLACE INTO settings SET name = ?, value = ?', array($config_name, $value));
+}
+
 /* config_value_exists - determines if a value exists for the current user/setting specified
    @arg $config_name - the name of the configuration setting as specified $settings array
      in 'include/global_settings.php'
    @returns (bool) - true if a value exists, false if a value does not exist */
 function config_value_exists($config_name) {
 	return sizeof(db_fetch_assoc_prepared('SELECT value FROM settings WHERE name= ?', array($config_name)));
-}
-
-/* graph_config_value_exists - determines if a value exists for the current user/setting specified
-   @arg $config_name - the name of the configuration setting as specified $settings_graphs array
-     in 'include/global_settings.php'
-   @arg $user_id - the id of the user to check the configuration value for
-   @returns (bool) - true if a value exists, false if a value does not exist */
-function graph_config_value_exists($config_name, $user_id) {
-	return sizeof(db_fetch_assoc_prepared('SELECT value FROM settings_graphs WHERE name = ? AND user_id = ?', array($config_name, $user_id)));
 }
 
 /* read_default_config_option - finds the default value of a Cacti configuration setting
@@ -172,14 +214,6 @@ function read_default_config_option($config_name) {
 			}
 		}
 	}
-}
-
-/* set_config_option - sets/updates a cacti config option with the given value.
-   @arg $config_name - the name of the configuration setting as specified $settings array
-   @arg $value       - the values to be saved
-   @returns          - void */
-function set_config_option($config_name, $value) {
-	db_execute_prepared('REPLACE INTO settings SET name = ?, value = ?', array($config_name, $value));
 }
 
 /* read_config_option - finds the current value of a Cacti configuration setting
@@ -221,7 +255,7 @@ function get_selected_theme() {
 	if (isset($_SESSION['selected_theme'])) {
 		return $_SESSION['selected_theme'];
 	}elseif (isset($_SESSION['sess_user_id'])) {
-		$theme = db_fetch_cell_prepared("SELECT value FROM settings_graphs WHERE name='selected_theme' AND user_id = ?", array($_SESSION['sess_user_id']));
+		$theme = db_fetch_cell_prepared("SELECT value FROM settings_user WHERE name='selected_theme' AND user_id = ?", array($_SESSION['sess_user_id']));
 
 		if (!empty($theme)) {
 			$_SESSION['selected_theme'] = $theme;
