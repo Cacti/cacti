@@ -22,16 +22,16 @@
  +-------------------------------------------------------------------------+
 */
 
+$guest_account = true;
+include('./include/auth.php');
+include_once('./lib/rrd.php');
+
 /* set default action */
 set_default_action('view');
 
 if (!isset_request_var('view_type')) { 
 	set_request_var('view_type', '');
 }
-
-$guest_account = true;
-include('./include/auth.php');
-include_once('./lib/rrd.php');
 
 /* ================= input validation ================= */
 input_validate_input_regex(get_request_var('rra_id'), '^([0-9]+|all)$');
