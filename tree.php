@@ -347,7 +347,7 @@ function form_actions() {
 	global $tree_actions;
 
 	/* ================= input validation ================= */
-	input_validate_input_regex(get_nfilter_request_var('drp_action'), '^([a-zA-Z0-9_]+)$');
+	get_filter_request_var('drp_action', FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => '/^([a-zA-Z0-9_]+)$/')));
 	/* ==================================================== */
 
 	/* if we are to save this form, instead of display it */

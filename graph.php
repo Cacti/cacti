@@ -34,11 +34,11 @@ if (!isset_request_var('view_type')) {
 }
 
 /* ================= input validation ================= */
-input_validate_input_regex(get_request_var('rra_id'), '^([0-9]+|all)$');
+get_filter_request_var('rra_id', FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => '/^([0-9]+|all)$/')));
 get_filter_request_var('local_graph_id');
 get_filter_request_var('graph_end');
 get_filter_request_var('graph_start');
-input_validate_input_regex(get_request_var('view_type'), '^([a-zA-Z0-9]+)$');
+get_filter_request_var('view_type', FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => '/^([a-zA-Z0-9]+)$/')));
 /* ==================================================== */
 
 api_plugin_hook_function('graph');

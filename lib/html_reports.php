@@ -786,8 +786,8 @@ function reports_send($id) {
 
 function reports_item_movedown() {
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var('item_id'));
-	input_validate_input_number(get_request_var('id'));
+	get_filter_request_var('item_id');
+	get_filter_request_var('id');
 	/* ==================================================== */
 
 	move_item_down('reports_items', get_request_var('item_id'), 'report_id=' . get_request_var('id'));
@@ -795,15 +795,15 @@ function reports_item_movedown() {
 
 function reports_item_moveup() {
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var('item_id'));
-	input_validate_input_number(get_request_var('id'));
+	get_filter_request_var('item_id');
+	get_filter_request_var('id');
 	/* ==================================================== */
 	move_item_up('reports_items', get_request_var('item_id'), 'report_id=' . get_request_var('id'));
 }
 
 function reports_item_remove() {
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var('item_id'));
+	get_filter_request_var('item_id');
 	/* ==================================================== */
 	db_execute('DELETE FROM reports_items WHERE id=' . get_request_var('item_id'));
 }

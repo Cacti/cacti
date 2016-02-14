@@ -50,7 +50,7 @@ $pluginslist = retrieve_plugin_list();
 $modes = array('installold', 'uninstallold', 'install', 'uninstall', 'disable', 'enable', 'check', 'moveup', 'movedown');
 
 if (isset_request_var('mode') && in_array(get_request_var('mode'), $modes)  && isset_request_var('id')) {
-	input_validate_input_regex(get_request_var('id'), '^([a-zA-Z0-9]+)$');
+	get_filter_request_var('id', FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => '/^([a-zA-Z0-9]+)$/')));
 
 	$mode = get_request_var('mode');
 	$id   = sanitize_search_string(get_request_var('id'));

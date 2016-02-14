@@ -114,7 +114,7 @@ function form_save() {
 		get_filter_request_var('id');
 		get_filter_request_var('data_input_id');
 		get_filter_request_var('sequence');
-		input_validate_input_regex(get_nfilter_request_var('input_output'), '^(in|out)$');
+		get_filter_request_var('input_output', FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => '/^(in|out)$/')));
 		/* ==================================================== */
 
 		$save['id']            = get_nfilter_request_var('id');
@@ -155,7 +155,7 @@ function form_actions() {
 	global $di_actions;
 
 	/* ================= input validation ================= */
-	input_validate_input_regex(get_nfilter_request_var('drp_action'), '^([a-zA-Z0-9_]+)$');
+	get_filter_request_var('drp_action', FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => '/^([a-zA-Z0-9_]+)$/')));
 	/* ==================================================== */
 
 	/* if we are to save this form, instead of display it */
@@ -278,7 +278,7 @@ function field_edit() {
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
 	get_filter_request_var('data_input_id');
-	input_validate_input_regex(get_request_var('type'), '^(in|out)$');
+	get_filter_request_var('type', FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => '/^(in|out)$/')));
 	/* ==================================================== */
 
 	if (!isempty_request_var('id')) {
