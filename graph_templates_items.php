@@ -237,12 +237,23 @@ function item_movedown() {
 		move_graph_group(get_request_var('id'), $arr, $next_id, 'next');
 	}elseif (preg_match('/(GPRINT|VRULE|HRULE|COMMENT)/', $graph_item_types{db_fetch_cell_prepared('SELECT graph_type_id FROM graph_templates_item WHERE id = ?', array(get_request_var('id')))})) {
 		/* this is so we know the "other" graph item to propagate the changes to */
-		$next_item = get_item('graph_templates_item', 'sequence', get_request_var('id'), 'graph_template_id=' . get_request_var('graph_template_id') . ' and local_graph_id=0', 'next');
+		$next_item = get_item('graph_templates_item', 'sequence', get_request_var('id'), 'graph_template_id=' . get_request_var('graph_template_id') . ' AND local_graph_id=0', 'next');
 
 		move_item_down('graph_templates_item', get_request_var('id'), 'graph_template_id=' . get_request_var('graph_template_id') . ' AND local_graph_id=0');
+	}
 
-		db_execute_prepared('UPDATE graph_templates_item SET sequence = ' . db_fetch_cell_prepared('SELECT sequence FROM graph_templates_item WHERE id = ?', array(get_request_var('id'))) . ' WHERE local_graph_template_item_id = ?', array(get_request_var('id')));
-		db_execute_prepared('UPDATE graph_templates_item SET sequence = ' . db_fetch_cell_prepared('SELECT sequence FROM graph_templates_item WHERE id = ?', array($next_item)). ' WHERE local_graph_template_item_id = ?', array($next_item));
+	if (!isempty_request_var('graph_template_id')) {
+		resequence_graphs(get_request_var('graph_template_id'));
+	}
+}
+
+function resequence_graphs($graph_template_id) {
+	$items = db_fetch_assoc_prepared('SELECT id, sequence FROM graph_templates_item WHERE graph_template_id = ? AND local_graph_id = 0 ORDER BY sequence', array($graph_template_id));
+
+	if (sizeof($items)) {
+	foreach($items as $item) {
+		db_execute_prepared('UPDATE graph_templates_item SET sequence = ? WHERE graph_template_id = ? AND local_graph_template_item_id = ?', array($item['sequence'], $graph_template_id, $item['id']));
+	}
 	}
 }
 
@@ -261,12 +272,13 @@ function item_moveup() {
 		move_graph_group(get_request_var('id'), $arr, $next_id, 'previous');
 	}elseif (preg_match('/(GPRINT|VRULE|HRULE|COMMENT)/', $graph_item_types{db_fetch_cell_prepared('SELECT graph_type_id FROM graph_templates_item WHERE id = ?', array(get_request_var('id')))})) {
 		/* this is so we know the "other" graph item to propagate the changes to */
-		$last_item = get_item('graph_templates_item', 'sequence', get_request_var('id'), 'graph_template_id=' . get_request_var('graph_template_id') . ' and local_graph_id=0', 'previous');
+		$last_item = get_item('graph_templates_item', 'sequence', get_request_var('id'), 'graph_template_id=' . get_request_var('graph_template_id') . ' AND local_graph_id=0', 'previous');
 
-		move_item_up('graph_templates_item', get_request_var('id'), 'graph_template_id=' . get_request_var('graph_template_id') . ' and local_graph_id=0');
+		move_item_up('graph_templates_item', get_request_var('id'), 'graph_template_id=' . get_request_var('graph_template_id') . ' AND local_graph_id=0');
+	}
 
-		db_execute_prepared('UPDATE graph_templates_item SET sequence = ' . db_fetch_cell_prepared('SELECT sequence FROM graph_templates_item WHERE id = ?', array(get_request_var('id'))) . ' WHERE local_graph_template_item_id = ?', array(get_request_var('id')));
-		db_execute_prepared('UPDATE graph_templates_item SET sequence = ' . db_fetch_cell_prepared('SELECT sequence FROM graph_templates_item WHERE id = ?', array($last_item)). ' WHERE local_graph_template_item_id = ?', array($last_item));
+	if (!isempty_request_var('graph_template_id')) {
+		resequence_graphs(get_request_var('graph_template_id'));
 	}
 }
 
@@ -319,7 +331,7 @@ function item_edit() {
 
 	/* by default, select the LAST DS chosen to make everyone's lives easier */
 	if (!isempty_request_var('graph_template_id')) {
-		$default = db_fetch_row_prepared('SELECT task_item_id FROM graph_templates_item WHERE graph_template_id = ? and local_graph_id = 0 ORDER BY sequence DESC', array(get_request_var('graph_template_id')));
+		$default = db_fetch_row_prepared('SELECT task_item_id FROM graph_templates_item WHERE graph_template_id = ? AND local_graph_id = 0 ORDER BY sequence DESC', array(get_request_var('graph_template_id')));
 
 		if (sizeof($default) > 0) {
 			$struct_graph_item['task_item_id']['default'] = $default['task_item_id'];
