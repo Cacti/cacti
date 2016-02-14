@@ -171,6 +171,8 @@ function settings() {
 	?>
 	<script type='text/javascript'>
 	var themeFonts=<?php print read_config_option('font_method');?>;
+	var themeChanged = false;
+	var currentTheme = '<?php print get_selected_theme();?>';
 
 	function graphSettings() {
 		if (themeFonts == 1) {
@@ -232,19 +234,32 @@ function settings() {
 		}
 	}
 
+	function themeChanger() {
+		if ($('#selected_theme').val() != currentTheme) {
+			themeChanged = true;
+		}else{
+			themeChanged = false;
+		}
+	}
+
 	$(function() {
 		graphSettings();
 
 		$('#navigation').show();
 		$('#navigation_right').show();
 
-		$('input[value="Save"]').click(function(event) {
+		$('input[value="Save"]').unbind().click(function(event) {
 			event.preventDefault();
 			href='<?php  print $_SERVER['HTTP_REFERER'];?>';
-			href=href+(href.indexOf('?') > 0 ? '&':'?')+'header=false';
+			href=href+(href.indexOf('?') > 0 ? '&':'?')+'header=false'+(themeChanged ? '&newtheme=1':'');
+
 			$.post('graph_settings.php?header=false', $('input, select, textarea').serialize()).done(function(data) {
-				document.location='<?php  print $_SERVER['HTTP_REFERER'];?>';
+				document.location='<?php print $_SERVER['HTTP_REFERER'];?>'+(themeChanged ? '&newtheme=1':'');
 			});
+		});
+
+		$('#selected_theme').change(function() {
+			themeChanger();
 		});
 
 		$('#timespan_sel').change(function() {

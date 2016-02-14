@@ -182,7 +182,7 @@ default:
 				});
 			}else{
 				$.post('settings.php?tab='+$('#tab').val()+'&header=false', $('input, select, textarea').serialize()).done(function(data) {
-					document.location = 'settings.php?tab='+$('#tab').val();
+					document.location = 'settings.php?newtheme=1&tab='+$('#tab').val();
 				});
 			}
 		});

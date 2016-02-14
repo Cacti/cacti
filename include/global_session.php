@@ -62,7 +62,7 @@ if (!empty($refresh)) {
 	$refreshIsLogout = 'true';
 } ?> 
 <script type='text/javascript'>
-	var theme='<?php print read_config_option('selected_theme');?>';
+	var theme='<?php print get_selected_theme();?>';
 	var refreshIsLogout=<?php print $refreshIsLogout;?>;
 	var refreshPage='<?php print $myrefresh['page'];?>';
 	var refreshMSeconds=<?php print $myrefresh['seconds']*1000;?>;

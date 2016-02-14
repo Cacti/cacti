@@ -308,9 +308,9 @@ function boost_graph_cache_check($local_graph_id, $rra_id, $rrdtool_pipe, $graph
 			if (is_dir($cache_directory)) {
 				if (is_writable($cache_directory)) {
 					if ($rra_id > 0) {
-						$cache_file = $cache_directory . '/lgi_' . $local_graph_id . '_rrai_' . $rra_id;
+						$cache_file = $cache_directory . '/' . get_selected_theme() . '_lgi_' . $local_graph_id . '_rrai_' . $rra_id;
 					}else{
-						$cache_file = $cache_directory . '/lgi_' . $local_graph_id . '_rrai_' . $rra_id . '_tsi_' . $timespan;
+						$cache_file = $cache_directory . '/' . get_selected_theme() . '_lgi_' . $local_graph_id . '_rrai_' . $rra_id . '_tsi_' . $timespan;
 					}
 
 					if (isset($graph_data_array['graph_height'])) {
@@ -432,9 +432,9 @@ function boost_graph_set_file(&$output, $local_graph_id, $rra_id) {
 		if (strlen($cache_directory)) {
 			if (is_dir($cache_directory)) {
 				if ($rra_id > 0) {
-					$cache_file = $cache_directory . '/lgi_' . $local_graph_id . '_rrai_' . $rra_id;
+					$cache_file = $cache_directory . '/' . get_selected_theme() . '_lgi_' . $local_graph_id . '_rrai_' . $rra_id;
 				}else{
-					$cache_file = $cache_directory . '/lgi_' . $local_graph_id . '_rrai_' . $rra_id . '_tsi_' . $timespan;
+					$cache_file = $cache_directory . '/' . get_selected_theme() . '_lgi_' . $local_graph_id . '_rrai_' . $rra_id . '_tsi_' . $timespan;
 				}
 
 				if (isset($graph_data_array['graph_height'])) {

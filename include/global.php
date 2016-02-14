@@ -257,6 +257,10 @@ if ($is_web) {
 	}
 	include_once($config['include_path'] . '/csrf/csrf-magic.php');
 
+	if (isset_request_var('newtheme')) {
+		unset($_SESSION['selected_theme']);
+	}
+
 	if (read_config_option('force_https') == 'on') {
 		if (!isset($_SERVER['HTTPS']) && isset($_SERVER['HTTP_HOST']) && isset($_SERVER['REQUEST_URI'])) {
 			Header('Location: https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] . "\n\n");

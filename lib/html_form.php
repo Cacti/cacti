@@ -626,7 +626,7 @@ function form_callback($form_name, $classic_sql, $column_display, $column_id, $c
 		$on_change = " onChange='$on_change' ";
 	}
 
-	$theme = read_config_option('selected_theme');
+	$theme = get_selected_theme();
 	if ($theme == 'classic') {
 		print "<select id='" . htmlspecialchars($form_name) . "' name='" . htmlspecialchars($form_name) . "'" . $class . $on_change . ">";
 

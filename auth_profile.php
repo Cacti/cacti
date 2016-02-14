@@ -120,7 +120,7 @@ function form_save() {
 }
 
 /* --------------------------
-    Graph Settings Functions
+    User Settings Functions
    -------------------------- */
 
 function settings() {
@@ -146,7 +146,7 @@ function settings() {
 
 	form_start('auth_profile.php');
 
-	html_start_box('User Settings', '100%', '', '3', 'center', '');
+	html_start_box('User Account Details', '100%', '', '3', 'center', '');
 
 	$current_user = db_fetch_row_prepared('SELECT * FROM user_auth WHERE id = ?', array($_SESSION['sess_user_id']));
 
@@ -215,7 +215,7 @@ function settings() {
 			$settings_graphs['tree']['default_tree_id']['sql'] = get_graph_tree_array(true);
 		}
 
-		html_start_box('Graph Settings', '100%', '', '3', 'center', '');
+		html_start_box('User Settings', '100%', '', '3', 'center', '');
 
 		while (list($tab_short_name, $tab_fields) = each($settings_graphs)) {
 			$collapsible = true;
@@ -261,6 +261,8 @@ function settings() {
 	<script type="text/javascript">
 
 	var themeFonts=<?php print read_config_option('font_method');?>;
+	var themeChanged = false;
+	var currentTheme = '<?php print get_selected_theme();?>';
 
 	function clearPrivateData() {
 		$.localStorage.removeAll();
@@ -365,6 +367,14 @@ function settings() {
 		}
 	}
 
+	function themeChanger() {
+		if ($('#selected_theme').val() != currentTheme) {
+			themeChanged = true;
+		}else{
+			themeChanged = false;
+		}
+	}
+
 	$(function() {
 		graphSettings();
 
@@ -373,11 +383,19 @@ function settings() {
 
 		$('input[value="Save"]').unbind().click(function(event) {
 			event.preventDefault();
-			href='<?php  print $_SERVER['HTTP_REFERER'];?>';
-			href=href+(href.indexOf('?') > 0 ? '&':'?')+'header=false';
-			$.post('auth_profile.php?header=false', $('input, select, textarea').serialize()).done(function(data) {
-				loadPageNoHeader('auth_profile.php?action=noreturn&header=false');
-			});
+            if (themeChanged != true) {
+                $.post('auth_profile.php?header=false', $('input, select, textarea').serialize()).done(function(data) {
+					loadPageNoHeader('auth_profile.php?action=noreturn&header=false');
+                });
+            }else{
+                $.post('auth_profile.php?header=false', $('input, select, textarea').serialize()).done(function(data) {
+                    document.location = 'auth_profile.php?newtheme=1';
+                });
+            }
+		});
+
+		$('#selected_theme').change(function() {
+			themeChanger();
 		});
 
 		$('input[value="Return"]').unbind().click(function(event) {

@@ -1725,6 +1725,13 @@ $settings = array(
 
 $settings_graphs = array(
 	'general' => array(
+		'selected_theme' => array(
+			'friendly_name' => 'Theme',
+			'description' => 'Please select one of the available Themes to skin your Cacti with.',
+			'method' => 'drop_array',
+			'default' => 'classic',
+			'array' => $themes
+			),
 		'default_view_mode' => array(
 			'friendly_name' => 'Default View Mode',
 			'description' => 'Which mode you want displayed when you visit "graph_view.php"',

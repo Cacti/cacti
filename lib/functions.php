@@ -214,6 +214,27 @@ function read_config_option($config_name, $force = FALSE) {
 	return $config_array[$config_name];
 }
 
+/* get_selected_theme - checks the user settings and if the user selected theme is set, returns it
+     otherwise returns the system default.
+   @returns - the themen name */
+function get_selected_theme() {
+	if (isset($_SESSION['selected_theme'])) {
+		return $_SESSION['selected_theme'];
+	}elseif (isset($_SESSION['sess_user_id'])) {
+		$theme = db_fetch_cell_prepared("SELECT value FROM settings_graphs WHERE name='selected_theme' AND user_id = ?", array($_SESSION['sess_user_id']));
+
+		if (!empty($theme)) {
+			$_SESSION['selected_theme'] = $theme;
+
+			return $theme;
+		}
+	}
+
+	$_SESSION['selected_theme'] = read_config_option('selected_theme');
+
+	return read_config_option('selected_theme');
+}
+
 /* form_input_validate - validates the value of a form field and Takes the appropriate action if the input
      is not valid
    @arg $field_value - the value of the form field
@@ -2519,12 +2540,12 @@ function draw_navigation_text($type = 'url') {
 		if ($current_mappings[$i] == '?') {
 			/* '?' tells us to pull title from the cache at this level */
 			if (isset($nav_level_cache{$i})) {
-				$current_nav .= (empty($url) ? '' : "<li><a id='nav_$i' href='" . htmlspecialchars($url) . "'>") . htmlspecialchars(resolve_navigation_variables($nav{$nav_level_cache{$i}['id']}['title'])) . (empty($url) ? '' : '</a>' . (read_config_option('selected_theme') == 'classic' ? ' -> ':'') . '</li>');
+				$current_nav .= (empty($url) ? '' : "<li><a id='nav_$i' href='" . htmlspecialchars($url) . "'>") . htmlspecialchars(resolve_navigation_variables($nav{$nav_level_cache{$i}['id']}['title'])) . (empty($url) ? '' : '</a>' . (get_selected_theme() == 'classic' ? ' -> ':'') . '</li>');
 				$title       .= htmlspecialchars(resolve_navigation_variables($nav{$nav_level_cache{$i}['id']}['title'])) . ' -> ';
 			}
 		}else{
 			/* there is no '?' - pull from the above array */
-			$current_nav .= (empty($url) ? '' : "<li><a id='nav_$i' href='" . htmlspecialchars($url) . "'>") . htmlspecialchars(resolve_navigation_variables($nav{$current_mappings[$i]}['title'])) . (empty($url) ? '' : '</a>' . (read_config_option('selected_theme') == 'classic' ? ' -> ':'') . '</li>');
+			$current_nav .= (empty($url) ? '' : "<li><a id='nav_$i' href='" . htmlspecialchars($url) . "'>") . htmlspecialchars(resolve_navigation_variables($nav{$current_mappings[$i]}['title'])) . (empty($url) ? '' : '</a>' . (get_selected_theme() == 'classic' ? ' -> ':'') . '</li>');
 			$title       .= htmlspecialchars(resolve_navigation_variables($nav{$current_mappings[$i]}['title'])) . ' -> ';
 		}
 

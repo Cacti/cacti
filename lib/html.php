@@ -1081,7 +1081,7 @@ function is_console_page($url) {
 function html_show_tabs_left($show_console_tab) {
 	global $config, $tabs_left;
 
-	if (read_config_option("selected_theme") == 'classic') {
+	if (get_selected_theme() == 'classic') {
 		if ($show_console_tab == true) {
 			?><a href="<?php echo $config['url_path']; ?>index.php"><img src="<?php echo $config['url_path']; ?>images/tab_console<?php print (is_console_page(basename($_SERVER['PHP_SELF'])) ? '_down':'');?>.gif" alt="Console"></a><?php
 		}
@@ -1216,7 +1216,7 @@ function html_show_tabs_left($show_console_tab) {
 function html_graph_tabs_right($current_user) {
 	global $config, $tabs_right;
 
-	$theme = read_config_option('selected_theme');
+	$theme = get_selected_theme();
 
 	if ($theme == 'classic') {
 		if (is_view_allowed('graph_settings')) {
@@ -1353,7 +1353,7 @@ function html_graph_tabs_right($current_user) {
 }
 
 function html_host_filter($host_id = '-1', $call_back = 'applyFilter') {
-	$theme = read_config_option('selected_theme');
+	$theme = get_selected_theme();
 
 	if ($theme == 'classic') {
 		?>
