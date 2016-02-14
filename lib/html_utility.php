@@ -328,7 +328,9 @@ function get_request_var_request($name, $default = '') {
 function get_filter_request_var($name, $filter = FILTER_VALIDATE_INT, $options = array()) {
 	if (isset_request_var($name)) {
 		if (isempty_request_var($name)) {
-			$value = true;
+			set_request_var($name, get_nfilter_request_var($name));
+
+			return get_request_var($name);
 		}else{
 			if (!sizeof($options)) {
 				$value = filter_var($_REQUEST[$name], $filter);

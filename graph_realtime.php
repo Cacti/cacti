@@ -48,12 +48,12 @@ case 'countdown':
 	get_filter_request_var('count');
 	get_filter_request_var('top');
 	get_filter_request_var('left');
-	/* ==================================================== */
-
-	/* clean up action string */
-	if (isset_request_var('action')) {
-		set_request_var('action', sanitize_search_string(get_request_var('action')));
+	if (isset_request_var('graph_nolegend')) {
+		set_request_var('graph_nolegend', 'true');
+	}else{
+		set_request_var('graph_nolegend', 'false');
 	}
+	/* ==================================================== */
 
 	switch (get_request_var('action')) {
 	case 'init':
@@ -104,12 +104,17 @@ case 'countdown':
 	/* override: graph start */
 	if (!isempty_request_var('graph_start')) {
 		$graph_data_array['graph_start']  = get_request_var('graph_start');
+		if ($graph_data_array['graph_start'] < 0) {
+			$graph_data_array['graph_start'] = time() + $graph_data_array['graph_start'];
+		}
 		$_SESSION['sess_realtime_window'] = get_request_var('ds_step');
 	}
 
 	/* override: graph end */
 	if (!isempty_request_var('graph_end')) {
 		$graph_data_array['graph_end'] = get_request_var('graph_end');
+	}else{
+		$graph_data_array['graph_end'] = time();
 	}
 
 	/* print RRDTool graph source? */

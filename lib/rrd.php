@@ -1665,7 +1665,6 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 			}elseif (isset($graph_data_array['export_realtime'])) {
 				$output_flag = RRDTOOL_OUTPUT_GRAPH_DATA;
 				$output = rrdtool_execute("graph $graph_opts$graph_defs$txt_graph_items", false, $output_flag, $rrdtool_pipe);
-				//cacti_log(str_replace(RRD_NL, ' ', "rrdtool graph $graph_opts$graph_defs$txt_graph_items"));
 
 				if ($fp = fopen($graph_data_array['export_realtime'], 'w')) {
 					fwrite($fp, $output, strlen($output));
