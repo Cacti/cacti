@@ -66,8 +66,21 @@ if (get_request_var('action') != '') {
 			'default' => ''
 			),
 		'nodeid' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_REGEXP, 
+			'options' => array('options' => array('regexp' => '/([_\-a-z:0-9#]+)/')),
+			'pageset' => true,
 			'default' => ''
+			),
+		'id' => array(
+			'filter' => FILTER_VALIDATE_REGEXP, 
+			'options' => array('options' => array('regexp' => '/([_\-a-z:0-9#]+)/')),
+			'pageset' => true,
+			'default' => ''
+			),
+		'text' => array(
+			'filter' => FILTER_CALLBACK, 
+			'default' => '', 
+			'options' => array('options' => 'sanitize_search_string')
 			),
 		'filter' => array(
 			'filter' => FILTER_CALLBACK, 
@@ -78,14 +91,6 @@ if (get_request_var('action') != '') {
 
 	validate_store_request_vars($filters);
 	/* ================= input validation ================= */
-
-	if (isset_request_var('id')) {
-		if (!is_numeric(get_nfilter_request_var('id'))) {
-			get_filter_request_var('id', FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => '/([_a-z:0-9#]+)/')));
-		}else{
-			get_filter_request_var('id');
-		}
-	}
 }
 
 switch (get_request_var('action')) {
