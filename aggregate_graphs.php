@@ -36,8 +36,6 @@ include_once('./lib/data_query.php');
 
 aggregate_prune_graphs();
 
-define('MAX_DISPLAY_PAGES', 21);
-
 $graph_actions = array(
 	1 => 'Delete',
 	2 => 'Migrate Aggregate to use a Template',

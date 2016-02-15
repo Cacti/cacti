@@ -27,8 +27,6 @@ include_once('./lib/api_tree.php');
 include_once('./lib/html_tree.php');
 include_once('./lib/data_query.php');
 
-define('MAX_DISPLAY_PAGES', 21);
-
 $tree_actions = array(
 	1 => 'Delete',
 	2 => 'Publish',

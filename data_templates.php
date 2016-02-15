@@ -28,8 +28,6 @@ include_once('./lib/html_tree.php');
 include_once('./lib/utility.php');
 include_once('./lib/template.php');
 
-define('MAX_DISPLAY_PAGES', 21);
-
 $ds_actions = array(
 	1 => 'Delete',
 	2 => 'Duplicate'

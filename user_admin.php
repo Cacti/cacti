@@ -24,8 +24,6 @@
 
 include('./include/auth.php');
 
-define('MAX_DISPLAY_PAGES', 21);
-
 $user_actions = array(
 	1 => 'Delete',
 	2 => 'Copy',

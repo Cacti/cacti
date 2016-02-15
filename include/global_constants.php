@@ -342,3 +342,5 @@ if ($database_type == 'mysql') {
 }else{
 	define('SQL_NO_CACHE', '');
 }
+
+define('MAX_DISPLAY_PAGES', 5);

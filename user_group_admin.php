@@ -24,8 +24,6 @@
 
 include('./include/auth.php');
 
-define('MAX_DISPLAY_PAGES', 21);
-
 //print_r($_POST);exit;
 
 $group_actions = array(

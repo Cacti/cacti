@@ -480,8 +480,6 @@ function utilities_view_tech($php_info = '') {
 function utilities_view_user_log() {
 	global $auth_realms, $item_rows;
 
-	define('MAX_DISPLAY_PAGES', 21);
-
 	/* ================= input validation and session storage ================= */
 	$filters = array(
 		'rows' => array(
@@ -1081,8 +1079,6 @@ function utilities_clear_logfile() {
 function utilities_view_snmp_cache() {
 	global $poller_actions, $item_rows;
 
-	define('MAX_DISPLAY_PAGES', 21);
-
 	/* ================= input validation and session storage ================= */
 	$filters = array(
 		'rows' => array(
@@ -1365,8 +1361,6 @@ function utilities_view_snmp_cache() {
 
 function utilities_view_poller_cache() {
 	global $poller_actions, $item_rows;
-
-	define('MAX_DISPLAY_PAGES', 21);
 
 	/* ================= input validation and session storage ================= */
 	$filters = array(
@@ -2093,8 +2087,6 @@ function boost_display_run_status() {
 function snmpagent_utilities_run_cache() {
 	global $item_rows;
 
-	define('MAX_DISPLAY_PAGES', 21);
-
 	get_filter_request_var('mib', FILTER_CALLBACK, array('options' => 'sanitize_search_string'));
 
 	$mibs = db_fetch_assoc('SELECT DISTINCT mib FROM snmpagent_cache');
@@ -2311,8 +2303,6 @@ function snmpagent_utilities_run_cache() {
 
 function snmpagent_utilities_run_eventlog(){
 	global $item_rows;
-
-	define('MAX_DISPLAY_PAGES', 21);
 
 	$severity_levels = array(
 		SNMPAGENT_EVENT_SEVERITY_LOW => 'LOW',

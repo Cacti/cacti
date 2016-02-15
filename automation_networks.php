@@ -27,8 +27,6 @@ include('./include/auth.php');
 include_once('./lib/snmp.php');
 include_once('./lib/poller.php');
 
-define('MAX_DISPLAY_PAGES', 21);
-
 $network_actions = array(
 	1 => 'Delete',
 	2 => 'Disable',

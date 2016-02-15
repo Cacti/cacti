@@ -40,8 +40,6 @@ if (get_request_var('action') == 'purge') {
 	exit;
 }
 
-define('MAX_DISPLAY_PAGES', 21);
-
 $os_arr     = array_rekey(db_fetch_assoc('SELECT DISTINCT os FROM automation_devices WHERE os IS NOT NULL AND os!=""'), 'os', 'os');
 $status_arr = array('Down', 'Up');
 $networks   = array_rekey(db_fetch_assoc('SELECT an.id, an.name 

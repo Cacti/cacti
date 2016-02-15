@@ -28,8 +28,6 @@ include_once('./lib/template.php');
 include_once('./lib/api_tree.php');
 include_once('./lib/html_tree.php');
 
-define('MAX_DISPLAY_PAGES', 21);
-
 $graph_actions = array(
 	1 => 'Delete',
 	2 => 'Duplicate',

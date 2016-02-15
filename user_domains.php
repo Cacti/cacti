@@ -25,8 +25,6 @@
 include('./include/auth.php');
 include_once('./lib/utility.php');
 
-define('MAX_DISPLAY_PAGES', 21);
-
 $actions = array(
 	1 => 'Delete',
 	2 => 'Disable',

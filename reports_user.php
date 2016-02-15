@@ -26,7 +26,6 @@ $guest_account = true;
 include('./include/auth.php');
 include($config['library_path'] . '/reports.php');
 include($config['library_path'] . '/html_reports.php');
-define('MAX_DISPLAY_PAGES', 21);
 
 get_filter_request_var('id');
 

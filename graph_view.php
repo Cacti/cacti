@@ -30,8 +30,6 @@ include_once('./lib/html_graph.php');
 include_once('./lib/api_tree.php');
 include_once('./lib/timespan_settings.php');
 
-define('MAX_DISPLAY_PAGES', 21);
-
 /* set the default graph action */
 set_default_graph_action();
 

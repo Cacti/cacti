@@ -25,11 +25,9 @@
 include('./include/auth.php');
 include_once('./lib/data_query.php');
 
-define('MAX_DISPLAY_PAGES', 21);
-
 $dq_actions = array(
 	1 => 'Delete'
-	);
+);
 
 /* set default action */
 set_default_action();

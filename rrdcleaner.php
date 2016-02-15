@@ -26,8 +26,6 @@
 include_once ('./include/auth.php');
 include_once ($config['library_path'] . '/functions.php');
 
-define('MAX_DISPLAY_PAGES', 21);
-
 $ds_actions = array (
 	1 => 'Delete',
 	3 => 'Archive'

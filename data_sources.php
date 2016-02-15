@@ -31,8 +31,6 @@ include_once('./lib/html_form_template.php');
 include_once('./lib/rrd.php');
 include_once('./lib/data_query.php');
 
-define('MAX_DISPLAY_PAGES', 21);
-
 $ds_actions = array(
 	1 => 'Delete',
 	2 => 'Change Data Template',

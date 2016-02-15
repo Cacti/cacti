@@ -26,8 +26,6 @@ include('./include/auth.php');
 include_once('./lib/utility.php');
 include_once('./lib/cdef.php');
 
-define('MAX_DISPLAY_PAGES', 21);
-
 $cdef_actions = array(
 	1 => 'Delete',
 	2 => 'Duplicate'

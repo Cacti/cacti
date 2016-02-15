@@ -25,8 +25,6 @@
 include_once('./include/auth.php');
 include_once('./lib/api_aggregate.php');
 
-define('MAX_DISPLAY_PAGES', 21);
-
 $aggregate_actions = array(
 	1 => 'Delete'
 );

@@ -25,8 +25,6 @@
 include('./include/auth.php');
 include_once('./lib/data_query.php');
 
-define('MAX_DISPLAY_PAGES', 21);
-
 $automation_tree_rules_actions = array(
 	AUTOMATION_ACTION_TREE_DUPLICATE => 'Duplicate',
 	AUTOMATION_ACTION_TREE_ENABLE => 'Enable',

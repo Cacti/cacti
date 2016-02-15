@@ -25,8 +25,6 @@
 include('./include/auth.php');
 include_once('./lib/snmp.php');
 
-define('MAX_DISPLAY_PAGES', 21);
-
 $automation_snmp_actions = array(
 	1 => 'Delete',
 	2 => 'Duplicate',

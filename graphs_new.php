@@ -29,8 +29,6 @@ include_once('./lib/sort.php');
 include_once('./lib/html_form_template.php');
 include_once('./lib/template.php');
 
-define('MAX_DISPLAY_PAGES', 21);
-
 /* set default action */
 set_default_action();
 switch (get_request_var('action')) {
@@ -364,8 +362,8 @@ function host_new_graphs($host_id, $host_template_id, $selected_graphs_array) {
 
 		/* since the user didn't actually click "Create" to POST the data; we have to
 		pretend like they did here */
-		save_request_var('save_component_new_graphs', '1');
-		save_request_var('selected_graphs_array', serialize($selected_graphs_array));
+		set_request_var('save_component_new_graphs', '1');
+		set_request_var('selected_graphs_array', serialize($selected_graphs_array));
 
 		host_new_graphs_save($host_id);
 

@@ -24,8 +24,6 @@
 
 include_once('./include/auth.php');
 
-define('MAX_DISPLAY_PAGES', 21);
-
 $aggregate_actions = array(
 	1 => 'Delete',
 	2 => 'Duplicate'

@@ -603,13 +603,15 @@ function get_current_graph_end() {
    @arg $url - the url string to prepend to each page click
    @returns - a string containing html that represents the a page list */
 function get_page_list($current_page, $pages_per_screen, $rows_per_page, $total_rows, $url, $page_var = 'page', $return_to = '') {
-	$url_page_select = '';
+	$url_page_select = "<ul class='pagination'>";
 
 	if (strpos($url, '?') !== false) {
 		$url . '&';
 	}else{
 		$url . '?';
 	}
+
+	$total_pages = ceil($total_rows / $rows_per_page);
 
 	if ($rows_per_page <= 0) {
 		$total_pages = 0;
@@ -621,10 +623,12 @@ function get_page_list($current_page, $pages_per_screen, $rows_per_page, $total_
 	$end_page = min($total_pages, ($current_page + floor(($pages_per_screen - 1) / 2)));
 
 	/* adjust if we are close to the beginning of the page list */
+	if ($current_page > ceil($pages_per_screen/2)) {
+		$url_page_select .= "<li><a href='#' onClick='goto$page_var(1)'>1</a></li>";
+		$url_page_select .= '<li><span>...</span></li>';
+	}
 	if ($current_page <= ceil(($pages_per_screen) / 2)) {
 		$end_page += ($pages_per_screen - $end_page);
-	}else{
-		$url_page_select .= '...';
 	}
 
 	/* adjust if we are close to the end of the page list */
@@ -640,20 +644,19 @@ function get_page_list($current_page, $pages_per_screen, $rows_per_page, $total_
 		$page = $page_number + $start_page;
 		if ($page_number < $pages_per_screen) {
 			if ($current_page == $page) {
-				$url_page_select .= "<strong><span class='linkOverDark' style='cursor:pointer;' onClick='goto$page_var($page)'>$page</span></strong>";
+				$url_page_select .= "<li><a href='#' class='active' onClick='goto$page_var($page)'>$page</a></li>";
 			}else{
-				$url_page_select .= "<span class='linkOverDark' style='cursor:pointer;' onClick='goto$page_var($page)'>$page</span>";
+				$url_page_select .= "<li><a href='#' onClick='goto$page_var($page)'>$page</a></li>";
 			}
-		}
-
-		if (($page_number+$start_page) < $end_page) {
-			$url_page_select .= ',';
 		}
 	}
 
 	if (($total_pages - $current_page) >= ceil(($pages_per_screen) / 2)) {
-		$url_page_select .= '...';
+		$url_page_select .= '<li><span>...</span></li>';
+		$url_page_select .= "<li><a href='#' onClick='goto$page_var($total_pages)'>$total_pages</a></li>";
 	}
+
+	$url_page_select .= '</ul>';
 
 	if ($return_to != '') {
 		$url_page_select .= "<script type='text/javascript'>function goto$page_var(pageNo) { if (typeof url_graph === 'function') { var url_add=url_graph('') }else{ var url_add=''; }; $.get('${url}&header=false&$page_var='+pageNo+url_add,function(data) { $('#$return_to').html(data); applySkin(); if (typeof initializeGraphs == 'function') initializeGraphs();}); }</script>";
