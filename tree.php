@@ -56,7 +56,9 @@ if (get_request_var('action') != '') {
 			'default' => ''
 			),
 		'parent' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_REGEXP, 
+			'options' => array('options' => array('regexp' => '/([_\-a-z:0-9#]+)/')),
+			'pageset' => true,
 			'default' => ''
 			),
 		'position' => array(
