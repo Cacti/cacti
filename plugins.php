@@ -547,7 +547,7 @@ function plugin_actions($plugin) {
 	$link = '<td>';
 	switch ($plugin['status']) {
 		case '-2': // Old PA Not Installed
-			$link .= "<a href='" . htmlspecialchars($config['url_path'] . 'plugins.php?mode=installold&id=' . $plugin['directory']) . "' title='Install Old Plugin' class='linkEditMain'><img align='absmiddle' src='" . $config['url_path'] . "images/install_icon.png'></a>";
+			$link .= "<a href='" . htmlspecialchars($config['url_path'] . 'plugins.php?mode=installold&id=' . $plugin['directory']) . "' title='Install Old Plugin' class='linkEditMain'><img align='absmiddle' src='" . $config['url_path'] . "images/cog_add.png'></a>";
 			$link .= "<img align='absmiddle' src='" . $config['url_path'] . "images/view_none.gif'>";
 			break;
 		case '-1':	// Old PA Currently Active
@@ -558,30 +558,30 @@ function plugin_actions($plugin) {
 				$oldplugins = array();
 			}
 			if (in_array($plugin['directory'], $oldplugins)) {
-				$link .= "<a href='" . htmlspecialchars($config['url_path'] . 'plugins.php?mode=uninstallold&id=' . $plugin['directory']) . "' title='Uninstall Old Plugin' class='linkEditMain'><img align='absmiddle' src='" . $config['url_path'] . "images/uninstall_icon.gif'></a>";
+				$link .= "<a href='" . htmlspecialchars($config['url_path'] . 'plugins.php?mode=uninstallold&id=' . $plugin['directory']) . "' title='Uninstall Old Plugin' class='linkEditMain'><img align='absmiddle' src='" . $config['url_path'] . "images/cog_delete.png'></a>";
 			} else {
-				$link .= "<a href='#' title='Please Uninstall from config.php' class='linkEditMain'><img align='absmiddle' src='" . $config['url_path'] . "images/install_icon_disabled.png'></a>";
+				$link .= "<a href='#' title='Please Uninstall from config.php' class='linkEditMain'><img align='absmiddle' src='" . $config['url_path'] . "images/cog_add.png'></a>";
 			}
 			$link .= "<img align='absmiddle' src='" . $config['url_path'] . "images/view_none.gif'>";
 			break;
 		case '0': // Not Installed
-			$link .= "<a href='" . htmlspecialchars($config['url_path'] . 'plugins.php?mode=install&id=' . $plugin['directory']) . "' title='Install Plugin' class='linkEditMain'><img align='absmiddle' src='" . $config['url_path'] . "images/install_icon.png'></a>";
+			$link .= "<a href='" . htmlspecialchars($config['url_path'] . 'plugins.php?mode=install&id=' . $plugin['directory']) . "' title='Install Plugin' class='linkEditMain'><img align='absmiddle' src='" . $config['url_path'] . "images/cog_add.png'></a>";
 			$link .= "<img align='absmiddle' src='" . $config['url_path'] . "images/view_none.gif'>";
 			break;
 		case '1':	// Currently Active
-			$link .= "<a href='" . htmlspecialchars($config['url_path'] . 'plugins.php?mode=uninstall&id=' . $plugin['directory']) . "' title='Uninstall Plugin' class='linkEditMain'><img align='absmiddle' src='" . $config['url_path'] . "images/uninstall_icon.gif'></a>";
-			$link .= "<a href='" . htmlspecialchars($config['url_path'] . 'plugins.php?mode=disable&id=' . $plugin['directory']) . "' title='Disable Plugin' class='linkEditMain'><img align='absmiddle' src='" . $config['url_path'] . "images/disable_icon.png'></a>";
+			$link .= "<a href='" . htmlspecialchars($config['url_path'] . 'plugins.php?mode=uninstall&id=' . $plugin['directory']) . "' title='Uninstall Plugin' class='linkEditMain'><img align='absmiddle' src='" . $config['url_path'] . "images/cog_delete.png'></a>";
+			$link .= "<a href='" . htmlspecialchars($config['url_path'] . 'plugins.php?mode=disable&id=' . $plugin['directory']) . "' title='Disable Plugin' class='linkEditMain'><img align='absmiddle' src='" . $config['url_path'] . "images/stop.png'></a>";
 			break;
 		case '2': // Configuration issues
-			$link .= "<a href='" . htmlspecialchars($config['url_path'] . 'plugins.php?mode=uninstall&id=' . $plugin['directory']) . "' title='Uninstall Plugin' class='linkEditMain'><img align='absmiddle' src='" . $config['url_path'] . "images/uninstall_icon.gif'></a>";
+			$link .= "<a href='" . htmlspecialchars($config['url_path'] . 'plugins.php?mode=uninstall&id=' . $plugin['directory']) . "' title='Uninstall Plugin' class='linkEditMain'><img align='absmiddle' src='" . $config['url_path'] . "images/cog_delete.png'></a>";
 			break;
 		case '4':	// Installed but not active
-			$link .= "<a href='" . htmlspecialchars($config['url_path'] . 'plugins.php?mode=uninstall&id=' . $plugin['directory']) . "' title='Uninstall Plugin' class='linkEditMain'><img align='absmiddle' src='" . $config['url_path'] . "images/uninstall_icon.gif'></a>";
-			$link .= "<a href='" . htmlspecialchars($config['url_path'] . 'plugins.php?mode=enable&id=' . $plugin['directory']) . "' title='Enable Plugin' class='linkEditMain'><img align='absmiddle' src='" . $config['url_path'] . "images/enable_icon.png'></a>";
+			$link .= "<a href='" . htmlspecialchars($config['url_path'] . 'plugins.php?mode=uninstall&id=' . $plugin['directory']) . "' title='Uninstall Plugin' class='linkEditMain'><img align='absmiddle' src='" . $config['url_path'] . "images/cog_delete.png'></a>";
+			$link .= "<a href='" . htmlspecialchars($config['url_path'] . 'plugins.php?mode=enable&id=' . $plugin['directory']) . "' title='Enable Plugin' class='linkEditMain'><img align='absmiddle' src='" . $config['url_path'] . "images/accept.png'></a>";
 			break;
 		default: // Old PIA
-			$link .= "<a href='#' title='Please Install/Uninstall from config.php' class='linkEditMain'><img align='absmiddle' src='" . $config['url_path'] . "images/install_icon_disabled.png'></a>";
-			$link .= "<a href='#' title='Enabling from the UI is not supported' class='linkEditMain'><img align='absmiddle' src='images/enable_icon_disabled.png'></a>";
+			$link .= "<a href='#' title='Please Install/Uninstall from config.php' class='linkEditMain'><img align='absmiddle' src='" . $config['url_path'] . "images/cog_add.png'></a>";
+			$link .= "<a href='#' title='Enabling from the UI is not supported' class='linkEditMain'><img align='absmiddle' src='images/cog_error.png'></a>";
 			break;
 	}
 	$link .= '</td>';
