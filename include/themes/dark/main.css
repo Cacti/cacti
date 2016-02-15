@@ -81,6 +81,7 @@ th .fa {
 
 input, select {
 	padding: 0.5em 0.5em 0.5em 0.5em;
+	font-size: 12px;
 }
 
 *:focus {
@@ -124,7 +125,7 @@ label {
 	position:relative;
 	left: -20px;
 	margin-right: -10px;
-	font-size: 13px !important;
+	font-size: 11px !important;
 }
 
 .badpassword {
@@ -1013,7 +1014,25 @@ th.sortable {
 
 .navBarNavigation {
 	color: white;
-	display:block;
+	text-align:center;
+	margin-left:auto;
+	margin-right:auto;
+}
+
+.navBarNavigationCenter {
+	width:80%;
+	text-align:center;
+}
+
+.navBarNavigationPrevious {
+	width:10%;
+	text-align:left;
+	cursor:pointer;
+}
+
+.navBarNavigationNext {
+	width:10%;
+	text-align:right;
 	cursor:pointer;
 }
 

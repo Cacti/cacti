@@ -389,18 +389,18 @@ function html_nav_bar($base_url, $max_pages, $current_page, $rows_per_page, $tot
 
 		$nav = "<tr class='cactiNavBarTop'>
 			<td colspan='$colspan'>
-				<table style='width:100%;'>
+				<table class='navBarNavigation' style='width:100%;'>
 					<tr>
-						<td style='width:10%;text-align:left;' class='textHeaderDark'><div style='display:block;'>
-							" . (($current_page > 1) ? "<div class='navBarNavigation navBarNavigationPrevious' onClick='goto$page_var(" . ($current_page-1) . ")'><i class='fa fa-angle-double-left previous'></i>Previous</div>":"") . "
+						<td class='navBarNavigationPrevious'><div style='display:block;'>
+							" . (($current_page > 1) ? "<div onClick='goto$page_var(" . ($current_page-1) . ")'><i class='fa fa-angle-double-left previous'></i>Previous</div>":"") . "
 						</div></td>
-						<td style='width:80%;text-align:center;' class='textHeaderDark'>
+						<td class='navBarNavigationCenter'>
 							<div>
 								Showing $object " . (($rows_per_page*($current_page-1))+1) . " to " . (($total_rows < $rows_per_page) || ($total_rows < ($rows_per_page*$current_page)) ? $total_rows : $rows_per_page*$current_page) . " of $total_rows [ $url_page_select ]
 							</div>
 						</td>
-						<td style='width:10%;text-align:right;' class='textHeaderDark'><div style='display:block;'>
-							" . (($current_page*$rows_per_page) < $total_rows ? "<div class='navBarNavigation navBarNavigationNext' onClick='goto$page_var(" . ($current_page+1) . ")'>Next<i class='fa fa-angle-double-right next'></i></div>":"") . "
+						<td class='navBarNavigationNext'><div style='display:block;'>
+							" . (($current_page*$rows_per_page) < $total_rows ? "<div onClick='goto$page_var(" . ($current_page+1) . ")'>Next<i class='fa fa-angle-double-right next'></i></div>":"") . "
 						</div></td>
 					</tr>
 				</table>
@@ -409,9 +409,9 @@ function html_nav_bar($base_url, $max_pages, $current_page, $rows_per_page, $tot
 	}elseif ($total_rows > 0) {
 		$nav = "<tr class='cactiNavBarTop'>
 			<td colspan='$colspan'>
-				<table style='width:100%;text-align:center;'>
+				<table class='navBarNavigation'>
 					<tr>
-						<td class='textHeaderDark'>
+						<td class='navBarNavigationCenter'>
 							<div>
 								Showing All $total_rows $object
 							</div>
@@ -424,9 +424,9 @@ function html_nav_bar($base_url, $max_pages, $current_page, $rows_per_page, $tot
 	}else{
 		$nav = "<tr class='cactiNavBarTop'>
 			<td colspan='$colspan'>
-				<table style='width:100%;text-align:center;'>
+				<table class='navBarNavigation'>
 					<tr>
-						<td class='textHeaderDark'>
+						<td class='navBarNavigationCenter'>
 							No $object Found
 						</td>
 					</tr>

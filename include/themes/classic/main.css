@@ -832,10 +832,32 @@ legend {
 	border: 1px solid #aaaaaa;
 }
 
+.navBar {
+	min-width:30%;
+	white-space:nowrap;
+}
+
 .navBarNavigation {
 	color: white;
-	font-weight: bold;
-	display:block;
+	text-align:center;
+	margin-left:auto;
+	margin-right:auto;
+}
+
+.navBarNavigationCenter {
+	width:80%;
+	text-align:center;
+}
+
+.navBarNavigationPrevious {
+	width:10%;
+	text-align:left;
+	cursor:pointer;
+}
+
+.navBarNavigationNext {
+	width:10%;
+	text-align:right;
 	cursor:pointer;
 }
 
