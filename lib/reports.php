@@ -1414,8 +1414,8 @@ function reports_graphs_action_execute($action) {
 				$reports_id      = get_filter_request_var('reports_id');
 
 				input_validate_input_number($reports_id);
-				input_validate_input_number(get_nfilter_request_var('timespan'));
-				input_validate_input_number(get_nfilter_request_var('alignment'));
+				get_filter_request_var('timespan');
+				get_filter_request_var('alignment');
 
 				$report = db_fetch_row_prepared('SELECT * FROM reports WHERE id = ?',  array($reports_id));
 

@@ -975,7 +975,7 @@ function form_actions(){
 			$list = '';
 
 			/* ================= input validation ================= */
-			input_validate_input_number( get_nfilter_request_var('id'));
+			get_filter_request_var('id');
 			/* ==================================================== */
 
 			foreach($_POST as $key => $value) {
