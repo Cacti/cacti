@@ -106,11 +106,7 @@ function save() {
 			}
 		}
 
-		if ((is_error_message()) || (isempty_request_var('id'))) {
-			header('Location: automation_graph_rules.php?header=false&action=edit&id=' . (empty($rule_id) ? get_nfilter_request_var('id') : $rule_id));
-		}else{
-			header('Location: automation_graph_rules.php?header=false');
-		}
+		header('Location: automation_graph_rules.php?header=false&action=edit&id=' . (empty($rule_id) ? get_nfilter_request_var('id') : $rule_id));
 	}elseif (isset_request_var('save_component_automation_graph_rule_item')) {
 		/* ================= input validation ================= */
 		get_filter_request_var('id');
@@ -545,7 +541,7 @@ function automation_graph_rules_edit() {
 			basename($_SERVER['PHP_SELF']));
 	}
 
-	form_save_button('automation_graph_rules.php');
+	form_save_button('automation_graph_rules.php', 'return');
 
 	print '<br>';
 

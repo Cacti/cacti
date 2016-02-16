@@ -633,7 +633,7 @@ function automation_snmp_edit() {
 		html_end_box();
 	}
 
-	form_save_button('automation_snmp.php');
+	form_save_button('automation_snmp.php', 'return');
 
     ?>
     <script type='text/javascript'>

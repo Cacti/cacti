@@ -601,7 +601,7 @@ function automation_tree_rules_edit() {
 			basename($_SERVER['PHP_SELF']));
 	}
 
-	form_save_button('automation_tree_rules.php');
+	form_save_button('automation_tree_rules.php', 'return');
 	print '<br>';
 
 	if (!empty($rule['id'])) {
