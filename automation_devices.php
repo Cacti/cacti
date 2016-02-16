@@ -223,6 +223,20 @@ html_start_box('<strong>Discovery Filters</strong>', '100%', $colors['header'], 
 						?>
 					</select>
 				<td>
+					<input type='button' id='refresh' value='Go' title='Set/Refresh Filters'>
+				</td>
+				<td>
+					<input type='button' id='clear' value='Clear' title='Reset fields to defaults'>
+				</td>
+				<td>
+					<input type='button' id='export' value='Export' title='Export to a file'>
+				</td>
+				<td>
+					<input type='button' id='purge' value='Purge' title='Purge Discovered Devices'>
+				</td>
+			</table>
+			<table class='filterTable'>
+				<td>
 					Status
 				</td>
 				<td>
@@ -281,18 +295,6 @@ html_start_box('<strong>Discovery Filters</strong>', '100%', $colors['header'], 
 						}
 						?>
 					</select>
-				</td>
-				<td>
-					<input type='button' id='refresh' value='Go' title='Set/Refresh Filters'>
-				</td>
-				<td>
-					<input type='button' id='clear' value='Clear' title='Reset fields to defaults'>
-				</td>
-				<td>
-					<input type='button' id='export' value='Export' title='Export to a file'>
-				</td>
-				<td>
-					<input type='button' id='purge' value='Purge' title='Purge Discovered Devices'>
 				</td>
 				<input type='hidden' id='page' value='<?php print get_request_var('page');?>'>
 			</tr>

@@ -1137,7 +1137,15 @@ function ds() {
 						<input type='button' id='clear' value='Clear' title='Clear Filters'>
 					</td>
 				</tr>
+			</table>
+			<table class='filterTable'>
 				<tr>
+					<td>
+						Search
+					</td>
+					<td>
+						<input id='filter' type='text' size='25' value='<?php print htmlspecialchars(get_request_var('filter'));?>' onChange='applyFilter()'>
+					</td>
 					<td>
 						Method
 					</td>
@@ -1175,16 +1183,6 @@ function ds() {
 							}
 							?>
 						</select>
-					</td>
-				</tr>
-			</table>
-			<table class='filterTable'>
-				<tr>
-					<td>
-						Search
-					</td>
-					<td>
-						<input id='filter' type='text' size='25' value='<?php print htmlspecialchars(get_request_var('filter'));?>' onChange='applyFilter()'>
 					</td>
 				</tr>
 			</table>
