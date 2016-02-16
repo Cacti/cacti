@@ -957,6 +957,7 @@ function initializeGraphs() {
 		graph_id=$(this).attr('id').replace('graph_','').replace('_mrtg','');
 		$.get(urlPath+'graph.php?local_graph_id='+graph_id+'&header=false', function(data) {
 			$('#breadcrumbs').append('<li><a id="nav_mrgt" href="#">MRTG View</a></li>');
+			$('#zoom-container').remove();
 			$('#main').html(data);
 			applySkin();
 		});
