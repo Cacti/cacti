@@ -405,7 +405,7 @@ function automation_tree_rules_item_edit() {
 		if (get_request_var('rule_type') == AUTOMATION_RULE_TYPE_TREE_ACTION) {
 			if (isset($_SESSION['automation_tree_rules_show_trees']) && ($item['field'] != AUTOMATION_TREE_ITEM_TYPE_STRING)) {
 				if ($_SESSION['automation_tree_rules_show_trees']) {
-					display_matching_trees(get_request_var('id'), AUTOMATION_RULE_TYPE_TREE_ACTION, $item, basename($_SERVER['PHP_SELF']) . '?action=item_edit&id=' . get_request_var('id') . '&item_id=' . get_request_var('item_id') . '&rule_type=' . get_request_var('rule_type'));
+					display_matching_trees(get_request_var('id'), AUTOMATION_RULE_TYPE_TREE_ACTION, $item, 'automation_tree_rules.php?action=item_edit&id=' . get_request_var('id') . '&item_id=' . get_request_var('item_id') . '&rule_type=' . get_request_var('rule_type'));
 				}
 			}
 		}
@@ -591,14 +591,14 @@ function automation_tree_rules_edit() {
 		display_match_rule_items('Object Selection Criteria',
 			$rule['id'],
 			AUTOMATION_RULE_TYPE_TREE_MATCH,
-			basename($_SERVER['PHP_SELF']));
+			'automation_tree_rules.php');
 
 		# fetch tree action rules
 		display_tree_rule_items('Tree Creation Criteria',
 			$rule['id'],
 			$rule['leaf_type'],
 			AUTOMATION_RULE_TYPE_TREE_ACTION,
-			basename($_SERVER['PHP_SELF']));
+			'automation_tree_rules.php');
 	}
 
 	form_save_button('automation_tree_rules.php', 'return');
@@ -609,9 +609,9 @@ function automation_tree_rules_edit() {
 		if (isset($_SESSION['automation_tree_rules_show_objects'])) {
 			if ($_SESSION['automation_tree_rules_show_objects']) {
 				if ($rule['leaf_type'] == TREE_ITEM_TYPE_HOST) {
-					display_matching_hosts($rule, AUTOMATION_RULE_TYPE_TREE_MATCH, basename($_SERVER['PHP_SELF']) . '?action=edit&id=' . get_request_var('id'));
+					display_matching_hosts($rule, AUTOMATION_RULE_TYPE_TREE_MATCH, 'automation_tree_rules.php?action=edit&id=' . get_request_var('id'));
 				} elseif ($rule['leaf_type'] == TREE_ITEM_TYPE_GRAPH) {
-					display_matching_graphs($rule, AUTOMATION_RULE_TYPE_TREE_MATCH, basename($_SERVER['PHP_SELF']) . '?action=edit&id=' . get_request_var('id'));
+					display_matching_graphs($rule, AUTOMATION_RULE_TYPE_TREE_MATCH, 'automation_tree_rules.php?action=edit&id=' . get_request_var('id'));
 				}
 			}
 		}

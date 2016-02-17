@@ -1825,7 +1825,7 @@ function global_item_edit($rule_id, $rule_item_id, $rule_type) {
 		$automation_item['sequence'] = get_sequence('', 'sequence', $item_table, 'rule_id=' . $rule_id . $sql_and);
 	}
 
-	form_start('automation_graph_rules.php', 'form_automation_global_item_edit');
+	form_start($module, 'form_automation_global_item_edit');
 
 	html_start_box("Rule Item $header_label", '100%', '', '3', 'center', '');
 

@@ -532,13 +532,13 @@ function automation_graph_rules_edit() {
 		display_match_rule_items('Device Selection Criteria',
 			$rule['id'],
 			AUTOMATION_RULE_TYPE_GRAPH_MATCH,
-			basename($_SERVER['PHP_SELF']));
+			'automation_graph_rules.php');
 
 		# fetch graph action rules
 		display_graph_rule_items('Graph Creation Criteria',
 			$rule['id'],
 			AUTOMATION_RULE_TYPE_GRAPH_ACTION,
-			basename($_SERVER['PHP_SELF']));
+			'automation_graph_rules.php');
 	}
 
 	form_save_button('automation_graph_rules.php', 'return');
@@ -549,7 +549,7 @@ function automation_graph_rules_edit() {
 		/* display list of matching hosts */
 		if (isset($_SESSION['automation_graph_rules_show_hosts'])) {
 			if ($_SESSION['automation_graph_rules_show_hosts']) {
-				display_matching_hosts($rule, AUTOMATION_RULE_TYPE_GRAPH_MATCH, basename($_SERVER['PHP_SELF']) . '?action=edit&id=' . get_request_var('id'));
+				display_matching_hosts($rule, AUTOMATION_RULE_TYPE_GRAPH_MATCH, 'automation_graph_rules.php?action=edit&id=' . get_request_var('id'));
 			}
 		}
 
