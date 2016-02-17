@@ -233,7 +233,7 @@ if (!$master && $thread == 0) {
 
 	registerTask($network_id, getmypid(), $poller_id, 'tmaster');
 
-	cacti_log("Network Discover is now running for Subnet Range '$network_id'", true, 'AUTOMATION');
+	cacti_log("Network Discover is now running for Subnet Range '$network_id'", true, 'AUTOM8');
 
 	automation_primeIPAddressTable($network_id);
 
@@ -243,10 +243,7 @@ if (!$master && $thread == 0) {
 	$curthread = 1;
 	while($curthread <= $threads) {
 		automation_debug("Launching Thread $curthread\n");
-		$old_debug = $debug;
-		$debug = false;
 		exec_background(read_config_option('path_php_binary'), '-q ' . read_config_option('path_webroot') . "/poller_automation.php --poller=" . $poller_id . " --thread=$curthread --network=$network_id" . ($force ? ' --force':'') . ($debug ? ' --debug':''));
-		$debug = $old_debug;
 		$curthread++;
 	}
 
@@ -263,23 +260,6 @@ if (!$master && $thread == 0) {
 		automation_debug("Found $running Threads\n");
 
 		if ($running == 0) {
-			/* determine data queries to rerun */
-			$graph_search = db_fetch_cell("SELECT rerun_data_queries FROM automation_networks WHERE id=$network_id");
-			if ($graph_search == 'on') {
-				automation_debug("Rerunning Data Queries on Existing Hosts\n");
-				$devices = db_fetch_assoc("SELECT id, description FROM host 
-					INNER JOIN automation_ips
-					ON host.hostname=automation_ips.hostname
-					WHERE host.disabled!='on'
-					AND automation_ips.network_id=$network_id");
-
-				foreach ($devices as $device) {
-//					automation_debug('Device : ' . $device['description'] . "\n");
-//					automation_create_graphs($device['id']);
-//					automation_remove_graphs($device['id']);
-				}
-			}
-
 			db_execute_prepared('DELETE FROM automation_ips WHERE network_id = ?', array($network_id));
 
 			$totals = db_fetch_row_prepared('SELECT SUM(up_hosts) AS up, SUM(snmp_hosts) AS snmp FROM automation_processes WHERE network_id=?', array($network_id));
@@ -339,47 +319,57 @@ function discoverDevices($network_id, $thread) {
 			if ($dns != '') {
 				$dnsname = automation_get_dns_from_ip($device['ip_address'], $dns, 300);
 				if ($dnsname != $device['ip_address'] && $dnsname != 'timed_out') {
+					automation_debug("Device: " . $device['ip_address'] . ", Checking DNS: Found '" . $dnsname . "'");
 					db_execute_prepared('UPDATE automation_ips SET hostname = ? WHERE ip_address = ?', array($dnsname, $device['ip_address']));
 
 					$device['hostname']      = $dnsname;
 					$device['dnsname']       = $dnsname;
 					$device['dnsname_short'] = preg_split('/[\.]+/', strtolower($dnsname), -1, PREG_SPLIT_NO_EMPTY);
 				}elseif ($network['enable_netbios'] == 'on') {
-					$device['hostname'] = ping_netbios_name($device['ip_address']);
-					if ($device['hostname'] === false) {
+					automation_debug("Device: " . $device['ip_address'] . ", Checking DNS: Not found, Checking NetBIOS:");
+					$netbios = ping_netbios_name($device['ip_address']);
+					if ($netbios === false) {
+						automation_debug(" Not found");
 						$device['hostname']      = $device['ip_address'];
 						$device['dnsname']       = '';
 						$device['dnsname_short'] = '';
 					}else{
+						automation_debug(" Found: '" . $netbios . "'");
 						db_execute_prepared('UPDATE automation_ips SET hostname = ? WHERE ip_address = ?', array($device['hostname'], $device['ip_address']));
-						$device['dnsname']       = $device['hostname'];
-						$device['dnsname_short'] = $device['hostname'];
+						$device['dnsname']       = $netbios;
+						$device['dnsname_short'] = $netbios;
 					}
 				}else{
+					automation_debug("Device: " . $device['ip_address'] . ", Checking DNS: Not found");
 					$device['hostname']      = $device['ip_address'];
 					$device['dnsname']       = '';
 					$device['dnsname_short'] = '';
 				}
 			}else{
-				$dnsname = gethostbyaddr($device['ip_address']);
+				$dnsname = @gethostbyaddr($device['ip_address']);
 				$device['hostname'] = $dnsname;
 				if ($dnsname != $device['ip_address']) {
+					automation_debug("Device: " . $device['ip_address'] . ", Checking DNS: Found '" . $dnsname . "'");
 					db_execute_prepared('UPDATE automation_ips SET hostname = ? WHERE ip_address = ?', array($dnsname, $device['ip_address']));
 
 					$device['dnsname']       = $dnsname;
 					$device['dnsname_short'] = preg_split('/[\.]+/', strtolower($dnsname), -1, PREG_SPLIT_NO_EMPTY);
 				}elseif ($network['enable_netbios'] == 'on') {
-					$device['hostname'] = ping_netbios_name($device['ip_address']);
-					if ($device['hostname'] === false) {
+					automation_debug("Device: " . $device['ip_address'] . ", Checking DNS: Not found, Checking NetBIOS:");
+					$netbios = ping_netbios_name($device['ip_address']);
+					if ($netbios === false) {
+						automation_debug(" Not found");
 						$device['hostname']      = $device['ip_address'];
 						$device['dnsname']       = '';
 						$device['dnsname_short'] = '';
 					}else{
+						automation_debug(" Found: '" . $netbios . "'");
 						db_execute_prepared('UPDATE automation_ips SET hostname = ? WHERE ip_address = ?', array($device['hostname'], $device['ip_address']));
-						$device['dnsname']       = $device['hostname'];
-						$device['dnsname_short'] = $device['hostname'];
+						$device['dnsname']       = $netbios;
+						$device['dnsname_short'] = $netbios;
 					}
 				}else{
+					automation_debug("Device: " . $device['ip_address'] . ", Checking DNS: Not found");
 					$device['hostname']      = $device['ip_address'];
 					$device['dnsname']       = '';
 					$device['dnsname_short'] = '';
@@ -389,8 +379,10 @@ function discoverDevices($network_id, $thread) {
 			$exists = db_fetch_row_prepared('SELECT snmp_version, status FROM host WHERE hostname IN (?,?)', array($device['ip_address'], $device['hostname']));
 
 			if (!sizeof($exists)) {
+				automation_debug(", Status: Not in Cacti");
+
 				if (substr($device['ip_address'], -3) < 255) {
-					automation_debug('Scanning Host: ' . $device['ip_address']);
+					automation_debug(', Ping: ');
 
 					// Set status to running
 					markIPRunning($device['ip_address'], $network_id);
@@ -431,10 +423,10 @@ function discoverDevices($network_id, $thread) {
 					$result = $ping->ping(AVAIL_PING, $network['ping_method'], $network['ping_timeout'], 1);
 	
 					if (!$result) {
-						automation_debug(" - Does not respond to ping!");
+						automation_debug(" No response");
 						updateDownDevice($network_id, $device['ip_address']);
 					}else{
-						automation_debug(" - Responded to ping!");
+						automation_debug(" Responded");
 						$stats['ping']++;
 						addUpDevice($network_id, getmypid());
 					}
@@ -448,6 +440,7 @@ function discoverDevices($network_id, $thread) {
 						if(!isset($snmp_sysName_short[0])) {
 							$snmp_sysName_short[0] = '';
 						}
+
 						$exists = db_fetch_row_prepared('SELECT status, snmp_version FROM host WHERE hostname IN (?,?)', array($snmp_sysName_short[0], $snmp_sysName[0]));
 
 						if (sizeof($exists)) {
@@ -459,17 +452,29 @@ function discoverDevices($network_id, $thread) {
 								}
 							}
 
-							automation_debug(' - Host DNS is already in hosts table!');
-							automation_debug(' DNS: ' . $device['dnsname'] . ' - ' . $device['dnsname_short'][0] . ' SNMP: ' . $snmp_sysName[0] . ' - ' . $snmp_sysName_short[0]);
+							automation_debug(' Device is in Cacti!');
+
 							markIPDone($device['ip_address'], $network_id);
 						} else {
+							$isCactiSysName = db_fetch_cell_prepared('SELECT COUNT(*)
+								FROM host
+								WHERE snmp_sysName = ?', array($snmp_sysName[0]));
+
+							if ($isCactiSysName) {
+								automation_debug(", Skipping sysName '" . $snmp_sysName[0] . "' already in Cacti!\n");
+								markIPDone($device['ip_address'], $network_id);
+								continue;
+							}
+	
 							$isDuplicateSysName = db_fetch_cell_prepared('SELECT COUNT(*) 
 								FROM automation_devices 
 								WHERE network_id = ? 
-								AND sysName = ?', array($network_id, $snmp_sysName[0]));
-	
+								AND sysName != ""
+								AND ip != ?
+								AND sysName = ?', array($device['ip_address'], $network_id, $snmp_sysName[0]));
+
 							if ($isDuplicateSysName) {
-								automation_debug(" - Ignoring Address Already Discovered as Another IP!\n");
+								automation_debug(", Skipping sysName '" . $snmp_sysName[0] . "' already Discovered!\n");
 								markIPDone($device['ip_address'], $network_id);
 								continue;
 							}
@@ -478,31 +483,20 @@ function discoverDevices($network_id, $thread) {
 							addSNMPDevice($network_id, getmypid());
 
 							$host_id = 0;
-							automation_debug(' - Is a valid device! DNS: ' . $device['dnsname'] . ' SNMP: ' . $snmp_sysName[0]);
+							automation_debug(" Responded");
 
 							$fos = automation_find_os($device['snmp_sysDescr'], $device['snmp_sysObjectID'], $device['snmp_sysName']);
 
 							if ($fos != false) {
-								automation_debug("\n     Host Template: " . $fos['name']);
+								automation_debug(", Template: " . $fos['name']);
 								$device['os']                   = $fos['name'];
 								$device['host_template']        = $fos['host_template'];
-								$device['availability_method']  = $fox['availability_method'];
-								$device['snmp_readstring']      = db_qstr($device['snmp_readstring']);
-								$device['snmp_version']         = db_qstr($device['snmp_version']);
-								$device['snmp_username']        = db_qstr($device['snmp_username']);
-								$device['snmp_password']        = db_qstr($device['snmp_password']);
-								$device['snmp_auth_protocol']   = db_qstr($device['snmp_auth_protocol']);
-								$device['snmp_priv_passphrase'] = db_qstr($device['snmp_priv_passphrase']);
-								$device['snmp_priv_protocol']   = db_qstr($device['snmp_priv_protocol']);
-								$device['snmp_context']         = db_qstr($device['snmp_context']);
-								$device['snmp_sysName']         = db_qstr($device['snmp_sysName']);
-								$device['snmp_sysLocation']     = db_qstr($device['snmp_sysLocation']);
-								$device['snmp_sysContact']      = db_qstr($device['snmp_sysContact']);
-								$device['snmp_sysDescr']        = db_qstr($device['snmp_sysDescr']);
-								$device['snmp_sysUptime']       = db_qstr($device['snmp_sysUptime']);
+								$device['availability_method']  = $fos['availability_method'];
 								$host_id = automation_add_device($device);
 
 								$stats['added']++;
+							}else{
+								automation_debug(", Template: Not found, Not adding to Cacti");
 							}
 
 							// if the devices template is not discovered, add to found table
@@ -552,14 +546,16 @@ function discoverDevices($network_id, $thread) {
 							. db_qstr($device['snmp_sysUptime'])       . ', '
 							. '"", 0, 1,' . time() . ')');
 
-						automation_debug(" - Host $dnsname is alive but no SNMP!");
+						automation_debug(", Alive no SNMP!");
 
 						markIPDone($device['ip_address'], $network_id);
 					}else{
 						markIPDone($device['ip_address'], $network_id);
 					}
+
+					automation_debug("\n");
 				} else {
-					automation_debug(" - Ignoring Address (PHP Bug does not allow us to ping .255 as it thinks its a broadcast IP)!");
+					automation_debug(", Status: Ignoring Address (PHP Bug does not allow us to ping .255 as it thinks its a broadcast IP)!\n");
 					markIPDone($device['ip_address'], $network_id);
 				}
 			} else {
@@ -571,18 +567,16 @@ function discoverDevices($network_id, $thread) {
 					}
 				}
 
-				automation_debug(' - Host is already in hosts table!');
+				automation_debug(", Status: Already in Cacti\n");
 				markIPDone($device['ip_address'], $network_id);
 			}
-	
-			automation_debug("\n");
 		}else{
 			// no more ips to scan
 			break;
 		}
 	}
 
-	cacti_log('Network ' . $network['name'] . " Thread $thread Finished, " . $stats['scanned'] . ' IPs Scanned, ' . $stats['ping'] . ' IPs Responded to Ping, ' . $stats['snmp'] . ' Responded to SNMP, ' . $stats['added'] . ' Device Added, ' . $count_graph .  ' Graphs Added to Cacti', true, 'AUTOMATION');
+	cacti_log('Network ' . $network['name'] . " Thread $thread Finished, " . $stats['scanned'] . ' IPs Scanned, ' . $stats['ping'] . ' IPs Responded to Ping, ' . $stats['snmp'] . ' Responded to SNMP, ' . $stats['added'] . ' Device Added, ' . $count_graph .  ' Graphs Added to Cacti', true, 'AUTOM8');
 
 	return true;
 }

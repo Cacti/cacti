@@ -318,16 +318,16 @@ $struct_data_source_item = array(
 	'rrd_minimum' => array(
 		'friendly_name' => 'Minimum Value ("U" for No Minimum)',
 		'method' => 'textbox',
-		'max_length' => '20',
-		'size' => '10',
+		'max_length' => '30',
+		'size' => '20',
 		'default' => '0',
 		'description' => 'The minimum value of data that is allowed to be collected.'
 		),
 	'rrd_maximum' => array(
 		'friendly_name' => 'Maximum Value ("U" for No Maximum)',
 		'method' => 'textbox',
-		'max_length' => '20',
-		'size' => '10',
+		'max_length' => '30',
+		'size' => '20',
 		'default' => '0',
 		'description' => 'The maximum value of data that is allowed to be collected.'
 		),

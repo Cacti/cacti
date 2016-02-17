@@ -97,6 +97,7 @@ function api_device_save($id, $host_template_id, $description, $hostname, $snmp_
 	$availability_method, $ping_method, $ping_port, $ping_timeout, $ping_retries,
 	$notes, $snmp_auth_protocol, $snmp_priv_passphrase, $snmp_priv_protocol, $snmp_context, $max_oids, $device_threads) {
 	global $config;
+
 	include_once($config['base_path'] . '/lib/utility.php');
 	include_once($config['base_path'] . '/lib/variables.php');
 	include_once($config['base_path'] . '/lib/data_query.php');
@@ -108,8 +109,13 @@ function api_device_save($id, $host_template_id, $description, $hostname, $snmp_
 		$_host_template_id = db_fetch_cell_prepared('SELECT host_template_id FROM host WHERE id=?', array($id));
 	}
 
+	if (is_error_message()) {
+		cacti_log('Failed before');
+	}
+
 	$save['id']                   = form_input_validate($id, 'id', '^[0-9]+$', false, 3);
 	$save['host_template_id']     = form_input_validate($host_template_id, 'host_template_id', '^[0-9]+$', false, 3);
+
 	$save['description']          = form_input_validate($description, 'description', '', false, 3);
 	$save['hostname']             = form_input_validate(trim($hostname), 'hostname', '', false, 3);
 	$save['notes']                = form_input_validate($notes, 'notes', '', true, 3);
@@ -197,13 +203,16 @@ function api_device_save($id, $host_template_id, $description, $hostname, $snmp_
 		}
 	}
 
-	# now that we have the id of the new host, we may plugin postprocessing code
-	$save['id'] = $host_id;
-	snmpagent_api_device_new($save);
+	if ($host_id > 0) {
+		# now that we have the id of the new host, we may plugin postprocessing code
+		$save['id'] = $host_id;
 
-	automation_hook_device_create_tree($save);
+		snmpagent_api_device_new($save);
 
-	api_plugin_hook_function('api_device_new', $save);
+		automation_hook_device_create_tree($save);
+
+		api_plugin_hook_function('api_device_new', $save);
+	}
 
 	return $host_id;
 }

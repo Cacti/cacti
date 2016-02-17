@@ -40,7 +40,7 @@ $device_actions = array(
 	4 => 'Change SNMP Options',
 	5 => 'Clear Statistics',
 	6 => 'Change Availability Options',
-	7 => 'Apply Automation Rules to Device(s)'
+	7 => 'Apply Automation Rules'
 );
 
 $device_actions = api_plugin_hook_function('device_action_array', $device_actions);
@@ -299,16 +299,16 @@ function form_actions() {
 				for ($i=0;($i<count($selected_items));$i++) {
 					api_tree_item_save(0, get_nfilter_request_var('tree_id'), TREE_ITEM_TYPE_HOST, get_nfilter_request_var('tree_item_id'), '', 0, read_user_setting('default_rra_id'), $selected_items[$i], 1, 1, false);
 				}
-			}elseif ($action == 7) { /* automation */
-				cacti_log(__FUNCTION__ . ' called, action: ' . $action, true, 'AUTOMATION TRACE', POLLER_VERBOSITY_MEDIUM);
+			}elseif (get_nfilter_request_var('drp_action') == 7) { /* automation */
+				cacti_log(__FUNCTION__ . ' called, action: ' . $action, true, 'AUTOM8 TRACE', POLLER_VERBOSITY_MEDIUM);
 
-				cacti_log(__FUNCTION__ . ', items: ' . get_nfilter_request_var('selected_items'), true, 'AUTOMATION TRACE', POLLER_VERBOSITY_MEDIUM);
+				cacti_log(__FUNCTION__ . ', items: ' . get_nfilter_request_var('selected_items'), true, 'AUTOM8 TRACE', POLLER_VERBOSITY_MEDIUM);
 
 				/* work on all selected hosts */
 				for ($i=0;($i<count($selected_items));$i++) {
 					$host_id = $selected_items[$i];
 
-					cacti_log(__FUNCTION__ . ' Host[' . $host_id . ']', true, 'AUTOMATION TRACE', POLLER_VERBOSITY_MEDIUM);
+					cacti_log(__FUNCTION__ . ' Host[' . $host_id . ']', true, 'AUTOM8 TRACE', POLLER_VERBOSITY_MEDIUM);
 
 					/* select all graph templates associated with this host, but exclude those where
 					*  a graph already exists (table graph_local has a known entry for this host/template) */
@@ -325,20 +325,20 @@ function form_actions() {
 
 					$graph_templates = db_fetch_assoc($sql);
 
-					cacti_log(__FUNCTION__ . ' Host[' . $host_id . '], sql: ' . $sql, true, 'AUTOMATION TRACE', POLLER_VERBOSITY_MEDIUM);
+					cacti_log(__FUNCTION__ . ' Host[' . $host_id . '], sql: ' . $sql, true, 'AUTOM8 TRACE', POLLER_VERBOSITY_MEDIUM);
 
 					/* create all graph template graphs */
 					if (sizeof($graph_templates)) {
 						foreach ($graph_templates as $graph_template) {
-							cacti_log(__FUNCTION__ . ' Host[' . $host_id . '], graph: ' . $graph_template['id'], true, 'AUTOMATION TRACE', POLLER_VERBOSITY_MEDIUM);
+							cacti_log(__FUNCTION__ . ' Host[' . $host_id . '], graph: ' . $graph_template['id'], true, 'AUTOM8 TRACE', POLLER_VERBOSITY_MEDIUM);
 
 							automation_execute_graph_template($host_id, $graph_template['id']);
 						}
 					}
 
 					/* all associated data queries */
-					$data_queries = db_fetch_assoc('SELECT sq.*
-						host_snmp_query.reindex_method 
+					$data_queries = db_fetch_assoc('SELECT sq.*,
+						hsq.reindex_method 
 						FROM snmp_query AS sq
 						INNER JOIN host_snmp_query AS hsq
 						ON sq.id=hsq.snmp_query_id
@@ -347,14 +347,14 @@ function form_actions() {
 					/* create all data query graphs */
 					if (sizeof($data_queries)) {
 						foreach ($data_queries as $data_query) {
-							cacti_log(__FUNCTION__ . ' Host[' . $data['host_id'] . '], dq: ' . $data['snmp_query_id'], true, 'AUTOMATION TRACE', POLLER_VERBOSITY_MEDIUM);
+							cacti_log(__FUNCTION__ . ' Host[' . $host_id . '], dq[' . $data_query['id'] . ']', true, 'AUTOM8 TRACE', POLLER_VERBOSITY_MEDIUM);
 
-							automation_execute_data_query($host_id, $data_query['snmp_query_id']);
+							automation_execute_data_query($host_id, $data_query['id']);
 						}
 					}
 
 					/* now handle tree rules for that host */
-					cacti_log(__FUNCTION__ . ' Host[' . $host_id . '], create_tree for host: ' . $host_id, true, 'AUTOMATION TRACE', POLLER_VERBOSITY_MEDIUM);
+					cacti_log(__FUNCTION__ . ' Host[' . $host_id . '], create_tree for host: ' . $host_id, true, 'AUTOM8 TRACE', POLLER_VERBOSITY_MEDIUM);
 
 					automation_execute_device_create_tree($host_id);
 				}
@@ -523,13 +523,15 @@ function form_actions() {
 			<input type='hidden' name='tree_id' value='" . $matches[1] . "'>\n";
 
 			$save_html = "<input type='button' value='Cancel' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='Continue' title='Place Device(s) on Tree'>";
-		}elseif ($save['drp_action'] == 7) { /* automation */
+		}elseif (get_nfilter_request_var('drp_action') == 7) { /* automation */
 			print "<tr>
 				<td class='textArea'>
 					<p>Click 'Continue' to apply Automation Rules to the following Devices(s)</p>
 					<p><ul>$host_list</ul></p>
 				</td>
 			</tr>\n";
+
+			$save_html = "<input type='button' value='Cancel' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='Continue' title='Run Automation on Device(s)'>";
 		} else {
 			$save['drp_action'] = get_nfilter_request_var('drp_action');
 			$save['host_list'] = $host_list;

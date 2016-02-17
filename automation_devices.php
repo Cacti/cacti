@@ -431,7 +431,7 @@ function snmp_data($item) {
 	if ($item == '') {
 		return 'N/A';
 	}else{
-		return title_trim(htmlspecialchars($item), read_config_option('max_title_length'));
+		return htmlspecialchars(str_replace(':',' ', $item));
 	}
 }
 

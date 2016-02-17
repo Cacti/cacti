@@ -63,8 +63,8 @@ function run_data_query($host_id, $snmp_query_id) {
 	query_debug_timer_offset('data_query', 'Update data query cache complete');
 
 	/* update the poller cache */
-//	update_poller_cache_from_query($host_id, $snmp_query_id);
-//	query_debug_timer_offset('data_query', 'Update poller cache from query complete');
+	update_poller_cache_from_query($host_id, $snmp_query_id);
+	query_debug_timer_offset('data_query', 'Update poller cache from query complete');
 
 	/* perform any automation on reindex */
 	automation_execute_data_query($host_id, $snmp_query_id);

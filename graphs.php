@@ -496,7 +496,7 @@ function form_actions() {
 				header("Location: aggregate_graphs.php?header=false&action=edit&tab=details&id=$local_graph_id");
 				exit;
 			}elseif ($action == 8) { /* automation */
-				cacti_log('automation_graph_action_execute called: ' . $action, true, 'AUTOMATION TRACE', POLLER_VERBOSITY_MEDIUM);
+				cacti_log('automation_graph_action_execute called: ' . $action, true, 'AUTM8 TRACE', POLLER_VERBOSITY_MEDIUM);
 
 				/* work on all selected graphs */
 				for ($i=0;($i<count($selected_items));$i++) {

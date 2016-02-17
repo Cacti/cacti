@@ -195,26 +195,26 @@ function automation_tree_rules_form_actions() {
 
 		if ($selected_items != false) {
 			if (get_nfilter_request_var('drp_action') == AUTOMATION_ACTION_TREE_DELETE) { /* DELETE */
-				cacti_log('form_actions DELETE: ' . serialize($selected_items), true, 'AUTOMATION TRACE', POLLER_VERBOSITY_MEDIUM);
+				cacti_log('form_actions DELETE: ' . serialize($selected_items), true, 'AUTOM8 TRACE', POLLER_VERBOSITY_MEDIUM);
 
 				db_execute('DELETE FROM automation_tree_rules WHERE ' . array_to_sql_or($selected_items, 'id'));
 				db_execute('DELETE FROM automation_tree_rule_items WHERE ' . array_to_sql_or($selected_items, 'rule_id'));
 				db_execute('DELETE FROM automation_match_rule_items WHERE ' . array_to_sql_or($selected_items, 'rule_id'));
 			}elseif (get_nfilter_request_var('drp_action') == AUTOMATION_ACTION_TREE_DUPLICATE) { /* duplicate */
 				for ($i=0;($i<count($selected_items));$i++) {
-					cacti_log('form_actions duplicate: ' . $selected_items[$i], true, 'AUTOMATION TRACE', POLLER_VERBOSITY_MEDIUM);
+					cacti_log('form_actions duplicate: ' . $selected_items[$i], true, 'AUTOM8 TRACE', POLLER_VERBOSITY_MEDIUM);
 	
 					duplicate_automation_tree_rules($selected_items[$i], get_nfilter_request_var('name_format'));
 				}
 			}elseif (get_nfilter_request_var('drp_action') == AUTOMATION_ACTION_TREE_ENABLE) { /* enable */
 				for ($i=0;($i<count($selected_items));$i++) {
-					cacti_log('form_actions enable: ' . $selected_items[$i], true, 'AUTOMATION TRACE', POLLER_VERBOSITY_MEDIUM);
+					cacti_log('form_actions enable: ' . $selected_items[$i], true, 'AUTOM8 TRACE', POLLER_VERBOSITY_MEDIUM);
 	
 					db_execute("UPDATE automation_tree_rules SET enabled='on' WHERE id=" . $selected_items[$i]);
 				}
 			}elseif (get_nfilter_request_var('drp_action') == AUTOMATION_ACTION_TREE_DISABLE) { /* disable */
 				for ($i=0;($i<count($selected_items));$i++) {
-					cacti_log('form_actions disable: ' . $selected_items[$i], true, 'AUTOMATION TRACE', POLLER_VERBOSITY_MEDIUM);
+					cacti_log('form_actions disable: ' . $selected_items[$i], true, 'AUTOM8 TRACE', POLLER_VERBOSITY_MEDIUM);
 	
 					db_execute("UPDATE automation_tree_rules SET enabled='' WHERE id=" . $selected_items[$i]);
 				}
