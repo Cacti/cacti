@@ -99,7 +99,6 @@ function automation_tree_rules_form_save() {
 		$save['tree_item_id']       = isset_request_var('tree_item_id') ? form_input_validate(get_nfilter_request_var('tree_item_id'), 'tree_item_id', '^[0-9]+$', false, 3) : 0;
 		$save['leaf_type']          = (isset_request_var('leaf_type')) ? form_input_validate(get_nfilter_request_var('leaf_type'), 'leaf_type', '^[0-9]+$', false, 3) : 0;
 		$save['host_grouping_type'] = isset_request_var('host_grouping_type') ? form_input_validate(get_nfilter_request_var('host_grouping_type'), 'host_grouping_type', '^[0-9]+$', false, 3) : 0;
-		$save['rra_id']             = isset_request_var('rra_id') ? form_input_validate(get_nfilter_request_var('rra_id'), 'rra_id', '^[0-9]+$', false, 3) : 0;
 		$save['enabled']            = (isset_request_var('enabled') ? 'on' : '');
 		if (!is_error_message()) {
 			$rule_id = sql_save($save, 'automation_tree_rules');
@@ -493,7 +492,6 @@ function automation_tree_rules_edit() {
 	get_filter_request_var('tree_id');
 	get_filter_request_var('leaf_type');
 	get_filter_request_var('host_grouping_type');
-	get_filter_request_var('rra_id');
 	get_filter_request_var('tree_item_id');
 	get_filter_request_var('show_hosts');
 	/* ==================================================== */
@@ -551,10 +549,6 @@ function automation_tree_rules_edit() {
 
 	if (isset_request_var('host_grouping_type')) {
 		$rule['host_grouping_type'] = get_request_var('host_grouping_type');
-	}
-
-	if (isset_request_var('rra_id')) {
-		$rule['rra_id'] = get_request_var('rra_id');
 	}
 
 	if (isset_request_var('tree_item_id')) {
@@ -630,7 +624,6 @@ function automation_tree_rules_edit() {
 		strURL += '&tree_item_id=' + $('#tree_item_id').val();
 		strURL += '&leaf_type=' + $('#leaf_type').val();
 		strURL += '&host_grouping_type=' + $('#host_grouping_type').val();
-		strURL += '&rra_id=' + $('#rra_id').val();
 		strURL += '&rows=' + $('#graph_rows').val();
 
 		loadPageNoHeader(strURL);
@@ -638,15 +631,9 @@ function automation_tree_rules_edit() {
 
 	function applyItemTypeChange() {
 		if ($('#leaf_type').val() == '<?php print TREE_ITEM_TYPE_HOST;?>') {
-			$('#host_grouping_type').val('');
-			$('#host_grouping_type').prop('disabled', false);
-			$('#rra_id').val('');
-			$('#rra_id').prop('disabled', true);
+			$('#row_host_grouping_type').show();
 		} else if ($('#leaf_type').val() == '<?php print TREE_ITEM_TYPE_GRAPH;?>') {
-			$('#host_grouping_type').val('');
-			$('#host_grouping_type').prop('disabled', true);
-			$('#rra_id').val('');
-			$('#rra_id').prop('disabled', false);
+			$('#row_host_grouping_type').hide();
 		}
 	}
 	</script>
@@ -822,15 +809,13 @@ function automation_tree_rules() {
 		$sql_where");
 
 	$automation_tree_rules = db_fetch_assoc("SELECT atr.id, atr.name, atr.tree_id, atr.tree_item_id,
-		atr.leaf_type, atr.host_grouping_type, atr.rra_id, atr.enabled,
-		gt.name AS tree_name, gti.title AS subtree_name, rra.name AS rra_name 
+		atr.leaf_type, atr.host_grouping_type, atr.enabled,
+		gt.name AS tree_name, gti.title AS subtree_name, 
 		FROM automation_tree_rules AS atr
 		LEFT JOIN graph_tree AS gt
 		ON atr.tree_id=gt.id
 		LEFT JOIN graph_tree_items AS gti
 		ON atr.tree_item_id = gti.id
-		LEFT JOIN rra
-		ON atr.rra_id=rra.id
 		$sql_where
 		ORDER BY " . get_request_var('sort_column') . ' ' . get_request_var('sort_direction') . "
 		LIMIT " . ($rows*(get_request_var('page')-1)) . ',' . $rows);
@@ -846,7 +831,6 @@ function automation_tree_rules() {
 		'subtree_name'			=> array('display' => 'At Subtree', 'align' => 'left', 'sort' => 'ASC'),
 		'leaf_type'				=> array('display' => 'This Type', 'align' => 'left', 'sort' => 'ASC'),
 		'host_grouping_type'	=> array('display' => 'Using Grouping', 'align' => 'left', 'sort' => 'ASC'),
-		'rra_id'				=> array('display' => 'Using Round Robin Archive', 'align' => 'left', 'sort' => 'ASC'),
 		'enabled' 				=> array('display' => 'Enabled', 'align' => 'right', 'sort' => 'ASC'));
 
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
@@ -864,7 +848,6 @@ function automation_tree_rules() {
 			form_selectable_cell($subtree_name, $automation_tree_rule['id']);
 			form_selectable_cell($tree_item_type_name, $automation_tree_rule['id']);
 			form_selectable_cell($tree_host_grouping_type, $automation_tree_rule['id']);
-			form_selectable_cell($automation_tree_rule['rra_name'], $automation_tree_rule['id']);
 			form_selectable_cell($automation_tree_rule['enabled'] ? 'Enabled' : 'Disabled', $automation_tree_rule['id'], '', 'text-align:right');
 			form_checkbox_cell($automation_tree_rule['name'], $automation_tree_rule['id']);
 

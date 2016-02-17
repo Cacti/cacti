@@ -37,15 +37,17 @@ function process_tree_settings() {
 function grow_dropdown_tree($tree_id, $parent = 0, $form_name = '', $selected_tree_item_id = '') {
 	global $config;
 
-	static $tier = 1;
+	static $tier = 0;
 
-	$branches = db_fetch_assoc("SELECT gti.id, gti.title
+	$tier++;
+
+	$branches = db_fetch_assoc("SELECT gti.id, gti.title, parent
 		FROM graph_tree_items AS gti
 		WHERE gti.graph_tree_id=$tree_id
 		AND gti.host_id = 0
 		AND gti.local_graph_id = 0
 		AND parent=$parent
-		ORDER BY position");
+		ORDER BY parent, position");
 
 	if ($parent == 0) {
 		print "<select name='$form_name'>\n";
@@ -53,22 +55,24 @@ function grow_dropdown_tree($tree_id, $parent = 0, $form_name = '', $selected_tr
 	}
 
 	if (sizeof($branches)) {
-	foreach ($branches as $leaf) {
-		$indent = str_repeat('---', $tier);
+		foreach ($branches as $leaf) {
+			if ($leaf['parent'] == 0) {
+				$tier = 1;
+			}
 
-		if ($selected_tree_item_id == $leaf['id']) {
-			$html_selected = ' selected';
-		}else{
-			$html_selected = '';
+			$indent = str_repeat('-', $tier);
+
+			if ($selected_tree_item_id == $leaf['id']) {
+				$html_selected = ' selected';
+			}else{
+				$html_selected = '';
+			}
+
+			print "<option value='" . $leaf['id'] . "'$html_selected>$indent " . $leaf['title'] . "</option>\n";
+
+			grow_dropdown_tree($tree_id, $leaf['id'], $form_name, $selected_tree_item_id);
 		}
-
-		print "<option value='" . $leaf['id'] . "'$html_selected>$indent " . $leaf['title'] . "</option>\n";
-
-		grow_dropdown_tree($tree_id, $leaf['id'], $form_name, $selected_tree_item_id);
 	}
-	}
-
-	$tier++;
 
 	if ($parent == 0) {
 		print "</select>\n";

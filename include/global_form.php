@@ -1990,13 +1990,6 @@ $fields_automation_tree_rules_edit1 = array(
 		'array' => $host_group_types,
 		'value' => '|arg1:host_grouping_type|',
 		'default' => HOST_GROUPING_GRAPH_TEMPLATE,
-	),
-	'rra_id' => array(
-		'method' => 'drop_sql',
-		'friendly_name' => 'Round Robin Archive',
-		'description' => 'Choose a round robin archive to control how this graph is displayed.',
-		'value' => '|arg1:rra_id|',
-		'sql' => 'SELECT id,name FROM rra ORDER BY timespan',
 	)
 );
 
