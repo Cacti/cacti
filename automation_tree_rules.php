@@ -810,7 +810,7 @@ function automation_tree_rules() {
 
 	$automation_tree_rules = db_fetch_assoc("SELECT atr.id, atr.name, atr.tree_id, atr.tree_item_id,
 		atr.leaf_type, atr.host_grouping_type, atr.enabled,
-		gt.name AS tree_name, gti.title AS subtree_name, 
+		gt.name AS tree_name, gti.title AS subtree_name 
 		FROM automation_tree_rules AS atr
 		LEFT JOIN graph_tree AS gt
 		ON atr.tree_id=gt.id
