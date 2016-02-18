@@ -2325,7 +2325,7 @@ function create_all_header_nodes ($item_id, $rule) {
 		if ($rule['leaf_type'] == TREE_ITEM_TYPE_HOST) {
 			$sql_tables = 'FROM host AS h
 				LEFT JOIN host_template AS ht
-				ON h.host_template_id=ht.id) ';
+				ON h.host_template_id=ht.id ';
 
 			$sql_where = 'WHERE h.id='. $item_id . ' ';
 		} elseif ($rule['leaf_type'] == TREE_ITEM_TYPE_GRAPH) {
