@@ -1078,6 +1078,7 @@ function upgrade_to_1_0_0() {
 		`enabled` char(2) DEFAULT '',
 		`snmp_id` int(10) unsigned DEFAULT NULL,
 		`enable_netbios` char(2) DEFAULT '',
+		`add_to_cacti` char(2) DEFAULT '',
 		`total_ips` int(10) unsigned DEFAULT '0',
 		`up_hosts` int(10) unsigned NOT NULL DEFAULT '0',
 		`snmp_hosts` int(10) unsigned NOT NULL DEFAULT '0',
@@ -1180,6 +1181,7 @@ function upgrade_to_1_0_0() {
 	
 	db_install_execute('1.0', "ALTER TABLE settings MODIFY COLUMN value varchar(2048) NOT NULL default ''");
 	db_install_execute('1.0', "ALTER TABLE settings_graphs MODIFY COLUMN value varchar(2048) NOT NULL default ''");
+	db_install_execute('1.0', "ALTER TABLE user_auth MODIFY COLUMN password varchar(2048) NOT NULL default ''");
 
 	db_install_execute('1.0', 'RENAME TABLE settings_graphs TO settings_user');
 

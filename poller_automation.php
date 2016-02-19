@@ -487,7 +487,7 @@ function discoverDevices($network_id, $thread) {
 
 							$fos = automation_find_os($device['snmp_sysDescr'], $device['snmp_sysObjectID'], $device['snmp_sysName']);
 
-							if ($fos != false) {
+							if ($fos != false && read_config_option('add_to_cacti') == 'on') {
 								automation_debug(", Template: " . $fos['name']);
 								$device['os']                   = $fos['name'];
 								$device['host_template']        = $fos['host_template'];
@@ -495,8 +495,10 @@ function discoverDevices($network_id, $thread) {
 								$host_id = automation_add_device($device);
 
 								$stats['added']++;
-							}else{
+							}elseif ($fos == false) {
 								automation_debug(", Template: Not found, Not adding to Cacti");
+							}else{
+								automation_debug(", Skipped: Add to Cacti disabled");
 							}
 
 							// if the devices template is not discovered, add to found table

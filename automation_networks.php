@@ -437,10 +437,16 @@ function network_edit() {
 		'value' => '|arg1:enable_netbios|',
 		'default' => ''
 		),
+	'add_to_cacti' => array(
+		'method' => 'checkbox',
+		'friendly_name' => 'Automatically Add to Cacti',
+		'description' => 'For any newly discovered Devices that are reachable using SNMP and who match a Device Rule, add them to Cacti.',
+		'value' => '|arg1:add_to_cacti|'
+		),
 	'rerun_data_queries' => array(
 		'method' => 'checkbox',
 		'friendly_name' => 'Rerun Data Queries',
-		'description' => 'If checked, a previously discovered device will be re queried.',
+		'description' => 'If a device, previously added to Cacti, is found, rerun its data queries.',
 		'value' => '|arg1:rerun_data_queries|'
 		),
 	'spacer2' => array(
@@ -506,7 +512,7 @@ function network_edit() {
 		),
 	'spacer1' => array(
 		'method' => 'spacer',
-		'friendly_name' => 'Connectivity Settings',
+		'friendly_name' => 'Reachability Settings',
 		),
 	'snmp_id' => array(
 		'method' => 'drop_sql',

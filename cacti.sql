@@ -256,6 +256,7 @@ CREATE TABLE `automation_networks` (
   `enabled` char(2) DEFAULT '',
   `snmp_id` int(10) unsigned DEFAULT NULL,
   `enable_netbios` char(2) DEFAULT '',
+  `add_to_cacti` char(2) DEFAULT '',
   `total_ips` int(10) unsigned DEFAULT '0',
   `up_hosts` int(10) unsigned NOT NULL DEFAULT '0',
   `snmp_hosts` int(10) unsigned NOT NULL DEFAULT '0',
@@ -3648,7 +3649,7 @@ INSERT INTO snmp_query_graph_sv VALUES (49,'183bb486c92a566fddcb0585ede37865',22
 CREATE TABLE user_auth (
   id mediumint(8) unsigned NOT NULL auto_increment,
   username varchar(50) NOT NULL default '0',
-  password varchar(50) NOT NULL default '0',
+  password varchar(2048) NOT NULL default '0',
   realm mediumint(8) NOT NULL default '0',
   full_name varchar(100) default '0',
   must_change_password char(2) default NULL,
