@@ -931,7 +931,3 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 	html_end_box();
 }
 
-function naturally_sort_graphs($a, $b) {
-	return strnatcasecmp($a['title_cache'], $b['title_cache']);
-}
-

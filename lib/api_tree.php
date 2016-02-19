@@ -133,7 +133,7 @@ function api_tree_copy_node($tree_id, $node_id, $new_parent, $new_position) {
 
 	$id = sql_save($save, 'graph_tree_items');
 
-	api_tree_reorder_branch($tree_id, $pdata['branch'], $id, $new_position);
+	api_tree_sort_branch($id, $tree_id);
 
 	header('Content-Type: application/json; charset=utf-8');
 	print json_encode(array('id' => 'tbranch:' . $id));
@@ -165,46 +165,6 @@ function api_tree_get_lock($lockname, $timeout = 10) {
 function api_tree_release_lock($lockname) {
 	$lockname = sanitize_search_string($lockname);
 	$unlocked = db_fetch_cell("SELECT RELEASE_LOCK('$lockname')");
-}
-
-/* api_tree_reorder_branch - given a tree, a parent branch, the branch just moved, and it's postion, resort the tree branch
- * @arg $tree_id - The tree to remove from
- * @arg $parent_id - The tree branch to resort
- * @arg $moved_branch - The branch that was juste moved into the current brnach
- * @arg $position - The current branch/leaf position
- * @arg $title - The new brnach/leaf title
- * @returns - null */
-function api_tree_reorder_branch($tree_id, $parent_id, $moved_branch = 0, $position = 0) {
-	// Lock the table
-	api_tree_get_lock('tree-lock', 10);
-	
-	$items = db_fetch_assoc_prepared("SELECT id, position 
-		FROM graph_tree_items
-		WHERE graph_tree_id = ?
-		AND parent = ?
-		AND id != ?
-		ORDER BY position", 
-		array($tree_id, $parent_id, $moved_branch));
-
-	$i = 0;
-	if (sizeof($items)) {
-		foreach($items as $item) {
-			if ($i == $position) {
-				$i++;
-			}
-
-			db_execute_prepared("UPDATE graph_tree_items 
-				SET position = ?
-				WHERE id = ?
-				AND graph_tree_id = ?", 
-				array($i, $item['id'], $tree_id));
-
-			$i++;
-		}
-	}
-
-	// Un-Lock the table
-	api_tree_release_lock('tree-lock');
 }
 
 /* api_tree_create_node - given a tree, a desintation branch, order position, and title, create a branch/leaf.
@@ -243,7 +203,7 @@ function api_tree_create_node($tree_id, $node_id, $position, $title = 'New Branc
 
 	$id = sql_save($save, 'graph_tree_items');
 
-	api_tree_reorder_branch($tree_id, $data['branch'], $id, $position);
+	api_tree_sort_branch($id, $tree_id);
 
 	header('Content-Type: application/json; charset=utf-8');
 	print json_encode(array('id' => 'tbranch:' . $id));
@@ -329,6 +289,7 @@ function api_tree_move_node($tree_id, $node_id, $new_parent, $new_position) {
 	}
 
 	$data  = api_tree_parse_node_data($node_id);
+	$id    = $data['branch'];
 
 	if ($data['parent'] != $pdata['branch']) {
 		db_execute_prepared("UPDATE graph_tree_items 
@@ -337,7 +298,16 @@ function api_tree_move_node($tree_id, $node_id, $new_parent, $new_position) {
 			AND graph_tree_id = ?", 
 			array($pdata['branch'], $new_position, $data['branch'], $tree_id));
 
-		api_tree_reorder_branch($tree_id, $pdata['branch'], $data['branch'], $new_position);
+		$others = db_fetch_assoc_prepared('SELECT id FROM graph_tree_items WHERE parent = ? AND id != ? AND position >= ?', array($pdata['branch'], $data['branch'], $new_position));
+		$position = $new_position + 1;
+		if (sizeof($others)) {
+		foreach($others as $other) {
+			db_execute_prepared('UPDATE graph_tree_items SET position = ? WHERE id = ?', array($position, $other['id']));
+			$position++;
+		}
+		}
+
+		api_tree_sort_branch($id, $tree_id);
 	}elseif (isset($data['branch']) && $data['branch'] > 0 && isset($pdata['branch']) && $pdata['branch'] >= 0) {
 		db_execute_prepared("UPDATE graph_tree_items
 			SET position = ? 
@@ -345,11 +315,21 @@ function api_tree_move_node($tree_id, $node_id, $new_parent, $new_position) {
 			AND id = ?", 
 			array($new_position, $tree_id, $data['branch']));
 
-		api_tree_reorder_branch($tree_id, $pdata['branch'], $data['branch'], $new_position);
+		$others = db_fetch_assoc_prepared('SELECT id FROM graph_tree_items WHERE parent = ? AND id != ? AND position >= ?', array($pdata['branch'], $data['branch'], $new_position));
+		$position = $new_position + 1;
+		if (sizeof($others)) {
+		foreach($others as $other) {
+			db_execute_prepared('UPDATE graph_tree_items SET position = ? WHERE id = ?', array($position, $other['id']));
+			$position++;
+		}
+		}
+
+		api_tree_sort_branch($id, $tree_id);
 	}else{
 		cacti_log("Invalid Source Destination Branches, Function move_node", false);
-		return;
 	}
+
+	return;
 }
 
 /* api_tree_parse_node_data - given the node information parse into a branch, parent, host, graph array
@@ -513,8 +493,12 @@ function api_tree_get_node($tree_id, $node_id) {
 	if ($node_id == '#') {
 		$heirarchy = draw_dhtml_tree_level($tree_id, 0);
 	}else{
-		$dnode = explode(':', $node_id);
-		$id = $dnode[1];
+		$data  = api_tree_parse_node_data($node_id);
+		$id    = $data['branch'];
+//		$dnode = explode(':', $node_id);
+//		$id = $dnode[1];
+//		$dnode = explode('_', $id);
+//		$id = $dnode[0];
 		input_validate_input_number($id);
 		$heirarchy = draw_dhtml_tree_level($tree_id, $id);
 	}
@@ -580,47 +564,7 @@ function api_tree_item_save($id, $tree_id, $type, $parent_tree_item_id, $title, 
 		if ($tree_item_id) {
 			raise_message(1);
 
-			$tree_sort_type = db_fetch_cell("SELECT sort_type FROM graph_tree WHERE id='$tree_id'");
-
-			/* tree item ordering */
-			if ($tree_sort_type == TREE_ORDERING_NONE) {
-				/* resort our parent */
-				$parent_sorting_type = db_fetch_cell("SELECT sort_children_type FROM graph_tree_items WHERE id=$parent_tree_item_id");
-				if ((!empty($parent_tree_item_id)) && ($parent_sorting_type != TREE_ORDERING_NONE)) {
-					api_tree_sort_tree(SORT_TYPE_TREE_ITEM, $parent_tree_item_id, $parent_sorting_type);
-				}
-
-				/* if this is a header, sort direct children */
-				if (($type == TREE_ITEM_TYPE_HEADER) && ($sort_children_type != TREE_ORDERING_NONE)) {
-					api_tree_sort_tree(SORT_TYPE_TREE_ITEM, $tree_item_id, $sort_children_type);
-				}
-			}else{
-				if ($parent_tree_item_id == 0) {
-					api_tree_sort_tree(SORT_TYPE_TREE, $tree_id, $tree_sort_type);
-				}else{
-					api_tree_sort_tree(SORT_TYPE_TREE_ITEM, $parent_tree_item_id, $tree_sort_type);
-				}
-			}
-
-			/* if the user checked the 'Propagate Changes' box */
-			if (($type == TREE_ITEM_TYPE_HEADER) && ($propagate_changes == true)) {
-				$tree_items = db_fetch_assoc("SELECT gti.id
-					FROM graph_tree_items AS gti
-					WHERE gti.host_id=0
-					AND gti.local_graph_id=0
-					AND gti.parent=$parent_tree_item_id
-					AND gti.graph_tree_id='$tree_id'");
-
-				if (sizeof($tree_items) > 0) {
-					foreach ($tree_items as $item) {
-						db_execute("UPDATE graph_tree_items SET sort_children_type='$sort_children_type' WHERE id='" . $item["id"] . "'");
-
-						if ($sort_children_type != TREE_ORDERING_NONE) {
-							api_tree_sort_tree(SORT_TYPE_TREE_ITEM, $item["id"], $sort_children_type);
-						}
-					}
-				}
-			}
+			api_tree_sort_branch($tree_item_id, $tree_id);
 		}else{
 			raise_message(2);
 		}
@@ -651,83 +595,156 @@ function api_tree_get_item_type($tree_item_id) {
 	return "";
 }
 
-/* sort_branch - sorts the child items a branch using a specified sorting algorithm
-   @arg $sort_type - the type of sorting to perform. available options are:
-     SORT_TYPE_TREE (1) - sort the entire tree
-     SORT_TYPE_TREE_ITEM (2) - sort a single tree branch
-   @arg $item_id - the id tree or tree item to sort
-   @arg $sort_style - the type of sorting to perform. available options are:
-     TREE_ORDERING_NONE (1) - no sorting
-     TREE_ORDERING_ALPHABETIC (2) - alphabetic sorting
-     TREE_ORDERING_NUMERIC (3) - numeric sorting */
-function api_tree_sort_tree($sort_type, $branch_id, $sort_style) {
-	global $config;
+function naturally_sort_graphs($a, $b) {
+	return strnatcasecmp($a['title_cache'], $b['title_cache']);
+}
 
-	include_once($config["library_path"] . "/sort.php");
+function api_tree_get_branch_ordering($branch_id) {
+	$branch = db_fetch_row_prepared('SELECT * FROM graph_tree_items WHERE id = ?', array($branch_id));
 
-	if (empty($branch_id)) { 
-		return 0; 
-	}
+	if (sizeof($branch)) {
+		if ($branch['sort_children_type'] == 0) {
+			$parent = $branch['parent'];
 
-	if ($sort_style == TREE_ORDERING_NONE) { 
-		return 0; 
-	}
-
-	if ($sort_type == SORT_TYPE_TREE_ITEM) {
-		$tree_id = db_fetch_cell("SELECT graph_tree_id FROM graph_tree_items WHERE id=$branch_id");
-
-		$sql_where = "WHERE gti.graph_tree_id=$tree_id AND parent=$branch_id";
-	}else if ($sort_type == SORT_TYPE_TREE) {
-		$sql_where = "WHERE gti.graph_tree_id='$branch_id'";
-
-		$tree_id = $branch_id;
-	}else{
-		return 0;
-	}
-
-	$hier_sql = "SELECT gti.id, gti.title, gti.local_graph_id, gti.host_id, 
-		gtg.title_cache AS graph_title, CONCAT_WS('',description,' (',hostname,')') AS hostname
-		FROM graph_tree_items AS gti
-		LEFT JOIN graph_templates_graph AS gtg
-		ON gti.local_graph_id=gtg.local_graph_id AND gtg.local_graph_id>0
-		LEFT JOIN host AS h
-		ON h.id=gti.host_id
-		$sql_where
-		ORDER BY gti.position";
-
-	$hierarchy = db_fetch_assoc($hier_sql);
-
-	$sort_array = array();
-	if (sizeof($hierarchy)) {
-	foreach ($hierarchy as $leaf) {
-		if ($leaf["local_graph_id"] > 0) {
-			$sort_array[$leaf["id"]] = $leaf["graph_title"];
-		}elseif ($leaf["title"] != "") {
-			$sort_array[$leaf["id"]] = $leaf["title"];
-		}elseif ($leaf["host_id"] > 0) {
-			$sort_array[$leaf["id"]] = $leaf["hostname"];
+			if ($parent > 0) {
+				return api_tree_get_branch_ordering($parent);
+			}else{
+				return db_fetch_cell_prepared('SELECT sort_type FROM graph_tree WHERE id = ?', array($branch['graph_tree_id']));
+			}
+		}else{
+			return $branch['sort_children_type'];
 		}
-	}
-	}
-
-	/* do the actual sort */
-	if ($sort_style == TREE_ORDERING_NUMERIC) {
-		uasort($sort_array, "usort_numeric");
-	}elseif ($sort_style == TREE_ORDERING_ALPHABETIC) {
-		uasort($sort_array, "usort_alphabetic");
-	}elseif ($sort_style == TREE_ORDERING_NATURAL) {
-		uasort($sort_array, "usort_natural");
-	}
-
-	$position = 0;
-
-	/* prepend all order keys will 'x' so they don't collide during the REPLACE process */
-	foreach($sort_array as $id => $item) {
-		db_execute("UPDATE graph_tree_items 
-			SET position=$position 
-			WHERE id=$id AND graph_tree_id=$tree_id");
-
-		$position++;
+	}else{
+		return 1;
 	}
 }
 
+function api_tree_sort_branch($leaf_id = 0, $graph_tree_id = 0) {
+	api_tree_get_lock('tree-lock', 10);
+
+	// Sorting will go in this order for anyone sorting:
+	// Tree Branches go first, then Devices, then Graphs
+	$sequence = 1;
+
+	if (!is_numeric($leaf_id)) {
+		$data  = api_tree_parse_node_data($leaf_id);
+		$leaf_id  = $data['branch'];
+	}
+
+	if ($leaf_id > 0) {
+		$pdata         = db_fetch_row_prepared('SELECT parent, graph_tree_id FROM graph_tree_items WHERE id = ?', array($leaf_id));
+		$parent        = $pdata['parent'];
+		$graph_tree_id = $pdata['graph_tree_id'];
+	}elseif ($graph_tree_id > 0) {
+		$parent        = 0;
+	}else{
+		cacti_log('Error Sorting Tree');
+		return;
+	}
+
+	if ($parent > 0) {
+		$sort_style = api_tree_get_branch_ordering($parent);
+	}else{
+		$sort_style = db_fetch_cell_prepared('SELECT sort_type FROM graph_tree WHERE id = ?', array($graph_tree_id));
+	}
+
+	if ($sort_style == TREE_ORDERING_ALPHABETIC) {
+		$order_by = 'ORDER BY title';
+	} else {
+		$order_by = 'ORDER BY position';
+	}
+
+	$sort_array = array_rekey(db_fetch_assoc_prepared('SELECT title, id 
+		FROM graph_tree_items AS gti 
+		WHERE parent = ? 
+		AND graph_tree_id = ?
+		AND local_graph_id = 0 
+		AND host_id = 0 ' . $order_by, array($parent, $graph_tree_id)), 'id', 'title');
+
+	if (sizeof($sort_array)) {
+		if ($sort_style == TREE_ORDERING_NUMERIC) {
+			asort($sort_array, SORT_NUMERIC);
+		}elseif ($sort_style == TREE_ORDERING_ALPHABETIC) {
+			// Let's let the database do it!
+		}elseif ($sort_style == TREE_ORDERING_NATURAL) {
+			if (defined('SORT_FLAG_CASE')) {
+				asort($sort_array, SORT_NATURAL | SORT_FLAG_CASE);
+			}else{
+				natcasesort($sort_array);
+			}
+		}
+
+		foreach($sort_array as $id => $element) {
+			db_execute_prepared('UPDATE graph_tree_items SET position = ? WHERE id = ?', array($sequence, $id));
+			$sequence++;
+		}
+	}
+
+	if ($sort_style == TREE_ORDERING_ALPHABETIC) {
+		$order_by = 'ORDER BY h.description';
+	} else {
+		$order_by = 'ORDER BY position';
+	}
+
+	$sort_array = array_rekey(db_fetch_assoc_prepared('SELECT h.description, gti.id
+		FROM graph_tree_items AS gti 
+		INNER JOIN host AS h 
+		ON h.id=gti.host_id 
+		WHERE parent = ? 
+		AND graph_tree_id = ?
+		AND host_id > 0 ' . $order_by, array($parent, $graph_tree_id)), 'id', 'description');
+
+	if (sizeof($sort_array)) {
+		if ($sort_style == TREE_ORDERING_NUMERIC) {
+			asort($sort_array, SORT_NUMERIC);
+		}elseif ($sort_style == TREE_ORDERING_ALPHABETIC) {
+			// Let's let the database do it!
+		}elseif ($sort_style == TREE_ORDERING_NATURAL) {
+			if (defined('SORT_FLAG_CASE')) {
+				asort($sort_array, SORT_NATURAL | SORT_FLAG_CASE);
+			}else{
+				natcasesort($sort_array);
+			}
+		}
+
+		foreach($sort_array as $id => $element) {
+			db_execute_prepared('UPDATE graph_tree_items SET position = ? WHERE id = ?', array($sequence, $id));
+			$sequence++;
+		}
+	}
+
+	if ($sort_style == TREE_ORDERING_ALPHABETIC) {
+		$order_by = 'ORDER BY gtg.title_cache';
+	} else {
+		$order_by = 'ORDER BY position';
+	}
+
+	$sort_array = array_rekey(db_fetch_assoc_prepared('SELECT gtg.title_cache, gti.id
+		FROM graph_tree_items AS gti 
+		INNER JOIN graph_templates_graph AS gtg
+		ON gtg.local_graph_id=gti.local_graph_id
+		WHERE parent = ? 
+		AND graph_tree_id = ?
+		AND gti.local_graph_id > 0 ' . $order_by, array($parent, $graph_tree_id)), 'id', 'title_cache');
+
+	if (sizeof($sort_array)) {
+		if ($sort_style == TREE_ORDERING_NUMERIC) {
+			asort($sort_array, SORT_NUMERIC);
+		}elseif ($sort_style == TREE_ORDERING_ALPHABETIC) {
+			// Let's let the database do it!
+		}elseif ($sort_style == TREE_ORDERING_NATURAL) {
+			if (defined('SORT_FLAG_CASE')) {
+				asort($sort_array, SORT_NATURAL | SORT_FLAG_CASE);
+			}else{
+				natcasesort($sort_array);
+			}
+		}
+
+		foreach($sort_array as $id => $element) {
+			db_execute_prepared('UPDATE graph_tree_items SET position = ? WHERE id = ?', array($sequence, $id));
+			$sequence++;
+		}
+	}
+
+	api_tree_release_lock('tree-lock');
+}

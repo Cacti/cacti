@@ -203,7 +203,7 @@ function set_host_sort_type() {
 						$type = HOST_GROUPING_DATA_QUERY_INDEX;
 					}
 
-					db_execute_prepared("UPDATE graph_tree_items SET host_grouping_type=$type WHERE id = ?", array($branch));
+					db_execute_prepared('UPDATE graph_tree_items SET host_grouping_type = ? WHERE id = ?', array($type, $branch));
 					break;
 				}
 			}
@@ -292,8 +292,14 @@ function set_branch_sort_type() {
 					break;
 				}
 
-				if ($type != '' && $branch != '') {
-					db_execute_prepared('UPDATE graph_tree_items SET sort_children_type=$type WHERE id = ?', array($branch));
+				if (is_numeric($type) && is_numeric($branch)) {
+					db_execute_prepared('UPDATE graph_tree_items SET sort_children_type = ? WHERE id = ?', array($type, $branch));
+				}
+
+				$first_child = db_fetch_cell_prepared('SELECT id FROM graph_tree_items WHERE parent = ? ORDER BY position', array($branch));
+
+				if (!empty($first_child)) {
+					api_tree_sort_branch($first_child);
 				}
 
 				break;
@@ -317,7 +323,11 @@ function form_save() {
 		get_filter_request_var('id');
 		/* ==================================================== */
 
-		$save['id']            = get_nfilter_request_var('id');
+		if (get_filter_request_var('id') > 0) {
+			$prev_order = db_fetch_cell_prepared('SELECT sort_type FROM graph_tree WHERE id = ?', array(get_request_var('id')));
+		}
+
+		$save['id']            = get_request_var('id');
 		$save['name']          = form_input_validate(get_nfilter_request_var('name'), 'name', '', false, 3);
 		$save['sort_type']     = form_input_validate(get_nfilter_request_var('sort_type'), 'sort_type', '', true, 3);
 		$save['last_modified'] = date('Y-m-d H:i:s', time());
@@ -334,7 +344,11 @@ function form_save() {
 				raise_message(1);
 
 				/* sort the tree using the algorithm chosen by the user */
-				api_tree_sort_tree(SORT_TYPE_TREE, $tree_id, get_nfilter_request_var('sort_type'));
+				if ($save['sort_type'] != $prev_order) {
+					if ($save['sort_type'] != TREE_ORDERING_NONE) {
+						sort_recursive(0, $tree_id);
+					}
+				}
 			}else{
 				raise_message(2);
 			}
@@ -343,6 +357,35 @@ function form_save() {
 		header("Location: tree.php?header=false&action=edit&id=$tree_id");
 		exit;
 	}
+}
+
+function sort_recursive($branch, $tree_id) {
+	$leaves = db_fetch_assoc_prepared('SELECT * FROM graph_tree_items WHERE graph_tree_id = ? AND parent = ? AND local_graph_id = 0 AND host_id = 0', array($tree_id, $branch));
+
+	if (sizeof($leaves)) {
+	foreach($leaves as $leaf) {
+		if ($leaf['sort_children_type'] == TREE_ORDERING_INHERIT) {
+			$first_child = db_fetch_cell_prepared('SELECT id FROM graph_tree_items WHERE parent = ?', array($leaf['id']));
+
+			if (!empty($first_child)) {
+				api_tree_sort_branch($first_child, $tree_id);
+
+				if (leaves_exist($leaf['id'], $tree_id)) {
+					sort_recursive($first_child, $tree_id);
+				}
+			}
+		}
+	}
+	}
+}
+
+function leaves_exist($parent, $tree_id) {
+	return db_fetch_assoc_prepared('SELECT COUNT(*) 
+		FROM graph_tree_items 
+		WHERE graph_tree_id = ? 
+		AND parent = ? 
+		AND local_graph_id = 0 
+		AND host_id = 0', array($tree_id, $parent));
 }
 
 /* -----------------------
@@ -520,6 +563,9 @@ function tree_edit() {
 	}
 
 	form_start('tree.php');
+
+	// Remove inherit from the main tree option
+	unset($fields_tree_edit['sort_type']['array'][0]);
 
 	html_start_box('Graph Trees ' . $header_label, '100%', '', '3', 'center', '');
 
@@ -815,8 +861,9 @@ function tree_edit() {
 				}
 			})<?php if ($editable) {?>.on('delete_node.jstree', function (e, data) {
 				$.get('?action=delete_node', { 'id' : data.node.id, 'tree_id' : $('#id').val() })
-					.fail(function () {
-						data.instance.refresh();
+					.always(function() {
+						var st = data.instance.get_state();
+						data.instance.load_node(data.instance.get_parent(data.node.id), function () { this.set_state(st); });
 					});
 				})
 			.on('hover_node.jstree', function (e, data) {
@@ -830,27 +877,33 @@ function tree_edit() {
 				$.get('?action=create_node', { 'id' : data.node.parent, 'tree_id' : $('#id').val(), 'position' : data.position, 'text' : data.node.text })
 					.done(function (d) {
 						data.instance.set_id(data.node, d.id);
+						var st = data.instance.get_state();
+						data.instance.load_node(data.instance.get_parent(d.id), function () { this.set_state(st); });
 					})
 					.fail(function () {
-						data.instance.refresh();
+						var st = data.instance.get_state();
+						data.instance.load_node(data.instance.get_parent(data.node.id), function () { this.set_state(st); });
 					});
 			})
 			.on('rename_node.jstree', function (e, data) {
 				$.get('?action=rename_node', { 'id' : data.node.id, 'tree_id' : $('#id').val(), 'text' : data.text })
-					.fail(function () {
-						data.instance.refresh();
+					.always(function () {
+						var st = data.instance.get_state();
+						data.instance.load_node(data.instance.get_parent(data.node.id), function () { this.set_state(st); });
 					});
 			})
 			.on('move_node.jstree', function (e, data) {
 				$.get('?action=move_node', { 'id' : data.node.id, 'tree_id' : $('#id').val(), 'parent' : data.parent, 'position' : data.position })
 					.always(function () {
-						data.instance.refresh();
+						var st = data.instance.get_state();
+						data.instance.load_node(data.instance.get_parent(data.node.id), function () { this.set_state(st); });
 					});
 			})
 			.on('copy_node.jstree', function (e, data) {
 				$.get('?action=copy_node', { 'id' : data.original.id, 'tree_id' : $('#id').val(), 'parent' : data.parent, 'position' : data.position })
 					.always(function () {
-						data.instance.refresh();
+						var st = data.instance.get_state();
+						data.instance.load_node(data.instance.get_parent(data.node.id), function () { this.set_state(st); });
 					});
 			})<?php }else{?>.children().bind('contextmenu', function(event) {
 				return false;
@@ -913,8 +966,8 @@ function tree_edit() {
 					'_disabled'			: false,
 					'label'				: 'Create',
 					'action'			: function (data) {
-						var inst = $.jstree.reference(data.reference),
-							obj = inst.get_node(data.reference);
+						var inst = $.jstree.reference(data.reference);
+						var obj = inst.get_node(data.reference);
 						inst.create_node(obj, {}, 'last', function (new_node) {
 							setTimeout(function () { inst.edit(new_node); },0);
 						});
@@ -927,8 +980,8 @@ function tree_edit() {
 					'_disabled'			: false,
 					'label'				: 'Rename',
 					'action'			: function (data) {
-						var inst = $.jstree.reference(data.reference),
-							obj = inst.get_node(data.reference);
+						var inst = $.jstree.reference(data.reference);
+						var obj = inst.get_node(data.reference);
 						inst.edit(obj);
 					}
 				},
@@ -939,12 +992,11 @@ function tree_edit() {
 					'_disabled'			: false,
 					'label'				: 'Delete',
 					'action'			: function (data) {
-						var inst = $.jstree.reference(data.reference),
-							obj = inst.get_node(data.reference);
+						var inst = $.jstree.reference(data.reference);
+						var obj = inst.get_node(data.reference);
 						if(inst.is_selected(obj)) {
 							inst.delete_node(inst.get_selected());
-						}
-						else {
+						} else {
 							inst.delete_node(obj);
 						}
 					}
@@ -963,6 +1015,9 @@ function tree_edit() {
 							'label'				: 'Inherit',
 							'action'			: function (data) {
 								setBranchSortOrder('inherit', nodeid);
+								var inst = $.jstree.reference(data.reference);
+								var st = inst.get_state();
+								inst.load_node(nodeid, function () { this.set_state(st); });
 							}
 						},
 						'manual' : {
@@ -972,6 +1027,9 @@ function tree_edit() {
 							'label'				: 'Manual',
 							'action'			: function (data) {
 								setBranchSortOrder('manual', nodeid);
+								var inst = $.jstree.reference(data.reference);
+								var st = inst.get_state();
+								inst.load_node(nodeid, function () { this.set_state(st); });
 							}
 						},
 						'alpha' : {
@@ -981,6 +1039,9 @@ function tree_edit() {
 							'label'				: 'Alphabetic',
 							'action'			: function (data) {
 								setBranchSortOrder('alpha', nodeid);
+								var inst = $.jstree.reference(data.reference);
+								var st = inst.get_state();
+								inst.load_node(nodeid, function () { this.set_state(st); });
 							}
 						},
 						'natural' : {
@@ -990,6 +1051,9 @@ function tree_edit() {
 							'label'				: 'Natural',
 							'action'			: function (data) {
 								setBranchSortOrder('natural', nodeid);
+								var inst = $.jstree.reference(data.reference);
+								var st = inst.get_state();
+								inst.load_node(nodeid, function () { this.set_state(st); });
 							}
 						},
 						'numeric' : {
@@ -999,6 +1063,9 @@ function tree_edit() {
 							'label'				: 'Numeric',
 							'action'			: function (data) {
 								setBranchSortOrder('numeric', nodeid);
+								var inst = $.jstree.reference(data.reference);
+								var st = inst.get_state();
+								inst.load_node(nodeid, function () { this.set_state(st); });
 							}
 						}
 					}
@@ -1016,12 +1083,11 @@ function tree_edit() {
 							'icon'				: 'fa fa-cut',
 							'label'				: 'Cut',
 							'action'			: function (data) {
-								var inst = $.jstree.reference(data.reference),
-									obj = inst.get_node(data.reference);
+								var inst = $.jstree.reference(data.reference);
+								var obj = inst.get_node(data.reference);
 								if(inst.is_selected(obj)) {
 									inst.cut(inst.get_selected());
-								}
-								else {
+								} else {
 									inst.cut(obj);
 								}
 							}
@@ -1032,12 +1098,11 @@ function tree_edit() {
 							'separator_after'	: false,
 							'label'				: 'Copy',
 							'action'			: function (data) {
-								var inst = $.jstree.reference(data.reference),
-									obj = inst.get_node(data.reference);
+								var inst = $.jstree.reference(data.reference);
+								var obj = inst.get_node(data.reference);
 								if(inst.is_selected(obj)) {
 									inst.copy(inst.get_selected());
-								}
-								else {
+								} else {
 									inst.copy(obj);
 								}
 							}
@@ -1051,8 +1116,8 @@ function tree_edit() {
 							'separator_after'	: false,
 							'label'				: 'Paste',
 							'action'			: function (data) {
-								var inst = $.jstree.reference(data.reference),
-									obj = inst.get_node(data.reference);
+								var inst = $.jstree.reference(data.reference);
+								var obj = inst.get_node(data.reference);
 								inst.paste(obj);
 							}
 						}
@@ -1070,12 +1135,11 @@ function tree_edit() {
 					'_disabled'			: false, //(this.check('delete_node', data.reference, this.get_parent(data.reference), '')),
 					'label'				: 'Delete',
 					'action'			: function (data) {
-						var inst = $.jstree.reference(data.reference),
-							obj = inst.get_node(data.reference);
+						var inst = $.jstree.reference(data.reference);
+						var obj = inst.get_node(data.reference);
 						if(inst.is_selected(obj)) {
 							inst.delete_node(inst.get_selected());
-						}
-						else {
+						} else {
 							inst.delete_node(obj);
 						}
 					}
@@ -1093,12 +1157,11 @@ function tree_edit() {
 							'icon'				: 'fa fa-cut',
 							'label'				: 'Cut',
 							'action'			: function (data) {
-								var inst = $.jstree.reference(data.reference),
-									obj = inst.get_node(data.reference);
+								var inst = $.jstree.reference(data.reference);
+								var obj = inst.get_node(data.reference);
 								if(inst.is_selected(obj)) {
 									inst.cut(inst.get_selected());
-								}
-								else {
+								} else {
 									inst.cut(obj);
 								}
 							}
@@ -1109,12 +1172,11 @@ function tree_edit() {
 							'separator_after'	: false,
 							'label'				: 'Copy',
 							'action'			: function (data) {
-								var inst = $.jstree.reference(data.reference),
-									obj = inst.get_node(data.reference);
+								var inst = $.jstree.reference(data.reference);
+								var obj = inst.get_node(data.reference);
 								if(inst.is_selected(obj)) {
 									inst.copy(inst.get_selected());
-								}
-								else {
+								} else {
 									inst.copy(obj);
 								}
 							}
@@ -1133,12 +1195,11 @@ function tree_edit() {
 					'_disabled'			: false,
 					'label'				: 'Delete',
 					'action'			: function (data) {
-						var inst = $.jstree.reference(data.reference),
-							obj = inst.get_node(data.reference);
+						var inst = $.jstree.reference(data.reference);
+						var obj = inst.get_node(data.reference);
 						if(inst.is_selected(obj)) {
 							inst.delete_node(inst.get_selected());
-						}
-						else {
+						} else {
 							inst.delete_node(obj);
 						}
 					}
@@ -1187,8 +1248,7 @@ function tree_edit() {
 									obj = inst.get_node(data.reference);
 								if(inst.is_selected(obj)) {
 									inst.cut(inst.get_selected());
-								}
-								else {
+								} else {
 									inst.cut(obj);
 								}
 							}
@@ -1203,8 +1263,7 @@ function tree_edit() {
 									obj = inst.get_node(data.reference);
 								if(inst.is_selected(obj)) {
 									inst.copy(inst.get_selected());
-								}
-								else {
+								} else {
 									inst.copy(obj);
 								}
 							}
