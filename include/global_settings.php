@@ -1670,8 +1670,8 @@ $settings = array(
 			'friendly_name' => 'Location',
 			'description' => 'Choose if RRDs will be stored locally or being handled by an external RRDtool proxy server. Note: Once this setting has been chanced poller cache needs to be rebuild.',
 			'method' => 'drop_array',
-			'default' => 'Local',
-			'array' => array('Local', 'RRDtool Proxy Server'),
+			'default' => 0,
+			'array' => array ('Local', 'RRDtool Proxy Server'),
 			),
 		'extended_paths' => array(
 			'friendly_name' => 'Structured RRD Path (/host_id/local_data_id.rrd)',
