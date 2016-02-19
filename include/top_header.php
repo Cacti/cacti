@@ -38,7 +38,7 @@ $using_guest_account = false;
 <html>
 <head>
 	<meta http-equiv='X-UA-Compatible' content='IE=edge'>
-	<meta content='width=720, initial-scale=1.2, maximum-scale=1.2, minimum-scale=1.2' name='viewport'>
+	<meta content='width=720, initial-scale=0.8, maximum-scale=2.0, minimum-scale=0.5' name='viewport'>
 	<title><?php echo $page_title; ?></title>
 	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
 	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print get_selected_theme();?>/main.css' type='text/css' rel='stylesheet'>
@@ -89,7 +89,7 @@ $using_guest_account = false;
 				<?php draw_menu();?>
 				<tr>
 					<td style='text-align:center;'>
-						<div class='cactiLogo' onClick='document.location="about.php";'></div>
+						<div class='cactiLogo' onClick='loadPageNoHeader("about.php?header=false");'></div>
 					</td>
 				</tr>
 			</table>

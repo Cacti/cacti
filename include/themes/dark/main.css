@@ -442,6 +442,7 @@ label {
 	top:0px;
 	position:fixed;
 	right:0px;
+	z-index:-1;
 }
 
 .cactiConsolePageHeadBackdrop {
@@ -453,6 +454,7 @@ label {
 	top:0px;
 	position:fixed;
 	right:0px;
+	z-index:-1;
 }
 
 .navigation {
@@ -1200,6 +1202,7 @@ div#tabs {
 	position:fixed;
 	top: 0px;
 	right: 0px;
+	z-index:-1;
 }
 
 div#gtabs {

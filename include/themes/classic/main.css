@@ -420,6 +420,7 @@ label {
 	float:right;
 	width:400px;
 	height:37px;
+	z-index:-1;
 }
 
 .cactiConsolePageHeadBackdrop {
@@ -428,6 +429,7 @@ label {
 	float:right;
 	width:400px;
 	height:37px;
+	z-index:-1;
 }
 
 .navigation {
@@ -997,6 +999,7 @@ td#tabs {
 	height: 37px;
 	width:500px;
 	float:right;
+	z-index:-1;
 }
 
 div#gtabs {
