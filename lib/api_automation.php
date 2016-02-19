@@ -1051,7 +1051,7 @@ function display_matching_trees ($rule_id, $rule_type, $item, $url) {
 		'host_template_name' => array('Device Template Name', 'ASC'),
 		'status' => array('Status', 'ASC'),
 		'source' => array($item['field'], 'ASC'),
-		'result' => array('Result', 'ASC'),
+		'result' => array('Resulting Branch', 'ASC'),
 	);
 
 	html_header_sort(
