@@ -1187,3 +1187,7 @@ ul.pagination li a:hover:not(.active) {
 	background-color: #9C9C9C;
 	color: black;
 }
+
+tr#realtime td:first-child {
+	height:68px;
+}

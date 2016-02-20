@@ -1466,3 +1466,7 @@ ul.pagination li a:hover:not(.active) {
 	background: linear-gradient(to bottom, rgba(167,217,134,0.4) 0%, rgba(148,179,107,0.4) 100%);
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#a7d986', endColorstr='#94b36b', GradientType=0 );
 }
+
+tr#realtime td:first-child {
+	height:68px;
+}

@@ -675,7 +675,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 						</td>
 					</tr>
 					<tr id='realtime' style='display:none;'>
-						<td height="68">
+						<td>
 							Window
 						</td>
 						<td>
