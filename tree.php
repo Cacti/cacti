@@ -877,8 +877,8 @@ function tree_edit() {
 				$.get('?action=create_node', { 'id' : data.node.parent, 'tree_id' : $('#id').val(), 'position' : data.position, 'text' : data.node.text })
 					.done(function (d) {
 						data.instance.set_id(data.node, d.id);
-						var st = data.instance.get_state();
-						data.instance.load_node(data.instance.get_parent(d.id), function () { this.set_state(st); });
+						data.instance.set_text(data.node, d.text);
+						data.instance.edit(data.node);
 					})
 					.fail(function () {
 						var st = data.instance.get_state();
@@ -887,9 +887,14 @@ function tree_edit() {
 			})
 			.on('rename_node.jstree', function (e, data) {
 				$.get('?action=rename_node', { 'id' : data.node.id, 'tree_id' : $('#id').val(), 'text' : data.text })
-					.always(function () {
-						var st = data.instance.get_state();
-						data.instance.load_node(data.instance.get_parent(data.node.id), function () { this.set_state(st); });
+					.always(function (d) {
+						if (d.result == 'false') {
+							data.instance.set_text(data.node, d.text);
+							data.instance.edit(data.node);
+						}else{
+							var st = data.instance.get_state();
+							data.instance.load_node(data.instance.get_parent(data.node.id), function () { this.set_state(st); });
+						}
 					});
 			})
 			.on('move_node.jstree', function (e, data) {
