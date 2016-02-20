@@ -485,6 +485,7 @@ function aggregate_validate_graph_params($posted, $has_override = false) {
 			$params_new[$field] = form_input_validate(htmlspecialchars($posted[$field]), $field, $defs['regex'], $defs['allow_empty'], 3);
 		}
 	}
+
 	return $params_new;
 }
 

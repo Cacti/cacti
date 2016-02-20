@@ -33,7 +33,7 @@ $aggregate_actions = array(
 set_default_action();
 
 if (get_request_var('action') == 'save') {
-	if (get_request_var('id') == 0 && isset_request_var('_graph_template_id') && get_request_var('_graph_template_id') == 0) {
+	if (isset_request_var('id') && get_filter_request_var('id') == 0 && isset_request_var('_graph_template_id') && get_filter_request_var('_graph_template_id') == 0) {
 		set_request_var('action', 'edit');
 	}
 }
@@ -424,19 +424,19 @@ function aggregate_template_edit() {
 	function changeTotals() {
 		switch ($('#total').val()) {
 			case '<?php print AGGREGATE_TOTAL_NONE;?>':
-				$('#total_type').prop('disabled', true);
-				$('#total_prefix').prop('disabled', true);
-				$('#order_type').prop('disabled', false);
+				$('#row_total_type').hide();
+				$('#row_total_prefix').hide();
+				$('#row_order_type').show();
 				break;
 			case '<?php print AGGREGATE_TOTAL_ALL;?>':
-				$('#total_type').prop('disabled', false);
-				$('#total_prefix').prop('disabled', false);
-				$('#order_type').prop('disabled', false);
+				$('#row_total_type').show();
+				$('#row_total_prefix').show();
+				$('#row_order_type').show();
 				changeTotalsType();
 				break;
 			case '<?php print AGGREGATE_TOTAL_ONLY;?>':
-				$('#total_type').prop('disabled', false);
-				$('#total_prefix').prop('disabled', false);
+				$('#row_total_type').show();
+				$('#row_total_prefix').show();
 				//$('#order_type').prop('disabled', true);
 				changeTotalsType();
 				break;

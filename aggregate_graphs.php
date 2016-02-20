@@ -263,7 +263,6 @@ function form_actions() {
 		}
 
 		header('Location: aggregate_graphs.php?header=false');
-
 		exit;
 	}
 
@@ -556,9 +555,9 @@ function graph_edit() {
 
 	/* handle debug mode */
 	if (isset_request_var('debug')) {
-		if (get_request_var('debug') == '0') {
+		if (get_filter_request_var('debug') == '0') {
 			kill_session_var('graph_debug_mode');
-		}elseif (get_request_var('debug') == '1') {
+		}elseif (get_filter_request_var('debug') == '1') {
 			$_SESSION['graph_debug_mode'] = true;
 		}
 	}

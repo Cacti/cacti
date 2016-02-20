@@ -95,7 +95,7 @@ function api_aggregate_associate($graphs) {
 
 	push_out_aggregates($aggregate_template, $local_graph_id);
 
-	header("Location: aggregate_graphs.php?action=edit&tab=items&id=$local_graph_id");
+	header("Location: aggregate_graphs.php?header=false&action=edit&tab=items&id=$local_graph_id");
 
 	exit;
 }
@@ -111,7 +111,7 @@ function api_aggregate_disassociate($graphs) {
 
 	push_out_aggregates($aggregate_template, $local_graph_id);
 
-	header("Location: aggregate_graphs.php?action=edit&tab=items&id=$local_graph_id");
+	header("Location: aggregate_graphs.php?header=false&action=edit&tab=items&id=$local_graph_id");
 
 	exit;
 }
