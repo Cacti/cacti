@@ -44,7 +44,7 @@ $graph_actions = array(
 	4 => 'Convert to Graph Template',
     'aggregate' => 'Create Aggregate Graph',
     'aggregate_template' => 'Create Aggregate from Template',
-	8 => 'Apply Automation Rules to Graph(s)'
+	8 => 'Apply Automation Rules'
 );
 
 $graph_actions = api_plugin_hook_function('graphs_action_array', $graph_actions);
