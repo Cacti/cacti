@@ -2985,15 +2985,19 @@ function sanitize_cdef($cdef) {
  * @returns array      - the sanitized selected items array
  */
 function sanitize_unserialize_selected_items($items) {
-	$items = unserialize(stripslashes($items));
+	if ($items != '') {
+		$items = unserialize(stripslashes($items));
 
-	if (is_array($items)) {
-		for ($i=0;($i<count($items));$i++) {
-			if (is_array($items[$i])) {
-				return false;
-			}elseif (!is_numeric($items[$i]) && ($items[$i] != '')) {
-				return false;
+		if (is_array($items)) {
+			for ($i=0;($i<count($items));$i++) {
+				if (is_array($items[$i])) {
+					return false;
+				}elseif (!is_numeric($items[$i]) && ($items[$i] != '')) {
+					return false;
+				}
 			}
+		}else{
+			return false;
 		}
 	}else{
 		return false;
