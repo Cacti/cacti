@@ -289,10 +289,18 @@ function form_input_validate($field_value, $field_name, $regexp_match, $allow_nu
 	}
 
 	if ($allow_nulls == false && $field_value == '') {
+		if (read_config_option('developer_mode') == 'on') {
+			cacti_log("Form Validation Failed: Variable '$field_name' does not allow nulls and variable is null", false);
+		}
+
 		raise_message($custom_message);
 
 		$_SESSION['sess_error_fields'][$field_name] = $field_name;
 	}else if ($regexp_match != '' && !preg_match('/' . $regexp_match . '/', $field_value)) {
+		if (read_config_option('developer_mode') == 'on') {
+			cacti_log("Form Validation Failed: Variable '$field_name' with Value '$field_value' Failed REGEX '$regexp_patch'", false);
+		}
+
 		raise_message($custom_message);
 
 		$_SESSION['sess_error_fields'][$field_name] = $field_name;
