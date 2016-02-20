@@ -1092,7 +1092,7 @@ function get_allowed_devices($sql_where = '', $order_by = 'description', $limit 
 				FROM host AS h 
 				LEFT JOIN graph_local AS gl 
 				ON h.id=gl.host_id 
-				LEFT graph_templates_graph AS gtg 
+				LEFT JOIN graph_templates_graph AS gtg 
 				ON gl.id=gtg.local_graph_id 
 				LEFT JOIN graph_templates AS gt 
 				ON gt.id=gl.graph_template_id 
