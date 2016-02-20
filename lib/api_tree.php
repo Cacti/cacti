@@ -337,6 +337,8 @@ function api_tree_move_node($tree_id, $node_id, $new_parent, $new_position) {
 	input_validate_input_number($tree_id);
 	input_validate_input_number($new_position);
 
+	$new_position++;
+
 	// Basic Error Checking
 	if (empty($tree_id) || $tree_id < 0) {
 		cacti_log("ERROR: Invalid TreeID: '$tree_id', Function delete_node", false);
@@ -358,7 +360,6 @@ function api_tree_move_node($tree_id, $node_id, $new_parent, $new_position) {
 	}
 
 	$data  = api_tree_parse_node_data($node_id);
-	$id    = $data['leaf_id'];
 
 	if ($data['parent'] != $pdata['leaf_id']) {
 		db_execute_prepared("UPDATE graph_tree_items 
@@ -367,7 +368,12 @@ function api_tree_move_node($tree_id, $node_id, $new_parent, $new_position) {
 			AND graph_tree_id = ?", 
 			array($pdata['leaf_id'], $new_position, $data['leaf_id'], $tree_id));
 
-		$others = db_fetch_assoc_prepared('SELECT id FROM graph_tree_items WHERE parent = ? AND id != ? AND position >= ?', array($pdata['leaf_id'], $data['leaf_id'], $new_position));
+		$others = db_fetch_assoc_prepared('SELECT id 
+			FROM graph_tree_items 
+			WHERE parent = ? 
+			AND id != ? 
+			AND position >= ?', array($pdata['leaf_id'], $data['leaf_id'], $new_position));
+
 		$position = $new_position + 1;
 		if (sizeof($others)) {
 		foreach($others as $other) {
@@ -376,7 +382,7 @@ function api_tree_move_node($tree_id, $node_id, $new_parent, $new_position) {
 		}
 		}
 
-		api_tree_sort_branch($id, $tree_id);
+		api_tree_sort_branch($data['leaf_id'], $tree_id);
 	}elseif (isset($data['leaf_id']) && $data['leaf_id'] > 0 && isset($pdata['leaf_id']) && $pdata['leaf_id'] >= 0) {
 		db_execute_prepared("UPDATE graph_tree_items
 			SET position = ? 
@@ -384,7 +390,12 @@ function api_tree_move_node($tree_id, $node_id, $new_parent, $new_position) {
 			AND id = ?", 
 			array($new_position, $tree_id, $data['leaf_id']));
 
-		$others = db_fetch_assoc_prepared('SELECT id FROM graph_tree_items WHERE parent = ? AND id != ? AND position >= ?', array($pdata['leaf_id'], $data['leaf_id'], $new_position));
+		$others = db_fetch_assoc_prepared('SELECT id 
+			FROM graph_tree_items 
+			WHERE parent = ? 
+			AND id != ? AND 
+			position >= ?', array($pdata['leaf_id'], $data['leaf_id'], $new_position));
+
 		$position = $new_position + 1;
 		if (sizeof($others)) {
 		foreach($others as $other) {
@@ -393,7 +404,7 @@ function api_tree_move_node($tree_id, $node_id, $new_parent, $new_position) {
 		}
 		}
 
-		api_tree_sort_branch($id, $tree_id);
+		api_tree_sort_branch($data['leaf_id'], $tree_id);
 	}else{
 		cacti_log("Invalid Source Destination Branches, Function move_node", false);
 	}
