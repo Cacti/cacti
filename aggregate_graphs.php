@@ -575,7 +575,7 @@ function graph_edit() {
 		?>
 		<tr class='even'>
 			<td align='center' class='textInfo' colspan='2'>
-				<img src='<?php print htmlspecialchars($config['url_path'] . 'graph_image.php?action=edit&local_graph_id=' . get_request_var('id') . '&rra_id=' . read_user_setting('default_rra_id'));?>' alt=''>
+				<img src='<?php print htmlspecialchars($config['url_path'] . 'graph_image.php?action=edit&disable_cache=1&local_graph_id=' . get_request_var('id') . '&rra_id=' . read_user_setting('default_rra_id'));?>' alt=''>
 			</td>
 			<?php
 			if (isset($_SESSION['graph_debug_mode']) && isset_request_var('id')) {
