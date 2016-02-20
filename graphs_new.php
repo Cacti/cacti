@@ -98,9 +98,9 @@ function form_save() {
 	}
 
 	if (isset_request_var('save_component_new_graphs')) {
-		host_new_graphs_save($host_id);
+		host_new_graphs_save(get_filter_request_var('host_id'));
 
-		header('Location: graphs_new.php?host_id=' . $host_id . '&header=false');
+		header('Location: graphs_new.php?host_id=' . get_filter_request_var('host_id') . '&header=false');
 	}
 }
 

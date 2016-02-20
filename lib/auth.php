@@ -172,7 +172,7 @@ function user_copy($template_user, $new_user, $template_realm = 0, $new_realm = 
 	if ((isset($user_exist)) && ($overwrite )) {
 		db_execute_prepared('DELETE FROM user_auth_perms WHERE user_id = ?', array($user_exist['id']));
 		db_execute_prepared('DELETE FROM user_auth_realm WHERE user_id = ?', array($user_exist['id']));
-		db_execute_prepared('DELETE FROM settings_graphs WHERE user_id = ?', array($user_exist['id']));
+		db_execute_prepared('DELETE FROM settings_user WHERE user_id = ?', array($user_exist['id']));
 		db_execute_prepared('DELETE FROM settings_tree   WHERE user_id = ?', array($user_exist['id']));
 	}
 
@@ -192,11 +192,11 @@ function user_copy($template_user, $new_user, $template_realm = 0, $new_realm = 
 		}
 	}
 
-	$settings_graphs = db_fetch_assoc_prepared('SELECT * FROM settings_graphs WHERE user_id = ?', array($template_id));
-	if (isset($settings_graphs)) {
-		foreach ($settings_graphs as $row) {
+	$settings_user = db_fetch_assoc_prepared('SELECT * FROM settings_user WHERE user_id = ?', array($template_id));
+	if (isset($settings_user)) {
+		foreach ($settings_user as $row) {
 			$row['user_id'] = $new_id;
-			sql_save($row, 'settings_graphs', array('user_id', 'name'), false);
+			sql_save($row, 'settings_user', array('user_id', 'name'), false);
 		}
 	}
 
@@ -248,7 +248,7 @@ function user_remove($user_id) {
 	db_execute_prepared('DELETE FROM user_auth_realm WHERE user_id = ?', array($user_id));
 	db_execute_prepared('DELETE FROM user_auth_perms WHERE user_id = ?', array($user_id));
 	db_execute_prepared('DELETE FROM user_auth_group_members WHERE user_id = ?', array($user_id));
-	db_execute_prepared('DELETE FROM settings_graphs WHERE user_id = ?', array($user_id));
+	db_execute_prepared('DELETE FROM settings_user WHERE user_id = ?', array($user_id));
 	db_execute_prepared('DELETE FROM settings_tree WHERE user_id = ?', array($user_id));
 
 	api_plugin_hook_function('user_remove', $user_id);
@@ -1068,13 +1068,13 @@ function get_allowed_devices($sql_where = '', $order_by = 'description', $limit 
 			INNER JOIN (
 				SELECT DISTINCT id FROM (
 					SELECT h.*, $sql_select
-					FROM graph_templates_graph AS gtg 
-					INNER JOIN graph_local AS gl 
+					FROM host AS h
+					LEFT JOIN graph_local AS gl 
+					ON h.id=gl.host_id 
+					LEFT JOIN graph_templates_graph AS gtg 
 					ON gl.id=gtg.local_graph_id 
 					LEFT JOIN graph_templates AS gt 
 					ON gt.id=gl.graph_template_id 
-					LEFT JOIN host AS h 
-					ON h.id=gl.host_id 
 					LEFT JOIN host_template AS ht
 					ON h.host_template_id=ht.id
 					$sql_join
@@ -1089,13 +1089,13 @@ function get_allowed_devices($sql_where = '', $order_by = 'description', $limit 
 		$total_rows = db_fetch_cell("SELECT COUNT(DISTINCT id)
 			FROM (
 				SELECT h.id, $sql_select
-				FROM graph_templates_graph AS gtg 
-				INNER JOIN graph_local AS gl 
+				FROM host AS h 
+				LEFT JOIN graph_local AS gl 
+				ON h.id=gl.host_id 
+				LEFT graph_templates_graph AS gtg 
 				ON gl.id=gtg.local_graph_id 
 				LEFT JOIN graph_templates AS gt 
 				ON gt.id=gl.graph_template_id 
-				LEFT JOIN host AS h 
-				ON h.id=gl.host_id 
 				LEFT JOIN host_template AS ht
 				ON h.host_template_id=ht.id
 				$sql_join
@@ -1251,7 +1251,12 @@ function get_host_array() {
 function get_allowed_ajax_hosts($include_any = true, $include_none = true) {
 	$return    = array();
 	$term      = get_filter_request_var('term', FILTER_CALLBACK, array('options' => 'sanitize_search_string'));
-	$sql_where = "hostname LIKE '%$term%' OR description LIKE '%$term%' OR notes LIKE '%$term%'";
+	if ($term != '') {
+		$sql_where = "hostname LIKE '%$term%' OR description LIKE '%$term%' OR notes LIKE '%$term%'";
+	}else{
+		$sql_where = "";
+	}
+
 	$hosts     = get_allowed_devices($sql_where, 'description', 30);
 
 	if (get_request_var('term') == '') {
