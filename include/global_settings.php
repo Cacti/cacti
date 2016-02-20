@@ -735,14 +735,16 @@ $settings = array(
 			'friendly_name' => 'Refresh Interval',
 			'description' => 'This is the time between graph updates.',
 			'method' => 'drop_array',
-			'default' => 15,
+			'default' => 10,
 			'array' => $realtime_refresh,
 			),
 		'realtime_cache_path' => array(
 			'friendly_name' => 'Cache Directory',
 			'description' => 'This is the location, on the web server where the RRDfiles and PNG files will be cached.
-			This cache will be managed by the poller.',
+			This cache will be managed by the poller.
+			Make sure you have the correct read and write permissions on this folder',
 			'method' => 'dirpath',
+			'default' => $config['base_path'] . '/rra_rt/',
 			'max_length' => 255,
 			'size' => 40,
 			),
