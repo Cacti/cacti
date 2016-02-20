@@ -701,7 +701,7 @@ function api_tree_get_branch_ordering($leaf_id) {
 
 	if (sizeof($leaf)) {
 		if ($leaf['sort_children_type'] == 0) {
-			$parent = $leaf_id['parent'];
+			$parent = $leaf['parent'];
 
 			if ($parent > 0) {
 				return api_tree_get_branch_ordering($parent);
