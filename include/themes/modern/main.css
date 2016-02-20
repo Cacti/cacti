@@ -1185,6 +1185,10 @@ div#tabs {
 	height: 30px;
 }
 
+td#tabs {
+	padding:0px !important;
+}
+
 .cactiGraphHeaderBackground {
 	background: transparent url("./images/cacti_logo.svg") no-repeat scroll left 10% / 380px auto;
 	height: 35px;
@@ -1245,7 +1249,6 @@ div#gtabs {
 }
 
 .tabs li, .maintabs li {
-	bottom:-1px;
 	float:left;
 	margin:0 3px 0 0;
 	position:relative;
