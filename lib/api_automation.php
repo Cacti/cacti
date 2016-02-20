@@ -1845,8 +1845,6 @@ function global_item_edit($rule_id, $rule_item_id, $rule_type) {
 function automation_hook_graph_template($host_id, $graph_template_id) {
 	global $config;
 
-	include_once($config['base_path'] . '/lib/api_automation.php');
-
 	if (read_config_option('automation_graphs_enabled') == '') {
 		cacti_log(__FUNCTION__ . ' Host[' . $host_id . '] - skipped: Graph Creation Switch is: ' . (read_config_option('automation_graphs_enabled') == '' ? 'off' : 'on') . ' graph template: ' . $graph_template_id, false, 'AUTOM8 TRACE', POLLER_VERBOSITY_MEDIUM);
 		return;
@@ -1862,8 +1860,6 @@ function automation_hook_graph_template($host_id, $graph_template_id) {
  */
 function automation_hook_device_create_tree($data) {
 	global $config;
-
-	include_once($config['base_path'] . '/lib/api_automation.php');
 
 	cacti_log(__FUNCTION__ . ' called: ' . serialize($data), false, 'AUTOM8 TRACE', POLLER_VERBOSITY_MEDIUM);
 	
@@ -1885,8 +1881,6 @@ function automation_hook_device_create_tree($data) {
 function automation_hook_graph_create_tree($data) {
 	global $config;
 
-	include_once($config['base_path'] . '/lib/api_automation.php');
-
 	cacti_log(__FUNCTION__ . ' called: ' . serialize($data), false, 'AUTOM8 TRACE', POLLER_VERBOSITY_MEDIUM);
 	
 	if (read_config_option('automation_tree_enabled') == '') {
@@ -1906,8 +1900,6 @@ function automation_hook_graph_create_tree($data) {
  */
 function automation_execute_data_query($host_id, $snmp_query_id) {
 	global $config;
-
-	include_once($config['base_path'] . '/lib/api_automation.php');
 
 	cacti_log(__FUNCTION__ . ' Host[' . $host_id . "] - start - data query: $snmp_query_id", false, 'AUTOM8 TRACE', POLLER_VERBOSITY_MEDIUM);
 
@@ -1960,12 +1952,12 @@ function automation_execute_data_query($host_id, $snmp_query_id) {
 function automation_execute_graph_template($host_id, $graph_template_id) {
 	global $config;
 
-	include_once($config['base_path'] . '/lib/api_automation.php');
 	include_once($config['base_path'] . '/lib/template.php');
 	include_once($config['base_path'] . '/lib/api_automation_tools.php');
 	include_once($config['base_path'] . '/lib/utility.php');
 
 	$dataSourceId = '';
+	$function  = 'Function[' . __FUNCTION__ . ']';
 
 	cacti_log(__FUNCTION__ . ' called: Host[' . $host_id . '] - graph template: ' . $graph_template_id, false, 'AUTOM8 TRACE', POLLER_VERBOSITY_MEDIUM);
 
@@ -1989,7 +1981,7 @@ function automation_execute_graph_template($host_id, $graph_template_id) {
 			AND graph_templates_item.task_item_id = data_template_rrd.id
 			LIMIT 1');
 
-		cacti_log(__FUNCTION__ . ' Host[' . $host_id . "] Not Adding Graph - this graph already exists - graph-id: ($existsAlready) - data-source-id: ($dataSourceId)", false, 'AUTOM8');
+		cacti_log('NOTE: ' . $function . ' Host[' . $host_id . "] Graph - Already Exists - graph-id: ($existsAlready) - data-source-id: ($dataSourceId)", false, 'AUTOM8');
 		return;
 	}else{
 		# input fields are not supported
@@ -2024,8 +2016,6 @@ function automation_execute_graph_template($host_id, $graph_template_id) {
  */
 function automation_execute_device_create_tree($host_id) {
 	global $config;
-
-	include_once($config['base_path'] . '/lib/api_automation.php');
 
 	/* the $data array holds all information about the host we're just working on
 	 * even if we selected multiple hosts, the calling code will scan through the list
@@ -2081,8 +2071,6 @@ function automation_execute_device_create_tree($host_id) {
  */
 function automation_execute_graph_create_tree($graph_id) {
 	global $config;
-
-	include_once($config['base_path'] . '/lib/api_automation.php');
 
 	/* the $data array holds all information about the graph we're just working on
 	 * even if we selected multiple graphs, the calling code will scan through the list
@@ -2141,10 +2129,11 @@ function automation_execute_graph_create_tree($graph_id) {
 function create_dq_graphs($host_id, $snmp_query_id, $rule) {
 	global $config, $automation_op_array, $automation_oper;
 
-	include_once($config['base_path'] . '/lib/api_automation.php');
 	include_once($config['base_path'] . '/lib/template.php');
 
 	cacti_log(__FUNCTION__ . ' Host[' . $host_id . "] - snmp query: $snmp_query_id - rule: " . $rule['name'], false, 'AUTOM8 TRACE', POLLER_VERBOSITY_MEDIUM);
+
+	$function  = 'Function[' . __FUNCTION__ . ']';
 
 	$snmp_query_array = array();
 	$snmp_query_array['snmp_query_id']       = $rule['snmp_query_id'];
@@ -2253,7 +2242,7 @@ function create_dq_graphs($host_id, $snmp_query_id, $rule) {
 
 			$existsAlready = db_fetch_cell($sql);
 			if (isset($existsAlready) && $existsAlready > 0) {
-				cacti_log(__FUNCTION__ . ' Host[' . $host_id . "] Not Adding Graph - this graph already exists - DS[$existsAlready]", false, 'AUTOM8');
+				cacti_log('NOTE: ' . $function . ' Host[' . $host_id . "] Graph - Already Exists - DS[$existsAlready]", false, 'AUTOM8');
 				continue;
 			}
 
@@ -2279,9 +2268,9 @@ function create_dq_graphs($host_id, $snmp_query_id, $rule) {
 					}
 				}
 
-				cacti_log(__FUNCTION__ . ' Host[' . $host_id . '] Graph Added - graph-id: (' . $return_array['local_graph_id'] . ") - data-source-ids: ($data_source_id)", false, 'AUTOM8');
+				cacti_log('NOTE: ' . $function . ' Host[' . $host_id . '] Graph Added - graph-id: (' . $return_array['local_graph_id'] . ") - data-source-ids: ($data_source_id)", false, 'AUTOM8');
 			} else {
-				cacti_log(__FUNCTION__ . ' Host[' . $host_id . '] WARNING: Graph Not Added', false, 'AUTOM8');
+				cacti_log('WARNING: ' . $function . ' Host[' . $host_id . '] Graph Not Added', false, 'AUTOM8');
 			}
 		}
 
@@ -2299,8 +2288,6 @@ function create_dq_graphs($host_id, $snmp_query_id, $rule) {
  */
 function create_all_header_nodes ($item_id, $rule) {
 	global $config, $automation_tree_header_types;
-
-	include_once($config['base_path'] . '/lib/api_automation.php');
 
 	# get all related rules that are enabled
 	$sql = 'SELECT *
@@ -2385,8 +2372,6 @@ function create_all_header_nodes ($item_id, $rule) {
 function create_multi_header_node($object, $rule, $tree_item, $parent_tree_item_id){
 	global $config;
 
-	include_once($config['base_path'] . '/lib/api_automation.php');
-
 	cacti_log(__FUNCTION__ . " - object: '" . $object . "', Header: '" . $tree_item['search_pattern'] . "', parent: " . $parent_tree_item_id, false, 'AUTOM8 TRACE', POLLER_VERBOSITY_MEDIUM);
 	
 	if ($tree_item['field'] === AUTOMATION_TREE_ITEM_TYPE_STRING) {
@@ -2418,22 +2403,27 @@ function create_multi_header_node($object, $rule, $tree_item, $parent_tree_item_
 function create_header_node($title, $rule, $item, $parent_tree_item_id) {
 	global $config;
 
-	include_once($config['base_path'] . '/lib/api_automation.php');
 	include_once($config['base_path'] . '/lib/api_tree.php');
 
-	$id = 0;				# create a new entry
-	$local_graph_id = 0;	# headers don't need no graph_id
-	$rra_id = 0;			# nor an rra_id
-	$host_id = 0;			# or a host_id
-	$propagate = ($item['propagate_changes'] != '');
+	$id             = 0;  # create a new entry
+	$local_graph_id = 0;  # headers don't need no graph_id
+	$rra_id         = 0;  # nor an rra_id
+	$host_id        = 0;  # or a host_id
+	$propagate      = ($item['propagate_changes'] != '');
+	$function  = 'Function[' . __FUNCTION__ . ']';
 
-	$new_item = api_tree_item_save($id, $rule['tree_id'], TREE_ITEM_TYPE_HEADER, $parent_tree_item_id,
-		$title, $local_graph_id, $rra_id, $host_id, $rule['host_grouping_type'], $item['sort_type'], $propagate);
+	if (api_tree_branch_exists($rule['tree_id'], $parent_tree_item_id, $title)) {
+		$new_item = api_tree_get_branch_id($rule['tree_id'], $parent_tree_item_id, $title);
+		cacti_log('NOTE: ' . $function . ' Parent[' . $parent_tree_item_id . '] Tree Item - Already Exists', false, 'AUTOM8');
+	}else{
+		$new_item = api_tree_item_save($id, $rule['tree_id'], TREE_ITEM_TYPE_HEADER, $parent_tree_item_id,
+			$title, $local_graph_id, $rra_id, $host_id, $rule['host_grouping_type'], $item['sort_type'], $propagate);
 
-	if (isset($new_item) && $new_item > 0) {
-		cacti_log(__FUNCTION__ . ' Parent[' . $parent_tree_item_id . '] Tree Item added - id: (' . $new_item . ') Title: (' .$title . ')', false, 'AUTOM8');
-	} else {
-		cacti_log(__FUNCTION__ . ' WARNING: Parent[' . $parent_tree_item_id . '] Tree Item not added', false, 'AUTOM8');
+		if (isset($new_item) && $new_item > 0) {
+			cacti_log('NOTE: ' . $function . ' Parent[' . $parent_tree_item_id . '] Tree Item - Added - id: (' . $new_item . ') Title: (' .$title . ')', false, 'AUTOM8');
+		} else {
+			cacti_log('WARNING: ' . $function . ' Parent[' . $parent_tree_item_id . '] Tree Item - Not Added', false, 'AUTOM8');
+		}
 	}
 
 	return $new_item;
@@ -2449,22 +2439,27 @@ function create_header_node($title, $rule, $item, $parent_tree_item_id) {
 function create_device_node($host_id, $parent, $rule) {
 	global $config;
 
-	include_once($config['base_path'] . '/lib/api_automation.php');
 	include_once($config['base_path'] . '/lib/api_tree.php');
 
-	$id = 0;				# create a new entry
-	$local_graph_id = 0;	# hosts don't need no graph_id
-	$title = '';			# nor a title
-	$sort_type = 0;			# nor a sort type
-	$propagate = false;		# nor a propagation flag
+	$id             = 0;      # create a new entry
+	$local_graph_id = 0;      # hosts don't need no graph_id
+	$title          = '';     # nor a title
+	$sort_type      = 0;      # nor a sort type
+	$propagate      = false;  # nor a propagation flag
+	$function       = 'Function[' . __FUNCTION__ . ']';
 
-	$new_item = api_tree_item_save($id, $rule['tree_id'], TREE_ITEM_TYPE_HOST, $parent, $title, 
-		$local_graph_id, $rule['rra_id'], $host_id, $rule['host_grouping_type'], $sort_type, $propagate);
+	if (api_tree_host_exists($rule['tree_id'], $parent, $host_id)) {
+		$new_item = db_fetch_cell_prepared('SELECT id FROM graph_tree_items WHERE host_id = ? AND parent = ? AND graph_tree_id = ?', array($host_id, $parent, $rule['tree_id']));
+		cacti_log('NOTE: ' . $function . ' Host[' . $host_id . '] Tree Item - Already Exists', false, 'AUTOM8');
+	}else{
+		$new_item = api_tree_item_save($id, $rule['tree_id'], TREE_ITEM_TYPE_HOST, $parent, $title, 
+			$local_graph_id, $rule['rra_id'], $host_id, $rule['host_grouping_type'], $sort_type, $propagate);
 
-	if (isset($new_item) && $new_item > 0) {
-		cacti_log(__FUNCTION__ . ' Host[' . $host_id . '] Tree Item added - id: (' . $new_item . ')', false, 'AUTOM8');
-	} else {
-		cacti_log(__FUNCTION__ . ' WARNING: Host[' . $host_id . '] Tree Item not added', false, 'AUTOM8');
+		if (isset($new_item) && $new_item > 0) {
+			cacti_log('NOTE: ' . $function . ' Host[' . $host_id . '] Tree Item - Added - id: (' . $new_item . ')', false, 'AUTOM8');
+		} else {
+			cacti_log('WARNING: ' . $function . ' Host[' . $host_id . '] Tree Item - Not Added', false, 'AUTOM8');
+		}
 	}
 
 	return $new_item;
@@ -2480,22 +2475,27 @@ function create_device_node($host_id, $parent, $rule) {
 function create_graph_node($graph_id, $parent, $rule) {
 	global $config;
 
-	include_once($config['base_path'] . '/lib/api_automation.php');
 	include_once($config['base_path'] . '/lib/api_tree.php');
 
-	$id = 0;				# create a new entry
-	$host_id = 0;			# graphs don't need no host_id
-	$title = '';			# nor a title
-	$sort_type = 0;			# nor a sort type
-	$propagate = false;		# nor a propagation flag
+	$id        = 0;      # create a new entry
+	$host_id   = 0;      # graphs don't need no host_id
+	$title     = '';     # nor a title
+	$sort_type = 0;      # nor a sort type
+	$propagate = false;  # nor a propagation flag
+	$function  = 'Function[' . __FUNCTION__ . ']';
 
-	$new_item = api_tree_item_save($id, $rule['tree_id'], TREE_ITEM_TYPE_GRAPH, $parent, $title, 
-		$graph_id, $rule['rra_id'], $host_id, $rule['host_grouping_type'], $sort_type, $propagate);
+	if (api_tree_graph_exists($rule['tree_id'], $parent, $graph_id)) {
+		$new_item = db_fetch_cell_prepared('SELECT id FROM graph_tree_items WHERE local_graph_id = ? AND parent = ? AND graph_tree_id = ?', array($graph_id, $parent, $rule['tree_id']));
+		cacti_log('WARNING: ' . $function . ' Graph[' . $graph_id . '] Tree Item - Already Exists', false, 'AUTOM8');
+	}else{
+		$new_item = api_tree_item_save($id, $rule['tree_id'], TREE_ITEM_TYPE_GRAPH, $parent, $title, 
+			$graph_id, $rule['rra_id'], $host_id, $rule['host_grouping_type'], $sort_type, $propagate);
 
-	if (isset($new_item) && $new_item > 0) {
-		cacti_log(__FUNCTION__ . ' Graph[' . $graph_id . '] Tree Item added - id: (' . $new_item . ')', false, 'AUTOM8');
-	} else {
-		cacti_log(__FUNCTION__ . ' Graph[' . $graph_id . '] WARNING: Tree Item not added', false, 'AUTOM8');
+		if (isset($new_item) && $new_item > 0) {
+			cacti_log('NOTE: ' . $function . ' Graph[' . $graph_id . '] Tree Item - Added - id: (' . $new_item . ')', false, 'AUTOM8');
+		} else {
+			cacti_log('WARNING: ' . $function . ' Graph[' . $graph_id . '] Tree Item - Not Added', false, 'AUTOM8');
+		}
 	}
 
 	return $new_item;

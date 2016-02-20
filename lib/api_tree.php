@@ -248,6 +248,36 @@ function api_tree_branch_exists($tree_id, $parent, $title) {
 	}
 }
 
+/* api_tree_host_exists - given a tree, parent branch, and a host_id, will check host on that branch
+ * @arg $tree_id - The tree_id to search
+ * @arg $parent - The parent leaf_id to search
+ * @arg $host_id - The host_id to search for
+ * @returns - the id of the leaf if it exists */
+function api_tree_host_exists($tree_id, $parent, $host_id) {
+	$id =  db_fetch_cell_prepared('SELECT id FROM graph_tree_items WHERE graph_tree_id = ? AND parent = ? AND host_id = ?', array($tree_id, $parent, $host_id));
+
+	if ($id > 0) {
+		return $id;
+	}else{
+		return false;
+	}
+}
+
+/* api_tree_graph_exists - given a tree, parent branch, and a local_graph_id, will check graph on that branch
+ * @arg $tree_id - The tree_id to search
+ * @arg $parent - The parent leaf_id to search
+ * @arg $local_graph_id - The local_graph_id to search for
+ * @returns - the id of the leaf if it exists */
+function api_tree_graph_exists($tree_id, $parent, $local_graph_id) {
+	$id =  db_fetch_cell_prepared('SELECT id FROM graph_tree_items WHERE graph_tree_id = ? AND parent = ? AND local_graph_id = ?', array($tree_id, $parent, $local_graph_id));
+
+	if ($id > 0) {
+		return $id;
+	}else{
+		return false;
+	}
+}
+
 /* api_tree_delete - given a tree and a branch/leaf, delete the node and it's content
  * @arg $tree_id - The tree to remove from
  * @arg $leaf_id - The branch to remove
@@ -693,6 +723,15 @@ function api_tree_get_branch_ordering($leaf_id) {
  * @returns - the name of the leaf */
 function api_tree_get_branch_name($tree_id, $leaf_id) {
 	return db_fetch_cell_prepared('SELECT title FROM graph_tree_items WHERE graph_tree_id = ? AND id = ?', array($tree_id, $leaf_id));
+}
+
+/* api_tree_get_branch_id - given a tree, parent, and title return the leaf_id
+ * @arg $tree_id - the tree id 
+ * @arg $parent - the parent leaf id
+ * @arg $title - the branch/leaf title
+ * @returns - the name of the leaf */
+function api_tree_get_branch_id($tree_id, $parent, $title) {
+	return db_fetch_cell_prepared('SELECT id FROM graph_tree_items WHERE graph_tree_id = ? AND parent = ? AND title = ?', array($tree_id, $parent, $title));
 }
 
 /* api_tree_sort_branch - sorts a branch based upon sorting rules.
