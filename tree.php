@@ -296,10 +296,9 @@ function set_branch_sort_type() {
 					db_execute_prepared('UPDATE graph_tree_items SET sort_children_type = ? WHERE id = ?', array($type, $branch));
 				}
 
-				$first_child = db_fetch_cell_prepared('SELECT id FROM graph_tree_items WHERE parent = ? ORDER BY position', array($branch));
-
+				$first_child = db_fetch_row_prepared('SELECT id, graph_tree_id FROM graph_tree_items WHERE parent = ? ORDER BY position LIMIT 1', array($branch));
 				if (!empty($first_child)) {
-					api_tree_sort_branch($first_child);
+					api_tree_sort_branch($first_child['id'], $first_child['graph_tree_id']);
 				}
 
 				break;
@@ -1022,7 +1021,9 @@ function tree_edit() {
 								setBranchSortOrder('inherit', nodeid);
 								var inst = $.jstree.reference(data.reference);
 								var st = inst.get_state();
-								inst.load_node(nodeid, function () { this.set_state(st); });
+								var obj = inst.get_node();
+								inst.refresh(obj);
+								inst.load_node(nodeid, function() { this.set_state(st); });
 							}
 						},
 						'manual' : {
@@ -1034,7 +1035,9 @@ function tree_edit() {
 								setBranchSortOrder('manual', nodeid);
 								var inst = $.jstree.reference(data.reference);
 								var st = inst.get_state();
-								inst.load_node(nodeid, function () { this.set_state(st); });
+								var obj = inst.get_node();
+								inst.refresh(obj);
+								inst.load_node(nodeid, function() { this.set_state(st); });
 							}
 						},
 						'alpha' : {
@@ -1046,7 +1049,9 @@ function tree_edit() {
 								setBranchSortOrder('alpha', nodeid);
 								var inst = $.jstree.reference(data.reference);
 								var st = inst.get_state();
-								inst.load_node(nodeid, function () { this.set_state(st); });
+								var obj = inst.get_node();
+								inst.refresh(obj);
+								inst.load_node(nodeid, function() { this.set_state(st); });
 							}
 						},
 						'natural' : {
@@ -1058,6 +1063,8 @@ function tree_edit() {
 								setBranchSortOrder('natural', nodeid);
 								var inst = $.jstree.reference(data.reference);
 								var st = inst.get_state();
+								var obj = inst.get_node();
+								inst.refresh(obj);
 								inst.load_node(nodeid, function () { this.set_state(st); });
 							}
 						},
@@ -1070,6 +1077,8 @@ function tree_edit() {
 								setBranchSortOrder('numeric', nodeid);
 								var inst = $.jstree.reference(data.reference);
 								var st = inst.get_state();
+								var obj = inst.get_node();
+								inst.refresh(obj);
 								inst.load_node(nodeid, function () { this.set_state(st); });
 							}
 						}
