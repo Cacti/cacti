@@ -308,13 +308,7 @@ function color_import() {
 
 	html_end_box();
 
-	?>
-	<table style='width:100%'><tr><td class='saveRow'>
-		<input type='hidden' name='action' value='save'>
-		<input id='import' type='submit' value='Import'>
-		</td></tr></table>
-	</form>
-	<?php
+	form_save_button('color.php', 'import');
 }
 
 function color_remove() {
@@ -381,9 +375,7 @@ function color_edit() {
 	<?php
 }
 
-function color() {
-	global $color_actions, $item_rows;
-
+function process_request_vars() {
 	/* ================= input validation and session storage ================= */
 	$filters = array(
 		'rows' => array(
@@ -427,6 +419,12 @@ function color() {
 
 	validate_store_request_vars($filters, 'sess_color');
 	/* ================= input validation ================= */
+}
+
+function color() {
+	global $color_actions, $item_rows;
+
+	process_request_vars();
 
 	html_start_box('Colors', '100%', '', '3', 'center', 'color.php?action=edit');
 
@@ -520,6 +518,11 @@ function color() {
 				$('#import').click(function(event) {
 					strURL = 'color.php?action=import&header=false';
 					loadPageNoHeader(strURL);
+				});
+
+				$('#export').click(function(event) {
+					strURL = 'color.php?action=export&header=false';
+					document.location = strURL;
 				});
 			});
 			</script>
@@ -640,5 +643,55 @@ function color() {
 	draw_actions_dropdown($color_actions, 1);
 
 	form_end();
+}
+
+function color_export() {
+	process_request_vars();
+
+	/* form the 'where' clause for our main sql query */
+	if (get_request_var('filter') != '') {
+		$sql_where = "WHERE (name LIKE '%" . get_request_var('filter') . "%' 
+			OR hex LIKE '%" .  get_request_var('filter') . "%')";
+	}else{
+		$sql_where = '';
+	}
+
+	if (get_request_var('named') == 'true') {
+		$sql_where .= (strlen($sql_where) ? ' AND':'WHERE') . " read_only='on'";
+	}
+
+	if (get_request_var('has_graphs') == 'true') {
+		$sql_having = 'HAVING graphs>0 OR templates>0';
+	}else{
+		$sql_having = '';
+	}
+
+	$colors = db_fetch_assoc("SELECT *,
+        SUM(CASE WHEN local_graph_id>0 THEN 1 ELSE 0 END) AS graphs,
+        SUM(CASE WHEN local_graph_id=0 THEN 1 ELSE 0 END) AS templates
+        FROM (
+			SELECT c.*, local_graph_id
+			FROM colors AS c
+			LEFT JOIN (
+				SELECT color_id, graph_template_id, local_graph_id 
+				FROM graph_templates_item 
+				WHERE color_id>0
+			) AS gti
+			ON c.id=gti.color_id
+		) AS rs
+		$sql_where
+		GROUP BY rs.id
+		$sql_having");
+
+	if (sizeof($colors)) {
+		header('Content-type: application/csv');
+		header('Content-Disposition: attachment; filename=colors.csv');
+
+		print '"name","hex"' . "\n";
+
+		foreach($colors as $color) {
+			print '"' . $color['name'] . '","' . $color['hex'] . '"' . "\n";
+		}
+	}
 }
 
