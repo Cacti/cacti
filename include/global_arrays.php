@@ -570,7 +570,6 @@ $user_auth_realm_filenames = array(
 	'graph_image.php' => 7,
 	'graph_json.php' => 7,
 	'graph_xport.php' => 7,
-	'graph_settings.php' => 7,
 	'graph_templates.php' => 10,
 	'graph_templates_inputs.php' => 10,
 	'graph_templates_items.php' => 10,

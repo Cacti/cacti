@@ -1815,12 +1815,6 @@ function draw_navigation_text($type = 'url') {
 			'mapping' => 'graph_view.php:,?', 
 			'level' => '2'
 			),
-		'graph_settings.php:' => array(
-			'title' => 'Settings', 
-			'mapping' => 'graph_view.php:', 
-			'url' => 'graph_settings.php', 
-			'level' => '1'
-			),
 		'index.php:' => array(
 			'title' => 'Console', 
 			'mapping' => '', 

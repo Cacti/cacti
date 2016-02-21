@@ -1093,7 +1093,7 @@ function html_show_tabs_left($show_console_tab) {
 		if (is_realm_allowed(7)) {
 			?><a href="<?php echo $config['url_path']; ?>graph_view.php"><img src="<?php echo $config['url_path']; ?>images/tab_graphs<?php
 			$file = basename($_SERVER['PHP_SELF']);
-			if ($file == "graph_view.php" || $file == "graph_settings.php" || $file == "graph.php") {
+			if ($file == "graph_view.php" || $file == "graph.php") {
 				print "_down";
 			} 
 			print ".gif";?>" alt="Graphs"></a><?php
@@ -1223,14 +1223,6 @@ function html_graph_tabs_right($current_user) {
 	$theme = get_selected_theme();
 
 	if ($theme == 'classic') {
-		if (is_view_allowed('graph_settings')) {
-			print '<a class="righttab" href="' . $config['url_path'] . 'graph_settings.php"><img src="' . $config['url_path'] . 'images/tab_settings';
-			if (basename($_SERVER['PHP_SELF']) == 'graph_settings.php') {
-				print '_down';
-			}
-			print '.gif" alt="Settings"></a>';
-		}?>&nbsp;&nbsp;<?php
-
 		if (is_view_allowed('show_tree')) {
 			?><a class='righttab' href='<?php print htmlspecialchars($config['url_path'] . 'graph_view.php?action=tree');?>'><img src='<?php echo $config['url_path']; ?>images/tab_mode_tree<?php
 			if (isset_request_var('action') && get_nfilter_request_var('action') == 'tree') {
@@ -1255,12 +1247,6 @@ function html_graph_tabs_right($current_user) {
 	}else{
 		$tabs_right = array(
 			array(
-				'title' => 'Settings',
-				'image' => '',
-				'id'    => 'settings',
-				'url'   => 'graph_settings.php',
-			),
-			array(
 				'title' => 'Tree View',
 				'image' => 'include/themes/' . $theme . '/images/tab_tree.gif',
 				'id'    => 'tree',
@@ -1282,9 +1268,7 @@ function html_graph_tabs_right($current_user) {
 
 		$i = 0;
 		foreach($tabs_right as $tab) {
-			if ($tab['url'] == 'graph_settings.php' && (basename($_SERVER['PHP_SELF']) == 'graph_settings.php')) {
-				$tabs_right[$i]['selected'] = true;
-			}elseif ($tab['id'] == 'tree') {
+			if ($tab['id'] == 'tree') {
 				if (isset_request_var('action') && get_nfilter_request_var('action') == 'tree') {
 					$tabs_right[$i]['selected'] = true;
 				}
@@ -1306,17 +1290,6 @@ function html_graph_tabs_right($current_user) {
 		print "<div class='tabs' style='float:right;'><nav><ul>\n";
 		foreach($tabs_right as $tab) {
 			switch($tab['id']) {
-			case 'settings':
-				if (is_view_allowed('graph_settings') == true) {
-					if (isset($tab['image']) && $tab['image'] != '') {
-						print "<li><a title='" . $tab['title'] . "' class='righttab " . (isset($tab['selected']) ? 'selected':'') . "' href='" . $tab['url'] . "'><img src='" . $config['url_path'] . $tab['image'] . "' alt='' style='vertical-align:bottom;'></a></li>\n";
-					}else{
-						print "<li><a title='" . $tab['title'] . "' class='righttab " . (isset($tab['selected']) ? 'selected':'') . "' href='" . $tab['url'] . "'>" . $tab['title'] . "</a></li>\n";
-					}
-					break;
-				}
-
-				break;
 			case 'tree':
 				if (is_view_allowed('show_tree')) {
 					if (isset($tab['image']) && $tab['image'] != '') {
