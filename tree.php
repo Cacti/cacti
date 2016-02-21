@@ -767,6 +767,9 @@ function tree_edit() {
 			});
 		}
 
+		graphsDropSet = '';
+		hostsDropSet  = '';
+
 		$(function() {
 			<?php if ($editable == false) {?>
 			$('select, input').not('#lock').prop('disabled', true);
@@ -904,22 +907,47 @@ function tree_edit() {
 					});
 			})
 			.on('copy_node.jstree', function (e, data) {
-				$.get('?action=copy_node', { 'id' : data.original.id, 'tree_id' : $('#id').val(), 'parent' : data.parent, 'position' : data.position })
-					.always(function () {
-						var st = data.instance.get_state();
-						data.instance.load_node(data.instance.get_parent(data.node.id), function () { this.set_state(st); });
+				oid = data.original.id;
+
+				if (oid.search('thost') >= 0) {
+					set = hostsDropSet;
+				}else{
+					set = graphsDropSet;
+				}
+
+				if (set != '' && set.selected.length > 0) {
+					entries = set.selected;
+					$.each(entries, function(i, id) {
+						$.get('?action=copy_node', { 'id' : id, 'tree_id' : $('#id').val(), 'parent' : data.parent, 'position' : data.position })
+							.always(function () {
+								var st = data.instance.get_state();
+								data.instance.load_node(data.instance.get_parent(data.node.id), function () { this.set_state(st); });
+							});
 					});
+
+					if (oid.search('thost') >= 0) {
+						$('#hosts').jstree().deselect_all();
+					}else{
+						$('#graphs').jstree().deselect_all();
+					}
+				}else{
+					$.get('?action=copy_node', { 'id' : data.original.id, 'tree_id' : $('#id').val(), 'parent' : data.parent, 'position' : data.position })
+						.always(function () {
+							var st = data.instance.get_state();
+							data.instance.load_node(data.instance.get_parent(data.node.id), function () { this.set_state(st); });
+						});
+				}
 			})<?php }else{?>.children().bind('contextmenu', function(event) {
 				return false;
 			})<?php }?>;
 
 			$('#jstree').css('height', height).css('overflow','auto');;
 
-			dragable('#graphs');
-			dragable('#hosts');
+			dragable('#graphs', 'graphs');
+			dragable('#hosts', 'hosts');
 		});
 
-		function dragable(element) {
+		function dragable(element, type) {
 			$(element)
 				.jstree({
 					'types' : {
@@ -942,18 +970,26 @@ function tree_edit() {
 						'always_copy' : true
 					},
 					'themes' : { 'stripes' : true },
-					'plugins' : [ 'wholerow', 'state', <?php if ($editable) {?>'dnd', <?php }?>'types' ]
+					'plugins' : [ 'wholerow', <?php if ($editable) {?>'dnd', <?php }?>'types' ]
 				})
 				.on('ready.jstree', function(e, data) {
 					if (reset == true) {
 						$('#jstree').jstree('clear_state');
 					}
 				})<?php if ($editable) {?>
-				.on('copy_node.jstree', function (e, data) {
-					$.get('?action=copy_node', { 'id' : data.original.id, 'parent' : data.parent, 'position' : data.position })
-						.always(function () {
-							data.instance.refresh();
-						});
+				.on('select_node.jstree', function(e, data) {
+					if (type == 'graphs') {
+						graphsDropSet = data;
+					}else{
+						hostsDropSet  = data;
+					}
+				})
+				.on('deselect_node.jstree', function(e,data) {
+					if (type == 'graphs') {
+						graphsDropSet = data;
+					}else{
+						hostsDropSet  = data;
+					}
 				})<?php }?>;
 				$(element).find('.jstree-ocl').hide();
 				$(element).children().bind('contextmenu', function(event) {
