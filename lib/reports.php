@@ -212,7 +212,9 @@ function generate_report($report, $force = false) {
 
 	reports_log(__FUNCTION__ . ', report_id: ' . $report['id'], false, 'REPORTS TRACE', POLLER_VERBOSITY_MEDIUM);
 
-	$body = reports_generate_html($report['id'], REPORTS_OUTPUT_EMAIL);
+	$theme = 'classic';
+
+	$body = reports_generate_html($report['id'], REPORTS_OUTPUT_EMAIL, $theme);
 
 	$time = time();
 	# get config option for first-day-of-the-week
@@ -256,7 +258,9 @@ function generate_report($report, $force = false) {
 			'graph_width'    => $report['graph_width'],
 			'graph_height'   => $report['graph_height'],
 			'image_format'   => 'png',
-			'output_flag'    => RRDTOOL_OUTPUT_STDOUT
+			'graph_theme'    => $theme,
+			'output_flag'    => RRDTOOL_OUTPUT_STDOUT,
+			'disable_cache'  => true
 		);
 
 		if ($report['thumbnails'] == 'on') {
@@ -434,7 +438,6 @@ function reports_load_format_file($format_file, &$output, &$report_tag_included,
 	global $config;
 
 	$contents = array();
-	$theme    = 'classic';
 
 	if (file_exists($config['base_path'] . '/formats/' . $format_file)) {
 		$contents = file($config['base_path'] . '/formats/' . $format_file);
@@ -532,18 +535,21 @@ function reports_tree_has_graphs($tree_id, $branch_id, $effective_user, $search_
  * @param int $output		- type of output
  * @return string			- generated html output
  */
-function reports_generate_html ($reports_id, $output = REPORTS_OUTPUT_STDOUT) {
+function reports_generate_html ($reports_id, $output = REPORTS_OUTPUT_STDOUT, &$theme = '') {
 	global $config, $colors;
 	global $alignment;
 	include_once($config['base_path'] . '/lib/time.php');
 
-	$outstr       = '';
-	$report       = db_fetch_row_prepared('SELECT * FROM reports WHERE id = ?', array($reports_id));
+	$outstr        = '';
+	$report        = db_fetch_row_prepared('SELECT * FROM reports WHERE id = ?', array($reports_id));
 	$reports_items = db_fetch_assoc_prepared('SELECT * FROM reports_items WHERE report_id = ? ORDER BY sequence', array($report['id']));
-	$format_data  = '';
-	$report_tag   = false;
-	$format_ok    = false;
-	$theme        = 'classic';
+	$format_data   = '';
+	$report_tag    = false;
+	$format_ok     = false;
+
+	if ($theme == '') {
+		$theme         = 'classic';
+	}
 
 	$time = time();
 	# get config option for first-day-of-the-week
