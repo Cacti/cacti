@@ -179,8 +179,6 @@ function manager(){
 	$sql_where = "WHERE (snmpagent_managers.hostname LIKE '%%" . get_request_var('filter') . "%%'
 						OR snmpagent_managers.description LIKE '%%" . get_request_var('filter') . "%%')";
 
-	html_start_box('', '100%', '', '3', 'center', '');
-
 	$total_rows = db_fetch_cell("SELECT
 		COUNT(snmpagent_managers.id)
 		FROM snmpagent_managers
@@ -210,10 +208,6 @@ function manager(){
 		ORDER BY " . get_request_var('sort_column') . ' ' . get_request_var('sort_direction') .  ' 
 		LIMIT ' . (get_request_var('rows')*(get_request_var('page')-1)) . ',' . get_request_var('rows'));
 
-	/* generate page list */
-	$nav = html_nav_bar('managers.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), get_request_var('rows'), $total_rows, 11, 'Receivers', 'page', 'main');
-	print $nav;
-
 	$display_text = array(
 		'description' => array('Description', 'ASC'),
 		'id' => array('Id', 'ASC'),
@@ -225,6 +219,12 @@ function manager(){
 
 	form_start('managers.php', 'chk');
 
+	html_start_box('', '100%', '', '3', 'center', '');
+
+	/* generate page list */
+	$nav = html_nav_bar('managers.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), get_request_var('rows'), $total_rows, 11, 'Receivers', 'page', 'main');
+	print $nav;
+
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
 	$i = 0;
@@ -235,7 +235,7 @@ function manager(){
 			form_alternate_row('line' . $item['id'], false);
 			form_selectable_cell( '<a class="linkEditMain" href="managers.php?action=edit&id=' . $item['id'] . '">' . $description . '</a>', $item['id']);
 			form_selectable_cell( $item['id'], $item['id']);
-			form_selectable_cell( $item['disabled'] ? 'disabled' : 'active', $item['id']);
+			form_selectable_cell( $item['disabled'] ? '<span class="deviceDown">Disabled</span>' : '<span class="deviceUp">Enabled</span>', $item['id']);
 			form_selectable_cell( $hostname, $item['id']);
 			form_selectable_cell( '<a class="linkEditMain" href="managers.php?action=edit&tab=notifications&id=' . $item['id'] . '">' . ($item['count_notify'] ? $item['count_notify'] : 0) . '</a>' , $item['id']);
 			form_selectable_cell( '<a class="linkEditMain" href="managers.php?action=edit&tab=logs&id=' . $item['id'] . '">' . ($item['count_log'] ? $item['count_log'] : 0 ) . '</a>', $item['id']);
@@ -250,8 +250,10 @@ function manager(){
 	html_end_box(false);
 
 	form_hidden_box('action_receivers', '1', '');
-	/* draw the dropdown containing a list of available actions for this form */
+
 	draw_actions_dropdown($manager_actions);
+
+	form_end();
 }
 
 function manager_edit() {
