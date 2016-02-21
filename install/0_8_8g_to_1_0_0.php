@@ -1005,7 +1005,12 @@ function upgrade_to_1_0_0() {
 	if (in_array('plugin_discover_hosts', $tables)) {
 		db_install_execute('1.0', 'RENAME TABLE plugin_discover_hosts TO automation_devices');
 		db_install_execute('1.0', "ALTER TABLE automation_devices 
-			ADD COLUMN network_id INT unsigned NOT NULL default '0' FIRST, 
+			ADD COLUMN id BIGINT unsigned auto_increment FIRST, 
+			ADD COLUMN network_id INT unsigned NOT NULL default '0' AFTER id, 
+			ADD COLUMN snmp_port int(10) unsigned NOT NULL DEFAULT '161' AFTER snmp_version,
+			DROP PRIMARY KEY,
+			ADD PRIMARY KEY(id), 
+			ADD UNIQUE INDEX ip(ip);
 			DROP COLUMN hash,
 			ADD INDEX network_id(network_id),
 			COMMENT='Table of Discovered Devices'");
@@ -1031,11 +1036,13 @@ function upgrade_to_1_0_0() {
 	}
 
 	db_install_execute('1.0', "CREATE TABLE IF NOT EXISTS `automation_devices` (
+		`id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
 		`network_id` int(10) unsigned NOT NULL DEFAULT '0',
 		`hostname` varchar(100) NOT NULL DEFAULT '',
 		`ip` varchar(17) NOT NULL DEFAULT '',
 		`community` varchar(100) NOT NULL DEFAULT '',
 		`snmp_version` tinyint(1) unsigned NOT NULL DEFAULT '1',
+		`snmp_port` int(10) unsigned NOT NULL DEFAULT '161',
 		`snmp_username` varchar(50) DEFAULT NULL,
 		`snmp_password` varchar(50) DEFAULT NULL,
 		`snmp_auth_protocol` char(5) DEFAULT '',
@@ -1052,7 +1059,8 @@ function upgrade_to_1_0_0() {
 		`known` tinyint(4) NOT NULL DEFAULT '0',
 		`up` tinyint(4) NOT NULL DEFAULT '0',
 		`time` int(11) NOT NULL DEFAULT '0',
-		PRIMARY KEY (`ip`),
+		PRIMARY KEY (`id`),
+		UNIQUE KEY `ip` (`ip`),
 		KEY `hostname` (`hostname`)) 
 		ENGINE=MyISAM 
 		COMMENT='Table of Discovered Devices'");

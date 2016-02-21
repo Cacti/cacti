@@ -393,6 +393,7 @@ function discoverDevices($network_id, $thread) {
 					$device['ping_status']          = 0;
 					$device['snmp_id']              = $network['snmp_id'];
 					$device['snmp_version']         = '';
+					$device['snmp_port']            = '';
 					$device['snmp_readstring']      = '';
 					$device['snmp_username']        = '';
 					$device['snmp_password']        = '';
@@ -504,12 +505,13 @@ function discoverDevices($network_id, $thread) {
 							// if the devices template is not discovered, add to found table
 							if (!$host_id) {
 								db_execute('REPLACE INTO automation_devices 
-									(network_id, hostname, ip, community, snmp_version, snmp_username, snmp_password, snmp_auth_protocol, snmp_priv_passphrase, snmp_priv_protocol, snmp_context, sysName, sysLocation, sysContact, sysDescr, sysUptime, os, snmp, up, time) VALUES ('
+									(network_id, hostname, ip, community, snmp_version, snmp_port, snmp_username, snmp_password, snmp_auth_protocol, snmp_priv_passphrase, snmp_priv_protocol, snmp_context, sysName, sysLocation, sysContact, sysDescr, sysUptime, os, snmp, up, time) VALUES ('
 									. $network_id                              . ', '
 									. db_qstr($device['dnsname'])              . ', '
 									. db_qstr($device['ip_address'])           . ', '
 									. db_qstr($device['snmp_readstring'])      . ', '
 									. db_qstr($device['snmp_version'])         . ', '
+									. db_qstr($device['snmp_port'])            . ', '
 									. db_qstr($device['snmp_username'])        . ', '
 									. db_qstr($device['snmp_password'])        . ', '
 									. db_qstr($device['snmp_auth_protocol'])   . ', '
@@ -529,12 +531,13 @@ function discoverDevices($network_id, $thread) {
 						}
 					}else if ($result) {
 						db_execute('REPLACE INTO automation_devices 
-							(network_id, hostname, ip, community, snmp_version, snmp_username, snmp_password, snmp_auth_protocol, snmp_priv_passphrase, snmp_priv_protocol, snmp_context, sysName, sysLocation, sysContact, sysDescr, sysUptime, os, snmp, up, time) VALUES ('
+							(network_id, hostname, ip, community, snmp_version, snmp_port, snmp_username, snmp_password, snmp_auth_protocol, snmp_priv_passphrase, snmp_priv_protocol, snmp_context, sysName, sysLocation, sysContact, sysDescr, sysUptime, os, snmp, up, time) VALUES ('
 							. $network_id                              . ', '
 							. db_qstr($device['dnsname'])              . ', '
 							. db_qstr($device['ip_address'])           . ', '
 							. db_qstr($device['snmp_readstring'])      . ', '
 							. db_qstr($device['snmp_version'])         . ', '
+							. db_qstr($device['snmp_port'])            . ', '
 							. db_qstr($device['snmp_username'])        . ', '
 							. db_qstr($device['snmp_password'])        . ', '
 							. db_qstr($device['snmp_auth_protocol'])   . ', '

@@ -2516,13 +2516,13 @@ function automation_poller_bottom () {
 	exec_background($command_string, $extra_args);
 }
 
-function automation_add_device ($device) {
+function automation_add_device ($device, $web = false) {
 	global $plugins, $config;
 
 	$template_id          = $device['host_template'];
-	$snmp_sysName         = preg_split('/[\s.]+/', $device['snmp_sysName'], -1, PREG_SPLIT_NO_EMPTY);
+	$snmp_sysName         = preg_split('/[\s.]+/', $device['sysName'], -1, PREG_SPLIT_NO_EMPTY);
 	$description          = $snmp_sysName[0] != '' ? $snmp_sysName[0] : $device['hostname'];
-	$ip                   = $device['hostname'];
+	$ip                   = $device['ip'];
 	$community            = $device['community'];
 	$snmp_ver             = $device['snmp_version'];
 	$snmp_username	      = $device['snmp_username'];
@@ -2534,14 +2534,14 @@ function automation_add_device ($device) {
 	$ping_method          = isset($device['ping_method']) ? $device['ping_method']:read_config_option('ping_method');
 	$ping_port            = isset($device['ping_port']) ? $device['ping_port']:read_config_option('ping_port');
 	$ping_timeout         = isset($device['ping_timeout']) ? $device['ping_timeout']:read_config_option('ping_timeout');
-	$ping_retries         = read_config_option('ping_retries');
-	$notes                = 'Added by Discovery Plugin';
+	$ping_retries         = isset($device['ping_retries']) ? $device['ping_retries']:read_config_option('ping_retries');
+	$notes                = isset($device['notes']) ? $device['notes']:'Added by Discovery Plugin';
 	$snmp_auth_protocol   = $device['snmp_auth_protocol'];
 	$snmp_priv_passphrase = $device['snmp_priv_passphrase'];
 	$snmp_priv_protocol   = $device['snmp_priv_protocol'];
 	$snmp_context	      = $device['snmp_context'];
-	$device_threads       = 1;
-	$max_oids             = 10;
+	$device_threads       = isset($device['device_threads']) ? $device['device_threads']:1;
+	$max_oids             = isset($device['max_oids']) ? $device['max_oids']:10;
 
 	automation_debug(' - Adding Device');
 
@@ -2553,10 +2553,15 @@ function automation_add_device ($device) {
 		$snmp_priv_protocol, $snmp_context, $max_oids, $device_threads);
 
 	if ($host_id) {
-		automation_debug(' - Success');
+		if (!$web) {
+			automation_debug(' - Success');
+		}
 		/* Use the thold plugin if it exists */
 		if (api_plugin_is_enabled('thold')) {
-			automation_debug("     Creating Thresholds\n");
+			if (!$web) {
+				automation_debug("     Creating Thresholds\n");
+			}
+
 			if (file_exists($config['base_path'] . '/plugins/thold/thold-functions.php')) {
 				include_once($config['base_path'] . '/plugins/thold/thold-functions.php');
 				autocreate($host_id);
@@ -2568,7 +2573,9 @@ function automation_add_device ($device) {
 
 		db_execute("DELETE FROM automation_devices WHERE ip='$ip' LIMIT 1");
 	}else{
-		automation_debug(' - Failed');
+		if (!$web) {
+			automation_debug(' - Failed');
+		}
 	}
 
 	return $host_id;

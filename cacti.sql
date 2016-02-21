@@ -141,11 +141,13 @@ CREATE TABLE `aggregate_graphs_items` (
 --
 
 CREATE TABLE `automation_devices` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `network_id` int(10) unsigned NOT NULL DEFAULT '0',
   `hostname` varchar(100) NOT NULL DEFAULT '',
   `ip` varchar(17) NOT NULL DEFAULT '',
   `community` varchar(100) NOT NULL DEFAULT '',
   `snmp_version` tinyint(1) unsigned NOT NULL DEFAULT '1',
+  `snmp_port` int(10) unsigned NOT NULL DEFAULT '161',
   `snmp_username` varchar(50) DEFAULT NULL,
   `snmp_password` varchar(50) DEFAULT NULL,
   `snmp_auth_protocol` char(5) DEFAULT '',
@@ -162,7 +164,8 @@ CREATE TABLE `automation_devices` (
   `known` tinyint(4) NOT NULL DEFAULT '0',
   `up` tinyint(4) NOT NULL DEFAULT '0',
   `time` int(11) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`ip`),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `ip` (`ip`),
   KEY `hostname` (`hostname`)
 ) ENGINE=MyISAM COMMENT='Table of Discovered Devices';
 
