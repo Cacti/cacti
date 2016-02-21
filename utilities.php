@@ -2318,7 +2318,10 @@ function snmpagent_utilities_run_eventlog(){
 		SNMPAGENT_EVENT_SEVERITY_CRITICAL => '#FF00FF'
 	);
 
-	$receivers = db_fetch_assoc('SELECT DISTINCT manager_id, hostname FROM snmpagent_notifications_log INNER JOIN snmpagent_managers ON snmpagent_managers.id = snmpagent_notifications_log.manager_id');
+	$receivers = db_fetch_assoc('SELECT DISTINCT manager_id, hostname 
+		FROM snmpagent_notifications_log 
+		INNER JOIN snmpagent_managers 
+		ON snmpagent_managers.id = snmpagent_notifications_log.manager_id');
 
 	/* ================= input validation ================= */
 	get_filter_request_var('receiver');
