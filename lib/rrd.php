@@ -925,7 +925,7 @@ function rrd_function_process_graph_options($graph_start, $graph_end, &$graph, &
 		'--base=' . cacti_escapeshellarg($graph['base_value']) . RRD_NL .
 		'--height=' . cacti_escapeshellarg($graph_height) . RRD_NL .
 		'--width=' . cacti_escapeshellarg($graph_width) . RRD_NL .
-		"$scale $unit_value $unit_exponent_value $graph_legend ";
+		trim("$scale $unit_value $unit_exponent_value $graph_legend ", "\n\r " . RRD_NL) . RRD_NL;
 
 	if (!empty($graph['vertical_label'])) {
 		$graph_opts .= '--vertical-label=' . 
