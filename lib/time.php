@@ -226,7 +226,7 @@ function shift_time(&$span, $direction, $shift_size) {
 	# now custom time settings in effect
 	$_SESSION['sess_current_timespan'] = GT_CUSTOM;
 	$_SESSION['custom'] = 1;
-	$_POST['predefined_timespan'] = GT_CUSTOM;
+	set_request_var('predefined_timespan', GT_CUSTOM);
 }
 
 /** date_time_format		create a format string for date/time
