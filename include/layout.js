@@ -403,7 +403,7 @@ function applySkin() {
 		applySelectorVisibilityAndActions();
 	}else{
 		// Allows selection of a non disabled row
-		$('tr.selectable:not([id^="gt_line"]').find('td').not('.checkbox').each(function(data) {
+		$('tr.selectable:not([id^="gt_line"])').find('td').not('.checkbox').each(function(data) {
 			$(this).unbind().click(function(data) {
 				$(this).parent().toggleClass('selected');
 				var $checkbox = $(this).parent().find(':checkbox');
