@@ -529,19 +529,19 @@ $user_auth_realms = array(
 	7  => 'View Graphs',
 	20 => 'Update Profile',
 
-	1  => 'User Administration',
-	15 => 'Global Settings',
+	1  => 'User Management',
+	15 => 'Settings and Utilities',
 	23 => 'Automation Settings',
 
 	2  => 'Data Input Methods',
 	13 => 'Data Queries',
 
 	3  => 'Devices/Data Sources',
-	5  => 'Graphs/Colors/GPrints',
+	5  => 'Graphs',
 	4  => 'Graph Trees',
 
-	9  => 'RRAs Presets',
-	14 => 'CDEFs',
+	9  => 'RRA Presets',
+	14 => 'Colors/GPrings/CDEFs',
 
 	10 => 'Graph Templates',
 	11 => 'Data Templates',
@@ -550,11 +550,18 @@ $user_auth_realms = array(
 	16 => 'Export Data',
 	17 => 'Import Data',
 
-	18 => 'View Cacti Log (Admin)',
-	19 => 'View Cacti Log (User)',
+	18 => 'Log Management',
+	19 => 'Log Viewing',
 
-	21 => 'Create Reports (Admin)',
-	22 => 'Create Reports (User)');
+	21 => 'Reports Management',
+	22 => 'Reports Creation');
+
+$user_auth_roles = array(
+	'Normal User' => array(7, 19, 20, 22),
+	'Template Editor' => array(8, 2, 9, 10, 11, 12, 13, 14, 16, 17),
+	'General Administration' => array(8, 3, 4, 5, 23),
+	'System Administration' => array(8, 15, 1, 18, 21, 101)
+);
 
 $user_auth_realm_filenames = array(
 	'about.php' => 8,

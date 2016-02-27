@@ -24,13 +24,13 @@
 
 include('./include/auth.php');
 
-//print_r($_POST);exit;
+set_default_action();
 
 $group_actions = array(
 	1 => 'Delete',
 	3 => 'Enable',
 	4 => 'Disable'
-	);
+);
 
 $href_options = array(
 	3 => array(
@@ -1215,7 +1215,7 @@ function user_group_is_member($user_id, $group_id) {
 }
 
 function user_group_realms_edit($header_label) {
-	global $user_auth_realms;
+	global $user_auth_realms, $user_auth_roles;
 
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
@@ -1228,37 +1228,52 @@ function user_group_realms_edit($header_label) {
 	html_start_box('', '100%', '', '3', 'center', '');
 
 	print "	<tr class='cactiTableTitle'>
-			<td class='textHeaderDark'><strong>Realm Permissions</strong> $header_label</td>
+			<td class='textHeaderDark'><strong>Group Permissions</strong> $header_label</td>
 			<td class='tableHader' width='1%' align='center'><input type='checkbox' style='margin: 0px;' name='all' title='Select All' onClick='selectAllRealms(this.checked)'></td>\n
 		</tr>\n";
 
 	/* do cacti realms first */
-	print "<tr class='tableHeader'><th colspan='2'>Base Permissions</th></tr>\n";
-	print "<tr class='odd'><td><table style='width:100%;'><tr><td class='realms'>\n";
 	$i = 1;
-	$j = 1;
-	$base = array(7,8,15,1,2,3,4,5,6,9,10,11,12,13,14,16,17,18,19,20,21,22,23,101);
-	foreach($base as $realm) {
-		if (isset($user_auth_realms[$realm])) {
-			if (sizeof(db_fetch_assoc_prepared('SELECT realm_id FROM user_auth_group_realm WHERE group_id = ? AND realm_id = ?', array(get_request_var('id', 0), $realm))) > 0) {
-				$old_value = 'on';
-			}else{
-				$old_value = '';
+	foreach($user_auth_roles as $role_name => $perms) {
+		$j = 1;
+
+		print "<tr class='tableHeader'><th colspan='2'>" . $role_name . "</th></tr>\n";
+		print "<tr class='odd'><td colspan='4' style='width:100%;'><table style='width:100%;'>\n";
+		foreach($perms as $realm) {
+			if ($j == 1) {
+				print "<tr>\n";
 			}
 
-			unset($all_realms[$realm]);
+			print "<td class='realms'>\n";
+			if (isset($user_auth_realms[$realm])) {
+				if (sizeof(db_fetch_assoc_prepared('SELECT realm_id FROM user_auth_group_realm WHERE group_id = ? AND realm_id = ?', array(get_request_var('id', 0), $realm))) > 0) {
+					$old_value = 'on';
+				}else{
+					$old_value = '';
+				}
+
+				unset($all_realms[$realm]);
+
+				form_checkbox('section' . $realm, $old_value, $user_auth_realms[$realm], '', '', '', (!isempty_request_var('id') ? 1 : 0)); print '<br>';
+			}
+			print "</td>\n";
 
 			if ($j == 5) {
-				print "</td><td class='realms'>\n";
+				print "</tr>\n";
 				$j = 1;
+			}else{
+				$j++;
 			}
-
-			form_checkbox('section' . $realm, $old_value, $user_auth_realms[$realm], '', '', '', (!isempty_request_var('id') ? 1 : 0)); print '<br>';
-
-			$j++;
 		}
+
+		if ($j > 1) {
+			print "<td class='realms' colspan='" . (6-$j) . "'></td>\n";
+			print "</tr>\n";
+		}
+
+		print "</table></td></tr>\n";
 	}
-	print "</td></tr></table></td></tr>\n";
+
 	print "<script type='text/javascript'>function selectAllRealms(checked) { if (checked) { $('input[id^=\"section\"]').prop('checked', true); } else { $('input[id^=\"section\"]').prop('checked', false); } }</script>\n";
 
 	/* do plugin realms */
@@ -1274,27 +1289,28 @@ function user_group_realms_edit($header_label) {
 		$last_plugin = 'none';
 		$i = 1;
 		$j = 1;
-		$level = floor(sizeof($all_realms) / 4); 
-		$break = false;
 
 		foreach($realms as $r) {
-			if ($last_plugin != $r['name']) {
-				if ($break) {
-					print "</td><td class='realms'>\n";
-					$break = false;
+			$break = false;
+
+			if ($last_plugin != $r['name'] && $last_plugin != 'none') {
+				$break = true;
+
+				if ($j == 6) {
+					print "</tr><tr>\n";
+					$break = true;;
 					$j = 1;
+				}else{
+					$j++;
 				}
-				print '<strong>' . $r['name'] . "</strong><br>\n";
-				$last_plugin = $r['name'];
-			}elseif ($break) {
-				print "</td><td class='realms'>\n";
-				$break = false;
-				$j = 1;
-				print '<strong>' . $r['name'] . " (cont)</strong><br>\n";
 			}
 
-			if ($j == 6) {
-				$break = true;;
+			if ($break) {
+				print "</td><td class='realms'>\n";
+			}
+			
+			if ($break || $i == 1) {
+				print '<strong>' . $r['name'] . "</strong><br>\n";
 			}
 
 			$realm = $r['realm_id'] + 100;
@@ -1311,7 +1327,9 @@ function user_group_realms_edit($header_label) {
 
 			form_checkbox('section' . $realm, $old_value, substr($user_auth_realms[$realm], $pos), '', '', '', (!isempty_request_var('id') ? 1 : 0)); print '<br>';
 
-			$j++;
+			$last_plugin = $r['name'];
+
+			$i++;
 		}
 	}
 
@@ -1492,7 +1510,7 @@ function group_edit() {
 	$tabs = array(
 		'general' => 'General',
 		'members' => 'Members',
-		'realms' => 'Realm Perms',
+		'realms' => 'Permissions',
 		'permsg' => 'Graph Perms',
 		'permsd' => 'Device Perms',
 		'permste' => 'Template Perms',
