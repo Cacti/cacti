@@ -360,6 +360,9 @@ function __rrd_proxy_execute($command_line, $log_to_stdout, $output_flag, $rrdp=
 	$rrdp_socket = $rrdp[0];
 	$rrdp_public_key = $rrdp[1];
 	
+	if(strlen($command_line) >= 8192) {
+		$command_line = gzencode($command_line, 1);
+	}
 	socket_write($rrdp_socket, encrypt($command_line, $rrdp_public_key) . "\r\n");
 	
 	$input = '';
@@ -387,6 +390,10 @@ function __rrd_proxy_execute($command_line, $log_to_stdout, $output_flag, $rrdp=
 					
 				foreach($chunks as $chunk) {
 					$output .= decrypt(trim($chunk));
+					if(strpos($output, "\x1f\x8b") === 0) {
+						$output = gzdecode($output);
+					}
+					
 					if ( substr_count($output, "OK u") || substr_count($output, "ERROR:") ) {
 						if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_DEBUG) {						
 							cacti_log("RRDP: " . $output, $log_to_stdout, $logopt);
