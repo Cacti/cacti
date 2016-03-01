@@ -339,9 +339,9 @@ function __rrd_proxy_execute($command_line, $log_to_stdout, $output_flag, $rrdp=
 	$command_line = str_replace("\\\n", " ", $command_line);
 
 	/* output information to the log file if appropriate */
-	//if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_DEBUG) {
+	if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_DEBUG) {
 		cacti_log("CACTI2RRDP: " . read_config_option("path_rrdtool") . " $command_line", $log_to_stdout, $logopt);
-	//}
+	}
 	
 	/* store the last command to provide rrdtool segfault diagnostics */
 	$last_command = $command_line;
@@ -388,9 +388,9 @@ function __rrd_proxy_execute($command_line, $log_to_stdout, $output_flag, $rrdp=
 				foreach($chunks as $chunk) {
 					$output .= decrypt(trim($chunk));
 					if ( substr_count($output, "OK u") || substr_count($output, "ERROR:") ) {
-	//					if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_DEBUG) {						
+						if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_DEBUG) {						
 							cacti_log("RRDP: " . $output, $log_to_stdout, $logopt);
-	//					}
+						}
 						break 2;
 					}
 				}
@@ -437,7 +437,12 @@ function rrdtool_function_create($local_data_id, $show_source, $rrdtool_pipe = '
 	/* ok, if that passes lets check to make sure an rra does not already
 	exist, the last thing we want to do is overright data! */
 	if ($show_source != true) {
-		if (file_exists($data_source_path) == true) {
+		if(read_config_option('storage_location')) {
+			$file_exists = rrdtool_execute("file_exists $data_source_path" , true, RRDTOOL_OUTPUT_BOOLEAN, $rrdtool_pipe, 'POLLER');
+		}else {
+			$file_exists = file_exists($data_source_path);
+		}
+		if ($file_exists == true) {
 			return -1;
 		}
 	}
@@ -538,21 +543,30 @@ function rrdtool_function_create($local_data_id, $show_source, $rrdtool_pipe = '
 	   exists and if not create it.
 	 */
 	if (read_config_option('extended_paths') == 'on') {
-		if (!is_dir(dirname($data_source_path))) {
-			if (mkdir(dirname($data_source_path), 0775)) {
-				if ($config['cacti_server_os'] != 'win32') {
-					$owner_id = fileowner($config['rra_path']);
-					$group_id = filegroup($config['rra_path']);
-
-					if ((chown(dirname($data_source_path), $owner_id)) &&
-						(chgrp(dirname($data_source_path), $group_id))) {
-						/* permissions set ok */
-					}else{
-						cacti_log("ERROR: Unable to set directory permissions for '" . dirname($data_source_path) . "'", FALSE);
-					}
+	
+		if(read_config_option('storage_location')) {
+			if( false === rrdtool_execute("is_dir " . dirname($data_source_path), true, RRDTOOL_OUTPUT_BOOLEAN, $rrdtool_pipe, 'POLLER') ) {
+				if( false === rrdtool_execute("mkdir " . dirname($data_source_path), true, RRDTOOL_OUTPUT_BOOLEAN, $rrdtool_pipe, 'POLLER') ) {
+					cacti_log("ERROR: Unable to create directory '" . dirname($data_source_path) . "'", FALSE);
 				}
-			}else{
-				cacti_log("ERROR: Unable to create directory '" . dirname($data_source_path) . "'", FALSE);
+			}
+		}else {
+			if (!is_dir(dirname($data_source_path))) {
+				if (mkdir(dirname($data_source_path), 0775)) {
+					if ($config['cacti_server_os'] != 'win32') {
+						$owner_id = fileowner($config['rra_path']);
+						$group_id = filegroup($config['rra_path']);
+
+						if ((chown(dirname($data_source_path), $owner_id)) &&
+							(chgrp(dirname($data_source_path), $group_id))) {
+							/* permissions set ok */
+						}else{
+							cacti_log("ERROR: Unable to set directory permissions for '" . dirname($data_source_path) . "'", FALSE);
+						}
+					}
+				}else{
+					cacti_log("ERROR: Unable to create directory '" . dirname($data_source_path) . "'", FALSE);
+				}
 			}
 		}
 	}
