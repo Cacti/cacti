@@ -556,7 +556,7 @@ function user_group_members_edit($header_label) {
 
 	/* form the 'where' clause for our main sql query */
 	if (strlen(get_request_var('filter'))) {
-		$sql_where = "WHERE (username LIKE '%%" . get_request_var('filter') . "%%' OR full_name LIKE '%%" . get_request_var('filter') . "%%')";
+		$sql_where = "WHERE (username LIKE '%" . get_request_var('filter') . "%' OR full_name LIKE '%" . get_request_var('filter') . "%')";
 	} else {
 		$sql_where = '';
 	}
@@ -691,7 +691,7 @@ function user_group_graph_perms_edit($tab, $header_label) {
 
 		/* form the 'where' clause for our main sql query */
 		if (strlen(get_request_var('filter'))) {
-			$sql_where = "WHERE (gtg.title_cache LIKE '%%" . get_request_var('filter') . "%%' AND gtg.local_graph_id>0)";
+			$sql_where = "WHERE (gtg.title_cache LIKE '%" . get_request_var('filter') . "%' AND gtg.local_graph_id>0)";
 		} else {
 			$sql_where = 'WHERE (gtg.local_graph_id>0)';
 		}
@@ -831,7 +831,7 @@ function user_group_graph_perms_edit($tab, $header_label) {
 		/* form the 'where' clause for our main sql query */
 		/* form the 'where' clause for our main sql query */
 		if (strlen(get_request_var('filter'))) {
-			$sql_where = "WHERE (host.hostname LIKE '%%" . get_request_var('filter') . "%%' OR host.description LIKE '%%" . get_request_var('filter') . "%%')";
+			$sql_where = "WHERE (host.hostname LIKE '%" . get_request_var('filter') . "%' OR host.description LIKE '%" . get_request_var('filter') . "%')";
 		} else {
 			$sql_where = '';
 		}
@@ -978,7 +978,7 @@ function user_group_graph_perms_edit($tab, $header_label) {
 		/* form the 'where' clause for our main sql query */
 		/* form the 'where' clause for our main sql query */
 		if (strlen(get_request_var('filter'))) {
-			$sql_where = "WHERE (gt.name LIKE '%%" . get_request_var('filter') . "%%')";
+			$sql_where = "WHERE (gt.name LIKE '%" . get_request_var('filter') . "%')";
 		} else {
 			$sql_where = '';
 		}
@@ -1116,7 +1116,7 @@ function user_group_graph_perms_edit($tab, $header_label) {
 
 		/* form the 'where' clause for our main sql query */
 		if (strlen(get_request_var('filter'))) {
-			$sql_where = "WHERE (gt.name LIKE '%%" . get_request_var('filter') . "%%')";
+			$sql_where = "WHERE (gt.name LIKE '%" . get_request_var('filter') . "%')";
 		} else {
 			$sql_where = '';
 		}
@@ -1421,6 +1421,7 @@ function user_group_graph_settings_edit($header_label) {
 
 	?>
 	<script type='text/javascript'>
+
 	var themeFonts=<?php print read_config_option('font_method');?>;
 
 	function graphSettings() {
@@ -1628,6 +1629,7 @@ function user_group() {
 
 	?>
 	<script type='text/javascript'>
+
 	function applyFilter() {
 		strURL  = 'user_group_admin.php?rows=' + $('#rows').val();
 		strURL += '&page=' + $('#page').val();
@@ -1642,12 +1644,13 @@ function user_group() {
 		loadPageNoHeader(strURL);
 	}
 
-	$(function(data) {
+	$(function() {
 		$('#form_group').submit(function(event) {
 			event.preventDefault();
 			applyFilter();
 		});
 	});
+
 	</script>
 	<?php
 
@@ -1950,6 +1953,7 @@ function graph_filter($header_label) {
 
 	?>
 	<script type='text/javascript'>
+
 	function applyFilter() {
 		strURL  = 'user_group_admin.php?action=edit&tab=permsg&id=<?php print get_request_var('id');?>'
 		strURL += '&rows=' + $('#rows').val();
@@ -1967,12 +1971,13 @@ function graph_filter($header_label) {
 		loadPageNoHeader(strURL);
 	}
 
-	$(function(data) {
+	$(function() {
 		$('#forms').submit(function(event) {
 			event.preventDefault();
 			applyFilter();
 		});
 	});
+
 	</script>
 	<?php
 
@@ -2057,6 +2062,7 @@ function device_filter($header_label) {
 
 	?>
 	<script type='text/javascript'>
+
 	function applyFilter() {
 		strURL  = 'user_group_admin.php?action=edit&tab=permsd&id=<?php print get_request_var('id');?>'
 		strURL += '&rows=' + $('#rows').val();
@@ -2074,12 +2080,13 @@ function device_filter($header_label) {
 		loadPageNoHeader(strURL);
 	}
 
-	$(function(data) {
+	$(function() {
 		$('#forms').submit(function(event) {
 			event.preventDefault();
 			applyFilter();
 		});
 	});
+
 	</script>
 	<?php
 
@@ -2160,6 +2167,7 @@ function template_filter($header_label) {
 
 	?>
 	<script type='text/javascript'>
+
 	function applyFilter() {
 		strURL  = 'user_group_admin.php?action=edit&tab=permste&id=<?php print get_request_var('id');?>'
 		strURL += '&rows=' + $('#rows').val();
@@ -2176,12 +2184,13 @@ function template_filter($header_label) {
 		loadPageNoHeader(strURL);
 	}
 
-	$(function(data) {
+	$(function() {
 		$('#forms').submit(function(event) {
 			event.preventDefault();
 			applyFilter();
 		});
 	});
+
 	</script>
 	<?php
 
@@ -2244,6 +2253,7 @@ function tree_filter($header_label) {
 
 	?>
 	<script type='text/javascript'>
+
 	function applyFilter() {
 		strURL  = 'user_group_admin.php?action=edit&tab=permstr&id=<?php print get_request_var('id');?>'
 		strURL += '&rows=' + $('#rows').val();
@@ -2260,12 +2270,13 @@ function tree_filter($header_label) {
 		loadPageNoHeader(strURL);
 	}
 
-	$(function(data) {
+	$(function() {
 		$('#forms').submit(function(event) {
 			event.preventDefault();
 			applyFilter();
 		});
 	});
+
 	</script>
 	<?php
 
@@ -2328,6 +2339,7 @@ function member_filter($header_label) {
 
 	?>
 	<script type='text/javascript'>
+
 	function applyFilter() {
 		strURL  = 'user_group_admin.php?action=edit&tab=members&id=<?php print get_request_var('id');?>'
 		strURL += '&rows=' + $('#rows').val();
@@ -2344,12 +2356,13 @@ function member_filter($header_label) {
 		loadPageNoHeader(strURL);
 	}
 
-	$(function(data) {
+	$(function() {
 		$('#forms').submit(function(event) {
 			event.preventDefault();
 			applyFilter();
 		});
 	});
+
 	</script>
 	<?php
 

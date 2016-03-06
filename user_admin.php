@@ -735,10 +735,10 @@ function graph_perms_edit($tab, $header_label) {
 				<?php form_dropdown('policy_graphs',$policy_array,'','',$policy['policy_graphs'],'',''); ?>
 			</td>
 			<td>
-				<input type="submit" name="update_policy" value="Update">
-				<input type="hidden" name="tab" value="<?php print $tab;?>">
-				<input type="hidden" name="id" value="<?php print get_request_var('id');?>">
-				<input type="hidden" name="update_policy" value="1">
+				<input type='submit' name='update_policy' value='Update'>
+				<input type='hidden' name='tab' value='<?php print $tab;?>'>
+				<input type='hidden' name='id' value='<?php print get_request_var('id');?>'>
+				<input type='hidden' name='update_policy' value='1'>
 			</td>
 			</tr></table></td>
 		</tr>
@@ -776,13 +776,14 @@ function graph_perms_edit($tab, $header_label) {
 			INNER JOIN user_auth_group_members AS uagm
 			ON uag.id = uagm.group_id
 			WHERE uag.enabled = 'on' AND uagm.user_id = ?", array($user));
+
 		$policies[] = db_fetch_row_prepared("SELECT id, 'user' AS type, 'user' AS name, 
 			policy_graphs, policy_hosts, policy_graph_templates 
 			FROM user_auth WHERE id = ?", array($user));
 
 		/* form the 'where' clause for our main sql query */
 		if (strlen(get_request_var('filter'))) {
-			$sql_where = "WHERE (gtg.title_cache LIKE '%%" . get_request_var('filter') . "%%' AND gtg.local_graph_id > 0)";
+			$sql_where = "WHERE (gtg.title_cache LIKE '%" . get_request_var('filter') . "%' AND gtg.local_graph_id > 0)";
 		} else {
 			$sql_where = 'WHERE (gtg.local_graph_id > 0)';
 		}
@@ -1028,10 +1029,10 @@ function graph_perms_edit($tab, $header_label) {
 				<?php form_dropdown('policy_hosts',$policy_array,'','',$policy['policy_hosts'],'',''); ?>
 			</td>
 			<td>
-				<input type="submit" name="update_policy" value="Update">
-				<input type="hidden" name="tab" value="<?php print $tab;?>">
-				<input type="hidden" name="id" value="<?php print get_request_var('id');?>">
-				<input type="hidden" name="update_policy" value="1">
+				<input type='submit' name='update_policy' value='Update'>
+				<input type='hidden' name='tab' value='<?php print $tab;?>'>
+				<input type='hidden' name='id' value='<?php print get_request_var('id');?>'>
+				<input type='hidden' name='update_policy' value='1'>
 			</td>
 			</tr></table></td>
 		</tr>
@@ -1051,7 +1052,7 @@ function graph_perms_edit($tab, $header_label) {
 		/* form the 'where' clause for our main sql query */
 		/* form the 'where' clause for our main sql query */
 		if (strlen(get_request_var('filter'))) {
-			$sql_where = "WHERE (host.hostname LIKE '%%" . get_request_var('filter') . "%%' OR host.description LIKE '%%" . get_request_var('filter') . "%%')";
+			$sql_where = "WHERE (host.hostname LIKE '%" . get_request_var('filter') . "%' OR host.description LIKE '%" . get_request_var('filter') . "%')";
 		} else {
 			$sql_where = '';
 		}
@@ -1175,10 +1176,10 @@ function graph_perms_edit($tab, $header_label) {
 				<?php form_dropdown('policy_graph_templates',$policy_array,'','',$policy['policy_graph_templates'],'',''); ?>
 			</td>
 			<td>
-				<input type="submit" name="update_policy" value="Update">
-				<input type="hidden" name="tab" value="<?php print $tab;?>">
-				<input type="hidden" name="id" value="<?php print get_request_var('id');?>">
-				<input type="hidden" name="update_policy" value="1">
+				<input type='submit' name='update_policy' value='Update'>
+				<input type='hidden' name='tab' value='<?php print $tab;?>'>
+				<input type='hidden' name='id' value='<?php print get_request_var('id');?>'>
+				<input type='hidden' name='update_policy' value='1'>
 			</td>
 			</tr></table></td>
 		</tr>
@@ -1197,7 +1198,7 @@ function graph_perms_edit($tab, $header_label) {
 
 		/* form the 'where' clause for our main sql query */
 		if (strlen(get_request_var('filter'))) {
-			$sql_where = "WHERE (gt.name LIKE '%%" . get_request_var('filter') . "%%')";
+			$sql_where = "WHERE (gt.name LIKE '%" . get_request_var('filter') . "%')";
 		} else {
 			$sql_where = '';
 		}
@@ -1313,10 +1314,10 @@ function graph_perms_edit($tab, $header_label) {
 				<?php form_dropdown('policy_trees',$policy_array,'','',$policy['policy_trees'],'',''); ?>
 			</td>
 			<td>
-				<input type="submit" name="update_policy" value="Update">
-				<input type="hidden" name="tab" value="<?php print $tab;?>">
-				<input type="hidden" name="id" value="<?php print get_request_var('id');?>">
-				<input type="hidden" name="update_policy" value="1">
+				<input type='submit' name='update_policy' value='Update'>
+				<input type='hidden' name='tab' value='<?php print $tab;?>'>
+				<input type='hidden' name='id' value='<?php print get_request_var('id');?>'>
+				<input type='hidden' name='update_policy' value='1'>
 			</td>
 			</tr></table></td>
 		</tr>
@@ -1335,7 +1336,7 @@ function graph_perms_edit($tab, $header_label) {
 
 		/* form the 'where' clause for our main sql query */
 		if (strlen(get_request_var('filter'))) {
-			$sql_where = "WHERE (gt.name LIKE '%%" . get_request_var('filter') . "%%')";
+			$sql_where = "WHERE (gt.name LIKE '%" . get_request_var('filter') . "%')";
 		} else {
 			$sql_where = '';
 		}
@@ -1534,7 +1535,7 @@ function user_realms_edit($header_label) {
 
 			$realm = $r['realm_id'] + 100;
 
-			if (sizeof(db_fetch_assoc_prepared('SELECT realm_id FROM user_auth_realm WHERE group_id = ? AND realm_id = ?', array(get_request_var('id', 0), $realm))) > 0) {
+			if (sizeof(db_fetch_assoc_prepared('SELECT realm_id FROM user_auth_realm WHERE user_id = ? AND realm_id = ?', array(get_request_var('id', 0), $realm))) > 0) {
 				$old_value = 'on';
 			}else{
 				$old_value = '';
@@ -1639,7 +1640,7 @@ function graph_settings_edit($header_label) {
 	form_save_button('user_admin.php', 'return');
 
 	?>
-	<script type="text/javascript">
+	<script type='text/javascript'>
 
 	var themeFonts=<?php print read_config_option('font_method');?>;
 
@@ -1787,6 +1788,7 @@ function user_edit() {
 
 		?>
 		<script type='text/javascript'>
+
 		var minChars=<?php print read_config_option('secpass_minlen');?>;
 
 		function changeRealm() {
@@ -1915,7 +1917,8 @@ function user() {
 	/* ================= input validation ================= */
 
 	?>
-	<script type="text/javascript">
+	<script type='text/javascript'>
+
 	function applyFilter() {
 		strURL  = 'user_admin.php?rows=' + $('#rows').val();
 		strURL += '&filter=' + $('#filter').val();
@@ -1943,6 +1946,7 @@ function user() {
 			applyFilter();
 		});
 	});
+
 	</script>
 	<?php
 
@@ -2250,7 +2254,8 @@ function graph_filter($header_label) {
 	global $config, $item_rows;
 
 	?>
-	<script type="text/javascript">
+	<script type='text/javascript'>
+
 	function applyFilter() {
 		strURL  = 'user_admin.php?action=user_edit&tab=permsg&id=<?php print get_request_var('id');?>'
 		strURL += '&rows=' + $('#rows').val();
@@ -2268,12 +2273,13 @@ function graph_filter($header_label) {
 		loadPageNoHeader(strURL);
 	}
 
-	$(function(data) {
+	$(function() {
 		$('#forms').submit(function(event) {
 			event.preventDefault();
 			applyFilter();
 		});
 	});
+
 	</script>
 	<?php
 
@@ -2358,6 +2364,7 @@ function group_filter($header_label) {
 
 	?>
 	<script type='text/javascript'>
+
 	function applyFilter() {
 		strURL  = 'user_admin.php?action=user_edit&tab=permsgr&id=<?php print get_request_var('id');?>'
 		strURL += '&rows=' + $('#rows').val();
@@ -2374,12 +2381,13 @@ function group_filter($header_label) {
 		loadPageNoHeader(strURL);
 	}
 
-	$(function(data) {
+	$(function() {
 		$('#forms').submit(function(event) {
 			event.preventDefault();
 			applyFilter();
 		});
 	});
+
 	</script>
 	<?php
 
@@ -2442,6 +2450,7 @@ function device_filter($header_label) {
 
 	?>
 	<script type='text/javascript'>
+
 	function applyFilter() {
 		strURL  = 'user_admin.php?action=user_edit&tab=permsd&id=<?php print get_request_var('id');?>'
 		strURL += '&rows=' + $('#rows').val();
@@ -2459,12 +2468,13 @@ function device_filter($header_label) {
 		loadPageNoHeader(strURL);
 	}
 
-	$(function(data) {
+	$(function() {
 		$('#forms').submit(function(event) {
 			event.preventDefault();
 			applyFilter();
 		});
 	});
+
 	</script>
 	<?php
 
@@ -2545,6 +2555,7 @@ function template_filter($header_label) {
 
 	?>
 	<script type='text/javascript'>
+
 	function applyFilter() {
 		strURL  = 'user_admin.php?action=user_edit&tab=permste&id=<?php print get_request_var('id');?>'
 		strURL += '&rows=' + $('#rows').val();
@@ -2561,12 +2572,13 @@ function template_filter($header_label) {
 		loadPageNoHeader(strURL);
 	}
 
-	$(function(data) {
+	$(function() {
 		$('#forms').submit(function(event) {
 			event.preventDefault();
 			applyFilter();
 		});
 	});
+
 	</script>
 	<?php
 
@@ -2629,6 +2641,7 @@ function tree_filter($header_label) {
 
 	?>
 	<script type='text/javascript'>
+
 	function applyFilter() {
 		strURL  = 'user_admin.php?action=user_edit&tab=permstr&id=<?php print get_request_var('id');?>'
 		strURL += '&rows=' + $('#rows').val();
@@ -2645,12 +2658,13 @@ function tree_filter($header_label) {
 		loadPageNoHeader(strURL);
 	}
 
-	$(function(data) {
+	$(function() {
 		$('#forms').submit(function(event) {
 			event.preventDefault();
 			applyFilter();
 		});
 	});
+
 	</script>
 	<?php
 
@@ -2713,6 +2727,7 @@ function member_filter($header_label) {
 
 	?>
 	<script type='text/javascript'>
+
 	function applyFilter(objForm) {
 		strURL  = 'user_admin.php?action=user_edit&tab=members&id=<?php print get_request_var('id');?>'
 		strURL += '&rows=' + $('#rows').val();
@@ -2729,12 +2744,13 @@ function member_filter($header_label) {
 		loadPageNoHeader(strURL);
 	}
 
-	$(function(data) {
+	$(function() {
 		$('#forms').submit(function(event) {
 			event.preventDefault();
 			applyFilter();
 		});
 	});
+
 	</script>
 	<?php
 
