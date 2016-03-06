@@ -333,12 +333,6 @@ if (config_value_exists('path_cactilog')) {
 	$input['path_cactilog']['default'] = $config['base_path'] . '/log/cacti.log';
 }
 
-/* SNMP Version */
-if ($config['cacti_server_os'] == 'unix') {
-	$input['snmp_version'] = $settings['general']['snmp_version'];
-	$input['snmp_version']['default'] = 'net-snmp';
-}
-
 /* RRDTool Version */
 if ((file_exists($input['path_rrdtool']['default'])) && (($config['cacti_server_os'] == 'win32') || (is_executable($input['path_rrdtool']['default']))) ) {
 	$input['rrdtool_version'] = $settings['general']['rrdtool_version'];
