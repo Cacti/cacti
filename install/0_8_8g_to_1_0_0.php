@@ -1193,5 +1193,7 @@ function upgrade_to_1_0_0() {
 
 	db_install_execute('1.0', 'RENAME TABLE settings_graphs TO settings_user');
 
+	db_install_execute('1.0', 'ALTER TABLE user_auth ADD COLUMN reset_perms INT unsigned NOT NULL default "0" AFTER lastfail');
+
 	rsa_check_keypair();
 }

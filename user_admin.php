@@ -32,6 +32,8 @@ $user_actions = array(
 	5 => 'Batch Copy'
 );
 
+set_default_action();
+
 if (isset_request_var('update_policy')) {
 	update_policies();
 }else{
@@ -498,20 +500,21 @@ function form_save() {
 		form_input_validate(get_nfilter_request_var('password'), 'password', '' . preg_quote(get_nfilter_request_var('password_confirm')) . '', true, 4);
 		form_input_validate(get_nfilter_request_var('password_confirm'), 'password_confirm', '' . preg_quote(get_nfilter_request_var('password')) . '', true, 4);
 
-		$save['id'] = get_nfilter_request_var('id');
-		$save['username'] = form_input_validate(get_nfilter_request_var('username'), 'username', "^[A-Za-z0-9\._\\\@\ -]+$", false, 3);
-		$save['full_name'] = form_input_validate(get_nfilter_request_var('full_name'), 'full_name', '', true, 3);
-		$save['password'] = $password;
+		$save['id']                   = get_nfilter_request_var('id');
+		$save['username']             = form_input_validate(get_nfilter_request_var('username'), 'username', "^[A-Za-z0-9\._\\\@\ -]+$", false, 3);
+		$save['full_name']            = form_input_validate(get_nfilter_request_var('full_name'), 'full_name', '', true, 3);
+		$save['password']             = $password;
 		$save['must_change_password'] = form_input_validate(get_nfilter_request_var('must_change_password', ''), 'must_change_password', '', true, 3);
-		$save['password_change'] = form_input_validate(get_nfilter_request_var('password_change', ''), 'password_change', '', true, 3);
-		$save['show_tree'] = form_input_validate(get_nfilter_request_var('show_tree', ''), 'show_tree', '', true, 3);
-		$save['show_list'] = form_input_validate(get_nfilter_request_var('show_list', ''), 'show_list', '', true, 3);
-		$save['show_preview'] = form_input_validate(get_nfilter_request_var('show_preview', ''), 'show_preview', '', true, 3);
-		$save['graph_settings'] = form_input_validate(get_nfilter_request_var('graph_settings', ''), 'graph_settings', '', true, 3);
-		$save['login_opts'] = form_input_validate(get_nfilter_request_var('login_opts'), 'login_opts', '', true, 3);
-		$save['realm'] = get_nfilter_request_var('realm', 0);
-		$save['enabled'] = form_input_validate(get_nfilter_request_var('enabled', ''), 'enabled', '', true, 3);
-		$save['locked'] = form_input_validate(get_nfilter_request_var('locked', ''), 'locked', '', true, 3);
+		$save['password_change']      = form_input_validate(get_nfilter_request_var('password_change', ''), 'password_change', '', true, 3);
+		$save['show_tree']            = form_input_validate(get_nfilter_request_var('show_tree', ''), 'show_tree', '', true, 3);
+		$save['show_list']            = form_input_validate(get_nfilter_request_var('show_list', ''), 'show_list', '', true, 3);
+		$save['show_preview']         = form_input_validate(get_nfilter_request_var('show_preview', ''), 'show_preview', '', true, 3);
+		$save['graph_settings']       = form_input_validate(get_nfilter_request_var('graph_settings', ''), 'graph_settings', '', true, 3);
+		$save['login_opts']           = form_input_validate(get_nfilter_request_var('login_opts'), 'login_opts', '', true, 3);
+		$save['realm']                = get_nfilter_request_var('realm', 0);
+		$save['enabled']              = form_input_validate(get_nfilter_request_var('enabled', ''), 'enabled', '', true, 3);
+		$save['locked']               = form_input_validate(get_nfilter_request_var('locked', ''), 'locked', '', true, 3);
+		$save['reset_perms']          = mt_rand();
 		if ($save['locked'] == '') {
 			$save['failed_attempts'] = 0;
 		}		
@@ -538,16 +541,18 @@ function form_save() {
 			}
 		}
 
+		reset_user_perms(get_nfilter_request_var('id'));
+
 		raise_message(1);
 	}elseif (isset_request_var('save_component_graph_settings')) {
 		while (list($tab_short_name, $tab_fields) = each($settings_user)) {
 			while (list($field_name, $field_array) = each($tab_fields)) {
 				if ((isset($field_array['items'])) && (is_array($field_array['items']))) {
 					while (list($sub_field_name, $sub_field_array) = each($field_array['items'])) {
-						db_execute_prepared('REPLACE INTO settings_user (user_id, name, value) VALUES (?, ?, ?)', array((!empty($user_id) ? $user_id : get_nfilter_request_var('id')), $sub_field_name, get_nfilter_request_var($sub_field_name, '')));
+						db_execute_prepared('REPLACE INTO settings_user (user_id, name, value) VALUES (?, ?, ?)', array((!empty($user_id) ? $user_id : get_filter_request_var('id')), $sub_field_name, get_nfilter_request_var($sub_field_name, '')));
 					}
 				}else{
-					db_execute_prepared('REPLACE INTO settings_user (user_id, name, value) VALUES (?, ?, ?)', array((!empty($user_id) ? $user_id : get_nfilter_request_var('id')), $field_name, get_nfilter_request_var($field_name)));
+					db_execute_prepared('REPLACE INTO settings_user (user_id, name, value) VALUES (?, ?, ?)', array((!empty($user_id) ? $user_id : get_filter_request_var('id')), $field_name, get_nfilter_request_var($field_name)));
 				}
 			}
 		}
@@ -555,16 +560,20 @@ function form_save() {
 		/* reset local settings cache so the user sees the new settings */
 		kill_session_var('sess_graph_config_array');
 
+		reset_user_perms(get_request_var('id'));
+
 		raise_message(1);
 	}elseif (isset_request_var('save_component_graph_perms')) {
 		db_execute_prepared('UPDATE user_auth SET policy_graphs = ?, policy_trees = ?, policy_hosts = ?, policy_graph_templates = ? WHERE id = ?', 
 			array(get_nfilter_request_var('policy_graphs'), get_nfilter_request_var('policy_trees'), get_nfilter_request_var('policy_hosts'), get_nfilter_request_var('policy_graph_templates'), get_nfilter_request_var('id')));
 	} else {
 		api_plugin_hook('user_admin_user_save');
+
+		reset_user_perms(get_filter_request_var('id'));
 	}
 
 	/* redirect to the appropriate page */
-	header('Location: user_admin.php?action=user_edit&header=false&id=' . (empty($user_id) ? get_nfilter_request_var('id') : $user_id));
+	header('Location: user_admin.php?action=user_edit&header=false&id=' . (empty($user_id) ? get_filter_request_var('id') : $user_id));
 }
 
 /* --------------------------
@@ -1741,7 +1750,7 @@ function user_edit() {
 
 	/* set the default tab */
 	load_current_session_value('tab', 'sess_user_admin_tab', 'general');
-	$current_tab = get_request_var('tab');
+	$current_tab = get_nfilter_request_var('tab');
 
 	if (!isempty_request_var('id')) {
 		$user = db_fetch_row_prepared('SELECT * FROM user_auth WHERE id = ?', array(get_request_var('id')));

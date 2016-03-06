@@ -502,6 +502,12 @@ function is_realm_allowed($realm) {
 
 	/* list all realms that this user has access to */
 	if (isset($_SESSION['sess_user_id'])) {
+		if (!user_perms_valid($_SESSION['sess_user_id'])) {
+			kill_session_var('sess_user_realms');
+			kill_session_var('sess_graph_config_array');
+			kill_session_var('sess_config_array');
+		}
+
 		if (isset($_SESSION['sess_user_realms'][$realm])) {
 			return true;
 		}elseif (read_config_option('auth_method') != 0) {
@@ -1409,3 +1415,40 @@ function rsa_check_keypair() {
 		db_execute_prepared("INSERT INTO settings (`name`, `value`) VALUES ('rsa_public_key', '" . $keys['publickey'] . "'),('rsa_private_key', '" . $keys['privatekey'] . "'),('rsa_fingerprint', '" . $fingerprint . "')");
 	}
 }
+
+/* reset_group_perms - sets a flag for all users of a group logged in that their perms need to be reloaded from the database
+   @arg $user_id - (int) the id of the current user
+   @returns - null */
+function reset_group_perms($group_id) {
+	$users = array_rekey(db_fetch_assoc_prepared('SELECT user_id FROM user_auth_group_members WHERE group_id = ?', array($group_id)), 'user_id', 'user_id');
+	if (sizeof($users)) {
+		db_execute('UPDATE user_auth SET reset_perms=FLOOR(RAND() * 4294967295) + 1 WHERE id IN (' . implode(',', $users) . ')');
+	}
+}
+
+/* reset_user_perms - sets a flag for all users logged in as this user that their perms need to be reloaded from the database
+   @arg $user_id - (int) the id of the current user
+   @returns - null */
+function reset_user_perms($user_id) {
+	db_execute_prepared('UPDATE user_auth SET reset_perms=FLOOR(RAND() * 4294967295) + 1 WHERE id = ?', array($user_id));
+}
+
+/* user_perms_valid - checks to see if the admin has changed users permissions
+   @arg $user_id - (int) the id of the current user
+   @returns - true if still valid, false otherwise */
+function user_perms_valid($user_id) {
+	$valid = false;
+
+	$key   = db_fetch_cell_prepared('SELECT reset_perms FROM user_auth WHERE id = ?', array($user_id));
+
+	if (isset($_SESSION['sess_user_perms_key'])) {
+		if ($key == $_SESSION['sess_user_perms_key']) {
+			$valid = true;
+		}
+	}
+
+	$_SESSION['sess_user_perms_key'] = $key;
+
+	return $valid;
+}
+

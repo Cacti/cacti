@@ -450,21 +450,22 @@ function form_save() {
 			raise_message(12);
 		}
 
-		$save['id'] = get_nfilter_request_var('id');
-		$save['name'] = form_input_validate(get_nfilter_request_var('name'), 'name', "^[A-Za-z0-9\._\\\@\ -]+$", false, 3);
-		$save['description'] = form_input_validate(get_nfilter_request_var('description'), 'description', '', true, 3);
-		$save['show_tree'] = form_input_validate(get_nfilter_request_var('show_tree', ''), 'show_tree', '', true, 3);
-		$save['show_list'] = form_input_validate(get_nfilter_request_var('show_list', ''), 'show_list', '', true, 3);
-		$save['show_preview'] = form_input_validate(get_nfilter_request_var('show_preview', ''), 'show_preview', '', true, 3);
+		$save['id']             = get_nfilter_request_var('id');
+		$save['name']           = form_input_validate(get_nfilter_request_var('name'), 'name', "^[A-Za-z0-9\._\\\@\ -]+$", false, 3);
+		$save['description']    = form_input_validate(get_nfilter_request_var('description'), 'description', '', true, 3);
+		$save['show_tree']      = form_input_validate(get_nfilter_request_var('show_tree', ''), 'show_tree', '', true, 3);
+		$save['show_list']      = form_input_validate(get_nfilter_request_var('show_list', ''), 'show_list', '', true, 3);
+		$save['show_preview']   = form_input_validate(get_nfilter_request_var('show_preview', ''), 'show_preview', '', true, 3);
 		$save['graph_settings'] = form_input_validate(get_nfilter_request_var('graph_settings', ''), 'graph_settings', '', true, 3);
-		$save['login_opts'] = form_input_validate(get_nfilter_request_var('login_opts'), 'login_opts', '', true, 3);
-		$save['enabled'] = form_input_validate(get_nfilter_request_var('enabled', ''), 'enabled', '', true, 3);
+		$save['login_opts']     = form_input_validate(get_nfilter_request_var('login_opts'), 'login_opts', '', true, 3);
+		$save['enabled']        = form_input_validate(get_nfilter_request_var('enabled', ''), 'enabled', '', true, 3);
 		$save = api_plugin_hook_function('user_group_admin_setup_sql_save', $save);
 
 		if (!is_error_message()) {
 			$group_id = sql_save($save, 'user_auth_group');
 
 			if ($group_id) {
+				reset_user_group_perms($group_id);
 				raise_message(1);
 			}else{
 				raise_message(2);
@@ -475,35 +476,39 @@ function form_save() {
 		header('Location: user_group_admin.php?action=edit&header=false&tab=general&id=' . (isset($group_id) && $group_id > 0 ? $group_id : get_nfilter_request_var('id')));
 		exit;
 	}elseif (isset_request_var('save_component_realm_perms')) {
-		db_execute_prepared('DELETE FROM user_auth_group_realm WHERE group_id = ?', array(get_nfilter_request_var('id')));
+		db_execute_prepared('DELETE FROM user_auth_group_realm WHERE group_id = ?', array(get_filter_request_var('id')));
 
 		while (list($var, $val) = each($_POST)) {
 			if (preg_match('/^[section]/i', $var)) {
 				if (substr($var, 0, 7) == 'section') {
-				    db_execute_prepared('REPLACE INTO user_auth_group_realm (group_id, realm_id) VALUES (?, ?)', array(get_nfilter_request_var('id'), substr($var, 7)));
+				    db_execute_prepared('REPLACE INTO user_auth_group_realm (group_id, realm_id) VALUES (?, ?)', array(get_request_var('id'), substr($var, 7)));
 				}
 			}
 		}
 
+		reset_user_group_perms(get_request_var('id'));
+
 		raise_message(1);
 
-		header('Location: user_group_admin.php?action=edit&header=false&tab=realms&id=' . get_nfilter_request_var('id'));
+		header('Location: user_group_admin.php?action=edit&header=false&tab=realms&id=' . get_request_var('id'));
 		exit;
 	}elseif (isset_request_var('save_component_graph_settings')) {
 		while (list($tab_short_name, $tab_fields) = each($settings_user)) {
 			while (list($field_name, $field_array) = each($tab_fields)) {
 				if ((isset($field_array['items'])) && (is_array($field_array['items']))) {
 					while (list($sub_field_name, $sub_field_array) = each($field_array['items'])) {
-						db_execute_prepared('REPLACE INTO settings_user_group (group_id, name, value) VALUES (?, ?, ?)', array(get_nfilter_request_var('id'), $sub_field_name, get_nfilter_request_var($sub_field_name, '')));
+						db_execute_prepared('REPLACE INTO settings_user_group (group_id, name, value) VALUES (?, ?, ?)', array(get_filter_request_var('id'), $sub_field_name, get_nfilter_request_var($sub_field_name, '')));
 					}
 				}else{
-					db_execute_prepared('REPLACE INTO settings_user_group (group_id, name, value) VALUES (?, ?, ?)', array(get_nfilter_request_var('id'), $field_name, get_nfilter_request_var($field_name)));
+					db_execute_prepared('REPLACE INTO settings_user_group (group_id, name, value) VALUES (?, ?, ?)', array(get_request_var('id'), $field_name, get_nfilter_request_var($field_name)));
 				}
 			}
 		}
 
 		/* reset local settings cache so the user sees the new settings */
 		kill_session_var('sess_graph_config_array');
+
+		reset_user_group_perms(get_request_var('id'));
 
 		raise_message(1);
 
