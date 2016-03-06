@@ -222,9 +222,10 @@ function utilities_view_tech($php_info = '') {
 	}
 
 	/* Get SNMP cli version */
-	$snmp_version = read_config_option('snmp_version');
 	if ((file_exists(read_config_option('path_snmpget'))) && ((function_exists('is_executable')) && (is_executable(read_config_option('path_snmpget'))))) {
 		$snmp_version = shell_exec(cacti_escapeshellcmd(read_config_option('path_snmpget')) . ' -V 2>&1');
+	}else{
+		$snmp_version = "<font color='red'>NET-SNMP Not Installed or its paths are not set.  Please install if you wish to monitor SNMP enabled devices.</font>";
 	}
 
 	/* Check RRDTool issues */
@@ -268,7 +269,7 @@ function utilities_view_tech($php_info = '') {
 	print "		<td class='textArea'>" . read_config_option('rsa_fingerprint') . "</td>\n";
 	print "</tr>\n";
 	print "<tr class='even'>\n";
-	print "		<td class='textArea'>SNMP Version</td>\n";
+	print "		<td class='textArea'>NET-SNMP Version</td>\n";
 	print "		<td class='textArea'>" . $snmp_version . "</td>\n";
 	print "</tr>\n";
 
@@ -365,7 +366,11 @@ function utilities_view_tech($php_info = '') {
 	html_header(array('PHP Information'), 2);
 	print "<tr class='odd'>\n";
 	print "		<td class='textArea'>PHP Version</td>\n";
-	print "		<td class='textArea'>" . phpversion() . "</td>\n";
+	if (version_compare(PHP_VERSION, '5.5.0') >= 0) {
+	print "		<td class='textArea'>" . PHP_VERSION . "</td>\n";
+	}else{
+	print "		<td class='textArea'>" . PHP_VERSION . "</br><font color='red'>PHP Version 5.5.0+ is recommended due to strong password hashing support.</font></td>\n";
+	}
 	print "</tr>\n";
 	print "<tr class='even'>\n";
 	print "		<td class='textArea'>PHP OS</td>\n";

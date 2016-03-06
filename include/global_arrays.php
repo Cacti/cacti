@@ -349,10 +349,6 @@ $ldap_modes = array(
 	1 => 'Anonymous Searching',
 	2 => 'Specific Searching');
 
-$snmp_implimentations = array(
-	'ucd-snmp' => 'UCD-SNMP 4.x',
-	'net-snmp' => 'NET-SNMP 5.x');
-
 $rrdtool_versions = array(
 	'rrd-1.2.x' => 'RRDTool 1.2.x',
 	'rrd-1.3.x' => 'RRDTool 1.3.x',

@@ -83,9 +83,9 @@ function cacti_snmp_get($hostname, $community, $oid, $version, $username, $passw
 		$timeout = ceil($timeout / 1000);
 
 		if ($version == "1") {
-			$snmp_auth = (read_config_option("snmp_version") == "ucd-snmp") ? cacti_escapeshellarg($community): "-c " . cacti_escapeshellarg($community); /* v1/v2 - community string */
+			$snmp_auth = "-c " . cacti_escapeshellarg($community); /* v1/v2 - community string */
 		}elseif ($version == "2") {
-			$snmp_auth = (read_config_option("snmp_version") == "ucd-snmp") ? cacti_escapeshellarg($community) : "-c " . cacti_escapeshellarg($community); /* v1/v2 - community string */
+			$snmp_auth = "-c " . cacti_escapeshellarg($community); /* v1/v2 - community string */
 			$version = "2c"; /* ucd/net snmp prefers this over '2' */
 		}elseif ($version == "3") {
 			if ($priv_proto == "[None]" || $priv_pass == '') {
@@ -118,14 +118,7 @@ function cacti_snmp_get($hostname, $community, $oid, $version, $username, $passw
 		/* no valid snmp version has been set, get out */
 		if (empty($snmp_auth)) { return; }
 
-		if (read_config_option("snmp_version") == "ucd-snmp") {
-			/* escape the command to be executed and vulnerable parameters
-			 * numeric parameters are not subject to command injection
-			 * snmp_auth is treated seperately, see above */
-			exec(cacti_escapeshellcmd(read_config_option("path_snmpget")) . " -O vt -v$version -t $timeout -r $retries " . cacti_escapeshellarg($hostname) . ":$port $snmp_auth " . cacti_escapeshellarg($oid), $snmp_value);
-		}else {
-			exec(cacti_escapeshellcmd(read_config_option("path_snmpget")) . " -O fntevU " . $snmp_auth . " -v $version -t $timeout -r $retries " . cacti_escapeshellarg($hostname) . ":$port " . cacti_escapeshellarg($oid), $snmp_value);
-		}
+		exec(cacti_escapeshellcmd(read_config_option("path_snmpget")) . " -O fntevU " . $snmp_auth . " -v $version -t $timeout -r $retries " . cacti_escapeshellarg($hostname) . ":$port " . cacti_escapeshellarg($oid), $snmp_value);
 
 		/* fix for multi-line snmp output */
 		if (is_array($snmp_value)) {
@@ -204,10 +197,10 @@ function cacti_snmp_getnext($hostname, $community, $oid, $version, $username, $p
 		$timeout = ceil($timeout / 1000);
 
 		if ($version == "1") {
-			$snmp_auth = (read_config_option("snmp_version") == "ucd-snmp") ? cacti_escapeshellarg($community): "-c " . cacti_escapeshellarg($community); /* v1/v2 - community string */
+			$snmp_auth = "-c " . cacti_escapeshellarg($community); /* v1/v2 - community string */
 		}elseif ($version == "2") {
-			$snmp_auth = (read_config_option("snmp_version") == "ucd-snmp") ? cacti_escapeshellarg($community): "-c " . cacti_escapeshellarg($community); /* v1/v2 - community string */
-			$version = "2c"; /* ucd/net snmp prefers this over '2' */
+			$snmp_auth = "-c " . cacti_escapeshellarg($community); /* v1/v2 - community string */
+			$version   = "2c"; /* ucd/net snmp prefers this over '2' */
 		}elseif ($version == "3") {
 			if ($priv_proto == "[None]" || $priv_pass == '') {
 				$proto = "authNoPriv";
@@ -239,20 +232,13 @@ function cacti_snmp_getnext($hostname, $community, $oid, $version, $username, $p
 		/* no valid snmp version has been set, get out */
 		if (empty($snmp_auth)) { return; }
 
-		if (read_config_option("snmp_version") == "ucd-snmp") {
-			/* escape the command to be executed and vulnerable parameters
-			 * numeric parameters are not subject to command injection
-			 * snmp_auth is treated seperately, see above */
-			exec(cacti_escapeshellcmd(read_config_option("path_snmpgetnext")) . " -O vt -v$version -t $timeout -r $retries " . cacti_escapeshellarg($hostname) . ":$port $snmp_auth " . cacti_escapeshellarg($oid), $snmp_value);
-		}else {
-			/* handle control options "-C", works for net-snmp only */
-			$control_options = "";
-			if (read_config_option("oid_increasing_check_disable") != "") {
-				$control_options .= " -Cc ";
-			}
-
-			exec(cacti_escapeshellcmd(read_config_option("path_snmpgetnext")) . " -O fntevU $control_options $snmp_auth -v $version -t $timeout -r $retries " . cacti_escapeshellarg($hostname) . ":$port " . cacti_escapeshellarg($oid), $snmp_value);
+		/* handle control options "-C", works for net-snmp only */
+		$control_options = "";
+		if (read_config_option("oid_increasing_check_disable") != "") {
+			$control_options .= " -Cc ";
 		}
+
+		exec(cacti_escapeshellcmd(read_config_option("path_snmpgetnext")) . " -O fntevU $control_options $snmp_auth -v $version -t $timeout -r $retries " . cacti_escapeshellarg($hostname) . ":$port " . cacti_escapeshellarg($oid), $snmp_value);
 	}
 
 	if (isset($snmp_value)) {
@@ -374,10 +360,10 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $username, $pass
 		$timeout = ceil($timeout / 1000);
 
 		if ($version == "1") {
-			$snmp_auth = (read_config_option("snmp_version") == "ucd-snmp") ? cacti_escapeshellarg($community): "-c " . cacti_escapeshellarg($community); /* v1/v2 - community string */
+			$snmp_auth = "-c " . cacti_escapeshellarg($community); /* v1/v2 - community string */
 		}elseif ($version == "2") {
-			$snmp_auth = (read_config_option("snmp_version") == "ucd-snmp") ? cacti_escapeshellarg($community): "-c " . cacti_escapeshellarg($community); /* v1/v2 - community string */
-			$version = "2c"; /* ucd/net snmp prefers this over '2' */
+			$snmp_auth = "-c " . cacti_escapeshellarg($community); /* v1/v2 - community string */
+			$version   = "2c"; /* ucd/net snmp prefers this over '2' */
 		}elseif ($version == "3") {
 			if ($priv_proto == "[None]" || $priv_pass == '') {
 				$proto = "authNoPriv";
@@ -409,22 +395,15 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $username, $pass
 		/* no valid snmp version has been set, get out */
 		if (empty($snmp_auth)) { return; }
 
-		if (read_config_option("snmp_version") == "ucd-snmp") {
-			/* escape the command to be executed and vulnerable parameters
-			 * numeric parameters are not subject to command injection
-			 * snmp_auth is treated seperately, see above */
-			$temp_array = exec_into_array(cacti_escapeshellcmd(read_config_option("path_snmpwalk")) . " -v$version -t $timeout -r $retries " . cacti_escapeshellarg($hostname) . ":$port $snmp_auth " . cacti_escapeshellarg($oid));
-		}else {
-			/* handle control options "-C", works for net-snmp only */
-			$control_options = "";
-			if (read_config_option("oid_increasing_check_disable") != "") {
-				$control_options .= " -Cc ";
-			}
-			if (file_exists($path_snmpbulkwalk) && ($version > 1) && ($max_oids > 1)) {
-				$temp_array = exec_into_array(cacti_escapeshellcmd($path_snmpbulkwalk) . " -O Qn $control_options $snmp_auth -v $version -t $timeout -r $retries -Cr$max_oids " . cacti_escapeshellarg($hostname) . ":$port " . cacti_escapeshellarg($oid));
-			}else{
-				$temp_array = exec_into_array(cacti_escapeshellcmd(read_config_option("path_snmpwalk")) . " -O Qn $control_options $snmp_auth -v $version -t $timeout -r $retries " . cacti_escapeshellarg($hostname) . ":$port " . cacti_escapeshellarg($oid));
-			}
+		/* handle control options "-C", works for net-snmp only */
+		$control_options = "";
+		if (read_config_option("oid_increasing_check_disable") != "") {
+			$control_options .= " -Cc ";
+		}
+		if (file_exists($path_snmpbulkwalk) && ($version > 1) && ($max_oids > 1)) {
+			$temp_array = exec_into_array(cacti_escapeshellcmd($path_snmpbulkwalk) . " -O Qn $control_options $snmp_auth -v $version -t $timeout -r $retries -Cr$max_oids " . cacti_escapeshellarg($hostname) . ":$port " . cacti_escapeshellarg($oid));
+		}else{
+			$temp_array = exec_into_array(cacti_escapeshellcmd(read_config_option("path_snmpwalk")) . " -O Qn $control_options $snmp_auth -v $version -t $timeout -r $retries " . cacti_escapeshellarg($hostname) . ":$port " . cacti_escapeshellarg($oid));
 		}
 
 		if (substr_count(implode(" ", $temp_array), "Timeout:") && (!isset($snmp_logging) || $snmp_logging == true)) {

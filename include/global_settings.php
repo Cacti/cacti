@@ -234,25 +234,6 @@ $settings = array(
 					)
 				),
 			),
-		'versions_header' => array(
-			'friendly_name' => 'Required Tool Versions',
-			'collapsible' => 'true',
-			'method' => 'spacer',
-			),
-		'snmp_version' => array(
-			'friendly_name' => 'SNMP Utility Version',
-			'description' => 'The type of SNMP you have installed.  Required if you are using SNMP v2c or dont have embedded SNMP support in PHP.',
-			'method' => 'drop_array',
-			'default' => 'net-snmp',
-			'array' => $snmp_implimentations,
-			),
-		'rrdtool_version' => array(
-			'friendly_name' => 'RRDTool Utility Version',
-			'description' => 'The version of RRDTool that you have installed.',
-			'method' => 'drop_array',
-			'default' => 'rrd-1.4.x',
-			'array' => $rrdtool_versions,
-			),
 		'snmp_header' => array(
 			'friendly_name' => 'SNMP Defaults',
 			'method' => 'spacer',
@@ -370,6 +351,13 @@ $settings = array(
 			'friendly_name' => 'Other Settings',
 			'collapsible' => 'true',
 			'method' => 'spacer',
+			),
+		'rrdtool_version' => array(
+			'friendly_name' => 'RRDTool Version',
+			'description' => 'The version of RRDTool that you have installed.',
+			'method' => 'drop_array',
+			'default' => 'rrd-1.4.x',
+			'array' => $rrdtool_versions,
 			),
 		'graph_auth_method' => array(
 			'friendly_name' => 'Graph Permission Method',
