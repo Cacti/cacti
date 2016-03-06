@@ -91,10 +91,10 @@ if (get_nfilter_request_var('action') == 'login') {
 		/* Locate user in database */
 		$user = db_fetch_row_prepared('SELECT * FROM user_auth WHERE username = ? AND realm = 2', array($username));
 
-		if (!$user) {
-			cacti_log("AUTH LOGIN: User " . $username . " authenticated by web server but not found in Cacti database.");
+		if (!$user && read_config_option('user_template') == '0') {
+			cacti_log("ERROR: User '" . $username . "' authenticated by Web Server, but a Template User is not defined in Cacti.  Exiting.", false, 'AUTH');
 			$username = htmlspecialchars($username);
-			auth_display_custom_error_message("$username is not authorized to use Cacti.");
+			auth_display_custom_error_message("$username authenticated by Web Server, but a Template User is not defined in Cacti.");
 			exit;			
 		}
 
