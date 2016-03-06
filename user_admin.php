@@ -468,6 +468,8 @@ function form_save() {
 
 		if ((get_nfilter_request_var('password') == '') && (get_nfilter_request_var('password_confirm') == '')) {
 			$password = db_fetch_cell_prepared('SELECT password FROM user_auth WHERE id = ?', array(get_nfilter_request_var('id')));
+		}elseif (function_exists('password_hash')) {
+			$password = password_hash(get_nfilter_request_var('password'), PASSWORD_DEFAULT);
 		}else{
 			$password = md5(get_nfilter_request_var('password'));
 		}
