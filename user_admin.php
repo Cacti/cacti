@@ -1809,25 +1809,22 @@ function user_edit() {
 		}
 
 		function checkPassword() {
-			if ($('#password').val().length < minChars) {
+			if ($('#password').val().length == 0) {
+				$('#pass').remove();
+			}else if ($('#password').val().length < minChars) {
 				$('#pass').remove();
 				$('#password').after('<span id="pass"><i class="badpassword fa fa-times"></i><span style="padding-left:4px;">Password Too Short</span></span>');
 			}else{
-				if ($('#password_confirm').val().length > 0) {
-					$.post('user_admin.php?action=checkpass', { password: $('#password').val(), password_confim: $('#password_confirm').val(), __csrf_magic: csrfMagicToken } ).done(function(data) {
-						if (data == 'ok') {
-							$('#pass').remove();
-							$('#password').after('<span id="pass"><i class="goodpassword fa fa-check"></i><span style="padding-left:4px;">Password Validation Passes</span></span>');
-							checkPasswordConfirm();
-						}else{
-							$('#pass').remove();
-							$('#password').after('<span id="pass"><i class="badpassword fa fa-times"></i><span style="padding-left:4px;">'+data+'</span></span>');
-						}
-					});
-				}else{
-					$('#pass').remove();
-					$('#password').after('<span id="pass"><i class="goodpassword fa fa-check"></i><span style="padding-left:4px;">Password Length Good</span></span>');
-				}
+				$.post('user_admin.php?action=checkpass', { password: $('#password').val(), password_confim: $('#password_confirm').val(), __csrf_magic: csrfMagicToken } ).done(function(data) {
+					if (data == 'ok') {
+						$('#pass').remove();
+						$('#password').after('<span id="pass"><i class="goodpassword fa fa-check"></i><span style="padding-left:4px;">Password Validation Passes</span></span>');
+						checkPasswordConfirm();
+					}else{
+						$('#pass').remove();
+						$('#password').after('<span id="pass"><i class="badpassword fa fa-times"></i><span style="padding-left:4px;">'+data+'</span></span>');
+					}
+				});
 			}
 		}
 
@@ -1840,6 +1837,8 @@ function user_edit() {
 					$('#passconfirm').remove();
 					$('#password_confirm').after('<span id="passconfirm"><i class="goodpassword fa fa-check"></i><span style="padding-left:4px;">Passwords Match</span></span>');
 				}
+			}else{
+				$('#passconfirm').remove();
 			}
 		}
 
@@ -1855,7 +1854,7 @@ function user_edit() {
 			});
 
 			$('#password_confirm').keyup(function() {
-				checkPasswordConfirm();
+				checkPassword();
 			});
 
 			$('#realm').change(function() {

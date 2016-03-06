@@ -1360,21 +1360,25 @@ function secpass_check_pass($p) {
 	$minlen = read_config_option('secpass_minlen');
 	
 	$reqmixcase = (read_config_option('secpass_reqmixcase') == 'on' ? true : false);
-	$reqnum = (read_config_option('secpass_reqnum') == 'on' ? true : false);
-	$reqspec = (read_config_option('secpass_reqspec') == 'on' ? true : false);
+	$reqnum     = (read_config_option('secpass_reqnum') == 'on' ? true : false);
+	$reqspec    = (read_config_option('secpass_reqspec') == 'on' ? true : false);
 	if (strlen($p) < $minlen) {
-		return "Password must be at least $minlen characters!";
+		return 'Password must be at least ' . $minlen . ' characters!';
 	}
+
 	if ($reqnum && str_replace(array('0', '1', '2', '3', '4', '5', '6', '7', '8', '9'), '', $p) == $p) {
 		return 'Your password must contain at least 1 numerical character!';
 	}
+
 	if ($reqmixcase && strtolower($p) == $p) {
 		return 'Your password must contain a mix of lower case and upper case characters!';
 	}
+
 	if ($reqspec && str_replace(array('~', '`', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '-', '_', '+', '=', '[', '{', ']', '}', ';', ':', '<', ',', '.', '>', '?', '|', '/', '\\'), '', $p) == $p) {
 		return 'Your password must contain at least 1 special character!';
 	}
-	return '';
+
+	return 'ok';
 }
 
 function secpass_check_history($id, $p) {
