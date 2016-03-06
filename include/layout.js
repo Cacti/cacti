@@ -25,6 +25,7 @@ var theme;
 var myRefresh;
 var userMenuTimer;
 var pulsating=true;
+var pageLoaded=false;
 var messageTimer;
 var myTitle;
 
@@ -471,7 +472,7 @@ function loadPage(href) {
 		$('#main').html(content);
 
 		if (typeof window.history.pushState !== 'undefined') {
-			window.history.pushState({page:href}, htmlTitle, href);
+			window.history.pushState({page: href}, htmlTitle, href);
 		}
 
 		myTitle = htmlTitle;
@@ -488,6 +489,12 @@ function loadPage(href) {
 
 function loadPageNoHeader(href) {
 	$.get(href, function(data) {
+		if (typeof window.history.pushState !== 'undefined') {
+			href = href.replace('header=false', '');
+			href = href.replace('&&', '&');
+			window.history.pushState({page: href}, myTitle, href);
+		}
+
 		$('#main').html(data);
 
 		applySkin();
@@ -534,14 +541,15 @@ function ajaxAnchors() {
 		return false;
 	});
 
-	$(window).unbind('popstate').on('popstate', function(event) {
-		if (event.state) {
-			href = document.location.href;
-			if (href !== null) {
-				document.location = href;
-			}
+	$(window).bind('popstate', function(event) {
+		href = document.location.href;
+		if (!pageLoaded) {
+			pageLoaded = true;
+			return false;
+		}else{
+			document.location = href;
 		}
-	}, false);
+	});
 }
 
 function setupCollapsible() {
