@@ -1811,6 +1811,7 @@ function user_edit() {
 		function checkPassword() {
 			if ($('#password').val().length == 0) {
 				$('#pass').remove();
+				$('#passconfirm').remove();
 			}else if ($('#password').val().length < minChars) {
 				$('#pass').remove();
 				$('#password').after('<span id="pass"><i class="badpassword fa fa-times"></i><span style="padding-left:4px;">Password Too Short</span></span>');
@@ -1854,7 +1855,7 @@ function user_edit() {
 			});
 
 			$('#password_confirm').keyup(function() {
-				checkPassword();
+				checkPasswordConfirm();
 			});
 
 			$('#realm').change(function() {
