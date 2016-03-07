@@ -465,7 +465,7 @@ function form_save() {
 			$group_id = sql_save($save, 'user_auth_group');
 
 			if ($group_id) {
-				reset_user_group_perms($group_id);
+				reset_group_perms($group_id);
 				raise_message(1);
 			}else{
 				raise_message(2);
@@ -486,7 +486,7 @@ function form_save() {
 			}
 		}
 
-		reset_user_group_perms(get_request_var('id'));
+		reset_group_perms(get_request_var('id'));
 
 		raise_message(1);
 
@@ -508,7 +508,7 @@ function form_save() {
 		/* reset local settings cache so the user sees the new settings */
 		kill_session_var('sess_graph_config_array');
 
-		reset_user_group_perms(get_request_var('id'));
+		reset_group_perms(get_request_var('id'));
 
 		raise_message(1);
 
