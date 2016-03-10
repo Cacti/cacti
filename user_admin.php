@@ -1220,7 +1220,7 @@ function graph_perms_edit($tab, $header_label) {
 			$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') . ' (user_auth_perms.type=4 AND user_auth_perms.user_id=' . get_request_var('id', 0) . ')';
 		}
 
-		form_start(htmlspecialchars('user_admin.php?tab=permste&id=' . get_request_var('id')), 'policy');
+		form_start(htmlspecialchars('user_admin.php?tab=permste&id=' . get_request_var('id')), 'chk');
 
 		html_start_box('', '100%', '', '3', 'center', '');
 
@@ -1358,7 +1358,7 @@ function graph_perms_edit($tab, $header_label) {
 			$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') . ' (user_auth_perms.type=2 AND user_auth_perms.user_id=' . get_request_var('id', 0) . ')';
 		}
 
-		form_start(htmlspecialchars('user_admin.php?tab=permstr&id=' . get_request_var('id')), 'policy');
+		form_start(htmlspecialchars('user_admin.php?tab=permstr&id=' . get_request_var('id')), 'chk');
 
 		html_start_box('', '100%', '', '3', 'center', '');
 
@@ -1883,6 +1883,7 @@ function user_edit() {
 	case 'permste':
 	case 'permstr':
 		graph_perms_edit($current_tab, $header_label);
+
 		break;
 	default:
 		if (api_plugin_hook_function('user_admin_run_action', get_request_var('tab'))) {
