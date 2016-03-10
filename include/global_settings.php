@@ -1567,66 +1567,6 @@ $settings = array(
 			'method' => 'checkbox',
 			'default' => ''
 			),
-		'boost_srv_header' => array(
-			'friendly_name' => 'Boost Server Settings',
-			'method' => 'spacer',
-			'collapsible' => 'true'
-			),
-		'boost_server_enable' => array(
-			'friendly_name' => 'Enable Boost Server',
-			'description' => 'Should Boost server be used to RRDupdates?  If you do not select, then your web server needs R/W to rra directories.',
-			'method' => 'checkbox',
-			'default' => ''
-			),
-		'boost_server_effective_user' => array(
-			'friendly_name' => 'Effective User ID',
-			'description' => 'This UNIX/LINUX only option allows you to use this users UID to create and otherwise operate on RRDs.  In order to use this, you must also be using the POSIX module in PHP.  A Boost Server restart is required to enact any changes in this setting.',
-			'method' => 'textbox',
-			'default' => 'root',
-			'max_length' => '20'
-			),
-		'boost_server_multiprocess' => array(
-			'friendly_name' => 'Multiprocess Server',
-			'description' => 'Do you want the boost server to fork a separate update process for each boost request?  A Boost Server restart is required to enact any changes in this setting.',
-			'method' => 'drop_array',
-			'default' => '1',
-			'array' => array('0' => 'No', '1' => 'Yes')
-			),
-		'boost_path_rrdupdate' => array(
-			'friendly_name' => 'RRDUpdate Path',
-			'description' => 'If you are using the Multiprocess Boost server, it is best to utilize the rrdupdate binary to update your RRDs.  Specify its path here.  Otherwise, boost will use the rrdtool binary.',
-			'method' => 'textbox',
-			'default' => '',
-			'max_length' => '255'
-			),
-		'boost_server_hostname' => array(
-			'friendly_name' => 'Hostname or IP for Boost Server',
-			'description' => 'The Hostname/IP for the boost server.',
-			'method' => 'textbox',
-			'default' => 'localhost',
-			'max_length' => '100'
-			),
-		'boost_server_listen_port' => array(
-			'friendly_name' => 'TCP Port to Communicate On',
-			'description' => 'The boost server will listen on this port and the client will talk to this port.  A Boost Server restart is required to enact any changes in this setting.',
-			'method' => 'textbox',
-			'default' => '9050',
-			'max_length' => '10'
-			),
-		'boost_server_timeout' => array(
-			'friendly_name' => 'Boost Server Timeout',
-			'description' => 'The timeout, in seconds, that the client should wait on the boost server before giving up.',
-			'method' => 'textbox',
-			'default' => '2',
-			'max_length' => '10'
-			),
-		'boost_server_clients' => array(
-			'friendly_name' => 'Allowed Web Hosts',
-			'description' => 'A comma separated list of host IP Addresses allowed to connect to the boost server.',
-			'method' => 'textbox',
-			'default' => '127.0.0.1',
-			'max_length' => '512'
-			),
 		'boost_png_header' => array(
 			'friendly_name' => 'Image Caching',
 			'method' => 'spacer',

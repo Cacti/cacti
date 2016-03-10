@@ -38,10 +38,10 @@ function escape_command($command) {
 	#TODO return preg_replace((\\\$(?=\w+|\*|\@|\#|\?|\-|\\\$|\!|\_|[0-9]|\(.*\))|`(?=.*(?=`)))","$2", $command);  #suggested by ldevantier to allow for a single $
 }
 
-function rrd_init() {
+function rrd_init($output_to_term = TRUE, $force_storage_location_local = FALSE) {
 	global $config;
 	$args = func_get_args();
-	$function = read_config_option('storage_location') ? '__rrd_proxy_init' : '__rrd_init';
+	$function = (read_config_option('storage_location') && $force_storage_location_local === false ) ? '__rrd_proxy_init' : '__rrd_init';
 	return call_user_func_array($function, $args);
 }
 
@@ -592,6 +592,8 @@ function rrdtool_function_update($update_cache_array, $rrdtool_pipe = '') {
 	while (list($rrd_path, $rrd_fields) = each($update_cache_array)) {
 		$create_rrd_file = false;
 
+		if ((is_array($rrd_fields['times'])) && (sizeof($rrd_fields['times']))) {
+		
 		/* create the rrd if one does not already exist */
 		if(read_config_option('storage_location')) {
 			$file_exists = rrdtool_execute("file_exists $rrd_path" , true, RRDTOOL_OUTPUT_BOOLEAN, $rrdtool_pipe, 'POLLER');
@@ -604,7 +606,6 @@ function rrdtool_function_update($update_cache_array, $rrdtool_pipe = '') {
 			$create_rrd_file = true;
 		}
 
-		if ((is_array($rrd_fields['times'])) && (sizeof($rrd_fields['times']))) {
 			ksort($rrd_fields['times']);
 
 			while (list($update_time, $field_array) = each($rrd_fields['times'])) {
@@ -1113,15 +1114,6 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 	 * We will enclose all parameters in quotes and substitute quotation marks within
 	 * those parameters. 
 	 */
-
-	/* rrdtool fetches the default font from it's execution environment
-	 * you won't find that default font on the rrdtool statement itself!
-	 * set the rrdtool default font via environment variable */
-	if (!isset($graph_data_array['export_csv'])) {
-		if (read_config_option('path_rrdtool_default_font')) {
-			putenv('RRD_DEFAULT_FONT=' . read_config_option('path_rrdtool_default_font'));
-		}
-	}
 
 	/* before we do anything; make sure the user has permission to view this graph,
 	if not then get out */
@@ -2075,8 +2067,11 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 
 			if (isset($graph_data_array['export'])) {
 				rrdtool_execute("graph $graph_opts$graph_defs$txt_graph_items", false, RRDTOOL_OUTPUT_NULL, $rrdtool_pipe);
+
 				return 0;
 			}elseif (isset($graph_data_array['export_realtime'])) {
+			
+				$rrdtool_pipe = rrd_init(true, false); 
 				$output_flag = RRDTOOL_OUTPUT_GRAPH_DATA;
 				$output = rrdtool_execute("graph $graph_opts$graph_defs$txt_graph_items", false, $output_flag, $rrdtool_pipe);
 
@@ -2106,7 +2101,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 	}else{
 		$output_flag = RRDTOOL_OUTPUT_STDOUT;
 
-		$xport_array = rrdxport2array(rrdtool_execute("xport $graph_opts$graph_defs$txt_graph_items", false, $output_flag));
+		$xport_array = rrdxport2array(rrdtool_execute("xport $graph_opts$graph_defs$txt_graph_items", false, $output_flag, $rrdtool_pipe));
 
 		/* add host and graph information */
 		$xport_array['meta']['stacked_columns']= $stacked_columns;

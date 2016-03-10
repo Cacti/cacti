@@ -1767,7 +1767,6 @@ function boost_display_run_status() {
 	$next_run_time   = read_config_option('boost_next_run_time', TRUE);
 
 	$rrd_updates     = read_config_option('boost_rrd_update_enable', TRUE);
-	$boost_server    = read_config_option('boost_server_enable', TRUE);
 	$boost_cache     = read_config_option('boost_png_cache_enable', TRUE);
 
 	$max_records     = read_config_option('boost_rrd_update_max_records', TRUE);
@@ -2037,32 +2036,6 @@ function boost_display_run_status() {
 	form_alternate_row();
 	print '<td class="utilityPick"><strong>Maximum Allowed Runtime:</strong></td><td>' . $boost_max_runtime[$max_runtime] . '</td>';
 
-	/* boost runtime display */
-	html_header(array('Boost Server Details'), 2);
-
-	form_alternate_row();
-	print '<td><strong>Server Config Status:</strong></td><td><strong>' . ($boost_server == '' ? 'Disabled' : 'Enabled') . '</strong></td>';
-
-	form_alternate_row();
-	print '<td><strong>Multiprocess Server:</td><td>' . (read_config_option('boost_server_multiprocess', TRUE) == '1' ? 'Multiple Process' : 'Single Process') . '</strong></td>';
-
-	form_alternate_row();
-	print '<td><strong>Update Timeout:</td><td>' . read_config_option('boost_server_timeout', TRUE) . ' Seconds</strong></td>';
-
-	form_alternate_row();
-	print '<td><strong>Server/Port:</td><td>' . read_config_option('boost_server_hostname', TRUE) . '@' . read_config_option('boost_server_listen_port', TRUE) . '</strong></td>';
-
-	form_alternate_row();
-	print '<td><strong>Authorized Update Web Servers:</td><td>' . read_config_option('boost_server_clients', TRUE) . '</strong></td>';
-
-	if (strlen(read_config_option('boost_path_rrdupdate')) && (read_config_option('boost_server_multiprocess') == 1)) {
-		form_alternate_row();
-		print '<td><strong>RRDtool Binary Used:</td><td>' . read_config_option('boost_path_rrdupdate') . '</strong></td>';
-	}else{
-		form_alternate_row();
-		print '<td><strong>RRDtool Binary Used:</td><td>' . read_config_option('path_rrdtool') . '</strong></td>';
-	}
-
 	/* boost caching */
 	html_header(array('Image Caching'), 2);
 
@@ -2277,7 +2250,7 @@ function snmpagent_utilities_run_cache() {
 			form_alternate_row('line' . $item['oid'], false);
 			form_selectable_cell( $oid, $item['oid']);
 			if($item['description']) {
-				print '<td><a href="#" title="<div class=\'header\'>' . $name . '</div><div class=\'content preformatted\'>' . $item['description']. '</div>" class="tooltip">' . $name . '</a></td>';
+				print '<td><a href="#" title="<div class=\'header\'>' . $name . '</div><div class=\'content preformatted\'>' . $item['description'] . '</div>" class="tooltip">' . $name . '</a></td>';
 			}else {
 				print "<td>$name</td>";
 			}

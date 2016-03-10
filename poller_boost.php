@@ -60,7 +60,6 @@ function sig_handler($signo) {
 
 function output_rrd_data($start_time, $force = FALSE) {
 	global $start, $max_run_duration, $config, $debug, $get_memory, $memory_used;
-	global $rrdtool_pipe, $rrdtool_read_pipe;
 
 	include_once($config['base_path'] . '/lib/rrd.php');
 
@@ -95,7 +94,6 @@ function output_rrd_data($start_time, $force = FALSE) {
 
 	$current_time      = date('Y-m-d G:i:s', $start_time);
 	$rrdtool_pipe      = rrd_init();
-	$rrdtool_read_pipe = rrd_init();
 	$runtime_exceeded  = false;
 
 	/* let's set and track memory usage will we */
@@ -141,7 +139,7 @@ function output_rrd_data($start_time, $force = FALSE) {
 		$rows = db_fetch_cell("SELECT count(*) FROM $archive_table");
 
 		if ($rows > 0) {
-			$rrd_updates += boost_process_poller_output(FALSE, '', $current_time);
+			$rrd_updates += boost_process_poller_output('', $rrdtool_pipe, $current_time);
 
 			if ($get_memory) {
 				$cur_memory    = memory_get_usage();
@@ -170,7 +168,6 @@ function output_rrd_data($start_time, $force = FALSE) {
 	}
 
 	rrd_close($rrdtool_pipe);
-	rrd_close($rrdtool_read_pipe);
 
 	/* cleanup  - remove empty arch tables */
 	$tables = db_fetch_assoc("SELECT table_name AS name
