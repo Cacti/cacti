@@ -39,9 +39,75 @@ process_tree_settings();
 /* setup realtime defaults if they are not set */
 initialize_realtime_step_and_window();
 
+function get_matching_nodes() {
+	$my_matches = array();
+	$match = array();
+
+	$matching = db_fetch_assoc("SELECT gti.id, gti.parent, gti.graph_tree_id, IF(gti.title != '', '1', '0') AS node
+		FROM graph_tree_items AS gti 
+		LEFT JOIN host AS h
+		ON h.id=gti.host_id
+		LEFT JOIN graph_templates_graph AS gtg
+		ON gtg.local_graph_id=gti.local_graph_id AND gtg.local_graph_id>0
+		WHERE gtg.title_cache LIKE '%" . get_nfilter_request_var('str') . "%'
+		OR h.description LIKE '%" . get_nfilter_request_var('str') . "%'
+		OR h.hostname LIKE '%" . get_nfilter_request_var('str') . "%'
+		OR gti.title LIKE '%" . get_nfilter_request_var('str') . "%'");
+
+	if (sizeof($matching)) {
+		foreach($matching as $row) {
+			while ($row['parent'] != '0') {
+				$match[] = 'tbranch-' . $row['parent'];
+				$row = db_fetch_row("SELECT id, parent, graph_tree_id FROM graph_tree_items WHERE id=" . $row['parent']);
+			}
+
+			$match[]      = 'tree_anchor-' . $row['graph_tree_id'];
+			$my_matches[] = array_reverse($match);
+			$match        = array();
+		}
+
+		// Now flatten the list of nodes
+		$final_array = array();
+		$level = 0;
+		while (true) {
+			$found = 0;
+			foreach($my_matches as $match) {
+				if (isset($match[$level])) {
+					if ($level == 0) {
+						$final_array[$match[$level]][$match[$level]] = 1;
+					}else{
+						$final_array[$match[0]][$match[$level]] = 1;
+					}
+					$found++;
+				}
+			}
+			$level++;
+
+			if ($found == 0) break;
+		}
+
+		if (sizeof($final_array)) {
+			foreach($final_array as $key => $matches) {
+				foreach($matches as $branch => $dnc) {
+					$fa[] = $branch;
+				}
+			}
+		}
+ 
+		header('Content-Type: application/json; charset=utf-8');
+
+		print json_encode($fa);
+		//print '[' . implode(', ', array_keys($matching)) . ']';
+	}
+}
+
 switch (get_nfilter_request_var('action')) {
 case 'ajax_hosts':
 	get_allowed_ajax_hosts();
+
+	break;
+case 'ajax_search':
+	get_matching_nodes(); exit;
 
 	break;
 case 'save':
