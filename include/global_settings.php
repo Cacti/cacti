@@ -37,6 +37,7 @@ $dir->close();
 $tabs = array(
 	'general' => 'General',
 	'path' => 'Paths',
+	'snmp' => 'Device Defaults',
 	'poller' => 'Poller',
 	'storage' => 'Data Storage',
 	'export' => 'Graph Export',
@@ -234,84 +235,6 @@ $settings = array(
 					)
 				),
 			),
-		'snmp_header' => array(
-			'friendly_name' => 'SNMP Defaults',
-			'method' => 'spacer',
-			'collapsible' => 'true'
-			),
-		'snmp_ver' => array(
-			'friendly_name' => 'SNMP Version',
-			'description' => 'Default SNMP version for all new hosts.',
-			'method' => 'drop_array',
-			'default' => '1',
-			'array' => $snmp_versions,
-			),
-		'snmp_community' => array(
-			'friendly_name' => 'SNMP Community',
-			'description' => 'Default SNMP read community for all new hosts.',
-			'method' => 'textbox',
-			'default' => 'public',
-			'max_length' => '100',
-			),
-		'snmp_username' => array(
-			'friendly_name' => 'SNMP Username (v3)',
-			'description' => 'The SNMP v3 Username for polling hosts.',
-			'method' => 'textbox',
-			'default' => '',
-			'max_length' => '100',
-			),
-		'snmp_password' => array(
-			'friendly_name' => 'SNMP Password (v3)',
-			'description' => 'The SNMP v3 Password for polling hosts.',
-			'method' => 'textbox_password',
-			'default' => '',
-			'max_length' => '100',
-			),
-		'snmp_auth_protocol' => array(
-			'method' => 'drop_array',
-			'friendly_name' => 'SNMP Auth Protocol (v3)',
-			'description' => 'Choose the SNMPv3 Authorization Protocol.',
-			'default' => 'MD5',
-			'array' => $snmp_auth_protocols,
-			),
-		'snmp_priv_passphrase' => array(
-			'method' => 'textbox',
-			'friendly_name' => 'SNMP Privacy Passphrase (v3)',
-			'description' => 'Choose the SNMPv3 Privacy Passphrase.',
-			'default' => '',
-			'max_length' => '200'
-			),
-		'snmp_priv_protocol' => array(
-			'method' => 'drop_array',
-			'friendly_name' => 'SNMP Privacy Protocol (v3)',
-			'description' => 'Choose the SNMPv3 Privacy Protocol.',
-			'default' => 'DES',
-			'array' => $snmp_priv_protocols,
-			),
-		'snmp_timeout' => array(
-			'friendly_name' => 'SNMP Timeout',
-			'description' => 'Default SNMP timeout in milli-seconds.',
-			'method' => 'textbox',
-			'default' => '500',
-			'max_length' => '10',
-			'size' => '5'
-			),
-		'snmp_port' => array(
-			'friendly_name' => 'SNMP Port Number',
-			'description' => 'Default UDP port to be used for SNMP Calls.  Typically 161.',
-			'method' => 'textbox',
-			'default' => '161',
-			'max_length' => '10',
-			'size' => '5'
-			),
-		'snmp_retries' => array(
-			'friendly_name' => 'SNMP Retries',
-			'description' => 'The number times the SNMP poller will attempt to reach the host before failing.',
-			'method' => 'textbox',
-			'default' => '3',
-			'max_length' => '10',
-			'size' => '5'
-			),
 		'other_header' => array(
 			'friendly_name' => 'Other Defaults',
 			'collapsible' => 'true',
@@ -373,6 +296,12 @@ $settings = array(
 			'default' => '0',
 			'array' => array('0' => 'Simple', '1' => 'Advanced')
 			),
+		'hide_form_description' => array(
+			'friendly_name' => 'Show Form/Setting Help Inline',
+			'description' => 'When checked, Form and Setting Help will be show inline.  Otherwise it will be presented when hovering over the help button.',
+			'default' => 'on',
+			'method' => 'checkbox',
+			),
 		'deletion_verification' => array(
 			'friendly_name' => 'Deletion Verification',
 			'description' => 'Prompt user before item deletion.',
@@ -405,6 +334,150 @@ $settings = array(
 				'Invoking Rules manually will still be possible.',
 			'default' => '',
 			),
+		),
+	'snmp' => array(
+		'snmp_header' => array(
+			'friendly_name' => 'SNMP Defaults',
+			'method' => 'spacer',
+			'collapsible' => 'true'
+			),
+		'snmp_ver' => array(
+			'friendly_name' => 'Version',
+			'description' => 'Default SNMP version for all new hosts.',
+			'method' => 'drop_array',
+			'default' => '1',
+			'array' => $snmp_versions,
+			),
+		'snmp_community' => array(
+			'friendly_name' => 'Community',
+			'description' => 'Default SNMP read community for all new hosts.',
+			'method' => 'textbox',
+			'default' => 'public',
+			'max_length' => '100',
+			),
+		'snmp_username' => array(
+			'friendly_name' => 'Username (v3)',
+			'description' => 'The SNMP v3 Username for polling hosts.',
+			'method' => 'textbox',
+			'default' => '',
+			'max_length' => '100',
+			),
+		'snmp_password' => array(
+			'friendly_name' => 'Password (v3)',
+			'description' => 'The SNMP v3 Password for polling hosts.',
+			'method' => 'textbox_password',
+			'default' => '',
+			'max_length' => '100',
+			),
+		'snmp_auth_protocol' => array(
+			'method' => 'drop_array',
+			'friendly_name' => 'Auth Protocol (v3)',
+			'description' => 'Choose the SNMPv3 Authorization Protocol.',
+			'default' => 'MD5',
+			'array' => $snmp_auth_protocols,
+			),
+		'snmp_priv_passphrase' => array(
+			'method' => 'textbox',
+			'friendly_name' => 'Privacy Passphrase (v3)',
+			'description' => 'Choose the SNMPv3 Privacy Passphrase.',
+			'default' => '',
+			'max_length' => '200'
+			),
+		'snmp_priv_protocol' => array(
+			'method' => 'drop_array',
+			'friendly_name' => 'Privacy Protocol (v3)',
+			'description' => 'Choose the SNMPv3 Privacy Protocol.',
+			'default' => 'DES',
+			'array' => $snmp_priv_protocols,
+			),
+		'snmp_timeout' => array(
+			'friendly_name' => 'Timeout',
+			'description' => 'Default SNMP timeout in milli-seconds.',
+			'method' => 'textbox',
+			'default' => '500',
+			'max_length' => '10',
+			'size' => '5'
+			),
+		'snmp_port' => array(
+			'friendly_name' => 'Port Number',
+			'description' => 'Default UDP port to be used for SNMP Calls.  Typically 161.',
+			'method' => 'textbox',
+			'default' => '161',
+			'max_length' => '10',
+			'size' => '5'
+			),
+		'snmp_retries' => array(
+			'friendly_name' => 'Retries',
+			'description' => 'The number times the SNMP poller will attempt to reach the host before failing.',
+			'method' => 'textbox',
+			'default' => '3',
+			'max_length' => '10',
+			'size' => '5'
+			),
+		'availability_header' => array(
+			'friendly_name' => 'Availability/Reachability',
+			'method' => 'spacer',
+			'collapsible' => 'true'
+			),
+		'availability_method' => array(
+			'friendly_name' => 'Downed Device Detection',
+			'description' => 'The method Cacti will use to determine if a host is available for polling.  <br><i>NOTE: It is recommended that, at a minimum, SNMP always be selected.</i>',
+			'method' => 'drop_array',
+			'default' => AVAIL_SNMP,
+			'array' => $availability_options,
+			),
+		'ping_method' => array(
+			'friendly_name' => 'Ping Type',
+			'description' => 'The type of ping packet to sent.  <br><i>NOTE: ICMP requires that the Cacti Service ID have root privilages in Unix.</i>',
+			'method' => 'drop_array',
+			'default' => PING_UDP,
+			'array' => $ping_methods,
+			),
+		'ping_port' => array(
+			'friendly_name' => 'Ping Port',
+			'description' => 'When choosing either TCP or UDP Ping, which port should be checked for availability of the host prior to polling.',
+			'method' => 'textbox',
+			'default' => '23',
+			'max_length' => '10',
+			'size' => '5'
+			),
+		'ping_timeout' => array(
+			'friendly_name' => 'Ping Timeout Value',
+			'description' => 'The timeout value to use for host ICMP and UDP pinging.  This host SNMP timeout value applies for SNMP pings.',
+			'method' => 'textbox',
+			'default' => '400',
+			'max_length' => '10',
+			'size' => '5'
+			),
+		'ping_retries' => array(
+			'friendly_name' => 'Ping Retry Count',
+			'description' => 'The number of times Cacti will attempt to ping a host before failing.',
+			'method' => 'textbox',
+			'default' => '1',
+			'max_length' => '10',
+			'size' => '5'
+			),
+		'updown_header' => array(
+			'friendly_name' => 'Up/Down Settings',
+			'collapsible' => 'true',
+			'method' => 'spacer',
+			),
+		'ping_failure_count' => array(
+			'friendly_name' => 'Failure Count',
+			'description' => 'The number of polling intervals a host must be down before logging an error and reporting host as down.',
+			'method' => 'textbox',
+			'default' => '2',
+			'max_length' => '10',
+			'size' => '5'
+			),
+		'ping_recovery_count' => array(
+			'friendly_name' => 'Recovery Count',
+			'description' => 'The number of polling intervals a host must remain up before returning host to an up status and issuing a notice.',
+			'method' => 'textbox',
+			'default' => '3',
+			'max_length' => '10',
+			'size' => '5'
+			)
 		),
 	'export' => array(
 		'export_hdr_general' => array(
@@ -908,70 +981,6 @@ $settings = array(
 			'max_length' => '10',
 			'size' => '5'
 			),
-		'availability_header' => array(
-			'friendly_name' => 'Device Availability Settings',
-			'method' => 'spacer',
-			'collapsible' => 'true'
-			),
-		'availability_method' => array(
-			'friendly_name' => 'Downed Device Detection',
-			'description' => 'The method Cacti will use to determine if a host is available for polling.  <br><i>NOTE: It is recommended that, at a minimum, SNMP always be selected.</i>',
-			'method' => 'drop_array',
-			'default' => AVAIL_SNMP,
-			'array' => $availability_options,
-			),
-		'ping_method' => array(
-			'friendly_name' => 'Ping Type',
-			'description' => 'The type of ping packet to sent.  <br><i>NOTE: ICMP requires that the Cacti Service ID have root privilages in Unix.</i>',
-			'method' => 'drop_array',
-			'default' => PING_UDP,
-			'array' => $ping_methods,
-			),
-		'ping_port' => array(
-			'friendly_name' => 'Ping Port',
-			'description' => 'When choosing either TCP or UDP Ping, which port should be checked for availability of the host prior to polling.',
-			'method' => 'textbox',
-			'default' => '23',
-			'max_length' => '10',
-			'size' => '5'
-			),
-		'ping_timeout' => array(
-			'friendly_name' => 'Ping Timeout Value',
-			'description' => 'The timeout value to use for host ICMP and UDP pinging.  This host SNMP timeout value applies for SNMP pings.',
-			'method' => 'textbox',
-			'default' => '400',
-			'max_length' => '10',
-			'size' => '5'
-			),
-		'ping_retries' => array(
-			'friendly_name' => 'Ping Retry Count',
-			'description' => 'The number of times Cacti will attempt to ping a host before failing.',
-			'method' => 'textbox',
-			'default' => '1',
-			'max_length' => '10',
-			'size' => '5'
-			),
-		'updown_header' => array(
-			'friendly_name' => 'Device Up/Down Settings',
-			'collapsible' => 'true',
-			'method' => 'spacer',
-			),
-		'ping_failure_count' => array(
-			'friendly_name' => 'Failure Count',
-			'description' => 'The number of polling intervals a host must be down before logging an error and reporting host as down.',
-			'method' => 'textbox',
-			'default' => '2',
-			'max_length' => '10',
-			'size' => '5'
-			),
-		'ping_recovery_count' => array(
-			'friendly_name' => 'Recovery Count',
-			'description' => 'The number of polling intervals a host must remain up before returning host to an up status and issuing a notice.',
-			'method' => 'textbox',
-			'default' => '3',
-			'max_length' => '10',
-			'size' => '5'
-			)
 		),
 	'authentication' => array(
 		'auth_header' => array(
