@@ -540,7 +540,6 @@ function cdef_edit() {
 
 		$display_text = array(
 			array('display' => 'Item', 'align' => 'left'), 
-			array('display' => '', 'align' => 'center'), 
 			array('display' => 'Item Value', 'align' => 'left')
 		); 
 

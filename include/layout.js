@@ -454,6 +454,22 @@ function applySkin() {
 		}
 	});
 
+	$(document).tooltip({
+		items: 'div.cactiTooltipHint, span.cactiTooltipHint, a',
+		hide: { effect: 'fadeOut', duration: 500 },
+		content: function() {
+			var element = $(this);
+
+			if (element.is('div')) {
+				var text = $(this).find('span').html();
+			}
+			if (element.is('span') || element.is('a')) {
+				var text = $(this).attr('title');
+			}
+			return text;
+		}
+	});
+
 	// Don't show the message container until all GUI interaction is done
 	$('#message_container').delay(2000).slideUp('fast');
 	$('#main').show();

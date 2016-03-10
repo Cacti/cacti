@@ -98,25 +98,6 @@ function draw_edit_form($array) {
 			$i++;
 		}
 	}
-
-	if (read_config_option('hide_form_description') == '') {
-		?>
-		<script type='text/javascript'>
-		$(function() { 
-			$('.cactiTooltipHint').tooltip({ 
-				tooltipClass: 'cactiTooltip', 
-				items: 'div',
-				hide: { effect: 'fadeOut', duration: 500 },
-				content: function() { 
-					var element = $(this);
-					var text = $(this).find('span').html();
-					return text;
-				} 
-			}) 
-		});
-		</script>
-		<?php
-	}
 }
 
 /* draw_edit_control - draws a single control to be used on an html edit form
@@ -462,13 +443,13 @@ function form_filepath_box($form_name, $form_previous_value, $form_default_value
 	}
 
 	if (is_file(trim($form_previous_value))) {
-		$extra_data = "<span style='color:green'><br>[OK: FILE FOUND]</span>";
+		$extra_data = "<span class='cactiTooltipHint fa fa-check-circle' style='padding:5px;font-size:16px;color:green' title='File Found'></span>";
 	}else if (is_dir(trim($form_previous_value))) {
-		$extra_data = "<span style='color:red'><br>[ERROR: IS DIR]</span>";
+		$extra_data = "<span class='cactiTooltipHint fa fa-times-circle' style='padding:5px;font-size:16px;color:red' title='Path is a Directory and not a File'></span>";
 	}else if (strlen($form_previous_value) == 0) {
 		$extra_data = "";
 	}else{
-		$extra_data = "<span style='color:red'><br>[ERROR: FILE NOT FOUND]</span>";
+		$extra_data = "<span class='cactiTooltipHint fa fa-times-circle' style='padding:5px;font-size:16px;color:red' title='File is Not Found'></span>";
 	}
 
 	print " id='$form_name' placeholder='Enter a valid file path' name='$form_name' size='$form_size'" . (!empty($form_max_length) ? " maxlength='$form_max_length'" : "") . " value='" . htmlspecialchars($form_previous_value, ENT_QUOTES) . "'>" . $extra_data;
@@ -507,13 +488,13 @@ function form_dirpath_box($form_name, $form_previous_value, $form_default_value,
 	}
 
 	if (is_dir($form_previous_value)) {
-		$extra_data = "<span style='color:green'><br>[OK: DIR FOUND]";
+		$extra_data = "<span class='cactiTooltipHint fa fa-check-circle' style='padding:5px;font-size:16px;color:green' title='Directory Found'></span>";
 	}else if (is_file($form_previous_value)) {
-		$extra_data = "<span style='color:red'><br>[ERROR: IS FILE]";
+		$extra_data = "<span class='cactiTooltipHint fa fa-times-circle' style='padding:5px;font-size:16px;color:red' title='Path is a File and not a Directory'></span>";
 	}else if (strlen($form_previous_value) == 0) {
 		$extra_data = "";
 	}else{
-		$extra_data = "<span style='color:red'><br>[ERROR: DIR NOT FOUND]";
+		$extra_data = "<span class='cactiTooltipHint fa fa-times-circle' style='padding:5px;font-size:16px;color:red' title='Directory is Not found'></span>";
 	}
 
 	print " id='$form_name' name='$form_name' placeholder='Enter a valid directory path' size='$form_size'" . (!empty($form_max_length) ? " maxlength='$form_max_length'" : "") . " value='" . htmlspecialchars($form_previous_value, ENT_QUOTES) . "'>" . $extra_data;
