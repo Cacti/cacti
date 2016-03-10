@@ -789,12 +789,12 @@ function api_tree_sort_branch($leaf_id, $tree_id = 0, $lock = true) {
 		$order_by = 'ORDER BY position';
 	}
 
-	$sort_array = array_rekey(db_fetch_assoc_prepared('SELECT title, id, sort_children_type
+	$sort_array = array_rekey(db_fetch_assoc_prepared('SELECT id, title
 		FROM graph_tree_items AS gti 
 		WHERE parent = ? 
 		AND graph_tree_id = ?
 		AND local_graph_id = 0 
-		AND host_id = 0 ' . $order_by, array($parent, $tree_id)), 'id', array('title', 'sort_children_type'));
+		AND host_id = 0 ' . $order_by, array($parent, $tree_id)), 'id', 'title');
 
 	if (sizeof($sort_array)) {
 		if ($sort_style == TREE_ORDERING_NUMERIC) {
@@ -810,7 +810,8 @@ function api_tree_sort_branch($leaf_id, $tree_id = 0, $lock = true) {
 		}
 
 		foreach($sort_array as $id => $element) {
-			if ($element['sort_children_type'] == TREE_ORDERING_INHERIT) {
+			$sort = db_fetch_cell_prepared('SELECT sort_children_type FROM graph_tree_items WHERE id = ?', array($id));
+			if ($sort == TREE_ORDERING_INHERIT) {
 				$first_child = db_fetch_cell_prepared('SELECT id FROM graph_tree_items WHERE parent = ? ORDER BY position LIMIT 1', array($id));
 				if (!empty($first_child)) {
 					$level++;
