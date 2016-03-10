@@ -2253,6 +2253,36 @@ function draw_navigation_text($type = 'url') {
 			'url' => 'utilities.php', 
 			'level' => '2'
 			),
+		'vdef.php:' => array(
+			'title' => 'VDEFs', 
+			'mapping' => 'index.php:', 
+			'url' => 'vdef.php', 
+			'level' => '1'
+			),
+		'vdef.php:actions' => array(
+			'title' => 'Actions', 
+			'mapping' => 'index.php:,vdef.php:', 
+			'url' => 'vdef.php', 
+			'level' => '2'
+			),
+		'vdef.php:edit' => array(
+			'title' => '(Edit)', 
+			'mapping' => 'index.php:,vdef.php:', 
+			'url' => 'vdef.php', 
+			'level' => '2'
+			),
+		'vdef.php:remove' => array(
+			'title' => '(Remove)', 
+			'mapping' => 'index.php:,vdef.php:', 
+			'url' => 'vdef.php', 
+			'level' => '2'
+			),
+		'vdef.php:item_edit' => array(
+			'title' => 'VDEF Items', 
+			'mapping' => 'index.php:,vdef.php:,vdef.php:edit', 
+			'url' => '', 
+			'level' => '3'
+			),
 		'managers.php:' => array(
 			'title' => 'View SNMP Notification Receivers', 
 			'mapping' => 'index.php:,utilities.php:', 
@@ -2801,6 +2831,25 @@ function get_hash_gprint($gprint_id) {
 	}
 }
 
+/**
+ * returns the current unique hash for a vdef
+ * @param $graph_template_id - (int) the ID of the vdef to return a hash for
+ * @param $sub_type (optional) return the hash for a particlar sub-type of this type
+ * @returns - a 128-bit, hexadecimal hash */
+function get_hash_vdef($vdef_id, $sub_type = "vdef") {
+	if ($sub_type == "vdef") {
+		$hash = db_fetch_cell_prepared('SELECT hash FROM vdef WHERE id = ?', array($vdef_id));
+	}elseif ($sub_type == "vdef_item") {
+		$hash = db_fetch_cell_prepared('SELECT hash FROM vdef_items WHERE id = ?', array($vdef_id));
+	}
+
+	if (preg_match('/[a-fA-F0-9]{32}/', $hash)) {
+		return $hash;
+	}else{
+		return generate_hash();
+	}
+}
+
 /* get_hash_host_template - returns the current unique hash for a gprint preset
    @arg $host_template_id - (int) the ID of the host template to return a hash for
    @returns - a 128-bit, hexadecimal hash */
@@ -2851,7 +2900,7 @@ function get_hash_round_robin_archive($rra_id) {
 
 /* get_hash_version - returns the item type and cacti version in a hash format
    @arg $type - the type of item to represent ('graph_template','data_template',
-     'data_input_method','cdef','gprint_preset','data_query','host_template')
+     'data_input_method','cdef','vdef','gprint_preset','data_query','host_template')
    @returns - a 24-bit hexadecimal hash (8-bits for type, 16-bits for version) */
 function get_hash_version($type) {
 	global $hash_type_codes, $hash_version_codes, $config;

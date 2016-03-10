@@ -55,7 +55,9 @@ function draw_nontemplated_fields_graph($graph_template_id, &$values_array, $fie
 		$form_array[$form_field_name]["form_id"] = (isset($values_array["id"]) ? $values_array["id"] : "0");
 		unset($form_array[$form_field_name]["default"]);
 
-		if ($graph_template{"t_" . $field_name} != "on") {
+		if ($field_array['method'] == 'spacer') {
+			unset($form_array[$form_field_name]);
+		}elseif (isset($graph_template["t_" . $field_name]) && $graph_template["t_" . $field_name] != "on") {
 			if ($include_hidden_fields == true) {
 				$form_array[$form_field_name]["method"] = "hidden";
 			}else{
@@ -69,7 +71,7 @@ function draw_nontemplated_fields_graph($graph_template_id, &$values_array, $fie
 			}
 		}else{
 			if (($draw_any_items == false) && ($header_title != "")) {
-				print "<tr><td colspan='2' class='tableSubHeaderColumn'>$header_title</td></tr>\n";
+				print "<tr class='tableHeader'><td colspan='2' class='tableSubHeaderColumn'>$header_title</td></tr>\n";
 			}
 
 			$draw_any_items = true;

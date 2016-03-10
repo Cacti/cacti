@@ -199,6 +199,31 @@ $cdef_functions = array(1 =>
 	'TIME',
 	'LTIME');
 
+$vdef_functions = array(1 =>
+	'MAXIMUM',
+	'MINIMUM',
+	'AVERAGE',
+	'STDEV',
+	'LAST',
+	'FIRST',
+	'TOTAL',
+	'PERCENT',
+	'PERCENTNAN',
+	'LSLSLOPE',
+	'LSLINT',
+	'LSLCORREL'
+);
+
+$vdef_item_types = array(
+	CVDEF_ITEM_TYPE_FUNCTION        => 'Function',
+	CVDEF_ITEM_TYPE_SPEC_DS         => 'Special Data Source',
+	CVDEF_ITEM_TYPE_STRING          => 'Custom String',
+);
+
+$custom_vdef_data_source_types = array( // this may change as soon as RRDTool supports math in VDEF, until then only reference to CDEF may help
+	'CURRENT_DATA_SOURCE' => 'Current Graph Item Data Source',
+);
+
 $input_types = array(
 	DATA_INPUT_TYPE_SNMP => 'SNMP', // Action 0:
 	DATA_INPUT_TYPE_SNMP_QUERY => 'SNMP Query',
@@ -230,17 +255,61 @@ $data_source_types = array(1 =>
 	'DERIVE',
 	'ABSOLUTE');
 
+$rrd_font_render_modes = array(
+	RRD_FONT_RENDER_NORMAL  => 'Normal',
+	RRD_FONT_RENDER_LIGHT   => 'Light',
+	RRD_FONT_RENDER_MONO    => 'Mono',
+);
+
+$rrd_graph_render_modes = array(
+	RRD_GRAPH_RENDER_NORMAL => 'Normal',
+	RRD_GRAPH_RENDER_MONO   => 'Mono',
+);
+
+$rrd_legend_position = array(
+	RRD_LEGEND_POS_NORTH    => 'North',
+	RRD_LEGEND_POS_SOUTH    => 'South',
+	RRD_LEGEND_POS_WEST     => 'West',
+	RRD_LEGEND_POS_EAST     => 'East',
+);
+
+$rrd_textalign = array(
+	RRD_ALIGN_LEFT          => 'Left',
+	RRD_ALIGN_RIGHT         => 'Right',
+	RRD_ALIGN_JUSTIFIED     => 'Justified',
+	RRD_ALIGN_CENTER        => 'Center',
+);
+
+$rrd_legend_direction = array(
+	RRD_LEGEND_DIR_TOPDOWN  => 'Top -> Down',
+	RRD_LEGEND_DIR_BOTTOMUP => 'Bottom -> Up',
+);
+
+$rrd_axis_formatters = array(
+	'numeric'   => 'Numeric',
+	'timestamp' => 'Timestamp',
+	'duration'  => 'Duration'
+);
+
 $graph_item_types = array(
-	GRAPH_ITEM_TYPE_COMMENT => 'COMMENT',
-	GRAPH_ITEM_TYPE_HRULE   => 'HRULE',
-	GRAPH_ITEM_TYPE_VRULE   => 'VRULE',
-	GRAPH_ITEM_TYPE_LINE1   => 'LINE1',
-	GRAPH_ITEM_TYPE_LINE2   => 'LINE2',
-	GRAPH_ITEM_TYPE_LINE3   => 'LINE3',
-	GRAPH_ITEM_TYPE_AREA    => 'AREA',
-	GRAPH_ITEM_TYPE_STACK   => 'STACK',
-	GRAPH_ITEM_TYPE_GPRINT  => 'GPRINT',
-	GRAPH_ITEM_TYPE_LEGEND  => 'LEGEND');
+	GRAPH_ITEM_TYPE_COMMENT         => 'COMMENT',
+	GRAPH_ITEM_TYPE_HRULE           => 'HRULE',
+	GRAPH_ITEM_TYPE_VRULE           => 'VRULE',
+	GRAPH_ITEM_TYPE_LINE1           => 'LINE1',
+	GRAPH_ITEM_TYPE_LINE2           => 'LINE2',
+	GRAPH_ITEM_TYPE_LINE3           => 'LINE3',
+	GRAPH_ITEM_TYPE_AREA            => 'AREA',
+	GRAPH_ITEM_TYPE_STACK           => 'AREA:STACK',
+	GRAPH_ITEM_TYPE_GPRINT          => 'GPRINT',
+	GRAPH_ITEM_TYPE_GPRINT_AVERAGE  => 'GPRINT:AVERAGE',
+	GRAPH_ITEM_TYPE_GPRINT_LAST     => 'GPRINT:LAST',
+	GRAPH_ITEM_TYPE_GPRINT_MAX      => 'GPRINT:MAX',
+	GRAPH_ITEM_TYPE_GPRINT_MIN      => 'GPRINT:MIN',
+	GRAPH_ITEM_TYPE_LEGEND          => 'LEGEND',
+	GRAPH_ITEM_TYPE_LINESTACK       => 'LINE:STACK',
+	GRAPH_ITEM_TYPE_TIC             => 'TICK',
+	GRAPH_ITEM_TYPE_TEXTALIGN       => 'TEXTALIGN',
+);
 
 $image_types = array(1 => 'PNG', 3 => 'SVG');
 
@@ -356,11 +425,11 @@ $rrdtool_versions = array(
 	'rrd-1.5.x' => 'RRDTool 1.5.x');
 
 $cdef_item_types = array(
-	1 => 'Function',
-	2 => 'Operator',
-	4 => 'Special Data Source',
-	5 => 'Another CDEF',
-	6 => 'Custom String');
+	CVDEF_ITEM_TYPE_FUNCTION => 'Function',
+	CVDEF_ITEM_TYPE_OPERATOR => 'Operator',
+	CVDEF_ITEM_TYPE_SPEC_DS  => 'Special Data Source',
+	CVDEF_ITEM_TYPE_CDEF     => 'Another CDEF',
+	CVDEF_ITEM_TYPE_STRING   => 'Custom String');
 
 $graph_color_alpha = array(
 	'00' => '  0%',
@@ -438,6 +507,7 @@ $menu = array(
 		),
 	'Presets' => array(
 		'cdef.php' => 'CDEFs',
+		'vdef.php' => 'VDEFs',
 		'color.php' => 'Colors',
 		'gprint_presets.php' => 'GPRINTs',
 		'rra.php' => 'RRAs'
@@ -537,7 +607,7 @@ $user_auth_realms = array(
 	4  => 'Graph Trees',
 
 	9  => 'RRA Presets',
-	14 => 'Colors/GPrings/CDEFs',
+	14 => 'Colors/GPrints/CDEFs/VDEFs',
 
 	10 => 'Graph Templates',
 	11 => 'Data Templates',
@@ -596,6 +666,7 @@ $user_auth_realm_filenames = array(
 	'user_domains.php' => 1,
 	'user_group_admin.php' => 1,
 	'utilities.php' => 15,
+	'vdef.php' => 14,
 	'smtp_servers.php' => 8,
 	'email_templates.php' => 8,
 	'event_queue.php' => 8,
@@ -622,6 +693,8 @@ $hash_type_codes = array(
 	'round_robin_archive' => '15',
 	'cdef' => '05',
 	'cdef_item' => '14',
+	'vdef' => '18',
+	'vdef_item' => '19',
 	'gprint_preset' => '06',
 	'data_input_method' => '03',
 	'data_input_field' => '07',
@@ -684,7 +757,9 @@ $hash_type_names = array(
 	'graph_template_input' => 'Graph Template Input',
 	'data_query' => 'Data Query',
 	'host_template' => 'Device Template',
-	'round_robin_archive' => 'Round Robin Archive');
+	'round_robin_archive' => 'Round Robin Archive',
+	'vdef' => 'VDEF',
+	'vdef_item' => 'VDEF Item');
 
 $host_struc = array(
 	'host_template_id',

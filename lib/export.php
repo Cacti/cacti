@@ -25,28 +25,30 @@
 function graph_template_to_xml($graph_template_id) {
 	global $struct_graph, $fields_graph_template_input_edit, $struct_graph_item, $export_errors;
 
-	$hash["graph_template"] = get_hash_version("graph_template") . get_hash_graph_template($graph_template_id);
-	$xml_text = "";
+	$hash['graph_template'] = get_hash_version('graph_template') . get_hash_graph_template($graph_template_id);
+	$xml_text = '';
 
-	$graph_template = db_fetch_row("SELECT id,name from graph_templates WHERE id=$graph_template_id");
+	$graph_template = db_fetch_row("SELECT id, name from graph_templates WHERE id=$graph_template_id");
 	$graph_template_graph = db_fetch_row("SELECT * from graph_templates_graph WHERE graph_template_id=$graph_template_id AND local_graph_id=0");
 	$graph_template_items = db_fetch_assoc("SELECT * from graph_templates_item WHERE graph_template_id=$graph_template_id AND local_graph_id=0 ORDER BY sequence");
 	$graph_template_inputs = db_fetch_assoc("SELECT * from graph_template_input WHERE graph_template_id=$graph_template_id");
 
-	if ((empty($graph_template["id"])) || (empty($graph_template_graph["id"]))) {
+	if ((empty($graph_template['id'])) || (empty($graph_template_graph['id']))) {
 		$export_errors++;
 		raise_message(30);
-		cacti_log("ERROR: Invalid Graph Template found in Database.  Please run database repair script to identify and/or correct.", false, "WEBUI");
+		cacti_log('ERROR: Invalid Graph Template found in Database.  Please run database repair script to identify and/or correct.', false, 'WEBUI');
 		return;
 	}
 
-	$xml_text .= "<hash_" . $hash["graph_template"] . ">\n\t<name>" . xml_character_encode($graph_template["name"]) . "</name>\n\t<graph>\n";
+	$xml_text .= '<hash_' . $hash['graph_template'] . ">\n\t<name>" . xml_character_encode($graph_template['name']) . "</name>\n\t<graph>\n";
 
 	/* XML Branch: <graph> */
 	reset($struct_graph);
 	while (list($field_name, $field_array) = each($struct_graph)) {
-		$xml_text .= "\t\t<t_$field_name>" . xml_character_encode($graph_template_graph{"t_" . $field_name}) . "</t_$field_name>\n";
-		$xml_text .= "\t\t<$field_name>" . xml_character_encode($graph_template_graph{$field_name}) . "</$field_name>\n";
+		if ($field_array['method'] != 'spacer') {
+			$xml_text .= "\t\t<t_$field_name>" . xml_character_encode($graph_template_graph{'t_' . $field_name}) . "</t_$field_name>\n";
+			$xml_text .= "\t\t<$field_name>" . xml_character_encode($graph_template_graph{$field_name}) . "</$field_name>\n";
+		}
 	}
 
 	$xml_text .= "\t</graph>\n";
@@ -58,26 +60,28 @@ function graph_template_to_xml($graph_template_id) {
 	$i = 0;
 	if (sizeof($graph_template_items) > 0) {
 	foreach ($graph_template_items as $item) {
-		$hash["graph_template_item"] = get_hash_version("graph_template_item") . get_hash_graph_template($item["id"], "graph_template_item");
+		$hash['graph_template_item'] = get_hash_version('graph_template_item') . get_hash_graph_template($item['id'], 'graph_template_item');
 
-		$xml_text .= "\t\t<hash_" . $hash["graph_template_item"] . ">\n";
+		$xml_text .= "\t\t<hash_" . $hash['graph_template_item'] . ">\n";
 
 		reset($struct_graph_item);
 		while (list($field_name, $field_array) = each($struct_graph_item)) {
-			if (($field_name == "task_item_id") && (!empty($item{$field_name}))) {
-				$xml_text .= "\t\t\t<$field_name>hash_" . get_hash_version("data_template_item") . get_hash_data_template($item{$field_name}, "data_template_item") . "</$field_name>\n";
-			}elseif (($field_name == "cdef_id") && (!empty($item{$field_name}))) {
-				$xml_text .= "\t\t\t<$field_name>hash_" . get_hash_version("cdef") . get_hash_cdef($item{$field_name}) . "</$field_name>\n";
-			}elseif (($field_name == "gprint_id") && (!empty($item{$field_name}))) {
-				$xml_text .= "\t\t\t<$field_name>hash_" . get_hash_version("gprint_preset") . get_hash_gprint($item{$field_name}) . "</$field_name>\n";
-			}elseif (($field_name == "color_id") && (!empty($item{$field_name}))) {
-				$xml_text .= "\t\t\t<$field_name>" . db_fetch_cell("SELECT hex from colors WHERE id=" . $item{$field_name}) . "</$field_name>\n";
+			if (($field_name == 'task_item_id') && (!empty($item{$field_name}))) {
+				$xml_text .= "\t\t\t<$field_name>hash_" . get_hash_version('data_template_item') . get_hash_data_template($item{$field_name}, 'data_template_item') . "</$field_name>\n";
+			}elseif (($field_name == 'cdef_id') && (!empty($item{$field_name}))) {
+				$xml_text .= "\t\t\t<$field_name>hash_" . get_hash_version('cdef') . get_hash_cdef($item{$field_name}) . "</$field_name>\n";
+			}elseif (($field_name == 'vdef_id') && (!empty($item{$field_name}))) {
+				$xml_text .= "\t\t\t<$field_name>hash_" . get_hash_version('vdef') . get_hash_vdef($item{$field_name}) . "</$field_name>\n";
+			}elseif (($field_name == 'gprint_id') && (!empty($item{$field_name}))) {
+				$xml_text .= "\t\t\t<$field_name>hash_" . get_hash_version('gprint_preset') . get_hash_gprint($item{$field_name}) . "</$field_name>\n";
+			}elseif (($field_name == 'color_id') && (!empty($item{$field_name}))) {
+				$xml_text .= "\t\t\t<$field_name>" . db_fetch_cell('SELECT hex from colors WHERE id=' . $item{$field_name}) . "</$field_name>\n";
 			}else{
 				$xml_text .= "\t\t\t<$field_name>" . xml_character_encode($item{$field_name}) . "</$field_name>\n";
 			}
 		}
 
-		$xml_text .= "\t\t</hash_" . $hash["graph_template_item"] . ">\n";
+		$xml_text .= "\t\t</hash_" . $hash['graph_template_item'] . ">\n";
 
 		$i++;
 	}
@@ -92,28 +96,28 @@ function graph_template_to_xml($graph_template_id) {
 	$i = 0;
 	if (sizeof($graph_template_inputs) > 0) {
 	foreach ($graph_template_inputs as $item) {
-		$hash["graph_template_input"] = get_hash_version("graph_template_input") . get_hash_graph_template($item["id"], "graph_template_input");
+		$hash['graph_template_input'] = get_hash_version('graph_template_input') . get_hash_graph_template($item['id'], 'graph_template_input');
 
-		$xml_text .= "\t\t<hash_" . $hash["graph_template_input"] . ">\n";
+		$xml_text .= "\t\t<hash_" . $hash['graph_template_input'] . ">\n";
 
 		reset($fields_graph_template_input_edit);
 		while (list($field_name, $field_array) = each($fields_graph_template_input_edit)) {
-			if (($field_array["method"] != "hidden_zero") && ($field_array["method"] != "hidden")) {
+			if (($field_array['method'] != 'hidden_zero') && ($field_array['method'] != 'hidden')) {
 				$xml_text .= "\t\t\t<$field_name>" . xml_character_encode($item{$field_name}) . "</$field_name>\n";
 			}
 		}
 
-		$graph_template_input_items = db_fetch_assoc("SELECT graph_template_item_id from graph_template_input_defs WHERE graph_template_input_id=" . $item["id"]);
+		$graph_template_input_items = db_fetch_assoc('SELECT graph_template_item_id from graph_template_input_defs WHERE graph_template_input_id=' . $item['id']);
 
 		$xml_text .= "\t\t\t<items>";
 
 		$j = 0;
 		if (sizeof($graph_template_input_items) > 0) {
 		foreach ($graph_template_input_items as $item2) {
-			$xml_text .= "hash_" . get_hash_version("graph_template") . get_hash_graph_template($item2["graph_template_item_id"], "graph_template_item");
+			$xml_text .= 'hash_' . get_hash_version('graph_template') . get_hash_graph_template($item2['graph_template_item_id'], 'graph_template_item');
 
 			if (($j+1) < sizeof($graph_template_input_items)) {
-				$xml_text .= "|";
+				$xml_text .= '|';
 			}
 
 			$j++;
@@ -121,14 +125,14 @@ function graph_template_to_xml($graph_template_id) {
 		}
 
 		$xml_text .= "</items>\n";
-		$xml_text .= "\t\t</hash_" . $hash["graph_template_input"] . ">\n";
+		$xml_text .= "\t\t</hash_" . $hash['graph_template_input'] . ">\n";
 
 		$i++;
 	}
 	}
 
 	$xml_text .= "\t</inputs>\n";
-	$xml_text .= "</hash_" . $hash["graph_template"] . ">";
+	$xml_text .= '</hash_' . $hash['graph_template'] . '>';
 
 	return $xml_text;
 }
@@ -136,33 +140,33 @@ function graph_template_to_xml($graph_template_id) {
 function data_template_to_xml($data_template_id) {
 	global $struct_data_source, $struct_data_source_item, $export_errors;
 
-	$hash["data_template"] = get_hash_version("data_template") . get_hash_data_template($data_template_id);
-	$xml_text = "";
+	$hash['data_template'] = get_hash_version('data_template') . get_hash_data_template($data_template_id);
+	$xml_text = '';
 
 	$data_template = db_fetch_row("SELECT id,name from data_template WHERE id=$data_template_id");
 	$data_template_data = db_fetch_row("SELECT * from data_template_data WHERE data_template_id=$data_template_id AND local_data_id=0");
 	$data_template_rrd = db_fetch_assoc("SELECT * from data_template_rrd WHERE data_template_id=$data_template_id AND local_data_id=0");
-	$data_template_data_rra = db_fetch_assoc("SELECT * from data_template_data_rra WHERE data_template_data_id=" . $data_template_data["id"]);
-	$data_input_data = db_fetch_assoc("SELECT * from data_input_data WHERE data_template_data_id=" . $data_template_data["id"]);
+	$data_template_data_rra = db_fetch_assoc("SELECT * from data_template_data_rra WHERE data_template_data_id=" . $data_template_data['id']);
+	$data_input_data = db_fetch_assoc("SELECT * from data_input_data WHERE data_template_data_id=" . $data_template_data['id']);
 
-	if ((empty($data_template["id"])) || (empty($data_template_data["id"]))) {
+	if ((empty($data_template['id'])) || (empty($data_template_data['id']))) {
 		$export_errors++;
 		raise_message(27);
-		cacti_log("ERROR: Invalid Data Template found in Database.  Please run database repair script to identify and/or correct.", false, "WEBUI");
+		cacti_log('ERROR: Invalid Data Template found in Database.  Please run database repair script to identify and/or correct.', false, 'WEBUI');
 		return;
 	}
 
-	$xml_text .= "<hash_" . $hash["data_template"] . ">\n\t<name>" . xml_character_encode($data_template["name"]) . "</name>\n\t<ds>\n";
+	$xml_text .= '<hash_' . $hash['data_template'] . ">\n\t<name>" . xml_character_encode($data_template['name']) . "</name>\n\t<ds>\n";
 
 	/* XML Branch: <ds> */
 	reset($struct_data_source);
 	while (list($field_name, $field_array) = each($struct_data_source)) {
-		if (isset($data_template_data{"t_" . $field_name})) {
-			$xml_text .= "\t\t<t_$field_name>" . xml_character_encode($data_template_data{"t_" . $field_name}) . "</t_$field_name>\n";
+		if (isset($data_template_data{'t_' . $field_name})) {
+			$xml_text .= "\t\t<t_$field_name>" . xml_character_encode($data_template_data{'t_' . $field_name}) . "</t_$field_name>\n";
 		}
 
-		if (($field_name == "data_input_id") && (!empty($data_template_data{$field_name}))) {
-			$xml_text .= "\t\t<$field_name>hash_" . get_hash_version("data_input_method") . get_hash_data_input($data_template_data{$field_name}) . "</$field_name>\n";
+		if (($field_name == 'data_input_id') && (!empty($data_template_data{$field_name}))) {
+			$xml_text .= "\t\t<$field_name>hash_" . get_hash_version('data_input_method') . get_hash_data_input($data_template_data{$field_name}) . "</$field_name>\n";
 		}else{
 			if (isset($data_template_data{$field_name})) {
 				$xml_text .= "\t\t<$field_name>" . xml_character_encode($data_template_data{$field_name}) . "</$field_name>\n";
@@ -175,10 +179,10 @@ function data_template_to_xml($data_template_id) {
 	$i = 0;
 	if (sizeof($data_template_data_rra) > 0) {
 	foreach ($data_template_data_rra as $item) {
-		$xml_text .= "hash_" . get_hash_version("round_robin_archive") . get_hash_round_robin_archive($item["rra_id"]);
+		$xml_text .= 'hash_' . get_hash_version('round_robin_archive') . get_hash_round_robin_archive($item['rra_id']);
 
 		if (($i+1) < sizeof($data_template_data_rra)) {
-			$xml_text .= "|";
+			$xml_text .= '|';
 		}
 
 		$i++;
@@ -195,18 +199,18 @@ function data_template_to_xml($data_template_id) {
 	$i = 0;
 	if (sizeof($data_template_rrd) > 0) {
 	foreach ($data_template_rrd as $item) {
-		$hash["data_template_item"] = get_hash_version("data_template_item") . get_hash_data_template($item["id"], "data_template_item");
+		$hash['data_template_item'] = get_hash_version('data_template_item') . get_hash_data_template($item['id'], 'data_template_item');
 
-		$xml_text .= "\t\t<hash_" . $hash["data_template_item"] . ">\n";
+		$xml_text .= "\t\t<hash_" . $hash['data_template_item'] . ">\n";
 
 		reset($struct_data_source_item);
 		while (list($field_name, $field_array) = each($struct_data_source_item)) {
-			if (isset($item{"t_" . $field_name})) {
-				$xml_text .= "\t\t\t<t_$field_name>" . xml_character_encode($item{"t_" . $field_name}) . "</t_$field_name>\n";
+			if (isset($item{'t_' . $field_name})) {
+				$xml_text .= "\t\t\t<t_$field_name>" . xml_character_encode($item{'t_' . $field_name}) . "</t_$field_name>\n";
 			}
 
-			if (($field_name == "data_input_field_id") && (!empty($item{$field_name}))) {
-				$xml_text .= "\t\t\t<$field_name>hash_" . get_hash_version("data_input_field") . get_hash_data_input($item{$field_name}, "data_input_field") . "</$field_name>\n";
+			if (($field_name == 'data_input_field_id') && (!empty($item{$field_name}))) {
+				$xml_text .= "\t\t\t<$field_name>hash_" . get_hash_version('data_input_field') . get_hash_data_input($item{$field_name}, 'data_input_field') . "</$field_name>\n";
 			}else{
 				if (isset($item{$field_name})) {
 					$xml_text .= "\t\t\t<$field_name>" . xml_character_encode($item{$field_name}) . "</$field_name>\n";
@@ -214,7 +218,7 @@ function data_template_to_xml($data_template_id) {
 			}
 		}
 
-		$xml_text .= "\t\t</hash_" . $hash["data_template_item"] . ">\n";
+		$xml_text .= "\t\t</hash_" . $hash['data_template_item'] . ">\n";
 
 		$i++;
 	}
@@ -229,13 +233,13 @@ function data_template_to_xml($data_template_id) {
 	$i = 0;
 	if (sizeof($data_input_data) > 0) {
 	foreach ($data_input_data as $item) {
-		$xml_text .= "\t\t<item_" . str_pad(strval($i), 3, "0", STR_PAD_LEFT) . ">\n";
+		$xml_text .= "\t\t<item_" . str_pad(strval($i), 3, '0', STR_PAD_LEFT) . ">\n";
 
-		$xml_text .= "\t\t\t<data_input_field_id>hash_" . get_hash_version("data_input_field") . get_hash_data_input($item{"data_input_field_id"}, "data_input_field") . "</data_input_field_id>\n";
-		$xml_text .= "\t\t\t<t_value>" . xml_character_encode($item{"t_value"}) . "</t_value>\n";
-		$xml_text .= "\t\t\t<value>" . xml_character_encode($item{"value"}) . "</value>\n";
+		$xml_text .= "\t\t\t<data_input_field_id>hash_" . get_hash_version('data_input_field') . get_hash_data_input($item{'data_input_field_id'}, 'data_input_field') . "</data_input_field_id>\n";
+		$xml_text .= "\t\t\t<t_value>" . xml_character_encode($item{'t_value'}) . "</t_value>\n";
+		$xml_text .= "\t\t\t<value>" . xml_character_encode($item{'value'}) . "</value>\n";
 
-		$xml_text .= "\t\t</item_" . str_pad(strval($i), 3, "0", STR_PAD_LEFT) . ">\n";
+		$xml_text .= "\t\t</item_" . str_pad(strval($i), 3, '0', STR_PAD_LEFT) . ">\n";
 
 		$i++;
 	}
@@ -243,7 +247,7 @@ function data_template_to_xml($data_template_id) {
 
 	$xml_text .= "\t</data>\n";
 
-	$xml_text .= "</hash_" . $hash["data_template"] . ">";
+	$xml_text .= '</hash_' . $hash['data_template'] . '>';
 
 	return $xml_text;
 }
@@ -254,25 +258,25 @@ function data_input_method_to_xml($data_input_id) {
 	/* aggregate field arrays */
 	$fields_data_input_field_edit += $fields_data_input_field_edit_1;
 
-	$hash["data_input_method"] = get_hash_version("data_input_method") . get_hash_data_input($data_input_id);
-	$xml_text = "";
+	$hash['data_input_method'] = get_hash_version('data_input_method') . get_hash_data_input($data_input_id);
+	$xml_text = '';
 
 	$data_input = db_fetch_row("SELECT * from data_input WHERE id=$data_input_id");
 	$data_input_fields = db_fetch_assoc("SELECT * from data_input_fields WHERE data_input_id=$data_input_id");
 
-	if (empty($data_input["id"])) {
+	if (empty($data_input['id'])) {
 		$export_errors++;
 		raise_message(26);
-		cacti_log("ERROR: Invalid Data Input Method found in Data Template.  Please run database repair script to identify and/or correct.", false, "WEBUI");
+		cacti_log('ERROR: Invalid Data Input Method found in Data Template.  Please run database repair script to identify and/or correct.', false, 'WEBUI');
 		return;
 	}
 
-	$xml_text .= "<hash_" . $hash["data_input_method"] . ">\n";
+	$xml_text .= '<hash_' . $hash['data_input_method'] . ">\n";
 
 	/* XML Branch: <> */
 	reset($fields_data_input_edit);
 	while (list($field_name, $field_array) = each($fields_data_input_edit)) {
-		if (($field_array["method"] != "hidden_zero") && ($field_array["method"] != "hidden")) {
+		if (($field_array['method'] != 'hidden_zero') && ($field_array['method'] != 'hidden')) {
 			$xml_text .= "\t<$field_name>" . xml_character_encode($data_input{$field_name}) . "</$field_name>\n";
 		}
 	}
@@ -283,28 +287,28 @@ function data_input_method_to_xml($data_input_id) {
 
 	if (sizeof($data_input_fields) > 0) {
 	foreach ($data_input_fields as $item) {
-		$hash["data_input_field"] = get_hash_version("data_input_field") . get_hash_data_input($item["id"], "data_input_field");
+		$hash['data_input_field'] = get_hash_version('data_input_field') . get_hash_data_input($item['id'], 'data_input_field');
 
-		$xml_text .= "\t\t<hash_" . $hash["data_input_field"] . ">\n";
+		$xml_text .= "\t\t<hash_" . $hash['data_input_field'] . ">\n";
 
 		reset($fields_data_input_field_edit);
 		while (list($field_name, $field_array) = each($fields_data_input_field_edit)) {
-			if (($field_name == "input_output") && (!empty($item{$field_name}))) {
+			if (($field_name == 'input_output') && (!empty($item{$field_name}))) {
 				$xml_text .= "\t\t\t<$field_name>" . xml_character_encode($item{$field_name}) . "</$field_name>\n";
 			}else{
-				if (($field_array["method"] != "hidden_zero") && ($field_array["method"] != "hidden")) {
+				if (($field_array['method'] != 'hidden_zero') && ($field_array['method'] != 'hidden')) {
 					$xml_text .= "\t\t\t<$field_name>" . xml_character_encode($item{$field_name}) . "</$field_name>\n";
 				}
 			}
 		}
 
-		$xml_text .= "\t\t</hash_" . $hash["data_input_field"] . ">\n";
+		$xml_text .= "\t\t</hash_" . $hash['data_input_field'] . ">\n";
 	}
 	}
 
 	$xml_text .= "\t</fields>\n";
 
-	$xml_text .= "</hash_" . $hash["data_input_method"] . ">";
+	$xml_text .= '</hash_' . $hash['data_input_method'] . '>';
 
 	return $xml_text;
 }
@@ -318,30 +322,30 @@ function cdef_to_xml($cdef_id) {
 	global $fields_cdef_edit, $export_errors;
 
 	$fields_cdef_item_edit = array(
-		"sequence" => "sequence",
-		"type" => "type",
-		"value" => "value"
+		'sequence' => 'sequence',
+		'type' => 'type',
+		'value' => 'value'
 	);
 
-	$hash["cdef"] = get_hash_version("cdef") . get_hash_cdef($cdef_id);
-	$xml_text = "";
+	$hash['cdef'] = get_hash_version('cdef') . get_hash_cdef($cdef_id);
+	$xml_text = '';
 
 	$cdef = db_fetch_row("SELECT * from cdef WHERE id=$cdef_id");
 	$cdef_items = db_fetch_assoc("SELECT * from cdef_items WHERE cdef_id=$cdef_id ORDER BY sequence");
 
-	if (empty($cdef["id"])) {
+	if (empty($cdef['id'])) {
 		$export_errors++;
 		raise_message(25);
-		cacti_log("ERROR: Invalid CDEF found in Graph Template.  Please run database repair script to identify and/or correct.", false, "WEBUI");
+		cacti_log('ERROR: Invalid CDEF found in Graph Template.  Please run database repair script to identify and/or correct.', false, 'WEBUI');
 		return;
 	}
 
-	$xml_text .= "<hash_" . $hash["cdef"] . ">\n";
+	$xml_text .= '<hash_' . $hash['cdef'] . ">\n";
 
 	/* XML Branch: <> */
 	reset($fields_cdef_edit);
 	while (list($field_name, $field_array) = each($fields_cdef_edit)) {
-		if (($field_array["method"] != "hidden_zero") && ($field_array["method"] != "hidden")) {
+		if (($field_array['method'] != 'hidden_zero') && ($field_array['method'] != 'hidden')) {
 			$xml_text .= "\t<$field_name>" . xml_character_encode($cdef{$field_name}) . "</$field_name>\n";
 		}
 	}
@@ -353,29 +357,89 @@ function cdef_to_xml($cdef_id) {
 	$i = 0;
 	if (sizeof($cdef_items) > 0) {
 	foreach ($cdef_items as $item) {
-		$hash["cdef_item"] = get_hash_version("cdef_item") . get_hash_cdef($item["id"], "cdef_item");
+		$hash['cdef_item'] = get_hash_version('cdef_item') . get_hash_cdef($item['id'], 'cdef_item');
 
-		$xml_text .= "\t\t<hash_" . $hash["cdef_item"] . ">\n";
+		$xml_text .= "\t\t<hash_" . $hash['cdef_item'] . ">\n";
 
 		/* now do the encoding */
 		reset($fields_cdef_item_edit);
 		while (list($field_name, $field_array) = each($fields_cdef_item_edit)) {
 			/* check, if an inherited cdef as to be encoded */
-			if (($field_name == "value") && ($item["type"] == '5')) {
-				$xml_text .= "\t\t\t<$field_name>hash_" . get_hash_version("cdef") . get_hash_cdef($item{$field_name}) . "</$field_name>\n";
+			if (($field_name == 'value') && ($item['type'] == '5')) {
+				$xml_text .= "\t\t\t<$field_name>hash_" . get_hash_version('cdef') . get_hash_cdef($item{$field_name}) . "</$field_name>\n";
 			} else {
 				$xml_text .= "\t\t\t<$field_name>" . xml_character_encode($item{$field_name}) . "</$field_name>\n";				
 			}
 		}
 
-		$xml_text .= "\t\t</hash_" . $hash["cdef_item"] . ">\n";
+		$xml_text .= "\t\t</hash_" . $hash['cdef_item'] . ">\n";
 
 		$i++;
 	}
 	}
 
 	$xml_text .= "\t</items>\n";
-	$xml_text .= "</hash_" . $hash["cdef"] . ">";
+	$xml_text .= '</hash_' . $hash['cdef'] . '>';
+
+	return $xml_text;
+}
+
+/** encode given VDEF as XML string
+ * @param int $vdef_id  - id of VDEF
+ * @return string       - XML text of encoded VDEF
+ */
+function vdef_to_xml($vdef_id) {
+	global $config;
+	
+	include_once($config['library_path'] . '/vdef.php');
+
+	$hash['vdef'] = get_hash_version('vdef') . get_hash_vdef($vdef_id);
+	$xml_text = '';
+
+	$vdef       = db_fetch_row("select * from vdef where id=$vdef_id");
+	$vdef_items = db_fetch_assoc("select * from vdef_items where vdef_id=$vdef_id order by sequence");
+
+	if (empty($vdef['id'])) {
+		$err_msg = 'Invalid VDEF.';
+		return $err_msg;
+	}
+
+	$xml_text .= '<hash_' . $hash['vdef'] . ">\n";
+
+	/* XML Branch: <> */
+	$fields_vdef_edit = preset_vdef_form_list();
+	reset($fields_vdef_edit);
+	while (list($field_name, $field_array) = each($fields_vdef_edit)) {
+		if (($field_array['method'] != 'hidden_zero') && ($field_array['method'] != 'hidden') && ($field_array['method'] != 'spacer')) {
+			$xml_text .= "\t<$field_name>" . xml_character_encode($vdef{$field_name}) . "</$field_name>\n";
+		}
+	}
+
+	/* XML Branch: <items> */
+
+	$xml_text .= "\t<items>\n";
+
+	$i = 0;
+	if (sizeof($vdef_items) > 0) {
+	foreach ($vdef_items as $item) {
+		$hash['vdef_item'] = get_hash_version('vdef_item') . get_hash_vdef($item['id'], 'vdef_item');
+
+		$xml_text .= "\t\t<hash_" . $hash['vdef_item'] . ">\n";
+		$fields_vdef_item_edit = preset_vdef_item_form_list();
+		reset($fields_vdef_item_edit);
+		while (list($field_name, $field_array) = each($fields_vdef_item_edit)) {
+			if (($field_array['method'] != 'hidden_zero') && ($field_array['method'] != 'hidden') && ($field_array['method'] != 'spacer')) {
+				$xml_text .= "\t\t\t<$field_name>" . xml_character_encode($item{$field_name}) . "</$field_name>\n";
+			}
+		}
+		$xml_text .= "\t\t</hash_" . $hash['vdef_item'] . ">\n";
+
+		$i++;
+	}
+	}
+
+	$xml_text .= "\t</items>\n";
+	$xml_text .= '</hash_' . $hash['vdef'] . '>';
 
 	return $xml_text;
 }
@@ -383,15 +447,15 @@ function cdef_to_xml($cdef_id) {
 function gprint_preset_to_xml($gprint_preset_id) {
 	global $fields_grprint_presets_edit, $export_errors;
 
-	$hash = get_hash_version("gprint_preset") . get_hash_gprint($gprint_preset_id);
-	$xml_text = "";
+	$hash = get_hash_version('gprint_preset') . get_hash_gprint($gprint_preset_id);
+	$xml_text = '';
 
 	$graph_templates_gprint = db_fetch_row("SELECT * from graph_templates_gprint WHERE id=$gprint_preset_id");
 
-	if (empty($graph_templates_gprint["id"])) {
+	if (empty($graph_templates_gprint['id'])) {
 		$export_errors++;
 		raise_message(24);
-		cacti_log("ERROR: Invalid GPRINT preset found in Graph Template.  Please run database repair script to identify and/or correct.", false, "WEBUI");
+		cacti_log('ERROR: Invalid GPRINT preset found in Graph Template.  Please run database repair script to identify and/or correct.', false, 'WEBUI');
 		return;
 	}
 
@@ -400,7 +464,7 @@ function gprint_preset_to_xml($gprint_preset_id) {
 	/* XML Branch: <> */
 	reset($fields_grprint_presets_edit);
 	while (list($field_name, $field_array) = each($fields_grprint_presets_edit)) {
-		if (($field_array["method"] != "hidden_zero") && ($field_array["method"] != "hidden")) {
+		if (($field_array['method'] != 'hidden_zero') && ($field_array['method'] != 'hidden')) {
 			$xml_text .= "\t<$field_name>" . xml_character_encode($graph_templates_gprint{$field_name}) . "</$field_name>\n";
 		}
 	}
@@ -413,16 +477,16 @@ function gprint_preset_to_xml($gprint_preset_id) {
 function round_robin_archive_to_xml($round_robin_archive_id) {
 	global $fields_rra_edit, $export_errors;
 
-	$hash = get_hash_version("round_robin_archive") . get_hash_round_robin_archive($round_robin_archive_id);
-	$xml_text = "";
+	$hash = get_hash_version('round_robin_archive') . get_hash_round_robin_archive($round_robin_archive_id);
+	$xml_text = '';
 
 	$rra = db_fetch_row("SELECT * from rra WHERE id=$round_robin_archive_id");
 	$rra_cf = db_fetch_assoc("SELECT * from rra_cf WHERE rra_id=$round_robin_archive_id");
 
-	if (empty($rra["id"])) {
+	if (empty($rra['id'])) {
 		$export_errors++;
 		raise_message(23);
-		cacti_log("ERROR: Invalid Round Robin Archive found during Data Template export.  Please run database repair script to identify and/or correct.", false, "WEBUI");
+		cacti_log('ERROR: Invalid Round Robin Archive found during Data Template export.  Please run database repair script to identify and/or correct.', false, 'WEBUI');
 		return;
 	}
 
@@ -431,7 +495,7 @@ function round_robin_archive_to_xml($round_robin_archive_id) {
 	/* XML Branch: <> */
 	reset($fields_rra_edit);
 	while (list($field_name, $field_array) = each($fields_rra_edit)) {
-		if (($field_array["method"] != "hidden_zero") && ($field_array["method"] != "hidden")) {
+		if (($field_array['method'] != 'hidden_zero') && ($field_array['method'] != 'hidden')) {
 			if (isset($rra{$field_name})) {
 				$xml_text .= "\t<$field_name>" . xml_character_encode($rra{$field_name}) . "</$field_name>\n";
 			}
@@ -444,10 +508,10 @@ function round_robin_archive_to_xml($round_robin_archive_id) {
 	$i = 0;
 	if (sizeof($rra_cf) > 0) {
 	foreach ($rra_cf as $item) {
-		$xml_text .= $item["consolidation_function_id"];
+		$xml_text .= $item['consolidation_function_id'];
 
 		if (($i+1) < sizeof($rra_cf)) {
-			$xml_text .= "|";
+			$xml_text .= '|';
 		}
 
 		$i++;
@@ -464,17 +528,17 @@ function round_robin_archive_to_xml($round_robin_archive_id) {
 function host_template_to_xml($host_template_id) {
 	global $fields_host_template_edit, $export_errors;
 
-	$hash = get_hash_version("host_template") . get_hash_host_template($host_template_id);
-	$xml_text = "";
+	$hash = get_hash_version('host_template') . get_hash_host_template($host_template_id);
+	$xml_text = '';
 
 	$host_template = db_fetch_row("SELECT * from host_template WHERE id=$host_template_id");
 	$host_template_graph = db_fetch_assoc("SELECT * from host_template_graph WHERE host_template_id=$host_template_id");
 	$host_template_snmp_query = db_fetch_assoc("SELECT * from host_template_snmp_query WHERE host_template_id=$host_template_id");
 
-	if (empty($host_template["id"])) {
+	if (empty($host_template['id'])) {
 		$export_errors++;
 		raise_message(28);
-		cacti_log("ERROR: Invalid Device Template found during Export.  Please run database repair script to identify and/or correct.", false, "WEBUI");
+		cacti_log('ERROR: Invalid Device Template found during Export.  Please run database repair script to identify and/or correct.', false, 'WEBUI');
 		return;
 	}
 
@@ -483,7 +547,7 @@ function host_template_to_xml($host_template_id) {
 	/* XML Branch: <> */
 	reset($fields_host_template_edit);
 	while (list($field_name, $field_array) = each($fields_host_template_edit)) {
-		if (($field_array["method"] != "hidden_zero") && ($field_array["method"] != "hidden")) {
+		if (($field_array['method'] != 'hidden_zero') && ($field_array['method'] != 'hidden')) {
 			$xml_text .= "\t<$field_name>" . xml_character_encode($host_template{$field_name}) . "</$field_name>\n";
 		}
 	}
@@ -494,10 +558,10 @@ function host_template_to_xml($host_template_id) {
 	$j = 0;
 	if (sizeof($host_template_graph) > 0) {
 	foreach ($host_template_graph as $item) {
-		$xml_text .= "hash_" . get_hash_version("graph_template") . get_hash_graph_template($item["graph_template_id"]);
+		$xml_text .= 'hash_' . get_hash_version('graph_template') . get_hash_graph_template($item['graph_template_id']);
 
 		if (($j+1) < sizeof($host_template_graph)) {
-			$xml_text .= "|";
+			$xml_text .= '|';
 		}
 
 		$j++;
@@ -512,10 +576,10 @@ function host_template_to_xml($host_template_id) {
 	$j = 0;
 	if (sizeof($host_template_snmp_query) > 0) {
 	foreach ($host_template_snmp_query as $item) {
-		$xml_text .= "hash_" . get_hash_version("data_query") . get_hash_data_query($item["snmp_query_id"]);
+		$xml_text .= 'hash_' . get_hash_version('data_query') . get_hash_data_query($item['snmp_query_id']);
 
 		if (($j+1) < sizeof($host_template_snmp_query)) {
-			$xml_text .= "|";
+			$xml_text .= '|';
 		}
 
 		$j++;
@@ -532,28 +596,28 @@ function host_template_to_xml($host_template_id) {
 function data_query_to_xml($data_query_id) {
 	global $fields_data_query_edit, $fields_data_query_item_edit, $export_errors;
 
-	$hash["data_query"] = get_hash_version("data_query") . get_hash_data_query($data_query_id);
-	$xml_text = "";
+	$hash['data_query'] = get_hash_version('data_query') . get_hash_data_query($data_query_id);
+	$xml_text = '';
 
 	$snmp_query = db_fetch_row("SELECT * from snmp_query WHERE id=$data_query_id");
 	$snmp_query_graph = db_fetch_assoc("SELECT * from snmp_query_graph WHERE snmp_query_id=$data_query_id");
 
-	if (empty($snmp_query["id"])) {
+	if (empty($snmp_query['id'])) {
 		$export_errors++;
 		raise_message(28);
-		cacti_log("ERROR: Invalid Data Query found during Export.  Please run database repair script to identify and/or correct.", false, "WEBUI");
+		cacti_log('ERROR: Invalid Data Query found during Export.  Please run database repair script to identify and/or correct.', false, 'WEBUI');
 		return;
 	}
 
-	$xml_text .= "<hash_" . $hash["data_query"] . ">\n";
+	$xml_text .= '<hash_' . $hash['data_query'] . ">\n";
 
 	/* XML Branch: <> */
 	reset($fields_data_query_edit);
 	while (list($field_name, $field_array) = each($fields_data_query_edit)) {
-		if (($field_name == "data_input_id") && (!empty($snmp_query{$field_name}))) {
-			$xml_text .= "\t<$field_name>hash_" . get_hash_version("data_input_method") . get_hash_data_input($snmp_query{$field_name}) . "</$field_name>\n";
+		if (($field_name == 'data_input_id') && (!empty($snmp_query{$field_name}))) {
+			$xml_text .= "\t<$field_name>hash_" . get_hash_version('data_input_method') . get_hash_data_input($snmp_query{$field_name}) . "</$field_name>\n";
 		}else{
-			if (($field_array["method"] != "hidden_zero") && ($field_array["method"] != "hidden")) {
+			if (($field_array['method'] != 'hidden_zero') && ($field_array['method'] != 'hidden')) {
 				$xml_text .= "\t<$field_name>" . xml_character_encode($snmp_query{$field_name}) . "</$field_name>\n";
 			}
 		}
@@ -566,24 +630,24 @@ function data_query_to_xml($data_query_id) {
 	$i = 0;
 	if (sizeof($snmp_query_graph) > 0) {
 	foreach ($snmp_query_graph as $item) {
-		$hash["data_query_graph"] = get_hash_version("data_query_graph") . get_hash_data_query($item["id"], "data_query_graph");
+		$hash['data_query_graph'] = get_hash_version('data_query_graph') . get_hash_data_query($item['id'], 'data_query_graph');
 
-		$xml_text .= "\t\t<hash_" . $hash["data_query_graph"] . ">\n";
+		$xml_text .= "\t\t<hash_" . $hash['data_query_graph'] . ">\n";
 
 		reset($fields_data_query_item_edit);
 		while (list($field_name, $field_array) = each($fields_data_query_item_edit)) {
-			if (($field_name == "graph_template_id") && (!empty($item{$field_name}))) {
-				$xml_text .= "\t\t\t<$field_name>hash_" . get_hash_version("graph_template") . get_hash_graph_template($item{$field_name}) . "</$field_name>\n";
+			if (($field_name == 'graph_template_id') && (!empty($item{$field_name}))) {
+				$xml_text .= "\t\t\t<$field_name>hash_" . get_hash_version('graph_template') . get_hash_graph_template($item{$field_name}) . "</$field_name>\n";
 			}else{
-				if (($field_array["method"] != "hidden_zero") && ($field_array["method"] != "hidden")) {
+				if (($field_array['method'] != 'hidden_zero') && ($field_array['method'] != 'hidden')) {
 					$xml_text .= "\t\t\t<$field_name>" . xml_character_encode($item{$field_name}) . "</$field_name>\n";
 				}
 			}
 		}
 
-		$snmp_query_graph_rrd_sv = db_fetch_assoc("SELECT * from snmp_query_graph_rrd_sv WHERE snmp_query_graph_id=" . $item["id"] . " ORDER BY sequence");
-		$snmp_query_graph_sv = db_fetch_assoc("SELECT * from snmp_query_graph_sv WHERE snmp_query_graph_id=" . $item["id"] . " ORDER BY sequence");
-		$snmp_query_graph_rrd = db_fetch_assoc("SELECT * from snmp_query_graph_rrd WHERE snmp_query_graph_id=" . $item["id"] . " AND data_template_id > 0");
+		$snmp_query_graph_rrd_sv = db_fetch_assoc('SELECT * from snmp_query_graph_rrd_sv WHERE snmp_query_graph_id=' . $item['id'] . ' ORDER BY sequence');
+		$snmp_query_graph_sv = db_fetch_assoc('SELECT * from snmp_query_graph_sv WHERE snmp_query_graph_id=' . $item['id'] . ' ORDER BY sequence');
+		$snmp_query_graph_rrd = db_fetch_assoc('SELECT * from snmp_query_graph_rrd WHERE snmp_query_graph_id=' . $item['id'] . ' AND data_template_id > 0');
 
 		/* XML Branch: <graphs/rrd> */
 
@@ -592,13 +656,13 @@ function data_query_to_xml($data_query_id) {
 		$i = 0;
 		if (sizeof($snmp_query_graph_rrd) > 0) {
 		foreach ($snmp_query_graph_rrd as $item2) {
-			$xml_text .= "\t\t\t\t<item_" . str_pad(strval($i), 3, "0", STR_PAD_LEFT) . ">\n";
+			$xml_text .= "\t\t\t\t<item_" . str_pad(strval($i), 3, '0', STR_PAD_LEFT) . ">\n";
 
-			$xml_text .= "\t\t\t\t\t<snmp_field_name>" . $item2{"snmp_field_name"} . "</snmp_field_name>\n";
-			$xml_text .= "\t\t\t\t\t<data_template_id>hash_" . get_hash_version("data_template") . get_hash_data_template($item2{"data_template_id"}) . "</data_template_id>\n";
-			$xml_text .= "\t\t\t\t\t<data_template_rrd_id>hash_" . get_hash_version("data_template_item") . get_hash_data_template($item2{"data_template_rrd_id"}, "data_template_item") . "</data_template_rrd_id>\n";
+			$xml_text .= "\t\t\t\t\t<snmp_field_name>" . $item2{'snmp_field_name'} . "</snmp_field_name>\n";
+			$xml_text .= "\t\t\t\t\t<data_template_id>hash_" . get_hash_version('data_template') . get_hash_data_template($item2{'data_template_id'}) . "</data_template_id>\n";
+			$xml_text .= "\t\t\t\t\t<data_template_rrd_id>hash_" . get_hash_version('data_template_item') . get_hash_data_template($item2{'data_template_rrd_id'}, 'data_template_item') . "</data_template_rrd_id>\n";
 
-			$xml_text .= "\t\t\t\t</item_" . str_pad(strval($i), 3, "0", STR_PAD_LEFT) . ">\n";
+			$xml_text .= "\t\t\t\t</item_" . str_pad(strval($i), 3, '0', STR_PAD_LEFT) . ">\n";
 
 			$i++;
 		}
@@ -613,15 +677,15 @@ function data_query_to_xml($data_query_id) {
 		$j = 0;
 		if (sizeof($snmp_query_graph_sv) > 0) {
 		foreach ($snmp_query_graph_sv as $item2) {
-			$hash["data_query_sv_graph"] = get_hash_version("data_query_sv_graph") . get_hash_data_query($item2["id"], "data_query_sv_graph");
+			$hash['data_query_sv_graph'] = get_hash_version('data_query_sv_graph') . get_hash_data_query($item2['id'], 'data_query_sv_graph');
 
-			$xml_text .= "\t\t\t\t<hash_" . $hash["data_query_sv_graph"] . ">\n";
+			$xml_text .= "\t\t\t\t<hash_" . $hash['data_query_sv_graph'] . ">\n";
 
-			$xml_text .= "\t\t\t\t\t<field_name>" . xml_character_encode($item2{"field_name"}) . "</field_name>\n";
-			$xml_text .= "\t\t\t\t\t<sequence>" . $item2{"sequence"} . "</sequence>\n";
-			$xml_text .= "\t\t\t\t\t<text>" . xml_character_encode($item2{"text"}) . "</text>\n";
+			$xml_text .= "\t\t\t\t\t<field_name>" . xml_character_encode($item2{'field_name'}) . "</field_name>\n";
+			$xml_text .= "\t\t\t\t\t<sequence>" . $item2{'sequence'} . "</sequence>\n";
+			$xml_text .= "\t\t\t\t\t<text>" . xml_character_encode($item2{'text'}) . "</text>\n";
 
-			$xml_text .= "\t\t\t\t</hash_" . $hash["data_query_sv_graph"] . ">\n";
+			$xml_text .= "\t\t\t\t</hash_" . $hash['data_query_sv_graph'] . ">\n";
 
 			$j++;
 		}
@@ -636,16 +700,16 @@ function data_query_to_xml($data_query_id) {
 		$j = 0;
 		if (sizeof($snmp_query_graph_rrd_sv) > 0) {
 		foreach ($snmp_query_graph_rrd_sv as $item2) {
-			$hash["data_query_sv_data_source"] = get_hash_version("data_query_sv_data_source") . get_hash_data_query($item2["id"], "data_query_sv_data_source");
+			$hash['data_query_sv_data_source'] = get_hash_version('data_query_sv_data_source') . get_hash_data_query($item2['id'], 'data_query_sv_data_source');
 
-			$xml_text .= "\t\t\t\t<hash_" . $hash["data_query_sv_data_source"] . ">\n";
+			$xml_text .= "\t\t\t\t<hash_" . $hash['data_query_sv_data_source'] . ">\n";
 
-			$xml_text .= "\t\t\t\t\t<field_name>" . xml_character_encode($item2{"field_name"}) . "</field_name>\n";
-			$xml_text .= "\t\t\t\t\t<data_template_id>hash_" . get_hash_version("data_template") . get_hash_data_template($item2{"data_template_id"}) . "</data_template_id>\n";
-			$xml_text .= "\t\t\t\t\t<sequence>" . $item2{"sequence"} . "</sequence>\n";
-			$xml_text .= "\t\t\t\t\t<text>" . xml_character_encode($item2{"text"}) . "</text>\n";
+			$xml_text .= "\t\t\t\t\t<field_name>" . xml_character_encode($item2{'field_name'}) . "</field_name>\n";
+			$xml_text .= "\t\t\t\t\t<data_template_id>hash_" . get_hash_version('data_template') . get_hash_data_template($item2{'data_template_id'}) . "</data_template_id>\n";
+			$xml_text .= "\t\t\t\t\t<sequence>" . $item2{'sequence'} . "</sequence>\n";
+			$xml_text .= "\t\t\t\t\t<text>" . xml_character_encode($item2{'text'}) . "</text>\n";
 
-			$xml_text .= "\t\t\t\t</hash_" . $hash["data_query_sv_data_source"] . ">\n";
+			$xml_text .= "\t\t\t\t</hash_" . $hash['data_query_sv_data_source'] . ">\n";
 
 			$j++;
 		}
@@ -653,7 +717,7 @@ function data_query_to_xml($data_query_id) {
 
 		$xml_text .= "\t\t\t</sv_data_source>\n";
 
-		$xml_text .= "\t\t</hash_" . $hash["data_query_graph"] . ">\n";
+		$xml_text .= "\t\t</hash_" . $hash['data_query_graph'] . ">\n";
 
 		$i++;
 	}
@@ -661,7 +725,7 @@ function data_query_to_xml($data_query_id) {
 
 	$xml_text .= "\t</graphs>\n";
 
-	$xml_text .= "</hash_" . $hash["data_query"] . ">";
+	$xml_text .= '</hash_' . $hash['data_query'] . '>';
 
 	return $xml_text;
 }
@@ -686,27 +750,33 @@ function resolve_dependencies($type, $id, $dep_array) {
 
 		if (sizeof($graph_template_items) > 0) {
 		foreach ($graph_template_items as $item) {
-			if (!isset($dep_array["data_template"]{$item["data_template_id"]})) {
-				$dep_array = resolve_dependencies("data_template", $item["data_template_id"], $dep_array);
+			if (!isset($dep_array['data_template']{$item['data_template_id']})) {
+				$dep_array = resolve_dependencies('data_template', $item['data_template_id'], $dep_array);
 			}
 		}
 		}
 
 		/* dep: cdef */
-		$cdef_items = db_fetch_assoc("SELECT cdef_id from graph_templates_item WHERE graph_template_id=$id AND local_graph_id=0 AND cdef_id > 0 GROUP BY cdef_id");
+		$cdef_items = db_fetch_assoc("SELECT cdef_id 
+			FROM graph_templates_item 
+			WHERE graph_template_id=$id 
+			AND local_graph_id=0 
+			AND cdef_id > 0 
+			GROUP BY cdef_id");
 		
 		$recursive = true;
 		/* in the first turn, search all inherited cdef items related to all cdef's known on highest recursion level */
-		$search_cdef_items = $cdef_items;
+		$search_cdef_items = array_rekey($cdef_items, 'cdef_id', 'cdef_id');
 		if (sizeof($cdef_items) > 0) {
 			while ($recursive) {
 				/* are there any inherited cdef's within those referenced by any graph item? 
 				 * search for all cdef_items of type = 5 (inherited cdef) 
 				 * but fetch only those related to already given cdef's */
-				$sql = "SELECT value as cdef_id " .
-					"FROM cdef_items " .
-					"WHERE type = 5 " .
-					"AND " . array_to_sql_or($search_cdef_items, "cdef_id");
+				$sql = 'SELECT value as cdef_id ' .
+					'FROM cdef_items ' .
+					'WHERE type = 5 ' .
+					'AND ' . array_to_sql_or($search_cdef_items, 'cdef_id');
+cacti_log($sql);
 				$inherited_cdef_items = db_fetch_assoc($sql);
 				
 				/* in case we found any */
@@ -728,10 +798,21 @@ function resolve_dependencies($type, $id, $dep_array) {
 			}
 
 			foreach ($cdef_items as $item) {
-				if (!isset($dep_array["cdef"]{$item["cdef_id"]})) {
-					$dep_array = resolve_dependencies("cdef", $item["cdef_id"], $dep_array);
+				if (!isset($dep_array['cdef']{$item['cdef_id']})) {
+					$dep_array = resolve_dependencies('cdef', $item['cdef_id'], $dep_array);
 				}
 			}
+		}
+
+		/* dep: vdef */
+		$vdef_items = db_fetch_assoc("select vdef_id from graph_templates_item where graph_template_id=$id and local_graph_id=0 and vdef_id > 0 group by vdef_id");
+
+		if (sizeof($vdef_items) > 0) {
+		foreach ($vdef_items as $item) {
+			if (!isset($dep_array['vdef']{$item['vdef_id']})) {
+				$dep_array = resolve_dependencies('vdef', $item['vdef_id'], $dep_array);
+			}
+		}
 		}
 
 		/* dep: gprint preset */
@@ -739,8 +820,8 @@ function resolve_dependencies($type, $id, $dep_array) {
 
 		if (sizeof($graph_template_items) > 0) {
 		foreach ($graph_template_items as $item) {
-			if (!isset($dep_array["gprint_preset"]{$item["gprint_id"]})) {
-				$dep_array = resolve_dependencies("gprint_preset", $item["gprint_id"], $dep_array);
+			if (!isset($dep_array['gprint_preset']{$item['gprint_id']})) {
+				$dep_array = resolve_dependencies('gprint_preset', $item['gprint_id'], $dep_array);
 			}
 		}
 		}
@@ -750,17 +831,17 @@ function resolve_dependencies($type, $id, $dep_array) {
 		/* dep: data input method */
 		$item = db_fetch_row("SELECT data_input_id from data_template_data WHERE data_template_id=$id AND local_data_id=0 AND data_input_id > 0");
 
-		if ((!empty($item)) && (!isset($dep_array["data_input_method"]{$item["data_input_id"]}))) {
-			$dep_array = resolve_dependencies("data_input_method", $item["data_input_id"], $dep_array);
+		if ((!empty($item)) && (!isset($dep_array['data_input_method']{$item['data_input_id']}))) {
+			$dep_array = resolve_dependencies('data_input_method', $item['data_input_id'], $dep_array);
 		}
 
 		/* dep: round robin archive */
-		$rras = db_fetch_assoc("SELECT rra_id from data_template_data_rra WHERE data_template_data_id=" . db_fetch_cell("SELECT id FROM data_template_data WHERE data_template_id=$id AND local_data_id = 0"));
+		$rras = db_fetch_assoc('SELECT rra_id from data_template_data_rra WHERE data_template_data_id=' . db_fetch_cell("SELECT id FROM data_template_data WHERE data_template_id=$id AND local_data_id = 0"));
 
 		if (sizeof($rras) > 0) {
 		foreach ($rras as $item) {
-			if (!isset($dep_array["round_robin_archive"]{$item["rra_id"]})) {
-				$dep_array = resolve_dependencies("round_robin_archive", $item["rra_id"], $dep_array);
+			if (!isset($dep_array['round_robin_archive']{$item['rra_id']})) {
+				$dep_array = resolve_dependencies('round_robin_archive', $item['rra_id'], $dep_array);
 			}
 		}
 		}
@@ -770,8 +851,8 @@ function resolve_dependencies($type, $id, $dep_array) {
 		/* dep: data input method */
 		$item = db_fetch_row("SELECT data_input_id from snmp_query WHERE id=$id AND data_input_id > 0");
 
-		if ((!empty($item)) && (!isset($dep_array["data_input_method"]{$item["data_input_id"]}))) {
-			$dep_array = resolve_dependencies("data_input_method", $item["data_input_id"], $dep_array);
+		if ((!empty($item)) && (!isset($dep_array['data_input_method']{$item['data_input_id']}))) {
+			$dep_array = resolve_dependencies('data_input_method', $item['data_input_id'], $dep_array);
 		}
 
 		/* dep: graph template */
@@ -779,8 +860,8 @@ function resolve_dependencies($type, $id, $dep_array) {
 
 		if (sizeof($snmp_query_graph) > 0) {
 		foreach ($snmp_query_graph as $item) {
-			if (!isset($dep_array["graph_template"]{$item["graph_template_id"]})) {
-				$dep_array = resolve_dependencies("graph_template", $item["graph_template_id"], $dep_array);
+			if (!isset($dep_array['graph_template']{$item['graph_template_id']})) {
+				$dep_array = resolve_dependencies('graph_template', $item['graph_template_id'], $dep_array);
 			}
 		}
 		}
@@ -792,8 +873,8 @@ function resolve_dependencies($type, $id, $dep_array) {
 
 		if (sizeof($host_template_graph) > 0) {
 		foreach ($host_template_graph as $item) {
-			if (!isset($dep_array["graph_template"]{$item["graph_template_id"]})) {
-				$dep_array = resolve_dependencies("graph_template", $item["graph_template_id"], $dep_array);
+			if (!isset($dep_array['graph_template']{$item['graph_template_id']})) {
+				$dep_array = resolve_dependencies('graph_template', $item['graph_template_id'], $dep_array);
 			}
 		}
 		}
@@ -803,8 +884,8 @@ function resolve_dependencies($type, $id, $dep_array) {
 
 		if (sizeof($host_template_snmp_query) > 0) {
 		foreach ($host_template_snmp_query as $item) {
-			if (!isset($dep_array["data_query"]{$item["snmp_query_id"]})) {
-				$dep_array = resolve_dependencies("data_query", $item["snmp_query_id"], $dep_array);
+			if (!isset($dep_array['data_query']{$item['snmp_query_id']})) {
+				$dep_array = resolve_dependencies('data_query', $item['snmp_query_id'], $dep_array);
 			}
 		}
 		}
@@ -819,8 +900,8 @@ function resolve_dependencies($type, $id, $dep_array) {
 }
 
 function get_item_xml($type, $id, $follow_deps) {
-	$xml_text = "";
-	$xml_indent = "";
+	$xml_text = '';
+	$xml_indent = '';
 
 	if ($follow_deps == true) {
 		/* follow all dependencies recursively */
@@ -855,6 +936,9 @@ function get_item_xml($type, $id, $follow_deps) {
 				case 'cdef':
 					$xml_text .= "\n" . cdef_to_xml($dep_id);
 					break;
+				case 'vdef':
+					$xml_text .= "\n" . vdef_to_xml($dep_id);
+					break;
 				case 'round_robin_archive':
 					$xml_text .= "\n" . round_robin_archive_to_xml($dep_id);
 					break;
@@ -869,20 +953,20 @@ function get_item_xml($type, $id, $follow_deps) {
 		$xml_indent .= "\t" . $xml_array[$i] . "\n";
 	}
 
-	$xml_text = "<cacti>" . $xml_indent . "</cacti>";
+	$xml_text = '<cacti>' . $xml_indent . '</cacti>';
 
 	return $xml_text;
 }
 
 function xml_character_encode($text) {
-	if (function_exists("htmlspecialchars")) {
-		return htmlspecialchars($text, ENT_QUOTES, "UTF-8");
+	if (function_exists('htmlspecialchars')) {
+		return htmlspecialchars($text, ENT_QUOTES, 'UTF-8');
 	} else {
-		$text = str_replace("&", "&amp;", $text);
-		$text = str_replace(">", "&gt;", $text);
-		$text = str_replace("<", "&lt;", $text);
-		$text = str_replace("\"", "&quot;", $text);
-		$text = str_replace("\'", "&apos;", $text);
+		$text = str_replace('&', '&amp;', $text);
+		$text = str_replace('>', '&gt;', $text);
+		$text = str_replace('<', '&lt;', $text);
+		$text = str_replace("\"", '&quot;', $text);
+		$text = str_replace("\'", '&apos;', $text);
 
 		return $text;
 	}

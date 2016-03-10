@@ -128,15 +128,39 @@ function form_save() {
 				set_request_var('alpha', get_nfilter_request_var('invisible_alpha'));
 			}
 
-			$save['alpha']         = form_input_validate((isset($item['alpha']) ? $item['alpha'] : get_nfilter_request_var('alpha')), 'alpha', '', true, 3);
-			$save['graph_type_id'] = form_input_validate((isset($item['graph_type_id']) ? $item['graph_type_id'] : get_nfilter_request_var('graph_type_id')), 'graph_type_id', '^[0-9]+$', true, 3);
-			$save['cdef_id']       = form_input_validate(get_nfilter_request_var('cdef_id'), 'cdef_id', '^[0-9]+$', true, 3);
+			$save['alpha']          = form_input_validate((isset($item['alpha']) ? $item['alpha'] : get_nfilter_request_var('alpha')), 'alpha', '', true, 3);
+			$save['graph_type_id']  = form_input_validate((isset($item['graph_type_id']) ? $item['graph_type_id'] : get_nfilter_request_var('graph_type_id')), 'graph_type_id', '^[0-9]+$', true, 3);
+
+			if (isset_request_var('line_width') || isset($item['line_width'])) {
+				$save['line_width'] = form_input_validate((isset($item['line_width']) ? $item['line_width'] : get_nfilter_request_var('line_width')), 'line_width', '^[0-9]+[\.,]+[0-9]+$', true, 3);
+			}else { # make sure to transfer old LINEx style into line_width on save
+				switch ($save['graph_type_id']) {
+				case GRAPH_ITEM_TYPE_LINE1:
+					$save['line_width'] = 1;
+					break;
+				case GRAPH_ITEM_TYPE_LINE2:
+					$save['line_width'] = 2;
+					break;
+				case GRAPH_ITEM_TYPE_LINE3:
+					$save['line_width'] = 3;
+					break;
+				default:
+					$save['line_width'] = 0;
+				}
+   			}
+
+			$save['dashes']         = form_input_validate((isset_request_var('dashes') ? get_nfilter_request_var('dashes') : ''), 'dashes', '^[0-9]+[,0-9]*$', true, 3);
+            $save['dash_offset']    = form_input_validate((isset_request_var('dash_offset') ? get_nfilter_request_var('dash_offset') : ''), 'dash_offset', '^[0-9]+$', true, 3);
+			$save['cdef_id']        = form_input_validate(get_nfilter_request_var('cdef_id'), 'cdef_id', '^[0-9]+$', true, 3);
+			$save['vdef_id']        = form_input_validate(get_nfilter_request_var('vdef_id'), 'vdef_id', '^[0-9]+$', true, 3);
+			$save['shift']          = form_input_validate((isset_request_var('shift') ? get_nfilter_request_var('shift') : ''), 'shift', '^((on)|)$', true, 3);
 			$save['consolidation_function_id'] = form_input_validate((isset($item['consolidation_function_id']) ? $item['consolidation_function_id'] : get_nfilter_request_var('consolidation_function_id')), 'consolidation_function_id', '^[0-9]+$', true, 3);
-			$save['text_format']   = form_input_validate((isset($item['text_format']) ? $item['text_format'] : get_nfilter_request_var('text_format')), 'text_format', '', true, 3);
-			$save['value']         = form_input_validate(get_nfilter_request_var('value'), 'value', '', true, 3);
-			$save['hard_return']   = form_input_validate(((isset($item['hard_return']) ? $item['hard_return'] : (isset_request_var('hard_return') ? get_nfilter_request_var('hard_return') : ''))), 'hard_return', '', true, 3);
-			$save['gprint_id']     = form_input_validate(get_nfilter_request_var('gprint_id'), 'gprint_id', '^[0-9]+$', true, 3);
-			$save['sequence']      = $sequence;
+			$save['textalign']      = form_input_validate((isset_request_var('textalign') ? get_nfilter_request_var('textalign') : ''), 'textalign', '^[a-z]+$', true, 3);
+			$save['text_format']    = form_input_validate((isset($item['text_format']) ? $item['text_format'] : get_nfilter_request_var('text_format')), 'text_format', '', true, 3);
+			$save['value']          = form_input_validate(get_nfilter_request_var('value'), 'value', '', true, 3);
+			$save['hard_return']    = form_input_validate(((isset($item['hard_return']) ? $item['hard_return'] : (isset_request_var('hard_return') ? get_nfilter_request_var('hard_return') : ''))), 'hard_return', '', true, 3);
+			$save['gprint_id']      = form_input_validate(get_nfilter_request_var('gprint_id'), 'gprint_id', '^[0-9]+$', true, 3);
+			$save['sequence']       = $sequence;
 
 			if (!is_error_message()) {
 				$graph_template_item_id = sql_save($save, 'graph_templates_item');
@@ -375,6 +399,14 @@ function item_edit() {
 	<script type='text/javascript'>
 
 	$(function() {
+		$('#shift').click(function(data) {
+			if ($('#shift').is(':checked')) {
+				$('#row_value').show();
+			}else{
+				$('#row_value').hide();
+			}
+		});
+
 		setRowVisibility();
 		$('#graph_type_id').change(function(data) {
 			setRowVisibility();
@@ -387,70 +419,171 @@ function item_edit() {
 	graph_type_ids - 1 - Comment 2 - HRule 3 - Vrule 4 - Line1 5 - Line2 6 - Line3 7 - Area 8 - Stack 9 - Gprint 10 - Legend
 	*/
 
-	function setRowVisibility() {
+	function changeColorId() {
+		$('#alpha').prop('disabled', true);
+		if ($('#color_id').val() != 0) {
+			$('#alpha').prop('disabled', false);
+		}
 		switch($('#graph_type_id').val()) {
-		case '1':
-			$('#row_task_item_id').hide();
-			$('#row_color_id').hide();
-			$('#row_alpha').hide();
-			$('#row_consolidation_function_id').hide();
-			$('#row_cdef_id').hide();
-			$('#row_value').hide();
-			$('#row_gprint_id').hide();
-			$('#row_text_format').show();
-			$('#row_hard_return').show();
-			break;
-		case '2':
-		case '3':
-			$('#row_task_item_id').hide();
-			$('#row_color_id').hide();
-			$('#row_alpha').hide();
-			$('#row_consolidation_function_id').hide();
-			$('#row_cdef_id').hide();
-			$('#row_value').show();
-			$('#row_gprint_id').hide();
-			$('#row_text_format').hide();
-			$('#row_hard_return').show();
-			break;
 		case '4':
 		case '5':
 		case '6':
 		case '7':
 		case '8':
+			$('#alpha').prop('disabled', false);
+		}
+	}
+
+	function setRowVisibility() {
+		switch($('#graph_type_id').val()) {
+		case '1': // COMMENT
+			$('#row_task_item_id').hide();
+			$('#row_color_id').hide();
+			$('#row_line_width').hide();
+			$('#row_dashes').hide();
+			$('#row_dash_offset').hide();
+			$('#row_textalign').hide();
+			$('#row_shift').hide();
+			$('#row_alpha').hide();
+			$('#row_consolidation_function_id').hide();
+			$('#row_cdef_id').hide();
+			$('#row_vdef_id').hide();
+			$('#row_value').hide();
+			$('#row_gprint_id').hide();
+			$('#row_text_format').show();
+			$('#row_hard_return').show();
+			break;
+		case '2': // HRULE
+		case '3': // VRULE
+			$('#row_task_item_id').hide();
+			$('#row_color_id').hide();
+			$('#row_line_width').hide();
+			$('#row_dashes').show();
+			$('#row_dash_offset').show();
+			$('#row_textalign').hide();
+			$('#row_shift').hide();
+			$('#row_alpha').hide();
+			$('#row_consolidation_function_id').hide();
+			$('#row_cdef_id').hide();
+			$('#row_vdef_id').hide();
+			$('#row_value').show();
+			$('#row_gprint_id').hide();
+			$('#row_text_format').hide();
+			$('#row_hard_return').show();
+			break;
+		case '4': // LINE1
+		case '5': // LINE2
+		case '6': // LINE3
 			$('#row_task_item_id').show();
 			$('#row_color_id').show();
+			$('#row_line_width').show();
+			$('#row_dashes').show();
+			$('#row_dash_offset').show();
+			$('#row_textalign').hide();
+			$('#row_shift').show();
 			$('#row_alpha').show();
 			$('#row_consolidation_function_id').show();
 			$('#row_cdef_id').show();
+			$('#row_vdef_id').hide();
+			$('#row_value').hide();
+			$('#row_gprint_id').hide();
+			$('#row_text_format').show();
+			$('#row_hard_return').show();
+			break;
+		case '7': // AREA
+		case '8': // STACK
+		case '20': // LINE:STACK
+			$('#row_task_item_id').show();
+			$('#row_color_id').show();
+			$('#row_line_width').hide();
+			$('#row_dashes').hide();
+			$('#row_dash_offset').hide();
+			$('#row_textalign').hide();
+			$('#row_shift').show();
+			$('#row_alpha').show();
+			$('#row_consolidation_function_id').show();
+			$('#row_cdef_id').show();
+			$('#row_vdef_id').hide();
+			$('#row_value').hide();
+			$('#row_gprint_id').hide();
+			$('#row_text_format').show();
+			$('#row_hard_return').show();
+			break;
+		case '9':  // GPRINT
+		case '11': // GPRINT:MAX
+		case '12': // GPRINT:MIN
+		case '13': // GPRINT:MIN
+		case '14': // GPRINT:AVERAGE
+			$('#row_task_item_id').show();
+			$('#row_color_id').hide();
+			$('#row_line_width').hide();
+			$('#row_dashes').hide();
+			$('#row_dash_offset').hide();
+			$('#row_textalign').hide();
+			$('#row_shift').hide();
+			$('#row_alpha').hide();
+			$('#row_consolidation_function_id').show();
+			$('#row_cdef_id').show();
+			$('#row_vdef_id').show();
 			$('#row_value').hide();
 			$('#row_gprint_id').show();
 			$('#row_text_format').show();
 			$('#row_hard_return').show();
-
 			break;
-		case '9':
-		case '10':
+		case '10': // LEGEND
 			$('#row_task_item_id').show();
 			$('#row_color_id').hide();
+			$('#row_line_width').hide();
+			$('#row_dashes').hide();
+			$('#row_dash_offset').hide();
+			$('#row_textalign').hide();
+			$('#row_shift').hide();
 			$('#row_alpha').hide();
 			$('#row_consolidation_function_id').hide();
 			$('#row_cdef_id').show();
+			$('#row_vdef_id').show();
 			$('#row_value').hide();
 			$('#row_gprint_id').show();
 			$('#row_text_format').hide();
-			if ($('#graph_type_id').val() == 9) {
-				$('#row_hard_return').show();
-			}else{
-				$('#row_hard_return').hide();
-			}
-
+			$('#row_hard_return').hide();
+			break;
+		case '30': // TICK
+			$('#row_task_item_id').show();
+			$('#row_color_id').show();
+			$('#row_line_width').hide();
+			$('#row_dashes').hide();
+			$('#row_dash_offset').hide();
+			$('#row_textalign').hide();
+			$('#row_shift').hide();
+			$('#row_alpha').show();
+			$('#row_consolidation_function_id').show();
+			$('#row_cdef_id').show();
+			$('#row_vdef_id').show();
+			$('#row_value').hide();
+			$('#row_gprint_id').hide();
+			$('#row_text_format').show();
+			$('#row_hard_return').show();
+			break;
+		case '40': // TEXTALIGN
+			$('#row_task_item_id').hide();
+			$('#row_color_id').hide();
+			$('#row_line_width').hide();
+			$('#row_dashes').hide();
+			$('#row_dash_offset').hide();
+			$('#row_textalign').show();
+			$('#row_shift').hide();
+			$('#row_alpha').hide();
+			$('#row_consolidation_function_id').hide();
+			$('#row_cdef_id').hide();
+			$('#row_vdef_id').hide();
+			$('#row_value').hide();
+			$('#row_gprint_id').hide();
+			$('#row_text_format').hide();
+			$('#row_hard_return').hide();
 			break;
 		}
 
-		$('#alpha').prop('disabled', true);
-		if ($('#color_id').val() != 0) {
-			$('#alpha').prop('disabled', false);
-		}
+		changeColorId();
 	}
 
 	</script>

@@ -377,8 +377,10 @@ function push_out_graph($graph_template_graph_id) {
 	reset($struct_graph);
 	while (list($field_name, $field_array) = each($struct_graph)) {
 		/* are we allowed to push out the column? */
-		if (empty($graph_template_graph{"t_" . $field_name})) {
-			db_execute("UPDATE graph_templates_graph SET $field_name='" . addslashes($graph_template_graph[$field_name]) . "' WHERE local_graph_template_graph_id=" . $graph_template_graph["id"]);
+		if (isset($graph_template_graph{"t_" . $field_name}) && empty($graph_template_graph{"t_" . $field_name})) {
+			if ($field_array['method'] != 'spacer') {
+				db_execute("UPDATE graph_templates_graph SET $field_name='" . addslashes($graph_template_graph[$field_name]) . "' WHERE local_graph_template_graph_id=" . $graph_template_graph["id"]);
+			}
 
 			/* update the title cache */
 			if ($field_name == "title") {

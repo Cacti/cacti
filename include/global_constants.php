@@ -45,6 +45,31 @@ define('RRDTOOL_OUTPUT_STDERR', 2);
 define('RRDTOOL_OUTPUT_GRAPH_DATA', 3);
 define('RRDTOOL_OUTPUT_BOOLEAN', 4);
 
+define('RRD_VERSION_1_2', 'rrd-1.2.x');
+define('RRD_VERSION_1_3', 'rrd-1.3.x');
+define('RRD_VERSION_1_4', 'rrd-1.4.x');
+define('RRD_VERSION_1_5', 'rrd-1.5.x');
+
+define('RRD_FONT_RENDER_NORMAL',  'normal');
+define('RRD_FONT_RENDER_LIGHT',   'light');
+define('RRD_FONT_RENDER_MONO',    'mono');
+
+define('RRD_GRAPH_RENDER_NORMAL', 'normal');
+define('RRD_GRAPH_RENDER_MONO',   'mono');
+
+define('RRD_LEGEND_POS_NORTH',    'north');
+define('RRD_LEGEND_POS_SOUTH',    'south');
+define('RRD_LEGEND_POS_WEST',     'west');
+define('RRD_LEGEND_POS_EAST',     'east');
+
+define('RRD_ALIGN_LEFT',          'left');
+define('RRD_ALIGN_RIGHT',         'right');
+define('RRD_ALIGN_JUSTIFIED',     'justified');
+define('RRD_ALIGN_CENTER',        'center');
+
+define('RRD_LEGEND_DIR_TOPDOWN',  'topdown');
+define('RRD_LEGEND_DIR_BOTTOMUP', 'bottomup');
+
 define('DATA_QUERY_AUTOINDEX_NONE', 0);
 define('DATA_QUERY_AUTOINDEX_BACKWARDS_UPTIME', 1);
 define('DATA_QUERY_AUTOINDEX_INDEX_NUM_CHANGE', 2);
@@ -67,16 +92,13 @@ define('GRAPH_ITEM_TYPE_AREA',               7);
 define('GRAPH_ITEM_TYPE_STACK',              8);
 define('GRAPH_ITEM_TYPE_GPRINT',             9);
 define('GRAPH_ITEM_TYPE_LEGEND',            10);
-define('GRAPH_ITEM_TYPE_LINE1_LEGEND_CAX',  11);
-define('GRAPH_ITEM_TYPE_LINE1_LEGEND_CAXM', 12);
-define('GRAPH_ITEM_TYPE_LINE2_LEGEND_CAX',  13);
-define('GRAPH_ITEM_TYPE_LINE2_LEGEND_CAXM', 14);
-define('GRAPH_ITEM_TYPE_LINE3_LEGEND_CAX',  15);
-define('GRAPH_ITEM_TYPE_LINE3_LEGEND_CAXM', 16);
-define('GRAPH_ITEM_TYPE_AREA_LEGEND_CAX',   17);
-define('GRAPH_ITEM_TYPE_AREA_LEGEND_CAXM',  18);
-define('GRAPH_ITEM_TYPE_STACK_LEGEND_CAX',  19);
-define('GRAPH_ITEM_TYPE_STACK_LEGEND_CAXM', 20);
+define('GRAPH_ITEM_TYPE_GPRINT_LAST',       11);
+define('GRAPH_ITEM_TYPE_GPRINT_MAX',        12);
+define('GRAPH_ITEM_TYPE_GPRINT_MIN',        13);
+define('GRAPH_ITEM_TYPE_GPRINT_AVERAGE',    14);
+define('GRAPH_ITEM_TYPE_LINESTACK',         20);
+define('GRAPH_ITEM_TYPE_TIC',               30);
+define('GRAPH_ITEM_TYPE_TEXTALIGN',         40);
 
 /* used both for polling and reindexing */
 define('POLLER_ACTION_SNMP', 0);
@@ -193,6 +215,12 @@ define('GD_Y_MN_D', 5);
 
 define('GDC_HYPHEN', 0);
 define('GDC_SLASH', 1);
+
+define('CVDEF_ITEM_TYPE_FUNCTION', 1);
+define('CVDEF_ITEM_TYPE_OPERATOR', 2);
+define('CVDEF_ITEM_TYPE_SPEC_DS', 4);
+define('CVDEF_ITEM_TYPE_CDEF', 5);
+define('CVDEF_ITEM_TYPE_STRING', 6);
 
 define('SNMP_POLLER', 0);
 define('SNMP_CMDPHP', 1);
@@ -344,3 +372,4 @@ if ($database_type == 'mysql') {
 }
 
 define('MAX_DISPLAY_PAGES', 5);
+define('CHECKED', 'on');

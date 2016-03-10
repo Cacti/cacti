@@ -1196,4 +1196,86 @@ function upgrade_to_1_0_0() {
 	db_install_execute('1.0', 'ALTER TABLE user_auth ADD COLUMN reset_perms INT unsigned NOT NULL default "0" AFTER lastfail');
 
 	rsa_check_keypair();
+
+	db_install_execute('1.0', 'ALTER TABLE graph_templates_item ADD COLUMN vdef_id mediumint(8) unsigned NOT NULL default "0" AFTER cdef_id,
+		ADD COLUMN line_width DECIMAL(4,2) DEFAULT 0 AFTER graph_type_id, 
+		ADD COLUMN dashes varchar(20) DEFAULT NULL AFTER line_width,
+		ADD COLUMN dash_offset mediumint(4) DEFAULT NULL AFTER dashes,
+		ADD COLUMN shift char(2) DEFAULT NULL after vdef_id,
+		ADD COLUMN textalign varchar(10) DEFAULT NULL AFTER consolidation_function_id');
+
+	db_install_execute('1.0', 'ALTER TABLE graph_templates_graph ADD COLUMN t_alt_y_grid char(2) default "0" AFTER unit_exponent_value,
+		ADD COLUMN alt_y_grid char(2) default NULL AFTER t_alt_y_grid,
+		ADD COLUMN t_right_axis char(2) DEFAULT "0" AFTER alt_y_grid,
+		ADD COLUMN right_axis varchar(20) DEFAULT NULL AFTER t_right_axis,
+		ADD COLUMN t_right_axis_label char(2) DEFAULT "0" AFTER right_axis,
+		ADD COLUMN right_axis_label varchar(200) DEFAULT NULL AFTER t_right_axis_label,
+		ADD COLUMN t_right_axis_format char(2) DEFAULT "0" AFTER right_axis_label,
+		ADD COLUMN right_axis_format mediumint(8) DEFAULT NULL AFTER t_right_axis_format,
+		ADD COLUMN t_right_axis_formatter char(2) DEFAULT "0" AFTER right_axis_format,
+		ADD COLUMN right_axis_formatter varchar(10) DEFAULT NULL AFTER t_right_axis_formatter,
+		ADD COLUMN t_left_axis_formatter char(2) DEFAULT "0" AFTER right_axis_formatter,
+		ADD COLUMN left_axis_formatter varchar(10) DEFAULT NULL AFTER t_left_axis_formatter,
+		ADD COLUMN t_no_gridfit char(2) DEFAULT "0" AFTER left_axis_formatter,
+		ADD COLUMN no_gridfit char(2) DEFAULT NULL AFTER t_no_gridfit,
+		ADD COLUMN t_unit_length char(2) DEFAULT "0" AFTER no_gridfit,
+		ADD COLUMN unit_length varchar(10) DEFAULT NULL AFTER t_unit_length,
+		ADD COLUMN t_tab_width char(2) DEFAULT "0" AFTER unit_length,
+		ADD COLUMN tab_width varchar(10) DEFAULT NULL AFTER t_tab_width,
+		ADD COLUMN t_dynamic_labels char(2) default "0" AFTER tab_width,
+		ADD COLUMN dynamic_labels char(2) default NULL AFTER t_dynamic_labels,
+		ADD COLUMN t_force_rules_legend char(2) DEFAULT "0" AFTER dynamic_labels,
+		ADD COLUMN force_rules_legend char(2) DEFAULT NULL AFTER t_force_rules_legend,
+		ADD COLUMN t_legend_position char(2) DEFAULT "0" AFTER force_rules_legend,
+		ADD COLUMN legend_position varchar(10) DEFAULT NULL AFTER t_legend_position,
+		ADD COLUMN t_legend_direction char(2) DEFAULT "0" AFTER legend_position,
+		ADD COLUMN legend_direction varchar(10) DEFAULT NULL AFTER t_legend_direction');
+
+	/* create new table VDEF */
+	unset($data);
+	$data['columns'][] = array('name' => 'id', 'type' => 'mediumint(8)',    'unsigned' => 'unsigned', 'NULL' => false, 'auto_increment' => true);
+	$data['columns'][] = array('name' => 'hash', 'type' => 'varchar(32)', 'NULL' => false, 'default' => '');
+	$data['columns'][] = array('name' => 'name', 'type' => 'varchar(255)', 'NULL' => false, 'default' => '');
+	$data['keys'][] = array('name' => 'PRIMARY', 'columns' => 'id', 'primary' => true);
+	$data['type'] = 'MyISAM';
+	db_table_create('vdef', $data);
+
+	/* create new table VDEF_ITEMS */
+	unset($data);
+	$data['columns'][] = array('name' => 'id', 'type' => 'mediumint(8)',    'unsigned' => 'unsigned', 'NULL' => false, 'auto_increment' => true);
+	$data['columns'][] = array('name' => 'hash', 'type' => 'varchar(32)', 'NULL' => false, 'default' => '');
+	$data['columns'][] = array('name' => 'vdef_id', 'type' => 'mediumint(8)', 'unsigned' => 'unsigned', 'NULL' => false, 'default' => 0);
+	$data['columns'][] = array('name' => 'sequence', 'type' => 'mediumint(8)', 'unsigned' => 'unsigned', 'NULL' => false, 'default' => 0);
+	$data['columns'][] = array('name' => 'type', 'type' => 'tinyint(2)', 'NULL' => false, 'default' => 0);
+	$data['columns'][] = array('name' => 'value', 'type' => 'varchar(150)', 'NULL' => false, 'default' => '');
+	$data['keys'][] = array('name' => 'PRIMARY', 'columns' => 'id', 'primary' => true);
+	$data['keys'][] = array('name' => 'vdef_id', 'columns' => 'vdef_id');
+	$data['type'] = 'MyISAM';
+	db_table_create('vdef_items', $data);
+
+	/* fill table VDEF */
+	db_install_execute("1.0.0", "REPLACE INTO `vdef` VALUES (1, 'e06ed529238448773038601afb3cf278', 'Maximum');");
+	db_install_execute("1.0.0", "REPLACE INTO `vdef` VALUES (2, 'e4872dda82092393d6459c831a50dc3b', 'Minimum');");
+	db_install_execute("1.0.0", "REPLACE INTO `vdef` VALUES (3, '5ce1061a46bb62f36840c80412d2e629', 'Average');");
+	db_install_execute("1.0.0", "REPLACE INTO `vdef` VALUES (4, '06bd3cbe802da6a0745ea5ba93af554a', 'Last (Current)');");
+	db_install_execute("1.0.0", "REPLACE INTO `vdef` VALUES (5, '631c1b9086f3979d6dcf5c7a6946f104', 'First');");
+	db_install_execute("1.0.0", "REPLACE INTO `vdef` VALUES (6, '6b5335843630b66f858ce6b7c61fc493', 'Total: Current Data Source');");
+	db_install_execute("1.0.0", "REPLACE INTO `vdef` VALUES (7, 'c80d12b0f030af3574da68b28826cd39', '95th Percentage: Current Data Source');");
+
+	/* fill table VDEF */
+	db_install_execute("1.0.0", "REPLACE INTO `vdef_items` VALUES (1, '88d33bf9271ac2bdf490cf1784a342c1', 1, 1, 4, 'CURRENT_DATA_SOURCE');");
+	db_install_execute("1.0.0", "REPLACE INTO `vdef_items` VALUES (2, 'a307afab0c9b1779580039e3f7c4f6e5', 1, 2, 1, '1');");
+	db_install_execute("1.0.0", "REPLACE INTO `vdef_items` VALUES (3, '0945a96068bb57c80bfbd726cf1afa02', 2, 1, 4, 'CURRENT_DATA_SOURCE');");
+	db_install_execute("1.0.0", "REPLACE INTO `vdef_items` VALUES (4, '95a8df2eac60a89e8a8ca3ea3d019c44', 2, 2, 1, '2');");
+	db_install_execute("1.0.0", "REPLACE INTO `vdef_items` VALUES (5, 'cc2e1c47ec0b4f02eb13708cf6dac585', 3, 1, 4, 'CURRENT_DATA_SOURCE');");
+	db_install_execute("1.0.0", "REPLACE INTO `vdef_items` VALUES (6, 'a2fd796335b87d9ba54af6a855689507', 3, 2, 1, '3');");
+	db_install_execute("1.0.0", "REPLACE INTO `vdef_items` VALUES (7, 'a1d7974ee6018083a2053e0d0f7cb901', 4, 1, 4, 'CURRENT_DATA_SOURCE');");
+	db_install_execute("1.0.0", "REPLACE INTO `vdef_items` VALUES (8, '26fccba1c215439616bc1b83637ae7f3', 4, 2, 1, '5');");
+	db_install_execute("1.0.0", "REPLACE INTO `vdef_items` VALUES (9, 'a8993b265f4c5398f4a47c44b5b37a07', 5, 1, 4, 'CURRENT_DATA_SOURCE');");
+	db_install_execute("1.0.0", "REPLACE INTO `vdef_items` VALUES (10, '5a380d469d611719057c3695ce1e4eee', 5, 2, 1, '6');");
+	db_install_execute("1.0.0", "REPLACE INTO `vdef_items` VALUES (11, '65cfe546b17175fad41fcca98c057feb', 6, 1, 4, 'CURRENT_DATA_SOURCE');");
+	db_install_execute("1.0.0", "REPLACE INTO `vdef_items` VALUES (12, 'f330b5633c3517d7c62762cef091cc9e', 6, 2, 1, '7');");
+	db_install_execute("1.0.0", "REPLACE INTO `vdef_items` VALUES (13, 'f1bf2ecf54ca0565cf39c9c3f7e5394b', 7, 1, 4, 'CURRENT_DATA_SOURCE');");
+	db_install_execute("1.0.0", "REPLACE INTO `vdef_items` VALUES (14, '11a26f18feba3919be3af426670cba95', 7, 2, 6, '95');");
+	db_install_execute("1.0.0", "REPLACE INTO `vdef_items` VALUES (15, 'e7ae90275bc1efada07c19ca3472d9db', 7, 3, 1, '8');");
 }

@@ -249,7 +249,8 @@ $struct_data_source = array(
 		'max_length' => '250',
 		'size' => '80',
 		'default' => '',
-		'description' => 'Choose a name for this data source.',
+		'description' => 'Choose a name for this data source.  It can include replacement variables such as |host_description| or |query_fieldName|.
+            For a complete list of supported replacement tags, please see the Cacti documentation.',
 		'flags' => ''
 		),
 	'data_source_path' => array(
@@ -385,12 +386,18 @@ $fields_grprint_presets_edit = array(
 
 /* file: (graphs.php|graph_templates.php), action: (graph|template)_edit */
 $struct_graph = array(
+	'general_header' => array(
+		'friendly_name' => 'Common Options',
+		'collapsible' => 'true',
+		'method' => 'spacer',
+		),
 	'title' => array(
 		'friendly_name' => 'Title (--title)',
 		'method' => 'textbox',
 		'max_length' => '255',
 		'default' => '',
-		'description' => 'The name that is printed on the graph.',
+		'description' => 'The name that is printed on the graph.  It can include replacement variables such as |host_description| or |query_fieldName|.
+			For a complete list of supported replacement tags, please see the Cacti documentation.',
 		'size' => '80'
 		),
 	'vertical_label' => array(
@@ -413,7 +420,7 @@ $struct_graph = array(
 		'method' => 'textbox',
 		'max_length' => '50',
 		'default' => read_config_option('default_graph_height'),
-		'description' => 'The height (in pixels) that the graph is.',
+		'description' => 'The height (in pixels) of the graph area within the graph. This area does not include the legend, axis legends, or title.',
 		'size' => '7'
 		),
 	'width' => array(
@@ -421,15 +428,35 @@ $struct_graph = array(
 		'method' => 'textbox',
 		'max_length' => '50',
 		'default' => read_config_option('default_graph_width'),
-		'description' => 'The width (in pixels) that the graph is.',
+		'description' => 'The width (in pixels) of the graph area within the graph. This area does not include the legend, axis legends, or title.',
 		'size' => '7'
+		),
+	'base_value' => array(
+		'friendly_name' => 'Base Value (--base)',
+		'method' => 'textbox',
+		'max_length' => '50',
+		'default' => '1000',
+		'description' => 'Should be set to 1024 for memory and 1000 for traffic measurements.',
+		'size' => '12'
 		),
 	'slope_mode' => array(
 		'friendly_name' => 'Slope Mode (--slope-mode)',
 		'method' => 'checkbox',
 		'default' => 'on',
-		'description' => 'Using Slope Mode, in RRDtool 1.2.x and above, evens out the shape of the graphs at the expense of
+		'description' => 'Using Slope Mode evens out the shape of the graphs at the expense of
 			some on screen resolution.'
+		),
+	'export' => array(
+		'friendly_name' => 'Allow Graph Export',
+		'method' => 'checkbox',
+		'default' => 'on',
+		'description' => 'Choose whether this graph will be included in the static html/png export if you use
+			the Cacti export feature.'
+		),
+	'scaling_header' => array(
+		'friendly_name' => 'Scaling Options',
+		'collapsible' => 'true',
+		'method' => 'spacer',
 		),
 	'auto_scale' => array(
 		'friendly_name' => 'Auto Scale',
@@ -487,27 +514,12 @@ $struct_graph = array(
 		'default' => '',
 		'description' => 'Do not expand the lower and upper limit if the graph contains a value outside the valid range.'
 		),
-	'auto_padding' => array(
-		'friendly_name' => 'Auto Padding',
-		'method' => 'checkbox',
-		'default' => 'on',
-		'description' => 'Pad text so that legend and graph data always line up. Note: this could cause
-			graphs to take longer to render because of the larger overhead. Also Auto Padding may not
-			be accurate on all types of graphs, consistant labeling usually helps.'
-		),
-	'export' => array(
-		'friendly_name' => 'Allow Graph Export',
-		'method' => 'checkbox',
-		'default' => 'on',
-		'description' => 'Choose whether this graph will be included in the static html/png export if you use
-			Cactis export feature.'
-		),
 	'upper_limit' => array(
 		'friendly_name' => 'Upper Limit (--upper-limit)',
 		'method' => 'textbox',
 		'max_length' => '50',
 		'default' => '100',
-		'description' => 'The maximum vertical value for the rrd graph.',
+		'description' => 'The maximum vertical value for the graph.',
 		'size' => '12'
 		),
 	'lower_limit' => array(
@@ -515,23 +527,20 @@ $struct_graph = array(
 		'method' => 'textbox',
 		'max_length' => '255',
 		'default' => '0',
-		'description' => 'The minimum vertical value for the rrd graph.',
+		'description' => 'The minimum vertical value for the graph.',
 		'size' => '12'
 		),
-	'base_value' => array(
-		'friendly_name' => 'Base Value (--base)',
-		'method' => 'textbox',
-		'max_length' => '50',
-		'default' => '1000',
-		'description' => 'Should be set to 1024 for memory and 1000 for traffic measurements.',
-		'size' => '12'
+	'grid_header' => array(
+		'friendly_name' => 'Grid Options',
+		'collapsible' => 'true',
+		'method' => 'spacer',
 		),
 	'unit_value' => array(
 		'friendly_name' => 'Unit Grid Value (--unit/--y-grid)',
 		'method' => 'textbox',
 		'max_length' => '50',
 		'default' => '',
-		'description' => 'Sets the xponent value on the Y-axis for numbers. Note: This option is
+		'description' => 'Sets the exponent value on the Y-axis for numbers. Note: This option is
 			depricated and replaced by the --y-grid option.  In this option, Y-axis grid lines appear
 			at each grid step interval.  Labels are placed every label factor lines.',
 		'size' => '12'
@@ -544,7 +553,132 @@ $struct_graph = array(
 		'description' => 'What unit cacti should use on the Y-axis. Use 3 to display everything in "k" or -6
 			to display everything in "u" (micro).',
 		'size' => '12'
-		)
+		),
+	'unit_length' => array(
+		'friendly_name' => 'Unit Length (--units-length &lt;length&gt;)',
+		'method' => 'textbox',
+		'max_length' => '50',
+		'default' => '',
+		'size' => '30',
+		'description' => 'How many digits should rrdtool assume the y-axis labels to be? You may have to use this 
+			option to make enough space once you start fiddeling with the y-axis labeling.',
+        ),
+	'no_gridfit' => array(
+		'friendly_name' => 'No Gridfit (--no-gridfit)',
+		'method' => 'checkbox',
+		'default' => '',
+		'description' => 'In order to avoid anti-aliasing blurring effects rrdtool snaps points to device 
+			resolution pixels, this results in a crisper appearance. If this is not to your liking, you can 
+			use this switch to turn this behaviour off.<br><strong>Note: </strong>Gridfitting is turned off for PDF, EPS, SVG output by default.',
+		),
+	'alt_y_grid' => array(
+		'friendly_name' => 'Alternative Y Grid (--alt-y-grid)',
+		'method' => 'checkbox',
+		'default' => '',
+		'description' => 'The algorithm ensures that you always have a grid, that there are enough but not too many grid lines, 
+			and that the grid is metric. This parameter will also ensure that you get enough decimals displayed 
+			even if your graph goes from 69.998 to 70.001.<br><strong>Note: </strong>This parameter may interfere with --alt-autoscale options.',
+		),
+	'axis_header' => array(
+		'friendly_name' => 'Axis Options',
+		'collapsible' => 'true',
+		'method' => 'spacer',
+		),
+	'right_axis' => array(
+		'friendly_name' => 'Right Axis (--right-axis &lt;scale:shift&gt;)',
+		'method' => 'textbox',
+		'max_length' => '20',
+		'default' => '',
+		'size' => '20',
+		'description' => 'A second axis will be drawn to the right of the graph. It is tied to the left axis via the 
+			scale and shift parameters.',
+		),
+	'right_axis_label' => array(
+		'friendly_name' => 'Right Axis Label (--right-axis-label &lt;string&gt;)',
+		'method' => 'textbox',
+		'max_length' => '200',
+		'default' => '',
+		'size' => '30',
+		'description' => 'The label for the right axis.',
+        ),
+	'right_axis_format' => array(
+		'friendly_name' => 'Right Axis Format (--right-axis-format &lt;format&gt;)',
+		'method' => 'drop_sql',
+		'sql' => 'select id,name from graph_templates_gprint order by name',
+		'default' => '0',
+		'none_value' => 'None',
+		'description' => 'By default the format of the axis lables gets determined automatically. 
+			If you want to do this yourself, use this option with the same %lf arguments you know from the PRINT and GPRINT commands.',
+		),
+	'right_axis_formatter' => array(
+		'friendly_name' => 'Right Axis Formatter (--right-axis-formatter &lt;formatname&gt;)',
+		'method' => 'drop_array',
+		'array' => $rrd_axis_formatters,
+		'default' => '0',
+		'none_value' => 'None',
+		'description' => 'When you setup the right axis labeling, apply a rule to the data format.  Supported formats include "numeric" where
+			data is treated as numeric, "timestamp" where values are interpreted as unix timestamps (number of seconds since January 1970)
+			and expressed using strftime format (default is "%Y-%m-%d %H:%M:%S").  See also --units-length and --left-axis-format.  Finally
+			"duration" where values are interpreted as duration in milliseconds.  Formatting follows the rules of valstrfduration qualified PRINT/GPRINT.',
+		),
+	'left_axis_formatter' => array(
+		'friendly_name' => 'Left Axis Formatter (--left-axis-formatter &lt;formatname&gt;)',
+		'method' => 'drop_array',
+		'array' => $rrd_axis_formatters,
+		'default' => '0',
+		'none_value' => 'None',
+		'description' => 'When you setup the right axis labeling, apply a rule to the data format.  Supported formats include "numeric" where
+			data is treated as numeric, "timestamp" where values are interpreted as unix timestamps (number of seconds since January 1970)
+			and expressed using strftime format (default is "%Y-%m-%d %H:%M:%S").  See also --units-length and --left-axis-format.  Finally
+			"duration" where values are interpreted as duration in milliseconds.  Formatting follows the rules of valstrfduration qualified PRINT/GPRINT.',
+		),
+	'legend_header' => array(
+		'friendly_name' => 'Legend Options',
+		'collapsible' => 'true',
+		'method' => 'spacer',
+		),
+	'auto_padding' => array(
+		'friendly_name' => 'Auto Padding',
+		'method' => 'checkbox',
+		'default' => 'on',
+		'description' => 'Pad text so that legend and graph data always line up. Note: this could cause
+			graphs to take longer to render because of the larger overhead. Also Auto Padding may not
+			be accurate on all types of graphs, consistant labeling usually helps.'
+		),
+	'dynamic_labels' => array(
+		'friendly_name' => 'Dynamic Labels (--dynamic-labels)',
+		'method' => 'checkbox',
+		'default' => '',
+		'description' => 'Draw line markers as a line.',
+		),
+	'force_rules_legend' => array(
+		'friendly_name' => 'Force Rules Legend (--force-rules-legend)',
+		'method' => 'checkbox',
+		'default' => '',
+		'description' => 'Force the generation of HRULE and VRULE legends.',
+		),
+	'tab_width' => array(
+		'friendly_name' => 'Tab Width (--tabwidth &lt;pixels&gt;)',
+		'method' => 'textbox',
+		'max_length' => '50',
+		'default' => '',
+		'size' => '10',
+		'description' => 'By default the tab-width is 40 pixels, use this option to change it.'
+		),
+	'legend_position' => array(
+		'friendly_name' => 'Legend Position (--legend-position=&lt;position&gt;)',
+		'method' => 'drop_array',
+		'array' => $rrd_legend_position,
+		'none_value' => 'None',
+		'description' => 'Place the legend at the given side of the graph.',
+		),
+	'legend_direction' => array(
+		'friendly_name' => 'Legend Direction (--legend-direction=&lt;direction&gt;)',
+		'method' => 'drop_array',
+		'array' => $rrd_legend_direction,
+		'none_value' => 'None',
+		'description' => 'Place the legend items in the given vertical order.',
+		),
 	);
 
 /* file: (graphs.php|graph_templates.php), action: item_edit */
@@ -570,6 +704,30 @@ $struct_graph_item = array(
 		'default' => '0',
 		'none_value' => 'None',
 		'description' => 'The data source to use for this graph item.'
+		),
+	'line_width' => array(
+		'friendly_name' => 'Line Width (decimal)',
+		'method' => 'textbox',
+		'max_length' => '5',
+		'default' => '',
+		'size' => '5',
+		'description' => 'In case LINE was chosen, specify width of line here.',
+		),
+	'dashes' => array(
+		'friendly_name' => 'Dashes (dashes[=on_s[,off_s[,on_s,off_s]...]])',
+		'method' => 'textbox',
+		'max_length' => '20',
+		'default' => '',
+		'size' => '20',
+		'description' => 'The dashes modifier enables dashed line style.',
+		),
+	'dash_offset' => array(
+		'friendly_name' => 'Dash Offset (dash-offset=offset)',
+		'method' => 'textbox',
+		'max_length' => '4',
+		'default' => '',
+		'size' => '4',
+		'description' => 'The dash-offset parameter specifies an offset into the pattern at which the stroke begins.',
 		),
 	'color_id' => array(
 		'friendly_name' => 'Color',
@@ -598,7 +756,21 @@ $struct_graph_item = array(
 		'sql' => 'SELECT id,name FROM cdef ORDER BY name',
 		'default' => '0',
 		'none_value' => 'None',
-		'description' => 'A CDEF (math) function to apply to this item on the graph.'
+		'description' => 'A CDEF (math) function to apply to this item on the graph or legend.'
+		),
+	'vdef_id' => array(
+		'friendly_name' => 'VDEF Function',
+		'method' => 'drop_sql',
+		'sql' => 'SELECT id, name FROM vdef ORDER BY name',
+		'default' => '0',
+		'none_value' => 'None',
+		'description' => 'A VDEF (math) function to apply to this item on the graph legend.'
+		),
+	'shift' => array(
+		'friendly_name' => 'Shift Data',
+		'method' => 'checkbox',
+		'default' => '',
+		'description' => "Offset your data on the time axis (x-axis) by the amount specified in the 'value' field.",
 		),
 	'value' => array(
 		'friendly_name' => 'Value',
@@ -606,7 +778,9 @@ $struct_graph_item = array(
 		'max_length' => '50',
 		'size' => '40',
 		'default' => '',
-		'description' => 'The value of an HRULE or VRULE graph item.'
+		'description' =>  '[HRULE|VRULE]: The value of the graph item.<br/>
+			[TICK]: The fraction for the tick line.<br/>
+			[SHIFT]: The time offset in seconds.'
 		),
 	'gprint_id' => array(
 		'friendly_name' => 'GPRINT Type',
@@ -615,6 +789,16 @@ $struct_graph_item = array(
 		'default' => '2',
 		'description' => 'If this graph item is a GPRINT, you can optionally choose another format
 			here. You can define additional types under "GPRINT Presets".'
+		),
+	'textalign' => array(
+		'friendly_name' => 'Text Alignment' . ' (TEXTALIGN)',
+		'method' => 'drop_array',
+		'value' => '|arg1:textalign|',
+		'array' => $rrd_textalign,
+		'none_value' => 'None',
+		'description' => 'All subsequent legend line(s) will be aligned as given here.  You may use this command multiple times in a single graph.
+			This command does not produce tabular layout.<br/><strong>Note: </strong>You may want to insert a &lt;HR&gt; on the preceding graph item.<br/>
+			<strong>Note: </strong>A &lt;HR&gt; on this legend line will obsolete this setting!',
 		),
 	'text_format' => array(
 		'friendly_name' => 'Text Format',
