@@ -299,15 +299,10 @@ default:
 
 		if ($('#boost_rrd_update_enable')) {
 			initBoostOD();
-			initBoostServer();
 			initBoostCache();
 
 			$('#boost_rrd_update_enable').change(function() {
 				initBoostOD();
-			});
-
-			$('#boost_server_enable').change(function() {
-				initBoostServer();
 			});
 
 			$('#boost_png_cache_enable').change(function() {
@@ -391,26 +386,6 @@ default:
 			$('#row_boost_poller_mem_limit').hide();
 			$('#row_boost_rrd_update_max_runtime').hide();
 			$('#row_boost_redirect').hide();
-		}
-	}
-
-	function initBoostServer() {
-		if ($('#boost_server_enable').is(':checked')){
-			$('#row_boost_server_effective_user').show();
-			$('#row_boost_server_multiprocess').show();
-			$('#row_boost_path_rrdupdate').show();
-			$('#row_boost_server_hostname').show();
-			$('#row_boost_server_listen_port').show();
-			$('#row_boost_server_timeout').show();
-			$('#row_boost_server_clients').show();
-		}else{
-			$('#row_boost_server_effective_user').hide();
-			$('#row_boost_server_multiprocess').hide();
-			$('#row_boost_path_rrdupdate').hide();
-			$('#row_boost_server_hostname').hide();
-			$('#row_boost_server_listen_port').hide();
-			$('#row_boost_server_timeout').hide();
-			$('#row_boost_server_clients').hide();
 		}
 	}
 

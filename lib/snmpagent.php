@@ -73,11 +73,6 @@ function snmpagent_global_settings_update(){
 	$mc->object('boostApplRrdUpdatePollerMemLimit')->set( read_config_option("boost_poller_mem_limit", true) );
 	$mc->object('boostApplRrdUpdateMaxRunTime')->set( read_config_option("boost_rrd_update_max_runtime", true) );
 	$mc->object('boostApplRrdUpdateRedirect')->set( (read_config_option("boost_redirect", true) == "on") ? 1 : 2 );
-	$mc->object('boostApplServerEnabled')->set( (read_config_option("boost_server_enable", true) == "on") ? 1 : 2 );
-	$mc->object('boostApplServerMultiprocess')->set( (read_config_option("boost_server_multiprocess", true) == "on") ? 1 : 2 );
-	$mc->object('boostApplServerHostname')->set( read_config_option("boost_server_hostname", true) );
-	$mc->object('boostApplServerListenPort')->set( read_config_option("boost_server_listen_port", true) );
-	$mc->object('boostApplServerTimeOuts')->set( read_config_option("boost_server_timeout", true) );
 	$mc->object('boostApplImageCacheEnabled')->set( (read_config_option("boost_png_cache_enable", true) == "on") ? 1 : 2 );
 	$mc->object('boostApplLoggingEnabled')->set( (read_config_option("path_boost_log", true) == true) ? 1 : 2 );
 	$mc->object('boostApplLastUpdate')->set( time() );
