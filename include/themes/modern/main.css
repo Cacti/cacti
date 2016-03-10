@@ -967,7 +967,7 @@ th.sortable {
 }
 
 .graphSubHeaderColumn {
-	color: #snow;
+	color: snow;
 	font-size:12px;
 	vertical-align:middle;
 	text-align:left;
@@ -1162,6 +1162,22 @@ th.sortable {
 	padding:2px;
 }
 
+.cactiTooltipHint {
+	cursor: pointer;
+	color: #627D4D;
+	padding:0px 4px;
+	font-size: 14px;
+}
+
+.ui-tooltip-content {
+	min-width: 100px !important;
+	max-width: 500px !important;
+	overflow:auto !important;
+	opacity: 0.95;
+	border-radius: 5px !important;
+	border: transparent;
+}
+
 td.tab {
 	border-top: 1px solid #999;
 	border-right: 1px solid #666;
@@ -1258,10 +1274,12 @@ div#gtabs {
 	background:#fff;
 	border-bottom:1px solid #fff;
 }
+
 .tabs li.current a:hover, .maintabs li.current a:hover {
 	background:#fff;
 	border-bottom:1px solid #fff;
 }
+
 .tabs nav, .maintabs nav {
 	border-bottom:1px solid #ccc;
 	padding:0 0 0 4px;

@@ -727,6 +727,21 @@ legend {
 	line-height:10px;
 }
 
+.cactiTooltipHint {
+	cursor: pointer;
+	padding:0px 4px;
+	font-size: 14px;
+}
+
+.ui-tooltip-content {
+	min-width: 100px !important;
+	max-width: 500px !important;
+	overflow:auto !important;
+	opacity: 0.95;
+	border-radius: 5px !important;
+	border: transparent;
+}
+
 .loginPanel {
 	padding:4px 0px;
 }

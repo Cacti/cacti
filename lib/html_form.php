@@ -69,9 +69,16 @@ function draw_edit_form($array) {
 					form_alternate_row('row_' . $field_name);
 				}
 
-				print "<td style='width:" . ((isset($config_array["left_column_width"])) ? $config_array["left_column_width"] . "px;":"50%;") . "'>\n<span class='formItemName'>" . $field_array["friendly_name"] . "</span><br>\n";
+				print "<td style='width:" . ((isset($config_array["left_column_width"])) ? $config_array["left_column_width"] . "px;":"50%;") . "'>\n<span class='formItemName'>" . $field_array["friendly_name"] . "</span>\n";
+
+				if (read_config_option('hide_form_description') == 'on') {
+					print '<br><span class="formItemDescription">' . ((isset($field_array["description"])) ? $field_array["description"] : "") . "<br></span>\n";
+				}else{
+					print '<div class="cactiTooltipHint fa fa-question-circle"><span style="display:none;">' . ((isset($field_array["description"])) ? $field_array["description"] : "") . "</span></div>\n";
+				}
 
 				if (isset($field_array["sub_checkbox"])) {
+					print "<br>\n";
 					form_checkbox($field_array["sub_checkbox"]["name"],
 						$field_array["sub_checkbox"]["value"],
 						$field_array["sub_checkbox"]["friendly_name"],
@@ -81,9 +88,7 @@ function draw_edit_form($array) {
 						((isset($field_array["sub_checkbox"]["on_change"])) ? $field_array["sub_checkbox"]["on_change"] : ""));
 				}
 
-				print '<span class="formItemDescription">' . ((isset($field_array["description"])) ? $field_array["description"] : "") . "</span></td>\n";
-
-				print "<td>";
+				print "</td><td>";
 
 				draw_edit_control($field_name, $field_array);
 
@@ -92,6 +97,25 @@ function draw_edit_form($array) {
 
 			$i++;
 		}
+	}
+
+	if (read_config_option('hide_form_description') == '') {
+		?>
+		<script type='text/javascript'>
+		$(function() { 
+			$('.cactiTooltipHint').tooltip({ 
+				tooltipClass: 'cactiTooltip', 
+				items: 'div',
+				hide: { effect: 'fadeOut', duration: 500 },
+				content: function() { 
+					var element = $(this);
+					var text = $(this).find('span').html();
+					return text;
+				} 
+			}) 
+		});
+		</script>
+		<?php
 	}
 }
 

@@ -457,9 +457,8 @@ function template_edit() {
 		$form_array += array($field_name => $struct_data_source[$field_name]);
 
 		if ($field_array['flags'] == 'ALWAYSTEMPLATE') {
-			$form_array[$field_name]['description'] = '<em>This field is always templated.</em>';
+			$form_array[$field_name]['description'] .= '<br><em>This field is always templated.</em>';
 		}else{
-			$form_array[$field_name]['description'] = '';
 			$form_array[$field_name]['sub_checkbox'] = array(
 				'name' => 't_' . $field_name,
 				'friendly_name' => 'Use Per-Data Source Value (Ignore this Value)',
@@ -534,13 +533,12 @@ function template_edit() {
 	while (list($field_name, $field_array) = each($struct_data_source_item)) {
 		$form_array += array($field_name => $struct_data_source_item[$field_name]);
 
-		$form_array[$field_name]['description'] = '';
 		$form_array[$field_name]['value'] = (isset($template_rrd) ? $template_rrd[$field_name] : '');
 		$form_array[$field_name]['sub_checkbox'] = array(
 			'name' => 't_' . $field_name,
 			'friendly_name' => 'Use Per-Data Source Value (Ignore this Value)',
 			'value' => (isset($template_rrd) ? $template_rrd{'t_' . $field_name} : '')
-			);
+		);
 	}
 
 	draw_edit_form(
