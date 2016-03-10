@@ -489,12 +489,6 @@ function loadPage(href) {
 
 function loadPageNoHeader(href) {
 	$.get(href, function(data) {
-		if (typeof window.history.pushState !== 'undefined') {
-			href = href.replace('header=false', '');
-			href = href.replace('&&', '&');
-			window.history.pushState({page: href}, myTitle, href);
-		}
-
 		$('#main').html(data);
 
 		applySkin();
