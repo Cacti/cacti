@@ -1136,8 +1136,7 @@ function boost_rrdtool_function_update($local_data_id, $rrd_path, $rrd_update_te
 	}
 
 	if ($valid_entry) {
-		return rrdtool_execute("update $rrd_path --template $rrd_update_template $rrd_update_values", false, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'BOOST');
-			}else{
+		rrdtool_execute("update $rrd_path --template $rrd_update_template $rrd_update_values", false, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'BOOST');
 		return 'OK';
 	}
 }
