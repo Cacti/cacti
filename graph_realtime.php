@@ -27,6 +27,8 @@ $guest_account = true;
 include('./include/auth.php');
 include_once('./lib/rrd.php');
 
+$config['force_storage_location_local'] = true;
+
 set_default_action();
 
 switch (get_request_var('action')) {

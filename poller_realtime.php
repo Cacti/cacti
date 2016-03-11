@@ -37,7 +37,10 @@ include_once($config["base_path"] . "/lib/data_query.php");
 include_once($config["base_path"] . "/lib/graph_export.php");
 include_once($config["base_path"] . "/lib/rrd.php");
 
-/* initialize some variables */
+/* force Cacti to store realtime data locally */
+$config['force_storage_location_local'] = true;
+
+/* initialize some additional variables */
 $force     = FALSE;
 $debug     = FALSE;
 $graph_id  = FALSE;

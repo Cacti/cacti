@@ -38,9 +38,11 @@ function escape_command($command) {
 	#TODO return preg_replace((\\\$(?=\w+|\*|\@|\#|\?|\-|\\\$|\!|\_|[0-9]|\(.*\))|`(?=.*(?=`)))","$2", $command);  #suggested by ldevantier to allow for a single $
 }
 
-function rrd_init($output_to_term = TRUE, $force_storage_location_local = FALSE) {
+function rrd_init($output_to_term = TRUE) {
 	global $config;
+	
 	$args = func_get_args();
+	$force_storage_location_local = ( isset($config['force_storage_location_local']) && $config['force_storage_location_local'] === true ) ? true : false;
 	$function = (read_config_option('storage_location') && $force_storage_location_local === false ) ? '__rrd_proxy_init' : '__rrd_init';
 	return call_user_func_array($function, $args);
 }
@@ -131,7 +133,7 @@ function __rrd_proxy_init() {
 function rrd_close() {
 	global $config;
 	$args = func_get_args();
-	$function = read_config_option('storage_location') ? '__rrd_proxy_close' : '__rrd_close';
+	$function = (read_config_option('storage_location') && $config['force_storage_location_local'] === false ) ? '__rrd_proxy_close' : '__rrd_close';
 	return call_user_func_array($function, $args);
 }
 
@@ -190,7 +192,8 @@ function decrypt($input){
 function rrdtool_execute() {
 	global $config;
 	$args = func_get_args();
-	$function = read_config_option('storage_location') ? '__rrd_proxy_execute' : '__rrd_execute';
+	$force_storage_location_local = ( isset($config['force_storage_location_local']) && $config['force_storage_location_local'] === true ) ? true : false;
+	$function = (read_config_option('storage_location') && $force_storage_location_local === false ) ? '__rrd_proxy_execute' : '__rrd_execute';
 	return call_user_func_array($function, $args);
 }
 
@@ -2071,7 +2074,6 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 				return 0;
 			}elseif (isset($graph_data_array['export_realtime'])) {
 			
-				$rrdtool_pipe = rrd_init(true, false); 
 				$output_flag = RRDTOOL_OUTPUT_GRAPH_DATA;
 				$output = rrdtool_execute("graph $graph_opts$graph_defs$txt_graph_items", false, $output_flag, $rrdtool_pipe);
 
