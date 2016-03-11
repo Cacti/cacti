@@ -631,9 +631,9 @@ ul#breadcrumbs {
 	position:relative;
 	padding:30px 0px 5px 20px;
 	background-color:snow;
-	top:30%;
+	top:10%;
 	max-width:360px;
-	max-height:300px;
+	max-height:450px;
 	margin-left:auto;
 	margin-right:auto;
 	background: rgba(255,255,255,1);
@@ -644,7 +644,6 @@ ul#breadcrumbs {
 	background: -ms-linear-gradient(top, rgba(255,255,255,1) 0%, rgba(246,246,246,1) 47%, rgba(237,237,237,1) 100%);
 	background: linear-gradient(to bottom, rgba(255,255,255,1) 0%, rgba(246,246,246,1) 47%, rgba(237,237,237,1) 100%);
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#ededed', GradientType=0 );
-	text-shadow: 1px 1px 1px rgba(9, 61, 16, 0.66);
 }
 
 .cactiLoginLogo, .cactiLogoutLogo {

@@ -74,7 +74,25 @@ set_default_action();
 
 switch (get_request_var('action')) {
 case 'changepassword':
-	if ($user['password'] != md5(get_nfilter_request_var('current_password'))) {
+
+
+	// Secpass checking
+
+	$error = secpass_check_pass(get_nfilter_request_var('password'));
+	
+	if ($error != 'ok') {
+		$bad_password = true;
+		$errorMessage = "<span color='#FF0000'>$error</span>";
+
+	}
+			
+	if (!secpass_check_history($_SESSION['sess_user_id'], get_nfilter_request_var('password'))) {
+		$bad_password = true;
+		$errorMessage = "<span color='#FF0000'>You can not use a previously entered password!</span>";
+	}
+
+	// Password and Confirmed password checks
+		if ($user['password'] != md5(get_nfilter_request_var('current_password'))) {
 		$bad_password = true;
 		$errorMessage = "<span color='#FF0000'>Your current password is not correct.  Please try again.</span>";
 	}
@@ -83,21 +101,13 @@ case 'changepassword':
 		$bad_password = true;
 		$errorMessage = "<span color='#FF0000'>Your new password can not be the same as the old password.  Please try again.</span>";
 	}
-
-	// Secpass checking
-
-	$error = secpass_check_pass(get_nfilter_request_var('password'));
-	if ($error != '') {
-		$bad_password = true;
-		$errorMessage = "<span color='#FF0000'>$error</span>";
-
+	
+		if (get_nfilter_request_var('password') !== (get_nfilter_request_var('confirm'))) {
+	    $bad_password = true;
+		$errorMessage = "<span color='#FF0000'>Your new passwords do not match, please retype.</span>";
 	}
-	if (!secpass_check_history($_SESSION['sess_user_id'], get_nfilter_request_var('password'))) {
-		$bad_password = true;
-		$errorMessage = "<span color='#FF0000'>You can not use a previously entered password!</span>";
-	}
-
-	if ($bad_password == false && get_nfilter_request_var('password') == get_nfilter_request_var('confirm') && get_nfilter_request_var('password') != '') {
+	
+		if ($bad_password == false && get_nfilter_request_var('password') == get_nfilter_request_var('confirm') && get_nfilter_request_var('password') != '') {
 		// Password change is good to go
 		if (read_config_option('secpass_expirepass') > 0) {
 				db_execute("UPDATE user_auth SET lastchange = " . time() . " WHERE id = " . intval($_SESSION['sess_user_id']) . " AND realm = 0 AND enabled = 'on'");
@@ -162,9 +172,7 @@ if (api_plugin_hook_function('custom_password', OPER_MODE_NATIVE) == OPER_MODE_R
 	exit;
 }
 
-if ($bad_password && $errorMessage == "") {
-	$errorMessage = "<span color='#FF0000'>Your new passwords do not match, please retype.</span>";
-}elseif (get_request_var('action') == 'force') {
+if (get_request_var('action') == 'force') {
 	$errorMessage = "<span color='#FF0000'>*** Forced password change ***</span>";
 }
 
@@ -196,6 +204,11 @@ print "<body class='loginBody'>
 				<input type='hidden' name='name' value='" . (isset($user['username']) ? $user['username'] : '') . "'>
 				<div class='loginTitle'>
 					<p>Please enter your current password and your new<br>Cacti password.</p>
+					Password Policy: <br>
+					* Minimum length - 8 Characters <br>
+					* At least 1 Special Character [!@#$%^&*(){}}]<br>
+					* At least 1 Uppercase Character <br>
+					* Not previously used password <br><br>
 				</div>
 				<div class='cactiLogin'>
 					<table class='cactiLoginTable'>
@@ -209,7 +222,7 @@ print "<body class='loginBody'>
 						</tr>
 						<tr>
 							<td>Confirm new password</td>
-							<td><input type='password' name='confirm' autocomplete='off' size='20' placeholder='********'></td>
+							<td><input type='password' id='confirm' name='confirm' autocomplete='off' size='20' placeholder='********'></td>
 						</tr>
 						<tr>
 							<td><input type='submit' value='Save'></td>
