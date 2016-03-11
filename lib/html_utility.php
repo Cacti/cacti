@@ -624,7 +624,7 @@ function get_page_list($current_page, $pages_per_screen, $rows_per_page, $total_
 
 	/* adjust if we are close to the beginning of the page list */
 	if ($current_page > ceil($pages_per_screen/2)) {
-		$url_page_select .= "<li><a href='#' onClick='goto$page_var(1)'>1</a></li>";
+		$url_page_select .= "<li><a href='#' onClick='goto$page_var(1);return false'>1</a></li>";
 		$url_page_select .= '<li><span>...</span></li>';
 	}
 	if ($current_page <= ceil(($pages_per_screen) / 2)) {
@@ -644,24 +644,24 @@ function get_page_list($current_page, $pages_per_screen, $rows_per_page, $total_
 		$page = $page_number + $start_page;
 		if ($page_number < $pages_per_screen) {
 			if ($current_page == $page) {
-				$url_page_select .= "<li><a href='#' class='active' onClick='goto$page_var($page)'>$page</a></li>";
+				$url_page_select .= "<li><a href='#' class='active' onClick='goto$page_var($page);return false'>$page</a></li>";
 			}else{
-				$url_page_select .= "<li><a href='#' onClick='goto$page_var($page)'>$page</a></li>";
+				$url_page_select .= "<li><a href='#' onClick='goto$page_var($page);return false'>$page</a></li>";
 			}
 		}
 	}
 
 	if (($total_pages - $current_page) >= ceil(($pages_per_screen) / 2)) {
 		$url_page_select .= '<li><span>...</span></li>';
-		$url_page_select .= "<li><a href='#' onClick='goto$page_var($total_pages)'>$total_pages</a></li>";
+		$url_page_select .= "<li><a href='#' onClick='goto$page_var($total_pages);return false'>$total_pages</a></li>";
 	}
 
 	$url_page_select .= '</ul>';
 
 	if ($return_to != '') {
-		$url_page_select .= "<script type='text/javascript'>function goto$page_var(pageNo) { if (typeof url_graph === 'function') { var url_add=url_graph('') }else{ var url_add=''; }; $.get('${url}&header=false&$page_var='+pageNo+url_add,function(data) { $('#$return_to').html(data); applySkin(); if (typeof initializeGraphs == 'function') initializeGraphs();}); }</script>";
+		$url_page_select .= "<script type='text/javascript'>function goto$page_var(pageNo) { if (typeof url_graph === 'function') { var url_add=url_graph('') }else{ var url_add=''; }; $.get('${url}header=false&$page_var='+pageNo+url_add,function(data) { $('#$return_to').html(data); applySkin(); if (typeof initializeGraphs == 'function') initializeGraphs();}); }</script>";
 	}else{
-		$url_page_select .= "<script type='text/javascript'>function goto${page_var}(pageNo) { if (typeof url_graph === 'function') { var url_add=url_graph('') }else{ var url_add=''; }; document.location='$url&$page_var='+pageNo+url_add }</script>";
+		$url_page_select .= "<script type='text/javascript'>function goto${page_var}(pageNo) { if (typeof url_graph === 'function') { var url_add=url_graph('') }else{ var url_add=''; }; document.location='$url$page_var='+pageNo+url_add }</script>";
 	}
 
 	return $url_page_select;
