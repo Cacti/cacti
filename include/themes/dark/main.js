@@ -238,6 +238,7 @@ function setMenuVisibility() {
 
 	// Functon to give life to the Navigation pane
 	$('#nav li:has(ul) a.active').unbind().click(function() {
+		event.preventDefault();
 		if ($(this).next().is(':visible')){
 			$(this).next().slideUp( { duration: 200, easing: 'swing' } );
 			storage.set($(this).text(), 'collapsed');
