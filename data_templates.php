@@ -183,7 +183,7 @@ function form_save() {
 
 		/* update actual host template information for live hosts */
 		if ((!is_error_message()) && ($save2['id'] > 0)) {
-			db_execute_prepared('UPDATE data_template_data set data_input_id = ? WHERE data_template_id = ?', array(get_request_var('data_input_id'), get_request_var('data_template_id')));
+			db_execute_prepared('UPDATE data_template_data SET data_input_id = ? WHERE data_template_id = ?', array(get_request_var('data_input_id'), get_request_var('data_template_id')));
 		}
 
 		if (!is_error_message()) {
@@ -235,7 +235,7 @@ function form_save() {
 							$template_this_item = '';
 						}
 
-						if ((!empty($form_value)) || (!isempty_request_var('t_value_' . $input_field['data_name']))) {
+						if ((!isempty_request_var($form_value)) || (!isempty_request_var('t_value_' . $input_field['data_name']))) {
 							db_execute_prepared('INSERT INTO data_input_data (data_input_field_id, data_template_data_id, t_value, value)
 								values (?, ?, ?, ?)', array($input_field['id'], $data_template_data_id, $template_this_item, trim(get_nfilter_request_var($form_value)) ));
 						}
@@ -418,7 +418,7 @@ function template_rrd_add() {
 }
 
 function template_edit() {
-	global $struct_data_source, $struct_data_source_item, $data_source_types, $fields_data_template_template_edit;
+	global $struct_data_source, $struct_data_source_item, $data_source_types, $fields_data_template_template_edit, $fields_host_edit;
 
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
@@ -565,24 +565,38 @@ function template_edit() {
 		/* loop through each field found */
 		if (sizeof($fields) > 0) {
 			foreach ($fields as $field) {
-				$data_input_data = db_fetch_row('SELECT t_value,value FROM data_input_data WHERE data_template_data_id=' . $template_data['id'] . ' AND data_input_field_id=' . $field['id']);
+				$data_input_data = db_fetch_row_prepared('SELECT t_value, value 
+					FROM data_input_data 
+					WHERE data_template_data_id = ?
+					AND data_input_field_id = ?', array($template_data['id'], $field['id']));
 
-				if (sizeof($data_input_data) > 0) {
-					$old_value = $data_input_data['value'];
+				if (sizeof($data_input_data)) {
+					$old_value  = $data_input_data['value'];
+					$old_tvalue = $data_input_data['t_value'];
 				}else{
-					$old_value = '';
+					$old_value  = '';
+					$old_tvalue = '';
+				}
+
+				if ($field['data_name'] == 'management_ip') {
+					$help = $fields_host_edit['hostname']['description'];
+				}elseif (isset($fields_host_edit[$field['data_name']])) {
+					$help = $fields_host_edit[$field['data_name']]['description'];
+				}else{
+					$help = $field['name'];
 				}
 
 				form_alternate_row();
 
 				?>
 				<td style='width:50%;'>
-					<strong><?php print $field['name'];?></strong><br>
-					<?php form_checkbox('t_value_' . $field['data_name'], $data_input_data['t_value'], 'Use Per-Data Source Value (Ignore this Value)', '', '', get_request_var('id'));?>
+					<strong><?php print $field['name'];?></strong><?php print display_tooltip($help);?><br>
+
+					<?php form_checkbox('t_value_' . $field['data_name'], $old_tvalue, 'Use Per-Data Source Value (Ignore this Value)', '', '', get_request_var('id'));?>
 				</td>
 				<td>
-					<?php form_text_box('value_' . $field['data_name'],$old_value,'','');?>
-					<?php if ((preg_match('/^' . VALID_HOST_FIELDS . '$/i', $field['type_code'])) && ($data_input_data['t_value'] == '')) { print "<br><em>Value will be derived from the host if this field is left empty.</em>\n"; } ?>
+					<?php form_text_box('value_' . $field['data_name'], $old_value, '', '');?>
+					<?php if ((preg_match('/^' . VALID_HOST_FIELDS . '$/i', $field['type_code'])) && ($old_tvalue  == '')) { print "<br><em>Value will be derived from the device if this field is left empty.</em>\n"; } ?>
 				</td>
 				<?php
 				form_end_row();
