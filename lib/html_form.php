@@ -74,7 +74,7 @@ function draw_edit_form($array) {
 				if (read_config_option('hide_form_description') == 'on') {
 					print '<br><span class="formItemDescription">' . ((isset($field_array["description"])) ? $field_array["description"] : "") . "<br></span>\n";
 				}else{
-					print '<div class="cactiTooltipHint fa fa-question-circle"><span style="display:none;">' . ((isset($field_array["description"])) ? $field_array["description"] : "") . "</span></div>\n";
+					print display_tooltip((isset($field_array["description"])) ? $field_array["description"] : "");
 				}
 
 				if (isset($field_array["sub_checkbox"])) {

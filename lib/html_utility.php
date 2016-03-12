@@ -593,6 +593,13 @@ function get_current_graph_end() {
 	}
 }
 
+/* display_tooltip - display the text passed to the function as a tooltip
+   @arg $text - the text to display in the tooltip 
+   @returns - null */
+function display_tooltip($text) {
+	return '<div class="cactiTooltipHint fa fa-question-circle"><span style="display:none;">' . $text . "</span></div>\n";
+}
+
 /* get_page_list - generates the html necessary to present the user with a list of pages limited
      in length and number of rows per page
    @arg $current_page - the current page number
