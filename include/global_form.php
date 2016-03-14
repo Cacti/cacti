@@ -83,7 +83,7 @@ $fields_profile_edit = array(
 		),
 	'size' => array(
 		'method' => 'other',
-		'friendly_name' => 'RRA Size (in Bytes)',
+		'friendly_name' => 'RRDfile Size (in Bytes)',
 		'description' => 'Based upon the number of Rows in all RRAs and the number of Consolidation Functions selected, the size of this entire in the RRDfile.',
 		'value' => ''
 		),

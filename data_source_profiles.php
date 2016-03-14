@@ -475,7 +475,7 @@ function profile_edit() {
 
 	if (!isempty_request_var('id')) {
 		if (!$readonly) {
-			html_start_box('Data Source Profile RRAs', '100%', '', '3', 'center', 'data_source_profiles.php?action=item_edit&profile_id=' . $profile['id']);
+			html_start_box('Data Source Profile RRAs (press save to update timespans)', '100%', '', '3', 'center', 'data_source_profiles.php?action=item_edit&profile_id=' . $profile['id']);
 		}else{
 			html_start_box('Data Source Profile RRAs (Read Only)', '100%', '', '3', 'center', '');
 		}
@@ -606,30 +606,46 @@ function get_span($duration) {
 	$months = '';
 	$weeks  = '';
 	$days   = '';
+	$output = '';
 
 	if ($duration > 31536000) {
-		$years = floor($duration/31536000) . ' Years, ';;
-		$duration %= 31536000;
+		if (floor($duration/31536000) > 0) {
+			$years     = floor($duration/31536000) . ' Years ';;
+			$duration %= 31536000;
+			$output    = $years;
+		}
 	}
 
 	if ($duration > 2592000) {
-		$months = floor($duration/2592000) . ' Months, ';;
-		$duration %= 2592000;
+		if (floor($duration/2592000)) {
+			$months = floor($duration/2592000) . ' Months ';;
+			$duration %= 2592000;
+			$output   .= (strlen($output) ? ', ':'') . $months;
+		}
 	}
 
 	if ($duration > 604800) {
-		$weeks = floor($duration/604800) . ' Weeks, ';
-		$duration %= 604800;
+		if (floor($duration/604800) > 0) {
+			$weeks     = floor($duration/604800) . ' Weeks ';
+			$duration %= 604800;
+			$output   .= (strlen($output) ? ', ':'') . $weeks;
+		}
 	}
 
 	if ($duration > 86400) {
-		$days = floor($duration/86400) . ' Days, ';
-		$duration %= 86400;
+		if (floor($duration/86400) > 0) {
+			$days      = floor($duration/86400) . ' Days ';
+			$duration %= 86400;
+			$output   .= (strlen($output) ? ', ':'') . $days;
+		}
 	}
 
-	$hours = floor($duration/3600) . ' Hours';
+	if (floor($duration/3600) > 0) {
+		$hours   = floor($duration/3600) . ' Hours';
+		$output .= (strlen($output) ? ', ':'') . $hours;
+	}
 
-	return $years . $months . $weeks . $days . $hours;
+	return $output;
 }
 
 function profile() {
