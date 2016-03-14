@@ -384,7 +384,6 @@ CREATE TABLE `automation_tree_rule_items` (
   `rule_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `sequence` smallint(3) unsigned NOT NULL DEFAULT '0',
   `field` varchar(255) NOT NULL DEFAULT '',
-  `rra_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `sort_type` smallint(3) unsigned NOT NULL DEFAULT '0',
   `propagate_changes` char(2) DEFAULT '',
   `search_pattern` varchar(255) NOT NULL DEFAULT '',
@@ -409,7 +408,6 @@ CREATE TABLE `automation_tree_rules` (
   `tree_item_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `leaf_type` smallint(3) unsigned NOT NULL DEFAULT '0',
   `host_grouping_type` smallint(3) unsigned NOT NULL DEFAULT '0',
-  `rra_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `enabled` char(2) DEFAULT '',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=4 COMMENT='Automation Tree Rules';
@@ -1332,6 +1330,68 @@ INSERT INTO data_local VALUES (6,17,1,0,'');
 INSERT INTO data_local VALUES (7,16,1,0,'');
 
 --
+-- Table structure for table `data_source_profiles`
+--
+
+CREATE TABLE `data_source_profiles` (
+  `id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `hash` varchar(32) NOT NULL DEFAULT '',
+  `name` varchar(255) NOT NULL DEFAULT '',
+  `step` int(10) unsigned NOT NULL DEFAULT '300',
+  `heartbeat` int(10) unsigned NOT NULL DEFAULT '600',
+  `x_files_factor` double DEFAULT '0.5',
+  `default` char(2) DEFAULT '',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM COMMENT='Stores Data Source Profiles';
+
+--
+-- Dumping data for table `data_source_profiles`
+--
+
+INSERT INTO `data_source_profiles` VALUES (1,'d62c52891f4f9688729a5bc9fad91b18','System Default',300,600,0.5,'on');
+
+--
+-- Table structure for table `data_source_profiles_cf`
+--
+
+CREATE TABLE `data_source_profiles_cf` (
+  `data_source_profile_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `consolidation_function_id` smallint(5) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`data_source_profile_id`,`consolidation_function_id`),
+  KEY `data_source_profile_id` (`data_source_profile_id`)
+) ENGINE=MyISAM;
+
+--
+-- Dumping data for table `data_source_profiles_cf`
+--
+
+INSERT INTO `data_source_profiles_cf` VALUES (1,1),(1,2),(1,3),(1,4);
+
+--
+-- Table structure for table `data_source_profiles_rra`
+--
+
+CREATE TABLE `data_source_profiles_rra` (
+  `id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `data_source_profile_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `name` varchar(255) NOT NULL DEFAULT '',
+  `steps` int(10) unsigned DEFAULT '1',
+  `rows` int(10) unsigned NOT NULL DEFAULT '700',
+  PRIMARY KEY (`id`),
+  KEY `data_source_profile_id` (`data_source_profile_id`)
+) ENGINE=MyISAM COMMENT='Stores RRA Definitions for Data Source Profiles';
+
+--
+-- Dumping data for table `data_source_profiles_rra`
+--
+
+INSERT INTO `data_source_profiles_rra` VALUES 
+	(1,1,'Daily (5 Minute Average)',1,600),
+	(2,1,'Weekly (30 Minute Average)',6,700),
+	(3,1,'Monthly (2 Hour Average)',24,775),
+	(4,1,'Yearly (1 Day Average)',288,797);
+
+--
 -- Table structure for table `data_source_purge_action`
 --
 
@@ -1527,7 +1587,8 @@ CREATE TABLE data_template_data (
   active char(2) default NULL,
   t_rrd_step char(2) default NULL,
   rrd_step mediumint(8) unsigned NOT NULL default '0',
-  t_rra_id char(2) default NULL,
+  t_data_source_profile_id char(2) default '',
+  data_source_profile_id mediumint(8) unsigned NOT NULL default '0',
   PRIMARY KEY  (id),
   KEY local_data_id (local_data_id),
   KEY data_template_id (data_template_id),
@@ -1538,252 +1599,52 @@ CREATE TABLE data_template_data (
 -- Dumping data for table `data_template_data`
 --
 
-INSERT INTO data_template_data VALUES (3,0,0,3,2,'on','|host_description| - Hard Drive Space','',NULL,'','on','',300,'');
-INSERT INTO data_template_data VALUES (4,0,0,4,1,'','|host_description| - CPU Usage - System','',NULL,'','on','',300,'');
-INSERT INTO data_template_data VALUES (5,0,0,5,1,'','|host_description| - CPU Usage - User','',NULL,'','on','',300,'');
-INSERT INTO data_template_data VALUES (6,0,0,6,1,'','|host_description| - CPU Usage - Nice','',NULL,'','on','',300,'');
-INSERT INTO data_template_data VALUES (7,0,0,7,2,'on','|host_description| - Noise Level','',NULL,'','on','',300,'');
-INSERT INTO data_template_data VALUES (8,0,0,8,2,'on','|host_description| - Signal Level','',NULL,'','on','',300,'');
-INSERT INTO data_template_data VALUES (9,0,0,9,2,'on','|host_description| - Wireless Transmits','',NULL,'','on','',300,'');
-INSERT INTO data_template_data VALUES (10,0,0,10,2,'on','|host_description| - Wireless Re-Transmits','',NULL,'','on','',300,'');
-INSERT INTO data_template_data VALUES (11,0,0,11,4,'','|host_description| - Load Average','',NULL,'','on','',300,'');
-INSERT INTO data_template_data VALUES (13,0,0,13,6,'','|host_description| - Memory - Free','',NULL,'','on','',300,'');
-INSERT INTO data_template_data VALUES (15,0,0,15,6,'','|host_description| - Memory - Free Swap','',NULL,'','on','',300,'');
-INSERT INTO data_template_data VALUES (16,0,0,16,7,'','|host_description| - Processes','',NULL,'','on','',300,'');
-INSERT INTO data_template_data VALUES (17,0,0,17,5,'','|host_description| - Logged in Users','',NULL,'','on','',300,'');
-INSERT INTO data_template_data VALUES (18,0,0,18,10,'','|host_description| - Ping Host','',NULL,'','on','',300,'');
-INSERT INTO data_template_data VALUES (19,0,0,19,1,'','|host_description| - Total Users','',NULL,'','on','',300,'');
-INSERT INTO data_template_data VALUES (20,0,0,20,1,'','|host_description| - Total Logins','',NULL,'','on','',300,'');
-INSERT INTO data_template_data VALUES (22,0,0,22,1,'','|host_description| - File System Reads','',NULL,'','on','',300,'');
-INSERT INTO data_template_data VALUES (23,0,0,23,1,'','|host_description| - File System Writes','',NULL,'','on','',300,'');
-INSERT INTO data_template_data VALUES (24,0,0,24,1,'','|host_description| - Cache Checks','',NULL,'','on','',300,'');
-INSERT INTO data_template_data VALUES (25,0,0,25,1,'','|host_description| - Cache Hits','',NULL,'','on','',300,'');
-INSERT INTO data_template_data VALUES (26,0,0,26,1,'','|host_description| - Open Files','',NULL,'','on','',300,'');
-INSERT INTO data_template_data VALUES (27,0,0,27,1,'','|host_description| - 5 Minute CPU','',NULL,'','on','',300,'');
-INSERT INTO data_template_data VALUES (30,0,0,30,1,'','|host_description| - Load Average - 1 Minute','',NULL,'','on','',300,'');
-INSERT INTO data_template_data VALUES (31,0,0,31,1,'','|host_description| - Load Average - 5 Minute','',NULL,'','on','',300,'');
-INSERT INTO data_template_data VALUES (32,0,0,32,1,'','|host_description| - Load Average - 15 Minute','',NULL,'','on','',300,'');
-INSERT INTO data_template_data VALUES (33,0,0,33,1,'','|host_description| - Memory - Buffers','',NULL,'','on','',300,'');
-INSERT INTO data_template_data VALUES (34,0,0,34,1,'','|host_description| - Memory - Free','',NULL,'','on','',300,'');
-INSERT INTO data_template_data VALUES (35,0,0,35,2,'on','|host_description| - Volumes','',NULL,'','on','',300,'');
-INSERT INTO data_template_data VALUES (36,0,0,36,2,'on','|host_description| - Directory Entries','',NULL,'','on','',300,'');
-INSERT INTO data_template_data VALUES (37,0,0,37,11,'on','|host_description| - Hard Drive Space','',NULL,'','on','',300,'');
-INSERT INTO data_template_data VALUES (38,0,0,38,2,'on','|host_description| - Errors/Discards','',NULL,'','on','',300,'');
-INSERT INTO data_template_data VALUES (39,0,0,39,2,'on','|host_description| - Unicast Packets','',NULL,'','on','',300,'');
-INSERT INTO data_template_data VALUES (40,0,0,40,2,'on','|host_description| - Non-Unicast Packets','',NULL,'','on','',300,'');
-INSERT INTO data_template_data VALUES (41,0,0,41,2,'on','|host_description| - Traffic','',NULL,'','on','',300,'');
-INSERT INTO data_template_data VALUES (55,0,0,42,2,'','|host_description| - CPU Utilization','',NULL,'','on','',300,'');
-INSERT INTO data_template_data VALUES (56,0,0,43,12,'','|host_description| - Hard Drive Space','',NULL,'','on','',300,'');
-INSERT INTO data_template_data VALUES (57,0,0,44,12,'','|host_description| - CPU Utilization','',NULL,'','on','',300,'');
-INSERT INTO data_template_data VALUES (58,0,0,45,1,'','|host_description| - Processes','',NULL,'','on','',300,'');
-INSERT INTO data_template_data VALUES (59,0,0,46,1,'','|host_description| - Logged in Users','',NULL,'','on','',300,'');
-INSERT INTO data_template_data VALUES (62,13,3,13,6,NULL,'|host_description| - Memory - Free','Localhost - Memory - Free','<path_rra>/localhost_mem_buffers_3.rrd',NULL,'on',NULL,300,NULL);
-INSERT INTO data_template_data VALUES (63,15,4,15,6,NULL,'|host_description| - Memory - Free Swap','Localhost - Memory - Free Swap','<path_rra>/localhost_mem_swap_4.rrd',NULL,'on',NULL,300,NULL);
-INSERT INTO data_template_data VALUES (64,11,5,11,4,NULL,'|host_description| - Load Average','Localhost - Load Average','<path_rra>/localhost_load_1min_5.rrd',NULL,'on',NULL,300,NULL);
-INSERT INTO data_template_data VALUES (65,17,6,17,5,NULL,'|host_description| - Logged in Users','Localhost - Logged in Users','<path_rra>/localhost_users_6.rrd',NULL,'on',NULL,300,NULL);
-INSERT INTO data_template_data VALUES (66,16,7,16,7,NULL,'|host_description| - Processes','Localhost - Processes','<path_rra>/localhost_proc_7.rrd',NULL,'on',NULL,300,NULL);
-INSERT INTO data_template_data VALUES (68,0,0,47,1,'','|host_description| - Memory - Cache','',NULL,'','on','',300,'');
-INSERT INTO data_template_data VALUES (69,0,0,48,1,'on','|host_description| -','',NULL,'','on','',300,'');
-
---
--- Table structure for table `data_template_data_rra`
---
-
-CREATE TABLE data_template_data_rra (
-  data_template_data_id mediumint(8) unsigned NOT NULL default '0',
-  rra_id mediumint(8) unsigned NOT NULL default '0',
-  PRIMARY KEY  (data_template_data_id,rra_id),
-  KEY data_template_data_id (data_template_data_id)
-) ENGINE=MyISAM;
-
---
--- Dumping data for table `data_template_data_rra`
---
-
-INSERT INTO data_template_data_rra VALUES (3,1);
-INSERT INTO data_template_data_rra VALUES (3,2);
-INSERT INTO data_template_data_rra VALUES (3,3);
-INSERT INTO data_template_data_rra VALUES (3,4);
-INSERT INTO data_template_data_rra VALUES (4,1);
-INSERT INTO data_template_data_rra VALUES (4,2);
-INSERT INTO data_template_data_rra VALUES (4,3);
-INSERT INTO data_template_data_rra VALUES (4,4);
-INSERT INTO data_template_data_rra VALUES (5,1);
-INSERT INTO data_template_data_rra VALUES (5,2);
-INSERT INTO data_template_data_rra VALUES (5,3);
-INSERT INTO data_template_data_rra VALUES (5,4);
-INSERT INTO data_template_data_rra VALUES (6,1);
-INSERT INTO data_template_data_rra VALUES (6,2);
-INSERT INTO data_template_data_rra VALUES (6,3);
-INSERT INTO data_template_data_rra VALUES (6,4);
-INSERT INTO data_template_data_rra VALUES (7,1);
-INSERT INTO data_template_data_rra VALUES (7,2);
-INSERT INTO data_template_data_rra VALUES (7,3);
-INSERT INTO data_template_data_rra VALUES (7,4);
-INSERT INTO data_template_data_rra VALUES (8,1);
-INSERT INTO data_template_data_rra VALUES (8,2);
-INSERT INTO data_template_data_rra VALUES (8,3);
-INSERT INTO data_template_data_rra VALUES (8,4);
-INSERT INTO data_template_data_rra VALUES (9,1);
-INSERT INTO data_template_data_rra VALUES (9,2);
-INSERT INTO data_template_data_rra VALUES (9,3);
-INSERT INTO data_template_data_rra VALUES (9,4);
-INSERT INTO data_template_data_rra VALUES (10,1);
-INSERT INTO data_template_data_rra VALUES (10,2);
-INSERT INTO data_template_data_rra VALUES (10,3);
-INSERT INTO data_template_data_rra VALUES (10,4);
-INSERT INTO data_template_data_rra VALUES (11,1);
-INSERT INTO data_template_data_rra VALUES (11,2);
-INSERT INTO data_template_data_rra VALUES (11,3);
-INSERT INTO data_template_data_rra VALUES (11,4);
-INSERT INTO data_template_data_rra VALUES (13,1);
-INSERT INTO data_template_data_rra VALUES (13,2);
-INSERT INTO data_template_data_rra VALUES (13,3);
-INSERT INTO data_template_data_rra VALUES (13,4);
-INSERT INTO data_template_data_rra VALUES (15,1);
-INSERT INTO data_template_data_rra VALUES (15,2);
-INSERT INTO data_template_data_rra VALUES (15,3);
-INSERT INTO data_template_data_rra VALUES (15,4);
-INSERT INTO data_template_data_rra VALUES (16,1);
-INSERT INTO data_template_data_rra VALUES (16,2);
-INSERT INTO data_template_data_rra VALUES (16,3);
-INSERT INTO data_template_data_rra VALUES (16,4);
-INSERT INTO data_template_data_rra VALUES (17,1);
-INSERT INTO data_template_data_rra VALUES (17,2);
-INSERT INTO data_template_data_rra VALUES (17,3);
-INSERT INTO data_template_data_rra VALUES (17,4);
-INSERT INTO data_template_data_rra VALUES (18,1);
-INSERT INTO data_template_data_rra VALUES (18,2);
-INSERT INTO data_template_data_rra VALUES (18,3);
-INSERT INTO data_template_data_rra VALUES (18,4);
-INSERT INTO data_template_data_rra VALUES (19,1);
-INSERT INTO data_template_data_rra VALUES (19,2);
-INSERT INTO data_template_data_rra VALUES (19,3);
-INSERT INTO data_template_data_rra VALUES (19,4);
-INSERT INTO data_template_data_rra VALUES (20,1);
-INSERT INTO data_template_data_rra VALUES (20,2);
-INSERT INTO data_template_data_rra VALUES (20,3);
-INSERT INTO data_template_data_rra VALUES (20,4);
-INSERT INTO data_template_data_rra VALUES (22,1);
-INSERT INTO data_template_data_rra VALUES (22,2);
-INSERT INTO data_template_data_rra VALUES (22,3);
-INSERT INTO data_template_data_rra VALUES (22,4);
-INSERT INTO data_template_data_rra VALUES (23,1);
-INSERT INTO data_template_data_rra VALUES (23,2);
-INSERT INTO data_template_data_rra VALUES (23,3);
-INSERT INTO data_template_data_rra VALUES (23,4);
-INSERT INTO data_template_data_rra VALUES (24,1);
-INSERT INTO data_template_data_rra VALUES (24,2);
-INSERT INTO data_template_data_rra VALUES (24,3);
-INSERT INTO data_template_data_rra VALUES (24,4);
-INSERT INTO data_template_data_rra VALUES (25,1);
-INSERT INTO data_template_data_rra VALUES (25,2);
-INSERT INTO data_template_data_rra VALUES (25,3);
-INSERT INTO data_template_data_rra VALUES (25,4);
-INSERT INTO data_template_data_rra VALUES (26,1);
-INSERT INTO data_template_data_rra VALUES (26,2);
-INSERT INTO data_template_data_rra VALUES (26,3);
-INSERT INTO data_template_data_rra VALUES (26,4);
-INSERT INTO data_template_data_rra VALUES (27,1);
-INSERT INTO data_template_data_rra VALUES (27,2);
-INSERT INTO data_template_data_rra VALUES (27,3);
-INSERT INTO data_template_data_rra VALUES (27,4);
-INSERT INTO data_template_data_rra VALUES (30,1);
-INSERT INTO data_template_data_rra VALUES (30,2);
-INSERT INTO data_template_data_rra VALUES (30,3);
-INSERT INTO data_template_data_rra VALUES (30,4);
-INSERT INTO data_template_data_rra VALUES (31,1);
-INSERT INTO data_template_data_rra VALUES (31,2);
-INSERT INTO data_template_data_rra VALUES (31,3);
-INSERT INTO data_template_data_rra VALUES (31,4);
-INSERT INTO data_template_data_rra VALUES (32,1);
-INSERT INTO data_template_data_rra VALUES (32,2);
-INSERT INTO data_template_data_rra VALUES (32,3);
-INSERT INTO data_template_data_rra VALUES (32,4);
-INSERT INTO data_template_data_rra VALUES (33,1);
-INSERT INTO data_template_data_rra VALUES (33,2);
-INSERT INTO data_template_data_rra VALUES (33,3);
-INSERT INTO data_template_data_rra VALUES (33,4);
-INSERT INTO data_template_data_rra VALUES (34,1);
-INSERT INTO data_template_data_rra VALUES (34,2);
-INSERT INTO data_template_data_rra VALUES (34,3);
-INSERT INTO data_template_data_rra VALUES (34,4);
-INSERT INTO data_template_data_rra VALUES (35,1);
-INSERT INTO data_template_data_rra VALUES (35,2);
-INSERT INTO data_template_data_rra VALUES (35,3);
-INSERT INTO data_template_data_rra VALUES (35,4);
-INSERT INTO data_template_data_rra VALUES (36,1);
-INSERT INTO data_template_data_rra VALUES (36,2);
-INSERT INTO data_template_data_rra VALUES (36,3);
-INSERT INTO data_template_data_rra VALUES (36,4);
-INSERT INTO data_template_data_rra VALUES (37,1);
-INSERT INTO data_template_data_rra VALUES (37,2);
-INSERT INTO data_template_data_rra VALUES (37,3);
-INSERT INTO data_template_data_rra VALUES (37,4);
-INSERT INTO data_template_data_rra VALUES (38,1);
-INSERT INTO data_template_data_rra VALUES (38,2);
-INSERT INTO data_template_data_rra VALUES (38,3);
-INSERT INTO data_template_data_rra VALUES (38,4);
-INSERT INTO data_template_data_rra VALUES (39,1);
-INSERT INTO data_template_data_rra VALUES (39,2);
-INSERT INTO data_template_data_rra VALUES (39,3);
-INSERT INTO data_template_data_rra VALUES (39,4);
-INSERT INTO data_template_data_rra VALUES (40,1);
-INSERT INTO data_template_data_rra VALUES (40,2);
-INSERT INTO data_template_data_rra VALUES (40,3);
-INSERT INTO data_template_data_rra VALUES (40,4);
-INSERT INTO data_template_data_rra VALUES (41,1);
-INSERT INTO data_template_data_rra VALUES (41,2);
-INSERT INTO data_template_data_rra VALUES (41,3);
-INSERT INTO data_template_data_rra VALUES (41,4);
-INSERT INTO data_template_data_rra VALUES (55,1);
-INSERT INTO data_template_data_rra VALUES (55,2);
-INSERT INTO data_template_data_rra VALUES (55,3);
-INSERT INTO data_template_data_rra VALUES (55,4);
-INSERT INTO data_template_data_rra VALUES (56,1);
-INSERT INTO data_template_data_rra VALUES (56,2);
-INSERT INTO data_template_data_rra VALUES (56,3);
-INSERT INTO data_template_data_rra VALUES (56,4);
-INSERT INTO data_template_data_rra VALUES (57,1);
-INSERT INTO data_template_data_rra VALUES (57,2);
-INSERT INTO data_template_data_rra VALUES (57,3);
-INSERT INTO data_template_data_rra VALUES (57,4);
-INSERT INTO data_template_data_rra VALUES (58,1);
-INSERT INTO data_template_data_rra VALUES (58,2);
-INSERT INTO data_template_data_rra VALUES (58,3);
-INSERT INTO data_template_data_rra VALUES (58,4);
-INSERT INTO data_template_data_rra VALUES (59,1);
-INSERT INTO data_template_data_rra VALUES (59,2);
-INSERT INTO data_template_data_rra VALUES (59,3);
-INSERT INTO data_template_data_rra VALUES (59,4);
-INSERT INTO data_template_data_rra VALUES (62,1);
-INSERT INTO data_template_data_rra VALUES (62,2);
-INSERT INTO data_template_data_rra VALUES (62,3);
-INSERT INTO data_template_data_rra VALUES (62,4);
-INSERT INTO data_template_data_rra VALUES (63,1);
-INSERT INTO data_template_data_rra VALUES (63,2);
-INSERT INTO data_template_data_rra VALUES (63,3);
-INSERT INTO data_template_data_rra VALUES (63,4);
-INSERT INTO data_template_data_rra VALUES (64,1);
-INSERT INTO data_template_data_rra VALUES (64,2);
-INSERT INTO data_template_data_rra VALUES (64,3);
-INSERT INTO data_template_data_rra VALUES (64,4);
-INSERT INTO data_template_data_rra VALUES (65,1);
-INSERT INTO data_template_data_rra VALUES (65,2);
-INSERT INTO data_template_data_rra VALUES (65,3);
-INSERT INTO data_template_data_rra VALUES (65,4);
-INSERT INTO data_template_data_rra VALUES (66,1);
-INSERT INTO data_template_data_rra VALUES (66,2);
-INSERT INTO data_template_data_rra VALUES (66,3);
-INSERT INTO data_template_data_rra VALUES (66,4);
-INSERT INTO data_template_data_rra VALUES (68,1);
-INSERT INTO data_template_data_rra VALUES (68,2);
-INSERT INTO data_template_data_rra VALUES (68,3);
-INSERT INTO data_template_data_rra VALUES (68,4);
-INSERT INTO data_template_data_rra VALUES (69,1);
-INSERT INTO data_template_data_rra VALUES (69,2);
-INSERT INTO data_template_data_rra VALUES (69,3);
-INSERT INTO data_template_data_rra VALUES (69,4);
+INSERT INTO data_template_data VALUES (3,0,0,3,2,'on','|host_description| - Hard Drive Space','',NULL,'','on','',300,'',1);
+INSERT INTO data_template_data VALUES (4,0,0,4,1,'','|host_description| - CPU Usage - System','',NULL,'','on','',300,'',1);
+INSERT INTO data_template_data VALUES (5,0,0,5,1,'','|host_description| - CPU Usage - User','',NULL,'','on','',300,'',1);
+INSERT INTO data_template_data VALUES (6,0,0,6,1,'','|host_description| - CPU Usage - Nice','',NULL,'','on','',300,'',1);
+INSERT INTO data_template_data VALUES (7,0,0,7,2,'on','|host_description| - Noise Level','',NULL,'','on','',300,'',1);
+INSERT INTO data_template_data VALUES (8,0,0,8,2,'on','|host_description| - Signal Level','',NULL,'','on','',300,'',1);
+INSERT INTO data_template_data VALUES (9,0,0,9,2,'on','|host_description| - Wireless Transmits','',NULL,'','on','',300,'',1);
+INSERT INTO data_template_data VALUES (10,0,0,10,2,'on','|host_description| - Wireless Re-Transmits','',NULL,'','on','',300,'',1);
+INSERT INTO data_template_data VALUES (11,0,0,11,4,'','|host_description| - Load Average','',NULL,'','on','',300,'',1);
+INSERT INTO data_template_data VALUES (13,0,0,13,6,'','|host_description| - Memory - Free','',NULL,'','on','',300,'',1);
+INSERT INTO data_template_data VALUES (15,0,0,15,6,'','|host_description| - Memory - Free Swap','',NULL,'','on','',300,'',1);
+INSERT INTO data_template_data VALUES (16,0,0,16,7,'','|host_description| - Processes','',NULL,'','on','',300,'',1);
+INSERT INTO data_template_data VALUES (17,0,0,17,5,'','|host_description| - Logged in Users','',NULL,'','on','',300,'',1);
+INSERT INTO data_template_data VALUES (18,0,0,18,10,'','|host_description| - Ping Host','',NULL,'','on','',300,'',1);
+INSERT INTO data_template_data VALUES (19,0,0,19,1,'','|host_description| - Total Users','',NULL,'','on','',300,'',1);
+INSERT INTO data_template_data VALUES (20,0,0,20,1,'','|host_description| - Total Logins','',NULL,'','on','',300,'',1);
+INSERT INTO data_template_data VALUES (22,0,0,22,1,'','|host_description| - File System Reads','',NULL,'','on','',300,'',1);
+INSERT INTO data_template_data VALUES (23,0,0,23,1,'','|host_description| - File System Writes','',NULL,'','on','',300,'',1);
+INSERT INTO data_template_data VALUES (24,0,0,24,1,'','|host_description| - Cache Checks','',NULL,'','on','',300,'',1);
+INSERT INTO data_template_data VALUES (25,0,0,25,1,'','|host_description| - Cache Hits','',NULL,'','on','',300,'',1);
+INSERT INTO data_template_data VALUES (26,0,0,26,1,'','|host_description| - Open Files','',NULL,'','on','',300,'',1);
+INSERT INTO data_template_data VALUES (27,0,0,27,1,'','|host_description| - 5 Minute CPU','',NULL,'','on','',300,'',1);
+INSERT INTO data_template_data VALUES (30,0,0,30,1,'','|host_description| - Load Average - 1 Minute','',NULL,'','on','',300,'',1);
+INSERT INTO data_template_data VALUES (31,0,0,31,1,'','|host_description| - Load Average - 5 Minute','',NULL,'','on','',300,'',1);
+INSERT INTO data_template_data VALUES (32,0,0,32,1,'','|host_description| - Load Average - 15 Minute','',NULL,'','on','',300,'',1);
+INSERT INTO data_template_data VALUES (33,0,0,33,1,'','|host_description| - Memory - Buffers','',NULL,'','on','',300,'',1);
+INSERT INTO data_template_data VALUES (34,0,0,34,1,'','|host_description| - Memory - Free','',NULL,'','on','',300,'',1);
+INSERT INTO data_template_data VALUES (35,0,0,35,2,'on','|host_description| - Volumes','',NULL,'','on','',300,'',1);
+INSERT INTO data_template_data VALUES (36,0,0,36,2,'on','|host_description| - Directory Entries','',NULL,'','on','',300,'',1);
+INSERT INTO data_template_data VALUES (37,0,0,37,11,'on','|host_description| - Hard Drive Space','',NULL,'','on','',300,'',1);
+INSERT INTO data_template_data VALUES (38,0,0,38,2,'on','|host_description| - Errors/Discards','',NULL,'','on','',300,'',1);
+INSERT INTO data_template_data VALUES (39,0,0,39,2,'on','|host_description| - Unicast Packets','',NULL,'','on','',300,'',1);
+INSERT INTO data_template_data VALUES (40,0,0,40,2,'on','|host_description| - Non-Unicast Packets','',NULL,'','on','',300,'',1);
+INSERT INTO data_template_data VALUES (41,0,0,41,2,'on','|host_description| - Traffic','',NULL,'','on','',300,'',1);
+INSERT INTO data_template_data VALUES (55,0,0,42,2,'','|host_description| - CPU Utilization','',NULL,'','on','',300,'',1);
+INSERT INTO data_template_data VALUES (56,0,0,43,12,'','|host_description| - Hard Drive Space','',NULL,'','on','',300,'',1);
+INSERT INTO data_template_data VALUES (57,0,0,44,12,'','|host_description| - CPU Utilization','',NULL,'','on','',300,'',1);
+INSERT INTO data_template_data VALUES (58,0,0,45,1,'','|host_description| - Processes','',NULL,'','on','',300,'',1);
+INSERT INTO data_template_data VALUES (59,0,0,46,1,'','|host_description| - Logged in Users','',NULL,'','on','',300,'',1);
+INSERT INTO data_template_data VALUES (62,13,3,13,6,NULL,'|host_description| - Memory - Free','Localhost - Memory - Free','<path_rra>/localhost_mem_buffers_3.rrd',NULL,'on',NULL,300,'',1);
+INSERT INTO data_template_data VALUES (63,15,4,15,6,NULL,'|host_description| - Memory - Free Swap','Localhost - Memory - Free Swap','<path_rra>/localhost_mem_swap_4.rrd',NULL,'on',NULL,300,'',1);
+INSERT INTO data_template_data VALUES (64,11,5,11,4,NULL,'|host_description| - Load Average','Localhost - Load Average','<path_rra>/localhost_load_1min_5.rrd',NULL,'on',NULL,300,'',1);
+INSERT INTO data_template_data VALUES (65,17,6,17,5,NULL,'|host_description| - Logged in Users','Localhost - Logged in Users','<path_rra>/localhost_users_6.rrd',NULL,'on',NULL,300,'',1);
+INSERT INTO data_template_data VALUES (66,16,7,16,7,NULL,'|host_description| - Processes','Localhost - Processes','<path_rra>/localhost_proc_7.rrd',NULL,'on',NULL,300,'',1);
+INSERT INTO data_template_data VALUES (68,0,0,47,1,'','|host_description| - Memory - Cache','',NULL,'','on','',300,'',1);
+INSERT INTO data_template_data VALUES (69,0,0,48,1,'on','|host_description| -','',NULL,'','on','',300,'',1);
 
 --
 -- Table structure for table `data_template_rrd`
@@ -2819,7 +2680,6 @@ CREATE TABLE graph_tree_items (
   position int(10) unsigned DEFAULT NULL,
   graph_tree_id smallint(5) unsigned NOT NULL DEFAULT '0',
   local_graph_id mediumint(8) unsigned NOT NULL DEFAULT '0',
-  rra_id smallint(8) unsigned NOT NULL DEFAULT '0',
   title varchar(255) DEFAULT NULL,
   host_id mediumint(8) unsigned NOT NULL DEFAULT '0',
   host_grouping_type tinyint(3) unsigned NOT NULL DEFAULT '1',
@@ -3302,57 +3162,6 @@ CREATE TABLE `reports_items` (
   KEY `report_id` (`report_id`)) 
   ENGINE=MyISAM 
   COMMENT='Cacti Reporting Items';
-
---
--- Table structure for table `rra`
---
-
-CREATE TABLE rra (
-  id mediumint(8) unsigned NOT NULL auto_increment,
-  hash varchar(32) NOT NULL default '',
-  name varchar(100) NOT NULL default '',
-  x_files_factor double NOT NULL default '0.1',
-  steps mediumint(8) default '1',
-  rows int(12) NOT NULL default '600',
-  timespan int(12) unsigned NOT NULL default '0',
-  PRIMARY KEY  (id)
-) ENGINE=MyISAM;
-
---
--- Dumping data for table `rra`
---
-
-INSERT INTO rra VALUES (1,'c21df5178e5c955013591239eb0afd46','Daily (5 Minute Average)',0.5,1,600,86400);
-INSERT INTO rra VALUES (2,'0d9c0af8b8acdc7807943937b3208e29','Weekly (30 Minute Average)',0.5,6,700,604800);
-INSERT INTO rra VALUES (3,'6fc2d038fb42950138b0ce3e9874cc60','Monthly (2 Hour Average)',0.5,24,775,2678400);
-INSERT INTO rra VALUES (4,'e36f3adb9f152adfa5dc50fd2b23337e','Yearly (1 Day Average)',0.5,288,797,33053184);
-INSERT INTO rra VALUES (5,'283ea2bf1634d92ce081ec82a634f513','Hourly (1 Minute Average)',0.5,1,500,14400);
-
---
--- Table structure for table `rra_cf`
---
-
-CREATE TABLE rra_cf (
-  rra_id mediumint(8) unsigned NOT NULL default '0',
-  consolidation_function_id smallint(5) unsigned NOT NULL default '0',
-  PRIMARY KEY  (rra_id,consolidation_function_id),
-  KEY rra_id (rra_id)
-) ENGINE=MyISAM;
-
---
--- Dumping data for table `rra_cf`
---
-
-INSERT INTO rra_cf VALUES (1,1);
-INSERT INTO rra_cf VALUES (1,3);
-INSERT INTO rra_cf VALUES (2,1);
-INSERT INTO rra_cf VALUES (2,3);
-INSERT INTO rra_cf VALUES (3,1);
-INSERT INTO rra_cf VALUES (3,3);
-INSERT INTO rra_cf VALUES (4,1);
-INSERT INTO rra_cf VALUES (4,3);
-INSERT INTO rra_cf VALUES (5,1);
-INSERT INTO rra_cf VALUES (5,3);
 
 --
 -- Table structure for table `settings`

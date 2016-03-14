@@ -2713,22 +2713,19 @@ function resolve_navigation_variables($text) {
    @arg $local_graph_id - (int) the ID of the graph to retrieve a list of RRAs for
    @returns - (array) an array containing the name and id of each RRA found */
 function get_associated_rras($local_graph_id) {
-	return db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . '
-		rra.id,
-		rra.steps,
-		rra.rows,
-		rra.name,
-		rra.timespan,
-		data_template_data.rrd_step
-		FROM graph_templates_item
-		LEFT JOIN data_template_rrd ON (graph_templates_item.task_item_id = data_template_rrd.id)
-		LEFT JOIN data_template_data ON (data_template_rrd.local_data_id = data_template_data.local_data_id)
-		LEFT JOIN data_template_data_rra ON (data_template_data.id = data_template_data_rra.data_template_data_id)
-		LEFT JOIN rra ON (data_template_data_rra.rra_id = rra.id)
-                WHERE graph_templates_item.local_graph_id = ?
-		AND data_template_rrd.local_data_id != 0
-		GROUP BY rra.id
-		ORDER BY rra.timespan', array($local_graph_id));
+	return db_fetch_assoc_prepared('SELECT DISTINCT ' . SQL_NO_CACHE . '
+		dspr.id, dspr.steps, dspr.rows, dspr.name, dtd.rrd_step
+		FROM graph_templates_item AS gti
+		LEFT JOIN data_template_rrd AS dtr
+		ON gti.task_item_id=dtr.id
+		LEFT JOIN data_template_data AS dtd
+		ON dtr.local_data_id = dtd.local_data_id
+		LEFT JOIN data_source_profiles AS dsp
+		ON dtd.data_source_profile_id=dsp.id
+		LEFT JOIN data_source_profiles_rra AS dspr
+		ON dsp.id=dspr.data_source_profile_id
+		AND dtd.local_data_id != 0
+		WHERE gti.local_graph_id = ?', array($local_graph_id));
 }
 
 /* get_browser_query_string - returns the full url, including args requested by the browser
@@ -2850,6 +2847,20 @@ function get_hash_vdef($vdef_id, $sub_type = "vdef") {
 	}
 }
 
+/**
+ * returns the current unique hash for a vdef
+ * @param $data_source_profile_id - (int) the ID of the data_source_profile to return a hash for
+ * @returns - a 128-bit, hexadecimal hash */
+function get_hash_data_source_profile($data_source_profile_id) {
+	$hash = db_fetch_cell_prepared('SELECT hash FROM data_source_profiles WHERE id = ?', array($data_source_profile_id));
+
+	if (preg_match('/[a-fA-F0-9]{32}/', $hash)) {
+		return $hash;
+	}else{
+		return generate_hash();
+	}
+}
+
 /* get_hash_host_template - returns the current unique hash for a gprint preset
    @arg $host_template_id - (int) the ID of the host template to return a hash for
    @returns - a 128-bit, hexadecimal hash */
@@ -2877,19 +2888,6 @@ function get_hash_data_query($data_query_id, $sub_type = 'data_query') {
 	}elseif ($sub_type == 'data_query_sv_graph') {
 		$hash = db_fetch_cell_prepared('SELECT hash FROM snmp_query_graph_sv WHERE id = ?', array($data_query_id));
 	}
-
-	if (preg_match('/[a-fA-F0-9]{32}/', $hash)) {
-		return $hash;
-	}else{
-		return generate_hash();
-	}
-}
-
-/* get_hash_round_robin_archive - returns the current unique hash for a round robin archive
-   @arg $rra_id - (int) the ID of the round robin archive to return a hash for
-   @returns - a 128-bit, hexadecimal hash */
-function get_hash_round_robin_archive($rra_id) {
-	$hash = db_fetch_cell_prepared('SELECT hash FROM rra WHERE id = ?', array($rra_id));
 
 	if (preg_match('/[a-fA-F0-9]{32}/', $hash)) {
 		return $hash;

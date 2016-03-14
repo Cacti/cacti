@@ -22,7 +22,7 @@
  +-------------------------------------------------------------------------+
 */
 
-function import_xml_data(&$xml_data, $import_custom_rra_settings, $rra_array = array()) {
+function import_xml_data(&$xml_data, $import_as_new, $profile_id) {
 	global $config, $hash_type_codes, $hash_version_codes;
 
 	include_once($config['library_path'] . '/xml.php');
@@ -68,7 +68,7 @@ function import_xml_data(&$xml_data, $import_custom_rra_settings, $rra_array = a
 					$hash_cache += xml_to_graph_template($dep_hash_cache[$type][$i]['hash'], $hash_array, $hash_cache, $dep_hash_cache[$type][$i]['version']);
 					break;
 				case 'data_template':
-					$hash_cache += xml_to_data_template($dep_hash_cache[$type][$i]['hash'], $hash_array, $hash_cache, $import_custom_rra_settings, $rra_array);
+					$hash_cache += xml_to_data_template($dep_hash_cache[$type][$i]['hash'], $hash_array, $hash_cache, $import_as_new, $profile_id);
 					break;
 				case 'host_template':
 					$hash_cache += xml_to_host_template($dep_hash_cache[$type][$i]['hash'], $hash_array, $hash_cache);
@@ -88,10 +88,11 @@ function import_xml_data(&$xml_data, $import_custom_rra_settings, $rra_array = a
 				case 'vdef':
 					$hash_cache += xml_to_vdef($dep_hash_cache[$type][$i]['hash'], $hash_array, $hash_cache);
 					break;
+				case 'data_source_profile':
+					$hash_cache += xml_to_data_source_profile($dep_hash_cache[$type][$i]['hash'], $hash_array, $hash_cache, $import_as_new, $profile_id);
+					break;
 				case 'round_robin_archive':
-					if ($import_custom_rra_settings === true) {
-						$hash_cache += xml_to_round_robin_archive($dep_hash_cache[$type][$i]['hash'], $hash_array, $hash_cache);
-					}
+					// Deprecated
 					break;
 				}
 
@@ -259,8 +260,8 @@ function xml_to_graph_template($hash, &$xml_array, &$hash_cache, $hash_version) 
 	return $hash_cache;
 }
 
-function xml_to_data_template($hash, &$xml_array, &$hash_cache, $import_custom_rra_settings, $rra_array) {
-	global $struct_data_source, $struct_data_source_item;
+function xml_to_data_template($hash, &$xml_array, &$hash_cache, $import_as_new, $profile_id) {
+	global $struct_data_source, $struct_data_source_item, $import_template_id;
 
 	/* import into: data_template */
 	$_data_template_id = db_fetch_cell_prepared('SELECT id FROM data_template WHERE hash = ?', array($hash));
@@ -294,7 +295,9 @@ function xml_to_data_template($hash, &$xml_array, &$hash_cache, $import_custom_r
 		/* make sure this field exists in the xml array first */
 		if (isset($xml_array['ds'][$field_name])) {
 			/* is the value of this field a hash or not? */
-			if (preg_match('/hash_([a-f0-9]{2})([a-f0-9]{4})([a-f0-9]{32})/', $xml_array['ds'][$field_name])) {
+			if ($field_name == 'data_source_profile_id') {
+				$save[$field_name] = $profile_id;
+			}elseif (preg_match('/hash_([a-f0-9]{2})([a-f0-9]{4})([a-f0-9]{32})/', $xml_array['ds'][$field_name])) {
 				$save[$field_name] = resolve_hash_to_id($xml_array['ds'][$field_name], $hash_cache);
 			}else{
 				$save[$field_name] = addslashes(xml_character_decode($xml_array['ds'][$field_name]));
@@ -303,45 +306,13 @@ function xml_to_data_template($hash, &$xml_array, &$hash_cache, $import_custom_r
 	}
 
 	/* use the polling interval as the step if we are to use the default rra settings */
-	if ($import_custom_rra_settings === false) {
-		$save['rrd_step'] = read_config_option('poller_interval');
+	if ($import_as_new == false) {
+		$save['rrd_step'] = db_fetch_cell('SELECT step FROM data_source_profiles ORDER BY `default` DESC LIMIT 1');
 	}
 
 	$data_template_data_id = sql_save($save, 'data_template_data');
 
-	/* use custom rra settings From the xml */
-	if ($import_custom_rra_settings === true) {
-		/* import into: data_template_data_rra */
-		$hash_items = explode('|', $xml_array['ds']['rra_items']);
-
-		if (!empty($hash_items[0])) {
-			for ($i=0; $i<count($hash_items); $i++) {
-				/* parse information from the hash */
-				$parsed_hash = parse_xml_hash($hash_items[$i]);
-
-				/* invalid/wrong hash */
-				if ($parsed_hash == false) { return false; }
-
-				if (isset($hash_cache['round_robin_archive']{$parsed_hash['hash']})) {
-					db_execute_prepared('REPLACE INTO data_template_data_rra 
-						(data_template_data_id,rra_id) 
-						VALUES (?, ?)', array($data_template_data_id, $hash_cache['round_robin_archive']{$parsed_hash['hash']}));
-				}
-			}
-		}
-	}else{ /* use all rras selected by the user */
-		if (is_array($rra_array)) {
-			/* when overriding an existing data template, make sure that specifying fewer (or different) rra's is honoured */
-			db_execute_prepared('DELETE FROM data_template_data_rra 
-				WHERE data_template_data_id = ?', array($data_template_data_id));
-
-			foreach ($rra_array as $rra) {
-				/* as it was user supplied input, make sure it's an integer */
-				db_execute_prepared('REPLACE INTO data_template_data_rra 
-					(data_template_data_id,rra_id) values (?,?)', array($data_template_data_id, intval($rra)));
-			}
-		}
-	}
+	$import_template_id = $data_template_data_id;
 
 	/* import into: data_template_rrd */
 	if (is_array($xml_array['items'])) {
@@ -583,42 +554,71 @@ function xml_to_gprint_preset($hash, &$xml_array, &$hash_cache) {
 	return $hash_cache;
 }
 
-function xml_to_round_robin_archive($hash, &$xml_array, &$hash_cache) {
-	global $fields_rra_edit;
+function xml_to_data_source_profile($hash, &$xml_array, &$hash_cache, $import_as_new, $profile_id) {
+	global $fields_profile_edit, $fields_profile_rra_edit, $import_template_id;
 
-	/* import into: rra */
-	$_rra_id = db_fetch_cell_prepared('SELECT id FROM rra WHERE hash = ?', array($hash));
+	if ($import_as_new == true) {
+		$save['id']   = 0;
+		$save['hash'] = get_hash_data_source_profile(0);
 
-	$save['id']   = (empty($_rra_id) ? '0' : $_rra_id);
-	$save['hash'] = $hash;
-
-	reset($fields_rra_edit);
-	while (list($field_name, $field_array) = each($fields_rra_edit)) {
-		/* make sure this field exists in the xml array first */
-		if (isset($xml_array[$field_name])) {
-			$save[$field_name] = addslashes(xml_character_decode($xml_array[$field_name]));
+		reset($fields_profile_edit);
+		while (list($field_name, $field_array) = each($fields_profile_edit)) {
+			/* make sure this field exists in the xml array first */
+			if (isset($xml_array[$field_name])) {
+				$save[$field_name] = addslashes(xml_character_decode($xml_array[$field_name]));
+			}
 		}
-	}
 
-	$rra_id = sql_save($save, 'rra');
+		// Give the Profile a new name
+		$save['name'] .= ' (imported)';
 
-	$hash_cache['round_robin_archive'][$hash] = $rra_id;
+		$dsp_id = sql_save($save, 'data_source_profiles');
 
-	/* import into: rra_cf */
-	$hash_items = explode('|', $xml_array['cf_items']);
-
-	if (!empty($hash_items[0])) {
-		for ($i=0; $i<count($hash_items); $i++) {
-			db_execute_prepared('REPLACE INTO rra_cf 
-				(rra_id,consolidation_function_id) 
-				VALUES (?, ?)', array($rra_id, $hash_items[$i]));
+		if (!empty($dsp_id)) {
+cacti_log("UPDATE data_template_data SET data_source_profile_id=$dsp_id WHERE id=$import_template_id");
+			db_execute_prepared('UPDATE data_template_data SET data_source_profile_id = ? WHERE id = ?', array($dsp_id, $import_template_id));
 		}
-	}
 
-	/* status information that will be presented to the user */
-	$_SESSION['import_debug_info']['type']   = (empty($_rra_id) ? 'new' : 'update');
-	$_SESSION['import_debug_info']['title']  = $xml_array['name'];
-	$_SESSION['import_debug_info']['result'] = (empty($rra_id) ? 'fail' : 'success');
+		$hash_cache['data_source_profiles'][$hash] = $dsp_id;
+
+		/* import into: data_source_profiles_cf */
+		$hash_items = explode('|', $xml_array['cf_items']);
+
+		if (!empty($hash_items[0])) {
+			for ($i=0; $i<count($hash_items); $i++) {
+				db_execute_prepared('REPLACE INTO data_source_profiles_cf 
+					(data_source_profile_id,consolidation_function_id) 
+					VALUES (?, ?)', array($dsp_id, $hash_items[$i]));
+			}
+		}
+
+		/* import into: data_source_profiles_rra */
+		if (is_array($xml_array['items'])) {
+			while (list($item_name, $item_array) = each($xml_array['items'])) {
+				unset($save);
+
+				$save['id']                     = 0;
+				$save['data_source_profile_id'] = $dsp_id;
+
+				reset($fields_profile_rra_edit);
+				while (list($field_name, $field_array) = each($fields_profile_rra_edit)) {
+					/* make sure this field exists in the xml array first */
+					if (isset($item_array[$field_name])) {
+						$save[$field_name] = addslashes(xml_character_decode($item_array[$field_name]));
+					}
+				}
+
+				$rra_id = sql_save($save, 'data_source_profiles_rra');
+
+				$hash_cache['data_source_profile_rra']{$item_name} = $rra_id;
+			}
+		}
+
+		/* status information that will be presented to the user */
+		$_SESSION['import_debug_info']['type']   = 'new';
+		$_SESSION['import_debug_info']['title']  = $xml_array['name'] . ' (imported)';
+		$_SESSION['import_debug_info']['result'] = (empty($dsp_id) ? 'fail' : 'success');
+	}
 
 	return $hash_cache;
 }
@@ -928,7 +928,7 @@ function hash_to_friendly_name($hash, $display_type_name) {
 	case 'data_input_method':
 		return $prepend . db_fetch_cell_prepared('SELECT name FROM data_input WHERE hash = ?', array($parsed_hash['hash']));
 	case 'data_input_field':
-		return $prepend . db_fetch_cell_prepared('SELECT name FROM data_input_field WHERE hash = ?', array($parsed_hash['hash']));
+		return $prepend . db_fetch_cell_prepared('SELECT name FROM data_input_fields WHERE hash = ?', array($parsed_hash['hash']));
 	case 'data_query':
 		return $prepend . db_fetch_cell_prepared('SELECT name FROM snmp_query WHERE hash = ?', array($parsed_hash['hash']));
 	case 'gprint_preset':
@@ -937,8 +937,10 @@ function hash_to_friendly_name($hash, $display_type_name) {
 		return $prepend . db_fetch_cell_prepared('SELECT name FROM cdef WHERE hash = ?', array($parsed_hash['hash']));
 	case 'vdef':
 		return $prepend . db_fetch_cell_prepared('SELECT name FROM vdef WHERE hash = ?', array($parsed_hash['hash']));
+	case 'data_source_profile':
+		return $prepend . db_fetch_cell_prepared('SELECT name FROM data_source_profile WHERE hash = ?', array($parsed_hash['hash']));
 	case 'round_robin_archive':
-		return $prepend . db_fetch_cell_prepared('SELECT name FROM rra WHERE hash = ?', array($parsed_hash['hash']));
+		return $prepend;
 	}
 }
 

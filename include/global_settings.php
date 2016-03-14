@@ -1737,7 +1737,7 @@ $settings_user = array(
 			'friendly_name' => 'Default Time Range',
 			'description' => 'The default RRA to use when for Graphs the Timespan selector is disabled.',
 			'method' => 'drop_sql',
-			'sql' => 'SELECT id,name FROM rra ORDER BY timespan',
+			'sql' => 'SELECT id, name FROM data_source_profiles_rra ORDER BY steps',
 			'default' => '1'
 			),
 		'default_timespan' => array(

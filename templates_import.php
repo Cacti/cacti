@@ -60,16 +60,16 @@ function form_save() {
 			header('Location: templates_import.php'); exit;
 		}
 
-		if (get_nfilter_request_var('import_rra') == '1') {
-			$import_custom_rra_settings = false;
-			$rra_array = (isset_request_var('rra_id') ? get_nfilter_request_var('rra_id') : array());
+		if (get_filter_request_var('import_data_source_profile') == '0') {
+			$import_as_new = true;
+			$profile_id = 0;
 		}else{
-			$import_custom_rra_settings = true;
-			$rra_array = array();
+			$import_as_new = false;
+			$profile_id = get_request_var('import_data_source_profile');
 		}
 
 		/* obtain debug information if it's set */
-		$debug_data = import_xml_data($xml_data, $import_custom_rra_settings, $rra_array);
+		$debug_data = import_xml_data($xml_data, $import_as_new, $profile_id);
 		if(sizeof($debug_data) > 0) {
 			$_SESSION['import_debug_info'] = $debug_data;
 		}
@@ -85,9 +85,7 @@ function form_save() {
 function import() {
 	global $hash_type_names, $fields_template_import;
 
-	?>
-	<form method='post' action='templates_import.php' enctype='multipart/form-data'>
-	<?php
+	print "<form method='post' action='templates_import.php' enctype='multipart/form-data'>\n";
 
 	if ((isset($_SESSION['import_debug_info'])) && (is_array($_SESSION['import_debug_info']))) {
 		html_start_box('Import Results', '100%', '', '3', 'center', '');
@@ -149,25 +147,9 @@ function import() {
 		));
 
 	html_end_box();
+
 	form_hidden_box('save_component_import','1','');
 
 	form_save_button('', 'import');
-?>
-<script type='text/javascript'>
-
-$(function() {
-	changeRRA();
-});
-
-function changeRRA() {
-	if ($('#import_rra_1').is(':checked')) {
-		$('#row_rra_id').show();
-	}else{
-		$('#row_rra_id').hide();
-	}
-}
-
-</script>
-<?php
 }
 

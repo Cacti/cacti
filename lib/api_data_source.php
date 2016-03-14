@@ -44,7 +44,6 @@ function api_data_source_remove($local_data_id) {
 	$data_template_data_id = db_fetch_cell_prepared('SELECT id FROM data_template_data WHERE local_data_id = ?', array($local_data_id));
 
 	if (!empty($data_template_data_id)) {
-		db_execute_prepared('DELETE FROM data_template_data_rra WHERE data_template_data_id = ?', array($data_template_data_id));
 		db_execute_prepared('DELETE FROM data_input_data WHERE data_template_data_id = ?', array($data_template_data_id));
 	}
 
@@ -88,14 +87,12 @@ function api_data_source_remove_multi($local_data_ids) {
 				$dtd_ids_to_delete[] = $data_template_data_id["id"];
 
 				if (sizeof($dtd_ids_to_delete) >= 1000) {
-					db_execute("DELETE FROM data_template_data_rra WHERE data_template_data_id IN (" . implode(",", $dtd_ids_to_delete) . ")");
 					db_execute("DELETE FROM data_input_data WHERE data_template_data_id IN (" . implode(",", $dtd_ids_to_delete) . ")");
 					$dtd_ids_to_delete = array();
 				}
 			}
 
 			if (sizeof($dtd_ids_to_delete)) {
-				db_execute("DELETE FROM data_template_data_rra WHERE data_template_data_id IN (" . implode(",", $dtd_ids_to_delete) . ")");
 				db_execute("DELETE FROM data_input_data WHERE data_template_data_id IN (" . implode(",", $dtd_ids_to_delete) . ")");
 			}
 

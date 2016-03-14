@@ -104,10 +104,10 @@ case 'view':
 	$graph = db_fetch_row("SELECT * FROM graph_templates_graph WHERE local_graph_id=" . get_request_var('local_graph_id'));
 
 	$i = 0;
-	if (sizeof($rras) > 0) {
+	if (sizeof($rras)) {
 		$graph_end   = time();
 		foreach ($rras as $rra) {
-			$graph_start = $graph_end - db_fetch_cell_prepared('SELECT timespan FROM rra WHERE id = ?', array($rra['id']));
+			$graph_start = $graph_end - ($rra['steps'] * $rra['rows'] * $rra['rrd_step']);
 			$aggregate_url = aggregate_build_children_url(get_request_var('local_graph_id'), $graph_start, $graph_end, $rra['id']);
 			?>
 			<tr>
@@ -187,7 +187,7 @@ case 'view':
 case 'zoom':
 	/* find the maximum time span a graph can show */
 	$max_timespan=1;
-	if (sizeof($rras) > 0) {
+	if (sizeof($rras)) {
 		foreach ($rras as $rra) {
 			if ($rra['steps'] * $rra['rows'] * $rra['rrd_step'] > $max_timespan) {
 				$max_timespan = $rra['steps'] * $rra['rows'] * $rra['rrd_step'];
@@ -197,9 +197,21 @@ case 'zoom':
 
 	/* fetch information for the current RRA */
 	if (isset_request_var('rra_id') && get_request_var('rra_id') > 0) {
-		$rra = db_fetch_row_prepared('SELECT id, timespan, steps, name FROM rra WHERE id = ?', array(get_request_var('rra_id')));
+		$rra = db_fetch_row_prepared('SELECT dspr.id, step, steps, dspr.name 
+			FROM data_source_profiles_rra AS dspr
+			INNER JOIN data_source_profiles AS dsp
+			ON dsp.id=dspr.data_source_profile_id
+			WHERE dspr.id = ?', array(get_request_var('rra_id')));
+
+		$rra['timespan'] = $rra['steps'] * $rra['step'] * $rra['rows'];
 	}else{
-		$rra = db_fetch_row_prepared('SELECT id, timespan, steps, name FROM rra WHERE id = ?', array($rras[0]['id']));
+		$rra = db_fetch_row_prepared('SELECT id, step, steps, name 
+			FROM data_source_profiles_rra AS dspr
+			INNER JOIN data_source_profiles AS dsp
+			ON dsp.id=dspr.data_source_profile_id
+			WHERE dspr.id = ?', array($rras[0]['id']));
+
+		$rra['timespan'] = $rra['steps'] * $rra['step'] * $rra['rows'];
 	}
 
 	/* define the time span, which decides which rra to use */

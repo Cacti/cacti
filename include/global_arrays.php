@@ -74,7 +74,7 @@ $messages = array(
 		'message' => 'User delete not permitted for designated graph export user.',
 		'type' => 'error'),
 	23 => array(
-		'message' => 'Data Template Includes Deleted Round Robin Archive.  Please run Database Repair Script to Identify and/or Correct.',
+		'message' => 'Data Template Includes Deleted Data Source Profile.  Please resave the Data Template with an existing Data Source Profile.',
 		'type' => 'error'),
 	24 => array(
 		'message' => 'Graph Template Includes Deleted GPrint Prefix.  Please run Database Repair Script to Identify and/or Correct.',
@@ -169,7 +169,8 @@ $cdef_operators = array(1 =>
 	'-',
 	'*',
 	'/',
-	'%');
+	'%'
+);
 
 $cdef_functions = array(1 =>
 	'SIN',
@@ -197,7 +198,8 @@ $cdef_functions = array(1 =>
 	'NEGINF',
 	'NOW',
 	'TIME',
-	'LTIME');
+	'LTIME'
+);
 
 $vdef_functions = array(1 =>
 	'MAXIMUM',
@@ -225,35 +227,40 @@ $custom_vdef_data_source_types = array( // this may change as soon as RRDTool su
 );
 
 $input_types = array(
-	DATA_INPUT_TYPE_SNMP => 'SNMP', // Action 0:
-	DATA_INPUT_TYPE_SNMP_QUERY => 'SNMP Query',
-	DATA_INPUT_TYPE_SCRIPT => 'Script/Command',  // Action 1:
-	DATA_INPUT_TYPE_SCRIPT_QUERY => 'Script Query', // Action 1:
-	DATA_INPUT_TYPE_PHP_SCRIPT_SERVER => 'Script - Script Server (PHP)',
-	DATA_INPUT_TYPE_QUERY_SCRIPT_SERVER => 'Script Query - Script Server');
+	DATA_INPUT_TYPE_SNMP                => 'SNMP', // Action 0:
+	DATA_INPUT_TYPE_SNMP_QUERY          => 'SNMP Query',
+	DATA_INPUT_TYPE_SCRIPT              => 'Script/Command',  // Action 1:
+	DATA_INPUT_TYPE_SCRIPT_QUERY        => 'Script Query', // Action 1:
+	DATA_INPUT_TYPE_PHP_SCRIPT_SERVER   => 'Script - Script Server (PHP)',
+	DATA_INPUT_TYPE_QUERY_SCRIPT_SERVER => 'Script Query - Script Server'
+);
 
 $reindex_types = array(
-	DATA_QUERY_AUTOINDEX_NONE => 'None',
-	DATA_QUERY_AUTOINDEX_BACKWARDS_UPTIME => 'Uptime Goes Backwards',
-	DATA_QUERY_AUTOINDEX_INDEX_NUM_CHANGE => 'Index Count Changed',
-	DATA_QUERY_AUTOINDEX_FIELD_VERIFICATION => 'Verify All Fields');
+	DATA_QUERY_AUTOINDEX_NONE               => 'None',
+	DATA_QUERY_AUTOINDEX_BACKWARDS_UPTIME   => 'Uptime Goes Backwards',
+	DATA_QUERY_AUTOINDEX_INDEX_NUM_CHANGE   => 'Index Count Changed',
+	DATA_QUERY_AUTOINDEX_FIELD_VERIFICATION => 'Verify All Fields'
+);
 
 $snmp_query_field_actions = array(1 =>
 	'SNMP Field Name (Dropdown)',
 	'SNMP Field Value (From User)',
-	'SNMP Output Type (Dropdown)');
+	'SNMP Output Type (Dropdown)'
+);
 
 $consolidation_functions = array(1 =>
 	'AVERAGE',
 	'MIN',
 	'MAX',
-	'LAST');
+	'LAST'
+);
 
 $data_source_types = array(1 =>
 	'GAUGE',
 	'COUNTER',
 	'DERIVE',
-	'ABSOLUTE');
+	'ABSOLUTE'
+);
 
 $rrd_font_render_modes = array(
 	RRD_FONT_RENDER_NORMAL  => 'Normal',
@@ -311,65 +318,125 @@ $graph_item_types = array(
 	GRAPH_ITEM_TYPE_TEXTALIGN       => 'TEXTALIGN',
 );
 
-$image_types = array(1 => 'PNG', 3 => 'SVG');
+$image_types = array(
+	1 => 'PNG', 
+	3 => 'SVG'
+);
 
 $snmp_versions = array(0 =>
 	'Not In Use',
 	'Version 1',
 	'Version 2',
-	'Version 3');
+	'Version 3'
+);
 
 $snmp_auth_protocols = array(
 	'MD5' => 'MD5 (default)',
-	'SHA' => 'SHA');
+	'SHA' => 'SHA'
+);
 
 $snmp_priv_protocols = array(
 	'[None]' => '[None]',
-	'DES' => 'DES (default)',
-	'AES128' => 'AES');
+	'DES'    => 'DES (default)',
+	'AES128' => 'AES'
+);
 
 $banned_snmp_strings = array(
 	'End of MIB',
-	'No Such');
+	'No Such'
+);
 
 $logfile_options = array(1 =>
 	'Logfile Only',
 	'Logfile and Syslog/Eventlog',
-	'Syslog/Eventlog Only');
+	'Syslog/Eventlog Only'
+);
 
 $availability_options = array(
-	AVAIL_NONE => 'None',
-	AVAIL_SNMP_AND_PING => 'Ping and SNMP Uptime',
-	AVAIL_SNMP_OR_PING => 'Ping or SNMP Uptime',
-	AVAIL_SNMP => 'SNMP Uptime',
+	AVAIL_NONE             => 'None',
+	AVAIL_SNMP_AND_PING    => 'Ping and SNMP Uptime',
+	AVAIL_SNMP_OR_PING     => 'Ping or SNMP Uptime',
+	AVAIL_SNMP             => 'SNMP Uptime',
 	AVAIL_SNMP_GET_SYSDESC => 'SNMP Desc',
-	AVAIL_SNMP_GET_NEXT => 'SNMP getNext',
-	AVAIL_PING => 'Ping');
+	AVAIL_SNMP_GET_NEXT    => 'SNMP getNext',
+	AVAIL_PING             => 'Ping'
+);
 
 $ping_methods = array(
 	PING_ICMP => 'ICMP Ping',
-	PING_TCP => 'TCP Ping',
-	PING_UDP => 'UDP Ping');
+	PING_TCP  => 'TCP Ping',
+	PING_UDP  => 'UDP Ping'
+);
 
 $logfile_verbosity = array(
-	POLLER_VERBOSITY_NONE => 'NONE - Syslog Only if Selected',
-	POLLER_VERBOSITY_LOW => 'LOW - Statistics and Errors',
+	POLLER_VERBOSITY_NONE   => 'NONE - Syslog Only if Selected',
+	POLLER_VERBOSITY_LOW    => 'LOW - Statistics and Errors',
 	POLLER_VERBOSITY_MEDIUM => 'MEDIUM - Statistics, Errors and Results',
-	POLLER_VERBOSITY_HIGH => 'HIGH - Statistics, Errors, Results and Major I/O Events',
-	POLLER_VERBOSITY_DEBUG => 'DEBUG - Statistics, Errors, Results, I/O and Program Flow',
-	POLLER_VERBOSITY_DEVDBG => 'DEVEL - Developer DEBUG Level');
+	POLLER_VERBOSITY_HIGH   => 'HIGH - Statistics, Errors, Results and Major I/O Events',
+	POLLER_VERBOSITY_DEBUG  => 'DEBUG - Statistics, Errors, Results, I/O and Program Flow',
+	POLLER_VERBOSITY_DEVDBG => 'DEVEL - Developer DEBUG Level'
+);
 
 $poller_options = array(1 =>
 	'cmd.php',
-	'spine');
+	'spine'
+);
+
+$aggregation_levels = array(
+	1       => 'Selected Poller Interval',
+	900     => '15 Minutes',
+	1800    => '30 Minutes',
+	3600    => '1 Hour',
+	7200    => '2 Hours',
+	10800   => '3 Hours',
+	14400   => '4 Hours',
+	21600   => '6 Hours',
+	43200   => '12 Hours',
+	86400   => 'Daily'
+);
+	
+$sampling_intervals = array(
+	10    => 'Every 10 Seconds',
+	15    => 'Every 15 Seconds',
+	20    => 'Every 20 Seconds',
+	30    => 'Every 30 Seconds',
+	60    => 'Every Minute',
+	300   => 'Every 5 Minutes',
+	600   => 'Every 10 Minutes',
+	1200  => 'Every 20 Minutes',
+	1800  => 'Every 30 Minutes',
+	3600  => 'Every Hour',
+	7200  => 'Every 2 Hours',
+	14400 => 'Every 4 Hours'
+);
+
+$heartbeats = array(
+	20    => '20 Seconds',
+	30    => '30 Seconds',
+	40    => '40 Seconds',
+	60    => '1 Minute',
+	120   => '2 Minutes',
+	300   => '5 Minutes',
+	600   => '10 Minutes',
+	1200  => '20 Minutes',
+	1800  => '30 Minutes',
+	2400  => '40 Minutes',
+	3600  => '1 Hour',
+	7200  => '2 Hours',
+	14400 => '4 Hours',
+	28800 => '8 Hours',
+	57600 => '16 Hours',
+	86400 => '1 Day'
+);
 
 $poller_intervals = array(
-	10 => 'Every 10 Seconds',
-	15 => 'Every 15 Seconds',
-	20 => 'Every 20 Seconds',
-	30 => 'Every 30 Seconds',
-	60 => 'Every Minute',
-	300 => 'Every 5 Minutes');
+	10  => 'Every 10 Seconds',
+	15  => 'Every 15 Seconds',
+	20  => 'Every 20 Seconds',
+	30  => 'Every 30 Seconds',
+	60  => 'Every Minute',
+	300 => 'Every 5 Minutes'
+);
 
 $device_threads = array(
 	1 => '1 Thread (default)',
@@ -377,59 +444,73 @@ $device_threads = array(
 	3 => '3 Threads',
 	4 => '4 Threads',
 	5 => '5 Threads',
-	6 => '6 Threads');
+	6 => '6 Threads'
+);
 
 $cron_intervals = array(
-	60 => 'Every Minute',
-	300 => 'Every 5 Minutes');
+	60  => 'Every Minute',
+	300 => 'Every 5 Minutes'
+);
 
 $registered_cacti_names = array(
-	'path_cacti');
+	'path_cacti'
+);
 
 $graph_views = array(1 =>
 	'Tree View',
 	'List View',
-	'Preview View');
+	'Preview View'
+);
 
 $auth_methods = array(
 	0 => 'None',
 	1 => 'Builtin Authentication',
-	2 => 'Web Basic Authentication');
+	2 => 'Web Basic Authentication'
+);
+
 if (function_exists('ldap_connect')) {
 	$auth_methods[3] = 'LDAP Authentication';
 	$auth_methods[4] = 'Multiple LDAP/AD Domains';
 }
 
-$domain_types = array('1' => 'LDAP', '2' => 'Active Directory');
+$domain_types = array(
+	'1' => 'LDAP', 
+	'2' => 'Active Directory'
+);
 
 $auth_realms = get_auth_realms();
 
 $ldap_versions = array(
 	2 => 'Version 2',
-	3 => 'Version 3');
+	3 => 'Version 3'
+);
 
 $ldap_encryption = array(
 	0 => 'None',
 	1 => 'SSL',
-	2 => 'TLS');
+	2 => 'TLS'
+);
 
 $ldap_modes = array(
 	0 => 'No Searching',
 	1 => 'Anonymous Searching',
-	2 => 'Specific Searching');
+	2 => 'Specific Searching'
+);
 
 $rrdtool_versions = array(
 	'rrd-1.2.x' => 'RRDTool 1.2.x',
 	'rrd-1.3.x' => 'RRDTool 1.3.x',
 	'rrd-1.4.x' => 'RRDTool 1.4.x',
-	'rrd-1.5.x' => 'RRDTool 1.5.x');
+	'rrd-1.5.x' => 'RRDTool 1.5.x'
+);
 
 $cdef_item_types = array(
 	CVDEF_ITEM_TYPE_FUNCTION => 'Function',
 	CVDEF_ITEM_TYPE_OPERATOR => 'Operator',
 	CVDEF_ITEM_TYPE_SPEC_DS  => 'Special Data Source',
 	CVDEF_ITEM_TYPE_CDEF     => 'Another CDEF',
-	CVDEF_ITEM_TYPE_STRING   => 'Custom String');
+	CVDEF_ITEM_TYPE_STRING   => 'Custom String'
+);
 
 $graph_color_alpha = array(
 	'00' => '  0%',
@@ -442,75 +523,80 @@ $graph_color_alpha = array(
 	'B2' => ' 70%',
 	'CC' => ' 80%',
 	'E5' => ' 90%',
-	'FF' => '100%');
+	'FF' => '100%'
+);
 
 $tree_sort_types = array(
-	TREE_ORDERING_INHERIT => 'Inherit Parent Sorting',
-	TREE_ORDERING_NONE => 'Manual Ordering (No Sorting)',
+	TREE_ORDERING_INHERIT    => 'Inherit Parent Sorting',
+	TREE_ORDERING_NONE       => 'Manual Ordering (No Sorting)',
 	TREE_ORDERING_ALPHABETIC => 'Alphabetic Ordering',
-	TREE_ORDERING_NATURAL => 'Natural Ordering',
-	TREE_ORDERING_NUMERIC => 'Numeric Ordering');
+	TREE_ORDERING_NATURAL    => 'Natural Ordering',
+	TREE_ORDERING_NUMERIC    => 'Numeric Ordering'
+);
 
 $tree_item_types = array(
 	TREE_ITEM_TYPE_HEADER => 'Header',
-	TREE_ITEM_TYPE_GRAPH => 'Graph',
-	TREE_ITEM_TYPE_HOST => 'Device');
+	TREE_ITEM_TYPE_GRAPH  => 'Graph',
+	TREE_ITEM_TYPE_HOST   => 'Device'
+);
 
 $host_group_types = array(
-	HOST_GROUPING_GRAPH_TEMPLATE => 'Graph Template',
-	HOST_GROUPING_DATA_QUERY_INDEX => 'Data Query Index');
+	HOST_GROUPING_GRAPH_TEMPLATE   => 'Graph Template',
+	HOST_GROUPING_DATA_QUERY_INDEX => 'Data Query Index'
+);
 
 $custom_data_source_types = array(
-	'CURRENT_DATA_SOURCE' => 'Current Graph Item Data Source',
-	'ALL_DATA_SOURCES_NODUPS' => 'All Data Sources (Dont Include Duplicates)',
-	'ALL_DATA_SOURCES_DUPS'	=> 'All Data Sources (Include Duplicates)',
+	'CURRENT_DATA_SOURCE'         => 'Current Graph Item Data Source',
+	'ALL_DATA_SOURCES_NODUPS'     => 'All Data Sources (Dont Include Duplicates)',
+	'ALL_DATA_SOURCES_DUPS'       => 'All Data Sources (Include Duplicates)',
 	'SIMILAR_DATA_SOURCES_NODUPS' => 'All Similar Data Sources (Dont Include Duplicates)',
-	'SIMILAR_DATA_SOURCES_DUPS' => 'All Similar Data Sources (Include Duplicates)',
-	'CURRENT_DS_MINIMUM_VALUE' => 'Current Data Source Item: Minimum Value',
-	'CURRENT_DS_MAXIMUM_VALUE' => 'Current Data Source Item: Maximum Value',
+	'SIMILAR_DATA_SOURCES_DUPS'   => 'All Similar Data Sources (Include Duplicates)',
+	'CURRENT_DS_MINIMUM_VALUE'    => 'Current Data Source Item: Minimum Value',
+	'CURRENT_DS_MAXIMUM_VALUE'    => 'Current Data Source Item: Maximum Value',
 	'CURRENT_GRAPH_MINIMUM_VALUE' => 'Graph: Lower Limit',
 	'CURRENT_GRAPH_MAXIMUM_VALUE' => 'Graph: Upper Limit',
-	'COUNT_ALL_DS_NODUPS' => 'Count of All Data Sources (Dont Include Duplicates)',
-	'COUNT_ALL_DS_DUPS' => 'Count of All Data Sources (Include Duplicates)',
-	'COUNT_SIMILAR_DS_NODUPS' => 'Count of All Similar Data Sources (Dont Include Duplicates)',
-	'COUNT_SIMILAR_DS_DUPS'	=> 'Count of All Similar Data Sources (Include Duplicates)');
+	'COUNT_ALL_DS_NODUPS'         => 'Count of All Data Sources (Dont Include Duplicates)',
+	'COUNT_ALL_DS_DUPS'           => 'Count of All Data Sources (Include Duplicates)',
+	'COUNT_SIMILAR_DS_NODUPS'     => 'Count of All Similar Data Sources (Dont Include Duplicates)',
+	'COUNT_SIMILAR_DS_DUPS'	      => 'Count of All Similar Data Sources (Include Duplicates)'
+);
 
 $menu = array(
 	'Create' => array(
 		'graphs_new.php' => 'New Graphs'
 		),
 	'Management' => array(
-		'graphs.php' => 'Graphs',
-		'tree.php' => 'Trees',
-		'data_sources.php' => 'Data Sources',
-		'host.php' => 'Devices',
+		'graphs.php'           => 'Graphs',
+		'tree.php'             => 'Trees',
+		'data_sources.php'     => 'Data Sources',
+		'host.php'             => 'Devices',
 		'aggregate_graphs.php' => 'Aggregates',
 		),
 	'Collection Methods' => array(
 		'data_queries.php' => 'Data Queries',
-		'data_input.php' => 'Data Input Methods'
+		'data_input.php'   => 'Data Input Methods'
 		),
 	'Templates' => array(
-		'graph_templates.php' => 'Graph',
-		'host_templates.php' => 'Device',
-		'data_templates.php' => 'Data Source',
+		'graph_templates.php'     => 'Graph',
+		'host_templates.php'      => 'Device',
+		'data_templates.php'      => 'Data Source',
 		'aggregate_templates.php' => 'Aggregate',
-		'color_templates.php' => 'Color'
+		'color_templates.php'     => 'Color'
 		),
 	'Automation' => array(
-		'automation_networks.php' => 'Networks',
-		'automation_devices.php' => 'Discovered Devices',
-		'automation_templates.php' => 'Device Rules',
+		'automation_networks.php'    => 'Networks',
+		'automation_devices.php'     => 'Discovered Devices',
+		'automation_templates.php'   => 'Device Rules',
 		'automation_graph_rules.php' => 'Graph Rules',
-		'automation_tree_rules.php' => 'Tree Rules',
-		'automation_snmp.php' => 'SNMP Options',
+		'automation_tree_rules.php'  => 'Tree Rules',
+		'automation_snmp.php'        => 'SNMP Options',
 		),
 	'Presets' => array(
-		'cdef.php' => 'CDEFs',
-		'vdef.php' => 'VDEFs',
-		'color.php' => 'Colors',
-		'gprint_presets.php' => 'GPRINTs',
-		'rra.php' => 'RRAs'
+		'data_source_profiles.php' => 'Data Profiles',
+		'cdef.php'                 => 'CDEFs',
+		'vdef.php'                 => 'VDEFs',
+		'color.php'                => 'Colors',
+		'gprint_presets.php'       => 'GPRINTs'
 		),
 	'Import/Export' => array(
 		'templates_import.php' => 'Import Templates',
@@ -520,75 +606,79 @@ $menu = array(
 		'settings.php' => 'Settings'
 		),
 	'Utilities' => array(
-		'utilities.php' => 'System Utilities',
-		'user_admin.php' => 'Users',
+		'utilities.php'        => 'System Utilities',
+		'user_admin.php'       => 'Users',
 		'user_group_admin.php' => 'User Groups',
-		'user_domains.php' => 'User Domains'
+		'user_domains.php'     => 'User Domains'
 		)
-	);
+);
 
 $log_tail_lines = array(
-	-1 => 'All Lines',
-	10 => '10 Lines',
-	15 => '15 Lines',
-	20 => '20 Lines',
-	50 => '50 Lines',
-	100 => '100 Lines',
-	200 => '200 Lines',
-	500 => '500 Lines',
-	1000 => '1000 Lines',
-	2000 => '2000 Lines',
-	3000 => '3000 Lines',
-	5000 => '5000 Lines',
-	10000 => '10000 Lines');
+	-1    => 'All Lines',
+	10    => '10 Lines',
+	15    => '15 Lines',
+	20    => '20 Lines',
+	50    => '50 Lines',
+	100   => '100 Lines',
+	200   => '200 Lines',
+	500   => '500 Lines',
+	1000  => '1000 Lines',
+	2000  => '2000 Lines',
+	3000  => '3000 Lines',
+	5000  => '5000 Lines',
+	10000 => '10000 Lines'
+);
 
 $item_rows = array(
-	10 => '10',
-	15 => '15',
-	20 => '20',
-	25 => '25',
-	30 => '30',
-	40 => '40',
-	50 => '50',
-	100 => '100',
-	250 => '250',
-	500 => '500',
+	10   => '10',
+	15   => '15',
+	20   => '20',
+	25   => '25',
+	30   => '30',
+	40   => '40',
+	50   => '50',
+	100  => '100',
+	250  => '250',
+	500  => '500',
 	1000 => '1000',
 	2000 => '2000',
-	5000 => '5000');
+	5000 => '5000'
+);
 
 $graphs_per_page = array(
-	4 => '4',
-	6 => '6',
-	8 => '8',
-	9 => '9',
-	10 => '10',
-	12 => '12',
-	14 => '14',
-	15 => '15',
-	16 => '16',
-	18 => '18',
-	20 => '20',
-	24 => '24',
-	25 => '25',
-	27 => '27',
-	28 => '28',
-	30 => '30',
-	32 => '32',
-	35 => '35',
-	40 => '40',
-	50 => '50',
-	100 => '100');
+	4   => '4',
+	6   => '6',
+	8   => '8',
+	9   => '9',
+	10  => '10',
+	12  => '12',
+	14  => '14',
+	15  => '15',
+	16  => '16',
+	18  => '18',
+	20  => '20',
+	24  => '24',
+	25  => '25',
+	27  => '27',
+	28  => '28',
+	30  => '30',
+	32  => '32',
+	35  => '35',
+	40  => '40',
+	50  => '50',
+	100 => '100'
+);
 
 $page_refresh_interval = array(
-	5 => '5 Seconds',
-	10 => '10 Seconds',
-	20 => '20 Seconds',
-	30 => '30 Seconds',
-	60 => '1 Minute',
-	300 => '5 Minutes',
-	600 => '10 Minutes',
-	9999999 => 'Never');
+	5       => '5 Seconds',
+	10      => '10 Seconds',
+	20      => '20 Seconds',
+	30      => '30 Seconds',
+	60      => '1 Minute',
+	300     => '5 Minutes',
+	600     => '10 Minutes',
+	9999999 => 'Never'
+);
 
 $user_auth_realms = array(
 	8  => 'Console Access',
@@ -606,7 +696,7 @@ $user_auth_realms = array(
 	5  => 'Graphs',
 	4  => 'Graph Trees',
 
-	9  => 'RRA Presets',
+	9  => 'Data Source Profiles',
 	14 => 'Colors/GPrints/CDEFs/VDEFs',
 
 	10 => 'Graph Templates',
@@ -620,13 +710,14 @@ $user_auth_realms = array(
 	19 => 'Log Viewing',
 
 	21 => 'Reports Management',
-	22 => 'Reports Creation');
+	22 => 'Reports Creation'
+);
 
 $user_auth_roles = array(
-	'Normal User' => array(7, 19, 20, 22),
-	'Template Editor' => array(8, 2, 9, 10, 11, 12, 13, 14, 16, 17),
+	'Normal User'            => array(7, 19, 20, 22),
+	'Template Editor'        => array(8, 2, 9, 10, 11, 12, 13, 14, 16, 17),
 	'General Administration' => array(8, 3, 4, 5, 23),
-	'System Administration' => array(8, 15, 1, 18, 21, 101)
+	'System Administration'  => array(8, 15, 1, 18, 21, 101)
 );
 
 $user_auth_realm_filenames = array(
@@ -637,6 +728,7 @@ $user_auth_realm_filenames = array(
 	'color.php' => 5,
 	'data_input.php' => 2,
 	'data_sources.php' => 3,
+	'data_source_profiles.php' => 9,
 	'data_templates.php' => 11,
 	'gprint_presets.php' => 5,
 	'graph.php' => 7,
@@ -655,7 +747,6 @@ $user_auth_realm_filenames = array(
 	'host_templates.php' => 12,
 	'index.php' => 8,
 	'managers.php' => 15,
-	'rra.php' => 9,
 	'rrdcleaner.php' => 15,
 	'settings.php' => 15,
 	'data_queries.php' => 13,
@@ -687,14 +778,13 @@ $user_auth_realm_filenames = array(
 	'aggregate_templates.php' => 5,
 	'aggregate_graphs.php' => 5,
 	'aggregate_items.php' => 5,
-	'permission_denied.php' => -1);
+	'permission_denied.php' => -1
+);
 
 $hash_type_codes = array(
 	'round_robin_archive' => '15',
 	'cdef' => '05',
 	'cdef_item' => '14',
-	'vdef' => '18',
-	'vdef_item' => '19',
 	'gprint_preset' => '06',
 	'data_input_method' => '03',
 	'data_input_field' => '07',
@@ -707,7 +797,11 @@ $hash_type_codes = array(
 	'data_query_graph' => '11',
 	'data_query_sv_graph' => '12',
 	'data_query_sv_data_source' => '13',
-	'host_template' => '02');
+	'host_template' => '02',
+	'vdef' => '18',
+	'vdef_item' => '19',
+	'data_source_profile' => '20'
+);
 
 $hash_version_codes = array(
 	'0.8.4'  => '0000',
@@ -742,24 +836,26 @@ $hash_version_codes = array(
 	'0.8.8e' => '0025',
 	'0.8.8f' => '0025',
 	'0.8.8g' => '0025',
-	'1.0.0'  => '0027');
+	'1.0.0'  => '0027'
+);
 
 $hash_type_names = array(
-	'cdef' => 'CDEF',
-	'cdef_item' => 'CDEF Item',
-	'gprint_preset' => 'GPRINT Preset',
-	'data_input_method' => 'Data Input Method',
-	'data_input_field' => 'Data Input Field',
-	'data_template' => 'Data Template',
-	'data_template_item' => 'Data Template Item',
-	'graph_template' => 'Graph Template',
-	'graph_template_item' => 'Graph Template Item',
+	'cdef'                 => 'CDEF',
+	'cdef_item'            => 'CDEF Item',
+	'gprint_preset'        => 'GPRINT Preset',
+	'data_template'        => 'Data Template',
+	'data_input_method'    => 'Data Input Method',
+	'data_input_field'     => 'Data Input Field',
+	'data_source_profile'  => 'Data Source Profile',
+	'data_template_item'   => 'Data Template Item',
+	'graph_template'       => 'Graph Template',
+	'graph_template_item'  => 'Graph Template Item',
 	'graph_template_input' => 'Graph Template Input',
-	'data_query' => 'Data Query',
-	'host_template' => 'Device Template',
-	'round_robin_archive' => 'Round Robin Archive',
-	'vdef' => 'VDEF',
-	'vdef_item' => 'VDEF Item');
+	'data_query'           => 'Data Query',
+	'host_template'        => 'Device Template',
+	'vdef'                 => 'VDEF',
+	'vdef_item'            => 'VDEF Item'
+);
 
 $host_struc = array(
 	'host_template_id',
@@ -795,67 +891,71 @@ $host_struc = array(
 	'avg_time',
 	'total_polls',
 	'failed_polls',
-	'availability');
+	'availability'
+);
 
 $graph_timespans = array(
 	GT_LAST_HALF_HOUR => 'Last Half Hour',
-	GT_LAST_HOUR => 'Last Hour',
-	GT_LAST_2_HOURS => 'Last 2 Hours',
-	GT_LAST_4_HOURS => 'Last 4 Hours',
-	GT_LAST_6_HOURS =>'Last 6 Hours',
-	GT_LAST_12_HOURS =>'Last 12 Hours',
-	GT_LAST_DAY =>'Last Day',
-	GT_LAST_2_DAYS =>'Last 2 Days',
-	GT_LAST_3_DAYS =>'Last 3 Days',
-	GT_LAST_4_DAYS =>'Last 4 Days',
-	GT_LAST_WEEK =>'Last Week',
-	GT_LAST_2_WEEKS =>'Last 2 Weeks',
-	GT_LAST_MONTH =>'Last Month',
-	GT_LAST_2_MONTHS =>'Last 2 Months',
-	GT_LAST_3_MONTHS =>'Last 3 Months',
-	GT_LAST_4_MONTHS =>'Last 4 Months',
-	GT_LAST_6_MONTHS =>'Last 6 Months',
-	GT_LAST_YEAR =>'Last Year',
-	GT_LAST_2_YEARS =>'Last 2 Years',
-	GT_DAY_SHIFT => 'Day Shift',
-	GT_THIS_DAY => 'This Day',
-	GT_THIS_WEEK => 'This Week',
-	GT_THIS_MONTH => 'This Month',
-	GT_THIS_YEAR => 'This Year',
-	GT_PREV_DAY => 'Previous Day',
-	GT_PREV_WEEK => 'Previous Week',
-	GT_PREV_MONTH => 'Previous Month',
-	GT_PREV_YEAR => 'Previous Year');
+	GT_LAST_HOUR      => 'Last Hour',
+	GT_LAST_2_HOURS   => 'Last 2 Hours',
+	GT_LAST_4_HOURS   => 'Last 4 Hours',
+	GT_LAST_6_HOURS   => 'Last 6 Hours',
+	GT_LAST_12_HOURS  => 'Last 12 Hours',
+	GT_LAST_DAY       => 'Last Day',
+	GT_LAST_2_DAYS    => 'Last 2 Days',
+	GT_LAST_3_DAYS    => 'Last 3 Days',
+	GT_LAST_4_DAYS    => 'Last 4 Days',
+	GT_LAST_WEEK      => 'Last Week',
+	GT_LAST_2_WEEKS   => 'Last 2 Weeks',
+	GT_LAST_MONTH     => 'Last Month',
+	GT_LAST_2_MONTHS  => 'Last 2 Months',
+	GT_LAST_3_MONTHS  => 'Last 3 Months',
+	GT_LAST_4_MONTHS  => 'Last 4 Months',
+	GT_LAST_6_MONTHS  => 'Last 6 Months',
+	GT_LAST_YEAR      => 'Last Year',
+	GT_LAST_2_YEARS   => 'Last 2 Years',
+	GT_DAY_SHIFT      => 'Day Shift',
+	GT_THIS_DAY       => 'This Day',
+	GT_THIS_WEEK      => 'This Week',
+	GT_THIS_MONTH     => 'This Month',
+	GT_THIS_YEAR      => 'This Year',
+	GT_PREV_DAY       => 'Previous Day',
+	GT_PREV_WEEK      => 'Previous Week',
+	GT_PREV_MONTH     => 'Previous Month',
+	GT_PREV_YEAR      => 'Previous Year'
+);
 
 $graph_timeshifts = array(
 	GTS_HALF_HOUR => '30 Min',
-	GTS_1_HOUR => '1 Hour',
-	GTS_2_HOURS => '2 Hours',
-	GTS_4_HOURS => '4 Hours',
-	GTS_6_HOURS => '6 Hours',
-	GTS_12_HOURS => '12 Hours',
-	GTS_1_DAY => '1 Day',
-	GTS_2_DAYS => '2 Days',
-	GTS_3_DAYS => '3 Days',
-	GTS_4_DAYS => '4 Days',
-	GTS_1_WEEK => '1 Week',
-	GTS_2_WEEKS => '2 Weeks',
-	GTS_1_MONTH => '1 Month',
-	GTS_2_MONTHS => '2 Months',
-	GTS_3_MONTHS => '3 Months',
-	GTS_4_MONTHS => '4 Months',
-	GTS_6_MONTHS => '6 Months',
-	GTS_1_YEAR => '1 Year',
-	GTS_2_YEARS => '2 Years');
+	GTS_1_HOUR    => '1 Hour',
+	GTS_2_HOURS   => '2 Hours',
+	GTS_4_HOURS   => '4 Hours',
+	GTS_6_HOURS   => '6 Hours',
+	GTS_12_HOURS  => '12 Hours',
+	GTS_1_DAY     => '1 Day',
+	GTS_2_DAYS    => '2 Days',
+	GTS_3_DAYS    => '3 Days',
+	GTS_4_DAYS    => '4 Days',
+	GTS_1_WEEK    => '1 Week',
+	GTS_2_WEEKS   => '2 Weeks',
+	GTS_1_MONTH   => '1 Month',
+	GTS_2_MONTHS  => '2 Months',
+	GTS_3_MONTHS  => '3 Months',
+	GTS_4_MONTHS  => '4 Months',
+	GTS_6_MONTHS  => '6 Months',
+	GTS_1_YEAR    => '1 Year',
+	GTS_2_YEARS   => '2 Years'
+);
 
 $graph_weekdays = array(
-	WD_SUNDAY => date('l', strtotime('Sunday')),
-	WD_MONDAY => date('l', strtotime('Monday')),
-	WD_TUESDAY => date('l', strtotime('Tuesday')),
+	WD_SUNDAY    => date('l', strtotime('Sunday')),
+	WD_MONDAY    => date('l', strtotime('Monday')),
+	WD_TUESDAY   => date('l', strtotime('Tuesday')),
 	WD_WEDNESDAY => date('l', strtotime('Wednesday')),
-	WD_THURSDAY => date('l', strtotime('Thursday')),
-	WD_FRIDAY => date('l', strtotime('Friday')),
-	WD_SATURDAY => date('l', strtotime('Saturday')));
+	WD_THURSDAY  => date('l', strtotime('Thursday')),
+	WD_FRIDAY    => date('l', strtotime('Friday')),
+	WD_SATURDAY  => date('l', strtotime('Saturday'))
+);
 
 $graph_dateformats = array(
 	GD_MO_D_Y => 'Month Number, Day, Year',
@@ -863,31 +963,35 @@ $graph_dateformats = array(
 	GD_D_MO_Y => 'Day, Month Number, Year',
 	GD_D_MN_Y => 'Day, Month Name, Year',
 	GD_Y_MO_D => 'Year, Month Number, Day',
-	GD_Y_MN_D => 'Year, Month Name, Day');
+	GD_Y_MN_D => 'Year, Month Name, Day'
+);
 
 $graph_datechar = array(
 	GDC_HYPHEN => '-',
-	GDC_SLASH => '/');
+	GDC_SLASH => '/'
+);
 
 $dsstats_refresh_interval = array(
 	'boost' => 'After Boost',
-	'60'  => '1 Hour',
-	'120' => '2 Hours',
-	'180' => '3 Hours',
-	'240' => '4 Hours',
-	'300' => '5 Hours',
-	'360' => '6 Hours');
+	'60'    => '1 Hour',
+	'120'   => '2 Hours',
+	'180'   => '3 Hours',
+	'240'   => '4 Hours',
+	'300'   => '5 Hours',
+	'360'   => '6 Hours'
+);
 
 $dsstats_max_memory = array(
-	'32' => '32 MBytes',
-	'64' => '64 MBytes',
-	'128' => '128 MBytes',
-	'256' => '256 MBytes',
-	'512' => '512 MBytes',
+	'32'   => '32 MBytes',
+	'64'   => '64 MBytes',
+	'128'  => '128 MBytes',
+	'256'  => '256 MBytes',
+	'512'  => '512 MBytes',
 	'1024' => '1 GBytes',
 	'1536' => '1.5 GBytes',
 	'2048' => '2 GBytes',
-	'3072' => '3 GBytes');
+	'3072' => '3 GBytes'
+);
 
 $dsstats_hourly_avg = array(
 	'60'  => '1 Hour',
@@ -895,94 +999,102 @@ $dsstats_hourly_avg = array(
 	'180' => '3 Hours',
 	'240' => '4 Hours',
 	'300' => '5 Hours',
-	'360' => '6 Hours');
+	'360' => '6 Hours'
+);
 
 $boost_max_rows_per_select = array(
-	'2000' => '2,000 Data Source Items',
-	'5000' => '5,000 Data Source Items',
-	'10000' => '10,000 Data Source Items',
-	'15000' => '15,000 Data Source Items',
-	'25000' => '25,000 Data Source Items',
-	'50000' => '50,000 Data Source Items (Default)',
+	'2000'   => '2,000 Data Source Items',
+	'5000'   => '5,000 Data Source Items',
+	'10000'  => '10,000 Data Source Items',
+	'15000'  => '15,000 Data Source Items',
+	'25000'  => '25,000 Data Source Items',
+	'50000'  => '50,000 Data Source Items (Default)',
 	'100000' => '100,000 Data Source Items',
 	'200000' => '200,000 Data Source Items',
-	'400000' => '400,000 Data Source Items');
+	'400000' => '400,000 Data Source Items'
+);
 
 $boost_utilities_interval = array(
 	'999999' => 'Disabled',
-	'5'   => '5 Seconds',
-	'10'  => '10 Seconds',
-	'15'  => '15 Seconds',
-	'20'  => '20 Seconds',
-	'30'  => '30 Seconds',
-	'60'  => '1 Minute',
-	'300' => '5 Minutes');
+	'5'      => '5 Seconds',
+	'10'     => '10 Seconds',
+	'15'     => '15 Seconds',
+	'20'     => '20 Seconds',
+	'30'     => '30 Seconds',
+	'60'     => '1 Minute',
+	'300'    => '5 Minutes'
+);
 
 $boost_refresh_interval = array(
 	'30'  => '30 Minutes',
 	'60'  => '1 Hour',
 	'120' => '2 Hours',
 	'240' => '4 Hours',
-	'360' => '6 Hours');
+	'360' => '6 Hours'
+);
 
 $boost_max_runtime = array(
 	'1200' => '20 Minutes',
 	'2400' => '40 Minutes',
 	'3600' => '1 Hour',
-	'4800' => '1.5 Hours');
+	'4800' => '1.5 Hours'
+);
 
 $boost_max_memory = array(
-	'32' => '32 MBytes',
-	'64' => '64 MBytes',
-	'128' => '128 MBytes',
-	'256' => '256 MBytes',
-	'512' => '512 MBytes',
+	'32'   => '32 MBytes',
+	'64'   => '64 MBytes',
+	'128'  => '128 MBytes',
+	'256'  => '256 MBytes',
+	'512'  => '512 MBytes',
 	'1024' => '1 GBytes',
 	'1536' => '1.5 GBytes',
 	'2048' => '2 GBytes',
-	'3072' => '3 GBytes');
+	'3072' => '3 GBytes'
+);
 
 $realtime_window = array(
-	30   => "30 Seconds",
-	45   => "45 Seconds",
-	60   => "1 Minute",
-	90   => "1.5 Minutes",
-	120  => "2 Minutes",
-	300  => "5 Minutes",
-	600  => "10 Minutes",
-	1200 => "20 Minutes",
-	1800 => "30 Minutes",
-	3600 => "1 Hour");
+	30   => '30 Seconds',
+	45   => '45 Seconds',
+	60   => '1 Minute',
+	90   => '1.5 Minutes',
+	120  => '2 Minutes',
+	300  => '5 Minutes',
+	600  => '10 Minutes',
+	1200 => '20 Minutes',
+	1800 => '30 Minutes',
+	3600 => '1 Hour'
+);
 
 $realtime_refresh = array(
-	5   => "5 Seconds",
-	10  => "10 Seconds",
-	15  => "15 Seconds",
-	20  => "20 Seconds",
-	30  => "30 Seconds",
-	60  => "1 Minute",
-	120 => "2 Minutes");
+	5   => '5 Seconds',
+	10  => '10 Seconds',
+	15  => '15 Seconds',
+	20  => '20 Seconds',
+	30  => '30 Seconds',
+	60  => '1 Minute',
+	120 => '2 Minutes'
+);
 
 $attachment_sizes = array(
-	1048576 => "1 Megabyte",
-	2097152 => "2 Megabytes",
-	4194304 => "4 Megabytes",
-	10485760 => "10 Megabytes",
-	20971520 => "20 Megabytes",
-	52428800 => "50 Megabytes",
-	104857600 => "100 Megabytes"
+	1048576   => '1 Megabyte',
+	2097152   => '2 Megabytes',
+	4194304   => '4 Megabytes',
+	10485760  => '10 Megabytes',
+	20971520  => '20 Megabytes',
+	52428800  => '50 Megabytes',
+	104857600 => '100 Megabytes'
 );
 
 $reports_actions = array(
-	REPORTS_SEND_NOW  => "Send Now",
-	REPORTS_DUPLICATE => "Duplicate",
-	REPORTS_ENABLE    => "Enable",
-	REPORTS_DISABLE   => "Disable",
-	REPORTS_DELETE    => "Delete",
+	REPORTS_SEND_NOW  => 'Send Now',
+	REPORTS_DUPLICATE => 'Duplicate',
+	REPORTS_ENABLE    => 'Enable',
+	REPORTS_DISABLE   => 'Disable',
+	REPORTS_DELETE    => 'Delete',
 );
 
 if (is_realm_allowed(22)) {
-	$reports_actions[REPORTS_OWN] = "Take Ownership";
+	$reports_actions[REPORTS_OWN] = 'Take Ownership';
 }
 
 $attach_types = array(
@@ -1003,7 +1115,7 @@ if (extension_loaded(REPORTS_EXTENSION_GD)) {
 	$attach_types[REPORTS_TYPE_ATTACH_GIF] = 'Attached GIF Image';
 }
 
-if (read_config_option("reports_allow_ln") != '') {
+if (read_config_option('reports_allow_ln') != '') {
 	$attach_types[REPORTS_TYPE_INLINE_PNG_LN] = 'Inline PNG Image, LN Style';
 	if (extension_loaded(REPORTS_EXTENSION_GD)) {
 		$attach_types[REPORTS_TYPE_INLINE_JPG_LN] = 'Inline JPEG Image, LN Style';
@@ -1013,9 +1125,9 @@ if (read_config_option("reports_allow_ln") != '') {
 
 $item_types = array(
 	REPORTS_ITEM_TEXT  => 'Text',
-	REPORTS_ITEM_TREE => 'Tree',
+	REPORTS_ITEM_TREE  => 'Tree',
 	REPORTS_ITEM_GRAPH => 'Graph',
-	REPORTS_ITEM_HR => 'Horizontal Rule'
+	REPORTS_ITEM_HR    => 'Horizontal Rule'
 );
 
 $alignment = array(
@@ -1057,7 +1169,7 @@ $agg_totals_type = array(
 $agg_order_types = array(
 	AGGREGATE_ORDER_NONE      => 'No Reordering',
 	AGGREGATE_ORDER_DS_GRAPH  => 'Data Source, Graph',
-	AGGREGATE_ORDER_GRAPH_DS => 'Graph, Data Source',
+	AGGREGATE_ORDER_GRAPH_DS  => 'Graph, Data Source',
 );
 
 # operators for use with SQL/pattern matching
@@ -1188,16 +1300,16 @@ $automation_tree_header_types  = array(
 
 $automation_frequencies = array(
 	'disabled' => 'Disabled',
-	'60' => 'Every 1 Hour',
-	'120' => 'Every 2 Hours',
-	'240' => 'Every 4 Hours',
-	'360' => 'Every 6 Hours',
-	'480' => 'Every 8 Hours',
-	'720' => 'Every 12 Hours',
-	'1440' => 'Every Day',
-	'10080' => 'Every Week',
-	'20160' => 'Every 2 Weeks',
-	'40320' => 'Every 4 Weeks'
+	'60'       => 'Every 1 Hour',
+	'120'      => 'Every 2 Hours',
+	'240'      => 'Every 4 Hours',
+	'360'      => 'Every 6 Hours',
+	'480'      => 'Every 8 Hours',
+	'720'      => 'Every 12 Hours',
+	'1440'     => 'Every Day',
+	'10080'    => 'Every Week',
+	'20160'    => 'Every 2 Weeks',
+	'40320'    => 'Every 4 Weeks'
 );
 
 api_plugin_hook('config_arrays');

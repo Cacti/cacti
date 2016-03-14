@@ -247,23 +247,6 @@ function form_save() {
 		}
 
 		if (!is_error_message()) {
-			if (!isempty_request_var('rra_id')) {
-				/* save entries in 'selected rras' field */
-				db_execute_prepared('DELETE FROM data_template_data_rra WHERE data_template_data_id = ?', array($data_template_data_id));
-
-				for ($i=0; ($i < count(get_request_var('rra_id'))); $i++) {
-					/* ================= input validation ================= */
-					$rra_id = $_REQUEST['rra_id'][$i];
-					if (!is_numeric($rra_id)) {
-						exit;
-					}
-					/* ==================================================== */
-
-					db_execute_prepared('INSERT INTO data_template_data_rra (rra_id, data_template_data_id)
-						VALUES (?, ?)', array($rra_id, $data_template_data_id));
-				}
-			}
-
 			if (get_request_var('data_template_id') != get_request_var('_data_template_id')) {
 				/* update all necessary template information */
 				change_data_template($local_data_id, get_request_var('data_template_id'));
@@ -993,7 +976,7 @@ function get_poller_interval($seconds) {
 }
 
 function ds() {
-	global $ds_actions, $item_rows;
+	global $ds_actions, $item_rows, $sampling_intervals;
 
 	/* ================= input validation and session storage ================= */
 	$filters = array(
@@ -1248,20 +1231,11 @@ function ds() {
 		WHERE data_local.id=data_template_data.local_data_id
 		$sql_where1"));
 
-	$poller_intervals = array_rekey(db_fetch_assoc("SELECT data_template_data.local_data_id AS id,
-		Min(data_template_data.rrd_step*rra.steps) AS poller_interval
-		FROM data_template
-		INNER JOIN (data_local
-		INNER JOIN ((data_template_data_rra
-		INNER JOIN data_template_data ON data_template_data_rra.data_template_data_id=data_template_data.id)
-		INNER JOIN rra ON data_template_data_rra.rra_id = rra.id) ON data_local.id = data_template_data.local_data_id) ON data_template.id = data_template_data.data_template_id
-		$sql_where2
-		GROUP BY data_template_data.local_data_id"), 'id', 'poller_interval');
-
 	$data_sources = db_fetch_assoc("SELECT
 		data_template_data.local_data_id,
 		data_template_data.name_cache,
 		data_template_data.active,
+		data_template_data.rrd_step,
 		data_input.name as data_input_name,
 		data_template.name as data_template_name,
 		data_local.host_id
@@ -1331,13 +1305,11 @@ function ds() {
 				$data_input_name = htmlspecialchars($data_source['data_input_name']);
 			}
 
-			$poller_interval    = ((isset($poller_intervals[$data_source['local_data_id']])) ? $poller_intervals[$data_source['local_data_id']] : 0);
-
 			form_alternate_row('line' . $data_source['local_data_id'], true);
 			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars('data_sources.php?action=ds_edit&id=' . $data_source['local_data_id']) . "'>" . ((get_request_var('filter') != '') ? preg_replace('/(' . preg_quote(get_request_var('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", title_trim(htmlspecialchars($data_source['name_cache']), read_config_option('max_title_length'))) : title_trim(htmlspecialchars($data_source['name_cache']), read_config_option('max_title_length'))) . '</a>', $data_source['local_data_id']);
 			form_selectable_cell($data_source['local_data_id'], $data_source['local_data_id'], '', 'text-align:right');
 			form_selectable_cell($data_input_name, $data_source['local_data_id']);
-			form_selectable_cell(get_poller_interval($poller_interval), $data_source['local_data_id']);
+			form_selectable_cell(get_poller_interval($data_source['rrd_step']), $data_source['local_data_id']);
 			form_selectable_cell(($data_source['active'] == 'on' ? 'Yes' : 'No'), $data_source['local_data_id']);
 			form_selectable_cell($data_template_name, $data_source['local_data_id']);
 			form_checkbox_cell($data_source['name_cache'], $data_source['local_data_id']);

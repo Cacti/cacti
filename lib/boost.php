@@ -983,19 +983,19 @@ function boost_rrdtool_function_create($local_data_id, $initial_time, $show_sour
 	data source */
 
 	$rras = db_fetch_assoc_prepared('SELECT
-		data_template_data.rrd_step,
-		rra.x_files_factor,
-		rra.steps,
-		rra.rows,
-		rra_cf.consolidation_function_id,
-		(rra.rows * rra.steps) AS rra_order
-		FROM data_template_data
-		LEFT JOIN data_template_data_rra ON (data_template_data.id = data_template_data_rra.data_template_data_id)
-		LEFT JOIN rra ON (data_template_data_rra.rra_id = rra.id)
-		LEFT JOIN rra_cf ON (rra.id = rra_cf.rra_id)
-		WHERE data_template_data.local_data_id = ?
-		AND (rra.steps is not null OR rra.rows is not null)
-		ORDER BY rra_cf.consolidation_function_id, rra_order', array($local_data_id));
+		dtd.rrd_step, dsp.x_files_factor, dspr.steps, dspr.rows,
+		dspc.consolidation_function_id,
+		(dspr.rows * dspr.steps) AS rra_order
+		FROM data_template_data AS dtd
+		LEFT JOIN data_source_profiles AS dsp 
+		ON dtd.data_source_profile_id=dsp.id
+		LEFT JOIN data_source_profiles_rra AS dspr 
+		ON dtd.data_source_profile_id=dspr.data_source_profile_id
+		LEFT JOIN data_source_profiles_cf AS dspc 
+		ON dtd.data_source_profile_id=dspc.data_source_profile_id
+		WHERE dtd.local_data_id = ?
+		AND (dspr.steps IS NOT NULL OR dspr.rows IS NOT NULL)
+		ORDER BY dspc.consolidation_function_id, rra_order', array($local_data_id));
 
 	/* if we find that this DS has no RRA associated; get out.  This would
 	 * indicate that a data sources has been deleted

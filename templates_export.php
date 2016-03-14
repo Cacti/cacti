@@ -96,38 +96,46 @@ function export() {
 	<tr class='tableRow'>
 		<td>
 			<form name='form_graph_id' action='templates_export.php'>
-			<table>
-				<tr>
-					<td style='font-size:1.2em;'>What would you like to export?</td>
-					<td>
-						<select name='cbo_graph_id' onChange='window.location=document.form_graph_id.cbo_graph_id.options[document.form_graph_id.cbo_graph_id.selectedIndex].value'>
-							<?php
-							while (list($key, $array) = each($export_types)) {
-								print "<option value='templates_export.php?export_type=" . htmlspecialchars($key, ENT_QUOTES) . "'"; if (get_request_var('export_type') == $key) { print ' selected'; } print '>' . $array['name'] . "</option>\n";
-							}
-							?>
-						</select>
-					</td>
-				</tr>
-			</table>
+				<table>
+					<tr>
+						<td style='font-size:1.2em;'>What would you like to export?</td>
+						<td>
+							<select id='export_type'>
+								<?php
+								while (list($key, $array) = each($export_types)) {
+									print "<option value='$key'"; if (get_nfilter_request_var('export_type') == $key) { print ' selected'; } print '>' . htmlspecialchars($array['name'], ENT_QUOTES) . "</option>\n";
+								}
+								?>
+							</select>
+						</td>
+					</tr>
+				</table>
 			</form>
+			<script type='text/javascript'>
+			$(function() {
+				$('#export_type').change(function() {
+					strURL = 'templates_export.php?header=false&export_type='+$('#export_type').val();
+					loadPageNoHeader(strURL);
+				});
+			});
+			</script>
 		</td>
 	</tr>
 	<?php
 
 	html_end_box();
 
-	print "<form method='post' action='templates_export.php'>\n";
+	print "<form id='export' method='post' action='templates_export.php'>\n";
 
-	html_start_box('Available Templates [' . $export_types{get_request_var('export_type')}['name'] . ']', '100%', '', '3', 'center', '');
+	html_start_box('Available Templates [' . $export_types{get_nfilter_request_var('export_type')}['name'] . ']', '100%', '', '3', 'center', '');
 
 	form_alternate_row();?>
 		<td width='50%'>
-			<font class='textEditTitle'><?php print $export_types{get_request_var('export_type')}['name'];?> to Export</font><br>
+			<font class='textEditTitle'><?php print $export_types{get_nfilter_request_var('export_type')}['name'];?> to Export</font><br>
 			Choose the exact item to export to XML.
 		</td>
 		<td>
-			<?php form_dropdown('export_item_id', db_fetch_assoc($export_types{get_request_var('export_type')}['dropdown_sql']),'name','id','','','0');?>
+			<?php form_dropdown('export_item_id', db_fetch_assoc($export_types{get_nfilter_request_var('export_type')}['dropdown_sql']),'name','id','','','0');?>
 		</td>
 	</tr>
 
@@ -152,7 +160,7 @@ function export() {
 			form_radio_button('output_format', '3', '1', 'Output to the Browser (within Cacti)','1',true); print '<br>';
 			form_radio_button('output_format', '3', '2', 'Output to the Browser (raw XML)','1',true); print '<br>';
 			form_radio_button('output_format', '3', '3', 'Save File Locally','1',true);
-			form_hidden_box('export_type', get_request_var('export_type'), '');
+			form_hidden_box('export_type', get_nfilter_request_var('export_type'), '');
 			form_hidden_box('save_component_export','1','');
 			?>
 		</td>

@@ -239,17 +239,6 @@ function draw_edit_control($field_name, &$field_array) {
 		);
 
 		break;
-	case 'drop_multi_rra':
-		form_multi_dropdown(
-			$field_name, 
-			array_rekey(db_fetch_assoc("SELECT id,name FROM rra ORDER BY timespan"), "id", "name"),
-			(empty($field_array["form_id"]) ? db_fetch_assoc($field_array["sql_all"]) : db_fetch_assoc($field_array["sql"])), 
-			"id",
-			((isset($field_array["class"])) ? $field_array["class"] : ""),
-			((isset($field_array["on_change"])) ? $field_array["on_change"] : "")
-		);
-
-		break;
 	case 'drop_tree':
 		grow_dropdown_tree(
 			$field_array["tree_id"], 
@@ -332,16 +321,6 @@ function draw_edit_control($field_name, &$field_array) {
 		form_hidden_box($field_name, $field_array["value"], "", true);
 
 		break;
-	case 'template_drop_multi_rra':
-		$items = db_fetch_assoc($field_array["sql_print"]);
-
-		if (sizeof($items) > 0) {
-		foreach ($items as $item) {
-			print htmlspecialchars($item["name"],ENT_QUOTES) . "<br>";
-		}
-		}
-
-		break;
 	case 'font':
 		form_font_box(
 			$field_name, 
@@ -369,7 +348,7 @@ function draw_edit_control($field_name, &$field_array) {
 
 		break;
 	default:
-		print '<em>' . htmlspecialchars($field_array['value'],ENT_QUOTES) . '</em>';
+		print '<em id="' . $field_name . '">' . htmlspecialchars($field_array['value'],ENT_QUOTES) . '</em>';
 
 		form_hidden_box($field_name, $field_array['value'], '', true);
 

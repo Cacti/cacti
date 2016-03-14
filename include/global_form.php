@@ -28,6 +28,125 @@ if (!defined('VALID_HOST_FIELDS')) {
 }
 $valid_host_fields = VALID_HOST_FIELDS;
 
+/* file: profiles.php, action: edit */
+$fields_profile_edit = array(
+	'name' => array(
+		'method' => 'textbox',
+		'friendly_name' => 'Name',
+		'description' => 'A useful name for this Data Storage and Polling Profile.',
+		'value' => '|arg1:name|',
+		'max_length' => '255',
+		'size' => '80',
+		'default' => 'New Profile'
+		),
+	'step' => array(
+		'method' => 'drop_array',
+		'friendly_name' => 'Polling Interval',
+		'description' => 'The frequency that data will be collected from the Data Source?',
+		'array' => $sampling_intervals,
+		'value' => '|arg1:step|',
+		'default' => read_config_option('poller_interval'),
+		),
+	'heartbeat' => array(
+		'method' => 'drop_array',
+		'friendly_name' => 'Heartbeat',
+		'description' => 'How long can data be missing before RRDtool records unknown data.  
+			Increase this value if your Data Source is unstable and you wish to carry forward 
+			old data rather than show gaps in your graphs.  This value is multiplied by the
+			X-Files Factor to determine the actual amount of time.',
+		'array' => $heartbeats,
+		'value' => '|arg1:heartbeat|',
+		'default' => (read_config_option('poller_interval') * 2),
+		),
+	'x_files_factor' => array(
+		'method' => 'textbox',
+		'friendly_name' => 'X-Files Factor',
+		'description' => 'The amount of unknown data that can still be regarded as known.',
+		'value' => '|arg1:x_files_factor|',
+		'max_length' => '10',
+		'size' => '7',
+		'default' => '0.5'
+		),
+	'consolidation_function_id' => array(
+		'method' => 'drop_multi',
+		'friendly_name' => 'Consolidation Functions',
+		'description' => 'How data is to be entered in RRAs.',
+		'array' => $consolidation_functions,
+		'sql' => 'SELECT consolidation_function_id AS id, data_source_profile_id FROM data_source_profiles_cf WHERE data_source_profile_id="|arg1:id|"',
+		),
+	'default' => array(
+		'method' => 'checkbox',
+		'friendly_name' => 'Default',
+		'description' => 'Is this the default storage profile?',
+		'value' => '|arg1:default|',
+		'default' => '',
+		),
+	'size' => array(
+		'method' => 'other',
+		'friendly_name' => 'RRA Size (in Bytes)',
+		'description' => 'Based upon the number of Rows in all RRAs and the number of Consolidation Functions selected, the size of this entire in the RRDfile.',
+		'value' => ''
+		),
+	'id' => array(
+		'method' => 'hidden_zero',
+		'value' => '|arg1:id|'
+		),
+	'save_component_profile' => array(
+		'method' => 'hidden',
+		'value' => '1'
+		)
+	);
+
+/* file: rra.php, action: edit */
+$fields_profile_rra_edit = array(
+	'name' => array(
+		'method' => 'textbox',
+		'friendly_name' => 'Name',
+		'description' => 'How data is to be entered in RRAs.',
+		'value' => '|arg1:name|',
+		'max_length' => '100',
+		'size' => '60',
+		'default' => 'New Profile RRA'
+		),
+	'steps' => array(
+		'method' => 'drop_array',
+		'friendly_name' => 'Aggregation Level',
+		'description' => 'The number of samples required prior to filling a row in the RRA specification.  The first RRA should always have a value of 1.',
+		'array' => $aggregation_levels,
+		'value' => '|arg1:steps|',
+		'default' => read_config_option('poller_interval'),
+		),
+	'rows' => array(
+		'method' => 'textbox',
+		'friendly_name' => 'Rows',
+		'description' => 'How many generations data is kept in the RRA.',
+		'value' => '|arg1:rows|',
+		'max_length' => '12',
+		'size' => '10',
+		'default' => '600'
+		),
+	'timespan' => array(
+		'method' => 'other',
+		'friendly_name' => 'Effective Retention',
+		'description' => 'Based upon the Aggregation Level, the Rows, and the Polling Interval the amount of data that will be retained in the RRA',
+		'value' => ''
+		),
+	'size' => array(
+		'method' => 'other',
+		'friendly_name' => 'RRA Size (in Bytes)',
+		'description' => 'Based upon the number of Rows and the number of Consolidation Functions selected, the size of this RRA in the RRDfile.',
+		'value' => ''
+		),
+	'id' => array(
+		'method' => 'hidden_zero',
+		'value' => '|arg1:id|'
+		),
+	'save_component_rra' => array(
+		'method' => 'hidden',
+		'value' => '1'
+		)
+	);
+
 /* file: cdef.php, action: edit */
 $fields_cdef_edit = array(
 	'name' => array(
@@ -271,26 +390,17 @@ $struct_data_source = array(
 		'description' => 'The script/source used to gather data for this data source.',
 		'flags' => 'ALWAYSTEMPLATE'
 		),
-//	'data_source_profile' => array(
-//		'friendly_name' => 'Data Source Profile',
-//		'method' => 'drop_array',
-//		'description' => 'Select the Data Source Profile.  The Data Source Profile controls polling interval, the data aggregation, and retention policy for the resulting Data Sources.',
-//		'array' => array('1' => 'My Default Profile', '2' => 'Some other Profile'),
-//		'default' => '1'
-//		),
-	'rra_id' => array(
-		'method' => 'drop_multi_rra',
-		'friendly_name' => 'Associated RRAs',
-		'description' => 'Which RRAs to use when entering data. (It is recommended that you select all of these values).',
-		'form_id' => '|arg1:id|',
-		'sql' => 'SELECT rra_id AS id,data_template_data_id FROM data_template_data_rra WHERE data_template_data_id=|arg1:id|',
-		'sql_all' => 'SELECT rra.id FROM rra ORDER BY id',
-		'sql_print' => 'SELECT rra.name FROM (data_template_data_rra,rra) WHERE data_template_data_rra.rra_id=rra.id AND data_template_data_rra.data_template_data_id=|arg1:id|',
-		'flags' => 'ALWAYSTEMPLATE'
+	'data_source_profile_id' => array(
+		'friendly_name' => 'Data Source Profile',
+		'method' => 'drop_sql',
+		'description' => 'Select the Data Source Profile.  The Data Source Profile controls polling interval, the data aggregation, and retention policy for the resulting Data Sources.',
+		'sql' => 'SELECT id, name FROM data_source_profiles ORDER BY name',
+		'none_val' => 'N/A',
+		'flags' => ''
 		),
 	'rrd_step' => array(
 		'friendly_name' => 'Step',
-		'method' => 'textbox',
+		'method' => 'hidden',
 		'max_length' => '10',
 		'size' => '10',
 		'default' => '300',
@@ -341,7 +451,7 @@ $struct_data_source_item = array(
 		),
 	'rrd_heartbeat' => array(
 		'friendly_name' => 'Heartbeat',
-		'method' => 'textbox',
+		'method' => 'hidden',
 		'max_length' => '20',
 		'size' => '10',
 		'default' => '600',
@@ -1130,65 +1240,6 @@ $fields_host_template_edit = array(
 		)
 	);
 
-/* file: rra.php, action: edit */
-$fields_rra_edit = array(
-	'name' => array(
-		'method' => 'textbox',
-		'friendly_name' => 'Name',
-		'description' => 'How data is to be entered in RRAs.',
-		'value' => '|arg1:name|',
-		'max_length' => '100',
-		'size' => '60'
-		),
-	'consolidation_function_id' => array(
-		'method' => 'drop_multi',
-		'friendly_name' => 'Consolidation Functions',
-		'description' => 'How data is to be entered in RRAs.',
-		'array' => $consolidation_functions,
-		'sql' => 'SELECT consolidation_function_id AS id,rra_id FROM rra_cf WHERE rra_id="|arg1:id|"',
-		),
-	'x_files_factor' => array(
-		'method' => 'textbox',
-		'friendly_name' => 'X-Files Factor',
-		'description' => 'The amount of unknown data that can still be regarded as known.',
-		'value' => '|arg1:x_files_factor|',
-		'max_length' => '10',
-		'size' => '7'
-		),
-	'steps' => array(
-		'method' => 'textbox',
-		'friendly_name' => 'Steps',
-		'description' => 'How many data points are needed to put data into the RRA.',
-		'value' => '|arg1:steps|',
-		'max_length' => '8',
-		'size' => '7'
-		),
-	'rows' => array(
-		'method' => 'textbox',
-		'friendly_name' => 'Rows',
-		'description' => 'How many generations data is kept in the RRA.',
-		'value' => '|arg1:rows|',
-		'max_length' => '12',
-		'size' => '10'
-		),
-	'timespan' => array(
-		'method' => 'textbox',
-		'friendly_name' => 'Timespan',
-		'description' => 'How many seconds to display in graph for this RRA.',
-		'value' => '|arg1:timespan|',
-		'max_length' => '12',
-		'size' => '10'
-		),
-	'id' => array(
-		'method' => 'hidden_zero',
-		'value' => '|arg1:id|'
-		),
-	'save_component_rra' => array(
-		'method' => 'hidden',
-		'value' => '1'
-		)
-	);
-
 /* file: data_queries.php, action: edit */
 $fields_data_query_edit = array(
 	'name' => array(
@@ -1514,38 +1565,13 @@ $fields_template_import = array(
 		'textarea_cols' => '50',
 		'class' => 'textAreaNotes'
 		),
-//	'import_data_source_profile' => array(
-//		'friendly_name' => 'Data Source Profile',
-//		'method' => 'drop_array',
-//		'description' => 'Select the Data Source Profile.  The Data Source Profile controls polling interval, the data aggregation, and retention policy for the resulting Data Sources.',
-//		'array' => array('1' => 'My Default Profile', '2' => 'Some other Profile'),
-//		'value' => '',
-//		'default' => '1'
-//		),
-	'import_rra' => array(
-		'friendly_name' => 'Import RRA Settings',
-		'description' => 'Choose whether to allow Cacti to import custom RRA settings from imported templates or whether to use the defaults for this installation.',
-		'method' => 'radio',
+	'import_data_source_profile' => array(
+		'friendly_name' => 'Data Source Profile',
+		'method' => 'drop_sql',
+		'description' => 'Select the Data Source Profile.  The Data Source Profile controls polling interval, the data aggregation, and retention policy for the resulting Data Sources.',
+		'sql' => "SELECT * FROM (SELECT '0' AS id, 'Create New From Template' AS name UNION SELECT id, name FROM data_source_profiles ORDER BY name) AS rs",
 		'value' => '',
-		'default' => '1',
-		'on_change' => 'changeRRA()',
-		'items' => array(
-			0 => array(
-				'radio_value' => '1',
-				'radio_caption' => 'Select your RRA settings below (Recommended)'
-				),
-			1 => array(
-				'radio_value' => '2',
-				'radio_caption' => 'Use custom RRA settings from the template'
-				),
-			)
-		),
-	'rra_id' => array(
-		'method' => 'drop_multi_rra',
-		'friendly_name' => 'Associated RRAs',
-		'description' => 'Which RRAs to use when entering data (It is recommended that you <strong>deselect unwanted values</strong>).',
-		'form_id' => '',
-		'sql_all' => 'SELECT rra.id FROM rra WHERE id IN (1,2,3,4) ORDER BY id',
+		'default' => '1'
 		),
 	);
 

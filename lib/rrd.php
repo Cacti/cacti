@@ -464,19 +464,19 @@ function rrdtool_function_create($local_data_id, $show_source, $rrdtool_pipe = '
 	not a big deal however since this function gets called once per
 	data source */
 
-	$rras = db_fetch_assoc("SELECT dtd.rrd_step, rra.x_files_factor,
-		rra.steps, rra.rows, rra_cf.consolidation_function_id,
-		(rra.rows*rra.steps) as rra_order
+	$rras = db_fetch_assoc("SELECT dtd.rrd_step, dsp.x_files_factor,
+		dspr.steps, dspr.rows, dspc.consolidation_function_id,
+		(dspr.rows*dspr.steps) as rra_order
 		FROM data_template_data AS dtd
-		LEFT JOIN data_template_data_rra AS dtdr
-		ON dtd.id=dtdr.data_template_data_id
-		LEFT JOIN rra
-		ON dtdr.rra_id=rra.id
-		LEFT JOIN rra_cf 
-		ON rra.id=rra_cf.rra_id
+		LEFT JOIN data_source_profiles AS dsp
+		ON dtd.data_source_profile_id=dsp.id
+		LEFT JOIN data_source_profiles_rra AS dspr
+		ON dsp.id=dspr.data_source_profile_id
+		LEFT JOIN data_source_profiles_cf AS dspc 
+		ON dsp.id=dspc.data_source_profile_id
 		WHERE dtd.local_data_id=$local_data_id
-		AND (rra.steps IS NOT NULL OR rra.rows IS NOT NULL)
-		ORDER BY rra_cf.consolidation_function_id,rra_order");
+		AND (dspr.steps IS NOT NULL OR dspr.rows IS NOT NULL)
+		ORDER BY dspc.consolidation_function_id, rra_order");
 
 	/* if we find that this DS has no RRA associated; get out */
 	if (sizeof($rras) <= 0) {
@@ -1176,7 +1176,14 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 			}
 		}
 	}else{
-		$rra = db_fetch_row("SELECT timespan,rows,steps FROM rra WHERE id=$rra_id");
+		$rra = db_fetch_row_prepared('SELECT 
+			rows, step, steps 
+			FROM data_source_profiles_rra AS dspr
+			INNER JOIN data_source_profiles AS dsp
+			ON dspr.data_source_profile_id=dsp.id
+			WHERE dspr.id = ?', array($rra_id));
+
+		$rra['timespan'] = $rra['rows'] * $rra['step'] * $rra['steps'];
 	}
 
 	if (!isset($graph_data_array['export_realtime'])) {

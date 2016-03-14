@@ -629,7 +629,6 @@ function duplicate_data_source($_local_data_id, $_data_template_id, $data_source
 		$data_template_rrds = db_fetch_assoc("SELECT * FROM data_template_rrd WHERE local_data_id=$_local_data_id");
 
 		$data_input_datas = db_fetch_assoc("SELECT * FROM data_input_data WHERE data_template_data_id=" . $data_template_data['id']);
-		$data_template_data_rras = db_fetch_assoc("SELECT * FROM data_template_data_rra WHERE data_template_data_id=" . $data_template_data['id']);
 
 		/* create new entry: data_local */
 		$save['id']               = 0;
@@ -647,7 +646,6 @@ function duplicate_data_source($_local_data_id, $_data_template_id, $data_source
 		$data_template_rrds = db_fetch_assoc("SELECT * FROM data_template_rrd WHERE data_template_id=$_data_template_id AND local_data_id=0");
 
 		$data_input_datas = db_fetch_assoc("SELECT * FROM data_input_data WHERE data_template_data_id=" . $data_template_data['id']);
-		$data_template_data_rras = db_fetch_assoc("SELECT * FROM data_template_data_rra WHERE data_template_data_id=" . $data_template_data['id']);
 
 		/* create new entry: data_template */
 		$save['id']   = 0;
@@ -713,14 +711,6 @@ function duplicate_data_source($_local_data_id, $_data_template_id, $data_source
 		db_execute("INSERT INTO data_input_data (data_input_field_id,data_template_data_id,t_value,value) VALUES
 			(" . $data_input_data['data_input_field_id'] . ",$data_template_data_id,'" . $data_input_data['t_value'] .
 			"','" . $data_input_data['value'] . "')");
-	}
-	}
-
-	/* create new entry(s): data_template_data_rra */
-	if (sizeof($data_template_data_rras) > 0) {
-	foreach ($data_template_data_rras as $data_template_data_rra) {
-		db_execute("INSERT INTO data_template_data_rra (data_template_data_id,rra_id) VALUES ($data_template_data_id,
-			" . $data_template_data_rra['rra_id'] . ')');
 	}
 	}
 

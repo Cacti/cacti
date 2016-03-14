@@ -86,7 +86,7 @@ function form_save() {
 		get_filter_request_var('data_template_data_id');
 		get_filter_request_var('data_template_rrd_id');
 		get_filter_request_var('data_source_type_id');
-		get_filter_request_var('rrd_step');
+		get_filter_request_var('data_source_profile_id');
 		get_filter_request_var('rrd_heartbeat');
 		/* ==================================================== */
 
@@ -105,22 +105,27 @@ function form_save() {
 		$save2['name']          = form_input_validate(get_nfilter_request_var('name'), 'name', '', (isset_request_var('t_name') ? true : false), 3);
 		$save2['t_active']      = form_input_validate((isset_request_var('t_active') ? get_nfilter_request_var('t_active') : ''), 't_active', '', true, 3);
 		$save2['active']        = form_input_validate((isset_request_var('active') ? get_nfilter_request_var('active') : ''), 'active', '', true, 3);
-		$save2['t_rrd_step']    = form_input_validate((isset_request_var('t_rrd_step') ? get_nfilter_request_var('t_rrd_step') : ''), 't_rrd_step', '', true, 3);
-		$save2['rrd_step']      = form_input_validate(get_request_var('rrd_step'), 'rrd_step', '^[0-9]+$', (isset_request_var('t_rrd_step') ? true : false), 3);
-		$save2['t_rra_id']      = form_input_validate((isset_request_var('t_rra_id') ? get_nfilter_request_var('t_rra_id') : ''), 't_rra_id', '', true, 3);
+
+		$rrd_step               = db_fetch_cell_prepared('SELECT step FROM data_source_profiles WHERE id = ?', array(get_request_var('data_source_profile_id')));
+		$rrd_heartbeat          = db_fetch_cell_prepared('SELECT heartbeat FROM data_source_profiles WHERE id = ?', array(get_request_var('data_source_profile_id')));
+		$save2['rrd_step']      = $rrd_step;
+
+		$save2['t_data_source_profile_id'] = form_input_validate((isset_request_var('t_data_source_profile_id') ? get_nfilter_request_var('t_data_source_profile_id') : ''), 't_data_source_profile_id', '', true, 3);
+		$save2['data_source_profile_id']   = form_input_validate(get_request_var('data_source_profile_id'), 'data_source_profile_id', '^[0-9]+$', (isset_request_var('data_source_profile_id') ? true : false), 3);
 
 		/* save: data_template_rrd */
-		$save3['id']              = get_request_var('data_template_rrd_id');
-		$save3['hash']            = get_hash_data_template(get_request_var('data_template_rrd_id'), 'data_template_item');
+		$save3['id']                    = get_request_var('data_template_rrd_id');
+		$save3['hash']                  = get_hash_data_template(get_request_var('data_template_rrd_id'), 'data_template_item');
 		$save3['local_data_template_rrd_id'] = 0;
-		$save3['local_data_id']   = 0;
+		$save3['local_data_id']         = 0;
 
-		$save3['t_rrd_maximum']   = form_input_validate((isset_request_var('t_rrd_maximum') ? get_nfilter_request_var('t_rrd_maximum') : ''), 't_rrd_maximum', '', true, 3);
-		$save3['rrd_maximum']     = form_input_validate(get_nfilter_request_var('rrd_maximum'), 'rrd_maximum', '^(-?([0-9]+(\.[0-9]*)?|[0-9]*\.[0-9]+)([eE][+\-]?[0-9]+)?)|U$', (isset_request_var('t_rrd_maximum') ? true : false), 3);
-		$save3['t_rrd_minimum']   = form_input_validate((isset_request_var('t_rrd_minimum') ? get_nfilter_request_var('t_rrd_minimum') : ''), 't_rrd_minimum', '', true, 3);
-		$save3['rrd_minimum']     = form_input_validate(get_nfilter_request_var('rrd_minimum'), 'rrd_minimum', '^(-?([0-9]+(\.[0-9]*)?|[0-9]*\.[0-9]+)([eE][+\-]?[0-9]+)?)|U$', (isset_request_var('t_rrd_minimum') ? true : false), 3);
-		$save3['t_rrd_heartbeat'] = form_input_validate((isset_request_var('t_rrd_heartbeat') ? get_nfilter_request_var('t_rrd_heartbeat') : ''), 't_rrd_heartbeat', '', true, 3);
-		$save3['rrd_heartbeat']   = form_input_validate(get_request_var('rrd_heartbeat'), 'rrd_heartbeat', '^[0-9]+$', (isset_request_var('t_rrd_heartbeat') ? true : false), 3);
+		$save3['t_rrd_maximum']         = form_input_validate((isset_request_var('t_rrd_maximum') ? get_nfilter_request_var('t_rrd_maximum') : ''), 't_rrd_maximum', '', true, 3);
+		$save3['rrd_maximum']           = form_input_validate(get_nfilter_request_var('rrd_maximum'), 'rrd_maximum', '^(-?([0-9]+(\.[0-9]*)?|[0-9]*\.[0-9]+)([eE][+\-]?[0-9]+)?)|U$', (isset_request_var('t_rrd_maximum') ? true : false), 3);
+		$save3['t_rrd_minimum']         = form_input_validate((isset_request_var('t_rrd_minimum') ? get_nfilter_request_var('t_rrd_minimum') : ''), 't_rrd_minimum', '', true, 3);
+		$save3['rrd_minimum']           = form_input_validate(get_nfilter_request_var('rrd_minimum'), 'rrd_minimum', '^(-?([0-9]+(\.[0-9]*)?|[0-9]*\.[0-9]+)([eE][+\-]?[0-9]+)?)|U$', (isset_request_var('t_rrd_minimum') ? true : false), 3);
+
+		$save3['rrd_heartbeat']         = $rrd_heartbeat;
+
 		$save3['t_data_source_type_id'] = form_input_validate((isset_request_var('t_data_source_type_id') ? get_nfilter_request_var('t_data_source_type_id') : ''), 't_data_source_type_id', '', true, 3);
 		$save3['data_source_type_id']   = form_input_validate(get_request_var('data_source_type_id'), 'data_source_type_id', '^[0-9]+$', true, 3);
 		$save3['t_data_source_name']    = form_input_validate((isset_request_var('t_data_source_name') ? get_nfilter_request_var('t_data_source_name') : ''), 't_data_source_name', '', true, 3);
@@ -198,23 +203,6 @@ function form_save() {
 		}
 
 		if (!is_error_message()) {
-			/* save entries in 'selected rras' field */
-			db_execute_prepared('DELETE FROM data_template_data_rra WHERE data_template_data_id = ?', array($data_template_data_id));
-
-			if (isset_request_var('rra_id')) {
-				for ($i=0; ($i < count(get_nfilter_request_var('rra_id'))); $i++) {
-					/* ================= input validation ================= */
-					$rra_id = $_REQUEST['rra_id'][$i];
-					if (!is_numeric($rra_id)) {
-						exit;
-					}
-					/* ==================================================== */
-
-					db_execute_prepared('INSERT INTO data_template_data_rra (rra_id, data_template_data_id)
-						VALUES (?, ?)', array($rra_id, $data_template_data_id));
-				}
-			}
-
 			if (!isempty_request_var('data_template_id')) {
 				/* push out all data source settings to child data source using this template */
 				push_out_data_source($data_template_data_id);
@@ -270,14 +258,6 @@ function form_actions() {
 
 		if ($selected_items != false) {
 			if (get_nfilter_request_var('drp_action') == '1') { /* delete */
-				$data_template_datas = db_fetch_assoc('SELECT id FROM data_template_data WHERE ' . array_to_sql_or($selected_items, 'data_template_id') . ' AND local_data_id=0');
-
-				if (sizeof($data_template_datas) > 0) {
-				foreach ($data_template_datas as $data_template_data) {
-					db_execute_prepared('DELETE FROM data_template_data_rra WHERE data_template_data_id = ?', array($data_template_data['id']));
-				}
-				}
-
 				db_execute('DELETE FROM data_template_data WHERE ' . array_to_sql_or($selected_items, 'data_template_id') . ' AND local_data_id=0');
 				db_execute('DELETE FROM data_template_rrd WHERE ' . array_to_sql_or($selected_items, 'data_template_id') . ' AND local_data_id=0');
 				db_execute('DELETE FROM snmp_query_graph_rrd WHERE ' . array_to_sql_or($selected_items, 'data_template_id'));
