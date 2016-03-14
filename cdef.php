@@ -316,6 +316,10 @@ function cdef_item_remove_confirm() {
 
 	?>
 	<script type='text/javascript'>
+	$(function() {
+		$('#cdialog').dialog();
+	});
+
 	$('#continue').click(function(data) {
 		$.post('cdef.php?action=item_remove', { 
 			__csrf_magic: csrfMagicToken, 

@@ -289,6 +289,10 @@ function vdef_item_remove_confirm() {
 
 	?>
 	<script type='text/javascript'>
+	$(function() {
+		$('#cdialog').dialog();
+	});
+
 	$('#continue').click(function(data) {
 		$.post('vdef.php?action=item_remove', { 
 			__csrf_magic: csrfMagicToken, 
