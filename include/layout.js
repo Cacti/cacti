@@ -456,7 +456,6 @@ function applySkin() {
 
 	$(document).tooltip({
 		items: 'div.cactiTooltipHint, span.cactiTooltipHint, a',
-		hide: { effect: 'fadeOut', duration: 500 },
 		content: function() {
 			var element = $(this);
 
