@@ -395,7 +395,7 @@ CREATE TABLE `automation_tree_rule_items` (
 -- Dumping data for table `automation_tree_rule_items`
 --
 
-INSERT INTO `automation_tree_rule_items` VALUES (1,1,1,'ht.name',0,1,'','^(.*)\\s*Linux\\s*(.*)$','${1}\\n${2}'),(2,1,2,'h.hostname',0,1,'','^(\\w*)\\s*(\\w*)\\s*(\\w*).*$',''),(3,2,1,'0',0,2,'on','Traffic',''),(4,2,2,'gtg.title_cache',0,1,'','^(.*)\\s*-\\s*Traffic -\\s*(.*)$','${1}\\n${2}');
+INSERT INTO `automation_tree_rule_items` VALUES (1,1,1,'ht.name',1,'','^(.*)\\s*Linux\\s*(.*)$','${1}\\n${2}'),(2,1,2,'h.hostname',1,'','^(\\w*)\\s*(\\w*)\\s*(\\w*).*$',''),(3,2,1,'0',2,'on','Traffic',''),(4,2,2,'gtg.title_cache',1,'','^(.*)\\s*-\\s*Traffic -\\s*(.*)$','${1}\\n${2}');
 
 --
 -- Table structure for table `automation_tree_rules`
@@ -416,7 +416,7 @@ CREATE TABLE `automation_tree_rules` (
 -- Dumping data for table `automation_tree_rules`
 --
 
-INSERT INTO `automation_tree_rules` VALUES (1,'New Device',1,0,3,0,0,''),(2,'New Graph',1,0,2,0,1,'');
+INSERT INTO `automation_tree_rules` VALUES (1,'New Device',1,0,3,0,''),(2,'New Graph',1,0,2,0,'');
 
 --
 -- Table structure for table `cdef`
@@ -2694,7 +2694,7 @@ CREATE TABLE graph_tree_items (
 -- Dumping data for table `graph_tree_items`
 --
 
-INSERT INTO graph_tree_items VALUES (1,0,0,1,0,1,'',1,1,1);
+INSERT INTO graph_tree_items VALUES (1,0,0,1,0,'',1,1,1);
 
 --
 -- Table structure for table `host`
