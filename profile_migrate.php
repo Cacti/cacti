@@ -4,7 +4,7 @@ $no_http_headers = true;
 
 include('./include/global.php');
 
-$tables_exists = db_fetch_assoc('SHOW TABLES LIKE "data_template_data_cf"');
+$tables_exists = db_fetch_assoc('SHOW TABLES LIKE "data_template_data_rra"');
 
 if ($tables_exist) {
 	db_execute("ALTER TABLE data_template_data 
