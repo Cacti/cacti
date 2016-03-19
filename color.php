@@ -34,6 +34,10 @@ switch (get_request_var('action')) {
 		form_save();
 
 		break;
+	case 'actions':
+		form_actions();
+
+		break;
 	case 'remove':
 		color_remove();
 
@@ -118,6 +122,84 @@ function form_save() {
 /* -----------------------
     Color Functions
    ----------------------- */
+
+function form_actions() {
+	global $color_actions;
+
+	/* ================= input validation ================= */
+	get_filter_request_var('drp_action', FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => '/^([a-zA-Z0-9_]+)$/')));
+	/* ==================================================== */
+	
+	/* if we are to save this form, instead of display it */
+	if (isset_request_var('selected_items')) {
+		$selected_items = sanitize_unserialize_selected_items(get_nfilter_request_var('selected_items'));
+
+		if ($selected_items != false) {
+			if (get_nfilter_request_var('drp_action') == '1') { /* delete */
+				db_execute('DELETE FROM colors WHERE ' . array_to_sql_or($selected_items, 'hex'));
+			}
+		}
+
+		header('Location: color.php?header=false');
+		exit;
+	}
+
+	/* setup some variables */
+	$color_list = ''; $i = 0;
+
+	/* loop through each of the graphs selected on the previous page and get more info about them */
+	while (list($var,$val) = each($_POST)) {
+		if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
+			/* ================= input validation ================= */
+			input_validate_input_number($matches[1]);
+			/* ==================================================== */
+
+			$color = db_fetch_row_prepared('SELECT * FROM colors WHERE id = ?', array($matches[1]));
+
+			$color_list .= '<li>' . ($color['name'] != '' ? htmlspecialchars($color['name']):'Unnamed Color') . ' (<span style="background-color:#' . $color['hex'] . '">' . $color['hex'] . '</span>)</li>';
+			$color_array[$i] = $matches[1];
+
+			$i++;
+		}
+	}
+
+	top_header();
+
+	form_start('color.php');
+
+	html_start_box($color_actions{get_nfilter_request_var('drp_action')}, '60%', '', '3', 'center', '');
+
+	if (isset($color_array) && sizeof($color_array)) {
+		if (get_nfilter_request_var('drp_action') == '1') { /* delete */
+			print "<tr>
+				<td class='textArea' class='odd'>
+					<p>Click 'Continue' to delete the folling Color(s).</p>
+					<p><ul>$color_list</ul></p>
+				</td>
+			</tr>\n";
+
+			$save_html = "<input type='button' value='Cancel' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='Continue' title='Delete Color(s)'>";
+		}
+	}else{
+		print "<tr><td class='odd'><span class='textError'>You must select at least one Color.</span></td></tr>\n";
+		$save_html = "<input type='button' value='Return' onClick='cactiReturnTo()'>";
+	}
+
+	print "<tr>
+		<td class='saveRow'>
+			<input type='hidden' name='action' value='actions'>
+			<input type='hidden' name='selected_items' value='" . (isset($color_array) ? serialize($color_array) : '') . "'>
+			<input type='hidden' name='drp_action' value='" . get_nfilter_request_var('drp_action') . "'>
+			$save_html
+		</td>
+	</tr>\n";
+
+	html_end_box();
+
+	form_end();
+
+	bottom_footer();
+}
 
 function color_import_processor(&$colors) {
 	$i      = 0;
@@ -309,14 +391,6 @@ function color_import() {
 	html_end_box();
 
 	form_save_button('color.php', 'import');
-}
-
-function color_remove() {
-	/* ================= input validation ================= */
-	get_filter_request_var('id');
-	/* ==================================================== */
-
-	db_execute_prepared('DELETE FROM colors WHERE id = ?', array(get_request_var('id')));
 }
 
 function color_edit() {
