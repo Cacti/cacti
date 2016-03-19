@@ -250,7 +250,7 @@ if (read_config_option('realtime_enabled') == '') {
 					<strong>Timespan</strong>
 				</td>
 				<td>
-					<select name='graph_start' id='graph_start' onChange='self.imageOptionsChanged("timespan")'>
+					<select name='graph_start' id='graph_start' onChange='imageOptionsChanged("timespan")'>
 					<?php
 					foreach ($realtime_window as $interval => $text) {
 						printf('<option value="%d"%s>%s</option>',
@@ -264,7 +264,7 @@ if (read_config_option('realtime_enabled') == '') {
 					<strong>Interval</strong>
 				</td>
 				<td>
-					<select name='ds_step' id='ds_step' onChange="self.imageOptionsChanged('interval')">
+					<select name='ds_step' id='ds_step' onChange="imageOptionsChanged('interval')">
 					<?php
 					foreach ($realtime_refresh as $interval => $text) {
 						printf('<option value="%d"%s>%s</option>',
@@ -340,40 +340,10 @@ if (read_config_option('realtime_enabled') == '') {
 
 	setTimeout('countdown_update()', 1000);
 
-	function realtimeDetectBrowser() {
-		if (navigator.userAgent.indexOf('MSIE') >= 0) {
-			browser = "IE";
-		}else if (navigator.userAgent.indexOf('Chrome') >= 0) {
-			browser = 'Chrome';
-		}else if (navigator.userAgent.indexOf('Mozilla') >= 0) {
-			browser = "FF";
-		}else if (navigator.userAgent.indexOf('Opera') >= 0) {
-			browser = "Opera";
-		}else{
-			browser = "Other";
-		}
-
-		return browser;
-	}
-
 	$(function() {
 		imageOptionsChanged('init');
 	});
 
-	function imageOptionsChanged(action) {
-		graph_start    = $("#graph_start").val();
-		graph_end      = 0;
-		local_graph_id = $("#local_graph_id").val();
-		ds_step        = $("#ds_step").val();
-
-		url="?top=0&left=0&action="+action+"&graph_start=-"+graph_start+"&local_graph_id="+local_graph_id+"&ds_step="+ds_step+"&count="+count;
-
-		$.get(url, function(data) {
-			results = $.parseJSON(data);
-
-			$('#image').empty().html("<img id='graph_"+local_graph_id+"' class='graphimage' alt='' src='"+urlPath+"graph_realtime.php?action=view&local_graph_id="+local_graph_id+"&count="+count+"'/>").change();
-		});
-	}
 	</script>
 </form>
 </body>

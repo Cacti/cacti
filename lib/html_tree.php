@@ -691,7 +691,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 							Window
 						</td>
 						<td>
-							<select name='graph_start' id='graph_start' onChange='self.imageOptionsChanged("timespan")'>
+							<select name='graph_start' id='graph_start' onChange='imageOptionsChanged("timespan")'>
 								<?php
 								foreach ($realtime_window as $interval => $text) {
 									printf('<option value="%d"%s>%s</option>', $interval, $interval == $_SESSION['sess_realtime_window'] ? ' selected="selected"' : '', $text);
@@ -703,7 +703,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 							Refresh
 						</td>
 						<td>
-							<select name='ds_step' id='ds_step' onChange="self.imageOptionsChanged('interval')">
+							<select name='ds_step' id='ds_step' onChange="imageOptionsChanged('interval')">
 								<?php
 								foreach ($realtime_refresh as $interval => $text) {
 									printf('<option value="%d"%s>%s</option>', $interval, $interval == $_SESSION['sess_realtime_dsstep'] ? ' selected="selected"' : '', $text);

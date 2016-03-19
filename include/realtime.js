@@ -8,6 +8,35 @@ var timeOffset;
 var realtimeTimer;
 var rtWidth         = 0;
 var rtheight        = 0;
+var url;
+
+function realtimeDetectBrowser() {
+	if (navigator.userAgent.indexOf('MSIE') >= 0) {
+		browser = "IE";
+	}else if (navigator.userAgent.indexOf('Chrome') >= 0) {
+		browser = 'Chrome';
+	}else if (navigator.userAgent.indexOf('Mozilla') >= 0) {
+		browser = "FF";
+	}else if (navigator.userAgent.indexOf('Opera') >= 0) {
+		browser = "Opera";
+	}else{
+		browser = "Other";
+	}
+
+	return browser;
+}
+
+function imageOptionsChanged(action) {
+	graph_start    = $("#graph_start").val();
+	graph_end      = 0;
+	ds_step        = $("#ds_step").val();
+
+	url="?top=0&left=0&action="+action+"&graph_start=-"+graph_start+"&ds_step="+ds_step+"&count="+count;
+
+	Pace.stop;
+
+	$.get(url);
+}
 
 function stopRealtime() {
 	for (key in realtimeArray) {
@@ -54,11 +83,6 @@ function restorePageRefresh() {
 	setupPageTimeout();
 }
 
-function graphDispose(graph_id) {
-	$('#dispose_'+graph_id).remove();
-	$('#graph_'+graph_id).css('position','').css('top','').css('left', '');
-}
-
 function realtimeGrapher() {
 	clearTimeout(myRefresh);
 	clearTimeout(realtimeTimer);
@@ -86,20 +110,22 @@ function realtimeGrapher() {
 				}
 			}
 
-			position = $('#wrapper_'+local_graph_id).find('img').attr('id', 'dispose_'+local_graph_id).position();
+			position = $('#wrapper_'+local_graph_id).find('img').position();
+
+			Pace.stop;
 
 			$.get(urlPath+'graph_realtime.php?action=countdown&top='+parseInt(position.top)+'&left='+parseInt(position.left)+(isThumb ? '&graph_nolegend=true':'')+'&graph_end=0&graph_start=-'+graph_start+'&local_graph_id='+local_graph_id+'&ds_step='+ds_step+'#count='+count, function(data) {
+				Pace.start;
+
 				results = $.parseJSON(data);
 
-				$('#wrapper_'+results.local_graph_id).append("<img style='display:none;position:absolute;left:"+results.left+"px;top:"+results.top+"px;z-index:"+count+";' id='graph_"+results.local_graph_id+"' class='graphimage' alt='' src='data:image/png;base64,"+results.data+"' />");
+				$('#graph_'+results.local_graph_id).prop('src', 'data:image/png;base64,'+results.data).change();
 
 				if (isThumb) {
-					$('#graph_'+results.local_graph_id).width(rtWidth).height(rtHeight).show();
+					$('#graph_'+results.local_graph_id).width(rtWidth).height(rtHeight);
 				}else{
-					$('#graph_'+results.local_graph_id).show();
+					$('#graph_'+results.local_graph_id);
 				}
-
-				setTimeout('graphDispose('+results.local_graph_id+')', 1000);
 			});
 		}
 	}
