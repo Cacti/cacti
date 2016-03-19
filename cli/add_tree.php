@@ -47,7 +47,6 @@ if (sizeof($parms)) {
 	$treeId     = 0;   # When creating a node, it has to go in a tree
 	$nodeType   = '';  # Should be 'header', 'graph' or 'host' when creating a node
 	$graphId    = 0;   # The ID of the graph to add (gets added to parentNode)
-	$rra_id     = 1;   # The rra_id for the graph to display: 1 = daily, 2 = weekly, 3 = monthly, 4 = yearly
 
 	$sortMethods = array('manual' => 1, 'alpha' => 2, 'natural' => 4, 'numeric' => 3);
 	$nodeTypes   = array('header' => 1, 'graph' => 2, 'host' => 3);
@@ -96,10 +95,6 @@ if (sizeof($parms)) {
 			$graphId = $value;
 
 			break;
-		case "--rra-id":
-			$rra_id = $value;
-
-			break;
 		case "--host-id":
 			$hostId = $value;
 
@@ -118,10 +113,6 @@ if (sizeof($parms)) {
 			break;
 		case "--list-nodes":
 			$displayNodes = TRUE;
-
-			break;
-		case "--list-rras":
-			$displayRRAs = TRUE;
 
 			break;
 		case "--list-graphs":
@@ -217,7 +208,7 @@ if (sizeof($parms)) {
 
 		$treeId = sql_save($treeOpts, "graph_tree");
 
-		api_tree_sort_tree(SORT_TYPE_TREE, $treeId, $treeOpts["sort_type"]);
+		api_tree_sort_branch(0, $treeId);
 
 		echo "Tree Created - tree-id: ($treeId)\n";
 
@@ -258,9 +249,8 @@ if (sizeof($parms)) {
 				exit(1);
 			}
 
-			# Blank out the graphId, rra_id, hostID and host_grouping_style  fields
+			# Blank out the graphId, hostID and host_grouping_style  fields
 			$graphId        = 0;
-			$rra_id         = 0;
 			$hostId         = 0;
 			$hostGroupStyle = 1;
 		}else if($nodeType == 'graph') {
@@ -269,19 +259,6 @@ if (sizeof($parms)) {
 			$hostId         = 0;
 			$hostGroupStyle = 1;
 
-			# verify rra-id
-			if (!is_numeric($rra_id)) {
-				echo "ERROR: rra-id $rra_id must be numeric > 0\n";
-				display_help();
-				exit(1);
-			} elseif ($rra_id > 0 ) {
-				$rraExists = db_fetch_cell("SELECT id FROM rra WHERE id=$rra_id");
-
-				if (!isset($rraExists)) {
-					echo "ERROR: rra-id $rra_id does not exist\n";
-					exit(1);
-				}
-			}
 			$graphs = db_fetch_assoc("SELECT " .
 				"id " .
 				"FROM graph_local " .
@@ -292,9 +269,8 @@ if (sizeof($parms)) {
 				exit(1);
 			}
 		}else if ($nodeType == 'host') {
-			# Blank out graphId, rra_id, name fields
+			# Blank out graphId, name fields
 			$graphId        = 0;
-			$rra_id         = 0;
 			$name           = '';
 
 			if (!isset($hosts[$hostId])) {
@@ -310,7 +286,7 @@ if (sizeof($parms)) {
 		}
 
 		# $nodeId could be a Header Node, a Graph Node, or a Host node.
-		$nodeId = api_tree_item_save(0, $treeId, $itemType, $parentNode, $name, $graphId, $rra_id, $hostId, $hostGroupStyle, $sortMethods[$sortMethod], false);
+		$nodeId = api_tree_item_save(0, $treeId, $itemType, $parentNode, $name, $graphId, $hostId, $hostGroupStyle, $sortMethods[$sortMethod], false);
 
 		echo "Added Node node-id: ($nodeId)\n";
 
@@ -346,13 +322,11 @@ function display_help() {
 	echo "     1 = Graph Template,\n";
 	echo "     2 = Data Query Index)\n\n";
 	echo "Graph node options:\n";
-	echo "    --graph-id=[ID]\n";
-	echo "    [--rra-id=[ID]]\n\n";
+	echo "    --graph-id=[ID]\n\n";
 	echo "List Options:\n";
 	echo "    --list-hosts\n";
 	echo "    --list-trees\n";
 	echo "    --list-nodes --tree-id=[ID]\n";
-	echo "    --list-rras\n";
 	echo "    --list-graphs --host-id=[ID]\n";
 }
 

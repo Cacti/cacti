@@ -2030,7 +2030,7 @@ function automation_execute_device_create_tree($host_id) {
 	 * has to be done later
 	 */
 	$sql = "SELECT atr.id, atr.name, atr.tree_id, atr.tree_item_id, 
-		atr.leaf_type, atr.host_grouping_type, atr.rra_id 
+		atr.leaf_type, atr.host_grouping_type
 		FROM automation_tree_rules AS atr
 		WHERE enabled='on'
 		AND leaf_type=" . TREE_ITEM_TYPE_HOST;
@@ -2085,7 +2085,7 @@ function automation_execute_graph_create_tree($graph_id) {
 	 * has to be done later
 	 */
 	$sql = "SELECT atg.id, atg.name, atg.tree_id, atg.tree_item_id,
-		atg.leaf_type, atg.host_grouping_type, atg.rra_id
+		atg.leaf_type, atg.host_grouping_type
 		FROM automation_tree_rules AS atr
 		WHERE enabled='on' 
 		AND leaf_type=" . TREE_ITEM_TYPE_GRAPH;
@@ -2407,7 +2407,6 @@ function create_header_node($title, $rule, $item, $parent_tree_item_id) {
 
 	$id             = 0;  # create a new entry
 	$local_graph_id = 0;  # headers don't need no graph_id
-	$rra_id         = 0;  # nor an rra_id
 	$host_id        = 0;  # or a host_id
 	$propagate      = ($item['propagate_changes'] != '');
 	$function  = 'Function[' . __FUNCTION__ . ']';
@@ -2417,7 +2416,7 @@ function create_header_node($title, $rule, $item, $parent_tree_item_id) {
 		cacti_log('NOTE: ' . $function . ' Parent[' . $parent_tree_item_id . '] Tree Item - Already Exists', false, 'AUTOM8');
 	}else{
 		$new_item = api_tree_item_save($id, $rule['tree_id'], TREE_ITEM_TYPE_HEADER, $parent_tree_item_id,
-			$title, $local_graph_id, $rra_id, $host_id, $rule['host_grouping_type'], $item['sort_type'], $propagate);
+			$title, $local_graph_id, $host_id, $rule['host_grouping_type'], $item['sort_type'], $propagate);
 
 		if (isset($new_item) && $new_item > 0) {
 			cacti_log('NOTE: ' . $function . ' Parent[' . $parent_tree_item_id . '] Tree Item - Added - id: (' . $new_item . ') Title: (' .$title . ')', false, 'AUTOM8');
@@ -2453,7 +2452,7 @@ function create_device_node($host_id, $parent, $rule) {
 		cacti_log('NOTE: ' . $function . ' Host[' . $host_id . '] Tree Item - Already Exists', false, 'AUTOM8');
 	}else{
 		$new_item = api_tree_item_save($id, $rule['tree_id'], TREE_ITEM_TYPE_HOST, $parent, $title, 
-			$local_graph_id, $rule['rra_id'], $host_id, $rule['host_grouping_type'], $sort_type, $propagate);
+			$local_graph_id, $host_id, $rule['host_grouping_type'], $sort_type, $propagate);
 
 		if (isset($new_item) && $new_item > 0) {
 			cacti_log('NOTE: ' . $function . ' Host[' . $host_id . '] Tree Item - Added - id: (' . $new_item . ')', false, 'AUTOM8');
@@ -2489,7 +2488,7 @@ function create_graph_node($graph_id, $parent, $rule) {
 		cacti_log('WARNING: ' . $function . ' Graph[' . $graph_id . '] Tree Item - Already Exists', false, 'AUTOM8');
 	}else{
 		$new_item = api_tree_item_save($id, $rule['tree_id'], TREE_ITEM_TYPE_GRAPH, $parent, $title, 
-			$graph_id, $rule['rra_id'], $host_id, $rule['host_grouping_type'], $sort_type, $propagate);
+			$graph_id, $host_id, $rule['host_grouping_type'], $sort_type, $propagate);
 
 		if (isset($new_item) && $new_item > 0) {
 			cacti_log('NOTE: ' . $function . ' Graph[' . $graph_id . '] Tree Item - Added - id: (' . $new_item . ')', false, 'AUTOM8');
@@ -2595,7 +2594,7 @@ function automation_add_tree ($host_id, $tree) {
 		$parent = $tree;
 	}
 
-	$nodeId = api_tree_item_save(0, $tree_id, 3, $parent, '', 0, 0, $host_id, 1, 1, false);
+	$nodeId = api_tree_item_save(0, $tree_id, 3, $parent, '', 0, $host_id, 1, 1, false);
 }
 
 function automation_find_os($sysDescr, $sysObject, $sysName) {

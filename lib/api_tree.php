@@ -616,13 +616,12 @@ function api_tree_get_node($tree_id, $node_id) {
  * @arg $parent_tree_item_id - The parent leaf for the object
  * @arg $title - The leaf title in the caseo a leaf
  * @arg $local_graph_id - The graph id in the case of a graph
- * @arg $rra_id - The default timespan in the case of a graph
  * @arg $host_id - The host id in the case of a graph
  * @arg $host_grouping_type - The sort order for the host under expanded hosts
  * @arg $sort_children - The sort type in the case of a leaf
  * @arg $propagate_changes - Wether the changes should be cascaded through all children
  * @returns - boolean true or false depending on the outcome of the operation */
-function api_tree_item_save($id, $tree_id, $type, $parent_tree_item_id, $title, $local_graph_id, $rra_id,
+function api_tree_item_save($id, $tree_id, $type, $parent_tree_item_id, $title, $local_graph_id, 
 	$host_id, $host_grouping_type, $sort_children_type, $propagate_changes) {
 	global $config;
 

@@ -257,7 +257,7 @@ function form_actions() {
 				get_filter_request_var('tree_id');
 				get_filter_request_var('tree_item_id');
 				for ($i=0;($i<count($selected_items));$i++) {
-					api_tree_item_save(0, get_nfilter_request_var('tree_id'), TREE_ITEM_TYPE_GRAPH, get_nfilter_request_var('tree_item_id'), '', $selected_items[$i], read_user_setting('default_rra_id'), 0, 0, 0, false);
+					api_tree_item_save(0, get_nfilter_request_var('tree_id'), TREE_ITEM_TYPE_GRAPH, get_nfilter_request_var('tree_item_id'), '', $selected_items[$i], 0, 0, 0, false);
 				}
 			}
 		}
