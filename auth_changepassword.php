@@ -74,7 +74,25 @@ set_default_action();
 
 switch (get_request_var('action')) {
 case 'changepassword':
-	if ($user['password'] != md5(get_nfilter_request_var('current_password'))) {
+
+
+	// Secpass checking
+
+	$error = secpass_check_pass(get_nfilter_request_var('password'));
+	
+	if ($error != 'ok') {
+		$bad_password = true;
+		$errorMessage = "<span color='#FF0000'>$error</span>";
+
+	}
+			
+	if (!secpass_check_history($_SESSION['sess_user_id'], get_nfilter_request_var('password'))) {
+		$bad_password = true;
+		$errorMessage = "<span color='#FF0000'>You can not use a previously entered password!</span>";
+	}
+
+	// Password and Confirmed password checks
+		if ($user['password'] != md5(get_nfilter_request_var('current_password'))) {
 		$bad_password = true;
 		$errorMessage = "<span color='#FF0000'>Your current password is not correct.  Please try again.</span>";
 	}
@@ -83,21 +101,13 @@ case 'changepassword':
 		$bad_password = true;
 		$errorMessage = "<span color='#FF0000'>Your new password can not be the same as the old password.  Please try again.</span>";
 	}
-
-	// Secpass checking
-
-	$error = secpass_check_pass(get_nfilter_request_var('password'));
-	if ($error != '') {
-		$bad_password = true;
-		$errorMessage = "<span color='#FF0000'>$error</span>";
-
+	
+		if (get_nfilter_request_var('password') !== (get_nfilter_request_var('confirm'))) {
+	    $bad_password = true;
+		$errorMessage = "<span color='#FF0000'>Your new passwords do not match, please retype.</span>";
 	}
-	if (!secpass_check_history($_SESSION['sess_user_id'], get_nfilter_request_var('password'))) {
-		$bad_password = true;
-		$errorMessage = "<span color='#FF0000'>You can not use a previously entered password!</span>";
-	}
-
-	if ($bad_password == false && get_nfilter_request_var('password') == get_nfilter_request_var('confirm') && get_nfilter_request_var('password') != '') {
+	
+		if ($bad_password == false && get_nfilter_request_var('password') == get_nfilter_request_var('confirm') && get_nfilter_request_var('password') != '') {
 		// Password change is good to go
 		if (read_config_option('secpass_expirepass') > 0) {
 				db_execute("UPDATE user_auth SET lastchange = " . time() . " WHERE id = " . intval($_SESSION['sess_user_id']) . " AND realm = 0 AND enabled = 'on'");
@@ -162,11 +172,15 @@ if (api_plugin_hook_function('custom_password', OPER_MODE_NATIVE) == OPER_MODE_R
 	exit;
 }
 
-if ($bad_password && $errorMessage == "") {
-	$errorMessage = "<span color='#FF0000'>Your new passwords do not match, please retype.</span>";
-}elseif (get_request_var('action') == 'force') {
+if (get_request_var('action') == 'force') {
 	$errorMessage = "<span color='#FF0000'>*** Forced password change ***</span>";
 }
+
+/* Create tooltip for password complexity */
+$secpass_tooltip = 	"Minimum Length: " .read_config_option('secpass_minlen') . "<br>" .
+					"Require Mix Case: " .read_config_option('secpass_reqmixcase') . "<br>" .
+					"Require Number: " .read_config_option('secpass_reqnum') . "<br>" .
+					"Require Special Character: " .read_config_option('secpass_reqspec') . "<br>" ;
 
 print "<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.01 Transitional//EN' 'http://www.w3.org/TR/html4/loose.dtd'>\n";
 print "<html>\n";
@@ -174,7 +188,8 @@ print "<head>\n";
 print "\t<title>Change Password</title>\n";
 print "\t<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>\n";
 print "\t<link href='" . $config['url_path'] . "include/themes/" . get_selected_theme() . "/main.css' type='text/css' rel='stylesheet'>\n";
-   print "\t<link href='" . $config['url_path'] . "include/themes/" . get_selected_theme() . "/jquery-ui.css' type='text/css' rel='stylesheet'>\n";
+print "\t<link href='" . $config['url_path'] . "include/themes/" . get_selected_theme() . "/jquery-ui.css' type='text/css' rel='stylesheet'>\n";
+print "\t<link href='" . $config['url_path'] . "include/" .  "/fa/css/font-awesome.css' type='text/css' rel='stylesheet'>\n";
 print "\t<link href='" . $config['url_path'] . "images/favicon.ico' rel='shortcut icon'>\n";
 print "\t<script type='text/javascript' src='" . $config['url_path'] . "include/js/jquery.js' language='javascript'></script>\n";
 print "\t<script type='text/javascript' src='" . $config['url_path'] . "include/js/jquery-ui.js' language='javascript'></script>\n";
@@ -205,7 +220,7 @@ print "<body class='loginBody'>
 						</tr>
 						<tr>
 							<td>New password</td>
-							<td><input type='password' name='password' autocomplete='off' size='20' placeholder='********'></td>
+							<td><input type='password' name='password' autocomplete='off' size='20' placeholder='********'>" . display_tooltip($secpass_tooltip) ."</td>
 						</tr>
 						<tr>
 							<td>Confirm new password</td>
