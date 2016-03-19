@@ -605,127 +605,120 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 		</form>
 		</td>
 	</tr>
-	<?php
-
-	/* include time span selector */
-	if (read_user_setting('timespan_sel') == 'on') {
-		?>
-		<tr class='even noprint'>
-			<td class='noprint'>
-			<form name='form_timespan_selector' method='post' action='graph_view.php'>
-				<table class='filterTable'>
-					<tr id='timespan'>
-						<td>
-							Presets
-						</td>
-						<td>
-							<select id='predefined_timespan' name='predefined_timespan' onChange='applyGraphTimespan()'>
-								<?php
-								if (isset($_SESSION['custom'])) {
-									$graph_timespans[GT_CUSTOM] = 'Custom';
-									$start_val = 0;
-									$end_val = sizeof($graph_timespans);
-								} else {
-									if (isset($graph_timespans[GT_CUSTOM])) {
-										asort($graph_timespans);
-										array_shift($graph_timespans);
-									}
-									$start_val = 1;
-									$end_val = sizeof($graph_timespans)+1;
+	<tr class='even noprint'>
+		<td class='noprint'>
+		<form name='form_timespan_selector' method='post' action='graph_view.php'>
+			<table class='filterTable'>
+				<tr id='timespan'>
+					<td>
+						Presets
+					</td>
+					<td>
+						<select id='predefined_timespan' name='predefined_timespan' onChange='applyGraphTimespan()'>
+							<?php
+							if (isset($_SESSION['custom'])) {
+								$graph_timespans[GT_CUSTOM] = 'Custom';
+								$start_val = 0;
+								$end_val = sizeof($graph_timespans);
+							} else {
+								if (isset($graph_timespans[GT_CUSTOM])) {
+									asort($graph_timespans);
+									array_shift($graph_timespans);
 								}
-
-								if (sizeof($graph_timespans) > 0) {
-									for ($value=$start_val; $value < $end_val; $value++) {
-										print "<option value='$value'"; if ($_SESSION['sess_current_timespan'] == $value) { print ' selected'; } print '>' . title_trim($graph_timespans[$value], 40) . "</option>\n";
-									}
-								}
-								?>
-							</select>
-						</td>
-						<td>
-							From
-						</td>
-						<td>
-							<input type='text' id='date1' title='Graph Begin Timestamp' size='18' value='<?php print (isset($_SESSION['sess_current_date1']) ? $_SESSION['sess_current_date1'] : '');?>'>
-						</td>
-						<td>
-                                                        <i id='startDate' class='calendar fa fa-calendar' title='Start Date Selector'></i>
-						</td>
-						<td>
-							To
-						</td>
-						<td>
-							<input type='text' id='date2' title='Graph End Timestamp' size='18' value='<?php print (isset($_SESSION['sess_current_date2']) ? $_SESSION['sess_current_date2'] : '');?>'>
-						</td>
-						<td>
-							<i id='endDate' class='calendar fa fa-calendar' title='End Date Selector'></i>
-                                                </td>
-                                                <td>
-							<i class='shiftArrow fa fa-backward' onClick='timeshiftGraphFilterLeft()' title='Shift Time Backward'></i>
-                                                </td>
-						<td>
-							<select id='predefined_timeshift' name='predefined_timeshift' title='Define Shifting Interval'>
-								<?php
 								$start_val = 1;
-								$end_val = sizeof($graph_timeshifts)+1;
-								if (sizeof($graph_timeshifts) > 0) {
-									for ($shift_value=$start_val; $shift_value < $end_val; $shift_value++) {
-										print "<option value='$shift_value'"; if ($_SESSION['sess_current_timeshift'] == $shift_value) { print ' selected'; } print '>' . title_trim($graph_timeshifts[$shift_value], 40) . "</option>\n";
-									}
+								$end_val = sizeof($graph_timespans)+1;
+							}
+
+							if (sizeof($graph_timespans) > 0) {
+								for ($value=$start_val; $value < $end_val; $value++) {
+									print "<option value='$value'"; if ($_SESSION['sess_current_timespan'] == $value) { print ' selected'; } print '>' . title_trim($graph_timespans[$value], 40) . "</option>\n";
 								}
-								?>
-							</select>
-						</td>
-						<td>
-							<i class='shiftArrow fa fa-forward' onClick='timeshiftGraphFilterRight()' title='Shift Time Forward'></i>
-						</td>
-						<td>
-							<input type='button' name='button_refresh_x' value='Refresh' title='Refresh selected time span' onClick='refreshGraphTimespanFilter()'>
-						</td>
-						<td>
-							<input type='button' name='button_clear' value='Clear' title='Return to the default time span' onClick='clearGraphTimespanFilter()'>
-						</td>
-					</tr>
-					<tr id='realtime' style='display:none;'>
-						<td>
-							Window
-						</td>
-						<td>
-							<select name='graph_start' id='graph_start' onChange='imageOptionsChanged("timespan")'>
-								<?php
-								foreach ($realtime_window as $interval => $text) {
-									printf('<option value="%d"%s>%s</option>', $interval, $interval == $_SESSION['sess_realtime_window'] ? ' selected="selected"' : '', $text);
+							}
+							?>
+						</select>
+					</td>
+					<td>
+						From
+					</td>
+					<td>
+						<input type='text' id='date1' title='Graph Begin Timestamp' size='18' value='<?php print (isset($_SESSION['sess_current_date1']) ? $_SESSION['sess_current_date1'] : '');?>'>
+					</td>
+					<td>
+						<i id='startDate' class='calendar fa fa-calendar' title='Start Date Selector'></i>
+					</td>
+					<td>
+						To
+					</td>
+					<td>
+						<input type='text' id='date2' title='Graph End Timestamp' size='18' value='<?php print (isset($_SESSION['sess_current_date2']) ? $_SESSION['sess_current_date2'] : '');?>'>
+					</td>
+					<td>
+						<i id='endDate' class='calendar fa fa-calendar' title='End Date Selector'></i>
+					</td>
+					<td>
+						<i class='shiftArrow fa fa-backward' onClick='timeshiftGraphFilterLeft()' title='Shift Time Backward'></i>
+					</td>
+					<td>
+						<select id='predefined_timeshift' name='predefined_timeshift' title='Define Shifting Interval'>
+							<?php
+							$start_val = 1;
+							$end_val = sizeof($graph_timeshifts)+1;
+							if (sizeof($graph_timeshifts) > 0) {
+								for ($shift_value=$start_val; $shift_value < $end_val; $shift_value++) {
+									print "<option value='$shift_value'"; if ($_SESSION['sess_current_timeshift'] == $shift_value) { print ' selected'; } print '>' . title_trim($graph_timeshifts[$shift_value], 40) . "</option>\n";
 								}
-								?>
-							</select>
-						</td>
-						<td>
-							Refresh
-						</td>
-						<td>
-							<select name='ds_step' id='ds_step' onChange="imageOptionsChanged('interval')">
-								<?php
-								foreach ($realtime_refresh as $interval => $text) {
-									printf('<option value="%d"%s>%s</option>', $interval, $interval == $_SESSION['sess_realtime_dsstep'] ? ' selected="selected"' : '', $text);
-								}
-								?>
-							</select>
-						</td>
-						<td>
-							<input type='button' id='realtimeoff' value='Stop'>
-						</td>
-						<td align='center' colspan='6'>
-							<span id='countdown'></span>
-						</td>
-					</tr>
-				</table>
-			</form>
-			</td>
-		</tr>
-		<?php
-	}
-	?>
+							}
+							?>
+						</select>
+					</td>
+					<td>
+						<i class='shiftArrow fa fa-forward' onClick='timeshiftGraphFilterRight()' title='Shift Time Forward'></i>
+					</td>
+					<td>
+						<input type='button' name='button_refresh_x' value='Refresh' title='Refresh selected time span' onClick='refreshGraphTimespanFilter()'>
+					</td>
+					<td>
+						<input type='button' name='button_clear' value='Clear' title='Return to the default time span' onClick='clearGraphTimespanFilter()'>
+					</td>
+				</tr>
+				<tr id='realtime' style='display:none;'>
+					<td>
+						Window
+					</td>
+					<td>
+						<select name='graph_start' id='graph_start' onChange='imageOptionsChanged("timespan")'>
+							<?php
+							foreach ($realtime_window as $interval => $text) {
+								printf('<option value="%d"%s>%s</option>', $interval, $interval == $_SESSION['sess_realtime_window'] ? ' selected="selected"' : '', $text);
+							}
+							?>
+						</select>
+					</td>
+					<td>
+						Refresh
+					</td>
+					<td>
+						<select name='ds_step' id='ds_step' onChange="imageOptionsChanged('interval')">
+							<?php
+							foreach ($realtime_refresh as $interval => $text) {
+								printf('<option value="%d"%s>%s</option>', $interval, $interval == $_SESSION['sess_realtime_dsstep'] ? ' selected="selected"' : '', $text);
+							}
+							?>
+						</select>
+					</td>
+					<td>
+						<input type='button' id='realtimeoff' value='Stop'>
+					</td>
+					<td align='center' colspan='6'>
+						<span id='countdown'></span>
+					</td>
+				</tr>
+			</table>
+		</form>
+		</td>
+	</tr>
 	<script type='text/javascript'>
+
 	var graph_start=<?php print get_current_graph_start();?>;
 	var graph_end=<?php print get_current_graph_end();?>;
 	var timeOffset=<?php print date('Z');?>;
@@ -755,33 +748,35 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 			}
 		});
 
-                $('#date1').datetimepicker({
-                        minuteGrid: 10,
-                        stepMinute: 1,
-						showAnim: 'slideDown',
-						numberOfMonths: 1,
-                        timeFormat: 'HH:mm',
-                        dateFormat: 'yy-mm-dd',
-						showButtonPanel: false
-                });
+		$('#date1').datetimepicker({
+			minuteGrid: 10,
+			stepMinute: 1,
+			showAnim: 'slideDown',
+			numberOfMonths: 1,
+			timeFormat: 'HH:mm',
+			dateFormat: 'yy-mm-dd',
+			showButtonPanel: false
+		});
 
-                $('#date2').datetimepicker({
-                        minuteGrid: 10,
-                        stepMinute: 1,
-						showAnim: 'slideDown',
-						numberOfMonths: 1,
-                        timeFormat: 'HH:mm',
-                        dateFormat: 'yy-mm-dd',
-						showButtonPanel: false
-                });
+		$('#date2').datetimepicker({
+			minuteGrid: 10,
+			stepMinute: 1,
+			showAnim: 'slideDown',
+			numberOfMonths: 1,
+			timeFormat: 'HH:mm',
+			dateFormat: 'yy-mm-dd',
+			showButtonPanel: false
+		});
 
 		var navBar = "<div id='navBar' class='navBar'><?php print draw_navigation_text();?></div>";
 		if (navBar != '') {
 			$('#navBar').replaceWith(navBar);
 		}
+
 		setupBreadcrumbs();
 		initializeGraphs();
 	});
+
 	</script>
 	<?php
 	html_end_box();

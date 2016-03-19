@@ -1727,15 +1727,9 @@ $settings_user = array(
 			)
 		),
 	'timespan' => array(
-		'timespan_sel' => array(
-			'friendly_name' => 'Display Graph View Timespan Selector',
-			'description' => 'Choose if you want the time span selection box to be displayed.',
-			'method' => 'checkbox',
-			'default' => 'on'
-		),
 		'default_rra_id' => array(
 			'friendly_name' => 'Default Time Range',
-			'description' => 'The default RRA to use when for Graphs the Timespan selector is disabled.',
+			'description' => 'The default RRA to use in rare occasions.',
 			'method' => 'drop_sql',
 			'sql' => 'SELECT id, name FROM data_source_profiles_rra ORDER BY steps',
 			'default' => '1'

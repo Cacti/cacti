@@ -347,24 +347,6 @@ function settings() {
 				break;
 			}
 		}
-
-		if ($('#timespan_sel').is(':checked')) {
-			$('#row_default_rra_id').hide();
-			$('#row_default_timespan').show();
-			$('#row_default_timeshift').show();
-			$('#row_allow_graph_dates_in_future').show();
-			$('#row_first_weekdayid').show();
-			$('#row_day_shift_start').show();
-			$('#row_day_shift_end').show();
-		} else {
-			$('#row_default_rra_id').show();
-			$('#row_default_timespan').hide();
-			$('#row_default_timeshift').hide();
-			$('#row_allow_graph_dates_in_future').hide();
-			$('#row_first_weekdayid').hide();
-			$('#row_day_shift_start').hide();
-			$('#row_day_shift_end').hide();
-		}
 	}
 
 	function themeChanger() {
@@ -400,10 +382,6 @@ function settings() {
 
 		$('input[value="Return"]').unbind().click(function(event) {
 			document.location = '<?php print $_SESSION['profile_referer'];?>';
-		});
-
-		$('#timespan_sel').change(function() {
-			graphSettings();
 		});
 	});
 

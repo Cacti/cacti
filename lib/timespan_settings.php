@@ -39,13 +39,9 @@ initialize_timespan($timespan);
 $timeshift = set_timeshift();
 
 /* if the user does not want to see timespan selectors */
-if (read_user_setting('timespan_sel') == '') {
-	set_preset_timespan($timespan);
-/* the user does want to see them */
-}else {
-	process_html_variables();
-	process_user_input($timespan, $timeshift);
-}
+process_html_variables();
+process_user_input($timespan, $timeshift);
+
 /* save session variables */
 finalize_timespan($timespan);
 
@@ -176,7 +172,7 @@ function process_user_input(&$timespan, $timeshift) {
 /* establish graph timespan from either a user select or the default */
 function set_preset_timespan(&$timespan) {
 	# no current timespan: get default timespan
-	if ((!isset($_SESSION['sess_current_timespan'])) || (read_user_setting('timespan_sel') == '')) {
+	if (!isset($_SESSION['sess_current_timespan'])) {
 		$_SESSION['sess_current_timespan'] = read_user_setting('default_timespan');
 	}
 
@@ -234,7 +230,6 @@ function set_timeshift() {
 
 	# no current timeshift: get default timeshift
 	if ((!isset($_SESSION['sess_current_timeshift'])) ||
-		(read_user_setting('timespan_sel') == '') ||
 		(isset_request_var('button_clear'))
 		) {
 		$_SESSION['sess_current_timeshift'] = read_user_setting('default_timeshift');
