@@ -1617,7 +1617,7 @@ function graph_management() {
 
 	if (get_request_var('host_id') == '-1') {
 		/* Show all items */
-	}elseif (get_request_var('host_id') == '0') {
+	}elseif (isempty_request_var('host_id')) {
 		$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') . ' gl.host_id=0';
 	}elseif (!isempty_request_var('host_id')) {
 		$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') . ' gl.host_id=' . get_request_var('host_id');
