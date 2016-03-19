@@ -99,13 +99,13 @@ if ($tables_exist) {
 		$i++;
 	}
 
-	//db_execute('DROP TABLE rra');
-	//db_execute('DROP TABLE rra_cf');
-	//db_execute('DROP TABLE data_template_data_rra');
-	//db_execute('ALTER TABLE data_template_data DROP COLUMN t_rra_id');
-	//db_execute('ALTER TABLE automation_tree_rule_items DROP COLUMN rra_id');
-	//db_execute('ALTER TABLE automation_tree_rules DROP COLUMN rra_id');
-	//db_execute('ALTER TABLE graph_tree_items DROP COLUMN rra_id');
+	db_execute('DROP TABLE rra');
+	db_execute('DROP TABLE rra_cf');
+	db_execute('DROP TABLE data_template_data_rra');
+	db_execute('ALTER TABLE data_template_data DROP COLUMN t_rra_id');
+	db_execute('ALTER TABLE automation_tree_rule_items DROP COLUMN rra_id');
+	db_execute('ALTER TABLE automation_tree_rules DROP COLUMN rra_id');
+	db_execute('ALTER TABLE graph_tree_items DROP COLUMN rra_id');
 }else{
 	print "Data Source Profile Migration Already Completed\n";
 }
