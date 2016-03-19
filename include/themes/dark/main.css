@@ -214,6 +214,10 @@ label {
 	border:none;
 }
 
+.drillDown {
+	cursor:pointer;
+}
+
 .monoSpace {
 	font-size:10px;
 	font-family: monospace;

@@ -185,6 +185,10 @@ label {
 	text-decoration: none !important;
 }
 
+.drillDown {
+	cursor:pointer;
+}
+
 .moveArrow {
 	color: #00438C !important;
 	height: 14px !important;
