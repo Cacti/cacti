@@ -1129,7 +1129,7 @@ function boost_rrdtool_function_update($local_data_id, $rrd_path, $rrd_update_te
 		$file_exists = rrdtool_execute("file_exists $rrd_path" , true, RRDTOOL_OUTPUT_BOOLEAN, $rrdtool_pipe, 'BOOST');
 	}else{
 		$file_exists = file_exists($rrd_path);
-			}
+	}
 
 	if ($file_exists == false) {
 		$valid_entry = boost_rrdtool_function_create($local_data_id, $initial_time, false, $rrdtool_pipe);

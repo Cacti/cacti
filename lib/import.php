@@ -353,7 +353,7 @@ function xml_to_data_template($hash, &$xml_array, &$hash_cache, $import_as_new, 
 			}
 
 			/* use the polling interval * 2 as the heartbeat if we are to use the default rra settings */
-			if ($import_as_new  === false) { 
+			if ($import_as_new === false) {
 				$save['rrd_heartbeat'] = read_config_option('poller_interval') * 2;
 			}
 

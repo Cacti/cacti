@@ -591,20 +591,6 @@ function template_edit() {
 	}
 
 	form_save_button('data_templates.php', 'return');
-
-	?>
-	<script type='text/javascript'>
-	$(function() {
-		$('#rra_id').multiselect({
-			selectedList: 1,
-			noneSelectedText: 'Select Round Robin Archive(s)',
-			header: false,
-			height: 140,
-			minWidth: 300
-		});
-	});
-	</script>
-	<?php
 }
 
 function template() {

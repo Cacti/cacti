@@ -1020,16 +1020,19 @@ function build_html_file($leaf, $type = "", $array_data = array(), $snmp_index =
 	case "tree":
 	case "leaf":
 		$request = "SELECT DISTINCT
-			graph_tree_items.id,
-			graph_tree_items.title,
-			graph_tree_items.local_graph_id,
-			graph_tree_items.rra_id,
-			graph_tree_items.order_key,
+			graph_tree_items.id, graph_tree_items.title,
+			graph_tree_items.local_graph_id, graph_tree_items.order_key,
 			graph_templates_graph.title_cache as title_cache
-			FROM (graph_tree_items,graph_local)
-			LEFT JOIN host ON (host.id=graph_local.host_id)
-			LEFT JOIN graph_templates_graph ON (graph_tree_items.local_graph_id=graph_templates_graph.local_graph_id AND graph_tree_items.local_graph_id>0)
-			LEFT JOIN graph_templates ON (graph_templates_graph.graph_template_id=graph_templates.id)
+			FROM graph_tree_items
+			INNER JOIN graph_local
+			ON graph_local.id=graph_tree_items.local_graph_id
+			LEFT JOIN host 
+			ON host.id=graph_local.host_id
+			LEFT JOIN graph_templates_graph
+			ON graph_tree_items.local_graph_id=graph_templates_graph.local_graph_id 
+			AND graph_tree_items.local_graph_id>0
+			LEFT JOIN graph_templates 
+			ON graph_templates_graph.graph_template_id=graph_templates.id
 			$sql_join
 			$sql_where
 			GROUP BY graph_tree_items.id
@@ -1153,8 +1156,7 @@ function explore_tree($path, $tree_id, $parent_tree_item_id) {
 		title,
 		host_id
 		FROM graph_tree_items
-		WHERE rra_id = 0
-		AND graph_tree_id = " . $tree_id);
+		WHERE graph_tree_id = " . $tree_id);
 
 	$total_graphs_created = 0;
 
@@ -1252,8 +1254,7 @@ function export_tree_graphs_and_graph_html($path, $tree_id) {
 			graph_templates_graph.width,
 			graph_templates_graph.title_cache,
 			graph_templates.name,
-			graph_local.host_id,
-			graph_tree_items.rra_id
+			graph_local.host_id
 			FROM (graph_tree_items, graph_templates_graph)
 			$sql_join
 			WHERE ((graph_templates_graph.local_graph_id<>0)
@@ -1294,7 +1295,6 @@ function export_tree_graphs_and_graph_html($path, $tree_id) {
 		graph_templates_graph.title_cache,
 		graph_templates.name,
 		graph_local.host_id,
-		graph_tree_items.rra_id,
 		graph_tree_items.id AS gtid
 		FROM (graph_tree_items, graph_templates_graph)
 		$sql_join
@@ -1343,7 +1343,7 @@ function export_tree_graphs_and_graph_html($path, $tree_id) {
 			export_log("Creating Graph '" . $cacti_export_path . $graph_data_array["export_filename"] . "'");
 
 			/* generate the graph */
-			@rrdtool_function_graph($graph["local_graph_id"], $graph["rra_id"], $graph_data_array, $rrdtool_pipe);
+			@rrdtool_function_graph($graph["local_graph_id"], read_user_setting('default_rra_id'), $graph_data_array, $rrdtool_pipe);
 			$total_graphs_created++;
 
 			/* generate html files for each graph */

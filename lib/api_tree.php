@@ -644,20 +644,19 @@ function api_tree_item_save($id, $tree_id, $type, $parent_tree_item_id, $title, 
 		}
 	}
 
-	$save["id"] = $id;
-	$save["graph_tree_id"] = $tree_id;
-	$save["title"] = form_input_validate($title, "title", "", ($type == TREE_ITEM_TYPE_HEADER ? false : true), 3);
-	$save["parent"] = $parent_tree_item_id;
-	$save["local_graph_id"] = form_input_validate($local_graph_id, "local_graph_id", "", true, 3);
-	$save["rra_id"]	= form_input_validate($rra_id, "rra_id", "", true, 3);
-	$save["host_id"] = form_input_validate($host_id, "host_id", "", true, 3);
-	$save["host_grouping_type"] = form_input_validate($host_grouping_type, "host_grouping_type", "", true, 3);
-	$save["sort_children_type"] = form_input_validate($sort_children_type, "sort_children_type", "", true, 3);
+	$save['id']                 = $id;
+	$save['graph_tree_id']      = $tree_id;
+	$save['title']              = form_input_validate($title, 'title', '', ($type == TREE_ITEM_TYPE_HEADER ? false : true), 3);
+	$save['parent']             = $parent_tree_item_id;
+	$save['local_graph_id']     = form_input_validate($local_graph_id, 'local_graph_id', '', true, 3);
+	$save['host_id']            = form_input_validate($host_id, 'host_id', '', true, 3);
+	$save['host_grouping_type'] = form_input_validate($host_grouping_type, 'host_grouping_type', '', true, 3);
+	$save['sort_children_type'] = form_input_validate($sort_children_type, 'sort_children_type', '', true, 3);
 
 	$tree_item_id = 0;
 
 	if (!is_error_message()) {
-		$tree_item_id = sql_save($save, "graph_tree_items");
+		$tree_item_id = sql_save($save, 'graph_tree_items');
 
 		if ($tree_item_id) {
 			raise_message(1);

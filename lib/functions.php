@@ -3361,7 +3361,7 @@ function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '
 	if (is_array($attachments) && sizeof($attachments) && substr_count($body, '<GRAPH>') > 0) {
 		foreach($attachments as $val) {
 			$graph_data_array = array('output_flag'=> RRDTOOL_OUTPUT_STDOUT);
-  			$data = rrdtool_function_graph($val['local_graph_id'], $val['rra_id'], $graph_data_array);
+  			$data = rrdtool_function_graph($val['local_graph_id'], isset($val['rra_id']) ? $val['rra_id']:read_user_setting('default_rra_id'), $graph_data_array);
 			if ($data != '') {
 				/* get content id and create attachment */
 				$cid = getmypid() . '_' . $i . '@' . 'localhost';

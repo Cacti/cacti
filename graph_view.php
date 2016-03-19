@@ -294,8 +294,6 @@ case 'preview':
 			if ((isset($graph_array)) && (sizeof($graph_array) > 0)) {
 				/* build sql string including each graph the user checked */
 				$sql_or = array_to_sql_or($graph_array, 'gtg.local_graph_id');
-
-				$set_rra_id = empty($rra_id) ? read_user_setting('default_rra_id') : get_request_var('rra_id');
 			}
 		}
 	}

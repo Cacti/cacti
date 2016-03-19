@@ -656,7 +656,6 @@ function duplicate_data_source($_local_data_id, $_data_template_id, $data_source
 	}
 
 	unset($save);
-	unset($struct_data_source['rra_id']);
 	unset($struct_data_source['data_source_path']);
 	reset($struct_data_source);
 
