@@ -704,7 +704,7 @@ function get_allowed_tree_header_graphs($tree_id, $leaf_id = 0, $sql_where = '',
 
 		$sql_having = "HAVING $sql_having";
 
-		$graphs = db_fetch_assoc("SELECT gti.id, gti.title, gti.rra_id, gtg.local_graph_id, 
+		$graphs = db_fetch_assoc("SELECT gti.id, gti.title, gtg.local_graph_id, 
 			h.description, gt.name AS template_name, gtg.title_cache, 
 			gtg.width, gtg.height, gl.snmp_index, gl.snmp_query_id,
 			$sql_select
@@ -742,7 +742,7 @@ function get_allowed_tree_header_graphs($tree_id, $leaf_id = 0, $sql_where = '',
 	}else{
 		$graphs = db_fetch_assoc("SELECT 
 			gti.id, gti.title, 
-			gti.rra_id, gtg.local_graph_id, 
+			gtg.local_graph_id, 
 			host.description, 
 			gt.name AS template_name, 
 			gtg.title_cache, 
