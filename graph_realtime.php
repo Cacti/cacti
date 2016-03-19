@@ -52,8 +52,6 @@ case 'countdown':
 	get_filter_request_var('left');
 	if (isset_request_var('graph_nolegend')) {
 		set_request_var('graph_nolegend', 'true');
-	}else{
-		set_request_var('graph_nolegend', 'false');
 	}
 	/* ==================================================== */
 
