@@ -2712,8 +2712,8 @@ function resolve_navigation_variables($text) {
 /* get_associated_rras - returns a list of all RRAs referenced by a particular graph
    @arg $local_graph_id - (int) the ID of the graph to retrieve a list of RRAs for
    @returns - (array) an array containing the name and id of each RRA found */
-function get_associated_rras($local_graph_id) {
-	return db_fetch_assoc_prepared('SELECT DISTINCT ' . SQL_NO_CACHE . '
+function get_associated_rras($local_graph_id, $sql_where = '') {
+	return db_fetch_assoc_prepared('SELECT DISTINCT ' . SQL_NO_CACHE . "
 		dspr.id, dspr.steps, dspr.rows, dspr.name, dtd.rrd_step
 		FROM graph_templates_item AS gti
 		LEFT JOIN data_template_rrd AS dtr
@@ -2725,7 +2725,7 @@ function get_associated_rras($local_graph_id) {
 		LEFT JOIN data_source_profiles_rra AS dspr
 		ON dsp.id=dspr.data_source_profile_id
 		AND dtd.local_data_id != 0
-		WHERE gti.local_graph_id = ?', array($local_graph_id));
+		WHERE gti.local_graph_id = ? $sql_where", array($local_graph_id));
 }
 
 /* get_browser_query_string - returns the full url, including args requested by the browser

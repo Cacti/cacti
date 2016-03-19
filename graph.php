@@ -44,6 +44,7 @@ get_filter_request_var('view_type', FILTER_VALIDATE_REGEXP, array('options' => a
 api_plugin_hook_function('graph');
 
 include_once('./lib/html_tree.php');
+
 top_graph_header();
 
 if (!isset_request_var('rra_id')) {
@@ -51,9 +52,9 @@ if (!isset_request_var('rra_id')) {
 }
 
 if (get_request_var('rra_id') == 'all') {
-	$sql_where = ' WHERE id IS NOT NULL';
+	$sql_where = ' AND dspr.id IS NOT NULL';
 }else{
-	$sql_where = ' WHERE id=' . get_request_var('rra_id');
+	$sql_where = ' AND dspr.id=' . get_request_var('rra_id');
 }
 
 /* make sure the graph requested exists (sanity) */
@@ -74,7 +75,7 @@ if (get_request_var('action') != 'properties') {
 	print "<table width='100%' class='cactiTable'>";
 }
 
-$rras = get_associated_rras(get_request_var('local_graph_id'));
+$rras = get_associated_rras(get_request_var('local_graph_id'), $sql_where);
 
 switch (get_request_var('action')) {
 case 'view':
