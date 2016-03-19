@@ -2631,7 +2631,7 @@ function draw_navigation_text($type = 'url') {
 		$leaf_name = '';
 		$tree_name = '';
 		if (isset_request_var('leaf_id') && get_request_var('leaf_id') != '') {
-			$leaf = db_fetch_row_prepared('SELECT * FROM graph_tree_items WHERE id = ?', array(get_request_var('leaf_id')));
+			$leaf = db_fetch_row_prepared('SELECT * FROM graph_tree_items WHERE id = ?', array(get_filter_request_var('leaf_id')));
 
 			if (sizeof($leaf)) {
 				if ($leaf['host_id'] > 0) {
@@ -2646,7 +2646,7 @@ function draw_navigation_text($type = 'url') {
 			}
 
 			if (isset_request_var('host_group_data') && get_request_var('host_group_data') != '') {
-				$parts = explode(':', get_request_var('host_group_data'));
+				$parts = explode(':', get_nfilter_request_var('host_group_data'));
 				input_validate_input_number($parts[1]);
 
 				if ($parts[0] == 'graph_template') {

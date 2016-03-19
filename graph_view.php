@@ -149,7 +149,7 @@ case 'save':
 	break;
 case 'tree':
 	if (isset_request_var('tree_id')) {
-		$_SESSION['sess_tree_id'] = get_request_var('tree_id');
+		$_SESSION['sess_tree_id'] = get_filter_request_var('tree_id');
 	}
 
 	top_graph_header();

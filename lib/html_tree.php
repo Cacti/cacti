@@ -126,7 +126,7 @@ function grow_dhtml_trees() {
 	if ((!isset($_SESSION['sess_node_id']) && !isset_request_var('tree_id'))) {
 		print "var node='tree_anchor-" . $default_tree_id . "';\n";
 		print "var reset=true;\n";
-	}elseif (isset_request_var('nodeid') && get_request_var('nodeid') != '') {
+	}elseif (isset_request_var('nodeid') && !isempty_request_var('nodeid')) {
 		print "var node='" . get_request_var('nodeid') . "';\n";
 		print "var reset=false;\n";
 	}elseif (isset($_SESSION['sess_node_id'])) {
