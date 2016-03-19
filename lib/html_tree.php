@@ -722,7 +722,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 	var graph_start=<?php print get_current_graph_start();?>;
 	var graph_end=<?php print get_current_graph_end();?>;
 	var timeOffset=<?php print date('Z');?>;
-	var pageAction ='tree_content';
+	var pageAction = 'tree';
 	var graphPage  = 'graph_view.php';
 	var date1Open  = false;
 	var date2Open  = false;

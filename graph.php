@@ -116,7 +116,7 @@ case 'view':
 					<table>
 						<tr>
 							<td>
-								<div id='wrapper_<?php print $graph['local_graph_id'] . '_' . $rra['id'];?>' graph_id='<?php print $graph['local_graph_id'];?>' rra_id='<?php print $rra['id'];?>' graph_width='<?php print $graph['width'];?>' graph_height='<?php print $graph['height'];?>' title_font_size='<?php print ((read_user_setting("custom_fonts") == "on") ? read_user_setting("title_size") : read_config_option("title_size"));?>' style="min-height: <?php echo (1.2 * $graph["height"]) . "px"?>;"></div>
+								<div class='graphWrapper' id='wrapper_<?php print $graph['local_graph_id'] . '_' . $rra['id'];?>' graph_id='<?php print $graph['local_graph_id'];?>' rra_id='<?php print $rra['id'];?>' graph_width='<?php print $graph['width'];?>' graph_height='<?php print $graph['height'];?>' title_font_size='<?php print ((read_user_setting("custom_fonts") == "on") ? read_user_setting("title_size") : read_config_option("title_size"));?>' style="min-height: <?php echo (1.2 * $graph["height"]) . "px"?>;"></div>
 							</td>
 							<td valign='top' style='padding: 3px;' class='noprint'>
 								<span class='hyperLink utils' graph_start='<?php print $graph_start;?>' graph_end='<?php print $graph_end;?>' rra_id='<?php print $rra['id'];?>' id='graph_<?php print get_request_var('local_graph_id');?>_util'><img class='drillDown' src='<?php print $config['url_path'];?>images/cog.png' alt='' title='Graph Details, Zooming and Debugging Utilities'></span><br>
@@ -145,7 +145,7 @@ case 'view':
 	refreshMSeconds=9999999;
 
 	function initializeGraph() {
-		$('div[id^="wrapper_"]').each(function() {
+		$('.graphWrapper').each(function() {
 			graph_id=$(this).attr('graph_id');
 			rra_id=$(this).attr('rra_id');
 			graph_height=$(this).attr('graph_height');
@@ -276,7 +276,7 @@ case 'zoom':
 			<table>
 				<tr>
 					<td align='center'>
-						<div id='wrapper_<?php print $graph['local_graph_id']?>' graph_width='<?php print $graph['width'];?>' graph_height='<?php print $graph['height'];?>' title_font_size='<?php print ((read_user_setting("custom_fonts") == "on") ? read_user_setting("title_size") : read_config_option("title_size"));?>' style="min-height: <?php echo (1.2 * $graph["height"]) . "px"?>;"></div>
+						<div class='graphWrapper' id='wrapper_<?php print $graph['local_graph_id']?>' graph_width='<?php print $graph['width'];?>' graph_height='<?php print $graph['height'];?>' title_font_size='<?php print ((read_user_setting("custom_fonts") == "on") ? read_user_setting("title_size") : read_config_option("title_size"));?>' style="min-height: <?php echo (1.2 * $graph["height"]) . "px"?>;"></div>
                             <?php print (read_user_setting("show_graph_title") == "on" ? "<span align='center'><strong>" . htmlspecialchars($graph["title_cache"]) . "</strong></span>" : "");?>
 					</td>
 					<td valign='top' style='align:left;padding-top: 3px;' class='noprint'>
@@ -349,7 +349,7 @@ case 'zoom':
 	}
 
 	function initializeGraph() {
-		$('div[id^="wrapper_"]').each(function() {
+		$('.graphWrapper').each(function() {
 			graph_id=$(this).attr('id').replace('wrapper_','');
 			graph_height=$(this).attr('graph_height');
 			graph_width=$(this).attr('graph_width');
