@@ -107,7 +107,7 @@ case 'countdown':
 		if ($graph_data_array['graph_start'] < 0) {
 			$graph_data_array['graph_start'] = time() + $graph_data_array['graph_start'];
 		}
-		$_SESSION['sess_realtime_window'] = get_request_var('ds_step');
+		$_SESSION['sess_realtime_window'] = abs(get_request_var('graph_start'));
 	}
 
 	/* override: graph end */
