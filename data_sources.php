@@ -136,8 +136,10 @@ function form_save() {
 			data_input_fields.allow_nulls,
 			data_input_fields.type_code
 			FROM data_template_data
-			LEFT JOIN data_input_fields ON (data_input_fields.data_input_id = data_template_data.data_input_id)
-			LEFT JOIN data_local ON (data_template_data.local_data_id = data_local.id)
+			LEFT JOIN data_input_fields 
+			ON (data_input_fields.data_input_id = data_template_data.data_input_id)
+			LEFT JOIN data_local 
+			ON (data_template_data.local_data_id = data_local.id)
 			WHERE data_template_data.id = ?
 			AND data_input_fields.input_output='in'", array(get_request_var('data_template_data_id')));
 
@@ -1179,56 +1181,47 @@ function ds() {
 
 	/* form the 'where' clause for our main sql query */
 	if (strlen(get_request_var('filter'))) {
-		$sql_where1 = "AND (data_template_data.name_cache like '%" . get_request_var('filter') . "%'" .
+		$sql_where1 = "WHERE (data_template_data.name_cache like '%" . get_request_var('filter') . "%'" .
 			" OR data_template_data.local_data_id like '%" . get_request_var('filter') . "%'" .
 			" OR data_template.name like '%" . get_request_var('filter') . "%'" .
 			" OR data_input.name like '%" . get_request_var('filter') . "%')";
-
-		$sql_where2 = "AND (data_template_data.name_cache like '%" . get_request_var('filter') . "%'" .
-			" OR data_template.name like '%" . get_request_var('filter') . "%')";
 	}else{
 		$sql_where1 = '';
-		$sql_where2 = '';
 	}
 
 	if (get_request_var('host_id') == '-1') {
 		/* Show all items */
-	}elseif (get_request_var('host_id') == '0') {
-		$sql_where1 .= ' AND data_local.host_id=0';
-		$sql_where2 .= ' AND data_local.host_id=0';
+	}elseif (isempty_request_var('host_id')) {
+		$sql_where1 .= (strlen($sql_where1) ? ' AND':'WHERE') . ' (data_local.host_id=0 OR data_local.host_id IS NULL)';
 	}elseif (!isempty_request_var('host_id')) {
-		$sql_where1 .= ' AND data_local.host_id=' . get_request_var('host_id');
-		$sql_where2 .= ' AND data_local.host_id=' . get_request_var('host_id');
+		$sql_where1 .= (strlen($sql_where1) ? ' AND':'WHERE') . ' data_local.host_id=' . get_request_var('host_id');
 	}
 
 	if (get_request_var('template_id') == '-1') {
 		/* Show all items */
 	}elseif (get_request_var('template_id') == '0') {
-		$sql_where1 .= ' AND data_template_data.data_template_id=0';
-		$sql_where2 .= ' AND data_template_data.data_template_id=0';
+		$sql_where1 .= (strlen($sql_where1) ? ' AND':'WHERE') . ' data_template_data.data_template_id=0';
 	}elseif (!isempty_request_var('host_id')) {
-		$sql_where1 .= ' AND data_template_data.data_template_id=' . get_request_var('template_id');
-		$sql_where2 .= ' AND data_template_data.data_template_id=' . get_request_var('template_id');
+		$sql_where1 .= (strlen($sql_where1) ? ' AND':'WHERE') . ' data_template_data.data_template_id=' . get_request_var('template_id');
 	}
 
 	if (get_request_var('method_id') == '-1') {
 		/* Show all items */
 	}elseif (get_request_var('method_id') == '0') {
-		$sql_where1 .= ' AND data_template_data.data_input_id=0';
-		$sql_where2 .= ' AND data_template_data.data_input_id=0';
+		$sql_where1 .= (strlen($sql_where1) ? ' AND':'WHERE') . ' data_template_data.data_input_id=0';
 	}elseif (!isempty_request_var('method_id')) {
-		$sql_where1 .= ' AND data_template_data.data_input_id=' . get_request_var('method_id');
-		$sql_where2 .= ' AND data_template_data.data_input_id=' . get_request_var('method_id');
+		$sql_where1 .= (strlen($sql_where1) ? ' AND':'WHERE') . ' data_template_data.data_input_id=' . get_request_var('method_id');
 	}
 
 	$total_rows = sizeof(db_fetch_assoc("SELECT
 		data_local.id
-		FROM (data_local,data_template_data)
+		FROM data_local
+		INNER JOIN data_template_data
+		ON data_local.id=data_template_data.local_data_id
 		LEFT JOIN data_input
 		ON (data_input.id=data_template_data.data_input_id)
 		LEFT JOIN data_template
 		ON (data_local.data_template_id=data_template.id)
-		WHERE data_local.id=data_template_data.local_data_id
 		$sql_where1"));
 
 	$data_sources = db_fetch_assoc("SELECT
@@ -1239,12 +1232,13 @@ function ds() {
 		data_input.name as data_input_name,
 		data_template.name as data_template_name,
 		data_local.host_id
-		FROM (data_local,data_template_data)
+		FROM data_local
+		INNER JOIN data_template_data
+		ON data_local.id=data_template_data.local_data_id
 		LEFT JOIN data_input
-		ON (data_input.id=data_template_data.data_input_id)
+		ON data_input.id=data_template_data.data_input_id
 		LEFT JOIN data_template
-		ON (data_local.data_template_id=data_template.id)
-		WHERE data_local.id=data_template_data.local_data_id
+		ON data_local.data_template_id=data_template.id
 		$sql_where1
 		ORDER BY ". get_request_var('sort_column') . ' ' . get_request_var('sort_direction') .
 		' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows);
