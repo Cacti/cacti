@@ -416,6 +416,12 @@ function aggregate_change_graph_type($graph_index, $old_graph_type, $new_graph_t
 	 * xRULEs honestly do not make much sense on an aggregated graph, though */
 	switch ($old_graph_type) {
 		case GRAPH_ITEM_TYPE_GPRINT:
+		case GRAPH_ITEM_TYPE_GPRINT_LAST:
+		case GRAPH_ITEM_TYPE_GPRINT_MAX:
+		case GRAPH_ITEM_TYPE_GPRINT_MAX:
+		case GRAPH_ITEM_TYPE_GPRINT_AVERAGE:
+		case GRAPH_ITEM_TYPE_GPRINT_TEXTALIGN:
+		case GRAPH_ITEM_TYPE_GPRINT_TIC:
 		case GRAPH_ITEM_TYPE_COMMENT:
 		case GRAPH_ITEM_TYPE_HRULE:
 		case GRAPH_ITEM_TYPE_VRULE:
@@ -437,6 +443,7 @@ function aggregate_change_graph_type($graph_index, $old_graph_type, $new_graph_t
 			 * so it's a good idea to keep all AREA entries of the first aggregated elementary graph (index 0)*/
 			if ($graph_index == 0 && $item_index == 1 && 
 				($old_graph_type == GRAPH_ITEM_TYPE_STACK || 
+				$old_graph_type == GRAPH_ITEM_TYPE_LINESTACK || 
 				$old_graph_type == GRAPH_ITEM_TYPE_LINE1 || 
 				$old_graph_type == GRAPH_ITEM_TYPE_LINE2 || 
 				$old_graph_type == GRAPH_ITEM_TYPE_LINE3)) {
@@ -475,6 +482,7 @@ function aggregate_change_graph_type($graph_index, $old_graph_type, $new_graph_t
 		case GRAPH_ITEM_TYPE_LINE1:
 		case GRAPH_ITEM_TYPE_LINE2:
 		case GRAPH_ITEM_TYPE_LINE3:
+		case GRAPH_ITEM_TYPE_LINESTACK:
 			/* create a LINEx graph */
 			return $new_graph_type;
 			break;

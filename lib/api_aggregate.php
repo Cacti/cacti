@@ -238,7 +238,14 @@ function aggregate_graphs_insert_graph_items($_new_graph_id, $_old_graph_id, $_g
 
 			if ($_total == AGGREGATE_TOTAL_ONLY) {
 				# if we only need the totalling legend, ...
-				if (($graph_item['graph_type_id'] == GRAPH_ITEM_TYPE_GPRINT) || ($graph_item['graph_type_id'] == GRAPH_ITEM_TYPE_COMMENT)) {
+				if (($graph_item['graph_type_id'] == GRAPH_ITEM_TYPE_GPRINT) || 
+					($graph_item['graph_type_id'] == GRAPH_ITEM_TYPE_GPRINT_LAST) || 
+					($graph_item['graph_type_id'] == GRAPH_ITEM_TYPE_GPRINT_MIN) || 
+					($graph_item['graph_type_id'] == GRAPH_ITEM_TYPE_GPRINT_MAX) || 
+					($graph_item['graph_type_id'] == GRAPH_ITEM_TYPE_GPRINT_AVERAGE) || 
+					($graph_item['graph_type_id'] == GRAPH_ITEM_TYPE_TEXTALIGN) || 
+					($graph_item['graph_type_id'] == GRAPH_ITEM_TYPE_TIC) || 
+					($graph_item['graph_type_id'] == GRAPH_ITEM_TYPE_COMMENT)) {
 					# and this is a legend entry (GPRINT, COMMENT), skip
 					continue;
 				} else {
