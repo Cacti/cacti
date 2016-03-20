@@ -451,6 +451,7 @@ INSERT INTO `automation_tree_rules` VALUES (1,'New Device',1,0,3,0,''),(2,'New G
 CREATE TABLE cdef (
   id mediumint(8) unsigned NOT NULL auto_increment,
   hash varchar(32) NOT NULL default '',
+  system mediumint(8) unsigned NOT NULL DEFAULT '0',
   name varchar(255) NOT NULL default '',
   PRIMARY KEY  (id)
 ) ENGINE=MyISAM;
@@ -459,12 +460,12 @@ CREATE TABLE cdef (
 -- Dumping data for table `cdef`
 --
 
-INSERT INTO cdef VALUES (3,'3d352eed9fa8f7b2791205b3273708c7','Make Stack Negative');
-INSERT INTO cdef VALUES (4,'e961cc8ec04fda6ed4981cf5ad501aa5','Make Per 5 Minutes');
-INSERT INTO cdef VALUES (12,'f1ac79f05f255c02f914c920f1038c54','Total All Data Sources');
-INSERT INTO cdef VALUES (2,'73f95f8b77b5508157d64047342c421e','Turn Bytes into Bits');
-INSERT INTO cdef VALUES (14,'634a23af5e78af0964e8d33b1a4ed26b','Multiply by 1024');
-INSERT INTO cdef VALUES (15,'068984b5ccdfd2048869efae5166f722','Total All Data Sources, Multiply by 1024');
+INSERT INTO cdef VALUES (3,'3d352eed9fa8f7b2791205b3273708c7',0,'Make Stack Negative');
+INSERT INTO cdef VALUES (4,'e961cc8ec04fda6ed4981cf5ad501aa5',0,'Make Per 5 Minutes');
+INSERT INTO cdef VALUES (12,'f1ac79f05f255c02f914c920f1038c54',0,'Total All Data Sources');
+INSERT INTO cdef VALUES (2,'73f95f8b77b5508157d64047342c421e',0,'Turn Bytes into Bits');
+INSERT INTO cdef VALUES (14,'634a23af5e78af0964e8d33b1a4ed26b',0,'Multiply by 1024');
+INSERT INTO cdef VALUES (15,'068984b5ccdfd2048869efae5166f722',0,'Total All Data Sources, Multiply by 1024');
 
 --
 -- Table structure for table `cdef_items`

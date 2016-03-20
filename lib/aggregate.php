@@ -553,9 +553,10 @@ function aggregate_cdef_make0() {
 	}
 
 	# create a new cdef entry
-	$save['id']   = 0;
-	$save['hash'] = get_hash_cdef(0);
-	$save['name'] = $magic;
+	$save['id']     = 0;
+	$save['hash']   = get_hash_cdef(0);
+	$save['system'] = 1;
+	$save['name']   = $magic;
 
 	# save the cdef itself
 	$new_cdef_id  = sql_save($save, 'cdef');
@@ -662,9 +663,11 @@ function aggregate_cdef_totalling($_new_graph_id, $_graph_item_sequence, $_total
 			# in case, we have NO match
 			if (empty($new_cdef_id)) {
 				# create a new cdef entry
-				$save['id']    = 0;
-				$save['hash']  = get_hash_cdef(0);
-				$new_cdef_name = 'INVALID ' . $cdef_name; # in case anything goes wrong
+				$save['id']     = 0;
+				$save['hash']   = get_hash_cdef(0);
+				$save['system'] = 1;
+				$new_cdef_name  = 'INVALID ' . $cdef_name; # in case anything goes wrong
+
 				switch ($_total_type) {
 					case AGGREGATE_TOTAL_TYPE_SIMILAR:
 						$new_cdef_name = '_AGGREGATE SIMILAR ' . $cdef_name;
@@ -673,7 +676,8 @@ function aggregate_cdef_totalling($_new_graph_id, $_graph_item_sequence, $_total
 						$new_cdef_name = '_AGGREGATE ALL ' . $cdef_name;
 						break;
 				}
-				$save['name'] = $new_cdef_name;
+
+				$save['name']   = $new_cdef_name;
 
 				# save the cdef itself
 				$new_cdef_id  = sql_save($save, 'cdef');

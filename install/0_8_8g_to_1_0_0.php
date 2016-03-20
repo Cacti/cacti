@@ -1405,4 +1405,8 @@ function upgrade_to_1_0_0() {
 		ADD COLUMN legend_position varchar(10) DEFAULT NULL AFTER t_legend_position,
 		ADD COLUMN t_legend_direction char(2) DEFAULT "0" AFTER legend_position,
 		ADD COLUMN legend_direction varchar(10) DEFAULT NULL AFTER t_legend_direction');
+
+	// Update Aggregate CDEF's to become system level
+	db_install_execute('1.0.0', "ALTER TABLE cdef ADD COLUMN system mediumint(8) unsigned NOT NULL DEFAULT '0' AFTER hash");
+	db_install_execute('1.0.0', "UPDATE cdef SET system=1 WHERE name LIKE '\_%'");
 }

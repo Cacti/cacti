@@ -130,9 +130,10 @@ function form_save() {
 	}
 
 	if (isset_request_var('save_component_cdef')) {
-		$save['id']   = form_input_validate(get_nfilter_request_var('id'), 'id', '^[0-9]+$', false, 3);
-		$save['hash'] = get_hash_cdef(get_nfilter_request_var('id'));
-		$save['name'] = form_input_validate(get_nfilter_request_var('name'), 'name', '', false, 3);
+		$save['id']     = form_input_validate(get_nfilter_request_var('id'), 'id', '^[0-9]+$', false, 3);
+		$save['hash']   = get_hash_cdef(get_nfilter_request_var('id'));
+		$save['name']   = form_input_validate(get_nfilter_request_var('name'), 'name', '', false, 3);
+		$save['system'] = 0;
 
 		if (!is_error_message()) {
 			$cdef_id = sql_save($save, 'cdef');
@@ -440,7 +441,7 @@ function item_edit() {
 				form_dropdown('value', $custom_data_source_types, '', '', (isset($cdef['value']) ? $cdef['value'] : ''), '', '');
 				break;
 			case '5':
-				form_dropdown('value', db_fetch_assoc('SELECT name, id FROM cdef ORDER BY name'), 'name', 'id', (isset($cdef['value']) ? $cdef['value'] : ''), '', '');
+				form_dropdown('value', db_fetch_assoc('SELECT name, id FROM cdef WHERE system=0 ORDER BY name'), 'name', 'id', (isset($cdef['value']) ? $cdef['value'] : ''), '', '');
 				break;
 			case '6':
 				form_text_box('value', (isset($cdef['value']) ? $cdef['value'] : ''), '', '255', 30, 'text', isset_request_var('id') ? get_request_var('id') : '0');
@@ -549,7 +550,7 @@ function cdef_edit() {
 
 		html_header($display_text, 2);
 
-		$cdef_items = db_fetch_assoc_prepared('SELECT * FROM cdef_items WHERE cdef_id = ? ORDER BY sequence', array(get_request_var('id')));
+		$cdef_items = db_fetch_assoc_prepared('SELECT * FROM cdef_items WHERE system=0 AND cdef_id = ? ORDER BY sequence', array(get_request_var('id')));
 
 		$i = 0;
 		if (sizeof($cdef_items)) {
@@ -765,6 +766,7 @@ function cdef() {
 			FROM cdef AS cd
 			LEFT JOIN graph_templates_item AS gti
 			ON gti.cdef_id=cd.id
+			WHERE system=0
 			GROUP BY cd.id, gti.graph_template_id, gti.local_graph_id
 		) AS rs
 		$sql_where
@@ -778,9 +780,9 @@ function cdef() {
 	print $nav;
 
 	$display_text = array(
-		'name' => array('display' => 'CDEF Name', 'align' => 'left', 'sort' => 'ASC', 'tip' => 'The name of this CDEF.'),
-		'nosort' => array('display' => 'Deletable', 'align' => 'right', 'tip' => 'CDEFs that are in use can not be Deleted.  In use is defined as being referenced by a Graph or a Graph Template.'), 
-		'graphs' => array('display' => 'Graphs Using', 'align' => 'right', 'sort' => 'DESC', 'tip' => 'The number of Graphs using this CDEF.'),
+		'name'      => array('display' => 'CDEF Name',       'align' => 'left',  'sort' => 'ASC', 'tip' => 'The name of this CDEF.'),
+		'nosort'    => array('display' => 'Deletable',       'align' => 'right', 'tip'  => 'CDEFs that are in use can not be Deleted.  In use is defined as being referenced by a Graph or a Graph Template.'), 
+		'graphs'    => array('display' => 'Graphs Using',    'align' => 'right', 'sort' => 'DESC', 'tip' => 'The number of Graphs using this CDEF.'),
 		'templates' => array('display' => 'Templates Using', 'align' => 'right', 'sort' => 'DESC', 'tip' => 'The number of Graphs Templates using this CDEF.'));
 
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
