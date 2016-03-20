@@ -1686,7 +1686,7 @@ $settings_user = array(
 			),
 		'default_view_mode' => array(
 			'friendly_name' => 'Default View Mode',
-			'description' => 'Which mode you want displayed when you visit "graph_view.php"',
+			'description' => 'Which Graph mode you want displayed by default when you first visit the Graphs page?',
 			'method' => 'drop_array',
 			'array' => $graph_views,
 			'default' => '1'

@@ -1596,7 +1596,7 @@ function user_realms_edit($header_label) {
 	form_save_button('user_admin.php', 'return');
 }
 
-function graph_settings_edit($header_label) {
+function settings_edit($header_label) {
 	global $settings_user, $tabs_graphs, $graph_views;
 
 	/* ================= input validation ================= */
@@ -1605,7 +1605,7 @@ function graph_settings_edit($header_label) {
 
 	form_start('user_admin.php');
 
-	html_start_box("Graph Settings $header_label", '100%', '', '3', 'center', '');
+	html_start_box("User Settings $header_label", '100%', '', '3', 'center', '');
 
 	while (list($tab_short_name, $tab_fields) = each($settings_user)) {
 		$collapsible = true;
@@ -1718,14 +1718,14 @@ function user_edit() {
 
 	/* present a tabbed interface */
 	$tabs = array(
-		'general' => 'General',
-		'realms' => 'Permissions',
-		'permsgr' => 'Group Membership',
-		'permsg' => 'Graph Perms',
-		'permsd' => 'Device Perms',
-		'permste' => 'Template Perms',
-		'permstr' => 'Tree Perms',
-		'settings' => 'Graph Settings'
+		'general'  => 'General',
+		'realms'   => 'Permissions',
+		'permsgr'  => 'Group Membership',
+		'permsg'   => 'Graph Perms',
+		'permsd'   => 'Device Perms',
+		'permste'  => 'Template Perms',
+		'permstr'  => 'Tree Perms',
+		'settings' => 'User Settings'
 	);
 
 	/* set the default tab */
@@ -1848,7 +1848,7 @@ function user_edit() {
 
 		break;
 	case 'settings':
-		graph_settings_edit($header_label);
+		settings_edit($header_label);
 
 		break;
 	case 'realms':

@@ -99,7 +99,7 @@ $fields_user_group_edit = array(
 		'items' => array(
 			'graph_settings' => array(
 				'value' => '|arg1:graph_settings|',
-				'friendly_name' => 'Allow Users of this Group to keep custom Graph Settings',
+				'friendly_name' => 'Allow Users of this Group to keep custom User Settings',
 				'form_id' => '|arg1:id|',
 				'default' => 'on'
 				)
@@ -1370,7 +1370,7 @@ function user_group_realms_edit($header_label) {
 	form_save_button('user_group_admin.php', 'return');
 }
 
-function user_group_graph_settings_edit($header_label) {
+function user_group_settings_edit($header_label) {
 	global $settings_user, $tabs_graphs, $graph_views;
 
 	/* ================= input validation ================= */
@@ -1379,7 +1379,7 @@ function user_group_graph_settings_edit($header_label) {
 
 	form_start('user_group_admin.php', 'chk');
 
-	html_start_box("Graph Settings $header_label", '100%', '', '3', 'center', '');
+	html_start_box("User Settings $header_label", '100%', '', '3', 'center', '');
 
 	while (list($tab_short_name, $tab_fields) = each($settings_user)) {
 		$collapsible = true;
@@ -1492,14 +1492,14 @@ function group_edit() {
 
 	/* present a tabbed interface */
 	$tabs = array(
-		'general' => 'General',
-		'members' => 'Members',
-		'realms' => 'Permissions',
-		'permsg' => 'Graph Perms',
-		'permsd' => 'Device Perms',
-		'permste' => 'Template Perms',
-		'permstr' => 'Tree Perms',
-		'settings' => 'Graph Settings'
+		'general'  => 'General',
+		'members'  => 'Members',
+		'realms'   => 'Permissions',
+		'permsg'   => 'Graph Perms',
+		'permsd'   => 'Device Perms',
+		'permste'  => 'Template Perms',
+		'permstr'  => 'Tree Perms',
+		'settings' => 'User Settings'
 	);
 
 	$tabs = api_plugin_hook_function('ugroup_tabs', $tabs);
@@ -1548,7 +1548,7 @@ function group_edit() {
 
 		break;
 	case 'settings':
-		user_group_graph_settings_edit($header_label);
+		user_group_settings_edit($header_label);
 
 		break;
 	case 'realms':
