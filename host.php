@@ -464,7 +464,7 @@ function form_actions() {
 			$form_array = array();
 
 			while (list($field_name, $field_array) = each($fields_host_edit)) {
-				if (preg_match('/(availability_method|ping_method|ping_port)/', $field_name)) {
+				if (preg_match('/(availability_method|ping_method|ping_port|ping_timeout|ping_retries)/', $field_name)) {
 					$form_array += array($field_name => $fields_host_edit[$field_name]);
 
 					$form_array[$field_name]['value'] = '';
