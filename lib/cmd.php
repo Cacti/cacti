@@ -77,7 +77,7 @@ function debug($message) {
 	global $debug;
 
 	if ($debug) {
-		print("DEBUG: " . $message . "\n");
+		print('DEBUG: ' . $message . "\n");
 	}
 }
 
@@ -94,7 +94,7 @@ ini_set('memory_limit', '512M');
 $no_http_headers = true;
 
 /* process calling arguments */
-$parms = $_SERVER["argv"];
+$parms = $_SERVER['argv'];
 array_shift($parms);
 
 $first   = NULL;

@@ -23,7 +23,7 @@
 */
 
 function clog_get_graphs_from_datasource($local_data_id) {
-	return array_rekey(db_fetch_assoc("SELECT DISTINCT graph_templates_graph.local_graph_id AS id,
+	return array_rekey(db_fetch_assoc_prepared('SELECT DISTINCT graph_templates_graph.local_graph_id AS id,
 		graph_templates_graph.title_cache AS name
 		FROM (graph_templates_graph
 		INNER JOIN graph_templates_item
@@ -31,7 +31,7 @@ function clog_get_graphs_from_datasource($local_data_id) {
 		INNER JOIN data_template_rrd
 		ON graph_templates_item.task_item_id=data_template_rrd.id
 		WHERE graph_templates_graph.local_graph_id>0
-		AND data_template_rrd.local_data_id=$local_data_id"), 'id', 'name');
+		AND data_template_rrd.local_data_id = ?', array($local_data_id)), 'id', 'name');
 }
 
 function clog_purge_logfile() {
@@ -196,7 +196,7 @@ function clog_view_logfile() {
 				$host_end    = strpos($item, ']', $host_start);
 				$host_id     = substr($item, $host_start+7, $host_end-($host_start+7));
 				$new_item   .= htmlspecialchars(substr($item, 0, $host_start + 7)) . "<a href='" . htmlspecialchars($config['url_path'] . 'host.php?action=edit&id=' . $host_id) . "'>$host_id</a>";
-				$host_description = db_fetch_cell("SELECT description FROM host WHERE id=$host_id");
+				$host_description = db_fetch_cell_prepered('SELECT description FROM host WHERE id = ?', array($host_id));
 				$new_item   .= '] Description[' . htmlspecialchars($host_description) . '';
 				$item        = substr($item, $host_end);
 				$host_start  = strpos($item, 'Device[');

@@ -77,51 +77,51 @@ function api_data_source_remove_multi($local_data_ids) {
 
 	$local_data_ids_chunks = array_chunk($local_data_ids, 1000);
 	foreach ($local_data_ids_chunks as $ids_to_delete) {
-		$data_template_data_ids = db_fetch_assoc("SELECT id
+		$data_template_data_ids = db_fetch_assoc('SELECT id
 				FROM data_template_data
-				WHERE local_data_id IN (" . implode(",", $ids_to_delete) . ")");
+				WHERE local_data_id IN (' . implode(',', $ids_to_delete) . ')');
 
 		if (sizeof($data_template_data_ids)) {
 			$dtd_ids_to_delete = array();
 			foreach($data_template_data_ids as $data_template_data_id) {
-				$dtd_ids_to_delete[] = $data_template_data_id["id"];
+				$dtd_ids_to_delete[] = $data_template_data_id['id'];
 
 				if (sizeof($dtd_ids_to_delete) >= 1000) {
-					db_execute("DELETE FROM data_input_data WHERE data_template_data_id IN (" . implode(",", $dtd_ids_to_delete) . ")");
+					db_execute('DELETE FROM data_input_data WHERE data_template_data_id IN (' . implode(',', $dtd_ids_to_delete) . ')');
 					$dtd_ids_to_delete = array();
 				}
 			}
 
 			if (sizeof($dtd_ids_to_delete)) {
-				db_execute("DELETE FROM data_input_data WHERE data_template_data_id IN (" . implode(",", $dtd_ids_to_delete) . ")");
+				db_execute('DELETE FROM data_input_data WHERE data_template_data_id IN (' . implode(',', $dtd_ids_to_delete) . ')');
 			}
 
 		}
 
-		db_execute("DELETE FROM data_template_data WHERE local_data_id IN (" . implode(",", $ids_to_delete) . ")");
-		db_execute("DELETE FROM data_template_rrd WHERE local_data_id IN (" . implode(",", $ids_to_delete) . ")");
-		db_execute("DELETE FROM poller_item WHERE local_data_id IN (" . implode(",", $ids_to_delete) . ")");
-		db_execute("DELETE FROM data_local WHERE id IN (" . implode(",", $ids_to_delete) . ")");
+		db_execute('DELETE FROM data_template_data WHERE local_data_id IN (' . implode(',', $ids_to_delete) . ')');
+		db_execute('DELETE FROM data_template_rrd WHERE local_data_id IN (' . implode(',', $ids_to_delete) . ')');
+		db_execute('DELETE FROM poller_item WHERE local_data_id IN (' . implode(',', $ids_to_delete) . ')');
+		db_execute('DELETE FROM data_local WHERE id IN (' . implode(',', $ids_to_delete) . ')');
 
 		/* dsstats */
-		db_execute("DELETE FROM data_source_stats_daily WHERE local_data_id IN(" . implode(",", $ids_to_delete) . ")");
-		db_execute("DELETE FROM data_source_stats_hourly WHERE local_data_id IN(" . implode(",", $ids_to_delete) . ")");
-		db_execute("DELETE FROM data_source_stats_hourly_cache WHERE local_data_id IN(" . implode(",", $ids_to_delete) . ")");
-		db_execute("DELETE FROM data_source_stats_hourly_last WHERE local_data_id IN(" . implode(",", $ids_to_delete) . ")");
-		db_execute("DELETE FROM data_source_stats_monthly WHERE local_data_id IN(" . implode(",", $ids_to_delete) . ")");
-		db_execute("DELETE FROM data_source_stats_weekly WHERE local_data_id IN(" . implode(",", $ids_to_delete) . ")");
-		db_execute("DELETE FROM data_source_stats_yearly WHERE local_data_id IN(" . implode(",", $ids_to_delete) . ")");
+		db_execute('DELETE FROM data_source_stats_daily WHERE local_data_id IN(' . implode(',', $ids_to_delete) . ')');
+		db_execute('DELETE FROM data_source_stats_hourly WHERE local_data_id IN(' . implode(',', $ids_to_delete) . ')');
+		db_execute('DELETE FROM data_source_stats_hourly_cache WHERE local_data_id IN(' . implode(',', $ids_to_delete) . ')');
+		db_execute('DELETE FROM data_source_stats_hourly_last WHERE local_data_id IN(' . implode(',', $ids_to_delete) . ')');
+		db_execute('DELETE FROM data_source_stats_monthly WHERE local_data_id IN(' . implode(',', $ids_to_delete) . ')');
+		db_execute('DELETE FROM data_source_stats_weekly WHERE local_data_id IN(' . implode(',', $ids_to_delete) . ')');
+		db_execute('DELETE FROM data_source_stats_yearly WHERE local_data_id IN(' . implode(',', $ids_to_delete) . ')');
 
 		/* boost */
-		db_execute("DELETE FROM poller_output WHERE local_data_id IN (" . implode(",", $ids_to_delete) . ")");
-		db_execute("DELETE FROM poller_output_boost WHERE local_data_id IN (" . implode(",", $ids_to_delete) . ")");
+		db_execute('DELETE FROM poller_output WHERE local_data_id IN (' . implode(',', $ids_to_delete) . ')');
+		db_execute('DELETE FROM poller_output_boost WHERE local_data_id IN (' . implode(',', $ids_to_delete) . ')');
 
 		if ($autoclean == 'on') {
 			db_execute("INSERT INTO data_source_purge_action (local_data_id, name, action)
 				SELECT local_data_id, REPLACE(data_source_name, '<path_cacti>/', ''), '" . $acmethod . "'
 				FROM data_template_data
-				WHERE local_data_id IN (" . implode(",", $ids_to_delete) . ")
-				ON DUPLICATE KEY UPDATE action=VALUES(action)");
+				WHERE local_data_id IN (" . implode(',', $ids_to_delete) . ')
+				ON DUPLICATE KEY UPDATE action=VALUES(action)');
 		}
 	}
 }
@@ -196,8 +196,7 @@ function api_reapply_suggested_data_source_title($local_data_id) {
 	}
 
 	$suggested_values = db_fetch_assoc_prepared("SELECT 
-		text, 
-		field_name 
+		text, field_name 
 		FROM snmp_query_graph_rrd_sv 
 		WHERE snmp_query_graph_id = ?
 		AND data_template_id = ?

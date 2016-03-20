@@ -201,7 +201,7 @@ function display_matching_hosts($rule, $rule_type, $url) {
 
 	/* form the 'where' clause for our main sql query */
 	if (get_request_var('filter') != '') {
-		$sql_where = "WHERE (h.hostname LIKE '%%" . get_request_var('filter') . "%%' OR h.description LIKE '%%" . get_request_var('filter') . "%%' OR ht.name LIKE '%%" . get_request_var('filter') . "%%')";
+		$sql_where = "WHERE (h.hostname LIKE '%" . get_request_var('filter') . "%' OR h.description LIKE '%" . get_request_var('filter') . "%' OR ht.name LIKE '%" . get_request_var('filter') . "%')";
 	}else{
 		$sql_where = '';
 	}
@@ -302,9 +302,10 @@ function display_matching_hosts($rule, $rule_type, $url) {
 	}else{
 		print "<tr><td colspan='8'><em>No Matching Devices</em></td></tr>";
 	}
+
 	html_end_box(true);
 
-	print "</form>\n";
+	form_end();
 }
 
 function display_matching_graphs($rule, $rule_type, $url) {
@@ -551,13 +552,13 @@ function display_matching_graphs($rule, $rule_type, $url) {
 	$nav = html_nav_bar($url, MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 8, 'Devices', 'page', 'main');
 
 	$display_text = array(
-		'description' => array('Device Description', 'ASC'),
-		'hostname' => array('Hostname', 'ASC'),
+		'description'        => array('Device Description', 'ASC'),
+		'hostname'           => array('Hostname', 'ASC'),
 		'host_template_name' => array('Device Template Name', 'ASC'),
-		'status' => array('Status', 'ASC'),
-		'title_cache' => array('Graph Title', 'ASC'),
-		'local_graph_id' => array('Graph ID', 'ASC'),
-		'name' => array('Graph Template Name', 'ASC'),
+		'status'             => array('Status', 'ASC'),
+		'title_cache'        => array('Graph Title', 'ASC'),
+		'local_graph_id'     => array('Graph ID', 'ASC'),
+		'name'               => array('Graph Template Name', 'ASC'),
 	);
 
 	html_header_sort(
@@ -593,7 +594,7 @@ function display_matching_graphs($rule, $rule_type, $url) {
 
 	html_end_box(true);
 
-	print "</form>\n";
+	form_end();
 }
 
 function display_new_graphs($rule) {
@@ -664,7 +665,7 @@ function display_new_graphs($rule) {
 		$total_rows = 0;
 	}
 
-	html_start_box('Data Queries [ ' . $snmp_query['name'] . '] <div id="dqhelp" class="fa fa-question-circle" style="padding:0px 4px;cursor:pointer;" title="A blue font color indicates that the rule will be applied to the objects in question.  Other objects will not be subject to the rule."></div>', '100%', '', '3', 'center', '');
+	html_start_box('Data Queries [ ' . $snmp_query['name'] . '] ' . display_tooltip('A blue font color indicates that the rule will be applied to the objects in question.  Other objects will not be subject to the rule.'), '100%', '', '3', 'center', '');
 
 	if ($xml_array != false) {
 		$html_dq_header = '';
@@ -745,7 +746,7 @@ function display_new_graphs($rule) {
 				form_alternate_row("line$row_counter", true);
 
 				if (isset($created_graphs{$row['host_id']}{$row['snmp_index']})) {
-					$style = ' style="color: black"';
+					$style = ' ';
 				} else {
 					$style = ' style="color: blue"';
 				}
