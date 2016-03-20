@@ -1775,6 +1775,12 @@ function draw_navigation_text($type = 'url') {
 			'url' => '', 
 			'level' => '0'
 			),
+		'auth_profile.php:edit' => array(
+			'title' => 'User Profile (Edit)', 
+			'mapping' => '', 
+			'url' => '', 
+			'level' => '0'
+			),
 		'graph_view.php:' => array(
 			'title' => 'Graphs', 
 			'mapping' => '', 
