@@ -708,16 +708,20 @@ function graph_edit() {
 			$form_array = array();
 
 			while (list($field_name, $field_array) = each($struct_graph)) {
-				if ($field_name != 'title') {
-					$form_array += array($field_name => $struct_graph[$field_name]);
+				if ($field_array['method'] != 'spacer') {
+					if ($field_name != 'title') {
+						$form_array += array($field_name => $struct_graph[$field_name]);
 
-					$form_array[$field_name]['value']   = (isset($graphs) ? $graphs[$field_name] : '');
-					$form_array[$field_name]['form_id'] = (isset($graphs) ? $graphs['id'] : '0');
+						$form_array[$field_name]['value']   = (isset($graphs) ? $graphs[$field_name] : '');
+						$form_array[$field_name]['form_id'] = (isset($graphs) ? $graphs['id'] : '0');
 	
-					if (!(($use_graph_template == false) || ($graphs_template{'t_' . $field_name} == 'on'))) {
-						$form_array[$field_name]['method']      = 'template_' . $form_array[$field_name]['method'];
-						$form_array[$field_name]['description'] = '';
+						if (!(($use_graph_template == false) || ($graphs_template{'t_' . $field_name} == 'on'))) {
+							$form_array[$field_name]['method']      = 'template_' . $form_array[$field_name]['method'];
+							$form_array[$field_name]['description'] = '';
+						}
 					}
+				}else{
+					$form_array += array($field_name => $struct_graph[$field_name]);
 				}
 			}
 
