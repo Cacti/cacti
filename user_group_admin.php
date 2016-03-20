@@ -1512,7 +1512,7 @@ function group_edit() {
 
     /* set the default tab */
     load_current_session_value('tab', 'sess_ugroup_tab', 'general');
-    $current_tab = get_request_var('tab');
+    $current_tab = get_nfilter_request_var('tab');
 
 	if (sizeof($tabs) && isset_request_var('id')) {
 		/* draw the tabs */
