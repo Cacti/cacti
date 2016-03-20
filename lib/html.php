@@ -44,7 +44,7 @@ function html_start_box($title, $width, $background_color, $cell_padding, $align
 	$table_id = $table_prefix . $table_suffix;
 
 	?>
-	<table id='<?php print $table_id;?>' style='width:<?php print $width;?>;text-align:<?php print $align;?>;' class='cactiTable'>
+	<table id='<?php print $table_id;?>' class='cactiTable' style='width:<?php print $width;?>;text-align:<?php print $align;?>;'>
 		<tr style='padding:0px;'>
 			<td style='padding:0px;'>
 				<?php if ($title != "") {?>
@@ -56,7 +56,7 @@ function html_start_box($title, $width, $background_color, $cell_padding, $align
 					</tr>
 				</table>
 				<?php }?>
-				<table class='cactiTable' style='padding:<?php print $cell_padding;?>px;'>
+				<table id='<?php print $table_id . '_child';?>' class='cactiTable' style='padding:<?php print $cell_padding;?>px;'>
 	<?php
 
 	$table_suffix++;
@@ -77,11 +77,24 @@ function html_end_box($trailing_br = true) { ?>
    @arg $cellpadding - the table cell padding for the box
    @arg $leading_br (bool) - whether to draw a leader <br> tag before the start of the table */
 function html_graph_start_box($cellpadding = 3, $leading_br = true) {
+	static $table_suffix = 1;
+
+	$table_prefix = 'graph_' . basename($_SERVER['PHP_SELF'], '.php');;
+
+	if (!isempty_request_var('report')) {
+		$table_prefix .= '_' . clean_up_name(get_nfilter_request_var('report'));
+	} elseif (!isempty_request_var('tab')) {
+		$table_prefix .= '_' . clean_up_name(get_nfilter_request_var('tab'));
+	} elseif (!isempty_request_var('action')) {
+		$table_prefix .= '_' . clean_up_name(get_nfilter_request_var('action'));
+	}
+	$table_id = $table_prefix . $table_suffix;
+
 	if ($leading_br == true) {
 		print "<br>\n";
 	}
 
-	print "<table class='cactiTable' align='center' style='padding:$cellpadding;'>\n";
+	print "<table id='" . $table_id . "' class='cactiTable' align='center' style='padding:$cellpadding;'>\n";
 }
 
 /* html_graph_end_box - draws the end of an HTML graph view box */
