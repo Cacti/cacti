@@ -882,7 +882,10 @@ function applyGraphFilter() {
 }
 
 function applyGraphTimespan() {
-	$.get(graphPage+'?action='+pageAction+'&header=false'+
+	var href     = graphPage+'?action='+pageAction+'&header=false';
+	var new_href = href.replace('action=tree&', 'action=tree_content&');
+
+	$.get(new_href+'?action='+pageAction+'&header=false'+
 		'&predefined_timespan='+$('#predefined_timespan').val()+
 		'&predefined_timeshift='+$('#predefined_timeshift').val(), function(data) {
 		$('#main').html(data);
