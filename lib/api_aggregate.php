@@ -1252,10 +1252,11 @@ function draw_aggregate_template_graph_config($aggregate_template_id, $graph_tem
 
 				/* value from graph template or aggregate graph template 
 				(based on value of t_$field_name of aggregate_template_graph) */
-				if (sizeof($aggregate_templates_graph) && $aggregate_templates_graph['t_'.$field_name] == 'on')
+				if (sizeof($aggregate_templates_graph) && $aggregate_templates_graph['t_'.$field_name] == 'on') {
 					$value = $aggregate_templates_graph[$field_name];
-				else
+				}else{
 					$value = $graph_templates_graph[$field_name];
+				}
 
 				$form_array[$field_name]['value'] = $value;
 				$form_array[$field_name]['sub_checkbox'] = array(
@@ -1291,7 +1292,6 @@ function setFieldsDisabled() {
 		fieldName = this.id.substr(4);
 		cbName = 't_'+fieldName;
 		if ($('#'+cbName).size() > 0) {
-			console.log($('#'+cbName));
 			$('#'+fieldName).prop('disabled', !$('#'+cbName).is(':checked'));
 		}
 	});

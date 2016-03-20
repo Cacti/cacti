@@ -659,6 +659,20 @@ function graph_edit() {
 				'#base_value',
 				'#unit_value',
 				'#unit_exponent_value',
+
+				'#alt_y_grid',
+				'#right_axis',
+				'#right_axis_label',
+				'#right_axis_format',
+				'#right_axis_formatter',
+				'#left_axis_formatter',
+				'#no_gridfit',
+				'#unit_length',
+				'#tab_width',
+				'#dynamic_labels',
+				'#force_rules_legend',
+				'#legend_position',
+				'#legend_direction',
 				'#vertical_label'
 			];
 
