@@ -177,13 +177,13 @@ if (is_array($xport_array['meta'])) {
 		}
 
 		print "</table><br>\n";
-		print "<table class='cactiTable' align='center' width='100%'>\n";
+		print "<table id='csvExport' class='cactiTable' align='center' width='100%'><thead>\n";
 
 		print "<tr class='tableHeader'><th class='tableSubHeaderColumn left'>Date</th>";
 		for ($i = 1; $i <= $xport_array['meta']['columns']; $i++) {
-			print "<th class='tableSubHeaderColumn right'>" . $xport_array['meta']['legend']['col' . $i] . "</th>";
+			print "<th class='{sorter: \"numberFormat\"} tableSubHeaderColumn right'>" . $xport_array['meta']['legend']['col' . $i] . "</th>";
 		}
-		print "</tr>";
+		print "</tr></thead>\n";
 	}
 }
 
@@ -202,7 +202,7 @@ if (is_array($xport_array['data'])) {
 			print "<tr class='" . ($j % 2 == 0 ? 'odd':'even') . "'><td align='left'>" . date('Y-m-d H:i:s', $row['timestamp']) . "</td>";
 			for ($i = 1; $i <= $xport_array['meta']['columns']; $i++) {
 				if ($row['col' . $i] > 1) {
-					print "<td align='right'>" . trim(number_format(round($row['col' . $i],3)),'0') . "</td>";
+					print "<td align='right'>" . trim(number_format(round($row['col' . $i],3))) . "</td>";
 				}elseif($row['col' . $i] == 0) {
 					print "<td align='right'>-</td>";
 				}else{
@@ -213,6 +213,8 @@ if (is_array($xport_array['data'])) {
 			$j++;
 		}
 	}
+
+	print "<script type='text/javascript'>$(function() { $('#csvExport').tablesorter({widgets: ['zebra'], widgetZebra: { css: ['even', 'odd']} }); });</script>\n";
 }
 
 /* log the memory usage */

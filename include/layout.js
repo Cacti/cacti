@@ -236,6 +236,18 @@ $.fn.serializeObject = function() {
 	return objectData;
 };
 
+// Plugin to apply numeric format for tablesorter
+$.tablesorter.addParser({
+	id: "numberFormat",
+	is: function(s) {
+		return /^[0-9]?[0-9,\.]*$/.test(s);
+	},
+	format: function(s) {
+		return $.tablesorter.formatFloat(s.replace(/,/g, ''));
+	},
+	type: "numeric"
+});
+
 /** Mini jquery plugin to determine if an element has a scrollbar present */
 (function($) {
     $.fn.hasScrollBar = function() {
