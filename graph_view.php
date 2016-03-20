@@ -300,10 +300,23 @@ case 'preview':
 
 	$total_graphs = 0;
 
-	$sql_where  = (strlen(get_request_var('filter')) ? "gtg.title_cache LIKE '%" . get_request_var('filter') . "%'":'');
+	/* create filter for sql */
+	$sql_where  = '';
+	if (!isempty_request_var('filter')) {
+		$sql_where .= " gtg.title_cache LIKE '%" . get_request_var('filter') . "%'";
+	}
+
 	$sql_where .= (strlen($sql_or) && strlen($sql_where) ? ' AND ':'') . $sql_or;
-	$sql_where .= (get_request_var('host_id') >= 0 ? (strlen($sql_where) ? ' AND':'') . ' gl.host_id=' . get_request_var('host_id'):'');
-	$sql_where .= (get_request_var('graph_template_id') > 0 ? (strlen($sql_where) ? ' AND':'') . ' gl.graph_template_id=' . get_request_var('graph_template_id'):'');
+
+	if (!isempty_request_var('host_id') && get_request_var('host_id') > 0) {
+		$sql_where .= (empty($sql_where) ? '' : ' AND') . ' gl.host_id=' . get_request_var('host_id');
+	}elseif (isempty_request_var('host_id')) {
+		$sql_where .= (empty($sql_where) ? '' : ' AND') . ' gl.host_id=0';
+	}
+
+	if (!isempty_request_var('graph_template_id')) {
+		$sql_where .= (empty($sql_where) ? '' : ' AND') . ' gl.graph_template_id=' . get_request_var('graph_template_id');
+	}
 
 	$limit      = (get_request_var('graphs')*(get_request_var('page')-1)) . ',' . get_request_var('graphs');
 	$order      = 'gtg.title_cache';
@@ -501,9 +514,19 @@ case 'list':
 
 	/* create filter for sql */
 	$sql_where  = '';
-	$sql_where .= (isempty_request_var('filter') ? '' : " gtg.title_cache LIKE '%" . get_request_var('filter') . "%'");
-	$sql_where .= (get_request_var('host_id') < 0 ? '' : (empty($sql_filter) ? '' : ' AND') . ' gl.host_id=' . get_request_var('host_id'));
-	$sql_where .= (isempty_request_var('graph_template_id') ? '' : (empty($sql_filter) ? '' : ' AND') . ' gl.graph_template_id=' . get_request_var('graph_template_id'));
+	if (!isempty_request_var('filter')) {
+		$sql_where .= " gtg.title_cache LIKE '%" . get_request_var('filter') . "%'";
+	}
+
+	if (!isempty_request_var('host_id') && get_request_var('host_id') > 0) {
+		$sql_where .= (empty($sql_where) ? '' : ' AND') . ' gl.host_id=' . get_request_var('host_id');
+	}elseif (isempty_request_var('host_id')) {
+		$sql_where .= (empty($sql_where) ? '' : ' AND') . ' gl.host_id=0';
+	}
+
+	if (!isempty_request_var('graph_template_id')) {
+		$sql_where .= (empty($sql_where) ? '' : ' AND') . ' gl.graph_template_id=' . get_request_var('graph_template_id');
+	}
 
 	$total_rows = 0;
 	$limit      = (get_request_var('rows')*(get_request_var('page')-1)) . ',' . get_request_var('rows');
