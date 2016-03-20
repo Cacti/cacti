@@ -700,7 +700,7 @@ function ping_host() {
 					$host['snmp_auth_protocol'], $host['snmp_priv_passphrase'], $host['snmp_priv_protocol'],
 					$host['snmp_context'], $host['snmp_port'], $host['snmp_timeout'], read_config_option('snmp_retries'), SNMP_WEBUI);
 
-				print '<strong>System:</strong>' . html_split_string($snmp_system) . "<br>\n";
+				print '<strong>System:</strong> ' . html_split_string($snmp_system) . "<br>\n";
 				$days      = intval($snmp_uptime / (60*60*24*100));
 				$remainder = $snmp_uptime % (60*60*24*100);
 				$hours     = intval($remainder / (60*60*100));
