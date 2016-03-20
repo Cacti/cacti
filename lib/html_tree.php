@@ -127,7 +127,7 @@ function grow_dhtml_trees() {
 		print "var node='tree_anchor-" . $default_tree_id . "';\n";
 		print "var reset=true;\n";
 	}elseif (isset_request_var('nodeid') && !isempty_request_var('nodeid')) {
-		print "var node='" . get_request_var('nodeid') . "';\n";
+		print "var node='" . get_nfilter_request_var('nodeid') . "';\n";
 		print "var reset=false;\n";
 	}elseif (isset($_SESSION['sess_node_id'])) {
 		if ($_SESSION['sess_node_id'] == 'tbranch-0') {

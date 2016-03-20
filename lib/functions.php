@@ -2630,7 +2630,7 @@ function draw_navigation_text($type = 'url') {
 		$leaf_sub  = '';
 		$leaf_name = '';
 		$tree_name = '';
-		if (isset_request_var('leaf_id') && get_request_var('leaf_id') != '') {
+		if (isset_request_var('leaf_id') && get_nfilter_request_var('leaf_id') != '') {
 			$leaf = db_fetch_row_prepared('SELECT * FROM graph_tree_items WHERE id = ?', array(get_filter_request_var('leaf_id')));
 
 			if (sizeof($leaf)) {
@@ -2645,7 +2645,7 @@ function draw_navigation_text($type = 'url') {
 				$leaf_name = 'Leaf';
 			}
 
-			if (isset_request_var('host_group_data') && get_request_var('host_group_data') != '') {
+			if (isset_request_var('host_group_data') && get_nfilter_request_var('host_group_data') != '') {
 				$parts = explode(':', get_nfilter_request_var('host_group_data'));
 				input_validate_input_number($parts[1]);
 
