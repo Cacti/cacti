@@ -196,7 +196,7 @@ function clog_view_logfile() {
 				$host_end    = strpos($item, ']', $host_start);
 				$host_id     = substr($item, $host_start+7, $host_end-($host_start+7));
 				$new_item   .= htmlspecialchars(substr($item, 0, $host_start + 7)) . "<a href='" . htmlspecialchars($config['url_path'] . 'host.php?action=edit&id=' . $host_id) . "'>$host_id</a>";
-				$host_description = db_fetch_cell_prepered('SELECT description FROM host WHERE id = ?', array($host_id));
+				$host_description = db_fetch_cell_prepared('SELECT description FROM host WHERE id = ?', array($host_id));
 				$new_item   .= '] Description[' . htmlspecialchars($host_description) . '';
 				$item        = substr($item, $host_end);
 				$host_start  = strpos($item, 'Device[');
