@@ -477,9 +477,8 @@ function snmpagent_read($object){
 			$value = db_fetch_cell("SELECT `cacti` FROM `version`");
 			break;
 		case "cactiApplSnmpVersion":
-			$versions = array("net-snmp" => 1, "ucd-snmp" => 2);
 			$snmp_version = read_config_option("snmp_version", true);
-			$value = $versions[$snmp_version];
+			$value = $snmp_version;
 			if(function_exists("snmpget")) {
 				$value = 3;
 			}
