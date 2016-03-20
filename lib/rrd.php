@@ -1945,7 +1945,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 				}
 
 				break;
-			case GRAPH_ITEM_TYPE_TICK:
+			case GRAPH_ITEM_TYPE_TIC:
 				$_fraction = (empty($graph_item['graph_type_id']) ? '' : (':' . $graph_item['value']));
 				$_legend   = (empty($graph_variables['text_format'][$graph_item_id]) ? '' : (':' . "'" . $graph_variables['text_format'][$graph_item_id] . $hardreturn[$graph_item_id] . "'"));
 				$txt_graph_items .= $graph_item_types{$graph_item['graph_type_id']} . ':' . $data_source_name . $graph_item_color_code . $_fraction . $_legend;
@@ -1955,7 +1955,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 				$graph_variables['value'][$graph_item_id] = str_replace(':', '\:', $graph_variables['value'][$graph_item_id]); /* escape colons */
 
 				/* perform variable substitution; if this does not return a number, rrdtool will FAIL! */
-				$substitute = rrd_substitute_device_query_data($graph_variables['value'][$graph_item_id], $graph, $graph_item);
+				$substitute = rrd_substitute_host_query_data($graph_variables['value'][$graph_item_id], $graph, $graph_item);
 
 				if (is_numeric($substitute)) {
 					$graph_variables['value'][$graph_item_id] = $substitute;
