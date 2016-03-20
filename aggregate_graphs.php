@@ -676,10 +676,10 @@ function graph_edit() {
 				'#vertical_label'
 			];
 
-			$().ready(function() {
+			$(function() {
 				if ($('#template_propogation').is(':checked')) {
 					for (var i = 0; i < templated_selectors.length; i++) {
-						$( templated_selectors[i] ).prop('disabled', true);
+						$(templated_selectors[i] ).prop('disabled', true);
 					}
 				}else{
 					$('#row_template_propogation').hide();
