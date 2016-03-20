@@ -1247,22 +1247,26 @@ function draw_aggregate_template_graph_config($aggregate_template_id, $graph_tem
 			if ($field_name == 'title')
 				continue;
 
-			$form_array += array($field_name => $struct_graph[$field_name]);
+			if ($field_array['method'] != 'spacer') {
+				$form_array += array($field_name => $struct_graph[$field_name]);
 
-			/* value from graph template or aggregate graph template 
-			(based on value of t_$field_name of aggregate_template_graph) */
-			if (sizeof($aggregate_templates_graph) && $aggregate_templates_graph['t_'.$field_name] == 'on')
-				$value = $aggregate_templates_graph[$field_name];
-			else
-				$value = $graph_templates_graph[$field_name];
+				/* value from graph template or aggregate graph template 
+				(based on value of t_$field_name of aggregate_template_graph) */
+				if (sizeof($aggregate_templates_graph) && $aggregate_templates_graph['t_'.$field_name] == 'on')
+					$value = $aggregate_templates_graph[$field_name];
+				else
+					$value = $graph_templates_graph[$field_name];
 
-			$form_array[$field_name]['value'] = $value;
-			$form_array[$field_name]['sub_checkbox'] = array(
-				'name' => 't_' . $field_name,
-				'friendly_name' => 'Override this Value<br>',
-				'value' => (sizeof($aggregate_templates_graph) ? $aggregate_templates_graph{'t_' . $field_name} : ''),
-				'on_change' => 'toggleFieldEnabled(this);'
-			);
+				$form_array[$field_name]['value'] = $value;
+				$form_array[$field_name]['sub_checkbox'] = array(
+					'name' => 't_' . $field_name,
+					'friendly_name' => 'Override this Value<br>',
+					'value' => (sizeof($aggregate_templates_graph) ? $aggregate_templates_graph{'t_' . $field_name} : ''),
+					'on_change' => 'toggleFieldEnabled(this);'
+				);
+			}else{
+				$form_array += array($field_name => $struct_graph[$field_name]);
+			}
 		}
 
 		draw_edit_form(

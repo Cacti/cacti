@@ -1378,4 +1378,31 @@ function upgrade_to_1_0_0() {
 	db_install_execute('1.0.0', 'ALTER TABLE automation_tree_rule_items DROP COLUMN rra_id');
 	db_install_execute('1.0.0', 'ALTER TABLE automation_tree_rules DROP COLUMN rra_id');
 	db_install_execute('1.0.0', 'ALTER TABLE graph_tree_items DROP COLUMN rra_id');
+
+	db_install_execute('1.0', 'ALTER TABLE aggregate_graph_templates_graph ADD COLUMN t_alt_y_grid char(2) default "0" AFTER unit_exponent_value,
+		ADD COLUMN alt_y_grid char(2) default NULL AFTER t_alt_y_grid,
+		ADD COLUMN t_right_axis char(2) DEFAULT "0" AFTER alt_y_grid,
+		ADD COLUMN right_axis varchar(20) DEFAULT NULL AFTER t_right_axis,
+		ADD COLUMN t_right_axis_label char(2) DEFAULT "0" AFTER right_axis,
+		ADD COLUMN right_axis_label varchar(200) DEFAULT NULL AFTER t_right_axis_label,
+		ADD COLUMN t_right_axis_format char(2) DEFAULT "0" AFTER right_axis_label,
+		ADD COLUMN right_axis_format mediumint(8) DEFAULT NULL AFTER t_right_axis_format,
+		ADD COLUMN t_right_axis_formatter char(2) DEFAULT "0" AFTER right_axis_format,
+		ADD COLUMN right_axis_formatter varchar(10) DEFAULT NULL AFTER t_right_axis_formatter,
+		ADD COLUMN t_left_axis_formatter char(2) DEFAULT "0" AFTER right_axis_formatter,
+		ADD COLUMN left_axis_formatter varchar(10) DEFAULT NULL AFTER t_left_axis_formatter,
+		ADD COLUMN t_no_gridfit char(2) DEFAULT "0" AFTER left_axis_formatter,
+		ADD COLUMN no_gridfit char(2) DEFAULT NULL AFTER t_no_gridfit,
+		ADD COLUMN t_unit_length char(2) DEFAULT "0" AFTER no_gridfit,
+		ADD COLUMN unit_length varchar(10) DEFAULT NULL AFTER t_unit_length,
+		ADD COLUMN t_tab_width char(2) DEFAULT "0" AFTER unit_length,
+		ADD COLUMN tab_width varchar(10) DEFAULT NULL AFTER t_tab_width,
+		ADD COLUMN t_dynamic_labels char(2) default "0" AFTER tab_width,
+		ADD COLUMN dynamic_labels char(2) default NULL AFTER t_dynamic_labels,
+		ADD COLUMN t_force_rules_legend char(2) DEFAULT "0" AFTER dynamic_labels,
+		ADD COLUMN force_rules_legend char(2) DEFAULT NULL AFTER t_force_rules_legend,
+		ADD COLUMN t_legend_position char(2) DEFAULT "0" AFTER force_rules_legend,
+		ADD COLUMN legend_position varchar(10) DEFAULT NULL AFTER t_legend_position,
+		ADD COLUMN t_legend_direction char(2) DEFAULT "0" AFTER legend_position,
+		ADD COLUMN legend_direction varchar(10) DEFAULT NULL AFTER t_legend_direction');
 }
