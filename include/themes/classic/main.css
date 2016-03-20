@@ -89,6 +89,13 @@ label {
 	cursor:pointer;
 }
 
+.badpassword_message {
+	padding:2px;
+	color:red;
+	font-size:1.0em !important;
+	vertical-align:bottom;
+}
+
 .badpassword {
 	padding:4px;
 	color:red;

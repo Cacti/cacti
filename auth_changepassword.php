@@ -74,44 +74,57 @@ set_default_action();
 
 switch (get_request_var('action')) {
 case 'changepassword':
-
-
 	// Secpass checking
-
 	$error = secpass_check_pass(get_nfilter_request_var('password'));
 	
 	if ($error != 'ok') {
 		$bad_password = true;
-		$errorMessage = "<span color='#FF0000'>$error</span>";
-
+		$errorMessage = "<span class='badpassword_message'>$error</span>";
 	}
 			
 	if (!secpass_check_history($_SESSION['sess_user_id'], get_nfilter_request_var('password'))) {
 		$bad_password = true;
-		$errorMessage = "<span color='#FF0000'>You can not use a previously entered password!</span>";
+		$errorMessage = "<span class='badpassword_message'>You can not use a previously entered password!</span>";
 	}
+
+	// Get password options for the new password
+	if (function_exists('password_hash')) {
+		$password_new = password_hash(get_nfilter_request_var('password'), PASSWORD_DEFAULT);
+	}else{
+		$password_new = '';
+	}
+	$password_old = md5(get_nfilter_request_var('password'));
+
+	// Get old password to compare against the database 
+	if (function_exists('password_hash')) {
+		$current_password_new = password_hash(get_nfilter_request_var('current_password'), PASSWORD_DEFAULT);
+	}else{
+		$current_password_new = '';
+	}
+	$current_password_old = md5(get_nfilter_request_var('current_password'));
 
 	// Password and Confirmed password checks
-		if ($user['password'] != md5(get_nfilter_request_var('current_password'))) {
+	if ($user['password'] != $current_password_new && $user['password'] != $current_password_old) {
 		$bad_password = true;
-		$errorMessage = "<span color='#FF0000'>Your current password is not correct.  Please try again.</span>";
+		$errorMessage = "<span class='badpassword_message'>Your current password is not correct.  Please try again.</span>";
 	}
 
-	if ($user['password'] == md5(get_nfilter_request_var('password'))) {
+	if ($user['password'] == $password_new || $user['password'] == $password_old) {
 		$bad_password = true;
-		$errorMessage = "<span color='#FF0000'>Your new password can not be the same as the old password.  Please try again.</span>";
+		$errorMessage = "<span class='badpassword_message'>Your new password can not be the same as the old password.  Please try again.</span>";
 	}
 	
-		if (get_nfilter_request_var('password') !== (get_nfilter_request_var('confirm'))) {
+	if (get_nfilter_request_var('password') !== (get_nfilter_request_var('confirm'))) {
 	    $bad_password = true;
-		$errorMessage = "<span color='#FF0000'>Your new passwords do not match, please retype.</span>";
+		$errorMessage = "<span class='badpassword_message'>Your new passwords do not match, please retype.</span>";
 	}
 	
-		if ($bad_password == false && get_nfilter_request_var('password') == get_nfilter_request_var('confirm') && get_nfilter_request_var('password') != '') {
+	if ($bad_password == false && get_nfilter_request_var('password') == get_nfilter_request_var('confirm') && get_nfilter_request_var('password') != '') {
 		// Password change is good to go
 		if (read_config_option('secpass_expirepass') > 0) {
-				db_execute("UPDATE user_auth SET lastchange = " . time() . " WHERE id = " . intval($_SESSION['sess_user_id']) . " AND realm = 0 AND enabled = 'on'");
+			db_execute("UPDATE user_auth SET lastchange = " . time() . " WHERE id = " . intval($_SESSION['sess_user_id']) . " AND realm = 0 AND enabled = 'on'");
 		}
+
 		$history = intval(read_config_option('secpass_history'));
 		if ($history > 0) {
 				$h = db_fetch_row_prepared("SELECT password, password_history FROM user_auth WHERE id = ? AND realm = 0 AND enabled = 'on'", array($_SESSION['sess_user_id']));
@@ -119,19 +132,18 @@ case 'changepassword':
 				$h = explode('|', $h['password_history']);
 				while (count($h) > $history - 1) {
 					array_shift($h);
-			}
+				}
 				$h[] = $op;
 				$h = implode('|', $h);
 				db_execute_prepared("UPDATE user_auth SET password_history = ? WHERE id = ? AND realm = 0 AND enabled = 'on'", array($h, $_SESSION['sess_user_id']));
 		}
 
 		db_execute_prepared('INSERT IGNORE INTO user_log (username, result, ip) VALUES (?, 3, ?)', array($user['username'], $_SERVER['REMOTE_ADDR']));
-		db_execute_prepared("UPDATE user_auth SET must_change_password = '', password = ? WHERE id = ?", array(md5(get_nfilter_request_var('password')), $_SESSION['sess_user_id']));
+		db_execute_prepared("UPDATE user_auth SET must_change_password = '', password = ? WHERE id = ?", array($password_new != '' ? $password_new:$password_old, $_SESSION['sess_user_id']));
 
 		kill_session_var('sess_change_password');
 
-		/* ok, at the point the user has been sucessfully authenticated; so we must
-		decide what to do next */
+		/* ok, at the point the user has been sucessfully authenticated; so we must decide what to do next */
 
 		/* if no console permissions show graphs otherwise, pay attention to user setting */
 		$realm_id    = $user_auth_realm_filenames['index.php'];
@@ -177,10 +189,30 @@ if (get_request_var('action') == 'force') {
 }
 
 /* Create tooltip for password complexity */
-$secpass_tooltip = 	"Minimum Length: " .read_config_option('secpass_minlen') . "<br>" .
-					"Require Mix Case: " .read_config_option('secpass_reqmixcase') . "<br>" .
-					"Require Number: " .read_config_option('secpass_reqnum') . "<br>" .
-					"Require Special Character: " .read_config_option('secpass_reqspec') . "<br>" ;
+$secpass_tooltip = "<span style='font-weight:normal;'>Password requirements include:</span><br>";
+$secpass_body    = '';
+
+if (read_config_option('secpass_minlen') > 0) {
+	$secpass_body .= "Must be at least " . read_config_option('secpass_minlen') . " characters in length";
+}
+
+if (read_config_option('secpass_reqmixcase') == 'on') {
+	$secpass_body .= (strlen($secpass_body) ? ';<br>':'') . "Must include mixed case";
+}
+
+if (read_config_option('secpass_reqnum') == 'on') {
+	$secpass_body .= (strlen($secpass_body) ? ';<br>':'') . "Must include at least 1 number";
+}
+
+if (read_config_option('secpass_reqspec') == 'on') {
+	$secpass_body .= (strlen($secpass_body) ? ';<br>':'') . "Must include at least 1 special character";
+}
+
+if (read_config_option('secpass_history') != '0') {
+	$secpass_body .= (strlen($secpass_body) ? ';<br>':'') . "Can not be reused for " . (read_config_option('secpass_history')+1) . " password changes";
+}
+
+$secpass_tooltip .= $secpass_body . ".";
 
 print "<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.01 Transitional//EN' 'http://www.w3.org/TR/html4/loose.dtd'>\n";
 print "<html>\n";
