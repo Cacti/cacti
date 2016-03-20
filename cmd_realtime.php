@@ -196,7 +196,7 @@ if ((sizeof($polling_items) > 0)) {
 		}
 
 		if (isset($output)) {
-			db_execute_prepared("INSERT INTO poller_output_realtime 
+			db_execute_prepared("REPLACE INTO poller_output_realtime 
 				(local_data_id, rrd_name, time, poller_id, output) 
 				VALUES 
 				(?, ?, ?, ?, ?)", 
