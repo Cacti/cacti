@@ -63,7 +63,7 @@ function initialize_timespan(&$timespan) {
 /* preformat for timespan selector */
 function process_html_variables() {
 	if (isset_request_var('predefined_timespan')) {
-		if (!is_numeric(get_request_var('predefined_timespan'))) {
+		if (!is_numeric(get_filter_request_var('predefined_timespan'))) {
 			if (isset($_SESSION['sess_current_timespan'])) {
 				if ($_SESSION['custom']) {
 					set_request_var('predefined_timespan', GT_CUSTOM);
@@ -88,7 +88,7 @@ function process_html_variables() {
 
 	# process timeshift
 	if (isset_request_var('predefined_timeshift')) {
-		if (!is_numeric(get_request_var('predefined_timeshift'))) {
+		if (!is_numeric(get_filter_request_var('predefined_timeshift'))) {
 			if (isset($_SESSION['sess_current_timeshift'])) {
 				set_request_var('predefined_timeshift', $_SESSION['sess_current_timeshift']);
 			}else {

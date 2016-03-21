@@ -105,7 +105,7 @@ if (!isset_request_var('stdout')) {
 	header('Content-Disposition: attachment; filename="' . $filename . '"');
 }
 
-if (isset_request_var('format') && get_request_var('format') == 'table') {
+if (isset_request_var('format') && get_nfilter_request_var('format') == 'table') {
 	$html = true;
 }else{
 	$html = false;
