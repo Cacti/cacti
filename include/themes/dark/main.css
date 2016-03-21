@@ -614,6 +614,7 @@ ul#breadcrumbs {
 	left: 0px; 
 	top: 56px; 
 	z-index: 2; 
+	overflow-x: hidden;
 	overflow-y: hidden;
 }
 

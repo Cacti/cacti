@@ -5,16 +5,16 @@ function themeReady() {
 	var hostOpen = false;
 
 	$('body').css('height', $(window).height());
-	$('#navigation').css('height', ($(window).height()-40)+'px');
-	$('#navigation_right').css('height', ($(window).height()-40)+'px');
+	$('#navigation').css('height', ($(window).height()-80)+'px');
+	$('#navigation_right').css('height', ($(window).height()-80)+'px');
 	$('.formItemDescription').hide();
 
 	$(window).resize(function(event) {
 		$('body').css('height', $(window).height());
 
 		if (!$(event.target).hasClass('ui-resizable')) {
-			$('#navigation').css('height', ($(window).height()-40)+'px');
-			$('#navigation_right').css('height', ($(window).height()-40)+'px');
+			$('#navigation').css('height', ($(window).height()-80)+'px');
+			$('#navigation_right').css('height', ($(window).height()-80)+'px');
 		}
 	});
 
