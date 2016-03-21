@@ -345,7 +345,7 @@ $settings = array(
 			'friendly_name' => 'Version',
 			'description' => 'Default SNMP version for all new hosts.',
 			'method' => 'drop_array',
-			'default' => '1',
+			'default' => '2',
 			'array' => $snmp_versions,
 			),
 		'snmp_community' => array(
