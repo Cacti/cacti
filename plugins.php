@@ -462,7 +462,7 @@ function update_show_current () {
 
 	$display_text = array(
 		'nosort' => array('display' => 'Actions', 'align' => 'left', 'sort' => '', 'tip' => 'Actions available include "Install", "Activate", "Disable", "Enable", "Uninstall".'),
-		'directory' => array('display' => 'Plugin Name', 'align' => 'left', 'sort' => 'ASC', 'tip' => 'The name for this Plugin.  The name is controlled by the direcotry it resides in.'),
+		'directory' => array('display' => 'Plugin Name', 'align' => 'left', 'sort' => 'ASC', 'tip' => 'The name for this Plugin.  The name is controlled by the directory it resides in.'),
 		'id' => array('display' => 'Load Order', 'align' => 'left', 'sort' => 'ASC', 'tip' => 'The load order of the Plugin.  You can change the load order by first sorting by it, then moving a Plugin either up or down.'),
 		'name' => array('display' => 'Plugin Description', 'align' => 'left', 'sort' => 'ASC', 'tip' => 'A description that the Plugins author has given to the Plugin.'),
 		'version' => array('display' => 'Version', 'align' => 'left', 'sort' => 'ASC', 'tip' => 'The version of this Plugin.'),
