@@ -270,6 +270,27 @@ $settings = array(
 			'size' => '5',
 			'max_length' => '5'
 			),
+		"i18n_language_support" => array(
+            "friendly_name" => __("Language Support"),
+            "description" => __("Choose \"enabled\" to allow the localization of Cacti. The strict mode requires that the requested language will also be supported by all plugins being installed at your system. If that's not the fact everything will be displayed in English."),
+            "method" => "drop_array",
+            "default" => "1",
+            "array" => $i18n_modes
+            ),
+        "i18n_default_language" => array(
+            "friendly_name" => __("Default Language"),
+            "description" => __("Default language for this system."),
+            "method" => "drop_array",
+            "default" => "us",
+            "array" => get_installed_locales()
+            ),
+        "i18n_auto_detection" => array(
+            "friendly_name" => __("Auto Language Detection"),
+            "description" => __("Allow to automatically determine the \"default\" language of the user and provide it at login time if that language is supported by Cacti. If disabled, the default language will be in force until the user elects another language. "),
+            "method" => "drop_array",
+            "default" => "1",
+            "array" => array( "0" => __("Disabled"), "1" => __("Enabled"))
+            ),
 		'other1_header' => array(
 			'friendly_name' => 'Other Settings',
 			'collapsible' => 'true',

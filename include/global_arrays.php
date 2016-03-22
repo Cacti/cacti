@@ -504,6 +504,12 @@ $rrdtool_versions = array(
 	'rrd-1.5.x' => 'RRDTool 1.5.x'
 );
 
+$i18n_modes = array(
+    0 => __('Disabled'),
+    1 => __('Enabled'),
+    2 => __('Enabled (strict mode)'),
+);
+
 $cdef_item_types = array(
 	CVDEF_ITEM_TYPE_FUNCTION => 'Function',
 	CVDEF_ITEM_TYPE_OPERATOR => 'Operator',
