@@ -169,6 +169,7 @@ foreach($cacti_textdomains as $domain => $paths) {
 		die('Invalid language file: ' . $cacti_textdomains[$domain]['path2catalogue']);
 	}
 }
+unset($input);
 
 /* load standard wrappers */
 load_i18n_gettext_wrappers();
