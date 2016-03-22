@@ -105,9 +105,6 @@ else
 	}
 }
 
-cacti_log("Language:" . $cacti_locale . " Country: " . $cacti_country, false, 'CACTTI');
-
-
 /* define the path to the language file */
 $path2catalogue = $config['base_path'] . '/locales/LC_MESSAGES/' . $lang2locale[$cacti_locale]['filename'] . '.mo';
 
@@ -201,8 +198,6 @@ function load_fallback_procedure(){
 	define('CACTI_COUNTRY', 'us');
 	define('CACTI_LANGUAGE', 'English');
 	define('CACTI_LANGUAGE_FILE', 'english_usa');
-	
-	cacti_log('DEBUG: FALLBACK', false, 'BOOST');
 	
 }
 
