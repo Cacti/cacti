@@ -1831,7 +1831,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 			case GRAPH_ITEM_TYPE_COMMENT:
 				if (!isset($graph_data_array['graph_nolegend'])) {
 					# perform variable substitution first (in case this will yield an empty results or brings command injection problems)
-					$comment_arg = rrd_substitute_host_query_data($graph_variables['text_format'][$graph_item_id], $graph, $graph_item);
+					$comment_arg = rrd_substitute_device_query_data($graph_variables['text_format'][$graph_item_id], $graph, $graph_item);
 					# next, compute the argument of the COMMENT statement and perform injection counter measures
 					if (trim($comment_arg) == '') { # an empty COMMENT must be treated with care
 						$comment_arg = cacti_escapeshellarg(' ' . $hardreturn[$graph_item_id]);
@@ -1946,7 +1946,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 				}
 
 				break;
-			case GRAPH_ITEM_TYPE_TICK:
+			case GRAPH_ITEM_TYPE_TIC:
 				$_fraction = (empty($graph_item['graph_type_id']) ? '' : (':' . $graph_item['value']));
 				$_legend   = (empty($graph_variables['text_format'][$graph_item_id]) ? '' : (':' . "'" . $graph_variables['text_format'][$graph_item_id] . $hardreturn[$graph_item_id] . "'"));
 				$txt_graph_items .= $graph_item_types{$graph_item['graph_type_id']} . ':' . $data_source_name . $graph_item_color_code . $_fraction . $_legend;
