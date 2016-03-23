@@ -218,13 +218,15 @@ function load_i18n_gettext_wrappers(){
 		}else {
 			return $text;
 		}
-
 	}
 
-
-	function __n($single, $plural, $number, $domain = 'cacti') {
+	function __n($singular, $plural, $number, $domain = 'cacti'){
 		global $l10n;
-		return $l10n->_ngettext($single, $plural, $number);
+		if (isset($l10n[$domain])) {
+    		return $l10n[$domain]->ngettext($singular, $plural, $number);
+    	}else {
+			return ($number == 1) ? $singular : $plural;	
+		}
 	}
 
 
@@ -308,8 +310,8 @@ function load_i18n_fallback_wrappers(){
 		return $text;
 	}
 
-	function __n($single, $plural, $number, $domain = 'cacti') {
-		return ($number == 1) ? $single : $plural;
+	function __n($singular, $plural, $number, $domain = 'cacti') {
+		return ($number == 1) ? $singular : $plural;
 	}
 
 	function __() {
