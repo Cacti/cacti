@@ -24,13 +24,15 @@
 
 define('IN_CACTI_INSTALL', 1);
 
-include('../include/global.php');
+include_once('../include/global.php');
+
+top_header();
+
+api_plugin_hook('console_before');
 
 /* allow the upgrade script to run for as long as it needs to */
 ini_set('max_execution_time', '0');
 
-/* verify all required php extensions */
-if (!verify_php_extensions()) {exit;}
 
 $cacti_versions = array('0.8', '0.8.1', '0.8.2', '0.8.2a', '0.8.3', '0.8.3a', '0.8.4', '0.8.5', '0.8.5a',
 	'0.8.6', '0.8.6a', '0.8.6b', '0.8.6c', '0.8.6d', '0.8.6e', '0.8.6f', '0.8.6g', '0.8.6h', '0.8.6i', '0.8.6j', '0.8.6k',
@@ -64,23 +66,15 @@ if ($old_cacti_version == $config['cacti_version']) {
 	exit;
 }
 
-function verify_php_extensions() {
-	global $database_type;
-	$extensions = array('session', 'sockets', 'xml', 'PDO', 'pdo_' . $database_type);
-	$ok = true;
-	$missing_extension = "	<p style='font-family: Verdana, Arial; font-size: 16px; font-weight: bold; color: red;'>Error</p>
-							<p style='font-family: Verdana, Arial; font-size: 12px;'>The following PHP extensions are missing:</p><ul>";
-	foreach ($extensions as $extension) {
-		if (!extension_loaded($extension)){
-			$ok = false;
-			$missing_extension .= "<li style='font-family: Verdana, Arial; font-size: 12px;'>$extension</li>";
+function verify_php_extensions($extensions) {
+	for ($i = 0; $i < count($extensions); $i++) {
+		if (extension_loaded($extensions[$i]['name'])){
+			$extensions[$i]['installed'] = true;
 		}
 	}
-	if (!$ok) {
-		print $missing_extension . "</ul><p style='font-family: Verdana, Arial; font-size: 12px;'>Please install those PHP extensions and retry</p>";
-	}
-	return $ok;
+	return $extensions;
 }
+
 
 function db_install_execute($cacti_version, $sql) {
 	$sql_install_cache = (isset($_SESSION['sess_sql_install_cache']) ? $_SESSION['sess_sql_install_cache'] : array());
@@ -144,12 +138,153 @@ function find_best_path($binary_name) {
 	}
 }
 
+
+function plugin_setup_get_templates() {
+	global $config;
+	$templates = Array(
+			'Disk IO Usage.xml.gz'
+				);
+
+	$path =  $config['base_path'] . '/install/templates';
+	$info = Array();
+	foreach ($templates as $xmlfile) {
+		$filename = "compress.zlib:///$path/$xmlfile";
+		$xml = file_get_contents($filename);;
+		//Loading Template Information from package
+		$xmlget = simplexml_load_string($xml); 
+		$data = to_array($xmlget);
+		if (is_array($data['info']['author'])) $data['info']['author'] = '1';
+		if (is_array($data['info']['email'])) $data['info']['email'] = '2';
+		if (is_array($data['info']['description'])) $data['info']['description'] = '3';
+		if (is_array($data['info']['homepage'])) $data['info']['homepage'] = '4';
+
+		$data['info']['filename'] = $xmlfile;
+		$info[] = $data['info'];
+	}
+	return $info;
+}
+
+function plugin_setup_install_template($xmlfile, $opt = 0, $interval = 5) {
+	global $config;
+	if ($opt) {
+		$path = $config['base_path'] . '/install/templates/';
+	} else {
+		$path = $config['base_path'] . '/install/templates/';
+	}
+
+	if ($interval == 1) {
+		$interval = array(1, 2, 3, 4, 5);
+	} else {
+		$interval = array(1, 2, 3, 4);
+	}
+
+	/* set new timeout and memory settings */
+	ini_set("max_execution_time", "5");
+	ini_set("memory_limit", "64M");
+
+	$public_key = <<<EOD
+-----BEGIN PUBLIC KEY-----
+MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAMbPpuQfwmg93oOGjdLKrAqwEPwvvNjC
+bk2YZiDglh8lQJxNQI9glG1Z/ptvqprFO3iSx9rTP4vzZ0Ek2+EMYTMCAwEAAQ==
+-----END PUBLIC KEY-----
+EOD;
+
+	$filename = "compress.zlib:///$path/$xmlfile";
+	$binary_signature = "";
+
+	$f = fopen($filename, 'r');
+	$xml = "";
+	while (!feof($f)) {
+		$x = fgets($f);
+		if (strpos($x, "<signature>") !== FALSE) {
+			$binary_signature =  base64_decode(trim(str_replace(array('<signature>', '</signature>'), '', $x)));
+			$x = "	<signature></signature>\n";
+		}
+		$xml .= "$x";
+	}
+	fclose($f); 
+
+	// Verify Signature
+	$ok = openssl_verify($xml, $binary_signature, $public_key);
+	if ($ok == 1) {
+		//print "	File is signed correctly\n";
+	} elseif ($ok == 0) {
+		//print "	ERROR: File has been tampered with\n";
+		//exit;
+		return;
+	} else {
+		//print "	ERROR: Could not verify signature!\n";
+		//exit;
+		return;
+	}
+	//print "Loading Plugin Information from package\n";
+	$xmlget = simplexml_load_string($xml); 
+	$data = to_array($xmlget);
+
+	$plugin = $data['info']['name'];
+	//print "Verifying each files signature\n";
+	if (isset($data['files']['file']['data'])) {
+		$data['files']['file'] = array($data['files']['file']);
+	}
+
+	foreach ($data['files']['file'] as $f) {
+
+		$binary_signature = base64_decode($f['filesignature']);
+		$fdata = base64_decode($f['data']);
+		$ok = openssl_verify($fdata, $binary_signature, $public_key);
+		if ($ok == 1) {
+			//print "	File OK : " . $f['name'] . "\n";
+		} else {
+			//print "	ERROR: Could not verify signature for file: " . $f['name'] . "\n";
+			//exit;
+			return;
+		}
+	}
+	include_once($config['base_path'] . "/lib/import.php");
+
+	$p = $config['base_path'];
+	$error = false;
+	//print "Writing Files\n";
+	foreach ($data['files']['file'] as $f) {
+		$fdata = base64_decode($f['data']);
+		$name = $f['name'];
+		if (substr($name, 0, 8) == 'scripts/' || substr($name, 0, 9) == 'resource/') {
+			$filename = "$p/$name";
+			//print "	Writing $filename\n";
+			$file = fopen($filename,'wb');
+			fwrite($file ,$fdata, strlen($fdata));
+			fclose($file);
+			clearstatcache();
+			if (!file_exists($filename)) {
+				//print "	Unable to create directory: $filename\n";
+			}
+		} else {
+			$debug_data = import_xml_data($fdata, false, $interval);
+		}
+	}
+	//print "File creation complete\n";
+}
+
+
+function to_array ($data) {
+	if (is_object($data)) {
+		$data = get_object_vars($data);
+	}
+	return (is_array($data)) ? array_map(__FUNCTION__,$data) : $data;
+}
+
+
 /* Here, we define each name, default value, type, and path check for each value
 we want the user to input. The "name" field must exist in the 'settings' table for
 this to work. Cacti also uses different default values depending on what OS it is
 running on. */
 
+function install_file_paths () {
+global $config, $settings;
+
+
 /* RRDTool Binary Path */
+$input = array();
 $input['path_rrdtool'] = $settings['path']['path_rrdtool'];
 
 if ($config['cacti_server_os'] == 'unix') {
@@ -324,6 +459,7 @@ if ($config['cacti_server_os'] == 'unix') {
 	}
 }
 
+
 /* log file path */
 $input['path_cactilog'] = $settings['path']['path_cactilog'];
 $input['path_cactilog']['description'] = 'The path to your Cacti log file.';
@@ -332,6 +468,16 @@ if (config_value_exists('path_cactilog')) {
 } else {
 	$input['path_cactilog']['default'] = $config['base_path'] . '/log/cacti.log';
 }
+
+/* Theme */
+$input['selected_theme'] = $settings['visual']['selected_theme'];
+$input['selected_theme']['description'] = 'Please select one of the available Themes to skin your Cacti with.';
+if (config_value_exists('selected_theme')) {
+	$input['selected_theme']['default'] = read_config_option('selected_theme');
+} else {
+	$input['selected_theme']['default'] = 'modern';
+}
+
 
 /* RRDTool Version */
 if ((file_exists($input['path_rrdtool']['default'])) && (($config['cacti_server_os'] == 'win32') || (is_executable($input['path_rrdtool']['default']))) ) {
@@ -342,7 +488,9 @@ if ((file_exists($input['path_rrdtool']['default'])) && (($config['cacti_server_
 	exec("\"" . $input['path_rrdtool']['default'] . "\"", $out_array);
 
 	if (sizeof($out_array) > 0) {
-		if (preg_match('/^RRDtool 1\.4/', $out_array[0])) {
+		if (preg_match('/^RRDtool 1\.5/', $out_array[0])) {
+			$input['rrdtool_version']['default'] = 'rrd-1.5.x';
+		}else if (preg_match('/^RRDtool 1\.4\./', $out_array[0])) {
 			$input['rrdtool_version']['default'] = 'rrd-1.4.x';
 		}else if (preg_match('/^RRDtool 1\.3\./', $out_array[0])) {
 			$input['rrdtool_version']['default'] = 'rrd-1.3.x';
@@ -353,7 +501,8 @@ if ((file_exists($input['path_rrdtool']['default'])) && (($config['cacti_server_
 		}
 	}
 }
-
+	return $input;
+}
 /* default value for this variable */
 if (!isset($_REQUEST['install_type'])) {
 	$_REQUEST['install_type'] = 0;
@@ -369,38 +518,69 @@ if ($old_cacti_version == 'new_install') {
 /* pre-processing that needs to be done for each step */
 if (isset($_REQUEST['step']) && $_REQUEST['step'] > 0) {
 	$step = intval($_REQUEST['step']);
+	
+	/* license and welcome screen - send to dependencies */
 	if ($step == '1') {
 		$step = '2';
-	} elseif (($step == '2') && ($_REQUEST['install_type'] == '1')) {
+	/* check for dependencies - send to install/upgrade */	
+	} elseif ($step == '2') {
 		$step = '3';
-	} elseif (($step == '2') && ($_REQUEST['install_type'] == '3')) {
+	/* install/upgrade - if user chooses "New Install" send to pathcheck */
+	} elseif (($step == '3') && ($_REQUEST['install_type'] == '1')) {
+		$step = '4';
+	/* install/upgrade - if user chooses "Upgrade" send to upgrade */
+	} elseif (($step == '3') && ($_REQUEST['install_type'] == '3')) {
 		$step = '8';
+	/* upgrade-oldversion - if user runs old version send to oldversionwarning*/
 	} elseif (($step == '8') && ($old_version_index <= array_search('0.8.5a', $cacti_versions))) {
 		$step = '9';
+	/* upgrade - if user upgrades send to pathcheck */
 	} elseif ($step == '8') {
-		$step = '3';
+		$step = '4';
+	/* oldversionwarning - if user upgrades from old version send to dependencies */
 	} elseif ($step == '9') {
 		$step = '3';
-	} elseif ($step == '3') {
-		$step = '4';
+	/* pathcheck - send to installpaths */
+	} elseif ($step == '4') {
+		$step = '5';
+	/* installpaths - send to templates */
+	} elseif ($step == '5') {
+		$step = '6';
+	/* templates - send to install and finalize */
+	} elseif ($step == '6') {
+		$step = '7';
 	}
 } else {
 	$step = 1;
 }
 
-if ($step == '4') {
+
+
+
+	
+/* install and finalize - Install templates, change cacti version and send to login page */
+if ($step == '7') {
 	include_once('../lib/data_query.php');
 	include_once('../lib/utility.php');
 
-	$i = 0;
-
-	/* get all items on the form and write values for them  */
-	while (list($name, $array) = each($input)) {
-		if (isset($_POST[$name])) {
-			db_execute("replace into settings (name,value) values ('$name','" . $_POST[$name] . "')");
+	
+	/* look for templates that have been checked for install */
+		$install = Array();
+		foreach ($_POST as $post => $v) {
+			if (substr($post, 0, 4) == 'chk_' && is_numeric(substr($post, 4))) {
+				$install[] = substr($post, 4);
+			}
 		}
-	}
-
+		/* install templates */
+		$templates = plugin_setup_get_templates(1);
+		if (!empty($install)) {
+			foreach ($install as $i) {
+				plugin_setup_install_template($templates[$i]['filename'], 1, $templates[$i]['interval']);
+			}
+		}
+	
+	/* clear session */
+	
 	setcookie(session_name(),'',time() - 3600,'/');
 
 	kill_session_var('sess_config_array');
@@ -425,11 +605,17 @@ if ($step == '4') {
 		rsa_check_keypair();
 	}
 	
+	/* change cacti version */
 	db_execute('DELETE FROM version');
 	db_execute("INSERT INTO version (cacti) VALUES ('" . $config["cacti_version"] . "')");
 
+	/* send to login page */
 	header ('Location: ../index.php');
 	exit;
+
+	
+	
+	/* upgrade */
 }elseif (($step == '8') && ($_REQUEST['install_type'] == '3')) {
 	/* if the version is not found, die */
 	if (!is_int($old_version_index)) {
@@ -622,8 +808,65 @@ if ($step == '4') {
 						but WITHOUT ANY WARRANTY; without even the implied warranty of
 						MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 						GNU General Public License for more details.</p>
+						
+								<?php }elseif ($step == '2') { ?>
+				<?php
+					print '<h2>Pre-installation Check</h2><br>';
+					print 'Cacti requies several PHP Modules to be installed to work properly.  If any of these are not installed, you will be unable to continue the installation until corrected.<br><br>';
 
-						<?php }elseif ($step == '2') { ?>
+					html_start_box("<strong> " . __("Required PHP Modules") . "</strong>", "30", 0, "", "", false);
+					html_header(array(array('name' => 'Name'), array('name' => 'Required'), array('name' => 'Installed')));
+
+					
+					form_selectable_cell('PHP Version', '');
+					form_selectable_cell('5.2.0+', '');
+					form_selectable_cell((version_compare(PHP_VERSION, '5.2.0', '<') ? "<font color=red>" . PHP_VERSION . "</font>" : "<font color=green>" . PHP_VERSION . "</font>"), '');
+					form_end_row();
+
+					$extensions = array( array('name' => 'session', 'installed' => false),
+										 array('name' => 'sockets', 'installed' => false),
+										 array('name' => 'mysql', 'installed' => false),
+										 array('name' => 'xml', 'installed' => false),
+										 array('name' => 'pcre', 'installed' => false),
+										 array('name' => 'json', 'installed' => false),
+					);
+
+								$ext = verify_php_extensions($extensions);
+								$i = 0;
+								$enabled = true;
+								foreach ($ext as $id =>$e) {
+									form_alternate_row_color($colors["alternate"], $colors["light"], $i, 'line' . $id); $i++;
+									form_selectable_cell($e['name'], '');
+									form_selectable_cell('<font color=green>Yes</font>', '');
+									form_selectable_cell(($e['installed'] ? '<font color=green>Yes</font>' : '<font color=red>NO</font>'), '');
+									form_end_row();
+									if (!$e['installed']) $enabled = false;
+								}
+						html_end_box(false);
+
+					print '<br>' . __('<br>These extensions may increase the performance of your Cacti install but are not necessary.<br><br>');
+					$extensions = array( array('name' => 'snmp', 'installed' => false),
+										 array('name' => 'mysqli', 'installed' => false),
+										 array('name' => 'gd', 'installed' => false),
+
+					);
+
+						$ext = verify_php_extensions($extensions);
+						$i = 0;
+						html_start_box("<strong> " . __("Other Modules") . "</strong>", "30", 0, "", "", false);
+						html_header(array(array('name' => 'Name'), array('name' => 'Required'), array('name' => 'Installed')));
+						foreach ($ext as $id => $e) {
+							form_alternate_row_color($colors["alternate"], $colors["light"], $i, 'line' . $id); $i++;
+							//print '<td>' . $e['name'] . '</td><td><font color=green>Yes</font></td><td>' . ($e['installed'] ? '<font color=green>Yes</font>' : '<font color=red>NO</font>') . '</td>';
+							form_selectable_cell($e['name'], '');
+							form_selectable_cell('<font color=green>Yes</font>', '');
+							form_selectable_cell(($e['installed'] ? '<font color=green>Yes</font>' : '<font color=red>NO</font>'), '');
+							form_end_row();
+						}
+						html_end_box(false);
+
+?>	
+						<?php }elseif ($step == '3') { ?>
 
 						<p>Please select the type of installation</p>
 
@@ -644,11 +887,20 @@ if ($step == '4') {
 							print "Server Operating System Type: " . $config['cacti_server_os'] . '<br>'; ?>
 						</p>
 
-						<?php }elseif ($step == '3') { ?>
+						
+												
+					
+						
+						
+						<?php }elseif ($step == '4') { ?>
 
 						<p>Make sure all of these values are correct before continuing.</p>
 						<?php
+						
+						/* installpaths*/
+						
 						$i = 0;
+						$input = install_file_paths();
 						/* find the appropriate value for each 'config name' above by config.php, database,
 						or a default for fall back */
 						while (list($name, $array) = each($input)) {
@@ -697,16 +949,115 @@ if ($step == '4') {
 							$i++;
 						}?>
 
-						<p><strong><font color='#FF0000'>NOTE:</font></strong> Once you click 'Finish',
+							<p><strong><font color='#FF0000'>NOTE:</font></strong> Once you click 'Finish',
 						all of your settings will be saved and your database will be upgraded if this
 						is an upgrade. You can change any of the settings on this screen at a later
 						time by going to 'Cacti Settings' from within Cacti.</p>
 
+						
+						
+						<?php }elseif ($step == '5') { 
+						
+						/* installpaths - Install paths and theme etc */
+
+						include_once('../lib/data_query.php');
+						include_once('../lib/utility.php');
+
+						$i = 0;
+
+						$input = install_file_paths();
+						/* get all items on the form and write values for them  */
+						while (list($name, $array) = each($input)) {
+							if (isset($_POST[$name])) {
+								db_execute("replace into settings (name,value) values ('$name','" . $_POST[$name] . "')");
+							}
+						}
+						
+						/* Print message and error logs */
+						print ' <p>Settings installed<br><br></p>';
+						
+						/* Check if /resource is writable */
+						print " <p>Next step is template installation. For installation to work the '". $config['base_path'] . "/resource' folder needs to be writable by the webserver.<br><br></p>";
+						
+								
+									if (is_writable('../resource/snmp_queries')) {
+										$writeaccess_snmp_q = "Writable";
+									} else {
+										$writeaccess_snmp_q = "is not writable";
+										$writable=FALSE;
+									}
+									
+									if (is_writable('../resource/script_server')) {
+										$writeaccess_script_s = "Writable";
+									} else {
+										$writeaccess_script_s = "is not writable";
+										$writable=FALSE;
+									}
+									if (is_writable('../resource/script_queries')) {
+										$writeaccess_script_q = "Writable";
+									} else {
+										$writeaccess_script_q  = "is not writable";
+										$writable=FALSE;
+									}
+									
+									
+						print " <p>". $config['base_path'] . "/resource/snmp_queries is $writeaccess_snmp_q</p>";
+						print " <p>". $config['base_path'] . "/resource/script_server is $writeaccess_script_s</p>";
+						print " <p>". $config['base_path'] . "/resource/script_queries is $writeaccess_script_q</p><br>";
+							
+						/* Print help message for unix and windows if directory is not writable */
+						if (($config['cacti_server_os'] == "unix") && isset($writable)) {
+						print 'Make sure your webserver has read and write access to the entire folder structure.<br> Example: chown -R apache.apache /resource<br>';
+					} elseif (($config['cacti_server_os'] == "win32") && isset($writable)){
+						print 'Check Permissions';
+					}
+				
+							
+	
+				?>		
+												
+						<?php }elseif ($step == '6') { ?>
+
+						<p>Make sure all of these values are correct before continuing.</p>
+						<?php
+					
+							/* Templates*/
+							
+							print "<h1>Template Setup</h1>";
+							print "Templates allow you to monitor and graph a vast assortment of data within Cacti.  While the base Cacti install provides basic templates for most devices, you can select a few extra templates below to include in your install.<br><br>";
+							print "<form name='chk' method='post' action='start.php'>";
+
+							$templates = plugin_setup_get_templates();
+
+							html_start_box('<strong>Templates</strong>', '100%', '3', 'center', "", "");
+							html_header_checkbox(array(array('name' => 'Name'), array('name' => 'Description'), array('name' => 'Author'), array('name' => 'Homepage')));
+							$i = 0;
+							foreach ($templates as $id => $p) {
+								form_alternate_row_color($colors["alternate"], $colors["light"], $i, 'line' . $id); $i++;
+								form_selectable_cell($p['name'], $id);
+								form_selectable_cell($p['description'], $id);
+								form_selectable_cell($p['author'], $id);
+								if ($p['homepage'] != '') {
+									form_selectable_cell("<a href='". $p['homepage'] . "' target=_new>" . $p['homepage'] . "</a>", $id);
+								} else {
+									form_selectable_cell('', $id);
+								}
+								form_checkbox_cell($p['name'], $id);
+								form_end_row();
+								html_end_box(false);
+								
+							}
+						
+				?>			
+						
+					
 						<?php }elseif ($step == '8') { ?>
 
 						<p>Upgrade results:</p>
 
 						<?php
+						/* upgrade */
+						
 						$current_version  = '';
 						$upgrade_results = '';
 						$failed_sql_query = false;
@@ -754,7 +1105,9 @@ if ($step == '4') {
 						print $upgrade_results;
 						?>
 
-						<?php }elseif ($step == '9') { ?>
+						<?php 
+						/* oldversionwarning */
+						}elseif ($step == '9') { ?>
 
 						<p style='font-size: 16px; font-weight: bold; color: red;'>Important Upgrade Notice</p>
 
@@ -782,5 +1135,9 @@ if ($step == '4') {
 
 </form>
 
-</body>
-</html>
+<?php
+
+api_plugin_hook('console_after');
+
+bottom_footer();
+
