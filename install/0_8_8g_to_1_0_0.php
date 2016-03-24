@@ -1232,27 +1232,31 @@ function upgrade_to_1_0_0() {
 		ADD COLUMN legend_direction varchar(10) DEFAULT NULL AFTER t_legend_direction');
 
 	/* create new table VDEF */
-	unset($data);
+	$data = array();
 	$data['columns'][] = array('name' => 'id', 'type' => 'mediumint(8)',    'unsigned' => 'unsigned', 'NULL' => false, 'auto_increment' => true);
 	$data['columns'][] = array('name' => 'hash', 'type' => 'varchar(32)', 'NULL' => false, 'default' => '');
 	$data['columns'][] = array('name' => 'name', 'type' => 'varchar(255)', 'NULL' => false, 'default' => '');
-	$data['keys'][] = array('name' => 'PRIMARY', 'columns' => 'id', 'primary' => true);
+	$data['primary']   = 'id';
+	$data['comment']   = 'vdef';
 	$data['type'] = 'MyISAM';
 	db_table_create('vdef', $data);
 
 	/* create new table VDEF_ITEMS */
-	unset($data);
+	$data = array();
 	$data['columns'][] = array('name' => 'id', 'type' => 'mediumint(8)',    'unsigned' => 'unsigned', 'NULL' => false, 'auto_increment' => true);
 	$data['columns'][] = array('name' => 'hash', 'type' => 'varchar(32)', 'NULL' => false, 'default' => '');
 	$data['columns'][] = array('name' => 'vdef_id', 'type' => 'mediumint(8)', 'unsigned' => 'unsigned', 'NULL' => false, 'default' => 0);
 	$data['columns'][] = array('name' => 'sequence', 'type' => 'mediumint(8)', 'unsigned' => 'unsigned', 'NULL' => false, 'default' => 0);
 	$data['columns'][] = array('name' => 'type', 'type' => 'tinyint(2)', 'NULL' => false, 'default' => 0);
 	$data['columns'][] = array('name' => 'value', 'type' => 'varchar(150)', 'NULL' => false, 'default' => '');
-	$data['keys'][] = array('name' => 'PRIMARY', 'columns' => 'id', 'primary' => true);
+	$data['primary']   = 'id';
 	$data['keys'][] = array('name' => 'vdef_id', 'columns' => 'vdef_id');
+	$data['comment']   = 'vdef items';
 	$data['type'] = 'MyISAM';
 	db_table_create('vdef_items', $data);
 
+	
+	
 	/* fill table VDEF */
 	db_install_execute("1.0.0", "REPLACE INTO `vdef` VALUES (1, 'e06ed529238448773038601afb3cf278', 'Maximum');");
 	db_install_execute("1.0.0", "REPLACE INTO `vdef` VALUES (2, 'e4872dda82092393d6459c831a50dc3b', 'Minimum');");
@@ -1353,7 +1357,7 @@ function upgrade_to_1_0_0() {
 
 				db_install_execute('1.0.0', "REPLACE INTO data_source_profiles_cf
 					(data_source_profile_id, consolidation_function_id)
-					SELECT '$id' AS data_source_profile_id, consolidation_function_id FROM rra_cf WHERE id=" . $r);
+					SELECT '$id' AS data_source_profile_id, consolidation_function_id FROM rra_cf WHERE rra_id=" . $r);
 			}
 
 			db_install_execute('1.0.0', "UPDATE data_template_data 

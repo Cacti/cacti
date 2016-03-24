@@ -26,9 +26,7 @@ define('IN_CACTI_INSTALL', 1);
 
 include_once('../include/global.php');
 
-top_header();
 
-api_plugin_hook('console_before');
 
 /* allow the upgrade script to run for as long as it needs to */
 ini_set('max_execution_time', '0');
@@ -877,6 +875,11 @@ if ($step == '7') {
 						</select>
 						</p>
 
+				<?php		if ($default_install_type == '3') {
+								print '<p> <font color="#FF0000">WARNING - If you are upgrading from a previous version please close all Cacti browser sessions and clear cache before continuing</font></p>';
+							} 
+					?>	
+						
 						<p>The following information has been determined from Cacti's configuration file.
 						If it is not correct, please edit 'include/config.php' before continuing.</p>
 
@@ -1136,8 +1139,3 @@ if ($step == '7') {
 </form>
 
 <?php
-
-api_plugin_hook('console_after');
-
-bottom_footer();
-

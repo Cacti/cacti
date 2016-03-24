@@ -3669,7 +3669,7 @@ CREATE TABLE vdef (
   hash varchar(32) NOT NULL default '',
   name varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL default '',
   PRIMARY KEY  (id)
-) ENGINE=MyISAM;
+) ENGINE=MyISAM COMMENT='vdef';
 
 --
 -- Dumping data for table `vdef`
@@ -3696,7 +3696,7 @@ CREATE TABLE vdef_items (
   value varchar(150) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL default '',
   PRIMARY KEY  (id),
   KEY vdef_id (vdef_id)
-) ENGINE=MyISAM;
+) ENGINE=MyISAM COMMENT='vdef items';
 
 --
 -- Dumping data for table `vdef_items`
