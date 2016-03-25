@@ -295,7 +295,7 @@ CREATE TABLE `automation_networks` (
   `ping_retries` int(10) unsigned DEFAULT '0',
   `sched_type` int(10) unsigned NOT NULL DEFAULT '0' COMMENT 'Schedule type: manual or automatic',
   `threads` int(10) unsigned DEFAULT '1',
-  `run_limit` int(10) unsigned DEFAULT '0',
+  `run_limit` int(10) unsigned DEFAULT '0' COMMENT 'The maximum runtime for the discovery',
   `start_at` varchar(20) DEFAULT NULL,
   `next_start` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   `recur_every` int(10) unsigned DEFAULT '1',
@@ -393,7 +393,7 @@ CREATE TABLE `automation_templates` (
   `sysOid` varchar(60) DEFAULT '',
   `sequence` int(10) unsigned DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=3 COMMENT='Plugin Discovery - Templates of SysDesc matches to use to au';
+) ENGINE=MyISAM AUTO_INCREMENT=3 COMMENT='Templates of SysDescr SysName and SysOID matches to use for automation';
 
 --
 -- Dumping data for table `automation_templates`
@@ -1386,7 +1386,7 @@ CREATE TABLE `data_source_profiles_cf` (
   `consolidation_function_id` smallint(5) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`data_source_profile_id`,`consolidation_function_id`),
   KEY `data_source_profile_id` (`data_source_profile_id`)
-) ENGINE=MyISAM;
+) ENGINE=MyISAM COMMENT='Maps the Data Source Profile Consolidation Functions';
 
 --
 -- Dumping data for table `data_source_profiles_cf`
@@ -3265,6 +3265,7 @@ CREATE TABLE user_auth (
   password varchar(2048) NOT NULL default '0',
   realm mediumint(8) NOT NULL default '0',
   full_name varchar(100) default '0',
+  email_address varchar(128) NULL,
   must_change_password char(2) default NULL,
   password_change char(2) default 'on',
   show_tree char(2) default 'on',
@@ -3294,8 +3295,8 @@ CREATE TABLE user_auth (
 -- Dumping data for table `user_auth`
 --
 
-INSERT INTO user_auth VALUES (1,'admin','21232f297a57a5a743894a0e4a801fc3',0,'Administrator','on','on','on','on','on',1,1,1,1,1,1,'on',-1,-1,-1,'',0,0,0);
-INSERT INTO user_auth VALUES (3,'guest','43e9a4ab75570f5b',0,'Guest Account','on','on','on','on','on',3,1,1,1,1,1,'',-1,-1,-1,'',0,0,0);
+INSERT INTO user_auth VALUES (1,'admin','21232f297a57a5a743894a0e4a801fc3',0,'Administrator','','on','on','on','on','on',1,1,1,1,1,1,'on',-1,-1,-1,'',0,0,0);
+INSERT INTO user_auth VALUES (3,'guest','43e9a4ab75570f5b',0,'Guest Account','','on','on','on','on','on',3,1,1,1,1,1,'',-1,-1,-1,'',0,0,0);
 
 --
 -- Table structure for table `user_auth_cache`
