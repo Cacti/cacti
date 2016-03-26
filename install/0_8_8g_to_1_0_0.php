@@ -145,7 +145,7 @@ function upgrade_to_1_0_0() {
 	db_install_execute('1.0', "CREATE TABLE IF NOT EXISTS `poller_output_boost` (
 		`local_data_id` mediumint(8) unsigned NOT NULL default '0',
 		`rrd_name` varchar(19) NOT NULL default '',
-		`time` datetime NOT NULL default '0000-00-00 00:00:00',
+		`time` timestamp NOT NULL default '0000-00-00 00:00:00',
 		`output` varchar(512) NOT NULL,
 		PRIMARY KEY USING BTREE (`local_data_id`,`rrd_name`,`time`))
 		ENGINE=MyISAM ROW_FORMAT=FIXED");
@@ -364,8 +364,8 @@ function upgrade_to_1_0_0() {
 	// Add secpass fields
 	db_install_add_column ('1.0', 'user_auth', array('name' => 'lastchange', 'type' => 'int(12)', 'NULL' => false, 'default' => '-1'));
 	db_install_add_column ('1.0', 'user_auth', array('name' => 'lastlogin', 'type' => 'int(12)', 'NULL' => false, 'default' => '-1'));
-	db_install_add_column ('1.0', 'user_auth', array('name' => 'password_history', 'type' => 'INT(12)', 'NULL' => false, 'default' => '-1'));
-	db_install_add_column ('1.0', 'user_auth', array('name' => 'locked', 'type' => 'text', 'NULL' => false, 'default' => ''));
+	db_install_add_column ('1.0', 'user_auth', array('name' => 'password_history', 'type' => 'varchar(4096)', 'NULL' => false, 'default' => '-1'));
+	db_install_add_column ('1.0', 'user_auth', array('name' => 'locked', 'type' => 'varchar(3)', 'NULL' => false, 'default' => ''));
 	db_install_add_column ('1.0', 'user_auth', array('name' => 'failed_attempts', 'type' => 'int(5)', 'NULL' => false, 'default' => '0'));
 	db_install_add_column ('1.0', 'user_auth', array('name' => 'lastfail', 'type' => 'int(12)', 'NULL' => false, 'default' => '0'));
 
@@ -469,7 +469,7 @@ function upgrade_to_1_0_0() {
 	db_install_execute('1.0', "CREATE TABLE poller_output_realtime (
 		local_data_id mediumint(8) unsigned NOT NULL default '0',
 		rrd_name varchar(19) NOT NULL default '',
-		time datetime NOT NULL default '0000-00-00 00:00:00',
+		time timestamp NOT NULL default '0000-00-00 00:00:00',
 		output text NOT NULL,
 		poller_id varchar(30) NOT NULL default '',
 		PRIMARY KEY  (local_data_id,rrd_name,`time`),
@@ -1188,7 +1188,7 @@ function upgrade_to_1_0_0() {
 	
 	db_install_execute('1.0', "ALTER TABLE settings MODIFY COLUMN value varchar(2048) NOT NULL default ''");
 	db_install_execute('1.0', "ALTER TABLE settings_graphs MODIFY COLUMN value varchar(2048) NOT NULL default ''");
-	db_install_execute('1.0', "ALTER TABLE user_auth MODIFY COLUMN password varchar(2048) NOT NULL default '0'");
+	db_install_execute('1.0', "ALTER TABLE user_auth MODIFY COLUMN password varchar(2048) NOT NULL default ''");
 
 	db_install_execute('1.0', 'RENAME TABLE settings_graphs TO settings_user');
 
