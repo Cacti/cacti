@@ -77,7 +77,9 @@ if (!isempty_request_var('show_source')) {
 	$graph_data_array['print_source'] = get_request_var('show_source');
 }
 
-$graph_info = db_fetch_row_prepared('SELECT * FROM graph_templates_graph WHERE local_graph_id = ?', array(get_request_var('local_graph_id')));
+$graph_info = db_fetch_row_prepared('SELECT * 
+	FROM graph_templates_graph 
+	WHERE local_graph_id = ?', array(get_request_var('local_graph_id')));
 
 /* for bandwidth, NThPercentile */
 $xport_meta = array();
@@ -179,9 +181,9 @@ if (is_array($xport_array['meta'])) {
 		print "</table><br>\n";
 		print "<table id='csvExport' class='cactiTable' align='center' width='100%'><thead>\n";
 
-		print "<tr class='tableHeader'><th class='tableSubHeaderColumn left'>Date</th>";
+		print "<tr class='tableHeader'><th class='tableSubHeaderColumn left ui-resizable'>Date</th>";
 		for ($i = 1; $i <= $xport_array['meta']['columns']; $i++) {
-			print "<th class='{sorter: \"numberFormat\"} tableSubHeaderColumn right'>" . $xport_array['meta']['legend']['col' . $i] . "</th>";
+			print "<th class='{sorter: \"numberFormat\"} tableSubHeaderColumn right ui-resizable'>" . $xport_array['meta']['legend']['col' . $i] . "</th>";
 		}
 		print "</tr></thead>\n";
 	}
@@ -199,7 +201,7 @@ if (is_array($xport_array['data'])) {
 	}else{
 		$j = 0;
 		foreach($xport_array['data'] as $row) {
-			print "<tr class='" . ($j % 2 == 0 ? 'odd':'even') . "'><td align='left'>" . date('Y-m-d H:i:s', $row['timestamp']) . "</td>";
+			print "<tr><td align='left'>" . date('Y-m-d H:i:s', $row['timestamp']) . "</td>";
 			for ($i = 1; $i <= $xport_array['meta']['columns']; $i++) {
 				if ($row['col' . $i] > 1) {
 					print "<td align='right'>" . trim(number_format(round($row['col' . $i],3))) . "</td>";
@@ -212,13 +214,25 @@ if (is_array($xport_array['data'])) {
 			print "</tr>\n";
 			$j++;
 		}
-	}
 
-	print "<script type='text/javascript'>$(function() { $('#csvExport').tablesorter({widgets: ['zebra'], widgetZebra: { css: ['even', 'odd']} }); });</script>\n";
+		?>
+		<script type='text/javascript'>
+		$(function() { 
+			$('#csvExport').tablesorter({
+				widgets: ['zebra'], 
+				widgetZebra: { css: ['even', 'odd'] }, 
+				headerTemplate: '<div class="textSubHeaderDark">{content} {icon}</div>', 
+				cssIconAsc: 'fa-sort-asc', 
+				cssIconDesc: 'fa-sort-desc', 
+				cssIconNone: 'fa-sort', 
+				cssIcon: 'fa' 
+			}); 
+		});
+		</script>
+		<?php
+	}
 }
 
 /* log the memory usage */
-if (read_config_option('log_verbosity') >= POLLER_VERBOSITY_MEDIUM && function_exists('memory_get_peak_usage')) {
-	cacti_log("The Peak Graph XPORT Memory Usage was '" . memory_get_peak_usage() . "'", FALSE, 'WEBUI');
-}
+cacti_log("The Peak Graph XPORT Memory Usage was '" . memory_get_peak_usage() . "'", FALSE, 'WEBUI', POLLER_VERBOSITY_MEDIUM);
 
