@@ -295,7 +295,7 @@ CREATE TABLE `automation_networks` (
   `ping_retries` int(10) unsigned DEFAULT '0',
   `sched_type` int(10) unsigned NOT NULL DEFAULT '0' COMMENT 'Schedule type: manual or automatic',
   `threads` int(10) unsigned DEFAULT '1',
-  `run_limit` int(10) unsigned DEFAULT '0',
+  `run_limit` int(10) unsigned DEFAULT '0' COMMENT 'The maximum runtime for the discovery',
   `start_at` varchar(20) DEFAULT NULL,
   `next_start` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   `recur_every` int(10) unsigned DEFAULT '1',
@@ -393,7 +393,7 @@ CREATE TABLE `automation_templates` (
   `sysOid` varchar(60) DEFAULT '',
   `sequence` int(10) unsigned DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=3 COMMENT='Plugin Discovery - Templates of SysDesc matches to use to au';
+) ENGINE=MyISAM AUTO_INCREMENT=3 COMMENT='Templates of SysDescr SysName and SysOID matches to use for automation';
 
 --
 -- Dumping data for table `automation_templates`
@@ -1386,7 +1386,7 @@ CREATE TABLE `data_source_profiles_cf` (
   `consolidation_function_id` smallint(5) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`data_source_profile_id`,`consolidation_function_id`),
   KEY `data_source_profile_id` (`data_source_profile_id`)
-) ENGINE=MyISAM;
+) ENGINE=MyISAM COMMENT='Maps the Data Source Profile Consolidation Functions';
 
 --
 -- Dumping data for table `data_source_profiles_cf`
@@ -1601,7 +1601,7 @@ CREATE TABLE data_template_data (
   t_rrd_step char(2) default NULL,
   rrd_step mediumint(8) unsigned NOT NULL default '0',
   t_data_source_profile_id char(2) default '',
-  data_source_profile_id mediumint(8) unsigned NOT NULL default '0',
+  data_source_profile_id mediumint(8) unsigned NOT NULL default '1',
   PRIMARY KEY  (id),
   KEY local_data_id (local_data_id),
   KEY data_template_id (data_template_id),
@@ -2542,8 +2542,8 @@ CREATE TABLE host (
   disabled char(2) default NULL,
   status tinyint(2) NOT NULL default '0',
   status_event_count mediumint(8) unsigned NOT NULL default '0',
-  status_fail_date datetime NOT NULL default '0000-00-00 00:00:00',
-  status_rec_date datetime NOT NULL default '0000-00-00 00:00:00',
+  status_fail_date timestamp NOT NULL default '0000-00-00 00:00:00',
+  status_rec_date timestamp NOT NULL default '0000-00-00 00:00:00',
   status_last_error varchar(255) default '',
   min_time decimal(10,5) default '9.99999',
   max_time decimal(10,5) default '0.00000',
@@ -2772,7 +2772,7 @@ CREATE TABLE poller (
   id smallint(5) unsigned NOT NULL auto_increment,
   hostname varchar(250) NOT NULL default '',
   ip_address int(11) unsigned NOT NULL default '0',
-  last_update datetime NOT NULL default '0000-00-00 00:00:00',
+  last_update timestamp NOT NULL default '0000-00-00 00:00:00',
   PRIMARY KEY  (id)
 ) ENGINE=MyISAM;
 
@@ -2782,7 +2782,7 @@ CREATE TABLE poller (
 
 CREATE TABLE poller_command (
   poller_id smallint(5) unsigned NOT NULL default '0',
-  time datetime NOT NULL default '0000-00-00 00:00:00',
+  time timestamp NOT NULL default '0000-00-00 00:00:00',
   action tinyint(3) unsigned NOT NULL default '0',
   command varchar(200) NOT NULL default '',
   PRIMARY KEY  (poller_id,action,command)
@@ -2832,7 +2832,7 @@ CREATE TABLE poller_item (
 CREATE TABLE poller_output (
   local_data_id mediumint(8) unsigned NOT NULL default '0',
   rrd_name varchar(19) NOT NULL default '',
-  time datetime NOT NULL default '0000-00-00 00:00:00',
+  time timestamp NOT NULL default '0000-00-00 00:00:00',
   output text NOT NULL,
   PRIMARY KEY (local_data_id,rrd_name,time) /*!50060 USING BTREE */
 ) ENGINE=MyISAM;
@@ -2844,7 +2844,7 @@ CREATE TABLE poller_output (
 CREATE TABLE  `poller_output_boost` (
   `local_data_id` mediumint(8) unsigned NOT NULL default '0',
   `rrd_name` varchar(19) NOT NULL default '',
-  `time` datetime NOT NULL default '0000-00-00 00:00:00',
+  `time` timestamp NOT NULL default '0000-00-00 00:00:00',
   `output` varchar(512) NOT NULL,
   PRIMARY KEY USING BTREE (`local_data_id`,`rrd_name`,`time`)
 ) ENGINE=MyISAM ROW_FORMAT=FIXED;
@@ -2866,7 +2866,7 @@ CREATE TABLE  `poller_output_boost_processes` (
 CREATE TABLE IF NOT EXISTS poller_output_realtime (
   local_data_id mediumint(8) unsigned NOT NULL default '0',
   rrd_name varchar(19) NOT NULL default '',
-  `time` datetime NOT NULL default '0000-00-00 00:00:00',
+  `time` timestamp NOT NULL default '0000-00-00 00:00:00',
   output text NOT NULL,
   poller_id varchar(30) NOT NULL default '',
   PRIMARY KEY  (local_data_id,rrd_name,`time`),
@@ -2897,8 +2897,8 @@ CREATE TABLE poller_time (
   id mediumint(8) unsigned NOT NULL auto_increment,
   pid int(11) unsigned NOT NULL default '0',
   poller_id smallint(5) unsigned NOT NULL default '0',
-  start_time datetime NOT NULL default '0000-00-00 00:00:00',
-  end_time datetime NOT NULL default '0000-00-00 00:00:00',
+  start_time timestamp NOT NULL default '0000-00-00 00:00:00',
+  end_time timestamp NOT NULL default '0000-00-00 00:00:00',
   PRIMARY KEY  (id)
 ) ENGINE=MyISAM;
 
@@ -3262,9 +3262,10 @@ INSERT INTO snmp_query_graph_sv VALUES (49,'183bb486c92a566fddcb0585ede37865',22
 CREATE TABLE user_auth (
   id mediumint(8) unsigned NOT NULL auto_increment,
   username varchar(50) NOT NULL default '0',
-  password varchar(2048) NOT NULL default '0',
+  password varchar(2048) NOT NULL default '',
   realm mediumint(8) NOT NULL default '0',
   full_name varchar(100) default '0',
+  email_address varchar(128) NULL,
   must_change_password char(2) default NULL,
   password_change char(2) default 'on',
   show_tree char(2) default 'on',
@@ -3279,8 +3280,8 @@ CREATE TABLE user_auth (
   enabled char(2) NOT NULL DEFAULT 'on',
   lastchange int(12) NOT NULL DEFAULT '-1',
   lastlogin int(12) NOT NULL DEFAULT '-1',
-  password_history int(12) NOT NULL DEFAULT '-1',
-  locked  text NOT NULL,
+  password_history varchar(4096) NOT NULL DEFAULT '-1',
+  locked varchar(3) NOT NULL DEFAULT '',
   failed_attempts int(5) NOT NULL DEFAULT '0',
   lastfail int(12) NOT NULL DEFAULT '0',
   reset_perms int(12) UNSIGNED NOT NULL DEFAULT '0',
@@ -3294,8 +3295,8 @@ CREATE TABLE user_auth (
 -- Dumping data for table `user_auth`
 --
 
-INSERT INTO user_auth VALUES (1,'admin','21232f297a57a5a743894a0e4a801fc3',0,'Administrator','on','on','on','on','on',1,1,1,1,1,1,'on',-1,-1,-1,'',0,0,0);
-INSERT INTO user_auth VALUES (3,'guest','43e9a4ab75570f5b',0,'Guest Account','on','on','on','on','on',3,1,1,1,1,1,'',-1,-1,-1,'',0,0,0);
+INSERT INTO user_auth VALUES (1,'admin','21232f297a57a5a743894a0e4a801fc3',0,'Administrator','','on','on','on','on','on',1,1,1,1,1,1,'on',-1,-1,-1,'',0,0,0);
+INSERT INTO user_auth VALUES (3,'guest','43e9a4ab75570f5b',0,'Guest Account','','on','on','on','on','on',3,1,1,1,1,1,'',-1,-1,-1,'',0,0,0);
 
 --
 -- Table structure for table `user_auth_cache`
@@ -3447,7 +3448,7 @@ INSERT INTO user_auth_realm VALUES (101,1);
 CREATE TABLE user_log (
   username varchar(50) NOT NULL default '0',
   user_id mediumint(8) NOT NULL default '0',
-  time datetime NOT NULL default '0000-00-00 00:00:00',
+  time timestamp NOT NULL default '0000-00-00 00:00:00',
   result tinyint(1) NOT NULL default '0',
   ip varchar(40) NOT NULL default '',
   PRIMARY KEY  (username,user_id,time),
@@ -3669,7 +3670,7 @@ CREATE TABLE vdef (
   hash varchar(32) NOT NULL default '',
   name varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL default '',
   PRIMARY KEY  (id)
-) ENGINE=MyISAM;
+) ENGINE=MyISAM COMMENT='vdef';
 
 --
 -- Dumping data for table `vdef`
@@ -3696,7 +3697,7 @@ CREATE TABLE vdef_items (
   value varchar(150) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL default '',
   PRIMARY KEY  (id),
   KEY vdef_id (vdef_id)
-) ENGINE=MyISAM;
+) ENGINE=MyISAM COMMENT='vdef items';
 
 --
 -- Dumping data for table `vdef_items`

@@ -73,7 +73,7 @@ function upgrade_to_1_0_0() {
 	db_install_execute('1.0', "CREATE TABLE IF NOT EXISTS `settings_user_group` (
 		`group_id` smallint(8) unsigned NOT NULL DEFAULT '0',
 		`name` varchar(50) NOT NULL DEFAULT '',
-		`value` varchar(255) NOT NULL DEFAULT '',
+		`value` varchar(2048) NOT NULL DEFAULT '',
 		PRIMARY KEY (`group_id`,`name`))
 		ENGINE=MyISAM
 		COMMENT='Stores the Default User Group Graph Settings';");
@@ -145,10 +145,10 @@ function upgrade_to_1_0_0() {
 	db_install_execute('1.0', "CREATE TABLE IF NOT EXISTS `poller_output_boost` (
 		`local_data_id` mediumint(8) unsigned NOT NULL default '0',
 		`rrd_name` varchar(19) NOT NULL default '',
-		`time` datetime NOT NULL default '0000-00-00 00:00:00',
+		`time` timestamp NOT NULL default '0000-00-00 00:00:00',
 		`output` varchar(512) NOT NULL,
-		PRIMARY KEY USING BTREE (`local_data_id`,`time`,`rrd_name`))
-		ENGINE=MEMORY;");
+		PRIMARY KEY USING BTREE (`local_data_id`,`rrd_name`,`time`))
+		ENGINE=MyISAM ROW_FORMAT=FIXED");
 
 	db_install_execute('1.0', "CREATE TABLE IF NOT EXISTS `poller_output_boost_processes` (
 		`sock_int_value` bigint(20) unsigned NOT NULL auto_increment,
@@ -351,8 +351,7 @@ function upgrade_to_1_0_0() {
 	db_install_execute('1.0', "ALTER TABLE graph_tree_items 
 		MODIFY COLUMN id BIGINT UNSIGNED NOT NULL auto_increment, 
 		ADD COLUMN parent BIGINT UNSIGNED default NULL AFTER id, 
-		ADD COLUMN position int UNSIGNED default NULL AFTER parent,
-		ADD INDEX parent (parent)");
+		ADD COLUMN position int UNSIGNED default NULL AFTER parent");
 
 	db_install_execute('1.0', "CREATE TABLE IF NOT EXISTS `user_auth_cache` (
 		`user_id` int(10) unsigned NOT NULL DEFAULT '0',
@@ -365,7 +364,7 @@ function upgrade_to_1_0_0() {
 	// Add secpass fields
 	db_install_add_column ('1.0', 'user_auth', array('name' => 'lastchange', 'type' => 'int(12)', 'NULL' => false, 'default' => '-1'));
 	db_install_add_column ('1.0', 'user_auth', array('name' => 'lastlogin', 'type' => 'int(12)', 'NULL' => false, 'default' => '-1'));
-	db_install_add_column ('1.0', 'user_auth', array('name' => 'password_history', 'type' => 'varchar(4096)', 'NULL' => false, 'default' => ''));
+	db_install_add_column ('1.0', 'user_auth', array('name' => 'password_history', 'type' => 'varchar(4096)', 'NULL' => false, 'default' => '-1'));
 	db_install_add_column ('1.0', 'user_auth', array('name' => 'locked', 'type' => 'varchar(3)', 'NULL' => false, 'default' => ''));
 	db_install_add_column ('1.0', 'user_auth', array('name' => 'failed_attempts', 'type' => 'int(5)', 'NULL' => false, 'default' => '0'));
 	db_install_add_column ('1.0', 'user_auth', array('name' => 'lastfail', 'type' => 'int(12)', 'NULL' => false, 'default' => '0'));
@@ -464,7 +463,7 @@ function upgrade_to_1_0_0() {
 
 	// Adding email column for future user
 	db_install_add_column ('1.0', 'user_auth', array('name' => 'email_address', 'type' => 'varchar(128)', 'NULL' => true, 'after' => 'full_name'));
-	db_install_add_column ('1.0', 'user_auth', array('name' => 'password_change', 'type' => 'char(2)', 'NULL' => false, 'default' => 'on', 'after' => 'email_address'));
+	db_install_add_column ('1.0', 'user_auth', array('name' => 'password_change', 'type' => 'char(2)', 'NULL' => true, 'default' => 'on', 'after' => 'must_change_password'));
 
 	db_install_execute('1.0', 'DROP TABLE IF EXISTS poller_output_realtime');
 	db_install_execute('1.0', "CREATE TABLE poller_output_realtime (
@@ -1096,15 +1095,15 @@ function upgrade_to_1_0_0() {
 		`ping_retries` int(10) unsigned DEFAULT '0',
 		`sched_type` int(10) unsigned NOT NULL DEFAULT '0' COMMENT 'Schedule type: manual or automatic',
 		`threads` int(10) unsigned DEFAULT '1',
-		`run_limit` int(10) unsigned NOT NULL DEFAULT '0' COMMENT 'The maximum runtime for the discovery',
+		`run_limit` int(10) unsigned NULL DEFAULT '0' COMMENT 'The maximum runtime for the discovery',
 		`start_at` varchar(20) DEFAULT NULL,
 		`next_start` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
 		`recur_every` int(10) unsigned DEFAULT '1',
 		`day_of_week` varchar(45) DEFAULT NULL COMMENT 'The days of week to run in crontab format',
 		`month` varchar(45) DEFAULT NULL COMMENT 'The months to run in crontab format',
 		`day_of_month` varchar(45) DEFAULT NULL COMMENT 'The days of month to run in crontab format',
-		`hour` varchar(45) DEFAULT NULL COMMENT 'The hours to run in crontab format',
-		`min` varchar(45) DEFAULT NULL COMMENT 'The minutes to run in crontab format',
+		`monthly_week` varchar(45) DEFAULT NULL,
+		`monthly_day` varchar(45) DEFAULT NULL,
 		`last_runtime` double NOT NULL DEFAULT '0' COMMENT 'The last runtime for discovery',
 		`last_started` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT 'The time the discovery last started',
 		`last_status` varchar(128) NOT NULL DEFAULT '' COMMENT 'The last exit message if any',
@@ -1118,7 +1117,7 @@ function upgrade_to_1_0_0() {
 		`pid` int(8) unsigned NOT NULL,
 		`poller_id` int(10) unsigned DEFAULT '0',
 		`network_id` int(10) unsigned NOT NULL DEFAULT '0',
-		`task` varchar(20) NOT NULL DEFAULT '',
+		`task` varchar(20) NULL DEFAULT '',
 		`status` varchar(20) DEFAULT NULL,
 		`command` varchar(20) DEFAULT NULL,
 		`up_hosts` int(10) unsigned DEFAULT '0',
@@ -1126,7 +1125,7 @@ function upgrade_to_1_0_0() {
 		`heartbeat` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
 		PRIMARY KEY (`pid`, `network_id`)) 
 		ENGINE=MEMORY 
-		COMMENT='Table required for parallelization of data collection'");
+		COMMENT='Table tracking active poller processes'");
 
 	db_install_execute('1.0', "CREATE TABLE IF NOT EXISTS `automation_snmp` (
 		`id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -1159,13 +1158,13 @@ function upgrade_to_1_0_0() {
 		`id` int(8) NOT NULL AUTO_INCREMENT,
 		`host_template` int(8) NOT NULL DEFAULT '0',
 		`availability_method` int(10) unsigned DEFAULT '2',
-		`sysDescr` varchar(255) NOT NULL DEFAULT '',
-		`sysName` varchar(255) NOT NULL DEFAULT '',
-		`sysOid` varchar(60) NOT NULL DEFAULT '',
+		`sysDescr` varchar(255) NULL DEFAULT '',
+		`sysName` varchar(255) NULL DEFAULT '',
+		`sysOid` varchar(60) NULL DEFAULT '',
 		`sequence` int(10) unsigned DEFAULT '0',
 		PRIMARY KEY (`id`)) 
 		ENGINE=MyISAM 
-		COMMENT='Templates of SysDescr SysName and SysOID matches to use to automation'");
+		COMMENT='Templates of SysDescr SysName and SysOID matches to use for automation'");
 
 	db_install_execute('1.0', "DELETE FROM plugin_config WHERE directory='discovery'");
 	db_install_execute('1.0', "DELETE FROM plugin_realms WHERE plugin='discovery'");
@@ -1181,7 +1180,7 @@ function upgrade_to_1_0_0() {
 		db_install_execute('1.0', 'INSERT IGNORE INTO user_auth_realm (user_id, realm_id) VALUES (1, 23)');
 	}
 
-	db_install_execute('1.0', "ALTER TABLE colors ADD COLUMN name varchar(40) AFTER id, ADD COLUMN read_only CHAR(2) DEFAULT '' AFTER hex, ADD UNIQUE INDEX hex(hex)");
+	db_install_execute('1.0', "ALTER TABLE colors ADD COLUMN name varchar(40) DEFAULT '' AFTER id, ADD COLUMN read_only CHAR(2) DEFAULT '' AFTER hex, ADD UNIQUE INDEX hex(hex)");
 
 	if (file_exists(dirname(__FILE__) . '/import_colors.php')) {
 		shell_exec('php -q ' . dirname(__FILE__) . '/import_colors.php');
@@ -1193,7 +1192,7 @@ function upgrade_to_1_0_0() {
 
 	db_install_execute('1.0', 'RENAME TABLE settings_graphs TO settings_user');
 
-	db_install_execute('1.0', 'ALTER TABLE user_auth ADD COLUMN reset_perms INT unsigned NOT NULL default "0" AFTER lastfail');
+	db_install_execute('1.0', 'ALTER TABLE user_auth ADD COLUMN reset_perms INT(12) unsigned NOT NULL default "0" AFTER lastfail');
 
 	rsa_check_keypair();
 
@@ -1220,8 +1219,8 @@ function upgrade_to_1_0_0() {
 		ADD COLUMN no_gridfit char(2) DEFAULT NULL AFTER t_no_gridfit,
 		ADD COLUMN t_unit_length char(2) DEFAULT "0" AFTER no_gridfit,
 		ADD COLUMN unit_length varchar(10) DEFAULT NULL AFTER t_unit_length,
-		ADD COLUMN t_tab_width char(2) DEFAULT "0" AFTER unit_length,
-		ADD COLUMN tab_width varchar(10) DEFAULT NULL AFTER t_tab_width,
+		ADD COLUMN t_tab_width char(2) DEFAULT "30" AFTER unit_length,
+		ADD COLUMN tab_width varchar(20) DEFAULT NULL AFTER t_tab_width,
 		ADD COLUMN t_dynamic_labels char(2) default "0" AFTER tab_width,
 		ADD COLUMN dynamic_labels char(2) default NULL AFTER t_dynamic_labels,
 		ADD COLUMN t_force_rules_legend char(2) DEFAULT "0" AFTER dynamic_labels,
@@ -1231,28 +1230,44 @@ function upgrade_to_1_0_0() {
 		ADD COLUMN t_legend_direction char(2) DEFAULT "0" AFTER legend_position,
 		ADD COLUMN legend_direction varchar(10) DEFAULT NULL AFTER t_legend_direction');
 
+		
+	/* create new table sessions */
+	$data = array();
+	$data['columns'][] = array('name' => 'id', 'type' => 'varchar(32)', 'NULL' => false );
+	$data['columns'][] = array('name' => 'remote_addr', 'type' => 'varchar(25)', 'NULL' => false, 'default' => '');
+	$data['columns'][] = array('name' => 'access', 'type' => 'INT(10)', 'unsigned' => 'unsigned', 'NULL' => true);
+	$data['columns'][] = array('name' => 'data', 'type' => 'text',  'NULL' => true);
+	$data['primary']   = 'id';
+	$data['comment']   = 'Used for Database based Session Storage';
+	$data['type'] = 'InnoDB';
+	db_table_create('sessions', $data);
+		
 	/* create new table VDEF */
-	unset($data);
+	$data = array();
 	$data['columns'][] = array('name' => 'id', 'type' => 'mediumint(8)',    'unsigned' => 'unsigned', 'NULL' => false, 'auto_increment' => true);
 	$data['columns'][] = array('name' => 'hash', 'type' => 'varchar(32)', 'NULL' => false, 'default' => '');
 	$data['columns'][] = array('name' => 'name', 'type' => 'varchar(255)', 'NULL' => false, 'default' => '');
-	$data['keys'][] = array('name' => 'PRIMARY', 'columns' => 'id', 'primary' => true);
+	$data['primary']   = 'id';
+	$data['comment']   = 'vdef';
 	$data['type'] = 'MyISAM';
 	db_table_create('vdef', $data);
 
 	/* create new table VDEF_ITEMS */
-	unset($data);
+	$data = array();
 	$data['columns'][] = array('name' => 'id', 'type' => 'mediumint(8)',    'unsigned' => 'unsigned', 'NULL' => false, 'auto_increment' => true);
 	$data['columns'][] = array('name' => 'hash', 'type' => 'varchar(32)', 'NULL' => false, 'default' => '');
 	$data['columns'][] = array('name' => 'vdef_id', 'type' => 'mediumint(8)', 'unsigned' => 'unsigned', 'NULL' => false, 'default' => 0);
 	$data['columns'][] = array('name' => 'sequence', 'type' => 'mediumint(8)', 'unsigned' => 'unsigned', 'NULL' => false, 'default' => 0);
 	$data['columns'][] = array('name' => 'type', 'type' => 'tinyint(2)', 'NULL' => false, 'default' => 0);
 	$data['columns'][] = array('name' => 'value', 'type' => 'varchar(150)', 'NULL' => false, 'default' => '');
-	$data['keys'][] = array('name' => 'PRIMARY', 'columns' => 'id', 'primary' => true);
+	$data['primary']   = 'id';
 	$data['keys'][] = array('name' => 'vdef_id', 'columns' => 'vdef_id');
+	$data['comment']   = 'vdef items';
 	$data['type'] = 'MyISAM';
 	db_table_create('vdef_items', $data);
 
+	
+	
 	/* fill table VDEF */
 	db_install_execute("1.0.0", "REPLACE INTO `vdef` VALUES (1, 'e06ed529238448773038601afb3cf278', 'Maximum');");
 	db_install_execute("1.0.0", "REPLACE INTO `vdef` VALUES (2, 'e4872dda82092393d6459c831a50dc3b', 'Minimum');");
@@ -1281,7 +1296,7 @@ function upgrade_to_1_0_0() {
 
 	db_install_execute('1.0.0', "ALTER TABLE data_template_data 
 		ADD COLUMN t_data_source_profile_id CHAR(2) default '', 
-		ADD COLUMN data_source_profile_id mediumint(8) not null default '0'");
+		ADD COLUMN data_source_profile_id mediumint(8) unsigned not null default '0'");
 
 	db_install_execute('1.0.0', "CREATE TABLE `data_source_profiles` (
 		`id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
@@ -1294,6 +1309,7 @@ function upgrade_to_1_0_0() {
 		PRIMARY KEY (`id`))
 		ENGINE=MyISAM 
 		COMMENT='Stores Data Source Profiles'");
+		
 
 	db_install_execute('1.0.0', "CREATE TABLE `data_source_profiles_cf` (
 		`data_source_profile_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
@@ -1353,7 +1369,7 @@ function upgrade_to_1_0_0() {
 
 				db_install_execute('1.0.0', "REPLACE INTO data_source_profiles_cf
 					(data_source_profile_id, consolidation_function_id)
-					SELECT '$id' AS data_source_profile_id, consolidation_function_id FROM rra_cf WHERE id=" . $r);
+					SELECT '$id' AS data_source_profile_id, consolidation_function_id FROM rra_cf WHERE rra_id=" . $r);
 			}
 
 			db_install_execute('1.0.0', "UPDATE data_template_data 
@@ -1395,8 +1411,8 @@ function upgrade_to_1_0_0() {
 		ADD COLUMN no_gridfit char(2) DEFAULT NULL AFTER t_no_gridfit,
 		ADD COLUMN t_unit_length char(2) DEFAULT "0" AFTER no_gridfit,
 		ADD COLUMN unit_length varchar(10) DEFAULT NULL AFTER t_unit_length,
-		ADD COLUMN t_tab_width char(2) DEFAULT "0" AFTER unit_length,
-		ADD COLUMN tab_width varchar(10) DEFAULT NULL AFTER t_tab_width,
+		ADD COLUMN t_tab_width char(2) DEFAULT "30" AFTER unit_length,
+		ADD COLUMN tab_width varchar(20) DEFAULT NULL AFTER t_tab_width,
 		ADD COLUMN t_dynamic_labels char(2) default "0" AFTER tab_width,
 		ADD COLUMN dynamic_labels char(2) default NULL AFTER t_dynamic_labels,
 		ADD COLUMN t_force_rules_legend char(2) DEFAULT "0" AFTER dynamic_labels,
