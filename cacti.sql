@@ -1601,7 +1601,7 @@ CREATE TABLE data_template_data (
   t_rrd_step char(2) default NULL,
   rrd_step mediumint(8) unsigned NOT NULL default '0',
   t_data_source_profile_id char(2) default '',
-  data_source_profile_id mediumint(8) unsigned NOT NULL default '0',
+  data_source_profile_id mediumint(8) unsigned NOT NULL default '1',
   PRIMARY KEY  (id),
   KEY local_data_id (local_data_id),
   KEY data_template_id (data_template_id),
