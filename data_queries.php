@@ -896,7 +896,7 @@ function data_query_edit() {
 				applySkin();
 				$('#cdialog').dialog({ 
 					title: 'Delete Associated Graph', 
-					close: function () { $('.delete').blur() },
+					close: function () { $('.delete').blur(); $('.selectable').removeClass('selected'); },
 					minHeight: 80, 
 					minWidth: 500 
 				});

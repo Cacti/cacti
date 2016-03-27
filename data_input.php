@@ -286,7 +286,7 @@ function field_remove_confirm() {
 	</script>
 	<?php
 }
-		
+
 function field_remove() {
 	global $registered_cacti_names;
 
@@ -528,7 +528,7 @@ function data_edit() {
 				applySkin();
 				$('#cdialog').dialog({ 
 					title: 'Delete Data Input Field', 
-					close: function () { $('.delete').blur() },
+					close: function () { $('.delete').blur(); $('.selectable').removeClass('selected'); },
 					minHeight: 80, 
 					minWidth: 500 
 				});
