@@ -529,7 +529,7 @@ function loadPageNoHeader(href) {
 }
 
 function ajaxAnchors() {
-	$('a.pic, a.linkOverDark, a.linkEditMain, a.hyperLink, a.tab').not('[href^=http], [href^=https], [href^=#]').unbind().click(function(event) {
+	$('a.pic, a.linkOverDark, a.linkEditMain, a.hyperLink, a.tab').not('[href^="http"], [href^="https"], [href^="#"]').unbind().click(function(event) {
 		event.preventDefault();
 
 		/* update menu selection */
