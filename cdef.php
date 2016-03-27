@@ -550,7 +550,7 @@ function cdef_edit() {
 
 		html_header($display_text, 2);
 
-		$cdef_items = db_fetch_assoc_prepared('SELECT * FROM cdef_items WHERE system=0 AND cdef_id = ? ORDER BY sequence', array(get_request_var('id')));
+		$cdef_items = db_fetch_assoc_prepared('SELECT * FROM cdef_items WHERE cdef_id = ? ORDER BY sequence', array(get_request_var('id')));
 
 		$i = 0;
 		if (sizeof($cdef_items)) {
