@@ -2497,7 +2497,8 @@ CREATE TABLE graph_tree_items (
   PRIMARY KEY (`id`),
   KEY `graph_tree_id` (`graph_tree_id`),
   KEY `host_id` (`host_id`),
-  KEY `local_graph_id` (`local_graph_id`)
+  KEY `local_graph_id` (`local_graph_id`),
+  KEY `parent`(`parent`)
 ) ENGINE=MyISAM;
 
 --
