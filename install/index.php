@@ -517,34 +517,34 @@ if ($old_cacti_version == 'new_install') {
 if (isset($_REQUEST['step']) && $_REQUEST['step'] > 0) {
 	$step = intval($_REQUEST['step']);
 	
-	/* license and welcome screen - send to dependencies */
+	/* license&welcome - send to checkdependencies */
 	if ($step == '1') {
 		$step = '2';
-	/* check for dependencies - send to install/upgrade */	
+	/* checkdependencies - send to install/upgrade */	
 	} elseif ($step == '2') {
 		$step = '3';
-	/* install/upgrade - if user chooses "New Install" send to pathcheck */
+	/* install/upgrade - if user chooses "New Install" send to settingscheck */
 	} elseif (($step == '3') && ($_REQUEST['install_type'] == '1')) {
 		$step = '4';
 	/* install/upgrade - if user chooses "Upgrade" send to upgrade */
 	} elseif (($step == '3') && ($_REQUEST['install_type'] == '3')) {
 		$step = '8';
-	/* upgrade-oldversion - if user runs old version send to oldversionwarning*/
+	/* upgrade - if user runs old version send to upgrade-oldversion*/
 	} elseif (($step == '8') && ($old_version_index <= array_search('0.8.5a', $cacti_versions))) {
 		$step = '9';
-	/* upgrade - if user upgrades send to pathcheck */
+	/* upgrade - if user upgrades send to checkdependencies */
 	} elseif ($step == '8') {
-		$step = '4';
-	/* oldversionwarning - if user upgrades from old version send to dependencies */
+		$step = '3';
+	/* upgrade-oldversion - if user upgrades from old version send to checkdependencies */
 	} elseif ($step == '9') {
 		$step = '3';
-	/* pathcheck - send to installpaths */
+	/* settingscheck - send to settings-install */
 	} elseif ($step == '4') {
 		$step = '5';
-	/* installpaths - send to templates */
+	/* settings-install - send to template-import */
 	} elseif ($step == '5') {
 		$step = '6';
-	/* templates - send to install and finalize */
+	/* template-import - send to installfinal */
 	} elseif ($step == '6') {
 		$step = '7';
 	}
@@ -556,7 +556,7 @@ if (isset($_REQUEST['step']) && $_REQUEST['step'] > 0) {
 
 
 	
-/* install and finalize - Install templates, change cacti version and send to login page */
+/* installfinal - Install templates, change cacti version and send to login page */
 if ($step == '7') {
 	include_once('../lib/data_query.php');
 	include_once('../lib/utility.php');
@@ -613,7 +613,7 @@ if ($step == '7') {
 
 	
 	
-	/* upgrade */
+/* upgrade */
 }elseif (($step == '8') && ($_REQUEST['install_type'] == '3')) {
 	/* if the version is not found, die */
 	if (!is_int($old_version_index)) {
@@ -741,7 +741,7 @@ if ($step == '7') {
 <head>
 	<title>cacti</title>
 	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
-	<link href='<?php echo $config['url_path']; ?>include/themes/classic/main.css' type='text/css' rel='stylesheet'>
+	<link href='<?php echo $config['url_path']; ?>include/themes/modern/main.css' type='text/css' rel='stylesheet'>
 	<style type='text/css'>>
 	<!--
 		BODY,TABLE,TR,TD
@@ -782,7 +782,9 @@ if ($step == '7') {
 				</tr>
 				<tr class='installArea'>
 					<td>
-						<?php if ($step == '1') { ?>
+						
+				<?php	/* license&welcome */
+						if ($step == '1') { ?>
 
 						<p>Thanks for taking the time to download and install cacti, the complete graphing
 						solution for your network. Before you can start making cool graphs, there are a few
@@ -807,8 +809,10 @@ if ($step == '7') {
 						MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 						GNU General Public License for more details.</p>
 						
-								<?php }elseif ($step == '2') { ?>
-				<?php
+						
+				<?php 	/* checkdependencies */
+						}elseif ($step == '2') { 
+				
 					print '<h2>Pre-installation Check</h2><br>';
 					print 'Cacti requies several PHP Modules to be installed to work properly.  If any of these are not installed, you will be unable to continue the installation until corrected.<br><br>';
 
@@ -861,10 +865,11 @@ if ($step == '7') {
 							form_selectable_cell(($e['installed'] ? '<font color=green>Yes</font>' : '<font color=red>NO</font>'), '');
 							form_end_row();
 						}
-						html_end_box(false);
+						html_end_box(false); ?>	
 
-?>	
-						<?php }elseif ($step == '3') { ?>
+						
+				<?php 	/* install/upgrade */
+						}elseif ($step == '3') { ?>
 
 						<p>Please select the type of installation</p>
 
@@ -891,17 +896,13 @@ if ($step == '7') {
 						</p>
 
 						
-												
-					
-						
-						
-						<?php }elseif ($step == '4') { ?>
+				<?php 	/* settingscheck */
+						}elseif ($step == '4') { ?>
 
 						<p>Make sure all of these values are correct before continuing.</p>
+						
 						<?php
-						
-						/* installpaths*/
-						
+								
 						$i = 0;
 						$input = install_file_paths();
 						/* find the appropriate value for each 'config name' above by config.php, database,
@@ -957,11 +958,9 @@ if ($step == '7') {
 						is an upgrade. You can change any of the settings on this screen at a later
 						time by going to 'Cacti Settings' from within Cacti.</p>
 
-						
-						
-						<?php }elseif ($step == '5') { 
-						
-						/* installpaths - Install paths and theme etc */
+
+				<?php 	/* settings-install */
+						}elseif ($step == '5') { 
 
 						include_once('../lib/data_query.php');
 						include_once('../lib/utility.php');
@@ -977,54 +976,49 @@ if ($step == '7') {
 						}
 						
 						/* Print message and error logs */
-						print ' <p>Settings installed<br><br></p>';
+						print ' <p><b>Settings installed</b><br><br></p>';
 						
 						/* Check if /resource is writable */
-						print " <p>Next step is template installation. For installation to work the '". $config['base_path'] . "/resource' folder needs to be writable by the webserver.<br><br></p>";
+						print " <p>Next step is template installation. For template installation to work the '". $config['base_path'] . "/resource' folder needs to be writable by the webserver.<br>
+								 If you dont want to install any templates now you can skip this and import them later.<br></p>";
 						
 								
 									if (is_writable('../resource/snmp_queries')) {
-										$writeaccess_snmp_q = "Writable";
+										print " <p>". $config['base_path'] . "/resource/snmp_queries is <font color='#008000'>writable</font></p>";
 									} else {
-										$writeaccess_snmp_q = "is not writable";
+										print " <p>". $config['base_path'] . "/resource/script_server is <font color='#FF0000'>not writable</font></p>";
 										$writable=FALSE;
 									}
 									
 									if (is_writable('../resource/script_server')) {
-										$writeaccess_script_s = "Writable";
+										print " <p>". $config['base_path'] . "/resource/script_server is <font color='#008000'>writable</font></p>";
 									} else {
-										$writeaccess_script_s = "is not writable";
+										print " <p>". $config['base_path'] . "/resource/script_server is <font color='#FF0000'>not writable</font></p>";
 										$writable=FALSE;
 									}
 									if (is_writable('../resource/script_queries')) {
-										$writeaccess_script_q = "Writable";
+										print " <p>". $config['base_path'] . "/resource/script_queries is <font color='#008000'>writable</font></p><br>";
 									} else {
-										$writeaccess_script_q  = "is not writable";
+										print " <p>". $config['base_path'] . "/resource/script_queries is <font color='#FF0000'>not writable</font></p><br>";
 										$writable=FALSE;
 									}
 									
 									
-						print " <p>". $config['base_path'] . "/resource/snmp_queries is $writeaccess_snmp_q</p>";
-						print " <p>". $config['base_path'] . "/resource/script_server is $writeaccess_script_s</p>";
-						print " <p>". $config['base_path'] . "/resource/script_queries is $writeaccess_script_q</p><br>";
-							
 						/* Print help message for unix and windows if directory is not writable */
 						if (($config['cacti_server_os'] == "unix") && isset($writable)) {
-						print 'Make sure your webserver has read and write access to the entire folder structure.<br> Example: chown -R apache.apache /resource<br>';
-					} elseif (($config['cacti_server_os'] == "win32") && isset($writable)){
-						print 'Check Permissions';
-					}
-				
+							print "Make sure your webserver has read and write access to the entire folder structure.<br> Example: chown -R apache.apache " . $config['base_path'] . "/resource<br><br>";
+						}elseif (($config['cacti_server_os'] == "win32") && isset($writable)){
+							print 'Check Permissions';
+						}else {
+						print '<font color="#008000">All folders is writable</font><br><br>';
+						} ?>		
 							
-	
-				?>		
-												
-						<?php }elseif ($step == '6') { ?>
+							
+				<?php 	/* template-import */
+						}elseif ($step == '6') { ?>
 
 						<p>Make sure all of these values are correct before continuing.</p>
 						<?php
-					
-							/* Templates*/
 							
 							print "<h1>Template Setup</h1>";
 							print "Templates allow you to monitor and graph a vast assortment of data within Cacti.  While the base Cacti install provides basic templates for most devices, you can select a few extra templates below to include in your install.<br><br>";
@@ -1049,18 +1043,16 @@ if ($step == '7') {
 								form_end_row();
 								html_end_box(false);
 								
-							}
-						
-				?>			
+							} ?>			
 						
 					
-						<?php }elseif ($step == '8') { ?>
+				<?php 	/* upgrade */
+						}elseif ($step == '8') { ?>
 
 						<p>Upgrade results:</p>
 
 						<?php
-						/* upgrade */
-						
+												
 						$current_version  = '';
 						$upgrade_results = '';
 						$failed_sql_query = false;
@@ -1105,11 +1097,9 @@ if ($step == '7') {
 								a permissions problem.</p>\n";
 						}
 
-						print $upgrade_results;
-						?>
+						print $upgrade_results; ?>
 
-						<?php 
-						/* oldversionwarning */
+				<?php 	/* upgrade-oldversion */
 						}elseif ($step == '9') { ?>
 
 						<p style='font-size: 16px; font-weight: bold; color: red;'>Important Upgrade Notice</p>
