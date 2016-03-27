@@ -43,32 +43,32 @@ switch (get_request_var('action')) {
 
 		break;
 	case 'item_add_gt':
-		get_filter_request_var('host_template_id');
-
 		template_item_add_gt();
 
-		header('Location: host_templates.php?header=false&action=edit&id=' . get_request_var('host_template_id'));
+		header('Location: host_templates.php?header=false&action=edit&id=' . get_filter_request_var('host_template_id'));
 		break;
-	case 'item_remove_gt':
-		get_filter_request_var('host_template_id');
+    case 'item_remove_gt_confirm':
+        template_item_remove_gt_confirm();
 
+        break;
+	case 'item_remove_gt':
 		template_item_remove_gt();
 
-		header('Location: host_templates.php?action=edit&id=' . get_request_var('host_template_id'));
+		header('Location: host_templates.php?action=edit&id=' . get_filter_request_var('host_template_id'));
 		break;
 	case 'item_add_dq':
-		get_filter_request_var('host_template_id');
-
 		template_item_add_dq();
 
-		header('Location: host_templates.php?header=false&action=edit&id=' . get_request_var('host_template_id'));
+		header('Location: host_templates.php?header=false&action=edit&id=' . get_filter_request_var('host_template_id'));
 		break;
-	case 'item_remove_dq':
-		get_filter_request_var('host_template_id');
+    case 'item_remove_dq_confirm':
+        template_item_remove_dq_confirm();
 
+        break;
+	case 'item_remove_dq':
 		template_item_remove_dq();
 
-		header('Location: host_templates.php?action=edit&id=' . get_request_var('host_template_id'));
+		header('Location: host_templates.php?action=edit&id=' . get_filter_request_var('host_template_id'));
 		break;
 	case 'edit':
 		top_header();
@@ -247,6 +247,57 @@ function form_actions() {
     Template Functions
    --------------------- */
 
+function template_item_remove_gt_confirm() {
+	/* ================= input validation ================= */
+	get_filter_request_var('id');
+	get_filter_request_var('host_template_id');
+	/* ==================================================== */
+
+	form_start('host_templates.php?action=edit&id' . get_request_var('host_template_id'));
+
+	html_start_box('', '100%', '', '3', 'center', '');
+
+	$template = db_fetch_row_prepared('SELECT * FROM graph_templates WHERE id = ?', array(get_request_var('id')));
+
+	?>
+	<tr>
+		<td class='topBoxAlt'>
+			<p>Click 'Continue' to delete the following Graph Template will be disassociated from the Device Template.</p>
+			<p>Graph Template Name: '<?php print $template['name'];?>'<br>
+		</td>
+	</tr>
+	<tr>
+		<td align='right'>
+			<input id='cancel' type='button' value='Cancel' onClick='$("#cdialog").dialog("close")' name='cancel'>
+			<input id='continue' type='button' value='Continue' name='continue' title='Remove Data Input Field'>
+		</td>
+	</tr>
+	<?php
+
+	html_end_box();
+
+	form_end();
+
+	?>
+	<script type='text/javascript'>
+	$(function() {
+		$('#cdialog').dialog();
+	});
+
+	$('#continue').click(function(data) {
+		$.post('host_templates.php?action=item_remove_gt', { 
+			__csrf_magic: csrfMagicToken, 
+			host_template_id: <?php print get_request_var('host_template_id');?>, 
+			id: <?php print get_request_var('id');?> 
+		}, function(data) {
+			$('#cdialog').dialog('close');
+			loadPageNoHeader('host_templates.php?action=edit&header=false&id=<?php print get_request_var('host_template_id');?>');
+		});
+	});
+	</script>
+	<?php
+}
+
 function template_item_remove_gt() {
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
@@ -254,6 +305,57 @@ function template_item_remove_gt() {
 	/* ==================================================== */
 
 	db_execute_prepared('DELETE FROM host_template_graph WHERE graph_template_id = ? AND host_template_id = ?', array(get_request_var('id'), get_request_var('host_template_id')));
+}
+
+function template_item_remove_dq_confirm() {
+	/* ================= input validation ================= */
+	get_filter_request_var('id');
+	get_filter_request_var('host_template_id');
+	/* ==================================================== */
+
+	form_start('host_templates.php?action=edit&id' . get_request_var('host_template_id'));
+
+	html_start_box('', '100%', '', '3', 'center', '');
+
+	$query = db_fetch_row_prepared('SELECT * FROM snmp_query WHERE id = ?', array(get_request_var('id')));
+
+	?>
+	<tr>
+		<td class='topBoxAlt'>
+			<p>Click 'Continue' to delete the following Data Queries will be disassociated from the Device Template.</p>
+			<p>Data Query Name: '<?php print $query['name'];?>'<br>
+		</td>
+	</tr>
+	<tr>
+		<td align='right'>
+			<input id='cancel' type='button' value='Cancel' onClick='$("#cdialog").dialog("close")' name='cancel'>
+			<input id='continue' type='button' value='Continue' name='continue' title='Remove Data Input Field'>
+		</td>
+	</tr>
+	<?php
+
+	html_end_box();
+
+	form_end();
+
+	?>
+	<script type='text/javascript'>
+	$(function() {
+		$('#cdialog').dialog();
+	});
+
+	$('#continue').click(function(data) {
+		$.post('host_templates.php?action=item_remove_dq', { 
+			__csrf_magic: csrfMagicToken, 
+			host_template_id: <?php print get_request_var('host_template_id');?>, 
+			id: <?php print get_request_var('id');?> 
+		}, function(data) {
+			$('#cdialog').dialog('close');
+			loadPageNoHeader('host_templates.php?action=edit&header=false&id=<?php print get_request_var('host_template_id');?>');
+		});
+	});
+	</script>
+	<?php
 }
 
 function template_item_remove_dq() {
@@ -315,7 +417,7 @@ function template_edit() {
 						<strong><?php print $i;?>)</strong> <?php print htmlspecialchars($item['name']);?>
 					</td>
 					<td class='right'>
-						<a class='deleteMarker fa fa-remove' title='Delete' href='<?php print htmlspecialchars('host_templates.php?action=item_remove_gt&id=' . $item['id'] . '&host_template_id=' . get_request_var('id'));?>'></a>
+						<a class='delete deleteMarker fa fa-remove' title='Delete' href='<?php print htmlspecialchars('host_templates.php?action=item_remove_gt_confirm&id=' . $item['id'] . '&host_template_id=' . get_request_var('id'));?>'></a>
 					</td>
 				<?php
 				form_end_row();
@@ -375,7 +477,7 @@ function template_edit() {
 						<strong><?php print $i;?>)</strong> <?php print htmlspecialchars($item['name']);?>
 					</td>
 					<td class='right'>
-						<a class='deleteMarker fa fa-remove' title='Delete' href='<?php print htmlspecialchars('host_templates.php?action=item_remove_dq&id=' . $item['id'] . '&host_template_id=' . get_request_var('id'));?>'></a>
+						<a class='delete deleteMarker fa fa-remove' title='Delete' href='<?php print htmlspecialchars('host_templates.php?action=item_remove_dq_confirm&id=' . $item['id'] . '&host_template_id=' . get_request_var('id'));?>'></a>
 					</td>
 				<?php
 				form_end_row();
@@ -419,20 +521,55 @@ function template_edit() {
 
 	?>
 	<script type='text/javascript'>
+
 	$(function() {
+		$('body').append("<div id='cdialog'></div>");
+
+		$('.delete').click(function (event) {
+			event.preventDefault();
+
+			request = $(this).attr('href');
+			$.get(request, function(data) {
+				$('#cdialog').html(data);
+				applySkin();
+				$('#cdialog').dialog({ 
+					title: 'Delete Data Input Field', 
+					close: function () { $('.delete').blur(); $('.selectable').removeClass('selected'); },
+					minHeight: 80, 
+					minWidth: 500 
+				});
+			});
+		}).css('cursor', 'pointer');
+
 		$('#add_dq').click(function() {
-			$.post('host_templates.php?action=item_add_dq', { host_template_id: $('#id').val(), snmp_query_id: $('#snmp_query_id').val(), reindex_method: $('#reindex_method').val(), __csrf_magic: csrfMagicToken }).done(function(data) {
+			$.post('host_templates.php?action=item_add_dq', { 
+				host_template_id: $('#id').val(), 
+				snmp_query_id: $('#snmp_query_id').val(), 
+				reindex_method: $('#reindex_method').val(), 
+				__csrf_magic: csrfMagicToken 
+			}).done(function(data) {
 				$('#main').html(data);
 				applySkin();
 			});
 		});
 
 		$('#add_gt').click(function() {
-			$.post('host_templates.php?action=item_add_gt', { host_template_id: $('#id').val(), graph_template_id: $('#graph_template_id').val(), __csrf_magic: csrfMagicToken }).done(function(data) {
+			$.post('host_templates.php?action=item_add_gt', { 
+				host_template_id: $('#id').val(), 
+				graph_template_id: $('#graph_template_id').val(), 
+				__csrf_magic: csrfMagicToken 
+			}).done(function(data) {
 				$('#main').html(data);
 				applySkin();
 			});
 		});
+	});
+
+	</script>
+	<?php
+	?>
+	<script type='text/javascript'>
+	$(function() {
 	});
 	</script>
 	<?php

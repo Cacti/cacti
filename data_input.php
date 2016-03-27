@@ -39,12 +39,14 @@ switch (get_request_var('action')) {
 		form_actions();
 
 		break;
-	case 'field_remove':
-		get_filter_request_var('data_input_id');
+	case 'field_remove_confirm':
+		field_remove_confirm();
 
+		break;
+	case 'field_remove':
 		field_remove();
 
-		header('Location: data_input.php?header=false&action=edit&id=' . get_request_var('data_input_id'));
+		header('Location: data_input.php?header=false&action=edit&id=' . get_filter_request_var('data_input_id'));
 		break;
 	case 'field_edit':
 		top_header();
@@ -233,6 +235,58 @@ function form_actions() {
     CDEF Item Functions
    -------------------------- */
 
+function field_remove_confirm() {
+	/* ================= input validation ================= */
+	get_filter_request_var('id');
+	get_filter_request_var('data_input_id');
+	/* ==================================================== */
+
+	form_start('data_intput.php?action=edit&id' . get_request_var('data_input_id'));
+
+	html_start_box('', '100%', '', '3', 'center', '');
+
+	$field = db_fetch_row_prepared('SELECT * FROM data_input_fields WHERE id = ?', array(get_request_var('id')));
+
+	?>
+	<tr>
+		<td class='topBoxAlt'>
+			<p>Click 'Continue' to delete the following Data Input Field.</p>
+			<p>Field Name: '<?php print $field['data_name'];?>'<br>
+			<p>Friendly Name: '<?php print $field['name'];?>'<br>
+		</td>
+	</tr>
+	<tr>
+		<td align='right'>
+			<input id='cancel' type='button' value='Cancel' onClick='$("#cdialog").dialog("close")' name='cancel'>
+			<input id='continue' type='button' value='Continue' name='continue' title='Remove Data Input Field'>
+		</td>
+	</tr>
+	<?php
+
+	html_end_box();
+
+	form_end();
+
+	?>
+	<script type='text/javascript'>
+	$(function() {
+		$('#cdialog').dialog();
+	});
+
+	$('#continue').click(function(data) {
+		$.post('data_input.php?action=field_remove', { 
+			__csrf_magic: csrfMagicToken, 
+			data_input_id: <?php print get_request_var('data_input_id');?>, 
+			id: <?php print get_request_var('id');?> 
+		}, function(data) {
+			$('#cdialog').dialog('close');
+			loadPageNoHeader('data_input.php?action=edit&header=false&id=<?php print get_request_var('data_input_id');?>');
+		});
+	});
+	</script>
+	<?php
+}
+
 function field_remove() {
 	global $registered_cacti_names;
 
@@ -241,30 +295,19 @@ function field_remove() {
 	get_filter_request_var('data_input_id');
 	/* ==================================================== */
 
-	if ((read_config_option('deletion_verification') == 'on') && (!isset_request_var('confirm'))) {
-		top_header();
+	/* get information about the field we're going to delete so we can re-order the seqs */
+	$field = db_fetch_row_prepared('SELECT input_output,data_input_id FROM data_input_fields WHERE id = ?', array(get_request_var('id')));
 
-		form_confirm('Are You Sure?', "Are you sure you want to delete the field '" . htmlspecialchars(db_fetch_cell_prepared('SELECT name FROM data_input_fields WHERE id = ?', array(get_request_var('id'))), ENT_QUOTES) . "'?", htmlspecialchars('data_input.php?action=edit&id=' . get_request_var('data_input_id')), htmlspecialchars('data_input.php?action=field_remove&id=' . get_request_var('id') . '&data_input_id=' . get_request_var('data_input_id')));
+	db_execute_prepared('DELETE FROM data_input_fields WHERE id = ?', array(get_request_var('id')));
+	db_execute_prepared('DELETE FROM data_input_data WHERE data_input_field_id = ?', array(get_request_var('id')));
 
-		bottom_footer();
-		exit;
-	}
-
-	if ((read_config_option('deletion_verification') == '') || (isset_request_var('confirm'))) {
-		/* get information about the field we're going to delete so we can re-order the seqs */
-		$field = db_fetch_row_prepared('SELECT input_output,data_input_id FROM data_input_fields WHERE id = ?', array(get_request_var('id')));
-
-		db_execute_prepared('DELETE FROM data_input_fields WHERE id = ?', array(get_request_var('id')));
-		db_execute_prepared('DELETE FROM data_input_data WHERE data_input_field_id = ?', array(get_request_var('id')));
-
-		/* when a field is deleted; we need to re-order the field sequences */
-		if (($field['input_output'] == 'in') && (preg_match_all('/<([_a-zA-Z0-9]+)>/', db_fetch_cell_prepared('SELECT input_string FROM data_input WHERE id = ?', array($field['data_input_id'])), $matches))) {
-			$j = 0;
-			for ($i=0; ($i < count($matches[1])); $i++) {
-				if (in_array($matches[1][$i], $registered_cacti_names) == false) {
-					$j++;
-					db_execute_prepared("UPDATE data_input_fields SET sequence = ? WHERE data_input_id = ? AND input_output = 'in' AND data_name = ?", array($j, $field['data_input_id'], $matches[1][$i]));
-				}
+	/* when a field is deleted; we need to re-order the field sequences */
+	if (($field['input_output'] == 'in') && (preg_match_all('/<([_a-zA-Z0-9]+)>/', db_fetch_cell_prepared('SELECT input_string FROM data_input WHERE id = ?', array($field['data_input_id'])), $matches))) {
+		$j = 0;
+		for ($i=0; ($i < count($matches[1])); $i++) {
+			if (in_array($matches[1][$i], $registered_cacti_names) == false) {
+				$j++;
+				db_execute_prepared("UPDATE data_input_fields SET sequence = ? WHERE data_input_id = ? AND input_output = 'in' AND data_name = ?", array($j, $field['data_input_id'], $matches[1][$i]));
 			}
 		}
 	}
@@ -418,7 +461,7 @@ function data_edit() {
 						<?php print htmlspecialchars($field['name']);?>
 					</td>
 					<td align="right">
-						<a class='pic deleteMarker fa fa-remove' href='<?php print htmlspecialchars('data_input.php?action=field_remove&id=' . $field['id'] . '&data_input_id=' . get_request_var('id'));?>' title='Delete'></a>
+						<a class='delete deleteMarker fa fa-remove' href='<?php print htmlspecialchars('data_input.php?action=field_remove_confirm&id=' . $field['id'] . '&data_input_id=' . get_request_var('id'));?>' title='Delete'></a>
 					</td>
 					<?php
 				form_end_row();
@@ -456,7 +499,7 @@ function data_edit() {
 						<?php print html_boolean_friendly($field['update_rra']);?>
 					</td>
 					<td align="right">
-						<a class='pic deleteMarker fa fa-remove' href='<?php print htmlspecialchars('data_input.php?action=field_remove&id=' . $field['id'] . '&data_input_id=' . get_request_var('id'));?>' title='Delete'></a>
+						<a class='delete deleteMarker fa fa-remove' href='<?php print htmlspecialchars('data_input.php?action=field_remove_confirm&id=' . $field['id'] . '&data_input_id=' . get_request_var('id'));?>' title='Delete'></a>
 					</td>
 				<?php
 				form_end_row();
@@ -469,6 +512,32 @@ function data_edit() {
 	}
 
 	form_save_button('data_input.php', 'return');
+
+	?>
+	<script type='text/javascript'>
+
+	$(function() {
+		$('body').append("<div id='cdialog'></div>");
+
+		$('.delete').click(function (event) {
+			event.preventDefault();
+
+			request = $(this).attr('href');
+			$.get(request, function(data) {
+				$('#cdialog').html(data);
+				applySkin();
+				$('#cdialog').dialog({ 
+					title: 'Delete Data Input Field', 
+					close: function () { $('.delete').blur(); $('.selectable').removeClass('selected'); },
+					minHeight: 80, 
+					minWidth: 500 
+				});
+			});
+		}).css('cursor', 'pointer');
+	});
+
+	</script>
+	<?php
 }
 
 function data() {

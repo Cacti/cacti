@@ -67,7 +67,7 @@ a:hover {
 	color: #fff;
 }
 
-th .fa {
+th i.fa {
     margin-top: -5px;
     position: absolute;
     right: 3px;
@@ -981,6 +981,7 @@ th.sortable {
 	vertical-align:middle;
 	text-align:left;
 	font-size: 12px;
+	font-weight: normal;
 }
 
 .tableHeader th div {
@@ -1432,7 +1433,6 @@ ul#nav {
 }
 
 .ui-tooltip-content {
-	min-width: 100px !important;
 	max-width: 500px !important;
 	overflow:auto !important;
 	opacity: 0.95;

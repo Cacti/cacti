@@ -42,59 +42,43 @@ switch (get_request_var('action')) {
 
 		break;
 	case 'item_moveup_dssv':
-		get_filter_request_var('snmp_query_graph_id');
-		get_filter_request_var('snmp_query_id');
-
 		data_query_item_moveup_dssv();
 
-		header('Location: data_queries.php?header=false&action=item_edit&id=' . get_request_var('snmp_query_graph_id') . '&snmp_query_id=' . get_request_var('snmp_query_id'));
+		header('Location: data_queries.php?header=false&action=item_edit&id=' . get_filter_request_var('snmp_query_graph_id') . '&snmp_query_id=' . get_filter_request_var('snmp_query_id'));
 		break;
 	case 'item_movedown_dssv':
-		get_filter_request_var('snmp_query_graph_id');
-		get_filter_request_var('snmp_query_id');
-
 		data_query_item_movedown_dssv();
 
-		header('Location: data_queries.php?header=false&action=item_edit&id=' . get_request_var('snmp_query_graph_id') . '&snmp_query_id=' . get_request_var('snmp_query_id'));
+		header('Location: data_queries.php?header=false&action=item_edit&id=' . get_filter_request_var('snmp_query_graph_id') . '&snmp_query_id=' . get_filter_request_var('snmp_query_id'));
 		break;
 	case 'item_remove_dssv':
-		get_filter_request_var('snmp_query_graph_id');
-		get_filter_request_var('snmp_query_id');
-
 		data_query_item_remove_dssv();
 
-		header('Location: data_queries.php?header=false&action=item_edit&id=' . get_request_var('snmp_query_graph_id') . '&snmp_query_id=' . get_request_var('snmp_query_id'));
+		header('Location: data_queries.php?header=false&action=item_edit&id=' . get_filter_request_var('snmp_query_graph_id') . '&snmp_query_id=' . get_filter_request_var('snmp_query_id'));
 		break;
 	case 'item_moveup_gsv':
-		get_filter_request_var('snmp_query_graph_id');
-		get_filter_request_var('snmp_query_id');
-
 		data_query_item_moveup_gsv();
 
-		header('Location: data_queries.php?header=false&action=item_edit&id=' . get_request_var('snmp_query_graph_id') . '&snmp_query_id=' . get_request_var('snmp_query_id'));
+		header('Location: data_queries.php?header=false&action=item_edit&id=' . get_filter_request_var('snmp_query_graph_id') . '&snmp_query_id=' . get_filter_request_var('snmp_query_id'));
 		break;
 	case 'item_movedown_gsv':
-		get_filter_request_var('snmp_query_graph_id');
-		get_filter_request_var('snmp_query_id');
-
 		data_query_item_movedown_gsv();
 
-		header('Location: data_queries.php?header=false&action=item_edit&id=' . get_request_var('snmp_query_graph_id') . '&snmp_query_id=' . get_request_var('snmp_query_id'));
+		header('Location: data_queries.php?header=false&action=item_edit&id=' . get_filter_request_var('snmp_query_graph_id') . '&snmp_query_id=' . get_filter_request_var('snmp_query_id'));
 		break;
 	case 'item_remove_gsv':
-		get_filter_request_var('snmp_query_graph_id');
-		get_filter_request_var('snmp_query_id');
-
 		data_query_item_remove_gsv();
 
-		header('Location: data_queries.php?header=false&action=item_edit&id=' . get_request_var('snmp_query_graph_id') . '&snmp_query_id=' . get_request_var('snmp_query_id'));
+		header('Location: data_queries.php?header=false&action=item_edit&id=' . get_filter_request_var('snmp_query_graph_id') . '&snmp_query_id=' . get_filter_request_var('snmp_query_id'));
 		break;
-	case 'item_remove':
-		get_filter_request_var('snmp_query_id');
+    case 'item_remove_confirm':
+        data_query_item_remove_confirm();
 
+        break;
+	case 'item_remove':
 		data_query_item_remove();
 
-		header('Location: data_queries.php?header=false&action=edit&id=' . get_request_var('snmp_query_id'));
+		header('Location: data_queries.php?header=false&action=edit&id=' . get_filter_request_var('snmp_query_id'));
 		break;
 	case 'item_edit':
 		top_header();
@@ -369,27 +353,68 @@ function data_query_item_remove_dssv() {
 	db_execute_prepared('DELETE FROM snmp_query_graph_rrd_sv WHERE id = ?', array(get_request_var('id')));
 }
 
-function data_query_item_remove() {
+function data_query_item_remove_confirm() {
+	global $vdef_functions, $vdef_item_types, $custom_vdef_data_source_types;
+
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
 	get_filter_request_var('snmp_query_id');
 	/* ==================================================== */
 
-	if ((read_config_option('deletion_verification') == 'on') && (!isset_request_var('confirm'))) {
-		top_header();
+	form_start('data_queries.php?action=edit&id' . get_request_var('snmp_query_id'));
 
-		form_confirm('Are You Sure?', "Are you sure you want to delete the Data Query Graph '" . htmlspecialchars(db_fetch_cell_prepared('SELECT name FROM snmp_query_graph WHERE id = ?', array(get_request_var('id'))), ENT_QUOTES) . "'?", htmlspecialchars('data_queries.php?action=edit&id=' . get_request_var('snmp_query_id')), htmlspecialchars('data_queries.php?action=item_remove&id=' . get_request_var('id') . '&snmp_query_id=' . get_request_var('snmp_query_id')));
+	html_start_box('', '100%', '', '3', 'center', '');
 
-		bottom_footer();
-		exit;
-	}
+	$graph_template = db_fetch_row('SELECT * FROM snmp_query_graph WHERE id=' . get_request_var('id'));
 
-	if ((read_config_option('deletion_verification') == '') || (isset_request_var('confirm'))) {
-		db_execute_prepared('DELETE FROM snmp_query_graph WHERE id = ?', array(get_request_var('id')));
-		db_execute_prepared('DELETE FROM snmp_query_graph_rrd WHERE snmp_query_graph_id = ?', array(get_request_var('id')));
-		db_execute_prepared('DELETE FROM snmp_query_graph_rrd_sv WHERE snmp_query_graph_id = ?', array(get_request_var('id')));
-		db_execute_prepared('DELETE FROM snmp_query_graph_sv WHERE snmp_query_graph_id = ?', array(get_request_var('id')));
-	}
+	?>
+	<tr>
+		<td class='topBoxAlt'>
+			<p>Click 'Continue' to delete the following Data Query Graph Association.</p>
+			<p>Graph Name: '<?php print $graph_template['name'];?>'<br>
+		</td>
+	</tr>
+	<tr>
+		<td align='right'>
+			<input id='cancel' type='button' value='Cancel' onClick='$("#cdialog").dialog("close");' name='cancel'>
+			<input id='continue' type='button' value='Continue' name='continue' title='Remove VDEF Item'>
+		</td>
+	</tr>
+	<?php
+
+	html_end_box();
+
+	form_end();
+
+	?>
+	<script type='text/javascript'>
+	$(function() {
+		$('#cdialog').dialog();
+	});
+
+	$('#continue').click(function(data) {
+		$.post('data_queries.php?action=item_remove', { 
+			__csrf_magic: csrfMagicToken, 
+			snmp_query_id: <?php print get_request_var('snmp_query_id');?>, 
+			id: <?php print get_request_var('id');?> 
+		}, function(data) {
+			$('#cdialog').dialog('close');
+			loadPageNoHeader('data_queries.php?action=edit&header=false&id=<?php print get_request_var('snmp_query_id');?>');
+		});
+	});
+	</script>
+	<?php
+}
+		
+function data_query_item_remove() {
+	/* ================= input validation ================= */
+	get_filter_request_var('id');
+	/* ==================================================== */
+
+	db_execute_prepared('DELETE FROM snmp_query_graph WHERE id = ?', array(get_request_var('id')));
+	db_execute_prepared('DELETE FROM snmp_query_graph_rrd WHERE snmp_query_graph_id = ?', array(get_request_var('id')));
+	db_execute_prepared('DELETE FROM snmp_query_graph_rrd_sv WHERE snmp_query_graph_id = ?', array(get_request_var('id')));
+	db_execute_prepared('DELETE FROM snmp_query_graph_sv WHERE snmp_query_graph_id = ?', array(get_request_var('id')));
 }
 
 function data_query_item_edit() {
@@ -841,7 +866,7 @@ function data_query_edit() {
 							<?php print $snmp_query_graph['id'];?>
 						</td>
 						<td class='right'>
-							<a class='deleteMarker fa fa-remove' title='Delete' href='<?php print htmlspecialchars('data_queries.php?action=item_remove&id=' . $snmp_query_graph['id'] . '&snmp_query_id=' . $snmp_query['id']);?>'></a>
+							<a class='delete deleteMarker fa fa-remove' title='Delete' href='<?php print htmlspecialchars('data_queries.php?action=item_remove_confirm&id=' . $snmp_query_graph['id'] . '&snmp_query_id=' . $snmp_query['id']);?>'></a>
 						</td>
 					</tr>
 					<?php
@@ -855,6 +880,32 @@ function data_query_edit() {
 	}
 
 	form_save_button('data_queries.php', 'return');
+
+	?>
+	<script type='text/javascript'>
+
+	$(function() {
+		$('body').append("<div id='cdialog'></div>");
+
+		$('.delete').click(function (event) {
+			event.preventDefault();
+
+			request = $(this).attr('href');
+			$.get(request, function(data) {
+				$('#cdialog').html(data);
+				applySkin();
+				$('#cdialog').dialog({ 
+					title: 'Delete Associated Graph', 
+					close: function () { $('.delete').blur(); $('.selectable').removeClass('selected'); },
+					minHeight: 80, 
+					minWidth: 500 
+				});
+			});
+		}).css('cursor', 'pointer');
+	});
+
+	</script>
+	<?php
 }
 
 function data_query() {
