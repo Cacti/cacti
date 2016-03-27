@@ -555,7 +555,12 @@ function profile_edit() {
 			$.get(request, function(data) {
 				$('#cdialog').html(data);
 				applySkin();
-				$('#cdialog').dialog({ title: 'Delete Data Source Profile Item', minHeight: 80, minWidth: 500 });
+				$('#cdialog').dialog({ 
+					title: 'Delete Data Source Profile Item', 
+					close: function () { $('.delete').blur(); $('.selectable').removeClass('selected'); },
+					minHeight: 80, 
+					minWidth: 500 
+				});
 			});
 		}).css('cursor', 'pointer');
 		<?php }else{ ?>
