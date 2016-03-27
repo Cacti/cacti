@@ -42,63 +42,43 @@ switch (get_request_var('action')) {
 
 		break;
 	case 'item_moveup_dssv':
-		get_filter_request_var('snmp_query_graph_id');
-		get_filter_request_var('snmp_query_id');
-
 		data_query_item_moveup_dssv();
 
-		header('Location: data_queries.php?header=false&action=item_edit&id=' . get_request_var('snmp_query_graph_id') . '&snmp_query_id=' . get_request_var('snmp_query_id'));
+		header('Location: data_queries.php?header=false&action=item_edit&id=' . get_filter_request_var('snmp_query_graph_id') . '&snmp_query_id=' . get_filter_request_var('snmp_query_id'));
 		break;
 	case 'item_movedown_dssv':
-		get_filter_request_var('snmp_query_graph_id');
-		get_filter_request_var('snmp_query_id');
-
 		data_query_item_movedown_dssv();
 
-		header('Location: data_queries.php?header=false&action=item_edit&id=' . get_request_var('snmp_query_graph_id') . '&snmp_query_id=' . get_request_var('snmp_query_id'));
+		header('Location: data_queries.php?header=false&action=item_edit&id=' . get_filter_request_var('snmp_query_graph_id') . '&snmp_query_id=' . get_filter_request_var('snmp_query_id'));
 		break;
 	case 'item_remove_dssv':
-		get_filter_request_var('snmp_query_graph_id');
-		get_filter_request_var('snmp_query_id');
-
 		data_query_item_remove_dssv();
 
-		header('Location: data_queries.php?header=false&action=item_edit&id=' . get_request_var('snmp_query_graph_id') . '&snmp_query_id=' . get_request_var('snmp_query_id'));
+		header('Location: data_queries.php?header=false&action=item_edit&id=' . get_filter_request_var('snmp_query_graph_id') . '&snmp_query_id=' . get_filter_request_var('snmp_query_id'));
 		break;
 	case 'item_moveup_gsv':
-		get_filter_request_var('snmp_query_graph_id');
-		get_filter_request_var('snmp_query_id');
-
 		data_query_item_moveup_gsv();
 
-		header('Location: data_queries.php?header=false&action=item_edit&id=' . get_request_var('snmp_query_graph_id') . '&snmp_query_id=' . get_request_var('snmp_query_id'));
+		header('Location: data_queries.php?header=false&action=item_edit&id=' . get_filter_request_var('snmp_query_graph_id') . '&snmp_query_id=' . get_filter_request_var('snmp_query_id'));
 		break;
 	case 'item_movedown_gsv':
-		get_filter_request_var('snmp_query_graph_id');
-		get_filter_request_var('snmp_query_id');
-
 		data_query_item_movedown_gsv();
 
-		header('Location: data_queries.php?header=false&action=item_edit&id=' . get_request_var('snmp_query_graph_id') . '&snmp_query_id=' . get_request_var('snmp_query_id'));
+		header('Location: data_queries.php?header=false&action=item_edit&id=' . get_filter_request_var('snmp_query_graph_id') . '&snmp_query_id=' . get_filter_request_var('snmp_query_id'));
 		break;
 	case 'item_remove_gsv':
-		get_filter_request_var('snmp_query_graph_id');
-		get_filter_request_var('snmp_query_id');
-
 		data_query_item_remove_gsv();
 
-		header('Location: data_queries.php?header=false&action=item_edit&id=' . get_request_var('snmp_query_graph_id') . '&snmp_query_id=' . get_request_var('snmp_query_id'));
+		header('Location: data_queries.php?header=false&action=item_edit&id=' . get_filter_request_var('snmp_query_graph_id') . '&snmp_query_id=' . get_filter_request_var('snmp_query_id'));
 		break;
     case 'item_remove_confirm':
         data_query_item_remove_confirm();
 
         break;
 	case 'item_remove':
-		get_filter_request_var('snmp_query_id');
-
 		data_query_item_remove();
 
-		header('Location: data_queries.php?header=false&action=edit&id=' . get_request_var('snmp_query_id'));
+		header('Location: data_queries.php?header=false&action=edit&id=' . get_filter_request_var('snmp_query_id'));
 		break;
 	case 'item_edit':
 		top_header();
@@ -914,7 +894,12 @@ function data_query_edit() {
 			$.get(request, function(data) {
 				$('#cdialog').html(data);
 				applySkin();
-				$('#cdialog').dialog({ title: 'Delete Associated Graph', minHeight: 80, minWidth: 500 });
+				$('#cdialog').dialog({ 
+					title: 'Delete Associated Graph', 
+					close: function () { $('.delete').blur() },
+					minHeight: 80, 
+					minWidth: 500 
+				});
 			});
 		}).css('cursor', 'pointer');
 	});
