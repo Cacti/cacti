@@ -821,7 +821,7 @@ function graph_perms_edit($tab, $header_label) {
 					$sql_having .= (strlen($sql_having) ? ' OR':'') . " (user$i=" . $policy['id'];
 				}
 			}
-			$sql_join   .= 'LEFT JOIN user_auth_' . ($policy['type'] == 'user' ? '':'group_') . "perms AS uap$i ON (gl.id=uap$i.item_id AND uap$i.type=1) ";
+			$sql_join   .= 'LEFT JOIN user_auth_' . ($policy['type'] == 'user' ? '':'group_') . "perms AS uap$i ON (gl.id=uap$i.item_id AND uap$i.type=1 AND uap$i." . ($policy['type'] == 'user' ? 'user_':'group_') . 'id=' . get_request_var('id') . ') ';
 			$sql_select .= (strlen($sql_select) ? ', ':'') . "uap$i." . $policy['type'] . "_id AS user$i";
 			$i++;
 
@@ -832,7 +832,7 @@ function graph_perms_edit($tab, $header_label) {
 					$sql_having .= " OR (user$i=" . $policy['id'];
 				}
 			}
-			$sql_join   .= 'LEFT JOIN user_auth_' . ($policy['type'] == 'user' ? '':'group_') . "perms AS uap$i ON (gl.host_id=uap$i.item_id AND uap$i.type=3) ";
+			$sql_join   .= 'LEFT JOIN user_auth_' . ($policy['type'] == 'user' ? '':'group_') . "perms AS uap$i ON (gl.host_id=uap$i.item_id AND uap$i.type=3 AND uap$i." . ($policy['type'] == 'user' ? 'user_':'group_') . 'id=' . get_request_var('id') . ') ';
 			$sql_select .= (strlen($sql_select) ? ', ':'') . "uap$i." . $policy['type'] . "_id AS user$i";
 			$i++;
 
@@ -843,7 +843,7 @@ function graph_perms_edit($tab, $header_label) {
 					$sql_having .= " $sql_operator user$i=" . $policy['id'] . '))';
 				}
 			}
-			$sql_join   .= 'LEFT JOIN user_auth_' . ($policy['type'] == 'user' ? '':'group_') . "perms AS uap$i ON (gl.graph_template_id=uap$i.item_id AND uap$i.type=4) ";
+			$sql_join   .= 'LEFT JOIN user_auth_' . ($policy['type'] == 'user' ? '':'group_') . "perms AS uap$i ON (gl.graph_template_id=uap$i.item_id AND uap$i.type=4 AND uap$i." . ($policy['type'] == 'user' ? 'user_':'group_') . 'id=' . get_request_var('id') . ') ';
 			$sql_select .= (strlen($sql_select) ? ', ':'') . "uap$i." . $policy['type'] . "_id AS user$i";
 			$i++;
 		}
@@ -1090,7 +1090,7 @@ function graph_perms_edit($tab, $header_label) {
 			COUNT(host.id)
 			FROM host
 			LEFT JOIN user_auth_perms 
-			ON (host.id = user_auth_perms.item_id AND user_auth_perms.type = 3)
+			ON (host.id = user_auth_perms.item_id AND user_auth_perms.type = 3 AND user_auth_perms.user_id = " . get_request_var('id') . ")
 			$sql_where");
 
 		$host_graphs       = array_rekey(db_fetch_assoc('SELECT host_id, count(*) as graphs FROM graph_local GROUP BY host_id'), 'host_id', 'graphs');
@@ -1099,7 +1099,7 @@ function graph_perms_edit($tab, $header_label) {
 		$sql_query = "SELECT host.*, user_auth_perms.user_id
 			FROM host 
 			LEFT JOIN user_auth_perms 
-			ON (host.id = user_auth_perms.item_id AND user_auth_perms.type = 3)
+			ON (host.id = user_auth_perms.item_id AND user_auth_perms.type = 3 AND user_auth_perms.user_id = " . get_request_var('id') . ")
 			$sql_where 
 			ORDER BY description
 			LIMIT " . ($rows*(get_request_var('page')-1)) . ',' . $rows;
@@ -1230,7 +1230,7 @@ function graph_perms_edit($tab, $header_label) {
 			INNER JOIN graph_local AS gl
 			ON gt.id = gl.graph_template_id
 			LEFT JOIN user_auth_perms 
-			ON (gt.id = user_auth_perms.item_id AND user_auth_perms.type = 4)
+			ON (gt.id = user_auth_perms.item_id AND user_auth_perms.type = 4 AND user_auth_perms.user_id = " . get_request_var('id') . ")
 			$sql_where
 			GROUP BY gl.graph_template_id");
 
@@ -1239,7 +1239,7 @@ function graph_perms_edit($tab, $header_label) {
 			INNER JOIN graph_local AS gl
 			ON gt.id = gl.graph_template_id
 			LEFT JOIN user_auth_perms 
-			ON (gt.id = user_auth_perms.item_id AND user_auth_perms.type = 4)
+			ON (gt.id = user_auth_perms.item_id AND user_auth_perms.type = 4 AND user_auth_perms.user_id = " . get_request_var('id') . ")
 			$sql_where 
 			GROUP BY gl.graph_template_id
 			ORDER BY name
@@ -1366,13 +1366,13 @@ function graph_perms_edit($tab, $header_label) {
 			COUNT(gt.id)
 			FROM graph_tree AS gt
 			LEFT JOIN user_auth_perms 
-			ON (gt.id = user_auth_perms.item_id AND user_auth_perms.type = 2)
+			ON (gt.id = user_auth_perms.item_id AND user_auth_perms.type = 2 AND user_auth_perms.user_id = " . get_request_var('id') . ")
 			$sql_where");
 
 		$sql_query = "SELECT gt.id, gt.name, user_auth_perms.user_id
 			FROM graph_tree AS gt
 			LEFT JOIN user_auth_perms 
-			ON (gt.id = user_auth_perms.item_id AND user_auth_perms.type = 2)
+			ON (gt.id = user_auth_perms.item_id AND user_auth_perms.type = 2 AND user_auth_perms.user_id = " . get_request_var('id') . ")
 			$sql_where 
 			ORDER BY name
 			LIMIT " . ($rows*(get_request_var('page')-1)) . ',' . $rows;
