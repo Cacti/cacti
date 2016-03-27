@@ -351,7 +351,9 @@ function upgrade_to_1_0_0() {
 	db_install_execute('1.0', "ALTER TABLE graph_tree_items 
 		MODIFY COLUMN id BIGINT UNSIGNED NOT NULL auto_increment, 
 		ADD COLUMN parent BIGINT UNSIGNED default NULL AFTER id, 
-		ADD COLUMN position int UNSIGNED default NULL AFTER parent");
+		ADD COLUMN position int UNSIGNED default NULL AFTER parent,
+		ADD INDEX parent (parent)");
+		
 
 	db_install_execute('1.0', "CREATE TABLE IF NOT EXISTS `user_auth_cache` (
 		`user_id` int(10) unsigned NOT NULL DEFAULT '0',
@@ -361,6 +363,27 @@ function upgrade_to_1_0_0() {
 		ENGINE=MyISAM 
 		COMMENT='Caches Remember Me Details'");
 
+	db_install_execute('1.0', "ALTER TABLE host 
+		MODIFY COLUMN status_fail_date timestamp NOT NULL DEFAULT '0000-00-00 00:00:00', 
+		MODIFY COLUMN status_rec_date timestamp NOT NULL DEFAULT '0000-00-00 00:00:00'");
+		
+	db_install_execute('1.0', "ALTER TABLE poller
+		MODIFY COLUMN last_update timestamp NOT NULL DEFAULT '0000-00-00 00:00:00'");
+		
+	db_install_execute('1.0', "ALTER TABLE poller_command
+		MODIFY COLUMN time timestamp NOT NULL DEFAULT '0000-00-00 00:00:00'");
+		
+	db_install_execute('1.0', "ALTER TABLE poller_output
+		MODIFY COLUMN time timestamp NOT NULL DEFAULT '0000-00-00 00:00:00'");
+	
+	db_install_execute('1.0', "ALTER TABLE poller_time
+		MODIFY COLUMN start_time timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+		MODIFY COLUMN end_time timestamp NOT NULL DEFAULT '0000-00-00 00:00:00'");
+	
+	db_install_execute('1.0', "ALTER TABLE user_log
+		MODIFY COLUMN time timestamp NOT NULL DEFAULT '0000-00-00 00:00:00'");
+	
+		
 	// Add secpass fields
 	db_install_add_column ('1.0', 'user_auth', array('name' => 'lastchange', 'type' => 'int(12)', 'NULL' => false, 'default' => '-1'));
 	db_install_add_column ('1.0', 'user_auth', array('name' => 'lastlogin', 'type' => 'int(12)', 'NULL' => false, 'default' => '-1'));
