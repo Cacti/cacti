@@ -412,15 +412,21 @@ case 'properties':
 	if (!isempty_request_var('graph_end')) {
 		$graph_data_array['graph_end'] = get_request_var('graph_end');
 	}
-
+	
+	$graph_data_array['output_flag'] = RRDTOOL_OUTPUT_STDERR;
+	$graph_data_array['print_source'] = 1;
+	
 	print "<table align='center' width='100%' class='cactiTable'<tr><td>\n";
 	print "<table class='cactiTable' width='100%'>\n";
 	print "<tr class='tableHeader'><td colspan='3' class='linkOverDark' style='font-weight:bold;'>RRDtool Graph Syntax</td></tr>\n";
 	print "<tr><td><pre>\n";
-	print trim(@rrdtool_function_graph(get_request_var('local_graph_id'), get_request_var('rra_id'), $graph_data_array));
+	print "<span class='textInfo'>RRDTool Command:</span><br>";
+	print @rrdtool_function_graph(get_request_var('local_graph_id'), get_request_var('rra_id'), $graph_data_array);
+	unset($graph_data_array['print_source']);
+	print "<span class='textInfo'>RRDTool Says:</span><br>";
+	print @rrdtool_function_graph(get_request_var('local_graph_id'), get_request_var('rra_id'), $graph_data_array);
 	print "</pre></td></tr>\n";
 	print "</table></td></tr></table>\n";
-
 	exit;
 	break;
 }
