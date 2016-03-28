@@ -532,12 +532,12 @@ if (isset($_REQUEST['step']) && $_REQUEST['step'] > 0) {
 	/* upgrade - if user runs old version send to upgrade-oldversion*/
 	} elseif (($step == '8') && ($old_version_index <= array_search('0.8.5a', $cacti_versions))) {
 		$step = '9';
-	/* upgrade - if user upgrades send to checkdependencies */
+	/* upgrade - if user upgrades send to settingscheck */
 	} elseif ($step == '8') {
-		$step = '3';
-	/* upgrade-oldversion - if user upgrades from old version send to checkdependencies */
+		$step = '4';
+	/* upgrade-oldversion - if user upgrades from old version send to settingscheck */
 	} elseif ($step == '9') {
-		$step = '3';
+		$step = '4';
 	/* settingscheck - send to settings-install */
 	} elseif ($step == '4') {
 		$step = '5';
