@@ -259,7 +259,8 @@ $data_source_types = array(1 =>
 	'GAUGE',
 	'COUNTER',
 	'DERIVE',
-	'ABSOLUTE'
+	'ABSOLUTE',
+	'COMPUTE'
 );
 
 $rrd_font_render_modes = array(

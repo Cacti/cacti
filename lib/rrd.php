@@ -27,13 +27,13 @@ define('MAX_FETCH_CACHE_SIZE', 5);
 
 if( read_config_option('storage_location') ) {
 	/* load crypt libraries only if the Cacti RRDtool Proxy Server is in use */
-	set_include_path($config["include_path"] . "/phpseclib/");
+	set_include_path($config['include_path'] . '/phpseclib/');
 	include_once('Crypt/RSA.php');
 	include_once('Crypt/AES.php');
 }
 
 function escape_command($command) {
-	return $command;		# we escape every single argument now, no need for "special" escaping
+	return $command;		# we escape every single argument now, no need for 'special' escaping
 	#return preg_replace("/(\\\$|`)/", "", $command); # current cacti code
 	#TODO return preg_replace((\\\$(?=\w+|\*|\@|\#|\?|\-|\\\$|\!|\_|[0-9]|\(.*\))|`(?=.*(?=`)))","$2", $command);  #suggested by ldevantier to allow for a single $
 }
@@ -1137,8 +1137,8 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 	 * "best-fit" resolution fit algorithm */
 	if (empty($rra_id)) {
 		if ((empty($graph_data_array['graph_start'])) || (empty($graph_data_array['graph_end']))) {
-			$rra['rows'] = 600;
-			$rra['steps'] = 1;
+			$rra['rows']     = 600;
+			$rra['steps']    = 1;
 			$rra['timespan'] = 86400;
 		}else{
 			/* get a list of RRAs related to this graph */
@@ -1162,7 +1162,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 			}
 
 			if (!isset($rra)) {
-				$rra['rows'] = 600;
+				$rra['rows']  = 600;
 				$rra['steps'] = 1;
 			}
 		}
@@ -2252,3 +2252,889 @@ function rrd_substitute_host_query_data($txt_graph_item, $graph, $graph_item) {
 	return $txt_graph_item;
 }
 
+/** given a data source id, return rrdtool info array
+ * @param $data_source_id - data source id
+ * @return - (array) an array containing all data from rrdtool info command
+ */
+function rrdtool_function_info($data_source_id) {
+	/* Get the path to rrdtool file */
+	$data_source_path = get_data_source_path($data_source_id, true);
+
+	/* Execute rrdtool info command */
+	$cmd_line = ' info ' . $data_source_path;
+	$output = rrdtool_execute($cmd_line, RRDTOOL_OUTPUT_NULL, RRDTOOL_OUTPUT_STDOUT);
+	if (sizeof($output) == 0) {
+		return false;
+	}
+
+	/* Parse the output */
+	$matches  = array();
+	$rrd_info = array('rra' => array(), 'ds' => array());
+	$output   = explode("\n", $output);
+
+	foreach ($output as $line) {
+		$line = trim($line);
+		if (preg_match('/^ds\[(\S+)\]\.(\S+) = (\S+)$/', $line, $matches)) {
+			$rrd_info['ds'][$matches[1]][$matches[2]] = trim($matches[3], '"');
+		} elseif (preg_match('/^rra\[(\S+)\]\.(\S+)\[(\S+)\]\.(\S+) = (\S+)$/', $line, $matches)) {
+			$rrd_info['rra'][$matches[1]][$matches[2]][$matches[3]][$matches[4]] = trim($matches[5], '"');
+		} elseif (preg_match('/^rra\[(\S+)\]\.(\S+) = (\S+)$/', $line, $matches)) {
+			$rrd_info['rra'][$matches[1]][$matches[2]] = trim($matches[3], '"');
+		} elseif (preg_match("/^(\S+) = \"(\S+)\"$/", $line, $matches)) {
+			$rrd_info[$matches[1]] = trim($matches[2], '"');
+		} elseif (preg_match('/^(\S+) = (\S+)$/', $line, $matches)) {
+			$rrd_info[$matches[1]] = trim($matches[2], '"');
+		}
+	}
+
+	$output = '';
+	$matches = array();
+
+	/* Return parsed values */
+	return $rrd_info;
+}
+
+/** rrdtool_cacti_compare 	compares cacti information to rrd file information
+ * @param $data_source_id		the id of the data source
+ * @param $info				rrdtool info as an array
+ * @return					array build like $info defining html class in case of error
+ */
+function rrdtool_cacti_compare($data_source_id, &$info) {
+	global $data_source_types, $consolidation_functions;
+
+	/* get cacti header information for given data source id */
+	$cacti_header_array = db_fetch_row_prepared('SELECT 
+		local_data_template_data_id, rrd_step, data_source_profile_id
+		FROM data_template_data 
+		WHERE local_data_id = ?', array($data_source_id));
+
+	$cacti_file = get_data_source_path($data_source_id, true);
+
+	/* get cacti DS information */
+	$cacti_ds_array = db_fetch_assoc_prepared("SELECT data_source_name, data_source_type_id, 
+		rrd_heartbeat, rrd_maximum, rrd_minimum 
+		FROM data_template_rrd 
+		WHERE local_data_id = ?", array($data_source_id));
+
+	/* get cacti RRA information */
+	$cacti_rra_array = db_fetch_assoc_prepared('SELECT 
+		dspc.consolidation_function_id AS cf, 
+		dsp.x_files_factor AS xff, 
+		dspr.steps AS steps, 
+		dspr.rows AS rows 
+		FROM data_source_profiles AS dsp
+		INNER JOIN data_source_profiles_cf AS dspc
+		ON dsp.id=dspc.data_source_profile_id
+		INNER JOIN data_source_profiles_rra AS dspr
+		ON dsp.id=dspr.data_source_profile_id
+		WHERE dsp.id = ? 
+		ORDER BY dspc.consolidation_function_id, dspr.steps', 
+		array($cacti_header_array['data_source_profile_id']));
+
+	$diff = array();
+	/* -----------------------------------------------------------------------------------
+	 * header information
+	 -----------------------------------------------------------------------------------*/
+	if ($cacti_header_array['rrd_step'] != $info['step']) {
+		$diff['step'] = __("required rrd step size is '%s'", $cacti_header_array['rrd_step']);
+	}
+
+	/* -----------------------------------------------------------------------------------
+	 * data source information
+	 -----------------------------------------------------------------------------------*/
+	if (sizeof($cacti_ds_array) > 0) {
+		foreach ($cacti_ds_array as $key => $data_source) {
+			$ds_name = $data_source['data_source_name'];
+
+			/* try to print matching rrd file's ds information */
+			if (isset($info['ds'][$ds_name]) ) {
+				if (!isset($info['ds'][$ds_name]['seen'])) {
+					$info['ds'][$ds_name]['seen'] = TRUE;
+				} else {
+					continue;
+				}
+
+				$ds_type = trim($info['ds'][$ds_name]['type'], '"');
+				if ($data_source_types[$data_source['data_source_type_id']] != $ds_type) {
+					$diff['ds'][$ds_name]['type'] = __("type for data source '%s' should be '%s'", $ds_name, $data_source_types[$data_source['data_source_type_id']]);
+					$diff['tune'][] = $info['filename'] . ' ' . '--data-source-type ' . $ds_name . ':' . $data_source_types[$data_source['data_source_type_id']];
+				}
+
+				if ($data_source['rrd_heartbeat'] != $info['ds'][$ds_name]['minimal_heartbeat']) {
+					$diff['ds'][$ds_name]['minimal_heartbeat'] = __("heartbeat for data source '%s' should be '%s'", $ds_name, $data_source['rrd_heartbeat']);
+					$diff['tune'][] = $info['filename'] . ' ' . '--heartbeat ' . $ds_name . ':' . $data_source['rrd_heartbeat'];
+				}
+
+				if ($data_source['rrd_minimum'] != $info['ds'][$ds_name]['min']) {
+					$diff['ds'][$ds_name]['min'] = __("rrd minimum for data source '%s' should be '%s'", $ds_name, $data_source['rrd_minimum']);
+					$diff['tune'][] = $info['filename'] . ' ' . '--maximum ' . $ds_name . ':' . $data_source['rrd_minimum'];
+				}
+
+				if ($data_source['rrd_maximum'] != $info['ds'][$ds_name]['max']) {
+					$data_local = db_fetch_row('SELECT * FROM data_local WHERE id=' . $data_source_id);
+					if ($data_source['rrd_maximum'] == '|query_ifSpeed|' || $data_source['rrd_maximum'] == '|query_ifHighSpeed|') {
+						$highSpeed = db_fetch_cell("SELECT field_value
+							FROM host_snmp_cache
+							WHERE host_id=" . $data_local['host_id'] . "
+							AND snmp_query_id=" . $data_local['snmp_query_id'] . "
+							AND snmp_index='" . $data_local['snmp_index'] . "'
+							AND field_name='ifHighSpeed'");
+
+						if (!empty($highSpeed)) {
+							$data_source['rrd_maximum'] = $highSpeed * 1000000;
+						}else{
+							$data_source['rrd_maximum'] = substitute_snmp_query_data('|query_ifSpeed|',$data_local['host_id'], $data_local['snmp_query_id'], $data_local['snmp_index']);
+						}
+					}else{
+						$data_source['rrd_maximum'] = substitute_snmp_query_data($data_source['rrd_maximum'],$data_local['host_id'], $data_local['snmp_query_id'], $data_local['snmp_index']);
+					}
+
+					if (empty($data_source['rrd_maximum']) || $data_source['rrd_maximum'] == '|query_ifSpeed|') {
+						$data_source['rrd_maximum'] = '10000000000000';
+					}
+				}
+
+				if ($data_source['rrd_maximum'] != $info['ds'][$ds_name]['max']) {
+					$diff['ds'][$ds_name]['max'] = __("rrd maximum for data source '%s' should be '%s'", $ds_name, $data_source['rrd_maximum']);
+					$diff['tune'][] = $info['filename'] . ' ' . '--minimum ' . $ds_name . ':' . $data_source['rrd_maximum'];
+				}
+			} else {
+				# cacti knows this ds, but the rrd file does not
+				$info['ds'][$ds_name]['type'] = $data_source_types[$data_source['data_source_type_id']];
+				$info['ds'][$ds_name]['minimal_heartbeat'] = $data_source['rrd_heartbeat'];
+				$info['ds'][$ds_name]['min'] = $data_source['rrd_minimum'];
+				$info['ds'][$ds_name]['max'] = $data_source['rrd_maximum'];
+				$info['ds'][$ds_name]['seen'] = TRUE;
+				$diff['ds'][$ds_name]['error'] = __("DS '%s' missing in rrd file", $ds_name);
+			}
+		}
+	}
+
+	/* print all data sources still known to the rrd file (no match to cacti ds will happen here) */
+	if (sizeof($info['ds']) > 0) {
+		foreach ($info['ds'] as $ds_name => $data_source) {
+			if (!isset($data_source['seen'])) {
+				$diff['ds'][$ds_name]['error'] = __("DS '%s' missing in cacti definition", $ds_name);
+			}
+		}
+	}
+
+
+	/* -----------------------------------------------------------------------------------
+	 * RRA information
+	 -----------------------------------------------------------------------------------*/
+	$resize = TRUE;		# assume a resize operation as long as no rra duplicates are found
+	# scan cacti rra information for duplicates of (CF, STEPS)
+	if (sizeof($cacti_rra_array) > 0) {
+		for ($i=0; $i<= sizeof($cacti_rra_array)-1; $i++) {
+			$cf = $cacti_rra_array{$i}['cf'];
+			$steps = $cacti_rra_array{$i}['steps'];
+			foreach($cacti_rra_array as $cacti_rra_id => $cacti_rra) {
+				if ($cf == $cacti_rra['cf'] && $steps == $cacti_rra['steps'] && ($i != $cacti_rra_id)) {
+					$diff['rra'][$i]['error'] = __("Cacti RRA '%s' has same cf/steps (%s, %s) as '%s'", $i, $consolidation_functions{$cf}, $steps, $cacti_rra_id);
+					$diff['rra'][$cacti_rra_id]['error'] = __("Cacti RRA '%s' has same cf/steps (%s, %s) as '%s'", $cacti_rra_id, $consolidation_functions{$cf}, $steps, $i);
+					$resize = FALSE;
+				}
+			}
+		}
+	}
+	# scan file rra information for duplicates of (CF, PDP_PER_ROWS)
+	if (sizeof($info['rra']) > 0) {
+		for ($i=0; $i<= sizeof($info['rra'])-1; $i++) {
+			$cf = $info['rra']{$i}['cf'];
+			$steps = $info['rra']{$i}['pdp_per_row'];
+			foreach($info['rra'] as $file_rra_id => $file_rra) {
+				if (($cf == $file_rra['cf']) && ($steps == $file_rra['pdp_per_row']) && ($i != $file_rra_id)) {
+					$diff['rra'][$i]['error'] = __("File RRA '%s' has same cf/steps (%s, %s) as '%s'", $i, $cf, $steps, $file_rra_id);
+					$diff['rra'][$file_rra_id]['error'] = __("File RRA '%s' has same cf/steps (%s, %s) as '%s'", $file_rra_id, $cf, $steps, $i);
+					$resize = FALSE;
+				}
+			}
+		}
+	}
+
+	/* print all RRAs known to cacti and add those from matching rrd file */
+	if (sizeof($cacti_rra_array) > 0) {
+		foreach($cacti_rra_array as $cacti_rra_id => $cacti_rra) {
+			/* find matching rra info from rrd file
+			 * do NOT assume, that rra sequence is kept ($cacti_rra_id != $file_rra_id may happen)!
+			 * Match is assumed, if CF and STEPS/PDP_PER_ROW match; so go for it */
+			foreach ($info['rra'] as $file_rra_id => $file_rra) {
+
+				/* in case of mismatch, $file_rra['pdp_per_row'] might not be defined */
+				if (!isset($file_rra['pdp_per_row'])) $file_rra['pdp_per_row'] = 0;
+
+				if ($consolidation_functions{$cacti_rra['cf']} == trim($file_rra['cf'], '"') &&
+					$cacti_rra['steps'] == $file_rra['pdp_per_row']) {
+
+					if (!isset($info['rra'][$file_rra_id]['seen'])) {
+						# mark both rra id's as seen to avoid printing them as non-matching
+						$info['rra'][$file_rra_id]['seen'] = TRUE;
+						$cacti_rra_array[$cacti_rra_id]['seen'] = TRUE;
+					} else {
+						continue;
+					}
+
+					if ($cacti_rra['xff'] != $file_rra['xff']) {
+						$diff['rra'][$file_rra_id]['xff'] = __("xff for cacti rra id '%s' should be '%s'", $cacti_rra_id, $cacti_rra['xff']);
+					}
+
+					if ($cacti_rra['rows'] != $file_rra['rows'] && $resize) {
+						$diff['rra'][$file_rra_id]['rows'] = __("number of rows for cacti rra id '%s' should be '%s'", $cacti_rra_id, $cacti_rra['rows']);
+						if ($cacti_rra['rows'] > $file_rra['rows']) {
+							$diff['resize'][] = $info['filename'] . ' ' . $cacti_rra_id . ' GROW ' . ($cacti_rra['rows'] - $file_rra['rows']);
+						} else {
+							$diff['resize'][] = $info['filename'] . ' ' . $cacti_rra_id . ' SHRINK ' . ($file_rra['rows'] - $cacti_rra['rows']);
+						}
+					}
+				}
+			}
+			# if cacti knows an rra that has no match, consider this as an error
+			if (!isset($cacti_rra_array[$cacti_rra_id]['seen'])) {
+				# add to info array for printing, the index $cacti_rra_id has no real meaning
+				$info['rra']['cacti_' . $cacti_rra_id]['cf']    = $consolidation_functions{$cacti_rra['cf']};
+				$info['rra']['cacti_' . $cacti_rra_id]['steps'] = $cacti_rra['steps'];
+				$info['rra']['cacti_' . $cacti_rra_id]['xff']   = $cacti_rra['xff'];
+				$info['rra']['cacti_' . $cacti_rra_id]['rows']  = $cacti_rra['rows'];
+				$diff['rra']['cacti_' . $cacti_rra_id]['error'] = __("RRA '%s' missing in rrd file", $cacti_rra_id);
+			}
+		}
+	}
+
+	# if the rrd file has an rra that has no cacti match, consider this as an error
+	if (sizeof($info['rra']) > 0) {
+		foreach ($info['rra'] as $file_rra_id => $file_rra) {
+			if (!isset($info['rra'][$file_rra_id]['seen'])) {
+				$diff['rra'][$file_rra_id]['error'] = __("RRA '%s' missing in cacti definition", $file_rra_id);
+			}
+		}
+	}
+
+	return $diff;
+
+}
+
+/** take output from rrdtool info array and build html table
+ * @param array $info_array - array of rrdtool info data
+ * @param array $diff - array of differences between definition and current rrd file settings
+ * @return string - html code
+ */
+function rrdtool_info2html($info_array, $diff=array()) {
+	global $config;
+
+	include_once($config['library_path'] . '/time.php');
+
+	html_start_box(__('RRD File Information'), '100%', '', '3', 'center', '');
+
+	# header data
+	$header_items = array(
+		array('display' =>__('Header'), 'align' => 'left'),
+		array('display' => '', 'align' => 'left')
+	);
+
+	html_header($header_items, 1, false, 'info_header');
+
+	# add human readable timestamp
+	if (isset($info_array['last_update'])) {
+		$info_array['last_update'] .= ' [' . date(date_time_format(), $info_array['last_update']) . ']';
+	}
+
+	$loop = array(
+		'filename' 		=> $info_array['filename'],
+		'rrd_version'	=> $info_array['rrd_version'],
+		'step' 			=> $info_array['step'],
+		'last_update'	=> $info_array['last_update']);
+
+	foreach ($loop as $key => $value) {
+		form_alternate_row($key, true);
+		form_selectable_cell($key, 'key');
+		form_selectable_cell($value, 'value', '', ((isset($diff[$key]) ? 'color:red' : '')));
+		form_end_row();
+	}
+
+	html_end_box();
+
+	# data sources
+	$header_items = array(
+		array('display' => __('Data Source Items'), 'align' => 'left'),
+		array('display' => __('Type'),              'align' => 'left'),
+		array('display' => __('Minimal Heartbeat'), 'align' => 'right'),
+		array('display' => __('Min'),               'align' => 'right'),
+		array('display' => __('Max'),               'align' => 'right'),
+		array('display' => __('Last DS'),           'align' => 'right'),
+		array('display' => __('Value'),             'align' => 'right'),
+		array('display' => __('Unkown Sec'),        'align' => 'right')
+	);
+
+	html_start_box('', '100%', '', '3', 'center', '');
+
+	html_header($header_items, 1, false, 'info_ds');
+
+	if (sizeof($info_array['ds'])) {
+		foreach ($info_array['ds'] as $key => $value) {
+			form_alternate_row('line' . $key, true);
+
+			form_selectable_cell($key, 'name', '', (isset($diff['ds'][$key]['error']) ? 'color:red' : ''));
+			form_selectable_cell((isset($value['type']) ? $value['type'] : ''), 'type', '', (isset($diff['ds'][$key]['type']) ? 'color:red' : ''));
+			form_selectable_cell((isset($value['minimal_heartbeat']) ? $value['minimal_heartbeat'] : ''), 'minimal_heartbeat', '', (isset($diff['ds'][$key]['minimal_heartbeat']) ? 'color:red, text-align:right' : 'text-align:right'));
+			form_selectable_cell((isset($value['min']) ? number_format($value['min']) : ''), 'min', '', (isset($diff['ds'][$key]['min']) ? 'color:red;text-align:right' : 'text-align:right'));
+			form_selectable_cell((isset($value['max']) ? number_format($value['max']) : ''), 'max', '', (isset($diff['ds'][$key]['max']) ? 'color:red;text-align:right' : 'text-align:right'));
+			form_selectable_cell((isset($value['last_ds']) ? number_format($value['last_ds']) : ''), 'last_ds', '', 'text-align:right');
+			form_selectable_cell((isset($value['value']) ? number_format($value['value']) : ''), 'value', '', 'text-align:right');
+			form_selectable_cell((isset($value['unknown_sec']) ? number_format($value['unknown_sec']) : ''), 'unknown_sec', '', 'text-align:right');
+
+			form_end_row();
+		}
+	}
+
+	html_end_box();
+
+	# round robin archive
+	$header_items = array(
+		array('display' => __('Round Robin Archive'),        'align' => 'left'),
+		array('display' => __('Consolidation Function'),     'align' => 'left'),
+		array('display' => __('Rows'),                       'align' => 'right'),
+		array('display' => __('Cur Row'),                    'align' => 'right'),
+		array('display' => __('PDP per Row'),                'align' => 'right'),
+		array('display' => __('X Files Factor'),             'align' => 'right'),
+		array('display' => __('CDP Prep Value (0)'),         'align' => 'right'),
+		array('display' => __('CDP Unknown Datapoints (0)'), 'align' => 'right')
+	);
+
+	html_start_box('', '100%', '', '3', 'center', '');
+
+	html_header($header_items, 1, false, 'info_rra');
+
+	if (sizeof($info_array['rra'])) {
+		foreach ($info_array['rra'] as $key => $value) {
+			form_alternate_row('line_' . $key, true);
+
+			form_selectable_cell($key, 'name', '', (isset($diff['rra'][$key]['error']) ? 'color:red' : ''));
+			form_selectable_cell((isset($value['cf']) ? $value['cf'] : ''), 'cf');
+			form_selectable_cell((isset($value['rows']) ? $value['rows'] : ''), 'rows', '', (isset($diff['rra'][$key]['rows']) 	? 'color:red;text-align:right' : 'text-align:right'));
+			form_selectable_cell((isset($value['cur_row']) ? $value['cur_row'] : ''), 'cur_row', '', 'text-align:right');
+			form_selectable_cell((isset($value['pdp_per_row']) ? $value['pdp_per_row'] : ''), 'pdp_per_row', '', 'text-align:right');
+			form_selectable_cell((isset($value['xff']) ? floatval($value['xff']) : ''), 'xff', '', (isset($diff['rra'][$key]['xff']) 	? 'color:red;text-align:right' : 'text-align:right'));
+			form_selectable_cell((isset($value['cdp_prep'][0]['value']) ? (strtolower($value['cdp_prep'][0]['value']) == 'nan') ? $value['cdp_prep'][0]['value'] : floatval($value['cdp_prep'][0]['value']) : ''), 'value', '', 'text-align:right');
+			form_selectable_cell((isset($value['cdp_prep'][0]['unknown_datapoints'])? $value['cdp_prep'][0]['unknown_datapoints'] : ''), 	'unknown_datapoints', '', 'text-align:right');
+
+			form_end_row();
+		}
+	}
+
+	html_end_box();
+}
+
+/** rrdtool_tune			- create rrdtool tune/resize commands
+ * 						  html+cli enabled
+ * @param $rrd_file		- rrd file name
+ * @param $diff			- array of discrepancies between cacti setttings and rrd file info
+ * @param $show_source	- only show text+commands or execute all commands, execute is for cli mode only!
+ */
+function rrdtool_tune($rrd_file, $diff, $show_source = true) {
+	function print_leaves($array, $nl) {
+		foreach ($array as $key => $line) {
+			if (!is_array($line)) {
+				print $line . $nl;
+			} else {
+				if ($key === 'tune') continue;
+				if ($key === 'resize') continue;
+				print_leaves($line, $nl);
+			}
+		}
+
+	}
+
+
+	$cmd = array();
+	# for html/cli mode
+	if (!isset($_SERVER['argv'][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($_SERVER['REMOTE_ADDR'])) {
+		$nl = '<br/>';
+	} else {
+		$nl = "\n";
+	}
+
+	if ($show_source && sizeof($diff)) {
+		# print error descriptions
+		print_leaves($diff, $nl);
+	}
+
+	if (isset($diff['tune']) && sizeof($diff['tune'])) {
+		# create tune commands
+		foreach ($diff['tune'] as $line) {
+			if ($show_source == true) {
+				print read_config_option('path_rrdtool') . ' tune ' . $line . $nl;
+			}else{
+				rrdtool_execute("tune $line", true, RRDTOOL_OUTPUT_STDOUT);
+			}
+		}
+	}
+
+	if (isset($diff['resize']) && sizeof($diff['resize'])) {
+		# each resize goes into an extra line
+		foreach ($diff['resize'] as $line) {
+			if ($show_source == true) {
+				print read_config_option('path_rrdtool') . ' resize ' . $line . $nl;
+				print __('rename %s to %s', dirname($rrd_file) . '/resize.rrd', $rrd_file) . $nl;
+			}else{
+				rrdtool_execute("resize $line", true, RRDTOOL_OUTPUT_STDOUT);
+				rename(dirname($rrd_file) . '/resize.rrd', $rrd_file);
+			}
+		}
+	}
+}
+
+/** Given a data source id, check the rrdtool file to the data source definition
+ * @param $data_source_id - data source id
+ * @return - (array) an array containing issues with the rrdtool file definition vs data source
+ */
+function rrd_check($data_source_id) {
+	global $rrd_tune_array, $data_source_types;
+
+	$data_source_name = get_data_source_item_name($rrd_tune_array['data_source_id']);
+	$data_source_type = $data_source_types{$rrd_tune_array['data-source-type']};
+	$data_source_path = get_data_source_path($rrd_tune_array['data_source_id'], true);
+}
+
+/** Given a data source id, update the rrdtool file to match the data source definition
+ * @param $data_source_id - data source id
+ * @return - 1 success, 2 false
+ */
+function rrd_repair($data_source_id) {
+	global $rrd_tune_array, $data_source_types;
+
+	$data_source_name = get_data_source_item_name($rrd_tune_array['data_source_id']);
+	$data_source_type = $data_source_types{$rrd_tune_array['data-source-type']};
+	$data_source_path = get_data_source_path($rrd_tune_array['data_source_id'], true);
+}
+
+/** add a (list of) datasource(s) to an (array of) rrd file(s)
+ * @param array $file_array	- array of rrd files
+ * @param array $ds_array	- array of datasouce parameters
+ * @param bool $debug		- debug mode
+ * @return mixed			- success (bool) or error message (array)
+ */
+function rrd_datasource_add($file_array, $ds_array, $debug) {
+	global $data_source_types, $consolidation_functions;
+
+	$rrdtool_pipe = rrd_init();
+
+	/* iterate all given rrd files */
+	foreach ($file_array as $file) {
+		/* create a DOM object from an rrdtool dump */
+		$dom = new domDocument;
+		$dom->loadXML(rrdtool_execute("dump $file", false, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'UTIL'));
+		if (!$dom) {
+			$check['err_msg'] = __('Error while parsing the XML of rrdtool dump');
+			return $check;
+		}
+
+		/* rrdtool dump depends on rrd file version:
+		 * version 0001 => RRDTool 1.0.x
+		 * version 0003 => RRDTool 1.2.x, 1.3.x, 1.4.x
+		 */
+		$version = trim($dom->getElementsByTagName('version')->item(0)->nodeValue);
+
+		/* now start XML processing */
+		foreach ($ds_array as $ds) {
+			/* first, append the <DS> strcuture in the rrd header */
+			if ($ds['type'] === $data_source_types[DATA_SOURCE_TYPE_COMPUTE]) {
+				rrd_append_compute_ds($dom, $version, $ds['name'], $ds['type'], $ds['cdef']);
+			} else {
+				rrd_append_ds($dom, $version, $ds['name'], $ds['type'], $ds['heartbeat'], $ds['min'], $ds['max']);
+			}
+			/* now work on the <DS> structure as part of the <cdp_prep> tree */
+			rrd_append_cdp_prep_ds($dom, $version);
+			/* add <V>alues to the <database> tree */
+			rrd_append_value($dom);
+		}
+
+		if ($debug) {
+			echo $dom->saveXML();
+		} else {
+			/* for rrdtool restore, we need a file, so write the XML to disk */
+			$xml_file = $file . '.xml';
+			$rc = $dom->save($xml_file);
+			/* verify, if write was successful */
+			if ($rc === false) {
+				$check['err_msg'] = __('ERROR while writing XML file: %s', $xml_file);
+				return $check;
+			} else {
+				/* are we allowed to write the rrd file? */
+				if (is_writable($file)) {
+					/* restore the modified XML to rrd */
+					rrdtool_execute("restore -f $xml_file $file", false, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'UTIL');
+					/* scratch that XML file to avoid filling up the disk */
+					unlink($xml_file);
+					cacti_log(__('Added datasource(s) to rrd file: %s', $file), false, 'UTIL');
+				} else {
+					$check['err_msg'] = __('ERROR: RRD file %s not writeable', $file);
+					return $check;
+				}
+			}
+		}
+	}
+
+	rrd_close($rrdtool_pipe);
+
+	return true;
+}
+
+/** delete a (list of) rra(s) from an (array of) rrd file(s)
+ * @param array $file_array	- array of rrd files
+ * @param array $rra_array	- array of rra parameters
+ * @param bool $debug		- debug mode
+ * @return mixed			- success (bool) or error message (array)
+ */
+function rrd_rra_delete($file_array, $rra_array, $debug) {
+	$rrdtool_pipe = '';
+
+	/* iterate all given rrd files */
+	foreach ($file_array as $file) {
+		/* create a DOM document from an rrdtool dump */
+		$dom = new domDocument;
+		$dom->loadXML(rrdtool_execute("dump $file", false, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'UTIL'));
+		if (!$dom) {
+			$check['err_msg'] = __('Error while parsing the XML of rrdtool dump');
+			return $check;
+		}
+
+		/* now start XML processing */
+		foreach ($rra_array as $rra) {
+			rrd_delete_rra($dom, $rra, $debug);
+		}
+
+		if ($debug) {
+			echo $dom->saveXML();
+		} else {
+			/* for rrdtool restore, we need a file, so write the XML to disk */
+			$xml_file = $file . '.xml';
+			$rc = $dom->save($xml_file);
+			/* verify, if write was successful */
+			if ($rc === false) {
+				$check['err_msg'] = __('ERROR while writing XML file: %s', $xml_file);
+				return $check;
+			} else {
+				/* are we allowed to write the rrd file? */
+				if (is_writable($file)) {
+					/* restore the modified XML to rrd */
+					rrdtool_execute("restore -f $xml_file $file", false, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'UTIL');
+					/* scratch that XML file to avoid filling up the disk */
+					unlink($xml_file);
+					cacti_log(__('Deleted rra(s) from rrd file: %s', $file), false, 'UTIL');
+				} else {
+					$check['err_msg'] = __('ERROR: RRD file %s not writeable', $file);
+					return $check;
+				}
+			}
+		}
+	}
+
+	rrd_close($rrdtool_pipe);
+
+	return true;
+}
+
+/** clone a (list of) rra(s) from an (array of) rrd file(s)
+ * @param array $file_array	- array of rrd files
+ * @param string $cf		- new consolidation function
+ * @param array $rra_array	- array of rra parameters
+ * @param bool $debug		- debug mode
+ * @return mixed			- success (bool) or error message (array)
+ */
+function rrd_rra_clone($file_array, $cf, $rra_array, $debug) {
+	$rrdtool_pipe = '';
+
+	/* iterate all given rrd files */
+	foreach ($file_array as $file) {
+		/* create a DOM document from an rrdtool dump */
+		$dom = new domDocument;
+		$dom->loadXML(rrdtool_execute("dump $file", false, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'UTIL'));
+		if (!$dom) {
+			$check['err_msg'] = __('Error while parsing the XML of rrdtool dump');
+			return $check;
+		}
+
+		/* now start XML processing */
+		foreach ($rra_array as $rra) {
+			rrd_copy_rra($dom, $cf, $rra, $debug);
+		}
+
+		if ($debug) {
+			echo $dom->saveXML();
+		} else {
+			/* for rrdtool restore, we need a file, so write the XML to disk */
+			$xml_file = $file . '.xml';
+			$rc = $dom->save($xml_file);
+			/* verify, if write was successful */
+			if ($rc === false) {
+				$check['err_msg'] = __('ERROR while writing XML file: %s', $xml_file);
+				return $check;
+			} else {
+				/* are we allowed to write the rrd file? */
+				if (is_writable($file)) {
+					/* restore the modified XML to rrd */
+					rrdtool_execute("restore -f $xml_file $file", false, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'UTIL');
+					/* scratch that XML file to avoid filling up the disk */
+					unlink($xml_file);
+					cacti_log(__('Deleted rra(s) from rrd file: %s', $file), false, 'UTIL');
+				} else {
+					$check['err_msg'] = __('ERROR: RRD file %s not writeable', $file);
+					return $check;
+				}
+			}
+		}
+	}
+
+	rrd_close($rrdtool_pipe);
+
+	return true;
+}
+
+/** appends a <DS> subtree to an RRD XML structure
+ * @param object $dom	- the DOM object, where the RRD XML is stored
+ * @param string $version- rrd file version
+ * @param string $name	- name of the new ds
+ * @param string $type	- type of the new ds
+ * @param int $min_hb	- heartbeat of the new ds
+ * @param string $min	- min value of the new ds or [NaN|U]
+ * @param string $max	- max value of the new ds or [NaN|U]
+ * @return object		- modified DOM
+ */
+function rrd_append_ds($dom, $version, $name, $type, $min_hb, $min, $max) {
+	/* rrdtool version dependencies */
+	if ($version === RRD_FILE_VERSION1) {
+		$last_ds = 'U';
+	}
+	elseif ($version === RRD_FILE_VERSION3) {
+		$last_ds = 'UNKN';
+	}
+
+	/* create <DS> subtree */
+	$new_dom = new DOMDocument;
+	/* pretty print */
+	$new_dom->formatOutput = true;
+	/* this defines the new node structure */
+	$new_dom->loadXML("
+			<ds>
+				<name> $name </name>
+				<type> $type </type>
+				<minimal_heartbeat> $min_hb </minimal_heartbeat>
+				<min> $min </min>
+				<max> $max </max>
+
+				<!-- PDP Status -->
+				<last_ds> $last_ds </last_ds>
+				<value> 0.0000000000e+00 </value>
+				<unknown_sec> 0 </unknown_sec>
+			</ds>");
+
+	/* create a node element from new document */
+	$new_node = $new_dom->getElementsByTagName('ds')->item(0);
+	#echo $new_dom->saveXML();	# print new node
+
+	/* get XPATH notation required for positioning */
+	#$xpath = new DOMXPath($dom);
+	/* get XPATH for entry where new node will be inserted
+	 * which is the <rra> entry */
+	#$insert = $xpath->query('/rrd/rra')->item(0);
+	$insert = $dom->getElementsByTagName('rra')->item(0);
+
+	/* import the new node */
+	$new_node = $dom->importNode($new_node, true);
+	/* and insert it at the correct place */
+	$insert->parentNode->insertBefore($new_node, $insert);
+}
+
+/** COMPUTE DS: appends a <DS> subtree to an RRD XML structure
+ * @param object $dom	- the DOM object, where the RRD XML is stored
+ * @param string $version- rrd file version
+ * @param string $name	- name of the new ds
+ * @param string $type	- type of the new ds
+ * @param int $cdef		- the cdef rpn used for COMPUTE
+ * @return object		- modified DOM
+ */
+function rrd_append_compute_ds($dom, $version, $name, $type, $cdef) {
+	/* rrdtool version dependencies */
+	if ($version === RRD_FILE_VERSION1) {
+		$last_ds = 'U';
+	}
+	elseif ($version === RRD_FILE_VERSION3) {
+		$last_ds = 'UNKN';
+	}
+
+	/* create <DS> subtree */
+	$new_dom = new DOMDocument;
+	/* pretty print */
+	$new_dom->formatOutput = true;
+	/* this defines the new node structure */
+	$new_dom->loadXML("
+			<ds>
+				<name> $name </name>
+				<type> $type </type>
+				<cdef> $cdef </cdef>
+
+				<!-- PDP Status -->
+				<last_ds> $last_ds </last_ds>
+				<value> 0.0000000000e+00 </value>
+				<unknown_sec> 0 </unknown_sec>
+			</ds>");
+
+	/* create a node element from new document */
+	$new_node = $new_dom->getElementsByTagName('ds')->item(0);
+
+	/* get XPATH notation required for positioning */
+	#$xpath = new DOMXPath($dom);
+	/* get XPATH for entry where new node will be inserted
+	 * which is the <rra> entry */
+	#$insert = $xpath->query('/rrd/rra')->item(0);
+	$insert = $dom->getElementsByTagName('rra')->item(0);
+
+	/* import the new node */
+	$new_node = $dom->importNode($new_node, true);
+	/* and insert it at the correct place */
+	$insert->parentNode->insertBefore($new_node, $insert);
+}
+
+/** append a <DS> subtree to the <CDP_PREP> subtrees of a RRD XML structure
+ * @param object $dom		- the DOM object, where the RRD XML is stored
+ * @param string $version	- rrd file version
+ * @return object			- the modified DOM object
+ */
+function rrd_append_cdp_prep_ds($dom, $version) {
+	/* get all <cdp_prep><ds> entries */
+	#$cdp_prep_list = $xpath->query('/rrd/rra/cdp_prep');
+	$cdp_prep_list = $dom->getElementsByTagName('rra')->item(0)->getElementsByTagName('cdp_prep');
+
+	/* get XPATH notation required for positioning */
+	#$xpath = new DOMXPath($dom);
+
+	/* get XPATH for source <ds> entry */
+	#$src_ds = $xpath->query('/rrd/rra/cdp_prep/ds')->item(0);
+	$src_ds = $dom->getElementsByTagName('rra')->item(0)->getElementsByTagName('cdp_prep')->item(0)->getElementsByTagName('ds')->item(0);
+	/* clone the source ds entry to preserve RRDTool notation */
+	$new_ds = $src_ds->cloneNode(true);
+
+	/* rrdtool version dependencies */
+	if ($version === RRD_FILE_VERSION3) {
+		$new_ds->getElementsByTagName('primary_value')->item(0)->nodeValue = ' NaN ';
+		$new_ds->getElementsByTagName('secondary_value')->item(0)->nodeValue = ' NaN ';
+	}
+
+	/* the new node always has default entries */
+	$new_ds->getElementsByTagName('value')->item(0)->nodeValue = ' NaN ';
+	$new_ds->getElementsByTagName('unknown_datapoints')->item(0)->nodeValue = ' 0 ';
+
+
+	/* iterate all entries found, equals 'number of <rra>' times 'number of <ds>' */
+	if ($cdp_prep_list->length) {
+		foreach ($cdp_prep_list as $cdp_prep) {
+			/* $cdp_prep now points to the next <cdp_prep> XML Element
+			 * and append new ds entry at end of <cdp_prep> child list */
+			$cdp_prep->appendChild($new_ds);
+		}
+	}
+}
+
+/** append a <V>alue element to the <DATABASE> subtrees of a RRD XML structure
+ * @param object $dom	- the DOM object, where the RRD XML is stored
+ * @return object		- the modified DOM object
+ */
+function rrd_append_value($dom) {
+	/* get XPATH notation required for positioning */
+	#$xpath = new DOMXPath($dom);
+
+	/* get all <cdp_prep><ds> entries */
+	#$itemList = $xpath->query('/rrd/rra/database/row');
+	$itemList = $dom->getElementsByTagName('row');
+
+	/* create <V> entry to preserve RRDTool notation */
+	$new_v = $dom->createElement('v', ' NaN ');
+
+	/* iterate all entries found, equals 'number of <rra>' times 'number of <ds>' */
+	if ($itemList->length) {
+		foreach ($itemList as $item) {
+			/* $item now points to the next <cdp_prep> XML Element
+			 * and append new ds entry at end of <cdp_prep> child list */
+			$item->appendChild($new_v);
+		}
+	}
+}
+
+/** delete an <RRA> subtree from the <RRD> XML structure
+ * @param object $dom		- the DOM document, where the RRD XML is stored
+ * @param array $rra_parm	- a single rra parameter set, given by the user
+ * @return object			- the modified DOM object
+ */
+function rrd_delete_rra($dom, $rra_parm) {
+	/* find all RRA DOMNodes */
+	$rras = $dom->getElementsByTagName('rra');
+
+	/* iterate all entries found */
+	$nb = $rras->length;
+	for ($pos = 0; $pos < $nb; $pos++) {
+		/* retrieve all RRA DOMNodes one by one */
+		$rra = $rras->item($pos);
+		$cf = $rra->getElementsByTagName('cf')->item(0)->nodeValue;
+		$pdp_per_row = $rra->getElementsByTagName('pdp_per_row')->item(0)->nodeValue;
+		$xff = $rra->getElementsByTagName('xff')->item(0)->nodeValue;
+		$rows = $rra->getElementsByTagName('row')->length;
+
+		if ($cf 			== $rra_parm['cf'] &&
+			$pdp_per_row 	== $rra_parm['pdp_per_row'] &&
+			$xff 			== $rra_parm['xff'] &&
+			$rows 			== $rra_parm['rows']) {
+			print(__("RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) removed from RRD file\n", $cf, $rows, $pdp_per_row, $xff));
+			/* we need the parentNode for removal operation */
+			$parent = $rra->parentNode;
+			$parent->removeChild($rra);
+			break; /* do NOT accidentally remove more than one element, else loop back to forth */
+		}
+	}
+	return $dom;
+}
+
+/** clone an <RRA> subtree of the <RRD> XML structure, replacing cf
+ * @param object $dom		- the DOM document, where the RRD XML is stored
+ * @param string $cf		- new consolidation function
+ * @param array $rra_parm	- a single rra parameter set, given by the user
+ * @return object			- the modified DOM object
+ */
+function rrd_copy_rra($dom, $cf, $rra_parm) {
+	/* find all RRA DOMNodes */
+	$rras = $dom->getElementsByTagName('rra');
+
+	/* iterate all entries found */
+	$nb = $rras->length;
+	for ($pos = 0; $pos < $nb; $pos++) {
+		/* retrieve all RRA DOMNodes one by one */
+		$rra          = $rras->item($pos);
+		$_cf          = $rra->getElementsByTagName('cf')->item(0)->nodeValue;
+		$_pdp_per_row = $rra->getElementsByTagName('pdp_per_row')->item(0)->nodeValue;
+		$_xff         = $rra->getElementsByTagName('xff')->item(0)->nodeValue;
+		$_rows        = $rra->getElementsByTagName('row')->length;
+
+		if ($_cf 			== $rra_parm['cf'] &&
+			$_pdp_per_row 	== $rra_parm['pdp_per_row'] &&
+			$_xff 			== $rra_parm['xff'] &&
+			$_rows 			== $rra_parm['rows']) {
+			print(__("RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) adding to RRD file\n", $cf, $_rows, $_pdp_per_row, $_xff));
+			/* we need the parentNode for append operation */
+			$parent = $rra->parentNode;
+
+			/* get a clone of the matching RRA */
+			$new_rra = $rra->cloneNode(true);
+			/* and find the 'old' cf */
+			#$old_cf = $new_rra->getElementsByTagName('cf')->item(0);
+			/* now replace old cf with new one */
+			#$old_cf->childNodes->item(0)->replaceData(0,20,$cf);
+			$new_rra->getElementsByTagName('cf')->item(0)->nodeValue = $cf;
+
+			/* append new rra entry at end of the list */
+			$parent->appendChild($new_rra);
+			break; /* do NOT accidentally clone more than one element, else loop back to forth */
+		}
+	}
+
+	return $dom;
+}

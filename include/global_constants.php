@@ -70,6 +70,9 @@ define('RRD_ALIGN_CENTER',        'center');
 define('RRD_LEGEND_DIR_TOPDOWN',  'topdown');
 define('RRD_LEGEND_DIR_BOTTOMUP', 'bottomup');
 
+define('RRD_FILE_VERSION1',       '0001');
+define('RRD_FILE_VERSION3',       '0003');
+
 define('DATA_QUERY_AUTOINDEX_NONE', 0);
 define('DATA_QUERY_AUTOINDEX_BACKWARDS_UPTIME', 1);
 define('DATA_QUERY_AUTOINDEX_INDEX_NUM_CHANGE', 2);

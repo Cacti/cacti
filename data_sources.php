@@ -713,6 +713,15 @@ function ds_edit() {
 		}
 	}
 
+	/* handle debug mode */
+	if (isset_request_var('info')) {
+		if (get_nfilter_request_var('info') == '0') {
+			kill_session_var('ds_info_mode');
+		}elseif (get_nfilter_request_var('info') == '1') {
+			$_SESSION['ds_info_mode'] = true;
+		}
+	}
+
 	top_header();
 
 	if (!isempty_request_var('id')) {
@@ -724,6 +733,7 @@ function ds_edit() {
 				</td>
 				<td class='textInfo right' valign='top'>
 					<span class='linkMarker'>*<a class='hyperLink' href='<?php print htmlspecialchars('data_sources.php?action=ds_edit&id=' . (isset_request_var('id') ? get_request_var('id') : '0') . '&debug=' . (isset($_SESSION['ds_debug_mode']) ? '0' : '1'));?>'>Turn <?php print (isset($_SESSION['ds_debug_mode']) ? 'Off' : 'On');?> Data Source Debug Mode.</a><br>
+					<span class='linkMarker'>*<a class='hyperLink' href='<?php print htmlspecialchars('data_sources.php?action=ds_edit&id=' . (isset_request_var('id') ? get_request_var('id') : '0') . '&info=' . (isset($_SESSION['ds_info_mode']) ? '0' : '1'));?>'>Turn <?php print (isset($_SESSION['ds_info_mode']) ? 'Off' : 'On');?> Data Source Info Mode.</a><br>
 					<?php
 						if (!empty($data_template['id'])) {
 							?><span class='linkMarker'>*<a class='hyperLink' href='<?php print htmlspecialchars('data_templates.php?action=template_edit&id=' . (isset($data_template['id']) ? $data_template['id'] : '0'));?>'>Edit Data Template.</a><br><?php
@@ -947,6 +957,29 @@ function ds_edit() {
 					<span class='textInfo'>Data Source Debug</span><br>
 					<pre><?php print @rrdtool_function_create(get_request_var('id'), true);?></pre>
 				</td>
+			</tr>
+		</table>
+		<?php
+	}
+
+	/* display the debug mode box if the user wants it */
+	if ((isset($_SESSION['ds_info_mode'])) && (isset_request_var('id'))) {
+		?>
+		<table style='width:100%'>
+			<tr>
+				<td><?php
+				$rrd_info = rrdtool_function_info(get_request_var('id'));
+
+				if (sizeof($rrd_info['rra'])) {
+					$diff = rrdtool_cacti_compare(get_request_var('id'), $rrd_info);
+					rrdtool_info2html($rrd_info, $diff);
+					if (sizeof($diff)) {
+						html_start_box('RRDtool Tune Info', '100%', '', '3', 'center', '');
+						rrdtool_tune($rrd_info['filename'], $diff, true);
+						html_end_box();
+					}
+				}
+				?></td>
 			</tr>
 		</table>
 		<?php
