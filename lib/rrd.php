@@ -2366,8 +2366,12 @@ function rrdtool_cacti_compare($data_source_id, &$info) {
 				}
 
 				if ($data_source['rrd_minimum'] != $info['ds'][$ds_name]['min']) {
-					$diff['ds'][$ds_name]['min'] = __("rrd minimum for data source '%s' should be '%s'", $ds_name, $data_source['rrd_minimum']);
-					$diff['tune'][] = $info['filename'] . ' ' . '--maximum ' . $ds_name . ':' . $data_source['rrd_minimum'];
+					if ($data_source['rrd_minimum'] == 'U' && $info['ds'][$ds_name]['min'] == 'NaN') {
+						$data_source['rrd_minimum'] == 'NaN';
+					}else{
+						$diff['ds'][$ds_name]['min'] = __("rrd minimum for data source '%s' should be '%s'", $ds_name, $data_source['rrd_minimum']);
+						$diff['tune'][] = $info['filename'] . ' ' . '--maximum ' . $ds_name . ':' . $data_source['rrd_minimum'];
+					}
 				}
 
 				if ($data_source['rrd_maximum'] != $info['ds'][$ds_name]['max']) {
@@ -2383,10 +2387,12 @@ function rrdtool_cacti_compare($data_source_id, &$info) {
 						if (!empty($highSpeed)) {
 							$data_source['rrd_maximum'] = $highSpeed * 1000000;
 						}else{
-							$data_source['rrd_maximum'] = substitute_snmp_query_data('|query_ifSpeed|',$data_local['host_id'], $data_local['snmp_query_id'], $data_local['snmp_index']);
+							$data_source['rrd_maximum'] = substitute_snmp_query_data('|query_ifSpeed|', $data_local['host_id'], $data_local['snmp_query_id'], $data_local['snmp_index']);
 						}
-					}else{
-						$data_source['rrd_maximum'] = substitute_snmp_query_data($data_source['rrd_maximum'],$data_local['host_id'], $data_local['snmp_query_id'], $data_local['snmp_index']);
+					}elseif ($data_source['rrd_maximum'] == '0' || $data_source['rrd_maximum'] == 'U') {
+						$data_source['rrd_maximum'] = 'NaN';
+					}else {
+						$data_source['rrd_maximum'] = substitute_snmp_query_data($data_source['rrd_maximum'], $data_local['host_id'], $data_local['snmp_query_id'], $data_local['snmp_index']);
 					}
 
 					if (empty($data_source['rrd_maximum']) || $data_source['rrd_maximum'] == '|query_ifSpeed|') {
@@ -2577,8 +2583,8 @@ function rrdtool_info2html($info_array, $diff=array()) {
 			form_selectable_cell($key, 'name', '', (isset($diff['ds'][$key]['error']) ? 'color:red' : ''));
 			form_selectable_cell((isset($value['type']) ? $value['type'] : ''), 'type', '', (isset($diff['ds'][$key]['type']) ? 'color:red' : ''));
 			form_selectable_cell((isset($value['minimal_heartbeat']) ? $value['minimal_heartbeat'] : ''), 'minimal_heartbeat', '', (isset($diff['ds'][$key]['minimal_heartbeat']) ? 'color:red, text-align:right' : 'text-align:right'));
-			form_selectable_cell((isset($value['min']) ? number_format($value['min']) : ''), 'min', '', (isset($diff['ds'][$key]['min']) ? 'color:red;text-align:right' : 'text-align:right'));
-			form_selectable_cell((isset($value['max']) ? number_format($value['max']) : ''), 'max', '', (isset($diff['ds'][$key]['max']) ? 'color:red;text-align:right' : 'text-align:right'));
+			form_selectable_cell((isset($value['min']) ? $value['min'] != 'NaN' ? number_format($value['min']): $value['min'] : ''), 'min', '', (isset($diff['ds'][$key]['min']) ? 'color:red;text-align:right' : 'text-align:right'));
+			form_selectable_cell((isset($value['max']) ? $value['max'] != 'NaN' ? number_format($value['max']): $value['max'] : ''), 'max', '', (isset($diff['ds'][$key]['max']) ? 'color:red;text-align:right' : 'text-align:right'));
 			form_selectable_cell((isset($value['last_ds']) ? number_format($value['last_ds']) : ''), 'last_ds', '', 'text-align:right');
 			form_selectable_cell((isset($value['value']) ? number_format($value['value']) : ''), 'value', '', 'text-align:right');
 			form_selectable_cell((isset($value['unknown_sec']) ? number_format($value['unknown_sec']) : ''), 'unknown_sec', '', 'text-align:right');
