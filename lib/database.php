@@ -927,7 +927,7 @@ function db_qstr($s, $db_conn = '') {
 		$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
 	}
 
-	$replaceQuote = "\\'";
+	$replaceQuote = '\\';
 
 	if (is_null($s)) return 'NULL';
 
