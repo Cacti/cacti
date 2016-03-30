@@ -526,12 +526,12 @@ function validate_store_request_vars($filters, $sess_prefix = '') {
    @arg $default_value - the default value to use if values cannot be obtained using
      the session or request array */
 function load_current_session_value($request_var_name, $session_var_name, $default_value) {
-	if (isset($_REQUEST[$request_var_name])) {
-		$_SESSION[$session_var_name] = $_REQUEST[$request_var_name];
+	if (isset_request_var($request_var_name)) {
+		$_SESSION[$session_var_name] = get_request_var($request_var_name);
 	}elseif (isset($_SESSION[$session_var_name])) {
-		$_REQUEST[$request_var_name] = $_SESSION[$session_var_name];
+		set_request_var($request_var_name, $_SESSION[$session_var_name]);
 	}else{
-		$_REQUEST[$request_var_name] = $default_value;
+		set_request_var($request_var_name, $default_value);
 	}
 }
 
