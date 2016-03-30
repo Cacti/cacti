@@ -1385,6 +1385,7 @@ function html_host_filter($host_id = '-1', $call_back = 'applyFilter', $sql_wher
 				<input size='28' id='host' value='<?php print $hostname;?>'>
 			</span>
 			<input type='hidden' id='host_id' name='host_id' value='<?php print $host_id;?>'>
+			<input type='hidden' id='call_back' value='<?php print $call_back . "()";?>'>
 		</td>
 	<?php
 	}
