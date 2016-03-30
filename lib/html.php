@@ -1342,7 +1342,7 @@ function html_graph_tabs_right($current_user) {
 	}
 }
 
-function html_host_filter($host_id = '-1', $call_back = 'applyFilter') {
+function html_host_filter($host_id = '-1', $call_back = 'applyFilter', $sql_where = '') {
 	$theme = get_selected_theme();
 
 	if ($theme == 'classic') {
@@ -1355,7 +1355,7 @@ function html_host_filter($host_id = '-1', $call_back = 'applyFilter') {
 				<option value='-1'<?php if (get_request_var('host_id') == '-1') {?> selected<?php }?>>Any</option>
 				<option value='0'<?php if (get_request_var('host_id') == '0') {?> selected<?php }?>>None</option>
 				<?php
-				$hosts = db_fetch_assoc("SELECT id, CONCAT_WS('',description,' (',hostname,')') AS name FROM host ORDER BY description, hostname");
+				$hosts = db_fetch_assoc("SELECT id, CONCAT_WS('',description,' (',hostname,')') AS name FROM host $sql_where ORDER BY description, hostname");
 
 				if (sizeof($hosts) > 0) {
 					foreach ($hosts as $host) {

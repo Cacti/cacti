@@ -133,10 +133,10 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 	?>
 	<tr class='even noprint'>
 		<td class='noprint'>
-		<form id='form_graph_view' method='post' action='<?php print $page;?>?action=preview'>
+		<form id='form_graph_view' method='post' action='<?php print $page;?>?action=<?php print $action;?>'>
 			<table id='device' class='filterTable'>
 				<tr>
-					<?php print html_host_filter(get_request_var('host_id'), 'applyGraphFilter');?>
+					<?php print html_host_filter(get_request_var('host_id'), 'applyGraphFilter()', $devices_where);?>
 					<td>
 						Template
 					</td>
@@ -330,7 +330,7 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 		var graph_start=<?php print get_current_graph_start();?>;
 		var graph_end=<?php print get_current_graph_end();?>;
 		var timeOffset=<?php print date('Z');?>;
-		var pageAction ='<?php print $action;?>';
+		var pageAction = '<?php print $action;?>';
 		var graphPage  = '<?php print $page;?>';
 		var date1Open = false;
 		var date2Open = false;

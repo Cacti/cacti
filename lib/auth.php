@@ -1254,16 +1254,15 @@ function get_host_array() {
 	return $return_devices;
 }
 
-function get_allowed_ajax_hosts($include_any = true, $include_none = true) {
+function get_allowed_ajax_hosts($include_any = true, $include_none = true, $sql_where = '') {
 	$return    = array();
+
 	$term      = get_filter_request_var('term', FILTER_CALLBACK, array('options' => 'sanitize_search_string'));
 	if ($term != '') {
-		$sql_where = "hostname LIKE '%$term%' OR description LIKE '%$term%' OR notes LIKE '%$term%'";
-	}else{
-		$sql_where = "";
+		$sql_where .= (strlen($sql_where) ? ' AND ':'') . "hostname LIKE '%$term%' OR description LIKE '%$term%' OR notes LIKE '%$term%'";
 	}
 
-	$hosts     = get_allowed_devices($sql_where, 'description', 30);
+	$hosts = get_allowed_devices($sql_where, 'description', 30);
 
 	if (get_request_var('term') == '') {
 		if ($include_any) {
