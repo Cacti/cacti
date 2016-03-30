@@ -22,6 +22,8 @@
  +-------------------------------------------------------------------------+
 */
 
+global $no_session_write;
+
 $oper_mode = api_plugin_hook_function('bottom_footer', OPER_MODE_NATIVE);
 if (($oper_mode == OPER_MODE_NATIVE) || ($oper_mode == OPER_MODE_IFRAME_NONAV)) {
 
@@ -51,7 +53,9 @@ kill_session_var("sess_field_values");
 debug_log_clear();
 
 /* close the session */
-session_write_close();
+if (array_search(basename($_SERVER['PHP_SELF']), $no_session_write) === false) {
+	session_write_close();
+}
 
 /* close the database connection */
 db_close();

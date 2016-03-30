@@ -1319,5 +1319,11 @@ $automation_frequencies = array(
 	'40320'    => 'Every 4 Weeks'
 );
 
+$no_session_write = array(
+	'graph_xport.php',
+	'graph_image.php',
+	'graph_json.php'
+);
+
 api_plugin_hook('config_arrays');
 
