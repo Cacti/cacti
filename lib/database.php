@@ -81,11 +81,11 @@ function db_close($db_conn = FALSE) {
 	global $database_sessions, $database_default, $database_hostname, $database_port;
 
 	/* check for a connection being passed, if not use legacy behavior */
-	if (!$db_conn) {
+	if (!is_object($db_conn)) {
 		$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
 	}
 
-	if (!$db_conn) return FALSE;
+	if (!is_object($db_conn)) return FALSE;
 
 	$db_conn = null;
 	$database_sessions["$database_hostname:$database_port:$database_default"] = null;
@@ -109,10 +109,11 @@ function db_execute_prepared($sql, $parms = array(), $log = TRUE, $db_conn = FAL
 	global $database_sessions, $database_default, $config, $database_hostname, $database_port;
 
 	/* check for a connection being passed, if not use legacy behavior */
-	if (!$db_conn) {
+	if (!is_object($db_conn)) {
 		$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
 	}
-	if (!$db_conn) return FALSE;
+
+	if (!is_object($db_conn)) return FALSE;
 
 	$sql = trim(str_replace("\n", '', str_replace("\r", '', str_replace("\t", ' ', $sql))), ';');
 
@@ -184,10 +185,12 @@ function db_fetch_cell_prepared($sql, $parms = array(), $col_name = '', $log = T
 	global $database_sessions, $database_default, $config, $database_hostname, $database_port;
 
 	/* check for a connection being passed, if not use legacy behavior */
-	if (!$db_conn) {
+	if (!is_object($db_conn)) {
 		$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
 	}
-	if (!$db_conn) return FALSE;
+
+	if (!is_object($db_conn)) return FALSE;
+
 	$sql = str_replace("\n", '', str_replace("\r", '', str_replace("\t", ' ', $sql)));
 
 	if (read_config_option('log_verbosity') == POLLER_VERBOSITY_DEVDBG) {
@@ -236,10 +239,11 @@ function db_fetch_row_prepared($sql, $parms = array(), $log = TRUE, $db_conn = F
 	global $database_sessions, $database_default, $config, $database_hostname, $database_port;
 
 	/* check for a connection being passed, if not use legacy behavior */
-	if (!$db_conn) {
+	if (!is_object($db_conn)) {
 		$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
 	}
-	if (!$db_conn) return FALSE;
+
+	if (!is_object($db_conn)) return FALSE;
 
 	$sql = str_replace("\n", '', str_replace("\r", '', str_replace("\t", ' ', $sql)));
 
@@ -286,10 +290,11 @@ function db_fetch_assoc_prepared($sql, $parms = array(), $log = TRUE, $db_conn =
 	global $database_sessions, $database_default, $config, $database_hostname, $database_port;
 
 	/* check for a connection being passed, if not use legacy behavior */
-	if (!$db_conn) {
+	if (!is_object($db_conn)) {
 		$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
 	}
-	if (!$db_conn) return FALSE;
+
+	if (!is_object($db_conn)) return FALSE;
 
 	$sql = str_replace("\n", '', str_replace("\r", '', str_replace("\t", ' ', $sql)));
 
@@ -315,7 +320,9 @@ function db_fetch_assoc_prepared($sql, $parms = array(), $log = TRUE, $db_conn =
 		cacti_log('ERROR: SQL Assoc Failed!, Error: ' . $errorinfo[2]);
 		cacti_debug_backtrace('SQL');
 	}
+
 	if (isset($query)) unset($query);
+
 	return array();
 }
 
@@ -325,12 +332,14 @@ function db_fetch_insert_id($db_conn = FALSE) {
 	global $database_sessions, $database_default, $database_hostname, $database_port;
 
 	/* check for a connection being passed, if not use legacy behavior */
-	if (!$db_conn) {
+	if (!is_object($db_conn)) {
 		$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
 	}
-	if ($db_conn) {
+
+	if (is_object($db_conn)) {
 		return $db_conn->lastInsertId();
 	}
+
 	return FALSE;
 }
 
@@ -340,10 +349,12 @@ function db_affected_rows($db_conn = FALSE) {
 	global $database_sessions, $database_default, $database_hostname, $database_port;
 
 	/* check for a connection being passed, if not use legacy behavior */
-	if (!$db_conn) {
+	if (!is_object($db_conn)) {
 		$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
 	}
-	if (!$db_conn) return FALSE;
+
+	if (!is_object($db_conn)) return FALSE;
+
 	return $db_conn->affected_rows;
 }
 
@@ -356,10 +367,11 @@ function db_add_column ($table, $column, $log = TRUE, $db_conn = FALSE) {
 	global $database_sessions, $database_default, $database_hostname, $database_port;
 
 	/* check for a connection being passed, if not use legacy behavior */
-	if (!$db_conn) {
+	if (!is_object($db_conn)) {
 		$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
 	}
-	if (!$db_conn) return FALSE;
+
+	if (!is_object($db_conn)) return FALSE;
 
 	$result = db_fetch_assoc('SHOW columns FROM `' . $table . '`', $log, $db_conn);
 	$columns = array();
@@ -396,10 +408,11 @@ function db_remove_column ($table, $column, $log = TRUE, $db_conn = FALSE) {
 	global $database_sessions, $database_default, $database_hostname, $database_port;
 
 	/* check for a connection being passed, if not use legacy behavior */
-	if (!$db_conn) {
+	if (!is_object($db_conn)) {
 		$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
 	}
-	if (!$db_conn) return FALSE;
+
+	if (!is_object($db_conn)) return FALSE;
 
 	$result = db_fetch_assoc('SHOW columns FROM `' . $table . '`', $log, $db_conn);
 	$columns = array();
@@ -435,10 +448,11 @@ function db_update_table ($table, $data, $removecolumns = FALSE, $log = TRUE, $d
 	global $database_sessions, $database_default, $database_hostname, $database_port;
 
 	/* check for a connection being passed, if not use legacy behavior */
-	if (!$db_conn) {
+	if (!is_object($db_conn)) {
 		$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
 	}
-	if (!$db_conn) return FALSE;
+
+	if (!is_object($db_conn)) return FALSE;
 
 	if (!db_table_exists($table, $log, $db_conn)) {
 		return db_table_create ($table, $data, $log, $db_conn);
@@ -564,10 +578,11 @@ function db_table_create ($table, $data, $log = TRUE, $db_conn = FALSE) {
 	global $database_sessions, $database_default, $database_hostname, $database_port;
 
 	/* check for a connection being passed, if not use legacy behavior */
-	if (!$db_conn) {
+	if (!is_object($db_conn)) {
 		$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
 	}
-	if (!$db_conn) return FALSE;
+
+	if (!is_object($db_conn)) return FALSE;
 
 	if (!db_table_exists($table, $log, $db_conn)) {
 		$c = 0;
@@ -655,7 +670,7 @@ function db_replace($table_name, $array_items, $keyCols, $db_conn = FALSE) {
 	global $database_sessions, $database_default, $database_hostname, $database_port;
 
 	/* check for a connection being passed, if not use legacy behavior */
-	if (!$db_conn) {
+	if (!is_object($db_conn)) {
 		$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
 	}
 
@@ -717,7 +732,7 @@ function sql_save($array_items, $table_name, $key_cols = 'id', $autoinc = TRUE, 
 	global $database_sessions, $database_default, $database_hostname, $database_port;
 
 	/* check for a connection being passed, if not use legacy behavior */
-	if (!$db_conn) {
+	if (!is_object($db_conn)) {
 		$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
 	}
 
@@ -767,7 +782,7 @@ function sql_column_exists($table_name, $column_name, $db_conn = '') {
 	global $database_sessions, $database_default, $database_hostname, $database_port;
 
 	/* check for a connection being passed, if not use legacy behavior */
-	if (!$db_conn) {
+	if (!is_object($db_conn)) {
 		$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
 	}
 
@@ -788,7 +803,7 @@ function sql_function_timestamp($db_conn = '') {
 	global $database_sessions, $database_default, $database_hostname, $database_port;
 
 	/* check for a connection being passed, if not use legacy behavior */
-	if (!$db_conn) {
+	if (!is_object($db_conn)) {
 		$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
 	}
 
@@ -807,7 +822,7 @@ function sql_function_substr($db_conn = '') {
 	global $database_sessions, $database_default, $database_hostname, $database_port;
 
 	/* check for a connection being passed, if not use legacy behavior */
-	if (!$db_conn) {
+	if (!is_object($db_conn)) {
 		$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
 	}
 
@@ -844,7 +859,7 @@ function sql_function_concat($db_conn = '') {
 	global $database_sessions, $database_default, $database_hostname, $database_port;
 
 	/* check for a connection being passed, if not use legacy behavior */
-	if (!$db_conn) {
+	if (!is_object($db_conn)) {
 		$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
 	}
 
@@ -862,7 +877,7 @@ function sql_function_replace($db_conn = '') {
 	global $database_sessions, $database_default, $database_hostname, $database_port;
 
 	/* check for a connection being passed, if not use legacy behavior */
-	if (!$db_conn) {
+	if (!is_object($db_conn)) {
 		$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
 	}
 
@@ -903,7 +918,7 @@ function sql_function_dateformat($fmt, $col = false, $db_conn = '') {
 	global $database_sessions, $database_default, $database_hostname, $database_port;
 
 	/* check for a connection being passed, if not use legacy behavior */
-	if (!$db_conn) {
+	if (!is_object($db_conn)) {
 		$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
 	}
 
@@ -923,7 +938,7 @@ function db_qstr($s, $db_conn = '') {
 	global $database_sessions, $database_default, $database_hostname, $database_port;
 
 	/* check for a connection being passed, if not use legacy behavior */
-	if (!$db_conn) {
+	if (!is_object($db_conn)) {
 		$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
 	}
 
@@ -931,11 +946,14 @@ function db_qstr($s, $db_conn = '') {
 
 	if (is_null($s)) return 'NULL';
 
-	if (is_resource($db_conn))
+	if (is_object($db_conn)) {
 		return $db_conn->quote($s);
-	if ($replaceQuote == '\\') {
+	}
+
+	if ($replaceQuote == "\\'") {
 		$s = str_replace(array('\\', "\0"), array('\\\\', "\\\0"), $s);
 	}
+
 	return  "'" . str_replace("'",$replaceQuote, $s) . "'";
 }
 
