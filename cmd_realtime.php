@@ -113,7 +113,7 @@ if ((sizeof($polling_items) > 0)) {
 			);
 
 		if (function_exists("proc_open")) {
-			$cactiphp = proc_open(read_config_option("path_php_binary") . " -q " . $config["base_path"] . "/script_server.php cmd", $cactides, $pipes);
+			$cactiphp = proc_open(read_config_option("path_php_binary") . " -q " . $config["base_path"] . "/script_server.php realtime", $cactides, $pipes);
 			$output = fgets($pipes[1], 1024);
 			$using_proc_function = true;
 		}else {

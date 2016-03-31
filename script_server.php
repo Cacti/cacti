@@ -71,6 +71,9 @@ if (php_sapi_name() != 'cli') {
 	define('STDOUT', fopen('php://stdout', 'w'));
 }
 
+/* signal for realtime */
+global $environ;
+
 /* record the script start time */
 $start = microtime(true);
 
@@ -99,6 +102,8 @@ if ($_SERVER['argc'] >= 2) {
 	else
 		if (($_SERVER['argv'][1] == 'cmd.php') || ($_SERVER['argv'][1] == 'cmd'))
 			$environ = 'cmd';
+		elseif ($_SERVER['argv'][1] == 'realtime') 
+			$environ = 'realtime';
 		else
 			$environ = 'other';
 

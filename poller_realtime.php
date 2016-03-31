@@ -143,7 +143,6 @@ if (!is_dir($cache_dir)) {
 }
 
 shell_exec("$command_string $extra_args");
-usleep(100000);
 
 /* open a pipe to rrdtool for writing */
 $rrdtool_pipe = rrd_init();
