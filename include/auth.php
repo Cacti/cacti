@@ -112,15 +112,15 @@ if (read_config_option('auth_method') != 0) {
 
 		if ($realm_id != -1 && !$authorized) {
 			if (isset($_SERVER['HTTP_REFERER'])) {
-				$goBack = "<td colspan='2' align='center'>[<a href='" . htmlspecialchars($_SERVER['HTTP_REFERER']) . "'>Return</a> | <a href='" . $config['url_path'] . "logout.php'>Login Again</a>]</td>";
+				$goBack = "<td colspan='2' align='center'>[<a href='" . htmlspecialchars($_SERVER['HTTP_REFERER']) . "'>" . __('Return') . "</a> | <a href='" . $config['url_path'] . "logout.php'>" . __('Login Again') . "</a>]</td>";
 			}else{
-				$goBack = "<td colspan='2' align='center'>[<a href='" . $config['url_path'] . "logout.php'>Login Again</a>]</td>";
+				$goBack = "<td colspan='2' align='center'>[<a href='" . $config['url_path'] . "logout.php'>" . __('Login Again') . "</a>]</td>";
 			}
 
 			print "<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.01 Transitional//EN' 'http://www.w3.org/TR/html4/loose.dtd'>\n";
 			print "<html>\n";
 			print "<head>\n";
-			print "\t<title>Permission Denied</title>\n";
+			print "\t<title>" . __('Permission Denied') . "</title>\n";
 			print "\t<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>\n";
 			print "\t<link href='" . $config['url_path'] . "include/themes/" . get_selected_theme() . "/main.css' type='text/css' rel='stylesheet'>\n";
 			print "\t<link href='" . $config['url_path'] . "include/themes/" . get_selected_theme() . "/jquery-ui.css' type='text/css' rel='stylesheet'>\n";
@@ -138,16 +138,15 @@ if (read_config_option('auth_method') != 0) {
 			<div class='logoutCenter'>
 				<div class='logoutArea'>
 					<div class='cactiLogoutLogo'></div>
-					<legend>Permission Denied</legend>
+					<legend>" . __('Permission Denied') . "</legend>
 					<div class='logoutTitle'>
-						<p>You are not permitted to access this section of Cacti.<br>
-						If you feel that this is an error.  Please contact your<br>
-						Cacti Administrator.</p>
+						<p>" . __('You are not permitted to access this section of Cacti. If you feel that you need access to this particular section, please contact the Cacti administrator.') .
+						"</p>
 						<center>" . $goBack . "</center>
 					</div>
 					<div class='logoutErrors'></div>
 				</div>
-				<div class='versionInfo'>Version " . $version . " | " . COPYRIGHT_YEARS_SHORT . "</div>
+				<div class='versionInfo'>" . __('Version') . ' ' . $version . " | " . COPYRIGHT_YEARS_SHORT . "</div>
 			</div>
 			<div class='logoutRight'></div>
 			<script type='text/javascript'>
