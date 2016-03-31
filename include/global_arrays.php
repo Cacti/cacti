@@ -995,9 +995,9 @@ $dsstats_max_memory = array(
 	'256'  => __('%d MBytes', 256),
 	'512'  => __('%d MBytes', 512),
 	'1024' => __('1 GByte'),
-	'1536' => __('$s GBytes', '1.5'),
-	'2048' => __('$d GBytes', 2),
-	'3072' => __('$d GBytes', 3)
+	'1536' => __('%s GBytes', '1.5'),
+	'2048' => __('%d GBytes', 2),
+	'3072' => __('%d GBytes', 3)
 );
 
 $dsstats_hourly_avg = array(
@@ -1054,9 +1054,9 @@ $boost_max_memory = array(
 	'256'  => __('%d MBytes', 256),
 	'512'  => __('%d MBytes', 512),
 	'1024' => __('1 GByte'),
-	'1536' => __('$s GBytes', '1.5'),
-	'2048' => __('$d GBytes', 2),
-	'3072' => __('$d GBytes', 3)
+	'1536' => __('%s GBytes', '1.5'),
+	'2048' => __('%d GBytes', 2),
+	'3072' => __('%d GBytes', 3)
 );
 
 $realtime_window = array(
