@@ -1063,7 +1063,7 @@ $realtime_window = array(
 	30   => __('%d Seconds', 30),
 	45   => __('%d Seconds', 45),
 	60   => __('1 Minute'),
-	90   => __('%f Minutes', '1.5'),
+	90   => __('%s Minutes', '1.5'),
 	120  => __('%d Minutes', 2),
 	300  => __('%d Minutes', 5),
 	600  => __('%d Minutes', 10),
@@ -1074,7 +1074,7 @@ $realtime_window = array(
 
 $realtime_refresh = array(
 	5   => __('%d Seconds', 5),
-	10  => __('%d Seconds', 20),
+	10  => __('%d Seconds', 10),
 	15  => __('%d Seconds', 25),
 	20  => __('%d Seconds', 20),
 	30  => __('%d Seconds', 30),
