@@ -232,10 +232,10 @@ if (read_config_option('realtime_enabled') == '') {
     <script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jstree.js'></script>
     <script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery.hotkeys.js'></script>
     <script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery.zoom.js' language='javascript'></script>
-    <script type='text/javascript' src='<?php echo $config['url_path']; ?>include/jscalendar/calendar.js'></script>
-    <script type='text/javascript' src='<?php echo $config['url_path']; ?>include/jscalendar/lang/calendar-en.js'></script>
-    <script type='text/javascript' src='<?php echo $config['url_path']; ?>include/jscalendar/calendar-setup.js'></script>
+	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery.tablesorter.js' language='javascript'></script>
     <script type='text/javascript' src='<?php echo $config['url_path']; ?>include/layout.js'></script>
+	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/realtime.js'></script>
+	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/pace.js'></script>
     <script type='text/javascript' src='<?php echo $config['url_path']; ?>include/themes/<?php print get_selected_theme();?>/main.js'></script>
     <?php include($config['base_path'] . '/include/global_session.php'); api_plugin_hook('page_head'); ?>
 </head>
