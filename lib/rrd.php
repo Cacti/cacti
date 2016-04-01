@@ -1823,7 +1823,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 			case GRAPH_ITEM_TYPE_COMMENT:
 				if (!isset($graph_data_array['graph_nolegend'])) {
 					# perform variable substitution first (in case this will yield an empty results or brings command injection problems)
-					$comment_arg = rrd_substitute_device_query_data($graph_variables['text_format'][$graph_item_id], $graph, $graph_item);
+					$comment_arg = rrd_substitute_host_query_data($graph_variables['text_format'][$graph_item_id], $graph, $graph_item);
 					# next, compute the argument of the COMMENT statement and perform injection counter measures
 					if (trim($comment_arg) == '') { # an empty COMMENT must be treated with care
 						$comment_arg = cacti_escapeshellarg(' ' . $hardreturn[$graph_item_id]);
@@ -1948,7 +1948,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 				$graph_variables['value'][$graph_item_id] = str_replace(':', '\:', $graph_variables['value'][$graph_item_id]); /* escape colons */
 
 				/* perform variable substitution; if this does not return a number, rrdtool will FAIL! */
-				$substitute = rrd_substitute_device_query_data($graph_variables['value'][$graph_item_id], $graph, $graph_item);
+				$substitute = rrd_substitute_host_query_data($graph_variables['value'][$graph_item_id], $graph, $graph_item);
 
 				if (is_numeric($substitute)) {
 					$graph_variables['value'][$graph_item_id] = $substitute;
@@ -2370,7 +2370,7 @@ function rrdtool_cacti_compare($data_source_id, &$info) {
 						$data_source['rrd_minimum'] == 'NaN';
 					}else{
 						$diff['ds'][$ds_name]['min'] = __("rrd minimum for data source '%s' should be '%s'", $ds_name, $data_source['rrd_minimum']);
-						$diff['tune'][] = $info['filename'] . ' ' . '--maximum ' . $ds_name . ':' . $data_source['rrd_minimum'];
+						$diff['tune'][] = $info['filename'] . ' ' . '--minimum ' . $ds_name . ':' . $data_source['rrd_minimum'];
 					}
 				}
 
@@ -2402,7 +2402,7 @@ function rrdtool_cacti_compare($data_source_id, &$info) {
 
 				if ($data_source['rrd_maximum'] != $info['ds'][$ds_name]['max']) {
 					$diff['ds'][$ds_name]['max'] = __("rrd maximum for data source '%s' should be '%s'", $ds_name, $data_source['rrd_maximum']);
-					$diff['tune'][] = $info['filename'] . ' ' . '--minimum ' . $ds_name . ':' . $data_source['rrd_maximum'];
+					$diff['tune'][] = $info['filename'] . ' ' . '--maximum ' . $ds_name . ':' . $data_source['rrd_maximum'];
 				}
 			} else {
 				# cacti knows this ds, but the rrd file does not
