@@ -2370,7 +2370,7 @@ function rrdtool_cacti_compare($data_source_id, &$info) {
 						$data_source['rrd_minimum'] == 'NaN';
 					}else{
 						$diff['ds'][$ds_name]['min'] = __("rrd minimum for data source '%s' should be '%s'", $ds_name, $data_source['rrd_minimum']);
-						$diff['tune'][] = $info['filename'] . ' ' . '--maximum ' . $ds_name . ':' . $data_source['rrd_minimum'];
+						$diff['tune'][] = $info['filename'] . ' ' . '--minimum ' . $ds_name . ':' . $data_source['rrd_minimum'];
 					}
 				}
 
@@ -2402,7 +2402,7 @@ function rrdtool_cacti_compare($data_source_id, &$info) {
 
 				if ($data_source['rrd_maximum'] != $info['ds'][$ds_name]['max']) {
 					$diff['ds'][$ds_name]['max'] = __("rrd maximum for data source '%s' should be '%s'", $ds_name, $data_source['rrd_maximum']);
-					$diff['tune'][] = $info['filename'] . ' ' . '--minimum ' . $ds_name . ':' . $data_source['rrd_maximum'];
+					$diff['tune'][] = $info['filename'] . ' ' . '--maximum ' . $ds_name . ':' . $data_source['rrd_maximum'];
 				}
 			} else {
 				# cacti knows this ds, but the rrd file does not
