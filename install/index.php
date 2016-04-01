@@ -814,7 +814,7 @@ if ($step == '7') {
 						}elseif ($step == '2') { 
 				
 					print '<h2>Pre-installation Check</h2><br>';
-					print 'Cacti requies several PHP Modules to be installed to work properly.  If any of these are not installed, you will be unable to continue the installation until corrected.<br><br>';
+					print 'Cacti requries several PHP Modules to be installed to work properly.  If any of these are not installed, you will be unable to continue the installation until corrected.<br><br>';
 
 					html_start_box("<strong> " . __("Required PHP Modules") . "</strong>", "30", 0, "", "", false);
 					html_header(array(array('name' => 'Name'), array('name' => 'Required'), array('name' => 'Installed')));
@@ -831,6 +831,7 @@ if ($step == '7') {
 										 array('name' => 'xml', 'installed' => false),
 										 array('name' => 'pcre', 'installed' => false),
 										 array('name' => 'json', 'installed' => false),
+										 array('name' => 'zlib', 'installed' => false)
 					);
 
 								$ext = verify_php_extensions($extensions);
@@ -986,7 +987,7 @@ if ($step == '7') {
 									if (is_writable('../resource/snmp_queries')) {
 										print " <p>". $config['base_path'] . "/resource/snmp_queries is <font color='#008000'>writable</font></p>";
 									} else {
-										print " <p>". $config['base_path'] . "/resource/script_server is <font color='#FF0000'>not writable</font></p>";
+										print " <p>". $config['base_path'] . "/resource/snmp_queries  is <font color='#FF0000'>not writable</font></p>";
 										$writable=FALSE;
 									}
 									
@@ -1006,11 +1007,12 @@ if ($step == '7') {
 									
 						/* Print help message for unix and windows if directory is not writable */
 						if (($config['cacti_server_os'] == "unix") && isset($writable)) {
-							print "Make sure your webserver has read and write access to the entire folder structure.<br> Example: chown -R apache.apache " . $config['base_path'] . "/resource<br><br>";
+							print "Make sure your webserver has read and write access to the entire folder structure.<br> Example: chown -R apache.apache " . $config['base_path'] . "/resource/<br>";
+							print "For SELINUX users make sure that you have the correct permissions or set 'setenforce 0' temporarly.<br><br>";
 						}elseif (($config['cacti_server_os'] == "win32") && isset($writable)){
 							print 'Check Permissions';
 						}else {
-						print '<font color="#008000">All folders is writable</font><br><br>';
+						print '<font color="#008000">All folders are writable</font><br><br>';
 						} ?>		
 							
 							
