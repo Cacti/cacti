@@ -263,7 +263,23 @@ function load_i18n_gettext_wrappers(){
 		}
 	}
 
-
+	function __xn($context, $singular, $plural, $number, $domain = 'cacti'){
+		return __n($singular, $plural, $number, $domain);
+	}
+	
+	function __x(){
+		$args = func_get_args();
+		$num  = func_num_args();
+		
+		/* this should never happen */
+		if ($num < 2) {
+			return false;
+		}else {
+			$context = array_shift($args);
+			return call_user_func_array('__', $args);
+		}
+	}
+	
 	function __date($format, $timestamp = false, $domain = 'cacti') {
 
 		global $i18n_date_placeholders;
@@ -339,6 +355,23 @@ function load_i18n_fallback_wrappers(){
 
 			/* process return string against input arguments */
 			return call_user_func_array('sprintf', $args);
+		}
+	}
+
+	function __xn($context, $singular, $plural, $number, $domain = 'cacti'){
+		return __n($singular, $plural, $number, $domain);
+	}
+	
+	function __x(){
+		$args = func_get_args();
+		$num  = func_num_args();
+		
+		/* this should never happen */
+		if ($num < 2) {
+			return false;
+		}else {
+			$context = array_shift($args);
+			return call_user_func_array('__', $args);
 		}
 	}
 
