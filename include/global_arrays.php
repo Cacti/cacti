@@ -570,7 +570,7 @@ $custom_data_source_types = array(
 
 $menu = array(
 	'Create' => array(
-		'graphs_new.php' => _('New Graphs')
+		'graphs_new.php' => __('New Graphs')
 		),
 	'Management' => array(
 		'graphs.php'           => __('Graphs'),
