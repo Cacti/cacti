@@ -49,6 +49,10 @@ switch (get_request_var('action')) {
 		get_allowed_ajax_hosts(false);
 
 		break;
+	case 'ajax_save':
+		save_default_query_option();
+
+		break;
 	default:
 		top_header();
 
@@ -61,6 +65,15 @@ switch (get_request_var('action')) {
 /* --------------------------
     The Save Function
    -------------------------- */
+
+function save_default_query_option() {
+	$data_query = get_filter_request_var('query');
+	$default    = get_filter_request_var('item');
+
+	set_user_setting('default_sgg_' . $data_query, $default); 
+
+	print "Default Settings Saved\n";
+}
 
 function form_save() {
 	if (isset_request_var('save_component_graph')) {
@@ -930,9 +943,10 @@ function graphs() {
 							<td class='nowrap right' style='font-style:italic;'>
 							Select a Graph Type to Create
 						</td>
-						<td align='right'>
-							<select name='sgg_" . $snmp_query['id'] . "' id='sgg_" . $snmp_query['id'] . "' onChange='dqUpdateDeps(" . $snmp_query['id'] . ',' . (isset($column_counter) ? $column_counter:'') . ");'>
-								"; html_create_list($data_query_graphs,'name','id','0'); print "
+						<td style='white-space:nowrap'>
+							<input type='button' class='default' id='default_" .  $snmp_query['id'] . "' value='Set Default' title='Make selection default'>
+							<select class='dqselect' name='sgg_" . $snmp_query['id'] . "' id='sgg_" . $snmp_query['id'] . "' onChange='dqUpdateDeps(" . $snmp_query['id'] . ',' . (isset($column_counter) ? $column_counter:'') . ");'>
+								"; html_create_list($data_query_graphs,'name','id',read_user_setting('default_sgg_' . $snmp_query['id'])); print "
 							</select>
 						</td>
 					</tr>
@@ -947,7 +961,7 @@ function graphs() {
 	}
 
 	if (strlen($script)) {
-		$script .= "</script>\n";
+		$script .= "$('.default').click(function() { $.get('graphs_new.php?action=ajax_save&query=" . $snmp_query['id'] . "'+'&item='+$(this).next('select').val()) });</script>\n";
 		print $script;
 	}
 
