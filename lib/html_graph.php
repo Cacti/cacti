@@ -96,26 +96,25 @@ function html_graph_validate_preview_request_vars() {
 		'thumbnails' => array(
 			'filter' => FILTER_VALIDATE_REGEXP, 
 			'options' => array('options' => array('regexp' => '(true|false)')),
-			'pageset' => true,
 			'default' => read_user_setting('thumbnail_section_preview') == 'on' ? 'true':'false'
 			),
 		'graph_list' => array(
 			'filter' => FILTER_VALIDATE_REGEXP, 
 			'options' => array('options' => array('regexp' => '/^([\,0-9]+)$/')),
 			'pageset' => true,
-			'default' => read_user_setting('thumbnail_section_preview') == 'on' ? 'true':'false'
+			'default' => ''
 			),
 		'graph_add' => array(
 			'filter' => FILTER_VALIDATE_REGEXP, 
 			'options' => array('options' => array('regexp' => '/^([\,0-9]+)$/')),
 			'pageset' => true,
-			'default' => read_user_setting('thumbnail_section_preview') == 'on' ? 'true':'false'
+			'default' => ''
 			),
 		'graph_remove' => array(
 			'filter' => FILTER_VALIDATE_REGEXP, 
 			'options' => array('options' => array('regexp' => '/^([\,0-9]+)$/')),
 			'pageset' => true,
-			'default' => read_user_setting('thumbnail_section_preview') == 'on' ? 'true':'false'
+			'default' => ''
 			),
 		'style' => array(
 			'filter' => FILTER_DEFAULT,

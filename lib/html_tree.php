@@ -484,7 +484,7 @@ function html_validate_tree_vars() {
 			'filter' => FILTER_VALIDATE_REGEXP, 
 			'options' => array('options' => array('regexp' => '(true|false)')),
 			'pageset' => true,
-			'default' => 'true'
+			'default' => read_user_setting('thumbnail_section_tree_2')
 			)
 	);
 

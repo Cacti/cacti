@@ -864,6 +864,7 @@ function saveGraphFilter(section) {
 	href=graphPage+'?action=save'+
 		'&columns='+$('#columns').val()+
 		'&graphs='+$('#graphs').val()+
+		'&thumbnails='+$('#thumbnails').is(':checked')+
 		'&predefined_timespan='+$('#predefined_timespan').val()+
 		'&predefined_timeshift='+$('#predefined_timeshift').val()+
 		'&thumbnails='+$('#thumbnails').is(':checked');
