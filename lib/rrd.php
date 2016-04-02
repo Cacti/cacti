@@ -1067,7 +1067,7 @@ function rrd_function_process_graph_options($graph_start, $graph_end, &$graph, &
 		}
 	}
 
-	$graph_opts .= "$rigid" . trim("$scale $unit_value $unit_exponent_value $graph_legend ", "\n\r " . RRD_NL) . RRD_NL;
+	$graph_opts .= "$rigid" . trim("$scale$unit_value$unit_exponent_value$graph_legend", "\n\r " . RRD_NL) . RRD_NL;
 
 	/* add a date to the graph legend */
 	$graph_opts .= rrdtool_function_format_graph_date($graph_data_array);
