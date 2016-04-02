@@ -52,6 +52,7 @@ if (get_request_var('action') == 'timeout') {
 	print "\t<script type='text/javascript' src='" . $config['url_path'] . "include/js/jquery-ui.js' language='javascript'></script>\n";
 	print "\t<script type='text/javascript' src='" . $config['url_path'] . "include/js/jquery.cookie.js' language='javascript'></script>\n";
 	print "\t<script type='text/javascript' src='" . $config['url_path'] . "include/js/jquery.hotkeys.js'></script>\n";
+	print "\t<script type='text/javascript' src='" . $config['url_path'] . "include/js/jquery.tablesorter.js'></script>\n";
 	print "\t<script type='text/javascript' src='" . $config['url_path'] . "include/layout.js'></script>\n";
 	print "\t<script type='text/javascript' src='" . $config['url_path'] . "include/themes/" . get_selected_theme() . "/main.js'></script>\n";
 	print "<script type='text/javascript'>var theme='" . get_selected_theme() . "';</script>\n";
