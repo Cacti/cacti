@@ -1289,8 +1289,10 @@ function upgrade_to_1_0_0() {
 	$data['type'] = 'MyISAM';
 	db_table_create('vdef_items', $data);
 
-	
-	
+	/* add admin permissions */
+	db_install_execute("1.0.0", "REPLACE INTO `user_auth_realm` VALUES (19,1);");
+	db_install_execute("1.0.0", "REPLACE INTO `user_auth_realm` VALUES (22,1);");
+		
 	/* fill table VDEF */
 	db_install_execute("1.0.0", "REPLACE INTO `vdef` VALUES (1, 'e06ed529238448773038601afb3cf278', 'Maximum');");
 	db_install_execute("1.0.0", "REPLACE INTO `vdef` VALUES (2, 'e4872dda82092393d6459c831a50dc3b', 'Minimum');");
