@@ -7,7 +7,7 @@ var originalRefresh = 0;
 var timeOffset;
 var realtimeTimer;
 var rtWidth         = 0;
-var rtheight        = 0;
+var rtHeight        = 0;
 var url;
 
 function realtimeDetectBrowser() {
@@ -30,12 +30,23 @@ function imageOptionsChanged(action) {
 	graph_start    = $("#graph_start").val();
 	graph_end      = 0;
 	ds_step        = $("#ds_step").val();
+	local_graph_id = $('#local_graph_id').val();
 
-	url="?top=0&left=0&action="+action+"&graph_start=-"+graph_start+"&ds_step="+ds_step+"&count="+count;
+	if (rtWidth == 0) {
+		rtWidth = $(window).width();
+	}
+
+	if (rtHeight == 0) {
+		rtHeight = $(window).height()+50;
+	}
+
+	url="?top=0&left=0&action="+action+"&local_graph_id="+local_graph_id+"&graph_start=-"+graph_start+"&ds_step="+ds_step+"&count="+count;
 
 	Pace.stop;
 
-	$.get(url);
+	$.getJSON(url, function(data) {
+		$('#image').empty().append('<img class="graphimage" src="data:image/png;base64,'+data.data+'"/>');
+	});
 }
 
 function stopRealtime() {
@@ -127,7 +138,7 @@ function realtimeGrapher() {
 			});
 		}
 	}
-
+	
 	if (inRealtime == false) {
 		stopRealtime();
 	} else {
