@@ -211,6 +211,7 @@ case 'tree_content':
 	<script type='text/javascript'>
     var refreshIsLogout=false;
     var refreshPage='<?php print str_replace('tree_content', 'tree', $_SERVER['REQUEST_URI']);?>';
+	var refreshMSeconds=<?php print read_user_setting('page_refresh')*1000;?>;
 	var graph_start=<?php print get_current_graph_start();?>;
 	var graph_end=<?php print get_current_graph_end();?>;
 	var timeOffset=<?php print date('Z');?>
@@ -576,6 +577,7 @@ case 'list':
 	<input type='hidden' id='graph_remove' name='graph_remove' value=''>
 	</form>
 	<script type='text/javascript'>
+	var refreshMSeconds=999999999;
 	var graph_list_array = new Array(<?php print get_request_var('graph_list');?>);
 
 	$(function() {
