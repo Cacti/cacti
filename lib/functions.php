@@ -3130,13 +3130,21 @@ function bottom_footer() {
 			$('#message_container').html(message).show().delay(2000).slideUp('fast');
 			window.scrollTo(0,0);
 		}
+
+		if (pageRefresh > 0) {
+			refreshMSeconds=pageRefresh;
+			pageRefresh = 0;
+		}else{
+			refreshMSeconds=999999999;
+		}
+
 		</script>
 		<?php
 
 		/* we use this session var to store field values for when a save fails,
 		this way we can restore the field's previous values. we reset it here, because
 		they only need to be stored for a single page */
-		kill_session_var("sess_field_values");
+		kill_session_var('sess_field_values');
 
 		/* close the session */
 		session_write_close();
