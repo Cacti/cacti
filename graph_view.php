@@ -209,6 +209,8 @@ case 'tree_content':
 
 	?>
 	<script type='text/javascript'>
+    var refreshIsLogout=false;
+    var refreshPage='<?php print str_replace('tree_content', 'tree', $_SERVER['REQUEST_URI']);?>';
 	var graph_start=<?php print get_current_graph_start();?>;
 	var graph_end=<?php print get_current_graph_end();?>;
 	var timeOffset=<?php print date('Z');?>
