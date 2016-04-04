@@ -47,7 +47,7 @@ if (isset($_GET['language']) && isset($lang2locale[$_GET['language']]))
 {
 	$cacti_locale = $_GET['language'];
 	$cacti_country = $lang2locale[$_GET['language']]['country'];
-	$_SESSION['sess_i18n_language'] = $cacti_locale;
+	$_SESSION['sess_user_language'] = $cacti_locale;
 	unset($_SESSION['sess_current_date1']);
 	unset($_SESSION['sess_current_date2']);
 
@@ -56,24 +56,22 @@ if (isset($_GET['language']) && isset($lang2locale[$_GET['language']]))
 
 }
 /* language definition stored in the SESSION */
-elseif (isset($_SESSION['sess_i18n_language']) && isset($lang2locale[$_SESSION['sess_i18n_language']]))
+elseif (isset($_SESSION['sess_user_language']) && isset($lang2locale[$_SESSION['sess_user_language']]))
 {
-	$cacti_locale = $_SESSION['sess_i18n_language'];
-	$cacti_country = $lang2locale[$_SESSION['sess_i18n_language']]['country'];
+	$cacti_locale = $_SESSION['sess_user_language'];
+	$cacti_country = $lang2locale[$_SESSION['sess_user_language']]['country'];
 
 }
-
-#elseif ($user_locale = read_user_setting('language'))
+elseif ($user_locale = read_user_i18n_setting('user_language'))
 /* look up for user customized language setting stored in Cacti DB */
-#{
-#	if (isset($lang2locale[$user_locale]))
-#	{
-#		$cacti_locale = $user_locale;
-#		$cacti_country = $lang2locale[$cacti_locale]['country'];
-#		$_SESSION['sess_i18n_language'] = $cacti_locale;
-#	}
-
-#}
+{
+	if (isset($lang2locale[$user_locale]))
+	{
+		$cacti_locale = $user_locale;
+		$cacti_country = $lang2locale[$cacti_locale]['country'];
+		$_SESSION['sess_user_language'] = $cacti_locale;
+	}
+}
 elseif ( isset($_SERVER['HTTP_ACCEPT_LANGUAGE']) && ( read_config_option('i18n_auto_detection') | read_config_option('i18n_auto_detection') == '' ) )
 /* detect browser settings if auto detection is enabled */
 {
@@ -192,7 +190,7 @@ function load_fallback_procedure(){
 	load_i18n_fallback_wrappers();
 
 	/* reset variables */
-	$_SESSION['sess_i18n_language'] = '';
+	$_SESSION['sess_user_language'] = '';
 
 	$cacti_textdomains = array();
 	define('CACTI_LOCALE', 'en');
@@ -442,7 +440,6 @@ function get_list_of_locales () {
 	return $lang2locale;
 }
 
-
 /**
  * get_installed_locales - finds all installed locales
  *
@@ -470,6 +467,43 @@ function get_installed_locales(){
 	}
 
 	return $supported_languages;
+}
+
+/* read_user_i18n_setting - finds the current value of a i18n configuration setting
+   @arg $config_name - the name of the configuration setting as specified $settings_user array
+     in 'include/global_settings.php'
+   @returns - the current value of the i18n configuration option or the system default value */
+function read_user_i18n_setting($config_name) {
+	global $config;
+
+	/* users must have cacti user auth turned on to use this, or the guest account must be active */
+	if (isset($_SESSION['sess_user_id'])) {
+		$effective_uid = $_SESSION['sess_user_id'];
+	}else if (isset($config['config_options_array']['export_user_id'])) {
+		$effective_uid = $config['config_options_array']['export_user_id'];
+	}else if ((read_config_option('auth_method') == 0)) {
+		if (isset($_SESSION['sess_config_array'])) {
+			$config_array = $_SESSION['sess_config_array'];
+		}else if (isset($config['config_options_array'])) {
+			$config_array = $config['config_options_array'];
+		}
+		if (!isset($config_array[$config_name])) {
+			$effective_uid = db_fetch_cell_prepared("SELECT user_auth.id from settings INNER JOIN user_auth ON user_auth.username = settings.value WHERE settings.name = 'guest_user'");
+		}
+		if (strlen($effective_uid) == 0) {
+			$effective_uid = 0;
+		}
+	}else{
+		$effective_uid = 0;
+	}
+
+	$db_setting = db_fetch_row_prepared('SELECT value FROM settings_user WHERE name = ? AND user_id = ?', array($config_name, $effective_uid));
+	
+	if (isset($db_setting['value'])) {
+		return $db_setting['value'];
+	}else{
+		return false;
+	}
 }
 
 

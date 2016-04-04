@@ -116,6 +116,7 @@ function form_save() {
 	raise_message(1);
 
 	/* reset local settings cache so the user sees the new settings */
+	kill_session_var('sess_user_language');
 	kill_session_var('sess_graph_config_array');
 }
 

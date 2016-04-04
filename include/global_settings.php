@@ -1717,9 +1717,9 @@ $settings_user = array(
 			'array' => $graph_views,
 			'default' => '1'
 			),
-        'default_language' => array(
-            'friendly_name' => __('Default Language'),
-            'description' => __('Default language for this system.'),
+        'user_language' => array(
+            'friendly_name' => __('User Language'),
+            'description' => __('Defines the preferred GUI language.'),
             'method' => 'drop_array',
             'default' => 'us',
             'array' => get_installed_locales()

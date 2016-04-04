@@ -152,7 +152,6 @@ db_connect_real($database_hostname, $database_username, $database_password, $dat
 /* include additional modules */
 include_once($config['library_path'] . '/functions.php');
 include_once($config['include_path'] . '/global_constants.php');
-include_once($config['include_path'] . '/global_languages.php');
 
 if ((isset($no_http_headers) && $no_http_headers == true) || in_array(basename($_SERVER['PHP_SELF']), $no_http_header_files, true)) {
 	$is_web = false;
@@ -233,6 +232,8 @@ if ((bool)ini_get('register_globals')) {
 
 /* gather the existing cactidb version */
 $config['cacti_db_version'] = db_fetch_cell("SELECT cacti FROM version LIMIT 1");
+
+include_once($config['include_path'] . '/global_languages.php');
 
 include_once($config['library_path'] . '/auth.php');
 include_once($config['library_path'] . '/plugins.php');
