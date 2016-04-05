@@ -690,7 +690,7 @@ function _db_replace($db_conn, $table, $fieldArray, $keyCols, $has_autoinc) {
 		$keyCols = array($keyCols);
 	}
 
-	$sql  = "INSERT INTO `$table` (";
+	$sql  = "INSERT INTO $table (";
 	$sql2 = '';
 	$sql3 = '';
 

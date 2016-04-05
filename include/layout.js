@@ -800,7 +800,7 @@ function setupPageTimeout() {
 	if (typeof refreshMSeconds != 'undefined') {
 		myRefresh = setTimeout(function() {
 			if (refreshIsLogout) {
-				document.location = refreshPage;
+				document.location = 'logout.php';
 			}else{
 				if (previousPage != '') {
 					refreshPage = previousPage;

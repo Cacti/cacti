@@ -326,6 +326,8 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 		</form>
 		<script type='text/javascript'>
 
+    	var refreshIsLogout=false;
+		var refreshMSeconds=<?php print read_user_setting('page_refresh')*1000;?>;
 		var graph_start=<?php print get_current_graph_start();?>;
 		var graph_end=<?php print get_current_graph_end();?>;
 		var timeOffset=<?php print date('Z');?>;

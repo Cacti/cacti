@@ -943,8 +943,10 @@ function graphs() {
 							<td class='nowrap right' style='font-style:italic;'>
 							Select a Graph Type to Create
 						</td>
-						<td style='white-space:nowrap'>
+						<td class='right'>
 							<input type='button' class='default' id='default_" .  $snmp_query['id'] . "' value='Set Default' title='Make selection default'>
+						</td>
+						<td style='white-space:nowrap'>
 							<select class='dqselect' name='sgg_" . $snmp_query['id'] . "' id='sgg_" . $snmp_query['id'] . "' onChange='dqUpdateDeps(" . $snmp_query['id'] . ',' . (isset($column_counter) ? $column_counter:'') . ");'>
 								"; html_create_list($data_query_graphs,'name','id',read_user_setting('default_sgg_' . $snmp_query['id'])); print "
 							</select>

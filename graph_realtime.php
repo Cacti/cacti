@@ -135,7 +135,7 @@ case 'countdown':
 
 	/* construct the image name  */
 	$graph_data_array['export_realtime'] = read_config_option('realtime_cache_path') . '/user_' . session_id() . '_lgi_' . get_request_var('local_graph_id') . '.png';
-	$graph_data_array['output_flag'] = RRDTOOL_OUTPUT_GRAPH_DATA;
+	$graph_data_array['output_flag']     = RRDTOOL_OUTPUT_GRAPH_DATA;
 
 	rrdtool_function_graph(get_request_var('local_graph_id'), '', $graph_data_array);
 
@@ -148,11 +148,11 @@ case 'countdown':
 	/* send text information back to browser as well as image information */
 	$return_array = array(
 		'local_graph_id' => get_request_var('local_graph_id'),
-		'top' => get_request_var('top'),
-		'left' => get_request_var('left'),
-		'ds_step' => (isset($_SESSION['sess_realtime_ds_step']) ? $_SESSION['sess_realtime_ds_step']:$graph_data_array['ds_step']),
-		'graph_start' => (isset($_SESSION['sess_realtime_graph_start']) ? $_SESSION['sess_realtime_graph_start']:$graph_data_array['graph_start']),
-		'data' => (isset($data) ? $data:'')
+		'top'            => get_request_var('top'),
+		'left'           => get_request_var('left'),
+		'ds_step'        => (isset($_SESSION['sess_realtime_ds_step']) ? $_SESSION['sess_realtime_ds_step']:$graph_data_array['ds_step']),
+		'graph_start'    => (isset($_SESSION['sess_realtime_graph_start']) ? $_SESSION['sess_realtime_graph_start']:$graph_data_array['graph_start']),
+		'data'           => (isset($data) ? $data:'')
 	);
 
 	print json_encode($return_array);
@@ -245,7 +245,7 @@ if (read_config_option('realtime_enabled') == '') {
 		<table align='center'>
 			<tr>
 				<td> 
-					<strong>Timespan</strong>
+					Window
 				</td>
 				<td>
 					<select name='graph_start' id='graph_start' onChange='imageOptionsChanged("timespan")'>
@@ -259,7 +259,7 @@ if (read_config_option('realtime_enabled') == '') {
 					</select>
 				</td>
 				<td>
-					<strong>Interval</strong>
+					Refresh
 				</td>
 				<td>
 					<select name='ds_step' id='ds_step' onChange="imageOptionsChanged('interval')">
@@ -275,7 +275,7 @@ if (read_config_option('realtime_enabled') == '') {
 			</tr>
 			<tr>
 				<td align='center' colspan='6'>
-					<span id='countdown'><strong><?php echo get_request_var('ds_step'); ?> seconds left.</strong></span>
+					<span id='countdown'><?php echo get_request_var('ds_step'); ?> seconds left.</span>
 				</td>
 			</tr>
 		</table>
@@ -291,36 +291,36 @@ if (read_config_option('realtime_enabled') == '') {
 	var ds_step = 0;
 	var sizeset = false;
 	var count   = 0;
-	var browser = "";
+	var browser = '';
 
 	function countdown_update() {
 		ds_step--;
 
 		if (ds_step < 0) {
-			ds_step = $("#ds_step").val();
+			ds_step = $('#ds_step').val();
 			imageOptionsChanged('countdown');
 			sizeset = false;
 		}
 
-		$('#countdown').html( '<strong>' + ds_step + ' seconds left.</strong>');
+		$('#countdown').html(ds_step + ' seconds left.');
 
 		browser = realtimeDetectBrowser();
 
 		/* set the window size */
-		height = $(".graphimage").height();
-		width  = $(".graphimage").width();
+		height = $('.graphimage').height();
+		width  = $('.graphimage').width();
 
 		if (height > 40) {
-			if (browser == "IE") {
+			if (browser == 'IE') {
 				width  = width  + 30;
 				height = height + 110;
 			}else{
 				width  = width  + 40;
-				height = height + 165;
+				height = height + 170;
 			}
 
 			if (sizeset == false) {
-				if (browser == "FF") {
+				if (browser == 'FF') {
 					window.outerHeight = height;
 					window.outerWidth  = width;
 				}else{

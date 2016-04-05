@@ -68,4 +68,5 @@ if (!empty($refresh)) {
 	var refreshMSeconds=<?php print $myrefresh['seconds']*1000;?>;
 	var urlPath='<?php print $config['url_path'];?>';
 	var previousPage='';
+	var pageRefresh=0;
 </script>
