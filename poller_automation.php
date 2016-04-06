@@ -487,8 +487,8 @@ function discoverDevices($network_id, $thread) {
 							automation_debug(" Responded");
 
 							$fos = automation_find_os($device['snmp_sysDescr'], $device['snmp_sysObjectID'], $device['snmp_sysName']);
-
-							if ($fos != false && read_config_option('add_to_cacti') == 'on') {
+							
+							if ($fos != false && $network['add_to_cacti'] == 'on') {
 								automation_debug(", Template: " . $fos['name']);
 								$device['os']                   = $fos['name'];
 								$device['host_template']        = $fos['host_template'];
