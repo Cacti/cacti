@@ -1290,6 +1290,12 @@ function upgrade_to_1_0_0() {
 	db_table_create('vdef_items', $data);
 
 	
+	/* add admin permissions */
+	$userid= db_fetch_cell("SELECT * FROM user_auth WHERE id='1' AND username='admin'");
+	if (!empty($userid)) {
+	db_install_execute("1.0.0", "REPLACE INTO `user_auth_realm` VALUES (19,1);");
+	db_install_execute("1.0.0", "REPLACE INTO `user_auth_realm` VALUES (22,1);");
+	}
 	
 	/* fill table VDEF */
 	db_install_execute("1.0.0", "REPLACE INTO `vdef` VALUES (1, 'e06ed529238448773038601afb3cf278', 'Maximum');");
