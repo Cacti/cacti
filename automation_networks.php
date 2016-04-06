@@ -122,6 +122,7 @@ function api_networks_save($post) {
 
 		$save['enabled']            = (isset($post['enabled']) ? 'on':'');
 		$save['enable_netbios']     = (isset($post['enable_netbios']) ? 'on':'');
+		$save['add_to_cacti']     = (isset($post['add_to_cacti']) ? 'on':'');
 		$save['rerun_data_queries'] = (isset($post['rerun_data_queries']) ? 'on':'');
 
 		/* discovery connectivity settings */

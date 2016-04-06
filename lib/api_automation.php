@@ -2638,9 +2638,9 @@ function automation_add_device ($device, $web = false) {
 	global $plugins, $config;
 
 	$template_id          = $device['host_template'];
-	$snmp_sysName         = preg_split('/[\s.]+/', $device['sysName'], -1, PREG_SPLIT_NO_EMPTY);
+	$snmp_sysName         = preg_split('/[\s.]+/', $device['snmp_sysName'], -1, PREG_SPLIT_NO_EMPTY);
 	$description          = $snmp_sysName[0] != '' ? $snmp_sysName[0] : $device['hostname'];
-	$ip                   = $device['ip'];
+	$ip                   = $device['ip_address'];
 	$community            = $device['community'];
 	$snmp_ver             = $device['snmp_version'];
 	$snmp_username	      = $device['snmp_username'];
