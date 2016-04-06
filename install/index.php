@@ -44,23 +44,19 @@ $old_version_index = array_search($old_cacti_version, $cacti_versions);
 
 /* do a version check */
 if ($old_cacti_version == $config['cacti_version']) {
-	print "	<p style='font-family: Verdana, Arial; font-size: 16px; font-weight: bold; color: red;'>Error</p>
-		<p style='font-family: Verdana, Arial; font-size: 12px;'>This installation is already up-to-date. Click <a href='../index.php'>here</a> to use cacti.</p>";
+	print '	<p style="font-family: Verdana, Arial; font-size: 16px; font-weight: bold; color: red;">' . __('Error') . '</p>
+		<p style="font-family: Verdana, Arial; font-size: 12px;">' 
+		. __('This installation is already up-to-date. Click <a href="%s">here</a> to use cacti.', '../index.php') . '</p>';
 	exit;
 }elseif (preg_match('/^0\.6/', $old_cacti_version)) {
-	print "	<p style='font-family: Verdana, Arial; font-size: 16px; font-weight: bold; color: red;'>Error</p>
-		<p style='font-family: Verdana, Arial; font-size: 12px;'>You are attempting to install cacti " . $config['cacti_version'] . "
-		onto a 0.6.x database. To continue, you must create a new database, import 'cacti.sql' into it, and
-		update 'include/config.php' to point to the new database.</p>";
+	print '	<p style="font-family: Verdana, Arial; font-size: 16px; font-weight: bold; color: red;">' . __('Error') . '</p>
+		<p style="font-family: Verdana, Arial; font-size: 12px;">' 
+		. __('You are attempting to install cacti %s	onto a 0.6.x database. To continue, you must create a new database, import "cacti.sql" into it, and	update "include/config.php" to point to the new database.', $config['cacti_version']) . '</p>';
 	exit;
 }elseif (empty($old_cacti_version)) {
-	print "	<p style='font-family: Verdana, Arial; font-size: 16px; font-weight: bold; color: red;'>Error</p>
-		<p style='font-family: Verdana, Arial; font-size: 12px;'>You have created a new database, but have not yet imported
-		the 'cacti.sql' file. At the command line, execute the following to continue:</p>
-		<p><pre>mysql -u $database_username -p $database_default < cacti.sql</pre></p>
-		<p>This error may also be generated if the cacti database user does not have correct permissions on the cacti database.
-		Please ensure that the cacti database user has the ability to SELECT, INSERT, DELETE, UPDATE, CREATE, ALTER, DROP, INDEX
-		on the cacti database.</p>";
+	print '	<p style="font-family: Verdana, Arial; font-size: 16px; font-weight: bold; color: red;">' . __('Error') . '</p>
+		<p style="font-family: Verdana, Arial; font-size: 12px;">' 
+		. __('You have created a new database, but have not yet imported the "cacti.sql" file. At the command line, execute the following to continue:</p><p><pre>mysql -u $database_username -p $database_default < cacti.sql</pre></p><p>This error may also be generated if the cacti database user does not have correct permissions on the cacti database. Please ensure that the cacti database user has the ability to SELECT, INSERT, DELETE, UPDATE, CREATE, ALTER, DROP, INDEX on the cacti database.') . '</p>';
 	exit;
 }
 
@@ -617,10 +613,9 @@ if ($step == '7') {
 }elseif (($step == '8') && ($_REQUEST['install_type'] == '3')) {
 	/* if the version is not found, die */
 	if (!is_int($old_version_index)) {
-		print "	<p style='font-family: Verdana, Arial; font-size: 16px; font-weight: bold; color: red;'>Error</p>
-			<p style='font-family: Verdana, Arial; font-size: 12px;'>Invalid Cacti version
-			<strong>$old_cacti_version</strong>, cannot upgrade to <strong>" . $config['cacti_version'] . "
-			</strong></p>";
+		print "	<p style='font-family: Verdana, Arial; font-size: 16px; font-weight: bold; color: red;'>" . __('Error') . "</p>
+			<p style='font-family: Verdana, Arial; font-size: 12px;'>"
+			. __('Invalid Cacti version <strong>%1$s</strong>, cannot upgrade to <strong>%2$s</strong>', $old_cacti_version, $config['cacti_version']) . "</p>";
 		exit;
 	}
 
@@ -778,27 +773,19 @@ if ($step == '7') {
 		<td style='width:100%;vertical-align:middle;'>
 			<table class='cactiTable'>
 				<tr class='cactiTableTitle'>
-					<td class='textHeaderDark'><strong>Cacti Installation Guide</strong></td>
+					<td class='textHeaderDark'><strong><?php print __('Cacti Installation Guide'); ?></strong></td>
 				</tr>
 				<tr class='installArea'>
 					<td>
 						
 				<?php	/* license&welcome */
-						if ($step == '1') { ?>
+						if ($step == '1') {
 
-						<p>Thanks for taking the time to download and install cacti, the complete graphing
-						solution for your network. Before you can start making cool graphs, there are a few
-						pieces of data that cacti needs to know.</p>
-
-						<p>Make sure you have read and followed the required steps needed to install cacti
-						before continuing. Install information can be found for
-						<a href='../docs/html/install_unix.html'>Unix</a> and <a href='../docs/html/install_windows.html'>Win32</a>-based operating systems.</p>
-
-						<p>Also, if this is an upgrade, be sure to reading the <a href='../docs/html/upgrade.html'>Upgrade</a> information file.</p>
-
-						<p>Cacti is licensed under the GNU General Public License, you must agree
-						to its provisions before continuing:</p>
-
+							print '<p>' . __('Thanks for taking the time to download and install cacti, the complete graphing solution for your network. Before you can start making cool graphs, there are a few pieces of data that cacti needs to know.') . '</p>';
+							print '<p>' . __('Make sure you have read and followed the required steps needed to install cacti before continuing. Install information can be found for <a href="%1$s">Unix</a> and <a href="%2$s">Win32</a>-based operating systems.', '../docs/html/install_unix.html', '../docs/html/install_windows.html') . '</p>';
+							print '<p>' . __('Also, if this is an upgrade, be sure to reading the <a href="%s">Upgrade</a> information file.', '../docs/html/upgrade.html') . '</p>';
+							print '<p>' . __('Cacti is licensed under the GNU General Public License, you must agree to its provisions before continuing:') . "</p>";
+						?>
 						<p class='code'>This program is free software; you can redistribute it and/or
 						modify it under the terms of the GNU General Public License
 						as published by the Free Software Foundation; either version 2
@@ -813,21 +800,21 @@ if ($step == '7') {
 				<?php 	/* checkdependencies */
 						}elseif ($step == '2') { 
 				
-					print '<h2>Pre-installation Check</h2><br>';
-					print 'Cacti requries several PHP Modules to be installed to work properly.  If any of these are not installed, you will be unable to continue the installation until corrected.<br><br>';
+					print '<h2>' . __('Pre-installation Check') .'</h2><br>';
+					print __('Cacti requries several PHP Modules to be installed to work properly. If any of these are not installed, you will be unable to continue the installation until corrected.') . '<br><br>';
 
-					html_start_box("<strong> " . __("Required PHP Modules") . "</strong>", "30", 0, "", "", false);
-					html_header(array(array('name' => 'Name'), array('name' => 'Required'), array('name' => 'Installed')));
-
+					html_start_box('<strong> ' . __('Required PHP Modules') . '</strong>', '30', 0, '', '', false);
+					html_header( array( __('Name'), __('Required'), __('Installed') ) );
 					
-					form_selectable_cell('PHP Version', '');
+					form_selectable_cell(__('PHP Version'), '');
 					form_selectable_cell('5.2.0+', '');
 					form_selectable_cell((version_compare(PHP_VERSION, '5.2.0', '<') ? "<font color=red>" . PHP_VERSION . "</font>" : "<font color=green>" . PHP_VERSION . "</font>"), '');
 					form_end_row();
 
 					$extensions = array( array('name' => 'session', 'installed' => false),
 										 array('name' => 'sockets', 'installed' => false),
-										 array('name' => 'mysql', 'installed' => false),
+										 array('name' => 'PDO', 'installed' => false),
+										 array('name' => 'pdo_mysql', 'installed' => false),
 										 array('name' => 'xml', 'installed' => false),
 										 array('name' => 'pcre', 'installed' => false),
 										 array('name' => 'json', 'installed' => false),
@@ -840,204 +827,192 @@ if ($step == '7') {
 								foreach ($ext as $id =>$e) {
 									form_alternate_row_color($colors["alternate"], $colors["light"], $i, 'line' . $id); $i++;
 									form_selectable_cell($e['name'], '');
-									form_selectable_cell('<font color=green>Yes</font>', '');
-									form_selectable_cell(($e['installed'] ? '<font color=green>Yes</font>' : '<font color=red>NO</font>'), '');
+									form_selectable_cell('<font color=green>' . __('Yes') . '</font>', '');
+									form_selectable_cell(($e['installed'] ? '<font color=green>' . __('Yes') . '</font>' : '<font color=red>' . __('No') . '</font>'), '');
 									form_end_row();
 									if (!$e['installed']) $enabled = false;
 								}
 						html_end_box(false);
 
-					print '<br>' . __('<br>These extensions may increase the performance of your Cacti install but are not necessary.<br><br>');
+					print '<br><br>' . __('These extensions may increase the performance of your Cacti install but are not necessary.') . '<br><br>';
 					$extensions = array( array('name' => 'snmp', 'installed' => false),
-										 array('name' => 'mysqli', 'installed' => false),
+										 array('name' => 'ldap', 'installed' => false),
 										 array('name' => 'gd', 'installed' => false),
+										 array('name' => 'openssl', 'installed' => false),
+										 array('name' => 'gmp', 'installed' => false)
 
 					);
 
 						$ext = verify_php_extensions($extensions);
 						$i = 0;
-						html_start_box("<strong> " . __("Other Modules") . "</strong>", "30", 0, "", "", false);
-						html_header(array(array('name' => 'Name'), array('name' => 'Required'), array('name' => 'Installed')));
+						html_start_box('<strong> ' . __('Optional Modules') . '</strong>', '30', 0, '', '', false);
+						html_header( array( __('Name'), __('Required'), __('Installed') ) );
 						foreach ($ext as $id => $e) {
 							form_alternate_row_color($colors["alternate"], $colors["light"], $i, 'line' . $id); $i++;
-							//print '<td>' . $e['name'] . '</td><td><font color=green>Yes</font></td><td>' . ($e['installed'] ? '<font color=green>Yes</font>' : '<font color=red>NO</font>') . '</td>';
 							form_selectable_cell($e['name'], '');
-							form_selectable_cell('<font color=green>Yes</font>', '');
-							form_selectable_cell(($e['installed'] ? '<font color=green>Yes</font>' : '<font color=red>NO</font>'), '');
+							form_selectable_cell('<font color=green>' . __('Yes') . '</font>', '');
+							form_selectable_cell(($e['installed'] ? '<font color=green>' . __('Yes') . '</font>' : '<font color=red>' . __('No') . '</font>'), '');
 							form_end_row();
 						}
-						html_end_box(false); ?>	
+						html_end_box(false);
 
 						
-				<?php 	/* install/upgrade */
-						}elseif ($step == '3') { ?>
+						/* install/upgrade */
+						}elseif ($step == '3') {
 
-						<p>Please select the type of installation</p>
+							print '<p>' . __('Please select the type of installation') . '</p>';
+							print '<p>
+										<select name="install_type">
+											<option value="1"' . (($default_install_type == '1') ? ' selected' : '') . '>' . __('New Install') . '</option>
+											<option value="3"' . (($default_install_type == '3') ? ' selected' : '') . '>' . __('Upgrade from Cacti 0.8.x') . '</option>
+										</select>
+									</p>';
 
-						<p>
-						<select name='install_type'>
-							<option value='1'<?php print ($default_install_type == '1') ? ' selected' : '';?>>New Install</option>
-							<option value='3'<?php print ($default_install_type == '3') ? ' selected' : '';?>>Upgrade from cacti 0.8.x</option>
-						</select>
-						</p>
-
-				<?php		if ($default_install_type == '3') {
-								print '<p> <font color="#FF0000">WARNING - If you are upgrading from a previous version please close all Cacti browser sessions and clear cache before continuing</font></p>';
+							if ($default_install_type == '3') {
+								print '<p> <font color="#FF0000">' . __('WARNING - If you are upgrading from a previous version please close all Cacti browser sessions and clear cache before continuing') . '</font></p>';
 							} 
-					?>	
-						
-						<p>The following information has been determined from Cacti's configuration file.
-						If it is not correct, please edit 'include/config.php' before continuing.</p>
-
-						<p class='code'>
-						<?php	print "Database User: $database_username<br>";
-							print "Database Hostname: $database_hostname<br>";
-							print "Database: $database_default<br>";
-							print "Server Operating System Type: " . $config['cacti_server_os'] . '<br>'; ?>
-						</p>
+				
+							print '<p>' . __('The following information has been determined from Cacti\'s configuration file. If it is not correct, please edit "include/config.php" before continuing.') . '</p>';
+							print '<p class="code">'
+									. __('Database User: %s', $database_username) . '<br>'
+									. __('Database Hostname: %s', $database_hostname) . '<br>'
+									. __('Database: %s', $database_default) . '<br>'
+									. __('Server Operating System Type: %s', $config['cacti_server_os']) . '<br>'
+								. '</p>';
 
 						
-				<?php 	/* settingscheck */
-						}elseif ($step == '4') { ?>
+				 		/* settingscheck */
+						}elseif ($step == '4') {
 
-						<p>Make sure all of these values are correct before continuing.</p>
-						
-						<?php
-								
-						$i = 0;
-						$input = install_file_paths();
-						/* find the appropriate value for each 'config name' above by config.php, database,
-						or a default for fall back */
-						while (list($name, $array) = each($input)) {
-							if (isset($input[$name])) {
-								$current_value = $array['default'];
+							print '<p>' . __('Make sure all of these values are correct before continuing.') . '</p>';						
+														
+							$i = 0;
+							$input = install_file_paths();
+							/* find the appropriate value for each 'config name' above by config.php, database,
+							or a default for fall back */
+							while (list($name, $array) = each($input)) {
+								if (isset($input[$name])) {
+									$current_value = $array['default'];
 
-								/* run a check on the path specified only if specified above, then fill a string with
-								the results ('FOUND' or 'NOT FOUND') so they can be displayed on the form */
-								$form_check_string = '';
+									/* run a check on the path specified only if specified above, then fill a string with
+									the results ('FOUND' or 'NOT FOUND') so they can be displayed on the form */
+									$form_check_string = '';
 
-								if (($array['method'] == 'textbox') ||
-									($array['method'] == 'filepath')) {
-									if (@file_exists($current_value)) {
-										$form_check_string = "<font color='#008000'>[FOUND]</font> ";
-									}else{
-										$form_check_string = "<font color='#FF0000'>[NOT FOUND]</font> ";
+									if (($array['method'] == 'textbox') ||
+										($array['method'] == 'filepath')) {
+										if (@file_exists($current_value)) {
+											$form_check_string = '<font color="#008000">' . __('[FOUND]') . '</font> ';
+										}else{
+											$form_check_string = '<font color="#FF0000">' . __('[NOT FOUND]') . '</font> ';
+										}
 									}
+
+									/* draw the acual header and textbox on the form */
+									print '<p><strong>' . $form_check_string . $array['friendly_name'] . '</strong>';
+
+									if (!empty($array['friendly_name'])) {
+										print ': ' . $array['description'];
+									}else{
+										print '<strong>' . $array['description'] . '</strong>';
+									}
+
+									print '<br>';
+
+									switch ($array['method']) {
+									case 'textbox':
+										form_text_box($name, $current_value, '', '', '40', 'text');
+										break;
+									case 'filepath':
+										form_filepath_box($name, $current_value, '', '', '40', 'text');
+										break;
+									case 'drop_array':
+										form_dropdown($name, $array['array'], '', '', $current_value, '', '');
+										break;
+									}
+
+									print '<br></p>';
 								}
 
-								/* draw the acual header and textbox on the form */
-								print '<p><strong>' . $form_check_string . $array['friendly_name'] . '</strong>';
-
-								if (!empty($array['friendly_name'])) {
-									print ': ' . $array['description'];
-								}else{
-									print '<strong>' . $array['description'] . '</strong>';
-								}
-
-								print '<br>';
-
-								switch ($array['method']) {
-								case 'textbox':
-									form_text_box($name, $current_value, '', '', '40', 'text');
-									break;
-								case 'filepath':
-									form_filepath_box($name, $current_value, '', '', '40', 'text');
-									break;
-								case 'drop_array':
-									form_dropdown($name, $array['array'], '', '', $current_value, '', '');
-									break;
-								}
-
-								print '<br></p>';
+								$i++;
 							}
+							
+							print '<p><strong><font color="#FF0000">' . __('NOTE:') . '</font></strong> ' . __('Once you click "Finish", all of your settings will be saved and your database will be upgraded if this is an upgrade. You can change any of the settings on this screen at a later time by going to "Cacti Settings" from within Cacti.') . '</p>';
 
-							$i++;
-						}?>
-
-							<p><strong><font color='#FF0000'>NOTE:</font></strong> Once you click 'Finish',
-						all of your settings will be saved and your database will be upgraded if this
-						is an upgrade. You can change any of the settings on this screen at a later
-						time by going to 'Cacti Settings' from within Cacti.</p>
-
-
-				<?php 	/* settings-install */
+					 	/* settings-install */
 						}elseif ($step == '5') { 
 
-						include_once('../lib/data_query.php');
-						include_once('../lib/utility.php');
+							include_once('../lib/data_query.php');
+							include_once('../lib/utility.php');
 
-						$i = 0;
+							$i = 0;
 
-						$input = install_file_paths();
-						/* get all items on the form and write values for them  */
-						while (list($name, $array) = each($input)) {
-							if (isset($_POST[$name])) {
-								db_execute("replace into settings (name,value) values ('$name','" . $_POST[$name] . "')");
+							$input = install_file_paths();
+							/* get all items on the form and write values for them  */
+							while (list($name, $array) = each($input)) {
+								if (isset($_POST[$name])) {
+									db_execute("replace into settings (name,value) values ('$name','" . $_POST[$name] . "')");
+								}
 							}
-						}
-						
-						/* Print message and error logs */
-						print ' <p><b>Settings installed</b><br><br></p>';
-						
-						/* Check if /resource is writable */
-						print " <p>Next step is template installation. For template installation to work the '". $config['base_path'] . "/resource' folder needs to be writable by the webserver.<br>
-								 If you dont want to install any templates now you can skip this and import them later.<br></p>";
-						
-								
-									if (is_writable('../resource/snmp_queries')) {
-										print " <p>". $config['base_path'] . "/resource/snmp_queries is <font color='#008000'>writable</font></p>";
-									} else {
-										print " <p>". $config['base_path'] . "/resource/snmp_queries  is <font color='#FF0000'>not writable</font></p>";
-										$writable=FALSE;
-									}
-									
-									if (is_writable('../resource/script_server')) {
-										print " <p>". $config['base_path'] . "/resource/script_server is <font color='#008000'>writable</font></p>";
-									} else {
-										print " <p>". $config['base_path'] . "/resource/script_server is <font color='#FF0000'>not writable</font></p>";
-										$writable=FALSE;
-									}
-									if (is_writable('../resource/script_queries')) {
-										print " <p>". $config['base_path'] . "/resource/script_queries is <font color='#008000'>writable</font></p><br>";
-									} else {
-										print " <p>". $config['base_path'] . "/resource/script_queries is <font color='#FF0000'>not writable</font></p><br>";
-										$writable=FALSE;
-									}
+							
+							/* Print message and error logs */
+							print ' <p><b>' . __('Settings installed') . '</b><br><br></p>';
+							
+							/* Check if /resource is writable */
+							print ' <p>'. __('Next step is template installation. For template installation to work the "%1$s/resource" folder needs to be writable by the webserver.', $config['base_path']) . '<br>'
+									 	. __('If you dont want to install any templates now you can skip this and import them later.') . '<br></p>';
+													
+							if (is_writable('../resource/snmp_queries')) {
+								print ' <p>'. $config['base_path'] . '/resource/snmp_queries is <font color="#008000">' . __('writable') . '</font></p>';
+							} else {
+								print ' <p>'. $config['base_path'] . '/resource/snmp_queries is <font color="#FF0000">' . __('not writable') . '</font></p>';
+								$writable=FALSE;
+							}
+							
+							if (is_writable('../resource/script_server')) {
+								print ' <p>'. $config['base_path'] . '/resource/script_server is <font color="#008000">' . __('writable') . '</font></p>';
+							} else {
+								print ' <p>'. $config['base_path'] . '/resource/script_server is <font color="#FF0000">' . __('not writable') . '</font></p>';
+								$writable=FALSE;
+							}
+							if (is_writable('../resource/script_queries')) {
+								print ' <p>'. $config['base_path'] . '/resource/script_queries is <font color="#008000">' . __('writable') . '</font></p><br>';
+							} else {
+								print ' <p>'. $config['base_path'] . '/resource/script_queries is <font color="#FF0000">' . __('not writable') . '</font></p><br>';
+								$writable=FALSE;
+							}
 									
 									
-						/* Print help message for unix and windows if directory is not writable */
-						if (($config['cacti_server_os'] == "unix") && isset($writable)) {
-							print "Make sure your webserver has read and write access to the entire folder structure.<br> Example: chown -R apache.apache " . $config['base_path'] . "/resource/<br>";
-							print "For SELINUX users make sure that you have the correct permissions or set 'setenforce 0' temporarly.<br><br>";
-						}elseif (($config['cacti_server_os'] == "win32") && isset($writable)){
-							print 'Check Permissions';
-						}else {
-						print '<font color="#008000">All folders are writable</font><br><br>';
-						} ?>		
+							/* Print help message for unix and windows if directory is not writable */
+							if (($config['cacti_server_os'] == "unix") && isset($writable)) {
+								print __('Make sure your webserver has read and write access to the entire folder structure.<br> Example: chown -R apache.apache %s/resource/', $config['base_path']) . '<br>';
+								print __('For SELINUX users make sure that you have the correct permissions or set "setenforce 0" temporarly') . '<br><br>';
+							}elseif (($config['cacti_server_os'] == "win32") && isset($writable)){
+								print __('Check Permissions');
+							}else {
+								print '<font color="#008000">' . __('All folders are writable') . '</font><br><br>';
+							}
 							
 							
-				<?php 	/* template-import */
-						}elseif ($step == '6') { ?>
+						/* template-import */
+						}elseif ($step == '6') {
 
-						<p>Make sure all of these values are correct before continuing.</p>
-						<?php
-							
-							print "<h1>Template Setup</h1>";
-							print "Templates allow you to monitor and graph a vast assortment of data within Cacti.  While the base Cacti install provides basic templates for most devices, you can select a few extra templates below to include in your install.<br><br>";
-							print "<form name='chk' method='post' action='start.php'>";
+							print '<p>' . __('Make sure all of these values are correct before continuing.') . '</p>';
+							print '<h1>' . __('Template Setup') . '</h1>';
+							print __('Templates allow you to monitor and graph a vast assortment of data within Cacti. While the base Cacti install provides basic templates for most devices, you can select a few extra templates below to include in your install.') . '<br><br>';
+							print '<form name="chk" method="post" action="start.php">';
 
 							$templates = plugin_setup_get_templates();
 
-							html_start_box('<strong>Templates</strong>', '100%', '3', 'center', "", "");
-							html_header_checkbox(array(array('name' => 'Name'), array('name' => 'Description'), array('name' => 'Author'), array('name' => 'Homepage')));
+							html_start_box('<strong>' . __('Templates') . '</strong>', '100%', '3', 'center', '', '');
+							html_header_checkbox( array( __('Name'), __('Description'), __('Author'), __('Homepage') ) );
 							$i = 0;
 							foreach ($templates as $id => $p) {
-								form_alternate_row_color($colors["alternate"], $colors["light"], $i, 'line' . $id); $i++;
+								form_alternate_row_color($colors['alternate'], $colors['light'], $i, 'line' . $id); $i++;
 								form_selectable_cell($p['name'], $id);
 								form_selectable_cell($p['description'], $id);
 								form_selectable_cell($p['author'], $id);
 								if ($p['homepage'] != '') {
-									form_selectable_cell("<a href='". $p['homepage'] . "' target=_new>" . $p['homepage'] . "</a>", $id);
+									form_selectable_cell('<a href="'. $p['homepage'] . '" target=_new>' . $p['homepage'] . '</a>', $id);
 								} else {
 									form_selectable_cell('', $id);
 								}
@@ -1045,81 +1020,71 @@ if ($step == '7') {
 								form_end_row();
 								html_end_box(false);
 								
-							} ?>			
+							}
 						
 					
-				<?php 	/* upgrade */
-						}elseif ($step == '8') { ?>
+						/* upgrade */
+						}elseif ($step == '8') {
 
-						<p>Upgrade results:</p>
+							print '<p>' . __('Upgrade results:') . '</p>';
 
-						<?php
-												
-						$current_version  = '';
-						$upgrade_results = '';
-						$failed_sql_query = false;
+							$current_version  = '';
+							$upgrade_results = '';
+							$failed_sql_query = false;
 
-						$sqltext = array();
-						$sqltext[0] = "<span style='color: red; font-weight: bold; font-size: 12px;'>[Fail]</span>&nbsp;";
-						$sqltext[1] = "<span style='color: green; font-weight: bold; font-size: 12px;'>[Success]</span>&nbsp;";
-						$sqltext[2] = "<span style='color: grey; font-weight: bold; font-size: 12px;'>[Not Ran]</span>&nbsp;";
+							$sqltext = array();
+							$sqltext[0] = '<span style="color: red; font-weight: bold; font-size: 12px;">' . __('[Fail]') . '</span>&nbsp;';
+							$sqltext[1] = '<span style="color: green; font-weight: bold; font-size: 12px;">' . __('[Success]') . '</span>&nbsp;';
+							$sqltext[2] = '<span style="color: grey; font-weight: bold; font-size: 12px;">' . __('[Not Ran]') . '</span>&nbsp;';
 
-						if (isset($_SESSION['sess_sql_install_cache'])) {
-							while (list($index, $arr1) = each($_SESSION['sess_sql_install_cache'])) {
-								while (list($version, $arr2) = each($arr1)) {
-									while (list($status, $sql) = each($arr2)) {
-										if ($current_version != $version) {
-											$version_index = array_search($version, $cacti_versions);
-											$upgrade_results .= '<p><strong>' . (isset($cacti_versions{$version_index-1}) ? $cacti_versions{$version_index-1}:'')  . ' -> ' . $cacti_versions{$version_index} . "</strong></p>\n";
+							if (isset($_SESSION['sess_sql_install_cache'])) {
+								while (list($index, $arr1) = each($_SESSION['sess_sql_install_cache'])) {
+									while (list($version, $arr2) = each($arr1)) {
+										while (list($status, $sql) = each($arr2)) {
+											if ($current_version != $version) {
+												$version_index = array_search($version, $cacti_versions);
+												$upgrade_results .= '<p><strong>' . (isset($cacti_versions{$version_index-1}) ? $cacti_versions{$version_index-1}:'')  . ' -> ' . $cacti_versions{$version_index} . "</strong></p>\n";
+											}
+
+											$upgrade_results .= "<p class='code'>" . $sqltext[$status] . nl2br($sql) . "</p>\n";
+
+											/* if there are one or more failures, make a note because we are going to print
+											out a warning to the user later on */
+											if ($status == 0) {
+												$failed_sql_query = true;
+											}
+
+											$current_version = $version;
 										}
-
-										$upgrade_results .= "<p class='code'>" . $sqltext[$status] . nl2br($sql) . "</p>\n";
-
-										/* if there are one or more failures, make a note because we are going to print
-										out a warning to the user later on */
-										if ($status == 0) {
-											$failed_sql_query = true;
-										}
-
-										$current_version = $version;
 									}
 								}
+
+								kill_session_var('sess_sql_install_cache');
+							}else{
+								print '<em>' . __('No SQL queries have been executed.') . '</em>';
 							}
 
-							kill_session_var('sess_sql_install_cache');
-						}else{
-							print '<em>No SQL queries have been executed.</em>';
-						}
+							if ($failed_sql_query == true) {
+								print '<p><strong><font color="#FF0000">' . __('WARNING:') . '</font></strong> ' . __('One or more of the SQL queries needed to upgraded your Cacti installation has failed. Please see below for more details. Your Cacti MySQL user must have <strong>SELECT, INSERT, UPDATE, DELETE, ALTER, CREATE, and DROP</strong> permissions. You should try executing the failed queries as "root" to ensure that you do not have a permissions problem.') . "</p>\n";
+							}
 
-						if ($failed_sql_query == true) {
-							print "<p><strong><font color='#FF0000'>WARNING:</font></strong> One or more of the SQL queries needed to
-								upgraded your Cacti installation has failed. Please see below for more details. Your
-								Cacti MySQL user must have <strong>SELECT, INSERT, UPDATE, DELETE, ALTER, CREATE, and DROP</strong>
-								permissions. You should try executing the failed queries as 'root' to ensure that you do not have
-								a permissions problem.</p>\n";
-						}
+							print $upgrade_results;
 
-						print $upgrade_results; ?>
+						/* upgrade-oldversion */
+						}elseif ($step == '9') {
+							
+							print '<p style="font-size: 16px; font-weight: bold; color: red;">' . __('Important Upgrade Notice') . '</p>';
+							print '<p>' . __('Before you continue with the installation, you <strong>must</strong> update your <tt>/etc/crontab</tt> file to point to <tt>poller.php</tt> instead of <tt>cmd.php</tt>.') . '</p>';
+							print '<p>' . __('See the sample crontab entry below with the change made in red. Your crontab line will look slightly different based upon your setup.') . '</p>';
+							print '<p><tt>*/5 * * * * cactiuser php /var/www/html/cacti/<span style="font-weight: bold; color: red;">poller.php</span> &gt; /dev/null 2&gt;&amp;1</tt></p>';
+							print '<p>' . __('Once you have made this change, please click Next to continue.') . '</p>';
 
-				<?php 	/* upgrade-oldversion */
-						}elseif ($step == '9') { ?>
-
-						<p style='font-size: 16px; font-weight: bold; color: red;'>Important Upgrade Notice</p>
-
-						<p>Before you continue with the installation, you <strong>must</strong> update your <tt>/etc/crontab</tt> file to point to <tt>poller.php</tt> instead of <tt>cmd.php</tt>.</p>
-
-						<p>See the sample crontab entry below with the change made in red. Your crontab line will look slightly different based upon your setup.</p>
-
-						<p><tt>*/5 * * * * cactiuser php /var/www/html/cacti/<span style='font-weight: bold; color: red;'>poller.php</span> &gt; /dev/null 2&gt;&amp;1</tt></p>
-
-						<p>Once you have made this change, please click Next to continue.</p>
-
-						<?php }?>
+						}?>
 
 					</td>
 				</tr>
 				<tr>
-					<td class='saveRow'><input type='submit' value='<?php if ($step == '3'){?>Finish<?php }else{?>Next<?php }?>'></td>
+					<td class='saveRow'><input type='submit' value='<?php if ($step == '3'){ print __x('Dialog: complete', 'Finish'); }else{ print __x('Dialog: go to the next page', 'Next'); }?>'></td>
 				<tr>
 			</table>
 		</td>
