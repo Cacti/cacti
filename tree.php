@@ -501,32 +501,6 @@ function form_actions() {
     Tree Functions
    --------------------- */
 
-function tree_remove() {
-	/* ================= input validation ================= */
-	get_filter_request_var('id');
-	/* ==================================================== */
-
-	if ((read_config_option('deletion_verification') == 'on') && (!isset_request_var('confirm'))) {
-		top_header();
-
-		form_confirm('Are You Sure?', "Are you sure you want to delete the tree <strong>'" . htmlspecialchars(db_fetch_cell_prepared('SELECT name FROM graph_tree WHERE id = ?', array(get_request_var('id'))), ENT_QUOTES) . "'</strong>?", htmlspecialchars('tree.php'), htmlspecialchars('tree.php?action=remove&id=' . get_request_var('id')));
-
-		bottom_footer();
-		exit;
-	}
-
-	if ((read_config_option('deletion_verification') == '') || (isset_request_var('confirm'))) {
-		db_execute_prepared('DELETE FROM graph_tree WHERE id = ?', array(get_request_var('id')));
-		db_execute_prepared('DELETE FROM graph_tree_items WHERE graph_tree_id = ?', array(get_request_var('id')));
-	}
-
-	/* clear graph tree cache on save - affects current user only, other users should see changes in <5 minutes */
-	if (isset($_SESSION['dhtml_tree'])) {
-		unset($_SESSION['dhtml_tree']);
-	}
-
-}
-
 function tree_edit() {
 	global $fields_tree_edit;
 
