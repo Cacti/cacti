@@ -142,7 +142,7 @@ function plugin_setup_get_templates() {
 	$path =  $config['base_path'] . '/install/templates';
 	$info = Array();
 	foreach ($templates as $xmlfile) {
-		$filename = "compress.zlib:///$path/$xmlfile";
+		$filename = "compress.zlib://$path/$xmlfile";
 		$xml = file_get_contents($filename);;
 		//Loading Template Information from package
 		$xmlget = simplexml_load_string($xml); 
@@ -183,7 +183,7 @@ bk2YZiDglh8lQJxNQI9glG1Z/ptvqprFO3iSx9rTP4vzZ0Ek2+EMYTMCAwEAAQ==
 -----END PUBLIC KEY-----
 EOD;
 
-	$filename = "compress.zlib:///$path/$xmlfile";
+	$filename = "compress.zlib://$path/$xmlfile";
 	$binary_signature = "";
 
 	$f = fopen($filename, 'r');
