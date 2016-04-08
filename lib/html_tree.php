@@ -50,7 +50,7 @@ function grow_dropdown_tree($tree_id, $parent = 0, $form_name = '', $selected_tr
 		ORDER BY parent, position");
 
 	if ($parent == 0) {
-		print "<select name='$form_name'>\n";
+		print "<select id='$form_name'>\n";
 		print "<option value='0'>[root]</option>\n";
 	}
 

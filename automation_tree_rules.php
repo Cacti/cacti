@@ -618,13 +618,12 @@ function automation_tree_rules_edit() {
 	});
 
 	function applyTreeChange() {
-		strURL  = 'automation_tree_rules.php?action=edit&id=' + $('#id').val();
+		strURL  = 'automation_tree_rules.php?header=false&action=edit&id=' + $('#id').val();
 		strURL += '&name=' + $('#name').val();
-		strURL += '&tree_id=' + $('tree_id').val();
+		strURL += '&tree_id=' + $('#tree_id').val();
 		strURL += '&tree_item_id=' + $('#tree_item_id').val();
 		strURL += '&leaf_type=' + $('#leaf_type').val();
-		strURL += '&host_grouping_type=' + $('#host_grouping_type').val();
-		strURL += '&rows=' + $('#graph_rows').val();
+		strURL += '&enabled=' + $('#enabled').val();
 
 		loadPageNoHeader(strURL);
 	}
