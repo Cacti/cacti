@@ -305,9 +305,15 @@ function xml_to_data_template($hash, &$xml_array, &$hash_cache, $import_as_new, 
 		}
 	}
 
-	/* use the polling interval as the step if we are to use the default rra settings */
+	
+	/* use the profiles step if we are not importing a new one */
 	if ($import_as_new == false) {
-		$save['rrd_step'] = db_fetch_cell('SELECT step FROM data_source_profiles ORDER BY `default` DESC LIMIT 1');
+		$save['rrd_step'] = db_fetch_cell('SELECT step FROM data_source_profiles WHERE id=' . $profile_id . '');
+	}
+	
+	/* Fix for importing during installation - use the polling interval as the step if we are to use the default rra settings */
+	if (is_array($profile_id) == true)  {
+		$save['rrd_step'] = read_config_option('poller_interval');
 	}
 
 	$data_template_data_id = sql_save($save, 'data_template_data');
@@ -352,8 +358,13 @@ function xml_to_data_template($hash, &$xml_array, &$hash_cache, $import_as_new, 
 				}
 			}
 
-			/* use the polling interval * 2 as the heartbeat if we are to use the default rra settings */
+			/* use the profiles step * 2 as the heartbeat if we are not importing a new profile */
 			if ($import_as_new === false) {
+				$save['rrd_heartbeat'] = db_fetch_cell('SELECT step FROM data_source_profiles WHERE id=' . $profile_id . '') * 2;
+			}
+			
+			/* Fix for importing during installation - use the polling interval as the step if we are to use the default rra settings */
+			if (is_array($profile_id) == true) {
 				$save['rrd_heartbeat'] = read_config_option('poller_interval') * 2;
 			}
 
