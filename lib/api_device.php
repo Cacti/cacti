@@ -109,10 +109,6 @@ function api_device_save($id, $host_template_id, $description, $hostname, $snmp_
 		$_host_template_id = db_fetch_cell_prepared('SELECT host_template_id FROM host WHERE id=?', array($id));
 	}
 
-	if (is_error_message()) {
-		cacti_log('Failed before');
-	}
-
 	$save['id']                   = form_input_validate($id, 'id', '^[0-9]+$', false, 3);
 	$save['host_template_id']     = form_input_validate($host_template_id, 'host_template_id', '^[0-9]+$', false, 3);
 
