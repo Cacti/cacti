@@ -88,22 +88,6 @@ echo "\nNOTE: Checking for Invalid Cacti Templates\n";
 /* keep track of total rows */
 $total_rows = 0;
 
-/* remove invalid consolidation function and RRA's */
-$rows = db_fetch_cell("SELECT count(*) FROM rra_cf LEFT JOIN rra ON rra_cf.rra_id=rra.id WHERE rra.id IS NULL;");
-$total_rows += $rows;
-if ($rows > 0) {
-	if ($force) db_execute("DELETE FROM rra_cf WHERE rra_id NOT IN (SELECT id FROM rra)");
-	echo "NOTE: $rows Invalid Consolidation Function Rows " . ($force ? "Removed from":"Found in") . " Database\n";
-}
-
-/* remove invalid RRA's from the Database */
-$rows = db_fetch_cell("SELECT count(*) FROM data_template_data_rra LEFT JOIN rra ON data_template_data_rra.rra_id=rra.id WHERE rra.id IS NULL");
-$total_rows += $rows;
-if ($rows > 0) {
-	if ($force) db_execute("DELETE FROM data_template_data_rra WHERE rra_id NOT IN (SELECT id FROM rra)");
-	echo "NOTE: $rows Invalid Data Template Data RRA Rows " . ($force ? "Removed from":"Found in") . " Database\n";
-}
-
 /* remove invalid GPrint Presets from the Database */
 $rows = db_fetch_cell("SELECT count(*) FROM graph_templates_item LEFT JOIN graph_templates_gprint ON graph_templates_item.gprint_id=graph_templates_gprint.id WHERE graph_templates_gprint.id IS NULL AND graph_templates_item.gprint_id>0");
 $total_rows += $rows;
