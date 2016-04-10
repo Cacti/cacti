@@ -767,6 +767,16 @@ legend {
 	text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
 }
 
+.noLinkEditMain {
+	color: rgba(44,130,29,1);
+	text-decoration: none;
+	font-size: 12px;
+	font-weight: bold;
+	padding: 3px;
+  	text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+	white-space: nowrap;
+}
+
 .linkEditMain, .linkEditMain:visited, .linkEditMain:active {
 	color: rgba(44,130,29,1);
 	text-decoration: none;

@@ -790,6 +790,15 @@ legend {
 	text-decoration: none;
 }
 
+.noLinkEditMain {
+	color: rgba(44,130,29,1);
+	text-decoration: none;
+	font-size: 12px;
+	font-weight: normal;
+	padding: 3px;
+	white-space: nowrap;
+}
+
 .linkEditMain, .linkEditMain:active {
 	color: rgba(44,130,29,1);
 	text-decoration: none;
