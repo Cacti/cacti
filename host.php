@@ -158,6 +158,10 @@ function form_save() {
 				get_nfilter_request_var('snmp_auth_protocol'), get_nfilter_request_var('snmp_priv_passphrase'),
 				get_nfilter_request_var('snmp_priv_protocol'), get_nfilter_request_var('snmp_context'), 
 				get_nfilter_request_var('max_oids'), get_nfilter_request_var('device_threads'));
+
+			if ($host_id !== false) {
+				api_plugin_hook_function('host_save', array('host_id' => $host_id));
+			}
 		}
 
 		header('Location: host.php?header=false&action=edit&id=' . (empty($host_id) ? get_nfilter_request_var('id') : $host_id));
