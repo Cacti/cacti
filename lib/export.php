@@ -33,10 +33,11 @@ function graph_template_to_xml($graph_template_id) {
 	$graph_template_items = db_fetch_assoc("SELECT * FROM graph_templates_item WHERE graph_template_id=$graph_template_id AND local_graph_id=0 ORDER BY sequence");
 	$graph_template_inputs = db_fetch_assoc("SELECT * FROM graph_template_input WHERE graph_template_id=$graph_template_id");
 
+
 	if ((empty($graph_template['id'])) || (empty($graph_template_graph['id']))) {
 		$export_errors++;
 		raise_message(30);
-		cacti_log('ERROR: Invalid Graph Template found in Database.  Please run database repair script to identify and/or correct.', false, 'WEBUI');
+		cacti_log('ERROR: Invalid Graph Template found in Database for Template ' . $graph_template['name'] . '[' . $graph_template['id'] . '] GTGid: ' . $graph_template_graph['id'] . '.  Please run database repair script to identify and/or correct.', false, 'WEBUI');
 		return;
 	}
 
