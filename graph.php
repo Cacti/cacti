@@ -142,7 +142,7 @@ case 'view':
 	?>
 	<script type='text/javascript'>
 	/* turn off the page refresh */
-	refreshMSeconds=9999999;
+	var refreshMSeconds=9999999;
 
 	function initializeGraph() {
 		$('.graphWrapper').each(function() {
@@ -314,7 +314,7 @@ case 'zoom':
 	var graph_data_on=true;
 
 	/* turn off the page refresh */
-	refreshMSeconds=9999999;
+	var refreshMSeconds=9999999;
 
 	function refreshGraph() {
 		$('#graph_start').val(getTimestampFromDate($('#date1').val()));

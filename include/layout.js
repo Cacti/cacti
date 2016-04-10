@@ -989,6 +989,7 @@ function initializeGraphs() {
 			$('#zoom-container').remove();
 			$('#main').html(data);
 			applySkin();
+			clearTimeout(myRefresh);
 		});
 	});
 
@@ -1058,6 +1059,7 @@ function initializeGraphs() {
 			$('#main').html(data);
 			$('#breadcrumbs').append('<li><a id="nav_util" href="#">Utility View</a></li>');
 			applySkin();
+			clearTimeout(myRefresh);
 		});
 	});
 
