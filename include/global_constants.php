@@ -62,6 +62,7 @@ define('RRD_LEGEND_POS_SOUTH',    'south');
 define('RRD_LEGEND_POS_WEST',     'west');
 define('RRD_LEGEND_POS_EAST',     'east');
 
+define('RRD_ALIGN_NONE',          '');
 define('RRD_ALIGN_LEFT',          'left');
 define('RRD_ALIGN_RIGHT',         'right');
 define('RRD_ALIGN_JUSTIFIED',     'justified');

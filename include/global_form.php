@@ -904,7 +904,7 @@ $struct_graph_item = array(
 		'method' => 'drop_array',
 		'value' => '|arg1:textalign|',
 		'array' => $rrd_textalign,
-		'none_value' => __('None'),
+		'default' => '',
 		'description' => __('All subsequent legend line(s) will be aligned as given here.  You may use this command multiple times in a single graph.
 			This command does not produce tabular layout.<br/><strong>Note: </strong>You may want to insert a &lt;HR&gt; on the preceding graph item.<br/>
 			<strong>Note: </strong>A &lt;HR&gt; on this legend line will obsolete this setting!'),

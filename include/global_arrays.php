@@ -282,6 +282,7 @@ $rrd_legend_position = array(
 );
 
 $rrd_textalign = array(
+	RRD_ALIGN_NONE          => __('None'),
 	RRD_ALIGN_LEFT          => __('Left'),
 	RRD_ALIGN_RIGHT         => __('Right'),
 	RRD_ALIGN_JUSTIFIED     => __('Justified'),
@@ -385,8 +386,6 @@ $poller_options = array(1 =>
 
 $aggregation_levels = array(
 	1       => __('Selected Poller Interval'),
-	300     => __('%d Minutes', 5),
-	600     => __('%d Minutes', 10),
 	900     => __('%d Minutes', 15),
 	1800    => __('%d Minutes', 30),
 	3600    => __('1 Hour'),
