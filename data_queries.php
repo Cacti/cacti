@@ -834,49 +834,50 @@ function data_query_edit() {
 		print "<tr class='tableRow'><td>$text</td></tr>";
 		html_end_box();
 
-		if ($xml_file_exists == true) {
-			html_start_box('Associated Graph Templates', '100%', '', '3', 'center', 'data_queries.php?action=item_edit&snmp_query_id=' . $snmp_query['id']);
+		html_start_box('Associated Graph Templates', '100%', '', '3', 'center', 'data_queries.php?action=item_edit&snmp_query_id=' . $snmp_query['id']);
 
-			print "<tr class='tableHeader'>
-					<th class='tableSubHeaderColumn'>Name</th>
-					<th class='tableSubHeaderColumn'>Graph Template Name</th>
-					<th class='tableSubHeaderColumn right'>Mapping ID</th>
-					<th class='tableSubHeaderColumn right' style='width:60px;'>Action</td>
-				</tr>";
+		print "<tr class='tableHeader'>
+			<th class='tableSubHeaderColumn'>Name</th>
+			<th class='tableSubHeaderColumn'>Graph Template Name</th>
+			<th class='tableSubHeaderColumn right'>Mapping ID</th>
+			<th class='tableSubHeaderColumn right' style='width:60px;'>Action</td>
+		</tr>";
 
-			$snmp_query_graphs = db_fetch_assoc_prepared('SELECT sqg.id, gt.name AS graph_template_name, sqg.name
-				FROM snmp_query_graph AS sqg
-				LEFT JOIN graph_templates AS gt
-				ON (sqg.graph_template_id = gt.id)
-				WHERE sqg.snmp_query_id = ?
-				ORDER BY sqg.name', array($snmp_query['id']));
+		$snmp_query_graphs = db_fetch_assoc_prepared('SELECT sqg.id, gt.name AS graph_template_name, sqg.name
+			FROM snmp_query_graph AS sqg
+			LEFT JOIN graph_templates AS gt
+			ON (sqg.graph_template_id = gt.id)
+			WHERE sqg.snmp_query_id = ?
+			ORDER BY sqg.name', array($snmp_query['id']));
 
-			$i = 0;
-			if (sizeof($snmp_query_graphs) > 0) {
-				foreach ($snmp_query_graphs as $snmp_query_graph) {
-					form_alternate_row();
-					?>
-						<td>
-							<a class='linkEditMain' href="<?php print htmlspecialchars('data_queries.php?action=item_edit&id=' . $snmp_query_graph['id'] . '&snmp_query_id=' . $snmp_query['id']);?>"><?php print htmlspecialchars($snmp_query_graph['name']);?></a>
-						</td>
-						<td>
-							<?php print htmlspecialchars($snmp_query_graph['graph_template_name']);?>
-						</td>
-						<td class='right'>
-							<?php print $snmp_query_graph['id'];?>
-						</td>
-						<td class='right'>
-							<a class='delete deleteMarker fa fa-remove' title='Delete' href='<?php print htmlspecialchars('data_queries.php?action=item_remove_confirm&id=' . $snmp_query_graph['id'] . '&snmp_query_id=' . $snmp_query['id']);?>'></a>
-						</td>
-					</tr>
-					<?php
-				}
-			}else{
-				print "<tr class='tableRow'><td><em>No Graph Templates Defined.</em></td></tr>";
+		if (sizeof($snmp_query_graphs)) {
+			foreach ($snmp_query_graphs as $snmp_query_graph) {
+				form_alternate_row();
+				?>
+					<td>
+					<?php if ($xml_file_exists) {?>
+						<a class='linkEditMain' href="<?php print htmlspecialchars('data_queries.php?action=item_edit&id=' . $snmp_query_graph['id'] . '&snmp_query_id=' . $snmp_query['id']);?>"><?php print htmlspecialchars($snmp_query_graph['name']);?></a>
+					<?php }else{ ?>
+						<span class='noLinkEditMain' title='Association Read Only until XML file located'><?php print htmlspecialchars($snmp_query_graph['name']);?></span>
+					<?php } ?>
+					</td>
+					<td>
+						<?php print htmlspecialchars($snmp_query_graph['graph_template_name']);?>
+					</td>
+					<td class='right'>
+						<?php print $snmp_query_graph['id'];?>
+					</td>
+					<td class='right'>
+						<a class='delete deleteMarker fa fa-remove' title='Delete' href='<?php print htmlspecialchars('data_queries.php?action=item_remove_confirm&id=' . $snmp_query_graph['id'] . '&snmp_query_id=' . $snmp_query['id']);?>'></a>
+					</td>
+				</tr>
+				<?php
 			}
-
-			html_end_box();
+		}else{
+			print "<tr class='tableRow'><td><em>No Graph Templates Defined.</em></td></tr>";
 		}
+
+		html_end_box();
 	}
 
 	form_save_button('data_queries.php', 'return');
@@ -886,6 +887,8 @@ function data_query_edit() {
 
 	$(function() {
 		$('body').append("<div id='cdialog'></div>");
+
+		$('.noLinkEditMain').tooltip();
 
 		$('.delete').click(function (event) {
 			event.preventDefault();
