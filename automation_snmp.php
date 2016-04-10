@@ -598,7 +598,7 @@ function automation_snmp_edit() {
 				$form_data .= '<td class="right">' . 	$item['snmp_retries'] . '</td>';
 				$form_data .= '<td class="right">' . 	$item['max_oids'] . '</td>';
 				$form_data .= '<td>' . 	($item['snmp_version'] == 3 ? $item['snmp_username'] : 'N/A') . '</td>';
-				$form_data .= '<td>' . 	($item['snmp_version'] == 3 ? $item['snmp_password'] : 'N/A') . '</td>';
+				$form_data .= '<td>' . 	(($item['snmp_version'] == 3 AND $item['snmp_password'] !== '') ? '*********' : 'N/A') . '</td>';
 				$form_data .= '<td>' . 	($item['snmp_version'] == 3 ? $item['snmp_auth_protocol'] : 'N/A') . '</td>';
 				$form_data .= '<td>' . 	($item['snmp_version'] == 3 ? $item['snmp_priv_passphrase'] : 'N/A') . '</td>';
 				$form_data .= '<td>' . 	($item['snmp_version'] == 3 ? $item['snmp_priv_protocol'] : 'N/A') . '</td>';
