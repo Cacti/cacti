@@ -488,7 +488,9 @@ function validate_store_request_vars($filters, $sess_prefix = '') {
 					set_request_var($variable, '');
 				}
 			}else{
-				if (isempty_request_var($variable)) {
+				if (get_nfilter_request_var($variable) == '0') {
+					$value = '0';
+				}elseif (isempty_request_var($variable)) {
 					$value = '';
 				}elseif (!isset($options['options'])) {
 					$value = filter_var($_REQUEST[$variable], $options['filter']);
