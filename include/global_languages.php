@@ -262,7 +262,15 @@ function load_i18n_gettext_wrappers(){
 	}
 
 	function __xn($context, $singular, $plural, $number, $domain = 'cacti'){
-		return __n($singular, $plural, $number, $domain);
+		$xsingular = $context . chr(4) . $singular;
+		$xplural = $context . chr(4) . $plural;
+		
+		$msgstr = __n($xsingular, $xplural, $number, $domain);
+		if($number == 1 ) {
+			return ( $msgstr == $xsingular ) ? $singular : $msgstr;
+		}else {
+			return ( $msgstr == $xplural ) ? $plural : $msgstr;
+		}
 	}
 	
 	function __x(){
@@ -274,7 +282,27 @@ function load_i18n_gettext_wrappers(){
 			return false;
 		}else {
 			$context = array_shift($args);
-			return call_user_func_array('__', $args);
+			$num--;
+			
+			$msgid = reset($args);
+			$xmsgid = $context . chr(4) . $msgid;
+			
+			$args[0] = $xmsgid;
+			
+			if($num == 2) {
+				/* pure text string without placeholders and a change of the default textdomain */
+				$msgstr = __gettext($args[0]);
+			}else {
+				/* get gettext string */
+				$msgstr = isset($l10n[$args[$num-1]]) 	? __gettext($args[0], $args[$num-1])
+														: __gettext($args[0]);			
+			}
+			
+			/* use the raw message id if language catalogue does not contain a context specific message string */
+			$args[0] = ( $msgstr == $xmsgid ) ? $msgid : $msgstr;
+			
+			/* process return string against input arguments */
+			return call_user_func_array('sprintf', $args);
 		}
 	}
 	
