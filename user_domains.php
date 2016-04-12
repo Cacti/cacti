@@ -26,10 +26,10 @@ include('./include/auth.php');
 include_once('./lib/utility.php');
 
 $actions = array(
-	1 => 'Delete',
-	2 => 'Disable',
-	3 => 'Enable',
-	4 => 'Default'
+	1 => __('Delete'),
+	2 => __('Disable'),
+	3 => __('Enable'),
+	4 => __('Default')
 	);
 
 /* set default action */
@@ -218,43 +218,43 @@ function form_actions() {
 		if (get_nfilter_request_var('drp_action') == '1') { /* delete */
 			print "<tr>
 				<td class='textArea'>
-					<p>Click 'Continue' to delete the following User Domain(s).</p>
+					<p>" . __n('Click \'Continue\' to delete the following User Domain.', 'Click \'Continue\' to delete following User Domains.', sizeof($d_array)) . "</p>
 					<p><ul>$d_list</ul></p>
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' value='Cancel' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='Continue' title='Delete User Domain(s)'>";
+			$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "' title='" . __n('Delete User Domain', 'Delete User Domains', sizeof($d_array)) . "'>";
 		}else if (get_nfilter_request_var('drp_action') == '2') { /* disable */
 			print "<tr>
 				<td class='textArea'>
-					<p>Click 'Continue' to disable the following User Domain(s).</p>
+					<p>" . __n('Click \'Continue\' to disable the following User Domain.', 'Click \'Continue\' to disable following User Domains.', sizeof($d_array)) . "</p>
 					<p><ul>$d_list</ul></p>
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' value='Cancel' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='Continue' title='Disable User Domain(s)'>";
+			$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "' title='" . __n('Disable User Domain', 'Disable User Domains', sizeof($d_array)) . "'>";
 		}else if (get_nfilter_request_var('drp_action') == '3') { /* enable */
 			print "<tr>
 				<td class='textArea'>
-					<p>Click  'Continue' to enable the following User Domain(s).</p>
+					<p>" . __('Click \'Continue\' to enable the following User Domain.', 'Click \'Continue\' to enable following User Domains.', sizeof($d_array)) . "</p>
 					<p><ul>$d_list</ul></p>
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' value='Cancel' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='Continue' title='Enabled User Domain(s)'>";
+			$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "' title='" . __n('Enabled User Domain', 'Enable User Domains', sizeof($d_array)) . "'>";
 		}else if (get_nfilter_request_var('drp_action') == '4') { /* default */
 			print "<tr>
 				<td class='textArea'>
-					<p>Click 'Continue' to make the following the following User Domain the default one.</p>
+					<p>" . __('Click \'Continue\' to make the following the following User Domain the default one.') . "</p>
 					<p><ul>$d_list</ul></p>
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' value='Cancel' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='Continue' title='Make Selected Domain Default'>";
+			$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "' title='" . __('Make Selected Domain Default') . "'>";
 		}
 	}else{
-		print "<tr><td class='even'><span class='textError'>You must select at least one data input method.</span></td></tr>\n";
-		$save_html = "<input type='button' value='Return' onClick='cactiReturnTo()'>";
+		print "<tr><td class='even'><span class='textError'>" . __('You must select at least one data input method.') . "</span></td></tr>\n";
+		$save_html = "<input type='button' value='" . __('Return') . "' onClick='cactiReturnTo()'>";
 	}
 
 	print "<tr>
@@ -304,42 +304,41 @@ function domain_edit() {
 
 	if (!isempty_request_var('domain_id')) {
 		$domain = db_fetch_row_prepared('SELECT * FROM user_domains WHERE domain_id = ?', array(get_request_var('domain_id')));
-		$header_label = '[edit: ' . $domain['domain_name'] . ']';
+		$header_label = __('User Domain [edit: %s]', $domain['domain_name']);
 	}else{
-		$header_label = '[new]';
+		$header_label = __('User Domain [new]');
 	}
 
 	/* file: data_input.php, action: edit */
 	$fields_domain_edit = array(
 		'domain_name' => array(
 			'method' => 'textbox',
-			'friendly_name' => 'Name',
-			'description' => 'Enter a meaningful name for this domain.  This will be the name that appears
-			in the Login Realm during login.',
+			'friendly_name' => __('Name'),
+			'description' => __('Enter a meaningful name for this domain. This will be the name that appears in the Login Realm during login.'),
 			'value' => '|arg1:domain_name|',
 			'max_length' => '255',
 			),
 		'type' => array(
 			'method' => 'drop_array',
-			'friendly_name' => 'Domains Type',
-			'description' => 'Choose what type of domain this is.',
+			'friendly_name' => __('Domains Type'),
+			'description' => __('Choose what type of domain this is.'),
 			'value' => '|arg1:type|',
 			'array' => $domain_types,
 			'default' => '2'
 			),
 		'user_id' => array(
-			'friendly_name' => 'User Template',
-			'description' => 'The name of the user that Cacti will use as a template for new user accounts.',
+			'friendly_name' => __('User Template'),
+			'description' => __('The name of the user that Cacti will use as a template for new user accounts.'),
 			'method' => 'drop_sql',
 			'value' => '|arg1:user_id|',
-			'none_value' => 'No User',
+			'none_value' => __('No User'),
 			'sql' => 'SELECT id AS id, username AS name FROM user_auth WHERE realm=0 ORDER BY username',
 			'default' => '0'
 			),
 		'enabled' => array(
 			'method' => 'checkbox',
-			'friendly_name' => 'Enabled',
-			'description' => 'If this checkbox is checked, users will be able to login using this domain.',
+			'friendly_name' => __('Enabled'),
+			'description' => __('If this checkbox is checked, users will be able to login using this domain.'),
 			'value' => '|arg1:enabled|',
 			'default' => '',
 			),
@@ -355,16 +354,16 @@ function domain_edit() {
 
 	$fields_domain_ldap_edit = array(
 		'server' => array(
-			'friendly_name' => 'Server',
-			'description' => 'The dns hostname or ip address of the server.',
+			'friendly_name' => __('Server'),
+			'description' => __('The dns hostname or ip address of the server.'),
 			'method' => 'textbox',
 			'value' => '|arg1:server|',
 			'default' => read_config_option('ldap_server'),
 			'max_length' => '255'
 			),
 		'port' => array(
-			'friendly_name' => 'Port Standard',
-			'description' => 'TCP/UDP port for Non SSL communications.',
+			'friendly_name' => __('Port Standard'),
+			'description' => __('TCP/UDP port for Non SSL communications.'),
 			'method' => 'textbox',
 			'max_length' => '5',
 			'value' => '|arg1:port|',
@@ -372,8 +371,8 @@ function domain_edit() {
 			'size' => '5'
 			),
 		'port_ssl' => array(
-			'friendly_name' => 'Port SSL',
-			'description' => 'TCP/UDP port for SSL communications.',
+			'friendly_name' => __('Port SSL'),
+			'description' => __('TCP/UDP port for SSL communications.'),
 			'method' => 'textbox',
 			'max_length' => '5',
 			'value' => '|arg1:port_ssl|',
@@ -381,99 +380,99 @@ function domain_edit() {
 			'size' => '5'
 			),
 		'proto_version' => array(
-			'friendly_name' => 'Protocol Version',
-			'description' => 'Protocol Version that the server supports.',
+			'friendly_name' => __('Protocol Version'),
+			'description' => __('Protocol Version that the server supports.'),
 			'method' => 'drop_array',
 			'value' => '|arg1:proto_version|',
 			'array' => $ldap_versions
 			),
 		'encryption' => array(
-			'friendly_name' => 'Encryption',
-			'description' => 'Encryption that the server supports. TLS is only supported by Protocol Version 3.',
+			'friendly_name' => __('Encryption'),
+			'description' => __('Encryption that the server supports. TLS is only supported by Protocol Version 3.'),
 			'method' => 'drop_array',
 			'value' => '|arg1:encryption|',
 			'array' => $ldap_encryption
 			),
 		'referrals' => array(
-			'friendly_name' => 'Referrals',
-			'description' => 'Enable or Disable LDAP referrals.  If disabled, it may increase the speed of searches.',
+			'friendly_name' => __('Referrals'),
+			'description' => __('Enable or Disable LDAP referrals.  If disabled, it may increase the speed of searches.'),
 			'method' => 'drop_array',
 			'value' => '|arg1:referrals|',
-			'array' => array( '0' => 'Disabled', '1' => 'Enable')
+			'array' => array( '0' => __('Disabled'), '1' => __('Enable'))
 			),
 		'mode' => array(
-			'friendly_name' => 'Mode',
-			'description' => 'Mode which cacti will attempt to authenticate against the LDAP server.<blockquote><i>No Searching</i> - No Distinguished Name (DN) searching occurs, just attempt to bind with the provided Distinguished Name (DN) format.<br><br><i>Anonymous Searching</i> - Attempts to search for username against LDAP directory via anonymous binding to locate the users Distinguished Name (DN).<br><br><i>Specific Searching</i> - Attempts search for username against LDAP directory via Specific Distinguished Name (DN) and Specific Password for binding to locate the users Distinguished Name (DN).',
+			'friendly_name' => __('Mode'),
+			'description' => __('Mode which cacti will attempt to authenticate against the LDAP server.<blockquote><i>No Searching</i> - No Distinguished Name (DN) searching occurs, just attempt to bind with the provided Distinguished Name (DN) format.<br><br><i>Anonymous Searching</i> - Attempts to search for username against LDAP directory via anonymous binding to locate the users Distinguished Name (DN).<br><br><i>Specific Searching</i> - Attempts search for username against LDAP directory via Specific Distinguished Name (DN) and Specific Password for binding to locate the users Distinguished Name (DN).'),
 			'method' => 'drop_array',
 			'value' => '|arg1:mode|',
 			'array' => $ldap_modes
 			),
 		'dn' => array(
-			'friendly_name' => 'Distinguished Name (DN)',
-			'description' => 'Distinguished Name syntax, such as for windows: <i>"&lt;username&gt;@win2kdomain.local"</i> or for OpenLDAP: <i>"uid=&lt;username&gt;,ou=people,dc=domain,dc=local"</i>.   "&lt;username&gt" is replaced with the username that was supplied at the login prompt.  This is only used when in "No Searching" mode.',
+			'friendly_name' => __('Distinguished Name (DN)'),
+			'description' => __('Distinguished Name syntax, such as for windows: <i>"&lt;username&gt;@win2kdomain.local"</i> or for OpenLDAP: <i>"uid=&lt;username&gt;,ou=people,dc=domain,dc=local"</i>.   "&lt;username&gt" is replaced with the username that was supplied at the login prompt.  This is only used when in "No Searching" mode.'),
 			'method' => 'textbox',
 			'value' => '|arg1:dn|',
 			'max_length' => '255'
 			),
 		'group_require' => array(
-			'friendly_name' => 'Require Group Membership',
-			'description' => 'Require user to be member of group to authenticate. Group settings must be set for this to work, enabling without proper group settings will cause authenication failure.',
+			'friendly_name' => __('Require Group Membership'),
+			'description' => __('Require user to be member of group to authenticate. Group settings must be set for this to work, enabling without proper group settings will cause authenication failure.'),
 			'value' => '|arg1:group_require|',
 			'method' => 'checkbox'
 			),
 		'group_header' => array(
-			'friendly_name' => 'LDAP Group Settings',
+			'friendly_name' => __('LDAP Group Settings'),
 			'method' => 'spacer'
 			),
 		'group_dn' => array(
-			'friendly_name' => 'Group Distingished Name (DN)',
-			'description' => 'Distingished Name of the group that user must have membership.',
+			'friendly_name' => __('Group Distingished Name (DN)'),
+			'description' => __('Distingished Name of the group that user must have membership.'),
 			'method' => 'textbox',
 			'value' => '|arg1:group_dn|',
 			'max_length' => '255'
 			),
 		'group_attrib' => array(
-			'friendly_name' => 'Group Member Attribute',
-			'description' => 'Name of the attribute that contains the usernames of the members.',
+			'friendly_name' => __('Group Member Attribute'),
+			'description' => __('Name of the attribute that contains the usernames of the members.'),
 			'method' => 'textbox',
 			'value' => '|arg1:group_attrib|',
 			'max_length' => '255'
 			),
 		'group_member_type' => array(
-			'friendly_name' => 'Group Member Type',
-			'description' => 'Defines if users use full Distingished Name or just Username in the defined Group Member Attribute.',
+			'friendly_name' => __('Group Member Type'),
+			'description' => __('Defines if users use full Distingished Name or just Username in the defined Group Member Attribute.'),
 			'method' => 'drop_array',
 			'value' => '|arg1:group_member_type|',
 			'array' => array( 1 => 'Distingished Name', 2 => 'Username' )
 			),
 		'search_base_header' => array(
-			'friendly_name' => 'LDAP Specific Search Settings',
+			'friendly_name' => __('LDAP Specific Search Settings'),
 			'method' => 'spacer'
 			),
 		'search_base' => array(
-			'friendly_name' => 'Search Base',
-			'description' => 'Search base for searching the LDAP directory, such as <i>"dc=win2kdomain,dc=local"</i> or <i>"ou=people,dc=domain,dc=local"</i>.',
+			'friendly_name' => __('Search Base'),
+			'description' => __('Search base for searching the LDAP directory, such as <i>"dc=win2kdomain,dc=local"</i> or <i>"ou=people,dc=domain,dc=local"</i>.'),
 			'method' => 'textbox',
 			'value' => '|arg1:search_base|',
 			'max_length' => '255'
 			),
 		'search_filter' => array(
-			'friendly_name' => 'Search Filter',
-			'description' => 'Search filter to use to locate the user in the LDAP directory, such as for windows: <i>"(&amp;(objectclass=user)(objectcategory=user)(userPrincipalName=&lt;username&gt;*))"</i> or for OpenLDAP: <i>"(&(objectClass=account)(uid=&lt;username&gt))"</i>.  "&lt;username&gt" is replaced with the username that was supplied at the login prompt. ',
+			'friendly_name' => __('Search Filter'),
+			'description' => __('Search filter to use to locate the user in the LDAP directory, such as for windows: <i>"(&amp;(objectclass=user)(objectcategory=user)(userPrincipalName=&lt;username&gt;*))"</i> or for OpenLDAP: <i>"(&(objectClass=account)(uid=&lt;username&gt))"</i>.  "&lt;username&gt" is replaced with the username that was supplied at the login prompt.'),
 			'method' => 'textbox',
 			'value' => '|arg1:search_filter|',
 			'max_length' => '255'
 			),
 		'specific_dn' => array(
-			'friendly_name' => 'Search Distingished Name (DN)',
-			'description' => 'Distinguished Name for Specific Searching binding to the LDAP directory.',
+			'friendly_name' => __('Search Distingished Name (DN)'),
+			'description' => __('Distinguished Name for Specific Searching binding to the LDAP directory.'),
 			'method' => 'textbox',
 			'value' => '|arg1:specific_dn|',
 			'max_length' => '255'
 			),
 		'specific_password' => array(
-			'friendly_name' => 'Search Password',
-			'description' => 'Password for Specific Searching binding to the LDAP directory.',
+			'friendly_name' => __('Search Password'),
+			'description' => __('Password for Specific Searching binding to the LDAP directory.'),
 			'method' => 'textbox_password',
 			'value' => '|arg1:specific_password|',
 			'max_length' => '255'
@@ -486,7 +485,7 @@ function domain_edit() {
 
 	form_start('user_domains.php');
 
-	html_start_box("User Domain $header_label", '100%', '', '3', 'center', '');
+	html_start_box($header_label, '100%', '', '3', 'center', '');
 
 	draw_edit_form(array(
 		'config' => array(),
@@ -498,7 +497,7 @@ function domain_edit() {
 	if (!isempty_request_var('domain_id')) {
 		$domain = db_fetch_row_prepared('SELECT * FROM user_domains_ldap WHERE domain_id = ?', array(get_request_var('domain_id')));
 
-		html_start_box('Domain Properties', '100%', '', '3', 'center', '');
+		html_start_box( __('Domain Properties'), '100%', '', '3', 'center', '');
 
 		draw_edit_form(array(
 			'config' => array(),
@@ -603,7 +602,7 @@ function domains() {
 	validate_store_request_vars($filters, 'sess_domains');
 	/* ================= input validation ================= */
 
-	html_start_box('User Domains', '100%', '', '3', 'center', 'user_domains.php?action=edit');
+	html_start_box( __('User Domains'), '100%', '', '3', 'center', 'user_domains.php?action=edit');
 
 	?>
 	<tr class='even' class='noprint'>
@@ -612,13 +611,13 @@ function domains() {
 			<table class='filterTable'>
 				<tr class='noprint'>
 					<td>
-						Search
+						<?php print __('Search');?>
 					</td>
 					<td>
 						<input id='filter' type='text' name='filter' size='25' value='<?php print get_request_var('filter');?>'>
 					</td>
 					<td>
-						Domains
+						<?php print __('Domains');?>
 					</td>
 					<td>
 						<select id='rows' name="rows" onChange="applyFilter()">
@@ -632,10 +631,10 @@ function domains() {
 						</select>
 					</td>
 					<td>
-						<input id='refresh' type='button' value='Go' title='Set/Refresh Filters'>
+						<input id='refresh' type='button' value='<?php print __x('filter: use', 'Go');?>' title='<?php print __('Set/Refresh Filters');?>'>
 					</td>
 					<td>
-						<input id='clear' type='button' value='Clear' title='Clear Filters'>
+						<input id='clear' type='button' value='<?php print __('filter: reset', 'Clear');?>' title='<?php print __('Clear Filters');?>'>
 					</td>
 				</tr>
 			</table>
@@ -699,16 +698,16 @@ function domains() {
 		ORDER BY " . get_request_var('sort_column') . ' ' . get_request_var('sort_direction') . '
 		LIMIT ' . (get_request_var('rows')*(get_request_var('page')-1)) . ',' . get_request_var('rows'));
 
-	$nav = html_nav_bar('user_user_domains.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), get_request_var('rows'), $total_rows, 6, 'User Domains', 'page', 'main');
+	$nav = html_nav_bar('user_user_domains.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), get_request_var('rows'), $total_rows, 6, __('User Domains'), 'page', 'main');
 
 	print $nav;
 
 	$display_text = array(
-		'domain_name' => array('Domain Name', 'ASC'),
-		'type' => array('Domain Type', 'ASC'),
-		'defdomain' => array('Default', 'ASC'),
-		'user_id' => array('Effective User', 'ASC'),
-		'enabled' => array('Enabled', 'ASC'));
+		'domain_name' => array( __('Domain Name'), 'ASC'),
+		'type' => array( __('Domain Type'), 'ASC'),
+		'defdomain' => array( __('Default'), 'ASC'),
+		'user_id' => array( __('Effective User'), 'ASC'),
+		'enabled' => array( __('Enabled'), 'ASC'));
 
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
@@ -719,16 +718,16 @@ function domains() {
 			form_alternate_row('line' . $domain['domain_id'], true);
 			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars('user_domains.php?action=edit&domain_id=' . $domain['domain_id']) . "'>" . (strlen(get_request_var('filter')) ? preg_replace('/(' . preg_quote(get_request_var('filter')) . ')/i', "<span class='filteredValue>\\1</span>", htmlspecialchars($domain['domain_name'])) : htmlspecialchars($domain['domain_name'])) . '</a>', $domain['domain_id']);
 			form_selectable_cell($domain_types{$domain['type']}, $domain['domain_id']);
-			form_selectable_cell(($domain['defdomain'] == '0' ? '--':'Yes'), $domain['domain_id']);
-			form_selectable_cell(($domain['user_id'] == '0' ? 'None Selected': db_fetch_cell_prepared('SELECT username FROM user_auth WHERE id = ?', array($domain['user_id']))), $domain['domain_id']);
-			form_selectable_cell(($domain['enabled'] == 'on' ? 'Yes':'No'), $domain['domain_id']);
+			form_selectable_cell( ($domain['defdomain'] == '0' ? '--': __('Yes') ), $domain['domain_id']);
+			form_selectable_cell( ($domain['user_id'] == '0' ? __('None Selected') : db_fetch_cell_prepared('SELECT username FROM user_auth WHERE id = ?', array($domain['user_id']))), $domain['domain_id']);
+			form_selectable_cell( ($domain['enabled'] == 'on' ? __('Yes'):__('No') ), $domain['domain_id']);
 			form_checkbox_cell($domain['domain_name'], $domain['domain_id']);
 			form_end_row();
 		}
 
 		print $nav;
 	}else{
-		print '<tr><td><em>No User Domains Defined</em></td></tr>';
+		print '<tr><td><em>' . __('No User Domains Defined') . '</em></td></tr>';
 	}
 
 	html_end_box(false);
