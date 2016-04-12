@@ -210,7 +210,7 @@ function vdef_form_actions() {
 		if (get_nfilter_request_var('drp_action') === '1') { /* delete */
 			print "	<tr>
 					<td class='topBoxAlt'>
-						<p>" . __('Click \'Continue\' to delete the following VDEF(s).') . "</p>
+						<p>" . __n('Click \'Continue\' to delete the following VDEF.', 'Click \'Continue\' to delete following VDEFs.', sizeof($vdef_array)) . "</p>
 						<p><ul>$vdef_list</ul></p>
 					</td>
 				</tr>\n";
@@ -219,7 +219,7 @@ function vdef_form_actions() {
 		}elseif (get_nfilter_request_var('drp_action') === '2') { /* duplicate */
 			print "	<tr>
 					<td class='topBoxAlt'>
-						<p>" . __('Click \'Continue\' to duplicate the following VDEF(s). You can optionally change the title format for the new VDEF(s).') . "</p>
+						<p>" . __n('Click \'Continue\' to duplicate the following VDEF. You can optionally change the title format for the new VDEF.', 'Click \'Continue\' to duplicate following VDEFs. You can optionally change the title format for the new VDEFs.', sizeof($vdef_array)) . "</p>
 						<p><ul>$vdef_list</ul></p>
 						<p><strong>" . __('Title Format:') . "</strong><br>"; form_text_box("title_format", "<vdef_title> (1)", "", "255", "30", "text"); print "</p>
 					</td>
