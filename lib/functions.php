@@ -37,6 +37,31 @@ function title_trim($text, $max_length) {
 	}
 }
 
+/* filter_value - a quick way to highlight text in a table from general filtering
+   @arg $text - the string to filter
+   @arg $filter - the search term to filter for
+   @arg $href - the href if you wish to have an anchor returned
+   @returns - the filtered string */
+function filter_value($value, $filter, $href = '') {
+	static $charset;
+
+	if ($charset == '') {
+		$charset = ini_get('default_charset');
+	}
+
+	$value =  htmlspecialchars($value, ENT_QUOTES, $charset, false);
+
+	if ($filter != '') {
+		$value = preg_replace('/(' . preg_quote($_REQUEST['filter']) . ')/i', "<span class='filteredValue'>\\1</span>", $value);
+	}
+
+	if ($href != '') {
+		$value = '<a class="linkEditMain" href="' . htmlspecialchars($href, ENT_QUOTES, $charset, false) . '">' . $value  . '</a>';
+	}
+
+	return $value;
+}
+
 /* set_graph_config_option - deprecated - wrapper to set_user_setting().
    @arg $config_name - the name of the configuration setting as specified $settings array
    @arg $value       - the values to be saved
