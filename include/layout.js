@@ -483,6 +483,10 @@ function applySkin() {
 
 	// Don't show the message container until all GUI interaction is done
 	$('#message_container').delay(2000).slideUp('fast');
+
+	// remove stray tooltips
+	$(document).tooltip('close');
+
 	$('#main').show();
 }
 
