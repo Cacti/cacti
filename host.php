@@ -1439,18 +1439,18 @@ function host() {
 	print $nav;
 
 	$display_text = array(
-		'description' => array('display' => 'Device Description', 'align' => 'left', 'sort' => 'ASC', 'tip' => 'The name by which this Device will be referred to.'),
-		'hostname' => array('display' => 'Hostname', 'align' => 'left', 'sort' => 'ASC', 'tip' => 'Either an IP address, or hostname.  If a hostname, it must be resolvable by either DNS, or from your hosts file.'),
-		'id' => array('display' => 'ID', 'align' => 'right', 'sort' => 'ASC', 'tip' => 'The internal database ID for this Device.  Useful when performing automation or debugging.'),
-		'graphs' => array('display' => 'Graphs', 'align' => 'right', 'sort' => 'DESC', 'tip' => 'The total number of Graphs generated from this Device.'),
-		'data_sources' => array('display' => 'Data Sources', 'align' => 'right', 'sort' => 'DESC', 'tip' => 'The total number of Data Sources generated from this Device.'),
-		'status' => array('display' => 'Status', 'align' => 'center', 'sort' => 'ASC', 'tip' => 'The monitoring status of the Device based upon ping results.  If this Device is a special type Device, by using the hostname "localhost", or due to the setting to not perform an Availability Check, it will always remain Up.  When using cmd.php data collector, a Device with no Graphs, is not pinged by the data collector and will remain in an "Unknown" state.'),
-		'status_rec_date' => array('display' => 'In State', 'align' => 'right', 'sort' => 'ASC', 'tip' => 'The amount of time that this Device has been in its current state.'),
+		'description'            => array('display' => 'Device Description', 'align' => 'left', 'sort' => 'ASC', 'tip' => 'The name by which this Device will be referred to.'),
+		'hostname'               => array('display' => 'Hostname', 'align' => 'left', 'sort' => 'ASC', 'tip' => 'Either an IP address, or hostname.  If a hostname, it must be resolvable by either DNS, or from your hosts file.'),
+		'id'                     => array('display' => 'ID', 'align' => 'right', 'sort' => 'ASC', 'tip' => 'The internal database ID for this Device.  Useful when performing automation or debugging.'),
+		'graphs'                 => array('display' => 'Graphs', 'align' => 'right', 'sort' => 'DESC', 'tip' => 'The total number of Graphs generated from this Device.'),
+		'data_sources'           => array('display' => 'Data Sources', 'align' => 'right', 'sort' => 'DESC', 'tip' => 'The total number of Data Sources generated from this Device.'),
+		'status'                 => array('display' => 'Status', 'align' => 'center', 'sort' => 'ASC', 'tip' => 'The monitoring status of the Device based upon ping results.  If this Device is a special type Device, by using the hostname "localhost", or due to the setting to not perform an Availability Check, it will always remain Up.  When using cmd.php data collector, a Device with no Graphs, is not pinged by the data collector and will remain in an "Unknown" state.'),
+		'nosort99'               => array('display' => 'In State', 'align' => 'right', 'sort' => 'ASC', 'tip' => 'The amount of time that this Device has been in its current state.'),
 		'snmp_sysUpTimeInstance' => array('display' => 'Uptime', 'align' => 'right', 'sort' => 'ASC', 'tip' => 'The current amount of time that the host has been up.'),
-		'polling_time' => array('display' => 'Poll Time', 'align' => 'right', 'sort' => 'DESC', 'tip' => 'The the amount of time it takes to collect data from this Device.'),
-		'cur_time' => array('display' => 'Current (ms)', 'align' => 'right', 'sort' => 'DESC', 'tip' => 'The current ping time in milliseconds to reach the Device.'),
-		'avg_time' => array('display' => 'Average (ms)', 'align' => 'right', 'sort' => 'DESC', 'tip' => 'The average ping time in milliseconds to reach the Device since the counters were cleared for this Device.'),
-		'availability' => array('display' => 'Availability', 'align' => 'right', 'sort' => 'ASC', 'tip' => 'The availability percentage based upon ping results insce the counters were cleared for this Device.'));
+		'polling_time'           => array('display' => 'Poll Time', 'align' => 'right', 'sort' => 'DESC', 'tip' => 'The the amount of time it takes to collect data from this Device.'),
+		'cur_time'               => array('display' => 'Current (ms)', 'align' => 'right', 'sort' => 'DESC', 'tip' => 'The current ping time in milliseconds to reach the Device.'),
+		'avg_time'               => array('display' => 'Average (ms)', 'align' => 'right', 'sort' => 'DESC', 'tip' => 'The average ping time in milliseconds to reach the Device since the counters were cleared for this Device.'),
+		'availability'           => array('display' => 'Availability', 'align' => 'right', 'sort' => 'ASC', 'tip' => 'The availability percentage based upon ping results insce the counters were cleared for this Device.'));
 
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
@@ -1466,7 +1466,7 @@ function host() {
 				$hours     = intval($remainder / (60*60*100));
 				$remainder = $remainder % (60*60*100);
 				$minutes   = intval($remainder / (60*100));
-				$uptime    = "$days:$hours:$minutes";
+				$uptime    = $days . 'd:' . $hours . 'h:' . $minutes . 'm';
 			}else{
 				$uptime    = "N/A";
 			}
@@ -1512,7 +1512,7 @@ function get_timeinstate($host) {
 	}elseif (strtotime($host['status_rec_date']) > 943916400) {
 		$time = time() - strtotime($host['status_rec_date']);
 	}else{
-		return '-';
+		$time = $host['snmp_sysUpTimeInstance']/100;
 	}
 
 	if ($time > 86400) {
@@ -1531,6 +1531,6 @@ function get_timeinstate($host) {
 
 	$minutes = floor($time/60);
 
-	return $days . ':' . $hours . ':' . $minutes;
+	return $days . 'd:' . $hours . 'h:' . $minutes . 'm';
 }
 
