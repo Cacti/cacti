@@ -985,7 +985,7 @@ if ($step == '7') {
 							/* Print help message for unix and windows if directory is not writable */
 							if (($config['cacti_server_os'] == "unix") && isset($writable)) {
 								print __('Make sure your webserver has read and write access to the entire folder structure.<br> Example: chown -R apache.apache %s/resource/', $config['base_path']) . '<br>';
-								print __('For SELINUX users make sure that you have the correct permissions or set "setenforce 0" temporarly') . '<br><br>';
+								print __('For SELINUX-users make sure that you have the correct permissions or set "setenforce 0" temporarily.') . '<br><br>';
 							}elseif (($config['cacti_server_os'] == "win32") && isset($writable)){
 								print __('Check Permissions');
 							}else {
