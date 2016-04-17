@@ -1857,9 +1857,9 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 					$graph_variables['text_format'][$graph_item_id] = str_replace(':', '\:', $graph_variables['text_format'][$graph_item_id]);
 
 					if ($graph_item['vdef_id'] == '0') {
-						$txt_graph_items .= 'GPRINT:' . $data_source_name . ":AVERAGE:'" . $graph_variables['text_format'][$graph_item_id] . $graph_item['gprint_text'] . $hardreturn[$graph_item_id] . "' ";
+						$txt_graph_items .= 'GPRINT:' . $data_source_name . ':AVERAGE:"' . $graph_variables['text_format'][$graph_item_id] . $graph_item['gprint_text'] . $hardreturn[$graph_item_id] . '" ';
 					}else{
-						$txt_graph_items .= 'GPRINT:' . $data_source_name . ":'" . $graph_variables['text_format'][$graph_item_id] . $graph_item['gprint_text'] . $hardreturn[$graph_item_id] . "' ";
+						$txt_graph_items .= 'GPRINT:' . $data_source_name . ':"' . $graph_variables['text_format'][$graph_item_id] . $graph_item['gprint_text'] . $hardreturn[$graph_item_id] . '" ';
 					}
 				}
 
@@ -1869,9 +1869,9 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 					$graph_variables['text_format'][$graph_item_id] = str_replace(':', '\:', $graph_variables['text_format'][$graph_item_id]);
 
 					if ($graph_item['vdef_id'] == '0') {
-						$txt_graph_items .= 'GPRINT:' . $data_source_name . ":LAST:'" . $graph_variables['text_format'][$graph_item_id] . $graph_item['gprint_text'] . $hardreturn[$graph_item_id] . "' ";
+						$txt_graph_items .= 'GPRINT:' . $data_source_name . ':LAST:"' . $graph_variables['text_format'][$graph_item_id] . $graph_item['gprint_text'] . $hardreturn[$graph_item_id] . '" ';
 					}else{
-						$txt_graph_items .= 'GPRINT:' . $data_source_name . ":'" . $graph_variables['text_format'][$graph_item_id] . $graph_item['gprint_text'] . $hardreturn[$graph_item_id] . "' ";
+						$txt_graph_items .= 'GPRINT:' . $data_source_name . ':"' . $graph_variables['text_format'][$graph_item_id] . $graph_item['gprint_text'] . $hardreturn[$graph_item_id] . '" ';
 					}
 				}
 
@@ -1881,9 +1881,9 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 					$graph_variables['text_format'][$graph_item_id] = str_replace(':', '\:', $graph_variables['text_format'][$graph_item_id]);
 
 					if ($graph_item['vdef_id'] == '0') {
-						$txt_graph_items .= 'GPRINT:' . $data_source_name . ":MAX:'" . $graph_variables['text_format'][$graph_item_id] . $graph_item['gprint_text'] . $hardreturn[$graph_item_id] . "' ";
+						$txt_graph_items .= 'GPRINT:' . $data_source_name . ':MAX:"' . $graph_variables['text_format'][$graph_item_id] . $graph_item['gprint_text'] . $hardreturn[$graph_item_id] . '" ';
 					}else{
-						$txt_graph_items .= 'GPRINT:' . $data_source_name . ":'" . $graph_variables['text_format'][$graph_item_id] . $graph_item['gprint_text'] . $hardreturn[$graph_item_id] . "' ";
+						$txt_graph_items .= 'GPRINT:' . $data_source_name . ':"' . $graph_variables['text_format'][$graph_item_id] . $graph_item['gprint_text'] . $hardreturn[$graph_item_id] . '" ';
 					}
 				}
 
@@ -1893,9 +1893,9 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 					$graph_variables['text_format'][$graph_item_id] = str_replace(':', '\:', $graph_variables['text_format'][$graph_item_id]);
 
 					if ($graph_item['vdef_id'] == '0') {
-						$txt_graph_items .= 'GPRINT:' . $data_source_name . ":MIN:'" . $graph_variables['text_format'][$graph_item_id] . $graph_item['gprint_text'] . $hardreturn[$graph_item_id] . "' ";
+						$txt_graph_items .= 'GPRINT:' . $data_source_name . ':MIN:"' . $graph_variables['text_format'][$graph_item_id] . $graph_item['gprint_text'] . $hardreturn[$graph_item_id] . '" ';
 					}else{
-						$txt_graph_items .= 'GPRINT:' . $data_source_name . ":'" . $graph_variables['text_format'][$graph_item_id] . $graph_item['gprint_text'] . $hardreturn[$graph_item_id] . "' ";
+						$txt_graph_items .= 'GPRINT:' . $data_source_name . ':"' . $graph_variables['text_format'][$graph_item_id] . $graph_item['gprint_text'] . $hardreturn[$graph_item_id] . '" ';
 					}
 				}
 
@@ -1933,7 +1933,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 
 				break;
 			case GRAPH_ITEM_TYPE_LINESTACK:
-				$txt_graph_items .= 'LINE' . $graph_item['line_width'] . ':' . $data_source_name . $graph_item_color_code . ':' . "'" . $graph_variables['text_format'][$graph_item_id] . $hardreturn[$graph_item_id] . "':STACK" . $dash;
+				$txt_graph_items .= 'LINE' . $graph_item['line_width'] . ':' . $data_source_name . $graph_item_color_code . ':"' . $graph_variables['text_format'][$graph_item_id] . $hardreturn[$graph_item_id] . '":STACK' . $dash;
 
 				if ($graph_item['shift'] == CHECKED && $graph_item['value'] > 0) {      # create a SHIFT statement
 					$txt_graph_items .= RRD_NL . 'SHIFT:' . $data_source_name . ':' . $graph_item['value'];
@@ -1942,7 +1942,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 				break;
 			case GRAPH_ITEM_TYPE_TIC:
 				$_fraction = (empty($graph_item['graph_type_id']) ? '' : (':' . $graph_item['value']));
-				$_legend   = (empty($graph_variables['text_format'][$graph_item_id]) ? '' : (':' . "'" . $graph_variables['text_format'][$graph_item_id] . $hardreturn[$graph_item_id] . "'"));
+				$_legend   = (empty($graph_variables['text_format'][$graph_item_id]) ? '' : (':"' . $graph_variables['text_format'][$graph_item_id] . $hardreturn[$graph_item_id] . '"'));
 				$txt_graph_items .= $graph_item_types{$graph_item['graph_type_id']} . ':' . $data_source_name . $graph_item_color_code . $_fraction . $_legend;
 
 				break;
@@ -1956,7 +1956,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 					$graph_variables['value'][$graph_item_id] = $substitute;
 				}
 
-				$txt_graph_items .= $graph_item_types{$graph_item['graph_type_id']} . ':' . $graph_variables['value'][$graph_item_id] . $graph_item_color_code . ":'" . $graph_variables['text_format'][$graph_item_id] . $hardreturn[$graph_item_id] . "'" . $dash;
+				$txt_graph_items .= $graph_item_types{$graph_item['graph_type_id']} . ':' . $graph_variables['value'][$graph_item_id] . $graph_item_color_code . ':"' . $graph_variables['text_format'][$graph_item_id] . $hardreturn[$graph_item_id] . '"' . $dash;
 
 				break;
 			case GRAPH_ITEM_TYPE_VRULE:
@@ -1972,7 +1972,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 					$value = $graph_item['value'];
 				}
 
-				$txt_graph_items .= $graph_item_types{$graph_item['graph_type_id']} . ':' . $value . $graph_item_color_code . ":'" . $graph_variables['text_format'][$graph_item_id] . $hardreturn[$graph_item_id] . "'" . $dash;
+				$txt_graph_items .= $graph_item_types{$graph_item['graph_type_id']} . ':' . $value . $graph_item_color_code . ':"' . $graph_variables['text_format'][$graph_item_id] . $hardreturn[$graph_item_id] . '"' . $dash;
 
 				break;
 			default:
