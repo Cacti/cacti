@@ -602,7 +602,7 @@ function get_size($id, $type, $cfs = '') {
 		$cfs  = db_fetch_cell_prepared('SELECT COUNT(*) FROM data_source_profiles_cf WHERE data_source_profile_id = ?', array($id));
 		$rows = get_filter_request_var('rows');
 
-		return number_format($rows * $row * $cfs) . " Bytes per Data Source.";
+		return number_format(($rows * $row * $cfs) / 1000) . " KBytes per Data Source.";
 	}
 }
 
