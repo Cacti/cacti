@@ -597,12 +597,12 @@ function get_size($id, $type, $cfs = '') {
 
 		$rows = db_fetch_cell_prepared('SELECT SUM(rows) FROM data_source_profiles_rra WHERE data_source_profile_id = ?', array($id));
 
-		return number_format($rows * $row * $cfs + $dsheader) . " Bytes per Data Source, and $header Bytes for the Header.";
+		return number_format(($rows * $row * $cfs + $dsheader) / 1000) . " KBytes per Data Source, and $header Bytes for the Header.";
 	}else{
 		$cfs  = db_fetch_cell_prepared('SELECT COUNT(*) FROM data_source_profiles_cf WHERE data_source_profile_id = ?', array($id));
 		$rows = get_filter_request_var('rows');
 
-		return number_format($rows * $row * $cfs) . " Bytes per Data Source.";
+		return number_format(($rows * $row * $cfs) / 1000) . " KBytes per Data Source.";
 	}
 }
 
