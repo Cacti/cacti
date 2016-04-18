@@ -2043,13 +2043,15 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 				
 				if (isset($graph_data_array['graphv']) && $version != RRD_VERSION_1_2) {
 					$output = rrdtool_execute("graphv $graph_opts$graph_defs$txt_graph_items", false, $output_flag, $rrdtool_pipe);
-				}else{
+				}elseif (isset($graph_data_array['graphv']) && $version == RRD_VERSION_1_2){
 					// RRD Tool 1.2.x does not support 'graphv' option, do workaround
 					$output2 = rrdtool_execute("graph $graph_opts$graph_defs$txt_graph_items", false, $output_flag, $rrdtool_pipe);
 					
-					$output =        'graph_width = '.$graph_data_array['graph_width']."\r\n".'graph_height = '.$graph_data_array['graph_height']."\r\n";
+					$output =         'graph_width = '.$graph_data_array['graph_width']."\r\n".'graph_height = '.$graph_data_array['graph_height']."\r\n";
 					$output = $output.'graph_start = '.$graph_data_array['graph_start']."\r\n".'graph_end = '.$graph_data_array['graph_end']."\r\n";
 					$output = $output.'image = BLOB_SIZE:'.strlen($output2)."\r\n".$output2;
+				}else{
+					$output = rrdtool_execute("graph $graph_opts$graph_defs$txt_graph_items", false, $output_flag, $rrdtool_pipe);
 				}
 
 				boost_graph_set_file($output, $local_graph_id, $rra_id);
