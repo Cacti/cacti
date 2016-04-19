@@ -549,6 +549,11 @@ function duplicate_graph($_local_graph_id, $_graph_template_id, $graph_title) {
 	}
 
 	unset($save);
+	unset($struct_graph['general_header']);
+	unset($struct_graph['scaling_header']);
+	unset($struct_graph['grid_header']);
+	unset($struct_graph['axis_header']);
+	unset($struct_graph['legend_header']);
 	reset($struct_graph);
 
 	/* create new entry: graph_templates_graph */
