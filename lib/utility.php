@@ -560,6 +560,7 @@ function duplicate_graph($_local_graph_id, $_graph_template_id, $graph_title) {
 
 	reset($struct_graph);
 	while (list($field, $array) = each($struct_graph)) {
+		if ($array['method'] == 'spacer') continue;
 		$save{$field} = $graph_template_graph{$field};
 		$save{'t_' . $field} = $graph_template_graph{'t_' . $field};
 	}
