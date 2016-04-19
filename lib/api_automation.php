@@ -1462,8 +1462,8 @@ function duplicate_automation_tree_rules($_id, $_title) {
 		foreach ($rule_items as $rule_item) {
 			$save = $rule_item;
 			/* make sure, that regexp is correctly masked */
-			$save['search_pattern'] = mysql_real_escape_string($rule_item['search_pattern']);
-			$save['replace_pattern'] = mysql_real_escape_string($rule_item['replace_pattern']);
+			$save['search_pattern'] = form_input_validate($rule_item['search_pattern'], 'search_pattern', '', false, 3);
+			$save['replace_pattern'] = form_input_validate($rule_item['replace_pattern'], 'replace_pattern', '', true, 3);
 			$save['id'] = 0;
 			$save['rule_id'] = $rule_id;
 			$rule_item_id = sql_save($save, 'automation_tree_rule_items');
