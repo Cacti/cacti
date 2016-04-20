@@ -1115,8 +1115,6 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 		return 'GRAPH ACCESS DENIED';
 	}
 
-	$version = read_config_option('rrdtool_version');
-	
 	/* check the boost image cache and if we find a live file there return it instead */
 	if (!isset($graph_data_array['export_csv']) && !isset($graph_data_array['export_realtime']) && !isset($graph_data_array['disable_cache'])) {
 		$graph_data = boost_graph_cache_check($local_graph_id, $rra_id, $rrdtool_pipe, $graph_data_array, false);
@@ -2015,6 +2013,11 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 		if (isset($graph_data_array['print_source'])) {
 			print '<PRE>' . htmlspecialchars(read_config_option('path_rrdtool') . ' graph ' . $graph_opts . $graph_defs . $txt_graph_items) . '</PRE>';
 		}else{
+			if (isset($graph_data_array['graphv'])) {
+				$graph = 'graphv';
+			}else{
+				$graph = 'graph';
+			}
 
 			if (isset($graph_data_array['export'])) {
 				rrdtool_execute("graph $graph_opts$graph_defs$txt_graph_items", false, RRDTOOL_OUTPUT_NULL, $rrdtool_pipe);
@@ -2040,19 +2043,8 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 				}else{
 					$output_flag = $graph_data_array['output_flag'];
 				}
-				
-				if (isset($graph_data_array['graphv']) && $version != RRD_VERSION_1_2) {
-					$output = rrdtool_execute("graphv $graph_opts$graph_defs$txt_graph_items", false, $output_flag, $rrdtool_pipe);
-				}elseif (isset($graph_data_array['graphv']) && $version == RRD_VERSION_1_2){
-					// RRD Tool 1.2.x does not support 'graphv' option, do workaround
-					$output2 = rrdtool_execute("graph $graph_opts$graph_defs$txt_graph_items", false, $output_flag, $rrdtool_pipe);
-					
-					$output =         'graph_width = '.$graph_data_array['graph_width']."\r\n".'graph_height = '.$graph_data_array['graph_height']."\r\n";
-					$output = $output.'graph_start = '.$graph_data_array['graph_start']."\r\n".'graph_end = '.$graph_data_array['graph_end']."\r\n";
-					$output = $output.'image = BLOB_SIZE:'.strlen($output2)."\r\n".$output2;
-				}else{
-					$output = rrdtool_execute("graph $graph_opts$graph_defs$txt_graph_items", false, $output_flag, $rrdtool_pipe);
-				}
+
+				$output = rrdtool_execute("$graph $graph_opts$graph_defs$txt_graph_items", false, $output_flag, $rrdtool_pipe);
 
 				boost_graph_set_file($output, $local_graph_id, $rra_id);
 
