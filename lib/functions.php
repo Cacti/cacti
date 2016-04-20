@@ -3142,7 +3142,9 @@ function cacti_escapeshellarg($string, $quote=true) {
 }
 
 function bottom_footer() {
-	global $config;
+	global $config, $refresh;
+
+	include($config['base_path'] . '/include/global_session.php');
 
 	if (!isset_request_var('header') || get_nfilter_request_var('header') == 'true') {
 		include($config['base_path'] . '/include/bottom_footer.php');
@@ -3151,17 +3153,16 @@ function bottom_footer() {
 		<script type='text/javascript'>
 		var message = "<?php print display_output_messages();?>";
 
-		if (message != '') {
-			$('#message_container').html(message).show().delay(2000).slideUp('fast');
-			window.scrollTo(0,0);
-		}
+		$(function() {
+			if (message != '') {
+				$('#message_container').html(message).show().delay(2000).slideUp('fast');
+				window.scrollTo(0,0);
+			}
 
-		if (pageRefresh > 0) {
-			refreshMSeconds=pageRefresh;
-			pageRefresh = 0;
-		}else{
-			refreshMSeconds=999999999;
-		}
+			if (refreshMSeconds == null || refreshMSeconds < 5000) {
+				refreshMSeconds=999999999;
+			}
+		});
 
 		</script>
 		<?php

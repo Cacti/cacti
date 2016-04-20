@@ -83,7 +83,6 @@ load_current_session_value('action', 'sess_cacti_graph_action', $graph_views['2'
 	<link href='<?php echo $config['url_path']; ?>include/fa/css/font-awesome.css' type='text/css' rel='stylesheet'>
 	<link href='<?php echo $config['url_path']; ?>images/favicon.ico' rel='shortcut icon'>
 	<link rel='icon' type='image/gif' href='<?php echo $config['url_path']; ?>images/cacti_logo.gif' sizes='96x96'>
-	<?php include($config['base_path'] . '/include/global_session.php');?>
 	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery.js'></script>
 	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery-ui.js'></script>
 	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery.cookie.js'></script>

@@ -500,7 +500,7 @@ function loadPage(href) {
 
 		$('title').text(htmlTitle);
 		$('#breadcrumbs').html(breadCrumbs);
-		$('#main').html(content);
+		$('#main').empty().html(content);
 
 		if (typeof window.history.pushState !== 'undefined') {
 			window.history.pushState({page: href}, htmlTitle, href);
@@ -520,7 +520,7 @@ function loadPage(href) {
 
 function loadPageNoHeader(href) {
 	$.get(href, function(data) {
-		$('#main').html(data);
+		$('#main').empty().html(data);
 
 		applySkin();
 
