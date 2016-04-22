@@ -191,7 +191,7 @@ if (is_array($xport_array['meta'])) {
 
 if (is_array($xport_array['data'])) {
 	if (!$html) {
-		$j = 0;
+		$j = 1;
 		foreach($xport_array['data'] as $row) {
 			$data = '"' . date('Y-m-d H:i:s', (isset($row["timestamp"]) ? $row["timestamp"] : $xport_array["meta"]["start"] + $j*$xport_array["meta"]["step"])) . '"';
 			for ($i = 1; $i <= $xport_array['meta']['columns']; $i++) {
@@ -201,7 +201,7 @@ if (is_array($xport_array['data'])) {
 			$j++;
 		}
 	}else{
-		$j = 0;
+		$j = 1;
 		foreach($xport_array['data'] as $row) {
 			print "<tr><td align='left'>" . date('Y-m-d H:i:s', (isset($row["timestamp"]) ? $row["timestamp"] : $xport_array["meta"]["start"] + $j*$xport_array["meta"]["step"])) . "</td>";
 			for ($i = 1; $i <= $xport_array['meta']['columns']; $i++) {
