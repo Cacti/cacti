@@ -1357,7 +1357,17 @@ function html_host_filter($host_id = '-1', $call_back = 'applyFilter', $sql_wher
 				<option value='-1'<?php if (get_request_var('host_id') == '-1') {?> selected<?php }?>>Any</option>
 				<option value='0'<?php if (get_request_var('host_id') == '0') {?> selected<?php }?>>None</option>
 				<?php
-				$hosts = db_fetch_assoc("SELECT id, CONCAT_WS('',description,' (',hostname,')') AS name FROM host $sql_where ORDER BY description, hostname");
+
+				if ($sql_where != '' && strpos($sql_where, 'WHERE') === false) { 
+					$sql_where = 'WHERE ' . $sql_where;
+				}
+
+				$hosts = db_fetch_assoc("SELECT h.id, CONCAT_WS('',h.description,' (',h.hostname,')') AS name 
+					FROM host AS h
+					LEFT JOIN host_template AS ht
+					ON ht.id=h.host_template_id
+					$sql_where 
+					ORDER BY h.description, h.hostname");
 
 				if (sizeof($hosts) > 0) {
 					foreach ($hosts as $host) {
