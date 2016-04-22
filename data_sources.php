@@ -177,6 +177,7 @@ function form_save() {
 		get_filter_request_var('current_rrd');
 		get_filter_request_var('rrd_step');
 		get_filter_request_var('data_input_id');
+		get_filter_request_var('_data_template_id');
 		/* ==================================================== */
 
 		$save1['id']               = get_filter_request_var('local_data_id');
@@ -279,7 +280,7 @@ function form_save() {
 		update_poller_cache($local_data_id, true);
 	}
 
-	if (isset_request_var('save_component_data_source_new') && isempty_request_var_post('data_template_id')) {
+	if (isset_request_var('save_component_data_source_new') && isempty_request_var('data_template_id')) {
 		header('Location: data_sources.php?header=false&action=ds_edit&host_id=' . get_request_var('host_id') . '&new=1');
 	}elseif ((is_error_message()) || (get_request_var('data_template_id') != get_request_var('_data_template_id')) || (get_request_var('data_input_id') != get_request_var('_data_input_id')) || (get_request_var('host_id') != get_request_var('_host_id'))) {
 		header('Location: data_sources.php?header=false&action=ds_edit&id=' . (empty($local_data_id) ? get_filter_request_var('local_data_id') : $local_data_id) . '&host_id=' . get_request_var('host_id') . '&view_rrd=' . (isset_request_var('current_rrd') ? get_nfilter_request_var('current_rrd') : '0'));
@@ -769,8 +770,8 @@ function ds_edit() {
 			'none_value' => 'None',
 			'sql' => 'SELECT id, description as name FROM host ORDER BY name',
 			'action' => 'ajax_hosts_noany',
-			'id' => (isset_request_var('host_id') ? get_request_var('host_id') : $data_local['host_id']),
-			'value' => db_fetch_cell_prepared('SELECT description FROM host WHERE id = ?', (isset_request_var('host_id') ? array(get_request_var('host_id')) : array($data_local['host_id']))),
+			'id' => (isset_request_var('host_id') ? get_request_var('host_id') : (isset($data_local['host_id']) ? $data_local['host_id']:0)),
+			'value' => db_fetch_cell_prepared('SELECT description FROM host WHERE id = ?', (isset_request_var('host_id') ? array(get_request_var('host_id')) : (isset($data_local['host_id']) ? array($data_local['host_id']):array(0)))),
 			),
 		'_data_template_id' => array(
 			'method' => 'hidden',
