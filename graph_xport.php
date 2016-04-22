@@ -118,7 +118,7 @@ if (is_array($xport_array['meta'])) {
 		print '"Title:","'          . $xport_array['meta']['title_cache']                . '"' . "\n";
 		print '"Vertical Label:","' . $xport_array['meta']['vertical_label']             . '"' . "\n";
 		print '"Start Date:","'     . date('Y-m-d H:i:s', $xport_array['meta']['start']) . '"' . "\n";
-		print '"End Date:","'       . date('Y-m-d H:i:s', $xport_array['meta']['end'])   . '"' . "\n";
+		print '"End Date:","'       . date('Y-m-d H:i:s', $xport_array["meta"]["start"] + $xport_array["meta"]["step"]*($xport_array["meta"]["rows"]-1))   . '"' . "\n";
 		print '"Step:","'           . $xport_array['meta']['step']                       . '"' . "\n";
 		print '"Total Rows:","'     . $xport_array['meta']['rows']                       . '"' . "\n";
 		print '"Graph ID:","'       . $xport_array['meta']['local_graph_id']             . '"' . "\n";
