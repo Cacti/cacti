@@ -1343,7 +1343,10 @@ CREATE TABLE data_local (
   host_id mediumint(8) unsigned NOT NULL default '0',
   snmp_query_id mediumint(8) NOT NULL default '0',
   snmp_index varchar(255) NOT NULL default '',
-  PRIMARY KEY  (id)
+  PRIMARY KEY  (id),
+  KEY data_template_id (data_template_id),
+  KEY snmp_query_id (snmp_query_id),
+  KEY host_id (host_id)
 ) ENGINE=MyISAM;
 
 --

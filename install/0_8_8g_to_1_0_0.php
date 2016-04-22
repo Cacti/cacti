@@ -1454,4 +1454,9 @@ function upgrade_to_1_0_0() {
 	// Update Aggregate CDEF's to become system level
 	db_install_execute('1.0.0', "ALTER TABLE cdef ADD COLUMN system mediumint(8) unsigned NOT NULL DEFAULT '0' AFTER hash");
 	db_install_execute('1.0.0', "UPDATE cdef SET system=1 WHERE name LIKE '\_%'");
+
+	// Add some important missing indexes
+	db_install_execute('1.0.0', "ALTER TABLE data_local 
+		ADD INDEX data_template_id (data_template_id), 
+		ADD INDEX snmp_query_id (snmp_query_id)");
 }
