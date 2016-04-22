@@ -218,7 +218,7 @@ if (get_nfilter_request_var('action') == 'login') {
 	/* Process the user  */
 	if (sizeof($user)) {
 		cacti_log("LOGIN: User '" . $user['username'] . "' Authenticated", false, 'AUTH');
-		db_execute_prepared('INSERT INTO user_log (username, user_id, result, ip, time) VALUES (?, ?, 1, ?, NOW())', array($username, $user['id'], $_SERVER['REMOTE_ADDR']));
+		db_execute_prepared('INSERT IGNORE INTO user_log (username, user_id, result, ip, time) VALUES (?, ?, 1, ?, NOW())', array($username, $user['id'], $_SERVER['REMOTE_ADDR']));
 
 		/* is user enabled */
 		$user_enabled = $user['enabled'];
@@ -307,7 +307,7 @@ if (get_nfilter_request_var('action') == 'login') {
 			exit;
 		}else{
 			/* BAD username/password builtin and LDAP */
-			db_execute_prepared('INSERT INTO user_log (username, user_id, result, ip, time) VALUES (?, 0, 0, ?, NOW())', array($username, $_SERVER['REMOTE_ADDR']));
+			db_execute_prepared('INSERT IGNORE INTO user_log (username, user_id, result, ip, time) VALUES (?, 0, 0, ?, NOW())', array($username, $_SERVER['REMOTE_ADDR']));
 		}
 	}
 }
