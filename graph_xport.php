@@ -150,7 +150,7 @@ if (is_array($xport_array['meta'])) {
 		print "<tr class='even'><td align='left'>Title</td><td $second>"          . trim($xport_array['meta']['title_cache'],"'")      . "</td></tr>\n";
 		print "<tr class='odd'><td align='left'>Vertical Label</td><td $second>" . trim($xport_array['meta']['vertical_label'],"'")    . "</td></tr>\n";
 		print "<tr class='even'><td align='left'>Start Date</td><td $second>"     . date('Y-m-d H:i:s', $xport_array['meta']['start']) . "</td></tr>\n";
-		print "<tr class='odd'><td align='left'>End Date</td><td $second>"       . date('Y-m-d H:i:s', ($xport_array["meta"]["end"] == $xport_array["meta"]["start"]) ? $xport_array["meta"]["start"] + $xport_array["meta"]["step"]*($xport_array["meta"]["rows"]-1) : $xport_array["meta"]["end"])) . "</td></tr>\n";
+		print "<tr class='odd'><td align='left'>End Date</td><td $second>"       . date('Y-m-d H:i:s', ($xport_array["meta"]["end"] == $xport_array["meta"]["start"]) ? $xport_array["meta"]["start"] + $xport_array["meta"]["step"]*($xport_array["meta"]["rows"]-1) : $xport_array["meta"]["end"]) . "</td></tr>\n";
 		print "<tr class='even'><td align='left'>Step</td><td $second>"           . $xport_array['meta']['step']                       . "</td></tr>\n";
 		print "<tr class='odd'><td align='left'>Total Rows</td><td $second>"     . $xport_array['meta']['rows']                        . "</td></tr>\n";
 		print "<tr class='even'><td align='left'>Graph ID</td><td $second>"       . $xport_array['meta']['local_graph_id']             . "</td></tr>\n";
