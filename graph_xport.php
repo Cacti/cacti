@@ -118,7 +118,7 @@ if (is_array($xport_array['meta'])) {
 		print '"Title:","'          . $xport_array['meta']['title_cache']                . '"' . "\n";
 		print '"Vertical Label:","' . $xport_array['meta']['vertical_label']             . '"' . "\n";
 		print '"Start Date:","'     . date('Y-m-d H:i:s', $xport_array['meta']['start']) . '"' . "\n";
-		print '"End Date:","'       . date('Y-m-d H:i:s', $xport_array["meta"]["start"] + $xport_array["meta"]["step"]*($xport_array["meta"]["rows"]-1))   . '"' . "\n";
+		print '"End Date:","'       . date('Y-m-d H:i:s', ($xport_array["meta"]["end"] == $xport_array["meta"]["start"]) ? $xport_array["meta"]["start"] + $xport_array["meta"]["step"]*($xport_array["meta"]["rows"]-1) : $xport_array["meta"]["end"]) . '"' . "\n";
 		print '"Step:","'           . $xport_array['meta']['step']                       . '"' . "\n";
 		print '"Total Rows:","'     . $xport_array['meta']['rows']                       . '"' . "\n";
 		print '"Graph ID:","'       . $xport_array['meta']['local_graph_id']             . '"' . "\n";
@@ -150,7 +150,7 @@ if (is_array($xport_array['meta'])) {
 		print "<tr class='even'><td align='left'>Title</td><td $second>"          . trim($xport_array['meta']['title_cache'],"'")      . "</td></tr>\n";
 		print "<tr class='odd'><td align='left'>Vertical Label</td><td $second>" . trim($xport_array['meta']['vertical_label'],"'")    . "</td></tr>\n";
 		print "<tr class='even'><td align='left'>Start Date</td><td $second>"     . date('Y-m-d H:i:s', $xport_array['meta']['start']) . "</td></tr>\n";
-		print "<tr class='odd'><td align='left'>End Date</td><td $second>"       . date('Y-m-d H:i:s', $xport_array['meta']['end'])    . "</td></tr>\n";
+		print "<tr class='odd'><td align='left'>End Date</td><td $second>"       . date('Y-m-d H:i:s', ($xport_array["meta"]["end"] == $xport_array["meta"]["start"]) ? $xport_array["meta"]["start"] + $xport_array["meta"]["step"]*($xport_array["meta"]["rows"]-1) : $xport_array["meta"]["end"])) . "</td></tr>\n";
 		print "<tr class='even'><td align='left'>Step</td><td $second>"           . $xport_array['meta']['step']                       . "</td></tr>\n";
 		print "<tr class='odd'><td align='left'>Total Rows</td><td $second>"     . $xport_array['meta']['rows']                        . "</td></tr>\n";
 		print "<tr class='even'><td align='left'>Graph ID</td><td $second>"       . $xport_array['meta']['local_graph_id']             . "</td></tr>\n";
@@ -191,17 +191,19 @@ if (is_array($xport_array['meta'])) {
 
 if (is_array($xport_array['data'])) {
 	if (!$html) {
+		$j = 0;
 		foreach($xport_array['data'] as $row) {
-			$data = '"' . date('Y-m-d H:i:s', $row['timestamp']) . '"';
+			$data = '"' . date('Y-m-d H:i:s', (isset($row["timestamp"]) ? $row["timestamp"] : $xport_array["meta"]["start"] + $j*$xport_array["meta"]["step"])) . '"';
 			for ($i = 1; $i <= $xport_array['meta']['columns']; $i++) {
 				$data .= ',"' . $row['col' . $i] . '"';
 			}
 			print $data . "\n";
+			$j++;
 		}
 	}else{
 		$j = 0;
 		foreach($xport_array['data'] as $row) {
-			print "<tr><td align='left'>" . date('Y-m-d H:i:s', $row['timestamp']) . "</td>";
+			print "<tr><td align='left'>" . date('Y-m-d H:i:s', (isset($row["timestamp"]) ? $row["timestamp"] : $xport_array["meta"]["start"] + $j*$xport_array["meta"]["step"])) . "</td>";
 			for ($i = 1; $i <= $xport_array['meta']['columns']; $i++) {
 				if ($row['col' . $i] > 1) {
 					print "<td align='right'>" . trim(number_format(round($row['col' . $i],3))) . "</td>";
