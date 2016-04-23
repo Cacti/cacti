@@ -641,7 +641,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 						From
 					</td>
 					<td>
-						<input type='text' id='date1' title='Graph Begin Timestamp' size='18' value='<?php print (isset($_SESSION['sess_current_date1']) ? $_SESSION['sess_current_date1'] : '');?>'>
+						<input type='text' id='date1' size='18' value='<?php print (isset($_SESSION['sess_current_date1']) ? $_SESSION['sess_current_date1'] : '');?>'>
 					</td>
 					<td>
 						<i id='startDate' class='calendar fa fa-calendar' title='Start Date Selector'></i>
@@ -650,7 +650,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 						To
 					</td>
 					<td>
-						<input type='text' id='date2' title='Graph End Timestamp' size='18' value='<?php print (isset($_SESSION['sess_current_date2']) ? $_SESSION['sess_current_date2'] : '');?>'>
+						<input type='text' id='date2' size='18' value='<?php print (isset($_SESSION['sess_current_date2']) ? $_SESSION['sess_current_date2'] : '');?>'>
 					</td>
 					<td>
 						<i id='endDate' class='calendar fa fa-calendar' title='End Date Selector'></i>

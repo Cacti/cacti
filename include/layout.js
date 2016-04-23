@@ -668,7 +668,7 @@ function setupSortable() {
 	});
 
 	// Setup tool tips for all titles to match the jQueryUI theme
-	$('th').tooltip();
+	$('i, th, img, input, label, select').tooltip({ closed: true }).on('focus', function() { $('#filter').tooltip('close') }).on('click', function() { $(this).tooltip('close'); });
 }
 
 function setupBreadcrumbs() {

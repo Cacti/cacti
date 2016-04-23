@@ -129,6 +129,8 @@ function html_graph_validate_preview_request_vars() {
 function html_graph_preview_filter($page, $action, $devices_where = '', $templates_where = '') {
 	global $graphs_per_page, $realtime_window, $realtime_refresh, $graph_timeshifts, $graph_timespans, $config;
 
+	initialize_realtime_step_and_window();
+
 	?>
 	<tr class='even noprint'>
 		<td class='noprint'>
@@ -250,7 +252,7 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 						From
 					</td>
 					<td>
-						<input type='text' id='date1' title='Graph Begin Timestamp' size='18' value='<?php print (isset($_SESSION['sess_current_date1']) ? $_SESSION['sess_current_date1'] : '');?>'>
+						<input type='text' id='date1' size='18' value='<?php print (isset($_SESSION['sess_current_date1']) ? $_SESSION['sess_current_date1'] : '');?>'>
 					</td>
 					<td>
 						<i id='startDate' class='calendar fa fa-calendar' title='Start Date Selector'></i>
@@ -259,7 +261,7 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 						To
 					</td>
 					<td>
-						<input type='text' id='date2' title='Graph End Timestamp' size='18' value='<?php print (isset($_SESSION['sess_current_date2']) ? $_SESSION['sess_current_date2'] : '');?>'>
+						<input type='text' id='date2' size='18' value='<?php print (isset($_SESSION['sess_current_date2']) ? $_SESSION['sess_current_date2'] : '');?>'>
 					</td>
 					<td>
 						<i id='endDate' class='calendar fa fa-calendar' title='End Date Selector'></i>
