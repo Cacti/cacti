@@ -1500,3 +1500,60 @@ ul.pagination li a:hover:not(.active) {
 tr#realtime td:first-child {
 	height:64px;
 }
+
+.logEmergency {
+	background-color: rgba(250, 116, 32, 0.2);
+	text-align: center;
+	width: 12.5%;
+	color: #eeeeee;
+}
+
+.logCritical {
+	background-color: rgba(242, 23, 33, 0.2);
+	text-align: center;
+	width: 12.5%;
+	color: #eeeeee;
+}
+
+.logAlert {
+	background-color: rgba(242, 25, 36, 0.2);
+	text-align: center;
+	width: 12.5%;
+	color: #eeeeee;
+}
+
+.logWarning {
+	background-color: rgba(255, 122, 48, 0.2);
+	text-align: center;
+	width: 12.5%;
+	color: #eeeeee;
+}
+
+.logError {
+	background-color: rgba(251, 74, 20, 0.2);
+	text-align: center;
+	width: 12.5%;
+	color: #eeeeee;
+}
+
+.logNotice {
+	background-color: rgba(250, 253, 158, 0.2);
+	text-align: center;
+	width: 12.5%;
+	color: #eeeeee;
+}
+
+.logInfo {
+	background-color: rgba(204, 255, 204, 0.2);
+	text-align: center;
+	width: 12.5%;
+	color: #eeeeee;
+}
+
+.logDebug {
+	background-color: rgba(205, 207, 196, 0.2);
+	text-align: center;
+	width: 12.5%;
+	color: #eeeeee;
+}
+

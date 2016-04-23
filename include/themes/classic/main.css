@@ -1226,3 +1226,52 @@ ul.pagination li a:hover:not(.active) {
 tr#realtime td:first-child {
 	height:54px;
 }
+
+.logEmergency {
+	background-color: #FA7420;
+	text-align: center;
+	width: 14%;
+}
+
+.logCritical {
+	background-color: #F21721;
+	text-align: center;
+	width: 14%;
+}
+
+.logWarning {
+	background-color: #FF7A30;
+	text-align: center;
+	width: 14%;
+}
+
+.logAlert {
+	background-color: #F21924;
+	text-align: center;
+	width: 14%;
+}
+
+.logError {
+	background-color: #FB4A14;
+	text-align: center;
+	width: 14%;
+}
+
+.logNotice {
+	background-color: #FAFD9E;
+	text-align: center;
+	width: 14%;
+}
+
+.logInfo {
+	background-color: #CCFFCC;
+	text-align: center;
+	width: 14%;
+}
+
+.logDebug {
+	background-color: #CDCFC4;
+	text-align: center;
+	width: 14%;
+}
+
