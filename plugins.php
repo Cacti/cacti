@@ -47,10 +47,10 @@ $pluginslist = retrieve_plugin_list();
 /* Check to see if we are installing, etc... */
 $modes = array('installold', 'uninstallold', 'install', 'uninstall', 'disable', 'enable', 'check', 'moveup', 'movedown');
 
-if (isset_request_var('mode') && in_array(get_request_var('mode'), $modes)  && isset_request_var('id')) {
+if (isset_request_var('mode') && in_array(get_nfilter_request_var('mode'), $modes) && isset_request_var('id')) {
 	get_filter_request_var('id', FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => '/^([a-zA-Z0-9]+)$/')));
 
-	$mode = get_request_var('mode');
+	$mode = get_nfilter_request_var('mode');
 	$id   = sanitize_search_string(get_request_var('id'));
 
 	switch ($mode) {
