@@ -93,7 +93,7 @@ function read_default_graph_config_option($config_name) {
      in 'include/global_settings.php'
    @returns - the current value of the graph configuration option */
 function read_graph_config_option($config_name, $force = FALSE) {
-	return read_user_setting($config_name, $force);
+	return read_user_setting($config_name, false, $force);
 }
 
 /* set_user_setting - sets/updates a user setting with the given value.
@@ -107,7 +107,7 @@ function set_user_setting($config_name, $value, $user = -1) {
 	}
 	db_execute_prepared('REPLACE INTO settings_user SET user_id = ?, name = ?, value = ?', array($user, $config_name, $value));
 
-	unset($_SESSION['sess_graph_config_array']);
+	unset($_SESSION['sess_user_config_array']);
 	unset($settings_user);
 }
 
@@ -145,7 +145,7 @@ function read_default_user_setting($config_name) {
    @arg $config_name - the name of the configuration setting as specified $settings_user array
      in 'include/global_settings.php'
    @returns - the current value of the graph configuration option */
-function read_user_setting($config_name, $force = FALSE) {
+function read_user_setting($config_name, $default = false, $force = FALSE) {
 	global $config;
 
 	/* users must have cacti user auth turned on to use this, or the guest account must be active */
@@ -164,42 +164,46 @@ function read_user_setting($config_name, $force = FALSE) {
 
 		$db_setting = db_fetch_row_prepared('SELECT value FROM settings_user WHERE name = ? AND user_id = ?', array($config_name, $effective_uid));
 
-		if (isset($db_setting['value'])) {
+		if (sizeof($db_setting)) {
 			return $db_setting['value'];
+		}elseif ($default !== false) {
+			return $default;
 		}else{
-			return read_default_graph_config_option($config_name);
+			return read_default_user_setting($config_name);
 		}
 	}else{
 		$effective_uid = 0;
 	}
 
 	if (!$force) {
-		if (isset($_SESSION['sess_graph_config_array'])) {
-			$graph_config_array = $_SESSION['sess_graph_config_array'];
+		if (isset($_SESSION['sess_user_config_array'])) {
+			$user_config_array = $_SESSION['sess_user_config_array'];
 		}else if (isset($config['config_options_array']['export_user_id'])) {
-			if (isset($config['config_graph_settings_array'])) {
-				$graph_config_array = $config['config_graph_settings_array'];
+			if (isset($config['config_user_settings_array'])) {
+				$user_config_array = $config['config_user_settings_array'];
 			}
 		}
 	}
 
-	if (!isset($graph_config_array[$config_name])) {
+	if (!isset($user_config_array[$config_name])) {
 		$db_setting = db_fetch_row_prepared('SELECT value FROM settings_user WHERE name = ? AND user_id = ?', array($config_name, $effective_uid));
 
-		if (isset($db_setting['value'])) {
-			$graph_config_array[$config_name] = $db_setting['value'];
+		if (sizeof($db_setting)) {
+			$user_config_array[$config_name] = $db_setting['value'];
+		}elseif ($default !== false) {
+			$user_config_array[$config_name] = $default;
 		}else{
-			$graph_config_array[$config_name] = read_default_graph_config_option($config_name);
+			$user_config_array[$config_name] = read_default_user_setting($config_name);
 		}
 
 		if (isset($_SESSION)) {
-			$_SESSION['sess_graph_config_array']   = $graph_config_array;
+			$_SESSION['sess_user_config_array']   = $user_config_array;
 		}else{
-			$config['config_graph_settings_array'] = $graph_config_array;
+			$config['config_user_settings_array'] = $user_config_array;
 		}
 	}
 
-	return $graph_config_array[$config_name];
+	return $user_config_array[$config_name];
 }
 
 /* set_config_option - sets/updates a cacti config option with the given value.
@@ -1298,11 +1302,15 @@ function get_graph_title($local_graph_id) {
 		WHERE graph_templates_graph.local_graph_id = graph_local.id
 		AND graph_local.id = ?', array($local_graph_id));
 
-	if ((strstr($graph['title'], '|')) && (!empty($graph['host_id']))) {
-		$graph['title'] = substitute_data_input_data($graph['title'], $graph, 0);
-		return expand_title($graph['host_id'], $graph['snmp_query_id'], $graph['snmp_index'], $graph['title']);
+	if (sizeof($graph)) {
+		if ((strstr($graph['title'], '|')) && (!empty($graph['host_id']))) {
+			$graph['title'] = substitute_data_input_data($graph['title'], $graph, 0);
+			return expand_title($graph['host_id'], $graph['snmp_query_id'], $graph['snmp_index'], $graph['title']);
+		}else{
+			return $graph['title'];
+		}
 	}else{
-		return $graph['title'];
+		return '';
 	}
 }
 
