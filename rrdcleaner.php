@@ -27,8 +27,8 @@ include_once ('./include/auth.php');
 include_once ($config['library_path'] . '/functions.php');
 
 $ds_actions = array (
-	1 => 'Delete',
-	3 => 'Archive'
+	1 => __x('dropdown action', 'Delete'),
+	3 => __x('dropdown action', 'Archive')
 );
 
 $rra_path = $config['rra_path'] . '/';
@@ -287,7 +287,7 @@ function list_rrd() {
 
 	/* ================= input validation and session storage ================= */
 
-	html_start_box('RRD Cleaner', '100%', '', '3', 'center', '');
+	html_start_box( __('RRD Cleaner'), '100%', '', '3', 'center', '');
 	filter();
 	html_end_box();
 
@@ -335,13 +335,13 @@ function list_rrd() {
 	print $nav;
 
 	$display_text = array(
-		'name'               => array('RRD File Name', 'ASC'),
-		'name_cache'         => array('DS Name', 'ASC'),
-		'local_data_id'      => array('DS ID', 'ASC'),
-		'data_template_id'   => array('Template ID', 'ASC'),
-		'data_template_name' => array('Template', 'ASC'),
-		'last_mod'           => array('Last Modified', 'DESC'),
-		'size'               => array('Size [KB]', 'DESC')
+		'name'               => array( __('RRD File Name'), 'ASC'),
+		'name_cache'         => array( __('DS Name'), 'ASC'),
+		'local_data_id'      => array( __('DS ID'), 'ASC'),
+		'data_template_id'   => array( __('Template ID'), 'ASC'),
+		'data_template_name' => array( __('Template'), 'ASC'),
+		'last_mod'           => array( __('Last Modified'), 'DESC'),
+		'size'               => array( __('Size [KB]'), 'DESC')
 	);
 
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
@@ -352,9 +352,9 @@ function list_rrd() {
 			form_alternate_row('line' . $file['id'], true);
 			form_selectable_cell(((get_request_var('filter') != '') ? preg_replace('/(' . preg_quote(get_request_var('filter')) . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($file['name'])) : htmlspecialchars($file['name'])) . '</a>', $file['id']);
 			form_selectable_cell(($file['local_data_id'] != 0) ? "<a class='linkEditMain' href='../../data_sources.php?action=ds_edit&id=" . $file['local_data_id'] . "'>" . ((get_request_var('filter') != '') ? preg_replace('/(' . preg_quote(get_request_var('filter')) . ')/i', "<span class='filteredValue'>\\1</span>", title_trim(htmlspecialchars($file['name_cache']), read_config_option('max_title_length'))) : title_trim(htmlspecialchars($file['name_cache']), read_config_option('max_title_length'))) . '</a>' : '<i>Deleted</i>', $file['id']);
-			form_selectable_cell($file['local_data_id'] > 0 ? $file['local_data_id']:'<i>Deleted</i>', $file['id']);
-			form_selectable_cell($file['data_template_id'] > 0 ? $file['data_template_id']:'<i>Deleted</i>', $file['id']);
-			form_selectable_cell($file['data_template_id'] > 0 ? (get_request_var('filter') != '' ? preg_replace('/(' . preg_quote(get_request_var('filter')) . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($file['data_template_name'])) . '</a>': htmlspecialchars($file['data_template_name'])):'<i>Deleted</i>', $file['id']);
+			form_selectable_cell($file['local_data_id'] > 0 ? $file['local_data_id']:'<i>' . __('Deleted') . '</i>', $file['id']);
+			form_selectable_cell($file['data_template_id'] > 0 ? $file['data_template_id']: '<i>' . __('Deleted') . '</i>', $file['id']);
+			form_selectable_cell($file['data_template_id'] > 0 ? (get_request_var('filter') != '' ? preg_replace('/(' . preg_quote(get_request_var('filter')) . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($file['data_template_name'])) . '</a>': htmlspecialchars($file['data_template_name'])):'<i>' . __('Deleted') . '</i>', $file['id']);
 			form_selectable_cell($file['last_mod'], $file['id']);
 			form_selectable_cell(round($file['size']/1024,2), $file['id']);
 			form_checkbox_cell($file['id'], $file['id']);
@@ -365,7 +365,7 @@ function list_rrd() {
 		/* put the nav bar on the bottom as well */
 		print $nav;
 	} else {
-		print "<tr><td><em>No unused RRD Files</em></td></tr>\n";
+		print "<tr><td><em>" . __('No unused RRD Files') . "</em></td></tr>\n";
 	}
 
 	html_end_box(false);
@@ -383,9 +383,9 @@ function list_rrd() {
 function rrdcleaner_legend($total_size) {
 	html_start_box('', '100%', '', '3', 'center', '');
 	print '<tr>';
-	print '<td><b>Total Size [MB]:</b> ' . round($total_size/1024/1024,2) . '</td>';
+	print '<td><b>' . __('Total Size [MB]:') . '</b> ' . round($total_size/1024/1024,2) . '</td>';
 	print '</tr><tr>';
-	print '<td><b>Last Scan:</b> ' . rrdcleaner_lastupdate() . '</td>';
+	print '<td><b>' . __('Last Scan:') . '</b> ' . rrdcleaner_lastupdate() . '</td>';
 	print '</tr>';
 	html_end_box(false);
 }
@@ -458,29 +458,29 @@ function filter() {
 			<table class='filterTable'>
 				<tr>
 					<td>
-						Search
+						<?php print __('Search');?>
 					</td>
 					<td>
 						<input id='filter' type='text' name='filter' size='25' value='<?php print get_request_var('filter');?>'>
 					</td>
 					<td class='nowrap'>
-						Time Since Update
+						<?php print __('Time Since Update');?>
 					</td>
 					<td>
 						<select id='age' name='age' onChange='refreshForm()'>
-							<option value='0'   <?php print (get_request_var('age') == '0'   ? ' selected':'');?>>&lt; 1 Week</option>
-							<option value='604800'   <?php print (get_request_var('age') == '604800'   ? ' selected':'');?>>&gt; 1 Week</option>
-							<option value='1209600'  <?php print (get_request_var('age') == '1209600'  ? ' selected':'');?>>&gt; 2 Weeks</option>
-							<option value='1814400'  <?php print (get_request_var('age') == '1814400'  ? ' selected':'');?>>&gt; 3 Weeks</option>
-							<option value='2628000'  <?php print (get_request_var('age') == '2628000'  ? ' selected':'');?>>&gt; 1 Month</option>
-							<option value='5256000'  <?php print (get_request_var('age') == '5256000'  ? ' selected':'');?>>&gt; 2 Months</option>
-							<option value='10512000' <?php print (get_request_var('age') == '10512000' ? ' selected':'');?>>&gt; 4 Months</option>
-							<option value='15768000' <?php print (get_request_var('age') == '15768000' ? ' selected':'');?>>&gt; 6 Months</option>
-							<option value='31536000' <?php print (get_request_var('age') == '31536000' ? ' selected':'');?>>&gt; 1 Year</option>
+							<option value='0'   <?php print (get_request_var('age') == '0'   ? ' selected':'');?>>&lt; <?php print __('1 Week');?></option>
+							<option value='604800'   <?php print (get_request_var('age') == '604800'   ? ' selected':'');?>>&gt; <?php print __('1 Week');?></option>
+							<option value='1209600'  <?php print (get_request_var('age') == '1209600'  ? ' selected':'');?>>&gt; <?php print __('%d Weeks',2);?></option>
+							<option value='1814400'  <?php print (get_request_var('age') == '1814400'  ? ' selected':'');?>>&gt; <?php print __('%d Weeks', 3);?></option>
+							<option value='2628000'  <?php print (get_request_var('age') == '2628000'  ? ' selected':'');?>>&gt; <?php print __('1 Month');?></option>
+							<option value='5256000'  <?php print (get_request_var('age') == '5256000'  ? ' selected':'');?>>&gt; <?php print __('%d Months', 2);?></option>
+							<option value='10512000' <?php print (get_request_var('age') == '10512000' ? ' selected':'');?>>&gt; <?php print __('%d Months', 4);?></option>
+							<option value='15768000' <?php print (get_request_var('age') == '15768000' ? ' selected':'');?>>&gt; <?php print __('%d Months', 6);?></option>
+							<option value='31536000' <?php print (get_request_var('age') == '31536000' ? ' selected':'');?>>&gt; <?php print __('1 Year');?></option>
 						</select>
 					</td>
 					<td>
-						RRDfiles
+						<?php print __('RRDfiles');?>
 					</td>
 					<td>
 						<select id='rows' name='rows'>
@@ -494,17 +494,17 @@ function filter() {
 						</select>
 					</td>
 					<td>
-						<input id='go' type='submit' value='Go'>
+						<input id='go' type='submit' value='<?php print __x('filter: use', 'Go');?>'>
 					</td>
 					<td>
-						<input id='clear' type='button' value='Clear'>
+						<input id='clear' type='button' value='<?php print __x('filter: reset', 'Clear');?>'>
 					</td>
 					<td>
-						<input id='rescan' type='button' value='Rescan' name='rescan'>
+						<input id='rescan' type='button' value='<?php print __('Rescan');?>' name='rescan'>
 					</td>
 					<td>
-						<input id='remall' type='button' value='Delete All' title='Delete All Unknown RRDfiles'>
-						<input id='arcall' type='button' value='Archive All' title='Archive All Unknown RRDfiles'>
+						<input id='remall' type='button' value='<?php print __('Delete All');?>' title='<?php print __('Delete All Unknown RRDfiles');?>'>
+						<input id='arcall' type='button' value='<?php print __('Archive All');?>' title='<?php print __('Archive All Unknown RRDfiles');?>'>
 					</td>
 					<td id='text'></td>
 				</tr>
