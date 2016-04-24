@@ -25,20 +25,20 @@
 include('./include/auth.php');
 
 $manager_actions = array(
-	1 => 'Delete',
-	2 => 'Enable',
-	3 => 'Disable'
+	1 => __('Delete'),
+	2 => __('Enable'),
+	3 => __('Disable')
 );
 
 $manager_notification_actions = array(
-	0 => 'Disable',
-	1 => 'Enable'
+	0 => __('Disable'),
+	1 => __('Enable')
 );
 
 $tabs_manager_edit = array(
-	'general' => 'General',
-	'notifications' => 'Notifications',
-	'logs' => 'Logs',
+	'general' => __('General'),
+	'notifications' => __('Notifications'),
+	'logs' => __('Logs'),
 );
 
 /* set default action */
@@ -132,7 +132,7 @@ function manager(){
 	</script>
 	<?php
 
-	html_start_box('SNMP Notification Receivers', '100%', '', '3', 'center', 'managers.php?action=edit');
+	html_start_box( __('SNMP Notification Receivers'), '100%', '', '3', 'center', 'managers.php?action=edit');
 
 	?>
 	<tr class='even noprint'>
@@ -141,13 +141,13 @@ function manager(){
 				<table class='filterTable'>
 					<tr>
 						<td>
-							Search
+							<?php print __('Search'); ?>
 						</td>
 						<td>
 							<input id='filter' type='text' name='filter' size='25' value='<?php print htmlspecialchars(get_request_var('filter'));?>' onChange='applyFilter()'>
 						</td>
 						<td>
-							Receivers
+							<?php print __('Receivers'); ?>
 						</td>
 						<td>
 							<select id='rows' name='rows' onChange='applyFilter()'>
@@ -161,10 +161,10 @@ function manager(){
 							</select>
 						</td>
 						<td>
-							<input type='button' id='refresh' value='Go' title='Set/Refresh Filters'>
+							<input type='button' id='refresh' value='<?php print __('Go');?>' title='<?php print __('Set/Refresh Filters');?>'>
 						</td>
 						<td>
-							<input type='button' id='clear' value='Clear' title='Clear Filters'>
+							<input type='button' id='clear' value='<?php print __('Clear');?>' title='<?php print __('Clear Filters');?>'>
 						</td>
 					</tr>
 				</table>
@@ -209,12 +209,12 @@ function manager(){
 		LIMIT ' . (get_request_var('rows')*(get_request_var('page')-1)) . ',' . get_request_var('rows'));
 
 	$display_text = array(
-		'description' => array('Description', 'ASC'),
-		'id' => array('Id', 'ASC'),
-		'disabled' => array('Status', 'ASC'),
-		'hostname' => array('Hostname', 'ASC'),
-		'count_notify' => array('Notifications', 'ASC'),
-		'count_log' => array('Logs', 'ASC')
+		'description' => array( __('Description'), 'ASC'),
+		'id' => array( __('Id'), 'ASC'),
+		'disabled' => array( __('Status'), 'ASC'),
+		'hostname' => array( __('Hostname'), 'ASC'),
+		'count_notify' => array( __('Notifications'), 'ASC'),
+		'count_log' => array( __('Logs'), 'ASC')
 	);
 
 	form_start('managers.php', 'chk');
@@ -222,7 +222,7 @@ function manager(){
 	html_start_box('', '100%', '', '3', 'center', '');
 
 	/* generate page list */
-	$nav = html_nav_bar('managers.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), get_request_var('rows'), $total_rows, 11, 'Receivers', 'page', 'main');
+	$nav = html_nav_bar('managers.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), get_request_var('rows'), $total_rows, 11, __('Receivers'), 'page', 'main');
 	print $nav;
 
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
@@ -235,7 +235,7 @@ function manager(){
 			form_alternate_row('line' . $item['id'], false);
 			form_selectable_cell( '<a class="linkEditMain" href="managers.php?action=edit&id=' . $item['id'] . '">' . $description . '</a>', $item['id']);
 			form_selectable_cell( $item['id'], $item['id']);
-			form_selectable_cell( $item['disabled'] ? '<span class="deviceDown">Disabled</span>' : '<span class="deviceUp">Enabled</span>', $item['id']);
+			form_selectable_cell( $item['disabled'] ? '<span class="deviceDown">' . __('Disabled') . '</span>' : '<span class="deviceUp">' . __('Enabled') . '</span>', $item['id']);
 			form_selectable_cell( $hostname, $item['id']);
 			form_selectable_cell( '<a class="linkEditMain" href="managers.php?action=edit&tab=notifications&id=' . $item['id'] . '">' . ($item['count_notify'] ? $item['count_notify'] : 0) . '</a>' , $item['id']);
 			form_selectable_cell( '<a class="linkEditMain" href="managers.php?action=edit&tab=logs&id=' . $item['id'] . '">' . ($item['count_log'] ? $item['count_log'] : 0 ) . '</a>', $item['id']);
@@ -244,7 +244,7 @@ function manager(){
 		}
 		print $nav;
 	}else{
-		print '<tr><td><em>No SNMP Notification Receivers</em></td></tr>';
+		print '<tr><td><em>' . __('No SNMP Notification Receivers') . '</em></td></tr>';
 	}
 
 	html_end_box(false);
@@ -271,9 +271,9 @@ function manager_edit() {
 
 	if ($id) {
 		$manager = db_fetch_row_prepared('SELECT * FROM snmpagent_managers WHERE id = ?', array(get_request_var('id')));
-		$header_label = '[edit: ' . htmlspecialchars($manager['description']) . ']';
+		$header_label = __('SNMP Notification Receiver [edit: %s]', htmlspecialchars($manager['description']));
 	}else{
-		$header_label = '[new]';
+		$header_label = __('SNMP Notification Receiver [new]');
 	}
 
 	if (sizeof($tabs_manager_edit) && isset_request_var('id')) {
@@ -312,14 +312,14 @@ function manager_edit() {
 
 	switch(get_request_var('tab')){
 		case 'notifications':
-			html_start_box("SNMP Notification Receiver $header_label", '100%', '', '3', 'center', '');
+			html_start_box($header_label, '100%', '', '3', 'center', '');
 
 			manager_notifications($id);
 			html_end_box();
 			draw_actions_dropdown($manager_notification_actions);
 			break;
 		case 'logs':
-			html_start_box("SNMP Notification Receiver $header_label", '100%', '', '3', 'center', '');
+			html_start_box($header_label, '100%', '', '3', 'center', '');
 
 			manager_logs($id);
 			html_end_box();
@@ -327,7 +327,7 @@ function manager_edit() {
 		default:
 			form_start('managers.php');
 
-			html_start_box("SNMP Notification Receiver $header_label", '100%', '', '3', 'center', '');
+			html_start_box($header_label, '100%', '', '3', 'center', '');
 
 			draw_edit_form(
 				array(
@@ -489,11 +489,11 @@ function manager_notifications($id){
 				<table class='filterTable'>
 					<tr>
 						<td>
-							MIB
+							<?php print __('MIB');?>
 						</td>
 						<td>
 							<select id='mib' name='mib' onChange='applyFilter()'>
-								<option value='-1'<?php if (get_request_var('mib') == '-1') {?> selected<?php }?>>Any</option>
+								<option value='-1'<?php if (get_request_var('mib') == '-1') {?> selected<?php }?>><?php print __('Any');?></option>
 								<?php
 								if (sizeof($mibs) > 0) {
 								foreach ($mibs as $mib) {
@@ -504,13 +504,13 @@ function manager_notifications($id){
 							</select>
 						</td>
 						<td>
-							Search
+							<?php print __('Search');?>
 						</td>
 						<td>
 							<input id='filter' type='text' size='25' value='<?php print htmlspecialchars(get_request_var('filter'));?>' onChange='applyFilter()'>
 						</td>
 						<td>
-							Receivers
+							<?php print __('Receivers');?>
 						</td>
 						<td>
 							<select id='rows' name='rows' onChange='applyFilter()'>
@@ -524,10 +524,10 @@ function manager_notifications($id){
 							</select>
 						</td>
 						<td>
-							<input type='button' id='refresh' value='Go' title='Set/Refresh Filters'>
+							<input type='button' id='refresh' value='<?php print __('Go');?>' title='<?php print __('Set/Refresh Filters');?>'>
 						</td>
 						<td>
-							<input type='button' id='clear' value='Clear' title='Clear Filters'>
+							<input type='button' id='clear' value='<?php print __('Clear');?>' title='<?php print __('Clear Filters');?>'>
 						</td>
 					</tr>
 				</table>
@@ -579,7 +579,7 @@ function manager_notifications($id){
 	$nav = html_nav_bar('managers.php?action=edit&id=' . $id . '&tab=notifications&mib=' . get_request_var('mib') . '&filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 11, '', 'page', 'main');
 	print $nav;
 
-	html_header_checkbox( array('Name', 'OID', 'MIB', 'Kind', 'Max-Access', 'Monitored'), true, 'managers.php?action=edit&tab=notifications&id=' . $id);
+	html_header_checkbox( array( __('Name'), __('OID'), __('MIB'), __('Kind'), __('Max-Access'), __('Monitored') ), true, 'managers.php?action=edit&tab=notifications&id=' . $id);
 
 	if (sizeof($snmp_cache) > 0) {
 		foreach ($snmp_cache as $item) {
@@ -598,13 +598,13 @@ function manager_notifications($id){
 			form_selectable_cell( $mib, $row_id);
 			form_selectable_cell( $item['kind'], $row_id);
 			form_selectable_cell( $item['max-access'],$row_id);
-			form_selectable_cell( ( ( isset( $notifications[ $item['mib'] ]) && isset( $notifications[ $item['mib'] ][ $item['name'] ]) ) ? 'Enabled' : 'Disabled' ), $row_id);
+			form_selectable_cell( ( ( isset( $notifications[ $item['mib'] ]) && isset( $notifications[ $item['mib'] ][ $item['name'] ]) ) ? __('Enabled') : __('Disabled') ), $row_id);
 			form_checkbox_cell($item['oid'], $row_id);
 			form_end_row();
 		}
 		print $nav;
 	}else{
-		print '<tr><td><em>No SNMP Notifications</em></td></tr>';
+		print '<tr><td><em>' . __('No SNMP Notifications') . '</em></td></tr>';
 	}
 
 	?>
@@ -688,17 +688,17 @@ function manager_logs($id) {
 				<table class='filterTable'>
 					<tr>
 						<td>
-							Search
+							<?php print __('Search');?>
 						</td>
 						<td>
 							<input type='text' id='filter' size='25' value='<?php print htmlspecialchars(get_request_var('filter'));?>'>
 						</td>
 						<td>
-							Severity
+							<?php print __('Severity');?>
 						</td>
 						<td>
 							<select id='severity' onChange='applyFilter()'>
-								<option value='-1'<?php if (get_request_var('severity') == '-1') {?> selected<?php }?>>Any</option>
+								<option value='-1'<?php if (get_request_var('severity') == '-1') {?> selected<?php }?>><?php print __('Any');?></option>
 								<?php
 								foreach ($severity_levels as $level => $name) {
 									print "<option value='" . $level . "'"; if (get_request_var('severity') == $level) { print ' selected'; } print '>' . $name . "</option>\n";
@@ -707,13 +707,13 @@ function manager_logs($id) {
 							</select>
 						</td>
 						<td>
-							<input type='button' id='refresh' value='Go' title='Set/Refresh Filters'>
+							<input type='button' id='refresh' value='<?php print __('Go');?>' title='<?php print __('Set/Refresh Filters');?>'>
 						</td>
 						<td>
-							<input type='button' id='clear' value='Clear' title='Clear Filters'>
+							<input type='button' id='clear' value='<?php print __('Clear');?>' title='<?php print __('Clear Filters');?>'>
 						</td>
 						<td>
-							<input type='button' id='purge' value='Purge' title='Purge Notification Log'>
+							<input type='button' id='purge' value='<?php print __('Purge');?>' title='<?php print __('Purge Notification Log');?>'>
 						</td>
 					</tr>
 				</table>
@@ -757,17 +757,17 @@ function manager_logs($id) {
 
 	$logs = db_fetch_assoc($sql_query);
 
-	$nav = html_nav_bar('managers.php?action=exit&id=' . $id . '&tab=logs&mib=' . get_request_var('mib') . '&filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), get_request_var('rows'), $total_rows, 7, 'Receivers', 'page', 'main');
+	$nav = html_nav_bar('managers.php?action=exit&id=' . $id . '&tab=logs&mib=' . get_request_var('mib') . '&filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), get_request_var('rows'), $total_rows, 7, __('Receivers'), 'page', 'main');
 
 	print $nav;
 
-	html_header(array(' ', 'Time', 'Notification', 'Varbinds' ));
+	html_header(array(' ', __('Time'), __('Notification'), __('Varbinds') ));
 
 	if (sizeof($logs)) {
 		foreach ($logs as $item) {
 			$varbinds = (strlen(get_request_var('filter')) ? (preg_replace('/(' . preg_quote(get_request_var('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($item['varbinds']))): htmlspecialchars($item['varbinds']));
 			form_alternate_row('line' . $item['id'], true);
-			print "<td title='Severity Level: " . $severity_levels[ $item['severity'] ] . "' style='width:10px;background-color: " . $severity_colors[ $item['severity'] ] . ";border-top:1px solid white;border-bottom:1px solid white;'></td>";
+			print "<td title='" . __('Severity Level') . ": " . $severity_levels[ $item['severity'] ] . "' style='width:10px;background-color: " . $severity_colors[ $item['severity'] ] . ";border-top:1px solid white;border-bottom:1px solid white;'></td>";
 			print "<td class='nowrap'>" . date( 'Y/m/d H:i:s', $item['time']) . '</td>';
 
 			if ($item['description']) {
@@ -785,7 +785,7 @@ function manager_logs($id) {
 		}
 		print $nav;
 	}else{
-		print '<tr><td><em>No SNMP Notification Log Entries</em></td></tr>';
+		print '<tr><td><em>' . __('No SNMP Notification Log Entries') . '</em></td></tr>';
 	}
 
 	?>
@@ -944,14 +944,22 @@ function form_actions(){
 			html_start_box($manager_actions{get_nfilter_request_var('drp_action')}, '60%', '', '3', 'center', '');
 
 			if (sizeof($selected_items)) {
+				if (get_nfilter_request_var('drp_action') == '1') { /* delete */
+					$msg = __n('Click \'Continue\' to delete the following Notification Receiver', 'Click \'Continue\' to delete following Notification Receiver', sizeof($selected_items));
+				}elseif (get_nfilter_request_var('drp_action') == '2') { /* enable */
+					$msg = __n('Click \'Continue\' to enable the following Notification Receiver', 'Click \'Continue\' to enable following Notification Receiver', sizeof($selected_items));
+				}elseif (get_nfilter_request_var('drp_action') == '3') { /* disable */
+					$msg = __n('Click \'Continue\' to disable the following Notification Receiver', 'Click \'Continue\' to disable following Notification Receiver', sizeof($selected_items));
+				}
+			
 				print "<tr>
 					<td class='textArea'>
-						<p>Click 'Continue' to " . strtolower($manager_actions[get_nfilter_request_var('drp_action')]) . " the following Notification Receiver(s).</p>
+						<p>$msg</p>
 						<p><ul>$list</ul></p>
 					</td>
 				</tr>\n";
 
-				$save_html = "<input type='button' value='Cancel' onClick='cactiReturnTo()'><input type='submit' value='Continue' title='" . $manager_actions[get_nfilter_request_var('drp_action')] . " Notification Receiver(s)'>";
+				$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'><input type='submit' value='" . __('Continue') . "' title='" . $manager_actions[get_nfilter_request_var('drp_action')] . " Notification Receiver(s)'>";
 			} else {
 				print "<tr><td class='even'><span class='textError'>You must select at least one Notification Receiver.</span></td></tr>\n";
 				$save_html = "<input type='button' value='Return' onClick='cactiReturnTo()'>";
@@ -998,8 +1006,8 @@ function form_actions(){
 
 			if (sizeof($selected_items)) {
 				$msg = (get_nfilter_request_var('drp_action') == 1)
-					 ? "Click 'Continue' to forward the following Notification Objects to this Noticification Receiver."
-					 : "Click 'Continue' to disable forwarding the following Notification Objects to this Noticification Receiver.";
+					 ? __('Click \'Continue\' to forward the following Notification Objects to this Notification Receiver.')
+					 : __('Click \'Continue\' to disable forwarding the following Notification Objects to this Noticification Receiver.');
 
 				print "<tr>
 					<td class='textArea'>
@@ -1008,10 +1016,10 @@ function form_actions(){
 					</td>
 				</tr>\n";
 
-				$save_html = "<input type='button' value='Cancel' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='Continue' title='Disable Notification Objects'>";
+				$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "' title='" . __('Disable Notification Objects') . "'>";
 			} else {
-				print "<tr><td><span class='textError'>You must select at least one notification object.</span></td></tr>\n";
-				$save_html = "<input type='button' value='Return' onClick='cactiReturnTo()'>";
+				print "<tr><td><span class='textError'>" . __('You must select at least one notification object.') . "</span></td></tr>\n";
+				$save_html = "<input type='button' value='" . __('Return') . "' onClick='cactiReturnTo()'>";
 			}
 
 			print "<tr>
