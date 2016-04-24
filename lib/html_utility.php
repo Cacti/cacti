@@ -143,9 +143,26 @@ function form_alternate_row($row_id = '', $light = false, $disabled = false) {
    @arg $contents - the readable portion of the
    @arg $id - the id of the object that will be highlighted
    @arg $width - the width of the table element
-   @arg $style - the style to apply to the table element */
-function form_selectable_cell($contents, $id, $width='', $style='') {
-	print "\t<td " . ($width != '' || $style != "" ? "style='" . ($width != '' ? "width:$width;":"") . ($style != '' ? "$style;'":"'"):"") . ">" . $contents . "</td>\n";
+   @arg $style_or_class - the style or class to apply to the table element */
+function form_selectable_cell($contents, $id, $width='', $style_or_class = '') {
+	$output = '';
+
+	if ($style_or_class != '') {
+		if (strpos($style_or_class, ':') === false) {
+			$output = "class='" . $style_or_class . "'";
+			if ($width != '') {
+				$output .= " style='width:$width;'";
+			}
+		}else{
+			$output = "style='" . $style_or_class;
+			if ($width != '') {
+				$output .= ($output != '' ? ';':'') . "width:$width;";
+			}
+			$output .= "'";
+		}
+	}
+
+	print "\t<td id='$id' " . $output . ">" . $contents . "</td>\n";
 }
 
 /* form_checkbox_cell - format's a tables checkbox form element so that the cacti js actions work on it
