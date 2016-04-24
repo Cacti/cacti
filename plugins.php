@@ -24,21 +24,21 @@
 
 include('./include/auth.php');
 
-$actions = array('install' => 'Install',
-	'enable' => 'Enable',
-	'disable' => 'Disable',
-	'uninstall' => 'Uninstall',
+$actions = array('install' => __('Install'),
+	'enable' => __('Enable'),
+	'disable' => __('Disable'),
+	'uninstall' => __('Uninstall'),
 //	'check' => 'Check'
 );
 
 $status_names = array(
-	-2 => 'Disabled',
-	-1 => 'Active',
-	0 => 'Not Installed',
-	1 => 'Active',
-	2 => 'Awaiting Configuration',
-	3 => 'Awaiting Upgrade',
-	4 => 'Installed'
+	-2 => __('Disabled'),
+	-1 => __('Active'),
+	0 => __('Not Installed'),
+	1 => __('Active'),
+	2 => __('Awaiting Configuration'),
+	3 => __('Awaiting Upgrade'),
+	4 => __('Installed')
 );
 
 /* get the comprehensive list of plugins */
@@ -222,8 +222,8 @@ function plugins_load_temp_table() {
 				if (!function_exists('plugin_' . $file . '_install') && function_exists($file . '_version')) {
 					$function = $file . '_version';
 					$cinfo[$file] = $function();
-					if (!isset($cinfo[$file]['author']))   $cinfo[$file]['author']   = 'Unknown';
-					if (!isset($cinfo[$file]['homepage'])) $cinfo[$file]['homepage'] = 'Not Stated';
+					if (!isset($cinfo[$file]['author']))   $cinfo[$file]['author']   = __('Unknown');
+					if (!isset($cinfo[$file]['homepage'])) $cinfo[$file]['homepage'] = __('Not Stated');
 					if (isset($cinfo[$file]['webpage']))   $cinfo[$file]['homepage'] = $cinfo[$file]['webpage'];
 					if (!isset($cinfo[$file]['longname'])) $cinfo[$file]['longname'] = ucfirst($file);
 					$cinfo[$file]['status'] = -2;
@@ -243,8 +243,8 @@ function plugins_load_temp_table() {
 					$function               = $file . '_version';
 					$cinfo[$file]           = $function();
 					$cinfo[$file]['status'] = 0;
-					if (!isset($cinfo[$file]['author']))   $cinfo[$file]['author']   = 'Unknown';
-					if (!isset($cinfo[$file]['homepage'])) $cinfo[$file]['homepage'] = 'Not Stated';
+					if (!isset($cinfo[$file]['author']))   $cinfo[$file]['author']   = __('Unknown');
+					if (!isset($cinfo[$file]['homepage'])) $cinfo[$file]['homepage'] = __('Not Stated');
 					if (isset($cinfo[$file]['webpage']))   $cinfo[$file]['homepage'] = $cinfo[$file]['webpage'];
 					if (!isset($cinfo[$file]['longname'])) $cinfo[$file]['homepage'] = ucfirst($file);
 
@@ -347,7 +347,7 @@ function update_show_current () {
 	</script>
 	<?php
 
-	html_start_box('Plugin Management (Cacti Version: ' . $config['cacti_version'] . ')', '100%', '', '3', 'center', '');
+	html_start_box( __('Plugin Management (Cacti Version: %s)', $config['cacti_version']), '100%', '', '3', 'center', '');
 
 	?>
 	<tr class='even noprint'>
@@ -356,28 +356,28 @@ function update_show_current () {
 			<table class='filterTable'>
 				<tr class='noprint'>
 					<td>
-						Search
+						<?php print __('Search');?>
 					</td>
 					<td>
 						<input id='filter' type='text' name='filter' size='25' value='<?php print get_request_var('filter');?>'>
 					</td>
 					<td>
-						Status
+						<?php print __('Status');?>
 					</td>
 					<td>
 						<select id='state' name='state' onChange='applyFilter()'>
-							<option value='-3'<?php if (get_request_var('state') == '-3') {?> selected<?php }?>>All</option>
-							<option value='1'<?php if (get_request_var('state') == '1') {?> selected<?php }?>>Active</option>
-							<option value='4'<?php if (get_request_var('state') == '4') {?> selected<?php }?>>Installed</option>
-							<option value='5'<?php if (get_request_var('state') == '5') {?> selected<?php }?>>Active/Installed</option>
-							<option value='2'<?php if (get_request_var('state') == '2') {?> selected<?php }?>>Configuration Issues</option>
-							<option value='0'<?php if (get_request_var('state') == '0') {?> selected<?php }?>>Not Installed</option>
-							<option value='-1'<?php if (get_request_var('state') == '-1') {?> selected<?php }?>>Legacy Installed</option>
-							<option value='-2'<?php if (get_request_var('state') == '-2') {?> selected<?php }?>>Legacy Not Intalled</option>
+							<option value='-3'<?php if (get_request_var('state') == '-3') {?> selected<?php }?>><?php print __('All');?></option>
+							<option value='1'<?php if (get_request_var('state') == '1') {?> selected<?php }?>><?php print __('Active');?></option>
+							<option value='4'<?php if (get_request_var('state') == '4') {?> selected<?php }?>><?php print __('Installed');?></option>
+							<option value='5'<?php if (get_request_var('state') == '5') {?> selected<?php }?>><?php print __('Active/Installed');?></option>
+							<option value='2'<?php if (get_request_var('state') == '2') {?> selected<?php }?>><?php print __('Configuration Issues');?></option>
+							<option value='0'<?php if (get_request_var('state') == '0') {?> selected<?php }?>><?php print __('Not Installed');?></option>
+							<option value='-1'<?php if (get_request_var('state') == '-1') {?> selected<?php }?>><?php print __('Legacy Installed');?></option>
+							<option value='-2'<?php if (get_request_var('state') == '-2') {?> selected<?php }?>><?php print __('Legacy Not Intalled');?></option>
 						</select>
 					</td>
 					<td>
-						Plugins
+						<?php print __('Plugins');?>
 					</td>
 					<td>
 						<select id='rows' name='rows' onChange='applyFilter()'>
@@ -391,10 +391,10 @@ function update_show_current () {
 						</select>
 					</td>
 					<td>
-						<input type='button' id='refresh' value='Go' title='Set/Refresh Filters'>
+						<input type='button' id='refresh' value='<?php print __('Go');?>' title='<?php print __('Set/Refresh Filters');?>'>
 					</td>
 					<td>
-						<input type='button' id='clear' value='Clear' title='Clear Filters'>
+						<input type='button' id='clear' value='<?php print __('Clear');?>' title='<?php print __('Clear Filters');?>'>
 					</td>
 				</tr>
 			</table>
@@ -456,18 +456,18 @@ function update_show_current () {
 
 	db_execute("DROP TABLE $table");
 
-	$nav = html_nav_bar('plugins.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 8, 'Plugins', 'page', 'main');
+	$nav = html_nav_bar('plugins.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 8, __('Plugins'), 'page', 'main');
 
 	print $nav;
 
 	$display_text = array(
-		'nosort' => array('display' => 'Actions', 'align' => 'left', 'sort' => '', 'tip' => 'Actions available include "Install", "Activate", "Disable", "Enable", "Uninstall".'),
-		'directory' => array('display' => 'Plugin Name', 'align' => 'left', 'sort' => 'ASC', 'tip' => 'The name for this Plugin.  The name is controlled by the directory it resides in.'),
-		'id' => array('display' => 'Load Order', 'align' => 'left', 'sort' => 'ASC', 'tip' => 'The load order of the Plugin.  You can change the load order by first sorting by it, then moving a Plugin either up or down.'),
-		'name' => array('display' => 'Plugin Description', 'align' => 'left', 'sort' => 'ASC', 'tip' => 'A description that the Plugins author has given to the Plugin.'),
-		'version' => array('display' => 'Version', 'align' => 'left', 'sort' => 'ASC', 'tip' => 'The version of this Plugin.'),
-		'status' => array('display' => 'Status', 'align' => 'left', 'sort' => 'ASC', 'tip' => 'The status of this Plugin.'),
-		'author' => array('display' => 'Author', 'align' => 'left', 'sort' => 'ASC', 'tip' => 'The author of this Plugin.'));
+		'nosort' => array('display' => __('Actions'), 'align' => 'left', 'sort' => '', 'tip' => __('Actions available include "Install", "Activate", "Disable", "Enable", "Uninstall".')),
+		'directory' => array('display' => __('Plugin Name'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('The name for this Plugin.  The name is controlled by the directory it resides in.')),
+		'id' => array('display' => __('Load Order'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('The load order of the Plugin.  You can change the load order by first sorting by it, then moving a Plugin either up or down.')),
+		'name' => array('display' => __('Plugin Description'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('A description that the Plugins author has given to the Plugin.')),
+		'version' => array('display' => __('Version'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('The version of this Plugin.')),
+		'status' => array('display' => __('Status'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('The status of this Plugin.')),
+		'author' => array('display' => __('Author'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('The author of this Plugin.')));
 
 	html_header_sort($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), 1);
 
@@ -495,7 +495,7 @@ function update_show_current () {
 
 		print $nav;
 	}else{
-		print '<tr><td><em>No Plugins Found</em></td></tr>';
+		print '<tr><td><em>' . __('No Plugins Found') . '</em></td></tr>';
 	}
 
 	html_end_box(false);
@@ -509,19 +509,19 @@ function format_plugin_row($plugin, $last_plugin, $include_ordering) {
 
 	$row = plugin_actions($plugin);
 
-	$row .= "<td><a href='" . htmlspecialchars($plugin['webpage']) . "' target='_blank'><strong>" . (strlen(get_request_var('filter')) ? preg_replace('/(' . preg_quote(get_request_var('filter')) . ')/i', "<span class='filteredValue'>\\1</span>", ucfirst($plugin['directory'])) : ucfirst($plugin['directory'])) . '</strong></a>' . (is_dir($config['base_path'] . '/plugins/' . $plugin['directory']) ? '':' (<span class="txtErrorText">ERROR: Directory Missing</span>)') . '</td>';
+	$row .= "<td><a href='" . htmlspecialchars($plugin['webpage']) . "' target='_blank'><strong>" . (strlen(get_request_var('filter')) ? preg_replace('/(' . preg_quote(get_request_var('filter')) . ')/i', "<span class='filteredValue'>\\1</span>", ucfirst($plugin['directory'])) : ucfirst($plugin['directory'])) . '</strong></a>' . (is_dir($config['base_path'] . '/plugins/' . $plugin['directory']) ? '':' (<span class="txtErrorText">' . __('ERROR: Directory Missing') . '</span>)') . '</td>';
 
 	if ($include_ordering) {
 		$row .= "<td class='nowrap'>";
 		if (!$first_plugin) {
-			$row .= "<a href='" . htmlspecialchars($config['url_path'] . 'plugins.php?mode=moveup&id=' . $plugin['directory']) . "' title='Order Before Prevous Plugin' class='linkEditMain'><img align='absmiddle' src='" . $config['url_path'] . "images/move_up.gif'></a>";
+			$row .= "<a href='" . htmlspecialchars($config['url_path'] . 'plugins.php?mode=moveup&id=' . $plugin['directory']) . "' title='" . __('Order Before Prevous Plugin') . "' class='linkEditMain'><img align='absmiddle' src='" . $config['url_path'] . "images/move_up.gif'></a>";
 		}else{
-			$row .= "<a href='#' title='Can NOT Reduce Load Order' class='linkEditMain'><img align='absmiddle' src='" . $config['url_path'] . "images/view_none.gif'></a>";
+			$row .= "<a href='#' title='" . __('Can NOT Reduce Load Order') . "' class='linkEditMain'><img align='absmiddle' src='" . $config['url_path'] . "images/view_none.gif'></a>";
 		}
 		if (!$last_plugin) {
-			$row .= "<a href='" . htmlspecialchars($config['url_path'] . 'plugins.php?mode=movedown&id=' . $plugin['directory']) . "' title='Order After Next Plugin' class='linkEditMain'><img align='absmiddle' src='" . $config['url_path'] . "images/move_down.gif'></a>";
+			$row .= "<a href='" . htmlspecialchars($config['url_path'] . 'plugins.php?mode=movedown&id=' . $plugin['directory']) . "' title='" . __('Order After Next Plugin') . "' class='linkEditMain'><img align='absmiddle' src='" . $config['url_path'] . "images/move_down.gif'></a>";
 		}else{
-			$row .= "<a href='#' title='Can Increase Load Order' class='linkEditMain'><img align='absmiddle' src='" . $config['url_path'] . "images/view_none.gif'></a>";
+			$row .= "<a href='#' title='" . __('Can Increase Load Order') . "' class='linkEditMain'><img align='absmiddle' src='" . $config['url_path'] . "images/view_none.gif'></a>";
 		}
 		$row .= "</td>\n";
 	}else{
@@ -547,7 +547,7 @@ function plugin_actions($plugin) {
 	$link = '<td>';
 	switch ($plugin['status']) {
 		case '-2': // Old PA Not Installed
-			$link .= "<a href='" . htmlspecialchars($config['url_path'] . 'plugins.php?mode=installold&id=' . $plugin['directory']) . "' title='Install Old Plugin' class='linkEditMain'><img align='absmiddle' src='" . $config['url_path'] . "images/cog_add.png'></a>";
+			$link .= "<a href='" . htmlspecialchars($config['url_path'] . 'plugins.php?mode=installold&id=' . $plugin['directory']) . "' title='" . __('Install Old Plugin') . "' class='linkEditMain'><img align='absmiddle' src='" . $config['url_path'] . "images/cog_add.png'></a>";
 			$link .= "<img align='absmiddle' src='" . $config['url_path'] . "images/view_none.gif'>";
 			break;
 		case '-1':	// Old PA Currently Active
@@ -558,30 +558,30 @@ function plugin_actions($plugin) {
 				$oldplugins = array();
 			}
 			if (in_array($plugin['directory'], $oldplugins)) {
-				$link .= "<a href='" . htmlspecialchars($config['url_path'] . 'plugins.php?mode=uninstallold&id=' . $plugin['directory']) . "' title='Uninstall Old Plugin' class='linkEditMain'><img align='absmiddle' src='" . $config['url_path'] . "images/cog_delete.png'></a>";
+				$link .= "<a href='" . htmlspecialchars($config['url_path'] . 'plugins.php?mode=uninstallold&id=' . $plugin['directory']) . "' title='" . __('Uninstall Old Plugin') . "' class='linkEditMain'><img align='absmiddle' src='" . $config['url_path'] . "images/cog_delete.png'></a>";
 			} else {
-				$link .= "<a href='#' title='Please Uninstall from config.php' class='linkEditMain'><img align='absmiddle' src='" . $config['url_path'] . "images/cog_add.png'></a>";
+				$link .= "<a href='#' title='" . __('Please Uninstall from config.php') . "' class='linkEditMain'><img align='absmiddle' src='" . $config['url_path'] . "images/cog_add.png'></a>";
 			}
 			$link .= "<img align='absmiddle' src='" . $config['url_path'] . "images/view_none.gif'>";
 			break;
 		case '0': // Not Installed
-			$link .= "<a href='" . htmlspecialchars($config['url_path'] . 'plugins.php?mode=install&id=' . $plugin['directory']) . "' title='Install Plugin' class='linkEditMain'><img align='absmiddle' src='" . $config['url_path'] . "images/cog_add.png'></a>";
+			$link .= "<a href='" . htmlspecialchars($config['url_path'] . 'plugins.php?mode=install&id=' . $plugin['directory']) . "' title='" . __('Install Plugin') . "' class='linkEditMain'><img align='absmiddle' src='" . $config['url_path'] . "images/cog_add.png'></a>";
 			$link .= "<img align='absmiddle' src='" . $config['url_path'] . "images/view_none.gif'>";
 			break;
 		case '1':	// Currently Active
-			$link .= "<a href='" . htmlspecialchars($config['url_path'] . 'plugins.php?mode=uninstall&id=' . $plugin['directory']) . "' title='Uninstall Plugin' class='linkEditMain'><img align='absmiddle' src='" . $config['url_path'] . "images/cog_delete.png'></a>";
-			$link .= "<a href='" . htmlspecialchars($config['url_path'] . 'plugins.php?mode=disable&id=' . $plugin['directory']) . "' title='Disable Plugin' class='linkEditMain'><img align='absmiddle' src='" . $config['url_path'] . "images/stop.png'></a>";
+			$link .= "<a href='" . htmlspecialchars($config['url_path'] . 'plugins.php?mode=uninstall&id=' . $plugin['directory']) . "' title='" . __('Uninstall Plugin') . "' class='linkEditMain'><img align='absmiddle' src='" . $config['url_path'] . "images/cog_delete.png'></a>";
+			$link .= "<a href='" . htmlspecialchars($config['url_path'] . 'plugins.php?mode=disable&id=' . $plugin['directory']) . "' title='" . __('Disable Plugin') . "' class='linkEditMain'><img align='absmiddle' src='" . $config['url_path'] . "images/stop.png'></a>";
 			break;
 		case '2': // Configuration issues
-			$link .= "<a href='" . htmlspecialchars($config['url_path'] . 'plugins.php?mode=uninstall&id=' . $plugin['directory']) . "' title='Uninstall Plugin' class='linkEditMain'><img align='absmiddle' src='" . $config['url_path'] . "images/cog_delete.png'></a>";
+			$link .= "<a href='" . htmlspecialchars($config['url_path'] . 'plugins.php?mode=uninstall&id=' . $plugin['directory']) . "' title='" . __('Uninstall Plugin') . "' class='linkEditMain'><img align='absmiddle' src='" . $config['url_path'] . "images/cog_delete.png'></a>";
 			break;
 		case '4':	// Installed but not active
-			$link .= "<a href='" . htmlspecialchars($config['url_path'] . 'plugins.php?mode=uninstall&id=' . $plugin['directory']) . "' title='Uninstall Plugin' class='linkEditMain'><img align='absmiddle' src='" . $config['url_path'] . "images/cog_delete.png'></a>";
-			$link .= "<a href='" . htmlspecialchars($config['url_path'] . 'plugins.php?mode=enable&id=' . $plugin['directory']) . "' title='Enable Plugin' class='linkEditMain'><img align='absmiddle' src='" . $config['url_path'] . "images/accept.png'></a>";
+			$link .= "<a href='" . htmlspecialchars($config['url_path'] . 'plugins.php?mode=uninstall&id=' . $plugin['directory']) . "' title='" . __('Uninstall Plugin') . "' class='linkEditMain'><img align='absmiddle' src='" . $config['url_path'] . "images/cog_delete.png'></a>";
+			$link .= "<a href='" . htmlspecialchars($config['url_path'] . 'plugins.php?mode=enable&id=' . $plugin['directory']) . "' title='" . __('Enable Plugin') . "' class='linkEditMain'><img align='absmiddle' src='" . $config['url_path'] . "images/accept.png'></a>";
 			break;
 		default: // Old PIA
-			$link .= "<a href='#' title='Please Install/Uninstall from config.php' class='linkEditMain'><img align='absmiddle' src='" . $config['url_path'] . "images/cog_add.png'></a>";
-			$link .= "<a href='#' title='Enabling from the UI is not supported' class='linkEditMain'><img align='absmiddle' src='images/cog_error.png'></a>";
+			$link .= "<a href='#' title='" . __('Please Install/Uninstall from config.php') . "' class='linkEditMain'><img align='absmiddle' src='" . $config['url_path'] . "images/cog_add.png'></a>";
+			$link .= "<a href='#' title='" . __('Enabling from the UI is not supported') . "' class='linkEditMain'><img align='absmiddle' src='images/cog_error.png'></a>";
 			break;
 	}
 	$link .= '</td>';
