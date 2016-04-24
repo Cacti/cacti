@@ -116,7 +116,7 @@ default:
 
 	form_start('settings.php');
 
-	html_start_box('Cacti Settings (' . $tabs[$current_tab] . ')', '100%', '', '3', 'center', '');
+	html_start_box( __('Cacti Settings (%s)', $tabs[$current_tab]), '100%', '', '3', 'center', '');
 
 	$form_array = array();
 
@@ -188,7 +188,7 @@ default:
 			$('#emailtest').click(function() {
 				var $div = $('<div />').appendTo('body');
 				$div.attr('id', 'testmail');
-				$('#testmail').prop('title', 'Test E-Mail Results');
+				$('#testmail').prop('title', '<?php print __('Test E-Mail Results');?>');
 				$('#testmail').dialog({
 					autoOpen: false,
 					modal: true,
