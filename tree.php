@@ -28,9 +28,9 @@ include_once('./lib/html_tree.php');
 include_once('./lib/data_query.php');
 
 $tree_actions = array(
-	1 => 'Delete',
-	2 => 'Publish',
-	3 => 'Un Publish'
+	1 => __x('dropdown action', 'Delete'),
+	2 => __x('dropdown action', 'Publish'),
+	3 => __x('dropdown action', 'Un Publish')
 );
 
 /* set default action */
@@ -226,19 +226,19 @@ function get_branch_sort_type() {
 				$sort_type = db_fetch_cell_prepared('SELECT sort_children_type FROM graph_tree_items WHERE id = ?', array($branch));
 				switch($sort_type) {
 				case TREE_ORDERING_INHERIT:
-					print 'inherit';
+					print __x('ordering of tree items', 'inherit');
 					break;
 				case TREE_ORDERING_NONE:
-					print 'manual';
+					print __x('ordering of tree items', 'manual');
 					break;
 				case TREE_ORDERING_ALPHABETIC:
-					print 'alpha';
+					print __x('ordering of tree items', 'alpha');
 					break;
 				case TREE_ORDERING_NATURAL:
-					print 'natural';
+					print __x('ordering of tree items', 'natural');
 					break;
 				case TREE_ORDERING_NUMERIC:
-					print 'numeric';
+					print __x('ordering of tree items', 'numeric');
 					break;
 				default:
 					print '';
@@ -451,34 +451,34 @@ function form_actions() {
 		if (get_nfilter_request_var('drp_action') == '1') { /* delete */
 			print "<tr>
 				<td class='textArea' class='odd'>
-					<p>Click 'Continue' to delete the folling Tree(s).</p>
+					<p>" . __n('Click \'Continue\' to delete the following Tree.', 'Click \'Continue\' to delete following Trees.', sizeof($tree_array)) . "</p>
 					<p><ul>$tree_list</ul></p>
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' value='Cancel' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='Continue' title='Delete Tree(s)'>";
+			$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "' title='" . __n('Delete Tree', 'Delete Trees', sizeof($tree_array)) . "'>";
 		}elseif (get_nfilter_request_var('drp_action') == '2') { /* publish */
 			print "<tr>
 				<td class='textArea' class='odd'>
-					<p>Click 'Continue' to publish the following Tree(s).</p>
+					<p>" . __n('Click \'Continue\' to publish the following Tree.', 'Click \'Continue\' to publish following Trees.', sizeof($tree_array)) . "</p>
 					<p><ul>$tree_list</ul></p>
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' value='Cancel' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='Continue' title='Publish Tree(s)'>";
+			$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "' title='" . __n('Publish Tree', 'Publish Trees', sizeof($tree_array)) . "'>";
 		}elseif (get_nfilter_request_var('drp_action') == '3') { /* un-publish */
 			print "<tr>
 				<td class='textArea' class='odd'>
-					<p>Click 'Continue' to un-publish the following Tree(s).</p>
+					<p>" . __n('Click \'Continue\' to un-publish the following Tree.', 'Click \'Continue\' to un-publish following Trees.', sizeof($tree_array)) . "</p>
 					<p><ul>$tree_list</ul></p>
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' value='Cancel' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='Continue' title='Un-Publish Tree(s)'>";
+			$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "' title='" . __n('Un-publish Tree', 'Un-publish Trees', sizeof($tree_array)) . "'>";
 		}
 	}else{
-		print "<tr><td class='odd'><span class='textError'>You must select at least one Tree.</span></td></tr>\n";
-		$save_html = "<input type='button' value='Return' onClick='cactiReturnTo()'>";
+		print "<tr><td class='odd'><span class='textError'>" . __('You must select at least one Tree.') . "</span></td></tr>\n";
+		$save_html = "<input type='button' value='" . __('Return') . "' onClick='cactiReturnTo()'>";
 	}
 
 	print "<tr>
@@ -520,7 +520,7 @@ function tree_edit() {
 	if (!isempty_request_var('id')) {
 		$tree = db_fetch_row_prepared('SELECT * FROM graph_tree WHERE id = ?', array(get_request_var('id')));
 
-		$header_label = '[edit: ' . htmlspecialchars($tree['name']) . ']';
+		$header_label = __('Graph Trees [edit: %s]', htmlspecialchars($tree['name']) );
 
 		// Reset the cookie state if tree id has changed
 		if (isset($_SESSION['sess_tree_id']) && $_SESSION['sess_tree_id'] != get_request_var('id')) {
@@ -532,7 +532,7 @@ function tree_edit() {
 	}else{
 		$tree = array();
 
-		$header_label = '[new]';
+		$header_label = __('Graph Trees [new]');
 	}
 
 	form_start('tree.php');
@@ -540,7 +540,7 @@ function tree_edit() {
 	// Remove inherit from the main tree option
 	unset($fields_tree_edit['sort_type']['array'][0]);
 
-	html_start_box('Graph Trees ' . $header_label, '100%', '', '3', 'center', '');
+	html_start_box($header_label, '100%', '', '3', 'center', '');
 
 	draw_edit_form(array(
 		'config' => array(),
@@ -552,16 +552,16 @@ function tree_edit() {
 	$lockdiv = '';
 
 	if (isset($tree['locked']) && $tree['locked'] == 0) {
-		$lockdiv = "<div style='padding:3px;'><table><tr><td><input id='lock' type='button' value='Edit Tree'></td><td style='font-weight:bold;'>To Edit this tree, you must first lock it by pressing the Edit Tree button.</td></tr></table></div>\n";
+		$lockdiv = "<div style='padding:3px;'><table><tr><td><input id='lock' type='button' value='" . __('Edit Tree') . "'></td><td style='font-weight:bold;'>" . __('To Edit this tree, you must first lock it by pressing the Edit Tree button.') . "</td></tr></table></div>\n";
 		$editable = false;
 	}elseif (isset($tree['locked']) && $tree['locked'] == 1) {
-		$lockdiv = "<div style='padding:3px;'><table><tr><td><input id='unlock' type='button' value='Finish Editing Tree'></td><td><input id='addbranch' type='button' value='Add Root Branch' onClick='createNode()'></td><td style='font-weight:bold;'>The tree was locked for Editing on '" . $tree['locked_date'] . "' by '" . get_username($tree['modified_by']) . "'";
+		$lockdiv = "<div style='padding:3px;'><table><tr><td><input id='unlock' type='button' value='" . __('Finish Editing Tree') . "'></td><td><input id='addbranch' type='button' value='" . __('Add Root Branch') . "' onClick='createNode()'></td><td style='font-weight:bold;'>" . __('This tree has been locked for Editing on %1$s by %2$s.', $tree['locked_date'], get_username($tree['modified_by']));
 		if ($tree['modified_by'] == $_SESSION['sess_user_id']) {
 			$editable = true;
 			$lockdiv .= '</td></tr></table></div>';
 		}else{
 			$editable = false;
-			$lockdiv .= '. To edit the tree, you must first unlock it and then lock it as yourself</td></tr></table></div>';
+			$lockdiv .= __('To edit the tree, you must first unlock it and then lock it as yourself') . '</td></tr></table></div>';
 		}
 	}else{
 		$tree['id'] = 0;
@@ -577,7 +577,7 @@ function tree_edit() {
 
 		print "<table class='treeTable' valign='top'><tr valign='top'><td class='treeArea'>\n";
 
-		html_start_box('Tree Items', '100%', '', '3', 'center', '');
+		html_start_box( __('Tree Items'), '100%', '', '3', 'center', '');
 
 		echo "<tr><td style='padding:7px;'><div id='jstree'></div></td></tr>\n";
 
@@ -585,7 +585,7 @@ function tree_edit() {
 
 		print "</td><td></td><td class='treeItemsArea'>\n";
 
-		html_start_box('Available Devices', '100%', '', '3', 'center', '');
+		html_start_box( __('Available Devices'), '100%', '', '3', 'center', '');
 		?>
 		<tr id='treeFilter' class='even noprint'>
 			<td>
@@ -593,7 +593,7 @@ function tree_edit() {
 				<table class='filterTable'>
 					<tr>
 						<td>
-							Search
+							<?php print __('Search'); ?>
 						</td>
 						<td>
 							<input id='hfilter' type='text' name='hfilter' size='25' value='<?php print htmlspecialchars(get_request_var('hfilter'));?>'>
@@ -607,7 +607,7 @@ function tree_edit() {
 
 		html_end_box(false);
 
-		$display_text = array('Description');
+		$display_text = array( __('Description'));
 
 		html_start_box('', '100%', '', '3', 'center', '');
 		html_header($display_text);
@@ -620,7 +620,7 @@ function tree_edit() {
 
 		print "</td><td></td><td class='treeItemsArea'>\n";
 
-		html_start_box('Available Graphs', '100%', '', '3', 'center', '');
+		html_start_box( __('Available Graphs'), '100%', '', '3', 'center', '');
 		?>
 		<tr id='treeFilter' class='even noprint'>
 			<td>
@@ -628,7 +628,7 @@ function tree_edit() {
 				<table class='filterTable'>
 					<tr>
 						<td>
-							Search
+							<?php print __('Search'); ?>
 						</td>
 						<td>
 							<input id='grfilter' type='text' name='grfilter' size='25' value='<?php print htmlspecialchars(get_request_var('grfilter'));?>'>
@@ -641,7 +641,7 @@ function tree_edit() {
 		<?php	
 		html_end_box(false);
 
-		$display_text = array('Graph Name');
+		$display_text = array( __('Graph Name'));
 
 		html_start_box('', '100%', '', '3', 'center', '');
 		html_header($display_text);
@@ -1439,7 +1439,7 @@ function tree() {
 
 	<?php
 
-	html_start_box('Graph Trees', '100%', '', '3', 'center', 'tree.php?action=edit');
+	html_start_box( __('Graph Trees'), '100%', '', '3', 'center', 'tree.php?action=edit');
 
 	?>
 	<tr class='even noprint'>
@@ -1448,13 +1448,13 @@ function tree() {
 			<table class='filterTable'>
 				<tr>
 					<td>
-						Search
+						<?php print __('Search'); ?>
 					</td>
 					<td>
 						<input id='filter' type='text' name='filter' size='25' value='<?php print htmlspecialchars(get_request_var('filter'));?>'>
 					</td>
 					<td>
-						Trees
+						<?php print __('Trees'); ?>
 					</td>
 					<td>
 						<select id='rows' name='rows' onChange='applyFilter()'>
@@ -1468,10 +1468,10 @@ function tree() {
 						</select>
 					</td>
 					<td>
-						<input type='button' id='refresh' value='Go' title='Set/Refresh Filters'>
+						<input type='button' id='refresh' value='<?php print __('Go');?>' title='<?php print __('Set/Refresh Filters');?>'>
 					</td>
 					<td>
-						<input type='button' id='clear' value='Clear' title='Clear Filters'>
+						<input type='button' id='clear' value='<?php print __('Clear');?>' title='<?php print __('Clear Filters');?>'>
 					</td>
 				</tr>
 			</table>
@@ -1512,21 +1512,21 @@ function tree() {
 		ON t.id=ti.graph_tree_id
 		$sql_where");
 
-	$nav = html_nav_bar('tree.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 11, 'Trees', 'page', 'main');
+	$nav = html_nav_bar('tree.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 11, __('Trees'), 'page', 'main');
 
 	print $nav;
 
 	$display_text = array(
-		'name' => array('display' => 'Tree Name', 'align' => 'left', 'sort' => 'ASC', 'tip' => 'The name by which this Tree will be referred to as.'),
-		'id' => array('display' => 'ID', 'align' => 'right', 'sort' => 'ASC', 'tip' => 'The internal database ID for this Tree.  Usefull when performing automation or debugging.'),
-		'enabled' => array('display' => 'Published', 'align' => 'left', 'sort' => 'ASC', 'tip' => 'Unpublished Trees can not be viewed from the Graph tab'),
-		'locked' => array('display' => 'Locked', 'align' => 'left', 'sort' => 'ASC', 'tip' => 'A Tree must be locked in order to be edited.'),
-		'user_id' => array('display' => 'Owner', 'align' => 'left', 'sort' => 'ASC', 'tip' => 'The original author of this Tree.'),
-		'last_modified' => array('display' => 'Last Edited', 'align' => 'right', 'sort' => 'ASC', 'tip' => 'The date that this Tree was last edited.'),
-		'modified_by' => array('display' => 'Edited By', 'align' => 'right', 'sort' => 'ASC', 'tip' => 'The last user to have modified this Tree.'),
-		'branches' => array('display' => 'Branches', 'align' => 'right', 'sort' => 'DESC', 'tip' => 'The total number of Branches in this Tree.'),
-		'hosts' => array('display' => 'Devices', 'align' => 'right', 'sort' => 'DESC', 'tip' => 'The total number of individual Devices in this Tree.'),
-		'graphs' => array('display' => 'Graphs', 'align' => 'right', 'sort' => 'DESC', 'tip' => 'The total number of individual Graphs in this Tree.'));
+		'name' => array('display' => __('Tree Name'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('The name by which this Tree will be referred to as.')),
+		'id' => array('display' => __('ID'), 'align' => 'right', 'sort' => 'ASC', 'tip' => __('The internal database ID for this Tree.  Usefull when performing automation or debugging.')),
+		'enabled' => array('display' => __('Published'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('Unpublished Trees can not be viewed from the Graph tab')),
+		'locked' => array('display' => __('Locked'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('A Tree must be locked in order to be edited.')),
+		'user_id' => array('display' => __('Owner'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('The original author of this Tree.')),
+		'last_modified' => array('display' => __('Last Edited'), 'align' => 'right', 'sort' => 'ASC', 'tip' => __('The date that this Tree was last edited.')),
+		'modified_by' => array('display' => __('Edited By'), 'align' => 'right', 'sort' => 'ASC', 'tip' => __('The last user to have modified this Tree.')),
+		'branches' => array('display' => __('Branches'), 'align' => 'right', 'sort' => 'DESC', 'tip' => __('The total number of Branches in this Tree.')),
+		'hosts' => array('display' => __('Devices'), 'align' => 'right', 'sort' => 'DESC', 'tip' => __('The total number of individual Devices in this Tree.')),
+		'graphs' => array('display' => __('Graphs'), 'align' => 'right', 'sort' => 'DESC', 'tip' => __('The total number of individual Graphs in this Tree.')));
 
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
@@ -1537,8 +1537,8 @@ function tree() {
 			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars('tree.php?action=edit&id=' . $tree['id']) . "'>" .
 				(strlen(get_request_var('filter')) ? preg_replace('/(' . preg_quote(get_request_var('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($tree['name'])) : htmlspecialchars($tree['name'])) . '</a>', $tree['id']);
 			form_selectable_cell($tree['id'], $tree['id'], '', 'text-align:right');
-			form_selectable_cell($tree['enabled'] == 'on' ? 'Yes':'No', $tree['id']);
-			form_selectable_cell($tree['locked'] == '1' ? 'Yes':'No', $tree['id']);
+			form_selectable_cell($tree['enabled'] == 'on' ? __('Yes'):__('No'), $tree['id']);
+			form_selectable_cell($tree['locked'] == '1' ? __('Yes'):__('No'), $tree['id']);
 			form_selectable_cell(get_username($tree['user_id']), $tree['id']);
 			form_selectable_cell(substr($tree['last_modified'],0,16), $tree['id'], '', 'text-align:right');
 			form_selectable_cell(get_username($tree['modified_by']), $tree['id'], '', 'text-align:right');
@@ -1551,7 +1551,7 @@ function tree() {
 
 		print $nav;
 	}else{
-		print "<tr class='tableRow'><td colspan='11'><em>No Trees Found</em></td></tr>";
+		print "<tr class='tableRow'><td colspan='11'><em>" . __('No Trees Found') . "</em></td></tr>";
 	}
 	html_end_box(false);
 
