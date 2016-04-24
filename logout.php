@@ -62,15 +62,14 @@ if (get_request_var('action') == 'timeout') {
 	<div class='logoutCenter'>
 		<div class='logoutArea'>
 			<div class='cactiLogoutLogo'></div>
-			<legend>Automatic Logout</legend>
+			<legend>" . __('Automatic Logout') . "</legend>
 			<div class='logoutTitle'>
-				<p>You have been logged out of Cacti due to a session timeout.</p>
-				<p>Please close your broser or</p>
-				<center>[<a href='index.php'>Login Again</a>]</center>
+				<p>" . __('You have been logged out of Cacti due to a session timeout.') . "</p>
+				<p>" . __('Please close your browser or </p><center>[<a href="%s">Login Again</a>]</center>', 'index.php') . "
 			</div>
 			<div class='logoutErrors'></div>
 		</div>
-		<div class='versionInfo'>Version " . $version . " | " . COPYRIGHT_YEARS_SHORT . "</div>
+		<div class='versionInfo'>" . __('Version %s', $version) . " | " . COPYRIGHT_YEARS_SHORT . "</div>
 	</div>
 	<div class='logoutRight'></div>
 	<script type='text/javascript'>
@@ -109,15 +108,14 @@ if (get_request_var('action') == 'timeout') {
 	<div class='logoutCenter'>
 		<div class='logoutArea'>
 			<div class='cactiLogoutLogo'></div>
-			<legend>Automatic Logout</legend>
+			<legend>" . __('Automatic Logout') . "</legend>
 			<div class='logoutTitle'>
-				<p>You have been logged out of Cacti. To end your session,</p>
-				<p>Please close your broser or</p>
-				<center>[<a href='index.php'>Return to Cacti</a>]</center>
+				<p>" . __('You have been logged out of Cacti due to a session timeout.') . "</p>
+				<p>" . __('Please close your browser or </p><center>[<a href="%s">Login Again</a>]</center>', 'index.php') . "
 			</div>
 			<div class='logoutErrors'></div>
 		</div>
-		<div class='versionInfo'>Version " . $version . " | " . COPYRIGHT_YEARS_SHORT . "</div>
+		<div class='versionInfo'>" . __('Version %s', $version) . " | " . COPYRIGHT_YEARS_SHORT . "</div>
 	</div>
 	<div class='logoutRight'></div>
 	<script type='text/javascript'>
