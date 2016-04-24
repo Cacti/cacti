@@ -31,17 +31,16 @@ api_plugin_hook('console_before');
 <table width="100%" align="center">
 	<tr>
 		<td class="textAreaNotes">
-			<strong>You are now logged into <a href="about.php">Cacti</a>. You can follow these basic steps to get
-			started.</strong>
+			<strong><?php print __('You are now logged into <a href="%s">Cacti</a>. You can follow these basic steps to get started.', 'about.php');?></strong>
 
 			<ul>
-				<li><a href="host.php">Create devices</a> for network</li>
-				<li><a href="graphs_new.php">Create graphs</a> for your new devices</li>
-				<li><a href="graph_view.php">View</a> your new graphs</li>
+				<li><?php print __('<a href="%s">Create devices</a> for network', 'host.php');?></li>
+				<li><?php print __('<a href="%s">Create graphs</a> for your new devices', 'graphs_new.php');?></li>
+				<li><?php print __('<a href="%s">View</a> your new graphs', 'graph_view.php');?></li>
 			</ul>
 		</td>
 		<td class="textAreaNotes" align="right" valign="top">
-			<strong>Version <?php print $config['cacti_version'];?></strong>
+			<strong><?php print __('Version %s', $config['cacti_version']);?></strong>
 		</td>
 	</tr>
 </table>
