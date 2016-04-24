@@ -88,24 +88,24 @@ function import() {
 	print "<form method='post' action='templates_import.php' enctype='multipart/form-data'>\n";
 
 	if ((isset($_SESSION['import_debug_info'])) && (is_array($_SESSION['import_debug_info']))) {
-		html_start_box('Import Results', '100%', '', '3', 'center', '');
+		html_start_box( __('Import Results'), '100%', '', '3', 'center', '');
 
-		print "<tr class='odd'><td><p class='textArea'>Cacti has imported the following items:</p>";
+		print "<tr class='odd'><td><p class='textArea'>" . __('Cacti has imported the following items:') . "</p>";
 
 		while (list($type, $type_array) = each($_SESSION['import_debug_info'])) {
 			print '<p><strong>' . $hash_type_names[$type] . '</strong></p>';
 
 			while (list($index, $vals) = each($type_array)) {
 				if ($vals['result'] == 'success') {
-					$result_text = "<span class='success'>[success]</span>";
+					$result_text = "<span class='success'>" . __('[success]') . "</span>";
 				}else{
-					$result_text = "<span class='failed'>[fail]</span>";
+					$result_text = "<span class='failed'>" . __('[fail]') . "</span>";
 				}
 
 				if ($vals['type'] == 'update') {
-					$type_text = "<span class='updateObject'>[update]</span>";
+					$type_text = "<span class='updateObject'>" . __('[update]') . "</span>";
 				}else{
-					$type_text = "<span class='newObject'>[new]</span>";
+					$type_text = "<span class='newObject'>" . __('[new]') . "</span>";
 				}
 
 				print "<span class='monoSpace'>$result_text " . htmlspecialchars($vals['title']) . " $type_text</span><br>\n";
@@ -115,9 +115,9 @@ function import() {
 				if ((isset($vals['dep'])) && (sizeof($vals['dep']) > 0)) {
 					while (list($dep_hash, $dep_status) = each($vals['dep'])) {
 						if ($dep_status == 'met') {
-							$dep_status_text = "<span class='foundDependency'>Found Dependency:</span>";
+							$dep_status_text = "<span class='foundDependency'>" . __('Found Dependency:') . "</span>";
 						}else{
-							$dep_status_text = "<span class='unmetDependency'>Unmet Dependency:</span>";
+							$dep_status_text = "<span class='unmetDependency'>" . __('Unmet Dependency:') . "</span>";
 							$there_are_dep_errors = true;
 						}
 
@@ -139,7 +139,7 @@ function import() {
 		kill_session_var('import_debug_info');
 	}
 
-	html_start_box('Import Templates', '100%', '', '3', 'center', '');
+	html_start_box( __('Import Templates'), '100%', '', '3', 'center', '');
 
 	draw_edit_form(array(
 		'config' => array('no_form_tag' => true),
