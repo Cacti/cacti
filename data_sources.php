@@ -32,14 +32,14 @@ include_once('./lib/rrd.php');
 include_once('./lib/data_query.php');
 
 $ds_actions = array(
-	1 => 'Delete',
-	2 => 'Change Data Template',
-	3 => 'Change Device',
-	8 => 'Reapply Suggested Names',
-	4 => 'Duplicate',
-	5 => 'Convert to Data Template',
-	6 => 'Enable',
-	7 => 'Disable'
+	1 => __('Delete'),
+	2 => __('Change Data Template'),
+	3 => __('Change Device'),
+	8 => __('Reapply Suggested Names'),
+	4 => __('Duplicate'),
+	5 => __('Convert to Data Template'),
+	6 => __('Enable'),
+	7 => __('Disable')
 );
 
 $ds_actions = api_plugin_hook_function('data_source_action_array', $ds_actions);
@@ -438,11 +438,11 @@ function form_actions() {
 
 			print "<tr>
 				<td class='textArea'>
-					<p>Click 'Continue' to delete the following Data Source(s).</p>
+					<p>" . __n('Click \'Continue\' to delete the following Data Source', 'Click \'Continue\' to delete following Data Sources', sizeof($ds_array)) . "</p>
 					<p><ul>$ds_list</ul></p>";
 
 			if (sizeof($graphs)) {
-				print "<tr><td class='textArea'><p class='textArea'>The following graphs are using these data sources:</p>\n";
+				print "<tr><td class='textArea'><p class='textArea'>" . __n('The following graph is using these data sources:', 'The following graphs are using these data sources:', sizeof($graphs)) . "</p>\n";
 
 				print '<p><ul>';
 				foreach ($graphs as $graph) {
@@ -451,97 +451,94 @@ function form_actions() {
 				print '</ul></p>';
 				print '<br>';
 
-				form_radio_button('delete_type', '3', '1', 'Leave the Graph(s) untouched.', '1'); print '<br>';
-				form_radio_button('delete_type', '3', '2', 'Delete all <strong>Graph Item(s)</strong> that reference these Data Source(s).', '1'); print '<br>';
-				form_radio_button('delete_type', '3', '3', 'Delete all <strong>Graph(s)</strong> that reference these Data Source(s).', '1'); print '<br>';
+				form_radio_button('delete_type', '3', '1', __n('Leave the <strong>Graph</strong> untouched.', 'Leave all <strong>Graphs</strong> untouched.', sizeof($graphs)), '1'); print '<br>';
+				form_radio_button('delete_type', '3', '2', __n('Delete all <strong>Graph Items</strong> that reference this Data Source.', 'Delete all <strong>Graph Items</strong> that reference these Data Sources.', sizeof($ds_array)), '1'); print '<br>';
+				form_radio_button('delete_type', '3', '3', __n('Delete all <strong>Graphs</strong> that reference this Data Source.', 'Delete all <strong>Graphs</strong> that reference these Data Sources.', sizeof($ds_array)), '1'); print '<br>';
 				print '</td></tr>';
 			}
 
 			print "</td>
 				</tr>\n";
 
-			$save_html = "<input type='button' value='Cancel' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='Continue' title='Delete Data Source(s)'>";
+			$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "' title='" . __n('Delete Data Source', 'Delete Data Sources', sizeof($ds_array)) . "'>";
 		}elseif (get_nfilter_request_var('drp_action') == '2') { /* change graph template */
 			print "<tr>
 				<td class='textArea'>
-					<p>Choose a Data Template and click \"Continue\" to change the Data Template for
-					the following Data Source(s). Be aware that all warnings will be suppressed during the
-					conversion, so graph data loss is possible.</p>
+					<p>" . __n('Choose a Data Template and click \'Continue\' to change the Data Template for the following Data Source.', 'Choose a Data Template and click \'Continue\' to change the Data Template for all following Data Sources.', sizeof($ds_array)) .
+					__('Be aware that all warnings will be suppressed during the conversion, so graph data loss is possible.') . "</p>
 					<p><ul>$ds_list</ul></p>
-					<p>New Data Template:<br>"; form_dropdown('data_template_id',db_fetch_assoc('SELECT data_template.id,data_template.name FROM data_template ORDER BY data_template.name'),'name','id','','','0'); print "</p>
+					<p>" . __('New Data Template:') . "<br>"; form_dropdown('data_template_id',db_fetch_assoc('SELECT data_template.id,data_template.name FROM data_template ORDER BY data_template.name'),'name','id','','','0'); print "</p>
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' value='Cancel' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='Continue' title='Change Graph Template for Data Source(s)'>";
+			$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "' title='" . __n('Change Graph Template for Data Source', 'Change Graph Template for Data Sources', sizeof($ds_array)) . "'>";
 		}elseif (get_nfilter_request_var('drp_action') == '3') { /* change host */
 			print "<tr>
 				<td class='textArea'>
-					<p>Choose a new Device for these Data Source(s) and click 'Continue'.</p>
+					<p>" . __n('Choose a new Device for this Data Source and click \'Continue\'.', 'Choose a new Device for these Data Sources and click \'Continue\'') . "</p>
 					<p><ul>$ds_list</ul></p>
-					<p>New Device:<br>"; form_dropdown('host_id',db_fetch_assoc("SELECT id, CONCAT_WS('',description,' (',hostname,')') AS name FROM host ORDER BY description, hostname"),'name','id','','','0'); print "</p>
+					<p>" . __('New Device:') . "<br>"; form_dropdown('host_id',db_fetch_assoc("SELECT id, CONCAT_WS('',description,' (',hostname,')') AS name FROM host ORDER BY description, hostname"),'name','id','','','0'); print "</p>
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' value='Cancel' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='Continue' title='Change Device'>";
+			$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "' title='" . __('Change Device') . "'>";
 		}elseif (get_nfilter_request_var('drp_action') == '4') { /* duplicate */
 			print "<tr>
 				<td class='textArea'>
-					<p>Click 'Continue' to duplicate the following Data Source(s). You can
-					optionally change the title format for the new Data Source(s).</p>
+					<p>" . __n('Click \'Continue\' to duplicate the following Data Source. You can optionally change the title format for the new Data Source.', 'Click \'Continue\' to duplicate following Data Sources. You can optionally change the title format for the new Data Sources.', sizeof($ds_array)) . "</p>
 					<p><ul>$ds_list</ul></p>
-					<p>Title Format:<br>"; form_text_box('title_format', '<ds_title> (1)', '', '255', '30', 'text'); print "</p>
+					<p>" . __('Title Format:') . "<br>"; form_text_box('title_format', '<ds_title> (1)', '', '255', '30', 'text'); print "</p>
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' value='Cancel' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='Continue' title='Duplicate Data Source(s)'>";
+			$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "' title='" . __('Duplicate Data Source', 'Duplicate Data Source', sizeof($ds_array)) . "'>";
 		}elseif (get_nfilter_request_var('drp_action') == '5') { /* data source -> data template */
 			print "<tr>
 				<td class='textArea'>
-					<p>Click 'Continue' to convert the following Data Source(s) into Data Template(s).
-					You can optionally change the title format for the new Data Template(s).</p>
+					<p>" . __n('Click \'Continue\' to convert the following Data Source into a Data Template. You can optionally change the title format for the new Data Template.', 'Click \'Continue\' to convert all following Data Sources into Data Templates. You can optionally change the title format for the new Data Templates.', sizeof($ds_array)) . "</p>
 					<p><ul>$ds_list</ul></p>
-					<p>Title Format:<br>"; form_text_box('title_format', '<ds_title> Template', '', '255', '30', 'text'); print "</p>
+					<p>" . __('Title Format:') . "<br>"; form_text_box('title_format', '<ds_title> Template', '', '255', '30', 'text'); print "</p>
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' value='Cancel' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='Continue' title='Convert Data Source(s) to Data Template(s)'>";
+			$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "' title='" . __n('Convert Data Source to Data Template', 'Convert Data Sources to Data Templates', sizeof($ds_array)) . "'>";
 		}elseif (get_nfilter_request_var('drp_action') == '6') { /* data source enable */
 			print "<tr>
 				<td class='textArea'>
-					<p>Click 'Continue' to enable the following Data Source(s).</p>
+					<p>" . __n('Click \'Continue\' to enable the following Data Source.', 'Click \'Continue\' to enable all following Data Sources.', sizeof($ds_array)) . "</p>
 					<p><ul>$ds_list</ul></p>
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' value='Cancel' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='Continue' title='Enable Data Source(s)'>";
+			$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "' title='" . __n('Enable Data Source', 'Enable Data Sources', sizeof($ds_array)) . "'>";
 		}elseif (get_nfilter_request_var('drp_action') == '7') { /* data source disable */
 			print "<tr>
 				<td class='textArea'>
-					<p>Click 'Continue' to disable the following Data Source(s).</p>
+					<p>" . __n('Click \'Continue\' to disable the following Data Source.', 'Click \'Continue\' to disable all following Data Sources.', sizeof($ds_array)) . "</p>
 					<p><ul>$ds_list</ul></p>
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' value='Cancel' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='Continue' title='Disable Data Source(s)'>";
+			$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "' title='" . __('Disable Data Source', 'Disable Data Sources', sizeof($ds_array)) . "'>";
 		}elseif (get_nfilter_request_var('drp_action') == '8') { /* reapply suggested data source naming */
 			print "<tr>
 				<td class='textArea'>
-					<p>Click 'Continue' to re-apply the suggested names to the following Data Source(s).</p>
+					<p>" . __n('Click \'Continue\' to re-apply the suggested name to the following Data Source.', 'Click \'Continue\' to re-apply the suggested names to all following Data Sources.', sizeof($ds_array)) . "</p>
 					<p><ul>$ds_list</ul></p>
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' value='Cancel' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='Continue' title='Reapply Suggested Naming to Data Source(s)'>";
+			$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "' title='" . __('Reapply Suggested Naming to Data Source', 'Reapply Suggested Naming to Data Sources', sizeof($ds_array)) . "'>";
 		}else{
 			$save['drp_action'] = get_nfilter_request_var('drp_action');
 			$save['ds_list'] = $ds_list;
 			$save['ds_array'] = (isset($ds_array)? $ds_array : array());
 			api_plugin_hook_function('data_source_action_prepare', $save);
-			$save_html = "<input type='button' value='Cancel' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='Continue'>";
+			$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "'>";
 		}
 	}else{
-		print "<tr><td class='even'><span class='textError'>You must select at least one data source.</span></td></tr>\n";
-		$save_html = "<input type='button' value='Return' onClick='cactiReturnTo()'>";
+		print "<tr><td class='even'><span class='textError'>" . __('You must select at least one data source.') . "</span></td></tr>\n";
+		$save_html = "<input type='button' value='" . __('Return') . "' onClick='cactiReturnTo()'>";
 	}
 
 	print "<tr>
@@ -577,9 +574,9 @@ function data_edit() {
 
 		$host = db_fetch_row_prepared('SELECT host.id, host.hostname FROM (data_local, host) WHERE data_local.host_id = host.id and data_local.id = ?', array(get_request_var('id')));
 
-		$header_label = '[edit: ' . htmlspecialchars($data['name']) . ']';
+		#$header_label = '[edit: ' . htmlspecialchars($data['name']) . ']';
 	}else{
-		$header_label = '[new]';
+		#$header_label = '[new]';
 	}
 
 	form_start('data_sources.php');
@@ -589,7 +586,7 @@ function data_edit() {
 		/* get each INPUT field for this data input source */
 		$fields = db_fetch_assoc_prepared("SELECT * FROM data_input_fields WHERE data_input_id = ? AND input_output = 'in' ORDER BY name", array($data['data_input_id']));
 
-		html_start_box("Custom Data [data input: " . htmlspecialchars(db_fetch_cell_prepared('SELECT name FROM data_input WHERE id = ?', array($data['data_input_id']))) . ']', '100%', '', '3', 'center', '');
+		html_start_box( __('Custom Data [data input: %s]', htmlspecialchars(db_fetch_cell_prepared('SELECT name FROM data_input WHERE id = ?', array($data['data_input_id']))) ),'100%', '', '3', 'center', '');
 
 		/* loop through each field found */
 		if (sizeof($fields) > 0) {
@@ -612,11 +609,11 @@ function data_edit() {
 			form_alternate_row();
 
 			if ((!empty($host['id'])) && (preg_match('/^' . VALID_HOST_FIELDS . '$/i', $field['type_code']))) {
-				print "<td style='width:50%;'><strong>" . $field['name'] . '</strong> (From Device: ' . $host['hostname'] . ")</td>\n";
+				print "<td style='width:50%;'><strong>" . $field['name'] . '</strong> ' . __('(From Device: %s)', $host['hostname']) . "</td>\n";
 				print "<td><em>$old_value</em></td>\n";
 			}elseif (empty($can_template)) {
-				print "<td style='width:50%;'><strong>" . $field['name'] . "</strong> (From Data Template)</td>\n";
-				print '<td><em>' . (empty($old_value) ? 'Nothing Entered' : $old_value) . "</em></td>\n";
+				print "<td style='width:50%;'><strong>" . $field['name'] . '</strong> ' . __('(From Data Template)') . "</td>\n";
+				print '<td><em>' . (empty($old_value) ? __('Nothing Entered') : $old_value) . "</em></td>\n";
 			}else{
 				print "<td style='width:50%;'><strong>" . $field['name'] . "</strong></td>\n";
 				print '<td>';
@@ -631,7 +628,7 @@ function data_edit() {
 			$i++;
 		}
 		}else{
-			print '<tr><td><em>No Input Fields for the Selected Data Input Source</em></td></tr>';
+			print '<tr><td><em>' . __('No Input Fields for the Selected Data Input Source') . '</em></td></tr>';
 		}
 
 		html_end_box();
