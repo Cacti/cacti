@@ -215,15 +215,15 @@ function aggregate_color_item_edit() {
 
 	if (isset_request_var('color_template_item_id') && (get_request_var('color_template_item_id') > 0)) {
 		$template_item = db_fetch_row('select * from color_template_items where color_template_item_id=' . get_request_var('color_template_item_id'));
-		$header_label = '[edit Report Item: ' . $template['name'] . ']';
+		$header_label = __('Color Template Items [edit Report Item: %s]', $template['name']);
 	}else{
 		$template_item = array();
-		$header_label = '[new Report Item: ' . $template['name'] . ']';
+		$header_label = __('Color Template Items [new Report Item: %s]', $template['name']);
 	}
 
 	form_start('color_templates_items.php', 'aggregate_color_item_edit');
 
-	html_start_box("Color Template Items $header_label", '100%', '', '3', 'center', '');
+	html_start_box($header_label, '100%', '', '3', 'center', '');
 
 	draw_edit_form(array(
 		'config' => array('no_form_tag' => true),
