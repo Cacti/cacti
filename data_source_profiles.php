@@ -26,8 +26,8 @@ include('./include/auth.php');
 include_once('./lib/utility.php');
 
 $profile_actions = array(
-	1 => 'Delete',
-	2 => 'Duplicate'
+	1 => __('Delete'),
+	2 => __('Duplicate')
 );
 
 /* set default action */
@@ -253,27 +253,26 @@ function form_actions() {
 		if (get_nfilter_request_var('drp_action') == '1') { /* delete */
 			print "<tr>
 				<td class='textArea' class='odd'>
-					<p>Click 'Continue' to delete the folling Data Source Pofile(s).</p>
+					<p>" . __n('Click \'Continue\' to delete the following Data Source Profile', 'Click \'Continue\' to delete following Data Source Profiles', sizeof($profile_array)) . "</p>
 					<p><ul>$profile_list</ul></p>
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' value='Cancel' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='Continue' title='Delete CDEF(s)'>";
+			$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "' title='" . __n('Delete Data Source Profile', 'Delete Data Source Profiles', sizeof($profile_array)) . "'>";
 		}elseif (get_nfilter_request_var('drp_action') == '2') { /* duplicate */
 			print "<tr>
 				<td class='textArea' class='odd'>
-					<p>Click 'Continue' to duplicate the following Data Source Profile(s). You can
-					optionally change the title format for the new Data Source Profile(s).</p>
+					<p>" . __n('Click \'Continue\' to duplicate the following Data Source Profile. You can optionally change the title format for the new Data Source Profile', 'Click \'Continue\' to duplicate following Data Source Profiles. You can optionally change the title format for the new Data Source Profiles.', sizeof($profile_array)) . "</p>
 					<p><ul>$profile_list</ul></p>
-					<p>Title Format:<br>"; form_text_box('title_format', '<profile_title> (1)', '', '255', '30', 'text'); print "</p>
+					<p>" . __('Title Format:') . "<br>"; form_text_box('title_format', '<profile_title> (1)', '', '255', '30', 'text'); print "</p>
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' value='Cancel' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='Continue' title='Duplicate CDEF(s)'>";
+			$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "' title='" . __n('Duplicate Data Source Profile', 'Duplicate Date Source Profiles', sizeof($profile_array)) . "'>";
 		}
 	}else{
-		print "<tr><td class='odd'><span class='textError'>You must select at least one CDEF.</span></td></tr>\n";
-		$save_html = "<input type='button' value='Return' onClick='cactiReturnTo()'>";
+		print "<tr><td class='odd'><span class='textError'>" . __('You must select at least one Data Source Profile.') . "</span></td></tr>\n";
+		$save_html = "<input type='button' value='" . __('Return') . "' onClick='cactiReturnTo()'>";
 	}
 
 	print "<tr>
@@ -311,14 +310,14 @@ function profile_item_remove_confirm() {
 	?>
 	<tr>
 		<td class='topBoxAlt'>
-			<p>Click 'Continue' to delete the following Data Source Profile RRA.</p>
-			<p>Profile Name: '<?php print $profile['name'];?>'<br>
+			<p><?php print __('Click \'Continue\' to delete the following Data Source Profile RRA.');?></p>
+			<p><?php print __('Profile Name: %s', $profile['name']);?><br>
 		</td>
 	</tr>
 	<tr>
 		<td align='right'>
-			<input id='cancel' type='button' value='Cancel' onClick='$("#cdialog").dialog("close");' name='cancel'>
-			<input id='continue' type='button' value='Continue' name='continue' title='Remove Data Source Profile RRA'>
+			<input id='cancel' type='button' value='<?php print __('Cancel');?>' onClick='$("#cdialog").dialog("close");' name='cancel'>
+			<input id='continue' type='button' value='<?php print __('Continue');?>' name='continue' title='<?php print __('Remove Data Source Profile RRA');?>'>
 		</td>
 	</tr>
 	<?php
@@ -367,7 +366,7 @@ function item_edit() {
 		$sampling_interval = db_fetch_cell_prepared('SELECT step FROM data_source_profiles WHERE id = ?', array(get_request_var('profile_id')));
 
 		if ($rra['steps'] == '1') {
-			$fields_profile_rra_edit['steps']['array'] = array('1' => 'Each Insert is New Row');
+			$fields_profile_rra_edit['steps']['array'] = array('1' => __('Each Insert is New Row'));
 		}else{
 			unset($aggregation_levels[1]);
 			$fields_profile_rra_edit['steps']['array'] = $aggregation_levels;
@@ -377,7 +376,7 @@ function item_edit() {
 		$oneguy = db_fetch_cell_prepared('SELECT id FROM data_source_profiles_rra WHERE data_source_profile_id = ? AND steps=1', array(get_request_var('profile_id')));
 
 		if (empty($oneguy)) {
-			$fields_profile_rra_edit['steps']['array'] = array('1' => 'Each Insert is New Row');
+			$fields_profile_rra_edit['steps']['array'] = array('1' => __('Each Insert is New Row'));
 		}else{
 			unset($aggregation_levels[1]);
 			$fields_profile_rra_edit['steps']['array'] = $aggregation_levels;
@@ -386,7 +385,7 @@ function item_edit() {
 
 	form_start('data_source_profiles.php', 'form_rra');
 
-	html_start_box('RRA [edit: ' . htmlspecialchars(db_fetch_cell_prepared('SELECT name FROM data_source_profiles_rra WHERE id = ?', array(get_request_var('cdef_id')))) . ']', '100%', '', '3', 'center', '');
+	html_start_box( __('RRA [edit: %s]', htmlspecialchars(db_fetch_cell_prepared('SELECT name FROM data_source_profiles_rra WHERE id = ?', array(get_request_var('id')))) ), '100%', '', '3', 'center', '');
 
 	draw_edit_form(array(
 		'config' => array('no_form_tag' => true),
@@ -439,7 +438,7 @@ function item_edit() {
 }
 
 /* ---------------------
-    CDEF Functions
+    Profile Functions
    --------------------- */
 
 function profile_edit() {
@@ -455,15 +454,15 @@ function profile_edit() {
 			FROM data_template_data AS dtd
 			WHERE data_source_profile_id = ? AND local_data_id > 0', array(get_request_var('id')));
 
-		$header_label = '[edit: ' . htmlspecialchars($profile['name']) . ']' . ($readonly ? ' (Read Only)':'');
+		$header_label = __('Data Source Profile [edit: %s]', htmlspecialchars($profile['name']) . ($readonly ? ' (Read Only)':''));
 	}else{
-		$header_label = '[new]';
+		$header_label = __('Data Source Profile [new]');
 		$readonly     = false;
 	}
 
 	form_start('data_source_profiles.php', 'profile');
 
-	html_start_box("Data Source Profile $header_label", '100%', '', '3', 'center', '');
+	html_start_box($header_label, '100%', '', '3', 'center', '');
 
 	draw_edit_form(array(
 		'config' => array('no_form_tag' => true),
@@ -475,16 +474,16 @@ function profile_edit() {
 
 	if (!isempty_request_var('id')) {
 		if (!$readonly) {
-			html_start_box('Data Source Profile RRAs (press save to update timespans)', '100%', '', '3', 'center', 'data_source_profiles.php?action=item_edit&profile_id=' . $profile['id']);
+			html_start_box( __('Data Source Profile RRAs (press save to update timespans)'), '100%', '', '3', 'center', 'data_source_profiles.php?action=item_edit&profile_id=' . $profile['id']);
 		}else{
-			html_start_box('Data Source Profile RRAs (Read Only)', '100%', '', '3', 'center', '');
+			html_start_box( __('Data Source Profile RRAs (Read Only)'), '100%', '', '3', 'center', '');
 		}
 
 		$display_text = array(
-			array('display' => 'Name',               'align' => 'left'), 
-			array('display' => 'Effective Timespan', 'align' => 'left'),
-			array('display' => 'Steps',              'align' => 'left'),
-			array('display' => 'Rows',               'align' => 'left'),
+			array('display' => __('Name'),               'align' => 'left'), 
+			array('display' => __('Effective Timespan'), 'align' => 'left'),
+			array('display' => __('Steps'),              'align' => 'left'),
+			array('display' => __('Rows'),               'align' => 'left'),
 		); 
 
 		html_header($display_text, 2);
@@ -508,7 +507,7 @@ function profile_edit() {
 					<em><?php print $rra['rows'];?></em>
 				</td>
 				<td class='right'>
-					<?php print (!$readonly ? "<a id='" . $profile['id'] . '_' . $rra['id'] . "' class='delete deleteMarker fa fa-remove' title='Delete' href='#'></a>":"");?>
+					<?php print (!$readonly ? "<a id='" . $profile['id'] . '_' . $rra['id'] . "' class='delete deleteMarker fa fa-remove' title='" . __('Delete') . "' href='#'></a>":"");?>
 				</td>
 				<?php
 				form_end_row();
@@ -530,7 +529,7 @@ function profile_edit() {
 
         $('#consolidation_function_id').multiselect({
             selectedList: 1,
-            noneSelectedText: 'Select Consolidation Function(s)',
+            noneSelectedText: '<?php print __('Select Consolidation Function(s)');?>',
             header: false,
             multipleRow: true,
             multipleRowWidth: 90,
@@ -556,7 +555,7 @@ function profile_edit() {
 				$('#cdialog').html(data);
 				applySkin();
 				$('#cdialog').dialog({ 
-					title: 'Delete Data Source Profile Item', 
+					title: '<?php print __('Delete Data Source Profile Item');?>', 
 					close: function () { $('.delete').blur(); $('.selectable').removeClass('selected'); },
 					minHeight: 80, 
 					minWidth: 500 
@@ -615,7 +614,8 @@ function get_span($duration) {
 
 	if ($duration > 31536000) {
 		if (floor($duration/31536000) > 0) {
-			$years     = floor($duration/31536000) . ' Years ';;
+			$years     = floor($duration/31536000);
+			$years	   = ( $years == 1 ) ? __('1 Year') : __('%d Years', $years); 
 			$duration %= 31536000;
 			$output    = $years;
 		}
@@ -623,7 +623,8 @@ function get_span($duration) {
 
 	if ($duration > 2592000) {
 		if (floor($duration/2592000)) {
-			$months = floor($duration/2592000) . ' Months ';;
+			$months    = floor($duration/2592000);
+			$months    = ( $months == 1 ) ? __('1 Month') : __('%d Months', $months); 
 			$duration %= 2592000;
 			$output   .= (strlen($output) ? ', ':'') . $months;
 		}
@@ -631,7 +632,8 @@ function get_span($duration) {
 
 	if ($duration > 604800) {
 		if (floor($duration/604800) > 0) {
-			$weeks     = floor($duration/604800) . ' Weeks ';
+			$weeks     = floor($duration/604800);
+			$weeks     = ( $weeks == 1 ) ? __('1 Week') : __('%d Weeks', $weeks); 
 			$duration %= 604800;
 			$output   .= (strlen($output) ? ', ':'') . $weeks;
 		}
@@ -639,14 +641,16 @@ function get_span($duration) {
 
 	if ($duration > 86400) {
 		if (floor($duration/86400) > 0) {
-			$days      = floor($duration/86400) . ' Days ';
+			$days      = floor($duration/86400);
+			$days      = ( $days == 1 ) ? __('1 Day') : __('%d Days', $days);
 			$duration %= 86400;
 			$output   .= (strlen($output) ? ', ':'') . $days;
 		}
 	}
 
 	if (floor($duration/3600) > 0) {
-		$hours   = floor($duration/3600) . ' Hours';
+		$hours   = floor($duration/3600);
+		$hours   = ( $hours == 1 ) ? __('1 Hour') : __('%d Hours', $hours);
 		$output .= (strlen($output) ? ', ':'') . $hours;
 	}
 
@@ -694,7 +698,7 @@ function profile() {
 	validate_store_request_vars($filters, 'sess_dsp');
 	/* ================= input validation ================= */
 
-	html_start_box("Data Source Profile's", '100%', '', '3', 'center', 'data_source_profiles.php?action=edit');
+	html_start_box( __('Data Source Profiles'), '100%', '', '3', 'center', 'data_source_profiles.php?action=edit');
 
 	?>
 	<tr class='even'>
@@ -703,13 +707,13 @@ function profile() {
 			<table class='filterTable'>
 				<tr>
 					<td>
-						Search
+						<?php print __('Search');?>
 					</td>
 					<td>
 						<input id='filter' type='text' name='filter' size='25' value='<?php print htmlspecialchars(get_request_var('filter'));?>'>
 					</td>
 					<td>
-						Profiles
+						<?php print __('Profiles');?>
 					</td>
 					<td>
 						<select id='rows' name='rows' onChange='applyFilter()'>
@@ -726,13 +730,13 @@ function profile() {
 						<input type='checkbox' id='has_data' <?php print (get_request_var('has_data') == 'true' ? 'checked':'');?>>
 					</td>
 					<td>
-						<label for='has_data'>Has Data Sources</label>
+						<label for='has_data'><?php print __('Has Data Sources');?></label>
 					</td>
 					<td>
-						<input type='button' id='refresh' value='Go' title='Set/Refresh Filters'>
+						<input type='button' id='refresh' value='<?php print __('Go');?>' title='<?php print __('Set/Refresh Filters');?>'>
 					</td>
 					<td>
-						<input type='button' id='clear' value='Clear' title='Clear Filters'>
+						<input type='button' id='clear' value='<?php print __('Clear');?>' title='<?php print __('Clear Filters');?>'>
 					</td>
 				</tr>
 			</table>
@@ -822,19 +826,19 @@ function profile() {
 		ORDER BY " . get_request_var('sort_column') . ' ' . get_request_var('sort_direction') .
 		' LIMIT ' . (get_request_var('rows')*(get_request_var('page')-1)) . ',' . get_request_var('rows'));
 
-	$nav = html_nav_bar('data_source_profiles.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), get_request_var('rows'), $total_rows, 9, 'Profiles', 'page', 'main');
+	$nav = html_nav_bar('data_source_profiles.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), get_request_var('rows'), $total_rows, 9, __('Profiles'), 'page', 'main');
 
 	print $nav;
 
 	$display_text = array(
-		'name' => array('display' => 'Data Source Profile Name', 'align' => 'left', 'sort' => 'ASC', 'tip' => 'The name of this CDEF.'),
-		'nosort00' => array('display' => 'Default', 'align' => 'right', 'tip' => 'Is this the default Profile for all new Data Templates?'), 
-		'nosort01' => array('display' => 'Deletable', 'align' => 'right', 'tip' => 'Profiles that are in use can not be Deleted.  In use is defined as being referenced by a Data Source or a Data Template.'), 
-		'nosort02' => array('display' => 'Read Only', 'align' => 'right', 'tip' => 'Profiles that are in use by Data Sources become read only for now.'), 
-		'step' => array('display' => 'Poller Interval', 'align' => 'right', 'sort' => 'ASC', 'tip' => 'The Polling Frequency for the Profile'),
-		'heartbeat' => array('display' => 'Heartbeat', 'align' => 'right', 'sort' => 'ASC', 'tip' => 'The Amount of Time, in seocnds, without good data before Data is stored as Unknown'),
-		'data_sources' => array('display' => 'Data Sources Using', 'align' => 'right', 'sort' => 'DESC', 'tip' => 'The number of Data Sources using this Profile.'),
-		'templates' => array('display' => 'Templates Using', 'align' => 'right', 'sort' => 'DESC', 'tip' => 'The number of Data Templates using this Profile.'));
+		'name' => array('display' => __('Data Source Profile Name'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('The name of this CDEF.')),
+		'nosort00' => array('display' => __('Default'), 'align' => 'right', 'tip' => __('Is this the default Profile for all new Data Templates?')), 
+		'nosort01' => array('display' => __('Deletable'), 'align' => 'right', 'tip' => __('Profiles that are in use can not be Deleted. In use is defined as being referenced by a Data Source or a Data Template.')), 
+		'nosort02' => array('display' => __('Read Only'), 'align' => 'right', 'tip' => __('Profiles that are in use by Data Sources become read only for now.')), 
+		'step' => array('display' => __('Poller Interval'), 'align' => 'right', 'sort' => 'ASC', 'tip' => __('The Polling Frequency for the Profile')),
+		'heartbeat' => array('display' => __('Heartbeat'), 'align' => 'right', 'sort' => 'ASC', 'tip' => __('The Amount of Time, in seocnds, without good data before Data is stored as Unknown')),
+		'data_sources' => array('display' => __('Data Sources Using'), 'align' => 'right', 'sort' => 'DESC', 'tip' => __('The number of Data Sources using this Profile.')),
+		'templates' => array('display' => __('Templates Using'), 'align' => 'right', 'sort' => 'DESC', 'tip' => __('The number of Data Templates using this Profile.')));
 
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
@@ -856,8 +860,8 @@ function profile() {
 			form_alternate_row('line' . $profile['id'], false, $disabled);
 			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars('data_source_profiles.php?action=edit&id=' . $profile['id']) . "'>" . (strlen(get_request_var('filter')) ? preg_replace('/(' . preg_quote(get_request_var('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($profile['name'])) : htmlspecialchars($profile['name'])) . '</a>', $profile['id']);
 			form_selectable_cell($profile['default'] == 'on' ? 'Yes':'', $profile['id'], '', 'text-align:right');
-			form_selectable_cell($disabled ? 'No':'Yes', $profile['id'], '', 'text-align:right');
-			form_selectable_cell($readonly ? 'Yes':'No', $profile['id'], '', 'text-align:right');
+			form_selectable_cell($disabled ? __('No') : __('Yes'), $profile['id'], '', 'text-align:right');
+			form_selectable_cell($readonly ? __('Yes') : __('No'), $profile['id'], '', 'text-align:right');
 			form_selectable_cell($sampling_intervals[$profile['step']], $profile['id'], '', 'text-align:right');
 			form_selectable_cell($heartbeats[$profile['heartbeat']], $profile['id'], '', 'text-align:right');
 			form_selectable_cell(number_format($profile['data_sources']), $profile['id'], '', 'text-align:right');
@@ -867,7 +871,7 @@ function profile() {
 		}
 		print $nav;
 	}else{
-		print "<tr class='tableRow'><td colspan='4'><em>No Data Source Profiles</em></td></tr>\n";
+		print "<tr class='tableRow'><td colspan='4'><em>" . __('No Data Source Profiles') . "</em></td></tr>\n";
 	}
 	html_end_box(false);
 
