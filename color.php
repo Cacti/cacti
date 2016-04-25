@@ -156,7 +156,7 @@ function form_actions() {
 
 			$color = db_fetch_row_prepared('SELECT * FROM colors WHERE id = ?', array($matches[1]));
 
-			$color_list .= '<li>' . ($color['name'] != '' ? htmlspecialchars($color['name']):'Unnamed Color') . ' (<span style="background-color:#' . $color['hex'] . '">' . $color['hex'] . '</span>)</li>';
+			$color_list .= '<li>' . ($color['name'] != '' ? htmlspecialchars($color['name']): __('Unnamed Color')) . ' (<span style="background-color:#' . $color['hex'] . '">' . $color['hex'] . '</span>)</li>';
 			$color_array[$i] = $matches[1];
 
 			$i++;
@@ -173,16 +173,16 @@ function form_actions() {
 		if (get_nfilter_request_var('drp_action') == '1') { /* delete */
 			print "<tr>
 				<td class='textArea' class='odd'>
-					<p>Click 'Continue' to delete the folling Color(s).</p>
+					<p>" . __n('Click \'Continue\' to delete the following Color', 'Click \'Continue\' to delete the following Colors', sizeof($color_array)) . "</p>
 					<p><ul>$color_list</ul></p>
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' value='Cancel' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='Continue' title='Delete Color(s)'>";
+			$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "' title='" . __n('Delete Color', 'Delete Colors', sizeof($color_array)) . "'>";
 		}
 	}else{
-		print "<tr><td class='odd'><span class='textError'>You must select at least one Color.</span></td></tr>\n";
-		$save_html = "<input type='button' value='Return' onClick='cactiReturnTo()'>";
+		print "<tr><td class='odd'><span class='textError'>" . __('You must select at least one Color.') . "</span></td></tr>\n";
+		$save_html = "<input type='button' value='" . __('Return') . "' onClick='cactiReturnTo()'>";
 	}
 
 	print "<tr>
@@ -337,7 +337,7 @@ function color_import() {
 		html_start_box('Import Results', '100%', '', '3', 'center', '');
 
 		print "<tr class='even'><td>
-			<p class='textArea'>Cacti has imported the following items:</p>
+			<p class='textArea'>" . __('Cacti has imported the following items:') . "</p>
 		</td></tr>\n";
 
 		if (sizeof($_SESSION['import_debug_info'])) {
@@ -351,37 +351,37 @@ function color_import() {
 		kill_session_var('import_debug_info');
 	}
 
-	html_start_box('Import Colors', '100%', '', '3', 'center', '');
+	html_start_box( __('Import Colors'), '100%', '', '3', 'center', '');
 
 	form_alternate_row();?>
-		<td width='50%'><font class='textEditTitle'>Import Colors from Local File</font><br>
-			Please specify the location of the CSV file containing your Color information.
+		<td width='50%'><font class='textEditTitle'><?php print __('Import Colors from Local File'); ?></font><br>
+			<?php print __('Please specify the location of the CSV file containing your Color information.');?>
 		</td>
 		<td align='left'>
 			<div>
-				<label class='import_label' for='import_file'>Select a File</label>
+				<label class='import_label' for='import_file'><?php print __('Select a File'); ?></label>
 				<input class='import_button' type='file' id='import_file'>
 				<span class='import_text'></span>
 			</div>
 		</td>
 	</tr><?php
 	form_alternate_row();?>
-		<td width='50%'><font class='textEditTitle'>Overwrite Existing Data?</font><br>
-			Should the import process be allowed to overwrite existing data?  Please note, this does not mean delete old rows, only update duplicate rows.
+		<td width='50%'><font class='textEditTitle'><?php print __('Overwrite Existing Data?');?></font><br>
+			<?php print __('Should the import process be allowed to overwrite existing data?  Please note, this does not mean delete old rows, only update duplicate rows.');?>
 		</td>
 		<td align='left'>
-			<input type='checkbox' name='allow_update' id='allow_update'>Allow Existing Rows to be Updated?
+			<input type='checkbox' name='allow_update' id='allow_update'><?php print __('Allow Existing Rows to be Updated?');?>
 		</td><?php
 
 	html_end_box(FALSE);
 
-	html_start_box('Required File Format Notes', '100%', '', '3', 'center', '');
+	html_start_box( __('Required File Format Notes'), '100%', '', '3', 'center', '');
 
 	form_alternate_row();?>
-		<td><strong>The file must contain a header row with the following column headings.</strong>
+		<td><strong><?php print __('The file must contain a header row with the following column headings.');?></strong>
 			<br><br>
-			<strong>name</strong> - The Color Name<br>
-			<strong>hex</strong> - The Hex Value<br>
+				<?php print __('<strong>name</strong> - The Color Name');?><br>
+				<?php print __('<strong>hex</strong> - The Hex Value');?><br>
 			<br>
 		</td>
 	</tr><?php
@@ -402,14 +402,14 @@ function color_edit() {
 
 	if (!isempty_request_var('id')) {
 		$color = db_fetch_row_prepared('SELECT * FROM colors WHERE id = ?', array(get_request_var('id')));
-		$header_label = '[edit: ' . $color['hex'] . ']';
+		$header_label = __('Colors [edit: %s]', $color['hex']);
 	}else{
-		$header_label = '[new]';
+		$header_label = __('Colors [new]');
 	}
 
 	form_start('color.php', 'color');
 
-	html_start_box("Colors $header_label", '100%', '', '3', 'center', '');
+	html_start_box( $header_label, '100%', '', '3', 'center', '');
 
 	draw_edit_form(array(
 		'config' => array('no_form_tag' => true),
@@ -500,7 +500,7 @@ function color() {
 
 	process_request_vars();
 
-	html_start_box('Colors', '100%', '', '3', 'center', 'color.php?action=edit');
+	html_start_box( __('Colors'), '100%', '', '3', 'center', 'color.php?action=edit');
 
 	?>
 	<tr class='even'>
@@ -509,13 +509,13 @@ function color() {
 			<table class='filterTable'>
 				<tr>
 					<td>
-						Search
+						<?php print __('Search');?>
 					</td>
 					<td>
 						<input id='filter' type='text' name='filter' size='25' value='<?php print htmlspecialchars(get_request_var('filter'));?>'>
 					</td>
 					<td>
-						Colors
+						<?php print __('Colors');?>
 					</td>
 					<td>
 						<select id='rows' name='rows' onChange='applyFilter()'>
@@ -532,25 +532,25 @@ function color() {
 						<input type="checkbox" id='named' <?php print (get_request_var('named') == 'true' ? 'checked':'');?>>
 					</td>
 					<td>
-						<label for='named'>Named Colors</label>
+						<label for='named'><?php print __('Named Colors');?></label>
 					</td>
 					<td>
 						<input type="checkbox" id='has_graphs' <?php print (get_request_var('has_graphs') == 'true' ? 'checked':'');?>>
 					</td>
 					<td>
-						<label for='has_graphs'>Has Graphs</label>
+						<label for='has_graphs'><?php print __('Has Graphs');?></label>
 					</td>
 					<td>
-						<input type='button' id='refresh' value='Go' title='Set/Refresh Filters'>
+						<input type='button' id='refresh' value='<?php print __('Go');?>' title='<?php print __('Set/Refresh Filters');?>'>
 					</td>
 					<td>
-						<input type='button' id='clear' value='Clear' title='Clear Filters'>
+						<input type='button' id='clear' value='<?php print __('Clear');?>' title='<?php print __('Clear Filters');?>'>
 					</td>
 					<td>
-						<input type='button' id='import' value='Import' title='Import Colors'>
+						<input type='button' id='import' value='<?php print __('Import');?>' title='<?php print __('Import Colors');?>'>
 					</td>
 					<td>
-						<input type='button' id='export' value='Export' title='Export Colors'>
+						<input type='button' id='export' value='<?php print __('Export');?>' title='<?php print __('Export Colors');?>'>
 					</td>
 				</tr>
 			</table>
@@ -671,13 +671,13 @@ function color() {
     print $nav;
 
 	$display_text = array(
-		'hex' => array('display' => 'Hex', 'align' => 'left', 'sort' => 'DESC', 'tip' => 'The Hex Value for this Color.'),
-		'name' => array('display' => 'Color Name', 'align' => 'left', 'sort' => 'ASC', 'tip' => 'The name of this Color definition.'),
-		'read_only' => array('display' => 'Named Color', 'align' => 'left', 'sort' => 'ASC', 'tip' => 'Is this color a named color which are read only.'),
-		'nosort1' => array('display' => 'Color', 'align' => 'center', 'sort' => 'DESC', 'tip' => 'The Color as shown on the screen.'),
-		'nosort' => array('display' => 'Deletable', 'align' => 'right', 'sort' => '', 'tip' => 'Colors in use can not be Deleted.  In use is defined as being referenced either by a Graph or a Graph Template.'),
-		'graphs' => array('display' => 'Graphs', 'align' => 'right', 'sort' => 'DESC', 'tip' => 'The number of Graph using this Color.'),
-		'templates' => array('display' => 'Templates', 'align' => 'right', 'sort' => 'DESC', 'tip' => 'The number of Graph Templates using this Color.')
+		'hex' => array('display' => __('Hex'), 'align' => 'left', 'sort' => 'DESC', 'tip' => __('The Hex Value for this Color.')),
+		'name' => array('display' => __('Color Name'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('The name of this Color definition.')),
+		'read_only' => array('display' => __('Named Color'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('Is this color a named color which are read only.')),
+		'nosort1' => array('display' => __('Color'), 'align' => 'center', 'sort' => 'DESC', 'tip' => __('The Color as shown on the screen.')),
+		'nosort' => array('display' => __('Deletable'), 'align' => 'right', 'sort' => '', 'tip' => __('Colors in use can not be Deleted.  In use is defined as being referenced either by a Graph or a Graph Template.')),
+		'graphs' => array('display' => __('Graphs'), 'align' => 'right', 'sort' => 'DESC', 'tip' => __('The number of Graph using this Color.')),
+		'templates' => array('display' => __('Templates'), 'align' => 'right', 'sort' => 'DESC', 'tip' => __('The number of Graph Templates using this Color.'))
 	);
 
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
@@ -698,9 +698,9 @@ function color() {
 			form_alternate_row('line' . $color['id'], false, $disabled);
 			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars('color.php?action=edit&id=' . $color['id']) . "'>" . $color['hex'] . '</a>', $color['id']);
 			form_selectable_cell(strlen(get_request_var('filter')) ? preg_replace('/(' . preg_quote(get_request_var('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($color['name'])) : htmlspecialchars($color['name']), $color['id']);
-			form_selectable_cell($color['read_only'] == 'on' ? 'Yes':'No', $color['id']);
+			form_selectable_cell($color['read_only'] == 'on' ? __('Yes'):__('No'), $color['id']);
 			form_selectable_cell('', $color['id'], '', 'text-align:right;background-color:#' . $color['hex'] . ';min-width:30%');
-			form_selectable_cell($disabled ? 'No':'Yes', $color['id'], '', 'text-align:right');
+			form_selectable_cell($disabled ? __('No'):__('Yes'), $color['id'], '', 'text-align:right');
 			form_selectable_cell(number_format($color['graphs']), $color['id'], '', 'text-align:right');
 			form_selectable_cell(number_format($color['templates']), $color['id'], '', 'text-align:right');
 			form_checkbox_cell($color['name'], $color['id'], $disabled);
@@ -709,7 +709,7 @@ function color() {
 
 		print $nav;
 	}else{
-		print "<tr class='tableRow'><td colspan='7'><em>No Colors Found</em></td></tr>\n";
+		print "<tr class='tableRow'><td colspan='7'><em>" . __('No Colors Found') . "</em></td></tr>\n";
 	}
 	html_end_box();
 
