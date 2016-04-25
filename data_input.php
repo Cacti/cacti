@@ -203,16 +203,16 @@ function form_actions() {
 
 			print "<tr>
 				<td class='textArea' class='odd'>
-					<p>Click 'Continue' to delete the following Data Input Method(s).</p>
+					<p>" . __n('Click \'Continue\' to delete the following Data Input Method', 'Click \'Continue\' to delete the following Data Input Method', sizeof($di_array)) . "</p>
 					<p><ul>$di_list</ul></p>
 				</td>
 			</tr>\n";
 		}
 
-		$save_html = "<input type='button' value='Cancel' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='Continue' title='Delete Data Input Method(s)'>";
+		$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "' title='" . __n('Delete Data Input Method', 'Delete Data Input Methods', sizeof($di_array)) . "'>";
 	}else{
-		print "<tr><td class='odd'><span class='textError'>You must select at least one data input method.</span></td></tr>\n";
-		$save_html = "<input type='button' value='Return' onClick='cactiReturnTo()'>";
+		print "<tr><td class='odd'><span class='textError'>" . __('You must select at least one data input method.') . "</span></td></tr>\n";
+		$save_html = "<input type='button' value='" . __('Return') . "' onClick='cactiReturnTo()'>";
 	}
 
 	print "<tr>
@@ -250,15 +250,15 @@ function field_remove_confirm() {
 	?>
 	<tr>
 		<td class='topBoxAlt'>
-			<p>Click 'Continue' to delete the following Data Input Field.</p>
-			<p>Field Name: '<?php print $field['data_name'];?>'<br>
-			<p>Friendly Name: '<?php print $field['name'];?>'<br>
+			<p><?php print __('Click \'Continue\' to delete the following Data Input Field.');?></p>
+			<p><?php print __('Field Name: %s', $field['data_name']);?>'<br>
+			<p><?php print __('Friendly Name: %s', $field['name']);?>'<br>
 		</td>
 	</tr>
 	<tr>
 		<td align='right'>
-			<input id='cancel' type='button' value='Cancel' onClick='$("#cdialog").dialog("close")' name='cancel'>
-			<input id='continue' type='button' value='Continue' name='continue' title='Remove Data Input Field'>
+			<input id='cancel' type='button' value='<?php print __('Cancel');?>' onClick='$("#cdialog").dialog("close")' name='cancel'>
+			<input id='continue' type='button' value='<?php print __('Continue');?>' name='continue' title='<?php print __('Remove Data Input Field');?>'>
 		</td>
 	</tr>
 	<?php
@@ -332,12 +332,6 @@ function field_edit() {
 		$current_field_type = $field['input_output'];
 	}
 
-	if ($current_field_type == 'out') {
-		$header_name = 'Output';
-	}elseif ($current_field_type == 'in') {
-		$header_name = 'Input';
-	}
-
 	$data_input = db_fetch_row_prepared('SELECT type_id, name FROM data_input WHERE id = ?', array(get_request_var('data_input_id')));
 
 	/* obtain a list of available fields for this given field type (input/output) */
@@ -356,9 +350,15 @@ function field_edit() {
 		return;
 	}
 
+	if ($current_field_type == 'out') {
+		$header_name = __('Output Fields [edit: %s]', htmlspecialchars($data_input['name']));
+	}elseif ($current_field_type == 'in') {
+		$header_name = __('Input Fields [edit: %s]', htmlspecialchars($data_input['name']));
+	}
+
 	form_start('data_input.php', 'data_input');
 
-	html_start_box("$header_name Fields [edit: " . htmlspecialchars($data_input['name']) . ']', '100%', '', '3', 'center', '');
+	html_start_box( $header_name, '100%', '', '3', 'center', '');
 
 	$form_array = array();
 
@@ -420,14 +420,14 @@ function data_edit() {
 
 	if (!isempty_request_var('id')) {
 		$data_input = db_fetch_row_prepared('SELECT * FROM data_input WHERE id = ?', array(get_request_var('id')));
-		$header_label = '[edit: ' . htmlspecialchars($data_input['name']) . ']';
+		$header_label = __('Data Input Methods [edit: %s]', htmlspecialchars($data_input['name']));
 	}else{
-		$header_label = '[new]';
+		$header_label = __('Data Input Methods [new]');
 	}
 
 	form_start('data_input.php', 'data_input');
 
-	html_start_box("Data Input Methods $header_label", '100%', '', '3', 'center', '');
+	html_start_box( $header_label, '100%', '', '3', 'center', '');
 
 	draw_edit_form(array(
 		'config' => array('no_form_tag' => true),
@@ -437,11 +437,11 @@ function data_edit() {
 	html_end_box();
 
 	if (!isempty_request_var('id')) {
-		html_start_box('Input Fields', '100%', '', '3', 'center', 'data_input.php?action=field_edit&type=in&data_input_id=' . htmlspecialchars(get_request_var('id')));
+		html_start_box( __('Input Fields'), '100%', '', '3', 'center', 'data_input.php?action=field_edit&type=in&data_input_id=' . htmlspecialchars(get_request_var('id')));
 		print "<tr class='tableHeader'>";
-			DrawMatrixHeaderItem('Name','',1);
-			DrawMatrixHeaderItem('Field Order','',1);
-			DrawMatrixHeaderItem('Friendly Name','',2);
+			DrawMatrixHeaderItem( __('Name'),'',1);
+			DrawMatrixHeaderItem( __('Field Order'),'',1);
+			DrawMatrixHeaderItem( __('Friendly Name'),'',2);
 		print '</tr>';
 
 		$fields = db_fetch_assoc_prepared("SELECT id, data_name, name, sequence FROM data_input_fields WHERE data_input_id = ? AND input_output = 'in' ORDER BY sequence, data_name", array(get_request_var('id')));
@@ -455,28 +455,28 @@ function data_edit() {
 						<a class="linkEditMain" href="<?php print htmlspecialchars('data_input.php?action=field_edit&id=' . $field['id'] . '&data_input_id=' . get_request_var('id'));?>"><?php print htmlspecialchars($field['data_name']);?></a>
 					</td>
 					<td>
-						<?php print $field['sequence']; if ($field['sequence'] == '0') { print ' (Not In Use)'; }?>
+						<?php print $field['sequence']; if ($field['sequence'] == '0') { print ' ' . __('(Not In Use)'); }?>
 					</td>
 					<td>
 						<?php print htmlspecialchars($field['name']);?>
 					</td>
 					<td align="right">
-						<a class='delete deleteMarker fa fa-remove' href='<?php print htmlspecialchars('data_input.php?action=field_remove_confirm&id=' . $field['id'] . '&data_input_id=' . get_request_var('id'));?>' title='Delete'></a>
+						<a class='delete deleteMarker fa fa-remove' href='<?php print htmlspecialchars('data_input.php?action=field_remove_confirm&id=' . $field['id'] . '&data_input_id=' . get_request_var('id'));?>' title='<?php print __('Delete');?>'></a>
 					</td>
 					<?php
 				form_end_row();
 			}
 		}else{
-			print '<tr><td><em>No Input Fields</em></td></tr>';
+			print '<tr><td><em>' . __('No Input Fields') . '</em></td></tr>';
 		}
 		html_end_box();
 
-		html_start_box('Output Fields', '100%', '', '3', 'center', 'data_input.php?action=field_edit&type=out&data_input_id=' . get_request_var('id'));
+		html_start_box( __('Output Fields'), '100%', '', '3', 'center', 'data_input.php?action=field_edit&type=out&data_input_id=' . get_request_var('id'));
 		print "<tr class='tableHeader'>";
-			DrawMatrixHeaderItem('Name','',1);
-			DrawMatrixHeaderItem('Field Order','',1);
-			DrawMatrixHeaderItem('Friendly Name','',1);
-			DrawMatrixHeaderItem('Update RRA','',2);
+			DrawMatrixHeaderItem( __('Name'),'',1);
+			DrawMatrixHeaderItem( __('Field Order'),'',1);
+			DrawMatrixHeaderItem( __('Friendly Name'),'',1);
+			DrawMatrixHeaderItem( __('Update RRA'),'',2);
 		print '</tr>';
 
 		$fields = db_fetch_assoc_prepared("SELECT id, name, data_name, update_rra, sequence FROM data_input_fields WHERE data_input_id = ? and input_output = 'out' ORDER BY sequence, data_name", array(get_request_var('id')));
@@ -490,7 +490,7 @@ function data_edit() {
 						<a class="linkEditMain" href="<?php print htmlspecialchars('data_input.php?action=field_edit&id=' . $field['id'] . '&data_input_id=' . get_request_var('id'));?>"><?php print htmlspecialchars($field['data_name']);?></a>
 					</td>
 					<td>
-						<?php print $field['sequence']; if ($field['sequence'] == '0') { print ' (Not In Use)'; }?>
+						<?php print $field['sequence']; if ($field['sequence'] == '0') { print ' ' . __('(Not In Use)'); }?>
 					</td>
 					<td>
 						<?php print htmlspecialchars($field['name']);?>
@@ -499,13 +499,13 @@ function data_edit() {
 						<?php print html_boolean_friendly($field['update_rra']);?>
 					</td>
 					<td align="right">
-						<a class='delete deleteMarker fa fa-remove' href='<?php print htmlspecialchars('data_input.php?action=field_remove_confirm&id=' . $field['id'] . '&data_input_id=' . get_request_var('id'));?>' title='Delete'></a>
+						<a class='delete deleteMarker fa fa-remove' href='<?php print htmlspecialchars('data_input.php?action=field_remove_confirm&id=' . $field['id'] . '&data_input_id=' . get_request_var('id'));?>' title='<?php print __('Delete');?>'></a>
 					</td>
 				<?php
 				form_end_row();
 			}
 		}else{
-			print '<tr><td><em>No Output Fields</em></td></tr>';
+			print '<tr><td><em>' . __('No Output Fields') . '</em></td></tr>';
 		}
 
 		html_end_box();
@@ -527,7 +527,7 @@ function data_edit() {
 				$('#cdialog').html(data);
 				applySkin();
 				$('#cdialog').dialog({ 
-					title: 'Delete Data Input Field', 
+					title: '<?php print __('Delete Data Input Field');?>', 
 					close: function () { $('.delete').blur(); $('.selectable').removeClass('selected'); },
 					minHeight: 80, 
 					minWidth: 500 
@@ -575,7 +575,7 @@ function data() {
 	validate_store_request_vars($filters, 'sess_data_input');
 	/* ================= input validation ================= */
 
-	html_start_box('Data Input Methods', '100%', '', '3', 'center', 'data_input.php?action=edit');
+	html_start_box( __('Data Input Methods'), '100%', '', '3', 'center', 'data_input.php?action=edit');
 
 	?>
 	<tr class='even noprint'>
@@ -584,13 +584,13 @@ function data() {
 			<table class='filterTable'>
 				<tr class='noprint'>
 					<td>
-						Search
+						<?php __('Search');?>
 					</td>
 					<td>
 						<input id='filter' type='text' name='filter' size='25' value='<?php print htmlspecialchars(get_request_var('filter'));?>'>
 					</td>
 					<td class='nowrap'>
-						Input Methods
+						<?php __('Input Methods');?>
 					</td>
 					<td>
 						<select id='rows' name='rows' onChange='applyFilter()'>
@@ -604,10 +604,10 @@ function data() {
 						</select>
 					</td>
 					<td>
-						<input type="submit" id='refresh' value="Go" title="Set/Refresh Filters">
+						<input type="submit" id='refresh' value="<?php __('Go');?>" title="<?php __('Set/Refresh Filters');?>">
 					</td>
 					<td>
-						<input type="button" id='clear' value="Clear" title="Clear Filters">
+						<input type="button" id='clear' value="<?php __('Clear');?>" title="<?php __('Clear Filters');?>">
 					</td>
 				</tr>
 			</table>
@@ -683,11 +683,11 @@ function data() {
 	print $nav;
 
 	$display_text = array(
-		'name' => array('display' => 'Data Input Name', 'align' => 'left', 'sort' => 'ASC', 'tip' => 'The name of this Data Input Method.'),
-		'nosort' => array('display' => 'Deletable', 'align' => 'right', 'tip' => 'Data Inputs that are in use can not be Deleted.  In use is defined as being referenced either by a Data Source or a Data Template.'), 
-		'data_sources' => array('display' => 'Data Sources Using', 'align' => 'right', 'sort' => 'DESC', 'tip' => 'The number of Data Sources that use this Data Input Method.'),
-		'templates' => array('display' => 'Templates Using', 'align' => 'right', 'sort' => 'DESC', 'tip' => 'The number of Data Templates that use this Data Input Method.'),
-		'type_id' => array('display' => 'Data Input Method', 'align' => 'left', 'sort' => 'ASC', 'tip' => 'The method used to gather information for this Data Input Method.'));
+		'name' => array('display' => __('Data Input Name'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('The name of this Data Input Method.')),
+		'nosort' => array('display' => __('Deletable'), 'align' => 'right', 'tip' => __('Data Inputs that are in use can not be Deleted. In use is defined as being referenced either by a Data Source or a Data Template.')), 
+		'data_sources' => array('display' => __('Data Sources Using'), 'align' => 'right', 'sort' => 'DESC', 'tip' => __('The number of Data Sources that use this Data Input Method.')),
+		'templates' => array('display' => __('Templates Using'), 'align' => 'right', 'sort' => 'DESC', 'tip' => __('The number of Data Templates that use this Data Input Method.')),
+		'type_id' => array('display' => __('Data Input Method'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('The method used to gather information for this Data Input Method.')));
 
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
@@ -702,7 +702,7 @@ function data() {
 			}
 			form_alternate_row('line' . $data_input['id'], true, $disabled);
 			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars('data_input.php?action=edit&id=' . $data_input['id']) . "'>" . (strlen(get_request_var('filter')) ? preg_replace('/(' . preg_quote(get_request_var('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($data_input['name'])) : htmlspecialchars($data_input['name'])) . '</a>', $data_input['id']);
-			form_selectable_cell($disabled ? 'No':'Yes', $data_input['id'],'', 'text-align:right');
+			form_selectable_cell($disabled ? __('No'): __('Yes'), $data_input['id'],'', 'text-align:right');
 			form_selectable_cell(number_format($data_input['data_sources']), $data_input['id'],'', 'text-align:right');
 			form_selectable_cell(number_format($data_input['templates']), $data_input['id'],'', 'text-align:right');
 			form_selectable_cell($input_types{$data_input['type_id']}, $data_input['id']);
@@ -712,7 +712,7 @@ function data() {
 
 		print $nav;
 	}else{
-		print "<tr><td colspan='5'><em>No Data Input Methods</em></td></tr>";
+		print "<tr><td colspan='5'><em>" . __('No Data Input Methods') . "</em></td></tr>";
 	}
 
 	html_end_box(false);
