@@ -504,7 +504,8 @@ $ldap_modes = array(
 $rrdtool_versions = array(
 	'rrd-1.3.x' => 'RRDTool 1.3.x',
 	'rrd-1.4.x' => 'RRDTool 1.4.x',
-	'rrd-1.5.x' => 'RRDTool 1.5.x'
+	'rrd-1.5.x' => 'RRDTool 1.5.x',
+	'rrd-1.6.x' => 'RRDTool 1.6.x'
 );
 
 $i18n_modes = array(
@@ -1325,6 +1326,56 @@ $no_session_write = array(
 	'graph_xport.php',
 	'graph_image.php',
 	'graph_json.php'
+);
+
+$i18n_months = array(
+	'January'	=> __('January'),
+	'February'	=> __('February'),
+	'March'		=> __('March'),
+	'Arpil'		=> __('April'),
+	'May'		=> __('May'),
+	'June'		=> __('June'),
+	'July'		=> __('July'),
+	'August'	=> __('August'),
+	'September'	=> __('September'),
+	'October'	=> __('October'),
+	'November'	=> __('November'),
+	'December'	=> __('December'),
+);
+
+$i18n_months_short = array(
+	'Jan'	=> __x('A short textual representation of a month, three letters', 'Jan'),
+	'Feb'	=> __x('A short textual representation of a month, three letters', 'Feb'),
+	'Mar'	=> __x('A short textual representation of a month, three letters', 'Mar'),
+	'Arp'	=> __x('A short textual representation of a month, three letters', 'Apr'),
+	'May'	=> __x('A short textual representation of a month, three letters', 'May'),
+	'Jun'	=> __x('A short textual representation of a month, three letters', 'Jun'),
+	'Jul'	=> __x('A short textual representation of a month, three letters', 'Jul'),
+	'Aug'	=> __x('A short textual representation of a month, three letters', 'Aug'),
+	'Sep'	=> __x('A short textual representation of a month, three letters', 'Sep'),
+	'Oct'	=> __x('A short textual representation of a month, three letters', 'Oct'),
+	'Nov'	=> __x('A short textual representation of a month, three letters', 'Nov'),
+	'Dec'	=> __x('A short textual representation of a month, three letters', 'Dec'),
+);
+
+$i18n_weekdays = array(
+	'Sunday'	=> __('Sunday'),
+	'Monday'	=> __('Monday'),
+	'Tuesday'	=> __('Tuesday'),
+	'Wednesday'	=> __('Wednesday'),
+	'Thursday'	=> __('Thursday'),
+	'Friday'	=> __('Friday'),
+	'Saturday'	=> __('Saturday')
+);
+
+$i18n_weekdays_short = array(
+	'Sun'	=> __x('A textual representation of a day, three letters', 'Sun'),
+	'Mon'	=> __x('A textual representation of a day, three letters', 'Mon'),
+	'Tue'	=> __x('A textual representation of a day, three letters', 'Tue'),
+	'Wed'	=> __x('A textual representation of a day, three letters', 'Wed'),
+	'Thu'	=> __x('A textual representation of a day, three letters', 'Thu'),
+	'Fri'	=> __x('A textual representation of a day, three letters', 'Fri'),
+	'Sat'	=> __x('A textual representation of a day, three letters', 'Sat')
 );
 
 api_plugin_hook('config_arrays');
