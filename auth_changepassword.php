@@ -84,7 +84,7 @@ case 'changepassword':
 			
 	if (!secpass_check_history($_SESSION['sess_user_id'], get_nfilter_request_var('password'))) {
 		$bad_password = true;
-		$errorMessage = "<span class='badpassword_message'>You can not use a previously entered password!</span>";
+		$errorMessage = "<span class='badpassword_message'>" . __('You can not use a previously entered password!') . "</span>";
 	}
 
 	// Get password options for the new password
@@ -106,17 +106,17 @@ case 'changepassword':
 	// Password and Confirmed password checks
 	if ($user['password'] != $current_password_new && $user['password'] != $current_password_old) {
 		$bad_password = true;
-		$errorMessage = "<span class='badpassword_message'>Your current password is not correct.  Please try again.</span>";
+		$errorMessage = "<span class='badpassword_message'>" . __('Your current password is not correct. Please try again.') . "</span>";
 	}
 
 	if ($user['password'] == $password_new || $user['password'] == $password_old) {
 		$bad_password = true;
-		$errorMessage = "<span class='badpassword_message'>Your new password can not be the same as the old password.  Please try again.</span>";
+		$errorMessage = "<span class='badpassword_message'>" . __('Your new password can not be the same as the old password. Please try again.') . "</span>";
 	}
 	
 	if (get_nfilter_request_var('password') !== (get_nfilter_request_var('confirm'))) {
 	    $bad_password = true;
-		$errorMessage = "<span class='badpassword_message'>Your new passwords do not match, please retype.</span>";
+		$errorMessage = "<span class='badpassword_message'>" . __('Your new passwords do not match, please retype.') . "</span>";
 	}
 	
 	if ($bad_password == false && get_nfilter_request_var('password') == get_nfilter_request_var('confirm') && get_nfilter_request_var('password') != '') {
@@ -185,39 +185,39 @@ if (api_plugin_hook_function('custom_password', OPER_MODE_NATIVE) == OPER_MODE_R
 }
 
 if (get_request_var('action') == 'force') {
-	$errorMessage = "<span color='#FF0000'>*** Forced password change ***</span>";
+	$errorMessage = "<span color='#FF0000'>*** " . __('Forced password change') . " ***</span>";
 }
 
 /* Create tooltip for password complexity */
-$secpass_tooltip = "<span style='font-weight:normal;'>Password requirements include:</span><br>";
+$secpass_tooltip = "<span style='font-weight:normal;'>" . __('Password requirements include:') . "</span><br>";
 $secpass_body    = '';
 
 if (read_config_option('secpass_minlen') > 0) {
-	$secpass_body .= "Must be at least " . read_config_option('secpass_minlen') . " characters in length";
+	$secpass_body .= __('Must be at least %i characters in length', read_config_option('secpass_minlen'));
 }
 
 if (read_config_option('secpass_reqmixcase') == 'on') {
-	$secpass_body .= (strlen($secpass_body) ? ';<br>':'') . "Must include mixed case";
+	$secpass_body .= (strlen($secpass_body) ? '<br>':'') . __('Must include mixed case');
 }
 
 if (read_config_option('secpass_reqnum') == 'on') {
-	$secpass_body .= (strlen($secpass_body) ? ';<br>':'') . "Must include at least 1 number";
+	$secpass_body .= (strlen($secpass_body) ? '<br>':'') . __('Must include at least 1 number');
 }
 
 if (read_config_option('secpass_reqspec') == 'on') {
-	$secpass_body .= (strlen($secpass_body) ? ';<br>':'') . "Must include at least 1 special character";
+	$secpass_body .= (strlen($secpass_body) ? '<br>':'') . __('Must include at least 1 special character');
 }
 
 if (read_config_option('secpass_history') != '0') {
-	$secpass_body .= (strlen($secpass_body) ? ';<br>':'') . "Can not be reused for " . (read_config_option('secpass_history')+1) . " password changes";
+	$secpass_body .= (strlen($secpass_body) ? '<br>':'') . __('Can not be reused for %d password changes', read_config_option('secpass_history')+1);
 }
 
-$secpass_tooltip .= $secpass_body . ".";
+$secpass_tooltip .= $secpass_body;
 
 print "<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.01 Transitional//EN' 'http://www.w3.org/TR/html4/loose.dtd'>\n";
 print "<html>\n";
 print "<head>\n";
-print "\t<title>Change Password</title>\n";
+print "\t<title>" . __('Change Password') . "</title>\n";
 print "\t<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>\n";
 print "\t<link href='" . $config['url_path'] . "include/themes/" . get_selected_theme() . "/main.css' type='text/css' rel='stylesheet'>\n";
 print "\t<link href='" . $config['url_path'] . "include/themes/" . get_selected_theme() . "/jquery-ui.css' type='text/css' rel='stylesheet'>\n";
@@ -237,37 +237,37 @@ print "<body class='loginBody'>
 	<div class='loginCenter'>
 		<div class='loginArea'>
 			<div class='cactiLogoutLogo'></div>
-			<legend>Change Password</legend>
+			<legend>" . __('Change Password') . "</legend>
 			<form name='login' method='post' action='" . basename($_SERVER['PHP_SELF']) . "'>
 				<input type='hidden' name='action' value='changepassword'>
 				<input type='hidden' name='ref' value='" . sanitize_uri(get_request_var('ref')) . "'>
 				<input type='hidden' name='name' value='" . (isset($user['username']) ? $user['username'] : '') . "'>
 				<div class='loginTitle'>
-					<p>Please enter your current password and your new<br>Cacti password.</p>
+					<p>" . __('Please enter your current password and your new<br>Cacti password.') . "</p>
 				</div>
 				<div class='cactiLogin'>
 					<table class='cactiLoginTable'>
 						<tr>
-							<td>Current password</td>
+							<td>" . __('Current password') . "</td>
 							<td><input type='password' id='current' name='current_password' autocomplete='off' size='20' placeholder='********'></td>
 						</tr>
 						<tr>
-							<td>New password</td>
+							<td>" . __('New password') . "</td>
 							<td><input type='password' name='password' autocomplete='off' size='20' placeholder='********'>" . display_tooltip($secpass_tooltip) ."</td>
 						</tr>
 						<tr>
-							<td>Confirm new password</td>
+							<td>" . __('Confirm new password') . "</td>
 							<td><input type='password' name='confirm' autocomplete='off' size='20' placeholder='********'></td>
 						</tr>
 						<tr>
-							<td><input type='submit' value='Save'></td>
+							<td><input type='submit' value='" . __('Save') . "'></td>
 						</tr>
 					</table>
 				</div>
 			</form>
 			<div class='loginErrors'>" . $errorMessage . "</div>
 		</div>
-		<div class='versionInfo'>Version " . $version . " | " . COPYRIGHT_YEARS_SHORT  . "</div>
+		<div class='versionInfo'>" . __('Version %1$s | %2$s', $version, COPYRIGHT_YEARS_SHORT) . "</div>
 	</div>
 	<div class='loginRight'></div>
 	<script type='text/javascript'>
