@@ -317,8 +317,8 @@ function load_i18n_gettext_wrappers(){
 		/* placeholders will allow to fill in the translated weekdays, month and so on.. */
 		$i18n_date_placeholders = array(
 			'#1' => __(date('D', $timestamp), $domain),
-			'#2' => str_replace('_', '', __( '_'  . date('M', $timestamp) . '_', $domain)),
-			'#3' => str_replace('_', '', __( '__' . date('F', $timestamp) . '_', $domain)),
+			'#2' => __(date('M', $timestamp), $domain),
+			'#3' => __(date('F', $timestamp), $domain),
 			'#4' => __(date('l', $timestamp), $domain)
 		);
 
