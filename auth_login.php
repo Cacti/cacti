@@ -47,7 +47,7 @@ if (read_config_option('auth_method') == '2') {
 		/* No user - Bad juju! */
 		$username = '';
 		cacti_log('ERROR: No username passed with Web Basic Authentication enabled.', false, 'AUTH');
-		auth_display_custom_error_message('Web Basic Authentication configured, but no username was passed from the web server.  Please make sure you have authentication enabled on the web server.');
+		auth_display_custom_error_message( __('Web Basic Authentication configured, but no username was passed from the web server. Please make sure you have authentication enabled on the web server.') );
 		exit;
 	}
 }else{
@@ -94,7 +94,7 @@ if (get_nfilter_request_var('action') == 'login') {
 		if (!$user && read_config_option('user_template') == '0') {
 			cacti_log("ERROR: User '" . $username . "' authenticated by Web Server, but a Template User is not defined in Cacti.  Exiting.", false, 'AUTH');
 			$username = htmlspecialchars($username);
-			auth_display_custom_error_message("$username authenticated by Web Server, but a Template User is not defined in Cacti.");
+			auth_display_custom_error_message( __('%s authenticated by Web Server, but a Template User is not defined in Cacti.', $username) );
 			exit;			
 		}
 
@@ -113,7 +113,7 @@ if (get_nfilter_request_var('action') == 'login') {
 				/* Error searching */
 				cacti_log('LOGIN: LDAP Error: ' . $ldap_dn_search_response['error_text'], false, 'AUTH');
 				$ldap_error = true;
-				$ldap_error_message = 'LDAP Search Error: ' . $ldap_dn_search_response['error_text'];
+				$ldap_error_message =  __('LDAP Search Error: %s', $ldap_dn_search_response['error_text']);
 				$user_auth = false;
 				$user = array();
 			}
@@ -134,7 +134,7 @@ if (get_nfilter_request_var('action') == 'login') {
 					/* error */
 					cacti_log('LOGIN: LDAP Error: ' . $ldap_auth_response['error_text'], false, 'AUTH');
 					$ldap_error = true;
-					$ldap_error_message = 'LDAP Error: ' . $ldap_auth_response['error_text'];
+					$ldap_error_message = __('LDAP Error: %s', $ldap_auth_response['error_text']);
 					$user_auth = false;
 					$user = array();
 				}
@@ -194,7 +194,7 @@ if (get_nfilter_request_var('action') == 'login') {
 		}else{
 			/* error */
 			cacti_log("LOGIN: Template user '" . read_config_option('user_template') . "' does not exist.", false, 'AUTH');
-			auth_display_custom_error_message("Template user '" . read_config_option('user_template') . "' does not exist.");
+			auth_display_custom_error_message( __('Template user %s does not exist.', read_config_option('user_template')) );
 			exit;
 		}
 	}
@@ -209,7 +209,7 @@ if (get_nfilter_request_var('action') == 'login') {
 			$guest_user = true;
 		}else{
 			/* error */
-			auth_display_custom_error_message('Guest user "' . read_config_option('guest_user') . '" does not exist.');
+			auth_display_custom_error_message( __('Guest user %s does not exist.', read_config_option('guest_user')) );
 			cacti_log("LOGIN: Unable to locate guest user '" . read_config_option('guest_user') . "'", false, 'AUTH');
 			exit;
 		}
@@ -224,7 +224,7 @@ if (get_nfilter_request_var('action') == 'login') {
 		$user_enabled = $user['enabled'];
 		if ($user_enabled != 'on') {
 			/* Display error */
-			auth_display_custom_error_message('Access Denied, user account disabled.');
+			auth_display_custom_error_message( __('Access Denied, user account disabled.') );
 			exit;
 		}
 
@@ -302,7 +302,7 @@ if (get_nfilter_request_var('action') == 'login') {
 	}else{
 		if ((!$guest_user) && ($user_auth)) {
 			/* No guest account defined */
-			auth_display_custom_error_message('Access Denied, please contact you Cacti Administrator.');
+			auth_display_custom_error_message( __('Access Denied, please contact you Cacti Administrator.') );
 			cacti_log('LOGIN: Access Denied, No guest enabled or template user to copy', false, 'AUTH');
 			exit;
 		}else{
@@ -345,7 +345,7 @@ function domains_login_process() {
 			/* Error searching */
 			cacti_log('LOGIN: LDAP Error: ' . $ldap_dn_search_response['error_text'], false, 'AUTH');
 			$ldap_error = true;
-			$ldap_error_message = 'LDAP Search Error: ' . $ldap_dn_search_response['error_text'];
+			$ldap_error_message = __('LDAP Search Error: %s', $ldap_dn_search_response['error_text']);
 			$user_auth = false;
 			$user = array();
 		}
@@ -377,7 +377,7 @@ function domains_login_process() {
 					}else{
 						/* error */
 						cacti_log("LOGIN: Template user '" . $template_username . "' does not exist.", false, 'AUTH');
-						auth_display_custom_error_message("Template user '" . $template_username . "' does not exist.");
+						auth_display_custom_error_message( __('Template user %s does not exist.', $template_username) );
 						exit;
 					}
 				}
@@ -385,7 +385,7 @@ function domains_login_process() {
 				/* error */
 				cacti_log('LOGIN: LDAP Error: ' . $ldap_auth_response['error_text'], false, 'AUTH');
 				$ldap_error = true;
-				$ldap_error_message = 'LDAP Error: ' . $ldap_auth_response['error_text'];
+				$ldap_error_message = __('LDAP Error: %s', $ldap_auth_response['error_text']);
 				$user_auth = false;
 				$user = array();
 			}
@@ -456,7 +456,7 @@ if (api_plugin_hook_function('custom_login', OPER_MODE_NATIVE) == OPER_MODE_RESK
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-	<title><?php print api_plugin_hook_function('login_title', 'Login to Cacti');?></title>
+	<title><?php print api_plugin_hook_function('login_title', __('Login to Cacti'));?></title>
 	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
 	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print get_selected_theme();?>/main.css' type='text/css' rel='stylesheet'>
 	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print get_selected_theme();?>/jquery-ui.css' type='text/css' rel='stylesheet'>
@@ -481,7 +481,7 @@ if (api_plugin_hook_function('custom_login', OPER_MODE_NATIVE) == OPER_MODE_RESK
 	<div class='loginCenter'>
 	<div class='loginArea'>
 		<div class='cactiLoginLogo'></div>
-			<legend>User Login</legend>
+			<legend><?php print __('User Login');?></legend>
 			<form name='login' method='post' action='<?php print basename($_SERVER['PHP_SELF']);?>'>
 				<input type='hidden' name='action' value='login'>
 				<?php api_plugin_hook_function('login_before', 
@@ -493,21 +493,21 @@ if (api_plugin_hook_function('custom_login', OPER_MODE_NATIVE) == OPER_MODE_RESK
 						'action' => get_nfilter_request_var('action'))); 
 				?>
 				<div class='loginTitle'>
-					<p>Enter your Username and Password below</p>
+					<p><? print __('Enter your Username and Password below');?></p>
 				</div>
 				<div class='cactiLogin'>
 					<table class='cactiLoginTable'>
 						<tr>
 							<td>
-								<label for='login_username'>Username</label>
+								<label for='login_username'><?php print __('Username');?></label>
 							</td>
 							<td>
-								<input type='text' id='login_username' name='login_username' value='<?php print htmlspecialchars($username, ENT_QUOTES); ?>' placeholder='Username'>
+								<input type='text' id='login_username' name='login_username' value='<?php print htmlspecialchars($username, ENT_QUOTES); ?>' placeholder='<?php print __('Username');?>'>
 							</td>
 						</tr>
 						<tr>
 							<td>
-								<label for='login_password'>Password</label>
+								<label for='login_password'><?php print __('Password');?></label>
 							</td>
 							<td>
 								<input type='password' id='login_password' name='login_password' placeholder='********'>
@@ -534,7 +534,7 @@ if (api_plugin_hook_function('custom_login', OPER_MODE_NATIVE) == OPER_MODE_RESK
 						?>
 						<tr>
 							<td>
-								<label for='realm'>Realm</label>
+								<label for='realm'><?php print __('Realm');?></label>
 							</td>
 							<td>
 								<select id='realm' name='realm'><?php
@@ -550,13 +550,13 @@ if (api_plugin_hook_function('custom_login', OPER_MODE_NATIVE) == OPER_MODE_RESK
 					<?php } if (read_config_option('auth_cache_enabled') == 'on') { ?>
 						<tr>
 							<td colspan='2'>
-								<label for='remember_me'><input style='vertical-align:-3px;' type='checkbox' id='remember_me' name='remember_me' <?php print (isset($_COOKIE['cacti_remembers']) ? 'checked':'');?>>Keep me signed in</label>
+								<label for='remember_me'><input style='vertical-align:-3px;' type='checkbox' id='remember_me' name='remember_me' <?php print (isset($_COOKIE['cacti_remembers']) ? 'checked':'');?>><?php print __('Keep me signed in');?></label>
 							</td>
 						</tr>
 					<?php } ?>
 						<tr>
 							<td cospan='2'>
-								<input type='submit' value='Login'>
+								<input type='submit' value='<?php print __('Login');?>'>
 							</td>
 						</tr>
 					</table>
@@ -565,18 +565,20 @@ if (api_plugin_hook_function('custom_login', OPER_MODE_NATIVE) == OPER_MODE_RESK
 			</form>
 			<div class='loginErrors'>
 				<?php
-				if ($ldap_error) {?>
-				<?php print $ldap_error_message; ?>
-				<?php }else{
-				if (get_nfilter_request_var('action') == 'login') {?>
-				Invalid User Name/Password Please Retype
-				<?php }
-				if ($user_enabled == '0') {?>
-				User Account Disabled
-				<?php } } ?>
+				if ($ldap_error) {
+					print $ldap_error_message;
+				}else{
+					if (get_nfilter_request_var('action') == 'login') {
+						print __('Invalid User Name/Password Please Retype');
+					}
+					if ($user_enabled == '0') {
+						print __('User Account Disabled');
+					} 
+				}
+				?>
 			</div>
 		</div>
-		<div class='versionInfo'>Version <?php print $version;?> | <?php print COPYRIGHT_YEARS_SHORT;?></div>
+		<div class='versionInfo'><?php print __('Version %1$s | %2$s', $version, COPYRIGHT_YEARS_SHORT);?></div>
 	</div>
 	<div class='loginRight'></div>
 	<script type='text/javascript'>
