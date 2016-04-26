@@ -147,7 +147,7 @@ function settings() {
 
 	form_start('auth_profile.php');
 
-	html_start_box('User Account Details', '100%', '', '3', 'center', '');
+	html_start_box( __('User Account Details'), '100%', '', '3', 'center', '');
 
 	$current_user = db_fetch_row_prepared('SELECT * FROM user_auth WHERE id = ?', array($_SESSION['sess_user_id']));
 
@@ -159,33 +159,33 @@ function settings() {
 	$fields_user = array(
 		'username' => array(
 			'method' => 'value',
-			'friendly_name' => 'User Name',
-			'description' => 'The login name for this user.',
+			'friendly_name' => __('User Name'),
+			'description' => __('The login name for this user.'),
 			'value' => '|arg1:username|',
 			'max_length' => '40',
 			'size' => '40'
 		),
 		'full_name' => array(
 			'method' => 'textbox',
-			'friendly_name' => 'Full Name',
-			'description' => 'A more descriptive name for this user, that can include spaces or special characters.',
+			'friendly_name' => __('Full Name'),
+			'description' => __('A more descriptive name for this user, that can include spaces or special characters.'),
 			'value' => '|arg1:full_name|',
 			'max_length' => '120',
 			'size' => '60'
 		),
 		'email_address' => array(
 			'method' => 'textbox',
-			'friendly_name' => 'E-Mail Address',
-			'description' => 'An E-Mail Address you be reached at.',
+			'friendly_name' => __('E-Mail Address'),
+			'description' => __('An E-Mail Address you be reached at.'),
 			'value' => '|arg1:email_address|',
 			'max_length' => '60',
 			'size' => '60'
 		),
 		'private_data' => array(
 			'method' => 'button',
-			'friendly_name' => 'Clear Private Data',
-			'description' => 'Clear Private Data including Column sizing.',
-			'value' => 'Clear Private Data',
+			'friendly_name' => __('Clear Private Data'),
+			'description' => __('Clear Private Data including Column sizing.'),
+			'value' => __('Clear Private Data'),
 			'on_click' => 'clearPrivateData()'
 		)
 	);
@@ -194,9 +194,9 @@ function settings() {
 		$fields_user += array(
 			'logout_everywhere' => array(
 				'method' => 'button',
-				'friendly_name' => 'Logout Everywhere',
-				'description' => 'Clear all your Login Session Tokens.',
-				'value' => 'Logout Everywhere',
+				'friendly_name' => __('Logout Everywhere'),
+				'description' => __('Clear all your Login Session Tokens.'),
+				'value' => __('Logout Everywhere'),
 				'on_click' => 'logoutEverywhere()'
 	        )
 		);
@@ -216,7 +216,7 @@ function settings() {
 			$settings_user['tree']['default_tree_id']['sql'] = get_graph_tree_array(true);
 		}
 
-		html_start_box('User Settings', '100%', '', '3', 'center', '');
+		html_start_box( __('User Settings'), '100%', '', '3', 'center', '');
 
 		while (list($tab_short_name, $tab_fields) = each($settings_user)) {
 			$collapsible = true;
@@ -269,7 +269,7 @@ function settings() {
 		$.localStorage.removeAll();
 		$.sessionStorage.removeAll();
 
-		$('body').append('<div style="display:none;" id="cleared" title="Private Data Cleared"><p>Your Private Data has been cleared.</p></div>');
+		$('body').append('<div style="display:none;" id="cleared" title="<?php print __('Private Data Cleared');?>"><p><?php print __('Your Private Data has been cleared.');?></p></div>');
 
 		$('#cleared').dialog({
 			modal: true,
@@ -289,7 +289,7 @@ function settings() {
 
 	function logoutEverywhere() {
 		$.get('auth_profile.php?action=logout_everywhere', function(data) {
-			$('body').append('<div style="display:none;" id="cleared" title="User Sessions Cleared"><p>All your login sessions have been cleared.</p></div>');
+			$('body').append('<div style="display:none;" id="cleared" title="<?php print __('User Sessions Cleared');?>"><p><?php print __('All your login sessions have been cleared.');?></p></div>');
 
 			$('#cleared').dialog({
 				modal: true,
