@@ -1230,48 +1230,48 @@ tr#realtime td:first-child {
 .logEmergency {
 	background-color: #FA7420;
 	text-align: center;
-	width: 14%;
+	width: 12.5%;
 }
 
 .logCritical {
 	background-color: #F21721;
 	text-align: center;
-	width: 14%;
+	width: 12.5%;
 }
 
 .logWarning {
 	background-color: #FF7A30;
 	text-align: center;
-	width: 14%;
+	width: 12.5%;
 }
 
 .logAlert {
 	background-color: #F21924;
 	text-align: center;
-	width: 14%;
+	width: 12.5%;
 }
 
 .logError {
 	background-color: #FB4A14;
 	text-align: center;
-	width: 14%;
+	width: 12.5%;
 }
 
 .logNotice {
 	background-color: #FAFD9E;
 	text-align: center;
-	width: 14%;
+	width: 12.5%;
 }
 
 .logInfo {
 	background-color: #CCFFCC;
 	text-align: center;
-	width: 14%;
+	width: 12.5%;
 }
 
 .logDebug {
 	background-color: #CDCFC4;
 	text-align: center;
-	width: 14%;
+	width: 12.5%;
 }
 
