@@ -3495,8 +3495,12 @@ function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '
 	}
 
 	if ($mail->send()) {
+		cacti_log("Mail Sucessfully Sent to '" . $toText . "', Subject: '" . $mail->Subject . "'", false, 'MAILER'); 
+
 		return '';
 	}else{
+		cacti_log("Mail Failed to '" . $toText . "', Subject: '" . $mail->Subject . "'", false, 'MAILER');
+
 		return $mail->ErrorInfo;
 	}
 }
