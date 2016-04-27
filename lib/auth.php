@@ -371,6 +371,10 @@ function get_graph_permissions_sql($policy_graphs, $policy_hosts, $policy_graph_
    @arg $local_graph_id - (int) the ID of the graph to check permissions for
    @returns - (bool) whether the current user is allowed the view the specified graph or not */
 function is_graph_allowed($local_graph_id, $user = 0) {
+	if ($user == 0) {
+		return true;
+	}
+
 	$rows  = 0;
 	$graph = get_allowed_graphs('', '', '', $rows, $user, $local_graph_id);
 
