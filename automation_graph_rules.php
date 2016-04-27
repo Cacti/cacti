@@ -619,7 +619,7 @@ function automation_graph_rules() {
 		'rows' => array(
 			'filter' => FILTER_VALIDATE_INT, 
 			'pageset' => true,
-			'default' => read_config_option('num_rows_table')
+			'default' => '-1'
 			),
 		'page' => array(
 			'filter' => FILTER_VALIDATE_INT, 
@@ -656,17 +656,16 @@ function automation_graph_rules() {
 	validate_store_request_vars($filters, 'sess_autom_gr');
 	/* ================= input validation ================= */
 
+	if (get_request_var('rows') == -1) {
+		$rows = read_config_option('num_rows_table');
+	}else{
+		$rows = get_request_var('rows');
+	}
+
 	if ((!empty($_SESSION['sess_autom_gr_status'])) && (!isempty_request_var('status'))) {
 		if ($_SESSION['sess_autom_gr_status'] != get_nfilter_request_var('status')) {
 			set_request_var('page', 1);
 		}
-	}
-
-	/* if the number of rows is -1, set it to the default */
-	if (get_nfilter_request_var('rows') == -1) {
-		$rows = read_config_option('num_rows_table');
-	}else{
-		$rows = get_nfilter_request_var('rows');
 	}
 
 	html_start_box('Graph Rules', '100%', $colors['header'], '3', 'center', 'automation_graph_rules.php?action=edit');
@@ -720,7 +719,7 @@ function automation_graph_rules() {
 						</td>
 						<td>
 							<select id='rows'>
-								<option value='-1' <?php print (get_request_var('rows') == '-1' ? ' selected':'');?>>Default</option>
+								<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?>
 								<?php
 								if (sizeof($item_rows) > 0) {
 									foreach ($item_rows as $key => $value) {
@@ -815,9 +814,9 @@ function automation_graph_rules() {
 		ON (agr.graph_type_id=sqg.id) 
 		$sql_where 
 		ORDER BY " . get_request_var('sort_column') . ' ' . get_request_var('sort_direction') . "
-		LIMIT " . (get_request_var('rows')*(get_request_var('page')-1)) . ',' . get_request_var('rows'));
+		LIMIT " . ($rows*(get_request_var('page')-1)) . ',' . $rows);
 
-	$nav = html_nav_bar('automation_graph_rules.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), get_request_var('rows'), $total_rows, 7, 'Graphs', 'page', 'main');
+	$nav = html_nav_bar('automation_graph_rules.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 7, 'Graphs', 'page', 'main');
 
 	print $nav;
 

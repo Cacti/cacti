@@ -1047,11 +1047,11 @@ function reports_edit() {
 		'id' => array(
 			'filter' => FILTER_VALIDATE_INT, 
 			'pageset' => true,
-			'default' => read_config_option('num_rows_table')
+			'default' => '-1'
 			),
 		'rows' => array(
 			'filter' => FILTER_VALIDATE_INT, 
-			'default' => read_config_option('num_rows_table')
+			'default' => '-1'
 			),
 		'page' => array(
 			'filter' => FILTER_VALIDATE_INT, 
@@ -1077,6 +1077,12 @@ function reports_edit() {
 
 	validate_store_request_vars($filters, 'sess_reports');
 	/* ================= input validation ================= */
+
+	if (get_request_var('rows') == '-1') {
+		$rows = read_config_option('num_rows_table');
+	}else{
+		$rows = get_request_var('rows');
+	}
 
 	/* display the report */
 	$report = array();
@@ -1321,7 +1327,7 @@ function reports() {
 		'rows' => array(
 			'filter' => FILTER_VALIDATE_INT, 
 			'pageset' => true,
-			'default' => read_config_option('num_rows_table')
+			'default' => '-1'
 			),
 		'page' => array(
 			'filter' => FILTER_VALIDATE_INT, 
@@ -1358,17 +1364,16 @@ function reports() {
 	validate_store_request_vars($filters, 'sess_reports');
 	/* ================= input validation ================= */
 
-	if ((!empty($_SESSION['sess_status'])) && (!isempty_request_var('status'))) {
-		if ($_SESSION['sess_status'] != get_request_var('status')) {
-			set_request_var('page', '1');
-		}
-	}
-
-	/* if the number of rows is -1, set it to the default */
 	if (get_request_var('rows') == -1) {
 		$rows = read_config_option('num_rows_table');
 	}else{
 		$rows = get_request_var('rows');
+	}
+
+	if ((!empty($_SESSION['sess_status'])) && (!isempty_request_var('status'))) {
+		if ($_SESSION['sess_status'] != get_request_var('status')) {
+			set_request_var('page', '1');
+		}
 	}
 
 	print '<form id="form_report" action="' . get_reports_page() . '">';

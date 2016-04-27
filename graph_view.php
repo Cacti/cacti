@@ -376,7 +376,7 @@ case 'list':
 		'rows' => array(
 			'filter' => FILTER_VALIDATE_INT, 
 			'pageset' => true,
-			'default' => read_config_option('num_rows_table')
+			'default' => '-1'
 			),
 		'page' => array(
 			'filter' => FILTER_VALIDATE_INT, 
@@ -414,6 +414,12 @@ case 'list':
 
 	validate_store_request_vars($filters, 'sess_gl');
 	/* ================= input validation ================= */
+
+	if (get_request_var('rows') == '-1') {
+		$rows = read_config_option('num_rows_table');
+	}else{
+		$rows = get_request_var('rows');
+	}
 
 	/* save selected graphs into url */
 	if (!isempty_request_var('graph_list')) {
@@ -474,6 +480,7 @@ case 'list':
 					</td>
 					<td>
 						<select id='rows' name='rows' onChange='applyFilter()'>
+							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?>
 							<?php
 							if (sizeof($item_rows) > 0) {
 							foreach ($item_rows as $key => $value) {
@@ -510,11 +517,6 @@ case 'list':
 	<?php
 	html_end_box();
 
-	/* if the number of rows is -1, set it to the default */
-	if (get_request_var('rows') == -1) {
-		set_request_var('rows', read_user_setting('num_rows_table'));
-	}
-
 	/* create filter for sql */
 	$sql_where  = '';
 	if (!isempty_request_var('filter')) {
@@ -532,7 +534,7 @@ case 'list':
 	}
 
 	$total_rows = 0;
-	$limit      = (get_request_var('rows')*(get_request_var('page')-1)) . ',' . get_request_var('rows');
+	$limit      = ($rows*(get_request_var('page')-1)) . ',' . $rows;
 
 	$graphs = get_allowed_graphs($sql_where, 'gtg.title_cache', $limit, $total_rows);
 
@@ -540,7 +542,7 @@ case 'list':
 
 	html_start_box('', '100%', '', '3', 'center', '');
 
-	$nav = html_nav_bar('graph_view.php?action=list', MAX_DISPLAY_PAGES, get_request_var('page'), get_request_var('rows'), $total_rows, 5, 'Graphs', 'page', 'main');
+	$nav = html_nav_bar('graph_view.php?action=list', MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 5, 'Graphs', 'page', 'main');
 
 	print $nav;
 

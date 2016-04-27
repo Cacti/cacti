@@ -574,6 +574,7 @@ function vdef_filter() {
 					</td>
 					<td>
 						<select id='rows' onChange='applyFilter()'>
+							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?>
 							<?php
 							if (sizeof($item_rows)) {
 							foreach ($item_rows as $key => $value) {
@@ -652,12 +653,6 @@ function get_vdef_records(&$total_rows, &$rowspp) {
 		$sql_having = '';
 	}
 
-	if (get_request_var('rows') == '-1') {
-		$rows = read_config_option('num_rows_table');
-	}else{
-		$rows = get_request_var('rows');
-	}
-
 	$total_rows = db_fetch_cell("SELECT
 		COUNT(rows)
         FROM (
@@ -685,7 +680,7 @@ function get_vdef_records(&$total_rows, &$rowspp) {
 		GROUP BY rs.id
 		$sql_having
 		ORDER BY " . get_request_var('sort_column') . ' ' . get_request_var('sort_direction') .
-		' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows);
+		' LIMIT ' . ($rowspp*(get_request_var('page')-1)) . ',' . $rowspp);
 }
 
 function vdef($refresh = true) {
@@ -696,7 +691,7 @@ function vdef($refresh = true) {
 		'rows' => array(
 			'filter' => FILTER_VALIDATE_INT,
 			'pageset' => true,
-			'default' => read_config_option('num_rows_table')
+			'default' => '-1'
 			),
 		'page' => array(
 			'filter' => FILTER_VALIDATE_INT,
@@ -733,7 +728,12 @@ function vdef($refresh = true) {
 
 	$total_rows = 0;
 	$vdefs = array();
-	$rows  = get_request_var('rows');
+
+	if (get_request_var('rows') == '-1') {
+		$rows = read_config_option('num_rows_table');
+	}else{
+		$rows = get_request_var('rows');
+	}
 
 	$vdefs = get_vdef_records($total_rows, $rows);
 
@@ -741,7 +741,7 @@ function vdef($refresh = true) {
 
 	html_start_box('', '100%', '', '3', 'center', '');
 
-	$nav = html_nav_bar('vdef.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), get_request_var('rows'), $total_rows, 5, 'VDEFs', 'page', 'main');
+	$nav = html_nav_bar('vdef.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 5, 'VDEFs', 'page', 'main');
 
     print $nav;
 

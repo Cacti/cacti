@@ -73,7 +73,7 @@ function manager(){
 		'rows' => array(
 			'filter' => FILTER_VALIDATE_INT, 
 			'pageset' => true,
-			'default' => read_config_option('num_rows_table')
+			'default' => '-1'
 			),
 		'page' => array(
 			'filter' => FILTER_VALIDATE_INT, 
@@ -99,6 +99,12 @@ function manager(){
 
 	validate_store_request_vars($filters, 'sess_snmp_mgr');
 	/* ================= input validation ================= */
+
+	if (get_request_var('rows') == '-1') {
+		$rows = read_config_option('num_rows_table');
+	}else{
+		$rows = get_request_var('rows');
+	}
 
 	?>
 	<script type="text/javascript">
@@ -151,6 +157,7 @@ function manager(){
 						</td>
 						<td>
 							<select id='rows' name='rows' onChange='applyFilter()'>
+								<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?>
 								<?php
 								if (sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
@@ -206,7 +213,7 @@ function manager(){
 		ON snmpagent_notifications_log.manager_id = snmpagent_managers.id
 		$sql_where
 		ORDER BY " . get_request_var('sort_column') . ' ' . get_request_var('sort_direction') .  ' 
-		LIMIT ' . (get_request_var('rows')*(get_request_var('page')-1)) . ',' . get_request_var('rows'));
+		LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows);
 
 	$display_text = array(
 		'description' => array( __('Description'), 'ASC'),
@@ -222,7 +229,7 @@ function manager(){
 	html_start_box('', '100%', '', '3', 'center', '');
 
 	/* generate page list */
-	$nav = html_nav_bar('managers.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), get_request_var('rows'), $total_rows, 11, __('Receivers'), 'page', 'main');
+	$nav = html_nav_bar('managers.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 11, __('Receivers'), 'page', 'main');
 	print $nav;
 
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
@@ -415,7 +422,7 @@ function manager_notifications($id){
 		'rows' => array(
 			'filter' => FILTER_VALIDATE_INT, 
 			'pageset' => true,
-			'default' => read_config_option('num_rows_table')
+			'default' => '-1'
 			),
 		'page' => array(
 			'filter' => FILTER_VALIDATE_INT, 
@@ -447,6 +454,12 @@ function manager_notifications($id){
 
 	validate_store_request_vars($filters, 'sess_snmp_cache');
 	/* ================= input validation ================= */
+
+	if (get_request_var('rows') == '-1') {
+		$rows = read_config_option('num_rows_table');
+	}else{
+		$rows = get_request_var('rows');
+	}
 
 	?>
 	<script type="text/javascript">
@@ -514,6 +527,7 @@ function manager_notifications($id){
 						</td>
 						<td>
 							<select id='rows' name='rows' onChange='applyFilter()'>
+								<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?>
 								<?php
 								if (sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
@@ -558,8 +572,6 @@ function manager_notifications($id){
 	form_start('managers.php', 'chk');
 
 	html_start_box('', '100%', '', '3', 'center', '');
-
-	$rows = read_config_option('num_rows_table');
 
 	/* FIXME: Change SQL Queries to not use WHERE 1 */
 	$total_rows = db_fetch_cell("SELECT COUNT(*) FROM snmpagent_cache WHERE 1 $sql_where");
@@ -650,7 +662,7 @@ function manager_logs($id) {
 		'rows' => array(
 			'filter' => FILTER_VALIDATE_INT, 
 			'pageset' => true,
-			'default' => read_config_option('num_rows_table')
+			'default' => '-1'
 			),
 		'page' => array(
 			'filter' => FILTER_VALIDATE_INT, 
@@ -670,6 +682,12 @@ function manager_logs($id) {
 
 	validate_store_request_vars($filters, 'sess_snmp_logs');
 	/* ================= input validation ================= */
+
+	if (get_request_var('rows') == '-1') {
+		$rows = read_config_option('num_rows_table');
+	}else{
+		$rows = get_request_var('rows');
+	}
 
 	?>
 	<script type='text/javascript'>
@@ -747,7 +765,7 @@ function manager_logs($id) {
 		LEFT JOIN snmpagent_cache 
 		ON snmpagent_cache.name = snmpagent_notifications_log.notification
 		WHERE $sql_where 
-		LIMIT " . (read_config_option('num_rows_table')*(get_request_var('page')-1)) . ',' . read_config_option('num_rows_table');
+		LIMIT " . ($rows*(get_request_var('page')-1)) . ',' . $rows;
 
 	form_start('managers.php', 'chk');
 
@@ -757,7 +775,7 @@ function manager_logs($id) {
 
 	$logs = db_fetch_assoc($sql_query);
 
-	$nav = html_nav_bar('managers.php?action=exit&id=' . $id . '&tab=logs&mib=' . get_request_var('mib') . '&filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), get_request_var('rows'), $total_rows, 7, __('Receivers'), 'page', 'main');
+	$nav = html_nav_bar('managers.php?action=exit&id=' . $id . '&tab=logs&mib=' . get_request_var('mib') . '&filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 7, __('Receivers'), 'page', 'main');
 
 	print $nav;
 

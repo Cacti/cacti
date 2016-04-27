@@ -414,7 +414,7 @@ function graphs() {
 		'rows' => array(
 			'filter' => FILTER_VALIDATE_INT, 
 			'pageset' => true,
-			'default' => read_config_option('num_rows_table')
+			'default' => '-1'
 			),
 		'filter' => array(
 			'filter' => FILTER_CALLBACK, 
@@ -436,6 +436,12 @@ function graphs() {
 	validate_store_request_vars($filters, 'sess_grn');
 	/* ================= input validation ================= */
 
+	if (get_request_var('rows') == '-1') {
+		$rows = read_config_option('num_rows_table');
+	}else{
+		$rows = get_request_var('rows');
+	}
+
 	if (!isempty_request_var('host_id')) {
 		$host   = db_fetch_row_prepared('SELECT id, description, hostname, host_template_id FROM host WHERE id = ?', array(get_request_var('host_id')));
 		$header =  ' [ ' . htmlspecialchars($host['description']) . ' (' . htmlspecialchars($host['hostname']) . ') ' . 
@@ -444,8 +450,6 @@ function graphs() {
 		$host   = array();
 		$header = 'None Host Type';
 	}
-
-	$row_limit = get_request_var('rows');
 
 	html_start_box("New Graphs for $header" , '100%', '', '3', 'center', '');
 
@@ -521,6 +525,7 @@ function graphs() {
 				</td>
 				<td>
 					<select id='rows' name='rows' onChange='applyFilter()'>
+						<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?>
 						<?php
 						if (sizeof($item_rows) > 0) {
 							foreach ($item_rows as $key => $value) {
@@ -825,14 +830,14 @@ function graphs() {
 							$sql_where
 							GROUP BY host_id, snmp_query_id, snmp_index
 							$sql_order
-							LIMIT " . ($row_limit*($page-1)) . ',' . $row_limit;
+							LIMIT " . ($rows*($page-1)) . ',' . $rows;
 
 						$sql_query .= ' FROM host_snmp_cache
 							WHERE host_id=' . $host['id'] . '
 							AND snmp_query_id=' . $snmp_query['id'] . "
 							$sql_where
 							GROUP BY host_id, snmp_query_id, snmp_index
-							LIMIT " . ($row_limit*($page-1)) . ',' . $row_limit;
+							LIMIT " . ($rows*($page-1)) . ',' . $rows;
 
 						$rows_query = 'SELECT host_id, snmp_query_id, snmp_index
 							FROM host_snmp_cache
@@ -848,13 +853,13 @@ function graphs() {
 
 						$total_rows = sizeof(db_fetch_assoc($rows_query));
 
-						if (($page - 1) * $row_limit > $total_rows) {
+						if (($page - 1) * $rows > $total_rows) {
 							$page = 1;
 							set_request_var('page' . $query['id'], $page);
 							load_current_session_value('page' . $query['id'], 'sess_grn_page' . $query['id'], '1');
 						}
 
-						$nav = html_nav_bar('graphs_new.php', MAX_DISPLAY_PAGES, $page, $row_limit, $total_rows, 15, 'Items', 'page' . $snmp_query['id']);
+						$nav = html_nav_bar('graphs_new.php', MAX_DISPLAY_PAGES, $page, $rows, $total_rows, 15, 'Items', 'page' . $snmp_query['id']);
 
 						print $nav;
 
@@ -913,7 +918,7 @@ function graphs() {
 							}
 						}
 
-						if ($total_rows > $row_limit) {
+						if ($total_rows > $rows) {
 							print $nav;
 						}
 					}else{

@@ -612,7 +612,7 @@ function cdef() {
 		'rows' => array(
 			'filter' => FILTER_VALIDATE_INT, 
 			'pageset' => true,
-			'default' => read_config_option('num_rows_table')
+			'default' => '-1'
 			),
 		'page' => array(
 			'filter' => FILTER_VALIDATE_INT, 
@@ -645,6 +645,12 @@ function cdef() {
 	validate_store_request_vars($filters, 'sess_cdef');
 	/* ================= input validation ================= */
 
+	if (get_request_var('rows') == '-1') {
+		$rows = read_config_option('num_rows_table');
+	}else{
+		$rows = get_request_var('rows');
+	}
+
 	html_start_box( __('CDEFs'), '100%', '', '3', 'center', 'cdef.php?action=edit');
 
 	?>
@@ -664,6 +670,7 @@ function cdef() {
 					</td>
 					<td>
 						<select id='rows' name='rows' onChange='applyFilter()'>
+							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?>
 							<?php
 							if (sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
@@ -772,9 +779,9 @@ function cdef() {
 		GROUP BY rs.id
 		$sql_having
 		ORDER BY " . get_request_var('sort_column') . ' ' . get_request_var('sort_direction') .
-		' LIMIT ' . (get_request_var('rows')*(get_request_var('page')-1)) . ',' . get_request_var('rows'));
+		' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows);
 
-	$nav = html_nav_bar('cdef.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), get_request_var('rows'), $total_rows, 5, 'CDEFs', 'page', 'main');
+	$nav = html_nav_bar('cdef.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 5, 'CDEFs', 'page', 'main');
 
 	print $nav;
 

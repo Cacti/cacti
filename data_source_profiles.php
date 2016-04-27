@@ -665,7 +665,7 @@ function profile() {
 		'rows' => array(
 			'filter' => FILTER_VALIDATE_INT, 
 			'pageset' => true,
-			'default' => read_config_option('num_rows_table')
+			'default' => '-1'
 			),
 		'page' => array(
 			'filter' => FILTER_VALIDATE_INT, 
@@ -698,6 +698,12 @@ function profile() {
 	validate_store_request_vars($filters, 'sess_dsp');
 	/* ================= input validation ================= */
 
+	if (get_request_var('rows') == '-1') {
+		$rows = read_config_option('num_rows_table');
+	}else{
+		$rows = get_request_var('rows');
+	}
+
 	html_start_box( __('Data Source Profiles'), '100%', '', '3', 'center', 'data_source_profiles.php?action=edit');
 
 	?>
@@ -717,6 +723,7 @@ function profile() {
 					</td>
 					<td>
 						<select id='rows' name='rows' onChange='applyFilter()'>
+							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?>
 							<?php
 							if (sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
@@ -824,9 +831,9 @@ function profile() {
 		GROUP BY rs.id
 		$sql_having
 		ORDER BY " . get_request_var('sort_column') . ' ' . get_request_var('sort_direction') .
-		' LIMIT ' . (get_request_var('rows')*(get_request_var('page')-1)) . ',' . get_request_var('rows'));
+		' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows);
 
-	$nav = html_nav_bar('data_source_profiles.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), get_request_var('rows'), $total_rows, 9, __('Profiles'), 'page', 'main');
+	$nav = html_nav_bar('data_source_profiles.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 9, __('Profiles'), 'page', 'main');
 
 	print $nav;
 

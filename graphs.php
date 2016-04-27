@@ -1452,7 +1452,7 @@ function graph_management() {
 		'rows' => array(
 			'filter' => FILTER_VALIDATE_INT, 
 			'pageset' => true,
-			'default' => read_config_option('num_rows_table')
+			'default' => '-1'
 			),
 		'page' => array(
 			'filter' => FILTER_VALIDATE_INT, 
@@ -1489,7 +1489,6 @@ function graph_management() {
 	validate_store_request_vars($filters, 'sess_graph');
 	/* ================= input validation ================= */
 
-	/* if the number of rows is -1, set it to the default */
 	if (get_request_var('rows') == -1) {
 		$rows = read_config_option('num_rows_table');
 	}else{
@@ -1589,6 +1588,7 @@ function graph_management() {
 					</td>
 					<td>
 						<select id='rows' name='rows' onChange='applyFilter()'>
+							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?>
 							<?php
 							if (sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {

@@ -490,7 +490,7 @@ function utilities_view_user_log() {
 		'rows' => array(
 			'filter' => FILTER_VALIDATE_INT, 
 			'pageset' => true,
-			'default' => read_config_option('num_rows_table')
+			'default' => '-1'
 			),
 		'page' => array(
 			'filter' => FILTER_VALIDATE_INT, 
@@ -526,6 +526,12 @@ function utilities_view_user_log() {
 
 	validate_store_request_vars($filters, 'sess_userlog');
 	/* ================= input validation ================= */
+
+	if (get_request_var('rows') == '-1') {
+		$rows = read_config_option('num_rows_table');
+	}else{
+		$rows = get_request_var('rows');
+	}
 
 	?>
 	<script type="text/javascript">
@@ -613,6 +619,7 @@ function utilities_view_user_log() {
 					</td>
 					<td>
 						<select id='rows' onChange='applyFilter()'>
+							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?>
 							<?php
 							if (sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
@@ -701,11 +708,11 @@ function utilities_view_user_log() {
 		ON ua.username=ul.username
 		$sql_where
 		ORDER BY " . get_request_var('sort_column') . ' ' . get_request_var('sort_direction') . '
-		LIMIT ' . (get_request_var('rows')*(get_request_var('page')-1)) . ',' . get_request_var('rows');
+		LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;
 
 	$user_log = db_fetch_assoc($user_log_sql);
 
-	$nav = html_nav_bar('utilities.php?action=view_user_log&username=' . get_request_var('username') . '&filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), get_request_var('rows'), $total_rows, 6, 'User Logins', 'page', 'main');
+	$nav = html_nav_bar('utilities.php?action=view_user_log&username=' . get_request_var('username') . '&filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 6, 'User Logins', 'page', 'main');
 
 	print $nav;
 
@@ -797,7 +804,7 @@ function utilities_view_logfile() {
 		'tail_lines' => array(
 			'filter' => FILTER_VALIDATE_INT, 
 			'pageset' => true,
-			'default' => read_config_option('num_rows_log')
+			'default' => '-1'
 			),
 		'filter' => array(
 			'filter' => FILTER_CALLBACK, 
@@ -824,6 +831,12 @@ function utilities_view_logfile() {
 
 	validate_store_request_vars($filters, 'sess_log');
 	/* ================= input validation ================= */
+
+	if (get_request_var('rows') == '-1') {
+		$rows = read_config_option('num_rows_table');
+	}else{
+		$rows = get_request_var('rows');
+	}
 
 	$refresh['seconds'] = get_request_var('refresh');
 	$refresh['page'] = 'utilities.php?action=view_logfile&header=false';
@@ -1089,7 +1102,7 @@ function utilities_view_snmp_cache() {
 		'rows' => array(
 			'filter' => FILTER_VALIDATE_INT, 
 			'pageset' => true,
-			'default' => read_config_option('num_rows_table')
+			'default' => '-1'
 			),
 		'page' => array(
 			'filter' => FILTER_VALIDATE_INT, 
@@ -1120,6 +1133,12 @@ function utilities_view_snmp_cache() {
 
 	validate_store_request_vars($filters, 'sess_usnmp');
 	/* ================= input validation ================= */
+
+	if (get_request_var('rows') == '-1') {
+		$rows = read_config_option('num_rows_table');
+	}else{
+		$rows = get_request_var('rows');
+	}
 
 	$refresh['seconds'] = '300';
 	$refresh['page'] = 'utilities.php?action=view_snmp_cache&header=false';
@@ -1251,6 +1270,7 @@ function utilities_view_snmp_cache() {
 					</td>
 					<td>
 						<select id='rows' onChange='applyFilter()'>
+							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?>
 							<?php
 							if (sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
@@ -1321,11 +1341,11 @@ function utilities_view_snmp_cache() {
 		WHERE host_snmp_cache.host_id = host.id
 		AND host_snmp_cache.snmp_query_id = snmp_query.id
 		$sql_where
-		LIMIT " . (get_request_var('rows')*(get_request_var('page')-1)) . ',' . get_request_var('rows');
+		LIMIT " . ($rows*(get_request_var('page')-1)) . ',' . $rows;
 
 	$snmp_cache = db_fetch_assoc($snmp_cache_sql);
 
-	$nav = html_nav_bar('utilities.php?action=view_snmp_cache&host_id=' . get_request_var('host_id') . '&filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), get_request_var('rows'), $total_rows, 6, 'Entries', 'page', 'main');
+	$nav = html_nav_bar('utilities.php?action=view_snmp_cache&host_id=' . get_request_var('host_id') . '&filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 6, 'Entries', 'page', 'main');
 
 	print $nav;
 
@@ -1372,7 +1392,7 @@ function utilities_view_poller_cache() {
 		'rows' => array(
 			'filter' => FILTER_VALIDATE_INT, 
 			'pageset' => true,
-			'default' => read_config_option('num_rows_table')
+			'default' => '-1'
 			),
 		'page' => array(
 			'filter' => FILTER_VALIDATE_INT, 
@@ -1408,6 +1428,12 @@ function utilities_view_poller_cache() {
 
 	validate_store_request_vars($filters, 'sess_poller');
 	/* ================= input validation ================= */
+
+	if (get_request_var('rows') == '-1') {
+		$rows = read_config_option('num_rows_table');
+	}else{
+		$rows = get_request_var('rows');
+	}
 
 	$refresh['seconds'] = '300';
 	$refresh['page'] = 'utilities.php?action=view_poller_cache&header=false';
@@ -1499,6 +1525,7 @@ function utilities_view_poller_cache() {
 					</td>
 					<td>
 						<select id='rows' onChange='applyFilter()'>
+							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?>
 							<?php
 							if (sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
@@ -1570,11 +1597,11 @@ function utilities_view_poller_cache() {
 		ON data_template_data.local_data_id = poller_item.local_data_id
 		$sql_where
 		ORDER BY " . get_request_var('sort_column') . ' ' . get_request_var('sort_direction') . ', action ASC
-		LIMIT ' . (get_request_var('rows')*(get_request_var('page')-1)) . ',' . get_request_var('rows');
+		LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;
 
 	$poller_cache = db_fetch_assoc($poller_sql);
 
-	$nav = html_nav_bar('utilities.php?action=view_poller_cache&filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), get_request_var('rows'), $total_rows, 3, 'Entries', 'page', 'main');
+	$nav = html_nav_bar('utilities.php?action=view_poller_cache&filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 3, 'Entries', 'page', 'main');
 
 	print $nav;
 
@@ -2084,7 +2111,7 @@ function snmpagent_utilities_run_cache() {
 		'rows' => array(
 			'filter' => FILTER_VALIDATE_INT, 
 			'pageset' => true,
-			'default' => read_config_option('num_rows_table')
+			'default' => '-1'
 			),
 		'page' => array(
 			'filter' => FILTER_VALIDATE_INT, 
@@ -2106,7 +2133,6 @@ function snmpagent_utilities_run_cache() {
 	validate_store_request_vars($filters, 'sess_snmpac');
 	/* ================= input validation ================= */
 
-	/* if the number of rows is -1, set it to the default */
 	if (get_request_var('rows') == -1) {
 		$rows = read_config_option('num_rows_table');
 	}else{
@@ -2224,6 +2250,7 @@ function snmpagent_utilities_run_cache() {
 			OR `max-access` LIKE '%%" . get_request_var('filter') . "%%')";
 	}
 	$sql_where .= ' ORDER by `oid`';
+
 	html_start_box('', '100%', '', '3', 'center', '');
 
 	$total_rows = db_fetch_cell("SELECT COUNT(*) FROM snmpagent_cache WHERE 1 $sql_where");
@@ -2321,7 +2348,7 @@ function snmpagent_utilities_run_eventlog(){
 		'rows' => array(
 			'filter' => FILTER_VALIDATE_INT, 
 			'pageset' => true,
-			'default' => read_config_option('num_rows_table')
+			'default' => '-1'
 			),
 		'page' => array(
 			'filter' => FILTER_VALIDATE_INT, 
@@ -2348,9 +2375,10 @@ function snmpagent_utilities_run_eventlog(){
 	validate_store_request_vars($filters, 'sess_snmpl');
 	/* ================= input validation ================= */
 
-	/* if the number of rows is -1, set it to the default */
 	if (get_request_var('rows') == -1) {
-		set_request_var('rows', read_config_option('num_rows_table'));
+		$rows = read_config_option('num_rows_table');
+	}else{
+		$rows = get_request_var('rows');
 	}
 
 	?>
@@ -2486,9 +2514,9 @@ function snmpagent_utilities_run_eventlog(){
 	}
 	$sql_where .= ' ORDER by `time` DESC';
 	$sql_query = "SELECT snmpagent_notifications_log.*, snmpagent_managers.hostname, snmpagent_cache.description FROM snmpagent_notifications_log
-					 INNER JOIN snmpagent_managers ON snmpagent_managers.id = snmpagent_notifications_log.manager_id
-					 LEFT JOIN snmpagent_cache ON snmpagent_cache.name = snmpagent_notifications_log.notification
-					 WHERE $sql_where LIMIT " . (read_config_option('num_rows_table')*(get_request_var('page')-1)) . ',' . read_config_option('num_rows_table');
+		INNER JOIN snmpagent_managers ON snmpagent_managers.id = snmpagent_notifications_log.manager_id
+		LEFT JOIN snmpagent_cache ON snmpagent_cache.name = snmpagent_notifications_log.notification
+		WHERE $sql_where LIMIT " . ($rows*(get_request_var('page')-1)) . ',' . $rows;
 
 	form_start('managers.php', 'chk');
 
@@ -2498,7 +2526,7 @@ function snmpagent_utilities_run_eventlog(){
 	$logs = db_fetch_assoc($sql_query);
 
 	/* generate page list */
-	$nav = html_nav_bar('utilities.php?action=view_snmpagent_events&severity='. get_request_var('severity').'&receiver='. get_request_var('receiver').'&filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), get_request_var('rows'), $total_rows, 11, '', 'page', 'main');
+	$nav = html_nav_bar('utilities.php?action=view_snmpagent_events&severity='. get_request_var('severity').'&receiver='. get_request_var('receiver').'&filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 11, '', 'page', 'main');
 
 	print $nav;
 

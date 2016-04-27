@@ -548,7 +548,7 @@ function data() {
 		'rows' => array(
 			'filter' => FILTER_VALIDATE_INT, 
 			'pageset' => true,
-			'default' => read_config_option('num_rows_table')
+			'default' => '-1'
 			),
 		'page' => array(
 			'filter' => FILTER_VALIDATE_INT, 
@@ -575,6 +575,12 @@ function data() {
 	validate_store_request_vars($filters, 'sess_data_input');
 	/* ================= input validation ================= */
 
+	if (get_request_var('rows') == '-1') {
+		$rows = read_config_option('num_rows_table');
+	}else{
+		$rows = get_request_var('rows');
+	}
+
 	html_start_box( __('Data Input Methods'), '100%', '', '3', 'center', 'data_input.php?action=edit');
 
 	?>
@@ -584,16 +590,17 @@ function data() {
 			<table class='filterTable'>
 				<tr class='noprint'>
 					<td>
-						<?php __('Search');?>
+						<?php print __('Search');?>
 					</td>
 					<td>
 						<input id='filter' type='text' name='filter' size='25' value='<?php print htmlspecialchars(get_request_var('filter'));?>'>
 					</td>
 					<td class='nowrap'>
-						<?php __('Input Methods');?>
+						<?php print __('Input Methods');?>
 					</td>
 					<td>
 						<select id='rows' name='rows' onChange='applyFilter()'>
+							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?>
 							<?php
 							if (sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
@@ -604,10 +611,10 @@ function data() {
 						</select>
 					</td>
 					<td>
-						<input type="submit" id='refresh' value="<?php __('Go');?>" title="<?php __('Set/Refresh Filters');?>">
+						<input type='submit' id='refresh' value='<?php print __('Go');?>' title='<?php __('Set/Refresh Filters');?>'>
 					</td>
 					<td>
-						<input type="button" id='clear' value="<?php __('Clear');?>" title="<?php __('Clear Filters');?>">
+						<input type='button' id='clear' value='<?php print __('Clear');?>' title='<?php __('Clear Filters');?>'>
 					</td>
 				</tr>
 			</table>
@@ -646,7 +653,7 @@ function data() {
 	html_end_box();
 
 	/* print checkbox form for validation */
-	print "<form name='chk' method='post' action='data_input.php'>\n";
+	form_start('data_input.php', 'chk');
 
 	html_start_box('', '100%', '', '3', 'center', '');
 
@@ -676,9 +683,9 @@ function data() {
 		$sql_where
 		GROUP BY di.id
 		ORDER BY " . get_request_var('sort_column') . ' ' . get_request_var('sort_direction') . '
-		LIMIT ' . (get_request_var('rows')*(get_request_var('page')-1)) . ',' . get_request_var('rows'));
+		LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows);
 
-	$nav = html_nav_bar('data_input.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), get_request_var('rows'), $total_rows, 6, 'Input Methods', 'page', 'main');
+	$nav = html_nav_bar('data_input.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 6, 'Input Methods', 'page', 'main');
 
 	print $nav;
 

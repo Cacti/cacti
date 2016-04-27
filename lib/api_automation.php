@@ -30,7 +30,7 @@ function display_matching_hosts($rule, $rule_type, $url) {
 		'rowsd' => array(
 			'filter' => FILTER_VALIDATE_INT, 
 			'pageset' => true,
-			'default' => read_config_option('num_rows_table')
+			'default' => '-1'
 			),
 		'paged' => array(
 			'filter' => FILTER_VALIDATE_INT, 
@@ -73,17 +73,17 @@ function display_matching_hosts($rule, $rule_type, $url) {
 	validate_store_request_vars($filters, 'sess_auto');
 	/* ================= input validation ================= */
 
-	if ((!empty($_SESSION['sess_automation_host_status'])) && (!isempty_request_var('host_status'))) {
-		if ($_SESSION['sess_automation_host_status'] != get_request_var('host_status')) {
-			set_request_var('paged', '1');
-		}
-	}
-
 	/* if the number of rows is -1, set it to the default */
 	if (get_request_var('rowsd') == -1) {
 		$rows = read_config_option('num_rows_table');
 	}else{
 		$rows = get_request_var('rowsd');
+	}
+
+	if ((!empty($_SESSION['sess_automation_host_status'])) && (!isempty_request_var('host_status'))) {
+		if ($_SESSION['sess_automation_host_status'] != get_request_var('host_status')) {
+			set_request_var('paged', '1');
+		}
 	}
 
 	?>
@@ -316,7 +316,7 @@ function display_matching_graphs($rule, $rule_type, $url) {
 		'rows' => array(
 			'filter' => FILTER_VALIDATE_INT, 
 			'pageset' => true,
-			'default' => read_config_option('num_rows_table')
+			'default' => '-1'
 			),
 		'page' => array(
 			'filter' => FILTER_VALIDATE_INT, 
@@ -605,7 +605,7 @@ function display_new_graphs($rule, $url) {
 		'rows' => array(
 			'filter' => FILTER_VALIDATE_INT, 
 			'pageset' => true,
-			'default' => read_config_option('num_rows_table')
+			'default' => '-1'
 			),
 		'page' => array(
 			'filter' => FILTER_VALIDATE_INT, 
@@ -889,7 +889,7 @@ function display_matching_trees ($rule_id, $rule_type, $item, $url) {
 		'rows' => array(
 			'filter' => FILTER_VALIDATE_INT, 
 			'pageset' => true,
-			'default' => read_config_option('num_rows_table')
+			'default' => '-1'
 			),
 		'page' => array(
 			'filter' => FILTER_VALIDATE_INT, 
@@ -926,17 +926,16 @@ function display_matching_trees ($rule_id, $rule_type, $item, $url) {
 	validate_store_request_vars($filters, 'sess_autot');
 	/* ================= input validation ================= */
 
-	if ((!empty($_SESSION['sess_automation_host_status'])) && (!isempty_request_var('host_status'))) {
-		if ($_SESSION['sess_automation_host_status'] != get_request_var('host_status')) {
-			set_request_var('page', '1');
-		}
-	}
-
-	/* if the number of rows is -1, set it to the default */
 	if (get_request_var('rows') == -1) {
 		$rows = read_config_option('num_rows_table');
 	}else{
 		$rows = get_request_var('rows');
+	}
+
+	if ((!empty($_SESSION['sess_automation_host_status'])) && (!isempty_request_var('host_status'))) {
+		if ($_SESSION['sess_automation_host_status'] != get_request_var('host_status')) {
+			set_request_var('page', '1');
+		}
 	}
 
 	?>
@@ -2365,9 +2364,9 @@ function create_dq_graphs($host_id, $snmp_query_id, $rule) {
 				continue;
 			}
 
-			$empty = array(); /* Suggested Values are not been implemented */
+			$myempty = array(); /* Suggested Values are not been implemented */
 
-			$return_array = create_complete_graph_from_template($graph_template_id, $host_id, $snmp_query_array, $empty);
+			$return_array = create_complete_graph_from_template($graph_template_id, $host_id, $snmp_query_array, $myempty);
 
 			if (sizeof($return_array) && array_key_exists('local_graph_id', $return_array) && array_key_exists('local_data_id', $return_array)) {
 				$data_source_id = db_fetch_cell('SELECT

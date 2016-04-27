@@ -751,7 +751,7 @@ function network_edit() {
 	<?php
 }
 
-function get_networks(&$sql_where, $row_limit, $apply_limits = TRUE) {
+function get_networks(&$sql_where, $rows, $apply_limits = TRUE) {
 	if (get_request_var('filter') != '') {
 		$sql_where = " WHERE (automation_networks.name LIKE '%" . get_request_var('filter') . "%')";
 	}
@@ -762,7 +762,7 @@ function get_networks(&$sql_where, $row_limit, $apply_limits = TRUE) {
 		ORDER BY " . get_request_var('sort_column') . ' ' . get_request_var('sort_direction');
 
 	if ($apply_limits) {
-		$query_string .= ' LIMIT ' . ($row_limit*(get_request_var('page') -1)) . ',' . $row_limit;
+		$query_string .= ' LIMIT ' . ($rows*(get_request_var('page') -1)) . ',' . $rows;
 	}
 
 	return db_fetch_assoc($query_string);
@@ -776,7 +776,7 @@ function networks() {
 		'rows' => array(
 			'filter' => FILTER_VALIDATE_INT, 
 			'pageset' => true,
-			'default' => read_config_option('num_rows_table')
+			'default' => '-1'
 			),
 		'page' => array(
 			'filter' => FILTER_VALIDATE_INT, 
@@ -804,11 +804,11 @@ function networks() {
 	/* ================= input validation ================= */
 
 	if (get_request_var('rows') == -1) {
-		$row_limit = read_config_option('num_rows_table');
+		$rows = read_config_option('num_rows_table');
 	}elseif (get_request_var('rows') == -2) {
-		$row_limit = 999999;
+		$rows = 99999999;
 	}else{
-		$row_limit = get_request_var('rows');
+		$rows = get_request_var('rows');
 	}
 
 	html_start_box('Network Filters', '100%', '', '3', 'center', 'automation_networks.php?action=edit');
@@ -817,7 +817,7 @@ function networks() {
 
 	$sql_where = '';
 
-	$networks = get_networks($sql_where, $row_limit);
+	$networks = get_networks($sql_where, $rows);
 
 	/* print checkbox form for validation */
 	form_start('automation_networks.php', 'chk');
@@ -826,7 +826,7 @@ function networks() {
 
 	$total_rows = db_fetch_cell('SELECT COUNT(*) FROM automation_networks ' . $sql_where);
 
-	$nav = html_nav_bar('automation_networks.php', MAX_DISPLAY_PAGES, get_request_var('page'), $row_limit, $total_rows, 14, 'Networks');
+	$nav = html_nav_bar('automation_networks.php', MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 14, 'Networks');
 
 	print $nav;
 

@@ -469,7 +469,7 @@ function aggregate_template() {
 		'rows' => array(
 			'filter' => FILTER_VALIDATE_INT, 
 			'pageset' => true,
-			'default' => read_config_option('num_rows_table')
+			'default' => '-1'
 			),
 		'page' => array(
 			'filter' => FILTER_VALIDATE_INT, 
@@ -502,6 +502,12 @@ function aggregate_template() {
 	validate_store_request_vars($filters, 'sess_agg_tmp');
 	/* ================= input validation ================= */
 
+	if (get_request_var('rows') == '-1') {
+		$rows = read_config_option('num_rows_table');
+	}else{
+		$rows = get_request_var('rows');
+	}
+
 	form_start('aggregate_templates.php', 'template');
 
 	html_start_box('Aggregate Templates', '100%', '', '3', 'center', 'aggregate_templates.php?action=edit');
@@ -527,7 +533,7 @@ function aggregate_template() {
 		$filter_html .= 'selected';
 	}
 
-	$filter_html .= '>Default</option>';
+	$filter_html .= '>' . __('Default') . '</option>';
 	if (sizeof($item_rows)) {
 		foreach ($item_rows as $key => $value) {
 			$filter_html .= "<option value='" . $key . "'";
@@ -603,9 +609,9 @@ function aggregate_template() {
 		ON gt.id=pgt.graph_template_id
 		$sql_where
 		ORDER BY " . get_request_var('sort_column') . ' ' . get_request_var('sort_direction') .
-		' LIMIT ' . (get_request_var('rows')*(get_request_var('page')-1)) . ',' . get_request_var('rows'));
+		' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows);
 
-	$nav = html_nav_bar('aggregate_templates.php', MAX_DISPLAY_PAGES, get_request_var('page'), get_request_var('rows'), $total_rows, 5, 'Aggregate Templates', 'page', 'main');
+	$nav = html_nav_bar('aggregate_templates.php', MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 5, 'Aggregate Templates', 'page', 'main');
 
 	print $nav;
 

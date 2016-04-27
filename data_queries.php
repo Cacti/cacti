@@ -26,7 +26,7 @@ include('./include/auth.php');
 include_once('./lib/data_query.php');
 
 $dq_actions = array(
-	1 => 'Delete'
+	1 => __('Delete')
 );
 
 /* set default action */
@@ -834,14 +834,13 @@ function data_query_edit() {
 		print "<tr class='tableRow'><td>$text</td></tr>";
 		html_end_box();
 
-		if ($xml_file_exists == true) {
-			html_start_box( __('Associated Graph Templates'), '100%', '', '3', 'center', 'data_queries.php?action=item_edit&snmp_query_id=' . $snmp_query['id']);
+		html_start_box( __('Associated Graph Templates'), '100%', '', '3', 'center', 'data_queries.php?action=item_edit&snmp_query_id=' . $snmp_query['id']);
 
 		print "<tr class='tableHeader'>
-					<th class='tableSubHeaderColumn'>" . __('Name') . "</th>
-					<th class='tableSubHeaderColumn'>" . __('Graph Template Name') . "</th>
-					<th class='tableSubHeaderColumn right'>" . __('Mapping ID') . "</th>
-					<th class='tableSubHeaderColumn right' style='width:60px;'>" . __('Action') . "</td>
+			<th class='tableSubHeaderColumn'>" . __('Name') . "</th>
+			<th class='tableSubHeaderColumn'>" . __('Graph Template Name') . "</th>
+			<th class='tableSubHeaderColumn right'>" . __('Mapping ID') . "</th>
+			<th class='tableSubHeaderColumn right' style='width:60px;'>" . __('Action') . "</td>
 		</tr>";
 
 		$snmp_query_graphs = db_fetch_assoc_prepared('SELECT sqg.id, gt.name AS graph_template_name, sqg.name
@@ -920,7 +919,7 @@ function data_query() {
 		'rows' => array(
 			'filter' => FILTER_VALIDATE_INT, 
 			'pageset' => true,
-			'default' => read_config_option('num_rows_table')
+			'default' => '-1'
 			),
 		'page' => array(
 			'filter' => FILTER_VALIDATE_INT, 
@@ -947,6 +946,12 @@ function data_query() {
 	validate_store_request_vars($filters, 'sess_dq');
 	/* ================= input validation ================= */
 
+	if (get_request_var('rows') == '-1') {
+		$rows = read_config_option('num_rows_table');
+	}else{
+		$rows = get_request_var('rows');
+	}
+
 	html_start_box( __('Data Queries'), '100%', '', '3', 'center', 'data_queries.php?action=edit');
 
 	?>
@@ -966,6 +971,7 @@ function data_query() {
 					</td>
 					<td>
 						<select id='rows' name='rows' onChange='applyFilter()'>
+							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?>
 							<?php
 							if (sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
@@ -1050,9 +1056,9 @@ function data_query() {
 		$sql_where
 		GROUP BY sq.id
 		ORDER BY " . get_request_var('sort_column') . ' ' . get_request_var('sort_direction') . '
-		LIMIT ' . (get_request_var('rows')*(get_request_var('page')-1)) . ',' . get_request_var('rows'));
+		LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows);
 
-	$nav = html_nav_bar('data_queries.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), get_request_var('rows'), $total_rows, 7, __('Data Queries'), 'page', 'main');
+	$nav = html_nav_bar('data_queries.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 7, __('Data Queries'), 'page', 'main');
 	print $nav;
 
 	$display_text = array(

@@ -327,7 +327,7 @@ function template() {
 		'rows' => array(
 			'filter' => FILTER_VALIDATE_INT, 
 			'pageset' => true,
-			'default' => read_config_option('num_rows_table')
+			'default' => '-1'
 			),
 		'page' => array(
 			'filter' => FILTER_VALIDATE_INT, 
@@ -343,6 +343,12 @@ function template() {
 
 	validate_store_request_vars($filters, 'sess_autot');
 	/* ================= input validation ================= */
+
+	if (get_request_var('rows') == '-1') {
+		$rows = read_config_option('num_rows_table');
+	}else{
+		$rows = get_request_var('rows');
+	}
 
 	html_start_box("Device Automation Templates", '100%', '', '3', 'center', 'automation_templates.php?action=edit');
 
@@ -363,6 +369,7 @@ function template() {
 					</td>
 					<td>
 						<select id='rows' onChange='applyFilter()'>
+							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?>
 							<?php
 							if (sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
@@ -433,9 +440,9 @@ function template() {
 		ON ht.id=at.host_template
 		$sql_where
 		ORDER BY sequence " . 
-		' LIMIT ' . (get_request_var('rows')*(get_request_var('page')-1)) . ',' . get_request_var('rows'));
+		' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows);
 
-	$nav = html_nav_bar('automation_templates.php', MAX_DISPLAY_PAGES, get_request_var('page'), get_request_var('rows'), $total_rows, 7, 'Templates', 'page', 'main');
+	$nav = html_nav_bar('automation_templates.php', MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 7, 'Templates', 'page', 'main');
 
 	print $nav;
 

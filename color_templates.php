@@ -345,7 +345,7 @@ function aggregate_color_template() {
 		'rows' => array(
 			'filter' => FILTER_VALIDATE_INT, 
 			'pageset' => true,
-			'default' => read_config_option('num_rows_table')
+			'default' => '-1'
 			),
 		'page' => array(
 			'filter' => FILTER_VALIDATE_INT, 
@@ -378,14 +378,13 @@ function aggregate_color_template() {
 	validate_store_request_vars($filters, 'sess_ct');
 	/* ================= input validation ================= */
 
-	/* if the number of rows is -1, set it to the default */
 	if (get_request_var('rows') == -1) {
 		$rows = read_config_option('num_rows_table');
 	}else{
 		$rows = get_request_var('rows');
 	}
 
-	print ('<form id="form_template" action="color_templates.php" method="get">');
+	form_start('color_templates.php', 'form_template');
 
 	html_start_box( __('Color Templates'), '100%', '', '3', 'center', 'color_templates.php?action=template_edit');
 

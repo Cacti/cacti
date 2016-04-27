@@ -810,7 +810,7 @@ function aggregate_items() {
 		'rows' => array(
 			'filter' => FILTER_VALIDATE_INT, 
 			'pageset' => true,
-			'default' => read_config_option('num_rows_table')
+			'default' => '-1'
 			),
 		'template_id' => array(
 			'filter' => FILTER_VALIDATE_INT, 
@@ -847,7 +847,6 @@ function aggregate_items() {
 	validate_store_request_vars($filters, 'sess_agraph_item');
 	/* ================= input validation ================= */
 
-	/* if the number of rows is -1, set it to the default */
 	if (get_request_var('rows') == -1) {
 		$rows = read_config_option('num_rows_table');
 	}else{
@@ -912,7 +911,7 @@ function aggregate_items() {
 					</td>
 					<td>
 						<select id='rows' onChange='applyFilter()'>
-							<option value='-1'<?php if (get_request_var('rows') == '-1') {?> selected<?php }?>>Default</option>
+							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?>
 							<?php
 							if (sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
@@ -1128,7 +1127,7 @@ function aggregate_graph() {
 		'rows' => array(
 			'filter' => FILTER_VALIDATE_INT, 
 			'pageset' => true,
-			'default' => read_config_option('num_rows_table')
+			'default' => '-1'
 			),
 		'template_id' => array(
 			'filter' => FILTER_VALIDATE_INT, 
@@ -1160,7 +1159,6 @@ function aggregate_graph() {
 	validate_store_request_vars($filters, 'sess_agraph');
 	/* ================= input validation ================= */
 
-	/* if the number of rows is -1, set it to the default */
 	if (get_request_var('rows') == -1) {
 		$rows = read_config_option('num_rows_table');
 	}else{
@@ -1248,7 +1246,7 @@ function aggregate_graph() {
 					</td>
 					<td>
 						<select id='rows' onChange='applyFilter()'>
-							<option value='-1'<?php if (get_request_var('rows') == '-1') {?> selected<?php }?>>Default</option>
+							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?>
 							<?php
 							if (sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
