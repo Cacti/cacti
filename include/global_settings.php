@@ -724,7 +724,7 @@ $settings = array(
 			'friendly_name' => __('Maximum Title Length'),
 			'description' => __('The maximum allowable Graph or Data Source titles.'),
 			'method' => 'textbox',
-			'default' => '80',
+			'default' => '110',
 			'max_length' => '10',
 			'size' => '5'
 			),
@@ -732,7 +732,7 @@ $settings = array(
 			'friendly_name' => __('Data Source Field Length'),
 			'description' => __('The maximum Data Query field length.'),
 			'method' => 'textbox',
-			'default' => '15',
+			'default' => '40',
 			'max_length' => '10',
 			'size' => '5'
 			),
