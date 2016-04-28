@@ -563,7 +563,7 @@ function graph_edit() {
 	}
 
 	if (!isempty_request_var('id') && $current_tab == 'preview') {
-		print "<td id='tabs' class='nowrap' align='right'><a class='textHeader' href='" . htmlspecialchars('aggregate_graphs.php?action=edit&id=' . get_request_var('id') . '&tab=' . get_request_var('tab') .  '&debug=' . (isset($_SESSION['graph_debug_mode']) ? '0' : '1')) . "'>Turn " . (isset($_SESSION['graph_debug_mode']) ? 'Off' : 'On') . " Graph Debug Mode</a></td>\n</tr></table>\n";
+		print "<td id='tabs' class='nowrap' align='right'><a class='hyperLink textHeader' href='" . htmlspecialchars('aggregate_graphs.php?action=edit&id=' . get_request_var('id') . '&tab=' . get_request_var('tab') .  '&debug=' . (isset($_SESSION['graph_debug_mode']) ? '0' : '1')) . "'>Turn " . (isset($_SESSION['graph_debug_mode']) ? 'Off' : 'On') . " Graph Debug Mode</a></td>\n</tr></table>\n";
 	}elseif (!isempty_request_var('id') && $current_tab == 'details' && (!sizeof($template))) {
 		print "<td id='tabs class='nowrap right'><a id='toggle_items' class='textHeader' href='#'>Show Item Details</a></td>\n</tr></table>\n";
 	}else{
