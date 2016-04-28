@@ -1479,7 +1479,11 @@ function generate_graph_def_name($graph_item_id) {
 		$result .= $lookup_table{substr(strval($graph_item_id), $i, 1)};
 	}
 
-	return $result;
+	if ($result == 'cf') {
+		return 'zcf';
+	}else{
+		return $result;
+	}
 }
 
 /* generate_data_input_field_sequences - re-numbers the sequences of each field associated
@@ -3393,12 +3397,13 @@ function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '
 
 	// Set the wordwrap limits
 	$wordwrap = read_config_option('settings_wordwrap');
-	if ($wordwrap == '')
+	if ($wordwrap == '') {
 		$wordwrap = 76;
-	if ($wordwrap > 9999)
+	}elseif ($wordwrap > 9999) {
 		$wordwrap = 9999;
-	if ($wordwrap < 0)
+	}elseif ($wordwrap < 0) {
 		$wordwrap = 76;
+	}
 
 	$mail->WordWrap = $wordwrap;
 	$mail->setWordWrap();
@@ -3415,7 +3420,7 @@ function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '
 				$cid = getmypid() . '_' . $i . '@' . 'localhost';
 
 				/* attempt to attach */
-				if ($mail->addStringEmbededImage($data, $cid, $val['filename'].'.png', 'base64', 'image/png', 'inline') === false) {
+				if ($mail->addStringEmbeddedImage($data, $cid, $val['filename'].'.png', 'base64', 'image/png', 'inline') === false) {
 					cacti_log('ERROR: ' . $mail->ErrorInfo, false);
 
 					return $mail->ErrorInfo;
