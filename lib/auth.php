@@ -371,10 +371,6 @@ function get_graph_permissions_sql($policy_graphs, $policy_hosts, $policy_graph_
    @arg $local_graph_id - (int) the ID of the graph to check permissions for
    @returns - (bool) whether the current user is allowed the view the specified graph or not */
 function is_graph_allowed($local_graph_id, $user = 0) {
-	if ($user == 0) {
-		return true;
-	}
-
 	$rows  = 0;
 	$graph = get_allowed_graphs('', '', '', $rows, $user, $local_graph_id);
 
@@ -1168,30 +1164,12 @@ function get_allowed_graph_templates($sql_where = '', $order_by = 'name', $limit
 		$policies[] = db_fetch_row_prepared("SELECT id, 'user' AS type, policy_graphs, policy_hosts, policy_graph_templates FROM user_auth WHERE id = ?", array($user));
 		
 		foreach($policies as $policy) {
-			if ($policy['policy_graphs'] == 1) {
-				$sql_having .= (strlen($sql_having) ? ' OR':'') . " (user$i IS NULL";
-			}else{
-				$sql_having .= (strlen($sql_having) ? ' OR':'') . " (user$i=" . $policy['id'];
-			}
-			$sql_join   .= 'LEFT JOIN user_auth_' . ($policy['type'] == 'user' ? '':'group_') . "perms AS uap$i ON (gl.id=uap$i.item_id AND uap$i.type=1) ";
-			$sql_select .= (strlen($sql_select) ? ', ':'') . "uap$i." . $policy['type'] . "_id AS user$i";
-			$i++;
-
-			if ($policy['policy_hosts'] == 1) {
-				$sql_having .= " OR (user$i IS NULL";
-			}else{
-				$sql_having .= " OR (user$i=" . $policy['id'];
-			}
-			$sql_join   .= "LEFT JOIN user_auth_" . ($policy['type'] == 'user' ? '':'group_') . "perms AS uap$i ON (gl.host_id=uap$i.item_id AND uap$i.type=3) ";
-			$sql_select .= (strlen($sql_select) ? ', ':'') . "uap$i." . $policy['type'] . "_id AS user$i";
-			$i++;
-
 			if ($policy['policy_graph_templates'] == 1) {
-				$sql_having .= " $sql_operator user$i IS NULL))";
+				$sql_having .= " user$i IS NULL";
 			}else{
-				$sql_having .= " $sql_operator user$i=" . $policy['id'] . '))';
+				$sql_having .= " user$i=" . $policy['id'];
 			}
-			$sql_join   .= 'LEFT JOIN user_auth_' . ($policy['type'] == 'user' ? '':'group_') . "perms AS uap$i ON (gl.graph_template_id=uap$i.item_id AND uap$i.type=4) ";
+			$sql_join   .= 'LEFT JOIN user_auth_' . ($policy['type'] == 'user' ? '':'group_') . "perms AS uap$i ON (gt.id=uap$i.item_id AND uap$i.type=4) ";
 			$sql_select .= (strlen($sql_select) ? ', ':'') . "uap$i." . $policy['type'] . "_id AS user$i";
 			$i++;
 		}
@@ -1203,13 +1181,7 @@ function get_allowed_graph_templates($sql_where = '', $order_by = 'name', $limit
 			INNER JOIN (
 				SELECT DISTINCT id FROM (
 					SELECT gt.*, $sql_select
-					FROM graph_templates_graph AS gtg 
-					INNER JOIN graph_local AS gl 
-					ON gl.id=gtg.local_graph_id 
-					LEFT JOIN graph_templates AS gt 
-					ON gt.id=gl.graph_template_id 
-					LEFT JOIN host AS h 
-					ON h.id=gl.host_id 
+					FROM graph_templates AS gt
 					$sql_join
 					$sql_where
 					$sql_having
@@ -1219,16 +1191,10 @@ function get_allowed_graph_templates($sql_where = '', $order_by = 'name', $limit
 			$order_by
 			$limit");
 
-		$total_rows = db_fetch_cell("SELECT COUNT(DISTINCT id)
+		$total_rows = db_fetch_cell("SELECT COUNT(id)
 			FROM (
 				SELECT gt.id, $sql_select
-				FROM graph_templates_graph AS gtg 
-				INNER JOIN graph_local AS gl 
-				ON gl.id=gtg.local_graph_id 
-				LEFT JOIN graph_templates AS gt 
-				ON gt.id=gl.graph_template_id 
-				LEFT JOIN host AS h 
-				ON h.id=gl.host_id 
+				FROM graph_templates AS gt 
 				$sql_join
 				$sql_where
 				$sql_having
