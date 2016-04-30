@@ -170,12 +170,21 @@ function api_plugin_db_table_create ($plugin, $table, $data) {
 		}
 
 		if (isset($data['keys']) && sizeof($data['keys'])) {
-		foreach ($data['keys'] as $key) {
-			if (isset($key['name'])) {
-				$sql .= ",\n KEY `" . $key['name'] . '` (`' . $key['columns'] . '`)';
+			foreach ($data['keys'] as $key) {
+				if (isset($key['name'])) {
+					$sql .= ",\n INDEX `" . $key['name'] . '` (`' . $key['columns'] . '`)';
+				}
 			}
 		}
+
+		if (isset($data['unique_keys'])) {
+			foreach ($data['unique_keys'] as $key) {
+				if (isset($key['name'])) {
+					$sql .= ",\n UNIQUE INDEX `" . $key['name'] . '` (`' . $key['columns'] . '`)';
+				}
+			}
 		}
+
 		$sql .= ') ENGINE = ' . $data['type'];
 
 		if (isset($data['comment'])) {
