@@ -411,6 +411,8 @@ function applySkin() {
 		$('input[type=submit], input[type=button]').button();
 	}
 
+	$('.ui-tooltip').remove();
+
 	// Select All Action for everyone but graphs_new, else do ugly shit
 	if (basename(document.location.pathname, '.php') == 'graphs_new') {
 		applySelectorVisibilityAndActions();
