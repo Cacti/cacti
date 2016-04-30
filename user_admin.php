@@ -515,6 +515,7 @@ function form_save() {
 		$save['login_opts']           = form_input_validate(get_nfilter_request_var('login_opts'), 'login_opts', '', true, 3);
 		$save['realm']                = get_nfilter_request_var('realm', 0);
 		$save['enabled']              = form_input_validate(get_nfilter_request_var('enabled', ''), 'enabled', '', true, 3);
+		$save['email_address']        = form_input_validate(get_nfilter_request_var('email_address', ''), 'email_address', '', true, 3);
 		$save['locked']               = form_input_validate(get_nfilter_request_var('locked', ''), 'locked', '', true, 3);
 		$save['reset_perms']          = mt_rand();
 		if ($save['locked'] == '') {
