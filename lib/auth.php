@@ -372,6 +372,7 @@ function get_graph_permissions_sql($policy_graphs, $policy_hosts, $policy_graph_
    @returns - (bool) whether the current user is allowed the view the specified graph or not */
 function is_graph_allowed($local_graph_id, $user = 0) {
 	$rows  = 0;
+
 	$graph = get_allowed_graphs('', '', '', $rows, $user, $local_graph_id);
 
 	if ($rows > 0) {
@@ -743,7 +744,7 @@ function get_allowed_tree_header_graphs($tree_id, $leaf_id = 0, $sql_where = '',
 		$graphs = db_fetch_assoc("SELECT 
 			gti.id, gti.title, 
 			gtg.local_graph_id, 
-			host.description, 
+			h.description, 
 			gt.name AS template_name, 
 			gtg.title_cache, 
 			gtg.width, 
@@ -801,11 +802,11 @@ function get_allowed_graphs($sql_where = '', $order_by = 'gtg.title_cache', $lim
 	$sql_select = '';
 	$sql_join   = '';
 
-	if (read_config_option('auth_method') != 0) {
-		if ($user == 0) {
-			$user = $_SESSION['sess_user_id'];
-		}
+	if ($user == 0 && isset($_SESSION['sess_user_id'])) {
+		$user = $_SESSION['sess_user_id'];
+	}
 
+	if (read_config_option('auth_method') != 0 && $user != 0) {
 		if (read_config_option('graph_auth_method') == 1) {
 			$sql_operator = 'OR';
 		}else{
@@ -886,7 +887,7 @@ function get_allowed_graphs($sql_where = '', $order_by = 'gtg.title_cache', $lim
 	}else{
 		$graphs = db_fetch_assoc("SELECT 
 			gtg.local_graph_id, 
-			host.description, 
+			h.description, 
 			gt.name AS template_name, 
 			gtg.title_cache, 
 			gtg.width, 
