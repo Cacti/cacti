@@ -1025,35 +1025,35 @@ function form_confirm_buttons($action_url, $cancel_url) {
    @arg $cancel_url - the url to go to when the user clicks 'cancel'
    @arg $force_type - if specified, will force the 'action' button to be either
      'save' or 'create'. otherwise this field should be properly auto-detected */
-function form_save_button($cancel_url, $force_type = "", $key_field = "id") {
-	$calt = "Cancel";
+function form_save_button($cancel_url, $force_type = '', $key_field = 'id', $ajax = true) {
+	$calt = 'Cancel';
 
-	if (empty($force_type) || $force_type == "return") {
+	if (empty($force_type) || $force_type == 'return') {
 		if (isempty_request_var($key_field)) {
-			$alt = "Create";
+			$alt = 'Create';
 		}else{
-			$alt = "Save";
+			$alt = 'Save';
 
 			if (strlen($force_type)) {
-				$calt   = "Return";
+				$calt   = 'Return';
 			}else{
-				$calt   = "Cancel";
+				$calt   = 'Cancel';
 			}
 		}
-	}elseif ($force_type == "save") {
-		$alt = "Save";
-	}elseif ($force_type == "create") {
-		$alt = "Create";
-	}elseif ($force_type == "import") {
-		$alt = "Import";
-	}elseif ($force_type == "export") {
-		$alt = "Export";
+	}elseif ($force_type == 'save') {
+		$alt = 'Save';
+	}elseif ($force_type == 'create') {
+		$alt = 'Create';
+	}elseif ($force_type == 'import') {
+		$alt = 'Import';
+	}elseif ($force_type == 'export') {
+		$alt = 'Export';
 	}
 
-	if ($force_type != "import" && $force_type != "export" && $force_type != "save" && $cancel_url != '') {
+	if ($force_type != 'import' && $force_type != 'export' && $force_type != 'save' && $cancel_url != '') {
 		$cancel_action = "<input type='button' onClick='cactiReturnTo(\"" . $cancel_url . "\")' value='" . $calt . "'>";
 	}else{
-		$cancel_action = "";
+		$cancel_action = '';
 	}
 
 	?>
@@ -1068,7 +1068,7 @@ function form_save_button($cancel_url, $force_type = "", $key_field = "id") {
 	</table>
 	<?php
 
-	form_end();
+	form_end($ajax);
 }
 
 /* form_save_buttons - draws a set of buttons at the end of a form
@@ -1109,25 +1109,27 @@ function form_start($action, $id = '') {
 }
 
 /* form_end - draws post form end. To be combined with form_start() */
-function form_end() {
+function form_end($ajax = true) {
 	global $form_id, $form_action;
 
-	?>
-	</form>
-	<script type='text/javascript'>
-	$(function() {
-		$('#<?php print $form_id;?>').submit(function(event) {
-			event.preventDefault();
-			strURL = '<?php print $form_action;?>';
-			strURL += (strURL.indexOf('?') >- 0 ? '&':'?') + 'header=false';
-			json =  $('#<?php print $form_id;?>').serializeObject();
-			$.post(strURL, json).done(function(data) {
-				$('#main').html(data);
-				applySkin();
-				window.scrollTo(0, 0);
+	print "</form>\n";
+
+	if ($ajax) { ?>
+		<script type='text/javascript'>
+		$(function() {
+			$('#<?php print $form_id;?>').submit(function(event) {
+				event.preventDefault();
+				strURL = '<?php print $form_action;?>';
+				strURL += (strURL.indexOf('?') >- 0 ? '&':'?') + 'header=false';
+				json =  $('#<?php print $form_id;?>').serializeObject();
+				$.post(strURL, json).done(function(data) {
+					$('#main').html(data);
+					applySkin();
+					window.scrollTo(0, 0);
+				});
 			});
 		});
-	});
-	</script>
-	<?php
+		</script>
+		<?php
+	}
 }
