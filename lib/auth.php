@@ -672,6 +672,7 @@ function get_allowed_tree_header_graphs($tree_id, $leaf_id = 0, $sql_where = '',
 			INNER JOIN user_auth_group_members AS uagm
 			ON uag.id = uagm.group_id
 			WHERE uag.enabled = 'on' AND uagm.user_id = ?", array($user));
+
 		$policies[] = db_fetch_row_prepared("SELECT id, 'user' AS type, policy_graphs, policy_hosts, policy_graph_templates FROM user_auth WHERE id = ?", array($user));
 		
 		foreach($policies as $policy) {
@@ -1162,6 +1163,7 @@ function get_allowed_graph_templates($sql_where = '', $order_by = 'name', $limit
 			INNER JOIN user_auth_group_members AS uagm
 			ON uag.id = uagm.group_id
 			WHERE uag.enabled = 'on' AND uagm.user_id = ?", array($user));
+
 		$policies[] = db_fetch_row_prepared("SELECT id, 'user' AS type, policy_graphs, policy_hosts, policy_graph_templates FROM user_auth WHERE id = ?", array($user));
 		
 		foreach($policies as $policy) {
@@ -1180,7 +1182,7 @@ function get_allowed_graph_templates($sql_where = '', $order_by = 'name', $limit
 		$templates = db_fetch_assoc("SELECT gt1.*
 			FROM graph_templates AS gt1
 			INNER JOIN (
-				SELECT DISTINCT id FROM (
+				SELECT DISTINCT graph_template_id FROM (
 					SELECT gt.*, $sql_select
 					FROM graph_templates_graph AS gt
 					INNER JOIN graph_local AS gl
@@ -1192,7 +1194,7 @@ function get_allowed_graph_templates($sql_where = '', $order_by = 'name', $limit
 					$sql_having
 				) AS rs1
 			) AS rs2
-			ON rs2.id=gt1.id
+			ON rs2.graph_template_id=gt1.id
 			$order_by
 			$limit");
 
