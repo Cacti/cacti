@@ -50,6 +50,15 @@ Cacti CHANGELOG
 -feature: All Filters Handled in Ajax
 -feature: Refactor Graph Details page to incldue CSV output, zoom, debug, and download links
 
+0.8.8h
+-bug:0002656: Authentication using web authentication as a user not in the cacti database allows complete access (regression)
+-bug:0002667: Cacti SQL Injection Vulnerability
+-bug:0002666: When click the [Clear] button after clicking the [Refresh] button in Preview Mode , fails to CSRFcheck
+-bug:0002673: CVE-2016-3659 - Cacti graph_view.php SQL Injection Vulnerability
+-bug:0002676: Outdated MIBs for non-unicast packets
+-bug:0002677: Index is a MySQL 5.6 reserved word
+-bug:0002681: generate_graph_def_name() generates reserved word "cf"
+
 0.8.8g
 -bug:0002642: ping.pl does not take into account host port numbers
 -bug:0002567: RRDTool 1.5.x Support 
