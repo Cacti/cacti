@@ -3026,8 +3026,8 @@ function debug_log_return($type) {
    @arg $string - the original raw search string
    @returns - the sanitized search string */
 function sanitize_search_string($string) {
-	static $drop_char_match =   array('^', '$', '<', '>', '`', '\'', '"', '|', ',', '?', '+', '[', ']', '{', '}', '#', ';', '!', '=', '*');
-	static $drop_char_replace = array(' ', ' ', ' ', ' ',  '',   '', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ');
+	static $drop_char_match = array('(',')','^', '$', '<', '>', '`', '\'', '"', '|', ',', '?', '+', '[', ']', '{', '}', '#', ';', '!', '=', '*');
+	static $drop_char_replace = array('','',' ', ' ', ' ', ' ', '', '', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '); 
 
 	/* Replace line endings by a space */
 	$string = preg_replace('/[\n\r]/is', ' ', $string);
@@ -3487,6 +3487,11 @@ function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '
 			$body = str_replace('</BR>', "\n", $body);
 		}
 
+		$text['text']  = strip_tags($body);
+		$mail->isHTML(false);
+		$mail->Body    = $text['text'];
+		$mail->AltBody = $text['text'];
+	} elseif ($html == false) {
 		$text['text']  = strip_tags($body);
 		$mail->isHTML(false);
 		$mail->Body    = $text['text'];
