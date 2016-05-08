@@ -706,7 +706,7 @@ function snmpagent_notification( $notification, $mib, $varbinds, $severity = SNM
 				}else if($notification_manager["snmp_version"] == 2 ) {
 					$args = " -v 2c -c " . $notification_manager["snmp_community"] . ( ($notification_manager["snmp_message_type"] == 2 )? " -Ci " : "" )  . " " . $notification_manager["hostname"] . ":" . $notification_manager["snmp_port"] . " \"\" " . $enterprise_oid . $snmp_notification_varbinds;
 				}else if($notification_manager["snmp_version"] == 3 ) {
-					$args = " -v 3 " . (($notification_manager["snmp_message_type"] == 2 )? " -Ci " : "" ) .  " -u " . $notification_manager["snmp_username"];
+					$args = " -v 3 -e " . $notification_manager["snmp_engine_id"] . (($notification_manager["snmp_message_type"] == 2 )? " -Ci " : "" ) .  " -u " . $notification_manager["snmp_username"];
 
 					if( $notification_manager["snmp_auth_password"] && $notification_manager["snmp_priv_password"]) {
 						$snmp_security_level = "authPriv";

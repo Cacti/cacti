@@ -1678,15 +1678,14 @@ $fields_template_import = array(
 			'value' => '|arg1:snmp_priv_protocol|',
 			'default' => read_config_option('snmp_priv_protocol'),
 			'array' => $snmp_priv_protocols,
-			),
-		'snmp_context' => array(
+			),	
+		'snmp_engine_id' => array(
+			'friendly_name' => __('SNMP Engine ID'),
+			'description' => __('Defines the unique SNMP Engine ID to identify this peer. Following format will be recommended:<br>FlexibleLength+Enterprise(8000) + IANA-Cacti(5d75) + MAC-Following(03) + YOUR-MAC-ADDRESS(e.g.:D89D67287B00).<br>Per default the locally administrated MAC 02-FF-FF-FF-FF-FF will be used.'),
+			'value' => '|arg1:snmp_engine_id|',
 			'method' => 'textbox',
-			'friendly_name' => __('SNMP Context'),
-			'description' => __('Enter the SNMP Context to use for this device.'),
-			'value' => '|arg1:snmp_context|',
-			'default' => '',
-			'max_length' => '64',
-			'size' => '25'
+			'max_length' => 64,
+			'default' => '80005d750302FFFFFFFFFF',
 			),
 		'snmp_port' => array(
 			'method' => 'textbox',

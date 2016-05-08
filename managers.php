@@ -361,6 +361,7 @@ function manager_edit() {
 						$('#row_snmp_auth_protocol').hide();
 						$('#row_snmp_priv_password').hide();
 						$('#row_snmp_priv_protocol').hide();
+						$('#row_snmp_engine_id').hide();
 						$('#row_snmp_context').hide();
 						$('#row_snmp_port').show();
 						$('#row_snmp_timeout').show();
@@ -373,6 +374,7 @@ function manager_edit() {
 						$('#row_snmp_auth_protocol').show();
 						$('#row_snmp_priv_password').show();
 						$('#row_snmp_priv_protocol').show();
+						$('#row_snmp_engine_id').show();
 						$('#row_snmp_context').show();
 						$('#row_snmp_port').show();
 						$('#row_snmp_timeout').show();
@@ -867,19 +869,26 @@ function form_save() {
 				$save['snmp_auth_protocol']   = form_input_validate(get_nfilter_request_var('snmp_auth_protocol'), 'snmp_auth_protocol', "^\[None\]|MD5|SHA$", true, 3);
 				$save['snmp_priv_password']   = form_input_validate(get_nfilter_request_var('snmp_priv_password'), 'snmp_priv_password', '', true, 3);
 				$save['snmp_priv_protocol']   = form_input_validate(get_nfilter_request_var('snmp_priv_protocol'), 'snmp_priv_protocol', "^\[None\]|DES|AES128$", true, 3);
+				$save['snmp_engine_id']       = form_input_validate(get_request_var_post('snmp_engine_id'), 'snmp_engine_id', '', false, 3);
 			} else {
 				$save['snmp_username']        = '';
 				$save['snmp_auth_password']   = '';
 				$save['snmp_auth_protocol']   = '';
 				$save['snmp_priv_password']   = '';
 				$save['snmp_priv_protocol']   = '';
+				$save['snmp_engine_id']       = '';
 			}
 
 			$save['snmp_port']                = form_input_validate(get_nfilter_request_var('snmp_port'), 'snmp_port', '^[0-9]+$', false, 3);
 			$save['snmp_message_type']        = form_input_validate(get_nfilter_request_var('snmp_message_type'), 'snmp_message_type', '^[1-2]$', false, 3);
 			$save['notes']                    = form_input_validate(get_nfilter_request_var('notes'), 'notes', '', true, 3);
 
-			if ($save['snmp_version'] == 3 && ($save['snmp_auth_password'] != $save['snmp_auth_password_confirm'])) {
+
+			if ($save['snmp_version'] == 3 && ($save['snmp_auth_password'] != $_POST['snmp_auth_password_confirm'])) {
+				raise_message(4);
+			}
+
+			if ($save['snmp_version'] == 3 && ($save['snmp_priv_password'] != $_POST['snmp_priv_password_confirm'])) {
 				raise_message(4);
 			}
 

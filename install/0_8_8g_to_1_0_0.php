@@ -271,6 +271,7 @@ function upgrade_to_1_0_0() {
 		`snmp_auth_protocol` varchar(255) NOT NULL,
 		`snmp_priv_password` varchar(255) NOT NULL,
 		`snmp_priv_protocol` varchar(255) NOT NULL,
+		`snmp_engine_id` varchar(64) NOT NULL DEFAULT '80005d750302FFFFFFFFFF',
 		`snmp_port` varchar(255) NOT NULL,
 		`snmp_message_type` tinyint(1) NOT NULL,
 		`notes` text,
