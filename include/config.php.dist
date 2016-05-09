@@ -41,6 +41,12 @@ $database_ssl      = false;
 /* Default session name - Session name must contain alpha characters */
 //$cacti_session_name = 'Cacti';
 
-
 /* Save sessions to a database for load balancing */
 $cacti_db_session = true;
+
+/* The poller_id of this system.  Set to '0' for the main website */
+$poller_id = 0;
+
+/* Optional parameters to define scripts and resource paths if not using the defaults */
+//$scripts_path = '/var/www/html/cacti/scripts';
+//$resource_path = '/var/www/html/cacti/resource/';

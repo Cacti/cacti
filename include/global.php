@@ -103,6 +103,13 @@ $config['cacti_server_os'] = (strstr(PHP_OS, 'WIN')) ? 'win32' : 'unix';
 /* built-in snmp support */
 $config['php_snmp_support'] = function_exists('snmpget');
 
+/* Set the poller_id */
+if (isset($poller_id)) {
+	$config['poller_id'] = $poller_id;
+}else{
+	$config['poller_id'] = 0;
+}
+
 /* set URL path */
 if (! isset($url_path)) {
 	$url_path = '';
@@ -120,6 +127,19 @@ if ($config['cacti_server_os'] == 'win32') {
 }
 $config['include_path'] = dirname(__FILE__);
 $config['rra_path'] = $config['base_path'] . '/rra';
+
+/* for multiple pollers, we need to know this location */
+if (!isset($scripts_path)) {
+	$config['scripts_path'] = $config['base_path'] . '/scripts';
+}else{
+	$config['scripts_path'] = $scripts_path;
+}
+
+if (!isset($resource_path)) {
+	$config['resource_path'] = $config['base_path'] . '/resource';
+}else{
+	$config['resource_path'] = $resource_path;
+}
 
 /* colors */
 $colors['dark_outline'] = '454E53';

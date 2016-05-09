@@ -2516,6 +2516,7 @@ INSERT INTO graph_tree_items VALUES (1,0,0,1,0,'',1,1,1);
 
 CREATE TABLE host (
   id mediumint(8) unsigned NOT NULL auto_increment,
+  poller_id int(10) unsigned NOT NULL default '0',
   host_template_id mediumint(8) unsigned NOT NULL default '0',
   description varchar(150) NOT NULL default '',
   hostname varchar(250) default NULL,
@@ -2558,6 +2559,7 @@ CREATE TABLE host (
   failed_polls int(12) unsigned default '0',
   availability decimal(8,5) NOT NULL default '100.00000',
   PRIMARY KEY  (id),
+  KEY poller_id (poller_id),
   KEY disabled (disabled)
 ) ENGINE=MyISAM;
 
@@ -2892,6 +2894,21 @@ CREATE TABLE poller_reindex (
   PRIMARY KEY  (host_id,data_query_id,arg1),
   KEY present (present)
 ) ENGINE=MyISAM;
+
+--
+-- Table structure for table `poller_resource_cache`
+--
+
+CREATE TABLE poller_resource_cache (
+  id int(10) unsigned NOT NULL AUTO_INCREMENT,
+  resource_type varchar(20) DEFAULT NULL,
+  md5sum varchar(32) DEFAULT NULL,
+  path varchar(255) DEFAULT NULL,
+  update_time timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  contents longblob,
+  PRIMARY KEY (id),
+  UNIQUE KEY path (path)
+) ENGINE=MyISAM COMMENT='Caches all scripts, resources files, and plugins';
 
 --
 -- Table structure for table `poller_time`

@@ -1460,4 +1460,21 @@ function upgrade_to_1_0_0() {
 	db_install_execute('1.0.0', "ALTER TABLE data_local 
 		ADD INDEX data_template_id (data_template_id), 
 		ADD INDEX snmp_query_id (snmp_query_id)");
+
+	db_install_execute('1.0.0', "ALTER TABLE poller 
+		MODIFY COLUMN last_update TIMESTAMP NOT NULL default '0000-00-00'");
+
+	db_install_execute('1.0.0', "CREATE TABLE IF NOT EXISTS poller_resource_cache (
+		id int(10) unsigned NOT NULL AUTO_INCREMENT,
+		resource_type varchar(20) DEFAULT NULL,
+		md5sum varchar(32) DEFAULT NULL,
+		path varchar(255) DEFAULT NULL,
+		update_time timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+		contents longblob,
+		PRIMARY KEY (id),
+		UNIQUE KEY path (path)) 
+		ENGINE=MyISAM 
+		COMMENT='Caches all scripts, resources files, and plugins'");
+
+	db_install_execute('1.0.0', "ALTER TABLE host ADD COLUMN poller_id INT UNSIGNED default '0' AFTER id, ADD INDEX poller_id(poller_id)");
 }

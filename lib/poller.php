@@ -446,3 +446,190 @@ function process_poller_output(&$rrdtool_pipe, $remainder = FALSE) {
 	return $rrds_processed;
 }
 
+/** update_resource_cache - place the cacti website in the poller_resource_cache 
+ * 
+ *  for remote pollers to consume
+ * @param int $poller_id    - The id of the poller.  0 is the main system
+ * @return null             - No data is returned
+ */
+function update_resource_cache($poller_id = 0) {
+	global $config;
+
+	$mpath = $config['base_path'];
+	$spath = $config['scripts_path'];
+	$rpath = $config['resource_path'];
+
+	$paths = array(
+		'base'     => array('recursive' => false, 'path' => $mpath),
+		'scripts'  => array('recursive' => true,  'path' => $spath),
+		'resource' => array('recursive' => true,  'path' => $rpath),
+		'plugins'  => array('recursive' => true,  'path' => $mpath . '/plugins'),
+		'lib'      => array('recursive' => true,  'path' => $mpath . '/lib'),
+		'include'  => array('recursive' => true,  'path' => $mpath . '/include'),
+		'formats'  => array('recursive' => true,  'path' => $mpath . '/formats'),
+		'locales'  => array('recursive' => true,  'path' => $mpath . '/locales'),
+		'mibs'     => array('recursive' => true,  'path' => $mpath . '/mibs'),
+		'cli'      => array('recursive' => true,  'path' => $mpath . '/cli')
+	);
+
+	if ($poller_id == 0) {
+		foreach($paths as $type => $path) {
+			if (is_readable($path['path'])) {
+				cache_in_path($path['path'], $type, $path['recursive']);
+			}else{
+				cacti_log("ERROR: Unable to read the " . $type . " path '" . $path['path'] . "'", false, 'POLLER');
+			}
+		}
+	}else{
+		foreach($paths as $type => $path) {
+			if (is_writable($config['scripts_path'])) {
+				resource_cache_out($type, $path);
+			}else{
+				cacti_log("FATAL: Unable to write to the " . $type . " path '" . $path['path'] . "'", false, 'POLLER');
+			}
+		}
+	}
+}
+
+/** cache_in_path - check to see if the directory in question has changed.  
+ *  If so, send its data into the resource cache table 
+ * 
+ * @param string $path      - The path to look for changes
+ * @param string $type      - The patch types being cached
+ * @param bool   $recursive - Should the path be scanned recursively
+ * @return null             - No data is returned
+ */
+function cache_in_path($path, $type, $recursive = true) {
+	$settings_path = "md5dirsum_$type";
+
+	$last_md5      = read_config_option($settings_path);
+	$curr_md5      = md5sum_path($path, $recursive);
+
+	if (empty($last_md5) || $last_md5 != $curr_md5) {
+		cacti_log("NOTE: Detecting Resource Change.  Updating Resource Cache for '$path'", false, 'POLLER');
+		update_db_from_path($path, $type, $recursive);
+	}
+
+	set_config_option($settings_path, $curr_md5);
+}
+
+/** update_db_from_path - store the actual file in the databases resource cache.
+ *  Skip the include/config.php if it exists
+ *
+ * @param string $path      - The path to look for changes
+ * @param string $type      - The patch types being cached
+ * @param bool   $recursive - Should the path be scanned recursively
+ * @return null             - No data is returned
+ */
+function update_db_from_path($path, $type, $recursive = true) {
+	global $config;
+
+	$pobject = dir($path);
+
+	while(($entry = $pobject->read()) !== false) {
+		if ($entry != '.' && $entry != '..') {
+			if (is_dir($path . '/' . $entry)) {
+				if ($recursive) {
+					update_db_from_path($path . '/' . $entry, $type, $recursive);
+				}
+			}elseif (ltrim($path . '/' . $entry,'/') != 'include/config.php') {
+				$save                  = array();
+				$save['path']          = ltrim(trim(str_replace($config['base_path'], '', $path), '/ \\') . '/' . $entry, '/ \\');
+				$save['id']            = db_fetch_cell_prepared('SELECT id FROM poller_resource_cache WHERE path = ?', array($save['path']));
+				$save['resource_type'] = $type;
+				$save['md5sum']        = md5_file($path . '/' . $entry);
+				$save['update_time']   = date('Y-m-d H:i:s');
+				$save['contents']      = base64_encode(file_get_contents($path . '/' . $entry));
+
+				sql_save($save, 'poller_resource_cache');
+			}
+		}
+	}
+
+	$pobject->close();
+}
+
+/** resource_cache_out - push the cache from the cacti database to the 
+ *  remote database.  Check PHP files for errors
+ *
+ * before placing them on the remote pollers file system.
+ * @param string $type      - The path type being cached
+ * @param string $path      - The path to store the contents
+ * @return null             - No data is returned
+ */
+function resource_cache_out($type, $path) {
+	global $config;
+
+	$settings_path = "md5dirsum_$type";
+	$php_path      = read_config_option('path_php');
+
+	$last_md5      = read_config_option($settings_path);
+	$curr_md5      = md5sum_path($path['path']);
+
+	if (empty($last_md5) || $last_md5 != $curr_md5) {
+		$entries = db_fetch_assoc('SELECT * FROM poller_resource_cache WHERE resource_type = ?', array($type));
+		if (sizeof($entries)) {
+			foreach($entries as $e) {
+				$mypath = $path['path'] . '/' . $e['path'];
+
+				if (file_exists($mypath)) {
+					$md5sum = md5_file($mypath);
+				}else{
+					$md5sum = '';
+				}
+
+				if (is_dir(dirname($mypath))) {
+					if ($md5sum != $e['md5sum']) {
+						$info = pathinfo($mypath);
+						$exit = -1;
+
+						/* if the file type is PHP check syntax */
+						if ($info['extension'] == 'php') {
+							if (file_put_contents('/tmp/cachecheck.php', base64_decode($e['contents'])) !== false) {
+								$output = system($path_php . ' -l /tmp/cacheckeck.php', $exit);
+								if ($exit == 0) {
+									file_put_contents($mypath, base64_decode($e['contents']));
+								}else{
+									cacti_log("ERROR: PHP File '" . $mypath . "' from Cache has a Syntax error!", false, 'POLLER');
+								}
+							}else{
+								cacti_log("ERROR: Unable to write file '" . $tmpfile . "' for PHP Syntax verification", false, 'POLLER');
+							}
+						}
+					}
+				}else{
+					cacti_log("ERROR: Directory does not exist '" . dirname($mypath) . "'", false, 'POLLER');
+				}
+			}
+		}
+	}
+}
+
+/** md5sum_path - get a recursive md5sum on an entire directory.
+ *
+ * @param string $path      - The path to check for the md5sum
+ * @param bool   $recursive - The path should be verified recursively
+ * @return null             - No data is returned
+ */
+function md5sum_path($path, $recursive = true) {
+    if (!is_dir($path)) {
+        return false;
+    }
+    
+    $filemd5s = array();
+    $pobject = dir($path);
+
+    while (($entry = $pobject->read()) !== false) {
+        if ($entry != '.' && $entry != '..') {
+             if (is_dir($path . '/' . $entry) && $recursive) {
+                 $filemd5s[] = md5sum_path($path . '/' . $entry, $recursive);
+             } else {
+                 $filemd5s[] = md5_file($path . '/' . $entry);
+             }
+         }
+    }
+
+    $pobject->close();
+
+    return md5(implode('', $filemd5s));
+}
