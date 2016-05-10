@@ -147,7 +147,7 @@ case 'changepassword':
 
 		/* if no console permissions show graphs otherwise, pay attention to user setting */
 		$realm_id    = $user_auth_realm_filenames['index.php'];
-		$has_console = db_fetch_cell('SELECT realm_id FROM user_auth_realm WHERE user_id = ? AND realm_id = ?', array($_SESSION['sess_user_id'], $realm_id));
+		$has_console = db_fetch_cell_prepared('SELECT realm_id FROM user_auth_realm WHERE user_id = ? AND realm_id = ?', array($_SESSION['sess_user_id'], $realm_id));
 
 		if (basename(get_nfilter_request_var('ref')) == 'auth_changepassword.php' || basename(get_nfilter_request_var('ref')) == '') {
 			if ($has_console) {
