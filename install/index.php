@@ -26,11 +26,15 @@ define('IN_CACTI_INSTALL', 1);
 
 include_once('../include/global.php');
 
+set_default_action();
 
+if (get_request_var('action') == 'testdb') {
+	test_database_connection();
+	exit;
+}
 
 /* allow the upgrade script to run for as long as it needs to */
 ini_set('max_execution_time', '0');
-
 
 $cacti_versions = array('0.8', '0.8.1', '0.8.2', '0.8.2a', '0.8.3', '0.8.3a', '0.8.4', '0.8.5', '0.8.5a',
 	'0.8.6', '0.8.6a', '0.8.6b', '0.8.6c', '0.8.6d', '0.8.6e', '0.8.6f', '0.8.6g', '0.8.6h', '0.8.6i', '0.8.6j', '0.8.6k',
@@ -58,6 +62,26 @@ if ($old_cacti_version == $config['cacti_version']) {
 		<p style="font-family: Verdana, Arial; font-size: 12px;">' 
 		. __('You have created a new database, but have not yet imported the "cacti.sql" file. At the command line, execute the following to continue:</p><p><pre>mysql -u $database_username -p $database_default < cacti.sql</pre></p><p>This error may also be generated if the cacti database user does not have correct permissions on the cacti database. Please ensure that the cacti database user has the ability to SELECT, INSERT, DELETE, UPDATE, CREATE, ALTER, DROP, INDEX on the cacti database.') . '</p>';
 	exit;
+}
+
+function test_database_connection() {
+	$database_type     = 'mysql';
+	$database_default  = get_request_var('database_default');
+	$database_hostname = get_request_var('database_hostname');
+	$database_username = get_request_var('database_username');
+	$database_password = get_request_var('database_password');
+	$database_port     = get_request_var('database_port');
+
+	$database_ssl      = isset_request_var('database_ssl') ? true:false;
+
+	$connection = db_connect_real($database_hostname, $database_username, $database_password, $database_default, $database_type, $database_port, $database_ssl);
+
+	if (is_object($connection)) {
+		db_close($connection);
+		print 'Connection Sucsessful';
+	}else{
+		print 'Connection Failed';
+	}
 }
 
 function verify_php_extensions($extensions) {
@@ -211,11 +235,13 @@ EOD;
 		//exit;
 		return;
 	}
+
 	//print "Loading Plugin Information from package\n";
 	$xmlget = simplexml_load_string($xml); 
 	$data = to_array($xmlget);
 
 	$plugin = $data['info']['name'];
+
 	//print "Verifying each files signature\n";
 	if (isset($data['files']['file']['data'])) {
 		$data['files']['file'] = array($data['files']['file']);
@@ -498,8 +524,8 @@ if ((file_exists($input['path_rrdtool']['default'])) && (($config['cacti_server_
 	return $input;
 }
 /* default value for this variable */
-if (!isset($_REQUEST['install_type'])) {
-	$_REQUEST['install_type'] = 0;
+if (!isset_request_var('install_type')) {
+	set_request_var('install_type', '0');
 }
 
 /* defaults for the install type dropdown */
@@ -525,10 +551,13 @@ if (isset_request_var('step') && get_filter_request_var('step') > 0) {
 		$step++;
 		break;
 	case '3':
-		$previous_step = 3;
+		$previous_step = 2;
 		if (get_filter_request_var('install_type') == '1') {
 			/* install - New Primary Server */
 			$step = 4;
+		}elseif (get_filter_request_var('install_type') == '2') {
+			/* install - New Remote Poller */
+			$step = 10;
 		}elseif (get_filter_request_var('install_type') == '3') {
 			/* install/upgrade - if user chooses "Upgrade" send to upgrade */
 			$step = 8;
@@ -566,21 +595,20 @@ if (isset_request_var('step') && get_filter_request_var('step') > 0) {
 		/* upgrade-oldversion - if user upgrades from old version send to settingscheck */
 		$step = 4;
 		break;
+	case '10':
+		$previous_step = 3;
+		$step = 4;
+		break;
 	}
 } else {
 	$previous_step = 0;
 	$step = 1;
 }
 
-
-
-
-	
 /* installfinal - Install templates, change cacti version and send to login page */
 if ($step == '7') {
 	include_once('../lib/data_query.php');
 	include_once('../lib/utility.php');
-
 	
 	/* look for templates that have been checked for install */
 		$install = Array();
@@ -631,10 +659,8 @@ if ($step == '7') {
 	header ('Location: ../index.php');
 	exit;
 
-	
-	
 /* upgrade */
-}elseif (($step == '8') && ($_REQUEST['install_type'] == '3')) {
+}elseif (($step == '8') && (get_filter_request_var('install_type') == '3')) {
 	/* if the version is not found, die */
 	if (!is_int($old_version_index)) {
 		print "	<p style='font-family: Verdana, Arial; font-size: 16px; font-weight: bold; color: red;'>" . __('Error') . "</p>
@@ -754,11 +780,21 @@ if ($step == '7') {
 	}
 }
 
+if (isset_request_var('database_hostname')) {
+	$_SESSION['database_type']     = 'mysql';
+	$_SESSION['database_default']  = get_nfilter_request_var('database_default');
+	$_SESSION['database_hostname'] = get_nfilter_request_var('database_hostname');
+	$_SESSION['database_username'] = get_nfilter_request_var('database_username');
+	$_SESSION['database_password'] = get_nfilter_request_var('database_password');
+	$_SESSION['database_port']     = get_filter_request_var('database_port');
+	$_SESSION['database_ssl']      = isset_request_var('database_ssl') ? true:false;
+}
+
 ?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-	<title>cacti</title>
+	<title>Cacti Server Installation/Upgrade</title>
 	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
 	<link href='<?php echo $config['url_path']; ?>include/themes/modern/main.css' type='text/css' rel='stylesheet'>
 	<link href='<?php echo $config['url_path']; ?>include/themes/modern/jquery.zoom.css' type='text/css' rel='stylesheet'>
@@ -792,30 +828,11 @@ if ($step == '7') {
 	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/realtime.js'></script>
 	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/layout.js'></script>
 	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/themes/modern/main.js'></script>
-
-	<style type='text/css'>>
-	<!--
-		BODY,TABLE,TR,TD
-		{
-			font-size: 10pt;
-			font-family: Verdana, Arial, sans-serif;
-		}
-
-		.code
-		{
-			font-family: Courier New, Courier;
-		}
-
-		.header-text
-		{
-			color: white;
-			font-weight: bold;
-		}
-
-		.installArea {
-			font-size: 12px;
-		}
-	-->
+	<style type='text/css'>
+	input, select {
+		font-size: 12px;
+		padding: 0.4em;
+	}
 	</style>
 </head>
 
@@ -829,7 +846,7 @@ if ($step == '7') {
 		<td style='width:100%;vertical-align:middle;'>
 			<table class='cactiTable'>
 				<tr class='cactiTableTitle'>
-					<td class='textHeaderDark'><strong><?php print __('Cacti Installation Guide'); ?></strong></td>
+					<td class='textHeaderDark'><strong><?php print __('Cacti Installation Wizard'); ?></strong></td>
 				</tr>
 				<tr class='installArea'>
 					<td>
@@ -1001,8 +1018,8 @@ if ($step == '7') {
 						$input = install_file_paths();
 						/* get all items on the form and write values for them  */
 						while (list($name, $array) = each($input)) {
-							if (isset($_POST[$name])) {
-								db_execute("REPLACE INTO settings (name,value) VALUES ('$name','" . $_POST[$name] . "')");
+							if (isset_request_var($name)) {
+								db_execute_prepared("REPLACE INTO settings (name,value) VALUES (?, ?)", array($name, get_nfilter_request_var($name)));
 							}
 						}
 							
@@ -1124,6 +1141,30 @@ if ($step == '7') {
 						print '<p>' . __('See the sample crontab entry below with the change made in red. Your crontab line will look slightly different based upon your setup.') . '</p>';
 						print '<p><tt>*/5 * * * * cactiuser php /var/www/html/cacti/<span style="font-weight: bold; color: red;">poller.php</span> &gt; /dev/null 2&gt;&amp;1</tt></p>';
 						print '<p>' . __('Once you have made this change, please click Finish to continue.') . '</p>';
+
+					/* remote poller */
+					}elseif ($step == '10') {
+						print '<p>';
+						print __('Before continuing, you must test the database connection to the Primary Cacti Web Server using your information below.  Please enter connection values for your Primary Cacti Web Server and press the \'Test Connection\' button in order to proceed.');
+						print '</p>';
+						print '<p>';
+						print __('<b>Note:</b> the Database hostname can not be either \'localhost\' or the loopback address of this server.');
+						print '</p>';
+						print '<table class="filterTable">';
+						print '<tr><td>' . __('Database Name') . '</td>';
+						print "<td><input size='12' type='text' id='database_default' name='database_default' value='" . (isset($_SESSION['database_default']) ? $_SESSION['database_default']:'cacti') . "'></td></tr>";
+						print '<tr><td>' . __('Database Hostname') . '</td>';
+						print "<td><input size='30' type='text' id='database_hostname' name='database_hostname' value='" . (isset($_SESSION['database_hostname']) ? $_SESSION['database_hostname']:'yourhost.yourdomain.com') . "'></td></tr>";
+						print '<tr><td>' . __('Database Username') . '</td>';
+						print "<td><input size='12' type='text' id='database_username' name='database_username' value='" . (isset($_SESSION['database_username']) ? $_SESSION['database_username']:'cactiuser') . "'></td></tr>";
+						print '<tr><td>' . __('Database Password') . '</td>';
+						print "<td><input size='12' type='text' id='database_password' name='database_password' value='" . (isset($_SESSION['database_password']) ? $_SESSION['database_password']:'cactiuser') . "'></td></tr>";
+						print '<tr><td>' . __('Database Port') . '</td>';
+						print "<td><input size='4' type='text' id='database_port' name='database_port' value='" . (isset($_SESSION['database_port']) ? $_SESSION['database_port']:'3306') . "'></td></tr>";
+						print '<tr><td><label for="database_ssl">' . __('Database SSL') . '</label></td>';
+						print "<td><input type='checkbox' id='database_ssl' name='database_ssl' " . (isset($_SESSION['database_ssl']) && $_SESSION['database_ssl'] == true ? 'checked':'') . "></td></tr>";
+						print '<tr><td><input id="testdb" type="button" value="' . __('Test Connection') . '"></td><td style="text-align:left" id="message"></td></tr>';
+						print '</table>';
 					}?>
 					</td>
 				</tr>
@@ -1143,9 +1184,11 @@ if ($step == '7') {
 <script type='text/javascript'>
 var step='<?php print $step;?>';
 $(function() {
-	$('#next, #previous').button();
+	$('#next, #previous, #testdb').button();
 
 	if (step == 1) {
+		$('#next').button('disable');
+	}else if (step == 10) {
 		$('#next').button('disable');
 	}
 
@@ -1158,6 +1201,26 @@ $(function() {
 			$('#next').button('enable');
 		}else{
 			$('#next').button('disable');
+		}
+	});
+
+	$('#testdb').click(function() {
+		strURL = 'index.php?action=testdb';
+		$.post(strURL, $('input').serializeObject()).done(function(data) {
+			$('#message').html(data).show().fadeOut(2000);
+			if (data == 'Connection Sucsessful') {
+				$('#next').button('enable');
+			}
+		});
+	});
+
+	$('#database_hostname').keyup(function() {
+		if ($('#database_hostname').val() == 'localhost') {
+			$('#testdb').button('disable');
+		}else if ($('#database_hostname').val() == '127.0.0.1') {
+			$('#testdb').button('disable');
+		}else{
+			$('#testdb').button('enable');
 		}
 	});
 });
