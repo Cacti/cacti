@@ -253,7 +253,7 @@ EOD;
 				//print "	Unable to create directory: $filename\n";
 			}
 		} else {
-			$debug_data = import_xml_data($fdata, false, $interval);
+			$debug_data = import_xml_data($fdata, false, 1);
 		}
 	}
 	//print "File creation complete\n";
