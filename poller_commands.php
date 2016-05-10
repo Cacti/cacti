@@ -38,13 +38,48 @@ include_once($config['base_path'] . '/lib/poller.php');
 include_once($config['base_path'] . '/lib/data_query.php');
 include_once($config['base_path'] . '/lib/rrd.php');
 
+$poller_id = $config['poller_id'];
+
+/* process calling arguments */
+$parms = $_SERVER['argv'];
+array_shift($parms);
+
+if (sizeof($parms)) {
+	foreach($parms as $parameter) {
+		@list($arg, $value) = @explode('=', $parameter);
+
+		switch ($arg) {
+		case '--version':
+		case '-V':
+		case '-H':
+		case '--help':
+			display_help();
+			exit(0);
+		case '--poller':
+		case '-p':
+			$poller_id = $value;
+			break;
+		case '--debug':
+		case '-d':
+			$debug = true;
+			break;
+		default:
+			echo "ERROR: Invalid Argument: ($arg)\n\n";
+			display_help();
+			exit(1);
+		}
+	}
+}
+
 /* Record Start Time */
 $start = microtime(true);
 
-$poller_commands = db_fetch_assoc('SELECT poller_command.action, poller_command.command FROM poller_command WHERE poller_command.poller_id = 0');
+$poller_commands = db_fetch_assoc_prepared('SELECT action, command 
+	FROM poller_command 
+	WHERE poller_id = ?', array($poller_id));
 
-$last_host_id = 0;
-$first_host = true;
+$last_host_id   = 0;
+$first_host     = true;
 $recached_hosts = 0;
 
 if (sizeof($poller_commands) > 0) {
@@ -88,18 +123,27 @@ if (sizeof($poller_commands) > 0) {
 		}
 	}
 
-	db_execute('DELETE FROM poller_command WHERE poller_id = 0');
+	db_execute_prepared('DELETE FROM poller_command WHERE poller_id = ?', array($poller_id));
 }
 
 /* take time to log performance data */
 $recache = microtime(true);
 
-$recache_stats = sprintf('RecacheTime:%01.4f DevicesRecached:%s',	round($recache - $start, 4), $recached_hosts);
+$recache_stats = sprintf('Poller:%i RecacheTime:%01.4f DevicesRecached:%s',	$poller_id, round($recache - $start, 4), $recached_hosts);
 
 if ($recached_hosts > 0) {
 	cacti_log('STATS: ' . $recache_stats, true, 'RECACHE');
 }
 
 /* insert poller stats into the settings table */
-db_execute("REPLACE INTO settings (name, value) VALUES ('stats_recache', '$recache_stats')");
+db_execute("REPLACE INTO settings (name, value) VALUES ('stats_recache_$poller_id', '$recache_stats')");
 
+function display_help () {
+	$version = db_fetch_cell('SELECT cacti FROM version');
+	echo "Cacti Poller Commands Poller, Version $version, " . COPYRIGHT_YEARS . "\n\n";
+	echo "usage: poller_commands.php [ --poller=ID ] [-d | --debug] [-h | --help | -v | --version]\n\n";
+	echo "-p | --poller - The poller to run as.  Defaults to the system poller\n";
+	echo "-d | --debug  - Display verbose output during execution\n";
+	echo "-v --version  - Display this help message\n";
+	echo "-h --help     - Display this help message\n";
+}

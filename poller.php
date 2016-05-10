@@ -329,7 +329,7 @@ while ($poller_runs_completed < $poller_runs) {
 			$total_procs    = $concurrent_processes;
 		}
 
-		$extra_args = api_plugin_hook_function ('poller_command_args', $extra_args);
+		$extra_args = api_plugin_hook_function('poller_command_args', $extra_args);
 
 		/* Populate each execution file with appropriate information */
 		foreach ($polling_hosts as $item) {
@@ -360,7 +360,7 @@ while ($poller_runs_completed < $poller_runs) {
 			$host_count ++;
 
 			if ($change_proc) {
-				exec_background($command_string, "$extra_args --first=$first_host --last=$last_host" . ($mibs ? ' --mibs':''));
+				exec_background($command_string, "$extra_args --poller=$poller_id --first=$first_host --last=$last_host" . ($mibs ? ' --mibs':''));
 				usleep(100000);
 
 				$host_count   = 1;
@@ -376,7 +376,7 @@ while ($poller_runs_completed < $poller_runs) {
 		if ($host_count > 1) {
 			$last_host = $item['id'];
 
-			exec_background($command_string, "$extra_args --first=$first_host --last=$last_host");
+			exec_background($command_string, "$extra_args --poller=$poller_id --first=$first_host --last=$last_host");
 			usleep(100000);
 
 			$started_processes++;
@@ -395,7 +395,10 @@ while ($poller_runs_completed < $poller_runs) {
 		$rrds_processed = 0;
 		$poller_finishing_dispatched = false;
 		while (1) {
-			$finished_processes = db_fetch_cell('SELECT ' . SQL_NO_CACHE . " count(*) FROM poller_time WHERE poller_id = $poller_id AND end_time  >'0000-00-00 00:00:00'");
+			$finished_processes = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . " count(*) 
+				FROM poller_time 
+				WHERE poller_id = ? 
+				AND end_time >'0000-00-00 00:00:00'", array($poller_id));
 
 			if ($finished_processes >= $started_processes) {
 				/* all scheduled pollers are finished */
@@ -437,15 +440,15 @@ while ($poller_runs_completed < $poller_runs) {
 		rrd_close($rrdtool_pipe);
 
 		/* process poller commands */
-		if (db_fetch_cell('SELECT ' . SQL_NO_CACHE . " COUNT(*) FROM poller_command WHERE poller_id = $poller_id") > 0) {
+		if (db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . ' COUNT(*) FROM poller_command WHERE poller_id = ?', array($poller_id)) > 0) {
 			$command_string = read_config_option('path_php_binary');
-			$extra_args = '-q "' . $config['base_path'] . '/poller_commands.php"';
+			$extra_args = '-q "' . $config['base_path'] . "/poller_commands.php\" --poller=$poller_id";
 			exec_background($command_string, $extra_args);
 		} else {
 			/* no re-index or Rechache present on this run
 			 * in case, we have more PCOMMANDS than recaching, this has to be moved to poller_commands.php
 			 * but then we'll have to call it each time to make sure, stats are updated */
-			db_execute("REPLACE INTO settings (name,value) VALUES ('stats_recache','RecacheTime:0.0 DevicesRecached:0')");
+			db_execute("REPLACE INTO settings (name,value) VALUES ('stats_recache_$poller_id','RecacheTime:0.0 DevicesRecached:0')");
 		}
 
 		/* graph export */
