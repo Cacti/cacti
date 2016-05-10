@@ -156,9 +156,17 @@ function update_reindex_cache($host_id, $data_query_id) {
 	/* will be used to keep track of sql statements to execute later on */
 	$recache_stack = array();
 
-	$host            = db_fetch_row_prepared('SELECT ' . SQL_NO_CACHE . ' hostname, snmp_community, snmp_version, snmp_username, snmp_password, snmp_auth_protocol, snmp_priv_passphrase, snmp_priv_protocol, snmp_context, snmp_port, snmp_timeout FROM host WHERE id = ?', array($host_id));
-	$data_query      = db_fetch_row_prepared('SELECT ' . SQL_NO_CACHE . ' reindex_method, sort_field FROM host_snmp_query WHERE host_id = ? AND snmp_query_id = ?', array($host_id, $data_query_id));
-	$data_query_type = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . ' data_input.type_id FROM (data_input, snmp_query) WHERE data_input.id = snmp_query.data_input_id AND snmp_query.id = ?', array($data_query_id));
+	$host            = db_fetch_row_prepared('SELECT ' . SQL_NO_CACHE . ' * FROM host WHERE id = ?', array($host_id));
+
+	$data_query      = db_fetch_row_prepared('SELECT ' . SQL_NO_CACHE . ' * FROM host_snmp_query WHERE host_id = ? AND snmp_query_id = ?', array($host_id, $data_query_id));
+
+	$data_query_type = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . ' data_input.type_id 
+		FROM data_input
+		INNER JOIN snmp_query
+		ON data_input.id = snmp_query.data_input_id
+		WHERE snmp_query.id = ?', 
+		array($data_query_id));
+
 	$data_query_xml  = get_data_query_array($data_query_id);
 
 	switch ($data_query['reindex_method']) {
@@ -206,7 +214,12 @@ function update_reindex_cache($host_id, $data_query_id) {
 			 * we do NOT make use of <oid_num_indexes> or the like!
 			 * this works, even if no <oid_num_indexes> was given
 			 */
-			$assert_value = sizeof(db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' snmp_index FROM host_snmp_cache WHERE host_id = ? AND snmp_query_id = ? GROUP BY snmp_index', array($host_id, $data_query_id)));
+			$assert_value = sizeof(db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' snmp_index 
+				FROM host_snmp_cache 
+				WHERE host_id = ? 
+				AND snmp_query_id = ? 
+				GROUP BY snmp_index', 
+				array($host_id, $data_query_id)));
 
 			/* now, we have to build the (list of) commands that are later used on a recache event
 			 * the result of those commands will be compared to the assert_value we have just computed
@@ -244,7 +257,12 @@ function update_reindex_cache($host_id, $data_query_id) {
 
 			break;
 		case DATA_QUERY_AUTOINDEX_FIELD_VERIFICATION:
-			$primary_indexes = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' snmp_index, oid, field_value FROM host_snmp_cache WHERE host_id = ? AND snmp_query_id = ? AND field_name = ?', array($host_id, $data_query_id, $data_query['sort_field']));
+			$primary_indexes = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' snmp_index, oid, field_value 
+				FROM host_snmp_cache 
+				WHERE host_id = ? 
+				AND snmp_query_id = ? 
+				AND field_name = ?', 
+				array($host_id, $data_query_id, $data_query['sort_field']));
 
 			if (sizeof($primary_indexes) > 0) {
 				foreach ($primary_indexes as $index) {
@@ -268,7 +286,11 @@ function update_reindex_cache($host_id, $data_query_id) {
 
 function poller_update_poller_reindex_from_buffer($host_id, $data_query_id, &$recache_stack) {
 	/* set all fields present value to 0, to mark the outliers when we are all done */
-	db_execute_prepared('UPDATE poller_reindex SET present = 0 WHERE host_id = ? AND data_query_id = ?', array($host_id, $data_query_id));
+	db_execute_prepared('UPDATE poller_reindex 
+		SET present = 0 
+		WHERE host_id = ? 
+		AND data_query_id = ?', 
+		array($host_id, $data_query_id));
 
 	/* setup the database call */
 	$sql_prefix   = 'INSERT INTO poller_reindex (host_id, data_query_id, action, op, assert_value, arg1, present) VALUES';
@@ -310,7 +332,10 @@ function poller_update_poller_reindex_from_buffer($host_id, $data_query_id, &$re
 	}
 
 	/* remove stale records FROM the poller reindex */
-	db_execute_prepared('DELETE FROM poller_reindex WHERE host_id = ? AND data_query_id = ? AND present = 0', array($host_id, $data_query_id));
+	db_execute_prepared('DELETE FROM poller_reindex 
+		WHERE host_id = ? 
+		AND data_query_id = ? 
+		AND present = 0', array($host_id, $data_query_id));
 }
 
 /* process_poller_output - grabs data from the 'poller_output' table and feeds the *completed*
@@ -332,17 +357,14 @@ function process_poller_output(&$rrdtool_pipe, $remainder = FALSE) {
 	}
 
 	/* create/update the rrd files */
-	$results = db_fetch_assoc("select
-		poller_output.output,
-		poller_output.time,
-		UNIX_TIMESTAMP(poller_output.time) as unix_time,
-		poller_output.local_data_id,
-		poller_item.rrd_path,
-		poller_item.rrd_name,
-		poller_item.rrd_num
-		from (poller_output,poller_item)
-		where (poller_output.local_data_id=poller_item.local_data_id AND poller_output.rrd_name=poller_item.rrd_name)
-		order by poller_output.local_data_id
+	$results = db_fetch_assoc("SELECT po.output, po.time,
+		UNIX_TIMESTAMP(po.time) as unix_time, po.local_data_id,
+		pi.rrd_path, pi.rrd_name, pi.rrd_num
+		FROM poller_output AS po
+		INNER JOIN poller_item AS pi
+		ON po.local_data_id=pi.local_data_id
+		AND po.rrd_name=pi.rrd_name
+		ORDER BY po.local_data_id
 		$limit");
 
 	if (sizeof($results) > 0) {
@@ -378,11 +400,12 @@ function process_poller_output(&$rrdtool_pipe, $remainder = FALSE) {
 				$values = explode(' ', $value);
 
 				$rrd_field_names = array_rekey(db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . '
-					data_template_rrd.data_source_name,
-					data_input_fields.data_name
-					FROM (data_template_rrd, data_input_fields)
-					WHERE data_template_rrd.data_input_field_id = data_input_fields.id
-					and data_template_rrd.local_data_id = ?', array($item['local_data_id'])), 'data_name', 'data_source_name');
+					dtr.data_source_name, dif.data_name
+					FROM data_template_rrd AS dtr
+					INNER JOIN data_input_fields AD dif
+					ON dtr.data_input_field_id = dif.id
+					WHERE dtr.local_data_id = ?', 
+					array($item['local_data_id'])), 'data_name', 'data_source_name');
 
 				if (sizeof($values)) {
 				foreach($values as $value) {
