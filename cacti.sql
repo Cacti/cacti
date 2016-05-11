@@ -12,12 +12,12 @@ CREATE TABLE `aggregate_graph_templates` (
   `total_type` int(10) unsigned NOT NULL,
   `total_prefix` varchar(64) NOT NULL,
   `order_type` int(10) unsigned NOT NULL,
-  `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `user_id` int(10) unsigned NOT NULL,
   PRIMARY KEY (`id`),
   KEY `graph_template_id` (`graph_template_id`),
   KEY `user_id` (`user_id`)
-) ENGINE=MyISAM COMMENT='Template Definitions for Aggregate Graphs';
+) ENGINE=InnoDB COMMENT='Template Definitions for Aggregate Graphs';
 
 --
 -- Table structure for table `aggregate_graph_templates_graph`
@@ -87,7 +87,7 @@ CREATE TABLE `aggregate_graph_templates_graph` (
   t_legend_direction char(2) DEFAULT '0',
   legend_direction varchar(10) DEFAULT NULL,
   PRIMARY KEY (`aggregate_template_id`)
-) ENGINE=MyISAM COMMENT='Aggregate Template Graph Data';
+) ENGINE=InnoDB COMMENT='Aggregate Template Graph Data';
 
 --
 -- Table structure for table `aggregate_graph_templates_item`
@@ -105,7 +105,7 @@ CREATE TABLE `aggregate_graph_templates_item` (
   `item_skip` char(2) NOT NULL,
   `item_total` char(2) NOT NULL,
   PRIMARY KEY (`aggregate_template_id`,`graph_templates_item_id`)
-) ENGINE=MyISAM COMMENT='Aggregate Template Graph Items';
+) ENGINE=InnoDB COMMENT='Aggregate Template Graph Items';
 
 --
 -- Table structure for table `aggregate_graphs`
@@ -131,7 +131,7 @@ CREATE TABLE `aggregate_graphs` (
   KEY `local_graph_id` (`local_graph_id`),
   KEY `title_format` (`title_format`),
   KEY `user_id` (`user_id`)
-) ENGINE=MyISAM COMMENT='Aggregate Graph Definitions';
+) ENGINE=InnoDB COMMENT='Aggregate Graph Definitions';
 
 --
 -- Table structure for table `aggregate_graphs_graph_item`
@@ -149,7 +149,7 @@ CREATE TABLE `aggregate_graphs_graph_item` (
   `item_skip` char(2) NOT NULL,
   `item_total` char(2) NOT NULL,
   PRIMARY KEY (`aggregate_graph_id`,`graph_templates_item_id`)
-) ENGINE=MyISAM COMMENT='Aggregate Graph Graph Items';
+) ENGINE=InnoDB COMMENT='Aggregate Graph Graph Items';
 
 --
 -- Table structure for table `aggregate_graphs_items`
@@ -160,7 +160,7 @@ CREATE TABLE `aggregate_graphs_items` (
   `local_graph_id` int(10) unsigned NOT NULL,
   `sequence` mediumint(8) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`aggregate_graph_id`,`local_graph_id`)
-) ENGINE=MyISAM COMMENT='Aggregate Graph Items';
+) ENGINE=InnoDB COMMENT='Aggregate Graph Items';
 
 --
 -- Table structure for table `automation_devices`
@@ -193,7 +193,7 @@ CREATE TABLE `automation_devices` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `ip` (`ip`),
   KEY `hostname` (`hostname`)
-) ENGINE=MyISAM COMMENT='Table of Discovered Devices';
+) ENGINE=InnoDB COMMENT='Table of Discovered Devices';
 
 --
 -- Table structure for table `automation_graph_rule_items`
@@ -208,7 +208,7 @@ CREATE TABLE `automation_graph_rule_items` (
   `operator` smallint(3) unsigned NOT NULL DEFAULT '0',
   `pattern` varchar(255) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=7 COMMENT='Automation Graph Rule Items';
+) ENGINE=InnoDB AUTO_INCREMENT=7 COMMENT='Automation Graph Rule Items';
 
 --
 -- Dumping data for table `automation_graph_rule_items`
@@ -227,7 +227,7 @@ CREATE TABLE `automation_graph_rules` (
   `graph_type_id` smallint(3) unsigned NOT NULL DEFAULT '0',
   `enabled` char(2) DEFAULT '',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=5 COMMENT='Automation Graph Rules';
+) ENGINE=InnoDB AUTO_INCREMENT=5 COMMENT='Automation Graph Rules';
 
 --
 -- Dumping data for table `automation_graph_rules`
@@ -264,7 +264,7 @@ CREATE TABLE `automation_match_rule_items` (
   `operator` smallint(3) unsigned NOT NULL DEFAULT '0',
   `pattern` varchar(255) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=10 COMMENT='Automation Match Rule Items';
+) ENGINE=InnoDB AUTO_INCREMENT=10 COMMENT='Automation Match Rule Items';
 
 --
 -- Dumping data for table `automation_match_rule_items`
@@ -310,7 +310,7 @@ CREATE TABLE `automation_networks` (
   `rerun_data_queries` char(2) DEFAULT NULL COMMENT 'Rerun data queries or not for existing hosts',
   PRIMARY KEY (`id`),
   KEY `poller_id` (`poller_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 COMMENT='Stores scanning subnet definitions';
+) ENGINE=InnoDB AUTO_INCREMENT=2 COMMENT='Stores scanning subnet definitions';
 
 --
 -- Dumping data for table `automation_networks`
@@ -343,7 +343,7 @@ CREATE TABLE `automation_snmp` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(100) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=3 COMMENT='Group of SNMP Option Sets';
+) ENGINE=InnoDB AUTO_INCREMENT=3 COMMENT='Group of SNMP Option Sets';
 
 --
 -- Dumping data for table `automation_snmp`
@@ -372,7 +372,7 @@ CREATE TABLE `automation_snmp_items` (
   `snmp_priv_protocol` char(6) DEFAULT '',
   `snmp_context` varchar(64) DEFAULT '',
   PRIMARY KEY (`id`,`snmp_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=3 COMMENT='Set of SNMP Options';
+) ENGINE=InnoDB AUTO_INCREMENT=3 COMMENT='Set of SNMP Options';
 
 --
 -- Dumping data for table `automation_snmp_items`
@@ -393,7 +393,7 @@ CREATE TABLE `automation_templates` (
   `sysOid` varchar(60) DEFAULT '',
   `sequence` int(10) unsigned DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=3 COMMENT='Templates of SysDescr SysName and SysOID matches to use for automation';
+) ENGINE=InnoDB AUTO_INCREMENT=3 COMMENT='Templates of SysDescr SysName and SysOID matches to use for automation';
 
 --
 -- Dumping data for table `automation_templates`
@@ -415,7 +415,7 @@ CREATE TABLE `automation_tree_rule_items` (
   `search_pattern` varchar(255) NOT NULL DEFAULT '',
   `replace_pattern` varchar(255) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=5 COMMENT='Automation Tree Rule Items';
+) ENGINE=InnoDB AUTO_INCREMENT=5 COMMENT='Automation Tree Rule Items';
 
 --
 -- Dumping data for table `automation_tree_rule_items`
@@ -436,7 +436,7 @@ CREATE TABLE `automation_tree_rules` (
   `host_grouping_type` smallint(3) unsigned NOT NULL DEFAULT '0',
   `enabled` char(2) DEFAULT '',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=4 COMMENT='Automation Tree Rules';
+) ENGINE=InnoDB AUTO_INCREMENT=4 COMMENT='Automation Tree Rules';
 
 --
 -- Dumping data for table `automation_tree_rules`
@@ -454,7 +454,7 @@ CREATE TABLE cdef (
   system mediumint(8) unsigned NOT NULL DEFAULT '0',
   name varchar(255) NOT NULL default '',
   PRIMARY KEY  (id)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 --
 -- Dumping data for table `cdef`
@@ -480,7 +480,7 @@ CREATE TABLE cdef_items (
   value varchar(150) NOT NULL default '',
   PRIMARY KEY  (id),
   KEY cdef_id (cdef_id)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 --
 -- Dumping data for table `cdef_items`
@@ -508,7 +508,7 @@ CREATE TABLE `color_templates` (
   `color_template_id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL DEFAULT '',
   PRIMARY KEY (`color_template_id`)
-) ENGINE=MyISAM COMMENT='Color Templates';
+) ENGINE=InnoDB COMMENT='Color Templates';
 
 --
 -- Dumping data for table `color_templates`
@@ -529,7 +529,7 @@ CREATE TABLE `color_template_items` (
   `color_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `sequence` mediumint(8) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`color_template_item_id`)
-) ENGINE=MyISAM COMMENT='Color Items for Color Templates';
+) ENGINE=InnoDB COMMENT='Color Items for Color Templates';
 
 --
 -- Dumping data for table `color_template_items`
@@ -591,7 +591,7 @@ CREATE TABLE colors (
   read_only char(2) default '',
   PRIMARY KEY (id),
   UNIQUE KEY hex (hex)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 --
 -- Dumping data for table `colors`
@@ -1046,7 +1046,7 @@ CREATE TABLE data_input (
   type_id tinyint(2) NOT NULL default '0',
   PRIMARY KEY (id),
   KEY name (name)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 --
 -- Dumping data for table `data_input`
@@ -1076,7 +1076,7 @@ CREATE TABLE data_input_data (
   value text,
   PRIMARY KEY (data_input_field_id,data_template_data_id),
   KEY t_value (t_value)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 --
 -- Dumping data for table `data_input_data`
@@ -1280,7 +1280,7 @@ CREATE TABLE data_input_fields (
   PRIMARY KEY  (id),
   KEY data_input_id (data_input_id),
   KEY type_code (type_code)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 --
 -- Dumping data for table `data_input_fields`
@@ -1347,7 +1347,7 @@ CREATE TABLE data_local (
   KEY data_template_id (data_template_id),
   KEY snmp_query_id (snmp_query_id),
   KEY host_id (host_id)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 --
 -- Dumping data for table `data_local`
@@ -1372,7 +1372,7 @@ CREATE TABLE `data_source_profiles` (
   `x_files_factor` double DEFAULT '0.5',
   `default` char(2) DEFAULT '',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM COMMENT='Stores Data Source Profiles';
+) ENGINE=InnoDB COMMENT='Stores Data Source Profiles';
 
 --
 -- Dumping data for table `data_source_profiles`
@@ -1389,7 +1389,7 @@ CREATE TABLE `data_source_profiles_cf` (
   `consolidation_function_id` smallint(5) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`data_source_profile_id`,`consolidation_function_id`),
   KEY `data_source_profile_id` (`data_source_profile_id`)
-) ENGINE=MyISAM COMMENT='Maps the Data Source Profile Consolidation Functions';
+) ENGINE=InnoDB COMMENT='Maps the Data Source Profile Consolidation Functions';
 
 --
 -- Dumping data for table `data_source_profiles_cf`
@@ -1409,7 +1409,7 @@ CREATE TABLE `data_source_profiles_rra` (
   `rows` int(10) unsigned NOT NULL DEFAULT '700',
   PRIMARY KEY (`id`),
   KEY `data_source_profile_id` (`data_source_profile_id`)
-) ENGINE=MyISAM COMMENT='Stores RRA Definitions for Data Source Profiles';
+) ENGINE=InnoDB COMMENT='Stores RRA Definitions for Data Source Profiles';
 
 --
 -- Dumping data for table `data_source_profiles_rra`
@@ -1432,7 +1432,7 @@ CREATE TABLE IF NOT EXISTS `data_source_purge_action` (
 		`action` tinyint(2) NOT NULL default 0,
 		PRIMARY KEY (`id`),
 		UNIQUE KEY name (`name`))
-		ENGINE=MyISAM
+		ENGINE=InnoDB
 		COMMENT='RRD Cleaner File Actions';
 
 --
@@ -1453,7 +1453,7 @@ CREATE TABLE `data_source_purge_temp` (
 		KEY local_data_id (`local_data_id`),
 		KEY in_cacti (`in_cacti`),
 		KEY data_template_id (`data_template_id`))
-		ENGINE=MyISAM
+		ENGINE=InnoDB
 		COMMENT='RRD Cleaner File Repository';
 
 	
@@ -1467,7 +1467,7 @@ CREATE TABLE IF NOT EXISTS `data_source_stats_daily` (
 		`average` DOUBLE DEFAULT NULL,
 		`peak` DOUBLE DEFAULT NULL,
 		PRIMARY KEY  (`local_data_id`,`rrd_name`)
-		) ENGINE=MyISAM;
+		) ENGINE=InnoDB;
 
 --
 -- Table structure for table `data_source_stats_hourly`
@@ -1479,7 +1479,7 @@ CREATE TABLE IF NOT EXISTS `data_source_stats_hourly` (
 		`average` DOUBLE DEFAULT NULL,
 		`peak` DOUBLE DEFAULT NULL,
 		PRIMARY KEY  (`local_data_id`,`rrd_name`)
-		) ENGINE=MyISAM;
+		) ENGINE=InnoDB;
 
 --
 -- Table structure for table `data_source_stats_hourly_cache`
@@ -1516,7 +1516,7 @@ CREATE TABLE IF NOT EXISTS `data_source_stats_monthly` (
 		`average` DOUBLE DEFAULT NULL,
 		`peak` DOUBLE DEFAULT NULL,
 		PRIMARY KEY  (`local_data_id`,`rrd_name`)
-		) ENGINE=MyISAM;
+		) ENGINE=InnoDB;
 
 --
 -- Table structure for table `data_source_stats_weekly`
@@ -1528,7 +1528,7 @@ CREATE TABLE IF NOT EXISTS `data_source_stats_weekly` (
 		`average` DOUBLE DEFAULT NULL,
 		`peak` DOUBLE DEFAULT NULL,
 		PRIMARY KEY  (`local_data_id`,`rrd_name`)
-		) ENGINE=MyISAM;
+		) ENGINE=InnoDB;
 
 --
 -- Table structure for table `data_source_stats_yearly`
@@ -1540,7 +1540,7 @@ CREATE TABLE IF NOT EXISTS `data_source_stats_yearly` (
 		`average` DOUBLE DEFAULT NULL,
 		`peak` DOUBLE DEFAULT NULL,
 		PRIMARY KEY  (`local_data_id`,`rrd_name`)
-		) ENGINE=MyISAM;
+		) ENGINE=InnoDB;
 
 --
 -- Table structure for table `data_template`
@@ -1551,7 +1551,7 @@ CREATE TABLE data_template (
   hash varchar(32) NOT NULL default '',
   name varchar(150) NOT NULL default '',
   PRIMARY KEY  (id)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 --
 -- Dumping data for table `data_template`
@@ -1609,7 +1609,7 @@ CREATE TABLE data_template_data (
   KEY local_data_id (local_data_id),
   KEY data_template_id (data_template_id),
   KEY data_input_id (data_input_id)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 --
 -- Dumping data for table `data_template_data`
@@ -1675,7 +1675,7 @@ CREATE TABLE data_template_rrd (
   KEY local_data_id (local_data_id),
   KEY data_template_id (data_template_id),
   KEY local_data_template_rrd_id (local_data_template_rrd_id)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 --
 -- Dumping data for table `data_template_rrd`
@@ -1742,7 +1742,7 @@ CREATE TABLE graph_local (
   KEY graph_template_id (graph_template_id),
   KEY snmp_query_id (snmp_query_id),
   KEY snmp_index (snmp_index)
-) ENGINE=MyISAM COMMENT='Creates a relationship for each item in a custom graph.';
+) ENGINE=InnoDB COMMENT='Creates a relationship for each item in a custom graph.';
 
 --
 -- Dumping data for table `graph_local`
@@ -1765,7 +1765,7 @@ CREATE TABLE graph_template_input (
   description text,
   column_name varchar(50) NOT NULL default '',
   PRIMARY KEY  (id)
-) ENGINE=MyISAM COMMENT='Stores the names for graph item input groups.';
+) ENGINE=InnoDB COMMENT='Stores the names for graph item input groups.';
 
 --
 -- Dumping data for table `graph_template_input`
@@ -1837,7 +1837,7 @@ CREATE TABLE graph_template_input_defs (
   graph_template_item_id int(12) unsigned NOT NULL default '0',
   PRIMARY KEY  (graph_template_input_id,graph_template_item_id),
   KEY graph_template_input_id (graph_template_input_id)
-) ENGINE=MyISAM COMMENT='Stores the relationship for what graph iitems are associated';
+) ENGINE=InnoDB COMMENT='Stores the relationship for what graph iitems are associated';
 
 --
 -- Dumping data for table `graph_template_input_defs`
@@ -2042,7 +2042,7 @@ CREATE TABLE graph_templates (
   name char(255) NOT NULL default '',
   PRIMARY KEY  (id),
   KEY name (name)
-) ENGINE=MyISAM COMMENT='Contains each graph template name.';
+) ENGINE=InnoDB COMMENT='Contains each graph template name.';
 
 --
 -- Dumping data for table `graph_templates`
@@ -2083,7 +2083,7 @@ CREATE TABLE graph_templates_gprint (
   name varchar(100) NOT NULL default '',
   gprint_text varchar(255) default NULL,
   PRIMARY KEY  (id)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 --
 -- Dumping data for table `graph_templates_gprint`
@@ -2171,7 +2171,7 @@ CREATE TABLE graph_templates_graph (
   KEY local_graph_id (local_graph_id),
   KEY graph_template_id (graph_template_id),
   KEY title_cache (title_cache)
-) ENGINE=MyISAM COMMENT='Stores the actual graph data.';
+) ENGINE=InnoDB COMMENT='Stores the actual graph data.';
 
 --
 -- Dumping data for table `graph_templates_graph`
@@ -2237,7 +2237,7 @@ CREATE TABLE graph_templates_item (
   KEY graph_template_id (graph_template_id),
   KEY local_graph_id (local_graph_id),
   KEY task_item_id (task_item_id)
-) ENGINE=MyISAM COMMENT='Stores the actual graph item data.';
+) ENGINE=InnoDB COMMENT='Stores the actual graph item data.';
 
 --
 -- Dumping data for table `graph_templates_item`
@@ -2475,7 +2475,7 @@ CREATE TABLE graph_tree (
   last_modified timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   modified_by int(10) unsigned DEFAULT '1',
   PRIMARY KEY  (id)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 --
 -- Dumping data for table `graph_tree`
@@ -2502,7 +2502,7 @@ CREATE TABLE graph_tree_items (
   KEY `host_id` (`host_id`),
   KEY `local_graph_id` (`local_graph_id`),
   KEY `parent`(`parent`)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 --
 -- Dumping data for table `graph_tree_items`
@@ -2561,7 +2561,7 @@ CREATE TABLE host (
   PRIMARY KEY  (id),
   KEY poller_id (poller_id),
   KEY disabled (disabled)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 --
 -- Dumping data for table `host`
@@ -2577,7 +2577,7 @@ CREATE TABLE host_graph (
   host_id mediumint(8) unsigned NOT NULL default '0',
   graph_template_id mediumint(8) unsigned NOT NULL default '0',
   PRIMARY KEY  (host_id,graph_template_id)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 --
 -- Dumping data for table `host_graph`
@@ -2607,7 +2607,7 @@ CREATE TABLE host_snmp_cache (
   KEY field_value (field_value),
   KEY snmp_query_id (snmp_query_id),
   KEY present (present)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 --
 -- Dumping data for table `host_snmp_cache`
@@ -2626,7 +2626,7 @@ CREATE TABLE host_snmp_query (
   reindex_method tinyint(3) unsigned NOT NULL default '0',
   PRIMARY KEY  (host_id,snmp_query_id),
   KEY host_id (host_id)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 --
 -- Dumping data for table `host_snmp_query`
@@ -2643,7 +2643,7 @@ CREATE TABLE host_template (
   hash varchar(32) NOT NULL default '',
   name varchar(100) NOT NULL default '',
   PRIMARY KEY  (id)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 --
 -- Dumping data for table `host_template`
@@ -2664,7 +2664,7 @@ CREATE TABLE host_template_graph (
   graph_template_id mediumint(8) unsigned NOT NULL default '0',
   PRIMARY KEY  (host_template_id,graph_template_id),
   KEY host_template_id (host_template_id)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 --
 -- Dumping data for table `host_template_graph`
@@ -2690,7 +2690,7 @@ CREATE TABLE host_template_snmp_query (
   snmp_query_id mediumint(8) unsigned NOT NULL default '0',
   PRIMARY KEY  (host_template_id,snmp_query_id),
   KEY host_template_id (host_template_id)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 --
 -- Dumping data for table `host_template_snmp_query`
@@ -2720,7 +2720,7 @@ CREATE TABLE `plugin_config` (
   PRIMARY KEY  (`id`),
   KEY `status` (`status`),
   KEY `directory` (`directory`)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 --
 -- Table structure for table `plugin_hooks`
@@ -2736,7 +2736,7 @@ CREATE TABLE `plugin_hooks` (
   PRIMARY KEY  (`id`),
   KEY `hook` (`hook`),
   KEY `status` (`status`)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 --
 -- Table structure for table `plugin_realms`
@@ -2749,7 +2749,7 @@ CREATE TABLE `plugin_realms` (
   `display` varchar(64) NOT NULL default '',
   PRIMARY KEY  (`id`),
   KEY `plugin` (`plugin`)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 --
 -- Table structure for table `plugin_db_changes`
@@ -2764,7 +2764,7 @@ CREATE TABLE `plugin_db_changes` (
   PRIMARY KEY  (`id`),
   KEY `plugin` (`plugin`),
   KEY `method` (`method`)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 REPLACE INTO `plugin_realms` VALUES (1, 'internal', 'plugins.php', 'Plugin Management');
 INSERT INTO `plugin_hooks` VALUES (1, 'internal', 'config_arrays', '', 'plugin_config_arrays', 1);
@@ -2780,7 +2780,7 @@ CREATE TABLE poller (
   ip_address int(11) unsigned NOT NULL default '0',
   last_update timestamp NOT NULL default '0000-00-00 00:00:00',
   PRIMARY KEY  (id)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 --
 -- Table structure for table `poller_command`
@@ -2792,7 +2792,7 @@ CREATE TABLE poller_command (
   action tinyint(3) unsigned NOT NULL default '0',
   command varchar(200) NOT NULL default '',
   PRIMARY KEY  (poller_id,action,command)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 --
 -- Table structure for table `poller_item`
@@ -2829,7 +2829,7 @@ CREATE TABLE poller_item (
   KEY rrd_next_step (rrd_next_step),
   KEY action (action),
   KEY present (present)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 --
 -- Table structure for table `poller_output`
@@ -2841,7 +2841,7 @@ CREATE TABLE poller_output (
   time timestamp NOT NULL default '0000-00-00 00:00:00',
   output text NOT NULL,
   PRIMARY KEY (local_data_id,rrd_name,time) /*!50060 USING BTREE */
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 --
 -- Table structure for table `poller_output_boost`
@@ -2853,7 +2853,7 @@ CREATE TABLE  `poller_output_boost` (
   `time` timestamp NOT NULL default '0000-00-00 00:00:00',
   `output` varchar(512) NOT NULL,
   PRIMARY KEY USING BTREE (`local_data_id`,`rrd_name`,`time`)
-) ENGINE=MyISAM ROW_FORMAT=FIXED;
+) ENGINE=InnoDB ROW_FORMAT=FIXED;
 
 --
 -- Table structure for table `poller_output_boost_processes`
@@ -2877,7 +2877,7 @@ CREATE TABLE IF NOT EXISTS poller_output_realtime (
   poller_id varchar(30) NOT NULL default '',
   PRIMARY KEY  (local_data_id,rrd_name,`time`),
   KEY poller_id(poller_id)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 --
 -- Table structure for table `poller_reindex`
@@ -2893,7 +2893,7 @@ CREATE TABLE poller_reindex (
   arg1 varchar(255) NOT NULL default '',
   PRIMARY KEY  (host_id,data_query_id,arg1),
   KEY present (present)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 --
 -- Table structure for table `poller_resource_cache`
@@ -2908,7 +2908,7 @@ CREATE TABLE poller_resource_cache (
   contents longblob,
   PRIMARY KEY (id),
   UNIQUE KEY path (path)
-) ENGINE=MyISAM COMMENT='Caches all scripts, resources files, and plugins';
+) ENGINE=InnoDB COMMENT='Caches all scripts, resources files, and plugins';
 
 --
 -- Table structure for table `poller_time`
@@ -2921,7 +2921,7 @@ CREATE TABLE poller_time (
   start_time timestamp NOT NULL default '0000-00-00 00:00:00',
   end_time timestamp NOT NULL default '0000-00-00 00:00:00',
   PRIMARY KEY  (id)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 --
 -- Table structure for table `reports`
@@ -2954,7 +2954,7 @@ CREATE TABLE `reports` (
   `enabled` char(2) DEFAULT '',
   PRIMARY KEY (`id`),
   KEY `mailtime` (`mailtime`)) 
-  ENGINE=MyISAM 
+  ENGINE=InnoDB 
   COMMENT='Cacri Reporting Reports';
 
 --
@@ -2980,7 +2980,7 @@ CREATE TABLE `reports_items` (
   `sequence` smallint(5) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `report_id` (`report_id`)) 
-  ENGINE=MyISAM 
+  ENGINE=InnoDB 
   COMMENT='Cacti Reporting Items';
 
 --
@@ -2991,7 +2991,7 @@ CREATE TABLE settings (
   name varchar(50) NOT NULL default '',
   value varchar(2048) NOT NULL default '',
   PRIMARY KEY  (name)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 --
 -- Dumping data for table `settings`
@@ -3007,7 +3007,7 @@ CREATE TABLE settings_user (
   name varchar(50) NOT NULL default '',
   value varchar(2048) NOT NULL default '',
   PRIMARY KEY  (user_id,name)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 --
 -- Dumping data for table `settings_user`
@@ -3023,7 +3023,7 @@ CREATE TABLE settings_user_group (
   name varchar(50) NOT NULL DEFAULT '',
   value varchar(2048) NOT NULL DEFAULT '',
   PRIMARY KEY (group_id,name)
-) ENGINE=MyISAM COMMENT='Stores the Default User Group Graph Settings';
+) ENGINE=InnoDB COMMENT='Stores the Default User Group Graph Settings';
 
 --
 -- Table structure for table `settings_tree`
@@ -3034,7 +3034,7 @@ CREATE TABLE settings_tree (
   graph_tree_item_id mediumint(8) unsigned NOT NULL default '0',
   status tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (user_id,graph_tree_item_id)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 --
 -- Dumping data for table `settings_tree`
@@ -3055,7 +3055,7 @@ CREATE TABLE snmp_query (
   data_input_id mediumint(8) unsigned NOT NULL default '0',
   PRIMARY KEY  (id),
   KEY name (name)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 --
 -- Dumping data for table `snmp_query`
@@ -3078,7 +3078,7 @@ CREATE TABLE snmp_query_graph (
   name varchar(100) NOT NULL default '',
   graph_template_id mediumint(8) unsigned NOT NULL default '0',
   PRIMARY KEY  (id)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 --
 -- Dumping data for table `snmp_query_graph`
@@ -3111,7 +3111,7 @@ CREATE TABLE snmp_query_graph_rrd (
   PRIMARY KEY  (snmp_query_graph_id,data_template_id,data_template_rrd_id),
   KEY data_template_rrd_id (data_template_rrd_id),
   KEY snmp_query_graph_id (snmp_query_graph_id)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 --
 -- Dumping data for table `snmp_query_graph_rrd`
@@ -3162,7 +3162,7 @@ CREATE TABLE snmp_query_graph_rrd_sv (
   PRIMARY KEY  (id),
   KEY snmp_query_graph_id (snmp_query_graph_id),
   KEY data_template_id (data_template_id)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 --
 -- Dumping data for table `snmp_query_graph_rrd_sv`
@@ -3234,7 +3234,7 @@ CREATE TABLE snmp_query_graph_sv (
   text varchar(255) NOT NULL default '',
   PRIMARY KEY  (id),
   KEY snmp_query_graph_id (snmp_query_graph_id)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 --
 -- Dumping data for table `snmp_query_graph_sv`
@@ -3310,7 +3310,7 @@ CREATE TABLE user_auth (
   KEY username (username),
   KEY realm (realm),
   KEY enabled (enabled)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 --
 -- Dumping data for table `user_auth`
@@ -3328,7 +3328,7 @@ CREATE TABLE IF NOT EXISTS `user_auth_cache` (
   `hostname` varchar(64) NOT NULL DEFAULT '',
   `last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `token` varchar(1024) NOT NULL DEFAULT ''
-) ENGINE=MyISAM COMMENT='Caches Remember Me Details';
+) ENGINE=InnoDB COMMENT='Caches Remember Me Details';
 
 --
 -- Dumping data for table `user_auth`
@@ -3353,7 +3353,7 @@ CREATE TABLE `user_auth_group` (
   `policy_graph_templates` tinyint(1) unsigned NOT NULL DEFAULT '1',
   `enabled` char(2) NOT NULL DEFAULT 'on',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=1 COMMENT='Table that Contains User Groups';
+) ENGINE=InnoDB AUTO_INCREMENT=1 COMMENT='Table that Contains User Groups';
 
 --
 -- Dumping data for table `user_auth_group`
@@ -3369,7 +3369,7 @@ CREATE TABLE `user_auth_group_members` (
   PRIMARY KEY (`group_id`,`user_id`),
   KEY `group_id` (`group_id`),
   KEY `realm_id` (`user_id`)
-) ENGINE=MyISAM COMMENT='Table that Contains User Group Members';
+) ENGINE=InnoDB COMMENT='Table that Contains User Group Members';
 
 --
 -- Dumping data for table `user_auth_group_members`
@@ -3385,7 +3385,7 @@ CREATE TABLE `user_auth_group_perms` (
   `type` tinyint(2) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`group_id`,`item_id`,`type`),
   KEY `group_id` (`group_id`,`type`)
-) ENGINE=MyISAM COMMENT='Table that Contains User Group Permissions';
+) ENGINE=InnoDB COMMENT='Table that Contains User Group Permissions';
 
 --
 -- Dumping data for table `user_auth_group_perms`
@@ -3401,7 +3401,7 @@ CREATE TABLE `user_auth_group_realm` (
   PRIMARY KEY (`group_id`,`realm_id`),
   KEY `group_id` (`group_id`),
   KEY `realm_id` (`realm_id`)
-) ENGINE=MyISAM COMMENT='Table that Contains User Group Realm Permissions';
+) ENGINE=InnoDB COMMENT='Table that Contains User Group Realm Permissions';
 
 --
 -- Dumping data for table `user_auth_group_realm`
@@ -3417,7 +3417,7 @@ CREATE TABLE user_auth_perms (
   type tinyint(2) unsigned NOT NULL default '0',
   PRIMARY KEY  (user_id,item_id,type),
   KEY user_id (user_id,type)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 --
 -- Dumping data for table `user_auth_perms`
@@ -3433,7 +3433,7 @@ CREATE TABLE user_auth_realm (
   user_id mediumint(8) unsigned NOT NULL default '0',
   PRIMARY KEY  (realm_id,user_id),
   KEY user_id (user_id)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 --
 -- Dumping data for table `user_auth_realm`
@@ -3477,7 +3477,7 @@ CREATE TABLE user_log (
   PRIMARY KEY  (username,user_id,time),
   KEY username (username),
   KEY user_id (user_id)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 --
 -- Dumping data for table `user_log`
@@ -3495,7 +3495,7 @@ CREATE TABLE `user_domains` (
   `defdomain` tinyint(3) NOT NULL DEFAULT '0',
   `user_id` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`domain_id`)
-) ENGINE=MyISAM COMMENT='Table to Hold Login Domains';
+) ENGINE=InnoDB COMMENT='Table to Hold Login Domains';
 
 --
 -- Dumping data for table `user_domains`
@@ -3524,7 +3524,7 @@ CREATE TABLE `user_domains_ldap` (
   `specific_dn` varchar(128) NOT NULL,
   `specific_password` varchar(128) NOT NULL,
   PRIMARY KEY (`domain_id`)
-) ENGINE=MyISAM COMMENT='Table to Hold Login Domains for LDAP';
+) ENGINE=InnoDB COMMENT='Table to Hold Login Domains for LDAP';
 
 --
 -- Dumping data for table `user_domains_ldap`
@@ -3563,7 +3563,7 @@ CREATE TABLE `snmpagent_cache` (
   PRIMARY KEY (`oid`),
   KEY `name` (`name`),
   KEY `mib` (`mib`)
-) ENGINE=MyISAM COMMENT='SNMP MIB CACHE';
+) ENGINE=InnoDB COMMENT='SNMP MIB CACHE';
 
 --
 -- Dumping data for table `snmpagent_cache`
@@ -3577,7 +3577,7 @@ CREATE TABLE `snmpagent_mibs` (
   `name` varchar(32) NOT NULL DEFAULT '',
   `file` varchar(255) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM COMMENT='Registered MIB files';
+) ENGINE=InnoDB COMMENT='Registered MIB files';
 
 --
 -- Dumping data for table `snmpagent_mibs`
@@ -3593,7 +3593,7 @@ CREATE TABLE `snmpagent_cache_notifications` (
   `attribute` varchar(255) NOT NULL,
   `sequence_id` smallint(6) NOT NULL,
   KEY `name` (`name`)
-) ENGINE=MyISAM COMMENT='Notifcations and related attributes';
+) ENGINE=InnoDB COMMENT='Notifcations and related attributes';
 
 --
 -- Dumping data for table `snmpagent_cache_notifications`
@@ -3610,7 +3610,7 @@ CREATE TABLE `snmpagent_cache_textual_conventions` (
   `description` varchar(5000) NOT NULL DEFAULT '',
   KEY `name` (`name`),
   KEY `mib` (`mib`)
-) ENGINE=MyISAM COMMENT='Textual conventions';
+) ENGINE=InnoDB COMMENT='Textual conventions';
 
 --
 -- Dumping data for table `snmpagent_cache_textual_conventions`
@@ -3639,7 +3639,7 @@ CREATE TABLE `snmpagent_managers` (
   `notes` text,
   PRIMARY KEY (`id`),
   KEY `hostname` (`hostname`)
-) ENGINE=MyISAM COMMENT='snmp notification receivers';
+) ENGINE=InnoDB COMMENT='snmp notification receivers';
 
 --
 -- Dumping data for table `snmpagent_managers`
@@ -3656,7 +3656,7 @@ CREATE TABLE `snmpagent_managers_notifications` (
   KEY `mib` (`mib`),
   KEY `manager_id` (`manager_id`),
   KEY `manager_id2` (`manager_id`,`notification`)
-) ENGINE=MyISAM COMMENT='snmp notifications to receivers';
+) ENGINE=InnoDB COMMENT='snmp notifications to receivers';
 
 --
 -- Dumping data for table `snmpagent_managers_notifications`
@@ -3679,7 +3679,7 @@ CREATE TABLE `snmpagent_notifications_log` (
   KEY `severity` (`severity`),
   KEY `manager_id` (`manager_id`),
   KEY `manager_id2` (`manager_id`,`notification`)
-) ENGINE=MyISAM COMMENT='logs snmp notifications to receivers';
+) ENGINE=InnoDB COMMENT='logs snmp notifications to receivers';
 
 --
 -- Dumping data for table `snmpagent_notifications_log`
@@ -3694,7 +3694,7 @@ CREATE TABLE vdef (
   hash varchar(32) NOT NULL default '',
   name varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL default '',
   PRIMARY KEY  (id)
-) ENGINE=MyISAM COMMENT='vdef';
+) ENGINE=InnoDB COMMENT='vdef';
 
 --
 -- Dumping data for table `vdef`
@@ -3721,7 +3721,7 @@ CREATE TABLE vdef_items (
   value varchar(150) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL default '',
   PRIMARY KEY  (id),
   KEY vdef_id (vdef_id)
-) ENGINE=MyISAM COMMENT='vdef items';
+) ENGINE=InnoDB COMMENT='vdef items';
 
 --
 -- Dumping data for table `vdef_items`
@@ -3748,8 +3748,9 @@ INSERT INTO vdef_items VALUES(15, 'e7ae90275bc1efada07c19ca3472d9db', 7, 3, 1, '
 --
 
 CREATE TABLE version (
-  cacti char(20) default NULL
-) ENGINE=MyISAM;
+  cacti char(20) default NULL,
+  PRIMARY KEY  (cacti)
+) ENGINE=InnoDB;
 
 --
 -- Dumping data for table `version`
