@@ -133,7 +133,6 @@ function utilities_php_modules() {
 	return $php_info;
 }
 
-
 function memory_bytes($val) {
 	$val = trim($val);
 	$last = strtolower($val{strlen($val)-1});
@@ -149,7 +148,6 @@ function memory_bytes($val) {
 
 	return $val;
 }
-
 
 function memory_readable($val) {
 
@@ -169,44 +167,52 @@ function memory_readable($val) {
 	return $val . $val_label;
 }
 
-
 function utilities_view_tech($php_info = '') {
 	global $database_default, $config, $rrdtool_versions, $poller_options, $input_types;
 
 	/* Get table status */
-	$tables = db_fetch_assoc('SHOW TABLES');
-	$skip_tables  = array();
-	$table_status = array();
+	$tables = db_fetch_assoc_prepared('SELECT * 
+		FROM information_schema.tables 
+		WHERE table_schema = ?', array($database_default));
 
-	if (sizeof($tables)) {
-	foreach($tables as $table) {
-		$create_syntax = db_fetch_row('SHOW CREATE TABLE ' . $table['Tables_in_' . $database_default]);
+	/* Get poller stats */
+	$poller_item = db_fetch_assoc('SELECT action, count(action) AS total 
+		FROM poller_item 
+		GROUP BY action');
 
-		if (sizeof($create_syntax)) {
-			if (substr_count(strtoupper($create_syntax['Create Table']), 'INNODB')) {
-				$skip_tables[] = $table['Tables_in_' . $database_default];
-			}else{
-				$include_tables[] = $table['Tables_in_' . $database_default];
+	/* Get System Memory */
+	$memInfo = array();
+	if ($config['cacti_server_os'] == 'win32') {
+		exec('wmic os get FreePhysicalMemory', $memInfo['FreePhysicalMemory']);
+		exec('wmic os get FreeSpaceInPagingFiles', $memInfo['FreeSpaceInPagingFiles']);
+		exec('wmic os get FreeVirtualMemory', $memInfo['FreeVirtualMemory']);
+		exec('wmic os get SizeStoredInPagingFiles', $memInfo['SizeStoredInPagingFiles']);
+		exec('wmic os get TotalVirtualMemorySize', $memInfo['TotalVirtualMemorySize']);
+		exec('wmic os get TotalVisibleMemorySize', $memInfo['TotalVisibleMemorySize']);
+		if (sizeof($memInfo)) {
+			foreach($memInfo as $key => $values) {
+				$memInfo[$key] = $values[1];
+			}
+		}
+	}else{
+		$data = explode("\n", file_get_contents('/proc/meminfo'));
+		foreach($data as $l) {
+			if (trim($l) != '') {
+				list($key, $val) = explode(':', $l);
+				$val = trim($val, " kBb\r\n");
+				$memInfo[$key] = round($val * 1024,0);
 			}
 		}
 	}
-	}
-
-	if (sizeof($include_tables)) {
-	foreach($include_tables as $table) {
-		$status = db_fetch_row("SHOW TABLE STATUS LIKE '$table'");
-
-		array_push($table_status, $status);
-	}
-	}
-
-	/* Get poller stats */
-	$poller_item = db_fetch_assoc('SELECT action, count(action) AS total FROM poller_item GROUP BY action');
 
 	/* Get system stats */
-	$host_count = db_fetch_cell('SELECT COUNT(*) FROM host');
+	$host_count  = db_fetch_cell('SELECT COUNT(*) FROM host');
 	$graph_count = db_fetch_cell('SELECT COUNT(*) FROM graph_local');
-	$data_count = db_fetch_assoc('SELECT i.type_id, COUNT(i.type_id) AS total FROM data_template_data AS d, data_input AS i WHERE d.data_input_id = i.id AND local_data_id <> 0 GROUP BY i.type_id');
+	$data_count  = db_fetch_assoc('SELECT i.type_id, COUNT(i.type_id) AS total 
+		FROM data_template_data AS d, data_input AS i 
+		WHERE d.data_input_id = i.id 
+		AND local_data_id <> 0 
+		GROUP BY i.type_id');
 
 	/* Get RRDtool version */
 	$rrdtool_version = 'Unknown';
@@ -251,43 +257,51 @@ function utilities_view_tech($php_info = '') {
 	/* Display tech information */
 	html_start_box('Technical Support', '100%', '', '3', 'center', '');
 	html_header(array('General Information'), 2);
-	print "<tr class='odd'>\n";
-	print "		<td class='textArea'>Date</td>\n";
-	print "		<td class='textArea'>" . date('r') . "</td>\n";
-	print "</tr>\n";
-	api_plugin_hook_function('custom_version_info');
-	print "<tr class='even'>\n";
-	print "		<td class='textArea'>Cacti Version</td>\n";
-	print "		<td class='textArea'>" . $config['cacti_version'] . "</td>\n";
-	print "</tr>\n";
-	print "<tr class='odd'>\n";
-	print "		<td class='textArea'>Cacti OS</td>\n";
-	print "		<td class='textArea'>" . $config['cacti_server_os'] . "</td>\n";
-	print "</tr>\n";
-	print "<tr class='odd'>\n";
-	print "		<td class='textArea'>RSA Fingerprint</td>\n";
-	print "		<td class='textArea'>" . read_config_option('rsa_fingerprint') . "</td>\n";
-	print "</tr>\n";
-	print "<tr class='even'>\n";
-	print "		<td class='textArea'>NET-SNMP Version</td>\n";
-	print "		<td class='textArea'>" . $snmp_version . "</td>\n";
-	print "</tr>\n";
+	form_alternate_row();
+	print "<td>Date</td>\n";
+	print "<td>" . date('r') . "</td>\n";
+	form_end_row();
 
-	print "<tr class='odd'>\n";
-	print "		<td class='textArea'>RRDTool Version</td>\n";
-	print "		<td class='textArea'>" . $rrdtool_versions[$rrdtool_version] . ' ' . $rrdtool_error . "</td>\n";
-	print "</tr>\n";
-	print "<tr class='even'>\n";
-	print "		<td class='textArea'>Devices</td>\n";
-	print "		<td class='textArea'>" . $host_count . "</td>\n";
-	print "</tr>\n";
-	print "<tr class='odd'>\n";
-	print "		<td class='textArea'>Graphs</td>\n";
-	print "		<td class='textArea'>" . $graph_count . "</td>\n";
-	print "</tr>\n";
-	print "<tr class='even'>\n";
-	print "		<td class='textArea'>Data Sources</td>\n";
-	print "		<td class='textArea'>";
+	api_plugin_hook_function('custom_version_info');
+
+	form_alternate_row();
+	print "<td>Cacti Version</td>\n";
+	print "<td>" . $config['cacti_version'] . "</td>\n";
+	form_end_row();
+
+	form_alternate_row();
+	print "<td>Cacti OS</td>\n";
+	print "<td>" . $config['cacti_server_os'] . "</td>\n";
+	form_end_row();
+
+	form_alternate_row();
+	print "<td>RSA Fingerprint</td>\n";
+	print "<td>" . read_config_option('rsa_fingerprint') . "</td>\n";
+	form_end_row();
+
+	form_alternate_row();
+	print "<td>NET-SNMP Version</td>\n";
+	print "<td>" . $snmp_version . "</td>\n";
+	form_end_row();
+
+	form_alternate_row();
+	print "<td>RRDTool Version</td>\n";
+	print "<td>" . $rrdtool_versions[$rrdtool_version] . ' ' . $rrdtool_error . "</td>\n";
+	form_end_row();
+
+	form_alternate_row();
+	print "<td>Devices</td>\n";
+	print "<td>" . $host_count . "</td>\n";
+	form_end_row();
+
+	form_alternate_row();
+	print "<td>Graphs</td>\n";
+	print "<td>" . $graph_count . "</td>\n";
+	form_end_row();
+
+	form_alternate_row();
+	print "<td>Data Sources</td>\n";
+	print "<td>";
 	$data_total = 0;
 	if (sizeof($data_count)) {
 		foreach ($data_count as $item) {
@@ -299,25 +313,28 @@ function utilities_view_tech($php_info = '') {
 		print "<font color='red'>0</font>";
 	}
 	print "</td>\n";
-	print "</tr>\n";
+	form_end_row();
 
 	html_header(array('Poller Information'), 2);
-	print "<tr class='odd'>\n";
-	print "		<td class='textArea'>Interval</td>\n";
-	print "		<td class='textArea'>" . read_config_option('poller_interval') . "</td>\n";
+
+	form_alternate_row();
+	print "<td>Interval</td>\n";
+	print "<td>" . read_config_option('poller_interval') . "</td>\n";
 	if (file_exists(read_config_option('path_spine')) && $poller_options[read_config_option('poller_type')] == 'spine') {
 		$type = $spine_version;
 	} else {
 		$type = $poller_options[read_config_option('poller_type')];
 	}
-	print "</tr>\n";
-	print "<tr class='even'>\n";
-	print "		<td class='textArea'>Type</td>\n";
-	print "		<td class='textArea'>" . $type . "</td>\n";
-	print "</tr>\n";
-	print "<tr class='odd'>\n";
-	print "		<td class='textArea'>Items</td>\n";
-	print "		<td class='textArea'>";
+	form_end_row();
+
+	form_alternate_row();
+	print "<td>Type</td>\n";
+	print "<td>" . $type . "</td>\n";
+	form_end_row();
+
+	form_alternate_row();
+	print "<td>Items</td>\n";
+	print "<td>";
 	$total = 0;
 	if (sizeof($poller_item)) {
 		foreach ($poller_item as $item) {
@@ -329,80 +346,112 @@ function utilities_view_tech($php_info = '') {
 		print "<font color='red'>No items to poll</font>";
 	}
 	print "</td>\n";
-	print "</tr>\n";
+	form_end_row();
 
-	print "<tr class='even'>\n";
-	print "		<td class='textArea'>Concurrent Processes</td>\n";
-	print "		<td class='textArea'>" . read_config_option('concurrent_processes') . "</td>\n";
-	print "</tr>\n";
+	form_alternate_row();
+	print "<td>Concurrent Processes</td>\n";
+	print "<td>" . read_config_option('concurrent_processes') . "</td>\n";
+	form_end_row();
 
-	print "<tr class='odd'>\n";
-	print "		<td class='textArea'>Max Threads</td>\n";
-	print "		<td class='textArea'>" . read_config_option('max_threads') . "</td>\n";
-	print "</tr>\n";
+	form_alternate_row();
+	print "<td>Max Threads</td>\n";
+	print "<td>" . read_config_option('max_threads') . "</td>\n";
+	form_end_row();
 
-	print "<tr class='even'>\n";
-	print "		<td class='textArea'>PHP Servers</td>\n";
-	print "		<td class='textArea'>" . read_config_option('php_servers') . "</td>\n";
-	print "</tr>\n";
+	form_alternate_row();
+	print "<td>PHP Servers</td>\n";
+	print "<td>" . read_config_option('php_servers') . "</td>\n";
+	form_end_row();
 
-	print "<tr class='odd'>\n";
-	print "		<td class='textArea'>Script Timeout</td>\n";
-	print "		<td class='textArea'>" . read_config_option('script_timeout') . "</td>\n";
-	print "</tr>\n";
+	form_alternate_row();
+	print "<td>Script Timeout</td>\n";
+	print "<td>" . read_config_option('script_timeout') . "</td>\n";
+	form_end_row();
 
-	print "<tr class='even'>\n";
-	print "		<td class='textArea'>Max OID</td>\n";
-	print "		<td class='textArea'>" . read_config_option('max_get_size') . "</td>\n";
-	print "</tr>\n";
+	form_alternate_row();
+	print "<td>Max OID</td>\n";
+	print "<td>" . read_config_option('max_get_size') . "</td>\n";
+	form_end_row();
 
+	form_alternate_row();
+	print "<td>Last Run Statistics</td>\n";
+	print "<td>" . read_config_option('stats_poller') . "</td>\n";
+	form_end_row();
 
-	print "<tr class='odd'>\n";
-	print "		<td class='textArea'>Last Run Statistics</td>\n";
-	print "		<td class='textArea'>" . read_config_option('stats_poller') . "</td>\n";
-	print "</tr>\n";
-
+	html_header(array('System Memory'), 2);
+	$i = 0;
+	foreach($memInfo as $name => $value) {
+		if ($config['cacti_server_os'] == 'win32') {
+			form_alternate_row();
+			print "<td>$name</td>\n";
+			print "<td>" . round($value/1024/1024,0) . " MB</td>\n";
+			form_end_row();
+		}else{
+			switch($name) {
+			case 'SwapTotal':
+			case 'SwapFree':
+			case 'MemTotal':
+			case 'MemFree':
+			case 'Buffers':
+			case 'Active':
+			case 'Inactive':
+				form_alternate_row();
+				print "<td>$name</td>\n";
+				print "<td>" . round($value/1024/1024,0) . " MB</td>\n";
+				form_end_row();
+			}
+		}
+		$i++;
+	}
+	print "</td>\n";
+	form_end_row();
 
 	html_header(array('PHP Information'), 2);
-	print "<tr class='odd'>\n";
-	print "		<td class='textArea'>PHP Version</td>\n";
+
+	form_alternate_row();
+	print "<td>PHP Version</td>\n";
 	if (version_compare(PHP_VERSION, '5.5.0') >= 0) {
-	print "		<td class='textArea'>" . PHP_VERSION . "</td>\n";
+		print "<td>" . PHP_VERSION . "</td>\n";
 	}else{
-	print "		<td class='textArea'>" . PHP_VERSION . "</br><font color='red'>PHP Version 5.5.0+ is recommended due to strong password hashing support.</font></td>\n";
+		print "<td>" . PHP_VERSION . "</br><font color='red'>PHP Version 5.5.0+ is recommended due to strong password hashing support.</font></td>\n";
 	}
-	print "</tr>\n";
-	print "<tr class='even'>\n";
-	print "		<td class='textArea'>PHP OS</td>\n";
-	print "		<td class='textArea'>" . PHP_OS . "</td>\n";
-	print "</tr>\n";
-	print "<tr class='odd'>\n";
-	print "		<td class='textArea'>PHP uname</td>\n";
-	print "		<td class='textArea'>";
+	form_end_row();
+
+	form_alternate_row();
+	print "<td>PHP OS</td>\n";
+	print "<td>" . PHP_OS . "</td>\n";
+	form_end_row();
+
+	form_alternate_row();
+	print "<td>PHP uname</td>\n";
+	print "<td>";
 	if (function_exists('php_uname')) {
 		print php_uname();
 	}else{
 		print 'N/A';
 	}
 	print "</td>\n";
-	print "</tr>\n";
-	print "<tr class='even'>\n";
-	print "		<td class='textArea'>PHP SNMP</td>\n";
-	print "		<td class='textArea'>";
+	form_end_row();
+
+	form_alternate_row();
+	print "<td>PHP SNMP</td>\n";
+	print "<td>";
 	if (function_exists('snmpget')) {
 		print 'Installed';
 	} else {
 		print 'Not Installed';
 	}
 	print "</td>\n";
-	print "</tr>\n";
-	print "<tr class='odd'>\n";
-	print "		<td class='textArea'>max_execution_time</td>\n";
-	print "		<td class='textArea'>" . ini_get('max_execution_time') . "</td>\n";
-	print "</tr>\n";
-	print "<tr class='even'>\n";
-	print "		<td class='textArea'>memory_limit</td>\n";
-	print "		<td class='textArea'>" . ini_get('memory_limit');
+	form_end_row();
+
+	form_alternate_row();
+	print "<td>max_execution_time</td>\n";
+	print "<td>" . ini_get('max_execution_time') . "</td>\n";
+	form_end_row();
+
+	form_alternate_row();
+	print "<td>memory_limit</td>\n";
+	print "<td>" . ini_get('memory_limit');
 
 	/* Calculate memory suggestion based off of data source count */
 	$memory_suggestion = $data_total * 32768;
@@ -426,61 +475,301 @@ function utilities_view_tech($php_info = '') {
 		print '</font><br>';
 	}
 	print "</td>\n";
-	print "</tr>\n";
+	form_end_row();
 
-	html_header(array('MySQL Table Information'), 2);
-	print "<tr class='odd'>\n";
-	print "		<td colspan='2' style='text-align:left;padding:0px'>";
-	if (sizeof($table_status) > 0) {
-		print "<table class='cactiTable' style='width:100%'>\n";
-		print "<tr class='tableHeader'>\n";
-		print "  <th class='tableSubHeaderColumn'>Name</th>\n";
-		print "  <th class='tableSubHeaderColumn' style='text-align:right;'>Rows</th>\n";
-		print "  <th class='tableSubHeaderColumn'>Engine</th>\n";
-		print "  <th class='tableSubHeaderColumn'>Collation</th>\n";
-		print "</tr>\n";
-		foreach ($table_status as $item) {
+	// MySQL Important Variables
+	$variables = array_rekey(db_fetch_assoc('SHOW GLOBAL VARIABLES'), 'Variable_name', 'Value');
+
+	$recommendations = array(
+		'version' => array(
+			'value' => '5.6',
+			'measure' => 'gt',
+			'comment' => 'MySQL 5.6 is great release, and a very good version to choose.  
+				Other choices today include MariaDB which is very popular and addresses some issues
+				with the C API that negatively impacts spine in MySQL 5.5, and for some reason
+				Oracle has chosen not to fix in MySQL 5.5.  So, avoid MySQL 5.5 at all costs.'
+			)
+	);
+
+	if ($variables['version'] < '5.6') {
+		$recommendations += array(
+			'collation_server' => array(
+				'value' => 'utf8_general_ci',
+				'measure' => 'equal',
+				'comment' => 'When using Cacti with languages other than english, it is important to use
+					the utf8_general_ci collation type as some characters take more than a single byte.'
+				),
+			'character_set_client' => array(
+				'value' => 'utf8',
+				'measure' => 'equal',
+				'comment' => 'When using Cacti with languages other than english, it is important ot use
+					the utf8 character set as some characters take more than a single byte.'
+				)
+		);
+	}else{
+		$recommendations += array(
+			'collation_server' => array(
+				'value' => 'utf8mb4_col',
+				'measure' => 'equal',
+				'comment' => 'When using Cacti with languages other than english, it is important to use
+					the utf8mb4_col collation type as some characters take more than a single byte.'
+				),
+			'character_set_client' => array(
+				'value' => 'utf8mb4',
+				'measure' => 'equal',
+				'comment' => 'When using Cacti with languages other than english, it is important ot use
+					the utf8mb4 character set as some characters take more than a single byte.'
+				)
+		);
+	}
+
+	$recommendations += array(
+		'max_connections' => array(
+			'value'   => '100', 
+			'measure' => 'gt', 
+			'comment' => 'Depending on the number of logins and use of spine data collector, 
+				MySQL will need many connections.  The calculation for spine is:
+				total_connections = total_processes * (total_threads + script_servers + 1), then you
+				must leave headroom for user connections, which will change depending on the number of
+				concurrent login accounts.'
+			),
+		'table_cache' => array(
+			'value'   => '200',
+			'measure' => 'gt',
+			'comment' => 'Keeping the table cache larger means less file open/close operations when
+				using innodb_file_per_table.'
+			),
+		'max_allowed_packet' => array(
+			'value'   => 16777216,
+			'measure' => 'gt',
+			'comment' => 'With Remote polling capabilities, large amounts of data 
+				will be synced from the main server to the remote pollers.  
+				Therefore, keep this value at or above 16M.'
+			),
+		'tmp_table_size' => array(
+			'value'   => '64M',
+			'measure' => 'gtm',
+			'comment' => 'When executing subqueries, having a larger temporary table size, 
+				keep those temporary tables in memory.'
+			),
+		'join_buffer_size' => array(
+			'value'   => '64M',
+			'measure' => 'gtm',
+			'comment' => 'When performing joins, if they are below this size, they will 
+				be kept in memory and never writen to a temporary file.'
+			),
+		'innodb_file_per_table' => array(
+			'value'   => 'ON',
+			'measure' => 'equal',
+			'comment' => 'When using InnoDB storage it is important to keep your table spaces
+				separate.  This makes managing the tables simpler for long time users of MySQL.
+				If you are running with this currently off, you can migrate to the per file storage
+				by enabling the feature, and then running an alter statement on all InnoDB tables.'
+			),
+		'innodb_buffer_pool_size' => array(
+			'value'   => '25',
+			'measure' => 'pmem',
+			'comment' => 'InnoDB will hold as much tables and indexes in system memory as is possible.
+				Therefore, you should make the innodb_buffer_pool large enough to hold as much
+				of the tables and index in memory.  Checking the size of the /var/lib/mysql/cacti
+				directory will help in determining this value.  We are recommending 25% of your systems
+				total memory, but your requirements will vary depending on your systems size.'
+			),
+		'innodb_doublewrite' => array(
+			'value'   => 'OFF',
+			'measure' => 'equal',
+			'comment' => 'With modern SSD type storage, this operation actually degrades the disk
+				more rapidly and adds a 50% overhead on all write operations.'
+			),
+		'innodb_additional_mem_pool_size' => array(
+			'value'   => '80M',
+			'measure' => 'gtm',
+			'comment' => 'This is where metadata is stored. If you had a lot of tables, it would be useful to increase this.'
+			),
+		'innodb_flush_log_at_trx_commit' => array(
+			'value'   => '2',
+			'measure' => 'equal',
+			'comment' => 'Setting this value to 2 means that you will flush all transactions every
+				second rather than at commit.  This allows MySQL to perform writing less often'
+			),
+		'innodb_lock_wait_timeout' => array(
+			'value'   => '50',
+			'measure' => 'gt',
+			'comment' => 'Rogue queries should not for the database to go offline to others.  Kill these
+				queries before they kill your system.'
+			),
+	);
+
+	if ($variables['version'] < '5.6') {
+		$recommendations += array(
+			'innodb_file_io_threads' => array(
+				'value'   => '16',
+				'measure' => 'gt',
+				'comment' => 'With modern SSD type storage, having multiple io threads is advantagious for
+					applications with high io characteristics.'
+				)
+		);
+	}else{
+		$recommendations += array(
+			'innodb_read_io_threads' => array(
+				'value'   => '32',
+				'measure' => 'gt',
+				'comment' => 'With modern SSD type storage, having multiple read io threads is advantagious for
+					applications with high io characteristics.'
+				),
+			'innodb_write_io_threads' => array(
+				'value'   => '16',
+				'measure' => 'gt',
+				'comment' => 'With modern SSD type storage, having multiple write io threads is advantagious for
+					applications with high io characteristics.'
+				),
+			'innodb_buffer_pool_instances' => array(
+				'value' => '16',
+				'measure' => 'present',
+				'comment' => 'MySQL will divide the innodb_buffer_pool into memory regions to improve performance.
+					The max value is 64.  When your innodb_buffer_pool is less than 1GB, you should use the pool size
+					divided by 128MB.  Continue to use this equation upto the max of 64.'
+				)
+		);
+	}
+
+	html_header(array('Important MySQL Variables (/etc/my.cnf) - [ <a class="linkOverDark" href="https://dev.mysql.com/doc/refman/' . substr($variables['version'],0,3) . '/en/server-system-variables.html">Documentation</a> ] Note: Many changes below require a database restart'), 2);
+
+	form_alternate_row();
+	print "<td colspan='2' style='text-align:left;padding:0px'>";
+	print "<table id='mysql' class='cactiTable' style='width:100%'>\n";
+	print "<thead>\n";
+	print "<tr class='tableHeader'>\n";
+	print "  <th class='tableSubHeaderColumn'>Variable</th>\n";
+	print "  <th class='tableSubHeaderColumn'>Current Value</th>\n";
+	print "  <th class='tableSubHeaderColumn'>Recommended Value</th>\n";
+	print "  <th class='tableSubHeaderColumn'>Comments</th>\n";
+	print "</tr>\n";
+	print "</thead>\n";
+
+	foreach($recommendations as $name => $r) {
+		if (isset($variables[$name])) {
 			form_alternate_row();
-			print '  <td>' . $item['Name'] . "</td>\n";
-			print '  <td style="text-align:right;">' . number_format($item['Rows']) . "</td>\n";
-			if (isset($item['Engine'])) {
-				print '  <td>' . $item['Engine'] . "</td>\n";
-			}else{
-				print "  <td>Unknown</td>\n";
-			}
-			if (isset($item['Collation'])) {
-				print '  <td>' . $item['Collation'] . "</td>\n";
-			} else {
-				print "  <td>Unknown</td>\n";
+			switch($r['measure']) {
+			case 'gtm':
+				$value = trim($r['value'], 'M') * 1024 * 1024;
+				if ($variables[$name] >= $value) {
+					$class = 'deviceUp';
+				}else{
+					$class = 'deviceDown';
+				}
+				print "<td class='$class'>"    . $name             . "</td>\n";
+				print "<td class='$class'>"    . ($variables[$name]/1024/1024) . "M</td>\n";
+				print "<td class='$class'>>= " . $r['value']       . "</td>\n";
+				print "<td>"                   . $r['comment']     . "</td>\n";
+				break;
+			case 'gt':
+				if ($variables[$name] >= $r['value']) {
+					$class = 'deviceUp';
+				}else{
+					$class = 'deviceDown';
+				}
+				print "<td class='$class'>"    . $name             . "</td>\n";
+				print "<td class='$class'>"    . $variables[$name] . "</td>\n";
+				print "<td class='$class'>>= " . $r['value']       . "</td>\n";
+				print "<td>"                   . $r['comment']     . "</td>\n";
+				break;
+			case 'equal':
+				if ($variables[$name] == $r['value']) {
+					$class = 'deviceUp';
+				}else{
+					$class = 'deviceDown';
+				}
+				print "<td class='$class'>"    . $name             . "</td>\n";
+				print "<td class='$class'>"    . $variables[$name] . "</td>\n";
+				print "<td class='$class'>"    . $r['value']       . "</td>\n";
+				print "<td>"                   . $r['comment']     . "</td>\n";
+				break;
+			case 'pmem':
+				if (isset($memInfo['MemTotal'])) {
+					$totalMem = $memInfo['MemTotal'];
+				}else{
+					$totalMem = $memInfo['TotalVisibleMemorySize'];
+				}
+
+				if ($variables[$name] >= ($r['value']*$totalMem/100)) {
+					$class = 'deviceUp';
+				}else{
+					$class = 'deviceDown';
+				}
+				print "<td class='$class'>"    . $name             . "</td>\n";
+				print "<td class='$class'>"    . round($variables[$name]/1024/1024,0) . "M</td>\n";
+				print "<td class='$class'>>="    . round($r['value']*$totalMem/100/1024/1024,0) . "M</td>\n";
+				print "<td>"                   . $r['comment']     . "</td>\n";
+				break;
 			}
 			form_end_row();
 		}
+	}
+	print "</table>\n";
+	print "</td>\n";
+	form_end_row();
 
-		if (sizeof($skip_tables)) {
-			print "<tr><td colspan='20' align='center'><strong>The Following Tables were Skipped Due to being INNODB</strong></td></tr>";
+	html_header(array('MySQL Table Information - Sizes in KBytes'), 2);
 
-			foreach($skip_tables as $table) {
-				print "<tr><td colspan='20' align='center'>" . $table . '</td></tr>';
-			}
+	form_alternate_row();
+	print "		<td colspan='2' style='text-align:left;padding:0px'>";
+	if (sizeof($tables) > 0) {
+		print "<table id='tables' class='cactiTable' style='width:100%'>\n";
+		print "<thead>\n";
+		print "<tr class='tableHeader'>\n";
+		print "  <th class='tableSubHeaderColumn'>Name</th>\n";
+		print "  <th class='tableSubHeaderColumn'>Engine</th>\n";
+		print "  <th class='tableSubHeaderColumn' style='text-align:right;'>Rows</th>\n";
+		print "  <th class='tableSubHeaderColumn'>Avg Row Length</th>\n";
+		print "  <th class='tableSubHeaderColumn'>Data Length</th>\n";
+		print "  <th class='tableSubHeaderColumn'>Index Length</th>\n";
+		print "  <th class='tableSubHeaderColumn'>Collation</th>\n";
+		print "  <th class='tableSubHeaderColumn'>Comment</th>\n";
+		print "</tr>\n";
+		print "</thead>\n";
+		foreach ($tables as $table) {
+			form_alternate_row();
+			print '<td>' . $table['TABLE_NAME'] . "</td>\n";
+			print '<td>' . $table['ENGINE'] . "</td>\n";
+			print '<td class="right">' . number_format($table['TABLE_ROWS']) . "</td>\n";
+			print '<td class="right">' . number_format($table['AVG_ROW_LENGTH']/1024) . "</td>\n";
+			print '<td class="right">' . number_format($table['DATA_LENGTH']/1024) . "</td>\n";
+			print '<td class="right">' . number_format($table['INDEX_LENGTH']/1024) . "</td>\n";
+			print '<td>' . $table['TABLE_COLLATION'] . "</td>\n";
+			print '<td>' . $table['TABLE_COMMENT'] . "</td>\n";
+			form_end_row();
 		}
 
 		print "</table>\n";
 	}else{
 		print 'Unable to retrieve table status';
 	}
-
 	print "</td>\n";
-	print "</tr>\n";
+	form_end_row();
 
 	html_header(array('PHP Module Information'), 2);
-	print "<tr class='odd'>\n";
-	print "		<td class='textArea' colspan='2'>" . $php_info . "</td>\n";
-	print "</tr>\n";
+	form_alternate_row();
+	print "<td colspan='2'>" . $php_info . "</td>\n";
+	form_end_row();
 
 	html_end_box();
-
+	?>
+	<script type='text/javascript'>
+	$(function() {
+		$('#tables').tablesorter({
+			widgets: ['zebra'],
+			widgetZebra: { css: ['even', 'odd'] },
+			headerTemplate: '<div class="textSubHeaderDark">{content} {icon}</div>',
+			cssIconAsc: 'fa-sort-asc',
+			cssIconDesc: 'fa-sort-desc',
+			cssIconNone: 'fa-sort',
+			cssIcon: 'fa'
+		});
+	});
+	</script>
+	<?php
 }
-
 
 function utilities_view_user_log() {
 	global $auth_realms, $item_rows;
