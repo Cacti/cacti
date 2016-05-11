@@ -173,7 +173,7 @@ function user_copy($template_user, $new_user, $template_realm = 0, $new_realm = 
 		db_execute_prepared('DELETE FROM user_auth_perms WHERE user_id = ?', array($user_exist['id']));
 		db_execute_prepared('DELETE FROM user_auth_realm WHERE user_id = ?', array($user_exist['id']));
 		db_execute_prepared('DELETE FROM settings_user WHERE user_id = ?', array($user_exist['id']));
-		db_execute_prepared('DELETE FROM settings_tree   WHERE user_id = ?', array($user_exist['id']));
+		db_execute_prepared('DELETE FROM settings_tree WHERE user_id = ?', array($user_exist['id']));
 	}
 
 	$user_auth_perms = db_fetch_assoc_prepared('SELECT * FROM user_auth_perms WHERE user_id = ?', array($template_id));
