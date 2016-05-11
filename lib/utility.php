@@ -46,6 +46,13 @@ function repopulate_poller_cache() {
 			poller_update_poller_cache_from_buffer($local_data_ids, $poller_items);
 		}
 	}
+
+	$poller_ids = array_rekey(db_fetch_assoc('SELECT DISTINCT poller_id FROM poller_item'), 'poller_id', 'poller_id');
+	if (sizeof($poller_ids)) {
+	foreach($poller_ids as $poller_id) {
+		api_data_source_cache_crc_update($poller_id);
+	}
+	}
 }
 
 function update_poller_cache_from_query($host_id, $data_query_id) {
@@ -72,6 +79,13 @@ function update_poller_cache_from_query($host_id, $data_query_id) {
 		if ($i > 0) {
 			poller_update_poller_cache_from_buffer($local_data_ids, $poller_items);
 		}
+	}
+
+	$poller_ids = array_rekey(db_fetch_assoc_prepared('SELECT DISTINCT poller_id FROM poller_item WHERE host_id = ?', array($host_id)), 'poller_id', 'poller_id');
+	if (sizeof($poller_ids)) {
+	foreach($poller_ids as $poller_id) {
+		api_data_source_cache_crc_update($poller_id);
+	}
 	}
 }
 
@@ -327,11 +341,11 @@ function push_out_data_input_method($data_input_id) {
 		}
 	}
 }
+
 /** mass update of poller cache - can run in parallel to poller
  * @param array/int $local_data_ids - either a scalar (all ids) or an array of data source to act on
  * @param array $poller_items - the new items for poller cache
  */
-
 function poller_update_poller_cache_from_buffer($local_data_ids, &$poller_items) {
 	/* set all fields present value to 0, to mark the outliers when we are all done */
 	$ids = array();
@@ -514,6 +528,9 @@ function push_out_host($host_id, $local_data_id = 0, $data_template_id = 0) {
 	if (sizeof($local_data_ids)) {
 		poller_update_poller_cache_from_buffer($local_data_ids, $poller_items);
 	}
+
+	$poller_id = db_fetch_cell_prepared('SELECT poller_id FROM host WHERE id = ?', array($host_id));
+	api_data_source_cache_crc_update($poller_id);
 }
 
 function duplicate_graph($_local_graph_id, $_graph_template_id, $graph_title) {

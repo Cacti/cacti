@@ -22,9 +22,20 @@
  +-------------------------------------------------------------------------+
 */
 
+/* api_device_crc_update - update hash stored in settings table to inform
+   remote pollers to update their caches
+   @arg $poller_id - the id of the poller impacted by hash update */
+function api_device_cache_crc_update($poller_id) {
+	$hash = hash('ripemd160', date('Y-m-d H:i:s') . rand() . $poller_id);
+
+	db_execute_prepared("REPLACE INTO settings SET value = ? WHERE name='device_cache_crc_$poller_id'", array($hash));
+}
+
 /* api_device_remove - removes a device
    @arg $device_id - the id of the device to remove */
 function api_device_remove($device_id) {
+	$poller_id = db_fetch_cell_prepared('SELECT poller_id FROM host WHERE id = ?', array($device_id));
+
 	db_execute_prepared('DELETE FROM host             WHERE      id = ?', array($device_id));
 	db_execute_prepared('DELETE FROM host_graph       WHERE host_id = ?', array($device_id));
 	db_execute_prepared('DELETE FROM host_snmp_query  WHERE host_id = ?', array($device_id));
@@ -37,6 +48,8 @@ function api_device_remove($device_id) {
 
 	db_execute_prepared('UPDATE data_local  SET host_id = 0 WHERE host_id = ?', array($device_id));
 	db_execute_prepared('UPDATE graph_local SET host_id = 0 WHERE host_id = ?', array($device_id));
+
+	api_device_cache_crc_update($poller_id);
 }
 
 /* api_device_remove_multi - removes multiple devices in one call
@@ -61,6 +74,10 @@ function api_device_remove_multi($device_ids) {
 			$i++;
 		}
 
+		$poller_ids = array_rekey(db_fetch_assoc("SELECT DISTINCT poller_id 
+			FROM host 
+			WHERE id IN ($devices_to_delete)"), 'poller_id', 'poller_id');
+
 		db_execute("DELETE FROM host             WHERE id IN ($devices_to_delete)");
 		db_execute("DELETE FROM host_graph       WHERE host_id IN ($devices_to_delete)");
 		db_execute("DELETE FROM host_snmp_query  WHERE host_id IN ($devices_to_delete)");
@@ -73,6 +90,12 @@ function api_device_remove_multi($device_ids) {
 		/* for people who choose to leave data sources around */
 		db_execute("UPDATE data_local  SET host_id=0 WHERE host_id IN ($devices_to_delete)");
 		db_execute("UPDATE graph_local SET host_id=0 WHERE host_id IN ($devices_to_delete)");
+	}
+
+	if (sizeof($poller_ids)) {
+		foreach($poller_ids as $poller_id) {
+			api_device_cache_crc_update($poller_id);
+		}
 	}
 }
 
@@ -159,6 +182,11 @@ function api_device_save($id, $host_template_id, $description, $hostname, $snmp_
 
 		if ($host_id) {
 			raise_message(1);
+
+			/* let the remote pollers know there was a change */
+			/* todo - need to put in real poller_id */
+			$poller_id = 0;
+			api_device_cache_crc_update($poller_id);
 
 			/* push out relavant fields to data sources using this host */
 			push_out_host($host_id, 0);
