@@ -362,7 +362,7 @@ function form_actions() {
 				}
 			}elseif (get_nfilter_request_var('drp_action') == '4') { /* duplicate */
 				for ($i=0;($i<count($selected_items));$i++) {
-					duplicate_data_source($selected_items[$i], 0, get_nfilter_request_var('title_format'));
+					api_duplicate_data_source($selected_items[$i], 0, get_nfilter_request_var('title_format'));
 				}
 			}elseif (get_nfilter_request_var('drp_action') == '5') { /* data source -> data template */
 				for ($i=0;($i<count($selected_items));$i++) {

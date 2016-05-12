@@ -437,9 +437,7 @@ function poller_update_poller_cache_from_buffer($local_data_ids, &$poller_items)
  * @param int $data_template_id - id of data template
  * works on table data_input_data and poller cache
  */
-
 function push_out_host($host_id, $local_data_id = 0, $data_template_id = 0) {
-
 	/* ok here's the deal: first we need to find every data source that uses this host.
 	then we go through each of those data sources, finding each one using a data input method
 	with "special fields". if we find one, fill it will the data here FROM this host */
@@ -533,323 +531,347 @@ function push_out_host($host_id, $local_data_id = 0, $data_template_id = 0) {
 	api_data_source_cache_crc_update($poller_id);
 }
 
-function duplicate_graph($_local_graph_id, $_graph_template_id, $graph_title) {
-	global $struct_graph, $struct_graph_item;
+function utilities_get_mysql_recommendations() {
+	// MySQL Important Variables
+	$variables = array_rekey(db_fetch_assoc('SHOW GLOBAL VARIABLES'), 'Variable_name', 'Value');
 
-	if (!empty($_local_graph_id)) {
-		$graph_local          = db_fetch_row("SELECT * FROM graph_local WHERE id=$_local_graph_id");
-		$graph_template_graph = db_fetch_row("SELECT * FROM graph_templates_graph WHERE local_graph_id=$_local_graph_id");
-		$graph_template_items = db_fetch_assoc("SELECT * FROM graph_templates_item WHERE local_graph_id=$_local_graph_id");
+	$memInfo = utilities_get_system_memory();
 
-		/* create new entry: graph_local */
-		$save['id'] = 0;
-		$save['graph_template_id'] = $graph_local['graph_template_id'];
-		$save['host_id']           = $graph_local['host_id'];
-		$save['snmp_query_id']     = $graph_local['snmp_query_id'];
-		$save['snmp_index']        = $graph_local['snmp_index'];
+	$recommendations = array(
+		'version' => array(
+			'value' => '5.6',
+			'measure' => 'gt',
+			'comment' => 'MySQL 5.6 is great release, and a very good version to choose.  
+				Other choices today include MariaDB which is very popular and addresses some issues
+				with the C API that negatively impacts spine in MySQL 5.5, and for some reason
+				Oracle has chosen not to fix in MySQL 5.5.  So, avoid MySQL 5.5 at all cost.'
+			)
+	);
 
-		$local_graph_id = sql_save($save, 'graph_local');
-
-		$graph_template_graph['title'] = str_replace('<graph_title>', $graph_template_graph['title'], $graph_title);
-	}elseif (!empty($_graph_template_id)) {
-		$graph_template        = db_fetch_row("SELECT * FROM graph_templates WHERE id=$_graph_template_id");
-		$graph_template_graph  = db_fetch_row("SELECT * FROM graph_templates_graph WHERE graph_template_id=$_graph_template_id AND local_graph_id=0");
-		$graph_template_items  = db_fetch_assoc("SELECT * FROM graph_templates_item WHERE graph_template_id=$_graph_template_id AND local_graph_id=0");
-		$graph_template_inputs = db_fetch_assoc("SELECT * FROM graph_template_input WHERE graph_template_id=$_graph_template_id");
-
-		/* create new entry: graph_templates */
-		$save['id']   = 0;
-		$save['hash'] = get_hash_graph_template(0);
-		$save['name'] = str_replace('<template_title>', $graph_template['name'], $graph_title);
-
-		$graph_template_id = sql_save($save, 'graph_templates');
+	if ($variables['version'] < '5.6') {
+		$recommendations += array(
+			'collation_server' => array(
+				'value' => 'utf8_general_ci',
+				'measure' => 'equal',
+				'comment' => 'When using Cacti with languages other than english, it is important to use
+					the utf8_general_ci collation type as some characters take more than a single byte.  
+					If you are first just now installing Cacti, stop, make the changes and start over again.
+					If your Cacti has been running and is in production, see the internet for instructions
+					on converting your databases and tables if you plan on supporting other languages.'
+				),
+			'character_set_client' => array(
+				'value' => 'utf8',
+				'measure' => 'equal',
+				'comment' => 'When using Cacti with languages other than english, it is important ot use
+					the utf8 character set as some characters take more than a single byte.
+					If you are first just now installing Cacti, stop, make the changes and start over again.
+                                        If your Cacti has been running and is in production, see the internet for instructions
+                                        on converting your databases and tables if you plan on supporting other languages.'
+				)
+		);
+	}else{
+		$recommendations += array(
+			'collation_server' => array(
+				'value' => 'utf8mb4_col',
+				'measure' => 'equal',
+				'comment' => 'When using Cacti with languages other than english, it is important to use
+					the utf8mb4_col collation type as some characters take more than a single byte.'
+				),
+			'character_set_client' => array(
+				'value' => 'utf8mb4',
+				'measure' => 'equal',
+				'comment' => 'When using Cacti with languages other than english, it is important ot use
+					the utf8mb4 character set as some characters take more than a single byte.'
+				)
+		);
 	}
 
-	unset($save);
-	reset($struct_graph);
+	$recommendations += array(
+		'max_connections' => array(
+			'value'   => '100', 
+			'measure' => 'gt', 
+			'comment' => 'Depending on the number of logins and use of spine data collector, 
+				MySQL will need many connections.  The calculation for spine is:
+				total_connections = total_processes * (total_threads + script_servers + 1), then you
+				must leave headroom for user connections, which will change depending on the number of
+				concurrent login accounts.'
+			),
+		'max_heap_table_size' => array(
+			'value'   => '5',
+			'measure' => 'pmem',
+			'comment' => 'If using the Cacti Performance Booster and choosing a memory storage engine,
+				you have to be careful to flush your Performance Booster buffer before the system runs
+				out of memory table space.  This is done two ways, first reducing the size of your output
+				column to just the right size.  This column is in the tables poller_output, 
+				and poller_output_boost.  The second thing you can do is allocate more memory to memory
+				tables.  We have arbitrarily choosen a recommended value of 10% of system memory, but 
+				if you are using SSD disk drives, or have a smaller system, you may ignore this recommendation
+				or choose a different storage engine.  You may see the expected consumption of the 
+				Performance Booster tables under Console -> System Utilities -> View Boost Status.'
+			),
+		'table_cache' => array(
+			'value'   => '200',
+			'measure' => 'gt',
+			'comment' => 'Keeping the table cache larger means less file open/close operations when
+				using innodb_file_per_table.'
+			),
+		'max_allowed_packet' => array(
+			'value'   => 16777216,
+			'measure' => 'gt',
+			'comment' => 'With Remote polling capabilities, large amounts of data 
+				will be synced from the main server to the remote pollers.  
+				Therefore, keep this value at or above 16M.'
+			),
+		'tmp_table_size' => array(
+			'value'   => '64M',
+			'measure' => 'gtm',
+			'comment' => 'When executing subqueries, having a larger temporary table size, 
+				keep those temporary tables in memory.'
+			),
+		'join_buffer_size' => array(
+			'value'   => '64M',
+			'measure' => 'gtm',
+			'comment' => 'When performing joins, if they are below this size, they will 
+				be kept in memory and never writen to a temporary file.'
+			),
+		'innodb_file_per_table' => array(
+			'value'   => 'ON',
+			'measure' => 'equal',
+			'comment' => 'When using InnoDB storage it is important to keep your table spaces
+				separate.  This makes managing the tables simpler for long time users of MySQL.
+				If you are running with this currently off, you can migrate to the per file storage
+				by enabling the feature, and then running an alter statement on all InnoDB tables.'
+			),
+		'innodb_buffer_pool_size' => array(
+			'value'   => '25',
+			'measure' => 'pmem',
+			'comment' => 'InnoDB will hold as much tables and indexes in system memory as is possible.
+				Therefore, you should make the innodb_buffer_pool large enough to hold as much
+				of the tables and index in memory.  Checking the size of the /var/lib/mysql/cacti
+				directory will help in determining this value.  We are recommending 25% of your systems
+				total memory, but your requirements will vary depending on your systems size.'
+			),
+		'innodb_doublewrite' => array(
+			'value'   => 'OFF',
+			'measure' => 'equal',
+			'comment' => 'With modern SSD type storage, this operation actually degrades the disk
+				more rapidly and adds a 50% overhead on all write operations.'
+			),
+		'innodb_additional_mem_pool_size' => array(
+			'value'   => '80M',
+			'measure' => 'gtm',
+			'comment' => 'This is where metadata is stored. If you had a lot of tables, it would be useful to increase this.'
+			),
+		'innodb_flush_log_at_trx_commit' => array(
+			'value'   => '2',
+			'measure' => 'equal',
+			'comment' => 'Setting this value to 2 means that you will flush all transactions every
+				second rather than at commit.  This allows MySQL to perform writing less often'
+			),
+		'innodb_lock_wait_timeout' => array(
+			'value'   => '50',
+			'measure' => 'gt',
+			'comment' => 'Rogue queries should not for the database to go offline to others.  Kill these
+				queries before they kill your system.'
+			),
+	);
 
-	/* create new entry: graph_templates_graph */
-	$save['id']                            = 0;
-	$save['local_graph_id']                = (isset($local_graph_id) ? $local_graph_id : 0);
-	$save['local_graph_template_graph_id'] = (isset($graph_template_graph['local_graph_template_graph_id']) ? $graph_template_graph['local_graph_template_graph_id'] : 0);
-	$save['graph_template_id']             = (!empty($_local_graph_id) ? $graph_template_graph['graph_template_id'] : $graph_template_id);
-	$save['title_cache']                   = $graph_template_graph['title_cache'];
-
-	reset($struct_graph);
-	while (list($field, $array) = each($struct_graph)) {
-		if ($array['method'] == 'spacer') continue;
-		$save{$field} = $graph_template_graph{$field};
-		$save{'t_' . $field} = $graph_template_graph{'t_' . $field};
+	if ($variables['version'] < '5.6') {
+		$recommendations += array(
+			'innodb_file_io_threads' => array(
+				'value'   => '16',
+				'measure' => 'gt',
+				'comment' => 'With modern SSD type storage, having multiple io threads is advantagious for
+					applications with high io characteristics.'
+				)
+		);
+	}else{
+		$recommendations += array(
+			'innodb_read_io_threads' => array(
+				'value'   => '32',
+				'measure' => 'gt',
+				'comment' => 'With modern SSD type storage, having multiple read io threads is advantagious for
+					applications with high io characteristics.'
+				),
+			'innodb_write_io_threads' => array(
+				'value'   => '16',
+				'measure' => 'gt',
+				'comment' => 'With modern SSD type storage, having multiple write io threads is advantagious for
+					applications with high io characteristics.'
+				),
+			'innodb_buffer_pool_instances' => array(
+				'value' => '16',
+				'measure' => 'present',
+				'comment' => 'MySQL will divide the innodb_buffer_pool into memory regions to improve performance.
+					The max value is 64.  When your innodb_buffer_pool is less than 1GB, you should use the pool size
+					divided by 128MB.  Continue to use this equation upto the max of 64.'
+				)
+		);
 	}
 
-	$graph_templates_graph_id = sql_save($save, 'graph_templates_graph');
+	html_header(array('MySQL Tuning (/etc/my.cnf) - [ <a class="linkOverDark" href="https://dev.mysql.com/doc/refman/' . substr($variables['version'],0,3) . '/en/server-system-variables.html">Documentation</a> ] Note: Many changes below require a database restart'), 2);
 
-	/* create new entry(s): graph_templates_item */
-	if (sizeof($graph_template_items) > 0) {
-	foreach ($graph_template_items as $graph_template_item) {
-		unset($save);
-		reset($struct_graph_item);
+	form_alternate_row();
+	print "<td colspan='2' style='text-align:left;padding:0px'>";
+	print "<table id='mysql' class='cactiTable' style='width:100%'>\n";
+	print "<thead>\n";
+	print "<tr class='tableHeader'>\n";
+	print "  <th class='tableSubHeaderColumn'>Variable</th>\n";
+	print "  <th class='tableSubHeaderColumn'>Current Value</th>\n";
+	print "  <th class='tableSubHeaderColumn'>Recommended Value</th>\n";
+	print "  <th class='tableSubHeaderColumn'>Comments</th>\n";
+	print "</tr>\n";
+	print "</thead>\n";
 
-		$save['id']                           = 0;
-		/* save a hash only for graph_template copy operations */
-		$save['hash']                         = (!empty($_graph_template_id) ? get_hash_graph_template(0, 'graph_template_item') : 0);
-		$save['local_graph_id']               = (isset($local_graph_id) ? $local_graph_id : 0);
-		$save['graph_template_id']            = (!empty($_local_graph_id) ? $graph_template_item['graph_template_id'] : $graph_template_id);
-		$save['local_graph_template_item_id'] = (isset($graph_template_item['local_graph_template_item_id']) ? $graph_template_item['local_graph_template_item_id'] : 0);
+	foreach($recommendations as $name => $r) {
+		if (isset($variables[$name])) {
+			$class = '';
 
-		while (list($field, $array) = each($struct_graph_item)) {
-			$save{$field} = $graph_template_item{$field};
-		}
+			form_alternate_row();
+			switch($r['measure']) {
+			case 'gtm':
+				$value = trim($r['value'], 'M') * 1024 * 1024;
+				if ($variables[$name] < $value) {
+					$class = 'deviceDown';
+				}
 
-		$graph_item_mappings{$graph_template_item['id']} = sql_save($save, 'graph_templates_item');
-	}
-	}
+				print "<td>" . $name . "</td>\n";
+				print "<td class='$class'>" . ($variables[$name]/1024/1024) . "M</td>\n";
+				print "<td>>= " . $r['value'] . "</td>\n";
+				print "<td class='$class'>" . $r['comment'] . "</td>\n";
 
-	if (!empty($_graph_template_id)) {
-		/* create new entry(s): graph_template_input (graph template only) */
-		if (sizeof($graph_template_inputs) > 0) {
-		foreach ($graph_template_inputs as $graph_template_input) {
-			unset($save);
+				break;
+			case 'gt':
+				if ($variables[$name] < $r['value']) {
+					$class = 'deviceDown';
+				}
 
-			$save['id']                = 0;
-			$save['graph_template_id'] = $graph_template_id;
-			$save['name']              = $graph_template_input['name'];
-			$save['description']       = $graph_template_input['description'];
-			$save['column_name']       = $graph_template_input['column_name'];
-			$save['hash']              = get_hash_graph_template(0, 'graph_template_input');
+				print "<td>" . $name . "</td>\n";
+				print "<td class='$class'>" . $variables[$name] . "</td>\n";
+				print "<td>>= " . $r['value'] . "</td>\n";
+				print "<td class='$class'>" . $r['comment'] . "</td>\n";
 
-			$graph_template_input_id   = sql_save($save, 'graph_template_input');
+				break;
+			case 'equal':
+				if ($variables[$name] != $r['value']) {
+					$class = 'deviceDown';
+				}
 
-			$graph_template_input_defs = db_fetch_assoc('SELECT * FROM graph_template_input_defs WHERE graph_template_input_id=' . $graph_template_input['id']);
+				print "<td>" . $name . "</td>\n";
+				print "<td class='$class'>" . $variables[$name] . "</td>\n";
+				print "<td>" . $r['value'] . "</td>\n";
+				print "<td class='$class'>" . $r['comment'] . "</td>\n";
 
-			/* create new entry(s): graph_template_input_defs (graph template only) */
-			if (sizeof($graph_template_input_defs) > 0) {
-			foreach ($graph_template_input_defs as $graph_template_input_def) {
-				db_execute("INSERT INTO graph_template_input_defs (graph_template_input_id,graph_template_item_id)
-					values ($graph_template_input_id," . $graph_item_mappings{$graph_template_input_def['graph_template_item_id']} . ')');
+				break;
+			case 'pmem':
+				if (isset($memInfo['MemTotal'])) {
+					$totalMem = $memInfo['MemTotal'];
+				}else{
+					$totalMem = $memInfo['TotalVisibleMemorySize'];
+				}
+
+				if ($variables[$name] < ($r['value']*$totalMem/100)) {
+					$class = 'deviceDown';
+				}
+
+				print "<td>" . $name . "</td>\n";
+				print "<td class='$class'>" . round($variables[$name]/1024/1024,0) . "M</td>\n";
+				print "<td>>=" . round($r['value']*$totalMem/100/1024/1024,0) . "M</td>\n";
+				print "<td class='$class'>" . $r['comment'] . "</td>\n";
+
+				break;
 			}
+			form_end_row();
+		}
+	}
+	print "</table>\n";
+	print "</td>\n";
+	form_end_row();
+}
+
+function utilities_php_modules() {
+	/*
+	   Gather phpinfo into a string variable - This has to be done before
+	   any headers are sent to the browser, as we are going to do some
+	   output buffering fun
+	*/
+
+	ob_start();
+	phpinfo(INFO_MODULES);
+	$php_info = ob_get_contents();
+	ob_end_clean();
+
+	/* Remove nasty style sheets, links and other junk */
+	$php_info = str_replace("\n", '', $php_info);
+	$php_info = preg_replace('/^.*\<body\>/', '', $php_info);
+	$php_info = preg_replace('/\<\/body\>.*$/', '', $php_info);
+	$php_info = preg_replace('/\<a.*\>/U', '', $php_info);
+	$php_info = preg_replace('/\<\/a\>/', '<hr>', $php_info);
+	$php_info = preg_replace('/\<img.*\>/U', '', $php_info);
+	$php_info = preg_replace('/\<\/?address\>/', '', $php_info);
+
+	return $php_info;
+}
+
+function memory_bytes($val) {
+	$val = trim($val);
+	$last = strtolower($val{strlen($val)-1});
+	switch($last) {
+		// The 'G' modifier is available since PHP 5.1.0
+		case 'g':
+			$val *= 1024;
+		case 'm':
+			$val *= 1024;
+		case 'k':
+			$val *= 1024;
+	}
+
+	return $val;
+}
+
+function memory_readable($val) {
+	if ($val < 1024) {
+		$val_label = 'bytes';
+	}elseif ($val < 1048576) {
+		$val_label = 'K';
+		$val /= 1024;
+	}elseif ($val < 1073741824) {
+		$val_label = 'M';
+		$val /= 1048576;
+	}else{
+		$val_label = 'G';
+		$val /= 1073741824;
+	}
+
+	return $val . $val_label;
+}
+
+function utilities_get_system_memory() {
+	global $config;
+
+	if ($config['cacti_server_os'] == 'win32') {
+		exec('wmic os get FreePhysicalMemory', $memInfo['FreePhysicalMemory']);
+		exec('wmic os get FreeSpaceInPagingFiles', $memInfo['FreeSpaceInPagingFiles']);
+		exec('wmic os get FreeVirtualMemory', $memInfo['FreeVirtualMemory']);
+		exec('wmic os get SizeStoredInPagingFiles', $memInfo['SizeStoredInPagingFiles']);
+		exec('wmic os get TotalVirtualMemorySize', $memInfo['TotalVirtualMemorySize']);
+		exec('wmic os get TotalVisibleMemorySize', $memInfo['TotalVisibleMemorySize']);
+		if (sizeof($memInfo)) {
+			foreach($memInfo as $key => $values) {
+				$memInfo[$key] = $values[1];
 			}
 		}
-		}
-	}
-
-	if (!empty($_local_graph_id)) {
-		update_graph_title_cache($local_graph_id);
-	}
-}
-
-function duplicate_data_source($_local_data_id, $_data_template_id, $data_source_title) {
-	global $struct_data_source, $struct_data_source_item;
-
-	if (!empty($_local_data_id)) {
-		$data_local = db_fetch_row("SELECT * FROM data_local WHERE id=$_local_data_id");
-		$data_template_data = db_fetch_row("SELECT * FROM data_template_data WHERE local_data_id=$_local_data_id");
-		$data_template_rrds = db_fetch_assoc("SELECT * FROM data_template_rrd WHERE local_data_id=$_local_data_id");
-
-		$data_input_datas = db_fetch_assoc("SELECT * FROM data_input_data WHERE data_template_data_id=" . $data_template_data['id']);
-
-		/* create new entry: data_local */
-		$save['id']               = 0;
-		$save['data_template_id'] = $data_local['data_template_id'];
-		$save['host_id']          = $data_local['host_id'];
-		$save['snmp_query_id']    = $data_local['snmp_query_id'];
-		$save['snmp_index']       = $data_local['snmp_index'];
-
-		$local_data_id = sql_save($save, 'data_local');
-
-		$data_template_data['name'] = str_replace('<ds_title>', $data_template_data['name'], $data_source_title);
-	}elseif (!empty($_data_template_id)) {
-		$data_template = db_fetch_row("SELECT * FROM data_template WHERE id=$_data_template_id");
-		$data_template_data = db_fetch_row("SELECT * FROM data_template_data WHERE data_template_id=$_data_template_id AND local_data_id=0");
-		$data_template_rrds = db_fetch_assoc("SELECT * FROM data_template_rrd WHERE data_template_id=$_data_template_id AND local_data_id=0");
-
-		$data_input_datas = db_fetch_assoc("SELECT * FROM data_input_data WHERE data_template_data_id=" . $data_template_data['id']);
-
-		/* create new entry: data_template */
-		$save['id']   = 0;
-		$save['hash'] = get_hash_data_template(0);
-		$save['name'] = str_replace('<template_title>', $data_template['name'], $data_source_title);
-
-		$data_template_id = sql_save($save, 'data_template');
-	}
-
-	unset($save);
-	unset($struct_data_source['data_source_path']);
-	reset($struct_data_source);
-
-	/* create new entry: data_template_data */
-	$save['id']                          = 0;
-	$save['local_data_id']               = (isset($local_data_id) ? $local_data_id : 0);
-	$save['local_data_template_data_id'] = (isset($data_template_data['local_data_template_data_id']) ? $data_template_data['local_data_template_data_id'] : 0);
-	$save['data_template_id']            = (!empty($_local_data_id) ? $data_template_data['data_template_id'] : $data_template_id);
-	$save['name_cache']                  = $data_template_data['name_cache'];
-
-	while (list($field, $array) = each($struct_data_source)) {
-		$save{$field} = $data_template_data{$field};
-
-		if ($array['flags'] != 'ALWAYSTEMPLATE') {
-			$save{'t_' . $field} = $data_template_data{'t_' . $field};
-		}
-	}
-
-	$data_template_data_id = sql_save($save, 'data_template_data');
-
-	/* create new entry(s): data_template_rrd */
-	if (sizeof($data_template_rrds) > 0) {
-	foreach ($data_template_rrds as $data_template_rrd) {
-		unset($save);
-		reset($struct_data_source_item);
-
-		$save['id']                         = 0;
-		$save['local_data_id']              = (isset($local_data_id) ? $local_data_id : 0);
-		$save['local_data_template_rrd_id'] = (isset($data_template_rrd['local_data_template_rrd_id']) ? $data_template_rrd['local_data_template_rrd_id'] : 0);
-		$save['data_template_id']           = (!empty($_local_data_id) ? $data_template_rrd['data_template_id'] : $data_template_id);
-		if ($save['local_data_id'] == 0) {
-			$save['hash']                   = get_hash_data_template($data_template_rrd['local_data_template_rrd_id'], 'data_template_item');
-		} else {
-			$save['hash'] = '';
-		}
-
-		while (list($field, $array) = each($struct_data_source_item)) {
-			$save{$field} = $data_template_rrd{$field};
-
-			if (isset($data_template_rrd{'t_' . $field})) {
-				$save{'t_' . $field} = $data_template_rrd{'t_' . $field};
+	}else{
+		$data = explode("\n", file_get_contents('/proc/meminfo'));
+		foreach($data as $l) {
+			if (trim($l) != '') {
+				list($key, $val) = explode(':', $l);
+				$val = trim($val, " kBb\r\n");
+				$memInfo[$key] = round($val * 1024,0);
 			}
 		}
-
-		$data_template_rrd_id = sql_save($save, 'data_template_rrd');
-	}
 	}
 
-	/* create new entry(s): data_input_data */
-	if (sizeof($data_input_datas) > 0) {
-	foreach ($data_input_datas as $data_input_data) {
-		db_execute("INSERT INTO data_input_data (data_input_field_id,data_template_data_id,t_value,value) VALUES
-			(" . $data_input_data['data_input_field_id'] . ",$data_template_data_id,'" . $data_input_data['t_value'] .
-			"','" . $data_input_data['value'] . "')");
-	}
-	}
-
-	if (!empty($_local_data_id)) {
-		update_data_source_title_cache($local_data_id);
-	}
-}
-
-function duplicate_host_template($_host_template_id, $host_template_title) {
-	global $fields_host_template_edit;
-
-	$host_template = db_fetch_row("SELECT * FROM host_template WHERE id=$_host_template_id");
-	$host_template_graphs = db_fetch_assoc("SELECT * FROM host_template_graph WHERE host_template_id=$_host_template_id");
-	$host_template_data_queries = db_fetch_assoc("SELECT * FROM host_template_snmp_query WHERE host_template_id=$_host_template_id");
-
-	/* substitute the title variable */
-	$host_template['name'] = str_replace('<template_title>', $host_template['name'], $host_template_title);
-
-	/* create new entry: host_template */
-	$save['id']   = 0;
-	$save['hash'] = get_hash_host_template(0);
-
-	reset($fields_host_template_edit);
-	while (list($field, $array) = each($fields_host_template_edit)) {
-		if (!preg_match('/^hidden/', $array['method'])) {
-			$save[$field] = $host_template[$field];
-		}
-	}
-
-	$host_template_id = sql_save($save, 'host_template');
-
-	/* create new entry(s): host_template_graph */
-	if (sizeof($host_template_graphs) > 0) {
-	foreach ($host_template_graphs as $host_template_graph) {
-		db_execute("INSERT INTO host_template_graph (host_template_id,graph_template_id) VALUES ($host_template_id," . $host_template_graph['graph_template_id'] . ')');
-	}
-	}
-
-	/* create new entry(s): host_template_snmp_query */
-	if (sizeof($host_template_data_queries) > 0) {
-	foreach ($host_template_data_queries as $host_template_data_query) {
-		db_execute("INSERT INTO host_template_snmp_query (host_template_id,snmp_query_id) VALUES ($host_template_id," . $host_template_data_query['snmp_query_id'] . ')');
-	}
-	}
-}
-
-function duplicate_cdef($_cdef_id, $cdef_title) {
-	global $fields_cdef_edit;
-
-	$cdef = db_fetch_row("SELECT * FROM cdef WHERE id=$_cdef_id");
-	$cdef_items = db_fetch_assoc("SELECT * FROM cdef_items WHERE cdef_id=$_cdef_id");
-
-	/* substitute the title variable */
-	$cdef['name'] = str_replace('<cdef_title>', $cdef['name'], $cdef_title);
-
-	/* create new entry: host_template */
-	$save['id']   = 0;
-	$save['hash'] = get_hash_cdef(0);
-
-	reset($fields_cdef_edit);
-	while (list($field, $array) = each($fields_cdef_edit)) {
-		if (!preg_match('/^hidden/', $array['method'])) {
-			$save[$field] = $cdef[$field];
-		}
-	}
-
-	$cdef_id = sql_save($save, 'cdef');
-
-	/* create new entry(s): cdef_items */
-	if (sizeof($cdef_items) > 0) {
-		foreach ($cdef_items as $cdef_item) {
-			unset($save);
-
-			$save['id']       = 0;
-			$save['hash']     = get_hash_cdef(0, 'cdef_item');
-			$save['cdef_id']  = $cdef_id;
-			$save['sequence'] = $cdef_item['sequence'];
-			$save['type']     = $cdef_item['type'];
-			$save['value']    = $cdef_item['value'];
-
-			sql_save($save, 'cdef_items');
-		}
-	}
-}
-
-function duplicate_vdef($_vdef_id, $vdef_title) {
-	global $fields_vdef_edit;
-
-	$vdef       = db_fetch_row_prepared('SELECT * FROM vdef WHERE id = ?', array($_vdef_id));
-	$vdef_items = db_fetch_assoc_prepared('SELECT * FROM vdef_items WHERE vdef_id = ?', array($_vdef_id));
-
-	/* substitute the title variable */
-	$vdef['name'] = str_replace('<vdef_title>', $vdef['name'], $vdef_title);
-
-	/* create new entry: device_template */
-	$save['id']   = 0;
-	$save['hash'] = get_hash_vdef(0);
-
-	$fields_vdef_edit = preset_vdef_form_list();
-	reset($fields_vdef_edit);
-	while (list($field, $array) = each($fields_vdef_edit)) {
-		if (!preg_match('/^hidden/', $array['method'])) {
-			$save[$field] = $vdef[$field];
-		}
-	}
-
-	$vdef_id = sql_save($save, 'vdef');
-
-	/* create new entry(s): vdef_items */
-	if (sizeof($vdef_items) > 0) {
-		foreach ($vdef_items as $vdef_item) {
-			unset($save);
-
-			$save['id']       = 0;
-			$save['hash']     = get_hash_vdef(0, 'vdef_item');
-			$save['vdef_id']  = $vdef_id;
-			$save['sequence'] = $vdef_item['sequence'];
-			$save['type']     = $vdef_item['type'];
-			$save['value']    = $vdef_item['value'];
-
-			sql_save($save, 'vdef_items');
-		}
-	}
+	return $memInfo;
 }
 

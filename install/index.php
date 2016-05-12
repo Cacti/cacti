@@ -25,6 +25,7 @@
 define('IN_CACTI_INSTALL', 1);
 
 include_once('../include/global.php');
+include_once('../lib/utility.php');
 
 set_default_action();
 
@@ -873,8 +874,8 @@ if (isset_request_var('database_hostname')) {
 					<?php 	
 					/* checkdependencies */
 					}elseif ($step == '2') { 
-						print '<h2>' . __('Pre-installation Check') .'</h2><br>';
-						print __('Cacti requries several PHP Modules to be installed to work properly. If any of these are not installed, you will be unable to continue the installation until corrected.') . '<br><br>';
+						print '<h2>' . __('Pre-installation Checks') .'</h2>';
+						print __('Cacti requries several PHP Modules to be installed to work properly. If any of these are not installed, you will be unable to continue the installation until corrected. In addition, for optimal system performance Cacti should be run with certain MySQL system variables set.  Please follow the MySQL recommendations at your discretion.  Always seek the MySQL documentation if you have any questions.') . '<br><br>';
 
 						html_start_box('<strong> ' . __('Required PHP Modules') . '</strong>', '30', 0, '', '', false);
 						html_header( array( __('Name'), __('Required'), __('Installed') ) );
@@ -908,7 +909,7 @@ if (isset_request_var('database_hostname')) {
 						}
 						html_end_box(false);
 
-						print '<br><br>' . __('These extensions may increase the performance of your Cacti install but are not necessary.') . '<br><br>';
+						print '<br>' . __('These extensions may increase the performance of your Cacti install but are not necessary.') . '<br><br>';
 						$extensions = array(
 							array('name' => 'snmp', 'installed' => false),
 							array('name' => 'ldap', 'installed' => false),
@@ -928,6 +929,12 @@ if (isset_request_var('database_hostname')) {
 							form_selectable_cell(($e['installed'] ? '<font color=green>' . __('Yes') . '</font>' : '<font color=red>' . __('No') . '</font>'), '');
 							form_end_row();
 						}
+						html_end_box();
+
+						print '<br>' . __('These MySQL performance tuning settings will help your Cacti system perform better without issues for a longer time.') . '<br><br>';
+
+						html_start_box('<strong> ' . __('Recommended MySQL System Variable Settings') . '</strong>', '30', 0, '', '', false);
+						utilities_get_mysql_recommendations();
 						html_end_box(false);
 
 					/* install/upgrade */

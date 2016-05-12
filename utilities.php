@@ -108,65 +108,6 @@ switch (get_request_var('action')) {
     Utilities Functions
    ----------------------- */
 
-function utilities_php_modules() {
-
-	/*
-	   Gather phpinfo into a string variable - This has to be done before
-	   any headers are sent to the browser, as we are going to do some
-	   output buffering fun
-	*/
-
-	ob_start();
-	phpinfo(INFO_MODULES);
-	$php_info = ob_get_contents();
-	ob_end_clean();
-
-	/* Remove nasty style sheets, links and other junk */
-	$php_info = str_replace("\n", '', $php_info);
-	$php_info = preg_replace('/^.*\<body\>/', '', $php_info);
-	$php_info = preg_replace('/\<\/body\>.*$/', '', $php_info);
-	$php_info = preg_replace('/\<a.*\>/U', '', $php_info);
-	$php_info = preg_replace('/\<\/a\>/', '<hr>', $php_info);
-	$php_info = preg_replace('/\<img.*\>/U', '', $php_info);
-	$php_info = preg_replace('/\<\/?address\>/', '', $php_info);
-
-	return $php_info;
-}
-
-function memory_bytes($val) {
-	$val = trim($val);
-	$last = strtolower($val{strlen($val)-1});
-	switch($last) {
-		// The 'G' modifier is available since PHP 5.1.0
-		case 'g':
-			$val *= 1024;
-		case 'm':
-			$val *= 1024;
-		case 'k':
-			$val *= 1024;
-	}
-
-	return $val;
-}
-
-function memory_readable($val) {
-
-	if ($val < 1024) {
-		$val_label = 'bytes';
-	}elseif ($val < 1048576) {
-		$val_label = 'K';
-		$val /= 1024;
-	}elseif ($val < 1073741824) {
-		$val_label = 'M';
-		$val /= 1048576;
-	}else{
-		$val_label = 'G';
-		$val /= 1073741824;
-	}
-
-	return $val . $val_label;
-}
-
 function utilities_view_tech($php_info = '') {
 	global $database_default, $config, $rrdtool_versions, $poller_options, $input_types;
 
@@ -179,31 +120,6 @@ function utilities_view_tech($php_info = '') {
 	$poller_item = db_fetch_assoc('SELECT action, count(action) AS total 
 		FROM poller_item 
 		GROUP BY action');
-
-	/* Get System Memory */
-	$memInfo = array();
-	if ($config['cacti_server_os'] == 'win32') {
-		exec('wmic os get FreePhysicalMemory', $memInfo['FreePhysicalMemory']);
-		exec('wmic os get FreeSpaceInPagingFiles', $memInfo['FreeSpaceInPagingFiles']);
-		exec('wmic os get FreeVirtualMemory', $memInfo['FreeVirtualMemory']);
-		exec('wmic os get SizeStoredInPagingFiles', $memInfo['SizeStoredInPagingFiles']);
-		exec('wmic os get TotalVirtualMemorySize', $memInfo['TotalVirtualMemorySize']);
-		exec('wmic os get TotalVisibleMemorySize', $memInfo['TotalVisibleMemorySize']);
-		if (sizeof($memInfo)) {
-			foreach($memInfo as $key => $values) {
-				$memInfo[$key] = $values[1];
-			}
-		}
-	}else{
-		$data = explode("\n", file_get_contents('/proc/meminfo'));
-		foreach($data as $l) {
-			if (trim($l) != '') {
-				list($key, $val) = explode(':', $l);
-				$val = trim($val, " kBb\r\n");
-				$memInfo[$key] = round($val * 1024,0);
-			}
-		}
-	}
 
 	/* Get system stats */
 	$host_count  = db_fetch_cell('SELECT COUNT(*) FROM host');
@@ -416,6 +332,10 @@ function utilities_view_tech($php_info = '') {
 
 		html_header(array('System Memory'), 2);
 		$i = 0;
+
+		/* Get System Memory */
+		$memInfo = utilities_get_system_memory();
+
 		foreach($memInfo as $name => $value) {
 			if ($config['cacti_server_os'] == 'win32') {
 				form_alternate_row();
@@ -514,241 +434,7 @@ function utilities_view_tech($php_info = '') {
 		print "</td>\n";
 		form_end_row();
 
-		// MySQL Important Variables
-		$variables = array_rekey(db_fetch_assoc('SHOW GLOBAL VARIABLES'), 'Variable_name', 'Value');
-
-		$recommendations = array(
-			'version' => array(
-				'value' => '5.6',
-				'measure' => 'gt',
-				'comment' => 'MySQL 5.6 is great release, and a very good version to choose.  
-					Other choices today include MariaDB which is very popular and addresses some issues
-					with the C API that negatively impacts spine in MySQL 5.5, and for some reason
-					Oracle has chosen not to fix in MySQL 5.5.  So, avoid MySQL 5.5 at all costs.'
-				)
-		);
-
-		if ($variables['version'] < '5.6') {
-			$recommendations += array(
-				'collation_server' => array(
-					'value' => 'utf8_general_ci',
-					'measure' => 'equal',
-					'comment' => 'When using Cacti with languages other than english, it is important to use
-						the utf8_general_ci collation type as some characters take more than a single byte.'
-					),
-				'character_set_client' => array(
-					'value' => 'utf8',
-					'measure' => 'equal',
-					'comment' => 'When using Cacti with languages other than english, it is important ot use
-						the utf8 character set as some characters take more than a single byte.'
-					)
-			);
-		}else{
-			$recommendations += array(
-				'collation_server' => array(
-					'value' => 'utf8mb4_col',
-					'measure' => 'equal',
-					'comment' => 'When using Cacti with languages other than english, it is important to use
-						the utf8mb4_col collation type as some characters take more than a single byte.'
-					),
-				'character_set_client' => array(
-					'value' => 'utf8mb4',
-					'measure' => 'equal',
-					'comment' => 'When using Cacti with languages other than english, it is important ot use
-						the utf8mb4 character set as some characters take more than a single byte.'
-					)
-			);
-		}
-	
-		$recommendations += array(
-			'max_connections' => array(
-				'value'   => '100', 
-				'measure' => 'gt', 
-				'comment' => 'Depending on the number of logins and use of spine data collector, 
-					MySQL will need many connections.  The calculation for spine is:
-					total_connections = total_processes * (total_threads + script_servers + 1), then you
-					must leave headroom for user connections, which will change depending on the number of
-					concurrent login accounts.'
-				),
-			'table_cache' => array(
-				'value'   => '200',
-				'measure' => 'gt',
-				'comment' => 'Keeping the table cache larger means less file open/close operations when
-					using innodb_file_per_table.'
-				),
-			'max_allowed_packet' => array(
-				'value'   => 16777216,
-				'measure' => 'gt',
-				'comment' => 'With Remote polling capabilities, large amounts of data 
-					will be synced from the main server to the remote pollers.  
-					Therefore, keep this value at or above 16M.'
-				),
-			'tmp_table_size' => array(
-				'value'   => '64M',
-				'measure' => 'gtm',
-				'comment' => 'When executing subqueries, having a larger temporary table size, 
-					keep those temporary tables in memory.'
-				),
-			'join_buffer_size' => array(
-				'value'   => '64M',
-				'measure' => 'gtm',
-				'comment' => 'When performing joins, if they are below this size, they will 
-					be kept in memory and never writen to a temporary file.'
-				),
-			'innodb_file_per_table' => array(
-				'value'   => 'ON',
-				'measure' => 'equal',
-				'comment' => 'When using InnoDB storage it is important to keep your table spaces
-					separate.  This makes managing the tables simpler for long time users of MySQL.
-					If you are running with this currently off, you can migrate to the per file storage
-					by enabling the feature, and then running an alter statement on all InnoDB tables.'
-				),
-			'innodb_buffer_pool_size' => array(
-				'value'   => '25',
-				'measure' => 'pmem',
-				'comment' => 'InnoDB will hold as much tables and indexes in system memory as is possible.
-					Therefore, you should make the innodb_buffer_pool large enough to hold as much
-					of the tables and index in memory.  Checking the size of the /var/lib/mysql/cacti
-					directory will help in determining this value.  We are recommending 25% of your systems
-					total memory, but your requirements will vary depending on your systems size.'
-				),
-			'innodb_doublewrite' => array(
-				'value'   => 'OFF',
-				'measure' => 'equal',
-				'comment' => 'With modern SSD type storage, this operation actually degrades the disk
-					more rapidly and adds a 50% overhead on all write operations.'
-				),
-			'innodb_additional_mem_pool_size' => array(
-				'value'   => '80M',
-				'measure' => 'gtm',
-				'comment' => 'This is where metadata is stored. If you had a lot of tables, it would be useful to increase this.'
-				),
-			'innodb_flush_log_at_trx_commit' => array(
-				'value'   => '2',
-				'measure' => 'equal',
-				'comment' => 'Setting this value to 2 means that you will flush all transactions every
-					second rather than at commit.  This allows MySQL to perform writing less often'
-				),
-			'innodb_lock_wait_timeout' => array(
-				'value'   => '50',
-				'measure' => 'gt',
-				'comment' => 'Rogue queries should not for the database to go offline to others.  Kill these
-					queries before they kill your system.'
-				),
-		);
-
-		if ($variables['version'] < '5.6') {
-			$recommendations += array(
-				'innodb_file_io_threads' => array(
-					'value'   => '16',
-					'measure' => 'gt',
-					'comment' => 'With modern SSD type storage, having multiple io threads is advantagious for
-						applications with high io characteristics.'
-					)
-			);
-		}else{
-			$recommendations += array(
-				'innodb_read_io_threads' => array(
-					'value'   => '32',
-					'measure' => 'gt',
-					'comment' => 'With modern SSD type storage, having multiple read io threads is advantagious for
-						applications with high io characteristics.'
-					),
-				'innodb_write_io_threads' => array(
-					'value'   => '16',
-					'measure' => 'gt',
-					'comment' => 'With modern SSD type storage, having multiple write io threads is advantagious for
-						applications with high io characteristics.'
-					),
-				'innodb_buffer_pool_instances' => array(
-					'value' => '16',
-					'measure' => 'present',
-					'comment' => 'MySQL will divide the innodb_buffer_pool into memory regions to improve performance.
-						The max value is 64.  When your innodb_buffer_pool is less than 1GB, you should use the pool size
-						divided by 128MB.  Continue to use this equation upto the max of 64.'
-					)
-			);
-		}
-
-		html_header(array('MySQL Tuning (/etc/my.cnf) - [ <a class="linkOverDark" href="https://dev.mysql.com/doc/refman/' . substr($variables['version'],0,3) . '/en/server-system-variables.html">Documentation</a> ] Note: Many changes below require a database restart'), 2);
-
-		form_alternate_row();
-		print "<td colspan='2' style='text-align:left;padding:0px'>";
-		print "<table id='mysql' class='cactiTable' style='width:100%'>\n";
-		print "<thead>\n";
-		print "<tr class='tableHeader'>\n";
-		print "  <th class='tableSubHeaderColumn'>Variable</th>\n";
-		print "  <th class='tableSubHeaderColumn'>Current Value</th>\n";
-		print "  <th class='tableSubHeaderColumn'>Recommended Value</th>\n";
-		print "  <th class='tableSubHeaderColumn'>Comments</th>\n";
-		print "</tr>\n";
-		print "</thead>\n";
-
-		foreach($recommendations as $name => $r) {
-			if (isset($variables[$name])) {
-				$class = '';
-
-				form_alternate_row();
-				switch($r['measure']) {
-				case 'gtm':
-					$value = trim($r['value'], 'M') * 1024 * 1024;
-					if ($variables[$name] < $value) {
-						$class = 'deviceDown';
-					}
-
-					print "<td>" . $name . "</td>\n";
-					print "<td class='$class'>" . ($variables[$name]/1024/1024) . "M</td>\n";
-					print "<td>>= " . $r['value'] . "</td>\n";
-					print "<td class='$class'>" . $r['comment'] . "</td>\n";
-
-					break;
-				case 'gt':
-					if ($variables[$name] < $r['value']) {
-						$class = 'deviceDown';
-					}
-
-					print "<td>" . $name . "</td>\n";
-					print "<td class='$class'>" . $variables[$name] . "</td>\n";
-					print "<td>>= " . $r['value'] . "</td>\n";
-					print "<td class='$class'>" . $r['comment'] . "</td>\n";
-
-					break;
-				case 'equal':
-					if ($variables[$name] != $r['value']) {
-						$class = 'deviceDown';
-					}
-
-					print "<td>" . $name . "</td>\n";
-					print "<td class='$class'>" . $variables[$name] . "</td>\n";
-					print "<td>=" . $r['value'] . "</td>\n";
-					print "<td class='$class'>" . $r['comment'] . "</td>\n";
-
-					break;
-				case 'pmem':
-					if (isset($memInfo['MemTotal'])) {
-						$totalMem = $memInfo['MemTotal'];
-					}else{
-						$totalMem = $memInfo['TotalVisibleMemorySize'];
-					}
-
-					if ($variables[$name] < ($r['value']*$totalMem/100)) {
-						$class = 'deviceDown';
-					}
-
-					print "<td>" . $name . "</td>\n";
-					print "<td class='$class'>" . round($variables[$name]/1024/1024,0) . "M</td>\n";
-					print "<td>>=" . round($r['value']*$totalMem/100/1024/1024,0) . "M</td>\n";
-					print "<td class='$class'>" . $r['comment'] . "</td>\n";
-
-					break;
-				}
-				form_end_row();
-			}
-		}
-		print "</table>\n";
-		print "</td>\n";
-		form_end_row();
-
+		utilities_get_mysql_recommendations();
 	}elseif (get_request_var('tab') == 'database') {
 
 		html_header(array('MySQL Table Information - Sizes in KBytes'), 2);
@@ -793,6 +479,8 @@ function utilities_view_tech($php_info = '') {
 
 		html_header(array('PHP Module Information'), 2);
 		form_alternate_row();
+		$php_info = str_replace('width="600"', '', $php_info);
+		$php_info = str_replace('th colspan="2"', 'th class="subHeaderColumn"', $php_info);
 		print "<td colspan='2'>" . $php_info . "</td>\n";
 		form_end_row();
 

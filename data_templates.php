@@ -24,6 +24,7 @@
 
 include ('./include/auth.php');
 include_once('./lib/api_tree.php');
+include_once('./lib/api_data_source.php');
 include_once('./lib/html_tree.php');
 include_once('./lib/utility.php');
 include_once('./lib/template.php');
@@ -270,7 +271,7 @@ function form_actions() {
 				db_execute('UPDATE data_local set data_template_id=0 WHERE ' . array_to_sql_or($selected_items, 'data_template_id'));
 			}elseif (get_nfilter_request_var('drp_action') == '2') { /* duplicate */
 				for ($i=0;($i<count($selected_items));$i++) {
-					duplicate_data_source(0, $selected_items[$i], get_nfilter_request_var('title_format'));
+					api_duplicate_data_source(0, $selected_items[$i], get_nfilter_request_var('title_format'));
 				}
 			}
 		}

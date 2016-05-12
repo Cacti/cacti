@@ -23,7 +23,6 @@
 */
 
 include('./include/auth.php');
-include_once('./lib/utility.php');
 include_once('./lib/vdef.php');
 
 $vdef_actions = array(
@@ -137,6 +136,46 @@ function vdef_form_save() {
 			header('Location: vdef.php?action=item_edit&header=false&vdef_id=' . get_request_var('vdef_id') . '&id=' . (empty($vdef_item_id) ? get_request_var('id') : $vdef_item_id));
 		}else{
 			header('Location: vdef.php?action=edit&header=false&id=' . get_request_var('vdef_id'));
+		}
+	}
+}
+
+function duplicate_vdef($_vdef_id, $vdef_title) {
+	global $fields_vdef_edit;
+
+	$vdef       = db_fetch_row_prepared('SELECT * FROM vdef WHERE id = ?', array($_vdef_id));
+	$vdef_items = db_fetch_assoc_prepared('SELECT * FROM vdef_items WHERE vdef_id = ?', array($_vdef_id));
+
+	/* substitute the title variable */
+	$vdef['name'] = str_replace('<vdef_title>', $vdef['name'], $vdef_title);
+
+	/* create new entry: device_template */
+	$save['id']   = 0;
+	$save['hash'] = get_hash_vdef(0);
+
+	$fields_vdef_edit = preset_vdef_form_list();
+	reset($fields_vdef_edit);
+	while (list($field, $array) = each($fields_vdef_edit)) {
+		if (!preg_match('/^hidden/', $array['method'])) {
+			$save[$field] = $vdef[$field];
+		}
+	}
+
+	$vdef_id = sql_save($save, 'vdef');
+
+	/* create new entry(s): vdef_items */
+	if (sizeof($vdef_items) > 0) {
+		foreach ($vdef_items as $vdef_item) {
+			unset($save);
+
+			$save['id']       = 0;
+			$save['hash']     = get_hash_vdef(0, 'vdef_item');
+			$save['vdef_id']  = $vdef_id;
+			$save['sequence'] = $vdef_item['sequence'];
+			$save['type']     = $vdef_item['type'];
+			$save['value']    = $vdef_item['value'];
+
+			sql_save($save, 'vdef_items');
 		}
 	}
 }

@@ -23,7 +23,6 @@
 */
 
 include('./include/auth.php');
-include_once('./lib/utility.php');
 include_once('./lib/cdef.php');
 
 $cdef_actions = array(
@@ -176,6 +175,45 @@ function form_save() {
 			header('Location: cdef.php?header=false&action=item_edit&cdef_id=' . get_nfilter_request_var('cdef_id') . '&id=' . (empty($cdef_item_id) ? get_nfilter_request_var('id') : $cdef_item_id));
 		}else{
 			header('Location: cdef.php?header=false&action=edit&id=' . get_nfilter_request_var('cdef_id'));
+		}
+	}
+}
+
+function duplicate_cdef($_cdef_id, $cdef_title) {
+	global $fields_cdef_edit;
+
+	$cdef = db_fetch_row("SELECT * FROM cdef WHERE id=$_cdef_id");
+	$cdef_items = db_fetch_assoc("SELECT * FROM cdef_items WHERE cdef_id=$_cdef_id");
+
+	/* substitute the title variable */
+	$cdef['name'] = str_replace('<cdef_title>', $cdef['name'], $cdef_title);
+
+	/* create new entry: host_template */
+	$save['id']   = 0;
+	$save['hash'] = get_hash_cdef(0);
+
+	reset($fields_cdef_edit);
+	while (list($field, $array) = each($fields_cdef_edit)) {
+		if (!preg_match('/^hidden/', $array['method'])) {
+			$save[$field] = $cdef[$field];
+		}
+	}
+
+	$cdef_id = sql_save($save, 'cdef');
+
+	/* create new entry(s): cdef_items */
+	if (sizeof($cdef_items) > 0) {
+		foreach ($cdef_items as $cdef_item) {
+			unset($save);
+
+			$save['id']       = 0;
+			$save['hash']     = get_hash_cdef(0, 'cdef_item');
+			$save['cdef_id']  = $cdef_id;
+			$save['sequence'] = $cdef_item['sequence'];
+			$save['type']     = $cdef_item['type'];
+			$save['value']    = $cdef_item['value'];
+
+			sql_save($save, 'cdef_items');
 		}
 	}
 }
