@@ -780,9 +780,9 @@ function template() {
 
 	$display_text = array(
 		'name' => array('display' => 'Device Template Name', 'align' => 'left', 'sort' => 'ASC', 'tip' => 'The name of this Device Template.'),
+		'host_template.id' => array('display' => 'ID', 'align' => 'right', 'sort' => 'ASC', 'tip' => 'The internal database ID for this Device Template.  Useful when performing automation or debugging.'),
 		"nosort" => array('display' => 'Deletable', 'align' => 'right', 'sort' => '', 'tip' => 'Device Templates in use can not be Deleted.  In use is defined as being referenced by a Device.'),
-		'hosts' => array('display' => 'Devices Using', 'align' => 'right', 'sort' => 'DESC', 'tip' => 'The number of Devices using this Device Template.'),
-		'host_template.id' => array('display' => 'ID', 'align' => 'right', 'sort' => 'ASC', 'tip' => 'The internal database ID for this Device Template.  Useful when performing automation or debugging.')
+		'hosts' => array('display' => 'Devices Using', 'align' => 'right', 'sort' => 'DESC', 'tip' => 'The number of Devices using this Device Template.')
 	);
 
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
@@ -798,9 +798,9 @@ function template() {
 
 			form_alternate_row('line' . $template['id'], true);
 			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars('host_templates.php?action=edit&id=' . $template['id']) . "'>" . (strlen(get_request_var('filter')) ? preg_replace('/(' . preg_quote(get_request_var('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($template['name'])) : htmlspecialchars($template['name'])) . '</a>', $template['id'], $disabled);
+			form_selectable_cell($template['id'], $template['id'], '', 'text-align:right', $disabled);
 			form_selectable_cell($disabled ? 'No':'Yes', $template['id'], '', 'text-align:right', $disabled);
 			form_selectable_cell(number_format($template['hosts']), $template['id'], '', 'text-align:right', $disabled);
-			form_selectable_cell($template['id'], $template['id'], '', 'text-align:right', $disabled);
 			form_checkbox_cell($template['name'], $template['id'], $disabled);
 			form_end_row();
 		}

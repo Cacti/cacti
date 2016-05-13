@@ -679,12 +679,12 @@ function template() {
 
 	$display_text = array(
 		'name'            => array('display' => 'Graph Template Name', 'align' => 'left', 'sort' => 'ASC', 'tip' => 'The name of this Graph Template.'),
+		'gt.id'           => array('display' => 'ID', 'align' => 'right', 'sort' => 'ASC', 'tip' => 'The internal ID for this Graph Template.  Useful when performing automation or debugging.'),
 		'size'            => array('display' => 'Size', 'align' => 'right', 'sort' => 'ASC', 'tip' => 'The default size of the resulting Graphs.'),
 		'image_format_id' => array('display' => 'Image Format', 'align' => 'right', 'sort' => 'ASC', 'tip' => 'The default image formatefor the resulting Graphs.'),
 		'vertical_label'  => array('display' => 'Vertical Label', 'align' => 'right', 'sort' => 'ASC', 'tip' => 'The vertical label for the resulting Graphs.'),
 		'nosort3'         => array('display' => 'Deletable', 'align' => 'right', 'tip' => 'Graph Templates that are in use can not be Deleted.  In use is defined as being referenced by a Graph.'), 
-		'graphs'          => array('display' => 'Graphs Using', 'align' => 'right', 'sort' => 'DESC', 'tip' => 'The number of Graphs using this Graph Template.'),
-		'gt.id'           => array('display' => 'ID', 'align' => 'right', 'sort' => 'ASC', 'tip' => 'The internal ID for this Graph Template.  Useful when performing automation or debugging.')
+		'graphs'          => array('display' => 'Graphs Using', 'align' => 'right', 'sort' => 'DESC', 'tip' => 'The number of Graphs using this Graph Template.')
 	);
 
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
@@ -699,12 +699,12 @@ function template() {
 			}
 			form_alternate_row('line' . $template['id'], true, $disabled);
 			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars('graph_templates.php?action=template_edit&id=' . $template['id']) . "'>" . (strlen(get_request_var('filter')) ? preg_replace('/(' . preg_quote(get_request_var('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($template['name'])) : htmlspecialchars($template['name'])) . '</a>', $template['id']);
+			form_selectable_cell($template['id'], $template['id'], '', 'text-align:right');
 			form_selectable_cell($template['size'], $template['id'], '', 'text-align:right');
 			form_selectable_cell($image_types[$template['image_format_id']], $template['id'], '', 'text-align:right');
 			form_selectable_cell($template['vertical_label'], $template['id'], '', 'text-align:right');
 			form_selectable_cell($disabled ? 'No':'Yes', $template['id'], '', 'text-align:right');
 			form_selectable_cell(number_format($template['graphs']), $template['id'], '', 'text-align:right');
-			form_selectable_cell($template['id'], $template['id'], '', 'text-align:right');
 			form_checkbox_cell($template['name'], $template['id'], $disabled);
 			form_end_row();
 		}
