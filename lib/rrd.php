@@ -1099,7 +1099,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 	include_once($config['library_path'] . '/boost.php');
 	include_once($config['library_path'] . '/xml.php');
 	include($config['include_path'] . '/global_arrays.php');
-	
+
 	/* prevent command injection
 	 * This function prepares an rrdtool graph statement to be executed by the web server.
 	 * We have to take care, that the attacker does not insert shell code.
