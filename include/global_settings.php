@@ -1722,8 +1722,8 @@ $settings = array(
 			into account a certain number of \'outliers\'.  Those are exceptinal samples, like the spike, that need
 			to be excluded from the Variance Average calculation.'),
 			'method' => 'drop_array',
-			'default' => '1',
-			'array' => array(1 => __('Standard Deviation'), 2=> __('Variance Based w/Outliers Removed'))
+			'default' => '2',
+			'array' => array(1 => __('Standard Deviation'), 2 => __('Variance Based w/Outliers Removed'))
 			),
 		'spikekill_avgnan' => array(
 			'friendly_name' => __('Replacement Method'),
@@ -1731,7 +1731,7 @@ $settings = array(
 			the average of the data source in question.  The second method replaces the spike with a \'NaN\'.'),
 			'method' => 'drop_array',
 			'default' => '1',
-			'array' => array(1 => __('Average'), 2=> __('NaN\'s'))
+			'array' => array(1 => __('Average'), 2 => __('NaN\'s'))
 			),
 		'spikekill_deviations' => array(
 			'friendly_name' => __('Number of Standard Deviations'),

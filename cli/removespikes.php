@@ -32,7 +32,7 @@ if (!isset($_SERVER['argv'][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($
 	die('<br><strong>This script is only meant to run at the command line.</strong>');
 }
 
-include_once('../include/global.php');
+include(dirname(__FILE__)."/../include/global.php");
 
 /* setup defaults */
 $debug     = FALSE;
