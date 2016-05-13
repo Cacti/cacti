@@ -163,6 +163,52 @@ default:
 	var currentTheme = '';
 
 	$(function() {
+		$('#spikekill_templates').multiselect({
+			noneSelectedText: 'Select Template(s)', 
+			selectedText: function(numChecked, numTotal, checkedItems) {
+				myReturn = numChecked + ' Templates Selected';
+				$.each(checkedItems, function(index, value) {
+					if (value.value == '0') {
+						myReturn='All Templates Selected';
+						return false;
+					}
+				});
+				return myReturn;
+			},
+			checkAllText: 'All', 
+			uncheckAllText: 'None',
+			uncheckall: function() {
+				$(this).multiselect('widget').find(':checkbox:first').each(function() {
+					$(this).prop('checked', true);
+				});
+			},
+			click: function(event, ui) {
+				checked=$(this).multiselect('widget').find('input:checked').length;
+
+				if (ui.value == '0') {
+					if (ui.checked == true) {
+						$('#host').multiselect('uncheckAll');
+						$(this).multiselect('widget').find(':checkbox:first').each(function() {
+							$(this).prop('checked', true);
+						});
+					}
+				}else if (checked == 0) {
+					$(this).multiselect('widget').find(':checkbox:first').each(function() {
+						$(this).click();
+					});
+				}else if ($(this).multiselect('widget').find('input:checked:first').val() == '0') {
+					if (checked > 0) {
+						$(this).multiselect('widget').find(':checkbox:first').each(function() {
+							$(this).click();
+							$(this).prop('disable', true);
+						});
+					}
+				}
+			}
+		}).multiselectfilter( {
+			label: 'Search', width: '150'
+		});
+
 		$('.subTab').find('a').click(function(event) {
 			event.preventDefault();
 			strURL = $(this).attr('href');

@@ -22,39 +22,46 @@
  +-------------------------------------------------------------------------+
 */
 
-global $plugin_hooks, $plugins_integrated, $plugins;
-$plugin_hooks       = array();
-$plugins_integrated = array('snmpagent', 'clog', 'settings', 'boost', 'dsstats', 'watermark', 'ssl', 'ugroup', 'domains', 'jqueryskin', 'secpass', 'logrotate', 'realtime', 'rrdclean', 'nectar', 'aggregate', 'autom8', 'discovery', 'spikekill');
+include('./include/auth.php');
 
-function use_plugin ($name) {
-	global $config;
-	if (file_exists($config['base_path'] . "/plugins/$name/setup.php")) {
-		include_once($config['base_path'] . "/plugins/$name/setup.php");
-		$function = "plugin_init_$name";
-		if (function_exists($function)) {
-			$function();
+switch(get_nfilter_request_var('method')) {
+	case 'stddev':
+	case 'variance':
+		break;
+	default:
+		echo "FATAL: SpikeKill method '" . get_nfilter_request_var('method') . "' is Invalid\n";
+		exit(1);
+		break;
+}
+
+if (is_realm_allowed(1043)) {
+	$local_data_ids = db_fetch_assoc('SELECT DISTINCT
+		data_template_rrd.local_data_id
+		FROM graph_templates_item
+		LEFT JOIN data_template_rrd 
+		ON (graph_templates_item.task_item_id=data_template_rrd.id)
+		WHERE graph_templates_item.local_graph_id=' . get_filter_request_var('local_graph_id'));
+
+	$results = '';
+	if (sizeof($local_data_ids)) {
+		foreach($local_data_ids as $local_data_id) {
+			$data_source_path = get_data_source_path($local_data_id['local_data_id'], true);
+
+			if (strlen($data_source_path)) {
+				cacti_log(read_config_option('path_php_binary') . ' -q ' . $config['base_path'] . '/plugins/spikekill/removespikes.php ' .
+					' -R=' . $data_source_path . (isset_request_var('dryrun') ? ' --dryrun' : '') .
+					' -M=' . get_nfilter_request_var('method') .
+					' --html', false);
+				$results .= shell_exec(read_config_option('path_php_binary') . ' -q ' . $config['base_path'] . '/plugins/spikekill/removespikes.php ' .
+					' -R=' . $data_source_path . (isset($_REQUEST['dryrun']) ? ' --dryrun' : '') .
+					' -M=' . get_nfilter_request_var('method') .
+					' --html');
+			}
 		}
 	}
+
+	return json_encode(array('local_graph_id' => get_request_var('local_graph_id'), 'results' => $results));
+}else{
+	echo "FATAL: SpikeKill Not Allowed\n";
 }
 
-/**
- * This function executes a hook.
- * @param string $name Name of hook to fire
- * @return mixed $data
- */
-if (!is_array($plugins)) {
-	$plugins = array();
-}
-
-$oldplugins = read_config_option('oldplugins');
-if (strlen(trim($oldplugins))) {
-	$oldplugins = explode(',', $oldplugins);
-	$plugins    = array_merge($plugins, $oldplugins);
-}
-
-/* On startup, register all plugins configured for use. */
-if (isset($plugins) && is_array($plugins) && !defined('IN_CACTI_INSTALL')) {
-	foreach ($plugins as $plugin) {
-		use_plugin($plugin['directory']);
-	}
-}

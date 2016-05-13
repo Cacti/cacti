@@ -987,6 +987,30 @@ function clearGraphTimespanFilter() {
 	});
 }
 
+function removeSpikesStdDev(local_graph_id) {
+	strURL = 'spikekill.php?method=stddev&local_graph_id='+local_graph_id;
+	$.getJSON(strURL, function(data) {
+	});
+}
+
+function removeSpikesVariance(local_graph_id) {
+	strURL = "spikekill.php?method=variance&local_graph_id="+local_graph_id;
+	$.getJSON(strURL, function(data) {
+	});
+}
+
+function dryRunStdDev(local_graph_id) {
+	strURL = "spikekill.php?method=stddev&dryrun=true&local_graph_id="+local_graph_id;
+	$.getJSON(strURL, function(data) {
+	});
+}
+
+function dryRunVariance(local_graph_id) {
+	strURL = "spikekill.php?method=variance&dryrun=true&local_graph_id="+local_graph_id;
+	$.getJSON(strURL, function(data) {
+	});
+}
+
 function initializeGraphs() {
 	$('span[id$="_mrtg"]').unbind('click').click(function() {
 		graph_id=$(this).attr('id').replace('graph_','').replace('_mrtg','');
@@ -1001,7 +1025,10 @@ function initializeGraphs() {
 
 	$('span[id$="_csv"]').unbind('click').click(function() {
 		graph_id=$(this).attr('id').replace('graph_','').replace('_csv','');
-		document.location = urlPath+'graph_xport.php?local_graph_id='+graph_id+'&rra_id=0&view_type=tree&graph_start='+getTimestampFromDate($('#date1').val())+'&graph_end='+getTimestampFromDate($('#date2').val());
+		document.location = urlPath+
+			'graph_xport.php?local_graph_id='+graph_id+
+			'&rra_id=0&view_type=tree&graph_start='+getTimestampFromDate($('#date1').val())+
+			'&graph_end='+getTimestampFromDate($('#date2').val());
 	});
 
 	$('#form_graph_view').unbind('submit').on('submit', function(event) {

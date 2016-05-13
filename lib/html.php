@@ -374,6 +374,9 @@ function graph_drilldown_icons($local_graph_id, $type = 'graph_buttons') {
 	if (read_config_option('realtime_enabled') == 'on') {
 		print "<span class='realtime' id='graph_" . $local_graph_id . "_realtime'><img class='drillDown' src='" . $config['url_path'] . "images/chart_curve_go.png' alt='' title='Click to view just this Graph in Realtime'></span><br/>\n";
 	}
+	if (is_realm_allowed(1043)) {
+		print "<span class='spikekill' id='graph_" . $local_graph_id . "_sk'><img title='SpikeKill not functional yet' id='sk" . $local_graph_id . "' class='drillDown' src='" . $config['url_path'] . "images/spikekill.gif'><br/>";
+	}
 
 	if ($aggregate_url != '') {
 		print $aggregate_url;

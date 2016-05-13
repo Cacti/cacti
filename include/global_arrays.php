@@ -691,42 +691,43 @@ $page_refresh_interval = array(
 );
 
 $user_auth_realms = array(
-	8  => __('Console Access'),
-	7  => __('View Graphs'),
-	20 => __('Update Profile'),
+	8    => __('Console Access'),
+	7    => __('View Graphs'),
+	20   => __('Update Profile'),
 
-	1  => __('User Management'),
-	15 => __('Settings and Utilities'),
-	23 => __('Automation Settings'),
+	1    => __('User Management'),
+	15   => __('Settings and Utilities'),
+	23   => __('Automation Settings'),
 
-	2  => __('Data Input Methods'),
-	13 => __('Data Queries'),
+	2    => __('Data Input Methods'),
+	13   => __('Data Queries'),
 
-	3  => __('Devices/Data Sources'),
-	5  => __('Graphs'),
-	4  => __('Graph Trees'),
+	3    => __('Devices/Data Sources'),
+	5    => __('Graphs'),
+	4    => __('Graph Trees'),
+	1043 => __('Remove Spikes from Graphs'),
 
-	9  => __('Data Source Profiles'),
-	14 => __('Colors/GPrints/CDEFs/VDEFs'),
+	9    => __('Data Source Profiles'),
+	14   => __('Colors/GPrints/CDEFs/VDEFs'),
 
-	10 => __('Graph Templates'),
-	11 => __('Data Templates'),
-	12 => __('Device Templates'),
+	10   => __('Graph Templates'),
+	11   => __('Data Templates'),
+	12   => __('Device Templates'),
 
-	16 => __('Export Data'),
-	17 => __('Import Data'),
+	16   => __('Export Data'),
+	17   => __('Import Data'),
 
-	18 => __('Log Management'),
-	19 => __('Log Viewing'),
+	18   => __('Log Management'),
+	19   => __('Log Viewing'),
 
-	21 => __('Reports Management'),
-	22 => __('Reports Creation')
+	21   => __('Reports Management'),
+	22   => __('Reports Creation')
 );
 
 $user_auth_roles = array(
 	'Normal User'            => array(7, 19, 20, 22),
 	'Template Editor'        => array(8, 2, 9, 10, 11, 12, 13, 14, 16, 17),
-	'General Administration' => array(8, 3, 4, 5, 23),
+	'General Administration' => array(8, 3, 4, 5, 23, 1043),
 	'System Administration'  => array(8, 15, 1, 18, 21, 101)
 );
 
@@ -788,6 +789,7 @@ $user_auth_realm_filenames = array(
 	'aggregate_templates.php' => 5,
 	'aggregate_graphs.php' => 5,
 	'aggregate_items.php' => 5,
+	'spikekill.php' => 1043,
 	'permission_denied.php' => -1
 );
 
