@@ -540,6 +540,18 @@ function log_cacti_stats($loop_start, $method, $concurrent_processes, $max_threa
 	api_plugin_hook_function('cacti_stats_update', $perf_data);
 }
 
+/**
+ * function for bulk spikekill that only runs on the main cacti server
+ */
+function spikekill_poller_bottom () {
+    global $config;
+    include_once($config['base_path'] . '/lib/poller.php');
+
+    $command_string = read_config_option('path_php_binary');
+    $extra_args = '-q ' . $config['base_path'] . '/poller_spikekill.php';
+    exec_background($command_string, $extra_args);
+}
+
 function display_help() {
 	$version = db_fetch_cell('SELECT cacti FROM version');
 	echo "Cacti Main Poller, Version $version, " . COPYRIGHT_YEARS . "\n\n";
@@ -556,6 +568,7 @@ if ($poller_id == 0) {
 	boost_poller_bottom();
 	dsstats_poller_bottom();
 	reports_poller_bottom();
+	spikekill_poller_bottom();
 	automation_poller_bottom();
 	poller_maintenance();
 }else{
