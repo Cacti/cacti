@@ -541,10 +541,10 @@ function utilities_get_mysql_recommendations() {
 		'version' => array(
 			'value' => '5.6',
 			'measure' => 'gt',
-			'comment' => 'MySQL 5.6 is great release, and a very good version to choose.  
+			'comment' => __('MySQL 5.6 is great release, and a very good version to choose.  
 				Other choices today include MariaDB which is very popular and addresses some issues
 				with the C API that negatively impacts spine in MySQL 5.5, and for some reason
-				Oracle has chosen not to fix in MySQL 5.5.  So, avoid MySQL 5.5 at all cost.'
+				Oracle has chosen not to fix in MySQL 5.5.  So, avoid MySQL 5.5 at all cost.')
 			)
 	);
 
@@ -553,20 +553,20 @@ function utilities_get_mysql_recommendations() {
 			'collation_server' => array(
 				'value' => 'utf8_general_ci',
 				'measure' => 'equal',
-				'comment' => 'When using Cacti with languages other than english, it is important to use
+				'comment' => __('When using Cacti with languages other than english, it is important to use
 					the utf8_general_ci collation type as some characters take more than a single byte.  
 					If you are first just now installing Cacti, stop, make the changes and start over again.
 					If your Cacti has been running and is in production, see the internet for instructions
-					on converting your databases and tables if you plan on supporting other languages.'
+					on converting your databases and tables if you plan on supporting other languages.')
 				),
 			'character_set_client' => array(
 				'value' => 'utf8',
 				'measure' => 'equal',
-				'comment' => 'When using Cacti with languages other than english, it is important ot use
+				'comment' => __('When using Cacti with languages other than english, it is important ot use
 					the utf8 character set as some characters take more than a single byte.
 					If you are first just now installing Cacti, stop, make the changes and start over again.
-                                        If your Cacti has been running and is in production, see the internet for instructions
-                                        on converting your databases and tables if you plan on supporting other languages.'
+					If your Cacti has been running and is in production, see the internet for instructions
+					on converting your databases and tables if you plan on supporting other languages.')
 				)
 		);
 	}else{
@@ -574,14 +574,14 @@ function utilities_get_mysql_recommendations() {
 			'collation_server' => array(
 				'value' => 'utf8mb4_col',
 				'measure' => 'equal',
-				'comment' => 'When using Cacti with languages other than english, it is important to use
-					the utf8mb4_col collation type as some characters take more than a single byte.'
+				'comment' => __('When using Cacti with languages other than english, it is important to use
+					the utf8mb4_col collation type as some characters take more than a single byte.')
 				),
 			'character_set_client' => array(
 				'value' => 'utf8mb4',
 				'measure' => 'equal',
-				'comment' => 'When using Cacti with languages other than english, it is important ot use
-					the utf8mb4 character set as some characters take more than a single byte.'
+				'comment' => __('When using Cacti with languages other than english, it is important ot use
+					the utf8mb4 character set as some characters take more than a single byte.')
 				)
 		);
 	}
@@ -590,16 +590,16 @@ function utilities_get_mysql_recommendations() {
 		'max_connections' => array(
 			'value'   => '100', 
 			'measure' => 'gt', 
-			'comment' => 'Depending on the number of logins and use of spine data collector, 
+			'comment' => __('Depending on the number of logins and use of spine data collector, 
 				MySQL will need many connections.  The calculation for spine is:
 				total_connections = total_processes * (total_threads + script_servers + 1), then you
 				must leave headroom for user connections, which will change depending on the number of
-				concurrent login accounts.'
+				concurrent login accounts.')
 			),
 		'max_heap_table_size' => array(
 			'value'   => '5',
 			'measure' => 'pmem',
-			'comment' => 'If using the Cacti Performance Booster and choosing a memory storage engine,
+			'comment' => __('If using the Cacti Performance Booster and choosing a memory storage engine,
 				you have to be careful to flush your Performance Booster buffer before the system runs
 				out of memory table space.  This is done two ways, first reducing the size of your output
 				column to just the right size.  This column is in the tables poller_output, 
@@ -607,109 +607,114 @@ function utilities_get_mysql_recommendations() {
 				tables.  We have arbitrarily choosen a recommended value of 10% of system memory, but 
 				if you are using SSD disk drives, or have a smaller system, you may ignore this recommendation
 				or choose a different storage engine.  You may see the expected consumption of the 
-				Performance Booster tables under Console -> System Utilities -> View Boost Status.'
+				Performance Booster tables under Console -> System Utilities -> View Boost Status.')
 			),
 		'table_cache' => array(
 			'value'   => '200',
 			'measure' => 'gt',
-			'comment' => 'Keeping the table cache larger means less file open/close operations when
-				using innodb_file_per_table.'
+			'comment' => __('Keeping the table cache larger means less file open/close operations when
+				using innodb_file_per_table.')
 			),
 		'max_allowed_packet' => array(
 			'value'   => 16777216,
 			'measure' => 'gt',
-			'comment' => 'With Remote polling capabilities, large amounts of data 
+			'comment' => __('With Remote polling capabilities, large amounts of data 
 				will be synced from the main server to the remote pollers.  
-				Therefore, keep this value at or above 16M.'
+				Therefore, keep this value at or above 16M.')
 			),
 		'tmp_table_size' => array(
 			'value'   => '64M',
 			'measure' => 'gtm',
-			'comment' => 'When executing subqueries, having a larger temporary table size, 
-				keep those temporary tables in memory.'
+			'comment' => __('When executing subqueries, having a larger temporary table size, 
+				keep those temporary tables in memory.')
 			),
 		'join_buffer_size' => array(
 			'value'   => '64M',
 			'measure' => 'gtm',
-			'comment' => 'When performing joins, if they are below this size, they will 
-				be kept in memory and never writen to a temporary file.'
+			'comment' => __('When performing joins, if they are below this size, they will 
+				be kept in memory and never writen to a temporary file.')
 			),
 		'innodb_file_per_table' => array(
 			'value'   => 'ON',
 			'measure' => 'equal',
-			'comment' => 'When using InnoDB storage it is important to keep your table spaces
+			'comment' => __('When using InnoDB storage it is important to keep your table spaces
 				separate.  This makes managing the tables simpler for long time users of MySQL.
 				If you are running with this currently off, you can migrate to the per file storage
-				by enabling the feature, and then running an alter statement on all InnoDB tables.'
+				by enabling the feature, and then running an alter statement on all InnoDB tables.')
 			),
 		'innodb_buffer_pool_size' => array(
 			'value'   => '25',
 			'measure' => 'pmem',
-			'comment' => 'InnoDB will hold as much tables and indexes in system memory as is possible.
+			'comment' => __('InnoDB will hold as much tables and indexes in system memory as is possible.
 				Therefore, you should make the innodb_buffer_pool large enough to hold as much
 				of the tables and index in memory.  Checking the size of the /var/lib/mysql/cacti
 				directory will help in determining this value.  We are recommending 25% of your systems
-				total memory, but your requirements will vary depending on your systems size.'
+				total memory, but your requirements will vary depending on your systems size.')
 			),
 		'innodb_doublewrite' => array(
 			'value'   => 'OFF',
 			'measure' => 'equal',
-			'comment' => 'With modern SSD type storage, this operation actually degrades the disk
-				more rapidly and adds a 50% overhead on all write operations.'
+			'comment' => __('With modern SSD type storage, this operation actually degrades the disk
+				more rapidly and adds a 50% overhead on all write operations.')
 			),
 		'innodb_additional_mem_pool_size' => array(
 			'value'   => '80M',
 			'measure' => 'gtm',
-			'comment' => 'This is where metadata is stored. If you had a lot of tables, it would be useful to increase this.'
-			),
-		'innodb_flush_log_at_trx_commit' => array(
-			'value'   => '2',
-			'measure' => 'equal',
-			'comment' => 'Setting this value to 2 means that you will flush all transactions every
-				second rather than at commit.  This allows MySQL to perform writing less often'
+			'comment' => __('This is where metadata is stored. If you had a lot of tables, it would be useful to increase this.')
 			),
 		'innodb_lock_wait_timeout' => array(
 			'value'   => '50',
 			'measure' => 'gt',
-			'comment' => 'Rogue queries should not for the database to go offline to others.  Kill these
-				queries before they kill your system.'
-			),
+			'comment' => __('Rogue queries should not for the database to go offline to others.  Kill these
+				queries before they kill your system.')
+			)
 	);
 
 	if ($variables['version'] < '5.6') {
 		$recommendations += array(
+			'innodb_flush_log_at_trx_commit' => array(
+				'value'   => '2',
+				'measure' => 'equal',
+				'comment' => __('Setting this value to 2 means that you will flush all transactions every
+				second rather than at commit.  This allows MySQL to perform writing less often.')
+			),
 			'innodb_file_io_threads' => array(
 				'value'   => '16',
 				'measure' => 'gt',
-				'comment' => 'With modern SSD type storage, having multiple io threads is advantagious for
-					applications with high io characteristics.'
+				'comment' => __('With modern SSD type storage, having multiple io threads is advantagious for
+					applications with high io characteristics.')
 				)
 		);
 	}else{
 		$recommendations += array(
+			'innodb_flush_log_at_timeout' => array(
+				'value'   => '3',
+				'measure'  => 'gt',
+				'comment'  => __('As of MySQL 5.6, the you can control how often MySQL flushes transactions to disk.  The default is 1 second, but in high I/O systems setting to a value greater than 1 can allow disk I/O to be more sequential'),
+				),
 			'innodb_read_io_threads' => array(
 				'value'   => '32',
 				'measure' => 'gt',
-				'comment' => 'With modern SSD type storage, having multiple read io threads is advantagious for
-					applications with high io characteristics.'
+				'comment' => __('With modern SSD type storage, having multiple read io threads is advantagious for
+					applications with high io characteristics.')
 				),
 			'innodb_write_io_threads' => array(
 				'value'   => '16',
 				'measure' => 'gt',
-				'comment' => 'With modern SSD type storage, having multiple write io threads is advantagious for
-					applications with high io characteristics.'
+				'comment' => __('With modern SSD type storage, having multiple write io threads is advantagious for
+					applications with high io characteristics.')
 				),
 			'innodb_buffer_pool_instances' => array(
 				'value' => '16',
 				'measure' => 'present',
-				'comment' => 'MySQL will divide the innodb_buffer_pool into memory regions to improve performance.
+				'comment' => __('MySQL will divide the innodb_buffer_pool into memory regions to improve performance.
 					The max value is 64.  When your innodb_buffer_pool is less than 1GB, you should use the pool size
-					divided by 128MB.  Continue to use this equation upto the max of 64.'
+					divided by 128MB.  Continue to use this equation upto the max of 64.')
 				)
 		);
 	}
 
-	html_header(array('MySQL Tuning (/etc/my.cnf) - [ <a class="linkOverDark" href="https://dev.mysql.com/doc/refman/' . substr($variables['version'],0,3) . '/en/server-system-variables.html">Documentation</a> ] Note: Many changes below require a database restart'), 2);
+	html_header(array(__('MySQL Tuning') . ' (/etc/my.cnf) - [ <a class="linkOverDark" href="https://dev.mysql.com/doc/refman/' . substr($variables['version'],0,3) . '/en/server-system-variables.html">' . __('Documentation') . '</a> ] ' . __('Note: Many changes below require a database restart')), 2);
 
 	form_alternate_row();
 	print "<td colspan='2' style='text-align:left;padding:0px'>";
