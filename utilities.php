@@ -23,6 +23,7 @@
 */
 
 include('./include/auth.php');
+include_once('./lib/api_data_source.php');
 include_once('./lib/utility.php');
 include_once('./lib/boost.php');
 
