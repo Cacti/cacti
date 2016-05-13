@@ -836,7 +836,7 @@ $settings = array(
 			This cache will be managed by the poller.
 			Make sure you have the correct read and write permissions on this folder'),
 			'method' => 'dirpath',
-			'default' => $config['base_path'] . '/rra_rt/',
+			'default' => $config['base_path'] . '/cache/realtime/',
 			'max_length' => 255,
 			'size' => 40,
 			),
@@ -1620,7 +1620,7 @@ $settings = array(
 			'description' => __('Specify the location where Boost should place your image files.  These files will be automatically purged by the poller when they expire.'),
 			'method' => 'dirpath',
 			'max_length' => '255',
-			'default' => ''
+			'default' => $config['base_path'] . '/cache/boost/'
 			),
 		'boost_process_header' => array(
 			'friendly_name' => __('Process Interlocking'),
@@ -1810,7 +1810,7 @@ $settings = array(
 			'description' => __('If this directory is not empty, then your original RRDfiles will be backed
 			up to this location.'),
 			'method' => 'dirpath',
-			'default' => $config['base_path'] . '/cache/skbackups',
+			'default' => $config['base_path'] . '/cache/spikekill/',
 			'max_length' => '255',
 			'size' => '60'
 			),
