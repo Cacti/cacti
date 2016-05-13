@@ -402,7 +402,7 @@ function process_poller_output(&$rrdtool_pipe, $remainder = FALSE) {
 				$rrd_field_names = array_rekey(db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . '
 					dtr.data_source_name, dif.data_name
 					FROM data_template_rrd AS dtr
-					INNER JOIN data_input_fields AD dif
+					INNER JOIN data_input_fields AS dif
 					ON dtr.data_input_field_id = dif.id
 					WHERE dtr.local_data_id = ?', 
 					array($item['local_data_id'])), 'data_name', 'data_source_name');
