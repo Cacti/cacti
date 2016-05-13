@@ -64,8 +64,6 @@ $spikekill_templates = array_rekey(db_fetch_assoc('SELECT DISTINCT gt.id, gt.nam
 	WHERE gti.local_graph_id=0 AND data_source_type_id IN (3,2)
 	ORDER BY name'), 'id', 'name');
 
-$spikekill_sql = 'SELECT graph_template_id AS id FROM graph_templates_spikekill';
-
 /* setting information */
 $settings = array(
 	'path' => array(
@@ -1848,7 +1846,6 @@ $settings = array(
 			'method' => 'drop_multi',
 			'description' => __('When performing batch spike removal, only the templates selected below will be acted on.'),
 			'array' => $spikekill_templates,
-			'sql' => $spikekill_sql,
             )
 		)
 	);

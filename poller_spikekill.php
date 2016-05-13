@@ -76,11 +76,22 @@ foreach($parms as $parameter) {
 echo "NOTE: SpikeKill Running\n";
 
 if (!$templates) {
-	$templates = array_rekey(db_fetch_assoc('SELECT graph_template_id 
-		FROM graph_templates_spikekill'), 
-		'graph_template_id', 'graph_template_id');
+	$templates = db_fetch_cell("SELECT value FROM settings WHERE name='spikekill_templates'");
+	$templates = explode(',', $templates);
 }else{
-	$templates = explode(',',$templates);
+	$templates = explode(',', $templates);
+}
+
+if (!sizeof($templates)) {
+	print "ERROR: No valid Graph Templates selected\n\n";
+	exit(1);
+}else{
+	foreach($templates as $template) {
+		if (!is_numeric($template)) {
+			print "ERROR: Graph Template '" . $template . "' Invalid\n\n";
+			exit(1);
+		}
+	}
 }
 
 if (timeToRun()) {

@@ -2461,15 +2461,6 @@ INSERT INTO graph_templates_item VALUES (409,'dab91d7093e720841393feea5bdcba85',
 INSERT INTO graph_templates_item VALUES (410,'03e5bd2151fea3c90843eb1130b84458',0,0,34,96,0,'FF',9,0.00,NULL,NULL,0,0,NULL,3,NULL,'Maximum:','','on',2,4);
 
 --
--- Table structure for table `graph_templates_spikekill`
---
-
-CREATE TABLE graph_templates_spikekill
-	(graph_template_id mediumint(8) unsigned NOT NULL default '0',
-	PRIMARY KEY (graph_template_id))
-	ENGINE=InnoDB COMMENT='Holds Graph Templates to be Batch Killed on a Schedule';
-
---
 -- Table structure for table `graph_tree`
 --
 

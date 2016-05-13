@@ -1479,13 +1479,7 @@ function upgrade_to_1_0_0() {
 	db_install_execute('1.0.0', "ALTER TABLE host ADD COLUMN poller_id INT UNSIGNED default '0' AFTER id, ADD INDEX poller_id(poller_id)");
 
 	if (db_table_exists('plugin_spikekill_templates')) {
-		db_install_execute('1.0.0', 'RENAME TABLE plugin_spikekill_templates TO graph_templates_spikekill');
-		db_install_execute('1.0.0', "ALTER TABLE graph_templates_spikekill COMMENT='Holds Graph Templates to be Batch Killed on a Schedule'");
-	}else{
-		db_install_execute('1.0.0', "CREATE TABLE graph_templates_spikekill (
-			graph_template_id mediumint(8) unsigned NOT NULL default '0',
-			PRIMARY KEY (graph_template_id))
-			ENGINE=InnoDB 
-			COMMENT='Holds Graph Templates to be Batch Killed on a Schedule'");
+		$templates = implode(',', array_rekey(db_fetch_assoc('SELECT graph_template_id FROM plugin_spikekill_templates'), 'graph_template_id', 'graph_template_id'));
+		db_install_execute('1.0.0', "REPLACE INTO settings (name, value) VALUES('spikekill_templates','$templates')");
 	}
 }
