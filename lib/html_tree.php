@@ -150,7 +150,7 @@ function grow_dhtml_trees() {
 		print "var reset=true;\n";
 	}
 	if (isset_request_var('leaf_id')) {
-		print "var leaf='" . get_request_var('leaf_id') . "';\n";
+		print "var leaf='" . get_filter_request_var('leaf_id') . "';\n";
 	}else{
 		print "var leaf='';\n";
 	}
