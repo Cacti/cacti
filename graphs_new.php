@@ -24,6 +24,7 @@
 
 include('./include/auth.php');
 include_once('./lib/data_query.php');
+include_once('./lib/api_data_source.php');
 include_once('./lib/utility.php');
 include_once('./lib/sort.php');
 include_once('./lib/html_form_template.php');
