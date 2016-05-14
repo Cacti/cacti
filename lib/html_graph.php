@@ -383,6 +383,7 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 		});
 
 		</script>
+		<?php html_spikekill_js();?>
 		</td>
 	</tr>
 	<?php

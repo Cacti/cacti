@@ -32,7 +32,7 @@ if (!isset($_SERVER['argv'][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($
 	die('<br><strong>This script is only meant to run at the command line.</strong>');
 }
 
-include(dirname(__FILE__)."/../include/global.php");
+include(dirname(__FILE__) . "/../include/global.php");
 
 /* setup defaults */
 $debug     = FALSE;
@@ -49,6 +49,8 @@ $numspike = read_config_option('spikekill_number');
 $stddev   = read_config_option('spikekill_deviations');
 $percent  = read_config_option('spikekill_percent');
 $outliers = read_config_option('spikekill_outliers');
+
+global $strout;
 
 /* process calling arguments */
 $parms = $_SERVER['argv'];
@@ -182,23 +184,6 @@ if ($rrdfile == '') {
 	exit(-2);
 }
 
-/* let's see if we can find rrdtool */
-if (!$using_cacti) {
-	if (substr_count(PHP_OS, 'WIN')) {
-		$response = shell_exec('rrdtool.exe');
-	}else{
-		$response = shell_exec('rrdtool');
-	}
-
-	if (strlen($response)) {
-		$response_array = explode(' ', $response);
-		echo 'NOTE: Using ' . $response_array[0] . ' Version ' . $response_array[1] . "\n";
-	}else{
-		echo "FATAL: RRDTool not found in path.  Please insure RRDTool can be found in your path!\n";
-		exit(-1);
-	}
-}
-
 /* determine the temporary file name */
 $seed = mt_rand();
 if ($config['cacti_server_os'] == 'win32') {
@@ -211,18 +196,12 @@ if ($config['cacti_server_os'] == 'win32') {
 	$bakfile = '/tmp/' . str_replace('.rrd', '', basename($rrdfile)) . '.backup.' . $seed . '.rrd';
 }
 
-if ($html) {
-	echo "<table cellpadding='3' cellspacing='0' class='spikekill_data' id='spikekill_data'>";
-}
+$strout = '';
 
 /* execute the dump command */
-echo ($html ? "<tr><td colspan='20' class='spikekill_note'>":"") . "NOTE: Creating XML file '$xmlfile' from '$rrdfile'" . ($html ? "</td></tr>\n":"\n");
+$strout .= ($html ? "<p class='spikekillNote'>":"") . "NOTE: Creating XML file '$xmlfile' from '$rrdfile'" . ($html ? "</p>\n":"\n");
 
-if ($using_cacti) {
-	shell_exec(read_config_option('path_rrdtool') . " dump $rrdfile > $xmlfile");
-}else{
-	shell_exec("rrdtool dump $rrdfile > $xmlfile");
-}
+shell_exec(read_config_option('path_rrdtool') . " dump $rrdfile > $xmlfile");
 
 /* read the xml file into an array*/
 if (file_exists($xmlfile)) {
@@ -231,20 +210,22 @@ if (file_exists($xmlfile)) {
 	/* remove the temp file */
 	unlink($xmlfile);
 }else{
-	if ($using_cacti) {
-		echo ($html ? "<tr><td colspan='20' class='spikekill_note'>":'') . 'FATAL: RRDtool Command Failed.  Please verify that the RRDtool path is valid in Settings->Paths!' . ($html ? "</td></tr>\n":"\n");
-	}else{
-		echo ($html ? "<tr><td colspan='20' class='spikekill_note'>":'') . 'FATAL: RRDtool Command Failed.  Please insure your RRDtool install is valid!' . ($html ? "</td></tr>\n":"\n");
-	}
+	$strout .= ($html ? "<p class='spikekillNote'>":'') . 'FATAL: RRDtool Command Failed.  Please verify that the RRDtool path is valid in Settings->Paths!' . ($html ? "</p>\n":"\n");
+
+	print $strout;
+
 	exit(-12);
 }
 
 /* backup the rrdfile if requested */
 if ($backup && !$dryrun) {
 	if (copy($rrdfile, $bakfile)) {
-		echo ($html ? "<tr><td colspan='20' class='spikekill_note'>":'') . "NOTE: RRDfile '$rrdfile' backed up to '$bakfile'" . ($html ? "</td></tr>\n":"\n");
+		$strout .= ($html ? "<p class='spikekillNote'>":'') . "NOTE: RRDfile '$rrdfile' backed up to '$bakfile'" . ($html ? "</p>\n":"\n");
 	}else{
-		echo ($html ? "<tr><td colspan='20' class='spikekill_note'>":'') . "FATAL: RRDfile Backup of '$rrdfile' to '$bakfile' FAILED!" . ($html ? "</td></tr>\n":"\n");
+		$strout .= ($html ? "<p class='spikekillNote'>":'') . "FATAL: RRDfile Backup of '$rrdfile' to '$bakfile' FAILED!" . ($html ? "</p>\n":"\n");
+
+		print $strout;
+
 		exit(-13);
 	}
 }
@@ -381,12 +362,22 @@ calculateVarianceAverages($rra, $samples);
    3) The max and min cutoffs of all samples
    4) The number of kills in each ds based upon the thresholds
 */
-echo ($html ? "<tr><td colspan='20' class='spikekill_note'>":'') . "NOTE: Searching for Spikes in XML file '$xmlfile'" . ($html ? "</td></tr>\n":"\n");
+$strout .= ($html ? "<p class='spikekillNote'>":'') . 
+	"NOTE: Searching for Spikes in XML file '$xmlfile'" . ($html ? "</p>\n":"\n");
+
 calculateOverallStatistics($rra, $samples);
 
 /* debugging and/or status report */
 if ($debug || $dryrun) {
+	if ($html) {
+		$strout .= "<table style='width:100%' class='spikekillData' id='spikekillData'>";
+	}
+
 	outputStatistics($rra);
+
+	if ($html) {
+		$strout .= '</table>';
+	}
 }
 
 /* create an output array */
@@ -397,7 +388,8 @@ if ($method == 1) {
 			$new_output = updateXML($output, $rra);
 		}
 	}else{
-		echo ($html ? "<tr><td colspan='20' class='spikekill_note'>":'') . "NOTE: NO Standard Deviation Spikes found in '$rrdfile'" . ($html ? "</td></tr>\n":"\n");
+		$strout .= ($html ? "<p class='spikekillNote'>":'') . 
+			"NOTE: NO Standard Deviation Spikes found in '$rrdfile'" . ($html ? "</p>\n":"\n");
 	}
 }else{
 	/* variance subroutine */
@@ -406,7 +398,8 @@ if ($method == 1) {
 			$new_output = updateXML($output, $rra);
 		}
 	}else{
-		echo ($html ? "<tr><td colspan='20' class='spikekill_note'>":'') . "NOTE: NO Variance Spikes found in '$rrdfile'" . ($html ? "</td></tr>\n":"\n");
+		$strout .= ($html ? "<p class='spikekillNote'>":'') . 
+			"NOTE: NO Variance Spikes found in '$rrdfile'" . ($html ? "</p>\n":"\n");
 	}
 }
 
@@ -416,40 +409,42 @@ if (!$dryrun) {
 		if (writeXMLFile($new_output, $xmlfile)) {
 			if (backupRRDFile($rrdfile)) {
 				createRRDFileFromXML($xmlfile, $rrdfile);
-				echo ($html ? "<tr><td colspan='20' class='spikekill_note'>":'') . "NOTE: Spikes Found and Remediated.  Total Spikes ($total_kills)" . ($html ? "</td></tr>\n":"\n");
+				$strout .= ($html ? "<p class='spikekillNote'>":'') . 
+					"NOTE: Spikes Found and Remediated.  Total Spikes ($total_kills)" . ($html ? "</p>\n":"\n");
 			}else{
-				echo ($html ? "<tr><td colspan='20' class='spikekill_note'>":'') . "FATAL: Unable to backup '$rrdfile'" . ($html ? "</td></tr>\n":"\n");
+				$strout .= ($html ? "<p class='spikekillNote'>":'') . 
+					"FATAL: Unable to backup '$rrdfile'" . ($html ? "</p>\n":"\n");
 			}
 		}else{
-			echo ($html ? "<tr><td colspan='20' class='spikekill_note'>":'') . "FATAL: Unable to write XML file '$xmlfile'" . ($html ? "</td></tr>\n":"\n");
+			$strout .= ($html ? "<p class='spikekillNote'>":'') . 
+				"FATAL: Unable to write XML file '$xmlfile'" . ($html ? "</p>\n":"\n");
 		}
 	}
 }else{
-	echo ($html ? "<tr><td colspan='20' class='spikekill_note'>":'') . "NOTE: Dryrun requested.  No updates performed" . ($html ? "</td></tr>\n":"\n");
+	$strout .= ($html ? "<p class='spikekillNote'>":'') . 
+		"NOTE: Dryrun requested.  No updates performed" . ($html ? "</p>\n":"\n");
 }
 
 if ($html) {
-	echo '</table>';
+	$strout .= '<hr/>';
 }
 
 if ($total_kills > 0) {
-	cacti_log("WARNING: Removed '$total_kills' Spikes from '$rrdfile', Method:'$method'", false, 'WEBUI');
+	cacti_log("NOTE: Removed '$total_kills' Spikes from '$rrdfile', Method:'$method'", false, ($html ? 'WEBUI':'CLI'));
 }elseif($debug) {
-	cacti_log("NOTE: Removed '$total_kills' Spikes from '$rrdfile', Method:'$method'", false, 'WEBUI');
+	cacti_log("NOTE: Removed '$total_kills' Spikes from '$rrdfile', Method:'$method'", false, ($html ? 'WEBUI':'CLI'));
 }
+
+print $strout;
 
 /* All Functions */
 function createRRDFileFromXML($xmlfile, $rrdfile) {
-	global $using_cacti, $html;
+	global $html;
 
 	/* execute the dump command */
-	echo ($html ? "<tr><td colspan='20' class='spikekill_note'>":'') . "NOTE: Re-Importing '$xmlfile' to '$rrdfile'" . ($html ? "</td></tr>\n":"\n");
-	if ($using_cacti) {
-		$response = shell_exec(read_config_option('path_rrdtool') . " restore -f -r $xmlfile $rrdfile");
-	}else{
-		$response = shell_exec("rrdtool restore -f -r $xmlfile $rrdfile");
-	}
-	if (strlen($response)) echo ($html ? "<tr><td colspan='20' class='spikekill_note'>":'') . $response . ($html ? "</td></tr>\n":"\n");
+	echo ($html ? "<p class='spikekillNote'>":'') . "NOTE: Re-Importing '$xmlfile' to '$rrdfile'" . ($html ? "</p>\n":"\n");
+	$response = shell_exec(read_config_option('path_rrdtool') . " restore -f -r $xmlfile $rrdfile");
+	if (strlen($response)) echo ($html ? "<p class='spikekillNote'>":'') . $response . ($html ? "</p>\n":"\n");
 }
 
 function writeXMLFile($output, $xmlfile) {
@@ -457,15 +452,11 @@ function writeXMLFile($output, $xmlfile) {
 }
 
 function backupRRDFile($rrdfile) {
-	global $using_cacti, $tempdir, $seed, $html;
+	global $tempdir, $seed, $html;
 
-	if ($using_cacti) {
-		$backupdir = read_config_option('spikekill_backupdir');
+	$backupdir = read_config_option('spikekill_backupdir');
 
-		if ($backupdir == '') {
-			$backupdir = $tempdir;
-		}
-	}else{
+	if ($backupdir == '') {
 		$backupdir = $tempdir;
 	}
 
@@ -475,7 +466,7 @@ function backupRRDFile($rrdfile) {
 		$newfile = basename($rrdfile);
 	}
 
-	echo ($html ? "<tr><td colspan='20' class='spikekill_note'>":'') . "NOTE: Backing Up '$rrdfile' to '" . $backupdir . "/" .  $newfile . "'" . ($html ? "</td></tr>\n":"\n");
+	echo ($html ? "<p class='spikekillNote'>":'') . "NOTE: Backing Up '$rrdfile' to '" . $backupdir . "/" .  $newfile . "'" . ($html ? "</p>\n":"\n");
 
 	return copy($rrdfile, $backupdir . '/' . $newfile);
 }
@@ -592,22 +583,22 @@ function calculateOverallStatistics(&$rra, &$samples) {
 }
 
 function outputStatistics($rra) {
-	global $rra_cf, $rra_name, $ds_name, $rra_pdp, $html;
+	global $strout, $rra_cf, $rra_name, $ds_name, $rra_pdp, $html;
 
 	if (sizeof($rra)) {
 		if (!$html) {
-			echo "\n";
-			printf("%10s %16s %10s %7s %7s %10s %10s %10s %10s %10s %10s %10s %10s %10s %10s\n",
+			$strout .= "\n";
+			$strout .= sprintf("%10s %16s %10s %7s %7s %10s %10s %10s %10s %10s %10s %10s %10s %10s %10s\n",
 				'Size', 'DataSource', 'CF', 'Samples', 'NonNan', 'Avg', 'StdDev',
 				'MaxValue', 'MinValue', 'MaxStdDev', 'MinStdDev', 'StdKilled', 'VarKilled', 'StdDevAvg', 'VarAvg');
-			printf("%10s %16s %10s %7s %7s %10s %10s %10s %10s %10s %10s %10s %10s %10s %10s\n",
+			$strout .= sprintf("%10s %16s %10s %7s %7s %10s %10s %10s %10s %10s %10s %10s %10s %10s %10s\n",
 				'----------', '---------------', '----------', '-------', '-------', '----------', '----------', '----------',
 				'----------', '----------', '----------', '----------', '----------', '----------',
 				'----------');
 			foreach($rra as $rra_key => $dses) {
 				if (sizeof($dses)) {
 				foreach($dses as $dskey => $ds) {
-					printf('%10s %16s %10s %7s %7s ' .
+					$strout .= sprintf('%10s %16s %10s %7s %7s ' .
 						($ds['average'] < 1E6 ? '%10s ':'%10.4e ') .
 						($ds['standard_deviation'] < 1E6 ? '%10s ':'%10.4e ') .
 						(isset($ds['max_value']) ? ($ds['max_value'] < 1E6 ? '%10s ':'%10.4e ') : '%10s ') .
@@ -636,15 +627,15 @@ function outputStatistics($rra) {
 				}
 			}
 
-			echo "\n";
+			$strout .= "\n";
 		}else{
-			printf("<tr><th style='width:10%%;'>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th></tr>\n",
+			$strout .= sprintf("<tr class='tableHeader'><th style='width:10%%;'>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th></tr>\n",
 				'Size', 'DataSource', 'CF', 'Samples', 'NonNan', 'Avg', 'StdDev',
 				'MaxValue', 'MinValue', 'MaxStdDev', 'MinStdDev', 'StdKilled', 'VarKilled', 'StdDevAvg', 'VarAvg');
 			foreach($rra as $rra_key => $dses) {
 				if (sizeof($dses)) {
 				foreach($dses as $dskey => $ds) {
-					printf('<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>' .
+					$strout .= sprintf('<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>' .
 						($ds['average'] < 1E6 ? '%s</td><td>':'%.4e</td><td>') .
 						($ds['standard_deviation'] < 1E6 ? '%s</td><td>':'%.4e</td><td>') .
 						(isset($ds['max_value']) ? ($ds['max_value'] < 1E6 ? '%s</td><td>':'%.4e</td><td>') : '%s</td><td>') .

@@ -204,6 +204,7 @@ function html_graph_area(&$graph_array, $no_graphs_message = "", $extra_url_args
 
 			?>
 			<td style='width:<?php print ceil(100 / $columns);?>%;'>
+				<div>
 				<table style='text-align:center;margin:auto;'>
 					<tr>
 						<td>
@@ -215,6 +216,7 @@ function html_graph_area(&$graph_array, $no_graphs_message = "", $extra_url_args
 						</td>
 					</tr>
 				</table>
+				<div>
 			</td>
 			<?php
 
@@ -375,7 +377,9 @@ function graph_drilldown_icons($local_graph_id, $type = 'graph_buttons') {
 		print "<span class='realtime' id='graph_" . $local_graph_id . "_realtime'><img class='drillDown' src='" . $config['url_path'] . "images/chart_curve_go.png' alt='' title='Click to view just this Graph in Realtime'></span><br/>\n";
 	}
 	if (is_realm_allowed(1043)) {
-		print "<span class='spikekill' id='graph_" . $local_graph_id . "_sk'><img title='SpikeKill not functional yet' id='sk" . $local_graph_id . "' class='drillDown' src='" . $config['url_path'] . "images/spikekill.gif'><br/>";
+		print "<span class='spikekill' id='graph_" . $local_graph_id . "_sk'><img id='sk" . $local_graph_id . "' class='drillDown' src='" . $config['url_path'] . "images/spikekill.gif'>";
+		html_spikekill_menu($local_graph_id);
+		print '<br/>';
 	}
 
 	if ($aggregate_url != '') {
@@ -1404,5 +1408,59 @@ function html_host_filter($host_id = '-1', $call_back = 'applyFilter', $sql_wher
 		</td>
 	<?php
 	}
+}
+
+function html_spikekill_menu($local_graph_id) {
+	?>
+	<div class='spikeparent' style='display:none;z-index:20;position:absolute;'>
+	<ul class='spikemenu' style='font-size:1em;'>
+		<li data-graph='<?php print $local_graph_id;?>' style='text-align:left;' class='rstddev'><i style='padding-right:2px;' class='deviceUp fa fa-support'></i>Remove StdDev</li>
+		<li data-graph='<?php print $local_graph_id;?>' style='text-align:left;' class='rvariance'><i style='padding-right:2px;' class='deviceRecovering fa fa-support'></i>Remove Variance</li>
+		<li data-graph='<?php print $local_graph_id;?>' style='text-align:left;' class='dstddev'><i style='padding-right:2px;' class='deviceUp fa fa-check'></i>DryRun StdDev</li>
+		<li data-graph='<?php print $local_graph_id;?>' style='text-align:left;' class='dvariance'><i style='padding-right:2px;' class='deviceRecovering fa fa-check'></i>DryRun Variance</li>
+	</ul>
+	</div>
+	<?php
+}
+
+function html_spikekill_js() {
+	?>
+	<script type='text/javascript'>
+	$(function() {
+		$('.spikemenu').menu();
+
+		$('.rstddev').click(function() {
+			removeSpikesStdDev($(this).attr('data-graph'));
+		});
+
+		$('.dstddev').click(function() {
+			dryRunStdDev($(this).attr('data-graph'));
+		});
+
+		$('.rvariance').click(function() {
+			removeSpikesVariance($(this).attr('data-graph'));
+		});
+
+		$('.dvariance').click(function() {
+			dryRunVariance($(this).attr('data-graph'));
+		});
+
+		$('.spikekill').hover(function() {
+			$(this).find('.spikeparent:first').each(function() {
+				$(this).show();
+			});
+		}, function() {
+			$(this).find('.spikeparent:first').each(function() {
+				$(this).hide();
+			});
+		}).blur(function() {
+			$(this).find('.spikeparent:first').each(function() {
+				$(this).hide();
+			});
+		});
+
+	});
+	</script>
+	<?php
 }
 

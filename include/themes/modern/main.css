@@ -1190,6 +1190,14 @@ th.sortable {
 	font-size:14px !important;
 }
 
+.spikekillData, .spikekillData td {
+	border: 1px solid #999;
+}
+
+.spikekillNote {
+	padding: 1px;
+}
+
 td.tab {
 	border-top: 1px solid #999;
 	border-right: 1px solid #666;

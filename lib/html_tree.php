@@ -779,6 +779,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 
 	</script>
 	<?php
+	html_spikekill_js();
 	html_end_box();
 
 	api_plugin_hook_function('graph_tree_page_buttons',

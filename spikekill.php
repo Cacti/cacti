@@ -24,6 +24,8 @@
 
 include('./include/auth.php');
 
+$debug = false;
+
 switch(get_nfilter_request_var('method')) {
 	case 'stddev':
 	case 'variance':
@@ -48,11 +50,14 @@ if (is_realm_allowed(1043)) {
 			$data_source_path = get_data_source_path($local_data_id['local_data_id'], true);
 
 			if (strlen($data_source_path)) {
-				cacti_log(read_config_option('path_php_binary') . ' -q ' . $config['base_path'] . '/plugins/spikekill/removespikes.php ' .
-					' -R=' . $data_source_path . (isset_request_var('dryrun') ? ' --dryrun' : '') .
-					' -M=' . get_nfilter_request_var('method') .
-					' --html', false);
-				$results .= shell_exec(read_config_option('path_php_binary') . ' -q ' . $config['base_path'] . '/plugins/spikekill/removespikes.php ' .
+				if ($debug) {
+					cacti_log(read_config_option('path_php_binary') . ' -q ' . $config['base_path'] . '/cli/removespikes.php ' .
+						' -R=' . $data_source_path . (isset_request_var('dryrun') ? ' --dryrun' : '') .
+						' -M=' . get_nfilter_request_var('method') .
+						' --html', false);
+				}
+
+				$results .= shell_exec(read_config_option('path_php_binary') . ' -q ' . $config['base_path'] . '/cli/removespikes.php ' .
 					' -R=' . $data_source_path . (isset($_REQUEST['dryrun']) ? ' --dryrun' : '') .
 					' -M=' . get_nfilter_request_var('method') .
 					' --html');
@@ -60,7 +65,7 @@ if (is_realm_allowed(1043)) {
 		}
 	}
 
-	return json_encode(array('local_graph_id' => get_request_var('local_graph_id'), 'results' => $results));
+	print json_encode(array('local_graph_id' => get_request_var('local_graph_id'), 'results' => $results));
 }else{
 	echo "FATAL: SpikeKill Not Allowed\n";
 }

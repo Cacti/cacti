@@ -990,25 +990,78 @@ function clearGraphTimespanFilter() {
 function removeSpikesStdDev(local_graph_id) {
 	strURL = 'spikekill.php?method=stddev&local_graph_id='+local_graph_id;
 	$.getJSON(strURL, function(data) {
+		redrawGraph(local_graph_id);
+		$('#spikeresults').remove();
+		$('body').append('<div id="spikeresults" style="overflow-y:scroll;" title="SpikeKill Results"></div>');
+		$('#spikeresults').html(data.results);
+		$('#spikeresults').dialog({ width:1100, maxHeight: 600 });
 	});
 }
 
 function removeSpikesVariance(local_graph_id) {
 	strURL = "spikekill.php?method=variance&local_graph_id="+local_graph_id;
 	$.getJSON(strURL, function(data) {
+		redrawGraph(local_graph_id);
+		$('#spikeresults').remove();
+		$('body').append('<div id="spikeresults" style="overflow-y:scroll;" title="SpikeKill Results"></div>');
+		$('#spikeresults').html(data.results);
+		$('#spikeresults').dialog({ width:1100, maxHeight: 600 });
 	});
 }
 
 function dryRunStdDev(local_graph_id) {
 	strURL = "spikekill.php?method=stddev&dryrun=true&local_graph_id="+local_graph_id;
 	$.getJSON(strURL, function(data) {
+		$('#spikeresults').remove();
+		$('body').append('<div id="spikeresults" style="overflow-y:scroll;" title="SpikeKill Results"></div>');
+		$('#spikeresults').html(data.results);
+		$('#spikeresults').dialog({ width:1100, maxHeight: 600 });
 	});
 }
 
 function dryRunVariance(local_graph_id) {
 	strURL = "spikekill.php?method=variance&dryrun=true&local_graph_id="+local_graph_id;
 	$.getJSON(strURL, function(data) {
+		$('#spikeresults').remove();
+		$('body').append('<div id="spikeresults" style="overflow-y:scroll;" title="SpikeKill Results"></div>');
+		$('#spikeresults').html(data.results);
+		$('#spikeresults').dialog({ width:1100, maxHeight: 600 });
 	});
+}
+
+function redrawGraph(graph_id) {
+	mainWidth = $('#main').width();
+	myColumns = $('#columns').val();
+	isThumb   = $('#thumbnails').is(':checked');
+
+	if (isThumb) {
+		myWidth = (mainWidth-(32*myColumns))/myColumns;
+	}
+
+	graph_height=$('#wrapper_'+graph_id).attr('graph_height');
+	graph_width=$('#wrapper_'+graph_id).attr('graph_width');
+
+	$.getJSON(urlPath+'graph_json.php?rra_id=0'+
+		'&local_graph_id='+graph_id+
+		'&graph_start='+graph_start+
+		'&graph_end='+graph_end+
+		'&graph_height='+graph_height+
+		'&graph_width='+graph_width+
+		(isThumb ? '&graph_nolegend=true':''),
+		function(data) {
+			if (isThumb && myWidth < data.image_width) {
+				ratio=myWidth/data.image_width;
+				data.image_width  *= ratio;
+				data.image_height *= ratio;
+				data.graph_width  *= ratio;
+				data.graph_height *= ratio;
+				data.graph_top    *= ratio;
+				data.graph_left   *= ratio;
+			}
+
+			$('#wrapper_'+data.local_graph_id).html("<img class='graphimage' id='graph_"+data.local_graph_id+"' src='data:image/"+data.type+";base64,"+data.image+"' graph_start='"+data.graph_start+"' graph_end='"+data.graph_end+"' graph_left='"+data.graph_left+"' graph_top='"+data.graph_top+"' graph_width='"+data.graph_width+"' graph_height='"+data.graph_height+"' width='"+data.image_width+"' height='"+data.image_height+"' image_width='"+data.image_width+"' image_height='"+data.image_height+"' value_min='"+data.value_min+"' value_max='"+data.value_max+"'>");
+		}
+	);
 }
 
 function initializeGraphs() {
