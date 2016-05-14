@@ -2202,8 +2202,8 @@ function automation_execute_graph_create_tree($graph_id) {
 	 * checking whether a specific rule matches the selected graph
 	 * has to be done later
 	 */
-	$sql = "SELECT atg.id, atg.name, atg.tree_id, atg.tree_item_id,
-		atg.leaf_type, atg.host_grouping_type
+	$sql = "SELECT atr.id, atr.name, atr.tree_id, atr.tree_item_id,
+		atr.leaf_type, atr.host_grouping_type
 		FROM automation_tree_rules AS atr
 		WHERE enabled='on' 
 		AND leaf_type=" . TREE_ITEM_TYPE_GRAPH;
