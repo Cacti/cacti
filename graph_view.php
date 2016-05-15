@@ -33,6 +33,9 @@ include_once('./lib/timespan_settings.php');
 /* set the default graph action */
 set_default_graph_action();
 
+/* perform spikekill action */
+html_spikekill_actions();
+
 /* process tree settings */
 process_tree_settings();
 

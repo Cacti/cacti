@@ -1198,12 +1198,36 @@ th.sortable {
 	padding: 1px;
 }
 
+.spikekillMenu {
+	background: #f5f5f5 none repeat scroll 0 0;
+    border: 1px solid #979797;
+    box-shadow: 2px 2px 2px #999999;
+    margin: 0;
+    padding: 2px;
+	line-height: 1.5em;
+}
+
+.spikekillMenu li {
+	vertical-align:middle;
+}
+
+.spikekillMenu i {
+	text-align:center;
+	width: 2.0em;
+	display:inline-block;
+}
+
+.spikekillMenu i:empty{
+	width: 2.0em;
+	display:inline-block;
+}
+
 td.tab {
 	border-top: 1px solid #999;
 	border-right: 1px solid #666;
 	border-left: 1px solid #999;
-	padding-left:3px;
-	padding-right:3px;
+	padding-left: 3px;
+	padding-right: 3px;
 	min-width:0%;
 	border-bottom: none;
 	border-top-left-radius: 4px;

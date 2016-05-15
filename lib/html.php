@@ -377,8 +377,7 @@ function graph_drilldown_icons($local_graph_id, $type = 'graph_buttons') {
 		print "<span class='realtime' id='graph_" . $local_graph_id . "_realtime'><img class='drillDown' src='" . $config['url_path'] . "images/chart_curve_go.png' alt='' title='Click to view just this Graph in Realtime'></span><br/>\n";
 	}
 	if (is_realm_allowed(1043)) {
-		print "<span class='spikekill' id='graph_" . $local_graph_id . "_sk'><img id='sk" . $local_graph_id . "' class='drillDown' src='" . $config['url_path'] . "images/spikekill.gif'>";
-		html_spikekill_menu($local_graph_id);
+		print "<span class='spikekill' data-graph='" . $local_graph_id . "' id='graph_" . $local_graph_id . "_sk'><img id='sk" . $local_graph_id . "' class='drillDown' src='" . $config['url_path'] . "images/spikekill.gif'>";
 		print '<br/>';
 	}
 
@@ -1410,14 +1409,90 @@ function html_host_filter($host_id = '-1', $call_back = 'applyFilter', $sql_wher
 	}
 }
 
+function html_spikekill_actions() {
+	switch(get_nfilter_request_var('action')) {
+	case 'spikemenu':
+		print html_spikekill_menu(get_filter_request_var('local_graph_id'));
+
+		break;
+	case 'spikesave':
+		switch(get_nfilter_request_var('setting')) {
+			case 'rmethod':
+				$id = get_filter_request_var('id');
+				set_user_setting('spikekill_method', $id);
+				break;
+			case 'rstddev':
+				$id = get_filter_request_var('id');
+				set_user_setting('spikekill_deviations', $id);
+				break;
+			case 'rvarout':
+				$id = get_filter_request_var('id');
+				set_user_setting('spikekill_outliers', $id);
+				break;
+			case 'rvarpct':
+				$id = get_filter_request_var('id');
+				set_user_setting('spikekill_percent', $id);
+				break;
+			case 'rkills':
+				$id = get_filter_request_var('id');
+				set_user_setting('spikekill_number', $id);
+				break;
+		}
+
+		break;
+	}
+}
+
+function html_spikekill_setting($name) {
+	return read_user_setting($name, read_config_option($name), true);
+}
+
 function html_spikekill_menu($local_graph_id) {
+	$rmethod  = '<li>' . __('Replacement Methods') . '<ul>';
+	$rmethod .= '<li class="skmethod" id="method_1"><i ' . (html_spikekill_setting('spikekill_avgnan') == '1' ? 'class="fa fa-check"':'') . '></i><span></span>' . __('Average') . '</li>';
+	$rmethod .= '<li class="skmethod" id="method_2"><i ' . (html_spikekill_setting('spikekill_avgnan') == '2' ? 'class="fa fa-check"':'') . '></i><span></span>' . __('Nan\'s') . '</li>';
+	$rmethod .= '</ul></li>';
+
+	$rstddev  = '<li>' . __('Standard Deviations') . '<ul>';
+	for($i = 1; $i <= 10; $i++) {
+		$rstddev .= '<li class="skstddev" id="stddev_' . $i . '"><i ' . (html_spikekill_setting('spikekill_deviations') == $i ? 'class="fa fa-check"':'') . '></i><span></span>' . __('%s Standard Deviations', $i) . '</li>';
+	}
+	$rstddev .= '</ul></li>';
+
+	$rvarpct  = '<li>' . __('Variance Percentage') . '<ul>';
+	for($i = 1; $i <= 10; $i++) {
+		$rvarpct .= '<li class="skvarpct" id="varpct_' . ($i * 100) . '"><i ' . (html_spikekill_setting('spikekill_percent') == ($i * 100) ? 'class="fa fa-check"':'') . '></i><span></span>' . round($i * 100,0) . ' %</li>';
+	}
+	$rvarpct .= '</ul></li>';
+
+	$rvarout  = '<li>' . __('Variance Outliers') . '<ul>';
+	for($i = 3; $i <= 10; $i++) {
+		$rvarout .= '<li class="skvarout" id="varout_' . $i . '"><i ' . (html_spikekill_setting('spikekill_outliers') == $i ? 'class="fa fa-check"':'') . '></i><span></span>' . __('%d Outliers', $i) . '</li>';
+	}
+	$rvarout .= '</ul></li>';
+
+	$rkills  = '<li>' . __('Kills Per RRA') . '<ul>';
+	for($i = 1; $i <= 10; $i++) {
+		$rkills .= '<li class="skkills" id="kills_' . $i . '"><i ' . (html_spikekill_setting('spikekill_number') == $i ? 'class="fa fa-check"':'') . '></i><span></span>' . __('%d Spiikes', $i) . '</li>';
+	}
+	$rkills .= '</ul></li>';
+
 	?>
-	<div class='spikeparent' style='display:none;z-index:20;position:absolute;'>
-	<ul class='spikemenu' style='font-size:1em;'>
-		<li data-graph='<?php print $local_graph_id;?>' style='text-align:left;' class='rstddev'><i style='padding-right:2px;' class='deviceUp fa fa-support'></i>Remove StdDev</li>
-		<li data-graph='<?php print $local_graph_id;?>' style='text-align:left;' class='rvariance'><i style='padding-right:2px;' class='deviceRecovering fa fa-support'></i>Remove Variance</li>
-		<li data-graph='<?php print $local_graph_id;?>' style='text-align:left;' class='dstddev'><i style='padding-right:2px;' class='deviceUp fa fa-check'></i>DryRun StdDev</li>
-		<li data-graph='<?php print $local_graph_id;?>' style='text-align:left;' class='dvariance'><i style='padding-right:2px;' class='deviceRecovering fa fa-check'></i>DryRun Variance</li>
+	<div class='spikekillParent' style='display:none;z-index:20;position:absolute;text-align:left;white-space:nowrap;padding-right:2px;'>
+	<ul class='spikekillMenu' style='font-size:1em;'>
+		<li data-graph='<?php print $local_graph_id;?>' class='rstddev'><i class='deviceUp fa fa-support'></i><span></span>Remove StdDev</li>
+		<li data-graph='<?php print $local_graph_id;?>' class='rvariance'><i class='deviceRecovering fa fa-support'></i><span></span>Remove Variance</li>
+		<li data-graph='<?php print $local_graph_id;?>' class='dstddev'><i class='deviceUp fa fa-check'></i><span></span>DryRun StdDev</li>
+		<li data-graph='<?php print $local_graph_id;?>' class='dvariance'><i class='deviceRecovering fa fa-check'></i><span></span>DryRun Variance</li>
+		<li><i class='fa fa-cog'></i><span></span>Settings
+			<ul>
+				<?php print $rmethod;?>
+				<?php print $rstddev;?>
+				<?php print $rvarpct;?>
+				<?php print $rvarout;?>
+				<?php print $rkills;?>
+			</ul>
+		</li>
 	</ul>
 	</div>
 	<?php
@@ -1427,39 +1502,102 @@ function html_spikekill_js() {
 	?>
 	<script type='text/javascript'>
 	$(function() {
-		$('.spikemenu').menu();
+		$('.spikekill').hover(function() {
+			$('.spikekillParent').stop(false, false);
+			local_graph_id = $(this).attr('data-graph');
 
+			$.get('?action=spikemenu&local_graph_id='+local_graph_id, function(data) {
+				$('#sk'+local_graph_id).after(data);	
+
+				$('.spikekillMenu').menu({
+					select: function(event, ui) {
+						$(this).menu('focus', event, ui.item);
+					},
+					delay: 500
+				});
+
+				spikeKillActions();
+
+				$('.spikekillParent').show();
+			});
+		}, function() {
+			$(this).find('.spikekillParent:first').each(function() {
+				$(this).find('.spikekillMenu:first').menu('collapseAll', null, true);
+				$(this).fadeOut(600, function() {
+					$('.spikekillMenu').menu('destroy');
+					$('.spikekillParent').remove();
+				});
+			});
+		});
+	});
+
+	function spikeKillActions() {
 		$('.rstddev').click(function() {
 			removeSpikesStdDev($(this).attr('data-graph'));
+			$('.spikekillParent').hide();
 		});
 
 		$('.dstddev').click(function() {
 			dryRunStdDev($(this).attr('data-graph'));
+			$('.spikekillParent').hide();
 		});
 
 		$('.rvariance').click(function() {
 			removeSpikesVariance($(this).attr('data-graph'));
+			$('.spikekillParent').hide();
 		});
 
 		$('.dvariance').click(function() {
 			dryRunVariance($(this).attr('data-graph'));
+			$('.spikekillParent').hide();
 		});
 
-		$('.spikekill').hover(function() {
-			$(this).find('.spikeparent:first').each(function() {
-				$(this).show();
-			});
-		}, function() {
-			$(this).find('.spikeparent:first').each(function() {
-				$(this).hide();
-			});
-		}).blur(function() {
-			$(this).find('.spikeparent:first').each(function() {
-				$(this).hide();
-			});
+
+		$('.skmethod').click(function() {
+			$('.skmethod').find('i').removeClass('fa fa-check');
+			$(this).find('i:first').addClass('fa fa-check');
+			$('.spikekillMenu').menu('collapseAll', null, true);
+
+			strURL = '?action=spikesave&setting=rmethod&id='+$(this).attr('id').replace('method_','');
+			$.get(strURL);
 		});
 
-	});
+		$('.skkills').click(function() {
+			$('.skkills').find('i').removeClass('fa fa-check');
+			$(this).find('i:first').addClass('fa fa-check');
+			$('.spikekillMenu').menu('collapseAll', null, true);
+
+			strURL = '?action=spikesave&setting=rkills&id='+$(this).attr('id').replace('kills_','');
+			$.get(strURL);
+		});
+
+		$('.skstddev').click(function() {
+			$('.skstddev').find('i').removeClass('fa fa-check');
+			$(this).find('i:first').addClass('fa fa-check');
+			$('.spikekillMenu').menu('collapseAll', null, true);
+
+			strURL = '?action=spikesave&setting=rstddev&id='+$(this).attr('id').replace('stddev_','');
+			$.get(strURL);
+		});
+
+		$('.skvarpct').click(function() {
+			$('.skvarpct').find('i').removeClass('fa fa-check');
+			$(this).find('i:first').addClass('fa fa-check');
+			$('.spikekillMenu').menu('collapseAll', null, true);
+
+			strURL = '?action=spikesave&setting=rvarpct&id='+$(this).attr('id').replace('varpct_','');
+			$.get(strURL);
+		});
+
+		$('.skvarout').click(function() {
+			$('.skvarout').find('i').removeClass('fa fa-check');
+			$(this).find('i:first').addClass('fa fa-check');
+			$('.spikekillMenu').menu('collapseAll', null, true);
+
+			strURL = '?action=spikesave&setting=rvarout&id='+$(this).attr('id').replace('varout_','');
+			$.get(strURL);
+		});
+	}
 	</script>
 	<?php
 }
