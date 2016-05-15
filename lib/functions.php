@@ -3847,3 +3847,68 @@ function cacti_debug_backtrace($entry = '', $html = false) {
 	cacti_log(trim("$entry Backtrace: $s"), false);
 }
 
+/*	calculate_percentiles - Given and array of numbers, calculate the Nth percentile,
+ *  optionally, return an array of numbers containing elements required for 
+ *  a whisker chart.
+ *
+ *  @arg $data       - an array of data
+ *  @arg $percentile - the Nth percentile to calculate.  By default 95th.
+ *  #arg $whisker    - if whisker is true, an array of values will be returne
+ *                     including 25th, median, 75th, and 90th perecentiles.
+ *
+ *  @returns - either the Nth percentile, the elements for a whisker chart,
+ *            or false if there is insufficient data to determine. */
+function calculate_percentiles($data, $percentile = 95, $whisker = false) {
+    if ($percentile > 0 && $percentile < 1) {
+        $p = $percentile;
+    }elseif ($percentile > 1 && $percentile <= 100) {
+        $p = $percentile * .01;
+    }else {
+        return false;
+    }
+
+	if ($whisker) {
+		$tiles = array(
+			'25th' => 0.25,
+			'50th' => 0.50,
+			'75th' => 0.75,
+			'90th' => 0.90,
+			'95th' => 0.95,
+		);
+	}else{
+		$tiles = array(
+			'custom' => $p
+		);
+	}
+
+	$results  = array();
+	$elements = sizeof($data);
+
+	/* sort the array to return */
+	sort($data);
+
+	foreach($tiles as $index => $p) {
+		/* calculate offsets into the array */
+		$allindex    = ($elements - 1) * $p;
+		$intvalindex = intval($allindex);
+		$floatval    = $allindex - $intvalindex;
+
+		if (!is_float($floatval)) {
+			$ptile = $data[$intvalindex];
+		} else {
+			if ($elements > $intvalindex + 1) {
+				$ptile = $floatval * ($data[$intvalindex + 1] - $data[$intvalindex]) + $data[$intvalindex];
+			} else {
+				$ptile = $data[$intvalindex];
+			}
+		}
+
+		if ($index == 'custom') {
+			return $ptile;
+		}else{
+			$results[$index] = $ptile;
+		}
+	}
+
+    return $result;
+}
