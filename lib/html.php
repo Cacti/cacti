@@ -1503,7 +1503,6 @@ function html_spikekill_js() {
 	<script type='text/javascript'>
 	$(function() {
 		$('.spikekill').hover(function() {
-			$('.spikekillParent').stop(false, false);
 			local_graph_id = $(this).attr('data-graph');
 
 			$.get('?action=spikemenu&local_graph_id='+local_graph_id, function(data) {
