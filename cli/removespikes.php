@@ -44,11 +44,12 @@ $var_kills = FALSE;
 $html      = FALSE;
 $backup    = FALSE;
 
-$method   = read_config_option('spikekill_method');
-$numspike = read_config_option('spikekill_number');
-$stddev   = read_config_option('spikekill_deviations');
-$percent  = read_config_option('spikekill_percent');
-$outliers = read_config_option('spikekill_outliers');
+$dmethod   = read_config_option('spikekill_method');
+$dnumspike = read_config_option('spikekill_number');
+$dstddev   = read_config_option('spikekill_deviations');
+$dpercent  = read_config_option('spikekill_percent');
+$doutliers = read_config_option('spikekill_outliers');
+$davgnan   = read_config_option('spikekill_avgnan');
 
 global $strout;
 
@@ -60,6 +61,32 @@ foreach($parms as $parameter) {
 	@list($arg, $value) = @explode('=', $parameter);
 
 	switch ($arg) {
+	case '--user':
+	case '-U':
+		$user = $value;
+
+		if (!is_numeric($user) || ($user < 1)) {
+			echo "FATAL: The user id must be a positive integer.\n\n";
+			display_help();
+			exit(-12);
+		}
+
+		/* confirm the user id is accurate */
+		$user_id = db_fetch_cell_prepared('SELECT id FROM user_auth WHERE id = ?', array($user));
+		if (empty($user)) {
+			echo "FATAL: Invalid user id.\n\n";
+			display_help();
+			exit(-13);
+		}
+
+		$umethod   = read_user_setting('spikekill_method', $dmethod);
+		$unumspike = read_user_setting('spikekill_number', $dnumspike);
+		$ustddev   = read_user_setting('spikekill_deviations', $dstddev);
+		$upercent  = read_user_setting('spikekill_percent', $dpercent);
+		$uoutliers = read_user_setting('spikekill_outliers', $doutliers);
+		$uavgnan   = read_user_setting('spikekill_avgnan', $davgnan);
+
+		break;
 	case '--method':
 	case '-M':
 		if ($value == 'variance') {
@@ -174,6 +201,55 @@ foreach($parms as $parameter) {
 		print 'ERROR: Invalid Parameter ' . $parameter . "\n\n";
 		display_help();
 		exit(-3);
+	}
+}
+
+/* set the corret calue */
+if (!isset($avgnan)) {
+	if (!isset($uavgnan)) {
+		$avgnan = $davgnan;
+	}else{
+		$avgnan = $uavgnan;
+	}
+}
+
+if (!isset($method)) {
+	if (!isset($umethod)) {
+		$method = $dmethod;
+	}else{
+		$method = $umethod;
+	}
+}
+
+if (!isset($numspike)) {
+	if (!isset($unumspike)) {
+		$numspike = $dnumspike;
+	}else{
+		$numspike = $unumspike;
+	}
+}
+
+if (!isset($stddev)) {
+	if (!isset($ustddev)) {
+		$stddev = $dstddev;
+	}else{
+		$stddev = $ustddev;
+	}
+}
+
+if (!isset($percent)) {
+	if (!isset($upercent)) {
+		$percent = $dpercent;
+	}else{
+		$percent = $upercent;
+	}
+}
+
+if (!isset($outliers)) {
+	if (!isset($uoutliers)) {
+		$outliers = $doutliers;
+	}else{
+		$outliers = $uoutliers;
 	}
 }
 
@@ -830,6 +906,7 @@ function display_help () {
 	echo "    [-P|--percent=N] [-N|--number=N] [-D|--dryrun] [-d|--debug]\n";
 	echo "    [--html] [-h|--help|-v|-V|--version]\n\n";
 
+	echo "-U|--user        - The Cacti user account to pull settings from.  Default is to use system settings.'\n";
 	echo "-M|--method      - The spike removal method to use.  Options are 'stddev'|'variance'\n";
 	echo "-A|--avgnan      - The spike replacement method to use.  Options are 'avg'|'nan'\n";
 	echo "-S|--stddev      - The number of standard deviations +/- allowed\n";
