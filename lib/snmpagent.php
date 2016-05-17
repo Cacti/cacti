@@ -390,7 +390,7 @@ function snmpagent_get_pluginslist(){
 					$pluginslist[$file] = $cinfo;
 
 				} elseif (function_exists('plugin_' . $file . '_install') && function_exists('plugin_' . $file . '_version')) {
-					$function = $file . '_version';
+					$function = 'plugin_' . $file . '_version';
 					$cinfo = $function();
 					$cinfo['status'] = 0;
 					if (!isset($cinfo['author']))   $cinfo['author']   = 'Unknown';

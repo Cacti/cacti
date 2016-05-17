@@ -240,7 +240,7 @@ function plugins_load_temp_table() {
 							$cinfo[$file]['version']  . "')");
 					$pluginslist[] = $file;
 				} elseif (function_exists('plugin_' . $file . '_install') && function_exists('plugin_' . $file . '_version')) {
-					$function               = $file . '_version';
+					$function               = 'plugin_' . $file . '_version';
 					$cinfo[$file]           = $function();
 					$cinfo[$file]['status'] = 0;
 					if (!isset($cinfo[$file]['author']))   $cinfo[$file]['author']   = __('Unknown');
