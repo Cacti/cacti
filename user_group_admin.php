@@ -66,10 +66,6 @@ $gperm_options = array(
 		)
 );
 
-//if (isset($_REQUEST['id']) && !group_group_console_allowed($_REQUEST['id'])) {
-//	unset($href_options[1]);
-//}
-
 $fields_user_group_edit = array(
 	'name' => array(
 		'method' => 'textbox',

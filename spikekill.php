@@ -59,7 +59,7 @@ if (is_realm_allowed(1043)) {
 				}
 
 				$results .= shell_exec(read_config_option('path_php_binary') . ' -q ' . $config['base_path'] . '/cli/removespikes.php ' .
-					' -R=' . $data_source_path . (isset($_REQUEST['dryrun']) ? ' --dryrun' : '') .
+					' -R=' . $data_source_path . (isset_request_var('dryrun') ? ' --dryrun' : '') .
 					' -M=' . get_nfilter_request_var('method') .
 					' -U=' . $_SESSION['sess_user_id'] . 
 					' --html');

@@ -753,7 +753,7 @@ function manager_logs($id) {
 	/* filter by severity */
 	if (get_request_var('severity') == '-1') {
 		/* Show all items */
-	}elseif (!empty($_REQUEST['severity'])) {
+	}elseif (!isempty_request_var('severity')) {
 		$sql_where .= " AND snmpagent_notifications_log.severity='" . get_request_var('severity') . "'";
 	}
 
@@ -809,7 +809,7 @@ function manager_logs($id) {
 	}
 
 	?>
-	<input type='hidden' name='id' value='<?php print $_REQUEST['id']; ?>'>
+	<input type='hidden' name='id' value='<?php print get_filter_request_var('id'); ?>'>
 	<div style='display:none' id='snmpagentTooltip'></div>
 	<script language='javascript' type='text/javascript'>
 		function showTooltip(e, div, title, desc) {
@@ -838,20 +838,20 @@ function manager_logs($id) {
 }
 
 function form_save() {
-	if (!isset($_REQUEST['tab'])) $_REQUEST['tab'] = 'general';
+	if (!isset_request_var('tab')) set_request_var('tab', 'general');
 
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
 	get_filter_request_var('max_log_size');
 
-	if (!in_array(get_nfilter_request_var('max_log_size'), range(1,31) ) ) {
+	if (!in_array(get_nfilter_request_var('max_log_size'), range(1,31))) {
 		//	die_html_input_error();
 	}
 	/* ================= input validation ================= */
 
-	switch($_REQUEST['tab']){
+	switch(get_nfilter_request_var('tab')){
 		case 'notifications':
-			header('Location: managers.php?action=edit&tab=notifications&id=' . (empty($manager_id) ? get_nfilter_request_var('id') : $manager_id) );
+			header('Location: managers.php?action=edit&tab=notifications&id=' . (empty($manager_id) ? get_request_var('id') : $manager_id) );
 			break;
 		default:
 			$save['id']                       = get_request_var('id');
@@ -884,11 +884,11 @@ function form_save() {
 			$save['notes']                    = form_input_validate(get_nfilter_request_var('notes'), 'notes', '', true, 3);
 
 
-			if ($save['snmp_version'] == 3 && ($save['snmp_auth_password'] != $_POST['snmp_auth_password_confirm'])) {
+			if ($save['snmp_version'] == 3 && ($save['snmp_auth_password'] != get_nfilter_request_var('snmp_auth_password_confirm'))) {
 				raise_message(4);
 			}
 
-			if ($save['snmp_version'] == 3 && ($save['snmp_priv_password'] != $_POST['snmp_priv_password_confirm'])) {
+			if ($save['snmp_version'] == 3 && ($save['snmp_priv_password'] != get_nfilter_request_var('snmp_priv_password_confirm'))) {
 				raise_message(4);
 			}
 
