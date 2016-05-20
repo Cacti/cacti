@@ -42,11 +42,11 @@ if (!read_config_option('i18n_language_support') && read_config_option('i18n_lan
 
 
 /* determine whether or not we can support the language */
-if (isset_request_var('language') && isset($lang2locale[get_request_var('language')]))
+if (isset($_REQUEST['language']) && isset($lang2locale[$_REQUEST['language']]))
 /* user requests another language */
 {
-	$cacti_locale  = get_nfilter_request_var['language'];
-	$cacti_country = $lang2locale[get_nfilter_request_var('language')]['country'];
+	$cacti_locale  = $_REQUEST['language'];
+	$cacti_country = $lang2locale[$_REQUEST['language']]['country'];
 	$_SESSION['sess_user_language'] = $cacti_locale;
 	unset($_SESSION['sess_current_date1']);
 	unset($_SESSION['sess_current_date2']);
