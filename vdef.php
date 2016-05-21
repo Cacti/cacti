@@ -381,7 +381,7 @@ function vdef_item_edit() {
 
 	form_start('vdef.php', 'form_vdef');
 
-	html_start_box( $header_label, '100%', '', '3', 'center', '');
+	html_start_box($header_label, '100%', '', '3', 'center', '');
 
 	if (isset_request_var('type_select')) {
 		$current_type = get_request_var('type_select');
@@ -780,7 +780,7 @@ function vdef($refresh = true) {
 
 	html_start_box('', '100%', '', '3', 'center', '');
 
-	$nav = html_nav_bar('vdef.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 5, 'VDEFs', 'page', 'main');
+	$nav = html_nav_bar('vdef.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 5, __('VDEFs'), 'page', 'main');
 
     print $nav;
 
