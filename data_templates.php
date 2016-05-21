@@ -30,8 +30,8 @@ include_once('./lib/utility.php');
 include_once('./lib/template.php');
 
 $ds_actions = array(
-	1 => 'Delete',
-	2 => 'Duplicate'
+	1 => __('Delete'),
+	2 => __('Duplicate')
 );
 
 /* set default action */
@@ -301,41 +301,39 @@ function form_actions() {
 
 	form_start('data_templates.php');
 
-	html_start_box($ds_actions{get_nfilter_request_var('drp_action')}, '60%', '', '3', 'center', '');
+	html_start_box($ds_actions{get_request_var('drp_action')}, '60%', '', '3', 'center', '');
 
 	if (isset($ds_array) && sizeof($ds_array)) {
-		if (get_nfilter_request_var('drp_action') == '1') { /* delete */
+		if (get_request_var('drp_action') == '1') { /* delete */
 			print "<tr>
 				<td class='textArea'>
-					<p>Click 'Continue' to delete the following Data Template(s).  Any data sources attached
-					to these templates will become individual Data Source(s) and all Templating benefits will be removed.</p>
+					<p>" . __('Click \'Continue\' to delete the following Data Template(s).  Any data sources attached to these templates will become individual Data Source(s) and all Templating benefits will be removed.') . "</p>
 					<p><ul>$ds_list</ul></p>
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' value='Cancel' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='Continue' title='Delete Data Template(s)'>";
-		}elseif (get_nfilter_request_var('drp_action') == '2') { /* duplicate */
+			$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "' title='" . __('Delete Data Template(s)') . "'>";
+		}elseif (get_request_var('drp_action') == '2') { /* duplicate */
 			print "<tr>
 				<td class='textArea'>
-					<p>Click 'Continue' to duplicate the following Data Template(s). You can
-					optionally change the title format for the new Data Template(s).</p>
+					<p>" . __('Click \'Continue\' to duplicate the following Data Template(s). You can optionally change the title format for the new Data Template(s).') . "</p>
 					<p><ul>$ds_list</ul></p>
-					<p>Title Format:<br>"; form_text_box('title_format', '<template_title> (1)', '', '255', '30', 'text'); print "</p>
+					<p>" . __('Title Format:') . '<br>'; form_text_box('title_format', '<' . __('template_title') . '> (1)', '', '255', '30', 'text'); print "</p>
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' value='Cancel' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='Continue' title='Duplicate Data Template(s)'>";
+			$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "' title='" . __('Duplicate Data Template(s)') . "'>";
 		}
 	}else{
-		print "<tr><td class='even'><span class='textError'>You must select at least one data template.</span></td></tr>\n";
-		$save_html = "<input type='button' value='Return' onClick='cactiReturnTo()'>";
+		print "<tr><td class='even'><span class='textError'>" . __('You must select at least one data template.') . "</span></td></tr>\n";
+		$save_html = "<input type='button' value='" . __('Return') . "' onClick='cactiReturnTo()'>";
 	}
 
 	print "<tr>
 		<td class='saveRow'>
 			<input type='hidden' name='action' value='actions'>
 			<input type='hidden' name='selected_items' value='" . (isset($ds_array) ? serialize($ds_array) : '') . "'>
-			<input type='hidden' name='drp_action' value='" . get_nfilter_request_var('drp_action') . "'>
+			<input type='hidden' name='drp_action' value='" . get_request_var('drp_action') . "'>
 			$save_html
 		</td>
 	</tr>\n";
@@ -410,14 +408,14 @@ function template_edit() {
 		$template_data = db_fetch_row_prepared('SELECT * FROM data_template_data WHERE data_template_id = ? AND local_data_id = 0', array(get_request_var('id')));
 		$template = db_fetch_row_prepared('SELECT * FROM data_template WHERE id = ?', array(get_request_var('id')));
 
-		$header_label = '[edit: ' . $template['name'] . ']';
+		$header_label = __('Data Templates [edit: %s]', htmlspecialchars($template['name']));
 	}else{
-		$header_label = '[new]';
+		$header_label = __('Data Templates [new]');
 	}
 
 	form_start('data_templates.php', 'data_templates');
 
-	html_start_box('Data Templates ' . htmlspecialchars($header_label), '100%', '', '3', 'center', '');
+	html_start_box($header_label, '100%', '', '3', 'center', '');
 
 	draw_edit_form(array(
 		'config' => array('no_form_tag' => 'true'),
@@ -427,7 +425,7 @@ function template_edit() {
 
 	html_end_box();
 
-	html_start_box('Data Source', '100%', '', '3', 'center', '');
+	html_start_box(__('Data Source'), '100%', '', '3', 'center', '');
 
 	/* make sure 'data source path' doesn't show up for a template... we should NEVER template this field */
 	unset($struct_data_source['data_source_path']);
@@ -438,11 +436,11 @@ function template_edit() {
 		$form_array += array($field_name => $struct_data_source[$field_name]);
 
 		if ($field_array['flags'] == 'ALWAYSTEMPLATE') {
-			$form_array[$field_name]['description'] .= '<br><em>This field is always templated.</em>';
+			$form_array[$field_name]['description'] .= '<br><em>' . __('This field is always templated.') . '</em>';
 		}else{
 			$form_array[$field_name]['sub_checkbox'] = array(
 				'name' => 't_' . $field_name,
-				'friendly_name' => 'Use Per-Data Source Value (Ignore this Value)',
+				'friendly_name' => __('Use Per-Data Source Value (Ignore this Value)'),
 				'value' => (isset($template_data{'t_' . $field_name}) ? $template_data{'t_' . $field_name} : '')
 				);
 		}
@@ -486,7 +484,7 @@ function template_edit() {
 			$i++;
 			print "<li>
 				<a " . (($template_data_rrd['id'] == get_request_var('view_rrd')) ? "class='selected'" : "class=''") . " href='" . htmlspecialchars('data_templates.php?action=template_edit&id=' . get_request_var('id') . '&view_rrd=' . $template_data_rrd['id']) . "'>$i: " . htmlspecialchars($template_data_rrd['data_source_name']) . "</a>
-				<a class='deleteMarker fa fa-remove' title='Delete' href='" . htmlspecialchars('data_templates.php?action=rrd_remove&id=' . $template_data_rrd['id'] . '&data_template_id=' . get_request_var('id')) . "'></a></li>\n";
+				<a class='deleteMarker fa fa-remove' title='" . __('Delete') . "' href='" . htmlspecialchars('data_templates.php?action=rrd_remove&id=' . $template_data_rrd['id'] . '&data_template_id=' . get_request_var('id')) . "'></a></li>\n";
 		}
 
 		print "
@@ -498,7 +496,7 @@ function template_edit() {
 		}
 	}
 
-	html_start_box('Data Source Item [' . (isset($template_rrd) ? htmlspecialchars($template_rrd['data_source_name']) : '') . ']', '100%', '', '0', 'center', (!isempty_request_var('id') ? 'data_templates.php?action=rrd_add&id=' . get_request_var('id'):''), 'New');
+	html_start_box(__('Data Source Item [%s]', (isset($template_rrd) ? htmlspecialchars($template_rrd['data_source_name']) : '')), '100%', '', '0', 'center', (!isempty_request_var('id') ? 'data_templates.php?action=rrd_add&id=' . get_request_var('id'):''), 'New');
 
 	/* data input fields list */
 	if ((empty($template_data['data_input_id'])) ||
@@ -517,7 +515,7 @@ function template_edit() {
 		$form_array[$field_name]['value'] = (isset($template_rrd) ? $template_rrd[$field_name] : '');
 		$form_array[$field_name]['sub_checkbox'] = array(
 			'name' => 't_' . $field_name,
-			'friendly_name' => 'Use Per-Data Source Value (Ignore this Value)',
+			'friendly_name' => __('Use Per-Data Source Value (Ignore this Value)'),
 			'value' => (isset($template_rrd) ? $template_rrd{'t_' . $field_name} : '')
 		);
 	}
@@ -541,7 +539,7 @@ function template_edit() {
 		/* get each INPUT field for this data input source */
 		$fields = db_fetch_assoc('SELECT * FROM data_input_fields WHERE data_input_id=' . $template_data['data_input_id'] . " AND input_output='in' ORDER BY name");
 
-		html_start_box('Custom Data [data input: ' . htmlspecialchars(db_fetch_cell('SELECT name FROM data_input WHERE id=' . $template_data['data_input_id'])) . ']', '100%', '', '3', 'center', '');
+		html_start_box(__('Custom Data [data input: %s]', htmlspecialchars(db_fetch_cell('SELECT name FROM data_input WHERE id=' . $template_data['data_input_id']))), '100%', '', '3', 'center', '');
 
 		/* loop through each field found */
 		if (sizeof($fields) > 0) {
@@ -571,13 +569,13 @@ function template_edit() {
 
 				?>
 				<td style='width:50%;'>
-					<strong><?php print $field['name'];?></strong><?php print display_tooltip($help);?><br>
+					<strong><?php print htmlspecialchars($field['name']);?></strong><?php print display_tooltip($help);?><br>
 
-					<?php form_checkbox('t_value_' . $field['data_name'], $old_tvalue, 'Use Per-Data Source Value (Ignore this Value)', '', '', get_request_var('id'));?>
+					<?php form_checkbox('t_value_' . $field['data_name'], $old_tvalue, __('Use Per-Data Source Value (Ignore this Value)'), '', '', get_request_var('id'));?>
 				</td>
 				<td>
 					<?php form_text_box('value_' . $field['data_name'], $old_value, '', '');?>
-					<?php if ((preg_match('/^' . VALID_HOST_FIELDS . '$/i', $field['type_code'])) && ($old_tvalue  == '')) { print "<br><em>Value will be derived from the device if this field is left empty.</em>\n"; } ?>
+					<?php if ((preg_match('/^' . VALID_HOST_FIELDS . '$/i', $field['type_code'])) && ($old_tvalue  == '')) { print "<br><em>" . __('Value will be derived from the device if this field is left empty.') . "</em>\n"; } ?>
 				</td>
 				<?php
 				form_end_row();
@@ -585,7 +583,7 @@ function template_edit() {
 				$i++;
 			}
 		}else{
-			print '<tr><td><em>No Input Fields for the Selected Data Input Source</em></td></tr>';
+			print '<tr><td><em>' . __('No Input Fields for the Selected Data Input Source') . '</em></td></tr>';
 		}
 
 		html_end_box();
@@ -641,7 +639,7 @@ function template() {
 		$rows = get_request_var('rows');
 	}
 
-	html_start_box('Data Templates', '100%', '', '3', 'center', 'data_templates.php?action=template_edit');
+	html_start_box(__('Data Templates'), '100%', '', '3', 'center', 'data_templates.php?action=template_edit');
 
 	?>
 	<tr class='even noprint'>
@@ -650,17 +648,17 @@ function template() {
 			<table class='filterTable'>
 				<tr>
 					<td>
-						Search
+						<?php print __('Search');?>
 					</td>
 					<td>
 						<input id='filter' type='text' name='filter' size='25' value='<?php print htmlspecialchars(get_request_var('filter'));?>'>
 					</td>
 					<td class='nowrap'>
-						Data Templates
+						<?php print __('Data Templates');?>
 					</td>
 					<td>
 						<select id='rows' name='rows' onChange='applyFilter()'>
-							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?>
+							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?>>
 							<?php
 							if (sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
@@ -674,13 +672,13 @@ function template() {
 						<input type='checkbox' id='has_data' <?php print (get_request_var('has_data') == 'true' ? 'checked':'');?>>
 					</td>
 					<td>
-						<label for='has_data'>Has Data Sources</label>
+						<label for='has_data'><?php print __('Has Data Sources');?></label>
 					</td>
 					<td>
-						<input type='button' id='refresh' value='Go' title='Set/Refresh Filters'>
+						<input type='button' id='refresh' value='<?php print __('Go');?>' title='<?php print __('Set/Refresh Filters');?>'>
 					</td>
 					<td>
-						<input type='button' id='clear' value='Clear' title='Clear Filters'>
+						<input type='button' id='clear' value='<?php print __('Clear');?>' title='<?php print __('Clear Filters');?>'>
 					</td>
 				</tr>
 			</table>
@@ -773,12 +771,12 @@ function template() {
 	print $nav;
 
 	$display_text = array(
-		'name' => array('display' => 'Data Template Name', 'align' => 'left', 'sort' => 'ASC', 'tip' => 'The name of this Data Template.'),
-		'id' => array('display' => 'ID', 'align' => 'right', 'sort' => 'ASC', 'tip' => 'The internal database ID for this Data Template.  Useful when performing automation or debugging.'),
-		'nosort' => array('display' => 'Deletable', 'align' => 'right', 'tip' => 'Data Templates that are in use can not be Deleted.  In use is defined as being referenced by a Data Source.'), 
-		'data_sources' => array('display' => 'Data Sources Using', 'align' => 'right', 'sort' => 'DESC', 'tip' => 'The number of Data Sources using this Data Template.'),
-		'data_input_method' => array('display' => 'Data Input Method', 'align' => 'left', 'sort' => 'ASC', 'tip' => 'The method that is used to place Data into the Data Source RRDfile.'),
-		'active' => array('display' => 'Status', 'align' => 'left', 'sort' => 'ASC', 'tip' => 'Data Sources based on Inactive Data Templates wont be updated when the poller runs.')
+		'name'              => array('display' => __('Data Template Name'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('The name of this Data Template.')),
+		'id'                => array('display' => __('ID'), 'align' => 'right', 'sort' => 'ASC', 'tip' => __('The internal database ID for this Data Template.  Useful when performing automation or debugging.')),
+		'nosort'            => array('display' => __('Deletable'), 'align' => 'right', 'tip' => __('Data Templates that are in use can not be Deleted.  In use is defined as being referenced by a Data Source.')),
+		'data_sources'      => array('display' => __('Data Sources Using'), 'align' => 'right', 'sort' => 'DESC', 'tip' => __('The number of Data Sources using this Data Template.')),
+		'data_input_method' => array('display' => __('Data Input Method'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('The method that is used to place Data into the Data Source RRDfile.')),
+		'active'            => array('display' => __('Status'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('Data Sources based on Inactive Data Templates wont be updated when the poller runs.'))
 	);
 
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
@@ -793,10 +791,10 @@ function template() {
 			form_alternate_row('line' . $template['id'], true, $disabled);
 			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars('data_templates.php?action=template_edit&id=' . $template['id']) . "'>" . (strlen(get_request_var('filter')) ? preg_replace('/(' . preg_quote(get_request_var('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($template['name'])) : htmlspecialchars($template['name'])) . '</a>', $template['id']);
 			form_selectable_cell($template['id'], $template['id'], '', 'text-align:right');
-			form_selectable_cell($disabled ? 'No':'Yes', $template['id'], '', 'text-align:right');
+			form_selectable_cell($disabled ? __('No'):__('Yes'), $template['id'], '', 'text-align:right');
 			form_selectable_cell(number_format($template['data_sources']), $template['id'], '', 'text-align:right');
-			form_selectable_cell((empty($template['data_input_method']) ? '<em>None</em>': htmlspecialchars($template['data_input_method'])), $template['id']);
-			form_selectable_cell((($template['active'] == 'on') ? 'Active' : 'Disabled'), $template['id']);
+			form_selectable_cell((empty($template['data_input_method']) ? '<em>' . __('None') .'</em>': htmlspecialchars($template['data_input_method'])), $template['id']);
+			form_selectable_cell((($template['active'] == 'on') ? __('Active'):__('Disabled')), $template['id']);
 			form_checkbox_cell($template['name'], $template['id'], $disabled);
 			form_end_row();
 		}
@@ -804,7 +802,7 @@ function template() {
 		/* put the nav bar on the bottom as well */
 		print $nav;
 	}else{
-		print "<tr class='tableRow'><td colspan='6'><em>No Data Templates</em></td></tr>\n";
+		print "<tr class='tableRow'><td colspan='6'><em>" . __('No Data Templates') . "</em></td></tr>\n";
 	}
 	html_end_box(false);
 
