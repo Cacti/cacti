@@ -25,7 +25,9 @@
 include('./include/auth.php');
 include_once('./lib/utility.php');
 
-$di_actions = array(1 => 'Delete');
+$di_actions = array(
+	1 => __('Delete')
+);
 
 /* set default action */
 set_default_action();
@@ -117,14 +119,14 @@ function form_save() {
 		get_filter_request_var('input_output', FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => '/^(in|out)$/')));
 		/* ==================================================== */
 
-		$save['id']            = get_nfilter_request_var('id');
+		$save['id']            = get_request_var('id');
 		$save['hash']          = get_hash_data_input(get_nfilter_request_var('id'), 'data_input_field');
-		$save['data_input_id'] = get_nfilter_request_var('data_input_id');
+		$save['data_input_id'] = get_request_var('data_input_id');
 		$save['name']          = form_input_validate(get_nfilter_request_var('name'), 'name', '', false, 3);
 		$save['data_name']     = form_input_validate(get_nfilter_request_var('data_name'), 'data_name', '', false, 3);
-		$save['input_output']  = get_nfilter_request_var('input_output');
+		$save['input_output']  = get_request_var('input_output');
 		$save['update_rra']    = form_input_validate((isset_request_var('update_rra') ? get_nfilter_request_var('update_rra') : ''), 'update_rra', '', true, 3);
-		$save['sequence']      = get_nfilter_request_var('sequence');
+		$save['sequence']      = get_request_var('sequence');
 		$save['type_code']     = form_input_validate((isset_request_var('type_code') ? get_nfilter_request_var('type_code') : ''), 'type_code', '', true, 3);
 		$save['regexp_match']  = form_input_validate((isset_request_var('regexp_match') ? get_nfilter_request_var('regexp_match') : ''), 'regexp_match', '', true, 3);
 		$save['allow_nulls']   = form_input_validate((isset_request_var('allow_nulls') ? get_nfilter_request_var('allow_nulls') : ''), 'allow_nulls', '', true, 3);
@@ -135,8 +137,8 @@ function form_save() {
 			if ($data_input_field_id) {
 				raise_message(1);
 
-				if ((!empty($data_input_field_id)) && (get_nfilter_request_var('input_output') == 'in')) {
-					generate_data_input_field_sequences(db_fetch_cell_prepared('SELECT input_string FROM data_input WHERE id = ?', array(get_nfilter_request_var('data_input_id'))), get_nfilter_request_var('data_input_id'));
+				if ((!empty($data_input_field_id)) && (get_request_var('input_output') == 'in')) {
+					generate_data_input_field_sequences(db_fetch_cell_prepared('SELECT input_string FROM data_input WHERE id = ?', array(get_request_var('data_input_id'))), get_request_var('data_input_id'));
 				}
 			}else{
 				raise_message(2);
@@ -144,9 +146,9 @@ function form_save() {
 		}
 
 		if (is_error_message()) {
-			header('Location: data_input.php?header=false&action=field_edit&data_input_id=' . get_nfilter_request_var('data_input_id') . '&id=' . (empty($data_input_field_id) ? get_nfilter_request_var('id') : $data_input_field_id) . (!isempty_request_var('input_output') ? '&type=' . get_nfilter_request_var('input_output') : ''));
+			header('Location: data_input.php?header=false&action=field_edit&data_input_id=' . get_request_var('data_input_id') . '&id=' . (empty($data_input_field_id) ? get_request_var('id') : $data_input_field_id) . (!isempty_request_var('input_output') ? '&type=' . get_request_var('input_output') : ''));
 		}else{
-			header('Location: data_input.php?header=false&action=edit&id=' . get_nfilter_request_var('data_input_id'));
+			header('Location: data_input.php?header=false&action=edit&id=' . get_request_var('data_input_id'));
 		}
 	}
 }
@@ -427,7 +429,7 @@ function data_edit() {
 
 	form_start('data_input.php', 'data_input');
 
-	html_start_box( $header_label, '100%', '', '3', 'center', '');
+	html_start_box($header_label, '100%', '', '3', 'center', '');
 
 	draw_edit_form(array(
 		'config' => array('no_form_tag' => true),
@@ -471,12 +473,12 @@ function data_edit() {
 		}
 		html_end_box();
 
-		html_start_box( __('Output Fields'), '100%', '', '3', 'center', 'data_input.php?action=field_edit&type=out&data_input_id=' . get_request_var('id'));
+		html_start_box(__('Output Fields'), '100%', '', '3', 'center', 'data_input.php?action=field_edit&type=out&data_input_id=' . get_request_var('id'));
 		print "<tr class='tableHeader'>";
-			DrawMatrixHeaderItem( __('Name'),'',1);
-			DrawMatrixHeaderItem( __('Field Order'),'',1);
-			DrawMatrixHeaderItem( __('Friendly Name'),'',1);
-			DrawMatrixHeaderItem( __('Update RRA'),'',2);
+			DrawMatrixHeaderItem(__('Name'),'',1);
+			DrawMatrixHeaderItem(__('Field Order'),'',1);
+			DrawMatrixHeaderItem(__('Friendly Name'),'',1);
+			DrawMatrixHeaderItem(__('Update RRA'),'',2);
 		print '</tr>';
 
 		$fields = db_fetch_assoc_prepared("SELECT id, name, data_name, update_rra, sequence FROM data_input_fields WHERE data_input_id = ? and input_output = 'out' ORDER BY sequence, data_name", array(get_request_var('id')));
@@ -685,16 +687,16 @@ function data() {
 		ORDER BY " . get_request_var('sort_column') . ' ' . get_request_var('sort_direction') . '
 		LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows);
 
-	$nav = html_nav_bar('data_input.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 6, 'Input Methods', 'page', 'main');
+	$nav = html_nav_bar('data_input.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 6, __('Input Methods'), 'page', 'main');
 
 	print $nav;
 
 	$display_text = array(
-		'name' => array('display' => __('Data Input Name'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('The name of this Data Input Method.')),
-		'nosort' => array('display' => __('Deletable'), 'align' => 'right', 'tip' => __('Data Inputs that are in use can not be Deleted. In use is defined as being referenced either by a Data Source or a Data Template.')), 
+		'name'         => array('display' => __('Data Input Name'),    'align' => 'left', 'sort' => 'ASC', 'tip' => __('The name of this Data Input Method.')),
+		'nosort'       => array('display' => __('Deletable'),          'align' => 'right', 'tip' => __('Data Inputs that are in use can not be Deleted. In use is defined as being referenced either by a Data Source or a Data Template.')), 
 		'data_sources' => array('display' => __('Data Sources Using'), 'align' => 'right', 'sort' => 'DESC', 'tip' => __('The number of Data Sources that use this Data Input Method.')),
-		'templates' => array('display' => __('Templates Using'), 'align' => 'right', 'sort' => 'DESC', 'tip' => __('The number of Data Templates that use this Data Input Method.')),
-		'type_id' => array('display' => __('Data Input Method'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('The method used to gather information for this Data Input Method.')));
+		'templates'    => array('display' => __('Templates Using'),    'align' => 'right', 'sort' => 'DESC', 'tip' => __('The number of Data Templates that use this Data Input Method.')),
+		'type_id'      => array('display' => __('Data Input Method'),  'align' => 'left', 'sort' => 'ASC', 'tip' => __('The method used to gather information for this Data Input Method.')));
 
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
