@@ -556,18 +556,19 @@ function cdef_edit() {
 
 	if (!isempty_request_var('id')) {
 		$cdef = db_fetch_row_prepared('SELECT * FROM cdef WHERE id = ?', array(get_request_var('id')));
-		$header_label = '[edit: ' . htmlspecialchars($cdef['name']) . ']';
+		$header_label = __('CDEF [edit: %s]', htmlspecialchars($cdef['name']));
 	}else{
-		$header_label = '[new]';
+		$header_label = __('CDEF [new]');
 	}
 
 	form_start('cdef.php', 'cdef');
 
-	html_start_box("CDEF's $header_label", '100%', '', '3', 'center', '');
+	html_start_box($header_label, '100%', '', '3', 'center', '');
 
-	draw_edit_form(array(
-		'config' => array('no_form_tag' => true),
-		'fields' => inject_form_variables($fields_cdef_edit, (isset($cdef) ? $cdef : array()))
+	draw_edit_form(
+		array(
+			'config' => array('no_form_tag' => true),
+			'fields' => inject_form_variables($fields_cdef_edit, (isset($cdef) ? $cdef : array()))
 		)
 	);
 
@@ -819,7 +820,7 @@ function cdef() {
 		ORDER BY " . get_request_var('sort_column') . ' ' . get_request_var('sort_direction') .
 		' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows);
 
-	$nav = html_nav_bar('cdef.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 5, 'CDEFs', 'page', 'main');
+	$nav = html_nav_bar('cdef.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 5, __('CDEFs'), 'page', 'main');
 
 	print $nav;
 
