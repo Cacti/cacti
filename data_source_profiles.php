@@ -113,8 +113,8 @@ function form_save() {
 	}
 
 	if (isset_request_var('save_component_profile')) {
-		$save['id']             = form_input_validate(get_nfilter_request_var('id'), 'id', '^[0-9]+$', false, 3);
-		$save['hash']           = get_hash_data_source_profile(get_nfilter_request_var('id'));
+		$save['id']             = form_input_validate(get_request_var('id'), 'id', '^[0-9]+$', false, 3);
+		$save['hash']           = get_hash_data_source_profile(get_request_var('id'));
 
 		$save['name']           = form_input_validate(get_nfilter_request_var('name'), 'name', '', false, 3);
 
@@ -125,7 +125,7 @@ function form_save() {
 		}
 
 		if (isset_request_var('default')) {
-			$save['default']        = (isset_request_var('default') ? 'on':'');
+			$save['default'] = (isset_request_var('default') ? 'on':'');
 			db_execute('UPDATE data_source_profiles SET `default`=""');
 		}
 
@@ -159,7 +159,7 @@ function form_save() {
 			}
 		}
 
-		header('Location: data_source_profiles.php?header=false&action=edit&id=' . (empty($profile_id) ? get_nfilter_request_var('id') : $profile_id));
+		header('Location: data_source_profiles.php?header=false&action=edit&id=' . (empty($profile_id) ? get_request_var('id') : $profile_id));
 	}elseif (isset_request_var('save_component_rra')) {
 		/* ================= input validation ================= */
 		get_filter_request_var('id');
@@ -169,7 +169,7 @@ function form_save() {
 		$sampling_interval = db_fetch_cell_prepared('SELECT step FROM data_source_profiles WHERE id = ?', array(get_request_var('profile_id')));
 		$save['id']                      = form_input_validate(get_request_var('id'), 'id', '^[0-9]+$', false, 3);
 		$save['name']                    = form_input_validate(get_nfilter_request_var('name'), 'name', '', true, 3);
-		$save['data_source_profile_id']  = form_input_validate(get_nfilter_request_var('profile_id'), 'profile_id', '^[0-9]+$', false, 3);
+		$save['data_source_profile_id']  = form_input_validate(get_request_var('profile_id'), 'profile_id', '^[0-9]+$', false, 3);
 		$save['steps']                   = form_input_validate(get_nfilter_request_var('steps'), 'steps', '^[0-9]+$', false, 3);
 
 		if ($save['steps'] != '1') {
@@ -188,9 +188,9 @@ function form_save() {
 		}
 
 		if (is_error_message()) {
-			header('Location: data_source_profiles.php?header=false&action=item_edit&profile_id=' . get_nfilter_request_var('profile_id') . '&id=' . (empty($profile_rra_id) ? get_nfilter_request_var('id') : $profile_rra_id));
+			header('Location: data_source_profiles.php?header=false&action=item_edit&profile_id=' . get_request_var('profile_id') . '&id=' . (empty($profile_rra_id) ? get_request_var('id') : $profile_rra_id));
 		}else{
-			header('Location: data_source_profiles.php?header=false&action=edit&id=' . get_nfilter_request_var('profile_id'));
+			header('Location: data_source_profiles.php?header=false&action=edit&id=' . get_request_var('profile_id'));
 		}
 	}
 }
@@ -211,11 +211,11 @@ function form_actions() {
 		$selected_items = sanitize_unserialize_selected_items(get_nfilter_request_var('selected_items'));
 
 		if ($selected_items != false) {
-			if (get_nfilter_request_var('drp_action') == '1') { /* delete */
+			if (get_request_var('drp_action') == '1') { /* delete */
 				db_execute('DELETE FROM data_source_profiles WHERE ' . array_to_sql_or($selected_items, 'id'));
 				db_execute('DELETE FROM data_source_profiles_rra WHERE ' . array_to_sql_or($selected_items, 'data_source_profile_id'));
 				db_execute('DELETE FROM data_source_profiles_cf WHERE ' . array_to_sql_or($selected_items, 'data_source_profile_id'));
-			}elseif (get_nfilter_request_var('drp_action') == '2') { /* duplicate */
+			}elseif (get_request_var('drp_action') == '2') { /* duplicate */
 				for ($i=0;($i<count($selected_items));$i++) {
 					duplicate_data_source_profile($selected_items[$i], get_nfilter_request_var('title_format'));
 				}
@@ -247,10 +247,10 @@ function form_actions() {
 
 	form_start('data_source_profiles.php');
 
-	html_start_box($profile_actions{get_nfilter_request_var('drp_action')}, '60%', '', '3', 'center', '');
+	html_start_box($profile_actions{get_request_var('drp_action')}, '60%', '', '3', 'center', '');
 
 	if (isset($profile_array) && sizeof($profile_array)) {
-		if (get_nfilter_request_var('drp_action') == '1') { /* delete */
+		if (get_request_var('drp_action') == '1') { /* delete */
 			print "<tr>
 				<td class='textArea' class='odd'>
 					<p>" . __n('Click \'Continue\' to delete the following Data Source Profile', 'Click \'Continue\' to delete following Data Source Profiles', sizeof($profile_array)) . "</p>
@@ -259,7 +259,7 @@ function form_actions() {
 			</tr>\n";
 
 			$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "' title='" . __n('Delete Data Source Profile', 'Delete Data Source Profiles', sizeof($profile_array)) . "'>";
-		}elseif (get_nfilter_request_var('drp_action') == '2') { /* duplicate */
+		}elseif (get_request_var('drp_action') == '2') { /* duplicate */
 			print "<tr>
 				<td class='textArea' class='odd'>
 					<p>" . __n('Click \'Continue\' to duplicate the following Data Source Profile. You can optionally change the title format for the new Data Source Profile', 'Click \'Continue\' to duplicate following Data Source Profiles. You can optionally change the title format for the new Data Source Profiles.', sizeof($profile_array)) . "</p>
@@ -279,7 +279,7 @@ function form_actions() {
 		<td class='saveRow'>
 			<input type='hidden' name='action' value='actions'>
 			<input type='hidden' name='selected_items' value='" . (isset($profile_array) ? serialize($profile_array) : '') . "'>
-			<input type='hidden' name='drp_action' value='" . get_nfilter_request_var('drp_action') . "'>
+			<input type='hidden' name='drp_action' value='" . get_request_var('drp_action') . "'>
 			$save_html
 		</td>
 	</tr>\n";
