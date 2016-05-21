@@ -26,11 +26,11 @@ include('./include/auth.php');
 include('./lib/api_device.php');
 
 $device_actions = array(
-	1 => 'Add Device'
+	1 => __('Add Device')
 );
 
 $os_arr     = array_rekey(db_fetch_assoc('SELECT DISTINCT os FROM automation_devices WHERE os IS NOT NULL AND os!=""'), 'os', 'os');
-$status_arr = array('Down', 'Up');
+$status_arr = array(__('Down'), __('Up'));
 $networks   = array_rekey(db_fetch_assoc('SELECT an.id, an.name 
 	FROM automation_networks AS an
 	INNER JOIN automation_devices AS ad
@@ -77,7 +77,7 @@ function form_actions() {
 					$d = db_fetch_row_prepared("SELECT * FROM automation_devices WHERE id = ?", array($id));
 					$d['host_template']       = get_filter_request_var('host_template');
 					$d['availability_method'] = get_filter_request_var('availability_method');
-					$d['notes']               = 'Added manually through device automation interface.';
+					$d['notes']               = __('Added manually through device automation interface.');
 					$d['snmp_sysName']        = $d['sysName'];
 
 					// pull ping options from network_id
@@ -92,9 +92,9 @@ function form_actions() {
 					$host_id = automation_add_device($d, true);
 
 					if ($host_id) {
-						$message .= "<span class='deviceUp'>Device " . $d['description'] . ' Added to Cacti</span><br>';
+						$message .= "<span class='deviceUp'>" . __('Device') . ' ' . $d['description'] . ' ' . __('Added to Cacti') . '</span><br>';
 					}else{
-						$message .= "<span class='deviceDown'>Device " . $d['description'] . ' Not Added to Cacti</span><br>';
+						$message .= "<span class='deviceDown'>" . __('Device') . ' ' . $d['description'] . ' ' . __('Not Added to Cacti') . '</span><br>';
 					}
 				}
 
@@ -138,29 +138,29 @@ function form_actions() {
 		if (get_nfilter_request_var('drp_action') == '1') { /* delete */
 			print "<tr>
 				<td class='textArea odd'>
-					<p>Click 'Continue' to add the following Discovered device(s).</p>
+					<p>" . __('Click \'Continue\' to add the following Discovered device(s).') . "</p>
 					<p><ul>$device_list</ul></p>
 				</td>
 			</tr>
 			<tr>
 				<td class='textArea odd'>
-					<table><tr><td>Select Template</td><td>\n";
+					<table><tr><td>" . __('Select Template') . "</td><td>\n";
 
 			form_dropdown('host_template', $available_host_templates, 'name', 'id', '', '', '');
 
 			print "</td></tr>\n";
 
-			print "<tr><td>Availability Method</td><td>\n";
+			print "<tr><td>" . __('Availability Method') . "</td><td>\n";
 
 			form_dropdown('availability_method', $availability_options, '', '', '', '', '');
 
 			print "</td></tr></table></td></tr>\n";
 
-			$save_html = "<input type='button' value='Cancel' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='Continue' title='Add Device(s)'>";
+			$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "' title='" . __('Add Device(s)') . "'>";
 		}
 	}else{
-		print "<tr><td class='odd'><span class='textError'>You must select at least one Device.</span></td></tr>\n";
-		$save_html = "<input type='button' value='Return' onClick='cactiReturnTo()'>";
+		print "<tr><td class='odd'><span class='textError'>" . __('You must select at least one Device.') . "</span></td></tr>\n";
+		$save_html = "<input type='button' value='" . __('Return') . "' onClick='cactiReturnTo()'>";
 	}
 
 	print "<tr>
@@ -205,17 +205,17 @@ function display_discovery_page() {
 	print $nav;
 
 	$display_text = array(
-		'hostname' => array('display' => 'Device Name', 'align' => 'left', 'sort' => 'ASC'),
-		'ip' => array('display' => 'IP', 'align' => 'left', 'sort' => 'ASC'),
-		'sysName' => array('display' => 'SNMP Name', 'align' => 'left', 'sort' => 'ASC'),
-		'sysLocation' => array('display' => 'Location', 'align' => 'left', 'sort' => 'ASC'),
-		'sysContact' => array('display' => 'Contact', 'align' => 'left', 'sort' => 'ASC'),
-		'sysDescr' => array('display' => 'Description', 'align' => 'left', 'sort' => 'ASC'),
-		'os' => array('display' => 'OS', 'align' => 'left', 'sort' => 'ASC'),
-		'time' => array('display' => 'Uptime', 'align' => 'right', 'sort' => 'DESC'),
-		'snmp' => array('display' => 'SNMP', 'align' => 'right', 'sort' => 'DESC'),
-		'up' => array('display' => 'Status', 'align' => 'right', 'sort' => 'ASC'),
-		'mytime' => array('display' => 'Last Check', 'align' => 'right', 'sort' => 'DESC'));
+		'hostname'    => array('display' => __('Device Name'), 'align' => 'left', 'sort' => 'ASC'),
+		'ip'          => array('display' => __('IP'),          'align' => 'left', 'sort' => 'ASC'),
+		'sysName'     => array('display' => __('SNMP Name'),   'align' => 'left', 'sort' => 'ASC'),
+		'sysLocation' => array('display' => __('Location'),    'align' => 'left', 'sort' => 'ASC'),
+		'sysContact'  => array('display' => __('Contact'),     'align' => 'left', 'sort' => 'ASC'),
+		'sysDescr'    => array('display' => __('Description'), 'align' => 'left', 'sort' => 'ASC'),
+		'os'          => array('display' => __('OS'),          'align' => 'left', 'sort' => 'ASC'),
+		'time'        => array('display' => __('Uptime'),      'align' => 'right', 'sort' => 'DESC'),
+		'snmp'        => array('display' => __('SNMP'),        'align' => 'right', 'sort' => 'DESC'),
+		'up'          => array('display' => __('Status'),      'align' => 'right', 'sort' => 'ASC'),
+		'mytime'      => array('display' => __('Last Check'),  'align' => 'right', 'sort' => 'DESC'));
 
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
@@ -228,7 +228,7 @@ function display_discovery_page() {
 	$ping_method         = read_config_option('ping_method');
 	$availability_method = read_config_option('availability_method');
 
-	$status = array('<font color=red>Down</font>','<font color=green>Up</font>');
+	$status = array("<span class='deviceDown'>" . __('Down') . '</span>',"<span class='deviceUp'>" . __('Up') . '</span>');
 	if (sizeof($results)) {
 		foreach($results as $host) {
 			form_alternate_row('line' . $host['id'], true);
@@ -242,7 +242,7 @@ function display_discovery_page() {
 			}
 
 			if ($host['hostname'] == '') {
-				$host['hostname'] = 'Not Detected';
+				$host['hostname'] = __('Not Detected');
 			}
 
 			form_selectable_cell((strlen(get_request_var('filter')) ? preg_replace('/(' . preg_quote(get_request_var('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($host['hostname'])) : htmlspecialchars($host['hostname'])), $host['id']);
@@ -260,7 +260,7 @@ function display_discovery_page() {
 			form_end_row();
 		}
 	}else{
-		print "<tr class='even'><td colspan=11>No Devices Found</td></tr>";
+		print "<tr class='even'><td colspan=11>" . __('No Devices Found') . "</td></tr>";
 	}
 
 	print $nav;
@@ -396,7 +396,7 @@ function get_discovery_results(&$total_rows = 0, $rows = 0, $export = false) {
 function draw_filter() {
 	global $item_rows, $os_arr, $status_arr, $networks, $device_actions;
 
-	html_start_box('<strong>Discovery Filters</strong>', '100%', '', '3', 'center', '');
+	html_start_box(__('Discovery Filters'), '100%', '', '3', 'center', '');
 
 	?>
 	<tr class='even'>
@@ -405,17 +405,17 @@ function draw_filter() {
 			<table class='filterTable'>
 				<tr class='noprint'>
 					<td>
-						Search
+						<?php print __('Search');?>
 					</td>
 					<td>
 						<input type='text' id='filter' size='25' value='<?php print get_request_var('filter');?>'>
 					</td>
 					<td>
-						Network
+						<?php print __('Network');?>
 					</td>
 					<td>
 						<select id='network' onChange='applyFilter()'>
-							<option value='-1' <?php if (get_request_var('network') == -1) {?> selected<?php }?>>Any</option>
+							<option value='-1' <?php if (get_request_var('network') == -1) {?> selected<?php }?>><?php print __('Any');?></option>
 							<?php
 							if (sizeof($networks)) {
 							foreach ($networks as $key => $name) {
@@ -425,25 +425,25 @@ function draw_filter() {
 							?>
 						</select>
 					<td>
-						<input type='button' id='refresh' value='Go' title='Set/Refresh Filters'>
+						<input type='button' id='refresh' value='<?php print __('Go');?>' title='<?php print __('Set/Refresh Filters');?>'>
 					</td>
 					<td>
-						<input type='button' id='clear' value='Clear' title='Reset fields to defaults'>
+						<input type='button' id='clear' value='<?php print __('Clear');?>' title='<?php print __('Reset fields to defaults');?>'>
 					</td>
 					<td>
-						<input type='button' id='export' value='Export' title='Export to a file'>
+						<input type='button' id='export' value='<?php print __('Export');?>' title='<?php print __('Export to a file');?>'>
 					</td>
 					<td>
-						<input type='button' id='purge' value='Purge' title='Purge Discovered Devices'>
+						<input type='button' id='purge' value='<?php print __('Purge');?>' title='<?php print __('Purge Discovered Devices');?>'>
 					</td>
 				</table>
 				<table class='filterTable'>
 					<td>
-						Status
+						<?php print __('Status');?>
 					</td>
 					<td>
 						<select id='status' onChange='applyFilter()'>
-							<option value='-1' <?php if (get_request_var('status') == '') {?> selected<?php }?>>Any</option>
+							<option value='-1' <?php if (get_request_var('status') == '') {?> selected<?php }?>><?php print __('Any');?></option>
 							<?php
 							if (sizeof($status_arr)) {
 							foreach ($status_arr as $st) {
@@ -454,11 +454,11 @@ function draw_filter() {
 						</select>
 					</td>
 					<td>
-						OS
+						<?php print __('OS');?>
 					</td>
 					<td>
 						<select id='os' onChange='applyFilter()'>
-							<option value='-1' <?php if (get_request_var('os') == '') {?> selected<?php }?>>Any</option>
+							<option value='-1' <?php if (get_request_var('os') == '') {?> selected<?php }?>><?php print __('Any');?></option>
 							<?php
 							if (sizeof($os_arr)) {
 							foreach ($os_arr as $st) {
@@ -469,11 +469,11 @@ function draw_filter() {
 						</select>
 					</td>
 					<td>
-						SNMP
+						<?php print __('SNMP');?>
 					</td>
 					<td>
 						<select id='snmp' onChange='applyFilter()'>
-							<option value='-1' <?php if (get_request_var('snmp') == '') {?> selected<?php }?>>Any</option>
+							<option value='-1' <?php if (get_request_var('snmp') == '') {?> selected<?php }?>><?php print __('Any');?></option>
 							<?php
 							if (sizeof($status_arr)) {
 							foreach ($status_arr as $st) {
@@ -484,7 +484,7 @@ function draw_filter() {
 						</select>
 					</td>
 					<td>
-						Devices
+						<?php print __('Devices');?>
 					</td>
 					<td>
 						<select id='rows' onChange='applyFilter()'>
@@ -569,7 +569,7 @@ function export_discovery_results() {
 		foreach($host as $h=>$r) {
 			$host['$h'] = str_replace(',','',$r);
 		}
-		print ($host['hostname'] == '' ? 'Not Detected':$host['hostname']) . ',';
+		print ($host['hostname'] == '' ? __('Not Detected'):$host['hostname']) . ',';
 		print $host['ip'] . ',';
 		print export_data($host['sysName']) . ',';
 		print export_data($host['sysLocation']) . ',';
@@ -577,8 +577,8 @@ function export_discovery_results() {
 		print export_data($host['sysDescr']) . ',';
 		print export_data($host['os']) . ',';
 		print export_data($uptime) . ',';
-		print ($host['snmp'] == 1 ? 'Up':'Down') . ',';
-		print ($host['up'] == 1 ? 'Up':'Down') . "\n";
+		print ($host['snmp'] == 1 ? __('Up'):__('Down')) . ',';
+		print ($host['up'] == 1 ? __('Up'):__('Down')) . "\n";
 	}
 	}
 }
