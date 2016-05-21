@@ -207,7 +207,7 @@ case 'tree_content':
 	html_validate_tree_vars();
 
 	if (!is_view_allowed('show_tree')) {
-		print "<font class='txtErrorTextBox'>YOU DO NOT HAVE RIGHTS FOR TREE VIEW</font>"; return;
+		print "<font class='txtErrorTextBox'>" . __('YOU DO NOT HAVE RIGHTS FOR TREE VIEW') . "</font>"; return;
 	}
 
 	?>
@@ -254,13 +254,13 @@ case 'preview':
 	top_graph_header();
 
 	if (!is_view_allowed('show_preview')) {
-		print "<font class='txtErrorTextBox'>YOU DO NOT HAVE RIGHTS FOR PREVIEW VIEW</font>"; return;
+		print "<font class='txtErrorTextBox'>" . __('YOU DO NOT HAVE RIGHTS FOR PREVIEW VIEW') . "</font>"; return;
 	}
 
 	html_graph_validate_preview_request_vars();
 
 	/* include graph view filter selector */
-	html_start_box('Graph Preview Filters' . (isset_request_var('style') && strlen(get_request_var('style')) ? ' [ Custom Graph List Applied - Filtering from List ]':''), '100%', '', '3', 'center', '');
+	html_start_box(__('Graph Preview Filters') . (isset_request_var('style') && strlen(get_request_var('style')) ? ' ' . __('[ Custom Graph List Applied - Filtering from List ]'):''), '100%', '', '3', 'center', '');
 
 	html_graph_preview_filter('graph_view.php', 'preview');
 
@@ -340,7 +340,7 @@ case 'preview':
 
 	html_start_box('', '100%', '', '3', 'center', '');
 
-	$nav = html_nav_bar($nav_url, MAX_DISPLAY_PAGES, get_request_var('page'), get_request_var('graphs'), $total_graphs, get_request_var('columns'), 'Graphs', 'page', 'main');
+	$nav = html_nav_bar($nav_url, MAX_DISPLAY_PAGES, get_request_var('page'), get_request_var('graphs'), $total_graphs, get_request_var('columns'), __('Graphs'), 'page', 'main');
 
 	print $nav;
 
@@ -365,7 +365,7 @@ case 'list':
 	top_graph_header();
 
 	if (!is_view_allowed('show_list')) {
-		print "<font class='txtErrorTextBox'>YOU DO NOT HAVE RIGHTS FOR LIST VIEW</font>"; return;
+		print "<font class='txtErrorTextBox'>" . __('YOU DO NOT HAVE RIGHTS FOR LIST VIEW') ."</font>"; return;
 	}
 
 	/* reset the graph list on a new viewing */
@@ -451,7 +451,7 @@ case 'list':
 	load_current_session_value('graph_list', 'sess_graph_view_list_graph_list', '');
 
 	/* display graph view filter selector */
-	html_start_box('Graph List View Filters' . (isset_request_var('style') && strlen(get_request_var('style')) ? ' [ Custom Graph List Applied - Filter FROM List ]':''), '100%', '', '3', 'center', '');
+	html_start_box(__('Graph List View Filters') . (isset_request_var('style') && strlen(get_request_var('style')) ? ' ' . __('[ Custom Graph List Applied - Filter FROM List ]'):''), '100%', '', '3', 'center', '');
 
 	?>
 	<tr class='even noprint'>
@@ -461,11 +461,11 @@ case 'list':
 				<tr class='noprint'>
 					<?php print html_host_filter(get_request_var('host_id'));?>
 					<td>
-						Template
+						<?php print __('Template');?>
 					</td>
 					<td>
 						<select id='graph_template_id' name='graph_template_id' onChange='applyFilter()'>
-							<option value='0'<?php print htmlspecialchars(get_request_var('filter'));?><?php if (get_request_var('host_id') == '0') {?> selected<?php }?>>Any</option>
+							<option value='0'<?php print htmlspecialchars(get_request_var('filter'));?><?php if (get_request_var('host_id') == '0') {?> selected<?php }?>><?php print__('Any');?></option>
 							<?php
 
 							$graph_templates = get_allowed_graph_templates();
@@ -479,11 +479,11 @@ case 'list':
 						</select>
 					</td>
 					<td>
-						Graphs
+						<?php print __('Graphs');?>
 					</td>
 					<td>
 						<select id='rows' name='rows' onChange='applyFilter()'>
-							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?>
+							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?>>
 							<?php
 							if (sizeof($item_rows) > 0) {
 							foreach ($item_rows as $key => $value) {
@@ -494,19 +494,19 @@ case 'list':
 						</select>
 					</td>
 					<td>
-						Search
+						<?php print __('Search');?>
 					</td>
 					<td>
 						<input id='filter' type='text' name='filter' size='25' value='<?php print htmlspecialchars(get_request_var('filter'));?>'>
 					</td>
 					<td>
-						<input type='button' id='refresh' value='Go' title='Set/Refresh Filters' onClick='applyFilter()'>
+						<input type='button' id='refresh' value='<?php print __('Go');?>' title='<?php print __('Set/Refresh Filters');?>' onClick='applyFilter()'>
 					</td>
 					<td>
-						<input type='button' id='clear' value='Clear' title='Clear Filters' onClick='clearFilter()'>
+						<input type='button' id='clear' value='<?php print __('Clear');?>' title='<?php print __('Clear Filters');?>' onClick='clearFilter()'>
 					</td>
 					<td>
-						<input type='button' value='View' title='View Graphs' onClick='viewGraphs()'>
+						<input type='button' value='<?php print __('View');?>' title='<?php print __('View Graphs');?>' onClick='viewGraphs()'>
 					</td>
 				</tr>
 			</table>
@@ -549,7 +549,7 @@ case 'list':
 
 	print $nav;
 
-	html_header_checkbox(array('Graph Title', 'Device', 'Graph Template', 'Graph Size'), false);
+	html_header_checkbox(array(__('Graph Title'), __('Device'), __('Graph Template'), __('Graph Size')), false);
 
 	$i = 0;
 	if (sizeof($graphs)) {
@@ -572,7 +572,7 @@ case 'list':
 	<table align='right'>
 	<tr>
 		<td align='right'><img src='images/arrow.gif' alt=''>&nbsp;</td>
-		<td align='right'><input type='button' value='View' title='View Graphs' onClick='viewGraphs()'></td>
+		<td align='right'><input type='button' value='<?php print __('View');?>' title='<?php print __('View Graphs');?>' onClick='viewGraphs()'></td>
 	</tr>
 	</table>
 	<input type='hidden' name='style' value='selective'>
