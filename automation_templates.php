@@ -26,7 +26,7 @@ include('./include/auth.php');
 include_once('./lib/utility.php');
 
 $at_actions = array(
-	1 => 'Delete'
+	1 => __('Delete')
 );
 
 /* set default action */
@@ -137,16 +137,16 @@ function form_actions() {
 		if (get_nfilter_request_var('drp_action') == '1') { /* delete */
 			print "<tr>
 				<td class='textArea' class='odd'>
-					<p>Click 'Continue' to delete the folling Automation Template(s).</p>
+					<p>" . __('Click \'Continue\' to delete the folling Automation Template(s).') . "</p>
 					<p><ul>$at_list</ul></p>
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' value='Cancel' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='Continue' title='Delete Automation Template(s)'>";
+			$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "' title='" . __('Delete Automation Template(s)') . "'>";
 		}
 	}else{
-		print "<tr><td class='odd'><span class='textError'>You must select at least one Automation Template.</span></td></tr>\n";
-		$save_html = "<input type='button' value='Return' onClick='cactiReturnTo()'>";
+		print "<tr><td class='odd'><span class='textError'>" . __('You must select at least one Automation Template.') . "</span></td></tr>\n";
+		$save_html = "<input type='button' value='" . __('Return') . "' onClick='cactiReturnTo()'>";
 	}
 
 	print "<tr>
@@ -247,37 +247,37 @@ function template_edit() {
 	$fields_automation_template_edit = array(
 		'host_template' => array(
 			'method' => 'drop_array',
-			'friendly_name' => 'Host Template',
-			'description' => 'Select a Device Template that Devices will be matched to.',
+			'friendly_name' => __('Host Template'),
+			'description' => __('Select a Device Template that Devices will be matched to.'),
 			'value' => '|arg1:host_template|',
 			'array' => $template_names,
 			),
 		'availability_method' => array(
 			'method' => 'drop_array',
-			'friendly_name' => 'Availability Method',
-			'description' => 'Choose the Availability Method to use for Discovered Devices.',
+			'friendly_name' => __('Availability Method'),
+			'description' => __('Choose the Availability Method to use for Discovered Devices.'),
 			'value' => '|arg1:availability_method|',
 			'default' => read_config_option('availability_method'),
 			'array' => $availability_options,
 			),
 		'sysDescr' => array(
 			'method' => 'textbox',
-			'friendly_name' => 'System Description Match',
-			'description' => 'This is a unique string that will be matched to a devices sysDescr string to pair it to this Discovery Template.  Any perl regular expression can be used in addition to any wildcardable SQL Where expression.',
+			'friendly_name' => __('System Description Match'),
+			'description' => __('This is a unique string that will be matched to a devices sysDescr string to pair it to this Discovery Template.  Any perl regular expression can be used in addition to any wildcardable SQL Where expression.'),
 			'value' => '|arg1:sysDescr|',
 			'max_length' => '255',
 			),
 		'sysName' => array(
 			'method' => 'textbox',
-			'friendly_name' => 'System Name Match',
-			'description' => 'This is a unique string that will be matched to a devices sysName string to pair it to this Automation Template.  Any perl regular expression can be used in addition to any wildcardable SQL Where expression.',
+			'friendly_name' => __('System Name Match'),
+			'description' => __('This is a unique string that will be matched to a devices sysName string to pair it to this Automation Template.  Any perl regular expression can be used in addition to any wildcardable SQL Where expression.'),
 			'value' => '|arg1:sysName|',
 			'max_length' => '128',
 			),
 		'sysOid' => array(
 			'method' => 'textbox',
-			'friendly_name' => 'System OID Match',
-			'description' => 'This is a unique string that will be matched to a devices sysOid string to pair it to this Automation Template.  Any perl regular expression can be used in addition to any wildcardable SQL Where expression.',
+			'friendly_name' => __('System OID Match'),
+			'description' => __('This is a unique string that will be matched to a devices sysOid string to pair it to this Automation Template.  Any perl regular expression can be used in addition to any wildcardable SQL Where expression.'),
 			'value' => '|arg1:sysOid|',
 			'max_length' => '128',
 			),
@@ -299,15 +299,15 @@ function template_edit() {
 
 	if (!isempty_request_var('id')) {
 		$host_template = db_fetch_row('SELECT * FROM automation_templates WHERE id=' . get_request_var('id'));
-		$header_label = '[edit: ' . $template_names[$host_template['host_template']] . ']';
+		$header_label = '[' . __('edit') . ': ' . $template_names[$host_template['host_template']] . ']';
 	}else{
-		$header_label = '[new]';
+		$header_label = '[' . __('new') . ']';
 		set_request_var('id', 0);
 	}
 
 	form_start('automation_templates.php', 'form_network');
 
-	html_start_box("Automation Templates $header_label", '100%', '', '3', 'center', '');
+	html_start_box(__('Automation Templates') . ' ' . $header_label, '100%', '', '3', 'center', '');
 
 	draw_edit_form(array(
 		'config' => array('no_form_tag' => 'true'),
@@ -350,7 +350,7 @@ function template() {
 		$rows = get_request_var('rows');
 	}
 
-	html_start_box("Device Automation Templates", '100%', '', '3', 'center', 'automation_templates.php?action=edit');
+	html_start_box(__('Device Automation Templates'), '100%', '', '3', 'center', 'automation_templates.php?action=edit');
 
 	?>
 	<tr class='even'>
@@ -359,13 +359,13 @@ function template() {
 			<table class='filterTable'>
 				<tr>
 					<td>
-						Search
+						<?php print __('Search');?>
 					</td>
 					<td>
 						<input id='filter' type='text' size='25' value='<?php print htmlspecialchars(get_request_var('filter'));?>'>
 					</td>
 					<td>
-						Templates
+						<?php print __('Templates');?>
 					</td>
 					<td>
 						<select id='rows' onChange='applyFilter()'>
@@ -380,10 +380,10 @@ function template() {
 						</select>
 					</td>
 					<td>
-						<input type='button' id='refresh' value='Go' title='Set/Refresh Filters'>
+						<input type='button' id='refresh' value='<?php print __('Go');?>' title='<?php print __('Set/Refresh Filters');?>'>
 					</td>
 					<td>
-						<input type='button' id='clear' value='Clear' title='Clear Filters'>
+						<input type='button' id='clear' value='<?php print __('Clear');?>' title='<?php print __('Clear Filters');?>'>
 					</td>
 				</tr>
 			</table>
@@ -391,7 +391,12 @@ function template() {
 			</form>
 			<script type='text/javascript'>
 			function applyFilter() {
-				strURL = 'automation_templates.php?filter='+$('#filter').val()+'&rows='+$('#rows').val()+'&page='+$('#page').val()+'&has_graphs='+$('#has_graphs').is(':checked')+'&header=false';
+				strURL = 'automation_templates.php' + 
+					'?filter='     + $('#filter').val()+
+					'&rows='       + $('#rows').val()+
+					'&page='       + $('#page').val()+
+					'&has_graphs=' + $('#has_graphs').is(':checked')+
+					'&header=false';
 				loadPageNoHeader(strURL);
 			}
 
@@ -442,17 +447,17 @@ function template() {
 		ORDER BY sequence " . 
 		' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows);
 
-	$nav = html_nav_bar('automation_templates.php', MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 7, 'Templates', 'page', 'main');
+	$nav = html_nav_bar('automation_templates.php', MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 7, __('Templates'), 'page', 'main');
 
 	print $nav;
 
 	$display_text = array(
-		array('display' => 'Template Name', 'align' => 'left'),
-		array('display' => 'Availability Method', 'align' => 'left'),
-		array('display' => 'System Description Match', 'align' => 'left'),
-		array('display' => 'System Name Match', 'align' => 'left'),
-		array('display' => 'System ObjectId Match', 'align' => 'left'),
-		array('display' => 'Action', 'align' => 'right'));
+		array('display' => __('Template Name'), 'align' => 'left'),
+		array('display' => __('Availability Method'), 'align' => 'left'),
+		array('display' => __('System Description Match'), 'align' => 'left'),
+		array('display' => __('System Name Match'), 'align' => 'left'),
+		array('display' => __('System ObjectId Match'), 'align' => 'left'),
+		array('display' => __('Action'), 'align' => 'right'));
 
 	html_header_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'));
 
@@ -460,7 +465,7 @@ function template() {
 	if (sizeof($dts)) {
 		foreach ($dts as $dt) {
 			if ($dt['name'] == '') {
-				$name = 'Unknown Template';
+				$name = __('Unknown Template');
 			}else{
 				$name = $dt['name'];
 			}
@@ -473,13 +478,13 @@ function template() {
 
 			if (get_request_var('filter') == '') {
 				if ($i < $total_rows && $total_rows > 1) {
-					$form_data = '<a class="pic fa fa-arrow-down moveArrow" href="' . htmlspecialchars('automation_templates.php?action=movedown&id=' . $dt['id']) . '" title="Move Down"></a>';
+					$form_data = '<a class="pic fa fa-arrow-down moveArrow" href="' . htmlspecialchars('automation_templates.php?action=movedown&id=' . $dt['id']) . '" title="' . __('Move Down') . '"></a>';
 				}else{
 					$form_data = '<span class="moveArrowNone"></span>';
 				}
 
 				if ($i > 1 && $i <= $total_rows) {
-					$form_data .= '<a class="pic fa fa-arrow-up moveArrow" href="' . htmlspecialchars('automation_templates.php?action=moveup&id=' . $dt['id']) . '" title="Move Up"></a>';
+					$form_data .= '<a class="pic fa fa-arrow-up moveArrow" href="' . htmlspecialchars('automation_templates.php?action=moveup&id=' . $dt['id']) . '" title="' . __('Move Up') . '"></a>';
 				}else{
 					$form_data .= '<span class="moveArrowNone"></span>';
 				}
@@ -494,7 +499,7 @@ function template() {
 			$i++;
 		}
 	}else{
-		print "<tr><td><em>No Automation Device Templates</em></td></tr>\n";
+		print "<tr><td><em>" . __('No Automation Device Templates') . "</em></td></tr>\n";
 	}
 
 	html_end_box(false);
@@ -516,4 +521,3 @@ function template() {
 	<?php
 }
 
-?>

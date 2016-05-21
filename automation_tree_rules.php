@@ -26,10 +26,10 @@ include('./include/auth.php');
 include_once('./lib/data_query.php');
 
 $automation_tree_rules_actions = array(
-	AUTOMATION_ACTION_TREE_DUPLICATE => 'Duplicate',
-	AUTOMATION_ACTION_TREE_ENABLE => 'Enable',
-	AUTOMATION_ACTION_TREE_DISABLE => 'Disable',
-	AUTOMATION_ACTION_TREE_DELETE => 'Delete',
+	AUTOMATION_ACTION_TREE_DUPLICATE => __('Duplicate'),
+	AUTOMATION_ACTION_TREE_ENABLE    => __('Enable'),
+	AUTOMATION_ACTION_TREE_DISABLE   => __('Disable'),
+	AUTOMATION_ACTION_TREE_DELETE    => __('Delete'),
 );
 
 /* set default action */
@@ -93,7 +93,7 @@ function automation_tree_rules_form_save() {
 		get_filter_request_var('id');
 		/* ==================================================== */
 
-		$save['id']                 = get_nfilter_request_var('id');
+		$save['id']                 = get_request_var('id');
 		$save['name']               = form_input_validate(get_nfilter_request_var('name'), 'name', '', true, 3);
 		$save['tree_id']            = form_input_validate(get_nfilter_request_var('tree_id'), 'tree_id', '^[0-9]+$', false, 3);
 		$save['tree_item_id']       = isset_request_var('tree_item_id') ? form_input_validate(get_nfilter_request_var('tree_item_id'), 'tree_item_id', '^[0-9]+$', false, 3) : 0;
@@ -110,16 +110,17 @@ function automation_tree_rules_form_save() {
 			}
 		}
 
-		header('Location: automation_tree_rules.php?header=false&action=edit&id=' . (empty($rule_id) ? get_nfilter_request_var('id') : $rule_id));
+		header('Location: automation_tree_rules.php?header=false&action=edit&id=' . (empty($rule_id) ? get_request_var('id') : $rule_id));
 
 	}elseif (isset_request_var('save_component_automation_match_item')) {
 		/* ================= input validation ================= */
 		get_filter_request_var('id');
 		get_filter_request_var('item_id');
 		/* ==================================================== */
+
 		$save = array();
-		$save['id']        = form_input_validate(get_nfilter_request_var('item_id'), 'item_id', '^[0-9]+$', false, 3);
-		$save['rule_id']   = form_input_validate(get_nfilter_request_var('id'), 'id', '^[0-9]+$', false, 3);
+		$save['id']        = form_input_validate(get_request_var('item_id'), 'item_id', '^[0-9]+$', false, 3);
+		$save['rule_id']   = form_input_validate(get_request_var('id'), 'id', '^[0-9]+$', false, 3);
 		$save['rule_type'] = AUTOMATION_RULE_TYPE_TREE_MATCH;
 		$save['sequence']  = form_input_validate(get_nfilter_request_var('sequence'), 'sequence', '^[0-9]+$', false, 3);
 		$save['operation'] = form_input_validate(get_nfilter_request_var('operation'), 'operation', '^[-0-9]+$', true, 3);
@@ -138,9 +139,9 @@ function automation_tree_rules_form_save() {
 		}
 
 		if (is_error_message()) {
-			header('Location: automation_tree_rules.php?header=false&action=item_edit&id=' . get_nfilter_request_var('id') . '&item_id=' . (empty($item_id) ? get_nfilter_request_var('item_id') : $item_id) . '&rule_type=' . AUTOMATION_RULE_TYPE_TREE_MATCH);
+			header('Location: automation_tree_rules.php?header=false&action=item_edit&id=' . get_request_var('id') . '&item_id=' . (empty($item_id) ? get_request_var('item_id') : $item_id) . '&rule_type=' . AUTOMATION_RULE_TYPE_TREE_MATCH);
 		}else{
-			header('Location: automation_tree_rules.php?header=false&action=edit&id=' . get_nfilter_request_var('id') . '&rule_type=' . AUTOMATION_RULE_TYPE_TREE_MATCH);
+			header('Location: automation_tree_rules.php?header=false&action=edit&id=' . get_request_var('id') . '&rule_type=' . AUTOMATION_RULE_TYPE_TREE_MATCH);
 		}
 	}elseif (isset_request_var('save_component_automation_tree_rule_item')) {
 
@@ -150,8 +151,8 @@ function automation_tree_rules_form_save() {
 		/* ==================================================== */
 
 		unset($save);
-		$save['id']                = form_input_validate(get_nfilter_request_var('item_id'), 'item_id', '^[0-9]+$', false, 3);
-		$save['rule_id']           = form_input_validate(get_nfilter_request_var('id'), 'id', '^[0-9]+$', false, 3);
+		$save['id']                = form_input_validate(get_request_var('item_id'), 'item_id', '^[0-9]+$', false, 3);
+		$save['rule_id']           = form_input_validate(get_request_var('id'), 'id', '^[0-9]+$', false, 3);
 		$save['sequence']          = form_input_validate(get_nfilter_request_var('sequence'), 'sequence', '^[0-9]+$', false, 3);
 		$save['field']             = form_input_validate((isset_request_var('field') ? get_nfilter_request_var('field') : ''), 'field', '', true, 3);
 		$save['sort_type']         = form_input_validate(get_nfilter_request_var('sort_type'), 'sort_type', '^[0-9]+$', false, 3);
@@ -170,9 +171,9 @@ function automation_tree_rules_form_save() {
 		}
 
 		if (is_error_message()) {
-			header('Location: automation_tree_rules.php?header=false&action=item_edit&id=' . get_nfilter_request_var('id') . '&item_id=' . (empty($automation_graph_rule_item_id) ? get_nfilter_request_var('item_id') : $automation_graph_rule_item_id) . '&rule_type=' . AUTOMATION_RULE_TYPE_TREE_ACTION);
+			header('Location: automation_tree_rules.php?header=false&action=item_edit&id=' . get_request_var('id') . '&item_id=' . (empty($automation_graph_rule_item_id) ? get_request_var('item_id') : $automation_graph_rule_item_id) . '&rule_type=' . AUTOMATION_RULE_TYPE_TREE_ACTION);
 		}else{
-			header('Location: automation_tree_rules.php?header=false&action=edit&id=' . get_nfilter_request_var('id') . '&rule_type=' . AUTOMATION_RULE_TYPE_TREE_ACTION);
+			header('Location: automation_tree_rules.php?header=false&action=edit&id=' . get_request_var('id') . '&rule_type=' . AUTOMATION_RULE_TYPE_TREE_ACTION);
 		}
 	} else {
 		raise_message(2);
@@ -249,41 +250,40 @@ function automation_tree_rules_form_actions() {
 	if (get_nfilter_request_var('drp_action') == AUTOMATION_ACTION_TREE_DELETE) { /* DELETE */
 		print "<tr>
 			<td class='textArea'>
-				<p>Click 'Continue' to delete the following Rule(s).</p>
+				<p>" . __('Click \'Continue\' to delete the following Rule(s).') . "</p>
 				<p><ul>$automation_tree_rules_list</ul></p>
 			</td>
 		</tr>\n";
 	}elseif (get_nfilter_request_var('drp_action') == AUTOMATION_ACTION_TREE_DUPLICATE) { /* duplicate */
 		print "<tr>
 			<td class='textArea'>
-				<p>Click 'Continue' to duplicate the following Rule(s). You can
-				optionally change the title format for the new Rules.</p>
+				<p>" . __('Click \'Continue\' to duplicate the following Rule(s). You can optionally change the title format for the new Rules.') . "</p>
 				<p><ul>$automation_tree_rules_list</ul></p>
-				<p>Title Format:<br>"; form_text_box('name_format', '<rule_name> (1)', '', '255', '30', 'text'); print "</p>
+				<p>" . __('Title Format') . '<br>'; form_text_box('name_format', '<' . __('rule_name') . '> (1)', '', '255', '30', 'text'); print "</p>
 			</td>
 		</tr>\n";
 	}elseif (get_nfilter_request_var('drp_action') == AUTOMATION_ACTION_TREE_ENABLE) { /* enable */
 		print "<tr>
 			<td class='textArea'>
-				<p>Click 'Continue' to enable the following Rule(s).</p>
+				<p>" . __('Click \'Continue\' to enable the following Rule(s).') . "</p>
 				<p><ul>$automation_tree_rules_list</ul></p>
-				<p>Make sure, that those rules have successfully been tested!</p>
+				<p>" . __('Make sure, that those rules have successfully been tested!') . "</p>
 			</td>
 		</tr>\n";
 	}elseif (get_nfilter_request_var('drp_action') == AUTOMATION_ACTION_TREE_DISABLE) { /* disable */
 		print "<tr>
 			<td class='textArea'>
-				<p>Click 'Continue' to disable the following Rule(s).</p>
+				<p>" . __('Click \'Continue\' to disable the following Rule(s).') . "</p>
 				<p><ul>$automation_tree_rules_list</ul></p>
 			</td>
 		</tr>\n";
 	}
 
 	if (!isset($automation_tree_rules_array)) {
-		print "<tr><td class='even'><span class='textError'>You must select at least one Rule.</span></td></tr>";
-		$save_html = "<input type='button' value='Return' onClick='cactiReturnTo()'>";
+		print "<tr><td class='even'><span class='textError'>" . __('You must select at least one Rule.') . "</span></td></tr>";
+		$save_html = "<input type='button' value='" . __('Return') . "' onClick='cactiReturnTo()'>";
 	}else {
-		$save_html = "<input type='button' value='Cancel' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='Continue' title='Apply requested action'>";
+		$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "' title='" . __('Apply requested action') . "'>";
 	}
 
 	print "<tr>
@@ -376,7 +376,7 @@ function automation_tree_rules_item_edit() {
 				?>
 <table style='width:100%;text-align:center;'>
 	<tr>
-		<td class='textInfo' style='text-align:right;vertical-align:top;'><span class='linkMarker'>*<a class='linkEditMain' href='<?php print htmlspecialchars('automation_tree_rules.php?action=item_edit&id=' . (isset_request_var('id') ? get_request_var('id') : 0) . '&item_id=' . (isset_request_var('item_id') ? get_request_var('item_id') : 0) . '&rule_type=' . (isset_request_var('rule_type') ? get_request_var('rule_type') : 0) .'&show_trees=') . (isset($_SESSION['automation_tree_rules_show_trees']) ? '0' : '1');?>'><?php print (isset($_SESSION['automation_tree_rules_show_trees']) ? 'Dont Show' : 'Show');?> Created Trees.</a></span><br>
+		<td class='textInfo' style='text-align:right;vertical-align:top;'><span class='linkMarker'>*<a class='linkEditMain' href='<?php print htmlspecialchars('automation_tree_rules.php?action=item_edit&id=' . (isset_request_var('id') ? get_request_var('id') : 0) . '&item_id=' . (isset_request_var('item_id') ? get_request_var('item_id') : 0) . '&rule_type=' . (isset_request_var('rule_type') ? get_request_var('rule_type') : 0) .'&show_trees=') . (isset($_SESSION['automation_tree_rules_show_trees']) ? '0' : '1');?>'><?php print (isset($_SESSION['automation_tree_rules_show_trees']) ? __('Dont Show'):__('Show'));?> <?php print __('Created Trees');?></a></span><br>
 		</td>
 	</tr>
 </table>
@@ -468,7 +468,7 @@ function automation_tree_rules_remove() {
 
 	if ((read_config_option('deletion_verification') == 'on') && (!isset_request_var('confirm'))) {
 		top_header();
-		form_confirm('Are You Sure?', "Are you sure you want to DELETE the Rule '" . db_fetch_cell('SELECT name FROM automation_tree_rules WHERE id=' . get_request_var('id')) . "'?", 'automation_tree_rules.php', 'automation_tree_rules.php?action=remove&id=' . get_request_var('id'));
+		form_confirm(__('Are You Sure?'), __("Are you sure you want to DELETE the Rule '%s'?", db_fetch_cell('SELECT name FROM automation_tree_rules WHERE id=' . get_request_var('id'))), 'automation_tree_rules.php', 'automation_tree_rules.php?action=remove&id=' . get_request_var('id'));
 		bottom_footer();
 		exit;
 	}
@@ -517,7 +517,7 @@ function automation_tree_rules_edit() {
 		?>
 <table style='width:100%;text-align:center;'>
 	<tr>
-		<td class='textInfo' align='right' valign='top'><span class='linkMarker'>*<a class='linkEditMain' href='<?php print htmlspecialchars('automation_tree_rules.php?action=edit&id=' . (isset_request_var('id') ? get_request_var('id') : 0) . '&show_hosts=') . (isset($_SESSION['automation_tree_rules_show_objects']) ? '0' : '1');?>'><?php print (isset($_SESSION['automation_tree_rules_show_objects']) ? 'Dont Show' : 'Show');?> Eligible Objects.</a></span><br>
+		<td class='textInfo' align='right' valign='top'><span class='linkMarker'>*<a class='linkEditMain' href='<?php print htmlspecialchars('automation_tree_rules.php?action=edit&id=' . (isset_request_var('id') ? get_request_var('id') : 0) . '&show_hosts=') . (isset($_SESSION['automation_tree_rules_show_objects']) ? '0' : '1');?>'><?php print (isset($_SESSION['automation_tree_rules_show_objects']) ? __('Dont Show'):__('Show'));?> <?php print __('Eligible Objects');?></a></span><br>
 		</td>
 	</tr>
 </table>
@@ -530,9 +530,9 @@ function automation_tree_rules_edit() {
 	$rule = array();
 	if (!isempty_request_var('id')) {
 		$rule = db_fetch_row('SELECT * FROM automation_tree_rules WHERE id=' . get_request_var('id'));
-		$header_label = '[edit: ' . $rule['name'] . ']';
+		$header_label = '[' . __('edit') . ': ' . $rule['name'] . ']';
 	}else{
-		$header_label = '[new]';
+		$header_label = '[' . __('new') . ']';
 	}
 	/* if creating a new rule, use all fields that have already been entered on page reload */
 	if (isset_request_var('name')) {
@@ -557,7 +557,7 @@ function automation_tree_rules_edit() {
 
 	form_start('automation_tree_rules.php', 'form_automation_tree_rule_edit');
 
-	html_start_box("Tree Rule Selection $header_label", '100%', '', '3', 'center', '');
+	html_start_box(__('Tree Rule Selection') . ' ' . $header_label, '100%', '', '3', 'center', '');
 
 	if (!isempty_request_var('id')) {
 		/* display whole rule */
@@ -692,7 +692,7 @@ function automation_tree_rules() {
 		$rows = get_request_var('rows');
 	}
 
-	html_start_box('Tree Rules', '100%', '', '3', 'center', 'automation_tree_rules.php?action=edit');
+	html_start_box(__('Tree Rules'), '100%', '', '3', 'center', 'automation_tree_rules.php?action=edit');
 
 	?>
 	<tr class='even'>
@@ -701,13 +701,13 @@ function automation_tree_rules() {
 				<table class='filterTable'>
 					<tr>
 						<td>
-							Search
+							<?php print __('Search');?>
 						</td>
 						<td>
 							<input type='text' id='filter' size='25' value='<?php print get_request_var('filter');?>'>
 						</td>
 						<td>
-							Status
+							<?php print __('Status');?>
 						</td>
 						<td>
 							<select id='status'>
@@ -717,7 +717,7 @@ function automation_tree_rules() {
 							</select>
 						</td>
 						<td>
-							Tree Rules
+							<?php print __('Tree Rules');?>
 						</td>
 						<td>
 							<select id='rows'>
@@ -732,10 +732,10 @@ function automation_tree_rules() {
 							</select>
 						</td>
 						<td>
-							<input id='refresh' type='button' value='Go'> 
+							<input id='refresh' type='button' value='<?php print __('Go');?>'> 
 						</td>
 						<td>
-							<input id='clear' type='button' value='Clear'>
+							<input id='clear' type='button' value='<?php print __('Clear');?>'>
 						</td>
 					</tr>
 				</table>
@@ -818,25 +818,26 @@ function automation_tree_rules() {
 		ORDER BY " . get_request_var('sort_column') . ' ' . get_request_var('sort_direction') . "
 		LIMIT " . ($rows*(get_request_var('page')-1)) . ',' . $rows);
 
-	$nav = html_nav_bar('automation_tree_rules.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 11, 'Trees', 'page', 'main');
+	$nav = html_nav_bar('automation_tree_rules.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 11, __('Trees'), 'page', 'main');
 
 	print $nav;
 
 	$display_text = array(
-		'name' 					=> array('display' => 'Rule Name', 'align' => 'left', 'sort' => 'ASC'),
-		'id' 					=> array('display' => 'Id', 'align' => 'right', 'sort' => 'ASC'),
-		'tree_name' 			=> array('display' => 'Hook into Tree', 'align' => 'left', 'sort' =>'ASC'),
-		'subtree_name'			=> array('display' => 'At Subtree', 'align' => 'left', 'sort' => 'ASC'),
-		'leaf_type'				=> array('display' => 'This Type', 'align' => 'left', 'sort' => 'ASC'),
-		'host_grouping_type'	=> array('display' => 'Using Grouping', 'align' => 'left', 'sort' => 'ASC'),
-		'enabled' 				=> array('display' => 'Enabled', 'align' => 'right', 'sort' => 'ASC'));
+		'name'               => array('display' => __('Rule Name'),      'align' => 'left',  'sort' => 'ASC'),
+		'id'                 => array('display' => __('ID'),             'align' => 'right', 'sort' => 'ASC'),
+		'tree_name'          => array('display' => __('Hook into Tree'), 'align' => 'left',  'sort' => 'ASC'),
+		'subtree_name'       => array('display' => __('At Subtree'),     'align' => 'left',  'sort' => 'ASC'),
+		'leaf_type'          => array('display' => __('This Type'),      'align' => 'left',  'sort' => 'ASC'),
+		'host_grouping_type' => array('display' => __('Using Grouping'), 'align' => 'left',  'sort' => 'ASC'),
+		'enabled'            => array('display' => __('Enabled'),        'align' => 'right', 'sort' => 'ASC')
+	);
 
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
 	if (sizeof($automation_tree_rules) > 0) {
 		foreach ($automation_tree_rules as 	$automation_tree_rule) {
-			$tree_item_type_name = ((empty($automation_tree_rule['leaf_type'])) ? '<em>None</em>' : $automation_tree_item_types{$automation_tree_rule['leaf_type']});
-			$subtree_name = ((empty($automation_tree_rule['subtree_name'])) ? '<em>ROOT</em>' : $automation_tree_rule['subtree_name']);
+			$tree_item_type_name = ((empty($automation_tree_rule['leaf_type'])) ? '<em>' . __('None') . '</em>' : $automation_tree_item_types{$automation_tree_rule['leaf_type']});
+			$subtree_name = ((empty($automation_tree_rule['subtree_name'])) ? '<em>' . __('ROOT') . '</em>' : $automation_tree_rule['subtree_name']);
 			$tree_host_grouping_type = ((empty($host_group_types{$automation_tree_rule['host_grouping_type']})) ? '' : $host_group_types{$automation_tree_rule['host_grouping_type']});
 			form_alternate_row('line' .  $automation_tree_rule['id'], true);
 
@@ -846,7 +847,7 @@ function automation_tree_rules() {
 			form_selectable_cell($subtree_name, $automation_tree_rule['id']);
 			form_selectable_cell($tree_item_type_name, $automation_tree_rule['id']);
 			form_selectable_cell($tree_host_grouping_type, $automation_tree_rule['id']);
-			form_selectable_cell($automation_tree_rule['enabled'] ? 'Enabled' : 'Disabled', $automation_tree_rule['id'], '', 'text-align:right');
+			form_selectable_cell($automation_tree_rule['enabled'] ? __('Enabled'):__('Disabled'), $automation_tree_rule['id'], '', 'text-align:right');
 			form_checkbox_cell($automation_tree_rule['name'], $automation_tree_rule['id']);
 
 			form_end_row();
@@ -854,7 +855,7 @@ function automation_tree_rules() {
 
 		print $nav;
 	}else{
-		print "<tr><td colspan='9'><em>No Tree Rules</em></td></tr>\n";
+		print "<tr><td colspan='9'><em>" . __('No Tree Rules') . "</em></td></tr>\n";
 	}
 	html_end_box(false);
 
@@ -863,4 +864,3 @@ function automation_tree_rules() {
 
 	form_end();
 }
-?>

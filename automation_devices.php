@@ -200,7 +200,7 @@ function display_discovery_page() {
 	$results = get_discovery_results($total_rows, $rows);
 
 	/* generate page list */
-	$nav = html_nav_bar('automation_devices.php', MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 12, 'Devices', 'page', 'main');
+	$nav = html_nav_bar('automation_devices.php', MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 12, __('Devices'), 'page', 'main');
 
 	print $nav;
 

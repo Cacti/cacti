@@ -26,10 +26,10 @@ include('./include/auth.php');
 include_once('./lib/data_query.php');
 
 $automation_graph_rules_actions = array(
-	AUTOMATION_ACTION_GRAPH_DUPLICATE => 'Duplicate',
-	AUTOMATION_ACTION_GRAPH_ENABLE => 'Enable',
-	AUTOMATION_ACTION_GRAPH_DISABLE => 'Disable',
-	AUTOMATION_ACTION_GRAPH_DELETE => 'Delete',
+	AUTOMATION_ACTION_GRAPH_DUPLICATE => __('Duplicate'),
+	AUTOMATION_ACTION_GRAPH_ENABLE    => __('Enable'),
+	AUTOMATION_ACTION_GRAPH_DISABLE   => __('Disable'),
+	AUTOMATION_ACTION_GRAPH_DELETE    => __('Delete'),
 );
 
 /* set default action */
@@ -112,9 +112,10 @@ function save() {
 		get_filter_request_var('id');
 		get_filter_request_var('item_id');
 		/* ==================================================== */
+
 		$save = array();
-		$save['id']        = form_input_validate(get_nfilter_request_var('item_id'), 'item_id', '^[0-9]+$', false, 3);
-		$save['rule_id']   = form_input_validate(get_nfilter_request_var('id'), 'id', '^[0-9]+$', false, 3);
+		$save['id']        = form_input_validate(get_request_var('item_id'), 'item_id', '^[0-9]+$', false, 3);
+		$save['rule_id']   = form_input_validate(get_request_var('id'), 'id', '^[0-9]+$', false, 3);
 		$save['sequence']  = form_input_validate(get_nfilter_request_var('sequence'), 'sequence', '^[0-9]+$', false, 3);
 		$save['operation'] = form_input_validate(get_nfilter_request_var('operation'), 'operation', '^[-0-9]+$', true, 3);
 		$save['field']     = form_input_validate(((isset_request_var('field') && get_nfilter_request_var('field') != '0') ? get_nfilter_request_var('field') : ''), 'field', '', true, 3);
@@ -132,9 +133,9 @@ function save() {
 		}
 
 		if (is_error_message()) {
-			header('Location: automation_graph_rules.php?header=false&action=item_edit&id=' . get_nfilter_request_var('id') . '&item_id=' . (empty($item_id) ? get_nfilter_request_var('item_id') : $item_id) . '&rule_type=' . AUTOMATION_RULE_TYPE_GRAPH_ACTION);
+			header('Location: automation_graph_rules.php?header=false&action=item_edit&id=' . get_request_var('id') . '&item_id=' . (empty($item_id) ? get_request_var('item_id') : $item_id) . '&rule_type=' . AUTOMATION_RULE_TYPE_GRAPH_ACTION);
 		}else{
-			header('Location: automation_graph_rules.php?header=false&action=edit&id=' . get_nfilter_request_var('id') . '&rule_type=' . AUTOMATION_RULE_TYPE_GRAPH_ACTION);
+			header('Location: automation_graph_rules.php?header=false&action=edit&id=' . get_request_var('id') . '&rule_type=' . AUTOMATION_RULE_TYPE_GRAPH_ACTION);
 		}
 	}elseif (isset_request_var('save_component_automation_match_item')) {
 		/* ================= input validation ================= */
@@ -143,8 +144,8 @@ function save() {
 		/* ==================================================== */
 
 		unset($save);
-		$save['id']        = form_input_validate(get_nfilter_request_var('item_id'), 'item_id', '^[0-9]+$', false, 3);
-		$save['rule_id']   = form_input_validate(get_nfilter_request_var('id'), 'id', '^[0-9]+$', false, 3);
+		$save['id']        = form_input_validate(get_request_var('item_id'), 'item_id', '^[0-9]+$', false, 3);
+		$save['rule_id']   = form_input_validate(get_request_var('id'), 'id', '^[0-9]+$', false, 3);
 		$save['rule_type'] = AUTOMATION_RULE_TYPE_GRAPH_MATCH;
 		$save['sequence']  = form_input_validate(get_nfilter_request_var('sequence'), 'sequence', '^[0-9]+$', false, 3);
 		$save['operation'] = form_input_validate(get_nfilter_request_var('operation'), 'operation', '^[-0-9]+$', true, 3);
@@ -163,9 +164,9 @@ function save() {
 		}
 
 		if (is_error_message()) {
-			header('Location: automation_graph_rules.php?header=false&action=item_edit&id=' . get_nfilter_request_var('id') . '&item_id=' . (empty($item_id) ? get_nfilter_request_var('item_id') : $item_id) . '&rule_type=' . AUTOMATION_RULE_TYPE_GRAPH_MATCH);
+			header('Location: automation_graph_rules.php?header=false&action=item_edit&id=' . get_request_var('id') . '&item_id=' . (empty($item_id) ? get_request_var('item_id') : $item_id) . '&rule_type=' . AUTOMATION_RULE_TYPE_GRAPH_MATCH);
 		}else{
-			header('Location: automation_graph_rules.php?header=false&action=edit&id=' . get_nfilter_request_var('id') . '&rule_type=' . AUTOMATION_RULE_TYPE_GRAPH_MATCH);
+			header('Location: automation_graph_rules.php?header=false&action=edit&id=' . get_request_var('id') . '&rule_type=' . AUTOMATION_RULE_TYPE_GRAPH_MATCH);
 		}
 	} else {
 		raise_message(2);
@@ -178,7 +179,7 @@ function save() {
  ------------------------ */
 
 function automation_graph_rules_form_actions() {
-	global $config, $colors, $automation_graph_rules_actions;
+	global $config, $automation_graph_rules_actions;
 
 	/* if we are to save this form, instead of display it */
 	if (isset_request_var('selected_items')) {
@@ -232,46 +233,45 @@ function automation_graph_rules_form_actions() {
 
 	form_start('automation_graph_rules.php', 'automation_graph_rules');
 
-	html_start_box($automation_graph_rules_actions{get_nfilter_request_var('drp_action')}, '60%', $colors['header_panel'], '3', 'center', '');
+	html_start_box($automation_graph_rules_actions{get_nfilter_request_var('drp_action')}, '60%', '', '3', 'center', '');
 
 	if (get_nfilter_request_var('drp_action') == AUTOMATION_ACTION_GRAPH_DELETE) { /* delete */
-		print "	<tr>
+		print "<tr>
 			<td class='textArea'>
-				<p>Are you sure you want to delete the following Rules?  If so, press 'Continue'.</p>
+				<p>" . __('Press \'Continue\' to delete the following Rules.') . "</p>
 				<ul>$automation_graph_rules_list</ul>
 			</td>
 		</tr>";
 	}elseif (get_nfilter_request_var('drp_action') == AUTOMATION_ACTION_GRAPH_DUPLICATE) { /* duplicate */
 		print "<tr>
 			<td class='textArea'>
-				<p>Click 'Continue' to duplicate the following Rule(s). You can
-				optionally change the title format for the new Rules.</p>
+				<p>" . __('Click \'Continue\' to duplicate the following Rule(s). You can optionally change the title format for the new Rules.') . "</p>
 				<ul>$automation_graph_rules_list</ul>
-				<p>Title Format:<br>"; form_text_box('name_format', '<rule_name> (1)', '', '255', '30', 'text'); print "</p>
+				<p>" . __('Title Format') . '<br>'; form_text_box('name_format', '<' . __('rule_name') . '> (1)', '', '255', '30', 'text'); print "</p>
 			</td>
 		</tr>\n";
 	}elseif (get_nfilter_request_var('drp_action') == AUTOMATION_ACTION_GRAPH_ENABLE) { /* enable */
 		print "<tr>
 			<td class='textArea'>
-				<p>Click 'Continue' to enable the following Rule(s).</p>
+				<p>" . __('Click \'Continue\' to enable the following Rule(s).') . "</p>
 				<ul>$automation_graph_rules_list</ul>
-				<p>Make sure, that those rules have successfully been tested!</p>
+				<p>" . __('Make sure, that those rules have successfully been tested!') . "</p>
 			</td>
 		</tr>\n";
 	}elseif (get_nfilter_request_var('drp_action') == AUTOMATION_ACTION_GRAPH_DISABLE) { /* disable */
 		print "<tr>
 			<td class='textArea'>
-				<p>Click 'Continue' to disable the following Rule(s).</p>
+				<p>" . __('Click \'Continue\' to disable the following Rule(s).') . "</p>
 				<ul>$automation_graph_rules_list</ul>
 			</td>
 		</tr>\n";
 	}
 
 	if (!isset($automation_graph_rules_array)) {
-		print "<tr class='even'><td><span class='textError'>You must select at least one Rule.</span></td></tr>\n";
-		$save_html = "<input type='button' value='Return' onClick='cactiReturnTo()'>";
+		print "<tr class='even'><td><span class='textError'>" . __('You must select at least one Rule.') . "</span></td></tr>\n";
+		$save_html = "<input type='button' value='" . __('Return') . "' onClick='cactiReturnTo()'>";
 	}else {
-		$save_html = "<input type='button' value='Cancel' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='Continue' title='Apply requested action'>";
+		$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "' title='" . __('Apply requested action') . "'>";
 	}
 
 	print "	<tr>
@@ -307,8 +307,6 @@ function automation_graph_rules_item_movedown() {
 	}
 }
 
-
-
 function automation_graph_rules_item_moveup() {
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
@@ -323,8 +321,6 @@ function automation_graph_rules_item_moveup() {
 	}
 }
 
-
-
 function automation_graph_rules_item_remove() {
 	/* ================= input validation ================= */
 	get_filter_request_var('item_id');
@@ -332,14 +328,12 @@ function automation_graph_rules_item_remove() {
 	/* ==================================================== */
 
 	if (get_request_var('rule_type') == AUTOMATION_RULE_TYPE_GRAPH_MATCH) {
-		db_execute('delete from automation_match_rule_items where id=' . get_request_var('item_id'));
+		db_execute('DELETE FROM automation_match_rule_items WHERE id=' . get_request_var('item_id'));
 	} elseif (get_request_var('rule_type') == AUTOMATION_RULE_TYPE_GRAPH_ACTION) {
-		db_execute('delete from automation_graph_rule_items where id=' . get_request_var('item_id'));
+		db_execute('DELETE FROM automation_graph_rule_items WHERE id=' . get_request_var('item_id'));
 	}
 
 }
-
-
 
 function automation_graph_rules_item_edit() {
 	global $config;
@@ -405,7 +399,7 @@ function automation_graph_rules_remove() {
 
 	if ((read_config_option('deletion_verification') == 'on') && (!isset_request_var('confirm'))) {
 		top_header();
-		form_confirm('Are You Sure?', "Are you sure you want to delete the Rule '" . db_fetch_cell('SELECT name FROM automation_graph_rules WHERE id=' . get_request_var('id')) . "'?", 'automation_graph_rules.php', 'automation_graph_rules.php?action=remove&id=' . get_request_var('id'));
+		form_confirm(__('Are You Sure?'), __("Are you sure you want to delete the Rule '%s'?", db_fetch_cell('SELECT name FROM automation_graph_rules WHERE id=' . get_request_var('id'))), 'automation_graph_rules.php', 'automation_graph_rules.php?action=remove&id=' . get_request_var('id'));
 		bottom_footer();
 		exit;
 	}
@@ -419,7 +413,7 @@ function automation_graph_rules_remove() {
 
 
 function automation_graph_rules_edit() {
-	global $colors, $config;
+	global $config;
 	global $fields_automation_graph_rules_edit1, $fields_automation_graph_rules_edit2, $fields_automation_graph_rules_edit3;
 
 	/* ================= input validation ================= */
@@ -477,9 +471,9 @@ function automation_graph_rules_edit() {
 			$rule['graph_type_id'] = get_request_var('graph_type_id'); # set query_type for display
 		}
 		# setup header
-		$header_label = '[edit: ' . $rule['name'] . ']';
+		$header_label = '[' . __('edit') . ': ' . $rule['name'] . ']';
 	}else{
-		$header_label = '[new]';
+		$header_label = '[' . __('new') . ']';
 	}
 
 	/*
@@ -489,7 +483,7 @@ function automation_graph_rules_edit() {
 		?>
 <table style='width:100%;text-align:center;'>
 	<tr>
-		<td class='textInfo' align='right' valign='top'><span class='linkMarker'>*<a class='linkEditMain' href='<?php print htmlspecialchars('automation_graph_rules.php?action=edit&id=' . (isset_request_var('id') ? get_request_var('id') : 0) . '&show_rule=') . ($_SESSION['automation_graph_rules_show_rule'] == true ? '0' : '1');?>'><?php print ($_SESSION['automation_graph_rules_show_rule'] == true ? 'Dont Show' : 'Show');?> Rule Details.</a></span><br>
+		<td class='textInfo' align='right' valign='top'><span class='linkMarker'>*<a class='linkEditMain' href='<?php print htmlspecialchars('automation_graph_rules.php?action=edit&id=' . (isset_request_var('id') ? get_request_var('id') : 0) . '&show_rule=') . ($_SESSION['automation_graph_rules_show_rule'] == true ? '0' : '1');?>'><?php print ($_SESSION['automation_graph_rules_show_rule'] == true ? __('Dont Show'):__('Show'));?> <?php print __('Rule Details.');?></a></span><br>
 		</td>
 	</tr>
 		<?php
@@ -502,7 +496,7 @@ function automation_graph_rules_edit() {
 		?>
 <table style='width:100%;text-align:center;'>
 	<tr>
-		<td class='textInfo' align='right' valign='top'><span class='linkMarker'>*<a class='linkEditMain' href='<?php print htmlspecialchars('automation_graph_rules.php?action=edit&id=' . (isset_request_var('id') ? get_request_var('id') : 0) . '&show_hosts=') . (isset($_SESSION['automation_graph_rules_show_hosts']) ? '0' : '1');?>'><?php print (isset($_SESSION['automation_graph_rules_show_hosts']) ? 'Dont Show' : 'Show');?> Matching Devices.</a></span><br>
+		<td class='textInfo' align='right' valign='top'><span class='linkMarker'>*<a class='linkEditMain' href='<?php print htmlspecialchars('automation_graph_rules.php?action=edit&id=' . (isset_request_var('id') ? get_request_var('id') : 0) . '&show_hosts=') . (isset($_SESSION['automation_graph_rules_show_hosts']) ? '0' : '1');?>'><?php print (isset($_SESSION['automation_graph_rules_show_hosts']) ? __('Dont Show'):__('Show'));?> <?php print __('Matching Devices.');?></a></span><br>
 		</td>
 	</tr>
 		<?php
@@ -515,7 +509,7 @@ function automation_graph_rules_edit() {
 		?>
 	<tr>
 		<td class='textInfo' align='right' valign='top'>
-			<span class='linkMarker'>*<a class='linkEditMain' href='<?php print htmlspecialchars('automation_graph_rules.php?action=edit&id=' . (isset_request_var('id') ? get_request_var('id') : 0) . '&show_graphs=') . (isset($_SESSION['automation_graph_rules_show_graphs']) ? '0' : '1');?>'><?php print (isset($_SESSION['automation_graph_rules_show_graphs']) ? 'Dont Show' : 'Show');?> Matching Objects.</a></span><br>
+			<span class='linkMarker'>*<a class='linkEditMain' href='<?php print htmlspecialchars('automation_graph_rules.php?action=edit&id=' . (isset_request_var('id') ? get_request_var('id') : 0) . '&show_graphs=') . (isset($_SESSION['automation_graph_rules_show_graphs']) ? '0' : '1');?>'><?php print (isset($_SESSION['automation_graph_rules_show_graphs']) ? __('Dont Show'):__('Show'));?> <?php print __('Matching Objects.');?></a></span><br>
 		</td>
 	</tr>
 </table>
@@ -525,7 +519,7 @@ function automation_graph_rules_edit() {
 	if ($_SESSION['automation_graph_rules_show_rule']) {
 		form_start('automation_graph_rules.php', 'automation_graph_rules');
 
-		html_start_box("Rule Selection $header_label", '100%', $colors['header'], '3', 'center', '');
+		html_start_box("Rule Selection $header_label", '100%', '', '3', 'center', '');
 
 		if (!isempty_request_var('id')) {
 			/* display whole rule */
@@ -550,13 +544,13 @@ function automation_graph_rules_edit() {
 		 */
 		if (!empty($rule['id'])) {
 			# display graph rules for host match
-			display_match_rule_items('Device Selection Criteria',
+			display_match_rule_items(__('Device Selection Criteria'),
 				$rule['id'],
 				AUTOMATION_RULE_TYPE_GRAPH_MATCH,
 				'automation_graph_rules.php');
 
 			# fetch graph action rules
-			display_graph_rule_items('Graph Creation Criteria',
+			display_graph_rule_items(__('Graph Creation Criteria'),
 				$rule['id'],
 				AUTOMATION_RULE_TYPE_GRAPH_ACTION,
 				'automation_graph_rules.php');
@@ -612,7 +606,7 @@ function automation_graph_rules_edit() {
 }
 
 function automation_graph_rules() {
-	global $colors, $automation_graph_rules_actions, $config, $item_rows;
+	global $automation_graph_rules_actions, $config, $item_rows;
 
 	/* ================= input validation and session storage ================= */
 	$filters = array(
@@ -668,7 +662,7 @@ function automation_graph_rules() {
 		}
 	}
 
-	html_start_box('Graph Rules', '100%', $colors['header'], '3', 'center', 'automation_graph_rules.php?action=edit');
+	html_start_box(__('Graph Rules'), '100%', '', '3', 'center', 'automation_graph_rules.php?action=edit');
 
 	?>
 	<tr class='even'>
@@ -677,17 +671,17 @@ function automation_graph_rules() {
 				<table class='filterTable'>
 					<tr>
 						<td>
-							Search
+							<?php print __('Search');?>
 						</td>
 						<td>
 							<input type='text' id='filter' size='25' value='<?php print get_request_var('filter');?>'>
 						</td>
 						<td class='nowrap'>
-							Data Query
+							<?php print __('Data Query');?>
 						</td>
 						<td>
 							<select id='snmp_query_id'>
-								<option value='-1'<?php print (get_request_var('snmp_query_id') == '-1' ? ' selected':'');?>>Any</option>
+								<option value='-1'<?php print (get_request_var('snmp_query_id') == '-1' ? ' selected':'');?>><?php print __('Any');?></option>
 								<?php 
 								$available_data_queries = db_fetch_assoc('SELECT DISTINCT
 									ar.snmp_query_id, sq.name 
@@ -705,17 +699,17 @@ function automation_graph_rules() {
 							</select>
 						</td>
 						<td>
-							Status
+							<?php print __('Status');?>
 						</td>
 						<td>
 							<select id='status'>
-								<option value='-1' <?php print (get_request_var('status') == '-1' ? ' selected':'');?>>Any</option>
-								<option value='-2' <?php print (get_request_var('status') == '-2' ? ' selected':'');?>>Enabled</option>
-								<option value='-3' <?php print (get_request_var('status') == '-3' ? ' selected':'');?>>Disabled</option>
+								<option value='-1' <?php print (get_request_var('status') == '-1' ? ' selected':'');?>><?php print __('Any');?></option>
+								<option value='-2' <?php print (get_request_var('status') == '-2' ? ' selected':'');?>><?php print __('Enabled');?></option>
+								<option value='-3' <?php print (get_request_var('status') == '-3' ? ' selected':'');?>><?php print __('Disabled');?></option>
 							</select>
 						</td>
 						<td>
-							Rules
+							<?php print __('Rules');?>
 						</td>
 						<td>
 							<select id='rows'>
@@ -730,17 +724,23 @@ function automation_graph_rules() {
 							</select>
 						</td>
 						<td>
-							<input type='submit' id='refresh' name'go' value='Go'>
+							<input type='submit' id='refresh' name'go' value='<?php print __('Go');?>'>
 						</td>
 						<td>
-							<input type='button' id='clear' value='Clear'></td>
+							<input type='button' id='clear' value='<?php print __('Clear');?>'></td>
 					</tr>
 				</table>
 			<input type='hidden' id='page' value='<?php print get_request_var('page');?>'>
 		</form>
 		<script type='text/javascript'>
 		function applyFilter() {
-			strURL = 'automation_graph_rules.php?status='+$('#status').val()+'&filter='+$('#filter').val()+'&rows='+$('#rows').val()+'&page='+$('#page').val()+'&snmp_query_id='+$('#snmp_query_id').val()+'&header=false';
+			strURL = 'automation_graph_rules.php' + 
+				'?status='        + $('#status').val()+
+				'&filter='        + $('#filter').val()+
+				'&rows='          + $('#rows').val()+
+				'&page='          + $('#page').val()+
+				'&snmp_query_id=' + $('#snmp_query_id').val()+
+				'&header=false';
 			loadPageNoHeader(strURL);
 		}
 
@@ -796,7 +796,7 @@ function automation_graph_rules() {
 
 	form_start('automation_graph_rules.php', 'chk');
 
-	html_start_box('', '100%', $colors['header'], '3', 'center', '');
+	html_start_box('', '100%', '', '3', 'center', '');
 
 	$total_rows = db_fetch_cell("SELECT
 		COUNT(agr.id)
@@ -816,27 +816,26 @@ function automation_graph_rules() {
 		ORDER BY " . get_request_var('sort_column') . ' ' . get_request_var('sort_direction') . "
 		LIMIT " . ($rows*(get_request_var('page')-1)) . ',' . $rows);
 
-	$nav = html_nav_bar('automation_graph_rules.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 7, 'Graphs', 'page', 'main');
+	$nav = html_nav_bar('automation_graph_rules.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 7, __('Graphs'), 'page', 'main');
 
 	print $nav;
 
 	$display_text = array(
-		'name'            => array('display' => 'Rule Name', 'align' => 'left', 'sort' => 'ASC', 'tip' => 'The name of this rule.'),
-		'id'              => array('display' => 'Id', 'align' => 'right', 'sort' => 'ASC', 'tip' => 'The internal database ID for this rule.  Useful in performing debugging and automation.'),
-		'snmp_query_name' => array('display' => 'Data Query', 'align' => 'left', 'sort' => 'ASC'),
-		'graph_type_name' => array('display' => 'Graph Type', 'align' => 'left', 'sort' => 'ASC'),
-		'enabled'         => array('display' => 'Enabled', 'align' => 'right', 'sort' => 'ASC'),
+		'name'            => array('display' => __('Rule Name'),  'align' => 'left', 'sort' => 'ASC', 'tip' => __('The name of this rule.')),
+		'id'              => array('display' => __('ID'),         'align' => 'right', 'sort' => 'ASC', 'tip' => __('The internal database ID for this rule.  Useful in performing debugging and automation.')),
+		'snmp_query_name' => array('display' => __('Data Query'), 'align' => 'left', 'sort' => 'ASC'),
+		'graph_type_name' => array('display' => __('Graph Type'), 'align' => 'left', 'sort' => 'ASC'),
+		'enabled'         => array('display' => __('Enabled'),    'align' => 'right', 'sort' => 'ASC'),
 	);
 
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
-	$i = 0;
-	if (sizeof($automation_graph_rules_list) > 0) {
+	if (sizeof($automation_graph_rules_list)) {
 		foreach ($automation_graph_rules_list as $automation_graph_rules) {
-			$snmp_query_name 		= ((empty($automation_graph_rules['snmp_query_name'])) 	 ? '<em>None</em>' : htmlspecialchars($automation_graph_rules['snmp_query_name']));
-			$graph_type_name 		= ((empty($automation_graph_rules['graph_type_name'])) 	 ? '<em>None</em>' : htmlspecialchars($automation_graph_rules['graph_type_name']));
+			$snmp_query_name 		= ((empty($automation_graph_rules['snmp_query_name'])) 	 ? '<em>' . __('None') . '</em>' : htmlspecialchars($automation_graph_rules['snmp_query_name']));
+			$graph_type_name 		= ((empty($automation_graph_rules['graph_type_name'])) 	 ? '<em>' . __('None') . '</em>' : htmlspecialchars($automation_graph_rules['graph_type_name']));
 
-			form_alternate_row_color($colors['alternate'], $colors['light'], $i, 'line' . $automation_graph_rules['id']); $i++;
+			form_alternate_row('line' . $automation_graph_rules['id'], true); 
 
 			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars('automation_graph_rules.php?action=edit&id=' . $automation_graph_rules['id'] . "&page=1") . "'>" . ((get_request_var('filter') != '') ? preg_replace('/(' . preg_quote(get_request_var('filter')) . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($automation_graph_rules['name'])) : htmlspecialchars($automation_graph_rules['name'])) . '</a>', $automation_graph_rules['id']);
 			form_selectable_cell($automation_graph_rules['id'], $automation_graph_rules['id'], '', 'text-align:right');
@@ -850,7 +849,7 @@ function automation_graph_rules() {
 
 		print $nav;
 	}else{
-		print "<tr><td><em>No Graph Rules</em></td></tr>\n";
+		print "<tr><td><em>" . __('No Graph Rules') . "</em></td></tr>\n";
 	}
 
 	html_end_box(false);
