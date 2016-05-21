@@ -24,9 +24,10 @@
 
 include('./include/auth.php');
 
-$actions = array('install' => __('Install'),
-	'enable' => __('Enable'),
-	'disable' => __('Disable'),
+$actions = array(
+	'install'   => __('Install'),
+	'enable'    => __('Enable'),
+	'disable'   => __('Disable'),
 	'uninstall' => __('Uninstall'),
 //	'check' => 'Check'
 );
@@ -34,11 +35,11 @@ $actions = array('install' => __('Install'),
 $status_names = array(
 	-2 => __('Disabled'),
 	-1 => __('Active'),
-	0 => __('Not Installed'),
-	1 => __('Active'),
-	2 => __('Awaiting Configuration'),
-	3 => __('Awaiting Upgrade'),
-	4 => __('Installed')
+	0  => __('Not Installed'),
+	1  => __('Active'),
+	2  => __('Awaiting Configuration'),
+	3  => __('Awaiting Upgrade'),
+	4  => __('Installed')
 );
 
 /* get the comprehensive list of plugins */
