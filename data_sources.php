@@ -569,14 +569,17 @@ function data_edit() {
 	global $config;
 
 	if (!isempty_request_var('id')) {
-		$data = db_fetch_row_prepared('SELECT id, data_input_id, data_template_id, name, local_data_id FROM data_template_data WHERE local_data_id = ?', array(get_request_var('id')));
-		$template_data = db_fetch_row_prepared('SELECT id, data_input_id FROM data_template_data WHERE data_template_id = ? AND local_data_id = 0', array($data['data_template_id']));
+		$data = db_fetch_row_prepared('SELECT id, data_input_id, data_template_id, name, local_data_id 
+			FROM data_template_data 
+			WHERE local_data_id = ?', array(get_request_var('id')));
 
-		$host = db_fetch_row_prepared('SELECT host.id, host.hostname FROM (data_local, host) WHERE data_local.host_id = host.id and data_local.id = ?', array(get_request_var('id')));
+		$template_data = db_fetch_row_prepared('SELECT id, data_input_id 
+			FROM data_template_data 
+			WHERE data_template_id = ? AND local_data_id = 0', array($data['data_template_id']));
 
-		#$header_label = '[edit: ' . htmlspecialchars($data['name']) . ']';
-	}else{
-		#$header_label = '[new]';
+		$host = db_fetch_row_prepared('SELECT host.id, host.hostname 
+			FROM (data_local, host) 
+			WHERE data_local.host_id = host.id and data_local.id = ?', array(get_request_var('id')));
 	}
 
 	form_start('data_sources.php');
@@ -584,14 +587,18 @@ function data_edit() {
 	$i = 0;
 	if (!empty($data['data_input_id'])) {
 		/* get each INPUT field for this data input source */
-		$fields = db_fetch_assoc_prepared("SELECT * FROM data_input_fields WHERE data_input_id = ? AND input_output = 'in' ORDER BY name", array($data['data_input_id']));
+		$fields = db_fetch_assoc_prepared("SELECT * 
+			FROM data_input_fields 
+			WHERE data_input_id = ? AND input_output = 'in' ORDER BY name", array($data['data_input_id']));
 
 		html_start_box( __('Custom Data [data input: %s]', htmlspecialchars(db_fetch_cell_prepared('SELECT name FROM data_input WHERE id = ?', array($data['data_input_id']))) ),'100%', '', '3', 'center', '');
 
 		/* loop through each field found */
 		if (sizeof($fields) > 0) {
 		foreach ($fields as $field) {
-			$data_input_data = db_fetch_row_prepared('SELECT * FROM data_input_data WHERE data_template_data_id = ? AND data_input_field_id = ?', array($data['id'], $field['id']));
+			$data_input_data = db_fetch_row_prepared('SELECT * 
+				FROM data_input_data 
+				WHERE data_template_data_id = ? AND data_input_field_id = ?', array($data['id'], $field['id']));
 
 			if (sizeof($data_input_data) > 0) {
 				$old_value = $data_input_data['value'];
@@ -603,7 +610,9 @@ function data_edit() {
 			if (empty($data['data_template_id'])) {
 				$can_template = 'on';
 			}else{
-				$can_template = db_fetch_cell_prepared('SELECT t_value FROM data_input_data WHERE data_template_data_id = ? AND data_input_field_id = ?', array($template_data['id'], $field['id']));
+				$can_template = db_fetch_cell_prepared('SELECT t_value 
+					FROM data_input_data 
+					WHERE data_template_data_id = ? AND data_input_field_id = ?', array($template_data['id'], $field['id']));
 			}
 
 			form_alternate_row();
@@ -1111,7 +1120,7 @@ function ds() {
 		$add_url = '';
 	}
 
-	html_start_box( __('Data Sources [host: %s]', (empty($host['hostname']) ? 'No Device' : htmlspecialchars($host['hostname']))), '100%', '', '3', 'center', $add_url);
+	html_start_box( __('Data Sources [%s]', (empty($host['hostname']) ? __('No Device') : htmlspecialchars($host['hostname']))), '100%', '', '3', 'center', $add_url);
 
 	?>
 	<tr class='even noprint'>
