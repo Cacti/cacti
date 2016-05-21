@@ -530,9 +530,9 @@ function automation_tree_rules_edit() {
 	$rule = array();
 	if (!isempty_request_var('id')) {
 		$rule = db_fetch_row('SELECT * FROM automation_tree_rules WHERE id=' . get_request_var('id'));
-		$header_label = '[' . __('edit') . ': ' . $rule['name'] . ']';
+		$header_label = __('Tree Rule Selection [edit: %s]', htmlspecialchars($rule['name']));
 	}else{
-		$header_label = '[' . __('new') . ']';
+		$header_label = __('Tree Rules Selection [new]');
 	}
 	/* if creating a new rule, use all fields that have already been entered on page reload */
 	if (isset_request_var('name')) {
@@ -557,7 +557,7 @@ function automation_tree_rules_edit() {
 
 	form_start('automation_tree_rules.php', 'form_automation_tree_rule_edit');
 
-	html_start_box(__('Tree Rule Selection') . ' ' . $header_label, '100%', '', '3', 'center', '');
+	html_start_box($header_label, '100%', '', '3', 'center', '');
 
 	if (!isempty_request_var('id')) {
 		/* display whole rule */

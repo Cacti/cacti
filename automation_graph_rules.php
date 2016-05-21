@@ -471,9 +471,9 @@ function automation_graph_rules_edit() {
 			$rule['graph_type_id'] = get_request_var('graph_type_id'); # set query_type for display
 		}
 		# setup header
-		$header_label = '[' . __('edit') . ': ' . $rule['name'] . ']';
+		$header_label = __('Rule Selection [edit: %s]', htmlspecialchars($rule['name']));
 	}else{
-		$header_label = '[' . __('new') . ']';
+		$header_label = __('Rule Selection [new]');
 	}
 
 	/*
@@ -519,7 +519,7 @@ function automation_graph_rules_edit() {
 	if ($_SESSION['automation_graph_rules_show_rule']) {
 		form_start('automation_graph_rules.php', 'automation_graph_rules');
 
-		html_start_box("Rule Selection $header_label", '100%', '', '3', 'center', '');
+		html_start_box($header_label, '100%', '', '3', 'center', '');
 
 		if (!isempty_request_var('id')) {
 			/* display whole rule */

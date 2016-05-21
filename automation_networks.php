@@ -340,9 +340,9 @@ function network_edit() {
 
 	if (!isempty_request_var('id')) {
 		$network = db_fetch_row('SELECT * FROM automation_networks WHERE id=' . get_request_var('id'));
-		$header_label = '[' . __('edit') . ': ' . $network['name'] . ']';
+		$header_label = __('Network Discovery Range [edit: %s]', htmlspecialchars($network['name']));
 	}else{
-		$header_label = '[' . __('new') . ']';
+		$header_label = __('Network Discovery Range [new]');
 	}
 
 	/* file: mactrack_device_types.php, action: edit */
@@ -617,12 +617,14 @@ function network_edit() {
 
 	form_start('automation_networks.php', 'form_network');
 
-	html_start_box(__('Network Discovery Range') . ' ' . $header_label, '100%', '', '3', 'center', '');
+	html_start_box($header_label, '100%', '', '3', 'center', '');
 
-	draw_edit_form(array(
-		'config' => array('no_form_tag' => 'true'),
-		'fields' => inject_form_variables($fields, (isset($network) ? $network : array()))
-		));
+	draw_edit_form(
+		array(
+			'config' => array('no_form_tag' => 'true'),
+			'fields' => inject_form_variables($fields, (isset($network) ? $network : array()))
+		)
+	);
 
 	html_end_box();
 

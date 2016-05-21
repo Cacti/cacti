@@ -299,20 +299,22 @@ function template_edit() {
 
 	if (!isempty_request_var('id')) {
 		$host_template = db_fetch_row('SELECT * FROM automation_templates WHERE id=' . get_request_var('id'));
-		$header_label = '[' . __('edit') . ': ' . $template_names[$host_template['host_template']] . ']';
+		$header_label = __('Automation Templates [edit: %s', htmlspecialchars($template_names[$host_template['host_template']]));
 	}else{
-		$header_label = '[' . __('new') . ']';
+		$header_label = __('Automation Templates [new]');
 		set_request_var('id', 0);
 	}
 
 	form_start('automation_templates.php', 'form_network');
 
-	html_start_box(__('Automation Templates') . ' ' . $header_label, '100%', '', '3', 'center', '');
+	html_start_box($header_label, '100%', '', '3', 'center', '');
 
-	draw_edit_form(array(
-		'config' => array('no_form_tag' => 'true'),
-		'fields' => inject_form_variables($fields_automation_template_edit, (isset($host_template) ? $host_template : array()))
-		));
+	draw_edit_form(
+		array(
+			'config' => array('no_form_tag' => 'true'),
+			'fields' => inject_form_variables($fields_automation_template_edit, (isset($host_template) ? $host_template : array()))
+		)
+	);
 
 	html_end_box();
 

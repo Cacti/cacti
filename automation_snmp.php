@@ -306,9 +306,9 @@ function automation_snmp_item_edit() {
 			FROM automation_snmp_items 
 			WHERE id=' . get_request_var('item_id'));
 
-		$header_label = '[' . __('edit') . ': ' . $snmp_option['name'] . ']';
+		$header_label = __('SNMP Options [edit: %s]', htmlspecialchars($snmp_option['name']));
 	}else{
-		$header_label = '[' . __('new') . ']';
+		$header_label = __('SNMP Options [new]');
 		$automation_snmp_item = array();
 		$automation_snmp_item['snmp_id'] = get_request_var('id');
 		$automation_snmp_item['sequence'] = get_sequence('', 'sequence', 'automation_snmp_items', 'snmp_id=' . get_request_var('id'));
@@ -316,7 +316,7 @@ function automation_snmp_item_edit() {
 
 	form_start('automation_snmp.php', 'automation_item_edit');
 
-	html_start_box(__('SNMP Options') . ' ' . $header_label, '100%', '', '3', 'center', '');
+	html_start_box($header_label, '100%', '', '3', 'center', '');
 
 	/* this is snmp we are talking about here */
 	unset($snmp_versions[0]);
