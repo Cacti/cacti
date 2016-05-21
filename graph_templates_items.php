@@ -80,6 +80,7 @@ function form_save() {
 		get_filter_request_var('graph_template_id');
 		get_filter_request_var('task_item_id');
 		get_filter_request_var('sequence');
+		get_filter_request_var('color_id');
 		get_filter_request_var('graph_template_item_id');
 		/* ==================================================== */
 
@@ -114,20 +115,20 @@ function form_save() {
 					));
 		}
 
-		$sequence = get_nfilter_request_var('sequence');
+		$sequence = get_request_var('sequence');
 
 		foreach ($items as $item) {
 			/* generate a new sequence if needed */
 			if (empty($sequence)) {
-				$sequence = get_sequence($sequence, 'sequence', 'graph_templates_item', 'graph_template_id=' . get_nfilter_request_var('graph_template_id') . ' AND local_graph_id=0');
+				$sequence = get_sequence($sequence, 'sequence', 'graph_templates_item', 'graph_template_id=' . get_request_var('graph_template_id') . ' AND local_graph_id=0');
 			}
 
-			$save['id']                = get_nfilter_request_var('graph_template_item_id');
-			$save['hash']              = get_hash_graph_template(get_nfilter_request_var('graph_template_item_id'), 'graph_template_item');
-			$save['graph_template_id'] = get_nfilter_request_var('graph_template_id');
+			$save['id']                = get_request_var('graph_template_item_id');
+			$save['hash']              = get_hash_graph_template(get_request_var('graph_template_item_id'), 'graph_template_item');
+			$save['graph_template_id'] = get_request_var('graph_template_id');
 			$save['local_graph_id']    = 0;
-			$save['task_item_id']      = form_input_validate(get_nfilter_request_var('task_item_id'), 'task_item_id', '^[0-9]+$', true, 3);
-			$save['color_id']          = form_input_validate((isset($item['color_id']) ? $item['color_id'] : get_nfilter_request_var('color_id')), 'color_id', '', true, 3);
+			$save['task_item_id']      = form_input_validate(get_request_var('task_item_id'), 'task_item_id', '^[0-9]+$', true, 3);
+			$save['color_id']          = form_input_validate((isset($item['color_id']) ? $item['color_id'] : get_request_var('color_id')), 'color_id', '', true, 3);
 
 			/* if alpha is disabled, use invisible_alpha instead */
 			if (!isset_request_var('alpha')) {
@@ -135,7 +136,7 @@ function form_save() {
 			}
 
 			$save['alpha']             = form_input_validate((isset($item['alpha']) ? $item['alpha'] : get_nfilter_request_var('alpha')), 'alpha', '', true, 3);
-			$save['graph_type_id']     = form_input_validate((isset($item['graph_type_id']) ? $item['graph_type_id'] : get_nfilter_request_var('graph_type_id')), 'graph_type_id', '^[0-9]+$', true, 3);
+			$save['graph_type_id']     = form_input_validate((isset($item['graph_type_id']) ? $item['graph_type_id'] : get_filter_request_var('graph_type_id')), 'graph_type_id', '^[0-9]+$', true, 3);
 
 			if (isset_request_var('line_width') || isset($item['line_width'])) {
 				$save['line_width']    = form_input_validate((isset($item['line_width']) ? $item['line_width'] : get_nfilter_request_var('line_width')), 'line_width', '^[0-9]+[\.,]+[0-9]+$', true, 3);
@@ -345,9 +346,9 @@ function item_edit() {
 
 	form_start('graph_templates_items.php', 'graph_items');
 
-	$header_label = '[edit graph: ' . db_fetch_cell_prepared('SELECT name FROM graph_templates WHERE id = ?', array(get_request_var('graph_template_id'))) . ']';
+	$header_label = __('Graph Template Items [edit graph: %s]', htmlspecialchars(db_fetch_cell_prepared('SELECT name FROM graph_templates WHERE id = ?', array(get_request_var('graph_template_id')))));
 
-	html_start_box('Graph Template Items ' . htmlspecialchars($header_label), '100%', '', '3', 'center', '');
+	html_start_box($header_label, '100%', '', '3', 'center', '');
 
 	if (!isempty_request_var('id')) {
 		$template_item = db_fetch_row_prepared('SELECT * FROM graph_templates_item WHERE id = ?', array(get_request_var('id')));
