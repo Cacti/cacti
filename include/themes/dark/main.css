@@ -938,7 +938,6 @@ legend {
 
 .cactiTableTitle td {
 	line-height: 16px;
-	padding: 4px;
 }
 
 .cactiDebugTable {
@@ -1347,7 +1346,6 @@ div#gtabs {
 	display: block;
 	padding: 2px 4px;
 	background: #ccc;
-	border-top: 1px solid #151515;
 	border-bottom: 1px solid #151515;
 	text-decoration: none;
 	color: #fff;
@@ -1422,8 +1420,7 @@ tr.selected a {
 
 #nav li ul li a {
 	padding: 2px 4px;
-	background: #161606 none repeat scroll 0 0;
-	border-bottom: 1px dotted #151515;
+	background: #191919 none repeat scroll 0 0;
 }
 
 #nav li ul li {
