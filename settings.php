@@ -111,9 +111,9 @@ default:
 	print "<div class='tabs' style='float:left;'><nav><ul>\n";
 
 	if (sizeof($tabs) > 0) {
-	foreach (array_keys($tabs) as $tab_short_name) {
-		print "<li class='subTab'><a " . (($tab_short_name == $current_tab) ? "class='selected'" : "class=''") . " href='" . htmlspecialchars("settings.php?tab=$tab_short_name") . "'>$tabs[$tab_short_name]</a></li>\n";
-	}
+		foreach (array_keys($tabs) as $tab_short_name) {
+			print "<li class='subTab'><a " . (($tab_short_name == $current_tab) ? "class='selected'" : "class=''") . " href='" . htmlspecialchars("settings.php?tab=$tab_short_name") . "'>" . $tabs[$tab_short_name] . "</a></li>\n";
+		}
 	}
 
 	print "</ul></nav></div>\n";
@@ -148,8 +148,9 @@ default:
 	draw_edit_form(
 		array(
 			'config' => array('no_form_tag' => true),
-			'fields' => $form_array)
-			);
+			'fields' => $form_array
+		)
+	);
 
 	html_end_box();
 
