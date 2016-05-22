@@ -23,22 +23,22 @@
 */
 
 /* do NOT run this script through a web browser */
-if (!isset($_SERVER["argv"][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($_SERVER['REMOTE_ADDR'])) {
-	die("<br>This script is only meant to run at the command line.");
+if (!isset($_SERVER['argv'][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($_SERVER['REMOTE_ADDR'])) {
+	die('<br>This script is only meant to run at the command line.');
 }
 
-$start = date("Y-n-d H:i:s"); // for runtime measurement
+$start = date('Y-n-d H:i:s'); // for runtime measurement
 
-ini_set("max_execution_time", "0");
+ini_set('max_execution_time', '0');
 
 /* we are not talking to the browser */
 $no_http_headers = true;
 
 include('./include/global.php');
-include_once($config["base_path"] . "/lib/snmp.php");
-include_once($config["base_path"] . "/lib/poller.php");
-include_once($config["base_path"] . "/lib/rrd.php");
-include_once($config["base_path"] . "/lib/ping.php");
+include_once($config['base_path'] . '/lib/snmp.php');
+include_once($config['base_path'] . '/lib/poller.php');
+include_once($config['base_path'] . '/lib/rrd.php');
+include_once($config['base_path'] . '/lib/ping.php');
 
 /* correct for a windows PHP bug. fixed in 5.2.0 */
 if (count($_SERVER['argv']) < 4) {
@@ -83,14 +83,14 @@ $ids = array();
 foreach ($local_data_ids as $row) $ids[] = $row['local_data_id'];
 
 /* check arguments */
-$polling_items       = db_fetch_assoc("SELECT *
+$polling_items       = db_fetch_assoc('SELECT *
 	FROM poller_item
-	WHERE local_data_id IN (".implode(',', $ids).")
-	ORDER by host_id");
+	WHERE local_data_id IN (' . implode(',', $ids).')
+	ORDER by host_id');
 
-$script_server_calls = db_fetch_cell("SELECT count(*)
+$script_server_calls = db_fetch_cell('SELECT count(*)
 	FROM poller_item
-	WHERE (action=2)");
+	WHERE (action=2)');
 
 $print_data_to_stdout = true;
 
@@ -98,22 +98,22 @@ $print_data_to_stdout = true;
 $hosts = db_fetch_assoc("SELECT * FROM host WHERE disabled = '' ORDER by id");
 
 /* rework the hosts array to be searchable */
-$hosts = array_rekey($hosts, "id", $host_struc);
+$hosts = array_rekey($hosts, 'id', $host_struc);
 
 $host_count = sizeof($hosts);
-$script_server_calls = db_fetch_cell("SELECT count(*) from poller_item WHERE action=2");
+$script_server_calls = db_fetch_cell('SELECT count(*) from poller_item WHERE action=2');
 
 if ((sizeof($polling_items) > 0)) {
 	/* startup Cacti php polling server and include the include file for script processing */
 	if ($script_server_calls > 0) {
 		$cactides = array(
-			0 => array("pipe", "r"), // stdin is a pipe that the child will read from
-			1 => array("pipe", "w"), // stdout is a pipe that the child will write to
-			2 => array("pipe", "w")  // stderr is a pipe to write to
+			0 => array('pipe', 'r'), // stdin is a pipe that the child will read from
+			1 => array('pipe', 'w'), // stdout is a pipe that the child will write to
+			2 => array('pipe', 'w')  // stderr is a pipe to write to
 			);
 
-		if (function_exists("proc_open")) {
-			$cactiphp = proc_open(read_config_option("path_php_binary") . " -q " . $config["base_path"] . "/script_server.php realtime", $cactides, $pipes);
+		if (function_exists('proc_open')) {
+			$cactiphp = proc_open(read_config_option('path_php_binary') . ' -q ' . $config['base_path'] . '/script_server.php realtime', $cactides, $pipes);
 			$output = fgets($pipes[1], 1024);
 			$using_proc_function = true;
 		}else {
@@ -124,21 +124,21 @@ if ((sizeof($polling_items) > 0)) {
 	}
 
 	/* all polled items need the same insert time */
-	$host_update_time = date("Y-m-d H:i:s");
+	$host_update_time = date('Y-m-d H:i:s');
 
 	foreach ($polling_items as $item) {
-		$data_source = $item["local_data_id"];
-		$host_id     = $item["host_id"];
+		$data_source = $item['local_data_id'];
+		$host_id     = $item['host_id'];
 
-		switch ($item["action"]) {
+		switch ($item['action']) {
 		case POLLER_ACTION_SNMP: /* snmp */
-			if (($item["snmp_version"] == 0) || (($item["snmp_community"] == "") && ($item["snmp_version"] != 3))) {
-				$output = "U";
+			if (($item['snmp_version'] == 0) || (($item['snmp_community'] == '') && ($item['snmp_version'] != 3))) {
+				$output = 'U';
 			}else {
-				$output = cacti_snmp_get($item["hostname"], $item["snmp_community"], $item["arg1"],
-					$item["snmp_version"], $item["snmp_username"], $item["snmp_password"],
-					$item["snmp_auth_protocol"], $item["snmp_priv_passphrase"], $item["snmp_priv_protocol"],
-					$item["snmp_context"], $item["snmp_port"], $item["snmp_timeout"], read_config_option("snmp_retries"), SNMP_CMDPHP);
+				$output = cacti_snmp_get($item['hostname'], $item['snmp_community'], $item['arg1'],
+					$item['snmp_version'], $item['snmp_username'], $item['snmp_password'],
+					$item['snmp_auth_protocol'], $item['snmp_priv_passphrase'], $item['snmp_priv_protocol'],
+					$item['snmp_context'], $item['snmp_port'], $item['snmp_timeout'], read_config_option('snmp_retries'), SNMP_CMDPHP);
 
 				/* remove any quotes from string */
 				$output = strip_quotes($output);
@@ -150,13 +150,13 @@ if ((sizeof($polling_items) > 0)) {
 						$strout = strlen($output);
 					}
 
-					$output = "U";
+					$output = 'U';
 				}
 			}
 
 			break;
 		case POLLER_ACTION_SCRIPT: /* script (popen) */
-			$output = trim(exec_poll($item["arg1"]));
+			$output = trim(exec_poll($item['arg1']));
 
 			/* remove any quotes from string */
 			$output = strip_quotes($output);
@@ -168,13 +168,13 @@ if ((sizeof($polling_items) > 0)) {
 					$strout = strlen($output);
 				}
 
-				$output = "U";
+				$output = 'U';
 			}
 
 			break;
 		case POLLER_ACTION_SCRIPT_PHP: /* script (php script server) */
 			if ($using_proc_function == true) {
-				$output = trim(str_replace("\n", "", exec_poll_php($item["arg1"], $using_proc_function, $pipes, $cactiphp)));
+				$output = trim(str_replace("\n", '', exec_poll_php($item['arg1'], $using_proc_function, $pipes, $cactiphp)));
 
 				/* remove any quotes from string */
 				$output = strip_quotes($output);
@@ -186,21 +186,21 @@ if ((sizeof($polling_items) > 0)) {
 						$strout = strlen($output);
 					}
 
-					$output = "U";
+					$output = 'U';
 				}
 			}else{
-				$output = "U";
+				$output = 'U';
 			}
 
 			break;
 		}
 
 		if (isset($output)) {
-			db_execute_prepared("REPLACE INTO poller_output_realtime 
+			db_execute_prepared('REPLACE INTO poller_output_realtime 
 				(local_data_id, rrd_name, time, poller_id, output) 
 				VALUES 
-				(?, ?, ?, ?, ?)", 
-				array($item["local_data_id"], $item["rrd_name"], $host_update_time, $poller_id, $output));
+				(?, ?, ?, ?, ?)', 
+				array($item['local_data_id'], $item['rrd_name'], $host_update_time, $poller_id, $output));
 		}
 	}
 
