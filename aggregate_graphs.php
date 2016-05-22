@@ -37,14 +37,14 @@ include_once('./lib/data_query.php');
 aggregate_prune_graphs();
 
 $graph_actions = array(
-	1 => 'Delete',
-	2 => 'Migrate Aggregate to use a Template',
-	3 => 'Create New Aggregate from Aggregates'
+	1 => __('Delete'),
+	2 => __('Migrate Aggregate to use a Template'),
+	3 => __('Create New Aggregate from Aggregates')
 );
 
 $agg_item_actions = array(
-	10 => 'Associate with Aggregate',
-	11 => 'Disassociate with Aggregate'
+	10 => __('Associate with Aggregate'),
+	11 => __('Disassociate with Aggregate')
 );
 
 /* set default action */
@@ -75,10 +75,10 @@ function add_tree_names_to_actions_array() {
 	/* add a list of tree names to the actions dropdown */
 	$trees = db_fetch_assoc('SELECT id,name FROM graph_tree ORDER BY name');
 
-	if (sizeof($trees) > 0) {
-	foreach ($trees as $tree) {
-		$graph_actions{'tr_' . $tree['id']} = 'Place on a Tree (' . $tree['name'] . ')';
-	}
+	if (sizeof($trees)) {
+		foreach ($trees as $tree) {
+			$graph_actions{'tr_' . $tree['id']} = __('Place on a Tree (%s)', $tree['name']);
+		}
 	}
 }
 
@@ -125,9 +125,7 @@ function form_save() {
 	);
 
 	/* update title in aggregate graphs table */
-	db_execute("UPDATE aggregate_graphs " .
-			"SET title_format='" . $graph_title . "' " .
-			"WHERE id=$aggregate_graph_id");
+	db_execute("UPDATE aggregate_graphs SET title_format='" . $graph_title . "' WHERE id=$aggregate_graph_id");
 
 	/* next lets see if any of the aggregate has changed and save as applicable
 	 * if the graph is templates, we can simply ignore.  A simple check will
@@ -242,18 +240,18 @@ function form_actions() {
 		$selected_items = sanitize_unserialize_selected_items(get_nfilter_request_var('selected_items'));
 
 		if ($selected_items != false) {
-			if (get_nfilter_request_var('drp_action') == '1') { /* delete */
+			if (get_request_var('drp_action') == '1') { /* delete */
 				api_aggregate_remove_multi($selected_items);
-			}elseif (get_nfilter_request_var('drp_action') == '2') { /* migrate to template */
+			}elseif (get_request_var('drp_action') == '2') { /* migrate to template */
 				api_aggregate_convert_template($selected_items);
-			}elseif (get_nfilter_request_var('drp_action') == '3') { /* create aggregate from aggregate */
+			}elseif (get_request_var('drp_action') == '3') { /* create aggregate from aggregate */
 				$aggregate_name = get_request_var('aggregate_name');
 				api_aggregate_create($aggregate_name, $selected_items);
-			}elseif (get_nfilter_request_var('drp_action') == '10') { /* associate with aggregate */
+			}elseif (get_request_var('drp_action') == '10') { /* associate with aggregate */
 				api_aggregate_associate($selected_items);
-			}elseif (get_nfilter_request_var('drp_action') == '11') { /* dis-associate with aggregate */
+			}elseif (get_request_var('drp_action') == '11') { /* dis-associate with aggregate */
 				api_aggregate_disassociate($selected_items);
-			}elseif (preg_match('/^tr_([0-9]+)$/', get_nfilter_request_var('drp_action'), $matches)) { /* place on tree */
+			}elseif (preg_match('/^tr_([0-9]+)$/', get_request_var('drp_action'), $matches)) { /* place on tree */
 				get_filter_request_var('tree_id');
 				get_filter_request_var('tree_item_id');
 				for ($i=0;($i<count($selected_items));$i++) {
@@ -290,19 +288,19 @@ function form_actions() {
 
 	form_start('aggregate_graphs.php');
 
-	html_start_box($graph_actions{get_nfilter_request_var('drp_action')}, '60%', '', '3', 'center', '');
+	html_start_box($graph_actions{get_request_var('drp_action')}, '60%', '', '3', 'center', '');
 
 	if (isset($graph_array) && sizeof($graph_array)) {
-		if (get_nfilter_request_var('drp_action') == '1') { /* delete */
+		if (get_request_var('drp_action') == '1') { /* delete */
 			print "<tr>
 				<td class='textArea'>
-					<p>Click 'Continue' to delete the following Aggregate Graph(s).</p>
+					<p>" . __('Click \'Continue\' to delete the following Aggregate Graph(s).') . "</p>
 					<p><ul>$graph_list</ul></p>
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' value='Cancel' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='Continue' title='Delete Graph(s)'>";
-		}elseif (get_nfilter_request_var('drp_action') == '2') { /* migrate to aggregate */
+			$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "' title='" . __('Delete Graph(s)') . "'>";
+		}elseif (get_request_var('drp_action') == '2') { /* migrate to aggregate */
 			/* determine the common graph template if any */
 			reset($_POST);
 			while (list($var,$val) = each($_POST)) {
@@ -315,23 +313,26 @@ function form_actions() {
 			/* for whatever reason,  subquery performance in mysql is sub-optimal.  Therefore, let's do this
 			 * as a few queries instead.
 			 */
-			$task_items = array_rekey(db_fetch_assoc("SELECT DISTINCT task_item_id FROM graph_templates_item WHERE local_graph_id IN($lgid)"), 'task_item_id', 'task_item_id');
+			$task_items = array_rekey(db_fetch_assoc("SELECT DISTINCT task_item_id 
+				FROM graph_templates_item 
+				WHERE local_graph_id IN($lgid)"), 'task_item_id', 'task_item_id');
+
 			$task_items = implode(',', $task_items);
-			$graph_templates = db_fetch_assoc("SELECT DISTINCT graph_template_id FROM graph_templates_item
+
+			$graph_templates = db_fetch_assoc("SELECT DISTINCT graph_template_id 
+				FROM graph_templates_item
 				WHERE task_item_id IN ($task_items) AND  graph_template_id>0");
 
 			if (sizeof($graph_templates) > 1) {
 				print "<tr>
 					<td class='textArea'>
-						<p>The selected Aggregate Graphs represent elements from more than one Graph Template.</p>
-						<p>In order to migrate the Aggregate Graphs below to a Template based Aggregate, they
-						must only be using one Graph Template.  Please press 'Return' and then select only Aggregate
-						Graph that utilize the same Graph Template.</p>
+						<p>" . __('The selected Aggregate Graphs represent elements from more than one Graph Template.') . "</p>
+						<p>" . __('In order to migrate the Aggregate Graphs below to a Template based Aggregate, they must only be using one Graph Template.  Please press \'Return\' and then select only Aggregate Graph that utilize the same Graph Template.') . "</p>
 						<p><ul>$graph_list</ul></p>
 					</td>
 				</tr>\n";
 
-				$save_html = "<input type='button' value='Return' onClick='cactiReturnTo()'>";
+				$save_html = "<input type='button' value='" . __('Return') . "' onClick='cactiReturnTo()'>";
 			}else{
 				$graph_template      = $graph_templates[0]['graph_template_id'];
 				$aggregate_templates = db_fetch_assoc("SELECT id, name FROM aggregate_graph_templates WHERE graph_template_id=$graph_template ORDER BY name");
@@ -339,14 +340,13 @@ function form_actions() {
 				if (sizeof($aggregate_templates)) {
 					print "<tr>
 						<td class='textArea' colspan='2'>
-							<p>Click 'Continue' and the following Aggregate Graph(s) will be migrated to use the
-							Aggregate Template that you choose below.</p>
+							<p>" . __('Click \'Continue\' and the following Aggregate Graph(s) will be migrated to use the Aggregate Template that you choose below.') . "</p>
 							<p><ul>$graph_list</ul></p>
 						</td>
 					</tr>\n";
 
 					print "<tr>
-						<td class='textArea' width='170'>Aggregate Template:</td>
+						<td class='textArea' width='170'>" . __('Aggregate Template:') . "</td>
 						<td>
 							<select name='aggregate_template_id'>\n";
 
@@ -356,66 +356,65 @@ function form_actions() {
 						</td>
 					</tr>\n";
 
-					$save_html = "<tr><td colspan='2' align='right'><input type='button' value='Cancel' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='Continue' title='Delete Graph(s)'></td></tr>";
+					$save_html = "<tr><td colspan='2' align='right'><input type='button' value='" . __('Cancel'). "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "' title='" . __('Delete Graph(s)') . "'></td></tr>";
 				}else{
 					print "<tr>
 						<td class='textArea'>
-							<p>There are currently no Aggregate Templates defined for the selected Legacy Aggregates.</p>
-							<p>In order to migrate the Aggregate Graphs below to a Template based Aggregate, first
-							create an Aggregate Template for the Graph Template '" . db_fetch_cell("SELECT name FROM graph_templates WHERE id=$graph_template") . "'.</p>
-							<p>Please press 'Return' to continue.</p>
+							<p>" . __('There are currently no Aggregate Templates defined for the selected Legacy Aggregates.') . "</p>
+							<p>" . __('In order to migrate the Aggregate Graphs below to a Template based Aggregate, first create an Aggregate Template for the Graph Template \'%s\'.', db_fetch_cell("SELECT name FROM graph_templates WHERE id=$graph_template")) . "</p>
+							<p>" . __('Please press \'Return\' to continue.') . "</p>
 							<p><ul>$graph_list</ul></p>
 						</td>
 					</tr>\n";
 
-					$save_html = "<input type='button' value='Return' onClick='cactiReturnTo()'>";
+					$save_html = "<input type='button' value='" . __('Return') . "' onClick='cactiReturnTo()'>";
 				}
 			}
-		}elseif (get_nfilter_request_var("drp_action") == "3") { /* create aggregate from aggregates */
+		}elseif (get_request_var('drp_action') == '3') { /* create aggregate from aggregates */
 			print "<tr>
 				<td colspan='2' class='textArea'>
-					<p>Click 'Continue' to combined the following Aggregate Graph(s) into a single Aggregate Graph.</p>
+					<p>" . __('Click \'Continue\' to combined the following Aggregate Graph(s) into a single Aggregate Graph.') . "</p>
 					<p><ul>$graph_list</ul></p>
 				</td>
 			</tr>\n";
 
-			print "	<tr><td class='textArea' width='170'>Aggregate Name:</td></tr>\n";
-			print "	<tr><td class='textArea'><input name='aggregate_name' size='40' value='New Aggregate'></td></tr>\n";
+			print "	<tr><td class='textArea' width='170'>" . __('Aggregate Name:') . "</td></tr>\n";
+			print "	<tr><td class='textArea'><input name='aggregate_name' size='40' value='" . __('New Aggregate') . "'></td></tr>\n";
 
-			$save_html = "<input type='button' value='Cancel' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='Continue' title='Delete Graph(s)'>";
-		}elseif (get_nfilter_request_var("drp_action") == "10") { /* associate with aggregate */
+			$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "' title='" . __('Delete Graph(s)') . "'>";
+		}elseif (get_request_var('drp_action') == '10') { /* associate with aggregate */
 			print "<tr>
 				<td class='textArea'>
-					<p>Click 'Continue' to associate the following Graph(s) with the Aggregate Graph.</p>
+					<p>" . __('Click \'Continue\' to associate the following Graph(s) with the Aggregate Graph.') . "</p>
 					<p><ul>$graph_list</ul></p>
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' value='Cancel' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='Continue' title='Associate Graph(s)'>";
-		}elseif (get_nfilter_request_var("drp_action") == "11") { /* dis-associate with aggregate */
+			$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "' title='" . __('Associate Graph(s)') . "'>";
+		}elseif (get_request_var('drp_action') == '11') { /* dis-associate with aggregate */
 			print "<tr>
 				<td class='textArea'>
-					<p>Click 'Continue' to disassociate the following Graph(s) from the Aggregate.</p>
+					<p>" . __('Click \'Continue\' to disassociate the following Graph(s) from the Aggregate.') . "</p>
 					<p><ul>$graph_list</ul></p>
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' value='Cancel' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='Continue' title='Dis-Associate Graph(s)'>";
-		}elseif (preg_match("/^tr_([0-9]+)$/", get_nfilter_request_var("drp_action"), $matches)) { /* place on tree */
+			$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "' title='" . __('Dis-Associate Graph(s)') . "'>";
+		}elseif (preg_match("/^tr_([0-9]+)$/", get_request_var('drp_action'), $matches)) { /* place on tree */
 			print "<tr>
 				<td class='textArea'>
-					<p>Click 'Continue' to place the following Aggregate Graph(s) under the Tree Branch.</p>
+					<p>" . __('Click \'Continue\' to place the following Aggregate Graph(s) under the Tree Branch.') . "</p>
 					<p><ul>$graph_list</ul></p>
-					<p>Destination Branch:<br>"; grow_dropdown_tree($matches[1], "tree_item_id", "0"); print "</p>
+					<p>" . __('Destination Branch:') . "<br>"; grow_dropdown_tree($matches[1], "tree_item_id", "0"); print "</p>
 				</td>
 			</tr>\n
 			<input type='hidden' name='tree_id' value='" . $matches[1] . "'>\n";
 
-			$save_html = "<input type='button' value='Cancel' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='Continue' title='Place Graph(s) on Tree'>";
+			$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "' title='" . __('Place Graph(s) on Tree') . "'>";
 		}
 	}else{
-		print "<tr><td class='even'><span class='textError'>You must select at least one graph.</span></td></tr>\n";
-		$save_html = "<input type='button' value='Return' onClick='cactiReturnTo()'>";
+		print "<tr><td class='even'><span class='textError'>" . __('You must select at least one graph.') . "</span></td></tr>\n";
+		$save_html = "<input type='button' value='" . __('Return') . "' onClick='cactiReturnTo()'>";
 	}
 
 	print "	<tr>
@@ -423,7 +422,7 @@ function form_actions() {
 			<input type='hidden' name='action' value='actions'>
 			<input type='hidden' name='local_graph_id' value='" . (isset_request_var('local_graph_id') ? get_nfilter_request_var('local_graph_id'):0) . "'>
 			<input type='hidden' name='selected_items' value='" . (isset($graph_array) ? serialize($graph_array) : '') . "'>
-			<input type='hidden' name='drp_action' value='" . get_nfilter_request_var('drp_action') . "'>
+			<input type='hidden' name='drp_action' value='" . get_request_var('drp_action') . "'>
 			$save_html
 		</td>
 	</tr>\n";
@@ -449,7 +448,7 @@ function item() {
 	if (isempty_request_var('id')) {
 		$template_item_list = array();
 
-		$header_label = '[new]';
+		$header_label = __('Graph Items [new]');
 	}else{
 		$template_item_list = db_fetch_assoc('SELECT
 			gti.id, gti.text_format, gti.value, gti.hard_return, gti.graph_type_id,
@@ -464,7 +463,7 @@ function item() {
 			WHERE gti.local_graph_id=' . get_request_var('id') . '
 			ORDER BY gti.sequence');
 
-		$header_label = '[edit: ' . htmlspecialchars(get_graph_title(get_request_var('id'))) . ']';
+		$header_label = __('Graph Items [edit: %s]', htmlspecialchars(get_graph_title(get_request_var('id'))));
 	}
 
 	$graph_template_id = db_fetch_cell('SELECT graph_template_id FROM graph_local WHERE id=' . get_request_var('id'));
@@ -475,7 +474,7 @@ function item() {
 		$add_text = '';
 	}
 
-	html_start_box("Graph Items $header_label", '100%', '', '3', 'center', $add_text);
+	html_start_box($header_label, '100%', '', '3', 'center', $add_text);
 	draw_graph_items_list($template_item_list, 'aggregate_items.php', 'local_graph_id=' . get_request_var('id') , (empty($graph_template_id) ? false : true));
 	html_end_box(false);
 }
@@ -519,10 +518,10 @@ function graph_edit() {
 			$template = $aginfo;
 		}
 
-		$aggregate_tabs = array('details' => 'Details', 'items' => 'Items', 'preview' => 'Preview');
+		$aggregate_tabs = array('details' => __('Details'), 'items' => __('Items'), 'preview' => __('Preview'));
 	}else{
 		$template = array();
-		$aggregate_tabs = array('details' => 'Details', 'preview' => 'Preview');
+		$aggregate_tabs = array('details' => __('Details'), 'preview' => __('Preview'));
 	}
 
 	/* ================= input validation and session storage ================= */
@@ -531,7 +530,7 @@ function graph_edit() {
 			'filter' => FILTER_CALLBACK, 
 			'default' => 'details', 
 			'options' => array('options' => 'sanitize_search_string')
-			),
+		)
 	);
 
 	validate_store_request_vars($filters, 'sess_aggregate');
@@ -562,16 +561,22 @@ function graph_edit() {
 		}
 	}
 
+	if (isset($_SESSION['graph_debug_mode'])) {
+		$message = __('Turn Off Graph Debug Mode');
+	}else{
+		$message = __('Turn On Graph Debug Mode');
+	}
+
 	if (!isempty_request_var('id') && $current_tab == 'preview') {
-		print "<td id='tabs' class='nowrap' align='right'><a class='hyperLink textHeader' href='" . htmlspecialchars('aggregate_graphs.php?action=edit&id=' . get_request_var('id') . '&tab=' . get_request_var('tab') .  '&debug=' . (isset($_SESSION['graph_debug_mode']) ? '0' : '1')) . "'>Turn " . (isset($_SESSION['graph_debug_mode']) ? 'Off' : 'On') . " Graph Debug Mode</a></td>\n</tr></table>\n";
+		print "<td id='tabs' class='nowrap' align='right'><a class='hyperLink textHeader' href='" . htmlspecialchars('aggregate_graphs.php?action=edit&id=' . get_request_var('id') . '&tab=' . get_request_var('tab') .  '&debug=' . (isset($_SESSION['graph_debug_mode']) ? '0' : '1')) . "'>" . $message . "</a></td>\n</tr></table>\n";
 	}elseif (!isempty_request_var('id') && $current_tab == 'details' && (!sizeof($template))) {
-		print "<td id='tabs class='nowrap right'><a id='toggle_items' class='textHeader' href='#'>Show Item Details</a></td>\n</tr></table>\n";
+		print "<td id='tabs class='nowrap right'><a id='toggle_items' class='textHeader' href='#'>" . __('Show Item Details') . "</a></td>\n</tr></table>\n";
 	}else{
 		print "<td align='right'></td>\n</tr></table>\n";
 	}
 
 	if (!isempty_request_var('id') && $current_tab == 'preview') {
-		html_start_box("Aggregate Preview $header_label", '100%', '', '3', 'center', '');
+		html_start_box(__('Aggregate Preview %s', $header_label), '100%', '', '3', 'center', '');
 		?>
 		<tr class='even'>
 			<td align='center' class='textInfo' colspan='2'>
@@ -584,9 +589,9 @@ function graph_edit() {
 				?>
 				<td>
 					<div style='overflow:auto;'>
-					<span class='textInfo'>RRDTool Command:</span><br>
+					<span class='textInfo'><?php print __('RRDTool Command:');?></span><br>
 					<pre class='monoSpace'><?php print @rrdtool_function_graph(get_request_var('id'), 1, $graph_data_array);?></pre>
-					<span class='textInfo'>RRDTool Says:</span><br>
+					<span class='textInfo'><?php print __('RRDTool Says:');?></span><br>
 					<?php unset($graph_data_array['print_source']);?>
 					<pre class='monoSpace'><?php print @rrdtool_function_graph(get_request_var('id'), 1, $graph_data_array);?></pre>
 					</div>
@@ -611,13 +616,15 @@ function graph_edit() {
 		if (sizeof($template)) {
 			print "<div id='templated'>";
 
-			html_start_box("Aggregate Graph $header_label", '100%', '', '3', 'center', '');
+			html_start_box(__('Aggregate Graph %s', $header_label), '100%', '', '3', 'center', '');
 
 			/* add template propagation to the structure */
-			draw_edit_form(array(
-				'config' => array('no_form_tag' => true),
-				'fields' => inject_form_variables($struct_aggregate_graph, (isset($aginfo) ? $aginfo : array()))
-			));
+			draw_edit_form(
+				array(
+					'config' => array('no_form_tag' => true),
+					'fields' => inject_form_variables($struct_aggregate_graph, (isset($aginfo) ? $aginfo : array()))
+				)
+			);
 
 			html_end_box(false);
 
@@ -717,7 +724,7 @@ function graph_edit() {
 		}
 
 		if (empty($graphs['graph_template_id'])) {
-			html_start_box('Graph Configuration', '100%', '', '3', 'center', '');
+			html_start_box(__('Graph Configuration'), '100%', '', '3', 'center', '');
 
 			$form_array = array();
 
@@ -743,8 +750,8 @@ function graph_edit() {
 				array(
 					'config' => array('no_form_tag' => true),
 					'fields' => $form_array
-					)
-				);
+				)
+			);
 
 			html_end_box(false);
 		}
@@ -767,12 +774,12 @@ function graph_edit() {
 		});
 
 		$('#toggle_items').click(function() {
-			if ($('#toggle_items').is(":contains('Show')")) {
+			if ($('#toggle_items').is(":contains('<?php print __('Show');?>')")) {
 				$('#local_graph_template_graph_id').next('table').css('display', '');
-				$('#toggle_items').text('Hide Item Details');
+				$('#toggle_items').text('<?php print __('Hide Item Details');?>');
 			}else{
 				$('#local_graph_template_graph_id').next('table').css('display', 'none');
-				$('#toggle_items').text('Show Item Details');
+				$('#toggle_items').text('<?php print __('Show Item Details');?>');
 			}
 		});
 
@@ -854,7 +861,7 @@ function aggregate_items() {
 	}
 
 	?>
-	<script type="text/javascript">
+	<script type='text/javascript'>
 
 	function applyFilter() {
 		strURL = 'aggregate_graphs.php?action=edit&tab=items&id='+$('#id').val();
@@ -892,7 +899,7 @@ function aggregate_items() {
 	</script>
 	<?php
 
-	html_start_box('Matching Graphs', '100%', '', '3', 'center', '');
+	html_start_box(__('Matching Graphs'), '100%', '', '3', 'center', '');
 
 	?>
 	<tr class='even'>
@@ -901,17 +908,17 @@ function aggregate_items() {
 			<table class='filterTable'>
 				<tr>
 					<td>
-						Search
+						<?php print __('Search');?>
 					</td>
 					<td>
 						<input type='text' id='filter' size='25' onChange='applyFilter()' value='<?php print htmlspecialchars(get_request_var('filter'));?>'>
 					</td>
 					<td>
-						Rows
+						<?php print __('Graphs');?>
 					</td>
 					<td>
 						<select id='rows' onChange='applyFilter()'>
-							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?>
+							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?>>
 							<?php
 							if (sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
@@ -925,13 +932,13 @@ function aggregate_items() {
 						<input type='checkbox' id='matching' onChange='applyFilter()' <?php print (get_request_var('matching') == 'on' || get_request_var('matching') == 'true' ? ' checked':'');?>>
 					</td>
 					<td>
-						<label for='matching'>Part of Aggregate</label>
+						<label for='matching'><?php print __('Part of Aggregate');?></label>
 					</td>
 					<td>
-						<input id='refresh' type='button' value='Go' title='Set/Refresh Filters'>
+						<input id='refresh' type='button' value='<?php print __('Go');?>' title='<?php print __('Set/Refresh Filters');?>'>
 					</td>
 					<td>
-						<input id='clear' type='button' onClick='clearFilter()' value='Clear' title='Clear Filters'>
+						<input id='clear' type='button' onClick='clearFilter()' value='<?php print __('Clear');?>' title='<?php print __('Clear Filters');?>'>
 					</td>
 				</tr>
 			</table>
@@ -998,26 +1005,26 @@ function aggregate_items() {
 		ORDER BY " . get_request_var('sort_column') . ' ' . get_request_var('sort_direction') .
 		' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows);
 
-	$nav = html_nav_bar('aggregate_graphs.php?action=edit&tab=items&id=' . get_request_var('id'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 5, 'Graphs', 'page', 'main');
+	$nav = html_nav_bar('aggregate_graphs.php?action=edit&tab=items&id=' . get_request_var('id'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 5, __('Graphs'), 'page', 'main');
 
 	print $nav;
 
 	$display_text = array(
-		'title_cache' => array('display' => 'Graph Title', 'align' => 'left', 'sort' => 'ASC'),
-		'local_graph_id' => array('display' => 'ID', 'align' => 'right', 'sort' => 'ASC'),
-		'agg_graph_id' => array('display' => 'Included in Aggregate', 'align' => 'left', 'sort' => 'ASC'),
-		'height' => array('display' => 'Size', 'align' => 'left', 'sort' => 'ASC'));
+		'title_cache'    => array('display' => __('Graph Title'), 'align' => 'left', 'sort' => 'ASC'),
+		'local_graph_id' => array('display' => __('ID'), 'align' => 'right', 'sort' => 'ASC'),
+		'agg_graph_id'   => array('display' => __('Included in Aggregate'), 'align' => 'left', 'sort' => 'ASC'),
+		'height'         => array('display' => __('Size'), 'align' => 'left', 'sort' => 'ASC'));
 
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), 'action=edit&tab=items&id=' . get_request_var('id'), false);
 
 	if (sizeof($graph_list) > 0) {
 		foreach ($graph_list as $graph) {
 			/* we're escaping strings here, so no need to escape them on form_selectable_cell */
-			$template_name = ((empty($graph['name'])) ? '<em>None</em>' : htmlspecialchars($graph['name']));
+			$template_name = ((empty($graph['name'])) ? '<em>' . __('None') . '</em>' : htmlspecialchars($graph['name']));
 			form_alternate_row('line' . $graph['local_graph_id'], true);
 			form_selectable_cell(get_request_var('filter') != '' ? aggregate_format_text(htmlspecialchars($graph['title_cache']), get_request_var('filter')) : htmlspecialchars($graph['title_cache']), $graph['local_graph_id']);
 			form_selectable_cell($graph['local_graph_id'], $graph['local_graph_id'], '', 'text-align:right');
-			form_selectable_cell(($graph['agg_graph_id'] != '' ? "<span class='associated'>Yes</span>":"<span class='notAssociated'>No</span>"), $graph['local_graph_id']);
+			form_selectable_cell(($graph['agg_graph_id'] != '' ? "<span class='associated'>" . __('Yes') . "</span>":"<span class='notAssociated'>" . __('No') . "</span>"), $graph['local_graph_id']);
 			form_selectable_cell($graph['height'] . 'x' . $graph['width'], $graph['local_graph_id']);
 			form_checkbox_cell($graph['title_cache'], $graph['local_graph_id']);
 			form_end_row();
@@ -1026,7 +1033,7 @@ function aggregate_items() {
 		/* put the nav bar on the bottom as well */
 		print $nav;
 	}else{
-		print '<tr><td><em>No Graphs Found</em></td></tr>';
+		print '<tr><td><em>' . __('No Graphs Found') . '</em></td></tr>';
 	}
 
 	html_end_box(false);
@@ -1112,7 +1119,7 @@ function aggregate_format_text($text, $filter) {
 
 	if (sizeof($tags)) {
 		foreach($tags as $k => $t) {
-			$text = str_replace("<<$k>>", "<span class='filteredValue'>" . $t . "</span>", $text);
+			$text = str_replace("<<$k>>", "<span class='filteredValue'>" . htmlspecialchars($t) . "</span>", $text);
 		}
 	}
 
@@ -1205,7 +1212,7 @@ function aggregate_graph() {
 	</script>
 	<?php
 
-	html_start_box('Aggregate Graphs', '100%', '', '3', 'center', '');
+	html_start_box(__('Aggregate Graphs'), '100%', '', '3', 'center', '');
 
 	?>
 	<tr class='even'>
@@ -1214,18 +1221,18 @@ function aggregate_graph() {
 			<table class='filterTable'>
 				<tr>
 					<td>
-						Search
+						<?php print __('Search');?>
 					</td>
 					<td>
 						<input type='text' id='filter' size='25' value='<?php print htmlspecialchars(get_request_var('filter'));?>'>
 					</td>
 					<td>
-						Template
+						<?php print __('Template');?>
 					</td>
 					<td>
 						<select id='template_id' name='template_id' onChange='applyFilter()'>
-							<option value='-1'<?php if (get_request_var('template_id') == '-1') {?> selected<?php }?>>Any</option>
-							<option value='0'<?php if (get_request_var('template_id') == '0') {?> selected<?php }?>>None</option>
+							<option value='-1'<?php if (get_request_var('template_id') == '-1') {?> selected<?php }?>><?php print __('Any');?></option>
+							<option value='0'<?php if (get_request_var('template_id') == '0') {?> selected<?php }?>><?php print __('None');?></option>
 							<?php
 							$templates = db_fetch_assoc('SELECT DISTINCT at.id, at.name
 								FROM aggregate_graph_templates AS at
@@ -1242,11 +1249,11 @@ function aggregate_graph() {
 						</select>
 					</td>
 					<td>
-						Graphs
+						<?php print __('Graphs');?>
 					</td>
 					<td>
 						<select id='rows' onChange='applyFilter()'>
-							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?>
+							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?>>
 							<?php
 							if (sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
@@ -1257,10 +1264,10 @@ function aggregate_graph() {
 						</select>
 					</td>
 					<td>
-						<input type='button' id='refresh' value='Go' title='Set/Refresh Filters'>
+						<input type='button' id='refresh' value='<?php print __('Go');?>' title='<?php print __('Set/Refresh Filters');?>'>
 					</td>
 					<td>
-						<input type='button' id='clear' value='Clear' title='Clear Filters'>
+						<input type='button' id='clear' value='<?php print __('Clear');?>' title='<?php print __('Clear Filters');?>'>
 					</td>
 				</tr>
 			</table>
@@ -1316,15 +1323,16 @@ function aggregate_graph() {
 		' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows);
 
 
-	$nav = html_nav_bar('aggregate_graphs.php', MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 5, 'Aggregate Graphs', 'page', 'main');
+	$nav = html_nav_bar('aggregate_graphs.php', MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 5, __('Aggregate Graphs'), 'page', 'main');
 
 	print $nav;
 
 	$display_text = array(
-		'title_cache' => array('display' => 'Graph Title', 'align' => 'left', 'sort' => 'ASC', 'tip' => 'The title for the Aggregate Graphs'),
-		'local_graph_id' => array('display' => 'ID', 'align' => 'right', 'sort' => 'ASC', 'tip' => 'The internal database identifier for this object'),
-		'name' => array('display' => 'Aggregate Template', 'align' => 'left', 'sort' => 'ASC', 'top' => 'The Aggregate Template that this Aggregate Graphs is based upon'),
-		'height' => array('Size', 'ASC'));
+		'title_cache'    => array('display' => __('Graph Title'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('The title for the Aggregate Graphs')),
+		'local_graph_id' => array('display' => __('ID'), 'align' => 'right', 'sort' => 'ASC', 'tip' => __('The internal database identifier for this object')),
+		'name'           => array('display' => __('Aggregate Template'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('The Aggregate Template that this Aggregate Graphs is based upon')),
+		'height'         => array('display' => __('Size'), 'align' => 'right', 'sort' => 'ASC')
+	);
 
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), 'filter=' . get_request_var('filter'), false);
 
@@ -1344,7 +1352,7 @@ function aggregate_graph() {
 		/* put the nav bar on the bottom as well */
 		print $nav;
 	}else{
-		print '<tr><td><em>No Aggregate Graphs Found</em></td></tr>';
+		print '<tr><td><em>' . __('No Aggregate Graphs Found') .'</em></td></tr>';
 	}
 
 	html_end_box(false);
@@ -1402,4 +1410,3 @@ function purge_old_graphs() {
 	}
 }
 
-?>
