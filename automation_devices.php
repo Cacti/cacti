@@ -29,9 +29,16 @@ $device_actions = array(
 	1 => __('Add Device')
 );
 
-$os_arr     = array_rekey(db_fetch_assoc('SELECT DISTINCT os FROM automation_devices WHERE os IS NOT NULL AND os!=""'), 'os', 'os');
-$status_arr = array(__('Down'), __('Up'));
-$networks   = array_rekey(db_fetch_assoc('SELECT an.id, an.name 
+$os_arr = array_rekey(db_fetch_assoc('SELECT DISTINCT os 
+	FROM automation_devices 
+	WHERE os IS NOT NULL AND os!=""'), 'os', 'os');
+
+$status_arr = array(
+	__('Down'),
+	__('Up')
+);
+
+$networks = array_rekey(db_fetch_assoc('SELECT an.id, an.name 
 	FROM automation_networks AS an
 	INNER JOIN automation_devices AS ad
 	ON an.id=ad.network_id 
@@ -92,9 +99,9 @@ function form_actions() {
 					$host_id = automation_add_device($d, true);
 
 					if ($host_id) {
-						$message .= "<span class='deviceUp'>" . __('Device') . ' ' . $d['description'] . ' ' . __('Added to Cacti') . '</span><br>';
+						$message .= "<span class='deviceUp'>" . __('Device') . ' ' . htmlspecialchars($d['description']) . ' ' . __('Added to Cacti') . '</span><br>';
 					}else{
-						$message .= "<span class='deviceDown'>" . __('Device') . ' ' . $d['description'] . ' ' . __('Not Added to Cacti') . '</span><br>';
+						$message .= "<span class='deviceDown'>" . __('Device') . ' ' . htmlspecialchars($d['description']) . ' ' . __('Not Added to Cacti') . '</span><br>';
 					}
 				}
 
@@ -130,12 +137,12 @@ function form_actions() {
 
 	form_start('automation_devices.php', 'chk');
 
-	html_start_box($device_actions{get_nfilter_request_var('drp_action')}, '60%', '', '3', 'center', '');
+	html_start_box($device_actions{get_request_var('drp_action')}, '60%', '', '3', 'center', '');
 
 	$available_host_templates = db_fetch_assoc_prepared('SELECT id, name FROM host_template ORDER BY name');
 
 	if (isset($device_array) && sizeof($device_array)) {
-		if (get_nfilter_request_var('drp_action') == '1') { /* delete */
+		if (get_request_var('drp_action') == '1') { /* delete */
 			print "<tr>
 				<td class='textArea odd'>
 					<p>" . __('Click \'Continue\' to add the following Discovered device(s).') . "</p>
@@ -167,7 +174,7 @@ function form_actions() {
 		<td class='saveRow'>
 			<input type='hidden' name='action' value='actions'>
 			<input type='hidden' name='selected_items' value='" . (isset($device_array) ? serialize($device_array) : '') . "'>
-			<input type='hidden' name='drp_action' value='" . get_nfilter_request_var('drp_action') . "'>
+			<input type='hidden' name='drp_action' value='" . get_request_var('drp_action') . "'>
 			$save_html
 		</td>
 	</tr>\n";
@@ -344,9 +351,9 @@ function get_discovery_results(&$total_rows = 0, $rows = 0, $export = false) {
 	$os         = get_request_var('os');
 	$filter     = get_request_var('filter');
 
-	if ($status == 'Down') {
+	if ($status == __('Down')) {
 		$sql_where .= 'WHERE up=0';
-	} else if ($status == 'Up') {
+	} else if ($status == __('Up')) {
 		$sql_where .= 'WHERE up=1';
 	}
 
@@ -354,9 +361,9 @@ function get_discovery_results(&$total_rows = 0, $rows = 0, $export = false) {
 		$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') . 'network_id=' . $network;
 	}
 
-	if ($snmp == 'Down') {
+	if ($snmp == __('Down')) {
 		$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') . 'snmp=0';
-	} else if ($snmp == 'Up') {
+	} else if ($snmp == __('Up')) {
 		$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') . 'snmp=1';
 	}
 
