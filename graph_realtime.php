@@ -192,21 +192,21 @@ if (!isset($_SESSION['sess_realtime_graph_start'])) {
 if (read_config_option('realtime_enabled') == '') {
 	print "<html>\n";
 	print "<body>\n";
-	print "	<p><strong>Realtime has been disabled by your administrator.</strong></p>\n";
+	print "	<p><strong>" . __('Realtime has been disabled by your administrator.') . "</strong></p>\n";
 	print "</body>\n";
 	print "</html>\n";
 	exit;
 }elseif (!is_dir(read_config_option('realtime_cache_path'))) {
 	print "<html>\n";
 	print "<body>\n";
-	print "	<p><strong>The Image Cache Directory directory does not exist.  Please first create it and set permissions and then attempt to open another realtime graph.</strong></p>\n";
+	print "	<p><strong>" . __('The Image Cache Directory directory does not exist.  Please first create it and set permissions and then attempt to open another realtime graph.') . "</strong></p>\n";
 	print "</body>\n";
 	print "</html>\n";
 	exit;
 }elseif (!is_writable(read_config_option('realtime_cache_path'))) {
 	print "<html>\n";
 	print "<body>\n";
-	print "	<p><strong>The Image Cache Directory is not writable.  Please set permissions and then attempt to open another realtime graph.</strong></p>\n";
+	print "	<p><strong>" . __('The Image Cache Directory is not writable.  Please set permissions and then attempt to open another realtime graph.') . "</strong></p>\n";
 	print "</body>\n";
 	print "</html>\n";
 	exit;
@@ -217,7 +217,7 @@ if (read_config_option('realtime_enabled') == '') {
 <head>
     <meta http-equiv='X-UA-Compatible' content='edge'>
     <meta content='width=720, initial-scale=1.2, maximum-scale=1.2, minimum-scale=1.2' name='viewport'>
-	<title>Cacti Realtime Graphing</title>
+	<title><?php print __('Cacti Realtime Graphing');?></title>
     <meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
     <link href='<?php echo $config['url_path']; ?>include/themes/<?php print get_selected_theme();?>/main.css' type='text/css' rel='stylesheet'>
     <link href='<?php echo $config['url_path']; ?>include/themes/<?php print get_selected_theme();?>/jquery.zoom.css' type='text/css' rel='stylesheet'>
@@ -245,7 +245,7 @@ if (read_config_option('realtime_enabled') == '') {
 		<table align='center'>
 			<tr>
 				<td> 
-					Window
+					<?php print __('Window');?>
 				</td>
 				<td>
 					<select name='graph_start' id='graph_start' onChange='imageOptionsChanged("timespan")'>
@@ -259,7 +259,7 @@ if (read_config_option('realtime_enabled') == '') {
 					</select>
 				</td>
 				<td>
-					Refresh
+					<?php print __('Refresh');?>
 				</td>
 				<td>
 					<select name='ds_step' id='ds_step' onChange="imageOptionsChanged('interval')">
@@ -275,7 +275,7 @@ if (read_config_option('realtime_enabled') == '') {
 			</tr>
 			<tr>
 				<td align='center' colspan='6'>
-					<span id='countdown'><?php echo get_request_var('ds_step'); ?> seconds left.</span>
+					<span id='countdown'><?php print __('%d seconds left.',  get_request_var('ds_step')); ?></span>
 				</td>
 			</tr>
 		</table>
@@ -287,6 +287,7 @@ if (read_config_option('realtime_enabled') == '') {
 	<input type='hidden' id='url_path' name='url_path' value='<?php echo $config['url_path'];?>'/>
 	<input type='hidden' id='local_graph_id' name='local_graph_id' value='<?php echo get_request_var('local_graph_id'); ?>'/>
 	<script type='text/javascript'>
+
 	var url;
 	var ds_step = 0;
 	var sizeset = false;
@@ -302,7 +303,7 @@ if (read_config_option('realtime_enabled') == '') {
 			sizeset = false;
 		}
 
-		$('#countdown').html(ds_step + ' seconds left.');
+		$('#countdown').html(ds_step + ' <?php print __('seconds left.');?>');
 
 		browser = realtimeDetectBrowser();
 
