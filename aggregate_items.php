@@ -340,7 +340,7 @@ function item_edit() {
 			$template_item[$field_name] = $item_overrides[$field_name];
 	}
 
-	html_start_box('Override Values for Graph Item', '100%', '', '3', 'center', '');
+	html_start_box(__('Override Values for Graph Item'), '100%', '', '3', 'center', '');
 
 	$form_array = array();
 
@@ -351,7 +351,7 @@ function item_edit() {
 		if (array_key_exists('t_' . $field_name, $item_overrides)) {
 			$form_array[$field_name]['sub_checkbox']  = array(
 				'name' => 't_' . $field_name,
-				'friendly_name' => 'Override this Value<br>',
+				'friendly_name' => __('Override this Value') . '<br>',
 				'value' => ($item_overrides['t_'.$field_name] == 'on' ? 'on' : ''),
 				'on_change' => 'toggleFieldEnabled(this);'
 			);
@@ -365,10 +365,10 @@ function item_edit() {
 		array(
 			'config' => array(
 				'post_to' => $config['url_path'] . 'aggregate_items.php'
-				),
+			),
 			'fields' => $form_array
-			)
-		);
+		)
+	);
 
 	form_hidden_box('local_graph_id', get_request_var('local_graph_id'), '0');
 	form_hidden_box('graph_template_item_id', (isset($template_item) ? $template_item['id'] : '0'), '');
@@ -397,15 +397,13 @@ function item_edit() {
 
 	function dynamic() {
 		$('#alpha').prop('disabled', true);
-		if (($('#rrdtool_version').val() != 'rrd-1.0.x') &&
-			($('#color_id').val() != 0)) {
+		if ($('#color_id').val() != 0) {
 			$('#alpha').prop('disabled', true);
 		}
 	}
 
 	function changeColorId() {
-		if (($('#rrdtool_version').val() != 'rrd-1.0.x') &&
-			($('#color_id').attr('selectedIndex') != 0)) {
+		if ($('#color_id').attr('selectedIndex') != 0) {
 			$('#alpha').prop('disabled', true);
 		}
 	}
@@ -434,6 +432,5 @@ function item_edit() {
 
 	</script>
 	<?php
-} // function item_edit()
+} 
 
-?>
