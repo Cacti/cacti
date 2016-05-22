@@ -27,7 +27,7 @@ include_once('./include/auth.php');
 $aggregate_actions = array(
 	1 => __('Delete'),
 	2 => __('Duplicate')
-	);
+);
 
 /* set default action */
 set_default_action();
@@ -182,7 +182,7 @@ function aggregate_color_form_actions() {
 		$selected_items = sanitize_unserialize_selected_items(get_nfilter_request_var('selected_items'));
 
 		if ($selected_items != false) {
-			if (get_nfilter_request_var('drp_action') == '1') { /* delete */
+			if (get_request_var('drp_action') == '1') { /* delete */
 				db_execute('DELETE FROM color_templates WHERE ' . array_to_sql_or($selected_items, 'color_template_id'));
 				db_execute('DELETE FROM color_template_items WHERE ' . array_to_sql_or($selected_items, 'color_template_id'));
 			}elseif (get_nfilter_request_var('drp_action') == '2') { /* duplicate */
@@ -205,7 +205,7 @@ function aggregate_color_form_actions() {
 			/* ================= input validation ================= */
 			input_validate_input_number($matches[1]);
 			/* ==================================================== */
-			$color_list .= '<li>' . db_fetch_cell('SELECT name FROM color_templates WHERE color_template_id=' . $matches[1]) . '</li>';
+			$color_list .= '<li>' . htmlspecialchars(db_fetch_cell('SELECT name FROM color_templates WHERE color_template_id=' . $matches[1])) . '</li>';
 			$color_array[] = $matches[1];
 		}
 	}
@@ -217,7 +217,7 @@ function aggregate_color_form_actions() {
 	html_start_box($aggregate_actions{get_nfilter_request_var('drp_action')}, '60%', '', '3', 'center', '');
 
 	if (isset($color_array) && sizeof($color_array)) {
-		if (get_nfilter_request_var('drp_action') == '1') { /* delete */
+		if (get_request_var('drp_action') == '1') { /* delete */
 			print "<tr>
 				<td class='textArea'>
 					<p>" . __n('Click \'Continue\' to delete the following Color Template', 'Click \'Continue\' to delete following Color Templates', sizeof($color_array)) . "</p>
@@ -226,7 +226,7 @@ function aggregate_color_form_actions() {
 			</tr>\n";
 	
 			$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "' title='" . __n('Delete Color Template', 'Delete Color Templates', sizeof($color_array)) . "'>";
-		}elseif (get_nfilter_request_var('drp_action') == '2') { /* duplicate */
+		}elseif (get_request_var('drp_action') == '2') { /* duplicate */
 			print "<tr>
 				<td class='textArea'>
 					<p>" . __n('Click \'Continue\' to duplicate the following Color Template. You can optionally change the title format for the new color template.', 'Click \'Continue\' to duplicate following Color Templates. You can optionally change the title format for the new color templates.', sizeof($color_array)) . "</p>
@@ -246,7 +246,7 @@ function aggregate_color_form_actions() {
 		<td class='saveRow'>
 			<input type='hidden' name='action' value='actions'>
 			<input type='hidden' name='selected_items' value='" . (isset($color_array) ? serialize($color_array) : '') . "'>
-			<input type='hidden' name='drp_action' value='" . get_nfilter_request_var('drp_action') . "'>
+			<input type='hidden' name='drp_action' value='" . get_request_var('drp_action') . "'>
 			$save_html
 		</td>
 	</tr>\n";
@@ -299,11 +299,13 @@ function aggregate_color_item() {
  */
 function aggregate_color_template_edit() {
 	global $config, $image_types, $fields_color_template_template_edit, $struct_aggregate;
+
 	include_once($config['base_path'] . '/lib/api_aggregate.php');
 
 	/* ================= input validation ================= */
 	get_filter_request_var('color_template_id');
 	/* ==================================================== */
+
 	if (!isempty_request_var('color_template_id')) {
 		$template = db_fetch_row('SELECT * FROM color_templates WHERE color_template_id=' . get_request_var('color_template_id'));
 		$header_label = __('Color Template [edit: %s]', $template['name']);
@@ -315,10 +317,12 @@ function aggregate_color_template_edit() {
 
 	html_start_box($header_label, '100%', '', '3', 'center', '');
 
-	draw_edit_form(array(
-		'config' => array('no_form_tag' => true),
-		'fields' => inject_form_variables($fields_color_template_template_edit, (isset($template) ? $template : array()))
-		));
+	draw_edit_form(
+		array(
+			'config' => array('no_form_tag' => true),
+			'fields' => inject_form_variables($fields_color_template_template_edit, (isset($template) ? $template : array()))
+		)
+	);
 
 	html_end_box();
 	form_hidden_box('color_template_id', (isset($template['color_template_id']) ? $template['color_template_id'] : '0'), '');
@@ -498,9 +502,9 @@ function aggregate_color_template() {
 	print $nav;
 
 	$display_text = array(
-		'name' => array( __('Template Title'), 'ASC'),
-		'nosort' => array('display' => __('Deletable'), 'align' => 'right', 'tip' => __('Color Templates that are in use can not be Deleted. In use is defined as being referenced by an Aggregate Template.')),
-		'graphs' => array('display' => __('Graphs'), 'align' => 'right', 'sort' => 'DESC'),
+		'name'      => array( __('Template Title'), 'ASC'),
+		'nosort'    => array('display' => __('Deletable'), 'align' => 'right', 'tip' => __('Color Templates that are in use can not be Deleted. In use is defined as being referenced by an Aggregate Template.')),
+		'graphs'    => array('display' => __('Graphs'), 'align' => 'right', 'sort' => 'DESC'),
 		'templates' => array('display' => __('Templates'), 'align' => 'right', 'sort' => 'DESC')
 	);
 
