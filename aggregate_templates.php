@@ -26,7 +26,7 @@ include_once('./include/auth.php');
 include_once('./lib/api_aggregate.php');
 
 $aggregate_actions = array(
-	1 => 'Delete'
+	1 => __('Delete')
 );
 
 /* set default action */
@@ -289,16 +289,16 @@ function aggregate_form_actions() {
 		if (get_nfilter_request_var('drp_action') == '1') { /* delete */
 			print "<tr>
 					<td class='textArea'>
-						<p>Are you sure you want to Delete the following Aggregate Graph Template(s)?</p>
+						<p>" . __('Click \'Continue\' to Delete the following Aggregate Graph Template(s).') . "</p>
 						<p><ul>$aggregate_list</ul></p>
 					</td>
 				</tr>\n";
 
-			$save_html = "<input type='button' value='Cancel' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='Continue' title='Delete Color Template(s)'>";
+			$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "' title='" . __('Delete Color Template(s)') . "'>";
 		}
 	}else{
-		print "<tr><td class='even'><span class='textError'>You must select at least one Aggregate Graph Template.</span></td></tr>\n";
-		$save_html = "<input type='button' value='Return' onClick='cactiReturnTo()'>";
+		print "<tr><td class='even'><span class='textError'>" . __('You must select at least one Aggregate Graph Template.') . "</span></td></tr>\n";
+		$save_html = "<input type='button' value='" . __('Return') . "' onClick='cactiReturnTo()'>";
 	}
 
 	print "<tr>
@@ -347,10 +347,12 @@ function aggregate_template_edit() {
 
 	html_start_box("Aggregate Template $header_label", '100%', '', '3', 'center', '');
 
-	draw_edit_form(array(
-		'config' => array('no_form_tag' => true),
-		'fields' => inject_form_variables($struct_aggregate_template, (isset($template) ? $template : array()))
-	));
+	draw_edit_form(
+		array(
+			'config' => array('no_form_tag' => true),
+			'fields' => inject_form_variables($struct_aggregate_template, (isset($template) ? $template : array()))
+		)
+	);
 
 	html_end_box();
 
@@ -510,20 +512,20 @@ function aggregate_template() {
 
 	form_start('aggregate_templates.php', 'template');
 
-	html_start_box('Aggregate Templates', '100%', '', '3', 'center', 'aggregate_templates.php?action=edit');
+	html_start_box(__('Aggregate Templates'), '100%', '', '3', 'center', 'aggregate_templates.php?action=edit');
 
 	$filter_html = '<tr class="even">
 		<td>
 			<table class="filterTable">
 				<tr>
 					<td>
-						Search
+						' . __('Search') . '
 					</td>
 					<td>
 						<input type="text" id="filter" size="25" value="' . get_request_var("filter") . '">
 					</td>
 					<td>
-						Templates
+						' . __('Templates') . '
 					</td>
 					<td>
 						<select id="rows" onChange="applyFilter()">
@@ -550,13 +552,13 @@ function aggregate_template() {
 						<input type="checkbox" id="has_graphs" ' . (get_request_var('has_graphs') == 'true' ? 'checked':'') . ' onChange="applyFilter()">
 					</td>
 					<td>
-						<label for="has_graphs">Has Graphs</label>
+						<label for="has_graphs">' . __('Has Graphs') . '</label>
 					</td>
 					<td>
-						<input type="button" value="Go" id="refresh">
+						<input type="button" value="' . __('Go') . '" id="refresh">
 					</td>
 					<td>
-						<input type="button" value="Clear" id="clear">
+						<input type="button" value="' . __('Clear') . '" id="clear">
 					</td>
 				</tr>
 			</table>
@@ -611,15 +613,16 @@ function aggregate_template() {
 		ORDER BY " . get_request_var('sort_column') . ' ' . get_request_var('sort_direction') .
 		' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows);
 
-	$nav = html_nav_bar('aggregate_templates.php', MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 5, 'Aggregate Templates', 'page', 'main');
+	$nav = html_nav_bar('aggregate_templates.php', MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 5, __('Aggregate Templates'), 'page', 'main');
 
 	print $nav;
 
 	$display_text = array(
-		'pgt.name' => array('display' => 'Template Title', 'align' => 'left', 'sort' => 'ASC'),
-		'nosort' => array('display' => 'Deletable', 'align' => 'right', 'tip' => 'Aggregate Templates that are in use can not be Deleted.  In use is defined as being referenced by an Aggregate.'),
-		'graphs.graphs' => array('display' => 'Graphs', 'align' => 'right', 'sort' => 'DESC'),
-		'graph_template_name' => array('display' => 'Graph Template', 'align' => 'left', 'sort' => 'ASC'));
+		'pgt.name'            => array('display' => __('Template Title'), 'align' => 'left', 'sort' => 'ASC'),
+		'nosort'              => array('display' => __('Deletable'), 'align' => 'right', 'tip' => __('Aggregate Templates that are in use can not be Deleted.  In use is defined as being referenced by an Aggregate.')),
+		'graphs.graphs'       => array('display' => __('Graphs'), 'align' => 'right', 'sort' => 'DESC'),
+		'graph_template_name' => array('display' => __('Graph Template'), 'align' => 'left', 'sort' => 'ASC')
+	);
 
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
@@ -643,7 +646,7 @@ function aggregate_template() {
 		/* put the nav bar on the bottom as well */
 		print $nav;
 	}else{
-		print "<tr><td><em>No Aggregate Templates</em></td></tr>\n";
+		print "<tr><td><em>" . __('No Aggregate Templates') . "</em></td></tr>\n";
 	}
 
 	html_end_box(false);
@@ -693,4 +696,3 @@ function aggregate_template() {
 	<?php
 }
 
-?>
