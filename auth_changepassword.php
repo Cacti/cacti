@@ -138,7 +138,7 @@ case 'changepassword':
 				db_execute_prepared("UPDATE user_auth SET password_history = ? WHERE id = ? AND realm = 0 AND enabled = 'on'", array($h, $_SESSION['sess_user_id']));
 		}
 
-		db_execute_prepared('INSERT IGNORE INTO user_log (username, result, ip) VALUES (?, 3, ?)', array($user['username'], $_SERVER['REMOTE_ADDR']));
+		db_execute_prepared('INSERT IGNORE INTO user_log (username, result, time, ip) VALUES (?, 3, NOW(), ?)', array($user['username'], $_SERVER['REMOTE_ADDR']));
 		db_execute_prepared("UPDATE user_auth SET must_change_password = '', password = ? WHERE id = ?", array($password_new != '' ? $password_new:$password_old, $_SESSION['sess_user_id']));
 
 		kill_session_var('sess_change_password');
@@ -185,7 +185,7 @@ if (api_plugin_hook_function('custom_password', OPER_MODE_NATIVE) == OPER_MODE_R
 }
 
 if (get_request_var('action') == 'force') {
-	$errorMessage = "<span color='#FF0000'>*** " . __('Forced password change') . " ***</span>";
+	$errorMessage = "<span class='loginErrors'>*** " . __('Forced password change') . " ***</span>";
 }
 
 /* Create tooltip for password complexity */
