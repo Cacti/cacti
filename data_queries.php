@@ -1059,6 +1059,7 @@ function data_query() {
 		LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows);
 
 	$nav = html_nav_bar('data_queries.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 7, __('Data Queries'), 'page', 'main');
+
 	print $nav;
 
 	$display_text = array(
