@@ -24,7 +24,9 @@
 
 include('./include/auth.php');
 
-$color_actions = array('1' => 'Delete');
+$color_actions = array(
+	'1' => __('Delete')
+);
 
 /* set default action */
 set_default_action();
@@ -135,7 +137,7 @@ function form_actions() {
 		$selected_items = sanitize_unserialize_selected_items(get_nfilter_request_var('selected_items'));
 
 		if ($selected_items != false) {
-			if (get_nfilter_request_var('drp_action') == '1') { /* delete */
+			if (get_request_var('drp_action') == '1') { /* delete */
 				db_execute('DELETE FROM colors WHERE ' . array_to_sql_or($selected_items, 'hex'));
 			}
 		}
@@ -189,7 +191,7 @@ function form_actions() {
 		<td class='saveRow'>
 			<input type='hidden' name='action' value='actions'>
 			<input type='hidden' name='selected_items' value='" . (isset($color_array) ? serialize($color_array) : '') . "'>
-			<input type='hidden' name='drp_action' value='" . get_nfilter_request_var('drp_action') . "'>
+			<input type='hidden' name='drp_action' value='" . get_request_var('drp_action') . "'>
 			$save_html
 		</td>
 	</tr>\n";
@@ -506,7 +508,7 @@ function color() {
 		$rows = get_request_var('rows');
 	}
 
-	html_start_box( __('Colors'), '100%', '', '3', 'center', 'color.php?action=edit');
+	html_start_box(__('Colors'), '100%', '', '3', 'center', 'color.php?action=edit');
 
 	?>
 	<tr class='even'>
@@ -536,13 +538,13 @@ function color() {
 						</select>
 					</td>
 					<td>
-						<input type="checkbox" id='named' <?php print (get_request_var('named') == 'true' ? 'checked':'');?>>
+						<input type='checkbox' id='named' <?php print (get_request_var('named') == 'true' ? 'checked':'');?>>
 					</td>
 					<td>
 						<label for='named'><?php print __('Named Colors');?></label>
 					</td>
 					<td>
-						<input type="checkbox" id='has_graphs' <?php print (get_request_var('has_graphs') == 'true' ? 'checked':'');?>>
+						<input type='checkbox' id='has_graphs' <?php print (get_request_var('has_graphs') == 'true' ? 'checked':'');?>>
 					</td>
 					<td>
 						<label for='has_graphs'><?php print __('Has Graphs');?></label>
@@ -678,12 +680,12 @@ function color() {
     print $nav;
 
 	$display_text = array(
-		'hex' => array('display' => __('Hex'), 'align' => 'left', 'sort' => 'DESC', 'tip' => __('The Hex Value for this Color.')),
-		'name' => array('display' => __('Color Name'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('The name of this Color definition.')),
+		'hex'       => array('display' => __('Hex'), 'align' => 'left', 'sort' => 'DESC', 'tip' => __('The Hex Value for this Color.')),
+		'name'      => array('display' => __('Color Name'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('The name of this Color definition.')),
 		'read_only' => array('display' => __('Named Color'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('Is this color a named color which are read only.')),
-		'nosort1' => array('display' => __('Color'), 'align' => 'center', 'sort' => 'DESC', 'tip' => __('The Color as shown on the screen.')),
-		'nosort' => array('display' => __('Deletable'), 'align' => 'right', 'sort' => '', 'tip' => __('Colors in use can not be Deleted.  In use is defined as being referenced either by a Graph or a Graph Template.')),
-		'graphs' => array('display' => __('Graphs'), 'align' => 'right', 'sort' => 'DESC', 'tip' => __('The number of Graph using this Color.')),
+		'nosort1'   => array('display' => __('Color'), 'align' => 'center', 'sort' => 'DESC', 'tip' => __('The Color as shown on the screen.')),
+		'nosort'    => array('display' => __('Deletable'), 'align' => 'right', 'sort' => '', 'tip' => __('Colors in use can not be Deleted.  In use is defined as being referenced either by a Graph or a Graph Template.')),
+		'graphs'    => array('display' => __('Graphs'), 'align' => 'right', 'sort' => 'DESC', 'tip' => __('The number of Graph using this Color.')),
 		'templates' => array('display' => __('Templates'), 'align' => 'right', 'sort' => 'DESC', 'tip' => __('The number of Graph Templates using this Color.'))
 	);
 
