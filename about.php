@@ -26,7 +26,8 @@ include('./include/auth.php');
 
 top_header();
 
-html_start_box( __('About Cacti'), '100%', '', '3', 'center', '');
+html_start_box(__('About Cacti'), '100%', '', '3', 'center', '');
+
 ?>
 
 <tr class='tableHeader'>
