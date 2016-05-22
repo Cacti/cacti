@@ -29,10 +29,9 @@ function graph_template_to_xml($graph_template_id) {
 	$xml_text = '';
 
 	$graph_template = db_fetch_row("SELECT id, name FROM graph_templates WHERE id=$graph_template_id");
-	$graph_template_graph = db_fetch_row("SELECT * FROM graph_templates_graph WHERE graph_template_id=$graph_template_id AND local_graph_id=0");
+	$graph_template_graph = db_fetch_row("SELECT * FROM graph_templates_graph WHERE graph_template_id=$graph_template_id AND local_graph_id=0 ORDER BY id");
 	$graph_template_items = db_fetch_assoc("SELECT * FROM graph_templates_item WHERE graph_template_id=$graph_template_id AND local_graph_id=0 ORDER BY sequence");
-	$graph_template_inputs = db_fetch_assoc("SELECT * FROM graph_template_input WHERE graph_template_id=$graph_template_id");
-
+	$graph_template_inputs = db_fetch_assoc("SELECT * FROM graph_template_input WHERE graph_template_id=$graph_template_id ORDER BY hash ");
 
 	if ((empty($graph_template['id'])) || (empty($graph_template_graph['id']))) {
 		$export_errors++;
@@ -147,8 +146,8 @@ function data_template_to_xml($data_template_id) {
 	$data_template          = db_fetch_row("SELECT id, name FROM data_template WHERE id=$data_template_id");
 	$data_template_data     = db_fetch_row("SELECT * FROM data_template_data WHERE data_template_id=$data_template_id AND local_data_id=0");
 
-	$data_template_rrd      = db_fetch_assoc("SELECT * FROM data_template_rrd WHERE data_template_id=$data_template_id AND local_data_id=0");
-	$data_input_data        = db_fetch_assoc("SELECT * FROM data_input_data WHERE data_template_data_id=" . $data_template_data['id']);
+	$data_template_rrd      = db_fetch_assoc("SELECT * FROM data_template_rrd WHERE data_template_id=$data_template_id AND local_data_id=0 ORDER BY hash");
+	$data_input_data        = db_fetch_assoc("SELECT * FROM data_input_data WHERE data_template_data_id=" . $data_template_data['id'] . " ORDER BY data_input_field_id");
 
 	if ((empty($data_template['id'])) || (empty($data_template_data['id']))) {
 		$export_errors++;
@@ -249,7 +248,7 @@ function data_input_method_to_xml($data_input_id) {
 	$xml_text = '';
 
 	$data_input = db_fetch_row("SELECT * FROM data_input WHERE id=$data_input_id");
-	$data_input_fields = db_fetch_assoc("SELECT * FROM data_input_fields WHERE data_input_id=$data_input_id");
+	$data_input_fields = db_fetch_assoc("SELECT * FROM data_input_fields WHERE data_input_id=$data_input_id ORDER BY hash");
 
 	if (empty($data_input['id'])) {
 		$export_errors++;
@@ -384,7 +383,7 @@ function vdef_to_xml($vdef_id) {
 	$xml_text = '';
 
 	$vdef       = db_fetch_row("SELECT * FROM vdef WHERE id=$vdef_id");
-	$vdef_items = db_fetch_assoc("SELECT * FROM vdef_items WHERE vdef_id=$vdef_id order by sequence");
+	$vdef_items = db_fetch_assoc("SELECT * FROM vdef_items WHERE vdef_id=$vdef_id ORDER BY sequence");
 
 	if (empty($vdef['id'])) {
 		$err_msg = 'Invalid VDEF.';
@@ -469,8 +468,8 @@ function data_source_profile_to_xml($data_source_profile_id) {
 
 	$profile     = db_fetch_row("SELECT * FROM data_source_profiles WHERE id=$data_source_profile_id");
 
-	$profile_cf  = db_fetch_assoc("SELECT * FROM data_source_profiles_cf WHERE data_source_profile_id=$data_source_profile_id");
-	$profile_rra = db_fetch_assoc("SELECT * FROM data_source_profiles_rra WHERE data_source_profile_id=$data_source_profile_id");
+	$profile_cf  = db_fetch_assoc("SELECT * FROM data_source_profiles_cf WHERE data_source_profile_id=$data_source_profile_id ORDER BY consolidation_function_id");
+	$profile_rra = db_fetch_assoc("SELECT * FROM data_source_profiles_rra WHERE data_source_profile_id=$data_source_profile_id ORDER BY steps");
 
 	if (empty($profile['id'])) {
 		$export_errors++;
@@ -543,8 +542,8 @@ function host_template_to_xml($host_template_id) {
 	$xml_text = '';
 
 	$host_template = db_fetch_row("SELECT * FROM host_template WHERE id=$host_template_id");
-	$host_template_graph = db_fetch_assoc("SELECT * FROM host_template_graph WHERE host_template_id=$host_template_id");
-	$host_template_snmp_query = db_fetch_assoc("SELECT * FROM host_template_snmp_query WHERE host_template_id=$host_template_id");
+	$host_template_graph = db_fetch_assoc("SELECT * FROM host_template_graph WHERE host_template_id=$host_template_id ORDER BY graph_template_id");
+	$host_template_snmp_query = db_fetch_assoc("SELECT * FROM host_template_snmp_query WHERE host_template_id=$host_template_id ORDER BY snmp_query_id");
 
 	if (empty($host_template['id'])) {
 		$export_errors++;
@@ -611,7 +610,7 @@ function data_query_to_xml($data_query_id) {
 	$xml_text = '';
 
 	$snmp_query = db_fetch_row("SELECT * FROM snmp_query WHERE id=$data_query_id");
-	$snmp_query_graph = db_fetch_assoc("SELECT * FROM snmp_query_graph WHERE snmp_query_id=$data_query_id");
+	$snmp_query_graph = db_fetch_assoc("SELECT * FROM snmp_query_graph WHERE snmp_query_id=$data_query_id ORDER BY hash");
 
 	if (empty($snmp_query['id'])) {
 		$export_errors++;
@@ -658,7 +657,7 @@ function data_query_to_xml($data_query_id) {
 
 		$snmp_query_graph_rrd_sv = db_fetch_assoc('SELECT * FROM snmp_query_graph_rrd_sv WHERE snmp_query_graph_id=' . $item['id'] . ' ORDER BY sequence');
 		$snmp_query_graph_sv = db_fetch_assoc('SELECT * FROM snmp_query_graph_sv WHERE snmp_query_graph_id=' . $item['id'] . ' ORDER BY sequence');
-		$snmp_query_graph_rrd = db_fetch_assoc('SELECT * FROM snmp_query_graph_rrd WHERE snmp_query_graph_id=' . $item['id'] . ' AND data_template_id > 0');
+		$snmp_query_graph_rrd = db_fetch_assoc('SELECT * FROM snmp_query_graph_rrd WHERE snmp_query_graph_id=' . $item['id'] . ' AND data_template_id > 0 ORDER BY data_template_rrd_id');
 
 		/* XML Branch: <graphs/rrd> */
 
