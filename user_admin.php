@@ -25,11 +25,11 @@
 include('./include/auth.php');
 
 $user_actions = array(
-	1 => 'Delete',
-	2 => 'Copy',
-	3 => 'Enable',
-	4 => 'Disable',
-	5 => 'Batch Copy'
+	1 => __('Delete'),
+	2 => __('Copy'),
+	3 => __('Enable'),
+	4 => __('Disable'),
+	5 => __('Batch Copy')
 );
 
 set_default_action();
@@ -295,12 +295,12 @@ function form_actions() {
 		if ((get_nfilter_request_var('drp_action') == '1') && (sizeof($user_array))) { /* delete */
 			print "<tr>
 				<td class='textArea'>
-					<p>Click 'Continue' to delete the selected User(s).</p>
+					<p>" . __('Click \'Continue\' to delete the selected User(s).') . "</p>
 					<p><ul>$user_list</ul></p>
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' value='Cancel' onClick='cactiReturnTo()'><input type='submit' value='Continue' title='Delete User(s)'>";
+			$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'><input type='submit' value='" . __('Continue') . "' title='" . __('Delete User(s)') . "'>";
 		}
 		$user_id = '';
 
@@ -310,59 +310,59 @@ function form_actions() {
 
 			print "<tr>
 				<td class='textArea'>
-					Click 'Continue' to copy the selected User to a new User below.
+					<p>" . __('Click \'Continue\' to copy the selected User to a new User below.') . "</p>
 				</td>
 			</tr>
 			<tr>
 				<td class='textArea'>
-					Template Username: <i>" . db_fetch_cell_prepared('SELECT username FROM user_auth WHERE id = ?', array($user_id)) . "</i>
+					<p>" . __('Template Username:') . " <i>" . htmlspecialchars(db_fetch_cell_prepared('SELECT username FROM user_auth WHERE id = ?', array($user_id))) . "</i></p>
 				</td>
 			</tr>
 			<tr>
 				<td class='textArea'>
-				Username: ";
+					<p>" . __('Username:') . " ";
 			print form_text_box('new_username', '', '', 25);
 
-			print "</td>
+			print "</p></td>
 				</tr>
 				<tr>
 					<td class='textArea'>
-						Full Name: ";
+						<p>" . __('Full Name:') . " ";
 			print form_text_box('new_fullname', '', '', 35);
 
-			print "</td>
+			print "</p></td>
 				</tr>
 				<tr>
 					<td class='textArea'>
-						Realm: ";
+						<p>" . __('Realm:') ." ";
 			print form_dropdown('new_realm', $auth_realms, '', '', $user_realm, '', 0);
 
-			print "</td>
+			print "</p></td>
 				</tr>\n";
 
-			$save_html = "<input type='button' value='Cancel' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='Continue' title='Copy User'>";
+			$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "' title='" . __('Copy User') . "'>";
 		}
 
 		if ((get_nfilter_request_var('drp_action') == '3') && (sizeof($user_array))) { /* enable */
 			print "<tr>
 				<td class='textArea'>
-					<p>Click 'Continue' to enable the selected User(s).</p>
+					<p>" . __('Click \'Continue\' to enable the selected User(s).'). "</p>
 					<p><ul>$user_list</ul></p>
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' value='Cancel' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='Continue' title='Enable User(s)'>";
+			$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "' title='" . __('Enable User(s)') . "'>";
 		}
 
 		if ((get_nfilter_request_var('drp_action') == '4') && (sizeof($user_array))) { /* disable */
 			print "<tr>
 				<td class='textArea'>
-					<p>Click 'Continue' to disable the selected User(s).</p>
+					<p>" . __('Click \'Continue\' to disable the selected User(s).') . "</p>
 					<p><ul>$user_list</ul></p>
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' value='Cancel' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='Continue' title='Disable User(s)'>";
+			$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "' title='" . __('Disable User(s)') . "'>";
 		}
 
 		if ((get_nfilter_request_var('drp_action') == '5') && (sizeof($user_array))) { /* batch copy */
@@ -370,26 +370,26 @@ function form_actions() {
 
 			print "<tr>
 				<td class='textArea'>
-					<p>Click 'Continue' to overwrite the User(s) settings with the selected template User settings and permissions.  The original users Full Name, Password, Realm and Enable status will be retained, all other fields will be overwritten from Template User.<br><br></td>
+					<p>" . __('Click \'Continue\' to overwrite the User(s) settings with the selected template User settings and permissions.  The original users Full Name, Password, Realm and Enable status will be retained, all other fields will be overwritten from Template User.') . "<br><br></td>
 				</tr><tr>
 					<td class='textArea'>
-						Template User: ";
+						<p>" . __('Template User:') . " ";
 			print form_dropdown('template_user', $usernames, 'username', 'id', '', '', 0);
 
-			print "</td>
+			print "</p></td>
 				</tr><tr>
 					<td class='textArea'>
-						<p>User(s) to update:</p>
+						<p>" . __('User(s) to update:') . "</p>
 						<p><ul>$user_list</ul></p>
 					</td>
 				</tr>\n";
 
-			$save_html = "<input type='button' value='Cancel' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='Continue' title='Reset User(s) Settings'>";
+			$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "' title='" . __('Reset User(s) Settings') . "'>";
 		}
 	}else{
-		print "<tr><td class='even'><span class='textError'>You must select at least one user.</span></td></tr>\n";
+		print "<tr><td class='even'><span class='textError'>" . __('You must select at least one user.') . "</span></td></tr>\n";
 
-		$save_html = "<input type='button' value='Return' onClick='cactiReturnTo()'>";
+		$save_html = "<input type='button' value='" . __('Return') . "' onClick='cactiReturnTo()'>";
 	}
 
 	print "<tr>
@@ -742,7 +742,7 @@ function graph_perms_edit($tab, $header_label) {
 		?>
 		<tr class='even'>
 			<td><table><tr>
-			<td class='nowrap'>Default Graph Policy for this User</td>
+			<td class='nowrap'><?php print __('Default Graph Policy for this User');?></td>
 			<td>
 				<?php form_dropdown('policy_graphs',$policy_array,'','',$policy['policy_graphs'],'',''); ?>
 			</td>
@@ -890,7 +890,7 @@ function graph_perms_edit($tab, $header_label) {
 
 		print $nav;
 
-		$display_text = array('Graph Title', 'ID', 'Effective Policy');
+		$display_text = array(__('Graph Title'), __('ID'), __('Effective Policy'));
 
 		html_header_checkbox($display_text, false);
 
@@ -907,7 +907,7 @@ function graph_perms_edit($tab, $header_label) {
 			/* put the nav bar on the bottom as well */
 			print $nav;
 		} else {
-			print '<tr><td><em>No Matching Graphs Found</em></td></tr>';
+			print '<tr><td><em>' . __('No Matching Graphs Found') . '</em></td></tr>';
 		}
 		html_end_box(false);
 
@@ -917,13 +917,13 @@ function graph_perms_edit($tab, $header_label) {
 
 		if ($policy['policy_graphs'] == 1) {
 			$assoc_actions = array(
-				1 => 'Revoke Access',
-				2 => 'Grant Access'
+				1 => __('Revoke Access'),
+				2 => __('Grant Access')
 			);
 		}else{
 			$assoc_actions = array(
-				1 => 'Grant Access',
-				2 => 'Revoke Access'
+				1 => __('Grant Access'),
+				2 => __('Revoke Access')
 			);
 		}
 
@@ -984,7 +984,7 @@ function graph_perms_edit($tab, $header_label) {
 	
 		print $nav;
 
-		$display_text = array('Name', 'Description', 'Member', 'ID', 'Policies (Graph/Device/Template)', 'Enabled');
+		$display_text = array(__('Name'), __('Description'), __('Member'), __('ID'), __('Policies (Graph/Device/Template)'), __('Enabled'));
 
 		html_header_checkbox($display_text, false);
 
@@ -993,10 +993,10 @@ function graph_perms_edit($tab, $header_label) {
 				form_alternate_row('line' . $g['id'], true);
 				form_selectable_cell("<a class='linkEditMain' href='user_group_admin.php?action=edit&id=" . $g['id'] . "'>" . (strlen(get_request_var('filter')) ? preg_replace('/(' . preg_quote(get_request_var('filter')) . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($g['name'])) : htmlspecialchars($g['name'])) . '</a>', $g['id']);
 				form_selectable_cell((strlen(get_request_var('filter')) ? preg_replace('/(' . preg_quote(get_request_var('filter')) . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($g['description'])) : htmlspecialchars($g['description'])), $g['id']);
-				form_selectable_cell($g['user_id'] > 0 ? 'Member':'Non Member', $g['id']);
+				form_selectable_cell($g['user_id'] > 0 ? __('Member'):__('Non Member'), $g['id']);
 				form_selectable_cell(($g['id']), $g['id']);
-				form_selectable_cell(($g['policy_graphs'] == 1 ? 'ALLOW':'DENY') . '/' . ($g['policy_hosts'] == 1 ? 'ALLOW':'DENY') . '/' . ($g['policy_graph_templates'] == 1 ? 'ALLOW':'DENY'), $g['id']);
-				form_selectable_cell($g['enabled'] == 'on' ? 'Enabled':'Disabled', $g['id']);
+				form_selectable_cell(($g['policy_graphs'] == 1 ? __('ALLOW'):__('DENY')) . '/' . ($g['policy_hosts'] == 1 ? __('ALLOW'):__('DENY')) . '/' . ($g['policy_graph_templates'] == 1 ? __('ALLOW'):__('DENY')), $g['id']);
+				form_selectable_cell($g['enabled'] == 'on' ? __('Enabled'):__('Disabled'), $g['id']);
 				form_checkbox_cell($g['name'], $g['id']);
 				form_end_row();
 			}
@@ -1004,7 +1004,7 @@ function graph_perms_edit($tab, $header_label) {
 			/* put the nav bar on the bottom as well */
 			print $nav;
 		} else {
-			print '<tr><td><em>No Matching User Groups Found</em></td></tr>';
+			print '<tr><td><em>' . __('No Matching User Groups Found') . '</em></td></tr>';
 		}
 		html_end_box(false);
 
@@ -1013,8 +1013,8 @@ function graph_perms_edit($tab, $header_label) {
 		form_hidden_box('associate_groups', '1', '');
 
 		$assoc_actions = array(
-			1 => 'Assign Membership',
-			2 => 'Remove Membership'
+			1 => __('Assign Membership'),
+			2 => __('Remove Membership')
 		);
 
 		/* draw the dropdown containing a list of available actions for this form */
@@ -1031,12 +1031,12 @@ function graph_perms_edit($tab, $header_label) {
 		form_start('user_admin.php', 'policy');
 
 		/* box: device permissions */
-		html_start_box('Default Device Policy', '100%', '', '3', 'center', '');
+		html_start_box(__('Default Device Policy'), '100%', '', '3', 'center', '');
 
 		?>
 		<tr class='even'>
 			<td><table><tr>
-			<td class='nowrap'>Default Device Policy for this User</td>
+			<td class='nowrap'><?php print __('Default Device Policy for this User');?></td>
 			<td>
 				<?php form_dropdown('policy_hosts',$policy_array,'','',$policy['policy_hosts'],'',''); ?>
 			</td>
@@ -1111,7 +1111,7 @@ function graph_perms_edit($tab, $header_label) {
 	
 		print $nav;
 
-		$display_text = array('Description', 'ID', 'Effective Policy', 'Graphs', 'Data Sources', 'Status', 'Hostname');
+		$display_text = array(__('Description'), __('ID'), __('Effective Policy'), __('Graphs'), __('Data Sources'), __('Status'), __('Hostname'));
 
 		html_header_checkbox($display_text, false);
 
@@ -1122,15 +1122,15 @@ function graph_perms_edit($tab, $header_label) {
 				form_selectable_cell(round(($host['id']), 2), $host['id']);
 				if (empty($host['user_id']) || $host['user_id'] == NULL) {
 					if ($policy['policy_hosts'] == 1) {
-						form_selectable_cell('<span class="accessGranted">Access Granted</span>', $host['id']);
+						form_selectable_cell('<span class="accessGranted">' . __('Access Granted') . '</span>', $host['id']);
 					}else{
-						form_selectable_cell('<span class="accessRestricted">Access Restricted</span>', $host['id']);
+						form_selectable_cell('<span class="accessRestricted">' . __('Access Restricted') . '</span>', $host['id']);
 					}
 				} else {
 					if ($policy['policy_hosts'] == 1) {
-						form_selectable_cell('<span class="accessRestricted">Access Restricted</span>', $host['id']);
+						form_selectable_cell('<span class="accessRestricted">' . __('Access Restricted') . '</span>', $host['id']);
 					}else{
-						form_selectable_cell('<span class="accessGranted">Access Granted</span>', $host['id']);
+						form_selectable_cell('<span class="accessGranted">' . __('Access Granted') . '</span>', $host['id']);
 					}
 				}
 				form_selectable_cell((isset($host_graphs[$host['id']]) ? $host_graphs[$host['id']] : 0), $host['id']);
@@ -1144,7 +1144,7 @@ function graph_perms_edit($tab, $header_label) {
 			/* put the nav bar on the bottom as well */
 			print $nav;
 		} else {
-			print '<tr><td><em>No Matching Devices Found</em></td></tr>';
+			print '<tr><td><em>' . __('No Matching Devices Found') . '</em></td></tr>';
 		}
 		html_end_box(false);
 
@@ -1154,13 +1154,13 @@ function graph_perms_edit($tab, $header_label) {
 
 		if ($policy['policy_hosts'] == 1) {
 			$assoc_actions = array(
-				1 => 'Revoke Access',
-				2 => 'Grant Access'
+				1 => __('Revoke Access'),
+				2 => __('Grant Access')
 			);
 		}else{
 			$assoc_actions = array(
-				1 => 'Grant Access',
-				2 => 'Revoke Access'
+				1 => __('Grant Access'),
+				2 => __('Revoke Access')
 			);
 		}
 
@@ -1178,12 +1178,12 @@ function graph_perms_edit($tab, $header_label) {
 		form_start('user_admin.php', 'policy');
 
 		/* box: device permissions */
-		html_start_box('Default Graph Template Policy', '100%', '', '3', 'center', '');
+		html_start_box(__('Default Graph Template Policy'), '100%', '', '3', 'center', '');
 
 		?>
 		<tr class='even'>
 			<td><table><tr>
-			<td class='nowrap'>Default Graph Template Policy for this User</td>
+			<td class='nowrap'><?php print __('Default Graph Template Policy for this User');?></td>
 			<td>
 				<?php form_dropdown('policy_graph_templates',$policy_array,'','',$policy['policy_graph_templates'],'',''); ?>
 			</td>
@@ -1252,7 +1252,7 @@ function graph_perms_edit($tab, $header_label) {
 
 		print $nav;
 
-		$display_text = array('Template Name', 'ID', 'Effective Policy', 'Total Graphs');
+		$display_text = array(__('Template Name'), __('ID'), __('Effective Policy'), __('Total Graphs'));
 
 		html_header_checkbox($display_text, false);
 
@@ -1263,15 +1263,15 @@ function graph_perms_edit($tab, $header_label) {
 				form_selectable_cell($g['id'], $g['id']);
 				if (empty($g['user_id']) || $g['user_id'] == NULL) {
 					if ($policy['policy_graph_templates'] == 1) {
-						form_selectable_cell('<span class="accessGranted">Access Granted</span>', $g['id']);
+						form_selectable_cell('<span class="accessGranted">' . __('Access Granted') . '</span>', $g['id']);
 					}else{
-						form_selectable_cell('<span class="accessRestricted">Access Restricted</span>', $g['id']);
+						form_selectable_cell('<span class="accessRestricted">' . __('Access Restricted') . '</span>', $g['id']);
 					}
 				} else {
 					if ($policy['policy_graph_templates'] == 1) {
-						form_selectable_cell('<span class="accessRestricted">Access Restricted</span>', $g['id']);
+						form_selectable_cell('<span class="accessRestricted">' . __('Access Restricted') . '</span>', $g['id']);
 					}else{
-						form_selectable_cell('<span style="accessGranted">Access Granted</span>', $g['id']);
+						form_selectable_cell('<span style="accessGranted">' . __('Access Granted') . '</span>', $g['id']);
 					}
 				}
 				form_selectable_cell($g['totals'], $g['id']);
@@ -1282,7 +1282,7 @@ function graph_perms_edit($tab, $header_label) {
 			/* put the nav bar on the bottom as well */
 			print $nav;
 		} else {
-			print '<tr><td><em>No Matching Graph Templates Found</em></td></tr>';
+			print '<tr><td><em>' . __('No Matching Graph Templates Found') . '</em></td></tr>';
 		}
 		html_end_box(false);
 
@@ -1292,13 +1292,13 @@ function graph_perms_edit($tab, $header_label) {
 
 		if ($policy['policy_graph_templates'] == 1) {
 			$assoc_actions = array(
-				1 => 'Revoke Access',
-				2 => 'Grant Access'
+				1 => __('Revoke Access'),
+				2 => __('Grant Access')
 			);
 		}else{
 			$assoc_actions = array(
-				1 => 'Grant Access',
-				2 => 'Revoke Access'
+				1 => __('Grant Access'),
+				2 => __('Revoke Access')
 			);
 		}
 
@@ -1316,12 +1316,12 @@ function graph_perms_edit($tab, $header_label) {
 		form_start('user_admin.php', 'policy');
 
 		/* box: device permissions */
-		html_start_box('Default Tree Policy', '100%', '', '3', 'center', '');
+		html_start_box(__('Default Tree Policy'), '100%', '', '3', 'center', '');
 
 		?>
 		<tr class='even'>
 			<td><table><tr>
-			<td class='nowrap'>Default Tree Policy for this User</td>
+			<td class='nowrap'><?php print __('Default Tree Policy for this User');?></td>
 			<td>
 				<?php form_dropdown('policy_trees',$policy_array,'','',$policy['policy_trees'],'',''); ?>
 			</td>
@@ -1384,7 +1384,7 @@ function graph_perms_edit($tab, $header_label) {
 
 		print $nav;
 
-		$display_text = array('Tree Name', 'ID', 'Effective Policy');
+		$display_text = array(__('Tree Name'), __('ID'), __('Effective Policy'));
 
 		html_header_checkbox($display_text, false);
 
@@ -1395,15 +1395,15 @@ function graph_perms_edit($tab, $header_label) {
 				form_selectable_cell($t['id'], $t['id']);
 				if (empty($t['user_id']) || $t['user_id'] == NULL) {
 					if ($policy['policy_graphs'] == 1) {
-						form_selectable_cell('<span class="accessGranted">Access Granted</span>', $t['id']);
+						form_selectable_cell('<span class="accessGranted">' . __('Access Granted') . '</span>', $t['id']);
 					}else{
-						form_selectable_cell('<span class="accessRestricted">Access Restricted</span>', $t['id']);
+						form_selectable_cell('<span class="accessRestricted">' . __('Access Restricted') . '</span>', $t['id']);
 					}
 				} else {
 					if ($policy['policy_graphs'] == 1) {
-						form_selectable_cell('<span class="accessRestricted">Access Restricted</span>', $t['id']);
+						form_selectable_cell('<span class="accessRestricted">' . __('Access Restricted') . '</span>', $t['id']);
 					}else{
-						form_selectable_cell('<span class="accessGranted">Access Granted</span>', $t['id']);
+						form_selectable_cell('<span class="accessGranted">' . __('Access Granted') . '</span>', $t['id']);
 					}
 				}
 				form_checkbox_cell($t['name'], $t['id']);
@@ -1413,7 +1413,7 @@ function graph_perms_edit($tab, $header_label) {
 			/* put the nav bar on the bottom as well */
 			print $nav;
 		} else {
-			print '<tr><td><em>No Matching Trees Found</em></td></tr>';
+			print '<tr><td><em>' . __('No Matching Trees Found') . '</em></td></tr>';
 		}
 		html_end_box(false);
 
@@ -1423,13 +1423,13 @@ function graph_perms_edit($tab, $header_label) {
 
 		if ($policy['policy_graph_templates'] == 1) {
 			$assoc_actions = array(
-				1 => 'Revoke Access',
-				2 => 'Grant Access'
+				1 => __('Revoke Access'),
+				2 => __('Grant Access')
 			);
 		}else{
 			$assoc_actions = array(
-				1 => 'Grant Access',
-				2 => 'Revoke Access'
+				1 => __('Grant Access'),
+				2 => __('Revoke Access')
 			);
 		}
 
@@ -1456,8 +1456,8 @@ function user_realms_edit($header_label) {
 	$all_realms = $user_auth_realms;
 
 	print "	<tr class='cactiTableTitle'>
-			<td class='textHeaderDark'><strong>User Permissions</strong> $header_label</td>
-			<td class='tableHeader' style='width:1%;text-align:center;'><input class='checkbox' type='checkbox' name='all' title='Select All' onClick='selectAllRealms(this.checked)'></td>\n
+			<td class='textHeaderDark'><strong>" . __('User Permissions') . "</strong> $header_label</td>
+			<td class='tableHeader' style='width:1%;text-align:center;'><input class='checkbox' type='checkbox' name='all' title='" . __('Select All') . "' onClick='selectAllRealms(this.checked)'></td>\n
 		</tr>\n";
 
 	/* do cacti realms first */
@@ -1515,7 +1515,7 @@ function user_realms_edit($header_label) {
 		ON pc.directory = pr.plugin
 		ORDER BY pc.name, pr.display');
 
-	print "<tr class='tableHeader'><th colspan='2'>Plugin Permissions</th></tr>\n";
+	print "<tr class='tableHeader'><th colspan='2'>" . __('Plugin Permissions') . "</th></tr>\n";
 	print "<tr class='odd'><td colspan='4'><table style='width:100%;'><tr><td class='realms'>\n";
 	if (sizeof($realms)) {
 		$last_plugin = 'none';
@@ -1571,7 +1571,7 @@ function user_realms_edit($header_label) {
 			print "</td><td class='realms'>\n";
 		}
 
-		print "<strong>Legacy 1.x Plugins</strong><br>\n";
+		print "<strong>" . __('Legacy 1.x Plugins') . "</strong><br>\n";
 		foreach($all_realms as $realm => $name) {
 			if (sizeof(db_fetch_assoc_prepared('SELECT realm_id FROM user_auth_realm WHERE user_id = ? AND realm_id = ?', array(get_request_var('id', 0), $realm))) > 0) {
 				$old_value = 'on';
@@ -1606,7 +1606,7 @@ function settings_edit($header_label) {
 
 	form_start('user_admin.php');
 
-	html_start_box("User Settings $header_label", '100%', '', '3', 'center', '');
+	html_start_box(__('User Settings %s', $header_label), '100%', '', '3', 'center', '');
 
 	while (list($tab_short_name, $tab_fields) = each($settings_user)) {
 		$collapsible = true;
@@ -1720,14 +1720,14 @@ function user_edit() {
 
 	/* present a tabbed interface */
 	$tabs = array(
-		'general'  => 'General',
-		'realms'   => 'Permissions',
-		'permsgr'  => 'Group Membership',
-		'permsg'   => 'Graph Perms',
-		'permsd'   => 'Device Perms',
-		'permste'  => 'Template Perms',
-		'permstr'  => 'Tree Perms',
-		'settings' => 'User Settings'
+		'general'  => __('General'),
+		'realms'   => __('Permissions'),
+		'permsgr'  => __('Group Membership'),
+		'permsg'   => __('Graph Perms'),
+		'permsd'   => __('Device Perms'),
+		'permste'  => __('Template Perms'),
+		'permstr'  => __('Tree Perms'),
+		'settings' => __('User Settings')
 	);
 
 	/* set the default tab */
@@ -1750,7 +1750,7 @@ function user_edit() {
 				" href='" . htmlspecialchars($config['url_path'] .
 				'user_admin.php?action=user_edit&id=' . get_request_var('id') .
 				'&tab=' . $tab_short_name) .
-				"'>$tabs[$tab_short_name]</a></li>\n";
+				"'>" . $tabs[$tab_short_name] . "</a></li>\n";
 		}
 
 		api_plugin_hook('user_admin_tab');
@@ -1764,7 +1764,7 @@ function user_edit() {
 
 		form_start('user_admin.php');
 
-		html_start_box("User Management $header_label", '100%', '', '3', 'center', '');
+		html_start_box(__('User Management %s', $header_label), '100%', '', '3', 'center', '');
 
 		draw_edit_form(
 			array(
@@ -1796,12 +1796,12 @@ function user_edit() {
 				$('#passconfirm').remove();
 			}else if ($('#password').val().length < minChars) {
 				$('#pass').remove();
-				$('#password').after('<span id="pass"><i class="badpassword fa fa-times"></i><span style="padding-left:4px;">Password Too Short</span></span>');
+				$('#password').after('<span id="pass"><i class="badpassword fa fa-times"></i><span style="padding-left:4px;"><?php print __('Password Too Short')?></span></span>');
 			}else{
 				$.post('user_admin.php?action=checkpass', { password: $('#password').val(), password_confim: $('#password_confirm').val(), __csrf_magic: csrfMagicToken } ).done(function(data) {
 					if (data == 'ok') {
 						$('#pass').remove();
-						$('#password').after('<span id="pass"><i class="goodpassword fa fa-check"></i><span style="padding-left:4px;">Password Validation Passes</span></span>');
+						$('#password').after('<span id="pass"><i class="goodpassword fa fa-check"></i><span style="padding-left:4px;"><?php print __('Password Validation Passes');?></span></span>');
 						checkPasswordConfirm();
 					}else{
 						$('#pass').remove();
@@ -1815,10 +1815,10 @@ function user_edit() {
 			if ($('#password_confirm').val().length > 0) {
 				if ($('#password').val() != $('#password_confirm').val()) {
 					$('#passconfirm').remove();
-					$('#password_confirm').after('<span id="passconfirm"><i class="badpassword fa fa-times"></i><span style="padding-left:4px;">Passwords do Not Match</span></span>');
+					$('#password_confirm').after('<span id="passconfirm"><i class="badpassword fa fa-times"></i><span style="padding-left:4px;"><?php print __('Passwords do Not Match');?></span></span>');
 				}else{
 					$('#passconfirm').remove();
-					$('#password_confirm').after('<span id="passconfirm"><i class="goodpassword fa fa-check"></i><span style="padding-left:4px;">Passwords Match</span></span>');
+					$('#password_confirm').after('<span id="passconfirm"><i class="goodpassword fa fa-check"></i><span style="padding-left:4px;"><?php print __('Passwords Match');?></span></span>');
 				}
 			}else{
 				$('#passconfirm').remove();
@@ -1942,7 +1942,7 @@ function user() {
 	</script>
 	<?php
 
-	html_start_box('User Management', '100%', '', '3', 'center', 'user_admin.php?tab=general&action=user_edit');
+	html_start_box(__('User Management'), '100%', '', '3', 'center', 'user_admin.php?tab=general&action=user_edit');
 
 	if (get_request_var('rows') == '-1') {
 		$rows = read_config_option('num_rows_table');
@@ -1957,17 +1957,17 @@ function user() {
 			<table class='filterTable'>
 				<tr>
 					<td>
-						Search
+						<?php print __('Search');?>
 					</td>
 					<td>
 						<input id='filter' type='text' name='filter' size='25' value='<?php print htmlspecialchars(get_request_var('filter'));?>'>
 					</td>
 					<td>
-						Users
+						<?php print __('Users');?>
 					</td>
 					<td>
 						<select id='rows' name='rows' onChange='applyFilter()'>
-							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?>
+							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?>>
 							<?php
 							if (sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
@@ -1978,10 +1978,10 @@ function user() {
 						</select>
 					</td>
 					<td>
-						<input type='button' id='refresh' value='Go' title='Set/Refresh Filters'>
+						<input type='button' id='refresh' value='<?php print __('Go');?>' title='<?php print __('Set/Refresh Filters');?>'>
 					</td>
 					<td>
-						<input type='button' id='clear' value='Clear' title='Clear Filters'>
+						<input type='button' id='clear' value='<?php print __('Clear');?>' title='<?php print __('Clear Filters');?>'>
 					</td>
 				</tr>
 			</table>
@@ -2024,28 +2024,29 @@ function user() {
 	print $nav;
 
 	$display_text = array(
-		'username' => array('User Name', 'ASC'),
-		'full_name' => array('Full Name', 'ASC'),
-		'enabled' => array('Enabled', 'ASC'),
-		'realm' => array('Realm', 'ASC'),
-		'policy_graphs' => array('Graph Policy', 'ASC'),
-		'policy_hosts' => array('Device Policy', 'ASC'),
-		'policy_graph_templates' => array('Template Policy', 'ASC'),
-		'dtime' => array('Last Login', 'DESC'));
+		'username'               => array(__('User Name'), 'ASC'),
+		'full_name'              => array(__('Full Name'), 'ASC'),
+		'enabled'                => array(__('Enabled'), 'ASC'),
+		'realm'                  => array(__('Realm'), 'ASC'),
+		'policy_graphs'          => array(__('Graph Policy'), 'ASC'),
+		'policy_hosts'           => array(__('Device Policy'), 'ASC'),
+		'policy_graph_templates' => array(__('Template Policy'), 'ASC'),
+		'dtime'                  => array(__('Last Login'), 'DESC')
+	);
 
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
 	if (sizeof($user_list) > 0) {
 		foreach ($user_list as $user) {
 			if (empty($user['dtime']) || ($user['dtime'] == '12/31/1969')) {
-				$last_login = 'N/A';
+				$last_login = __('N/A');
 			}else{
 				$last_login = strftime('%A, %B %d, %Y %H:%M:%S ', strtotime($user['dtime']));;
 			}
 			if ($user['enabled'] == 'on') {
-				$enabled = 'Yes';
+				$enabled = __('Yes');
 			}else{
-				$enabled = 'No';
+				$enabled = __('No');
 			}
 
 			form_alternate_row('line' . $user['id'], true);
@@ -2055,9 +2056,9 @@ function user() {
 			form_selectable_cell((strlen(get_request_var('filter')) ? preg_replace('/(' . preg_quote(get_request_var('filter')) . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($user['full_name'])) : htmlspecialchars($user['full_name'])), $user['id']);
 			form_selectable_cell($enabled, $user['id']);
 			form_selectable_cell($auth_realms[$user['realm']], $user['id']);
-			form_selectable_cell(($user['policy_graphs'] == 1 ? 'ALLOW':'DENY'), $user['id']);
-			form_selectable_cell(($user['policy_hosts'] == 1 ? 'ALLOW':'DENY'), $user['id']);
-			form_selectable_cell(($user['policy_graph_templates'] == 1 ? 'ALLOW':'DENY'), $user['id']);
+			form_selectable_cell(($user['policy_graphs'] == 1 ? __('ALLOW'):__('DENY')), $user['id']);
+			form_selectable_cell(($user['policy_hosts'] == 1 ? __('ALLOW'):__('DENY')), $user['id']);
+			form_selectable_cell(($user['policy_graph_templates'] == 1 ? __('ALLOW'):__('DENY')), $user['id']);
 			form_selectable_cell($last_login, $user['id']);
 			form_checkbox_cell($user['username'], $user['id']);
 			form_end_row();
@@ -2065,12 +2066,11 @@ function user() {
 
 		print $nav;
 	}else{
-		print '<tr><td><em>No Users</em></td></tr>';
+		print '<tr><td><em>' . __('No Users') . '</em></td></tr>';
 	}
 	html_end_box(false);
 
 	draw_actions_dropdown($user_actions);
-
 }
 
 function process_graph_request_vars() {
@@ -2276,7 +2276,7 @@ function graph_filter($header_label) {
 	</script>
 	<?php
 
-	html_start_box('Graph Permissions ' . htmlspecialchars($header_label), '100%', '', '3', 'center', '');
+	html_start_box(__('Graph Permissions %s', htmlspecialchars($header_label)), '100%', '', '3', 'center', '');
 
 	?>
 	<tr class='even'>
@@ -2285,18 +2285,18 @@ function graph_filter($header_label) {
 			<table class='filterTable'>
 				<tr>
 					<td>
-						Search
+						<?php print __('Search');?>
 					</td>
 					<td>
 						<input id='filter' type='text' name='filter' size='25' value='<?php print htmlspecialchars(get_request_var('filter'));?>' onChange='applyFilter()'>
 					</td>
 					<td>
-						Template
+						<?php print __('Template');?>
 					</td>
 					<td>
 						<select id='graph_template_id' name='graph_template_id' onChange='applyFilter()'>
-							<option value='-1'<?php if (get_request_var('graph_template_id') == '-1') {?> selected<?php }?>>Any</option>
-							<option value='0'<?php if (get_request_var('graph_template_id') == '0') {?> selected<?php }?>>None</option>
+							<option value='-1'<?php if (get_request_var('graph_template_id') == '-1') {?> selected<?php }?>><?php print __('Any');?></option>
+							<option value='0'<?php if (get_request_var('graph_template_id') == '0') {?> selected<?php }?>><?php print __('None');?></option>
 							<?php
 							$graph_templates = db_fetch_assoc('SELECT DISTINCT gt.id, gt.name 
 								FROM graph_templates AS gt
@@ -2313,7 +2313,7 @@ function graph_filter($header_label) {
 						</select>
 					</td>
 					<td>
-						Graphs
+						<?php print __('Graphs');?>
 					</td>
 					<td>
 						<select id='rows' name='rows' onChange='applyFilter()'>
@@ -2331,13 +2331,13 @@ function graph_filter($header_label) {
 						<input type='checkbox' name='associated' id='associated' onChange='applyFilter()' <?php print (get_request_var('associated') == 'true' || get_request_var('associated') == 'on' ? 'checked':'');?>>
 					</td>
 					<td>
-						<label for='associated'>Show All</label>
+						<label for='associated'><?php print __('Show All');?></label>
 					</td>
 					<td nowrap>
-						<input type='button' value='Go' onClick='applyFilter()' title='Set/Refresh Filters'>
+						<input type='button' value='<?php print __('Go');?>' onClick='applyFilter()' title='<?php print __('Set/Refresh Filters');?>'>
 					</td>
 					<td nowrap>
-						<input type='button' name='clearf' value='Clear' onClick='clearFilter()' title='Clear Filters'>
+						<input type='button' name='clearf' value='<?php print __('Clear');?>' onClick='clearFilter()' title='<?php print __('Clear Filters');?>'>
 					</td>
 				</tr>
 			</table>
@@ -2385,7 +2385,7 @@ function group_filter($header_label) {
 	</script>
 	<?php
 
-	html_start_box('Group Membership ' . htmlspecialchars($header_label), '100%', '', '3', 'center', '');
+	html_start_box(__('Group Membership %s', htmlspecialchars($header_label)), '100%', '', '3', 'center', '');
 
 	?>
 	<tr class='even'>
@@ -2394,13 +2394,13 @@ function group_filter($header_label) {
 			<table class='filterTable'>
 				<tr>
 					<td>
-						Search
+						<?php print __('Search');?>
 					</td>
 					<td>
 						<input id='filter' type='text' name='filter' size='25' value='<?php print htmlspecialchars(get_request_var('filter'));?>' onChange='applyFilter()'>
 					</td>
 					<td>
-						Groups
+						<?php print __('Groups');?>
 					</td>
 					<td>
 						<select id='rows' name='rows' onChange='applyFilter()'>
@@ -2418,13 +2418,13 @@ function group_filter($header_label) {
 						<input type='checkbox' name='associated' id='associated' onChange='applyFilter()' <?php print (get_request_var('associated') == 'true' || get_request_var('associated') == 'on' ? 'checked':'');?>>
 					</td>
 					<td>
-						<label for='associated'>Show All</label>
+						<label for='associated'><?php print __('Show All');?></label>
 					</td>
 					<td>
-						<input type='button' value='Go' onClick='applyFilter()' title='Set/Refresh Filters'>
+						<input type='button' value='<?php print __('Go');?>' onClick='applyFilter()' title='<?php print __('Set/Refresh Filters');?>'>
 					</td>
 					<td>
-						<input type='button' name='clearf' value='Clear' onClick='clearFilter()' title='Clear Filters'>
+						<input type='button' name='clearf' value='<?php print __('Clear');?>' onClick='clearFilter()' title='<?php print __('Clear Filters');?>'>
 					</td>
 				</tr>
 			</table>
@@ -2473,7 +2473,7 @@ function device_filter($header_label) {
 	</script>
 	<?php
 
-	html_start_box('Devices Permission ' . htmlspecialchars($header_label), '100%', '', '3', 'center', '');
+	html_start_box(__('Devices Permission %s', htmlspecialchars($header_label)), '100%', '', '3', 'center', '');
 
 	?>
 	<tr class='even'>
@@ -2482,18 +2482,18 @@ function device_filter($header_label) {
 			<table class='filterTable'>
 				<tr>
 					<td>
-						Search
+						<?php print __('Search');?>
 					</td>
 					<td>
 						<input id='filter' type='text' name='filter' size='25' value='<?php print htmlspecialchars(get_request_var('filter'));?>' onChange='applyFilter()'>
 					</td>
 					<td>
-						Template
+						<?php print __('Template');?>
 					</td>
 					<td>
 						<select id='host_template_id' name='host_template_id' onChange='applyFilter()'>
-							<option value='-1'<?php if (get_request_var('host_template_id') == '-1') {?> selected<?php }?>>Any</option>
-							<option value='0'<?php if (get_request_var('host_template_id') == '0') {?> selected<?php }?>>None</option>
+							<option value='-1'<?php if (get_request_var('host_template_id') == '-1') {?> selected<?php }?>><?php print __('Any');?></option>
+							<option value='0'<?php if (get_request_var('host_template_id') == '0') {?> selected<?php }?>><?php print __('None');?></option>
 							<?php
 							$host_templates = db_fetch_assoc('SELECT id, name FROM host_template ORDER BY name');
 
@@ -2506,11 +2506,11 @@ function device_filter($header_label) {
 						</select>
 					</td>
 					<td>
-						Devices
+						<?php print __('Devices');?>
 					</td>
 					<td>
 						<select id='rows' name='rows' onChange='applyFilter()'>
-							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?>
+							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?>>
 							<?php
 							if (sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
@@ -2524,13 +2524,13 @@ function device_filter($header_label) {
 						<input type='checkbox' name='associated' id='associated' onChange='applyFilter()' <?php print (get_request_var('associated') == 'true' || get_request_var('associated') == 'on' ? 'checked':'');?>>
 					</td>
 					<td>
-						<label for='associated'>Show Exceptions</label>
+						<label for='associated'><?php print __('Show Exceptions');?></label>
 					</td>
 					<td>
-						<input type='button' value='Go' onClick='applyFilter()' title='Set/Refresh Filters'>
+						<input type='button' value='<?php print __('Go');?>' onClick='applyFilter()' title='<?php print __('Set/Refresh Filters');?>'>
 					</td>
 					<td>
-						<input type='button' name='clearf' value='Clear' onClick='clearFilter()' title='Clear Filters'>
+						<input type='button' name='clearf' value='<?php print __('Clear');?>' onClick='clearFilter()' title='<?php print __('Clear Filters');?>'>
 					</td>
 				</tr>
 			</table>
@@ -2578,7 +2578,7 @@ function template_filter($header_label) {
 	</script>
 	<?php
 
-	html_start_box('Template Permission ' . htmlspecialchars($header_label), '100%', '', '3', 'center', '');
+	html_start_box(__('Template Permission %s', htmlspecialchars($header_label)), '100%', '', '3', 'center', '');
 
 	?>
 	<tr class='even'>
@@ -2587,17 +2587,17 @@ function template_filter($header_label) {
 			<table class='filterTable'>
 				<tr>
 					<td>
-						Search
+						<?php print __('Search');?>
 					</td>
 					<td>
 						<input id='filter' type='text' name='filter' size='25' value='<?php print htmlspecialchars(get_request_var('filter'));?>' onChange='applyFilter()'>
 					</td>
 					<td>
-						Templates
+						<?php print __('Templates');?>
 					</td>
 					<td>
 						<select id='rows' name='rows' onChange='applyFilter()'>
-							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?>
+							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?>>
 							<?php
 							if (sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
@@ -2611,13 +2611,13 @@ function template_filter($header_label) {
 						<input type='checkbox' name='associated' id='associated' onChange='applyFilter()' <?php print (get_request_var('associated') == 'true' || get_request_var('associated') == 'on' ? 'checked':'');?>>
 					</td>
 					<td>
-						<label for='associated'>Show Exceptions</label>
+						<label for='associated'><?php print __('Show Exceptions');?></label>
 					</td>
 					<td>
-						<input type='button' value='Go' onClick='applyFilter()' title='Set/Refresh Filters'>
+						<input type='button' value='<?php print __('Go');?>' onClick='applyFilter()' title='<?php print __('Set/Refresh Filters');?>'>
 					</td>
 					<td>
-						<input type='button' name='clearf' value='Clear' onClick='clearFilter()' title='Clear Filters'>
+						<input type='button' name='clearf' value='<?php print __('Clear');?>' onClick='clearFilter()' title='<?php print __('Clear Filters');?>'>
 					</td>
 				</tr>
 			</table>
@@ -2665,7 +2665,7 @@ function tree_filter($header_label) {
 	</script>
 	<?php
 
-	html_start_box('Tree Permission ' . htmlspecialchars($header_label), '100%', '', '3', 'center', '');
+	html_start_box(__('Tree Permission %s', htmlspecialchars($header_label)), '100%', '', '3', 'center', '');
 
 	?>
 	<tr class='even'>
@@ -2674,13 +2674,13 @@ function tree_filter($header_label) {
 			<table class='filterTable'>
 				<tr>
 					<td>
-						Search
+						<?php print __('Search');?>
 					</td>
 					<td>
 						<input id='filter' type='text' name='filter' size='25' value='<?php print htmlspecialchars(get_request_var('filter'));?>' onChange='applyFilter()'>
 					</td>
 					<td>
-						Trees
+						<?php print __('Trees');?>
 					</td>
 					<td>
 						<select id='rows' name='rows' onChange='applyFilter()'>
@@ -2698,13 +2698,13 @@ function tree_filter($header_label) {
 						<input type='checkbox' name='associated' id='associated' onChange='applyFilter()' <?php print (get_request_var('associated') == 'true' || get_request_var('associated') == 'on' ? 'checked':'');?>>
 					</td>
 					<td>
-						<label for='associated'>Show Exceptions</label>
+						<label for='associated'><?php print __('Show Exceptions');?></label>
 					</td>
 					<td>
-						<input type='button' id='refresh' value='Go' onClick='applyFilter()' title='Set/Refresh Filters'>
+						<input type='button' id='refresh' value='<?php print __('Go');?>' onClick='applyFilter()' title='<?php print __('Set/Refresh Filters');?>'>
 					</td>
 					<td>
-						<input type='button' id='clear' name='clearf' value='Clear' onClick='clearFilter()' title='Clear Filters'>
+						<input type='button' id='clear' name='clearf' value='<?php print __('Clear');?>' onClick='clearFilter()' title='<?php print __('Clear Filters');?>'>
 					</td>
 				</tr>
 			</table>
@@ -2752,7 +2752,7 @@ function member_filter($header_label) {
 	</script>
 	<?php
 
-	html_start_box('Tree Permission ' . htmlspecialchars($header_label), '100%', '', '3', 'center', '');
+	html_start_box(__('Tree Permission %s', htmlspecialchars($header_label)), '100%', '', '3', 'center', '');
 
 	?>
 	<tr class='even'>
@@ -2761,13 +2761,13 @@ function member_filter($header_label) {
 			<table class='filterTable'>
 				<tr>
 					<td>
-						Search
+						<?php print __('Search');?>
 					</td>
 					<td>
 						<input id='filter' type='text' name='filter' size='25' value='<?php print htmlspecialchars(get_request_var('filter'));?>' onChange='applyFilter()'>
 					</td>
 					<td>
-						Trees
+						<?php print __('Trees');?>
 					</td>
 					<td>
 						<select id='rows' name='rows' onChange='applyFilter()'>
@@ -2785,13 +2785,13 @@ function member_filter($header_label) {
 						<input type='checkbox' name='associated' id='associated' onChange='applyFilter()' <?php print (get_request_var('associated') == 'true' || get_request_var('associated') == 'on' ? 'checked':'');?>>
 					</td>
 					<td>
-						<label for='associated'>Show Exceptions</label>
+						<label for='associated'><?php print __('Show Exceptions<');?>/label>
 					</td>
 					<td>
-						<input type='button' id='refresh' value='Go' onClick='applyFilter()' title='Set/Refresh Filters'>
+						<input type='button' id='refresh' value='<?php print __('Go');?>' onClick='applyFilter()' title='<?php print __('Set/Refresh Filters');?>'>
 					</td>
 					<td>
-						<input type='button' id='clear' name='clearf' value='Clear' onClick='clearFilter()' title='Clear Filters'>
+						<input type='button' id='clear' name='clearf' value='<?php print __('Clear');?>' onClick='clearFilter()' title='<?php print __('Clear Filters');?>'>
 					</td>
 				</tr>
 			</table>
