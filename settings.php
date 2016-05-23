@@ -108,11 +108,15 @@ default:
 
 	/* draw the categories tabs on the top of the page */
 	print "<table><tr><td style='padding-bottom:0px;'>\n";
-	print "<div class='tabs' style='float:left;'><nav><ul>\n";
+	print "<div class='tabs' style='float:left;'><nav><ul role='tablist'>\n";
 
 	if (sizeof($tabs) > 0) {
+		$i = 0;
+
 		foreach (array_keys($tabs) as $tab_short_name) {
-			print "<li class='subTab'><a " . (($tab_short_name == $current_tab) ? "class='selected'" : "class=''") . " href='" . htmlspecialchars("settings.php?tab=$tab_short_name") . "'>" . $tabs[$tab_short_name] . "</a></li>\n";
+			print "<li role='tab' tabindex='$i' aria-controls='tabs-" . ($i+1) . "' class='subTab'><a role='presentation' tabindex='-1' " . (($tab_short_name == $current_tab) ? "class='selected'" : "class=''") . " href='" . htmlspecialchars("settings.php?tab=$tab_short_name") . "'>" . $tabs[$tab_short_name] . "</a></li>\n";
+
+			$i++;
 		}
 	}
 

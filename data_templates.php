@@ -476,21 +476,20 @@ function template_edit() {
 	$i = 0;
 	if (isset($template_data_rrds)) {
 		if (sizeof($template_data_rrds) > 1) {
+			/* draw the data source tabs on the top of the page */
+			print "<div class='tabs' style='float:left;'><nav><ul role='tablist'>\n";
 
-		/* draw the data source tabs on the top of the page */
-		print "<div class='tabs' style='float:left;'><nav><ul>\n";
+			foreach ($template_data_rrds as $template_data_rrd) {
+				print "<li tole='tab' tabindex='$i' aria-controls='tabs-" . ($i+1) . "'>
+					<a role='presentation' tabindex='-1' " . (($template_data_rrd['id'] == get_request_var('view_rrd')) ? "class='selected'" : "class=''") . " href='" . htmlspecialchars('data_templates.php?action=template_edit&id=' . get_request_var('id') . '&view_rrd=' . $template_data_rrd['id']) . "'>" . ($i+1) . ": " . htmlspecialchars($template_data_rrd['data_source_name']) . "</a>
+					<a class='deleteMarker fa fa-remove' title='" . __('Delete') . "' href='" . htmlspecialchars('data_templates.php?action=rrd_remove&id=' . $template_data_rrd['id'] . '&data_template_id=' . get_request_var('id')) . "'></a></li>\n";
 
-		foreach ($template_data_rrds as $template_data_rrd) {
-			$i++;
-			print "<li>
-				<a " . (($template_data_rrd['id'] == get_request_var('view_rrd')) ? "class='selected'" : "class=''") . " href='" . htmlspecialchars('data_templates.php?action=template_edit&id=' . get_request_var('id') . '&view_rrd=' . $template_data_rrd['id']) . "'>$i: " . htmlspecialchars($template_data_rrd['data_source_name']) . "</a>
-				<a class='deleteMarker fa fa-remove' title='" . __('Delete') . "' href='" . htmlspecialchars('data_templates.php?action=rrd_remove&id=' . $template_data_rrd['id'] . '&data_template_id=' . get_request_var('id')) . "'></a></li>\n";
-		}
+				$i++;
+			}
 
-		print "
-		</ul></nav>\n
-		</div>\n";
-
+			print "
+			</ul></nav>\n
+			</div>\n";
 		}elseif (sizeof($template_data_rrds) == 1) {
 			set_request_var('view_rrd', $template_data_rrds[0]['id']);
 		}

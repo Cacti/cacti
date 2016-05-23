@@ -107,7 +107,7 @@ load_current_session_value('action', 'sess_cacti_graph_action', $graph_views['2'
 	<?php api_plugin_hook('page_head'); ?>
 </head>
 <body>
-<div id='cactiPageHead' class='cactiPageHead'>
+<div id='cactiPageHead' class='cactiPageHead' role='banner'>
 	<?php if ($oper_mode == OPER_MODE_NATIVE) { ;?>
 	<div id='tabs'><?php html_show_tabs_left(true);?></div>
 	<div class='cactiGraphHeaderBackground'><div id='gtabs'><?php print html_graph_tabs_right($current_user);?></div></div>
@@ -125,5 +125,5 @@ load_current_session_value('action', 'sess_cacti_graph_action', $graph_views['2'
 	<div id='navigation_right' class='cactiGraphContentAreaPreview'>
 	<?php } ?>
 		<div id='message_container'><?php print display_output_messages();?></div>
-		<div style='position:static;' id='main'>
+		<div style='position:static;' id='main' role='main'>
 	<?php } ?>

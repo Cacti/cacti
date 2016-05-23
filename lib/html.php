@@ -874,7 +874,7 @@ function draw_menu($user_menu = "") {
 	//print "<pre>";print_r($_SERVER);print "</pre>";
 	//print "<pre>";print_r($user_menu);print "</pre>";exit;
 
-	print "<tr><td><table><tr><td><div id='menu'><ul id='nav'>\n";
+	print "<tr><td><table><tr><td><div id='menu'><ul id='nav' role='menu' tabindex='0'>\n";
 
 	/* loop through each header */
 	$i = 0;
@@ -1230,9 +1230,13 @@ function html_show_tabs_left($show_console_tab) {
 			$i++;
 		}
 
-		print "<div class='maintabs'><nav><ul>\n";
+		$i = 0;
+
+		print "<div class='maintabs'><nav><ul role='tablist'>\n";
 		foreach($tabs_left as $tab) {
-			print "<li><a class='lefttab " . (isset($tab['selected']) ? 'selected':'') . "' href='" . $tab['url'] . "'>" . $tab['title'] . "</a></li>\n";
+			print "<li role='tab' tabindex='$i' aria-controls='tabs-" . ($i+1) . "'><a class='lefttab " . (isset($tab['selected']) ? 'selected':'') . "' href='" . $tab['url'] . "' role='presentation' tabindex='-1'>" . $tab['title'] . "</a></li>\n";
+
+			$i++;
 		}
 		print "</ul></nav></div>\n";
 	}
@@ -1308,15 +1312,15 @@ function html_graph_tabs_right($current_user) {
 			$i++;
 		}
 
-		print "<div class='tabs' style='float:right;'><nav><ul>\n";
+		print "<div class='tabs' style='float:right;'><nav><ul role='tablist'>\n";
 		foreach($tabs_right as $tab) {
 			switch($tab['id']) {
 			case 'tree':
 				if (is_view_allowed('show_tree')) {
 					if (isset($tab['image']) && $tab['image'] != '') {
-						print "<li><a title='" . $tab['title'] . "' class='righttab " . (isset($tab['selected']) ? 'selected':'') . "' href='" . $tab['url'] . "'><img src='" . $config['url_path'] . $tab['image'] . "' alt='' style='vertical-align:bottom;'></a></li>\n";
+						print "<li role='tab' tabindex='1' aria-controls='tabs-1'><a role='presentation' tabindex='-1' title='" . $tab['title'] . "' class='righttab " . (isset($tab['selected']) ? 'selected':'') . "' href='" . $tab['url'] . "'><img src='" . $config['url_path'] . $tab['image'] . "' alt='' style='vertical-align:bottom;'></a></li>\n";
 					}else{
-						print "<li><a title='" . $tab['title'] . "' class='righttab " . (isset($tab['selected']) ? 'selected':'') . "' href='" . $tab['url'] . "'>" . $tab['title'] . "</a></li>\n";
+						print "<li role='tab' tabindex='1' aria-controls='tabs-1'><a role='presentation' tabindex='-1' title='" . $tab['title'] . "' class='righttab " . (isset($tab['selected']) ? 'selected':'') . "' href='" . $tab['url'] . "'>" . $tab['title'] . "</a></li>\n";
 					}
 					break;
 				}
@@ -1325,9 +1329,9 @@ function html_graph_tabs_right($current_user) {
 			case 'list':
 				if (is_view_allowed('show_list')) {
 					if (isset($tab['image']) && $tab['image'] != '') {
-						print "<li><a title='" . $tab['title'] . "' class='righttab " . (isset($tab['selected']) ? 'selected':'') . "' href='" . $tab['url'] . "'><img src='" . $config['url_path'] . $tab['image'] . "' alt='' style='vertical-align:bottom;'></a></li>\n";
+						print "<li role='tab' tabindex='2' aria-controls='tabs-2'><a role='presentation' tabindex='-1' title='" . $tab['title'] . "' class='righttab " . (isset($tab['selected']) ? 'selected':'') . "' href='" . $tab['url'] . "'><img src='" . $config['url_path'] . $tab['image'] . "' alt='' style='vertical-align:bottom;'></a></li>\n";
 					}else{
-						print "<li><a title='" . $tab['title'] . "' class='righttab " . (isset($tab['selected']) ? 'selected':'') . "' href='" . $tab['url'] . "'>" . $tab['title'] . "</a></li>\n";
+						print "<li role='tab' tabindex='2' aria-controls='tabs-2'><a role='presentation' tabindex='-1' title='" . $tab['title'] . "' class='righttab " . (isset($tab['selected']) ? 'selected':'') . "' href='" . $tab['url'] . "'>" . $tab['title'] . "</a></li>\n";
 					}
 					break;
 				}
@@ -1336,9 +1340,9 @@ function html_graph_tabs_right($current_user) {
 			case 'preview':
 				if (is_view_allowed('show_preview')) {
 					if (isset($tab['image']) && $tab['image'] != '') {
-						print "<li><a title='" . $tab['title'] . "' class='righttab " . (isset($tab['selected']) ? 'selected':'') . "' href='" . $tab['url'] . "'><img src='" . $config['url_path'] . $tab['image'] . "' alt='' style='vertical-align:bottom;'></a></li>\n";
+						print "<li role='tab' tabindex='3' aria-controls='tabs-3'><a role='presentation' tabindex='-1' title='" . $tab['title'] . "' class='righttab " . (isset($tab['selected']) ? 'selected':'') . "' href='" . $tab['url'] . "'><img src='" . $config['url_path'] . $tab['image'] . "' alt='' style='vertical-align:bottom;'></a></li>\n";
 					}else{
-						print "<li><a title='" . $tab['title'] . "' class='righttab " . (isset($tab['selected']) ? 'selected':'') . "' href='" . $tab['url'] . "'>" . $tab['title'] . "</a></li>\n";
+						print "<li role='tab' tabindex='3' aria-controls='tabs-3'><a role='presentation' tabindex='-1' title='" . $tab['title'] . "' class='righttab " . (isset($tab['selected']) ? 'selected':'') . "' href='" . $tab['url'] . "'>" . $tab['title'] . "</a></li>\n";
 					}
 					break;
 				}

@@ -32,7 +32,6 @@ if ($oper_mode == OPER_MODE_RESKIN) {
 $page_title = api_plugin_hook_function('page_title', draw_navigation_text('title'));
 $using_guest_account = false;
 
-//<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 ?>
 <!DOCTYPE html>
 <html>
@@ -76,7 +75,7 @@ $using_guest_account = false;
 	<?php api_plugin_hook('page_head'); ?>
 </head>
 <body>
-<div id='cactiPageHead' class='cactiPageHead'>
+<div id='cactiPageHead' class='cactiPageHead' role='banner'>
 	<?php if ($oper_mode == OPER_MODE_NATIVE) { ;?>
 	<div id='tabs'><?php html_show_tabs_left(true);?></div>
 	<div class='cactiConsolePageHeadBackdrop'></div>
@@ -109,5 +108,5 @@ $using_guest_account = false;
 <?php } else { ?>
 	<div id='navigation_right' class='cactiConsoleContentArea'>
 		<div style='display:none;' id='message_container'><?php display_output_messages();?></div>
-		<div style='position:relative;' id='main'>
+		<div style='position:relative;' id='main' role='main'>
 <?php } ?>

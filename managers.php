@@ -284,20 +284,24 @@ function manager_edit() {
 	}
 
 	if (sizeof($tabs_manager_edit) && isset_request_var('id')) {
-		/* draw the tabs */
-		print "<div class='tabs'><nav><ul>\n";
+		$i = 0;
 
-	foreach (array_keys($tabs_manager_edit) as $tab_short_name) {
-		if (($id == 0 & $tab_short_name != 'general')){
-				print "<li class='subTab'><span " . (($tab_short_name == get_request_var('tab')) ? "class='selected'" : '') . "'>$tabs_manager_edit[$tab_short_name]</span></li>\n";
-		}else {
-				print "<li class='subTab'><a " . (($tab_short_name == get_request_var('tab')) ? "class='selected'" : '') .
+		/* draw the tabs */
+		print "<div class='tabs'><nav><ul role='tablist'>\n";
+
+		foreach (array_keys($tabs_manager_edit) as $tab_short_name) {
+			if (($id == 0 & $tab_short_name != 'general')){
+				print "<li role='tab' tabindex='$i' aria-controls='tabs-" . ($i+1) . "' class='subTab'><a role='presentation' tabindex='-1' href='#' " . (($tab_short_name == get_request_var('tab')) ? "class='selected'" : '') . "'>" . $tabs_manager_edit[$tab_short_name] . "</a></li>\n";
+			}else {
+				print "<li role='tab' tabindex='$i' aria-controls='tabs-" . ($i+1) . "' class='subTab'><a role='presentation' tabindex='-1' " . (($tab_short_name == get_request_var('tab')) ? "class='selected'" : '') .
 					" href='" . htmlspecialchars($config['url_path'] .
 					'managers.php?action=edit&id=' . get_request_var('id') .
 					'&tab=' . $tab_short_name) .
-					"'>$tabs_manager_edit[$tab_short_name]</a></li>\n";
+					"'>" . $tabs_manager_edit[$tab_short_name] . "</a></li>\n";
+			}
+
+			$i++;
 		}
-	}
 
 		print "</ul></nav></div>\n";
 

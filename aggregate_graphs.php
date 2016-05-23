@@ -540,15 +540,18 @@ function graph_edit() {
 
 	/* draw the categories tabs on the top of the page */
 	print "<table class='tabs' width='100%' align='center'>\n";
-	print "<tr><td width='100%' id='tabs' valign='bottom'><div class='aggtabs'><nav><ul>\n";
+	print "<tr><td width='100%' id='tabs' valign='bottom'><div class='aggtabs'><nav><ul role='tablist'>\n";
 
+	$i = 0;
 	if (sizeof($aggregate_tabs)) {
-	foreach (array_keys($aggregate_tabs) as $tab_short_name) {
-		if ($tab_short_name == 'details' || (!isempty_request_var('id'))) {
-			print "<li><a class='tab " . ($tab_short_name == $current_tab ? "selected'" : "'") . 
-				" href='" . htmlspecialchars($config['url_path'] . 'aggregate_graphs.php?action=edit&id=' . get_request_var('id') . "&tab=$tab_short_name") . "'>" . $aggregate_tabs[$tab_short_name] . "</a></li>\n";
+		foreach (array_keys($aggregate_tabs) as $tab_short_name) {
+			if ($tab_short_name == 'details' || (!isempty_request_var('id'))) {
+				print "<li role='tab' tabindex='$i' aria-controls='tabs-" . ($i+1) . "'><a tabindex='-1' role='presentation' class='tab " . ($tab_short_name == $current_tab ? "selected'" : "'") . 
+					" href='" . htmlspecialchars($config['url_path'] . 'aggregate_graphs.php?action=edit&id=' . get_request_var('id') . "&tab=$tab_short_name") . "'>" . $aggregate_tabs[$tab_short_name] . "</a></li>\n";
+			}
+
+			$i++;
 		}
-	}
 	}
 	print "</ul></nav></div></td>\n";
 
