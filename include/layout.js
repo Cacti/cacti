@@ -502,7 +502,8 @@ function loadPage(href) {
 
 		$('title').text(htmlTitle);
 		$('#breadcrumbs').html(breadCrumbs);
-		$('#main').empty().html(content);
+		$('div[class^="ui-"]').remove();
+		$('#main').html(content);
 
 		if (typeof window.history.pushState !== 'undefined') {
 			window.history.pushState({page: href}, htmlTitle, href);
@@ -522,7 +523,8 @@ function loadPage(href) {
 
 function loadPageNoHeader(href) {
 	$.get(href, function(data) {
-		$('#main').empty().html(data);
+		$('div[class^="ui-"]').remove();
+		$('#main').html(data);
 
 		applySkin();
 
@@ -663,6 +665,7 @@ function setupSortable() {
 			var column=$(this).find('.sortinfo').attr('sort-column');
 			var direction=$(this).find('.sortinfo').attr('sort-direction');
 			$.get(page+(page.indexOf('?') > 0 ? '&':'?')+'sort_column='+column+'&sort_direction='+direction+'&header=false', function(data) {
+				$('div[class^="ui-"]').remove();
 				$('#main').html(data);
 				applySkin();
 			});
@@ -816,6 +819,7 @@ function setupPageTimeout() {
 				refreshPage = refreshPage.replace('action=tree&', 'action=tree_content&');
 
 				$.get(refreshPage, function(data) {
+					$('div[class^="ui-"]').remove();
 					$('#main').html(data);
 					applySkin();
 				});
@@ -861,6 +865,7 @@ var pageAction = 'preview';
 
 function clearGraphFilter() {
 	$.get(graphPage+'?action='+pageAction+'&header=false&clear=1', function(data) {
+		$('div[class^="ui-"]').remove();
 		$('#main').html(data);
 		applySkin();
 	});
@@ -888,6 +893,7 @@ function applyGraphFilter() {
 	new_href = href.replace('action=tree&', 'action=tree_content&');
 
 	$.get(new_href+'&header=false', function(data) {
+		$('div[class^="ui-"]').remove();
 		$('#main').html(data);
 
 		applySkin();
@@ -907,6 +913,7 @@ function applyGraphTimespan() {
 	$.get(new_href+'?action='+pageAction+'&header=false'+
 		'&predefined_timespan='+$('#predefined_timespan').val()+
 		'&predefined_timeshift='+$('#predefined_timeshift').val(), function(data) {
+		$('div[class^="ui-"]').remove();
 		$('#main').html(data);
 		applySkin();
 	});
@@ -926,6 +933,7 @@ function refreshGraphTimespanFilter() {
 	var href     = graphPage+'?action='+pageAction+'&header=false';
 	var new_href = href.replace('action=tree&', 'action=tree_content&');
 	$.post(new_href, json).done(function(data) {
+		$('div[class^="ui-"]').remove();
 		$('#main').html(data);
 		applySkin();
 	});
@@ -945,6 +953,7 @@ function timeshiftGraphFilterLeft() {
 	var href     = graphPage+'?action='+pageAction+'&header=false';
 	var new_href = href.replace('action=tree&', 'action=tree_content&');
 	$.post(new_href, json).done(function(data) {
+		$('div[class^="ui-"]').remove();
 		$('#main').html(data);
 		applySkin();
 	});
@@ -964,6 +973,7 @@ function timeshiftGraphFilterRight() {
 	var href     = graphPage+'?action='+pageAction+'&header=false';
 	var new_href = href.replace('action=tree&', 'action=tree_content&');
 	$.post(new_href, json).done(function(data) {
+		$('div[class^="ui-"]').remove();
 		$('#main').html(data);
 		applySkin();
 	});
@@ -982,6 +992,7 @@ function clearGraphTimespanFilter() {
 	var href     = graphPage+'?action='+pageAction+'&header=false';
 	var new_href = href.replace('action=tree&', 'action=tree_content&');
 	$.post(new_href, json).done(function(data) {
+		$('div[class^="ui-"]').remove();
 		$('#main').html(data);
 		applySkin();
 	});
@@ -1070,6 +1081,7 @@ function initializeGraphs() {
 		$.get(urlPath+'graph.php?local_graph_id='+graph_id+'&header=false', function(data) {
 			$('#breadcrumbs').append('<li><a id="nav_mrgt" href="#">MRTG View</a></li>');
 			$('#zoom-container').remove();
+			$('div[class^="ui-"]').remove();
 			$('#main').html(data);
 			applySkin();
 			clearTimeout(myRefresh);
@@ -1142,6 +1154,7 @@ function initializeGraphs() {
 	$('span[id$="_util"]').unbind('click').click(function() {
 		graph_id=$(this).attr('id').replace('graph_','').replace('_util','');
 		$.get(urlPath+'graph.php?action=zoom&header=false&local_graph_id='+graph_id+'&rra_id=0&graph_start='+getTimestampFromDate($('#date1').val())+'&graph_end='+getTimestampFromDate($('#date2').val()), function(data) {
+			$('div[class^="ui-"]').remove();
 			$('#main').html(data);
 			$('#breadcrumbs').append('<li><a id="nav_util" href="#">Utility View</a></li>');
 			applySkin();
