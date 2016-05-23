@@ -342,7 +342,7 @@ function cdef_item_remove_confirm() {
 	</tr>
 	<tr>
 		<td align='right'>
-			<input id='cancel' type='button' value='<?php print __('Cancel');?>' onClick='$("#cdialog").dialog("close");' name='cancel'>
+			<input id='cancel' type='button' value='<?php print __('Cancel');?>' onClick='$("#cdialog").dialog("close");$(".deleteMarker").blur();' name='cancel'>
 			<input id='continue' type='button' value='<?php print __('Continue');?>' name='continue' title='<?php print __('Remove CDEF Item');?>'>
 		</td>
 	</tr>
@@ -365,6 +365,7 @@ function cdef_item_remove_confirm() {
 			id: <?php print get_request_var('id');?> 
 		}, function(data) {
 			$('#cdialog').dialog('close');
+			$('.deleteMarker').blur();
 			loadPageNoHeader('cdef.php?action=edit&header=false&id=<?php print get_request_var('id');?>');
 		});
 	});
@@ -593,7 +594,7 @@ function cdef_edit() {
 		$i = 0;
 		if (sizeof($cdef_items)) {
 			foreach ($cdef_items as $cdef_item) {
-				form_alternate_row('line' . $cdef_item['id']);$i++;?>
+				form_alternate_row('line' . $cdef_item['id'], true, true);$i++;?>
 					<td>
 						<a class='linkEditMain' href='<?php print htmlspecialchars('cdef.php?action=item_edit&id=' . $cdef_item['id'] . '&cdef_id=' . $cdef['id']);?>'><?php print __('Item #%d', $i);?></a>
 					</td>
@@ -618,7 +619,8 @@ function cdef_edit() {
 
 	$(function() {
 		$('#cdef_edit3').find('.cactiTable').attr('id', 'cdef_item');
-		$('body').append("<div id='cdialog'></div>");
+		$('.cdialog').remove();
+		$('body').append("<div class='cdialog' id='cdialog'></div>");
 
 		$('#cdef_item').tableDnD({
 			onDrop: function(table, row) {

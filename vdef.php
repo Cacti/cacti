@@ -540,7 +540,7 @@ function vdef_edit() {
 		$i = 0;
 		if (sizeof($vdef_items)) {
 			foreach ($vdef_items as $vdef_item) {
-				form_alternate_row('line' . $vdef_item['id'], true);
+				form_alternate_row('line' . $vdef_item['id'], true, true);
 					?>
 					<td>
 						<a class='linkEditMain' href='<?php print htmlspecialchars('vdef.php?action=item_edit&id=' . $vdef_item['id'] . '&vdef_id=' . $vdef['id']);?>'><?php print __('Item #%d', $i);?></a>
@@ -567,7 +567,8 @@ function vdef_edit() {
 
 	$(function() {
 		$('#vdef_edit3').find('.cactiTable').attr('id', 'vdef_item');
-		$('body').append("<div id='cdialog'></div>");
+		$('.cdialog').remove();
+		$('body').append("<div class='cdialog' id='cdialog'></div>");
 
 		$('#vdef_item').tableDnD({
 			onDrop: function(table, row) {
