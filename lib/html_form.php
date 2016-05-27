@@ -362,7 +362,7 @@ function draw_edit_control($field_name, &$field_array) {
    @arg $title - the hover title for the button
    @arg $action - the onClick action for the button */
 function form_button($form_name, $value, $title = '', $action = '') {
-	print "<input type='button' " . 
+	print "<input role='button' type='button' " . 
 		"id='$form_name' " . 
 		"name='$form_name' " . 
 		"value='$value' " . 
@@ -374,7 +374,6 @@ function form_button($form_name, $value, $title = '', $action = '') {
    @arg $form_name - the name of this form element
    @arg $form_size - the size (width) of the textbox */
 function form_file($form_name, $form_size = 30) {
-
 	print "<div>\n";
 	print "<label class='import_label' for='import_file'>Select a File</label>\n";
 	print "<input class='import_button' type='file'";
@@ -496,7 +495,7 @@ function form_text_box($form_name, $form_previous_value, $form_default_value, $f
 		$form_previous_value = $form_default_value;
 	}
 
-	print "<input type='$type'";
+	print "<input role='textbox' type='$type'";
 
 	if (isset($_SESSION['sess_error_fields'])) {
 		if (!empty($_SESSION['sess_error_fields'][$form_name])) {
@@ -725,12 +724,12 @@ function form_checkbox($form_name, $form_previous_value, $form_caption, $form_de
 	}
 
 	if ($form_previous_value == 'on') {
-		$checked = ' checked';
+		$checked = " checked aria-checked='true'";
 	}else{
-		$checked = '';
+		$checked = " aria-checked='false'";
 	}
 
-	print "<input type='checkbox' id='$form_name' name='$form_name'" . $on_change . $class . $checked . ">" . ($form_caption != '' ? " <label for='$form_name'>$form_caption</label>\n":"");
+	print "<input role='checkbox' type='checkbox' id='$form_name' name='$form_name'" . $on_change . $class . $checked . ">" . ($form_caption != '' ? " <label for='$form_name'>$form_caption</label>\n":"");
 }
 
 /* form_radio_button - draws a standard html radio button
@@ -760,14 +759,14 @@ function form_radio_button($form_name, $form_previous_value, $form_current_value
 	}
 
 	if ($form_previous_value == $form_current_value) {
-		$checked = ' checked';
+		$checked = " checked aria-checked='true'";
 	}else{
-		$checked = '';
+		$checked = " aria-checked='false'";
 	}
 
 	$css_id = $form_name . '_' . $form_current_value;
 
-	print "<input type='radio' id='$css_id' name='$form_name' value='$form_current_value'" . $class . $on_change . $checked . "><label for='$css_id'>$form_caption</label>\n";
+	print "<input role='radio' type='radio' id='$css_id' name='$form_name' value='$form_current_value'" . $class . $on_change . $checked . "><label for='$css_id'>$form_caption</label>\n";
 }
 
 /* form_text_area - draws a standard html text area box
@@ -807,7 +806,7 @@ function form_text_area($form_name, $form_previous_value, $form_rows, $form_colu
 		$placeholder = " placeholder='$placeholder'";
 	}
 
-	print "<textarea cols='$form_columns' rows='$form_rows' id='$form_name' name='$form_name'" . $class . $on_change . $placeholder . '>' . htmlspecialchars($form_previous_value, ENT_QUOTES) . "</textarea>\n";
+	print "<textarea role='textbox' aria-multiline='true' cols='$form_columns' rows='$form_rows' id='$form_name' name='$form_name'" . $class . $on_change . $placeholder . '>' . htmlspecialchars($form_previous_value, ENT_QUOTES) . "</textarea>\n";
 }
 
 /* form_multi_dropdown - draws a standard html multiple select dropdown

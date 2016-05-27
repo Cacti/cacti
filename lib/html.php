@@ -901,8 +901,8 @@ function draw_menu($user_menu = "") {
 			}
 			$headers[$id] = true;
 
-			print "<li id='$id'><a class='menu_parent active' href='#'>$header_name</a>\n";
-			print "<ul id='${id}_div' style='display:block;'>\n";
+			print "<li role='menuitem' aria-haspopup='true' id='$id'><a class='menu_parent active' href='#'>$header_name</a>\n";
+			print "<ul role='menu' id='${id}_div' style='display:block;'>\n";
 
 			/* pass 2: loop through each top level item and render it */
 			foreach ($header_array as $item_url => $item_title) {
@@ -928,9 +928,9 @@ function draw_menu($user_menu = "") {
 							that is contained in the sub-items array */
 							if (($i == 0) || ($draw_sub_items)) {
 								if (basename($_SERVER["PHP_SELF"]) == basename($item_sub_url)) {
-									print "<li><a class='pic selected' href='" . htmlspecialchars($item_sub_url) . "'>$item_sub_title</a></li>\n";
+									print "<li><a role='menuitem' tabindex='-1' class='pic selected' href='" . htmlspecialchars($item_sub_url) . "'>$item_sub_title</a></li>\n";
 								}else{
-									print "<li><a class='pic' href='" . htmlspecialchars($item_sub_url) . "'>$item_sub_title</a></li>\n";
+									print "<li><a role='menuitem' tabindex='-1' class='pic' href='" . htmlspecialchars($item_sub_url) . "'>$item_sub_title</a></li>\n";
 								}
 							}
 
@@ -942,9 +942,9 @@ function draw_menu($user_menu = "") {
 						/* draw normal (non sub-item) menu item */
 						$item_url = $config['url_path'] . $item_url;
 						if (basename($_SERVER["PHP_SELF"]) == basename($item_url)) {
-							print "<li><a class='pic selected' href='" . htmlspecialchars($item_url) . "'>$item_title</a></li>\n";
+							print "<li><a role='menuitem' tabindex='-1' class='pic selected' href='" . htmlspecialchars($item_url) . "'>$item_title</a></li>\n";
 						}else{
-							print "<li><a class='pic' href='" . htmlspecialchars($item_url) . "'>$item_title</a></li>\n";
+							print "<li><a role='menuitem' tabindex='-1' class='pic' href='" . htmlspecialchars($item_url) . "'>$item_title</a></li>\n";
 						}
 					}
 				}

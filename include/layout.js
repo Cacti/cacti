@@ -413,6 +413,15 @@ function applySkin() {
 
 	$('.ui-tooltip').remove();
 
+	// change for accessibility  
+	$('input[type="checkbox"], input[type="radio"]').click(function() {
+		if ($(this).is(':checked')) {
+			$(this).attr('aria-checked', 'true');
+		}else{
+			$(this).attr('aria-checked', 'false');
+		}
+	});
+
 	// Select All Action for everyone but graphs_new, else do ugly shit
 	if (basename(document.location.pathname, '.php') == 'graphs_new') {
 		applySelectorVisibilityAndActions();
