@@ -1020,9 +1020,9 @@ function aggregate_get_data_sources($graph_array, &$data_sources, &$graph_templa
 		} elseif (sizeof($used_graph_templates) < 1) {
 			/* selected graphs do not use templates */
 			print "<tr><td colspan='2' class='textArea'>
-			<p>The Graphs chosen for the Aggregate Graph do not use Graph Templates. 
-			Aggregate does not support creating Aggregate Graphs from non-templated graphs.</p>";
-			print "<p>Press 'Return' to return and select different Graphs</p>\n";
+			<p>" . __('The Graphs chosen for the Aggregate Graph do not use Graph Templates. 
+			Aggregate does not support creating Aggregate Graphs from non-templated graphs.') . "</p>";
+			print "<p>" . __('Press \'Return\' to return and select different Graphs') . "</p>\n";
 			print '</td></tr>';
 
 			?>
@@ -1111,18 +1111,18 @@ function draw_aggregate_graph_items_list($_graph_id = 0, $_graph_template_id = 0
 	}
 	
 	# draw list of graph items
-	html_start_box('<strong>Graph '.($is_templated ? 'Template ' : '').'Items</strong>', '100%', '', '3', 'center', '');
+	html_start_box(($is_templated ? __('Graph Template Items'):__('Graph Items')), '100%', '', '3', 'center', '');
 
 	# print column header
 	print "<tr class='tableHeader'>\n";
-	DrawMatrixHeaderItem('Graph Item', '', 1);
-	DrawMatrixHeaderItem('Data Source', '',1);
-	DrawMatrixHeaderItem('Graph Item Type', '', 1);
-	DrawMatrixHeaderItem('CF Type', '', 1);
-	DrawMatrixHeaderItem('Item Color', '', 2);
-	DrawMatrixHeaderItem('Color Template', '', 1);
-	DrawMatrixHeaderItem('Skip', '', 1);
-	DrawMatrixHeaderItem('Total', '', 1);
+	DrawMatrixHeaderItem(__('Graph Item'), '', 1);
+	DrawMatrixHeaderItem(__('Data Source'), '',1);
+	DrawMatrixHeaderItem(__('Graph Item Type'), '', 1);
+	DrawMatrixHeaderItem(__('CF Type'), '', 1);
+	DrawMatrixHeaderItem(__('Item Color'), '', 2);
+	DrawMatrixHeaderItem(__('Color Template'), '', 1);
+	DrawMatrixHeaderItem(__('Skip'), '', 1);
+	DrawMatrixHeaderItem(__('Total'), '', 1);
 	print '</tr>';
 
 	$group_counter = 0; $_graph_type_name = ''; $i = 0;
@@ -1157,19 +1157,19 @@ function draw_aggregate_graph_items_list($_graph_id = 0, $_graph_template_id = 0
 			}
 
 			/* column 'Graph Item' */
-			print '<td><strong>';
+			print '<td>';
 			if ($is_edit == false) {
 				/* no existing aggregate graph/template */
-				print 'Item # ' . ($i+1);
+				print __('Item # %d', ($i+1));
 			}elseif (isset($_object['template_propogation']) && $_object['template_propogation']) {
 				/* existing aggregate graph with template propagation enabled */
-				print 'Item # ' . ($i+1);
+				print __('Item # %d', ($i+1));
 			}else {
 				/* existing aggregate template or graph with no templating */
 				/* create a link to graph item editor */
-				print '<a href="aggregate_items.php?action=item_edit&'.$item_editor_link_param.'&id='.$item['id'].'">Item # ' . ($i+1) . '</a>';
+				print '<a href="aggregate_items.php?action=item_edit&'.$item_editor_link_param.'&id='.$item['id'].'">' . __('Item # %d', ($i+1)) . '</a>';
 			}
-			print "</strong></td>\n";
+			print "</td>\n";
 
 			/* column "Data Source" */
 			$_graph_type_name = $graph_item_types{$item['graph_type_id']};
@@ -1225,7 +1225,7 @@ function draw_aggregate_graph_items_list($_graph_id = 0, $_graph_template_id = 0
 			$i++;
 		}
 	}else{
-		print "<tr><td colspan='7'><em>No Items</em></td></tr>";
+		print "<tr><td colspan='7'><em>" . __('No Items') . "</em></td></tr>";
 	}
 
 	html_end_box();
@@ -1243,7 +1243,7 @@ function draw_aggregate_graph_items_list($_graph_id = 0, $_graph_template_id = 0
 function draw_aggregate_template_graph_config($aggregate_template_id, $graph_template_id) {
 	global $struct_graph;
 
-	html_start_box('<strong>Graph Configuration</strong>', '100%', '', '3', 'center', '');
+	html_start_box(__('Graph Configuration'), '100%', '', '3', 'center', '');
 
 	$aggregate_templates_graph = db_fetch_row_prepared('SELECT * FROM aggregate_graph_templates_graph WHERE aggregate_template_id = ?', array($aggregate_template_id));
 	$graph_templates_graph     = db_fetch_row_prepared('SELECT * FROM graph_templates_graph WHERE graph_template_id = ?', array($graph_template_id));
@@ -1268,7 +1268,7 @@ function draw_aggregate_template_graph_config($aggregate_template_id, $graph_tem
 				$form_array[$field_name]['value'] = $value;
 				$form_array[$field_name]['sub_checkbox'] = array(
 					'name' => 't_' . $field_name,
-					'friendly_name' => 'Override this Value<br>',
+					'friendly_name' => __('Override this Value'). '<br>',
 					'value' => (sizeof($aggregate_templates_graph) ? $aggregate_templates_graph{'t_' . $field_name} : ''),
 					'on_change' => 'toggleFieldEnabled(this);'
 				);
@@ -1318,5 +1318,3 @@ function toggleFieldEnabled(cb) {
 		html_end_box(false);
 }
 
-
-?>
