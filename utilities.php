@@ -148,17 +148,17 @@ function utilities_view_tech($php_info = '') {
 	if ((file_exists(read_config_option('path_snmpget'))) && ((function_exists('is_executable')) && (is_executable(read_config_option('path_snmpget'))))) {
 		$snmp_version = shell_exec(cacti_escapeshellcmd(read_config_option('path_snmpget')) . ' -V 2>&1');
 	}else{
-		$snmp_version = "<span class='deviceDown'>NET-SNMP Not Installed or its paths are not set.  Please install if you wish to monitor SNMP enabled devices.</span>";
+		$snmp_version = "<span class='deviceDown'>" . __('NET-SNMP Not Installed or its paths are not set.  Please install if you wish to monitor SNMP enabled devices.') . "</span>";
 	}
 
 	/* Check RRDTool issues */
 	$rrdtool_error = '';
 	if ($rrdtool_version != read_config_option('rrdtool_version')) {
-		$rrdtool_error .= "<br><span class='deviceDown'>ERROR: Installed RRDTool version does not match configured version.<br>Please visit the <a href='" . htmlspecialchars('settings.php?tab=general') . "'>Configuration Settings</a> and select the correct RRDTool Utility Version.</span><br>";
+		$rrdtool_error .= "<br><span class='deviceDown'>" . __('ERROR: Installed RRDTool version does not match configured version.<br>Please visit the %s and select the correct RRDTool Utility Version.', "<a href='" . htmlspecialchars('settings.php?tab=general') . "'>" . __('Configuration Settings') . '</a>') . "</span><br>";
 	}
 	$graph_gif_count = db_fetch_cell('SELECT COUNT(*) FROM graph_templates_graph WHERE image_format_id = 2');
 	if ($graph_gif_count > 0) {
-		$rrdtool_error .= "<br><span class='deviceDown'>ERROR: RRDTool 1.2.x+ does not support the GIF images format, but " . $graph_gif_count . ' graph(s) and/or templates have GIF set as the image format.</span><br>';
+		$rrdtool_error .= "<br><span class='deviceDown'>" . __('ERROR: RRDTool 1.2.x+ does not support the GIF images format, but %d" graph(s) and/or templates have GIF set as the image format.', $graph_gif_count) . '</span><br>';
 	}
 
 	/* Get spine version */
@@ -177,16 +177,16 @@ function utilities_view_tech($php_info = '') {
 
 	/* present a tabbed interface */
 	$tabs = array(
-		'summary'  => 'Summary',
-		'database' => 'Database',
-		'phpinfo'  => 'PHP Info',
+		'summary'  => __('Summary'),
+		'database' => __('Database'),
+		'phpinfo'  => __('PHP Info'),
 	);
 
 	/* set the default tab */
 	load_current_session_value('tab', 'sess_ts_tabs', 'summary');
 	$current_tab = get_nfilter_request_var('tab');
 
-	$header_label = 'Technical Support [ ' . $tabs[get_request_var('tab')] . ' ]';
+	$header_label = __('Technical Support [%s]', $tabs[get_request_var('tab')]);
 
 	if (sizeof($tabs)) {
 		$i = 0;
@@ -213,70 +213,70 @@ function utilities_view_tech($php_info = '') {
 	html_start_box($header_label, '100%', '', '3', 'center', '');
 
 	if (get_request_var('tab') == 'summary') {
-		html_header(array('General Information'), 2);
+		html_header(array(__('General Information')), 2);
 		form_alternate_row();
-		print "<td>Date</td>\n";
-		print "<td>" . date('r') . "</td>\n";
+		print '<td>' . __('Date') . "</td>\n";
+		print '<td>' . date('r') . "</td>\n";
 		form_end_row();
 
 		api_plugin_hook_function('custom_version_info');
 
 		form_alternate_row();
-		print "<td>Cacti Version</td>\n";
-		print "<td>" . $config['cacti_version'] . "</td>\n";
+		print '<td>' . __('Cacti Version') . "</td>\n";
+		print '<td>' . $config['cacti_version'] . "</td>\n";
 		form_end_row();
 
 		form_alternate_row();
-		print "<td>Cacti OS</td>\n";
-		print "<td>" . $config['cacti_server_os'] . "</td>\n";
+		print '<td>' . __('Cacti OS') . "</td>\n";
+		print '<td>' . $config['cacti_server_os'] . "</td>\n";
 		form_end_row();
 
 		form_alternate_row();
-		print "<td>RSA Fingerprint</td>\n";
-		print "<td>" . read_config_option('rsa_fingerprint') . "</td>\n";
+		print '<td>' . __('RSA Fingerprint') . "</td>\n";
+		print '<td>' . read_config_option('rsa_fingerprint') . "</td>\n";
 		form_end_row();
 
 		form_alternate_row();
-		print "<td>NET-SNMP Version</td>\n";
-		print "<td>" . $snmp_version . "</td>\n";
+		print '<td>' . __('NET-SNMP Version') . "</td>\n";
+		print '<td>' . $snmp_version . "</td>\n";
 		form_end_row();
 
 		form_alternate_row();
-		print "<td>RRDTool Version</td>\n";
-		print "<td>" . $rrdtool_versions[$rrdtool_version] . ' ' . $rrdtool_error . "</td>\n";
+		print '<td>' . __('RRDTool Version') . "</td>\n";
+		print '<td>' . $rrdtool_versions[$rrdtool_version] . ' ' . $rrdtool_error . "</td>\n";
 		form_end_row();
 
 		form_alternate_row();
-		print "<td>Devices</td>\n";
-		print "<td>" . $host_count . "</td>\n";
+		print '<td>' . __('Devices') . "</td>\n";
+		print '<td>' . number_format($host_count) . "</td>\n";
 		form_end_row();
 
 		form_alternate_row();
-		print "<td>Graphs</td>\n";
-		print "<td>" . $graph_count . "</td>\n";
+		print '<td>' . __('Graphs') . "</td>\n";
+		print '<td>' . number_format($graph_count) . "</td>\n";
 		form_end_row();
 
 		form_alternate_row();
-		print "<td>Data Sources</td>\n";
-		print "<td>";
+		print '<td>' . __('Data Sources') . "</td>\n";
+		print '<td>';
 		$data_total = 0;
 		if (sizeof($data_count)) {
 			foreach ($data_count as $item) {
-				print $input_types[$item['type_id']] . ': ' . $item['total'] . '<br>';
+				print $input_types[$item['type_id']] . ': ' . number_format($item['total']) . '<br>';
 				$data_total += $item['total'];
 			}
-			print 'Total: ' . $data_total;
+			print __('Total: %d', number_format($data_total));
 		}else{
 			print "<span class='deviceDown'>0</span>";
 		}
 		print "</td>\n";
 		form_end_row();
 
-		html_header(array('Poller Information'), 2);
+		html_header(array(__('Poller Information')), 2);
 
 		form_alternate_row();
 		print "<td>Interval</td>\n";
-		print "<td>" . read_config_option('poller_interval') . "</td>\n";
+		print '<td>' . read_config_option('poller_interval') . "</td>\n";
 		if (file_exists(read_config_option('path_spine')) && $poller_options[read_config_option('poller_type')] == 'spine') {
 			$type = $spine_version;
 		} else {
@@ -285,54 +285,54 @@ function utilities_view_tech($php_info = '') {
 		form_end_row();
 
 		form_alternate_row();
-		print "<td>Type</td>\n";
-		print "<td>" . $type . "</td>\n";
+		print '<td>' . __('Type') . "</td>\n";
+		print '<td>' . $type . "</td>\n";
 		form_end_row();
 
 		form_alternate_row();
-		print "<td>Items</td>\n";
-		print "<td>";
+		print '<td>' . __('Items') . "</td>\n";
+		print '<td>';
 		$total = 0;
 		if (sizeof($poller_item)) {
 			foreach ($poller_item as $item) {
-				print 'Action[' . $item['action'] . ']: ' . $item['total'] . '<br>';
+				print __('Action[%s]', $item['action']) . ': ' . number_format($item['total']) . '<br>';
 				$total += $item['total'];
 			}
-			print 'Total: ' . $total;
+			print __('Total: %d', number_format($total));
 		}else{
-			print "<span class='deviceDown'>No items to poll</span>";
+			print "<span class='deviceDown'>" . __('No items to poll') . "</span>";
 		}
 		print "</td>\n";
 		form_end_row();
 
 		form_alternate_row();
-		print "<td>Concurrent Processes</td>\n";
-		print "<td>" . read_config_option('concurrent_processes') . "</td>\n";
+		print '<td>' . __('Concurrent Processes') . "</td>\n";
+		print '<td>' . read_config_option('concurrent_processes') . "</td>\n";
 		form_end_row();
 
 		form_alternate_row();
-		print "<td>Max Threads</td>\n";
-		print "<td>" . read_config_option('max_threads') . "</td>\n";
+		print '<td>' . __('Max Threads') . "</td>\n";
+		print '<td>' . read_config_option('max_threads') . "</td>\n";
 		form_end_row();
 
 		form_alternate_row();
-		print "<td>PHP Servers</td>\n";
-		print "<td>" . read_config_option('php_servers') . "</td>\n";
+		print '<td>' . __('PHP Servers') . "</td>\n";
+		print '<td>' . read_config_option('php_servers') . "</td>\n";
 		form_end_row();
 
 		form_alternate_row();
-		print "<td>Script Timeout</td>\n";
-		print "<td>" . read_config_option('script_timeout') . "</td>\n";
+		print '<td>' . __('Script Timeout') . "</td>\n";
+		print '<td>' . read_config_option('script_timeout') . "</td>\n";
 		form_end_row();
 
 		form_alternate_row();
-		print "<td>Max OID</td>\n";
-		print "<td>" . read_config_option('max_get_size') . "</td>\n";
+		print '<td>' . __('Max OID') . "</td>\n";
+		print '<td>' . read_config_option('max_get_size') . "</td>\n";
 		form_end_row();
 
 		form_alternate_row();
-		print "<td>Last Run Statistics</td>\n";
-		print "<td>" . read_config_option('stats_poller') . "</td>\n";
+		print '<td>' . __('Last Run Statistics') . "</td>\n";
+		print '<td>' . read_config_option('stats_poller') . "</td>\n";
 		form_end_row();
 
 		html_header(array('System Memory'), 2);
@@ -345,7 +345,7 @@ function utilities_view_tech($php_info = '') {
 			if ($config['cacti_server_os'] == 'win32') {
 				form_alternate_row();
 				print "<td>$name</td>\n";
-				print "<td>" . round($value/1024/1024,0) . " MB</td>\n";
+				print '<td>' . round($value/1024/1024,0) . " MB</td>\n";
 				form_end_row();
 			}else{
 				switch($name) {
@@ -358,7 +358,7 @@ function utilities_view_tech($php_info = '') {
 				case 'Inactive':
 					form_alternate_row();
 					print "<td>$name</td>\n";
-					print "<td>" . number_format($value/1024/1024,0) . " MB</td>\n";
+					print '<td>' . number_format($value/1024/1024,0) . " MB</td>\n";
 					form_end_row();
 				}
 			}
@@ -367,52 +367,52 @@ function utilities_view_tech($php_info = '') {
 		print "</td>\n";
 		form_end_row();
 
-		html_header(array('PHP Information'), 2);
+		html_header(array(__('PHP Information')), 2);
 
 		form_alternate_row();
-		print "<td>PHP Version</td>\n";
+		print "<td>" . __('PHP Version') . "</td>\n";
 		if (version_compare(PHP_VERSION, '5.5.0') >= 0) {
-			print "<td>" . PHP_VERSION . "</td>\n";
+			print '<td>' . PHP_VERSION . "</td>\n";
 		}else{
-			print "<td>" . PHP_VERSION . "</br><span class='deviceDown'>PHP Version 5.5.0+ is recommended due to strong password hashing support.</span></td>\n";
+			print '<td>' . PHP_VERSION . "</br><span class='deviceDown'>" . __('PHP Version 5.5.0+ is recommended due to strong password hashing support.') . "</span></td>\n";
 		}
 		form_end_row();
 
 		form_alternate_row();
-		print "<td>PHP OS</td>\n";
-		print "<td>" . PHP_OS . "</td>\n";
+		print "<td>" . __('PHP OS') . "</td>\n";
+		print '<td>' . PHP_OS . "</td>\n";
 		form_end_row();
 
 		form_alternate_row();
-		print "<td>PHP uname</td>\n";
-		print "<td>";
+		print "<td>" . __('PHP uname') . "</td>\n";
+		print '<td>';
 		if (function_exists('php_uname')) {
 			print php_uname();
 		}else{
-			print 'N/A';
+			print __('N/A');
 		}
 		print "</td>\n";
 		form_end_row();
 
 		form_alternate_row();
-		print "<td>PHP SNMP</td>\n";
-		print "<td>";
+		print "<td>" . __('PHP SNMP') . "</td>\n";
+		print '<td>';
 		if (function_exists('snmpget')) {
-			print 'Installed';
+			print __('Installed');
 		} else {
-			print 'Not Installed';
+			print __('Not Installed');
 		}
 		print "</td>\n";
 		form_end_row();
 
 		form_alternate_row();
 		print "<td>max_execution_time</td>\n";
-		print "<td>" . ini_get('max_execution_time') . "</td>\n";
+		print '<td>' . ini_get('max_execution_time') . "</td>\n";
 		form_end_row();
 
 		form_alternate_row();
 		print "<td>memory_limit</td>\n";
-		print "<td>" . ini_get('memory_limit');
+		print '<td>' . ini_get('memory_limit');
 
 		/* Calculate memory suggestion based off of data source count */
 		$memory_suggestion = $data_total * 32768;
@@ -430,10 +430,10 @@ function utilities_view_tech($php_info = '') {
 		if (memory_bytes(ini_get('memory_limit')) < $memory_suggestion) {
 			print "<br><span class='deviceDown'>";
 			if ((ini_get('memory_limit') == -1)) {
-				print "You've set memory limit to 'unlimited'.<br/>";
+				print __("You've set memory limit to 'unlimited'.") . "<br>";
 			}
-			print 'It is highly suggested that you alter you php.ini memory_limit to ' . memory_readable($memory_suggestion) . ' or higher. <br/>
-				This suggested memory value is calculated based on the number of data source present and is only to be used as a suggestion, actual values may vary system to system based on requirements.';
+			print __('It is highly suggested that you alter you php.ini memory_limit to %s or higher.', memory_readable($memory_suggestion)) . ' <br/>' . 
+				__('This suggested memory value is calculated based on the number of data source present and is only to be used as a suggestion, actual values may vary system to system based on requirements.');
 			print '</span><br>';
 		}
 		print "</td>\n";
@@ -442,7 +442,7 @@ function utilities_view_tech($php_info = '') {
 		utilities_get_mysql_recommendations();
 	}elseif (get_request_var('tab') == 'database') {
 
-		html_header(array('MySQL Table Information - Sizes in KBytes'), 2);
+		html_header(array(__('MySQL Table Information - Sizes in KBytes')), 2);
 
 		form_alternate_row();
 		print "		<td colspan='2' style='text-align:left;padding:0px'>";
@@ -450,14 +450,14 @@ function utilities_view_tech($php_info = '') {
 			print "<table id='tables' class='cactiTable' style='width:100%'>\n";
 			print "<thead>\n";
 			print "<tr class='tableHeader'>\n";
-			print "  <th class='tableSubHeaderColumn'>Name</th>\n";
-			print "  <th class='tableSubHeaderColumn'>Engine</th>\n";
-			print "  <th class='tableSubHeaderColumn' style='text-align:right;'>Rows</th>\n";
-			print "  <th class='tableSubHeaderColumn'>Avg Row Length</th>\n";
-			print "  <th class='tableSubHeaderColumn'>Data Length</th>\n";
-			print "  <th class='tableSubHeaderColumn'>Index Length</th>\n";
-			print "  <th class='tableSubHeaderColumn'>Collation</th>\n";
-			print "  <th class='tableSubHeaderColumn'>Comment</th>\n";
+			print "  <th class='tableSubHeaderColumn'>" . __('Name') . "</th>\n";
+			print "  <th class='tableSubHeaderColumn'>" . __('Engine') . "</th>\n";
+			print "  <th class='tableSubHeaderColumn' style='text-align:right;'>" . __('Rows') . "</th>\n";
+			print "  <th class='tableSubHeaderColumn'>" . __('Avg Row Length') . "</th>\n";
+			print "  <th class='tableSubHeaderColumn'>" . __('Data Length') . "</th>\n";
+			print "  <th class='tableSubHeaderColumn'>" . __('Index Length') . "</th>\n";
+			print "  <th class='tableSubHeaderColumn'>" . __('Collation') . "</th>\n";
+			print "  <th class='tableSubHeaderColumn'>" . __('Comment') . "</th>\n";
 			print "</tr>\n";
 			print "</thead>\n";
 			foreach ($tables as $table) {
@@ -475,14 +475,14 @@ function utilities_view_tech($php_info = '') {
 
 			print "</table>\n";
 		}else{
-			print 'Unable to retrieve table status';
+			print __('Unable to retrieve table status');
 		}
 		print "</td>\n";
 		form_end_row();
 
 	}else{
 
-		html_header(array('PHP Module Information'), 2);
+		html_header(array(__('PHP Module Information')), 2);
 		form_alternate_row();
 		$php_info = str_replace('width="600"', '', $php_info);
 		$php_info = str_replace('th colspan="2"', 'th class="subHeaderColumn"', $php_info);
@@ -605,7 +605,7 @@ function utilities_view_user_log() {
 	</script>
 	<?php
 
-	html_start_box('User Login History', '100%', '', '3', 'center', '');
+	html_start_box(__('User Login History'), '100%', '', '3', 'center', '');
 
 	?>
 	<tr class='even noprint'>
@@ -614,12 +614,12 @@ function utilities_view_user_log() {
 			<table class='filterTable'>
 				<tr>
 					<td>
-						User
+						<?php print __('User');?>
 					</td>
 					<td>
 						<select id='username' onChange='applyFilter()'>
-							<option value='-1'<?php if (get_request_var('username') == '-1') {?> selected<?php }?>>All</option>
-							<option value='-2'<?php if (get_request_var('username') == '-2') {?> selected<?php }?>>Deleted/Invalid</option>
+							<option value='-1'<?php if (get_request_var('username') == '-1') {?> selected<?php }?>><?php print __('All');?></option>
+							<option value='-2'<?php if (get_request_var('username') == '-2') {?> selected<?php }?>><?php print __('Deleted/Invalid');?></option>
 							<?php
 							$users = db_fetch_assoc('SELECT DISTINCT username FROM user_auth ORDER BY username');
 
@@ -632,22 +632,22 @@ function utilities_view_user_log() {
 						</select>
 					</td>
 					<td>
-						Result
+						<?php print __('Result');?>
 					</td>
 					<td>
 						<select id='result' onChange='applyFilter()'>
-							<option value='-1'<?php if (get_request_var('result') == '-1') {?> selected<?php }?>>Any</option>
-							<option value='1'<?php if (get_request_var('result') == '1') {?> selected<?php }?>>Success - Pswd</option>
-							<option value='2'<?php if (get_request_var('result') == '2') {?> selected<?php }?>>Success - Token</option>
-							<option value='0'<?php if (get_request_var('result') == '0') {?> selected<?php }?>>Failed</option>
+							<option value='-1'<?php if (get_request_var('result') == '-1') {?> selected<?php }?>><?php print __('Any');?></option>
+							<option value='1'<?php if (get_request_var('result') == '1') {?> selected<?php }?>><?php print __('Success - Pswd');?></option>
+							<option value='2'<?php if (get_request_var('result') == '2') {?> selected<?php }?>><?php print __('Success - Token');?></option>
+							<option value='0'<?php if (get_request_var('result') == '0') {?> selected<?php }?>><?php print __('Failed');?></option>
 						</select>
 					</td>
 					<td>
-						Attempts
+						<?php print __('Attempts');?>
 					</td>
 					<td>
 						<select id='rows' onChange='applyFilter()'>
-							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?>
+							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?>>
 							<?php
 							if (sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
@@ -658,20 +658,20 @@ function utilities_view_user_log() {
 						</select>
 					</td>
 					<td>
-						<input type='button' id='refresh' value='Go' title='Set/Refresh Filters'>
+						<input type='button' id='refresh' value='<?php print __('Go');?>' title='<?php print __('Set/Refresh Filters');?>'>
 					</td>
 					<td>
-						<input type='button' id='clear' value='Clear' title='Clear Filters'>
+						<input type='button' id='clear' value='<?php print __('Clear');?>' title='<?php print __('Clear Filters');?>'>
 					</td>
 					<td>
-						<input type='button' id='purge' value='Purge' title='Purge User Log'>
+						<input type='button' id='purge' value='<?php print __('Purge');?>' title='<?php print __('Purge User Log');?>'>
 					</td>
 				</tr>
 			</table>
 			<table class='filterTable'>
 				<tr>
 					<td>
-						Search
+						<?php print __('Search');?>
 					</td>
 					<td>
 						<input id='filter' type='text' size='25' value='<?php print htmlspecialchars(get_request_var('filter'));?>'>
@@ -740,17 +740,18 @@ function utilities_view_user_log() {
 
 	$user_log = db_fetch_assoc($user_log_sql);
 
-	$nav = html_nav_bar('utilities.php?action=view_user_log&username=' . get_request_var('username') . '&filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 6, 'User Logins', 'page', 'main');
+	$nav = html_nav_bar('utilities.php?action=view_user_log&username=' . get_request_var('username') . '&filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 6, __('User Logins'), 'page', 'main');
 
 	print $nav;
 
 	$display_text = array(
-		'username' => array('User', 'ASC'),
-		'full_name' => array('Full Name', 'ASC'),
-		'realm' => array('Authentication Realm', 'ASC'),
-		'time' => array('Date', 'ASC'),
-		'result' => array('Result', 'DESC'),
-		'ip' => array('IP Address', 'DESC'));
+		'username'  => array(__('User'), 'ASC'),
+		'full_name' => array(__('Full Name'), 'ASC'),
+		'realm'     => array(__('Authentication Realm'), 'ASC'),
+		'time'      => array(__('Date'), 'ASC'),
+		'result'    => array(__('Result'), 'DESC'),
+		'ip'        => array(__('IP Address'), 'DESC')
+	);
 
 	html_header_sort($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), 1, 'utilities.php?action=view_user_log');
 
@@ -765,7 +766,7 @@ function utilities_view_user_log() {
 				<?php if (isset($item['full_name'])) {
 						print (strlen(get_request_var('filter')) ? (preg_replace('/(' . preg_quote(get_request_var('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($item['full_name']))) : htmlspecialchars($item['full_name']));
 					}else{
-						print '(User Removed)';
+						print __('(User Removed)');
 					}
 				?>
 			</td>
@@ -773,7 +774,7 @@ function utilities_view_user_log() {
 				<?php if (isset($auth_realms[$item['realm']])) {
 						print (strlen(get_request_var('filter')) ? (preg_replace('/(' . preg_quote(get_request_var('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", $auth_realms[$item['realm']])) : $auth_realms[$item['realm']]);
 					}else{
-						print 'N/A';
+						print __('N/A');
 					}
 				?>
 			</td>
@@ -922,7 +923,7 @@ function utilities_view_logfile() {
 	</script>
 	<?php
 
-	html_start_box('Log File Filters', '100%', '', '3', 'center', '');
+	html_start_box(__('Log File Filters'), '100%', '', '3', 'center', '');
 
 	?>
 	<tr class='even noprint'>
@@ -931,7 +932,7 @@ function utilities_view_logfile() {
 			<table class='filterTable'>
 				<tr>
 					<td class='nowrap'>
-						Tail Lines
+						<?php print __('Tail Lines');?>
 					</td>
 					<td>
 						<select id='tail_lines' onChange='applyFilter()'>
@@ -943,31 +944,31 @@ function utilities_view_logfile() {
 						</select>
 					</td>
 					<td class='nowrap'>
-						Message Type
+						<?php print __('Message Type');?>
 					</td>
 					<td>
 						<select id='message_type' onChange='applyFilter()'>
-							<option value='-1'<?php if (get_request_var('message_type') == '-1') {?> selected<?php }?>>All</option>
-							<option value='1'<?php if (get_request_var('message_type') == '1') {?> selected<?php }?>>Stats</option>
-							<option value='2'<?php if (get_request_var('message_type') == '2') {?> selected<?php }?>>Warnings</option>
-							<option value='3'<?php if (get_request_var('message_type') == '3') {?> selected<?php }?>>Errors</option>
-							<option value='4'<?php if (get_request_var('message_type') == '4') {?> selected<?php }?>>Debug</option>
-							<option value='5'<?php if (get_request_var('message_type') == '5') {?> selected<?php }?>>SQL Calls</option>
+							<option value='-1'<?php if (get_request_var('message_type') == '-1') {?> selected<?php }?>><?php print __('All');?></option>
+							<option value='1'<?php if (get_request_var('message_type') == '1') {?> selected<?php }?>><?php print __('Stats');?></option>
+							<option value='2'<?php if (get_request_var('message_type') == '2') {?> selected<?php }?>><?php print __('Warnings');?></option>
+							<option value='3'<?php if (get_request_var('message_type') == '3') {?> selected<?php }?>><?php print __('Errors');?></option>
+							<option value='4'<?php if (get_request_var('message_type') == '4') {?> selected<?php }?>><?php print __('Debug');?></option>
+							<option value='5'<?php if (get_request_var('message_type') == '5') {?> selected<?php }?>><?php print __('SQL Calls');?></option>
 						</select>
 					</td>
 					<td>
-						<input type='button' id='refreshme' value='Go' title='Set/Refresh Filters'>
+						<input type='button' id='refreshme' value='<?php print __('Go');?>' title='<?php print __('Set/Refresh Filters');?>'>
 					</td>
 					<td>
-						<input type='button' id='clear' value='Clear' title='Clear Filters'>
+						<input type='button' id='clear' value='<?php print __('Clear');?>' title='<?php print __('Clear Filters');?>'>
 					</td>
 					<td>
-						<input type='button' id='purge' value='Purge' title='Purge Log File'>
+						<input type='button' id='purge' value='<?php print __('Purge');?>' title='<?php print __('Purge Log File');?>'>
 					</td>
 				</tr>
 				<tr>
 					<td>
-						Refresh
+						<?php print __('Refresh');?>
 					</td>
 					<td>
 						<select id='refresh' onChange='applyFilter()'>
@@ -979,12 +980,12 @@ function utilities_view_logfile() {
 						</select>
 					</td>
 					<td class='nowrap'>
-						Display Order
+						<?php print __('Display Order');?>
 					</td>
 					<td>
 						<select id='reverse' onChange='applyFilter()'>
-							<option value='1'<?php if (get_request_var('reverse') == '1') {?> selected<?php }?>>Newest First</option>
-							<option value='2'<?php if (get_request_var('reverse') == '2') {?> selected<?php }?>>Oldest First</option>
+							<option value='1'<?php if (get_request_var('reverse') == '1') {?> selected<?php }?>><?php print __('Newest First');?></option>
+							<option value='2'<?php if (get_request_var('reverse') == '2') {?> selected<?php }?>><?php print __('Oldest First');?></option>
 						</select>
 					</td>
 				</tr>
@@ -992,7 +993,7 @@ function utilities_view_logfile() {
 			<table class='filterTable'>
 				<tr>
 					<td>
-						Search
+						<?php print __('Search');?>
 					</td>
 					<td>
 						<input id='filter' type='text' size='75' value='<?php print htmlspecialchars(get_request_var('filter'));?>'>
@@ -1015,9 +1016,9 @@ function utilities_view_logfile() {
 	}
 
 	if (get_request_var('message_type') > 0) {
-		$start_string = '<strong>Log File</strong> [Total Lines: ' . sizeof($logcontents) . ' - Non-Matching Items Hidden]';
+		$start_string = __('Log File [Total Lines: %d - Non-Matching Items Hidden]', sizeof($logcontents));
 	}else{
-		$start_string = '<strong>Log File</strong> [Total Lines: ' . sizeof($logcontents) . ' - All Items Shown]';
+		$start_string = __('Log File [Total Lines: %d - All Items Shown]', sizeof($logcontents));
 	}
 
 	html_start_box($start_string, '100%', '', '3', 'center', '');
@@ -1080,7 +1081,7 @@ function utilities_view_logfile() {
 		$i++;
 
 		if ($j > 1000) {
-			print "<tr class='clogLimit'><td>>>>>  LINE LIMIT OF 1000 LINES REACHED!!  <<<<</td></tr>\n";
+			print "<tr class='clogLimit'><td>>>>>" . __('LINE LIMIT OF 1000 LINES REACHED!!') . "<<<<</td></tr>\n";
 
 			break;
 		}
@@ -1105,19 +1106,19 @@ function utilities_clear_logfile() {
 		$logfile = './log/cacti.log';
 	}
 
-	html_start_box('Clear Cacti Log File', '100%', '', '3', 'center', '');
+	html_start_box(__('Clear Cacti Log File'), '100%', '', '3', 'center', '');
 	if (file_exists($logfile)) {
 		if (is_writable($logfile)) {
 			$timestamp = date('m/d/Y h:i:s A');
 			$log_fh = fopen($logfile, 'w');
-			fwrite($log_fh, $timestamp . " - WEBUI: Cacti Log Cleared from Web Management Interface\n");
+			fwrite($log_fh, __('%s - WEBUI: Cacti Log Cleared from Web Management Interface.', $timestamp) . "\n");
 			fclose($log_fh);
-			print '<tr><td>Cacti Log File Cleared</td></tr>';
+			print '<tr><td>' . __('Cacti Log File Cleared') . '</td></tr>';
 		}else{
-			print "<tr><td class='deviceDown'><b>Error: Unable to clear log, no write permissions.<b></td></tr>";
+			print "<tr><td class='deviceDown'><b>" . __('Error: Unable to clear log, no write permissions.') . "<b></td></tr>";
 		}
 	}else{
-		print "<tr><td class='deviceDown'><b>Error: Unable to clear log, file does not exist.</b></td></tr>";
+		print "<tr><td class='deviceDown'><b>" . __('Error: Unable to clear log, file does not exist.'). "</b></td></tr>";
 	}
 	html_end_box();
 }
@@ -1210,7 +1211,7 @@ function utilities_view_snmp_cache() {
 	</script>
 	<?php
 
-	html_start_box('SNMP Cache Items', '100%', '', '3', 'center', '');
+	html_start_box(__('SNMP Cache Items'), '100%', '', '3', 'center', '');
 
 	?>
 	<tr class='even noprint'>
@@ -1219,18 +1220,18 @@ function utilities_view_snmp_cache() {
 			<table class='filterTable'>
 				<tr>
 					<td>
-						Search
+						<?php print __('Search');?>
 					</td>
 					<td>
 						<input id='filter' type='text' size='25' value='<?php print htmlspecialchars(get_request_var('filter'));?>'>
 					</td>
 					<td>
-						Device
+						<?php print __('Device');?>
 					</td>
 					<td>
 						<select id='host_id' onChange='applyFilter()'>
-							<option value='-1'<?php if (get_request_var('host_id') == '-1') {?> selected<?php }?>>Any</option>
-							<option value='0'<?php if (get_request_var('host_id') == '0') {?> selected<?php }?>>None</option>
+							<option value='-1'<?php if (get_request_var('host_id') == '-1') {?> selected<?php }?>><?php print __('Any');?></option>
+							<option value='0'<?php if (get_request_var('host_id') == '0') {?> selected<?php }?>><?php print __('None');?></option>
 							<?php
 							if (get_request_var('snmp_query_id') == -1) {
 								$hosts = db_fetch_assoc('SELECT DISTINCT
@@ -1254,18 +1255,18 @@ function utilities_view_snmp_cache() {
 							}
 							if (sizeof($hosts) > 0) {
 							foreach ($hosts as $host) {
-								print "<option value='" . $host['id'] . "'"; if (get_request_var('host_id') == $host['id']) { print ' selected'; } print '>' . $host['description'] . "</option>\n";
+								print "<option value='" . $host['id'] . "'"; if (get_request_var('host_id') == $host['id']) { print ' selected'; } print '>' . htmlspecialchars($host['description'], ENT_QUOTES) . "</option>\n";
 							}
 							}
 							?>
 						</select>
 					</td>
 					<td>
-						Query Name
+						<?php print __('Query Name');?>
 					</td>
 					<td>
 						<select id='snmp_query_id' onChange='applyFilter()'>
-							<option value='-1'<?php if (get_request_var('host_id') == '-1') {?> selected<?php }?>>Any</option>
+							<option value='-1'<?php if (get_request_var('host_id') == '-1') {?> selected<?php }?>><?php print __('Any');?></option>
 							<?php
 							if (get_request_var('host_id') == -1) {
 								$snmp_queries = db_fetch_assoc('SELECT DISTINCT
@@ -1287,18 +1288,18 @@ function utilities_view_snmp_cache() {
 							}
 							if (sizeof($snmp_queries) > 0) {
 							foreach ($snmp_queries as $snmp_query) {
-								print "<option value='" . $snmp_query['id'] . "'"; if (get_request_var('snmp_query_id') == $snmp_query['id']) { print ' selected'; } print '>' . $snmp_query['name'] . "</option>\n";
+								print "<option value='" . $snmp_query['id'] . "'"; if (get_request_var('snmp_query_id') == $snmp_query['id']) { print ' selected'; } print '>' . htmlspecialchars($snmp_query['name'], ENT_QUOTES) . "</option>\n";
 							}
 							}
 							?>
 						</select>
 					</td>
 					<td>
-						Rows
+						<?php print __('Rows');?>
 					</td>
 					<td>
 						<select id='rows' onChange='applyFilter()'>
-							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?>
+							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?>>
 							<?php
 							if (sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
@@ -1309,10 +1310,10 @@ function utilities_view_snmp_cache() {
 						</select>
 					</td>
 					<td>
-						<input type='button' id='refresh' value='Go' title='Set/Refresh Filters'>
+						<input type='button' id='refresh' value='<?php print __('Go');?>' title='<?php print __('Set/Refresh Filters');?>'>
 					</td>
 					<td>
-						<input type='button' id='clear' value='Clear' title='Clear Fitlers'>
+						<input type='button' id='clear' value='<?php print __('Clear');?>' title='<?php print __('Clear Fitlers');?>'>
 					</td>
 				</tr>
 			</table>
@@ -1377,7 +1378,7 @@ function utilities_view_snmp_cache() {
 
 	print $nav;
 
-	html_header(array('Device', 'SNMP Query', 'Index', 'Field Name', 'Field Value', 'OID'));
+	html_header(array(__('Device'), __('SNMP Query'), __('Index'), __('Field Name'), __('Field Value'), __('OID')));
 
 	$i = 0;
 	if (sizeof($snmp_cache)) {
@@ -1505,7 +1506,7 @@ function utilities_view_poller_cache() {
 	</script>
 	<?php
 
-	html_start_box('Poller Cache Items', '100%', '', '3', 'center', '');
+	html_start_box(__('Poller Cache Items'), '100%', '', '3', 'center', '');
 
 	?>
 	<tr class='even noprint'>
@@ -1514,42 +1515,42 @@ function utilities_view_poller_cache() {
 			<table class='filterTable'>
 				<tr>
 					<td>
-						Search
+						<?php print __('Search');?>
 					</td>
 					<td>
 						<input id='filter' type='text' size='25' value='<?php print htmlspecialchars(get_request_var('filter'));?>'>
 					</td>
 					<td>
-						Device
+						<?php print __('Device');?>
 					</td>
 					<td>
 						<select id='host_id' onChange='applyFilter()'>
-							<option value='-1'<?php if (get_request_var('host_id') == '-1') {?> selected<?php }?>>Any</option>
-							<option value='0'<?php if (get_request_var('host_id') == '0') {?> selected<?php }?>>None</option>
+							<option value='-1'<?php if (get_request_var('host_id') == '-1') {?> selected<?php }?>><?php print __('Any');?></option>
+							<option value='0'<?php if (get_request_var('host_id') == '0') {?> selected<?php }?>><?php print __('None');?></option>
 							<?php
 							$hosts = db_fetch_assoc('SELECT id, description, hostname FROM host ORDER BY description');
 
 							if (sizeof($hosts) > 0) {
 							foreach ($hosts as $host) {
-								print "<option value='" . $host['id'] . "'"; if (get_request_var('host_id') == $host['id']) { print ' selected'; } print '>' . $host['description'] . "</option>\n";
+								print "<option value='" . $host['id'] . "'"; if (get_request_var('host_id') == $host['id']) { print ' selected'; } print '>' . htmlspecialchars($host['description'], ENT_QUOTES) . "</option>\n";
 							}
 							}
 							?>
 						</select>
 					</td>
 					<td>
-						Action
+						<?php print __('Action');?>
 					</td>
 					<td>
 						<select id='poller_action' onChange='applyFilter()'>
-							<option value='-1'<?php if (get_request_var('poller_action') == '-1') {?> selected<?php }?>>Any</option>
-							<option value='0'<?php if (get_request_var('poller_action') == '0') {?> selected<?php }?>>SNMP</option>
-							<option value='1'<?php if (get_request_var('poller_action') == '1') {?> selected<?php }?>>Script</option>
-							<option value='2'<?php if (get_request_var('poller_action') == '2') {?> selected<?php }?>>Script Server</option>
+							<option value='-1'<?php if (get_request_var('poller_action') == '-1') {?> selected<?php }?>><?php print __('Any');?></option>
+							<option value='0'<?php if (get_request_var('poller_action') == '0') {?> selected<?php }?>><?php print __('SNMP');?></option>
+							<option value='1'<?php if (get_request_var('poller_action') == '1') {?> selected<?php }?>><?php print __('Script');?></option>
+							<option value='2'<?php if (get_request_var('poller_action') == '2') {?> selected<?php }?>><?php print __('Script Server');?></option>
 						</select>
 					</td>
 					<td>
-						Entries
+						<?php print __('Entries');?>
 					</td>
 					<td>
 						<select id='rows' onChange='applyFilter()'>
@@ -1564,10 +1565,10 @@ function utilities_view_poller_cache() {
 						</select>
 					</td>
 					<td>
-						<input type='button' id='refresh' value='Go' title='Set/Refresh Filters'>
+						<input type='button' id='refresh' value='<?php print __('Go');?>' title='<?php print __('Set/Refresh Filters');?>'>
 					</td>
 					<td>
-						<input type='button' id='clear' value='Clear' title='Clear Filters'>
+						<input type='button' id='clear' value='<?php print __('Clear');?>' title='<?php print __('Clear Filters');?>'>
 					</td>
 				</tr>
 			</table>
@@ -1634,8 +1635,8 @@ function utilities_view_poller_cache() {
 	print $nav;
 
 	$display_text = array(
-		'data_template_data.name_cache' => array('Data Source Name', 'ASC'),
-		'nosort' => array('Details', 'ASC'));
+		'data_template_data.name_cache' => array(__('Data Source Name'), 'ASC'),
+		'nosort' => array(__('Details'), 'ASC'));
 
 	html_header_sort($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), 1, 'utilities.php?action=view_poller_cache');
 
@@ -1658,18 +1659,18 @@ function utilities_view_poller_cache() {
 			if ($item['action'] == 0) {
 				if ($item['snmp_version'] != 3) {
 					$details =
-						'SNMP Version: ' . $item['snmp_version'] . ', ' .
-						'Community: ' . $item['snmp_community'] . ', ' .
-						'OID: ' . (strlen(get_request_var('filter')) ? (preg_replace('/(' . preg_quote(get_request_var('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($item['arg1']))) : htmlspecialchars($item['arg1']));
+						__('SNMP Version:') . ' ' . $item['snmp_version'] . ', ' .
+						__('Community:') . ' ' . $item['snmp_community'] . ', ' .
+						__('OID:') . ' ' . (strlen(get_request_var('filter')) ? (preg_replace('/(' . preg_quote(get_request_var('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($item['arg1']))) : htmlspecialchars($item['arg1']));
 				}else{
 					$details =
-						'SNMP Version: ' . $item['snmp_version'] . ', ' .
-						'User: ' . $item['snmp_username'] . ', OID: ' . $item['arg1'];
+						__('SNMP Version:') . ' ' . $item['snmp_version'] . ', ' .
+						__('User:') . ' ' . $item['snmp_username'] . ', ' . __('OID:') . ' ' . $item['arg1'];
 				}
 			}elseif ($item['action'] == 1) {
-					$details = 'Script: ' . (strlen(get_request_var('filter')) ? (preg_replace('/(' . preg_quote(get_request_var('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($item['arg1']))) : htmlspecialchars($item['arg1']));
+					$details = __('Script:') . ' ' . (strlen(get_request_var('filter')) ? (preg_replace('/(' . preg_quote(get_request_var('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($item['arg1']))) : htmlspecialchars($item['arg1']));
 			}else{
-					$details = 'Script Server: ' . (strlen(get_request_var('filter')) ? (preg_replace('/(' . preg_quote(get_request_var('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($item['arg1']))) : htmlspecialchars($item['arg1']));
+					$details = __('Script Server:') . ' ' . (strlen(get_request_var('filter')) ? (preg_replace('/(' . preg_quote(get_request_var('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($item['arg1']))) : htmlspecialchars($item['arg1']));
 			}
 
 			print $details;
@@ -1682,7 +1683,7 @@ function utilities_view_poller_cache() {
 			<td>
 			</td>
 			<td>
-				RRD: <?php print $item['rrd_path'];?>
+				<?php print __('RRD:');?> <?php print $item['rrd_path'];?>
 			</td>
 		</tr>
 		<?php
@@ -1696,7 +1697,7 @@ function utilities_view_poller_cache() {
 }
 
 function utilities() {
-	html_start_box('Cacti System Utilities', '100%', '', '3', 'center', '');
+	html_start_box(__('Cacti System Utilities'), '100%', '', '3', 'center', '');
 
 	?>
 	<colgroup span='3'>
@@ -1704,102 +1705,102 @@ function utilities() {
 		<col style='vertical-align:top;width:80%;'></col>
 	</colgroup>
 
-	<?php html_header(array('Technical Support'), 2); form_alternate_row(); ?>
+	<?php html_header(array(__('Technical Support')), 2); form_alternate_row(); ?>
 		<td class='textArea'>
-			<a class='hyperLink' href='<?php print htmlspecialchars('utilities.php?action=view_tech');?>'>Technical Support</a>
+			<a class='hyperLink' href='<?php print htmlspecialchars('utilities.php?action=view_tech');?>'><?php print __('Technical Support');?></a>
 		</td>
 		<td class='textArea'>
-			Cacti technical support page.  Used by developers and technical support persons to assist with issues in Cacti.  Includes checks for common configuration issues.
-		</td>
-	</tr>
-
-	<?php html_header(array('Log Administration'), 2); form_alternate_row(); ?>
-		<td class='textArea'>
-			<a class='hyperLink' href='<?php print htmlspecialchars('utilities.php?action=view_logfile');?>'>View Cacti Log File</a>
-		</td>
-		<td class='textArea'>
-			The Cacti Log File stores statistic, error and other message depending on system settings.  This information can be used to identify problems with the poller and application.
-		</td>
-	</tr>
-	<?php form_alternate_row(); ?>
-		<td class='textArea'>
-			<a class='hyperLink' href='<?php print htmlspecialchars('utilities.php?action=view_user_log');?>'>View User Log</a>
-		</td>
-		<td class='textArea'>
-			Allows Administrators to browse the user log.  Administrators can filter and export the log as well.
+			<?php print __('Cacti technical support page.  Used by developers and technical support persons to assist with issues in Cacti.  Includes checks for common configuration issues.');?>
 		</td>
 	</tr>
 
-	<?php html_header(array('Poller Cache Administration'), 2); form_alternate_row(); ?>
+	<?php html_header(array(__('Log Administration')), 2); form_alternate_row(); ?>
 		<td class='textArea'>
-			<a class='hyperLink' href='<?php print htmlspecialchars('utilities.php?action=view_poller_cache');?>'>View Poller Cache</a>
+			<a class='hyperLink' href='<?php print htmlspecialchars('utilities.php?action=view_logfile');?>'><?php print __('View Cacti Log File');?></a>
 		</td>
 		<td class='textArea'>
-			This is the data that is being passed to the poller each time it runs. This data is then in turn executed/interpreted and the results are fed into the rrd files for graphing or the database for display.
-		</td>
-	</tr>
-	<?php form_alternate_row(); ?>
-		<td class='textArea'>
-			<a class='hyperLink' href='<?php print htmlspecialchars('utilities.php?action=view_snmp_cache');?>'>View SNMP Cache</a>
-		</td>
-		<td class='textArea'>
-			The SNMP cache stores information gathered from SNMP queries. It is used by cacti to determine the OID to use when gathering information from an SNMP-enabled host.
+			<?php print __('The Cacti Log File stores statistic, error and other message depending on system settings.  This information can be used to identify problems with the poller and application.');?>
 		</td>
 	</tr>
 	<?php form_alternate_row(); ?>
 		<td class='textArea'>
-			<a class='hyperLink' href='<?php print htmlspecialchars('utilities.php?action=clear_poller_cache');?>'>Rebuild Poller Cache</a>
+			<a class='hyperLink' href='<?php print htmlspecialchars('utilities.php?action=view_user_log');?>'><?php print __('View User Log');?></a>
 		</td>
 		<td class='textArea'>
-			The poller cache will be cleared and re-generated if you select this option. Sometimes host/data source data can get out of sync with the cache in which case it makes sense to clear the cache and start over.
-		</td>
-	</tr>
-	<?php html_header(array('Boost Utilities'), 2); form_alternate_row(); ?>
-		<td class='textArea'>
-			<a class='hyperLink' href='<?php print htmlspecialchars('utilities.php?action=view_boost_status');?>'>View Boost Status</a>
-		</td>
-		<td class='textArea'>
-			This menu pick allows you to view various boost settings and statistics associated with the current running Boost configuration.
+			<?php print __('Allows Administrators to browse the user log.  Administrators can filter and export the log as well.');?>
 		</td>
 	</tr>
-	<?php html_header(array('RRD Utilities'), 2); form_alternate_row(); ?>
+
+	<?php html_header(array(__('Poller Cache Administration')), 2); form_alternate_row(); ?>
 		<td class='textArea'>
-			<a class='hyperLink' href='<?php print htmlspecialchars('rrdcleaner.php');?>'>RRDfile Cleaner</a>
+			<a class='hyperLink' href='<?php print htmlspecialchars('utilities.php?action=view_poller_cache');?>'><?php print __('View Poller Cache');?></a>
 		</td>
 		<td class='textArea'>
-			When you delete Data Sources from Cacti, the corresponding RRDfiles are not removed automatically.  Use this utility to facilitate the removal of these old files.
-		</td>
-	</tr>
-	<?php html_header(array('SNMPAgent Utilities'), 2); form_alternate_row(); ?>
-		<td class='textArea'>
-			<a class='hyperLink' href='<?php print htmlspecialchars('utilities.php?action=view_snmpagent_cache');?>'>View SNMPAgent Cache</a>
-		</td>
-		<td class='textArea'>
-			This shows all objects being handled by the SNMPAgent.
+			<?php print __('This is the data that is being passed to the poller each time it runs. This data is then in turn executed/interpreted and the results are fed into the rrd files for graphing or the database for display.');?>
 		</td>
 	</tr>
 	<?php form_alternate_row(); ?>
 		<td class='textArea'>
-			<a class='hyperLink' href='<?php print htmlspecialchars('utilities.php?action=rebuild_snmpagent_cache');?>'>Rebuild SNMPAgent Cache</a>
+			<a class='hyperLink' href='<?php print htmlspecialchars('utilities.php?action=view_snmp_cache');?>'><?php print __('View SNMP Cache');?></a>
 		</td>
 		<td class='textArea'>
-			The snmp cache will be cleared and re-generated if you select this option. Note that it takes another poller run to restore the SNMP cache completely.
-		</td>
-	</tr>
-	<?php form_alternate_row(); ?>
-		<td class='textArea'>
-			<a class='hyperLink' href='<?php print htmlspecialchars('utilities.php?action=view_snmpagent_events');?>'>View SNMPAgent Notification Log</a>
-		</td>
-		<td class='textArea'>
-			This menu pick allows you to view the latest events SNMPAgent has handled in relation to the registered notification receivers.
+			<?php print __('The SNMP cache stores information gathered from SNMP queries. It is used by cacti to determine the OID to use when gathering information from an SNMP-enabled host.');?>
 		</td>
 	</tr>
 	<?php form_alternate_row(); ?>
 		<td class='textArea'>
-			<a class='hyperLink' href='<?php print htmlspecialchars('managers.php');?>'>SNMP Notification Receivers</a>
+			<a class='hyperLink' href='<?php print htmlspecialchars('utilities.php?action=clear_poller_cache');?>'><?php print __('Rebuild Poller Cache');?></a>
 		</td>
 		<td class='textArea'>
-			Allows Administrators to maintain SNMP notification receivers.
+			<?php print __('The poller cache will be cleared and re-generated if you select this option. Sometimes host/data source data can get out of sync with the cache in which case it makes sense to clear the cache and start over.');?>
+		</td>
+	</tr>
+	<?php html_header(array(__('Boost Utilities')), 2); form_alternate_row(); ?>
+		<td class='textArea'>
+			<a class='hyperLink' href='<?php print htmlspecialchars('utilities.php?action=view_boost_status');?>'><?php print __('View Boost Status');?></a>
+		</td>
+		<td class='textArea'>
+			<?php print __('This menu pick allows you to view various boost settings and statistics associated with the current running Boost configuration.');?>
+		</td>
+	</tr>
+	<?php html_header(array(__('RRD Utilities')), 2); form_alternate_row(); ?>
+		<td class='textArea'>
+			<a class='hyperLink' href='<?php print htmlspecialchars('rrdcleaner.php');?>'><?php print __('RRDfile Cleaner<');?>/a>
+		</td>
+		<td class='textArea'>
+			<?php print __('When you delete Data Sources from Cacti, the corresponding RRDfiles are not removed automatically.  Use this utility to facilitate the removal of these old files.');?>
+		</td>
+	</tr>
+	<?php html_header(array(__('SNMPAgent Utilities')), 2); form_alternate_row(); ?>
+		<td class='textArea'>
+			<a class='hyperLink' href='<?php print htmlspecialchars('utilities.php?action=view_snmpagent_cache');?>'><?php print __('View SNMPAgent Cache');?></a>
+		</td>
+		<td class='textArea'>
+			<?php print __('This shows all objects being handled by the SNMPAgent.');?>
+		</td>
+	</tr>
+	<?php form_alternate_row(); ?>
+		<td class='textArea'>
+			<a class='hyperLink' href='<?php print htmlspecialchars('utilities.php?action=rebuild_snmpagent_cache');?>'><?php print __('Rebuild SNMPAgent Cache');?></a>
+		</td>
+		<td class='textArea'>
+			<?php print __('The snmp cache will be cleared and re-generated if you select this option. Note that it takes another poller run to restore the SNMP cache completely.');?>
+		</td>
+	</tr>
+	<?php form_alternate_row(); ?>
+		<td class='textArea'>
+			<a class='hyperLink' href='<?php print htmlspecialchars('utilities.php?action=view_snmpagent_events');?>'><?php print __('View SNMPAgent Notification Log');?></a>
+		</td>
+		<td class='textArea'>
+			<?php print __('This menu pick allows you to view the latest events SNMPAgent has handled in relation to the registered notification receivers.');?>
+		</td>
+	</tr>
+	<?php form_alternate_row(); ?>
+		<td class='textArea'>
+			<a class='hyperLink' href='<?php print htmlspecialchars('managers.php');?>'><?php print __('SNMP Notification Receivers');?></a>
+		</td>
+		<td class='textArea'>
+			<?php print __('Allows Administrators to maintain SNMP notification receivers.');?>
 		</td>
 	</tr>
 	<?php
@@ -1833,7 +1834,7 @@ function boost_display_run_status() {
 	$refresh['page'] = 'utilities.php?action=view_boost_status&header=false';
 	$refresh['seconds'] = get_request_var('refresh');
 
-	html_start_box('Boost Status', '100%', '', '3', 'center', '');
+	html_start_box(__('Boost Status'), '100%', '', '3', 'center', '');
 
 	?>
 	<script type="text/javascript">
@@ -1852,7 +1853,7 @@ function boost_display_run_status() {
 			<table>
 				<tr>
 					<td class='nowrap'>
-						Refresh Interval
+						<?php print __('Refresh Interval');?>
 					</td>
 					<td>
 						<select id='refresh' name='refresh' onChange='applyFilter()'>
@@ -1863,7 +1864,7 @@ function boost_display_run_status() {
 						?>
 					</td>
 					<td>
-						<input type='button' value='Refresh' onClick='applyFilter()'>
+						<input type='button' value='<?php print __('Refresh');?>' onClick='applyFilter()'>
 					</td>
 				</tr>
 			</table>
@@ -1871,12 +1872,15 @@ function boost_display_run_status() {
 		</form>
 	</tr>
 	<?php
-	html_end_box(TRUE);
+	html_end_box(true);
+
 	html_start_box('', '100%', '', '3', 'center', '');
 
 	/* get the boost table status */
-	$boost_table_status = db_fetch_assoc("SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE table_schema=SCHEMA()
-						AND (table_name LIKE 'poller_output_boost_arch_%' OR table_name LIKE 'poller_output_boost')");
+	$boost_table_status = db_fetch_assoc("SELECT * 
+		FROM INFORMATION_SCHEMA.TABLES WHERE table_schema=SCHEMA()
+		AND (table_name LIKE 'poller_output_boost_arch_%' OR table_name LIKE 'poller_output_boost')");
+
 	$pending_records = 0;
 	$arch_records = 0;
 	$data_length = 0;
@@ -1904,13 +1908,13 @@ function boost_display_run_status() {
 
 		$boost_status_date = $boost_status_array[1];
 
-		if (substr_count($boost_status_array[0], 'complete')) $boost_status_text = 'Idle';
-		elseif (substr_count($boost_status_array[0], 'running'))  $boost_status_text = 'Running';
-		elseif (substr_count($boost_status_array[0], 'overrun'))    $boost_status_text = 'Overrun Warning';
-		elseif (substr_count($boost_status_array[0], 'timeout'))  $boost_status_text = 'Timed Out';
-		else   $boost_status_text = 'Other';
+		if (substr_count($boost_status_array[0], 'complete'))    $boost_status_text = __('Idle');
+		elseif (substr_count($boost_status_array[0], 'running')) $boost_status_text = __('Running');
+		elseif (substr_count($boost_status_array[0], 'overrun')) $boost_status_text = __('Overrun Warning');
+		elseif (substr_count($boost_status_array[0], 'timeout')) $boost_status_text = __('Timed Out');
+		else   $boost_status_text = __('Other');
 	}else{
-		$boost_status_text = 'Never Run';
+		$boost_status_text = __('Never Run');
 		$boost_status_date = '';
 	}
 
@@ -1963,50 +1967,50 @@ function boost_display_run_status() {
 			$directory_size = boost_file_size_display($directory_size);
 			$cache_files = $cache_files . ' Files';
 		}else{
-			$directory_size = '<strong>WARNING:</strong> Can not open directory';
-			$cache_files = '<strong>WARNING:</strong> Unknown';
+			$directory_size = '<strong>' . __('WARNING:') . '</strong>' . __('Can not open directory');
+			$cache_files = '<strong>' . __('WARNING:') . '</strong> ' . __('Unknown');
 		}
 	}else{
-		$directory_size = '<strong>WARNING:</strong> Directory Does NOT Exist!!';
-		$cache_files = '<strong>WARNING:</strong> N/A';
+		$directory_size = '<strong>' . __('WARNING:') . '</strong> ' . __('Directory Does NOT Exist!!');
+		$cache_files = '<strong>' . __('WARNING:') . '</strong> ' . __('N/A');
 	}
 
 	$i = 0;
 
 	/* boost status display */
-	html_header(array('Current Boost Status'), 2);
+	html_header(array(__('Current Boost Status')), 2);
 
 	form_alternate_row();
-	print '<td><strong>Boost On Demand Updating:</strong></td><td><strong>' . ($rrd_updates == '' ? 'Disabled' : $boost_status_text) . '</strong></td>';
+	print '<td>' . __('Boost On Demand Updating:') . '</td><td>' . ($rrd_updates == '' ? 'Disabled' : $boost_status_text) . '</td>';
 
 	form_alternate_row();
-	print '<td><strong>Total Data Sources:</strong></td><td>' . $total_data_sources . '</td>';
+	print '<td>' . __('Total Data Sources:') . '</td><td>' . number_format($total_data_sources) . '</td>';
 
 	if ($total_records > 0) {
 		form_alternate_row();
-		print '<td><strong>Pending Boost Records:</strong></td><td>' . $pending_records . '</td>';
+		print '<td>' . __('Pending Boost Records:') . '</td><td>' . number_format($pending_records) . '</td>';
 
 		form_alternate_row();
-		print '<td><strong>Archived Boost Records:</strong></td><td>' . $arch_records . '</td>';
+		print '<td>' . __('Archived Boost Records:') . '</td><td>' . number_format($arch_records) . '</td>';
 
 		form_alternate_row();
-		print '<td><strong>Total Boost Records:</strong></td><td>' . $total_records . '</td>';
+		print '<td>' . __('Total Boost Records:') . '</td><td>' . number_format($total_records) . '</td>';
 	}
 
 	/* boost status display */
-	html_header(array('Boost Storage Statistics'), 2);
+	html_header(array(__('Boost Storage Statistics')), 2);
 
 	/* describe the table format */
 	form_alternate_row();
-	print '<td><strong>Database Engine:</strong></td><td>' . $engine . '</td>';
+	print '<td>' . __('Database Engine:') . '</td><td>' . $engine . '</td>';
 
 	/* tell the user how big the table is */
 	form_alternate_row();
-	print '<td><strong>Current Boost Tables Size:</strong></td><td>' . boost_file_size_display($data_length, 2) . '</td>';
+	print '<td>' . __('Current Boost Tables Size:') . '</td><td>' . boost_file_size_display($data_length, 2) . '</td>';
 
 	/* tell the user about the average size/record */
 	form_alternate_row();
-	print '<td><strong>Avg Bytes/Record:</strong></td><td>' . boost_file_size_display($avg_row_length) . '</td>';
+	print '<td>' . __('Avg Bytes/Record:') . '</td><td>' . boost_file_size_display($avg_row_length) . '</td>';
 
 	/* tell the user about the average size/record */
 	$output_length = read_config_option('boost_max_output_length');
@@ -2034,77 +2038,77 @@ function boost_display_run_status() {
 
 	if ($max_length != 0) {
 		form_alternate_row();
-		print '<td><strong>Max Record Length:</strong></td><td>' . $max_length . ' Bytes</td>';
+		print '<td>' . __('Max Record Length:') . '</td><td>' . __('%d Bytes', number_format($max_length)) . '</td>';
 	}
 
 	/* tell the user about the "Maximum Size" this table can be */
 	form_alternate_row();
 	if (strcmp($engine, 'MEMORY')) {
-		$max_table_allowed = 'Unlimited';
-		$max_table_records = 'Unlimited';
+		$max_table_allowed = __('Unlimited');
+		$max_table_records = __('Unlimited');
 	}else{
 		$max_table_allowed = boost_file_size_display($max_data_length, 2);
-		$max_table_records = ($avg_row_length ? round($max_data_length/$avg_row_length, 0) : 0);
+		$max_table_records = number_format(($avg_row_length ? round($max_data_length/$avg_row_length, 0) : 0));
 	}
-	print '<td><strong>Max Allowed Boost Table Size:</strong></td><td>' . $max_table_allowed . '</td>';
+	print '<td>' . __('Max Allowed Boost Table Size:') . '</td><td>' . $max_table_allowed . '</td>';
 
 	/* tell the user about the estimated records that "could" be held in memory */
 	form_alternate_row();
-	print '<td><strong>Estimated Maximum Records:</strong></td><td>' . $max_table_records  . ' Records</td>';
+	print '<td>' . __('Estimated Maximum Records:') . '</td><td>' . $max_table_records  . ' Records</td>';
 
 	/* boost last runtime display */
-	html_header(array('Runtime Statistics'), 2);
+	html_header(array(__('Runtime Statistics')), 2);
 
 	form_alternate_row();
-	print '<td class="utilityPick"><strong>Last Start Time:</strong></td><td>' . $last_run_time . '</td>';
+	print '<td class="utilityPick">' . __('Last Start Time:') . '</td><td>' . $last_run_time . '</td>';
 
 	form_alternate_row();
-	print '<td class="utilityPick"><strong>Last Run Duration:</strong></td><td>';
-	print (($boost_last_run_duration > 60) ? (int)($boost_last_run_duration/60) . ' minutes ' : '' ) . $boost_last_run_duration%60 . ' seconds';
-	if ($rrd_updates != ''){ print ' (' . round(100*$boost_last_run_duration/$update_interval/60) . '% of update frequency)';}
+	print '<td class="utilityPick">' . __('Last Run Duration:') . '</td><td>';
+	print (($boost_last_run_duration > 60) ? __('%d minutes', (int)($boost_last_run_duration/60)) : '' ) . __('%d seconds', $boost_last_run_duration%60);
+	if ($rrd_updates != ''){ print ' (' . __('%0.2f percent of update frequency', round(100*$boost_last_run_duration/$update_interval/60));}
 	print '</td>';
 
 	form_alternate_row();
-	print '<td class="utilityPick"><strong>RRD Updates:</strong></td><td>' . $boost_rrds_updated . '</td>';
+	print '<td class="utilityPick">' . __('RRD Updates:') . '</td><td>' . $boost_rrds_updated . '</td>';
 
 	form_alternate_row();
-	print '<td class="utilityPick"><strong>Peak Poller Memory:</strong></td><td>' . ((read_config_option('boost_peak_memory') != '') ? (round(read_config_option('boost_peak_memory')/1024/1024,2)) . ' MBytes' : 'N/A') . '</td>';
+	print '<td class="utilityPick">' . __('Peak Poller Memory:') . '</td><td>' . ((read_config_option('boost_peak_memory') != '') ? (round(read_config_option('boost_peak_memory')/1024/1024,2)) . ' ' . __('MBytes') : __('N/A')) . '</td>';
 
 	form_alternate_row();
-	print '<td class="utilityPick"><strong>Detailed Runtime Timers:</strong></td><td>' . (($detail_stats != '') ? $detail_stats:'N/A') . '</td>';
+	print '<td class="utilityPick">' . __('Detailed Runtime Timers:') . '</td><td>' . (($detail_stats != '') ? $detail_stats:__('N/A')) . '</td>';
 
 	form_alternate_row();
-	print '<td class="utilityPick"><strong>Max Poller Memory Allowed:</strong></td><td>' . ((read_config_option('boost_poller_mem_limit') != '') ? (read_config_option('boost_poller_mem_limit')) . ' MBytes' : 'N/A') . '</td>';
+	print '<td class="utilityPick">' . __('Max Poller Memory Allowed:') . '</td><td>' . ((read_config_option('boost_poller_mem_limit') != '') ? (read_config_option('boost_poller_mem_limit')) . ' ' . __('MBytes') : __('N/A')) . '</td>';
 
 	/* boost runtime display */
-	html_header(array('Run Time Configuration'), 2);
+	html_header(array(__('Run Time Configuration')), 2);
 
 	form_alternate_row();
-	print '<td class="utilityPick"><strong>Update Frequency:</strong></td><td><strong>' . ($rrd_updates == '' ? 'N/A' : $boost_refresh_interval[$update_interval]) . '</strong></td>';
+	print '<td class="utilityPick">' . __('Update Frequency:') . '</td><td>' . ($rrd_updates == '' ? __('N/A') : $boost_refresh_interval[$update_interval]) . '</td>';
 
 	form_alternate_row();
-	print '<td class="utilityPick"><strong>Next Start Time:</strong></td><td>' . $next_run_time . '</td>';
+	print '<td class="utilityPick">' . __('Next Start Time:') . '</td><td>' . $next_run_time . '</td>';
 
 	form_alternate_row();
-	print '<td class="utilityPick"><strong>Maximum Records:</strong></td><td>' . $max_records . ' Records</td>';
+	print '<td class="utilityPick">' . __('Maximum Records:') . '</td><td>' . $max_records . ' ' . __('Records') . '</td>';
 
 	form_alternate_row();
-	print '<td class="utilityPick"><strong>Maximum Allowed Runtime:</strong></td><td>' . $boost_max_runtime[$max_runtime] . '</td>';
+	print '<td class="utilityPick">' . __('Maximum Allowed Runtime:') . '</td><td>' . $boost_max_runtime[$max_runtime] . '</td>';
 
 	/* boost caching */
-	html_header(array('Image Caching'), 2);
+	html_header(array(__('Image Caching')), 2);
 
 	form_alternate_row();
-	print '<td><strong>Image Caching Status:</strong></td><td><strong>' . ($boost_cache == '' ? 'Disabled' : 'Enabled') . '</strong></td>';
+	print '<td>' . __('Image Caching Status:') . '</td><td>' . ($boost_cache == '' ? __('Disabled') : __('Enabled')) . '</td>';
 
 	form_alternate_row();
-	print '<td><strong>Cache Directory:</strong></td><td>' . $cache_directory . '</td>';
+	print '<td>' . __('Cache Directory:') . '</td><td>' . $cache_directory . '</td>';
 
 	form_alternate_row();
-	print '<td><strong>Cached Files:</strong></td><td>' . $cache_files . '</td>';
+	print '<td>' . __('Cached Files:') . '</td><td>' . $cache_files . '</td>';
 
 	form_alternate_row();
-	print '<td><strong>Cached Files Size:</strong></td><td>' . $directory_size . '</td>';
+	print '<td>' . __('Cached Files Size:') . '</td><td>' . $directory_size . '</td>';
 
 	html_end_box(TRUE);
 }
@@ -2201,7 +2205,7 @@ function snmpagent_utilities_run_cache() {
 	</script>
 	<?php
 
-	html_start_box('SNMPAgent Cache', '100%', '', '3', 'center', '');
+	html_start_box(__('SNMPAgent Cache'), '100%', '', '3', 'center', '');
 
 	?>
 	<tr class='even noprint'>
@@ -2210,32 +2214,32 @@ function snmpagent_utilities_run_cache() {
 				<table class='filterTable'>
 					<tr>
 						<td>
-							Search
+							<?php print __('Search');?>
 						</td>
 						<td>
 							<input id='filter' type='text' size='25' value='<?php print htmlspecialchars(get_request_var('filter'));?>'>
 						</td>
 						<td>
-							MIB
+							<?php print __('MIB');?>
 						</td>
 						<td>
 							<select id='mib' onChange='applyFilter()'>
-								<option value='-1'<?php if (get_request_var('mib') == '-1') {?> selected<?php }?>>Any</option>
+								<option value='-1'<?php if (get_request_var('mib') == '-1') {?> selected<?php }?>><?php print __('Any');?></option>
 								<?php
 								if (sizeof($mibs) > 0) {
 									foreach ($mibs as $mib) {
-										print "<option value='" . $mib['mib'] . "'"; if (get_request_var('mib') == $mib['mib']) { print ' selected'; } print '>' . $mib['mib'] . "</option>\n";
+										print "<option value='" . $mib['mib'] . "'"; if (get_request_var('mib') == $mib['mib']) { print ' selected'; } print '>' . htmlspecialchars($mib['mib'], ENT_QUOTES) . "</option>\n";
 									}
 								}
 								?>
 							</select>
 						</td>
 						<td>
-							OIDs
+							<?php print __('OIDs');?>
 						</td>
 						<td>
 							<select id='rows' onChange='applyFilter()'>
-								<option value='-1'<?php if (get_request_var('rows') == '-1') {?> selected<?php }?>>Default</option>
+								<option value='-1'<?php if (get_request_var('rows') == '-1') {?> selected<?php }?>><?php print __('Default');?></option>
 								<?php
 								if (sizeof($item_rows) > 0) {
 									foreach ($item_rows as $key => $value) {
@@ -2246,10 +2250,10 @@ function snmpagent_utilities_run_cache() {
 							</select>
 						</td>
 						<td>
-							<input type='button' id='refresh' value='Go' title='Set/Refresh Filters'>
+							<input type='button' id='refresh' value='<?php print __('Go');?>' title='<?php print __('Set/Refresh Filters');?>'>
 						</td>
 						<td>
-							<input type='button' id='clear' value='Clear' title='Clear Filters'>
+							<input type='button' id='clear' value='<?php print __('Clear');?>' title='<?php print __('Clear Filters');?>'>
 						</td>
 					</tr>
 				</table>
@@ -2272,10 +2276,10 @@ function snmpagent_utilities_run_cache() {
 
 	/* filter by search string */
 	if (get_request_var('filter') != '') {
-		$sql_where .= " AND (`oid` LIKE '%%" . get_request_var('filter') . "%%'
-			OR `name` LIKE '%%" . get_request_var('filter') . "%%'
-			OR `mib` LIKE '%%" . get_request_var('filter') . "%%'
-			OR `max-access` LIKE '%%" . get_request_var('filter') . "%%')";
+		$sql_where .= " AND (`oid` LIKE '%" . get_request_var('filter') . "%'
+			OR `name` LIKE '%" . get_request_var('filter') . "%'
+			OR `mib` LIKE '%" . get_request_var('filter') . "%'
+			OR `max-access` LIKE '%" . get_request_var('filter') . "%')";
 	}
 	$sql_where .= ' ORDER by `oid`';
 
@@ -2287,11 +2291,11 @@ function snmpagent_utilities_run_cache() {
 	$snmp_cache = db_fetch_assoc($snmp_cache_sql);
 
 	/* generate page list */
-	$nav = html_nav_bar('utilities.php?action=view_snmpagent_cache&mib=' . get_request_var('mib') . '&filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 11, '', 'page', 'main');
+	$nav = html_nav_bar('utilities.php?action=view_snmpagent_cache&mib=' . get_request_var('mib') . '&filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 11, __('Entries'), 'page', 'main');
 
 	print $nav;
 
-	html_header(array( 'OID', 'Name', 'MIB', 'Kind', 'Max-Access', 'Value'));
+	html_header(array(__('OID'), __('Name'), __('MIB'), __('Kind'), __('Max-Access'), __('Value')));
 
 	if (sizeof($snmp_cache) > 0) {
 		foreach ($snmp_cache as $item) {
@@ -2305,14 +2309,14 @@ function snmpagent_utilities_run_cache() {
 			form_alternate_row('line' . $item['oid'], false);
 			form_selectable_cell( $oid, $item['oid']);
 			if($item['description']) {
-				print '<td><a href="#" title="<div class=\'header\'>' . $name . '</div><div class=\'content preformatted\'>' . $item['description'] . '</div>" class="tooltip">' . $name . '</a></td>';
+				print '<td><a href="#" title="<div class=\'header\'>' . $name . '</div><div class=\'content preformatted\'>' . htmlspecialchars($item['description'], ENT_QUOTES) . '</div>" class="tooltip">' . $name . '</a></td>';
 			}else {
 				print "<td>$name</td>";
 			}
-			form_selectable_cell( $mib, $item['oid']);
-			form_selectable_cell( $item['kind'], $item['oid']);
-			form_selectable_cell( $max_access, $item['oid']);
-			form_selectable_cell( (in_array($item['kind'], array('Scalar', 'Column Data')) ? $item['value'] : 'n/a'), $item['oid']);
+			form_selectable_cell($mib, $item['oid']);
+			form_selectable_cell($item['kind'], $item['oid']);
+			form_selectable_cell($max_access, $item['oid']);
+			form_selectable_cell((in_array($item['kind'], array(__('Scalar'), __('Column Data'))) ? $item['value'] : __('N/A')), $item['oid']);
 			form_end_row();
 		}
 	}
@@ -2322,7 +2326,7 @@ function snmpagent_utilities_run_cache() {
 	html_end_box();
 
 	?>
-	<script language="javascript" type="text/javascript" >
+	<script type='text/javascript'>
 		$('.tooltip').tooltip({
 			track: true,
 			show: 250,
@@ -2338,16 +2342,16 @@ function snmpagent_utilities_run_eventlog(){
 	global $item_rows;
 
 	$severity_levels = array(
-		SNMPAGENT_EVENT_SEVERITY_LOW => 'LOW',
-		SNMPAGENT_EVENT_SEVERITY_MEDIUM => 'MEDIUM',
-		SNMPAGENT_EVENT_SEVERITY_HIGH => 'HIGH',
+		SNMPAGENT_EVENT_SEVERITY_LOW      => 'LOW',
+		SNMPAGENT_EVENT_SEVERITY_MEDIUM   => 'MEDIUM',
+		SNMPAGENT_EVENT_SEVERITY_HIGH     => 'HIGH',
 		SNMPAGENT_EVENT_SEVERITY_CRITICAL => 'CRITICAL'
 	);
 
 	$severity_colors = array(
-		SNMPAGENT_EVENT_SEVERITY_LOW => '#00FF00',
-		SNMPAGENT_EVENT_SEVERITY_MEDIUM => '#FFFF00',
-		SNMPAGENT_EVENT_SEVERITY_HIGH => '#FF0000',
+		SNMPAGENT_EVENT_SEVERITY_LOW      => '#00FF00',
+		SNMPAGENT_EVENT_SEVERITY_MEDIUM   => '#FFFF00',
+		SNMPAGENT_EVENT_SEVERITY_HIGH     => '#FF0000',
 		SNMPAGENT_EVENT_SEVERITY_CRITICAL => '#FF00FF'
 	);
 
@@ -2452,7 +2456,7 @@ function snmpagent_utilities_run_eventlog(){
 	</script>
 
 	<?php
-	html_start_box('SNMPAgent Notification Log', '100%', '', '3', 'center', '');
+	html_start_box(__('SNMPAgent Notification Log'), '100%', '', '3', 'center', '');
 
 	?>
 	<tr class='even noprint'>
@@ -2461,30 +2465,30 @@ function snmpagent_utilities_run_eventlog(){
 				<table class='filterTable'>
 					<tr>
 						<td>
-							Search
+							<?php print __('Search');?>
 						</td>
 						<td>
-							<input id='filter' type='text' size='25' value='<?php print htmlspecialchars(get_request_var('filter'));?>'>
+							<input id='filter' type='text' size='25' value='<?php print get_request_var('filter');?>'>
 						</td>
 						<td>
-							Severity
+							<?php print __('Severity');?>
 						</td>
 						<td>
 							<select id='severity' onChange='applyFilter()'>
-								<option value='-1'<?php if (get_request_var('severity') == '-1') {?> selected<?php }?>>Any</option>
+								<option value='-1'<?php if (get_request_var('severity') == '-1') {?> selected<?php }?>><?php print __('Any');?></option>
 								<?php
 								foreach ($severity_levels as $level => $name) {
-									print "<option value='" . $level . "'"; if (get_request_var('severity') == $level) { print ' selected'; } print '>' . $name . "</option>\n";
+									print "<option value='" . $level . "'"; if (get_request_var('severity') == $level) { print ' selected'; } print '>' . htmlspecialchars($name, ENT_QUOTES) . "</option>\n";
 								}
 								?>
 							</select>
 						</td>
 						<td>
-							Receiver
+							<?php print __('Receiver');?>
 						</td>
 						<td>
 							<select id='receiver' onChange='applyFilter()'>
-								<option value='-1'<?php if (get_request_var('receiver') == '-1') {?> selected<?php }?>>Any</option>
+								<option value='-1'<?php if (get_request_var('receiver') == '-1') {?> selected<?php }?>><?php print __('Any');?></option>
 								<?php
 								foreach ($receivers as $receiver) {
 									print "<option value='" . $receiver['manager_id'] . "'"; if (get_request_var('receiver') == $receiver['manager_id']) { print ' selected'; } print '>' . $receiver['hostname'] . "</option>\n";
@@ -2493,11 +2497,11 @@ function snmpagent_utilities_run_eventlog(){
 							</select>
 						</td>
 						<td>
-							Entries
+							<?php print __('Entries');?>
 						</td>
 						<td>
 							<select id='rows' onChange='applyFilter()'>
-								<option value='-1'<?php if (get_request_var('rows') == '-1') {?> selected<?php }?>>Default</option>
+								<option value='-1'<?php if (get_request_var('rows') == '-1') {?> selected<?php }?>><?php print __('Default');?></option>
 								<?php
 								if (sizeof($item_rows) > 0) {
 									foreach ($item_rows as $key => $value) {
@@ -2508,9 +2512,9 @@ function snmpagent_utilities_run_eventlog(){
 							</select>
 						</td>
 						<td>
-							<input type='button' id='refresh' value='Go' title='Set/Refresh Filters'>
-							<input type='button' id='clear' value='Clear' title='Clear Filters'>
-							<input type='button' id='purge' value='Purge' title='Purge Notification Log'>
+							<input type='button' id='refresh' value='<?php print __('Go');?>' title='<?php print __('Set/Refresh Filters');?>'>
+							<input type='button' id='clear' value='<?php print __('Clear');?>' title='<?php print __('Clear Filters');?>'>
+							<input type='button' id='purge' value='<?php print __('Purge');?>' title='<?php print __('Purge Notification Log');?>'>
 						</td>
 					</tr>
 				</table>
@@ -2558,32 +2562,32 @@ function snmpagent_utilities_run_eventlog(){
 
 	print $nav;
 
-	html_header(array(' ', 'Time', 'Receiver', 'Notification', 'Varbinds' ));
+	html_header(array(' ', __('Time'), __('Receiver'), __('Notification'), __('Varbinds')));
 
 	if (sizeof($logs) > 0) {
 		foreach ($logs as $item) {
 			$varbinds = (strlen(get_request_var('filter')) ? (preg_replace('/(' . preg_quote(get_request_var('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($item['varbinds']))): htmlspecialchars($item['varbinds']));
 			form_alternate_row('line' . $item['id'], false);
-			print "<td title='Severity Level: " . $severity_levels[ $item['severity'] ] . "' style='width:10px;background-color: " . $severity_colors[ $item['severity'] ] . ";border-top:1px solid white;border-bottom:1px solid white;'></td>";
-			print "<td class='nowrap'>" . date( 'Y/m/d H:i:s', $item['time']) . '</td>';
-			print '<td>' . $item['hostname'] . '</td>';
+			print "<td title='" . __('Severity Level: %s', $severity_levels[$item['severity']]) . "' style='width:10px;background-color: " . $severity_colors[$item['severity']] . ";border-top:1px solid white;border-bottom:1px solid white;'></td>";
+			print "<td class='nowrap'>" . date('Y/m/d H:i:s', $item['time']) . '</td>';
+			print '<td>' . htmlspecialchars($item['hostname'], ENT_QUOTES) . '</td>';
 			if($item['description']) {
 				print '<td><a href="#" title="<div class=\'header\'>' . htmlspecialchars($item['notification'], ENT_QUOTES) . '</div><div class=\'content preformatted\'>' . htmlspecialchars($item['description'], ENT_QUOTES) . '</div>" class="tooltip">' . htmlspecialchars($item['notification']) . '</a></td>';
 			}else {
-				print "<td>" . htmlspecialchars($item['notification']) . "</td>";
+				print '<td>' . htmlspecialchars($item['notification']) . "</td>";
 			}
 			print "<td>$varbinds</td>";
 			form_end_row();
 		}
 		print $nav;
 	}else{
-		print '<tr><td><em>No SNMP Notification Log Entries</em></td></tr>';
+		print '<tr><td><em>' . __('No SNMP Notification Log Entries') . '</em></td></tr>';
 	}
 
 	html_end_box();
 	?>
 
-	<script language='javascript' type='text/javascript' >
+	<script type='text/javascript' >
 	$('.tooltip').tooltip({
 		track: true,
 		position: { collision: 'flipfit' },
