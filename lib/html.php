@@ -152,7 +152,7 @@ function html_graph_area(&$graph_array, $no_graphs_message = "", $extra_url_args
 				if ($print) {
 					print "<tr class='templateHeader'>
 						<td colspan='3' class='textHeaderDark'>
-							<strong>Graph Template:</strong> " . htmlspecialchars($graph["graph_template_name"]) . "
+							" . __('Graph Template:') . ' ' . htmlspecialchars($graph["graph_template_name"]) . "
 						</td>
 					</tr>";
 				}
@@ -180,7 +180,7 @@ function html_graph_area(&$graph_array, $no_graphs_message = "", $extra_url_args
 					}
 
 					print "<tr class='tableHeader'>
-							<td colspan='$columns' class='graphSubHeaderColumn textHeaderDark'><strong>Data Query:</strong> " . $graph["data_query_name"] . "</td>
+							<td colspan='$columns' class='graphSubHeaderColumn textHeaderDark'>" . __('Data Query:') . ' ' . $graph["data_query_name"] . "</td>
 						</tr>";
 					$i = 0;
 				}
@@ -209,7 +209,7 @@ function html_graph_area(&$graph_array, $no_graphs_message = "", $extra_url_args
 					<tr>
 						<td>
 							<div class='graphWrapper' style='width:100%;' id='wrapper_<?php print $graph['local_graph_id']?>' graph_width='<?php print $graph['width'];?>' graph_height='<?php print $graph['height'];?>' title_font_size='<?php print ((read_user_setting("custom_fonts") == "on") ? read_user_setting("title_size") : read_config_option("title_size"));?>'></div>
-							<?php print (read_user_setting("show_graph_title") == "on" ? "<span align='center'><strong>" . htmlspecialchars($graph["title_cache"]) . "</strong></span>" : "");?>
+							<?php print (read_user_setting("show_graph_title") == "on" ? "<span align='center'>" . htmlspecialchars($graph["title_cache"]) . "</span>" : "");?>
 						</td>
 						<td style='vertical-align:top;align-self:left;padding:3px;' class='noprint'>
 							<?php graph_drilldown_icons($graph['local_graph_id']);?>
@@ -312,7 +312,7 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = "", $extr
 					}
 
 					print "<tr class='tableHeader'>
-							<td class='graphSubHeaderColumn textHeaderDark' colspan='$columns'><strong>Data Query:</strong> " . $graph["data_query_name"] . "</td>
+							<td class='graphSubHeaderColumn textHeaderDark' colspan='$columns'>" . __('Data Query:') . ' ' . $graph["data_query_name"] . "</td>
 						</tr>";
 					$i = 0;
 				}
@@ -329,7 +329,7 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = "", $extr
 					<tr>
 						<td>
 							<div class='graphWrapper' id='wrapper_<?php print $graph['local_graph_id']?>' graph_width='<?php print read_user_setting("default_width");?>' graph_height='<?php print read_user_setting("default_height");?>'></div>
-							<?php print (read_user_setting("show_graph_title") == "on" ? "<span align='center'><strong>" . htmlspecialchars($graph["title_cache"]) . "</strong></span>" : "");?>
+							<?php print (read_user_setting("show_graph_title") == "on" ? "<span align='center'>" . htmlspecialchars($graph["title_cache"]) . "</span>" : "");?>
 						</td>
 						<td style='vertical-align:top;text-align:center'>
 							<?php print graph_drilldown_icons($graph['local_graph_id'], 'graph_buttons_thumbnails');?>
@@ -370,11 +370,11 @@ function graph_drilldown_icons($local_graph_id, $type = 'graph_buttons') {
 
 	$aggregate_url = aggregate_build_children_url($local_graph_id);
 
-	print "<span class='utils' id='graph_" . $local_graph_id . "_util'><img class='drillDown' src='" . $config['url_path'] . "images/cog.png' alt='' title='Graph Details, Zooming and Debugging Utilities'></span><br>\n";
-	print "<span class='csvexport' id='graph_" . $local_graph_id . "_csv'><img class='drillDown' src='" . $config['url_path'] . "images/table_go.png' alt='' title='CSV Export of Graph Data'></span><br>\n";
-	print "<span class='mrgt' id='graph_" . $local_graph_id . "_mrtg'><img class='drillDown' src='" . $config['url_path'] . "images/mrtg.png' alt='' title='MRTG Graph View'></span><br>\n";
+	print "<span class='utils' id='graph_" . $local_graph_id . "_util'><img class='drillDown' src='" . $config['url_path'] . "images/cog.png' alt='' title='" . __('Graph Details, Zooming and Debugging Utilities') . "'></span><br>\n";
+	print "<span class='csvexport' id='graph_" . $local_graph_id . "_csv'><img class='drillDown' src='" . $config['url_path'] . "images/table_go.png' alt='' title='" . __('CSV Export of Graph Data'). "'></span><br>\n";
+	print "<span class='mrgt' id='graph_" . $local_graph_id . "_mrtg'><img class='drillDown' src='" . $config['url_path'] . "images/mrtg.png' alt='' title='" . __('MRTG Graph View'). "'></span><br>\n";
 	if (read_config_option('realtime_enabled') == 'on') {
-		print "<span class='realtime' id='graph_" . $local_graph_id . "_realtime'><img class='drillDown' src='" . $config['url_path'] . "images/chart_curve_go.png' alt='' title='Click to view just this Graph in Realtime'></span><br/>\n";
+		print "<span class='realtime' id='graph_" . $local_graph_id . "_realtime'><img class='drillDown' src='" . $config['url_path'] . "images/chart_curve_go.png' alt='' title='" . __('Click to view just this Graph in Realtime'). "'></span><br/>\n";
 	}
 	if (is_realm_allowed(1043)) {
 		print "<span class='spikekill' data-graph='" . $local_graph_id . "' id='graph_" . $local_graph_id . "_sk'><img id='sk" . $local_graph_id . "' class='drillDown' src='" . $config['url_path'] . "images/spikekill.gif'>";
@@ -413,15 +413,15 @@ function html_nav_bar($base_url, $max_pages, $current_page, $rows_per_page, $tot
 				<table class='navBarNavigation' style='width:100%;'>
 					<tr>
 						<td class='navBarNavigationPrevious'><div style='display:block;'>
-							" . (($current_page > 1) ? "<div onClick='goto$page_var(" . ($current_page-1) . ")'><i class='fa fa-angle-double-left previous'></i>Previous</div>":"") . "
+							" . (($current_page > 1) ? "<div onClick='goto$page_var(" . ($current_page-1) . ")'><i class='fa fa-angle-double-left previous'></i>" . __('Previous'). "</div>":"") . "
 						</div></td>
 						<td class='navBarNavigationCenter'>
 							<div>
-								Showing $object " . (($rows_per_page*($current_page-1))+1) . " to " . (($total_rows < $rows_per_page) || ($total_rows < ($rows_per_page*$current_page)) ? $total_rows : $rows_per_page*$current_page) . " of $total_rows [ $url_page_select ]
+								" . __('Showing %s %d to %d of %s [ %s ]', $object, (($rows_per_page*($current_page-1))+1), (($total_rows < $rows_per_page) || ($total_rows < ($rows_per_page*$current_page)) ? $total_rows : $rows_per_page*$current_page), $total_rows, $url_page_select) . "
 							</div>
 						</td>
 						<td class='navBarNavigationNext'><div style='display:block;'>
-							" . (($current_page*$rows_per_page) < $total_rows ? "<div onClick='goto$page_var(" . ($current_page+1) . ")'>Next<i class='fa fa-angle-double-right next'></i></div>":"") . "
+							" . (($current_page*$rows_per_page) < $total_rows ? "<div onClick='goto$page_var(" . ($current_page+1) . ")'>" . __('Next'). "<i class='fa fa-angle-double-right next'></i></div>":"") . "
 						</div></td>
 					</tr>
 				</table>
@@ -434,7 +434,7 @@ function html_nav_bar($base_url, $max_pages, $current_page, $rows_per_page, $tot
 					<tr>
 						<td class='navBarNavigationCenter'>
 							<div>
-								Showing All $total_rows $object
+								" . __('Showing All %d %s', $total_rows, $object) . "
 							</div>
 						</td>
 					</tr>
@@ -448,7 +448,7 @@ function html_nav_bar($base_url, $max_pages, $current_page, $rows_per_page, $tot
 				<table class='navBarNavigation'>
 					<tr>
 						<td class='navBarNavigationCenter'>
-							No $object Found
+							" . __('No %s Found', $object) . "
 						</td>
 					</tr>
 				</table>
@@ -632,7 +632,7 @@ function html_header_sort_checkbox($header_items, $sort_column, $sort_direction,
 		}
 	}
 
-	print "<th class='tableSubHeaderCheckbox'><input id='selectall' class='checkbox' type='checkbox' title='Select All Rows' onClick='SelectAll(\"chk_\",this.checked)'></th>" . ($include_form ? "<th style='display:none;'><form id='chk' name='chk' method='post' action='$form_action'></th>\n":"");
+	print "<th class='tableSubHeaderCheckbox'><input id='selectall' class='checkbox' type='checkbox' title='" . __('Select All Rows'). "' onClick='SelectAll(\"chk_\",this.checked)'></th>" . ($include_form ? "<th style='display:none;'><form id='chk' name='chk' method='post' action='$form_action'></th>\n":"");
 	print "</tr>\n";
 
 	$page++;
@@ -675,7 +675,7 @@ function html_header_checkbox($header_items, $include_form = true, $form_action 
 		}
 	}
 
-	print "<th class='tableSubHeaderCheckbox'><input id='selectall' class='checkbox' type='checkbox' title='Select All Rows' onClick='SelectAll(\"chk_\",this.checked)'></th>\n" . ($include_form ? "<th style='display:none;'><form id='chk' name='chk' method='post' action='$form_action'></th>\n":"");
+	print "<th class='tableSubHeaderCheckbox'><input id='selectall' class='checkbox' type='checkbox' title='" . __('Select All Rows'). "' onClick='SelectAll(\"chk_\",this.checked)'></th>\n" . ($include_form ? "<th style='display:none;'><form id='chk' name='chk' method='post' action='$form_action'></th>\n":"");
 	print "</tr>\n";
 }
 
@@ -769,11 +769,11 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 	include($config["include_path"] . "/global_arrays.php");
 
 	print "<tr class='tableHeader'>";
-		DrawMatrixHeaderItem("Graph Item","",1);
-		DrawMatrixHeaderItem("Data Source","",1);
-		DrawMatrixHeaderItem("Graph Item Type","",1);
-		DrawMatrixHeaderItem("CF Type","",1);
-		DrawMatrixHeaderItem("Item Color","",4);
+		DrawMatrixHeaderItem(__('Graph Item'),'',1);
+		DrawMatrixHeaderItem(__('Data Source'),'',1);
+		DrawMatrixHeaderItem(__('Graph Item Type'),'',1);
+		DrawMatrixHeaderItem(__('CF Type'),'',1);
+		DrawMatrixHeaderItem(__('Item Color'),'',4);
 	print "</tr>";
 
 	$group_counter = 0; $_graph_type_name = ""; $i = 0;
@@ -806,11 +806,11 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 
 			print "<td>";
 			if ($disable_controls == false) { print "<a class='linkEditMain' href='" . htmlspecialchars("$filename?action=item_edit&id=" . $item["id"] . "&$url_data") . "'>"; }
-			print "<strong>Item # " . ($i+1) . "</strong>";
+			print __('Item # %d', ($i+1));
 			if ($disable_controls == false) { print "</a>"; }
 			print "</td>\n";
 
-			if (empty($item["data_source_name"])) { $item["data_source_name"] = "No Task"; }
+			if (empty($item["data_source_name"])) { $item["data_source_name"] = __('No Task'); }
 
 			switch (true) {
 			case preg_match("/(AREA|STACK|GPRINT|LINE[123])/", $_graph_type_name):
@@ -840,18 +840,18 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 			if ($disable_controls == false) {
 				print "<td style='text-align:right;padding-right:10px;'>\n";
 				if ($i != sizeof($item_list)-1) {
-					print "<a class='moveArrow fa fa-arrow-down' title='Move Down' href='" . htmlspecialchars("$filename?action=item_movedown&id=" . $item["id"] . "&$url_data") . "'></a>\n";
+					print "<a class='moveArrow fa fa-arrow-down' title='" . __('Move Down'). "' href='" . htmlspecialchars("$filename?action=item_movedown&id=" . $item["id"] . "&$url_data") . "'></a>\n";
 				}else{
 					print "<span class='moveArrowNone'></span>\n";
 				}
 				if ($i > 0) {
-					print "<a class='moveArrow fa fa-arrow-up' title='Move Up' href='" . htmlspecialchars("$filename?action=item_moveup&id=" . $item["id"] . "&$url_data") . "'></a>\n";
+					print "<a class='moveArrow fa fa-arrow-up' title='" . __('Move Up') . "' href='" . htmlspecialchars("$filename?action=item_moveup&id=" . $item["id"] . "&$url_data") . "'></a>\n";
 				}else{
 					print "<span class='moveArrowNone'></span>\n";
 				}
 				print "</td>\n";
 
-				print "<td style='text-align:right;'><a class='deleteMarker fa fa-remove' title='Delete' href='" . htmlspecialchars("$filename?action=item_remove&id=" . $item["id"] . "&$url_data") . "'></a></td>\n";
+				print "<td style='text-align:right;'><a class='deleteMarker fa fa-remove' title='" . __('Delete') . "' href='" . htmlspecialchars("$filename?action=item_remove&id=" . $item["id"] . "&$url_data") . "'></a></td>\n";
 			}
 
 			print "</tr>";
@@ -859,7 +859,7 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 			$i++;
 		}
 	}else{
-		print "<tr class='tableRow'><td colspan='7'><em>No Items</em></td></tr>";
+		print "<tr class='tableRow'><td colspan='7'><em>" . __('No Items') . "</em></td></tr>";
 	}
 }
 
@@ -982,7 +982,7 @@ function draw_actions_dropdown($actions_array, $delete_action = 1) {
 				<?php form_dropdown('drp_action',$actions_array, '', '', '0', '', '');?>
 			</td>
 			<td>
-				<input id='submit' type='submit' value='Go' title='Execute Action'>
+				<input id='submit' type='submit' value='Go' title='<?php print __('Execute Action');?>'>
 			</td>
 		</tr>
 	</table>
@@ -1108,7 +1108,7 @@ function html_show_tabs_left($show_console_tab) {
 
 	if (get_selected_theme() == 'classic') {
 		if ($show_console_tab == true) {
-			?><a href="<?php echo $config['url_path']; ?>index.php"><img src="<?php echo $config['url_path']; ?>images/tab_console<?php print (is_console_page(basename($_SERVER['PHP_SELF'])) ? '_down':'');?>.gif" alt="Console"></a><?php
+			?><a href="<?php echo $config['url_path']; ?>index.php"><img src="<?php echo $config['url_path']; ?>images/tab_console<?php print (is_console_page(basename($_SERVER['PHP_SELF'])) ? '_down':'');?>.gif" alt="<?php print __('Console');?>"></a><?php
 		}
 
 		if (is_realm_allowed(7)) {
@@ -1122,17 +1122,17 @@ function html_show_tabs_left($show_console_tab) {
 
 		if (is_realm_allowed(21) || is_realm_allowed(22)) {
 			if (substr_count($_SERVER["REQUEST_URI"], "reports_")) {
-				print '<a href="' . $config['url_path'] . (is_realm_allowed(22) ? 'reports_admin.php':'reports_user.php') . '"><img src="' . $config['url_path'] . 'images/tab_nectar_down.gif" alt="Reporting"></a>';
+				print '<a href="' . $config['url_path'] . (is_realm_allowed(22) ? 'reports_admin.php':'reports_user.php') . '"><img src="' . $config['url_path'] . 'images/tab_nectar_down.gif" alt="' . __('Reporting') . '"></a>';
 			}else{
-				print '<a href="' . $config['url_path'] . (is_realm_allowed(22) ? 'reports_admin.php':'reports_user.php') . '"><img src="' . $config['url_path'] . 'images/tab_nectar.gif" alt="Reporting"></a>';
+				print '<a href="' . $config['url_path'] . (is_realm_allowed(22) ? 'reports_admin.php':'reports_user.php') . '"><img src="' . $config['url_path'] . 'images/tab_nectar.gif" alt="' . __('Reporting') . '"></a>';
 			}
 		}
 
 		if (is_realm_allowed(18) || is_realm_allowed(19)) {
 			if (substr_count($_SERVER["REQUEST_URI"], "clog")) {
-				print '<a href="' . $config['url_path'] . (is_realm_allowed(18) ? 'clog.php':'clog_user.php') . '"><img src="' . $config['url_path'] . 'images/tab_clog_down.png" alt="Cacti Log"></a>';
+				print '<a href="' . $config['url_path'] . (is_realm_allowed(18) ? 'clog.php':'clog_user.php') . '"><img src="' . $config['url_path'] . 'images/tab_clog_down.png" alt="' . __('Cacti Log'). '"></a>';
 			}else{
-				print '<a href="' . $config['url_path'] . (is_realm_allowed(18) ? 'clog.php':'clog_user.php') . '"><img src="' . $config['url_path'] . 'images/tab_clog.png" alt="Cacti Log"></a>';
+				print '<a href="' . $config['url_path'] . (is_realm_allowed(18) ? 'clog.php':'clog_user.php') . '"><img src="' . $config['url_path'] . 'images/tab_clog.png" alt="' . __('Cacti Log') . '"></a>';
 			}
 		}
 
@@ -1141,7 +1141,7 @@ function html_show_tabs_left($show_console_tab) {
 		if ($show_console_tab) {
 			$tabs_left[] =
 			array(
-				'title' => 'Console',
+				'title' => __('Console'),
 				'image' => '',
 				'url'   => $config['url_path'] . 'index.php',
 			);
@@ -1149,21 +1149,21 @@ function html_show_tabs_left($show_console_tab) {
 
 		$tabs_left[] =
 			array(
-				'title' => 'Graphs',
+				'title' => __('Graphs'),
 				'image' => '',
 				'url'   => $config['url_path'] . 'graph_view.php',
 			);
 
 		$tabs_left[] =
 			array(
-				'title' => 'Reporting',
+				'title' => __('Reporting'),
 				'image' => '',
 				'url'   => $config['url_path'] . (is_realm_allowed(22) ? 'reports_admin.php':'reports_user.php'),
 			);
 
 		$tabs_left[] =
 			array(
-				'title' => 'Cacti Log',
+				'title' => __('Cacti Log'),
 				'image' => '',
 				'url'   => $config['url_path'] . (is_realm_allowed(18) ? 'clog.php':'clog_user.php'),
 			);
@@ -1252,39 +1252,39 @@ function html_graph_tabs_right($current_user) {
 			?><a class='righttab' href='<?php print htmlspecialchars($config['url_path'] . 'graph_view.php?action=tree');?>'><img src='<?php echo $config['url_path']; ?>images/tab_mode_tree<?php
 			if (isset_request_var('action') && get_nfilter_request_var('action') == 'tree') {
 				print '_down';
-			}?>.gif' title='Tree View' alt=''></a><?php
+			}?>.gif' title='<?php print __('Tree View');?>' alt=''></a><?php
 		}?><?php
 
 		if (is_view_allowed('show_list')) {
 			?><a class='righttab' href='<?php print htmlspecialchars($config['url_path'] . 'graph_view.php?action=list');?>'><img src='<?php echo $config['url_path']; ?>images/tab_mode_list<?php
 			if (isset_request_var('action') && get_nfilter_request_var('action') == 'list') {
 				print '_down';
-			}?>.gif' title='List View' alt=''></a><?php
+			}?>.gif' title='<?php print __('List View');?>' alt=''></a><?php
 		}?><?php
 
 		if (is_view_allowed('show_preview')) {
 			?><a class='righttab' href='<?php print htmlspecialchars($config['url_path'] . 'graph_view.php?action=preview');?>'><img src='<?php echo $config['url_path']; ?>images/tab_mode_preview<?php
 			if (isset_request_var('action') && get_nfilter_request_var('action') == 'preview') {
 				print '_down';
-			}?>.gif' title='Preview View' alt=''></a><?php
+			}?>.gif' title='<?php print __('Preview View');?>' alt=''></a><?php
 		}?>&nbsp;<br>
 		<?php
 	}else{
 		$tabs_right = array(
 			array(
-				'title' => 'Tree View',
+				'title' => __('Tree View'),
 				'image' => 'include/themes/' . $theme . '/images/tab_tree.gif',
 				'id'    => 'tree',
 				'url'   => 'graph_view.php?action=tree',
 			),
 			array(
-				'title' => 'List View',
+				'title' => __('List View'),
 				'image' => 'include/themes/' . $theme . '/images/tab_list.gif',
 				'id'    => 'list',
 				'url'   => 'graph_view.php?action=list',
 			),
 			array(
-				'title' => 'Preview',
+				'title' => __('Preview'),
 				'image' => 'include/themes/' . $theme . '/images/tab_preview.gif',
 				'id'    => 'preview',
 				'url'   => 'graph_view.php?action=preview',
@@ -1360,12 +1360,12 @@ function html_host_filter($host_id = '-1', $call_back = 'applyFilter', $sql_wher
 	if ($theme == 'classic') {
 		?>
 		<td>
-			Device
+			<?php print __('Device');?>
 		</td>
 		<td>
 			<select id='host_id' name='host_id' onChange='<?php print $call_back;?>()'>
-				<option value='-1'<?php if (get_request_var('host_id') == '-1') {?> selected<?php }?>>Any</option>
-				<option value='0'<?php if (get_request_var('host_id') == '0') {?> selected<?php }?>>None</option>
+				<option value='-1'<?php if (get_request_var('host_id') == '-1') {?> selected<?php }?>><?php print __('Any');?></option>
+				<option value='0'<?php if (get_request_var('host_id') == '0') {?> selected<?php }?>><?php print __('None');?></option>
 				<?php
 
 				if ($sql_where != '' && strpos($sql_where, 'WHERE') === false) { 
@@ -1399,7 +1399,7 @@ function html_host_filter($host_id = '-1', $call_back = 'applyFilter', $sql_wher
 
 		?>
 		<td>
-			Device
+			<?php print __('Device');?>
 		</td>
 		<td>
 			<span id='host_wrapper' style='width:200px;' class='ui-selectmenu-button ui-widget ui-state-default ui-corner-all'>
@@ -1484,10 +1484,10 @@ function html_spikekill_menu($local_graph_id) {
 	?>
 	<div class='spikekillParent' style='display:none;z-index:20;position:absolute;text-align:left;white-space:nowrap;padding-right:2px;'>
 	<ul class='spikekillMenu' style='font-size:1em;'>
-		<li data-graph='<?php print $local_graph_id;?>' class='rstddev'><i class='deviceUp fa fa-support'></i><span></span>Remove StdDev</li>
-		<li data-graph='<?php print $local_graph_id;?>' class='rvariance'><i class='deviceRecovering fa fa-support'></i><span></span>Remove Variance</li>
-		<li data-graph='<?php print $local_graph_id;?>' class='dstddev'><i class='deviceUp fa fa-check'></i><span></span>DryRun StdDev</li>
-		<li data-graph='<?php print $local_graph_id;?>' class='dvariance'><i class='deviceRecovering fa fa-check'></i><span></span>DryRun Variance</li>
+		<li data-graph='<?php print $local_graph_id;?>' class='rstddev'><i class='deviceUp fa fa-support'></i><span></span><?php print __('Remove StdDev');?></li>
+		<li data-graph='<?php print $local_graph_id;?>' class='rvariance'><i class='deviceRecovering fa fa-support'></i><span></span><?php print __('Remove Variance');?></li>
+		<li data-graph='<?php print $local_graph_id;?>' class='dstddev'><i class='deviceUp fa fa-check'></i><span></span><?php print __('DryRun StdDev');?></li>
+		<li data-graph='<?php print $local_graph_id;?>' class='dvariance'><i class='deviceRecovering fa fa-check'></i><span></span><?php print __('DryRun Variance');?></li>
 		<li><i class='fa fa-cog'></i><span></span>Settings
 			<ul>
 				<?php print $rmethod;?>

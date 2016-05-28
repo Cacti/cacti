@@ -375,7 +375,7 @@ function form_button($form_name, $value, $title = '', $action = '') {
    @arg $form_size - the size (width) of the textbox */
 function form_file($form_name, $form_size = 30) {
 	print "<div>\n";
-	print "<label class='import_label' for='import_file'>Select a File</label>\n";
+	print "<label class='import_label' for='import_file'>" . __('Select a File'). "</label>\n";
 	print "<input class='import_button' type='file'";
 
 	if (isset($_SESSION["sess_error_fields"]) && !empty($_SESSION["sess_error_fields"][$form_name])) {
@@ -421,16 +421,16 @@ function form_filepath_box($form_name, $form_previous_value, $form_default_value
 	}
 
 	if (is_file(trim($form_previous_value))) {
-		$extra_data = "<span class='cactiTooltipHint fa fa-check-circle' style='padding:5px;font-size:16px;color:green' title='File Found'></span>";
+		$extra_data = "<span class='cactiTooltipHint fa fa-check-circle' style='padding:5px;font-size:16px;color:green' title='" . __('File Found') . "'></span>";
 	}else if (is_dir(trim($form_previous_value))) {
-		$extra_data = "<span class='cactiTooltipHint fa fa-times-circle' style='padding:5px;font-size:16px;color:red' title='Path is a Directory and not a File'></span>";
+		$extra_data = "<span class='cactiTooltipHint fa fa-times-circle' style='padding:5px;font-size:16px;color:red' title='" . __('Path is a Directory and not a File') . "'></span>";
 	}else if (strlen($form_previous_value) == 0) {
 		$extra_data = '';
 	}else{
-		$extra_data = "<span class='cactiTooltipHint fa fa-times-circle' style='padding:5px;font-size:16px;color:red' title='File is Not Found'></span>";
+		$extra_data = "<span class='cactiTooltipHint fa fa-times-circle' style='padding:5px;font-size:16px;color:red' title='" . __('File is Not Found'). "'></span>";
 	}
 
-	print " id='$form_name' placeholder='Enter a valid file path' name='$form_name' size='$form_size'" . (!empty($form_max_length) ? " maxlength='$form_max_length'" : '') . " value='" . htmlspecialchars($form_previous_value, ENT_QUOTES) . "'>" . $extra_data;
+	print " id='$form_name' placeholder='" . __('Enter a valid file path') . "' name='$form_name' size='$form_size'" . (!empty($form_max_length) ? " maxlength='$form_max_length'" : '') . " value='" . htmlspecialchars($form_previous_value, ENT_QUOTES) . "'>" . $extra_data;
 }
 
 /* form_dirpath_box - draws a standard html textbox and provides status of a directories existence
@@ -466,16 +466,16 @@ function form_dirpath_box($form_name, $form_previous_value, $form_default_value,
 	}
 
 	if (is_dir($form_previous_value)) {
-		$extra_data = "<span class='cactiTooltipHint fa fa-check-circle' style='padding:5px;font-size:16px;color:green' title='Directory Found'></span>";
+		$extra_data = "<span class='cactiTooltipHint fa fa-check-circle' style='padding:5px;font-size:16px;color:green' title='" . __('Directory Found') ."'></span>";
 	}else if (is_file($form_previous_value)) {
-		$extra_data = "<span class='cactiTooltipHint fa fa-times-circle' style='padding:5px;font-size:16px;color:red' title='Path is a File and not a Directory'></span>";
+		$extra_data = "<span class='cactiTooltipHint fa fa-times-circle' style='padding:5px;font-size:16px;color:red' title='" . __('Path is a File and not a Directory'). "></span>";
 	}else if (strlen($form_previous_value) == 0) {
 		$extra_data = '';
 	}else{
-		$extra_data = "<span class='cactiTooltipHint fa fa-times-circle' style='padding:5px;font-size:16px;color:red' title='Directory is Not found'></span>";
+		$extra_data = "<span class='cactiTooltipHint fa fa-times-circle' style='padding:5px;font-size:16px;color:red' title='" . __('Directory is Not found'). "'></span>";
 	}
 
-	print " id='$form_name' name='$form_name' placeholder='Enter a valid directory path' size='$form_size'" . (!empty($form_max_length) ? " maxlength='$form_max_length'" : '') . " value='" . htmlspecialchars($form_previous_value, ENT_QUOTES) . "'>" . $extra_data;
+	print " id='$form_name' name='$form_name' placeholder='" . __('Enter a valid directory path'). "' size='$form_size'" . (!empty($form_max_length) ? " maxlength='$form_max_length'" : '') . " value='" . htmlspecialchars($form_previous_value, ENT_QUOTES) . "'>" . $extra_data;
 }
 
 /* form_text_box - draws a standard html textbox
@@ -969,17 +969,17 @@ function form_font_box($form_name, $form_previous_value, $form_default_value, $f
 		/* do some simple checks */
 		if (read_config_option('rrdtool_version') == 'rrd-1.2.x') { # rrdtool 1.2 uses font files
 			if (is_file($form_previous_value)) {
-				$extra_data = "<span style='color:green'><br>[" . 'OK: FILE FOUND' . ']</span>';
+				$extra_data = "<span style='color:green'><br>[" . __('OK: FILE FOUND') . ']</span>';
 			}else if (is_dir($form_previous_value)) {
-				$extra_data = "<span style='color:red'><br>[" . 'ERROR: IS DIR' . ']</span>';
+				$extra_data = "<span style='color:red'><br>[" . __('ERROR: IS DIR') . ']</span>';
 			}else{
-				$extra_data = "<span style='color:red'><br>[" . 'ERROR: FILE NOT FOUND' . ']</span>';
+				$extra_data = "<span style='color:red'><br>[" . __('ERROR: FILE NOT FOUND') . ']</span>';
 			}
 		} else {	# rrdtool 1.3+ use fontconfig
 			/* verifying all possible pango font params is too complex to be tested here
 			 * so we only escape the font
 			 */
-			$extra_data = "<span style='color:green'><br>[" . 'NO FONT VERIFICATION POSSIBLE' . ']</span>';
+			$extra_data = "<span style='color:green'><br>[" . __('NO FONT VERIFICATION POSSIBLE') . ']</span>';
 		}
 	}
 
@@ -998,7 +998,7 @@ function form_confirm($title_text, $body_text, $cancel_url, $action_url) { ?>
 			<td class='even' colspan='10'>
 				<table>
 					<tr class='cactiTableTitle'>
-						<td class='textHeaderDark'><strong><?php print $title_text;?></strong></td>
+						<td class='textHeaderDark'><?php print $title_text;?></td>
 					</tr>
 					<?php
 					form_area($body_text);
@@ -1019,8 +1019,8 @@ function form_confirm_buttons($action_url, $cancel_url) {
 	?>
 	<tr>
 		<td align='right'>
-			<input type='button' onClick='cactiReturnTo("<?php print $config['url_path'] . $cancel_url;?>")' value='Cancel'>
-			<input type='button' onClick='cactiReturnTo("<?php print $config['url_path'] . $action_url;?>&confirm=true")' value='Delete'>
+			<input type='button' onClick='cactiReturnTo("<?php print $config['url_path'] . $cancel_url;?>")' value='<?php print __('Cancel');?>'>
+			<input type='button' onClick='cactiReturnTo("<?php print $config['url_path'] . $action_url;?>&confirm=true")' value='<?php print __('Delete');?>'>
 		</td>
 	</tr>
 <?php }
@@ -1031,28 +1031,28 @@ function form_confirm_buttons($action_url, $cancel_url) {
    @arg $force_type - if specified, will force the 'action' button to be either
      'save' or 'create'. otherwise this field should be properly auto-detected */
 function form_save_button($cancel_url, $force_type = '', $key_field = 'id', $ajax = true) {
-	$calt = 'Cancel';
+	$calt = __('Cancel');
 
 	if (empty($force_type) || $force_type == 'return') {
 		if (isempty_request_var($key_field)) {
-			$alt = 'Create';
+			$alt = __('Create');
 		}else{
-			$alt = 'Save';
+			$alt = __('Save');
 
 			if (strlen($force_type)) {
-				$calt   = 'Return';
+				$calt   = __('Return');
 			}else{
-				$calt   = 'Cancel';
+				$calt   = __('Cancel');
 			}
 		}
 	}elseif ($force_type == 'save') {
-		$alt = 'Save';
+		$alt = __('Save');
 	}elseif ($force_type == 'create') {
-		$alt = 'Create';
+		$alt = __('Create');
 	}elseif ($force_type == 'import') {
-		$alt = 'Import';
+		$alt = __('Import');
 	}elseif ($force_type == 'export') {
-		$alt = 'Export';
+		$alt = __('Export');
 	}
 
 	if ($force_type != 'import' && $force_type != 'export' && $force_type != 'save' && $cancel_url != '') {
