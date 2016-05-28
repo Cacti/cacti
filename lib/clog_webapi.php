@@ -47,7 +47,7 @@ function clog_purge_logfile() {
 		if (is_writable($logfile)) {
 			$timestamp = date('m/d/Y h:i:s A');
 			$log_fh = fopen($logfile, 'w');
-			fwrite($log_fh, $timestamp . " - WEBUI: Cacti Log Cleared from Web Management Interface\n");
+			fwrite($log_fh, __('%s - WEBUI: Cacti Log Cleared from Web Management Interface', $timestamp) . "\n");
 			fclose($log_fh);
 			raise_message('clog_purged');
 		}else{
@@ -113,17 +113,17 @@ function clog_view_logfile() {
 	if ((isset_request_var('purge')) && (clog_admin())) {
 		form_start('clog.php');
 
-		html_start_box('<strong>Purge</strong>', '50%', '', '3', 'center', '');
+		html_start_box(__('Purge'), '50%', '', '3', 'center', '');
 
 		print "<tr>
 			<td class='textArea'>
-				<p>Click 'Continue' to purge the Cacti log file.<br><br><br>Note: If logging is set to Cacti and Syslog, the log information will remain in Syslog.</p>
+				<p>" . __('Click \'Continue\' to purge the Cacti log file.<br><br><br>Note: If logging is set to Cacti and Syslog, the log information will remain in Syslog.') . "</p>
 			</td>
 		</tr>
 		<tr class='saveRow'>
 			<td colspan='2' align='right'>
-				<input id='cancel' type='button' value='Cancel'>&nbsp
-				<input id='pc' type='button' name='purge_continue' value='Continue' title='Purge cacti.log'>
+				<input id='cancel' type='button' value='" . __('Cancel') . "'>&nbsp
+				<input id='pc' type='button' name='purge_continue' value='" . __('Continue') . "' title='" . __('Purge cacti.log') . "'>
 				<script type='text/javascript'>
 				$('#pc').click(function() {
 					strURL = location.pathname+'?purge_continue=1&header=false';
@@ -149,7 +149,7 @@ function clog_view_logfile() {
 		return;	
 	}
 
-	html_start_box('<strong>Log File Filters</strong>', '100%', $colors['header'], '3', 'center', '');
+	html_start_box(__('Log File Filters'), '100%', '', '3', 'center', '');
 	filter();
 	html_end_box();
 
@@ -172,12 +172,12 @@ function clog_view_logfile() {
 	}
 
 	if (get_request_var('message_type') > 0) {
-		$start_string = '<strong>Log File</strong> [Total Lines: ' . sizeof($logcontents) . $ad_filter . ' - Additional Filter in Affect]';
+		$start_string = __('Log File [Total Lines: %d %s - Additional Filter in Affect]', sizeof($logcontents), $sd_filter);
 	}else{
-		$start_string = '<strong>Log File</strong> [Total Lines: ' . sizeof($logcontents) . $ad_filter . ' - No Other Filter in Affect]';
+		$start_string = __('Log File [Total Lines: %d %s - No Other Filter in Affect]', sizeof($logcontents), $ad_filter);
 	}
 
-	html_start_box($start_string, '100%', $colors['header'], '3', 'center', '');
+	html_start_box($start_string, '100%', '', '3', 'center', '');
 
 	$i = 0;
 	$j = 0;
@@ -225,7 +225,7 @@ function clog_view_logfile() {
 							$titles .= "'"  . htmlspecialchars($title) . "'";
 						}
 					}
-					$new_item  .= htmlspecialchars($graph_add) . "' title='View Graphs'>" . $titles . '</a>';
+					$new_item  .= htmlspecialchars($graph_add) . "' title='" . __('View Graphs') . "'>" . $titles . '</a>';
 				}
 
 				$item      = substr($item, $ds_end);
@@ -276,7 +276,7 @@ function clog_view_logfile() {
 			?>
 			<tr class='even'>
 				<td>
-					<?php print '>>>>  LINE LIMIT OF 1000 LINES REACHED!!  <<<<';?>
+					<?php print '>>>>  ' . __('LINE LIMIT OF 1000 LINES REACHED!!') . '  <<<<';?>
 				</td>
 			</tr>
 			<?php
@@ -299,7 +299,7 @@ function filter() {
 			<table class='filterTable'>
 				<tr>
 					<td>
-						Tail Lines
+						<?php print __('Tail Lines');?>
 					</td>
 					<td>
 						<select id='tail_lines' name='tail_lines'>
@@ -311,31 +311,31 @@ function filter() {
 						</select>
 					</td>
 					<td class='nowrap'>
-						Message Type
+						<?php print __('Message Type');?>
 					</td>
 					<td>
 						<select id='message_type' name='message_type'>
-							<option value='-1'<?php if (get_request_var('message_type') == '-1') {?> selected<?php }?>>All</option>
-							<option value='1'<?php if (get_request_var('message_type') == '1') {?> selected<?php }?>>Stats</option>
-							<option value='2'<?php if (get_request_var('message_type') == '2') {?> selected<?php }?>>Warnings</option>
-							<option value='3'<?php if (get_request_var('message_type') == '3') {?> selected<?php }?>>Errors</option>
-							<option value='4'<?php if (get_request_var('message_type') == '4') {?> selected<?php }?>>Debug</option>
-							<option value='5'<?php if (get_request_var('message_type') == '5') {?> selected<?php }?>>SQL Calls</option>
+							<option value='-1'<?php if (get_request_var('message_type') == '-1') {?> selected<?php }?>><?php print __('All');?></option>
+							<option value='1'<?php if (get_request_var('message_type') == '1') {?> selected<?php }?>><?php print __('Stats');?></option>
+							<option value='2'<?php if (get_request_var('message_type') == '2') {?> selected<?php }?>><?php print __('Warnings');?></option>
+							<option value='3'<?php if (get_request_var('message_type') == '3') {?> selected<?php }?>><?php print __('Errors');?></option>
+							<option value='4'<?php if (get_request_var('message_type') == '4') {?> selected<?php }?>><?php print __('Debug');?></option>
+							<option value='5'<?php if (get_request_var('message_type') == '5') {?> selected<?php }?>><?php print __('SQL Calls');?></option>
 						</select>
 					</td>
 					<td>
-						<input type='button' id='go' name='go' value='Go' alt='Go'>
+						<input type='button' id='go' name='go' value='<?php print __('Go');?>'>
 					</td>
 					<td>
-						<input type='button' id='clear' name='clear' value='Clear' alt='Clear'>
+						<input type='button' id='clear' name='clear' value='<?php print __('Clear');?>'>
 					</td>
 					<td>
-						<?php if (clog_admin()) {?><input type='button' id='purge' name='purge' value='Purge' alt='Purge'><?php }?>
+						<?php if (clog_admin()) {?><input type='button' id='purge' name='purge' value='<?php print __('Purge');?>'><?php }?>
 					</td>
 				</tr>
 				<tr>
 					<td>
-						Refresh
+						<?php print __('Refresh');?>
 					</td>
 					<td>
 						<select id='refresh' name='refresh'>
@@ -347,12 +347,12 @@ function filter() {
 						</select>
 					</td>
 					<td class='nowrap'>
-						Display Order
+						<?php print __('Display Order');?>
 					</td>
 					<td>
 						<select id='reverse' name='reverse'>
-							<option value='1'<?php if (get_request_var('reverse') == '1') {?> selected<?php }?>>Newest First</option>
-							<option value='2'<?php if (get_request_var('reverse') == '2') {?> selected<?php }?>>Oldest First</option>
+							<option value='1'<?php if (get_request_var('reverse') == '1') {?> selected<?php }?>><?php print __('Newest First');?></option>
+							<option value='2'<?php if (get_request_var('reverse') == '2') {?> selected<?php }?>><?php print __('Oldest First');?></option>
 						</select>
 					</td>
 				</tr>
@@ -360,7 +360,7 @@ function filter() {
 			<table>
 				<tr>
 					<td>
-						SearchRegex
+						<?php print __('SearchRegex');?>
 					</td>
 					<td>
 						<input id='filter' type='text' name='filter' size='75' value='<?php print get_request_var('filter');?>'>
@@ -428,5 +428,3 @@ function filter() {
 	</tr>
 	<?php
 }
-
-
