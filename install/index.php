@@ -841,11 +841,11 @@ if (isset_request_var('database_hostname')) {
 
 <form method='post' action='index.php'>
 
-<table style='margin-left:auto;margin-right:auto;width:60%;text-align:center;'>
+<table style='margin-left:auto;margin-right:auto;width:80%;text-align:center;'>
 	<tr><td height='40'></td></tr>
 	<tr>
-		<td style='width:100%;vertical-align:middle;'>
-			<table class='cactiTable'>
+		<td style='width:100%;vertical-align:middle'>
+			<table class='cactiTable' style='border:1px solid rgba(98,125,77,1)'>
 				<tr class='cactiTableTitle'>
 					<td class='textHeaderDark'><strong><?php print __('Cacti Installation Wizard'); ?></strong></td>
 				</tr>
@@ -891,6 +891,7 @@ if (isset_request_var('database_hostname')) {
 							array('name' => 'PDO', 'installed' => false),
 							array('name' => 'pdo_mysql', 'installed' => false),
 							array('name' => 'xml', 'installed' => false),
+							array('name' => 'ldap', 'installed' => false),
 							array('name' => 'pcre', 'installed' => false),
 							array('name' => 'json', 'installed' => false),
 							array('name' => 'zlib', 'installed' => false)
@@ -909,10 +910,9 @@ if (isset_request_var('database_hostname')) {
 						}
 						html_end_box(false);
 
-						print '<br>' . __('These extensions may increase the performance of your Cacti install but are not necessary.') . '<br><br>';
+						print '<br>' . __('These following PHP extensions are not required, but should be included for performance of your Cacti install and for support of optional plugins.') . '<br><br>';
 						$extensions = array(
 							array('name' => 'snmp', 'installed' => false),
-							array('name' => 'ldap', 'installed' => false),
 							array('name' => 'gd', 'installed' => false),
 							array('name' => 'openssl', 'installed' => false),
 							array('name' => 'gmp', 'installed' => false)

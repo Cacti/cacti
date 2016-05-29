@@ -69,9 +69,11 @@ function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $p
 			//print $e->getMessage();
 			//exit;
 		}
+
 		$i++;
 		usleep(40000);
 	}
+
 	return FALSE;
 }
 
@@ -250,6 +252,7 @@ function db_fetch_row_prepared($sql, $parms = array(), $log = TRUE, $db_conn = F
 	if (($log) && (read_config_option('log_verbosity') == POLLER_VERBOSITY_DEVDBG)) {
 		cacti_log('DEVEL: SQL Row: "' . $sql . '"', FALSE);
 	}
+
 	$db_conn->affected_rows = 0;
 	$query = $db_conn->prepare($sql);
 	$query->execute($parms);
@@ -257,12 +260,18 @@ function db_fetch_row_prepared($sql, $parms = array(), $log = TRUE, $db_conn = F
 	$en = $errorinfo[1];
 	if ($en == '') {
 		$db_conn->affected_rows = $query->rowCount();
-		$q = $query->fetchAll(PDO::FETCH_ASSOC);
-		$query->closeCursor();
-		unset($query);
-		if (isset($q[0])) {
-			return $q[0];
-		} else {
+
+		if ($query->rowCount()) {
+			$q = $query->fetchAll(PDO::FETCH_ASSOC);
+			$query->closeCursor();
+			unset($query);
+			if (isset($q[0])) {
+				return $q[0];
+			} else {
+				return array();
+			}
+		}else{
+			$query->closeCursor();
 			return array();
 		}
 	}else if (($log) || (read_config_option('log_verbosity') >= POLLER_VERBOSITY_DEBUG)) {
@@ -432,6 +441,39 @@ function db_remove_column ($table, $column, $log = TRUE, $db_conn = FALSE) {
    @returns - (bool) the output of the sql query as a single variable */
 function db_table_exists($table, $log = TRUE, $db_conn = FALSE) {
 	return (db_fetch_cell("SHOW TABLES LIKE '$table'", '', $log, $db_conn) ? true : false);
+}
+
+/* db_cacti_initialized - checks whether cacti has been initialized properly and if not exits with a message
+   @param $is_web - is the session a web session.
+   @returns - (null)  */
+function db_cacti_initialized($is_web = true) {
+	global $database_sessions, $database_default, $config, $database_hostname, $database_port, $config;
+
+	$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
+
+	if (!is_object($db_conn)) return FALSE;
+
+	$query = $db_conn->prepare('SELECT cacti FROM version');
+	$query->execute();
+	$errorinfo = $query->errorInfo();
+	$query->closeCursor();
+
+	if ($errorinfo[1] != 0) {
+		print ($is_web ? '<head><link href="' . $config['url_path'] . 'include/themes/modern/main.css" type="text/css" rel="stylesheet"></head>':'');
+		print ($is_web ? '<table style="height:40px;"><tr><td></td></tr></table>':'');
+		print ($is_web ? '<table style="margin-left:auto;margin-right:auto;width:80%;border:1px solid rgba(98,125,77,1)" class="cactiTable"><tr class="cactiTableTitle"><td style="color:snow;font-weight:bold;">Fatal Error - Cacti Database Not Initialized</td></tr>':'');
+		print ($is_web ? '<tr class="installArea"><td>':'');
+		print ($is_web ? '<p>':'') . 'The Cacti Database has not been initialized.  Please initilize it before continuing.' . ($is_web ? '</p>':"\n");
+		print ($is_web ? '<p>':'') . 'To initilize the Cacti database, issue the following commands either as root or using a valid account.' . ($is_web ? '</p>':"\n");
+		print ($is_web ? '<p style="font-weight:bold;padding-left:25px;">':'') . '  mysqladmin -uroot -p create cacti' . ($is_web ? '</p>':"\n");
+		print ($is_web ? '<p style="font-weight:bold;padding-left:25px;">':'') . '  mysql -uroot -p -e "grant all on cacti.* to \'someuser\'@\'localhost\' identified by \'somepassword\'"' . ($is_web ? '</p>':"\n");
+		print ($is_web ? '<p style="font-weight:bold;padding-left:25px;">':'') . '  mysql -uroot -p < /pathcacti/cacti.sql' . ($is_web ? '</p>':"\n");
+		print ($is_web ? '<p>':'') . 'Where <b>/pathcacti/</b> is the path to your Cacti install location.' . ($is_web ? '</p>':"\n");
+		print ($is_web ? '<p>':'') . 'Change <b>someuser</b> and <b>somepassword</b> to match your site preferences.  The defaults are <b>cactiuser</b> for both user and password.' . ($is_web ? '</p>':"\n");
+		print ($is_web ? '<p>':'') . '<b>NOTE:</b> When installing a remote poller, the <b>config.php</b> file must be writable by the Web Server account, and must include valid connection information to the main Cacti server.  The file should be changed to read only after the install is completed.' . ($is_web ? '</p>':"\n");
+		print ($is_web ? '</td></tr></table>':'');
+		exit;
+	}
 }
 
 /* db_column_exists - checks whether a column exists

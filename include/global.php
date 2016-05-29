@@ -166,20 +166,30 @@ if (isset($cacti_db_session) && $cacti_db_session) {
 	include(dirname(__FILE__) . '/session.php');
 }
 
+if ((isset($no_http_headers) && $no_http_headers == true) || in_array(basename($_SERVER['PHP_SELF']), $no_http_header_files, true)) {
+	$is_web = false;
+}elseif ($_SERVER['PHP_SELF'] != '') {
+	$is_web = true;
+}
+
 /* connect to the database server */
-db_connect_real($database_hostname, $database_username, $database_password, $database_default, $database_type, $database_port, $database_ssl);
+if (!db_connect_real($database_hostname, $database_username, $database_password, $database_default, $database_type, $database_port, $database_ssl)) {
+	print $is_web ? '<p>':'';
+	print 'FATAL: Connection to Cacti database failed. Please insure the database is running and your credentials in config.php are valid.';
+	print $is_web ? '</p>':'';
+	exit;
+}
 
 /* include additional modules */
 include_once($config['library_path'] . '/functions.php');
+
+/* verify the cacti database is initialized before moving past here */
+db_cacti_initialized($is_web);
+
 include_once($config['include_path'] . '/global_constants.php');
 
-if ((isset($no_http_headers) && $no_http_headers == true) || in_array(basename($_SERVER['PHP_SELF']), $no_http_header_files, true)) {
-	$is_web = false;
 
-	// Don't start a session, this is the CLI
-}elseif ($_SERVER['PHP_SELF'] != '') {
-	$is_web = true;
-
+if ($is_web) {
 	/* Sanity Check on "Corrupt" PHP_SELF */
 	if ($_SERVER['SCRIPT_NAME'] != $_SERVER['PHP_SELF']) {
 		echo "\nInvalid PHP_SELF Path \n";
@@ -196,7 +206,7 @@ if ((isset($no_http_headers) && $no_http_headers == true) || in_array(basename($
 	/* prevent IE from silently rejects cookies sent from third party sites. */
 	header('P3P: CP="CAO PSA OUR"');
 
-	/* initilize php session */
+	/* initialize php session */
 	session_name($cacti_session_name);
 	if (!session_id()) session_start();
 
@@ -221,8 +231,6 @@ if ((isset($no_http_headers) && $no_http_headers == true) || in_array(basename($
 			session_destroy();
 		}
 	}
-}else{
-	$is_web = false;
 }
 
 /* emulate 'register_globals' = 'off' if turned on */
