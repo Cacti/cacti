@@ -505,20 +505,25 @@ function loadPage(href) {
 	$.get(href, function(html) {
 		var htmlObject  = $(html);
 		var matches     = html.match(/<title>(.*?)<\/title>/);
-		var htmlTitle   = matches[1];
-		var breadCrumbs = htmlObject.find('#breadcrumbs').html();
-		var content     = htmlObject.find('#main').html();
 
-		$('title').text(htmlTitle);
-		$('#breadcrumbs').html(breadCrumbs);
-		$('div[class^="ui-"]').remove();
-		$('#main').html(content);
+		if (matches !== null) {
+			var htmlTitle   = matches[1];
+			var breadCrumbs = htmlObject.find('#breadcrumbs').html();
+			var content     = htmlObject.find('#main').html();
 
-		if (typeof window.history.pushState !== 'undefined') {
-			window.history.pushState({page: href}, htmlTitle, href);
+			$('title').text(htmlTitle);
+			$('#breadcrumbs').html(breadCrumbs);
+			$('div[class^="ui-"]').remove();
+			$('#main').html(content);
+
+			if (typeof window.history.pushState !== 'undefined') {
+				window.history.pushState({page: href}, htmlTitle, href);
+			}
+
+			myTitle = htmlTitle;
+		}else{
+			$('#main').html(html);
 		}
-
-		myTitle = htmlTitle;
 
 		applySkin();
 
