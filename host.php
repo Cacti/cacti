@@ -1180,6 +1180,8 @@ function host_edit() {
 
 		<?php
 		html_end_box();
+
+		api_plugin_hook('device_edit_pre_bottom');
 	}
 
 	form_save_button('host.php', 'return');
