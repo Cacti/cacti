@@ -37,6 +37,10 @@ switch (get_request_var('action')) {
 		form_save();
 
 		break;
+	case 'ajax_dnd':
+		automation_template_dnd();
+
+		break;
 	case 'actions':
 		form_actions();
 
@@ -66,6 +70,54 @@ switch (get_request_var('action')) {
 		template();
 		bottom_footer();
 		break;
+}
+
+function automation_template_dnd() {
+	/* ================= Input validation ================= */
+	get_filter_request_var('id');
+	/* ================= Input validation ================= */
+
+	if (!isset_request_var('template_ids') || !is_array(get_nfilter_request_var('template_ids'))) exit;
+
+	/* template table contains two row defined as 'nodrag&nodrop' */
+	unset($_REQUEST['template_ids'][0]);
+	unset($_REQUEST['template_ids'][1]);
+
+	/* delivered template ids has to be exactly the same like we have stored */
+	$old_order = array();
+
+	$i = 1;
+	foreach(get_nfilter_request_var('template_ids') as $sequence => $id) {
+		if (empty($id)) continue;
+		$new_order[$i] = str_replace('line', '', $id);
+		$i++;
+	}
+
+	$items = db_fetch_assoc('SELECT id, sequence FROM automation_templates ORDER BY sequence');
+
+	if (sizeof($items)) {
+		foreach($items as $item) {
+			$old_order[$item['sequence']] = $item['id'];
+		}
+	} else {
+		exit;
+	}
+
+	if (sizeof(array_diff($new_order, $old_order))>0) exit;
+
+	/* the set of sequence numbers has to be the same too */
+	if (sizeof(array_diff_key($new_order, $old_order))>0) exit;
+	/* ==================================================== */
+
+	foreach($new_order as $sequence => $id) {
+		input_validate_input_number($sequence);
+		input_validate_input_number($id);
+
+		db_execute_prepared('UPDATE automation_templates SET sequence = ? WHERE id = ?', array($sequence, $id));
+	}
+
+	header('Location: automation_templates.php?header=false');
+	exit;
 }
 
 function automation_movedown() {
@@ -458,8 +510,8 @@ function template() {
 		array('display' => __('Availability Method'), 'align' => 'left'),
 		array('display' => __('System Description Match'), 'align' => 'left'),
 		array('display' => __('System Name Match'), 'align' => 'left'),
-		array('display' => __('System ObjectId Match'), 'align' => 'left'),
-		array('display' => __('Action'), 'align' => 'right'));
+		array('display' => __('System ObjectId Match'), 'align' => 'left')
+	);
 
 	html_header_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'));
 
@@ -477,24 +529,6 @@ function template() {
 			form_selectable_cell(htmlspecialchars($dt['sysDescr']), $dt['id']);
 			form_selectable_cell(htmlspecialchars($dt['sysName']), $dt['id']);
 			form_selectable_cell(htmlspecialchars($dt['sysOid']), $dt['id']);
-
-			if (get_request_var('filter') == '') {
-				if ($i < $total_rows && $total_rows > 1) {
-					$form_data = '<a class="pic fa fa-arrow-down moveArrow" href="' . htmlspecialchars('automation_templates.php?action=movedown&id=' . $dt['id']) . '" title="' . __('Move Down') . '"></a>';
-				}else{
-					$form_data = '<span class="moveArrowNone"></span>';
-				}
-
-				if ($i > 1 && $i <= $total_rows) {
-					$form_data .= '<a class="pic fa fa-arrow-up moveArrow" href="' . htmlspecialchars('automation_templates.php?action=moveup&id=' . $dt['id']) . '" title="' . __('Move Up') . '"></a>';
-				}else{
-					$form_data .= '<span class="moveArrowNone"></span>';
-				}
-			}else{
-				$form_data = '';
-			}
-
-			form_selectable_cell($form_data, $dt['id'], '', 'text-align:right');
 			form_checkbox_cell($name, $dt['id']);
 			form_end_row();
 
@@ -514,10 +548,21 @@ function template() {
 	?>
 	<script type='text/javascript'>
 	$(function() {
+        $('#automation_templates2_child').attr('id', 'template_ids');
+
 		$('img.action').click(function() {
 			strURL = $(this).attr('href');
 			loadPageNoHeader(strURL);
 		});
+
+		$('#template_ids').find('tr:first').addClass('nodrag').addClass('nodrop');
+
+        $('#template_ids').tableDnD({
+            onDrop: function(table, row) {
+                loadPageNoHeader('automation_templates.php?action=ajax_dnd&'+$.tableDnD.serialize());
+            }
+        });
+
 	});
 	</script>
 	<?php
