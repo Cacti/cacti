@@ -7,9 +7,17 @@ $host =~ s/:[0-9]{1,5}/$1/gis;
 
 # old linux version use "icmp_seq"
 # newer use "icmp_req" instead
-open(PROCESS, "ping -c 1 $host | grep 'icmp_[s|r]eq' | grep time |");
+open(PROCESS, "ping -c 1 $host 2>&1 | grep -E '(icmp_[s|r]eq.*time|unknown host)' |");
 $ping = <PROCESS>;
 close(PROCESS);
+
+if ($ping =~ "unknown host") {
+	open(PROCESS, "ping6 -c 1 $host | grep 'icmp_[s|r]eq.*time' |");
+	$ping = <PROCESS>;
+	close(PROCESS);
+}
+
+$ping = join("\n", grep { /icmp_[s|r]eq.*time/ } split(/\n/, $ping) );
 $ping =~ m/(.*time=)(.*) (ms|usec)/;
 
 if ($2 == "") {
