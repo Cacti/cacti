@@ -134,6 +134,8 @@ function form_alternate_row($row_id = '', $light = false, $disabled = false) {
 		print "<tr class='$class selectable' id='$row_id'>\n";
 	}elseif (substr($row_id,0,4) == 'row_') {
 		print "<tr class='$class' id='$row_id'>\n";
+	}elseif (strlen($row_id)) {
+		print "<tr class='$class' id='$row_id'>\n";
 	}else{
 		print "<tr class='$class'>\n";
 	}

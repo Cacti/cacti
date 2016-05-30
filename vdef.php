@@ -453,7 +453,7 @@ function vdef_item_dnd() {
 	get_filter_request_var('id');
 	/* ================= Input validation ================= */
 
-	if (!isset_request_var('vdef_item') || !is_array(get_request_var('vdef_item'))) exit;
+	if (!isset_request_var('vdef_item') || !is_array(get_nfilter_request_var('vdef_item'))) exit;
 
 	/* vdef table contains one row defined as 'nodrag&nodrop' */
 	unset($_REQUEST['vdef_item'][0]);
@@ -461,7 +461,7 @@ function vdef_item_dnd() {
 	/* delivered vdef ids has to be exactly the same like we have stored */
 	$old_order = array();
 
-	foreach(get_request_var('vdef_item') as $sequence => $vdef_id) {
+	foreach(get_nfilter_request_var('vdef_item') as $sequence => $vdef_id) {
 		if (empty($vdef_id)) continue;
 		$new_order[$sequence] = str_replace('line', '', $vdef_id);
 	}
@@ -476,10 +476,10 @@ function vdef_item_dnd() {
 		exit;
 	}
 
-	if(sizeof(array_diff($new_order, $old_order))>0) exit;
+	if (sizeof(array_diff($new_order, $old_order))>0) exit;
 
 	/* the set of sequence numbers has to be the same too */
-	if(sizeof(array_diff_key($new_order, $old_order))>0) exit;
+	if (sizeof(array_diff_key($new_order, $old_order))>0) exit;
 	/* ==================================================== */
 
 	foreach($new_order as $sequence => $vdef_id) {
@@ -541,19 +541,19 @@ function vdef_edit() {
 		if (sizeof($vdef_items)) {
 			foreach ($vdef_items as $vdef_item) {
 				form_alternate_row('line' . $vdef_item['id'], true, true);
-					?>
-					<td>
-						<a class='linkEditMain' href='<?php print htmlspecialchars('vdef.php?action=item_edit&id=' . $vdef_item['id'] . '&vdef_id=' . $vdef['id']);?>'><?php print __('Item #%d', $i);?></a>
-					</td>
-					<td>
-						<em><?php $vdef_item_type = $vdef_item['type']; print $vdef_item_types[$vdef_item_type];?></em>: <strong><?php print get_vdef_item_name($vdef_item['id']);?></strong>
-					</td>
-					<td align='right' style='text-align:right'>
-						<a id='<?php print $vdef['id'] . '_' . $vdef_item['id'];?>' class='delete deleteMarker fa fa-remove' title='<?php print __('Delete VDEF Item');?>'></a>
-					</td>
-			<?php
-			form_end_row();
-			$i++;
+				?>
+				<td>
+					<a class='linkEditMain' href='<?php print htmlspecialchars('vdef.php?action=item_edit&id=' . $vdef_item['id'] . '&vdef_id=' . $vdef['id']);?>'><?php print __('Item #%d', $i);?></a>
+				</td>
+				<td>
+					<em><?php $vdef_item_type = $vdef_item['type']; print $vdef_item_types[$vdef_item_type];?></em>: <strong><?php print get_vdef_item_name($vdef_item['id']);?></strong>
+				</td>
+				<td align='right' style='text-align:right'>
+					<a id='<?php print $vdef['id'] . '_' . $vdef_item['id'];?>' class='delete deleteMarker fa fa-remove' title='<?php print __('Delete VDEF Item');?>'></a>
+				</td>
+				<?php
+				form_end_row();
+				$i++;
 			}
 		}
 

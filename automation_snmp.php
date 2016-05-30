@@ -47,6 +47,10 @@ switch (get_request_var('action')) {
 		form_automation_snmp_actions();
 
 		break;
+	case 'ajax_dnd':
+		automation_snmp_item_dnd();
+
+		break;
 	case 'item_movedown':
 		get_filter_request_var('id');
 
@@ -60,6 +64,10 @@ switch (get_request_var('action')) {
 		automation_snmp_item_moveup();
 
 		header('Location: automation_snmp.php?action=edit&id=' . get_request_var('id'));
+		break;
+	case 'item_remove_confirm':
+		automation_snmp_item_remove_confirm();
+
 		break;
 	case 'item_remove':
 		get_filter_request_var('id');
@@ -257,8 +265,54 @@ function form_automation_snmp_actions() {
 }
 
 /* --------------------------
- mactrack Item Functions
+ SNMP Options Functions
  -------------------------- */
+
+function automation_snmp_item_dnd() {
+   /* ================= Input validation ================= */
+    get_filter_request_var('id');
+    /* ================= Input validation ================= */
+
+    if (!isset_request_var('snmp_item') || !is_array(get_nfilter_request_var('snmp_item'))) exit;
+
+    /* snmp table contains one row defined as 'nodrag&nodrop' */
+    unset($_REQUEST['snmp_item'][0]);
+
+    /* delivered vdef ids has to be exactly the same like we have stored */
+    $old_order = array();
+
+    foreach(get_request_var('snmp_item') as $sequence => $option_id) {
+        if (empty($option_id)) continue;
+        $new_order[$sequence] = str_replace('line', '', $option_id);
+    }
+
+    $snmp_items = db_fetch_assoc_prepared('SELECT id, sequence FROM automation_snmp_items WHERE snmp_id = ?', array(get_request_var('id')));
+
+    if(sizeof($snmp_items)) {
+        foreach($snmp_items as $item) {
+            $old_order[$item['sequence']] = $item['id'];
+        }
+    }else {
+        exit;
+    }
+
+    if (sizeof(array_diff($new_order, $old_order))>0) exit;
+
+    /* the set of sequence numbers has to be the same too */
+    if (sizeof(array_diff_key($new_order, $old_order))>0) exit;
+    /* ==================================================== */
+
+    foreach($new_order as $sequence => $option_id) {
+        input_validate_input_number($sequence);
+        input_validate_input_number($option_id);
+
+        db_execute_prepared('UPDATE automation_snmp_items SET sequence = ? WHERE id = ?', array($sequence, $option_id));
+    }
+
+    header('Location: automation_snmp.php?action=edit&header=false&id=' . get_request_var('id'));
+	exit;
+}
+
 function automation_snmp_item_movedown() {
 	/* ================= input validation ================= */
 	get_filter_request_var('item_id');
@@ -275,6 +329,63 @@ function automation_snmp_item_moveup() {
 	/* ==================================================== */
 
 	move_item_up('automation_snmp_items', get_request_var('item_id'), 'snmp_id=' . get_request_var('id'));
+}
+
+function automation_snmp_item_remove_confirm() {
+    global $vdef_functions, $vdef_item_types, $custom_vdef_data_source_types;
+
+    /* ================= input validation ================= */
+    get_filter_request_var('id');
+    get_filter_request_var('item_id');
+    /* ==================================================== */
+
+    form_start('automation_snmp.php');
+
+    html_start_box('', '100%', '', '3', 'center', '');
+
+    $snmp = db_fetch_row('SELECT * FROM automation_snmp WHERE id=' . get_request_var('id'));
+    $item = db_fetch_row('SELECT * FROM automation_snmp_items WHERE id=' . get_request_var('item_id'));
+
+    ?>
+    <tr>
+        <td class='topBoxAlt'>
+            <p><?php print __('Click \'Continue\' to delete the following SNMP Option Item.'); ?></p>
+            <p><?php print __('SNMP Option:');?> <?php print htmlspecialchars($snmp['name']);?><br>
+            <?php print __('SNMP Version: <b>%s</b>', $item['snmp_version']);?><br>
+			<?php print __('SNMP Community/Username: <b>%s</b>', ($item['snmp_version'] != 3 ? $item['snmp_readstring']:$item['snmp_username']));?></p>
+        </td>
+    </tr>
+    <tr>
+        <td align='right'>
+            <input id='cancel' type='button' value='<?php print __('Cancel');?>' onClick='$("#cdialog").dialog("close");' name='cancel'>
+            <input id='continue' type='button' value='<?php print __('Continue');?>' name='continue' title='<?php print __('Remove SNMP Item');?>'>
+        </td>
+    </tr>
+    <?php
+
+    html_end_box();
+
+    form_end();
+
+    ?>
+    <script type='text/javascript'>
+    $(function() {
+        $('#cdialog').dialog();
+    });
+
+    $('#continue').click(function(data) {
+        $.post('automation_snmp.php?action=item_remove', {
+            __csrf_magic: csrfMagicToken,
+            item_id: <?php print get_request_var('item_id');?>,
+            id: <?php print get_request_var('id');?>
+        }, function(data) {
+            $('#cdialog').dialog('close');
+            loadPageNoHeader('automation_snmp.php?action=edit&header=false&id=<?php print get_request_var('id');?>');
+        });
+    });
+    </script>
+    <?php
+
 }
 
 function automation_snmp_item_remove() {
@@ -561,8 +672,6 @@ function automation_snmp_edit() {
 
 		html_start_box(__('Automation SNMP Options'), '100%', '', '3', 'center', 'automation_snmp.php?action=item_edit&id=' . get_request_var('id'));
 
-		print "<tr class='tableHeader'>";
-
 		$display_text = array(
 			array('display' => __('Item'), 'align' => 'left'),
 			array('display' => __('Version'), 'align' => 'left'),
@@ -580,16 +689,14 @@ function automation_snmp_edit() {
 			array('display' => __('Action'), 'align' => 'right')
 		);
 
-		html_header($display_text, 2);
-
-		print '</tr>';
+		html_header($display_text);
 
 		$i = 1;
 		if (sizeof($items)) {
 			$total_items = sizeof($items);
 
 			foreach ($items as $item) {
-				form_alternate_row();
+				form_alternate_row('line' . $item['id'], true, true);
 				$form_data = "<td><a class='linkEditMain' href='" . htmlspecialchars('automation_snmp.php?action=item_edit&item_id=' . $item['id'] . '&id=' . $item['snmp_id']) . "'>Item#" . $i . '</a></td>';
 				#$form_data .= '<td>' . 	$item['sequence'] . '</td>';
 				$form_data .= '<td>' . 	$item['snmp_version'] . '</td>';
@@ -604,23 +711,8 @@ function automation_snmp_edit() {
 				$form_data .= '<td>' . 	($item['snmp_version'] == 3 ? $item['snmp_priv_passphrase'] : __('N/A')) . '</td>';
 				$form_data .= '<td>' . 	($item['snmp_version'] == 3 ? $item['snmp_priv_protocol'] : __('N/A')) . '</td>';
 				$form_data .= '<td>' . 	($item['snmp_version'] == 3 ? $item['snmp_context'] : __('N/A')) . '</td>';
-
 				$form_data .= '<td class="nowrap right">';
-				if ($i < $total_items && $total_items > 1) {
-					$form_data .= '<a class="pic fa fa-arrow-down moveArrow" href="' . htmlspecialchars('automation_snmp.php?action=item_movedown&item_id=' . $item['id'] . '&id=' . $item['snmp_id']) . '" title="' . __('Move Down') . '"></a>';
-				}else{
-					$form_data .= '<span class="moveArrowNone"></span>';
-				}
-
-				if ($i > 1 && $i <= $total_items) {
-					$form_data .= '<a class="pic fa fa-arrow-up moveArrow" href="' . htmlspecialchars('automation_snmp.php?action=item_moveup&item_id=' . $item['id'] .	'&id=' . $item['snmp_id']) . '" title="' . __('Move Up') . '"></a>';
-				}else{
-					$form_data .= '<span class="moveArrowNone"></span>';
-				}
-				$form_data .= '</td>';
-
-				$form_data .= '<td class="nowrap right">';
-				$form_data .= '<a class="pic deleteMarker fa fa-remove" href="' . htmlspecialchars('automation_snmp.php?action=item_remove&item_id=' . $item['id'] .	'&id=' . $item['snmp_id']) . '" title="' . __('Delete') . '"></a>';
+				$form_data .= '<a class="delete deleteMarker fa fa-remove" id="' . $item['id'] . '_' . $item['snmp_id'] . '" title="' . __('Delete') . '"></a>';
 				$form_data .= '</td></tr>';
 
 				print $form_data;
@@ -639,10 +731,31 @@ function automation_snmp_edit() {
     ?>
     <script type='text/javascript'>
     $(function() {
+		$('.cdialog').remove();
+		$('body').append("<div class='cdialog' id='cdialog'></div>");
+		$('#automation_snmp_edit2_child').attr('id', 'snmp_item');
         $('img.action').click(function() {
             strURL = $(this).attr('href');
 			loadPageNoHeader(strURL);
         });
+
+        $('#snmp_item').tableDnD({
+            onDrop: function(table, row) {
+                loadPageNoHeader('automation_snmp.php?action=ajax_dnd&id=<?php isset_request_var('id') ? print get_request_var('id') : print 0;?>&'+$.tableDnD.serialize());
+            }
+        });
+
+		$('.delete').click(function (event) {
+			event.preventDefault();
+
+			id = $(this).attr('id').split('_');
+			request = 'automation_snmp.php?action=item_remove_confirm&item_id='+id[0]+'&id='+id[1];
+			$.get(request, function(data) {
+				$('#cdialog').html(data);
+				applySkin();
+				$('#cdialog').dialog({ title: '<?php print __('Delete SNMP Option Item');?>', minHeight: 80, minWidth: 500 });
+			});
+		}).css('cursor', 'pointer');
     });
     </script>
     <?php

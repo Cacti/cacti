@@ -509,7 +509,7 @@ function cdef_item_dnd() {
 	get_filter_request_var('id');
 	/* ================= Input validation ================= */
 
-	if (!isset_request_var('cdef_item') || !is_array(get_request_var('cdef_item'))) exit;
+	if (!isset_request_var('cdef_item') || !is_array(get_nfilter_request_var('cdef_item'))) exit;
 
 	/* cdef table contains one row defined as 'nodrag&nodrop' */
 	unset($_REQUEST['cdef_item'][0]);
@@ -517,7 +517,7 @@ function cdef_item_dnd() {
 	/* delivered cdef ids has to be exactly the same like we have stored */
 	$old_order = array();
 
-	foreach(get_request_var('cdef_item') as $sequence => $cdef_id) {
+	foreach(get_nfilter_request_var('cdef_item') as $sequence => $cdef_id) {
 		if (empty($cdef_id)) continue;
 		$new_order[$sequence] = str_replace('line', '', $cdef_id);
 	}
