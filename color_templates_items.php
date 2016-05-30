@@ -32,6 +32,14 @@ switch (get_request_var('action')) {
 		aggregate_color_item_form_save();
 
 		break;
+	case 'ajax_dnd':
+		color_templates_item_dnd();
+
+		break;
+	case 'item_remove_confirm':
+		aggregate_color_item_remove_confirm();
+
+		break;
 	case 'item_remove':
 		get_filter_request_var('color_template_id');
 
@@ -119,6 +127,51 @@ function aggregate_color_item_form_save() {
     item - Graph Items
    ----------------------- */
 
+function color_templates_item_dnd() {
+   /* ================= Input validation ================= */
+    get_filter_request_var('id');
+    /* ================= Input validation ================= */
+
+    if (!isset_request_var('color_item') || !is_array(get_nfilter_request_var('color_item'))) exit;
+
+    /* snmp table contains one row defined as 'nodrag&nodrop' */
+    unset($_REQUEST['color_item'][0]);
+
+    /* delivered vdef ids has to be exactly the same like we have stored */
+    $old_order = array();
+
+    foreach(get_nfilter_request_var('color_item') as $sequence => $option_id) {
+        if (empty($option_id)) continue;
+        $new_order[$sequence] = str_replace('line', '', $option_id);
+    }
+
+    $color_items = db_fetch_assoc_prepared('SELECT color_template_item_id, sequence FROM color_template_items WHERE color_template_id = ?', array(get_request_var('id')));
+
+    if (sizeof($color_items)) {
+        foreach($color_items as $item) {
+            $old_order[$item['sequence']] = $item['color_template_item_id'];
+        }
+    }else {
+        exit;
+    }
+
+    if (sizeof(array_diff($new_order, $old_order))>0) exit;
+
+    /* the set of sequence numbers has to be the same too */
+    if (sizeof(array_diff_key($new_order, $old_order))>0) exit;
+    /* ==================================================== */
+
+    foreach($new_order as $sequence => $color_template_item_id) {
+        input_validate_input_number($sequence);
+        input_validate_input_number($color_template_item_id);
+
+        db_execute_prepared('UPDATE color_template_items SET sequence = ? WHERE color_template_item_id = ?', array($sequence, $color_template_item_id));
+    }
+
+    header('Location: color_templates.php?action=template_edit&header=false&color_template_id=' . get_request_var('id'));
+	exit;
+}
+
 /**
  * aggregate_color_item_movedown		move item down
  */
@@ -186,6 +239,61 @@ function aggregate_color_item_moveup() {
 		WHERE color_template_id=' . get_request_var('color_template_id') . '
 		AND color_template_item_id=' . $previous_sequence['color_template_item_id']);
 }
+
+function aggregate_color_item_remove_confirm() {
+	/* ================= input validation ================= */
+	get_filter_request_var('id');
+	get_filter_request_var('color_id');
+	/* ==================================================== */
+
+	form_start('color_templates.php');
+
+	html_start_box('', '100%', '', '3', 'center', '');
+
+	$template   = db_fetch_row('SELECT * FROM color_templates WHERE color_template_id=' . get_request_var('id'));
+	$color_item = db_fetch_row('SELECT * FROM color_template_items WHERE color_template_item_id=' . get_request_var('color_id'));
+	$color_hex  = db_fetch_cell_prepared('SELECT hex FROM colors WHERE id = ?', array($color_item['color_id']));
+
+	?>
+	<tr>
+		<td class='topBoxAlt'>
+			<p><?php print __('Click \'Continue\' to delete the following Color Template Color.'); ?></p>
+			<p><?php print __('Color Name:');?> '<?php print $template['name'];?>'<br>
+			<?php print __('Color Hex:');?><strong><?php print $color_hex;?></p>
+		</td>
+	</tr>
+	<tr>
+		<td align='right'>
+			<input id='cancel' type='button' value='<?php print __('Cancel');?>' onClick='$("#cdialog").dialog("close");' name='cancel'>
+			<input id='continue' type='button' value='<?php print __('Continue');?>' name='continue' title='<?php print __('Remove Color Item');?>'>
+		</td>
+	</tr>
+	<?php
+
+	html_end_box();
+
+	form_end();
+
+	?>
+	<script type='text/javascript'>
+	$(function() {
+		$('#cdialog').dialog();
+	});
+
+	$('#continue').click(function(data) {
+		$.post('color_template_items.php?action=item_remove', { 
+			__csrf_magic: csrfMagicToken, 
+			color_id: <?php print get_request_var('color_id');?>, 
+			id: <?php print get_request_var('id');?> 
+		}, function(data) {
+			$('#cdialog').dialog('close');
+			loadPageNoHeader('color_templates.php?action=edit&header=false&id=<?php print get_request_var('id');?>');
+		});
+	});
+	</script>
+	<?php
+}
+
 
 /**
  * aggregate_color_item_remove		remove item

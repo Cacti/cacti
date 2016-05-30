@@ -80,7 +80,7 @@ function draw_color_template_items_list($item_list, $filename, $url_data, $disab
 	if (sizeof($item_list)) {
 		foreach ($item_list as $item) {
 			/* alternating row color */
-			form_alternate_row();
+			form_alternate_row('line' . $item['color_template_item_id'], true, true);
 
 			print '<td>';
 
@@ -101,23 +101,7 @@ function draw_color_template_items_list($item_list, $filename, $url_data, $disab
 			print "<td style='font-weight:bold;'>" . $item['hex'] . "</td>\n";
 
 			if ($disable_controls == false) {
-				print "<td class='right' style='padding-right:10px;'>";
-				if ($i != sizeof($item_list)-1) {
-					print "<a class='pic fa fa-arrow-down moveArrow' href='" . htmlspecialchars($filename . "?action=item_movedown&color_template_item_id=" . $item['color_template_item_id'] . "&$url_data") . "' title='" . __('Move Down') . "'></a>\n";
-				}else{
-					print "<span class='moveArrowNone'></span>\n";
-				}
-
-				if ($i > 0) {
-					print "<a class='pic fa fa-arrow-up moveArrow' href='" . htmlspecialchars($filename . "?action=item_moveup&color_template_item_id=" . $item['color_template_item_id'] . "&$url_data") . "' title='" . __('Move Up') . "'></a>\n";
-				}else{
-					print "<span class='moveArrowNone'></span>\n";
-				}
-				print "</td>\n";
-			}
-
-			if ($disable_controls == false) {
-				print "<td class='right' style='width:2%;'><a class='pic deleteMarker fa fa-remove' href='" . htmlspecialchars($filename . "?action=item_remove&color_template_item_id=" . $item['color_template_item_id'] . "&$url_data") . "' title='" . __('Delete') . "'></a></td>\n";
+				print "<td class='right' style='width:2%;'><a class='delete deleteMarker fa fa-remove' id='" .  $item['color_template_id'] . '_' . $item['color_template_item_id'] . "' title='" . __('Delete') . "'></a></td>\n";
 			}
 
 			form_end_row();
@@ -274,7 +258,7 @@ function aggregate_color_item() {
 		$header_label = __('Color Template Items [new]');
 	}else{
 		$template_item_list = db_fetch_assoc('SELECT
-			cti.color_template_item_id, cti.sequence, colors.hex
+			cti.color_template_id, cti.color_template_item_id, cti.sequence, colors.hex
 			FROM color_template_items AS cti
 			LEFT JOIN colors 
 			ON cti.color_id=colors.id
@@ -289,6 +273,37 @@ function aggregate_color_item() {
 	draw_color_template_items_list($template_item_list, 'color_templates_items.php', 'color_template_id=' . htmlspecialchars(get_request_var('color_template_id')), false);
 
 	html_end_box();
+
+    ?>
+    <script type='text/javascript'>
+
+    $(function() {
+        $('#color_templates_template_edit2_child').attr('id', 'color_item');
+        $('.cdialog').remove();
+        $('body').append("<div class='cdialog' id='cdialog'></div>");
+
+        $('#color_item').tableDnD({
+            onDrop: function(table, row) {
+                loadPageNoHeader('color_templates_items.php?action=ajax_dnd&id=<?php isset_request_var('color_template_id') ? print get_request_var('color_template_id') : print 0;?>&'+$.tableDnD.serialize());
+            }
+        });
+
+        $('.delete').click(function (event) {
+            event.preventDefault();
+
+            id = $(this).attr('id').split('_');
+            request = 'color_templates_items.php?action=item_remove_confirm&id='+id[0]+'&color_id='+id[1];
+            $.get(request, function(data) {
+                $('#cdialog').html(data);
+                applySkin();
+                $('#cdialog').dialog({ title: '<?php print __('Delete Color Item');?>', minHeight: 80, minWidth: 500 });
+            });
+        }).css('cursor', 'pointer');
+    });
+
+    </script>
+    <?php
+
 }
 
 /* ----------------------------
