@@ -415,7 +415,7 @@ function host_new_graphs($host_id, $host_template_id, $selected_graphs_array) {
    ------------------- */
 
 function graphs() {
-	global $item_rows;
+	global $config, $item_rows;
 
 	/* ================= input validation and session storage ================= */
 	$filters = array(
@@ -950,7 +950,7 @@ function graphs() {
 					print "<table align='center' width='100%'>
 						<tr>
 							<td width='100%' valign='middle'>
-								<img src='images/arrow.gif' alt=''>
+								<img src='" . $config['url_path'] . "images/arrow.gif' alt=''>
 							</td>
 							<td class='nowrap right' style='font-style:italic;'>
 							" . __('Select a Graph Type to Create') . "
