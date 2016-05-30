@@ -32,6 +32,8 @@ $host_actions = array(
 /* set default action */
 set_default_action();
 
+api_plugin_hook('device_template_top');
+
 switch (get_request_var('action')) {
 	case 'save':
 		form_save();
@@ -552,7 +554,10 @@ function template_edit() {
 		</tr>
 
 		<?php
+
 		html_end_box();
+
+		api_plugin_hook('device_template_edit');
 	}
 
 	form_save_button('host_templates.php', 'return');
@@ -561,6 +566,7 @@ function template_edit() {
 	<script type='text/javascript'>
 
 	$(function() {
+		$('#cdialog').remove();
 		$('body').append("<div id='cdialog'></div>");
 
 		$('.delete').click(function (event) {
@@ -586,6 +592,7 @@ function template_edit() {
 				reindex_method: $('#reindex_method').val(), 
 				__csrf_magic: csrfMagicToken 
 			}).done(function(data) {
+				$('div[class^="ui-"]').remove();
 				$('#main').html(data);
 				applySkin();
 			});
@@ -597,6 +604,7 @@ function template_edit() {
 				graph_template_id: $('#graph_template_id').val(), 
 				__csrf_magic: csrfMagicToken 
 			}).done(function(data) {
+				$('div[class^="ui-"]').remove();
 				$('#main').html(data);
 				applySkin();
 			});
