@@ -515,6 +515,12 @@ function validate_store_request_vars($filters, $sess_prefix = '') {
 			}else{
 				if (get_nfilter_request_var($variable) == '0') {
 					$value = '0';
+				}elseif (get_nfilter_request_var($variable) == 'undefined') {
+					if (isset($options['default'])) {
+						$value = $options['default'];
+					}else{
+						$value = '';
+					}
 				}elseif (isempty_request_var($variable)) {
 					$value = '';
 				}elseif (!isset($options['options'])) {
