@@ -188,9 +188,9 @@ function form_confim_buttons($post_variable, $item_array, $save_message, $return
 			<input type='hidden' name='action' value='actions'>
 			<input type='hidden' name='selected_items' value='" . (isset($item_array) ? serialize($item_array) : '') . "'>
 			<input type='hidden' name='drp_action' value='" . $post_variable . "'>" . ($return ? "
-			<input type='button' value='Return' onClick='cactiReturnTo()'>
+			<input type='button' value='" . __('Return') . "' onClick='cactiReturnTo()'>
 			":"
-			<input type='button' value='Cancel' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='Continue' title='$message'>") . "
+			<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') ."' title='$save_message'>") . "
 		</td>
 	</tr>\n";
 }
@@ -570,23 +570,23 @@ function get_colored_device_status($disabled, $status) {
 	);
 
 	if ($disabled) {
-		return "<span class='deviceDisabled'>Disabled</span>";
+		return "<span class='deviceDisabled'>" . __('Disabled') . "</span>";
 	}else{
 		switch ($status) {
 			case HOST_DOWN:
-				return "<span class='deviceDown'>Down</span>"; 
+				return "<span class='deviceDown'>" . __('Down') . "</span>"; 
 				break;
 			case HOST_RECOVERING:
-				return "<span class='deviceRecovering'>Recovering</span>";
+				return "<span class='deviceRecovering'>" . __('Recovering') . "</span>";
 				break;
 			case HOST_UP:
-				return "<span class='deviceUp'>Up</span>";
+				return "<span class='deviceUp'>" . __('Up') . "</span>";
 				break;
 			case HOST_ERROR:
-				return "<span class='deviceError'>Error</span>";
+				return "<span class='deviceError'>" . __('Error') . "</span>";
 				break;
 			default:
-				return "<span class='deviceUnknown'>Unknown</span>";
+				return "<span class='deviceUnknown'>" . __('Unknown') . "</span>";
 				break;
 		}
 	}

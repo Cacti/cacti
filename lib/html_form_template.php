@@ -136,23 +136,23 @@ function draw_nontemplated_fields_graph_item($graph_template_id, $local_graph_id
 	if (sizeof($input_item_list) > 0) {
 		foreach ($input_item_list as $item) {
 			if (!empty($local_graph_id)) {
-				$current_def_value = db_fetch_row("select
+				$current_def_value = db_fetch_row("SELECT
 					graph_templates_item." . $item["column_name"] . ",
 					graph_templates_item.id
-					from (graph_templates_item,graph_template_input_defs)
-					where graph_template_input_defs.graph_template_item_id=graph_templates_item.local_graph_template_item_id
-					and graph_template_input_defs.graph_template_input_id=" . $item["id"] . "
-					and graph_templates_item.local_graph_id=$local_graph_id
-					limit 0,1");
+					FROM (graph_templates_item,graph_template_input_defs)
+					WHERE graph_template_input_defs.graph_template_item_id=graph_templates_item.local_graph_template_item_id
+					AND graph_template_input_defs.graph_template_input_id=" . $item["id"] . "
+					AND graph_templates_item.local_graph_id=$local_graph_id
+					LIMIT 0,1");
 			}else{
-				$current_def_value = db_fetch_row("select
+				$current_def_value = db_fetch_row("SELECT
 					graph_templates_item." . $item["column_name"] . ",
 					graph_templates_item.id
-					from (graph_templates_item,graph_template_input_defs)
-					where graph_template_input_defs.graph_template_item_id=graph_templates_item.id
-					and graph_template_input_defs.graph_template_input_id=" . $item["id"] . "
-					and graph_templates_item.graph_template_id=" . $graph_template_id . "
-					limit 0,1");
+					FROM (graph_templates_item,graph_template_input_defs)
+					WHERE graph_template_input_defs.graph_template_item_id=graph_templates_item.id
+					AND graph_template_input_defs.graph_template_input_id=" . $item["id"] . "
+					AND graph_templates_item.graph_template_id=" . $graph_template_id . "
+					LIMIT 0,1");
 			}
 
 			/* find our field name */
@@ -197,18 +197,18 @@ function draw_nontemplated_fields_graph_item($graph_template_id, $local_graph_id
 
 	/* setup form options */
 	if ($alternate_colors == true) {
-		$form_config_array = array("no_form_tag" => true);
+		$form_config_array = array('no_form_tag' => true);
 	}else{
-		$form_config_array = array("no_form_tag" => true, "force_row_color" => true);
+		$form_config_array = array('no_form_tag' => true, 'force_row_color' => true);
 	}
 
 	if (sizeof($input_item_list > 0)) {
 		draw_edit_form(
 			array(
-				"config" => $form_config_array,
-				"fields" => $form_array
-				)
-			);
+				'config' => $form_config_array,
+				'fields' => $form_array
+			)
+		);
 	}
 
 	return (isset($form_array) ? sizeof($form_array) : 0);
@@ -228,7 +228,7 @@ function draw_nontemplated_fields_graph_item($graph_template_id, $local_graph_id
      html input elements or omitted altogether?
    @arg $snmp_query_graph_id - if this data template is part of a data query, specify the graph id here. this
      will be used to determine if a given field is using suggested values */
-function draw_nontemplated_fields_data_source($data_template_id, $local_data_id, &$values_array, $field_name_format = "|field|", $header_title = "", $alternate_colors = true, $include_hidden_fields = true, $snmp_query_graph_id = 0) {
+function draw_nontemplated_fields_data_source($data_template_id, $local_data_id, &$values_array, $field_name_format = '|field|', $header_title = '', $alternate_colors = true, $include_hidden_fields = true, $snmp_query_graph_id = 0) {
 	global $struct_data_source;
 
 	$form_array = array();
@@ -287,10 +287,10 @@ function draw_nontemplated_fields_data_source($data_template_id, $local_data_id,
 
 	draw_edit_form(
 		array(
-			"config" => $form_config_array,
-			"fields" => $form_array
-			)
-		);
+			'config' => $form_config_array,
+			'fields' => $form_array
+		)
+	);
 
 	return (isset($form_array) ? sizeof($form_array) : 0);
 }
@@ -311,7 +311,7 @@ function draw_nontemplated_fields_data_source($data_template_id, $local_data_id,
      html input elements or omitted altogether?
    @arg $snmp_query_graph_id - if this graph template is part of a data query, specify the graph id here. this
      will be used to determine if a given field is using suggested values */
-function draw_nontemplated_fields_data_source_item($data_template_id, &$values_array, $field_name_format = "|field_id|", $header_title = "", $draw_title_for_each_item = true, $alternate_colors = true, $include_hidden_fields = true, $snmp_query_graph_id = 0) {
+function draw_nontemplated_fields_data_source_item($data_template_id, &$values_array, $field_name_format = '|field_id|', $header_title = '', $draw_title_for_each_item = true, $alternate_colors = true, $include_hidden_fields = true, $snmp_query_graph_id = 0) {
 	global $struct_data_source_item;
 
 	$draw_any_items = false;
@@ -319,9 +319,9 @@ function draw_nontemplated_fields_data_source_item($data_template_id, &$values_a
 
 	/* setup form options */
 	if ($alternate_colors == true) {
-		$form_config_array = array("no_form_tag" => true);
+		$form_config_array = array('no_form_tag' => true);
 	}else{
-		$form_config_array = array("no_form_tag" => true, "force_row_color" => true);
+		$form_config_array = array('no_form_tag' => true, 'force_row_color' => true);
 	}
 
 	if (sizeof($values_array) > 0) {
@@ -335,7 +335,7 @@ function draw_nontemplated_fields_data_source_item($data_template_id, &$values_a
 				$draw_any_items = false;
 			}
 
-			if (empty($rrd["local_data_id"])) { /* this is a template */
+			if (empty($rrd['local_data_id'])) { /* this is a template */
 				$data_template_rrd = $rrd;
 			}else{ /* this is not a template */
 				$data_template_rrd = db_fetch_row("SELECT * FROM data_template_rrd WHERE id=" . $rrd["local_data_template_rrd_id"]);
@@ -391,10 +391,10 @@ function draw_nontemplated_fields_data_source_item($data_template_id, &$values_a
 
 			draw_edit_form(
 				array(
-					"config" => $form_config_array,
-					"fields" => $form_array
-					)
-				);
+					'config' => $form_config_array,
+					'fields' => $form_array
+				)
+			);
 
 			$num_fields_drawn += sizeof($form_array);
 		}
@@ -515,14 +515,14 @@ function draw_custom_data_row($field_name, $data_input_field_id, $data_template_
 			form_dropdown($field_name, $index_type, "field_name", "field_name", $current_value, "", "", "");
 		}
 	}elseif (($field["type_code"] == "output_type") && (db_fetch_cell("SELECT local_data_id FROM data_template_data WHERE id=$data_template_data_id") > 0)) {
-		$output_type = db_fetch_assoc("select
+		$output_type = db_fetch_assoc("SELECT
 			snmp_query_graph.id,
 			snmp_query_graph.name
-			from (data_template_data,data_local,snmp_query_graph)
-			where data_template_data.local_data_id=data_local.id
-			and data_local.snmp_query_id=snmp_query_graph.snmp_query_id
-			and data_template_data.id=$data_template_data_id
-			group by snmp_query_graph.id");
+			FROM (data_template_data,data_local,snmp_query_graph)
+			WHERE data_template_data.local_data_id=data_local.id
+			AND data_local.snmp_query_id=snmp_query_graph.snmp_query_id
+			AND data_template_data.id=$data_template_data_id
+			GROUP BY snmp_query_graph.id");
 
 		if (sizeof($output_type) == 0) {
 			print "<em>Data query data sources must be created through <a href='" . htmlspecialchars("graphs_new.php") . "'>New Graphs</a>.</em>\n";

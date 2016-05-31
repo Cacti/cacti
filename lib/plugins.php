@@ -443,6 +443,6 @@ function plugin_config_arrays () {
 }
 
 function plugin_draw_navigation_text ($nav) {
-	$nav['plugins.php:'] = array('title' => 'Plugin Management', 'mapping' => 'index.php:', 'url' => 'plugins.php', 'level' => '1');
+	$nav['plugins.php:'] = array('title' => __('Plugin Management'), 'mapping' => 'index.php:', 'url' => 'plugins.php', 'level' => '1');
 	return $nav;
 }

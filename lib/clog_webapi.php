@@ -47,7 +47,7 @@ function clog_purge_logfile() {
 		if (is_writable($logfile)) {
 			$timestamp = date('m/d/Y h:i:s A');
 			$log_fh = fopen($logfile, 'w');
-			fwrite($log_fh, __('%s - WEBUI: Cacti Log Cleared from Web Management Interface', $timestamp) . "\n");
+			fwrite($log_fh, "$timestamp - WEBUI: Cacti Log Cleared from Web Management Interface\n");
 			fclose($log_fh);
 			raise_message('clog_purged');
 		}else{

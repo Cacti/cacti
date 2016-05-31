@@ -139,11 +139,11 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 				<tr>
 					<?php print html_host_filter(get_request_var('host_id'), 'applyGraphFilter()', $devices_where);?>
 					<td>
-						Template
+						<?php print __('Template');?>
 					</td>
 					<td>
 						<select id='graph_template_id' onChange='applyGraphFilter()'>
-							<option value='0'<?php if (get_request_var('graph_template_id') == '0') {?> selected<?php }?>>Any</option>
+							<option value='0'<?php if (get_request_var('graph_template_id') == '0') {?> selected<?php }?>><?php print __('Any');?></option>
 							<?php
 
 							$graph_templates = get_allowed_graph_templates($templates_where);
@@ -157,14 +157,14 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 						</select>
 					</td>
 					<td>
-						<input type='button' id='refresh' value='Go' title='Set/Refresh Filters' onClick='applyGraphFilter()'>
+						<input type='button' id='refresh' value='<?php print __('Go');?>' title='<?php print __('Set/Refresh Filters');?>' onClick='applyGraphFilter()'>
 					</td>
 					<td>
-						<input type='button' id='clear' value='Clear' title='Clear Filters' onClick='clearGraphFilter()'>
+						<input type='button' id='clear' value='<?php print __('Clear');?>' title='<?php print __('Clear Filters');?>' onClick='clearGraphFilter()'>
 					</td>
 					<?php if (is_view_allowed('graph_settings')) {?>
 					<td>
-						<input type='button' id='save' value='Save' title='Save the current Graphs, Columns, Thumbnail, Preset, and Timeshift preferences to your profile' onClick='saveGraphFilter("preview")'>
+						<input type='button' id='save' value='<?php print __('Save');?>' title='<?php print __('Save the current Graphs, Columns, Thumbnail, Preset, and Timeshift preferences to your profile');?>' onClick='saveGraphFilter("preview")'>
 					</td>
 					<td id='text'></td>
 					<?php }?>
@@ -173,13 +173,13 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 			<table class='filterTable'>
 				<tr>
 					<td>
-						Search
+						<?php print __('Search');?>
 					</td>
 					<td>
 						<input type='text' id='filter' size='25' value='<?php print htmlspecialchars(get_request_var('filter'));?>' onChange='applyGraphFilter()'>
 					</td>
 					<td>
-						Graphs
+						<?php print __('Graphs');?>
 					</td>
 					<td>
 						<select id='graphs' onChange='applyGraphFilter()'>
@@ -193,20 +193,20 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 						</select>
 					</td>
 					<td>
-						Columns
+						<?php print __('Columns');?>
 					</td>
 					<td>
 						<select id='columns' onChange='applyGraphFilter()'>
-							<option value='1'<?php if (get_request_var('columns') == '1') {?> selected<?php }?>>1 Column</option>
-							<option value='2'<?php if (get_request_var('columns') == '2') {?> selected<?php }?>>2 Columns</option>
-							<option value='3'<?php if (get_request_var('columns') == '3') {?> selected<?php }?>>3 Columns</option>
-							<option value='4'<?php if (get_request_var('columns') == '4') {?> selected<?php }?>>4 Columns</option>
-							<option value='5'<?php if (get_request_var('columns') == '5') {?> selected<?php }?>>5 Columns</option>
-							<option value='6'<?php if (get_request_var('columns') == '6') {?> selected<?php }?>>6 Columns</option>
+							<option value='1'<?php if (get_request_var('columns') == '1') {?> selected<?php }?>><?php print __('%d Column', 1);?></option>
+							<option value='2'<?php if (get_request_var('columns') == '2') {?> selected<?php }?>><?php print __('%d Columns', 2);?></option>
+							<option value='3'<?php if (get_request_var('columns') == '3') {?> selected<?php }?>><?php print __('%d Columns', 3);?></option>
+							<option value='4'<?php if (get_request_var('columns') == '4') {?> selected<?php }?>><?php print __('%d Columns', 4);?></option>
+							<option value='5'<?php if (get_request_var('columns') == '5') {?> selected<?php }?>><?php print __('%d Columns', 5);?></option>
+							<option value='6'<?php if (get_request_var('columns') == '6') {?> selected<?php }?>><?php print __('%d Columns', 6);?></option>
 						</select>
 					</td>
 					<td>
-						<label for='thumbnails'>Thumbnails</label>
+						<label for='thumbnails'><?php print __('Thumbnails');?></label>
 					</td>
 					<td>
 						<input id='thumbnails' type='checkbox' onClick='applyGraphFilter()' <?php print ((get_request_var('thumbnails') == 'true') ? 'checked':'');?>>
@@ -222,13 +222,13 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 			<table class='filterTable'>
 				<tr id='timespan'>
 					<td>
-						Presets
+						<?php print __('Presets');?>
 					</td>
 					<td>
 						<select id='predefined_timespan' onChange='applyGraphTimespan()'>
 							<?php
 							if ($_SESSION['custom']) {
-								$graph_timespans[GT_CUSTOM] = 'Custom';
+								$graph_timespans[GT_CUSTOM] = __('Custom');
 								$start_val = 0;
 								$end_val = sizeof($graph_timespans);
 							} else {
@@ -249,28 +249,28 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 						</select>
 					</td>
 					<td>
-						From
+						<?php print __('From');?>
 					</td>
 					<td>
 						<input type='text' id='date1' size='18' value='<?php print (isset($_SESSION['sess_current_date1']) ? $_SESSION['sess_current_date1'] : '');?>'>
 					</td>
 					<td>
-						<i id='startDate' class='calendar fa fa-calendar' title='Start Date Selector'></i>
+						<i id='startDate' class='calendar fa fa-calendar' title='<?php print __('Start Date Selector');?>'></i>
 					</td>
 					<td>
-						To
+						<?php print __('To');?>
 					</td>
 					<td>
 						<input type='text' id='date2' size='18' value='<?php print (isset($_SESSION['sess_current_date2']) ? $_SESSION['sess_current_date2'] : '');?>'>
 					</td>
 					<td>
-						<i id='endDate' class='calendar fa fa-calendar' title='End Date Selector'></i>
+						<i id='endDate' class='calendar fa fa-calendar' title='<?php print __('End Date Selector');?>'></i>
 					</td>
 					<td>
-						<i class='shiftArrow fa fa-backward' onClick='timeshiftGraphFilterLeft()' title='Shift Time Backward'></i>
+						<i class='shiftArrow fa fa-backward' onClick='timeshiftGraphFilterLeft()' title='<?php print __('Shift Time Backward');?>'></i>
 					</td>
 					<td>
-						<select id='predefined_timeshift' name='predefined_timeshift' title='Define Shifting Interval'>
+						<select id='predefined_timeshift' name='predefined_timeshift' title='<?php print __('Define Shifting Interval');?>'>
 							<?php
 							$start_val = 1;
 							$end_val = sizeof($graph_timeshifts)+1;
@@ -283,18 +283,18 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 						</select>
 					</td>
 					<td>
-						<i class='shiftArrow fa fa-forward' onClick='timeshiftGraphFilterRight()' title='Shift Time Forward'></i>
+						<i class='shiftArrow fa fa-forward' onClick='timeshiftGraphFilterRight()' title='<?php print __('Shift Time Forward');?>'></i>
 					</td>
 					<td>
-						<input type='button' value='Refresh' name='button_refresh_x' title='Refresh selected time span' onClick='refreshGraphTimespanFilter()'>
+						<input type='button' value='<?php print __('Refresh');?>' name='button_refresh_x' title='<?php print __('Refresh selected time span');?>' onClick='refreshGraphTimespanFilter()'>
 					</td>
 					<td>
-						<input type='button' value='Clear' title='Return to the default time span' onClick='clearGraphTimespanFilter()'>
+						<input type='button' value='<?php print __('Clear');?>' title='<?php print __('Return to the default time span');?>' onClick='clearGraphTimespanFilter()'>
 					</td>
 				</tr>
 				<tr id='realtime' style='display:none;'>
 					<td>
-						Window
+						<?php print __('Window');?>
 					</td>
 					<td>
 						<select name='graph_start' id='graph_start' onChange='imageOptionsChanged("timespan")'>
@@ -306,7 +306,7 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 						</select>
 					</td>
 					<td>
-						Interval
+						<?php print __('Interval');?>
 					</td>
 					<td>
 						<select name='ds_step' id='ds_step' onChange="imageOptionsChanged('interval')">
@@ -318,7 +318,7 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 						</select>
 					</td>
 					<td>
-						<input type='button' id='realtimeoff' value='Stop'>
+						<input type='button' id='realtimeoff' value='<?php print __('Stop');?>'>
 					</td>
 					<td align='center' colspan='6'>
 						<span id='countdown'></span>

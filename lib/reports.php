@@ -722,15 +722,15 @@ function expand_branch(&$report, &$item, $branch_id, $output, $format_ok, $theme
 	$out = ''; 	
 	if ($output == REPORTS_OUTPUT_STDOUT) {
 		$out = "<img class='image' alt='' src='" . htmlspecialchars($config['url_path'] . 'graph_image.php' .
-				'?graph_width=' . $report['graph_width'] .
-				'&graph_height=' . $report['graph_height'] .
-				'&graph_nolegend=' . ($report['thumbnails'] == 'on' ? 'true':'') .
-				'&local_graph_id=' . $item['local_graph_id'] .
-				'&graph_start=' . $timespan['begin_now'] .
-				'&graph_end=' . $timespan['end_now'] .
-				'&graph_theme=' . $theme .
-				'&image_format=png' . 
-				'&rra_id=0') . "'>";
+			'?graph_width=' . $report['graph_width'] .
+			'&graph_height=' . $report['graph_height'] .
+			'&graph_nolegend=' . ($report['thumbnails'] == 'on' ? 'true':'') .
+			'&local_graph_id=' . $item['local_graph_id'] .
+			'&graph_start=' . $timespan['begin_now'] .
+			'&graph_end=' . $timespan['end_now'] .
+			'&graph_theme=' . $theme .
+			'&image_format=png' . 
+			'&rra_id=0') . "'>";
 	} else {
 		$out = '<GRAPH:' . $item['local_graph_id'] . ':' . $item['timespan'] . '>';
 	}
@@ -827,29 +827,29 @@ function reports_expand_tree($report, $item, $parent, $output, $format_ok, $them
 
 		if ($leaf_type == 'graph') {
 			$graph_name = db_fetch_cell_prepared("SELECT 
-			gtg.title_cache AS title
-			FROM graph_templates_graph AS gtg
-			WHERE gtg.local_graph_id = ?", array($leaf['local_graph_id']));
+				gtg.title_cache AS title
+				FROM graph_templates_graph AS gtg
+				WHERE gtg.local_graph_id = ?", array($leaf['local_graph_id']));
 		}
 
 		//if (!empty($tree_name) && empty($leaf_name) && empty($host_name) && !$nested) {
 		if (!empty($tree_name) && empty($leaf_name) && empty($host_name)) {
-			$title = $title_delimeter . "<strong>Tree:</strong> $tree_name"; 
+			$title = $title_delimeter . "<strong>" . __('Tree:') . "</strong> $tree_name"; 
 			$title_delimeter = '-> ';
 		}
 
 		if (!empty($leaf_name)) {
-			$title .= $title_delimeter . "<strong>Leaf:</strong> $leaf_name"; 
+			$title .= $title_delimeter . "<strong>" . __('Leaf:') . "</strong> $leaf_name"; 
 			$title_delimeter = '-> ';
 		}
 
 		if (!empty($host_name)) {
-			$title .= $title_delimeter . "<strong>Host:</strong> $host_name"; 
+			$title .= $title_delimeter . "<strong>" . __('Host:') . "</strong> $host_name"; 
 			$title_delimeter = '-> ';
 		}
 
 		if (!empty($graph_name)) {
-			$title .= $title_delimeter . "<strong>Graph:</strong> $graph_name"; 
+			$title .= $title_delimeter . "<strong>" . __('Graph:') . "</strong> $graph_name"; 
 			$title_delimeter = '-> ';
 		}
 
@@ -944,10 +944,12 @@ function reports_expand_tree($report, $item, $parent, $output, $format_ok, $them
 				}
 
 				/* for graphs without a template */
-				array_push($graph_templates, array(
-					'id' => '0',
-					'name' => '(No Graph Template)'
-					));
+				array_push($graph_templates, 
+					array(
+						'id' => '0',
+						'name' => __('(No Graph Template)')
+					)
+				);
 
 				$outgraphs = array();
 				if (sizeof($graph_templates) > 0) {
@@ -1003,10 +1005,12 @@ function reports_expand_tree($report, $item, $parent, $output, $format_ok, $them
 
 				/* for graphs without a data query */
 				if (empty($data_query_id)) {
-					array_push($data_queries, array(
-						'id' => '0',
-						'name' => 'Non Query Based'
-						));
+					array_push($data_queries, 
+						array(
+							'id' => '0',
+							'name' => 'Non Query Based'
+						)
+					);
 				}
 
 				$i = 0;
@@ -1361,7 +1365,7 @@ function reports_error_handler($errno, $errmsg, $filename, $linenum, $vars) {
  * @arg $action		actions to be performed from dropdown
  */
 function reports_graphs_action_array($action) {
-	$action['reports'] = 'Add to Report';
+	$action['reports'] = __('Add to Report');
 	return $action;
 }
 
@@ -1377,24 +1381,22 @@ function reports_graphs_action_prepare($save) {
 	global $colors, $config, $graph_timespans, $alignment;
 
 	if ($save['drp_action'] == 'reports') { /* report */
-		print "	<tr>
-				<td class='textArea'>
-					<p>Choose the Report to associate these graphs with.  The defaults for alignment will be used
-					for each graph in the list below.</p>
-					<p>" . $save['graph_list'] . "</p>
-					<p><strong>Report:</strong><br>";
-					form_dropdown('reports_id', db_fetch_assoc_prepared('SELECT reports.id, reports.name
-						FROM reports
-						WHERE user_id = ?
-						ORDER by name', array($_SESSION['sess_user_id'])),'name','id','','','0');
-					echo '<br><p><strong>Graph Timespan:</strong><br>';
-					form_dropdown('timespan', $graph_timespans, '', '', '0', '', '', '');
-					echo '<br><p><strong>Graph Alignment:</strong><br>';
-					form_dropdown('alignment', $alignment, '', '', '0', '', '', '');
-					print "</p>
-				</td>
-			</tr>\n
-			";
+		print "<tr>
+			<td class='textArea'>
+				<p>" . __('Choose the Report to associate these graphs with.  The defaults for alignment will be used for each graph in the list below.') . "</p>
+				<p>" . $save['graph_list'] . "</p>
+				<p>" . __('Report:') . "<br>";
+				form_dropdown('reports_id', db_fetch_assoc_prepared('SELECT reports.id, reports.name
+					FROM reports
+					WHERE user_id = ?
+					ORDER by name', array($_SESSION['sess_user_id'])),'name','id','','','0');
+				echo '<br><p>' . __('Graph Timespan:') . '<br>';
+				form_dropdown('timespan', $graph_timespans, '', '', '0', '', '', '');
+				echo '<br><p>' . __('Graph Alignment:') . '<br>';
+				form_dropdown('alignment', $alignment, '', '', '0', '', '', '');
+				print "</p>
+			</td>
+		</tr>";
 	} else {
 		return $save;
 	}
@@ -1470,12 +1472,12 @@ function reports_graphs_action_execute($action) {
 
 						$id = sql_save($save, 'reports_items');
 						if ($id) {
-							$message .= "Created Report Graph Item '<i>" . get_graph_title($local_graph_id) . "</i>'<br>";
+							$message .= __('Created Report Graph Item \'<i>%s</i>\'', get_graph_title($local_graph_id)) . '<br>';
 						} else {
-							$message .= "Failed Adding Report Graph Item '<i>" . get_graph_title($local_graph_id) . "</i>' Already Exists<br>";
+							$message .= __('Failed Adding Report Graph Item \'<i>%s</i>\' Already Exists', get_graph_title($local_graph_id)) . '<br>';
 						}
 					} else {
-						$message .= "Skipped Report Graph Item '<i>" . get_graph_title($local_graph_id) . "</i>' Already Exists<br>";
+						$message .= __('Skipped Report Graph Item \'<i>%s</i>\' Already Exists', get_graph_title($local_graph_id)) . '<br>';
 					}
 				}
 			}

@@ -121,7 +121,7 @@ function display_matching_hosts($rule, $rule_type, $url) {
 	</script>
 	<?php
 
-	html_start_box('Matching Devices', '100%', '', '3', 'center', '');
+	html_start_box(__('Matching Devices'), '100%', '', '3', 'center', '');
 
 	?>
 	<tr class='even'>
@@ -130,18 +130,18 @@ function display_matching_hosts($rule, $rule_type, $url) {
 				<table class='filterTable'>
 					<tr>
 						<td>
-							Search
+							<?php print __('Search');?>
 						</td>
 						<td>
 							<input type='text' id='filterd' size='25' value='<?php print get_request_var('filterd');?>'>
 						</td>
 						<td>
-							Type
+							<?php print __('Type');?>
 						</td>
 						<td>
 							<select id='host_template_id' onChange='applyDeviceFilter()'>
-								<option value='-1'<?php if (get_request_var('host_template_id') == '-1') {?> selected<?php }?>>Any</option>
-								<option value='0'<?php if (get_request_var('host_template_id') == '0') {?> selected<?php }?>>None</option>
+								<option value='-1'<?php if (get_request_var('host_template_id') == '-1') {?> selected<?php }?>><?php print __('Any');?></option>
+								<option value='0'<?php if (get_request_var('host_template_id') == '0') {?> selected<?php }?>><?php print __('None');?></option>
 								<?php
 								$host_templates = db_fetch_assoc('SELECT id,name FROM host_template ORDER BY name');
 	
@@ -154,26 +154,26 @@ function display_matching_hosts($rule, $rule_type, $url) {
 							</select>
 						</td>
 						<td>
-							Status
+							<?php print __('Status');?>
 						</td>
 						<td>
 							<select id='host_status' onChange='applyDeviceFilter()'>
-								<option value='-1'<?php if (get_request_var('host_status') == '-1') {?> selected<?php }?>>Any</option>
-								<option value='-3'<?php if (get_request_var('host_status') == '-3') {?> selected<?php }?>>Enabled</option>
-								<option value='-2'<?php if (get_request_var('host_status') == '-2') {?> selected<?php }?>>Disabled</option>
-								<option value='-4'<?php if (get_request_var('host_status') == '-4') {?> selected<?php }?>>Not Up</option>
-								<option value='3'<?php if (get_request_var('host_status') == '3') {?> selected<?php }?>>Up</option>
-								<option value='1'<?php if (get_request_var('host_status') == '1') {?> selected<?php }?>>Down</option>
-								<option value='2'<?php if (get_request_var('host_status') == '2') {?> selected<?php }?>>Recovering</option>
-								<option value='0'<?php if (get_request_var('host_status') == '0') {?> selected<?php }?>>Unknown</option>
+								<option value='-1'<?php if (get_request_var('host_status') == '-1') {?> selected<?php }?>><?php print __('Any');?></option>
+								<option value='-3'<?php if (get_request_var('host_status') == '-3') {?> selected<?php }?>><?php print __('Enabled');?></option>
+								<option value='-2'<?php if (get_request_var('host_status') == '-2') {?> selected<?php }?>><?php print __('Disabled');?></option>
+								<option value='-4'<?php if (get_request_var('host_status') == '-4') {?> selected<?php }?>><?php print __('Not Up');?></option>
+								<option value='3'<?php if (get_request_var('host_status') == '3') {?> selected<?php }?>><?php print __('Up');?></option>
+								<option value='1'<?php if (get_request_var('host_status') == '1') {?> selected<?php }?>><?php print __('Down');?></option>
+								<option value='2'<?php if (get_request_var('host_status') == '2') {?> selected<?php }?>><?php print __('Recovering');?></option>
+								<option value='0'<?php if (get_request_var('host_status') == '0') {?> selected<?php }?>><?php print __('Unknown');?></option>
 							</select>
 						</td>
 						<td>
-							Devices
+							<?php print __('Devices');?>
 						</td>
 						<td>
 							<select id='rowsd' onChange='applyDeviceFilter()'>
-								<option value='-1'<?php if (get_request_var('rowsd') == '-1') {?> selected<?php }?>>Default</option>
+								<option value='-1'<?php if (get_request_var('rowsd') == '-1') {?> selected<?php }?>><?php print __('Default');?></option>
 								<?php
 								if (sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
@@ -184,10 +184,10 @@ function display_matching_hosts($rule, $rule_type, $url) {
 							</select>
 						</td>
 						<td>
-							<input id='refresh' type='button' value='Go'>
+							<input id='refresh' type='button' value='<?php print __('Go');?>'>
 						</td>
 						<td>
-							<input id='clear' type='button' value='Clear'>
+							<input id='clear' type='button' value='<?php print __('Clear');?>'>
 						</td>
 					</tr>
 				</table>
@@ -266,13 +266,13 @@ function display_matching_hosts($rule, $rule_type, $url) {
 	print $nav;
 
 	$display_text = array(
-		'description'        => array('Description', 'ASC'),
-		'hostname'           => array('Hostname', 'ASC'),
-		'status'             => array('Status', 'ASC'),
-		'host_template_name' => array('Device Template Name', 'ASC'),
-		'id'                 => array('ID', 'ASC'),
-		'nosort1'            => array('Graphs', 'ASC'),
-		'nosort2'            => array('Data Sources', 'ASC'),
+		'description'        => array(__('Description'), 'ASC'),
+		'hostname'           => array(__('Hostname'), 'ASC'),
+		'status'             => array(__('Status'), 'ASC'),
+		'host_template_name' => array(__('Device Template Name'), 'ASC'),
+		'id'                 => array(__('ID'), 'ASC'),
+		'nosort1'            => array(__('Graphs'), 'ASC'),
+		'nosort2'            => array(__('Data Sources'), 'ASC'),
 	);
 
 	html_header_sort(
@@ -300,7 +300,7 @@ function display_matching_hosts($rule, $rule_type, $url) {
 		/* put the nav bar on the bottom as well */
 		print $nav;
 	}else{
-		print "<tr><td colspan='8'><em>No Matching Devices</em></td></tr>";
+		print "<tr><td colspan='8'><em>" . __('No Matching Devices') . "</em></td></tr>";
 	}
 
 	html_end_box(true);
@@ -405,7 +405,7 @@ function display_matching_graphs($rule, $rule_type, $url) {
 	</script>
 	<?php
 
-	html_start_box('Matching Objects', '100%', '', '3', 'center', '');
+	html_start_box(__('Matching Objects'), '100%', '', '3', 'center', '');
 
 	?>
 	<tr class='even'>
@@ -414,12 +414,12 @@ function display_matching_graphs($rule, $rule_type, $url) {
 				<table class='filterTable'>
 					<tr>
 						<td>
-							Device
+							<?php print __('Device');?>
 						</td>
 						<td>
 							<select id='host_id'>
-								<option value='-1'<?php if (get_request_var('host_id') == '-1') {?> selected<?php }?>>Any</option>
-								<option value='0'<?php if (get_request_var('host_id') == '0') {?> selected<?php }?>>None</option>
+								<option value='-1'<?php if (get_request_var('host_id') == '-1') {?> selected<?php }?>><?php print __('Any');?></option>
+								<option value='0'<?php if (get_request_var('host_id') == '0') {?> selected<?php }?>><?php print __('None');?></option>
 								<?php
 								$hosts = get_allowed_devices();
 								if (sizeof($hosts)) {
@@ -431,12 +431,12 @@ function display_matching_graphs($rule, $rule_type, $url) {
 							</select>
 						</td>
 						<td>
-							Template
+							<?php print __('Template');?>
 						</td>
 						<td>
 							<select id='template_id'>
-								<option value='-1'<?php if (get_request_var('template_id') == '-1') {?> selected<?php }?>>Any</option>
-								<option value='0'<?php if (get_request_var('template_id') == '0') {?> selected<?php }?>>None</option>
+								<option value='-1'<?php if (get_request_var('template_id') == '-1') {?> selected<?php }?>><?php print __('Any');?></option>
+								<option value='0'<?php if (get_request_var('template_id') == '0') {?> selected<?php }?>><?php print __('None');?></option>
 								<?php
 								$templates = get_allowed_graph_templates();
 
@@ -449,25 +449,25 @@ function display_matching_graphs($rule, $rule_type, $url) {
 							</select>
 						</td>
 						<td>
-							<input id='refresh' type='button' value='Go'>
+							<input id='refresh' type='button' value='<?php print __('Go');?>'>
 						</td>
 						<td>
-							<input id='clear' type='button' value='Clear'>
+							<input id='clear' type='button' value='<?php print __('Clear');?>'>
 						</td>
 					</tr>
 					<tr>
 						<td>
-							Search
+							<?php print __('Search');?>
 						</td>
 						<td>
 							<input id='filter' type='text' size='25' value='<?php print get_request_var('filter');?>'>
 						</td>
 						<td>
-							Devices
+							<?php print __('Devices');?>
 						</td>
 						<td>
 							<select id='rows'>
-								<option value='-1'<?php if (get_request_var('rows') == '-1') {?> selected<?php }?>>Default</option>
+								<option value='-1'<?php if (get_request_var('rows') == '-1') {?> selected<?php }?>><?php print __('Default');?></option>
 								<?php
 								if (sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
@@ -552,13 +552,13 @@ function display_matching_graphs($rule, $rule_type, $url) {
 	$nav = html_nav_bar($url, MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 8, 'Devices', 'page', 'main');
 
 	$display_text = array(
-		'description'        => array('Device Description', 'ASC'),
-		'hostname'           => array('Hostname', 'ASC'),
-		'host_template_name' => array('Device Template Name', 'ASC'),
-		'status'             => array('Status', 'ASC'),
-		'title_cache'        => array('Graph Title', 'ASC'),
-		'local_graph_id'     => array('Graph ID', 'ASC'),
-		'name'               => array('Graph Template Name', 'ASC'),
+		'description'        => array(__('Device Description'), 'ASC'),
+		'hostname'           => array(__('Hostname'), 'ASC'),
+		'host_template_name' => array(__('Device Template Name'), 'ASC'),
+		'status'             => array(__('Status'), 'ASC'),
+		'title_cache'        => array(__('Graph Title'), 'ASC'),
+		'local_graph_id'     => array(__('Graph ID'), 'ASC'),
+		'name'               => array(__('Graph Template Name'), 'ASC'),
 	);
 
 	html_header_sort(
@@ -571,7 +571,7 @@ function display_matching_graphs($rule, $rule_type, $url) {
 
 	if (sizeof($graph_list)) {
 		foreach ($graph_list as $graph) {
-			$template_name = ((empty($graph['name'])) ? '<em>None</em>' : htmlspecialchars($graph['name']));
+			$template_name = ((empty($graph['name'])) ? '<em>' . __('None') . '</em>' : htmlspecialchars($graph['name']));
 			form_alternate_row('line' . $graph['local_graph_id'], true);
 
 			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars("host.php?action=edit&id=" . $graph['host_id']) . "'>" .
@@ -589,7 +589,7 @@ function display_matching_graphs($rule, $rule_type, $url) {
 		/* put the nav bar on the bottom as well */
 		print $nav;
 	}else{
-		print '<tr><td><em>No Graphs Found</em></td></tr>';
+		print '<tr><td><em>' . __('No Graphs Found') . '</em></td></tr>';
 	}
 
 	html_end_box(true);
@@ -671,7 +671,7 @@ function display_new_graphs($rule, $url) {
 	</script>
 	<?php
 
-	html_start_box('Matching Objects', '100%', '', '3', 'center', '');
+	html_start_box(__('Matching Objects'), '100%', '', '3', 'center', '');
 
 	?>
 	<tr class='even'>
@@ -680,17 +680,17 @@ function display_new_graphs($rule, $url) {
 				<table class='filterTable'>
 					<tr>
 						<td>
-							Search
+							<?php print __('Search');?>
 						</td>
 						<td>
 							<input type='text' id='filter' size='25' value='<?php print get_request_var('filter');?>'>
 						</td>
 						<td>
-							Objects
+							<?php print __('Objects');?>
 						</td>
 						<td>
 							<select id='rows' onChange='applyFilter()'>
-								<option value='-1'<?php if (get_request_var('rows') == '-1') {?> selected<?php }?>>Default</option>
+								<option value='-1'<?php if (get_request_var('rows') == '-1') {?> selected<?php }?>><?php print __('Default');?></option>
 								<?php
 								if (sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
@@ -701,10 +701,10 @@ function display_new_graphs($rule, $url) {
 							</select>
 						</td>
 						<td>
-							<input id='refresh' type='button' value='Go'>
+							<input id='refresh' type='button' value='<?php print __('Go');?>'>
 						</td>
 						<td>
-							<input id='clear' type='button' value='Clear'>
+							<input id='clear' type='button' value='<?php print __('Clear');?>'>
 						</td>
 					</tr>
 				</table>
@@ -755,7 +755,7 @@ function display_new_graphs($rule, $url) {
 		$total_rows = 0;
 	}
 
-	html_start_box('Matching Objects [ ' . $snmp_query['name'] . '] ' . display_tooltip('A blue font color indicates that the rule will be applied to the objects in question.  Other objects will not be subject to the rule.'), '100%', '', '3', 'center', '');
+	html_start_box(__('Matching Objects [ %s ]', htmlspecialchars($snmp_query['name'], ENT_QUOTES)) . display_tooltip(__('A blue font color indicates that the rule will be applied to the objects in question.  Other objects will not be subject to the rule.')), '100%', '', '3', 'center', '');
 
 	if ($xml_array != false) {
 		$html_dq_header     = '';
@@ -792,7 +792,7 @@ function display_new_graphs($rule, $url) {
 
 		$snmp_query_indexes = db_fetch_assoc($sql_query);
 
-		$nav = html_nav_bar('automation_graph_rules.php?action=edit&id=' . $rule['id'], MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 30, 'Matching Objects', 'page', 'main');
+		$nav = html_nav_bar('automation_graph_rules.php?action=edit&id=' . $rule['id'], MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 30, __('Matching Objects'), 'page', 'main');
 
 		print $nav;
 
@@ -802,8 +802,8 @@ function display_new_graphs($rule, $url) {
 		 * from the Data Query used
 		 */
 		# we want to print the host name as the first column
-		$new_fields['automation_host'] = array('name' => 'Hostname', 'direction' => 'input');
-		$new_fields['status']          = array('name' => 'Device Status', 'direction' => 'input');
+		$new_fields['automation_host'] = array('name' => __('Hostname'), 'direction' => 'input');
+		$new_fields['status']          = array('name' => __('Device Status'), 'direction' => 'input');
 		$xml_array['fields']           = $new_fields + $xml_array['fields'];
 		reset($xml_array['fields']);
 
@@ -826,7 +826,7 @@ function display_new_graphs($rule, $url) {
 		html_header($display_text);
 
 		if (!sizeof($snmp_query_indexes)) {
-			print "<tr colspan='6'><td>There are no Objects that match this rule.</td></tr>\n";
+			print "<tr colspan='6'><td>" . __('There are no Objects that match this rule.') . "</td></tr>\n";
 		}else{
 			print "<tr colspan='6'>" . $html_dq_header . "</tr>\n";
 		}
@@ -871,7 +871,7 @@ function display_new_graphs($rule, $url) {
 			print $nav;
 		}
 	} else {
-		print "<tr><td colspan='2' style='color: red;'>Error in data query</td></tr>\n";
+		print "<tr><td colspan='2' style='color: red;'>" . __('Error in data query') . "</td></tr>\n";
 	}
 
 	print '</table>';
@@ -975,7 +975,7 @@ function display_matching_trees ($rule_id, $rule_type, $item, $url) {
 
 	print "<form method='post' id='form_automation_tree' action='" . htmlspecialchars($url) . "'>";
 
-	html_start_box('Matching Items', '100%', '', '3', 'center', '');
+	html_start_box(__('Matching Items'), '100%', '', '3', 'center', '');
 
 	?>
 	<tr class='even'>
@@ -983,18 +983,18 @@ function display_matching_trees ($rule_id, $rule_type, $item, $url) {
 			<table class='filterTable'>
 				<tr>
 					<td>
-						Search
+						<?php print __('Search');?>
 					</td>
 					<td>
 						<input type='text' id='filter' size='25' value='<?php print get_request_var('filter');?>'>
 					</td>
 					<td>
-						Type
+						<?php print __('Type');?>
 					</td>
 					<td>
 						<select id='host_template_id' onChange='applyFilter()'>
-							<option value='-1'<?php if (get_request_var('host_template_id') == '-1') {?> selected<?php }?>>Any</option>
-							<option value='0'<?php if (get_request_var('host_template_id') == '0') {?> selected<?php }?>>None</option>
+							<option value='-1'<?php if (get_request_var('host_template_id') == '-1') {?> selected<?php }?>><?php print __('Any');?></option>
+							<option value='0'<?php if (get_request_var('host_template_id') == '0') {?> selected<?php }?>><?php print __('None');?></option>
 							<?php
 							$host_templates = db_fetch_assoc('select id,name from host_template order by name');
 
@@ -1007,26 +1007,26 @@ function display_matching_trees ($rule_id, $rule_type, $item, $url) {
 						</select>
 					</td>
 					<td>
-						Status
+						<?php print __('Status');?>
 					</td>
 					<td>
 						<select id='host_status' onChange='applyFilter()'>
-							<option value='-1'<?php if (get_request_var('host_status') == '-1') {?> selected<?php }?>>Any</option>
-							<option value='-3'<?php if (get_request_var('host_status') == '-3') {?> selected<?php }?>>Enabled</option>
-							<option value='-2'<?php if (get_request_var('host_status') == '-2') {?> selected<?php }?>>Disabled</option>
-							<option value='-4'<?php if (get_request_var('host_status') == '-4') {?> selected<?php }?>>Not Up</option>
-							<option value='3'<?php if (get_request_var('host_status') == '3') {?> selected<?php }?>>Up</option>
-							<option value='1'<?php if (get_request_var('host_status') == '1') {?> selected<?php }?>>Down</option>
-							<option value='2'<?php if (get_request_var('host_status') == '2') {?> selected<?php }?>>Recovering</option>
-							<option value='0'<?php if (get_request_var('host_status') == '0') {?> selected<?php }?>>Unknown</option>
+							<option value='-1'<?php if (get_request_var('host_status') == '-1') {?> selected<?php }?>><?php print __('Any');?></option>
+							<option value='-3'<?php if (get_request_var('host_status') == '-3') {?> selected<?php }?>><?php print __('Enabled');?></option>
+							<option value='-2'<?php if (get_request_var('host_status') == '-2') {?> selected<?php }?>><?php print __('Disabled');?></option>
+							<option value='-4'<?php if (get_request_var('host_status') == '-4') {?> selected<?php }?>><?php print __('Not Up');?></option>
+							<option value='3'<?php if (get_request_var('host_status') == '3') {?> selected<?php }?>><?php print __('Up');?></option>
+							<option value='1'<?php if (get_request_var('host_status') == '1') {?> selected<?php }?>><?php print __('Down');?></option>
+							<option value='2'<?php if (get_request_var('host_status') == '2') {?> selected<?php }?>><?php print __('Recovering');?></option>
+							<option value='0'<?php if (get_request_var('host_status') == '0') {?> selected<?php }?>><?php print __('Unknown');?></option>
 						</select>
 					</td>
 					<td class='nowrap'>
-						Data Queries
+						<?php print __('Data Queries');?>
 					</td>
 					<td>
 						<select id='rows' onChange='applyFilter()'>
-							<option value='-1'<?php if (get_request_var('rows') == '-1') {?> selected<?php }?>>Default</option>
+							<option value='-1'<?php if (get_request_var('rows') == '-1') {?> selected<?php }?>><?php print __('Default');?></option>
 							<?php
 							if (sizeof($item_rows) > 0) {
 							foreach ($item_rows as $key => $value) {
@@ -1037,10 +1037,10 @@ function display_matching_trees ($rule_id, $rule_type, $item, $url) {
 						</select>
 					</td>
 					<td>
-						<input id='refresh' type='button' value='Go'>
+						<input id='refresh' type='button' value='<?php print __('Go');?>'>
 					</td>
 					<td>
-						<input id='clear' type='button' value='Clear'>
+						<input id='clear' type='button' value='<?php print __('Clear');?>'>
 					</td>
 				</tr>
 			</table>
@@ -1132,12 +1132,12 @@ function display_matching_trees ($rule_id, $rule_type, $item, $url) {
 	print $nav;
 
 	$display_text = array(
-		'description'        => array('Description', 'ASC'),
-		'hostname'           => array('Hostname', 'ASC'),
-		'host_template_name' => array('Device Template Name', 'ASC'),
-		'status'             => array('Status', 'ASC'),
+		'description'        => array(__('Description'), 'ASC'),
+		'hostname'           => array(__('Hostname'), 'ASC'),
+		'host_template_name' => array(__('Device Template Name'), 'ASC'),
+		'status'             => array(__('Status'), 'ASC'),
 		'source'             => array($item['field'], 'ASC'),
-		'result'             => array('Resulting Branch', 'ASC'),
+		'result'             => array(__('Resulting Branch'), 'ASC'),
 	);
 
 	html_header_sort(
@@ -1180,7 +1180,7 @@ function display_matching_trees ($rule_id, $rule_type, $item, $url) {
 		/* put the nav bar on the bottom as well */
 		print $nav;
 	}else{
-		print "<tr><td colspan='6'><em>No Items</em></td></tr>";
+		print "<tr><td colspan='6'><em>" . __('No Items Found') . "</em></td></tr>";
 	}
 	html_end_box(true);
 
@@ -1196,16 +1196,16 @@ function display_match_rule_items($title, $rule_id, $rule_type, $module) {
 		AND rule_type=$rule_type 
 		ORDER BY sequence");
 
-	html_start_box("$title", '100%', '', '3', 'center', $module . '?action=item_edit&id=' . $rule_id . '&rule_type=' . $rule_type);
+	html_start_box($title, '100%', '', '3', 'center', $module . '?action=item_edit&id=' . $rule_id . '&rule_type=' . $rule_type);
 
 	$display_text = array(
-		array('display' => 'Item', 'align' => 'left'),
-		array('display' => 'Sequence', 'align' => 'left'),
-		array('display' => 'Operation', 'align' => 'left'),
-		array('display' => 'Field', 'align' => 'left'),
-		array('display' => 'Operator', 'align' => 'left'),
-		array('display' => 'Pattern', 'align' => 'left'),
-		array('display' => 'Actions', 'align' => 'right')
+		array('display' => __('Item'),      'align' => 'left'),
+		array('display' => __('Sequence'),  'align' => 'left'),
+		array('display' => __('Operation'), 'align' => 'left'),
+		array('display' => __('Field'),     'align' => 'left'),
+		array('display' => __('Operator'),  'align' => 'left'),
+		array('display' => __('Pattern'),   'align' => 'left'),
+		array('display' => __('Actions'),   'align' => 'right')
 	);
 
 	html_header($display_text, 2, false);
@@ -1226,20 +1226,20 @@ function display_match_rule_items($title, $rule_id, $rule_type, $module) {
 			$form_data .= '<td style="white-space:nowrap" class="right">';
 
 			if ($i != sizeof($items)-1) {
-				$form_data .= '<a class="pic fa fa-arrow-down moveArrow" href="' . htmlspecialchars($module . '?action=item_movedown&item_id=' . $item['id'] . '&id=' . $rule_id . '&rule_type=' . $rule_type) . '" title="Move Down"></a>';
+				$form_data .= '<a class="pic fa fa-arrow-down moveArrow" href="' . htmlspecialchars($module . '?action=item_movedown&item_id=' . $item['id'] . '&id=' . $rule_id . '&rule_type=' . $rule_type) . '" title="' . __('Move Down') . '"></a>';
 			}else{
 				$form_data .= '<span class="moveArrowNone"></span>';
 			}
 
 			if ($i > 0) {
-				$form_data .= '<a class="pic fa fa-arrow-up moveArrow" href="' . htmlspecialchars($module . '?action=item_moveup&item_id=' . $item['id'] .	'&id=' . $rule_id .	'&rule_type=' . $rule_type) . '" title="Move Up"></a>';
+				$form_data .= '<a class="pic fa fa-arrow-up moveArrow" href="' . htmlspecialchars($module . '?action=item_moveup&item_id=' . $item['id'] .	'&id=' . $rule_id .	'&rule_type=' . $rule_type) . '" title="' . __('Move Up') . '"></a>';
 			}else{
 				$form_data .= '<span class="moveArrowNone"></span>';
 			}
 			$form_data .= '</td>';
 
 			$form_data .= '<td style="width:1%;">
-				<a class="pid deleteMarker fa fa-remove" href="' . htmlspecialchars($module . '?action=item_remove&item_id=' . $item['id'] .	'&id=' . $rule_id .	'&rule_type=' . $rule_type) . '" title="Delete"></a></td>
+				<a class="pid deleteMarker fa fa-remove" href="' . htmlspecialchars($module . '?action=item_remove&item_id=' . $item['id'] .	'&id=' . $rule_id .	'&rule_type=' . $rule_type) . '" title="' . __('Delete') . '"></a></td>
 			</tr>';
 
 			print $form_data;
@@ -1247,7 +1247,7 @@ function display_match_rule_items($title, $rule_id, $rule_type, $module) {
 			$i++;
 		}
 	} else {
-		print "<tr><td colspan='7'><em>No Device Selection Criteria</em></td></tr>\n";
+		print "<tr><td colspan='7'><em>" . __('No Device Selection Criteria') . "</em></td></tr>\n";
 	}
 
 	html_end_box(true);
@@ -1258,16 +1258,16 @@ function display_graph_rule_items($title, $rule_id, $rule_type, $module) {
 
 	$items = db_fetch_assoc("SELECT * FROM automation_graph_rule_items WHERE rule_id=$rule_id ORDER BY sequence");
 
-	html_start_box("$title", '100%', '', '3', 'center', $module . '?action=item_edit&id=' . $rule_id . '&rule_type=' . $rule_type);
+	html_start_box($title, '100%', '', '3', 'center', $module . '?action=item_edit&id=' . $rule_id . '&rule_type=' . $rule_type);
 
 	$display_text = array(
-		array('display' => 'Item', 'align' => 'left'),
-		array('display' => 'Sequence', 'align' => 'left'),
-		array('display' => 'Operation', 'align' => 'left'),
-		array('display' => 'Field', 'align' => 'left'),
-		array('display' => 'Operator', 'align' => 'left'),
-		array('display' => 'Pattern', 'align' => 'left'),
-		array('display' => 'Actions', 'align' => 'right')
+		array('display' => __('Item'),      'align' => 'left'),
+		array('display' => __('Sequence'),  'align' => 'left'),
+		array('display' => __('Operation'), 'align' => 'left'),
+		array('display' => __('Field'),     'align' => 'left'),
+		array('display' => __('Operator'),  'align' => 'left'),
+		array('display' => __('Pattern'),   'align' => 'left'),
+		array('display' => __('Actions'),   'align' => 'right')
 	);
 
 	html_header($display_text, 2, false);
@@ -1289,26 +1289,26 @@ function display_graph_rule_items($title, $rule_id, $rule_type, $module) {
 			$form_data .= '<td style="white-space:nowrap" class="right">';
 
 			if ($i != sizeof($items)-1) {
-				$form_data .= '<a class="pic fa fa-awwow-down moveArrow" href="' . htmlspecialchars($module . '?action=item_movedown&item_id=' . $item['id'] . '&id=' . $rule_id .	'&rule_type=' . $rule_type) . '" title="Move Down"></a>';
+				$form_data .= '<a class="pic fa fa-awwow-down moveArrow" href="' . htmlspecialchars($module . '?action=item_movedown&item_id=' . $item['id'] . '&id=' . $rule_id .	'&rule_type=' . $rule_type) . '" title="' . __('Move Down') . '"></a>';
 			}else{
 				$form_data .= '<span class="moveArrowNone"></span>';
 			}
 
 			if ($i > 0) {
-				$form_data .= '<a class="pic fa fa-arrow-up moveArrow" href="' . htmlspecialchars($module . '?action=item_moveup&item_id=' . $item['id'] .	'&id=' . $rule_id .	'&rule_type=' . $rule_type) . '" title="Move Up"></a>';
+				$form_data .= '<a class="pic fa fa-arrow-up moveArrow" href="' . htmlspecialchars($module . '?action=item_moveup&item_id=' . $item['id'] .	'&id=' . $rule_id .	'&rule_type=' . $rule_type) . '" title="' . __('Move Up') . '"></a>';
 			}else{
 				$form_data .= '<span class="moveArrowNone"></span>';
 			}
 			$form_data .= '</td>';
 
 			$form_data .= '<td style="white-space:nowrap" class="right">
-				<a class="pic deleteMarker fa fa-remove" href="' . htmlspecialchars($module . '?action=item_remove&item_id=' . $item['id'] .	'&id=' . $rule_id .	'&rule_type=' . $rule_type) . '" title="Delete"></a></td>
+				<a class="pic deleteMarker fa fa-remove" href="' . htmlspecialchars($module . '?action=item_remove&item_id=' . $item['id'] .	'&id=' . $rule_id .	'&rule_type=' . $rule_type) . '" title="' . __('Delete') . '"></a></td>
 			</tr>';
 
 			print $form_data;
 		}
 	} else {
-		print "<tr><td colspan='7'><em>No Graph Creation Criteria</em></td></tr>\n";
+		print "<tr><td colspan='7'><em>" . __('No Graph Creation Criteria') . "</em></td></tr>\n";
 	}
 
 	html_end_box(true);
@@ -1320,17 +1320,17 @@ function display_tree_rule_items($title, $rule_id, $item_type, $rule_type, $modu
 
 	$items = db_fetch_assoc("SELECT * FROM automation_tree_rule_items WHERE rule_id=$rule_id ORDER BY sequence");
 
-	html_start_box("$title", '100%', '', '3', 'center', $module . '?action=item_edit&id=' . $rule_id . '&rule_type=' . $rule_type);
+	html_start_box($title, '100%', '', '3', 'center', $module . '?action=item_edit&id=' . $rule_id . '&rule_type=' . $rule_type);
 
 	$display_text = array(
-		array('display' => 'Item', 'align' => 'left'),
-		array('display' => 'Sequence', 'align' => 'left'),
-		array('display' => 'Field Name', 'align' => 'left'),
-		array('display' => 'Sorting Type', 'align' => 'left'),
-		array('display' => 'Propagate Change', 'align' => 'left'),
-		array('display' => 'Search Pattern', 'align' => 'left'),
-		array('display' => 'Replace Pattern', 'align' => 'left'),
-		array('display' => 'Actions', 'align' => 'right')
+		array('display' => __('Item'),             'align' => 'left'),
+		array('display' => __('Sequence'),         'align' => 'left'),
+		array('display' => __('Field Name'),       'align' => 'left'),
+		array('display' => __('Sorting Type'),     'align' => 'left'),
+		array('display' => __('Propagate Change'), 'align' => 'left'),
+		array('display' => __('Search Pattern'),   'align' => 'left'),
+		array('display' => __('Replace Pattern'),  'align' => 'left'),
+		array('display' => __('Actions'),          'align' => 'right')
 	);
 
 	html_header($display_text, 2, false);
@@ -1352,20 +1352,20 @@ function display_tree_rule_items($title, $rule_id, $item_type, $rule_type, $modu
 
 			$form_data .= '<td class="right">';
 			if ($i != sizeof($items)-1) {
-				$form_data .= '<a class="pic fa fa-arrow-down moveArrow" href="' . htmlspecialchars($module . '?action=item_movedown&item_id=' . $item['id'] . '&id=' . $rule_id .	'&rule_type=' . $rule_type) . '" title="Move Down"></a>';
+				$form_data .= '<a class="pic fa fa-arrow-down moveArrow" href="' . htmlspecialchars($module . '?action=item_movedown&item_id=' . $item['id'] . '&id=' . $rule_id .	'&rule_type=' . $rule_type) . '" title="' . __('Move Down') . '"></a>';
 			}else{
 				$form_data .= '<span class="moveArrowNone"></span>';
 			}
 
 			if ($i > 0) {
-				$form_data .= '<a class="pic fa fa-arrow-up moveArrow" href="' . htmlspecialchars($module . '?action=item_moveup&item_id=' . $item['id'] .	'&id=' . $rule_id .	'&rule_type=' . $rule_type) . '" title="Move Up"></a>';
+				$form_data .= '<a class="pic fa fa-arrow-up moveArrow" href="' . htmlspecialchars($module . '?action=item_moveup&item_id=' . $item['id'] .	'&id=' . $rule_id .	'&rule_type=' . $rule_type) . '" title="' . __('Move Up') . '"></a>';
 			}else{
 				$form_data .= '<span class="moveArrowNone"></span>';
 			}
 			$form_data .= '</td>';
 
 			$form_data .= '<td style="white-space:nowrap" style="width:1%;">
-				<a class="pic deleteMarker fa fa-remove" href="' . htmlspecialchars($module . '?action=item_remove&item_id=' . $item['id'] . '&id=' . $rule_id .	'&rule_type=' . $rule_type) . '" title="Delete"></a></td>
+				<a class="pic deleteMarker fa fa-remove" href="' . htmlspecialchars($module . '?action=item_remove&item_id=' . $item['id'] . '&id=' . $rule_id .	'&rule_type=' . $rule_type) . '" title="' . __('Delete') . '"></a></td>
 			</tr>';
 
 			print $form_data;
@@ -1373,7 +1373,7 @@ function display_tree_rule_items($title, $rule_id, $item_type, $rule_type, $modu
 			$i++;
 		}
 	} else {
-		print "<tr><td><em>No Tree Creation Criteria</em></td></tr>\n";
+		print "<tr><td><em>" . __('No Tree Creation Criteria') . "</em></td></tr>\n";
 	}
 
 	html_end_box(true);
@@ -1936,21 +1936,23 @@ function global_item_edit($rule_id, $rule_item_id, $rule_type) {
 	if (!empty($rule_item_id)) {
 		$automation_item = db_fetch_row("SELECT * FROM $item_table WHERE id=$rule_item_id $sql_and");
 
-		$header_label = "[edit rule item for $title: " . $automation_rule['name'] . ']';
+		$header_label = __('Rule Item [edit rule item for %s: %s]', $title, $automation_rule['name']);
 	}else{
-		$header_label = "[new rule item for $title: " . $automation_rule['name'] . ']';
+		$header_label = __('Rule Item [new rule item for %s: %s]', $title, $automation_rule['name']);
 		$automation_item = array();
 		$automation_item['sequence'] = get_sequence('', 'sequence', $item_table, 'rule_id=' . $rule_id . $sql_and);
 	}
 
 	form_start($module, 'form_automation_global_item_edit');
 
-	html_start_box("Rule Item $header_label", '100%', '', '3', 'center', '');
+	html_start_box($header_label, '100%', '', '3', 'center', '');
 
-	draw_edit_form(array(
-		'config' => array('no_form_tag' => true),
-		'fields' => inject_form_variables($_fields_rule_item_edit, (isset($automation_item) ? $automation_item : array()), (isset($automation_rule) ? $automation_rule : array()))
-	));
+	draw_edit_form(
+		array(
+			'config' => array('no_form_tag' => true),
+			'fields' => inject_form_variables($_fields_rule_item_edit, (isset($automation_item) ? $automation_item : array()), (isset($automation_rule) ? $automation_rule : array()))
+		)
+	);
 
 	html_end_box();
 }

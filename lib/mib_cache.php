@@ -31,7 +31,7 @@ class MibCache{
 	private $cache__tables			= array();
 	private $cache__tables_columns 	= array();
 
-	public function __construct($mib="CACTI-MIB") {
+	public function __construct($mib='CACTI-MIB') {
 		$this->active_mib = $mib;
 		return $this;
 	}
@@ -42,7 +42,7 @@ class MibCache{
 
 	public function uninstall() {
 		/* avoid that our default mib will be dropped by some plugin developer */
-		if($this->active_mib == "CACTI-MIB") {
+		if($this->active_mib == 'CACTI-MIB') {
 			return false;
 		}else {
 			db_execute("DELETE FROM snmpagent_cache WHERE `mib` = '" . $this->active_mib . "'");

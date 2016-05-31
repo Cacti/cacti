@@ -1000,12 +1000,11 @@ function aggregate_get_data_sources($graph_array, &$data_sources, &$graph_templa
 		if (sizeof($used_graph_templates) > 1) {
 			# this is invalid! STOP
 			print "<tr><td colspan='2' class='textArea'>
-			<p>The Graphs chosen for the Aggregate Graph below represent Graphs from multiple Graph Templates. 
-			Aggregate does not support creating Aggregate Graphs from multiple Graph Templates.</p>";
-			print "<p>Press 'Return' to return and select different Graphs</p>\n";
+			<p>" . __('The Graphs chosen for the Aggregate Graph below represent Graphs from multiple Graph Templates.  Aggregate does not support creating Aggregate Graphs from multiple Graph Templates.') . "</p>";
+			print "<p>" . __('Press \'Return\' to return and select different Graphs') . "</p>\n";
 			print "<ul>";
 			foreach ($used_graph_templates as $graph_template) {
-				print '<li>' . $graph_template['name'] . "</li>\n";
+				print '<li>' . htmlspecialchars($graph_template['name'], ENT_QUOTES) . "</li>\n";
 			}
 			print '</ul></td></tr>';
 
@@ -1020,8 +1019,7 @@ function aggregate_get_data_sources($graph_array, &$data_sources, &$graph_templa
 		} elseif (sizeof($used_graph_templates) < 1) {
 			/* selected graphs do not use templates */
 			print "<tr><td colspan='2' class='textArea'>
-			<p>" . __('The Graphs chosen for the Aggregate Graph do not use Graph Templates. 
-			Aggregate does not support creating Aggregate Graphs from non-templated graphs.') . "</p>";
+			<p>" . __('The Graphs chosen for the Aggregate Graph do not use Graph Templates.  Aggregate does not support creating Aggregate Graphs from non-templated graphs.') . "</p>";
 			print "<p>" . __('Press \'Return\' to return and select different Graphs') . "</p>\n";
 			print '</td></tr>';
 
@@ -1212,12 +1210,12 @@ function draw_aggregate_graph_items_list($_graph_id = 0, $_graph_template_id = 0
 
 			/* column "Skip" */
 			print "<td style='width:1%;text-align:center;'>";
-			print "<input class='checkbox' id='agg_skip_" . $item['id'] . "' type='checkbox' name='agg_skip_" . $item['id'] . "' title='" . $item['text_format'] . "' " . ($is_edit && (!isset($current_vals[$item['id']]['item_total']) || (isset($current_vals[$item['id']]['item_skip']) && $current_vals[$item['id']]['item_skip'] == 'on')) ? 'checked':'') . '>';
+			print "<input class='checkbox' id='agg_skip_" . $item['id'] . "' type='checkbox' name='agg_skip_" . $item['id'] . "' title='" . htmlspecialchars($item['text_format'], ENT_QUOTES) . "' " . ($is_edit && (!isset($current_vals[$item['id']]['item_total']) || (isset($current_vals[$item['id']]['item_skip']) && $current_vals[$item['id']]['item_skip'] == 'on')) ? 'checked':'') . '>';
 			print '</td>';
 
 			/* column 'Total' */
 			print "<td style='width:1%;text-align:center;'>";
-			print "<input class='checkbox' id='agg_total_" . ($item['id']) . "' type='checkbox' name='agg_total_" . ($item['id']) . "' title='" . $item['text_format'] . "' " . ($is_edit && isset($current_vals[$item['id']]['item_total']) && $current_vals[$item['id']]['item_total'] == 'on' ? 'checked':'') . '>';
+			print "<input class='checkbox' id='agg_total_" . ($item['id']) . "' type='checkbox' name='agg_total_" . ($item['id']) . "' title='" . htmlspecialchars($item['text_format'], ENT_QUOTES) . "' " . ($is_edit && isset($current_vals[$item['id']]['item_total']) && $current_vals[$item['id']]['item_total'] == 'on' ? 'checked':'') . '>';
 			print '</td>';
 
 			print '</tr>';
@@ -1281,8 +1279,8 @@ function draw_aggregate_template_graph_config($aggregate_template_id, $graph_tem
 			array(
 				'config' => array('no_form_tag' => true),
 				'fields' => $form_array
-				)
-			);
+			)
+		);
 
 		/* some javascript do dinamically disable non-overriden fields */
 ?>

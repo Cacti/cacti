@@ -71,8 +71,8 @@ function preset_vdef_form_list() {
 	$fields_vdef_edit = array(
 		'name' => array(
 			'method'        => 'textbox',
-			'friendly_name' => 'Name',
-			'description'   => 'A useful name for this VDEF.',
+			'friendly_name' => __('Name'),
+			'description'   => __('A useful name for this VDEF.'),
 			'value'         => '|arg1:name|',
 			'max_length'    => '255',
 		),

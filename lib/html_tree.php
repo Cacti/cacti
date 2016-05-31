@@ -521,23 +521,23 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 	$host_group_data_array = explode(':', $host_group_data);
 
 	if ($host_group_data_array[0] == 'graph_template') {
-		$host_group_data_name = '<strong>Graph Template:</strong> ' . db_fetch_cell('SELECT name FROM graph_templates WHERE id=' . $host_group_data_array[1]);
+		$host_group_data_name = '<strong>' . __('Graph Template:'). '</strong> ' . db_fetch_cell('SELECT name FROM graph_templates WHERE id=' . $host_group_data_array[1]);
 		$graph_template_id = $host_group_data_array[1];
 	}elseif ($host_group_data_array[0] == 'data_query') {
-		$host_group_data_name = '<strong>Graph Template:</strong> ' . (empty($host_group_data_array[1]) ? 'Non Query Based' : db_fetch_cell('SELECT name FROM snmp_query WHERE id=' . $host_group_data_array[1]));
+		$host_group_data_name = '<strong>' . __('Graph Template:') . '</strong> ' . (empty($host_group_data_array[1]) ? 'Non Query Based' : db_fetch_cell('SELECT name FROM snmp_query WHERE id=' . $host_group_data_array[1]));
 		$data_query_id = $host_group_data_array[1];
 	}elseif ($host_group_data_array[0] == 'data_query_index') {
-		$host_group_data_name = '<strong>Graph Template:</strong> ' . (empty($host_group_data_array[1]) ? 'Non Query Based' : db_fetch_cell('SELECT name FROM snmp_query WHERE id=' . $host_group_data_array[1])) . '-> ' . (empty($host_group_data_array[2]) ? 'Template Based' : get_formatted_data_query_index($leaf['host_id'], $host_group_data_array[1], $host_group_data_array[2]));
+		$host_group_data_name = '<strong>' . __('Graph Template:') . '</strong> ' . (empty($host_group_data_array[1]) ? 'Non Query Based' : db_fetch_cell('SELECT name FROM snmp_query WHERE id=' . $host_group_data_array[1])) . '-> ' . (empty($host_group_data_array[2]) ? 'Template Based' : get_formatted_data_query_index($leaf['host_id'], $host_group_data_array[1], $host_group_data_array[2]));
 		$data_query_id = $host_group_data_array[1];
 		$data_query_index = $host_group_data_array[2];
 	}
 
-	if (!empty($tree_name)) { $title .= $title_delimeter . '<strong>Tree:</strong>' . htmlspecialchars($tree_name, ENT_QUOTES); $title_delimeter = '-> '; }
-	if (!empty($leaf_name)) { $title .= $title_delimeter . '<strong>Leaf:</strong>' . htmlspecialchars($leaf_name, ENT_QUOTES); $title_delimeter = '-> '; }
-	if (!empty($host_name)) { $title .= $title_delimeter . '<strong>Device:</strong>' . htmlspecialchars($host_name, ENT_QUOTES); $title_delimeter = '-> '; }
+	if (!empty($tree_name)) { $title .= $title_delimeter . '<strong>' . __('Tree:') . '</strong>' . htmlspecialchars($tree_name, ENT_QUOTES); $title_delimeter = '-> '; }
+	if (!empty($leaf_name)) { $title .= $title_delimeter . '<strong>' . __('Leaf:') . '</strong>' . htmlspecialchars($leaf_name, ENT_QUOTES); $title_delimeter = '-> '; }
+	if (!empty($host_name)) { $title .= $title_delimeter . '<strong>' . __('Device:') . '</strong>' . htmlspecialchars($host_name, ENT_QUOTES); $title_delimeter = '-> '; }
 	if (!empty($host_group_data_name)) { $title .= $title_delimeter . " $host_group_data_name"; $title_delimeter = '-> '; }
 
-	html_start_box('<strong>Graph Filters</strong>' . (strlen(get_request_var('filter')) ? " [ Filter '" . htmlspecialchars(get_request_var('filter')) . "' Applied ]" : ''), '100%', "", '3', 'center', '');
+	html_start_box(__('Graph Filters') . (strlen(get_request_var('filter')) ? " [ " . __('Filter') . " '" . htmlspecialchars(get_request_var('filter')) . "' " . __('Applied') . " ]" : ''), '100%', "", '3', 'center', '');
 
 	?>
 	<tr class='even noprint' id='search'>
@@ -546,13 +546,13 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 			<table class='filterTable'>
 				<tr>
 					<td>
-						Search
+						<?php print __('Search');?>
 					</td>
 					<td>
 						<input id='filter' size='30' name='filter' value='<?php print htmlspecialchars(get_request_var('filter'));?>'>
 					</td>
 					<td>
-						Graphs
+						<?php print __('Graphs');?>
 					</td>
 					<td>
 						<select name='graphs' id='graphs' onChange='applyGraphFilter()'>
@@ -566,37 +566,37 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 						</select>
 					</td>
 					<td>
-						Columns
+						<?php print __('Columns');?>
 					</td>
 					<td>
 						<select name='columns' id='columns' onChange='applyGraphFilter()' <?php print get_request_var('thumbnails') == 'false' ? 'disabled':'';?>>
 							<?php if ( get_request_var('thumbnails') == 'false') {?>
-							<option value='<?php print get_request_var('columns');?>' selected>N/A</option>
+							<option value='<?php print get_request_var('columns');?>' selected><?php print __('N/A');?></option>
 							<?php }else{?>
-							<option value='1' <?php print (get_request_var('columns') == '1' ? ' selected':'');?>>1 Column</option>
-							<option value='2' <?php print (get_request_var('columns') == '2' ? ' selected':'');?>>2 Columns</option>
-							<option value='3' <?php print (get_request_var('columns') == '3' ? ' selected':'');?>>3 Columns</option>
-							<option value='4' <?php print (get_request_var('columns') == '4' ? ' selected':'');?>>4 Columns</option>
-							<option value='5' <?php print (get_request_var('columns') == '5' ? ' selected':'');?>>5 Columns</option>
-							<option value='6' <?php print (get_request_var('columns') == '6' ? ' selected':'');?>>6 Columns</option>
+							<option value='1' <?php print (get_request_var('columns') == '1' ? ' selected':'');?>><?php print __('%d Column', 1);?></option>
+							<option value='2' <?php print (get_request_var('columns') == '2' ? ' selected':'');?>><?php print __('%d Columns', 2);?></option>
+							<option value='3' <?php print (get_request_var('columns') == '3' ? ' selected':'');?>><?php print __('%d Columns', 3);?></option>
+							<option value='4' <?php print (get_request_var('columns') == '4' ? ' selected':'');?>><?php print __('%d Columns', 4);?></option>
+							<option value='5' <?php print (get_request_var('columns') == '5' ? ' selected':'');?>><?php print __('%d Columns', 5);?></option>
+							<option value='6' <?php print (get_request_var('columns') == '6' ? ' selected':'');?>><?php print __('%d Columns', 6);?></option>
 							<?php }?>
 						</select>
 					</td>
 					<td>
-						<label for='thumbnails'>Thumbnails</label>
+						<label for='thumbnails'><?php print __('Thumbnails');?></label>
 					</td>
 					<td>
 						<input id='thumbnails' type='checkbox' name='thumbnails' onClick='applyGraphFilter()' <?php print ((get_request_var('thumbnails') == 'true') ? 'checked':'');?>>
 					</td>
 					<td>
-						<input type='button' value='Go' title='Set/Refresh Filter' onClick='applyGraphFilter()'>
+						<input type='button' value='<?php print __('Go');?>' title='<?php print __('Set/Refresh Filter');?>' onClick='applyGraphFilter()'>
 					</td>
 					<td>
-						<input type='button' value='Clear' title='Clear Filters' onClick='applyGraphFilter()'>
+						<input type='button' value='<?php print __('Clear');?>' title='<?php print __('Clear Filters');?>' onClick='applyGraphFilter()'>
 					</td>
 					<?php if (is_view_allowed('graph_settings')) {?>
 					<td>
-						<input type='button' id='save' value='Save' title='Save the current Graphs, Columns, Thumbnail, Preset, and Timeshift preferences to your profile' onClick='saveGraphFilter("tree")'>
+						<input type='button' id='save' value='<?php print __('Save');?>' title='<?php print __('Save the current Graphs, Columns, Thumbnail, Preset, and Timeshift preferences to your profile');?>' onClick='saveGraphFilter("tree")'>
 					</td>
 					<td id='text'></td>
 					<?php }?>
@@ -611,13 +611,13 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 			<table class='filterTable'>
 				<tr id='timespan'>
 					<td>
-						Presets
+						<?php print __('Presets');?>
 					</td>
 					<td>
 						<select id='predefined_timespan' name='predefined_timespan' onChange='applyGraphTimespan()'>
 							<?php
 							if (isset($_SESSION['custom'])) {
-								$graph_timespans[GT_CUSTOM] = 'Custom';
+								$graph_timespans[GT_CUSTOM] = __('Custom');
 								$start_val = 0;
 								$end_val = sizeof($graph_timespans);
 							} else {
@@ -638,28 +638,28 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 						</select>
 					</td>
 					<td>
-						From
+						<?php print __('From');?>
 					</td>
 					<td>
 						<input type='text' id='date1' size='18' value='<?php print (isset($_SESSION['sess_current_date1']) ? $_SESSION['sess_current_date1'] : '');?>'>
 					</td>
 					<td>
-						<i id='startDate' class='calendar fa fa-calendar' title='Start Date Selector'></i>
+						<i id='startDate' class='calendar fa fa-calendar' title='<?php print __('Start Date Selector');?>'></i>
 					</td>
 					<td>
-						To
+						<?php print __('To');?>
 					</td>
 					<td>
 						<input type='text' id='date2' size='18' value='<?php print (isset($_SESSION['sess_current_date2']) ? $_SESSION['sess_current_date2'] : '');?>'>
 					</td>
 					<td>
-						<i id='endDate' class='calendar fa fa-calendar' title='End Date Selector'></i>
+						<i id='endDate' class='calendar fa fa-calendar' title='<?php print __('End Date Selector');?>'></i>
 					</td>
 					<td>
-						<i class='shiftArrow fa fa-backward' onClick='timeshiftGraphFilterLeft()' title='Shift Time Backward'></i>
+						<i class='shiftArrow fa fa-backward' onClick='timeshiftGraphFilterLeft()' title='<?php print __('Shift Time Backward');?>'></i>
 					</td>
 					<td>
-						<select id='predefined_timeshift' name='predefined_timeshift' title='Define Shifting Interval'>
+						<select id='predefined_timeshift' name='predefined_timeshift' title='<?php print __('Define Shifting Interval');?>'>
 							<?php
 							$start_val = 1;
 							$end_val = sizeof($graph_timeshifts)+1;
@@ -672,18 +672,18 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 						</select>
 					</td>
 					<td>
-						<i class='shiftArrow fa fa-forward' onClick='timeshiftGraphFilterRight()' title='Shift Time Forward'></i>
+						<i class='shiftArrow fa fa-forward' onClick='timeshiftGraphFilterRight()' title='<?php print __('Shift Time Forward');?>'></i>
 					</td>
 					<td>
-						<input type='button' name='button_refresh_x' value='Refresh' title='Refresh selected time span' onClick='refreshGraphTimespanFilter()'>
+						<input type='button' name='button_refresh_x' value='<?php print __('Refresh');?>' title='<?php print __('Refresh selected time span');?>' onClick='refreshGraphTimespanFilter()'>
 					</td>
 					<td>
-						<input type='button' name='button_clear' value='Clear' title='Return to the default time span' onClick='clearGraphTimespanFilter()'>
+						<input type='button' name='button_clear' value='<?php print __('Clear');?>' title='<?php print __('Return to the default time span');?>' onClick='clearGraphTimespanFilter()'>
 					</td>
 				</tr>
 				<tr id='realtime' style='display:none;'>
 					<td>
-						Window
+						<?php print __('Window');?>
 					</td>
 					<td>
 						<select name='graph_start' id='graph_start' onChange='imageOptionsChanged("timespan")'>
@@ -695,7 +695,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 						</select>
 					</td>
 					<td>
-						Refresh
+						<?php print __('Refresh');?>
 					</td>
 					<td>
 						<select name='ds_step' id='ds_step' onChange="imageOptionsChanged('interval')">
@@ -707,7 +707,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 						</select>
 					</td>
 					<td>
-						<input type='button' id='realtimeoff' value='Stop'>
+						<input type='button' id='realtimeoff' value='<?php print __('Stop');?>'>
 					</td>
 					<td align='center' colspan='6'>
 						<span id='countdown'></span>
@@ -850,10 +850,12 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 
 			/* for graphs without a data query */
 			if (empty($data_query_id)) {
-				array_push($data_queries, array(
-					'id' => '0',
-					'name' => 'Non Query Based'
-					));
+				array_push($data_queries, 
+					array(
+						'id' => '0',
+						'name' => 'Non Query Based'
+					)
+				);
 			}
 
 			if (sizeof($data_queries) > 0) {
@@ -904,7 +906,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 	$total_rows = sizeof($graph_list);
 
 	/* generate page list */
-	$nav = html_nav_bar("graph_view.php?action=tree_content&tree_id=$tree_id&leaf_id=$leaf_id&nodeid=" . get_request_var('nodeid') . '&host_group_data=' . get_request_var('host_group_data'), MAX_DISPLAY_PAGES, get_request_var('page'), get_request_var('graphs'), $total_rows, get_request_var('columns'), 'Graphs', 'page', 'main');
+	$nav = html_nav_bar("graph_view.php?action=tree_content&tree_id=$tree_id&leaf_id=$leaf_id&nodeid=" . get_request_var('nodeid') . '&host_group_data=' . get_request_var('host_group_data'), MAX_DISPLAY_PAGES, get_request_var('page'), get_request_var('graphs'), $total_rows, get_request_var('columns'), __('Graphs'), 'page', 'main');
 
 	print $nav;
 

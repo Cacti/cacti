@@ -186,6 +186,7 @@ function api_device_save($id, $host_template_id, $description, $hostname, $snmp_
 			/* let the remote pollers know there was a change */
 			/* todo - need to put in real poller_id */
 			$poller_id = 0;
+
 			api_device_cache_crc_update($poller_id);
 
 			/* push out relavant fields to data sources using this host */
