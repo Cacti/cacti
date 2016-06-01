@@ -1090,7 +1090,8 @@ function redrawGraph(graph_id) {
 }
 
 function initializeGraphs() {
-	$('span[id$="_mrtg"]').unbind('click').click(function() {
+	$('a[id$="_mrtg"]').unbind('click').click(function(event) {
+		event.preventDefault();
 		graph_id=$(this).attr('id').replace('graph_','').replace('_mrtg','');
 		$.get(urlPath+'graph.php?local_graph_id='+graph_id+'&header=false', function(data) {
 			$('#breadcrumbs').append('<li><a id="nav_mrgt" href="#">MRTG View</a></li>');
@@ -1102,7 +1103,8 @@ function initializeGraphs() {
 		});
 	});
 
-	$('span[id$="_csv"]').unbind('click').click(function() {
+	$('a[id$="_csv"]').unbind('click').click(function(event) {
+		event.preventDefault();
 		graph_id=$(this).attr('id').replace('graph_','').replace('_csv','');
 		document.location = urlPath+
 			'graph_xport.php?local_graph_id='+graph_id+
@@ -1165,7 +1167,8 @@ function initializeGraphs() {
 		realtimeGrapher();
 	});
 
-	$('span[id$="_util"]').unbind('click').click(function() {
+	$('a[id$="_util"]').unbind('click').click(function(event) {
+		event.preventDefault();
 		graph_id=$(this).attr('id').replace('graph_','').replace('_util','');
 		$.get(urlPath+'graph.php?action=zoom&header=false&local_graph_id='+graph_id+'&rra_id=0&graph_start='+getTimestampFromDate($('#date1').val())+'&graph_end='+getTimestampFromDate($('#date2').val()), function(data) {
 			$('div[class^="ui-"]').remove();
@@ -1176,7 +1179,8 @@ function initializeGraphs() {
 		});
 	});
 
-	$('span[id$="_realtime"]').unbind('click').click(function() {
+	$('a[id$="_realtime"]').unbind('click').click(function(event) {
+		event.preventDefault();
 		graph_id=$(this).attr('id').replace('graph_','').replace('_realtime','');
 
 		if (realtimeArray[graph_id]) {
