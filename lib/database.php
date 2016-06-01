@@ -62,6 +62,10 @@ function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $p
 		try {
 			$cnn_id = new PDO("$db_type:host=$device;port=$port;dbname=$db_name;charset=utf8", $user, $pass, $flags);
 			$cnn_id->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_SILENT);
+
+			// MySQL 5.7 forces NO_ZERO_DATE on
+			db_execute("SET SESSION sql_mode = (SELECT REPLACE(@@sql_mode,'NO_ZERO_DATE', ''))");
+
 			$database_sessions["$device:$port:$db_name"] = $cnn_id;
 			return $cnn_id;
 		} catch (PDOException $e) {
