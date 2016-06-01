@@ -65,6 +65,7 @@ function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $p
 
 			// MySQL 5.7 forces NO_ZERO_DATE on
 			db_execute("SET SESSION sql_mode = (SELECT REPLACE(@@sql_mode,'NO_ZERO_DATE', ''))");
+			db_execute("SET SESSION sql_mode = (SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY', ''))");
 
 			$database_sessions["$device:$port:$db_name"] = $cnn_id;
 			return $cnn_id;
