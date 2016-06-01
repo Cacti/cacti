@@ -172,7 +172,7 @@ function clog_view_logfile() {
 	}
 
 	if (get_request_var('message_type') > 0) {
-		$start_string = __('Log File [Total Lines: %d %s - Additional Filter in Affect]', sizeof($logcontents), $sd_filter);
+		$start_string = __('Log File [Total Lines: %d %s - Additional Filter in Affect]', sizeof($logcontents), $ad_filter);
 	}else{
 		$start_string = __('Log File [Total Lines: %d %s - No Other Filter in Affect]', sizeof($logcontents), $ad_filter);
 	}
