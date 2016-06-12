@@ -461,6 +461,7 @@ $struct_data_source_item = array(
 		'friendly_name' => __('Output Field'),
 		'method' => 'drop_sql',
 		'default' => '0',
+		'none_value' => __('Not Selected'),
 		'description' => __('When data is gathered, the data for this field will be put into this data source.')
 		)
 	);
