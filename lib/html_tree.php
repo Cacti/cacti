@@ -277,6 +277,8 @@ function grow_dhtml_trees() {
 			height = parseInt($(window).height()-$('.jstree').offset().top-10)+'px';
 			$('#navigation').height(height+'px');
 		});
+
+		<?php print api_plugin_hook_function('top_graph_jquery_function');?>
 	});
 	</script>
 	<?php
