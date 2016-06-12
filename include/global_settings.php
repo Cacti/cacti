@@ -2009,7 +2009,7 @@ $settings_user = array(
 		),
 	'tree' => array(
 		'default_tree_id' => array(
-			'friendly_name' => __('Default Graph Tree'),
+			'friendly_name' => __('Default Tree'),
 			'description' => __('The default graph tree to use when displaying graphs in tree mode.'),
 			'method' => 'drop_sql',
 			'sql' => 'SELECT id,name FROM graph_tree ORDER BY name',

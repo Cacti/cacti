@@ -704,7 +704,7 @@ $user_auth_realms = array(
 
 	3    => __('Devices/Data Sources'),
 	5    => __('Graphs'),
-	4    => __('Graph Trees'),
+	4    => __('Trees'),
 	1043 => __('Remove Spikes from Graphs'),
 
 	9    => __('Data Source Profiles'),

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-05-30 21:05-0400\n"
+"POT-Creation-Date: 2016-06-12 10:06-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -22,8 +22,9 @@ msgstr ""
 #: ../aggregate_graphs.php:40 ../lib/html_form.php:1025
 #: ../lib/html_reports.php:1302 ../lib/api_automation.php:1242
 #: ../lib/api_automation.php:1305 ../lib/api_automation.php:1368
-#: ../lib/html.php:854 ../plugins/thold/notify_lists.php:31
-#: ../plugins/thold/thold_templates.php:33 ../plugins/thold/setup.php:1031
+#: ../lib/html.php:854 ../plugins/syslog/syslog_removal.php:31
+#: ../plugins/syslog/setup.php:806 ../plugins/thold/notify_lists.php:31
+#: ../plugins/thold/thold_templates.php:33 ../plugins/thold/setup.php:1033
 #: ../plugins/thold/thold.php:324 ../data_sources.php:35
 #: ../data_sources.php:890 ../host_templates.php:28 ../host_templates.php:460
 #: ../host_templates.php:520 ../data_source_profiles.php:29
@@ -41,6 +42,7 @@ msgid "Delete"
 msgstr ""
 
 #: ../user_group_admin.php:31 ../automation_graph_rules.php:30
+#: ../plugins/syslog/syslog_removal.php:33 ../plugins/syslog/setup.php:808
 #: ../plugins/thold/thold.php:326 ../data_sources.php:41
 #: ../automation_tree_rules.php:30 ../automation_networks.php:33
 #: ../plugins.php:29 ../managers.php:29 ../managers.php:35
@@ -50,6 +52,7 @@ msgid "Enable"
 msgstr ""
 
 #: ../user_group_admin.php:32 ../automation_graph_rules.php:31
+#: ../plugins/syslog/syslog_removal.php:32 ../plugins/syslog/setup.php:807
 #: ../plugins/thold/thold.php:325 ../data_sources.php:42
 #: ../automation_tree_rules.php:31 ../automation_networks.php:32
 #: ../plugins.php:30 ../managers.php:30 ../managers.php:34
@@ -110,10 +113,19 @@ msgstr ""
 #: ../automation_graph_rules.php:828 ../lib/html_reports.php:1398
 #: ../lib/html_reports.php:1492 ../lib/html_reports.php:1503
 #: ../lib/html_reports.php:1526 ../lib/api_automation.php:162
-#: ../lib/api_automation.php:1015 ../plugins/thold/thold_graph.php:143
-#: ../plugins/thold/thold_graph.php:756 ../plugins/thold/notify_lists.php:959
-#: ../plugins/thold/notify_lists.php:1042
-#: ../plugins/thold/notify_lists.php:1125
+#: ../lib/api_automation.php:1015 ../plugins/syslog/syslog_removal.php:363
+#: ../plugins/syslog/syslog_removal.php:461
+#: ../plugins/syslog/syslog_removal.php:608
+#: ../plugins/syslog/syslog_reports.php:328
+#: ../plugins/syslog/syslog_reports.php:448
+#: ../plugins/syslog/syslog_reports.php:595
+#: ../plugins/syslog/syslog_alerts.php:418
+#: ../plugins/syslog/syslog_alerts.php:537
+#: ../plugins/syslog/syslog_alerts.php:687
+#: ../plugins/thold/thold_graph.php:137 ../plugins/thold/thold_graph.php:750
+#: ../plugins/thold/notify_lists.php:961
+#: ../plugins/thold/notify_lists.php:1044
+#: ../plugins/thold/notify_lists.php:1127
 #: ../plugins/thold/thold_templates.php:676 ../plugins/thold/thold.php:419
 #: ../plugins/thold/includes/settings.php:206 ../automation_tree_rules.php:832
 #: ../automation_tree_rules.php:850 ../utilities.php:2102
@@ -142,7 +154,7 @@ msgid "Allow Users of this Group to keep custom User Settings"
 msgstr ""
 
 #: ../user_group_admin.php:105
-msgid "Graph Tree Rights"
+msgid "Tree Rights"
 msgstr ""
 
 #: ../user_group_admin.php:107
@@ -188,25 +200,28 @@ msgstr[1] ""
 #: ../aggregate_graphs.php:402 ../aggregate_graphs.php:413
 #: ../lib/html_form.php:1024 ../lib/html_form.php:1036
 #: ../lib/html_form.php:1047 ../lib/html_utility.php:193
-#: ../lib/clog_webapi.php:125 ../plugins/thold/notify_lists.php:293
-#: ../plugins/thold/notify_lists.php:302 ../plugins/thold/notify_lists.php:354
-#: ../plugins/thold/notify_lists.php:365 ../plugins/thold/notify_lists.php:418
-#: ../plugins/thold/notify_lists.php:429 ../plugins/thold/notify_lists.php:482
-#: ../plugins/thold/notify_lists.php:492 ../plugins/thold/thold_webapi.php:300
-#: ../plugins/thold/thold_webapi.php:309 ../plugins/thold/setup.php:1109
-#: ../data_sources.php:463 ../data_sources.php:474 ../data_sources.php:484
-#: ../data_sources.php:494 ../data_sources.php:504 ../data_sources.php:513
-#: ../data_sources.php:522 ../data_sources.php:531 ../data_sources.php:537
-#: ../host_templates.php:247 ../host_templates.php:261
-#: ../host_templates.php:309 ../host_templates.php:369
-#: ../data_source_profiles.php:261 ../data_source_profiles.php:271
-#: ../data_source_profiles.php:319 ../color.php:183 ../graphs.php:611
-#: ../graphs.php:625 ../graphs.php:639 ../graphs.php:653 ../graphs.php:668
-#: ../graphs.php:691 ../graphs.php:708 ../graphs.php:809 ../graphs.php:849
-#: ../graphs.php:871 ../graphs.php:879 ../graphs.php:1439
-#: ../automation_tree_rules.php:286 ../graph_templates.php:278
-#: ../graph_templates.php:288 ../automation_networks.php:313 ../tree.php:459
-#: ../tree.php:468 ../tree.php:477 ../data_input.php:214 ../data_input.php:262
+#: ../lib/clog_webapi.php:125 ../plugins/syslog/syslog_removal.php:190
+#: ../plugins/syslog/syslog_reports.php:168
+#: ../plugins/syslog/syslog_alerts.php:171 ../plugins/syslog/setup.php:662
+#: ../plugins/thold/notify_lists.php:293 ../plugins/thold/notify_lists.php:302
+#: ../plugins/thold/notify_lists.php:354 ../plugins/thold/notify_lists.php:365
+#: ../plugins/thold/notify_lists.php:418 ../plugins/thold/notify_lists.php:429
+#: ../plugins/thold/notify_lists.php:482 ../plugins/thold/notify_lists.php:492
+#: ../plugins/thold/thold_webapi.php:300 ../plugins/thold/thold_webapi.php:309
+#: ../plugins/thold/setup.php:1111 ../data_sources.php:463
+#: ../data_sources.php:474 ../data_sources.php:484 ../data_sources.php:494
+#: ../data_sources.php:504 ../data_sources.php:513 ../data_sources.php:522
+#: ../data_sources.php:531 ../data_sources.php:537 ../host_templates.php:247
+#: ../host_templates.php:261 ../host_templates.php:309
+#: ../host_templates.php:369 ../data_source_profiles.php:261
+#: ../data_source_profiles.php:271 ../data_source_profiles.php:319
+#: ../color.php:183 ../graphs.php:611 ../graphs.php:625 ../graphs.php:639
+#: ../graphs.php:653 ../graphs.php:668 ../graphs.php:691 ../graphs.php:708
+#: ../graphs.php:809 ../graphs.php:849 ../graphs.php:871 ../graphs.php:879
+#: ../graphs.php:1439 ../automation_tree_rules.php:286
+#: ../graph_templates.php:278 ../graph_templates.php:288
+#: ../automation_networks.php:313 ../tree.php:459 ../tree.php:468
+#: ../tree.php:477 ../data_input.php:214 ../data_input.php:262
 #: ../automation_snmp.php:255 ../automation_snmp.php:358
 #: ../color_templates.php:212 ../color_templates.php:222 ../cdef.php:283
 #: ../cdef.php:293 ../cdef.php:345 ../managers.php:993 ../managers.php:1050
@@ -229,25 +244,27 @@ msgstr ""
 #: ../aggregate_graphs.php:384 ../aggregate_graphs.php:393
 #: ../aggregate_graphs.php:402 ../aggregate_graphs.php:413
 #: ../lib/html_reports.php:665 ../lib/html_utility.php:193
-#: ../lib/clog_webapi.php:126 ../plugins/thold/notify_lists.php:293
-#: ../plugins/thold/notify_lists.php:302 ../plugins/thold/notify_lists.php:354
-#: ../plugins/thold/notify_lists.php:365 ../plugins/thold/notify_lists.php:418
-#: ../plugins/thold/notify_lists.php:429 ../plugins/thold/notify_lists.php:482
-#: ../plugins/thold/notify_lists.php:492 ../plugins/thold/thold_webapi.php:295
-#: ../plugins/thold/thold_webapi.php:305 ../plugins/thold/setup.php:1110
-#: ../data_sources.php:463 ../data_sources.php:474 ../data_sources.php:484
-#: ../data_sources.php:494 ../data_sources.php:504 ../data_sources.php:513
-#: ../data_sources.php:522 ../data_sources.php:531 ../data_sources.php:537
-#: ../host_templates.php:247 ../host_templates.php:261
-#: ../host_templates.php:310 ../host_templates.php:370
-#: ../data_source_profiles.php:261 ../data_source_profiles.php:271
-#: ../data_source_profiles.php:320 ../color.php:183 ../graphs.php:611
-#: ../graphs.php:625 ../graphs.php:639 ../graphs.php:653 ../graphs.php:668
-#: ../graphs.php:691 ../graphs.php:708 ../graphs.php:809 ../graphs.php:849
-#: ../graphs.php:871 ../graphs.php:879 ../automation_tree_rules.php:286
-#: ../graph_templates.php:278 ../graph_templates.php:288
-#: ../automation_networks.php:305 ../tree.php:459 ../tree.php:468
-#: ../tree.php:477 ../data_input.php:214 ../data_input.php:263
+#: ../lib/clog_webapi.php:126 ../plugins/syslog/syslog_removal.php:190
+#: ../plugins/syslog/syslog_reports.php:168
+#: ../plugins/syslog/syslog_alerts.php:171
+#: ../plugins/thold/notify_lists.php:293 ../plugins/thold/notify_lists.php:302
+#: ../plugins/thold/notify_lists.php:354 ../plugins/thold/notify_lists.php:365
+#: ../plugins/thold/notify_lists.php:418 ../plugins/thold/notify_lists.php:429
+#: ../plugins/thold/notify_lists.php:482 ../plugins/thold/notify_lists.php:492
+#: ../plugins/thold/thold_webapi.php:295 ../plugins/thold/thold_webapi.php:305
+#: ../plugins/thold/setup.php:1112 ../data_sources.php:463
+#: ../data_sources.php:474 ../data_sources.php:484 ../data_sources.php:494
+#: ../data_sources.php:504 ../data_sources.php:513 ../data_sources.php:522
+#: ../data_sources.php:531 ../data_sources.php:537 ../host_templates.php:247
+#: ../host_templates.php:261 ../host_templates.php:310
+#: ../host_templates.php:370 ../data_source_profiles.php:261
+#: ../data_source_profiles.php:271 ../data_source_profiles.php:320
+#: ../color.php:183 ../graphs.php:611 ../graphs.php:625 ../graphs.php:639
+#: ../graphs.php:653 ../graphs.php:668 ../graphs.php:691 ../graphs.php:708
+#: ../graphs.php:809 ../graphs.php:849 ../graphs.php:871 ../graphs.php:879
+#: ../automation_tree_rules.php:286 ../graph_templates.php:278
+#: ../graph_templates.php:288 ../automation_networks.php:305 ../tree.php:459
+#: ../tree.php:468 ../tree.php:477 ../data_input.php:214 ../data_input.php:263
 #: ../automation_snmp.php:230 ../automation_snmp.php:359
 #: ../color_templates.php:212 ../color_templates.php:222 ../cdef.php:283
 #: ../cdef.php:293 ../cdef.php:346 ../managers.php:993 ../managers.php:1050
@@ -302,6 +319,9 @@ msgstr ""
 #: ../aggregate_graphs.php:370 ../aggregate_graphs.php:417
 #: ../permission_denied.php:30 ../permission_denied.php:32
 #: ../lib/html_form.php:1045 ../lib/html_utility.php:191
+#: ../plugins/syslog/syslog_removal.php:193
+#: ../plugins/syslog/syslog_reports.php:171
+#: ../plugins/syslog/syslog_alerts.php:174
 #: ../plugins/thold/notify_lists.php:306 ../plugins/thold/notify_lists.php:369
 #: ../plugins/thold/notify_lists.php:434 ../plugins/thold/notify_lists.php:497
 #: ../data_sources.php:541 ../host_templates.php:265
@@ -335,13 +355,13 @@ msgstr ""
 #: ../user_group_admin.php:883 ../user_group_admin.php:1025
 #: ../user_group_admin.php:1157 ../automation_graph_rules.php:825
 #: ../aggregate_graphs.php:1017 ../aggregate_graphs.php:1335
-#: ../lib/api_automation.php:273 ../plugins/thold/thold_graph.php:313
-#: ../plugins/thold/thold_graph.php:583 ../plugins/thold/notify_lists.php:819
-#: ../plugins/thold/notify_lists.php:1037
-#: ../plugins/thold/notify_lists.php:1273 ../plugins/thold/thold.php:473
+#: ../lib/api_automation.php:273 ../plugins/thold/thold_graph.php:307
+#: ../plugins/thold/thold_graph.php:577 ../plugins/thold/notify_lists.php:819
+#: ../plugins/thold/notify_lists.php:1039
+#: ../plugins/thold/notify_lists.php:1275 ../plugins/thold/thold.php:473
 #: ../data_sources.php:1296 ../host_templates.php:792 ../graphs.php:1673
 #: ../automation_tree_rules.php:827 ../graph_templates.php:680
-#: ../tree.php:1522 ../data_queries.php:1067 ../data_templates.php:774
+#: ../tree.php:1525 ../data_queries.php:1067 ../data_templates.php:774
 #: ../user_admin.php:893 ../user_admin.php:987 ../user_admin.php:1114
 #: ../user_admin.php:1255 ../user_admin.php:1387 ../host.php:1424
 msgid "ID"
@@ -366,11 +386,13 @@ msgstr ""
 #: ../user_group_admin.php:611 ../automation_graph_rules.php:708
 #: ../lib/html_reports.php:1399 ../lib/html_reports.php:1526
 #: ../lib/api_automation.php:163 ../lib/api_automation.php:1016
-#: ../lib/html_utility.php:573 ../plugins/thold/thold_graph.php:144
-#: ../plugins/thold/thold_graph.php:454 ../plugins/thold/thold_graph.php:757
-#: ../plugins/thold/notify_lists.php:488 ../plugins/thold/notify_lists.php:829
-#: ../plugins/thold/notify_lists.php:960
-#: ../plugins/thold/notify_lists.php:1125 ../plugins/thold/thold.php:420
+#: ../lib/html_utility.php:585 ../plugins/syslog/syslog_removal.php:363
+#: ../plugins/syslog/syslog_reports.php:328
+#: ../plugins/syslog/syslog_alerts.php:418
+#: ../plugins/thold/thold_graph.php:138 ../plugins/thold/thold_graph.php:448
+#: ../plugins/thold/thold_graph.php:751 ../plugins/thold/notify_lists.php:488
+#: ../plugins/thold/notify_lists.php:829 ../plugins/thold/notify_lists.php:962
+#: ../plugins/thold/notify_lists.php:1127 ../plugins/thold/thold.php:420
 #: ../plugins/thold/includes/arrays.php:42
 #: ../plugins/thold/includes/arrays.php:74
 #: ../plugins/thold/includes/settings.php:112
@@ -428,8 +450,8 @@ msgstr ""
 #: ../aggregate_graphs.php:1255 ../lib/html_graph.php:182
 #: ../lib/functions.php:1822 ../lib/api_automation.php:274
 #: ../lib/html_tree.php:555 ../lib/html_tree.php:909 ../lib/html.php:1152
-#: ../plugins/thold/thold_graph.php:584 ../plugins/thold/notify_lists.php:819
-#: ../color.php:688 ../graphs.php:1586 ../utilities.php:255 ../tree.php:1530
+#: ../plugins/thold/thold_graph.php:578 ../plugins/thold/notify_lists.php:819
+#: ../color.php:688 ../graphs.php:1586 ../utilities.php:255 ../tree.php:1533
 #: ../color_templates.php:522 ../include/global_arrays.php:579
 #: ../include/global_arrays.php:706 ../user_admin.php:1114
 #: ../user_admin.php:2320 ../host.php:1425
@@ -488,19 +510,19 @@ msgstr ""
 #: ../user_group_admin.php:879 ../user_group_admin.php:2113
 #: ../automation_devices.php:210 ../automation_devices.php:494
 #: ../lib/functions.php:2108 ../lib/api_automation.php:172
-#: ../lib/api_automation.php:466 ../plugins/thold/thold_graph.php:576
-#: ../plugins/thold/thold_graph.php:767 ../plugins/thold/notify_lists.php:43
+#: ../lib/api_automation.php:466 ../plugins/thold/thold_graph.php:570
+#: ../plugins/thold/thold_graph.php:761 ../plugins/thold/notify_lists.php:43
 #: ../plugins/thold/notify_lists.php:714 ../plugins/thold/notify_lists.php:815
-#: ../utilities.php:250 ../tree.php:1529 ../include/global_arrays.php:582
+#: ../utilities.php:250 ../tree.php:1532 ../include/global_arrays.php:582
 #: ../user_admin.php:2513 ../host.php:1285 ../host.php:1333 ../host.php:1417
 msgid "Devices"
 msgstr ""
 
 #: ../user_group_admin.php:883 ../automation_devices.php:220
 #: ../lib/api_automation.php:269 ../lib/api_automation.php:1135
-#: ../install/index.php:1081 ../plugins/thold/thold_graph.php:582
+#: ../install/index.php:1081 ../plugins/thold/thold_graph.php:576
 #: ../plugins/thold/notify_lists.php:586 ../plugins/thold/notify_lists.php:819
-#: ../plugins/thold/notify_lists.php:1586 ../tree.php:610 ../managers.php:219
+#: ../plugins/thold/notify_lists.php:1588 ../tree.php:610 ../managers.php:219
 #: ../include/global_form.php:968 ../include/global_form.php:1004
 #: ../include/global_form.php:1254 ../include/global_form.php:1585
 #: ../user_admin.php:987 ../user_admin.php:1114
@@ -508,7 +530,7 @@ msgid "Description"
 msgstr ""
 
 #: ../user_group_admin.php:883 ../lib/functions.php:2090
-#: ../lib/api_automation.php:275 ../plugins/thold/thold_graph.php:585
+#: ../lib/api_automation.php:275 ../plugins/thold/thold_graph.php:579
 #: ../plugins/thold/notify_lists.php:819 ../data_sources.php:1198
 #: ../data_sources.php:1290 ../utilities.php:260
 #: ../include/global_arrays.php:581 ../user_admin.php:1114 ../host.php:1426
@@ -520,9 +542,9 @@ msgstr ""
 #: ../lib/html_reports.php:1393 ../lib/api_automation.php:157
 #: ../lib/api_automation.php:271 ../lib/api_automation.php:558
 #: ../lib/api_automation.php:1010 ../lib/api_automation.php:1138
-#: ../plugins/thold/thold_graph.php:136 ../plugins/thold/thold_graph.php:586
-#: ../plugins/thold/thold_graph.php:751 ../plugins/thold/thold_graph.php:998
-#: ../plugins/thold/notify_lists.php:819 ../plugins/thold/setup.php:976
+#: ../plugins/thold/thold_graph.php:130 ../plugins/thold/thold_graph.php:580
+#: ../plugins/thold/thold_graph.php:745 ../plugins/thold/thold_graph.php:992
+#: ../plugins/thold/notify_lists.php:819 ../plugins/thold/setup.php:978
 #: ../automation_tree_rules.php:710 ../automation_networks.php:894
 #: ../plugins.php:366 ../plugins.php:470 ../managers.php:221
 #: ../data_templates.php:778 ../user_admin.php:1114 ../host.php:1017
@@ -532,7 +554,7 @@ msgstr ""
 
 #: ../user_group_admin.php:883 ../lib/api_automation.php:270
 #: ../lib/api_automation.php:556 ../lib/api_automation.php:805
-#: ../lib/api_automation.php:1136 ../plugins/thold/thold_graph.php:589
+#: ../lib/api_automation.php:1136 ../plugins/thold/thold_graph.php:583
 #: ../plugins/thold/notify_lists.php:819 ../managers.php:222
 #: ../include/global_form.php:1011 ../include/global_form.php:1593
 #: ../user_admin.php:1114 ../host.php:1423
@@ -581,13 +603,14 @@ msgid "Default Tree policy for this User Group"
 msgstr ""
 
 #: ../user_group_admin.php:1153 ../user_group_admin.php:2287
-#: ../automation_tree_rules.php:821 ../tree.php:1457 ../tree.php:1516
-#: ../include/global_arrays.php:580 ../user_admin.php:2687
+#: ../automation_tree_rules.php:821 ../tree.php:1445 ../tree.php:1460
+#: ../tree.php:1519 ../include/global_arrays.php:580
+#: ../include/global_arrays.php:707 ../user_admin.php:2687
 #: ../user_admin.php:2774
 msgid "Trees"
 msgstr ""
 
-#: ../user_group_admin.php:1157 ../tree.php:1521 ../user_admin.php:1387
+#: ../user_group_admin.php:1157 ../tree.php:1524 ../user_admin.php:1387
 msgid "Tree Name"
 msgstr ""
 
@@ -672,11 +695,15 @@ msgstr ""
 #: ../lib/html_graph.php:176 ../lib/html_reports.php:1387
 #: ../lib/api_automation.php:133 ../lib/api_automation.php:460
 #: ../lib/api_automation.php:683 ../lib/api_automation.php:986
-#: ../lib/html_tree.php:549 ../plugins/thold/thold_graph.php:107
-#: ../plugins/thold/thold_graph.php:727 ../plugins/thold/thold_graph.php:970
-#: ../plugins/thold/notify_lists.php:690 ../plugins/thold/notify_lists.php:933
-#: ../plugins/thold/notify_lists.php:1191
-#: ../plugins/thold/notify_lists.php:1498
+#: ../lib/html_tree.php:549 ../plugins/syslog/syslog.php:427
+#: ../plugins/syslog/syslog.php:809 ../plugins/syslog/syslog_removal.php:455
+#: ../plugins/syslog/syslog_reports.php:442
+#: ../plugins/syslog/syslog_alerts.php:531
+#: ../plugins/thold/thold_graph.php:101 ../plugins/thold/thold_graph.php:721
+#: ../plugins/thold/thold_graph.php:964 ../plugins/thold/notify_lists.php:690
+#: ../plugins/thold/notify_lists.php:935
+#: ../plugins/thold/notify_lists.php:1193
+#: ../plugins/thold/notify_lists.php:1500
 #: ../plugins/thold/thold_templates.php:1251 ../plugins/thold/thold.php:392
 #: ../data_sources.php:1168 ../host_templates.php:680
 #: ../data_source_profiles.php:716 ../color.php:520 ../graphs.php:1580
@@ -684,7 +711,7 @@ msgstr ""
 #: ../utilities.php:674 ../utilities.php:996 ../utilities.php:1223
 #: ../utilities.php:1518 ../utilities.php:2217 ../utilities.php:2468
 #: ../automation_networks.php:989 ../automation_networks.php:1010
-#: ../tree.php:596 ../tree.php:631 ../tree.php:1451 ../plugins.php:360
+#: ../tree.php:596 ../tree.php:631 ../tree.php:1454 ../plugins.php:360
 #: ../data_input.php:595 ../automation_snmp.php:812 ../color_templates.php:415
 #: ../cdef.php:704 ../managers.php:150 ../managers.php:526 ../managers.php:715
 #: ../data_queries.php:964 ../data_templates.php:650 ../user_domains.php:620
@@ -710,18 +737,22 @@ msgstr ""
 #: ../lib/api_automation.php:470 ../lib/api_automation.php:693
 #: ../lib/api_automation.php:1029
 #: ../plugins/flowview/flowview_schedules.php:415
-#: ../plugins/thold/thold_graph.php:152 ../plugins/thold/thold_graph.php:771
-#: ../plugins/thold/thold_graph.php:1017 ../plugins/thold/notify_lists.php:718
-#: ../plugins/thold/notify_lists.php:968
-#: ../plugins/thold/notify_lists.php:1201
-#: ../plugins/thold/notify_lists.php:1508
+#: ../plugins/syslog/syslog.php:406 ../plugins/syslog/syslog.php:1089
+#: ../plugins/syslog/syslog_removal.php:475
+#: ../plugins/syslog/syslog_reports.php:462
+#: ../plugins/syslog/syslog_alerts.php:551
+#: ../plugins/thold/thold_graph.php:146 ../plugins/thold/thold_graph.php:765
+#: ../plugins/thold/thold_graph.php:1011 ../plugins/thold/notify_lists.php:718
+#: ../plugins/thold/notify_lists.php:970
+#: ../plugins/thold/notify_lists.php:1203
+#: ../plugins/thold/notify_lists.php:1510
 #: ../plugins/thold/thold_templates.php:1261 ../data_sources.php:1202
 #: ../host_templates.php:690 ../data_source_profiles.php:726
 #: ../data_source_profiles.php:842 ../color.php:530 ../graphs.php:1590
 #: ../automation_tree_rules.php:724 ../graph_templates.php:560
 #: ../utilities.php:650 ../utilities.php:1302 ../utilities.php:1557
 #: ../utilities.php:2242 ../utilities.php:2504 ../automation_networks.php:999
-#: ../tree.php:1461 ../data_input.php:605 ../automation_snmp.php:822
+#: ../tree.php:1464 ../data_input.php:605 ../automation_snmp.php:822
 #: ../color_templates.php:429 ../cdef.php:714 ../managers.php:160
 #: ../managers.php:536 ../data_queries.php:974 ../data_templates.php:660
 #: ../user_domains.php:32 ../user_domains.php:630 ../user_domains.php:715
@@ -746,13 +777,13 @@ msgstr ""
 #: ../automation_templates.php:437 ../automation_devices.php:435
 #: ../graphs_new.php:560 ../graph_view.php:503 ../aggregate_graphs.php:941
 #: ../aggregate_graphs.php:1270 ../lib/html_graph.php:160
-#: ../plugins/thold/notify_lists.php:735 ../plugins/thold/notify_lists.php:985
-#: ../plugins/thold/notify_lists.php:1218
-#: ../plugins/thold/notify_lists.php:1519 ../data_sources.php:1158
+#: ../plugins/thold/notify_lists.php:735 ../plugins/thold/notify_lists.php:987
+#: ../plugins/thold/notify_lists.php:1220
+#: ../plugins/thold/notify_lists.php:1521 ../data_sources.php:1158
 #: ../host_templates.php:707 ../data_source_profiles.php:743 ../color.php:553
 #: ../graphs.php:1570 ../graph_templates.php:577 ../utilities.php:661
 #: ../utilities.php:960 ../utilities.php:1313 ../utilities.php:1568
-#: ../utilities.php:2253 ../utilities.php:2515 ../tree.php:1472
+#: ../utilities.php:2253 ../utilities.php:2515 ../tree.php:1475
 #: ../plugins.php:395 ../data_input.php:616 ../automation_snmp.php:833
 #: ../cdef.php:731 ../managers.php:171 ../managers.php:547 ../managers.php:734
 #: ../data_queries.php:985 ../data_templates.php:677 ../user_domains.php:641
@@ -775,13 +806,13 @@ msgstr ""
 #: ../automation_templates.php:440 ../graphs_new.php:561 ../graph_view.php:506
 #: ../aggregate_graphs.php:944 ../aggregate_graphs.php:1273
 #: ../lib/html_graph.php:163 ../lib/html_tree.php:595
-#: ../plugins/thold/notify_lists.php:738 ../plugins/thold/notify_lists.php:988
-#: ../plugins/thold/notify_lists.php:1221
-#: ../plugins/thold/notify_lists.php:1522 ../data_sources.php:1161
+#: ../plugins/thold/notify_lists.php:738 ../plugins/thold/notify_lists.php:990
+#: ../plugins/thold/notify_lists.php:1223
+#: ../plugins/thold/notify_lists.php:1524 ../data_sources.php:1161
 #: ../host_templates.php:710 ../data_source_profiles.php:746 ../color.php:556
 #: ../graphs.php:1573 ../graph_templates.php:580 ../utilities.php:664
 #: ../utilities.php:963 ../utilities.php:1571 ../utilities.php:2256
-#: ../utilities.php:2516 ../tree.php:1475 ../plugins.php:398
+#: ../utilities.php:2516 ../tree.php:1478 ../plugins.php:398
 #: ../data_input.php:619 ../automation_snmp.php:836 ../cdef.php:734
 #: ../managers.php:174 ../managers.php:550 ../managers.php:737
 #: ../data_queries.php:988 ../data_templates.php:680 ../user_domains.php:644
@@ -793,28 +824,42 @@ msgstr ""
 
 #: ../user_group_admin.php:1745 ../vdef.php:808 ../aggregate_graphs.php:1030
 #: ../install/index.php:906 ../install/index.php:907 ../install/index.php:928
-#: ../install/index.php:929 ../plugins/thold/thold_graph.php:340
-#: ../plugins/thold/thold.php:507 ../plugins/thold/thold.php:518
-#: ../plugins/thold/thold.php:585 ../data_sources.php:1347
-#: ../host_templates.php:811 ../data_source_profiles.php:870
-#: ../data_source_profiles.php:871 ../color.php:710 ../color.php:712
-#: ../graph_templates.php:704 ../tree.php:1541 ../tree.php:1542
-#: ../data_input.php:714 ../color_templates.php:539 ../cdef.php:848
-#: ../data_queries.php:1087 ../data_templates.php:793 ../user_domains.php:728
-#: ../user_domains.php:730 ../user_admin.php:2051 ../gprint_presets.php:406
+#: ../install/index.php:929 ../plugins/syslog/syslog_removal.php:466
+#: ../plugins/syslog/syslog_removal.php:622
+#: ../plugins/syslog/syslog_reports.php:453
+#: ../plugins/syslog/syslog_reports.php:610
+#: ../plugins/syslog/syslog_alerts.php:448
+#: ../plugins/syslog/syslog_alerts.php:542
+#: ../plugins/syslog/syslog_alerts.php:704
+#: ../plugins/thold/thold_graph.php:334 ../plugins/thold/thold.php:507
+#: ../plugins/thold/thold.php:518 ../plugins/thold/thold.php:585
+#: ../data_sources.php:1347 ../host_templates.php:811
+#: ../data_source_profiles.php:870 ../data_source_profiles.php:871
+#: ../color.php:710 ../color.php:712 ../graph_templates.php:704
+#: ../tree.php:1544 ../tree.php:1545 ../data_input.php:714
+#: ../color_templates.php:539 ../cdef.php:848 ../data_queries.php:1087
+#: ../data_templates.php:793 ../user_domains.php:728 ../user_domains.php:730
+#: ../user_admin.php:2051 ../gprint_presets.php:406
 msgid "Yes"
 msgstr ""
 
 #: ../user_group_admin.php:1747 ../vdef.php:808 ../aggregate_graphs.php:1030
 #: ../install/index.php:907 ../install/index.php:929
-#: ../plugins/thold/thold.php:502 ../plugins/thold/thold.php:585
-#: ../plugins/thold/thold.php:587 ../data_sources.php:1347
-#: ../host_templates.php:811 ../data_source_profiles.php:870
-#: ../data_source_profiles.php:871 ../color.php:710 ../color.php:712
-#: ../graph_templates.php:704 ../tree.php:1541 ../tree.php:1542
-#: ../data_input.php:714 ../color_templates.php:539 ../cdef.php:848
-#: ../data_queries.php:1087 ../data_templates.php:793 ../user_domains.php:730
-#: ../user_admin.php:2053 ../gprint_presets.php:406
+#: ../plugins/syslog/syslog_removal.php:467
+#: ../plugins/syslog/syslog_removal.php:622
+#: ../plugins/syslog/syslog_reports.php:454
+#: ../plugins/syslog/syslog_reports.php:610
+#: ../plugins/syslog/syslog_alerts.php:448
+#: ../plugins/syslog/syslog_alerts.php:543
+#: ../plugins/syslog/syslog_alerts.php:704 ../plugins/thold/thold.php:502
+#: ../plugins/thold/thold.php:585 ../plugins/thold/thold.php:587
+#: ../data_sources.php:1347 ../host_templates.php:811
+#: ../data_source_profiles.php:870 ../data_source_profiles.php:871
+#: ../color.php:710 ../color.php:712 ../graph_templates.php:704
+#: ../tree.php:1544 ../tree.php:1545 ../data_input.php:714
+#: ../color_templates.php:539 ../cdef.php:848 ../data_queries.php:1087
+#: ../data_templates.php:793 ../user_domains.php:730 ../user_admin.php:2053
+#: ../gprint_presets.php:406
 msgid "No"
 msgstr ""
 
@@ -842,7 +887,7 @@ msgstr ""
 #: ../user_group_admin.php:1985 ../user_group_admin.php:2095
 #: ../rrdcleaner.php:348 ../graph_view.php:464 ../aggregate_graphs.php:1233
 #: ../lib/html_graph.php:142 ../lib/api_automation.php:434
-#: ../plugins/thold/thold_graph.php:114 ../plugins/thold/notify_lists.php:939
+#: ../plugins/thold/thold_graph.php:108 ../plugins/thold/notify_lists.php:941
 #: ../plugins/thold/thold.php:399 ../data_sources.php:1133 ../graphs.php:1553
 #: ../user_admin.php:2298 ../user_admin.php:2495 ../host.php:1300
 msgid "Template"
@@ -857,7 +902,7 @@ msgstr ""
 #: ../lib/api_automation.php:161 ../lib/api_automation.php:421
 #: ../lib/api_automation.php:438 ../lib/api_automation.php:996
 #: ../lib/api_automation.php:1014 ../lib/html.php:1367
-#: ../plugins/thold/notify_lists.php:700 ../plugins/thold/notify_lists.php:943
+#: ../plugins/thold/notify_lists.php:700 ../plugins/thold/notify_lists.php:945
 #: ../plugins/thold/thold.php:403 ../plugins/thold/includes/settings.php:204
 #: ../data_sources.php:1178 ../graphs.php:1557 ../utilities.php:639
 #: ../utilities.php:1233 ../utilities.php:1269 ../utilities.php:1528
@@ -876,18 +921,19 @@ msgstr ""
 #: ../lib/html_reports.php:386 ../lib/api_automation.php:144
 #: ../lib/api_automation.php:422 ../lib/api_automation.php:439
 #: ../lib/api_automation.php:574 ../lib/api_automation.php:997
-#: ../lib/html.php:1368 ../plugins/thold/thold_graph.php:119
-#: ../plugins/thold/thold_graph.php:738 ../plugins/thold/notify_lists.php:701
-#: ../plugins/thold/notify_lists.php:839
-#: ../plugins/thold/notify_lists.php:1107
-#: ../plugins/thold/notify_lists.php:1328
+#: ../lib/html.php:1368 ../plugins/syslog/syslog.php:365
+#: ../plugins/syslog/syslog.php:386 ../plugins/syslog/syslog.php:779
+#: ../plugins/thold/thold_graph.php:113 ../plugins/thold/thold_graph.php:732
+#: ../plugins/thold/notify_lists.php:701 ../plugins/thold/notify_lists.php:839
+#: ../plugins/thold/notify_lists.php:1109
+#: ../plugins/thold/notify_lists.php:1330
 #: ../plugins/thold/thold_webapi.php:238 ../plugins/thold/thold_webapi.php:239
 #: ../plugins/thold/thold_templates.php:232
 #: ../plugins/thold/thold_templates.php:919
-#: ../plugins/thold/thold_templates.php:927 ../plugins/thold/setup.php:476
-#: ../plugins/thold/setup.php:480 ../plugins/thold/setup.php:483
-#: ../plugins/thold/setup.php:685 ../plugins/thold/setup.php:686
-#: ../plugins/thold/setup.php:896 ../plugins/thold/setup.php:897
+#: ../plugins/thold/thold_templates.php:927 ../plugins/thold/setup.php:478
+#: ../plugins/thold/setup.php:482 ../plugins/thold/setup.php:485
+#: ../plugins/thold/setup.php:687 ../plugins/thold/setup.php:688
+#: ../plugins/thold/setup.php:898 ../plugins/thold/setup.php:899
 #: ../plugins/thold/thold.php:1184 ../plugins/thold/thold.php:1192
 #: ../data_sources.php:1179 ../data_sources.php:1319 ../data_sources.php:1322
 #: ../data_sources.php:1331 ../data_sources.php:1334 ../graphs.php:1271
@@ -1078,18 +1124,22 @@ msgstr ""
 #: ../lib/api_automation.php:187 ../lib/api_automation.php:452
 #: ../lib/api_automation.php:704 ../lib/api_automation.php:1040
 #: ../lib/html_tree.php:592 ../lib/clog_webapi.php:327
-#: ../plugins/thold/thold_graph.php:163 ../plugins/thold/thold_graph.php:782
-#: ../plugins/thold/thold_graph.php:1028 ../plugins/thold/notify_lists.php:735
-#: ../plugins/thold/notify_lists.php:985
-#: ../plugins/thold/notify_lists.php:1218
-#: ../plugins/thold/notify_lists.php:1519
+#: ../plugins/syslog/syslog.php:417 ../plugins/syslog/syslog.php:1028
+#: ../plugins/syslog/syslog_removal.php:486
+#: ../plugins/syslog/syslog_reports.php:473
+#: ../plugins/syslog/syslog_alerts.php:562
+#: ../plugins/thold/thold_graph.php:157 ../plugins/thold/thold_graph.php:776
+#: ../plugins/thold/thold_graph.php:1022 ../plugins/thold/notify_lists.php:735
+#: ../plugins/thold/notify_lists.php:987
+#: ../plugins/thold/notify_lists.php:1220
+#: ../plugins/thold/notify_lists.php:1521
 #: ../plugins/thold/thold_templates.php:1272 ../plugins/thold/thold.php:424
 #: ../data_sources.php:1158 ../host_templates.php:707
 #: ../data_source_profiles.php:743 ../color.php:553 ../graphs.php:1570
 #: ../automation_tree_rules.php:735 ../graph_templates.php:577
 #: ../utilities.php:661 ../utilities.php:960 ../utilities.php:1313
 #: ../utilities.php:1568 ../utilities.php:2253 ../utilities.php:2515
-#: ../automation_networks.php:1010 ../tree.php:1472 ../plugins.php:395
+#: ../automation_networks.php:1010 ../tree.php:1475 ../plugins.php:395
 #: ../data_input.php:616 ../automation_snmp.php:833 ../color_templates.php:448
 #: ../cdef.php:731 ../managers.php:171 ../managers.php:547 ../managers.php:734
 #: ../data_queries.php:985 ../data_templates.php:677 ../user_admin.php:1985
@@ -1108,18 +1158,22 @@ msgstr ""
 #: ../lib/api_automation.php:455 ../lib/api_automation.php:707
 #: ../lib/api_automation.php:1043 ../lib/html_tree.php:595
 #: ../lib/html_tree.php:681 ../lib/clog_webapi.php:330
-#: ../plugins/thold/thold_graph.php:166 ../plugins/thold/thold_graph.php:785
-#: ../plugins/thold/thold_graph.php:1031 ../plugins/thold/notify_lists.php:738
-#: ../plugins/thold/notify_lists.php:988
-#: ../plugins/thold/notify_lists.php:1221
-#: ../plugins/thold/notify_lists.php:1522
+#: ../plugins/syslog/syslog.php:420 ../plugins/syslog/syslog.php:1031
+#: ../plugins/syslog/syslog_removal.php:489
+#: ../plugins/syslog/syslog_reports.php:476
+#: ../plugins/syslog/syslog_alerts.php:565
+#: ../plugins/thold/thold_graph.php:160 ../plugins/thold/thold_graph.php:779
+#: ../plugins/thold/thold_graph.php:1025 ../plugins/thold/notify_lists.php:738
+#: ../plugins/thold/notify_lists.php:990
+#: ../plugins/thold/notify_lists.php:1223
+#: ../plugins/thold/notify_lists.php:1524
 #: ../plugins/thold/thold_templates.php:1275 ../plugins/thold/thold.php:427
 #: ../data_sources.php:1161 ../host_templates.php:710
 #: ../data_source_profiles.php:746 ../color.php:556 ../graphs.php:1573
 #: ../automation_tree_rules.php:738 ../graph_templates.php:580
 #: ../utilities.php:664 ../utilities.php:963 ../utilities.php:1316
 #: ../utilities.php:1571 ../utilities.php:2256 ../utilities.php:2516
-#: ../automation_networks.php:1013 ../tree.php:1475 ../plugins.php:398
+#: ../automation_networks.php:1013 ../tree.php:1478 ../plugins.php:398
 #: ../data_input.php:619 ../automation_snmp.php:836 ../color_templates.php:451
 #: ../cdef.php:734 ../managers.php:174 ../managers.php:550 ../managers.php:737
 #: ../data_queries.php:988 ../data_templates.php:680 ../user_admin.php:1988
@@ -1253,8 +1307,8 @@ msgstr ""
 #: ../automation_devices.php:354 ../automation_devices.php:364
 #: ../automation_devices.php:587 ../automation_devices.php:588
 #: ../lib/api_automation.php:166 ../lib/api_automation.php:1019
-#: ../lib/html_utility.php:577 ../plugins/thold/thold_graph.php:458
-#: ../plugins/thold/thold_graph.php:761
+#: ../lib/html_utility.php:589 ../plugins/thold/thold_graph.php:452
+#: ../plugins/thold/thold_graph.php:755
 #: ../plugins/thold/includes/arrays.php:37 ../host.php:1327
 msgid "Down"
 msgstr ""
@@ -1263,8 +1317,8 @@ msgstr ""
 #: ../automation_devices.php:356 ../automation_devices.php:366
 #: ../automation_devices.php:587 ../automation_devices.php:588
 #: ../lib/api_automation.php:165 ../lib/api_automation.php:1018
-#: ../lib/html_utility.php:583 ../plugins/thold/thold_graph.php:464
-#: ../plugins/thold/thold_graph.php:760
+#: ../lib/html_utility.php:595 ../plugins/thold/thold_graph.php:458
+#: ../plugins/thold/thold_graph.php:754
 #: ../plugins/thold/includes/arrays.php:40 ../host.php:1326
 msgid "Up"
 msgstr ""
@@ -1276,7 +1330,7 @@ msgstr ""
 #: ../automation_devices.php:102 ../automation_devices.php:104
 #: ../graph_view.php:552 ../lib/functions.php:3594
 #: ../lib/api_automation.php:417 ../lib/html.php:1363 ../lib/html.php:1402
-#: ../plugins/thold/thold_graph.php:923 ../data_sources.php:774
+#: ../plugins/thold/thold_graph.php:917 ../data_sources.php:774
 #: ../graphs.php:1276 ../utilities.php:1229 ../utilities.php:1381
 #: ../utilities.php:1524 ../graphs_items.php:271
 #: ../include/global_arrays.php:550 ../include/global_arrays.php:591
@@ -1331,7 +1385,7 @@ msgstr ""
 msgid "OS"
 msgstr ""
 
-#: ../automation_devices.php:222 ../plugins/thold/thold_graph.php:588
+#: ../automation_devices.php:222 ../plugins/thold/thold_graph.php:582
 #: ../host.php:1429
 msgid "Uptime"
 msgstr ""
@@ -1366,7 +1420,8 @@ msgid "Reset fields to defaults"
 msgstr ""
 
 #: ../automation_devices.php:441 ../lib/html_form.php:1057
-#: ../plugins/thold/thold_templates.php:32 ../color.php:562
+#: ../plugins/syslog/syslog.php:1034 ../plugins/thold/thold_templates.php:32
+#: ../color.php:562
 msgid "Export"
 msgstr ""
 
@@ -1441,12 +1496,16 @@ msgid "Graph Types"
 msgstr ""
 
 #: ../graphs_new.php:510 ../lib/html_reports.php:326
-#: ../lib/clog_webapi.php:318 ../plugins/thold/thold_graph.php:118
-#: ../plugins/thold/thold_graph.php:140 ../plugins/thold/thold_graph.php:737
-#: ../plugins/thold/thold_graph.php:755 ../plugins/thold/thold_graph.php:981
-#: ../plugins/thold/thold_graph.php:1002 ../plugins/thold/notify_lists.php:956
-#: ../plugins/thold/thold.php:416 ../utilities.php:621 ../utilities.php:951
-#: ../plugins.php:370
+#: ../lib/clog_webapi.php:318 ../plugins/syslog/syslog.php:364
+#: ../plugins/syslog/syslog.php:385 ../plugins/syslog/syslog.php:778
+#: ../plugins/syslog/syslog_removal.php:465
+#: ../plugins/syslog/syslog_reports.php:452
+#: ../plugins/syslog/syslog_alerts.php:541
+#: ../plugins/thold/thold_graph.php:112 ../plugins/thold/thold_graph.php:134
+#: ../plugins/thold/thold_graph.php:731 ../plugins/thold/thold_graph.php:749
+#: ../plugins/thold/thold_graph.php:975 ../plugins/thold/thold_graph.php:996
+#: ../plugins/thold/notify_lists.php:958 ../plugins/thold/thold.php:416
+#: ../utilities.php:621 ../utilities.php:951 ../plugins.php:370
 msgid "All"
 msgstr ""
 
@@ -1455,7 +1514,9 @@ msgid "Graph Template Based"
 msgstr ""
 
 #: ../graphs_new.php:532 ../lib/rrd.php:2602
-#: ../plugins/thold/notify_lists.php:1197 ../data_source_profiles.php:486
+#: ../plugins/syslog/syslog_reports.php:458
+#: ../plugins/syslog/syslog_alerts.php:547
+#: ../plugins/thold/notify_lists.php:1199 ../data_source_profiles.php:486
 #: ../utilities.php:455 ../utilities.php:1298 ../include/global_form.php:121
 msgid "Rows"
 msgstr ""
@@ -1553,7 +1614,9 @@ msgstr ""
 msgid "Template ID"
 msgstr ""
 
-#: ../rrdcleaner.php:349
+#: ../rrdcleaner.php:349 ../plugins/syslog/syslog_removal.php:612
+#: ../plugins/syslog/syslog_reports.php:601
+#: ../plugins/syslog/syslog_alerts.php:691
 msgid "Last Modified"
 msgstr ""
 
@@ -1587,7 +1650,8 @@ msgid "1 Week"
 msgstr ""
 
 #: ../rrdcleaner.php:479 ../rrdcleaner.php:480
-#: ../plugins/thold/includes/arrays.php:130
+#: ../plugins/syslog/syslog_alerts.php:343 ../plugins/syslog/setup.php:859
+#: ../plugins/syslog/setup.php:878 ../plugins/thold/includes/arrays.php:130
 #: ../plugins/thold/includes/arrays.php:162
 #: ../plugins/thold/includes/arrays.php:206
 #: ../plugins/thold/includes/arrays.php:227 ../data_source_profiles.php:636
@@ -1602,6 +1666,11 @@ msgid "1 Month"
 msgstr ""
 
 #: ../rrdcleaner.php:482 ../rrdcleaner.php:483 ../rrdcleaner.php:484
+#: ../plugins/syslog/setup.php:861 ../plugins/syslog/setup.php:862
+#: ../plugins/syslog/setup.php:863 ../plugins/syslog/setup.php:864
+#: ../plugins/syslog/setup.php:865 ../plugins/syslog/setup.php:880
+#: ../plugins/syslog/setup.php:881 ../plugins/syslog/setup.php:882
+#: ../plugins/syslog/setup.php:883 ../plugins/syslog/setup.php:884
 #: ../plugins/thold/includes/arrays.php:29
 #: ../plugins/thold/includes/arrays.php:30
 #: ../plugins/thold/includes/arrays.php:31
@@ -1726,7 +1795,7 @@ msgid "View"
 msgstr ""
 
 #: ../graph_view.php:509 ../graph_view.php:575 ../lib/clog_webapi.php:228
-#: ../plugins/thold/thold_graph.php:631 ../plugins/thold/thold_graph.php:654
+#: ../plugins/thold/thold_graph.php:625 ../plugins/thold/thold_graph.php:648
 #: ../include/global_arrays.php:695
 msgid "View Graphs"
 msgstr ""
@@ -2027,11 +2096,11 @@ msgstr ""
 msgid "Aggregate Preview %s"
 msgstr ""
 
-#: ../aggregate_graphs.php:595 ../graphs.php:1342 ../graph.php:426
+#: ../aggregate_graphs.php:595 ../graphs.php:1342 ../graph.php:427
 msgid "RRDTool Command:"
 msgstr ""
 
-#: ../aggregate_graphs.php:597 ../graphs.php:1344 ../graph.php:429
+#: ../aggregate_graphs.php:597 ../graphs.php:1344 ../graph.php:430
 msgid "RRDTool Says:"
 msgstr ""
 
@@ -2139,7 +2208,7 @@ msgstr ""
 
 #: ../lib/html_graph.php:167 ../lib/html_form.php:1042
 #: ../lib/html_form.php:1051 ../lib/html_tree.php:599
-#: ../auth_changepassword.php:263
+#: ../plugins/syslog/syslog.php:1037 ../auth_changepassword.php:263
 msgid "Save"
 msgstr ""
 
@@ -2177,36 +2246,44 @@ msgid "Presets"
 msgstr ""
 
 #: ../lib/html_graph.php:231 ../lib/html_tree.php:620
+#: ../plugins/syslog/syslog.php:969
 msgid "Custom"
 msgstr ""
 
 #: ../lib/html_graph.php:252 ../lib/html_reports.php:1489
 #: ../lib/html_reports.php:1500 ../lib/html_tree.php:641
+#: ../plugins/syslog/syslog.php:991
 msgid "From"
 msgstr ""
 
 #: ../lib/html_graph.php:258 ../lib/html_tree.php:647
+#: ../plugins/syslog/syslog.php:997
 msgid "Start Date Selector"
 msgstr ""
 
 #: ../lib/html_graph.php:261 ../lib/html_reports.php:1490
 #: ../lib/html_reports.php:1501 ../lib/html_tree.php:650
+#: ../plugins/syslog/syslog.php:1000
 msgid "To"
 msgstr ""
 
 #: ../lib/html_graph.php:267 ../lib/html_tree.php:656
+#: ../plugins/syslog/syslog.php:1006
 msgid "End Date Selector"
 msgstr ""
 
 #: ../lib/html_graph.php:270 ../lib/html_tree.php:659
+#: ../plugins/syslog/syslog.php:1009
 msgid "Shift Time Backward"
 msgstr ""
 
 #: ../lib/html_graph.php:273 ../lib/html_tree.php:662
+#: ../plugins/syslog/syslog.php:1012
 msgid "Define Shifting Interval"
 msgstr ""
 
 #: ../lib/html_graph.php:286 ../lib/html_tree.php:675
+#: ../plugins/syslog/syslog.php:1025
 msgid "Shift Time Forward"
 msgstr ""
 
@@ -2295,11 +2372,11 @@ msgid "Import"
 msgstr ""
 
 #: ../lib/vdef.php:74 ../install/index.php:881 ../install/index.php:924
-#: ../install/index.php:1081 ../plugins/thold/thold_graph.php:312
+#: ../install/index.php:1081 ../plugins/thold/thold_graph.php:306
 #: ../plugins/thold/notify_lists.php:579
-#: ../plugins/thold/notify_lists.php:1036
-#: ../plugins/thold/notify_lists.php:1272
-#: ../plugins/thold/thold_templates.php:1336 ../plugins/thold/setup.php:976
+#: ../plugins/thold/notify_lists.php:1038
+#: ../plugins/thold/notify_lists.php:1274
+#: ../plugins/thold/thold_templates.php:1336 ../plugins/thold/setup.php:978
 #: ../plugins/thold/thold.php:472 ../data_source_profiles.php:483
 #: ../graph_templates.php:354 ../utilities.php:453 ../utilities.php:2298
 #: ../automation_networks.php:356 ../data_input.php:444 ../data_input.php:478
@@ -2679,6 +2756,9 @@ msgstr ""
 #: ../lib/functions.php:2486 ../lib/functions.php:2510
 #: ../lib/functions.php:2528 ../lib/functions.php:2546
 #: ../lib/functions.php:2564 ../lib/functions.php:2588
+#: ../plugins/syslog/setup.php:957 ../plugins/syslog/setup.php:958
+#: ../plugins/syslog/setup.php:962 ../plugins/syslog/setup.php:963
+#: ../plugins/syslog/setup.php:967
 msgid "(Edit)"
 msgstr ""
 
@@ -2697,8 +2777,8 @@ msgstr ""
 #: ../lib/functions.php:2570 ../lib/functions.php:2594
 #: ../lib/html_reports.php:1235 ../lib/api_automation.php:1208
 #: ../lib/api_automation.php:1270 ../lib/api_automation.php:1333
-#: ../plugins/thold/thold_graph.php:311 ../plugins/thold/thold_graph.php:581
-#: ../plugins.php:465
+#: ../plugins/syslog/syslog.php:1305 ../plugins/thold/thold_graph.php:305
+#: ../plugins/thold/thold_graph.php:575 ../plugins.php:465
 msgid "Actions"
 msgstr ""
 
@@ -2734,7 +2814,7 @@ msgstr ""
 msgid "View Cacti Log"
 msgstr ""
 
-#: ../lib/functions.php:1988 ../tree.php:1442 ../include/global_arrays.php:707
+#: ../lib/functions.php:1988
 msgid "Graph Trees"
 msgstr ""
 
@@ -2963,7 +3043,8 @@ msgstr ""
 msgid "Your email settings are currently set as follows"
 msgstr ""
 
-#: ../lib/functions.php:3570 ../data_sources.php:1174
+#: ../lib/functions.php:3570 ../plugins/syslog/syslog_removal.php:611
+#: ../plugins/syslog/syslog_alerts.php:685 ../data_sources.php:1174
 msgid "Method"
 msgstr ""
 
@@ -3050,14 +3131,16 @@ msgstr ""
 msgid "Message Not Sent due to ping failure."
 msgstr ""
 
-#: ../lib/html_reports.php:30 ../plugins/thold/thold_templates.php:647
-#: ../plugins/thold/thold.php:925 ../automation_networks.php:352
-#: ../include/global_form.php:1810 ../include/global_form.php:1910
-#: ../include/global_settings.php:52
+#: ../lib/html_reports.php:30 ../plugins/syslog/setup.php:678
+#: ../plugins/thold/thold_templates.php:647 ../plugins/thold/thold.php:925
+#: ../automation_networks.php:352 ../include/global_form.php:1810
+#: ../include/global_form.php:1910 ../include/global_settings.php:52
 msgid "General Settings"
 msgstr ""
 
 #: ../lib/html_reports.php:35 ../lib/html_reports.php:1484
+#: ../plugins/syslog/syslog_reports.php:318
+#: ../plugins/syslog/syslog_reports.php:594
 msgid "Report Name"
 msgstr ""
 
@@ -3234,7 +3317,8 @@ msgstr ""
 msgid "This Name will be used as the default E-mail Sender"
 msgstr ""
 
-#: ../lib/html_reports.php:187 ../plugins/thold/includes/settings.php:438
+#: ../lib/html_reports.php:187 ../plugins/syslog/setup.php:764
+#: ../plugins/thold/includes/settings.php:438
 #: ../include/global_settings.php:1332
 msgid "From Email Address"
 msgstr ""
@@ -3270,11 +3354,11 @@ msgstr ""
 #: ../lib/html_reports.php:306 ../lib/html_reports.php:1235
 #: ../lib/html_reports.php:1491 ../lib/html_reports.php:1502
 #: ../lib/api_automation.php:139 ../lib/api_automation.php:992
-#: ../lib/rrd.php:2566 ../plugins/thold/thold_graph.php:314
-#: ../plugins/thold/thold_graph.php:733 ../plugins/thold/thold_graph.php:925
+#: ../lib/rrd.php:2566 ../plugins/thold/thold_graph.php:308
+#: ../plugins/thold/thold_graph.php:727 ../plugins/thold/thold_graph.php:919
 #: ../plugins/thold/notify_lists.php:696
-#: ../plugins/thold/notify_lists.php:1040
-#: ../plugins/thold/notify_lists.php:1276
+#: ../plugins/thold/notify_lists.php:1042
+#: ../plugins/thold/notify_lists.php:1278
 #: ../plugins/thold/thold_templates.php:1339 ../plugins/thold/thold.php:474
 #: ../utilities.php:288
 msgid "Type"
@@ -3322,7 +3406,9 @@ msgstr ""
 msgid "Select a Host Template to use."
 msgstr ""
 
-#: ../lib/html_reports.php:364 ../include/global_arrays.php:1306
+#: ../lib/html_reports.php:364 ../plugins/syslog/syslog.php:1307
+#: ../plugins/syslog/syslog.php:1315 ../plugins/syslog/syslog.php:1372
+#: ../include/global_arrays.php:1306
 msgid "Host"
 msgstr ""
 
@@ -3472,7 +3558,7 @@ msgstr ""
 msgid "Send Report"
 msgstr ""
 
-#: ../lib/html_reports.php:1133
+#: ../lib/html_reports.php:1133 ../plugins/syslog/syslog_reports.php:314
 msgid "Report Details"
 msgstr ""
 
@@ -3525,15 +3611,16 @@ msgstr ""
 msgid "Reports %s"
 msgstr ""
 
-#: ../lib/html_reports.php:1473
+#: ../lib/html_reports.php:1473 ../plugins/syslog/syslog.php:1047
 msgid "Reports"
 msgstr ""
 
-#: ../lib/html_reports.php:1485 ../tree.php:1525
+#: ../lib/html_reports.php:1485 ../tree.php:1528
 msgid "Owner"
 msgstr ""
 
 #: ../lib/html_reports.php:1486 ../lib/html_reports.php:1497
+#: ../plugins/syslog/syslog_reports.php:598
 msgid "Frequency"
 msgstr ""
 
@@ -3549,7 +3636,7 @@ msgstr ""
 msgid "Report Title"
 msgstr ""
 
-#: ../lib/html_reports.php:1524
+#: ../lib/html_reports.php:1524 ../plugins/syslog/syslog_alerts.php:707
 msgid "Multiple"
 msgstr ""
 
@@ -3627,20 +3714,20 @@ msgid "Matching Devices"
 msgstr ""
 
 #: ../lib/api_automation.php:164 ../lib/api_automation.php:1017
-#: ../plugins/thold/thold_graph.php:758 ../host.php:1325
+#: ../plugins/thold/thold_graph.php:752 ../host.php:1325
 msgid "Not Up"
 msgstr ""
 
 #: ../lib/api_automation.php:167 ../lib/api_automation.php:1020
-#: ../lib/html_utility.php:580 ../plugins/thold/thold_graph.php:461
-#: ../plugins/thold/thold_graph.php:762
+#: ../lib/html_utility.php:592 ../plugins/thold/thold_graph.php:455
+#: ../plugins/thold/thold_graph.php:756
 #: ../plugins/thold/includes/arrays.php:39 ../host.php:1328
 msgid "Recovering"
 msgstr ""
 
 #: ../lib/api_automation.php:168 ../lib/api_automation.php:1021
-#: ../lib/html_utility.php:589 ../plugins/thold/thold_graph.php:470
-#: ../plugins/thold/thold_graph.php:763
+#: ../lib/html_utility.php:601 ../plugins/thold/thold_graph.php:464
+#: ../plugins/thold/thold_graph.php:757
 #: ../plugins/thold/includes/arrays.php:41 ../utilities.php:1971
 #: ../plugins.php:226 ../plugins.php:247 ../host.php:1329
 msgid "Unknown"
@@ -3683,7 +3770,7 @@ msgid ""
 "question.  Other objects will not be subject to the rule."
 msgstr ""
 
-#: ../lib/api_automation.php:806 ../plugins/thold/thold_graph.php:528
+#: ../lib/api_automation.php:806 ../plugins/thold/thold_graph.php:522
 #: ../plugins/thold/thold_functions.php:48
 msgid "Device Status"
 msgstr ""
@@ -3833,9 +3920,10 @@ msgstr ""
 msgid "Plugin Management"
 msgstr ""
 
-#: ../lib/html_utility.php:586 ../install/index.php:52 ../install/index.php:57
+#: ../lib/html_utility.php:598 ../install/index.php:52 ../install/index.php:57
 #: ../install/index.php:62 ../install/index.php:667
-#: ../plugins/thold/thold_graph.php:467
+#: ../plugins/syslog/syslog.php:1165 ../plugins/syslog/syslog.php:1205
+#: ../plugins/thold/thold_graph.php:461
 #: ../plugins/thold/includes/arrays.php:38
 #: ../plugins/thold/includes/settings.php:337
 msgid "Error"
@@ -3862,23 +3950,24 @@ msgstr ""
 msgid "Applied"
 msgstr ""
 
-#: ../lib/html_tree.php:574 ../plugins/thold/thold_graph.php:396
-#: ../plugins/thold/thold_graph.php:397 ../plugins/thold/thold_graph.php:398
-#: ../plugins/thold/thold_graph.php:403 ../plugins/thold/thold_graph.php:414
-#: ../plugins/thold/thold_graph.php:415 ../plugins/thold/thold_graph.php:610
-#: ../plugins/thold/thold_graph.php:942 ../plugins/thold/thold_graph.php:943
-#: ../plugins/thold/thold.php:557 ../plugins/thold/thold.php:577
-#: ../plugins/thold/thold.php:578 ../plugins/thold/thold.php:745
-#: ../plugins/thold/thold.php:748 ../plugins/thold/thold.php:755
-#: ../plugins/thold/thold.php:761 ../plugins/thold/thold.php:769
-#: ../plugins/thold/thold.php:775 ../plugins/thold/thold.php:781
-#: ../plugins/thold/thold.php:784 ../utilities.php:392 ../utilities.php:777
-#: ../utilities.php:1975 ../utilities.php:2075 ../utilities.php:2078
-#: ../utilities.php:2081 ../utilities.php:2087 ../utilities.php:2319
-#: ../automation_networks.php:959 ../automation_snmp.php:706
-#: ../automation_snmp.php:707 ../automation_snmp.php:708
-#: ../automation_snmp.php:709 ../automation_snmp.php:710
-#: ../automation_snmp.php:711 ../user_admin.php:2046
+#: ../lib/html_tree.php:574 ../plugins/syslog/syslog_alerts.php:703
+#: ../plugins/thold/thold_graph.php:390 ../plugins/thold/thold_graph.php:391
+#: ../plugins/thold/thold_graph.php:392 ../plugins/thold/thold_graph.php:397
+#: ../plugins/thold/thold_graph.php:408 ../plugins/thold/thold_graph.php:409
+#: ../plugins/thold/thold_graph.php:604 ../plugins/thold/thold_graph.php:936
+#: ../plugins/thold/thold_graph.php:937 ../plugins/thold/thold.php:557
+#: ../plugins/thold/thold.php:577 ../plugins/thold/thold.php:578
+#: ../plugins/thold/thold.php:745 ../plugins/thold/thold.php:748
+#: ../plugins/thold/thold.php:755 ../plugins/thold/thold.php:761
+#: ../plugins/thold/thold.php:769 ../plugins/thold/thold.php:775
+#: ../plugins/thold/thold.php:781 ../plugins/thold/thold.php:784
+#: ../utilities.php:392 ../utilities.php:777 ../utilities.php:1975
+#: ../utilities.php:2075 ../utilities.php:2078 ../utilities.php:2081
+#: ../utilities.php:2087 ../utilities.php:2319 ../automation_networks.php:959
+#: ../automation_snmp.php:706 ../automation_snmp.php:707
+#: ../automation_snmp.php:708 ../automation_snmp.php:709
+#: ../automation_snmp.php:710 ../automation_snmp.php:711
+#: ../user_admin.php:2046
 msgid "N/A"
 msgstr ""
 
@@ -3936,8 +4025,9 @@ msgstr ""
 msgid "Errors"
 msgstr ""
 
-#: ../lib/clog_webapi.php:322 ../plugins/thold/includes/settings.php:341
-#: ../utilities.php:955
+#: ../lib/clog_webapi.php:322 ../plugins/syslog/syslog.php:1172
+#: ../plugins/syslog/syslog.php:1209
+#: ../plugins/thold/includes/settings.php:341 ../utilities.php:955
 msgid "Debug"
 msgstr ""
 
@@ -4735,21 +4825,1374 @@ msgstr ""
 msgid "Schedules"
 msgstr ""
 
-#: ../plugins/thold/thold_graph.php:141 ../plugins/thold/notify_lists.php:957
+#: ../plugins/syslog/syslog.php:44
+msgid "All Text"
+msgstr ""
+
+#: ../plugins/syslog/syslog.php:45 ../plugins/syslog/syslog.php:46
+#: ../plugins/syslog/syslog.php:47 ../plugins/syslog/syslog.php:48
+#: ../plugins/syslog/syslog.php:49 ../plugins/syslog/syslog.php:50
+#, php-format
+msgid "%d Chars"
+msgstr ""
+
+#: ../plugins/syslog/syslog.php:102
+msgid "System Logs"
+msgstr ""
+
+#: ../plugins/syslog/syslog.php:104 ../include/global_settings.php:235
+msgid "Statistics"
+msgstr ""
+
+#: ../plugins/syslog/syslog.php:106
+msgid "Alert Logs"
+msgstr ""
+
+#: ../plugins/syslog/syslog.php:115
+msgid "Selected Alert"
+msgstr ""
+
+#: ../plugins/syslog/syslog.php:138
+msgid "Syslog Alert View"
+msgstr ""
+
+#: ../plugins/syslog/syslog.php:211
+msgid "Syslog Statistics Filter"
+msgstr ""
+
+#: ../plugins/syslog/syslog.php:270
+msgid "Messages"
+msgstr ""
+
+#: ../plugins/syslog/syslog.php:275
+msgid "Host Name"
+msgstr ""
+
+#: ../plugins/syslog/syslog.php:276 ../plugins/syslog/syslog.php:360
+#: ../plugins/syslog/syslog.php:1310 ../plugins/syslog/syslog.php:1318
+#: ../plugins/syslog/syslog.php:1373
+msgid "Facility"
+msgstr ""
+
+#: ../plugins/syslog/syslog.php:277 ../plugins/syslog/syslog.php:381
+#: ../plugins/syslog/syslog.php:1311 ../plugins/syslog/syslog.php:1319
+#: ../plugins/syslog/syslog.php:1374
+msgid "Priority"
+msgstr ""
+
+#: ../plugins/syslog/syslog.php:278 ../utilities.php:2093
+msgid "Records"
+msgstr ""
+
+#: ../plugins/syslog/syslog.php:292
+msgid "No Syslog Statistics Found"
+msgstr ""
+
+#: ../plugins/syslog/syslog.php:402 ../plugins/thold/thold_graph.php:1007
+#: ../utilities.php:1553 ../utilities.php:2294 ../utilities.php:2500
+msgid "Entries"
+msgstr ""
+
+#: ../plugins/syslog/syslog.php:749
+#, php-format
+msgid " [ Start: '%s' to End: '%s', Unprocessed Messages: %s ]"
+msgstr ""
+
+#: ../plugins/syslog/syslog.php:751
+#, php-format
+msgid "[ Unprocessed Messages: %s ]"
+msgstr ""
+
+#: ../plugins/syslog/syslog.php:767
+msgid "Select Device(s)"
+msgstr ""
+
+#: ../plugins/syslog/syslog.php:769
+msgid "Devices Selected"
+msgstr ""
+
+#: ../plugins/syslog/syslog.php:772
+msgid "All Devices Selected"
+msgstr ""
+
+#: ../plugins/syslog/syslog.php:959
+#, php-format
+msgid "Syslog Message Filter %s"
+msgstr ""
+
+#: ../plugins/syslog/syslog.php:1031
+msgid "Return filter values to their user defined defaults"
+msgstr ""
+
+#: ../plugins/syslog/syslog.php:1034
+msgid "Export Records to CSV"
+msgstr ""
+
+#: ../plugins/syslog/syslog.php:1037
+msgid "Save Default Settings"
+msgstr ""
+
+#: ../plugins/syslog/syslog.php:1041 ../plugins/syslog/syslog_alerts.php:678
+msgid "Alerts"
+msgstr ""
+
+#: ../plugins/syslog/syslog.php:1041
+msgid "View Syslog Alert Rules"
+msgstr ""
+
+#: ../plugins/syslog/syslog.php:1044
+msgid "Removals"
+msgstr ""
+
+#: ../plugins/syslog/syslog.php:1044
+msgid "View Syslog Removal Rules"
+msgstr ""
+
+#: ../plugins/syslog/syslog.php:1047
+msgid "View Syslog Reports"
+msgstr ""
+
+#: ../plugins/syslog/syslog.php:1064
+msgid "Show All Hosts"
+msgstr ""
+
+#: ../plugins/syslog/syslog.php:1065
+msgid "Show All Logs"
+msgstr ""
+
+#: ../plugins/syslog/syslog.php:1066
+msgid "Threshold Logs"
+msgstr ""
+
+#: ../plugins/syslog/syslog.php:1088
+msgid "Display Rows"
+msgstr ""
+
+#: ../plugins/syslog/syslog.php:1092
+#, php-format
+msgid "%d Messages"
+msgstr ""
+
+#: ../plugins/syslog/syslog.php:1098
+msgid "Message Trim"
+msgstr ""
+
+#: ../plugins/syslog/syslog.php:1121
+msgid "Programs to filter on"
+msgstr ""
+
+#: ../plugins/syslog/syslog.php:1122
+msgid "All Programs"
+msgstr ""
+
+#: ../plugins/syslog/syslog.php:1138
+msgid "Facilities to filter on"
+msgstr ""
+
+#: ../plugins/syslog/syslog.php:1139
+msgid "All Facilities"
+msgstr ""
+
+#: ../plugins/syslog/syslog.php:1157
+msgid "Priority Levels"
+msgstr ""
+
+#: ../plugins/syslog/syslog.php:1158
+msgid "All Priorities"
+msgstr ""
+
+#: ../plugins/syslog/syslog.php:1159 ../plugins/syslog/syslog.php:1202
+#: ../plugins/thold/includes/settings.php:334
+msgid "Emergency"
+msgstr ""
+
+#: ../plugins/syslog/syslog.php:1160
+msgid "Critical++"
+msgstr ""
+
+#: ../plugins/syslog/syslog.php:1161 ../plugins/syslog/syslog.php:1203
+#: ../plugins/syslog/syslog.php:1222 ../plugins/syslog/setup.php:899
+#: ../plugins/thold/thold_templates.php:948
+#: ../plugins/thold/thold_templates.php:961 ../plugins/thold/thold.php:1213
+#: ../plugins/thold/thold.php:1227 ../plugins/thold/includes/settings.php:336
+msgid "Critical"
+msgstr ""
+
+#: ../plugins/syslog/syslog.php:1162
+msgid "Alert++"
+msgstr ""
+
+#: ../plugins/syslog/syslog.php:1163 ../plugins/syslog/syslog.php:1204
+#: ../plugins/thold/includes/arrays.php:62
+#: ../plugins/thold/includes/arrays.php:69
+#: ../plugins/thold/includes/settings.php:335
+msgid "Alert"
+msgstr ""
+
+#: ../plugins/syslog/syslog.php:1164
+msgid "Error++"
+msgstr ""
+
+#: ../plugins/syslog/syslog.php:1166
+msgid "Warning++"
+msgstr ""
+
+#: ../plugins/syslog/syslog.php:1167 ../plugins/syslog/syslog.php:1206
+#: ../plugins/syslog/syslog.php:1223 ../plugins/syslog/setup.php:898
+#: ../plugins/thold/includes/arrays.php:61
+#: ../plugins/thold/includes/arrays.php:71
+#: ../plugins/thold/includes/settings.php:338
+msgid "Warning"
+msgstr ""
+
+#: ../plugins/syslog/syslog.php:1168
+msgid "Notice++"
+msgstr ""
+
+#: ../plugins/syslog/syslog.php:1169 ../plugins/syslog/syslog.php:1207
+#: ../plugins/syslog/syslog.php:1224 ../plugins/syslog/setup.php:897
+#: ../plugins/thold/includes/arrays.php:72
+#: ../plugins/thold/includes/settings.php:339
+msgid "Notice"
+msgstr ""
+
+#: ../plugins/syslog/syslog.php:1170
+msgid "Info++"
+msgstr ""
+
+#: ../plugins/syslog/syslog.php:1171 ../plugins/syslog/syslog.php:1208
+#: ../plugins/thold/includes/settings.php:340
+msgid "Info"
+msgstr ""
+
+#: ../plugins/syslog/syslog.php:1177
+msgid "Removal Handling"
+msgstr ""
+
+#: ../plugins/syslog/syslog.php:1178
+msgid "All Records"
+msgstr ""
+
+#: ../plugins/syslog/syslog.php:1179
+msgid "Main Records"
+msgstr ""
+
+#: ../plugins/syslog/syslog.php:1180
+msgid "Removed Records"
+msgstr ""
+
+#: ../plugins/syslog/syslog.php:1225
+msgid "Informational"
+msgstr ""
+
+#: ../plugins/syslog/syslog.php:1306 ../plugins/syslog/syslog.php:1314
+#: ../plugins/syslog/syslog.php:1369 ../utilities.php:218 ../utilities.php:751
+msgid "Date"
+msgstr ""
+
+#: ../plugins/syslog/syslog.php:1308 ../plugins/syslog/syslog.php:1316
+msgid "Program"
+msgstr ""
+
+#: ../plugins/syslog/syslog.php:1309 ../plugins/syslog/syslog.php:1317
+#: ../plugins/syslog/syslog.php:1370
+msgid "Message"
+msgstr ""
+
+#: ../plugins/syslog/syslog.php:1352
+msgid "No Syslog Messages"
+msgstr ""
+
+#: ../plugins/syslog/syslog.php:1367 ../plugins/syslog/syslog_alerts.php:362
+#: ../plugins/syslog/syslog_alerts.php:683
+msgid "Alert Name"
+msgstr ""
+
+#: ../plugins/syslog/syslog.php:1368 ../plugins/syslog/syslog_alerts.php:370
+#: ../plugins/syslog/syslog_alerts.php:684 ../utilities.php:2474
+#: ../managers.php:721
+msgid "Severity"
+msgstr ""
+
+#: ../plugins/syslog/syslog.php:1371
+msgid "Count"
+msgstr ""
+
+#: ../plugins/syslog/syslog.php:1396
+msgid "No Alert Log Messages"
+msgstr ""
+
+#: ../plugins/syslog/syslog_removal.php:34
+msgid "Reprocess"
+msgstr ""
+
+#: ../plugins/syslog/syslog_removal.php:151
+msgid "Click 'Continue' to Delete the following Syslog Removal Rule(s)."
+msgstr ""
+
+#: ../plugins/syslog/syslog_removal.php:157
+msgid "Delete Syslog Removal Rule(s)"
+msgstr ""
+
+#: ../plugins/syslog/syslog_removal.php:161
+msgid "Click 'Continue' to Disable the following Syslog Removal Rule(s)."
+msgstr ""
+
+#: ../plugins/syslog/syslog_removal.php:167
+msgid "Disable Syslog Removal Rule(s)"
+msgstr ""
+
+#: ../plugins/syslog/syslog_removal.php:171
+msgid "Click 'Continue' to Enable the following Syslog Removal Rule(s)."
+msgstr ""
+
+#: ../plugins/syslog/syslog_removal.php:177
+msgid "Enable Syslog Removal Rule(s)"
+msgstr ""
+
+#: ../plugins/syslog/syslog_removal.php:181
+msgid "Click 'Continue' to Re-process the following Syslog Removal Rule(s)."
+msgstr ""
+
+#: ../plugins/syslog/syslog_removal.php:187
+msgid "Retroactively Process Syslog Removal Rule(s)"
+msgstr ""
+
+#: ../plugins/syslog/syslog_removal.php:192
+msgid "You must select at least one Syslog Removal Rule."
+msgstr ""
+
+#: ../plugins/syslog/syslog_removal.php:270
+#, php-format
+msgid "There were %s messages removed, and %s messages transferred"
+msgstr ""
+
+#: ../plugins/syslog/syslog_removal.php:325
+#, php-format
+msgid "Removal Rule Edit [edit: %s]"
+msgstr ""
+
+#: ../plugins/syslog/syslog_removal.php:327
+#: ../plugins/syslog/syslog_removal.php:334
+msgid "Removal Rule Edit [new]"
+msgstr ""
+
+#: ../plugins/syslog/syslog_removal.php:329
+#: ../plugins/syslog/syslog_removal.php:342
+msgid "New Removal Record"
+msgstr ""
+
+#: ../plugins/syslog/syslog_removal.php:338
+msgid "New Removal Rule"
+msgstr ""
+
+#: ../plugins/syslog/syslog_removal.php:348
+msgid "Removel Rule Details"
+msgstr ""
+
+#: ../plugins/syslog/syslog_removal.php:352
+msgid "Removal Rule Name"
+msgstr ""
+
+#: ../plugins/syslog/syslog_removal.php:353
+msgid "Please describe this Removal Rule."
+msgstr ""
+
+#: ../plugins/syslog/syslog_removal.php:360
+#: ../plugins/syslog/syslog_reports.php:325
+msgid "Enabled?"
+msgstr ""
+
+#: ../plugins/syslog/syslog_removal.php:361
+msgid "Is this Removal Rule Enabled?"
+msgstr ""
+
+#: ../plugins/syslog/syslog_removal.php:368
+#: ../plugins/syslog/syslog_reports.php:333
+#: ../plugins/syslog/syslog_alerts.php:395
+msgid "String Match Type"
+msgstr ""
+
+#: ../plugins/syslog/syslog_removal.php:369
+#: ../plugins/syslog/syslog_alerts.php:396
+msgid ""
+"Define how you would like this string matched.  If using the SQL Expression "
+"type you may use any valid SQL expression\n"
+"\t\t\tto generate the alarm.  Available fields include 'message', "
+"'facility', 'priority', and 'host'."
+msgstr ""
+
+#: ../plugins/syslog/syslog_removal.php:377
+#: ../plugins/syslog/syslog_reports.php:341
+#: ../plugins/syslog/syslog_reports.php:364
+#: ../plugins/syslog/syslog_alerts.php:404
+msgid "Syslog Message Match String"
+msgstr ""
+
+#: ../plugins/syslog/syslog_removal.php:378
+#: ../plugins/syslog/syslog_alerts.php:405
+msgid ""
+"Enter the matching component of the syslog message, the facility or host "
+"name, or the SQL where clause if using the SQL Expression Match Type."
+msgstr ""
+
+#: ../plugins/syslog/syslog_removal.php:388
+msgid "Method of Removal"
+msgstr ""
+
+#: ../plugins/syslog/syslog_removal.php:390
+#: ../plugins/syslog/syslog_removal.php:625
+msgid "Deletion"
+msgstr ""
+
+#: ../plugins/syslog/syslog_removal.php:390
+msgid "Transferal"
+msgstr ""
+
+#: ../plugins/syslog/syslog_removal.php:394
+msgid "Removal Rule Notes"
+msgstr ""
+
+#: ../plugins/syslog/syslog_removal.php:397
+msgid "Space for Notes on the Removal rule"
+msgstr ""
+
+#: ../plugins/syslog/syslog_removal.php:574
+msgid "Syslog Removal Rule Filters"
+msgstr ""
+
+#: ../plugins/syslog/syslog_removal.php:607
+msgid "Removal Name"
+msgstr ""
+
+#: ../plugins/syslog/syslog_removal.php:609
+#: ../plugins/syslog/syslog_reports.php:596
+#: ../plugins/syslog/syslog_alerts.php:688
+msgid "Match Type"
+msgstr ""
+
+#: ../plugins/syslog/syslog_removal.php:610
+#: ../plugins/syslog/syslog_reports.php:597
+#: ../plugins/syslog/syslog_alerts.php:689
+msgid "Search String"
+msgstr ""
+
+#: ../plugins/syslog/syslog_removal.php:613
+#: ../plugins/syslog/syslog_reports.php:602
+#: ../plugins/syslog/syslog_alerts.php:692
+msgid "By User"
+msgstr ""
+
+#: ../plugins/syslog/syslog_removal.php:625
+msgid "Transfer"
+msgstr ""
+
+#: ../plugins/syslog/syslog_removal.php:632
+msgid "No Syslog Removal Rules Defined"
+msgstr ""
+
+#: ../plugins/syslog/syslog_reports.php:139
+msgid "Click 'Continue' to Delete the following Syslog Report(s)."
+msgstr ""
+
+#: ../plugins/syslog/syslog_reports.php:145
+msgid "Delete Syslog Report(s)"
+msgstr ""
+
+#: ../plugins/syslog/syslog_reports.php:149
+msgid "Click 'Continue' to Disable the following Syslog Report(s)."
+msgstr ""
+
+#: ../plugins/syslog/syslog_reports.php:155
+msgid "Disable Syslog Report(s)"
+msgstr ""
+
+#: ../plugins/syslog/syslog_reports.php:159
+msgid "Click 'Continue' to Enable the following Syslog Report(s)."
+msgstr ""
+
+#: ../plugins/syslog/syslog_reports.php:165
+msgid "Enable Syslog Report(s)"
+msgstr ""
+
+#: ../plugins/syslog/syslog_reports.php:170
+msgid "You must select at least one Syslog Report."
+msgstr ""
+
+#: ../plugins/syslog/syslog_reports.php:299
+#, php-format
+msgid "Report Edit [edit: %s]"
+msgstr ""
+
+#: ../plugins/syslog/syslog_reports.php:301
+#: ../plugins/syslog/syslog_reports.php:306
+msgid "Report Edit [new]"
+msgstr ""
+
+#: ../plugins/syslog/syslog_reports.php:303
+#: ../plugins/syslog/syslog_reports.php:308
+msgid "New Report Record"
+msgstr ""
+
+#: ../plugins/syslog/syslog_reports.php:319
+msgid "Please describe this Report."
+msgstr ""
+
+#: ../plugins/syslog/syslog_reports.php:326
+msgid "Is this Report Enabled?"
+msgstr ""
+
+#: ../plugins/syslog/syslog_reports.php:334
+msgid "Define how you would like this string matched."
+msgstr ""
+
+#: ../plugins/syslog/syslog_reports.php:342
+#: ../plugins/syslog/syslog_reports.php:365
+msgid "The matching component of the syslog message."
+msgstr ""
+
+#: ../plugins/syslog/syslog_reports.php:349
+msgid "Report Frequency"
+msgstr ""
+
+#: ../plugins/syslog/syslog_reports.php:350
+msgid "How often should this Report be sent to the distribution list?"
+msgstr ""
+
+#: ../plugins/syslog/syslog_reports.php:357
+#: ../plugins/syslog/syslog_reports.php:599
+msgid "Send Time"
+msgstr ""
+
+#: ../plugins/syslog/syslog_reports.php:358
+msgid "What time of day should this report be sent?"
+msgstr ""
+
+#: ../plugins/syslog/syslog_reports.php:372
+msgid "Report Body Text"
+msgstr ""
+
+#: ../plugins/syslog/syslog_reports.php:375
+msgid "The information that will be contained in the body of the report."
+msgstr ""
+
+#: ../plugins/syslog/syslog_reports.php:382
+msgid "Report e-mail Addresses"
+msgstr ""
+
+#: ../plugins/syslog/syslog_reports.php:385
+msgid "Comma delimited list of e-mail addresses to send the report to."
+msgstr ""
+
+#: ../plugins/syslog/syslog_reports.php:392
+msgid "Report Notes"
+msgstr ""
+
+#: ../plugins/syslog/syslog_reports.php:395
+msgid "Space for Notes on the Report"
+msgstr ""
+
+#: ../plugins/syslog/syslog_reports.php:561
+msgid "Syslog Report Filters"
+msgstr ""
+
+#: ../plugins/syslog/syslog_reports.php:600
+msgid "Last Sent"
+msgstr ""
+
+#: ../plugins/syslog/syslog_reports.php:615 ../plugins/syslog/setup.php:889
+#: ../plugins/thold/includes/arrays.php:83
+#: ../plugins/thold/includes/arrays.php:109
+#: ../plugins/thold/includes/arrays.php:167
+#: ../plugins/thold/includes/arrays.php:189
+#: ../plugins/thold/includes/arrays.php:232
+#: ../plugins/thold/includes/arrays.php:252 ../include/global_arrays.php:690
+msgid "Never"
+msgstr ""
+
+#: ../plugins/syslog/syslog_reports.php:622
+msgid "No Syslog Reports Defined"
+msgstr ""
+
+#: ../plugins/syslog/syslog_alerts.php:142
+msgid "Click 'Continue' to Delete the following Syslog Alert Rule(s)."
+msgstr ""
+
+#: ../plugins/syslog/syslog_alerts.php:148
+msgid "Delete Syslog Alert Rule(s)"
+msgstr ""
+
+#: ../plugins/syslog/syslog_alerts.php:152
+msgid "Click 'Continue' to Disable  the following Syslog Alert Rule(s)."
+msgstr ""
+
+#: ../plugins/syslog/syslog_alerts.php:158
+msgid "Disable Syslog Alert Rule(s)"
+msgstr ""
+
+#: ../plugins/syslog/syslog_alerts.php:162
+msgid "Click 'Continue' to Enable the following Syslog Alert Rule(s)."
+msgstr ""
+
+#: ../plugins/syslog/syslog_alerts.php:168
+msgid "Enable Syslog Alert Rule(s)"
+msgstr ""
+
+#: ../plugins/syslog/syslog_alerts.php:173
+msgid "You must select at least one Syslog Alert Rule."
+msgstr ""
+
+#: ../plugins/syslog/syslog_alerts.php:301
+#, php-format
+msgid "Alert Edit [edit: %s]"
+msgstr ""
+
+#: ../plugins/syslog/syslog_alerts.php:303
+#: ../plugins/syslog/syslog_alerts.php:315
+msgid "Alert Edit [new]"
+msgstr ""
+
+#: ../plugins/syslog/syslog_alerts.php:308
+msgid "Alert Ednt [new]"
+msgstr ""
+
+#: ../plugins/syslog/syslog_alerts.php:313
+#: ../plugins/syslog/syslog_alerts.php:317
+msgid "New Alert Rule"
+msgstr ""
+
+#: ../plugins/syslog/syslog_alerts.php:326
+msgid "Not Set"
+msgstr ""
+
+#: ../plugins/syslog/syslog_alerts.php:327
+#: ../plugins/syslog/syslog_alerts.php:328
+#: ../plugins/syslog/syslog_alerts.php:329
+#: ../plugins/syslog/syslog_alerts.php:330
+#: ../plugins/syslog/syslog_alerts.php:331
+#: ../plugins/syslog/syslog_alerts.php:332 ../plugins/syslog/setup.php:891
+#: ../plugins/syslog/setup.php:892 ../plugins/syslog/setup.php:893
+#: ../plugins/thold/includes/arrays.php:111
+#: ../plugins/thold/includes/arrays.php:112
+#: ../plugins/thold/includes/arrays.php:113
+#: ../plugins/thold/includes/arrays.php:114
+#: ../plugins/thold/includes/arrays.php:115
+#: ../plugins/thold/includes/arrays.php:116
+#: ../plugins/thold/includes/arrays.php:117
+#: ../plugins/thold/includes/arrays.php:118
+#: ../plugins/thold/includes/arrays.php:119
+#: ../plugins/thold/includes/arrays.php:136
+#: ../plugins/thold/includes/arrays.php:137
+#: ../plugins/thold/includes/arrays.php:138
+#: ../plugins/thold/includes/arrays.php:139
+#: ../plugins/thold/includes/arrays.php:140
+#: ../plugins/thold/includes/arrays.php:141
+#: ../plugins/thold/includes/arrays.php:142
+#: ../plugins/thold/includes/arrays.php:143
+#: ../plugins/thold/includes/arrays.php:144
+#: ../plugins/thold/includes/arrays.php:145
+#: ../plugins/thold/includes/arrays.php:146
+#: ../plugins/thold/includes/arrays.php:147
+#: ../plugins/thold/includes/arrays.php:148
+#: ../plugins/thold/includes/arrays.php:149
+#: ../plugins/thold/includes/arrays.php:150
+#: ../plugins/thold/includes/arrays.php:190
+#: ../plugins/thold/includes/arrays.php:191
+#: ../plugins/thold/includes/arrays.php:192
+#: ../plugins/thold/includes/arrays.php:193
+#: ../plugins/thold/includes/arrays.php:194
+#: ../plugins/thold/includes/arrays.php:195
+#: ../plugins/thold/includes/arrays.php:211
+#: ../plugins/thold/includes/arrays.php:212
+#: ../plugins/thold/includes/arrays.php:213
+#: ../plugins/thold/includes/arrays.php:214
+#: ../plugins/thold/includes/arrays.php:215
+#: ../plugins/thold/includes/arrays.php:216 ../data_sources.php:1016
+#: ../automation_networks.php:422 ../automation_networks.php:423
+#: ../automation_networks.php:424 ../automation_networks.php:425
+#: ../include/global_arrays.php:389 ../include/global_arrays.php:390
+#: ../include/global_arrays.php:391 ../include/global_arrays.php:392
+#: ../include/global_arrays.php:422 ../include/global_arrays.php:423
+#: ../include/global_arrays.php:424 ../include/global_arrays.php:425
+#: ../include/global_arrays.php:426 ../include/global_arrays.php:427
+#: ../include/global_arrays.php:688 ../include/global_arrays.php:689
+#: ../include/global_arrays.php:1037 ../include/global_arrays.php:1041
+#: ../include/global_arrays.php:1049 ../include/global_arrays.php:1050
+#: ../include/global_arrays.php:1072 ../include/global_arrays.php:1073
+#: ../include/global_arrays.php:1074 ../include/global_arrays.php:1075
+#: ../include/global_arrays.php:1076 ../include/global_arrays.php:1087
+#: ../include/global_settings.php:1171 ../include/global_settings.php:1172
+#: ../include/global_settings.php:1173 ../include/global_settings.php:1174
+#: ../include/global_settings.php:1175 ../include/global_settings.php:1901
+#, php-format
+msgid "%d Minutes"
+msgstr ""
+
+#: ../plugins/syslog/syslog_alerts.php:333
+#: ../plugins/thold/includes/arrays.php:120
+#: ../plugins/thold/includes/arrays.php:151
+#: ../plugins/thold/includes/arrays.php:196
+#: ../plugins/thold/includes/arrays.php:217 ../automation_networks.php:426
+#, php-format
+msgid "%d Hour"
+msgstr ""
+
+#: ../plugins/syslog/syslog_alerts.php:334
+#: ../plugins/syslog/syslog_alerts.php:335
+#: ../plugins/syslog/syslog_alerts.php:336
+#: ../plugins/syslog/syslog_alerts.php:337
+#: ../plugins/syslog/syslog_alerts.php:338
+#: ../plugins/syslog/syslog_alerts.php:339
+#: ../plugins/thold/includes/arrays.php:121
+#: ../plugins/thold/includes/arrays.php:122
+#: ../plugins/thold/includes/arrays.php:123
+#: ../plugins/thold/includes/arrays.php:124
+#: ../plugins/thold/includes/arrays.php:125
+#: ../plugins/thold/includes/arrays.php:126
+#: ../plugins/thold/includes/arrays.php:152
+#: ../plugins/thold/includes/arrays.php:153
+#: ../plugins/thold/includes/arrays.php:154
+#: ../plugins/thold/includes/arrays.php:156
+#: ../plugins/thold/includes/arrays.php:157
+#: ../plugins/thold/includes/arrays.php:158
+#: ../plugins/thold/includes/arrays.php:197
+#: ../plugins/thold/includes/arrays.php:198
+#: ../plugins/thold/includes/arrays.php:199
+#: ../plugins/thold/includes/arrays.php:200
+#: ../plugins/thold/includes/arrays.php:201
+#: ../plugins/thold/includes/arrays.php:202
+#: ../plugins/thold/includes/arrays.php:218
+#: ../plugins/thold/includes/arrays.php:219
+#: ../plugins/thold/includes/arrays.php:220
+#: ../plugins/thold/includes/arrays.php:221
+#: ../plugins/thold/includes/arrays.php:222
+#: ../plugins/thold/includes/arrays.php:223 ../data_source_profiles.php:653
+#: ../automation_networks.php:427 ../automation_networks.php:428
+#: ../automation_networks.php:429 ../include/global_arrays.php:394
+#: ../include/global_arrays.php:395 ../include/global_arrays.php:396
+#: ../include/global_arrays.php:397 ../include/global_arrays.php:398
+#: ../include/global_arrays.php:429 ../include/global_arrays.php:430
+#: ../include/global_arrays.php:431 ../include/global_arrays.php:432
+#: ../include/global_arrays.php:943 ../include/global_arrays.php:944
+#: ../include/global_arrays.php:945 ../include/global_arrays.php:946
+#: ../include/global_arrays.php:989 ../include/global_arrays.php:990
+#: ../include/global_arrays.php:991 ../include/global_arrays.php:992
+#: ../include/global_arrays.php:993 ../include/global_arrays.php:1010
+#: ../include/global_arrays.php:1011 ../include/global_arrays.php:1012
+#: ../include/global_arrays.php:1013 ../include/global_arrays.php:1014
+#: ../include/global_settings.php:1177 ../include/global_settings.php:1178
+#: ../include/global_settings.php:1179 ../include/global_settings.php:1180
+#, php-format
+msgid "%d Hours"
+msgstr ""
+
+#: ../plugins/syslog/syslog_alerts.php:340 ../plugins/syslog/setup.php:852
+#: ../plugins/syslog/setup.php:871 ../plugins/thold/includes/arrays.php:127
+#: ../plugins/thold/includes/arrays.php:159
+#: ../plugins/thold/includes/arrays.php:203
+#: ../plugins/thold/includes/arrays.php:224
+#, php-format
+msgid "%d Day"
+msgstr ""
+
+#: ../plugins/syslog/syslog_alerts.php:341 ../plugins/syslog/setup.php:853
+#: ../plugins/syslog/setup.php:854 ../plugins/syslog/setup.php:855
+#: ../plugins/syslog/setup.php:856 ../plugins/syslog/setup.php:857
+#: ../plugins/syslog/setup.php:872 ../plugins/syslog/setup.php:873
+#: ../plugins/syslog/setup.php:874 ../plugins/syslog/setup.php:875
+#: ../plugins/syslog/setup.php:876 ../plugins/thold/includes/arrays.php:128
+#: ../plugins/thold/includes/arrays.php:160
+#: ../plugins/thold/includes/arrays.php:204
+#: ../plugins/thold/includes/arrays.php:225 ../data_source_profiles.php:645
+#: ../include/global_arrays.php:948 ../include/global_arrays.php:949
+#: ../include/global_arrays.php:950 ../include/global_settings.php:1105
+#: ../include/global_settings.php:1106 ../include/global_settings.php:1107
+#: ../include/global_settings.php:1108 ../include/global_settings.php:1119
+#: ../include/global_settings.php:1120 ../include/global_settings.php:1121
+#: ../include/global_settings.php:1122
+#, php-format
+msgid "%d Days"
+msgstr ""
+
+#: ../plugins/syslog/syslog_alerts.php:342 ../plugins/syslog/setup.php:858
+#: ../plugins/syslog/setup.php:877 ../plugins/thold/includes/arrays.php:129
+#: ../plugins/thold/includes/arrays.php:161
+#: ../plugins/thold/includes/arrays.php:205
+#: ../plugins/thold/includes/arrays.php:226
+#, php-format
+msgid "%d Week"
+msgstr ""
+
+#: ../plugins/syslog/syslog_alerts.php:344
+msgid "Month"
+msgstr ""
+
+#: ../plugins/syslog/syslog_alerts.php:358
+msgid "Alert Details"
+msgstr ""
+
+#: ../plugins/syslog/syslog_alerts.php:363
+msgid "Please describe this Alert."
+msgstr ""
+
+#: ../plugins/syslog/syslog_alerts.php:371
+msgid "What is the Severity Level of this Alert?"
+msgstr ""
+
+#: ../plugins/syslog/syslog_alerts.php:378
+msgid "Reporting Method"
+msgstr ""
+
+#: ../plugins/syslog/syslog_alerts.php:379
+msgid "Define how to Alert on the syslog messages."
+msgstr ""
+
+#: ../plugins/syslog/syslog_alerts.php:381
+#: ../plugins/syslog/syslog_alerts.php:702
+msgid "Individual"
+msgstr ""
+
+#: ../plugins/syslog/syslog_alerts.php:381
+#: ../plugins/syslog/syslog_alerts.php:386
+#: ../plugins/syslog/syslog_alerts.php:702
+#: ../plugins/thold/thold_graph.php:971
+#: ../plugins/thold/includes/settings.php:61
+msgid "Threshold"
+msgstr ""
+
+#: ../plugins/syslog/syslog_alerts.php:387
+msgid ""
+"For the 'Threshold' method, If the number seen is above this value an Alert "
+"will be triggered."
+msgstr ""
+
+#: ../plugins/syslog/syslog_alerts.php:415
+msgid "Alert Enabled"
+msgstr ""
+
+#: ../plugins/syslog/syslog_alerts.php:416
+msgid "Is this Alert Enabled?"
+msgstr ""
+
+#: ../plugins/syslog/syslog_alerts.php:422
+#: ../plugins/thold/thold_templates.php:706 ../plugins/thold/thold.php:968
+msgid "Re-Alert Cycle"
+msgstr ""
+
+#: ../plugins/syslog/syslog_alerts.php:426
+msgid ""
+"Do not resend this alert again for the same host, until this amount of time "
+"has elapsed. For threshold based alarms, this applies to all hosts."
+msgstr ""
+
+#: ../plugins/syslog/syslog_alerts.php:430
+msgid "Alert Notes"
+msgstr ""
+
+#: ../plugins/syslog/syslog_alerts.php:433
+msgid "Space for Notes on the Alert"
+msgstr ""
+
+#: ../plugins/syslog/syslog_alerts.php:441
+msgid "Alert Actions"
+msgstr ""
+
+#: ../plugins/syslog/syslog_alerts.php:445
+msgid "Open Ticket"
+msgstr ""
+
+#: ../plugins/syslog/syslog_alerts.php:446
+msgid "Should a Help Desk Ticket be opened for this Alert"
+msgstr ""
+
+#: ../plugins/syslog/syslog_alerts.php:453
+msgid "E-Mails to Notify"
+msgstr ""
+
+#: ../plugins/syslog/syslog_alerts.php:456
+msgid ""
+"Please enter a comma delimited list of e-mail addresses to inform.  If you\n"
+"\t\t\twish to send out e-mail to a recipient in SMS format, please prefix "
+"that recipient's e-mail address\n"
+"\t\t\twith <b>'sms@'</b>.  For example, if the recipients SMS address is "
+"<b>'2485551212@mycarrier.net'</b>, you would\n"
+"\t\t\tenter it as <b>'sms@2485551212@mycarrier.net'</b> and it will be "
+"formatted as an SMS message."
+msgstr ""
+
+#: ../plugins/syslog/syslog_alerts.php:465
+msgid "Alert Command"
+msgstr ""
+
+#: ../plugins/syslog/syslog_alerts.php:468
+msgid ""
+"When an Alert is triggered, run the following command.  The following "
+"replacement variables\n"
+"\t\t\tare available <b>'&lt;HOSTNAME&gt;'</b>, <b>'&lt;ALERTID&gt;'</b>, "
+"<b>'&lt;MESSAGE&gt;'</b>,\n"
+"\t\t\t<b>'&lt;FACILITY&gt;'</b>, <b>'&lt;PRIORITY&gt;'</b>, <b>'&lt;"
+"SEVERITY&gt;'</b>.  Please\n"
+"\t\t\tnote that <b>'&lt;HOSTNAME&gt;'</b> is only available on individual "
+"thresholds."
+msgstr ""
+
+#: ../plugins/syslog/syslog_alerts.php:650
+msgid "Syslog Alert Filters"
+msgstr ""
+
+#: ../plugins/syslog/syslog_alerts.php:686
+msgid "Threshold Count"
+msgstr ""
+
+#: ../plugins/syslog/syslog_alerts.php:690
+msgid "E-Mail Addresses"
+msgstr ""
+
+#: ../plugins/syslog/syslog_alerts.php:714
+msgid "No Syslog Alerts Defined"
+msgstr ""
+
+#: ../plugins/syslog/setup.php:186
+msgid ""
+"Syslog 2.0 Requires an Entire Reinstall.  Please uninstall Syslog and Remove "
+"all Data before Intalling.  Migration is possible, but you must plan this in "
+"advance.  No automatic migration is supported."
+msgstr ""
+
+#: ../plugins/syslog/setup.php:498
+msgid "What upgrade/install type do you wish to use"
+msgstr ""
+
+#: ../plugins/syslog/setup.php:499
+msgid ""
+"When you have very large tables, performing a Truncate will be much "
+"quicker.  If you are\n"
+"\t\t\tconcerned about archive data, you can choose either Inline, which will "
+"freeze your browser for the period\n"
+"\t\t\tof this upgrade, or background, which will create a background process "
+"to bring your old syslog data\n"
+"\t\t\tfrom a backup table to the new syslog format.  Again this process can "
+"take several hours."
+msgstr ""
+
+#: ../plugins/syslog/setup.php:504
+msgid "Truncate Syslog Table"
+msgstr ""
+
+#: ../plugins/syslog/setup.php:504
+msgid "Inline Upgrade"
+msgstr ""
+
+#: ../plugins/syslog/setup.php:504
+msgid "Background Upgrade"
+msgstr ""
+
+#: ../plugins/syslog/setup.php:508
+msgid "Database Storage Engine"
+msgstr ""
+
+#: ../plugins/syslog/setup.php:509
+msgid ""
+"In MySQL 5.1.6 and above, you have the option to make this a partitioned "
+"table by days.  Prior to this\n"
+"\t\t\trelease, you only have the traditional table structure available."
+msgstr ""
+
+#: ../plugins/syslog/setup.php:512
+msgid "MyISAM Storage"
+msgstr ""
+
+#: ../plugins/syslog/setup.php:512
+msgid "InnoDB Storage"
+msgstr ""
+
+#: ../plugins/syslog/setup.php:516
+msgid "Database Architecutre"
+msgstr ""
+
+#: ../plugins/syslog/setup.php:517
+msgid ""
+"In MySQL 5.1.6 and above, you have the option to make this a partitioned "
+"table by days.\n"
+"\t\t\t\tIn MySQL 5.5 and above, you can create multiple partitions per day.\n"
+"\t\t\t\tPrior to MySQL 5.1.6, you only have the traditional table structure "
+"available."
+msgstr ""
+
+#: ../plugins/syslog/setup.php:521
+msgid "Traditional Table"
+msgstr ""
+
+#: ../plugins/syslog/setup.php:521
+msgid "Partitioined Table"
+msgstr ""
+
+#: ../plugins/syslog/setup.php:525
+msgid "Retention Policy"
+msgstr ""
+
+#: ../plugins/syslog/setup.php:526
+msgid ""
+"Choose how many days of Syslog values you wish to maintain in the database."
+msgstr ""
+
+#: ../plugins/syslog/setup.php:543
+msgid "Partitions per Day"
+msgstr ""
+
+#: ../plugins/syslog/setup.php:544
+msgid "Select the number of partitions per day that you wish to create."
+msgstr ""
+
+#: ../plugins/syslog/setup.php:547 ../plugins/syslog/setup.php:548
+#: ../plugins/syslog/setup.php:549 ../plugins/syslog/setup.php:550
+#: ../plugins/syslog/setup.php:551
+#, php-format
+msgid "%d Per Day"
+msgstr ""
+
+#: ../plugins/syslog/setup.php:557
+msgid "Upgrade"
+msgstr ""
+
+#: ../plugins/syslog/setup.php:559 ../plugins.php:28
+msgid "Install"
+msgstr ""
+
+#: ../plugins/syslog/setup.php:563
+#, php-format
+msgid "Syslog %s Advisor"
+msgstr ""
+
+#: ../plugins/syslog/setup.php:566
+msgid "WARNING: Syslog Upgrade is Time Consuming!!!"
+msgstr ""
+
+#: ../plugins/syslog/setup.php:567
+msgid ""
+"The upgrade of the 'main' syslog table can be a very time consuming "
+"process.  As such, it is recommended\n"
+"\t\t\tthat you either reduce the size of your syslog table prior to "
+"upgrading, or choose the background option</p>\n"
+"\t\t\t<p>If you choose the background option, your legacy syslog table will "
+"be renamed, and a new syslog table will\n"
+"\t\t\tbe created.  Then, an upgrade process will be launched in the "
+"background.  Again, this background process can\n"
+"\t\t\tquite a bit of time to complete.  However, your data will be "
+"preserved</p>\n"
+"\t\t\t<p>Regardless of your choice,\n"
+"\t\t\tall existing removal and alert rules will be maintained during the "
+"upgrade process.</p>\n"
+"\t\t\t<p>Press <b>'Upgrade'</b> to proceed with the upgrade, or <b>'Cancel'</"
+"b> to return to the Plugins menu."
+msgstr ""
+
+#: ../plugins/syslog/setup.php:578
+msgid ""
+"You have several options to choose from when installing Syslog.  The first "
+"is the Database Architecture.\n"
+"\t\t\tStarting with MySQL 5.1.6, you can elect to utilize Table Partitioning "
+"to prevent the size of the tables\n"
+"\t\t\tfrom becomming excessive thus slowing queries."
+msgstr ""
+
+#: ../plugins/syslog/setup.php:581
+msgid ""
+"You can also set the MySQL storage engine.  If you have not tuned you system "
+"for InnoDB storage properties,\n"
+"\t\t\tit is strongly recommended that you utilize the MyISAM storage engine."
+msgstr ""
+
+#: ../plugins/syslog/setup.php:583
+msgid ""
+"Can can also select the retention duration.  Please keeep in mind that if "
+"you have several hosts logging\n"
+"\t\t\tto syslog, this table can become quite large.  So, if not using "
+"partitioning, you might want to keep the size\n"
+"\t\t\tsmaller."
+msgstr ""
+
+#: ../plugins/syslog/setup.php:590
+#, php-format
+msgid "Syslog %s Settings"
+msgstr ""
+
+#: ../plugins/syslog/setup.php:617
+msgid "What uninstall method do you want to use?"
+msgstr ""
+
+#: ../plugins/syslog/setup.php:618
+msgid ""
+"When uninstalling syslog, you can remove everything, or only components, "
+"just in case you plan on re-installing in the future."
+msgstr ""
+
+#: ../plugins/syslog/setup.php:620
+msgid "Remove Everything (Logs, Tables, Settings)"
+msgstr ""
+
+#: ../plugins/syslog/setup.php:620
+msgid "Syslog Data Only"
+msgstr ""
+
+#: ../plugins/syslog/setup.php:634
+msgid "Syslog Uninstall Preferences"
+msgstr ""
+
+#: ../plugins/syslog/setup.php:674 ../plugins/syslog/setup.php:955
+#: ../plugins/syslog/setup.php:969
+msgid "Syslog"
+msgstr ""
+
+#: ../plugins/syslog/setup.php:682
+msgid "Syslog Enabled"
+msgstr ""
+
+#: ../plugins/syslog/setup.php:683
+msgid ""
+"If this checkbox is set, records will be transferred from the Syslog "
+"Incoming table to the\n"
+"\t\t\t\tmain syslog table and Alerts and Reports will be enabled.  Please "
+"keep in mind that if the system is disabled\n"
+"\t\t\t\tlog entries will still accumulate into the Syslog Incoming table as "
+"this is defined by the rsyslog or syslog-ng process."
+msgstr ""
+
+#: ../plugins/syslog/setup.php:690
+msgid "HTML Based e-Mail"
+msgstr ""
+
+#: ../plugins/syslog/setup.php:691
+msgid ""
+"If this checkbox is set, all e-mails will be sent in HTML format.  "
+"Otherwise, e-mails will be sent in plain text."
+msgstr ""
+
+#: ../plugins/syslog/setup.php:696
+msgid "Enable Statistics Gathering"
+msgstr ""
+
+#: ../plugins/syslog/setup.php:697
+msgid ""
+"If this checkbox is set, statistics on where syslog messages are arriving "
+"from will be maintained.\n"
+"\t\t\tThis statistical information can be used to render things such as heat "
+"maps."
+msgstr ""
+
+#: ../plugins/syslog/setup.php:703
+msgid "Strip Domains"
+msgstr ""
+
+#: ../plugins/syslog/setup.php:704
+msgid ""
+"A comma delimited list of domains that you wish to remove from the syslog "
+"hostname, Examples would be 'mydomain.com, otherdomain.com'"
+msgstr ""
+
+#: ../plugins/syslog/setup.php:711
+msgid "Validate Hostnames"
+msgstr ""
+
+#: ../plugins/syslog/setup.php:712
+msgid ""
+"If this checkbox is set, all hostnames are validated.  If the hostname is "
+"not valid. All records are assigned\n"
+"\t\t\tto a special host called 'invalidhost'.  This setting can impact "
+"syslog processing time on large systems.  Therefore, use of this\n"
+"\t\t\tsetting should only be used when other means are not in place to "
+"prevent this from happening."
+msgstr ""
+
+#: ../plugins/syslog/setup.php:719 ../utilities.php:1856
+#: ../include/global_settings.php:827
+msgid "Refresh Interval"
+msgstr ""
+
+#: ../plugins/syslog/setup.php:720
+msgid "This is the time in seconds before the page refreshes."
+msgstr ""
+
+#: ../plugins/syslog/setup.php:726
+msgid "Max Report Records"
+msgstr ""
+
+#: ../plugins/syslog/setup.php:727
+msgid ""
+"For Threshold based Alerts, what is the maxiumum number that you wish to\n"
+"\t\t\tshow in the report.  This is used to limit the size of the html log "
+"and e-mail."
+msgstr ""
+
+#: ../plugins/syslog/setup.php:732 ../plugins/syslog/setup.php:733
+#: ../plugins/syslog/setup.php:734 ../plugins/syslog/setup.php:735
+#: ../plugins/syslog/setup.php:736 ../plugins/syslog/setup.php:737
+#, php-format
+msgid "%d Records"
+msgstr ""
+
+#: ../plugins/syslog/setup.php:741
+msgid "Syslog Retention"
+msgstr ""
+
+#: ../plugins/syslog/setup.php:742
+msgid "This is the number of days to keep events."
+msgstr ""
+
+#: ../plugins/syslog/setup.php:748
+msgid "Syslog Alert Retention"
+msgstr ""
+
+#: ../plugins/syslog/setup.php:749
+msgid "This is the number of days to keep alert logs."
+msgstr ""
+
+#: ../plugins/syslog/setup.php:755
+msgid "Command for Opening Tickets"
+msgstr ""
+
+#: ../plugins/syslog/setup.php:756
+msgid ""
+"This command will be executed for opening Help Desk Tickets.  The command "
+"will be required to\n"
+"\t\t\tparse multiple input parameters as follows: <b>--alert-name</b>, <b>--"
+"severity</b>, <b>--hostlist</b>, <b>--message</b>.\n"
+"\t\t\tThe hostlist will be a comma delimited list of hosts impacted by the "
+"alert."
+msgstr ""
+
+#: ../plugins/syslog/setup.php:765
+msgid "This is the email address that syslog alerts will appear from."
+msgstr ""
+
+#: ../plugins/syslog/setup.php:770
+msgid "From Display Name"
+msgstr ""
+
+#: ../plugins/syslog/setup.php:771
+msgid "This is the display name that syslog alerts will appear from."
+msgstr ""
+
+#: ../plugins/syslog/setup.php:851 ../plugins/syslog/setup.php:870
+msgid "Indefinate"
+msgstr ""
+
+#: ../plugins/syslog/setup.php:860 ../plugins/syslog/setup.php:879
+#: ../plugins/thold/includes/arrays.php:28
+#: ../plugins/thold/includes/arrays.php:131
+#: ../plugins/thold/includes/arrays.php:163
+#: ../plugins/thold/includes/arrays.php:207
+#: ../plugins/thold/includes/arrays.php:228
+#, php-format
+msgid "%d Month"
+msgstr ""
+
+#: ../plugins/syslog/setup.php:866 ../plugins/syslog/setup.php:885
+#: ../plugins/thold/includes/arrays.php:33
+#, php-format
+msgid "%d Year"
+msgstr ""
+
+#: ../plugins/syslog/setup.php:890 ../plugins/thold/includes/arrays.php:110
+#: ../plugins/thold/includes/arrays.php:135 ../automation_networks.php:421
+#, php-format
+msgid "%d Minute"
+msgstr ""
+
+#: ../plugins/syslog/setup.php:903
+msgid "Begins with"
+msgstr ""
+
+#: ../plugins/syslog/setup.php:904
+msgid "Contains"
+msgstr ""
+
+#: ../plugins/syslog/setup.php:905
+msgid "Ends with"
+msgstr ""
+
+#: ../plugins/syslog/setup.php:906
+msgid "Hostname is"
+msgstr ""
+
+#: ../plugins/syslog/setup.php:907
+msgid "Facility is"
+msgstr ""
+
+#: ../plugins/syslog/setup.php:908
+msgid "SQL Expression"
+msgstr ""
+
+#: ../plugins/syslog/setup.php:911 ../include/global_arrays.php:916
+msgid "Last Day"
+msgstr ""
+
+#: ../plugins/syslog/setup.php:912 ../include/global_arrays.php:920
+msgid "Last Week"
+msgstr ""
+
+#: ../plugins/syslog/setup.php:936
+msgid "Alert Rules"
+msgstr ""
+
+#: ../plugins/syslog/setup.php:937
+msgid "Removal Rules"
+msgstr ""
+
+#: ../plugins/syslog/setup.php:938
+msgid "Report Rules"
+msgstr ""
+
+#: ../plugins/syslog/setup.php:956
+msgid "Syslog Removals"
+msgstr ""
+
+#: ../plugins/syslog/setup.php:959 ../plugins/syslog/setup.php:964
+#: ../plugins/syslog/setup.php:968
+msgid "(Actions)"
+msgstr ""
+
+#: ../plugins/syslog/setup.php:961
+msgid "Syslog Alerts"
+msgstr ""
+
+#: ../plugins/syslog/setup.php:966
+msgid "Syslog Reports"
+msgstr ""
+
+#: ../plugins/syslog/setup.php:1020
+msgid "Display Syslog in Range"
+msgstr ""
+
+#: ../plugins/syslog/setup.php:1072
+msgid "Syslog Utilities"
+msgstr ""
+
+#: ../plugins/syslog/setup.php:1076
+msgid "Purge Syslog Devices"
+msgstr ""
+
+#: ../plugins/syslog/setup.php:1079
+msgid ""
+"This menu pick provides a means to remove Devices that are no longer "
+"reporting into Cactis syslog server."
+msgstr ""
+
+#: ../plugins/thold/thold_graph.php:135 ../plugins/thold/notify_lists.php:959
 #: ../plugins/thold/thold.php:417 ../plugins/thold/includes/settings.php:207
 msgid "Breached"
 msgstr ""
 
-#: ../plugins/thold/thold_graph.php:142 ../plugins/thold/thold_graph.php:322
-#: ../plugins/thold/notify_lists.php:958
-#: ../plugins/thold/notify_lists.php:1041 ../plugins/thold/thold.php:418
+#: ../plugins/thold/thold_graph.php:136 ../plugins/thold/thold_graph.php:316
+#: ../plugins/thold/notify_lists.php:960
+#: ../plugins/thold/notify_lists.php:1043 ../plugins/thold/thold.php:418
 #: ../plugins/thold/thold.php:482 ../plugins/thold/includes/settings.php:208
 msgid "Triggered"
 msgstr ""
 
-#: ../plugins/thold/thold_graph.php:148 ../plugins/thold/notify_lists.php:44
-#: ../plugins/thold/notify_lists.php:964
-#: ../plugins/thold/notify_lists.php:1031
+#: ../plugins/thold/thold_graph.php:142 ../plugins/thold/notify_lists.php:44
+#: ../plugins/thold/notify_lists.php:966
+#: ../plugins/thold/notify_lists.php:1033
 #: ../plugins/thold/thold_functions.php:46 ../plugins/thold/thold.php:467
 #: ../plugins/thold/includes/settings.php:27
 #: ../plugins/thold/includes/settings.php:32
@@ -4760,207 +6203,197 @@ msgstr ""
 msgid "Thresholds"
 msgstr ""
 
-#: ../plugins/thold/thold_graph.php:259
+#: ../plugins/thold/thold_graph.php:253
 msgid "Threshold Status"
 msgstr ""
 
-#: ../plugins/thold/thold_graph.php:315 ../plugins/thold/thold.php:476
+#: ../plugins/thold/thold_graph.php:309 ../plugins/thold/thold.php:476
 msgid "Current"
 msgstr ""
 
-#: ../plugins/thold/thold_graph.php:316
+#: ../plugins/thold/thold_graph.php:310
 msgid "Warn Hi/Lo"
 msgstr ""
 
-#: ../plugins/thold/thold_graph.php:317
+#: ../plugins/thold/thold_graph.php:311
 msgid "Alert Hi/Lo"
 msgstr ""
 
-#: ../plugins/thold/thold_graph.php:318
+#: ../plugins/thold/thold_graph.php:312
 msgid "BL Hi/Lo"
 msgstr ""
 
-#: ../plugins/thold/thold_graph.php:319
+#: ../plugins/thold/thold_graph.php:313
 #: ../plugins/thold/thold_templates.php:1342 ../plugins/thold/thold.php:479
 msgid "Trigger"
 msgstr ""
 
-#: ../plugins/thold/thold_graph.php:320
+#: ../plugins/thold/thold_graph.php:314
 #: ../plugins/thold/thold_templates.php:1343 ../plugins/thold/thold.php:480
 #: ../include/global_arrays.php:300
 msgid "Duration"
 msgstr ""
 
-#: ../plugins/thold/thold_graph.php:321
+#: ../plugins/thold/thold_graph.php:315
 #: ../plugins/thold/thold_templates.php:1344 ../plugins/thold/thold.php:481
 msgid "Repeat"
 msgstr ""
 
-#: ../plugins/thold/thold_graph.php:362
+#: ../plugins/thold/thold_graph.php:356
 msgid "Baseline-LOW"
 msgstr ""
 
-#: ../plugins/thold/thold_graph.php:365
+#: ../plugins/thold/thold_graph.php:359
 msgid "Baseline-HIGH"
 msgstr ""
 
-#: ../plugins/thold/thold_graph.php:379
+#: ../plugins/thold/thold_graph.php:373
 msgid "Edit Threshold"
 msgstr ""
 
-#: ../plugins/thold/thold_graph.php:383
+#: ../plugins/thold/thold_graph.php:377
 msgid "Disable Threshold"
 msgstr ""
 
-#: ../plugins/thold/thold_graph.php:385
+#: ../plugins/thold/thold_graph.php:379
 msgid "Enable Threshold"
 msgstr ""
 
-#: ../plugins/thold/thold_graph.php:388
+#: ../plugins/thold/thold_graph.php:382
 msgid "View Graph"
 msgstr ""
 
-#: ../plugins/thold/thold_graph.php:389
+#: ../plugins/thold/thold_graph.php:383
 msgid "View Threshold History"
 msgstr ""
 
-#: ../plugins/thold/thold_graph.php:425 ../plugins/thold/notify_lists.php:1133
+#: ../plugins/thold/thold_graph.php:419 ../plugins/thold/notify_lists.php:1135
 #: ../plugins/thold/thold.php:595
 msgid "No Thresholds"
 msgstr ""
 
-#: ../plugins/thold/thold_graph.php:581
+#: ../plugins/thold/thold_graph.php:575
 msgid "Hover over icons for help"
 msgstr ""
 
-#: ../plugins/thold/thold_graph.php:582
+#: ../plugins/thold/thold_graph.php:576
 msgid "A description for the Device"
 msgstr ""
 
-#: ../plugins/thold/thold_graph.php:583
+#: ../plugins/thold/thold_graph.php:577
 msgid "A Cacti unique identifier for the Device"
 msgstr ""
 
-#: ../plugins/thold/thold_graph.php:584
+#: ../plugins/thold/thold_graph.php:578
 msgid "The number of Graphs for this Device"
 msgstr ""
 
-#: ../plugins/thold/thold_graph.php:585
+#: ../plugins/thold/thold_graph.php:579
 msgid "The number of Data Sources for this Device"
 msgstr ""
 
-#: ../plugins/thold/thold_graph.php:586
+#: ../plugins/thold/thold_graph.php:580
 msgid "The status for this Device as of the last time it was polled"
 msgstr ""
 
-#: ../plugins/thold/thold_graph.php:587 ../host.php:1428
+#: ../plugins/thold/thold_graph.php:581 ../host.php:1428
 msgid "In State"
 msgstr ""
 
-#: ../plugins/thold/thold_graph.php:587
+#: ../plugins/thold/thold_graph.php:581
 msgid ""
 "The last time Cacti found an issues with this Device.  It can be higher than "
 "the Uptime for the the Device, if it was rebooted between Cacti polling "
 "cycles"
 msgstr ""
 
-#: ../plugins/thold/thold_graph.php:588
+#: ../plugins/thold/thold_graph.php:582
 msgid "The official uptime of the Device as reported by SNMP"
 msgstr ""
 
-#: ../plugins/thold/thold_graph.php:589
+#: ../plugins/thold/thold_graph.php:583
 msgid "The official hostname for this Device"
 msgstr ""
 
-#: ../plugins/thold/thold_graph.php:590 ../host.php:1431
+#: ../plugins/thold/thold_graph.php:584 ../host.php:1431
 msgid "Current (ms)"
 msgstr ""
 
-#: ../plugins/thold/thold_graph.php:590
+#: ../plugins/thold/thold_graph.php:584
 msgid "The current response time for the Cacti Availability check"
 msgstr ""
 
-#: ../plugins/thold/thold_graph.php:591 ../host.php:1432
+#: ../plugins/thold/thold_graph.php:585 ../host.php:1432
 msgid "Average (ms)"
 msgstr ""
 
-#: ../plugins/thold/thold_graph.php:591
+#: ../plugins/thold/thold_graph.php:585
 msgid "The average response time for the Cacti Availability check"
 msgstr ""
 
-#: ../plugins/thold/thold_graph.php:592 ../host.php:1433
+#: ../plugins/thold/thold_graph.php:586 ../host.php:1433
 msgid "Availability"
 msgstr ""
 
-#: ../plugins/thold/thold_graph.php:592
+#: ../plugins/thold/thold_graph.php:586
 msgid ""
 "The overall Availability of this Device since the last counter reset in Cacti"
 msgstr ""
 
-#: ../plugins/thold/thold_graph.php:629 ../plugins/thold/thold_graph.php:652
+#: ../plugins/thold/thold_graph.php:623 ../plugins/thold/thold_graph.php:646
 msgid "Edit Device"
 msgstr ""
 
-#: ../plugins/thold/thold_graph.php:678 ../host.php:1476
+#: ../plugins/thold/thold_graph.php:672 ../host.php:1476
 msgid "No Devices"
 msgstr ""
 
-#: ../plugins/thold/thold_graph.php:759
+#: ../plugins/thold/thold_graph.php:753
 #: ../plugins/thold/includes/arrays.php:43
 msgid "Not Monitored"
 msgstr ""
 
-#: ../plugins/thold/thold_graph.php:879
+#: ../plugins/thold/thold_graph.php:873
 #, php-format
 msgid "Threshold Log for [ %s ]"
 msgstr ""
 
-#: ../plugins/thold/thold_graph.php:918
+#: ../plugins/thold/thold_graph.php:912
 msgid "Log Entries"
 msgstr ""
 
-#: ../plugins/thold/thold_graph.php:924 ../utilities.php:2565
+#: ../plugins/thold/thold_graph.php:918 ../utilities.php:2565
 #: ../managers.php:788
 msgid "Time"
 msgstr ""
 
-#: ../plugins/thold/thold_graph.php:926
+#: ../plugins/thold/thold_graph.php:920
 msgid "Event Description"
 msgstr ""
 
-#: ../plugins/thold/thold_graph.php:927
+#: ../plugins/thold/thold_graph.php:921
 msgid "Alert Value"
 msgstr ""
 
-#: ../plugins/thold/thold_graph.php:928
+#: ../plugins/thold/thold_graph.php:922
 msgid "Measured Value"
 msgstr ""
 
-#: ../plugins/thold/thold_graph.php:941
+#: ../plugins/thold/thold_graph.php:935
 msgid "Restoral Event"
 msgstr ""
 
-#: ../plugins/thold/thold_graph.php:949
+#: ../plugins/thold/thold_graph.php:943
 msgid "No Threshold Logs Found"
 msgstr ""
 
-#: ../plugins/thold/thold_graph.php:977
-#: ../plugins/thold/includes/settings.php:61
-msgid "Threshold"
-msgstr ""
-
-#: ../plugins/thold/thold_graph.php:1013 ../utilities.php:1553
-#: ../utilities.php:2294 ../utilities.php:2500
-msgid "Entries"
-msgstr ""
-
 #: ../plugins/thold/notify_lists.php:36 ../plugins/thold/notify_lists.php:873
-#: ../plugins/thold/notify_lists.php:1152
+#: ../plugins/thold/notify_lists.php:1154
 msgid "Associate"
 msgstr ""
 
 #: ../plugins/thold/notify_lists.php:37 ../plugins/thold/notify_lists.php:873
-#: ../plugins/thold/notify_lists.php:1152
+#: ../plugins/thold/notify_lists.php:1154
 msgid "Disassociate"
 msgstr ""
 
@@ -5127,8 +6560,8 @@ msgstr ""
 msgid "Associated Devices"
 msgstr ""
 
-#: ../plugins/thold/notify_lists.php:732 ../plugins/thold/notify_lists.php:982
-#: ../plugins/thold/notify_lists.php:1215
+#: ../plugins/thold/notify_lists.php:732 ../plugins/thold/notify_lists.php:984
+#: ../plugins/thold/notify_lists.php:1217
 msgid "Associated"
 msgstr ""
 
@@ -5148,55 +6581,55 @@ msgstr ""
 msgid "No Associated Devices Found"
 msgstr ""
 
-#: ../plugins/thold/notify_lists.php:925
+#: ../plugins/thold/notify_lists.php:927
 msgid "Associated Thresholds"
 msgstr ""
 
-#: ../plugins/thold/notify_lists.php:952 ../plugins/thold/thold.php:412
+#: ../plugins/thold/notify_lists.php:954 ../plugins/thold/thold.php:412
 msgid "State"
 msgstr ""
 
-#: ../plugins/thold/notify_lists.php:1038
-#: ../plugins/thold/notify_lists.php:1274
+#: ../plugins/thold/notify_lists.php:1040
+#: ../plugins/thold/notify_lists.php:1276
 msgid "Warning Lists"
 msgstr ""
 
-#: ../plugins/thold/notify_lists.php:1039
-#: ../plugins/thold/notify_lists.php:1275
+#: ../plugins/thold/notify_lists.php:1041
+#: ../plugins/thold/notify_lists.php:1277
 msgid "Alert Lists"
 msgstr ""
 
-#: ../plugins/thold/notify_lists.php:1069
-#: ../plugins/thold/notify_lists.php:1290
+#: ../plugins/thold/notify_lists.php:1071
+#: ../plugins/thold/notify_lists.php:1292
 msgid "Select Users"
 msgstr ""
 
-#: ../plugins/thold/notify_lists.php:1073
-#: ../plugins/thold/notify_lists.php:1092
-#: ../plugins/thold/notify_lists.php:1294
-#: ../plugins/thold/notify_lists.php:1313
+#: ../plugins/thold/notify_lists.php:1075
+#: ../plugins/thold/notify_lists.php:1094
+#: ../plugins/thold/notify_lists.php:1296
+#: ../plugins/thold/notify_lists.php:1315
 msgid "Specific Emails"
 msgstr ""
 
-#: ../plugins/thold/notify_lists.php:1078
-#: ../plugins/thold/notify_lists.php:1097
-#: ../plugins/thold/notify_lists.php:1299
-#: ../plugins/thold/notify_lists.php:1318
+#: ../plugins/thold/notify_lists.php:1080
+#: ../plugins/thold/notify_lists.php:1099
+#: ../plugins/thold/notify_lists.php:1301
+#: ../plugins/thold/notify_lists.php:1320
 msgid "Current List"
 msgstr ""
 
-#: ../plugins/thold/notify_lists.php:1086
-#: ../plugins/thold/notify_lists.php:1109
-#: ../plugins/thold/notify_lists.php:1307
-#: ../plugins/thold/notify_lists.php:1330
+#: ../plugins/thold/notify_lists.php:1088
+#: ../plugins/thold/notify_lists.php:1111
+#: ../plugins/thold/notify_lists.php:1309
+#: ../plugins/thold/notify_lists.php:1332
 msgid "Log Only"
 msgstr ""
 
-#: ../plugins/thold/notify_lists.php:1183
+#: ../plugins/thold/notify_lists.php:1185
 msgid "Associated Templates"
 msgstr ""
 
-#: ../plugins/thold/notify_lists.php:1489
+#: ../plugins/thold/notify_lists.php:1491
 #: ../plugins/thold/includes/settings.php:48
 #: ../plugins/thold/includes/settings.php:50
 #: ../plugins/thold/includes/settings.php:51
@@ -5204,20 +6637,20 @@ msgstr ""
 msgid "Notification Lists"
 msgstr ""
 
-#: ../plugins/thold/notify_lists.php:1504
-#: ../plugins/thold/notify_lists.php:1580
+#: ../plugins/thold/notify_lists.php:1506
+#: ../plugins/thold/notify_lists.php:1582
 msgid "Lists"
 msgstr ""
 
-#: ../plugins/thold/notify_lists.php:1585
+#: ../plugins/thold/notify_lists.php:1587
 msgid "List Name"
 msgstr ""
 
-#: ../plugins/thold/notify_lists.php:1587
+#: ../plugins/thold/notify_lists.php:1589
 msgid "Emails"
 msgstr ""
 
-#: ../plugins/thold/notify_lists.php:1602
+#: ../plugins/thold/notify_lists.php:1604
 msgid "No Notification Lists"
 msgstr ""
 
@@ -5309,8 +6742,8 @@ msgstr ""
 msgid "No Thresholds Templates associated with the Host's Template."
 msgstr ""
 
-#: ../plugins/thold/thold_functions.php:3380 ../plugins/thold/setup.php:606
-#: ../plugins/thold/setup.php:809
+#: ../plugins/thold/thold_functions.php:3380 ../plugins/thold/setup.php:608
+#: ../plugins/thold/setup.php:811
 #, php-format
 msgid ""
 "Created threshold for the Graph '<i>%s</i>' using the Data Source '<i>%s</i>'"
@@ -5321,7 +6754,7 @@ msgid "Threshold(s) Already Exists - No Thresholds Created"
 msgstr ""
 
 #: ../plugins/thold/thold_webapi.php:164 ../plugins/thold/thold_webapi.php:323
-#: ../plugins/thold/setup.php:711 ../plugins/thold/setup.php:920
+#: ../plugins/thold/setup.php:713 ../plugins/thold/setup.php:922
 msgid "Create Threshold from Template"
 msgstr ""
 
@@ -5333,13 +6766,13 @@ msgstr ""
 msgid "Are you sure you wish to create Thresholds for this Graph?"
 msgstr ""
 
-#: ../plugins/thold/thold_webapi.php:231 ../plugins/thold/setup.php:678
-#: ../plugins/thold/setup.php:889
+#: ../plugins/thold/thold_webapi.php:231 ../plugins/thold/setup.php:680
+#: ../plugins/thold/setup.php:891
 msgid "Available Threshold Templates"
 msgstr ""
 
-#: ../plugins/thold/thold_webapi.php:236 ../plugins/thold/setup.php:683
-#: ../plugins/thold/setup.php:894
+#: ../plugins/thold/thold_webapi.php:236 ../plugins/thold/setup.php:685
+#: ../plugins/thold/setup.php:896
 msgid "Select a Threshold Template"
 msgstr ""
 
@@ -5466,10 +6899,6 @@ msgstr ""
 
 #: ../plugins/thold/thold_templates.php:702 ../plugins/thold/thold.php:964
 msgid "The type of Threshold that will be monitored."
-msgstr ""
-
-#: ../plugins/thold/thold_templates.php:706 ../plugins/thold/thold.php:968
-msgid "Re-Alert Cycle"
 msgstr ""
 
 #: ../plugins/thold/thold_templates.php:710 ../plugins/thold/thold.php:972
@@ -5741,12 +7170,6 @@ msgstr ""
 msgid "High"
 msgstr ""
 
-#: ../plugins/thold/thold_templates.php:948
-#: ../plugins/thold/thold_templates.php:961 ../plugins/thold/thold.php:1213
-#: ../plugins/thold/thold.php:1227 ../plugins/thold/includes/settings.php:336
-msgid "Critical"
-msgstr ""
-
 #: ../plugins/thold/thold_templates.php:956 ../plugins/thold/thold.php:1222
 msgid "SNMP Notification - Warning Event Severity"
 msgstr ""
@@ -5903,92 +7326,92 @@ msgstr ""
 msgid "Toggle Threshold VRULES %s"
 msgstr ""
 
-#: ../plugins/thold/setup.php:399
+#: ../plugins/thold/setup.php:401
 msgid ""
 "Click 'Continute' to apply all appropriate Thresholds to these Device(s)."
 msgstr ""
 
-#: ../plugins/thold/setup.php:460
+#: ../plugins/thold/setup.php:462
 msgid "Email Address"
 msgstr ""
 
-#: ../plugins/thold/setup.php:476 ../plugins/thold/setup.php:480
-#: ../plugins/thold/setup.php:483
+#: ../plugins/thold/setup.php:478 ../plugins/thold/setup.php:482
+#: ../plugins/thold/setup.php:485
 msgid "Create Threshold from Data Source"
 msgstr ""
 
-#: ../plugins/thold/setup.php:492
+#: ../plugins/thold/setup.php:494
 msgid "Auto-create thresholds"
 msgstr ""
 
-#: ../plugins/thold/setup.php:617 ../plugins/thold/setup.php:820
+#: ../plugins/thold/setup.php:619 ../plugins/thold/setup.php:822
 msgid "Threshold(s) Already Exist - No Thresholds Created"
 msgstr ""
 
-#: ../plugins/thold/setup.php:667
+#: ../plugins/thold/setup.php:669
 msgid ""
 "The following Data Sources have no Threshold Templates associated with them"
 msgstr ""
 
-#: ../plugins/thold/setup.php:671
+#: ../plugins/thold/setup.php:673
 msgid "Are you sure you wish to create Thresholds for these Data Sources?"
 msgstr ""
 
-#: ../plugins/thold/setup.php:701
+#: ../plugins/thold/setup.php:703
 msgid ""
 "There are no Threshold Templates associated with the following Data Sources"
 msgstr ""
 
-#: ../plugins/thold/setup.php:878
+#: ../plugins/thold/setup.php:880
 msgid "The following Graphs have no Threshold Templates associated with them"
 msgstr ""
 
-#: ../plugins/thold/setup.php:910
+#: ../plugins/thold/setup.php:912
 msgid "There are no Threshold Templates associated with the following Graphs"
 msgstr ""
 
-#: ../plugins/thold/setup.php:966 ../plugins/thold/setup.php:1014
+#: ../plugins/thold/setup.php:968 ../plugins/thold/setup.php:1016
 msgid "Associated Threshold Templates"
 msgstr ""
 
-#: ../plugins/thold/setup.php:988
+#: ../plugins/thold/setup.php:990
 msgid "Threshold Exists"
 msgstr ""
 
-#: ../plugins/thold/setup.php:990
+#: ../plugins/thold/setup.php:992
 msgid "Threshold Does Not Exist"
 msgstr ""
 
-#: ../plugins/thold/setup.php:1007 ../plugins/thold/setup.php:1039
+#: ../plugins/thold/setup.php:1009 ../plugins/thold/setup.php:1041
 msgid "No Associated Threshold Templates."
 msgstr ""
 
-#: ../plugins/thold/setup.php:1056
+#: ../plugins/thold/setup.php:1058
 msgid "Add Threshold Template"
 msgstr ""
 
-#: ../plugins/thold/setup.php:1062 ../host_templates.php:491
+#: ../plugins/thold/setup.php:1064 ../host_templates.php:491
 #: ../host_templates.php:549 ../data_queries.php:613 ../data_queries.php:707
 #: ../host.php:1076 ../host.php:1173
 msgid "Add"
 msgstr ""
 
-#: ../plugins/thold/setup.php:1062
+#: ../plugins/thold/setup.php:1064
 msgid "Add Threshold Template to Device Template"
 msgstr ""
 
-#: ../plugins/thold/setup.php:1103
+#: ../plugins/thold/setup.php:1105
 msgid ""
 "Click 'Continue' to delete the following Threshold Template will be "
 "disassociated from the Device Template."
 msgstr ""
 
-#: ../plugins/thold/setup.php:1104
+#: ../plugins/thold/setup.php:1106
 #, php-format
 msgid "Threshold Template Name: %s"
 msgstr ""
 
-#: ../plugins/thold/setup.php:1110
+#: ../plugins/thold/setup.php:1112
 msgid "Remove Threshold Template"
 msgstr ""
 
@@ -6253,20 +7676,6 @@ msgstr ""
 msgid "Indefinately"
 msgstr ""
 
-#: ../plugins/thold/includes/arrays.php:28
-#: ../plugins/thold/includes/arrays.php:131
-#: ../plugins/thold/includes/arrays.php:163
-#: ../plugins/thold/includes/arrays.php:207
-#: ../plugins/thold/includes/arrays.php:228
-#, php-format
-msgid "%d Month"
-msgstr ""
-
-#: ../plugins/thold/includes/arrays.php:33
-#, php-format
-msgid "%d Year"
-msgstr ""
-
 #: ../plugins/thold/includes/arrays.php:47
 msgid "Notify - Alert"
 msgstr ""
@@ -6311,18 +7720,6 @@ msgstr ""
 msgid "Re-Trigger"
 msgstr ""
 
-#: ../plugins/thold/includes/arrays.php:61
-#: ../plugins/thold/includes/arrays.php:71
-#: ../plugins/thold/includes/settings.php:338
-msgid "Warning"
-msgstr ""
-
-#: ../plugins/thold/includes/arrays.php:62
-#: ../plugins/thold/includes/arrays.php:69
-#: ../plugins/thold/includes/settings.php:335
-msgid "Alert"
-msgstr ""
-
 #: ../plugins/thold/includes/arrays.php:63
 msgid "Restoral"
 msgstr ""
@@ -6339,22 +7736,8 @@ msgstr ""
 msgid "Baseline Alert"
 msgstr ""
 
-#: ../plugins/thold/includes/arrays.php:72
-#: ../plugins/thold/includes/settings.php:339
-msgid "Notice"
-msgstr ""
-
 #: ../plugins/thold/includes/arrays.php:73
 msgid "Ok"
-msgstr ""
-
-#: ../plugins/thold/includes/arrays.php:83
-#: ../plugins/thold/includes/arrays.php:109
-#: ../plugins/thold/includes/arrays.php:167
-#: ../plugins/thold/includes/arrays.php:189
-#: ../plugins/thold/includes/arrays.php:232
-#: ../plugins/thold/includes/arrays.php:252 ../include/global_arrays.php:690
-msgid "Never"
 msgstr ""
 
 #: ../plugins/thold/includes/arrays.php:84 ../include/global_arrays.php:407
@@ -6435,149 +7818,6 @@ msgstr ""
 #: ../plugins/thold/includes/arrays.php:105
 #: ../plugins/thold/includes/arrays.php:185
 msgid "Every Month"
-msgstr ""
-
-#: ../plugins/thold/includes/arrays.php:110
-#: ../plugins/thold/includes/arrays.php:135 ../automation_networks.php:421
-#, php-format
-msgid "%d Minute"
-msgstr ""
-
-#: ../plugins/thold/includes/arrays.php:111
-#: ../plugins/thold/includes/arrays.php:112
-#: ../plugins/thold/includes/arrays.php:113
-#: ../plugins/thold/includes/arrays.php:114
-#: ../plugins/thold/includes/arrays.php:115
-#: ../plugins/thold/includes/arrays.php:116
-#: ../plugins/thold/includes/arrays.php:117
-#: ../plugins/thold/includes/arrays.php:118
-#: ../plugins/thold/includes/arrays.php:119
-#: ../plugins/thold/includes/arrays.php:136
-#: ../plugins/thold/includes/arrays.php:137
-#: ../plugins/thold/includes/arrays.php:138
-#: ../plugins/thold/includes/arrays.php:139
-#: ../plugins/thold/includes/arrays.php:140
-#: ../plugins/thold/includes/arrays.php:141
-#: ../plugins/thold/includes/arrays.php:142
-#: ../plugins/thold/includes/arrays.php:143
-#: ../plugins/thold/includes/arrays.php:144
-#: ../plugins/thold/includes/arrays.php:145
-#: ../plugins/thold/includes/arrays.php:146
-#: ../plugins/thold/includes/arrays.php:147
-#: ../plugins/thold/includes/arrays.php:148
-#: ../plugins/thold/includes/arrays.php:149
-#: ../plugins/thold/includes/arrays.php:150
-#: ../plugins/thold/includes/arrays.php:190
-#: ../plugins/thold/includes/arrays.php:191
-#: ../plugins/thold/includes/arrays.php:192
-#: ../plugins/thold/includes/arrays.php:193
-#: ../plugins/thold/includes/arrays.php:194
-#: ../plugins/thold/includes/arrays.php:195
-#: ../plugins/thold/includes/arrays.php:211
-#: ../plugins/thold/includes/arrays.php:212
-#: ../plugins/thold/includes/arrays.php:213
-#: ../plugins/thold/includes/arrays.php:214
-#: ../plugins/thold/includes/arrays.php:215
-#: ../plugins/thold/includes/arrays.php:216 ../data_sources.php:1016
-#: ../automation_networks.php:422 ../automation_networks.php:423
-#: ../automation_networks.php:424 ../automation_networks.php:425
-#: ../include/global_arrays.php:389 ../include/global_arrays.php:390
-#: ../include/global_arrays.php:391 ../include/global_arrays.php:392
-#: ../include/global_arrays.php:422 ../include/global_arrays.php:423
-#: ../include/global_arrays.php:424 ../include/global_arrays.php:425
-#: ../include/global_arrays.php:426 ../include/global_arrays.php:427
-#: ../include/global_arrays.php:688 ../include/global_arrays.php:689
-#: ../include/global_arrays.php:1037 ../include/global_arrays.php:1041
-#: ../include/global_arrays.php:1049 ../include/global_arrays.php:1050
-#: ../include/global_arrays.php:1072 ../include/global_arrays.php:1073
-#: ../include/global_arrays.php:1074 ../include/global_arrays.php:1075
-#: ../include/global_arrays.php:1076 ../include/global_arrays.php:1087
-#: ../include/global_settings.php:1171 ../include/global_settings.php:1172
-#: ../include/global_settings.php:1173 ../include/global_settings.php:1174
-#: ../include/global_settings.php:1175 ../include/global_settings.php:1901
-#, php-format
-msgid "%d Minutes"
-msgstr ""
-
-#: ../plugins/thold/includes/arrays.php:120
-#: ../plugins/thold/includes/arrays.php:151
-#: ../plugins/thold/includes/arrays.php:196
-#: ../plugins/thold/includes/arrays.php:217 ../automation_networks.php:426
-#, php-format
-msgid "%d Hour"
-msgstr ""
-
-#: ../plugins/thold/includes/arrays.php:121
-#: ../plugins/thold/includes/arrays.php:122
-#: ../plugins/thold/includes/arrays.php:123
-#: ../plugins/thold/includes/arrays.php:124
-#: ../plugins/thold/includes/arrays.php:125
-#: ../plugins/thold/includes/arrays.php:126
-#: ../plugins/thold/includes/arrays.php:152
-#: ../plugins/thold/includes/arrays.php:153
-#: ../plugins/thold/includes/arrays.php:154
-#: ../plugins/thold/includes/arrays.php:156
-#: ../plugins/thold/includes/arrays.php:157
-#: ../plugins/thold/includes/arrays.php:158
-#: ../plugins/thold/includes/arrays.php:197
-#: ../plugins/thold/includes/arrays.php:198
-#: ../plugins/thold/includes/arrays.php:199
-#: ../plugins/thold/includes/arrays.php:200
-#: ../plugins/thold/includes/arrays.php:201
-#: ../plugins/thold/includes/arrays.php:202
-#: ../plugins/thold/includes/arrays.php:218
-#: ../plugins/thold/includes/arrays.php:219
-#: ../plugins/thold/includes/arrays.php:220
-#: ../plugins/thold/includes/arrays.php:221
-#: ../plugins/thold/includes/arrays.php:222
-#: ../plugins/thold/includes/arrays.php:223 ../data_source_profiles.php:653
-#: ../automation_networks.php:427 ../automation_networks.php:428
-#: ../automation_networks.php:429 ../include/global_arrays.php:394
-#: ../include/global_arrays.php:395 ../include/global_arrays.php:396
-#: ../include/global_arrays.php:397 ../include/global_arrays.php:398
-#: ../include/global_arrays.php:429 ../include/global_arrays.php:430
-#: ../include/global_arrays.php:431 ../include/global_arrays.php:432
-#: ../include/global_arrays.php:943 ../include/global_arrays.php:944
-#: ../include/global_arrays.php:945 ../include/global_arrays.php:946
-#: ../include/global_arrays.php:989 ../include/global_arrays.php:990
-#: ../include/global_arrays.php:991 ../include/global_arrays.php:992
-#: ../include/global_arrays.php:993 ../include/global_arrays.php:1010
-#: ../include/global_arrays.php:1011 ../include/global_arrays.php:1012
-#: ../include/global_arrays.php:1013 ../include/global_arrays.php:1014
-#: ../include/global_settings.php:1177 ../include/global_settings.php:1178
-#: ../include/global_settings.php:1179 ../include/global_settings.php:1180
-#, php-format
-msgid "%d Hours"
-msgstr ""
-
-#: ../plugins/thold/includes/arrays.php:127
-#: ../plugins/thold/includes/arrays.php:159
-#: ../plugins/thold/includes/arrays.php:203
-#: ../plugins/thold/includes/arrays.php:224
-#, php-format
-msgid "%d Day"
-msgstr ""
-
-#: ../plugins/thold/includes/arrays.php:128
-#: ../plugins/thold/includes/arrays.php:160
-#: ../plugins/thold/includes/arrays.php:204
-#: ../plugins/thold/includes/arrays.php:225 ../data_source_profiles.php:645
-#: ../include/global_arrays.php:948 ../include/global_arrays.php:949
-#: ../include/global_arrays.php:950 ../include/global_settings.php:1105
-#: ../include/global_settings.php:1106 ../include/global_settings.php:1107
-#: ../include/global_settings.php:1108 ../include/global_settings.php:1119
-#: ../include/global_settings.php:1120 ../include/global_settings.php:1121
-#: ../include/global_settings.php:1122
-#, php-format
-msgid "%d Days"
-msgstr ""
-
-#: ../plugins/thold/includes/arrays.php:129
-#: ../plugins/thold/includes/arrays.php:161
-#: ../plugins/thold/includes/arrays.php:205
-#: ../plugins/thold/includes/arrays.php:226
-#, php-format
-msgid "%d Week"
 msgstr ""
 
 #: ../plugins/thold/includes/arrays.php:155
@@ -6926,14 +8166,6 @@ msgstr ""
 
 #: ../plugins/thold/includes/settings.php:330
 msgid "This is the priority level that your syslog messages will be sent as."
-msgstr ""
-
-#: ../plugins/thold/includes/settings.php:334
-msgid "Emergency"
-msgstr ""
-
-#: ../plugins/thold/includes/settings.php:340
-msgid "Info"
 msgstr ""
 
 #: ../plugins/thold/includes/settings.php:345
@@ -8530,10 +9762,6 @@ msgstr ""
 msgid "General Information"
 msgstr ""
 
-#: ../utilities.php:218 ../utilities.php:751
-msgid "Date"
-msgstr ""
-
 #: ../utilities.php:225
 msgid "Cacti Version"
 msgstr ""
@@ -8957,10 +10185,6 @@ msgstr ""
 msgid "Allows Administrators to maintain SNMP notification receivers."
 msgstr ""
 
-#: ../utilities.php:1856 ../include/global_settings.php:827
-msgid "Refresh Interval"
-msgstr ""
-
 #: ../utilities.php:1911 ../automation_networks.php:945
 msgid "Idle"
 msgstr ""
@@ -9117,10 +10341,6 @@ msgstr ""
 msgid "Maximum Records:"
 msgstr ""
 
-#: ../utilities.php:2093
-msgid "Records"
-msgstr ""
-
 #: ../utilities.php:2096
 msgid "Maximum Allowed Runtime:"
 msgstr ""
@@ -9176,10 +10396,6 @@ msgstr ""
 
 #: ../utilities.php:2459
 msgid "SNMPAgent Notification Log"
-msgstr ""
-
-#: ../utilities.php:2474 ../managers.php:721
-msgid "Severity"
 msgstr ""
 
 #: ../utilities.php:2487 ../utilities.php:2565
@@ -9773,11 +10989,11 @@ msgstr ""
 
 #: ../tree.php:523
 #, php-format
-msgid "Graph Trees [edit: %s]"
+msgid "Trees [edit: %s]"
 msgstr ""
 
 #: ../tree.php:535
-msgid "Graph Trees [new]"
+msgid "Trees [new]"
 msgstr ""
 
 #: ../tree.php:555
@@ -9818,69 +11034,69 @@ msgstr ""
 msgid "Available Graphs"
 msgstr ""
 
-#: ../tree.php:1521
+#: ../tree.php:1524
 msgid "The name by which this Tree will be referred to as."
 msgstr ""
 
-#: ../tree.php:1522
+#: ../tree.php:1525
 msgid ""
 "The internal database ID for this Tree.  Usefull when performing automation "
 "or debugging."
 msgstr ""
 
-#: ../tree.php:1523
+#: ../tree.php:1526
 msgid "Published"
 msgstr ""
 
-#: ../tree.php:1523
+#: ../tree.php:1526
 msgid "Unpublished Trees can not be viewed from the Graph tab"
 msgstr ""
 
-#: ../tree.php:1524 ../include/global_form.php:1414
+#: ../tree.php:1527 ../include/global_form.php:1414
 msgid "Locked"
 msgstr ""
 
-#: ../tree.php:1524
+#: ../tree.php:1527
 msgid "A Tree must be locked in order to be edited."
 msgstr ""
 
-#: ../tree.php:1525
+#: ../tree.php:1528
 msgid "The original author of this Tree."
 msgstr ""
 
-#: ../tree.php:1526
+#: ../tree.php:1529
 msgid "Last Edited"
 msgstr ""
 
-#: ../tree.php:1526
+#: ../tree.php:1529
 msgid "The date that this Tree was last edited."
 msgstr ""
 
-#: ../tree.php:1527
+#: ../tree.php:1530
 msgid "Edited By"
 msgstr ""
 
-#: ../tree.php:1527
+#: ../tree.php:1530
 msgid "The last user to have modified this Tree."
 msgstr ""
 
-#: ../tree.php:1528
+#: ../tree.php:1531
 msgid "Branches"
 msgstr ""
 
-#: ../tree.php:1528
+#: ../tree.php:1531
 msgid "The total number of Branches in this Tree."
 msgstr ""
 
-#: ../tree.php:1529
+#: ../tree.php:1532
 msgid "The total number of individual Devices in this Tree."
 msgstr ""
 
-#: ../tree.php:1530
+#: ../tree.php:1533
 msgid "The total number of individual Graphs in this Tree."
 msgstr ""
 
-#: ../tree.php:1555
+#: ../tree.php:1558
 msgid "No Trees Found"
 msgstr ""
 
@@ -9891,10 +11107,6 @@ msgstr ""
 
 #: ../settings.php:247
 msgid "Test E-Mail Results"
-msgstr ""
-
-#: ../plugins.php:28
-msgid "Install"
 msgstr ""
 
 #: ../plugins.php:31
@@ -13443,18 +14655,10 @@ msgstr ""
 msgid "Last %d Hours"
 msgstr ""
 
-#: ../include/global_arrays.php:916
-msgid "Last Day"
-msgstr ""
-
 #: ../include/global_arrays.php:917 ../include/global_arrays.php:918
 #: ../include/global_arrays.php:919
 #, php-format
 msgid "Last %d Days"
-msgstr ""
-
-#: ../include/global_arrays.php:920
-msgid "Last Week"
 msgstr ""
 
 #: ../include/global_arrays.php:921
@@ -14200,10 +15404,6 @@ msgstr ""
 msgid ""
 "If you are using the Syslog/Eventlog, What Cacti poller messages should be "
 "placed in the Syslog/Eventlog."
-msgstr ""
-
-#: ../include/global_settings.php:235
-msgid "Statistics"
 msgstr ""
 
 #: ../include/global_settings.php:249
@@ -16101,7 +17301,7 @@ msgid "The width of Thumbnail graphs in pixels."
 msgstr ""
 
 #: ../include/global_settings.php:2012
-msgid "Default Graph Tree"
+msgid "Default Tree"
 msgstr ""
 
 #: ../include/global_settings.php:2013
@@ -16749,7 +17949,7 @@ msgstr ""
 msgid "Graph Source/Properties"
 msgstr ""
 
-#: ../graph.php:424
+#: ../graph.php:425
 msgid "RRDtool Graph Syntax"
 msgstr ""
 

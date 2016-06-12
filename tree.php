@@ -520,7 +520,7 @@ function tree_edit() {
 	if (!isempty_request_var('id')) {
 		$tree = db_fetch_row_prepared('SELECT * FROM graph_tree WHERE id = ?', array(get_request_var('id')));
 
-		$header_label = __('Graph Trees [edit: %s]', htmlspecialchars($tree['name']) );
+		$header_label = __('Trees [edit: %s]', htmlspecialchars($tree['name']) );
 
 		// Reset the cookie state if tree id has changed
 		if (isset($_SESSION['sess_tree_id']) && $_SESSION['sess_tree_id'] != get_request_var('id')) {
@@ -532,7 +532,7 @@ function tree_edit() {
 	}else{
 		$tree = array();
 
-		$header_label = __('Graph Trees [new]');
+		$header_label = __('Trees [new]');
 	}
 
 	form_start('tree.php');
@@ -1442,7 +1442,7 @@ function tree() {
 
 	<?php
 
-	html_start_box( __('Graph Trees'), '100%', '', '3', 'center', 'tree.php?action=edit');
+	html_start_box( __('Trees'), '100%', '', '3', 'center', 'tree.php?action=edit');
 
 	?>
 	<tr class='even noprint'>

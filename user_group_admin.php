@@ -102,7 +102,7 @@ $fields_user_group_edit = array(
 			)
 		),
 	'show_tree' => array(
-		'friendly_name' => __('Graph Tree Rights'),
+		'friendly_name' => __('Tree Rights'),
 		'method' => 'radio',
 		'description' => __('Should Users of this Group have access to the Tree?'),
 		'value' => '|arg1:show_tree|',
