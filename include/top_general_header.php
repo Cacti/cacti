@@ -92,7 +92,7 @@ $using_guest_account = false;
 			<?php draw_menu($user_menu);?>
 			<tr>
 				<td style='text-align:center;'>
-					<div class='cactiLogo' onClick='document.location="about.php";'></div>
+					<div class='cactiLogo' onclick='loadPage("<?php print $config['url_path'];?>about.php")'></div>
 				</td>
 			</tr>
 		</table>

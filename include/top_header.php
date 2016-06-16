@@ -93,7 +93,7 @@ $using_guest_account = false;
 				<?php draw_menu();?>
 				<tr>
 					<td style='text-align:center;'>
-						<div class='cactiLogo' onClick='loadPageNoHeader("about.php?header=false");'></div>
+						<div class='cactiLogo' onclick='loadPage("<?php print $config['url_path'];?>about.php")'></div>
 					</td>
 				</tr>
 			</table>
