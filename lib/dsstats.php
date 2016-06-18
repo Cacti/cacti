@@ -544,7 +544,7 @@ function dsstats_poller_output(&$rrd_update_array) {
 						$result['local_data_id'] = $data_source['local_data_id'];
 						$result['rrd_name']      = $ds;
 						$result['time']          = date('Y-m-d H:i:s', $time);
-						$result['output']        = $value;
+						$result['output']        = ($value == 'U' ? 'NULL':$value);
 						$lastval                 = '';
 
 						if (!isset($ds_types[$result['rrd_name']]['data_source_type_id'])) {
@@ -563,7 +563,9 @@ function dsstats_poller_output(&$rrd_update_array) {
 									WHERE local_data_id = ?
 									AND rrd_name = ?', array($result['local_data_id'], $result['rrd_name']));
 
-								if ($ds_last == '') {
+								if ($ds_last == '' || $ds_last == 'NULL') {
+									$currentval = 'NULL';
+								} elseif ($result['output'] == 'NULL') {
 									$currentval = 'NULL';
 								} elseif ($result['output'] >= $ds_last) {
 									/* everything is normal */
@@ -603,13 +605,23 @@ function dsstats_poller_output(&$rrd_update_array) {
 
 								break;
 							case 4:	// ABSOLUTE
-								$currentval = abs($result['output']);
-								$lastval    = $result['output'] == 'U' ? 'NULL' : abs($result['output']);
+								if ($result['output'] != 'NULL') {
+									$currentval = abs($result['output']);
+									$lastval    = $currentval;
+								}else{
+									$currentval = 'NULL';
+									$lastval    = $currentval;
+								}
 
 								break;
 							case 1:	// GAUGE
-								$currentval = $result['output'];
-								$lastval    = $result['output'] == 'U' ? 'NULL' : $result['output'];
+								if ($result['output'] != 'NULL') {
+									$currentval = $result['output'];
+									$lastval    = $result['output'] == 'U' ? 'NULL' : $result['output'];
+								}else{
+									$currentval = 'NULL';
+									$lastval    = $currentval;
+								}
 
 								break;
 							default:
@@ -634,9 +646,9 @@ function dsstats_poller_output(&$rrd_update_array) {
 						/* setupt the output buffer for the cache first */
 						$cachebuf .=
 							$cache_delim . '(' .
-							$result['local_data_id'] . ",'" .
-							$result['rrd_name'] . "','" .
-							$result['time'] . "'," .
+							$result['local_data_id'] . ", '" .
+							$result['rrd_name'] . "', '" .
+							$result['time'] . "', " .
 							$currentval . ')';
 
 						$out_length += strlen($cachebuf);
@@ -645,9 +657,9 @@ function dsstats_poller_output(&$rrd_update_array) {
 						if ($lastval != '') {
 							$lastbuf .=
 								$last_delim . '(' .
-								$result['local_data_id'] . ",'" .
-								$result['rrd_name'] . "','" .
-								$lastval . "'," .
+								$result['local_data_id'] . ", '" .
+								$result['rrd_name'] . "', " .
+								$lastval . ", " .
 								$currentval . ')';
 							$last_i++;
 							$last_length += strlen($lastbuf);
