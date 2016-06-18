@@ -981,7 +981,7 @@ function rrd_function_process_graph_options($graph_start, $graph_end, &$graph, &
 			break;
 		case "vertical_label":
 			if (!empty($value)) {
-			$graph_opts .= "--vertical-label=" . cacti_escapeshellarg($value) . RRD_NL;
+				$graph_opts .= "--vertical-label=" . cacti_escapeshellarg($value) . RRD_NL;
 			}
 			break;
 		case "slope_mode":
@@ -2586,7 +2586,7 @@ function rrdtool_info2html($info_array, $diff=array()) {
 			form_selectable_cell((isset($value['min']) ? $value['min'] != 'NaN' ? number_format($value['min']): $value['min'] : ''), 'min', '', (isset($diff['ds'][$key]['min']) ? 'color:red;text-align:right' : 'text-align:right'));
 			form_selectable_cell((isset($value['max']) ? $value['max'] != 'NaN' ? number_format($value['max']): $value['max'] : ''), 'max', '', (isset($diff['ds'][$key]['max']) ? 'color:red;text-align:right' : 'text-align:right'));
 			form_selectable_cell((isset($value['last_ds']) ? number_format($value['last_ds']) : ''), 'last_ds', '', 'text-align:right');
-			form_selectable_cell((isset($value['value']) ? number_format($value['value']) : ''), 'value', '', 'text-align:right');
+			form_selectable_cell((isset($value['value']) ? $value['value'] != 'NaN' ? number_format($value['value']) : $value['value'] : ''), 'value', '', 'text-align:right');
 			form_selectable_cell((isset($value['unknown_sec']) ? number_format($value['unknown_sec']) : ''), 'unknown_sec', '', 'text-align:right');
 
 			form_end_row();
