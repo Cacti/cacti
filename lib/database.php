@@ -489,7 +489,20 @@ function db_column_exists($table, $column, $log = TRUE, $db_conn = FALSE) {
 	return (db_fetch_cell("SHOW columns FROM `$table` LIKE '$column'", '', $log, $db_conn) ? true : false);
 }
 
+/* db_get_table_column_types - returns all the types for each column of a table
+   @param $table - the name of the table
+   @returns - (array) an array of column types indexed by the column names */
+function db_get_table_column_types($table) {
+	$columns = db_fetch_assoc("SHOW COLUMNS FROM $table");
+	$cols    = array();
+	if (sizeof($columns)) {
+		foreach($columns as $col) {
+			$cols[$col['Field']] = $col['Type'];
+		}
+	}
 
+	return $cols;
+}
 
 function db_update_table ($table, $data, $removecolumns = FALSE, $log = TRUE, $db_conn = FALSE) {
 	global $database_sessions, $database_default, $database_hostname, $database_port;
@@ -783,12 +796,22 @@ function sql_save($array_items, $table_name, $key_cols = 'id', $autoinc = TRUE, 
 		$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
 	}
 
+	$cols = db_get_table_column_types($table_name);
+
 	if (read_config_option('log_verbosity') == POLLER_VERBOSITY_DEVDBG) {
 		cacti_log("DEVEL: SQL Save on table '$table_name': \"" . serialize($array_items) . '"', FALSE);
 	}
 
 	while (list($key, $value) = each($array_items)) {
-		$array_items[$key] = '"' . sql_sanitize($value) . '"';
+		if (strstr($cols[$key], 'int') !== false || strstr($cols[$key], 'float') !== false) {
+			if (empty($value)) {
+				$array_items[$key] = 0;
+			}else{
+				$array_items[$key] = sql_sanitize($value);
+			}
+		}else{
+			$array_items[$key] = '"' . sql_sanitize($value) . '"';
+		}
 	}
 
 	$replace_result = _db_replace($db_conn, $table_name, $array_items, $key_cols, $autoinc);

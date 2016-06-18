@@ -541,6 +541,8 @@ function change_graph_template($local_graph_id, $graph_template_id, $intrusive) 
 		WHERE graph_template_input.id=graph_template_input_defs.graph_template_input_id
 		AND graph_template_input.graph_template_id = ?', array($graph_template_id));
 
+	$cols = db_get_table_column_types('graph_templates_item');
+
 	$k=0;
 	if (sizeof($template_items_list) > 0) {
 	foreach ($template_items_list as $template_item) {
@@ -548,8 +550,8 @@ function change_graph_template($local_graph_id, $graph_template_id, $intrusive) 
 		reset($struct_graph_item);
 
 		$save['local_graph_template_item_id'] = $template_item['id'];
-		$save['local_graph_id'] = $local_graph_id;
-		$save['graph_template_id'] = $template_item['graph_template_id'];
+		$save['local_graph_id']               = $local_graph_id;
+		$save['graph_template_id']            = $template_item['graph_template_id'];
 
 		if (isset($graph_items_list[$k])) {
 			/* graph item at this position, 'mesh' it in */
@@ -557,7 +559,15 @@ function change_graph_template($local_graph_id, $graph_template_id, $intrusive) 
 
 			/* make a first pass filling in ALL values from template */
 			while (list($field_name, $field_array) = each($struct_graph_item)) {
-				$save[$field_name] = $template_item[$field_name];
+				if (strstr($cols[$field_name], 'int') !== false || strstr($cols[$field_name], 'float') !== false) {
+					if (!empty($template_item[$field_name])) {
+						$save[$field_name] = $template_item[$field_name];
+					}else{
+						$save[$field_name] = 0;
+					}
+				}else{
+					$save[$field_name] = $template_item[$field_name];
+				}
 			}
 
 			/* go back a second time and fill in the INPUT values from the graph */
@@ -576,7 +586,15 @@ function change_graph_template($local_graph_id, $graph_template_id, $intrusive) 
 
 			if ($intrusive == true) {
 				while (list($field_name, $field_array) = each($struct_graph_item)) {
-					$save[$field_name] = $template_item[$field_name];
+					if (strstr($cols[$field_name], 'int') !== false || strstr($cols[$field_name], 'float') !== false) {
+						if (!empty($template_item[$field_name])) {
+							$save[$field_name] = $template_item[$field_name];
+						}else{
+							$save[$field_name] = 0;
+						}
+					}else{
+						$save[$field_name] = $template_item[$field_name];
+					}
 				}
 			}else{
 				unset($save);
