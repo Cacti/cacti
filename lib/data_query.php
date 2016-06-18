@@ -261,7 +261,7 @@ function query_snmp_host($host_id, $snmp_query_id) {
 
 	$snmp_queries = get_data_query_array($snmp_query_id);
 
-	if ($host['hostname'] == '') {
+	if (!sizeof($host) || $host['hostname'] == '') {
 		query_debug_timer_offset('data_query', "Invalid host_id: $host_id");
 		return false;
 	}
