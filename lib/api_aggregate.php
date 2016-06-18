@@ -1143,7 +1143,7 @@ function draw_aggregate_graph_items_list($_graph_id = 0, $_graph_template_id = 0
 			}
 
 			/* values can be overriden in aggregate graph/template */
-			if ($is_edit && $current_vals[$item['id']]['t_graph_type_id'] == 'on') {
+			if ($is_edit && isset($current_vals[$item['id']]['t_graph_type_id']) && $current_vals[$item['id']]['t_graph_type_id'] == 'on') {
 				$item['graph_type_id'] = $current_vals[$item['id']]['graph_type_id'];
 			}
 
