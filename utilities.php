@@ -647,7 +647,7 @@ function utilities_view_user_log() {
 					</td>
 					<td>
 						<select id='rows' onChange='applyFilter()'>
-							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?>>
+							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
 							if (sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
@@ -1299,7 +1299,7 @@ function utilities_view_snmp_cache() {
 					</td>
 					<td>
 						<select id='rows' onChange='applyFilter()'>
-							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?>>
+							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
 							if (sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
@@ -1554,7 +1554,7 @@ function utilities_view_poller_cache() {
 					</td>
 					<td>
 						<select id='rows' onChange='applyFilter()'>
-							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?>
+							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
 							if (sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {

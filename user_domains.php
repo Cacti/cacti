@@ -641,7 +641,7 @@ function domains() {
 						<input id='refresh' type='button' value='<?php print __x('filter: use', 'Go');?>' title='<?php print __('Set/Refresh Filters');?>'>
 					</td>
 					<td>
-						<input id='clear' type='button' value='<?php print __('filter: reset', 'Clear');?>' title='<?php print __('Clear Filters');?>'>
+						<input id='clear' type='button' value='<?php print __('Clear');?>' title='<?php print __('Clear Filters');?>'>
 					</td>
 				</tr>
 			</table>

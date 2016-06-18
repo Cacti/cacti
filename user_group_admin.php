@@ -1579,7 +1579,7 @@ function user_group() {
 		'rows' => array(
 			'filter' => FILTER_VALIDATE_INT, 
 			'pageset' => true,
-			'default' => read_config_option('num_rows_table')
+			'default' => '-1'
 			),
 		'page' => array(
 			'filter' => FILTER_VALIDATE_INT, 

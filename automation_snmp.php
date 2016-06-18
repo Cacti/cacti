@@ -332,8 +332,6 @@ function automation_snmp_item_moveup() {
 }
 
 function automation_snmp_item_remove_confirm() {
-    global $vdef_functions, $vdef_item_types, $custom_vdef_data_source_types;
-
     /* ================= input validation ================= */
     get_filter_request_var('id');
     get_filter_request_var('item_id');
@@ -821,7 +819,7 @@ function automation_snmp() {
 					</td>
                     <td>
                         <select id='rows' onChange='applyFilter()'>
-							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?>>
+							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
                             <?php
                             if (sizeof($item_rows)) {
                                 foreach ($item_rows as $key => $value) {
@@ -845,6 +843,25 @@ function automation_snmp() {
 		</td>
 	</tr>
 	<script type='text/javascript'>
+	function applyFilter() {
+		strURL = 'automation_snmp.php?filter='+$('#filter').val()+'&rows='+$('#rows').val()+'&page='+$('#page').val()+'&header=false';
+		loadPageNoHeader(strURL);
+	}
+
+	function clearFilter() {
+		strURL = 'automation_snmp.php?clear=1&header=false';
+		loadPageNoHeader(strURL);
+	}
+
+	$(function() {
+		$('#refresh').click(function() {
+			applyFilter();
+		});
+
+		$('#clear').click(function() {
+			clearFilter();
+		});
+	});
 	</script>
 	<?php
 

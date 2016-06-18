@@ -1885,7 +1885,7 @@ function user() {
 		'rows' => array(
 			'filter' => FILTER_VALIDATE_INT, 
 			'pageset' => true,
-			'default' => read_config_option('num_rows_table')
+			'default' => '-1'
 			),
 		'page' => array(
 			'filter' => FILTER_VALIDATE_INT, 
@@ -1971,7 +1971,7 @@ function user() {
 					</td>
 					<td>
 						<select id='rows' name='rows' onChange='applyFilter()'>
-							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?>>
+							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
 							if (sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
