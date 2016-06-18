@@ -146,7 +146,7 @@ function form_actions() {
 			print "<tr>
 				<td class='textArea odd'>
 					<p>" . __('Click \'Continue\' to add the following Discovered device(s).') . "</p>
-					<p><ul>$device_list</ul></p>
+					<p><div class='itemlist'><ul>$device_list</ul></div></p>
 				</td>
 			</tr>
 			<tr>

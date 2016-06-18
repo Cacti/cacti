@@ -439,16 +439,16 @@ function form_actions() {
 			print "<tr>
 				<td class='textArea'>
 					<p>" . __n('Click \'Continue\' to delete the following Data Source', 'Click \'Continue\' to delete following Data Sources', sizeof($ds_array)) . "</p>
-					<p><ul>$ds_list</ul></p>";
+					<p><div class='itemlist'><ul>$ds_list</ul></div></p>";
 
 			if (sizeof($graphs)) {
 				print "<tr><td class='textArea'><p class='textArea'>" . __n('The following graph is using these data sources:', 'The following graphs are using these data sources:', sizeof($graphs)) . "</p>\n";
 
-				print '<p><ul>';
+				print '<p><div class="itemlist"><ul>';
 				foreach ($graphs as $graph) {
 					print '<li>' . $graph['title_cache'] . "</li>\n";
 				}
-				print '</ul></p>';
+				print '</ul></div></p>';
 				print '<br>';
 
 				form_radio_button('delete_type', '3', '1', __n('Leave the <strong>Graph</strong> untouched.', 'Leave all <strong>Graphs</strong> untouched.', sizeof($graphs)), '1'); print '<br>';
@@ -466,7 +466,7 @@ function form_actions() {
 				<td class='textArea'>
 					<p>" . __n('Choose a Data Template and click \'Continue\' to change the Data Template for the following Data Source.', 'Choose a Data Template and click \'Continue\' to change the Data Template for all following Data Sources.', sizeof($ds_array)) .
 					__('Be aware that all warnings will be suppressed during the conversion, so graph data loss is possible.') . "</p>
-					<p><ul>$ds_list</ul></p>
+					<p><div class='itemlist'><ul>$ds_list</ul></div></p>
 					<p>" . __('New Data Template:') . "<br>"; form_dropdown('data_template_id',db_fetch_assoc('SELECT data_template.id,data_template.name FROM data_template ORDER BY data_template.name'),'name','id','','','0'); print "</p>
 				</td>
 			</tr>\n";
@@ -476,7 +476,7 @@ function form_actions() {
 			print "<tr>
 				<td class='textArea'>
 					<p>" . __n('Choose a new Device for this Data Source and click \'Continue\'.', 'Choose a new Device for these Data Sources and click \'Continue\'') . "</p>
-					<p><ul>$ds_list</ul></p>
+					<p><div class='itemlist'><ul>$ds_list</ul></div></p>
 					<p>" . __('New Device:') . "<br>"; form_dropdown('host_id',db_fetch_assoc("SELECT id, CONCAT_WS('',description,' (',hostname,')') AS name FROM host ORDER BY description, hostname"),'name','id','','','0'); print "</p>
 				</td>
 			</tr>\n";
@@ -486,7 +486,7 @@ function form_actions() {
 			print "<tr>
 				<td class='textArea'>
 					<p>" . __n('Click \'Continue\' to duplicate the following Data Source. You can optionally change the title format for the new Data Source.', 'Click \'Continue\' to duplicate following Data Sources. You can optionally change the title format for the new Data Sources.', sizeof($ds_array)) . "</p>
-					<p><ul>$ds_list</ul></p>
+					<p><div class='itemlist'><ul>$ds_list</ul></div></p>
 					<p>" . __('Title Format:') . "<br>"; form_text_box('title_format', '<ds_title> (1)', '', '255', '30', 'text'); print "</p>
 				</td>
 			</tr>\n";
@@ -496,7 +496,7 @@ function form_actions() {
 			print "<tr>
 				<td class='textArea'>
 					<p>" . __n('Click \'Continue\' to convert the following Data Source into a Data Template. You can optionally change the title format for the new Data Template.', 'Click \'Continue\' to convert all following Data Sources into Data Templates. You can optionally change the title format for the new Data Templates.', sizeof($ds_array)) . "</p>
-					<p><ul>$ds_list</ul></p>
+					<p><div class='itemlist'><ul>$ds_list</ul></div></p>
 					<p>" . __('Title Format:') . "<br>"; form_text_box('title_format', '<ds_title> Template', '', '255', '30', 'text'); print "</p>
 				</td>
 			</tr>\n";
@@ -506,7 +506,7 @@ function form_actions() {
 			print "<tr>
 				<td class='textArea'>
 					<p>" . __n('Click \'Continue\' to enable the following Data Source.', 'Click \'Continue\' to enable all following Data Sources.', sizeof($ds_array)) . "</p>
-					<p><ul>$ds_list</ul></p>
+					<p><div class='itemlist'><ul>$ds_list</ul></div></p>
 				</td>
 			</tr>\n";
 
@@ -515,7 +515,7 @@ function form_actions() {
 			print "<tr>
 				<td class='textArea'>
 					<p>" . __n('Click \'Continue\' to disable the following Data Source.', 'Click \'Continue\' to disable all following Data Sources.', sizeof($ds_array)) . "</p>
-					<p><ul>$ds_list</ul></p>
+					<p><div class='itemlist'><ul>$ds_list</ul></div></p>
 				</td>
 			</tr>\n";
 
@@ -524,7 +524,7 @@ function form_actions() {
 			print "<tr>
 				<td class='textArea'>
 					<p>" . __n('Click \'Continue\' to re-apply the suggested name to the following Data Source.', 'Click \'Continue\' to re-apply the suggested names to all following Data Sources.', sizeof($ds_array)) . "</p>
-					<p><ul>$ds_list</ul></p>
+					<p><div class='itemlist'><ul>$ds_list</ul></div></p>
 				</td>
 			</tr>\n";
 

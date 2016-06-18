@@ -219,7 +219,7 @@ function form_actions() {
 			print "<tr>
 				<td class='textArea'>
 					<p>" . __n('Click \'Continue\' to delete the following User Domain.', 'Click \'Continue\' to delete following User Domains.', sizeof($d_array)) . "</p>
-					<p><ul>$d_list</ul></p>
+					<p><div class='itemlist'><ul>$d_list</ul></div></p>
 				</td>
 			</tr>\n";
 
@@ -228,7 +228,7 @@ function form_actions() {
 			print "<tr>
 				<td class='textArea'>
 					<p>" . __n('Click \'Continue\' to disable the following User Domain.', 'Click \'Continue\' to disable following User Domains.', sizeof($d_array)) . "</p>
-					<p><ul>$d_list</ul></p>
+					<p><div class='itemlist'><ul>$d_list</ul></div></p>
 				</td>
 			</tr>\n";
 
@@ -237,7 +237,7 @@ function form_actions() {
 			print "<tr>
 				<td class='textArea'>
 					<p>" . __('Click \'Continue\' to enable the following User Domain.', 'Click \'Continue\' to enable following User Domains.', sizeof($d_array)) . "</p>
-					<p><ul>$d_list</ul></p>
+					<p><div class='itemlist'><ul>$d_list</ul></div></p>
 				</td>
 			</tr>\n";
 
@@ -246,7 +246,7 @@ function form_actions() {
 			print "<tr>
 				<td class='textArea'>
 					<p>" . __('Click \'Continue\' to make the following the following User Domain the default one.') . "</p>
-					<p><ul>$d_list</ul></p>
+					<p><div class='itemlist'><ul>$d_list</ul></div></p>
 				</td>
 			</tr>\n";
 

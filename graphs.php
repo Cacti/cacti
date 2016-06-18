@@ -586,16 +586,16 @@ function form_actions() {
 			print "	<tr>
 				<td class='textArea'>
 					<p>" . __('Click \'Continue\' to delete the following Graph(s).') . "</p>
-					<p><ul>$graph_list</ul></p>";
+					<p><div class='itemlist'><ul>$graph_list</ul></div></p>";
 
 			if (isset($data_sources) && sizeof($data_sources)) {
 				print "<tr><td class='textArea'><p>" . __('The following Data Source(s) are in use by these Graph(s):') . "</p>\n";
 
-				print '<p><ul>';
+				print '<p><div class="itemlist"><ul>';
 				foreach ($data_sources as $data_source) {
 					print '<li>' . htmlspecialchars($data_source['name_cache']) . "</li>\n";
 				}
-				print '</ul></p>';
+				print '</ul></div></p>';
 
 				print '<span class="nowrap">';
 				form_radio_button('delete_type', '2', '2', __('Delete all Data Source(s) referenced by these Graph(s).'), '2'); 
@@ -613,7 +613,7 @@ function form_actions() {
 			print "<tr>
 				<td class='textArea'>
 					<p>" . __('Choose a Graph Template and click \'Continue\' to change the Graph Template for the following Graph(s). Be aware that all warnings will be suppressed during the conversion, so Graph data loss is possible.') . "</p>
-					<p><ul>$graph_list</ul></p>
+					<p><div class='itemlist'><ul>$graph_list</ul></div></p>
 					<p>" . __('New Graph Template') . "<br>"; 
 
 					form_dropdown('graph_template_id',db_fetch_assoc('SELECT graph_templates.id,graph_templates.name FROM graph_templates ORDER BY name'),'name','id','','','0'); 
@@ -627,7 +627,7 @@ function form_actions() {
 			print "<tr>
 				<td class='textArea'>
 					<p>" . __('Click \'Continue\' to duplicate the following Graph(s). You can optionally change the title format for the new Graph(s).') . "</p>
-					<p><ul>$graph_list</ul></p>
+					<p><div class='itemlist'><ul>$graph_list</ul></div></p>
 					<p>" . __('Title Format') . "<br>"; 
 
 			form_text_box('title_format', __('<graph_title> (1)'), '', '255', '30', 'text'); 
@@ -641,7 +641,7 @@ function form_actions() {
 			print "<tr>
 				<td class='textArea'>
 					<p>" . __('Click \'Continue\' to convert the following Graph(s) into Graph Template(s).  You can optionally change the title format for the new Graph Template(s).') . "</p>
-					<p><ul>$graph_list</ul></p>
+					<p><div class='itemlist'><ul>$graph_list</ul></div></p>
 					<p>" . __('Title Format') . "<br>"; 
 
 			form_text_box('title_format', __('<graph_title> Template'), '', '255', '30', 'text'); 
@@ -655,7 +655,7 @@ function form_actions() {
 			print "<tr>
 				<td class='textArea'>
 					<p>" . __('Click \'Continue\' to place the following Graph(s) under the Tree Branch selected below.') . "</p>
-					<p><ul>$graph_list</ul></p>
+					<p><div class='itemlist'><ul>$graph_list</ul></div></p>
 					<p>" . __('Destination Branch') . "<br>"; 
 
 			grow_dropdown_tree($matches[1], '0', 'tree_item_id', '0'); 
@@ -670,7 +670,7 @@ function form_actions() {
 			print "<tr>
 				<td class='textArea'>
 					<p>" . __('Choose a new Device for these Graph(s) and click \'Continue\'.') . "</p>
-					<p><ul>$graph_list</ul></p>
+					<p><div class='itemlist'><ul>$graph_list</ul></div></p>
 					<p>" . __('New Device'). "<br>"; 
 
 			form_dropdown('host_id',db_fetch_assoc("SELECT id,CONCAT_WS('',description,' (',hostname,')') as name FROM host ORDER BY description,hostname"),'name','id','','','0'); 
@@ -684,7 +684,7 @@ function form_actions() {
 			print "<tr>
 				<td class='textArea'>
 					<p>" . __('Click \'Continue\' to re-apply suggested naming to the following Graph(s).') . "</p>
-					<p><ul>$graph_list</ul></p>
+					<p><div class='itemlist'><ul>$graph_list</ul></div></p>
 				</td>
 			</tr>\n";
 
@@ -693,7 +693,7 @@ function form_actions() {
 			print "<tr>
 				<td class='textArea'>
 					<p>" . __('Click \'Continue\' to resize the following Graph(s).') . "</p>
-					<p><ul>$graph_list</ul></p>
+					<p><div class='itemlist'><ul>$graph_list</ul></div></p>
 					<p>" . __('Graph Height') . "<br>"; 
 
 			form_text_box('graph_height', '', '', '255', '30', 'text'); 
@@ -722,18 +722,18 @@ function form_actions() {
 				print '<tr>';
 				print "<td class='textArea'>
 					<p>" . __('Click \'Continue\' to create an Aggregate Graph from the selected Graph(s).'). "</p>
-					<p><ul>" . get_nfilter_request_var('graph_list') . "</ul></p>
+					<p><div class='itemlist'><ul>" . get_nfilter_request_var('graph_list') . "</ul></div></p>
 				</td>\n";
 
 				/* list affected data sources */
 				if (sizeof($data_sources) > 0) {
 					print "<td class='textArea'>" .
 					'<p>' . __('The following data sources are in use by these graphs:') . '</p>
-						<ul>';
+					<p><div class="itemlist"><ul>';
 					foreach ($data_sources as $data_source) {
 						print '<li>' . htmlspecialchars($data_source['name_cache']) . "</li>\n";
 					}
-					print "</ul></td>\n";
+					print "</ul></div></p></td>\n";
 				}
 				print "</tr>\n";
 
@@ -826,7 +826,7 @@ function form_actions() {
 					print "<tr>
 						<td class='textArea'>
 							<p>" . __('Select the Aggregate Template to use and press \'Continue\' to create your Aggregate Graph.  Otherwise press \'Cancel\' to return.') . "</p>
-							<p><ul>" . $graph_list . "</ul></p>
+							<p><div class='itemlist'><ul>" . $graph_list . "</ul></div></p>
 						</td>
 					</tr>\n";
 
@@ -864,7 +864,7 @@ function form_actions() {
 			print "<tr>
 				<td class='textArea'>
 					<p>" . __('Click \'Continue\' to apply Automation Rules to the following Graphs.') . "</p>
-					<p><ul>$graph_list</ul></p>
+					<p><div class='itemlist'><ul>$graph_list</ul></div></p>
 				</td>
 			</tr>\n";
 

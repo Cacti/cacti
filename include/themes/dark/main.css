@@ -235,6 +235,11 @@ label {
 	width: 200px;
 }
 
+.itemlist { 
+	height:400px;
+	overflow-y:scroll;
+}
+
 .realms {
 	width:20%;
 	vertical-align:top;

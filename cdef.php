@@ -276,7 +276,7 @@ function form_actions() {
 			print "<tr>
 				<td class='textArea' class='odd'>
 					<p>" . __n('Click \'Continue\' to delete the following CDEF.', 'Click \'Continue\' to delete all following CDEFs.', sizeof($cdef_array)) . "</p>
-					<p><ul>$cdef_list</ul></p>
+					<p><div class='itemlist'><ul>$cdef_list</ul></div></p>
 				</td>
 			</tr>\n";
 
@@ -285,7 +285,7 @@ function form_actions() {
 			print "<tr>
 				<td class='textArea' class='odd'>
 					<p>" . __n('Click \'Continue\' to duplicate the following CDEF. You can optionally change the title format for the new CDEF.', 'Click \'Continue\' to duplicate the following CDEFs. You can optionally change the title format for the new CDEFs.', sizeof($cdef_array)) . "</p>
-					<p><ul>$cdef_list</ul></p>
+					<p><div class='itemlist'><ul>$cdef_list</ul></div></p>
 					<p>" . __n('Title Format:') . "<br>"; form_text_box('title_format', '<cdef_title> (1)', '', '255', '30', 'text'); print "</p>
 				</td>
 			</tr>\n";

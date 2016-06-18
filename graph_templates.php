@@ -271,7 +271,7 @@ function form_actions() {
 			print "<tr>
 				<td class='textArea'>
 					<p>" . __('Click \'Continue\' to delete the following Graph Template(s).  Any Graph(s) associated with the Template(s) will become individual Graph(s).') . "</p>
-					<p><ul>$graph_list</ul></p>
+					<p><div class='itemlist'><ul>$graph_list</ul></div></p>
 				</td>
 			</tr>\n";
 
@@ -280,7 +280,7 @@ function form_actions() {
 			print "<tr>
 				<td class='textArea'>
 					<p>" . __('Click \'Continue\' to duplicate the following Graph Template(s). You can optionally change the title format for the new Graph Template(s).') . "</p>
-					<p><ul>$graph_list</ul></p>
+					<p><div class='itemlist'><ul>$graph_list</ul></div></p>
 					<p><strong>" . __('Title Format:'). "</strong><br>"; form_text_box('title_format', '<template_title> (1)', '', '255', '30', 'text'); print "</p>
 				</td>
 			</tr>\n";

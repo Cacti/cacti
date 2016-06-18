@@ -205,7 +205,7 @@ function aggregate_color_form_actions() {
 			print "<tr>
 				<td class='textArea'>
 					<p>" . __n('Click \'Continue\' to delete the following Color Template', 'Click \'Continue\' to delete following Color Templates', sizeof($color_array)) . "</p>
-					<p><ul>$color_list</ul></p>
+					<p><div class='itemlist'><ul>$color_list</ul></div></p>
 				</td>
 			</tr>\n";
 	
@@ -214,7 +214,7 @@ function aggregate_color_form_actions() {
 			print "<tr>
 				<td class='textArea'>
 					<p>" . __n('Click \'Continue\' to duplicate the following Color Template. You can optionally change the title format for the new color template.', 'Click \'Continue\' to duplicate following Color Templates. You can optionally change the title format for the new color templates.', sizeof($color_array)) . "</p>
-					<p><ul>$color_list</ul></p>
+					<p><div class='itemlist'><ul>$color_list</ul></div></p>
 					<p>" . __('Title Format:') . "<br>"; form_text_box('title_format', '<template_title> (1)', '', '255', '30', 'text'); print "</p>
 				</td>
 			</tr>\n";

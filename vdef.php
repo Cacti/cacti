@@ -250,7 +250,7 @@ function vdef_form_actions() {
 			print "	<tr>
 					<td class='topBoxAlt'>
 						<p>" . __n('Click \'Continue\' to delete the following VDEF.', 'Click \'Continue\' to delete following VDEFs.', sizeof($vdef_array)) . "</p>
-						<p><ul>$vdef_list</ul></p>
+						<p><div class='itemlist'><ul>$vdef_list</ul></div></p>
 					</td>
 				</tr>\n";
 
@@ -259,7 +259,7 @@ function vdef_form_actions() {
 			print "	<tr>
 					<td class='topBoxAlt'>
 						<p>" . __n('Click \'Continue\' to duplicate the following VDEF. You can optionally change the title format for the new VDEF.', 'Click \'Continue\' to duplicate following VDEFs. You can optionally change the title format for the new VDEFs.', sizeof($vdef_array)) . "</p>
-						<p><ul>$vdef_list</ul></p>
+						<p><div class='itemlist'><ul>$vdef_list</ul></div></p>
 						<p><strong>" . __('Title Format:') . "</strong><br>"; form_text_box("title_format", "<vdef_title> (1)", "", "255", "30", "text"); print "</p>
 					</td>
 				</tr>\n";
@@ -345,7 +345,7 @@ function vdef_item_remove_confirm() {
 	</script>
 	<?php
 }
-		
+
 function vdef_item_remove() {
 	/* ================= input validation ================= */
 	get_filter_request_var('vdef_id');

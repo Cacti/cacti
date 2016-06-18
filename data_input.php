@@ -206,7 +206,7 @@ function form_actions() {
 			print "<tr>
 				<td class='textArea' class='odd'>
 					<p>" . __n('Click \'Continue\' to delete the following Data Input Method', 'Click \'Continue\' to delete the following Data Input Method', sizeof($di_array)) . "</p>
-					<p><ul>$di_list</ul></p>
+					<p><div class='itemlist'><ul>$di_list</ul></div></p>
 				</td>
 			</tr>\n";
 		}

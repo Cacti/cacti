@@ -668,21 +668,21 @@ function reports_form_actions() {
 			print "<tr>
 				<td class='textArea'>
 					<p>" . __('Click \'Continue\' to delete the following Report(s).') . "</p>
-					<p><ul>$reports_list</ul></p>
+					<p><div class='itemlist'><ul>$reports_list</ul></div></p>
 				</td>
 			</tr>\n";
 		}elseif (is_reports_admin() && get_nfilter_request_var('drp_action') == REPORTS_OWN) { /* take ownership */
 			print "<tr>
 				<td class='textArea'>
 					<p>" . __('Click \'Continue\' to take ownership of the following Report(s).') . "</p>
-					<p><ul>$reports_list</ul></p>
+					<p><div class='itemlist'><ul>$reports_list</ul></div></p>
 				</td>
 			</tr>\n";
 		}elseif (get_nfilter_request_var('drp_action') == REPORTS_DUPLICATE) { /* duplicate */
 			print "<tr>
 				<td class='textArea'>
 					<p>" . __('Click \'Continue\' to duplicate the following Report(s).  You may optionally change the title for the new Reports') . ".</p>
-					<p><ul>$reports_list</ul></p>
+					<p><div class='itemlist'><ul>$reports_list</ul></div></p>
 					<p>" . __('Name Format:') . "<br>\n"; 
 
 			form_text_box('name_format', '<name> (1)', '', '255', '30', 'text'); 
@@ -694,7 +694,7 @@ function reports_form_actions() {
 			print "<tr>
 				<td class='textArea'>
 					<p>" . __('Click \'Continue\' to enable the following Report(s).') . "</p>
-					<p><ul>$reports_list</ul></p>
+					<p><div class='itemlist'><ul>$reports_list</ul></div></p>
 					<p>" . __('Please be certain that those Report(s) have successfully been tested first!') . "</p>
 				</td>
 			</tr>\n";
@@ -702,14 +702,14 @@ function reports_form_actions() {
 			print "<tr>
 				<td class='textArea'>
 					<p>" . __('Click \'Continue\' to disable the following Reports.') . "</p>
-					<p><ul>$reports_list</ul></p>
+					<p><div class='itemlist'><ul>$reports_list</ul></div></p>
 				</td>
 			</tr>\n";
 		}elseif (get_nfilter_request_var('drp_action') == REPORTS_SEND_NOW) { /* send now */
 			print "<tr>
 				<td class='textArea'>
 					<p>" . __('Click \'Continue\' to send the following Report(s) now.') . "</p>
-					<p><ul>$reports_list</ul></p>
+					<p><div class='itemlist'><ul>$reports_list</ul></div></p>
 				</td>
 			</tr>\n";
 		}

@@ -265,35 +265,35 @@ function form_actions() {
 		print "<tr>
 			<td class='textArea'>
 				<p>" . __('Click \'Continue\' to delete the following Network(s).') . "</p>
-				<p><ul>$networks_list</ul></p>
+				<p><div class='itemlist'><ul>$networks_list</ul></div></p>
 			</td>
 		</tr>\n";
 	}elseif (get_nfilter_request_var('drp_action') == '3') { /* enable */
 		print "<tr>
 			<td class='textArea'>
 				<p>" . __('Click \'Continue\' to enable the following Network(s).') . "</p>
-				<p><ul>$networks_list</ul></p>
+				<p><div class='itemlist'><ul>$networks_list</ul></div></p>
 			</td>
 		</tr>\n";
 	}elseif (get_nfilter_request_var('drp_action') == '2') { /* disable */
 		print "<tr>
 			<td class='textArea'>
 				<p>" . __('Click \'Continue\' to disable the following Network(s).') . "</p>
-				<p><ul>$networks_list</ul></p>
+				<p><div class='itemlist'><ul>$networks_list</ul></div></p>
 			</td>
 		</tr>\n";
 	}elseif (get_nfilter_request_var('drp_action') == '4') { /* discover now */
 		print "<tr>
 			<td class='textArea'>
 				<p>" . __('Click \'Continue\' to discover the following Network(s).') . "</p>
-				<p><ul>$networks_list</ul></p>
+				<p><div class='itemlist'><ul>$networks_list</ul></div></p>
 			</td>
 		</tr>\n";
 	}elseif (get_nfilter_request_var('drp_action') == '5') { /* cancel discovery now */
 		print "<tr>
 			<td class='textArea'>
 				<p>" . __('Click \'Continue\' to cancel on going Network Discovery(s).') . "</p>
-				<p><ul>$networks_list</ul></p>
+				<p><div class='itemlist'><ul>$networks_list</ul></div></p>
 			</td>
 		</tr>\n";
 	}

@@ -190,7 +190,7 @@ function form_actions() {
 			print "<tr>
 				<td class='textArea' class='odd'>
 					<p>" . __('Click \'Continue\' to delete the folling Automation Template(s).') . "</p>
-					<p><ul>$at_list</ul></p>
+					<p><div class='itemlist'><ul>$at_list</ul></div></p>
 				</td>
 			</tr>\n";
 

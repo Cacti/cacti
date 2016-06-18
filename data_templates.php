@@ -308,7 +308,7 @@ function form_actions() {
 			print "<tr>
 				<td class='textArea'>
 					<p>" . __('Click \'Continue\' to delete the following Data Template(s).  Any data sources attached to these templates will become individual Data Source(s) and all Templating benefits will be removed.') . "</p>
-					<p><ul>$ds_list</ul></p>
+					<p><div class='itemlist'><ul>$ds_list</ul></div></p>
 				</td>
 			</tr>\n";
 
@@ -317,7 +317,7 @@ function form_actions() {
 			print "<tr>
 				<td class='textArea'>
 					<p>" . __('Click \'Continue\' to duplicate the following Data Template(s). You can optionally change the title format for the new Data Template(s).') . "</p>
-					<p><ul>$ds_list</ul></p>
+					<p><div class='itemlist'><ul>$ds_list</ul></div></p>
 					<p>" . __('Title Format:') . '<br>'; form_text_box('title_format', '<' . __('template_title') . '> (1)', '', '255', '30', 'text'); print "</p>
 				</td>
 			</tr>\n";

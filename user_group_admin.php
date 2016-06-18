@@ -373,7 +373,7 @@ function form_actions() {
 			print "<tr>
 				<td class='textArea'>
 					<p>" . __n('Click \'Continue\' to delete the following User Group', 'Click \'Continue\' to delete following User Groups', sizeof($group_array)) . "</p>
-					<p><ul>$group_list</ul></p>
+					<p><div class='itemlist'><ul>$group_list</ul></div></p>
 				</td>
 			</tr>\n";
 
@@ -386,7 +386,7 @@ function form_actions() {
 			print "<tr>
 				<td class='textArea'>
 					<p>" . __n('Click \'Continue\' to enable the following User Group.', 'Click \'Continue\' to enable following User Groups.', sizeof($group_array)) . "</p>
-					<p><ul>$group_list</ul></p>
+					<p><div class='itemlist'><ul>$group_list</ul></div></p>
 				</td>
 			</tr>\n";
 
@@ -397,7 +397,7 @@ function form_actions() {
 			print "<tr>
 				<td class='textArea'>
 					<p>" . __n('Click \'Continue\' to disable the following User Group.', 'Click \'Continue\' to disable following User Groups.', sizeof($group_array)) . "</p>
-					<p><ul>$group_list</ul></p>
+					<p><div class='itemlist'><ul>$group_list</ul></div></p>
 				</td>
 			</tr>\n";
 

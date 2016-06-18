@@ -251,14 +251,14 @@ function automation_tree_rules_form_actions() {
 		print "<tr>
 			<td class='textArea'>
 				<p>" . __('Click \'Continue\' to delete the following Rule(s).') . "</p>
-				<p><ul>$automation_tree_rules_list</ul></p>
+				<p><div class='itemlist'><ul>$automation_tree_rules_list</ul></div></p>
 			</td>
 		</tr>\n";
 	}elseif (get_nfilter_request_var('drp_action') == AUTOMATION_ACTION_TREE_DUPLICATE) { /* duplicate */
 		print "<tr>
 			<td class='textArea'>
 				<p>" . __('Click \'Continue\' to duplicate the following Rule(s). You can optionally change the title format for the new Rules.') . "</p>
-				<p><ul>$automation_tree_rules_list</ul></p>
+				<p><div class='itemlist'><ul>$automation_tree_rules_list</ul></div></p>
 				<p>" . __('Title Format') . '<br>'; form_text_box('name_format', '<' . __('rule_name') . '> (1)', '', '255', '30', 'text'); print "</p>
 			</td>
 		</tr>\n";
@@ -266,7 +266,7 @@ function automation_tree_rules_form_actions() {
 		print "<tr>
 			<td class='textArea'>
 				<p>" . __('Click \'Continue\' to enable the following Rule(s).') . "</p>
-				<p><ul>$automation_tree_rules_list</ul></p>
+				<p><div class='itemlist'><ul>$automation_tree_rules_list</ul></div></p>
 				<p>" . __('Make sure, that those rules have successfully been tested!') . "</p>
 			</td>
 		</tr>\n";
@@ -274,7 +274,7 @@ function automation_tree_rules_form_actions() {
 		print "<tr>
 			<td class='textArea'>
 				<p>" . __('Click \'Continue\' to disable the following Rule(s).') . "</p>
-				<p><ul>$automation_tree_rules_list</ul></p>
+				<p><div class='itemlist'><ul>$automation_tree_rules_list</ul></div></p>
 			</td>
 		</tr>\n";
 	}

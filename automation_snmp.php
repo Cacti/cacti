@@ -233,14 +233,14 @@ function form_automation_snmp_actions() {
 			print "<tr>
 				<td class='textArea'>
 					<p>" . __('Click \'Continue\' to delete the following SNMP Option(s).') . "</p>
-					<p><ul>$snmp_groups</ul></p>
+					<p><div class='itemlist'><ul>$snmp_groups</ul></div></p>
 				</td>
 			</tr>\n";
 		}elseif (get_nfilter_request_var('drp_action') == '2') { /* duplicate */
 			print "<tr>
 				<td class='textArea'>
 					<p>" . __('Click \'Continue\' to duplicate the following SNMP Options. You can optionally change the title format for the new SNMP Options.') . "</p>
-					<p><ul>$snmp_groups</ul></p>
+					<p><div class='itemlist'><ul>$snmp_groups</ul></div></p>
 					<p>" . __('Name Format') . '<br>'; form_text_box('name_format', '<' . __('name') . '> (1)', '', '255', '30', 'text'); print "</p>
 				</td>
 			</tr>\n";

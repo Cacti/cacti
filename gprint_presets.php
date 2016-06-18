@@ -146,7 +146,7 @@ function form_actions() {
 			print "<tr>
 				<td class='textArea' class='odd'>
 					<p>" . __('Click \'Continue\' to delete the folling GPRINT Preset(s).') . "</p>
-					<p><ul>$gprint_list</ul></p>
+					<p><div class='itemlist'><ul>$gprint_list</ul></div></p>
 				</td>
 			</tr>\n";
 

@@ -290,7 +290,7 @@ function aggregate_form_actions() {
 			print "<tr>
 					<td class='textArea'>
 						<p>" . __('Click \'Continue\' to Delete the following Aggregate Graph Template(s).') . "</p>
-						<p><ul>$aggregate_list</ul></p>
+						<p><div class='itemlist'><ul>$aggregate_list</ul></div></p>
 					</td>
 				</tr>\n";
 

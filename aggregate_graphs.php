@@ -295,7 +295,7 @@ function form_actions() {
 			print "<tr>
 				<td class='textArea'>
 					<p>" . __('Click \'Continue\' to delete the following Aggregate Graph(s).') . "</p>
-					<p><ul>$graph_list</ul></p>
+					<p><div class='itemlist'><ul>$graph_list</ul></div></p>
 				</td>
 			</tr>\n";
 
@@ -328,7 +328,7 @@ function form_actions() {
 					<td class='textArea'>
 						<p>" . __('The selected Aggregate Graphs represent elements from more than one Graph Template.') . "</p>
 						<p>" . __('In order to migrate the Aggregate Graphs below to a Template based Aggregate, they must only be using one Graph Template.  Please press \'Return\' and then select only Aggregate Graph that utilize the same Graph Template.') . "</p>
-						<p><ul>$graph_list</ul></p>
+						<p><div class='itemlist'><ul>$graph_list</ul></div></p>
 					</td>
 				</tr>\n";
 
@@ -341,7 +341,7 @@ function form_actions() {
 					print "<tr>
 						<td class='textArea' colspan='2'>
 							<p>" . __('Click \'Continue\' and the following Aggregate Graph(s) will be migrated to use the Aggregate Template that you choose below.') . "</p>
-							<p><ul>$graph_list</ul></p>
+							<p><div class='itemlist'><ul>$graph_list</ul></div></p>
 						</td>
 					</tr>\n";
 
@@ -363,7 +363,7 @@ function form_actions() {
 							<p>" . __('There are currently no Aggregate Templates defined for the selected Legacy Aggregates.') . "</p>
 							<p>" . __('In order to migrate the Aggregate Graphs below to a Template based Aggregate, first create an Aggregate Template for the Graph Template \'%s\'.', db_fetch_cell("SELECT name FROM graph_templates WHERE id=$graph_template")) . "</p>
 							<p>" . __('Please press \'Return\' to continue.') . "</p>
-							<p><ul>$graph_list</ul></p>
+							<p><div class='itemlist'><ul>$graph_list</ul></div></p>
 						</td>
 					</tr>\n";
 
@@ -374,7 +374,7 @@ function form_actions() {
 			print "<tr>
 				<td colspan='2' class='textArea'>
 					<p>" . __('Click \'Continue\' to combined the following Aggregate Graph(s) into a single Aggregate Graph.') . "</p>
-					<p><ul>$graph_list</ul></p>
+					<p><div class='itemlist'><ul>$graph_list</ul></div></p>
 				</td>
 			</tr>\n";
 
@@ -386,7 +386,7 @@ function form_actions() {
 			print "<tr>
 				<td class='textArea'>
 					<p>" . __('Click \'Continue\' to associate the following Graph(s) with the Aggregate Graph.') . "</p>
-					<p><ul>$graph_list</ul></p>
+					<p><div class='itemlist'><ul>$graph_list</ul></div></p>
 				</td>
 			</tr>\n";
 
@@ -395,7 +395,7 @@ function form_actions() {
 			print "<tr>
 				<td class='textArea'>
 					<p>" . __('Click \'Continue\' to disassociate the following Graph(s) from the Aggregate.') . "</p>
-					<p><ul>$graph_list</ul></p>
+					<p><div class='itemlist'><ul>$graph_list</ul></div></p>
 				</td>
 			</tr>\n";
 
@@ -404,7 +404,7 @@ function form_actions() {
 			print "<tr>
 				<td class='textArea'>
 					<p>" . __('Click \'Continue\' to place the following Aggregate Graph(s) under the Tree Branch.') . "</p>
-					<p><ul>$graph_list</ul></p>
+					<p><div class='itemlist'><ul>$graph_list</ul></div></p>
 					<p>" . __('Destination Branch:') . "<br>"; grow_dropdown_tree($matches[1], "tree_item_id", "0"); print "</p>
 				</td>
 			</tr>\n

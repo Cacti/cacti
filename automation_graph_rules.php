@@ -246,7 +246,7 @@ function automation_graph_rules_form_actions() {
 		print "<tr>
 			<td class='textArea'>
 				<p>" . __('Click \'Continue\' to duplicate the following Rule(s). You can optionally change the title format for the new Rules.') . "</p>
-				<ul>$automation_graph_rules_list</ul>
+				<p><div class='itemlist'><ul>$automation_graph_rules_list</ul></div></p>
 				<p>" . __('Title Format') . '<br>'; form_text_box('name_format', '<' . __('rule_name') . '> (1)', '', '255', '30', 'text'); print "</p>
 			</td>
 		</tr>\n";
@@ -254,7 +254,7 @@ function automation_graph_rules_form_actions() {
 		print "<tr>
 			<td class='textArea'>
 				<p>" . __('Click \'Continue\' to enable the following Rule(s).') . "</p>
-				<ul>$automation_graph_rules_list</ul>
+				<p><div class='itemlist'><ul>$automation_graph_rules_list</ul></div></p>
 				<p>" . __('Make sure, that those rules have successfully been tested!') . "</p>
 			</td>
 		</tr>\n";
@@ -262,7 +262,7 @@ function automation_graph_rules_form_actions() {
 		print "<tr>
 			<td class='textArea'>
 				<p>" . __('Click \'Continue\' to disable the following Rule(s).') . "</p>
-				<ul>$automation_graph_rules_list</ul>
+				<p><div class='itemlist'><ul>$automation_graph_rules_list</ul></div></p>
 			</td>
 		</tr>\n";
 	}

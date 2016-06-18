@@ -452,7 +452,7 @@ function form_actions() {
 			print "<tr>
 				<td class='textArea' class='odd'>
 					<p>" . __n('Click \'Continue\' to delete the following Tree.', 'Click \'Continue\' to delete following Trees.', sizeof($tree_array)) . "</p>
-					<p><ul>$tree_list</ul></p>
+					<p><div class='itemlist'><ul>$tree_list</ul></div></p>
 				</td>
 			</tr>\n";
 
@@ -461,7 +461,7 @@ function form_actions() {
 			print "<tr>
 				<td class='textArea' class='odd'>
 					<p>" . __n('Click \'Continue\' to publish the following Tree.', 'Click \'Continue\' to publish following Trees.', sizeof($tree_array)) . "</p>
-					<p><ul>$tree_list</ul></p>
+					<p><div class='itemlist'><ul>$tree_list</ul></div></p>
 				</td>
 			</tr>\n";
 
@@ -470,7 +470,7 @@ function form_actions() {
 			print "<tr>
 				<td class='textArea' class='odd'>
 					<p>" . __n('Click \'Continue\' to un-publish the following Tree.', 'Click \'Continue\' to un-publish following Trees.', sizeof($tree_array)) . "</p>
-					<p><ul>$tree_list</ul></p>
+					<p><div class='itemlist'><ul>$tree_list</ul></div></p>
 				</td>
 			</tr>\n";
 

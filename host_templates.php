@@ -240,7 +240,7 @@ function form_actions() {
 			print "<tr>
 				<td class='textArea'>
 					<p>" . __('Click \'Continue\' to delete the following Device Template(s).') . "</p>
-					<p><ul>$host_list</ul></p>
+					<p><div class='itemlist'><ul>$host_list</ul></div></p>
 				</td>
 			</tr>\n";
 
@@ -249,7 +249,7 @@ function form_actions() {
 			print "<tr>
 				<td class='textArea'>
 					<p>" . __('Click \'Continue\' to duplicate the following Device Template(s).  Optionally change the title for the new Device Template(s).') ."</p>
-					<p><ul>$host_list</ul></p>
+					<p><div class='itemlist'><ul>$host_list</ul></div></p>
 					<p><strong>" . __('Title Format:'). "</strong><br>\n"; 
 
 			form_text_box('title_format', '<template_title> (1)', '', '255', '30', 'text'); 
