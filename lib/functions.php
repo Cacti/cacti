@@ -2237,7 +2237,7 @@ function draw_navigation_text($type = 'url') {
 			'level' => '2'
 			),
 		'utilities.php:view_snmp_cache' => array(
-			'title' => __('View SNMP Cache'), 
+			'title' => __('View Data Query Cache'), 
 			'mapping' => 'index.php:,utilities.php:', 
 			'url' => 'utilities.php', 
 			'level' => '2'

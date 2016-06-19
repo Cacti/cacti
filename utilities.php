@@ -1211,7 +1211,7 @@ function utilities_view_snmp_cache() {
 	</script>
 	<?php
 
-	html_start_box(__('SNMP Cache Items'), '100%', '', '3', 'center', '');
+	html_start_box(__('Data Query Cache Items'), '100%', '', '3', 'center', '');
 
 	?>
 	<tr class='even noprint'>
@@ -1378,7 +1378,7 @@ function utilities_view_snmp_cache() {
 
 	print $nav;
 
-	html_header(array(__('Device'), __('SNMP Query'), __('Index'), __('Field Name'), __('Field Value'), __('OID')));
+	html_header(array(__('Device'), __('Data Query Name'), __('Index'), __('Field Name'), __('Field Value'), __('OID')));
 
 	$i = 0;
 	if (sizeof($snmp_cache)) {
@@ -1741,10 +1741,10 @@ function utilities() {
 	</tr>
 	<?php form_alternate_row(); ?>
 		<td class='textArea'>
-			<a class='hyperLink' href='<?php print htmlspecialchars('utilities.php?action=view_snmp_cache');?>'><?php print __('View SNMP Cache');?></a>
+			<a class='hyperLink' href='<?php print htmlspecialchars('utilities.php?action=view_snmp_cache');?>'><?php print __('View Data Query Cache');?></a>
 		</td>
 		<td class='textArea'>
-			<?php print __('The SNMP cache stores information gathered from SNMP queries. It is used by cacti to determine the OID to use when gathering information from an SNMP-enabled host.');?>
+			<?php print __('The Data Query Cache stores information gathered from Data Query input types. The values from these fields can be used in the text area of Graphs for Legends, Vertical Labels, and GPRINTS as well as in CDEF\'s.');?>
 		</td>
 	</tr>
 	<?php form_alternate_row(); ?>
