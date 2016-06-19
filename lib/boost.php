@@ -534,6 +534,8 @@ function boost_get_arch_table_name() {
 function boost_process_poller_output($local_data_id = '', $rrdtool_pipe='') {
 	global $config, $boost_sock, $boost_timeout, $debug, $get_memory, $memory_used;
 
+	static $warning_issued;
+
 	include_once($config['library_path'] . '/rrd.php');
 
 	/* suppress warnings */
@@ -563,14 +565,19 @@ function boost_process_poller_output($local_data_id = '', $rrdtool_pipe='') {
 	}else{
 		$single_local_data_id = false;
 
-		$poller_interval	= read_config_option('poller_interval');
-		$rrd_update_interval	= read_config_option('boost_rrd_update_interval');
-		$data_ids_to_get	= read_config_option('boost_rrd_update_max_records_per_select');
+		$poller_interval     = read_config_option('poller_interval');
+		$rrd_update_interval = read_config_option('boost_rrd_update_interval');
+		$data_ids_to_get     = read_config_option('boost_rrd_update_max_records_per_select');
 
 		$archive_table = boost_get_arch_table_name();
 
-		if($archive_table === false) {
-			cacti_log('Failed to determine archive table', false, 'BOOST');
+		if ($archive_table === false) {
+			if ($warning_issued != true) {
+				cacti_log('Failed to determine archive table', false, 'BOOST');
+			}
+
+			$warning_issued = true;
+
 			return 0;
 		}
 	}
@@ -583,13 +590,14 @@ function boost_process_poller_output($local_data_id = '', $rrdtool_pipe='') {
 			WHERE table_schema=SCHEMA()
 			AND table_name LIKE 'poller_output_boost_arch_%'
 			AND table_rows>0;");
+
 		if(count($arch_tables)) {
-		foreach($arch_tables as $table) {
-			if (strlen($query_string)) {
-				$query_string .= ' UNION ';
+			foreach($arch_tables as $table) {
+				if (strlen($query_string)) {
+					$query_string .= ' UNION ';
+				}
+				$query_string .= ' (SELECT local_data_id, UNIX_TIMESTAMP(time) AS timestamp, rrd_name, output FROM ' . $table['name'] . " WHERE local_data_id='$local_data_id') ";
 			}
-			$query_string .= ' (SELECT local_data_id, UNIX_TIMESTAMP(time) AS timestamp, rrd_name, output FROM ' . $table['name'] . " WHERE local_data_id='$local_data_id') ";
-		}
 		}
 
 		if (strlen($query_string)) {
@@ -1183,8 +1191,10 @@ function boost_update_snmp_statistics () {
 	$mc = new MibCache('CACTI-BOOST-MIB');
 	
 	/* get the boost table status */
-	$boost_table_status = db_fetch_assoc("SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE table_schema=SCHEMA()
-											AND (table_name LIKE 'poller_output_boost_arch_%' OR table_name LIKE 'poller_output_boost')");
+	$boost_table_status = db_fetch_assoc("SELECT * 
+		FROM INFORMATION_SCHEMA.TABLES 
+		WHERE table_schema=SCHEMA()
+		AND (table_name LIKE 'poller_output_boost_arch_%' OR table_name LIKE 'poller_output_boost')");
 
 	$total_data_sources = db_fetch_cell('SELECT COUNT(*) FROM poller_item');
 	
