@@ -379,7 +379,7 @@ label {
 
 .treeArea, .treeItemsArea {
 	width:33%;
-	border:1px solid #006400;
+	border:1px solid rgba(148, 179, 107, 0.8);
 }
 
 .linkMarker {
@@ -821,7 +821,7 @@ legend {
 }
 
 .hyperLink {
-	color: #006400;
+	color: rgba(148, 179, 107, 0.8);
 	font-size: 12px;
 	padding: 3px;
 	cursor:pointer;
@@ -1477,7 +1477,7 @@ ul#nav {
 }
 
 .ui-tooltip-content div.header {
-	color: #006400;
+	color: rgba(148, 179, 107, 0.8);
 }
 
 .ui-tooltip-content div.content {
