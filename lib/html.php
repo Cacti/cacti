@@ -413,15 +413,15 @@ function html_nav_bar($base_url, $max_pages, $current_page, $rows_per_page, $tot
 				<table class='navBarNavigation' style='width:100%;'>
 					<tr>
 						<td class='navBarNavigationPrevious'><div style='display:block;'>
-							" . (($current_page > 1) ? "<div onClick='goto$page_var(" . ($current_page-1) . ")'><i class='fa fa-angle-double-left previous'></i>" . __('Previous'). "</div>":"") . "
+							" . (($current_page > 1) ? "<a href='#' onClick='goto$page_var(" . ($current_page-1) . ")'><i class='fa fa-angle-double-left previous'></i>" . __('Previous'). "</a>":"") . "
 						</div></td>
 						<td class='navBarNavigationCenter'>
-							<div>
-								" . __('Showing %s %d to %d of %s [ %s ]', $object, (($rows_per_page*($current_page-1))+1), (($total_rows < $rows_per_page) || ($total_rows < ($rows_per_page*$current_page)) ? $total_rows : $rows_per_page*$current_page), $total_rows, $url_page_select) . "
-							</div>
+							<span>
+								" . __('<span>Showing %s %d to %d of %s [</span><span> %s </span><span>]</span>', $object, (($rows_per_page*($current_page-1))+1), (($total_rows < $rows_per_page) || ($total_rows < ($rows_per_page*$current_page)) ? $total_rows : $rows_per_page*$current_page), $total_rows, $url_page_select) . "
+							</span>
 						</td>
 						<td class='navBarNavigationNext'><div style='display:block;'>
-							" . (($current_page*$rows_per_page) < $total_rows ? "<div onClick='goto$page_var(" . ($current_page+1) . ")'>" . __('Next'). "<i class='fa fa-angle-double-right next'></i></div>":"") . "
+							" . (($current_page*$rows_per_page) < $total_rows ? "<a href='#' onClick='goto$page_var(" . ($current_page+1) . ")'>" . __('Next'). "<i class='fa fa-angle-double-right next'></i></a>":"") . "
 						</div></td>
 					</tr>
 				</table>

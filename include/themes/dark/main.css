@@ -838,7 +838,7 @@ legend {
 }
 
 .linkEditMain, .linkEditMain:active {
-	color: rgba(44,130,29,1);
+	color: rgba(148, 179, 107, 0.8);
 	text-decoration: none;
 	font-size: 12px;
 	font-weight: normal;
@@ -848,7 +848,7 @@ legend {
 }
 
 .linkEditMain:hover {
-	color: rgba(31,59,8,1);
+	color: show;
 	white-space: nowrap;
 	text-decoration: none;
 }
@@ -1084,6 +1084,7 @@ th.sortable {
 	text-align:center;
 	margin-left:auto;
 	margin-right:auto;
+	white-space:nowrap;
 }
 
 .navBarNavigationCenter {
@@ -1399,6 +1400,10 @@ tr.selectable:hover:not(.selected){
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#a7d986', endColorstr='#94b36b', GradientType=0 );
 }
 
+tr.selectable:hover:not(.selected) a {
+	color:snow;
+}
+
 tr.selected a {
 	color:black;
 }
@@ -1522,7 +1527,9 @@ ul.pagination li span {
 
 ul.pagination li a.active {
 	background: rgba(0, 0, 0, 0) linear-gradient(to bottom, rgba(167, 217, 134, 1) 0%, rgba(148, 179, 107, 1) 100%) repeat scroll 0 0;
-	color: black;
+	color: #161616;
+	border-radius: 3px;
+	height: 12px;
 }
 
 ul.pagination li a:hover:not(.active) {
@@ -1534,6 +1541,9 @@ ul.pagination li a:hover:not(.active) {
 	background: -ms-linear-gradient(top, rgba(167,217,134,0.4) 0%, rgba(148,179,107,0.4) 100%);
 	background: linear-gradient(to bottom, rgba(167,217,134,0.4) 0%, rgba(148,179,107,0.4) 100%);
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#a7d986', endColorstr='#94b36b', GradientType=0 );
+	border-radius: 3px;
+	color: snow;
+	height: 12px;
 }
 
 tr#realtime td:first-child {
