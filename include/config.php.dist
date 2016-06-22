@@ -58,7 +58,7 @@ $url_path = '/cacti/';
 
 /* default session name - session name must contain alpha characters */
 
-$cacti_session_name = 'Cacti1.0.0';
+$cacti_session_name = 'Cacti';
 
 /* save sessions to a database for load balancing */
 
