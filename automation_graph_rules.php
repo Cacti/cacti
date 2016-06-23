@@ -238,14 +238,14 @@ function automation_graph_rules_form_actions() {
 	if (get_nfilter_request_var('drp_action') == AUTOMATION_ACTION_GRAPH_DELETE) { /* delete */
 		print "<tr>
 			<td class='textArea'>
-				<p>" . __('Press \'Continue\' to delete the following Rules.') . "</p>
+				<p>" . __('Press \'Continue\' to delete the following Graph Rules.') . "</p>
 				<ul>$automation_graph_rules_list</ul>
 			</td>
 		</tr>";
 	}elseif (get_nfilter_request_var('drp_action') == AUTOMATION_ACTION_GRAPH_DUPLICATE) { /* duplicate */
 		print "<tr>
 			<td class='textArea'>
-				<p>" . __('Click \'Continue\' to duplicate the following Rule(s). You can optionally change the title format for the new Rules.') . "</p>
+				<p>" . __('Click \'Continue\' to duplicate the following Rule(s). You can optionally change the title format for the new Graph Rules.') . "</p>
 				<p><div class='itemlist'><ul>$automation_graph_rules_list</ul></div></p>
 				<p>" . __('Title Format') . '<br>'; form_text_box('name_format', '<' . __('rule_name') . '> (1)', '', '255', '30', 'text'); print "</p>
 			</td>
@@ -709,7 +709,7 @@ function automation_graph_rules() {
 							</select>
 						</td>
 						<td>
-							<?php print __('Rules');?>
+							<?php print __('Graph Rules');?>
 						</td>
 						<td>
 							<select id='rows'>
@@ -816,7 +816,7 @@ function automation_graph_rules() {
 		ORDER BY " . get_request_var('sort_column') . ' ' . get_request_var('sort_direction') . "
 		LIMIT " . ($rows*(get_request_var('page')-1)) . ',' . $rows);
 
-	$nav = html_nav_bar('automation_graph_rules.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 7, __('Graphs'), 'page', 'main');
+	$nav = html_nav_bar('automation_graph_rules.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 7, __('Graph Rules'), 'page', 'main');
 
 	print $nav;
 

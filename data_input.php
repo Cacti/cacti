@@ -613,7 +613,7 @@ function data() {
 						</select>
 					</td>
 					<td>
-						<input type='submit' id='refresh' value='<?php print __('Go');?>' title='<?php __('Set/Refresh Filters');?>'>
+						<input type='button' id='refresh' value='<?php print __('Go');?>' title='<?php __('Set/Refresh Filters');?>'>
 					</td>
 					<td>
 						<input type='button' id='clear' value='<?php print __('Clear');?>' title='<?php __('Clear Filters');?>'>
@@ -623,6 +623,7 @@ function data() {
 			<input type='hidden' id='page' name='page' value='<?php print get_request_var('page');?>'>
 		</form>
 		<script type='text/javascript'>
+
 		function applyFilter() {
 			strURL = 'data_input.php?filter='+$('#filter').val()+'&rows='+$('#rows').val()+'&page='+$('#page').val()+'&header=false';
 			loadPageNoHeader(strURL);
@@ -647,6 +648,7 @@ function data() {
 				applyFilter();
 			});
 		});
+
 		</script>
 		</td>
 	</tr>

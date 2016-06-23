@@ -759,7 +759,11 @@ function automation_tree_rules() {
 			}
 
 			$(function() {
-				$('#refresh, #rows, #status').change(function() {
+				$('#rows, #status').change(function() {
+					applyFilter();
+				});
+
+				$('#refresh').click(function() {
 					applyFilter();
 				});
 
@@ -818,7 +822,7 @@ function automation_tree_rules() {
 		ORDER BY " . get_request_var('sort_column') . ' ' . get_request_var('sort_direction') . "
 		LIMIT " . ($rows*(get_request_var('page')-1)) . ',' . $rows);
 
-	$nav = html_nav_bar('automation_tree_rules.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 11, __('Trees'), 'page', 'main');
+	$nav = html_nav_bar('automation_tree_rules.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 11, __('Tree Rules'), 'page', 'main');
 
 	print $nav;
 
