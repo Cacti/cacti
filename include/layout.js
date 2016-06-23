@@ -589,8 +589,6 @@ function ajaxAnchors() {
 		if (!pageLoaded) {
 			pageLoaded = true;
 			return false;
-		}else{
-			document.location = href;
 		}
 	});
 }
