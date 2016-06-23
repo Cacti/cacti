@@ -144,13 +144,13 @@ label {
 
 .goodpassword {
 	padding:4px;
-	color:green;
+	color: rgba(148, 179, 107, 0.8);
 	font-size:1.5em !important;
 	vertical-align:bottom;
 }
 
 .associated {
-	color:green;
+	color: rgba(148, 179, 107, 0.8);
 }
 
 .notAssociated {
@@ -166,7 +166,7 @@ label {
 }
 
 .idle {
-	color:green;
+	color: rgba(148, 179, 107, 0.8);
 }
 
 .running {
@@ -190,7 +190,7 @@ label {
 }
 
 .success {
-	color:green;
+	color: rgba(148, 179, 107, 0.8);
 }
 
 .failed {
@@ -198,11 +198,11 @@ label {
 }
 
 .accessGranted {
-	color:green;
+	color: rgba(148, 179, 107, 0.8);
 }
 
 .accessGrantedItem {
-	color:green;
+	color: rgba(148, 179, 107, 0.8);
 }
 
 .accessRestricted {
@@ -247,7 +247,7 @@ label {
 }
 
 .deviceUp {
-	color: #198e32;
+	color: rgba(148, 179, 107, 0.8);
 }
 
 .deviceDown {
@@ -271,7 +271,7 @@ label {
 }
 
 .beingGraphed {
-	color: green;
+	color: rgba(148, 179, 107, 0.8);
 }
 
 .notBeingGraphed {
@@ -341,7 +341,7 @@ label {
 	cursor:pointer;
 	padding:2px;
 	vertical-align:middle;
-	color:lime;
+	color: rgba(148, 179, 107, 0.8);
 	font-size:14px;
 }
 
@@ -714,6 +714,7 @@ ul#breadcrumbs {
 
 legend {
 	font-size:22px;
+	color:#bbbfc2;
 }
 
 .loginRight, .logoutRight {
