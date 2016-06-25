@@ -207,7 +207,7 @@ function api_plugin_db_changes_remove ($plugin) {
 	$columns = db_fetch_assoc_prepared("SELECT `table`, `column` FROM plugin_db_changes WHERE plugin = ? AND method ='addcolumn'", array($plugin), false);
 	if (count($columns)) {
 		foreach ($columns as $column) {
-			db_execute('ALTER IGNORE TABLE `' . $column['table'] . '` DROP `' . $column['column'] . '`');
+			db_execute('ALTER TABLE `' . $column['table'] . '` DROP `' . $column['column'] . '`');
 		}
 		db_execute_prepared("DELETE FROM plugin_db_changes WHERE plugin = ? AND method = 'addcolumn'", array($plugin), false);
 	}
@@ -227,7 +227,7 @@ function api_plugin_db_add_column ($plugin, $table, $column) {
 		}
 	}
 	if (isset($column['name']) && !in_array($column['name'], $columns)) {
-		$sql = 'ALTER IGNORE TABLE `' . $table . '` ADD `' . $column['name'] . '`';
+		$sql = 'ALTER TABLE `' . $table . '` ADD `' . $column['name'] . '`';
 		if (isset($column['type']))
 			$sql .= ' ' . $column['type'];
 		if (isset($column['unsigned']))
