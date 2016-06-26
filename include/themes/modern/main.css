@@ -36,7 +36,6 @@ a, a:active, a:visited {
 	text-decoration: none;
 	font-size: 12px;
 	padding: 3px;
-  	text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
 }
 
 a:hover {
@@ -872,7 +871,6 @@ legend {
 .textSubHeaderDark, .textSubHeaderDark:visited {
 	font-size: 11px;
 	color: snow;
-	font-weight: bold;
 }
 
 .cactiTable {
@@ -1033,6 +1031,7 @@ th.sortable {
 	text-align:center;
 	margin-left:auto;
 	margin-right:auto;
+	white-space:nowrap !important;
 }
 
 .navBarNavigationCenter {

@@ -105,7 +105,7 @@ label {
 }
 
 .center {
-	text-align:center;
+	text-align:center !important;
 }
 
 .usermenudown {
@@ -855,15 +855,28 @@ legend {
 }
 
 .linkOverDark, .linkOverDark:active {
-	color: white;
+	color: snow;
 	font-weight: normal;
 	text-decoration: none;
 	cursor: pointer;
 }
 
 .linkOverDark:hover {
-	color: white;
+	color: snow;
 	text-decoration: none;
+}
+
+.linkOverLight {
+	color:#161616;
+	text-decoration: none;
+	font-weight:normal;
+	text-align:center;
+}
+
+.linkOverLight:hover {
+	color:#464646;
+	text-decoration: none;
+	font-weight:normal;
 }
 
 /* text styles */
@@ -1045,7 +1058,7 @@ th.sortable {
 }
 
 .graphSubHeaderColumn {
-	color: #snow;
+	color: snow;
 	font-size:12px;
 	vertical-align:middle;
 	text-align:left;
@@ -1081,7 +1094,7 @@ th.sortable {
 }
 
 .navBarNavigation {
-	color: white;
+	color: snow;
 	text-align:center;
 	margin-left:auto;
 	margin-right:auto;
