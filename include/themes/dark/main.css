@@ -270,6 +270,26 @@ label {
 	color: #750F7D;
 }
 
+.deviceDownMuted {
+	color: #ffe333;
+}
+
+.deviceThreshold {
+	color: #ffa833;
+}
+
+.deviceUnmonitored {
+	color: rgba(250, 253, 158);
+}
+
+.deviceWarning {
+	color: #ea9827;
+}
+
+.deviceAlert {
+	color: #ea5f27;
+}
+
 .beingGraphed {
 	color: rgba(148, 179, 107, 0.8);
 }

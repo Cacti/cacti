@@ -36,6 +36,7 @@ a, a:active, a:visited {
 	text-decoration: none;
 	font-size: 12px;
 	padding: 3px;
+	vertical-align: middle !important;
 }
 
 a:hover {
@@ -43,7 +44,7 @@ a:hover {
 	color: #333333;
 }
 
-th .fa {
+th i.fa {
     margin-top: -5px;
     position: absolute;
     right: 3px;
@@ -57,6 +58,10 @@ th .fa {
 
 input, select {
 	padding: 0.4em 0.4em 0.4em 0.4em;
+}
+
+*:focus {
+    outline: none;
 }
 
 label {
@@ -76,7 +81,7 @@ label {
 }
 
 .center {
-	text-align:center;
+	text-align:center !important;
 }
 
 .usermenudown {
@@ -89,7 +94,6 @@ label {
 
 .user {
 	padding-right:16px;
-	font-weight:bold;
 	cursor:pointer;
 }
 
@@ -97,7 +101,7 @@ label {
 	position:relative;
 	left: -20px;
 	margin-right: -10px;
-	font-size: 13px !important;
+	font-size: 12px !important;
 }
 
 .badpassword_message {
@@ -123,12 +127,12 @@ label {
 
 .associated {
 	color:green;
-	font-weight:bold;
+	font-weight:normal;
 }
 
 .notAssociated {
 	color:red;
-	font-weight:bold;
+	font-weight:normal;
 }
 
 .disabled_row {
@@ -137,17 +141,16 @@ label {
 
 .disabled {
 	color:grey;
-	font-weight:bold;
+	font-weight:normal;
 }
 
 .idle {
 	color:green;
-	font-weight:bold;
+	font-weight:normal;
 }
 
 .running {
 	color:red;
-	font-weight:bold;
 }
 
 .newObject{
@@ -176,7 +179,6 @@ label {
 
 .accessGranted {
 	color:green;
-	font-weight:bold;
 }
 
 .accessGrantedItem {
@@ -185,7 +187,6 @@ label {
 
 .accessRestricted {
 	color:red;
-	font-weight:bold;
 }
 
 .accessRestrictedItem {
@@ -248,6 +249,25 @@ label {
 	color: #750F7D;
 }
 
+.deviceDownMuted {
+	color: #ffe333;
+}
+
+.deviceThreshold {
+	color: #ffa833;
+}
+
+.deviceUnmonitored {
+	color: rgba(250, 253, 158);
+}
+
+.deviceWarning {
+	color: #ea9827;
+}
+
+.deviceAlert {
+	color: #ea5f27;
+}
 .beingGraphed {
 	color: green;
 }
@@ -275,7 +295,7 @@ label {
 
 .menuoptions li a {
 	border-top: 1px solid #ccc;
-	font-weight:bold;
+	font-weight:normal;
 	display:block;
 	height:14px;
 }
@@ -290,8 +310,8 @@ label {
 }
 
 .import_button {
-	display: none;
 	opacity: 0;
+	display: none;
 }
 
 .import_text {
@@ -314,7 +334,6 @@ label {
 	padding:2px;
 	vertical-align:middle;
 	color:lime;
-	font-weight:bold;
 	font-size:14px;
 }
 
@@ -323,7 +342,6 @@ label {
 	padding:2px;
 	vertical-align:middle;
 	color:red;
-	font-weight:bold;
 	font-size:14px
 }
 
@@ -404,14 +422,12 @@ label {
 .hostUp {
 	color: #000000;
 	font-size: 10px;
-	font-weight: normal;
 	font-family: monospace;
 }
 
 .hostDown {
 	color: #ff0000;
 	font-size: 10px;
-	font-weight: normal;
 	font-family: monospace;
 }
 
@@ -570,7 +586,6 @@ ul#breadcrumbs {
 
 #breadcrumbs .current,
 #breadcrumbs .current:hover {
-	font-weight: bold;
 	background: none;
 }
 
@@ -693,7 +708,6 @@ ul#breadcrumbs {
 
 legend {
 	font-size:22px;
-	font-weight:bold;
 }
 
 .loginRight, .logoutRight {
@@ -768,16 +782,15 @@ legend {
 	padding: 3px;
 	cursor:pointer;
 	text-decoration: none;
-	text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
 }
 
 .noLinkEditMain {
 	color: rgba(44,130,29,1);
 	text-decoration: none;
 	font-size: 12px;
-	font-weight: bold;
+	font-weight: normal;
 	padding: 3px;
-  	text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+
 	white-space: nowrap;
 }
 
@@ -785,9 +798,8 @@ legend {
 	color: rgba(44,130,29,1);
 	text-decoration: none;
 	font-size: 12px;
-	font-weight: bold;
+	font-weight: normal;
 	padding: 3px;
-  	text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
 	white-space: nowrap;
 	cursor:pointer;
 }
@@ -810,11 +822,23 @@ legend {
 	text-decoration: none;
 }
 
+.linkOverLight {
+	color:#161616;
+	text-decoration: none;
+	font-weight:normal;
+	text-align:center;
+}
+
+.linkOverLight:hover {
+	color:#464646;
+	text-decoration: none;
+	font-weight:normal;
+}
 /* text styles */
 
 .textError {
 	font-size: 12px;
-	font-weight: bold;
+	font-weight: normal;
 	color: red;
 }
 
@@ -849,7 +873,7 @@ legend {
 
 .textHeaderDark {
 	font-size: 12px;
-	font-weight: bold;
+	font-weight: normal;
 	color: snow;
 }
 
@@ -871,6 +895,7 @@ legend {
 .textSubHeaderDark, .textSubHeaderDark:visited {
 	font-size: 11px;
 	color: snow;
+	font-weight: normal;
 }
 
 .cactiTable {
@@ -911,7 +936,7 @@ legend {
 }
 
 .formItemName {
-	font-weight:bold;
+	font-weight:normal;
 }
 
 .graphItem {
@@ -969,11 +994,11 @@ th.sortable {
 
 .tableHeader th {
 	color: snow;
-	font-weight:bold;
 	cursor: pointer;
 	vertical-align:middle;
 	text-align:left;
 	font-size: 11px;
+	font-weight:normal;
 }
 
 .tableHeader th div {
@@ -984,7 +1009,6 @@ th.sortable {
 
 .tableSubHeaderColumn {
 	color: snow;
-	font-weight:bold;
 	vertical-align:middle;
 	text-align:left;
 	cursor:pointer;
@@ -1094,7 +1118,7 @@ th.sortable {
 }
 
 .textEditTitle {
-	font-weight: bold;
+	font-weight: normal;
 }
 
 .textMenuHeader {
@@ -1102,7 +1126,7 @@ th.sortable {
 	background-color: #9C9C9C;
 	font-family: Verdana, Arial, Helvetica, sans-serif;
 	font-size: 10px;
-	font-weight: bold;
+	font-weight: normal;
 }
 
 .textMenuItem {
@@ -1130,7 +1154,7 @@ th.sortable {
 .txtErrorText {
 	color: #FF0000;
 	font-size: 12px;
-	font-weight: bold;
+	font-weight: normal;
 }
 
 /* tabs */
@@ -1483,17 +1507,17 @@ ul#nav {
 	color: #006400;
 }
 
+.ui-tooltip-content div.content {
+	font-size: 10px;
+	color: #333333;
+}
+
 .ui-tooltip-content {
 	max-width: 500px !important;
 	overflow:auto !important;
 	opacity: 0.95;
 	border-radius: 5px !important;
 	border: transparent;
-}
-
-.ui-tooltip-content div.content {
-	font-size: 10px;
-	color: #333333;
 }
 
 div.preformatted {
