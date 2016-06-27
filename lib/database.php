@@ -159,6 +159,14 @@ function db_execute_prepared($sql, $parms = array(), $log = TRUE, $db_conn = FAL
 					usleep(500000);
 					continue;
 				}
+			} else if ($en == 1153) {
+				if (strlen($sql) > 1024) {
+					$sql = substr($sql, 0, 1024) . '...';
+				}
+				cacti_log("ERROR: A DB Exec Failed!, Error:$en, SQL:\"" . str_replace("\n", '', str_replace("\r", '', str_replace("\t", ' ', $sql))) . "'", FALSE);
+				cacti_log('ERROR: A DB Exec Failed!, Error: ' . $errorinfo[2]);
+				cacti_debug_backtrace('SQL');
+				return FALSE;
 			} else {
 				cacti_log("ERROR: A DB Exec Failed!, Error:$en, SQL:\"" . str_replace("\n", '', str_replace("\r", '', str_replace("\t", ' ', $sql))) . "'", FALSE);
 				cacti_log('ERROR: A DB Exec Failed!, Error: ' . $errorinfo[2]);
