@@ -357,7 +357,7 @@ function snmpagent_poller_bottom() {
 }
 
 function snmpagent_get_pluginslist(){
-	global $config, $plugins;
+	global $config, $plugins, $plugins_integrated;
 	/* update the list of known plugins only once per polling cycle. In all other cases we would
 	   have to create too many new hooks to update that MIB table just in time.
 	   We have to do the same like function plugins_load_temp_table(), which will not be available
@@ -373,7 +373,7 @@ function snmpagent_get_pluginslist(){
 	$dh = opendir($path);
 	if ($dh !== false) {
 		while (($file = readdir($dh)) !== false) {
-			if ((is_dir("$path/$file")) && (file_exists("$path/$file/setup.php")) && (!array_key_exists($file, $pluginslist))) {
+			if ((is_dir("$path/$file")) && !in_array($file, $plugins_integrated) && (file_exists("$path/$file/setup.php")) && (!array_key_exists($file, $pluginslist))) {
 				include_once("$path/$file/setup.php");
 				if (!function_exists('plugin_' . $file . '_install') && function_exists($file . '_version')) {
 					$function = $file . '_version';
