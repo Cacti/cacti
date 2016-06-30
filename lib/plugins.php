@@ -336,13 +336,15 @@ function api_plugin_disable ($plugin) {
 
 function api_plugin_moveup($plugin) {
 	$id = db_fetch_cell_prepared('SELECT id FROM plugin_config WHERE directory = ?', array($plugin));
-	$temp_id = db_fetch_cell('SELECT MAX(id) FROM plugin_config')+1;
-	$prior_id = db_fetch_cell_prepared('SELECT MAX(id) FROM plugin_config WHERE id < ?', array($id));
+	if (!empty($id)) {
+		$temp_id = db_fetch_cell('SELECT MAX(id) FROM plugin_config')+1;
+		$prior_id = db_fetch_cell_prepared('SELECT MAX(id) FROM plugin_config WHERE id < ?', array($id));
 
-	/* update the above plugin to the prior temp id */
-	db_execute_prepared('UPDATE plugin_config SET id = ? WHERE id = ?', array($temp_id, $prior_id));
-	db_execute_prepared('UPDATE plugin_config SET id = ? WHERE id = ?', array($prior_id, $id));
-	db_execute_prepared('UPDATE plugin_config SET id = ? WHERE id = ?', array($id, $temp_id));
+		/* update the above plugin to the prior temp id */
+		db_execute_prepared('UPDATE plugin_config SET id = ? WHERE id = ?', array($temp_id, $prior_id));
+		db_execute_prepared('UPDATE plugin_config SET id = ? WHERE id = ?', array($prior_id, $id));
+		db_execute_prepared('UPDATE plugin_config SET id = ? WHERE id = ?', array($id, $temp_id));
+	}
 }
 
 function api_plugin_movedown($plugin) {
