@@ -264,7 +264,12 @@ if (get_nfilter_request_var('action') == 'login') {
 				/* because we use plugins, we can't redirect back to graph_view.php if they don't
 				 * have console access
 				 */
-				if (isset($_SERVER['HTTP_REFERER'])) {
+				if (isset($_SERVER["REDIRECT_URL"])) {
+					$referer = $_SERVER["REDIRECT_URL"];
+					if (isset($_SERVER["REDIRECT_QUERY_STRING"])) {
+						$referer .= '?' . $_SERVER["REDIRECT_QUERY_STRING"] . ($newtheme ? '?newtheme=1':'');
+					}
+				} else if (isset($_SERVER['HTTP_REFERER'])) {
 					$referer = $_SERVER['HTTP_REFERER'];
 					if (basename($referer) == 'logout.php') {
 						$referer = $config['url_path'] . 'index.php' . ($newtheme ? '?newtheme=1':'');
