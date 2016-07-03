@@ -1238,7 +1238,7 @@ function html_show_tabs_left($show_console_tab) {
 
 		print "<div class='maintabs'><nav><ul role='tablist'>\n";
 		foreach($tabs_left as $tab) {
-			print "<li role='tab' tabindex='$i' aria-controls='tabs-" . ($i+1) . "'><a id='" . $tab['id'] . "' class='lefttab " . (isset($tab['selected']) ? 'selected':'') . "' href='" . $tab['url'] . "' role='presentation' tabindex='-1'>" . $tab['title'] . "</a></li>\n";
+			print "<li role='tab' tabindex='$i' aria-controls='tabs-" . ($i+1) . "'><a id='" . (isset($tab['id']) ? $tab['id'] : 'maintab-anchor-' . $i ) . "' class='lefttab " . (isset($tab['selected']) ? 'selected':'') . "' href='" . $tab['url'] . "' role='presentation' tabindex='-1'>" . $tab['title'] . "</a></li>\n";
 
 			$i++;
 		}
