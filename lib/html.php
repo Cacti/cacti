@@ -1142,6 +1142,7 @@ function html_show_tabs_left($show_console_tab) {
 			$tabs_left[] =
 			array(
 				'title' => __('Console'),
+				'id'	=> 'maintab-anchor-console',
 				'image' => '',
 				'url'   => $config['url_path'] . 'index.php',
 			);
@@ -1150,6 +1151,7 @@ function html_show_tabs_left($show_console_tab) {
 		$tabs_left[] =
 			array(
 				'title' => __('Graphs'),
+				'id'	=> 'maintab-anchor-graphs',
 				'image' => '',
 				'url'   => $config['url_path'] . 'graph_view.php',
 			);
@@ -1157,6 +1159,7 @@ function html_show_tabs_left($show_console_tab) {
 		$tabs_left[] =
 			array(
 				'title' => __('Reporting'),
+				'id'	=> 'maintab-anchor-reports',
 				'image' => '',
 				'url'   => $config['url_path'] . (is_realm_allowed(22) ? 'reports_admin.php':'reports_user.php'),
 			);
@@ -1164,6 +1167,7 @@ function html_show_tabs_left($show_console_tab) {
 		$tabs_left[] =
 			array(
 				'title' => __('Cacti Log'),
+				'id'	=> 'maintab-anchor-logs',
 				'image' => '',
 				'url'   => $config['url_path'] . (is_realm_allowed(18) ? 'clog.php':'clog_user.php'),
 			);
@@ -1234,7 +1238,7 @@ function html_show_tabs_left($show_console_tab) {
 
 		print "<div class='maintabs'><nav><ul role='tablist'>\n";
 		foreach($tabs_left as $tab) {
-			print "<li role='tab' tabindex='$i' aria-controls='tabs-" . ($i+1) . "'><a class='lefttab " . (isset($tab['selected']) ? 'selected':'') . "' href='" . $tab['url'] . "' role='presentation' tabindex='-1'>" . $tab['title'] . "</a></li>\n";
+			print "<li role='tab' tabindex='$i' aria-controls='tabs-" . ($i+1) . "'><a id='" . $tab['id'] . "' class='lefttab " . (isset($tab['selected']) ? 'selected':'') . "' href='" . $tab['url'] . "' role='presentation' tabindex='-1'>" . $tab['title'] . "</a></li>\n";
 
 			$i++;
 		}
