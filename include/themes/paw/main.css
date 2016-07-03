@@ -10,7 +10,7 @@ body, table, tr, td, textarea {
 
 body {
 	margin: 0px;
-	background-color: snow;
+	background-color: white;
 	background-repeat: repeat-y;
     overflow: hidden;
 }
@@ -237,31 +237,34 @@ label {
 }
 
 .menuoptions {
-	background: none repeat scroll 0 0 #eee;
-    border-color: #f5f5f5 #e5e5e5 #ccc;
+	background: white;
+	border-width: 0px 3px 3px 3px;
+    border-color: #000;
     border-style: solid;
-    border-width: 0px 1px 1px 1px;
 	display:block;
 	float:right;
 	position:absolute;
-	right:26px;
-	top:22px;
+	right:0px;
+	top:45px;
   	list-style: none;
 	text-align:right;
 	margin:0px;
-	padding:0px;
+	padding: 10px 0px 10px 0px;
+	
 }
 
 .menuoptions li a {
-	border-top: 1px solid #ccc;
-	font-weight:bold;
 	display:block;
-	height:14px;
+	padding: 2px 15px 2px 15px;
+	font-size: 14px;
+	font-weight: light;
+	color: rgba(0,0,0,0.9);
+	text-decoration: none;
 }
 
 .menuoptions li a:hover {
 	display:block;
-	background: linear-gradient(to bottom, rgba(242, 246, 248, 1) 0%, rgba(216, 225, 231, 1) 50%, rgba(181, 198, 208, 1) 51%, rgba(224, 239, 249, 1) 100%) repeat scroll 0 0 rgba(0, 0, 0, 0);
+	background: rgba(0,0,0,0.1);
 }
 
 .import_label {
@@ -406,6 +409,12 @@ label {
 	top: 0;
 }
 
+.cactiPageHead #tabs {
+	overflow-x:auto;
+	overflow-y:hidden;
+}
+
+
 .cactiGraphPageHeadBackdrop {
 	padding-bottom:0px;
 	float:right;
@@ -413,8 +422,7 @@ label {
 }
 
 .cactiPageBottom {
-
-	background-color: #0072C6;
+	background-color: #000000;
 	height: 15px;
 	width: 100%;
 }
@@ -519,7 +527,7 @@ label {
 	border-radius:10px;
 	position:relative;
 	padding:30px 0px 5px 20px;
-	background-color:snow;
+	background-color:white;
 	top:30%;
 	max-width:360px;
 	max-height:300px;
@@ -589,7 +597,7 @@ legend {
 	padding-top:5px;
 	float:right;
 	margin-top:10px;
-	color:snow;
+	color:white;
 }
 
 .actionsDropdown {
@@ -607,7 +615,7 @@ legend {
 }
 
 .cactiGraphContentArea {
-	background: snow url('./../../../images/shadow.gif') repeat-x center top;
+	background: white url('./../../../images/shadow.gif') repeat-x center top;
 	padding-top: 10px;
 	padding-right: 5px;
 	padding-left: 5px;
@@ -616,7 +624,7 @@ legend {
 }
 
 .cactiGraphContentAreaPreview {
-	background: snow url('./../../../images/shadow.gif') repeat-x center top;
+	background: white url('./../../../images/shadow.gif') repeat-x center top;
 	padding-top: 10px;
 	padding-right: 5px;
 	padding-left: 5px;
@@ -706,7 +714,7 @@ legend {
 .messageBox {
 	margin-bottom:5px;
 	padding:5px;
-	background-color:snow;
+	background-color:white;
 	border:1px solid #BBBBBB;
 	max-width:100%;
 	position:relative;
@@ -716,7 +724,7 @@ legend {
 .textHeaderDark {
 	font-size: 12px;
 	font-weight: bold;
-	color: snow;
+	color: white;
 }
 
 .templateHeader {
@@ -736,7 +744,7 @@ legend {
 
 .textSubHeaderDark, .textSubHeaderDark:visited {
 	font-size: 11px;
-	color: snow;
+	color: white;
 	font-weight: bold;
 }
 
@@ -759,7 +767,8 @@ legend {
 .cactiTableTitle {
 	width: 100%;
 	border-bottom: 1px solid rgba(0,0,0,0.5);
-	background: #2d4ca8;
+	background: rgba(0,0,0,1);
+	
 }
 
 .cactiTableTitle td {
@@ -816,7 +825,9 @@ legend {
 }
 
 .tableHeader {
-	background: #2d4ca8;
+color: white;
+	#background: #2d4ca8;
+	background: rgba(0,0,0,0.55);
 }
 
 th.sortable {
@@ -825,7 +836,7 @@ th.sortable {
 }
 
 .tableHeader th {
-	color: snow;
+	color: white;
 	font-weight:bold;
 	cursor: pointer;
 	vertical-align:middle;
@@ -839,8 +850,15 @@ th.sortable {
 	font-size:11px;
 }
 
+.tableHeaderColumnSelected {
+	background: #3F75A2;
+}
+
+.tableHeaderColumnHover {
+	background: rgba(0,0,0,0.4);
+}
+
 .tableSubHeaderColumn {
-	background: #cccccc;
 	font-weight:bold;
 	vertical-align:middle;
 	text-align:left;
@@ -848,7 +866,7 @@ th.sortable {
 }
 
 .graphSubHeaderColumn {
-	color: #snow;
+	color: #white;
 	font-size:12px;
 	vertical-align:middle;
 	text-align:left;
@@ -857,14 +875,7 @@ th.sortable {
 
 .tableSubHeaderCheckbox {
 	width:1%;
-	background: rgba(138,179,105,1);
-	background: -moz-linear-gradient(top, rgba(138,179,105,1) 0%, rgba(63,117,15,1) 100%);
-	background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(138,179,105,1)), color-stop(100%, rgba(63,117,15,1)));
-	background: -webkit-linear-gradient(top, rgba(138,179,105,1) 0%, rgba(63,117,15,1) 100%);
-	background: -o-linear-gradient(top, rgba(138,179,105,1) 0%, rgba(63,117,15,1) 100%);
-	background: -ms-linear-gradient(top, rgba(138,179,105,1) 0%, rgba(63,117,15,1) 100%);
-	background: linear-gradient(to bottom, rgba(138,179,105,1) 0%, rgba(63,117,15,1) 100%);
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#8ab369', endColorstr='#3f750f', GradientType=0 );
+	background: #3F75A2;
 }
 
 .image_table {
@@ -934,13 +945,13 @@ th.sortable {
 	padding: 0px;
 	display: none;
 	overflow: auto;
-	color: snow;
+	color: white;
 	background-color:#e5e5e5;
 	border:1px solid #e5e5e5;
 }
 
 .installArea {
-	background-color: snow;
+	background-color: white;
 	padding: 10px;
 }
 
@@ -954,7 +965,7 @@ th.sortable {
 }
 
 .textMenuHeader {
-	color: snow;
+	color: white;
 	background-color: #9C9C9C;
 	font-family: Verdana, Arial, Helvetica, sans-serif;
 	font-size: 10px;
@@ -968,7 +979,7 @@ th.sortable {
 }
 
 .textMenuSubItem {
-	background-color: snow;
+	background-color: white;
 	font-family: Verdana, Arial, Helvetica, sans-serif;
 	font-size: 10px;
 }
@@ -1077,11 +1088,16 @@ div#gtabs {
 
 .usertabs {
 	float: right !important;
+	width: 95px !important;
+	overflow:hidden;
+	right: 0;
 }
 
 .maintabs {
 	line-height: 35px;
 	float: left;
+	width:50%;
+	overflow:hidden;
 }
 
 .maintabs a {
@@ -1098,11 +1114,11 @@ div#gtabs {
 }
 
 .maintabs a:hover {
-	background-color: rgba(0,0,0,0.3);
+	background-color: rgba(255,255,255,0.3);
 }
 
 .maintabs a.selected {
-	background-color: rgba(0,0,0,0.3);
+	background-color: rgba(63,117,162,0.8);
 }
 
 .maintabs nav {
@@ -1164,15 +1180,10 @@ div.submenu span{
 	background-repeat:repeat-x;
 }
 
-.tabs a.selected {
-	background: rgba(242,246,248,1);
-	background: -moz-linear-gradient(top, rgba(242,246,248,1) 0%, rgba(216,225,231,1) 50%, rgba(181,198,208,1) 51%, rgba(224,239,249,1) 100%);
-	background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(242,246,248,1)), color-stop(50%, rgba(216,225,231,1)), color-stop(51%, rgba(181,198,208,1)), color-stop(100%, rgba(224,239,249,1)));
-	background: -webkit-linear-gradient(top, rgba(242,246,248,1) 0%, rgba(216,225,231,1) 50%, rgba(181,198,208,1) 51%, rgba(224,239,249,1) 100%);
-	background: -o-linear-gradient(top, rgba(242,246,248,1) 0%, rgba(216,225,231,1) 50%, rgba(181,198,208,1) 51%, rgba(224,239,249,1) 100%);
-	background: -ms-linear-gradient(top, rgba(242,246,248,1) 0%, rgba(216,225,231,1) 50%, rgba(181,198,208,1) 51%, rgba(224,239,249,1) 100%);
-	background: linear-gradient(to bottom, rgba(242,246,248,1) 0%, rgba(216,225,231,1) 50%, rgba(181,198,208,1) 51%, rgba(224,239,249,1) 100%);
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f2f6f8', endColorstr='#e0eff9', GradientType=0 );
+.tabs nav a.selected {
+	color: white;
+	boder-bottom: 1px solid rgba(63,117,162,0.8);
+	background: rgba(63,117,162,0.8);
 }
 
 .tabs li {
@@ -1244,24 +1255,27 @@ th:last-child {
 }
 
 tr.selected {
-	color: snow;
-	background: rgba(204,204,204,1);
+	color: white;
+	#background: #9fbad0;
+	background: rgba(0,0,0,1);
 }
 
 tr.selectable:hover:not(.selected){
-	background: rgba(204,204,204,0.5);
+	#background: #c5d5e3;
+	background: rgba(0,0,0,0.3);
 }
 
 tr.selected a {
-	color:black;
+	color: yellow;
 }
 
-#nav li a.pic:hover {
+#nav li a.pic:hover:not(.selected) {
 	background: rgba(224,224,224,1);
 }
 
 #nav li a.selected {
-	background: rgba(204,204,204,1);
+	color: white;
+	background: #3F75A2;
 }
 
 #nav li ul {
@@ -1379,13 +1393,5 @@ tr#realtime td:first-child {
 
 .darkblue{
 	background: #2d4ca8; /* Old browsers */
-	/* IE9 SVG, needs conditional override of 'filter' to 'none' */
-	background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMCUiPgogICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzJkNGNhOCIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiMxYTE5NWUiIHN0b3Atb3BhY2l0eT0iMSIvPgogIDwvbGluZWFyR3JhZGllbnQ+CiAgPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNncmFkLXVjZ2ctZ2VuZXJhdGVkKSIgLz4KPC9zdmc+);
-	background: -moz-linear-gradient(left, #2d4ca8 0%, #1d316c 100%); /* FF3.6+ */
-	background: -webkit-gradient(linear, left top, right top, color-stop(0%,#2d4ca8), color-stop(100%,#1d316c)); /* Chrome,Safari4+ */
-	background: -webkit-linear-gradient(left, #2d4ca8 0%,#1d316c 100%); /* Chrome10+,Safari5.1+ */
-	background: -o-linear-gradient(left, #2d4ca8 0%,#1d316c 100%); /* Opera 11.10+ */
-	background: -ms-linear-gradient(left, #2d4ca8 0%,#1d316c 100%); /* IE10+ */
-	background: linear-gradient(to right, #2d4ca8 0%,#1d316c 100%); /* W3C */
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#2d4ca8', endColorstr='#1d316c',GradientType=1 ); /* IE6-8 */
+
 }

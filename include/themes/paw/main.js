@@ -53,16 +53,12 @@ function themeReady() {
 	$('head').append('<link href="/cactidev/include/fa/css/font-awesome.css" type="text/css" rel="stylesheet">');
 	$('.cactiLoginLogo').html("<i class='fa fa-paw'/>").css('font-size: 20px');
 	
-	$('.cactiPageHead').addClass('color darkblue');
-	
 	/* clean up the navigation menu */
 	$('.cactiConsoleNavigationArea').find('#menu').appendTo($('.cactiConsoleNavigationArea').find('#navigation'));
 	$('.cactiConsoleNavigationArea').find('#navigation > table').remove();
 
-	var userName = $('#user').html();
-	
 	/* Hey - No footer available ? */
-	$('<div id="cactiPageBottom" class="cactiPageBottom color darkblue"></div>').insertAfter('#cactiContent');
+	$('<div id="cactiPageBottom" class="cactiPageBottom"></div>').insertAfter('#cactiContent');
 	
 	/* Console? Nope! */
 	$('.maintabs nav ul li a').each( function() {	
@@ -76,15 +72,41 @@ function themeReady() {
 		}
 	});
 	
+	
 	/* user menu on the right ... */
 	if($('.usertabs').length == 0 ){
-		$('<div class="maintabs usertabs"><nav><ul><li><a class="pic" href="graph_settings.php"><i class="fa fa-cogs"></i></a></li><li id="user_name"><a>'+userName+'</a></li></ul></nav></div>').insertAfter('.maintabs');	
+		$('<div class="maintabs usertabs">'
+			+'<nav><ul>'
+				+'<li><a class="pic" href="graph_settings.php"><i class="fa fa-search"></i></a></li>'
+				+'<li><a class="pic" href="graph_settings.php"><i class="fa fa-cog"></i></a></li>'
+				+'<li class="action-icon-user"><a class="pic" href="#"><i class="fa fa-user"></i></a></li>'
+			+'</ul></nav>'
+		+'</div>').insertAfter('.maintabs');	
 	}
 	
 	ajaxAnchors();
 	
-	/* Now start resizing everything  :) */
+	/* User Menu */
+	$('.menuoptions').addClass('dropdownMenu').parent().appendTo('body');
+	
+	
 	$(window).trigger('resize');
+	$('.action-icon-user').unbind('click').click( function() {
+		$('.menuoptions').slideToggle(120);
+	});
+
+	/* Highlight sortable table columns */
+	$('.tableHeader th').has('i.fa-unsorted').removeClass('tableHeaderColumnHover tableHeaderColumnSelected');
+	$('.tableHeader th').has('i.fa-sort-asc').addClass('tableHeaderColumnSelected');
+	$('.tableHeader th').has('i.fa-sort-desc').addClass('tableHeaderColumnSelected');
+	$('.tableHeader th').has('i.fa-unsorted').hover(
+		function() {
+			$( this ).addClass("tableHeaderColumnHover" );
+		}, function() {
+			$( this ).removeClass( "tableHeaderColumnHover" );
+		}
+	);
+	
 
 /* End clean up */
 
