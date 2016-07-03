@@ -62,9 +62,9 @@ function themeReady() {
 	
 	/* Console? Nope! */
 	$('.maintabs nav ul li a').each( function() {	
-		if ( $(this).html() == 'Console') {
+		if ( $(this).attr('id') == 'maintab-anchor-console') {
 			$(this).html("<i class='fa fa-paw'/>").css({'border-right':'1px solid #aaa'});
-		}else if ( $(this).html() == 'Graphs' && $(this).parent().hasClass('maintabs-has-submenu') == 0 ) {
+		}else if ( $(this).attr('id') == 'maintab-anchor-graphs' && $(this).parent().hasClass('maintabs-has-submenu') == 0 ) {
 			//link = $(this).parent().html();
 			$(this).parent().addClass('maintabs-has-submenu');
 			$('<li class="maintabs-submenu"><a class="submenu-link" href="#"><i class="fa fa-angle-down"></i></a></li>').insertAfter( $(this));
