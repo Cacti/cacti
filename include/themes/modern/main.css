@@ -345,10 +345,8 @@ label {
 	background-color: #660000;
 }
 
-.beingGraphedBg {
-	color: rgba(22,22,22,0.8);
-	font-size: 10pt;
-	background-color: rgba(148, 179, 107, 0.8);
+.beingGraphed {
+	color: green;
 }
 
 .notBeingGraphed {
