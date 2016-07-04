@@ -96,6 +96,10 @@ label {
 	white-space:nowrap;
 }
 
+.top {
+	vertical-align:top;
+}
+
 .right {
 	text-align:right !important;
 }
@@ -147,6 +151,12 @@ label {
 	color: rgba(148, 179, 107, 0.8);
 	font-size:1.5em !important;
 	vertical-align:bottom;
+}
+
+.lazy {
+  position: fixed;
+  bottom: 0;
+  left: 0;
 }
 
 .associated {
@@ -236,8 +246,8 @@ label {
 }
 
 .itemlist { 
-	height:400px;
-	overflow-y:scroll;
+	max-height:300px;
+	overflow-y:auto;
 }
 
 .realms {
@@ -247,51 +257,130 @@ label {
 }
 
 .deviceUp {
-	color: rgba(148, 179, 107, 0.8);
+	color: rgba(148, 179, 107, 0.8) !important;
 }
 
 .deviceDown {
-	color: #ff0000;
+	color: #ff0000 !important;
 }
 
 .deviceUnknown {
-	color: #0000ff;
+	color: #0000ff !important;
 }
 
 .deviceDisabled {
-	color: #a1a1a1;
+	color: #a1a1a1 !important;
 }
 
 .deviceRecovering {
-	color: #ff8f1e;
+	color: #ff8f1e !important;
 }
 
 .deviceError {
-	color: #750F7D;
+	color: #750F7D !important;
 }
 
 .deviceDownMuted {
-	color: #ffe333;
+	color: #ffe333 !important;
 }
 
 .deviceThreshold {
-	color: #ffa833;
+	color: #ffa833 !important;
 }
 
 .deviceUnmonitored {
-	color: rgba(250, 253, 158);
+	color: rgba(250, 253, 158) !important;
 }
 
 .deviceWarning {
-	color: #ea9827;
+	color: #aa7807 !important;
 }
 
 .deviceAlert {
-	color: #ea5f27;
+	color: #660000 !important;
 }
 
-.beingGraphed {
-	color: rgba(148, 179, 107, 0.8);
+.deviceUpBg {
+	color: rgba(22,22,22,0.8);
+	font-size: 10pt;
+	font-weight: bold;
+	background-color: rgba(148, 179, 107, 0.8);
+}
+
+.deviceDownBg {
+	color: rgba(22,22,22,0.8);
+	font-size: 10pt;
+	font-weight: bold;
+	background-color: #ff0000;
+}
+
+.deviceUnknownBg {
+	color: rgba(22,22,22,0.8);
+	font-size: 10pt;
+	font-weight: bold;
+	background-color: #0000ff;
+}
+
+.deviceDisabledBg {
+	color: rgba(22,22,22,0.8);
+	font-size: 10pt;
+	font-weight: bold;
+	background-color: #a1a1a1;
+}
+
+.deviceRecoveringBg {
+	color: rgba(22,22,22,0.8);
+	font-size: 10pt;
+	font-weight: bold;
+	background-color: #ff8f1e;
+}
+
+.deviceErrorBg {
+	color: rgba(22,22,22,0.8);
+	font-size: 10pt;
+	font-weight: bold;
+	background-color: #750F7D;
+}
+
+.deviceDownMutedBg {
+	color: rgba(22,22,22,0.8);
+	font-size: 10pt;
+	font-weight: bold;
+	background-color: #ffe333;
+}
+
+.deviceThresholdBg {
+	color: rgba(22,22,22,0.8);
+	font-size: 10pt;
+	font-weight: bold;
+	background-color: #ffa833;
+}
+
+.deviceUnmonitoredBg {
+	color: rgba(22,22,22,0.8);
+	font-size: 10pt;
+	font-weight: bold;
+	background-color: rgba(250, 253, 158, 0.8);
+}
+
+.deviceWarningBg {
+	color: rgba(22,22,22,0.8);
+	font-size: 10pt;
+	font-weight: bold;
+	background-color: #aa7807;
+}
+
+.deviceAlertBg {
+	color: rgba(22,22,22,0.8);
+	font-size: 10pt;
+	font-weight: bold;
+	background-color: #660000;
+}
+
+.beingGraphedBg {
+	color: rgba(22,22,22,0.8);
+	font-size: 10pt;
+	background-color: rgba(148, 179, 107, 0.8);
 }
 
 .notBeingGraphed {
@@ -375,20 +464,20 @@ label {
 
 .odd {
 	background: none repeat scroll 0 0 #080808;
-    border: none;
-    box-shadow: 0 0 1px rgba(0, 0, 0, 0.1);
+	border: none;
+	box-shadow: 0 0 1px rgba(0, 0, 0, 0.1);
 }
 
 .even {
 	background: none repeat scroll 0 0 #0F0F0F;
-    border: none;
-    box-shadow: 0 0 1px rgba(0, 0, 0, 0.1);
+	border: none;
+	box-shadow: 0 0 1px rgba(0, 0, 0, 0.1);
 }
 
 .even-alternate {
 	background: none repeat scroll 0 0 #0F0F0F;
-    border: none;
-    box-shadow: 0 0 1px rgba(0, 0, 0, 0.1);
+	border: none;
+	box-shadow: 0 0 1px rgba(0, 0, 0, 0.1);
 }
 
 .saveRow {
@@ -842,9 +931,9 @@ legend {
 }
 
 .hyperLink {
-	color: rgba(148, 179, 107, 0.8);
+	color: rgba(148, 179, 107, 0.8) !important;
 	font-size: 12px;
-	padding: 3px;
+	padding: 0px;
 	cursor:pointer;
 	text-decoration: none;
 }
@@ -1048,6 +1137,13 @@ legend {
 	background: -ms-linear-gradient(top,  #45484d 0%,#000000 100%); /* IE10+ */
 	background: linear-gradient(to bottom,  #45484d 0%,#000000 100%); /* W3C */
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#45484d', endColorstr='#000000',GradientType=0 ); /* IE6-9 */
+	font-size: 12px;
+	font-weight: bold;
+	color: snow;
+	height: 20px;
+	padding: 3px;
+	margin-top: auto;
+	margin-bottom: auto;
 }
 
 th.sortable {
