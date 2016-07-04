@@ -1,0 +1,107 @@
+# Description: Cacti Monitoring Format
+# Theme: modern
+<html>
+<head>
+<meta http-equiv='Content-Type' content='text/html; charset=utf-8' />
+</head>
+<body>
+<style type='text/css'>
+
+body {
+	margin: 0px auto 0px auto;
+	width: 660px;
+	padding: 3px;
+	font-size: 11pt;
+	background: snow url('http://docs.cacti.net/cacti.png') no-repeat right top;
+	background-size: 60px 90px;
+	height: 100%;
+}
+
+p {
+	margin-right:60px;
+	padding: 3px;
+}
+
+html {
+	background-color: #EEEEEE;
+	font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+
+table {
+	width: 100%;
+	border-spacing: 0px;
+	border: 1px solid rgba(63,117,15,0.4);
+	font-size: 11pt;
+}
+
+tr {
+	padding:0px;
+	margin: 0px;
+	border-bottom: 1px solid rgba(63,117,15,1);
+}
+
+td, th {
+	padding: 3px;
+}
+
+a {
+	text-decoration: none;
+	color: rgba(63,117,15,1);
+	padding: 3px;
+}
+
+h1 {
+	font-size: 16pt;
+	font-weight: bold;
+}
+
+h2 {
+	font-size: 14pt;
+}
+
+.header_row {
+	color: snow;
+	background: linear-gradient(to bottom, rgba(138,179,105,1) 0%, rgba(63,117,15,1) 100%);
+	padding: 2px;
+	border; 1px solid rgba(63,117,15,1);
+}
+
+.header {
+	background-color: #3F750F;
+	font-size: 16pt;
+	text-align: left;
+	color: #FFF;
+}
+
+.left {
+	text-align: left;
+}
+
+.right {
+	text-align: right;
+}
+
+.center {
+	text-align: center;
+}
+
+.footer {
+	background: linear-gradient(to bottom, rgba(138,179,105,1) 0%, rgba(63,117,15,1) 100%);
+	font-size: 10pt;
+	width: 100%;
+	display:block;
+	color: snow;
+	text-align: right;
+}
+
+.link {
+	color: snow;
+	font-weight: bold;
+}
+
+</style>
+<REPORT>
+<br>
+<div class='footer'><span>Copyright &copy; 2004-2016 - <a class='link' href='href://www.cacti.net'>The Cacti Group</a></span></div>
+</body>
+</html>
