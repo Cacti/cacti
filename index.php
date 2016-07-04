@@ -28,9 +28,9 @@ top_header();
 api_plugin_hook('console_before');
 
 ?>
-<table width="100%" align="center">
+<table class='cactiTable'>
 	<tr>
-		<td class="textAreaNotes">
+		<td class="textAreaNotes top left">
 			<strong><?php print __('You are now logged into <a href="%s">Cacti</a>. You can follow these basic steps to get started.', 'about.php');?></strong>
 
 			<ul>
@@ -39,7 +39,7 @@ api_plugin_hook('console_before');
 				<li><?php print __('<a href="%s">View</a> your new graphs', 'graph_view.php');?></li>
 			</ul>
 		</td>
-		<td class="textAreaNotes" align="right" valign="top">
+		<td class="textAreaNotes top right">
 			<strong><?php print __('Version %s', $config['cacti_version']);?></strong>
 		</td>
 	</tr>
