@@ -61,14 +61,21 @@ function themeReady() {
 	$('<div id="cactiPageBottom" class="cactiPageBottom"></div>').insertAfter('#cactiContent');
 	
 	/* Console? Nope! */
+	submenu_counter = 10;
 	$('.maintabs nav ul li a').each( function() {	
-		if ( $(this).attr('id') == 'maintab-anchor-console') {
+		if ( $(this).html() == 'Console') {
 			$(this).html("<i class='fa fa-paw'/>").css({'border-right':'1px solid #aaa'});
-		}else if ( $(this).attr('id') == 'maintab-anchor-graphs' && $(this).parent().hasClass('maintabs-has-submenu') == 0 ) {
-			//link = $(this).parent().html();
+		}else if ( $(this).html() == 'Graphs' && $(this).parent().hasClass('maintabs-has-submenu') == 0 ) {
+			submenu_counter++;
 			$(this).parent().addClass('maintabs-has-submenu');
-			$('<li class="maintabs-submenu"><a class="submenu-link" href="#"><i class="fa fa-angle-down"></i></a></li>').insertAfter( $(this));
-			$('body').append('<div class="submenu"><span><a>Tree View</a></span><span><a>List View</a></span><span><a>Preview View</a></span></div>')
+			$('<li class="maintabs-submenu"><a class="submenu-' + submenu_counter + '" href="#"><i class="fa fa-angle-down"></i></a></li>').insertAfter( $(this) );
+			$('<div class="dropdownMenu">'
+				+'<ul id="submenu-' + submenu_counter + '" class="submenuoptions" style="display:none;">'
+					+'<li><a href="graph_view.php?action=tree">Tree View</a></li>'
+					+'<li><a href="graph_view.php?action=list">List View</a></li>'
+					+'<li><a href="graph_view.php?action=preview">Preview View</a></li>'
+				+'</ul>'
+			+'</div>').appendTo('body');
 		}
 	});
 	
@@ -87,14 +94,39 @@ function themeReady() {
 	ajaxAnchors();
 	
 	/* User Menu */
-	$('.menuoptions').addClass('dropdownMenu').parent().appendTo('body');
+	$('.menuoptions').parent().appendTo('body');
+
+	
 	
 	
 	$(window).trigger('resize');
 	$('.action-icon-user').unbind('click').click( function() {
+		
 		$('.menuoptions').slideToggle(120);
+		slideUp(120);
+		return false;
 	});
 
+	$('.maintabs-submenu').unbind('click').click( function() {
+
+		submenu_index = $(this).children('a:first').attr('class');
+		submenu = $('#'+submenu_index);
+		
+		if( submenu.is(':visible') === false ) {
+			/* close other drop down menus first */
+			$('.submenuoptions').slideUp(120);
+			$('.menuoptions').slideUp(120);
+			/* re-position */
+			position = $(this).parent('.maintabs-has-submenu').position();
+			submenu.css({'left':position.left}).slideDown(120);
+		}else {
+			submenu.slideUp(120);
+		}
+		
+		return false;
+	});
+
+	
 	/* Highlight sortable table columns */
 	$('.tableHeader th').has('i.fa-unsorted').removeClass('tableHeaderColumnHover tableHeaderColumnSelected');
 	$('.tableHeader th').has('i.fa-sort-asc').addClass('tableHeaderColumnSelected');

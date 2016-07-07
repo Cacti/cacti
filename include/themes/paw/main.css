@@ -236,10 +236,37 @@ label {
 	color: #484848;
 }
 
+.submenuoptions {
+	background: white;
+	border-width: 0px 3px 3px 3px;
+    border-color: rgba(0,0,0,0.7);
+    border-style: solid;
+	position:absolute;
+	top:45px;
+  	list-style: none;
+	text-align:left;
+	margin:0px;
+	padding: 10px 0px 10px 0px;
+}
+
+.submenuoptions li a {
+	display:block;
+	padding: 2px 15px 2px 15px;
+	font-size: 14px;
+	font-weight: light;
+	color: rgba(0,0,0,0.9);
+	text-decoration: none;
+}
+
+.submenuoptions li a:hover {
+	display:block;
+	background: rgba(0,0,0,0.1);
+}
+
 .menuoptions {
 	background: white;
 	border-width: 0px 3px 3px 3px;
-    border-color: #000;
+    border-color: rgba(0,0,0,0.7);
     border-style: solid;
 	display:block;
 	float:right;
@@ -312,13 +339,11 @@ label {
 .odd {
 	background: none repeat scroll 0 0 #F5F5F5;
     border: none;
-    #box-shadow: 0 0 1px rgba(0, 0, 0, 0.1);
 }
 
 .even {
 	background: none repeat scroll 0 0 #E5E5E5;
     border: none;
-    #box-shadow: 0 0 1px rgba(0, 0, 0, 0.1);
 }
 
 .even-alternate {
@@ -398,7 +423,7 @@ label {
 }
 
 .cactiPageHead {
-	background-color: #000;
+	background-color: rgba(0,0,0,0.7);
 	height:45px;
 	width:100%;
 	padding:0px;
@@ -667,7 +692,7 @@ legend {
 }
 
 .linkEditMain:hover {
-	color: rgba(31,59,8,1);
+	color: yellow;
 	white-space: nowrap;
 	text-decoration: none;
 }
@@ -1068,13 +1093,7 @@ td.tab {
 }
 
 .cactiGraphHeaderBackground {
-	background: transparent url("./../../../images/cacti_backdrop2.gif") no-repeat scroll right center;
-	height: 35px;
-	width:500px;
-	float:right;
-	position:fixed;
-	top: 0px;
-	right: 0px;
+	display: none;
 }
 
 div#gtabs {
@@ -1256,12 +1275,22 @@ th:last-child {
 
 tr.selected {
 	color: white;
-	#background: #9fbad0;
 	background: rgba(0,0,0,1);
 }
 
+tr.selected a.linkEditMain:visited {
+	color: yellow;
+}
+
+tr:not(.selectable) a.linkEditMain:hover {
+	color: #2d4ca8; 
+}
+
+tr.selectable a.linkEditMain:hover {
+	color: yellow; 
+}
+
 tr.selectable:hover:not(.selected){
-	#background: #c5d5e3;
 	background: rgba(0,0,0,0.3);
 }
 
