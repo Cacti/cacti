@@ -193,10 +193,6 @@ function display_discovery_page() {
 
 	draw_filter();
 
-	form_start('automation_devices.php', 'automation_devices');
-
-	html_start_box('', '100%', '', '3', 'center', '');
-
 	$total_rows = 0;
 	if (get_request_var('rows') == '-1') {
 		$rows = read_config_option('num_rows_table');
@@ -209,7 +205,11 @@ function display_discovery_page() {
 	/* generate page list */
 	$nav = html_nav_bar('automation_devices.php', MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 12, __('Devices'), 'page', 'main');
 
+	form_start('automation_devices.php', 'automation_devices');
+
 	print $nav;
+
+	html_start_box('', '100%', '', '3', 'center', '');
 
 	$display_text = array(
 		'hostname'    => array('display' => __('Device Name'), 'align' => 'left', 'sort' => 'ASC'),
@@ -270,9 +270,11 @@ function display_discovery_page() {
 		print "<tr class='even'><td colspan=11>" . __('No Devices Found') . "</td></tr>";
 	}
 
-	print $nav;
-
 	html_end_box(false);
+
+	if (sizeof($results)) {
+		print $nav;
+	}
 
 	/* draw the dropdown containing a list of available actions for this form */
 	draw_actions_dropdown($device_actions);
@@ -443,8 +445,10 @@ function draw_filter() {
 					<td>
 						<input type='button' id='purge' value='<?php print __('Purge');?>' title='<?php print __('Purge Discovered Devices');?>'>
 					</td>
-				</table>
-				<table class='filterTable'>
+				</tr>
+			</table>
+			<table class='filterTable'>
+				<tr>
 					<td>
 						<?php print __('Status');?>
 					</td>
@@ -505,7 +509,7 @@ function draw_filter() {
 							?>
 						</select>
 					</td>
-					<input type='hidden' id='page' value='<?php print get_request_var('page');?>'>
+					<td><input type='hidden' id='page' value='<?php print get_request_var('page');?>'></td>
 				</tr>
 			</table>
 		</form>

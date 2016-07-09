@@ -408,10 +408,6 @@ function update_show_current () {
 
 	html_end_box();
 
-	form_start('plugins.php', 'chk');
-
-	html_start_box('', '100%', '', '3', 'center', '');
-
 	$sql_where = '';
 
 	/* form the 'where' clause for our main sql query */
@@ -460,7 +456,11 @@ function update_show_current () {
 
 	$nav = html_nav_bar('plugins.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 8, __('Plugins'), 'page', 'main');
 
+	form_start('plugins.php', 'chk');
+
 	print $nav;
+
+	html_start_box('', '100%', '', '3', 'center', '');
 
 	$display_text = array(
 		'nosort' => array('display' => __('Actions'), 'align' => 'left', 'sort' => '', 'tip' => __('Actions available include "Install", "Activate", "Disable", "Enable", "Uninstall".')),
@@ -494,13 +494,15 @@ function update_show_current () {
 
 			$j++;
 		}
-
-		print $nav;
 	}else{
 		print '<tr><td><em>' . __('No Plugins Found') . '</em></td></tr>';
 	}
 
 	html_end_box(false);
+
+	if (sizeof($plugins)) {
+		print $nav;
+	}
 
 	form_end();
 }

@@ -1387,10 +1387,6 @@ function host() {
 		$sql_where .= (strlen($sql_where) ? ' AND host.host_template_id=' . get_request_var('host_template_id') : ' WHERE host.host_template_id=' . get_request_var('host_template_id'));
 	}
 
-	form_start('host.php', 'chk');
-
-	html_start_box('', '100%', '', '3', 'center', '');
-
 	$total_rows = db_fetch_cell("SELECT
 		COUNT(host.id)
 		FROM host
@@ -1416,7 +1412,11 @@ function host() {
 
 	$nav = html_nav_bar('host.php?filter=' . get_request_var('filter') . '&host_template_id=' . get_request_var('host_template_id') . '&host_status=' . get_request_var('host_status'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 13, __('Devices'), 'page', 'main');
 
+	form_start('host.php', 'chk');
+
 	print $nav;
+
+	html_start_box('', '100%', '', '3', 'center', '');
 
 	$display_text = array(
 		'description'            => array('display' => __('Device Description'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('The name by which this Device will be referred to.')),
@@ -1469,13 +1469,15 @@ function host() {
 			form_checkbox_cell($host['description'], $host['id']);
 			form_end_row();
 		}
-
-		/* put the nav bar on the bottom as well */
-		print $nav;
 	}else{
 		print "<tr class='tableRow'><td colspan='11'><em>" . __('No Devices') . "</em></td></tr>";
 	}
+
 	html_end_box(false);
+
+	if (sizeof($hosts)) {
+		print $nav;
+	}
 
 	/* add a list of tree names to the actions dropdown */
 	add_tree_names_to_actions_array();

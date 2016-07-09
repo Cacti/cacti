@@ -224,18 +224,19 @@ function manager(){
 		'count_log' => array( __('Logs'), 'ASC')
 	);
 
-	form_start('managers.php', 'chk');
-
-	html_start_box('', '100%', '', '3', 'center', '');
-
 	/* generate page list */
 	$nav = html_nav_bar('managers.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 11, __('Receivers'), 'page', 'main');
+
+	form_start('managers.php', 'chk');
+
 	print $nav;
+
+	html_start_box('', '100%', '', '3', 'center', '');
 
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
 	$i = 0;
-	if (sizeof($managers) > 0) {
+	if (sizeof($managers)) {
 		foreach ($managers as $item) {
 			$description = (strlen(get_request_var('filter')) ? (preg_replace('/(' . preg_quote(get_request_var('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($item['description']))) : htmlspecialchars($item['description']));
 			$hostname = (strlen(get_request_var('filter')) ? (preg_replace('/(' . preg_quote(get_request_var('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($item['hostname']))): htmlspecialchars($item['hostname']));
@@ -249,12 +250,15 @@ function manager(){
 			form_checkbox_cell($item['description'], $item['id']);
 			form_end_row();
 		}
-		print $nav;
 	}else{
 		print '<tr><td><em>' . __('No SNMP Notification Receivers') . '</em></td></tr>';
 	}
 
 	html_end_box(false);
+
+	if (sizeof($managers)) {
+		print $nav;
+	}
 
 	form_hidden_box('action_receivers', '1', '');
 

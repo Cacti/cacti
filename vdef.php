@@ -777,13 +777,13 @@ function vdef($refresh = true) {
 
 	$vdefs = get_vdef_records($total_rows, $rows);
 
-	form_start('vdef.php', 'chk');
-
-	html_start_box('', '100%', '', '3', 'center', '');
-
 	$nav = html_nav_bar('vdef.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 5, __('VDEFs'), 'page', 'main');
 
+	form_start('vdef.php', 'chk');
+
     print $nav;
+
+	html_start_box('', '100%', '', '3', 'center', '');
 
     $display_text = array(
         'name'      => array('display' => __('VDEF Name'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('The name of this VDEF.') ),
@@ -795,7 +795,7 @@ function vdef($refresh = true) {
     html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
     $i = 0;
-    if (sizeof($vdefs) > 0) {
+    if (sizeof($vdefs)) {
         foreach ($vdefs as $vdef) {
             if ($vdef['graphs'] == 0 && $vdef['templates'] == 0) {
                 $disabled = false;
@@ -811,11 +811,15 @@ function vdef($refresh = true) {
             form_checkbox_cell($vdef['name'], $vdef['id'], $disabled);
             form_end_row();
         }
-        print $nav;
     }else{
         print "<tr class='tableRow'><td colspan='4'><em>" . __('No VDEFs') . "</em></td></tr>\n";
     }
+
     html_end_box(false);
+
+    if (sizeof($vdefs)) {
+        print $nav;
+	}
 
     /* draw the dropdown containing a list of available actions for this form */
     draw_actions_dropdown($vdef_actions);

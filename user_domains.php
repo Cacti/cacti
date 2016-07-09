@@ -682,10 +682,6 @@ function domains() {
 
 	html_end_box();
 
-	form_start('user_domains.php', 'chk');
-
-	html_start_box('', '100%', '', '3', 'center', '');
-
 	/* form the 'where' clause for our main sql query */
 	if (get_request_var('filter') != '') {
 		$sql_where = "WHERE (domain_name LIKE '%%" . get_request_var('filter') . "%%') ||
@@ -707,7 +703,11 @@ function domains() {
 
 	$nav = html_nav_bar('user_user_domains.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 6, __('User Domains'), 'page', 'main');
 
+	form_start('user_domains.php', 'chk');
+
 	print $nav;
+
+	html_start_box('', '100%', '', '3', 'center', '');
 
 	$display_text = array(
 		'domain_name' => array( __('Domain Name'), 'ASC'),
@@ -719,7 +719,7 @@ function domains() {
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
 	$i = 0;
-	if (sizeof($domains) > 0) {
+	if (sizeof($domains)) {
 		foreach ($domains as $domain) {
 			/* hide system types */
 			form_alternate_row('line' . $domain['domain_id'], true);
@@ -731,18 +731,18 @@ function domains() {
 			form_checkbox_cell($domain['domain_name'], $domain['domain_id']);
 			form_end_row();
 		}
-
-		print $nav;
 	}else{
 		print '<tr><td><em>' . __('No User Domains Defined') . '</em></td></tr>';
 	}
 
 	html_end_box(false);
 
+	if (sizeof($domains)) {
+		print $nav;
+	}
+
 	/* draw the dropdown containing a list of available actions for this form */
 	draw_actions_dropdown($actions);
 
 	form_end();
 }
-
-

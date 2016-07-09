@@ -346,10 +346,6 @@ function gprint_presets() {
 		$sql_having = '';
 	}
 
-	form_start('gprint_presets.php', 'chk');
-
-	html_start_box('', '100%', '', '3', 'center', '');
-
 	$total_rows = db_fetch_cell("SELECT
 		COUNT(rows)
 		FROM (
@@ -381,7 +377,11 @@ function gprint_presets() {
 
 	$nav = html_nav_bar('gprint_presets.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 5, __('GPRINTs'), 'page', 'main');
 
+	form_start('gprint_presets.php', 'chk');
+
 	print $nav;
+
+	html_start_box('', '100%', '', '3', 'center', '');
 
 	$display_text = array(
 		'name'      => array('display' => __('GPRINT Preset Name'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('The name of this GPRINT Preset.')),
@@ -393,7 +393,7 @@ function gprint_presets() {
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
 	$i = 0;
-	if (sizeof($gprint_list) > 0) {
+	if (sizeof($gprint_list)) {
 		foreach ($gprint_list as $gp) {
 			if ($gp['graphs'] == 0 && $gp['templates'] == 0) {
 				$disabled = false;
@@ -409,12 +409,15 @@ function gprint_presets() {
             form_checkbox_cell($gp['name'], $gp['id'], $disabled);
             form_end_row();
 		}
-		print $nav;
 	}else{
 		print "<tr class='tableRow'><td colspan='4'><em>" . __('No GPRINT Presets') . "</em></td></tr>\n";
 	}
 
 	html_end_box();
+
+	if (sizeof($gprint_list)) {
+		print $nav;
+	}
 
 	/* draw the dropdown containing a list of available actions for this form */
 	draw_actions_dropdown($gprint_actions);

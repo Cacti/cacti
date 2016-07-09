@@ -795,8 +795,6 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 		)
 	);
 
-	html_start_box('', '100%', "", '3', 'center', '');
-
 	$graph_list = array();
 
 	if (($leaf_type == 'header') || (empty($leaf_id))) {
@@ -912,6 +910,8 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 
 	print $nav;
 
+	html_start_box('', '100%', "", '3', 'center', '');
+
 	/* start graph display */
 	print "<tr class='tableHeader'><td style='width:390px;' colspan='11' class='graphSubHeaderColumn textHeaderDark'>$title</td></tr>";
 
@@ -936,10 +936,10 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 
 	api_plugin_hook_function('tree_view_page_end');
 
-	if ($total_rows > 0) {
+	html_end_box();
+
+	if ($total_rows) {
 		print $nav;
 	}
-
-	html_end_box();
 }
 

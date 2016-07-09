@@ -1023,11 +1023,6 @@ function data_query() {
 
 	html_end_box();
 
-	/* print checkbox form for validation */
-	form_start('data_queries.php', 'chk');
-
-	html_start_box('', '100%', '', '3', 'center', '');
-
 	/* form the 'where' clause for our main sql query */
 	if (strlen(get_request_var('filter'))) {
 		$sql_where = "WHERE (sq.name like '%%" . get_request_var('filter') . "%%' OR di.name like '%%" . get_request_var('filter') . "%%')";
@@ -1060,7 +1055,11 @@ function data_query() {
 
 	$nav = html_nav_bar('data_queries.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 7, __('Data Queries'), 'page', 'main');
 
+	form_start('data_queries.php', 'chk');
+
 	print $nav;
+
+	html_start_box('', '100%', '', '3', 'center', '');
 
 	$display_text = array(
 		'name'              => array('display' => __('Data Query Name'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('The name of this Data Query.')),
@@ -1073,7 +1072,7 @@ function data_query() {
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
 	$i = 0;
-	if (sizeof($snmp_queries) > 0) {
+	if (sizeof($snmp_queries)) {
 		foreach ($snmp_queries as $snmp_query) {
 			if ($snmp_query['graphs'] == 0 && $snmp_query['templates'] == 0) {
 				$disabled = false;
@@ -1091,13 +1090,15 @@ function data_query() {
 			form_checkbox_cell($snmp_query['name'], $snmp_query['id'], $disabled);
 			form_end_row();
 		}
-
-		print $nav;
 	}else{
 		print "<tr class='tableRow'><td colspan='5'><em>" . __('No Data Queries') . "</em></td></tr>";
 	}
 
 	html_end_box(false);
+
+	if (sizeof($snmp_queries)) {
+		print $nav;
+	}
 
 	/* draw the dropdown containing a list of available actions for this form */
 	draw_actions_dropdown($dq_actions);

@@ -800,10 +800,6 @@ function automation_tree_rules() {
 		$sql_where .= (strlen($sql_where) ? " AND atr.enabled=''" : "WHERE atr.enabled=''");
 	}
 
-	form_start('automation_tree_rules.php', 'chk');
-
-	html_start_box('', '100%', '', '3', 'center', '');
-
 	$total_rows = db_fetch_cell("SELECT COUNT(atr.id) 
 		FROM automation_tree_rules AS atr
 		LEFT JOIN graph_tree AS gt
@@ -824,7 +820,11 @@ function automation_tree_rules() {
 
 	$nav = html_nav_bar('automation_tree_rules.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 11, __('Tree Rules'), 'page', 'main');
 
+	form_start('automation_tree_rules.php', 'chk');
+
 	print $nav;
+
+	html_start_box('', '100%', '', '3', 'center', '');
 
 	$display_text = array(
 		'name'               => array('display' => __('Rule Name'),      'align' => 'left',  'sort' => 'ASC'),
@@ -838,7 +838,7 @@ function automation_tree_rules() {
 
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
-	if (sizeof($automation_tree_rules) > 0) {
+	if (sizeof($automation_tree_rules)) {
 		foreach ($automation_tree_rules as 	$automation_tree_rule) {
 			$tree_item_type_name = ((empty($automation_tree_rule['leaf_type'])) ? '<em>' . __('None') . '</em>' : $automation_tree_item_types{$automation_tree_rule['leaf_type']});
 			$subtree_name = ((empty($automation_tree_rule['subtree_name'])) ? '<em>' . __('ROOT') . '</em>' : $automation_tree_rule['subtree_name']);
@@ -856,12 +856,15 @@ function automation_tree_rules() {
 
 			form_end_row();
 		}
-
-		print $nav;
 	}else{
 		print "<tr><td colspan='9'><em>" . __('No Tree Rules') . "</em></td></tr>\n";
 	}
+
 	html_end_box(false);
+
+	if (sizeof($automation_tree_rules)) {
+		print $nav;
+	}
 
 	/* draw the dropdown containing a list of available actions for this form */
 	draw_actions_dropdown($automation_tree_rules_actions);

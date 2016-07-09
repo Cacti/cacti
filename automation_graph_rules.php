@@ -724,7 +724,7 @@ function automation_graph_rules() {
 							</select>
 						</td>
 						<td>
-							<input type='submit' id='refresh' name'go' value='<?php print __('Go');?>'>
+							<input type='submit' id='refresh' name='go' value='<?php print __('Go');?>'>
 						</td>
 						<td>
 							<input type='button' id='clear' value='<?php print __('Clear');?>'></td>
@@ -794,10 +794,6 @@ function automation_graph_rules() {
 		$sql_where .= 'agr.snmp_query_id=' . get_request_var('snmp_query_id');
 	}
 
-	form_start('automation_graph_rules.php', 'chk');
-
-	html_start_box('', '100%', '', '3', 'center', '');
-
 	$total_rows = db_fetch_cell("SELECT
 		COUNT(agr.id)
 		FROM automation_graph_rules AS agr
@@ -818,7 +814,11 @@ function automation_graph_rules() {
 
 	$nav = html_nav_bar('automation_graph_rules.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 7, __('Graph Rules'), 'page', 'main');
 
+	form_start('automation_graph_rules.php', 'chk');
+
 	print $nav;
+
+	html_start_box('', '100%', '', '3', 'center', '');
 
 	$display_text = array(
 		'name'            => array('display' => __('Rule Name'),  'align' => 'left', 'sort' => 'ASC', 'tip' => __('The name of this rule.')),
@@ -846,13 +846,15 @@ function automation_graph_rules() {
 
 			form_end_row();
 		}
-
-		print $nav;
 	}else{
 		print "<tr><td><em>" . __('No Graph Rules') . "</em></td></tr>\n";
 	}
 
 	html_end_box(false);
+
+	if (sizeof($automation_graph_rules_list)) {
+		print $nav;
+	}
 
 	/* draw the dropdown containing a list of available actions for this form */
 	draw_actions_dropdown($automation_graph_rules_actions);

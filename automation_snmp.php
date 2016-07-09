@@ -876,8 +876,6 @@ function automation_snmp() {
 		$sql_where = '';
 	}
 
-	html_start_box('', '100%', '', '3', 'center', '');
-
 	$total_rows = db_fetch_cell("SELECT
 		COUNT(asnmp.id)
 		FROM automation_snmp AS asnmp
@@ -905,7 +903,11 @@ function automation_snmp() {
 
 	$nav = html_nav_bar('automation_snmp.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 12, __('SNMP Option Sets'), 'page', 'main');
 
+	form_start('automation_snmp.php', 'chk');
+
 	print $nav;
+
+	html_start_box('', '100%', '', '3', 'center', '');
 
 	$display_text = array(
 		'name'      => array('display' => __('SNMP Option Set'), 'align' => 'left',  'sort' => 'ASC'),
@@ -916,9 +918,9 @@ function automation_snmp() {
 		'v3entries' => array('display' => __('V3 Entries'),      'align' => 'right', 'sort' => 'DESC')
 	);
 
-	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'));
+	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
-	if (sizeof($snmp_groups) > 0) {
+	if (sizeof($snmp_groups)) {
 		foreach ($snmp_groups as $snmp_group) {
 			form_alternate_row('line' . $snmp_group['id'], true);
 
@@ -935,9 +937,12 @@ function automation_snmp() {
 	}else{
 		print "<tr><td><em>" . __('No SNMP Option Sets Found') . "</em></td></tr>\n";
 	}
-	print $nav;
 
 	html_end_box(false);
+
+	if (sizeof($snmp_groups)) {
+		print $nav;
+	}
 
 	/* draw the dropdown containing a list of available actions for this form */
 	draw_actions_dropdown($automation_snmp_actions);

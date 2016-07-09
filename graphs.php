@@ -1636,10 +1636,6 @@ function graph_management() {
 	/* allow plugins to modify sql_where */
 	$sql_where = api_plugin_hook_function('graphs_sql_where', $sql_where);
 
-	form_start('graphs.php', 'chk');
-
-	html_start_box('', '100%', '', '3', 'center', '');
-
 	$total_rows = db_fetch_cell("SELECT
 		COUNT(gtg.id)
 		FROM graph_local AS gl
@@ -1666,7 +1662,11 @@ function graph_management() {
 
 	$nav = html_nav_bar('graphs.php?filter=' . get_request_var('filter') . '&host_id=' . get_request_var('host_id'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 5, 'Graphs', 'page', 'main');
 
+	form_start('graphs.php', 'chk');
+
 	print $nav;
+
+	html_start_box('', '100%', '', '3', 'center', '');
 
 	$display_text = array(
 		'title_cache'    => array('display' => __('Graph Name'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('The Title of this Graph.  Generally programatically generated from the Graph Template definition or Suggested Naming rules.  The max length of the Title is controlled under Settings->Visual.')),
@@ -1678,7 +1678,7 @@ function graph_management() {
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
 	$i = 0;
-	if (sizeof($graph_list) > 0) {
+	if (sizeof($graph_list)) {
 		foreach ($graph_list as $graph) {
 			/* we're escaping strings here, so no need to escape them on form_selectable_cell */
 			$template_name = ((empty($graph['name'])) ? '<em>None</em>' : htmlspecialchars($graph['name']));
@@ -1690,14 +1690,15 @@ function graph_management() {
 			form_checkbox_cell($graph['title_cache'], $graph['local_graph_id']);
 			form_end_row();
 		}
-
-		/* put the nav bar on the bottom as well */
-		print $nav;
 	}else{
 		print "<tr class='tableRow'><td colspan='5'><em>" . __('No Graphs Found') . "</em></td></tr>";
 	}
 
 	html_end_box(false);
+
+	if (sizeof($graph_list)) {
+		print $nav;
+	}
 
 	/* add a list of tree names to the actions dropdown */
 	add_tree_names_to_actions_array();

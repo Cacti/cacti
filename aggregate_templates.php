@@ -582,10 +582,6 @@ function aggregate_template() {
 		$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') . 'graphs.graphs>0';
 	}
 
-	form_start('aggregate_templates.php', 'chk');
-
-	html_start_box('', '100%', '', '3', 'center', '');
-
 	$total_rows = db_fetch_cell("SELECT
 		COUNT(pgt.id)
 		FROM aggregate_graph_templates AS pgt
@@ -615,7 +611,11 @@ function aggregate_template() {
 
 	$nav = html_nav_bar('aggregate_templates.php', MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 5, __('Aggregate Templates'), 'page', 'main');
 
+	form_start('aggregate_templates.php', 'chk');
+
 	print $nav;
+
+	html_start_box('', '100%', '', '3', 'center', '');
 
 	$display_text = array(
 		'pgt.name'            => array('display' => __('Template Title'), 'align' => 'left', 'sort' => 'ASC'),
@@ -642,14 +642,16 @@ function aggregate_template() {
 			form_checkbox_cell($template['graph_template_name'], $template['id'], $disabled);
 			form_end_row();
 		}
-
-		/* put the nav bar on the bottom as well */
-		print $nav;
 	}else{
 		print "<tr><td><em>" . __('No Aggregate Templates') . "</em></td></tr>\n";
 	}
 
 	html_end_box(false);
+
+	if (sizeof($template_list)) {
+		/* put the nav bar on the bottom as well */
+		print $nav;
+	}
 
 	/* draw the dropdown containing a list of available actions for this form */
 	draw_actions_dropdown($aggregate_actions);

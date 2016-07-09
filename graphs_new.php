@@ -373,7 +373,7 @@ function host_new_graphs($host_id, $host_template_id, $selected_graphs_array) {
 			}
 			}
 
-			html_end_box();
+			html_end_box(false);
 		}
 	}
 
@@ -570,7 +570,7 @@ function graphs() {
 
 	html_end_box();
 
-	form_start('graphs_new.php',' chk');
+	form_start('graphs_new.php', 'chk');
 
 	$total_rows = sizeof(db_fetch_assoc_prepared('SELECT graph_template_id FROM host_graph WHERE host_id = ?', array(get_request_var('host_id'))));
 
@@ -595,7 +595,9 @@ function graphs() {
 	$script = "<script type='text/javascript'>; var created_graphs = new Array()\n";
 
 	if (get_request_var('graph_type') < 0) {
-		html_start_box(__('Graph Templates'), '100%', '', '3', 'center', '');
+		print "<div class='cactiTable'><div><div class='cactiTableTitle'><span>" . __('Graph Templates') . "</span></div><div class='cactiTableButton'><span></span></div></div></div>\n";
+
+		html_start_box('', '100%', '', '3', 'center', '');
 
 		print "<tr class='tableHeader'>
 				<th class='tableSubHeaderColumn'>" . __('Graph Template Name') . "</th>
@@ -651,7 +653,7 @@ function graphs() {
 			}
 		}
 
-		html_end_box();
+		html_end_box(false);
 
 		html_start_box('', '100%', '', '3', 'center', '');
 
@@ -670,7 +672,7 @@ function graphs() {
 		print '</td>
 			</tr>';
 
-		html_end_box();
+		html_end_box(false);
 	}
 
 	if (get_request_var('graph_type') != -1 && !isempty_request_var('host_id')) {
@@ -752,21 +754,7 @@ function graphs() {
 					}
 				}
 
-				print "<table class='cactiTable'>
-					<tr class='cactiTableTitle'>
-						<td colspan='" . ($num_input_fields+1) . "'>
-							<table style='width:100%;'>
-								<tr>
-									<td class='textHeaderDark'>
-										" . __('Data Query [%s]', $snmp_query['name']) . "
-									</td>
-									<td class='right'>
-										<span class='reloadquery fa fa-circle-o' id='reload" . $snmp_query['id'] . "' data-id='" . $snmp_query['id'] . "'></span>
-									</td>
-								</tr>
-							</table>
-						</td>
-					</tr>\n";
+				print "<div class='cactiTable'><div><div class='cactiTableTitle'><span>" . __('Data Query [%s]', $snmp_query['name']) . "</span></div><div class='cactiTableButton'><span class='reloadquery fa fa-circle-o' id='reload" . $snmp_query['id'] . "' data-id='" . $snmp_query['id'] . "'></span></div></div></div>\n";
 
 				if ($xml_array != false) {
 					$html_dq_header = '';
@@ -871,6 +859,8 @@ function graphs() {
 
 						print $nav;
 
+						html_start_box('', '100%', '', '3', 'center', '');
+
 						while (list($field_name, $field_array) = each($xml_array['fields'])) {
 							if ($field_array['direction'] == 'input' && sizeof($field_names)) {
 								foreach($field_names as $row) {
@@ -924,18 +914,18 @@ function graphs() {
 								$row_counter++;
 							}
 						}
-
-						if ($total_rows > $rows) {
-							print $nav;
-						}
 					}else{
+						html_start_box('', '100%', '', '3', 'center', '');
+
 						print "<tr class='odd'><td class='textError'>" . __('Search Returned no Rows.') . "</td></tr>\n";
 					}
 				}else{
+					html_start_box('', '100%', '', '3', 'center', '');
+
 					print "<tr class='odd'><td class='textError'>" . __('Error in data query.') . "</td></tr>\n";
 				}
 
-				print '</table>';
+				html_end_box(false);
 
 				/* draw the graph template drop down here */
 				$data_query_graphs = db_fetch_assoc_prepared('SELECT 
@@ -947,27 +937,29 @@ function graphs() {
 				if (sizeof($data_query_graphs) == 1) {
 					echo "<input type='hidden' id='sgg_" . $snmp_query['id'] . "' name='sgg_" . $snmp_query['id'] . "' value='" . $data_query_graphs[0]['id'] . "'>\n";
 				}elseif (sizeof($data_query_graphs) > 1) {
-					print "<table align='center' width='100%'>
-						<tr>
-							<td width='100%' valign='middle'>
-								<img src='" . $config['url_path'] . "images/arrow.gif' alt=''>
-							</td>
-							<td class='nowrap right' style='font-style:italic;'>
+					print "<div class='break'></div>\n";
+
+					html_start_box('', '100%', '', '3', 'center', '');
+
+					print "<tr>
+						<td>
+							<img src='" . $config['url_path'] . "images/arrow.gif' alt=''>
+						</td>
+						<td class='right' style='width:100%'>
 							" . __('Select a Graph Type to Create') . "
 						</td>
 						<td class='right'>
 							<input type='button' class='default' id='default_" .  $snmp_query['id'] . "' value='" . __('Set Default') . "' title='" . __('Make selection default') . "'>
 						</td>
-						<td style='white-space:nowrap'>
+						<td class='right'>
 							<select class='dqselect' name='sgg_" . $snmp_query['id'] . "' id='sgg_" . $snmp_query['id'] . "' onChange='dqUpdateDeps(" . $snmp_query['id'] . ',' . (isset($column_counter) ? $column_counter:'') . ");'>
 								"; html_create_list($data_query_graphs,'name','id',read_user_setting('default_sgg_' . $snmp_query['id'])); print "
 							</select>
 						</td>
-					</tr>
-					</table>\n";
-				}
+					</tr>\n";
 
-				print '<br>';
+					html_end_box(false);
+				}
 
 				$script .= 'dqUpdateDeps(' . $snmp_query['id'] . ',' . $num_visible_fields . ");\n";
 			}

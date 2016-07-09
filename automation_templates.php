@@ -487,10 +487,6 @@ function template() {
 		$sql_where = '';
 	}
 
-	form_start('automation_templates.php', 'chk');
-
-	html_start_box('', '100%', '', '3', 'center', 'automation_templates.php?action=edit');
-
 	$total_rows = db_fetch_cell("SELECT COUNT(*) FROM automation_templates $sql_where");
 
 	$dts = db_fetch_assoc("SELECT at.*, '' AS sysName, ht.name
@@ -503,7 +499,11 @@ function template() {
 
 	$nav = html_nav_bar('automation_templates.php', MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 7, __('Templates'), 'page', 'main');
 
+	form_start('automation_templates.php', 'chk');
+
 	print $nav;
+
+	html_start_box('', '100%', '', '3', 'center', '');
 
 	$display_text = array(
 		array('display' => __('Template Name'), 'align' => 'left'),
@@ -513,7 +513,7 @@ function template() {
 		array('display' => __('System ObjectId Match'), 'align' => 'left')
 	);
 
-	html_header_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'));
+	html_header_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
 	$i = 1;
 	if (sizeof($dts)) {
@@ -539,6 +539,10 @@ function template() {
 	}
 
 	html_end_box(false);
+
+	if (sizeof($dts)) {
+		print $nav;
+	}
 
 	/* draw the dropdown containing a list of available actions for this form */
 	draw_actions_dropdown($at_actions);

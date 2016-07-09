@@ -868,16 +868,15 @@ function networks() {
 
 	$networks = get_networks($sql_where, $rows);
 
-	/* print checkbox form for validation */
-	form_start('automation_networks.php', 'chk');
-
-	html_start_box('', '100%', '', '3', 'center', '');
-
 	$total_rows = db_fetch_cell('SELECT COUNT(*) FROM automation_networks ' . $sql_where);
 
 	$nav = html_nav_bar('automation_networks.php', MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 14, __('Networks'), 'page', 'main');
 
+	form_start('automation_networks.php', 'chk');
+
 	print $nav;
+
+	html_start_box('', '100%', '', '3', 'center', '');
 
 	$sched_types = array(
 		'1' => __('Manual'), 
@@ -961,13 +960,15 @@ function networks() {
 			form_checkbox_cell($network['name'], $network['id']);
 			form_end_row();
 		}
-
-		/* put the nav bar on the bottom as well */
-		print $nav;
 	}else{
 		print "<tr><td colspan='10'><em>" . __('No Networks Found') . "</em></td></tr>";
 	}
 	html_end_box(false);
+
+	if (sizeof($networks)) {
+		/* put the nav bar on the bottom as well */
+		print $nav;
+	}
 
 	/* draw the dropdown containing a list of available actions for this form */
 	draw_actions_dropdown($network_actions);
@@ -984,7 +985,6 @@ function networks_filter() {
 			<form id='networks' action='automation_networks.php'>
 			<table class='filterTable'>
 				<tr>
-					</td>
 					<td>
 						<?php print __('Search');?>
 					</td>
@@ -998,9 +998,9 @@ function networks_filter() {
 						<select id='rows' onChange='applyFilter()'>
 							<option value='-1'<?php if (get_request_var('rows') == '-1') {?> selected<?php }?>><?php print __('Default');?></option>
 							<?php
-							if (sizeof($item_rows) > 0) {
+							if (sizeof($item_rows)) {
 							foreach ($item_rows as $key => $value) {
-								print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . $value . '</option>\n';
+								print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . $value . "</option>\n";
 							}
 							}
 							?>

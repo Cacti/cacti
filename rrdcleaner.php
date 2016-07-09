@@ -311,10 +311,6 @@ function list_rrd() {
 		$sql_where .= " AND last_mod<='" . date("Y-m-d H:i:s", (time() - $secsback)) . "'";
 	}
 
-	form_start('rrdcleaner.php');
-
-	html_start_box('', $width, '', '3', 'center', '');
-
 	$total_rows = db_fetch_cell("SELECT COUNT(rc.name) 
 		FROM data_source_purge_temp AS rc
 		LEFT JOIN data_template AS dt
@@ -338,7 +334,11 @@ function list_rrd() {
 
 	$nav = html_nav_bar($config['url_path'] . 'rrdcleaner.php?filter'. get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 8, 'RRD Files', 'page', 'main');
 
+	form_start('rrdcleaner.php');
+
 	print $nav;
+
+	html_start_box('', $width, '', '3', 'center', '');
 
 	$display_text = array(
 		'name'               => array( __('RRD File Name'), 'ASC'),
@@ -367,14 +367,15 @@ function list_rrd() {
 			form_end_row();
 			$i++;
 		}
-
-		/* put the nav bar on the bottom as well */
-		print $nav;
 	} else {
 		print "<tr><td><em>" . __('No unused RRD Files') . "</em></td></tr>\n";
 	}
 
 	html_end_box(false);
+
+	if (sizeof($file_list)) {
+		print $nav;
+	}
 
 	rrdcleaner_legend($total_size);
 

@@ -585,13 +585,13 @@ function user_group_members_edit($header_label) {
 
 	$members = db_fetch_assoc($sql_query);
 
-	form_start(htmlspecialchars('user_group_admin.php?tab=members&id=' . get_request_var('id')), 'chk');
-
-	html_start_box('', '100%', '', '3', 'center', '');
-
 	$nav = html_nav_bar('user_group_admin.php?action=edit&tab=members&id=' . get_request_var('id'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 7, __('Users'), 'page', 'main');
 
+	form_start(htmlspecialchars('user_group_admin.php?tab=members&id=' . get_request_var('id')), 'chk');
+
 	print $nav;
+
+	html_start_box('', '100%', '', '3', 'center', '');
 
 	$display_text = array( __('Login Name'), __('Full Name'), __('ID'), __('Membership'), __('Enabled'), __('Realm'));
 
@@ -613,13 +613,15 @@ function user_group_members_edit($header_label) {
 			form_checkbox_cell($g['full_name'], $g['id']);
 			form_end_row();
 		}
-
-		/* put the nav bar on the bottom as well */
-		print $nav;
 	} else {
 		print '<tr><td><em>' . __('No Matching Group Members Found') . '</em></td></tr>';
 	}
+
 	html_end_box(false);
+
+	if (sizeof($members)) {
+		print $nav;
+	}
 
 	form_hidden_box('tab', 'members', '');
 	form_hidden_box('id', get_request_var('id'), '');
@@ -712,10 +714,6 @@ function user_group_graph_perms_edit($tab, $header_label) {
 			$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') . ' (user_auth_group_perms.type=1 AND user_auth_group_perms.group_id=' . get_request_var('id', 0) . ')';
 		}
 
-		form_start(htmlspecialchars('user_group_admin.php?tab=permsg&id=' . get_request_var('id')), 'chk');
-
-		html_start_box('', '100%', '', '3', 'center', '');
-
 		$total_rows = db_fetch_cell("select
 			COUNT(gtg.id)
 			FROM graph_templates_graph AS gtg
@@ -735,7 +733,11 @@ function user_group_graph_perms_edit($tab, $header_label) {
 
 		$nav = html_nav_bar('user_group_admin.php?action=edit&tab=permsg&id=' . get_request_var('id'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 7, __('Graphs'), 'page', 'main');
 	
+		form_start(htmlspecialchars('user_group_admin.php?tab=permsg&id=' . get_request_var('id')), 'chk');
+
 		print $nav;
+
+		html_start_box('', '100%', '', '3', 'center', '');
 
 		$display_text = array( __('Graph Title'), __('ID'), __('Effective Policy'));
 
@@ -762,13 +764,15 @@ function user_group_graph_perms_edit($tab, $header_label) {
 				form_checkbox_cell($g['title_cache'], $g['local_graph_id']);
 				form_end_row();
 			}
-	
-			/* put the nav bar on the bottom as well */
-			print $nav;
 		} else {
 			print '<tr><td><em>' . __('No Matching Graphs Found') . '</em></td></tr>';
 		}
+
 		html_end_box(false);
+
+		if (sizeof($graphs)) {
+			print $nav;
+		}
 
 		form_hidden_box('tab',$tab,'');
 		form_hidden_box('id', get_request_var('id'), '');
@@ -852,10 +856,6 @@ function user_group_graph_perms_edit($tab, $header_label) {
 			$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') . ' user_auth_group_perms.group_id=' . get_request_var('id', 0);
 		}
 
-		form_start(htmlspecialchars('user_group_admin.php?tab=permsd&id=' . get_request_var('id')), 'chk');
-
-		html_start_box('', '100%', '', '3', 'center', '');
-
 		$total_rows = db_fetch_cell("SELECT
 			COUNT(host.id)
 			FROM host
@@ -878,7 +878,11 @@ function user_group_graph_perms_edit($tab, $header_label) {
 
 		$nav = html_nav_bar('user_group_admin.php?action=edit&tab=permsd&id=' . get_request_var('id'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 11, __('Devices'), 'page', 'main');
 	
+		form_start(htmlspecialchars('user_group_admin.php?tab=permsd&id=' . get_request_var('id')), 'chk');
+
 		print $nav;
+
+		html_start_box('', '100%', '', '3', 'center', '');
 
 		$display_text = array( __('Description'), __('ID'), __('Effective Policy'), __('Graphs'), __('Data Sources'), __('Status'), __('Hostname') );
 
@@ -909,13 +913,14 @@ function user_group_graph_perms_edit($tab, $header_label) {
 				form_checkbox_cell($host['description'], $host['id']);
 				form_end_row();
 			}
-	
-			/* put the nav bar on the bottom as well */
-			print $nav;
 		} else {
 			print '<tr><td><em>' . __('No Matching Devices Found') . '</em></td></tr>';
 		}
 		html_end_box(false);
+
+		if (sizeof($hosts)) {
+			print $nav;
+		}
 
 		form_hidden_box('tab',$tab,'');
 		form_hidden_box('id', get_request_var('id'), '');
@@ -991,10 +996,6 @@ function user_group_graph_perms_edit($tab, $header_label) {
 			$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') . ' (user_auth_group_perms.type=4 AND user_auth_group_perms.group_id=' . get_request_var('id', 0) . ')';
 		}
 
-		form_start(htmlspecialchars('user_group_admin.php?tab=permste&id=' . get_request_var('id')), 'chk');
-
-		html_start_box('', '100%', '', '3', 'center', '');
-
 		$total_rows = db_fetch_cell("SELECT
 			COUNT(gt.id)
 			FROM graph_templates AS gt
@@ -1020,7 +1021,11 @@ function user_group_graph_perms_edit($tab, $header_label) {
 
 		$nav = html_nav_bar('user_group_admin.php?action=edit&tab=permste&id=' . get_request_var('id'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 11, __('Graph Templates'), 'page', 'main');
 
+		form_start(htmlspecialchars('user_group_admin.php?tab=permste&id=' . get_request_var('id')), 'chk');
+
 		print $nav;
+
+		html_start_box('', '100%', '', '3', 'center', '');
 
 		$display_text = array( __('Template Name'), __('ID'), __('Effective Policy'), __('Total Graphs'));
 
@@ -1048,13 +1053,15 @@ function user_group_graph_perms_edit($tab, $header_label) {
 				form_checkbox_cell($g['name'], $g['id']);
 				form_end_row();
 			}
-	
-			/* put the nav bar on the bottom as well */
-			print $nav;
 		} else {
 			print '<tr><td><em>' . __('No Matching Graph Templates Found') . '</em></td></tr>';
 		}
+
 		html_end_box(false);
+
+		if (sizeof($graphs)) {
+			print $nav;
+		}
 
 		form_hidden_box('tab',$tab,'');
 		form_hidden_box('id', get_request_var('id'), '');
@@ -1129,10 +1136,6 @@ function user_group_graph_perms_edit($tab, $header_label) {
 			$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') . ' (user_auth_group_perms.type=2 AND user_auth_group_perms.group_id=' . get_request_var('id', 0) . ')';
 		}
 
-		form_start(htmlspecialchars('user_group_admin.php?tab=permstr&id=' . get_request_var('id')), 'chk');
-
-		html_start_box('', '100%', '', '3', 'center', '');
-
 		$total_rows = db_fetch_cell("SELECT
 			COUNT(gt.id)
 			FROM graph_tree AS gt
@@ -1152,7 +1155,11 @@ function user_group_graph_perms_edit($tab, $header_label) {
 
 		$nav = html_nav_bar('user_group_admin.php?action=edit&tab=permstr&id=' . get_request_var('id'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 11, __('Trees'), 'page', 'main');
 
+		form_start(htmlspecialchars('user_group_admin.php?tab=permstr&id=' . get_request_var('id')), 'chk');
+
 		print $nav;
+
+		html_start_box('', '100%', '', '3', 'center', '');
 
 		$display_text = array( __('Tree Name'), __('ID'), __('Effective Policy'));
 
@@ -1179,13 +1186,14 @@ function user_group_graph_perms_edit($tab, $header_label) {
 				form_checkbox_cell($t['name'], $t['id']);
 				form_end_row();
 			}
-	
-			/* put the nav bar on the bottom as well */
-			print $nav;
 		} else {
 			print '<tr><td><em>' . __('No Matching Trees Found') . '</em></td></tr>';
 		}
 		html_end_box(false);
+
+		if (sizeof($trees)) {
+			print $nav;
+		}
 
 		form_hidden_box('tab',$tab,'');
 		form_hidden_box('id', get_request_var('id'), '');
@@ -1704,10 +1712,6 @@ function user_group() {
 		$sql_where = '';
 	}
 
-	form_start('user_group_admin.php', 'chk');
-
-	html_start_box('', '100%', '', '3', 'center', '');
-
 	$total_rows = db_fetch_cell("SELECT
 		COUNT(*)
 		FROM user_auth_group
@@ -1726,7 +1730,11 @@ function user_group() {
 
 	$nav = html_nav_bar('user_group_admin.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 8, __('Groups'), 'page', 'main');
 
+	form_start('user_group_admin.php', 'chk');
+
 	print $nav;
+
+	html_start_box('', '100%', '', '3', 'center', '');
 
 	$display_text = array(
 		'name' => array('Group Name', 'ASC'),
@@ -1759,14 +1767,19 @@ function user_group() {
 			form_checkbox_cell($group['name'], $group['id']);
 			form_end_row();
 		}
-
-		print $nav;
 	}else{
 		print '<tr><td><em>' . __('No User Groups Found') . '</em></td></tr>';
 	}
+
 	html_end_box(false);
 
+	if (sizeof($group_list)) {
+		print $nav;
+	}
+
 	draw_actions_dropdown($group_actions);
+
+	form_end();
 }
 
 function process_graph_request_vars() {

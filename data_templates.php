@@ -733,10 +733,6 @@ function template() {
 		$sql_having = '';
 	}
 
-	form_start('data_templates.php', 'chk');
-
-	html_start_box('', '100%', '', '3', 'center', '');
-
 	$total_rows = db_fetch_cell("SELECT COUNT(rows)
 		FROM (SELECT
 			COUNT(dt.id) rows,
@@ -767,7 +763,11 @@ function template() {
 
 	$nav = html_nav_bar('data_templates.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 7, __('Data Templates'), 'page', 'main');
 
+	form_start('data_templates.php', 'chk');
+
 	print $nav;
+
+	html_start_box('', '100%', '', '3', 'center', '');
 
 	$display_text = array(
 		'name'              => array('display' => __('Data Template Name'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('The name of this Data Template.')),
@@ -780,7 +780,7 @@ function template() {
 
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
-	if (sizeof($template_list) > 0) {
+	if (sizeof($template_list)) {
 		foreach ($template_list as $template) {
 			if ($template['data_sources'] > 0) {
 				$disabled = true;
@@ -797,13 +797,14 @@ function template() {
 			form_checkbox_cell($template['name'], $template['id'], $disabled);
 			form_end_row();
 		}
-
-		/* put the nav bar on the bottom as well */
-		print $nav;
 	}else{
 		print "<tr class='tableRow'><td colspan='6'><em>" . __('No Data Templates') . "</em></td></tr>\n";
 	}
 	html_end_box(false);
+
+	if (sizeof($template_list)) {
+		print $nav;
+	}
 
 	/* draw the dropdown containing a list of available actions for this form */
 	draw_actions_dropdown($ds_actions);

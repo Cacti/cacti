@@ -1283,13 +1283,13 @@ function ds() {
 		ORDER BY ". get_request_var('sort_column') . ' ' . get_request_var('sort_direction') .
 		' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows);
 
-	form_start('data_sources.php', 'chk');
-
-	html_start_box('', '100%', '', '3', 'center', '');
-
 	$nav = html_nav_bar('data_sources.php?filter=' . get_request_var('filter') . '&host_id=' . get_request_var('host_id'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 7, __('Data Sources'), 'page', 'main');
 
+	form_start('data_sources.php', 'chk');
+
 	print $nav;
+
+	html_start_box('', '100%', '', '3', 'center', '');
 
 	$display_text = array(
 		'name_cache' => array('display' => __('Data Source Name'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('The name of this Data Source. Generally programtically generated from the Data Template definition.')),
@@ -1302,7 +1302,7 @@ function ds() {
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
 	$i = 0;
-	if (sizeof($data_sources) > 0) {
+	if (sizeof($data_sources)) {
 		foreach ($data_sources as $data_source) {
 			$data_source['data_template_name'] = htmlspecialchars($data_source['data_template_name']);
 			$data_name_cache = title_trim(htmlspecialchars($data_source['name_cache']), read_config_option('max_title_length'));
@@ -1349,14 +1349,15 @@ function ds() {
 			form_checkbox_cell($data_source['name_cache'], $data_source['local_data_id']);
 			form_end_row();
 		}
-
-		/* put the nav bar on the bottom as well */
-		print $nav;
 	}else{
 		print "<tr class='tableRow'><td colspan='7'><em>" . __('No Data Sources') . "</em></td></tr>";
 	}
 
 	html_end_box(false);
+
+	if (sizeof($data_sources)) {
+		print $nav;
+	}
 
 	/* draw the dropdown containing a list of available actions for this form */
 	draw_actions_dropdown($ds_actions);

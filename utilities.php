@@ -720,8 +720,6 @@ function utilities_view_user_log() {
 		}
 	}
 
-	html_start_box('', '100%', '', '3', 'center', '');
-
 	$total_rows = db_fetch_cell("SELECT
 		COUNT(*)
 		FROM user_auth AS ua
@@ -744,6 +742,8 @@ function utilities_view_user_log() {
 
 	print $nav;
 
+	html_start_box('', '100%', '', '3', 'center', '');
+
 	$display_text = array(
 		'username'  => array(__('User'), 'ASC'),
 		'full_name' => array(__('Full Name'), 'ASC'),
@@ -755,7 +755,7 @@ function utilities_view_user_log() {
 
 	html_header_sort($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), 1, 'utilities.php?action=view_user_log');
 
-	if (sizeof($user_log) > 0) {
+	if (sizeof($user_log)) {
 		foreach ($user_log as $item) {
 			form_alternate_row('', true);
 			?>
@@ -790,11 +790,13 @@ function utilities_view_user_log() {
 			</tr>
 			<?php
 		}
-
-		print $nav;
 	}
 
 	html_end_box();
+
+	if (sizeof($user_log)) {
+		print $nav;
+	}
 }
 
 function utilities_clear_user_log() {
@@ -1353,8 +1355,6 @@ function utilities_view_snmp_cache() {
 			OR host_snmp_cache.oid LIKE '%%" . get_request_var('filter') . "%%')";
 	}
 
-	html_start_box('', '100%', '', '3', 'center', '');
-
 	$total_rows = db_fetch_cell("SELECT
 		COUNT(*)
 		FROM (host_snmp_cache, snmp_query,host)
@@ -1377,6 +1377,8 @@ function utilities_view_snmp_cache() {
 	$nav = html_nav_bar('utilities.php?action=view_snmp_cache&host_id=' . get_request_var('host_id') . '&filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 6, 'Entries', 'page', 'main');
 
 	print $nav;
+
+	html_start_box('', '100%', '', '3', 'center', '');
 
 	html_header(array(__('Device'), __('Data Query Name'), __('Index'), __('Field Name'), __('Field Value'), __('OID')));
 
@@ -1406,11 +1408,13 @@ function utilities_view_snmp_cache() {
 		</tr>
 		<?php
 		}
-
-		print $nav;
 	}
 
 	html_end_box();
+
+	if (sizeof($snmp_cache)) {
+		print $nav;
+	}
 }
 
 function utilities_view_poller_cache() {
@@ -1604,8 +1608,6 @@ function utilities_view_poller_cache() {
 			OR poller_item.rrd_path  LIKE '%%" . get_request_var('filter') . "%%')";
 	}
 
-	html_start_box('', '100%', '', '3', 'center', '');
-
 	$total_rows = db_fetch_cell("SELECT
 		COUNT(*)
 		FROM data_template_data
@@ -1634,6 +1636,8 @@ function utilities_view_poller_cache() {
 
 	print $nav;
 
+	html_start_box('', '100%', '', '3', 'center', '');
+
 	$display_text = array(
 		'data_template_data.name_cache' => array(__('Data Source Name'), 'ASC'),
 		'nosort' => array(__('Details'), 'ASC'));
@@ -1641,7 +1645,7 @@ function utilities_view_poller_cache() {
 	html_header_sort($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), 1, 'utilities.php?action=view_poller_cache');
 
 	$i = 0;
-	if (sizeof($poller_cache) > 0) {
+	if (sizeof($poller_cache)) {
 	foreach ($poller_cache as $item) {
 		if ($i % 2 == 0) {
 			$class = 'odd';
@@ -1691,9 +1695,11 @@ function utilities_view_poller_cache() {
 	}
 	}
 
-	print $nav;
-
 	html_end_box();
+
+	if (sizeof($poller_cache)) {
+		print $nav;
+	}
 }
 
 function utilities() {
@@ -2283,8 +2289,6 @@ function snmpagent_utilities_run_cache() {
 	}
 	$sql_where .= ' ORDER by `oid`';
 
-	html_start_box('', '100%', '', '3', 'center', '');
-
 	$total_rows = db_fetch_cell("SELECT COUNT(*) FROM snmpagent_cache WHERE 1 $sql_where");
 
 	$snmp_cache_sql = "SELECT * FROM snmpagent_cache WHERE 1 $sql_where LIMIT " . ($rows*(get_request_var('page')-1)) . ',' . $rows;
@@ -2295,9 +2299,11 @@ function snmpagent_utilities_run_cache() {
 
 	print $nav;
 
+	html_start_box('', '100%', '', '3', 'center', '');
+
 	html_header(array(__('OID'), __('Name'), __('MIB'), __('Kind'), __('Max-Access'), __('Value')));
 
-	if (sizeof($snmp_cache) > 0) {
+	if (sizeof($snmp_cache)) {
 		foreach ($snmp_cache as $item) {
 
 			$oid = (strlen(get_request_var('filter')) ? (preg_replace('/(' . preg_quote(get_request_var('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($item['oid']))) : htmlspecialchars($item['oid']));
@@ -2321,9 +2327,11 @@ function snmpagent_utilities_run_cache() {
 		}
 	}
 
-	print $nav;
-
 	html_end_box();
+
+	if (sizeof($snmp_cache)) {
+		print $nav;
+	}
 
 	?>
 	<script type='text/javascript'>
@@ -2550,41 +2558,49 @@ function snmpagent_utilities_run_eventlog(){
 		LEFT JOIN snmpagent_cache ON snmpagent_cache.name = snmpagent_notifications_log.notification
 		WHERE $sql_where LIMIT " . ($rows*(get_request_var('page')-1)) . ',' . $rows;
 
-	form_start('managers.php', 'chk');
-
-	html_start_box('', '100%', '', '3', 'center', '');
-
 	$total_rows = db_fetch_cell("SELECT COUNT(*) FROM snmpagent_notifications_log WHERE $sql_where");
 	$logs = db_fetch_assoc($sql_query);
 
 	/* generate page list */
-	$nav = html_nav_bar('utilities.php?action=view_snmpagent_events&severity='. get_request_var('severity').'&receiver='. get_request_var('receiver').'&filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 11, '', 'page', 'main');
+	$nav = html_nav_bar('utilities.php?action=view_snmpagent_events&severity='. get_request_var('severity').'&receiver='. get_request_var('receiver').'&filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 11, __('Agents'), 'page', 'main');
+
+	form_start('managers.php', 'chk');
 
 	print $nav;
 
+	html_start_box('', '100%', '', '3', 'center', '');
+
 	html_header(array(' ', __('Time'), __('Receiver'), __('Notification'), __('Varbinds')));
 
-	if (sizeof($logs) > 0) {
+	if (sizeof($logs)) {
 		foreach ($logs as $item) {
 			$varbinds = (strlen(get_request_var('filter')) ? (preg_replace('/(' . preg_quote(get_request_var('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($item['varbinds']))): htmlspecialchars($item['varbinds']));
 			form_alternate_row('line' . $item['id'], false);
+
 			print "<td title='" . __('Severity Level: %s', $severity_levels[$item['severity']]) . "' style='width:10px;background-color: " . $severity_colors[$item['severity']] . ";border-top:1px solid white;border-bottom:1px solid white;'></td>";
 			print "<td class='nowrap'>" . date('Y/m/d H:i:s', $item['time']) . '</td>';
 			print '<td>' . htmlspecialchars($item['hostname'], ENT_QUOTES) . '</td>';
+
 			if($item['description']) {
 				print '<td><a href="#" title="<div class=\'header\'>' . htmlspecialchars($item['notification'], ENT_QUOTES) . '</div><div class=\'content preformatted\'>' . htmlspecialchars($item['description'], ENT_QUOTES) . '</div>" class="tooltip">' . htmlspecialchars($item['notification']) . '</a></td>';
 			}else {
 				print '<td>' . htmlspecialchars($item['notification']) . "</td>";
 			}
+
 			print "<td>$varbinds</td>";
+
 			form_end_row();
 		}
-		print $nav;
 	}else{
 		print '<tr><td><em>' . __('No SNMP Notification Log Entries') . '</em></td></tr>';
 	}
 
 	html_end_box();
+
+	if (sizeof($logs)) {
+		print $nav;
+	}
+
 	?>
 
 	<script type='text/javascript' >

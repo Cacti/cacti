@@ -800,10 +800,6 @@ function profile() {
 		$sql_having = '';
 	}
 
-	form_start('data_source_profiles.php', 'chk');
-
-	html_start_box('', '100%', '', '3', 'center', '');
-
 	$total_rows = db_fetch_cell("SELECT
 		COUNT(rows)
 		FROM (
@@ -835,7 +831,11 @@ function profile() {
 
 	$nav = html_nav_bar('data_source_profiles.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 9, __('Profiles'), 'page', 'main');
 
+	form_start('data_source_profiles.php', 'chk');
+
 	print $nav;
+
+	html_start_box('', '100%', '', '3', 'center', '');
 
 	$display_text = array(
 		'name' => array('display' => __('Data Source Profile Name'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('The name of this CDEF.')),
@@ -876,11 +876,14 @@ function profile() {
 			form_checkbox_cell($profile['name'], $profile['id'], $disabled);
 			form_end_row();
 		}
-		print $nav;
 	}else{
 		print "<tr class='tableRow'><td colspan='4'><em>" . __('No Data Source Profiles') . "</em></td></tr>\n";
 	}
 	html_end_box(false);
+
+	if (sizeof($profile_list)) {
+		print $nav;
+	}
 
 	/* draw the dropdown containing a list of available actions for this form */
 	draw_actions_dropdown($profile_actions);

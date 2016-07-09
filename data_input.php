@@ -656,11 +656,6 @@ function data() {
 
 	html_end_box();
 
-	/* print checkbox form for validation */
-	form_start('data_input.php', 'chk');
-
-	html_start_box('', '100%', '', '3', 'center', '');
-
 	/* form the 'where' clause for our main sql query */
 	if (get_request_var('filter') != '') {
 		$sql_where = "WHERE (di.name like '%" . get_request_var('filter') . "%')";
@@ -691,7 +686,11 @@ function data() {
 
 	$nav = html_nav_bar('data_input.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 6, __('Input Methods'), 'page', 'main');
 
+	form_start('data_input.php', 'chk');
+
 	print $nav;
+
+	html_start_box('', '100%', '', '3', 'center', '');
 
 	$display_text = array(
 		'name'         => array('display' => __('Data Input Name'),    'align' => 'left', 'sort' => 'ASC', 'tip' => __('The name of this Data Input Method.')),
@@ -703,7 +702,7 @@ function data() {
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
 	$i = 0;
-	if (sizeof($data_inputs) > 0) {
+	if (sizeof($data_inputs)) {
 		foreach ($data_inputs as $data_input) {
 			/* hide system types */
 			if ($data_input['templates'] > 0 || $data_input['data_sources'] > 0) {
@@ -720,13 +719,15 @@ function data() {
 			form_checkbox_cell($data_input['name'], $data_input['id'], $disabled);
 			form_end_row();
 		}
-
-		print $nav;
 	}else{
 		print "<tr><td colspan='5'><em>" . __('No Data Input Methods') . "</em></td></tr>";
 	}
 
 	html_end_box(false);
+
+	if (sizeof($data_inputs)) {
+		print $nav;
+	}
 
 	/* draw the dropdown containing a list of available actions for this form */
 	draw_actions_dropdown($di_actions);

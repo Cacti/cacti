@@ -788,10 +788,6 @@ function cdef() {
 		$sql_having = '';
 	}
 
-	form_start('cdef.php', 'chk');
-
-	html_start_box('', '100%', '', '3', 'center', '');
-
 	$total_rows = db_fetch_cell("SELECT
 		COUNT(rows)
 		FROM (
@@ -824,7 +820,11 @@ function cdef() {
 
 	$nav = html_nav_bar('cdef.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 5, __('CDEFs'), 'page', 'main');
 
+	form_start('cdef.php', 'chk');
+
 	print $nav;
+
+	html_start_box('', '100%', '', '3', 'center', '');
 
 	$display_text = array(
 		'name'      => array('display' => __('CDEF Name'),       'align' => 'left',  'sort' => 'ASC', 'tip' => __('The name of this CDEF.')),
@@ -835,7 +835,7 @@ function cdef() {
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
 	$i = 0;
-	if (sizeof($cdef_list) > 0) {
+	if (sizeof($cdef_list)) {
 		foreach ($cdef_list as $cdef) {
 			if ($cdef['graphs'] == 0 && $cdef['templates'] == 0) {
 				$disabled = false;
@@ -851,11 +851,15 @@ function cdef() {
 			form_checkbox_cell($cdef['name'], $cdef['id'], $disabled);
 			form_end_row();
 		}
-		print $nav;
 	}else{
 		print "<tr class='tableRow'><td colspan='4'><em>" . __('No CDEFs') . "</em></td></tr>\n";
 	}
+
 	html_end_box(false);
+
+	if (sizeof($cdef_list)) {
+		print $nav;
+	}
 
 	/* draw the dropdown containing a list of available actions for this form */
 	draw_actions_dropdown($cdef_actions);

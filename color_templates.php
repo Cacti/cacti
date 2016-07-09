@@ -472,10 +472,6 @@ function aggregate_color_template() {
 		$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') . ' (templates>0 OR graphs>0)';
 	}
 
-	form_start('color_templates.php', 'chk');
-
-	html_start_box('', '100%', '', '3', 'center', '');
-
 	$total_rows = db_fetch_cell("SELECT
 		COUNT(ct.color_template_id)
 		FROM color_templates AS ct
@@ -514,7 +510,11 @@ function aggregate_color_template() {
 
 	$nav = html_nav_bar('color_templates.php', MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 5, 'Color Templates', 'page', 'main');
 
+	form_start('color_templates.php', 'chk');
+
 	print $nav;
+
+	html_start_box('', '100%', '', '3', 'center', '');
 
 	$display_text = array(
 		'name'      => array( __('Template Title'), 'ASC'),
@@ -525,7 +525,7 @@ function aggregate_color_template() {
 
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
-	if (sizeof($template_list) > 0) {
+	if (sizeof($template_list)) {
 		foreach ($template_list as $template) {
 			if ($template['templates'] > 0) {
 				$disabled = true;
@@ -542,12 +542,15 @@ function aggregate_color_template() {
 			form_checkbox_cell($template['name'], $template['color_template_id'], $disabled);
 			form_end_row();
 		}
-		/* put the nav bar on the bottom as well */
-		print $nav;
 	}else{
 		print "<tr><td><em>" . __('No Color Templates') ."</em></td></tr>\n";
 	}
+
 	html_end_box(false);
+
+	if (sizeof($template_list)) {
+		print $nav;
+	}
 
 	/* draw the dropdown containing a list of available actions for this form */
 	draw_actions_dropdown($aggregate_actions);

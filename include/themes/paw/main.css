@@ -4,7 +4,8 @@ body, table, tr, td, textarea {
 	font-family: 'Segoe UI', 'Segoe UI Web Regular', 'Segoe UI Symbol', 'Helvetica Neue', 'BBAlpha Sans', 'S60 Sans', Arial, sans-serif;
 	font-size: 12px;
 	/* fix those ever present IE issues */
-	-ms-overflow-style:scrollbar
+	-ms-overflow-style:scrollbar;
+	color: black;
 
 }
 
@@ -63,6 +64,10 @@ label {
 	white-space:nowrap;
 }
 
+.top {
+	vertical-align:top;
+}
+
 .right {
 	text-align:right !important;
 }
@@ -72,7 +77,7 @@ label {
 }
 
 .center {
-	text-align:center;
+	text-align:center !important;
 }
 
 .usermenudown {
@@ -189,6 +194,10 @@ label {
 	border:none;
 }
 
+.drillDown {
+	cursor:pointer;
+}
+
 .monoSpace {
 	font-size:9px;
 	font-family: monospace;
@@ -198,6 +207,11 @@ label {
 	width: 200px;
 }
 
+.itemlist { 
+	max-height:200px;
+	overflow-y:auto;
+}
+
 .realms {
 	width:20%;
 	vertical-align:top;
@@ -205,31 +219,128 @@ label {
 }
 
 .deviceUp {
-	color: #198e32;
+	color: rgba(148, 179, 107, 0.8) !important;
 }
 
 .deviceDown {
-	color: #ff0000;
+	color: #ff0000 !important;
 }
 
 .deviceUnknown {
-	color: #0000ff;
+	color: #0000ff !important;
 }
 
 .deviceDisabled {
-	color: #a1a1a1;
+	color: #a1a1a1 !important;
 }
 
 .deviceRecovering {
-	color: #ff8f1e;
+	color: #ff8f1e !important;
 }
 
 .deviceError {
-	color: #750F7D;
+	color: #750F7D !important;
+}
+
+.deviceDownMuted {
+	color: #ffe333 !important;
+}
+
+.deviceThreshold {
+	color: #ffa833 !important;
+}
+
+.deviceUnmonitored {
+	color: rgba(250, 253, 158) !important;
+}
+
+.deviceWarning {
+	color: #aa7807 !important;
+}
+
+.deviceAlert {
+	color: #660000 !important;
+}
+
+.deviceUpBg {
+	color: rgba(22,22,22,0.8);
+	font-size: 10pt;
+	font-weight: bold;
+	background-color: rgba(148, 179, 107, 0.8);
+}
+
+.deviceDownBg {
+	color: rgba(22,22,22,0.8);
+	font-size: 10pt;
+	font-weight: bold;
+	background-color: #ff0000;
+}
+
+.deviceUnknownBg {
+	color: rgba(22,22,22,0.8);
+	font-size: 10pt;
+	font-weight: bold;
+	background-color: #0000ff;
+}
+
+.deviceDisabledBg {
+	color: rgba(22,22,22,0.8);
+	font-size: 10pt;
+	font-weight: bold;
+	background-color: #a1a1a1;
+}
+
+.deviceRecoveringBg {
+	color: rgba(22,22,22,0.8);
+	font-size: 10pt;
+	font-weight: bold;
+	background-color: #ff8f1e;
+}
+
+.deviceErrorBg {
+	color: rgba(22,22,22,0.8);
+	font-size: 10pt;
+	font-weight: bold;
+	background-color: #750F7D;
+}
+
+.deviceDownMutedBg {
+	color: rgba(22,22,22,0.8);
+	font-size: 10pt;
+	font-weight: bold;
+	background-color: #ffe333;
+}
+
+.deviceThresholdBg {
+	color: rgba(22,22,22,0.8);
+	font-size: 10pt;
+	font-weight: bold;
+	background-color: #ffa833;
+}
+
+.deviceUnmonitoredBg {
+	color: rgba(22,22,22,0.8);
+	font-size: 10pt;
+	font-weight: bold;
+	background-color: rgba(250, 253, 158, 0.8);
+}
+
+.deviceWarningBg {
+	color: rgba(22,22,22,0.8);
+	font-size: 10pt;
+	font-weight: bold;
+	background-color: #aa7807;
+}
+
+.deviceAlertBg {
+	color: rgba(22,22,22,0.8);
+	font-size: 10pt;
+	font-weight: bold;
+	background-color: #660000;
 }
 
 .beingGraphed {
-	color: green;
+	color: rgba(148, 179, 107, 0.8);
 }
 
 .notBeingGraphed {
@@ -627,8 +738,65 @@ legend {
 
 .actionsDropdown {
 	vertical-align:middle;
+	padding: 3px;
 	width:100%;
 	line-height:10px;
+	float: right;
+	text-align: right;
+	display: table-row;
+}
+
+.actionsDropdown div {
+	display: table-column;
+	float: left;
+	margin-top: auto;
+	margin-bottom: auto;
+}
+
+.actionsDropdownArrow {
+	margin-top: auto;
+	margin-bottom: auto;
+	float:left;
+	padding: 3px;
+}
+
+.cactiTooltipHint {
+	cursor: pointer;
+	padding:5px;
+	font-size:14px !important;
+}
+
+.spikekillData, .spikekillData td {
+	border: 1px solid #999;
+}
+
+.spikekillNote {
+	padding: 1px;
+}
+
+.spikekillMenu {
+	background: #f5f5f5 none repeat scroll 0 0;
+    border: 1px solid #373737;
+    box-shadow: 2px 2px 2px #292929;
+    margin: 0;
+    padding: 2px;
+	line-height: 1.5em;
+}
+
+.spikekillMenu li {
+	color: snow;
+	vertical-align:middle;
+}
+
+.spikekillMenu i {
+	text-align:center;
+	width: 2.0em;
+	display:inline-block;
+}
+
+.spikekillMenu i:empty{
+	width: 2.0em;
+	display:inline-block;
 }
 
 .loginPanel {
@@ -779,25 +947,34 @@ legend {
 	margin-right:auto;
 }
 
-.cactiTable>tbody>tr.cactiNavBarTop:first-child {
-	border-top: none;
-	border-bottom: 1px solid rgba(0,0,0,0.5);
-}
-
-.cactiTable>tbody>tr.cactiNavBarTop:last-child {
-	border-top: 1px solid rgba(0,0,0,0.5);
-	border-bottom: none;
-}
 
 .cactiTableTitle {
-	width: 100%;
+	color: white;
+	float: left;
+	text-align: left;
+	padding: 3px 0px;
+	height: 22px;
+	display: table-column;
+	font-size: 1.1em;
+	width: 90%;
 	border-bottom: 1px solid rgba(0,0,0,0.5);
 	background: rgba(0,0,0,1);
 	
 }
 
-.cactiTableTitle td {
-	line-height: 16px;
+.cactiTableButton {
+	float: right;
+	padding: 3px 0px;
+	height: 22px;
+	display: table-column;
+	text-align: right;
+	width: 10%;
+	border-bottom: 1px solid rgba(0,0,0,0.5);
+	background: rgba(0,0,0,1);
+}
+
+.cactiTableButton span, .cactiTableTitle span {
+	padding: 0px 5px 0px 5px;
 }
 
 .cactiDebugTable {
@@ -850,7 +1027,7 @@ legend {
 }
 
 .tableHeader {
-color: white;
+	color: white;
 	#background: #2d4ca8;
 	background: rgba(0,0,0,0.55);
 }
@@ -921,26 +1098,64 @@ th.sortable {
 
 .navBarNavigation {
 	color: rgba(0,0,0,0.9);
+	width: 100%
 	text-align:center;
+	margin-bottom: -3px;
+	height: 20px;
 	margin-left:auto;
 	margin-right:auto;
 }
 
-.navBarNavigationCenter {
-	width:80%;
-	text-align:center;
+.navBarNavigationPrevious {
+	text-align: left;
+	cursor: pointer;
+	font-weight: bold;
+	float: left;
+	white-space: nowrap;
+	display: block;
+	width: 10%;
+	padding: 2px 0px;
+	height: 20px;
+	vertical-align: middle;
 }
 
-.navBarNavigationPrevious {
-	width:10%;
-	text-align:left;
-	cursor:pointer;
+.navBarNavigationCenter {
+	text-align: center;
+	display: block;
+	float: left;
+	white-space: nowrap;
+	width: 80%;
+	padding: 2px 0px;
+	height: 20px;
+	margin-top: auto;
+}
+
+.navBarNavigationCenter span {
+	vertical-align: middle;
 }
 
 .navBarNavigationNext {
-	width:10%;
-	text-align:right;
-	cursor:pointer;
+	text-align: right;
+	cursor: pointer;
+	font-weight: bold;
+	float: right;
+	white-space: nowrap;
+	display: block;
+	width: 10%;
+	padding: 2px 0px;
+	height: 20px;
+	vertical-align: middle;
+}
+
+.navBarNavigationNone {
+	text-align: center;
+	display: block;
+	float: left;
+	white-space: nowrap;
+	width:100%;
+	padding: 2px 0px;
+	height: 20px;
+	margin-top: auto;
 }
 
 .navBarNavigationNext i.ui-icon {
@@ -1369,6 +1584,14 @@ ul#nav {
 	color: #333333;
 }
 
+.ui-tooltip-content {
+	max-width: 500px !important;
+	overflow:auto !important;
+	opacity: 0.95;
+	border-radius: 5px !important;
+	border: transparent;
+}
+
 div.preformatted {
 	font-family: monospace;
 	white-space: pre;
@@ -1413,11 +1636,66 @@ ul.pagination li a:hover:not(.active) {
 	background: -o-linear-gradient(top, rgba(167,217,134,0.4) 0%, rgba(148,179,107,0.4) 100%);
 	background: -ms-linear-gradient(top, rgba(167,217,134,0.4) 0%, rgba(148,179,107,0.4) 100%);
 	background: linear-gradient(to bottom, rgba(167,217,134,0.4) 0%, rgba(148,179,107,0.4) 100%);
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#a7d986', endColorstr='#94b36b', GradientType=0 );
 }
 
 tr#realtime td:first-child {
 	height:68px;
+}
+
+.logEmergency {
+	background-color: rgba(250, 116, 32, 0.2);
+	text-align: center;
+	width: 12.5%;
+	color: black;
+}
+
+.logCritical {
+	background-color: rgba(242, 23, 33, 0.2);
+	text-align: center;
+	width: 12.5%;
+	color: black;
+}
+
+.logAlert {
+	background-color: rgba(242, 25, 36, 0.2);
+	text-align: center;
+	width: 12.5%;
+	color: black;
+}
+
+.logWarning {
+	background-color: rgba(255, 122, 48, 0.2);
+	text-align: center;
+	width: 12.5%;
+	color: black;
+}
+
+.logError {
+	background-color: rgba(251, 74, 20, 0.2);
+	text-align: center;
+	width: 12.5%;
+	color: black;
+}
+
+.logNotice {
+	background-color: rgba(250, 253, 158, 0.2);
+	text-align: center;
+	width: 12.5%;
+	color: black;
+}
+
+.logInfo {
+	background-color: rgba(204, 255, 204, 0.2);
+	text-align: center;
+	width: 12.5%;
+	color: black;
+}
+
+.logDebug {
+	background-color: rgba(205, 207, 196, 0.2);
+	text-align: center;
+	width: 12.5%;
+	color: black;
 }
 
 .darkblue{

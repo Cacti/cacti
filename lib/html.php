@@ -43,21 +43,21 @@ function html_start_box($title, $width, $background_color, $cell_padding, $align
 	}
 	$table_id = $table_prefix . $table_suffix;
 
+	if ($title != '') {
 	?>
-	<table id='<?php print $table_id;?>' class='cactiTable' style='width:<?php print $width;?>;text-align:<?php print $align;?>;'>
-		<tr style='padding:0px;'>
-			<td style='padding:0px;'>
-				<?php if ($title != "") {?>
-				<table class='cactiTableTitle'>
-					<tr>
-						<td class='textHeaderDark'><?php print $title;?></td>
-						<?php if ($add_text!= "") {?>
-						<td class='textHeaderDark' align='right'><a style='padding-right:5px;' class="linkOverDark" href="<?php print htmlspecialchars($add_text);?>"><?php print $add_label;?></a></td><?php }?>
-					</tr>
-				</table>
-				<?php }?>
-				<table id='<?php print $table_id . '_child';?>' class='cactiTable' style='padding:<?php print $cell_padding;?>px;'>
+	<div id='<?php print $table_id;?>' class='cactiTable' style='width:<?php print $width;?>;text-align:<?php print $align;?>;'>
+		<div>
+			<div class='cactiTableTitle'><span style='padding:3px;'><?php if ($title != "") { print $title; }?></span></div>
+			<div class='cactiTableButton'><span style='padding:3px;'<?php if ($add_text != "") {?><a style='padding-right:5px;' class="linkOverDark" href="<?php print htmlspecialchars($add_text);?>"><?php print $add_label;?></a><?php }?></span></div>
+		</div>
+		<table id='<?php print $table_id . '_child';?>' class='cactiTable' style='padding:<?php print $cell_padding;?>px;'>
 	<?php
+	}else{
+	?>
+	<div id='<?php print $table_id;?>' class='cactiTable' style='width:<?php print $width;?>;text-align:<?php print $align;?>;'>
+		<table id='<?php print $table_id . '_child';?>' class='cactiTable' style='padding:<?php print $cell_padding;?>px;'>
+	<?php
+	}
 
 	$table_suffix++;
 }
@@ -66,41 +66,10 @@ function html_start_box($title, $width, $background_color, $cell_padding, $align
    @arg $trailing_br (bool) - whether to draw a trailing <br> tag after ending
      the box */
 function html_end_box($trailing_br = true) { ?>
-				</table>
-			</td>
-		</tr>
-	</table>
+		</table>
+	</div>
 	<?php if ($trailing_br == true) { print "<div class='break'></div>"; } ?>
 <?php }
-
-/* html_graph_start_box - draws the start of an HTML graph view box
-   @arg $cellpadding - the table cell padding for the box
-   @arg $leading_br (bool) - whether to draw a leader <br> tag before the start of the table */
-function html_graph_start_box($cellpadding = 3, $leading_br = true) {
-	static $table_suffix = 1;
-
-	$table_prefix = 'graph_' . basename($_SERVER['PHP_SELF'], '.php');;
-
-	if (!isempty_request_var('report')) {
-		$table_prefix .= '_' . clean_up_name(get_nfilter_request_var('report'));
-	} elseif (!isempty_request_var('tab')) {
-		$table_prefix .= '_' . clean_up_name(get_nfilter_request_var('tab'));
-	} elseif (!isempty_request_var('action')) {
-		$table_prefix .= '_' . clean_up_name(get_nfilter_request_var('action'));
-	}
-	$table_id = $table_prefix . $table_suffix;
-
-	if ($leading_br == true) {
-		print "<br>\n";
-	}
-
-	print "<table id='" . $table_id . "' class='cactiTable' align='center' style='padding:$cellpadding;'>\n";
-}
-
-/* html_graph_end_box - draws the end of an HTML graph view box */
-function html_graph_end_box() {
-	print "</table>";
-}
 
 /* html_graph_area - draws an area the contains full sized graphs
    @arg $graph_array - the array to contains graph information. for each graph in the
@@ -398,7 +367,7 @@ function graph_drilldown_icons($local_graph_id, $type = 'graph_buttons') {
    @arg $object - the object types that is being displayed
    @arg $page_var - the object types that is being displayed
    @arg $return_to - paint the resulting page into this dom object */
-function html_nav_bar($base_url, $max_pages, $current_page, $rows_per_page, $total_rows, $colspan=30, $object = "Rows", $page_var = "page", $return_to = "") {
+function html_nav_bar($base_url, $max_pages, $current_page, $rows_per_page, $total_rows, $colspan=30, $object = 'Rows', $page_var = "page", $return_to = "") {
 	if ($total_rows > $rows_per_page) {
 		if (substr_count($base_url, '?') == 0) {
 			$base_url = trim($base_url) . '?';
@@ -408,52 +377,29 @@ function html_nav_bar($base_url, $max_pages, $current_page, $rows_per_page, $tot
 
 		$url_page_select = get_page_list($current_page, $max_pages, $rows_per_page, $total_rows, $base_url, $page_var, $return_to);
 
-		$nav = "<tr class='cactiNavBarTop'>
-			<td colspan='$colspan'>
-				<table class='navBarNavigation' style='width:100%;'>
-					<tr>
-						<td class='navBarNavigationPrevious'><div style='display:block;'>
-							" . (($current_page > 1) ? "<a href='#' onClick='goto$page_var(" . ($current_page-1) . ")'><i class='fa fa-angle-double-left previous'></i>" . __('Previous'). "</a>":"") . "
-						</div></td>
-						<td class='navBarNavigationCenter'>
-							<span>
-								" . __('<span>Showing %s %d to %d of %s [</span><span> %s </span><span>]</span>', $object, (($rows_per_page*($current_page-1))+1), (($total_rows < $rows_per_page) || ($total_rows < ($rows_per_page*$current_page)) ? $total_rows : $rows_per_page*$current_page), $total_rows, $url_page_select) . "
-							</span>
-						</td>
-						<td class='navBarNavigationNext'><div style='display:block;'>
-							" . (($current_page*$rows_per_page) < $total_rows ? "<a href='#' onClick='goto$page_var(" . ($current_page+1) . ")'>" . __('Next'). "<i class='fa fa-angle-double-right next'></i></a>":"") . "
-						</div></td>
-					</tr>
-				</table>
-			</td>
-			</tr>\n";
+		$nav = "<div class='navBarNavigation'>
+			<div class='navBarNavigationPrevious'>
+				" . (($current_page > 1) ? "<a href='#' onClick='goto$page_var(" . ($current_page-1) . ")'><i class='fa fa-angle-double-left previous'></i>" . __('Previous'). "</a>":"") . "
+			</div>
+			<div class='navBarNavigationCenter'>
+				" . __('Showing %s %d to %d of %s [ %s ]', $object, (($rows_per_page*($current_page-1))+1), (($total_rows < $rows_per_page) || ($total_rows < ($rows_per_page*$current_page)) ? $total_rows : $rows_per_page*$current_page), $total_rows, $url_page_select) . "
+			</div>
+			<div class='navBarNavigationNext'>
+				" . (($current_page*$rows_per_page) < $total_rows ? "<a href='#' onClick='goto$page_var(" . ($current_page+1) . ")'>" . __('Next'). "<i class='fa fa-angle-double-right next'></i></a>":"") . "
+			</div>
+		</div>\n";
 	}elseif ($total_rows > 0) {
-		$nav = "<tr class='cactiNavBarTop'>
-			<td colspan='$colspan'>
-				<table class='navBarNavigation'>
-					<tr>
-						<td class='navBarNavigationCenter'>
-							<div>
-								" . __('Showing All %d %s', $total_rows, $object) . "
-							</div>
-						</td>
-					</tr>
-				</table>
-			</td>
-			</tr>\n";
-
+		$nav = "<div class='navBarNavigation'>
+			<div class='navBarNavigationNone'>
+				" . __('Showing All %d %s', $total_rows, $object) . "
+			</div>
+		</div>\n";
 	}else{
-		$nav = "<tr class='cactiNavBarTop'>
-			<td colspan='$colspan'>
-				<table class='navBarNavigation'>
-					<tr>
-						<td class='navBarNavigationCenter'>
-							" . __('No %s Found', $object) . "
-						</td>
-					</tr>
-				</table>
-			</td>
-			</tr>\n";
+		$nav = "<div class='navBarNavigation'>
+			<div class='navBarNavigationNone'>
+				" . __('No %s Found', $object) . "
+			</div>
+		</div>\n";
 	}
 
 	return $nav;
@@ -973,19 +919,11 @@ function draw_actions_dropdown($actions_array, $delete_action = 1) {
 	}
 
 	?>
-	<table class='actionsDropdown'>
-		<tr>
-			<td style='width:100%;'>
-				<img style='text-align:center;' src='<?php echo $config['url_path']; ?>images/arrow.gif' alt=''>&nbsp;
-			</td>
-			<td>
-				<?php form_dropdown('drp_action',$actions_array, '', '', '0', '', '');?>
-			</td>
-			<td>
-				<input id='submit' type='submit' value='Go' title='<?php print __('Execute Action');?>'>
-			</td>
-		</tr>
-	</table>
+	<div class='actionsDropdown'>
+		<div class='actionsDropdownArrow'><img src='<?php echo $config['url_path']; ?>images/arrow.gif' alt=''></div>
+		<?php form_dropdown('drp_action',$actions_array, '', '', '0', '', '');?>
+		<input id='submit' type='submit' value='Go' title='<?php print __('Execute Action');?>'>
+	</div>
 	<input type='hidden' id='action' name='action' value='actions'>
 	<script type='text/javascript'>
 	function setDisabled() {

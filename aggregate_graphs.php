@@ -1297,10 +1297,6 @@ function aggregate_graph() {
 		$sql_where .= ' AND ag.aggregate_template_id=' . get_request_var('template_id');
 	}
 
-	form_start('aggregate_graphs.php', 'chk');
-
-	html_start_box('', '100%', '', '3', 'center', '');
-
 	$total_rows = db_fetch_cell("SELECT COUNT(gtg.id) AS total
 		FROM graph_templates_graph AS gtg
 		INNER JOIN graph_local AS gl
@@ -1328,7 +1324,11 @@ function aggregate_graph() {
 
 	$nav = html_nav_bar('aggregate_graphs.php', MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 5, __('Aggregate Graphs'), 'page', 'main');
 
+	form_start('aggregate_graphs.php', 'chk');
+
 	print $nav;
+
+	html_start_box('', '100%', '', '3', 'center', '');
 
 	$display_text = array(
 		'title_cache'    => array('display' => __('Graph Title'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('The title for the Aggregate Graphs')),
@@ -1337,9 +1337,9 @@ function aggregate_graph() {
 		'height'         => array('display' => __('Size'), 'align' => 'right', 'sort' => 'ASC')
 	);
 
-	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), 'filter=' . get_request_var('filter'), false);
+	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false, 'filter=' . get_request_var('filter'));
 
-	if (sizeof($graph_list) > 0) {
+	if (sizeof($graph_list)) {
 		foreach ($graph_list as $graph) {
 			/* we're escaping strings here, so no need to escape them on form_selectable_cell */
 			$template_name = ((empty($graph['name'])) ? '<em>None</em>' : htmlspecialchars($graph['name']));
@@ -1351,14 +1351,16 @@ function aggregate_graph() {
 			form_checkbox_cell($graph['title_cache'], $graph['local_graph_id']);
 			form_end_row();
 		}
-
-		/* put the nav bar on the bottom as well */
-		print $nav;
 	}else{
 		print '<tr><td><em>' . __('No Aggregate Graphs Found') .'</em></td></tr>';
 	}
 
 	html_end_box(false);
+
+	if (sizeof($graph_list)) {
+		/* put the nav bar on the bottom as well */
+		print $nav;
+	}
 
 	/* add a list of tree names to the actions dropdown */
 	add_tree_names_to_actions_array();

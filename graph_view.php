@@ -541,13 +541,13 @@ case 'list':
 
 	$graphs = get_allowed_graphs($sql_where, 'gtg.title_cache', $limit, $total_rows);
 
-	form_start('graph_view.php', 'chk');
-
-	html_start_box('', '100%', '', '3', 'center', '');
-
 	$nav = html_nav_bar('graph_view.php?action=list', MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 5, 'Graphs', 'page', 'main');
 
+	form_start('graph_view.php', 'chk');
+
 	print $nav;
+
+	html_start_box('', '100%', '', '3', 'center', '');
 
 	html_header_checkbox(array(__('Graph Title'), __('Device'), __('Graph Template'), __('Graph Size')), false);
 
@@ -562,11 +562,13 @@ case 'list':
 			form_checkbox_cell($graph['title_cache'], $graph['local_graph_id']);
 			form_end_row();
 		}
-
-		print $nav;
 	}
 
-	html_end_box();
+	html_end_box(false);
+
+	if (sizeof($graphs)) {
+		print $nav;
+	}
 
 	?>
 	<table align='right'>

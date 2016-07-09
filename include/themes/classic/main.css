@@ -244,27 +244,124 @@ label {
 }
 
 .deviceUp {
-	color: #198e32;
+	color: rgba(148, 179, 107, 0.8) !important;
 }
 
 .deviceDown {
-	color: #ff0000;
+	color: #ff0000 !important;
 }
 
 .deviceUnknown {
-	color: #0000ff;
+	color: #0000ff !important;
 }
 
 .deviceDisabled {
-	color: #a1a1a1;
+	color: #a1a1a1 !important;
 }
 
 .deviceRecovering {
-	color: #ff8f1e;
+	color: #ff8f1e !important;
 }
 
 .deviceError {
-	color: #750F7D;
+	color: #750F7D !important;
+}
+
+.deviceDownMuted {
+	color: #ffe333 !important;
+}
+
+.deviceThreshold {
+	color: #ffa833 !important;
+}
+
+.deviceUnmonitored {
+	color: rgba(250, 253, 158) !important;
+}
+
+.deviceWarning {
+	color: #aa7807 !important;
+}
+
+.deviceAlert {
+	color: #660000 !important;
+}
+
+.deviceUpBg {
+	color: rgba(22,22,22,0.8);
+	font-size: 10pt;
+	font-weight: bold;
+	background-color: rgba(148, 179, 107, 0.8);
+}
+
+.deviceDownBg {
+	color: rgba(22,22,22,0.8);
+	font-size: 10pt;
+	font-weight: bold;
+	background-color: #ff0000;
+}
+
+.deviceUnknownBg {
+	color: rgba(22,22,22,0.8);
+	font-size: 10pt;
+	font-weight: bold;
+	background-color: #0000ff;
+}
+
+.deviceDisabledBg {
+	color: rgba(22,22,22,0.8);
+	font-size: 10pt;
+	font-weight: bold;
+	background-color: #a1a1a1;
+}
+
+.deviceRecoveringBg {
+	color: rgba(22,22,22,0.8);
+	font-size: 10pt;
+	font-weight: bold;
+	background-color: #ff8f1e;
+}
+
+.deviceErrorBg {
+	color: rgba(22,22,22,0.8);
+	font-size: 10pt;
+	font-weight: bold;
+	background-color: #750F7D;
+}
+
+.deviceDownMutedBg {
+	color: rgba(22,22,22,0.8);
+	font-size: 10pt;
+	font-weight: bold;
+	background-color: #ffe333;
+}
+
+.deviceThresholdBg {
+	color: rgba(22,22,22,0.8);
+	font-size: 10pt;
+	font-weight: bold;
+	background-color: #ffa833;
+}
+
+.deviceUnmonitoredBg {
+	color: rgba(22,22,22,0.8);
+	font-size: 10pt;
+	font-weight: bold;
+	background-color: rgba(250, 253, 158, 0.8);
+}
+
+.deviceWarningBg {
+	color: rgba(22,22,22,0.8);
+	font-size: 10pt;
+	font-weight: bold;
+	background-color: #aa7807;
+}
+
+.deviceAlertBg {
+	color: rgba(22,22,22,0.8);
+	font-size: 10pt;
+	font-weight: bold;
+	background-color: #660000;
 }
 
 .beingGraphed {
@@ -554,37 +651,6 @@ ul#breadcrumbs {
 	margin-right:2px;
 }
 
-.spikekillData, .spikekillData td {
-	border: 1px solid #999;
-}
-
-.spikekillNote {
-	padding: 1px;
-}
-
-.spikekillMenu {
-	background: #f5f5f5 none repeat scroll 0 0;
-    border: 1px solid #979797;
-    box-shadow: 2px 2px 2px #999999;
-    margin: 0;
-    padding: 2px;
-	line-height: 1.5em;
-}
-
-.spikekillMenu li {
-	vertical-align:middle;
-}
-
-.spikekillMenu i {
-	text-align:center;
-	width: 2.0em;
-	display:inline-block;
-}
-
-.spikekillMenu i:empty{
-	width: 2.0em;
-	display:inline-block;
-}
 
 .loginLeft, .logoutLeft {
 	width:33%;
@@ -649,6 +715,30 @@ legend {
 	color:black;
 }
 
+.actionsDropdown {
+	vertical-align:middle;
+	padding: 3px;
+	width: 100%;
+	line-height: 16px;
+	float: right;
+	text-align: right;
+	display: table-row;
+}
+
+.actionsDropdown div {
+	display: table-column;
+	float: left;
+	margin-top: auto;
+	margin-bottom: auto;
+}
+
+.actionsDropdownArrow {
+	margin-top: auto;
+	margin-bottom: auto;
+	float:left;
+	padding: 3px;
+}
+
 .loginPanel {
 	padding:4px 0px;
 }
@@ -660,6 +750,37 @@ legend {
 	padding-left: 5px;
 	vertical-align:top;
 	display: table-cell;
+}
+.spikekillData, .spikekillData td {
+	border: 1px solid #999;
+}
+
+.spikekillNote {
+	padding: 1px;
+}
+
+.spikekillMenu {
+	background: #f5f5f5 none repeat scroll 0 0;
+    border: 1px solid #979797;
+    box-shadow: 2px 2px 2px #999999;
+    margin: 0;
+    padding: 2px;
+	line-height: 1.5em;
+}
+
+.spikekillMenu li {
+	vertical-align:middle;
+}
+
+.spikekillMenu i {
+	text-align:center;
+	width: 2.0em;
+	display:inline-block;
+}
+
+.spikekillMenu i:empty{
+	width: 2.0em;
+	display:inline-block;
 }
 
 .cactiConsoleContentArea {
@@ -786,12 +907,28 @@ legend {
 }
 
 .cactiTableTitle {
-	width: 100%;
+	color: white;
+	float: left;
+	text-align: left;
+	padding: 3px 0px;
+	height: 16px;
+	display: table-column;
+	width: 90%;
+	background-color: #00438c;
 }
 
-.cactiTableTitle td {
-	line-height: 16px;
+.cactiTableButton {
+	float: right;
+	padding: 3px 0px;
+	height: 16px;
+	display: table-column;
+	text-align: right;
+	width: 10%;
 	background-color: #00438c;
+}
+
+.cactiTableButton span, .cactiTableTitle span {
+	padding: 0px 5px 0px 5px;
 }
 
 .cactiDebugTable {
@@ -904,26 +1041,72 @@ legend {
 
 .navBarNavigation {
 	color: white;
+	width: 100%;
 	text-align:center;
+	display:inline-block;
+	margin-bottom: -3px;
 	margin-left:auto;
 	margin-right:auto;
+	background-color: #00438c;
+}
+
+.navBarNavigation a, .navBarNavigation a:visited, .navBarNavigation a:hover {
+	color: white;
+	text-decoration: none;
+	font-weight: normal;
+}
+
+
+.navBarNavigationPrevious {
+	text-align: left;
+	cursor: pointer;
+	font-weight: bold;
+	float: left;
+	white-space: nowrap;
+	display: block;
+	width: 10%;
+	padding: 2px 0px;
+	height: 16px;
+	vertical-align: middle;
 }
 
 .navBarNavigationCenter {
+	text-align: center;
+	display: block;
+	float: left;
+	white-space: nowrap;
 	width:80%;
-	text-align:center;
+	padding: 2px 0px;
+	height: 16px;
+	margin-top: auto;
 }
 
-.navBarNavigationPrevious {
-	width:10%;
-	text-align:left;
-	cursor:pointer;
+.navBarNavigationCenter span {
+	vertical-align: middle;
 }
 
 .navBarNavigationNext {
-	width:10%;
-	text-align:right;
-	cursor:pointer;
+	text-align: right;
+	cursor: pointer;
+	font-weight: bold;
+	float: right;
+	white-space: nowrap;
+	display: block;
+	width: 10%;
+	padding: 2px 0px;
+	height: 16px;
+	vertical-align: middle;
+}
+
+.navBarNavigationNone {
+	text-align: center;
+	display: block;
+	float: left;
+	white-space: nowrap;
+	width:100%;
+	padding: 2px 0px;
+	height: 16px;
+	margin-top: auto;
 }
 
 .navBarNavigationNext i.ui-icon {

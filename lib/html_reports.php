@@ -1470,10 +1470,9 @@ function reports() {
 		get_request_var('sort_direction') .
 		' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows);
 
-	$nav = html_nav_bar(get_reports_page() . 'filter=' . get_request_var('filter') . '&host_id=' . get_request_var('host_id'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 10, __('Reports'), 'page', 'main');
+	form_start(get_reports_page(), 'chk');
 
-	/* print checkbox form for validation */
-	print "<form name='chk' method='post' action='". get_reports_page() . "'>\n";
+	$nav = html_nav_bar(get_reports_page() . 'filter=' . get_request_var('filter') . '&host_id=' . get_request_var('host_id'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 10, __('Reports'), 'page', 'main');
 
 	html_start_box('', '100%', '', '3', 'center', '');
 
@@ -1507,7 +1506,7 @@ function reports() {
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
 	$i = 0;
-	if (sizeof($reports_list) > 0) {
+	if (sizeof($reports_list)) {
 		$date_format = reports_date_time_format();
 
 		foreach ($reports_list as $report) {
@@ -1528,11 +1527,15 @@ function reports() {
 
 			form_end_row();
 		}
-		print $nav;
 	}else{
 		print "<tr><td><em>" . __('No Reports Found') . "</em></td></tr>\n";
 	}
+
 	html_end_box(false);
+
+	if (sizeof($reports_list)) {
+		print $nav;
+	}
 
 	/* draw the dropdown containing a list of available actions for this form */
 	draw_actions_dropdown($reports_actions);

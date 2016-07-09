@@ -1487,10 +1487,6 @@ function tree() {
 
 	html_end_box();
 
-	form_start('tree.php', 'chk');
-
-	html_start_box('', '100%', '', '3', 'center', '');
-
 	/* form the 'where' clause for our main sql query */
 	if (strlen(get_request_var('filter'))) {
 		$sql_where = "WHERE (t.name LIKE '%" . get_request_var('filter') . "%' OR ti.title LIKE '%" . get_request_var('filter') . "%')";
@@ -1518,7 +1514,11 @@ function tree() {
 
 	$nav = html_nav_bar('tree.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 11, __('Trees'), 'page', 'main');
 
+	form_start('tree.php', 'chk');
+
 	print $nav;
+
+	html_start_box('', '100%', '', '3', 'center', '');
 
 	$display_text = array(
 		'name' => array('display' => __('Tree Name'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('The name by which this Tree will be referred to as.')),
@@ -1535,7 +1535,7 @@ function tree() {
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
 	$i = 0;
-	if (sizeof($trees) > 0) {
+	if (sizeof($trees)) {
 		foreach ($trees as $tree) {
 			form_alternate_row('line' . $tree['id'], true);
 			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars('tree.php?action=edit&id=' . $tree['id']) . "'>" .
@@ -1552,12 +1552,14 @@ function tree() {
 			form_checkbox_cell($tree['name'], $tree['id']);
 			form_end_row();
 		}
-
-		print $nav;
 	}else{
 		print "<tr class='tableRow'><td colspan='11'><em>" . __('No Trees Found') . "</em></td></tr>";
 	}
 	html_end_box(false);
+
+	if (sizeof($trees)) {
+		print $nav;
+	}
 
 	/* draw the dropdown containing a list of available actions for this form */
 	draw_actions_dropdown($tree_actions);

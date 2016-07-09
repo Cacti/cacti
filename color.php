@@ -633,10 +633,6 @@ function color() {
 		$sql_having = '';
 	}
 
-	form_start('color.php', 'chk');
-
-	html_start_box('', '100%', '', '3', 'center', '');
-
 	$total_rows = db_fetch_cell("SELECT
 		COUNT(color)
 		FROM (
@@ -677,7 +673,11 @@ function color() {
 
     $nav = html_nav_bar('color.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 8, 'Colors', 'page', 'main');
 
+	form_start('color.php', 'chk');
+
     print $nav;
+
+	html_start_box('', '100%', '', '3', 'center', '');
 
 	$display_text = array(
 		'hex'       => array('display' => __('Hex'), 'align' => 'left', 'sort' => 'DESC', 'tip' => __('The Hex Value for this Color.')),
@@ -692,7 +692,7 @@ function color() {
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
 	$i = 0;
-	if (sizeof($colors) > 0) {
+	if (sizeof($colors)) {
 		foreach ($colors as $color) {
 			if ($color['graphs'] == 0 && $color['templates'] == 0) {
 				$disabled = false;
@@ -715,12 +715,15 @@ function color() {
 			form_checkbox_cell($color['name'], $color['id'], $disabled);
 			form_end_row();
 		}
-
-		print $nav;
 	}else{
 		print "<tr class='tableRow'><td colspan='7'><em>" . __('No Colors Found') . "</em></td></tr>\n";
 	}
+
 	html_end_box();
+
+	if (sizeof($colors)) {
+		print $nav;
+	}
 
 	/* draw the dropdown containing a list of available actions for this form */
 	draw_actions_dropdown($color_actions, 1);
