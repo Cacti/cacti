@@ -2,7 +2,7 @@
 
 body, table, tr, td, textarea {
 	font-family: Verdana, Arial, Helvetica, sans-serif;
-	font-size: 12px;
+	font-size: 10px;
 }
 
 body {
@@ -32,7 +32,6 @@ img {
 a, a:active, a:visited {
 	color: blue;
 	text-decoration: none;
-	font-size: 12px;
 }
 
 a:hover {
@@ -928,6 +927,7 @@ legend {
 
 .cactiTableButton span, .cactiTableTitle span {
 	padding: 0px 5px 0px 5px;
+	font-size: 12px;
 }
 
 .cactiDebugTable {
@@ -1047,12 +1047,14 @@ legend {
 	margin-left:auto;
 	margin-right:auto;
 	background-color: #00438c;
+	font-size: 12px;
 }
 
 .navBarNavigation a, .navBarNavigation a:visited, .navBarNavigation a:hover {
 	color: white;
 	text-decoration: none;
 	font-weight: normal;
+	font-size: 12px;
 }
 
 
