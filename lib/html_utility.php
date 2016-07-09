@@ -164,7 +164,7 @@ function form_selectable_cell($contents, $id, $width='', $style_or_class = '') {
 		}
 	}
 
-	print "\t<td id='$id' " . $output . ">" . $contents . "</td>\n";
+	print "\t<td " . $output . ">" . $contents . "</td>\n";
 }
 
 /* form_checkbox_cell - format's a tables checkbox form element so that the cacti js actions work on it
