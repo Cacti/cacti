@@ -1457,8 +1457,8 @@ function host() {
 				(strlen(get_request_var('filter')) ? preg_replace('/(' . preg_quote(get_request_var('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($host['description'])) : htmlspecialchars($host['description'])) . '</a>', $host['id']);
 			form_selectable_cell((strlen(get_request_var('filter')) ? preg_replace('/(' . preg_quote(get_request_var('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($host['hostname'])) : htmlspecialchars($host['hostname'])), $host['id']);
 			form_selectable_cell($host['id'], $host['id'], '', 'text-align:right');
-			form_selectable_cell(number_format($host['graphs']), $host['id'], '', 'text-align:right');
-			form_selectable_cell(number_format($host['data_sources']), $host['id'], '', 'text-align:right');
+			form_selectable_cell(number_format_i18n($host['graphs']), $host['id'], '', 'text-align:right');
+			form_selectable_cell(number_format_i18n($host['data_sources']), $host['id'], '', 'text-align:right');
 			form_selectable_cell(get_colored_device_status(($host['disabled'] == 'on' ? true : false), $host['status']), $host['id'], '', 'text-align:center');
 			form_selectable_cell(get_timeinstate($host), $host['id'], '', 'text-align:right');
 			form_selectable_cell($uptime, $host['id'], '', 'text-align:right');

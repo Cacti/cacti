@@ -1758,7 +1758,7 @@ function user_group() {
 			form_alternate_row('line' . $group['id'], true);
 			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars('user_group_admin.php?action=edit&tab=general&id=' . $group['id']) . "'>" .
 			(strlen(get_request_var('filter')) ? preg_replace('/(' . preg_quote(get_request_var('filter')) . ')/i', "<span class='filteredValue'>\\1</span>",  htmlspecialchars($group['name'])) : htmlspecialchars($group['name'])) . '</a>', $group['id']);
-			form_selectable_cell(($group['members'] > 0 ? number_format($group['members']):'None'), $group['id']);
+			form_selectable_cell(($group['members'] > 0 ? number_format_i18n($group['members']):'None'), $group['id']);
 			form_selectable_cell((strlen(get_request_var('filter')) ? preg_replace('/(' . preg_quote(get_request_var('filter')) . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($group['description'])) : htmlspecialchars($group['description'])), $group['id']);
 			form_selectable_cell(($group['policy_graphs'] == 1 ? __('ALLOW') : __('DENY') ), $group['id']);
 			form_selectable_cell(($group['policy_hosts'] == 1 ? __('ALLOW') : __('DENY') ), $group['id']);

@@ -710,8 +710,8 @@ function color() {
 			form_selectable_cell($color['read_only'] == 'on' ? __('Yes'):__('No'), $color['id']);
 			form_selectable_cell('', $color['id'], '', 'text-align:right;background-color:#' . $color['hex'] . ';min-width:30%');
 			form_selectable_cell($disabled ? __('No'):__('Yes'), $color['id'], '', 'text-align:right');
-			form_selectable_cell(number_format($color['graphs']), $color['id'], '', 'text-align:right');
-			form_selectable_cell(number_format($color['templates']), $color['id'], '', 'text-align:right');
+			form_selectable_cell(number_format_i18n($color['graphs']), $color['id'], '', 'text-align:right');
+			form_selectable_cell(number_format_i18n($color['templates']), $color['id'], '', 'text-align:right');
 			form_checkbox_cell($color['name'], $color['id'], $disabled);
 			form_end_row();
 		}

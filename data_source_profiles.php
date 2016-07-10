@@ -596,12 +596,12 @@ function get_size($id, $type, $cfs = '') {
 
 		$rows = db_fetch_cell_prepared('SELECT SUM(rows) FROM data_source_profiles_rra WHERE data_source_profile_id = ?', array($id));
 
-		return number_format(($rows * $row * $cfs + $dsheader) / 1000) . " KBytes per Data Source, and $header Bytes for the Header.";
+		return number_format_i18n(($rows * $row * $cfs + $dsheader) / 1000) . " KBytes per Data Source, and $header Bytes for the Header.";
 	}else{
 		$cfs  = db_fetch_cell_prepared('SELECT COUNT(*) FROM data_source_profiles_cf WHERE data_source_profile_id = ?', array($id));
 		$rows = get_filter_request_var('rows');
 
-		return number_format(($rows * $row * $cfs) / 1000) . " KBytes per Data Source.";
+		return number_format_i18n(($rows * $row * $cfs) / 1000) . " KBytes per Data Source.";
 	}
 }
 
@@ -871,8 +871,8 @@ function profile() {
 			form_selectable_cell($readonly ? __('Yes') : __('No'), $profile['id'], '', 'text-align:right');
 			form_selectable_cell($sampling_intervals[$profile['step']], $profile['id'], '', 'text-align:right');
 			form_selectable_cell($heartbeats[$profile['heartbeat']], $profile['id'], '', 'text-align:right');
-			form_selectable_cell(number_format($profile['data_sources']), $profile['id'], '', 'text-align:right');
-			form_selectable_cell(number_format($profile['templates']), $profile['id'], '', 'text-align:right');
+			form_selectable_cell(number_format_i18n($profile['data_sources']), $profile['id'], '', 'text-align:right');
+			form_selectable_cell(number_format_i18n($profile['templates']), $profile['id'], '', 'text-align:right');
 			form_checkbox_cell($profile['name'], $profile['id'], $disabled);
 			form_end_row();
 		}

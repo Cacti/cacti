@@ -206,7 +206,7 @@ if (is_array($xport_array['data'])) {
 			print "<tr><td align='left'>" . date('Y-m-d H:i:s', (isset($row["timestamp"]) ? $row["timestamp"] : $xport_array["meta"]["start"] + $j*$xport_array["meta"]["step"])) . "</td>";
 			for ($i = 1; $i <= $xport_array['meta']['columns']; $i++) {
 				if ($row['col' . $i] > 1) {
-					print "<td align='right'>" . trim(number_format(round($row['col' . $i],3))) . "</td>";
+					print "<td align='right'>" . trim(number_format_i18n(round($row['col' . $i],3))) . "</td>";
 				}elseif($row['col' . $i] == 0) {
 					print "<td align='right'>-</td>";
 				}else{

@@ -791,7 +791,7 @@ function template() {
 			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars('data_templates.php?action=template_edit&id=' . $template['id']) . "'>" . (strlen(get_request_var('filter')) ? preg_replace('/(' . preg_quote(get_request_var('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($template['name'])) : htmlspecialchars($template['name'])) . '</a>', $template['id']);
 			form_selectable_cell($template['id'], $template['id'], '', 'text-align:right');
 			form_selectable_cell($disabled ? __('No'):__('Yes'), $template['id'], '', 'text-align:right');
-			form_selectable_cell(number_format($template['data_sources']), $template['id'], '', 'text-align:right');
+			form_selectable_cell(number_format_i18n($template['data_sources']), $template['id'], '', 'text-align:right');
 			form_selectable_cell((empty($template['data_input_method']) ? '<em>' . __('None') .'</em>': htmlspecialchars($template['data_input_method'])), $template['id']);
 			form_selectable_cell((($template['active'] == 'on') ? __('Active'):__('Disabled')), $template['id']);
 			form_checkbox_cell($template['name'], $template['id'], $disabled);

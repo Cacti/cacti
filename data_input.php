@@ -713,8 +713,8 @@ function data() {
 			form_alternate_row('line' . $data_input['id'], true, $disabled);
 			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars('data_input.php?action=edit&id=' . $data_input['id']) . "'>" . (strlen(get_request_var('filter')) ? preg_replace('/(' . preg_quote(get_request_var('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($data_input['name'])) : htmlspecialchars($data_input['name'])) . '</a>', $data_input['id']);
 			form_selectable_cell($disabled ? __('No'): __('Yes'), $data_input['id'],'', 'text-align:right');
-			form_selectable_cell(number_format($data_input['data_sources']), $data_input['id'],'', 'text-align:right');
-			form_selectable_cell(number_format($data_input['templates']), $data_input['id'],'', 'text-align:right');
+			form_selectable_cell(number_format_i18n($data_input['data_sources']), $data_input['id'],'', 'text-align:right');
+			form_selectable_cell(number_format_i18n($data_input['templates']), $data_input['id'],'', 'text-align:right');
 			form_selectable_cell($input_types{$data_input['type_id']}, $data_input['id']);
 			form_checkbox_cell($data_input['name'], $data_input['id'], $disabled);
 			form_end_row();

@@ -806,8 +806,8 @@ function vdef($refresh = true) {
             form_alternate_row('line' . $vdef['id'], false, $disabled);
             form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars('vdef.php?action=edit&id=' . $vdef['id']) . "'>" . (strlen(get_request_var('filter')) ? preg_replace('/(' . preg_quote(get_request_var('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($vdef['name'])) : htmlspecialchars($vdef['name'])) . '</a>', $vdef['id']);
             form_selectable_cell($disabled ? __('No'):__('Yes'), $vdef['id'], '', 'text-align:right');
-            form_selectable_cell(number_format($vdef['graphs']), $vdef['id'], '', 'text-align:right');
-            form_selectable_cell(number_format($vdef['templates']), $vdef['id'], '', 'text-align:right');
+            form_selectable_cell(number_format_i18n($vdef['graphs']), $vdef['id'], '', 'text-align:right');
+            form_selectable_cell(number_format_i18n($vdef['templates']), $vdef['id'], '', 'text-align:right');
             form_checkbox_cell($vdef['name'], $vdef['id'], $disabled);
             form_end_row();
         }

@@ -537,8 +537,8 @@ function aggregate_color_template() {
 
 			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars('color_templates.php?action=template_edit&color_template_id=' . $template['color_template_id'] . '&page=1') . "'>" . (get_request_var('filter') != '' ? preg_replace('/(' . preg_quote(get_request_var('filter')) . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($template['name'])) : htmlspecialchars($template['name'])) . '</a>', $template['color_template_id']);
 			form_selectable_cell($disabled ? __('No') : __('Yes'), $template['color_template_id'], '', 'text-align:right');
-            form_selectable_cell(number_format($template['graphs']), $template['color_template_id'], '', 'text-align:right;');
-            form_selectable_cell(number_format($template['templates']), $template['color_template_id'], '', 'text-align:right;');
+            form_selectable_cell(number_format_i18n($template['graphs']), $template['color_template_id'], '', 'text-align:right;');
+            form_selectable_cell(number_format_i18n($template['templates']), $template['color_template_id'], '', 'text-align:right;');
 			form_checkbox_cell($template['name'], $template['color_template_id'], $disabled);
 			form_end_row();
 		}

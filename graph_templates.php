@@ -702,7 +702,7 @@ function template() {
 			form_selectable_cell($image_types[$template['image_format_id']], $template['id'], '', 'text-align:right');
 			form_selectable_cell($template['vertical_label'], $template['id'], '', 'text-align:right');
 			form_selectable_cell($disabled ? __('No'):__('Yes'), $template['id'], '', 'text-align:right');
-			form_selectable_cell(number_format($template['graphs']), $template['id'], '', 'text-align:right');
+			form_selectable_cell(number_format_i18n($template['graphs']), $template['id'], '', 'text-align:right');
 			form_checkbox_cell($template['name'], $template['id'], $disabled);
 			form_end_row();
 		}

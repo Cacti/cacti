@@ -809,7 +809,7 @@ function template() {
 			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars('host_templates.php?action=edit&id=' . $template['id']) . "'>" . (strlen(get_request_var('filter')) ? preg_replace('/(' . preg_quote(get_request_var('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($template['name'])) : htmlspecialchars($template['name'])) . '</a>', $template['id'], $disabled);
 			form_selectable_cell($template['id'], $template['id'], '', 'text-align:right', $disabled);
 			form_selectable_cell($disabled ? __('No'):__('Yes'), $template['id'], '', 'text-align:right', $disabled);
-			form_selectable_cell(number_format($template['hosts']), $template['id'], '', 'text-align:right', $disabled);
+			form_selectable_cell(number_format_i18n($template['hosts']), $template['id'], '', 'text-align:right', $disabled);
 			form_checkbox_cell($template['name'], $template['id'], $disabled);
 			form_end_row();
 		}
