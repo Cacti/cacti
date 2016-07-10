@@ -535,3 +535,47 @@ function read_user_i18n_setting($config_name) {
 }
 
 
+/**
+ * number_format_i18n - local specific number format wrapper
+ *
+ * @return - formatted numer in the correct locale
+ */
+function number_format_i18n ($number, $decimals = 0) {
+	global $cacti_locale, $cacti_country;
+
+	$country = strtoupper($cacti_country);
+
+	if (function_exists('numfmt_create')) {
+		$fmt = numfmt_create($cacti_locale . '_' . $country, NumberFormatter::DECIMAL);
+		numfmt_set_attribute($fmt, NumberFormatter::MAX_FRACTION_DIGITS, $decimals);
+
+		return numfmt_format($fmt, $number);
+	}else{
+		$origlocales = explode(';', setlocale(LC_ALL, 0));
+		setlocale(LC_ALL, $cacti_locale . '_' . $country);
+		$locale = localeconv();
+		$number = number_format($number, $decimals, $locale['decimal_point'], $locale['thousands_sep']);
+
+		foreach ($origlocales as $locale_setting) {
+			if (strpos($locale_setting, '=') !== false) {
+				list($category, $locale) = explode('=', $locale_setting);
+  			} else {
+				$category = LC_ALL;
+				$locale   = $locale_setting;
+			}
+
+			switch($category) {
+			case 'LC_ALL':
+			case 'LC_COLLATE':
+			case 'LC_CTYPE':
+			case 'LC_MONETARY':
+			case 'LC_NUMERIC':
+			case 'LC_TIME':
+				setlocale($category, $locale);
+			}
+		}
+
+		return $number;
+	}
+}
+
