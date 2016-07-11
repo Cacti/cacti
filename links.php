@@ -502,7 +502,7 @@ function edit_page() {
 			'value' => (isset($data['extendedstyle']) ? $data['extendedstyle']:'')
 		),
 		'consolenewsection' => array(
-			'friendly_name' => __('--> New Console Section'),
+			'friendly_name' => __('New Console Section'),
 			'method' => 'textbox',
 			'max_length' => 20,
 			'description' => __('If you don\'t like any of the choices above, type a new title in here.'),
@@ -521,13 +521,13 @@ function edit_page() {
 			'directory' => $config['base_path'] . '/include/content',
 			'exclusions' => array('README', 'index.php'),
 			'none_value' => __('Web URL Below'),
-			'description' => __('The file that contains the content for this page. This can be a file in Cacti /include/content/ directory or a valid Website URL.'),
+			'description' => __('The file that contains the content for this page. This file needs to be in the Cacti \'include/content/\' directory.'),
 			'value' => (isset($data['contentfile']) ? $data['contentfile']:'')
 		),
 		'fileurl' => array(
 			'friendly_name' => __('Web URL Location'),
 			'method' => 'textbox',
-			'description' => __('The valid URL to use as an external link.  Must include the type, for example http:// or https://.'),
+			'description' => __('The valid URL to use for this external link.  Must include the type, for example http://www.cacti.net.  Note that many websites do not allow them to be embedded in an iframe from a foreign site, and therefore External Linkinig may not work.'),
 			'max_length' => 255,
 			'size' => 80,
 			'default' => 'http://www.cacti.net',
@@ -571,7 +571,7 @@ function edit_page() {
 				$('#row_consolenewsection').hide();
 			} else {
 				$('#row_consolesection').show();
-				$('#row_consolenewsection').show();
+				setConsoleNewSectionVisibity();
 			}
 		}).change();
 
@@ -581,19 +581,19 @@ function edit_page() {
 
 		// if you change the section, make the 'new' textbox reflect it
 		// if you change it to 'new', then clear the textbox, and jump to it
-		$('#consolesection').change( function() {
-			if ($(this).val() == '__NEW__') {
-				$('#consolenewsection').val('').focus();
-			} else {
-				$('#consolenewsection').val($(this).val());
-			}
-		});
-
-		// if you just start typing in there, then change the combo to 'New'
-		$('#consolenewsection').change( function() {
-			$('#consolesection').val('__NEW__');
-		});
+		$('#consolesection').change(function() {
+			setConsoleNewSectionVisibity();
+		}).change();
 	});
+
+	function setConsoleNewSectionVisibity() {
+		if ($('#consolesection').val() == '__NEW__') {
+			$('#row_consolenewsection').show();
+			$('#consolenewsection').focus();
+		}else{
+			$('#row_consolenewsection').hide();
+		}
+	}
 
 	function changeFilename() {
 		if ($('#filename').val() == 0) {
