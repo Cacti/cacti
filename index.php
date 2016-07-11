@@ -27,6 +27,36 @@ top_header();
 
 api_plugin_hook('console_before');
 
+function render_external_links($style = 'FRONT') {
+	global $config;
+
+	$consoles = db_fetch_assoc_prepared('SELECT * FROM external_links WHERE style = ?', array($style));
+	if (sizeof($consoles)) {
+		foreach($consoles as $page) {
+			if (is_realm_allowed($page['id']+10000)) {
+				if (preg_match('/^((((ht|f)tp(s?))\:\/\/){1}\S+)/i', $page['contentfile'])) {
+					print '<iframe class="content" src="' . $page['contentfile'] . '" frameborder="0"></iframe>';
+				} else {
+					print '<div id="content">';
+
+					$file = $config['base_path'] . "/include/content/" . $page['contentfile'];
+
+					if (file_exists($file)) {
+						include_once($file);
+					} else {
+						print '<h1>The file \'' . $page['contentfile'] . '\' does not exist!!</h1>';
+					}
+
+					print '</div>';
+				}
+			}
+		}
+	}
+}
+
+render_external_links('FRONTTOP');
+
+if (read_config_option('hide_console') != '1') {
 ?>
 <table class='cactiTable'>
 	<tr>
@@ -46,8 +76,28 @@ api_plugin_hook('console_before');
 </table>
 
 <?php
+}
+
+render_external_links('FRONT');
 
 api_plugin_hook('console_after');
+
+?>
+<script type='text/javascript'>
+$(function() {
+	resizeWindow();
+	$(window).resize(function() {
+		resizeWindow();
+	});
+});
+
+function resizeWindow() {
+	height = parseInt($('#navigation_right').height());
+	width  = $('#main').width();
+	$('.content').css({'height':height+'px', 'width':width, 'margin-top':'-5px'});
+}
+</script>
+<?php
 
 bottom_footer();
 

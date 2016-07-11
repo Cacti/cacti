@@ -1734,6 +1734,17 @@ INSERT INTO data_template_rrd VALUES (92,'165a0da5f461561c85d092dfe96b9551',0,0,
 INSERT INTO data_template_rrd VALUES (95,'7a6ca455bbeff99ca891371bc77d5cf9',0,0,47,'','U','','0','',600,'',1,'','mem_cache','',0);
 INSERT INTO data_template_rrd VALUES (96,'224b83ea73f55f8a861bcf4c9bea0472',0,0,48,'on','100','','0','',600,'on',1,'','snmp_oid','',0);
 
+CREATE TABLE external_links (
+  id int(11) NOT NULL AUTO_INCREMENT,
+  sortorder int(11) NOT NULL DEFAULT '0',
+  enabled char(2) DEFAULT 'on',
+  contentfile varchar(255) NOT NULL default '',
+  title varchar(20) NOT NULL default '',
+  style varchar(10) NOT NULL DEFAULT '',
+  extendedstyle varchar(50) NOT NULL DEFAULT '',
+  PRIMARY KEY (id)
+) ENGINE=InnoDB COMMENT='Contains pointers to external links that are embedded into Cacti';
+
 --
 -- Table structure for table `graph_local`
 --

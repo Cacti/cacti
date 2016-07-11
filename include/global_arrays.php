@@ -572,28 +572,28 @@ $custom_data_source_types = array(
 );
 
 $menu = array(
-	'Create' => array(
+	__('Create') => array(
 		'graphs_new.php' => __('New Graphs')
 		),
-	'Management' => array(
+	__('Management') => array(
 		'graphs.php'           => __('Graphs'),
 		'tree.php'             => __('Trees'),
 		'data_sources.php'     => __('Data Sources'),
 		'host.php'             => __('Devices'),
 		'aggregate_graphs.php' => __('Aggregates'),
 		),
-	'Collection Methods' => array(
+	__('Collection Methods') => array(
 		'data_queries.php' => __('Data Queries'),
 		'data_input.php'   => __('Data Input Methods')
 		),
-	'Templates' => array(
+	__('Templates') => array(
 		'graph_templates.php'     => __('Graph'),
 		'host_templates.php'      => __('Device'),
 		'data_templates.php'      => __('Data Source'),
 		'aggregate_templates.php' => __('Aggregate'),
 		'color_templates.php'     => __('Color')
 		),
-	'Automation' => array(
+	__('Automation') => array(
 		'automation_networks.php'    => __('Networks'),
 		'automation_devices.php'     => __('Discovered Devices'),
 		'automation_templates.php'   => __('Device Rules'),
@@ -601,27 +601,45 @@ $menu = array(
 		'automation_tree_rules.php'  => __('Tree Rules'),
 		'automation_snmp.php'        => __('SNMP Options'),
 		),
-	'Presets' => array(
+	__('Presets') => array(
 		'data_source_profiles.php' => __('Data Profiles'),
 		'cdef.php'                 => __('CDEFs'),
 		'vdef.php'                 => __('VDEFs'),
 		'color.php'                => __('Colors'),
 		'gprint_presets.php'       => __('GPRINTs')
 		),
-	'Import/Export' => array(
+	__('Import/Export') => array(
 		'templates_import.php' => __('Import Templates'),
 		'templates_export.php' => __('Export Templates')
 		),
-	'Configuration'  => array(
-		'settings.php' => __('Settings')
+	__('Configuration')  => array(
+		'settings.php' => __('Settings'),
+		'links.php'    => __('External Links')
 		),
-	'Utilities' => array(
+	__('Utilities') => array(
 		'utilities.php'        => __('System Utilities'),
 		'user_admin.php'       => __('Users'),
 		'user_group_admin.php' => __('User Groups'),
 		'user_domains.php'     => __('User Domains')
 		)
 );
+
+if ((isset($_SESSION['sess_user_id']))) {
+	$consoles = db_fetch_assoc('SELECT id, title, extendedstyle
+		FROM external_links
+		WHERE style="CONSOLE"
+		AND enabled="on"
+		ORDER BY extendedstyle, sortorder, id');
+
+	if (sizeof($consoles)) {
+		foreach ($consoles as $page) {
+			if (is_realm_allowed($page['id']+10000)) {
+				$menuname = (isset($page['extendedstyle']) && $page['extendedstyle'] != '' ? $page['extendedstyle'] : __('External Links'));
+				$menu[$menuname]['link.php?id=' . $page['id']] = $page['title'];
+			}
+		}
+	}
+}
 
 $log_tail_lines = array(
 	-1    => __('All Lines'),
@@ -698,6 +716,7 @@ $user_auth_realms = array(
 	8    => __('Console Access'),
 	7    => __('View Graphs'),
 	20   => __('Update Profile'),
+	24   => __('External Links'),
 
 	1    => __('User Management'),
 	15   => __('Settings and Utilities'),
@@ -729,7 +748,7 @@ $user_auth_realms = array(
 );
 
 $user_auth_roles = array(
-	'Normal User'            => array(7, 19, 20, 22),
+	'Normal User'            => array(7, 19, 20, 22, 24),
 	'Template Editor'        => array(8, 2, 9, 10, 11, 12, 13, 14, 16, 17),
 	'General Administration' => array(8, 3, 4, 5, 23, 1043),
 	'System Administration'  => array(8, 15, 1, 18, 21, 101)
@@ -764,6 +783,7 @@ $user_auth_realm_filenames = array(
 	'managers.php' => 15,
 	'rrdcleaner.php' => 15,
 	'settings.php' => 15,
+	'links.php' => 15,
 	'data_queries.php' => 13,
 	'templates_export.php' => 16,
 	'templates_import.php' => 17,

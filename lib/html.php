@@ -829,12 +829,20 @@ function draw_menu($user_menu = "") {
 		/* pass 1: see if we are allowed to view any children */
 		$show_header_items = false;
 		foreach ($header_array as $item_url => $item_title) {
-			$current_realm_id = (isset($user_auth_realm_filenames{basename($item_url)}) ? $user_auth_realm_filenames{basename($item_url)} : 0);
+			if (preg_match('#link.php\?id=(\d+)#', $item_url, $matches)) {
+				if (is_realm_allowed($matches[1]+10000)) {
+					$show_header_items = true;
+				}else{
+					$show_header_items = false;
+				}
+			}else{
+				$current_realm_id = (isset($user_auth_realm_filenames{basename($item_url)}) ? $user_auth_realm_filenames{basename($item_url)} : 0);
 
-			if (is_realm_allowed($current_realm_id)) {
-				$show_header_items = true;
-			}elseif (api_user_realm_auth(strtok($item_url, '?'))) {
-				$show_header_items = true;
+				if (is_realm_allowed($current_realm_id)) {
+					$show_header_items = true;
+				}elseif (api_user_realm_auth(strtok($item_url, '?'))) {
+					$show_header_items = true;
+				}
 			}
 		}
 
@@ -1074,6 +1082,33 @@ function html_show_tabs_left($show_console_tab) {
 			}
 		}
 
+		$external_links = db_fetch_assoc('SELECT id, title FROM external_links WHERE style="TAB" ORDER BY sortorder');
+		if (sizeof($external_links)) {
+			foreach($external_link_tabs as $tab) {
+				if (is_realm_allowed($tab['id']+10000)) {
+					$parsed_url = parse_url($_SERVER['REQUEST_URI']);
+					$down = false;
+
+					if (trim($parsed_url['page'],'/') == 'link.php') {
+						if (!empty($parsed_url['query'])) {
+							$queries = explode('&', $parsed_url['query']);
+							foreach($queries as $q) {
+								list($var, $value) = explode('=', $q);
+								if ($var == 'id') {
+									if ($val == $tab['id']) {
+										$down = true;
+										break;
+									}
+								}
+							}
+						}
+					}
+									
+					print '<a href="' . $config['url_path'] . 'link.php?id=' . $tab['id'] . '"><img src="' . get_classic_tabimage($tab['title'], $down) . '" alt="' . $tab['title'] . '"></a>';
+				}
+			}
+		}
+
 		api_plugin_hook('top_graph_header_tabs');
 	}else{
 		if ($show_console_tab) {
@@ -1109,6 +1144,21 @@ function html_show_tabs_left($show_console_tab) {
 				'image' => '',
 				'url'   => $config['url_path'] . (is_realm_allowed(18) ? 'clog.php':'clog_user.php'),
 			);
+
+		$external_links = db_fetch_assoc('SELECT id, title FROM external_links WHERE style="TAB" ORDER BY sortorder');
+		if (sizeof($external_links)) {
+			foreach($external_links as $tab) {
+				if (is_realm_allowed($tab['id']+10000)) {
+					$tabs_left[] = 
+						array(
+							'title' => $tab['title'],
+							'id'    => 'maintab-anchor-link' . $tab['id'],
+							'image' => '',
+							'url'   => $config['url_path'] . 'link.php?id=' . $tab['id']
+						);
+				}
+			}
+		}
 
 		// Get Plugin Text Out of Band
 		ob_start();

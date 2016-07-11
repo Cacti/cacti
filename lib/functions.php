@@ -2717,12 +2717,20 @@ function draw_navigation_text($type = 'url') {
 		$tree_title = $tree_name . ($leaf_name != '' ? ' (' . $leaf_name:'') . ($leaf_sub != '' ? ':' . $leaf_sub . ')':($leaf_name != '' ? ')':''));
 
 		$current_nav .= "<li><a id='nav_title' href=#>" . htmlspecialchars($tree_title) . '</a></li></ul>';
+	}elseif (preg_match('#link.php\?id=(\d+)#', $_SERVER['REQUEST_URI'], $matches)) {
+        $title      = db_fetch_cell_prepared('SELECT title FROM external_links WHERE id = ?', array($matches[1]));
+		$tree_title = '';
+        if (isset($title)) {
+			$current_nav .= "<li><a id='link_title' href=#>" . htmlspecialchars($title) . '</a></li></ul>';
+        }else{
+			$current_nav .= '</ul>';
+		}
 	}else{
 		$current_nav .= '</ul>';
 		$tree_title = '';
 	}
 
-	$title       .= htmlspecialchars(resolve_navigation_variables($current_array['title']) . ' ' . $tree_title);
+	$title .= htmlspecialchars(resolve_navigation_variables($current_array['title']) . ' ' . $tree_title);
 
 	/* keep a cache for each level we encounter */
 	$nav_level_cache{$current_array['level']} = array('id' => $current_page . ':' . $current_action, 'url' => get_browser_query_string());
@@ -3940,5 +3948,106 @@ function get_timeinstate($host) {
 	$minutes = floor($time/60);
 
 	return $days . 'd:' . $hours . 'h:' . $minutes . 'm';
+}
+
+function get_classic_tabimage($text, $down = false) {
+	global $config;
+
+	$images = array(
+		false => 'tab_template_blue.gif',
+		true  => 'tab_template_red.gif'
+	);
+
+	if ($text == '') return false;
+
+	$text         = strtolower($text);
+
+	$possibles = array(
+		array('DejaVuSans-Bold.ttf', 9, true),
+		array('DejaVuSansCondensed-Bold.ttf', 9, false),
+		array('DejaVuSans-Bold.ttf', 9, false),
+		array('DejaVuSansCondensed-Bold.ttf', 9, false),
+		array('DejaVuSans-Bold.ttf', 8, false),
+		array('DejaVuSansCondensed-Bold.ttf', 8, false),
+		array('DejaVuSans-Bold.ttf', 7, false),
+		array('DejaVuSansCondensed-Bold.ttf', 7, true),
+	);
+
+	$y        = 30;
+	$x        = 44;
+	$wlimit   = 72;
+	$wrapsize = 12;
+
+	if (file_exists($config['base_path'] . '/images/' . $images[$down])) {
+		$originalpath = getenv('GDFONTPATH');
+		putenv('GDFONTPATH="' . $config['base_path'] . '/include/fonts"');
+
+		$template = imagecreatefromgif($config['base_path'] . '/images/' . $images[$down]);
+
+		$w = imagesx($template);
+		$h = imagesy($template);
+
+		$tab = imagecreatetruecolor($w, $h);
+		imagecopy($tab, $template, 0, 0, 0, 0, $w, $h);
+
+		$txcol = imagecolorat($tab, 0, 0);
+		imagecolortransparent($tab,$txcol);
+
+		$white = imagecolorallocate($tab, 255, 255, 255);
+
+		foreach ($possibles as $variation) {
+			$font     = $variation[0];
+			$fontsize = $variation[1];
+
+			$lines = array();
+
+			// if no wrapping is requested, or no wrapping is possible...
+			if((!$variation[2]) || ($variation[2] && strpos($text,' ') === false)) {
+				$bounds  = imagettfbbox($fontsize, 0, $font, $text);
+				$w       = $bounds[4] - $bounds[0];
+				$h       = $bounds[1] - $bounds[5];
+				$realx   = $x - $w/2 -1;
+				$lines[] = array($text, $font, $fontsize, $realx, $y);
+				$maxw    = $w;
+			} else {
+				$texts = explode("\n", wordwrap($text, $wrapsize), 2);
+				$line  = 1;
+				$maxw  = 0;
+				foreach ($texts as $txt) {
+					$bounds  = imagettfbbox($fontsize, 0, $font, $txt);
+					$w       = $bounds[4] - $bounds[0];
+					$h       = $bounds[1] - $bounds[5];
+					$realx   = $x - $w/2 -1;
+					$realy   = $y - $h * $line + 3;
+					$lines[] = array($txt, $font, $fontsize, $realx, $realy);
+					if ($maxw < $w) {
+						$maxw = $w;
+					}
+
+					$line--;
+				}
+			}
+						
+			if($maxw<$wlimit) break;
+		}
+
+		foreach ($lines as $line) {
+			imagettftext($tab, $line[2], 0, $line[3], $line[4], $white, $line[1], $line[0]);
+		}
+
+		putenv('GDFONTPATH=' . $originalpath);
+
+		imagetruecolortopalette($tab, true, 256);
+
+		// generate the image an return the data directly
+		ob_start();
+		imagegif($image);
+		$image = ob_get_contents();
+		ob_end_clean();
+
+		return("data:image/gif;base64," . base64_encode($image));
+	}else{
+		return false;
+	}
 }
 

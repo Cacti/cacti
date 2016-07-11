@@ -1460,9 +1460,9 @@ function user_realms_edit($header_label) {
 
 	$all_realms = $user_auth_realms;
 
-	print "	<tr class='cactiTableTitle'>
-			<td class='textHeaderDark'><strong>" . __('User Permissions') . "</strong> $header_label</td>
-			<td class='tableHeader' style='width:1%;text-align:center;'><input class='checkbox' type='checkbox' name='all' title='" . __('Select All') . "' onClick='selectAllRealms(this.checked)'></td>\n
+	print "	<tr class='cactiTable'>
+			<td class='cactiTableTitle'>" . __('User Permissions') . " $header_label</td>
+			<td class='cactiTableButton' style='text-align:right;padding-bottom:5px;'><input class='checkbox' type='checkbox' name='all' title='" . __('Select All') . "' onClick='selectAllRealms(this.checked)'></td>\n
 		</tr>\n";
 
 	/* do cacti realms first */
@@ -1508,6 +1508,57 @@ function user_realms_edit($header_label) {
 		if ($j > 1) {
 			print "<td class='realms' colspan='" . (6-$j) . "'></td>\n";
 			print "</tr>\n";
+		}
+
+		print "</table></td></tr>\n";
+	}
+
+	/* external links */
+	$links  = db_fetch_assoc('SELECT * FROM external_links ORDER BY sortorder');
+
+	$style_translate = array(
+		'CONSOLE'    => __('Console Menu'),
+		'TAB'        => __('Top Tab'),
+		'FRONT'      => __('Bottom of Console Page'),
+		'FRONTTOP'   => __('Top of Console Page')
+	);
+
+	print "<tr class='tableHeader'><th colspan='2'>" . __('External Link Permissions') . "</th></tr>\n";
+	print "<tr class='odd'><td colspan='4'><table style='width:100%;'><tr><td class='realms'>\n";
+	if (sizeof($links)) {
+		$i = 1;
+		$j = 1;
+
+		foreach($links as $r) {
+			$break = false;
+
+			if ($j == 6) {
+				print "</tr><tr>\n";
+				$break = true;;
+				$j = 1;
+			}else{
+				$j++;
+			}
+
+			if ($break) {
+				print "</td><td class='realms'>\n";
+			}
+			
+			$realm = $r['id'] + 10000;
+
+			if (sizeof(db_fetch_assoc_prepared('SELECT realm_id FROM user_auth_realm WHERE user_id = ? AND realm_id = ?', array(get_request_var('id', 0), $realm))) > 0) {
+				$old_value = 'on';
+			}else{
+				$old_value = '';
+			}
+
+			unset($all_realms[$realm]);
+
+			$description = $style_translate[$r['style']] . ' : ' . $r['title'] . ($r['style'] == 'CONSOLE' ? ' --> ' . $r['extendedstyle']:'');
+
+			form_checkbox('section' . $realm, $old_value, $description, '', '', '', (!isempty_request_var('id') ? 1 : 0)); print '<br>';
+
+			$i++;
 		}
 
 		print "</table></td></tr>\n";

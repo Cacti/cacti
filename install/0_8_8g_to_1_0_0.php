@@ -1482,4 +1482,26 @@ function upgrade_to_1_0_0() {
 		$templates = implode(',', array_rekey(db_fetch_assoc('SELECT graph_template_id FROM plugin_spikekill_templates'), 'graph_template_id', 'graph_template_id'));
 		db_install_execute('1.0.0', "REPLACE INTO settings (name, value) VALUES('spikekill_templates','$templates')");
 	}
+
+	// Migrate superlinks pages to new external links table
+	if (db_table_exists('superlinks_auth')) {
+		db_install_execute('1.0', 'RENAME TABLE superlinks_pages TO external_links');
+
+		db_install_execute('1.0', 'ALTER TABLE external_links DROP COLUMN imagecache');
+
+		db_install_execute('1.0', 'ALTER TABLE external_links ADD COLUMN enabled CHAR(2) default "on" AFTER disabled');
+		db_install_execute('1.0', 'UPDATE external_links SET enabled="on" WHERE disabled=""');
+		db_install_execute('1.0', 'UPDATE external_links SET enabled="" WHERE disabled="on"');
+		db_install_execute('1.0', 'DELETE FROM external_links WHERE style NOT IN ("TAB", "CONSOLE", "FRONT", "FRONTTOP")');
+
+		db_install_execute('1.0', 'ALTER TABLE external_links 
+			DROP COLUMN disabled, 
+			MODIFY COLUMN contentfile VARCHAR(255) NOT NULL default "", 
+			MODIFY COLUMN title VARCHAR(20) NOT NULL default "",
+			MODIFY COLUMN style VARCHAR(10) NOT NULL default ""');
+
+		db_install_execute('1.0', 'DELETE FROM superlinks_auth WHERE pageid NOT IN(SELECT id FROM external_links)');
+		db_install_execute('1.0', 'INSERT INTO user_auth_realm (user_id, realm_id) SELECT userid, pageid+10000 FROM superlinks_auth');
+		db_install_execute('1.0', 'DROP TABLE superlinks_auth');
+	}
 }

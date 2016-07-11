@@ -339,6 +339,13 @@ $settings = array(
 			'default' => 'on',
 			'method' => 'checkbox',
 			),
+		'hide_console' => array(
+			'friendly_name' => __('Hide Cacti Console'),
+			'description' => __('For use with Cacti\'s External Link Support.  Using this setting, you can replace the Cacti Console with your own page.'),
+			'method' => 'drop_array',
+			'default' => 0,
+			'array' => array(0 => __('No'), 1 => __('Yes'))
+		),
 		'force_https' => array(
 			'friendly_name' => __('Force Connections over HTTPS'),
 			'description' => __('When checked, any attempts to access Cacti will be redirected to HTTPS to insure high security.'),
