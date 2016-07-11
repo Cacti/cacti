@@ -199,6 +199,45 @@ function draw_edit_control($field_name, &$field_array) {
 		);
 
 		break;
+	case 'drop_files':
+		if (isset($field_array['directory'])) {
+			$dir = $field_array['directory'];
+
+			if (is_dir($dir) && is_readable($dir)) {
+				if (function_exists('scandir')) {
+					$files = scandir($dir);
+				} elseif ($dh = opendir($dir)) {
+					while (($file = readdir($dh)) !== false) {
+						$files[] = $file;
+					}
+					closedir($dh);
+				}
+
+				if (sizeof($files)) {
+				foreach($files as $file) {
+					if (is_readable($dir . '/' . $file) && $file != '.' && $file != '..') {
+						if (!in_array($file, $field_array['exclusions'])) {
+							$array_files[basename($file)] = basename($file);
+						}
+					}
+				}
+				}
+			}
+		}
+
+		form_dropdown(
+			$field_name, 
+			$array_files,
+			'', 
+			'', 
+			$field_array['value'],
+			((isset($field_array['none_value'])) ? $field_array['none_value'] : ''),
+			((isset($field_array['default'])) ? $field_array['default'] : ''),
+			((isset($field_array['class'])) ? $field_array['class'] : ''),
+			((isset($field_array['on_change'])) ? $field_array['on_change'] : '')
+		);
+
+		break;
 	case 'drop_sql':
 		form_dropdown(
 			$field_name,
