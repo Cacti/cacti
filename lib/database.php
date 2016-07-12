@@ -811,7 +811,10 @@ function sql_save($array_items, $table_name, $key_cols = 'id', $autoinc = TRUE, 
 	}
 
 	while (list($key, $value) = each($array_items)) {
-		if (strstr($cols[$key], 'int') !== false || strstr($cols[$key], 'float') !== false) {
+		if (strstr($cols[$key], 'int') !== false || 
+			strstr($cols[$key], 'float') !== false || 
+			strstr($cols[$key], 'double') !== false || 
+			strstr($cols[$key], 'decimal') !== false) {
 			if (empty($value)) {
 				$array_items[$key] = 0;
 			}else{
