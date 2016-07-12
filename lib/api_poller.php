@@ -28,6 +28,7 @@ function api_poller_cache_item_add($host_id, $host_field_override, $local_data_i
 	if (!isset($hosts[$host_id])) {
 		$host = db_fetch_row_prepared('SELECT ' . SQL_NO_CACHE . '
 			host.id,
+			host.poller_id,
 			host.hostname,
 			host.snmp_community,
 			host.snmp_version,
@@ -86,11 +87,11 @@ function api_poller_cache_item_add($host_id, $host_field_override, $local_data_i
 
 		$rrd_next_step = api_poller_get_rrd_next_step($rrd_step, $num_rrd_items);
 
-		return "($local_data_id, " . '0, ' . $host['id'] . ", $poller_action_id," . db_qstr($host['hostname']) . ",
-			" . db_qstr($host['snmp_community'])       . ', ' . db_qstr($host['snmp_version'])       . ', ' . db_qstr($host['snmp_timeout']) . ",
-			" . db_qstr($host['snmp_username'])        . ', ' . db_qstr($host['snmp_password'])      . ', ' . db_qstr($host['snmp_auth_protocol']) . ",
-			" . db_qstr($host['snmp_priv_passphrase']) . ', ' . db_qstr($host['snmp_priv_protocol']) . ', ' . db_qstr($host['snmp_context']) . ",
-			" . db_qstr($host['snmp_port'])            . ', ' . db_qstr($data_source_item_name) . ', '     . db_qstr(clean_up_path(get_data_source_path($local_data_id, true))) . ",
+		return "($local_data_id, " . $host['poller_id'] . ', ' . $host['id'] . ", $poller_action_id," . db_qstr($host['hostname']) . ",
+			" . db_qstr($host['snmp_community'])        . ', ' . db_qstr($host['snmp_version'])       . ', ' . db_qstr($host['snmp_timeout']) . ",
+			" . db_qstr($host['snmp_username'])         . ', ' . db_qstr($host['snmp_password'])      . ', ' . db_qstr($host['snmp_auth_protocol']) . ",
+			" . db_qstr($host['snmp_priv_passphrase'])  . ', ' . db_qstr($host['snmp_priv_protocol']) . ', ' . db_qstr($host['snmp_context']) . ",
+			" . db_qstr($host['snmp_port'])             . ', ' . db_qstr($data_source_item_name) . ', '     . db_qstr(clean_up_path(get_data_source_path($local_data_id, true))) . ",
 			" . db_qstr($num_rrd_items) . ', ' . db_qstr($rrd_step) . ', ' . db_qstr($rrd_next_step) . ', ' . db_qstr($arg1) . ', ' . db_qstr($arg2) . ', ' . db_qstr($arg3) . ", '1')";
 	}
 }
