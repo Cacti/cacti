@@ -339,10 +339,10 @@ function pages() {
 	html_end_box();
 
 	$style_translate = array(
-		'CONSOLE'    => __('Console Menu'),
+		'CONSOLE'    => __('Console'),
 		'TAB'        => __('Top Tab'),
-		'FRONT'      => __('Bottom of Console Page'),
-		'FRONTTOP'   => __('Top of Console Page')
+		'FRONT'      => __('Bottom Console'),
+		'FRONTTOP'   => __('Top Console')
 	);
 
 	if (strlen(get_request_var('filter'))) {
@@ -395,7 +395,7 @@ function pages() {
 			form_selectable_cell($actions, $page['id'], '50');
 			form_selectable_cell(htmlspecialchars($page['contentfile']), $page['id']);
 			form_selectable_cell(htmlspecialchars($page['title']), $page['id']);
-			form_selectable_cell(htmlspecialchars($style_translate[$page['style']]) . ($page['style'] == 'CONSOLE' ? ' (' . $page['extendedstyle'].')':''), $page['id']);
+			form_selectable_cell(htmlspecialchars($style_translate[$page['style']]) . ($page['style'] == 'CONSOLE' ? ' ( ' . ($page['extendedstyle'] == '' ? 'External Links':$page['extendedstyle']) . ' )':''), $page['id']);
 			form_selectable_cell(($page['enabled'] == 'on' ? 'Yes':'No'), $page['id']);
 
 			if (get_request_var('sort_column') == 'sortorder') {

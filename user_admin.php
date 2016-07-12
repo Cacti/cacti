@@ -1517,10 +1517,10 @@ function user_realms_edit($header_label) {
 	$links  = db_fetch_assoc('SELECT * FROM external_links ORDER BY sortorder');
 
 	$style_translate = array(
-		'CONSOLE'    => __('Console Menu'),
+		'CONSOLE'    => __('Console'),
 		'TAB'        => __('Top Tab'),
-		'FRONT'      => __('Bottom of Console Page'),
-		'FRONTTOP'   => __('Top of Console Page')
+		'FRONT'      => __('Bottom Console'),
+		'FRONTTOP'   => __('Top Console')
 	);
 
 	print "<tr class='tableHeader'><th colspan='2'>" . __('External Link Permissions') . "</th></tr>\n";
@@ -1554,7 +1554,7 @@ function user_realms_edit($header_label) {
 
 			unset($all_realms[$realm]);
 
-			$description = $style_translate[$r['style']] . ' : ' . $r['title'] . ($r['style'] == 'CONSOLE' ? ' --> ' . $r['extendedstyle']:'');
+			$description = $style_translate[$r['style']] . ': ' . ($r['style'] == 'CONSOLE' ? ($r['extendedstyle'] == '' ? 'External Links':$r['extendedstyle']) . '/' . $r['title']:'');
 
 			form_checkbox('section' . $realm, $old_value, $description, '', '', '', (!isempty_request_var('id') ? 1 : 0)); print '<br>';
 
