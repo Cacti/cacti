@@ -1,12 +1,16 @@
 /* main styles */
 
+html, body {
+	height: 100%;
+	margin: 0px;
+}
+
 body, table, tr, td, textarea {
 	font-family: Verdana, Arial, Helvetica, sans-serif;
 	font-size: 10px;
 }
 
 body {
-	margin: 0px;
 	background-color: #ffffff;
 	background-repeat: repeat-y;
 }
@@ -47,7 +51,10 @@ th .fa {
 }
 
 #main {
-	display:none;
+	display: none;
+	position: relative;
+	width: 100%;
+	height: 100%;
 }
 
 tr.selected {
@@ -546,7 +553,7 @@ label {
 	background: #a9a9a9 url("./images/cacti_logo.svg") no-repeat scroll left 40% / 380px auto;
 	padding-bottom:0px;
 	float:right;
-	width:400px;
+	width:200px;
 	height:37px;
 	z-index:-1;
 }
@@ -598,8 +605,11 @@ ul#breadcrumbs {
 
 .cactiContent {
 	width: 100%;
+	height: 100%;
 	vertical-align: top;
-	display: table;
+	display: inline-table;
+	position: relative;
+	overflow: hidden;
 }
 
 .cactiTreeNavigationArea {
@@ -610,7 +620,7 @@ ul#breadcrumbs {
 	padding-top:10px;
 	width:225px;
 	max-width:400px;
-	display: table-cell;
+	height: 100%;
 	vertical-align: top;
 }
 
@@ -628,6 +638,7 @@ ul#breadcrumbs {
 	vertical-align:top;
 	float:left;
 	width:162px;
+	height: 100%;
 	overflow:auto;
 }
 
@@ -725,7 +736,7 @@ legend {
 }
 
 .actionsDropdown div {
-	display: table-column;
+	display: table-cell;
 	float: left;
 	margin-top: auto;
 	margin-bottom: auto;
@@ -748,7 +759,6 @@ legend {
 	padding-right: 5px;
 	padding-left: 5px;
 	vertical-align:top;
-	display: table-cell;
 }
 .spikekillData, .spikekillData td {
 	border: 1px solid #999;
@@ -784,11 +794,12 @@ legend {
 
 .cactiConsoleContentArea {
 	background: #FFFFFF url('./../../../images/shadow.gif') repeat-x center top;
-	padding-top:10px;
+	padding-top: 10px;
 	padding-right: 5px;
 	padding-left: 5px;
-	margin-left:162px;
-	vertical-align:top;
+	margin-left: 162px;
+	height: 100%;
+	vertical-align: top;
 	display: none;
 }
 
@@ -910,7 +921,7 @@ legend {
 	text-align: left;
 	padding: 3px 0px;
 	height: 16px;
-	display: table-column;
+	display: table-cell;
 	width: 90%;
 	background-color: #00438c;
 }
@@ -919,7 +930,7 @@ legend {
 	float: right;
 	padding: 3px 0px;
 	height: 16px;
-	display: table-column;
+	display: table-cell;
 	text-align: right;
 	width: 10%;
 	background-color: #00438c;
