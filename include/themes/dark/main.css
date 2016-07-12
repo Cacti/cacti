@@ -1680,8 +1680,8 @@ ul#nav {
 }
 
 div.preformatted {
-	font-family: monospace;
-	white-space: pre;
+	color: snow !important;
+	font-size: 11px !important;
 }
 
 ul.pagination {

@@ -84,7 +84,7 @@ class MibCache{
 						. $object_params["otype"] . "','"
 						. $object_params["kind"] . "','"
 						. $object_params["max-access"] . "',"
-						. db_qstr(str_replace("\r\n", '\r\n', trim($object_params["description"]))) . ")"
+						. db_qstr(str_replace("\r\n", '<br>', trim($object_params["description"]))) . ")"
 					);
 					if($object_params["otype"] == "NOTIFICATION-TYPE") {
 						foreach($object_params["objects"] as $notication_object_index => $notication_object) {
