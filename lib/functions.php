@@ -3980,7 +3980,7 @@ function get_classic_tabimage($text, $down = false) {
 
 	if (file_exists($config['base_path'] . '/images/' . $images[$down])) {
 		$originalpath = getenv('GDFONTPATH');
-		putenv('GDFONTPATH="' . $config['base_path'] . '/include/fonts"');
+		putenv('GDFONTPATH=' . $config['base_path'] . '/include/fonts/');
 
 		$template = imagecreatefromgif($config['base_path'] . '/images/' . $images[$down]);
 
@@ -4041,7 +4041,7 @@ function get_classic_tabimage($text, $down = false) {
 
 		// generate the image an return the data directly
 		ob_start();
-		imagegif($image);
+		imagegif($tab);
 		$image = ob_get_contents();
 		ob_end_clean();
 

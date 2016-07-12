@@ -1084,26 +1084,28 @@ function html_show_tabs_left($show_console_tab) {
 
 		$external_links = db_fetch_assoc('SELECT id, title FROM external_links WHERE style="TAB" ORDER BY sortorder');
 		if (sizeof($external_links)) {
-			foreach($external_link_tabs as $tab) {
+			foreach($external_links as $tab) {
 				if (is_realm_allowed($tab['id']+10000)) {
 					$parsed_url = parse_url($_SERVER['REQUEST_URI']);
 					$down = false;
 
-					if (trim($parsed_url['page'],'/') == 'link.php') {
+					if (trim($parsed_url['path'],'/') == 'link.php') {
 						if (!empty($parsed_url['query'])) {
-							$queries = explode('&', $parsed_url['query']);
-							foreach($queries as $q) {
-								list($var, $value) = explode('=', $q);
-								if ($var == 'id') {
-									if ($val == $tab['id']) {
-										$down = true;
-										break;
+							if (isset($parsed_url['query'])) {
+								$queries = explode('&', $parsed_url['query']);
+								foreach($queries as $q) {
+									list($var, $value) = explode('=', $q);
+									if ($var == 'id') {
+										if ($val == $tab['id']) {
+											$down = true;
+											break;
+										}
 									}
 								}
 							}
 						}
 					}
-									
+
 					print '<a href="' . $config['url_path'] . 'link.php?id=' . $tab['id'] . '"><img src="' . get_classic_tabimage($tab['title'], $down) . '" alt="' . $tab['title'] . '"></a>';
 				}
 			}
