@@ -558,7 +558,7 @@ function cacti_log($string, $output = false, $environ = 'CMDPHP', $level = '') {
 
 	/* format the message */
 	if ($environ == 'POLLER') {
-		$message = "$date - " . $environ . ': Poller[0] ' . $string . "\n";
+		$message = "$date - " . $environ . ': Poller[' . $config['poller_id'] . '] ' . $string . "\n";
 	}else {
 		$message = "$date - " . $environ . ' ' . $string . "\n";
 	}
