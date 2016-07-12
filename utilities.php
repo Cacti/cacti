@@ -2538,27 +2538,30 @@ function snmpagent_utilities_run_eventlog(){
 
 	/* filter by severity */
 	if(get_request_var('receiver') != '-1') {
-		$sql_where .= " AND snmpagent_notifications_log.manager_id='" . get_request_var('receiver') . "'";
+		$sql_where .= " AND snl.manager_id='" . get_request_var('receiver') . "'";
 	}
 
 	/* filter by severity */
 	if (get_request_var('severity') == '-1') {
 	/* Show all items */
 	}elseif (!isempty_request_var('severity')) {
-		$sql_where .= " AND snmpagent_notifications_log.severity='" . get_request_var('severity') . "'";
+		$sql_where .= " AND snl.severity='" . get_request_var('severity') . "'";
 	}
 
 	/* filter by search string */
 	if (get_request_var('filter') != '') {
-		$sql_where .= " AND (`varbinds` LIKE '%%" . get_request_var('filter') . "%%')";
+		$sql_where .= " AND (`varbinds` LIKE '%" . get_request_var('filter') . "%')";
 	}
 	$sql_where .= ' ORDER by `time` DESC';
-	$sql_query = "SELECT snmpagent_notifications_log.*, snmpagent_managers.hostname, snmpagent_cache.description FROM snmpagent_notifications_log
-		INNER JOIN snmpagent_managers ON snmpagent_managers.id = snmpagent_notifications_log.manager_id
-		LEFT JOIN snmpagent_cache ON snmpagent_cache.name = snmpagent_notifications_log.notification
+	$sql_query = "SELECT snl.*, sm.hostname, sc.description
+		FROM snmpagent_notifications_log AS snl
+		INNER JOIN snmpagent_managers AS sm
+		ON sm.id = snl.manager_id
+		LEFT JOIN snmpagent_cache AS sc
+		ON sc.name = snl.notification
 		WHERE $sql_where LIMIT " . ($rows*(get_request_var('page')-1)) . ',' . $rows;
 
-	$total_rows = db_fetch_cell("SELECT COUNT(*) FROM snmpagent_notifications_log WHERE $sql_where");
+	$total_rows = db_fetch_cell("SELECT COUNT(*) FROM snmpagent_notifications_log AS snl WHERE $sql_where");
 	$logs = db_fetch_assoc($sql_query);
 
 	/* generate page list */
