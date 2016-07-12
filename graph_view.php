@@ -165,7 +165,11 @@ case 'get_node':
 	$tree_id = 0;
 
 	if (isset_request_var('tree_id')) {
-		if (get_nfilter_request_var('tree_id') == 'default' || 
+		if (get_nfilter_request_var('tree_id') == 0 && strstr(get_nfilter_request_var('id'), 'tbranch-') !== false) {
+			$tree_id = db_fetch_cell_prepared('SELECT graph_tree_id 
+				FROM graph_tree_items 
+				WHERE id = ?', array(str_replace('tbranch-', '', get_nfilter_request_var('id'))));
+		}else if (get_nfilter_request_var('tree_id') == 'default' || 
 			get_nfilter_request_var('tree_id') == 'undefined' || 
 			get_nfilter_request_var('tree_id') == '') {
 
