@@ -1089,17 +1089,15 @@ function html_show_tabs_left($show_console_tab) {
 					$parsed_url = parse_url($_SERVER['REQUEST_URI']);
 					$down = false;
 
-					if (trim($parsed_url['path'],'/') == 'link.php') {
-						if (!empty($parsed_url['query'])) {
-							if (isset($parsed_url['query'])) {
-								$queries = explode('&', $parsed_url['query']);
-								foreach($queries as $q) {
-									list($var, $value) = explode('=', $q);
-									if ($var == 'id') {
-										if ($val == $tab['id']) {
-											$down = true;
-											break;
-										}
+					if (basename($parsed_url['path']) == 'link.php') {
+						if (isset($parsed_url['query'])) {
+							$queries = explode('&', $parsed_url['query']);
+							foreach($queries as $q) {
+								list($var, $value) = explode('=', $q);
+								if ($var == 'id') {
+									if ($value == $tab['id']) {
+										$down = true;
+										break;
 									}
 								}
 							}
