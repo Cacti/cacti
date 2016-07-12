@@ -886,15 +886,17 @@ if (isset_request_var('database_hostname')) {
 						form_end_row();
 
 						$extensions = array( 
-							array('name' => 'session', 'installed' => false),
-							array('name' => 'sockets', 'installed' => false),
-							array('name' => 'PDO', 'installed' => false),
+							array('name' => 'session',   'installed' => false),
+							array('name' => 'sockets',   'installed' => false),
+							array('name' => 'PDO',       'installed' => false),
 							array('name' => 'pdo_mysql', 'installed' => false),
-							array('name' => 'xml', 'installed' => false),
-							array('name' => 'ldap', 'installed' => false),
-							array('name' => 'pcre', 'installed' => false),
-							array('name' => 'json', 'installed' => false),
-							array('name' => 'zlib', 'installed' => false)
+							array('name' => 'xml',       'installed' => false),
+							array('name' => 'ldap',      'installed' => false),
+							array('name' => 'pcre',      'installed' => false),
+							array('name' => 'json',      'installed' => false),
+							array('name' => 'openssl',   'installed' => false),
+							array('name' => 'gd',        'installed' => false),
+							array('name' => 'zlib',      'installed' => false)
 						);
 
 						$ext = verify_php_extensions($extensions);
