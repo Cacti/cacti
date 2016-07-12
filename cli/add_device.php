@@ -48,6 +48,8 @@ if (sizeof($parms)) {
 	/* setup defaults */
 	$description   = "";
 	$ip            = "";
+	$poller_id     = 1;
+	$site_id       = 0;
 	$template_id   = 0;
 	$community     = read_config_option("snmp_community");
 	$snmp_ver      = read_config_option("snmp_ver");
@@ -106,6 +108,14 @@ if (sizeof($parms)) {
 			break;
 		case "--notes":
 			$notes = trim($value);
+
+			break;
+		case "--site":
+			$site_id = trim($value);
+
+			break;
+		case "--poller":
+			$poller_id = trim($value);
 
 			break;
 		case "--disable":
@@ -286,6 +296,16 @@ if (sizeof($parms)) {
 		exit(1);
 	}
 
+	if (!is_numeric($site_id) || $site_id < 0) {
+		echo "ERROR: You have specified an invalid site id!\n";
+		exit(1);
+	}
+
+	if (!is_numeric($poller_id) || $poller_id < 0) {
+		echo "ERROR: You have specified an invalid poller id!\n";
+		exit(1);
+	}
+
 	/* process snmp information */
 	if ($snmp_ver < 0 || $snmp_ver > 3) {
 		echo "ERROR: Invalid snmp version ($snmp_ver)\n";
@@ -331,7 +351,8 @@ if (sizeof($parms)) {
 				$snmp_port, $snmp_timeout, $disable, $avail, $ping_method,
 				$ping_port, $ping_timeout, $ping_retries, $notes,
 				$snmp_auth_protocol, $snmp_priv_passphrase,
-				$snmp_priv_protocol, $snmp_context, $max_oids, $device_threads);
+				$snmp_priv_protocol, $snmp_context, $max_oids, $device_threads, 
+				$poller_id, $site_id);
 
 	if (is_error_message()) {
 		echo "ERROR: Failed to add this device\n";
@@ -350,8 +371,9 @@ function display_help() {
 	echo "Add Device Utility, Version $version, " . COPYRIGHT_YEARS . "\n\n";
 	echo "A simple command line utility to add a device in Cacti\n\n";
 	echo "usage: add_device.php --description=[description] --ip=[IP] --template=[ID] [--notes=\"[]\"] [--disable]\n";
+	echo "    [--poller=[id]] [--site=[id]\n";
 	echo "    [--avail=[ping]] --ping_method=[icmp] --ping_port=[N/A, 1-65534] --ping_retries=[2]\n";
-	echo "    [--version=[1|2|3]] [--community=] [--port=161] [--timeout=500]\n";
+	echo "    [--version=[0|1|2|3]] [--community=] [--port=161] [--timeout=500]\n";
 	echo "    [--username= --password=] [--authproto=] [--privpass= --privproto=] [--context=]\n";
 	echo "    [--quiet]\n\n";
 	echo "Required:\n";
@@ -361,11 +383,13 @@ function display_help() {
 	echo "    --template     0, is a number (read below to get a list of templates)\n";
 	echo "    --notes        '', General information about this host.  Must be enclosed using double quotes.\n";
 	echo "    --disable      0, 1 to add this host but to disable checks and 0 to enable it\n";
+	echo "    --poller       0, numeric poller id that will perform data collection for the device.\n";
+	echo "    --site         0, numeric site id that will be associated with the device.\n";
 	echo "    --avail        pingsnmp, [ping][none, snmp, pingsnmp]\n";
 	echo "    --ping_method  tcp, icmp|tcp|udp\n";
 	echo "    --ping_port    '', 1-65534\n";
 	echo "    --ping_retries 2, the number of time to attempt to communicate with a host\n";
-	echo "    --version      1, 1|2|3, snmp version\n";
+	echo "    --version      1, 0|1|2|3, snmp version.  0 for no snmp\n";
 	echo "    --community    '', snmp community string for snmpv1 and snmpv2.  Leave blank for no community\n";
 	echo "    --port         161\n";
 	echo "    --timeout      500\n";

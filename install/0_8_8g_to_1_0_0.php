@@ -1504,4 +1504,61 @@ function upgrade_to_1_0_0() {
 		db_install_execute('1.0', 'INSERT INTO user_auth_realm (user_id, realm_id) SELECT userid, pageid+10000 FROM superlinks_auth');
 		db_install_execute('1.0', 'DROP TABLE superlinks_auth');
 	}
+
+	db_install_execute('1.0', "CREATE TABLE `sites` (
+		`id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+		`name` varchar(100) NOT NULL DEFAULT '',
+		`address1` varchar(100) DEFAULT '',
+		`address2` varchar(100) DEFAULT '',
+		`city` varchar(50) DEFAULT '',
+		`state` varchar(20) DEFAULT NULL,
+		`postal_code` varchar(20) DEFAULT '',
+		`country` varchar(30) DEFAULT '',
+		`timezone` varchar(40) DEFAULT '',
+		`latitude` decimal(13,10) NOT NULL DEFAULT '0.0000000000',
+		`longitude` decimal(13,10) NOT NULL DEFAULT '0.0000000000',
+		`alternate_id` varchar(30) DEFAULT '',
+		`notes` varchar(1024),
+		PRIMARY KEY (`id`),
+		KEY `name` (`name`),
+		KEY `city` (`city`),
+		KEY `state` (`state`),
+		KEY `postal_code` (`postal_code`),
+		KEY `country` (`country`),
+		KEY `alternate_id` (`alternate_id`)) 
+		ENGINE=InnoDB 
+		COMMENT='Contains information about customer sites';");
+
+	db_install_execute('1.0', "ALTER TABLE host 
+		ADD COLUMN site_id INT UNSIGNED NOT NULL default '0' AFTER poller_id, 
+		MODIFY COLUMN poller_id mediumint(8) unsigned default '1',
+		ADD INDEX site_id(site_id)");
+
+	/* update the poller table */
+	$data = array();
+	$data['columns'][] = array('name' => 'id', 'type' => 'mediumint(8)', 'unsigned' => 'unsigned', 'NULL' => false, 'auto_increment' => true);
+	$data['columns'][] = array('name' => 'disabled', 'type' => 'char(2)', 'NULL' => true, 'default' => '', 'after' => 'id');
+	$data['columns'][] = array('name' => 'name', 'type' => 'varchar(30)', 'NULL' => false, 'default' => '', 'after' => 'disabled');
+	$data['columns'][] = array('name' => 'notes', 'type' => 'varchar(1024)', 'NULL' => false, 'default' => '', 'after' => 'name');
+	$data['columns'][] = array('name' => 'status', 'type' => 'int(10)', 'unsigned' => true, 'NULL' => false, 'default' => '0', 'after' => 'notes');
+	$data['columns'][] = array('name' => 'hostname', 'type' => 'varchar(255)', 'NULL' => false, 'default' => '', 'after' => 'status');
+	$data['columns'][] = array('name' => 'total_time', 'type' => 'double', 'NULL' => false, 'default' => 0, 'after' => 'hostname');
+	$data['columns'][] = array('name' => 'snmp', 'type' => 'mediumint(8)', 'unsigned' => true, 'NULL' => false, 'default' => 0, 'after' => 'total_time');
+	$data['columns'][] = array('name' => 'script', 'type' => 'mediumint(8)', 'unsigned' => true, 'NULL' => false, 'default' => 0, 'after' => 'snmp');
+	$data['columns'][] = array('name' => 'server', 'type' => 'mediumint(8)', 'unsigned' => true, 'NULL' => false, 'default' => 0, 'after' => 'script');
+	$data['columns'][] = array('name' => 'last_update', 'type' => 'timestamp', 'NULL' => false, 'default' => '0000-00-00', 'after' => 'server');
+	$data['columns'][] = array('name' => 'last_status', 'type' => 'timestamp', 'NULL' => false, 'default' => '0000-00-00', 'after' => 'last_update');
+	$data['primary']   = 'id';
+	$data['comment']   = 'Pollers for Cacti';
+	$data['type'] = 'InnoDB';
+	db_table_create('poller', $data);
+
+	db_install_execute('1.0', 'INSERT INTO poller (id, description, hostname) VALUES (1, "Main Poller", "localhost")');
+	db_install_execute('1.0', 'UPDATE automation_networks SET poller_id=1 WHERE poller_id=0');
+	db_install_execute('1.0', 'UPDATE automation_processes SET poller_id=1 WHERE poller_id=0');
+	db_install_execute('1.0', 'UPDATE host SET poller_id=1 WHERE poller_id=0');
+	db_install_execute('1.0', 'UPDATE poller_command SET poller_id=1 WHERE poller_id=0');
+	db_install_execute('1.0', 'UPDATE poller_item SET poller_id=1 WHERE poller_id=0');
+	db_install_execute('1.0', 'UPDATE poller_output_realtime SET poller_id=1 WHERE poller_id=0');
+	db_install_execute('1.0', 'UPDATE poller_time SET poller_id=1 WHERE poller_id=0');
 }

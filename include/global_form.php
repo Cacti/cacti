@@ -1015,6 +1015,23 @@ $fields_host_edit = array(
 		'max_length' => '250',
 		'size' => '60',
 		),
+	'poller_id' => array(
+		'method' => 'drop_sql',
+		'friendly_name' => __('Poller Association'),
+		'description' => __('Choose the Cacti Data Collector/Poller to be used to gather data from this Device.'),
+		'value' => '|arg1:poller_id|',
+		'default' => '1',
+		'sql' => 'SELECT id, name FROM poller ORDER BY name',
+		),
+	'site_id' => array(
+		'method' => 'drop_sql',
+		'friendly_name' => __('Device Site Association'),
+		'description' => __('What Site is this Desive associated with.'),
+		'value' => '|arg1:site_id|',
+		'none_value' => __('None'),
+		'default' => '0',
+		'sql' => 'SELECT id,name FROM sites ORDER BY name',
+		),
 	'host_template_id' => array(
 		'method' => 'drop_sql',
 		'friendly_name' => __('Device Template'),

@@ -579,10 +579,12 @@ $menu = array(
 		'graphs.php'           => __('Graphs'),
 		'tree.php'             => __('Trees'),
 		'data_sources.php'     => __('Data Sources'),
+		'sites.php'            => __('Sites'),
 		'host.php'             => __('Devices'),
 		'aggregate_graphs.php' => __('Aggregates'),
 		),
-	__('Collection Methods') => array(
+	__('Data Collection') => array(
+		'pollers.php' => __('Data Collectors'),
 		'data_queries.php' => __('Data Queries'),
 		'data_input.php'   => __('Data Input Methods')
 		),
@@ -725,7 +727,7 @@ $user_auth_realms = array(
 	2    => __('Data Input Methods'),
 	13   => __('Data Queries'),
 
-	3    => __('Devices/Data Sources'),
+	3    => __('Sites/Devices/Data Sources/Data Collectors'),
 	5    => __('Graphs'),
 	4    => __('Trees'),
 	1043 => __('Remove Spikes from Graphs'),
@@ -777,6 +779,8 @@ $user_auth_realm_filenames = array(
 	'graphs.php' => 5,
 	'graphs_items.php' => 5,
 	'graphs_new.php' => 5,
+	'sites.php' => 3,
+	'pollers.php' => 3,
 	'host.php' => 3,
 	'host_templates.php' => 12,
 	'index.php' => 8,
@@ -872,6 +876,7 @@ $hash_version_codes = array(
 	'0.8.8e' => '0025',
 	'0.8.8f' => '0025',
 	'0.8.8g' => '0025',
+	'0.8.8h' => '0025',
 	'1.0.0'  => '0027'
 );
 
@@ -897,6 +902,8 @@ $host_struc = array(
 	'host_template_id',
 	'description',
 	'hostname',
+	'site_id',
+	'poller_id',
 	'notes',
 	'snmp_community',
 	'snmp_version',

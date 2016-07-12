@@ -2534,7 +2534,8 @@ INSERT INTO graph_tree_items VALUES (1,0,0,1,0,'',1,1,1);
 
 CREATE TABLE host (
   id mediumint(8) unsigned NOT NULL auto_increment,
-  poller_id int(10) unsigned NOT NULL default '0',
+  poller_id mediumint(8) unsigned NOT NULL default '0',
+  site_id int(10) unsigned NOT NULL default '0',
   host_template_id mediumint(8) unsigned NOT NULL default '0',
   description varchar(150) NOT NULL default '',
   hostname varchar(250) default NULL,
@@ -2578,6 +2579,7 @@ CREATE TABLE host (
   availability decimal(8,5) NOT NULL default '100.00000',
   PRIMARY KEY  (id),
   KEY poller_id (poller_id),
+  KEY site_id (site_id),
   KEY disabled (disabled)
 ) ENGINE=InnoDB;
 
@@ -2792,13 +2794,23 @@ INSERT INTO `plugin_hooks` VALUES (2, 'internal', 'draw_navigation_text', '', 'p
 -- Table structure for table `poller`
 --
 
-CREATE TABLE poller (
-  id smallint(5) unsigned NOT NULL auto_increment,
-  hostname varchar(250) NOT NULL default '',
-  ip_address int(11) unsigned NOT NULL default '0',
-  last_update timestamp NOT NULL default '0000-00-00 00:00:00',
-  PRIMARY KEY  (id)
-) ENGINE=InnoDB;
+CREATE TABLE `poller` (
+  `id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
+  `disabled` char(2) DEFAULT '',
+  `name` varchar(30) DEFAULT NULL,
+  `notes` varchar(1024) DEFAULT '',
+  `status` int(10) unsigned NOT NULL DEFAULT '0',
+  `hostname` varchar(250) NOT NULL DEFAULT '',
+  `total_time` double DEFAULT '0',
+  `snmp` mediumint(8) unsigned DEFAULT '0',
+  `script` mediumint(8) unsigned DEFAULT '0',
+  `server` mediumint(8) unsigned DEFAULT '0',
+  `last_update` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `last_status` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB COMMENT='Pollers for Cacti';
+
+INSERT INTO poller (id,name,hostname) VALUES (1,'Main Poller', 'localhost');
 
 --
 -- Table structure for table `poller_command`
@@ -3562,6 +3574,37 @@ CREATE TABLE `sessions` (
 
 --
 -- Dumping data for table `sessions`
+--
+
+--
+-- Table structure for table `sites`
+--
+
+CREATE TABLE `sites` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) NOT NULL DEFAULT '',
+  `address1` varchar(100) DEFAULT '',
+  `address2` varchar(100) DEFAULT '',
+  `city` varchar(50) DEFAULT '',
+  `state` varchar(20) DEFAULT NULL,
+  `postal_code` varchar(20) DEFAULT '',
+  `country` varchar(30) DEFAULT '',
+  `timezone` varchar(40) DEFAULT '',
+  `latitude` decimal(13,10) NOT NULL DEFAULT '0.0000000000',
+  `longitude` decimal(13,10) NOT NULL DEFAULT '0.0000000000',
+  `alternate_id` varchar(30) DEFAULT '',
+  `notes` varchar(1024),
+  PRIMARY KEY (`id`),
+  KEY `name` (`name`),
+  KEY `city` (`city`),
+  KEY `state` (`state`),
+  KEY `postal_code` (`postal_code`),
+  KEY `country` (`country`),
+  KEY `alternate_id` (`alternate_id`)
+) ENGINE=InnoDB COMMENT='Contains information about customer sites';
+
+--
+-- Dumping data for table `sites`
 --
 
 --

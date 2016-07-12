@@ -76,7 +76,7 @@ $mibs      = false;
 
 /* set the poller_id */
 if (!isset($config['poller_id'])) {
-	$poller_id = 0;
+	$poller_id = 1;
 }else{
 	$poller_id = $config['poller_id'];
 }
@@ -119,10 +119,13 @@ foreach($parms as $parameter) {
 }
 
 // pollers must be positive integers
-if (!is_numeric($poller_id) || $poller_id < 0) {
+if (!is_numeric($poller_id) || $poller_id < 1) {
 	cacti_log('FATAL: The poller id must be a positive integer', false, 'POLLER');
 	exit;
 }
+
+// Check to see if the poller is disabled
+poller_enabled_check($poller_id);
 
 // install signal handlers for UNIX only
 if (function_exists('pcntl_signal')) {
@@ -248,6 +251,31 @@ $polling_hosts         = array_merge(array(0 => array('id' => '0')), db_fetch_as
 while ($poller_runs_completed < $poller_runs) {
 	/* record the start time for this loop */
 	$loop_start = microtime(true);
+
+	$scripts = $server = $snmp = 0;
+	$totals = db_fetch_assoc('SELECT action, count(*) AS totals FROM poller_item GROUP BY action');
+	if (sizeof($totals)) {
+		foreach($totals as $value) {
+			switch($value['action']) {
+			case '0': // SNMP
+				$snmp = $value['totals'];
+				break;
+			case '1': // Script
+				$script = $value['totals'];
+				break;
+			case '2': // Server
+				$server = $value['totals'];
+				break;
+			}
+		}
+	}
+
+	/* update statistics */
+	db_execute_prepared('INSERT INTO poller (id, snmp, script, server, last_status, status)
+		VALUES (?, ?, ?, ?, NOW(), 1)
+		ON DUPLICATE KEY UPDATE snmp=VALUES(snmp), script=VALUES(script), 
+		server=VALUES(server), last_status=VALUES(last_status), status=VALUES(status)', 
+		array($poller_id, $snmp, $script, $server));
 
 	/* calculate overhead time */
 	if ($overhead_time == 0) {
@@ -474,20 +502,6 @@ while ($poller_runs_completed < $poller_runs) {
 	$loop_time = $loop_end - $loop_start;
 
 	if ($loop_time < $poller_interval) {
-
-		if ($poller_runs_completed == 1) {
-			$sleep_time = $poller_interval - $loop_time - $overhead_time;
-		} else {
-			$sleep_time = $poller_interval - $loop_time;
-		}
-
-		/* log some nice debug information */
-		if ($debug) {
-			echo 'Loop  Time is: ' . round($loop_time, 2) . "\n";
-			echo 'Sleep Time is: ' . round($sleep_time, 2) . "\n";
-			echo 'Total Time is: ' . round($loop_end - $poller_start, 2) . "\n";
- 		}
-
 		/* sleep the appripriate amount of time */
 		if ($poller_runs_completed < $poller_runs) {
 			$plugin_start = microtime(true);
@@ -498,6 +512,23 @@ while ($poller_runs_completed < $poller_runs) {
 			boost_poller_bottom();
 
 			api_plugin_hook('poller_bottom');
+
+			/* record the start time for this loop */
+			$loop_end      = microtime(true);
+			$cur_loop_time = $loop_end - $loop_start;
+
+			if ($poller_runs_completed == 1) {
+				$sleep_time = $poller_interval - $cur_loop_time - $overhead_time;
+			} else {
+				$sleep_time = $poller_interval - $cur_loop_time;
+			}
+
+			/* log some nice debug information */
+			if ($debug) {
+				echo 'Loop  Time is: ' . round($loop_time, 2) . "\n";
+				echo 'Sleep Time is: ' . round($sleep_time, 2) . "\n";
+				echo 'Total Time is: ' . round($loop_end - $poller_start, 2) . "\n";
+ 			}
 
 			$plugin_end = microtime(true);
 			if (($sleep_time - ($plugin_end - $plugin_start)) > 0) {
@@ -511,8 +542,19 @@ while ($poller_runs_completed < $poller_runs) {
 	}
 }
 
+function poller_enabled_check($poller_id) {
+	$disabled = db_fetch_cell_prepared('SELECT disabled FROM poller WHERE id = ?', array($poller_id));
+
+	if ($disabled == 'on') {
+		db_execute_prepared('UPDATE poller SET last_status=NOW() WHERE id = ?', array($poller_id));
+		cacti_log('WARNING: Poller is Disabled, not graphing or other activities are running', true, 'SYSTEM');
+		exit(1);
+	}
+}
+
 function log_cacti_stats($loop_start, $method, $concurrent_processes, $max_threads, $num_hosts,
 	$hosts_per_process, $num_polling_items, $rrds_processed) {
+	global $poller_id;
 
 	/* take time and log performance data */
 	$loop_end = microtime(true);
@@ -532,7 +574,12 @@ function log_cacti_stats($loop_start, $method, $concurrent_processes, $max_threa
 	cacti_log('STATS: ' . $cacti_stats , true, 'SYSTEM');
 
 	/* insert poller stats into the settings table */
-	db_execute("REPLACE INTO settings (name, value) VALUES ('stats_poller','$cacti_stats')");
+	db_execute_prepared('REPLACE INTO settings (name, value) VALUES ("stats_poller",?)', array($cacti_stats));
+	db_execute_prepared('INSERT INTO poller (id, total_time, last_update, last_status, status) 
+		VALUES (?, ?, NOW(), NOW(), 2)
+		ON DUPLICATE KEY UPDATE total_time=VALUES(total_time), last_update=VALUES(last_update),
+		last_status=VALUES(last_status), status=VALUES(status)', 
+		array($poller_id, round($loop_end-$loop_start,4)));
 
 	/* update snmpcache */
 	snmpagent_cacti_stats_update($perf_data);

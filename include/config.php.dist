@@ -43,11 +43,11 @@ $rdatabase_password = 'cactiuser';
 $rdatabase_port     = '3306';
 $rdatabase_ssl      = false;
 
-/* the poller_id of this system.  set to '0' for the main cacti
+/* the poller_id of this system.  set to '1' for the main cacti
  * web server.  otherwise, you this value should be the poller_id
- * for the rmote poller. */
+ * for the remote poller. */
 
-$poller_id = 0;
+$poller_id = 1;
 
 /* set the $url_path to point to the default URL of your cacti 
  * install ex: if your cacti install as at 
