@@ -2587,7 +2587,7 @@ CREATE TABLE host (
 -- Dumping data for table `host`
 --
 
-INSERT INTO `host` VALUES (1,0,8,'Localhost','127.0.0.1','','public',2,'','','','','','',161,500,'','',0,'','','',2,1,0,500,2,10,1,'',0,0,'0000-00-00 00:00:00','0000-00-00 00:00:00','',9.99999,0.00000,0.00000,0.00000,0,0,0,100.00000);
+INSERT INTO `host` VALUES (1,1,0,8,'Localhost','127.0.0.1','','public',2,'','','','','','',161,500,'','',0,'','','',2,1,0,500,2,10,1,'',0,0,'0000-00-00 00:00:00','0000-00-00 00:00:00','',9.99999,0.00000,0.00000,0.00000,0,0,0,100.00000);
 
 --
 -- Table structure for table `host_graph`
@@ -2883,7 +2883,7 @@ CREATE TABLE  `poller_output_boost` (
   `time` timestamp NOT NULL default '0000-00-00 00:00:00',
   `output` varchar(512) NOT NULL,
   PRIMARY KEY USING BTREE (`local_data_id`,`rrd_name`,`time`)
-) ENGINE=InnoDB ROW_FORMAT=FIXED;
+) ENGINE=InnoDB;
 
 --
 -- Table structure for table `poller_output_boost_processes`
@@ -3568,7 +3568,7 @@ CREATE TABLE `sessions` (
   `id` varchar(32) NOT NULL,
   `remote_addr` varchar(25) NOT NULL DEFAULT '',
   `access` int(10) unsigned DEFAULT NULL,
-  `data` text,
+  `data` mediumblob,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB COMMENT='Used for Database based Session Storage';
 
@@ -3809,7 +3809,7 @@ INSERT INTO vdef_items VALUES(15, 'e7ae90275bc1efada07c19ca3472d9db', 7, 3, 1, '
 --
 
 CREATE TABLE version (
-  cacti char(20) default NULL,
+  cacti char(20) default '',
   PRIMARY KEY  (cacti)
 ) ENGINE=InnoDB;
 
