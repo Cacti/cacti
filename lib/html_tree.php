@@ -350,7 +350,7 @@ function draw_dhtml_tree_level_graphing($tree_id, $parent = 0) {
 								ON gl.snmp_query_id=sq.id
 								AND gl.host_id=" . $leaf['host_id'] . "
 								GROUP BY sq.id
-							ORDER BY sq.name");
+								ORDER BY sq.name");
 
 							array_push($data_queries, array(
 								'id' => '0',
@@ -807,7 +807,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 	}elseif ($leaf_type == 'host') {
 		/* graph template grouping */
 		if ($leaf['host_grouping_type'] == HOST_GROUPING_GRAPH_TEMPLATE) {
-			$sql_where       = 'gl.host_id=' . $leaf['host_id'] . (empty($graph_template_id) ? '' : ' AND gt.id=' . $graph_template_id);
+			$sql_where       = 'gl.host_id=' . $leaf['host_id'] . (empty($graph_template_id) ? '' : ' AND gt.graph_template_id=' . $graph_template_id);
 			$graph_templates = get_allowed_graph_templates($sql_where);
 
 			/* for graphs without a template */
