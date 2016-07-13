@@ -15,12 +15,17 @@
     -webkit-box-shadow: inset 0 0 4px rgba(49,68,43,0.5); 
 }
 
+html, body {
+	height: 100%;
+	width: 100%;
+	margin: 0px;
+}
+
 body {
 	background: #161616 none repeat scroll 0 0;
 	color: #bbbfc2;
 	font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
 	font-size: 12px;
-	margin: 0;
 }
 
 li {
@@ -29,11 +34,6 @@ li {
 
 table, tr, td, textarea {
 	-ms-overflow-style:scrollbar;
-}
-
-body {
-	margin: 0px;
-	background-repeat: repeat-y;
 }
 
 table {
@@ -75,7 +75,9 @@ th i.fa {
 }
 
 #main {
-	display:none;
+	display: none;
+	width: 100%;
+	position: relative;
 	z-index: 3;
 }
 
@@ -840,24 +842,29 @@ legend {
 .actionsDropdown {
 	vertical-align:middle;
 	padding: 3px;
-	width: 100%;
-	line-height: 16px;
-	float: right;
+	width:100%;
 	text-align: right;
-	display: table-row;
+	display: table;
 }
 
 .actionsDropdown div {
-	display: table-column;
-	float: left;
+	display: table-row;
 	margin-top: auto;
 	margin-bottom: auto;
+}
+
+.actionsDropdownButton {
+	vertical-align: top;
+	float: right;
+	margin-top: 1px;
+	margin-left: 3px;
+	display: table-cell;
 }
 
 .actionsDropdownArrow {
 	margin-top: auto;
 	margin-bottom: auto;
-	float:left;
+	float:left !important;
 	padding: 3px;
 }
 

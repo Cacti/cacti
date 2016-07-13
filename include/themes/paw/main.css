@@ -740,23 +740,28 @@ legend {
 	vertical-align:middle;
 	padding: 3px;
 	width:100%;
-	line-height:10px;
-	float: right;
 	text-align: right;
-	display: table-row;
+	display: table;
 }
 
 .actionsDropdown div {
-	display: table-column;
-	float: left;
+	display: table-row;
 	margin-top: auto;
 	margin-bottom: auto;
+}
+
+.actionsDropdownButton {
+	vertical-align: top;
+	float: right;
+	margin-top: 1px;
+	margin-left: 3px;
+	display: table-cell;
 }
 
 .actionsDropdownArrow {
 	margin-top: auto;
 	margin-bottom: auto;
-	float:left;
+	float:left !important;
 	padding: 3px;
 }
 

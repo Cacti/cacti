@@ -1,5 +1,11 @@
 /* main styles */
 
+html, body {
+	height: 100%;
+	width: 100%;
+	margin: 0px;
+}
+
 body, table, tr, td, textarea {
 	font-family: Verdana, Arial, Helvetica, sans-serif;
 	font-size: 12px;
@@ -8,7 +14,6 @@ body, table, tr, td, textarea {
 }
 
 body {
-	margin: 0px;
 	background-color: snow;
 	background-repeat: repeat-y;
 }
@@ -53,6 +58,8 @@ th i.fa {
 
 #main {
 	display:none;
+	position: relative;
+	width: 100%;
 	z-index: 3;
 }
 
@@ -814,25 +821,31 @@ legend {
 	vertical-align:middle;
 	padding: 3px;
 	width:100%;
-	line-height: 16px;
-	float: right;
 	text-align: right;
-	display: table-row;
+	display: table;
 }
 
 .actionsDropdown div {
-	display: table-column;
-	float: left;
+	display: table-row;
 	margin-top: auto;
 	margin-bottom: auto;
+}
+
+.actionsDropdownButton {
+	vertical-align: top;
+	float: right;
+	margin-top: 1px;
+	margin-left: 3px;
+	display: table-cell;
 }
 
 .actionsDropdownArrow {
 	margin-top: auto;
 	margin-bottom: auto;
-	float:left;
+	float:left !important;
 	padding: 3px;
 }
+
 .cactiTooltipHint {
 	cursor: pointer;
 	color: #627D4D;

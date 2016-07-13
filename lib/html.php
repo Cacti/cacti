@@ -928,9 +928,11 @@ function draw_actions_dropdown($actions_array, $delete_action = 1) {
 
 	?>
 	<div class='actionsDropdown'>
-		<div class='actionsDropdownArrow'><img src='<?php echo $config['url_path']; ?>images/arrow.gif' alt=''></div>
-		<?php form_dropdown('drp_action',$actions_array, '', '', '0', '', '');?>
-		<input id='submit' type='submit' value='Go' title='<?php print __('Execute Action');?>'>
+		<div>
+			<span class='actionsDropdownArrow'><img src='<?php echo $config['url_path']; ?>images/arrow.gif' alt=''></span>
+			<?php form_dropdown('drp_action', $actions_array, '', '', '0', '', '');?>
+			<span class='actionsDropdownButton'><input id='submit' type='submit' value='Go' title='<?php print __('Execute Action');?>'></span>
+		</div>
 	</div>
 	<input type='hidden' id='action' name='action' value='actions'>
 	<script type='text/javascript'>
