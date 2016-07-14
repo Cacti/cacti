@@ -809,6 +809,7 @@ if (isset_request_var('database_hostname')) {
 	<link href='<?php echo $config['url_path']; ?>images/favicon.ico' rel='shortcut icon'>
 	<link rel='icon' type='image/gif' href='<?php echo $config['url_path']; ?>images/cacti_logo.gif' sizes='96x96'>
 	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery.js'></script>
+	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery-migrate.js'></script>
 	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery-ui.js'></script>
 	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery.cookie.js'></script>
 	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery.storageapi.js'></script>
@@ -846,7 +847,7 @@ if (isset_request_var('database_hostname')) {
 	<tr>
 		<td style='width:100%;vertical-align:middle'>
 			<table class='cactiTable' style='border:1px solid rgba(98,125,77,1)'>
-				<tr class='cactiTableTitle'>
+				<tr class='cactiTableTitleRow'>
 					<td class='textHeaderDark'><strong><?php print __('Cacti Installation Wizard'); ?></strong></td>
 				</tr>
 				<tr class='installArea'>
@@ -915,8 +916,6 @@ if (isset_request_var('database_hostname')) {
 						print '<br>' . __('These following PHP extensions are not required, but should be included for performance of your Cacti install and for support of optional plugins.') . '<br><br>';
 						$extensions = array(
 							array('name' => 'snmp', 'installed' => false),
-							array('name' => 'gd', 'installed' => false),
-							array('name' => 'openssl', 'installed' => false),
 							array('name' => 'gmp', 'installed' => false)
 						);
 
