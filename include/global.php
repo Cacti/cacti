@@ -107,7 +107,7 @@ $config['php_snmp_support'] = function_exists('snmpget');
 if (isset($poller_id)) {
 	$config['poller_id'] = $poller_id;
 }else{
-	$config['poller_id'] = 0;
+	$config['poller_id'] = 1;
 }
 
 /* set URL path */
