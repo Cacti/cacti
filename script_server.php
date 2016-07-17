@@ -110,10 +110,10 @@ if ($_SERVER['argc'] >= 2) {
 	if ($_SERVER['argc'] == 3)
 		$poller_id = $_SERVER['argv'][2];
 	else
-		$poller_id = 0;
+		$poller_id = 1;
 } else {
 	$environ = 'cmd';
-	$poller_id = 0;
+	$poller_id = 1;
 }
 
 if(read_config_option('log_verbosity') >= POLLER_VERBOSITY_DEBUG) {

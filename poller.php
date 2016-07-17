@@ -610,7 +610,7 @@ function display_help() {
 }
 
 /* start post data processing */
-if ($poller_id == 0) {
+if ($poller_id == 1) {
 	snmpagent_poller_bottom();
 	boost_poller_bottom();
 	dsstats_poller_bottom();

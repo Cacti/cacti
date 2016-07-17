@@ -174,7 +174,7 @@ if ($first == NULL || $last == NULL ) {
 }
 
 /* verify the poller_id */
-if (!is_numeric($poller_id) || $poller_id < 0) {
+if (!is_numeric($poller_id) || $poller_id < 1) {
 	cacti_log('FATAL: The poller needs to be a positive numeric value', true, 'POLLER');
 	exit(-1);
 }else{
