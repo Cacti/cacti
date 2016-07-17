@@ -121,24 +121,15 @@ function automation_template_dnd() {
 }
 
 function automation_movedown() {
-	/* ================= input validation ================= */
-	get_filter_request_var('id');
-	/* ==================================================== */
-	move_item_down('automation_templates', get_request_var('id'));
+	move_item_down('automation_templates', get_filter_request_var('id'));
 }
 
 function automation_moveup() {
-	/* ================= input validation ================= */
-	get_filter_request_var('id');
-	/* ==================================================== */
-	move_item_up('automation_templates', get_request_var('id'));
+	move_item_up('automation_templates', get_filter_request_var('id'));
 }
 
 function automation_remove() {
-	/* ================= input validation ================= */
-	get_filter_request_var('id');
-	/* ==================================================== */
-	db_execute('DELETE FROM automation_templates WHERE id=' . get_request_var('id'));
+	db_execute('DELETE FROM automation_templates WHERE id=' . get_filter_request_var('id'));
 }
 
 
@@ -513,9 +504,14 @@ function template() {
 		array('display' => __('System ObjectId Match'), 'align' => 'left')
 	);
 
+	if (read_config_option('drag_and_drop') == '') {
+		$display_text[] = array('display' => __('Order'), 'align' => 'center');
+	}
+
 	html_header_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
 	$i = 1;
+	$total_items = sizeof($dts);
 	if (sizeof($dts)) {
 		foreach ($dts as $dt) {
 			if ($dt['name'] == '') {
@@ -523,12 +519,31 @@ function template() {
 			}else{
 				$name = $dt['name'];
 			}
+
 			form_alternate_row('line' . $dt['id'], true);
 			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars('automation_templates.php?action=edit&id=' . $dt['id']) . "'>" . (strlen(get_request_var('filter')) ? preg_replace('/(' . preg_quote(get_request_var('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($name)) : htmlspecialchars($name)) . '</a>', $dt['id']);
 			form_selectable_cell($availability_options[$dt['availability_method']], $dt['id']);
 			form_selectable_cell(htmlspecialchars($dt['sysDescr']), $dt['id']);
 			form_selectable_cell(htmlspecialchars($dt['sysName']), $dt['id']);
 			form_selectable_cell(htmlspecialchars($dt['sysOid']), $dt['id']);
+
+			if (read_config_option('drag_and_drop') == '') {
+				$add_text = '';
+				if ($i < $total_items && $total_items > 1) {
+					$add_text .= '<a class="pic fa fa-caret-down moveArrow" href="' . htmlspecialchars('automation_templates.php?action=movedown&id=' . $dt['id']) . '" title="' . __('Move Down') . '"></a>';
+				}else{
+					$add_text .= '<span class="moveArrowNone"></span>';
+				}
+
+				if ($i > 1 && $i <= $total_items) {
+					$add_text .= '<a class="pic fa fa-caret-up moveArrow" href="' . htmlspecialchars('automation_template.php?action=moveup&id=' . $dt['id']) . '" title="' . __('Move Up') . '"></a>';
+				}else{
+					$add_text .= '<span class="moveArrowNone"></span>';
+				}
+
+				form_selectable_cell($add_text, $dt['id'], '', 'center');
+			}
+
 			form_checkbox_cell($name, $dt['id']);
 			form_end_row();
 

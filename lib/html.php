@@ -786,12 +786,12 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 			if ($disable_controls == false) {
 				print "<td style='text-align:right;padding-right:10px;'>\n";
 				if ($i != sizeof($item_list)-1) {
-					print "<a class='moveArrow fa fa-arrow-down' title='" . __('Move Down'). "' href='" . htmlspecialchars("$filename?action=item_movedown&id=" . $item["id"] . "&$url_data") . "'></a>\n";
+					print "<a class='moveArrow fa fa-caret-down' title='" . __('Move Down'). "' href='" . htmlspecialchars("$filename?action=item_movedown&id=" . $item["id"] . "&$url_data") . "'></a>\n";
 				}else{
 					print "<span class='moveArrowNone'></span>\n";
 				}
 				if ($i > 0) {
-					print "<a class='moveArrow fa fa-arrow-up' title='" . __('Move Up') . "' href='" . htmlspecialchars("$filename?action=item_moveup&id=" . $item["id"] . "&$url_data") . "'></a>\n";
+					print "<a class='moveArrow fa fa-caret-up' title='" . __('Move Up') . "' href='" . htmlspecialchars("$filename?action=item_moveup&id=" . $item["id"] . "&$url_data") . "'></a>\n";
 				}else{
 					print "<span class='moveArrowNone'></span>\n";
 				}

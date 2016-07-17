@@ -180,29 +180,36 @@ function aggregate_color_item_movedown() {
 	get_filter_request_var('color_template_item_id');
 	get_filter_request_var('color_template_id');
 	/* ==================================================== */
-	$current_sequence = db_fetch_row('SELECT color_template_item_id, sequence
+
+	$current_sequence = db_fetch_row_prepared('SELECT color_template_item_id, sequence
 		FROM color_template_items
-		WHERE color_template_item_id=' . get_request_var('color_template_item_id'), true);
+		WHERE color_template_item_id = ?', 
+		array(get_request_var('color_template_item_id')));
 
-	cacti_log('movedown Id: ' . $current_sequence['color_template_item_id'] . ' Seq:' . $current_sequence['sequence'], FALSE, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
+	cacti_log('movedown Id: ' . $current_sequence['color_template_item_id'] . ' Seq:' . $current_sequence['sequence'], 
+		FALSE, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
 
-	$next_sequence = db_fetch_row('SELET color_template_item_id, sequence
+	$next_sequence = db_fetch_row_prepared('SELECT color_template_item_id, sequence
 		FROM color_template_items
-		WHERE sequence>' . $current_sequence['sequence'] . '
-		AND color_template_id=' . get_request_var('color_template_id') . '
-		ORDER BY sequence ASC limit 1', true);
+		WHERE sequence > ?
+		AND color_template_id = ?
+		ORDER BY sequence ASC limit 1', 
+		array($current_sequence['sequence'], get_request_var('color_template_id')));
 
-	cacti_log('movedown Id: ' . $next_sequence['color_template_item_id'] . ' Seq:' . $next_sequence['sequence'], FALSE, POLLER_VERBOSITY_DEBUG);
+	cacti_log('movedown Id: ' . $next_sequence['color_template_item_id'] . ' Seq:' . $next_sequence['sequence'], 
+		FALSE, POLLER_VERBOSITY_DEBUG);
 
-	db_execute('UPDATE color_template_items
-		SET sequence=' . $next_sequence['sequence'] . '
-		WHERE color_template_id=' . get_request_var('color_template_id') . '
-		AND color_template_item_id=' . $current_sequence['color_template_item_id']);
+	db_execute_prepared('UPDATE color_template_items
+		SET sequence = ?
+		WHERE color_template_id = ?
+		AND color_template_item_id = ?', 
+		array($next_sequence['sequence'], get_request_var('color_template_id'), $current_sequence['color_template_item_id']));
 
-	db_execute('UPDATE color_template_items
-		SET sequence=' . $current_sequence['sequence'] . '
-		WHERE color_template_id=' . get_request_var('color_template_id') . '
-		AND color_template_item_id=' . $next_sequence['color_template_item_id']);
+	db_execute_prepared('UPDATE color_template_items
+		SET sequence = ?
+		WHERE color_template_id = ?
+		AND color_template_item_id = ?', 
+		array($current_sequence['sequence'], get_request_var('color_template_id'), $next_sequence['color_template_item_id']));
 }
 
 
@@ -215,29 +222,35 @@ function aggregate_color_item_moveup() {
 	get_filter_request_var('color_template_id');
 	/* ==================================================== */
 
-	$current_sequence = db_fetch_row('SELECT color_template_item_id, sequence
+	$current_sequence = db_fetch_row_prepared('SELECT color_template_item_id, sequence
 		FROM color_template_items
-		WHERE color_template_item_id=' . get_request_var('color_template_item_id'), true);
+		WHERE color_template_item_id = ?', 
+		array(get_request_var('color_template_item_id')));
 
-	cacti_log('moveup Id: ' . $current_sequence['color_template_item_id'] . ' Seq:' . $current_sequence['sequence'], FALSE, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
+	cacti_log('moveup Id: ' . $current_sequence['color_template_item_id'] . ' Seq:' . $current_sequence['sequence'], 
+		FALSE, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
 
-	$previous_sequence = db_fetch_row('SELECT color_template_item_id, sequence
+	$previous_sequence = db_fetch_row_prepared('SELECT color_template_item_id, sequence
 		FROM color_template_items
-		WHERE sequence < ' . $current_sequence['sequence'] . '
-		AND color_template_id=' . get_request_var('color_template_id') . '
-		ORDER BY sequence DESC limit 1', true);
+		WHERE sequence < ?
+		AND color_template_id = ?
+		ORDER BY sequence DESC limit 1', 
+		array($current_sequence['sequence'], get_request_var('color_template_id')));
 
-	cacti_log('moveup Id: ' . $previous_sequence['color_template_item_id'] . ' Seq:' . $previous_sequence['sequence'], FALSE, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
+	cacti_log('moveup Id: ' . $previous_sequence['color_template_item_id'] . ' Seq:' . $previous_sequence['sequence'], 
+		FALSE, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
 
-	db_execute('UPDATE color_template_items
-		SET sequence=' . $previous_sequence['sequence'] . '
-		WHERE color_template_id=' . get_request_var('color_template_id') . '
-		AND color_template_item_id=' . $current_sequence['color_template_item_id']);
+	db_execute_prepared('UPDATE color_template_items
+		SET sequence = ?
+		WHERE color_template_id = ?
+		AND color_template_item_id = ?', 
+		array($previous_sequence['sequence'], get_request_var('color_template_id'), $current_sequence['color_template_item_id']));
 
-	db_execute('UPDATE color_template_items
-		SET sequence=' . $current_sequence['sequence'] . '
-		WHERE color_template_id=' . get_request_var('color_template_id') . '
-		AND color_template_item_id=' . $previous_sequence['color_template_item_id']);
+	db_execute_prepared('UPDATE color_template_items
+		SET sequence = ?
+		WHERE color_template_id = ?
+		AND color_template_item_id = ?', 
+		array($current_sequence['sequence'], get_request_var('color_template_id'), $previous_sequence['color_template_item_id']));
 }
 
 function aggregate_color_item_remove_confirm() {

@@ -49,6 +49,20 @@ switch (get_request_var('action')) {
 		vdef_item_remove();
 
 		break;
+	case 'item_movedown':
+		get_filter_request_var('vdef_id');
+
+		item_movedown();
+
+		header('Location: vdef.php?header=false&action=edit&id=' . get_request_var('vdef_id'));
+		break;
+	case 'item_moveup':
+		get_filter_request_var('vdef_id');
+
+		item_moveup();
+
+		header('Location: vdef.php?header=false&action=edit&id=' . get_request_var('vdef_id'));
+		break;
 	case 'item_edit':
 		top_header();
 		vdef_item_edit();
@@ -448,6 +462,24 @@ function vdef_item_edit() {
     VDEF Functions
    --------------------- */
 
+function item_movedown() {
+	/* ================= input validation ================= */
+	get_filter_request_var('id');
+	get_filter_request_var('vdef_id');
+	/* ==================================================== */
+
+	move_item_down('vdef_items', get_request_var('id'), 'vdef_id=' . get_request_var('vdef_id'));
+}
+
+function item_moveup() {
+	/* ================= input validation ================= */
+	get_filter_request_var('id');
+	get_filter_request_var('vdef_id');
+	/* ==================================================== */
+
+	move_item_up('vdef_items', get_request_var('id'), 'vdef_id=' . get_request_var('vdef_id'));
+}
+
 function vdef_item_dnd() {
 	/* ================= Input validation ================= */
 	get_filter_request_var('id');
@@ -537,7 +569,9 @@ function vdef_edit() {
 		html_header($header_items, 2);
 
 		$vdef_items = db_fetch_assoc_prepared('SELECT * FROM vdef_items WHERE vdef_id = ? ORDER BY sequence', array(get_request_var('id')));
-		$i = 0;
+		$i = 1;
+		$total_items = sizeof($vdef_items);
+
 		if (sizeof($vdef_items)) {
 			foreach ($vdef_items as $vdef_item) {
 				form_alternate_row('line' . $vdef_item['id'], true, true);
@@ -549,10 +583,27 @@ function vdef_edit() {
 					<em><?php $vdef_item_type = $vdef_item['type']; print $vdef_item_types[$vdef_item_type];?></em>: <strong><?php print get_vdef_item_name($vdef_item['id']);?></strong>
 				</td>
 				<td align='right' style='text-align:right'>
+					<?php
+					if (read_config_option('drag_and_drop') == '') {
+						if ($i < $total_items && $total_items > 1) {
+							echo '<a class="pic fa fa-caret-down moveArrow" href="' . htmlspecialchars('vdef.php?action=item_movedown&id=' . $vdef_item['id'] . '&vdef_id=' . $vdef_item['vdef_id']) . '" title="' . __('Move Down') . '"></a>';
+						}else{
+							echo '<span class="moveArrowNone"></span>';
+						}
+
+						if ($i > 1 && $i <= $total_items) {
+							echo '<a class="pic fa fa-caret-up moveArrow" href="' . htmlspecialchars('vdef.php?action=item_moveup&id=' . $vdef_item['id'] .	'&vdef_id=' . $vdef_item['vdef_id']) . '" title="' . __('Move Up') . '"></a>';
+						}else{
+							echo '<span class="moveArrowNone"></span>';
+						}
+					}
+					?>
 					<a id='<?php print $vdef['id'] . '_' . $vdef_item['id'];?>' class='delete deleteMarker fa fa-remove' title='<?php print __('Delete VDEF Item');?>'></a>
 				</td>
 				<?php
+
 				form_end_row();
+
 				$i++;
 			}
 		}
@@ -570,11 +621,13 @@ function vdef_edit() {
 		$('.cdialog').remove();
 		$('body').append("<div class='cdialog' id='cdialog'></div>");
 
+		<?php if (read_config_option('drag_and_drop') == 'on') { ?>
 		$('#vdef_item').tableDnD({
 			onDrop: function(table, row) {
 				loadPageNoHeader('vdef.php?action=ajax_dnd&id=<?php isset_request_var('id') ? print get_request_var('id') : print 0;?>&'+$.tableDnD.serialize());
 			}
 		});
+		<?php } ?>
 
 		$('.delete').click(function (event) {
 			event.preventDefault();

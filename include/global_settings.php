@@ -346,6 +346,12 @@ $settings = array(
 			'default' => 0,
 			'array' => array(0 => __('No'), 1 => __('Yes'))
 		),
+		'drag_and_drop' => array(
+			'friendly_name' => __('Enable Drag-N-Drop'),
+			'description' => __('Some of Cacti\'s interfaces support Drag-N-Drop.  If checked this option will be enabled.  Note: For visually impaired user, this option may be disabled.'),
+			'method' => 'checkbox',
+			'default' => 'on',
+		),
 		'force_https' => array(
 			'friendly_name' => __('Force Connections over HTTPS'),
 			'description' => __('When checked, any attempts to access Cacti will be redirected to HTTPS to insure high security.'),

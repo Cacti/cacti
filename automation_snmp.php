@@ -690,9 +690,8 @@ function automation_snmp_edit() {
 		html_header($display_text);
 
 		$i = 1;
+		$total_items = sizeof($items);
 		if (sizeof($items)) {
-			$total_items = sizeof($items);
-
 			foreach ($items as $item) {
 				form_alternate_row('line' . $item['id'], true, true);
 				$form_data = "<td><a class='linkEditMain' href='" . htmlspecialchars('automation_snmp.php?action=item_edit&item_id=' . $item['id'] . '&id=' . $item['snmp_id']) . "'>Item#" . $i . '</a></td>';
@@ -710,6 +709,21 @@ function automation_snmp_edit() {
 				$form_data .= '<td>' . 	($item['snmp_version'] == 3 ? $item['snmp_priv_protocol'] : __('N/A')) . '</td>';
 				$form_data .= '<td>' . 	($item['snmp_version'] == 3 ? $item['snmp_context'] : __('N/A')) . '</td>';
 				$form_data .= '<td class="nowrap right">';
+
+				if (read_config_option('drag_and_drop') == '') {
+					if ($i < $total_items && $total_items > 1) {
+						$form_data .= '<a class="pic fa fa-caret-down moveArrow" href="' . htmlspecialchars('automation_snmp.php?action=item_movedown&item_id=' . $item['id'] . '&id=' . $item['snmp_id']) . '" title="' . __('Move Down') . '"></a>';
+					}else{
+						$form_data .= '<span class="moveArrowNone"></span>';
+					}
+
+					if ($i > 1 && $i <= $total_items) {
+						$form_data .= '<a class="pic fa fa-caret-up moveArrow" href="' . htmlspecialchars('automation_snmp.php?action=item_moveup&item_id=' . $item['id'] .	'&id=' . $item['snmp_id']) . '" title="' . __('Move Up') . '"></a>';
+					}else{
+						$form_data .= '<span class="moveArrowNone"></span>';
+					}
+				}
+
 				$form_data .= '<a class="delete deleteMarker fa fa-remove" id="' . $item['id'] . '_' . $item['snmp_id'] . '" title="' . __('Delete') . '"></a>';
 				$form_data .= '</td></tr>';
 
@@ -737,11 +751,13 @@ function automation_snmp_edit() {
 			loadPageNoHeader(strURL);
         });
 
+		<?php if (read_config_option('drag_and_drop') == 'on') { ?>
         $('#snmp_item').tableDnD({
             onDrop: function(table, row) {
                 loadPageNoHeader('automation_snmp.php?action=ajax_dnd&id=<?php isset_request_var('id') ? print get_request_var('id') : print 0;?>&'+$.tableDnD.serialize());
             }
         });
+		<?php } ?>
 
 		$('.delete').click(function (event) {
 			event.preventDefault();

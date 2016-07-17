@@ -75,7 +75,8 @@ function draw_color_template_items_list($item_list, $filename, $url_data, $disab
 
 	html_header($display_text, 4);
 
-	$i = 0;
+	$i = 1;
+	$total_items = sizeof($item_list);
 
 	if (sizeof($item_list)) {
 		foreach ($item_list as $item) {
@@ -88,7 +89,7 @@ function draw_color_template_items_list($item_list, $filename, $url_data, $disab
 				print "<a class='linkEditMain' href='" . htmlspecialchars($filename . '?action=item_edit&color_template_item_id=' . $item['color_template_item_id'] . "&$url_data") . "'>"; 
 			}
 
-			print '<strong>' . __('Item # %d', $i+1) . '</strong>';
+			print __('Item # %d', $i);
 
 			if ($disable_controls == false) { 
 				print '</a>'; 
@@ -101,7 +102,25 @@ function draw_color_template_items_list($item_list, $filename, $url_data, $disab
 			print "<td style='font-weight:bold;'>" . $item['hex'] . "</td>\n";
 
 			if ($disable_controls == false) {
-				print "<td class='right' style='width:2%;'><a class='delete deleteMarker fa fa-remove' id='" .  $item['color_template_id'] . '_' . $item['color_template_item_id'] . "' title='" . __('Delete') . "'></a></td>\n";
+				print "<td class='right nowrap'>";
+
+				if (read_config_option('drag_and_drop') == '') {
+					if ($i < $total_items && $total_items > 1) {
+						echo '<a class="pic fa fa-caret-down moveArrow" href="' . htmlspecialchars('color_templates_items.php?action=item_movedown&color_template_item_id=' . $item['color_template_item_id'] . '&color_template_id=' . $item['color_template_id']) . '" title="' . __('Move Down') . '"></a>';
+					}else{
+						echo '<span class="moveArrowNone"></span>';
+					}
+
+					if ($i > 1 && $i <= $total_items) {
+						echo '<a class="pic fa fa-caret-up moveArrow" href="' . htmlspecialchars('color_templates_items.php?action=item_moveup&color_template_item_id=' . $item['color_template_item_id'] . '&color_template_id=' . $item['color_template_id']) . '" title="' . __('Move Up') . '"></a>';
+					}else{
+						echo '<span class="moveArrowNone"></span>';
+					}
+				}
+
+				print "<a class='delete deleteMarker fa fa-remove' id='" .  $item['color_template_id'] . '_' . $item['color_template_item_id'] . "' title='" . __('Delete') . "'></a>";
+
+				print "</td>\n";
 			}
 
 			form_end_row();
@@ -282,11 +301,13 @@ function aggregate_color_item() {
         $('.cdialog').remove();
         $('body').append("<div class='cdialog' id='cdialog'></div>");
 
+		<?php if (read_config_option('drag_and_drop') == 'on') { ?>
         $('#color_item').tableDnD({
             onDrop: function(table, row) {
                 loadPageNoHeader('color_templates_items.php?action=ajax_dnd&id=<?php isset_request_var('color_template_id') ? print get_request_var('color_template_id') : print 0;?>&'+$.tableDnD.serialize());
             }
         });
+		<?php } ?>
 
         $('.delete').click(function (event) {
             event.preventDefault();

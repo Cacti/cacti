@@ -381,7 +381,6 @@ function cdef_item_remove() {
 	db_execute('DELETE FROM cdef_items WHERE id=' . get_request_var('cdef_id'));
 }
 
-
 function item_movedown() {
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
@@ -591,10 +590,11 @@ function cdef_edit() {
 
 		$cdef_items = db_fetch_assoc_prepared('SELECT * FROM cdef_items WHERE cdef_id = ? ORDER BY sequence', array(get_request_var('id')));
 
-		$i = 0;
+		$i = 1;
+		$total_items = sizeof($cdef_items);
 		if (sizeof($cdef_items)) {
 			foreach ($cdef_items as $cdef_item) {
-				form_alternate_row('line' . $cdef_item['id'], true, true);$i++;?>
+				form_alternate_row('line' . $cdef_item['id'], true, true);?>
 					<td>
 						<a class='linkEditMain' href='<?php print htmlspecialchars('cdef.php?action=item_edit&id=' . $cdef_item['id'] . '&cdef_id=' . $cdef['id']);?>'><?php print __('Item #%d', $i);?></a>
 					</td>
@@ -602,10 +602,27 @@ function cdef_edit() {
 						<em><?php $cdef_item_type = $cdef_item['type']; print $cdef_item_types[$cdef_item_type];?></em>: <?php print htmlspecialchars(get_cdef_item_name($cdef_item['id']));?>
 					</td>
 					<td class='right'>
+						<?php
+						if (read_config_option('drag_and_drop') == '') {
+							if ($i < $total_items && $total_items > 0) {
+								echo '<a class="pic fa fa-caret-down moveArrow" href="' . htmlspecialchars('cdef.php?action=item_movedown&id=' . $cdef_item['id'] . '&cdef_id=' . $cdef_item['cdef_id']) . '" title="' . __('Move Down') . '"></a>';
+							}else{
+								echo '<span class="moveArrowNone"></span>';
+							}
+	
+							if ($i > 1 && $i <= $total_items) {
+								echo '<a class="pic fa fa-caret-up moveArrow" href="' . htmlspecialchars('cdef.php?action=item_moveup&id=' . $cdef_item['id'] .	'&cdef_id=' . $cdef_item['cdef_id']) . '" title="' . __('Move Up') . '"></a>';
+							}else{
+								echo '<span class="moveArrowNone"></span>';
+							}
+						}
+						?>
 						<a id='<?php print $cdef['id'] . '_' . $cdef_item['id'];?>' class='delete deleteMarker fa fa-remove' title='<?php print __('Delete');?>' href='#'></a>
 					</td>
 				</tr>
-			<?php
+				<?php
+
+				$i++;
 			}
 		}
 
@@ -622,11 +639,13 @@ function cdef_edit() {
 		$('.cdialog').remove();
 		$('body').append("<div class='cdialog' id='cdialog'></div>");
 
+		<?php if (read_config_option('drag_and_drop') == 'on') { ?>
 		$('#cdef_item').tableDnD({
 			onDrop: function(table, row) {
 				loadPageNoHeader('cdef.php?action=ajax_dnd&id=<?php isset_request_var('id') ? print get_request_var('id') : print 0;?>&'+$.tableDnD.serialize());
 			}
 		});
+		<?php } ?>
 
 		$('.delete').click(function (event) {
 			event.preventDefault();

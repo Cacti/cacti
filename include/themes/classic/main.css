@@ -205,6 +205,7 @@ label {
 .moveArrow {
 	color: #00438C !important;
 	height: 14px !important;
+	font-size: 14px !important;
 	vertical-align: middle;
 	text-decoration: none !important;
 }
