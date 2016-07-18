@@ -844,7 +844,7 @@ function tree_edit() {
 				})
 			.on('hover_node.jstree', function (e, data) {
 				// Enable accessibility
-				$('#'+data.node.id+' a:first').focus();
+				$("[id*='"+data.node.id+"'] a:first").focus();
 
 				if (data.node.id.search('thost') >= 0) {
 					setHostSortIcon(data.node.id);
