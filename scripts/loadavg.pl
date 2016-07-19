@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 
 #get load avg for 5;15;30 min
-open(PROCESS,"uptime |");
+open(PROCESS, "LC_MESSAGES=c uptime |");
 $avg = <PROCESS>;
 $avg =~ s/.*:\s*//;
 close(PROCESS);
