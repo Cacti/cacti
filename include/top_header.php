@@ -48,6 +48,7 @@ $using_guest_account = false;
 	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print get_selected_theme();?>/jquery.multiselect.css' type='text/css' rel='stylesheet'>
 	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print get_selected_theme();?>/jquery.timepicker.css' type='text/css' rel='stylesheet'>
 	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print get_selected_theme();?>/jquery.colorpicker.css' type='text/css' rel='stylesheet'>
+	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print get_selected_theme();?>/c3.css' type='text/css' rel='stylesheet'>
 	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print get_selected_theme();?>/pace.css' type='text/css' rel='stylesheet'>
 	<link href='<?php echo $config['url_path']; ?>include/fa/css/font-awesome.css' type='text/css' rel='stylesheet'>
 	<link href='<?php echo $config['url_path']; ?>images/favicon.ico' rel='shortcut icon'>
@@ -71,6 +72,8 @@ $using_guest_account = false;
 	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery.sparkline.js'></script>
 	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/Chart.js'></script>
 	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/dygraph-combined.js'></script>
+	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/d3.js'></script>
+	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/c3.js'></script>
 	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/pace.js'></script>
 	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/realtime.js'></script>
 	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/layout.js'></script>
@@ -103,9 +106,9 @@ $using_guest_account = false;
 	</div>
 	<div id='navigation_right' class='cactiConsoleContentArea'>
 		<div style='display:none;' id='message_container'><?php display_output_messages();?></div>
-		<div style='position:relative;' id='main' role='main'>
+		<div style='position:relative;display:none;' id='main' role='main'>
 <?php }else{ ?>
 	<div id='navigation_right' class='cactiConsoleContentArea'>
 		<div style='display:none;' id='message_container'><?php display_output_messages();?></div>
-		<div style='position:relative;' id='main' role='main'>
+		<div style='position:relative;display:none;' id='main' role='main'>
 <?php } ?>
