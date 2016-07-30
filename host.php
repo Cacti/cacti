@@ -1275,7 +1275,7 @@ function host() {
 
 							if (sizeof($sites)) {
 								foreach ($sites as $site) {
-									print "<option value='" . $site['id'] . "'"; if (get_request_var('site') == $site['id']) { print ' selected'; } print '>' . htmlspecialchars($site['name']) . "</option>\n";
+									print "<option value='" . $site['id'] . "'"; if (get_request_var('site_id') == $site['id']) { print ' selected'; } print '>' . htmlspecialchars($site['name']) . "</option>\n";
 								}
 							}
 							?>
