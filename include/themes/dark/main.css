@@ -944,9 +944,9 @@ legend {
 	margin-left: 168px;
 }
 
-.hyperLink {
+.hyperLink, .hyperLink:hover, .hyperLink:visited {
 	color: rgba(148, 179, 107, 0.8) !important;
-	font-size: 12px;
+	font-size: 1.1em;
 	padding: 0px;
 	cursor:pointer;
 	text-decoration: none;
@@ -1072,17 +1072,17 @@ legend {
 	margin-left:auto; 
 	margin-right:auto;
 	display: table;
-	line-height: 16px;
+	height: 25px;
 	color: snow;
 }
 
 .cactiTableTitle {
 	float: left;
 	text-align: left;
-	padding: 3px 0px;
-	height: 16px;
+	padding: 5px 0px;
 	display: table-column;
 	width: 90%;
+	height: 25px;
 	background: -webkit-gradient( linear, left top, left bottom, color-stop(0, #252426), color-stop(1, #0C0D0D));
 	background: -o-linear-gradient(bottom, #252426 0%, #0C0D0D 100%);
 	background: -moz-linear-gradient(bottom, #252426 0%, #0C0D0D 100%);
@@ -1093,21 +1093,17 @@ legend {
 
 .cactiTableButton {
 	float: right;
-	padding: 3px 0px;
-	height: 16px;
+	padding: 5px 0px;
 	display: table-column;
 	text-align: right;
 	width: 10%;
+	height: 25px;
 	background: -webkit-gradient( linear, left top, left bottom, color-stop(0, #252426), color-stop(1, #0C0D0D));
 	background: -o-linear-gradient(bottom, #252426 0%, #0C0D0D 100%);
 	background: -moz-linear-gradient(bottom, #252426 0%, #0C0D0D 100%);
 	background: -webkit-linear-gradient(bottom, #252426 0%, #0C0D0D 100%);
 	background: -ms-linear-gradient(bottom, #252426 0%, #0C0D0D 100%);
 	background: linear-gradient(to bottom, #252426 0%, #0C0D0D 100%);
-}
-
-.cactiTableButton span, .cactiTableTitle span {
-	padding: 0px 5px 0px 5px;
 }
 
 .cactiDebugTable {
