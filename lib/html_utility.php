@@ -353,8 +353,12 @@ function get_filter_request_var($name, $filter = FILTER_VALIDATE_INT, $options =
 		}elseif (get_nfilter_request_var($name) == 'undefined') {
 			if (isset($options['default'])) {
 				set_request_var($name, $options['default']);
+
+				return $options['default'];
 			}else{
 				set_request_var($name, '');
+
+				return '';
 			}
 		}else{
 			if (!sizeof($options)) {
