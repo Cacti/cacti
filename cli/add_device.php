@@ -24,54 +24,55 @@
 */
 
 /* do NOT run this script through a web browser */
-if (!isset($_SERVER["argv"][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($_SERVER['REMOTE_ADDR'])) {
-	die("<br><strong>This script is only meant to run at the command line.</strong>");
+if (!isset($_SERVER['argv'][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($_SERVER['REMOTE_ADDR'])) {
+	die('<br><strong>This script is only meant to run at the command line.</strong>');
 }
 
 /* We are not talking to the browser */
 $no_http_headers = true;
 
-include(dirname(__FILE__)."/../include/global.php");
-include_once($config["base_path"]."/lib/api_automation_tools.php");
-include_once($config["base_path"]."/lib/utility.php");
-include_once($config["base_path"]."/lib/api_data_source.php");
-include_once($config["base_path"]."/lib/api_graph.php");
-include_once($config["base_path"]."/lib/snmp.php");
-include_once($config["base_path"]."/lib/data_query.php");
-include_once($config["base_path"]."/lib/api_device.php");
+include(dirname(__FILE__).'/../include/global.php');
+include_once($config['base_path'].'/lib/api_automation_tools.php');
+include_once($config['base_path'].'/lib/utility.php');
+include_once($config['base_path'].'/lib/api_data_source.php');
+include_once($config['base_path'].'/lib/api_graph.php');
+include_once($config['base_path'].'/lib/snmp.php');
+include_once($config['base_path'].'/lib/data_query.php');
+include_once($config['base_path'].'/lib/api_device.php');
 
 /* process calling arguments */
-$parms = $_SERVER["argv"];
+$parms = $_SERVER['argv'];
 array_shift($parms);
 
 if (sizeof($parms)) {
 	/* setup defaults */
-	$description   = "";
-	$ip            = "";
+	$description   = '';
+	$ip            = '';
 	$poller_id     = 1;
 	$site_id       = 0;
 	$template_id   = 0;
-	$community     = read_config_option("snmp_community");
-	$snmp_ver      = read_config_option("snmp_ver");
+	$community     = read_config_option('snmp_community');
+	$snmp_ver      = read_config_option('snmp_ver');
 	$disable       = 0;
 
-	$notes         = "";
+	$notes         = '';
 
-	$snmp_username        = read_config_option("snmp_username");
-	$snmp_password        = read_config_option("snmp_password");
-	$snmp_auth_protocol   = read_config_option("snmp_auth_protocol");
-	$snmp_priv_passphrase = read_config_option("snmp_priv_passphrase");
-	$snmp_priv_protocol   = read_config_option("snmp_priv_protocol");
-	$snmp_context         = "";
-	$snmp_port            = read_config_option("snmp_port");
-	$snmp_timeout         = read_config_option("snmp_timeout");
+	$snmp_username        = read_config_option('snmp_username');
+	$snmp_password        = read_config_option('snmp_password');
+	$snmp_auth_protocol   = read_config_option('snmp_auth_protocol');
+	$snmp_priv_passphrase = read_config_option('snmp_priv_passphrase');
+	$snmp_priv_protocol   = read_config_option('snmp_priv_protocol');
+	$snmp_context         = '';
+	$snmp_port            = read_config_option('snmp_port');
+	$snmp_timeout         = read_config_option('snmp_timeout');
 
 	$avail          = 1;
-	$ping_method    = read_config_option("ping_method");
-	$ping_port      = read_config_option("ping_port");
-	$ping_timeout   = read_config_option("ping_timeout");
-	$ping_retries   = read_config_option("ping_retries");
-	$max_oids       = read_config_option("max_get_size");
+	$ping_method    = read_config_option('ping_method');
+	$ping_port      = read_config_option('ping_port');
+	$ping_timeout   = read_config_option('ping_timeout');
+	$ping_retries   = read_config_option('ping_retries');
+	$max_oids       = read_config_option('max_get_size');
+	$proxy          = false;
 	$device_threads = 1;
 
 	$displayHostTemplates = FALSE;
@@ -79,92 +80,96 @@ if (sizeof($parms)) {
 	$quietMode            = FALSE;
 
 	foreach($parms as $parameter) {
-		@list($arg, $value) = @explode("=", $parameter);
+		@list($arg, $value) = @explode('=', $parameter);
 
 		switch ($arg) {
-		case "-d":
+		case '-d':
 			$debug = TRUE;
 
 			break;
-		case "--description":
+		case '--description':
 			$description = trim($value);
 
 			break;
-		case "--ip":
+		case '--ip':
 			$ip = trim($value);
 
 			break;
-		case "--template":
+		case '--template':
 			$template_id = $value;
 
 			break;
-		case "--community":
+		case '--community':
 			$community = trim($value);
 
 			break;
-		case "--version":
+		case '--version':
 			$snmp_ver = trim($value);
 
 			break;
-		case "--notes":
+		case '--notes':
 			$notes = trim($value);
 
 			break;
-		case "--site":
+		case '--site':
 			$site_id = trim($value);
 
 			break;
-		case "--poller":
+		case '--poller':
 			$poller_id = trim($value);
 
 			break;
-		case "--disable":
+		case '--disable':
 			$disable  = $value;
 
 			break;
-		case "--username":
+		case '--username':
 			$snmp_username = trim($value);
 
 			break;
-		case "--password":
+		case '--password':
 			$snmp_password = trim($value);
 
 			break;
-		case "--authproto":
+		case '--authproto':
 			$snmp_auth_protocol = trim($value);
 
 			break;
-		case "--privproto":
+		case '--privproto':
 			$snmp_priv_protocol = trim($value);
 
 			break;
-		case "--privpass":
+		case '--privpass':
 			$snmp_priv_passphrase = trim($value);
 
 			break;
-		case "--port":
+		case '--port':
 			$snmp_port     = $value;
 
 			break;
-		case "--timeout":
+		case '--proxy':
+			$proxy = true;
+
+			break;
+		case '--timeout':
 			$snmp_timeout  = $value;
 
 			break;
-		case "--avail":
+		case '--avail':
 			switch($value) {
-			case "none":
+			case 'none':
 				$avail = '0'; /* tried to use AVAIL_NONE, but then preg_match failes on validation, sigh */
 
 				break;
-			case "ping":
+			case 'ping':
 				$avail = AVAIL_PING;
 
 				break;
-			case "snmp":
+			case 'snmp':
 				$avail = AVAIL_SNMP;
 
 				break;
-			case "pingsnmp":
+			case 'pingsnmp':
 				$avail = AVAIL_SNMP_AND_PING;
 
 				break;
@@ -175,17 +180,17 @@ if (sizeof($parms)) {
 			}
 
 			break;
-		case "--ping_method":
+		case '--ping_method':
 			switch(strtolower($value)) {
-			case "icmp":
+			case 'icmp':
 				$ping_method = PING_ICMP;
 
 				break;
-			case "tcp":
+			case 'tcp':
 				$ping_method = PING_TCP;
 
 				break;
-			case "udp":
+			case 'udp':
 				$ping_method = PING_UDP;
 
 				break;
@@ -196,7 +201,7 @@ if (sizeof($parms)) {
 			}
 
 			break;
-		case "--ping_port":
+		case '--ping_port':
 			if (is_numeric($value) && ($value > 0)) {
 				$ping_port = $value;
 			}else{
@@ -206,7 +211,7 @@ if (sizeof($parms)) {
 			}
 
 			break;
-		case "--ping_retries":
+		case '--ping_retries':
 			if (is_numeric($value) && ($value > 0)) {
 				$ping_retries = $value;
 			}else{
@@ -216,7 +221,7 @@ if (sizeof($parms)) {
 			}
 
 			break;
-		case "--max_oids":
+		case '--max_oids':
 			if (is_numeric($value) && ($value > 0)) {
 				$max_oids = $value;
 			}else{
@@ -226,21 +231,21 @@ if (sizeof($parms)) {
 			}
 
 			break;
-		case "--version":
-		case "-V":
-		case "-H":
-		case "--help":
+		case '--version':
+		case '-V':
+		case '-H':
+		case '--help':
 			display_help();
 			exit(0);
-		case "--list-communities":
+		case '--list-communities':
 			$displayCommunities = TRUE;
 
 			break;
-		case "--list-host-templates":
+		case '--list-host-templates':
 			$displayHostTemplates = TRUE;
 
 			break;
-		case "--quiet":
+		case '--quiet':
 			$quietMode = TRUE;
 
 			break;
@@ -274,7 +279,7 @@ if (sizeof($parms)) {
 
 	/* process host description */
 	if (isset($hosts[$description])) {
-		db_execute("update host set hostname='$ip' where id=" . $hosts[$description]);
+		db_execute("UPDATE host SET hostname='$ip' WHERE id=" . $hosts[$description]);
 		echo "This host already exists in the database ($description) device-id: (" . $hosts[$description] . ")\n";
 		exit(1);
 	}
@@ -284,16 +289,56 @@ if (sizeof($parms)) {
 		exit(1);
 	}
 
-	/* process ip */
-	if (isset($addresses[$ip])) {
-		db_execute("update host set description = '$description' where id = " . $addresses[$ip]);
-		echo "ERROR: This IP already exists in the database ($ip) device-id: (" . $addresses[$ip] . ")\n";
-		exit(1);
-	}
-
 	if ($ip == "") {
 		echo "ERROR: You must supply an IP address for all hosts!\n";
 		exit(1);
+	}
+
+	/* process ip */
+	if (isset($addresses[$ip])) {
+		$id = $addresses[$ip];
+		$phost = db_fetch_row_prepared('SELECT * FROM host WHERE id = ?', array($id));
+		$fail = false;
+
+		if ($phost['snmp_version'] < '3' && $snmp_ver < '3') {
+			if ($phost['snmp_community'] != $community) {
+				if ($proxy) {
+					// assuming an snmp-proxy
+				}else{
+					echo "ERROR: This IP ($id) already exists in the database and --proxy was not specified.\n";
+					exit(1);
+				}
+			}else{
+				$fail = true;
+			}
+		}elseif ($phost['snmp_version'] != $snmp_ver) {
+			// assumeing a proxy
+		}elseif ($phost['snmp_version'] == '3' && $snmp_ver == '3') {
+			$changed = 0;
+			$changed += ($phost['snmp_usernanem'] != $username ? 1:0);
+			$changed += ($phost['snmp_context'] != $snmp_context ? 1:0);
+			$changed += ($phost['snmp_auth_protocol'] != $snmp_auth_protocol ? 1:0);
+			$changed += ($phost['snmp_priv_protocol'] != $snmp_priv_protocol ? 1:0);
+
+			if ($changed > 0) {
+				if ($proxy) {
+					// assuming a proxy
+				}else{
+					echo "ERROR: This IP ($id) already exists in the database and --proxy was not specified.\n";
+					exit(1);
+				}
+			}else{
+				$fail = true;
+			}
+		}else{
+			$fail = true;
+		}
+
+		if ($fail) {
+			db_execute("UPDATE host SET description = '$description' WHERE id = " . $addresses[$ip]);
+			echo "ERROR: This IP already exists in the database ($ip) device-id: (" . $addresses[$ip] . ")\n";
+			exit(1);
+		}
 	}
 
 	if (!is_numeric($site_id) || $site_id < 0) {
@@ -371,7 +416,7 @@ function display_help() {
 	echo "Add Device Utility, Version $version, " . COPYRIGHT_YEARS . "\n\n";
 	echo "A simple command line utility to add a device in Cacti\n\n";
 	echo "usage: add_device.php --description=[description] --ip=[IP] --template=[ID] [--notes=\"[]\"] [--disable]\n";
-	echo "    [--poller=[id]] [--site=[id]\n";
+	echo "    [--poller=[id]] [--site=[id] [--proxy]\n";
 	echo "    [--avail=[ping]] --ping_method=[icmp] --ping_port=[N/A, 1-65534] --ping_retries=[2]\n";
 	echo "    [--version=[0|1|2|3]] [--community=] [--port=161] [--timeout=500]\n";
 	echo "    [--username= --password=] [--authproto=] [--privpass= --privproto=] [--context=]\n";
@@ -380,6 +425,7 @@ function display_help() {
 	echo "    --description  the name that will be displayed by Cacti in the graphs\n";
 	echo "    --ip           self explanatory (can also be a FQDN)\n";
 	echo "Optional:\n";
+	echo "    --proxy        if specified, allows adding a second host with same ip address\n";
 	echo "    --template     0, is a number (read below to get a list of templates)\n";
 	echo "    --notes        '', General information about this host.  Must be enclosed using double quotes.\n";
 	echo "    --disable      0, 1 to add this host but to disable checks and 0 to enable it\n";
