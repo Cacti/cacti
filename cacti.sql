@@ -187,6 +187,7 @@ CREATE TABLE `automation_devices` (
   `snmp_priv_passphrase` varchar(200) DEFAULT '',
   `snmp_priv_protocol` char(6) DEFAULT '',
   `snmp_context` varchar(64) DEFAULT '',
+  `snmp_engine_id varchar(30) DEFAULT '',
   `sysName` varchar(100) NOT NULL DEFAULT '',
   `sysLocation` varchar(255) NOT NULL DEFAULT '',
   `sysContact` varchar(255) NOT NULL DEFAULT '',

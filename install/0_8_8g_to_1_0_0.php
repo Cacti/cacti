@@ -1561,4 +1561,8 @@ function upgrade_to_1_0_0() {
 	db_install_execute('1.0', 'UPDATE poller_item SET poller_id=1 WHERE poller_id=0');
 	db_install_execute('1.0', 'UPDATE poller_output_realtime SET poller_id=1 WHERE poller_id=0');
 	db_install_execute('1.0', 'UPDATE poller_time SET poller_id=1 WHERE poller_id=0');
+
+	db_install_execute('1.0', 'ALTER TABLE sessions MODIFY COLUMN data MEDIUMBLOB');
+
+	db_install_execute('1.0', 'ALTER TABLE host ADD COLUMN snmp_engine_id varchar(30) default "" AFTER snmp_context');
 }

@@ -63,6 +63,7 @@ if (sizeof($parms)) {
 	$snmp_priv_passphrase = read_config_option('snmp_priv_passphrase');
 	$snmp_priv_protocol   = read_config_option('snmp_priv_protocol');
 	$snmp_context         = '';
+	$snmp_engine_id       = '';
 	$snmp_port            = read_config_option('snmp_port');
 	$snmp_timeout         = read_config_option('snmp_timeout');
 
@@ -141,6 +142,14 @@ if (sizeof($parms)) {
 			break;
 		case '--privpass':
 			$snmp_priv_passphrase = trim($value);
+
+			break;
+		case '--context':
+			$snmp_context = trim($value);
+
+			break;
+		case '--engineid':
+			$snmp_engine_id = trim($value);
 
 			break;
 		case '--port':
@@ -317,6 +326,7 @@ if (sizeof($parms)) {
 			$changed = 0;
 			$changed += ($phost['snmp_usernanem'] != $username ? 1:0);
 			$changed += ($phost['snmp_context'] != $snmp_context ? 1:0);
+			$changed += ($phost['snmp_engine_id'] != $snmp_engine_id ? 1:0);
 			$changed += ($phost['snmp_auth_protocol'] != $snmp_auth_protocol ? 1:0);
 			$changed += ($phost['snmp_priv_protocol'] != $snmp_priv_protocol ? 1:0);
 
@@ -396,7 +406,7 @@ if (sizeof($parms)) {
 				$snmp_port, $snmp_timeout, $disable, $avail, $ping_method,
 				$ping_port, $ping_timeout, $ping_retries, $notes,
 				$snmp_auth_protocol, $snmp_priv_passphrase,
-				$snmp_priv_protocol, $snmp_context, $max_oids, $device_threads, 
+				$snmp_priv_protocol, $snmp_context, $snmp_engine_id, $max_oids, $device_threads, 
 				$poller_id, $site_id);
 
 	if (is_error_message()) {
@@ -419,7 +429,7 @@ function display_help() {
 	echo "    [--poller=[id]] [--site=[id] [--proxy]\n";
 	echo "    [--avail=[ping]] --ping_method=[icmp] --ping_port=[N/A, 1-65534] --ping_retries=[2]\n";
 	echo "    [--version=[0|1|2|3]] [--community=] [--port=161] [--timeout=500]\n";
-	echo "    [--username= --password=] [--authproto=] [--privpass= --privproto=] [--context=]\n";
+	echo "    [--username= --password=] [--authproto=] [--privpass= --privproto=] [--context=] [--engineid=]\n";
 	echo "    [--quiet]\n\n";
 	echo "Required:\n";
 	echo "    --description  the name that will be displayed by Cacti in the graphs\n";
@@ -445,6 +455,7 @@ function display_help() {
 	echo "    --privpass     '', snmp privacy passphrase for snmpv3\n";
 	echo "    --privproto    '', snmp privacy protocol for snmpv3\n";
 	echo "    --context      '', snmp context for snmpv3\n";
+	echo "    --engineid     '', snmp engineid for snmpv3\n";
 	echo "    --max_oids     10, 1-60, the number of OID's that can be obtained in a single SNMP Get request\n\n";
 	echo "List Options:\n";
 	echo "    --list-host-templates\n";

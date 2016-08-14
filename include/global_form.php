@@ -23,7 +23,7 @@
 */
 
 if (!defined('VALID_HOST_FIELDS')) {
-	$string = api_plugin_hook_function('valid_host_fields', '(hostname|host_id|snmp_community|snmp_username|snmp_password|snmp_auth_protocol|snmp_priv_passphrase|snmp_priv_protocol|snmp_context|snmp_version|snmp_port|snmp_timeout)');
+	$string = api_plugin_hook_function('valid_host_fields', '(hostname|host_id|snmp_community|snmp_username|snmp_password|snmp_auth_protocol|snmp_priv_passphrase|snmp_priv_protocol|snmp_context|snmp_engine_id|snmp_version|snmp_port|snmp_timeout)');
 	define('VALID_HOST_FIELDS', $string);
 }
 $valid_host_fields = VALID_HOST_FIELDS;
@@ -1125,12 +1125,21 @@ $fields_host_edit = array(
 		),
 	'snmp_context' => array(
 		'method' => 'textbox',
-		'friendly_name' => __('SNMP Context'),
-		'description' => __('Enter the SNMP context to use for this device.'),
+		'friendly_name' => __('SNMP Context (v3)'),
+		'description' => __('Enter the SNMP v3 context to use for this device.'),
 		'value' => '|arg1:snmp_context|',
 		'default' => '',
 		'max_length' => '64',
-		'size' => '40'
+		'size' => '30'
+		),
+	'snmp_engine_id' => array(
+		'method' => 'textbox',
+		'friendly_name' => __('SNMP Engine ID (v3)'),
+		'description' => __('Enter the SNMP v3 Engine Id to use for this device.'),
+		'value' => '|arg1:snmp_engine_id|',
+		'default' => '',
+		'max_length' => '30',
+		'size' => '30'
 		),
 	'snmp_port' => array(
 		'method' => 'textbox',
