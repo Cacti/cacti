@@ -606,7 +606,7 @@ function boost_process_poller_output($local_data_id = '', $rrdtool_pipe='') {
 
 		$timestamp = time();
 
-		$query_string .= " (SELECT local_data_id, UNIX_TIMESTAMP(time) AS timestamp, rrd_name, output FROM poller_output_boost WHERE local_data_id='$local_data_id' AND time < FROM_UNIXTIME('$timestamp'))";
+		$query_string .= " (SELECT local_data_id, UNIX_TIMESTAMP(time) AS timestamp, rrd_name, output FROM poller_output_boost WHERE local_data_id='$orig_local_data_id' AND time < FROM_UNIXTIME('$timestamp'))";
 		$query_string .= ' ORDER BY local_data_id ASC, timestamp ASC, rrd_name ASC ';
 
 	} else {
@@ -1167,7 +1167,6 @@ function boost_poller_bottom () {
 	chdir($config['base_path']);
 
 	if (read_config_option('boost_rrd_update_enable') == 'on') {
-	
 		boost_update_snmp_statistics();
 	
 		$command_string = read_config_option('path_php_binary');
@@ -1182,7 +1181,6 @@ function boost_poller_bottom () {
 		}
 
 		exec_background($command_string, $extra_args);
-
 	}
 }
 
