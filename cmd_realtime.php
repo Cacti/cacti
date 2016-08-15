@@ -27,7 +27,7 @@ if (!isset($_SERVER['argv'][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($
 	die('<br>This script is only meant to run at the command line.');
 }
 
-$start = date('Y-n-d H:i:s'); // for runtime measurement
+$start = date('Y-m-d H:i:s'); // for runtime measurement
 
 ini_set('max_execution_time', '0');
 
