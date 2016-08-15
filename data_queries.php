@@ -566,7 +566,7 @@ function data_query_item_edit() {
 				<td style='width;120;'>
 					<?php print htmlspecialchars($suggested_value['field_name']);?>
 				</td>
-				<td style='width:40px;text-align:center;'>
+				<td style='width:40px;text-align:right;'>
 					<?php if ($show_down) {?>
 					<span class='remover fa fa-caret-down moveArrow' title='<?php print __('Move Down');?>' href='<?php print htmlspecialchars('data_queries.php?action=item_movedown_gsv&snmp_query_graph_id=' . get_request_var('id') . '&id=' . $suggested_value['id'] . '&snmp_query_id=' . get_request_var('snmp_query_id') . '&field_name=' . $suggested_value['field_name']);?>'></span>
 					<?php }else{?>
