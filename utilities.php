@@ -1111,7 +1111,7 @@ function utilities_clear_logfile() {
 	html_start_box(__('Clear Cacti Log File'), '100%', '', '3', 'center', '');
 	if (file_exists($logfile)) {
 		if (is_writable($logfile)) {
-			$timestamp = date('m/d/Y h:i:s A');
+			$timestamp = date('Y-m-d H:i:s');
 			$log_fh = fopen($logfile, 'w');
 			fwrite($log_fh, __('%s - WEBUI: Cacti Log Cleared from Web Management Interface.', $timestamp) . "\n");
 			fclose($log_fh);
@@ -2581,7 +2581,7 @@ function snmpagent_utilities_run_eventlog(){
 			form_alternate_row('line' . $item['id'], false);
 
 			print "<td title='" . __('Severity Level: %s', $severity_levels[$item['severity']]) . "' style='width:10px;background-color: " . $severity_colors[$item['severity']] . ";border-top:1px solid white;border-bottom:1px solid white;'></td>";
-			print "<td class='nowrap'>" . date('Y/m/d H:i:s', $item['time']) . '</td>';
+			print "<td class='nowrap'>" . date('Y-m-d H:i:s', $item['time']) . '</td>';
 			print '<td>' . htmlspecialchars($item['hostname'], ENT_QUOTES) . '</td>';
 
 			if($item['description']) {
