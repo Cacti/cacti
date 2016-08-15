@@ -164,6 +164,14 @@ if (sizeof($parms)) {
 			$snmp_timeout  = $value;
 
 			break;
+		case '--ping_timeout':
+			$ping_timeout  = $value;
+
+			break;
+		case '--threads':
+			$device_threads  = $value;
+
+			break;
 		case '--avail':
 			switch($value) {
 			case 'none':
@@ -426,8 +434,8 @@ function display_help() {
 	echo "Add Device Utility, Version $version, " . COPYRIGHT_YEARS . "\n\n";
 	echo "A simple command line utility to add a device in Cacti\n\n";
 	echo "usage: add_device.php --description=[description] --ip=[IP] --template=[ID] [--notes=\"[]\"] [--disable]\n";
-	echo "    [--poller=[id]] [--site=[id] [--proxy]\n";
-	echo "    [--avail=[ping]] --ping_method=[icmp] --ping_port=[N/A, 1-65534] --ping_retries=[2]\n";
+	echo "    [--poller=[id]] [--site=[id] [--proxy] [--threads=[1]\n";
+	echo "    [--avail=[ping]] --ping_method=[icmp] --ping_port=[N/A, 1-65534] --ping_timeout=[N] --ping_retries=[2]\n";
 	echo "    [--version=[0|1|2|3]] [--community=] [--port=161] [--timeout=500]\n";
 	echo "    [--username= --password=] [--authproto=] [--privpass= --privproto=] [--context=] [--engineid=]\n";
 	echo "    [--quiet]\n\n";
@@ -441,10 +449,12 @@ function display_help() {
 	echo "    --disable      0, 1 to add this host but to disable checks and 0 to enable it\n";
 	echo "    --poller       0, numeric poller id that will perform data collection for the device.\n";
 	echo "    --site         0, numeric site id that will be associated with the device.\n";
+	echo "    --threads      1, numeric number of threads to poll device with.\n";
 	echo "    --avail        pingsnmp, [ping][none, snmp, pingsnmp]\n";
 	echo "    --ping_method  tcp, icmp|tcp|udp\n";
 	echo "    --ping_port    '', 1-65534\n";
 	echo "    --ping_retries 2, the number of time to attempt to communicate with a host\n";
+	echo "    --ping_timeout N, the ping timeout in milliseconds.  Defaults to database setting.\n";
 	echo "    --version      1, 0|1|2|3, snmp version.  0 for no snmp\n";
 	echo "    --community    '', snmp community string for snmpv1 and snmpv2.  Leave blank for no community\n";
 	echo "    --port         161\n";
