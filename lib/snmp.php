@@ -27,8 +27,20 @@ define("REGEXP_SNMP_TRIM", "/(hex|counter(32|64)|gauge|gauge(32|64)|float|ipaddr
 define("SNMP_METHOD_PHP", 1);
 define("SNMP_METHOD_BINARY", 2);
 
+function cacti_snmp_sanehost($hostname) {
+	$host_str_at   = preg_replace('/.*@/', '', $hostname) ;
+
+	if (strtoupper(substr($hostname, 0, 4)) != 'TCP:') {
+		$host_str_sane = preg_replace('/:(.*)/', '', $host_str_at) ;
+	}
+
+	return $host_str_sane ;
+}
+
 function cacti_snmp_get($hostname, $community, $oid, $version, $username, $password, $auth_proto, $priv_pass, $priv_proto, $context, $port = 161, $timeout = 500, $retries = 0, $environ = SNMP_POLLER) {
 	global $config, $snmp_logging, $php_errormsg;
+
+	$hostname = cacti_snmp_sanehost($hostname);
 
 	/* determine default retries */
 	if (($retries == 0) || (!is_numeric($retries))) {
@@ -145,6 +157,8 @@ function cacti_snmp_get($hostname, $community, $oid, $version, $username, $passw
 
 function cacti_snmp_getnext($hostname, $community, $oid, $version, $username, $password, $auth_proto, $priv_pass, $priv_proto, $context, $port = 161, $timeout = 500, $retries = 0, $environ = SNMP_POLLER) {
 	global $config, $snmp_logging, $php_errormsg;
+
+	$hostname = cacti_snmp_sanehost($hostname);
 
 	/* determine default retries */
 	if (($retries == 0) || (!is_numeric($retries))) {
@@ -265,6 +279,8 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $username, $pass
 	$snmp_auth	       = '';
 	$snmp_array        = array();
 	$temp_array        = array();
+
+	$hostname = cacti_snmp_sanehost($hostname);
 
 	/* determine default retries */
 	if (($retries == 0) || (!is_numeric($retries))) {
