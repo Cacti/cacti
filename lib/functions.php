@@ -851,14 +851,16 @@ function update_host_status($status, $host_id, &$hosts, &$ping, $ping_availabili
 		}
 
 		/* update times as required */
-		$hosts[$host_id]['cur_time'] = $ping_time;
+		if (is_numeric($ping_time)) {
+			$hosts[$host_id]['cur_time'] = $ping_time;
+		}
 
 		/* maximum time */
-		if ($ping_time > $hosts[$host_id]['max_time'])
+		if (is_numeric($ping_time) && $ping_time > $hosts[$host_id]['max_time'])
 			$hosts[$host_id]['max_time'] = $ping_time;
 
 		/* minimum time */
-		if ($ping_time < $hosts[$host_id]['min_time'])
+		if (is_numeric($ping_time) && $ping_time < $hosts[$host_id]['min_time'])
 			$hosts[$host_id]['min_time'] = $ping_time;
 
 		/* average time */
