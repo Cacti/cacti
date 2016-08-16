@@ -128,7 +128,7 @@ function update_poller_cache($data_source, $commit = false) {
 		$outputs = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . "
 			snmp_query_graph_rrd.snmp_field_name,
 			data_template_rrd.id as data_template_rrd_id
-			FROM (snmp_query_graph_rrd,data_template_rrd)
+			FROM (snmp_query_graph_rrd,data_template_rrd FORCE INDEX (local_data_id))
 			WHERE snmp_query_graph_rrd.data_template_rrd_id = data_template_rrd.local_data_template_rrd_id
 			$output_type_sql
 			AND snmp_query_graph_rrd.data_template_id = ?
