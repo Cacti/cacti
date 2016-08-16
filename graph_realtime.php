@@ -134,12 +134,12 @@ case 'countdown':
 	shell_exec("$command $args");
 
 	/* construct the image name  */
-	$graph_data_array['export_realtime'] = read_config_option('realtime_cache_path') . '/user_' . session_id() . '_lgi_' . get_request_var('local_graph_id') . '.png';
+	$graph_data_array['export_realtime'] = read_config_option('realtime_cache_path') . 'user_' . session_id() . '_lgi_' . get_request_var('local_graph_id') . '.png';
 	$graph_data_array['output_flag']     = RRDTOOL_OUTPUT_GRAPH_DATA;
 
 	rrdtool_function_graph(get_request_var('local_graph_id'), '', $graph_data_array);
 
-	$graph_rrd = read_config_option('realtime_cache_path') . '/user_' . session_id() . '_lgi_' . get_request_var('local_graph_id') . '.png';
+	$graph_rrd = read_config_option('realtime_cache_path') . 'user_' . session_id() . '_lgi_' . get_request_var('local_graph_id') . '.png';
 
 	if (file_exists($graph_rrd)) {
 		$data = base64_encode(file_get_contents($graph_rrd));
@@ -160,7 +160,7 @@ case 'countdown':
 	exit;
 	break;
 case 'view':
-	$graph_rrd = read_config_option('realtime_cache_path') . '/user_' . session_id() . '_lgi_' . get_request_var('local_graph_id') . '.png';
+	$graph_rrd = read_config_option('realtime_cache_path') . 'user_' . session_id() . '_lgi_' . get_request_var('local_graph_id') . '.png';
 
 	if (file_exists($graph_rrd)) {
 		print base64_encode(file_get_contents($graph_rrd));
