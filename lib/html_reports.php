@@ -329,7 +329,7 @@ $fields_reports_item_edit = array(
 		'sql' => "(SELECT id, CONCAT_WS('', title, ' (Branch)') AS name
 			FROM graph_tree_items
 			WHERE graph_tree_id=|arg1:tree_id| AND host_id=0 AND local_graph_id=0
-			ORDER BY order_key)
+			ORDER BY position)
 			UNION
 			(SELECT graph_tree_items.id, CONCAT_WS('', description, ' (Host)') AS name
 			FROM graph_tree_items
