@@ -1563,7 +1563,7 @@ function upgrade_to_1_0_0() {
 		ENGINE=InnoDB 
 		COMMENT="Pollers for Cacti"');
 
-	db_install_execute('1.0.0', 'INSERT INTO poller (id, description, hostname) VALUES (1, "Main Poller", "localhost")');
+	db_install_execute('1.0.0', 'INSERT INTO poller (id, name, hostname) VALUES (1, "Main Poller", "localhost")');
 	db_install_execute('1.0.0', 'UPDATE automation_networks SET poller_id=1 WHERE poller_id=0');
 	db_install_execute('1.0.0', 'UPDATE automation_processes SET poller_id=1 WHERE poller_id=0');
 	db_install_execute('1.0.0', 'UPDATE host SET poller_id=1 WHERE poller_id=0');
