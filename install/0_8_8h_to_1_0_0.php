@@ -1545,24 +1545,23 @@ function upgrade_to_1_0_0() {
 		MODIFY COLUMN poller_id mediumint(8) unsigned default '1',
 		ADD INDEX site_id(site_id)");
 
-	/* update the poller table */
-	$data = array();
-	$data['columns'][] = array('name' => 'id', 'type' => 'mediumint(8)', 'unsigned' => 'unsigned', 'NULL' => false, 'auto_increment' => true);
-	$data['columns'][] = array('name' => 'disabled', 'type' => 'char(2)', 'NULL' => true, 'default' => '', 'after' => 'id');
-	$data['columns'][] = array('name' => 'name', 'type' => 'varchar(30)', 'NULL' => false, 'default' => '', 'after' => 'disabled');
-	$data['columns'][] = array('name' => 'notes', 'type' => 'varchar(1024)', 'NULL' => false, 'default' => '', 'after' => 'name');
-	$data['columns'][] = array('name' => 'status', 'type' => 'int(10)', 'unsigned' => true, 'NULL' => false, 'default' => '0', 'after' => 'notes');
-	$data['columns'][] = array('name' => 'hostname', 'type' => 'varchar(255)', 'NULL' => false, 'default' => '', 'after' => 'status');
-	$data['columns'][] = array('name' => 'total_time', 'type' => 'double', 'NULL' => false, 'default' => 0, 'after' => 'hostname');
-	$data['columns'][] = array('name' => 'snmp', 'type' => 'mediumint(8)', 'unsigned' => true, 'NULL' => false, 'default' => 0, 'after' => 'total_time');
-	$data['columns'][] = array('name' => 'script', 'type' => 'mediumint(8)', 'unsigned' => true, 'NULL' => false, 'default' => 0, 'after' => 'snmp');
-	$data['columns'][] = array('name' => 'server', 'type' => 'mediumint(8)', 'unsigned' => true, 'NULL' => false, 'default' => 0, 'after' => 'script');
-	$data['columns'][] = array('name' => 'last_update', 'type' => 'timestamp', 'NULL' => false, 'default' => '0000-00-00', 'after' => 'server');
-	$data['columns'][] = array('name' => 'last_status', 'type' => 'timestamp', 'NULL' => false, 'default' => '0000-00-00', 'after' => 'last_update');
-	$data['primary']   = 'id';
-	$data['comment']   = 'Pollers for Cacti';
-	$data['type'] = 'InnoDB';
-	db_table_create('poller', $data);
+	db_install_execute('1.0.0', 'DROP TABLE poller');
+	db_install_execute('CREATE TABLE `poller` (
+		`id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
+		`disabled` char(2) DEFAULT "",
+		`name` varchar(30) DEFAULT NULL,
+		`notes` varchar(1024) DEFAULT "",
+		`status` int(10) unsigned NOT NULL DEFAULT "0",
+		`hostname` varchar(250) NOT NULL DEFAULT "",
+		`total_time` double DEFAULT "0",
+		`snmp` mediumint(8) unsigned DEFAULT "0",
+		`script` mediumint(8) unsigned DEFAULT "0",
+		`server` mediumint(8) unsigned DEFAULT "0",
+		`last_update` timestamp NOT NULL DEFAULT "0000-00-00 00:00:00",
+		`last_status` timestamp NOT NULL DEFAULT "0000-00-00 00:00:00",
+		PRIMARY KEY (`id`)) 
+		ENGINE=InnoDB 
+		COMMENT="Pollers for Cacti"');
 
 	db_install_execute('1.0.0', 'INSERT INTO poller (id, description, hostname) VALUES (1, "Main Poller", "localhost")');
 	db_install_execute('1.0.0', 'UPDATE automation_networks SET poller_id=1 WHERE poller_id=0');
