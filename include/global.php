@@ -162,8 +162,10 @@ $colors['form_alternate2'] = 'E5E5E5';
 /* include base modules */
 include_once($config['library_path'] . '/database.php');
 
-if (isset($cacti_db_session) && $cacti_db_session) {
+if (isset($cacti_db_session) && $cacti_db_session && db_table_exists('sessions')) {
 	include(dirname(__FILE__) . '/session.php');
+}else{
+	$cacti_db_session = false;
 }
 
 if ((isset($no_http_headers) && $no_http_headers == true) || in_array(basename($_SERVER['PHP_SELF']), $no_http_header_files, true)) {
