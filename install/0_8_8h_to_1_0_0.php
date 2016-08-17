@@ -1504,7 +1504,7 @@ function upgrade_to_1_0_0() {
 		db_install_execute('1.0.0', 'INSERT INTO user_auth_realm (user_id, realm_id) SELECT userid, pageid+10000 FROM superlinks_auth');
 		db_install_execute('1.0.0', 'DROP TABLE superlinks_auth');
 	}else{
-		db_install_execute('1.0.0' 'CREATE TABLE `external_links` (
+		db_install_execute('1.0.0', 'CREATE TABLE `external_links` (
 			`id` int(11) NOT NULL AUTO_INCREMENT,
 			`sortorder` int(11) NOT NULL DEFAULT "0",
 			`enabled` char(2) DEFAULT "on",
@@ -1546,7 +1546,7 @@ function upgrade_to_1_0_0() {
 		ADD INDEX site_id(site_id)");
 
 	db_install_execute('1.0.0', 'DROP TABLE poller');
-	db_install_execute('CREATE TABLE `poller` (
+	db_install_execute('1.0.0', 'CREATE TABLE `poller` (
 		`id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
 		`disabled` char(2) DEFAULT "",
 		`name` varchar(30) DEFAULT NULL,
