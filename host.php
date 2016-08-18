@@ -218,6 +218,9 @@ function form_actions() {
 					while (list($field_name, $field_array) = each($fields_host_edit)) {
 						if (isset_request_var("t_$field_name")) {
 							db_execute_prepared("UPDATE host SET $field_name = ? WHERE id = ?", array(get_nfilter_request_var($field_name), $selected_items[$i]));
+							if ($field_name == 'host_template_id') {
+								api_device_update_host_template($selected_items[$i], get_nfilter_request_var($field_name));
+							}
 						}
 					}
 
@@ -426,6 +429,7 @@ function form_actions() {
 					(preg_match('/^ping_/', $field_name)) ||
 					($field_name == 'poller_id') ||
 					($field_name == 'site_id') ||
+					($field_name == 'host_template_id') ||
 					($field_name == 'availability_method') ||
 					($field_name == 'device_threads') ||
 					($field_name == 'max_oids')) {
@@ -537,7 +541,10 @@ function host_add_query() {
 	get_filter_request_var('reindex_method');
 	/* ==================================================== */
 
-	db_execute_prepared('REPLACE INTO host_snmp_query (host_id, snmp_query_id, reindex_method) VALUES (?, ?, ?)', array(get_nfilter_request_var('host_id'), get_nfilter_request_var('snmp_query_id'), get_nfilter_request_var('reindex_method')));
+	db_execute_prepared('REPLACE INTO host_snmp_query 
+		(host_id, snmp_query_id, reindex_method) 
+		VALUES (?, ?, ?)', 
+		array(get_nfilter_request_var('host_id'), get_nfilter_request_var('snmp_query_id'), get_nfilter_request_var('reindex_method')));
 
 	/* recache snmp data */
 	run_data_query(get_nfilter_request_var('host_id'), get_nfilter_request_var('snmp_query_id'));
@@ -567,7 +574,10 @@ function host_add_gt() {
 	get_filter_request_var('graph_template_id');
 	/* ==================================================== */
 
-	db_execute_prepared('REPLACE INTO host_graph (host_id, graph_template_id) VALUES (?, ?)', array(get_nfilter_request_var('host_id'), get_nfilter_request_var('graph_template_id')));
+	db_execute_prepared('REPLACE INTO host_graph 
+		(host_id, graph_template_id) 
+		VALUES (?, ?)', 
+		array(get_nfilter_request_var('host_id'), get_nfilter_request_var('graph_template_id')));
 
 	automation_hook_graph_template(get_nfilter_request_var('host_id'), get_nfilter_request_var('graph_template_id'));
 
@@ -781,7 +791,10 @@ function host_edit() {
 				form_alternate_row("gt$i", true);
 
 				/* get status information for this graph template */
-				$is_being_graphed = (sizeof(db_fetch_assoc_prepared('SELECT id FROM graph_local WHERE graph_template_id = ? AND host_id = ?', array($item['id'], get_request_var('id')))) > 0) ? true : false;
+				$is_being_graphed = (sizeof(db_fetch_assoc_prepared('SELECT id 
+					FROM graph_local 
+					WHERE graph_template_id = ? 
+					AND host_id = ?', array($item['id'], get_request_var('id')))) > 0) ? true : false;
 
 				?>
 					<td style="padding: 4px;">

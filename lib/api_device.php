@@ -209,27 +209,7 @@ function api_device_save($id, $host_template_id, $description, $hostname, $snmp_
 
 		/* if the user changes the host template, add each snmp query associated with it */
 		if (($host_template_id != $_host_template_id) && (!empty($host_template_id))) {
-			$snmp_queries = db_fetch_assoc_prepared('SELECT snmp_query_id FROM host_template_snmp_query WHERE host_template_id = ?', array($host_template_id));
-
-			if (sizeof($snmp_queries) > 0) {
-				foreach ($snmp_queries as $snmp_query) {
-					db_execute_prepared('REPLACE INTO host_snmp_query (host_id, snmp_query_id, reindex_method) VALUES (?, ?, ?)', array($host_id, $snmp_query['snmp_query_id'], read_config_option('reindex_method')));
-
-					/* recache snmp data */
-					run_data_query($host_id, $snmp_query['snmp_query_id']);
-				}
-			}
-
-			$graph_templates = db_fetch_assoc_prepared('SELECT graph_template_id FROM host_template_graph WHERE host_template_id = ?', array($host_template_id));
-
-			if (sizeof($graph_templates) > 0) {
-				foreach ($graph_templates as $graph_template) {
-					db_execute_prepared('REPLACE INTO host_graph (host_id, graph_template_id) VALUES (?, ?)', array($host_id, $graph_template['graph_template_id']));
-					automation_hook_graph_template($host_id, $graph_template['graph_template_id']);
-
-					api_plugin_hook_function('add_graph_template_to_host', array('host_id' => $host_id, 'graph_template_id' => $graph_template['graph_template_id']));
-				}
-			}
+			api_device_update_host_template($host_id, $host_template_id);
 		}
 	}
 
@@ -270,5 +250,46 @@ function api_device_save($id, $host_template_id, $description, $hostname, $snmp_
 	}
 
 	return $host_id;
+}
+
+/* api_device_update_host_template - changes the host template of a host
+   @arg $host_id - the id of the device which contains the mapping
+   @arg $host_template_id - the id of the host template alter the device to */
+function api_device_update_host_template($host_id, $host_template_id) {
+	db_execute('UPDATE host SET host_template_id = ? WHERE id = ?', array($host_template_id, $host_id));
+
+	$snmp_queries = db_fetch_assoc_prepared('SELECT snmp_query_id 
+		FROM host_template_snmp_query 
+		WHERE host_template_id = ?', array($host_template_id));
+
+	if (sizeof($snmp_queries)) {
+		foreach ($snmp_queries as $snmp_query) {
+			db_execute_prepared('REPLACE INTO host_snmp_query 
+				(host_id, snmp_query_id, reindex_method) 
+				VALUES (?, ?, ?)', 
+				array($host_id, $snmp_query['snmp_query_id'], read_config_option('reindex_method')));
+
+			/* recache snmp data */
+			run_data_query($host_id, $snmp_query['snmp_query_id']);
+		}
+	}
+
+	$graph_templates = db_fetch_assoc_prepared('SELECT graph_template_id 
+		FROM host_template_graph 
+		WHERE host_template_id = ?', array($host_template_id));
+
+	if (sizeof($graph_templates)) {
+		foreach ($graph_templates as $graph_template) {
+			db_execute_prepared('REPLACE INTO host_graph 
+				(host_id, graph_template_id) 
+				VALUES (?, ?)', 
+				array($host_id, $graph_template['graph_template_id']));
+
+			automation_hook_graph_template($host_id, $graph_template['graph_template_id']);
+
+			api_plugin_hook_function('add_graph_template_to_host', 
+				array('host_id' => $host_id, 'graph_template_id' => $graph_template['graph_template_id']));
+		}
+	}
 }
 
