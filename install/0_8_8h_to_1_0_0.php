@@ -1577,4 +1577,12 @@ function upgrade_to_1_0_0() {
 	db_install_execute('1.0.0', 'ALTER TABLE host ADD COLUMN snmp_engine_id varchar(30) default "" AFTER snmp_context');
 	db_install_execute('1.0.0', 'ALTER TABLE poller_item ADD COLUMN snmp_engine_id varchar(30) default "" AFTER snmp_context');
 	db_install_execute('1.0.0', 'ALTER TABLE automation_snmp_items ADD COLUMN snmp_engine_id varchar(30) default "" AFTER snmp_context');
+
+	db_install_execute('1.0.0', 'ALTER TABLE host MODIFY COLUMN poller_id int(10) unsigned DEFAULT "1"');
+	db_install_execute('1.0.0', 'ALTER TABLE host MODIFY COLUMN site_id int(10) unsigned DEFAULT "1"');
+	db_install_execute('1.0.0', 'ALTER TABLE automation_networks MODIFY COLUMN poller_id int(10) unsigned DEFAULT "1"');
+	db_install_execute('1.0.0', 'ALTER TABLE automation_processes MODIFY COLUMN poller_id int(10) unsigned DEFAULT "1"');
+	db_install_execute('1.0.0', 'ALTER TABLE poller_command MODIFY COLUMN poller_id int(10) unsigned DEFAULT "1"');
+	db_install_execute('1.0.0', 'ALTER TABLE poller_item MODIFY COLUMN poller_id int(10) unsigned DEFAULT "1"');
+	db_install_execute('1.0.0', 'ALTER TABLE poller_time MODIFY COLUMN poller_id int(10) unsigned DEFAULT "1"');
 }

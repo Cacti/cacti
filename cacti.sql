@@ -286,7 +286,7 @@ INSERT INTO `automation_match_rule_items` VALUES (1,1,1,1,0,'h.description',14,'
 
 CREATE TABLE `automation_networks` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `poller_id` int(10) unsigned DEFAULT '0',
+  `poller_id` int(10) unsigned DEFAULT '1',
   `name` varchar(128) NOT NULL DEFAULT '' COMMENT 'The name for this network',
   `subnet_range` varchar(255) NOT NULL DEFAULT '' COMMENT 'Defined subnet ranges for discovery',
   `dns_servers` varchar(128) NOT NULL DEFAULT '' COMMENT 'DNS Servers to use for name resolution',
@@ -324,7 +324,7 @@ CREATE TABLE `automation_networks` (
 -- Dumping data for table `automation_networks`
 --
 
-INSERT INTO `automation_networks` VALUES (1,0,'Test Network','192.168.1.0/24','','on',1,'on','',254,14,8,2,22,400,1,2,10,1200,'2015-05-17 16:15','0000-00-00 00:00:00',2,'4','1,2,6','1,2,3,4,6,7,11,12,14,15,17,19,26,32','','',40.178689002991,'2015-05-19 02:23:22','','on');
+INSERT INTO `automation_networks` VALUES (1,1,'Test Network','192.168.1.0/24','','on',1,'on','',254,14,8,2,22,400,1,2,10,1200,'2015-05-17 16:15','0000-00-00 00:00:00',2,'4','1,2,6','1,2,3,4,6,7,11,12,14,15,17,19,26,32','','',40.178689002991,'2015-05-19 02:23:22','','on');
 
 --
 -- Table structure for table `automation_processes`
@@ -332,7 +332,7 @@ INSERT INTO `automation_networks` VALUES (1,0,'Test Network','192.168.1.0/24',''
 
 CREATE TABLE `automation_processes` (
   `pid` int(8) unsigned NOT NULL,
-  `poller_id` int(10) unsigned DEFAULT '0',
+  `poller_id` int(10) unsigned DEFAULT '1',
   `network_id` int(10) unsigned NOT NULL DEFAULT '0',
   `task` varchar(20) DEFAULT '',
   `status` varchar(20) DEFAULT NULL,
@@ -2536,8 +2536,8 @@ INSERT INTO graph_tree_items VALUES (1,0,0,1,0,'',1,1,1);
 
 CREATE TABLE host (
   id mediumint(8) unsigned NOT NULL auto_increment,
-  poller_id mediumint(8) unsigned NOT NULL default '0',
-  site_id int(10) unsigned NOT NULL default '0',
+  poller_id int(10) unsigned NOT NULL default '1',
+  site_id int(10) unsigned NOT NULL default '1',
   host_template_id mediumint(8) unsigned NOT NULL default '0',
   description varchar(150) NOT NULL default '',
   hostname varchar(250) default NULL,
@@ -2819,7 +2819,7 @@ INSERT INTO poller (id,name,hostname) VALUES (1,'Main Poller', 'localhost');
 --
 
 CREATE TABLE poller_command (
-  poller_id smallint(5) unsigned NOT NULL default '0',
+  poller_id smallint(5) unsigned NOT NULL default '1',
   time timestamp NOT NULL default '0000-00-00 00:00:00',
   action tinyint(3) unsigned NOT NULL default '0',
   command varchar(200) NOT NULL default '',
@@ -2832,7 +2832,7 @@ CREATE TABLE poller_command (
 
 CREATE TABLE poller_item (
   local_data_id mediumint(8) unsigned NOT NULL default '0',
-  poller_id smallint(5) unsigned NOT NULL default '0',
+  poller_id int(10) unsigned NOT NULL default '1',
   host_id mediumint(8) unsigned NOT NULL default '0',
   action tinyint(2) unsigned NOT NULL default '1',
   present tinyint NOT NULL DEFAULT '1',
@@ -2950,7 +2950,7 @@ CREATE TABLE poller_resource_cache (
 CREATE TABLE poller_time (
   id mediumint(8) unsigned NOT NULL auto_increment,
   pid int(11) unsigned NOT NULL default '0',
-  poller_id smallint(5) unsigned NOT NULL default '0',
+  poller_id int(10) unsigned NOT NULL default '1',
   start_time timestamp NOT NULL default '0000-00-00 00:00:00',
   end_time timestamp NOT NULL default '0000-00-00 00:00:00',
   PRIMARY KEY  (id)
