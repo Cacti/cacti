@@ -84,7 +84,8 @@ function form_save() {
 
 		$save['id']        = get_nfilter_request_var('id');
 
-		if (!isset_request_var('read_only')) {
+		if (get_nfilter_request_var('read_only') == '') {
+cacti_log('odd');
 			$save['name']      = get_nfilter_request_var('name');
 			$save['hex']       = form_input_validate(get_nfilter_request_var('hex'),  'hex',  '^[a-fA-F0-9]+$' , false, 3);
 		}else{
@@ -138,7 +139,7 @@ function form_actions() {
 
 		if ($selected_items != false) {
 			if (get_request_var('drp_action') == '1') { /* delete */
-				db_execute('DELETE FROM colors WHERE ' . array_to_sql_or($selected_items, 'hex'));
+				db_execute('DELETE FROM colors WHERE ' . array_to_sql_or($selected_items, 'id'));
 			}
 		}
 
