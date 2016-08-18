@@ -250,6 +250,20 @@ $settings = array(
 			'collapsible' => 'true',
 			'method' => 'spacer',
 			),
+		'default_site' => array(
+			'friendly_name' => __('Default Site'),
+			'description' => __('The default Site for all new Devices.'),
+			'method' => 'drop_sql',
+			'none_value' => __('None'),
+			'sql' => 'SELECT id, name FROM sites ORDER BY name',
+			),
+		'default_poller' => array(
+			'friendly_name' => __('Default Poller'),
+			'description' => __('The default Poller for all new Devices.'),
+			'method' => 'drop_sql',
+			'none_value' => __('None'),
+			'sql' => 'SELECT id, name FROM poller ORDER BY name',
+			),
 		'reindex_method' => array(
 			'friendly_name' => __('Default Reindex Method for Data Queries'),
 			'description' => __('The default Reindex Method to use for all Data Queries.'),
