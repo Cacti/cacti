@@ -2844,6 +2844,7 @@ CREATE TABLE poller_item (
   snmp_priv_passphrase varchar(200) NOT NULL default '',
   snmp_priv_protocol varchar(6) NOT NULL default '',
   snmp_context varchar(64) default '',
+  snmp_engine_id varchar(30) default '',
   snmp_port mediumint(5) unsigned NOT NULL default '161',
   snmp_timeout mediumint(8) unsigned NOT NULL default '0',
   rrd_name varchar(19) NOT NULL default '',

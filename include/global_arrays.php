@@ -913,6 +913,7 @@ $host_struc = array(
 	'snmp_priv_passphrase',
 	'snmp_priv_protocol',
 	'snmp_context',
+	'snmp_engine_id',
 	'snmp_port',
 	'snmp_timeout',
 	'max_oids',

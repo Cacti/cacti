@@ -371,7 +371,7 @@ function poller_update_poller_cache_from_buffer($local_data_ids, &$poller_items)
 	/* setup the database call */
 	$sql_prefix   = 'INSERT INTO poller_item (local_data_id, poller_id, host_id, action, hostname, ' .
 		'snmp_community, snmp_version, snmp_timeout, snmp_username, snmp_password, ' .
-		'snmp_auth_protocol, snmp_priv_passphrase, snmp_priv_protocol, snmp_context, ' .
+		'snmp_auth_protocol, snmp_priv_passphrase, snmp_priv_protocol, snmp_context, snmp_engine_id, ' .
 		'snmp_port, rrd_name, rrd_path, rrd_num, rrd_step, rrd_next_step, arg1, arg2, arg3, present) ' .
 		'VALUES';
 
@@ -379,7 +379,8 @@ function poller_update_poller_cache_from_buffer($local_data_ids, &$poller_items)
 		'snmp_community=VALUES(snmp_community), snmp_version=VALUES(snmp_version), snmp_timeout=VALUES(snmp_timeout), ' .
 		'snmp_username=VALUES(snmp_username), snmp_password=VALUES(snmp_password), snmp_auth_protocol=VALUES(snmp_auth_protocol), ' .
 		'snmp_priv_passphrase=VALUES(snmp_priv_passphrase), snmp_priv_protocol=VALUES(snmp_priv_protocol), ' .
-		'snmp_context=VALUES(snmp_context), snmp_port=VALUES(snmp_port), rrd_path=VALUES(rrd_path), rrd_num=VALUES(rrd_num), ' .
+		'snmp_context=VALUES(snmp_context), snmp_engine_id=VALUES(snmp_engine_id), snmp_port=VALUES(snmp_port), ' .
+		'rrd_path=VALUES(rrd_path), rrd_num=VALUES(rrd_num), ' .
 		'rrd_step=VALUES(rrd_step), rrd_next_step=VALUES(rrd_next_step), arg1=VALUES(arg1), arg2=VALUES(arg2), ' .
 		'arg3=VALUES(arg3), present=VALUES(present)';
 

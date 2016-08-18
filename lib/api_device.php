@@ -118,7 +118,7 @@ function api_device_gt_remove($device_id, $graph_template_id) {
 function api_device_save($id, $host_template_id, $description, $hostname, $snmp_community, $snmp_version,
 	$snmp_username, $snmp_password, $snmp_port, $snmp_timeout, $disabled,
 	$availability_method, $ping_method, $ping_port, $ping_timeout, $ping_retries,
-	$notes, $snmp_auth_protocol, $snmp_priv_passphrase, $snmp_priv_protocol, $snmp_context, $max_oids, $device_threads, $poller_id = 0, $site_id = 0) {
+	$notes, $snmp_auth_protocol, $snmp_priv_passphrase, $snmp_priv_protocol, $snmp_context, $snmp_engine_id, $max_oids, $device_threads, $poller_id = 0, $site_id = 0) {
 	global $config;
 
 	include_once($config['base_path'] . '/lib/utility.php');
@@ -152,6 +152,7 @@ function api_device_save($id, $host_template_id, $description, $hostname, $snmp_
 		$save['snmp_priv_passphrase'] = form_input_validate($snmp_priv_passphrase, 'snmp_priv_passphrase', '', true, 3);
 		$save['snmp_priv_protocol']   = form_input_validate($snmp_priv_protocol, 'snmp_priv_protocol', "^\[None\]|DES|AES128$", true, 3);
 		$save['snmp_context']         = form_input_validate($snmp_context, 'snmp_context', '', true, 3);
+		$save['snmp_engine_id']       = form_input_validate($snmp_engine_id, 'snmp_engine_id', '', true, 3);
 	} else {
 		$save['snmp_username']        = '';
 		$save['snmp_password']        = '';
@@ -159,6 +160,7 @@ function api_device_save($id, $host_template_id, $description, $hostname, $snmp_
 		$save['snmp_priv_passphrase'] = '';
 		$save['snmp_priv_protocol']   = '';
 		$save['snmp_context']         = '';
+		$save['snmp_engine_id']       = '';
 	}
 
 	$save['snmp_port']            = form_input_validate($snmp_port, 'snmp_port', '^[0-9]+$', false, 3);
@@ -232,6 +234,31 @@ function api_device_save($id, $host_template_id, $description, $hostname, $snmp_
 	}
 
 	if ($host_id > 0) {
+		if (read_config_option('extended_paths') == 'on'){
+			$host_dir = $config['rra_path'] . '/' . $host_id;
+			if (!is_dir($host_dir)){
+				if (is_writable($host_dir)) {
+					if (mkdir($host_dir, 0775)) {
+						if ($config['cacti_server_os'] != 'win32') {
+							$owner_id      = fileowner($config['rra_path']);
+							$group_id      = filegroup($config['rra_path']);
+		
+							if ((chown($host_dir, $owner_id)) &&
+								(chgrp($host_dir, $group_id))) {
+								/* permissions set ok */
+							}else{
+								cacti_log("ERROR: Unable to set directory permissions for '" . $host_dir . "'", FALSE);
+							}
+						}
+					}else{
+						cacti_log("ERROR: Unable to create directory '" . $host_dir . "'", FALSE);
+					}
+				}else{
+					cacti_log("ERROR: Unable to create directory due to missing write permissions '" . $host_dir . "'", FALSE);
+				}
+			}
+		}
+
 		# now that we have the id of the new host, we may plugin postprocessing code
 		$save['id'] = $host_id;
 
