@@ -66,6 +66,22 @@ function record_cmdphp_started() {
 		VALUES (?, ?, NOW(), '0000-00-00 00:00:00')", array($poller_id, getmypid()));
 }
 
+function open_snmp_session($host_id, &$item) {
+	global $sessions, $downhosts;
+
+	if (!isset($sessions[$host_id]) && !isset($downhosts[$host_id])) {
+		$sessions[$host_id] = cacti_snmp_session($item['hostname'], $item['snmp_community'], $item['snmp_version'],
+			$item['snmp_username'], $item['snmp_password'], $item['snmp_auth_protocol'], $item['snmp_priv_passphrase'],
+			$item['snmp_priv_protocol'], $item['snmp_context'], $item['snmp_engine_id'], $item['snmp_port'],
+			$item['snmp_timeout'], read_config_option('snmp_retries'), $item['max_oids']);
+
+		if ($sessions[$host_id] === false) {
+			unset($sessions[$host_id]);
+			$downhosts[$host_id] = true;
+		}
+	}
+}
+
 /*	display_help - displays the usage of the function */
 function display_help () {
 	$version = db_fetch_cell('SELECT cacti FROM version');
@@ -93,7 +109,7 @@ if (!isset($_SERVER['argv'][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($
 	die('<br>This script is only meant to run at the command line.');
 }
 
-global $poller_id;
+global $poller_id, $sessions, $downhosts;
 
 $start = date('Y-m-d H:i:s'); // for runtime measurement
 
@@ -351,6 +367,8 @@ if ($allhost) {
 }
 
 if ((sizeof($polling_items) > 0) && (read_config_option('poller_enabled') == 'on')) {
+	global $sessions, $downhosts;
+
 	$failure_type = '';
 	$host_down    = false;
 	$new_host     = true;
@@ -435,10 +453,13 @@ if ((sizeof($polling_items) > 0) && (read_config_option('poller_enabled') == 'on
 						case POLLER_ACTION_SNMP: /* snmp */
 							cacti_log("Device[$host_id] RECACHE DQ[" . $index_item['data_query_id'] . '] OID: ' . $index_item['arg1'], $print_data_to_stdout, 'POLLER', POLLER_VERBOSITY_DEBUG);
 
-							$output = cacti_snmp_get($item['hostname'], $item['snmp_community'], $index_item['arg1'],
-								$item['snmp_version'], $item['snmp_username'], $item['snmp_password'],
-								$item['snmp_auth_protocol'], $item['snmp_priv_passphrase'], $item['snmp_priv_protocol'],
-								$item['snmp_context'], $item['snmp_port'], $item['snmp_timeout'], read_config_option('snmp_retries'), SNMP_CMDPHP);
+							open_snmp_session($host_id, $item);
+
+							if (isset($sessions[$host_id])) {
+								$output = cacti_snmp_session_get($sessions[$host_id], $index_item['arg1']);
+							}else{
+								$output = 'U';
+							}
 
 							cacti_log("Device[$host_id] RECACHE DQ[" . $index_item['data_query_id'] . '] OID: ' . $index_item['arg1'] . ', output: ' . $output, $print_data_to_stdout, 'POLLER', POLLER_VERBOSITY_MEDIUM);
 
@@ -494,10 +515,13 @@ if ((sizeof($polling_items) > 0) && (read_config_option('poller_enabled') == 'on
 						case POLLER_ACTION_SNMP_COUNT: /* snmp; count items */
 							cacti_log("Device[$host_id] RECACHE DQ[" . $index_item['data_query_id'] . '] OID Count: ' . $index_item['arg1'], $print_data_to_stdout, 'POLLER', POLLER_VERBOSITY_DEBUG);
 
-							$output = sizeof(cacti_snmp_walk($item['hostname'], $item['snmp_community'], $index_item['arg1'],
-								$item['snmp_version'], $item['snmp_username'], $item['snmp_password'],
-								$item['snmp_auth_protocol'], $item['snmp_priv_passphrase'], $item['snmp_priv_protocol'],
-								$item['snmp_context'], $item['snmp_port'], $item['snmp_timeout'], read_config_option('snmp_retries'), SNMP_CMDPHP));
+							open_snmp_session($host_id, $item);
+
+							if (isset($sessions[$host_id])) {
+								$output = cacti_snmp_session_walk($sessions[$host_id], $index_item['arg1']);
+							}else{
+								$output = 'U';
+							}
 
 							cacti_log("Device[$host_id] RECACHE DQ[" . $index_item['data_query_id'] . '] OID Count: ' . $index_item['arg1'] . ', output: ' . $output, $print_data_to_stdout, 'POLLER', POLLER_VERBOSITY_MEDIUM);
 
@@ -608,10 +632,13 @@ if ((sizeof($polling_items) > 0) && (read_config_option('poller_enabled') == 'on
 					cacti_log("Device[$host_id] DS[$data_source] ERROR: Invalid SNMP Data Source.  Please either delete it from the database, or correct it.", $print_data_to_stdout, 'POLLER');
 					$output = 'U';
 				}else {
-					$output = cacti_snmp_get($item['hostname'], $item['snmp_community'], $item['arg1'],
-						$item['snmp_version'], $item['snmp_username'], $item['snmp_password'],
-						$item['snmp_auth_protocol'], $item['snmp_priv_passphrase'], $item['snmp_priv_protocol'],
-						$item['snmp_context'], $item['snmp_port'], $item['snmp_timeout'], read_config_option('snmp_retries'), SNMP_CMDPHP);
+					open_snmp_session($host_id, $item);
+
+					if (isset($sessions[$host_id])) {
+						$output = cacti_snmp_session_walk($sessions[$host_id], $item['arg1']);
+					}else{
+						$output = 'U';
+					}
 
 					/* remove any quotes from string */
 					$output = strip_quotes($output);

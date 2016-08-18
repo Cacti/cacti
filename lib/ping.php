@@ -258,39 +258,29 @@ class Net_Ping
 			$oid = '.1.3.6.1.2.1.1.3.0';
 		}
 
+		$session = cacti_snmp_session($this->host['hostname'], $this->host['snmp_community'], 
+			$this->host['snmp_version'], $this->host['snmp_username'], 
+			$this->host['snmp_password'], $this->host['snmp_auth_protocol'], 
+			$this->host['snmp_priv_passphrase'], $this->host['snmp_priv_protocol'], 
+			$this->host['snmp_context'], $this->host['snmp_engine_id'], 
+			$this->host['snmp_port'], $this->host['snmp_timeout'], 
+			$this->retries, $this->host['max_oids']);
+
+		if ($session === false) {
+			$this->snmp_status = 'down';
+			$this->snmp_response = 'Failed to make SNMP session';
+			return false;
+		}
+
 		/* getnext does not work in php versions less than 5 */
 		if (($this->avail_method == AVAIL_SNMP_GET_NEXT) &&
 			(version_compare('5', phpversion(), '<'))) {
-			$output = cacti_snmp_getnext($this->host['hostname'],
-				$this->host['snmp_community'],
-				$oid,
-				$this->host['snmp_version'],
-				$this->host['snmp_username'],
-				$this->host['snmp_password'],
-				$this->host['snmp_auth_protocol'],
-				$this->host['snmp_priv_passphrase'],
-				$this->host['snmp_priv_protocol'],
-				$this->host['snmp_context'],
-				$this->host['snmp_port'],
-				$this->host['snmp_timeout'],
-				$this->retries,
-				SNMP_CMDPHP);
+			$output = cacti_snmp_session_getnext($session, $oid);
 		}else{
-			$output = cacti_snmp_get($this->host['hostname'],
-				$this->host['snmp_community'],
-				$oid,
-				$this->host['snmp_version'],
-				$this->host['snmp_username'],
-				$this->host['snmp_password'],
-				$this->host['snmp_auth_protocol'],
-				$this->host['snmp_priv_passphrase'],
-				$this->host['snmp_priv_protocol'],
-				$this->host['snmp_context'],
-				$this->host['snmp_port'],
-				$this->host['snmp_timeout'],
-				$this->retries,
-				SNMP_CMDPHP);
+			$output = cacti_snmp_session_get($session, $oid);
 		}
+
+		$session->close();
 
 		/* determine total time +- ~10% */
 		$this->time = $this->get_time($this->precision);

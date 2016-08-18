@@ -135,10 +135,17 @@ if ((sizeof($polling_items) > 0)) {
 			if (($item['snmp_version'] == 0) || (($item['snmp_community'] == '') && ($item['snmp_version'] != 3))) {
 				$output = 'U';
 			}else {
-				$output = cacti_snmp_get($item['hostname'], $item['snmp_community'], $item['arg1'],
-					$item['snmp_version'], $item['snmp_username'], $item['snmp_password'],
-					$item['snmp_auth_protocol'], $item['snmp_priv_passphrase'], $item['snmp_priv_protocol'],
-					$item['snmp_context'], $item['snmp_port'], $item['snmp_timeout'], read_config_option('snmp_retries'), SNMP_CMDPHP);
+				$session = cacti_snmp_session($item['hostname'], $item['snmp_community'], $item['snmp_version'],
+					$item['snmp_username'], $item['snmp_password'], $item['snmp_auth_protocol'], $item['snmp_priv_passphrase'],
+					$item['snmp_priv_protocol'], $item['snmp_context'], $item['snmp_engine_id'], $item['snmp_port'],
+					$item['snmp_timeout'], $item['ping_retries'], $item['max_oids']);
+
+				if ($session === false) {
+					$output = 'U';
+				}else{
+					$output = cacti_snmp_session_get($session, $item['arg1']);
+					$session->close();
+				}
 
 				/* remove any quotes from string */
 				$output = strip_quotes($output);
