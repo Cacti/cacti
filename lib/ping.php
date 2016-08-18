@@ -164,7 +164,10 @@ class Net_Ping
 				 * ping: cap_set_proc: Permission denied
 				 * as it now tries to open an ICMP socket and fails 
 				 * $result will be empty, then. */
-				$result = shell_exec('ping -W ' . ceil($this->timeout/1000) . ' -c ' . $this->retries . ' -p ' . $pattern . ' ' . $this->host['hostname']);
+				$result = shell_exec('ping -W ' . ceil($this->timeout/1000) . ' -c ' . $this->retries . ' -p ' . $pattern . ' ' . $this->host['hostname'] . ' 2>&1');
+				if (substr_count($result, 'unknown host') && file_exists('/bin/ping6')) {
+					$result = shell_exec('ping6 -W ' . ceil($this->timeout/1000) . ' -c ' . $this->retries . ' -p ' . $pattern . ' ' . $this->host['hostname']);
+				}
 			}
 
 			if (strtolower(PHP_OS) != 'winnt') {
