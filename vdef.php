@@ -810,7 +810,7 @@ function vdef($refresh = true) {
 			'filter' => FILTER_VALIDATE_REGEXP,
 			'options' => array('options' => array('regexp' => '(true|false)')),
 			'pageset' => true,
-			'default' => 'true'
+			'default' => read_config_option('default_has') == 'on' ? 'true':'false'
 			)
 	);
 

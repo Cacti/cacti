@@ -72,6 +72,7 @@ function form_save() {
 		$save['gprint_text'] = form_input_validate(get_nfilter_request_var('gprint_text'), 'gprint_text', '', false, 3);
 
 		if (!is_error_message()) {
+cacti_log('odd');
 			$gprint_preset_id = sql_save($save, 'graph_templates_gprint');
 
 			if ($gprint_preset_id) {
@@ -237,7 +238,7 @@ function gprint_presets() {
 			'filter' => FILTER_VALIDATE_REGEXP, 
 			'options' => array('options' => array('regexp' => '(true|false)')),
 			'pageset' => true,
-			'default' => 'true'
+			'default' => read_config_option('default_has') == 'on' ? 'true':'false'
 			)
 	);
 

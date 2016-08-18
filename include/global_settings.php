@@ -251,7 +251,7 @@ $settings = array(
 			'method' => 'spacer',
 			),
 		'default_site' => array(
-			'friendly_name' => __('Default Site'),
+			'friendly_name' => __('Site'),
 			'description' => __('The default Site for all new Devices.'),
 			'method' => 'drop_sql',
 			'default' => '1',
@@ -259,7 +259,7 @@ $settings = array(
 			'sql' => 'SELECT id, name FROM sites ORDER BY name',
 			),
 		'default_poller' => array(
-			'friendly_name' => __('Default Poller'),
+			'friendly_name' => __('Poller'),
 			'description' => __('The default Poller for all new Devices.'),
 			'method' => 'drop_sql',
 			'default' => '1',
@@ -267,21 +267,27 @@ $settings = array(
 			'sql' => 'SELECT id, name FROM poller ORDER BY name',
 			),
 		'reindex_method' => array(
-			'friendly_name' => __('Default Reindex Method for Data Queries'),
+			'friendly_name' => __('Reindex Method for Data Queries'),
 			'description' => __('The default Reindex Method to use for all Data Queries.'),
 			'method' => 'drop_array',
 			'default' => '1',
 			'array' => $reindex_types,
 			),
+		'default_has' => array(
+			'friendly_name' => __('Has Graphs/Data Sources Checked'),
+			'description' => __('Should the Has Graphs and Has Data Sources be Checked by Default.'),
+			'method' => 'checkbox',
+			'default' => ''
+			),
 		'default_image_format' => array(
-			'friendly_name' => __('Default Graph Template Image Format'),
+			'friendly_name' => __('Graph Template Image Format'),
 			'description' => __('The default Image Format to be used for all new Graph Templates.'),
 			'method' => 'drop_array',
 			'default' => '1',
 			'array' => $image_types,
 			),
 		'default_graph_height' => array(
-			'friendly_name' => __('Default Graph Template Height'),
+			'friendly_name' => __('Graph Template Height'),
 			'description' => __('The default Graph Width to be used for all new Graph Templates.'),
 			'method' => 'textbox',
 			'default' => '150',
@@ -289,7 +295,7 @@ $settings = array(
 			'max_length' => '5'
 			),
 		'default_graph_width' => array(
-			'friendly_name' => __('Default Graph Template Width'),
+			'friendly_name' => __('Graph Template Width'),
 			'description' => __('The default Graph Width to be used for all new Graph Templates.'),
 			'method' => 'textbox',
 			'default' => '500',
@@ -304,7 +310,7 @@ $settings = array(
             'array' => $i18n_modes
             ),
         'i18n_default_language' => array(
-            'friendly_name' => __('Default Language'),
+            'friendly_name' => __('Language'),
             'description' => __('Default language for this system.'),
             'method' => 'drop_array',
             'default' => 'us',
