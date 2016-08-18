@@ -749,8 +749,8 @@ function host_edit() {
 
 	if ((isset_request_var('display_dq_details')) && (isset($_SESSION['debug_log']['data_query']))) {
 		print "<table id='dqdebug' class='cactiDebugTable'><tr><td>\n";
-		print "<table class='cactiTableTitle'>\n";
-		print "<tr><td class='textHeaderDark'><a style='display:none;' name='dqdbg'></a>" . __('Data Query Debug Information') . "</td><td class='textHeaderDark' align='right'><span id='dbghide' class='linkOverDark'>" . __('Hide') ."</span></td></tr>\n";
+		print "<table class='cactiTableTitle' style='width:100%'>\n";
+		print "<tr><td class='textHeaderDark' style='width:99%'><a style='display:none;' name='dqdbg'></a>" . __('Data Query Debug Information') . "</td><td class='textHeaderDark'><a id='dbghide' class='linkOverDark'>" . __('Hide') ."</a></td></tr>\n";
 		print "</table>\n";
 		print "<table class='cactiTable'>\n";
 		print "<tr><td class='debug'><span>" . debug_log_return('data_query') . "</span></td></tr>";
@@ -1149,7 +1149,7 @@ function device_javascript() {
 
 		changeHostForm();
 		$('#dbghide').unbind().click(function(data) {
-			$('#dqdebug').fadeOut('fast');
+			$('#dqdebug').empty().fadeOut('fast');
 		});
 
 		$.get(urlPath+'host.php?action=ping_host&id='+$('#id').val(), function(data) {
