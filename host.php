@@ -610,52 +610,45 @@ function ping_host() {
 		if (($host['snmp_community'] == '' && $host['snmp_username'] == '') || $host['snmp_version'] == 0) {
 			print "<span style='color: #ab3f1e; font-weight: bold;'>" . __('SNMP not in use') . "</span>\n";
 		}else{
-			$snmp_system = cacti_snmp_get($host['hostname'], $host['snmp_community'], '.1.3.6.1.2.1.1.1.0', $host['snmp_version'],
-				$host['snmp_username'], $host['snmp_password'],
-				$host['snmp_auth_protocol'], $host['snmp_priv_passphrase'], $host['snmp_priv_protocol'],
-				$host['snmp_context'], $host['snmp_port'], $host['snmp_timeout'], read_config_option('snmp_retries'),SNMP_WEBUI);
+			$session = cacti_snmp_session($host['hostname'], $host['snmp_community'], $host['snmp_version'],
+ 				$host['snmp_username'], $host['snmp_password'], $host['snmp_auth_protocol'], $host['snmp_priv_passphrase'],
+ 				$host['snmp_priv_protocol'], $host['snmp_context'], $host['snmp_engine_id'], $host['snmp_port'],
+				$host['snmp_timeout'], $host['ping_retries'], $host['max_oids']);
 
-			/* modify for some system descriptions */
-			/* 0000937: System output in host.php poor for Alcatel */
-			if (substr_count($snmp_system, '00:')) {
-				$snmp_system = str_replace('00:', '', $snmp_system);
-				$snmp_system = str_replace(':', ' ', $snmp_system);
-			}
-
-			if ($snmp_system == '') {
+			if ($session === false) {
 				print "<span class='hostDown'>" . __('SNMP error') . "</span>\n";
 			}else{
-				$snmp_uptime   = cacti_snmp_get($host['hostname'], $host['snmp_community'], '.1.3.6.1.2.1.1.3.0', $host['snmp_version'],
-					$host['snmp_username'], $host['snmp_password'],
-					$host['snmp_auth_protocol'], $host['snmp_priv_passphrase'], $host['snmp_priv_protocol'],
-					$host['snmp_context'], $host['snmp_port'], $host['snmp_timeout'], read_config_option('snmp_retries'), SNMP_WEBUI);
+				$snmp_system = cacti_snmp_session_get($session, '.1.3.6.1.2.1.1.1.0');
 
-				$snmp_hostname = cacti_snmp_get($host['hostname'], $host['snmp_community'], '.1.3.6.1.2.1.1.5.0', $host['snmp_version'],
-					$host['snmp_username'], $host['snmp_password'],
-					$host['snmp_auth_protocol'], $host['snmp_priv_passphrase'], $host['snmp_priv_protocol'],
-					$host['snmp_context'], $host['snmp_port'], $host['snmp_timeout'], read_config_option('snmp_retries'), SNMP_WEBUI);
+				/* modify for some system descriptions */
+				/* 0000937: System output in host.php poor for Alcatel */
+				if (substr_count($snmp_system, '00:')) {
+					$snmp_system = str_replace('00:', '', $snmp_system);
+					$snmp_system = str_replace(':', ' ', $snmp_system);
+				}
 
-				$snmp_location = cacti_snmp_get($host['hostname'], $host['snmp_community'], '.1.3.6.1.2.1.1.6.0', $host['snmp_version'],
-					$host['snmp_username'], $host['snmp_password'],
-					$host['snmp_auth_protocol'], $host['snmp_priv_passphrase'], $host['snmp_priv_protocol'],
-					$host['snmp_context'], $host['snmp_port'], $host['snmp_timeout'], read_config_option('snmp_retries'), SNMP_WEBUI);
+				if ($snmp_system == '') {
+					print "<span class='hostDown'>" . __('SNMP error') . "</span>\n";
+				}else{
+					$snmp_uptime     = cacti_snmp_session_get($session, '.1.3.6.1.2.1.1.3.0');
+					$snmp_hostname   = cacti_snmp_session_get($session, '.1.3.6.1.2.1.1.5.0');
+					$snmp_location   = cacti_snmp_session_get($session, '.1.3.6.1.2.1.1.6.0');
+					$snmp_contact    = cacti_snmp_session_get($session, '.1.3.6.1.2.1.1.4.0');
 
-				$snmp_contact  = cacti_snmp_get($host['hostname'], $host['snmp_community'], '.1.3.6.1.2.1.1.4.0', $host['snmp_version'],
-					$host['snmp_username'], $host['snmp_password'],
-					$host['snmp_auth_protocol'], $host['snmp_priv_passphrase'], $host['snmp_priv_protocol'],
-					$host['snmp_context'], $host['snmp_port'], $host['snmp_timeout'], read_config_option('snmp_retries'), SNMP_WEBUI);
+					print '<strong>' . __('System:') . '</strong> ' . html_split_string($snmp_system) . "<br>\n";
+					$days      = intval($snmp_uptime / (60*60*24*100));
+					$remainder = $snmp_uptime % (60*60*24*100);
+					$hours     = intval($remainder / (60*60*100));
+					$remainder = $remainder % (60*60*100);
+					$minutes   = intval($remainder / (60*100));
+					print '<strong>' . __('Uptime:') . "</strong> $snmp_uptime";
+					print "&nbsp;(" . $days . __('days') . ', ' . $hours . __('hours') . ', ' . $minutes . __('minutes') . ")<br>\n";
+					print "<strong>" . __('Hostname:') . "</strong> $snmp_hostname<br>\n";
+					print "<strong>" . __('Location:') . "</strong> $snmp_location<br>\n";
+					print "<strong>" . __('Contact:') . "</strong> $snmp_contact<br>\n";
+				}
 
-				print '<strong>' . __('System:') . '</strong> ' . html_split_string($snmp_system) . "<br>\n";
-				$days      = intval($snmp_uptime / (60*60*24*100));
-				$remainder = $snmp_uptime % (60*60*24*100);
-				$hours     = intval($remainder / (60*60*100));
-				$remainder = $remainder % (60*60*100);
-				$minutes   = intval($remainder / (60*100));
-				print '<strong>' . __('Uptime:') . "</strong> $snmp_uptime";
-				print "&nbsp;(" . $days . __('days') . ', ' . $hours . __('hours') . ', ' . $minutes . __('minutes') . ")<br>\n";
-				print "<strong>" . __('Hostname:') . "</strong> $snmp_hostname<br>\n";
-				print "<strong>" . __('Location:') . "</strong> $snmp_location<br>\n";
-				print "<strong>" . __('Contact:') . "</strong> $snmp_contact<br>\n";
+				$session->close();
 			}
 		}
 		print "</span>\n";
