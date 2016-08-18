@@ -85,7 +85,6 @@ function form_save() {
 		$save['id']        = get_nfilter_request_var('id');
 
 		if (get_nfilter_request_var('read_only') == '') {
-cacti_log('odd');
 			$save['name']      = get_nfilter_request_var('name');
 			$save['hex']       = form_input_validate(get_nfilter_request_var('hex'),  'hex',  '^[a-fA-F0-9]+$' , false, 3);
 		}else{
