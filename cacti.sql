@@ -379,6 +379,7 @@ CREATE TABLE `automation_snmp_items` (
   `snmp_priv_passphrase` varchar(200) DEFAULT '',
   `snmp_priv_protocol` char(6) DEFAULT '',
   `snmp_context` varchar(64) DEFAULT '',
+  `snmp_engine_id` varchar(30) DEFAULT '',
   PRIMARY KEY (`id`,`snmp_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 COMMENT='Set of SNMP Options';
 
@@ -386,7 +387,7 @@ CREATE TABLE `automation_snmp_items` (
 -- Dumping data for table `automation_snmp_items`
 --
 
-INSERT INTO `automation_snmp_items` VALUES (1,1,1,'2','public',161,1000,3,10,'admin','baseball','MD5','','DES',''),(2,1,2,'2','private',161,1000,3,10,'admin','baseball','MD5','','DES','');
+INSERT INTO `automation_snmp_items` VALUES (1,1,1,'2','public',161,1000,3,10,'admin','baseball','MD5','','DES','',''),(2,1,2,'2','private',161,1000,3,10,'admin','baseball','MD5','','DES','','');
 
 --
 -- Table structure for table `automation_templates`

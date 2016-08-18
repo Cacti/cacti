@@ -1576,4 +1576,5 @@ function upgrade_to_1_0_0() {
 
 	db_install_execute('1.0.0', 'ALTER TABLE host ADD COLUMN snmp_engine_id varchar(30) default "" AFTER snmp_context');
 	db_install_execute('1.0.0', 'ALTER TABLE poller_item ADD COLUMN snmp_engine_id varchar(30) default "" AFTER snmp_context');
+	db_install_execute('1.0.0', 'ALTER TABLE automation_snmp_items ADD COLUMN snmp_engine_id varchar(30) default "" AFTER snmp_context');
 }

@@ -2659,6 +2659,7 @@ function automation_add_device ($device, $web = false) {
 	$snmp_priv_passphrase = $device['snmp_priv_passphrase'];
 	$snmp_priv_protocol   = $device['snmp_priv_protocol'];
 	$snmp_context	      = $device['snmp_context'];
+	$snmp_engine_id       = $device['snmp_engine_id'];
 	$device_threads       = isset($device['device_threads']) ? $device['device_threads']:1;
 	$max_oids             = isset($device['max_oids']) ? $device['max_oids']:10;
 
@@ -2669,7 +2670,7 @@ function automation_add_device ($device, $web = false) {
 		$snmp_port, $snmp_timeout, $disable, $availability_method,
 		$ping_method, $ping_port, $ping_timeout, $ping_retries,
 		$notes, $snmp_auth_protocol, $snmp_priv_passphrase,
-		$snmp_priv_protocol, $snmp_context, $max_oids, $device_threads);
+		$snmp_priv_protocol, $snmp_context, $snmp_engine_id, $max_oids, $device_threads);
 
 	if ($host_id) {
 		if (!$web) {
@@ -3011,36 +3012,31 @@ function automation_valid_snmp_device (&$device) {
 			$device['snmp_priv_passphrase'] = $item['snmp_priv_passphrase'];
 			$device['snmp_priv_protocol']   = $item['snmp_priv_protocol'];
 			$device['snmp_context']         = $item['snmp_context'];
+			$device['snmp_engine_id']       = $item['snmp_engine_id'];
+			$device['max_oids']             = $item['max_oids'];
 
-			/* Community string is not used for v3 */
-			$snmp_sysObjectID = @cacti_snmp_get(
-				$device['ip_address'], 
-				$device['snmp_readstring'],
-				'.1.3.6.1.2.1.1.2.0',
-				$device['snmp_version'],
-				$device['snmp_username'], 
-				$device['snmp_password'], 
-				$device['snmp_auth_protocol'], 
-				$device['snmp_priv_passphrase'], 
-				$device['snmp_priv_protocol'], 
-				$device['snmp_context'],
-				$device['snmp_port'], 
-				$device['snmp_timeout'],
-				$device['snmp_retries']
-			);
+            $session = cacti_snmp_session($device['hostname'], $device['snmp_readstring'], $device['snmp_version'],
+                $device['snmp_username'], $device['snmp_password'], $device['snmp_auth_protocol'], $device['snmp_priv_passphrase'],
+                $device['snmp_priv_protocol'], $device['snmp_context'], $device['snmp_engine_id'], $device['snmp_port'],
+                $device['snmp_timeout'], $device['snmp_retries'], $device['max_oids']);
 
-			if ($snmp_sysObjectID != 'U') {
-				$snmp_sysObjectID = str_replace('enterprises', '.1.3.6.1.4.1', $snmp_sysObjectID);
-				$snmp_sysObjectID = str_replace('OID: ', '', $snmp_sysObjectID);
-				$snmp_sysObjectID = str_replace('.iso', '.1', $snmp_sysObjectID);
+            if ($session !== false) {
+				/* Community string is not used for v3 */
+				$snmp_sysObjectID = cacti_snmp_session_get($session, '.1.3.6.1.2.1.1.2.0');
 
-				if ((strlen($snmp_sysObjectID)) &&
-					(!substr_count($snmp_sysObjectID, 'No Such Object')) && 
-					(!substr_count($snmp_sysObjectID, 'Error In'))) {
-					$snmp_sysObjectID = trim(str_replace('"', '', $snmp_sysObjectID));
-					$device['snmp_status'] = HOST_UP;
-					$host_up = TRUE;
-					break;
+				if ($snmp_sysObjectID != 'U') {
+					$snmp_sysObjectID = str_replace('enterprises', '.1.3.6.1.4.1', $snmp_sysObjectID);
+					$snmp_sysObjectID = str_replace('OID: ', '', $snmp_sysObjectID);
+					$snmp_sysObjectID = str_replace('.iso', '.1', $snmp_sysObjectID);
+
+					if ((strlen($snmp_sysObjectID)) &&
+						(!substr_count($snmp_sysObjectID, 'No Such Object')) && 
+						(!substr_count($snmp_sysObjectID, 'Error In'))) {
+						$snmp_sysObjectID = trim(str_replace('"', '', $snmp_sysObjectID));
+						$device['snmp_status'] = HOST_UP;
+						$host_up = TRUE;
+						break;
+					}
 				}
 			}
 
@@ -3056,20 +3052,7 @@ function automation_valid_snmp_device (&$device) {
 		$device['community'] = $device['snmp_readstring'];
 
 		/* get system name */
-		$snmp_sysName = @cacti_snmp_get(
-			$device['ip_address'], 
-			$device['snmp_readstring'],
-			'.1.3.6.1.2.1.1.5.0', 
-			$device['snmp_version'],
-			$device['snmp_username'], 
-			$device['snmp_password'], 
-			$device['snmp_auth_protocol'], 
-			$device['snmp_priv_passphrase'], 
-			$device['snmp_priv_protocol'], 
-			$device['snmp_context'],
-			$device['snmp_port'], 
-			$device['snmp_timeout'],
-			$device['snmp_retries']);
+		$snmp_sysName = cacti_snmp_session_get($session, '.1.3.6.1.2.1.1.5.0'); 
 
 		if (strlen($snmp_sysName)) {
 			$snmp_sysName = trim(strtr($snmp_sysName,"\""," "));
@@ -3077,20 +3060,7 @@ function automation_valid_snmp_device (&$device) {
 		}
 
 		/* get system location */
-		$snmp_sysLocation = @cacti_snmp_get(
-			$device['ip_address'], 
-			$device['snmp_readstring'],
-			'.1.3.6.1.2.1.1.6.0', 
-			$device['snmp_version'],
-			$device['snmp_username'], 
-			$device['snmp_password'], 
-			$device['snmp_auth_protocol'], 
-			$device['snmp_priv_passphrase'], 
-			$device['snmp_priv_protocol'], 
-			$device['snmp_context'],
-			$device['snmp_port'], 
-			$device['snmp_timeout'],
-			$device['snmp_retries']);
+		$snmp_sysLocation = cacti_snmp_session_get($session, '.1.3.6.1.2.1.1.6.0'); 
 
 		if (strlen($snmp_sysLocation)) {
 			$snmp_sysLocation = trim(strtr($snmp_sysLocation,"\""," "));
@@ -3098,20 +3068,7 @@ function automation_valid_snmp_device (&$device) {
 		}
 
 		/* get system contact */
-		$snmp_sysContact = @cacti_snmp_get(
-			$device['ip_address'], 
-			$device['snmp_readstring'],
-			'.1.3.6.1.2.1.1.4.0', 
-			$device['snmp_version'],
-			$device['snmp_username'], 
-			$device['snmp_password'], 
-			$device['snmp_auth_protocol'], 
-			$device['snmp_priv_passphrase'], 
-			$device['snmp_priv_protocol'], 
-			$device['snmp_context'],
-			$device['snmp_port'], 
-			$device['snmp_timeout'],
-			$device['snmp_retries']);
+		$snmp_sysContact = cacti_snmp_session_get($session, '.1.3.6.1.2.1.1.4.0'); 
 
 		if (strlen($snmp_sysContact)) {
 			$snmp_sysContact = trim(strtr($snmp_sysContact,"\""," "));
@@ -3119,20 +3076,7 @@ function automation_valid_snmp_device (&$device) {
 		}
 
 		/* get system description */
-		$snmp_sysDescr = @cacti_snmp_get(
-			$device['ip_address'], 
-			$device['snmp_readstring'],
-			'.1.3.6.1.2.1.1.1.0', 
-			$device['snmp_version'],
-			$device['snmp_username'], 
-			$device['snmp_password'], 
-			$device['snmp_auth_protocol'], 
-			$device['snmp_priv_passphrase'], 
-			$device['snmp_priv_protocol'], 
-			$device['snmp_context'],
-			$device['snmp_port'], 
-			$device['snmp_timeout'],
-			$device['snmp_retrues']);
+		$snmp_sysDescr = cacti_snmp_session_get($session, '.1.3.6.1.2.1.1.1.0'); 
 
 		if (strlen($snmp_sysDescr)) {
 			$snmp_sysDescr = trim(strtr($snmp_sysDescr,"\""," "));
@@ -3140,25 +3084,14 @@ function automation_valid_snmp_device (&$device) {
 		}
 
 		/* get system uptime */
-		$snmp_sysUptime = @cacti_snmp_get(
-			$device['ip_address'], 
-			$device['snmp_readstring'],
-			'.1.3.6.1.2.1.1.3.0', 
-			$device['snmp_version'],
-			$device['snmp_username'], 
-			$device['snmp_password'], 
-			$device['snmp_auth_protocol'], 
-			$device['snmp_priv_passphrase'], 
-			$device['snmp_priv_protocol'], 
-			$device['snmp_context'],
-			$device['snmp_port'], 
-			$device['snmp_timeout'],
-			$device['snmp_retries']);
+		$snmp_sysUptime = cacti_snmp_session_get($session, '.1.3.6.1.2.1.1.3.0'); 
 
 		if (strlen($snmp_sysUptime)) {
 			$snmp_sysUptime = trim(strtr($snmp_sysUptime,"\""," "));
 			$device["snmp_sysUptime"] = $snmp_sysUptime;
 		}
+
+		$session->close();
 	}else{
 		automation_debug(' No response');
 	}
