@@ -140,15 +140,20 @@ function form_save() {
 						foreach($cfs as $cf) {
 							input_validate_input_number($cf);
 						}
+
+						db_execute_prepared('DELETE FROM data_source_profiles_cf 
+							WHERE data_source_profile_id = ?
+							AND consolidation_function_id NOT IN (' . implode(',', $cfs) . ')', array($profile_id));
 					}
 
-					db_execute('DELETE FROM data_source_profiles_cf WHERE data_source_profile_id = ' . $profile_id . ' AND consolidation_function_id NOT IN (' . implode(',', get_nfilter_request_var('consolidation_function_id')) . ')');
 
 					// Validate consolidation functions
 					$cfs = get_nfilter_request_var('consolidation_function_id');
 					if (sizeof($cfs)) {
 						foreach($cfs as $cf) {
-							db_execute('REPLACE INTO data_source_profiles_cf (data_source_profile_id, consolidation_function_id) VALUES (' . $profile_id . ',' . $cf . ')');
+							db_execute_prepared('REPLACE INTO data_source_profiles_cf 
+								(data_source_profile_id, consolidation_function_id) 
+								VALUES (?, ?)', array($profile_id, $cf));
 						}
 					}
 				}
