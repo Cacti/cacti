@@ -45,23 +45,22 @@ function api_poller_cache_item_add($host_id, $host_field_override, $local_data_i
 			FROM host
 			WHERE host.id = ?', array($host_id));
 
-		$hosts[$host_id] = $host;
+		if (sizeof($host)) {
+			$hosts[$host_id] = $host;
+		}
 	} else {
 		$host = $hosts[$host_id];
 	}
 
-	/* the $host_field_override array can be used to override certain host fields in the poller cache */
-	if (isset($host)) {
-		$host = array_merge($host, $host_field_override);
-	}
 
-	if (isset($host['id']) || (isset($host_id))) {
-		if (isset($host)) {
-			if ($host['disabled'] == 'on') {
-				return;
-			}
-		} else {
-			if ($poller_action_id == 0) {
+	if (sizeof($host) || (isset($host_id))) {
+		if (isset($host['disabled']) && $host['disabled'] == 'on') {
+			return;
+		}
+
+		if (!isset($host['id'])) {
+			// host id 0 can not have snmp
+			if ($poller_action_id == POLLER_ACTION_SNMP) {
 				return;
 			}
 
@@ -78,9 +77,17 @@ function api_poller_cache_item_add($host_id, $host_field_override, $local_data_i
 			$host['snmp_version'] = '';
 			$host['snmp_port'] = '';
 			$host['hostname'] = 'None';
+
+			$hosts[0] = $host;
 		}
 
-		if ($poller_action_id == 0) {
+		/* the $host_field_override array can be used to override certain host fields in the poller cache */
+		if (sizeof($host_field_override)) {
+			$host = array_merge($host, $host_field_override);
+		}
+
+		// don't add to poller cache for wrong snmp information
+		if ($poller_action_id == POLLER_ACTION_SNMP) {
 			if (($host['snmp_version'] < 1) || ($host['snmp_version'] > 3) ||
 				($host['snmp_community'] == '' && $host['snmp_version'] != 3)) {
 				return;
