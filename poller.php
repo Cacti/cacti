@@ -246,11 +246,26 @@ ini_set('memory_limit', '512M');
 
 $poller_runs_completed = 0;
 $poller_items_total    = 0;
-$polling_hosts         = array_merge(array(0 => array('id' => '0')), db_fetch_assoc('SELECT ' . SQL_NO_CACHE . " id FROM host WHERE poller_id=$poller_id AND disabled='' ORDER BY id"));
 
 while ($poller_runs_completed < $poller_runs) {
 	/* record the start time for this loop */
 	$loop_start = microtime(true);
+
+	if ($poller_id == '1') {
+		$polling_hosts = array_merge(
+			array(0 => array('id' => '0')), 
+			db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' id 
+				FROM host 
+				WHERE poller_id = ?
+				AND disabled="" 
+				ORDER BY id', array($poller_id)));
+	}else{
+		$polling_hosts = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' id 
+			FROM host 
+			WHERE poller_id = ? 
+			AND disabled="" 
+			ORDER BY id', array($poller_id));
+	}
 
 	$scripts = $server = $snmp = 0;
 	$totals = db_fetch_assoc('SELECT action, count(*) AS totals FROM poller_item GROUP BY action');
@@ -301,16 +316,36 @@ while ($poller_runs_completed < $poller_runs) {
 	$max_threads = read_config_option('max_threads');
 
 	/* initialize poller_time and poller_output tables, check poller_output for issues */
-	$running_processes = db_fetch_cell('SELECT ' . SQL_NO_CACHE . " count(*) FROM poller_time WHERE poller_id=$poller_id AND end_time='0000-00-00 00:00:00'");
+	$running_processes = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . ' COUNT(*) 
+		FROM poller_time 
+		WHERE poller_id = ?
+		AND end_time="0000-00-00 00:00:00"', array($poller_id));
+
 	if ($running_processes) {
 		cacti_log("WARNING: There are '$running_processes' detected as overrunning a polling process, please investigate", true, 'POLLER');
 	}
-	db_execute('DELETE FROM poller_time WHERE poller_id = ' . $poller_id);
 
+	db_execute_prepared('DELETE FROM poller_time WHERE poller_id = ?', array($poller_id));
+
+	// Only report issues for the main poller or from bad local data ids, other pollers may insert somewhat asynchornously
 	$issues_limit = 20;
-	$issues = db_fetch_assoc('SELECT ' . SQL_NO_CACHE . ' local_data_id, rrd_name FROM poller_output LIMIT ' . ($issues_limit));
-	$count  = db_fetch_cell('SELECT ' . SQL_NO_CACHE . ' COUNT(*) FROM poller_output');
+	$issues = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' local_data_id, rrd_name 
+		FROM poller_output AS po
+		LEFT JOIN data_local AS dl
+		ON po.local_data_id=dl.id
+		LEFT JOIN host AS h
+		ON dl.host_id=h.id
+		WHERE h.poller_id = ? OR h.id IS NULL LIMIT ' . $issues_limit, array($poller_id));
+
 	if (sizeof($issues)) {
+		$count  = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . ' COUNT(*) 
+			FROM poller_output AS po
+			LEFT JOIN data_local AS dl
+			ON po.local_data_id=dl.id
+			LEFT JOIN host AS h
+			ON dl.host_id=h.id
+			WHERE h.poller_id = ? OR h.id IS NULL', array($poller_id));
+
 		$issue_list = '';
 		foreach($issues as $issue) {
 			$issue_list .= (strlen($issue_list) ? ', ' : '') . $issue['rrd_name'] . '(DS[' . $issue['local_data_id'] . '])';
@@ -322,7 +357,13 @@ while ($poller_runs_completed < $poller_runs) {
 
 		cacti_log("WARNING: Poller Output Table not Empty.  Issues Found: $count, Data Sources: $issue_list", true, 'POLLER');
 
-		db_execute('TRUNCATE TABLE poller_output');
+		db_execute_prepared('DELETE po 
+			FROM poller_output AS po 
+			LEFT JOIN data_local AS dl
+			ON po.local_data_id=dl.id
+			LEFT JOIN host AS h
+			ON dl.host_id=h.id
+			WHERE h.poller_id = ? OR h.id IS NULL', array($poller_id));
 	}
 
 	/* mainline */
@@ -445,6 +486,7 @@ while ($poller_runs_completed < $poller_runs) {
 					print 'Waiting on ' . ($started_processes - $finished_processes) . ' of ' . $started_processes . " pollers.\n";
 				}
 
+				$mtb = microtime(true);
 				$rrds_processed = $rrds_processed + process_poller_output($rrdtool_pipe);
 
 				/* end the process if the runtime exceeds MAX_POLLER_RUNTIME */
@@ -459,8 +501,8 @@ while ($poller_runs_completed < $poller_runs) {
 						sizeof($polling_hosts), $hosts_per_process, $num_polling_items, $rrds_processed);
 
 					break;
-				}else{
-					usleep(500);
+				}else if (microtime(true) - $mtb < 1) {
+					sleep(1);
 				}
 			}
 		}

@@ -342,16 +342,27 @@ function poller_update_poller_reindex_from_buffer($host_id, $data_query_id, &$re
 function process_poller_output(&$rrdtool_pipe, $remainder = FALSE) {
 	global $config, $debug;
 
+	static $have_deleted_rows = true;
+
 	include_once($config['library_path'] . '/rrd.php');
 
 	/* let's count the number of rrd files we processed */
 	$rrds_processed = 0;
+	$max_rows = 40000;
 
 	if ($remainder) {
-		$limit = '';
+		/* check if too many rows pending */
+		$rows = db_fetch_cell('SELECT COUNT(*) FROM poller_output');
+		if ($rows > $max_rows && $have_deleted_rows === true) {
+			$limit = ' LIMIT ' . $max_rows;
+		}else{
+			$limit = '';
+		}
 	}else{
-		$limit = 'LIMIT 10000';
+		$limit = 'LIMIT ' . $max_rows;
 	}
+
+	$have_deleted_rows = false;
 
 	/* create/update the rrd files */
 	$results = db_fetch_assoc("SELECT po.output, po.time,
@@ -364,33 +375,35 @@ function process_poller_output(&$rrdtool_pipe, $remainder = FALSE) {
 		ORDER BY po.local_data_id
 		$limit");
 
-	if (sizeof($results) > 0) {
+	if (sizeof($results)) {
 		/* create an array keyed off of each .rrd file */
 		foreach ($results as $item) {
 			/* trim the default characters, but add single and double quotes */
-			$value = trim($item['output'], " \r\n\t\x0B\0\"'");
+			$value     = $item['output'];
 			$unix_time = $item['unix_time'];
+			$rrd_path  = $item['rrd_path'];
+			$rrd_name  = $item['rrd_name'];
 
-			$rrd_update_array{$item['rrd_path']}['local_data_id'] = $item['local_data_id'];
+			$rrd_update_array[$rrd_path]['local_data_id'] = $item['local_data_id'];
 
 			/* single one value output */
 			if ((is_numeric($value)) || ($value == 'U')) {
-				$rrd_update_array{$item['rrd_path']}['times'][$unix_time]{$item['rrd_name']} = $value;
+				$rrd_update_array[$rrd_path]['times'][$unix_time][$rrd_name] = $value;
 			/* special case of one value output: hexadecimal to decimal conversion */
 			}elseif (is_hexadecimal($value)) {
 				/* attempt to accomodate 32bit and 64bit systems */
 				$value = str_replace(' ', '', $value);
 				if (strlen($value) <= 8 || ((2147483647+1) == intval(2147483647+1))) {
-					$rrd_update_array{$item['rrd_path']}['times'][$unix_time]{$item['rrd_name']} = hexdec($value);
+					$rrd_update_array[$rrd_path]['times'][$unix_time][$rrd_name] = hexdec($value);
 				}elseif (function_exists('bcpow')) {
 					$dec = 0;
 					$vallen = strlen($value);
 					for ($i = 1; $i <= $vallen; $i++) {
 						$dec = bcadd($dec, bcmul(strval(hexdec($value[$i - 1])), bcpow('16', strval($vallen - $i))));
 					}
-					$rrd_update_array{$item['rrd_path']}['times'][$unix_time]{$item['rrd_name']} = $dec;
+					$rrd_update_array[$rrd_path]['times'][$unix_time][$rrd_name] = $dec;
 				}else{
-					$rrd_update_array{$item['rrd_path']}['times'][$unix_time]{$item['rrd_name']} = 'U';
+					$rrd_update_array[$rrd_path]['times'][$unix_time][$rrd_name] = 'U';
 				}
 			/* multiple value output */
 			}else{
@@ -412,7 +425,7 @@ function process_poller_output(&$rrdtool_pipe, $remainder = FALSE) {
 						if (isset($rrd_field_names{$matches[0]})) {
 							cacti_log("Parsed MULTI output field '" . $matches[0] . ':' . $matches[1] . "' [map " . $matches[0] . '->' . $rrd_field_names{$matches[0]} . ']' , true, 'POLLER', ($debug ? POLLER_VERBOSITY_NONE:POLLER_VERBOSITY_MEDIUM));
 
-							$rrd_update_array{$item['rrd_path']}['times'][$unix_time]{$rrd_field_names{$matches[0]}} = $matches[1];
+							$rrd_update_array[$rrd_path]['times'][$unix_time]{$rrd_field_names{$matches[0]}} = $matches[1];
 						}
 					}
 				}
@@ -420,10 +433,10 @@ function process_poller_output(&$rrdtool_pipe, $remainder = FALSE) {
 			}
 
 			/* fallback values */
-			if ((!isset($rrd_update_array{$item['rrd_path']}['times'][$unix_time])) && ($item['rrd_name'] != '')) {
-				$rrd_update_array{$item['rrd_path']}['times'][$unix_time]{$item['rrd_name']} = 'U';
-			}else if ((!isset($rrd_update_array{$item['rrd_path']}['times'][$unix_time])) && ($item['rrd_name'] == '')) {
-				unset($rrd_update_array{$item['rrd_path']});
+			if ((!isset($rrd_update_array[$rrd_path]['times'][$unix_time])) && ($rrd_name != '')) {
+				$rrd_update_array[$rrd_path]['times'][$unix_time][$rrd_name] = 'U';
+			}else if ((!isset($rrd_update_array[$rrd_path]['times'][$unix_time])) && ($rrd_name == '')) {
+				unset($rrd_update_array[$rrd_path]);
 			}
 		}
 
@@ -433,24 +446,30 @@ function process_poller_output(&$rrdtool_pipe, $remainder = FALSE) {
 		$data_ids = array();
 		foreach ($results as $item) {
 			$unix_time = $item['unix_time'];
+			$rrd_path  = $item['rrd_path'];
+			$rrd_name  = $item['rrd_name'];
 
-			if (isset($rrd_update_array{$item['rrd_path']}['times'][$unix_time])) {
-				if ($item['rrd_num'] <= sizeof($rrd_update_array{$item['rrd_path']}['times'][$unix_time])) {
+			if (isset($rrd_update_array[$rrd_path]['times'][$unix_time])) {
+				if ($item['rrd_num'] <= sizeof($rrd_update_array[$rrd_path]['times'][$unix_time])) {
 					$data_ids[] = $item['local_data_id'];
 					$k++;
 					if ($k % 10000 == 0) {
 						db_execute('DELETE FROM poller_output WHERE local_data_id IN (' . implode(',', $data_ids) . ')');
-						$k = 0;
+						$have_deleted_rows = true;
 						$data_ids = array();
+						$k = 0;
 					}
 				}else{
-					unset($rrd_update_array{$item['rrd_path']}['times'][$unix_time]);
+					unset($rrd_update_array[$rrd_path]['times'][$unix_time]);
 				}
+			}else{
+echo 'hh';
 			}
 		}
 
 		if ($k > 0) {
 			db_execute('DELETE FROM poller_output WHERE local_data_id IN (' . implode(',', $data_ids) . ')');
+			$have_deleted_rows = true;
 		}
 
 		/* process dsstats information */
@@ -460,6 +479,13 @@ function process_poller_output(&$rrdtool_pipe, $remainder = FALSE) {
 
 		if (boost_poller_on_demand($results)) {
 			$rrds_processed = rrdtool_function_update($rrd_update_array, $rrdtool_pipe);
+		}
+
+		$results = NULL;
+		$rrd_update_array = NULL;
+		/* to much records in poller_output, process in chunks */
+		if ($remainder && strlen($limit)) {
+			$rrds_processed += process_poller_output($rrdtool_pipe, $remainder);
 		}
 	}
 
