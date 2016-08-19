@@ -22,7 +22,7 @@ if (($val1 ne "query") && ($val1 ne "get") && ($val1 ne "index") && ($val1 ne "n
   exit;
 }
 
-open(DF, "/bin/df -P -k|");
+open(DF, "/bin/df -P -k -l|");
 
 $count=0;
 while (<DF>) {
