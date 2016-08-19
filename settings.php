@@ -123,7 +123,7 @@ default:
 	print "</ul></nav></div>\n";
 	print "</tr></table><table style='width:100%;'><tr><td style='padding:0px;'>\n";
 
-	form_start('settings.php');
+	form_start('settings.php', 'chk');
 
 	html_start_box( __('Cacti Settings (%s)', $tabs[$current_tab]), '100%', '', '3', 'center', '');
 
@@ -228,6 +228,14 @@ default:
 		
 		$('input[value="Save"]').click(function(event) {
 			event.preventDefault();
+
+			if (parseInt($('#cron_interval').val()) < parseInt($('#poller_interval').val())) {
+				$('#message_container').html('<div id="message" class="textError messageBox"><?php print __('Poller Interval must be less than Cron Interval');?></div>').show().delay(2000).slideUp('fast', function() {
+					$('#message_container').empty();
+				});
+				return false;
+			}
+
 			if (themeChanged != true) {
 				$.post('settings.php?tab='+$('#tab').val()+'&header=false', $('input, select, textarea').serialize()).done(function(data) {
 					$('#main').html(data);
