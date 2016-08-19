@@ -1039,8 +1039,8 @@ function utilities_view_logfile() {
 		}else{
 			while ($host_start) {
 				$host_end   = strpos($item, ']', $host_start);
-				$host_id    = substr($item, $host_start+5, $host_end-($host_start+5));
-				$new_item   = $new_item . htmlspecialchars(substr($item, 0, $host_start + 5)) . "<a href='" . htmlspecialchars('host.php?action=edit&id=' . $host_id) . "'>" . htmlspecialchars(substr($item, $host_start + 5, $host_end-($host_start + 5))) . '</a>';
+				$host_id    = substr($item, $host_start+7, $host_end-($host_start+7));
+				$new_item   = $new_item . htmlspecialchars(substr($item, 0, $host_start + 7)) . "<a href='" . htmlspecialchars('host.php?action=edit&id=' . $host_id) . "'>" . htmlspecialchars(substr($item, $host_start + 7, $host_end-($host_start + 7))) . '</a>';
 				$item       = substr($item, $host_end);
 				$host_start = strpos($item, 'Device[');
 			}
