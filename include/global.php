@@ -49,7 +49,7 @@ $url_path = '/cacti/';
 ini_set('max_input_vars', '5000');
 
 /* Include configuration */
-include(dirname(__FILE__) . '/config.php');
+include(realpath('.') . '/include/config.php');
 
 if (isset($config['cacti_version'])) {
 	die('Invalid include/config.php file detected.');
@@ -120,12 +120,11 @@ define('URL_PATH', $url_path);
 /* used for includes */
 if ($config['cacti_server_os'] == 'win32') {
 	$config['base_path']    = str_replace("\\", "/", substr(dirname(__FILE__),0,-8));
-	$config['library_path'] = $config['base_path'] . '/lib';
 }else{
-	$config['base_path']    = preg_replace("/(.*)[\/]include/", "\\1", dirname(__FILE__));
-	$config['library_path'] = preg_replace("/(.*[\/])include/", "\\1lib", dirname(__FILE__));
+	$config['base_path']    = preg_replace("/(.*)[\/]include/", "\\1", realpath('.'));
 }
-$config['include_path'] = dirname(__FILE__);
+$config['library_path'] = $config['base_path'] . '/lib';
+$config['include_path'] = $config['base_path'] . '/include';
 $config['rra_path'] = $config['base_path'] . '/rra';
 
 /* for multiple pollers, we need to know this location */
