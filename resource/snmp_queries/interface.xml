@@ -158,7 +158,7 @@
 		<ifIP>
 			<name>IP Address</name>
 			<method>walk</method>
-			<source>OID/REGEXP:.*\.([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3})$</source>
+			<source>OID/REGEXP:^\.?1\.3\.6\.1\.2\.1\.4\.20\.1\.2\.([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}).*</source>
 			<direction>input</direction>
 			<oid>.1.3.6.1.2.1.4.20.1.2</oid>
 		</ifIP>
