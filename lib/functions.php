@@ -1290,6 +1290,13 @@ function get_data_source_title($local_data_id) {
 	}
 }
 
+/* get_device_name - returns the description of the device in cacti host table
+   @arg $host_id - (int) the ID of the device to get a decription for
+   @returns - the device name */
+function get_device_name($host_id) {
+	return db_fetch_cell_prepared('SELECT description FROM host WHERE id = ?', array($host_id));
+}
+
 /* get_graph_title - returns the title of a graph without using the title cache
    @arg $local_graph_id - (int) the ID of the graph to get a title for
    @returns - the graph title */
