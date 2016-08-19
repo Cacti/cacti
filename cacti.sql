@@ -2550,6 +2550,7 @@ CREATE TABLE host (
   snmp_priv_passphrase varchar(200) default '',
   snmp_priv_protocol char(6) default '',
   snmp_context varchar(64) default '',
+  snmp_engine_id varchar(30) default '',
   snmp_port mediumint(5) unsigned NOT NULL default '161',
   snmp_timeout mediumint(8) unsigned NOT NULL default '500',
   snmp_sysDescr varchar(300) NOT NULL default '',
