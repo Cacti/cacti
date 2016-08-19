@@ -119,7 +119,7 @@ foreach($parms as $parameter) {
 }
 
 // pollers must be positive integers
-if (!is_numeric($poller_id) || $poller_id < 1) {
+if ($poller_id < 1) {
 	cacti_log('FATAL: The poller id must be a positive integer', false, 'POLLER');
 	exit;
 }
