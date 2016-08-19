@@ -2987,9 +2987,7 @@ function automation_valid_snmp_device (&$device) {
 	$device["ping_status"] = 0;
 
 	/* force php to return numeric oid's */
-	if (function_exists("snmp_set_oid_numeric_print")) {
-		snmp_set_oid_numeric_print(TRUE);
-	}
+	cacti_oid_numeric_format();
 
 	$snmp_items = db_fetch_assoc_prepared('SELECT * FROM automation_snmp_items WHERE snmp_id = ? ORDER BY sequence ASC', array($device['snmp_id']));
 

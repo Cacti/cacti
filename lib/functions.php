@@ -4056,3 +4056,10 @@ function get_classic_tabimage($text, $down = false) {
 	}
 }
 
+function cacti_oid_numeric_format() {
+    if (function_exists('snmp_set_oid_output_format')) {
+		snmp_set_oid_output_format(SNMP_OID_OUTPUT_NUMERIC);
+	}elseif (function_exists("snmp_set_oid_numeric_print")) {
+		snmp_set_oid_numeric_print(TRUE);
+	}
+}
