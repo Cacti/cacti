@@ -1,21 +1,28 @@
 #!/usr/bin/perl
+delete @ENV{qw(PATH)};
+$ENV{PATH} = "/usr/bin:/bin";
+$path = $ENV{'PATH'};
+
+
+$val1 = $ARGV[0];
+($val1) = $val1 =~ /^([\d]+)$/;
 
 #get load avg for 5;15;30 min
-open(PROCESS, "LC_MESSAGES=c uptime |");
+open(PROCESS,"uptime |");
 $avg = <PROCESS>;
 $avg =~ s/.*:\s*//;
 close(PROCESS);
 
-if ($ARGV[0] eq "5") {
-	$avg = `echo "$avg" | awk '\{print \$1 \}'`;
+if ($val1 eq "5") {
+        $avg = `echo "$avg" | awk '\{print \$1 \}'`;
 }
 
-if ($ARGV[0] eq "15") {
-	$avg = `echo "$avg" | awk '\{print \$2 \}'`;
+if ($val1 eq "15") {
+        $avg = `echo "$avg" | awk '\{print \$2 \}'`;
 }
 
-if ($ARGV[0] eq "30") {
-	$avg = `echo "$avg" | awk '\{print \$3 \}'`;
+if ($val1 eq "30") {
+        $avg = `echo "$avg" | awk '\{print \$3 \}'`;
 }
 
 chomp $avg;
