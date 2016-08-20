@@ -138,11 +138,11 @@ function api_networks_save($post) {
 
 		// accomodate a schedule start change
 		if ($post['orig_start_at'] != $post['start_at']) {
-			$save['next_start'] = '';
+			$save['next_start'] = '0000-00-00';
 		}
 
 		if ($post['orig_sched_type'] != $post['sched_type']) {
-			$save['next_start'] = '';
+			$save['next_start'] = '0000-00-00';
 		}
 
 		$save['recur_every']   = form_input_validate($post['recur_every'], 'recur_every', '', true, 3);
@@ -187,10 +187,10 @@ function api_networks_save($post) {
 					raise_message(2);
 				}
 			}
+
+			return $nextwork_id;
 		}
 	}
-
-	return $network_id;
 }
 
 /* ------------------------
