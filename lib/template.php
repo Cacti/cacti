@@ -465,9 +465,9 @@ function push_out_graph_item($graph_template_item_id) {
 	while (list($field_name, $field_array) = each($struct_graph_item)) {
 		/* are we allowed to push out the column? */
 		if (!isset($graph_item_inputs[$field_name])) {
-			db_execute_prepared('UPDATE graph_templates_item 
+			db_execute_prepared("UPDATE graph_templates_item 
 				SET $field_name = ? 
-				WHERE local_graph_template_item_id = ?', 
+				WHERE local_graph_template_item_id = ?", 
 				array($graph_template_item[$field_name], $graph_template_item['id']));
 		}
 	}
