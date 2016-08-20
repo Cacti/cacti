@@ -73,12 +73,16 @@ include_once($config['base_path'] . '/lib/reports.php');
 $force     = false;
 $debug     = false;
 $mibs      = false;
-
+echo "Poller id is " . $poller_id . "\n";
 /* set the poller_id */
 if (!isset($config['poller_id'])) {
 	$poller_id = 1;
 }else{
 	$poller_id = $config['poller_id'];
+
+	if (empty($poller_id) || $poller_id < 1) {
+		$poller_id = 1;
+	}
 }
 
 /* process calling arguments */
@@ -116,12 +120,6 @@ foreach($parms as $parameter) {
 		exit(1);
 	}
 }
-}
-
-// pollers must be positive integers
-if ($poller_id < 1) {
-	cacti_log('FATAL: The poller id must be a positive integer', false, 'POLLER');
-	exit;
 }
 
 // Check to see if the poller is disabled
