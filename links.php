@@ -77,7 +77,7 @@ case 'save':
 	$consolenewsection = get_nfilter_request_var('consolenewsection');
 	$extendedstyle = '';
 
-	if ($style == 'CONSOLE') {
+	if ($save['style'] == 'CONSOLE') {
 		if ($consolesection == '__NEW__') {
 			$extendedstyle = $consolenewsection;
 		}else{
