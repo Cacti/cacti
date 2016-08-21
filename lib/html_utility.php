@@ -456,14 +456,15 @@ function get_request_var_post($name, $default = '') {
 
    Validateion 'filter' follow PHP conventions including:
 
-     FILTER_VALIDATE_BOOLEAN - Validate that the variable is boolean
-     FILTER_VALIDATE_EMAIL   - Validate that the variable is an email
-     FILTER_VALIDATE_FLOAT   - Validate that the variable is a float
-     FILTER_VALIDATE_INT     - Validate that the variable is an integer
-     FILTER_VALIDATE_IP      - Validate that the variable is an IP address
-     FILTER_VALIDATE_MAC     - Validate that the variable is a MAC Address
-     FILTER_VALIDATE_REGEXP  - Validate against a REGEX
-     FILTER_VALIDATE_URL     - Validate that the variable is a valid URL
+     FILTER_VALIDATE_BOOLEAN  - Validate that the variable is boolean
+     FILTER_VALIDATE_EMAIL    - Validate that the variable is an email
+     FILTER_VALIDATE_FLOAT    - Validate that the variable is a float
+     FILTER_VALIDATE_INT      - Validate that the variable is an integer
+     FILTER_VALIDATE_IP       - Validate that the variable is an IP address
+     FILTER_VALIDATE_MAC      - Validate that the variable is a MAC Address
+     FILTER_VALIDATE_REGEXP   - Validate against a REGEX
+     FILTER_VALIDATE_URL      - Validate that the variable is a valid URL
+     FILTER_VALIDATE_IS_REGEX - Validate if a filter variable is a valid regex
 
    Sanitization 'filters' follow PHP conventions including:
 
@@ -483,6 +484,7 @@ function validate_store_request_vars($filters, $sess_prefix = '') {
 	global $_CACTI_REQUEST;
 
 	$changed = 0;
+	$custom_error = '';
 
 	if (sizeof($filters)) {
 		foreach($filters as $variable => $options) {
@@ -527,6 +529,14 @@ function validate_store_request_vars($filters, $sess_prefix = '') {
 					}
 				}elseif (isempty_request_var($variable)) {
 					$value = '';
+				}elseif ($options['filter'] == FILTER_VALIDATE_IS_REGEX) {
+					$valid = validate_is_regex($_REQUEST[$variable]);
+					if ($valid === true) {
+						$value = $_REQUEST[$variable];
+					}else{
+						$value = FALSE;
+						$custom_error = $valid;
+					}
 				}elseif (!isset($options['options'])) {
 					$value = filter_var($_REQUEST[$variable], $options['filter']);
 				}else{
@@ -534,7 +544,7 @@ function validate_store_request_vars($filters, $sess_prefix = '') {
 				}
 
 				if ($value === FALSE) {
-					die_html_input_error($variable, $_REQUEST[$variable]);
+					die_html_input_error($variable, $_REQUEST[$variable], $custom_error);
 				}else{
 					set_request_var($variable, $value);
 				}
@@ -554,6 +564,56 @@ function validate_store_request_vars($filters, $sess_prefix = '') {
 		set_request_var('page', 1);
 		set_request_var('changed', 1);
 	}
+}
+
+function validate_is_regex($regex) {
+	global $php_errormsg;
+
+	if ($regex == '') {
+		return true;
+	}
+
+	$track_errors = ini_get('track_errors');
+	ini_set('track_errors', 1); 
+
+    if(@preg_match("'" . $regex . "'", NULL) !== false) {
+		ini_set('track_errors', $track_errors);
+		return true;
+	}
+
+	$php_error = trim(str_replace('preg_match():', '', $php_errormsg));
+
+	ini_set('track_errors', $track_errors);
+
+	$errors = array(
+		PREG_INTERNAL_ERROR         => __('There was an internal error!'),
+		PREG_BACKTRACK_LIMIT_ERROR  => __('Backtrack limit was exhausted!'),
+		PREG_RECURSION_LIMIT_ERROR  => __('Recursion limit was exhausted!'),
+		PREG_BAD_UTF8_ERROR         => __('Bad UTF-8 error!'),
+		PREG_BAD_UTF8_OFFSET_ERROR  => __('Bad UTF-8 offset error!'),
+	);
+
+	$error = preg_last_error();
+
+	if (empty($error)) {
+		return $php_error;
+	}else{
+		return $errors[$error];
+	}
+}
+
+function validate_regex_var($filter) {
+	if ($filter != '') {
+		$result = _regex($filter);
+
+		if ($error !== false) {
+			$_SESSION['farmmon_regex_custom'] = "Invalid RegEX: $error";
+			raise_message('farmmon_regex_custom');
+			return false;
+		}
+	}
+
+	return true;
 }
 
 /* load_current_session_value - finds the correct value of a variable that is being
