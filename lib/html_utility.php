@@ -602,20 +602,6 @@ function validate_is_regex($regex) {
 	}
 }
 
-function validate_regex_var($filter) {
-	if ($filter != '') {
-		$result = _regex($filter);
-
-		if ($error !== false) {
-			$_SESSION['farmmon_regex_custom'] = "Invalid RegEX: $error";
-			raise_message('farmmon_regex_custom');
-			return false;
-		}
-	}
-
-	return true;
-}
-
 /* load_current_session_value - finds the correct value of a variable that is being
      cached as a session variable on an HTML form
    @arg $request_var_name - the array index name for the request variable
