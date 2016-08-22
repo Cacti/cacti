@@ -346,7 +346,7 @@ function query_snmp_host($host_id, $snmp_query_id) {
 
 				$output_array[] = data_query_format_record($host_id, $snmp_query_id, $field_name, $rewrite_value, $value, $value, '');
 			}
-		} else if (($field_array['method'] == 'get') && ($field_array['direction'] == 'input')) {
+		} elseif (($field_array['method'] == 'get') && ($field_array['direction'] == 'input')) {
 			query_debug_timer_offset('data_query', "Located input field '$field_name' [get]");
 
 			if ($field_array['source'] == 'value' && !isset($field_array['rewrite_index'])) {
@@ -376,7 +376,7 @@ function query_snmp_host($host_id, $snmp_query_id) {
 
 					$output_array[] = data_query_format_record($host_id, $snmp_query_id, $field_name, $rewrite_value, $value, $index, $oid);
 				}
-			} else if (isset($field_array['rewrite_index'])) {
+			} elseif (isset($field_array['rewrite_index'])) {
 				$rewritten_indexes = array();
 				if (isset($field_array['rewrite_index'])){
 					$rewritten_indexes = data_query_rewrite_indexes($errmsg, $host_id, $snmp_query_id, $field_array['rewrite_index'], $snmp_indexes, $fields_processed);
@@ -437,7 +437,7 @@ function query_snmp_host($host_id, $snmp_query_id) {
 					$output_array[] = data_query_format_record($host_id, $snmp_query_id, $field_name, $rewrite_value, $item['value'], $item['index'], $item['oid']);
 				}
 				$values = NULL;
-			} else if (substr($field_array['source'], 0, 13) == 'VALUE/REGEXP:') {
+			} elseif (substr($field_array['source'], 0, 13) == 'VALUE/REGEXP:') {
 				foreach($snmp_indexes as $oid => $index) {
 					$oid = $field_array['oid'] .  '.' . $index;
 					$oid .= isset($field_array['oid_suffix']) ? ('.' . $field_array['oid_suffix']) : '';
@@ -451,7 +451,7 @@ function query_snmp_host($host_id, $snmp_query_id) {
 					$output_array[] = data_query_format_record($host_id, $snmp_query_id, $field_name, $rewrite_value, $value, $index, $oid);
 				}
 			} 
-		}else if (($field_array['method'] == 'walk') && ($field_array['direction'] == 'input')) {
+		} elseif (($field_array['method'] == 'walk') && ($field_array['direction'] == 'input')) {
 			debug_log_insert_section_start('data_query', "Click to show data query output for field '$field_name'");
 
 			query_debug_timer_offset('data_query', "Located input field '$field_name' [walk]");
@@ -462,7 +462,7 @@ function query_snmp_host($host_id, $snmp_query_id) {
 
 			if ($field_array['source'] == 'value') {
 				foreach($snmp_data as $oid => $value) {
-					$snmp_index = preg_replace((isset($field_array['oid_index_parse']) ? $field_array['oid_index_parse'] : $index_parse_regexp), "\\1", $oid);
+					$snmp_index = preg_replace((isset($field_array['oid_index_parse']) ? '/' . $field_array['oid_index_parse'] . '/' : $index_parse_regexp), "\\1", $oid);
 
 					$oid = $field_array['oid'] . ".$snmp_index";
 
@@ -470,10 +470,10 @@ function query_snmp_host($host_id, $snmp_query_id) {
 						if ((substr_count(strtolower($value), 'down')) ||
 							($value == '2')) {
 							$value = 'Down';
-						}else if ((substr_count(strtolower($value), 'up')) ||
+						} elseif ((substr_count(strtolower($value), 'up')) ||
 							($value == '1')) {
 							$value = 'Up';
-						}else if ((substr_count(strtolower($value), 'notpresent')) ||
+						} elseif ((substr_count(strtolower($value), 'notpresent')) ||
 							($value == '6')) {
 							$value = 'notPresent';
 						}else{
@@ -487,11 +487,11 @@ function query_snmp_host($host_id, $snmp_query_id) {
 				}
 			}elseif (substr($field_array['source'], 0, 11) == 'OID/REGEXP:') {
 				foreach($snmp_data as $oid => $value) {
-					$value = preg_replace('/' . str_replace('OID/REGEXP:', '', $field_array['source']) . '/', "\\1", $oid);
+					$parse_value = preg_replace('/' . str_replace('OID/REGEXP:', '', $field_array['source']) . '/', "\\1", $oid);
 
 					if (isset($snmp_queries['oid_index_parse'])) {
 						$snmp_index = preg_replace($index_parse_regexp, "\\1", $oid);
-					}else if ((isset($value)) && ($value != '')) {
+					} elseif ((isset($value)) && ($value != '')) {
 						$snmp_index = $value;
 					}
 
@@ -501,11 +501,11 @@ function query_snmp_host($host_id, $snmp_query_id) {
 						$snmp_index = 1;
 					}
 
-					$oid = $field_array['oid'] .  '.' . $value;
+					$oid = $field_array['oid'] .  '.' . $parse_value;
 
 					/* rewrite octet strings */
-					if (preg_match('/^\d{1,3}(\.\d{1,3}){2,}$/', $value)) {
-						$octets = explode('.', $value);
+					if (preg_match('/^\d{1,3}(\.\d{1,3}){2,}$/', $parse_value)) {
+						$octets = explode('.', $parse_value);
 						$size = array_shift($octets);
 
 						if (count($octets) == $size) {
@@ -520,20 +520,20 @@ function query_snmp_host($host_id, $snmp_query_id) {
 								}
 							}
 							if ($isascii) {
-								query_debug_timer_offset('data_query', "Found OCTET STRING '$value' decoded value: '$decoded'");
+								query_debug_timer_offset('data_query', "Found OCTET STRING '$parse_value' decoded value: '$decoded'");
 								$value = $decoded;
 							}
 						}
 					}
 
-					debug_log_insert('data_query', "Found item [$field_name='$value'] index: $snmp_index [from regexp oid parse]");
+					debug_log_insert('data_query', "Found item [$field_name='$parse_value'] index: $snmp_index [from regexp oid parse]");
 
-					$output_array[] = data_query_format_record($host_id, $snmp_query_id, $field_name, $rewrite_value, $value, $snmp_index, $oid);
+					$output_array[] = data_query_format_record($host_id, $snmp_query_id, $field_name, $rewrite_value, $parse_value, $snmp_index, $oid);
 				}
 			}elseif (substr($field_array['source'], 0, 13) == 'VALUE/REGEXP:') {
 				foreach($snmp_data as $oid => $value) {
 					$value = preg_replace('/' . str_replace('VALUE/REGEXP:', '', $field_array['source']) . '/', "\\1", $value);
-					$snmp_index = preg_replace((isset($field_array['oid_index_parse']) ? $field_array['oid_index_parse'] : $index_parse_regexp), "\\1", $oid);
+					$snmp_index = preg_replace((isset($field_array['oid_index_parse']) ? '/' . $field_array['oid_index_parse'] . '/' : $index_parse_regexp), "\\1", $oid);
 					$oid = $field_array['oid'] . '.' . $snmp_index;
 
 					debug_log_insert('data_query', "Found item [$field_name='$value'] index: $snmp_index [from regexp value parse]");
