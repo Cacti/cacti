@@ -142,6 +142,10 @@ $fields_site_edit = array(
 		'size' => '50',
 		'max_length' => '30'
 	),
+	'id' => array(
+		'method' => 'hidden_zero',
+		'value' => '|arg1:id|'
+	),
 	'save_component_site' => array(
 		'method' => 'hidden',
 		'value' => '1'
