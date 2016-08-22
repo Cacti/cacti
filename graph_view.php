@@ -342,11 +342,11 @@ case 'preview':
 
 	$nav_url = preg_replace('/((\?|&)host_id=[0-9]+|(\?|&)filter=[a-zA-Z0-9]*)/', '', $nav_url);
 
-	html_start_box('', '100%', '', '3', 'center', '');
-
 	$nav = html_nav_bar($nav_url, MAX_DISPLAY_PAGES, get_request_var('page'), get_request_var('graphs'), $total_graphs, get_request_var('columns'), __('Graphs'), 'page', 'main');
 
 	print $nav;
+
+	html_start_box('', '100%', '', '3', 'center', '');
 
 	if (get_request_var('thumbnails') == 'true') {
 		html_graph_thumbnail_area($graphs, '', 'graph_start=' . get_current_graph_start() . '&graph_end=' . get_current_graph_end(), '', get_request_var('columns'));
@@ -354,11 +354,11 @@ case 'preview':
 		html_graph_area($graphs, '', 'graph_start=' . get_current_graph_start() . '&graph_end=' . get_current_graph_end(), '', get_request_var('columns'));
 	}
 
-	if ($total_graphs > 0) {
+	html_end_box();
+
+	if ($total_graphs) {
 		print $nav;
 	}
-
-	html_end_box();
 
 	if (!isset_request_var('header') || get_nfilter_request_var('header') == 'false') {
 		bottom_footer();
