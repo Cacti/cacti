@@ -69,6 +69,10 @@ function record_cmdphp_started() {
 function open_snmp_session($host_id, &$item) {
 	global $sessions, $downhosts;
 
+	if (!isset($item['max_oids'])) {
+		$item['max_oids'] = read_config_option('max_get_size');
+	}
+
 	if (!isset($sessions[$host_id]) && !isset($downhosts[$host_id])) {
 		$sessions[$host_id] = cacti_snmp_session($item['hostname'], $item['snmp_community'], $item['snmp_version'],
 			$item['snmp_username'], $item['snmp_password'], $item['snmp_auth_protocol'], $item['snmp_priv_passphrase'],
@@ -384,7 +388,7 @@ if ((sizeof($polling_items) > 0) && (read_config_option('poller_enabled') == 'on
 			0 => array('pipe', 'r'), // stdin is a pipe that the child will read from
 			1 => array('pipe', 'w'), // stdout is a pipe that the child will write to
 			2 => array('pipe', 'w')  // stderr is a pipe to write to
-			);
+		);
 
 		$cactiphp = proc_open(read_config_option('path_php_binary') . ' -q ' . $config['base_path'] . '/script_server.php cmd', $cactides, $pipes);
 		$output = fgets($pipes[1], 1024);

@@ -340,12 +340,13 @@ function snmpagent_poller_bottom() {
 	$recache_stats = db_fetch_cell("SELECT value FROM settings WHERE name = 'stats_recache'");
 	if($recache_stats) {
 		list($time, $hosts) = explode(" ", $recache_stats);
-		$time = str_replace("RecacheTime:", "", $time);
+		$time  = str_replace("RecacheTime:", "", $time);
 		$hosts = str_replace("HostsRecached:", "", $hosts);
+
+		$mc->object('cactiStatsRecacheTime')->set($time);
+		$mc->object('cactiStatsRecachedHosts')->set($hosts);
 	}
-	$mc->object('cactiStatsRecacheTime')->set($time);
-	$mc->object('cactiStatsRecachedHosts')->set($hosts);
-	$mc->object('cactiStatsLastUpdate')->set( time() );
+	$mc->object('cactiStatsLastUpdate')->set(time());
 
 	/* clean up the notification log */
 	$snmp_notification_managers = db_fetch_assoc("SELECT id, max_log_size FROM snmpagent_managers");

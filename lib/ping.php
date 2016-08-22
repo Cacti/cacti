@@ -267,7 +267,7 @@ class Net_Ping
 			$this->host['snmp_priv_passphrase'], $this->host['snmp_priv_protocol'], 
 			$this->host['snmp_context'], $this->host['snmp_engine_id'], 
 			$this->host['snmp_port'], $this->host['snmp_timeout'], 
-			$this->retries, $this->host['max_oids']);
+			$this->retries, read_config_option('max_get_size'));
 
 		if ($session === false) {
 			$this->snmp_status = 'down';
