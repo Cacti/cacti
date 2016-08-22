@@ -608,7 +608,10 @@ function ping_host() {
 	$am   = $host['availability_method'];
 	$anym = false;
 
-	if ($am == AVAIL_SNMP || $am == AVAIL_SNMP_GET_NEXT ||
+	if ($host['disabled'] == 'on') {
+		print __('Device is Disabled') . '<br>';
+		print __('Device Availability Check Bypassed') . '<br>';
+	}elseif ($am == AVAIL_SNMP || $am == AVAIL_SNMP_GET_NEXT ||
 		$am == AVAIL_SNMP_GET_SYSDESC || $am == AVAIL_SNMP_AND_PING ||
 		$am == AVAIL_SNMP_OR_PING) {
 
@@ -688,7 +691,7 @@ function ping_host() {
 		print "<span class='" . $class . "'>" . $ping->ping_response . "</span>\n";
 	}
 
-	if ($anym == false) {
+	if ($anym == false && $host['disabled'] != 'on') {
 		print __('No Ping or SNMP Availability Check In Use') . "<br><br>\n";
 	}
 }
