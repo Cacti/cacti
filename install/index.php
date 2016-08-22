@@ -94,52 +94,69 @@ function verify_php_extensions($extensions) {
 	return $extensions;
 }
 
-
-function db_install_execute($cacti_version, $sql) {
-	$sql_install_cache = (isset($_SESSION['sess_sql_install_cache']) ? $_SESSION['sess_sql_install_cache'] : array());
-
-	if (db_execute($sql)) {
-		$sql_install_cache{sizeof($sql_install_cache)}[$cacti_version][1] = $sql;
-	}else{
-		$sql_install_cache{sizeof($sql_install_cache)}[$cacti_version][0] = $sql;
-	}
-
-	$_SESSION['sess_sql_install_cache'] = $sql_install_cache;
+function db_install_execute($sql) {
+	$status = (db_execute($sql) ? 1 : 0);
+	db_install_add_cache ($status, $sql);
 }
 
-function db_install_add_column ($cacti_version, $table, $column) {
+function db_install_add_column ($table, $column) {
 	// Example: db_install_add_column ('plugin_config', array('name' => 'test' . rand(1, 200), 'type' => 'varchar (255)', 'NULL' => false));
-	global $config, $database_default;
-
-	$result = db_fetch_assoc('show columns from `' . $table . '`');
-	$columns = array();
-	foreach($result as $index => $arr) {
-		foreach ($arr as $t) {
-			$columns[] = $t;
-		}
-	}
 	$sql = 'ALTER TABLE `' . $table . '` ADD `' . $column['name'] . '`';
-	if (isset($column['type']))
-		$sql .= ' ' . $column['type'];
-	if (isset($column['unsigned']))
-		$sql .= ' unsigned';
-	if (isset($column['NULL']) && $column['NULL'] == false)
-		$sql .= ' NOT NULL';
-	if (isset($column['NULL']) && $column['NULL'] == true && !isset($column['default']))
-		$sql .= ' default NULL';
-	if (isset($column['default']))
-		$sql .= ' default ' . (is_numeric($column['default']) ? $column['default'] : "'" . $column['default'] . "'");
-	if (isset($column['auto_increment']))
-		$sql .= ' auto_increment';
-	if (isset($column['after']))
-		$sql .= ' AFTER ' . $column['after'];
-	if (isset($column['name']) && !in_array($column['name'], $columns)) {
-		db_install_execute($cacti_version, $sql);
+	if (!db_column_exists($table, $column['name'], false)) {
+		$status = db_add_column($table, $column, false);
 	} else {
-		$sql_install_cache = (isset($_SESSION['sess_sql_install_cache']) ? $_SESSION['sess_sql_install_cache'] : array());
-		$sql_install_cache{sizeof($sql_install_cache)}[$cacti_version][2] = $sql;
-		$_SESSION['sess_sql_install_cache'] = $sql_install_cache;
+		$status = 2;
 	}
+	db_install_add_cache ($status, $sql);
+}
+
+function db_install_add_key ($table, $type, $key, $columns) {
+	if (!is_array($columns)) {
+		$columns = array($columns);
+	}
+	
+	$sql = 'ALTER TABLE `' . $table . '` ADD ' . $type . ' ' . $key . '(' . implode(',', $columns) . ')';
+	if (!db_index_exists($table, $key, false)) {
+		$status = db_install_execute($sql);
+	} else {
+		db_install_add_cache (2, $sql);
+	}
+}
+
+function db_install_drop_table ($table) {
+	$sql = 'DROP TABLE `' . $table . '`';
+	if (db_table_exists($table, false)) {
+		db_install_execute ($sql);
+	} else {
+		db_install_add_cache (2, $sql);
+	}
+}
+
+function db_install_rename_table ($table, $newname) {
+	$sql = 'RENAME TABLE `' . $table . '` TO `' . $newname . '`';
+	if (db_table_exists($table, false) && !db_table_exists($newname, false)) {
+		db_install_execute ($sql);
+	} else {
+		db_install_add_cache (2, $sql);
+	}
+}
+
+function db_install_drop_column ($table, $column) {
+	$sql = 'ALTER TABLE `' . $table . '` DROP `' . $column . '`';
+	if (db_column_exists($table, $column, false)) {
+		$status = (db_remove_column ($table, $column) ? 1 : 0);
+	} else {
+		$status = 2;
+	}
+	db_install_add_cache ($status, $sql);
+}
+
+function db_install_add_cache ($status, $sql) {
+	global $upgrade_version;
+
+	$sql_install_cache = (isset($_SESSION['sess_sql_install_cache']) ? $_SESSION['sess_sql_install_cache'] : array());
+	$sql_install_cache{sizeof($sql_install_cache)}[$upgrade_version][$status] = $sql;
+	$_SESSION['sess_sql_install_cache'] = $sql_install_cache;
 }
 
 function find_best_path($binary_name) {
@@ -672,6 +689,7 @@ if ($step == '7') {
 
 	/* loop from the old version to the current, performing updates for each version in between */
 	for ($i=($old_version_index+1); $i<count($cacti_versions); $i++) {
+		$upgrade_version = $cacti_versions[$i];
 		if ($cacti_versions[$i] == '0.8.1') {
 			include ('0_8_to_0_8_1.php');
 			upgrade_to_0_8_1();

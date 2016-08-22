@@ -448,6 +448,16 @@ function db_remove_column ($table, $column, $log = TRUE, $db_conn = FALSE) {
 	return true;
 }
 
+/* db_index_exists - checks whether an index exists
+   @param $table - the name of the table
+   @param $index - the name of the index
+   @param $log - whether to log error messages, defaults to true
+   @returns - (bool) the output of the sql query as a single variable */
+function db_index_exists($table, $index, $log = TRUE, $db_conn = FALSE) {
+	$_keys = array_rekey(db_fetch_assoc("SHOW KEYS FROM `$table`"), "Key_name", "Key_name");
+	return in_array($index, $_keys);
+}
+
 /* db_table_exists - checks whether a table exists
    @param $table - the name of the table
    @param $log - whether to log error messages, defaults to true
@@ -491,6 +501,7 @@ function db_cacti_initialized($is_web = true) {
 
 /* db_column_exists - checks whether a column exists
    @param $table - the name of the table
+   @param $column - the name of the column
    @param $log - whether to log error messages, defaults to true
    @returns - (bool) the output of the sql query as a single variable */
 function db_column_exists($table, $column, $log = TRUE, $db_conn = FALSE) {
