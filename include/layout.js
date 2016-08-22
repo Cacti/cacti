@@ -493,7 +493,7 @@ function applySkin() {
 	});
 
 	// Don't show the message container until all GUI interaction is done
-	$('#message_container').delay(2000).slideUp('fast');
+	$('#message_container').show().delay(2000).slideUp('fast');
 
 	// remove stray tooltips
 	$(document).tooltip('close');
@@ -1058,7 +1058,7 @@ function redrawGraph(graph_id) {
 	isThumb   = $('#thumbnails').is(':checked');
 
 	if (isThumb) {
-		myWidth = (mainWidth-(32*myColumns))/myColumns;
+		myWidth = (mainWidth-(40*myColumns))/myColumns;
 	}
 
 	graph_height=$('#wrapper_'+graph_id).attr('graph_height');
