@@ -188,7 +188,7 @@ function api_networks_save($post) {
 				}
 			}
 
-			return $nextwork_id;
+			return $network_id;
 		}
 	}
 }
