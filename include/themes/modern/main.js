@@ -101,7 +101,7 @@ function themeReady() {
 					}
 				});
 
-				minWidth+=60;
+				minWidth+=80;
 				$('#'+id+'-button').css('min-width', minWidth+'px').css('max-width', '400px').css('width','');
 				$('#'+id+'-menu').css('max-height', '250px');
 			});

@@ -849,7 +849,7 @@ legend {
 .cactiTooltipHint {
 	cursor: pointer;
 	color: #627D4D;
-	padding:5px;
+	padding:2px;
 	font-size:14px !important;
 }
 
@@ -923,9 +923,9 @@ legend {
 	margin-left: 168px;
 }
 
-.hyperLink {
+.hyperLink, .hyperLink:hover, .hyperLink:visited {
 	color: #006400 !important;
-	font-size: 12px;
+	font-size: 1.1em;
 	padding: 0px;
 	cursor:pointer;
 	text-decoration: none;
