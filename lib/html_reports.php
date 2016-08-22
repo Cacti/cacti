@@ -1511,8 +1511,8 @@ function reports() {
 
 		foreach ($reports_list as $report) {
 			form_alternate_row('line' . $report['id'], true);
+			form_selectable_cell(filter_value($report['name'], get_request_var('filter'), get_reports_page() . '?action=edit&tab=details&id=' . $report['id'] . '&page=1'), $report['id']);
 
-			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars(get_reports_page() . '?action=edit&tab=details&id=' . $report['id'] . "&page=1") . "'>" . (get_request_var('filter') != '' ? preg_replace('/(' . preg_quote(get_request_var('filter')) . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($report['name'])) : htmlspecialchars($report['name'])) . '</a>', $report['id']);
 			if (is_reports_admin()) form_selectable_cell($report['full_name'], $report['id']);
 			$interval = 'Every ' . $report['count'] . ' ' . $reports_interval[$report['intrvl']];
 

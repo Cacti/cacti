@@ -402,7 +402,7 @@ function gprint_presets() {
 			}
 
             form_alternate_row('line' . $gp['id'], false, $disabled);
-            form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars('gprint_presets.php?action=edit&id=' . $gp['id']) . "'>" . (strlen(get_request_var('filter')) ? preg_replace('/(' . preg_quote(get_request_var('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($gp['name'])) : htmlspecialchars($gp['name'])) . '</a>', $gp['id']);
+			form_selectable_cell(filter_value($gp['name'], get_request_var('filter'), 'gprint_presets.php?action=edit&id=' . $gp['id']), $gp['id']);
             form_selectable_cell($disabled ? __('No'):__('Yes'), $gp['id'], '', 'text-align:right');
             form_selectable_cell(number_format_i18n($gp['graphs']), $gp['id'], '', 'text-align:right');
             form_selectable_cell(number_format_i18n($gp['templates']), $gp['id'], '', 'text-align:right');
@@ -413,7 +413,7 @@ function gprint_presets() {
 		print "<tr class='tableRow'><td colspan='4'><em>" . __('No GPRINT Presets') . "</em></td></tr>\n";
 	}
 
-	html_end_box();
+	html_end_box(false);
 
 	if (sizeof($gprint_list)) {
 		print $nav;

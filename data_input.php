@@ -711,7 +711,7 @@ function data() {
 				$disabled = false;
 			}
 			form_alternate_row('line' . $data_input['id'], true, $disabled);
-			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars('data_input.php?action=edit&id=' . $data_input['id']) . "'>" . (strlen(get_request_var('filter')) ? preg_replace('/(' . preg_quote(get_request_var('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($data_input['name'])) : htmlspecialchars($data_input['name'])) . '</a>', $data_input['id']);
+			form_selectable_cell(filter_value($data_input['name'], get_request_var('filter'), 'data_input.php?action=edit&id=' . $data_input['id']), $data_input['id']);
 			form_selectable_cell($disabled ? __('No'): __('Yes'), $data_input['id'],'', 'text-align:right');
 			form_selectable_cell(number_format_i18n($data_input['data_sources']), $data_input['id'],'', 'text-align:right');
 			form_selectable_cell(number_format_i18n($data_input['templates']), $data_input['id'],'', 'text-align:right');

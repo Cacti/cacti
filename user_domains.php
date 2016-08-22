@@ -30,7 +30,7 @@ $actions = array(
 	2 => __('Disable'),
 	3 => __('Enable'),
 	4 => __('Default')
-	);
+);
 
 /* set default action */
 set_default_action();
@@ -555,7 +555,7 @@ function domain_edit() {
 
 		$('#mode').change(function() {
 			initSearch();
-       		});
+		});
 
 		$('#group_require').change(function() {
 			initGroupMember();
@@ -723,7 +723,7 @@ function domains() {
 		foreach ($domains as $domain) {
 			/* hide system types */
 			form_alternate_row('line' . $domain['domain_id'], true);
-			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars('user_domains.php?action=edit&domain_id=' . $domain['domain_id']) . "'>" . (strlen(get_request_var('filter')) ? preg_replace('/(' . preg_quote(get_request_var('filter')) . ')/i', "<span class='filteredValue>\\1</span>", htmlspecialchars($domain['domain_name'])) : htmlspecialchars($domain['domain_name'])) . '</a>', $domain['domain_id']);
+			form_selectable_cell(filter_value($domain['domain_name'], get_request_var('filter'), 'user_domains.php?action=edit&domain_id=' . $domain['domain_id']), $domain['domain_id']);
 			form_selectable_cell($domain_types{$domain['type']}, $domain['domain_id']);
 			form_selectable_cell( ($domain['defdomain'] == '0' ? '--': __('Yes') ), $domain['domain_id']);
 			form_selectable_cell( ($domain['user_id'] == '0' ? __('None Selected') : db_fetch_cell_prepared('SELECT username FROM user_auth WHERE id = ?', array($domain['user_id']))), $domain['domain_id']);

@@ -806,7 +806,7 @@ function template() {
 			}
 
 			form_alternate_row('line' . $template['id'], true);
-			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars('host_templates.php?action=edit&id=' . $template['id']) . "'>" . (strlen(get_request_var('filter')) ? preg_replace('/(' . preg_quote(get_request_var('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($template['name'])) : htmlspecialchars($template['name'])) . '</a>', $template['id'], $disabled);
+			form_selectable_cell(filter_value($template['name'], get_request_var('filter'), 'host_templates.php?action=edit&id=' . $template['id']), $template['id']);
 			form_selectable_cell($template['id'], $template['id'], '', 'text-align:right', $disabled);
 			form_selectable_cell($disabled ? __('No'):__('Yes'), $template['id'], '', 'text-align:right', $disabled);
 			form_selectable_cell(number_format_i18n($template['hosts']), $template['id'], '', 'text-align:right', $disabled);

@@ -97,7 +97,7 @@ function display_matching_hosts($rule, $rule_type, $url) {
 		loadPageNoHeader(strURL);
 	}
 
-	function clearFilter() {
+	function clearDeviceFilter() {
 		strURL = '<?php print $url;?>' + '&clear=1&header=false';
 		loadPageNoHeader(strURL);
 	}
@@ -226,8 +226,6 @@ function display_matching_hosts($rule, $rule_type, $url) {
 		$sql_where .= (strlen($sql_where) ? ' AND h.host_template_id=' . get_request_var('host_template_id') : 'WHERE h.host_template_id=' . get_request_var('host_template_id'));
 	}
 
-	html_start_box('', '100%', '', '3', 'center', '');
-
 	$host_graphs       = array_rekey(db_fetch_assoc('SELECT host_id, count(*) as graphs FROM graph_local GROUP BY host_id'), 'host_id', 'graphs');
 	$host_data_sources = array_rekey(db_fetch_assoc('SELECT host_id, count(*) as data_sources FROM data_local GROUP BY host_id'), 'host_id', 'data_sources');
 
@@ -265,6 +263,8 @@ function display_matching_hosts($rule, $rule_type, $url) {
 
 	print $nav;
 
+	html_start_box('', '100%', '', '3', 'center', '');
+
 	$display_text = array(
 		'description'        => array(__('Description'), 'ASC'),
 		'hostname'           => array(__('Hostname'), 'ASC'),
@@ -286,24 +286,24 @@ function display_matching_hosts($rule, $rule_type, $url) {
 	if (sizeof($hosts)) {
 		foreach ($hosts as $host) {
 			form_alternate_row('line' . $host['host_id'], true);
-			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars('host.php?action=edit&id=' . $host['host_id']) . "'>" .
-				(strlen(get_request_var('filterd')) ? preg_replace('/(' . preg_quote(get_request_var('filterd')) . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($host['description'])) : htmlspecialchars($host['description'])) . '</a>', $host['host_id']);
-			form_selectable_cell((strlen(get_request_var('filterd')) ? preg_replace('/(' . preg_quote(get_request_var('filterd')) . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($host['hostname'])) : htmlspecialchars($host['hostname'])), $host['host_id']);
+			form_selectable_cell(filter_value($host['description'], get_request_var('filterd'), 'host.php?action=edit&id=' . $host['host_id']), $host['host_id']);
+			form_selectable_cell(filter_value($host['hostname'], get_request_var('filterd')), $host['host_id']);
 			form_selectable_cell(get_colored_device_status(($host['disabled'] == 'on' ? true : false), $host['status']), $host['host_id']);
-			form_selectable_cell((strlen(get_request_var('filterd')) ? preg_replace('/(' . preg_quote(get_request_var('filterd')) . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($host['host_template_name'])) : htmlspecialchars($host['host_template_name'])), $host['host_id']);
+			form_selectable_cell(filter_value($host['host_template_name'], get_request_var('filterd')), $host['host_id']);
 			form_selectable_cell(round(($host['host_id']), 2), $host['host_id']);
 			form_selectable_cell((isset($host_graphs[$host['host_id']]) ? $host_graphs[$host['host_id']] : 0), $host['host_id']);
 			form_selectable_cell((isset($host_data_sources[$host['host_id']]) ? $host_data_sources[$host['host_id']] : 0), $host['host_id']);
 			form_end_row();
 		}
-
-		/* put the nav bar on the bottom as well */
-		print $nav;
 	}else{
 		print "<tr><td colspan='8'><em>" . __('No Matching Devices') . "</em></td></tr>";
 	}
 
-	html_end_box(true);
+	html_end_box(false);
+
+	if (sizeof($hosts)) {
+		print $nav;
+	}
 
 	form_end();
 }
@@ -516,8 +516,6 @@ function display_matching_graphs($rule, $rule_type, $url) {
 	/* get the WHERE clause for matching graphs */
 	$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') . build_matching_objects_filter($rule['id'], $rule_type);
 
-	html_start_box('', '100%', '', '3', 'center', '');
-
 	$total_rows = db_fetch_cell("SELECT COUNT(gtg.id)
 		FROM graph_local AS gl
 		INNER JOIN graph_templates_graph AS gtg
@@ -551,6 +549,10 @@ function display_matching_graphs($rule, $rule_type, $url) {
 
 	$nav = html_nav_bar($url, MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 8, 'Devices', 'page', 'main');
 
+	print $nav;
+
+	html_start_box('', '100%', '', '3', 'center', '');
+
 	$display_text = array(
 		'description'        => array(__('Device Description'), 'ASC'),
 		'hostname'           => array(__('Hostname'), 'ASC'),
@@ -573,26 +575,24 @@ function display_matching_graphs($rule, $rule_type, $url) {
 		foreach ($graph_list as $graph) {
 			$template_name = ((empty($graph['name'])) ? '<em>' . __('None') . '</em>' : htmlspecialchars($graph['name']));
 			form_alternate_row('line' . $graph['local_graph_id'], true);
-
-			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars("host.php?action=edit&id=" . $graph['host_id']) . "'>" .
-				(strlen(get_request_var('filter')) ? preg_replace('/(' . preg_quote(get_request_var('filter')) . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($graph['description'])) : htmlspecialchars($graph['description'])) . '</a>', $graph['host_id']);
-			form_selectable_cell((strlen(get_request_var('filter')) ? preg_replace('/(' . preg_quote(get_request_var('filter')) . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($graph['hostname'])) : htmlspecialchars($graph['hostname'])), $graph['host_id']);
-			form_selectable_cell((strlen(get_request_var('filter')) ? preg_replace('/(' . preg_quote(get_request_var('filter')) . ')/i', "<span class='filteredValue;'>\\1</span>", htmlspecialchars($graph['host_template_name'])) : htmlspecialchars($graph['host_template_name'])), $graph['host_id']);
-			form_selectable_cell(get_colored_device_status(($graph['disabled'] == 'on' ? true : false), $graph['status']), $graph['host_id']);
-
-			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars('graphs.php?action=graph_edit&id=' . $graph['local_graph_id']) . "'>" . ((get_request_var('filter') != '') ? preg_replace('/(' . preg_quote(get_request_var('filter')) . ')/i', "<span class='filteredValue'>\\1</span>", title_trim(htmlspecialchars($graph['title_cache']), read_config_option('max_title_length'))) : title_trim(htmlspecialchars($graph['title_cache']), read_config_option('max_title_length'))) . '</a>', $graph['local_graph_id']);
+			form_selectable_cell(filter_value($graph['description'], get_request_var('filter'), 'host.php?action=edit&id=' . $graph['host_id']), $graph['local_graph_id']);
+			form_selectable_cell(filter_value($graph['hostname'], get_request_var('filter')), $graph['local_graph_id']);
+			form_selectable_cell(filter_value($graph['host_template_name'], get_request_var('filter')), $graph['local_graph_id']);
+			form_selectable_cell(get_colored_device_status(($graph['disabled'] == 'on' ? true : false), $graph['status']), $graph['local_graph_id']);
+			form_selectable_cell(filter_value(title_trim($graph['title_cache'], read_config_option('max_title_length')), get_request_var('filter'), 'graphs.php?action=graph_edit&id=' . $graph['local_graph_id']), $graph['local_graph_id']);
 			form_selectable_cell($graph['local_graph_id'], $graph['local_graph_id']);
-			form_selectable_cell(((get_request_var('filter') != '') ? preg_replace('/(' . preg_quote(get_request_var('filter')) . ')/i', "<span class='filteredValue;'>\\1</span>", $template_name) : $template_name) . '</a>', $graph['local_graph_id']);
+			form_selectable_cell(filter_value($template_name, get_request_var('filter')), $graph['local_graph_id']);
 			form_end_row();
 		}
-
-		/* put the nav bar on the bottom as well */
-		print $nav;
 	}else{
 		print '<tr><td><em>' . __('No Graphs Found') . '</em></td></tr>';
 	}
 
 	html_end_box(true);
+
+	if (sizeof($graph_list)) {
+		print $nav;
+	}
 
 	form_end();
 }
@@ -852,7 +852,7 @@ function display_new_graphs($rule, $url) {
 								if ($field_name == 'status') {
 									form_selectable_cell(get_colored_device_status(($row['disabled'] == 'on' ? true : false), $row['status']), 'status');
 								} else {
-									print "<td><span id='text$row_counter" . '_' . $column_counter . "' $style>" . $row[$field_name] . "</span></td>";
+									print "<td><span id='text$row_counter" . '_' . $column_counter . "' $style>" . filter_value($row[$field_name], get_request_var('filter')) . "</span></td>";
 								}
 							}else{
 								print "<td><span id='text$row_counter" . '_' . $column_counter . "' $style></span></td>";
@@ -1127,9 +1127,9 @@ function display_matching_trees ($rule_id, $rule_type, $item, $url) {
 	
 	$nav = html_nav_bar($url, MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 8, 'Devices', 'page', 'main');
 
-	html_start_box('', '100%', '', '3', 'center', '');
-
 	print $nav;
+
+	html_start_box('', '100%', '', '3', 'center', '');
 
 	$display_text = array(
 		'description'        => array(__('Description'), 'ASC'),
@@ -1149,7 +1149,7 @@ function display_matching_trees ($rule_id, $rule_type, $item, $url) {
 	);
 
 	$i = 0;
-	if (sizeof($templates) > 0) {
+	if (sizeof($templates)) {
 		foreach ($templates as 	$template) {
 			cacti_log(__FUNCTION__ . ' template: ' . serialize($template), false, 'AUTOM8 TRACE', POLLER_VERBOSITY_HIGH);
 			$replacement = automation_string_replace($item['search_pattern'], $item['replace_pattern'], $template['source']);
@@ -1167,22 +1167,23 @@ function display_matching_trees ($rule_id, $rule_type, $item, $url) {
 			cacti_log(__FUNCTION__ . " replacement: $repl", false, 'AUTOM8 TRACE', POLLER_VERBOSITY_HIGH);
 			
 			form_alternate_row('line' . $template['host_id'], true);
-			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars("host.php?action=edit&id=" . $template['host_id']) . "'>" .
-				(strlen(get_request_var('filter')) ? preg_replace('/(' . preg_quote(get_request_var('filter')) . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($template['description'])) : htmlspecialchars($template['description'])) . '</a>', $template['host_id']);
-			form_selectable_cell((strlen(get_request_var('filter')) ? preg_replace('/(' . preg_quote(get_request_var('filter')) . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($template['hostname'])) : htmlspecialchars($template['hostname'])), $template['host_id']);
-			form_selectable_cell((strlen(get_request_var('filter')) ? preg_replace('/(' . preg_quote(get_request_var('filter')) . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($template['host_template_name'])) : htmlspecialchars($template['host_template_name'])), $template['host_id']);
+			form_selectable_cell(filter_value($template['description'], get_request_var('filter'), "host.php?action=edit&id=" . $template['host_id']), $template['host_id']);
+			form_selectable_cell(filter_value($template['hostname'], get_request_var('filter')), $template['host_id']);
+			form_selectable_cell(filter_value($template['host_template_name'], get_request_var('filter')), $template['host_id']);
 			form_selectable_cell(get_colored_device_status(($template['disabled'] == 'on' ? true : false), $template['status']), $template['host_id']);
 			form_selectable_cell($template['source'], $template['host_id']);
 			form_selectable_cell($repl, $template['host_id']);
 			form_end_row();
 		}
-
-		/* put the nav bar on the bottom as well */
-		print $nav;
 	}else{
 		print "<tr><td colspan='6'><em>" . __('No Items Found') . "</em></td></tr>";
 	}
+
 	html_end_box(true);
+
+	if (sizeof($templates)) {
+		print $nav;
+	}
 
 	print "</form>\n";
 }
@@ -1503,7 +1504,7 @@ function build_data_query_sql($rule) {
 	if (sizeof($field_names) > 0) {
 		foreach($field_names as $column) {
 			$field_name = $column['field_name'];
-			$sql_query .= ", MAX(CASE WHEN field_name='$field_name' THEN field_value ELSE NULL END) AS '$field_name'";
+			$sql_query .= ", MAX(CASE WHEN field_name='$field_name' THEN field_value ELSE NULL END) AS $field_name";
 			$i++;
 		}
 	}

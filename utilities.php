@@ -564,7 +564,7 @@ function utilities_view_user_log() {
 	?>
 	<script type="text/javascript">
 	function clearFilter() {
-		strURL = '?clear=1&header=false';
+		strURL = '?action=clear_user_log&clear=1&header=false';
 		loadPageNoHeader(strURL);
 	}
 
@@ -760,11 +760,11 @@ function utilities_view_user_log() {
 			form_alternate_row('', true);
 			?>
 			<td class='nowrap'>
-				<?php print (strlen(get_request_var('filter')) ? (preg_replace('/(' . preg_quote(get_request_var('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($item['username']))) : htmlspecialchars($item['username']));?>
+				<?php print filter_value($item['username'], get_request_var('filter'));?>
 			</td>
 			<td class='nowrap'>
 				<?php if (isset($item['full_name'])) {
-						print (strlen(get_request_var('filter')) ? (preg_replace('/(' . preg_quote(get_request_var('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($item['full_name']))) : htmlspecialchars($item['full_name']));
+						print filter_value($item['full_name'], get_request_var('filter'));
 					}else{
 						print __('(User Removed)');
 					}
@@ -772,20 +772,20 @@ function utilities_view_user_log() {
 			</td>
 			<td class='nowrap'>
 				<?php if (isset($auth_realms[$item['realm']])) {
-						print (strlen(get_request_var('filter')) ? (preg_replace('/(' . preg_quote(get_request_var('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", $auth_realms[$item['realm']])) : $auth_realms[$item['realm']]);
+						print filter_value($auth_realms[$item['realm']], get_request_var('filter'));
 					}else{
 						print __('N/A');
 					}
 				?>
 			</td>
 			<td class='nowrap'>
-				<?php print (strlen(get_request_var('filter')) ? (preg_replace('/(' . preg_quote(get_request_var('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($item['time']))) : htmlspecialchars($item['time']));?>
+				<?php print filter_value($item['time'], get_request_var('filter'));?>
 			</td>
 			<td class='nowrap'>
 				<?php print ($item['result'] == 0 ? 'Failed':($item['result'] == 1 ? 'Success - Pswd':'Success - Token'));?>
 			</td>
 			<td class='nowrap'>
-				<?php print (strlen(get_request_var('filter')) ? (preg_replace('/(' . preg_quote(get_request_var('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($item['ip']))) : htmlspecialchars($item['ip']));?>
+				<?php print filter_value($item['ip'], get_request_var('filter'));?>
 			</td>
 			</tr>
 			<?php
@@ -1388,22 +1388,22 @@ function utilities_view_snmp_cache() {
 		form_alternate_row();
 		?>
 		<td>
-			<?php print (strlen(get_request_var('filter')) ? (preg_replace('/(' . preg_quote(get_request_var('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($item['description']))) : htmlspecialchars($item['description']));?>
+			<?php print filter_value($item['description'], get_request_var('filter'));?>
 		</td>
 		<td>
-			<?php print (strlen(get_request_var('filter')) ? (preg_replace('/(' . preg_quote(get_request_var('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($item['name']))) : htmlspecialchars($item['name']));?>
+			<?php print filter_value($item['name'], get_request_var('filter'));?>
 		</td>
 		<td>
 			<?php print $item['snmp_index'];?>
 		</td>
 		<td>
-			<?php print (strlen(get_request_var('filter')) ? (preg_replace('/(' . preg_quote(get_request_var('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($item['field_name']))) : htmlspecialchars($item['field_name']));?>
+			<?php print filter_value($item['field_name'], get_request_var('filter'));?>
 		</td>
 		<td>
-			<?php print (strlen(get_request_var('filter')) ? (preg_replace('/(' . preg_quote(get_request_var('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($item['field_value']))) : htmlspecialchars($item['field_value']));?>
+			<?php print filter_value($item['field_value'], get_request_var('filter'));?>
 		</td>
 		<td>
-			<?php print (strlen(get_request_var('filter')) ? (preg_replace('/(' . preg_quote(get_request_var('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($item['oid']))) : htmlspecialchars($item['oid']));?>
+			<?php print filter_value($item['oid'], get_request_var('filter'));?>
 		</td>
 		</tr>
 		<?php
@@ -1654,8 +1654,8 @@ function utilities_view_poller_cache() {
 		}
 		print "<tr class='$class'>\n";
 			?>
-			<td style='width:375px;'>
-				<a class="linkEditMain" href="<?php print htmlspecialchars('data_sources.php?action=ds_edit&id=' . $item['local_data_id']);?>"><?php print (strlen(get_request_var('filter')) ? preg_replace('/(' . preg_quote(get_request_var('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($item['name_cache'])):htmlspecialchars($item['name_cache']));?></a>
+			<td>
+				<?php print filter_value($item['name_cache'], get_request_var('filter'), 'data_sources.php?action=ds_edit&id=' . $item['local_data_id']);?>
 			</td>
 
 			<td>
@@ -1665,16 +1665,16 @@ function utilities_view_poller_cache() {
 					$details =
 						__('SNMP Version:') . ' ' . $item['snmp_version'] . ', ' .
 						__('Community:') . ' ' . $item['snmp_community'] . ', ' .
-						__('OID:') . ' ' . (strlen(get_request_var('filter')) ? (preg_replace('/(' . preg_quote(get_request_var('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($item['arg1']))) : htmlspecialchars($item['arg1']));
+						__('OID:') . ' ' . filter_value($item['arg1'], get_request_var('filter'));
 				}else{
 					$details =
 						__('SNMP Version:') . ' ' . $item['snmp_version'] . ', ' .
 						__('User:') . ' ' . $item['snmp_username'] . ', ' . __('OID:') . ' ' . $item['arg1'];
 				}
 			}elseif ($item['action'] == 1) {
-					$details = __('Script:') . ' ' . (strlen(get_request_var('filter')) ? (preg_replace('/(' . preg_quote(get_request_var('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($item['arg1']))) : htmlspecialchars($item['arg1']));
+					$details = __('Script:') . ' ' . filter_value($item['arg1'], get_request_var('filter'));
 			}else{
-					$details = __('Script Server:') . ' ' . (strlen(get_request_var('filter')) ? (preg_replace('/(' . preg_quote(get_request_var('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($item['arg1']))) : htmlspecialchars($item['arg1']));
+					$details = __('Script Server:') . ' ' . filter_value($item['arg1'], get_request_var('filter'));
 			}
 
 			print $details;
@@ -2301,16 +2301,15 @@ function snmpagent_utilities_run_cache() {
 
 	html_start_box('', '100%', '', '3', 'center', '');
 
-	html_header(array(__('OID'), __('Name'), __('MIB'), __('Kind'), __('Max-Access'), __('Value')));
+	html_header(array(__('OID'), __('Name'), __('MIB'), __('Type'), __('Max-Access'), __('Value')));
 
 	if (sizeof($snmp_cache)) {
 		foreach ($snmp_cache as $item) {
 
-			$oid = (strlen(get_request_var('filter')) ? (preg_replace('/(' . preg_quote(get_request_var('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($item['oid']))) : htmlspecialchars($item['oid']));
-			$name = (strlen(get_request_var('filter')) ? (preg_replace('/(' . preg_quote(get_request_var('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($item['name']))): htmlspecialchars($item['name']));
-			$mib = (strlen(get_request_var('filter')) ? (preg_replace('/(' . preg_quote(get_request_var('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($item['mib']))): htmlspecialchars($item['mib']));
-
-			$max_access = (strlen(get_request_var('filter')) ? (preg_replace('/(' . preg_quote(get_request_var('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($item['max-access']))) : htmlspecialchars($item['max-access']));
+			$oid        = filter_value($item['oid'], get_request_var('filter'));
+			$name       = filter_value($item['name'], get_request_var('filter'));
+			$mib        = filter_value($item['mib'], get_request_var('filter'));
+			$max_access = filter_value($item['max-access'], get_request_var('filter'));
 
 			form_alternate_row('line' . $item['oid'], false);
 			form_selectable_cell( $oid, $item['oid']);
@@ -2564,8 +2563,7 @@ function snmpagent_utilities_run_eventlog(){
 	$total_rows = db_fetch_cell("SELECT COUNT(*) FROM snmpagent_notifications_log AS snl WHERE $sql_where");
 	$logs = db_fetch_assoc($sql_query);
 
-	/* generate page list */
-	$nav = html_nav_bar('utilities.php?action=view_snmpagent_events&severity='. get_request_var('severity').'&receiver='. get_request_var('receiver').'&filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 11, __('Agents'), 'page', 'main');
+	$nav = html_nav_bar('utilities.php?action=view_snmpagent_events&severity='. get_request_var('severity').'&receiver='. get_request_var('receiver').'&filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 11, __('Log Entries'), 'page', 'main');
 
 	form_start('managers.php', 'chk');
 
@@ -2577,7 +2575,7 @@ function snmpagent_utilities_run_eventlog(){
 
 	if (sizeof($logs)) {
 		foreach ($logs as $item) {
-			$varbinds = (strlen(get_request_var('filter')) ? (preg_replace('/(' . preg_quote(get_request_var('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($item['varbinds']))): htmlspecialchars($item['varbinds']));
+			$varbinds = filter_value($item['varbinds'], get_request_var('filter'));
 			form_alternate_row('line' . $item['id'], false);
 
 			print "<td title='" . __('Severity Level: %s', $severity_levels[$item['severity']]) . "' style='width:10px;background-color: " . $severity_colors[$item['severity']] . ";border-top:1px solid white;border-bottom:1px solid white;'></td>";
@@ -2587,7 +2585,7 @@ function snmpagent_utilities_run_eventlog(){
 			if($item['description']) {
 				print '<td><a href="#" title="<div class=\'header\'>' . htmlspecialchars($item['notification'], ENT_QUOTES) . '</div><div class=\'content preformatted\'>' . htmlspecialchars($item['description'], ENT_QUOTES) . '</div>" class="tooltip">' . htmlspecialchars($item['notification']) . '</a></td>';
 			}else {
-				print '<td>' . htmlspecialchars($item['notification']) . "</td>";
+				print '<td>' . htmlspecialchars($item['notification']) . '</td>';
 			}
 
 			print "<td>$varbinds</td>";
@@ -2595,7 +2593,7 @@ function snmpagent_utilities_run_eventlog(){
 			form_end_row();
 		}
 	}else{
-		print '<tr><td><em>' . __('No SNMP Notification Log Entries') . '</em></td></tr>';
+		print '<tr><td colspan="5"><em>' . __('No SNMP Notification Log Entries') . '</em></td></tr>';
 	}
 
 	html_end_box();

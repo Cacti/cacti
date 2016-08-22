@@ -473,12 +473,19 @@ function template() {
 
 	/* form the 'where' clause for our main sql query */
 	if (get_request_var('filter') != '') {
-		$sql_where = "WHERE (name LIKE '%" . get_request_var('filter') . "%')";
+		$sql_where = "WHERE (name LIKE '%" . get_request_var('filter') . "%' OR " .
+			"sysName LIKE '%" . get_request_var('filter') . "%' OR " . 
+			"sysDescr LIKE '%" . get_request_var('filter') . "%' OR " . 
+			"sysOID LIKE '%" . get_request_var('filter') . "%')";
 	}else{
 		$sql_where = '';
 	}
 
-	$total_rows = db_fetch_cell("SELECT COUNT(*) FROM automation_templates $sql_where");
+	$total_rows = db_fetch_cell("SELECT COUNT(*) 
+		FROM automation_templates AS at
+		LEFT JOIN host_template AS ht
+		ON ht.id=at.host_template
+		$sql_where");
 
 	$dts = db_fetch_assoc("SELECT at.*, '' AS sysName, ht.name
 		FROM automation_templates AS at
@@ -521,11 +528,11 @@ function template() {
 			}
 
 			form_alternate_row('line' . $dt['id'], true);
-			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars('automation_templates.php?action=edit&id=' . $dt['id']) . "'>" . (strlen(get_request_var('filter')) ? preg_replace('/(' . preg_quote(get_request_var('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($name)) : htmlspecialchars($name)) . '</a>', $dt['id']);
+			form_selectable_cell(filter_value($name, get_request_var('filter'), 'automation_templates.php?action=edit&id=' . $dt['id']), $dt['id']);
 			form_selectable_cell($availability_options[$dt['availability_method']], $dt['id']);
-			form_selectable_cell(htmlspecialchars($dt['sysDescr']), $dt['id']);
-			form_selectable_cell(htmlspecialchars($dt['sysName']), $dt['id']);
-			form_selectable_cell(htmlspecialchars($dt['sysOid']), $dt['id']);
+			form_selectable_cell(filter_value($dt['sysDescr'], get_request_var('filter')), $dt['id']);
+			form_selectable_cell(filter_value($dt['sysName'], get_request_var('filter')), $dt['id']);
+			form_selectable_cell(filter_value($dt['sysOid'], get_request_var('filter')), $dt['id']);
 
 			if (read_config_option('drag_and_drop') == '') {
 				$add_text = '';

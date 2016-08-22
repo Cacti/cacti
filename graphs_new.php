@@ -896,7 +896,7 @@ function graphs() {
 									if ($field_array['direction'] == 'input') {
 										if (in_array($field_name, $fields)) {
 											if (isset($row[$field_name])) {
-												print "<td><span id='text$query_row" . '_' . $column_counter . "'>" . (strlen(get_request_var('filter')) ? preg_replace('/(' . preg_quote(get_request_var('filter')) . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($row[$field_name])) : htmlspecialchars($row[$field_name])) . '</span></td>';
+												print "<td><span id='text$query_row" . '_' . $column_counter . "'>" . filter_value($row[$field_name], get_request_var('filter')) . '</span></td>';
 											}else{
 												print "<td><span id='text$query_row" . '_' . $column_counter . "'></span></td>";
 											}

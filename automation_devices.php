@@ -252,8 +252,8 @@ function display_discovery_page() {
 				$host['hostname'] = __('Not Detected');
 			}
 
-			form_selectable_cell((strlen(get_request_var('filter')) ? preg_replace('/(' . preg_quote(get_request_var('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($host['hostname'])) : htmlspecialchars($host['hostname'])), $host['id']);
-			form_selectable_cell((strlen(get_request_var('filter')) ? preg_replace('/(' . preg_quote(get_request_var('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($host['ip'])) : htmlspecialchars($host['ip'])), $host['id']);
+			form_selectable_cell(filter_value($host['hostname'], get_request_var('filter')), $host['id']);
+			form_selectable_cell(filter_value($host['ip'], get_request_var('filter')), $host['id']);
 			form_selectable_cell(snmp_data($host['sysName']), $host['id'], '', 'text-align:left');
 			form_selectable_cell(snmp_data($host['sysLocation']), $host['id'], '', 'text-align:left');
 			form_selectable_cell(snmp_data($host['sysContact']), $host['id'], '', 'text-align:left');

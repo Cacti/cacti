@@ -735,7 +735,7 @@ function vdef_filter() {
 function get_vdef_records(&$total_rows, &$rowspp) {
 	/* form the 'where' clause for our main sql query */
 	if (get_request_var('filter') != '') {
-		$sql_where = "WHERE (vdef.name LIKE '%" . get_request_var('filter') . "%')";
+		$sql_where = "WHERE (rs.name LIKE '%" . get_request_var('filter') . "%')";
 	}else{
 		$sql_where = '';
 	}
@@ -857,7 +857,7 @@ function vdef($refresh = true) {
             }
 
             form_alternate_row('line' . $vdef['id'], false, $disabled);
-            form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars('vdef.php?action=edit&id=' . $vdef['id']) . "'>" . (strlen(get_request_var('filter')) ? preg_replace('/(' . preg_quote(get_request_var('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($vdef['name'])) : htmlspecialchars($vdef['name'])) . '</a>', $vdef['id']);
+			form_selectable_cell(filter_value($vdef['name'], get_request_var('filter'), 'vdef.php?action=edit&id=' . $vdef['id']), $vdef['id']);
             form_selectable_cell($disabled ? __('No'):__('Yes'), $vdef['id'], '', 'text-align:right');
             form_selectable_cell(number_format_i18n($vdef['graphs']), $vdef['id'], '', 'text-align:right');
             form_selectable_cell(number_format_i18n($vdef['templates']), $vdef['id'], '', 'text-align:right');

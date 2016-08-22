@@ -532,7 +532,7 @@ function format_plugin_row($plugin, $last_plugin, $include_ordering) {
 		$row .= "<td></td>\n";
 	}
 
-	$row .= "<td class='nowrap'>" . (strlen(get_request_var('filter')) ? preg_replace('/(' . preg_quote(get_request_var('filter')) . ')/i', "<span class='filteredValue'>\\1</span>", $plugin['name']) : $plugin['name']) . "</td>\n";
+	$row .= "<td class='nowrap'>" . filter_value($plugin['name'], get_request_var('filter')) . "</td>\n";
 	$row .= '<td>' . $plugin['version'] . "</td>\n";
 	$row .= "<td class='nowrap'>" . $status_names[$plugin['status']] . "</td>\n";
 	$row .= "<td class='nowrap'>" . $plugin['author'] . "</td>\n";

@@ -795,7 +795,7 @@ function automation_tree_rules() {
 	if (get_request_var('status') == '-1') {
 		/* Show all items */
 	}elseif (get_request_var('status') == '-2') {
-		$sql_where .= (strlen($sql_where) ? " AND atr.enabled='on'" : "WHERE .atr.enabled='on'");
+		$sql_where .= (strlen($sql_where) ? " AND atr.enabled='on'" : "WHERE atr.enabled='on'");
 	}elseif (get_request_var('status') == '-3') {
 		$sql_where .= (strlen($sql_where) ? " AND atr.enabled=''" : "WHERE atr.enabled=''");
 	}
@@ -845,7 +845,7 @@ function automation_tree_rules() {
 			$tree_host_grouping_type = ((empty($host_group_types{$automation_tree_rule['host_grouping_type']})) ? '' : $host_group_types{$automation_tree_rule['host_grouping_type']});
 			form_alternate_row('line' .  $automation_tree_rule['id'], true);
 
-			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars('automation_tree_rules.php?action=edit&id=' . $automation_tree_rule['id'] . '&page=1') . "'>" . (get_request_var('filter') != '' ? preg_replace('/(' . preg_quote(get_request_var('filter')) . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($automation_tree_rule['name'])) : htmlspecialchars($automation_tree_rule['name'])) . '</a>', $automation_tree_rule['id']);
+			form_selectable_cell(filter_value($automation_tree_rule['name'], get_request_var('filter'), 'automation_tree_rules.php?action=edit&id=' . $automation_tree_rule['id'] . '&page=1'), $automation_tree_rule['id']);
 			form_selectable_cell($automation_tree_rule['id'], $automation_tree_rule['id'], '', 'text-align:right');
 			form_selectable_cell($automation_tree_rule['tree_name'], $automation_tree_rule['id']);
 			form_selectable_cell($subtree_name, $automation_tree_rule['id']);

@@ -487,7 +487,7 @@ function sites() {
 	if (sizeof($site_list)) {
 		foreach ($site_list as $site) {
 			form_alternate_row('line' . $site['id'], true);
-			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars('sites.php?action=edit&id=' . $site['id']) . "'>" . (strlen(get_request_var('filter')) ? preg_replace('/(' . preg_quote(get_request_var('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($site['name'])) : htmlspecialchars($site['name'])) . '</a>', $site['id']);
+			form_selectable_cell(filter_value($site['name'], get_request_var('filter'), 'sites.php?action=edit&id=' . $site['id']), $site['id']);
 			form_selectable_cell($site['id'], $site['id'], '', 'right');
 			form_selectable_cell(number_format_i18n($site['hosts']), $site['id'], '', 'right');
 			form_selectable_cell($site['city'], $site['id'], '', 'left');

@@ -1307,22 +1307,22 @@ function ds() {
 			$data_source['data_template_name'] = htmlspecialchars($data_source['data_template_name']);
 			$data_name_cache = title_trim(htmlspecialchars($data_source['name_cache']), read_config_option('max_title_length'));
 
-			if (trim(get_request_var('filter') != '')) {
-				$data_name_cache = preg_replace('/(' . preg_quote(get_request_var('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", ($data_name_cache));
+			if (get_request_var('filter') != '') {
+				$data_name_cache = filter_value($data_name_cache, get_request_var('filter'));
 			}
 
 			/* keep copy of data source for comparison */
 			$data_source_orig = $data_source;
 			$data_source = api_plugin_hook_function('data_sources_table', $data_source);
+
 			/* we're escaping strings here, so no need to escape them on form_selectable_cell */
 			if (empty($data_source['data_template_name'])) {
 				$data_template_name = '<em>' . __('None') . '</em>';
 			} elseif ($data_source_orig['data_template_name'] != $data_source['data_template_name']) {
 				/* was changed by plugin, plugin has to take care for html-escaping */
-				$data_template_name = ((empty($data_source['data_template_name'])) ? '<em>' . __('None') . '</em>' : $data_source['data_template_name']);
-			} elseif (trim(get_request_var('filter') != '')) {
-				/* we take care of html-escaping */
-				$data_template_name = preg_replace('/(' . preg_quote(get_request_var('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($data_source['data_template_name']));
+				$data_template_name = $data_source['data_template_name'];
+			} elseif (get_request_var('filter') != '') {
+				$data_template_name = filter_value($data_source['data_template_name'], get_request_var('filter'));
 			} else {
 				$data_template_name = htmlspecialchars($data_source['data_template_name']);
 			}
@@ -1332,15 +1332,14 @@ function ds() {
 			} elseif ($data_source_orig['data_input_name'] != $data_source['data_input_name']) {
 				/* was changed by plugin, plugin has to take care for html-escaping */
 				$data_input_name = ((empty($data_source['data_input_name'])) ? '<em>' . __('None') . '</em>' : $data_source['data_input_name']);
-			} elseif (trim(get_request_var('filter') != '')) {
-				/* we take care of html-escaping */
-				$data_input_name = preg_replace('/(' . preg_quote(get_request_var('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($data_source['data_input_name']));
+			} elseif (get_request_var('filter') != '') {
+				$data_input_name = filter_value($data_source['data_input_name'], get_request_var('filter'));
 			} else {
 				$data_input_name = htmlspecialchars($data_source['data_input_name']);
 			}
 
 			form_alternate_row('line' . $data_source['local_data_id'], true);
-			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars('data_sources.php?action=ds_edit&id=' . $data_source['local_data_id']) . "'>" . ((get_request_var('filter') != '') ? preg_replace('/(' . preg_quote(get_request_var('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", title_trim(htmlspecialchars($data_source['name_cache']), read_config_option('max_title_length'))) : title_trim(htmlspecialchars($data_source['name_cache']), read_config_option('max_title_length'))) . '</a>', $data_source['local_data_id']);
+			form_selectable_cell(filter_value(title_trim($data_source['name_cache'], read_config_option('max_title_length')), get_request_var('filter'), 'data_sources.php?action=ds_edit&id=' . $data_source['local_data_id']), $data_source['local_data_id']);
 			form_selectable_cell($data_source['local_data_id'], $data_source['local_data_id'], '', 'text-align:right');
 			form_selectable_cell($data_input_name, $data_source['local_data_id']);
 			form_selectable_cell(get_poller_interval($data_source['rrd_step']), $data_source['local_data_id']);
