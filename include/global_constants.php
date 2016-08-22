@@ -378,4 +378,6 @@ if ($database_type == 'mysql') {
 define('MAX_DISPLAY_PAGES', 5);
 define('CHECKED', 'on');
 
-define('FILTER_VALIDATE_IS_REGEX', 99999);
+define('FILTER_VALIDATE_IS_REGEX',          99999);
+define('FILTER_VALIDATE_IS_NUMERIC_ARRAY', 100000);
+define('FILTER_VALIDATE_IS_NUMERIC_LIST',  100001);

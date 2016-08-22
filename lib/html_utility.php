@@ -456,15 +456,17 @@ function get_request_var_post($name, $default = '') {
 
    Validateion 'filter' follow PHP conventions including:
 
-     FILTER_VALIDATE_BOOLEAN  - Validate that the variable is boolean
-     FILTER_VALIDATE_EMAIL    - Validate that the variable is an email
-     FILTER_VALIDATE_FLOAT    - Validate that the variable is a float
-     FILTER_VALIDATE_INT      - Validate that the variable is an integer
-     FILTER_VALIDATE_IP       - Validate that the variable is an IP address
-     FILTER_VALIDATE_MAC      - Validate that the variable is a MAC Address
-     FILTER_VALIDATE_REGEXP   - Validate against a REGEX
-     FILTER_VALIDATE_URL      - Validate that the variable is a valid URL
-     FILTER_VALIDATE_IS_REGEX - Validate if a filter variable is a valid regex
+     FILTER_VALIDATE_BOOLEAN          - Validate that the variable is boolean
+     FILTER_VALIDATE_EMAIL            - Validate that the variable is an email
+     FILTER_VALIDATE_FLOAT            - Validate that the variable is a float
+     FILTER_VALIDATE_INT              - Validate that the variable is an integer
+     FILTER_VALIDATE_IP               - Validate that the variable is an IP address
+     FILTER_VALIDATE_MAC              - Validate that the variable is a MAC Address
+     FILTER_VALIDATE_REGEXP           - Validate against a REGEX
+     FILTER_VALIDATE_URL              - Validate that the variable is a valid URL
+     FILTER_VALIDATE_IS_REGEX         - Validate if a filter variable is a valid regex
+     FILTER_VALIDATE_IS_NUMERIC_ARRAY - Validate if a filter variable is a numeric array
+     FILTER_VALIDATE_IS_NUMERIC_LIST  - Validate if a filter variable is a comma delimited list of numbers
 
    Sanitization 'filters' follow PHP conventions including:
 
@@ -536,6 +538,39 @@ function validate_store_request_vars($filters, $sess_prefix = '') {
 					}else{
 						$value = FALSE;
 						$custom_error = $valid;
+					}
+				}elseif ($options['filter'] == FILTER_VALIDATE_IS_NUMERIC_ARRAY) {
+					$valid = true;
+					if (is_array($_REQUEST[$variable])) {
+						foreach($_REQUEST[$variable] AS $number) {
+							if (!is_numeric($number)) {
+								$valid = false;
+								break;
+							}
+						}
+					}else{
+						$valid = false;
+					}
+
+					if ($valid == true) {
+						$value = $_REQUEST[$variable];
+					}else{
+						$values = false;
+					}
+				}elseif ($options['filter'] == FILTER_VALIDATE_IS_NUMERIC_LIST) {
+					$valid = true;
+					$values = explode(',', $_REQUEST[$variable]);
+					foreach($values AS $number) {
+						if (!is_numeric($number)) {
+							$valid = false;
+							break;
+						}
+					}
+
+					if ($valid == true) {
+						$value = $_REQUEST[$variable];
+					}else{
+						$values = false;
 					}
 				}elseif (!isset($options['options'])) {
 					$value = filter_var($_REQUEST[$variable], $options['filter']);
