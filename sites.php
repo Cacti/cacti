@@ -101,7 +101,7 @@ $fields_site_edit = array(
 		'method' => 'drop_sql',
 		'friendly_name' => __('TimeZone'),
 		'description' => __('The timezone for the Site.'),
-		'value' => '|arg1:country|',
+		'value' => '|arg1:timezone|',
 		'sql' => 'SELECT Name AS id, Name AS name FROM mysql.time_zone_name ORDER BY name'
 	),
 	'latitude' => array(
