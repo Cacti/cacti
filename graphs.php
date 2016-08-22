@@ -136,6 +136,7 @@ function form_save() {
 	get_filter_request_var('local_graph_id');
 	get_filter_request_var('host_id');
 	get_filter_request_var('graph_template_graph_id');
+	get_filter_request_var('local_graph_template_graph_id');
 	/* ==================================================== */
 
 	if ((isset_request_var('save_component_graph_new')) && (!isempty_request_var('graph_template_id'))) {
@@ -158,15 +159,6 @@ function form_save() {
 	}
 
 	if (isset_request_var('save_component_graph')) {
-		/* ================= input validation ================= */
-		get_filter_request_var('graph_template_id');
-		get_filter_request_var('_graph_template_id');
-		get_filter_request_var('local_graph_id');
-		get_filter_request_var('host_id');
-		get_filter_request_var('graph_template_graph_id');
-		get_filter_request_var('local_graph_template_graph_id');
-		/* ==================================================== */
-
 		$save1['id']                     = get_nfilter_request_var('local_graph_id');
 		$save1['host_id']                = get_nfilter_request_var('host_id');
 		$save1['graph_template_id']      = get_nfilter_request_var('graph_template_id');
@@ -234,6 +226,7 @@ function form_save() {
 				if (get_nfilter_request_var('graph_template_id') != get_nfilter_request_var('_graph_template_id')) {
 					/* check to see if the number of graph items differs, if it does; we need user input */
 					if ((!isempty_request_var('graph_template_id')) && (!isempty_request_var('local_graph_id')) && (sizeof(db_fetch_assoc_prepared('SELECT id FROM graph_templates_item WHERE local_graph_id = ?', array($local_graph_id))) != sizeof(db_fetch_assoc_prepared('SELECT id from graph_templates_item WHERE local_graph_id = 0 AND graph_template_id = ?', array(get_nfilter_request_var('graph_template_id')))))) {
+
 						/* set the template back, since the user may choose not to go through with the change
 						at this point */
 						db_execute_prepared('UPDATE graph_local SET graph_template_id = ? WHERE id = ?', array(get_nfilter_request_var('_graph_template_id'), $local_graph_id));
