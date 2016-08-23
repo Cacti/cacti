@@ -492,7 +492,7 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $username, $pass
 		}
 
 		/* check for bad entries */
-		if (is_array($temp_array) && sizeof($temp_array)) {
+		if (is_array($temp_array) && sizeof($temp_array) && $temp_array !== false) {
 			foreach($temp_array as $key => $value) {
 				foreach($banned_snmp_strings as $item) {
 					if(strstr($value, $item) != '') {
@@ -504,13 +504,14 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $username, $pass
 		}
 
 		$o = 0;
-		for (@reset($temp_array); $i = @key($temp_array); next($temp_array)) {
-			if ($temp_array[$i] != 'NULL') {
-				$snmp_array[$o]['oid'] = preg_replace('/^\./', '', $i);
-				$snmp_array[$o]['value'] = format_snmp_string($temp_array[$i], $snmp_oid_included);
+		if ($temp_array !== false) {
+			for (@reset($temp_array); $i = @key($temp_array); next($temp_array)) {
+				if ($temp_array[$i] != 'NULL') {
+					$snmp_array[$o]['oid'] = preg_replace('/^\./', '', $i);
+					$snmp_array[$o]['value'] = format_snmp_string($temp_array[$i], $snmp_oid_included);
+				}
+				$o++;
 			}
-
-			$o++;
 		}
 	}else{
 		/* ucd/net snmp want the timeout in seconds */
