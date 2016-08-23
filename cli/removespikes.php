@@ -1,5 +1,5 @@
-<?php
 #!/usr/bin/php -q
+<?php
 /*
  ex: set tabstop=4 shiftwidth=4 autoindent:
  +-------------------------------------------------------------------------+
@@ -32,7 +32,7 @@ if (!isset($_SERVER['argv'][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($
 	die('<br><strong>This script is only meant to run at the command line.</strong>');
 }
 
-include(dirname(__FILE__) . "/../include/global.php");
+include(dirname(__FILE__) . '/../include/global.php');
 
 /* setup defaults */
 $debug     = FALSE;
@@ -57,150 +57,160 @@ global $strout;
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
-foreach($parms as $parameter) {
-	@list($arg, $value) = @explode('=', $parameter);
-
-	switch ($arg) {
-	case '--user':
-	case '-U':
-		$user = $value;
-
-		if (!is_numeric($user) || ($user < 1)) {
-			echo "FATAL: The user id must be a positive integer.\n\n";
-			display_help();
-			exit(-12);
+if (sizeof($parms)) {
+	foreach($parms as $parameter) {
+		if (strpos($parameter, '=')) {
+			list($arg, $value) = explode('=', $parameter);
+		} else {
+			$arg = $parameter;
+			$value = '';
 		}
 
-		/* confirm the user id is accurate */
-		$user_id = db_fetch_cell_prepared('SELECT id FROM user_auth WHERE id = ?', array($user));
-		if (empty($user)) {
-			echo "FATAL: Invalid user id.\n\n";
-			display_help();
-			exit(-13);
+		switch ($arg) {
+			case '--user':
+			case '-U':
+				$user = $value;
+
+				if (!is_numeric($user) || ($user < 1)) {
+					echo "FATAL: The user id must be a positive integer.\n\n";
+					display_help();
+					exit(-12);
+				}
+
+				/* confirm the user id is accurate */
+				$user_id = db_fetch_cell_prepared('SELECT id FROM user_auth WHERE id = ?', array($user));
+				if (empty($user)) {
+					echo "FATAL: Invalid user id.\n\n";
+					display_help();
+					exit(-13);
+				}
+
+				$umethod   = read_user_setting('spikekill_method', $dmethod);
+				$unumspike = read_user_setting('spikekill_number', $dnumspike);
+				$ustddev   = read_user_setting('spikekill_deviations', $dstddev);
+				$upercent  = read_user_setting('spikekill_percent', $dpercent);
+				$uoutliers = read_user_setting('spikekill_outliers', $doutliers);
+				$uavgnan   = read_user_setting('spikekill_avgnan', $davgnan);
+
+				break;
+			case '--method':
+			case '-M':
+				if ($value == 'variance') {
+					$method = 2;
+				}elseif ($value == 'stddev') {
+					$method = 1;
+				}else{
+					echo "FATAL: You must specify either 'stddev' or 'variance' as methods.\n\n";
+					display_help();
+					exit(-11);
+				}
+
+				break;
+			case '--avgnan':
+			case '-A':
+				if ($value == 'avg') {
+					$avgnan = 'avg';
+				}elseif ($value == 'nan') {
+					$avgnan = 'nan';
+				}else{
+					echo "FATAL: You must specify either 'avg' or 'nan' as replacement methods.\n\n";
+					display_help();
+					exit(-10);
+				}
+
+				break;
+			case '--rrdfile':
+			case '-R':
+				$rrdfile = $value;
+
+				if (!file_exists($rrdfile)) {
+					echo "FATAL: File '$rrdfile' does not exist.\n";
+					exit(-9);
+				}
+
+				if (!is_writable($rrdfile)) {
+					echo "FATAL: File '$rrdfile' is not writable by this account.\n";
+					exit(-8);
+				}
+
+				break;
+			case '--stddev':
+			case '-S':
+				$stddev = $value;
+
+				if (!is_numeric($stddev) || ($stddev < 1)) {
+					echo "FATAL: Standard Deviation must be a positive integer.\n\n";
+					display_help();
+					exit(-7);
+				}
+
+				break;
+			case '--outliers':
+			case '-O':
+				$outliers = $value;
+
+				if (!is_numeric($outliers) || ($outliers < 1)) {
+					echo "FATAL: The number of outliers to exlude must be a positive integer.\n\n";
+					display_help();
+					exit(-6);
+				}
+
+				break;
+			case '--percent':
+			case '-P':
+				$percent = $value/100;
+
+				if (!is_numeric($percent) || ($percent <= 0)) {
+					echo "FATAL: Percent deviation must be a positive floating point number.\n\n";
+					display_help();
+					exit(-5);
+				}
+
+				break;
+			case '--html':
+				$html = TRUE;
+
+				break;
+			case '--backup':
+				$backup = TRUE;
+
+				break;
+			case '-d':
+			case '--debug':
+				$debug = TRUE;
+
+				break;
+			case '-D':
+			case '--dryrun':
+				$dryrun = TRUE;
+
+				break;
+			case '--number':
+			case '-n':
+				$numspike = $value;
+
+				if (!is_numeric($numspike) || ($numspike < 1)) {
+					echo "FATAL: Number of spikes to remove must be a positive integer\n\n";
+					display_help();
+					exit(-4);
+				}
+
+				break;
+			case '--version':
+			case '-V':
+			case '-v':
+				display_version();
+				exit;
+			case '--help':
+			case '-H':
+			case '-h':
+				display_help();
+				exit;
+			default:
+				print 'ERROR: Invalid Parameter ' . $parameter . "\n\n";
+				display_help();
+				exit(-3);
 		}
-
-		$umethod   = read_user_setting('spikekill_method', $dmethod);
-		$unumspike = read_user_setting('spikekill_number', $dnumspike);
-		$ustddev   = read_user_setting('spikekill_deviations', $dstddev);
-		$upercent  = read_user_setting('spikekill_percent', $dpercent);
-		$uoutliers = read_user_setting('spikekill_outliers', $doutliers);
-		$uavgnan   = read_user_setting('spikekill_avgnan', $davgnan);
-
-		break;
-	case '--method':
-	case '-M':
-		if ($value == 'variance') {
-			$method = 2;
-		}elseif ($value == 'stddev') {
-			$method = 1;
-		}else{
-			echo "FATAL: You must specify either 'stddev' or 'variance' as methods.\n\n";
-			display_help();
-			exit(-11);
-		}
-
-		break;
-	case '--avgnan':
-	case '-A':
-		if ($value == 'avg') {
-			$avgnan = 'avg';
-		}elseif ($value == 'nan') {
-			$avgnan = 'nan';
-		}else{
-			echo "FATAL: You must specify either 'avg' or 'nan' as replacement methods.\n\n";
-			display_help();
-			exit(-10);
-		}
-
-		break;
-	case '--rrdfile':
-	case '-R':
-		$rrdfile = $value;
-
-		if (!file_exists($rrdfile)) {
-			echo "FATAL: File '$rrdfile' does not exist.\n";
-			exit(-9);
-		}
-
-		if (!is_writable($rrdfile)) {
-			echo "FATAL: File '$rrdfile' is not writable by this account.\n";
-			exit(-8);
-		}
-
-		break;
-	case '--stddev':
-	case '-S':
-		$stddev = $value;
-
-		if (!is_numeric($stddev) || ($stddev < 1)) {
-			echo "FATAL: Standard Deviation must be a positive integer.\n\n";
-			display_help();
-			exit(-7);
-		}
-
-		break;
-	case '--outliers':
-	case '-O':
-		$outliers = $value;
-
-		if (!is_numeric($outliers) || ($outliers < 1)) {
-			echo "FATAL: The number of outliers to exlude must be a positive integer.\n\n";
-			display_help();
-			exit(-6);
-		}
-
-		break;
-	case '--percent':
-	case '-P':
-		$percent = $value/100;
-
-		if (!is_numeric($percent) || ($percent <= 0)) {
-			echo "FATAL: Percent deviation must be a positive floating point number.\n\n";
-			display_help();
-			exit(-5);
-		}
-
-		break;
-	case '--html':
-		$html = TRUE;
-
-		break;
-	case '--backup':
-		$backup = TRUE;
-
-		break;
-	case '-d':
-	case '--debug':
-		$debug = TRUE;
-
-		break;
-	case '-D':
-	case '--dryrun':
-		$dryrun = TRUE;
-
-		break;
-	case '--number':
-	case '-n':
-		$numspike = $value;
-
-		if (!is_numeric($numspike) || ($numspike < 1)) {
-			echo "FATAL: Number of spikes to remove must be a positive integer\n\n";
-			display_help();
-			exit(-4);
-		}
-
-		break;
-	case '-h':
-	case '-v':
-	case '-V':
-	case '--version':
-	case '--help':
-		display_help();
-		exit(0);
-	default:
-		print 'ERROR: Invalid Parameter ' . $parameter . "\n\n";
-		display_help();
-		exit(-3);
 	}
 }
 
@@ -894,31 +904,35 @@ function standard_deviation($samples) {
 	return sqrt(array_sum($sample_square) / $sample_count - pow((array_sum($samples) / $sample_count), 2));
 }
 
+/*  display_version - displays version information */
+function display_version() {
+    $version = db_fetch_cell('SELECT cacti FROM version');
+    echo "Cacti Spike Remover Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
+}
+
 /* display_help - displays the usage of the function */
 function display_help () {
-	$version = db_fetch_cell('SELECT cacti FROM version');
-	echo 'Cacti Spike Remover ' . "$version, " . COPYRIGHT_YEARS . "\n\n";
+	display_version();
 
-	echo "A utility to programatically remove spikes from Cacti graphs. If no other input parameters\n";
-	echo "are specified the defaults are taken from Spikekill settings.\n\n";
-
-	echo "usage: removespikes.php -R|--rrdfile=rrdfile [-M|--method=stddev] [-A|--avgnan] [-S|--stddev=N]\n";
+	echo "\nusage: removespikes.php -R|--rrdfile=rrdfile [-M|--method=stddev] [-A|--avgnan] [-S|--stddev=N]\n";
 	echo "    [-P|--percent=N] [-N|--number=N] [-D|--dryrun] [-d|--debug]\n";
 	echo "    [--html] [-h|--help|-v|-V|--version]\n\n";
 
-	echo "-U|--user        - The Cacti user account to pull settings from.  Default is to use system settings.'\n";
-	echo "-M|--method      - The spike removal method to use.  Options are 'stddev'|'variance'\n";
-	echo "-A|--avgnan      - The spike replacement method to use.  Options are 'avg'|'nan'\n";
-	echo "-S|--stddev      - The number of standard deviations +/- allowed\n";
-	echo "-P|--percent     - The sample to sample percentage variation allowed\n";
-	echo "-N|--number      - The maximum number of spikes to remove from the RRDfile\n";
-	echo "-D|--dryrun      - If specified, the RRDfile will not be changed.  Instead a summary of\n";
-	echo "                   changes that would have been performed will be issued.\n";
-	echo "--backup         - Backup the original RRDfile to preserve prior values.\n\n";
+	echo "A utility to programatically remove spikes from Cacti graphs. If no optional input parameters\n";
+	echo "are specified the defaults are taken from the Cacti database.\n\n";
 
-	echo "The remainder of arguments are informational\n";
-	echo "--html           - Format the output for a web browser\n";
-	echo "-d|--debug       - Display verbose output during execution\n";
-	echo "-v -V --version  - Display this help message\n";
-	echo "-h --help        - display this help message\n";
+	echo "Required:\n";
+	echo "    --rrdfile=F   - The path to the RRDfile that will de-spiked.\n\n";
+	echo "Optional:\n";
+	echo "    --user        - The Cacti user account to pull settings from.  Default is to use system settings.\n";
+	echo "    --method      - The spike removal method to use.  Options are 'stddev'|'variance'.\n";
+	echo "    --avgnan      - The spike replacement method to use.  Options are 'avg'|'nan'.\n";
+	echo "    --stddev      - The number of standard deviations +/- allowed.\n";
+	echo "    --percent     - The sample to sample percentage variation allowed.\n";
+	echo "    --number      - The maximum number of spikes to remove from the RRDfile.\n";
+	echo "    --dryrun      - If specified, the RRDfile will not be changed.  Instead a summary of\n";
+	echo "                    changes that would have been performed will be issued.\n";
+	echo "    --backup      - Backup the original RRDfile to preserve prior values.\n";
+	echo "    --html        - Format the output for a web browser.\n";
+	echo "    --debug       - Display verbose output during execution.\n\n";
 }

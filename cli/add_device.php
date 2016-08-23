@@ -81,7 +81,12 @@ if (sizeof($parms)) {
 	$quietMode            = FALSE;
 
 	foreach($parms as $parameter) {
-		@list($arg, $value) = @explode('=', $parameter);
+		if (strpos($parameter, '=')) {
+			list($arg, $value) = explode('=', $parameter);
+		} else {
+			$arg = $parameter;
+			$value = '';
+		}
 
 		switch ($arg) {
 		case '-d':
@@ -250,10 +255,14 @@ if (sizeof($parms)) {
 			break;
 		case '--version':
 		case '-V':
-		case '-H':
+		case '-v':
+			display_version();
+			exit;
 		case '--help':
+		case '-H':
+		case '-h':
 			display_help();
-			exit(0);
+			exit;
 		case '--list-communities':
 			$displayCommunities = TRUE;
 
@@ -429,11 +438,16 @@ if (sizeof($parms)) {
 	exit(0);
 }
 
-function display_help() {
+/*  display_version - displays version information */
+function display_version() {
 	$version = db_fetch_cell('SELECT cacti FROM version');
-	echo "Add Device Utility, Version $version, " . COPYRIGHT_YEARS . "\n\n";
-	echo "A simple command line utility to add a device in Cacti\n\n";
-	echo "usage: add_device.php --description=[description] --ip=[IP] --template=[ID] [--notes=\"[]\"] [--disable]\n";
+	echo "Cacti Add Device Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
+}
+
+function display_help() {
+	display_version();
+
+	echo "\nusage: add_device.php --description=[description] --ip=[IP] --template=[ID] [--notes=\"[]\"] [--disable]\n";
 	echo "    [--poller=[id]] [--site=[id] [--proxy] [--threads=[1]\n";
 	echo "    [--avail=[ping]] --ping_method=[icmp] --ping_port=[N/A, 1-65534] --ping_timeout=[N] --ping_retries=[2]\n";
 	echo "    [--version=[0|1|2|3]] [--community=] [--port=161] [--timeout=500]\n";
@@ -441,7 +455,7 @@ function display_help() {
 	echo "    [--quiet]\n\n";
 	echo "Required:\n";
 	echo "    --description  the name that will be displayed by Cacti in the graphs\n";
-	echo "    --ip           self explanatory (can also be a FQDN)\n";
+	echo "    --ip           self explanatory (can also be a FQDN)\n\n";
 	echo "Optional:\n";
 	echo "    --proxy        if specified, allows adding a second host with same ip address\n";
 	echo "    --template     0, is a number (read below to get a list of templates)\n";
@@ -472,5 +486,3 @@ function display_help() {
 	echo "    --list-communities\n";
 	echo "    --quiet - batch mode value return\n\n";
 }
-
-?>

@@ -1,3 +1,4 @@
+#!/usr/bin/php -q
 <?php
 /*
  +-------------------------------------------------------------------------+
@@ -23,93 +24,96 @@
 */
 
 /* do NOT run this script through a web browser */
-if (!isset($_SERVER["argv"][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($_SERVER['REMOTE_ADDR'])) {
-	die("<br><strong>This script is only meant to run at the command line.</strong>");
+if (!isset($_SERVER['argv'][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($_SERVER['REMOTE_ADDR'])) {
+	die('<br><strong>This script is only meant to run at the command line.</strong>');
 }
 
-ini_set("max_execution_time", "0");
+ini_set('max_execution_time', '0');
 
 $no_http_headers = true;
 
-include(dirname(__FILE__) . "/../include/global.php");
-include_once($config["base_path"] . "/lib/api_graph.php");
+include(dirname(__FILE__) . '/../include/global.php');
+include_once($config['base_path'] . '/lib/api_graph.php');
 
 /* process calling arguments */
-$parms = $_SERVER["argv"];
+$parms = $_SERVER['argv'];
 array_shift($parms);
 
-/* utility requires input parameters */
-if (sizeof($parms) == 0) {
+$debug   = FALSE;
+$host_id = '';
+$filter  = '';
+
+if (sizeof($parms)) {
+	foreach($parms as $parameter) {
+		if (strpos($parameter, '=')) {
+			list($arg, $value) = explode('=', $parameter);
+		} else {
+			$arg = $parameter;
+			$value = '';
+		}
+
+		switch ($arg) {
+			case '-id':
+			case '--host-id':
+				$host_id = $value;
+				break;
+			case '-s':
+			case '--filter':
+				$filter = $value;
+				break;
+			case '--debug':
+			case '-d':
+				$debug = TRUE;
+				break;
+			case '--version':
+			case '-V':
+			case '-v':
+				display_version();
+				exit;
+			case '--help':
+			case '-H':
+			case '-h':
+				display_help();
+				exit;
+			default:
+				print 'ERROR: Invalid Parameter ' . $parameter . "\n\n";
+				display_help();
+				exit;
+		}
+	}
+}else{
 	print "ERROR: You must supply input parameters\n\n";
 	display_help();
 	exit;
 }
 
-$debug = FALSE;
-$host_id = "";
-$filter = "";
-
-foreach($parms as $parameter) {
-	@list($arg, $value) = @explode("=", $parameter);
-
-	switch ($arg) {
-	case "-id":
-		$host_id = $value;
-		break;
-	case "-s":
-		$filter = $value;
-		break;
-	case "-d":
-		$debug = TRUE;
-		break;
-	case "-h":
-		display_help();
-		exit;
-	case "-v":
-		display_help();
-		exit;
-	case "--version":
-		display_help();
-		exit;
-	case "--help":
-		display_help();
-		exit;
-	default:
-		print "ERROR: Invalid Parameter " . $parameter . "\n\n";
-		display_help();
-		exit;
-	}
-}
-
 /* form the 'where' clause for our main sql query */
 if (strlen($filter)) {
-	$sql_where = "AND (graph_templates_graph.title_cache like '%%" . $filter . "%%'" .
-		" OR graph_templates.name like '%%" . $filter . "%%')";
+	$sql_where = "AND (graph_templates_graph.title_cache LIKE '%" . $filter . "%'" .
+		" OR graph_templates.name LIKE '%" . $filter . "%')";
 }else{
-	$sql_where = "";
+	$sql_where = '';
 }
 
-if ($host_id == "All") {
+if (strtolower($host_id) == 'all') {
 	/* Act on all graphs */
-}elseif (substr_count($host_id, "|")) {
-	$hosts = explode("|", $host_id);
-	$host_str = "";
+}elseif (substr_count($host_id, ',')) {
+	$hosts = explode(',', $host_id);
+	$host_str = '';
 
 	foreach($hosts as $host) {
-		if (strlen($host_str)) {
-			$host_str .= ", '" . $host . "'";
-		}else{
-			$host_str .= "'" . $host . "'";
+		if (is_numeric($host) && $host > 0) {
+			$host_str .= ($host_str != '' ? ', ':'') . $host;
 		}
 	}
 
 	$sql_where .= " AND graph_local.host_id IN ($host_str)";
-}elseif ($host_id == "0") {
-	$sql_where .= " AND graph_local.host_id=0";
-}elseif (!empty($host_id)) {
-	$sql_where .= " AND graph_local.host_id=" . $host_id;
+}elseif ($host_id == '0') {
+	$sql_where .= ' AND graph_local.host_id=0';
+}elseif (!empty($host_id) && $host_id > 0) {
+	$sql_where .= ' AND graph_local.host_id=' . $host_id;
 }else{
-	print "ERROR: You must specify either a host_id or 'All' to proceed.\n";
+	print "ERROR: You must specify either a host_id or 'all' to proceed.\n";
 	display_help();
 	exit;
 }
@@ -141,16 +145,23 @@ foreach ($graph_list as $graph) {
 	$i++;
 }
 
+/*  display_version - displays version information */
+function display_version() {
+	$version = db_fetch_cell('SELECT cacti FROM version');
+	echo "Cacti Reapply graph Names Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
+}
+
 /*	display_help - displays the usage of the function */
 function display_help () {
-	$version = db_fetch_cell('SELECT cacti FROM version');
-	echo "Reapply Graph Names Utility, Version $version, " . COPYRIGHT_YEARS . "\n\n";
-	echo "usage: poller_graphs_reapply_names.php -id=[host_id|All][host_id1|host_id2|...] [-s=[search_string] [-d] [-h] [--help] [-v] [--version]\n\n";
-	echo "-id=host_id   - The host_id or 'All' or a pipe delimited list of host_id's\n";
-	echo "-s=search_str - A graph template name or graph title to search for\n";
-	echo "-d            - Display verbose output during execution\n";
-	echo "-v --version  - Display this help message\n";
-	echo "-h --help     - Display this help message\n";
+	display_version();
+
+	echo "\nusage: poller_graphs_reapply_names.php --host-id=[id|all][N1,N2,...] [--filter=[string] [--debug]\n\n";
+	echo "A utility to reapply Cacti Graph naming rules to existing Graphs in bulk.\n\n";
+	echo "Required:\n";
+	echo "    --host-id=id|all|N1,N2,... - The devices id, 'all' or a comma delimited list of id's\n\n";
+	echo "Optional:\n";
+	echo "    --filter=string            - A Graph Template name or Graph Title to search for\n";
+	echo "    --debug                    - Display verbose output during execution\n\n";
 }
 
 function debug($message) {
@@ -160,5 +171,3 @@ function debug($message) {
 		print("DEBUG: " . $message . "\n");
 	}
 }
-
-?>

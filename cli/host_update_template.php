@@ -1,3 +1,4 @@
+#!/usr/bin/php -q
 <?php
 /*
  +-------------------------------------------------------------------------+
@@ -23,21 +24,21 @@
 */
 
 /* do NOT run this script through a web browser */
-if (!isset($_SERVER["argv"][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($_SERVER['REMOTE_ADDR'])) {
-	die("<br><strong>This script is only meant to run at the command line.</strong>");
+if (!isset($_SERVER['argv'][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($_SERVER['REMOTE_ADDR'])) {
+	die('<br><strong>This script is only meant to run at the command line.</strong>');
 }
 
-ini_set("max_execution_time", "0");
+ini_set('max_execution_time', '0');
 
 $no_http_headers = true;
 
-include(dirname(__FILE__) . "/../include/global.php");
-include_once($config["base_path"] . "/lib/snmp.php");
-include_once($config["base_path"] . "/lib/data_query.php");
-include_once($config["base_path"] . "/lib/api_automation_tools.php");
+include(dirname(__FILE__) . '/../include/global.php');
+include_once($config['base_path'] . '/lib/snmp.php');
+include_once($config['base_path'] . '/lib/data_query.php');
+include_once($config['base_path'] . '/lib/api_automation_tools.php');
 
 /* process calling arguments */
-$parms = $_SERVER["argv"];
+$parms = $_SERVER['argv'];
 array_shift($parms);
 
 /* utility requires input parameters */
@@ -48,45 +49,56 @@ if (sizeof($parms) == 0) {
 }
 
 $debug    = FALSE;
-$template = "";
-$hostid   = "";
+$template = '';
+$hostid   = '';
 
-foreach($parms as $parameter) {
-	@list($arg, $value) = @explode("=", $parameter);
+if (sizeof($parms)) {
+	foreach($parms as $parameter) {
+		if (strpos($parameter, '=')) {
+			list($arg, $value) = explode('=', $parameter);
+		} else {
+			$arg = $parameter;
+			$value = '';
+		}
 
-	switch ($arg) {
-	case "--host-template":
-	case "--host-template-id":
-		$template = $value;
-		break;
-	case "--host-id":
-		$host_id = $value;
-		break;
-	case "--list-host-templates":
-		displayHostTemplates(getHostTemplates());
-		exit(0);
-	case "-d":
-	case "--debug":
-		$debug = TRUE;
-		break;
-	case "-h":
-	case "-v":
-	case "--version":
-	case "--help":
-		display_help();
-		exit;
-	default:
-		print "ERROR: Invalid Parameter " . $parameter . "\n\n";
-		display_help();
-		exit;
+		switch ($arg) {
+			case '--host-template':
+			case '--host-template-id':
+				$template = $value;
+				break;
+			case '--host-id':
+				$host_id = $value;
+				break;
+			case '--list-host-templates':
+				displayHostTemplates(getHostTemplates());
+				exit(0);
+			case '-d':
+			case '--debug':
+				$debug = TRUE;
+				break;
+			case '--version':
+			case '-V':
+			case '-v':
+				display_version();
+				exit;
+			case '--help':
+			case '-H':
+			case '-h':
+				display_help();
+				exit;
+			default:
+				print 'ERROR: Invalid Parameter ' . $parameter . "\n\n";
+				display_help();
+				exit;
+		}
 	}
 }
 
 /* determine the hosts to reindex */
-if (strtolower($host_id) == "all") {
-	$sql_where = "";
+if (strtolower($host_id) == 'all') {
+	$sql_where = '';
 }else if (is_numeric($host_id)) {
-	$sql_where = " WHERE id='$host_id'";
+	$sql_where = ' WHERE id=' . $host_id;
 }else{
 	print "ERROR: You must specify either a host_id or 'all' to proceed.\n\n";
 	display_help();
@@ -108,34 +120,34 @@ if (db_fetch_cell("SELECT id FROM host_template WHERE id=$template") > 0) {
 
 	if (sizeof($hosts)) {
 	foreach($hosts as $host) {
-		echo "NOTE: Updating Host '" . $host["description"] . "'\n";
-		$snmp_queries = db_fetch_assoc("SELECT snmp_query_id
+		echo "NOTE: Updating Host '" . $host['description'] . "'\n";
+		$snmp_queries = db_fetch_assoc('SELECT snmp_query_id
 			FROM host_template_snmp_query
-			WHERE host_template_id=" . $host["host_template_id"]);
+			WHERE host_template_id=' . $host['host_template_id']);
 
 		if (sizeof($snmp_queries) > 0) {
 			echo "NOTE: Updating Data Queries. There were '" . sizeof($snmp_queries) . "' Found\n";
 			foreach ($snmp_queries as $snmp_query) {
-				echo "NOTE: Updating Data Query ID '" . $snmp_query["snmp_query_id"] . "'\n";
-				db_execute("REPLACE INTO host_snmp_query (host_id,snmp_query_id,reindex_method)
-					VALUES (" . $host["id"] . ", " . $snmp_query["snmp_query_id"] . "," . DATA_QUERY_AUTOINDEX_BACKWARDS_UPTIME . ")");
+				echo "NOTE: Updating Data Query ID '" . $snmp_query['snmp_query_id'] . "'\n";
+				db_execute('REPLACE INTO host_snmp_query (host_id,snmp_query_id,reindex_method)
+					VALUES (' . $host['id'] . ', ' . $snmp_query['snmp_query_id'] . ',' . DATA_QUERY_AUTOINDEX_BACKWARDS_UPTIME . ')');
 
 				/* recache snmp data */
-				run_data_query($host["id"], $snmp_query["snmp_query_id"]);
+				run_data_query($host['id'], $snmp_query['snmp_query_id']);
 			}
 		}
 
-		$graph_templates = db_fetch_assoc("SELECT graph_template_id FROM host_template_graph WHERE host_template_id=" . $host["host_template_id"]);
+		$graph_templates = db_fetch_assoc('SELECT graph_template_id FROM host_template_graph WHERE host_template_id=' . $host['host_template_id']);
 
 		if (sizeof($graph_templates) > 0) {
 			echo "NOTE: Updating Graph Templates. There were '" . sizeof($graph_templates) . "' Found\n";
 
 			foreach ($graph_templates as $graph_template) {
-				db_execute("REPLACE INTO host_graph (host_id, graph_template_id) VALUES (" . $host["id"] . ", " . $graph_template["graph_template_id"] . ")");
+				db_execute('REPLACE INTO host_graph (host_id, graph_template_id) VALUES (' . $host['id'] . ', ' . $graph_template['graph_template_id'] . ')');
 
 				automation_hook_graph_template($host['id'], $graph_template['graph_template_id']);
 
-				api_plugin_hook_function('add_graph_template_to_host', array("host_id" => $host["id"], "graph_template_id" => $graph_template["graph_template_id"]));
+				api_plugin_hook_function('add_graph_template_to_host', array('host_id' => $host['id'], 'graph_template_id' => $graph_template['graph_template_id']));
 			}
 		}
 	}
@@ -145,20 +157,25 @@ if (db_fetch_cell("SELECT id FROM host_template WHERE id=$template") > 0) {
 	exit(1);
 }
 
+/*  display_version - displays version information */
+function display_version() {
+	$version = db_fetch_cell('SELECT cacti FROM version');
+	echo "Cacti Retemplate Host Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
+}
 
 /*	display_help - displays the usage of the function */
 function display_help () {
-	$version = db_fetch_cell('SELECT cacti FROM version');
-	echo "Retemplate Host Utility, Version $version, " . COPYRIGHT_YEARS . "\n\n";
-	echo "usage: host_update_template.php --host-id=[host-id|All] [--host-template=[ID]] [-d] [-h] [--help] [-v] [--version]\n\n";
-	echo "--host-id=host_id  - The host_id to have templates reapplied 'all' to do all hosts\n";
-	echo "--host-template=ID - Which Host Template to Refresh\n\n";
+	display_version();
+
+	echo "\nusage: host_update_template.php --host-id=[host-id|all] [--host-template=[ID]] [--debug]\n\n";
+	echo "A utility to update Cacti devices with the latest Device Template\n\n";
+	echo "Required:\n";
+	echo "    --host-id=host_id|all - The host_id to have templates reapplied 'all' to do all hosts\n";
+	echo "    --host-template=ID    - Which Host Template to Refresh\n\n";
 	echo "Optional:\n";
-	echo "-d --debug    - Display verbose output during execution\n";
-	echo "-v --version  - Display this help message\n";
-	echo "-h --help     - Display this help message\n";
-	echo "List Options:\n\n";
-	echo "--list-host-templates - Lists all available Host Templates\n\n";
+	echo "    --debug               - Display verbose output during execution\n\n";
+	echo "List Options:\n";
+	echo "    --list-host-templates - Lists all available Host Templates\n\n";
 }
 
 function debug($message) {
@@ -168,5 +185,3 @@ function debug($message) {
 		print("DEBUG: " . $message . "\n");
 	}
 }
-
-?>
