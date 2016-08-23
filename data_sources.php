@@ -475,7 +475,7 @@ function form_actions() {
 		}elseif (get_nfilter_request_var('drp_action') == '3') { /* change host */
 			print "<tr>
 				<td class='textArea'>
-					<p>" . __n('Choose a new Device for this Data Source and click \'Continue\'.', 'Choose a new Device for these Data Sources and click \'Continue\'') . "</p>
+					<p>" . __n('Choose a new Device for this Data Source and click \'Continue\'.', 'Choose a new Device for these Data Sources and click \'Continue\'', sizeof($ds_array)) . "</p>
 					<p><div class='itemlist'><ul>$ds_list</ul></div></p>
 					<p>" . __('New Device:') . "<br>"; form_dropdown('host_id',db_fetch_assoc("SELECT id, CONCAT_WS('',description,' (',hostname,')') AS name FROM host ORDER BY description, hostname"),'name','id','','','0'); print "</p>
 				</td>
