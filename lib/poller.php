@@ -574,18 +574,18 @@ function update_db_from_path($path, $type, $recursive = true) {
 
 	while(($entry = $pobject->read()) !== false) {
 		if ($entry != '.' && $entry != '..') {
-			if (is_dir($path . '/' . $entry)) {
+			if (is_dir($path . DIRECTORY_SEPARATOR . $entry)) {
 				if ($recursive) {
-					update_db_from_path($path . '/' . $entry, $type, $recursive);
+					update_db_from_path($path . DIRECTORY_SEPARATOR . $entry, $type, $recursive);
 				}
-			}elseif (ltrim($path . '/' . $entry,'/') != 'include/config.php') {
+			}elseif (ltrim($path . DIRECTORY_SEPARATOR . $entry, DIRECTORY_SEPARATOR) != 'include' . DIRECTORY_SEPARATOR . 'config.php') {
 				$save                  = array();
 				$save['path']          = ltrim(trim(str_replace($config['base_path'], '', $path), '/ \\') . '/' . $entry, '/ \\');
 				$save['id']            = db_fetch_cell_prepared('SELECT id FROM poller_resource_cache WHERE path = ?', array($save['path']));
 				$save['resource_type'] = $type;
-				$save['md5sum']        = md5_file($path . '/' . $entry);
+				$save['md5sum']        = md5_file($path . DIRECTORY_SEPARATOR . $entry);
 				$save['update_time']   = date('Y-m-d H:i:s');
-				$save['contents']      = base64_encode(file_get_contents($path . '/' . $entry));
+				$save['contents']      = base64_encode(file_get_contents($path . DIRECTORY_SEPARATOR . $entry));
 
 				sql_save($save, 'poller_resource_cache');
 			}
@@ -616,7 +616,7 @@ function resource_cache_out($type, $path) {
 		$entries = db_fetch_assoc('SELECT * FROM poller_resource_cache WHERE resource_type = ?', array($type));
 		if (sizeof($entries)) {
 			foreach($entries as $e) {
-				$mypath = $path['path'] . '/' . $e['path'];
+				$mypath = $path['path'] . DIRECTORY_SEPARATOR . $e['path'];
 
 				if (file_exists($mypath)) {
 					$md5sum = md5_file($mypath);
@@ -631,8 +631,14 @@ function resource_cache_out($type, $path) {
 
 						/* if the file type is PHP check syntax */
 						if ($info['extension'] == 'php') {
-							if (file_put_contents('/tmp/cachecheck.php', base64_decode($e['contents'])) !== false) {
-								$output = system($path_php . ' -l /tmp/cacheckeck.php', $exit);
+							if ($config['cacti_server_os'] == 'win32') {
+								$tmpfile = '%TEMP%' . DIRECTORY_SEPARATOR . 'cachecheck.php';
+							}else{
+								$tmpfile = '/tmp/cachecheck.php';
+							}
+
+							if (file_put_contents($tmpfile, base64_decode($e['contents'])) !== false) {
+								$output = system($path_php . ' -l ' . $tmpfile, $exit);
 								if ($exit == 0) {
 									file_put_contents($mypath, base64_decode($e['contents']));
 								}else{
@@ -666,11 +672,11 @@ function md5sum_path($path, $recursive = true) {
     $pobject = dir($path);
 
     while (($entry = $pobject->read()) !== false) {
-        if ($entry != '.' && $entry != '..') {
-             if (is_dir($path . '/' . $entry) && $recursive) {
-                 $filemd5s[] = md5sum_path($path . '/' . $entry, $recursive);
+        if ($entry != '.' && $entry != '..' && $entry != '') {
+             if (is_dir($path . DIRECTORY_SEPARATOR . $entry) && $recursive) {
+                 $filemd5s[] = md5sum_path($path . DIRECTORY_SEPARATOR. $entry, $recursive);
              } else {
-                 $filemd5s[] = md5_file($path . '/' . $entry);
+                 $filemd5s[] = md5_file($path . DIRECTORY_SEPARATOR . $entry);
              }
          }
     }
