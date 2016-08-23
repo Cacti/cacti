@@ -327,7 +327,7 @@ function form_input_validate($field_value, $field_name, $regexp_match, $allow_nu
 		$_SESSION['sess_error_fields'][$field_name] = $field_name;
 	}else if ($regexp_match != '' && !preg_match('/' . $regexp_match . '/', $field_value)) {
 		if (read_config_option('developer_mode') == 'on') {
-			cacti_log("Form Validation Failed: Variable '$field_name' with Value '$field_value' Failed REGEX '$regexp_patch'", false);
+			cacti_log("Form Validation Failed: Variable '$field_name' with Value '$field_value' Failed REGEX '$regexp_match'", false);
 		}
 
 		raise_message($custom_message);
@@ -703,7 +703,7 @@ function tail_file($file_name, $number_of_lines, $message_type = -1, $filter = '
 			/* match any lines that match the search string */
 			if (strlen($filter)) {
 				if ((substr_count(strtolower($line), strtolower($filter))) ||
-					(@preg_match($filter, $line))) {
+					(preg_match('/' . $filter . '/i', $line))) {
 					$display=true;
 				}else{
 					$display=false;
