@@ -184,6 +184,8 @@ function form_save() {
 		get_filter_request_var('current_rrd');
 		get_filter_request_var('rrd_step');
 		get_filter_request_var('data_input_id');
+		get_filter_request_var('host_id');
+		get_filter_request_var('_host_id');
 		get_filter_request_var('_data_template_id');
 		/* ==================================================== */
 
