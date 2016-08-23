@@ -334,6 +334,11 @@ function api_plugin_disable ($plugin) {
 	db_execute_prepared('UPDATE plugin_config SET status = 4 WHERE directory = ?', array($plugin));
 }
 
+function api_plugin_disable_all ($plugin) {
+	api_plugin_disable_hooks_all ($plugin);
+	db_execute_prepared('UPDATE plugin_config SET status = 4 WHERE directory = ?', array($plugin));
+}
+
 function api_plugin_moveup($plugin) {
 	$id = db_fetch_cell_prepared('SELECT id FROM plugin_config WHERE directory = ?', array($plugin));
 	if (!empty($id)) {
@@ -380,6 +385,10 @@ function api_plugin_enable_hooks ($plugin) {
 
 function api_plugin_disable_hooks ($plugin) {
 	db_execute_prepared("UPDATE plugin_hooks SET status = 0 WHERE name = ? AND hook != 'config_settings' AND hook != 'config_arrays' AND hook != 'config_form'", array($plugin));
+}
+
+function api_plugin_disable_hooks_all ($plugin) {
+	db_execute_prepared("UPDATE plugin_hooks SET status = 0 WHERE name = ?", array($plugin));
 }
 
 function api_plugin_register_realm ($plugin, $file, $display, $admin = false) {

@@ -1412,5 +1412,25 @@ $i18n_weekdays_short = array(
 	'Sat'	=> __x('A textual representation of a day, three letters', 'Sat')
 );
 
+$phperrors = array (
+	1 => 'ERROR',
+	2 => 'WARNING',
+	4 => 'PARSE',
+	8 => 'NOTICE',
+	16 => 'CORE_ERROR',
+	32 => 'CORE_WARNING',
+	64 => 'COMPILE_ERROR',
+	128 => 'COMPILE_WARNING',
+	256 => 'USER_ERROR',
+	512 => 'USER_WARNING',
+	1024 => 'USER_NOTICE',
+	2048 => 'STRICT',
+	4096 => 'RECOVERABLE_ERROR',
+	8192 => 'DEPRECATED',
+	16384 => 'USER_DEPRECATED',
+	32767 => 'ALL'
+);
+
+
 api_plugin_hook('config_arrays');
 

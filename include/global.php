@@ -185,6 +185,9 @@ if (!db_connect_real($database_hostname, $database_username, $database_password,
 /* include additional modules */
 include_once($config['library_path'] . '/functions.php');
 
+set_error_handler('CactiErrorHandler');
+register_shutdown_function('CactiShutdownHandler');
+
 /* verify the cacti database is initialized before moving past here */
 db_cacti_initialized($is_web);
 

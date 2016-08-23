@@ -4070,3 +4070,66 @@ function cacti_oid_numeric_format() {
 		snmp_set_oid_numeric_print(TRUE);
 	}
 }
+
+function CactiErrorHandler($level, $message, $file, $line, $context) {
+	global $phperrors;
+
+	preg_match("/.*\/plugins\/([\w-]*)\/.*/", $file, $output_array);
+	$plugin = (isset($output_array[1]) ? $output_array[1] : '' );
+	$error = 'PHP ' . $phperrors[$level] . ($plugin != '' ? " in  Plugin '$plugin'" : '') . ": $message in file: $file  on line: $line";
+
+	switch ($level) {
+		case E_COMPILE_ERROR:
+		case E_CORE_ERROR:
+		case E_ERROR:
+		case E_PARSE:
+			if ($plugin != '') {
+				api_plugin_disable_all($plugin);
+				cacti_log("ERRORS DETECTED - DISABLING PLUGIN '$plugin'");
+			}
+			cacti_log($error, false, "ERROR");
+			break;
+		case E_RECOVERABLE_ERROR:
+		case E_USER_ERROR:
+			cacti_log($error, false, "ERROR");
+			break;
+		case E_COMPILE_WARNING:
+		case E_CORE_WARNING:
+		case E_USER_WARNING:
+		case E_WARNING:
+			cacti_log($error, false, "ERROR");
+			break;
+		case E_NOTICE:
+		case E_USER_NOTICE:
+			cacti_log($error, false, "ERROR");
+			break;
+		case E_STRICT:
+			cacti_log($error, false, "ERROR");
+			break;
+		default:
+       		cacti_log($error, false, "ERROR");
+	}
+	return false;
+}
+
+function CactiShutdownHandler () {
+	global $phperrors;
+	$error = error_get_last();
+	switch ($error['type']) {
+		case E_ERROR:
+		case E_CORE_ERROR:
+		case E_COMPILE_ERROR:
+		case E_CORE_WARNING:
+		case E_COMPILE_WARNING:
+		case E_PARSE:
+			preg_match("/.*\/plugins\/([\w-]*)\/.*/", $error['file'], $output_array);
+			$plugin = (isset($output_array[1]) ? $output_array[1] : '' );
+			$message = 'PHP ' . $phperrors[$error['type']] . ($plugin != '' ? " in  Plugin '$plugin'" : '') . ": " . $error['message'] . ' in file: ' . 
+					$error['file'] . ' on line: ' . $error['line'];
+        		cacti_log($message, false, "ERROR");
+			if ($plugin != '') {
+				api_plugin_disable_all($plugin);
+				cacti_log("ERRORS DETECTED - DISABLING PLUGIN '$plugin'");
+			}
+	}
+}
