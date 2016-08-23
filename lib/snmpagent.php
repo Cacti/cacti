@@ -147,7 +147,7 @@ function snmpagent_graphs_action_bottom($data){
 function snmpagent_device_action_bottom($data){
 	$mc = new MibCache();
 	$action = $data[0];
-	$selected_items = sanitize_unserialize_selected_items($data[1]);
+	$selected_items = $data[1];
 
 	if ($selected_items != false) {
 		switch($action){
