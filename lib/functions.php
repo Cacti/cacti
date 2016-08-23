@@ -4088,26 +4088,32 @@ function CactiErrorHandler($level, $message, $file, $line, $context) {
 				cacti_log("ERRORS DETECTED - DISABLING PLUGIN '$plugin'");
 			}
 			cacti_log($error, false, "ERROR");
+			cacti_debug_backtrace('PHP ERROR');
 			break;
 		case E_RECOVERABLE_ERROR:
 		case E_USER_ERROR:
 			cacti_log($error, false, "ERROR");
+			cacti_debug_backtrace('PHP ERROR');
 			break;
 		case E_COMPILE_WARNING:
 		case E_CORE_WARNING:
 		case E_USER_WARNING:
 		case E_WARNING:
 			cacti_log($error, false, "ERROR");
+			cacti_debug_backtrace('PHP ERROR');
 			break;
 		case E_NOTICE:
 		case E_USER_NOTICE:
 			cacti_log($error, false, "ERROR");
+			cacti_debug_backtrace('PHP ERROR');
 			break;
 		case E_STRICT:
 			cacti_log($error, false, "ERROR");
+			cacti_debug_backtrace('PHP ERROR');
 			break;
 		default:
        		cacti_log($error, false, "ERROR");
+			cacti_debug_backtrace('PHP ERROR');
 	}
 	return false;
 }
@@ -4127,6 +4133,7 @@ function CactiShutdownHandler () {
 			$message = 'PHP ' . $phperrors[$error['type']] . ($plugin != '' ? " in  Plugin '$plugin'" : '') . ": " . $error['message'] . ' in file: ' . 
 					$error['file'] . ' on line: ' . $error['line'];
         		cacti_log($message, false, "ERROR");
+			cacti_debug_backtrace('PHP ERROR');
 			if ($plugin != '') {
 				api_plugin_disable_all($plugin);
 				cacti_log("ERRORS DETECTED - DISABLING PLUGIN '$plugin'");
