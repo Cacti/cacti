@@ -493,7 +493,9 @@ function applySkin() {
 	});
 
 	// Don't show the message container until all GUI interaction is done
-	$('#message_container').show().delay(2000).slideUp('fast');
+	$('#message_container').show().delay(2000).slideUp('fast', function() {
+		$('#message_container').empty();
+	});
 
 	// remove stray tooltips
 	$(document).tooltip('close');
