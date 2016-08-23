@@ -104,7 +104,7 @@ CREATE TABLE `aggregate_graph_templates_item` (
   `aggregate_template_id` int(10) unsigned NOT NULL,
   `graph_templates_item_id` int(10) unsigned NOT NULL,
   `sequence` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `color_template` int(11) unsigned NOT NULL,
+  `color_template` int(11) NOT NULL,
   `t_graph_type_id` char(2) DEFAULT '',
   `graph_type_id` tinyint(3) NOT NULL DEFAULT '0',
   `t_cdef_id` char(2) DEFAULT '',
