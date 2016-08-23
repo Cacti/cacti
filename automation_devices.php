@@ -238,7 +238,7 @@ function display_discovery_page() {
 	$status = array("<span class='deviceDown'>" . __('Down') . '</span>',"<span class='deviceUp'>" . __('Up') . '</span>');
 	if (sizeof($results)) {
 		foreach($results as $host) {
-			form_alternate_row('line' . $host['id'], true);
+			form_alternate_row('line' . $host['network_id'], true);
 
 			if ($host['sysUptime'] != 0) {
 				$days = intval($host['sysUptime']/8640000);
@@ -252,18 +252,18 @@ function display_discovery_page() {
 				$host['hostname'] = __('Not Detected');
 			}
 
-			form_selectable_cell(filter_value($host['hostname'], get_request_var('filter')), $host['id']);
-			form_selectable_cell(filter_value($host['ip'], get_request_var('filter')), $host['id']);
-			form_selectable_cell(snmp_data($host['sysName']), $host['id'], '', 'text-align:left');
-			form_selectable_cell(snmp_data($host['sysLocation']), $host['id'], '', 'text-align:left');
-			form_selectable_cell(snmp_data($host['sysContact']), $host['id'], '', 'text-align:left');
-			form_selectable_cell(snmp_data($host['sysDescr']), $host['id'], '', 'text-align:left');
-			form_selectable_cell(snmp_data($host['os']), $host['id'], '', 'text-align:left');
-			form_selectable_cell(snmp_data($uptime), $host['id'], '', 'text-align:right');
-			form_selectable_cell($status[$host['snmp']], $host['id'], '', 'text-align:right');
-			form_selectable_cell($status[$host['up']], $host['id'], '', 'text-align:right');
-			form_selectable_cell(substr($host['mytime'],0,16), $host['id'], '', 'text-align:right');
-			form_checkbox_cell($host['ip'], $host['id']);
+			form_selectable_cell(filter_value($host['hostname'], get_request_var('filter')), $host['network_id']);
+			form_selectable_cell(filter_value($host['ip'], get_request_var('filter')), $host['network_id']);
+			form_selectable_cell(snmp_data($host['sysName']), $host['network_id'], '', 'text-align:left');
+			form_selectable_cell(snmp_data($host['sysLocation']), $host['network_id'], '', 'text-align:left');
+			form_selectable_cell(snmp_data($host['sysContact']), $host['network_id'], '', 'text-align:left');
+			form_selectable_cell(snmp_data($host['sysDescr']), $host['network_id'], '', 'text-align:left');
+			form_selectable_cell(snmp_data($host['os']), $host['network_id'], '', 'text-align:left');
+			form_selectable_cell(snmp_data($uptime), $host['network_id'], '', 'text-align:right');
+			form_selectable_cell($status[$host['snmp']], $host['network_id'], '', 'text-align:right');
+			form_selectable_cell($status[$host['up']], $host['network_id'], '', 'text-align:right');
+			form_selectable_cell(substr($host['mytime'],0,16), $host['network_id'], '', 'text-align:right');
+			form_checkbox_cell($host['ip'], $host['network_id']);
 			form_end_row();
 		}
 	}else{
