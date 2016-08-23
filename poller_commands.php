@@ -1,3 +1,4 @@
+#!/usr/bin/php -q
 <?php
 /*
  +-------------------------------------------------------------------------+
@@ -46,27 +47,34 @@ array_shift($parms);
 
 if (sizeof($parms)) {
 	foreach($parms as $parameter) {
-		@list($arg, $value) = @explode('=', $parameter);
+		if (strpos($parameter, '=')) {
+			list($arg, $value) = explode('=', $parameter);
+		} else {
+			$arg = $parameter;
+			$value = '';
+		}
 
 		switch ($arg) {
-		case '--version':
-		case '-V':
-		case '-H':
-		case '--help':
-			display_help();
-			exit(0);
-		case '--poller':
-		case '-p':
-			$poller_id = $value;
-			break;
-		case '--debug':
-		case '-d':
-			$debug = true;
-			break;
-		default:
-			echo "ERROR: Invalid Argument: ($arg)\n\n";
-			display_help();
-			exit(1);
+			case '--version':
+			case '-V':
+				display_version();
+				exit;
+			case '-H':
+			case '--help':
+				display_help();
+				exit(0);
+			case '--poller':
+			case '-p':
+				$poller_id = $value;
+				break;
+			case '--debug':
+			case '-d':
+				$debug = true;
+				break;
+			default:
+				echo "ERROR: Invalid Argument: ($arg)\n\n";
+				display_help();
+				exit(1);
 		}
 	}
 }
@@ -138,10 +146,16 @@ if ($recached_hosts > 0) {
 /* insert poller stats into the settings table */
 db_execute("REPLACE INTO settings (name, value) VALUES ('stats_recache_$poller_id', '$recache_stats')");
 
+/*  display_version - displays version information */
+function display_version() {
+    $version = db_fetch_cell('SELECT cacti FROM version');
+	print "Cacti Poller Commands Poller, Version $version " . COPYRIGHT_YEARS . "\n";
+}
+
 function display_help () {
-	$version = db_fetch_cell('SELECT cacti FROM version');
-	echo "Cacti Poller Commands Poller, Version $version, " . COPYRIGHT_YEARS . "\n\n";
-	echo "usage: poller_commands.php [ --poller=ID ] [-d | --debug] [-h | --help | -v | --version]\n\n";
+	display_version();
+
+	echo "\nusage: poller_commands.php [ --poller=ID ] [-d | --debug] [-h | --help | -v | --version]\n\n";
 	echo "-p | --poller - The poller to run as.  Defaults to the system poller\n";
 	echo "-d | --debug  - Display verbose output during execution\n";
 	echo "-v --version  - Display this help message\n";

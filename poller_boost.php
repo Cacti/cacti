@@ -29,11 +29,17 @@ declare(ticks = 1);
 /* we are not talking to the browser */
 $no_http_headers = true;
 
+/*  display_version - displays version information */
+function display_version() {
+    $version = db_fetch_cell('SELECT cacti FROM version');
+	print "Cacti Boost RRD Update Poller, Version $version " . COPYRIGHT_YEARS . "\n";
+}
+
 /*	display_help - displays the usage of the function */
 function display_help () {
-	$version = db_fetch_cell('SELECT cacti FROM version');
-	print "Boost RRD Update Poller, Version $version " . COPYRIGHT_YEARS . "\n\n";
-	print "usage: poller_boost.php [-f | --force] [-d | --debug] [-h | -H | --help] [-v | -V | --version]\n\n";
+	display_version();
+
+	print "\nusage: poller_boost.php [-f | --force] [-d | --debug] [-h | -H | --help] [-v | -V | --version]\n\n";
 	print "-f | --force   - Force the execution of a update process\n";
 	print "-v | --verbose - Show details logs at the command line\n";
 	print "-d | --debug   - Display verbose output during execution\n";
@@ -261,33 +267,42 @@ $debug          = FALSE;
 $forcerun       = FALSE;
 $verbose        = FALSE;
 
-foreach($parms as $parameter) {
-	@list($arg, $value) = @explode('=', $parameter);
+if (sizeof($parms)) {
+	foreach($parms as $parameter) {
+		if (strpos($parameter, '=')) {
+			list($arg, $value) = explode('=', $parameter);
+		} else {
+			$arg = $parameter;
+			$value = '';
+		}
 
-	switch ($arg) {
-	case '-d':
-	case '--debug':
-		$debug = TRUE;
-		break;
-	case '-f':
-	case '--force':
-		$forcerun = TRUE;
-		break;
-	case '-v':
-	case '--verbose':
-		$verbose = TRUE;
-		break;
-	case '--version':
-	case '-V':
-	case '--help':
-	case '-h':
-	case '-H':
-		display_help();
-		exit;
-	default:
-		print 'ERROR: Invalid Parameter ' . $parameter . "\n\n";
-		display_help();
-		exit;
+		switch ($arg) {
+			case '-d':
+			case '--debug':
+				$debug = TRUE;
+				break;
+			case '-f':
+			case '--force':
+				$forcerun = TRUE;
+				break;
+			case '-v':
+			case '--verbose':
+				$verbose = TRUE;
+				break;
+			case '--version':
+			case '-V':
+				display_version();
+				exit;
+			case '--help':
+			case '-h':
+			case '-H':
+				display_help();
+				exit;
+			default:
+				print 'ERROR: Invalid Parameter ' . $parameter . "\n\n";
+				display_help();
+				exit;
+		}
 	}
 }
 
@@ -414,4 +429,3 @@ if ((read_config_option('boost_png_cache_enable') == 'on') || $forcerun) {
 		}
 	}
 }
-

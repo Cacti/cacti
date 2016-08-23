@@ -1,3 +1,4 @@
+#!/usr/bin/php -q
 <?php
 /*
  +-------------------------------------------------------------------------+
@@ -81,8 +82,8 @@ function sig_handler($signo) {
 }
 
 /* let PHP run just as long as it has to */
-if (!isset($_SERVER["argv"][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($_SERVER['REMOTE_ADDR'])) {
-	die("<br><strong>This script is only meant to run at the command line.</strong>");
+if (!isset($_SERVER['argv'][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($_SERVER['REMOTE_ADDR'])) {
+	die('<br><strong>This script is only meant to run at the command line.</strong>');
 }
 
 /* take time and log performance data */
@@ -92,31 +93,31 @@ $start = microtime(true);
 $startTime = time();
 
 /* let PHP run just as long as it has to */
-ini_set("max_execution_time", "0");
+ini_set('max_execution_time', '0');
 
 $dir = dirname(__FILE__);
 chdir($dir);
 
-include("./include/global.php");
-include_once($config["base_path"] . '/lib/snmp.php');
-include_once($config["base_path"] . '/lib/ping.php');
-include_once($config["base_path"] . '/lib/poller.php');
-include_once($config["base_path"] . '/lib/utility.php');
-include_once($config["base_path"] . '/lib/api_data_source.php');
-include_once($config["base_path"] . '/lib/api_graph.php');
-include_once($config["base_path"] . '/lib/snmp.php');
-include_once($config["base_path"] . '/lib/data_query.php');
-include_once($config["base_path"] . '/lib/api_device.php');
+include('./include/global.php');
+include_once($config['base_path'] . '/lib/snmp.php');
+include_once($config['base_path'] . '/lib/ping.php');
+include_once($config['base_path'] . '/lib/poller.php');
+include_once($config['base_path'] . '/lib/utility.php');
+include_once($config['base_path'] . '/lib/api_data_source.php');
+include_once($config['base_path'] . '/lib/api_graph.php');
+include_once($config['base_path'] . '/lib/snmp.php');
+include_once($config['base_path'] . '/lib/data_query.php');
+include_once($config['base_path'] . '/lib/api_device.php');
 
-include_once($config["base_path"] . '/lib/sort.php');
-include_once($config["base_path"] . '/lib/html_form_template.php');
-include_once($config["base_path"] . '/lib/template.php');
+include_once($config['base_path'] . '/lib/sort.php');
+include_once($config['base_path'] . '/lib/html_form_template.php');
+include_once($config['base_path'] . '/lib/template.php');
 
-include_once($config["base_path"] . '/lib/api_tree.php');
-include_once($config["base_path"] . '/lib/api_automation.php');
+include_once($config['base_path'] . '/lib/api_tree.php');
+include_once($config['base_path'] . '/lib/api_automation.php');
 
 /* process calling arguments */
-$parms = $_SERVER["argv"];
+$parms = $_SERVER['argv'];
 array_shift($parms);
 
 $debug      = false;
@@ -128,53 +129,57 @@ $master     = false;
 
 global $debug, $poller_id, $network_id, $thread, $master;
 
-foreach($parms as $parameter) {
-	if (strpos($parameter, '=')) {
-		@list($arg, $value) = @explode('=', $parameter);
-	} else {
-		$arg = $parameter;
-		$value = '';
-	}
+if (sizeof($parms)) {
+	foreach($parms as $parameter) {
+		if (strpos($parameter, '=')) {
+			list($arg, $value) = explode('=', $parameter);
+		} else {
+			$arg = $parameter;
+			$value = '';
+		}
 
-	switch ($arg) {
-	case "-d":
-	case "--debug":
-		$debug = true;
-		break;
-	case "-M":
-	case "--master":
-		$master = true;
-		break;
-	case "--poller":
-		$poller_id = $value;
-		break;
-	case "-f":
-	case "--force":
-		$force = true;
-		break;
-	case "--network":
-		$network_id = $value;
-		break;
-	case "--thread":
-		$thread = $value;
-		break;
-	case "-h":
-	case "-v":
-	case "--version":
-	case "--help":
-		display_help();
-		exit;
-	default:
-		print "ERROR: Invalid Parameter " . $parameter . "\n\n";
-		display_help();
-		exit;
+		switch ($arg) {
+			case '-d':
+			case '--debug':
+				$debug = true;
+				break;
+			case '-M':
+			case '--master':
+				$master = true;
+				break;
+			case '--poller':
+				$poller_id = $value;
+				break;
+			case '-f':
+			case '--force':
+				$force = true;
+				break;
+			case '--network':
+				$network_id = $value;
+				break;
+			case '--thread':
+				$thread = $value;
+				break;
+			case '-v':
+			case '--version':
+				display_version();
+				exit;
+			case '-h':
+			case '--help':
+				display_help();
+				exit;
+			default:
+				print 'ERROR: Invalid Parameter ' . $parameter . "\n\n";
+				display_help();
+				exit;
+		}
 	}
 }
 
 /* install signal handlers for UNIX only */
-if (function_exists("pcntl_signal")) {
-    pcntl_signal(SIGTERM, "sig_handler");
-    pcntl_signal(SIGINT, "sig_handler");
+if (function_exists('pcntl_signal')) {
+    pcntl_signal(SIGTERM, 'sig_handler');
+    pcntl_signal(SIGINT, 'sig_handler');
 }
 
 // Let's insure that we were called correctly
@@ -200,7 +205,7 @@ if ($master) {
 		foreach($networks as $network) {
 			if (api_automation_is_time_to_start($network['id']) || $force) {
 				automation_debug("Launching Network Master for '" . $network['name'] . "'\n");
-				exec_background(read_config_option('path_php_binary'), '-q ' . read_config_option('path_webroot') . "/poller_automation.php --poller=" . $poller_id . " --network=" . $network['id'] . ($force ? ' --force':'') . ($debug ? ' --debug':''));
+				exec_background(read_config_option('path_php_binary'), '-q ' . read_config_option('path_webroot') . '/poller_automation.php --poller=' . $poller_id . ' --network=' . $network['id'] . ($force ? ' --force':'') . ($debug ? ' --debug':''));
 				$launched++;
 			}else{
 				automation_debug("Not time to Run Discovery for '" . $network['name'] . "'\n");
@@ -591,12 +596,17 @@ function discoverDevices($network_id, $thread) {
 	return true;
 }
 
+/*  display_version - displays version information */
+function display_version() {
+    $version = db_fetch_cell('SELECT cacti FROM version');
+    print "Cacti Network Discovery Scanner, Version $version, " . COPYRIGHT_YEARS . "\n";
+}
+
 /*	display_help - displays the usage of the function */
 function display_help () {
-    $version = db_fetch_cell('SELECT cacti FROM version');
-    print "Network Discovery, Version $version, " . COPYRIGHT_YEARS . "\n\n";
-	print "Cacti Network Discovery Scanner based on original works of Autom8 and Discovery\n\n";
-	print "usage: poller_automation.php -M [--poller=N ] | --network=network_id [-T=thread_id]\n";
+	display_version();
+
+	print "\nusage: poller_automation.php -M [--poller=N ] | --network=network_id [-T=thread_id]\n";
 	print "    [-d | --debug] [-f | --force] [-h | --help | -v | --version]\n\n";
 	print "Master Process:\n";
 	print "    -M | --master - Master poller for all Automation\n";
@@ -663,5 +673,3 @@ function updateDownDevice($network_id, $ip) {
 		db_execute_prepared("UPDATE automation_devices SET up='0' WHERE ip = ? AND network_id = ?", array($ip, $network_id));
 	}
 }
-
-

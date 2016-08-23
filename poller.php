@@ -1,3 +1,4 @@
+#!/usr/bin/php -q
 <?php
 /*
  +-------------------------------------------------------------------------+
@@ -90,36 +91,45 @@ $parms = $_SERVER['argv'];
 array_shift($parms);
 
 if (sizeof($parms)) {
-foreach($parms as $parameter) {
-	@list($arg, $value) = @explode('=', $parameter);
+	foreach($parms as $parameter) {
+		if (strpos($parameter, '=')) {
+			list($arg, $value) = explode('=', $parameter);
+		} else {
+			$arg = $parameter;
+			$value = '';
+		}
 
-	switch ($arg) {
-	case '-p':
-	case '--poller':
-		$poller_id = $value;
+		switch ($arg) {
+			case '-p':
+			case '--poller':
+				$poller_id = $value;
 
-		break;
-	case '-d':
-	case '--debug':
-		$debug = true;
-
-		break;
-	case '--force':
-		$force = true;
-
-		break;
-	case '--version':
-	case '-V':
-	case '-H':
-	case '--help':
-		display_help();
-		exit(0);
-	default:
-		echo "ERROR: Invalid Argument: ($arg)\n\n";
-		display_help();
-		exit(1);
+				break;
+			case '-d':
+			case '--debug':
+				$debug = true;
+	
+				break;
+			case '--force':
+				$force = true;
+	
+				break;
+			case '--version':
+			case '-V':
+			case '-v':
+				display_version();
+				exit;
+			case '-H':
+			case '-h':
+			case '--help':
+				display_help();
+				exit;
+			default:
+				echo "ERROR: Invalid Argument: ($arg)\n\n";
+				display_help();
+				exit(1);
+		}
 	}
-}
 }
 
 // Check to see if the poller is disabled
@@ -639,11 +649,16 @@ function spikekill_poller_bottom () {
     exec_background($command_string, $extra_args);
 }
 
+/*  display_version - displays version information */
+function display_version() {
+    $version = db_fetch_cell('SELECT cacti FROM version');
+	echo "Cacti Main Poller, Version $version, " . COPYRIGHT_YEARS . "\n";
+}
+
 function display_help() {
-	$version = db_fetch_cell('SELECT cacti FROM version');
-	echo "Cacti Main Poller, Version $version, " . COPYRIGHT_YEARS . "\n\n";
-	echo "A simple command line utility to run the Cacti Poller.\n\n";
-	echo "usage: poller.php [--force] [--debug|-d]\n\n";
+	display_version();
+
+	echo "\nusage: poller.php [--force] [--debug|-d] [--help | -h | -H] [--version | -v | -V\\n\n";
 	echo "Options:\n";
 	echo "    --force        Override poller overrun detection and force a poller run\n";
 	echo "    --debug|-d     Output debug information.  Similar to cacti's DEBUG logging level.\n\n";

@@ -29,16 +29,22 @@ declare(ticks = 1);
 /* we are not talking to the browser */
 $no_http_headers = true;
 
+/*  display_version - displays version information */
+function display_version() {
+    $version = db_fetch_cell('SELECT cacti FROM version');
+	echo "Cacti Data Source Staitistcs Poller, Version $version " . COPYRIGHT_YEARS . "\n";
+}
+
 /* display_help - generic help screen for utilities
    @returns - null */
 function display_help () {
-	$version = db_fetch_cell('SELECT cacti FROM version');
-	print 'Data Sources Statistics Poller, Version ' . $version . ', ' . COPYRIGHT_YEARS . "\n\n";
-	print "usage: poller_dsstats.php [-f | --force] [-d | --debug] [-h | -H | --help] [-v | -V | --version]\n\n";
-	print "-f | --force     - Force the execution of a update process\n";
-	print "-d | --debug     - Display verbose output during execution\n";
-	print "-v -V --version  - Display this help message\n";
-	print "-h -H --help     - display this help message\n";
+	display_version();
+
+	echo "\nusage: poller_dsstats.php [-f | --force] [-d | --debug] [-h | -H | --help] [-v | -V | --version]\n\n";
+	echo "-f | --force     - Force the execution of a update process\n";
+	echo "-d | --debug     - Display verbose output during execution\n";
+	echo "-v -V --version  - Display this help message\n";
+	echo "-h -H --help     - display this help message\n";
 }
 
 /* sig_handler - provides a generic means to catch exceptions to the Cacti log.
@@ -79,30 +85,39 @@ $debug          = FALSE;
 $forcerun       = FALSE;
 $forcerun_maint = FALSE;
 
-foreach($parms as $parameter) {
-	@list($arg, $value) = @explode('=', $parameter);
+if (sizeof($parms)) {
+	foreach($parms as $parameter) {
+		if (strpos($parameter, '=')) {
+			list($arg, $value) = explode('=', $parameter);
+		} else {
+			$arg = $parameter;
+			$value = '';
+		}
 
-	switch ($arg) {
-	case '-d':
-	case '--debug':
-		$debug = TRUE;
-		break;
-	case '-f':
-	case '--force':
-		$forcerun = TRUE;
-		break;
-	case '-v':
-	case '--version':
-	case '-V':
-	case '--help':
-	case '-h':
-	case '-H':
-		display_help();
-		exit;
-	default:
-		print 'ERROR: Invalid Parameter ' . $parameter . "\n\n";
-		display_help();
-		exit;
+		switch ($arg) {
+		case '-d':
+		case '--debug':
+			$debug = TRUE;
+			break;
+		case '-f':
+		case '--force':
+			$forcerun = TRUE;
+			break;
+		case '--version':
+		case '-v':
+		case '-V':
+			display_version();
+			exit;
+		case '--help':
+		case '-h':
+		case '-H':
+			display_help();
+			exit;
+		default:
+			echo 'ERROR: Invalid Parameter ' . $parameter . "\n\n";
+			display_help();
+			exit;
+		}
 	}
 }
 

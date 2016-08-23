@@ -1,3 +1,4 @@
+#!/usr/bin/php -q
 <?php
 
 /*
@@ -49,26 +50,37 @@ $force    = FALSE;
 $archived = 0;
 $purged   = 0;
 
-foreach ($parms as $parameter) {
-	@list ($arg, $value) = @explode('=', $parameter);
+if (sizeof($parms)) {
+	foreach ($parms as $parameter) {
+		if (strpos($parameter, '=')) {
+			list($arg, $value) = explode('=', $parameter);
+		} else {
+			$arg = $parameter;
+			$value = '';
+		}
 
-	switch ($arg) {
-		case '-h' :
-		case '-v' :
-		case '--version' :
-		case '--help' :
-			display_help();
-			exit;
-		case '--force' :
-			$force = true;
-			break;
-		case '--debug' :
-			$debug = true;
-			break;
-		default :
-			print 'ERROR: Invalid Parameter ' . $parameter . "\n\n";
-			display_help();
-			exit;
+		switch ($arg) {
+			case '-h' :
+			case '-v' :
+			case '--version' :
+				display_version();
+				exit;
+			case '-h' :
+			case '-H' :
+			case '--help' :
+				display_help();
+				exit;
+			case '--force' :
+				$force = true;
+				break;
+			case '--debug' :
+				$debug = true;
+				break;
+			default :
+				echo 'ERROR: Invalid Parameter ' . $parameter . "\n\n";
+				display_help();
+				exit;
+		}
 	}
 }
 
@@ -443,16 +455,22 @@ function maint_debug($message) {
 	}
 }
 
+/*  display_version - displays version information */
+function display_version() {
+    $version = db_fetch_cell('SELECT cacti FROM version');
+	echo "Cacti Maintenance Poller, Version $version, " . COPYRIGHT_YEARS . "\n";
+}
+
 /*
  * display_help
  * displays the usage of the function
  */
 function display_help() {
-	$version = db_fetch_cell('SELECT cacti FROM version');
-	print "Cacti Maintenance Script, Version $version, " . COPYRIGHT_YEARS . "\n\n";
-	print "usage: poller_maintenance.php [--force] [--debug] [--help] [--version]\n\n";
-	print "--force       - force execution, e.g. for testing\n";
-	print "--debug       - debug execution, e.g. for testing\n\n";
-	print "-v --version  - Display this help message\n";
-	print "-h --help     - display this help message\n";
+	display_version();
+
+	echo "\nusage: poller_maintenance.php [--force] [--debug] [--help | -h | -H] [--version | -v | -V]\n\n";
+	echo "--force       - force execution, e.g. for testing\n";
+	echo "--debug       - debug execution, e.g. for testing\n\n";
+	echo "-v --version  - Display this help message\n";
+	echo "-h --help     - display this help message\n";
 }

@@ -45,31 +45,42 @@ $forcerun       = FALSE;
 $templates      = FALSE;
 $kills          = 0;
 
-foreach($parms as $parameter) {
-	@list($arg, $value) = @explode('=', $parameter);
+if (sizeof($parms)) {
+	foreach($parms as $parameter) {
+		if (strpos($parameter, '=')) {
+			list($arg, $value) = explode('=', $parameter);
+		} else {
+			$arg = $parameter;
+			$value = '';
+		}
 
-	switch ($arg) {
-	case '-d':
-	case '--debug':
-		$debug = TRUE;
-		break;
-	case '--templates':
-		$templates = $value;
-		break;
-	case '-f':
-	case '--force':
-		$forcerun = TRUE;
-		break;
-	case '-v':
-	case '--help':
-	case '-V':
-	case '--version':
-		display_help();
-		exit;
-	default:
-		print 'ERROR: Invalid Parameter ' . $parameter . "\n\n";
-		display_help();
-		exit;
+		switch ($arg) {
+			case '-d':
+			case '--debug':
+				$debug = TRUE;
+				break;
+			case '--templates':
+				$templates = $value;
+				break;
+			case '-f':
+			case '--force':
+				$forcerun = TRUE;
+				break;
+			case '--version':
+			case '-V':
+			case '-v':
+				display_version();
+				exit;
+			case '--help':
+			case '-H':
+			case '-h':
+				display_help();
+				exit;
+			default:
+				print 'ERROR: Invalid Parameter ' . $parameter . "\n\n";
+				display_help();
+				exit;
+		}
 	}
 }
 
@@ -197,9 +208,14 @@ function kill_spikes($templates, &$found) {
 	return sizeof($rrdfiles);
 }
 
+/*  display_version - displays version information */
+function display_version() {
+    $version = db_fetch_cell('SELECT cacti FROM version');
+	echo "Cacti SpikeKiller Batch Poller, Version $version, " . COPYRIGHT_YEARS . "\n";
+}
+
 function display_help() {
-	$version = db_fetch_cell('SELECT cacti FROM version');
-	echo 'SpikeKiller Batch, Version ' . $version . ', ' . COPYRIGHT_YEARS . "\n\n";
-	echo "Cacti batch Graph spike killer poller process.\n\n";
-	echo "usage: poller_spikekill.php [--force] [--debug] [--tempaltes=N,N,N]\n";
+	display_version();
+
+	echo "\nusage: poller_spikekill.php [--force] [--debug] [--tempaltes=N,N,N]\n";
 }

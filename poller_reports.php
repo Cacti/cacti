@@ -29,12 +29,18 @@ declare(ticks = 1);
 /* we are not talking to the browser */
 $no_http_headers = true;
 
+/*  display_version - displays version information */
+function display_version() {
+    $version = db_fetch_cell('SELECT cacti FROM version');
+	echo "Cacti Reporting Poller, Version $version, " . COPYRIGHT_YEARS . "\n";
+}
+
 /** display_help - generic help screen for utilities
  * @return		 - null */
 function display_help () {
-	$version = db_fetch_cell("SELECT cacti FROM version");
-	print "Reporting Poller Version " . $version . ", " .  COPYRIGHT_YEARS . "\n\n";
-	print "usage: poller_reports.php [-d | --debug] [-h | -H | --help] [-v | -V | --version]\n\n";
+	display_version();
+
+	print "\nusage: poller_reports.php [-d | --debug] [-h | -H | --help] [-v | -V | --version]\n\n";
 	print "-f | --force     - Force all Reports to be sent\n";
 	print "-d | --debug     - Display verbose output during execution\n";
 	print "-v -V --version  - Display this help message\n";
@@ -49,7 +55,7 @@ function sig_handler($signo) {
 	switch ($signo) {
 		case SIGTERM:
 		case SIGINT:
-			reports_log("WARNING: Reports Poller terminated by user", false, "REPORTS TRACE", POLLER_VERBOSITY_LOW);
+			reports_log('WARNING: Reports Poller terminated by user', false, 'REPORTS TRACE', POLLER_VERBOSITY_LOW);
 
 			exit;
 			break;
@@ -60,66 +66,75 @@ function sig_handler($signo) {
 
 
 /* do NOT run this script through a web browser */
-if (!isset($_SERVER["argv"][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($_SERVER['REMOTE_ADDR'])) {
-	die("<br><strong>This script is only meant to run at the command line.</strong>");
+if (!isset($_SERVER['argv'][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($_SERVER['REMOTE_ADDR'])) {
+	die('<br><strong>This script is only meant to run at the command line.</strong>');
 }
 
 $dir = dirname(__FILE__);
 chdir($dir);
 
 /* include important functions */
-include_once("./include/global.php");
-include_once($config["base_path"] . "/lib/poller.php");
-include_once($config["base_path"] . "/lib/rrd.php");
-include_once($config["base_path"] . "/lib/reports.php");
+include_once('./include/global.php');
+include_once($config['base_path'] . '/lib/poller.php');
+include_once($config['base_path'] . '/lib/rrd.php');
+include_once($config['base_path'] . '/lib/reports.php');
 
 global $current_user;
 
 /* process calling arguments */
-$parms = $_SERVER["argv"];
+$parms = $_SERVER['argv'];
 array_shift($parms);
 
 $debug          = FALSE;
 $force          = FALSE;
 
-foreach($parms as $parameter) {
-	@list($arg, $value) = @explode("=", $parameter);
+if (sizeof($parms)) {
+	foreach($parms as $parameter) {
+		if (strpos($parameter, '=')) {
+			list($arg, $value) = explode('=', $parameter);
+		} else {
+			$arg = $parameter;
+			$value = '';
+		}
 
-	switch ($arg) {
-	case "-f":
-	case "--force":
-		$force = TRUE;
-		break;
-	case "-d":
-	case "--debug":
-		$debug = TRUE;
-		break;
-	case "-v":
-	case "--version":
-	case "-V":
-	case "--help":
-	case "-h":
-	case "-H":
-		display_help();
-		exit;
-	default:
-		print "ERROR: Invalid Parameter " . $parameter . "\n\n";
-		display_help();
-		exit;
+		switch ($arg) {
+			case '-f':
+			case '--force':
+				$force = TRUE;
+				break;
+			case '-d':
+			case '--debug':
+				$debug = TRUE;
+				break;
+			case '--version':
+			case '-V':
+			case '-v':
+				display_version();
+				exit;
+			case '--help':
+			case '-H':
+			case '-h':
+				display_help();
+				exit;
+			default:
+				print 'ERROR: Invalid Parameter ' . $parameter . "\n\n";
+				display_help();
+				exit;
+		}
 	}
 }
 
 /* install signal handlers for UNIX only */
-if (function_exists("pcntl_signal")) {
-	pcntl_signal(SIGTERM, "sig_handler");
-	pcntl_signal(SIGINT, "sig_handler");
+if (function_exists('pcntl_signal')) {
+	pcntl_signal(SIGTERM, 'sig_handler');
+	pcntl_signal(SIGINT, 'sig_handler');
 }
 
 /* take time and log performance data */
 $start = microtime(true);
 
 /* let's give this script lot of time to run for ever */
-ini_set("max_execution_time", "0");
+ini_set('max_execution_time', '0');
 
 $t = time();
 $number_sent = 0;
@@ -130,15 +145,15 @@ if (!$force) {
 }else{
 	$reports = db_fetch_assoc("SELECT * FROM reports WHERE enabled='on'");
 }
-reports_log("Cacti Reports reports found: " . sizeof($reports), true, "REPORTS", POLLER_VERBOSITY_MEDIUM);
+reports_log('Cacti Reports reports found: ' . sizeof($reports), true, 'REPORTS', POLLER_VERBOSITY_MEDIUM);
 
 # execute each of those reports
 if (sizeof($reports)) {
 	foreach ($reports as $report) {
-		reports_log("Reports processing report: " . $report["name"], true, "REPORTS", POLLER_VERBOSITY_MEDIUM);
-		$current_user = db_fetch_row("SELECT * FROM user_auth WHERE id=" . $report["user_id"]);
+		reports_log('Reports processing report: ' . $report['name'], true, 'REPORTS', POLLER_VERBOSITY_MEDIUM);
+		$current_user = db_fetch_row('SELECT * FROM user_auth WHERE id=' . $report['user_id']);
 		if (isset($report['email'])) {
-			generate_report($report, false, "poller");
+			generate_report($report, false, 'poller');
 			$number_sent++;
 		}
 	}
@@ -147,9 +162,7 @@ if (sizeof($reports)) {
 	$end = microtime(true);
 
 	/* log statistics */
-	$reports_stats = sprintf("Time:%01.4f Reports:%s", $end - $start, $number_sent);
-	reports_log('Reports STATS: ' . $reports_stats, true, "REPORTS", POLLER_VERBOSITY_LOW);
+	$reports_stats = sprintf('Time:%01.4f Reports:%s', $end - $start, $number_sent);
+	reports_log('Reports STATS: ' . $reports_stats, true, 'REPORTS', POLLER_VERBOSITY_LOW);
 	db_execute("REPLACE INTO settings (name, value) VALUES ('stats_reports', '$reports_stats')");
 }
-
-?>
