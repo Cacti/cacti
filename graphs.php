@@ -1255,15 +1255,55 @@ function graph_edit() {
 
 	html_start_box($header_label, '100%', '', '3', 'center', '');
 
+	if (sizeof($graph)) {
+		$dqid = db_fetch_cell_prepared('SELECT snmp_query_id FROM graph_local WHERE id = ?', array($graph['local_graph_id']));
+	}else{
+		$dqid = '';
+	}
+
+	if (!empty($dqid)) {
+		$sqgi = db_fetch_cell_prepared('SELECT id 
+			FROM snmp_query_graph 
+			WHERE snmp_query_id = ? 
+			AND graph_template_id = ?',
+			array($dqid, $graph['graph_template_id']));
+
+		$query_fields = db_fetch_cell_prepared('SELECT GROUP_CONCAT(snmp_field_name) AS columns 
+			FROM snmp_query_graph_rrd 
+			WHERE snmp_query_graph_id = ?
+			GROUP BY snmp_query_graph_id', array($sqgi));
+
+		$common_graph_ids = array_rekey(db_fetch_assoc_prepared('SELECT 
+			snmp_query_graph_id, GROUP_CONCAT(snmp_field_name) AS columns
+			FROM snmp_query_graph_rrd
+			GROUP BY snmp_query_graph_id
+			HAVING columns = ?', array($query_fields)), 'snmp_query_graph_id', 'columns');
+
+		$ids = implode(',', array_keys($common_graph_ids));
+
+		$gtsql = 'SELECT gt.id, gt.name 
+			FROM graph_templates AS gt 
+			WHERE gt.id IN (
+				SELECT graph_template_id 
+				FROM snmp_query_graph 
+				WHERE snmp_query_id = ' . $dqid . '
+				AND id IN (' . $ids . ')
+			) ORDER BY name';
+	}elseif (sizeof($graph)) {
+		$gtsql = 'SELECT gt.id, gt.name FROM graph_templates AS gt WHERE gt.id=' . $graph['graph_template_id'] . ' ORDER BY name';
+	}else{
+		$gtsql = 'SELECT gt.id, gt.name FROM graph_templates AS gt ORDER BY name';
+	}
+
 	$form_array = array(
 		'graph_template_id' => array(
 			'method' => 'drop_sql',
 			'friendly_name' => __('Selected Graph Template'),
-			'description' => __('Choose a Graph Template to apply to this Graph. Please note that Graph Data may be lost if you change the Graph Template after one is already applied.'),
+			'description' => __('Choose a Graph Template to apply to this Graph. Please note that you may only change Graph Templates to a 100% compatible Graph Template, which means that it includes identical Data Sources.'),
 			'value' => (isset($graph) ? $graph['graph_template_id'] : '0'),
-			'none_value' => __('None'),
-			'sql' => 'SELECT graph_templates.id,graph_templates.name FROM graph_templates ORDER BY name'
-			),
+			'none_value' => ($graph['graph_template_id'] == 0 ? __('None'):''),
+			'sql' => $gtsql
+  			),
 		'host_id' => array(
 			'method' => 'drop_callback',
 			'friendly_name' => __('Device'),
