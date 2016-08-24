@@ -155,9 +155,10 @@ function display_version() {
 function display_help () {
 	display_version();
 
-	echo "\nusage: poller_commands.php [ --poller=ID ] [-d | --debug] [-h | --help | -v | --version]\n\n";
-	echo "-p | --poller - The poller to run as.  Defaults to the system poller\n";
-	echo "-d | --debug  - Display verbose output during execution\n";
-	echo "-v --version  - Display this help message\n";
-	echo "-h --help     - Display this help message\n";
+	echo "\nusage: poller_commands.php [--poller=ID] [--debug]\n\n";
+	echo "Cacti's commands poller.  This poller can receive specifically crafted commands from\n";
+	echo "either the Cacti UI, or from the main poller, and then run them in the background.\n\n";
+	echo "Optional:\n";
+	echo "    --poller=ID - The poller to run as.  Defaults to the system poller\n";
+	echo "    --debug     - Display verbose output during execution\n\n";
 }

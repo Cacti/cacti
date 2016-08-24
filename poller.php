@@ -658,9 +658,12 @@ function display_version() {
 function display_help() {
 	display_version();
 
-	echo "\nusage: poller.php [--force] [--debug|-d] [--help | -h | -H] [--version | -v | -V\\n\n";
-	echo "Options:\n";
-	echo "    --force        Override poller overrun detection and force a poller run\n";
+	echo "\nusage: poller.php [--poller=ID] [--force] [--debug]\n\n";
+	echo "Cacti's main poller.  This poller is the launcher of cmd.php, spine, and all other\n";
+	echo "background processes.  It is the heart of Cacti's data collection engine.\n\n";
+	echo "Optional:\n";
+	echo "    --poller=ID    Run as the poller indicated and not the default poller.\n";
+	echo "    --force        Override poller overrun detection and force a poller run.\n";
 	echo "    --debug|-d     Output debug information.  Similar to cacti's DEBUG logging level.\n\n";
 }
 

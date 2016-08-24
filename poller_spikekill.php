@@ -217,5 +217,11 @@ function display_version() {
 function display_help() {
 	display_version();
 
-	echo "\nusage: poller_spikekill.php [--force] [--debug] [--tempaltes=N,N,N]\n";
+	echo "\nusage: poller_spikekill.php [--templates=N,N,...] [--force] [--debug]\n\n";
+	echo "Cacti's SpikeKill batch removal poller.  This poller will remove spikes\n";
+	echo "in Cacti's RRDfiles based upon the settings maintained in Cacti's database.\n\n";
+	echo "Optional:\n";
+	echo "    --templates=N,N,... - Only despike the templates provided.\n";
+	echo "    --force             - Force running the despiking immediately.\n";
+	echo "    --debug             - Display verbose output during execution.\n";
 }

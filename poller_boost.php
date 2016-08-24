@@ -39,12 +39,13 @@ function display_version() {
 function display_help () {
 	display_version();
 
-	print "\nusage: poller_boost.php [-f | --force] [-d | --debug] [-h | -H | --help] [-v | -V | --version]\n\n";
-	print "-f | --force   - Force the execution of a update process\n";
-	print "-v | --verbose - Show details logs at the command line\n";
-	print "-d | --debug   - Display verbose output during execution\n";
-	print "-V | --version - Display this help message\n";
-	print "-h -H --help   - display this help message\n";
+	print "\nusage: poller_boost.php [--verbose] [--force] [--debug]\n\n";
+	print "Cacti's performance boosing poller.  This poller will purge the boost cache periodically.  You may\n";
+	print "force the processing of the boost cache by using the --force option.\n\n";
+	print "Optional:\n";
+	print "    --verbose - Show details logs at the command line\n";
+	print "    --force   - Force the execution of a update process\n";
+	print "    --debug   - Display verbose output during execution\n\n";
 }
 
 function sig_handler($signo) {
@@ -285,17 +286,17 @@ if (sizeof($parms)) {
 			case '--force':
 				$forcerun = TRUE;
 				break;
-			case '-v':
 			case '--verbose':
 				$verbose = TRUE;
 				break;
 			case '--version':
 			case '-V':
+			case '-v':
 				display_version();
 				exit;
 			case '--help':
-			case '-h':
 			case '-H':
+			case '-h':
 				display_help();
 				exit;
 			default:

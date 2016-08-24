@@ -606,19 +606,21 @@ function display_version() {
 function display_help () {
 	display_version();
 
-	print "\nusage: poller_automation.php -M [--poller=N ] | --network=network_id [-T=thread_id]\n";
-	print "    [-d | --debug] [-f | --force] [-h | --help | -v | --version]\n\n";
+	print "\nusage: poller_automation.php -M [--poller=ID] | --network=network_id [-T=thread_id]\n";
+	print "    [--debug] [--force]\n\n";
+	print "Cacti's automation poller.  This poller has two operating modes, Master and Slave.\n";
+	print "The Master process tracks and launches all Slaves based upon Cacti's automation\n";
+	print "settings.  If you only want to force a network to be collected, you only need to\n";
+	print "specify the Network ID and the force options.\n\n";
 	print "Master Process:\n";
 	print "    -M | --master - Master poller for all Automation\n";
-	print "    --poller=n    - Master Poller ID, Defaults to 0 or WebServer\n\n";
+	print "    --poller=ID   - Master Poller ID, Defaults to 0 or WebServer\n\n";
 	print "Network Masters and Workers:\n";
 	print "    --network=n   - Network ID to discover\n";
 	print "    --thread=n    - Thread ID, Defaults to 0 or Network Master\n\n";
 	print "General Options:\n";
-	print "    -f | --force  - Force the execution of a discovery process\n";
-	print "    -d | --debug  - Display verbose output during execution\n";
-	print "    -v --version  - Display this help message\n";
-	print "    -h --help     - Display this help message\n";
+	print "    --force       - Force the execution of a discovery process\n";
+	print "    --debug       - Display verbose output during execution\n\n";
 }
 
 function isProcessRunning($pid) {
