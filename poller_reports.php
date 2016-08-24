@@ -40,13 +40,13 @@ function display_version() {
 function display_help () {
 	display_version();
 
-	print "\nusage: poller_reports.php [-d | --debug] [-h | -H | --help] [-v | -V | --version]\n\n";
-	print "-f | --force     - Force all Reports to be sent\n";
-	print "-d | --debug     - Display verbose output during execution\n";
-	print "-v -V --version  - Display this help message\n";
-	print "-h -H --help     - display this help message\n";
+	print "\nusage: poller_reports.php [--force] [--debug]\n\n";
+	print "Cacti's graphical reporting poller.  This poller will create and distribute\n";
+	print "email reports to recipients based upon the schedules for those reports.\n\n";
+	print "Optional:\n";
+	print "    --force     - Force all Reports to be sent\n";
+	print "    --debug     - Display verbose output during execution\n\n";
 }
-
 
 /** sig_handler - provides a generic means to catch exceptions to the Cacti log.
  * @arg $signo 	- (int) the signal that was thrown by the interface.

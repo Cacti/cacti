@@ -60,14 +60,14 @@ if (sizeof($parms)) {
 		}
 
 		switch ($arg) {
-			case '-h' :
-			case '-v' :
 			case '--version' :
+			case '-V' :
+			case '-v' :
 				display_version();
 				exit;
-			case '-h' :
-			case '-H' :
 			case '--help' :
+			case '-H' :
+			case '-h' :
 				display_help();
 				exit;
 			case '--force' :
@@ -468,9 +468,10 @@ function display_version() {
 function display_help() {
 	display_version();
 
-	echo "\nusage: poller_maintenance.php [--force] [--debug] [--help | -h | -H] [--version | -v | -V]\n\n";
-	echo "--force       - force execution, e.g. for testing\n";
-	echo "--debug       - debug execution, e.g. for testing\n\n";
-	echo "-v --version  - Display this help message\n";
-	echo "-h --help     - display this help message\n";
+	echo "\nusage: poller_maintenance.php [--force] [--debug]\n\n";
+	echo "Cacti's maintenance poller.  This poller is repsonsible for executing periodic\n";
+	echo "maintenance activities for Cacti including log rotation, deactivating accounts, etc.\n\n";
+	echo "Optional:\n";
+	echo "    --force   - Force immediate execution, e.g. for testing.\n";
+	echo "    --debug   - Display verbose output during execution.\n\n";
 }

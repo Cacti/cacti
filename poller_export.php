@@ -67,12 +67,13 @@ if (sizeof($parms)) {
 		case '--force':
 			$force = TRUE;
 			break;
-		case '-v':
-		case '-V':
 		case '--version':
+		case '-V':
+		case '-v':
 			display_version();
 			exit;
 		case '--help':
+		case '-H':
 		case '-h':
 			display_help();
 			exit;
@@ -97,9 +98,10 @@ function display_version() {
 function display_help () {
 	display_version();
 
-	echo "\nusage: poller_export.php [-f|--force] [-d|--debug] [-h|--help|-v|-V|--version]\n\n";
-	echo "-f | --force     - Force export to run now running now\n";
-	echo "-d | --debug     - Display verbose output during execution\n";
-	echo "-v -V --version  - Display this help message\n";
-	echo "-h --help        - display this help message\n";
+	echo "\nusage: poller_export.php [-f|--force] [-d|--debug]\n\n";
+	echo "Cacti's Graph Export poller.  This poller will export parts of the Cacti\n";
+	echo "website into a static representation.\n\n";
+	echo "Optional:\n";
+	echo "    --force     - Force export to run now running now\n";
+	echo "    --debug     - Display verbose output during execution\n\n";
 }

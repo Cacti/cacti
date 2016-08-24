@@ -40,11 +40,13 @@ function display_version() {
 function display_help () {
 	display_version();
 
-	echo "\nusage: poller_dsstats.php [-f | --force] [-d | --debug] [-h | -H | --help] [-v | -V | --version]\n\n";
-	echo "-f | --force     - Force the execution of a update process\n";
-	echo "-d | --debug     - Display verbose output during execution\n";
-	echo "-v -V --version  - Display this help message\n";
-	echo "-h -H --help     - display this help message\n";
+	echo "\nusage: poller_dsstats.php [--force] [--debug]\n\n";
+	echo "Cacti's Data Source Statics poller.  This poller will periodically\n";
+	echo "calculate Data Source statistics for Cacti and works in conjunction\n";
+	echo "with Cacti's performance boosting popller as required.\n\n";
+	echo "Optional:\n";
+	echo "    --force     - Force the execution of a update process\n";
+	echo "    --debug     - Display verbose output during execution\n\n";
 }
 
 /* sig_handler - provides a generic means to catch exceptions to the Cacti log.

@@ -80,13 +80,13 @@ if (sizeof($parms)) {
 				$poller_id = $value;
 				break;
 			case '--version':
-			case '-v':
 			case '-V':
+			case '-v':
 				display_version();
 				exit;
 			case '--help':
-			case '-h':
 			case '-H':
+			case '-h':
 				display_help();
 				exit;
 			default:
@@ -175,9 +175,13 @@ function display_version() {
 function display_help() {
 	display_version();
 
-	echo "\nusage: poller_rt.php --graph=ID [--force] [--debug|-d] [--help | -h | -H] [--version | -v | -V]\n\n";
-	echo "Options:\n";
-	echo "    --graph=ID     Specify the graph id to convert (realtime)\n";
+	echo "\nusage: poller_rt.php --graph=ID [--interval=SEC] [--force] [--debug]\n\n";
+	echo "Cacti's Realtime graphing poller.  This poller behavies very similary\n";
+	echo "to Cacti's main poller with the exception that it only polls data source\n";
+	echo "that are specific to the graph being rendered in the Cacti UI.\n\n";
+	echo "Required:\n";
+	echo "    --graph=ID     Specify the graph id to convert (realtime)\n\n";
+	echo "Optional:\n";
 	echo "    --interval=SEC Specify the graph interval (realtime)\n";
 	echo "    --force        Override poller overrun detection and force a poller run\n";
 	echo "    --debug|-d     Output debug information.  Similar to cacti's DEBUG logging level.\n\n";
