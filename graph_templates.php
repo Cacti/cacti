@@ -31,7 +31,8 @@ include_once('./lib/html_tree.php');
 
 $graph_actions = array(
 	1 => __('Delete'),
-	2 => __('Duplicate')
+	2 => __('Duplicate'),
+	3 => __('Resize')
 );
 
 /* set default action */
@@ -201,7 +202,7 @@ function form_save() {
    ------------------------ */
 
 function form_actions() {
-	global $graph_actions;
+	global $graph_actions, $config;
 
 	/* ================= input validation ================= */
 	get_filter_request_var('drp_action', FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => '/^([a-zA-Z0-9_]+)$/')));
@@ -213,28 +214,54 @@ function form_actions() {
 
 		if ($selected_items != false) {
 			if (get_request_var('drp_action') == '1') { /* delete */
-				db_execute('DELETE FROM graph_templates WHERE ' . array_to_sql_or($selected_items, 'id'));
+				db_execute('DELETE FROM graph_templates 
+					WHERE ' . array_to_sql_or($selected_items, 'id'));
 
-				$graph_template_input = db_fetch_assoc('SELECT id FROM graph_template_input WHERE ' . array_to_sql_or($selected_items, 'graph_template_id'));
+				$graph_template_input = db_fetch_assoc('SELECT id 
+					FROM graph_template_input 
+					WHERE ' . array_to_sql_or($selected_items, 'graph_template_id'));
 
 				if (sizeof($graph_template_input) > 0) {
-				foreach ($graph_template_input as $item) {
-					db_execute('DELETE FROM graph_template_input_defs WHERE graph_template_input_id=' . $item['id']);
-				}
+					foreach ($graph_template_input as $item) {
+						db_execute_prepared('DELETE FROM graph_template_input_defs 
+							WHERE graph_template_input_id = ?', array($item['id']));
+					}
 				}
 
-				db_execute('DELETE FROM graph_template_input WHERE ' . array_to_sql_or($selected_items, 'graph_template_id'));
-				db_execute('DELETE FROM graph_templates_graph WHERE ' . array_to_sql_or($selected_items, 'graph_template_id') . ' AND local_graph_id=0');
-				db_execute('DELETE FROM graph_templates_item WHERE ' . array_to_sql_or($selected_items, 'graph_template_id') . ' AND local_graph_id=0');
-				db_execute('DELETE FROM host_template_graph WHERE ' . array_to_sql_or($selected_items, 'graph_template_id'));
+				db_execute('DELETE FROM graph_template_input 
+					WHERE ' . array_to_sql_or($selected_items, 'graph_template_id'));
+				db_execute('DELETE FROM graph_templates_graph 
+					WHERE ' . array_to_sql_or($selected_items, 'graph_template_id') . ' AND local_graph_id=0');
+				db_execute('DELETE FROM graph_templates_item 
+					WHERE ' . array_to_sql_or($selected_items, 'graph_template_id') . ' AND local_graph_id=0');
+				db_execute('DELETE FROM host_template_graph 
+					WHERE ' . array_to_sql_or($selected_items, 'graph_template_id'));
 
 				/* 'undo' any graph that is currently using this template */
-				db_execute('UPDATE graph_templates_graph SET local_graph_template_graph_id=0,graph_template_id=0 WHERE ' . array_to_sql_or($selected_items, 'graph_template_id'));
-				db_execute('UPDATE graph_templates_item SET local_graph_template_item_id=0,graph_template_id=0 WHERE ' . array_to_sql_or($selected_items, 'graph_template_id'));
-				db_execute('UPDATE graph_local SET graph_template_id=0 WHERE ' . array_to_sql_or($selected_items, 'graph_template_id'));
+				db_execute('UPDATE graph_templates_graph 
+					SET local_graph_template_graph_id=0, graph_template_id=0 
+					WHERE ' . array_to_sql_or($selected_items, 'graph_template_id'));
+				db_execute('UPDATE graph_templates_item 
+					SET local_graph_template_item_id=0, graph_template_id=0 
+					WHERE ' . array_to_sql_or($selected_items, 'graph_template_id'));
+				db_execute('UPDATE graph_local 
+					SET graph_template_id=0 
+					WHERE ' . array_to_sql_or($selected_items, 'graph_template_id'));
 			}elseif (get_request_var('drp_action') == '2') { /* duplicate */
 				for ($i=0;($i<count($selected_items));$i++) {
 					api_duplicate_graph(0, $selected_items[$i], get_nfilter_request_var('title_format'));
+				}
+			}elseif (get_request_var('drp_action') == '3') { /* resize */
+				get_filter_request_var('graph_width');
+				get_filter_request_var('graph_height');
+
+				for ($i=0;($i<count($selected_items));$i++) {
+					db_execute_prepared('UPDATE graph_templates_graph
+						SET width = ?, height = ?
+						WHERE graph_template_id = ?',
+						array(get_request_var('graph_width'), 
+						get_request_var('graph_height'), 
+						$selected_items[$i]));
 				}
 			}
 		}
@@ -271,7 +298,7 @@ function form_actions() {
 			print "<tr>
 				<td class='textArea'>
 					<p>" . __('Click \'Continue\' to delete the following Graph Template(s).  Any Graph(s) associated with the Template(s) will become individual Graph(s).') . "</p>
-					<p><div class='itemlist'><ul>$graph_list</ul></div></p>
+					<div class='itemlist'><ul>$graph_list</ul></div>
 				</td>
 			</tr>\n";
 
@@ -280,12 +307,32 @@ function form_actions() {
 			print "<tr>
 				<td class='textArea'>
 					<p>" . __('Click \'Continue\' to duplicate the following Graph Template(s). You can optionally change the title format for the new Graph Template(s).') . "</p>
-					<p><div class='itemlist'><ul>$graph_list</ul></div></p>
+					<div class='itemlist'><ul>$graph_list</ul></div>
 					<p><strong>" . __('Title Format:'). "</strong><br>"; form_text_box('title_format', '<template_title> (1)', '', '255', '30', 'text'); print "</p>
 				</td>
 			</tr>\n";
 
 			$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue'). "' title='" . __('Duplicate Graph Template(s)') . "'>";
+		}elseif (get_request_var('drp_action') == '3') { /* resize */
+			print "<tr>
+				<td class='textArea'>
+					<p>" . __('Click \'Continue\' to resize the following Graph Template(s) and Graph(s) to the Height and Width below.  The defaults below are maintained in Settings.') . "</p>
+					<div class='itemlist'><ul>$graph_list</ul></div>
+				</td>
+			</tr>
+			</table>
+			<table>
+			<tr>
+				<td>";
+
+			print __('Graph Height') . '</td><td>';
+			form_text_box('graph_height', read_config_option('default_graph_height'), '', '5', '5', 'text');
+			print __('Graph Width') . '</td><td>';
+			form_text_box('graph_width', read_config_option('default_graph_width'), '', '5', '5', 'text');
+
+			print "</td></tr></table><div class='break'></div><table style='width:100%'>\n";
+
+			$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "' title='" . __('Resize Selected Graph Template(s)') . "'>";
 		}
 	}else{
 		print "<tr><td class='even'><p><span class='textError'>" . __('ERROR: You must select at least one graph template.') . "</span></p></td></tr>\n";
