@@ -86,18 +86,27 @@ function open_snmp_session($host_id, &$item) {
 	}
 }
 
+function display_version() {
+	$version = db_fetch_cell('SELECT cacti FROM version');
+	echo "Cacti Legacy Host Data Collector, Version $version, " . COPYRIGHT_YEARS . "\n";
+}
+
 /*	display_help - displays the usage of the function */
 function display_help () {
-	$version = db_fetch_cell('SELECT cacti FROM version');
-	echo "Cacti Legacy Host Data Collector, Version $version, " . COPYRIGHT_YEARS . "\n\n";
-	echo "usage: cmd.php [ --first=ID --last=ID ] [ --poller=ID ] [-d | --debug] [-h | --help | -v | --version]\n\n";
-	echo "-p | --poller - The poller to run as.  Defaults to the system poller\n";
-	echo "-f | --first  - First host id in the range to collect from\n";
-	echo "-l | --last   - Last host id in the range to collect from\n";
-	echo "-m | --mibs   - Refresh all system mibs from hosts supporting snmp\n";
-	echo "-d | --debug  - Display verbose output during execution\n";
-	echo "-v --version  - Display this help message\n";
-	echo "-h --help     - Display this help message\n";
+	display_version();
+
+	echo "\nusage: cmd.php --first=ID --last=ID [--poller=ID] [--mibs] [--debug]\n\n";
+	echo "Cacti's legacy data collector.  This data collector is called by poller.php\n";
+	echo "every poller interval to gather information from devices.  It is recommended\n";
+	echo "that every system deploy spine instead of cmd.php in production due to the built\n";
+	echo "in scalability limits of cmd.php.\n\n";
+	echo "Required\n";
+	echo "    --first  - First host id in the range to collect from.\n";
+	echo "    --last   - Last host id in the range to collect from.\n";
+	echo "Optional:\n";
+	echo "    --poller - The poller to run as.  Defaults to the system poller.\n";
+	echo "    --mibs   - Refresh all system mibs from hosts supporting snmp.\n";
+	echo "    --debug  - Display verbose output during execution.\n\n";
 }
 
 function debug($message) {
@@ -129,26 +138,30 @@ array_shift($parms);
 $first     = NULL;
 $last      = NULL;
 $allhost   = true;
-$refresh   = false;
 $debug     = false;
 $mibs      = false;
 $poller_id = $config['poller_id'];
 
 if (sizeof($parms)) {
 	foreach($parms as $parameter) {
-		@list($arg, $value) = @explode('=', $parameter);
+		if (strpos($parameter, '=')) {
+			list($arg, $value) = explode('=', $parameter);
+		} else {
+			$arg = $parameter;
+			$value = '';
+		}
 
 		switch ($arg) {
-		case '--refresh':
-			$refresh = true;
-
-			break;
 		case '--version':
 		case '-V':
-		case '-H':
+		case '-v':
+			display_version();
+			exit;
 		case '--help':
+		case '-H':
+		case '-h':
 			display_help();
-			exit(0);
+			exit;
 		case '--poller':
 		case '-p':
 			$poller_id = $value;
@@ -208,22 +221,6 @@ if (!is_numeric($poller_id) || $poller_id < 1) {
 
 /* notify cacti processes that a poller is running */
 record_cmdphp_started();
-
-/* correct for a windows PHP bug. fixed in 5.2.0 */
-if ($config['cacti_server_os'] == 'win32') {
-	/* check PHP versions first, we know 5.2.0 and above is fixed */
-	if (version_compare('5.2.0', PHP_VERSION, '>=')) {
-		$guess = substr(__FILE__,0,2);
-		if ($guess == strtoupper($guess)) {
-			$response = 'ERROR: The PHP Script: CMD.PHP Must be started using the full path to the file and in lower case.  This is a PHP Bug!!!';
-			print "\n";
-			cacti_log($response, true, 'POLLER');
-
-			record_cmdphp_done();
-			exit('-1');
-		}
-	}
-}
 
 /* install signal handlers for UNIX only */
 if (function_exists('pcntl_signal')) {
