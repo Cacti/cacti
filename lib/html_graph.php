@@ -73,9 +73,9 @@ function html_graph_validate_preview_request_vars() {
 			'default' => '1'
 			),
 		'graph_template_id' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_IS_NUMERIC_LIST, 
 			'pageset' => true,
-			'default' => '0'
+			'default' => read_user_setting('graph_template_id')
 			),
 		'columns' => array(
 			'filter' => FILTER_VALIDATE_INT, 
@@ -142,15 +142,28 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 						<?php print __('Template');?>
 					</td>
 					<td>
-						<select id='graph_template_id' onChange='applyGraphFilter()'>
-							<option value='0'<?php if (get_request_var('graph_template_id') == '0') {?> selected<?php }?>><?php print __('Any');?></option>
+						<select id='graph_template_id' multiple>
+							<option value='0'<?php if (get_request_var('graph_template_id') == '0') {?> selected<?php }?>><?php print __('All Graphs & Templates');?></option>
 							<?php
+							$graph_templates = get_allowed_graph_templates();
+							if (sizeof($graph_templates)) {
+								$selected    = explode(',', get_request_var('graph_template_id'));
+								foreach ($graph_templates as $gt) {
+									$found = db_fetch_cell_prepared('SELECT id 
+										FROM graph_local 
+										WHERE graph_template_id = ? LIMIT 1', 
+										array($gt['id']));
 
-							$graph_templates = get_allowed_graph_templates($templates_where);
-
-							if (sizeof($graph_templates) > 0) {
-								foreach ($graph_templates as $template) {
-									print "<option value='" . $template['id'] . "'"; if (get_request_var('graph_template_id') == $template['id']) { print ' selected'; } print '>' . htmlspecialchars($template['name']) . "</option>\n";
+									if ($found) {
+										print "<option value='" . $gt['id'] . "'";
+										if (sizeof($selected)) {
+											if (in_array($gt['id'], $selected)) {
+												print ' selected';
+											}
+										}
+										print '>';
+										print $gt['name'] . "</option>\n";
+									}
 								}
 							}
 							?>
@@ -339,6 +352,64 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 		var date2Open = false;
 
 		$(function() {
+			var msWidth = 100;
+			$('#graph_template_id option').each(function() {
+				if ($(this).textWidth() > msWidth) {
+					msWidth = $(this).textWidth();
+				}
+				$('#graph_template_id').css('width', msWidth+80+'px');
+			});
+
+			$('#graph_template_id').multiselect({
+				noneSelectedText: '<?php print __('All Graphs & Templates');?>', 
+				selectedText: function(numChecked, numTotal, checkedItems) {
+					myReturn = numChecked + ' <?php print __('Templates Selected');?>';
+					$.each(checkedItems, function(index, value) {
+						if (value.value == '0') {
+							myReturn='<?php print __('All Graphs & Templates');?>';
+							return false;
+						}
+					});
+					return myReturn;
+				},
+				checkAllText: '<?php print __('All');?>', 
+				uncheckAllText: '<?php print __('None');?>',
+				uncheckall: function() {
+					$(this).multiselect('widget').find(':checkbox:first').each(function() {
+						$(this).prop('checked', true);
+					});
+				},
+				close: function(event, ui) {
+					applyGraphFilter();
+				},
+				click: function(event, ui) {
+					checked=$(this).multiselect('widget').find('input:checked').length;
+
+					if (ui.value == 0) {
+						if (ui.checked == true) {
+							$('#graph_template_id').multiselect('uncheckAll');
+							$(this).multiselect('widget').find(':checkbox:first').each(function() {
+								$(this).prop('checked', true);
+							});
+						}
+					}else if (checked == 0) {
+						$(this).multiselect('widget').find(':checkbox:first').each(function() {
+							$(this).click();
+						});
+					}else if ($(this).multiselect('widget').find('input:checked:first').val() == '0') {
+						if (checked > 0) {
+							$(this).multiselect('widget').find(':checkbox:first').each(function() {
+								$(this).click();
+								$(this).prop('disable', true);
+							});
+						}
+					}
+				}
+			}).multiselectfilter({
+				label: '<?php print __('Search');?>', 
+				width: msWidth
+			});
+
 			$('#startDate').click(function() {
 				if (date1Open) {
 					date1Open = false;

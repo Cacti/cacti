@@ -119,14 +119,21 @@ case 'save':
 		get_filter_request_var('predefined_timespan');
 		get_filter_request_var('predefined_timeshift');
 		get_filter_request_var('graphs');
+		get_filter_request_var('graph_template_id', FILTER_VALIDATE_IS_NUMERIC_LIST);
 
 		if (isset_request_var('predefined_timespan')) {
 			set_graph_config_option('default_timespan', get_request_var('predefined_timespan'));
 		}
+
 		if (isset_request_var('predefined_timeshift')) {
 			set_graph_config_option('default_timeshift', get_request_var('predefined_timeshift'));
 		}
-		if (isset_request_var('section') && get_request_var('section') == 'preview') {
+
+		if (isset_request_var('graph_template_id')) {
+			set_graph_config_option('graph_template_id', get_request_var('graph_template_id'));
+		}
+
+		if (isset_request_var('section') && get_nfilter_request_var('section') == 'preview') {
 			if (isset_request_var('columns')) {
 				set_graph_config_option('num_columns', get_request_var('columns'));
 			}
@@ -134,7 +141,7 @@ case 'save':
 				set_graph_config_option('preview_graphs_per_page', get_request_var('graphs'));
 			}
 			if (isset_request_var('thumbnails')) {
-				set_graph_config_option('thumbnail_section_preview', get_request_var('thumbnails') == 'true' ? 'on':'');
+				set_graph_config_option('thumbnail_section_preview', get_nfilter_request_var('thumbnails') == 'true' ? 'on':'');
 			}
 		}else{
 			if (isset_request_var('columns')) {
@@ -325,7 +332,7 @@ case 'preview':
 	}
 
 	if (!isempty_request_var('graph_template_id')) {
-		$sql_where .= (empty($sql_where) ? '' : ' AND') . ' gl.graph_template_id=' . get_request_var('graph_template_id');
+		$sql_where .= (empty($sql_where) ? '' : ' AND') . ' gl.graph_template_id IN (' . get_request_var('graph_template_id') . ')';
 	}
 
 	$limit      = (get_request_var('graphs')*(get_request_var('page')-1)) . ',' . get_request_var('graphs');
@@ -396,7 +403,7 @@ case 'list':
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'graph_template_id' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_IS_NUMERIC_LIST, 
 			'pageset' => true,
 			'default' => '0'
 			),
@@ -463,20 +470,40 @@ case 'list':
 		<form id='form_graph_list' name='form_graph_list' method='post' action='graph_view.php?action=list'>
 			<table class='filterTable'>
 				<tr class='noprint'>
+					<td>
+						<?php print __('Search');?>
+					</td>
+					<td>
+						<input id='filter' type='text' name='filter' size='25' value='<?php print htmlspecialchars(get_request_var('filter'));?>'>
+					</td>
 					<?php print html_host_filter(get_request_var('host_id'));?>
 					<td>
 						<?php print __('Template');?>
 					</td>
 					<td>
-						<select id='graph_template_id' name='graph_template_id' onChange='applyFilter()'>
-							<option value='0'<?php print htmlspecialchars(get_request_var('filter'));?><?php if (get_request_var('host_id') == '0') {?> selected<?php }?>><?php print __('Any');?></option>
+						<select id='graph_template_id' multiple style='overflow-y: scroll;' name='graph_template_id'>
+							<option value='0'<?php print htmlspecialchars(get_request_var('filter'));?><?php if (get_request_var('host_id') == '0') {?> selected<?php }?>><?php print __('All Graphs & Templates');?></option>
 							<?php
 
 							$graph_templates = get_allowed_graph_templates();
+							if (sizeof($graph_templates)) {
+								$selected    = explode(',', get_request_var('graph_template_id'));
+								foreach ($graph_templates as $gt) {
+									$found = db_fetch_cell_prepared('SELECT id 
+										FROM graph_local 
+										WHERE graph_template_id = ? LIMIT 1', 
+										array($gt['id']));
 
-							if (sizeof($graph_templates) > 0) {
-								foreach ($graph_templates as $template) {
-									print "<option value='" . $template['id'] . "'"; if (get_request_var('graph_template_id') == $template['id']) { print ' selected'; } print '>' . htmlspecialchars($template['name']) . "</option>\n";
+									if ($found) {
+										print "<option value='" . $gt['id'] . "'";
+										if (sizeof($selected)) {
+											if (in_array($gt['id'], $selected)) {
+												print ' selected';
+											}
+										}
+										print '>';
+										print $gt['name'] . "</option>\n";
+									}
 								}
 							}
 							?>
@@ -487,7 +514,7 @@ case 'list':
 					</td>
 					<td>
 						<select id='rows' name='rows' onChange='applyFilter()'>
-							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?>></option>
+							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
 							if (sizeof($item_rows) > 0) {
 							foreach ($item_rows as $key => $value) {
@@ -498,13 +525,7 @@ case 'list':
 						</select>
 					</td>
 					<td>
-						<?php print __('Search');?>
-					</td>
-					<td>
-						<input id='filter' type='text' name='filter' size='25' value='<?php print htmlspecialchars(get_request_var('filter'));?>'>
-					</td>
-					<td>
-						<input type='button' id='refresh' value='<?php print __('Go');?>' title='<?php print __('Set/Refresh Filters');?>' onClick='applyFilter()'>
+						<input type='submit' id='refresh' value='<?php print __('Go');?>' title='<?php print __('Set/Refresh Filters');?>'>
 					</td>
 					<td>
 						<input type='button' id='clear' value='<?php print __('Clear');?>' title='<?php print __('Clear Filters');?>' onClick='clearFilter()'>
@@ -531,13 +552,13 @@ case 'list':
 	}
 
 	if (!isempty_request_var('host_id') && get_request_var('host_id') > 0) {
-		$sql_where .= (empty($sql_where) ? '' : ' AND') . ' gl.host_id=' . get_request_var('host_id');
+		$sql_where .= ($sql_where == '' ? '' : ' AND') . ' gl.host_id=' . get_request_var('host_id');
 	}elseif (isempty_request_var('host_id')) {
-		$sql_where .= (empty($sql_where) ? '' : ' AND') . ' gl.host_id=0';
+		$sql_where .= ($sql_where == '' ? '' : ' AND') . ' gl.host_id=0';
 	}
 
 	if (!isempty_request_var('graph_template_id')) {
-		$sql_where .= (empty($sql_where) ? '' : ' AND') . ' gl.graph_template_id=' . get_request_var('graph_template_id');
+		$sql_where .= ($sql_where == '' ? '' : ' AND') . ' gl.graph_template_id IN (' . get_request_var('graph_template_id') . ')';
 	}
 
 	$total_rows = 0;
@@ -559,7 +580,7 @@ case 'list':
 	if (sizeof($graphs)) {
 		foreach ($graphs as $graph) {
 			form_alternate_row('line' . $graph['local_graph_id'], true);
-			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars('graph.php?local_graph_id=' . $graph['local_graph_id'] . '&rra_id=0') . "'>" . htmlspecialchars($graph['title_cache']) . '</a>', $graph['local_graph_id']);
+			form_selectable_cell(filter_value($graph['title_cache'], get_request_var('filter'), 'graph.php?local_graph_id=' . $graph['local_graph_id'] . '&rra_id=0'), $graph['local_graph_id']);
 			form_selectable_cell($graph['description'], $graph['local_graph_id']);
 			form_selectable_cell($graph['template_name'], $graph['local_graph_id']);
 			form_selectable_cell($graph['height'] . 'x' . $graph['width'], $graph['local_graph_id']);
@@ -660,22 +681,65 @@ case 'list':
 		return false;
 	}
 
-	function form_graph(objForm,objFormSubmit) {
-		var strAdd = '';
-		var strDel = '';
-		$('input[id^=chk_]').each(function(data) {
-			graphID = $(this).attr('id').replace('chk_','');
-			if ($(this).is(':checked')) {
-				strAdd += (strAdd.length > 0 ? ',':'') + graphID;
-			} else if (graphChecked(graphID)) {
-				strAdd += (strAdd.length > 0 ? ',':'') + graphID;
-			}
-		});
-		objFormSubmit.graph_add.value = strAdd;
-		objFormSubmit.graph_remove.value = strDel;
-	}
-
 	$(function() {
+		var msWidth = 100;
+		$('#graph_template_id option').each(function() {
+			if ($(this).textWidth() > msWidth) {
+				msWidth = $(this).textWidth();
+			}
+			$('#graph_template_id').css('width', msWidth+80+'px');
+		});
+
+		$('#graph_template_id').multiselect({
+			noneSelectedText: '<?php print __('All Graphs & Templatess');?>', 
+			selectedText: function(numChecked, numTotal, checkedItems) {
+				myReturn = numChecked + ' <?php print __('Templates Selected');?>';
+				$.each(checkedItems, function(index, value) {
+					if (value.value == '0') {
+						myReturn='<?php print __('All Graphs & Templates');?>';
+						return false;
+					}
+				});
+				return myReturn;
+			},
+			checkAllText: '<?php print __('All');?>', 
+			uncheckAllText: '<?php print __('None');?>',
+			uncheckall: function() {
+				$(this).multiselect('widget').find(':checkbox:first').each(function() {
+					$(this).prop('checked', true);
+				});
+			},
+			close: function(event, ui) {
+				applyFilter();
+			},
+			click: function(event, ui) {
+				checked=$(this).multiselect('widget').find('input:checked').length;
+
+				if (ui.value == 0) {
+					if (ui.checked == true) {
+						$('#graph_template_id').multiselect('uncheckAll');
+						$(this).multiselect('widget').find(':checkbox:first').each(function() {
+							$(this).prop('checked', true);
+						});
+					}
+				}else if (checked == 0) {
+					$(this).multiselect('widget').find(':checkbox:first').each(function() {
+						$(this).click();
+					});
+				}else if ($(this).multiselect('widget').find('input:checked:first').val() == '0') {
+					if (checked > 0) {
+						$(this).multiselect('widget').find(':checkbox:first').each(function() {
+							$(this).click();
+							$(this).prop('disable', true);
+						});
+					}
+				}
+			}
+		}).multiselectfilter({
+			label: '<?php print __('Search');?>', 
+			width: msWidth
+		});
+
 		$('#form_graph_list').on('submit', function(event) {
 			event.preventDefault();
 			applyFilter();

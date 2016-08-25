@@ -437,6 +437,11 @@ function html_validate_tree_vars() {
 			'pageset' => true,
 			'default' => read_user_setting('treeview_graphs_per_page')
 			),
+		'graph_template_id' => array(
+			'filter' => FILTER_VALIDATE_IS_NUMERIC_LIST, 
+			'pageset' => true,
+			'default' => read_user_setting('graph_template_id')
+			),
 		'columns' => array(
 			'filter' => FILTER_VALIDATE_INT, 
 			'default' => read_user_setting('num_columns_tree')
@@ -516,9 +521,20 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 	$leaf_type = api_tree_get_item_type($leaf_id);
 
 	/* get information for the headers */
-	if (!empty($tree_id)) { $tree_name = db_fetch_cell("SELECT name FROM graph_tree WHERE id=$tree_id"); }
-	if (!empty($leaf_id)) { $leaf_name = $leaf['title']; }
-	if (!empty($leaf_id)) { $host_name = db_fetch_cell("SELECT host.description FROM (graph_tree_items,host) WHERE graph_tree_items.host_id=host.id AND graph_tree_items.id=$leaf_id"); }
+	if (!empty($tree_id)) { 
+		$tree_name = db_fetch_cell_prepared('SELECT name FROM graph_tree WHERE id = ?', array($tree_id)); 
+	}
+
+	if (!empty($leaf_id)) { 
+		$leaf_name = $leaf['title']; 
+	}
+
+	if (!empty($leaf_id)) { 
+		$host_name = db_fetch_cell_prepared('SELECT host.description 
+			FROM (graph_tree_items,host) 
+			WHERE graph_tree_items.host_id=host.id 
+			AND graph_tree_items.id = ?', array($leaf_id)); 
+	}
 
 	$host_group_data_array = explode(':', $host_group_data);
 
@@ -553,6 +569,53 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 					<td>
 						<input id='filter' size='30' name='filter' value='<?php print htmlspecialchars(get_request_var('filter'));?>'>
 					</td>
+					<td>
+						<?php print __('Template');?>
+					</td>
+					<td>
+						<select id='graph_template_id' multiple>
+							<option value='0'<?php if (get_request_var('graph_template_id') == '0') {?> selected<?php }?>><?php print __('All Graphs & Templates');?></option>
+							<?php
+							$graph_templates = get_allowed_graph_templates();
+							if (sizeof($graph_templates)) {
+								$selected    = explode(',', get_request_var('graph_template_id'));
+								foreach ($graph_templates as $gt) {
+									$found = db_fetch_cell_prepared('SELECT id 
+										FROM graph_local 
+										WHERE graph_template_id = ? LIMIT 1', 
+										array($gt['id']));
+
+									if ($found) {
+										print "<option value='" . $gt['id'] . "'";
+										if (sizeof($selected)) {
+											if (in_array($gt['id'], $selected)) {
+												print ' selected';
+											}
+										}
+										print '>';
+										print $gt['name'] . "</option>\n";
+									}
+								}
+							}
+							?>
+						</select>
+					</td>
+					<td>
+						<input type='button' value='<?php print __('Go');?>' title='<?php print __('Set/Refresh Filter');?>' onClick='applyGraphFilter()'>
+					</td>
+					<td>
+						<input type='button' value='<?php print __('Clear');?>' title='<?php print __('Clear Filters');?>' onClick='applyGraphFilter()'>
+					</td>
+					<?php if (is_view_allowed('graph_settings')) {?>
+					<td>
+						<input type='button' id='save' value='<?php print __('Save');?>' title='<?php print __('Save the current Graphs, Columns, Thumbnail, Preset, and Timeshift preferences to your profile');?>' onClick='saveGraphFilter("tree")'>
+					</td>
+					<td id='text'></td>
+					<?php }?>
+				</tr>
+			</table>
+			<table class='filterTable'>
+				<tr>
 					<td>
 						<?php print __('Graphs');?>
 					</td>
@@ -590,18 +653,6 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 					<td>
 						<input id='thumbnails' type='checkbox' name='thumbnails' onClick='applyGraphFilter()' <?php print ((get_request_var('thumbnails') == 'true') ? 'checked':'');?>>
 					</td>
-					<td>
-						<input type='button' value='<?php print __('Go');?>' title='<?php print __('Set/Refresh Filter');?>' onClick='applyGraphFilter()'>
-					</td>
-					<td>
-						<input type='button' value='<?php print __('Clear');?>' title='<?php print __('Clear Filters');?>' onClick='applyGraphFilter()'>
-					</td>
-					<?php if (is_view_allowed('graph_settings')) {?>
-					<td>
-						<input type='button' id='save' value='<?php print __('Save');?>' title='<?php print __('Save the current Graphs, Columns, Thumbnail, Preset, and Timeshift preferences to your profile');?>' onClick='saveGraphFilter("tree")'>
-					</td>
-					<td id='text'></td>
-					<?php }?>
 				</tr>
 			</table>
 		</form>
@@ -730,6 +781,64 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 	var date2Open  = false;
 
 	$(function() {
+		var msWidth = 100;
+		$('#graph_template_id option').each(function() {
+			if ($(this).textWidth() > msWidth) {
+				msWidth = $(this).textWidth();
+			}
+			$('#graph_template_id').css('width', msWidth+80+'px');
+		});
+
+		$('#graph_template_id').multiselect({
+			noneSelectedText: '<?php print __('All Graphs & Templates');?>', 
+			selectedText: function(numChecked, numTotal, checkedItems) {
+				myReturn = numChecked + ' <?php print __('Templates Selected');?>';
+				$.each(checkedItems, function(index, value) {
+					if (value.value == '0') {
+						myReturn='<?php print __('All Graphs & Templates');?>';
+						return false;
+					}
+				});
+				return myReturn;
+			},
+			checkAllText: '<?php print __('All');?>', 
+			uncheckAllText: '<?php print __('None');?>',
+			uncheckall: function() {
+				$(this).multiselect('widget').find(':checkbox:first').each(function() {
+					$(this).prop('checked', true);
+				});
+			},
+			close: function(event, ui) {
+				applyGraphFilter();
+			},
+			click: function(event, ui) {
+				checked=$(this).multiselect('widget').find('input:checked').length;
+
+				if (ui.value == 0) {
+					if (ui.checked == true) {
+						$('#graph_template_id').multiselect('uncheckAll');
+						$(this).multiselect('widget').find(':checkbox:first').each(function() {
+							$(this).prop('checked', true);
+						});
+					}
+				}else if (checked == 0) {
+					$(this).multiselect('widget').find(':checkbox:first').each(function() {
+						$(this).click();
+					});
+				}else if ($(this).multiselect('widget').find('input:checked:first').val() == '0') {
+					if (checked > 0) {
+						$(this).multiselect('widget').find(':checkbox:first').each(function() {
+							$(this).click();
+							$(this).prop('disable', true);
+						});
+					}
+				}
+			}
+		}).multiselectfilter({
+			label: '<?php print __('Search');?>', 
+			width: msWidth
+		});
+
 		$('#startDate').click(function() {
 			if (date1Open) {
 				date1Open = false;
@@ -800,7 +909,11 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 	if (($leaf_type == 'header') || (empty($leaf_id))) {
 		$sql_where = '';
 		if (strlen(get_request_var('filter'))) {
-			$sql_where = " (gtg.title_cache LIKE '%" . get_request_var('filter') . "%' OR gtg.title LIKE '%" . get_request_var('filter') . "%')";
+			$sql_where .= " (gtg.title_cache LIKE '%" . get_request_var('filter') . "%' OR gtg.title LIKE '%" . get_request_var('filter') . "%')";
+		}
+
+		if (get_request_var('graph_template_id') != '' && get_request_var('graph_template_id') != '0') {
+			$sql_where .= ($sql_where != '' ? ' AND ':'') . ' (gl.graph_template_id IN (' . get_request_var('graph_template_id') . '))';
 		}
 
 		$graph_list = get_allowed_tree_header_graphs($tree_id, $leaf_id, $sql_where);
@@ -808,6 +921,10 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 		/* graph template grouping */
 		if ($leaf['host_grouping_type'] == HOST_GROUPING_GRAPH_TEMPLATE) {
 			$sql_where       = 'gl.host_id=' . $leaf['host_id'] . (empty($graph_template_id) ? '' : ' AND gt.graph_template_id=' . $graph_template_id);
+			if (get_request_var('graph_template_id') != '' && get_request_var('graph_template_id') != '0') {
+				$sql_where .= ($sql_where != '' ? ' AND ':'') . ' (gl.graph_template_id IN (' . get_request_var('graph_template_id') . '))';
+			}
+
 			$graph_templates = get_allowed_graph_templates($sql_where);
 
 			/* for graphs without a template */
@@ -816,26 +933,26 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 				'name' => '(No Graph Template)'
 				));
 
-			if (sizeof($graph_templates) > 0) {
-			foreach ($graph_templates as $graph_template) {
-				$sql_where = '';
-				if (strlen(get_request_var('filter'))) {
-					$sql_where = " (gtg.title_cache LIKE '%" . get_request_var('filter') . "%')";
-				}
-				$sql_where .= (strlen($sql_where) ? 'AND':'') . ' gl.graph_template_id=' . $graph_template['id'] . ' AND gl.host_id=' . $leaf['host_id'];
+			if (sizeof($graph_templates)) {
+				foreach ($graph_templates as $graph_template) {
+					$sql_where = '';
+					if (strlen(get_request_var('filter'))) {
+						$sql_where = " (gtg.title_cache LIKE '%" . get_request_var('filter') . "%')";
+					}
+					$sql_where .= (strlen($sql_where) ? 'AND':'') . ' gl.graph_template_id=' . $graph_template['id'] . ' AND gl.host_id=' . $leaf['host_id'];
 
-				$graphs = get_allowed_graphs($sql_where);
+					$graphs = get_allowed_graphs($sql_where);
 
-				/* let's sort the graphs naturally */
-				usort($graphs, 'naturally_sort_graphs');
+					/* let's sort the graphs naturally */
+					usort($graphs, 'naturally_sort_graphs');
 
-				if (sizeof($graphs)) {
-				foreach ($graphs as $graph) {
-					$graph['graph_template_name'] = $graph_template['name'];
-					array_push($graph_list, $graph);
+					if (sizeof($graphs)) {
+						foreach ($graphs as $graph) {
+							$graph['graph_template_name'] = $graph_template['name'];
+							array_push($graph_list, $graph);
+						}
+					}
 				}
-				}
-			}
 			}
 		/* data query index grouping */
 		}elseif ($leaf['host_grouping_type'] == HOST_GROUPING_DATA_QUERY_INDEX) {
@@ -858,47 +975,48 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 				);
 			}
 
-			if (sizeof($data_queries) > 0) {
-			foreach ($data_queries as $data_query) {
-				$sql_where = '';
+			if (sizeof($data_queries)) {
+				foreach ($data_queries as $data_query) {
+					$sql_where = '';
 
-				/* fetch a list of field names that are sorted by the preferred sort field */
-				$sort_field_data = get_formatted_data_query_indexes($leaf['host_id'], $data_query['id']);
+					/* fetch a list of field names that are sorted by the preferred sort field */
+					$sort_field_data = get_formatted_data_query_indexes($leaf['host_id'], $data_query['id']);
 
-				if (strlen(get_request_var('filter'))) {
-					$sql_where = " (gtg.title_cache LIKE '%" . get_request_var('filter') . "%')";
-				}
-
-				/* grab a list of all graphs for this host/data query combination */
-				$sql_where .= (strlen($sql_where) ? ' AND ':'') . ' gl.snmp_query_id=' . $data_query['id'] . ' AND gl.host_id=' . $leaf['host_id'] . "
-                                        " . (empty($data_query_index) ? '' : " AND gl.snmp_index='$data_query_index'");
-
-				$graphs = get_allowed_graphs($sql_where);
-
-				/* re-key the results on data query index */
-				$snmp_index_to_graph = array();
-				if (sizeof($graphs) > 0) {
-					/* let's sort the graphs naturally */
-					usort($graphs, 'naturally_sort_graphs');
-
-					foreach ($graphs as $graph) {
-						$snmp_index_to_graph{$graph['snmp_index']}{$graph['local_graph_id']} = $graph['title_cache'];
-						$graphs_height[$graph['local_graph_id']] = $graph['height'];
-						$graphs_width[$graph['local_graph_id']] = $graph['width'];
+					if (strlen(get_request_var('filter'))) {
+						$sql_where = " (gtg.title_cache LIKE '%" . get_request_var('filter') . "%')";
 					}
-				}
 
-				/* using the sorted data as they key; grab each snmp index from the master list */
-				while (list($snmp_index, $sort_field_value) = each($sort_field_data)) {
-					/* render each graph for the current data query index */
-					if (isset($snmp_index_to_graph[$snmp_index])) {
-						while (list($local_graph_id, $graph_title) = each($snmp_index_to_graph[$snmp_index])) {
-							/* reformat the array so it's compatable with the html_graph* area functions */
-							array_push($graph_list, array('data_query_name' => $data_query['name'], 'sort_field_value' => $sort_field_value, 'local_graph_id' => $local_graph_id, 'title_cache' => $graph_title, 'height' => $graphs_height[$graph['local_graph_id']], 'width' => $graphs_width[$graph['local_graph_id']]));
+					/* grab a list of all graphs for this host/data query combination */
+					$sql_where .= (strlen($sql_where) ? ' AND ':'') . 
+						' gl.snmp_query_id=' . $data_query['id'] . ' AND gl.host_id=' . $leaf['host_id'] . 
+						' ' . (empty($data_query_index) ? '' : " AND gl.snmp_index='$data_query_index'");
+
+					$graphs = get_allowed_graphs($sql_where);
+
+					/* re-key the results on data query index */
+					$snmp_index_to_graph = array();
+					if (sizeof($graphs) > 0) {
+						/* let's sort the graphs naturally */
+						usort($graphs, 'naturally_sort_graphs');
+
+						foreach ($graphs as $graph) {
+							$snmp_index_to_graph{$graph['snmp_index']}{$graph['local_graph_id']} = $graph['title_cache'];
+							$graphs_height[$graph['local_graph_id']] = $graph['height'];
+							$graphs_width[$graph['local_graph_id']] = $graph['width'];
+						}
+					}
+
+					/* using the sorted data as they key; grab each snmp index from the master list */
+					while (list($snmp_index, $sort_field_value) = each($sort_field_data)) {
+						/* render each graph for the current data query index */
+						if (isset($snmp_index_to_graph[$snmp_index])) {
+							while (list($local_graph_id, $graph_title) = each($snmp_index_to_graph[$snmp_index])) {
+								/* reformat the array so it's compatable with the html_graph* area functions */
+								array_push($graph_list, array('data_query_name' => $data_query['name'], 'sort_field_value' => $sort_field_value, 'local_graph_id' => $local_graph_id, 'title_cache' => $graph_title, 'height' => $graphs_height[$graph['local_graph_id']], 'width' => $graphs_width[$graph['local_graph_id']]));
+							}
 						}
 					}
 				}
-			}
 			}
 		}
 	}
@@ -910,7 +1028,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 
 	print $nav;
 
-	html_start_box('', '100%', "", '3', 'center', '');
+	html_start_box('', '100%', '', '3', 'center', '');
 
 	/* start graph display */
 	print "<tr class='tableHeader'><td style='width:390px;' colspan='11' class='graphSubHeaderColumn textHeaderDark'>$title</td></tr>";

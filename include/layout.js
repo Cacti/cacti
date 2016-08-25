@@ -889,21 +889,27 @@ function saveGraphFilter(section) {
 	href=graphPage+'?action=save'+
 		'&columns='+$('#columns').val()+
 		'&graphs='+$('#graphs').val()+
-		'&thumbnails='+$('#thumbnails').is(':checked')+
+		'&graph_template_id='+$('#graph_template_id').val()+
 		'&predefined_timespan='+$('#predefined_timespan').val()+
 		'&predefined_timeshift='+$('#predefined_timeshift').val()+
 		'&thumbnails='+$('#thumbnails').is(':checked');
 
 	$.get(href+'&header=false&section='+section, function(data) {
-		$('#text').show().text('Filter Settings Saved').fadeOut(2000);
+		$('#text').show().text('Filter Settings Saved').fadeOut(2000, function() {
+			$('#text').empty();
+		});
 	});
 }
 
 function applyGraphFilter() {
 	href = graphPage+'?action='+pageAction+
-		'&filter='+$('#filter').val()+'&host_id='+$('#host_id').val()+'&columns='+$('#columns').val()+
-		'&graphs='+$('#graphs').val()+'&graph_template_id='+$('#graph_template_id').val()+
+		'&filter='+$('#filter').val()+
+		'&host_id='+$('#host_id').val()+
+		'&columns='+$('#columns').val()+
+		'&graphs='+$('#graphs').val()+
+		'&graph_template_id='+$('#graph_template_id').val()+
 		'&thumbnails='+$('#thumbnails').is(':checked');
+
 	new_href = href.replace('action=tree&', 'action=tree_content&');
 
 	$.get(new_href+'&header=false', function(data) {
@@ -1117,7 +1123,7 @@ function initializeGraphs() {
 		applyFilter();
 	});
 
-	mainWidth = $('#main').width();
+	mainWidth = $('#main').width()-40;
 	myColumns = $('#columns').val();
 	isThumb   = $('#thumbnails').is(':checked');
 
