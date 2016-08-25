@@ -102,7 +102,7 @@ function display_help () {
 	echo "in scalability limits of cmd.php.\n\n";
 	echo "Required\n";
 	echo "    --first  - First host id in the range to collect from.\n";
-	echo "    --last   - Last host id in the range to collect from.\n";
+	echo "    --last   - Last host id in the range to collect from.\n\n";
 	echo "Optional:\n";
 	echo "    --poller - The poller to run as.  Defaults to the system poller.\n";
 	echo "    --mibs   - Refresh all system mibs from hosts supporting snmp.\n";
