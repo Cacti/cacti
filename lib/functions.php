@@ -3335,7 +3335,7 @@ function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '
 
 		$secure  = read_config_option('settings_smtp_secure');
 		if (!empty($secure) && $secure != 'none') {
-			$smtp->SMTPSecure = $secure;
+			$mail->SMTPSecure = $secure;
 			if (substr_count($mail->Host, ':') == 0) {
 				$mail->Host = $secure . '://' . $mail->Host;
 			}
