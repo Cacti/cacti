@@ -74,7 +74,7 @@ include_once($config['base_path'] . '/lib/reports.php');
 $force     = false;
 $debug     = false;
 $mibs      = false;
-echo "Poller id is " . $poller_id . "\n";
+
 /* set the poller_id */
 if (!isset($config['poller_id'])) {
 	$poller_id = 1;
@@ -597,7 +597,7 @@ function poller_enabled_check($poller_id) {
 
 	if ($disabled == 'on') {
 		db_execute_prepared('UPDATE poller SET last_status=NOW() WHERE id = ?', array($poller_id));
-		cacti_log('WARNING: Poller is Disabled, not graphing or other activities are running', true, 'SYSTEM');
+		cacti_log('WARNING: Poller ' . $poller_id . ' is Disabled, graphing or other activities are running', true, 'SYSTEM');
 		exit(1);
 	}
 }
