@@ -361,7 +361,58 @@ function get_filter_request_var($name, $filter = FILTER_VALIDATE_INT, $options =
 				return '';
 			}
 		}else{
-			if (!sizeof($options)) {
+			if (get_nfilter_request_var($name) == '0') {
+				$value = '0';
+			}elseif (get_nfilter_request_var($name) == 'undefined') {
+				if (isset($options['default'])) {
+					$value = $options['default'];
+				}else{
+					$value = '';
+				}
+			}elseif (isempty_request_var($name)) {
+				$value = '';
+			}elseif ($filter == FILTER_VALIDATE_IS_REGEX) {
+				$valid = validate_is_regex($_REQUEST[$name]);
+				if ($valid === true) {
+					$value = $_REQUEST[$name];
+				}else{
+					$value = FALSE;
+					$custom_error = $valid;
+				}
+			}elseif ($filter == FILTER_VALIDATE_IS_NUMERIC_ARRAY) {
+				$valid = true;
+				if (is_array($_REQUEST[$name])) {
+					foreach($_REQUEST[$name] AS $number) {
+						if (!is_numeric($number)) {
+							$valid = false;
+							break;
+						}
+					}
+				}else{
+					$valid = false;
+				}
+
+				if ($valid == true) {
+					$value = $_REQUEST[$name];
+				}else{
+					$value = false;
+				}
+			}elseif ($filter == FILTER_VALIDATE_IS_NUMERIC_LIST) {
+				$valid = true;
+				$values = explode(',', $_REQUEST[$name]);
+				foreach($values AS $number) {
+					if (!is_numeric($number)) {
+						$valid = false;
+						break;
+					}
+				}
+
+				if ($valid == true) {
+					$value = $_REQUEST[$name];
+				}else{
+					$value = false;
+				}
+			}elseif (!sizeof($options)) {
 				$value = filter_var($_REQUEST[$name], $filter);
 			}else{
 				$value = filter_var($_REQUEST[$name], $filter, $options);
@@ -369,7 +420,7 @@ function get_filter_request_var($name, $filter = FILTER_VALIDATE_INT, $options =
 		}
 
 		if ($value === false) {
-			die_html_input_error($name, get_request_var($name));
+			die_html_input_error($name, get_nfilter_request_var($name));
 		}else{
 			set_request_var($name, $value);
 
@@ -555,7 +606,7 @@ function validate_store_request_vars($filters, $sess_prefix = '') {
 					if ($valid == true) {
 						$value = $_REQUEST[$variable];
 					}else{
-						$values = false;
+						$value = false;
 					}
 				}elseif ($options['filter'] == FILTER_VALIDATE_IS_NUMERIC_LIST) {
 					$valid = true;
@@ -570,7 +621,7 @@ function validate_store_request_vars($filters, $sess_prefix = '') {
 					if ($valid == true) {
 						$value = $_REQUEST[$variable];
 					}else{
-						$values = false;
+						$value = false;
 					}
 				}elseif (!isset($options['options'])) {
 					$value = filter_var($_REQUEST[$variable], $options['filter']);

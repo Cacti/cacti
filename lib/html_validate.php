@@ -57,7 +57,7 @@ function die_html_input_error($variable = '', $value = '', $message = '') {
 	</table>
 	<?php
 
-	cacti_debug_backtrace('Validation' . ($variable != '' ? ", Variable:$variable":"") . ($value != '' ? ", Value:$value":""), true);
+	cacti_debug_backtrace('Validation Error' . ($variable != '' ? ", Variable:$variable":"") . ($value != '' ? ", Value:$value":""), true);
 
 	bottom_footer();
 	exit;
