@@ -34,9 +34,19 @@ include_once('./lib/html_form_template.php');
 include_once('./lib/rrd.php');
 include_once('./lib/data_query.php');
 
+validate_graph_request_vars();
+
 $graph_actions = array(
 	1  => __('Delete'),
-	2  => __('Change Graph Template'),
+);
+
+if (get_nfilter_request_var('template_id') > 0) {
+	$graph_actions += array(
+		2  => __('Change Graph Template'),
+	);
+}
+
+$graph_actions += array(
 	5  => __('Change Device'),
 	6  => __('Reapply Suggested Names'),
 	7  => __('Resize Graphs'),
@@ -63,17 +73,15 @@ switch (get_request_var('action')) {
 		break;
 	case 'graph_diff':
 		top_header();
-
 		graph_diff();
-
 		bottom_footer();
+
 		break;
 	case 'item':
 		top_header();
-
 		item();
-
 		bottom_footer();
+
 		break;
 	case 'graph_remove':
 		graph_remove();
@@ -94,17 +102,15 @@ switch (get_request_var('action')) {
 		$_SESSION['sess_graph_locked']  = (get_request_var('action') == 'lock' ? true:false);
 	case 'graph_edit':
 		top_header();
-
 		graph_edit();
-
 		bottom_footer();
+
 		break;
 	default:
 		top_header();
-
 		graph_management();
-
 		bottom_footer();
+
 		break;
 }
 
@@ -263,7 +269,7 @@ function form_save() {
 		if ($graph_template_id > 0) {
 			$input_list = db_fetch_assoc_prepared('SELECT id, column_name FROM graph_template_input WHERE graph_template_id = ?', array($graph_template_id));
 			
-			if (sizeof($input_list) > 0) {
+			if (sizeof($input_list)) {
 				foreach ($input_list as $input) {
 					/* we need to find out which graph items will be affected by saving this particular item */
 					$item_list = db_fetch_assoc_prepared('SELECT
@@ -274,7 +280,7 @@ function form_save() {
 						AND graph_template_input_defs.graph_template_input_id = ?', array(get_nfilter_request_var('local_graph_id'), $input['id']));
 					
 					/* loop through each item affected and update column data */
-					if (sizeof($item_list) > 0) {
+					if (sizeof($item_list)) {
 						foreach ($item_list as $item) {
 							/* if we are changing templates, the POST vars we are searching for here will not exist.
 							 this is because the db and form are out of sync here, but it is ok to just skip over saving
@@ -312,6 +318,50 @@ function form_save() {
     The "actions" function
    ------------------------ */
 
+function get_common_graph_templates(&$graph) {
+	if (sizeof($graph)) {
+		$dqid = db_fetch_cell_prepared('SELECT snmp_query_id FROM graph_local WHERE id = ?', array($graph['local_graph_id']));
+	}else{
+		$dqid = '';
+	}
+
+	if (!empty($dqid)) {
+		$sqgi = db_fetch_cell_prepared('SELECT id 
+			FROM snmp_query_graph 
+			WHERE snmp_query_id = ? 
+			AND graph_template_id = ?',
+			array($dqid, $graph['graph_template_id']));
+
+		$query_fields = db_fetch_cell_prepared('SELECT GROUP_CONCAT(snmp_field_name) AS columns 
+			FROM snmp_query_graph_rrd 
+			WHERE snmp_query_graph_id = ?
+			GROUP BY snmp_query_graph_id', array($sqgi));
+
+		$common_graph_ids = array_rekey(db_fetch_assoc_prepared('SELECT 
+			snmp_query_graph_id, GROUP_CONCAT(snmp_field_name) AS columns
+			FROM snmp_query_graph_rrd
+			GROUP BY snmp_query_graph_id
+			HAVING columns = ?', array($query_fields)), 'snmp_query_graph_id', 'columns');
+
+		$ids = implode(',', array_keys($common_graph_ids));
+
+		$gtsql = 'SELECT gt.id, gt.name 
+			FROM graph_templates AS gt 
+			WHERE gt.id IN (
+				SELECT graph_template_id 
+				FROM snmp_query_graph 
+				WHERE snmp_query_id = ' . $dqid . '
+				AND id IN (' . $ids . ')
+			) ORDER BY name';
+	}elseif (sizeof($graph)) {
+		$gtsql = 'SELECT gt.id, gt.name FROM graph_templates AS gt WHERE gt.id=' . $graph['graph_template_id'] . ' ORDER BY name';
+	}else{
+		$gtsql = 'SELECT gt.id, gt.name FROM graph_templates AS gt ORDER BY name';
+	}
+
+	return $gtsql;
+}
+
 function form_actions() {
 	global $graph_actions;
 
@@ -331,12 +381,14 @@ function form_actions() {
 
 				switch (get_nfilter_request_var('delete_type')) {
 					case '2': /* delete all data sources referenced by this graph */
-						$data_sources = array_rekey(db_fetch_assoc('SELECT data_template_data.local_data_id
-							FROM (data_template_rrd, data_template_data, graph_templates_item)
-							WHERE graph_templates_item.task_item_id=data_template_rrd.id
-							AND data_template_rrd.local_data_id=data_template_data.local_data_id
-							AND ' . array_to_sql_or($selected_items, 'graph_templates_item.local_graph_id') . '
-							AND data_template_data.local_data_id > 0'), 'local_data_id', 'local_data_id');
+						$data_sources = array_rekey(db_fetch_assoc('SELECT DISTINCT dtd.local_data_id
+							FROM data_template_data AS dtd
+							INNER JOIN data_template_rrd AS dtr
+							ON dtd.local_data_id=dtr.local_data_id
+							INNER JOIN graph_templates_item AS gti
+							ON dtr.id=gti.task_item_id
+							WHERE ' . array_to_sql_or($selected_items, 'gti.local_graph_id') . '
+							AND dtd.local_data_id > 0'), 'local_data_id', 'local_data_id');
 
 						if (sizeof($data_sources)) {
 							api_data_source_remove_multi($data_sources);
@@ -371,7 +423,9 @@ function form_actions() {
 			}elseif (get_request_var('drp_action') == '5') { /* change host */
 				get_filter_request_var('host_id');
 				for ($i=0;($i<count($selected_items));$i++) {
-					db_execute_prepared('UPDATE graph_local SET host_id = ? WHERE id = ?', array(get_nfilter_request_var('host_id'), $selected_items[$i]));
+					db_execute_prepared('UPDATE graph_local 
+						SET host_id = ? WHERE id = ?', 
+						array(get_nfilter_request_var('host_id'), $selected_items[$i]));
 					update_graph_title_cache($selected_items[$i]);
 				}
 			}elseif (get_request_var('drp_action') == '6') { /* reapply suggested naming */
@@ -415,9 +469,15 @@ function form_actions() {
 					$ag_data['total_prefix']          = form_input_validate(get_nfilter_request_var('aggregate_total_prefix'), 'aggregate_total_prefix', '', true, 3);
 					$ag_data['order_type']            = form_input_validate(get_nfilter_request_var('aggregate_order_type'), 'aggregate_order_type', '^[0-9]+$', true, 3);
 				} else {
-					$template_data = db_fetch_row('SELECT * FROM aggregate_graph_templates WHERE id=' . get_nfilter_request_var('aggregate_template_id'));
+					$template_data = db_fetch_row_prepared('SELECT * 
+						FROM aggregate_graph_templates 
+						WHERE id = ?', 
+						array(get_nfilter_request_var('aggregate_template_id')));
 
-					$item_no = db_fetch_cell('SELECT COUNT(*) FROM aggregate_graph_templates_item WHERE aggregate_template_id=' . get_nfilter_request_var('aggregate_template_id'));
+					$item_no = db_fetch_cell_prepared('SELECT COUNT(*) 
+						FROM aggregate_graph_templates_item 
+						WHERE aggregate_template_id = ?', 
+						array(get_nfilter_request_var('aggregate_template_id')));
 
 					$ag_data['aggregate_template_id'] = get_nfilter_request_var('aggregate_template_id');
 					$ag_data['template_propogation']  = 'on';
@@ -457,7 +517,11 @@ function form_actions() {
 				if (get_request_var('drp_action') == '9') {
 					/* get existing item ids and sequences from graph template */
 					$graph_templates_items = array_rekey(
-						db_fetch_assoc('SELECT id, sequence FROM graph_templates_item WHERE local_graph_id=0 AND graph_template_id=' . $ag_data['graph_template_id']),
+						db_fetch_assoc_prepared('SELECT id, sequence 
+							FROM graph_templates_item 
+							WHERE local_graph_id=0 
+							AND graph_template_id = ?', 
+							array($ag_data['graph_template_id'])),
 						'id', array('sequence')
 					);
 
@@ -480,7 +544,10 @@ function form_actions() {
 
 					aggregate_graph_items_save($aggregate_graph_items, 'aggregate_graphs_graph_item');
 				} else {
-					$aggregate_graph_items = db_fetch_assoc('SELECT * FROM aggregate_graph_templates_item WHERE aggregate_template_id=' . $ag_data['aggregate_template_id']);
+					$aggregate_graph_items = db_fetch_assoc_prepared('SELECT * 
+						FROM aggregate_graph_templates_item 
+						WHERE aggregate_template_id = ?', 
+						array($ag_data['aggregate_template_id']));
 				}
 
 				$attribs = $ag_data;
@@ -564,31 +631,29 @@ function form_actions() {
 		if (get_request_var('drp_action') == '1') { /* delete */
 			/* find out which (if any) data sources are being used by this graph, so we can tell the user */
 			if (isset($graph_array) && sizeof($graph_array)) {
-				$data_sources = db_fetch_assoc('select
-					data_template_data.local_data_id,
-					data_template_data.name_cache
-					from (data_template_rrd,data_template_data,graph_templates_item)
-					where graph_templates_item.task_item_id=data_template_rrd.id
-					and data_template_rrd.local_data_id=data_template_data.local_data_id
-					and ' . array_to_sql_or($graph_array, 'graph_templates_item.local_graph_id') . '
-					and data_template_data.local_data_id > 0
-					group by data_template_data.local_data_id
-					order by data_template_data.name_cache');
+				$data_sources = db_fetch_assoc('SELECT DISTINCT dtd.local_data_id, dtd.name_cache
+					FROM data_template_data AS dtd
+					INNER JOIN data_template_rrd AS dtr
+					ON dtr.local_data_id=dtd.local_data_id
+					INNER JOIN graph_templates_item AS gti
+					ON dtr.id=gti.task_item_id
+					WHERE ' . array_to_sql_or($graph_array, 'gti.local_graph_id') . '
+					AND dtd.local_data_id > 0');
 			}
 
 			print "	<tr>
 				<td class='textArea'>
 					<p>" . __('Click \'Continue\' to delete the following Graph(s).') . "</p>
-					<p><div class='itemlist'><ul>$graph_list</ul></div></p>";
+					<div class='itemlist'><ul>$graph_list</ul></div>";
 
 			if (isset($data_sources) && sizeof($data_sources)) {
 				print "<tr><td class='textArea'><p>" . __('The following Data Source(s) are in use by these Graph(s):') . "</p>\n";
 
-				print '<p><div class="itemlist"><ul>';
+				print '<div class="itemlist"><ul>';
 				foreach ($data_sources as $data_source) {
 					print '<li>' . htmlspecialchars($data_source['name_cache']) . "</li>\n";
 				}
-				print '</ul></div></p>';
+				print '</ul></div>';
 
 				print '<span class="nowrap">';
 				form_radio_button('delete_type', '2', '2', __('Delete all Data Source(s) referenced by these Graph(s).'), '2'); 
@@ -605,11 +670,21 @@ function form_actions() {
 		}elseif (get_request_var('drp_action') == '2') { /* change graph template */
 			print "<tr>
 				<td class='textArea'>
-					<p>" . __('Choose a Graph Template and click \'Continue\' to change the Graph Template for the following Graph(s). Be aware that all warnings will be suppressed during the conversion, so Graph data loss is possible.') . "</p>
-					<p><div class='itemlist'><ul>$graph_list</ul></div></p>
+					<p>" . __('Choose a Graph Template and click \'Continue\' to change the Graph Template for the following Graph(s). Please note, that only compatible Graph Templates will be displayed.  Compatible is identified by those having identical Data Sources.') . "</p>
+					<div class='itemlist'><ul>$graph_list</ul></div>
 					<p>" . __('New Graph Template') . "<br>"; 
 
-					form_dropdown('graph_template_id',db_fetch_assoc('SELECT graph_templates.id,graph_templates.name FROM graph_templates ORDER BY name'),'name','id','','','0'); 
+					$graph = array();
+					$graph['local_graph_id'] = db_fetch_cell_prepared('SELECT id 
+						FROM graph_local 
+						WHERE graph_template_id = ?
+						LIMIT 1', 
+						array(get_request_var('template_id')));
+					$graph['graph_template_id'] = get_filter_request_var('template_id');
+
+					$gtsql = get_common_graph_templates($graph);
+
+					form_dropdown('graph_template_id', db_fetch_assoc($gtsql), 'name','id','','','0'); 
 
 					print "</p>
 				</td>
@@ -620,7 +695,7 @@ function form_actions() {
 			print "<tr>
 				<td class='textArea'>
 					<p>" . __('Click \'Continue\' to duplicate the following Graph(s). You can optionally change the title format for the new Graph(s).') . "</p>
-					<p><div class='itemlist'><ul>$graph_list</ul></div></p>
+					<div class='itemlist'><ul>$graph_list</ul></div>
 					<p>" . __('Title Format') . "<br>"; 
 
 			form_text_box('title_format', __('<graph_title> (1)'), '', '255', '30', 'text'); 
@@ -634,7 +709,7 @@ function form_actions() {
 			print "<tr>
 				<td class='textArea'>
 					<p>" . __('Click \'Continue\' to convert the following Graph(s) into Graph Template(s).  You can optionally change the title format for the new Graph Template(s).') . "</p>
-					<p><div class='itemlist'><ul>$graph_list</ul></div></p>
+					<div class='itemlist'><ul>$graph_list</ul></div>
 					<p>" . __('Title Format') . "<br>"; 
 
 			form_text_box('title_format', __('<graph_title> Template'), '', '255', '30', 'text'); 
@@ -648,7 +723,7 @@ function form_actions() {
 			print "<tr>
 				<td class='textArea'>
 					<p>" . __('Click \'Continue\' to place the following Graph(s) under the Tree Branch selected below.') . "</p>
-					<p><div class='itemlist'><ul>$graph_list</ul></div></p>
+					<div class='itemlist'><ul>$graph_list</ul></div>
 					<p>" . __('Destination Branch') . "<br>"; 
 
 			grow_dropdown_tree($matches[1], '0', 'tree_item_id', '0'); 
@@ -663,7 +738,7 @@ function form_actions() {
 			print "<tr>
 				<td class='textArea'>
 					<p>" . __('Choose a new Device for these Graph(s) and click \'Continue\'.') . "</p>
-					<p><div class='itemlist'><ul>$graph_list</ul></div></p>
+					<div class='itemlist'><ul>$graph_list</ul></div>
 					<p>" . __('New Device'). "<br>"; 
 
 			form_dropdown('host_id',db_fetch_assoc("SELECT id,CONCAT_WS('',description,' (',hostname,')') as name FROM host ORDER BY description,hostname"),'name','id','','','0'); 
@@ -677,7 +752,7 @@ function form_actions() {
 			print "<tr>
 				<td class='textArea'>
 					<p>" . __('Click \'Continue\' to re-apply suggested naming to the following Graph(s).') . "</p>
-					<p><div class='itemlist'><ul>$graph_list</ul></div></p>
+					<div class='itemlist'><ul>$graph_list</ul></div>
 				</td>
 			</tr>\n";
 
@@ -686,7 +761,7 @@ function form_actions() {
 			print "<tr>
 				<td class='textArea'>
 					<p>" . __('Click \'Continue\' to resize the following Graph(s).') . "</p>
-					<p><div class='itemlist'><ul>$graph_list</ul></div></p>
+					<div class='itemlist'><ul>$graph_list</ul></div>
 					<p>" . __('Graph Height') . "<br>"; 
 
 			form_text_box('graph_height', '', '', '255', '30', 'text'); 
@@ -715,18 +790,18 @@ function form_actions() {
 				print '<tr>';
 				print "<td class='textArea'>
 					<p>" . __('Click \'Continue\' to create an Aggregate Graph from the selected Graph(s).'). "</p>
-					<p><div class='itemlist'><ul>" . get_nfilter_request_var('graph_list') . "</ul></div></p>
+					<div class='itemlist'><ul>" . get_nfilter_request_var('graph_list') . "</ul></div>
 				</td>\n";
 
 				/* list affected data sources */
 				if (sizeof($data_sources) > 0) {
 					print "<td class='textArea'>" .
 					'<p>' . __('The following data sources are in use by these graphs:') . '</p>
-					<p><div class="itemlist"><ul>';
+					<div class="itemlist"><ul>';
 					foreach ($data_sources as $data_source) {
 						print '<li>' . htmlspecialchars($data_source['name_cache']) . "</li>\n";
 					}
-					print "</ul></div></p></td>\n";
+					print "</ul></div></td>\n";
 				}
 				print "</tr>\n";
 
@@ -812,14 +887,17 @@ function form_actions() {
 
 			/* find out which (if any) data sources are being used by this graph, so we can tell the user */
 			if (aggregate_get_data_sources($graph_array, $data_sources, $graph_template)) {
-				$aggregate_templates = db_fetch_assoc("SELECT id, name FROM aggregate_graph_templates WHERE graph_template_id=$graph_template ORDER BY name");
+				$aggregate_templates = db_fetch_assoc_prepared('SELECT id, name 
+					FROM aggregate_graph_templates 
+					WHERE graph_template_id = ?
+					ORDER BY name', array($graph_template));
 
 				if (sizeof($aggregate_templates)) {
 					/* list affected graphs */
 					print "<tr>
 						<td class='textArea'>
 							<p>" . __('Select the Aggregate Template to use and press \'Continue\' to create your Aggregate Graph.  Otherwise press \'Cancel\' to return.') . "</p>
-							<p><div class='itemlist'><ul>" . $graph_list . "</ul></div></p>
+							<div class='itemlist'><ul>" . $graph_list . "</ul></div>
 						</td>
 					</tr>\n";
 
@@ -857,7 +935,7 @@ function form_actions() {
 			print "<tr>
 				<td class='textArea'>
 					<p>" . __('Click \'Continue\' to apply Automation Rules to the following Graphs.') . "</p>
-					<p><div class='itemlist'><ul>$graph_list</ul></div></p>
+					<div class='itemlist'><ul>$graph_list</ul></div>
 				</td>
 			</tr>\n";
 
@@ -957,36 +1035,34 @@ function graph_diff() {
 	get_filter_request_var('graph_template_id');
 	/* ==================================================== */
 
-	$template_query = "SELECT
-		graph_templates_item.id,
-		graph_templates_item.text_format,
-		graph_templates_item.value,
-		graph_templates_item.hard_return,
-		graph_templates_item.consolidation_function_id,
-		graph_templates_item.graph_type_id,
-		CONCAT_WS(' - ', data_template_data.name, data_template_rrd.data_source_name) AS task_item_id,
-		cdef.name AS cdef_id,
-		colors.hex AS color_id
-		FROM graph_templates_item
-		LEFT JOIN data_template_rrd ON (graph_templates_item.task_item_id = data_template_rrd.id)
-		LEFT JOIN data_local ON (data_template_rrd.local_data_id = data_local.id)
-		LEFT JOIN data_template_data ON (data_local.id = data_template_data.local_data_id)
-		LEFT JOIN cdef ON (cdef_id = cdef.id)
-		LEFT JOIN colors ON (color_id = colors.id)";
+	$template_query = 'SELECT gti.id, gti.text_format, gti.value, gti.hard_return, gti.consolidation_function_id,
+		gti.graph_type_id, CONCAT_WS(' - ', dtd.name, dtr.data_source_name) AS task_item_id,
+		cdef.name AS cdef_id, colors.hex AS color_id
+		FROM graph_templates_item AS gti
+		LEFT JOIN data_template_rrd AS dtr
+		ON gti.task_item_id=dtr.id
+		LEFT JOIN data_local AS dl
+		ON dtr.local_data_id = dl.id
+		LEFT JOIN data_template_data AS dtd 
+		ON dl.id = dtd.local_data_id
+		LEFT JOIN cdef 
+		ON cdef_id = cdef.id
+		LEFT JOIN colors 
+		ON color_id = colors.id';
 
 	/* first, get information about the graph template as that's what we're going to model this
 	graph after */
 	$graph_template_items = db_fetch_assoc_prepared("
 		$template_query
-		WHERE graph_templates_item.graph_template_id = ?
-		AND graph_templates_item.local_graph_id = 0
-		ORDER BY graph_templates_item.sequence", array(get_request_var('graph_template_id')));
+		WHERE gti.graph_template_id = ?
+		AND gti.local_graph_id = 0
+		ORDER BY gti.sequence", array(get_request_var('graph_template_id')));
 
 	/* next, get information about the current graph so we can make the appropriate comparisons */
 	$graph_items = db_fetch_assoc_prepared("
 		$template_query
-		WHERE graph_templates_item.local_graph_id = ?
-		ORDER BY graph_templates_item.sequence", array(get_request_var('id')));
+		WHERE gti.local_graph_id = ?
+		ORDER BY gti.sequence", array(get_request_var('id')));
 
 	$graph_template_inputs = db_fetch_assoc_prepared('SELECT
 		graph_template_input.column_name,
@@ -1181,7 +1257,10 @@ function graph_edit() {
 	if (!isempty_request_var('id')) {
 		$_SESSION['sess_graph_lock_id'] = get_request_var('id');
 
-		$local_graph_template_graph_id = db_fetch_cell_prepared('SELECT local_graph_template_graph_id FROM graph_templates_graph WHERE local_graph_id = ?', array(get_request_var('id')));
+		$local_graph_template_graph_id = db_fetch_cell_prepared('SELECT local_graph_template_graph_id 
+			FROM graph_templates_graph 
+			WHERE local_graph_id = ?', 
+			array(get_request_var('id')));
 
 		if (get_request_var('id') != $_SESSION['sess_graph_lock_id'] && !empty($local_graph_template_graph_id)) {
 			$locked = 'true';
@@ -1196,10 +1275,21 @@ function graph_edit() {
 			$_SESSION['sess_graph_locked'] = $locked;
 		}
 
-		$graph = db_fetch_row_prepared('SELECT * FROM graph_templates_graph WHERE local_graph_id = ?', array(get_request_var('id')));
-		$graph_template = db_fetch_row_prepared('SELECT * FROM graph_templates_graph WHERE id = ?', array($local_graph_template_graph_id));
+		$graph = db_fetch_row_prepared('SELECT * 
+			FROM graph_templates_graph 
+			WHERE local_graph_id = ?', 
+			array(get_request_var('id')));
 
-		$host_id = db_fetch_cell_prepared('SELECT host_id FROM graph_local WHERE id = ?', array(get_request_var('id')));
+		$graph_template = db_fetch_row_prepared('SELECT * 
+			FROM graph_templates_graph 
+			WHERE id = ?', 
+			array($local_graph_template_graph_id));
+
+		$host_id = db_fetch_cell_prepared('SELECT host_id 
+			FROM graph_local 
+			WHERE id = ?', 
+			array(get_request_var('id')));
+
 		$header_label = __('Graph Template Selection [edit: %s]', htmlspecialchars(get_graph_title(get_request_var('id'))));
 
 		if ($graph['graph_template_id'] == '0') {
@@ -1255,45 +1345,7 @@ function graph_edit() {
 
 	html_start_box($header_label, '100%', '', '3', 'center', '');
 
-	if (sizeof($graph)) {
-		$dqid = db_fetch_cell_prepared('SELECT snmp_query_id FROM graph_local WHERE id = ?', array($graph['local_graph_id']));
-	}else{
-		$dqid = '';
-	}
-
-	if (!empty($dqid)) {
-		$sqgi = db_fetch_cell_prepared('SELECT id 
-			FROM snmp_query_graph 
-			WHERE snmp_query_id = ? 
-			AND graph_template_id = ?',
-			array($dqid, $graph['graph_template_id']));
-
-		$query_fields = db_fetch_cell_prepared('SELECT GROUP_CONCAT(snmp_field_name) AS columns 
-			FROM snmp_query_graph_rrd 
-			WHERE snmp_query_graph_id = ?
-			GROUP BY snmp_query_graph_id', array($sqgi));
-
-		$common_graph_ids = array_rekey(db_fetch_assoc_prepared('SELECT 
-			snmp_query_graph_id, GROUP_CONCAT(snmp_field_name) AS columns
-			FROM snmp_query_graph_rrd
-			GROUP BY snmp_query_graph_id
-			HAVING columns = ?', array($query_fields)), 'snmp_query_graph_id', 'columns');
-
-		$ids = implode(',', array_keys($common_graph_ids));
-
-		$gtsql = 'SELECT gt.id, gt.name 
-			FROM graph_templates AS gt 
-			WHERE gt.id IN (
-				SELECT graph_template_id 
-				FROM snmp_query_graph 
-				WHERE snmp_query_id = ' . $dqid . '
-				AND id IN (' . $ids . ')
-			) ORDER BY name';
-	}elseif (sizeof($graph)) {
-		$gtsql = 'SELECT gt.id, gt.name FROM graph_templates AS gt WHERE gt.id=' . $graph['graph_template_id'] . ' ORDER BY name';
-	}else{
-		$gtsql = 'SELECT gt.id, gt.name FROM graph_templates AS gt ORDER BY name';
-	}
+	$gtsql = get_common_graph_templates($graph);
 
 	$form_array = array(
 		'graph_template_id' => array(
@@ -1476,9 +1528,7 @@ function graph_edit() {
 	<?php
 }
 
-function graph_management() {
-	global $graph_actions, $item_rows;
-
+function validate_graph_request_vars() {
 	/* ================= input validation and session storage ================= */
 	$filters = array(
 		'rows' => array(
@@ -1520,6 +1570,10 @@ function graph_management() {
 
 	validate_store_request_vars($filters, 'sess_graph');
 	/* ================= input validation ================= */
+}
+
+function graph_management() {
+	global $graph_actions, $item_rows;
 
 	if (get_request_var('rows') == -1) {
 		$rows = read_config_option('num_rows_table');
