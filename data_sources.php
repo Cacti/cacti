@@ -33,7 +33,6 @@ include_once('./lib/data_query.php');
 
 $ds_actions = array(
 	1 => __('Delete'),
-	2 => __('Change Data Template'),
 	3 => __('Change Device'),
 	8 => __('Reapply Suggested Names'),
 	4 => __('Duplicate'),
@@ -358,12 +357,6 @@ function form_actions() {
 				api_data_source_remove_multi($selected_items);
 
 				api_plugin_hook_function('data_source_remove', $selected_items);
-			}elseif (get_nfilter_request_var('drp_action') == '2') { /* change graph template */
-				get_filter_request_var('data_template_id');
-
-				for ($i=0;($i<count($selected_items));$i++) {
-					change_data_template($selected_items[$i], get_nfilter_request_var('data_template_id'));
-				}
 			}elseif (get_nfilter_request_var('drp_action') == '3') { /* change host */
 				get_filter_request_var('host_id');
 
@@ -473,17 +466,6 @@ function form_actions() {
 				</tr>\n";
 
 			$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "' title='" . __n('Delete Data Source', 'Delete Data Sources', sizeof($ds_array)) . "'>";
-		}elseif (get_nfilter_request_var('drp_action') == '2') { /* change graph template */
-			print "<tr>
-				<td class='textArea'>
-					<p>" . __n('Choose a Data Template and click \'Continue\' to change the Data Template for the following Data Source.', 'Choose a Data Template and click \'Continue\' to change the Data Template for all following Data Sources.', sizeof($ds_array)) .
-					__('Be aware that all warnings will be suppressed during the conversion, so graph data loss is possible.') . "</p>
-					<p><div class='itemlist'><ul>$ds_list</ul></div></p>
-					<p>" . __('New Data Template:') . "<br>"; form_dropdown('data_template_id',db_fetch_assoc('SELECT data_template.id,data_template.name FROM data_template ORDER BY data_template.name'),'name','id','','','0'); print "</p>
-				</td>
-			</tr>\n";
-
-			$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "' title='" . __n('Change Graph Template for Data Source', 'Change Graph Template for Data Sources', sizeof($ds_array)) . "'>";
 		}elseif (get_nfilter_request_var('drp_action') == '3') { /* change host */
 			print "<tr>
 				<td class='textArea'>
@@ -772,14 +754,38 @@ function ds_edit() {
 
 	html_start_box($header_label, '100%', '', '3', 'center', '');
 
+	if (isset($data_template)) {
+		$data_sources = db_fetch_cell_prepared('SELECT GROUP_CONCAT(DISTINCT data_source_name) AS data_source_names
+			FROM data_template_rrd
+			WHERE data_template_id = ?
+			GROUP BY data_template_id', array($data_template['id']));
+
+		$dts = db_fetch_assoc('SELECT data_template_id, GROUP_CONCAT(DISTINCT data_source_name) AS data_source_names 
+			FROM data_template_rrd 
+			GROUP BY data_template_id 
+			HAVING data_source_names="' . $data_sources . '"');
+
+		if (sizeof($dts)) {
+			foreach($dts as $dtid) {
+				$dtids[] = $dtid['data_template_id'];
+			}
+		}
+
+		$dtsql = 'SELECT id, name FROM data_template WHERE id IN(' . implode(',', $dtids) . ') ORDER BY name';
+	}else{
+		$data_sources = '';
+
+		$dtsql = 'SELECT id, name FROM data_template ORDER BY name';
+	}
+
 	$form_array = array(
 		'data_template_id' => array(
 			'method' => 'drop_sql',
 			'friendly_name' => __('Selected Data Template'),
-			'description' => __('The name given to this data template.'),
+			'description' => __('The name given to this data template.  Please note that you may only change Draph Templates to a 100% compatible Draph Template, which means that it includes identical Data Sources.'),
 			'value' => (isset($data_template) ? $data_template['id'] : '0'),
-			'none_value' => 'None',
-			'sql' => 'SELECT id,name FROM data_template order by name'
+			'none_value' => (isset($data_template) ? '':'None'),
+			'sql' => $dtsql
 			),
 		'host_id' => array(
 			'method' => 'drop_callback',
