@@ -1081,7 +1081,6 @@ legend {
 	padding: 5px 0px;
 	display: table-column;
 	width: 90%;
-	height: 25px;
 	background: -webkit-gradient( linear, left top, left bottom, color-stop(0, #252426), color-stop(1, #0C0D0D));
 	background: -o-linear-gradient(bottom, #252426 0%, #0C0D0D 100%);
 	background: -moz-linear-gradient(bottom, #252426 0%, #0C0D0D 100%);
@@ -1096,7 +1095,6 @@ legend {
 	display: table-column;
 	text-align: right;
 	width: 10%;
-	height: 25px;
 	background: -webkit-gradient( linear, left top, left bottom, color-stop(0, #252426), color-stop(1, #0C0D0D));
 	background: -o-linear-gradient(bottom, #252426 0%, #0C0D0D 100%);
 	background: -moz-linear-gradient(bottom, #252426 0%, #0C0D0D 100%);
@@ -1235,7 +1233,7 @@ th.sortable {
 	text-align: center;
 	display:inline-block;
 	margin-bottom: -3px;
-	height: 20px;
+	height: 25px;
 	background: -webkit-gradient( linear, left top, left bottom, color-stop(0, #252426), color-stop(1, #0C0D0D));
 	background: -o-linear-gradient(bottom, #252426 0%, #0C0D0D 100%);
 	background: -moz-linear-gradient(bottom, #252426 0%, #0C0D0D 100%);
