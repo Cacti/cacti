@@ -142,7 +142,7 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 						<?php print __('Template');?>
 					</td>
 					<td>
-						<select id='graph_template_id' multiple>
+						<select id='graph_template_id' multiple style='overflow-y:auto;overflow-x:hide;height:0px;'>
 							<option value='0'<?php if (get_request_var('graph_template_id') == '0') {?> selected<?php }?>><?php print __('All Graphs & Templates');?></option>
 							<?php
 							$graph_templates = get_allowed_graph_templates();
@@ -351,7 +351,7 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 		var date1Open = false;
 		var date2Open = false;
 
-		$(function() {
+		function initPage() {
 			var msWidth = 100;
 			$('#graph_template_id option').each(function() {
 				if ($(this).textWidth() > msWidth) {
@@ -360,7 +360,7 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 				$('#graph_template_id').css('width', msWidth+80+'px');
 			});
 
-			$('#graph_template_id').multiselect({
+			$('#graph_template_id').hide().multiselect({
 				noneSelectedText: '<?php print __('All Graphs & Templates');?>', 
 				selectedText: function(numChecked, numTotal, checkedItems) {
 					myReturn = numChecked + ' <?php print __('Templates Selected');?>';
@@ -449,8 +449,13 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 				dateFormat: 'yy-mm-dd',
 				showButtonPanel: false
 			});
+		}
 
-			initializeGraphs();
+		$(function() {
+			$.when(initPage())
+			.pipe(function() {
+					initializeGraphs();
+			});
 		});
 
 		</script>

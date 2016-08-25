@@ -340,16 +340,7 @@ case 'preview':
 
 	$graphs     = get_allowed_graphs($sql_where, $order, $limit, $total_graphs);	
 
-	/* do some fancy navigation url construction so we don't have to try and rebuild the url string */
-	if (preg_match('/page=[0-9]+/',basename($_SERVER['QUERY_STRING']))) {
-		$nav_url = str_replace('&page=' . get_request_var('page'), '', get_browser_query_string());
-	}else{
-		$nav_url = get_browser_query_string() . '&host_id=' . get_request_var('host_id');
-	}
-
-	$nav_url = preg_replace('/((\?|&)host_id=[0-9]+|(\?|&)filter=[a-zA-Z0-9]*)/', '', $nav_url);
-
-	$nav = html_nav_bar($nav_url, MAX_DISPLAY_PAGES, get_request_var('page'), get_request_var('graphs'), $total_graphs, get_request_var('columns'), __('Graphs'), 'page', 'main');
+	$nav = html_nav_bar('graph_view.php', MAX_DISPLAY_PAGES, get_request_var('page'), get_request_var('graphs'), $total_graphs, get_request_var('columns'), __('Graphs'), 'page', 'main');
 
 	print $nav;
 
@@ -467,21 +458,21 @@ case 'list':
 	?>
 	<tr class='even noprint'>
 		<td class='noprint'>
-		<form id='form_graph_list' name='form_graph_list' method='post' action='graph_view.php?action=list'>
+		<form id='form_graph_list' method='post' action='graph_view.php?action=list'>
 			<table class='filterTable'>
 				<tr class='noprint'>
 					<td>
 						<?php print __('Search');?>
 					</td>
 					<td>
-						<input id='filter' type='text' name='filter' size='25' value='<?php print htmlspecialchars(get_request_var('filter'));?>'>
+						<input id='filter' type='text' size='25' value='<?php print htmlspecialchars(get_request_var('filter'));?>'>
 					</td>
 					<?php print html_host_filter(get_request_var('host_id'));?>
 					<td>
 						<?php print __('Template');?>
 					</td>
 					<td>
-						<select id='graph_template_id' multiple style='overflow-y: scroll;' name='graph_template_id'>
+						<select id='graph_template_id' multiple style='overflow:hide;height:20px;'>
 							<option value='0'<?php print htmlspecialchars(get_request_var('filter'));?><?php if (get_request_var('host_id') == '0') {?> selected<?php }?>><?php print __('All Graphs & Templates');?></option>
 							<?php
 
@@ -513,7 +504,7 @@ case 'list':
 						<?php print __('Graphs');?>
 					</td>
 					<td>
-						<select id='rows' name='rows' onChange='applyFilter()'>
+						<select id='rows' onChange='applyFilter()'>
 							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
 							if (sizeof($item_rows) > 0) {
@@ -535,10 +526,10 @@ case 'list':
 					</td>
 				</tr>
 			</table>
-			<input type='hidden' name='graph_add' value=''>
-			<input type='hidden' name='graph_remove' value=''>
-			<input type='hidden' name='graph_list' value='<?php print get_request_var('graph_list');?>'>
-			<input type='hidden' id='page' name='page' value='<?php print get_request_var('page');?>'>
+			<input type='hidden' id='graph_add' value=''>
+			<input type='hidden' id='graph_remove' value=''>
+			<input type='hidden' id='graph_list' value='<?php print get_request_var('graph_list');?>'>
+			<input type='hidden' id='page' value='<?php print get_request_var('page');?>'>
 		</form>
 		</td>
 	</tr>
@@ -602,11 +593,11 @@ case 'list':
 		<td align='right'><input type='button' value='<?php print __('View');?>' title='<?php print __('View Graphs');?>' onClick='viewGraphs()'></td>
 	</tr>
 	</table>
-	<input type='hidden' name='style' value='selective'>
-	<input type='hidden' name='action' value='preview'>
-	<input type='hidden' id='graph_list' name='graph_list' value='<?php print get_request_var('graph_list'); ?>'>
-	<input type='hidden' id='graph_add' name='graph_add' value=''>
-	<input type='hidden' id='graph_remove' name='graph_remove' value=''>
+	<input type='hidden' id='style' value='selective'>
+	<input type='hidden' id='action' value='preview'>
+	<input type='hidden' id='graph_list' value='<?php print get_request_var('graph_list'); ?>'>
+	<input type='hidden' id='graph_add' value=''>
+	<input type='hidden' id='graph_remove' value=''>
 	</form>
 	<script type='text/javascript'>
 	var refreshMSeconds=999999999;
@@ -690,7 +681,7 @@ case 'list':
 			$('#graph_template_id').css('width', msWidth+80+'px');
 		});
 
-		$('#graph_template_id').multiselect({
+		$('#graph_template_id').hide().multiselect({
 			noneSelectedText: '<?php print __('All Graphs & Templatess');?>', 
 			selectedText: function(numChecked, numTotal, checkedItems) {
 				myReturn = numChecked + ' <?php print __('Templates Selected');?>';
