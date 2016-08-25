@@ -40,7 +40,7 @@ function clog_purge_logfile() {
 	$logfile = read_config_option('path_cactilog');
 
 	if ($logfile == '') {
-		$logfile = './log/cacti.log';
+		$logfile = $config['base_path'] . '/log/cacti.log';
 	}
 
 	if (file_exists($logfile)) {
@@ -89,9 +89,8 @@ function clog_view_logfile() {
 			'default' => '1'
 			),
 		'filter' => array(
-			'filter' => FILTER_CALLBACK, 
-			'default' => '', 
-			'options' => array('options' => 'sanitize_search_string')
+			'filter' => FILTER_VALIDATE_IS_REGEX, 
+			'default' => '' 
 			)
 	);
 

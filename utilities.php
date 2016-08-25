@@ -819,12 +819,12 @@ function utilities_clear_user_log() {
 }
 
 function utilities_view_logfile() {
-	global $log_tail_lines, $page_refresh_interval, $refresh;
+	global $log_tail_lines, $page_refresh_interval, $refresh, $config;
 
 	$logfile = read_config_option('path_cactilog');
 
 	if ($logfile == '') {
-		$logfile = './log/rrd.log';
+		$logfile = $config['base_path'] . '/log/cacti.log';
 	}
 
 	/* helps determine output color */
@@ -838,10 +838,9 @@ function utilities_view_logfile() {
 			'default' => '-1'
 			),
 		'filter' => array(
-			'filter' => FILTER_CALLBACK, 
+			'filter' => FILTER_VALIDATE_IS_REGEX, 
 			'pageset' => true,
-			'default' => '', 
-			'options' => array('options' => 'sanitize_search_string')
+			'default' => ''
 			),
 		'message_type' => array(
 			'filter' => FILTER_VALIDATE_INT, 
@@ -875,7 +874,7 @@ function utilities_view_logfile() {
 	top_header();
 
 	?>
-	<script type="text/javascript">
+	<script type='text/javascript'>
     var refreshIsLogout=false;
     var refreshPage='<?php print $refresh['page'];?>';
     var refreshMSeconds=<?php print $refresh['seconds']*1000;?>;
