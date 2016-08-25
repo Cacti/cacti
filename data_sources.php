@@ -1070,6 +1070,11 @@ function ds() {
 			'pageset' => true,
 			'default' => '-1'
 			),
+		'status' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'pageset' => true,
+			'default' => '-1'
+			),
 		'template_id' => array(
 			'filter' => FILTER_VALIDATE_INT, 
 			'pageset' => true,
@@ -1103,6 +1108,7 @@ function ds() {
 		strURL  = 'data_sources.php?host_id=' + $('#host_id').val();
 		strURL += '&filter=' + $('#filter').val();
 		strURL += '&rows=' + $('#rows').val();
+		strURL += '&status=' + $('#status').val();
 		strURL += '&template_id=' + $('#template_id').val();
 		strURL += '&method_id=' + $('#method_id').val();
 		strURL += '&page=' + $('#page').val();
@@ -1152,8 +1158,8 @@ function ds() {
 					</td>
 					<td>
 						<select id='template_id' name='template_id' onChange='applyFilter()'>
-							<option value='-1'<?php if (get_request_var('template_id') == '-1') {?> selected<?php }?>>Any</option>
-							<option value='0'<?php if (get_request_var('template_id') == '0') {?> selected<?php }?>>None</option>
+							<option value='-1'<?php if (get_request_var('template_id') == '-1') {?> selected<?php }?>><?php print __('Any');?></option>
+							<option value='0'<?php if (get_request_var('template_id') == '0') {?> selected<?php }?>><?php print __('None');?></option>
 							<?php
 
 							$templates = db_fetch_assoc('SELECT DISTINCT data_template.id, data_template.name
@@ -1170,6 +1176,16 @@ function ds() {
 							}
 							?>
 
+						</select>
+					</td>
+					<td>
+						<?php print __('Status');?>
+					</td>
+					<td>
+						<select id='status' name='status' onChange='applyFilter()'>
+							<option value='-1'<?php if (get_request_var('status') == '-1') {?> selected<?php }?>><?php print __('All');?></option>
+							<option value='1'<?php if (get_request_var('status') == '1') {?> selected<?php }?>><?php print __('Enabled');?></option>
+							<option value='2'<?php if (get_request_var('status') == '2') {?> selected<?php }?>><?php print __('Disabled');?></option>
 						</select>
 					</td>
 					<td>
@@ -1261,6 +1277,14 @@ function ds() {
 		$sql_where1 .= (strlen($sql_where1) ? ' AND':'WHERE') . ' data_template_data.data_template_id=0';
 	}elseif (!isempty_request_var('host_id')) {
 		$sql_where1 .= (strlen($sql_where1) ? ' AND':'WHERE') . ' data_template_data.data_template_id=' . get_request_var('template_id');
+	}
+
+	if (get_request_var('status') == '-1') {
+		/* Show all items */
+	}elseif (get_request_var('status') == '1') {
+		$sql_where1 .= (strlen($sql_where1) ? ' AND':'WHERE') . ' data_template_data.active="on"';
+	}else{
+		$sql_where1 .= (strlen($sql_where1) ? ' AND':'WHERE') . ' data_template_data.active=""';
 	}
 
 	if (get_request_var('method_id') == '-1') {
