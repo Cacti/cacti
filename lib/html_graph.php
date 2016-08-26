@@ -142,7 +142,7 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 						<?php print __('Template');?>
 					</td>
 					<td>
-						<select id='graph_template_id' multiple style='overflow-y:auto;overflow-x:hide;height:0px;'>
+						<select id='graph_template_id' multiple style='opacity:0.1;overflow-y:auto;overflow-x:hide;height:0px;'>
 							<option value='0'<?php if (get_request_var('graph_template_id') == '0') {?> selected<?php }?>><?php print __('All Graphs & Templates');?></option>
 							<?php
 							$graph_templates = get_allowed_graph_templates();
@@ -378,6 +378,9 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 					$(this).multiselect('widget').find(':checkbox:first').each(function() {
 						$(this).prop('checked', true);
 					});
+				},
+				open: function(event, ui) {
+					$("input[type='search']:first").focus();
 				},
 				close: function(event, ui) {
 					applyGraphFilter();

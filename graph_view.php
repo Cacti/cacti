@@ -472,7 +472,7 @@ case 'list':
 						<?php print __('Template');?>
 					</td>
 					<td>
-						<select id='graph_template_id' multiple style='overflow:hide;height:20px;'>
+						<select id='graph_template_id' multiple style='opacity:0.1;overflow:hide;height:0px;'>
 							<option value='0'<?php print htmlspecialchars(get_request_var('filter'));?><?php if (get_request_var('host_id') == '0') {?> selected<?php }?>><?php print __('All Graphs & Templates');?></option>
 							<?php
 
@@ -699,6 +699,9 @@ case 'list':
 				$(this).multiselect('widget').find(':checkbox:first').each(function() {
 					$(this).prop('checked', true);
 				});
+			},
+			open: function(event, ui) {
+				$("input[type='search']:first").focus();
 			},
 			close: function(event, ui) {
 				applyFilter();
