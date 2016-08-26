@@ -489,6 +489,72 @@ function push_out_graph_item($graph_template_item_id) {
 	}
 }
 
+function update_graph_data_source_output_type($local_graph_id, $output_type_id) {
+	$graph_local = db_fetch_row_prepared('SELECT * 
+		FROM graph_local 
+		WHERE id = ?', 
+		array($local_graph_id));
+
+	$task_items = db_fetch_cell_prepared('SELECT GROUP_CONCAT(DISTINCT task_item_id) AS items 
+		FROM graph_templates_item 
+		WHERE local_graph_id = ?', 
+		array($local_graph_id));
+
+	if ($task_items != '') {
+		$local_data_id = db_fetch_cell("SELECT DISTINCT local_data_id 
+			FROM data_template_rrd 
+			WHERE id IN($task_items)");
+	}else{
+		$local_data_id = 0;
+	}
+
+	if ($local_data_id > 0) {
+		$data = db_fetch_row_prepared('SELECT id, data_input_id, data_template_id, name, local_data_id
+			FROM data_template_data
+			WHERE local_data_id = ?', 
+			array($local_data_id));
+
+		/* get each INPUT field for this data input source */
+		$output_type_field_id = db_fetch_cell_prepared('SELECT id
+			FROM data_input_fields
+			WHERE data_input_id = ?
+			AND input_output="in"
+			AND type_code="output_type"
+			ORDER BY sequence',
+			array($data['data_input_id']));
+
+		$snmp_query_graph_id = db_fetch_cell_prepared('SELECT value
+			FROM data_input_data
+			WHERE data_template_data_id = ?
+			AND data_input_field_id = ?',
+			array($data['id'], $output_type_field_id));
+
+		if ($snmp_query_graph_id != $output_type_id) {
+			db_execute_prepared('UPDATE data_input_data
+				SET value = ?
+				WHERE data_template_data_id = ?
+				AND data_input_field_id = ?',
+				array($output_type_id, $data['id'], $output_type_field_id));
+
+			push_out_host($graph_local['host_id'], $local_data_id);
+		}
+	}
+}
+
+function parse_graph_template_id($value) {
+	if (strpos($value, '_') !== false) {
+		$template_parts = explode('_', $value);
+		if (is_numeric($template_parts[0]) && is_numeric($template_parts[1])) {
+			return array('graph_template_id' => $template_parts[0], 'output_type_id' => $template_parts[1]);
+		}else{
+			cacti_log('ERROR: Unable to parse graph_template_id with value ' . $value, false, 'WEBUI');
+			exit;
+		}
+	}else{
+		return array('graph_template_id' => $value);
+	}
+}
+
 /* change_graph_template - changes the graph template for a particular graph to
 	$graph_template_id
    @arg $local_graph_id - the id of the graph to change the graph template for
@@ -497,16 +563,35 @@ function push_out_graph_item($graph_template_item_id) {
    @arg $intrusive - (true) if the target graph template has more or less graph items than
 	the current graph, remove or add the items from the current graph to make them equal.
 	(false) leave the graph item count alone */
-function change_graph_template($local_graph_id, $graph_template_id, $intrusive) {
+function change_graph_template($local_graph_id, $graph_template_id, $intrusive = true) {
 	global $struct_graph, $struct_graph_item;
 
-	/* always update tables to new graph template (or no graph template) */
-	db_execute_prepared('UPDATE graph_local SET graph_template_id = ? WHERE id = ?', array($graph_template_id, $local_graph_id));
+	$template_data     = parse_graph_template_id($graph_template_id);
+	$graph_template_id = $template_data['graph_template_id'];
+
+	if (isset($template_data['output_type_id'])) {
+		$output_type_id = $template_data['output_type_id'];
+	}else{
+		$output_type_id = 0;
+	}
 
 	/* get information about both the graph and the graph template we're using */
 	$graph_list = db_fetch_row_prepared('SELECT * 
 		FROM graph_templates_graph 
 		WHERE local_graph_id = ?', array($local_graph_id));
+
+	$snmp_query_id = db_fetch_cell_prepared('SELECT snmp_query_id FROM graph_local WHERE id = ?', array($local_graph_id));
+
+	/* always update tables to new graph template (or no graph template) */
+	db_execute_prepared('UPDATE graph_local SET graph_template_id = ? WHERE id = ?', array($graph_template_id, $local_graph_id));
+
+	if ($output_type_id > 0) {
+		$changed = true;
+	}else if ($graph_template_id != $graph_list['graph_template_id']) {
+		$changed = true;
+	}else{
+		$changed = false;
+	}
 
 	$template_graph_list = (($graph_template_id == '0') ? $graph_list : db_fetch_row_prepared('SELECT * FROM graph_templates_graph WHERE local_graph_id=0 AND graph_template_id = ?', array($graph_template_id)));
 
@@ -560,47 +645,20 @@ function change_graph_template($local_graph_id, $graph_template_id, $intrusive) 
 	$cols = db_get_table_column_types('graph_templates_item');
 
 	$k=0;
-	if (sizeof($template_items_list) > 0) {
-	foreach ($template_items_list as $template_item) {
-		unset($save);
-		reset($struct_graph_item);
+	if (sizeof($template_items_list)) {
+		foreach ($template_items_list as $template_item) {
+			unset($save);
+			reset($struct_graph_item);
 
-		$save['local_graph_template_item_id'] = $template_item['id'];
-		$save['local_graph_id']               = $local_graph_id;
-		$save['graph_template_id']            = $template_item['graph_template_id'];
+			$save['local_graph_template_item_id'] = $template_item['id'];
+			$save['local_graph_id']               = $local_graph_id;
+			$save['graph_template_id']            = $template_item['graph_template_id'];
 
-		if (isset($graph_items_list[$k])) {
-			/* graph item at this position, 'mesh' it in */
-			$save['id'] = $graph_items_list[$k]['id'];
+			if (isset($graph_items_list[$k])) {
+				/* graph item at this position, 'mesh' it in */
+				$save['id'] = $graph_items_list[$k]['id'];
 
-			/* make a first pass filling in ALL values from template */
-			while (list($field_name, $field_array) = each($struct_graph_item)) {
-				if (strstr($cols[$field_name], 'int') !== false || strstr($cols[$field_name], 'float') !== false) {
-					if (!empty($template_item[$field_name])) {
-						$save[$field_name] = $template_item[$field_name];
-					}else{
-						$save[$field_name] = 0;
-					}
-				}else{
-					$save[$field_name] = $template_item[$field_name];
-				}
-			}
-
-			/* go back a second time and fill in the INPUT values from the graph */
-			for ($j=0; ($j < count($graph_template_inputs)); $j++) {
-				if ($graph_template_inputs[$j]['graph_template_item_id'] == $template_items_list[$k]['id']) {
-					/* if we find out that there is an 'input' covering this field/item, use the
-					value from the graph, not the template */
-					$graph_item_field_name = $graph_template_inputs[$j]['column_name'];
-					$save[$graph_item_field_name] = $graph_items_list[$k][$graph_item_field_name];
-				}
-			}
-		}else{
-			/* no graph item at this position, tack it on */
-			$save['id'] = 0;
-			$save['task_item_id'] = 0;
-
-			if ($intrusive == true) {
+				/* make a first pass filling in ALL values from template */
 				while (list($field_name, $field_array) = each($struct_graph_item)) {
 					if (strstr($cols[$field_name], 'int') !== false || strstr($cols[$field_name], 'float') !== false) {
 						if (!empty($template_item[$field_name])) {
@@ -612,17 +670,44 @@ function change_graph_template($local_graph_id, $graph_template_id, $intrusive) 
 						$save[$field_name] = $template_item[$field_name];
 					}
 				}
+
+				/* go back a second time and fill in the INPUT values from the graph */
+				for ($j=0; ($j < count($graph_template_inputs)); $j++) {
+					if ($graph_template_inputs[$j]['graph_template_item_id'] == $template_items_list[$k]['id']) {
+						/* if we find out that there is an 'input' covering this field/item, use the
+						value from the graph, not the template */
+						$graph_item_field_name = $graph_template_inputs[$j]['column_name'];
+						$save[$graph_item_field_name] = $graph_items_list[$k][$graph_item_field_name];
+					}
+				}
 			}else{
-				unset($save);
+				/* no graph item at this position, tack it on */
+				$save['id'] = 0;
+				$save['task_item_id'] = 0;
+
+				if ($intrusive == true) {
+					while (list($field_name, $field_array) = each($struct_graph_item)) {
+						if (strstr($cols[$field_name], 'int') !== false || strstr($cols[$field_name], 'float') !== false) {
+							if (!empty($template_item[$field_name])) {
+								$save[$field_name] = $template_item[$field_name];
+							}else{
+								$save[$field_name] = 0;
+							}
+						}else{
+							$save[$field_name] = $template_item[$field_name];
+						}
+					}
+				}else{
+					unset($save);
+				}
 			}
-		}
 
-		if (isset($save)) {
-			sql_save($save, 'graph_templates_item');
-		}
+			if (isset($save)) {
+				sql_save($save, 'graph_templates_item');
+			}
 
-		$k++;
-	}
+			$k++;
+		}
 	}
 
 	/* if there are more graph items then there are items in the template, delete the difference */
@@ -630,6 +715,11 @@ function change_graph_template($local_graph_id, $graph_template_id, $intrusive) 
 		for ($i=(sizeof($graph_items_list) - (sizeof($graph_items_list) - sizeof($template_items_list))); ($i < count($graph_items_list)); $i++) {
 			db_execute('DELETE FROM graph_templates_item WHERE id=' . $graph_items_list[$i]['id']);
 		}
+	}
+
+	/* handle changes in data template if there are any */
+	if ($changed && $snmp_query_id > 0) {
+		update_graph_data_source_output_type($local_graph_id, $output_type_id);
 	}
 
 	return true;
