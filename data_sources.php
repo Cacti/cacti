@@ -35,7 +35,6 @@ $ds_actions = array(
 	1 => __('Delete'),
 	3 => __('Change Device'),
 	8 => __('Reapply Suggested Names'),
-	4 => __('Duplicate'),
 	6 => __('Enable'),
 	7 => __('Disable')
 );
@@ -364,10 +363,6 @@ function form_actions() {
 					push_out_host(get_nfilter_request_var('host_id'), $selected_items[$i]);
 					update_data_source_title_cache($selected_items[$i]);
 				}
-			}elseif (get_nfilter_request_var('drp_action') == '4') { /* duplicate */
-				for ($i=0;($i<count($selected_items));$i++) {
-					api_duplicate_data_source($selected_items[$i], 0, get_nfilter_request_var('title_format'));
-				}
 			}elseif (get_nfilter_request_var('drp_action') == '6') { /* data source enable */
 				for ($i=0;($i<count($selected_items));$i++) {
 					api_data_source_enable($selected_items[$i]);
@@ -471,16 +466,6 @@ function form_actions() {
 			</tr>\n";
 
 			$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "' title='" . __('Change Device') . "'>";
-		}elseif (get_nfilter_request_var('drp_action') == '4') { /* duplicate */
-			print "<tr>
-				<td class='textArea'>
-					<p>" . __n('Click \'Continue\' to duplicate the following Data Source. You can optionally change the title format for the new Data Source.', 'Click \'Continue\' to duplicate following Data Sources. You can optionally change the title format for the new Data Sources.', sizeof($ds_array)) . "</p>
-					<p><div class='itemlist'><ul>$ds_list</ul></div></p>
-					<p>" . __('Title Format:') . "<br>"; form_text_box('title_format', '<ds_title> (1)', '', '255', '30', 'text'); print "</p>
-				</td>
-			</tr>\n";
-
-			$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "' title='" . __('Duplicate Data Source', 'Duplicate Data Source', sizeof($ds_array)) . "'>";
 		}elseif (get_nfilter_request_var('drp_action') == '6') { /* data source enable */
 			print "<tr>
 				<td class='textArea'>

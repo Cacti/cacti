@@ -50,7 +50,6 @@ $graph_actions += array(
 	5  => __('Change Device'),
 	6  => __('Reapply Suggested Names'),
 	7  => __('Resize Graphs'),
-	3  => __('Duplicate'),
     9  => __('Create Aggregate Graph'),
     10 => __('Create Aggregate from Template'),
 	8  => __('Apply Automation Rules')
@@ -437,10 +436,6 @@ function form_actions() {
 				for ($i=0;($i<count($selected_items));$i++) {
 					change_graph_template($selected_items[$i], $gt_id_unparsed, true);
 				}
-			}elseif (get_request_var('drp_action') == '3') { /* duplicate */
-				for ($i=0;($i<count($selected_items));$i++) {
-					api_duplicate_graph($selected_items[$i], 0, get_nfilter_request_var('title_format'));
-				}
 			}elseif (preg_match('/^tr_([0-9]+)$/', get_request_var('drp_action'), $matches)) { /* place on tree */
 				get_filter_request_var('tree_id');
 				get_filter_request_var('tree_item_id');
@@ -718,20 +713,6 @@ function form_actions() {
 			</tr>\n";
 
 			$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "' title='" . __('Change Graph Template') . "'>";
-		}elseif (get_request_var('drp_action') == '3') { /* duplicate */
-			print "<tr>
-				<td class='textArea'>
-					<p>" . __('Click \'Continue\' to duplicate the following Graph(s). You can optionally change the title format for the new Graph(s).') . "</p>
-					<div class='itemlist'><ul>$graph_list</ul></div>
-					<p>" . __('Title Format') . "<br>"; 
-
-			form_text_box('title_format', __('<graph_title> (1)'), '', '255', '30', 'text'); 
-
-			print "</p>
-				</td>
-			</tr>\n";
-
-			$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "' title='" . __('Duplicate Graph(s)') . "'>";
 		}elseif (preg_match('/^tr_([0-9]+)$/', get_request_var('drp_action'), $matches)) { /* place on tree */
 			print "<tr>
 				<td class='textArea'>
