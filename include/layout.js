@@ -657,15 +657,15 @@ function setupUserMenu() {
 }
 
 function setupSpecialKeys() {
-	$('#filter').unbind('keypress').attr('title', 'Press Ctrl+Shift+X to Clear Filter');
-	$('#filter').tooltip({ closed: true }).on('focus', function() { $('#filter').tooltip('close') }).on('click', function() { $(this).tooltip('close'); });
+	$('#filter, #rfilter').unbind('keypress').attr('title', 'Press Ctrl+Shift+X to Clear Filter');
+	$('#filter, #rfilter').tooltip({ closed: true }).on('focus', function() { $('#filter').tooltip('close') }).on('click', function() { $(this).tooltip('close'); });
 
-	$('#filter').bind('keypress', 'ctrl+shift+x', function() {
-		clearFilter();
+	$('#filter, #rfilter').bind('keypress', 'ctrl+shift+x', function() {
+		$('#filter, #rfilter').val('').css('text-align', 'left').submit();
 	});
 
 	if (!isMobile.any()) {
-		$('#filter').focus();
+		$('#filter, #rfilter').focus();
 	}
 }
 
@@ -687,7 +687,7 @@ function setupSortable() {
 	});
 
 	// Setup tool tips for all titles to match the jQueryUI theme
-	$('i, th, img, input, label, select, button').tooltip({ closed: true }).on('focus', function() { $('#filter').tooltip('close') }).on('click', function() { $(this).tooltip('close'); });
+	$('i, th, img, input, label, select, button').tooltip({ closed: true }).on('focus', function() { $('#filter, #rfilter').tooltip('close') }).on('click', function() { $(this).tooltip('close'); });
 }
 
 function setupBreadcrumbs() {
@@ -878,7 +878,11 @@ var graphPage  = urlPath+'graph_view.php';
 var pageAction = 'preview';
 
 function clearGraphFilter() {
-	$.get(graphPage+'?action='+pageAction+'&header=false&clear=1', function(data) {
+	href = graphPage+'?action='+pageAction+'&clear=1';
+
+	new_href = href.replace('action=tree&', 'action=tree_content&');
+
+	$.get(new_href+'&header=false', function(data) {
 		$('div[class^="ui-"]').remove();
 		$('#main').html(data);
 		applySkin();
@@ -903,7 +907,7 @@ function saveGraphFilter(section) {
 
 function applyGraphFilter() {
 	href = graphPage+'?action='+pageAction+
-		'&filter='+$('#filter').val()+
+		'&rfilter='+$('#rfilter').val()+
 		'&host_id='+$('#host_id').val()+
 		'&columns='+$('#columns').val()+
 		'&graphs='+$('#graphs').val()+

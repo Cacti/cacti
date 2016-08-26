@@ -87,11 +87,10 @@ function html_graph_validate_preview_request_vars() {
 			'pageset' => true,
 			'default' => '-1'
 			),
-		'filter' => array(
-			'filter' => FILTER_CALLBACK, 
+		'rfilter' => array(
+			'filter' => FILTER_VALIDATE_IS_REGEX, 
 			'pageset' => true,
 			'default' => '', 
-			'options' => array('options' => 'sanitize_search_string')
 			),
 		'thumbnails' => array(
 			'filter' => FILTER_VALIDATE_REGEXP, 
@@ -189,7 +188,7 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 						<?php print __('Search');?>
 					</td>
 					<td>
-						<input type='text' id='filter' size='25' value='<?php print htmlspecialchars(get_request_var('filter'));?>' onChange='applyGraphFilter()'>
+						<input type='text' id='rfilter' size='30' value='<?php print htmlspecialchars(get_request_var('rfilter'));?>' onChange='applyGraphFilter()'>
 					</td>
 					<td>
 						<?php print __('Graphs');?>

@@ -476,11 +476,10 @@ function html_validate_tree_vars() {
 			'pageset' => true,
 			'default' => ''
 			),
-		'filter' => array(
-			'filter' => FILTER_CALLBACK, 
+		'rfilter' => array(
+			'filter' => FILTER_VALIDATE_IS_REGEX, 
 			'pageset' => true,
 			'default' => '', 
-			'options' => array('options' => 'sanitize_search_string')
 			),
 		'host_group_data' => array(
 			'filter' => FILTER_CALLBACK, 
@@ -555,7 +554,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 	if (!empty($host_name)) { $title .= $title_delimeter . '<strong>' . __('Device:') . '</strong>' . htmlspecialchars($host_name, ENT_QUOTES); $title_delimeter = '-> '; }
 	if (!empty($host_group_data_name)) { $title .= $title_delimeter . " $host_group_data_name"; $title_delimeter = '-> '; }
 
-	html_start_box(__('Graph Filters') . (strlen(get_request_var('filter')) ? " [ " . __('Filter') . " '" . htmlspecialchars(get_request_var('filter')) . "' " . __('Applied') . " ]" : ''), '100%', "", '3', 'center', '');
+	html_start_box(__('Graph Filters') . (strlen(get_request_var('rfilter')) ? " [ " . __('Filter') . " '" . htmlspecialchars(get_request_var('rfilter')) . "' " . __('Applied') . " ]" : ''), '100%', "", '3', 'center', '');
 
 	?>
 	<tr class='even noprint' id='search'>
@@ -567,7 +566,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 						<?php print __('Search');?>
 					</td>
 					<td>
-						<input id='filter' size='30' name='filter' value='<?php print htmlspecialchars(get_request_var('filter'));?>'>
+						<input id='rfilter' size='30' value='<?php print htmlspecialchars(get_request_var('rfilter'));?>'>
 					</td>
 					<td>
 						<?php print __('Template');?>
@@ -604,7 +603,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 						<input type='button' value='<?php print __('Go');?>' title='<?php print __('Set/Refresh Filter');?>' onClick='applyGraphFilter()'>
 					</td>
 					<td>
-						<input type='button' value='<?php print __('Clear');?>' title='<?php print __('Clear Filters');?>' onClick='applyGraphFilter()'>
+						<input type='button' value='<?php print __('Clear');?>' title='<?php print __('Clear Filters');?>' onClick='clearGraphFilter()'>
 					</td>
 					<?php if (is_view_allowed('graph_settings')) {?>
 					<td>
@@ -917,8 +916,8 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 
 	if (($leaf_type == 'header') || (empty($leaf_id))) {
 		$sql_where = '';
-		if (strlen(get_request_var('filter'))) {
-			$sql_where .= " (gtg.title_cache LIKE '%" . get_request_var('filter') . "%' OR gtg.title LIKE '%" . get_request_var('filter') . "%')";
+		if (strlen(get_request_var('rfilter'))) {
+			$sql_where .= " (gtg.title_cache RLIKE '" . get_request_var('rfilter') . "' OR gtg.title RLIKE '" . get_request_var('rfilter') . "')";
 		}
 
 		if (get_request_var('graph_template_id') != '' && get_request_var('graph_template_id') != '0') {
@@ -945,8 +944,8 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 			if (sizeof($graph_templates)) {
 				foreach ($graph_templates as $graph_template) {
 					$sql_where = '';
-					if (strlen(get_request_var('filter'))) {
-						$sql_where = " (gtg.title_cache LIKE '%" . get_request_var('filter') . "%')";
+					if (strlen(get_request_var('rfilter'))) {
+						$sql_where = " (gtg.title_cache RLIKE '" . get_request_var('rfilter') . "')";
 					}
 					$sql_where .= (strlen($sql_where) ? 'AND':'') . ' gl.graph_template_id=' . $graph_template['id'] . ' AND gl.host_id=' . $leaf['host_id'];
 
@@ -991,8 +990,8 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 					/* fetch a list of field names that are sorted by the preferred sort field */
 					$sort_field_data = get_formatted_data_query_indexes($leaf['host_id'], $data_query['id']);
 
-					if (strlen(get_request_var('filter'))) {
-						$sql_where = " (gtg.title_cache LIKE '%" . get_request_var('filter') . "%')";
+					if (strlen(get_request_var('rfilter'))) {
+						$sql_where = " (gtg.title_cache RLIKE '" . get_request_var('rfilter') . "')";
 					}
 
 					/* grab a list of all graphs for this host/data query combination */

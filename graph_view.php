@@ -319,8 +319,8 @@ case 'preview':
 
 	/* create filter for sql */
 	$sql_where  = '';
-	if (!isempty_request_var('filter')) {
-		$sql_where .= " gtg.title_cache LIKE '%" . get_request_var('filter') . "%'";
+	if (!isempty_request_var('rfilter')) {
+		$sql_where .= " gtg.title_cache RLIKE '" . get_request_var('rfilter') . "'";
 	}
 
 	$sql_where .= (strlen($sql_or) && strlen($sql_where) ? ' AND ':'') . $sql_or;
@@ -387,11 +387,10 @@ case 'list':
 			'filter' => FILTER_VALIDATE_INT, 
 			'default' => '1'
 			),
-		'filter' => array(
-			'filter' => FILTER_CALLBACK, 
+		'rfilter' => array(
+			'filter' => FILTER_VALIDATE_IS_REGEX, 
 			'pageset' => true,
 			'default' => '', 
-			'options' => array('options' => 'sanitize_search_string')
 			),
 		'graph_template_id' => array(
 			'filter' => FILTER_VALIDATE_IS_NUMERIC_LIST, 
@@ -465,7 +464,7 @@ case 'list':
 						<?php print __('Search');?>
 					</td>
 					<td>
-						<input id='filter' type='text' size='25' value='<?php print htmlspecialchars(get_request_var('filter'));?>'>
+						<input id='rfilter' type='text' size='30' value='<?php print htmlspecialchars(get_request_var('rfilter'));?>'>
 					</td>
 					<?php print html_host_filter(get_request_var('host_id'));?>
 					<td>
@@ -473,7 +472,7 @@ case 'list':
 					</td>
 					<td>
 						<select id='graph_template_id' multiple style='opacity:0.1;overflow:hide;height:0px;'>
-							<option value='0'<?php print htmlspecialchars(get_request_var('filter'));?><?php if (get_request_var('host_id') == '0') {?> selected<?php }?>><?php print __('All Graphs & Templates');?></option>
+							<option value='0'<?php if (get_request_var('graph_template_id') == '0') {?> selected<?php }?>><?php print __('All Graphs & Templates');?></option>
 							<?php
 
 							$graph_templates = get_allowed_graph_templates();
@@ -538,8 +537,8 @@ case 'list':
 
 	/* create filter for sql */
 	$sql_where  = '';
-	if (!isempty_request_var('filter')) {
-		$sql_where .= " gtg.title_cache LIKE '%" . get_request_var('filter') . "%'";
+	if (!isempty_request_var('rfilter')) {
+		$sql_where .= " gtg.title_cache RLIKE '" . get_request_var('rfilter') . "'";
 	}
 
 	if (!isempty_request_var('host_id') && get_request_var('host_id') > 0) {
@@ -571,7 +570,7 @@ case 'list':
 	if (sizeof($graphs)) {
 		foreach ($graphs as $graph) {
 			form_alternate_row('line' . $graph['local_graph_id'], true);
-			form_selectable_cell(filter_value($graph['title_cache'], get_request_var('filter'), 'graph.php?local_graph_id=' . $graph['local_graph_id'] . '&rra_id=0'), $graph['local_graph_id']);
+			form_selectable_cell(filter_value($graph['title_cache'], get_request_var('rfilter'), 'graph.php?local_graph_id=' . $graph['local_graph_id'] . '&rra_id=0'), $graph['local_graph_id']);
 			form_selectable_cell($graph['description'], $graph['local_graph_id']);
 			form_selectable_cell($graph['template_name'], $graph['local_graph_id']);
 			form_selectable_cell($graph['height'] . 'x' . $graph['width'], $graph['local_graph_id']);
@@ -617,7 +616,7 @@ case 'list':
 		strURL += '&host_id=' + $('#host_id').val();
 		strURL += '&rows=' + $('#rows').val();
 		strURL += '&graph_template_id=' + $('#graph_template_id').val();
-		strURL += '&filter=' + $('#filter').val();
+		strURL += '&rfilter=' + $('#rfilter').val();
 		strURL += '&page=' + $('#page').val();
 		strURL += url_graph('');
 		loadPageNoHeader(strURL);

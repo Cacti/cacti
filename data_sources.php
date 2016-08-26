@@ -1049,8 +1049,8 @@ function ds() {
 			'filter' => FILTER_VALIDATE_INT, 
 			'default' => '1'
 			),
-		'filter' => array(
-			'filter' => FILTER_CALLBACK, 
+		'rfilter' => array(
+			'filter' => FILTER_VALIDATE_IS_REGEX, 
 			'pageset' => true,
 			'default' => '', 
 			'options' => array('options' => 'sanitize_search_string')
@@ -1106,7 +1106,7 @@ function ds() {
 	<script type='text/javascript'>
 	function applyFilter() {
 		strURL  = 'data_sources.php?host_id=' + $('#host_id').val();
-		strURL += '&filter=' + $('#filter').val();
+		strURL += '&rfilter=' + $('#rfilter').val();
 		strURL += '&rows=' + $('#rows').val();
 		strURL += '&status=' + $('#status').val();
 		strURL += '&template_id=' + $('#template_id').val();
@@ -1202,7 +1202,7 @@ function ds() {
 						<?php print __('Search');?>
 					</td>
 					<td>
-						<input id='filter' type='text' size='25' value='<?php print htmlspecialchars(get_request_var('filter'));?>' onChange='applyFilter()'>
+						<input id='rfilter' type='text' size='30' value='<?php print htmlspecialchars(get_request_var('rfilter'));?>' onChange='applyFilter()'>
 					</td>
 					<td>
 						<?php print __('Method');?>
@@ -1254,11 +1254,11 @@ function ds() {
 	html_end_box();
 
 	/* form the 'where' clause for our main sql query */
-	if (strlen(get_request_var('filter'))) {
-		$sql_where1 = "WHERE (data_template_data.name_cache like '%" . get_request_var('filter') . "%'" .
-			" OR data_template_data.local_data_id like '%" . get_request_var('filter') . "%'" .
-			" OR data_template.name like '%" . get_request_var('filter') . "%'" .
-			" OR data_input.name like '%" . get_request_var('filter') . "%')";
+	if (strlen(get_request_var('rfilter'))) {
+		$sql_where1 = "WHERE (data_template_data.name_cache RLIKE '" . get_request_var('rfilter') . "'" .
+			" OR data_template_data.local_data_id RLIKE '" . get_request_var('rfilter') . "'" .
+			" OR data_template.name RLIKE '" . get_request_var('rfilter') . "'" .
+			" OR data_input.name RLIKE '" . get_request_var('rfilter') . "')";
 	}else{
 		$sql_where1 = '';
 	}
@@ -1325,7 +1325,7 @@ function ds() {
 		ORDER BY ". get_request_var('sort_column') . ' ' . get_request_var('sort_direction') .
 		' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows);
 
-	$nav = html_nav_bar('data_sources.php?filter=' . get_request_var('filter') . '&host_id=' . get_request_var('host_id'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 7, __('Data Sources'), 'page', 'main');
+	$nav = html_nav_bar('data_sources.php?rfilter=' . get_request_var('rfilter') . '&host_id=' . get_request_var('host_id'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 7, __('Data Sources'), 'page', 'main');
 
 	form_start('data_sources.php', 'chk');
 
@@ -1349,8 +1349,8 @@ function ds() {
 			$data_source['data_template_name'] = htmlspecialchars($data_source['data_template_name']);
 			$data_name_cache = title_trim(htmlspecialchars($data_source['name_cache']), read_config_option('max_title_length'));
 
-			if (get_request_var('filter') != '') {
-				$data_name_cache = filter_value($data_name_cache, get_request_var('filter'));
+			if (get_request_var('rfilter') != '') {
+				$data_name_cache = filter_value($data_name_cache, get_request_var('rfilter'));
 			}
 
 			/* keep copy of data source for comparison */
@@ -1363,8 +1363,8 @@ function ds() {
 			} elseif ($data_source_orig['data_template_name'] != $data_source['data_template_name']) {
 				/* was changed by plugin, plugin has to take care for html-escaping */
 				$data_template_name = $data_source['data_template_name'];
-			} elseif (get_request_var('filter') != '') {
-				$data_template_name = filter_value($data_source['data_template_name'], get_request_var('filter'));
+			} elseif (get_request_var('rfilter') != '') {
+				$data_template_name = filter_value($data_source['data_template_name'], get_request_var('rfilter'));
 			} else {
 				$data_template_name = htmlspecialchars($data_source['data_template_name']);
 			}
@@ -1374,14 +1374,14 @@ function ds() {
 			} elseif ($data_source_orig['data_input_name'] != $data_source['data_input_name']) {
 				/* was changed by plugin, plugin has to take care for html-escaping */
 				$data_input_name = ((empty($data_source['data_input_name'])) ? '<em>' . __('None') . '</em>' : $data_source['data_input_name']);
-			} elseif (get_request_var('filter') != '') {
-				$data_input_name = filter_value($data_source['data_input_name'], get_request_var('filter'));
+			} elseif (get_request_var('rfilter') != '') {
+				$data_input_name = filter_value($data_source['data_input_name'], get_request_var('rfilter'));
 			} else {
 				$data_input_name = htmlspecialchars($data_source['data_input_name']);
 			}
 
 			form_alternate_row('line' . $data_source['local_data_id'], true);
-			form_selectable_cell(filter_value(title_trim($data_source['name_cache'], read_config_option('max_title_length')), get_request_var('filter'), 'data_sources.php?action=ds_edit&id=' . $data_source['local_data_id']), $data_source['local_data_id']);
+			form_selectable_cell(filter_value(title_trim($data_source['name_cache'], read_config_option('max_title_length')), get_request_var('rfilter'), 'data_sources.php?action=ds_edit&id=' . $data_source['local_data_id']), $data_source['local_data_id']);
 			form_selectable_cell($data_source['local_data_id'], $data_source['local_data_id'], '', 'text-align:right');
 			form_selectable_cell($data_input_name, $data_source['local_data_id']);
 			form_selectable_cell(get_poller_interval($data_source['rrd_step']), $data_source['local_data_id']);

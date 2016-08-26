@@ -52,7 +52,7 @@ function filter_value($value, $filter, $href = '') {
 	$value =  htmlspecialchars($value, ENT_QUOTES, $charset, false);
 
 	if ($filter != '') {
-		$value = preg_replace('#(' . preg_quote($filter) . ')#i', "<span class='filteredValue'>\\1</span>", $value);
+		$value = preg_replace('#(' . $filter . ')#i', "<span class='filteredValue'>\\1</span>", $value);
 	}
 
 	if ($href != '') {

@@ -1540,11 +1540,10 @@ function validate_graph_request_vars() {
 			'filter' => FILTER_VALIDATE_INT, 
 			'default' => '1'
 			),
-		'filter' => array(
-			'filter' => FILTER_CALLBACK, 
+		'rfilter' => array(
+			'filter' => FILTER_VALIDATE_IS_REGEX, 
 			'pageset' => true,
 			'default' => '', 
-			'options' => array('options' => 'sanitize_search_string')
 			),
 		'sort_column' => array(
 			'filter' => FILTER_CALLBACK, 
@@ -1588,7 +1587,7 @@ function graph_management() {
 		strURL  = 'graphs.php?host_id=' + $('#host_id').val();
 		strURL += '&rows=' + $('#rows').val();
 		strURL += '&page=' + $('#page').val();
-		strURL += '&filter=' + $('#filter').val();
+		strURL += '&rfilter=' + $('#rfilter').val();
 		strURL += '&template_id=' + $('#template_id').val();
 		strURL += '&header=false';
 		loadPageNoHeader(strURL);
@@ -1600,10 +1599,6 @@ function graph_management() {
 	}
 
 	$(function() {
-		$('#refresh').click(function() {
-			applyFilter();
-		});
-
 		$('#clear').click(function() {
 			clearFilter();
 		});
@@ -1654,7 +1649,7 @@ function graph_management() {
 						</select>
 					</td>
 					<td>
-						<input type='button' id='refresh' value='<?php print __('Go');?>' title='<?php print __('Set/Refresh Filters');?>'>
+						<input type='submit' id='refresh' value='<?php print __('Go');?>' title='<?php print __('Set/Refresh Filters');?>'>
 					</td>
 					<td>
 						<input type='button' id='clear' value='<?php print __('Clear');?>' title='<?php print __('Clear Filters');?>'>
@@ -1667,7 +1662,7 @@ function graph_management() {
 						<?php print __('Search');?>
 					</td>
 					<td>
-						<input id='filter' type='text' name='filter' size='25' value='<?php print htmlspecialchars(get_request_var('filter'));?>'>
+						<input id='rfilter' type='text' name='rfilter' size='30' value='<?php print htmlspecialchars(get_request_var('rfilter'));?>'>
 					</td>
 					<td>
 						<?php print __('Graphs');?>
@@ -1696,9 +1691,9 @@ function graph_management() {
 
 	/* form the 'where' clause for our main sql query */
 	$sql_where = '';
-	if (strlen(get_request_var('filter'))) {
-		$sql_where = " WHERE (gtg.title_cache LIKE '%" . get_request_var('filter') . "%'" .
-			" OR gt.name LIKE '%" . get_request_var('filter') . "%')";
+	if (strlen(get_request_var('rfilter'))) {
+		$sql_where = " WHERE (gtg.title_cache RLIKE '" . get_request_var('rfilter') . "'" .
+			" OR gt.name RLIKE '" . get_request_var('rfilter') . "')";
 	}
 
 	if (get_request_var('host_id') == '-1') {
@@ -1747,7 +1742,7 @@ function graph_management() {
 		ORDER BY " . get_request_var('sort_column') . ' ' . get_request_var('sort_direction') .
 		' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows);
 
-	$nav = html_nav_bar('graphs.php?filter=' . get_request_var('filter') . '&host_id=' . get_request_var('host_id'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 5, 'Graphs', 'page', 'main');
+	$nav = html_nav_bar('graphs.php?rfilter=' . get_request_var('rfilter') . '&host_id=' . get_request_var('host_id'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 5, 'Graphs', 'page', 'main');
 
 	form_start('graphs.php', 'chk');
 
@@ -1770,9 +1765,9 @@ function graph_management() {
 			/* we're escaping strings here, so no need to escape them on form_selectable_cell */
 			$template_name = ((empty($graph['name'])) ? '<em>None</em>' : htmlspecialchars($graph['name']));
 			form_alternate_row('line' . $graph['local_graph_id'], true);
-			form_selectable_cell(filter_value(title_trim($graph['title_cache'], read_config_option('max_title_length')), get_request_var('filter'), 'graphs.php?action=graph_edit&id=' . $graph['local_graph_id']), $graph['local_graph_id']);
+			form_selectable_cell(filter_value(title_trim($graph['title_cache'], read_config_option('max_title_length')), get_request_var('rfilter'), 'graphs.php?action=graph_edit&id=' . $graph['local_graph_id']), $graph['local_graph_id']);
 			form_selectable_cell($graph['local_graph_id'], $graph['local_graph_id'], '', 'text-align:right');
-			form_selectable_cell(filter_value($template_name, get_request_var('filter')), $graph['local_graph_id']);
+			form_selectable_cell(filter_value($template_name, get_request_var('rfilter')), $graph['local_graph_id']);
 			form_selectable_cell($graph['height'] . 'x' . $graph['width'], $graph['local_graph_id']);
 			form_checkbox_cell($graph['title_cache'], $graph['local_graph_id']);
 			form_end_row();
