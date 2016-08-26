@@ -865,8 +865,9 @@ function tree_edit() {
 					});
 			})
 			.on('rename_node.jstree', function (e, data) {
+				data.text = $.trim(data.text);
 				$.get('?action=rename_node', { 'id' : data.node.id, 'tree_id' : $('#id').val(), 'text' : data.text })
-					.always(function (d) {
+					.done(function (d) {
 						if (d.result == 'false') {
 							data.instance.set_text(data.node, d.text);
 							data.instance.edit(data.node);
