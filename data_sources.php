@@ -755,13 +755,16 @@ function ds_edit() {
 	html_start_box($header_label, '100%', '', '3', 'center', '');
 
 	if (isset($data_template)) {
-		$data_sources = db_fetch_cell_prepared('SELECT GROUP_CONCAT(DISTINCT data_source_name) AS data_source_names
+		$data_sources = db_fetch_cell_prepared('SELECT 
+			GROUP_CONCAT(DISTINCT data_source_name ORDER BY data_source_name) AS data_source_names
 			FROM data_template_rrd
 			WHERE data_template_id = ?
-			GROUP BY data_template_id', array($data_template['id']));
+			GROUP BY data_template_id ORDER BY data_source_names', array($data_template['id']));
 
-		$dts = db_fetch_assoc('SELECT data_template_id, GROUP_CONCAT(DISTINCT data_source_name) AS data_source_names 
+		$dts = db_fetch_assoc('SELECT data_template_id, 
+			GROUP_CONCAT(DISTINCT data_source_name ORDER BY data_source_name) AS data_source_names 
 			FROM data_template_rrd 
+			WHERE local_data_id=0
 			GROUP BY data_template_id 
 			HAVING data_source_names="' . $data_sources . '"');
 
