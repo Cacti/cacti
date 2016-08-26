@@ -36,7 +36,6 @@ $ds_actions = array(
 	3 => __('Change Device'),
 	8 => __('Reapply Suggested Names'),
 	4 => __('Duplicate'),
-	5 => __('Convert to Data Template'),
 	6 => __('Enable'),
 	7 => __('Disable')
 );
@@ -369,10 +368,6 @@ function form_actions() {
 				for ($i=0;($i<count($selected_items));$i++) {
 					api_duplicate_data_source($selected_items[$i], 0, get_nfilter_request_var('title_format'));
 				}
-			}elseif (get_nfilter_request_var('drp_action') == '5') { /* data source -> data template */
-				for ($i=0;($i<count($selected_items));$i++) {
-					data_source_to_data_template($selected_items[$i], get_nfilter_request_var('title_format'));
-				}
 			}elseif (get_nfilter_request_var('drp_action') == '6') { /* data source enable */
 				for ($i=0;($i<count($selected_items));$i++) {
 					api_data_source_enable($selected_items[$i]);
@@ -486,16 +481,6 @@ function form_actions() {
 			</tr>\n";
 
 			$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "' title='" . __('Duplicate Data Source', 'Duplicate Data Source', sizeof($ds_array)) . "'>";
-		}elseif (get_nfilter_request_var('drp_action') == '5') { /* data source -> data template */
-			print "<tr>
-				<td class='textArea'>
-					<p>" . __n('Click \'Continue\' to convert the following Data Source into a Data Template. You can optionally change the title format for the new Data Template.', 'Click \'Continue\' to convert all following Data Sources into Data Templates. You can optionally change the title format for the new Data Templates.', sizeof($ds_array)) . "</p>
-					<p><div class='itemlist'><ul>$ds_list</ul></div></p>
-					<p>" . __('Title Format:') . "<br>"; form_text_box('title_format', '<ds_title> Template', '', '255', '30', 'text'); print "</p>
-				</td>
-			</tr>\n";
-
-			$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "' title='" . __n('Convert Data Source to Data Template', 'Convert Data Sources to Data Templates', sizeof($ds_array)) . "'>";
 		}elseif (get_nfilter_request_var('drp_action') == '6') { /* data source enable */
 			print "<tr>
 				<td class='textArea'>
