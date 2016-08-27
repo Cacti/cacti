@@ -127,9 +127,14 @@ if (get_nfilter_request_var('action') == 'login') {
 					$user_auth = true;
 					$copy_user = true;
 					$realm = 1;
+
 					/* Locate user in database */
 					cacti_log("LOGIN: LDAP User '" . $username . "' Authenticated", false, 'AUTH');
-					$user = db_fetch_row_prepared('SELECT * FROM user_auth WHERE username = ? AND realm = 1', array($username));
+
+					$user = db_fetch_row_prepared('SELECT * 
+						FROM user_auth 
+						WHERE username = ? AND realm = 1', 
+						array($username));
 				}else{
 					/* error */
 					cacti_log('LOGIN: LDAP Error: ' . $ldap_auth_response['error_text'], false, 'AUTH');
@@ -154,25 +159,38 @@ if (get_nfilter_request_var('action') == 'login') {
 			/* Builtin Auth */
 			$user = array();
 			if ((!$user_auth) && (!$ldap_error)) {
-				$stored_pass = db_fetch_cell_prepared('SELECT password FROM user_auth WHERE username = ? AND realm = 0', array($username));
+				$stored_pass = db_fetch_cell_prepared('SELECT password 
+					FROM user_auth 
+					WHERE username = ? AND realm = 0', 
+					array($username));
 
 				if ($stored_pass != '') {
 					if (function_exists('password_verify')) {
 						$p = get_nfilter_request_var('login_password');
 
 						if (password_verify($p, $stored_pass)) {
-							$user = db_fetch_row_prepared('SELECT * FROM user_auth WHERE username = ? AND realm = 0', array($username));
+							$user = db_fetch_row_prepared('SELECT * 
+								FROM user_auth 
+								WHERE username = ? AND realm = 0', 
+								array($username));
 
 							if (password_needs_rehash($p, PASSWORD_DEFAULT)) {
 								$p = password_hash($p, PASSWORD_DEFAULT);
-								db_execute_prepared('UPDATE user_auth SET password = ? WHERE username = ?', array($p, $username));
+								db_execute_prepared('UPDATE user_auth 
+									SET password = ? 
+									WHERE username = ?', 
+									array($p, $username));
 							}
 						}
 					}
 
 					if (!sizeof($user)) {
 						$p = md5(get_nfilter_request_var('login_password'));
-						$user = db_fetch_row_prepared('SELECT * FROM user_auth WHERE username = ? AND password = ? AND realm = 0', array($username, $p));
+
+						$user = db_fetch_row_prepared('SELECT * 
+							FROM user_auth 
+							WHERE username = ? AND password = ? AND realm = 0', 
+							array($username, $p));
 					}
 				}else{
 					$user = array();

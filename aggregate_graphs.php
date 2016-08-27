@@ -100,7 +100,9 @@ function form_save() {
 	}
 
 	/* get the aggregate graph id */
-	$aggregate_graph_id  = db_fetch_cell('SELECT id FROM aggregate_graphs WHERE local_graph_id=' . $local_graph_id );
+	$aggregate_graph_id  = db_fetch_cell_prepared('SELECT id 
+		FROM aggregate_graphs 
+		WHERE local_graph_id = ?', array($local_graph_id));
 
 	/* if user disabled template propagation we need to get graph data from form */
 	if (!isset_request_var('template_propogation')) {
@@ -125,7 +127,10 @@ function form_save() {
 	);
 
 	/* update title in aggregate graphs table */
-	db_execute("UPDATE aggregate_graphs SET title_format='" . $graph_title . "' WHERE id=$aggregate_graph_id");
+	db_execute_prepared('UPDATE aggregate_graphs 
+		SET title_format = ?
+		WHERE id = ?', 
+		array($graph_title, $aggregate_graph_id));
 
 	/* next lets see if any of the aggregate has changed and save as applicable
 	 * if the graph is templates, we can simply ignore.  A simple check will
@@ -146,7 +151,11 @@ function form_save() {
 
 		/* see if anything changed, if so, we will have to push out the aggregate */
 		if (!empty($aggregate_graph_id)) {
-			$old = db_fetch_row("SELECT * FROM aggregate_graphs WHERE id=$aggregate_graph_id");
+			$old = db_fetch_row_prepared('SELECT * 
+				FROM aggregate_graphs 
+				WHERE id = ?', 
+				array($aggregate_graph_id));
+
 			$save_me = 0;
 
 			$save_me += ($old['template_propogation'] != $save['template_propogation']);
@@ -164,12 +173,17 @@ function form_save() {
 			/* save the template items now */
 			/* get existing item ids and sequences from graph template */
 			$graph_templates_items = array_rekey(
-				db_fetch_assoc('SELECT id, sequence FROM graph_templates_item WHERE local_graph_id=0 AND graph_template_id=' . $graph_template_id),
+				db_fetch_assoc_prepared('SELECT id, sequence 
+					FROM graph_templates_item 
+					WHERE local_graph_id=0 
+					AND graph_template_id = ?', array($graph_template_id)),
 				'id', array('sequence')
 			);
 			/* get existing aggregate template items */
 			$aggregate_graph_items_old = array_rekey(
-				db_fetch_assoc('SELECT * FROM aggregate_graphs_graph_item WHERE aggregate_graph_id='.$aggregate_graph_id),
+				db_fetch_assoc_prepared('SELECT * 
+					FROM aggregate_graphs_graph_item 
+					WHERE aggregate_graph_id = ?', array($aggregate_graph_id)),
 				'graph_templates_item_id', array('aggregate_graph_id', 'graph_templates_item_id', 'sequence', 'color_template', 't_graph_type_id', 'graph_type_id', 't_cdef_id', 'cdef_id', 'item_skip', 'item_total')
 			);
 
@@ -295,7 +309,7 @@ function form_actions() {
 			print "<tr>
 				<td class='textArea'>
 					<p>" . __('Click \'Continue\' to delete the following Aggregate Graph(s).') . "</p>
-					<p><div class='itemlist'><ul>$graph_list</ul></div></p>
+					<div class='itemlist'><ul>$graph_list</ul></div>
 				</td>
 			</tr>\n";
 
@@ -321,27 +335,32 @@ function form_actions() {
 
 			$graph_templates = db_fetch_assoc("SELECT DISTINCT graph_template_id 
 				FROM graph_templates_item
-				WHERE task_item_id IN ($task_items) AND  graph_template_id>0");
+				WHERE task_item_id IN ($task_items) AND graph_template_id>0");
 
 			if (sizeof($graph_templates) > 1) {
 				print "<tr>
 					<td class='textArea'>
 						<p>" . __('The selected Aggregate Graphs represent elements from more than one Graph Template.') . "</p>
 						<p>" . __('In order to migrate the Aggregate Graphs below to a Template based Aggregate, they must only be using one Graph Template.  Please press \'Return\' and then select only Aggregate Graph that utilize the same Graph Template.') . "</p>
-						<p><div class='itemlist'><ul>$graph_list</ul></div></p>
+						<div class='itemlist'><ul>$graph_list</ul></div>
 					</td>
 				</tr>\n";
 
 				$save_html = "<input type='button' value='" . __('Return') . "' onClick='cactiReturnTo()'>";
 			}else{
 				$graph_template      = $graph_templates[0]['graph_template_id'];
-				$aggregate_templates = db_fetch_assoc("SELECT id, name FROM aggregate_graph_templates WHERE graph_template_id=$graph_template ORDER BY name");
+
+				$aggregate_templates = db_fetch_assoc_prepared('SELECT id, name 
+					FROM aggregate_graph_templates 
+					WHERE graph_template_id = ? 
+					ORDER BY name', 
+					array($graph_template));
 
 				if (sizeof($aggregate_templates)) {
 					print "<tr>
 						<td class='textArea' colspan='2'>
 							<p>" . __('Click \'Continue\' and the following Aggregate Graph(s) will be migrated to use the Aggregate Template that you choose below.') . "</p>
-							<p><div class='itemlist'><ul>$graph_list</ul></div></p>
+							<div class='itemlist'><ul>$graph_list</ul></div>
 						</td>
 					</tr>\n";
 
@@ -361,9 +380,9 @@ function form_actions() {
 					print "<tr>
 						<td class='textArea'>
 							<p>" . __('There are currently no Aggregate Templates defined for the selected Legacy Aggregates.') . "</p>
-							<p>" . __('In order to migrate the Aggregate Graphs below to a Template based Aggregate, first create an Aggregate Template for the Graph Template \'%s\'.', db_fetch_cell("SELECT name FROM graph_templates WHERE id=$graph_template")) . "</p>
+							<p>" . __('In order to migrate the Aggregate Graphs below to a Template based Aggregate, first create an Aggregate Template for the Graph Template \'%s\'.', db_fetch_cell_prepared('SELECT name FROM graph_templates WHERE id = ?', array($graph_template))) . "</p>
 							<p>" . __('Please press \'Return\' to continue.') . "</p>
-							<p><div class='itemlist'><ul>$graph_list</ul></div></p>
+							<div class='itemlist'><ul>$graph_list</ul></div>
 						</td>
 					</tr>\n";
 
@@ -374,7 +393,7 @@ function form_actions() {
 			print "<tr>
 				<td colspan='2' class='textArea'>
 					<p>" . __('Click \'Continue\' to combined the following Aggregate Graph(s) into a single Aggregate Graph.') . "</p>
-					<p><div class='itemlist'><ul>$graph_list</ul></div></p>
+					<div class='itemlist'><ul>$graph_list</ul></div>
 				</td>
 			</tr>\n";
 
@@ -386,7 +405,7 @@ function form_actions() {
 			print "<tr>
 				<td class='textArea'>
 					<p>" . __('Click \'Continue\' to associate the following Graph(s) with the Aggregate Graph.') . "</p>
-					<p><div class='itemlist'><ul>$graph_list</ul></div></p>
+					<div class='itemlist'><ul>$graph_list</ul></div>
 				</td>
 			</tr>\n";
 
@@ -395,7 +414,7 @@ function form_actions() {
 			print "<tr>
 				<td class='textArea'>
 					<p>" . __('Click \'Continue\' to disassociate the following Graph(s) from the Aggregate.') . "</p>
-					<p><div class='itemlist'><ul>$graph_list</ul></div></p>
+					<div class='itemlist'><ul>$graph_list</ul></div>
 				</td>
 			</tr>\n";
 
@@ -404,7 +423,7 @@ function form_actions() {
 			print "<tr>
 				<td class='textArea'>
 					<p>" . __('Click \'Continue\' to place the following Aggregate Graph(s) under the Tree Branch.') . "</p>
-					<p><div class='itemlist'><ul>$graph_list</ul></div></p>
+					<div class='itemlist'><ul>$graph_list</ul></div>
 					<p>" . __('Destination Branch:') . "<br>"; grow_dropdown_tree($matches[1], "tree_item_id", "0"); print "</p>
 				</td>
 			</tr>\n
@@ -450,7 +469,7 @@ function item() {
 
 		$header_label = __('Graph Items [new]');
 	}else{
-		$template_item_list = db_fetch_assoc('SELECT
+		$template_item_list = db_fetch_assoc_prepared('SELECT
 			gti.id, gti.text_format, gti.value, gti.hard_return, gti.graph_type_id,
 			gti.consolidation_function_id, dtr.data_source_name,
 			cdef.name AS cdef_name, colors.hex
@@ -460,13 +479,16 @@ function item() {
 			LEFT JOIN data_template_data AS dtd ON (dl.id=dtd.local_data_id)
 			LEFT JOIN cdef ON (gti.cdef_id=cdef.id)
 			LEFT JOIN colors ON (gti.color_id=colors.id)
-			WHERE gti.local_graph_id=' . get_request_var('id') . '
-			ORDER BY gti.sequence');
+			WHERE gti.local_graph_id = ?
+			ORDER BY gti.sequence', 
+			array(get_request_var('id')));
 
 		$header_label = __('Graph Items [edit: %s]', htmlspecialchars(get_graph_title(get_request_var('id'))));
 	}
 
-	$graph_template_id = db_fetch_cell('SELECT graph_template_id FROM graph_local WHERE id=' . get_request_var('id'));
+	$graph_template_id = db_fetch_cell_prepared('SELECT graph_template_id 
+		FROM graph_local 
+		WHERE id = ?', array(get_request_var('id')));
 
 	if (empty($graph_template_id)) {
 		$add_text = 'aggregate_items.php?action=item_edit&local_graph_id=' . get_request_var('id');
@@ -506,14 +528,25 @@ function graph_edit() {
 	$aginfo = array();
 	$graphs = array();
 	if (!isempty_request_var('id')) {
-		$graphs = db_fetch_row('SELECT * FROM graph_templates_graph WHERE local_graph_id=' . get_request_var('id'));
-		$aginfo = db_fetch_row('SELECT * FROM aggregate_graphs WHERE local_graph_id=' . $graphs['local_graph_id']);
+		$graphs = db_fetch_row_prepared('SELECT * 
+			FROM graph_templates_graph 
+			WHERE local_graph_id = ?', 
+			array(get_request_var('id')));
+
+		$aginfo = db_fetch_row_prepared('SELECT * 
+			FROM aggregate_graphs 
+			WHERE local_graph_id = ?',
+			array($graphs['local_graph_id']));
+
 		$header_label = '[edit: ' . htmlspecialchars(get_graph_title(get_request_var('id'))) . ']';
 	}
 
 	if (sizeof($aginfo)) {
 		if ($aginfo['aggregate_template_id'] > 0) {
-			$template = db_fetch_row('SELECT * FROM aggregate_graph_templates WHERE id=' . $aginfo['aggregate_template_id']);
+			$template = db_fetch_row_prepared('SELECT * 
+				FROM aggregate_graph_templates 
+				WHERE id = ?', 
+				array($aginfo['aggregate_template_id']));
 		}else{
 			$template = $aginfo;
 		}
@@ -971,11 +1004,15 @@ function aggregate_items() {
 		$sql_where .= (strlen($sql_where) ? ' AND':'WHERE') . ' (agi.local_graph_id IS NOT NULL)';
 	}
 
-	$graph_template = db_fetch_cell('SELECT graph_template_id
+	$graph_template = db_fetch_cell_prepared('SELECT graph_template_id
 		FROM aggregate_graphs AS ag
-		WHERE ag.local_graph_id=' . get_request_var('id'));
+		WHERE ag.local_graph_id = ?', 
+		array(get_request_var('id')));
 
-	$aggregate_id   = db_fetch_cell('SELECT id FROM aggregate_graphs WHERE local_graph_id=' . get_request_var('id'));
+	$aggregate_id   = db_fetch_cell_prepared('SELECT id 
+		FROM aggregate_graphs 
+		WHERE local_graph_id = ?', 
+		array(get_request_var('id')));
 
 	if (!empty($graph_template)) {
 		$sql_where .= (strlen($sql_where) ? ' AND':'WHERE') . "(gtg.graph_template_id=$graph_template)";

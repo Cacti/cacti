@@ -122,12 +122,23 @@ case 'changepassword':
 	if ($bad_password == false && get_nfilter_request_var('password') == get_nfilter_request_var('confirm') && get_nfilter_request_var('password') != '') {
 		// Password change is good to go
 		if (read_config_option('secpass_expirepass') > 0) {
-			db_execute("UPDATE user_auth SET lastchange = " . time() . " WHERE id = " . intval($_SESSION['sess_user_id']) . " AND realm = 0 AND enabled = 'on'");
+			db_execute_prepared("UPDATE user_auth 
+				SET lastchange = ? 
+				WHERE id = ?
+				AND realm = 0 
+				AND enabled = 'on'", 
+				array(time(), intval($_SESSION['sess_user_id'])));
 		}
 
 		$history = intval(read_config_option('secpass_history'));
 		if ($history > 0) {
-				$h = db_fetch_row_prepared("SELECT password, password_history FROM user_auth WHERE id = ? AND realm = 0 AND enabled = 'on'", array($_SESSION['sess_user_id']));
+				$h = db_fetch_row_prepared("SELECT password, password_history 
+					FROM user_auth 
+					WHERE id = ? 
+					AND realm = 0 
+					AND enabled = 'on'", 
+					array($_SESSION['sess_user_id']));
+
 				$op = $h['password'];
 				$h = explode('|', $h['password_history']);
 				while (count($h) > $history - 1) {
@@ -135,11 +146,21 @@ case 'changepassword':
 				}
 				$h[] = $op;
 				$h = implode('|', $h);
-				db_execute_prepared("UPDATE user_auth SET password_history = ? WHERE id = ? AND realm = 0 AND enabled = 'on'", array($h, $_SESSION['sess_user_id']));
+
+				db_execute_prepared("UPDATE user_auth 
+					SET password_history = ? WHERE id = ? AND realm = 0 AND enabled = 'on'", 
+					array($h, $_SESSION['sess_user_id']));
 		}
 
-		db_execute_prepared('INSERT IGNORE INTO user_log (username, result, time, ip) VALUES (?, 3, NOW(), ?)', array($user['username'], $_SERVER['REMOTE_ADDR']));
-		db_execute_prepared("UPDATE user_auth SET must_change_password = '', password = ? WHERE id = ?", array($password_new != '' ? $password_new:$password_old, $_SESSION['sess_user_id']));
+		db_execute_prepared('INSERT IGNORE INTO user_log 
+			(username, result, time, ip) 
+			VALUES (?, 3, NOW(), ?)', 
+			array($user['username'], $_SERVER['REMOTE_ADDR']));
+
+		db_execute_prepared("UPDATE user_auth 
+			SET must_change_password = '', password = ? 
+			WHERE id = ?", 
+			array($password_new != '' ? $password_new:$password_old, $_SESSION['sess_user_id']));
 
 		kill_session_var('sess_change_password');
 
@@ -147,7 +168,10 @@ case 'changepassword':
 
 		/* if no console permissions show graphs otherwise, pay attention to user setting */
 		$realm_id    = $user_auth_realm_filenames['index.php'];
-		$has_console = db_fetch_cell_prepared('SELECT realm_id FROM user_auth_realm WHERE user_id = ? AND realm_id = ?', array($_SESSION['sess_user_id'], $realm_id));
+		$has_console = db_fetch_cell_prepared('SELECT realm_id 
+			FROM user_auth_realm 
+			WHERE user_id = ? AND realm_id = ?', 
+			array($_SESSION['sess_user_id'], $realm_id));
 
 		if (basename(get_nfilter_request_var('ref')) == 'auth_changepassword.php' || basename(get_nfilter_request_var('ref')) == '') {
 			if ($has_console) {

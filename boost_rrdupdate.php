@@ -76,9 +76,9 @@ if (!strlen(trim($result))) {
 }
 
 /* add the value to the table */
-db_execute("INSERT INTO poller_output_boost_processes
+db_execute_prepared('INSERT INTO poller_output_boost_processes
 	(sock_int_value, status)
-	VALUES ('" . $socket_int_value . "'," . db_qstr($result, get_magic_quotes_gpc()) . ')');
+	VALUES (?, ?)', array($socket_int_value, $result));
 
 /* close the connection */
 pclose($handle);

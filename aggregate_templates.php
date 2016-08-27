@@ -108,7 +108,11 @@ function aggregate_form_save() {
 
 	/* do a quick comparison to see if anything changed */
 	if ($is_new == false) {
-		$old = db_fetch_row('SELECT * FROM aggregate_graph_templates WHERE id=' . $save1['id']);
+		$old = db_fetch_row_prepared('SELECT * 
+			FROM aggregate_graph_templates 
+			WHERE id = ?', 
+			array($save1['id']));
+
 		$save_me = 0;
 
 		$save_me += ($old['gprint_prefix'] != $save1['gprint_prefix']);
@@ -124,14 +128,12 @@ function aggregate_form_save() {
 		$id = sql_save($save1, 'aggregate_graph_templates', 'id');
 
 		/* update children of the template */
-		db_execute("UPDATE aggregate_graphs SET
-			gprint_prefix='" . $save1['gprint_prefix'] . "',
-			graph_type="     . $save1['graph_type'] . ",
-			total="          . $save1['total'] . ",
-			total_prefix='"  . $save1['total_prefix'] . "',
-			order_type="     . $save1['order_type'] . "
-			WHERE aggregate_template_id=$id
-			AND template_propogation='on'");
+		db_execute_prepared("UPDATE aggregate_graphs 
+			SET gprint_prefix = ?, graph_type = ?, total = ?, total_prefix = ?, order_type = ?
+			WHERE aggregate_template_id = ?
+			AND template_propogation='on'", 
+			array($save1['gprint_prefix'], $save1['graph_type'], 
+				$save1['total'], $save1['total_prefix'],  $save1['order_type'], $id));
 
 		cacti_log('AGGREGATE GRAPH TEMPLATE Saved ID: ' . $id, FALSE, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
 	}else{
@@ -148,11 +150,17 @@ function aggregate_form_save() {
 	/* validate posted graph params */
 	$params_new = aggregate_validate_graph_params($_POST, true);
 	$params_new['aggregate_template_id'] = $id;
+
 	/* compare new graph param values with existing in DB.
 	 * We need to know if there were changes so we only
 	 * rebuild existing graphs if needed. */
 	$params_changed = false;
-	$params_old = db_fetch_row('SELECT * FROM aggregate_graph_templates_graph WHERE aggregate_template_id='.$id);
+
+	$params_old = db_fetch_row_prepared('SELECT * 
+		FROM aggregate_graph_templates_graph 
+		WHERE aggregate_template_id = ?', 
+		array($id));
+
 	if (!empty($params_old)) {
 		foreach ($params_old as $field => $value_old) {
 			if (isset($params_new[$field]) && $params_new[$field] != $value_old) {
@@ -173,13 +181,19 @@ function aggregate_form_save() {
 	/* save the template items now */
 	/* get existing item ids and sequences from graph template */
 	$graph_templates_items = array_rekey(
-		db_fetch_assoc('SELECT id, sequence FROM graph_templates_item WHERE local_graph_id=0 AND graph_template_id=' . $save1['graph_template_id']),
+		db_fetch_assoc_prepared('SELECT id, sequence 
+			FROM graph_templates_item 
+			WHERE local_graph_id=0 
+			AND graph_template_id = ?', 
+			array($save1['graph_template_id'])),
 		'id', array('sequence')
 	);
 
 	/* get existing aggregate template items */
 	$aggregate_template_items_old = array_rekey(
-		db_fetch_assoc('SELECT * FROM aggregate_graph_templates_item WHERE aggregate_template_id='.$id),
+		db_fetch_assoc_prepared('SELECT * 
+			FROM aggregate_graph_templates_item 
+			WHERE aggregate_template_id = ?', array($id)),
 		'graph_templates_item_id', array('sequence', 'color_template', 't_graph_type_id', 'graph_type_id', 't_cdef_id', 'cdef_id', 'item_skip', 'item_total')
 	);
 
@@ -274,7 +288,7 @@ function aggregate_form_actions() {
 			/* ================= input validation ================= */
 			input_validate_input_number($matches[1]);
 			/* ==================================================== */
-			$aggregate_list .= '<li>' . db_fetch_cell('SELECT name FROM aggregate_graph_templates WHERE id=' . $matches[1]) . '</li>';
+			$aggregate_list .= '<li>' . db_fetch_cell_prepared('SELECT name FROM aggregate_graph_templates WHERE id = ?', array($matches[1])) . '</li>';
 			$aggregate_array[] = $matches[1];
 		}
 	}
@@ -290,7 +304,7 @@ function aggregate_form_actions() {
 			print "<tr>
 					<td class='textArea'>
 						<p>" . __('Click \'Continue\' to Delete the following Aggregate Graph Template(s).') . "</p>
-						<p><div class='itemlist'><ul>$aggregate_list</ul></div></p>
+						<div class='itemlist'><ul>$aggregate_list</ul></div>
 					</td>
 				</tr>\n";
 
@@ -328,7 +342,11 @@ function aggregate_template_edit() {
 	/* ==================================================== */
 
 	if (!isempty_request_var('id')) {
-		$template = db_fetch_row('SELECT * FROM aggregate_graph_templates WHERE id=' . get_request_var('id'));
+		$template = db_fetch_row_prepared('SELECT * 
+			FROM aggregate_graph_templates 
+			WHERE id = ?', 
+			array(get_request_var('id')));
+
 		$header_label = '[edit: ' . $template['name'] . ']';
 	}else{
 		$header_label = '[new]';
