@@ -1427,7 +1427,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 				if ($graph['auto_padding'] == 'on') {
 					/* only applies to AREA, STACK and LINEs */
 					if (preg_match('/(AREA|STACK|LINE[123])/', $graph_item_types{$graph_item['graph_type_id']})) {
-						$text_format_length = strlen(trim($graph_variables['text_format'][$graph_item_id]));
+						$text_format_length = mb_strlen(trim($graph_variables['text_format'][$graph_item_id]), 'UTF-8');
 
 						if ($text_format_length > $padding_estimate) {
 							$padding_estimate = $text_format_length;
@@ -1715,7 +1715,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 		if ((!isset($graph_data_array['graph_nolegend'])) && ($graph['auto_padding'] == 'on')) {
 			/* only applies to AREA, STACK and LINEs */
 			if (preg_match('/(AREA|STACK|LINE[123]|TICK)/', $graph_item_types{$graph_item['graph_type_id']})) {
-				$text_format_length = strlen($graph_variables['text_format'][$graph_item_id]);
+				$text_format_length = mb_strlen($graph_variables['text_format'][$graph_item_id], 'UTF-8');
 
 				$pad_number = $padding_estimate;
 			} else if (($graph_item['graph_type_id'] == GRAPH_ITEM_TYPE_GPRINT_AVERAGE ||
