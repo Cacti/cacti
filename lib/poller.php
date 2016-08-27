@@ -501,6 +501,8 @@ echo 'hh';
 function update_resource_cache($poller_id = 0) {
 	global $config;
 
+	if ($config['cacti_server_os'] == 'win32') return;
+
 	$mpath = $config['base_path'];
 	$spath = $config['scripts_path'];
 	$rpath = $config['resource_path'];
