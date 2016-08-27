@@ -178,9 +178,9 @@ function query_script_host($host_id, $snmp_query_id) {
 			debug_log_insert('data_query', "Executing script query '$script_path'");
 
 			foreach($script_data_array as $element) {
-				if (preg_match('/(.*)' . preg_quote($script_queries['output_delimeter']) . '(.*)/', $element, $matches)) {
+				if (preg_match("/(.*?)" . preg_quote($script_queries['output_delimeter']) . "(.*)/", $element, $matches)) {
 					$script_index = $matches[1];
-					$field_value = $matches[2];
+					$field_value  = $matches[2];
 
 					$output_array[] = data_query_format_record($host_id, $snmp_query_id, $field_name, $rewrite_value, $field_value, $script_index, '');
 
