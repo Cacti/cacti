@@ -252,8 +252,16 @@ class Ldap {
 					/* Process group membership if required */
 					if ($this->group_member_type == 1) {
 						$ldap_group_response = @ldap_compare($ldap_conn, $this->group_dn, $this->group_attrib, $this->dn);
-					} else {
-						$ldap_group_response = @ldap_compare($ldap_conn, $this->group_dn, $this->group_attrib, $this->username);
+					} else if ($this->group_member_type == 2) {
+						/* Do a lookup to find this user's true DN. */
+						/* ldap_exop_whoami is not yet included in PHP. For reference, the
+						 * feature request: http://bugs.php.net/bug.php?id=42060
+						 * And the patch against lastest PHP release:
+						 * http://cvsweb.netbsd.org/bsdweb.cgi/pkgsrc/databases/php-ldap/files/ldap-ctrl-exop.patch
+						*/
+						$true_dn_result = ldap_search($ldap_conn, $this->search_base, 'userPrincipalName=' .$this->dn, array('dn'));
+						$true_dn = ldap_get_dn($ldap_conn, ldap_first_entry($ldap_conn, $true_dn_result));
+						$ldap_group_response = @ldap_compare($ldap_conn, $this->group_dn, $this->group_attrib, $true_dn);
 					}
 
 					if ($ldap_group_response === true) {
