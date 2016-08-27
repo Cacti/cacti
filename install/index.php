@@ -645,7 +645,7 @@ if ($step == '7') {
 	
 	/* clear session */
 	
-	setcookie(session_name(),'',time() - 3600,'/');
+	setcookie(session_name(),'',time() - 3600,$config['url_path']);
 
 	kill_session_var('sess_config_array');
 	kill_session_var('sess_host_cache_array');

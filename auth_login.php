@@ -321,8 +321,10 @@ if (get_nfilter_request_var('action') == 'login') {
      the pre-defined error messages
    @arg $message - the actual text of the error message to display */
 function auth_display_custom_error_message($message) {
+	global $config;
+
 	/* kill the session */
-	setcookie(session_name(),'',time() - 3600,'/');
+	setcookie(session_name(),'',time() - 3600,$config['url_path']);
 	/* print error */
 	print '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">';
 	print "<html>\n<head>\n";
