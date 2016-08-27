@@ -192,6 +192,10 @@ function form_save() {
 				raise_message(2);
 			}
 		}
+
+		if (!empty($graph_template_id)) {
+			resequence_graphs($graph_template_id);
+		}
 	}
 
 	header('Location: graph_templates.php?header=false&action=template_edit&id=' . (empty($graph_template_id) ? get_nfilter_request_var('graph_template_id') : $graph_template_id));
