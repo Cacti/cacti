@@ -555,6 +555,31 @@ function parse_graph_template_id($value) {
 	}
 }
 
+function resequence_graphs($graph_template_id, $local_graph_id = 0) {
+	$template_items = db_fetch_assoc_prepared('SELECT id, sequence 
+		FROM graph_templates_item 
+		WHERE graph_template_id = ? 
+		AND local_graph_id = 0
+		ORDER BY sequence', array($graph_template_id));
+
+	if (sizeof($template_items)) {
+		foreach($template_items as $item) {
+			if ($local_graph_id == 0) {
+				db_execute_prepared('UPDATE graph_templates_item 
+					SET sequence = ? 
+					WHERE graph_template_id = ? AND local_graph_id > 0
+					AND local_graph_template_item_id = ?', array($item['sequence'], $graph_template_id, $item['id']));
+			}else{
+				db_execute_prepared('UPDATE graph_templates_item 
+					SET sequence = ? 
+					WHERE graph_template_id = ? AND local_graph_id = ?
+					AND local_graph_template_item_id = ?', array($item['sequence'], $graph_template_id, $local_graph_id, $item['id']));
+			}
+		}
+	}
+}
+
+
 /* change_graph_template - changes the graph template for a particular graph to
 	$graph_template_id
    @arg $local_graph_id - the id of the graph to change the graph template for
@@ -653,69 +678,119 @@ function change_graph_template($local_graph_id, $graph_template_id, $intrusive =
 			$save['local_graph_template_item_id'] = $template_item['id'];
 			$save['local_graph_id']               = $local_graph_id;
 			$save['graph_template_id']            = $template_item['graph_template_id'];
+			$save['sequence']                     = $template_item['sequence'];
 
-			if (isset($graph_items_list[$k])) {
-				/* graph item at this position, 'mesh' it in */
-				$save['id'] = $graph_items_list[$k]['id'];
-
-				/* make a first pass filling in ALL values from template */
-				while (list($field_name, $field_array) = each($struct_graph_item)) {
-					if (strstr($cols[$field_name], 'int') !== false || strstr($cols[$field_name], 'float') !== false) {
-						if (!empty($template_item[$field_name])) {
-							$save[$field_name] = $template_item[$field_name];
-						}else{
-							$save[$field_name] = 0;
-						}
-					}else{
-						$save[$field_name] = $template_item[$field_name];
+			/* go through the existing graph_items and look for the matching local_graph_template_item_id */
+			$found = false;
+			if (sizeof($graph_items_list)) {
+				foreach($graph_items_list as $item) {
+					if ($item['local_graph_template_item_id'] == $template_item['id']) {
+						$found_item = $item;
+						$found = true;
+						break;
 					}
 				}
+			}
 
-				/* go back a second time and fill in the INPUT values from the graph */
-				for ($j=0; ($j < count($graph_template_inputs)); $j++) {
-					if ($graph_template_inputs[$j]['graph_template_item_id'] == $template_items_list[$k]['id']) {
-						/* if we find out that there is an 'input' covering this field/item, use the
-						value from the graph, not the template */
-						$graph_item_field_name = $graph_template_inputs[$j]['column_name'];
-						$save[$graph_item_field_name] = $graph_items_list[$k][$graph_item_field_name];
+			if ($found) {
+				foreach($found_item as $column => $value) {
+					switch($column) {
+					case 'local_graph_id':
+					case 'local_graph_template_item_id':
+					case 'graph_template_id':
+					case 'sequence':
+						break;
+					default:
+						if (strstr($cols[$column], 'int') !== false ||
+							strstr($cols[$column], 'float') !== false ||
+							strstr($cols[$column], 'decimal') !== false ||
+							strstr($cols[$column], 'double') !== false) {
+							if (!empty($value)) {
+								$save[$column] = $value;
+							}else{
+								$save[$column] = 0;
+							}
+						}else{
+							$save[$column] = $value;
+						}
+						break;
 					}
 				}
 			}else{
 				/* no graph item at this position, tack it on */
 				$save['id'] = 0;
-				$save['task_item_id'] = 0;
 
-				if ($intrusive == true) {
-					while (list($field_name, $field_array) = each($struct_graph_item)) {
-						if (strstr($cols[$field_name], 'int') !== false || strstr($cols[$field_name], 'float') !== false) {
-							if (!empty($template_item[$field_name])) {
-								$save[$field_name] = $template_item[$field_name];
-							}else{
-								$save[$field_name] = 0;
-							}
-						}else{
-							$save[$field_name] = $template_item[$field_name];
-						}
+				/* attempt to discover the task_item_id */
+				$local_data_ids = db_fetch_cell_prepared('SELECT 
+					GROUP_CONCAT(DISTINCT local_data_id) AS ids
+					FROM data_template_rrd 
+					WHERE id IN (
+						SELECT DISTINCT task_item_id 
+						FROM graph_templates_item 
+						WHERE local_graph_id = ?)',
+					array($local_graph_id));
+
+				$data_source_name = db_fetch_cell_prepared('SELECT data_source_name 
+					FROM data_template_rrd WHERE id = ?', 
+					array($template_item['task_item_id']));
+
+				if ($data_source_name != '') {
+					$task_item_id = db_fetch_cell_prepared('SELECT DISTINCT id FROM data_template_rrd WHERE
+						local_data_id IN (' . $local_data_ids . ') 
+						AND data_source_name = ?
+						LIMIT 1', array($data_source_name));
+
+					if (!empty($task_item_id)) {
+						$save['task_item_id'] = $task_item_id;
+					}else{
+						$save['task_item_id'] = 0;
 					}
 				}else{
-					unset($save);
+					$save['task_item_id'] = 0;
+				}
+
+				foreach($template_item as $column => $value) {
+					switch($column) {
+					case 'local_graph_id':
+					case 'local_graph_template_item_id':
+					case 'graph_template_id':
+					case 'sequence':
+					case 'task_item_id':
+						break;
+					default:
+						if (strstr($cols[$column], 'int') !== false ||
+							strstr($cols[$column], 'float') !== false ||
+							strstr($cols[$column], 'decimal') !== false ||
+							strstr($cols[$column], 'double') !== false) {
+							if (!empty($value)) {
+								$save[$column] = $value;
+							}else{
+								$save[$column] = 0;
+							}
+						}else{
+							$save[$column] = $value;
+						}
+						break;
+					}
 				}
 			}
-
-			if (isset($save)) {
-				sql_save($save, 'graph_templates_item');
-			}
-
-			$k++;
+				
+			sql_save($save, 'graph_templates_item');
 		}
 	}
 
 	/* if there are more graph items then there are items in the template, delete the difference */
-	if ((sizeof($graph_items_list) > sizeof($template_items_list)) && ($intrusive == true)) {
-		for ($i=(sizeof($graph_items_list) - (sizeof($graph_items_list) - sizeof($template_items_list))); ($i < count($graph_items_list)); $i++) {
-			db_execute('DELETE FROM graph_templates_item WHERE id=' . $graph_items_list[$i]['id']);
+	if (sizeof($graph_items_list) > sizeof($template_items_list)) {
+		foreach($template_items_list as $item) {
+			$ids[] = $item['id'];
 		}
+
+		db_execute('DELETE FROM graph_templates_item 
+			WHERE local_graph_template_item_id NOT IN (' . implode(',', $ids) . ') 
+			AND local_graph_id = ' . $local_graph_id);
 	}
+
+	resequence_graphs($graph_template_id, $local_graph_id);
 
 	/* handle changes in data template if there are any */
 	if ($changed && $snmp_query_id > 0) {

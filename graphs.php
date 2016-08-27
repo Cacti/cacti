@@ -372,9 +372,9 @@ function get_common_graph_templates(&$graph) {
 
 		$ids = implode(',', array_keys($common_graph_ids));
 
-		$gtids = db_fetch_cell('SELECT GROUP_CONCAT(DISTINCT graph_template_id) AS gtids 
+		$gtids = db_fetch_cell_prepared('SELECT GROUP_CONCAT(DISTINCT graph_template_id) AS gtids 
 			FROM snmp_query_graph 
-			WHERE id IN (' . $ids . ')');
+			WHERE snmp_query_id = ? AND id IN (' . $ids . ')', array($dqid));
 
 		$gtsql = "SELECT CONCAT_WS('', graph_template_id, '_', id, '') AS id, name 
 			FROM snmp_query_graph 
