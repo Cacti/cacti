@@ -913,6 +913,7 @@ if (isset_request_var('database_hostname')) {
 							array('name' => 'pdo_mysql', 'installed' => false),
 							array('name' => 'xml',       'installed' => false),
 							array('name' => 'ldap',      'installed' => false),
+							array('name' => 'mbstring',  'installed' => false),
 							array('name' => 'pcre',      'installed' => false),
 							array('name' => 'json',      'installed' => false),
 							array('name' => 'openssl',   'installed' => false),
