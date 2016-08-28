@@ -457,7 +457,7 @@ function rrdtool_function_create($local_data_id, $show_source, $rrdtool_pipe = '
 	not a big deal however since this function gets called once per
 	data source */
 
-	$rras = db_fetch_assoc("SELECT dtd.rrd_step, dsp.x_files_factor,
+	$rras = db_fetch_assoc_prepared('SELECT dtd.rrd_step, dsp.x_files_factor,
 		dspr.steps, dspr.rows, dspc.consolidation_function_id,
 		(dspr.rows*dspr.steps) as rra_order
 		FROM data_template_data AS dtd
@@ -467,9 +467,10 @@ function rrdtool_function_create($local_data_id, $show_source, $rrdtool_pipe = '
 		ON dsp.id=dspr.data_source_profile_id
 		LEFT JOIN data_source_profiles_cf AS dspc 
 		ON dsp.id=dspc.data_source_profile_id
-		WHERE dtd.local_data_id=$local_data_id
+		WHERE dtd.local_data_id = ?
 		AND (dspr.steps IS NOT NULL OR dspr.rows IS NOT NULL)
-		ORDER BY dspc.consolidation_function_id, rra_order");
+		ORDER BY dspc.consolidation_function_id, rra_order', 
+		array($local_data_id));
 
 	/* if we find that this DS has no RRA associated; get out */
 	if (sizeof($rras) <= 0) {
@@ -481,11 +482,12 @@ function rrdtool_function_create($local_data_id, $show_source, $rrdtool_pipe = '
 	$create_ds = RRD_NL . '--step '. $rras[0]['rrd_step'] . ' ' . RRD_NL;
 
 	/* query the data sources to be used in this .rrd file */
-	$data_sources = db_fetch_assoc("SELECT dtr.id, dtr.rrd_heartbeat,
+	$data_sources = db_fetch_assoc_prepared('SELECT dtr.id, dtr.rrd_heartbeat,
 		dtr.rrd_minimum, dtr.rrd_maximum, dtr.data_source_type_id
 		FROM data_template_rrd AS dtr
-		WHERE dtr.local_data_id=$local_data_id
-		ORDER BY local_data_template_rrd_id");
+		WHERE dtr.local_data_id = ?
+		ORDER BY local_data_template_rrd_id', 
+		array($local_data_id));
 
 	/* ONLY make a new DS entry if:
 	- There is multiple data sources and this item is not the main one.
@@ -501,14 +503,16 @@ function rrdtool_function_create($local_data_id, $show_source, $rrdtool_pipe = '
 			$data_source['rrd_maximum'] = 'U';
 		} elseif (strpos($data_source['rrd_maximum'], '|query_') !== false) {
 			/* in case a query variable is given, evaluate it */
-			$data_local = db_fetch_row('SELECT * FROM data_local WHERE id=' . $local_data_id);
+			$data_local = db_fetch_row_prepared('SELECT * FROM data_local WHERE id = ?', array($local_data_id));
+
 			if ($data_source['rrd_maximum'] == '|query_ifSpeed|' || $data_source['rrd_maximum'] == '|query_ifHighSpeed|') {
-				$highSpeed = db_fetch_cell("SELECT field_value
+				$highSpeed = db_fetch_cell_prepared('SELECT field_value
 					FROM host_snmp_cache
-					WHERE host_id=" . $data_local['host_id'] . "
-					AND snmp_query_id=" . $data_local['snmp_query_id'] . "
-					AND snmp_index='" . $data_local['snmp_index'] . "'
-					AND field_name='ifHighSpeed'");
+					WHERE host_id = ?
+					AND snmp_query_id = ?
+					AND snmp_index = ?
+					AND field_name="ifHighSpeed"',
+					array($data_local['host_id'], $data_local['snmp_query_id'], $data_local['snmp_index']));
 
 				if (!empty($highSpeed)) {
 					$data_source['rrd_maximum'] = $highSpeed * 1000000;
@@ -1006,7 +1010,7 @@ function rrd_function_process_graph_options($graph_start, $graph_end, &$graph, &
 		case "right_axis_format":
 			if ($version != RRD_VERSION_1_2) {
 				if (!empty($value)) {
-					$format = db_fetch_cell('SELECT gprint_text from graph_templates_gprint WHERE id=' . $value);
+					$format = db_fetch_cell_prepared('SELECT gprint_text from graph_templates_gprint WHERE id = ?', array($value));
 					$graph_opts .= "--right-axis-format " . cacti_escapeshellarg($format) . RRD_NL;
 				}
 			}
@@ -1124,13 +1128,15 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 	}
 
 	/* find the step and how often this graph is updated with new data */
-	$ds_step = db_fetch_cell("SELECT
+	$ds_step = db_fetch_cell_prepared('SELECT
 		data_template_data.rrd_step
 		FROM (data_template_data,data_template_rrd,graph_templates_item)
 		WHERE graph_templates_item.task_item_id=data_template_rrd.id
 		AND data_template_rrd.local_data_id=data_template_data.local_data_id
-		AND graph_templates_item.local_graph_id=$local_graph_id
-		LIMIT 0,1");
+		AND graph_templates_item.local_graph_id = ?
+		LIMIT 1', 
+		array($local_graph_id));
+
 	$ds_step = empty($ds_step) ? 300 : $ds_step;
 
 	/* if no rra was specified, we need to figure out which one RRDTool will choose using
@@ -2225,7 +2231,7 @@ function rrd_substitute_host_query_data($txt_graph_item, $graph, $graph_item) {
 	if (empty($graph['host_id'])) {
 		/* if graph has no associated host determine host_id from graph item data source */
 		if (isset($graph_item['local_data_id']) && !empty($graph_item['local_data_id'])) {
-			$host_id = db_fetch_cell("SELECT host_id FROM data_local WHERE id='" . $graph_item['local_data_id'] . "'");
+			$host_id = db_fetch_cell_prepared('SELECT host_id FROM data_local WHERE id = ?', array($graph_item['local_data_id']));
 		}
 	} else {
 		$host_id = $graph['host_id'];
@@ -2239,7 +2245,7 @@ function rrd_substitute_host_query_data($txt_graph_item, $graph, $graph_item) {
 			$txt_graph_item = substitute_snmp_query_data($txt_graph_item, $graph['host_id'], $graph['snmp_query_id'], $graph['snmp_index']);
 		/* use the data query information from the data source if possible */
 		}else{
-			$data_local = db_fetch_row("SELECT snmp_index,snmp_query_id,host_id FROM data_local WHERE id='" . $graph_item['local_data_id'] . "'");
+			$data_local = db_fetch_row_prepared('SELECT snmp_index, snmp_query_id, host_id FROM data_local WHERE id = ?', array($graph_item['local_data_id']));
 			$txt_graph_item = substitute_snmp_query_data($txt_graph_item, $data_local['host_id'], $data_local['snmp_query_id'], $data_local['snmp_index']);
 		}
 	}
@@ -2311,10 +2317,10 @@ function rrdtool_cacti_compare($data_source_id, &$info) {
 	$cacti_file = get_data_source_path($data_source_id, true);
 
 	/* get cacti DS information */
-	$cacti_ds_array = db_fetch_assoc_prepared("SELECT data_source_name, data_source_type_id, 
+	$cacti_ds_array = db_fetch_assoc_prepared('SELECT data_source_name, data_source_type_id, 
 		rrd_heartbeat, rrd_maximum, rrd_minimum 
 		FROM data_template_rrd 
-		WHERE local_data_id = ?", array($data_source_id));
+		WHERE local_data_id = ?', array($data_source_id));
 
 	/* get cacti RRA information */
 	$cacti_rra_array = db_fetch_assoc_prepared('SELECT 
@@ -2375,14 +2381,15 @@ function rrdtool_cacti_compare($data_source_id, &$info) {
 				}
 
 				if ($data_source['rrd_maximum'] != $info['ds'][$ds_name]['max']) {
-					$data_local = db_fetch_row('SELECT * FROM data_local WHERE id=' . $data_source_id);
+					$data_local = db_fetch_row_prepared('SELECT * FROM data_local WHERE id = ?', array($data_source_id));
 					if ($data_source['rrd_maximum'] == '|query_ifSpeed|' || $data_source['rrd_maximum'] == '|query_ifHighSpeed|') {
-						$highSpeed = db_fetch_cell("SELECT field_value
+						$highSpeed = db_fetch_cell_prepared('SELECT field_value
 							FROM host_snmp_cache
-							WHERE host_id=" . $data_local['host_id'] . "
-							AND snmp_query_id=" . $data_local['snmp_query_id'] . "
-							AND snmp_index='" . $data_local['snmp_index'] . "'
-							AND field_name='ifHighSpeed'");
+							WHERE host_id = ?
+							AND snmp_query_id = ?
+							AND snmp_index = ?
+							AND field_name="ifHighSpeed"',
+							array($data_local['host_id'], $data_local['snmp_query_id'], $data_local['snmp_index']));
 
 						if (!empty($highSpeed)) {
 							$data_source['rrd_maximum'] = $highSpeed * 1000000;

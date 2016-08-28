@@ -141,7 +141,7 @@ $number_sent = 0;
 
 # fetch all enabled reports that have a stratime in the past
 if (!$force) {
-	$reports = db_fetch_assoc("SELECT * FROM reports WHERE mailtime<$t AND enabled='on'");
+	$reports = db_fetch_assoc_prepared('SELECT * FROM reports WHERE mailtime < ? AND enabled="on"', array($t));
 }else{
 	$reports = db_fetch_assoc("SELECT * FROM reports WHERE enabled='on'");
 }
@@ -151,7 +151,7 @@ reports_log('Cacti Reports reports found: ' . sizeof($reports), true, 'REPORTS',
 if (sizeof($reports)) {
 	foreach ($reports as $report) {
 		reports_log('Reports processing report: ' . $report['name'], true, 'REPORTS', POLLER_VERBOSITY_MEDIUM);
-		$current_user = db_fetch_row('SELECT * FROM user_auth WHERE id=' . $report['user_id']);
+		$current_user = db_fetch_row_prepared('SELECT * FROM user_auth WHERE id = ?', array($report['user_id']));
 		if (isset($report['email'])) {
 			generate_report($report, false, 'poller');
 			$number_sent++;
@@ -164,5 +164,5 @@ if (sizeof($reports)) {
 	/* log statistics */
 	$reports_stats = sprintf('Time:%01.4f Reports:%s', $end - $start, $number_sent);
 	reports_log('Reports STATS: ' . $reports_stats, true, 'REPORTS', POLLER_VERBOSITY_LOW);
-	db_execute("REPLACE INTO settings (name, value) VALUES ('stats_reports', '$reports_stats')");
+	db_execute_prepared('REPLACE INTO settings (name, value) VALUES ("stats_reports", ?)', array($reports_stats));
 }

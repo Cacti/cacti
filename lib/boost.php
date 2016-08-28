@@ -1241,5 +1241,4 @@ function boost_update_snmp_statistics () {
 	$mc->object('boostStatsTotalsDataSources')->set( $total_data_sources );
 	
 	$mc->object('boostStatsLastUpdate')->set( time() );
-	
 }

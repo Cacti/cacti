@@ -144,7 +144,8 @@ if ($recached_hosts > 0) {
 }
 
 /* insert poller stats into the settings table */
-db_execute("REPLACE INTO settings (name, value) VALUES ('stats_recache_$poller_id', '$recache_stats')");
+db_execute_prepared('REPLACE INTO settings (name, value) VALUES (?, ?)',
+	array('stats_recache_' . $poller_id, $recache_stats));
 
 /*  display_version - displays version information */
 function display_version() {

@@ -129,7 +129,7 @@ function automation_moveup() {
 }
 
 function automation_remove() {
-	db_execute('DELETE FROM automation_templates WHERE id=' . get_filter_request_var('id'));
+	db_execute_prepared('DELETE FROM automation_templates WHERE id = ?', array(get_filter_request_var('id')));
 }
 
 
@@ -181,7 +181,7 @@ function form_actions() {
 			print "<tr>
 				<td class='textArea' class='odd'>
 					<p>" . __('Click \'Continue\' to delete the folling Automation Template(s).') . "</p>
-					<p><div class='itemlist'><ul>$at_list</ul></div></p>
+					<div class='itemlist'><ul>$at_list</ul></div>
 				</td>
 			</tr>\n";
 
@@ -243,13 +243,13 @@ function form_save() {
 }
 
 function automation_get_child_branches($tree_id, $id, $spaces, $headers) {
-	$items = db_fetch_assoc('SELECT id, title
+	$items = db_fetch_assoc_prepared('SELECT id, title
 		FROM graph_tree_items 
-		WHERE graph_tree_id=' . $tree_id  . '
+		WHERE graph_tree_id = ?
 		AND host_id=0
 		AND local_graph_id=0 
-		AND parent=' . $id . '
-		ORDER BY position');
+		AND parent = ?
+		ORDER BY position', array($tree_id, $id));
 
 	$spaces .= '--';
 
@@ -341,7 +341,7 @@ function template_edit() {
 	display_output_messages();
 
 	if (!isempty_request_var('id')) {
-		$host_template = db_fetch_row('SELECT * FROM automation_templates WHERE id=' . get_request_var('id'));
+		$host_template = db_fetch_row_prepared('SELECT * FROM automation_templates WHERE id = ?', array(get_request_var('id')));
 		$header_label = __('Automation Templates [edit: %s', htmlspecialchars($template_names[$host_template['host_template']]));
 	}else{
 		$header_label = __('Automation Templates [new]');

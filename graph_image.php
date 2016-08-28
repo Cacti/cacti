@@ -52,7 +52,7 @@ $graph_data_array = array();
 
 // Determine the graph type of the output
 if (!isset_request_var('image_format')) {
-	$type   = db_fetch_cell('SELECT image_format_id FROM graph_templates_graph WHERE local_graph_id=' . get_request_var('local_graph_id'));
+	$type   = db_fetch_cell_prepared('SELECT image_format_id FROM graph_templates_graph WHERE local_graph_id = ?', array(get_request_var('local_graph_id')));
 	switch($type) {
 	case '1':
 		$gtype = 'png';

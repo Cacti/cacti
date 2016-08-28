@@ -404,7 +404,7 @@ function log_dsstats_statistics($type) {
 	$start = microtime(true);
 
 	/* log to the database */
-	db_execute("REPLACE INTO settings (name,value) VALUES ('stats_dsstats_$type', '" . $cacti_stats . "')");
+	db_execute_prepared('REPLACE INTO settings (name, value) VALUES (?, ?)', array('stats_dsstats_' . $type, $cacti_stats));
 
 	/* log to the logfile */
 	cacti_log('DSSTATS STATS: Type:' . $type . ', ' . $cacti_stats , TRUE, 'SYSTEM');
@@ -548,8 +548,8 @@ function dsstats_poller_output(&$rrd_update_array) {
 						$lastval                 = '';
 
 						if (!isset($ds_types[$result['rrd_name']]['data_source_type_id'])) {
-							$polling_interval = db_fetch_cell('SELECT rrd_step FROM data_template_data WHERE local_data_id=' . $data_source['local_data_id']);
-							$ds_type          = db_fetch_cell('SELECT data_source_type_id FROM data_template_rrd WHERE local_data_id=' . $data_source['local_data_id']);
+							$polling_interval = db_fetch_cell_prepared('SELECT rrd_step FROM data_template_data WHERE local_data_id = ?', array($data_source['local_data_id']));
+							$ds_type          = db_fetch_cell_prepared('SELECT data_source_type_id FROM data_template_rrd WHERE local_data_id = ?', array($data_source['local_data_id']));
 						}else{
 							$polling_interval = $ds_types[$result['rrd_name']]['rrd_step'];
 							$ds_type          = $ds_types[$result['rrd_name']]['data_source_type_id'];

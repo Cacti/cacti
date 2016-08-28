@@ -272,7 +272,7 @@ function form_actions() {
 			print "<tr>
 				<td class='textArea' class='odd'>
 					<p>" . __n('Click \'Continue\' to delete the following Site.  Note, all devices will be disassociated from this site.', 'Click \'Continue\' to delete all following Sites.  Note, all devices will be disassociated from this site.', sizeof($site_array)) . "</p>
-					<p><div class='itemlist'><ul>$site_list</ul></div></p>
+					<div class='itemlist'><ul>$site_list</ul></div>
 				</td>
 			</tr>\n";
 

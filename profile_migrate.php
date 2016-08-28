@@ -110,4 +110,3 @@ if ($tables_exist) {
 	print "Data Source Profile Migration Already Completed\n";
 }
 
-?>

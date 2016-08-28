@@ -709,7 +709,12 @@ function graphs() {
 							$num_input_fields++;
 
 							if (!isset($total_rows)) {
-								$total_rows = db_fetch_cell_prepared('SELECT count(*) FROM host_snmp_cache WHERE host_id = ? AND snmp_query_id = ? AND field_name = ?', array($host['id'], $snmp_query['id'], $field_name));
+								$total_rows = db_fetch_cell_prepared('SELECT count(*) 
+									FROM host_snmp_cache 
+									WHERE host_id = ? 
+									AND snmp_query_id = ? 
+									AND field_name = ?', 
+									array($host['id'], $snmp_query['id'], $field_name));
 							}
 						}
 					}
@@ -766,11 +771,12 @@ function graphs() {
 					$sql_where = '';
 					if (get_request_var('filter') != '') {
 						$sql_where = '';
-						$indexes = db_fetch_assoc("SELECT DISTINCT snmp_index
+						$indexes = db_fetch_assoc_prepared('SELECT DISTINCT snmp_index
 							FROM host_snmp_cache
-							WHERE field_value LIKE '%" . get_request_var('filter') . "%'
-							AND snmp_query_id=" . $snmp_query['id'] . "
-							AND host_id=" . $host['id']);
+							WHERE field_value LIKE ?
+							AND snmp_query_id = ?
+							AND host_id = ?',
+							array('%' . get_request_var('filter') . '%', $snmp_query['id'], $host['id']));
 
 						if (sizeof($indexes)) {
 							foreach($indexes as $index) {

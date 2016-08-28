@@ -122,12 +122,12 @@ function output_rrd_data($start_time, $force = FALSE) {
 	$archive_table = 'poller_output_boost_arch_' . time();
 	db_execute("RENAME TABLE poller_output_boost TO $archive_table");
 	db_execute("CREATE TABLE poller_output_boost LIKE $archive_table");
-	$more_arch_tables = db_fetch_assoc("SELECT table_name AS name
+	$more_arch_tables = db_fetch_assoc_prepared("SELECT table_name AS name
 		FROM information_schema.tables
 		WHERE table_schema=SCHEMA()
 		AND table_name LIKE 'poller_output_boost_arch_%'
-		AND table_name!='$archive_table'
-		AND table_rows>0;");
+		AND table_name!= ?
+		AND table_rows>0;", array($archive_table));
 
 	if(count($more_arch_tables)) {
 		foreach($more_arch_tables as $table) {
@@ -206,7 +206,7 @@ function log_boost_statistics($rrd_updates) {
 		$rrd_updates);
 
 	/* log to the database */
-	db_execute("REPLACE INTO settings (name,value) VALUES ('stats_boost', '" . $cacti_stats . "')");
+	db_execute_prepared("REPLACE INTO settings (name,value) VALUES ('stats_boost', ?)", array($cacti_stats));
 
 	/* log to the logfile */
 	cacti_log('BOOST STATS: ' . $cacti_stats , TRUE, 'SYSTEM');
@@ -229,7 +229,7 @@ function log_boost_statistics($rrd_updates) {
 				$outstr .= ", timer_overhead:~$timer_overhead";
 			}
 			/* log to the database */
-			db_execute("REPLACE INTO settings (name,value) VALUES ('stats_detail_boost', '" . str_replace(',', '', $outstr) . "')");
+			db_execute_prepared("REPLACE INTO settings (name,value) VALUES ('stats_detail_boost', ?)", array(str_replace(',', '', $outstr)));
 
 			/* log to the logfile */
 			if ($verbose) {

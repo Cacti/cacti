@@ -63,17 +63,20 @@ function api_aggregate_convert_template($graphs) {
 		$save['order_type']            = $aggregate_template['order_type'];
 		$id = sql_save($save, 'aggregate_graphs');
 
-		$task_items = array_rekey(db_fetch_assoc('SELECT DISTINCT task_item_id FROM graph_templates_item WHERE local_graph_id = ?', array($graph)), 'task_item_id', 'task_item_id');
+		$task_items = array_rekey(db_fetch_assoc_prepared('SELECT DISTINCT task_item_id FROM graph_templates_item WHERE local_graph_id = ?', array($graph)), 'task_item_id', 'task_item_id');
 		$task_items = implode(',', $task_items);
-		$member_graphs = array_rekey(db_fetch_assoc("SELECT DISTINCT local_graph_id FROM graph_templates_item
-			WHERE task_item_id IN ($task_items) AND graph_template_id>0"), 'local_graph_id', 'local_graph_id');
+		$member_graphs = array_rekey(db_fetch_assoc("SELECT DISTINCT local_graph_id 
+			FROM graph_templates_item
+			WHERE task_item_id IN ($task_items) 
+			AND graph_template_id>0"), 'local_graph_id', 'local_graph_id');
 
 		$sequence = 1;
 
 		foreach($member_graphs as $mg) {
 			db_execute_prepared('REPLACE INTO aggregate_graphs_items
 				(aggregate_graph_id, local_graph_id, sequence)
-				VALUES (?, ?, ?)', array($id, $mg, $sequence));
+				VALUES (?, ?, ?)', 
+				array($id, $mg, $sequence));
 			$sequence++;
 		}
 
@@ -274,15 +277,11 @@ function aggregate_is_pure_stacked_graph($_local_graph_id) {
 
 	if (!empty($_local_graph_id)) {
 		# fetch all AREA graph items
-		$_count = db_fetch_cell("SELECT COUNT(id) " .
-					"FROM graph_templates_item " .
-					"WHERE graph_templates_item.local_graph_id=$_local_graph_id " .
-					"AND graph_templates_item.graph_type_id IN " .
-					"(" . GRAPH_ITEM_TYPE_AREA .
-					"," . GRAPH_ITEM_TYPE_LINE1 .
-					"," . GRAPH_ITEM_TYPE_LINE2 .
-					"," . GRAPH_ITEM_TYPE_LINE3 .
-					")");
+		$_count = db_fetch_cell_prepared('SELECT COUNT(id) 
+			FROM graph_templates_item 
+			WHERE graph_templates_item.local_graph_id = ?
+			AND graph_templates_item.graph_type_id IN (?, ?, ?, ?)',
+			array($_local_graph_id, GRAPH_ITEM_TYPE_AREA, GRAPH_ITEM_TYPE_LINE1, GRAPH_ITEM_TYPE_LINE2, GRAPH_ITEM_TYPE_LINE3));
 
 		cacti_log(__FUNCTION__ . ' #AREA/LINEx items: ' . $_count, true, 'AGGREGATE', POLLER_VERBOSITY_DEVDBG);
 
@@ -309,10 +308,11 @@ function aggregate_is_stacked_graph($_local_graph_id) {
 
 	if (!empty($_local_graph_id)) {
 		# fetch all AREA graph items
-		$_count = db_fetch_cell("SELECT COUNT(id) 
+		$_count = db_fetch_cell_prepared('SELECT COUNT(id) 
 			FROM graph_templates_item 
-			WHERE graph_templates_item.local_graph_id=$_local_graph_id 
-			AND graph_templates_item.graph_type_id =" . GRAPH_ITEM_TYPE_STACK);
+			WHERE graph_templates_item.local_graph_id = ?
+			AND graph_templates_item.graph_type_id = ?', 
+			array($_local_graph_id, GRAPH_ITEM_TYPE_STACK));
 
 		cacti_log(__FUNCTION__ . ' #AREA/LINEx items: ' . $_count, true, 'AGGREGATE', POLLER_VERBOSITY_DEVDBG);
 
@@ -402,10 +402,14 @@ function aggregate_conditional_convert_graph_type($_graph_id, $_old_type, $_new_
 		$_graph_item_id = db_fetch_cell_prepared('SELECT id FROM graph_templates_item 
 			WHERE graph_templates_item.local_graph_id = ?
 			AND graph_templates_item.graph_type_id = ? 
-			ORDER BY sequence LIMIT 0,1', array($_graph_id, $_old_type));
+			ORDER BY sequence LIMIT 1', 
+			array($_graph_id, $_old_type));
 
 		/* and update it to the new graph_type */
-		db_execute_prepared('UPDATE graph_templates_item SET graph_templates_item.graph_type_id = ? WHERE graph_templates_item.id = ?', array($_new_type, $_graph_item_id));
+		db_execute_prepared('UPDATE graph_templates_item 
+			SET graph_templates_item.graph_type_id = ? 
+			WHERE graph_templates_item.id = ?', 
+			array($_new_type, $_graph_item_id));
 	}
 }
 

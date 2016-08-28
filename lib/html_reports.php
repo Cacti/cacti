@@ -226,7 +226,7 @@ $fields_reports_edit = array(
 /* get the hosts sql first */
 if (read_config_option("auth_method") != 0) {
 	/* get policy information for the sql where clause */
-	$current_user = db_fetch_row("SELECT * FROM user_auth WHERE id=" . $_SESSION["sess_user_id"]);
+	$current_user = db_fetch_row_prepared('SELECT * FROM user_auth WHERE id = ?', array($_SESSION["sess_user_id"]));
 	$sql_where    = get_graph_permissions_sql($current_user["policy_graphs"], $current_user["policy_hosts"], $current_user["policy_graph_templates"]);
 
 	$hosts_sql = "SELECT DISTINCT host.id, CONCAT_WS('',host.description,' (',host.hostname,')') as name
@@ -269,28 +269,28 @@ if (read_config_option("auth_method") != 0) {
 	/* all allowed by default */
 	$sql_in = "";
 	if ($current_user["policy_trees"] == 1) {
-		$exclude_trees = db_fetch_assoc("SELECT item_id
+		$exclude_trees = db_fetch_assoc_prepared('SELECT item_id
 			FROM user_auth_perms
-			WHERE user_id=" . $_SESSION["sess_user_id"] . "
-			AND type=2");
+			WHERE user_id = ?
+			AND type=2', array($_SESSION['sess_user_id']));
 
 		if (sizeof($exclude_trees)) {
-		foreach($exclude_trees as $tree) {
-			$sql_in .= (strlen($sql_in) ? ", ":"") . $tree["item_id"];
-		}
+			foreach($exclude_trees as $tree) {
+				$sql_in .= (strlen($sql_in) ? ", ":"") . $tree["item_id"];
+			}
 		}
 
 		$sql_where = (strlen($sql_in) ? "WHERE id NOT IN ($sql_in)":"");
 	}else{
-		$include_trees = db_fetch_assoc("SELECT item_id
+		$include_trees = db_fetch_assoc_prepared('SELECT item_id
 			FROM user_auth_perms
-			WHERE user_id=" . $_SESSION["sess_user_id"] . "
-			AND type=2");
+			WHERE user_id = ?
+			AND type=2', array($_SESSION['sess_user_id']));
 
 		if (sizeof($include_trees)) {
-		foreach($include_trees as $tree) {
-			$sql_in .= (strlen($sql_in) ? ", ":"") . $tree["item_id"];
-		}
+			foreach($include_trees as $tree) {
+				$sql_in .= (strlen($sql_in) ? ", ":"") . $tree["item_id"];
+			}
 		}
 
 		$sql_where = (strlen($sql_in) ? "WHERE id IN ($sql_in)":"");
@@ -443,16 +443,16 @@ function reports_form_save() {
 		if (isempty_request_var('id')) {
 			$save['user_id'] = $_SESSION['sess_user_id'];
 		}else{
-			$save['user_id'] = db_fetch_cell('SELECT user_id FROM reports WHERE id=' . get_nfilter_request_var('id'));
+			$save['user_id'] = db_fetch_cell_prepared('SELECT user_id FROM reports WHERE id = ?', array(get_nfilter_request_var('id')));
 		}
 
 		$save['id']				= get_nfilter_request_var('id');
-		$save['name']			= sql_sanitize(form_input_validate(get_nfilter_request_var('name'), 'name', '', false, 3));
-		$save['email']			= sql_sanitize(form_input_validate(get_nfilter_request_var('email'), 'email', '', false, 3));
+		$save['name']			= form_input_validate(get_nfilter_request_var('name'), 'name', '', false, 3);
+		$save['email']			= form_input_validate(get_nfilter_request_var('email'), 'email', '', false, 3);
 		$save['enabled']		= (isset_request_var('enabled') ? 'on' : '');
 
 		$save['cformat']		= (isset_request_var('cformat') ? 'on' : '');
-		$save['format_file']	= sql_sanitize(get_nfilter_request_var('format_file'));
+		$save['format_file']	= get_nfilter_request_var('format_file');
 		$save['font_size']		= form_input_validate(get_nfilter_request_var('font_size'), 'font_size', '^[0-9]+$', false, 3);
 		$save['alignment']		= form_input_validate(get_nfilter_request_var('alignment'), 'alignment', '^[0-9]+$', false, 3);
 		$save['graph_linked']	= (isset_request_var('graph_linked') ? 'on' : '');
@@ -485,13 +485,13 @@ function reports_form_save() {
 		$save['mailtime']     = form_input_validate($timestamp, 'mailtime', '^[0-9]+$', false, 3);
 
 		if (strlen(get_nfilter_request_var('subject'))) {
-			$save['subject']          = sql_sanitize(get_nfilter_request_var('subject'));
+			$save['subject']          = get_nfilter_request_var('subject');
 		}else{
 			$save['subject'] = $save['name'];
 		}
-		$save['from_name']        = sql_sanitize(get_nfilter_request_var('from_name'));
-		$save['from_email']       = sql_sanitize(get_nfilter_request_var('from_email'));
-		$save['bcc']              = sql_sanitize(get_nfilter_request_var('bcc'));
+		$save['from_name']        = get_nfilter_request_var('from_name');
+		$save['from_email']       = get_nfilter_request_var('from_email');
+		$save['bcc']              = get_nfilter_request_var('bcc');
 
 		$atype = get_nfilter_request_var('attachment_type');
 		if (($atype != REPORTS_TYPE_INLINE_PNG) &&
@@ -536,13 +536,13 @@ function reports_form_save() {
 		$save['tree_id']           = (isset_request_var('tree_id') ? form_input_validate(get_nfilter_request_var('tree_id'), 'tree_id', '^[-0-9]+$', true, 3) : 0);
 		$save['branch_id']         = (isset_request_var('branch_id') ? form_input_validate(get_nfilter_request_var('branch_id'), 'branch_id', '^[-0-9]+$', true, 3) : 0);
 		$save['tree_cascade']      = (isset_request_var('tree_cascade') ? 'on':'');
-		$save['graph_name_regexp'] = sql_sanitize(get_nfilter_request_var('graph_name_regexp'));
+		$save['graph_name_regexp'] = get_nfilter_request_var('graph_name_regexp');
 		$save['host_template_id']  = (isset_request_var('host_template_id') ? form_input_validate(get_nfilter_request_var('host_template_id'), 'host_template_id', '^[-0-9]+$', true, 3) : 0);
 		$save['host_id']           = (isset_request_var('host_id') ? form_input_validate(get_nfilter_request_var('host_id'), 'host_id', '^[-0-9]+$', true, 3) : 0);
 		$save['graph_template_id'] = (isset_request_var('graph_template_id') ? form_input_validate(get_nfilter_request_var('graph_template_id'), 'graph_template_id', '^[-0-9]+$', true, 3) : 0);
 		$save['local_graph_id']    = (isset_request_var('local_graph_id') ? form_input_validate(get_nfilter_request_var('local_graph_id'), 'local_graph_id', '^[0-9]+$', true, 3) : 0);
 		$save['timespan']          = (isset_request_var('timespan') ? form_input_validate(get_nfilter_request_var('timespan'), 'timespan', '^[0-9]+$', true, 3) : 0);
-		$save['item_text']         = (isset_request_var('item_text') ? sql_sanitize(form_input_validate(get_nfilter_request_var('item_text'), 'item_text', '', true, 3)) : '');
+		$save['item_text']         = (isset_request_var('item_text') ? form_input_validate(get_nfilter_request_var('item_text'), 'item_text', '', true, 3) : '');
 		$save['align']             = (isset_request_var('align') ? form_input_validate(get_nfilter_request_var('align'), 'align', '^[0-9]+$', true, 3) : REPORTS_ALIGN_LEFT);
 		$save['font_size']         = (isset_request_var('font_size') ? form_input_validate(get_nfilter_request_var('font_size'), 'font_size', '^[0-9]+$', true, 3) : REPORTS_FONT_SIZE);
 
@@ -585,7 +585,7 @@ function reports_form_actions() {
 			}elseif (get_nfilter_request_var('drp_action') == REPORTS_OWN) { /* take ownership */
 				for ($i=0;($i<count($selected_items));$i++) {
 					reports_log(__FUNCTION__ . ', takeown: ' . $selected_items[$i] . ' user: ' . $_SESSION['sess_user_id'], false, 'REPORTS TRACE', POLLER_VERBOSITY_MEDIUM);
-					db_execute('UPDATE reports SET user_id=' . $_SESSION['sess_user_id'] . ' WHERE id=' . $selected_items[$i]);
+					db_execute_prepared('UPDATE reports SET user_id = ? WHERE id = ?', array($_SESSION['sess_user_id'], $selected_items[$i]));
 				}
 			}elseif (get_nfilter_request_var('drp_action') == REPORTS_DUPLICATE) { /* duplicate */
 				for ($i=0;($i<count($selected_items));$i++) {
@@ -595,12 +595,12 @@ function reports_form_actions() {
 			}elseif (get_nfilter_request_var('drp_action') == REPORTS_ENABLE) { /* enable */
 				for ($i=0;($i<count($selected_items));$i++) {
 					reports_log(__FUNCTION__ . ', enable: ' . $selected_items[$i], false, 'REPORTS TRACE', POLLER_VERBOSITY_MEDIUM);
-					db_execute("UPDATE reports SET enabled='on' WHERE id=" . $selected_items[$i]);
+					db_execute_prepared('UPDATE reports SET enabled="on" WHERE id = ?', array($selected_items[$i]));
 				}
 			}elseif (get_nfilter_request_var('drp_action') == REPORTS_DISABLE) { /* disable */
 				for ($i=0;($i<count($selected_items));$i++) {
 					reports_log(__FUNCTION__ . ', disable: ' . $selected_items[$i], false, 'REPORTS TRACE', POLLER_VERBOSITY_MEDIUM);
-					db_execute("UPDATE reports SET enabled='' WHERE id=" . $selected_items[$i]);
+					db_execute_prepared('UPDATE reports SET enabled="" WHERE id = ?', array($selected_items[$i]));
 				}
 			}elseif (get_nfilter_request_var('drp_action') == REPORTS_SEND_NOW) { /* send now */
 				include_once($config['base_path'] . '/lib/reports.php');
@@ -639,7 +639,7 @@ function reports_form_actions() {
 			/* ================= input validation ================= */
 			input_validate_input_number($matches[1]);
 			/* ==================================================== */
-			$reports_list .= '<li>' . db_fetch_cell('SELECT name FROM reports WHERE id=' . $matches[1]) . '</li>';
+			$reports_list .= '<li>' . db_fetch_cell_prepared('SELECT name FROM reports WHERE id = ?', array($matches[1])) . '</li>';
 			$reports_array[$i] = $matches[1];
 			$i++;
 		}
@@ -668,21 +668,21 @@ function reports_form_actions() {
 			print "<tr>
 				<td class='textArea'>
 					<p>" . __('Click \'Continue\' to delete the following Report(s).') . "</p>
-					<p><div class='itemlist'><ul>$reports_list</ul></div></p>
+					<div class='itemlist'><ul>$reports_list</ul></div>
 				</td>
 			</tr>\n";
 		}elseif (is_reports_admin() && get_nfilter_request_var('drp_action') == REPORTS_OWN) { /* take ownership */
 			print "<tr>
 				<td class='textArea'>
 					<p>" . __('Click \'Continue\' to take ownership of the following Report(s).') . "</p>
-					<p><div class='itemlist'><ul>$reports_list</ul></div></p>
+					<div class='itemlist'><ul>$reports_list</ul></div>
 				</td>
 			</tr>\n";
 		}elseif (get_nfilter_request_var('drp_action') == REPORTS_DUPLICATE) { /* duplicate */
 			print "<tr>
 				<td class='textArea'>
 					<p>" . __('Click \'Continue\' to duplicate the following Report(s).  You may optionally change the title for the new Reports') . ".</p>
-					<p><div class='itemlist'><ul>$reports_list</ul></div></p>
+					<div class='itemlist'><ul>$reports_list</ul></div>
 					<p>" . __('Name Format:') . "<br>\n"; 
 
 			form_text_box('name_format', '<name> (1)', '', '255', '30', 'text'); 
@@ -694,7 +694,7 @@ function reports_form_actions() {
 			print "<tr>
 				<td class='textArea'>
 					<p>" . __('Click \'Continue\' to enable the following Report(s).') . "</p>
-					<p><div class='itemlist'><ul>$reports_list</ul></div></p>
+					<div class='itemlist'><ul>$reports_list</ul></div>
 					<p>" . __('Please be certain that those Report(s) have successfully been tested first!') . "</p>
 				</td>
 			</tr>\n";
@@ -702,14 +702,14 @@ function reports_form_actions() {
 			print "<tr>
 				<td class='textArea'>
 					<p>" . __('Click \'Continue\' to disable the following Reports.') . "</p>
-					<p><div class='itemlist'><ul>$reports_list</ul></div></p>
+					<div class='itemlist'><ul>$reports_list</ul></div>
 				</td>
 			</tr>\n";
 		}elseif (get_nfilter_request_var('drp_action') == REPORTS_SEND_NOW) { /* send now */
 			print "<tr>
 				<td class='textArea'>
 					<p>" . __('Click \'Continue\' to send the following Report(s) now.') . "</p>
-					<p><div class='itemlist'><ul>$reports_list</ul></div></p>
+					<div class='itemlist'><ul>$reports_list</ul></div>
 				</td>
 			</tr>\n";
 		}
@@ -743,7 +743,7 @@ function reports_send($id) {
 	/* ==================================================== */
 	include_once($config['base_path'] . '/lib/reports.php');
 
-	$report = db_fetch_row('SELECT * FROM reports WHERE id=' . $id);
+	$report = db_fetch_row_prepared('SELECT * FROM reports WHERE id = ?', array($id));
 
 	if (!sizeof($report)) {
 		/* set error condition */
@@ -800,7 +800,7 @@ function reports_item_remove() {
 	/* ================= input validation ================= */
 	get_filter_request_var('item_id');
 	/* ==================================================== */
-	db_execute('DELETE FROM reports_items WHERE id=' . get_request_var('item_id'));
+	db_execute_prepared('DELETE FROM reports_items WHERE id = ?', array(get_request_var('item_id')));
 }
 
 function reports_item_edit() {
@@ -819,15 +819,11 @@ function reports_item_edit() {
 	/* ==================================================== */
 
 	# fetch the current report record
-	$report = db_fetch_row('SELECT *
-		FROM reports 
-		WHERE id=' . get_request_var('id'));
+	$report = db_fetch_row_prepared('SELECT * FROM reports WHERE id = ?', array(get_request_var('id')));
 
 	# if an existing item was requested, fetch data for it
 	if (isset_request_var('item_id') && (get_request_var('item_id') > 0)) {
-		$reports_item = db_fetch_row('SELECT *
-			FROM reports_items
-			WHERE id=' . get_request_var('item_id'));
+		$reports_item = db_fetch_row_prepared('SELECT * FROM reports_items WHERE id = ?', array(get_request_var('item_id')));
 
 		$header_label = '[edit Report Item: ' . $report['name'] . ']';
 	}else{
@@ -1082,7 +1078,7 @@ function reports_edit() {
 	/* display the report */
 	$report = array();
 	if (!isempty_request_var('id')) {
-		$report = db_fetch_row('SELECT * FROM reports WHERE id=' . get_request_var('id'));
+		$report = db_fetch_row_prepared('SELECT * FROM reports WHERE id = ?', array(get_request_var('id')));
 		# reformat mailtime to human readable format
 		$report['mailtime'] = date(reports_date_time_format(), $report['mailtime']);
 		# setup header
@@ -1225,12 +1221,12 @@ function display_reports_items($report_id) {
 	global $graph_timespans;
 	global $item_types, $alignment;
 
-	$items = db_fetch_assoc('SELECT *
+	$items = db_fetch_assoc_prepared('SELECT *
 		FROM reports_items
-		WHERE report_id=' . $report_id . '
-		ORDER BY sequence');
+		WHERE report_id = ?
+		ORDER BY sequence', array($report_id));
 
-	$css = db_fetch_cell('SELECT cformat FROM reports WHERE id=' . $report_id);
+	$css = db_fetch_cell_prepared('SELECT cformat FROM reports WHERE id = ?', array($report_id));
 
 	html_header(array(__('Item'), __('Sequence'), __('Type'), __('Item Details'), __('Timespan'), __('Alignment'), __('Font Size'), __('Actions')), 2);
 
@@ -1252,16 +1248,17 @@ function display_reports_items($report_id) {
 				break;
 			case REPORTS_ITEM_TREE:
 				if ($item['branch_id'] > 0) {
-					$branch_details = db_fetch_row('SELECT * FROM graph_tree_items WHERE id=' . $item['branch_id']);
+					$branch_details = db_fetch_row_prepared('SELECT * FROM graph_tree_items WHERE id = ?', array($item['branch_id']));
 				}else{
 					$branch_details = array();
 				}
-				$tree_name      = db_fetch_cell('SELECT name FROM graph_tree WHERE id=' . $item['tree_id']);
+
+				$tree_name = db_fetch_cell_prepared('SELECT name FROM graph_tree WHERE id = ?', array($item['tree_id']));
 
 				$item_details = 'Tree: ' . $tree_name;
 				if ($item['branch_id'] > 0) {
 					if ($branch_details['host_id'] > 0) {
-						$item_details .= ', Host: ' . db_fetch_cell('SELECT description FROM host WHERE id=' . $branch_details['host_id']);
+						$item_details .= ', Host: ' . db_fetch_cell_prepared('SELECT description FROM host WHERE id = ?', array($branch_details['host_id']));
 					}else{
 						$item_details .= ', Branch: ' . $branch_details['title'];
 

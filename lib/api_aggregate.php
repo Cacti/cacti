@@ -654,26 +654,60 @@ function push_out_aggregates($aggregate_template_id, $local_graph_id = 0) {
 	$member_graphs              = array();
 
 	if ($local_graph_id > 0 && $aggregate_template_id == 0) {
-		$id = db_fetch_cell("SELECT id FROM aggregate_graphs WHERE local_graph_id=$local_graph_id");
-		$attribs['skipped_items'] = array_rekey(db_fetch_assoc("SELECT sequence
-			FROM aggregate_graphs_graph_item
-			WHERE item_skip='on' AND aggregate_graph_id=" . $id . ' ORDER BY sequence'), 'sequence', 'sequence');
+		$id = db_fetch_cell_prepared('SELECT id 
+			FROM aggregate_graphs 
+			WHERE local_graph_id = ?', 
+			array($local_graph_id));
 
-		$attribs['total_items'] = array_rekey(db_fetch_assoc("SELECT sequence
-			FROM aggregate_graphs_graph_item
-			WHERE item_total='on' AND aggregate_graph_id=" . $id . ' ORDER BY sequence'), 'sequence', 'sequence');
+		$attribs['skipped_items'] = array_rekey(
+			db_fetch_assoc_prepared('SELECT sequence
+				FROM aggregate_graphs_graph_item
+				WHERE item_skip="on" 
+				AND aggregate_graph_id = ? 
+				ORDER BY sequence', 
+				array($id)), 
+			'sequence', 'sequence'
+		);
 
-		$attribs['color_templates'] = array_rekey(db_fetch_assoc("SELECT sequence, color_template
-			FROM aggregate_graphs_graph_item
-			WHERE color_template>=0 AND aggregate_graph_id=" . $id . ' ORDER BY sequence'), 'sequence', 'color_template');
+		$attribs['total_items'] = array_rekey(
+			db_fetch_assoc_prepared('SELECT sequence
+				FROM aggregate_graphs_graph_item
+				WHERE item_total="on" 
+				AND aggregate_graph_id = ? 
+				ORDER BY sequency', 
+				array($id)),
+			'sequence', 'sequence'
+		);
 
-		$attribs['graph_item_types'] = array_rekey(db_fetch_assoc("SELECT sequence, graph_type_id
-			FROM aggregate_graphs_graph_item
-			WHERE t_graph_type_id='on' AND aggregate_graph_id=" . $id . ' ORDER BY sequence'), 'sequence', 'graph_type_id');
+		$attribs['color_templates'] = array_rekey(
+			db_fetch_assoc_prepared('SELECT sequence, color_template
+				FROM aggregate_graphs_graph_item
+				WHERE color_template>=0 
+				AND aggregate_graph_id = ? 
+				ORDER BY sequence', 
+				array($id)),
+			'sequence', 'color_template'
+		);
 
-		$attribs['cdefs'] = array_rekey(db_fetch_assoc("SELECT sequence, cdef_id
-			FROM aggregate_graphs_graph_item
-			WHERE t_cdef_id='on' AND aggregate_graph_id=" . $id . ' ORDER BY sequence'), 'sequence', 'cdef_id');
+		$attribs['graph_item_types'] = array_rekey(
+			db_fetch_assoc_prepared('SELECT sequence, graph_type_id
+				FROM aggregate_graphs_graph_item
+				WHERE t_graph_type_id="on" 
+				AND aggregate_graph_id = ?
+				ORDER BY sequence', 
+				array($id)), 
+			'sequence', 'graph_type_id'
+		);
+
+		$attribs['cdefs'] = array_rekey(
+			db_fetch_assoc_prepared('SELECT sequence, cdef_id
+				FROM aggregate_graphs_graph_item
+				WHERE t_cdef_id="on" 
+				AND aggregate_graph_id = ?
+				ORDER BY sequence', 
+				array($id)), 
+			'sequence', 'cdef_id'
+		);
 
 		$attribs['aggregate_graph_id']   = $aggregate_template_id;
 		$attribs['template_propogation'] = '';
@@ -687,25 +721,55 @@ function push_out_aggregates($aggregate_template_id, $local_graph_id = 0) {
 		$attribs['reorder']              = $template_data['order_type'];
 		$attribs['item_no']              = db_fetch_cell_prepared('SELECT COUNT(*) FROM aggregate_graphs_graph_item WHERE aggregate_graph_id = ?', array($id));
 	}else{
-		$attribs['skipped_items'] = array_rekey(db_fetch_assoc("SELECT sequence
-			FROM aggregate_graph_templates_item
-			WHERE item_skip='on' AND aggregate_template_id=" . $aggregate_template_id . ' ORDER BY sequence'), 'sequence', 'sequence');
+		$attribs['skipped_items'] = array_rekey(
+			db_fetch_assoc_prepared('SELECT sequence
+				FROM aggregate_graph_templates_item
+				WHERE item_skip="on" 
+				AND aggregate_template_id = ? 
+				ORDER BY sequence', 
+				array($aggregate_template_id)), 
+			'sequence', 'sequence'
+		);
 
-		$attribs['total_items'] = array_rekey(db_fetch_assoc("SELECT sequence
-			FROM aggregate_graph_templates_item
-			WHERE item_total='on' AND aggregate_template_id=" . $aggregate_template_id . ' ORDER BY sequence'), 'sequence', 'sequence');
+		$attribs['total_items'] = array_rekey(
+			db_fetch_assoc_prepared('SELECT sequence
+				FROM aggregate_graph_templates_item
+				WHERE item_total="on" 
+				AND aggregate_template_id = ?
+				ORDER BY sequence', 
+				array($aggregate_template_id)), 
+			'sequence', 'sequence'
+		);
 
-		$attribs['color_templates'] = array_rekey(db_fetch_assoc('SELECT sequence, color_template
-			FROM aggregate_graph_templates_item
-			WHERE color_template>=0 AND aggregate_template_id=' . $aggregate_template_id . ' ORDER BY sequence'), 'sequence', 'color_template');
+		$attribs['color_templates'] = array_rekey(
+			db_fetch_assoc_prepared('SELECT sequence, color_template
+				FROM aggregate_graph_templates_item
+				WHERE color_template>=0 
+				AND aggregate_template_id = ?
+				ORDER BY sequence', 
+				array($aggregate_template_id)), 
+			'sequence', 'color_template'
+		);
 
-		$attribs['graph_item_types'] = array_rekey(db_fetch_assoc("SELECT sequence, graph_type_id
-			FROM aggregate_graph_templates_item
-			WHERE t_graph_type_id='on' AND aggregate_template_id=" . $aggregate_template_id . ' ORDER BY sequence'), 'sequence', 'graph_type_id');
+		$attribs['graph_item_types'] = array_rekey(
+			db_fetch_assoc_prepared('SELECT sequence, graph_type_id
+				FROM aggregate_graph_templates_item
+				WHERE t_graph_type_id="on" 
+				AND aggregate_template_id = ?
+				ORDER BY sequence', 
+				array($aggregate_template_id)), 
+			'sequence', 'graph_type_id'
+		);
 
-		$attribs['cdefs'] = array_rekey(db_fetch_assoc("SELECT sequence, cdef_id
-			FROM aggregate_graph_templates_item
-			WHERE t_cdef_id='on' AND aggregate_template_id=" . $aggregate_template_id . ' ORDER BY sequence'), 'sequence', 'cdef_id');
+		$attribs['cdefs'] = array_rekey(
+			db_fetch_assoc_prepared('SELECT sequence, cdef_id
+				FROM aggregate_graph_templates_item
+				WHERE t_cdef_id="on" 
+				AND aggregate_template_id = ?
+				ORDER BY sequence', 
+				array($aggregate_template_id)), 
+			'sequence', 'cdef_id'
+		);
 
 		$attribs['aggregate_template_id'] = $aggregate_template_id;
 		$template_data                    = db_fetch_row_prepared("SELECT * FROM aggregate_graph_templates WHERE id = ?", array($aggregate_template_id));
@@ -1086,17 +1150,17 @@ function draw_aggregate_graph_items_list($_graph_id = 0, $_graph_template_id = 0
 		/* fetch existing item values */
 		if (isset($_object['aggregate_template_id']) && $_object['aggregate_template_id'] == 0) {
 			/* this is aggregate graph with no aggregate template */
-			$current_vals = db_fetch_assoc('SELECT * FROM aggregate_graphs_graph_item WHERE aggregate_graph_id=' . $_object['id']);
+			$current_vals = db_fetch_assoc_prepared('SELECT * FROM aggregate_graphs_graph_item WHERE aggregate_graph_id = ?', array($_object['id']));
 			$item_editor_link_param = 'aggregate_graph_id='.$_object['id'].'&local_graph_id='.$_object['local_graph_id'];
 			$is_templated = false;
 		}elseif (isset($_object['aggregate_template_id'])) {
 			/* this is aggregate graph from aggregate template */
-			$current_vals = db_fetch_assoc('SELECT * FROM aggregate_graph_templates_item WHERE aggregate_template_id=' . $_object['aggregate_template_id']);
+			$current_vals = db_fetch_assoc_prepared('SELECT * FROM aggregate_graph_templates_item WHERE aggregate_template_id = ?', array($_object['aggregate_template_id']));
 			$item_editor_link_param = 'aggregate_template_id='.$_object['aggregate_template_id'];
 			$is_templated = true;
 		}else{
 			/* this is aggregate template */
-			$current_vals = db_fetch_assoc('SELECT * FROM aggregate_graph_templates_item WHERE aggregate_template_id=' . $_object['id']);
+			$current_vals = db_fetch_assoc_prepared('SELECT * FROM aggregate_graph_templates_item WHERE aggregate_template_id = ?', array($_object['id']));
 			$item_editor_link_param = 'aggregate_template_id='.$_object['id'];
 			$is_templated = true;
 		}

@@ -296,7 +296,7 @@ function form_actions() {
 			print "<tr>
 				<td class='textArea'>
 					<p>" . __('Click \'Continue\' to delete the selected User(s).') . "</p>
-					<p><div class='itemlist'><ul>$user_list</ul></div></p>
+					<div class='itemlist'><ul>$user_list</ul></div>
 				</td>
 			</tr>\n";
 
@@ -347,7 +347,7 @@ function form_actions() {
 			print "<tr>
 				<td class='textArea'>
 					<p>" . __('Click \'Continue\' to enable the selected User(s).'). "</p>
-					<p><div class='itemlist'><ul>$user_list</ul></div></p>
+					<div class='itemlist'><ul>$user_list</ul></div>
 				</td>
 			</tr>\n";
 
@@ -358,7 +358,7 @@ function form_actions() {
 			print "<tr>
 				<td class='textArea'>
 					<p>" . __('Click \'Continue\' to disable the selected User(s).') . "</p>
-					<p><div class='itemlist'><ul>$user_list</ul></div></p>
+					<div class='itemlist'><ul>$user_list</ul></div>
 				</td>
 			</tr>\n";
 

@@ -865,7 +865,7 @@ function form_multi_dropdown($form_name, $array_display, $sql_previous_values, $
 			$sql_previous_values[][$column_id] = $value;
 		}
 	}elseif ($sql_previous_values == '') {
-		$values = db_fetch_cell("SELECT value FROM settings WHERE name='$form_name'");
+		$values = db_fetch_cell_prepared('SELECT value FROM settings WHERE name = ?', array($form_name));
 		if ($values != '') {
 			$values = explode(',', $values);
 			foreach($values as $value) {
@@ -933,7 +933,7 @@ function form_color_dropdown($form_name, $form_previous_value, $form_none_entry,
 		$class = " class='colordropdown'";
 	}
 
-	$current_color = db_fetch_cell("SELECT hex FROM colors WHERE id=$form_previous_value");
+	$current_color = db_fetch_cell_prepared('SELECT hex FROM colors WHERE id = ?', array($form_previous_value));
 
 	if (strlen($on_change)) {
 		$on_change = ' ' . $on_change . ';';

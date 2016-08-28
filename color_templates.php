@@ -208,7 +208,7 @@ function aggregate_color_form_actions() {
 			/* ================= input validation ================= */
 			input_validate_input_number($matches[1]);
 			/* ==================================================== */
-			$color_list .= '<li>' . htmlspecialchars(db_fetch_cell('SELECT name FROM color_templates WHERE color_template_id=' . $matches[1])) . '</li>';
+			$color_list .= '<li>' . htmlspecialchars(db_fetch_cell_prepared('SELECT name FROM color_templates WHERE color_template_id = ?', array($matches[1]))) . '</li>';
 			$color_array[] = $matches[1];
 		}
 	}
@@ -224,7 +224,7 @@ function aggregate_color_form_actions() {
 			print "<tr>
 				<td class='textArea'>
 					<p>" . __n('Click \'Continue\' to delete the following Color Template', 'Click \'Continue\' to delete following Color Templates', sizeof($color_array)) . "</p>
-					<p><div class='itemlist'><ul>$color_list</ul></div></p>
+					<div class='itemlist'><ul>$color_list</ul></div>
 				</td>
 			</tr>\n";
 	
@@ -233,7 +233,7 @@ function aggregate_color_form_actions() {
 			print "<tr>
 				<td class='textArea'>
 					<p>" . __n('Click \'Continue\' to duplicate the following Color Template. You can optionally change the title format for the new color template.', 'Click \'Continue\' to duplicate following Color Templates. You can optionally change the title format for the new color templates.', sizeof($color_array)) . "</p>
-					<p><div class='itemlist'><ul>$color_list</ul></div></p>
+					<div class='itemlist'><ul>$color_list</ul></div>
 					<p>" . __('Title Format:') . "<br>"; form_text_box('title_format', '<template_title> (1)', '', '255', '30', 'text'); print "</p>
 				</td>
 			</tr>\n";
@@ -276,15 +276,16 @@ function aggregate_color_item() {
 
 		$header_label = __('Color Template Items [new]');
 	}else{
-		$template_item_list = db_fetch_assoc('SELECT
+		$template_item_list = db_fetch_assoc_prepared('SELECT
 			cti.color_template_id, cti.color_template_item_id, cti.sequence, colors.hex
 			FROM color_template_items AS cti
 			LEFT JOIN colors 
 			ON cti.color_id=colors.id
-			WHERE cti.color_template_id=' . get_request_var('color_template_id') . '
-			ORDER BY cti.sequence ASC');
+			WHERE cti.color_template_id = ?
+			ORDER BY cti.sequence ASC', 
+			array(get_request_var('color_template_id')));
 
-		$header_label = __('Color Template Items [edit: %s]', db_fetch_cell('SELECT name FROM color_templates WHERE color_template_id=' . get_request_var('color_template_id')));
+		$header_label = __('Color Template Items [edit: %s]', db_fetch_cell_prepared('SELECT name FROM color_templates WHERE color_template_id = ?', array(get_request_var('color_template_id'))));
 	}
 
 	html_start_box($header_label, '100%', '', '3', 'center', 'color_templates_items.php?action=item_edit&color_template_id=' . htmlspecialchars(get_request_var('color_template_id')));
@@ -343,7 +344,7 @@ function aggregate_color_template_edit() {
 	/* ==================================================== */
 
 	if (!isempty_request_var('color_template_id')) {
-		$template = db_fetch_row('SELECT * FROM color_templates WHERE color_template_id=' . get_request_var('color_template_id'));
+		$template = db_fetch_row_prepared('SELECT * FROM color_templates WHERE color_template_id = ?', array(get_request_var('color_template_id')));
 		$header_label = __('Color Template [edit: %s]', $template['name']);
 	}else{
 		$header_label = __('Color Template [new]');

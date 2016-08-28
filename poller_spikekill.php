@@ -125,7 +125,7 @@ if (timeToRun()) {
 		$kills);
 
     /* log to the database */
-    db_execute("REPLACE INTO settings (name,value) VALUES ('stats_spikekill', '" . $cacti_stats . "')");
+    db_execute_prepared('REPLACE INTO settings (name,value) VALUES ("stats_spikekill", ?)', array($cacti_stats));
 
     /* log to the logfile */
     cacti_log('SPIKEKILL STATS: ' . $cacti_stats , TRUE, 'SYSTEM');
@@ -152,11 +152,11 @@ function timeToRun() {
 
 		if ((empty($lastrun)) && ($nowfreq > $baseupper) && ($nowfreq < $baselower)) {
 			debug('Time to Run');
-			db_execute("REPLACE INTO settings (name,value) VALUES ('spikekill_lastrun', '" . time() . "')");
+			db_execute_prepared('REPLACE INTO settings (name,value) VALUES ("spikekill_lastrun", ?)', array(time()));
 			return true;
 		} elseif (($now - $lastrun > 3600) && ($nowfreq > $baseupper) && ($nowfreq < $baselower)) {
 			debug('Time to Run');
-			db_execute("REPLACE INTO settings (name,value) VALUES ('spikekill_lastrun', '" . time() . "')");
+			db_execute_prepared('REPLACE INTO settings (name,value) VALUES ("spikekill_lastrun", ?)', array(time()));
 			return true;
 		} else {
 			debug('Not Time to Run');
@@ -164,7 +164,7 @@ function timeToRun() {
 		}
 	} elseif ($forcerun) {
 		debug('Force to Run');
-		db_execute("REPLACE INTO settings (name,value) VALUES ('spikekill_lastrun', '" . time() . "')");
+		db_execute_prepared('REPLACE INTO settings (name,value) VALUES ("spikekill_lastrun", ?', array(time()));
 		return true;
 	} else {
 		debug('Not time to Run');

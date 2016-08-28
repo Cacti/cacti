@@ -104,7 +104,7 @@ case 'view':
 	</tr>
 	<?php
 
-	$graph = db_fetch_row("SELECT * FROM graph_templates_graph WHERE local_graph_id=" . get_request_var('local_graph_id'));
+	$graph = db_fetch_row_prepared('SELECT * FROM graph_templates_graph WHERE local_graph_id = ?', array(get_request_var('local_graph_id')));
 
 	$i = 0;
 	if (sizeof($rras)) {

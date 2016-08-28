@@ -190,7 +190,11 @@ if (!$master && !$network_id) {
 
 // Simple check for a disabled network
 if (!$master && $thread == 0) {
-	$status = db_fetch_cell("SELECT enabled FROM automation_networks WHERE id=$network_id AND poller_id=$poller_id");
+	$status = db_fetch_cell_prepared('SELECT enabled 
+		FROM automation_networks 
+		WHERE id = ?
+		AND poller_id = ?', 
+		array($network_id, $poller_id));
 
 	if ($status != 'on' && !$force) {
 		print "ERROR: This Subnet Range is disabled.  You must use the 'force' option to force it's execution.\n";
@@ -221,9 +225,13 @@ if (!$master && $thread == 0) {
 	automation_debug("Thread master about to launch collector threads\n");
 
 	// Remove any stale entries
-	$pids = array_rekey(db_fetch_assoc("SELECT pid 
-		FROM automation_processes 
-		WHERE network_id=$network_id"), 'pid', 'pid');
+	$pids = array_rekey(
+		db_fetch_assoc_prepared('SELECT pid 
+			FROM automation_processes 
+			WHERE network_id = ?', 
+			array($network_id)), 
+		'pid', 'pid'
+	);
 
 	automation_debug("Killing any prior running threads\n");
 	if (sizeof($pids)) {
@@ -238,8 +246,8 @@ if (!$master && $thread == 0) {
 	}
 
 	automation_debug("Removing any orphan entries\n");
-	db_execute("DELETE FROM automation_ips WHERE network_id=$network_id");
-	db_execute("DELETE FROM automation_processes WHERE network_id=$network_id");
+	db_execute_prepared('DELETE FROM automation_ips WHERE network_id = ?', array($network_id));
+	db_execute_prepared('DELETE FROM automation_processes WHERE network_id = ?', array($network_id));
 
 	registerTask($network_id, getmypid(), $poller_id, 'tmaster');
 
@@ -247,7 +255,7 @@ if (!$master && $thread == 0) {
 
 	automation_primeIPAddressTable($network_id);
 
-	$threads = db_fetch_cell("SELECT threads FROM automation_networks WHERE id=$network_id");
+	$threads = db_fetch_cell_prepared('SELECT threads FROM automation_networks WHERE id = ?', array($network_id));
 	automation_debug("Automation will use $threads Threads\n");
 
 	$curthread = 1;
@@ -261,18 +269,32 @@ if (!$master && $thread == 0) {
 	automation_debug("Checking for Running Threads\n");
 
 	while (true) {
-		$command = db_fetch_cell("SELECT command FROM automation_processes WHERE network_id=$network_id AND task='tmaster'");
+		$command = db_fetch_cell_prepared('SELECT command 
+			FROM automation_processes 
+			WHERE network_id = ? 
+			AND task="tmaster"', 
+			array($network_id));
+
 		if ($command == 'cancel') {
 			killProcess(getmypid());
 		}
 
-		$running = db_fetch_cell("SELECT count(*) FROM automation_processes WHERE network_id=$network_id AND task!='tmaster' AND status='running'");
+		$running = db_fetch_cell_prepared('SELECT count(*) 
+			FROM automation_processes 
+			WHERE network_id = ? 
+			AND task!="tmaster" 
+			AND status="running"', 
+			array($network_id));
+
 		automation_debug("Found $running Threads\n");
 
 		if ($running == 0) {
 			db_execute_prepared('DELETE FROM automation_ips WHERE network_id = ?', array($network_id));
 
-			$totals = db_fetch_row_prepared('SELECT SUM(up_hosts) AS up, SUM(snmp_hosts) AS snmp FROM automation_processes WHERE network_id=?', array($network_id));
+			$totals = db_fetch_row_prepared('SELECT SUM(up_hosts) AS up, SUM(snmp_hosts) AS snmp 
+				FROM automation_processes 
+				WHERE network_id=?', 
+				array($network_id));
 
 			/* take time and log performance data */
 			$end = microtime(true);

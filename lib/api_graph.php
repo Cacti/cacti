@@ -175,9 +175,9 @@ function api_duplicate_graph($_local_graph_id, $_graph_template_id, $graph_title
 	global $struct_graph, $struct_graph_item;
 
 	if (!empty($_local_graph_id)) {
-		$graph_local          = db_fetch_row("SELECT * FROM graph_local WHERE id=$_local_graph_id");
-		$graph_template_graph = db_fetch_row("SELECT * FROM graph_templates_graph WHERE local_graph_id=$_local_graph_id");
-		$graph_template_items = db_fetch_assoc("SELECT * FROM graph_templates_item WHERE local_graph_id=$_local_graph_id");
+		$graph_local          = db_fetch_row_prepared('SELECT * FROM graph_local WHERE id = ?', array($_local_graph_id));
+		$graph_template_graph = db_fetch_row_prepared('SELECT * FROM graph_templates_graph WHERE local_graph_id = ?', array($_local_graph_id));
+		$graph_template_items = db_fetch_assoc_prepared('SELECT * FROM graph_templates_item WHERE local_graph_id = ?', array($_local_graph_id));
 
 		/* create new entry: graph_local */
 		$save['id'] = 0;
@@ -190,10 +190,11 @@ function api_duplicate_graph($_local_graph_id, $_graph_template_id, $graph_title
 
 		$graph_template_graph['title'] = str_replace('<graph_title>', $graph_template_graph['title'], $graph_title);
 	}elseif (!empty($_graph_template_id)) {
-		$graph_template        = db_fetch_row("SELECT * FROM graph_templates WHERE id=$_graph_template_id");
-		$graph_template_graph  = db_fetch_row("SELECT * FROM graph_templates_graph WHERE graph_template_id=$_graph_template_id AND local_graph_id=0");
-		$graph_template_items  = db_fetch_assoc("SELECT * FROM graph_templates_item WHERE graph_template_id=$_graph_template_id AND local_graph_id=0");
-		$graph_template_inputs = db_fetch_assoc("SELECT * FROM graph_template_input WHERE graph_template_id=$_graph_template_id");
+		$graph_template        = db_fetch_row_prepared('SELECT * FROM graph_templates WHERE id = ?', array($_graph_template_id));
+		$graph_template_graph  = db_fetch_row_prepared('SELECT * FROM graph_templates_graph WHERE graph_template_id = ? AND local_graph_id=0', array($_graph_template_id));
+
+		$graph_template_items  = db_fetch_assoc_prepared('SELECT * FROM graph_templates_item WHERE graph_template_id = ? AND local_graph_id=0', array($_graph_template_id));
+		$graph_template_inputs = db_fetch_assoc_prepared('SELECT * FROM graph_template_input WHERE graph_template_id = ?', array($_graph_template_id));
 
 		/* create new entry: graph_templates */
 		$save['id']   = 0;
@@ -223,51 +224,53 @@ function api_duplicate_graph($_local_graph_id, $_graph_template_id, $graph_title
 	$graph_templates_graph_id = sql_save($save, 'graph_templates_graph');
 
 	/* create new entry(s): graph_templates_item */
-	if (sizeof($graph_template_items) > 0) {
-	foreach ($graph_template_items as $graph_template_item) {
-		unset($save);
-		reset($struct_graph_item);
+	if (sizeof($graph_template_items)) {
+		foreach ($graph_template_items as $graph_template_item) {
+			unset($save);
+			reset($struct_graph_item);
 
-		$save['id']                           = 0;
-		/* save a hash only for graph_template copy operations */
-		$save['hash']                         = (!empty($_graph_template_id) ? get_hash_graph_template(0, 'graph_template_item') : 0);
-		$save['local_graph_id']               = (isset($local_graph_id) ? $local_graph_id : 0);
-		$save['graph_template_id']            = (!empty($_local_graph_id) ? $graph_template_item['graph_template_id'] : $graph_template_id);
-		$save['local_graph_template_item_id'] = (isset($graph_template_item['local_graph_template_item_id']) ? $graph_template_item['local_graph_template_item_id'] : 0);
+			$save['id']                           = 0;
+			/* save a hash only for graph_template copy operations */
+			$save['hash']                         = (!empty($_graph_template_id) ? get_hash_graph_template(0, 'graph_template_item') : 0);
+			$save['local_graph_id']               = (isset($local_graph_id) ? $local_graph_id : 0);
+			$save['graph_template_id']            = (!empty($_local_graph_id) ? $graph_template_item['graph_template_id'] : $graph_template_id);
+			$save['local_graph_template_item_id'] = (isset($graph_template_item['local_graph_template_item_id']) ? $graph_template_item['local_graph_template_item_id'] : 0);
 
-		while (list($field, $array) = each($struct_graph_item)) {
-			$save{$field} = $graph_template_item{$field};
+			while (list($field, $array) = each($struct_graph_item)) {
+				$save{$field} = $graph_template_item{$field};
+			}
+
+			$graph_item_mappings{$graph_template_item['id']} = sql_save($save, 'graph_templates_item');
 		}
-
-		$graph_item_mappings{$graph_template_item['id']} = sql_save($save, 'graph_templates_item');
-	}
 	}
 
 	if (!empty($_graph_template_id)) {
 		/* create new entry(s): graph_template_input (graph template only) */
-		if (sizeof($graph_template_inputs) > 0) {
-		foreach ($graph_template_inputs as $graph_template_input) {
-			unset($save);
+		if (sizeof($graph_template_inputs)) {
+			foreach ($graph_template_inputs as $graph_template_input) {
+				unset($save);
 
-			$save['id']                = 0;
-			$save['graph_template_id'] = $graph_template_id;
-			$save['name']              = $graph_template_input['name'];
-			$save['description']       = $graph_template_input['description'];
-			$save['column_name']       = $graph_template_input['column_name'];
-			$save['hash']              = get_hash_graph_template(0, 'graph_template_input');
+				$save['id']                = 0;
+				$save['graph_template_id'] = $graph_template_id;
+				$save['name']              = $graph_template_input['name'];
+				$save['description']       = $graph_template_input['description'];
+				$save['column_name']       = $graph_template_input['column_name'];
+				$save['hash']              = get_hash_graph_template(0, 'graph_template_input');
 
-			$graph_template_input_id   = sql_save($save, 'graph_template_input');
+				$graph_template_input_id   = sql_save($save, 'graph_template_input');
 
-			$graph_template_input_defs = db_fetch_assoc('SELECT * FROM graph_template_input_defs WHERE graph_template_input_id=' . $graph_template_input['id']);
+				$graph_template_input_defs = db_fetch_assoc_prepared('SELECT * FROM graph_template_input_defs WHERE graph_template_input_id = ?', array($graph_template_input['id']));
 
-			/* create new entry(s): graph_template_input_defs (graph template only) */
-			if (sizeof($graph_template_input_defs) > 0) {
-			foreach ($graph_template_input_defs as $graph_template_input_def) {
-				db_execute("INSERT INTO graph_template_input_defs (graph_template_input_id,graph_template_item_id)
-					values ($graph_template_input_id," . $graph_item_mappings{$graph_template_input_def['graph_template_item_id']} . ')');
+				/* create new entry(s): graph_template_input_defs (graph template only) */
+				if (sizeof($graph_template_input_defs)) {
+					foreach ($graph_template_input_defs as $graph_template_input_def) {
+						db_execute_prepared('INSERT INTO graph_template_input_defs 
+							(graph_template_input_id, graph_template_item_id)
+							VALUES (?, ?)', 
+							array($graph_template_input_id, $graph_item_mappings[$graph_template_input_def['graph_template_item_id']]));
+					}
+				}
 			}
-			}
-		}
 		}
 	}
 

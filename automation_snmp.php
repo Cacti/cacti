@@ -107,7 +107,7 @@ function form_automation_snmp_save() {
 		/* ==================================================== */
 
 		$save['id']     = get_nfilter_request_var('id');
-		$save['name']   = sql_sanitize(form_input_validate(get_nfilter_request_var('name'), 'name', '', false, 3));
+		$save['name']   = form_input_validate(get_nfilter_request_var('name'), 'name', '', false, 3);
 
 		if (!is_error_message()) {
 			$id = sql_save($save, 'automation_snmp');
@@ -201,7 +201,7 @@ function form_automation_snmp_actions() {
 			/* ================= input validation ================= */
 			input_validate_input_number($matches[1]);
 			/* ==================================================== */
-			$snmp_groups .= '<li>' . db_fetch_cell('SELECT name FROM automation_snmp WHERE id=' . $matches[1]) . '</li>';
+			$snmp_groups .= '<li>' . db_fetch_cell_prepared('SELECT name FROM automation_snmp WHERE id = ?', array($matches[1])) . '</li>';
 			$automation_array[$i] = $matches[1];
 			$i++;
 		}
@@ -233,14 +233,14 @@ function form_automation_snmp_actions() {
 			print "<tr>
 				<td class='textArea'>
 					<p>" . __('Click \'Continue\' to delete the following SNMP Option(s).') . "</p>
-					<p><div class='itemlist'><ul>$snmp_groups</ul></div></p>
+					<div class='itemlist'><ul>$snmp_groups</ul></div>
 				</td>
 			</tr>\n";
 		}elseif (get_nfilter_request_var('drp_action') == '2') { /* duplicate */
 			print "<tr>
 				<td class='textArea'>
 					<p>" . __('Click \'Continue\' to duplicate the following SNMP Options. You can optionally change the title format for the new SNMP Options.') . "</p>
-					<p><div class='itemlist'><ul>$snmp_groups</ul></div></p>
+					<div class='itemlist'><ul>$snmp_groups</ul></div>
 					<p>" . __('Name Format') . '<br>'; form_text_box('name_format', '<' . __('name') . '> (1)', '', '255', '30', 'text'); print "</p>
 				</td>
 			</tr>\n";
@@ -341,8 +341,8 @@ function automation_snmp_item_remove_confirm() {
 
     html_start_box('', '100%', '', '3', 'center', '');
 
-    $snmp = db_fetch_row('SELECT * FROM automation_snmp WHERE id=' . get_request_var('id'));
-    $item = db_fetch_row('SELECT * FROM automation_snmp_items WHERE id=' . get_request_var('item_id'));
+    $snmp = db_fetch_row_prepared('SELECT * FROM automation_snmp WHERE id = ?', array(get_request_var('id')));
+    $item = db_fetch_row_prepared('SELECT * FROM automation_snmp_items WHERE id = ?', array(get_request_var('item_id')));
 
     ?>
     <tr>
@@ -391,7 +391,7 @@ function automation_snmp_item_remove() {
 	get_filter_request_var('item_id');
 	/* ==================================================== */
 
-	db_execute('delete from automation_snmp_items where id=' . get_request_var('item_id'));
+	db_execute_prepared('DELETE FROM automation_snmp_items WHERE id = ?', array(get_request_var('item_id')));
 }
 
 function automation_snmp_item_edit() {
@@ -405,15 +405,15 @@ function automation_snmp_item_edit() {
 	/* ==================================================== */
 
 	# fetch the current mactrack snmp record
-	$snmp_option = db_fetch_row('SELECT * 
+	$snmp_option = db_fetch_row_prepared('SELECT * 
 		FROM automation_snmp 
-		WHERE id=' . get_request_var('id'));
+		WHERE id = ?', array(get_request_var('id')));
 
 	# if an existing item was requested, fetch data for it
 	if (get_request_var('item_id', '') !== '') {
-		$automation_snmp_item = db_fetch_row('SELECT * 
+		$automation_snmp_item = db_fetch_row_prepared('SELECT * 
 			FROM automation_snmp_items 
-			WHERE id=' . get_request_var('item_id'));
+			WHERE id = ?', array(get_request_var('item_id')));
 
 		$header_label = __('SNMP Options [edit: %s]', htmlspecialchars($snmp_option['name']));
 	}else{
@@ -628,7 +628,7 @@ function automation_snmp_edit() {
 	/* display the mactrack snmp option set */
 	$snmp_group = array();
 	if (!isempty_request_var('id')) {
-		$snmp_group = db_fetch_row('SELECT * FROM automation_snmp where id=' . get_request_var('id'));
+		$snmp_group = db_fetch_row_prepared('SELECT * FROM automation_snmp where id = ?', array(get_request_var('id')));
 		# setup header
 		$header_label = '[' . __('edit') . ': ' . $snmp_group['name'] . ']';
 	}else{
@@ -663,10 +663,10 @@ function automation_snmp_edit() {
 	form_hidden_box('save_component_automation_snmp', '1', '');
 
 	if (!isempty_request_var('id')) {
-		$items = db_fetch_assoc('SELECT * 
+		$items = db_fetch_assoc_prepared('SELECT * 
 			FROM automation_snmp_items
-			WHERE snmp_id=' . get_request_var('id') . '
-			ORDER BY sequence');
+			WHERE snmp_id = ?
+			ORDER BY sequence', array(get_request_var('id')));
 
 		html_start_box(__('Automation SNMP Options'), '100%', '', '3', 'center', 'automation_snmp.php?action=item_edit&id=' . get_request_var('id'));
 

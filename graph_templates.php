@@ -234,10 +234,13 @@ function form_actions() {
 
 				db_execute('DELETE FROM graph_template_input 
 					WHERE ' . array_to_sql_or($selected_items, 'graph_template_id'));
+
 				db_execute('DELETE FROM graph_templates_graph 
 					WHERE ' . array_to_sql_or($selected_items, 'graph_template_id') . ' AND local_graph_id=0');
+
 				db_execute('DELETE FROM graph_templates_item 
 					WHERE ' . array_to_sql_or($selected_items, 'graph_template_id') . ' AND local_graph_id=0');
+
 				db_execute('DELETE FROM host_template_graph 
 					WHERE ' . array_to_sql_or($selected_items, 'graph_template_id'));
 
@@ -245,9 +248,11 @@ function form_actions() {
 				db_execute('UPDATE graph_templates_graph 
 					SET local_graph_template_graph_id=0, graph_template_id=0 
 					WHERE ' . array_to_sql_or($selected_items, 'graph_template_id'));
+
 				db_execute('UPDATE graph_templates_item 
 					SET local_graph_template_item_id=0, graph_template_id=0 
 					WHERE ' . array_to_sql_or($selected_items, 'graph_template_id'));
+
 				db_execute('UPDATE graph_local 
 					SET graph_template_id=0 
 					WHERE ' . array_to_sql_or($selected_items, 'graph_template_id'));
@@ -284,7 +289,7 @@ function form_actions() {
 			input_validate_input_number($matches[1]);
 			/* ==================================================== */
 
-			$graph_list .= '<li>' . htmlspecialchars(db_fetch_cell('SELECT name FROM graph_templates WHERE id=' . $matches[1])) . '</li>';
+			$graph_list .= '<li>' . htmlspecialchars(db_fetch_cell_prepared('SELECT name FROM graph_templates WHERE id = ?', array($matches[1]))) . '</li>';
 			$graph_array[$i] = $matches[1];
 
 			$i++;
@@ -371,28 +376,30 @@ function item() {
 
 		$header_label = 'Graph Template Items [new]';
 	}else{
-		$template_item_list = db_fetch_assoc("SELECT
-			graph_templates_item.id,
-			graph_templates_item.text_format,
-			graph_templates_item.value,
-			graph_templates_item.hard_return,
-			graph_templates_item.graph_type_id,
-			graph_templates_item.consolidation_function_id,
-			CONCAT_WS(' - ',data_template_data.name,data_template_rrd.data_source_name) AS data_source_name,
+		$template_item_list = db_fetch_assoc_prepared("SELECT gti.id, gti.text_format,
+			gti.value, gti.hard_return, gti.graph_type_id, gti.consolidation_function_id,
+			CONCAT_WS(' - ', dtd.name, dtr.data_source_name) AS data_source_name,
 			cdef.name AS cdef_name,
 			colors.hex
-			FROM graph_templates_item
-			LEFT JOIN data_template_rrd ON (graph_templates_item.task_item_id=data_template_rrd.id)
-			LEFT JOIN data_local ON (data_template_rrd.local_data_id=data_local.id)
-			LEFT JOIN data_template_data ON (data_local.id=data_template_data.local_data_id)
-			LEFT JOIN cdef ON (cdef_id=cdef.id)
-			LEFT JOIN vdef ON (vdef_id=vdef.id)
-			LEFT JOIN colors ON (color_id=colors.id)
-			WHERE graph_templates_item.graph_template_id=" . get_request_var('id') . "
-			AND graph_templates_item.local_graph_id=0
-			ORDER BY graph_templates_item.sequence");
+			FROM graph_templates_item AS gti
+			LEFT JOIN data_template_rrd AS dtr
+			ON gti.task_item_id=dtr.id
+			LEFT JOIN data_local AS dl 
+			ON dtr.local_data_id=dl.id
+			LEFT JOIN data_template_data AS dtd
+			ON dl.id=dtd.local_data_id
+			LEFT JOIN cdef 
+			ON cdef_id=cdef.id
+			LEFT JOIN vdef 
+			ON vdef_id=vdef.id
+			LEFT JOIN colors 
+			ON color_id=colors.id
+			WHERE gti.graph_template_id = ?
+			AND gti.local_graph_id=0
+			ORDER BY gti.sequence", 
+			array(get_request_var('id')));
 
-		$header_label = __('Graph Template Items [edit: %s]', htmlspecialchars(db_fetch_cell('SELECT name FROM graph_templates WHERE id=' . get_request_var('id'))));
+		$header_label = __('Graph Template Items [edit: %s]', htmlspecialchars(db_fetch_cell_prepared('SELECT name FROM graph_templates WHERE id = ?', array(get_request_var('id')))));
 	}
 
 	html_start_box($header_label, '100%', '', '3', 'center', 'graph_templates_items.php?action=item_edit&graph_template_id=' . get_request_var('id'));
@@ -405,7 +412,10 @@ function item() {
 		DrawMatrixHeaderItem(__('Name'),'',2);
 	print '</tr>';
 
-	$template_item_list = db_fetch_assoc('SELECT id,name FROM graph_template_input WHERE graph_template_id=' . get_request_var('id') . ' ORDER BY name');
+	$template_item_list = db_fetch_assoc_prepared('SELECT id, name 
+		FROM graph_template_input 
+		WHERE graph_template_id = ?
+		ORDER BY name', array(get_request_var('id')));
 
 	$i = 0;
 	if (sizeof($template_item_list) > 0) {
@@ -459,8 +469,16 @@ function template_edit() {
 	}
 
 	if (!isempty_request_var('id')) {
-		$template = db_fetch_row('SELECT * FROM graph_templates WHERE id=' . get_request_var('id'));
-		$template_graph = db_fetch_row('SELECT * FROM graph_templates_graph WHERE graph_template_id=' . get_request_var('id') . ' AND local_graph_id=0');
+		$template       = db_fetch_row_prepared('SELECT * 
+			FROM graph_templates 
+			WHERE id = ?', 
+			array(get_request_var('id')));
+
+		$template_graph = db_fetch_row('SELECT * 
+			FROM graph_templates_graph 
+			WHERE graph_template_id = ?
+			AND local_graph_id=0',
+			array(get_request_var('id')));
 
 		$header_label = __('Template [edit: %s]', htmlspecialchars($template['name']));
 	}else{

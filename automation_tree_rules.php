@@ -210,13 +210,13 @@ function automation_tree_rules_form_actions() {
 				for ($i=0;($i<count($selected_items));$i++) {
 					cacti_log('form_actions enable: ' . $selected_items[$i], true, 'AUTOM8 TRACE', POLLER_VERBOSITY_MEDIUM);
 	
-					db_execute("UPDATE automation_tree_rules SET enabled='on' WHERE id=" . $selected_items[$i]);
+					db_execute_prepared("UPDATE automation_tree_rules SET enabled='on' WHERE id = ?", array($selected_items[$i]));
 				}
 			}elseif (get_nfilter_request_var('drp_action') == AUTOMATION_ACTION_TREE_DISABLE) { /* disable */
 				for ($i=0;($i<count($selected_items));$i++) {
 					cacti_log('form_actions disable: ' . $selected_items[$i], true, 'AUTOM8 TRACE', POLLER_VERBOSITY_MEDIUM);
 	
-					db_execute("UPDATE automation_tree_rules SET enabled='' WHERE id=" . $selected_items[$i]);
+					db_execute_prepared("UPDATE automation_tree_rules SET enabled='' WHERE id = ?", array($selected_items[$i]));
 				}
 			}
 		}
@@ -236,7 +236,7 @@ function automation_tree_rules_form_actions() {
 			input_validate_input_number($matches[1]);
 			/* ==================================================== */
 
-			$automation_tree_rules_list .= '<li>' . db_fetch_cell('SELECT name FROM automation_tree_rules WHERE id=' . $matches[1]) . '</li>';
+			$automation_tree_rules_list .= '<li>' . db_fetch_cell_prepared('SELECT name FROM automation_tree_rules WHERE id = ?', array($matches[1])) . '</li>';
 			$automation_tree_rules_array[] = $matches[1];
 		}
 	}
@@ -251,14 +251,14 @@ function automation_tree_rules_form_actions() {
 		print "<tr>
 			<td class='textArea'>
 				<p>" . __('Click \'Continue\' to delete the following Rule(s).') . "</p>
-				<p><div class='itemlist'><ul>$automation_tree_rules_list</ul></div></p>
+				<div class='itemlist'><ul>$automation_tree_rules_list</ul></div>
 			</td>
 		</tr>\n";
 	}elseif (get_nfilter_request_var('drp_action') == AUTOMATION_ACTION_TREE_DUPLICATE) { /* duplicate */
 		print "<tr>
 			<td class='textArea'>
 				<p>" . __('Click \'Continue\' to duplicate the following Rule(s). You can optionally change the title format for the new Rules.') . "</p>
-				<p><div class='itemlist'><ul>$automation_tree_rules_list</ul></div></p>
+				<div class='itemlist'><ul>$automation_tree_rules_list</ul></div>
 				<p>" . __('Title Format') . '<br>'; form_text_box('name_format', '<' . __('rule_name') . '> (1)', '', '255', '30', 'text'); print "</p>
 			</td>
 		</tr>\n";
@@ -266,7 +266,7 @@ function automation_tree_rules_form_actions() {
 		print "<tr>
 			<td class='textArea'>
 				<p>" . __('Click \'Continue\' to enable the following Rule(s).') . "</p>
-				<p><div class='itemlist'><ul>$automation_tree_rules_list</ul></div></p>
+				<div class='itemlist'><ul>$automation_tree_rules_list</ul></div>
 				<p>" . __('Make sure, that those rules have successfully been tested!') . "</p>
 			</td>
 		</tr>\n";
@@ -274,7 +274,7 @@ function automation_tree_rules_form_actions() {
 		print "<tr>
 			<td class='textArea'>
 				<p>" . __('Click \'Continue\' to disable the following Rule(s).') . "</p>
-				<p><div class='itemlist'><ul>$automation_tree_rules_list</ul></div></p>
+				<div class='itemlist'><ul>$automation_tree_rules_list</ul></div>
 			</td>
 		</tr>\n";
 	}
@@ -341,9 +341,9 @@ function automation_tree_rules_item_remove() {
 	/* ==================================================== */
 
 	if (get_request_var('rule_type') == AUTOMATION_RULE_TYPE_TREE_MATCH) {
-		db_execute('DELETE FROM automation_match_rule_items WHERE id=' . get_request_var('item_id'));
+		db_execute_prepared('DELETE FROM automation_match_rule_items WHERE id = ?', array(get_request_var('item_id')));
 	} elseif (get_request_var('rule_type') == AUTOMATION_RULE_TYPE_TREE_ACTION) {
-		db_execute('DELETE FROM automation_tree_rule_items WHERE id=' . get_request_var('item_id'));
+		db_execute_prepared('DELETE FROM automation_tree_rule_items WHERE id = ?', array(get_request_var('item_id')));
 	}
 
 
@@ -371,7 +371,7 @@ function automation_tree_rules_item_edit() {
 
 	if (!isempty_request_var('rule_type') && !isempty_request_var('item_id')) {
 		if (get_request_var('rule_type') == AUTOMATION_RULE_TYPE_TREE_ACTION) {
-		$item = db_fetch_row('SELECT * FROM automation_tree_rule_items WHERE id=' . get_request_var('item_id'));
+		$item = db_fetch_row_prepared('SELECT * FROM automation_tree_rule_items WHERE id = ?', array(get_request_var('item_id')));
 			if ($item['field'] != AUTOMATION_TREE_ITEM_TYPE_STRING) {
 				?>
 <table style='width:100%;text-align:center;'>
@@ -468,15 +468,24 @@ function automation_tree_rules_remove() {
 
 	if ((read_config_option('deletion_verification') == 'on') && (!isset_request_var('confirm'))) {
 		top_header();
-		form_confirm(__('Are You Sure?'), __("Are you sure you want to DELETE the Rule '%s'?", db_fetch_cell('SELECT name FROM automation_tree_rules WHERE id=' . get_request_var('id'))), 'automation_tree_rules.php', 'automation_tree_rules.php?action=remove&id=' . get_request_var('id'));
+		form_confirm(__('Are You Sure?'), __("Are you sure you want to DELETE the Rule '%s'?", db_fetch_cell_prepared('SELECT name FROM automation_tree_rules WHERE id = ?', array(get_request_var('id')))), 'automation_tree_rules.php', 'automation_tree_rules.php?action=remove&id=' . get_request_var('id'));
 		bottom_footer();
 		exit;
 	}
 
 	if ((read_config_option('deletion_verification') == '') || (isset_request_var('confirm'))) {
-		db_execute('DELETE FROM automation_match_rule_items WHERE rule_id=' . get_request_var('id') . ' AND rule_type=' . AUTOMATION_RULE_TYPE_TREE_MATCH);
-		db_execute('DELETE FROM automation_tree_rule_items WHERE rule_id=' . get_request_var('id'));
-		db_execute('DELETE FROM automation_tree_rules WHERE id=' . get_request_var('id'));
+		db_execute_prepared('DELETE FROM automation_match_rule_items 
+			WHERE rule_id = ?
+			AND rule_type = ?', 
+			array(get_request_var('id'), AUTOMATION_RULE_TYPE_TREE_MATCH));
+
+		db_execute_prepared('DELETE FROM automation_tree_rule_items 
+			WHERE rule_id = ?', 
+			array(get_request_var('id')));
+
+		db_execute_prepared('DELETE FROM automation_tree_rules 
+			WHERE id = ?',
+			array(get_request_var('id')));
 	}
 }
 
@@ -529,7 +538,7 @@ function automation_tree_rules_edit() {
 	 */
 	$rule = array();
 	if (!isempty_request_var('id')) {
-		$rule = db_fetch_row('SELECT * FROM automation_tree_rules WHERE id=' . get_request_var('id'));
+		$rule = db_fetch_row_prepared('SELECT * FROM automation_tree_rules WHERE id = ?', array(get_request_var('id')));
 		$header_label = __('Tree Rule Selection [edit: %s]', htmlspecialchars($rule['name']));
 	}else{
 		$header_label = __('Tree Rules Selection [new]');

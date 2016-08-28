@@ -175,7 +175,10 @@ function form_save() {
 						input_validate_input_number($data_template_rrd_id);
 						/* ==================================================== */
 
-						db_execute_prepared('REPLACE INTO snmp_query_graph_rrd (snmp_query_graph_id, data_template_id, data_template_rrd_id, snmp_field_name) VALUES (?, ?, ?, ?)', array($snmp_query_graph_id, $data_template_id, $data_template_rrd_id, get_nfilter_request_var('dsdt_' . $data_template_id . '_' . $data_template_rrd_id . '_snmp_field_output')));
+						db_execute_prepared('REPLACE INTO snmp_query_graph_rrd 
+							(snmp_query_graph_id, data_template_id, data_template_rrd_id, snmp_field_name) 
+							VALUES (?, ?, ?, ?)', 
+							array($snmp_query_graph_id, $data_template_id, $data_template_rrd_id, get_nfilter_request_var('dsdt_' . $data_template_id . '_' . $data_template_rrd_id . '_snmp_field_output')));
 					}elseif ((preg_match('/^svds_([0-9]+)_x/i', $var, $matches)) && (!isempty_request_var('svds_' . $matches[1] . '_text')) && (!isempty_request_var('svds_' . $matches[1] . '_field'))) {
 						/* suggested values -- data templates */
 
@@ -184,18 +187,29 @@ function form_save() {
 						/* ==================================================== */
 
 						$sequence = get_sequence(0, 'sequence', 'snmp_query_graph_rrd_sv', 'snmp_query_graph_id=' . get_request_var('id')  . ' AND data_template_id=' . $matches[1] . " AND field_name='" . get_nfilter_request_var('svds_' . $matches[1] . '_field') . "'");
+
 						$hash = get_hash_data_query(0, 'data_query_sv_data_source');
-						db_execute_prepared('INSERT INTO snmp_query_graph_rrd_sv (hash, snmp_query_graph_id, data_template_id, sequence, field_name, text) VALUES (?, ?, ?, ?, ?, ?)', array($hash, get_request_var('id'), $matches[1], $sequence, get_nfilter_request_var('svds_' . $matches[1] . '_field'), get_nfilter_request_var('svds_' . $matches[1] . '_text')));
+
+						db_execute_prepared('INSERT INTO snmp_query_graph_rrd_sv 
+							(hash, snmp_query_graph_id, data_template_id, sequence, field_name, text) 
+							VALUES (?, ?, ?, ?, ?, ?)', 
+							array($hash, get_request_var('id'), $matches[1], $sequence, get_nfilter_request_var('svds_' . $matches[1] . '_field'), get_nfilter_request_var('svds_' . $matches[1] . '_text')));
 
 						$redirect_back = true;
+
 						clear_messages();
 					}elseif ((preg_match('/^svg_x/i', $var)) && (!isempty_request_var('svg_text')) && (!isempty_request_var('svg_field'))) {
 						/* suggested values -- graph templates */
 						$sequence = get_sequence(0, 'sequence', 'snmp_query_graph_sv', 'snmp_query_graph_id=' . get_request_var('id') . " AND field_name = " . db_qstr(get_nfilter_request_var('svg_field')));
 						$hash = get_hash_data_query(0, 'data_query_sv_graph');
-						db_execute_prepared('INSERT INTO snmp_query_graph_sv (hash, snmp_query_graph_id, sequence, field_name, text) VALUES (?, ?, ?, ?, ?)', array($hash, get_request_var('id'), $sequence, get_nfilter_request_var('svg_field'), get_nfilter_request_var('svg_text')));
+
+						db_execute_prepared('INSERT INTO snmp_query_graph_sv 
+							(hash, snmp_query_graph_id, sequence, field_name, text) 
+							VALUES (?, ?, ?, ?, ?)', 
+							array($hash, get_request_var('id'), $sequence, get_nfilter_request_var('svg_field'), get_nfilter_request_var('svg_text')));
 
 						$redirect_back = true;
+
 						clear_messages();
 					}
 				}
@@ -268,7 +282,7 @@ function form_actions() {
 			print "<tr>
 				<td class='textArea' class='odd'>
 					<p>' . __n('Click \'Continue\' to delete the following Data Query.', 'Click \'Continue\' to delete following Data Queries.', sizeof($dq_array)) . '</p>
-					<p><div class='itemlist'><ul>$dq_list</ul></div></p>
+					<div class='itemlist'><ul>$dq_list</ul></div>
 				</td>
 			</tr>\n";
 		}
@@ -365,7 +379,7 @@ function data_query_item_remove_confirm() {
 
 	html_start_box('', '100%', '', '3', 'center', '');
 
-	$graph_template = db_fetch_row('SELECT * FROM snmp_query_graph WHERE id=' . get_request_var('id'));
+	$graph_template = db_fetch_row_prepared('SELECT * FROM snmp_query_graph WHERE id = ?', array(get_request_var('id')));
 
 	?>
 	<tr>
@@ -783,7 +797,7 @@ function data_query_remove($id) {
 
 	if (sizeof($snmp_query_graph) > 0) {
 	foreach ($snmp_query_graph as $item) {
-		db_execute('DELETE FROM snmp_query_graph_rrd WHERE snmp_query_graph_id=' . $item['id']);
+		db_execute_prepared('DELETE FROM snmp_query_graph_rrd WHERE snmp_query_graph_id = ?', array($item['id']));
 	}
 	}
 

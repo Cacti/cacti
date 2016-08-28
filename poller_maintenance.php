@@ -124,7 +124,7 @@ if ($purge) {
 
 /* removing security tokens older than 90 days */
 if (read_config_option('auth_cache_enabled') == 'on') {
-	db_execute("DELETE FROM user_auth_cache WHERE last_update<'" . date('Y-m-d H:i:s', time()-(86400*90)) . "'");
+	db_execute_prepared('DELETE FROM user_auth_cache WHERE last_update < ?', array(date('Y-m-d H:i:s', time()-(86400*90))));
 }else{
 	db_execute('TRUNCATE TABLE user_auth_cache');
 }
@@ -247,16 +247,16 @@ function secpass_check_expired () {
 	$e = read_config_option('secpass_expireaccount');
 	if ($e > 0 && is_numeric($e)) {
 		$t = time();
-		db_execute("UPDATE user_auth SET lastlogin = $t WHERE lastlogin = -1 AND realm = 0 AND enabled = 'on'");
+		db_execute_prepared("UPDATE user_auth SET lastlogin = ? WHERE lastlogin = -1 AND realm = 0 AND enabled = 'on'", array($t));
 		$t = $t - (intval($e) * 86400);
-		db_execute("UPDATE user_auth SET enabled = '' WHERE realm = 0 AND enabled = 'on' AND lastlogin < $t AND id > 1");
+		db_execute_prepared("UPDATE user_auth SET enabled = '' WHERE realm = 0 AND enabled = 'on' AND lastlogin < ? AND id > 1", array($t));
 	}
 	$e = read_config_option('secpass_expirepass');
 	if ($e > 0 && is_numeric($e)) {
 		$t = time();
-		db_execute("UPDATE user_auth SET lastchange = $t WHERE lastchange = -1 AND realm = 0 AND enabled = 'on'");
+		db_execute_prepared("UPDATE user_auth SET lastchange = ? WHERE lastchange = -1 AND realm = 0 AND enabled = 'on'", array($t));
 		$t = $t - (intval($e) * 86400);
-		db_execute("UPDATE user_auth SET must_change_password = 'on' WHERE realm = 0 AND enabled = 'on' AND lastchange < $t");
+		db_execute_prepared("UPDATE user_auth SET must_change_password = 'on' WHERE realm = 0 AND enabled = 'on' AND lastchange < ?", array($t));
 	}
 }
 

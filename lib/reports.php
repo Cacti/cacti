@@ -925,15 +925,18 @@ function reports_expand_tree($report, $item, $parent, $output, $format_ok, $them
 		} elseif ($leaf_type == 'host' && $nested) {
 			/* graph template grouping */
 			if ($leaf['host_grouping_type'] == HOST_GROUPING_GRAPH_TEMPLATE) {
-				$graph_templates = array_rekey(db_fetch_assoc('SELECT DISTINCT
-					gt.id, gt.name
-					FROM graph_local AS gl
-					INNER JOIN graph_templates AS gt
-					ON gt.id=gl.graph_template_id
-					INNER JOIN graph_templates_graph AS gtg
-					ON gtg.local_graph_id=gl.id
-					WHERE gl.host_id=' . $leaf['host_id'] . '
-					ORDER BY gt.name'), 'id', 'name');
+				$graph_templates = array_rekey(
+					db_fetch_assoc_prepared('SELECT DISTINCT
+						gt.id, gt.name
+						FROM graph_local AS gl
+						INNER JOIN graph_templates AS gt
+						ON gt.id=gl.graph_template_id
+						INNER JOIN graph_templates_graph AS gtg
+						ON gtg.local_graph_id=gl.id
+						WHERE gl.host_id = ?
+						ORDER BY gt.name', array($leaf['host_id'])), 
+					'id', 'name'
+				);
 
 				if (sizeof($graph_templates)) {
 					foreach($graph_templates AS $id => $name) {
@@ -995,13 +998,14 @@ function reports_expand_tree($report, $item, $parent, $output, $format_ok, $them
 				}
 			/* data query index grouping */
 			} elseif ($leaf['host_grouping_type'] == HOST_GROUPING_DATA_QUERY_INDEX) {
-				$data_queries = db_fetch_assoc('SELECT DISTINCT
+				$data_queries = db_fetch_assoc_prepared('SELECT DISTINCT
 					sq.id, sq.name
 					FROM graph_local AS gl
 					INNER JOIN snmp_query AS sq
 					ON gl.snmp_query_id=sq.id
-					WHERE gl.host_id=' . $leaf['host_id'] . '
-					ORDER BY sq.name');
+					WHERE gl.host_id = ?
+					ORDER BY sq.name', 
+					array($leaf['host_id']));
 
 				/* for graphs without a data query */
 				if (empty($data_query_id)) {
@@ -1389,11 +1393,15 @@ function reports_graphs_action_prepare($save) {
 				form_dropdown('reports_id', db_fetch_assoc_prepared('SELECT reports.id, reports.name
 					FROM reports
 					WHERE user_id = ?
-					ORDER by name', array($_SESSION['sess_user_id'])),'name','id','','','0');
+					ORDER by name', 
+					array($_SESSION['sess_user_id'])), 'name', 'id', '', '', '0');
+
 				echo '<br><p>' . __('Graph Timespan:') . '<br>';
 				form_dropdown('timespan', $graph_timespans, '', '', '0', '', '', '');
+
 				echo '<br><p>' . __('Graph Alignment:') . '<br>';
 				form_dropdown('alignment', $alignment, '', '', '0', '', '', '');
+
 				print "</p>
 			</td>
 		</tr>";
@@ -1433,7 +1441,8 @@ function reports_graphs_action_execute($action) {
 						FROM reports_items
 						WHERE local_graph_id = ?
 						AND report_id = ?
-						AND timespan = ?', array($local_graph_id, $reports_id, get_nfilter_request_var('timespan')));
+						AND timespan = ?', 
+						array($local_graph_id, $reports_id, get_nfilter_request_var('timespan')));
 
 					if (!$existing) {
 						$sequence = db_fetch_cell_prepared('SELECT max(sequence)

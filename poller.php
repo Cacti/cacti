@@ -246,7 +246,10 @@ if ((($poller_start - $poller_lastrun - 5) > MAX_POLLER_RUNTIME) && ($poller_las
 	cacti_log("WARNING: $task_type is out of sync with the Poller Interval!  The Poller Interval is '$poller_interval' seconds, with a maximum of a '$min_period' second $task_type, but " . number_format_i18n($poller_start - $poller_lastrun, 1) . ' seconds have passed since the last poll!', true, 'POLLER');
 }
 
-db_execute("REPLACE INTO settings (name, value) VALUES ('poller_lastrun_$poller_id'," . (int)$poller_start. ')');
+db_execute_prepared('REPLACE INTO settings 
+	(name, value) 
+	VALUES (?, ?)', 
+	array('poller_lastrun_' . $poller_id, (int)$poller_start));
 
 /* let PHP only run 1 second longer than the max runtime, plus the poller needs lot's of memory */
 ini_set('max_execution_time', MAX_POLLER_RUNTIME + 1);

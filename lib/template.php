@@ -159,9 +159,7 @@ function push_out_data_source_item($data_template_rrd_id) {
 	global $struct_data_source_item;
 
 	/* get information about this data template */
-	$data_template_rrd = db_fetch_row("SELECT * 
-		FROM data_template_rrd 
-		WHERE id=$data_template_rrd_id");
+	$data_template_rrd = db_fetch_row_prepared('SELECT * FROM data_template_rrd WHERE id = ?', array($data_template_rrd_id));
 
 	/* must be a data template */
 	if (empty($data_template_rrd['data_template_id'])) { 
@@ -187,10 +185,7 @@ function push_out_data_source($data_template_data_id) {
 	global $struct_data_source;
 
 	/* get information about this data template */
-	$data_template_data = db_fetch_row_prepared('SELECT * 
-		FROM data_template_data 
-		WHERE id = ?', 
-		array($data_template_data_id));
+	$data_template_data = db_fetch_row_prepared('SELECT * FROM data_template_data WHERE id = ?', array($data_template_data_id));
 
 	/* must be a data template */
 	if (empty($data_template_data['data_template_id'])) { return 0; }

@@ -46,22 +46,36 @@ function get_matching_nodes() {
 	$my_matches = array();
 	$match = array();
 
-	$matching = db_fetch_assoc("SELECT gti.id, gti.parent, gti.graph_tree_id, IF(gti.title != '', '1', '0') AS node
-		FROM graph_tree_items AS gti 
-		LEFT JOIN host AS h
-		ON h.id=gti.host_id
-		LEFT JOIN graph_templates_graph AS gtg
-		ON gtg.local_graph_id=gti.local_graph_id AND gtg.local_graph_id>0
-		WHERE gtg.title_cache LIKE '%" . get_nfilter_request_var('str') . "%'
-		OR h.description LIKE '%" . get_nfilter_request_var('str') . "%'
-		OR h.hostname LIKE '%" . get_nfilter_request_var('str') . "%'
-		OR gti.title LIKE '%" . get_nfilter_request_var('str') . "%'");
+	$filter = '%' . get_nfilter_request_var('str') . '%';
+
+	if (get_nfilter_request_var('str') != '') {
+		$matching = db_fetch_assoc_prepared("SELECT gti.id, gti.parent, 
+			gti.graph_tree_id, IF(gti.title != '', '1', '0') AS node
+			FROM graph_tree_items AS gti 
+			LEFT JOIN host AS h
+			ON h.id=gti.host_id
+			LEFT JOIN graph_templates_graph AS gtg
+			ON gtg.local_graph_id=gti.local_graph_id AND gtg.local_graph_id>0
+			WHERE gtg.title_cache LIKE ? 
+			OR h.description LIKE ?
+			OR h.hostname LIKE ?
+			OR gti.title LIKE ?",
+			array($filter, $filter, $filter, $filter));
+	}else{
+		$matching = db_fetch_assoc("SELECT gti.id, gti.parent, 
+			gti.graph_tree_id, IF(gti.title != '', '1', '0') AS node
+			FROM graph_tree_items AS gti 
+			LEFT JOIN host AS h
+			ON h.id=gti.host_id
+			LEFT JOIN graph_templates_graph AS gtg
+			ON gtg.local_graph_id=gti.local_graph_id AND gtg.local_graph_id>0");
+	}
 
 	if (sizeof($matching)) {
 		foreach($matching as $row) {
 			while ($row['parent'] != '0') {
 				$match[] = 'tbranch-' . $row['parent'];
-				$row = db_fetch_row("SELECT id, parent, graph_tree_id FROM graph_tree_items WHERE id=" . $row['parent']);
+				$row = db_fetch_row_prepared('SELECT id, parent, graph_tree_id FROM graph_tree_items WHERE id = ?', array($row['parent']));
 			}
 
 			$match[]      = 'tree_anchor-' . $row['graph_tree_id'];
@@ -110,7 +124,8 @@ case 'ajax_hosts':
 
 	break;
 case 'ajax_search':
-	get_matching_nodes(); exit;
+	get_matching_nodes(); 
+	exit;
 
 	break;
 case 'save':
@@ -204,7 +219,7 @@ case 'get_node':
 				if ($pnode[0] == 'tbranch') {
 					$parent = $pnode[1];
 					input_validate_input_number($parent);
-					$tree_id = db_fetch_cell("SELECT graph_tree_id FROM graph_tree_items WHERE id=$parent");
+					$tree_id = db_fetch_cell_prepared('SELECT graph_tree_id FROM graph_tree_items WHERE id = ?', array($parent));
 					break;
 				}
 			}

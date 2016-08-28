@@ -182,8 +182,8 @@ function form_save() {
 function duplicate_cdef($_cdef_id, $cdef_title) {
 	global $fields_cdef_edit;
 
-	$cdef = db_fetch_row("SELECT * FROM cdef WHERE id=$_cdef_id");
-	$cdef_items = db_fetch_assoc("SELECT * FROM cdef_items WHERE cdef_id=$_cdef_id");
+	$cdef       = db_fetch_row_prepared('SELECT * FROM cdef WHERE id = ?', array($_cdef_id));
+	$cdef_items = db_fetch_assoc_prepared('SELECT * FROM cdef_items WHERE cdef_id = ?', array($_cdef_id));
 
 	/* substitute the title variable */
 	$cdef['name'] = str_replace('<cdef_title>', $cdef['name'], $cdef_title);
@@ -276,7 +276,7 @@ function form_actions() {
 			print "<tr>
 				<td class='textArea' class='odd'>
 					<p>" . __n('Click \'Continue\' to delete the following CDEF.', 'Click \'Continue\' to delete all following CDEFs.', sizeof($cdef_array)) . "</p>
-					<p><div class='itemlist'><ul>$cdef_list</ul></div></p>
+					<div class='itemlist'><ul>$cdef_list</ul></div>
 				</td>
 			</tr>\n";
 
@@ -285,7 +285,7 @@ function form_actions() {
 			print "<tr>
 				<td class='textArea' class='odd'>
 					<p>" . __n('Click \'Continue\' to duplicate the following CDEF. You can optionally change the title format for the new CDEF.', 'Click \'Continue\' to duplicate the following CDEFs. You can optionally change the title format for the new CDEFs.', sizeof($cdef_array)) . "</p>
-					<p><div class='itemlist'><ul>$cdef_list</ul></div></p>
+					<div class='itemlist'><ul>$cdef_list</ul></div>
 					<p>" . __n('Title Format:') . "<br>"; form_text_box('title_format', '<cdef_title> (1)', '', '255', '30', 'text'); print "</p>
 				</td>
 			</tr>\n";
@@ -329,8 +329,8 @@ function cdef_item_remove_confirm() {
 
 	html_start_box('', '100%', '', '3', 'center', '');
 
-	$cdef       = db_fetch_row('SELECT * FROM cdef WHERE id=' . get_request_var('id'));
-	$cdef_item  = db_fetch_row('SELECT * FROM cdef_items WHERE id=' . get_request_var('cdef_id'));
+	$cdef       = db_fetch_row_prepared('SELECT * FROM cdef WHERE id = ?', array(get_request_var('id')));
+	$cdef_item  = db_fetch_row_prepared('SELECT * FROM cdef_items WHERE id = ?', array(get_request_var('cdef_id')));
 
 	?>
 	<tr>
@@ -378,7 +378,7 @@ function cdef_item_remove() {
 	get_filter_request_var('cdef_id');
 	/* ==================================================== */
 
-	db_execute('DELETE FROM cdef_items WHERE id=' . get_request_var('cdef_id'));
+	db_execute_prepared('DELETE FROM cdef_items WHERE id = ?', array(get_request_var('cdef_id')));
 }
 
 function item_movedown() {

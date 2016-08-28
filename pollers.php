@@ -197,7 +197,7 @@ function form_actions() {
 			print "<tr>
 				<td class='textArea' class='odd'>
 					<p>" . __n('Click \'Continue\' to delete the following Data Collector.  Note, all devices will be disassociated from this Data Collector and mapped back to the Main Cacti Data Collector.', 'Click \'Continue\' to delete all following Data Collectors.  Note, all devices will be disassociated from these Data Collectors and mapped back to the Main Cacti Data Collector.', sizeof($poller_array)) . "</p>
-					<p><div class='itemlist'><ul>$pollers</ul></div></p>
+					<div class='itemlist'><ul>$pollers</ul></div>
 				</td>
 			</tr>\n";
 
@@ -206,7 +206,7 @@ function form_actions() {
 			print "<tr>
 				<td class='textArea' class='odd'>
 					<p>" . __n('Click \'Continue\' to disable the following Data Collector.', 'Click \'Continue\' to disable the following Data Collectors.', sizeof($poller_array)) . "</p>
-					<p><div class='itemlist'><ul>$pollers</ul></div></p>
+					<div class='itemlist'><ul>$pollers</ul></div>
 				</td>
 			</tr>\n";
 
@@ -215,7 +215,7 @@ function form_actions() {
 			print "<tr>
 				<td class='textArea' class='odd'>
 					<p>" . __n('Click \'Continue\' to enable the following Data Collector.', 'Click \'Continue\' to enable the following Data Collectors.', sizeof($poller_array)) . "</p>
-					<p><div class='itemlist'><ul>$pollers</ul></div></p>
+					<div class='itemlist'><ul>$pollers</ul></div>
 				</td>
 			</tr>\n";
 

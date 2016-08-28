@@ -395,7 +395,7 @@ class MibParser extends MibCache {
 					if(isset($this->oids[$object['VALUE'][0]]['oid'])) {
 						$oid = $this->oids[$object['VALUE'][0]]['oid'] . "." . $object['VALUE'][1];
 					}else {
-						$oid = db_fetch_cell("SELECT `oid` FROM snmpagent_cache WHERE name = '" . $object['VALUE'][0] . "' LIMIT 1");
+						$oid = db_fetch_cell_prepared('SELECT `oid` FROM snmpagent_cache WHERE name = ? LIMIT 1', array($object['VALUE'][0]));
 						$oid .= "." . $object['VALUE'][1];
 					}
 

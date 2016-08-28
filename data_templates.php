@@ -135,13 +135,8 @@ function form_save() {
 		$save3['data_input_field_id']   = form_input_validate((isset_request_var('data_input_field_id') ? get_nfilter_request_var('data_input_field_id') : '0'), 'data_input_field_id', '', true, 3);
 
 		/* ok, first pull out all 'input' values so we know how much to save */
-		$input_fields = db_fetch_assoc_prepared("SELECT
-			id,
-			input_output,
-			regexp_match,
-			allow_nulls,
-			type_code,
-			data_name
+		$input_fields = db_fetch_assoc_prepared("SELECT id, input_output, regexp_match,
+			allow_nulls, type_code, data_name
 			FROM data_input_fields
 			WHERE data_input_id = ?
 			AND input_output = 'in'", array(get_request_var('data_input_id')));
@@ -189,7 +184,10 @@ function form_save() {
 
 		/* update actual host template information for live hosts */
 		if ((!is_error_message()) && ($save2['id'] > 0)) {
-			db_execute_prepared('UPDATE data_template_data SET data_input_id = ? WHERE data_template_id = ?', array(get_request_var('data_input_id'), get_request_var('data_template_id')));
+			db_execute_prepared('UPDATE data_template_data 
+				SET data_input_id = ? 
+				WHERE data_template_id = ?', 
+				array(get_request_var('data_input_id'), get_request_var('data_template_id')));
 		}
 
 		if (!is_error_message()) {
@@ -308,7 +306,7 @@ function form_actions() {
 			print "<tr>
 				<td class='textArea'>
 					<p>" . __('Click \'Continue\' to delete the following Data Template(s).  Any data sources attached to these templates will become individual Data Source(s) and all Templating benefits will be removed.') . "</p>
-					<p><div class='itemlist'><ul>$ds_list</ul></div></p>
+					<div class='itemlist'><ul>$ds_list</ul></div>
 				</td>
 			</tr>\n";
 
@@ -317,7 +315,7 @@ function form_actions() {
 			print "<tr>
 				<td class='textArea'>
 					<p>" . __('Click \'Continue\' to duplicate the following Data Template(s). You can optionally change the title format for the new Data Template(s).') . "</p>
-					<p><div class='itemlist'><ul>$ds_list</ul></div></p>
+					<div class='itemlist'><ul>$ds_list</ul></div>
 					<p>" . __('Title Format:') . '<br>'; form_text_box('title_format', '<' . __('template_title') . '> (1)', '', '255', '30', 'text'); print "</p>
 				</td>
 			</tr>\n";
@@ -499,8 +497,8 @@ function template_edit() {
 
 	/* data input fields list */
 	if ((empty($template_data['data_input_id'])) ||
-		((db_fetch_cell('SELECT type_id FROM data_input WHERE id=' . $template_data['data_input_id']) != '1') &&
-		(db_fetch_cell('SELECT type_id FROM data_input WHERE id=' . $template_data['data_input_id']) != '5'))) {
+		((db_fetch_cell_prepared('SELECT type_id FROM data_input WHERE id = ?', array($template_data['data_input_id'])) != '1') &&
+		(db_fetch_cell_prepared('SELECT type_id FROM data_input WHERE id = ?', array($template_data['data_input_id'])) != '5'))) {
 		unset($struct_data_source_item['data_input_field_id']);
 	}else{
 		$struct_data_source_item['data_input_field_id']['sql'] = "SELECT id,CONCAT(data_name,' - ',name) AS name FROM data_input_fields WHERE data_input_id=" . $template_data['data_input_id'] . " AND input_output='out' AND update_rra='on' ORDER BY data_name,name";
@@ -536,9 +534,13 @@ function template_edit() {
 	$i = 0;
 	if (!isempty_request_var('id')) {
 		/* get each INPUT field for this data input source */
-		$fields = db_fetch_assoc('SELECT * FROM data_input_fields WHERE data_input_id=' . $template_data['data_input_id'] . " AND input_output='in' ORDER BY name");
+		$fields = db_fetch_assoc_prepared('SELECT * 
+			FROM data_input_fields 
+			WHERE data_input_id = ?
+			AND input_output="in" ORDER BY name', 
+			array($template_data['data_input_id']));
 
-		html_start_box(__('Custom Data [data input: %s]', htmlspecialchars(db_fetch_cell('SELECT name FROM data_input WHERE id=' . $template_data['data_input_id']))), '100%', '', '3', 'center', '');
+		html_start_box(__('Custom Data [data input: %s]', htmlspecialchars(db_fetch_cell_prepared('SELECT name FROM data_input WHERE id = ?', array($template_data['data_input_id'])))), '100%', '', '3', 'center', '');
 
 		/* loop through each field found */
 		if (sizeof($fields) > 0) {

@@ -259,7 +259,7 @@ function form_actions() {
 			print "<tr>
 				<td class='textArea' class='odd'>
 					<p>" . __n('Click \'Continue\' to delete the following Data Source Profile', 'Click \'Continue\' to delete following Data Source Profiles', sizeof($profile_array)) . "</p>
-					<p><div class='itemlist'><ul>$profile_list</ul></div></p>
+					<div class='itemlist'><ul>$profile_list</ul></div>
 				</td>
 			</tr>\n";
 
@@ -268,7 +268,7 @@ function form_actions() {
 			print "<tr>
 				<td class='textArea' class='odd'>
 					<p>" . __n('Click \'Continue\' to duplicate the following Data Source Profile. You can optionally change the title format for the new Data Source Profile', 'Click \'Continue\' to duplicate following Data Source Profiles. You can optionally change the title format for the new Data Source Profiles.', sizeof($profile_array)) . "</p>
-					<p><div class='itemlist'><ul>$profile_list</ul></div></p>
+					<div class='itemlist'><ul>$profile_list</ul></div>
 					<p>" . __('Title Format:') . "<br>"; form_text_box('title_format', '<profile_title> (1)', '', '255', '30', 'text'); print "</p>
 				</td>
 			</tr>\n";
@@ -310,7 +310,7 @@ function profile_item_remove_confirm() {
 
 	html_start_box('', '100%', '', '3', 'center', '');
 
-	$profile = db_fetch_row('SELECT * FROM data_source_profiles_rra WHERE id=' . get_request_var('id'));
+	$profile = db_fetch_row_prepared('SELECT * FROM data_source_profiles_rra WHERE id = ?', array(get_request_var('id')));
 
 	?>
 	<tr>
@@ -354,7 +354,7 @@ function profile_item_remove() {
 	get_filter_request_var('id');
 	/* ==================================================== */
 
-	db_execute('DELETE FROM data_source_profiles_rra WHERE id=' . get_request_var('id'));
+	db_execute_prepared('DELETE FROM data_source_profiles_rra WHERE id = ?', array(get_request_var('id')));
 }
 
 

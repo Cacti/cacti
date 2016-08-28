@@ -129,7 +129,7 @@ function api_device_save($id, $host_template_id, $description, $hostname, $snmp_
 	if (empty($id)) {
 		$_host_template_id = 0;
 	}else{
-		$_host_template_id = db_fetch_cell_prepared('SELECT host_template_id FROM host WHERE id=?', array($id));
+		$_host_template_id = db_fetch_cell_prepared('SELECT host_template_id FROM host WHERE id = ?', array($id));
 	}
 
 	$save['id']                   = form_input_validate($id, 'id', '^[0-9]+$', false, 3);

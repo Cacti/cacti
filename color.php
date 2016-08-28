@@ -176,7 +176,7 @@ function form_actions() {
 			print "<tr>
 				<td class='textArea' class='odd'>
 					<p>" . __n('Click \'Continue\' to delete the following Color', 'Click \'Continue\' to delete the following Colors', sizeof($color_array)) . "</p>
-					<p><div class='itemlist'><ul>$color_list</ul></div></p>
+					<div class='itemlist'><ul>$color_list</ul></div>
 				</td>
 			</tr>\n";
 

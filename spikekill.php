@@ -37,12 +37,11 @@ switch(get_nfilter_request_var('method')) {
 }
 
 if (is_realm_allowed(1043)) {
-	$local_data_ids = db_fetch_assoc('SELECT DISTINCT
-		data_template_rrd.local_data_id
+	$local_data_ids = db_fetch_assoc_prepared('SELECT DISTINCT data_template_rrd.local_data_id
 		FROM graph_templates_item
 		LEFT JOIN data_template_rrd 
-		ON (graph_templates_item.task_item_id=data_template_rrd.id)
-		WHERE graph_templates_item.local_graph_id=' . get_filter_request_var('local_graph_id'));
+		ON graph_templates_item.task_item_id=data_template_rrd.id
+		WHERE graph_templates_item.local_graph_id = ?', array(get_filter_request_var('local_graph_id')));
 
 	$results = '';
 	if (sizeof($local_data_ids)) {

@@ -68,11 +68,12 @@ $start = microtime(true);
 $polling_items = array();
 
 /* get poller_item for graph_id */
-$local_data_ids = db_fetch_assoc("SELECT DISTINCT data_template_rrd.local_data_id
+$local_data_ids = db_fetch_assoc_prepared('SELECT DISTINCT data_template_rrd.local_data_id
 	FROM graph_templates_item
-	LEFT JOIN data_template_rrd ON (graph_templates_item.task_item_id=data_template_rrd.id)
-	WHERE graph_templates_item.local_graph_id=$graph_id
-	AND data_template_rrd.local_data_id IS NOT NULL");
+	LEFT JOIN data_template_rrd 
+	ON graph_templates_item.task_item_id=data_template_rrd.id
+	WHERE graph_templates_item.local_graph_id = ?
+	AND data_template_rrd.local_data_id IS NOT NULL', array($graph_id));
 
 if (!count($local_data_ids)) {
 	echo "No local_graph_id found\n\n";
@@ -86,7 +87,7 @@ foreach ($local_data_ids as $row) $ids[] = $row['local_data_id'];
 $polling_items       = db_fetch_assoc('SELECT *
 	FROM poller_item
 	WHERE local_data_id IN (' . implode(',', $ids).')
-	ORDER by host_id');
+	ORDER BY host_id');
 
 $script_server_calls = db_fetch_cell('SELECT count(*)
 	FROM poller_item
@@ -95,13 +96,13 @@ $script_server_calls = db_fetch_cell('SELECT count(*)
 $print_data_to_stdout = true;
 
 /* get the number of polling items from the database */
-$hosts = db_fetch_assoc("SELECT * FROM host WHERE disabled = '' ORDER by id");
+$hosts = db_fetch_assoc("SELECT * FROM host WHERE disabled = '' ORDER BY id");
 
 /* rework the hosts array to be searchable */
 $hosts = array_rekey($hosts, 'id', $host_struc);
 
 $host_count = sizeof($hosts);
-$script_server_calls = db_fetch_cell('SELECT count(*) from poller_item WHERE action=2');
+$script_server_calls = db_fetch_cell('SELECT count(*) FROM poller_item WHERE action=2');
 
 if ((sizeof($polling_items) > 0)) {
 	/* startup Cacti php polling server and include the include file for script processing */

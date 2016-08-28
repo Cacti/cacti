@@ -1655,7 +1655,7 @@ function get_graph_parent($graph_template_item_id, $direction) {
 		$sql_order = 'DESC';
 	}
 
-	$next_parent_id = db_fetch_cell("SELECT id FROM graph_templates_item WHERE sequence $sql_operator " . $graph_item['sequence'] . " AND graph_type_id != 9 and $sql_where ORDER BY sequence $sql_order LIMIT 1");
+	$next_parent_id = db_fetch_cell("SELECT id FROM graph_templates_item WHERE sequence $sql_operator " . $graph_item['sequence'] . " AND graph_type_id != 9 AND $sql_where ORDER BY sequence $sql_order LIMIT 1");
 
 	if (empty($next_parent_id)) {
 		return 0;
@@ -3239,7 +3239,7 @@ function general_header() {
 }
 
 function send_mail($to, $from, $subject, $body, $attachments = '', $headers = '', $html = false) {
-	$full_name = db_fetch_cell("SELECT full_name FROM user_auth WHERE email_address='$from'");
+	$full_name = db_fetch_cell_prepared('SELECT full_name FROM user_auth WHERE email_address = ?', array($from));
 	if (empty($full_name)) {
 		$fromname = $from;
 	}else{

@@ -248,7 +248,7 @@ function vdef_form_actions() {
 			input_validate_input_number($matches[1]);
 			/* ==================================================== */
 
-			$vdef_list .= '<li>' . db_fetch_cell('select name from vdef where id=' . $matches[1]) . '</li>';
+			$vdef_list .= '<li>' . db_fetch_cell_prepared('SELECT name FROM vdef WHERE id = ?', array($matches[1])) . '</li>';
 			$vdef_array[] = $matches[1];
 		}
 	}
@@ -264,7 +264,7 @@ function vdef_form_actions() {
 			print "	<tr>
 					<td class='topBoxAlt'>
 						<p>" . __n('Click \'Continue\' to delete the following VDEF.', 'Click \'Continue\' to delete following VDEFs.', sizeof($vdef_array)) . "</p>
-						<p><div class='itemlist'><ul>$vdef_list</ul></div></p>
+						<div class='itemlist'><ul>$vdef_list</ul></div>
 					</td>
 				</tr>\n";
 
@@ -273,7 +273,7 @@ function vdef_form_actions() {
 			print "	<tr>
 					<td class='topBoxAlt'>
 						<p>" . __n('Click \'Continue\' to duplicate the following VDEF. You can optionally change the title format for the new VDEF.', 'Click \'Continue\' to duplicate following VDEFs. You can optionally change the title format for the new VDEFs.', sizeof($vdef_array)) . "</p>
-						<p><div class='itemlist'><ul>$vdef_list</ul></div></p>
+						<div class='itemlist'><ul>$vdef_list</ul></div>
 						<p><strong>" . __('Title Format:') . "</strong><br>"; form_text_box("title_format", "<vdef_title> (1)", "", "255", "30", "text"); print "</p>
 					</td>
 				</tr>\n";
@@ -317,8 +317,8 @@ function vdef_item_remove_confirm() {
 
 	html_start_box('', '100%', '', '3', 'center', '');
 
-	$vdef       = db_fetch_row('SELECT * FROM vdef WHERE id=' . get_request_var('id'));
-	$vdef_item  = db_fetch_row('SELECT * FROM vdef_items WHERE id=' . get_request_var('vdef_id'));
+	$vdef       = db_fetch_row_prepared('SELECT * FROM vdef WHERE id = ?', array(get_request_var('id')));
+	$vdef_item  = db_fetch_row_prepared('SELECT * FROM vdef_items WHERE id = ?', array(get_request_var('vdef_id')));
 
 	?>
 	<tr>
@@ -365,7 +365,7 @@ function vdef_item_remove() {
 	get_filter_request_var('vdef_id');
 	/* ==================================================== */
 
-	db_execute('DELETE FROM vdef_items WHERE id=' . get_request_var('vdef_id'));
+	db_execute_prepared('DELETE FROM vdef_items WHERE id = ?', array(get_request_var('vdef_id')));
 }
 
 function vdef_item_edit() {
@@ -532,7 +532,7 @@ function vdef_edit() {
 	/* ==================================================== */
 
 	if (!isempty_request_var('id')) {
-		$vdef = db_fetch_row('SELECT * FROM vdef WHERE id=' . get_request_var('id'));
+		$vdef = db_fetch_row_prepared('SELECT * FROM vdef WHERE id = ?', array(get_request_var('id')));
 		$header_label = __('VDEFs [edit: %s]', $vdef['name']);
 	}else{
 		$header_label = __('VDEFs [new]');

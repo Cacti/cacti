@@ -41,13 +41,14 @@ function grow_dropdown_tree($tree_id, $parent = 0, $form_name = '', $selected_tr
 
 	$tier++;
 
-	$branches = db_fetch_assoc("SELECT gti.id, gti.title, parent
+	$branches = db_fetch_assoc_prepared('SELECT gti.id, gti.title, parent
 		FROM graph_tree_items AS gti
-		WHERE gti.graph_tree_id=$tree_id
+		WHERE gti.graph_tree_id = ?
 		AND gti.host_id = 0
 		AND gti.local_graph_id = 0
-		AND parent=$parent
-		ORDER BY parent, position");
+		AND parent = ?
+		ORDER BY parent, position', 
+		array($tree_id, $parent));
 
 	if ($parent == 0) {
 		print "<select id='$form_name'>\n";
@@ -87,29 +88,31 @@ function grow_dhtml_trees() {
 	$default_tree_id = read_user_setting('default_tree_id');
 
 	if (empty($default_tree_id)) {
-		$user = db_fetch_row('SELECT * FROM user_auth WHERE id=' . $_SESSION['sess_user_id']);
+		$user = db_fetch_row_prepared('SELECT * FROM user_auth WHERE id = ?', array($_SESSION['sess_user_id']));
 
 		if ($user['policy_trees'] == 1) {
-			$default_tree_id = db_fetch_cell("SELECT id 
+			$default_tree_id = db_fetch_cell_prepared('SELECT id 
 				FROM graph_tree
 				WHERE id NOT IN (
 					SELECT item_id 
 					FROM user_auth_perms 
-					WHERE type=2 AND user_id=" . $_SESSION['sess_user_id'] . "
+					WHERE type=2 AND user_id = ?
 				)
-				AND enabled='on'
-				ORDER BY id LIMIT 1");
+				AND enabled="on"
+				ORDER BY id LIMIT 1', 
+				array($_SESSION['sess_user_id']));
 		}else{
-			$default_tree_id = db_fetch_cell("SELECT id 
+			$default_tree_id = db_fetch_cell('SELECT id 
 				FROM graph_tree
 				WHERE id IN (
 					SELECT item_id 
 					FROM user_auth_perms 
 					WHERE type=2 
-					AND user_id=" . $_SESSION['sess_user_id'] . "
+					AND user_id = ?
 				)
-				AND enabled='on'
-				ORDER BY id LIMIT 1");
+				AND enabled="on"
+				ORDER BY id LIMIT 1', 
+				array($_SESSION['sess_user_id']));
 		}
 	}
 
@@ -322,7 +325,7 @@ function draw_dhtml_tree_level_graphing($tree_id, $parent = 0) {
 
 	$heirarchy = get_allowed_tree_content($tree_id, $parent);
 
-	$tree = db_fetch_cell("SELECT * FROM graph_tree WHERE id=$tree_id");
+	$tree = db_fetch_cell_prepared('SELECT * FROM graph_tree WHERE id = ?', array($tree_id));
 
 	$dhtml_tree = array();
 
@@ -344,13 +347,13 @@ function draw_dhtml_tree_level_graphing($tree_id, $parent = 0) {
 								}
 							}
 						}else if ($leaf['host_grouping_type'] == HOST_GROUPING_DATA_QUERY_INDEX) {
-							$data_queries = db_fetch_assoc("SELECT sq.id, sq.name
+							$data_queries = db_fetch_assoc_prepared('SELECT sq.id, sq.name
 								FROM graph_local AS gl
 								INNER JOIN snmp_query AS sq
 								ON gl.snmp_query_id=sq.id
-								AND gl.host_id=" . $leaf['host_id'] . "
+								AND gl.host_id = ?
 								GROUP BY sq.id
-								ORDER BY sq.name");
+								ORDER BY sq.name', array($leaf['host_id']));
 
 							array_push($data_queries, array(
 								'id' => '0',
@@ -394,7 +397,7 @@ function draw_dhtml_tree_level_graphing($tree_id, $parent = 0) {
 	
 					$dhtml_tree[] = "\t\t\t\t</li>\n";
 				}else{ //It's not a host
-					$children = db_fetch_cell("SELECT COUNT(*) FROM graph_tree_items WHERE parent=" . $leaf['id'] . " AND local_graph_id=0");
+					$children = db_fetch_cell_prepared('SELECT COUNT(*) FROM graph_tree_items WHERE parent = ? AND local_graph_id=0', array($leaf['id']));
 
 					$dhtml_tree[] = "\t\t\t\t<li id='tbranch-" . $leaf['id'] . "' " . ($children > 0 ? "class='jstree-closed'":"") . "><a href=\"" . htmlspecialchars('graph_view.php?action=tree&tree_id=' . $tree_id . '&leaf_id=' . $leaf['id'] . '&host_group_data=') . '">' . htmlspecialchars($leaf['title']) . "</a></li>\n";
 				}
@@ -513,9 +516,11 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 	$title           = '';
 	$title_delimeter = '';
 
-	$leaf = db_fetch_row("SELECT title, host_id, host_grouping_type
+	$leaf = db_fetch_row_prepared('SELECT 
+		title, host_id, host_grouping_type
 		FROM graph_tree_items
-		WHERE id=$leaf_id");
+		WHERE id = ?', 
+		array($leaf_id));
 
 	$leaf_type = api_tree_get_item_type($leaf_id);
 
@@ -538,13 +543,13 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 	$host_group_data_array = explode(':', $host_group_data);
 
 	if ($host_group_data_array[0] == 'graph_template') {
-		$host_group_data_name = '<strong>' . __('Graph Template:'). '</strong> ' . db_fetch_cell('SELECT name FROM graph_templates WHERE id=' . $host_group_data_array[1]);
+		$host_group_data_name = '<strong>' . __('Graph Template:'). '</strong> ' . db_fetch_cell_prepared('SELECT name FROM graph_templates WHERE id = ?', array($host_group_data_array[1]));
 		$graph_template_id = $host_group_data_array[1];
 	}elseif ($host_group_data_array[0] == 'data_query') {
-		$host_group_data_name = '<strong>' . __('Graph Template:') . '</strong> ' . (empty($host_group_data_array[1]) ? 'Non Query Based' : db_fetch_cell('SELECT name FROM snmp_query WHERE id=' . $host_group_data_array[1]));
+		$host_group_data_name = '<strong>' . __('Graph Template:') . '</strong> ' . (empty($host_group_data_array[1]) ? 'Non Query Based' : db_fetch_cell_prepared('SELECT name FROM snmp_query WHERE id = ?', array($host_group_data_array[1])));
 		$data_query_id = $host_group_data_array[1];
 	}elseif ($host_group_data_array[0] == 'data_query_index') {
-		$host_group_data_name = '<strong>' . __('Graph Template:') . '</strong> ' . (empty($host_group_data_array[1]) ? 'Non Query Based' : db_fetch_cell('SELECT name FROM snmp_query WHERE id=' . $host_group_data_array[1])) . '-> ' . (empty($host_group_data_array[2]) ? 'Template Based' : get_formatted_data_query_index($leaf['host_id'], $host_group_data_array[1], $host_group_data_array[2]));
+		$host_group_data_name = '<strong>' . __('Graph Template:') . '</strong> ' . (empty($host_group_data_array[1]) ? 'Non Query Based' : db_fetch_cell_prepared('SELECT name FROM snmp_query WHERE id = ?', array($host_group_data_array[1]))) . '-> ' . (empty($host_group_data_array[2]) ? 'Template Based' : get_formatted_data_query_index($leaf['host_id'], $host_group_data_array[1], $host_group_data_array[2]));
 		$data_query_id = $host_group_data_array[1];
 		$data_query_index = $host_group_data_array[2];
 	}

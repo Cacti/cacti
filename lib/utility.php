@@ -150,10 +150,15 @@ function update_poller_cache($data_source, $commit = false) {
 				$script_path = get_full_script_path($data_source['id']);
 			}
 
-			$num_output_fields = sizeof(db_fetch_assoc('SELECT ' . SQL_NO_CACHE . ' id FROM data_input_fields WHERE data_input_id=' . $data_input['id'] . " AND input_output='out' AND update_rra='on'"));
+			$num_output_fields = sizeof(db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' id 
+				FROM data_input_fields 
+				WHERE data_input_id = ? 
+				AND input_output="out" 
+				AND update_rra="on"', 
+				array($data_input['id'])));
 
 			if ($num_output_fields == 1) {
-				$data_template_rrd_id = db_fetch_cell('SELECT ' . SQL_NO_CACHE . ' id FROM data_template_rrd WHERE local_data_id=' . $data_source['id']);
+				$data_template_rrd_id = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . ' id FROM data_template_rrd WHERE local_data_id = ?', array($data_source['id']));
 				$data_source_item_name = get_data_source_item_name($data_template_rrd_id);
 			}else{
 				$data_source_item_name = '';
@@ -162,25 +167,31 @@ function update_poller_cache($data_source, $commit = false) {
 			$poller_items[] = api_poller_cache_item_add($data_source['host_id'], array(), $data_source['id'], $data_input['rrd_step'], $action, $data_source_item_name, 1, $script_path);
 		}else if ($data_input['type_id'] == DATA_INPUT_TYPE_SNMP) { /* snmp */
 			/* get the host override fields */
-			$data_template_id = db_fetch_cell('SELECT ' . SQL_NO_CACHE . ' data_template_id FROM data_template_data WHERE local_data_id=' . $data_source['id']);
+			$data_template_id = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . ' data_template_id FROM data_template_data WHERE local_data_id = ?', array($data_source['id']));
 
 			/* get host fields first */
-			$host_fields = array_rekey(db_fetch_assoc('SELECT ' . SQL_NO_CACHE . " dif.type_code, did.value
-				FROM data_input_fields AS dif
-				LEFT JOIN data_input_data AS did
-				ON dif.id=did.data_input_field_id
-				WHERE (type_code LIKE 'snmp_%' OR type_code IN('hostname','host_id'))
-				AND did.data_template_data_id=" . $data_input['data_template_data_id'] . "
-				AND did.value != ''"), 'type_code', 'value');
+			$host_fields = array_rekey(
+				db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' dif.type_code, did.value
+					FROM data_input_fields AS dif
+					LEFT JOIN data_input_data AS did
+					ON dif.id=did.data_input_field_id
+					WHERE (type_code LIKE "snmp_%" OR type_code IN("hostname","host_id"))
+					AND did.data_template_data_id = ?
+					AND did.value != ""', array($data_input['data_template_data_id'])), 
+				'type_code', 'value'
+			);
 
-			$data_template_fields = array_rekey(db_fetch_assoc('SELECT ' . SQL_NO_CACHE . " dif.type_code, did.value
-				FROM data_input_fields AS dif
-				LEFT JOIN data_input_data AS did
-				ON dif.id=did.data_input_field_id
-				WHERE (type_code LIKE 'snmp_%' OR type_code='hostname')
-				AND did.data_template_data_id=$data_template_id
-				AND data_template_data_id=$data_template_id
-				AND did.value != ''"), 'type_code', 'value');
+			$data_template_fields = array_rekey(
+				db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' dif.type_code, did.value
+					FROM data_input_fields AS dif
+					LEFT JOIN data_input_data AS did
+					ON dif.id=did.data_input_field_id
+					WHERE (type_code LIKE "snmp_%" OR type_code="hostname")
+					AND did.data_template_data_id = ?
+					AND data_template_data_id = ?
+					AND did.value != ""', array($data_template_id, $data_template_id)), 
+				'type_code', 'value'
+			);
 
 			if (sizeof($host_fields)) {
 				if (sizeof($data_template_fields)) {
@@ -194,32 +205,38 @@ function update_poller_cache($data_source, $commit = false) {
 				$host_fields = $data_template_fields;
 			}
 
-			$data_template_rrd_id = db_fetch_cell('SELECT ' . SQL_NO_CACHE . ' id FROM data_template_rrd WHERE local_data_id=' . $data_source['id']);
+			$data_template_rrd_id = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . ' id FROM data_template_rrd WHERE local_data_id = ?', array($data_source['id']));
 
 			$poller_items[] = api_poller_cache_item_add($data_source['host_id'], $host_fields, $data_source['id'], $data_input['rrd_step'], 0, get_data_source_item_name($data_template_rrd_id), 1, (isset($host_fields['snmp_oid']) ? $host_fields['snmp_oid'] : ''));
 		}else if ($data_input['type_id'] == DATA_INPUT_TYPE_SNMP_QUERY) { /* snmp query */
 			$snmp_queries = get_data_query_array($data_source['snmp_query_id']);
 
 			/* get the host override fields */
-			$data_template_id = db_fetch_cell('SELECT ' . SQL_NO_CACHE . ' data_template_id FROM data_template_data WHERE local_data_id=' . $data_source['id']);
+			$data_template_id = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . ' data_template_id FROM data_template_data WHERE local_data_id = ?', array($data_source['id']));
 
 			/* get host fields first */
-			$host_fields = array_rekey(db_fetch_assoc('SELECT ' . SQL_NO_CACHE . " dif.type_code, did.value
-				FROM data_input_fields AS dif
-				LEFT JOIN data_input_data AS did
-				ON dif.id=did.data_input_field_id
-				WHERE (type_code LIKE 'snmp_%' OR type_code='hostname')
-				AND did.data_template_data_id=" . $data_input['data_template_data_id'] . "
-				AND did.value != ''"), 'type_code', 'value');
+			$host_fields = array_rekey(
+				db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' dif.type_code, did.value
+					FROM data_input_fields AS dif
+					LEFT JOIN data_input_data AS did
+					ON dif.id=did.data_input_field_id
+					WHERE (type_code LIKE "snmp_%" OR type_code="hostname")
+					AND did.data_template_data_id = ?
+					AND did.value != ""', array($data_input['data_template_data_id'])), 
+				'type_code', 'value'
+			);
 
-			$data_template_fields = array_rekey(db_fetch_assoc('SELECT ' . SQL_NO_CACHE . " dif.type_code, did.value
-				FROM data_input_fields AS dif
-				LEFT JOIN data_input_data AS did
-				ON dif.id=did.data_input_field_id
-				WHERE (type_code LIKE 'snmp_%' OR type_code='hostname')
-				AND did.data_template_data_id=$data_template_id
-				AND data_template_data_id=$data_template_id
-				AND did.value != ''"), 'type_code', 'value');
+			$data_template_fields = array_rekey(
+				db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' dif.type_code, did.value
+					FROM data_input_fields AS dif
+					LEFT JOIN data_input_data AS did
+					ON dif.id=did.data_input_field_id
+					WHERE (type_code LIKE "snmp_%" OR type_code="hostname")
+					AND did.data_template_data_id = ?
+					AND data_template_data_id = ?
+					AND did.value != ""', array($data_template_id, $data_template_id)), 
+				'type_code', 'value'
+			);
 
 			if (sizeof($host_fields)) {
 				if (sizeof($data_template_fields)) {
@@ -252,25 +269,31 @@ function update_poller_cache($data_source, $commit = false) {
 			$script_queries = get_data_query_array($data_source['snmp_query_id']);
 
 			/* get the host override fields */
-			$data_template_id = db_fetch_cell('SELECT ' . SQL_NO_CACHE . ' data_template_id FROM data_template_data WHERE local_data_id=' . $data_source['id']);
+			$data_template_id = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . ' data_template_id FROM data_template_data WHERE local_data_id = ?', array($data_source['id']));
 
 			/* get host fields first */
-			$host_fields = array_rekey(db_fetch_assoc('SELECT ' . SQL_NO_CACHE . " dif.type_code, did.value
-				FROM data_input_fields AS dif
-				LEFT JOIN data_input_data AS did
-				ON dif.id=did.data_input_field_id
-				WHERE (type_code LIKE 'snmp_%' OR type_code='hostname')
-				AND did.data_template_data_id=" . $data_input['data_template_data_id'] . "
-				AND did.value != ''"), 'type_code', 'value');
+			$host_fields = array_rekey(
+				db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' dif.type_code, did.value
+					FROM data_input_fields AS dif
+					LEFT JOIN data_input_data AS did
+					ON dif.id=did.data_input_field_id
+					WHERE (type_code LIKE "snmp_%" OR type_code="hostname")
+					AND did.data_template_data_id = ?
+					AND did.value != ""', array($data_input['data_template_data_id'])), 
+				'type_code', 'value'
+			);
 
-			$data_template_fields = array_rekey(db_fetch_assoc('SELECT ' . SQL_NO_CACHE . " dif.type_code, did.value
-				FROM data_input_fields AS dif
-				LEFT JOIN data_input_data AS did
-				ON dif.id=did.data_input_field_id
-				WHERE (type_code LIKE 'snmp_%' OR type_code='hostname')
-				AND data_template_data_id=$data_template_id
-				AND did.data_template_data_id=$data_template_id
-				AND did.value != ''"), 'type_code', 'value');
+			$data_template_fields = array_rekey(
+				db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' dif.type_code, did.value
+					FROM data_input_fields AS dif
+					LEFT JOIN data_input_data AS did
+					ON dif.id=did.data_input_field_id
+					WHERE (type_code LIKE "snmp_%" OR type_code="hostname")
+					AND data_template_data_id = ?
+					AND did.data_template_data_id = ?
+					AND did.value != ""', array($data_template_id, $data_template_id)), 
+				'type_code', 'value'
+			);
 
 			if (sizeof($host_fields)) {
 				if (sizeof($data_template_fields)) {
@@ -451,7 +474,7 @@ function push_out_host($host_id, $local_data_id = 0, $data_template_id = 0) {
 	/* setup the sql where, and if using a host, get it's host information */
 	if ($host_id != 0) {
 		/* get all information about this host so we can write it to the data source */
-		$hosts[$host_id] = db_fetch_row('SELECT ' . SQL_NO_CACHE . ' id AS host_id, host.* FROM host WHERE id=' . $host_id);
+		$hosts[$host_id] = db_fetch_row_prepared('SELECT ' . SQL_NO_CACHE . ' id AS host_id, host.* FROM host WHERE id = ?', array($host_id));
 
 		$sql_where .= ' AND dl.host_id=' . $host_id;
 	}
@@ -479,21 +502,22 @@ function push_out_host($host_id, $local_data_id = 0, $data_template_id = 0) {
 	foreach ($data_sources as $data_source) {
 		/* set the host information */
 		if (!isset($hosts[$data_source['host_id']])) {
-			$hosts[$data_source['host_id']] = db_fetch_row('SELECT * FROM host WHERE id=' . $data_source['host_id']);
+			$hosts[$data_source['host_id']] = db_fetch_row_prepared('SELECT * FROM host WHERE id = ?', array($data_source['host_id']));
 		}
 		$host = $hosts[$data_source['host_id']];
 
 		/* get field information FROM the data template */
 		if (!isset($template_fields{$data_source['local_data_template_data_id']})) {
-			$template_fields{$data_source['local_data_template_data_id']} = db_fetch_assoc('SELECT ' . SQL_NO_CACHE . "
+			$template_fields{$data_source['local_data_template_data_id']} = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . '
 				did.value, did.t_value, dif.id, dif.type_code
 				FROM data_input_fields AS dif
 				LEFT JOIN data_input_data AS did
 				ON dif.id=did.data_input_field_id
-				WHERE dif.data_input_id=" . $data_source['data_input_id'] . "
-				AND did.data_template_data_id=" . $data_source['local_data_template_data_id'] . "
-				AND (did.t_value='' OR did.t_value is null)
-				AND dif.input_output='in'");
+				WHERE dif.data_input_id = ?
+				AND did.data_template_data_id = ?
+				AND (did.t_value="" OR did.t_value is null)
+				AND dif.input_output="in"', 
+				array($data_source['data_input_id'], $data_source['local_data_template_data_id']));
 		}
 
 		reset($template_fields{$data_source['local_data_template_data_id']});
@@ -508,7 +532,10 @@ function push_out_host($host_id, $local_data_id = 0, $data_template_id = 0) {
 				// handle special case type_code
 				if ($template_field['type_code'] == 'host_id') $template_field['type_code'] = 'id';
 
-				db_execute_prepared('REPLACE INTO data_input_data (data_input_field_id, data_template_data_id, value) VALUES (?, ?, ?)', array($template_field['id'], $data_source['id'], $host[$template_field['type_code']]));
+				db_execute_prepared('REPLACE INTO data_input_data 
+					(data_input_field_id, data_template_data_id, value) 
+					VALUES (?, ?, ?)', 
+					array($template_field['id'], $data_source['id'], $host[$template_field['type_code']]));
 			}
 		}
 		}
@@ -520,7 +547,7 @@ function push_out_host($host_id, $local_data_id = 0, $data_template_id = 0) {
 		$data = $data_source;
 		$data['id'] = $data['local_data_id'];
 
-		$poller_items     = array_merge($poller_items, update_poller_cache($data));
+		$poller_items = array_merge($poller_items, update_poller_cache($data));
 	}
 	}
 
@@ -529,6 +556,7 @@ function push_out_host($host_id, $local_data_id = 0, $data_template_id = 0) {
 	}
 
 	$poller_id = db_fetch_cell_prepared('SELECT poller_id FROM host WHERE id = ?', array($host_id));
+
 	api_data_source_cache_crc_update($poller_id);
 }
 

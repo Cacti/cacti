@@ -802,7 +802,7 @@ function manager_logs($id) {
 				$description = '';
 				$lines = preg_split( '/\r\n|\r|\n/', $item['description']);
 				foreach($lines as $line) {
-					$description .= addslashes(trim($line)) . '<br>';
+					$description .= htmlspecialchars(trim($line)) . '<br>';
 				}
 				print '<td><a href="#" onMouseOut="hideTooltip(snmpagentTooltip)" onMouseMove="showTooltip(event, snmpagentTooltip, \'' . $item['notification'] . '\', \'' . $description . '\')">' . $item['notification'] . '</a></td>';
 			}else {
@@ -990,7 +990,7 @@ function form_actions(){
 				print "<tr>
 					<td class='textArea'>
 						<p>$msg</p>
-						<p><div class='itemlist'><ul>$list</ul></div></p>
+						<div class='itemlist'><ul>$list</ul></div>
 					</td>
 				</tr>\n";
 

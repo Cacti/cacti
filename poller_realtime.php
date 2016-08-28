@@ -197,17 +197,13 @@ function process_poller_output_rt($rrdtool_pipe, $poller_id, $interval) {
 	$rrds_processed = 0;
 
 	/* create/update the rrd files */
-	$results = db_fetch_assoc("SELECT
-		port.output,
-		port.time,
-		port.local_data_id,
-		poller_item.rrd_path,
-		poller_item.rrd_name,
-		poller_item.rrd_num
-		FROM (poller_output_realtime AS port,poller_item)
+	$results = db_fetch_assoc_prepared('SELECT port.output, port.time, port.local_data_id, 
+		poller_item.rrd_path, poller_item.rrd_name, poller_item.rrd_num
+		FROM (poller_output_realtime AS port, poller_item)
 		WHERE (port.local_data_id=poller_item.local_data_id
 		AND port.rrd_name=poller_item.rrd_name)
-		AND port.poller_id='$poller_id'");
+		AND port.poller_id = ?', 
+		array($poller_id));
 
 	if (sizeof($results) > 0) {
 		/* create an array keyed off of each .rrd file */
@@ -259,12 +255,12 @@ function process_poller_output_rt($rrdtool_pipe, $poller_id, $interval) {
 			}else{
 				$values = explode(' ', $value);
 
-				$rrd_field_names = array_rekey(db_fetch_assoc('SELECT
+				$rrd_field_names = array_rekey(db_fetch_assoc_prepared('SELECT
 					data_template_rrd.data_source_name,
 					data_input_fields.data_name
 					FROM (data_template_rrd,data_input_fields)
 					WHERE data_template_rrd.data_input_field_id=data_input_fields.id
-					AND data_template_rrd.local_data_id=' . $item['local_data_id']), 'data_name', 'data_source_name');
+					AND data_template_rrd.local_data_id = ?', array($item['local_data_id'])), 'data_name', 'data_source_name');
 
 				for ($i=0; $i<count($values); $i++) {
 					if (preg_match('/^([a-zA-Z0-9_\.-]+):([eE0-9\+\.-]+)$/', $values[$i], $matches)) {
@@ -286,11 +282,12 @@ function process_poller_output_rt($rrdtool_pipe, $poller_id, $interval) {
 		/* make sure each .rrd file has complete data */
 		reset($results);
 		foreach ($results as $item) {
-			db_execute("DELETE FROM poller_output_realtime
-				WHERE local_data_id='" . $item['local_data_id'] . "'
-				AND rrd_name='" . $item['rrd_name'] . "'
-				AND time='" . $item['time'] . "'
-				AND poller_id='$poller_id'");
+			db_execute_prepared('DELETE FROM poller_output_realtime
+				WHERE local_data_id = ? 
+				AND rrd_name = ? 
+				AND time = ? 
+				AND poller_id = ?',
+				array($item['local_data_id'], $item['rrd_name'], $item['time'], $poller_id));
 		}
 
 		$rrds_processed = rrdtool_function_update($rrd_update_array, $rrdtool_pipe);

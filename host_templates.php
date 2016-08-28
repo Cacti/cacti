@@ -121,9 +121,9 @@ function form_save() {
 function duplicate_host_template($_host_template_id, $host_template_title) {
 	global $fields_host_template_edit;
 
-	$host_template = db_fetch_row("SELECT * FROM host_template WHERE id=$_host_template_id");
-	$host_template_graphs = db_fetch_assoc("SELECT * FROM host_template_graph WHERE host_template_id=$_host_template_id");
-	$host_template_data_queries = db_fetch_assoc("SELECT * FROM host_template_snmp_query WHERE host_template_id=$_host_template_id");
+	$host_template              = db_fetch_row_prepared('SELECT * FROM host_template WHERE id = ?', array($_host_template_id));
+	$host_template_graphs       = db_fetch_assoc_prepared('SELECT * FROM host_template_graph WHERE host_template_id = ?', array($_host_template_id));
+	$host_template_data_queries = db_fetch_assoc_prepared('SELECT * FROM host_template_snmp_query WHERE host_template_id = ?', array($_host_template_id));
 
 	/* substitute the title variable */
 	$host_template['name'] = str_replace('<template_title>', $host_template['name'], $host_template_title);
@@ -144,14 +144,20 @@ function duplicate_host_template($_host_template_id, $host_template_title) {
 	/* create new entry(s): host_template_graph */
 	if (sizeof($host_template_graphs)) {
 		foreach ($host_template_graphs as $host_template_graph) {
-			db_execute("INSERT INTO host_template_graph (host_template_id,graph_template_id) VALUES ($host_template_id," . $host_template_graph['graph_template_id'] . ')');
+			db_execute_prepared('INSERT INTO host_template_graph 
+				(host_template_id,graph_template_id) 
+				VALUES (?, ?)', 
+				array($host_template_id, $host_template_graph['graph_template_id']));
 		}
 	}
 
 	/* create new entry(s): host_template_snmp_query */
 	if (sizeof($host_template_data_queries)) {
 		foreach ($host_template_data_queries as $host_template_data_query) {
-			db_execute("INSERT INTO host_template_snmp_query (host_template_id,snmp_query_id) VALUES ($host_template_id," . $host_template_data_query['snmp_query_id'] . ')');
+			db_execute_prepared('INSERT INTO host_template_snmp_query 
+				(host_template_id,snmp_query_id) 
+				VALUES (?, ?)', 
+				array($host_template_id, $host_template_data_query['snmp_query_id']));
 		}
 	}
 }
@@ -167,7 +173,8 @@ function template_item_add_dq() {
 	/* ==================================================== */
 
 	db_execute_prepared('REPLACE INTO host_template_snmp_query 
-		(host_template_id, snmp_query_id) VALUES (?, ?)', 
+		(host_template_id, snmp_query_id) 
+		VALUES (?, ?)', 
 		array(get_request_var('host_template_id'), get_request_var('snmp_query_id')));
 }
 
@@ -178,7 +185,8 @@ function template_item_add_gt() {
 	/* ==================================================== */
 
 	db_execute_prepared('REPLACE INTO host_template_graph 
-		(host_template_id, graph_template_id) VALUES (?, ?)', 
+		(host_template_id, graph_template_id) 
+		VALUES (?, ?)', 
 		array(get_request_var('host_template_id'), get_request_var('graph_template_id')));
 }
 
@@ -240,7 +248,7 @@ function form_actions() {
 			print "<tr>
 				<td class='textArea'>
 					<p>" . __('Click \'Continue\' to delete the following Device Template(s).') . "</p>
-					<p><div class='itemlist'><ul>$host_list</ul></div></p>
+					<div class='itemlist'><ul>$host_list</ul></div>
 				</td>
 			</tr>\n";
 
@@ -249,7 +257,7 @@ function form_actions() {
 			print "<tr>
 				<td class='textArea'>
 					<p>" . __('Click \'Continue\' to duplicate the following Device Template(s).  Optionally change the title for the new Device Template(s).') ."</p>
-					<p><div class='itemlist'><ul>$host_list</ul></div></p>
+					<div class='itemlist'><ul>$host_list</ul></div>
 					<p><strong>" . __('Title Format:'). "</strong><br>\n"; 
 
 			form_text_box('title_format', '<template_title> (1)', '', '255', '30', 'text'); 
@@ -477,8 +485,7 @@ function template_edit() {
 							<?php print __('Add Graph Template');?>
 						</td>
 						<td>
-							<?php form_dropdown('graph_template_id',db_fetch_assoc_prepared('SELECT
-								gt.id, gt.name
+							<?php form_dropdown('graph_template_id', db_fetch_assoc_prepared('SELECT gt.id, gt.name
 								FROM graph_templates AS gt 
 								LEFT JOIN host_template_graph AS htg
 								ON gt.id=htg.graph_template_id 
@@ -500,9 +507,7 @@ function template_edit() {
 
 		html_start_box(__('Associated Data Queries'), '100%', '', '3', 'center', '');
 
-		$selected_data_queries = db_fetch_assoc_prepared('SELECT
-			snmp_query.id,
-			snmp_query.name
+		$selected_data_queries = db_fetch_assoc_prepared('SELECT snmp_query.id, snmp_query.name
 			FROM (snmp_query, host_template_snmp_query)
 			WHERE snmp_query.id = host_template_snmp_query.snmp_query_id
 			AND host_template_snmp_query.host_template_id = ?
@@ -537,9 +542,7 @@ function template_edit() {
 							<?php print __('Add Data Query');?>
 						</td>
 						<td>
-							<?php form_dropdown('snmp_query_id',db_fetch_assoc_prepared('SELECT
-								snmp_query.id,
-								snmp_query.name
+							<?php form_dropdown('snmp_query_id', db_fetch_assoc_prepared('SELECT snmp_query.id, snmp_query.name
 								FROM snmp_query LEFT JOIN host_template_snmp_query
 								ON (snmp_query.id = host_template_snmp_query.snmp_query_id AND host_template_snmp_query.host_template_id = ?)
 								WHERE host_template_snmp_query.host_template_id is null

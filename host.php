@@ -334,12 +334,12 @@ function form_actions() {
 					}
 
 					/* all associated data queries */
-					$data_queries = db_fetch_assoc('SELECT sq.*,
+					$data_queries = db_fetch_assoc_prepared('SELECT sq.*,
 						hsq.reindex_method 
 						FROM snmp_query AS sq
 						INNER JOIN host_snmp_query AS hsq
 						ON sq.id=hsq.snmp_query_id
-						WHERE hsq.host_id=' . $host_id);
+						WHERE hsq.host_id = ?', array($host_id));
 
 					/* create all data query graphs */
 					if (sizeof($data_queries)) {
@@ -400,7 +400,7 @@ function form_actions() {
 			print "<tr>
 				<td colspan='2' class='textArea'>
 					<p>" . __('Click \'Continue\' to enable the following Device(s).') . "</p>
-					<p><div class='itemlist'><ul>$host_list</ul></div></p>
+					<div class='itemlist'><ul>$host_list</ul></div>
 				</td>
 			</tr>\n";
 
@@ -409,7 +409,7 @@ function form_actions() {
 			print "	<tr>
 				<td colspan='2' class='textArea'>
 					<p>" . __('Click \'Continue\' to disable the following Device(s).') . "</p>
-					<p><div class='itemlist'><ul>$host_list</ul></div></p>
+					<div class='itemlist'><ul>$host_list</ul></div>
 				</td>
 				</tr>\n";
 
@@ -418,7 +418,7 @@ function form_actions() {
 			print "<tr>
 				<td colspan='2' class='textArea'>
 					<p>" . __('Click \'Continue\' to change the Device options below for multiple Device(s).  Please check the box next to the fields you want to update, and then fill in the new value.') . "</p>
-					<p><div class='itemlist'><ul>$host_list</ul></div></p>
+					<div class='itemlist'><ul>$host_list</ul></div>
 				</td>
 			</tr>\n";
 
@@ -460,7 +460,7 @@ function form_actions() {
 			print "<tr>
 				<td colspan='2' class='textArea'>
 					<p>" . __('Click \'Continue\' to clear the counters for the following Device(s).') . "</p>
-					<p><div class='itemlist'><ul>$host_list</ul></div></p>
+					<div class='itemlist'><ul>$host_list</ul></div>
 				</td>
 			</tr>\n";
 
@@ -469,7 +469,7 @@ function form_actions() {
 			print "<tr>
 				<td class='textArea'>
 					<p>" . __('Click \'Continue\' to delete the following Device(s).') . "</p>
-					<p><div class='itemlist'><ul>$host_list</ul></div></p>\n";
+					<div class='itemlist'><ul>$host_list</ul></div>\n";
 
 					form_radio_button('delete_type', '2', '1', __('Leave all Graph(s) and Data Source(s) untouched.  Data Source(s) will be disabled however.'), '1'); print '<br>';
 					form_radio_button('delete_type', '2', '2', __('Delete all associated Graph(s) and Data Source(s).'), '1'); print '<br>';
@@ -483,7 +483,7 @@ function form_actions() {
 			print "<tr>
 				<td class='textArea'>
 					<p>" . __('Click \'Continue\' to place the following Device(s) under the branch selected below.') . "</p>
-					<p><div class='itemlist'><ul>$host_list</ul></div></p>
+					<div class='itemlist'><ul>$host_list</ul></div>
 					<p><strong>" . __('Destination Branch:') . "</strong><br>\n";
 					grow_dropdown_tree($matches[1], '0', 'tree_item_id', '0'); 
 
@@ -497,7 +497,7 @@ function form_actions() {
 			print "<tr>
 				<td class='textArea'>
 					<p>" . __('Click \'Continue\' to apply Automation Rules to the following Devices(s).'). "</p>
-					<p><div class='itemlist'><ul>$host_list</ul></div></p>
+					<div class='itemlist'><ul>$host_list</ul></div>
 				</td>
 			</tr>\n";
 
@@ -843,18 +843,14 @@ function host_edit() {
 
 		html_header(array(__('Data Query Name'), __('Debugging'), __('Re-Index Method'), __('Status')), 2);
 
-		$selected_data_queries = db_fetch_assoc_prepared('SELECT
-			snmp_query.id,
-			snmp_query.name,
-			host_snmp_query.reindex_method
+		$selected_data_queries = db_fetch_assoc_prepared('SELECT snmp_query.id,
+			snmp_query.name, host_snmp_query.reindex_method
 			FROM (snmp_query, host_snmp_query)
 			WHERE snmp_query.id = host_snmp_query.snmp_query_id
 			AND host_snmp_query.host_id = ?
 			ORDER BY snmp_query.name', array(get_request_var('id')));
 
-		$available_data_queries = db_fetch_assoc('SELECT
-			snmp_query.id,
-			snmp_query.name
+		$available_data_queries = db_fetch_assoc('SELECT snmp_query.id, snmp_query.name
 			FROM snmp_query
 			ORDER BY snmp_query.name');
 

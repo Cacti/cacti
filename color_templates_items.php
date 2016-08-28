@@ -263,8 +263,8 @@ function aggregate_color_item_remove_confirm() {
 
 	html_start_box('', '100%', '', '3', 'center', '');
 
-	$template   = db_fetch_row('SELECT * FROM color_templates WHERE color_template_id=' . get_request_var('id'));
-	$color_item = db_fetch_row('SELECT * FROM color_template_items WHERE color_template_item_id=' . get_request_var('color_id'));
+	$template   = db_fetch_row_prepared('SELECT * FROM color_templates WHERE color_template_id = ?', array(get_request_var('id')));
+	$color_item = db_fetch_row_prepared('SELECT * FROM color_template_items WHERE color_template_item_id = ?', array(get_request_var('color_id')));
 	$color_hex  = db_fetch_cell_prepared('SELECT hex FROM colors WHERE id = ?', array($color_item['color_id']));
 
 	?>
@@ -317,7 +317,7 @@ function aggregate_color_item_remove() {
 	get_filter_request_var('color_template_id');
 	/* ==================================================== */
 
-	db_execute('DELETE FROM color_template_items WHERE color_template_item_id=' . get_request_var('color_template_item_id'));
+	db_execute_prepared('DELETE FROM color_template_items WHERE color_template_item_id = ?', array(get_request_var('color_template_item_id')));
 }
 
 
@@ -332,10 +332,10 @@ function aggregate_color_item_edit() {
 	get_filter_request_var('color_template_id');
 	/* ==================================================== */
 
-	$template = db_fetch_row('SELECT * FROM color_templates WHERE color_template_id=' . get_request_var('color_template_id'));
+	$template = db_fetch_row_prepared('SELECT * FROM color_templates WHERE color_template_id = ?', array(get_request_var('color_template_id')));
 
 	if (isset_request_var('color_template_item_id') && (get_request_var('color_template_item_id') > 0)) {
-		$template_item = db_fetch_row('select * from color_template_items where color_template_item_id=' . get_request_var('color_template_item_id'));
+		$template_item = db_fetch_row_prepared('SELECT * FROM color_template_items WHERE color_template_item_id = ?', array(get_request_var('color_template_item_id')));
 		$header_label = __('Color Template Items [edit Report Item: %s]', $template['name']);
 	}else{
 		$template_item = array();

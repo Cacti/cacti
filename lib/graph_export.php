@@ -49,7 +49,7 @@ function graph_export($force = false) {
 					db_execute("REPLACE INTO settings (name,value) VALUES ('path_html_export_ctr','1')");
 					db_execute("REPLACE INTO settings (name,value) VALUES ('path_html_export_skip','1')");
 				} else {
-					db_execute("UPDATE settings set value='" . (read_config_option("path_html_export_ctr") + 1) . "' WHERE name='path_html_export_ctr'");
+					db_execute_prepared("UPDATE settings set value = ? WHERE name='path_html_export_ctr'", array(read_config_option('path_html_export_ctr') + 1));
 				}
 				break;
 			case "export_hourly":
@@ -160,7 +160,7 @@ function config_export_stats($start, $total_graphs_created) {
 	cacti_log("STATS: " . $export_stats, true, "EXPORT");
 
 	/* insert poller stats into the settings table */
-	db_execute("replace into settings (name,value) values ('stats_export','$export_stats')");
+	db_execute_prepared("REPLACE INTO settings (name,value) values ('stats_export', ?)", array($export_stats));
 }
 
 function export_fatal($stMessage) {
@@ -564,7 +564,7 @@ function classical_export($cacti_root_path, $cacti_export_path) {
 
 	/* get a list of all graphs that need exported */
 	$exportuser = read_config_option("export_user_id");
-	$current_user = db_fetch_row("SELECT * FROM user_auth WHERE id=" . read_config_option("export_user_id"));
+	$current_user = db_fetch_row_prepared('SELECT * FROM user_auth WHERE id = ?', array(read_config_option('export_user_id')));
 
 	$sql_where = "WHERE " . get_graph_permissions_sql($current_user["policy_graphs"], $current_user["policy_hosts"], $current_user["policy_graph_templates"]);
 	$sql_join = "LEFT JOIN host ON (host.id=graph_local.host_id)
@@ -588,11 +588,9 @@ function classical_export($cacti_root_path, $cacti_export_path) {
 		$sql_base
 		GROUP BY graph_templates_graph.local_graph_id");
 
-	$rras = db_fetch_assoc("SELECT
-		rra.id,
-		rra.name
+	$rras = db_fetch_assoc('SELECT rra.id, rra.name
 		FROM rra
-		ORDER BY timespan");
+		ORDER BY timespan');
 
 	/* write the html header data to the index file */
 	$stats = "Export Date: " . date(date_time_format()) . "<br>";
@@ -698,26 +696,24 @@ function tree_export() {
 	/* set the user to utilize for establishing export permissions */
 	$export_user = read_config_option("export_user_id");
 
-	$current_user = db_fetch_row("SELECT * FROM user_auth WHERE id='" . $export_user . "'");
+	$current_user = db_fetch_row_prepared('SELECT * FROM user_auth WHERE id = ?', array($export_user));
 
-	$cacti_root_path   = $config["base_path"];
-	$cacti_export_path = read_config_option("path_html_export");
+	$cacti_root_path   = $config['base_path'];
+	$cacti_export_path = read_config_option('path_html_export');
 
 	/* if the selected user has default rights, show all the graphs */
-	if ($current_user["policy_trees"] == 1) {
-		$trees = db_fetch_assoc("SELECT
-			id,
-			name
-			FROM graph_tree");
+	if ($current_user['policy_trees'] == 1) {
+		$trees = db_fetch_assoc('SELECT id, name
+			FROM graph_tree');
 	}else{
 		/* otherwise, show only those tree's that the user has access to */
-		$trees = db_fetch_assoc("SELECT
+		$trees = db_fetch_assoc_prepared('SELECT
 			graph_tree.id AS id,
 			graph_tree.name AS name
 			FROM user_auth_perms
 			INNER JOIN graph_tree
 			ON (user_auth_perms.item_id = graph_tree.id)
-			WHERE user_auth_perms.user_id ='" . $current_user["id"] . "'");
+			WHERE user_auth_perms.user_id = ?', array($current_user['id']));
 	}
 
 	/* if tree isolation is off, create the treeview and graphs directories for the initial hierarchy */
@@ -779,7 +775,7 @@ function tree_export() {
 function export_tree_html($path, $filename, $tree_id, $parent_tree_item_id) {
 	/* auth check for hosts on the trees */
 	if (read_config_option("auth_method") != 0) {
-		$current_user = db_fetch_row("SELECT * FROM user_auth WHERE id=" . read_config_option("export_user_id"));
+		$current_user = db_fetch_row_prepared('SELECT * FROM user_auth WHERE id = ?', array(read_config_option('export_user_id')));
 
 		$sql_join = "LEFT JOIN user_auth_perms ON (host.id=user_auth_perms.item_id AND user_auth_perms.type=3 AND user_auth_perms.user_id=" . read_config_option("export_user_id") . ")";
 
@@ -831,18 +827,16 @@ function export_tree_html($path, $filename, $tree_id, $parent_tree_item_id) {
 
 				if (read_config_option("export_tree_expand_hosts") == "on") {
 					if ($leaf["host_grouping_type"] == HOST_GROUPING_GRAPH_TEMPLATE) {
-						$graph_templates = db_fetch_assoc("SELECT
-							graph_templates.id,
-							graph_templates.name,
-							graph_templates_graph.local_graph_id,
-							graph_templates_graph.title_cache
+						$graph_templates = db_fetch_assoc_prepared('SELECT
+							graph_templates.id, graph_templates.name,
+							graph_templates_graph.local_graph_id, graph_templates_graph.title_cache
 							FROM (graph_local,graph_templates,graph_templates_graph)
 							WHERE graph_local.id=graph_templates_graph.local_graph_id
 							AND graph_templates_graph.graph_template_id=graph_templates.id
-							AND graph_local.host_id=" . $leaf["host_id"] . "
-							AND graph_templates_graph.export='on'
+							AND graph_local.host_id = ?
+							AND graph_templates_graph.export="on"
 							GROUP BY graph_templates.id
-							ORDER BY graph_templates.name");
+							ORDER BY graph_templates.name', array($leaf["host_id"]));
 
 						if (sizeof($graph_templates)) {
 							foreach($graph_templates as $graph_template) {
@@ -850,14 +844,13 @@ function export_tree_html($path, $filename, $tree_id, $parent_tree_item_id) {
 							}
 						}
 					}else if ($leaf["host_grouping_type"] == HOST_GROUPING_DATA_QUERY_INDEX) {
-						$data_queries = db_fetch_assoc("SELECT
-							snmp_query.id,
-							snmp_query.name
+						$data_queries = db_fetch_assoc_prepared('SELECT
+							snmp_query.id, snmp_query.name
 							FROM (graph_local,snmp_query)
 							WHERE graph_local.snmp_query_id=snmp_query.id
-							AND graph_local.host_id=" . $leaf["host_id"] . "
+							AND graph_local.host_id = ?
 							GROUP BY snmp_query.id
-							ORDER BY snmp_query.name");
+							ORDER BY snmp_query.name', array($leaf['host_id']));
 
 						array_push($data_queries, array(
 							"id" => "0",
@@ -889,7 +882,7 @@ function build_html_file($leaf, $type = "", $array_data = array(), $snmp_index =
 	$cacti_export_path = read_config_option("path_html_export");
 
 	/* auth check for hosts on the trees */
-	$current_user = db_fetch_row("SELECT * FROM user_auth WHERE id=" . read_config_option("export_user_id"));
+	$current_user = db_fetch_row_prepared('SELECT * FROM user_auth WHERE id = ?', array(read_config_option('export_user_id')));
 
 	$sql_join  = "LEFT JOIN user_auth_perms ON (host.id=user_auth_perms.item_id AND user_auth_perms.type=3 AND user_auth_perms.user_id=" . read_config_option("export_user_id") . ")";
 
@@ -1151,12 +1144,9 @@ function build_html_file($leaf, $type = "", $array_data = array(), $snmp_index =
 
 function explore_tree($path, $tree_id, $parent_tree_item_id) {
 	/* seek graph_tree_items of the tree_id which are NOT graphs but headers */
-	$links = db_fetch_assoc("SELECT
-		id,
-		title,
-		host_id
+	$links = db_fetch_assoc_prepared('SELECT id, title, host_id
 		FROM graph_tree_items
-		WHERE graph_tree_id = " . $tree_id);
+		WHERE graph_tree_id = ?', array($tree_id));
 
 	$total_graphs_created = 0;
 
@@ -1187,14 +1177,17 @@ function explore_tree($path, $tree_id, $parent_tree_item_id) {
    @arg $tree_id - (int) the ID of the graph tree to check permissions for
    @returns - (bool) whether the current user is allowed the view the specified graph tree or not */
 function export_is_tree_allowed($tree_id) {
-	$current_user = db_fetch_row("SELECT policy_trees from user_auth WHERE id=" . read_config_option("export_user_id"));
+	$current_user = db_fetch_row_prepared('SELECT policy_trees 
+		FROM user_auth 
+		WHERE id = ?', 
+		array(read_config_option('export_user_id')));
 
-	$trees = db_fetch_assoc("SELECT
-		user_id
+	$trees = db_fetch_assoc_prepared('SELECT user_id
 		FROM user_auth_perms
-		WHERE user_id=" . read_config_option("export_user_id") . "
+		WHERE user_id = ?
 		AND type=2
-		AND item_id=$tree_id");
+		AND item_id = ?', 
+		array(read_config_option("export_user_id"), $tree_id));
 
 	/* policy == allow AND matches = DENY */
 	if ((sizeof($trees) > 0) && ($current_user["policy_trees"] == "1")) {
@@ -1222,7 +1215,7 @@ function export_tree_graphs_and_graph_html($path, $tree_id) {
 	$cacti_export_path = read_config_option("path_html_export");
 
 	/* auth check for hosts on the trees */
-	$current_user = db_fetch_row("SELECT * FROM user_auth WHERE id=" . read_config_option("export_user_id"));
+	$current_user = db_fetch_row_prepared('SELECT * FROM user_auth WHERE id = ?', array(read_config_option('export_user_id')));
 
 	if (!export_is_tree_allowed($tree_id)) {
 		return 0;
@@ -1233,15 +1226,15 @@ function export_tree_graphs_and_graph_html($path, $tree_id) {
 		LEFT JOIN host ON (host.id=graph_local.host_id)
 		LEFT JOIN user_auth_perms ON ((graph_templates_graph.local_graph_id=user_auth_perms.item_id AND user_auth_perms.type=1 AND user_auth_perms.user_id=" . $current_user["id"] . ") OR (host.id=user_auth_perms.item_id AND user_auth_perms.type=3 AND user_auth_perms.user_id=" . $current_user["id"] . ") OR (graph_templates.id=user_auth_perms.item_id AND user_auth_perms.type=4 AND user_auth_perms.user_id=" . $current_user["id"] . "))";
 
-	$sql_where = get_graph_permissions_sql($current_user["policy_graphs"], $current_user["policy_hosts"], $current_user["policy_graph_templates"]);
-	$sql_where = (empty($sql_where) ? "" : "AND $sql_where");
+	$sql_where = get_graph_permissions_sql($current_user['policy_graphs'], $current_user['policy_hosts'], $current_user['policy_graph_templates']);
+	$sql_where = (empty($sql_where) ? '' : "AND $sql_where");
 
 	$graphs = array();
 
 	if ($tree_id == 0) {
-		$hosts = db_fetch_assoc("SELECT DISTINCT host_id FROM graph_tree_items");
+		$hosts = db_fetch_assoc('SELECT DISTINCT host_id FROM graph_tree_items');
 	}else{
-		$hosts = db_fetch_assoc("SELECT DISTINCT host_id FROM graph_tree_items WHERE graph_tree_id=" . $tree_id);
+		$hosts = db_fetch_assoc_prepared('SELECT DISTINCT host_id FROM graph_tree_items WHERE graph_tree_id = ?', array($tree_id));
 	}
 
 	/* get a list of host graphs first */
@@ -1535,7 +1528,7 @@ function get_graph_tree_array_export($return_sql = false, $force_refresh = false
 		(($config["config_options_array"]["tree_update_time"] + read_user_setting("page_refresh")) < time())) {
 
 		if (read_config_option("auth_method") != 0) {
-			$current_user = db_fetch_row("SELECT id, policy_trees FROM user_auth WHERE id=" . read_config_option("export_user_id"));
+			$current_user = db_fetch_row_prepared('SELECT id, policy_trees FROM user_auth WHERE id = ?', array(read_config_option('export_user_id')));
 
 			if ($current_user["policy_trees"] == "1") {
 				$sql_where = "WHERE user_auth_perms.user_id IS NULL";
@@ -1581,7 +1574,7 @@ function create_dhtml_tree_export($tree_id) {
 	$tree_list = get_graph_tree_array_export();
 
 	/* auth check for hosts on the trees */
-	$current_user = db_fetch_row("SELECT * FROM user_auth WHERE id=" . read_config_option("export_user_id"));
+	$current_user = db_fetch_row_prepared('SELECT * FROM user_auth WHERE id = ?', array(read_config_option('export_user_id')));
 
 	$sql_join  = "LEFT JOIN user_auth_perms ON ((graph_templates_graph.local_graph_id=user_auth_perms.item_id AND user_auth_perms.type=1 AND user_auth_perms.user_id=" . $current_user["id"] . ") OR (host.id=user_auth_perms.item_id AND user_auth_perms.type=3 AND user_auth_perms.user_id=" . $current_user["id"] . ") OR (graph_templates.id=user_auth_perms.item_id AND user_auth_perms.type=4 AND user_auth_perms.user_id=" . $current_user["id"] . "))";
 
@@ -1859,26 +1852,26 @@ function create_export_directory_structure($cacti_root_path, $dir) {
 }
 
 function get_host_description($host_id) {
-	$host = db_fetch_row("SELECT description FROM host WHERE id='".$host_id."'");
+	$host = db_fetch_row_prepared('SELECT description FROM host WHERE id = ?', array($host_id));
 	return $host["description"];
 }
 
 function get_host_id($tree_item_id) {
-	$graph_tree_item=db_fetch_row("SELECT host_id FROM graph_tree_items WHERE id='".$tree_item_id."'");
+	$graph_tree_item = db_fetch_row_prepared('SELECT host_id FROM graph_tree_items WHERE id = ?', array($tree_item_id));
 	return $graph_tree_item["host_id"];
 }
 
 function get_tree_name($tree_id) {
-	$graph_tree=db_fetch_row("SELECT id, name FROM graph_tree WHERE id='".$tree_id."'");
+	$graph_tree = db_fetch_row_prepared('SELECT id, name FROM graph_tree WHERE id = ?', array($tree_id));
 	return $graph_tree["name"];
 }
 
 function get_tree_item_title($tree_item_id) {
 	if (api_tree_get_item_type($tree_item_id) == "host")  {
-		$tree_item=db_fetch_row("SELECT host_id FROM graph_tree_items WHERE id='".$tree_item_id."'");
+		$tree_item = db_fetch_row_prepared('SELECT host_id FROM graph_tree_items WHERE id = ?', array($tree_item_id));
 		return get_host_description($tree_item["host_id"]);
 	}else{
-		$tree_item=db_fetch_row("SELECT title FROM graph_tree_items WHERE id='".$tree_item_id."'");
+		$tree_item = db_fetch_row_prepared('SELECT title FROM graph_tree_items WHERE id = ?', array($tree_item_id));
 		return $tree_item["title"];
 	}
 }

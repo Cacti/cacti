@@ -145,7 +145,7 @@ function xml_to_graph_template($hash, &$xml_array, &$hash_cache, $hash_version) 
 			if (($field_name == 'unit_exponent_value') && (get_version_index($hash_version) < get_version_index('0.8.5')) && ($xml_array['graph'][$field_name] == '0')) { /* backwards compatability */
 				$save[$field_name] = '';
 			}else{
-				$save[$field_name] = addslashes(xml_character_decode($xml_array['graph'][$field_name]));
+				$save[$field_name] = xml_character_decode($xml_array['graph'][$field_name]);
 			}
 		}
 	}
@@ -189,7 +189,7 @@ function xml_to_graph_template($hash, &$xml_array, &$hash_cache, $hash_version) 
 
 						$save[$field_name] = $color_id;
 					}else{
-						$save[$field_name] = addslashes(xml_character_decode($item_array[$field_name]));
+						$save[$field_name] = xml_character_decode($item_array[$field_name]);
 					}
 				}
 			}
@@ -223,7 +223,7 @@ function xml_to_graph_template($hash, &$xml_array, &$hash_cache, $hash_version) 
 			while (list($field_name, $field_array) = each($fields_graph_template_input_edit)) {
 				/* make sure this field exists in the xml array first */
 				if (isset($item_array[$field_name])) {
-					$save[$field_name] = addslashes(xml_character_decode($item_array[$field_name]));
+					$save[$field_name] = xml_character_decode($item_array[$field_name]);
 				}
 			}
 
@@ -300,7 +300,7 @@ function xml_to_data_template($hash, &$xml_array, &$hash_cache, $import_as_new, 
 			}elseif (preg_match('/hash_([a-f0-9]{2})([a-f0-9]{4})([a-f0-9]{32})/', $xml_array['ds'][$field_name])) {
 				$save[$field_name] = resolve_hash_to_id($xml_array['ds'][$field_name], $hash_cache);
 			}else{
-				$save[$field_name] = addslashes(xml_character_decode($xml_array['ds'][$field_name]));
+				$save[$field_name] = xml_character_decode($xml_array['ds'][$field_name]);
 			}
 		}
 	}
@@ -308,7 +308,7 @@ function xml_to_data_template($hash, &$xml_array, &$hash_cache, $import_as_new, 
 	
 	/* use the profiles step if we are not importing a new one */
 	if ($import_as_new == false) {
-		$save['rrd_step'] = db_fetch_cell('SELECT step FROM data_source_profiles WHERE id=' . $profile_id . '');
+		$save['rrd_step'] = db_fetch_cell_prepared('SELECT step FROM data_source_profiles WHERE id = ?', array($profile_id));
 	}
 	
 	/* Fix for importing during installation - use the polling interval as the step if we are to use the default rra settings */
@@ -353,14 +353,14 @@ function xml_to_data_template($hash, &$xml_array, &$hash_cache, $import_as_new, 
 					if (preg_match('/hash_([a-f0-9]{2})([a-f0-9]{4})([a-f0-9]{32})/', $item_array[$field_name])) {
 						$save[$field_name] = resolve_hash_to_id($item_array[$field_name], $hash_cache);
 					}else{
-						$save[$field_name] = addslashes(xml_character_decode($item_array[$field_name]));
+						$save[$field_name] = xml_character_decode($item_array[$field_name]);
 					}
 				}
 			}
 
 			/* use the profiles step * 2 as the heartbeat if we are not importing a new profile */
 			if ($import_as_new === false) {
-				$save['rrd_heartbeat'] = db_fetch_cell('SELECT step FROM data_source_profiles WHERE id=' . $profile_id . '') * 2;
+				$save['rrd_heartbeat'] = db_fetch_cell_prepared('SELECT step FROM data_source_profiles WHERE id = ?', array($profile_id)) * 2;
 			}
 			
 			/* Fix for importing during installation - use the polling interval as the step if we are to use the default rra settings */
@@ -381,7 +381,7 @@ function xml_to_data_template($hash, &$xml_array, &$hash_cache, $import_as_new, 
 			$save['data_template_data_id'] = $data_template_data_id;
 			$save['data_input_field_id']   = resolve_hash_to_id($item_array['data_input_field_id'], $hash_cache);
 			$save['t_value']               = $item_array['t_value'];
-			$save['value']                 = addslashes(xml_character_decode($item_array['value']));
+			$save['value']                 = xml_character_decode($item_array['value']);
 
 			sql_save($save, 'data_input_data', array('data_template_data_id', 'data_input_field_id'), false);
 		}
@@ -411,7 +411,7 @@ function xml_to_data_query($hash, &$xml_array, &$hash_cache) {
 			if (preg_match('/hash_([a-f0-9]{2})([a-f0-9]{4})([a-f0-9]{32})/', $xml_array[$field_name])) {
 				$save[$field_name] = resolve_hash_to_id($xml_array[$field_name], $hash_cache);
 			}else{
-				$save[$field_name] = addslashes(xml_character_decode($xml_array[$field_name]));
+				$save[$field_name] = xml_character_decode($xml_array[$field_name]);
 			}
 		}
 	}
@@ -447,7 +447,7 @@ function xml_to_data_query($hash, &$xml_array, &$hash_cache) {
 					if (preg_match('/hash_([a-f0-9]{2})([a-f0-9]{4})([a-f0-9]{32})/', $item_array[$field_name])) {
 						$save[$field_name] = resolve_hash_to_id($item_array[$field_name], $hash_cache);
 					}else{
-						$save[$field_name] = addslashes(xml_character_decode($item_array[$field_name]));
+						$save[$field_name] = xml_character_decode($item_array[$field_name]);
 					}
 				}
 			}
@@ -549,7 +549,7 @@ function xml_to_gprint_preset($hash, &$xml_array, &$hash_cache) {
 	while (list($field_name, $field_array) = each($fields_grprint_presets_edit)) {
 		/* make sure this field exists in the xml array first */
 		if (isset($xml_array[$field_name])) {
-			$save[$field_name] = addslashes(xml_character_decode($xml_array[$field_name]));
+			$save[$field_name] = xml_character_decode($xml_array[$field_name]);
 		}
 	}
 
@@ -576,7 +576,7 @@ function xml_to_data_source_profile($hash, &$xml_array, &$hash_cache, $import_as
 		while (list($field_name, $field_array) = each($fields_profile_edit)) {
 			/* make sure this field exists in the xml array first */
 			if (isset($xml_array[$field_name])) {
-				$save[$field_name] = addslashes(xml_character_decode($xml_array[$field_name]));
+				$save[$field_name] = xml_character_decode($xml_array[$field_name]);
 			}
 		}
 
@@ -586,7 +586,6 @@ function xml_to_data_source_profile($hash, &$xml_array, &$hash_cache, $import_as
 		$dsp_id = sql_save($save, 'data_source_profiles');
 
 		if (!empty($dsp_id)) {
-cacti_log("UPDATE data_template_data SET data_source_profile_id=$dsp_id WHERE id=$import_template_id");
 			db_execute_prepared('UPDATE data_template_data SET data_source_profile_id = ? WHERE id = ?', array($dsp_id, $import_template_id));
 		}
 
@@ -615,7 +614,7 @@ cacti_log("UPDATE data_template_data SET data_source_profile_id=$dsp_id WHERE id
 				while (list($field_name, $field_array) = each($fields_profile_rra_edit)) {
 					/* make sure this field exists in the xml array first */
 					if (isset($item_array[$field_name])) {
-						$save[$field_name] = addslashes(xml_character_decode($item_array[$field_name]));
+						$save[$field_name] = xml_character_decode($item_array[$field_name]);
 					}
 				}
 
@@ -647,7 +646,7 @@ function xml_to_host_template($hash, &$xml_array, &$hash_cache) {
 	while (list($field_name, $field_array) = each($fields_host_template_edit)) {
 		/* make sure this field exists in the xml array first */
 		if (isset($xml_array[$field_name])) {
-			$save[$field_name] = addslashes(xml_character_decode($xml_array[$field_name]));
+			$save[$field_name] = xml_character_decode($xml_array[$field_name]);
 		}
 	}
 
@@ -718,7 +717,7 @@ function xml_to_cdef($hash, &$xml_array, &$hash_cache) {
 	while (list($field_name, $field_array) = each($fields_cdef_edit)) {
 		/* make sure this field exists in the xml array first */
 		if (isset($xml_array[$field_name])) {
-			$save[$field_name] = addslashes(xml_character_decode($xml_array[$field_name]));
+			$save[$field_name] = xml_character_decode($xml_array[$field_name]);
 		}
 	}
 
@@ -759,7 +758,7 @@ function xml_to_cdef($hash, &$xml_array, &$hash_cache) {
 						$_cdef_id = db_fetch_cell_prepared('SELECT id FROM cdef WHERE hash = ?', array($parsed_item_hash['hash']));
 						$save[$field_name] = $_cdef_id;
 					} else {
-						$save[$field_name] = addslashes(xml_character_decode($item_array[$field_name]));
+						$save[$field_name] = xml_character_decode($item_array[$field_name]);
 					}
 				}
 			}
@@ -794,7 +793,7 @@ function xml_to_vdef($hash, &$xml_array, &$hash_cache) {
 	while (list($field_name, $field_array) = each($fields_vdef_edit)) {
 		/* make sure this field exists in the xml array first */
 		if (isset($xml_array[$field_name])) {
-			$save[$field_name] = addslashes(xml_character_decode($xml_array[$field_name]));
+			$save[$field_name] = xml_character_decode($xml_array[$field_name]);
 		}
 	}
 
@@ -823,7 +822,7 @@ function xml_to_vdef($hash, &$xml_array, &$hash_cache) {
 			while (list($field_name, $field_array) = each($fields_vdef_item_edit)) {
 				/* make sure this field exists in the xml array first */
 				if (isset($item_array[$field_name])) {
-					$save[$field_name] = addslashes(xml_character_decode($item_array[$field_name]));
+					$save[$field_name] = xml_character_decode($item_array[$field_name]);
 				}
 			}
 
@@ -862,7 +861,7 @@ function xml_to_data_input_method($hash, &$xml_array, &$hash_cache) {
 				$xml_array[$field_name] = str_replace('><', '> <', $xml_array[$field_name]);
 			}
 
-			$save[$field_name] = addslashes(xml_character_decode($xml_array[$field_name]));
+			$save[$field_name] = xml_character_decode($xml_array[$field_name]);
 		}
 	}
 
@@ -889,7 +888,7 @@ function xml_to_data_input_method($hash, &$xml_array, &$hash_cache) {
 			while (list($field_name, $field_array) = each($fields_data_input_field_edit)) {
 				/* make sure this field exists in the xml array first */
 				if (isset($item_array[$field_name])) {
-					$save[$field_name] = addslashes(xml_character_decode($item_array[$field_name]));
+					$save[$field_name] = xml_character_decode($item_array[$field_name]);
 				}
 			}
 
