@@ -215,16 +215,20 @@ if ($is_web) {
 	session_name($cacti_session_name);
 	if (!session_id()) session_start();
 
-	/* detect and handle get_magic_quotes */
-	if (!get_magic_quotes_gpc()) {
-		function addslashes_deep($value) {
-			$value = is_array($value) ? array_map('addslashes_deep', $value) : addslashes($value);
-			return $value;
+	if (get_magic_quotes_gpc()) {
+		$process = array(&$_GET, &$_POST, &$_COOKIE, &$_REQUEST);
+		while (list($key, $val) = each($process)) {
+			foreach ($val as $k => $v) {
+				unset($process[$key][$k]);
+				if (is_array($v)) {
+					$process[$key][stripslashes($k)] = $v;
+					$process[] = &$process[$key][stripslashes($k)];
+				} else {
+					$process[$key][stripslashes($k)] = stripslashes($v);
+				}
+			}
 		}
-
-		$_POST   = array_map('addslashes_deep', $_POST);
-		$_GET    = array_map('addslashes_deep', $_GET);
-		$_COOKIE = array_map('addslashes_deep', $_COOKIE);
+		unset($process);
 	}
 
 	/* make sure to start only only Cacti session at a time */

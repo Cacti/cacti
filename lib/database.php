@@ -829,10 +829,10 @@ function sql_save($array_items, $table_name, $key_cols = 'id', $autoinc = TRUE, 
 			if (empty($value)) {
 				$array_items[$key] = 0;
 			}else{
-				$array_items[$key] = sql_sanitize($value);
+				$array_items[$key] = $value;
 			}
 		}else{
-			$array_items[$key] = '"' . sql_sanitize($value) . '"';
+			$array_items[$key] = db_qstr($value);
 		}
 	}
 
@@ -860,8 +860,7 @@ function sql_save($array_items, $table_name, $key_cols = 'id', $autoinc = TRUE, 
    @param $value - value to sanitize
    @return - fixed value */
 function sql_sanitize($value) {
-	//$value = str_replace("'", "''", $value);
-	$value = str_replace(';', "\;", $value);
+	$value = db_qstr($value);
 
 	return $value;
 }
