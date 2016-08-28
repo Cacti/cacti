@@ -50,7 +50,7 @@ $path_mibcache_lock = $config['base_path'] . '/cache/mibcache/mibcache.lock';
 if($snmpagent) {
 
 	/* check mib cache table status */
-	$mibcache_changed = db_fetch_cell("SHOW TABLE STATUS WHERE `Name` LIKE 'plugin_snmpagent_cache' AND (UNIX_TIMESTAMP(`Update_time`)) >= $last_time");
+	$mibcache_changed = db_fetch_cell_prepared("SHOW TABLE STATUS WHERE `Name` LIKE 'plugin_snmpagent_cache' AND (UNIX_TIMESTAMP(`Update_time`)) >= ?", array($last_time));
 
 	if($mibcache_changed !== NULL || file_exists($path_mibcache) === FALSE ) {
 		$objects = db_fetch_assoc("SELECT `oid`, LOWER(type) as type, `otype`, `max-access`, `value` FROM plugin_snmpagent_cache");
