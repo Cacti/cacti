@@ -74,22 +74,21 @@ function form_save() {
 }
 
 function api_networks_remove($network_id){
-	db_execute('DELETE FROM automation_networks WHERE id=' . $network_id);
-	db_execute('DELETE FROM automation_devices WHERE network_id=' . $network_id);
+	db_execute_prepared('DELETE FROM automation_networks WHERE id = ?', array($network_id));
+	db_execute_prepared('DELETE FROM automation_devices WHERE network_id = ?', array($network_id));
 }
 
 function api_networks_enable($network_id){
-	db_execute('UPDATE automation_networks SET enabled="on" WHERE id=' . $network_id);
+	db_execute_prepared('UPDATE automation_networks SET enabled="on" WHERE id = ?', array($network_id));
 }
 
 function api_networks_disable($network_id){
-	db_execute('UPDATE automation_networks SET enabled="" WHERE id=' . $network_id);
+	db_execute_prepared('UPDATE automation_networks SET enabled="" WHERE id = ?', array($network_id));
 }
 
 function api_networks_cancel($network_id){
-	db_execute('UPDATE IGNORE automation_processes SET command="cancel" WHERE task="tmaster" AND network_id=' . $network_id);
-}
-
+	db_execute_prepared('UPDATE IGNORE automation_processes SET command="cancel" WHERE task="tmaster" AND network_id = ?', array($network_id));
+} 
 function api_networks_discover($network_id) {
 	$enabled = db_fetch_cell_prepared('SELECT enabled FROM automation_networks WHERE id = ?', array($network_id));
 	$running = db_fetch_cell_prepared('SELECT count(*) FROM automation_processes WHERE network_id = ?', array($network_id));
@@ -122,7 +121,7 @@ function api_networks_save($post) {
 
 		$save['enabled']            = (isset($post['enabled']) ? 'on':'');
 		$save['enable_netbios']     = (isset($post['enable_netbios']) ? 'on':'');
-		$save['add_to_cacti']     = (isset($post['add_to_cacti']) ? 'on':'');
+		$save['add_to_cacti']       = (isset($post['add_to_cacti']) ? 'on':'');
 		$save['rerun_data_queries'] = (isset($post['rerun_data_queries']) ? 'on':'');
 
 		/* discovery connectivity settings */
@@ -247,7 +246,7 @@ function form_actions() {
 			input_validate_input_number($matches[1]);
 			/* ==================================================== */
 
-			$networks_info = db_fetch_row('SELECT name FROM automation_networks WHERE id=' . $matches[1]);
+			$networks_info = db_fetch_row_prepared('SELECT name FROM automation_networks WHERE id = ?', array($matches[1]));
 			$networks_list .= '<li>' . $networks_info['name'] . '</li>';
 			$networks_array[$i] = $matches[1];
 		}
@@ -265,35 +264,35 @@ function form_actions() {
 		print "<tr>
 			<td class='textArea'>
 				<p>" . __('Click \'Continue\' to delete the following Network(s).') . "</p>
-				<p><div class='itemlist'><ul>$networks_list</ul></div></p>
+				<div class='itemlist'><ul>$networks_list</ul></div>
 			</td>
 		</tr>\n";
 	}elseif (get_nfilter_request_var('drp_action') == '3') { /* enable */
 		print "<tr>
 			<td class='textArea'>
 				<p>" . __('Click \'Continue\' to enable the following Network(s).') . "</p>
-				<p><div class='itemlist'><ul>$networks_list</ul></div></p>
+				<div class='itemlist'><ul>$networks_list</ul></div>
 			</td>
 		</tr>\n";
 	}elseif (get_nfilter_request_var('drp_action') == '2') { /* disable */
 		print "<tr>
 			<td class='textArea'>
 				<p>" . __('Click \'Continue\' to disable the following Network(s).') . "</p>
-				<p><div class='itemlist'><ul>$networks_list</ul></div></p>
+				<div class='itemlist'><ul>$networks_list</ul></div>
 			</td>
 		</tr>\n";
 	}elseif (get_nfilter_request_var('drp_action') == '4') { /* discover now */
 		print "<tr>
 			<td class='textArea'>
 				<p>" . __('Click \'Continue\' to discover the following Network(s).') . "</p>
-				<p><div class='itemlist'><ul>$networks_list</ul></div></p>
+				<div class='itemlist'><ul>$networks_list</ul></div>
 			</td>
 		</tr>\n";
 	}elseif (get_nfilter_request_var('drp_action') == '5') { /* cancel discovery now */
 		print "<tr>
 			<td class='textArea'>
 				<p>" . __('Click \'Continue\' to cancel on going Network Discovery(s).') . "</p>
-				<p><div class='itemlist'><ul>$networks_list</ul></div></p>
+				<div class='itemlist'><ul>$networks_list</ul></div>
 			</td>
 		</tr>\n";
 	}
@@ -339,7 +338,7 @@ function network_edit() {
 		'5' => __('Monthly on Day'));
 
 	if (!isempty_request_var('id')) {
-		$network = db_fetch_row('SELECT * FROM automation_networks WHERE id=' . get_request_var('id'));
+		$network = db_fetch_row_prepared('SELECT * FROM automation_networks WHERE id = ?', array(get_request_var('id')));
 		$header_label = __('Network Discovery Range [edit: %s]', htmlspecialchars($network['name']));
 	}else{
 		$header_label = __('Network Discovery Range [new]');
