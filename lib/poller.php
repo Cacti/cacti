@@ -673,7 +673,21 @@ function md5sum_path($path, $recursive = true) {
     $pobject = dir($path);
 
     while (($entry = $pobject->read()) !== false) {
-        if ($entry != '.' && $entry != '..' && $entry != '') {
+		if ($entry == '.') {
+			continue;
+		}elseif ($entry == '..') {
+			continue;
+		}elseif ($entry == '') {
+			continue;
+		}elseif (strpos($entry, '.tgz') !== false) {
+			continue;
+		}elseif (strpos($entry, '.zip') !== false) {
+			continue;
+		}elseif (strpos($entry, '.tar') !== false) {
+			continue;
+		}elseif (strpos($entry, '.gz') !== false) {
+			continue;
+		}else{
              if (is_dir($path . DIRECTORY_SEPARATOR . $entry) && $recursive) {
                  $filemd5s[] = md5sum_path($path . DIRECTORY_SEPARATOR. $entry, $recursive);
              } else {
