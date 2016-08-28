@@ -481,6 +481,7 @@ function form_save() {
 
 		/* check for guest or template user */
 		$username = db_fetch_cell_prepared('SELECT username FROM user_auth WHERE id = ?', array(get_nfilter_request_var('id')));
+		$history  = db_fetch_cell_prepared('SELECT password_history FROM user_auth WHERE id = ?', array(get_nfilter_request_var('id')));
 		if ($username != '' && $username != get_nfilter_request_var('username')) {
 			$template_user = read_config_option('user_template');
 			$guest_user    = read_config_option('guest_user');
@@ -499,9 +500,6 @@ function form_save() {
 			raise_message(4);
 		}
 
-		form_input_validate(get_nfilter_request_var('password'), 'password', '' . preg_quote(get_nfilter_request_var('password_confirm')) . '', true, 4);
-		form_input_validate(get_nfilter_request_var('password_confirm'), 'password_confirm', '' . preg_quote(get_nfilter_request_var('password')) . '', true, 4);
-
 		$save['id']                   = get_nfilter_request_var('id');
 		$save['username']             = form_input_validate(get_nfilter_request_var('username'), 'username', "^[A-Za-z0-9\._\\\@\ -]+$", false, 3);
 		$save['full_name']            = form_input_validate(get_nfilter_request_var('full_name'), 'full_name', '', true, 3);
@@ -514,6 +512,7 @@ function form_save() {
 		$save['graph_settings']       = form_input_validate(get_nfilter_request_var('graph_settings', ''), 'graph_settings', '', true, 3);
 		$save['login_opts']           = form_input_validate(get_nfilter_request_var('login_opts'), 'login_opts', '', true, 3);
 		$save['realm']                = get_nfilter_request_var('realm', 0);
+		$save['password_history']     = $history;
 		$save['enabled']              = form_input_validate(get_nfilter_request_var('enabled', ''), 'enabled', '', true, 3);
 		$save['email_address']        = form_input_validate(get_nfilter_request_var('email_address', ''), 'email_address', '', true, 3);
 		$save['locked']               = form_input_validate(get_nfilter_request_var('locked', ''), 'locked', '', true, 3);

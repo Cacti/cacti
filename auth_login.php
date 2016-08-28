@@ -120,7 +120,7 @@ if (get_nfilter_request_var('action') == 'login') {
 
 			if (!$ldap_error) {
 				/* auth user with LDAP */
-				$ldap_auth_response = cacti_ldap_auth($username,stripslashes(get_nfilter_request_var('login_password')),$ldap_dn);
+				$ldap_auth_response = cacti_ldap_auth($username, get_nfilter_request_var('login_password'), $ldap_dn);
 
 				if ($ldap_auth_response['error_num'] == '0') {
 					/* User ok */
@@ -377,7 +377,7 @@ function domains_login_process() {
 
 		if (!$ldap_error) {
 			/* auth user with LDAP */
-			$ldap_auth_response = domains_ldap_auth($username, stripslashes(get_nfilter_request_var('login_password')), $ldap_dn, get_nfilter_request_var('realm'));
+			$ldap_auth_response = domains_ldap_auth($username, get_nfilter_request_var('login_password'), $ldap_dn, get_nfilter_request_var('realm'));
 
 			if ($ldap_auth_response['error_num'] == '0') {
 				/* User ok */
