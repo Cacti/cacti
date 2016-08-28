@@ -2777,7 +2777,7 @@ function resolve_navigation_variables($text) {
    @returns - (array) an array containing the name and id of each RRA found */
 function get_associated_rras($local_graph_id, $sql_where = '') {
 	return db_fetch_assoc_prepared('SELECT DISTINCT ' . SQL_NO_CACHE . "
-		dspr.id, dspr.steps, dspr.rows, dspr.name, dtd.rrd_step
+		dspr.id, dsp.step, dspr.steps, dspr.rows, dspr.name, dtd.rrd_step
 		FROM graph_templates_item AS gti
 		LEFT JOIN data_template_rrd AS dtr
 		ON gti.task_item_id=dtr.id

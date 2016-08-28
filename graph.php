@@ -110,7 +110,7 @@ case 'view':
 	if (sizeof($rras)) {
 		$graph_end   = time();
 		foreach ($rras as $rra) {
-			$graph_start = $graph_end - ($rra['steps'] * $rra['rows'] * $rra['rrd_step']);
+			$graph_start = $graph_end - ($rra['step'] * $rra['rows'] * $rra['steps']);
 			$aggregate_url = aggregate_build_children_url(get_request_var('local_graph_id'), $graph_start, $graph_end, $rra['id']);
 			?>
 			<tr>
@@ -118,10 +118,10 @@ case 'view':
 					<table>
 						<tr>
 							<td>
-								<div class='graphWrapper' id='wrapper_<?php print $graph['local_graph_id'] . '_' . $rra['id'];?>' graph_id='<?php print $graph['local_graph_id'];?>' rra_id='<?php print $rra['id'];?>' graph_width='<?php print $graph['width'];?>' graph_height='<?php print $graph['height'];?>' title_font_size='<?php print ((read_user_setting("custom_fonts") == "on") ? read_user_setting("title_size") : read_config_option("title_size"));?>' style="min-height: <?php echo (1.2 * $graph["height"]) . "px"?>;"></div>
+								<div class='graphWrapper' id='wrapper_<?php print $graph['local_graph_id'] . '_' . $rra['id'];?>' graph_id='<?php print $graph['local_graph_id'];?>' rra_id='<?php print $rra['id'];?>' graph_width='<?php print $graph['width'];?>' graph_height='<?php print $graph['height'];?>' graph_start='<?php print $graph_start;?>' graph_end='<?php print $graph_end;?>' title_font_size='<?php print ((read_user_setting("custom_fonts") == "on") ? read_user_setting("title_size") : read_config_option("title_size"));?>' style="min-height: <?php echo (1.2 * $graph["height"]) . "px"?>;"></div>
 							</td>
 							<td valign='top' style='padding: 3px;' class='noprint'>
-								<span class='hyperLink utils' graph_start='<?php print $graph_start;?>' graph_end='<?php print $graph_end;?>' rra_id='<?php print $rra['id'];?>' id='graph_<?php print get_request_var('local_graph_id');?>_util'><img class='drillDown' src='<?php print $config['url_path'];?>images/cog.png' alt='' title='<?php print __('Graph Details, Zooming and Debugging Utilities');?>'></span><br>
+								<a class='utils' href='#' role='link' id='graph_<?php print get_request_var('local_graph_id');?>_util' graph_start='<?php print $graph_start;?>' graph_end='<?php print $graph_end;?>' rra_id='<?php print $rra['id'];?>'><img class='drillDown' src='<?php print $config['url_path'] . "images/cog.png";?>' alt='' title='<?php print __('Graph Details, Zooming and Debugging Utilities');?>'></a></br>
 								<a href='<?php print htmlspecialchars($config['url_path'] . 'graph_xport.php?local_graph_id=' . get_request_var('local_graph_id') . '&rra_id=' . $rra['id'] . '&view_type=' . get_request_var('view_type') .  '&graph_start=' . $graph_start . '&graph_end=' . $graph_end);?>'><img src='<?php print $config['url_path'] . "images/table_go.png";?>' alt='' title='<?php print __('CSV Export');?>'></a><br>
 								<?php if (read_config_option('realtime_enabled') == 'on') print "<a href='#' onclick=\"window.open('".$config['url_path']."graph_realtime.php?top=0&left=0&local_graph_id=" . get_request_var('local_graph_id') . "', 'popup_" . get_request_var('local_graph_id') . "', 'toolbar=no,menubar=no,resizable=yes,location=no,scrollbars=no,status=no,titlebar=no,width=650,height=300');return false\"><img src='" . $config['url_path'] . "images/chart_curve_go.png' alt='' title='" . __('Realtime') . "'></a><br/>\n";?>
 								<?php print ($aggregate_url != '' ? $aggregate_url:'')?>
@@ -152,10 +152,14 @@ case 'view':
 			rra_id=$(this).attr('rra_id');
 			graph_height=$(this).attr('graph_height');
 			graph_width=$(this).attr('graph_width');
+			graph_start=$(this).attr('graph_start');
+			graph_end=$(this).attr('graph_end');
 
 			$.getJSON(urlPath+'graph_json.php?'+
 				'local_graph_id='+graph_id+
 				'&graph_height='+graph_height+
+				'&graph_start='+graph_start+
+				'&graph_end='+graph_end+
 				'&rra_id='+rra_id+
 				'&graph_width='+graph_width+
 				'&disable_cache=true'+
@@ -165,7 +169,7 @@ case 'view':
 				});
 		});
 
-		$('span[id$="_util"]').unbind('click').click(function() {
+		$('a[id$="_util"]').unbind('click').click(function() {
 			graph_id=$(this).attr('id').replace('graph_','').replace('_util','');
 			rra_id=$(this).attr('rra_id');
 			graph_start=$(this).attr('graph_start');
@@ -282,13 +286,13 @@ case 'zoom':
                             <?php print (read_user_setting("show_graph_title") == "on" ? "<span align='center'><strong>" . htmlspecialchars($graph["title_cache"]) . "</strong></span>" : "");?>
 					</td>
 					<td valign='top' style='align:left;padding-top: 3px;' class='noprint'>
-						<span id='graph_<?php print $graph['local_graph_id'];?>_properties' class='hyperLink properties'> 
+						<a href='#' id='graph_<?php print $graph['local_graph_id'];?>_properties' class='hyperLink properties'> 
 							<img class='drillDown' src='<?php print $config['url_path'] . "images/graph_properties.gif";?>' alt='' title='<?php print __('Graph Source/Properties');?>'>
-						</span>
+						</a>
 						<br>
-						<span id='graph_<?php print $graph['local_graph_id'];?>_csv' class='hyperLink properties'> 
+						<a href='#' id='graph_<?php print $graph['local_graph_id'];?>_csv' class='hyperLink properties'> 
 							<img class='drillDown' src='<?php print $config['url_path'] . "images/table_go.png";?>' alt='' title='<?php print __('Graph Data');?>'>
-						</span>
+						</a>
 						<br>
 						<?php api_plugin_hook('graph_buttons', array('hook' => 'zoom', 'local_graph_id' => get_request_var('local_graph_id'), 'rra' =>  get_request_var('rra_id'), 'view_type' => get_request_var('view_type'))); ?>
 					</td>
@@ -385,11 +389,11 @@ case 'zoom':
 				});
 		});
 
-		$('span[id$="_properties"]').unbind('click').click(function() {
+		$('a[id$="_properties"]').unbind('click').click(function() {
 			graphProperties();
 		});
 
-		$('span[id$="_csv"]').unbind('click').click(function() {
+		$('a[id$="_csv"]').unbind('click').click(function() {
 			graphXport();
 		});
 	}
