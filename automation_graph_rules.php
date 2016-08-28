@@ -199,13 +199,19 @@ function automation_graph_rules_form_actions() {
 				for ($i=0;($i<count($selected_items));$i++) {
 					cacti_log('form_actions enable: ' . $selected_items[$i], true, 'AUTOM8 TRACE', POLLER_VERBOSITY_MEDIUM);
 
-					db_execute("UPDATE automation_graph_rules SET enabled='on' WHERE id=" . $selected_items[$i]);
+					db_execute_prepared("UPDATE automation_graph_rules 
+						SET enabled='on' 
+						WHERE id = ?", 
+						array($selected_items[$i]));
 				}
 			}elseif (get_nfilter_request_var('drp_action') == AUTOMATION_ACTION_GRAPH_DISABLE) { /* disable */
 				for ($i=0;($i<count($selected_items));$i++) {
 					cacti_log('form_actions disable: ' . $selected_items[$i], true, 'AUTOM8 TRACE', POLLER_VERBOSITY_MEDIUM);
 
-					db_execute("UPDATE automation_graph_rules SET enabled='' WHERE id=" . $selected_items[$i]);
+					db_execute_prepared("UPDATE automation_graph_rules 
+						SET enabled='' 
+						WHERE id = ?", 
+						array($selected_items[$i]));
 				}
 			}
 		}
@@ -224,7 +230,7 @@ function automation_graph_rules_form_actions() {
 			input_validate_input_number($matches[1]);
 			/* ==================================================== */
 
-			$automation_graph_rules_list .= '<li>' . db_fetch_cell('SELECT name FROM automation_graph_rules WHERE id=' . $matches[1]) . '</li>';
+			$automation_graph_rules_list .= '<li>' . db_fetch_cell_prepared('SELECT name FROM automation_graph_rules WHERE id = ?', array($matches[1])) . '</li>';
 			$automation_graph_rules_array[] = $matches[1];
 		}
 	}
@@ -246,7 +252,7 @@ function automation_graph_rules_form_actions() {
 		print "<tr>
 			<td class='textArea'>
 				<p>" . __('Click \'Continue\' to duplicate the following Rule(s). You can optionally change the title format for the new Graph Rules.') . "</p>
-				<p><div class='itemlist'><ul>$automation_graph_rules_list</ul></div></p>
+				<div class='itemlist'><ul>$automation_graph_rules_list</ul></div>
 				<p>" . __('Title Format') . '<br>'; form_text_box('name_format', '<' . __('rule_name') . '> (1)', '', '255', '30', 'text'); print "</p>
 			</td>
 		</tr>\n";
@@ -254,7 +260,7 @@ function automation_graph_rules_form_actions() {
 		print "<tr>
 			<td class='textArea'>
 				<p>" . __('Click \'Continue\' to enable the following Rule(s).') . "</p>
-				<p><div class='itemlist'><ul>$automation_graph_rules_list</ul></div></p>
+				<div class='itemlist'><ul>$automation_graph_rules_list</ul></div>
 				<p>" . __('Make sure, that those rules have successfully been tested!') . "</p>
 			</td>
 		</tr>\n";
@@ -262,7 +268,7 @@ function automation_graph_rules_form_actions() {
 		print "<tr>
 			<td class='textArea'>
 				<p>" . __('Click \'Continue\' to disable the following Rule(s).') . "</p>
-				<p><div class='itemlist'><ul>$automation_graph_rules_list</ul></div></p>
+				<div class='itemlist'><ul>$automation_graph_rules_list</ul></div>
 			</td>
 		</tr>\n";
 	}
@@ -328,9 +334,9 @@ function automation_graph_rules_item_remove() {
 	/* ==================================================== */
 
 	if (get_request_var('rule_type') == AUTOMATION_RULE_TYPE_GRAPH_MATCH) {
-		db_execute('DELETE FROM automation_match_rule_items WHERE id=' . get_request_var('item_id'));
+		db_execute_prepared('DELETE FROM automation_match_rule_items WHERE id = ?', array(get_request_var('item_id')));
 	} elseif (get_request_var('rule_type') == AUTOMATION_RULE_TYPE_GRAPH_ACTION) {
-		db_execute('DELETE FROM automation_graph_rule_items WHERE id=' . get_request_var('item_id'));
+		db_execute_prepared('DELETE FROM automation_graph_rule_items WHERE id = ?', array(get_request_var('item_id')));
 	}
 
 }
@@ -349,43 +355,45 @@ function automation_graph_rules_item_edit() {
 	form_hidden_box('rule_type', get_request_var('rule_type'), get_request_var('rule_type'));
 	form_hidden_box('id', (isset_request_var('id') ? get_request_var('id') : '0'), '');
 	form_hidden_box('item_id', (isset_request_var('item_id') ? get_request_var('id') : '0'), '');
+
 	if(get_request_var('rule_type') == AUTOMATION_RULE_TYPE_GRAPH_MATCH) {
 		form_hidden_box('save_component_automation_match_item', '1', '');
 	} else {
 		form_hidden_box('save_component_automation_graph_rule_item', '1', '');
 	}
+
 	form_save_button(htmlspecialchars('automation_graph_rules.php?action=edit&id=' . get_request_var('id') . '&rule_type='. get_request_var('rule_type')));
-//Now we need some javascript to make it dynamic
-?>
-<script type='text/javascript'>
 
-$(function() {
-	toggle_operation();
+	?>
+	<script type='text/javascript'>
+
+	$(function() {
+		toggle_operation();
 	toggle_operator();
-});
+	});
 
-function toggle_operation() {
-	if ($('#operation').val() == '<?php print AUTOMATION_OPER_RIGHT_BRACKET;?>') {
-		$('#field').val() = '';
-		$('#field').prop('disabled', true);
-		$('#operator').val() = 0;
-		$('#operator').prop('disabled', true);
-		$('#pattern').val() = '';
-		$('#pattern').prop('disabled', true);
-	} else {
-		$('#field').prop('disabled', false);
-		$('#operator').prop('disabled', false);
-		$('#pattern').prop('disabled', false);
+	function toggle_operation() {
+		if ($('#operation').val() == '<?php print AUTOMATION_OPER_RIGHT_BRACKET;?>') {
+			$('#field').val() = '';
+			$('#field').prop('disabled', true);
+			$('#operator').val() = 0;
+			$('#operator').prop('disabled', true);
+			$('#pattern').val() = '';
+			$('#pattern').prop('disabled', true);
+		} else {
+			$('#field').prop('disabled', false);
+			$('#operator').prop('disabled', false);
+			$('#pattern').prop('disabled', false);
+		}
 	}
-}
 
-function toggle_operator() {
-	if ($('#operator').val() == '<?php print AUTOMATION_OPER_RIGHT_BRACKET;?>') {
-	} else {
+	function toggle_operator() {
+		if ($('#operator').val() == '<?php print AUTOMATION_OPER_RIGHT_BRACKET;?>') {
+		} else {
+		}
 	}
-}
-</script>
-<?php
+	</script>
+	<?php
 }
 
 /* ---------------------
@@ -399,15 +407,24 @@ function automation_graph_rules_remove() {
 
 	if ((read_config_option('deletion_verification') == 'on') && (!isset_request_var('confirm'))) {
 		top_header();
-		form_confirm(__('Are You Sure?'), __("Are you sure you want to delete the Rule '%s'?", db_fetch_cell('SELECT name FROM automation_graph_rules WHERE id=' . get_request_var('id'))), 'automation_graph_rules.php', 'automation_graph_rules.php?action=remove&id=' . get_request_var('id'));
+		form_confirm(__('Are You Sure?'), __("Are you sure you want to delete the Rule '%s'?", db_fetch_cell_prepared('SELECT name FROM automation_graph_rules WHERE id = ?', array(get_request_var('id')))), 'automation_graph_rules.php', 'automation_graph_rules.php?action=remove&id=' . get_request_var('id'));
 		bottom_footer();
 		exit;
 	}
 
 	if ((read_config_option('deletion_verification') == '') || (isset_request_var('confirm'))) {
-		db_execute('DELETE FROM automation_match_rule_items WHERE rule_id=' . get_request_var('id') .  ' AND rule_type=' . AUTOMATION_RULE_TYPE_GRAPH_MATCH);
-		db_execute('DELETE FROM automation_graph_rule_items WHERE rule_id=' . get_request_var('id'));
-		db_execute('DELETE FROM automation_graph_rules WHERE id=' . get_request_var('id'));
+		db_execute_prepared('DELETE FROM automation_match_rule_items 
+			WHERE rule_id = ?
+			AND rule_type = ?', 
+			array(get_request_var('id'), AUTOMATION_RULE_TYPE_GRAPH_MATCH));
+
+		db_execute_prepared('DELETE FROM automation_graph_rule_items 
+			WHERE rule_id = ?', 
+			array(get_request_var('id')));
+
+		db_execute_prepared('DELETE FROM automation_graph_rules 
+			WHERE id = ?', 
+			array(get_request_var('id')));
 	}
 }
 
@@ -466,10 +483,12 @@ function automation_graph_rules_edit() {
 	 */
 	$rule = array();
 	if (!isempty_request_var('id')) {
-		$rule = db_fetch_row('SELECT * FROM automation_graph_rules where id=' . get_request_var('id'));
+		$rule = db_fetch_row_prepared('SELECT * FROM automation_graph_rules where id = ?', array(get_request_var('id')));
+
 		if (!isempty_request_var('graph_type_id')) {
 			$rule['graph_type_id'] = get_request_var('graph_type_id'); # set query_type for display
 		}
+
 		# setup header
 		$header_label = __('Rule Selection [edit: %s]', htmlspecialchars($rule['name']));
 	}else{
