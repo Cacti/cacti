@@ -937,18 +937,20 @@ function form_actions(){
 			get_filter_request_var('id');
 			/* ==================================================== */
 
-			$selected_items = unserialize(stripslashes(get_nfilter_request_var('selected_items')));
+			$selected_items = sanitize_unserialize_selected_items(get_nfilter_request_var('selected_items'));
 
-			if (get_nfilter_request_var('drp_action') == '0') { /* disable */
-				foreach($selected_items as $mib => $notifications) {
-					foreach($notifications as $notification => $state) {
-						db_execute_prepared('DELETE FROM snmpagent_managers_notifications WHERE `manager_id` = ? AND `mib` = ? AND `notification` = ? LIMIT 1', array(get_nfilter_request_var('id'), $mib, $notification));
+			if ($selected_items != false) {
+				if (get_nfilter_request_var('drp_action') == '0') { /* disable */
+					foreach($selected_items as $mib => $notifications) {
+						foreach($notifications as $notification => $state) {
+							db_execute_prepared('DELETE FROM snmpagent_managers_notifications WHERE `manager_id` = ? AND `mib` = ? AND `notification` = ? LIMIT 1', array(get_nfilter_request_var('id'), $mib, $notification));
+						}
 					}
-				}
-			}elseif (get_nfilter_request_var('drp_action') == '1') { /* enable */
-				foreach($selected_items as $mib => $notifications) {
-					foreach($notifications as $notification => $state) {
-						db_execute_prepared('INSERT IGNORE INTO snmpagent_managers_notifications (`manager_id`, `notification`, `mib`) VALUES (?, ?, ?)', array(get_nfilter_request_var('id'), $notification), $mib);
+				}elseif (get_nfilter_request_var('drp_action') == '1') { /* enable */
+					foreach($selected_items as $mib => $notifications) {
+						foreach($notifications as $notification => $state) {
+							db_execute_prepared('INSERT IGNORE INTO snmpagent_managers_notifications (`manager_id`, `notification`, `mib`) VALUES (?, ?, ?)', array(get_nfilter_request_var('id'), $notification), $mib);
+						}
 					}
 				}
 			}
