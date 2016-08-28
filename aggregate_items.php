@@ -188,7 +188,7 @@ function form_save_aggregate() {
 		// composed from multiple columns. need to manualy build query
 		$sql_set = 'SET ';
 		foreach ($save as $key => $value) {
-			$sql_set .= $key . "='" . addslashes($value) . "', ";
+			$sql_set .= $key . "=" . db_qstr($value) . ", ";
 		}
 		$sql_set = substr($sql_set, 0, -2);
 
