@@ -374,9 +374,29 @@ function template_rrd_add() {
 
 	$hash = get_hash_data_template(0, 'data_template_item');
 
-	db_execute_prepared("INSERT IGNORE INTO data_template_rrd 
+	/* check for duplicated data source name */
+	$i = 0;
+	$dsname = 'ds';
+	while (true) {
+		$exists = db_fetch_cell_prepared('SELECT data_source_name 
+			FROM data_template_rrd
+			WHERE data_source_name = ?
+			AND data_template_id = ?', 
+			array($dsname, get_request_var('id')));
+
+		if (empty($exists)) {
+			break;
+		}else{
+			$i++;
+			$dsname = 'ds (' . $i . ')';
+
+			if ($i > 100) break;
+		}
+	}
+
+	db_execute_prepared('INSERT IGNORE INTO data_template_rrd 
 		(hash, data_template_id, rrd_maximum, rrd_minimum, rrd_heartbeat, data_source_type_id, data_source_name) 
-	    VALUES (?, ?, 0, 0, 600, 1, 'ds')", array($hash, get_request_var('id')));
+	    VALUES (?, ?, 0, 0, 600, 1, ?)', array($hash, get_request_var('id'), $dsname));
 
 	$data_template_rrd_id = db_fetch_insert_id();
 
@@ -387,7 +407,7 @@ function template_rrd_add() {
 	foreach ($children as $item) {
 		db_execute_prepared("INSERT IGNORE INTO data_template_rrd 
 			(local_data_template_rrd_id, local_data_id, data_template_id, rrd_maximum, rrd_minimum, rrd_heartbeat, data_source_type_id, data_source_name) 
-			VALUES (?, ?, ?, 0, 0, 600, 1, 'ds')", array($data_template_rrd_id, $item['local_data_id'], get_request_var('id')));
+			VALUES (?, ?, ?, 0, 0, 600, 1, ?)", array($data_template_rrd_id, $item['local_data_id'], get_request_var('id'), $dsname));
 	}
 	}
 
