@@ -222,9 +222,10 @@ function form_save() {
 							$template_this_item = '';
 						}
 
-						if ((!isempty_request_var($form_value)) || (!isempty_request_var('t_value_' . $input_field['data_name']))) {
-							db_execute_prepared('INSERT INTO data_input_data (data_input_field_id, data_template_data_id, t_value, value)
-								values (?, ?, ?, ?)', array($input_field['id'], $data_template_data_id, $template_this_item, trim(get_nfilter_request_var($form_value)) ));
+						if ((!empty($form_value)) || (!isempty_request_var('t_value_' . $input_field['data_name']))) {
+							db_execute_prepared('INSERT INTO data_input_data 
+								(data_input_field_id, data_template_data_id, t_value, value)
+								values (?, ?, ?, ?)', array($input_field['id'], $data_template_data_id, $template_this_item, trim(get_nfilter_request_var($form_value))));
 						}
 					}
 				}
