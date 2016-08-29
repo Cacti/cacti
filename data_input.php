@@ -682,7 +682,7 @@ function data() {
 		SUM(CASE WHEN dtd.local_data_id>0 THEN 1 ELSE 0 END) AS data_sources
 		FROM data_input AS di
 		LEFT JOIN data_template_data AS dtd
-		ON di.id=dtd.data_template_id
+		ON di.id=dtd.data_input_id
 		$sql_where
 		GROUP BY di.id
 		ORDER BY " . get_request_var('sort_column') . ' ' . get_request_var('sort_direction') . '
