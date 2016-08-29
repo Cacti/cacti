@@ -152,7 +152,7 @@ function draw_nontemplated_fields_graph_item($graph_template_id, $local_graph_id
 					WHERE graph_template_input_defs.graph_template_item_id=graph_templates_item.local_graph_template_item_id
 					AND graph_template_input_defs.graph_template_input_id = ?
 					AND graph_templates_item.local_graph_id = ?
-					LIMIT 0,1', array( $item['id'], $local_graph_id));
+					LIMIT 1', array( $item['id'], $local_graph_id));
 			}else{
 				$current_def_value = db_fetch_row_prepared('SELECT
 					graph_templates_item.' . $item['column_name'] . ',
@@ -211,7 +211,7 @@ function draw_nontemplated_fields_graph_item($graph_template_id, $local_graph_id
 		$form_config_array = array('no_form_tag' => true, 'force_row_color' => true);
 	}
 
-	if (sizeof($input_item_list > 0)) {
+	if (sizeof($input_item_list)) {
 		draw_edit_form(
 			array(
 				'config' => $form_config_array,
@@ -336,7 +336,7 @@ function draw_nontemplated_fields_data_source_item($data_template_id, &$values_a
 		$form_config_array = array('no_form_tag' => true, 'force_row_color' => true);
 	}
 
-	if (sizeof($values_array) > 0) {
+	if (sizeof($values_array)) {
 		foreach ($values_array as $rrd) {
 			reset($struct_data_source_item);
 			$form_array = array();
