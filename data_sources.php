@@ -291,7 +291,7 @@ function form_save() {
 
 	if (isset_request_var('save_component_data_source_new') && isempty_request_var('data_template_id')) {
 		header('Location: data_sources.php?header=false&action=ds_edit&host_id=' . get_request_var('host_id') . '&new=1');
-	}elseif ((is_error_message()) || (get_request_var('data_template_id') != get_request_var('_data_template_id')) || (get_request_var('data_input_id') != get_request_var('_data_input_id')) || (get_request_var('host_id') != get_request_var('_host_id'))) {
+	}elseif ((is_error_message()) || (get_filter_request_var('data_template_id') != get_filter_request_var('_data_template_id')) || (get_filter_request_var('data_input_id') != get_filter_request_var('_data_input_id')) || (get_filter_request_var('host_id') != get_filter_request_var('_host_id'))) {
 		header('Location: data_sources.php?header=false&action=ds_edit&id=' . (empty($local_data_id) ? get_filter_request_var('local_data_id') : $local_data_id) . '&host_id=' . get_request_var('host_id') . '&view_rrd=' . (isset_request_var('current_rrd') ? get_nfilter_request_var('current_rrd') : '0'));
 	}else{
 		header('Location: data_sources.php?header=false');
