@@ -261,7 +261,8 @@ $fields_data_input_field_edit_2 = array(
 	'data_name' => array(
 		'method' => 'textbox',
 		'friendly_name' => __('Field [%s]', '|arg1:|'),
-		'description' => __('Enter a name for this %s field.', '|arg1:|'),
+		'description' => __('Enter a name for this %s field.  Note: If using name value pairs in your script, for example: NAME:VALUE,
+            it is important that the name match your output field name identically to the script output name or names.', '|arg1:|'),
 		'value' => '|arg2:data_name|',
 		'max_length' => '50',
 		'size' => '40'
