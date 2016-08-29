@@ -354,19 +354,21 @@ function field_edit() {
 
 	if ($current_field_type == 'out') {
 		$header_name = __('Output Fields [edit: %s]', htmlspecialchars($data_input['name']));
+		$dfield      = __('Output Field');
 	}elseif ($current_field_type == 'in') {
 		$header_name = __('Input Fields [edit: %s]', htmlspecialchars($data_input['name']));
+		$dfield      = __('Input Field');
 	}
 
 	form_start('data_input.php', 'data_input');
 
-	html_start_box( $header_name, '100%', '', '3', 'center', '');
+	html_start_box($header_name, '100%', '', '3', 'center', '');
 
 	$form_array = array();
 
 	/* field name */
 	if ((($data_input['type_id'] == '1') || ($data_input['type_id'] == '5')) && ($current_field_type == 'in')) { /* script */
-		$form_array = inject_form_variables($fields_data_input_field_edit_1, $header_name, $array_field_names, (isset($field) ? $field : array()));
+		$form_array = inject_form_variables($fields_data_input_field_edit_1, $dfield, $array_field_names, (isset($field) ? $field : array()));
 	}elseif (($data_input['type_id'] == '2') ||
 			($data_input['type_id'] == '3') ||
 			($data_input['type_id'] == '4') ||
@@ -374,7 +376,7 @@ function field_edit() {
 			($data_input['type_id'] == '7') ||
 			($data_input['type_id'] == '8') ||
 			($current_field_type == 'out')) { /* snmp */
-		$form_array = inject_form_variables($fields_data_input_field_edit_2, $header_name, (isset($field) ? $field : array()));
+		$form_array = inject_form_variables($fields_data_input_field_edit_2, $dfield, (isset($field) ? $field : array()));
 	}
 
 	/* ONLY if the field is an input */
@@ -386,10 +388,12 @@ function field_edit() {
 		unset($fields_data_input_field_edit['type_code']);
 	}
 
-	draw_edit_form(array(
-		'config' => array('no_form_tag' => true),
-		'fields' => $form_array + inject_form_variables($fields_data_input_field_edit, (isset($field) ? $field : array()), $current_field_type, $_REQUEST)
-		));
+	draw_edit_form(
+		array(
+			'config' => array('no_form_tag' => true),
+			'fields' => $form_array + inject_form_variables($fields_data_input_field_edit, (isset($field) ? $field : array()), $current_field_type, $_REQUEST)
+		)
+	);
 
 	html_end_box();
 
