@@ -27,7 +27,6 @@
 	and the data template
    @arg $data_template_id - the id of the data template to push out values for */
 function push_out_data_source_custom_data($data_template_id) {
-	
 	/* valid data template id? */
 	if (empty($data_template_id)) { 
 		return 0; 
@@ -59,7 +58,7 @@ function push_out_data_source_custom_data($data_template_id) {
 		ON data_template_data.id = data_input_data.data_template_data_id
 		WHERE (data_input_fields.input_output="in")
 		AND (data_input_data.t_value="" OR data_input_data.t_value IS NULL)
-		AND (data_input_data.data_template_data_id = ?
+		AND (data_input_data.data_template_data_id = ?)
 		AND (data_template_data.local_data_template_data_id=0)', 
 		array($data_template_data['id'])), 'id', array('type_code', 'value', 't_value'));
 
@@ -1005,7 +1004,7 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 				$graph_item_id = db_fetch_cell_prepared('SELECT id 
 					FROM graph_templates_item 
 					WHERE local_graph_template_item_id = ?
-					AND local_graph_id = ?', array($graph_template_item_i, $cache_array['local_graph_id']));
+					AND local_graph_id = ?', array($graph_template_item_id, $cache_array['local_graph_id']));
 
 				db_execute_prepared('UPDATE graph_templates_item 
 					SET ' . $field_name . ' = ?
