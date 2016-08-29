@@ -256,7 +256,7 @@ function api_device_save($id, $host_template_id, $description, $hostname, $snmp_
    @arg $host_id - the id of the device which contains the mapping
    @arg $host_template_id - the id of the host template alter the device to */
 function api_device_update_host_template($host_id, $host_template_id) {
-	db_execute('UPDATE host SET host_template_id = ? WHERE id = ?', array($host_template_id, $host_id));
+	db_execute_prepared('UPDATE host SET host_template_id = ? WHERE id = ?', array($host_template_id, $host_id));
 
 	$snmp_queries = db_fetch_assoc_prepared('SELECT snmp_query_id 
 		FROM host_template_snmp_query 
