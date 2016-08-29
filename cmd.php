@@ -662,7 +662,7 @@ if ((sizeof($polling_items) > 0) && (read_config_option('poller_enabled') == 'on
 					open_snmp_session($host_id, $item);
 
 					if (isset($sessions[$host_id])) {
-						$output = cacti_snmp_session_walk($sessions[$host_id], $item['arg1']);
+						$output = cacti_snmp_session_get($sessions[$host_id], $item['arg1']);
 					}else{
 						$output = 'U';
 					}
