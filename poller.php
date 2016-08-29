@@ -393,7 +393,12 @@ while ($poller_runs_completed < $poller_runs) {
 		/* Determine Command Name */
 		if ($poller_type == '2') {
 			$command_string = read_config_option('path_spine');
-			$extra_args     = '';
+			if (read_config_option('path_spine_config') != '' && file_exists(read_config_option('path_spine_config'))) {
+				$extra_args     = ' -C ' . read_config_option('path_spine_config');
+			}else{
+				$extra_args     = '';
+			}
+
 			$method         = 'spine';
 			$total_procs    = $concurrent_processes * $max_threads;
 			chdir(dirname(read_config_option('path_spine')));

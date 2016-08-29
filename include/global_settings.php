@@ -145,8 +145,14 @@ $settings = array(
 			'method' => 'spacer',
 			),
 		'path_spine' => array(
-			'friendly_name' => __('Spine Poller File Path'),
+			'friendly_name' => __('Spine Binary File Location'),
 			'description' => __('The path to Spine binary.'),
+			'method' => 'filepath',
+			'max_length' => '255'
+			),
+		'path_spine_config' => array(
+			'friendly_name' => __('Spine Config File Path'),
+			'description' => __('The path to Spine configuration file.  By default, in the cwd of spine, or /etc if not specified.'),
 			'method' => 'filepath',
 			'max_length' => '255'
 			),
