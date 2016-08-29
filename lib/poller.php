@@ -342,6 +342,7 @@ function process_poller_output(&$rrdtool_pipe, $remainder = FALSE) {
 	global $config, $debug;
 
 	static $have_deleted_rows = true;
+	static $rrd_field_names = array();
 
 	include_once($config['library_path'] . '/rrd.php');
 
@@ -365,14 +366,26 @@ function process_poller_output(&$rrdtool_pipe, $remainder = FALSE) {
 
 	/* create/update the rrd files */
 	$results = db_fetch_assoc("SELECT po.output, po.time,
-		UNIX_TIMESTAMP(po.time) as unix_time, po.local_data_id,
+		UNIX_TIMESTAMP(po.time) as unix_time, po.local_data_id, dl.data_template_id,
 		pi.rrd_path, pi.rrd_name, pi.rrd_num
 		FROM poller_output AS po
 		INNER JOIN poller_item AS pi
 		ON po.local_data_id=pi.local_data_id
 		AND po.rrd_name=pi.rrd_name
+		INNER JOIN data_local AS dl
+		ON dl.id=po.local_data_id
 		ORDER BY po.local_data_id
 		$limit");
+
+	if (!sizeof($rrd_field_names)) {
+		$rrd_field_names = array_rekey(db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . '
+			CONCAT(dtr.data_template_id, "_", dif.data_name) AS keyname, GROUP_CONCAT(dtr.data_source_name) AS data_source_name 
+			FROM data_template_rrd AS dtr
+			INNER JOIN data_input_fields AS dif
+			ON dtr.data_input_field_id = dif.id
+			WHERE dtr.local_data_id=0
+			GROUP BY dtr.data_template_id, dif.data_name'), 'keyname', array('data_source_name'));
+	}
 
 	if (sizeof($results)) {
 		/* create an array keyed off of each .rrd file */
@@ -405,29 +418,28 @@ function process_poller_output(&$rrdtool_pipe, $remainder = FALSE) {
 					$rrd_update_array[$rrd_path]['times'][$unix_time][$rrd_name] = 'U';
 				}
 			/* multiple value output */
-			}else{
+			}elseif (strpos($value, ':') !== false) {
 				$values = explode(' ', $value);
 
-				$rrd_field_names = array_rekey(db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . '
-					dtr.data_source_name, dif.data_name
-					FROM data_template_rrd AS dtr
-					INNER JOIN data_input_fields AS dif
-					ON dtr.data_input_field_id = dif.id
-					WHERE dtr.local_data_id = ?', 
-					array($item['local_data_id'])), 'data_name', 'data_source_name');
-
-				if (sizeof($values)) {
 				foreach($values as $value) {
 					$matches = explode(':', $value);
 
 					if (sizeof($matches) == 2) {
-						if (isset($rrd_field_names{$matches[0]})) {
-							cacti_log("Parsed MULTI output field '" . $matches[0] . ':' . $matches[1] . "' [map " . $matches[0] . '->' . $rrd_field_names{$matches[0]} . ']' , true, 'POLLER', ($debug ? POLLER_VERBOSITY_NONE:POLLER_VERBOSITY_MEDIUM));
+						if (isset($rrd_field_names[$item['data_template_id'] . '_' . $matches[0]])) {
+							$field_map = $rrd_field_names[$item['data_template_id'] . '_' . $matches[0]]['data_source_name'];
 
-							$rrd_update_array[$rrd_path]['times'][$unix_time]{$rrd_field_names{$matches[0]}} = $matches[1];
+							if (strpos($field_map, ',')) {
+								$fields = explode(',', $field_map);
+							}else{
+								$fields[] = $field_map;
+							}
+
+							foreach($fields as $field) {
+								cacti_log("Parsed MULTI output field '" . $matches[0] . ':' . $matches[1] . "' [map " . $matches[0] . '->' . $field . ']' , true, 'POLLER', ($debug ? POLLER_VERBOSITY_NONE:POLLER_VERBOSITY_MEDIUM));
+								$rrd_update_array[$rrd_path]['times'][$unix_time][$field] = $matches[1];
+							}
 						}
 					}
-				}
 				}
 			}
 
