@@ -2426,7 +2426,7 @@ function create_all_header_nodes ($item_id, $rule) {
         WHERE atri.rule_id = ?
         ORDER BY sequence', array($rule['id']));
 
-	cacti_log(__FUNCTION__ . " called: Item $item_id sql: $sql matches: " . sizeof($tree_items) . ' items', false, 'AUTOM8 TRACE', POLLER_VERBOSITY_HIGH);
+	cacti_log(__FUNCTION__ . " called: Item $item_id matches: " . sizeof($tree_items) . ' items', false, 'AUTOM8 TRACE', POLLER_VERBOSITY_HIGH);
 
 	/* start at the given tree item
 	 * it may be worth verifying existance of this entry
