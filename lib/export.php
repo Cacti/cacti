@@ -318,7 +318,7 @@ function cdef_to_xml($cdef_id) {
 	$xml_text = '';
 
 	$cdef       = db_fetch_row_prepared('SELECT * FROM cdef WHERE id = ?', array($cdef_id));
-	$cdef_items = db_fetch_assoc('SELECT * FROM cdef_items WHERE cdef_id = ? ORDER BY sequence', array($cdef_id));
+	$cdef_items = db_fetch_assoc_prepared('SELECT * FROM cdef_items WHERE cdef_id = ? ORDER BY sequence', array($cdef_id));
 
 	if (empty($cdef['id'])) {
 		$export_errors++;
