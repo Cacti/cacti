@@ -1017,6 +1017,7 @@ function upgrade_to_1_0_0() {
 			ADD COLUMN id BIGINT unsigned auto_increment FIRST, 
 			ADD COLUMN network_id INT unsigned NOT NULL default '0' AFTER id, 
 			ADD COLUMN snmp_port int(10) unsigned NOT NULL DEFAULT '161' AFTER snmp_version,
+			ADD COLUMN snmp_engine_id varchar(30) DEFAULT '' AFTER snmp_context,
 			DROP PRIMARY KEY,
 			ADD PRIMARY KEY(id), 
 			ADD UNIQUE INDEX ip(ip);
@@ -1055,6 +1056,7 @@ function upgrade_to_1_0_0() {
 		`snmp_priv_passphrase` varchar(200) DEFAULT '',
 		`snmp_priv_protocol` char(6) DEFAULT '',
 		`snmp_context` varchar(64) DEFAULT '',
+		`snmp_engine_id` varchar(30) DEFAULT '',
 		`sysName` varchar(100) NOT NULL DEFAULT '',
 		`sysLocation` varchar(255) NOT NULL DEFAULT '',
 		`sysContact` varchar(255) NOT NULL DEFAULT '',
