@@ -4087,32 +4087,35 @@ function CactiErrorHandler($level, $message, $file, $line, $context) {
 				api_plugin_disable_all($plugin);
 				cacti_log("ERRORS DETECTED - DISABLING PLUGIN '$plugin'");
 			}
-			cacti_log($error, false, "ERROR");
-			cacti_debug_backtrace('PHP ERROR');
+			cacti_log($error, false, 'ERROR');
+			cacti_debug_backtrace('PHP ERROR PARSE');
 			break;
 		case E_RECOVERABLE_ERROR:
 		case E_USER_ERROR:
-			cacti_log($error, false, "ERROR");
+			cacti_log($error, false, 'ERROR');
 			cacti_debug_backtrace('PHP ERROR');
 			break;
 		case E_COMPILE_WARNING:
 		case E_CORE_WARNING:
 		case E_USER_WARNING:
 		case E_WARNING:
-			cacti_log($error, false, "ERROR");
-			cacti_debug_backtrace('PHP ERROR');
+			/* don't log snmp timeout warnings */
+			if (strpos($error, 'No response from') === false) {
+				cacti_log($error, false, 'ERROR');
+				cacti_debug_backtrace('PHP ERROR WARNING');
+			}
 			break;
 		case E_NOTICE:
 		case E_USER_NOTICE:
-			cacti_log($error, false, "ERROR");
-			cacti_debug_backtrace('PHP ERROR');
+			cacti_log($error, false, 'ERROR');
+			cacti_debug_backtrace('PHP ERROR NOTICE');
 			break;
 		case E_STRICT:
-			cacti_log($error, false, "ERROR");
-			cacti_debug_backtrace('PHP ERROR');
+			cacti_log($error, false, 'ERROR');
+			cacti_debug_backtrace('PHP ERROR STRICT');
 			break;
 		default:
-       		cacti_log($error, false, "ERROR");
+       		cacti_log($error, false, 'ERROR');
 			cacti_debug_backtrace('PHP ERROR');
 	}
 	return false;
@@ -4128,11 +4131,11 @@ function CactiShutdownHandler () {
 		case E_CORE_WARNING:
 		case E_COMPILE_WARNING:
 		case E_PARSE:
-			preg_match("/.*\/plugins\/([\w-]*)\/.*/", $error['file'], $output_array);
+			preg_match('/.*\/plugins\/([\w-]*)\/.*/', $error['file'], $output_array);
 			$plugin = (isset($output_array[1]) ? $output_array[1] : '' );
-			$message = 'PHP ' . $phperrors[$error['type']] . ($plugin != '' ? " in  Plugin '$plugin'" : '') . ": " . $error['message'] . ' in file: ' . 
+			$message = 'PHP ' . $phperrors[$error['type']] . ($plugin != '' ? " in  Plugin '$plugin'" : '') . ': ' . $error['message'] . ' in file: ' . 
 					$error['file'] . ' on line: ' . $error['line'];
-        		cacti_log($message, false, "ERROR");
+        		cacti_log($message, false, 'ERROR');
 			cacti_debug_backtrace('PHP ERROR');
 			if ($plugin != '') {
 				api_plugin_disable_all($plugin);
