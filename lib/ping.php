@@ -39,8 +39,13 @@ class Net_Ping
 	var $time;
 	var $timer_start_time;
 
-	function Net_Ping() {
+	function __construct() {
 		$this->port = 33439;
+		return true;
+	}
+
+	function __destruct() {
+		return true;
 	}
 
 	function close_socket() {
