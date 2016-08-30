@@ -199,7 +199,7 @@ function aggregate_error_handler($errno, $errmsg, $filename, $linenum, $vars) {
 	if(!defined('E_STRICT'))            define('E_STRICT', 2048);
 	if(!defined('E_RECOVERABLE_ERROR')) define('E_RECOVERABLE_ERROR', 4096);
 
-	if (read_config_option('log_verbosity') >= AGGREGATE_LOG_DEBUG) {
+	if (read_config_option('log_verbosity') >= POLLER_VERBOSITY_DEBUG) {
 		/* define all error types */
 		$errortype = array(
 		E_ERROR             => 'Error',
@@ -849,4 +849,3 @@ function aggregate_prune_graphs($local_graph_id = 0) {
 	}
 }
 
-?>
