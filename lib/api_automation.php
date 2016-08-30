@@ -2661,8 +2661,8 @@ function automation_add_device ($device, $web = false) {
 
 	$template_id          = $device['host_template'];
 	$snmp_sysName         = preg_split('/[\s.]+/', $device['snmp_sysName'], -1, PREG_SPLIT_NO_EMPTY);
-	$description          = $snmp_sysName[0] != '' ? $snmp_sysName[0] : $device['hostname'];
-	$ip                   = $device['ip_address'];
+	$description          = (isset($snmp_sysName[0]) != '' ? $snmp_sysName[0] : ($device['hostname'] == '' ? $device['ip'] : $device['hostname']));
+	$ip                   = $device['ip'];
 	$community            = $device['community'];
 	$snmp_ver             = $device['snmp_version'];
 	$snmp_username	      = $device['snmp_username'];

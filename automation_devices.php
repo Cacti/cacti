@@ -24,6 +24,8 @@
 
 include('./include/auth.php');
 include('./lib/api_device.php');
+include('./lib/api_data_source.php');
+include('./lib/utility.php');
 
 $device_actions = array(
 	1 => __('Add Device')
@@ -81,14 +83,14 @@ function form_actions() {
 		if ($selected_items != false) {
 			if (get_nfilter_request_var('drp_action') == '1') { /* add to cacti */
 				foreach($selected_items as $id) {
-					$d = db_fetch_row_prepared("SELECT * FROM automation_devices WHERE id = ?", array($id));
+					$d = db_fetch_row_prepared('SELECT * FROM automation_devices WHERE id = ?', array($id));
 					$d['host_template']       = get_filter_request_var('host_template');
 					$d['availability_method'] = get_filter_request_var('availability_method');
 					$d['notes']               = __('Added manually through device automation interface.');
 					$d['snmp_sysName']        = $d['sysName'];
 
 					// pull ping options from network_id
-					$n = db_fetch_row_prepared("SELECT * FROM automation_networks WHERE id = ?", array($d['network_id']));
+					$n = db_fetch_row_prepared('SELECT * FROM automation_networks WHERE id = ?', array($d['network_id']));
 					if (sizeof($n)) {
 						$d['ping_method']  = $n['ping_method'];
 						$d['ping_port']    = $n['ping_port'];
@@ -99,9 +101,9 @@ function form_actions() {
 					$host_id = automation_add_device($d, true);
 
 					if ($host_id) {
-						$message .= "<span class='deviceUp'>" . __('Device') . ' ' . htmlspecialchars($d['description']) . ' ' . __('Added to Cacti') . '</span><br>';
+						$message = "<span class='deviceUp'>" . __('Device') . ' ' . htmlspecialchars($d['description']) . ' ' . __('Added to Cacti') . '</span><br>';
 					}else{
-						$message .= "<span class='deviceDown'>" . __('Device') . ' ' . htmlspecialchars($d['description']) . ' ' . __('Not Added to Cacti') . '</span><br>';
+						$message = "<span class='deviceDown'>" . __('Device') . ' ' . htmlspecialchars($d['description']) . ' ' . __('Not Added to Cacti') . '</span><br>';
 					}
 				}
 
@@ -252,18 +254,18 @@ function display_discovery_page() {
 				$host['hostname'] = __('Not Detected');
 			}
 
-			form_selectable_cell(filter_value($host['hostname'], get_request_var('filter')), $host['network_id']);
-			form_selectable_cell(filter_value($host['ip'], get_request_var('filter')), $host['network_id']);
-			form_selectable_cell(snmp_data($host['sysName']), $host['network_id'], '', 'text-align:left');
-			form_selectable_cell(snmp_data($host['sysLocation']), $host['network_id'], '', 'text-align:left');
-			form_selectable_cell(snmp_data($host['sysContact']), $host['network_id'], '', 'text-align:left');
-			form_selectable_cell(snmp_data($host['sysDescr']), $host['network_id'], '', 'text-align:left');
-			form_selectable_cell(snmp_data($host['os']), $host['network_id'], '', 'text-align:left');
-			form_selectable_cell(snmp_data($uptime), $host['network_id'], '', 'text-align:right');
-			form_selectable_cell($status[$host['snmp']], $host['network_id'], '', 'text-align:right');
-			form_selectable_cell($status[$host['up']], $host['network_id'], '', 'text-align:right');
-			form_selectable_cell(substr($host['mytime'],0,16), $host['network_id'], '', 'text-align:right');
-			form_checkbox_cell($host['ip'], $host['network_id']);
+			form_selectable_cell(filter_value($host['hostname'], get_request_var('filter')), $host['id']);
+			form_selectable_cell(filter_value($host['ip'], get_request_var('filter')), $host['id']);
+			form_selectable_cell(snmp_data($host['sysName']), $host['id'], '', 'text-align:left');
+			form_selectable_cell(snmp_data($host['sysLocation']), $host['id'], '', 'text-align:left');
+			form_selectable_cell(snmp_data($host['sysContact']), $host['id'], '', 'text-align:left');
+			form_selectable_cell(snmp_data($host['sysDescr']), $host['id'], '', 'text-align:left');
+			form_selectable_cell(snmp_data($host['os']), $host['id'], '', 'text-align:left');
+			form_selectable_cell(snmp_data($uptime), $host['id'], '', 'text-align:right');
+			form_selectable_cell($status[$host['snmp']], $host['id'], '', 'text-align:right');
+			form_selectable_cell($status[$host['up']], $host['id'], '', 'text-align:right');
+			form_selectable_cell(substr($host['mytime'],0,16), $host['id'], '', 'text-align:right');
+			form_checkbox_cell($host['ip'], $host['id']);
 			form_end_row();
 		}
 	}else{
@@ -620,4 +622,3 @@ function export_data($item) {
 	}
 }
 
-?>
