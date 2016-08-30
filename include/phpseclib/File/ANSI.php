@@ -3,52 +3,36 @@
 /**
  * Pure-PHP ANSI Decoder
  *
- * PHP versions 4 and 5
+ * PHP version 5
  *
- * If you call read() in Net_SSH2 you may get {@link http://en.wikipedia.org/wiki/ANSI_escape_code ANSI escape codes} back.
+ * If you call read() in \phpseclib\Net\SSH2 you may get {@link http://en.wikipedia.org/wiki/ANSI_escape_code ANSI escape codes} back.
  * They'd look like chr(0x1B) . '[00m' or whatever (0x1B = ESC).  They tell a
  * {@link http://en.wikipedia.org/wiki/Terminal_emulator terminal emulator} how to format the characters, what
- * color to display them in, etc. File_ANSI is a {@link http://en.wikipedia.org/wiki/VT100 VT100} terminal emulator.
- *
- * LICENSE: Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
+ * color to display them in, etc. \phpseclib\File\ANSI is a {@link http://en.wikipedia.org/wiki/VT100 VT100} terminal emulator.
  *
  * @category  File
- * @package   File_ANSI
+ * @package   ANSI
  * @author    Jim Wigginton <terrafrost@php.net>
  * @copyright 2012 Jim Wigginton
  * @license   http://www.opensource.org/licenses/mit-license.html  MIT License
  * @link      http://phpseclib.sourceforge.net
  */
 
+namespace phpseclib\File;
+
 /**
  * Pure-PHP ANSI Decoder
  *
- * @package File_ANSI
+ * @package ANSI
  * @author  Jim Wigginton <terrafrost@php.net>
  * @access  public
  */
-class File_ANSI
+class ANSI
 {
     /**
      * Max Width
      *
-     * @var Integer
+     * @var int
      * @access private
      */
     var $max_x;
@@ -56,7 +40,7 @@ class File_ANSI
     /**
      * Max Height
      *
-     * @var Integer
+     * @var int
      * @access private
      */
     var $max_y;
@@ -64,7 +48,7 @@ class File_ANSI
     /**
      * Max History
      *
-     * @var Integer
+     * @var int
      * @access private
      */
     var $max_history;
@@ -72,7 +56,7 @@ class File_ANSI
     /**
      * History
      *
-     * @var Array
+     * @var array
      * @access private
      */
     var $history;
@@ -80,7 +64,7 @@ class File_ANSI
     /**
      * History Attributes
      *
-     * @var Array
+     * @var array
      * @access private
      */
     var $history_attrs;
@@ -88,7 +72,7 @@ class File_ANSI
     /**
      * Current Column
      *
-     * @var Integer
+     * @var int
      * @access private
      */
     var $x;
@@ -96,7 +80,7 @@ class File_ANSI
     /**
      * Current Row
      *
-     * @var Integer
+     * @var int
      * @access private
      */
     var $y;
@@ -104,7 +88,7 @@ class File_ANSI
     /**
      * Old Column
      *
-     * @var Integer
+     * @var int
      * @access private
      */
     var $old_x;
@@ -112,7 +96,7 @@ class File_ANSI
     /**
      * Old Row
      *
-     * @var Integer
+     * @var int
      * @access private
      */
     var $old_y;
@@ -120,7 +104,7 @@ class File_ANSI
     /**
      * An empty attribute cell
      *
-     * @var Object
+     * @var object
      * @access private
      */
     var $base_attr_cell;
@@ -128,7 +112,7 @@ class File_ANSI
     /**
      * The current attribute cell
      *
-     * @var Object
+     * @var object
      * @access private
      */
     var $attr_cell;
@@ -136,7 +120,7 @@ class File_ANSI
     /**
      * An empty attribute row
      *
-     * @var Array
+     * @var array
      * @access private
      */
     var $attr_row;
@@ -144,7 +128,7 @@ class File_ANSI
     /**
      * The current screen text
      *
-     * @var Array
+     * @var array
      * @access private
      */
     var $screen;
@@ -152,7 +136,7 @@ class File_ANSI
     /**
      * The current screen attributes
      *
-     * @var Array
+     * @var array
      * @access private
      */
     var $attrs;
@@ -160,7 +144,7 @@ class File_ANSI
     /**
      * Current ANSI code
      *
-     * @var String
+     * @var string
      * @access private
      */
     var $ansi;
@@ -168,7 +152,7 @@ class File_ANSI
     /**
      * Tokenization
      *
-     * @var Array
+     * @var array
      * @access private
      */
     var $tokenization;
@@ -176,20 +160,20 @@ class File_ANSI
     /**
      * Default Constructor.
      *
-     * @return File_ANSI
+     * @return \phpseclib\File\ANSI
      * @access public
      */
-    function File_ANSI()
+    function __construct()
     {
-        $attr_cell = new stdClass();
+        $attr_cell = new \stdClass();
         $attr_cell->bold = false;
         $attr_cell->underline = false;
         $attr_cell->blink = false;
         $attr_cell->background = 'black';
         $attr_cell->foreground = 'white';
         $attr_cell->reverse = false;
-        $this->base_attr_cell = clone($attr_cell);
-        $this->attr_cell = clone($attr_cell);
+        $this->base_attr_cell = clone $attr_cell;
+        $this->attr_cell = clone $attr_cell;
 
         $this->setHistory(200);
         $this->setDimensions(80, 24);
@@ -200,8 +184,8 @@ class File_ANSI
      *
      * Resets the screen as well
      *
-     * @param Integer $x
-     * @param Integer $y
+     * @param int $x
+     * @param int $y
      * @access public
      */
     function setDimensions($x, $y)
@@ -219,8 +203,8 @@ class File_ANSI
     /**
      * Set the number of lines that should be logged past the terminal height
      *
-     * @param Integer $x
-     * @param Integer $y
+     * @param int $x
+     * @param int $y
      * @access public
      */
     function setHistory($history)
@@ -231,7 +215,7 @@ class File_ANSI
     /**
      * Load a string
      *
-     * @param String $source
+     * @param string $source
      * @access public
      */
     function loadString($source)
@@ -243,7 +227,7 @@ class File_ANSI
     /**
      * Appdend a string
      *
-     * @param String $source
+     * @param string $source
      * @access public
      */
     function appendString($source)
@@ -330,7 +314,7 @@ class File_ANSI
                                 foreach ($mods as $mod) {
                                     switch ($mod) {
                                         case 0: // Turn off character attributes
-                                            $attr_cell = clone($this->base_attr_cell);
+                                            $attr_cell = clone $this->base_attr_cell;
                                             break;
                                         case 1: // Turn bold mode on
                                             $attr_cell->bold = true;
@@ -400,7 +384,7 @@ class File_ANSI
                 case "\x08": // backspace
                     if ($this->x) {
                         $this->x--;
-                        $this->attrs[$this->y][$this->x] = clone($this->base_attr_cell);
+                        $this->attrs[$this->y][$this->x] = clone $this->base_attr_cell;
                         $this->screen[$this->y] = substr_replace(
                             $this->screen[$this->y],
                             $source[$i],
@@ -419,7 +403,7 @@ class File_ANSI
                     $this->ansi.= "\x1B";
                     break;
                 default:
-                    $this->attrs[$this->y][$this->x] = clone($this->attr_cell);
+                    $this->attrs[$this->y][$this->x] = clone $this->attr_cell;
                     if ($this->x > strlen($this->screen[$this->y])) {
                         $this->screen[$this->y] = str_repeat(' ', $this->x);
                     }
@@ -474,7 +458,7 @@ class File_ANSI
      * Returns the current coordinate without preformating
      *
      * @access private
-     * @return String
+     * @return string
      */
     function _processCoordinate($last_attr, $cur_attr, $char)
     {
@@ -531,7 +515,7 @@ class File_ANSI
      * Returns the current screen without preformating
      *
      * @access private
-     * @return String
+     * @return string
      */
     function _getScreen()
     {
@@ -555,7 +539,7 @@ class File_ANSI
      * Returns the current screen
      *
      * @access public
-     * @return String
+     * @return string
      */
     function getScreen()
     {
@@ -566,7 +550,7 @@ class File_ANSI
      * Returns the current screen and the x previous lines
      *
      * @access public
-     * @return String
+     * @return string
      */
     function getHistory()
     {
