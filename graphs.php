@@ -465,7 +465,7 @@ function form_actions() {
 				/* get common info - not dependant on template/no template*/
 				$local_graph_id = 0; // this will be a new graph
 				$member_graphs  = $selected_items;
-				$graph_title    = sql_sanitize(form_input_validate(get_nfilter_request_var('title_format'), 'title_format', '', true, 3));
+				$graph_title    = form_input_validate(get_nfilter_request_var('title_format'), 'title_format', '', true, 3);
 
 				/* future aggregate_graphs entry */
 				$ag_data = array();
@@ -484,7 +484,7 @@ function form_actions() {
 					$ag_data['aggregate_template_id'] = 0;
 					$ag_data['template_propogation']  = '';
 					$ag_data['graph_template_id']     = form_input_validate(get_nfilter_request_var('graph_template_id'), 'graph_template_id', '^[0-9]+$', true, 3);
-					$ag_data['gprint_prefix']         = sql_sanitize(form_input_validate(get_nfilter_request_var('gprint_prefix'), 'gprint_prefix', '', true, 3));
+					$ag_data['gprint_prefix']         = form_input_validate(get_nfilter_request_var('gprint_prefix'), 'gprint_prefix', '', true, 3);
 					$ag_data['graph_type']            = form_input_validate(get_nfilter_request_var('aggregate_graph_type'), 'aggregate_graph_type', '^[0-9]+$', true, 3);
 					$ag_data['total']                 = form_input_validate(get_nfilter_request_var('aggregate_total'), 'aggregate_total', '^[0-9]+$', true, 3);
 					$ag_data['total_type']            = form_input_validate(get_nfilter_request_var('aggregate_total_type'), 'aggregate_total_type', '^[0-9]+$', true, 3);
@@ -552,16 +552,16 @@ function form_actions() {
 
 					$aggregate_graph_items = array();
 					foreach ($graph_templates_items as $item_id => $data) {
-						$item_new = array();
-						$item_new['aggregate_graph_id'] = $aggregate_graph_id;
+						$item_new                            = array();
+						$item_new['aggregate_graph_id']      = $aggregate_graph_id;
 						$item_new['graph_templates_item_id'] = $item_id;
 
-						$item_new['color_template'] = isset($data['color_template']) ? $data['color_template']:-1;
-						$item_new['item_skip']      = isset($data['item_skip']) ? 'on':'';
-						$item_new['item_total']     = isset($data['item_total']) ? 'on':'';
-						$item_new['sequence']       = isset($data['sequence']) ? $data['sequence']:-1;
+						$item_new['color_template']          = isset($data['color_template']) ? $data['color_template'] : 0;
+						$item_new['item_skip']               = isset($data['item_skip']) ? 'on' : '';
+						$item_new['item_total']              = isset($data['item_total']) ? 'on' : '';
+						$item_new['sequence']                = isset($data['sequence']) ? $data['sequence'] : 0;
 
-						$aggregate_graph_items[] = $item_new;
+						$aggregate_graph_items[]             = $item_new;
 					}
 
 					aggregate_graph_items_save($aggregate_graph_items, 'aggregate_graphs_graph_item');

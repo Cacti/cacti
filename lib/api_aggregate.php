@@ -410,12 +410,12 @@ function aggregate_graph_items_save($items, $table) {
 			$item['graph_templates_item_id'],
 			$item['sequence'],
 			$item['color_template'],
-			$item['t_graph_type_id'],
+			db_qstr($item['t_graph_type_id']),
 			$item['graph_type_id'],
-			$item['t_cdef_id'],
+			db_qstr($item['t_cdef_id']),
 			$item['cdef_id'],
-			$item['item_skip'],
-			$item['item_total']
+			db_qstr($item['item_skip']),
+			db_qstr($item['item_total'])
 		);
 	}
 
@@ -426,7 +426,7 @@ function aggregate_graph_items_save($items, $table) {
 	cacti_log(__FUNCTION__ . ' called. SQL: ' . $sql, true, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
 
 	/* remove all old items */
-	db_execute("DELETE FROM $table WHERE ".$id_field."=".$items[0][$id_field]);
+	db_execute("DELETE FROM $table WHERE " . $id_field . '=' . $items[0][$id_field]);
 	if (db_execute($sql) == 1) {
 		return true;
 	}else {
@@ -503,23 +503,37 @@ function aggregate_validate_graph_items($posted, &$graph_items) {
 			input_validate_input_number($matches[1]);
 			/* ==================================================== */
 			$graph_templates_item_id = str_replace('agg_color_', '', $var);
-			$graph_items[$graph_templates_item_id]['color_template'] = $val;
+			if (isset($graph_items[$graph_templates_item_id])) {
+				$graph_items[$graph_templates_item_id]['color_template'] = $val;
+			}else{
+				cacti_log('Something fubar in agg_color');
+			}
 		}
+
 		/* work on checkboxed for skipping items */
 		if (preg_match('/^agg_skip_([0-9]+)$/', $var, $matches)) {
 			/* ================= input validation ================= */
 			input_validate_input_number($matches[1]);
 			/* ==================================================== */
 			$graph_templates_item_id = str_replace('agg_skip_', '', $var);
-			$graph_items[$graph_templates_item_id]['item_skip'] = $val;
+			if (isset($graph_items[$graph_templates_item_id])) {
+				$graph_items[$graph_templates_item_id]['item_skip'] = $val;
+			}else{
+				cacti_log('Something fubar in agg_skip');
+			}
 		}
+
 		/* work on checkboxed for totalling items */
 		if (preg_match('/^agg_total_([0-9]+)$/', $var, $matches)) {
 			/* ================= input validation ================= */
 			input_validate_input_number($matches[1]);
 			/* ==================================================== */
 			$graph_templates_item_id = str_replace('agg_total_', '', $var);
-			$graph_items[$graph_templates_item_id]['item_total'] = $val;
+			if (isset($graph_items[$graph_templates_item_id])) {
+				$graph_items[$graph_templates_item_id]['item_total'] = $val;
+			}else{
+				cacti_log('Something fubar in agg_total');
+			}
 		}
 	}
 }
