@@ -474,7 +474,7 @@ function template_edit() {
 			WHERE id = ?', 
 			array(get_request_var('id')));
 
-		$template_graph = db_fetch_row('SELECT * 
+		$template_graph = db_fetch_row_prepared('SELECT * 
 			FROM graph_templates_graph 
 			WHERE graph_template_id = ?
 			AND local_graph_id=0',
@@ -506,15 +506,15 @@ function template_edit() {
 		$form_array += array($field_name => $struct_graph[$field_name]);
 
 		if ($form_array[$field_name]['method'] != 'spacer') {
-			$form_array[$field_name]['value'] = (isset($template_graph) ? $template_graph[$field_name] : '');
+			$form_array[$field_name]['value'] = (isset($template_graph[$field_name]) ? $template_graph[$field_name] : '');
 		}
 
-		$form_array[$field_name]['form_id'] = (isset($template_graph) ? $template_graph['id'] : '0');
+		$form_array[$field_name]['form_id'] = (isset($template_graph['id']) ? $template_graph['id'] : '0');
 		if ($form_array[$field_name]['method'] != 'spacer') {
 			$form_array[$field_name]['sub_checkbox'] = array(
 				'name' => 't_' . $field_name,
 				'friendly_name' => __('Use Per-Graph Value (Ignore this Value)'),
-				'value' => (isset($template_graph) ? $template_graph{'t_' . $field_name} : '')
+				'value' => (isset($template_graph['t_' . $field_name]) ? $template_graph{'t_' . $field_name} : '')
 			);
 		}
 	}
