@@ -928,7 +928,7 @@ $enable = '1';
 						$ext = verify_php_extensions($extensions);
 						$enabled = '1';
 						foreach ($ext as $id =>$e) {
-							form_alternate_row_color('line' . $id);
+							form_alternate_row('line' . $id);
 							form_selectable_cell($e['name'], '');
 							form_selectable_cell('<font color=green>' . __('Yes') . '</font>', '');
 							form_selectable_cell(($e['installed'] ? '<font color=green>' . __('Yes') . '</font>' : '<font color=red>' . __('No') . '</font>'), '');
@@ -1222,9 +1222,8 @@ $enable = '1';
 
 						html_start_box('<strong>' . __('Templates') . '</strong>', '100%', '3', 'center', '', '');
 						html_header_checkbox( array( __('Name'), __('Description'), __('Author'), __('Homepage') ) );
-						$i = 0;
 						foreach ($templates as $id => $p) {
-							form_alternate_row_color($colors['alternate'], $colors['light'], $i, 'line' . $id); $i++;
+							form_alternate_row('line' . $id, true);
 							form_selectable_cell($p['name'], $id);
 							form_selectable_cell($p['description'], $id);
 							form_selectable_cell($p['author'], $id);
