@@ -4072,12 +4072,23 @@ function cacti_oid_numeric_format() {
 }
 
 function IgnoreErrorHandler($message) {
-	$ignore = array(
+	global $snmp_error;
+
+	$snmp_ignore = array(
 		'No response from',
 		'noSuchName',
 		'This name does not exist',
 		'End of MIB',
 	);
+
+	foreach ($snmp_ignore as $i) {
+		if (strpos($message, $i)) {
+			$snmp_error = $message;
+			return true;
+		}
+	}
+
+	$ignore = array();
 
 	foreach ($ignore as $i) {
 		if (strpos($message, $i)) {
@@ -4097,8 +4108,9 @@ function CactiErrorHandler($level, $message, $file, $line, $context) {
 	}
 
 	preg_match("/.*\/plugins\/([\w-]*)\/.*/", $file, $output_array);
-	$plugin = (isset($output_array[1]) ? $output_array[1] : '' );
-	$error = 'PHP ' . $phperrors[$level] . ($plugin != '' ? " in  Plugin '$plugin'" : '') . ": $message in file: $file  on line: $line";
+
+	$plugin = (isset($output_array[1]) ? $output_array[1] : '');
+	$error  = 'PHP ' . $phperrors[$level] . ($plugin != '' ? " in  Plugin '$plugin'" : '') . ": $message in file: $file  on line: $line";
 
 	switch ($level) {
 		case E_COMPILE_ERROR:
@@ -4137,6 +4149,7 @@ function CactiErrorHandler($level, $message, $file, $line, $context) {
        		cacti_log($error, false, 'ERROR');
 			cacti_debug_backtrace('PHP ERROR');
 	}
+
 	return false;
 }
 
@@ -4156,11 +4169,16 @@ function CactiShutdownHandler () {
 		case E_COMPILE_WARNING:
 		case E_PARSE:
 			preg_match('/.*\/plugins\/([\w-]*)\/.*/', $error['file'], $output_array);
+
 			$plugin = (isset($output_array[1]) ? $output_array[1] : '' );
-			$message = 'PHP ' . $phperrors[$error['type']] . ($plugin != '' ? " in  Plugin '$plugin'" : '') . ': ' . $error['message'] . ' in file: ' . 
-					$error['file'] . ' on line: ' . $error['line'];
-        		cacti_log($message, false, 'ERROR');
+
+			$message = 'PHP ' . $phperrors[$error['type']] . 
+				($plugin != '' ? " in  Plugin '$plugin'" : '') . ': ' . $error['message'] . 
+				' in file: ' .  $error['file'] . ' on line: ' . $error['line'];
+
+			cacti_log($message, false, 'ERROR');
 			cacti_debug_backtrace('PHP ERROR');
+
 			if ($plugin != '') {
 				api_plugin_disable_all($plugin);
 				cacti_log("ERRORS DETECTED - DISABLING PLUGIN '$plugin'");
