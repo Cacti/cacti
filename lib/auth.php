@@ -1384,14 +1384,18 @@ function secpass_check_history($id, $p) {
 function rsa_check_keypair() {
 	global $config;
 	
-	set_include_path($config["include_path"] . "/phpseclib/");
-	include_once('Crypt/RSA.php');
-	include_once('Crypt/AES.php');
+	set_include_path($config['include_path'] . '/phpseclib/');
+	include('Crypt/Base.php');
+	include('Math/BigInteger.php');
+	include('Crypt/Hash.php');
+	include('Crypt/RSA.php');
+	include('Crypt/Rijndael.php');
+	include('Crypt/AES.php');
 	
 	$public_key = read_config_option('rsa_public_key');
 
 	if(!$public_key) {
-		$rsa = new Crypt_RSA();
+		$rsa = new phpseclib\Crypt\RSA();
 		$keys = $rsa->createKey(2048);
 		$rsa->loadKey($keys['publickey']);
 		$fingerprint = $rsa->getPublicKeyFingerprint();

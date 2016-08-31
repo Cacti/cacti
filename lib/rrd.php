@@ -25,11 +25,15 @@
 define('RRD_NL', " \\\n");
 define('MAX_FETCH_CACHE_SIZE', 5);
 
-if( read_config_option('storage_location') ) {
+if(read_config_option('storage_location')) {
 	/* load crypt libraries only if the Cacti RRDtool Proxy Server is in use */
 	set_include_path($config['include_path'] . '/phpseclib/');
-	include_once('Crypt/RSA.php');
-	include_once('Crypt/AES.php');
+	include('Crypt/Base.php');
+	include('Math/BigInteger.php');
+	include('Crypt/Hash.php');
+	include('Crypt/RSA.php');
+	include('Crypt/Rijndael.php');
+	include('Crypt/AES.php');
 }
 
 function escape_command($command) {
@@ -71,7 +75,7 @@ function __rrd_init($output_to_term = TRUE) {
 function __rrd_proxy_init() {
 	global $config;
 	
-	$rsa = new Crypt_RSA();
+	$rsa = new phpseclib/Crypt/RSA();
 	
 	$rrdp_socket = @socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
 	if ($rrdp_socket === false) {
@@ -157,8 +161,8 @@ function __rrd_proxy_close($rrdp) {
 
 function encrypt($output, $rsa_key) {
 
-	$rsa = new Crypt_RSA();
-	$aes = new Crypt_AES();
+	$rsa = new phpseclib/Crypt/RSA();
+	$aes = new phpseclib/Crypt/AES();
 
 	$aes_key = crypt_random_string(192);
 	
@@ -173,8 +177,8 @@ function encrypt($output, $rsa_key) {
 
 function decrypt($input){
 			 
-	$rsa = new Crypt_RSA();
-	$aes = new Crypt_AES();
+	$rsa = new phpseclib/Crypt/RSA();
+	$aes = new phpseclib/Crypt/AES();
 
 	$rsa_private_key = read_config_option('rsa_private_key');
 	
