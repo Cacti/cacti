@@ -705,11 +705,13 @@ function host_edit() {
 
 	api_plugin_hook('host_edit_top');
 
+	$header_label = __('Device [new]');
 	if (!isempty_request_var('id')) {
 		$host = db_fetch_row_prepared('SELECT * FROM host WHERE id = ?', array(get_request_var('id')));
-		$header_label = __('Device [edit: %s]', htmlspecialchars($host['description']));
-	}else{
-		$header_label = __('Device [new]');
+
+		if (sizeof($host)) {
+			$header_label = __('Device [edit: %s]', htmlspecialchars($host['description']));
+		}
 	}
 
 	if (!empty($host['id'])) {
