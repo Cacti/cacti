@@ -809,7 +809,7 @@ if (isset_request_var('database_hostname')) {
 	$_SESSION['database_ssl']      = isset_request_var('database_ssl') ? true:false;
 }
 
-$enabled = false
+$enable = '1';
 
 ?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -926,14 +926,14 @@ $enabled = false
 						);
 
 						$ext = verify_php_extensions($extensions);
-						$enabled = true;
+						$enabled = '1';
 						foreach ($ext as $id =>$e) {
 							form_alternate_row_color('line' . $id);
 							form_selectable_cell($e['name'], '');
 							form_selectable_cell('<font color=green>' . __('Yes') . '</font>', '');
 							form_selectable_cell(($e['installed'] ? '<font color=green>' . __('Yes') . '</font>' : '<font color=red>' . __('No') . '</font>'), '');
 							form_end_row();
-							if (!$e['installed']) $enabled = false;
+							if (!$e['installed']) $enabled = '0';
 						}
 						html_end_box(false);
 
@@ -1355,8 +1355,10 @@ $(function() {
 		}
 	});
 
-	if ('<?php print $enabled;?>' == '') {
+	if ('<?php print $enabled;?>' == '0') {
 		$('#next').button('disable');
+	}else{
+		$('#next').button('enable');
 	}
 
 	$('#testdb').click(function() {
