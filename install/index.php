@@ -809,6 +809,8 @@ if (isset_request_var('database_hostname')) {
 	$_SESSION['database_ssl']      = isset_request_var('database_ssl') ? true:false;
 }
 
+$enabled = false
+
 ?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -898,6 +900,8 @@ if (isset_request_var('database_hostname')) {
 						print '<h3>' . __('Pre-installation Checks') .'</h3>';
 						print __('Cacti requries several PHP Modules to be installed to work properly. If any of these are not installed, you will be unable to continue the installation until corrected. In addition, for optimal system performance Cacti should be run with certain MySQL system variables set.  Please follow the MySQL recommendations at your discretion.  Always seek the MySQL documentation if you have any questions.') . '<br><br>';
 
+						print '<br>' . __('The following PHP extensions are mandator, and MUST be installed before continuing your Cacti install.') . '<br><br>';
+
 						html_start_box('<strong> ' . __('Required PHP Modules') . '</strong>', '30', 0, '', '', false);
 						html_header( array( __('Name'), __('Required'), __('Installed') ) );
 					
@@ -922,10 +926,9 @@ if (isset_request_var('database_hostname')) {
 						);
 
 						$ext = verify_php_extensions($extensions);
-						$i = 0;
 						$enabled = true;
 						foreach ($ext as $id =>$e) {
-							form_alternate_row_color($colors["alternate"], $colors["light"], $i, 'line' . $id); $i++;
+							form_alternate_row_color('line' . $id);
 							form_selectable_cell($e['name'], '');
 							form_selectable_cell('<font color=green>' . __('Yes') . '</font>', '');
 							form_selectable_cell(($e['installed'] ? '<font color=green>' . __('Yes') . '</font>' : '<font color=red>' . __('No') . '</font>'), '');
@@ -934,18 +937,17 @@ if (isset_request_var('database_hostname')) {
 						}
 						html_end_box(false);
 
-						print '<br>' . __('These following PHP extensions are not required, but should be included for performance of your Cacti install and for support of optional plugins.') . '<br><br>';
+						print '<br>' . __('The following PHP extensions are recommented, and should be installed before continuing your Cacti install.') . '<br><br>';
 						$extensions = array(
 							array('name' => 'snmp', 'installed' => false),
 							array('name' => 'gmp', 'installed' => false)
 						);
 
 						$ext = verify_php_extensions($extensions);
-						$i = 0;
 						html_start_box('<strong> ' . __('Optional Modules') . '</strong>', '30', 0, '', '', false);
 						html_header( array( __('Name'), __('Required'), __('Installed') ) );
 						foreach ($ext as $id => $e) {
-							form_alternate_row_color($colors["alternate"], $colors["light"], $i, 'line' . $id); $i++;
+							form_alternate_row('line' . $id, true);
 							form_selectable_cell($e['name'], '');
 							form_selectable_cell('<font color=green>' . __('Yes') . '</font>', '');
 							form_selectable_cell(($e['installed'] ? '<font color=green>' . __('Yes') . '</font>' : '<font color=red>' . __('No') . '</font>'), '');
@@ -958,7 +960,6 @@ if (isset_request_var('database_hostname')) {
 						html_start_box('<strong> ' . __('Recommended MySQL System Variable Settings') . '</strong>', '30', 0, '', '', false);
 						utilities_get_mysql_recommendations();
 						html_end_box(false);
-
 					/* install/upgrade */
 					}elseif ($step == '3') {
 						print '<h3>' . __('Installation Type') . '</h3>';
@@ -1353,6 +1354,10 @@ $(function() {
 			$('#next').button('disable');
 		}
 	});
+
+	if ('<?php print $enabled;?>' == '') {
+		$('#next').button('disable');
+	}
 
 	$('#testdb').click(function() {
 		strURL = 'index.php?action=testdb';
