@@ -88,7 +88,7 @@ function clog_view_logfile() {
 			'filter' => FILTER_VALIDATE_INT, 
 			'default' => '1'
 			),
-		'filter' => array(
+		'rfilter' => array(
 			'filter' => FILTER_VALIDATE_IS_REGEX, 
 			'default' => '' 
 			)
@@ -153,7 +153,7 @@ function clog_view_logfile() {
 	html_end_box();
 
 	/* read logfile into an array and display */
-	$logcontents   = tail_file($logfile, get_request_var('tail_lines'), get_request_var('message_type'), get_request_var('filter'));
+	$logcontents   = tail_file($logfile, get_request_var('tail_lines'), get_request_var('message_type'), get_request_var('rfilter'));
 	$exclude_regex = read_config_option('clog_exclude', true);
 
 	if (get_request_var('reverse') == 1) {
@@ -356,13 +356,13 @@ function filter() {
 					</td>
 				</tr>
 			</table>
-			<table>
+			<table class='filterTable'>
 				<tr>
 					<td>
-						<?php print __('SearchRegex');?>
+						<?php print __('Search');?>
 					</td>
 					<td>
-						<input id='filter' type='text' name='filter' size='75' value='<?php print get_request_var('filter');?>'>
+						<input id='rfilter' type='text' size='75' value='<?php print get_request_var('rfilter');?>'>
 					</td>
 				</tr>
 			</table>
@@ -371,7 +371,7 @@ function filter() {
 		    var refreshPage='<?php print $refresh['page'];?>';
 		    var refreshMSeconds=<?php print $refresh['seconds']*1000;?>;
 
-			$('#filter').change(function() {
+			$('#rfilter').change(function() {
 				refreshFilter();
 			});
 
@@ -412,7 +412,7 @@ function filter() {
 			function refreshFilter() {
 				refreshMSeconds=$('#refresh').val()*1000;
 
-				strURL = basename(location.pathname) + '?filter='+ $('#filter').val()+
+				strURL = basename(location.pathname) + '?rfilter='+ $('#rfilter').val()+
 					'&reverse='+$('#reverse').val()+
 					'&refresh='+$('#refresh').val()+
 					'&message_type='+$('#message_type').val()+

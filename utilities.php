@@ -837,7 +837,7 @@ function utilities_view_logfile() {
 			'pageset' => true,
 			'default' => '-1'
 			),
-		'filter' => array(
+		'rfilter' => array(
 			'filter' => FILTER_VALIDATE_IS_REGEX, 
 			'pageset' => true,
 			'default' => ''
@@ -908,7 +908,7 @@ function utilities_view_logfile() {
 		strURL += '&message_type=' + $('#message_type').val();
 		strURL += '&refresh=' + $('#refresh').val();
 		strURL += '&reverse=' + $('#reverse').val();
-		strURL += '&filter=' + $('#filter').val();
+		strURL += '&rfilter=' + $('#rfilter').val();
 		strURL += '&action=view_logfile';
 		strURL += '&header=false';
 		refreshMSeconds=$('#refresh').val()*1000;
@@ -997,7 +997,7 @@ function utilities_view_logfile() {
 						<?php print __('Search');?>
 					</td>
 					<td>
-						<input id='filter' type='text' size='75' value='<?php print htmlspecialchars(get_request_var('filter'));?>'>
+						<input id='rfilter' type='text' size='75' value='<?php print htmlspecialchars(get_request_var('rfilter'));?>'>
 					</td>
 				</tr>
 			</table>
@@ -1010,7 +1010,7 @@ function utilities_view_logfile() {
 	html_end_box();
 
 	/* read logfile into an array and display */
-	$logcontents = tail_file($logfile, get_request_var('tail_lines'), get_request_var('message_type'), get_request_var('filter'));
+	$logcontents = tail_file($logfile, get_request_var('tail_lines'), get_request_var('message_type'), get_request_var('rfilter'));
 
 	if (get_request_var('reverse') == 1) {
 		$logcontents = array_reverse($logcontents);
