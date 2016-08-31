@@ -49,7 +49,9 @@ if (!is_array($plugins)) {
 $oldplugins = read_config_option('oldplugins');
 if (strlen(trim($oldplugins))) {
 	$oldplugins = explode(',', $oldplugins);
-	$plugins    = array_merge($plugins, $oldplugins);
+	foreach($oldplugins as $plugin) {
+		$plugins[$plugin]['directory'] = $plugin;
+	}
 }
 
 /* On startup, register all plugins configured for use. */
