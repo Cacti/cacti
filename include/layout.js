@@ -591,25 +591,29 @@ function ajaxAnchors() {
 }
 
 function setupCollapsible() {
-	storage=$.sessionStorage;
+	storage=$.localStorage;
 
 	$('.collapsible').each(function(data) {
 		id=$(this).attr('id')+'_cs';
 		state = storage.get(id);
 		if (state == 'hide') {
+			$(this).addClass('collapsed');
 			$(this).nextUntil('tr.spacer').hide();
 			$(this).find('i').removeClass('fa-angle-double-up').addClass('fa-angle-double-down');
+			storage.set(id, 'hide');
 		}
 	});
 
 	$('.collapsible').click(function(data) {
 		id=$(this).attr('id')+'_cs';
 		if ($(this).find('i').hasClass('fa-angle-double-up')) {
-			$(this).nextUntil('tr.spacer').slideUp('fast');
+			$(this).addClass('collapsed');
+			$(this).nextUntil('tr.spacer').slideUp('slow');
 			$(this).find('i').removeClass('fa-angle-double-up').addClass('fa-angle-double-down');
 			storage.set(id, 'hide');
 		}else{
-			$(this).nextUntil('tr.spacer').slideDown('fast');
+			$(this).removeClass('collapsed');
+			$(this).nextUntil('tr.spacer').slideDown('slow');
 			$(this).nextUntil('tr.spacer').each(function(data) {
 				$(this).find('input, select').change();
 			});

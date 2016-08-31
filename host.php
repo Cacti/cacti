@@ -297,7 +297,7 @@ function form_actions() {
 					api_tree_item_save(0, get_nfilter_request_var('tree_id'), TREE_ITEM_TYPE_HOST, get_nfilter_request_var('tree_item_id'), '', 0, $selected_items[$i], 1, 1, false);
 				}
 			}elseif (get_request_var('drp_action') == 6) { /* automation */
-				cacti_log(__FUNCTION__ . ' called, action: ' . $action, true, 'AUTOM8 TRACE', POLLER_VERBOSITY_MEDIUM);
+				cacti_log(__FUNCTION__ . ' called, action: ' . get_request_var('drp_action'), true, 'AUTOM8 TRACE', POLLER_VERBOSITY_MEDIUM);
 
 				cacti_log(__FUNCTION__ . ', items: ' . get_nfilter_request_var('selected_items'), true, 'AUTOM8 TRACE', POLLER_VERBOSITY_MEDIUM);
 
@@ -965,6 +965,10 @@ function device_javascript() {
 	var ping_retries   = $('#ping_retries').val();
 
 	function setPing() {
+		if ($('#row_host_avail_head').hasClass('collapsed')) {
+			return false;
+		}
+
 		availability_method = $('#availability_method').val();
 		ping_method         = $('#ping_method').val();
 
@@ -1009,6 +1013,10 @@ function device_javascript() {
 	}
 
 	function setAvailability() {
+		if ($('#row_host_avail_head').hasClass('collapsed')) {
+			return false;
+		}
+
 		if ($('#snmp_version').val() == '0') {
 			methods = [ 
 				{ value: '0', text: 'None' }, 
@@ -1071,6 +1079,10 @@ function device_javascript() {
 	}
 
 	function setSNMP() {
+		if ($('#row_host_snmp_head').hasClass('collapsed')) {
+			return false;
+		}
+
 		snmp_version = $('#snmp_version').val();
 		switch(snmp_version) {
 		case '0': // No SNMP
@@ -1155,6 +1167,10 @@ function device_javascript() {
 		changeHostForm();
 		$('#dbghide').unbind().click(function(data) {
 			$('#dqdebug').empty().fadeOut('fast');
+		});
+
+		$('[id$="spacer"]').click(function() {
+			changeHostForm();
 		});
 
 		$.get(urlPath+'host.php?action=ping_host&id='+$('#id').val(), function(data) {
