@@ -500,7 +500,7 @@ function data_query_item_edit() {
 				ORDER BY data_template_rrd.data_source_name', array(get_request_var('id'), $data_template['id'], $data_template['id']));
 
 			$i = 0;
-			if (sizeof($data_template_rrds) > 0) {
+			if (sizeof($data_template_rrds)) {
 			foreach ($data_template_rrds as $data_template_rrd) {
 				if (empty($data_template_rrd['snmp_query_graph_id'])) {
 					$old_value = '';
@@ -524,15 +524,17 @@ function data_query_item_edit() {
 									$snmp_queries = get_data_query_array(get_request_var('snmp_query_id'));
 									$xml_outputs = array();
 
-									while (list($field_name, $field_array) = each($snmp_queries['fields'])) {
-										if ($field_array['direction'] == 'output') {
-											$xml_outputs[$field_name] = $field_name . ' (' . $field_array['name'] . ')';
+									if (sizeof($snmp_queries)) {
+										while (list($field_name, $field_array) = each($snmp_queries['fields'])) {
+											if ($field_array['direction'] == 'output') {
+												$xml_outputs[$field_name] = $field_name . ' (' . $field_array['name'] . ')';
+											}
 										}
 									}
 
 									form_dropdown('dsdt_' . $data_template['id'] . '_' . $data_template_rrd['id'] . '_snmp_field_output',$xml_outputs,'','',$data_template_rrd['snmp_field_name'],'','');?>
 								</td>
-								<td align="right">
+								<td align='right'>
 									<?php form_checkbox('dsdt_' . $data_template['id'] . '_' . $data_template_rrd['id'] . '_check', $old_value, '', '', '', get_request_var('id')); print '<br>';?>
 								</td>
 							</tr>
@@ -795,10 +797,10 @@ function data_query_item_edit() {
 function data_query_remove($id) {
 	$snmp_query_graph = db_fetch_assoc_prepared('SELECT id FROM snmp_query_graph WHERE snmp_query_id = ?', array($id));
 
-	if (sizeof($snmp_query_graph) > 0) {
-	foreach ($snmp_query_graph as $item) {
-		db_execute_prepared('DELETE FROM snmp_query_graph_rrd WHERE snmp_query_graph_id = ?', array($item['id']));
-	}
+	if (sizeof($snmp_query_graph)) {
+		foreach ($snmp_query_graph as $item) {
+			db_execute_prepared('DELETE FROM snmp_query_graph_rrd WHERE snmp_query_graph_id = ?', array($item['id']));
+		}
 	}
 
 	db_execute_prepared('DELETE FROM snmp_query WHERE id = ?', array($id));
@@ -987,7 +989,7 @@ function data_query() {
 						<select id='rows' name='rows' onChange='applyFilter()'>
 							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
-							if (sizeof($item_rows) > 0) {
+							if (sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
 									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . htmlspecialchars($value) . "</option>\n";
 								}
