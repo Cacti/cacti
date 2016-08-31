@@ -1734,7 +1734,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 
 		/* if we are not displaying a legend there is no point in us even processing the auto padding,
 		text format stuff. */
-		$pad_nubmer = 0;
+		$pad_number = 0;
 
 		if ((!isset($graph_data_array['graph_nolegend'])) && ($graph['auto_padding'] == 'on')) {
 			/* only applies to AREA, STACK and LINEs */
