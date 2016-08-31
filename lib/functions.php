@@ -4071,8 +4071,25 @@ function cacti_oid_numeric_format() {
 	}
 }
 
+function IgnoreErrorHandler($message) {
+	$ignore = array(
+			'No response from'
+			);
+	foreach ($ignore as $i) {
+		if (strpos($message, $i)) {
+			return true;
+		}
+	}
+	return false;
+}
+
+
 function CactiErrorHandler($level, $message, $file, $line, $context) {
 	global $phperrors;
+
+	if (IgnoreErrorHandler($message)) {
+		return true;
+	}
 
 	preg_match("/.*\/plugins\/([\w-]*)\/.*/", $file, $output_array);
 	$plugin = (isset($output_array[1]) ? $output_array[1] : '' );
@@ -4124,6 +4141,11 @@ function CactiErrorHandler($level, $message, $file, $line, $context) {
 function CactiShutdownHandler () {
 	global $phperrors;
 	$error = error_get_last();
+
+	if (IgnoreErrorHandler($error['message'])) {
+		return true;
+	}
+
 	switch ($error['type']) {
 		case E_ERROR:
 		case E_CORE_ERROR:
