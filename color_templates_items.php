@@ -45,7 +45,7 @@ switch (get_request_var('action')) {
 
 		aggregate_color_item_remove();
 
-		header('Location: color_templates.php?header=false&action=template_edit&color_template_id=' . get_request_var('color_template_id'));
+		header('Location: color_templates.php?header=false&action=template_edit&color_template_id=' . get_request_var('id'));
 		break;
 	case 'item_movedown':
 		get_filter_request_var('color_template_id');
@@ -294,13 +294,13 @@ function aggregate_color_item_remove_confirm() {
 	});
 
 	$('#continue').click(function(data) {
-		$.post('color_template_items.php?action=item_remove', { 
+		$.post('color_templates_items.php?action=item_remove', { 
 			__csrf_magic: csrfMagicToken, 
 			color_id: <?php print get_request_var('color_id');?>, 
 			id: <?php print get_request_var('id');?> 
 		}, function(data) {
 			$('#cdialog').dialog('close');
-			loadPageNoHeader('color_templates.php?action=edit&header=false&id=<?php print get_request_var('id');?>');
+			loadPageNoHeader('color_templates.php?action=template_edit&header=false&color_template_id=<?php print get_request_var('id');?>');
 		});
 	});
 	</script>
@@ -313,11 +313,11 @@ function aggregate_color_item_remove_confirm() {
  */
 function aggregate_color_item_remove() {
 	/* ================= input validation ================= */
-	get_filter_request_var('color_template_item_id');
-	get_filter_request_var('color_template_id');
+	get_filter_request_var('id');
+	get_filter_request_var('color_id');
 	/* ==================================================== */
 
-	db_execute_prepared('DELETE FROM color_template_items WHERE color_template_item_id = ?', array(get_request_var('color_template_item_id')));
+	db_execute_prepared('DELETE FROM color_template_items WHERE color_template_item_id = ?', array(get_request_var('color_id')));
 }
 
 
