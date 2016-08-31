@@ -103,9 +103,9 @@ function cacti_snmp_get($hostname, $community, $oid, $version, $username, $passw
 		snmp_set_quick_print(0);
 
 		if ($version == '1') {
-			$snmp_value = @snmpget($hostname . ':' . $port, $community, $oid, ($timeout * 1000), $retries);
+			$snmp_value = snmpget($hostname . ':' . $port, $community, $oid, ($timeout * 1000), $retries);
 		}elseif ($version == '2') {
-			$snmp_value = @snmp2_get($hostname . ':' . $port, $community, $oid, ($timeout * 1000), $retries);
+			$snmp_value = snmp2_get($hostname . ':' . $port, $community, $oid, ($timeout * 1000), $retries);
 		}else{
 			if ($priv_proto == '[None]' || $priv_pass == '') {
 				$proto = 'authNoPriv';
@@ -114,7 +114,7 @@ function cacti_snmp_get($hostname, $community, $oid, $version, $username, $passw
 				$proto = 'authPriv';
 			}
 
-			$snmp_value = @snmp3_get($hostname . ':' . $port, $username, $proto, $auth_proto, $password, $priv_proto, $priv_pass, $oid, ($timeout * 1000), $retries);
+			$snmp_value = snmp3_get($hostname . ':' . $port, $username, $proto, $auth_proto, $password, $priv_proto, $priv_pass, $oid, ($timeout * 1000), $retries);
 		}
 
 		if ($snmp_value === false) {
@@ -224,9 +224,9 @@ function cacti_snmp_getnext($hostname, $community, $oid, $version, $username, $p
 		snmp_set_quick_print(0);
 
 		if ($version == '1') {
-			$snmp_value = @snmpgetnext($hostname . ':' . $port, $community, $oid, ($timeout * 1000), $retries);
+			$snmp_value = snmpgetnext($hostname . ':' . $port, $community, $oid, ($timeout * 1000), $retries);
 		}elseif ($version == '2') {
-			$snmp_value = @snmp2_getnext($hostname . ':' . $port, $community, $oid, ($timeout * 1000), $retries);
+			$snmp_value = snmp2_getnext($hostname . ':' . $port, $community, $oid, ($timeout * 1000), $retries);
 		}else{
 			if ($priv_proto == '[None]' || $priv_pass == '') {
 				$proto = 'authNoPriv';
@@ -235,7 +235,7 @@ function cacti_snmp_getnext($hostname, $community, $oid, $version, $username, $p
 				$proto = 'authPriv';
 			}
 
-			$snmp_value = @snmp3_getnext($hostname . ':' . $port, $username, $proto, $auth_proto, $password, $priv_proto, $priv_pass, $oid, ($timeout * 1000), $retries);
+			$snmp_value = snmp3_getnext($hostname . ':' . $port, $username, $proto, $auth_proto, $password, $priv_proto, $priv_pass, $oid, ($timeout * 1000), $retries);
 		}
 
 		if ($snmp_value === false) {
@@ -331,7 +331,7 @@ function cacti_snmp_session_walk($session, $oid, $dummy = FALSE, $max_repetition
 	if ($max_repetitions <= 0)
 		$max_repetitions = 10;
 
-	$out = @$session->walk($oid, FALSE, $max_repetitions, $non_repeaters);
+	$out = $session->walk($oid, FALSE, $max_repetitions, $non_repeaters);
 	if ($out === FALSE) {
 		if($oid == '.1.3.6.1.2.1.47.1.1.1.1.2' || $oid == '1.3.6.1.4.1.9.9.68.1.2.2.1.2' || 
 			$oid == '.1.3.6.1.4.1.9.9.46.1.6.1.1.5' || $oid == '.1.3.6.1.4.1.9.9.46.1.6.1.1.14' ||
@@ -361,7 +361,7 @@ function cacti_snmp_session_get($session, $oid) {
 		cacti_log('Empty OID!', false);
 		return array();
 	}
-	$out = @$session->get($oid);
+	$out = $session->get($oid);
 	if (is_array($oid)) {
 		$oid = implode(',', $oid);
 	}
@@ -389,7 +389,7 @@ function cacti_snmp_session_getnext($session, $oid) {
 		return array();
 	}
 
-	$out = @$session->getnext($oid);
+	$out = $session->getnext($oid);
 	if (is_array($oid)) {
 		$oid = implode(',', $oid);
 	}
@@ -467,9 +467,9 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $username, $pass
 		snmp_set_quick_print(0);
 
 		if ($version == '1') {
-			$temp_array = @snmprealwalk($hostname . ':' . $port, $community, $oid, ($timeout * 1000), $retries);
+			$temp_array = snmprealwalk($hostname . ':' . $port, $community, $oid, ($timeout * 1000), $retries);
 		}elseif ($version == 2) {
-			$temp_array = @snmp2_real_walk($hostname . ':' . $port, $community, $oid, ($timeout * 1000), $retries);
+			$temp_array = snmp2_real_walk($hostname . ':' . $port, $community, $oid, ($timeout * 1000), $retries);
 		}else{
 			if ($priv_proto == '[None]' || $priv_pass == '') {
 				$proto = 'authNoPriv';
@@ -478,7 +478,7 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $username, $pass
 				$proto = 'authPriv';
 			}
 
-			$temp_array = @snmp3_real_walk($hostname . ':' . $port, $username, $proto, $auth_proto, $password, $priv_proto, $priv_pass, $oid, ($timeout * 1000), $retries);
+			$temp_array = snmp3_real_walk($hostname . ':' . $port, $username, $proto, $auth_proto, $password, $priv_proto, $priv_pass, $oid, ($timeout * 1000), $retries);
 		}
 
 		if ($temp_array === false) {

@@ -4117,7 +4117,7 @@ function CactiErrorHandler($level, $message, $file, $line, $context) {
 		case E_USER_WARNING:
 		case E_WARNING:
 			/* don't log snmp timeout warnings */
-			if (strpos($error, 'No response from') === false) {
+			if (strpos($error, 'snmp') === false) {
 				cacti_log($error, false, 'ERROR');
 				cacti_debug_backtrace('PHP ERROR WARNING');
 			}
