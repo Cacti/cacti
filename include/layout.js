@@ -492,11 +492,6 @@ function applySkin() {
 		}
 	});
 
-	// Don't show the message container until all GUI interaction is done
-	$('#message_container').show().delay(2000).slideUp('fast', function() {
-		$('#message_container').empty();
-	});
-
 	// remove stray tooltips
 	$(document).tooltip('close');
 
@@ -860,7 +855,9 @@ function pulsateStop(element) {
 $(function() {
 	clearTimeout(messageTimer);
 	$('#message_container').show();
-	messageTimer = setTimeout(function() { $('#message_container').slideUp('fast'); }, 2000);
+	messageTimer = setTimeout(function() { 
+		$('#message_container').slideUp('fast'); 
+		$('#message_container').empty(); }, 2000);
 
 	setupUserMenu();
 
