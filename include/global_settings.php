@@ -1727,6 +1727,11 @@ $settings = array(
 			'method' => 'spacer',
 			'collapsible' => 'true'
 			),
+		'rrdp_load_balancing' => array(
+			'friendly_name' => __('Load Balancing'),
+			'description' => __('If both main and backup proxy are receivable this option allows to spread all requests against RRDtool.'),
+			'method' => 'checkbox'
+		),
 		'rrdp_server_backup' => array(
 			'friendly_name' => __('Proxy Server'),
 			'description' => __('The dns hostname or ip address of the rrdtool backup proxy server if proxy is running in MSR mode.'),
