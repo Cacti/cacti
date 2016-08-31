@@ -1236,8 +1236,8 @@ function upgrade_to_1_0_0() {
 	db_install_add_column ('graph_templates_graph', array('name' => 'tab_width', 'type' => 'varchar(20)', 'NULL' => true, 'after' => 't_tab_width'));
 	db_install_add_column ('graph_templates_graph', array('name' => 't_dynamic_labels', 'type' => 'char(2)',  'default' => '0', 'after' => 'tab_width'));
 	db_install_add_column ('graph_templates_graph', array('name' => 'dynamic_labels', 'type' => 'char(2)', 'NULL' => true, 'after' => 't_dynamic_labels'));
-	db_install_add_column ('graph_templates_graph', array('name' => 't_force_rules', 'type' => 'char(2)',  'default' => '0', 'after' => 'dynamic_labels'));
-	db_install_add_column ('graph_templates_graph', array('name' => 'force_rules', 'type' => 'char(2)', 'NULL' => true, 'after' => 't_force_rules_legend'));
+	db_install_add_column ('graph_templates_graph', array('name' => 't_force_rules_legend', 'type' => 'char(2)',  'default' => '0', 'after' => 'dynamic_labels'));
+	db_install_add_column ('graph_templates_graph', array('name' => 'force_rules_legend', 'type' => 'char(2)', 'NULL' => true, 'after' => 't_force_rules_legend'));
 	db_install_add_column ('graph_templates_graph', array('name' => 't_legend_position', 'type' => 'char(2)',  'default' => '0', 'after' => 'force_rules_legend'));
 	db_install_add_column ('graph_templates_graph', array('name' => 'legend_position', 'type' => 'varchar(10)', 'NULL' => true, 'after' => 't_legend_position'));
 	db_install_add_column ('graph_templates_graph', array('name' => 't_legend_direction', 'type' => 'char(2)',  'default' => '0', 'after' => 'legend_position'));
@@ -1435,8 +1435,8 @@ function upgrade_to_1_0_0() {
 	db_install_add_column ('aggregate_graph_templates_graph', array('name' => 'tab_width', 'type' => 'varchar(20)', 'NULL' => true, 'after' => 't_tab_width'));
 	db_install_add_column ('aggregate_graph_templates_graph', array('name' => 't_dynamic_labels', 'type' => 'char(2)',  'default' => '0', 'after' => 'tab_width'));
 	db_install_add_column ('aggregate_graph_templates_graph', array('name' => 'dynamic_labels', 'type' => 'char(2)', 'NULL' => true, 'after' => 't_dynamic_labels'));
-	db_install_add_column ('aggregate_graph_templates_graph', array('name' => 't_force_rules', 'type' => 'char(2)',  'default' => '0', 'after' => 'dynamic_labels'));
-	db_install_add_column ('aggregate_graph_templates_graph', array('name' => 'force_rules', 'type' => 'char(2)', 'NULL' => true, 'after' => 't_force_rules_legend'));
+	db_install_add_column ('aggregate_graph_templates_graph', array('name' => 't_force_rules_legend', 'type' => 'char(2)',  'default' => '0', 'after' => 'dynamic_labels'));
+	db_install_add_column ('aggregate_graph_templates_graph', array('name' => 'force_rules_legend', 'type' => 'char(2)', 'NULL' => true, 'after' => 't_force_rules_legend'));
 	db_install_add_column ('aggregate_graph_templates_graph', array('name' => 't_legend_position', 'type' => 'char(2)',  'default' => '0', 'after' => 'force_rules_legend'));
 	db_install_add_column ('aggregate_graph_templates_graph', array('name' => 'legend_position', 'type' => 'varchar(10)', 'NULL' => true, 'after' => 't_legend_position'));
 	db_install_add_column ('aggregate_graph_templates_graph', array('name' => 't_legend_direction', 'type' => 'char(2)',  'default' => '0', 'after' => 'legend_position'));
