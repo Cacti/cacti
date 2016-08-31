@@ -24,6 +24,7 @@
 var theme;
 var myRefresh;
 var userMenuTimer;
+var graphMenuTimer;
 var pulsating=true;
 var pageLoaded=false;
 var messageTimer;
@@ -1181,7 +1182,33 @@ function initializeGraphs() {
 				});
 				realtimeArray[data.local_graph_id] = false;
 		});
+	})
+
+	$('.graphDrillDown').hover(
+	function() {
+		element = $(this);
+		clearTimeout(graphMenuTimer);
+		graphMenuTimer = setTimeout(function() { showGraphMenu(element); }, 400);
+	},
+	function() {
+		element = $(this);
+		clearTimeout(graphMenuTimer);
+		graphMenuTimer = setTimeout(function() { hideGraphMenu(element); }, 400);
 	});
+
+	function showGraphMenu(element) {
+		element.find('.spikekillMenu').menu('disable');
+		element.find('.iconWrapper').show('slide', { direction: 'left' }, 400, function() {
+			$(this).find('.spikekillMenu').menu('enable');
+		});
+	}
+
+	function hideGraphMenu(element) {
+		element.find('.spikekillMenu').menu('disable');
+		element.find('.iconWrapper').hide('slide', { direction: 'left' }, 400, function() {
+			$(this).find('.spikekillMenu').menu('enable');
+		});
+	}
 
 	$('#realtimeoff').unbind('click').click(function() {
 		stopRealtime();

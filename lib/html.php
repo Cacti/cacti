@@ -180,7 +180,7 @@ function html_graph_area(&$graph_array, $no_graphs_message = "", $extra_url_args
 							<div class='graphWrapper' style='width:100%;' id='wrapper_<?php print $graph['local_graph_id']?>' graph_width='<?php print $graph['width'];?>' graph_height='<?php print $graph['height'];?>' title_font_size='<?php print ((read_user_setting("custom_fonts") == "on") ? read_user_setting("title_size") : read_config_option("title_size"));?>'></div>
 							<?php print (read_user_setting("show_graph_title") == "on" ? "<span align='center'>" . htmlspecialchars($graph["title_cache"]) . "</span>" : "");?>
 						</td>
-						<td style='vertical-align:top;align-self:left;padding:3px;' class='noprint'>
+						<td class='noprint graphDrillDown'>
 							<?php graph_drilldown_icons($graph['local_graph_id']);?>
 						</td>
 					</tr>
@@ -300,7 +300,7 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = "", $extr
 							<div class='graphWrapper' id='wrapper_<?php print $graph['local_graph_id']?>' graph_width='<?php print read_user_setting("default_width");?>' graph_height='<?php print read_user_setting("default_height");?>'></div>
 							<?php print (read_user_setting("show_graph_title") == "on" ? "<span align='center'>" . htmlspecialchars($graph["title_cache"]) . "</span>" : "");?>
 						</td>
-						<td style='vertical-align:top;text-align:center'>
+						<td class='noprint graphDrillDown'>
 							<?php print graph_drilldown_icons($graph['local_graph_id'], 'graph_buttons_thumbnails');?>
 						</td>
 					</tr>
@@ -339,6 +339,7 @@ function graph_drilldown_icons($local_graph_id, $type = 'graph_buttons') {
 
 	$aggregate_url = aggregate_build_children_url($local_graph_id);
 
+	print "<div class='iconWrapper'>\n";
 	print "<a class='utils' href='#' role='link' id='graph_" . $local_graph_id . "_util'><img class='drillDown' src='" . $config['url_path'] . "images/cog.png' alt='' title='" . __('Graph Details, Zooming and Debugging Utilities') . "'></a><br>\n";
 	print "<a class='csvexport' href='#' role='link' id='graph_" . $local_graph_id . "_csv'><img class='drillDown' src='" . $config['url_path'] . "images/table_go.png' alt='' title='" . __('CSV Export of Graph Data'). "'></a><br>\n";
 	print "<a class='mrgt' href='#' role='link' id='graph_" . $local_graph_id . "_mrtg'><img class='drillDown' src='" . $config['url_path'] . "images/mrtg.png' alt='' title='" . __('MRTG Graph View'). "'></a><br>\n";
@@ -355,6 +356,8 @@ function graph_drilldown_icons($local_graph_id, $type = 'graph_buttons') {
 	}
 
 	api_plugin_hook($type, array('hook' => 'graphs_thumbnails', 'local_graph_id' => $local_graph_id, 'rra' =>  0, 'view_type' => ''));
+
+	print "</div>\n";
 }
 
 /* html_nav_bar - draws a navigation bar which includes previous/next links as well as current

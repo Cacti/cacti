@@ -188,6 +188,27 @@ label {
 	color:red;
 }
 
+.deleteIcon {
+	width:10px;
+	height:10px;
+	cursor:pointer;
+	padding:2px;
+	border:none;
+}
+
+.graphDrillDown {
+	vertical-align: top;
+	align-self: left;
+	z-index: 4;
+	padding: 3px;
+	height: 100%;
+	width: 20px;
+}
+
+.iconWrapper {
+	display:none;
+}
+
 .deleteMarker {
 	color: red !important;
 	height: 14px !important;

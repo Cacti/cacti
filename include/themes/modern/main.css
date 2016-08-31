@@ -212,6 +212,19 @@ label {
 	border:none;
 }
 
+.graphDrillDown {
+	vertical-align: top;
+	align-self: left;
+	z-index: 4;
+	padding: 3px;
+	height: 100%;
+	width: 20px;
+}
+
+.iconWrapper {
+	display:none;
+}
+
 .drillDown {
 	cursor:pointer;
 }
