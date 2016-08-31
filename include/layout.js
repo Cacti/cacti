@@ -582,12 +582,25 @@ function ajaxAnchors() {
 	});
 
 	$(window).bind('popstate', function(event) {
-		href = document.location.href;
-		if (!pageLoaded) {
-			pageLoaded = true;
-			return false;
+		handlePopState();
+	});
+
+	$('#filter, #rfilter').keyup(function(event) {
+		if (event.keyCode == 8 && $(this).val() == '') {
+			handlePopState();
 		}
 	});
+}
+
+function handlePopState() {
+	var href = document.location.href;
+
+	if (!pageLoaded) {
+		pageLoaded = true;
+		return false;
+	}else{
+		document.location = href;
+	}
 }
 
 function setupCollapsible() {
