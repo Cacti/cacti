@@ -171,8 +171,12 @@ function form_save() {
 	}
 
 	if (isset_request_var('save_component_graph')) {
+		if (get_filter_request_var('host_id') == '-1') {
+			set_request_var('host_id', '0');
+		}
+
 		$save1['id']                     = get_nfilter_request_var('local_graph_id');
-		$save1['host_id']                = get_nfilter_request_var('host_id');
+		$save1['host_id']                = get_request_var('host_id');
 		$save1['graph_template_id']      = get_nfilter_request_var('graph_template_id');
 
 		$save2['id']                     = get_nfilter_request_var('graph_template_graph_id');
