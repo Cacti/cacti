@@ -1107,7 +1107,7 @@ function data_query() {
 			form_end_row();
 		}
 	}else{
-		print "<tr class='tableRow'><td colspan='5'><em>" . __('No Data Queries') . "</em></td></tr>";
+		print "<tr class='tableRow'><td colspan='5'><em>" . __('No Data Queries Found') . "</em></td></tr>";
 	}
 
 	html_end_box(false);

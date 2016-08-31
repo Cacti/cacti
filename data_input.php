@@ -724,7 +724,7 @@ function data() {
 			form_end_row();
 		}
 	}else{
-		print "<tr><td colspan='5'><em>" . __('No Data Input Methods') . "</em></td></tr>";
+		print "<tr><td colspan='5'><em>" . __('No Data Input Methods Found') . "</em></td></tr>";
 	}
 
 	html_end_box(false);

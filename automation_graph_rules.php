@@ -869,7 +869,7 @@ function automation_graph_rules() {
 			form_end_row();
 		}
 	}else{
-		print "<tr><td><em>" . __('No Graph Rules') . "</em></td></tr>\n";
+		print "<tr><td><em>" . __('No Graph Rules Found') . "</em></td></tr>\n";
 	}
 
 	html_end_box(false);

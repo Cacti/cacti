@@ -661,7 +661,7 @@ function aggregate_template() {
 			form_end_row();
 		}
 	}else{
-		print "<tr><td><em>" . __('No Aggregate Templates') . "</em></td></tr>\n";
+		print "<tr><td><em>" . __('No Aggregate Templates Found') . "</em></td></tr>\n";
 	}
 
 	html_end_box(false);

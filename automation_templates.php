@@ -557,7 +557,7 @@ function template() {
 			$i++;
 		}
 	}else{
-		print "<tr><td><em>" . __('No Automation Device Templates') . "</em></td></tr>\n";
+		print "<tr><td><em>" . __('No Automation Device Templates Found') . "</em></td></tr>\n";
 	}
 
 	html_end_box(false);

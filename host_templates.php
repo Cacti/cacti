@@ -817,7 +817,7 @@ function template() {
 			form_end_row();
 		}
 	}else{
-		print "<tr class='tableRow'><td colspan='4'><em>" . __('No Device Templates') . "</em></td></tr>\n";
+		print "<tr class='tableRow'><td colspan='4'><em>" . __('No Device Templates Found') . "</em></td></tr>\n";
 	}
 	html_end_box(false);
 

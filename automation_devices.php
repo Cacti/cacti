@@ -269,7 +269,7 @@ function display_discovery_page() {
 			form_end_row();
 		}
 	}else{
-		print "<tr class='even'><td colspan=11>" . __('No Devices Found') . "</td></tr>";
+		print "<tr><td colspan=12><em>" . __('No Devices Found') . "</em></td></tr>";
 	}
 
 	html_end_box(false);

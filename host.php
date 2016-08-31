@@ -1500,7 +1500,7 @@ function host() {
 			form_end_row();
 		}
 	}else{
-		print "<tr class='tableRow'><td colspan='11'><em>" . __('No Devices') . "</em></td></tr>";
+		print "<tr class='tableRow'><td colspan='11'><em>" . __('No Devices Found') . "</em></td></tr>";
 	}
 
 	html_end_box(false);
