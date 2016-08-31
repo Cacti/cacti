@@ -4073,13 +4073,18 @@ function cacti_oid_numeric_format() {
 
 function IgnoreErrorHandler($message) {
 	$ignore = array(
-			'No response from'
-			);
+		'No response from',
+		'noSuchName',
+		'This name does not exist',
+		'End of MIB',
+	);
+
 	foreach ($ignore as $i) {
 		if (strpos($message, $i)) {
 			return true;
 		}
 	}
+
 	return false;
 }
 
@@ -4116,11 +4121,8 @@ function CactiErrorHandler($level, $message, $file, $line, $context) {
 		case E_CORE_WARNING:
 		case E_USER_WARNING:
 		case E_WARNING:
-			/* don't log snmp timeout warnings */
-			if (strpos($error, 'snmp') === false) {
-				cacti_log($error, false, 'ERROR');
-				cacti_debug_backtrace('PHP ERROR WARNING');
-			}
+			cacti_log($error, false, 'ERROR');
+			cacti_debug_backtrace('PHP ERROR WARNING');
 			break;
 		case E_NOTICE:
 		case E_USER_NOTICE:
