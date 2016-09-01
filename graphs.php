@@ -49,7 +49,6 @@ if (get_nfilter_request_var('template_id') > 0) {
 $graph_actions += array(
 	5  => __('Change Device'),
 	6  => __('Reapply Suggested Names'),
-	7  => __('Resize Graphs'),
     9  => __('Create Aggregate Graph'),
     10 => __('Create Aggregate from Template'),
 	8  => __('Apply Automation Rules')
@@ -459,12 +458,6 @@ function form_actions() {
 					api_reapply_suggested_graph_title($selected_items[$i]);
 					update_graph_title_cache($selected_items[$i]);
 				}
-			}elseif (get_request_var('drp_action') == '7') { /* resize graphs */
-				get_filter_request_var('graph_width');
-				get_filter_request_var('graph_height');
-				for ($i=0;($i<count($selected_items));$i++) {
-					api_resize_graphs($selected_items[$i], get_nfilter_request_var('graph_width'), get_nfilter_request_var('graph_height'));
-				}
 			}elseif (get_request_var('drp_action') == '9' || get_request_var('drp_action') == '10') {
 				/* get common info - not dependant on template/no template*/
 				$local_graph_id = 0; // this will be a new graph
@@ -755,23 +748,6 @@ function form_actions() {
 			</tr>\n";
 
 			$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "' title='" . __('Reapply Suggested Naming to Graph(s)') . "'>";
-		}elseif (get_request_var('drp_action') == '7') { /* resize graphs */
-			print "<tr>
-				<td class='textArea'>
-					<p>" . __('Click \'Continue\' to resize the following Graph(s).') . "</p>
-					<div class='itemlist'><ul>$graph_list</ul></div>
-					<p>" . __('Graph Height') . "<br>"; 
-
-			form_text_box('graph_height', '', '', '255', '30', 'text'); 
-
-			print '</p><p>' . __('Graph Width'). '<br>'; 
-			form_text_box('graph_width', '', '', '255', '30', 'text'); 
-
-			print "</p>
-				</td>
-			</tr>\n";
-
-			$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "' title='" . __('Resize Selected Graph(s)') . "'>";
 		} elseif (get_request_var('drp_action') == '9') {
 			include_once('./lib/api_aggregate.php');
 
