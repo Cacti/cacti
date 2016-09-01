@@ -466,13 +466,14 @@ case 'list':
 	set_request_var('graph_list', implode(',', array_keys($graph_list)));
 	load_current_session_value('graph_list', 'sess_graph_view_list_graph_list', '');
 
+	form_start('graph_view.php', 'form_graph_list');
+
 	/* display graph view filter selector */
 	html_start_box(__('Graph List View Filters') . (isset_request_var('style') && strlen(get_request_var('style')) ? ' ' . __('[ Custom Graph List Applied - Filter FROM List ]'):''), '100%', '', '3', 'center', '');
 
 	?>
 	<tr class='even noprint'>
 		<td class='noprint'>
-		<form id='form_graph_list' method='post' action='graph_view.php?action=list'>
 			<table class='filterTable'>
 				<tr class='noprint'>
 					<td>
@@ -540,11 +541,12 @@ case 'list':
 					</td>
 				</tr>
 			</table>
+			<input type='hidden' id='style' value='selective'>
+			<input type='hidden' id='action' value='preview'>
 			<input type='hidden' id='graph_add' value=''>
 			<input type='hidden' id='graph_remove' value=''>
 			<input type='hidden' id='graph_list' value='<?php print get_request_var('graph_list');?>'>
 			<input type='hidden' id='page' value='<?php print get_request_var('page');?>'>
-		</form>
 		</td>
 	</tr>
 	<?php
@@ -573,8 +575,6 @@ case 'list':
 
 	$nav = html_nav_bar('graph_view.php?action=list', MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 5, 'Graphs', 'page', 'main');
 
-	form_start('graph_view.php', 'chk');
-
 	print $nav;
 
 	html_start_box('', '100%', '', '3', 'center', '');
@@ -594,25 +594,22 @@ case 'list':
 		}
 	}
 
+	?>
+	<tr>
+		<td style='text-align:right' colspan='3'><img src='images/arrow.gif' alt=''>&nbsp;</td>
+		<td style='text-align:right' colspan='2'><input type='button' value='<?php print __('View');?>' title='<?php print __('View Graphs');?>' onClick='viewGraphs()'></td>
+	</tr>
+	<?php
+
 	html_end_box(false);
 
 	if (sizeof($graphs)) {
 		print $nav;
 	}
 
+	form_end();
+
 	?>
-	<table align='right'>
-	<tr>
-		<td align='right'><img src='images/arrow.gif' alt=''>&nbsp;</td>
-		<td align='right'><input type='button' value='<?php print __('View');?>' title='<?php print __('View Graphs');?>' onClick='viewGraphs()'></td>
-	</tr>
-	</table>
-	<input type='hidden' id='style' value='selective'>
-	<input type='hidden' id='action' value='preview'>
-	<input type='hidden' id='graph_list' value='<?php print get_request_var('graph_list'); ?>'>
-	<input type='hidden' id='graph_add' value=''>
-	<input type='hidden' id='graph_remove' value=''>
-	</form>
 	<script type='text/javascript'>
 	var refreshMSeconds=999999999;
 	var graph_list_array = new Array(<?php print get_request_var('graph_list');?>);
@@ -655,7 +652,27 @@ case 'list':
 		});
 		$('#graph_list').val(graphList);
 
-		document.chk.submit();
+		strURL = urlPath+'graph_view.php?action=preview';
+		$('#form_graph_list').find('select, input').each(function() {
+			switch($(this).attr('id')) {
+			case 'host_id':
+			case 'graph_template_id':
+				strURL += '&' + $(this).attr('id') + '=' + $(this).prop('selectedIndex');
+				break;
+			case 'rfilter':
+			case 'graph_add':
+			case 'graph_remove':
+			case 'graph_list':
+			case 'style':
+			case 'csrf_magic':
+				strURL += '&' + $(this).attr('id') + '=' + $(this).val();
+				break;
+			default:
+				break;
+			}
+		});
+
+		document.location = strURL;
 	}
 
 	function url_graph(strNavURL) {
