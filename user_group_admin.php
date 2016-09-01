@@ -1231,16 +1231,18 @@ function user_group_realms_edit($header_label) {
 	get_filter_request_var('id');
 	/* ==================================================== */
 
+	print "<div class='cactiTable' style='width:100%;text-align:left;'>
+		<div>
+			<div class='cactiTableTitle'><span style='padding:3px;'>" . __('User Permissions') . " $header_label</span></div>
+			<div class='cactiTableButton'><span style='padding:3px;'><input class='checkbox' type='checkbox' name='all' title='" . __('Select All') . "' onClick='selectAllRealms(this.checked)'></a><?php }?></span></div>
+		</div>
+	</div>\n";
+
 	form_start('user_group_admin.php', 'chk');
 
 	$all_realms = $user_auth_realms;
 
 	html_start_box('', '100%', '', '3', 'center', '');
-
-	print "	<tr class='cactiTableTitle'>
-			<td class='textHeaderDark'><strong>" . __('Group Permissions') . "</strong> $header_label</td>
-			<td class='tableHader' width='1%' align='center'><input type='checkbox' style='margin: 0px;' name='all' title='" . __('Select All') . "' onClick='selectAllRealms(this.checked)'></td>\n
-		</tr>\n";
 
 	/* do cacti realms first */
 	$i = 1;
@@ -1299,22 +1301,11 @@ function user_group_realms_edit($header_label) {
 	print "<tr class='tableHeader'><th colspan='2'>" . __('External Link Permissions') . "</th></tr>\n";
 	print "<tr class='odd'><td colspan='4'><table style='width:100%;'><tr><td class='realms'>\n";
 	if (sizeof($links)) {
-		$i = 1;
 		$j = 1;
 
 		foreach($links as $r) {
-			$break = false;
-
-			if ($j == 6) {
-				print "</tr><tr>\n";
-				$break = true;;
-				$j = 1;
-			}else{
-				$j++;
-			}
-
-			if ($break) {
-				print "</td><td class='realms'>\n";
+			if ($j == 1) {
+				print "<tr>\n";
 			}
 			
 			$realm = $r['id'] + 10000;
@@ -1327,11 +1318,32 @@ function user_group_realms_edit($header_label) {
 
 			unset($all_realms[$realm]);
 
-			$description = $style_translate[$r['style']] . ': ' . ($r['style'] == 'CONSOLE' ? ($r['extendedstyle'] == '' ? 'External Links':$r['extendedstyle']) . '/' . $r['title']:'');
+			print "<td class='realms'>\n";
+
+			switch($r['style']) {
+			case 'CONSOLE':
+				$description = $style_translate[$r['style']] . ': ' . ($r['extendedstyle'] == '' ? 'External Links' : $r['extendedstyle']) . '/' . $r['title'];
+				break;
+			default:
+				$description = $style_translate[$r['style']] . ': ' . ucfirst($r['title']);
+				break;
+			}
 
 			form_checkbox('section' . $realm, $old_value, $description, '', '', '', (!isempty_request_var('id') ? 1 : 0)); print '<br>';
 
-			$i++;
+			print "</td>\n";
+
+			if ($j == 5) {
+				print "</tr>\n";
+				$j = 1;
+			}else{
+				$j++;
+			}
+		}
+
+		if ($j > 1) {
+			print "<td class='realms' colspan='" . (6-$j) . "'></td>\n";
+			print "</tr>\n";
 		}
 
 		print "</table></td></tr>\n";
