@@ -54,8 +54,10 @@ function cacti_snmp_session($hostname, $community, $version, $username, $passwor
 		return FALSE;
 	}
 
-	$session->oid_output_format = SNMP_OID_OUTPUT_NUMERIC;
-	$session->valueretrieval = SNMP_VALUE_LIBRARY;
+	if (defined('SNMP_OID_OUTPUT_NUMERIC')) {
+		$session->oid_output_format = SNMP_OID_OUTPUT_NUMERIC;
+		$session->valueretrieval = SNMP_VALUE_LIBRARY;
+	}
 	$session->max_oids = $max_oids;
 
 	if ($version != SNMP::VERSION_3) {
