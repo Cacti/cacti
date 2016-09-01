@@ -1077,6 +1077,7 @@ legend {
 	font-size: 11px;
 	color: snow;
 	font-weight: normal;
+	padding: 2px;
 }
 
 .cactiTable {
@@ -1182,6 +1183,10 @@ legend {
 th.sortable {
 	cursor:pointer;
 	line-height:10px;
+}
+
+th.primarySort {
+	background: rgba(0, 0, 0, 0) linear-gradient(to bottom, rgba(167, 217, 134, 0.4) 0%, rgba(148, 179, 107, 0.4) 100%) repeat scroll 0 0;
 }
 
 .tableHeader th {

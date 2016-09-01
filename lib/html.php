@@ -437,6 +437,7 @@ function html_header_sort($header_items, $sort_column, $sort_direction, $last_it
 			if ($sort_column == $db_column) {
 				$icon = $sort_direction;
 				$direction = $new_sort_direction;
+				$isSort = true;
 			}else{
 				$icon = '';
 				if (isset($display_array['sort'])) {
@@ -444,6 +445,7 @@ function html_header_sort($header_items, $sort_column, $sort_direction, $last_it
 				}else{
 					$direction = 'ASC';
 				}
+				$isSort = false;
 			}
 
 			if (isset($display_array['align'])) {
@@ -463,10 +465,12 @@ function html_header_sort($header_items, $sort_column, $sort_direction, $last_it
 				$icon = $sort_direction;
 				$direction = $new_sort_direction;
 				$display_text = $display_array[0];
+				$isSort = true;
 			}else{
 				$icon = '';
 				$display_text = $display_array[0];
 				$direction = $display_array[1];
+				$isSort = false;
 			}
 
 			$align = 'left';
@@ -484,7 +488,7 @@ function html_header_sort($header_items, $sort_column, $sort_direction, $last_it
 		if (($db_column == "") || (substr_count($db_column, "nosort"))) {
 			print "<th " . ($tip != '' ? "title='" . htmlspecialchars($tip) . "'":"") . " style='padding:4px;text-align:$align;' " . ((($i+1) == count($header_items)) ? "colspan='$last_item_colspan' " : "") . ">" . $display_text . "</th>\n";
 		}else{
-			print "<th " . ($tip != '' ? "title='" . htmlspecialchars($tip) . "'":"") . " class='sortable' style='padding:4px;text-align:$align;'>";
+			print "<th " . ($tip != '' ? "title='" . htmlspecialchars($tip) . "'":"") . " class='sortable" . ($isSort ? ' primarySort':'') . "' style='padding:4px;text-align:$align;'>";
 			print "<div class='sortinfo' sort-page='" . ($url == '' ? htmlspecialchars($_SERVER['PHP_SELF']):$url) . "' sort-column='$db_column' sort-direction='$direction'><div class='textSubHeaderDark'>" . $display_text . "<i class='$icon'></i></div></div></th>\n";
 		}
 
@@ -528,6 +532,7 @@ function html_header_sort_checkbox($header_items, $sort_column, $sort_direction,
 			if ($sort_column == $db_column) {
 				$icon = $sort_direction;
 				$direction = $new_sort_direction;
+				$isSort = true;
 			}else{
 				$icon = '';
 
@@ -536,6 +541,7 @@ function html_header_sort_checkbox($header_items, $sort_column, $sort_direction,
 				}else{
 					$direction = 'ASC';
 				}
+				$isSort = false;
 			}
 
 			if (isset($display_array['align'])) {
@@ -555,10 +561,12 @@ function html_header_sort_checkbox($header_items, $sort_column, $sort_direction,
 				$icon = $sort_direction;
 				$direction = $new_sort_direction;
 				$display_text = $display_array[0];
+				$isSort = true;
 			}else{
 				$icon = '';
 				$display_text = $display_array[0];
 				$direction = $display_array[1];
+				$isSort = false;
 			}
 
 			$align = 'left';
@@ -576,7 +584,7 @@ function html_header_sort_checkbox($header_items, $sort_column, $sort_direction,
 		if (($db_column == "") || (substr_count($db_column, "nosort"))) {
 			print "<th " . ($tip != '' ? "title='" . htmlspecialchars($tip) . "'":"") . " style='text-align:$align;'>" . $display_text . "</th>\n";
 		}else{
-			print "<th " . ($tip != '' ? "title='" . htmlspecialchars($tip) . "'":"") . " class='sortable' style='text-align:$align;'>";
+			print "<th " . ($tip != '' ? "title='" . htmlspecialchars($tip) . "'":"") . " class='sortable" . ($isSort ? ' primarySort':'') . "' style='text-align:$align;'>";
 			print "<div class='sortinfo' sort-page='" . htmlspecialchars($form_action) . "' sort-column='$db_column' sort-direction='$direction'><div class='textSubHeaderDark'>" . $display_text . "<i class='$icon'></i></div></div></th>\n";
 		}
 	}
