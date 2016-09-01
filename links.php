@@ -98,7 +98,7 @@ case 'save':
 
 		raise_message(1);
 
-		header('Location: links.php');
+		header('Location: links.php?header=false');
 		exit;
 	}else{
 		raise_message(2);
